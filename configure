@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.39 
+# From configure.in Revision: 2.40 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -2086,6 +2086,7 @@ build/bin/list_members:bin/list_members \
 build/bin/list_owners:bin/list_owners \
 build/bin/mailmanctl:bin/mailmanctl \
 build/bin/mmsitepass:bin/mmsitepass \
+build/bin/msgfmt.py:bin/msgfmt.py \
 build/bin/newlist:bin/newlist \
 build/bin/pygettext.py:bin/pygettext.py \
 build/bin/qrunner:bin/qrunner \
