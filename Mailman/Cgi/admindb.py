@@ -66,7 +66,7 @@ def main():
     except KeyError:
         doc.SetTitle("Admindb Error")
         doc.AddItem(
-            Header(2, "You must specify what list you are intenting to visit"))
+            Header(2, "You must specify a list."))
         print doc.Format(bgcolor="#ffffff")
         sys.exit(0)
 
@@ -74,7 +74,7 @@ def main():
 
     if len(list_info) < 1:
         doc.SetTitle("Admindb Error")
-        doc.AddItem(eader(2, "Invalid options to CGI script."))
+        doc.AddItem(Header(2, "You must specify a list."))
         print doc.Format(bgcolor="#ffffff")
         sys.exit(0)
     list_name = string.lower(list_info[0])
@@ -236,7 +236,13 @@ def PrintPostRequest(val, form):
         ])
     t.AddRow([
 	FontSize("+1", Bold('If you reject this post, explain (optional):')),
-	TextArea("comment-%d" % val[0], "", 3, 50)
+	TextArea("comment-%d" % val[0], rows=4, cols=60,
+                 text=("Please do *not* post administrative requests"
+                       " to the mailing list!  If you wish to subscribe,"
+                       " visit %s or send a 'help' message to the"
+                       " the request address, %s , for instructions"
+                       % (list.GetAbsoluteScriptURL('listinfo'),
+                          list.GetRequestEmail())))
         ])
 
     cur_row = t.GetCurrentRowIndex()
@@ -312,8 +318,7 @@ def PrintRequests(doc):
     if list.requests.has_key('post'):
 	for request in list.requests['post']:
 	    form.AddItem('<hr>')
-	    form.AddItem(Center(Header(2,
-                                                             "Held Message")))
+	    form.AddItem(Center(Header(2, "Held Message")))
 	    PrintPostRequest(request, form)
     doc.AddItem(list.GetMailmanFooter())
 
