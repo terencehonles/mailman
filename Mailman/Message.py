@@ -55,8 +55,7 @@ class Message(rfc822.Message):
         self.body = self.fp.read()
 
     def __str__(self):
-        # TBD: should this include the unixfrom?
-        return string.join(self.headers, '') + '\n' + self.body
+        return self.unixfrom + string.join(self.headers, '') + '\n' + self.body
 
     def GetSender(self, use_envelope=None):
         """Return the address considered to be the author of the email.
