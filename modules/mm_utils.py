@@ -229,7 +229,9 @@ def GetNestingLevel():
   if nesting_level == None:
     try:
       path = os.environ['PATH_INFO']
-      nesting_level = len(string.split(os.environ['PATH_INFO'], '/')) - 1
+      if path[0] <> '/': 
+        path= '/' + path
+      nesting_level = len(string.split(path, '/')) - 1
     except KeyError:
       nesting_level = 0
   return nesting_level
