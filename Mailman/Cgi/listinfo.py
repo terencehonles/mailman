@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Produce listinfo page, primary web entry-point to maillists.
+"""Produce listinfo page, primary web entry-point to mailing lists.
 """
 
 # No lock needed in this script, because we don't change data.
@@ -24,8 +24,9 @@
 import sys
 import os, string
 from regsub import gsub
-import mm_utils, maillist, mm_cfg
-from htmlformat import *
+from Mailman import Utils, MailList
+from Mailman import mm_cfg
+from Mailman.htmlformat import *
 
 def main():
     try:
@@ -33,7 +34,7 @@ def main():
     except KeyError:
         path = ""
 
-    list_info = mm_utils.GetPathPieces(path)
+    list_info = Utils.GetPathPieces(path)
 
     if len(list_info) == 0:
         FormatListinfoOverview()
@@ -42,7 +43,7 @@ def main():
     list_name = string.lower(list_info[0])
 
     try:
-        list = maillist.MailList(list_name, lock=0)
+        list = MailList.MailList(list_name, lock=0)
     except:
         list = None
 
@@ -52,10 +53,12 @@ def main():
 
     FormatListListinfo(list)
 
+
+
 def FormatListinfoOverview(error=None):
     "Present a general welcome and itemize the (public) lists for this host."
     doc = Document()
-    legend = "%s maillists" % mm_cfg.DEFAULT_HOST_NAME
+    legend = "%s mailing lists" % mm_cfg.DEFAULT_HOST_NAME
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -64,7 +67,7 @@ def FormatListinfoOverview(error=None):
                       colspan=2, bgcolor="#99ccff")
 
     advertised = []
-    names = mm_utils.list_names()
+    names = Utils.list_names()
     names.sort()
 
     # XXX We need a portable way to determine the host by which we are being 
@@ -75,7 +78,7 @@ def FormatListinfoOverview(error=None):
 	http_host = None
 
     for n in names:
-	l = maillist.MailList(n, lock = 0)
+	l = MailList.MailList(n, lock = 0)
 	if l.advertised:
 	    if (http_host
 		and (string.find(http_host, l.host_name) == -1
@@ -95,7 +98,7 @@ def FormatListinfoOverview(error=None):
 			 "<p>"
 			 " There currently are no publicly-advertised ",
 			 Link(mm_cfg.MAILMAN_URL, "mailman"),
-			 " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+			 " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
 			 )
     else:
 
@@ -104,7 +107,7 @@ def FormatListinfoOverview(error=None):
             "<p>"
             " Below is the collection of publicly-advertised ",
             Link(mm_cfg.MAILMAN_URL, "mailman"),
-            " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+            " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
             (' Click on a list name to visit the info page'
              ' for that list.  There you can learn more about the list,'
              ' subscribe to it, or find the roster of current subscribers.'),
@@ -118,7 +121,7 @@ def FormatListinfoOverview(error=None):
                        % ((error and "right ") or ""))
                       +
                       '<p> List administrators, you can visit ',
-                      Link(os.path.join('../' * mm_utils.GetNestingLevel(),
+                      Link(os.path.join('../' * Utils.GetNestingLevel(),
 	                   'admin/'), "the list admin overview page"),
                       " to find the management interface for your list."
                       "<p>(Send questions or comments to ",
