@@ -47,9 +47,11 @@ from Mailman.Logging.Syslog import syslog
 def Update(l, stored_state):
     "Dispose of old vars and user options, mapping to new ones when suitable."
     ZapOldVars(l)
+    # Be sure to call UpdateOldUsers() before updating NewVars(), otherwise
+    # the list's bounce_info attribute won't be updated correctly.
+    UpdateOldUsers(l)
     NewVars(l)
     UpdateOldVars(l, stored_state)
-    UpdateOldUsers(l)
     CanonicalizeUserOptions(l)
     NewRequestsDatabase(l)
 
@@ -339,8 +341,10 @@ def UpdateOldUsers(l):
     for k, v in l.passwords.items():
         passwords[k.lower()] = v
     l.passwords = passwords
-    # Clear out bounce_info; we're going to do things completely differently
-    l.bounce_info = {}
+    # If there is no delivery_status attribute on the list, clear out
+    # bounce_info; we're going to do things completely differently.
+    if not hasattr(l, 'delivery_status'):
+        l.bounce_info = {}
 
 
 
