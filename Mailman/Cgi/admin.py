@@ -85,10 +85,13 @@ def main():
     # Which subcategory was requested?  Default is `general'
     if len(parts) == 1:
         category = 'general'
-        category_suffix = ''
+        subcat = None
+    elif len(parts) == 2:
+        category = parts[1]
+        subcat = None
     else:
         category = parts[1]
-        category_suffix = category
+        subcat = parts[2]
 
     # Is this a log-out request?
     if category == 'logout':
@@ -153,7 +156,7 @@ def main():
 
         if cgidata.keys():
             # There are options to change
-            change_options(mlist, category, cgidata, doc)
+            change_options(mlist, category, subcat, cgidata, doc)
             # Let the list sanity check the changed values
             mlist.CheckValues()
         # Additional sanity checks
@@ -178,7 +181,7 @@ def main():
                 turned off.  They will receive mail until you fix this
                 problem.'''))
         # Glom up the results page and print it out
-        show_results(mlist, doc, category, category_suffix, cgidata)
+        show_results(mlist, doc, category, subcat, cgidata)
         print doc.Format()
         mlist.Save()
     finally:
@@ -297,9 +300,13 @@ def option_help(mlist, varhelp):
     # Find out which category and variable help is being requested for.
     item = None
     reflist = varhelp.split('/')
-    if len(reflist) == 2:
-        category, varname = reflist
-        options = mlist.GetConfigInfo()[category]
+    if len(reflist) >= 2:
+        category = subcat = None
+        if len(reflist) == 2:
+            category, varname = reflist
+        elif len(reflist) == 3:
+            category, subcat, varname = reflist
+        options = mlist.GetConfigInfo(category, subcat)
         for i in options:
             if i and i[0] == varname:
                 item = i
@@ -308,6 +315,7 @@ def option_help(mlist, varhelp):
     if not item:
         bad = _('No valid variable name found.')
         add_error_message(doc, bad)
+        doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
     # Get the details about the variable
@@ -330,9 +338,13 @@ def option_help(mlist, varhelp):
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, description))
     doc.AddItem("%s<p>" % elaboration)
 
-    form = Form("%s/%s" % (mlist.GetScriptURL('admin'), category))
+    if subcat:
+        url = '%s/%s/%s' % (mlist.GetScriptURL('admin'), category, subcat)
+    else:
+        url = '%s/%s' % (mlist.GetScriptURL('admin'), category)
+    form = Form(url)
     valtab = Table(cellspacing=3, cellpadding=4, width='100%')
-    add_options_table_item(mlist, category, valtab, item, detailsp=0)
+    add_options_table_item(mlist, category, subcat, valtab, item, detailsp=0)
     form.AddItem(valtab)
     form.AddItem('<p>')
     form.AddItem(Center(submit_button()))
@@ -343,15 +355,19 @@ def option_help(mlist, varhelp):
     pages that are displaying this option for this mailing list.  You can also
     """))
 
-    doc.AddItem(Link('%s/%s' % (mlist.GetScriptURL('admin'), category),
-                     _('return to the %(category)s options page.')))
+    adminurl = mlist.GetScriptURL('admin')
+    if subcat:
+        url = '%s/%s/%s' % (adminurl, category, subcat)
+    else:
+        url = '%s/%s' % (adminurl, category)
+    doc.AddItem(Link(url, _('return to the %(category)s options page.')))
     doc.AddItem('</em>')
     doc.AddItem(mlist.GetMailmanFooter())
     print doc.Format()
 
 
 
-def show_results(mlist, doc, category, category_suffix, cgidata):
+def show_results(mlist, doc, category, subcat, cgidata):
     # Produce the results page
     adminurl = mlist.GetScriptURL('admin')
     categories = mlist.GetConfigCategories()
@@ -395,6 +411,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     categorykeys = categories.keys()
     half = len(categorykeys) / 2
     counter = 0
+    subcat = None
     for k in categorykeys:
         label = _(categories[k][0])
         url = '%s/%s' % (adminurl, k)
@@ -434,14 +451,14 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     # Now we need to craft the form that will be submitted, which will contain
     # all the variable settings, etc.  This is a bit of a kludge because we
     # know that the autoreply and members categories supports file uploads.
-    if category_suffix:
-        encoding = None
-        if category_suffix in ('autoreply', 'members'):
-            # These have file uploads
-            encoding = 'multipart/form-data'
-        form = Form('%s/%s' % (adminurl, category_suffix), encoding=encoding)
+    encoding = None
+    if category in ('autoreply', 'members'):
+        encoding = 'multipart/form-data'
+    if subcat:
+        form = Form('%s/%s/%s' % (adminurl, category, subcat),
+                    encoding=encoding)
     else:
-        form = Form(adminurl)
+        form = Form('%s/%s' % (adminurl, category), encoding=encoding)
     form.AddItem(
         _('''Make your changes in the following section, then submit them
         using the <em>Submit Your Changes</em> button below.''')
@@ -470,7 +487,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         form.AddItem(Center(password_inputs()))
         form.AddItem(Center(submit_button()))
     else:
-        form.AddItem(show_variables(mlist, category, cgidata, doc))
+        form.AddItem(show_variables(mlist, category, subcat, cgidata, doc))
         form.AddItem(Center(submit_button()))
     # Add the separator
     form.AddItem('<hr>')
@@ -481,8 +498,8 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
 
 
 
-def show_variables(mlist, category, cgidata, doc):
-    options = mlist.GetConfigInfo()[category]
+def show_variables(mlist, category, subcat, cgidata, doc):
+    options = mlist.GetConfigInfo(category, subcat)
 
     # The table containing the results
     table = Table(cellspacing=3, cellpadding=4, width='100%')
@@ -522,20 +539,21 @@ def show_variables(mlist, category, cgidata, doc):
             table.AddRow([Center(Italic(item))])
             table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
         else:
-            add_options_table_item(mlist, category, table, item)
+            add_options_table_item(mlist, category, subcat, table, item)
     table.AddRow(['<br>'])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     return table
 
 
 
-def add_options_table_item(mlist, category, table, item, detailsp=1):
+def add_options_table_item(mlist, category, subcat, table, item, detailsp=1):
     # Add a row to an options table with the item description and value.
     varname, kind, params, dependancies, descr, elaboration = \
              get_item_characteristics(item)
     if elaboration is None:
         elaboration = descr
-    descr = get_item_gui_description(mlist, category, varname, descr, detailsp)
+    descr = get_item_gui_description(mlist, category, subcat,
+                                     varname, descr, detailsp)
     val = get_item_gui_value(mlist, kind, varname, params)
     table.AddRow([descr, val])
     table.AddCellInfo(table.GetCurrentRowIndex(), 1,
@@ -679,21 +697,24 @@ def get_item_gui_value(mlist, kind, varname, params):
 
 
 
-def get_item_gui_description(mlist, category, varname, descr, detailsp):
+def get_item_gui_description(mlist, category, subcat,
+                             varname, descr, detailsp):
     # Return the item's description, with link to details.
     #
     # Details are not included if this is a VARHELP page, because that /is/
     # the details page!
     if detailsp:
-        text = Label(descr + ' ',
-                     Link(mlist.GetScriptURL('admin') +
-                          '/?VARHELP=' + category + '/' + varname,
-                          _('(Details)')))
-
+        if subcat:
+            varhelp = '/?VARHELP=%s/%s/%s' % (category, subcat, varname)
+        else:
+            varhelp = '/?VARHELP=%s/%s' % (category, varname)
+        link = Link(mlist.GetScriptURL('admin') + varhelp,
+                    _('<br>(Details for <b>%s</b>)' % varname)).Format()
+        text = Label('%s %s' % (descr, link)).Format()
     else:
-        text = Label(descr)
+        text = Label(descr).Format()
     if varname[0] == '_':
-        text = text.Format() + Label(_('''<br><em><strong>Note:</strong>
+        text += Label(_('''<br><em><strong>Note:</strong>
         setting this value performs an immediate action but does not modify
         permanent state.</em>''')).Format()
     return text
@@ -793,7 +814,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         usertable.AddRow([Center(Italic(_('%(allcnt)s members total')))])
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
                           usertable.GetCurrentCellIndex(),
-                          colspan=9,
+                          colspan=10,
                           bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     # Add the alphabetical links
     if bucket:
@@ -811,16 +832,16 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         usertable.AddRow([Center(joiner.join(cells))])
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
                           usertable.GetCurrentCellIndex(),
-                          colspan=9,
+                          colspan=10,
                           bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     usertable.AddRow([Center(h) for h in (_('unsub'),
                                           _('member address<br>member name'),
-                                          _('hide'), _('nomail'),
+                                          _('mod'), _('hide'), _('nomail'),
                                           _('ack'), _('not metoo'),
                                           _('digest'), _('plain'),
                                           _('language'))])
     rowindex = usertable.GetCurrentRowIndex()
-    for i in range(9):
+    for i in range(10):
         usertable.AddCellInfo(rowindex, i, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     # Find the longest name in the list
     longest = 0
@@ -841,6 +862,15 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                  name + 
                  Hidden('user', urllib.quote(addr)).Format(),
                  ]
+        # Do the `mod' option
+        if mlist.getMemberOption(addr, mm_cfg.Moderate):
+            value = 'on'
+            checked = 1
+        else:
+            value = 'off'
+            checked = 0
+        box = CheckBox('%s_mod' % addr, value, checked)
+        cells.append(Center(box).Format())
         for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
             if mlist.getMemberOption(addr,
                                      MailCommandHandler.option_info[opt]):
@@ -880,6 +910,10 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     legend = UnorderedList()
     legend.AddItem(
         _('<b>unsub</b> -- Click on this to unsubscribe the member.'))
+    legend.AddItem(
+        _("""<b>mod</b> -- The user's personal moderation flag.  If this is
+        set, postings from them will be moderated, otherwise they will be
+        approved."""))
     legend.AddItem(
         _("""<b>hide</b> -- Is the member's address concealed on
         the list of subscribers?"""))
@@ -1097,7 +1131,7 @@ def get_valid_value(mlist, prop, wtype, val, dependant):
 
 
 
-def change_options(mlist, category, cgidata, doc):
+def change_options(mlist, category, subcat, cgidata, doc):
     confirmed = 0
     # Handle changes to the list moderator password.  Do this before checking
     # the new admin password, since the latter will force a reauthentication.
@@ -1137,7 +1171,7 @@ def change_options(mlist, category, cgidata, doc):
     # is not "members" and the request is not from the login page
     # -scott 19980515
     #
-    if category != 'members' and \
+    if category <> 'members' and \
             not cgidata.has_key("request_login") and \
             len(cgidata.keys()) > 1:
         # then
@@ -1149,7 +1183,7 @@ def change_options(mlist, category, cgidata, doc):
                 #
                 page_setting = int(cgidata["subscribe_policy"].value)
                 cgidata["subscribe_policy"].value = str(page_setting + 1)
-        opt_list = mlist.GetConfigInfo()[category]
+        opt_list = mlist.GetConfigInfo(category, subcat)
         for item in opt_list:
             if type(item) <> TupleType or len(item) < 5:
                 continue
@@ -1322,6 +1356,9 @@ def change_options(mlist, category, cgidata, doc):
             if newlang and newlang <> oldlang:
                 mlist.setMemberLanguage(user, newlang)
                   
+            moderate = not not cgidata.getvalue(user+'_mod')
+            mlist.setMemberOption(user, mm_cfg.Moderate, moderate)
+
             for opt in ('hide', 'nomail', 'ack', 'notmetoo', 'plain'):
                 opt_code = MailCommandHandler.option_info[opt]
                 if cgidata.has_key('%s_%s' % (user, opt)):
