@@ -113,7 +113,7 @@ class Deliverer:
 
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
-    def DeliverToList(self, msg, recipients, news = 1,
+    def DeliverToList(self, msg, recipients, 
                       header="", footer="", remove_to=0, tmpfile_prefix = ""):
 	if not(len(recipients)):
 	    return
@@ -162,9 +162,6 @@ class Deliverer:
         if status:
             sys.stderr.write('Non-zero exit status: %d'
                              '\nCmd: %s' % ((status >> 8), cmd))
-	if news:
-   	  self.SendMailToNewsGroup(msg)
-
     def SendPostAck(self, msg, sender):
 	subject = msg.getheader('subject')
 	if not subject:
