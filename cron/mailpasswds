@@ -6,6 +6,8 @@ We accumulate users and their passwords, and use the last list to send a
 single message to each user with their complete collection of passwords,
 rather than sending a single message for each password."""
 
+__version__ = "$Revision: 388 $"
+
 # This puppy should probably do lots of logging.
 
 import sys, os, string

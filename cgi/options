@@ -6,6 +6,8 @@ Takes listname/userid in PATH_INFO, expecting an "obscured" userid.
 (Depending on the mm_utils.{O,Uno}bscureEmail utilities tolerance,
 will work fine with an unobscured ids as well.)"""
 
+__version__ = "$Revision: 388 $"
+
 # We don't need to lock in this script, because we're never going to change
 # data. 
 

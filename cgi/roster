@@ -4,6 +4,8 @@
 
 Takes listname in PATH_INFO."""
 
+__version__ = "$Revision: 388 $"
+
 # We don't need to lock in this script, because we're never going to change
 # data. 
 

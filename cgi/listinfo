@@ -4,6 +4,8 @@
 
 Errors are redirected to logs/errors."""
 
+__version__ = "$Revision: 388 $"
+
 # No lock needed in this script, because we don't change data.
 
 import sys

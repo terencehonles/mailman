@@ -2,6 +2,8 @@
 
 """Process input to user options form."""
 
+__version__ = "$Revision: 388 $"
+
 import sys
 sys.path.append('/home/mailman/mailman/modules')
 
