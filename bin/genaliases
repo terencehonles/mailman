@@ -33,21 +33,10 @@ import os
 import getopt
 import fcntl
 
-# The issue here is that we must be using a Berkeley DB version in Python
-# that's compatible with the version that Postfix uses.  First, we'll try
-# Robin Dunn's PyBSDDB3 module if its available, since that should be
-# backwards compatible with the widest range of existing libraries.
-# Otherwise,we'll fall back to whatever's available in Python.  Then about the
-# best we can do is just report any errors that come up.
-try:
-    import bsddb3 as bsddb
-except ImportError:
-    import bsddb
-
 import paths                                      # path hacking
+from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
-from Mailman.MTA import Postfix
 from Mailman.i18n import _
 
 
@@ -57,13 +46,6 @@ def usage(code, msg=''):
     if msg:
         print >> sys.stderr, msg
     sys.exit(code)
-
-
-
-def zapfile(filename):
-    # Truncate the file w/o messing with the file permissions
-    fp = open(filename, 'w')
-    fp.close()
 
 
 
@@ -80,12 +62,16 @@ def main():
     if args:
         usage(1)
 
+    # Open up the MTA specific module
+    modulename = 'Mailman.MTA.' + mm_cfg.MTA
+    __import__(modulename)
+    MTA = sys.modules[modulename]
+
     # Open the text file and Berkeley DB files, truncating any data already
     # there.  We need to acquire a lock so nobody tries to update the files
     # while we're doing it.
-    lock = Postfix.makelock()
+    lock = MTA.makelock()
     lock.lock()
-    lockfp = None
     # Group lists by virtual hostname
     mlists = {}
     for listname in Utils.list_names():
@@ -95,15 +81,10 @@ def main():
     # readable.
     omask = os.umask(002)
     try:
-        # Remove the original files
-        zapfile(Postfix.DBFILE)
-        zapfile(Postfix.TEXTFILE)
+        MTA.clear()
         for hostname, vlists in mlists.items():
-            dbfile, textfile = Postfix.virtual_files(hostname)
-            zapfile(dbfile)
-            zapfile(textfile)
             for mlist in vlists:
-                Postfix.create(mlist, nolock=1)
+                MTA.create(mlist, nolock=1)
     finally:
         os.umask(omask)
         lock.unlock(unconditionally=1)
@@ -111,9 +92,4 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except bsddb.error, (code, msg):
-        if code <> 22: raise
-        print >> sys.stderr, _(
-            "Python and Postfix have incompatible Berkeley DB libraries!")
+    main()
