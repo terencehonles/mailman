@@ -25,6 +25,9 @@
 import sys
 import time
 
+from mimelib.Text import Text
+from mimelib.RFC822 import RFC822
+
 from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import Utils
@@ -318,3 +321,19 @@ Bad admin recipient: %s''', self.internal_name(), addr)
             self.ClearBounceInfo(addr)
             self.Save()
             return Errors.MMNoSuchUserError, 1
+
+    def BounceMessage(self, msg, msgdata, e):
+        # Bounce a message back to the sender, with an error message if
+        # provided in the exception argument.
+        sender = msg.get_sender()
+        # Currently we always craft bounces as MIME messages.
+        bmsg = Message.UserNotification(msg.get_sender(),
+                                        self.GetOwnerEmail(),
+                                        e.subject())
+        bmsg.addheader('Content-Type', 'multipart/mixed')
+        bmsg['MIME-Version'] = '1.0'
+        txt = Text(e.details(),
+                   _charset=Utils.GetCharSet(self.preferred_language))
+        bmsg.add_payload(txt)
+        bmsg.add_payload(RFC822(msg))
+        bmsg.send(self)
