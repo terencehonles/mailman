@@ -115,6 +115,7 @@ LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'master-qrunner')
 # needn't be (much) longer than SNOOZE.  We pad it 6 hours just to be safe.
 LOCK_LIFETIME = mm_cfg.days(1) + mm_cfg.hours(6)
 SNOOZE = mm_cfg.days(1)
+MAX_RESTARTS = 10
 
 LogStdErr('error', 'mailmanctl', manual_reprime=0, tee_to_stdout=1)
 
@@ -250,8 +251,9 @@ def start_all_runners():
     kids = {}
     for qrname, count in mm_cfg.QRUNNERS:
         for slice in range(count):
-            info = (qrname, slice, count)
-            pid = start_runner(*info)
+            # queue runner name, slice, numslices, restart count
+            info = (qrname, slice, count, 0)
+            pid = start_runner(qrname, slice, count)
             kids[pid] = info
     return kids
 
@@ -457,18 +459,26 @@ def main():
                        (killsig == None and exitstatus <> signal.SIGTERM):
                         # Then
                         restarting = '[restarting]'
-                qrname, slice, count = kids[pid]
+                qrname, slice, count, restarts = kids[pid]
                 del kids[pid]
                 syslog('qrunner', """\
 Master qrunner detected subprocess exit
 (pid: %d, sig: %s, sts: %s, class: %s, slice: %d/%d) %s""",
                        pid, killsig, exitstatus, qrname,
                        slice+1, count, restarting)
+                # See if we've reached the maximum number of allowable restarts
+                if exitstatus <> signal.SIGINT:
+                    restarts += 1
+                if restarts > MAX_RESTARTS:
+                    syslog('qrunner', """\
+Qrunner %s reached maximum restart limit of %d, not restarting.""",
+                           qrname, MAX_RESTARTS)
+                    restarting = ''
                 # Now perhaps restart the process unless it exited with a
                 # SIGTERM or we aren't restarting.
                 if restarting:
                     newpid = start_runner(qrname, slice, count)
-                    kids[newpid] = (qrname, slice, count)
+                    kids[newpid] = (qrname, slice, count, restarts)
         finally:
             # Should we leave the main loop for any reason, we want to be sure
             # all of our children are exited cleanly.  Send SIGTERMs to all
