@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,10 +17,11 @@
 from Mailman import mm_cfg
 from Mailman.i18n import _
 from Mailman.mm_cfg import days
+from Mailman.Gui.GUIBase import GUIBase
 
 
 
-class Bounce:
+class Bounce(GUIBase):
     def GetConfigCategory(self):
         return 'bounce', _('Bounce detection')
 
@@ -100,37 +101,29 @@ class Bounce:
              Is Disabled</em> warnings.  This value must be an integer.""")),
             ]
 
-    def __convert(self, mlist, cgidata, varname, doc, func):
-        # BAW: This should really be an attribute on the doc object
-        def error(doc, varname, value):
-            from Mailman.Cgi.admin import add_error_message
-            text = _("""Bad value for <a href="?VARHELP=bounce/%(varname)s"
-            >%(varname)s</a>: %(value)s""")
-            add_error_message(doc, text, _('Error: '))
+    def _setValue(self, mlist, property, val, doc):
+        # Do value conversion from web representation to internal
+        # representation.
+        try:
+            if property == 'bounce_processing':
+                val = int(val)
+            elif property == 'bounce_score_threshold':
+                val = float(val)
+            elif property == 'bounce_info_stale_after':
+                val = days(int(val))
+            elif property == 'bounce_you_are_disabled_warnings':
+                val = int(val)
+            elif property == 'bounce_you_are_disabled_warnings_interval':
+                val = days(int(val))
+        except ValueError:
+            doc.addError(
+                _("""Bad value for <a href="?VARHELP=bounce/%(property)s"
+                >%(property)s</a>: %(val)s"""),
+                tag = _('Error: '))
+            return
+        GUIBase._setValue(self, mlist, property, val, doc)
 
-        value = cgidata.getvalue(varname)
-        if value:
-            try:
-                setattr(mlist, varname, func(value))
-            except ValueError:
-                error(doc, varname, value)
-
-    def HandleForm(self, mlist, cgidata, doc):
-        def convert(varname, func,
-                    self=self, mlist=mlist, cgidata=cgidata, doc=doc):
-            self.__convert(mlist, cgidata, varname, doc, func)
-
-        def to_days(value):
-            return days(int(value))
-        # Do our own form processing so the admin.py script doesn't have to
-        # contain all the logic for converting from seconds to days.
-        convert('bounce_processing', int)
-        convert('bounce_score_threshold', float)
-        convert('bounce_info_stale_after', to_days)
-        convert('bounce_you_are_disabled_warnings', int)
-        convert('bounce_you_are_disabled_warnings_interval', to_days)
-
-    def GetValue(self, mlist, kind, varname, params):
+    def getValue(self, mlist, kind, varname, params):
         if varname not in ('bounce_info_stale_after',
                            'bounce_you_are_disabled_warnings_interval'):
             return None
