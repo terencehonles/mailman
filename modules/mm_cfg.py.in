@@ -1,3 +1,5 @@
+# -*- python -*-
+
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -35,7 +37,6 @@ setting by using the value as a format string against the
 list-instance-object's dictionary - see the distributed value of
 DEFAULT_MSG_FOOTER for an example."""
 
-__version__ = "$Revision: 547 $"
 
 #######################################################
 #    Here's where we get the distributed defaults.    #
@@ -53,10 +54,6 @@ SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'
 DEFAULT_URL       = 'http://www.python.org/mailman'
 PUBLIC_ARCHIVE_URL = '/pipermail'
 PRIVATE_ARCHIVE_URL = '/mailman/private'
-
-# Once we know our home directory we can figure out the rest.
-HOME_DIR	  = '/home/mailman'
-MAILMAN_DIR       = '/home/mailman/mailman'
 
 # (Note - if you're looking for something that is imported from
 #  mm_cfg, but you didn't find it above, it's probably in mm_defaults.py.)
