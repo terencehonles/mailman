@@ -82,7 +82,6 @@ Site Administration
     - Allow the site admin to define list styles or themes, and list
       admins to choose one of the canned styles to apply to their
       list.
-    - add_members should have a switch to disable admin notifications
 
 Other Usability Improvments
     - A better strategy is needed for sub-lists and super-lists,
@@ -110,7 +109,6 @@ Portability & architecture
     - Use a real transactional database for all information, and allow
       various bits of information to come from different sources (a
       relational database, ZODB, LDAP, etc)
-    - Keep a members Real Name with their email address
     - Member profiles
     - Do a serious and thorough security audit (ongoing)
     - Allow lists of the same name in two different virtual domains
