@@ -114,7 +114,7 @@ def do_topic_filters(mlist, msg, msgdata, recips):
         # who selected at least one topic of interest, but turned on
         # ReceiveNonmatchingTopics.
         for user in recips:
-            if not mlist.topics_userinterest.has_key(user):
+            if not mlist.getMemberTopics(user):
                 # The user did not select any topics of interest, so he gets
                 # this message by default.
                 continue
@@ -128,7 +128,7 @@ def do_topic_filters(mlist, msg, msgdata, recips):
         # The message hit some topics, so only deliver this message to those
         # who are interested in one of the hit topics.
         for user in recips:
-            utopics = mlist.topics_userinterest.get(user)
+            utopics = mlist.getMemberTopics(user)
             if not utopics:
                 # This user is not interested in any topics, so they get all
                 # postings.
