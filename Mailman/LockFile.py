@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -342,7 +342,9 @@ class LockFile:
     # a fork.  Use at your own risk, but it should be race-condition safe.
     # _transfer_to() is called in the parent, passing in the pid of the
     # child.  _take_possession() is called in the child, and blocks until the
-    # parent has transferred possession to the child.
+    # parent has transferred possession to the child.  _disown() is used to
+    # set the __owned flag to 0, and it is a disgusting wart necessary to make
+    # forced lock acquisition work in mailmanctl. :(
     def _transfer_to(self, pid):
         # First touch it so it won't get broken while we're fiddling about.
         self.__touch()
@@ -368,13 +370,16 @@ class LockFile:
         self.__writelog('transferred the lock')
 
     def _take_possession(self):
-        self.__tmpfname = '%s.%s.%d' % (
+        self.__tmpfname = tmpfname = '%s.%s.%d' % (
             self.__lockfile, socket.gethostname(), os.getpid())
         # Wait until the linkcount is 2, indicating the parent has completed
         # the transfer.
-        while self.__linkcount() <> 2:
+        while self.__linkcount() <> 2 or self.__read() <> tmpfname:
             time.sleep(0.25)
         self.__writelog('took possession of the lock')
+
+    def _disown(self):
+        self.__owned = 0
 
     #
     # Private interface
