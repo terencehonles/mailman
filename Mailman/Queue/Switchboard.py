@@ -75,6 +75,9 @@ class _Switchboard:
             self.__lower = (shamax * slice) / numslices
             self.__upper = (shamax * (slice+1)) / numslices
 
+    def whichq(self):
+        return self.__whichq
+
     def enqueue(self, _msg, _metadata={}, **_kws):
         # Calculate the SHA hexdigest of the message to get a unique base
         # filename.  We're also going to use the digest as a hash into the set
