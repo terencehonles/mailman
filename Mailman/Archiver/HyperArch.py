@@ -42,12 +42,14 @@ from Mailman.Utils import mkdir, open_ex
 # TBD: ugly, ugly, ugly -baw
 open = open_ex
 
-try:
-    import gzip
-except ImportError:
-    gzip = None
+gzip = None
+if mm_cfg.GZIP_ARCHIVE_TXT_FILES:
+    try:
+        import gzip
+    except ImportError:
+        pass
 
-
+
 def html_quote(s):
     repls = ( ('&', '&amp;'),
 	      ("<", '&lt;'),
@@ -204,7 +206,6 @@ class Article(pipermail.Article):
 
 
     def __init__(self, message=None, sequence=0, keepHeaders=[]):
-	import time
 	if message==None: return
 	self.sequence=sequence
 
@@ -533,7 +534,7 @@ class HyperArchive(pipermail.T):
         # can't init the database while other
         # processes are writing to it!
         # XXX TODO- implement native locking
-        # with mailman's flock module for HyperDatabase.HyperDatabase
+        # with mailman's LockFile module for HyperDatabase.HyperDatabase
         #
 	pipermail.T.__init__(
             self,
@@ -721,7 +722,6 @@ class HyperArchive(pipermail.T):
             f.flush()
 
     def open_new_archive(self, archive, archivedir):
-	import os
 	index_html=os.path.join(archivedir, 'index.html') 
 	try: os.unlink(index_html)
 	except: pass
@@ -739,7 +739,6 @@ class HyperArchive(pipermail.T):
 
 
     def write_index_footer(self):
-	import string
 	for i in range(self.depth): print '</UL>'
         print self.html_foot()
 
@@ -869,15 +868,17 @@ class HyperArchive(pipermail.T):
     def update_dirty_archives(self):
         for i in self._dirty_archives:
             self.update_archive(i)
-            archz=None
-            archt=None
-            # only do this if the gzip module was imported globally
+            # only do this if the gzip module was imported globally, and
+            # gzip'ing was enabled via mm_cfg.GZIP_ARCHIVE_TXT_FILES.  See
+            # above.
             if gzip:
+                archz=None
+                archt=None
                 try:
                     txtfile = os.path.join(self.basedir, '%s.txt' % i)
                     gzipfile = os.path.join(self.basedir, '%s.txt.gz' % i)
                     oldgzip = os.path.join(self.basedir, '%s.old.txt.gz' % i)
-
+                    # open the plain text file
                     archt = open(txtfile, 'r') 
                     try:
                         os.rename(gzipfile, oldgzip)
@@ -975,7 +976,6 @@ class HyperArchive(pipermail.T):
 
     # Escape all special characters
     def __processbody_CGIescape(self, source, dest):
-        import cgi
         for i in xrange(0, len(source)):
 	    if source[i]!=None: 
 	        dest[i]=cgi.escape(source[i]) ; source[i]=None
@@ -1030,7 +1030,6 @@ class HyperArchive(pipermail.T):
 	return article
 
     def update_article(self, arcdir, article, prev, next):
-	import os
 	self.message('Updating HTML for article '+str(article.sequence))
 	try:
 	    f=open(os.path.join(arcdir, article.filename), 'r')
