@@ -129,7 +129,8 @@ def prepare_message(mlist, msg, msgdata):
     # Lines: is useful
     if msg['Lines'] is None:
         # BAW: is there a better way?
-        count = len(email.Iterators.body_line_iterator(msg))
+        it = email.Iterators.body_line_iterator(msg)
+        count = len(list(email.Iterators.body_line_iterator(msg)))
         msg['Lines'] = str(count)
     # Massage the message headers by remove some and rewriting others.  This
     # woon't completely sanitize the message, but it will eliminate the bulk
