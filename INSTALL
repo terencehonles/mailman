@@ -67,6 +67,9 @@ if you want to keep your existing installation intact.
 
 2. Running configure
 
+    TAKE SPECIAL NOTE OF THE --with-mail-gid AND --with-cgi-gid
+    OPTIONS BELOW.  YOU WILL PROBABLY NEED TO USE THESE!
+
     You do not need to be root to perform the steps in the section.
     Do them under your own login, or whatever account you typically
     install software as.  However, make sure that you have write
@@ -127,10 +130,13 @@ if you want to keep your existing installation intact.
             nobody'.
 
             The proper value for this is dependent on your Web server
-            configuration, and you must get this right, because the
-            group id is compiled into the CGI wrapper program for
-            added security.  On system using Apache for example, check
-            the values for the `Group' option in your httpd.conf file.
+            configuration.  You must get this right, because the group
+            id is compiled into the CGI wrapper program for added
+            security, and no Mailman CGI scripts will run if this is
+            incorrect.
+
+            If you're using Apache, check the values for the `Group'
+            option in your httpd.conf file.
 
       --with-cgi-ext=<extension>
             Specify an extension for cgi-bin programs.  The CGI
