@@ -1,0 +1,33 @@
+#!/usr/local/bin/python 
+
+# This script gets called by cron at 12:00 am the first of each month
+# It bumps the volume number up by one on each list, and resets
+# The digest number.
+
+import sys, os
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import maillist, mm_cfg
+
+
+dirs = os.listdir(mm_cfg.LIST_DATA_DIR)
+for dir in dirs:
+    if not (os.path.exists(os.path.join(
+	os.path.join(mm_cfg.LIST_DATA_DIR, dir), 'config.db'))):
+	continue
+    try:
+	list = maillist.MailList(dir)
+    except:
+	continue
+    list.UpdateArchive()
+    if list.archive_volume_frequency == 1:
+	# Remove old INDEX file, as it will never be used again, and eats
+	# up disk space.
+	os.unlink(os.path.join(list.archive_directory, "volume_%d/INDEX" %
+			       list.volume))
+	list.volume = list.volume + 1
+	list.next_digest_number = 1
+    list.Save()
+    list.Unlock()
+
