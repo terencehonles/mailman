@@ -71,7 +71,7 @@ def main():
     except Errors.MMListError, e:
         FormatAdminOverview('No such list <em>%s</em>' % listname)
         syslog('error', 'Someone tried to access the admin interface for a '
-               'non-existent list: %s\n' % listname)
+               'non-existent list: %s' % listname)
         return
     try:
         if len(parts) == 1:
