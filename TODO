@@ -1,152 +1,144 @@
-The Mailman TODO list
+The Mailman TODO List
 
-*Email Handling
-- Use VERP or DSN for address tracing.
-- Implement multiple subprocs for MTA handoff, or divorce MTA handoff
-  from the rest of Mailman explicitly.  Multi-threading doesn't seem
-  to help, possibly because of Python's global interpreter lock.
+    You should consider this list of items a good basis for the
+    requirements for Mailman 3.0.  It essentially contains a dream
+    list of all the things that are too painful or destabilizing for
+    the 2.x series.
 
-*Documentation
-- A detailed feature list
-- A user's guide
-- A site-admin's guide
-- A list-admin's guide
-- More in-place documentation
-- A developer's guide w/ Architecture and API info, etc.
-- manpages for the scripts in bin
+Email Handling
 
-*General Web UI
-- Add a navigation sidebar to all web pages - central links, and
-  list-specific links for list-specific pages.
-- NO DEAD ENDS
-- Implement cookies for edithtml and admindb
-- Make sure when settings are changed, there is always some sort of 
-  confirmation!
+    - Use VERP or DSN for address tracing, perhaps tied to the monthly
+      password reminders, or VERPing the occasional regular message.
+    - Use multiple subprocesses for MTA handoff, or divorce it
+      entirely from the rest of Mailman.  Multi-threading doesn't seem
+      to help much, possibly because of Python's global interpreter
+      lock.  The problem here is coordinating access to the list
+      database.
 
-*List Admin UI
-- Make it so mass-subscribe doesn't hang waiting for the mail transport to 
-  do all delivery. (This may have been done w/ the admin cookie patches?)
-- Time out admin requests, and have them auto-fail after that period.
-- Allow the admin to edit posts in the database (put a header in the post 
-  noting that it was edited by a moderator, however!)
-- Have the option for moderator passwords, so that moderators don't have 
-  access to the general list options.
-- An -urgent address for each list that may only be posted to by the list 
-  admin.  It will seem to be sent to the whole list, but will deliver to 
-  everyone ASAP, and not wait for digests.
-- A web UI to the -urgent address.
-- Better options for the policy on bundling digests (periodic w/ arbitrary 
-  periods, size based, a combo of the two, etc).
-- A button that will bundle a digest right now (tm).
-- Ability to set the next digest volume and issue number from the Web
-- A generic error template page.
-- An option for setting the precedence header.
-- Make the MM-tags accept useful options where appropriate.
-- Revamp the admindb user interface, it's fairly clunky (include a decent 
-  cataloging mechanism based on the file system).
-- Be able to edit ALL the web pages, as well as the mail messages.
-- Use templates from the templates dir until the list owner changes
-  the page, so the site admin can change them...
-- Allow the list-admin to require approvals for unsubs
-- Allow the admin to disable option settings by users
-- Allow the admin to easily "retire" a list, both through the Web or
-  email commands.
-- Ability to set defaults for the various user settings from the
-  "Membership Management" page. 
-- Allow admins to control and set individual headers, adding,
-  removing, or overriding those in the original message (sometimes
-  very useful, but could be dangerous!)
-- member management page should display case-preserved email addresses 
-  (but still sort case-insensitively).
+Documentation
+    - A detailed feature list
+    - A user's guide
+    - A site-admin's guide
+    - A list-admin's guide
+    - More on-line documentation and UI help
+    - A developer's guide w/ architecture and API information
+    - manpages for the scripts in bin and cron
 
-*List Member UI
-- Editing your user options should put you back to the edit-options page. 
-- Allow the user to be excluded from postings if they're getting them
-  in the to: or cc: headers.
-- An option to change your email address.  Or what might be easier:
-  allow a user to clone the options of an existing user into a new
-  address.
-- Allow users to specify a different address for password reminders
-  (w/ confirmation), or come up w/ a better strategy for remailing lists
-  (could be done as the default, given a generic filter mechanism).
-- Allow the user to get BOTH normal and digested delivery (but I still
-  don't understand why someone would want this)
+General Web UI
 
-*Site Administrator's UI
-- Make a web based site admin UI for adding lists, deleting lists, etc.
-- Use a better storage mechanism for the site admin password
-- Improve list deletion by requiring a valid password (from the shell script)
+    - NO DEAD ENDS
+    - All web UI must be configurable so that it more easily
+      integrates into an existing site's design.  Probably means using
+      a template language/system like Quixote or PHP.
+    - Default UI should add a navigation sidebar to all web pages.
+    - A heirarchy of page designs and information: e.g. the most
+      specialized of the following wins: site, virtual host, list,
+      language, user.
 
-*Mailcmd interface
-- Provide an email interface to administrative commands.
-- Allow email unsubs from matching address to unsubscribe, possibly
-  adding an "allow open unsubscribes" option to control this.  Also,
-  adding a confirmation with hit-reply to resubscribe.
+List Admin UI
+    - Separate list admin role from list moderator role
+    - Allow the moderator to edit posts being held for approval (make
+      it evident, either through a header or other means that the
+      message was edited by the moderator).
+    - Allow "urgent" postings to all members by the list admin which
+      bypasses normal digest delivery.
+    - A button that will bundled and deliver a digest Right Now.
+    - Ability to set the next digest volume and issue number from the web
+    - Allow the list-admin to require approvals for unsubs
+    - Allow the admin to disable option settings by users
+    - Ability to set defaults for the various user settings from the
+      "Membership Management" page.
+    - Allow admins to control and set individual headers, adding,
+      removing, or overriding those in the original message (sometimes
+      very useful, but could be dangerous!)
+    - Member management page should display case-preserved email
+      addresses (but still sort case-insensitively).
+    - Member management page should work better for humongous lists,
+      both in terms of performance, and in usability
 
-*Portability concerns
-- Replace cron stuff with our own scheduling mechanism
+List Member UI
+    - Editing your user options should put you back to the edit-options page
+    - Allow the user to be excluded from postings if they're getting
+      them in the to: or cc: headers.  Be smarter about filtering out
+      duplicate deliveries.
+    - Have one account per user per site, with multiple email
+      addresses and fallbacks.  Allow them to subscribe whichever
+      address they want to whichever list, with different options per
+      subscription.
+    - Allow the user to get BOTH normal and digested delivery (but I
+      still don't understand why someone would want this)
 
-*Bounce handling
-- Add more patterns for bounce handling (never ending)
-- Occasionally remove stale bounce entries
-- Send mail to people who are being removed without their knowledge
-  (even though they're likely not to get it).
-- Reminders to disabled addresses.  The idea is that if an addr is
-  disabled due to bouncing, we should send out periodic reminders.  We
-  may want to do this for explicitly disabled addrs too, but perhaps
-  with a different schedule.
-- Handle MTA warnings by discarding the messages but not registering
-  them as bounces.
+Site Administrator's UI
+    - Allow the site admin to define list "styles", and list admins to
+      choose one of the canned styles to apply to their list.
+    - Full creation, deletion, renaming, etc. of lists through the web
+      (and email?), including fixing aliases file updates.
 
-*Pipermail + Archiving mechanism
-- Search engine for archives
-- Provide downloadable tar.gz's of the html archives
-- sort by date should go most-recent to oldest
-- allow list owner to edit archive messages
-- archive link should do *something* reasonable before the first
-  message has been posted to the list.
-- optional form front-end to public interfaces as a filter to address
-  harvesters.
-- clobber_date should support third option: only munge the date if the
-  Date: field is unreasonable (far in the future or far in the past).
+Other Usability Improvments
+    - Allow individuals to turn off password reminders
+    - Confirmations should be both email and web based, and be used
+      for both subscription and unsubscription (configurable by the
+      list admin).
+    - A better strategy is needed for sub-lists and super-lists,
+      including dealing with the resulting password reminders and
+      authorization to modify the sub & superlists.
+    - Add a limit on the number of posts from any one individual
+      within a period of time (1 post per day, 10 per week, etc).
 
-*Code cleanup
-- Use the re module where regexp and regsub are used.
-- Refine any remaining unqualified exception guards to specify target 
-  exceptions, when appropriate.
-- Turn standard mailman exceptions into class exceptions. (In
-  particular, categorize into, eg, message-hold vs other sorts of
-  exceptions.)
-- Make error messages indicate the file, mailing list, etc at fault,
-  when possible.
-- Separate edit-options from the subscribe script.
-- Remove dead code, etc.
+Mailcmd interface
+    - Provide an email interface to all administrative commands
+    - Allow email unsubs from matching address to unsubscribe,
+      possibly adding an "allow open unsubscribes" option to control
+      this.  Also, adding a confirmation with hit-reply to
+      resubscribe
+    - Add -join and -remove addresses for easy subscription,
+      unsubscription
 
-*News
-- Allow crossposting.  This means no errors on duplicate messages, and 
-  also avoiding the need to approve separately for each list.
+Portability & architecture
+    - Replace cron stuff with our own scheduling mechanism.
+    - Get rid of the one-shot process model altogether in favor of a
+      multithreaded monolithic architecture.
+    - Better support for distributed processing
+    - Use a real transactional database for all information
+    - Member profiles
+    - Do a serious and thorough security audit
+    - Allow lists of the same name in two different virtual domains
 
-*Misc
-- Automatically update aliases again (fix alias wrapper)
-- Make the listinfo pages static, and have them regenerate when options are 
-  changed, or html is edited.
-- Make it so Mailman can run as a threaded server (this feature should be 
-  optional).
-- The threaded server should be able to off its workload to friendly machines 
-  if it is overworked (distributed support).
-- Refine locking to lock only necessary sections to get rid of superfluous
-  contention.
-- Implement member profiles, using a class to store name,
-  organization, description, etc, and default option settings.  The
-  lists still can have their own data, but the user can set defaults in
-  their profile...
-- Need to go through and verify there are no obvious security problems.
-- Restrict file and directory permissions as much as possible without
-  breaking Mailman functionality.
-- Add a limit on the number of posts from any one individual within a
-  period of time (1 post per day, 10 per week, etc).
-- Footers and headers should be MIME aware.
-- Allow lists of the same name in two different virtual domains
+Bounce handling
+    - Make a distinction between disabled addresses due to bouncing
+      and a user's explicit disabling of an address
+    - Add more patterns for bounce handling (never ending)
+    - Occasionally remove stale bounce entries
+    - Send mail to people who are being removed without their knowledge
+      (even though they're likely not to get it).
+    - Reminders to disabled addresses.  The idea is that if an addr is
+      disabled due to bouncing, we should send out periodic reminders.
+      We may want to do this for explicitly disabled addrs too, but
+      perhaps with a different schedule.
+    - Delete bounce disabled address after some period of retry
+
+Pipermail + Archiving mechanism
+    - Search engine for archives
+    - Provide downloadable tar.gz's of the html archives
+    - sort by date should go most-recent to oldest
+    - allow list owner to edit archive messages
+    - archive link should do *something* reasonable before the first
+      message has been posted to the list.
+    - optional form front-end to public interfaces as a filter to
+      address harvesters.
+    - clobber_date should support third option: only munge the date if
+      the Date: field is unreasonable (far in the future or far in the
+      past).
+    - In general the whole Pipermail subsystem needs a good rewrite.
+
+Code cleanup
+    - Use all the new wizzy Python 2.0 features
+    - Use the re module where regexp and regsub are used (not many left)
+    - Refine any remaining unqualified exception guards to specify
+      target exceptions, when appropriate.
+    - Turn all remaining string exceptions into class exceptions
+    - Remove dead code.
+
 
 
 Local Variables:
