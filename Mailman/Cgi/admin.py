@@ -473,16 +473,37 @@ def show_results(mlist, doc, category, subcat, cgidata):
             subcat = 'list'
         # Add member category specific tables
         form.AddItem(membership_options(mlist, subcat, cgidata, doc, form))
-        form.AddItem(Center(submit_button()))
+        form.AddItem(Center(submit_button('setmemberopts_btn')))
         # In "list" subcategory, we can also search for members
         if subcat == 'list':
-            form.AddItem(_('''Find members by
-          <a href="http://www.python.org/doc/current/lib/re-syntax.html">Python
-          regular expression</a>:'''))
-            form.AddItem(TextBox('findmember',
-                                 value=cgidata.getvalue('findmember', ''),
-                                 size='50%'))
-            form.AddItem(SubmitButton('findmember_btn', _('Search...')))
+            form.AddItem('<hr>\n')
+            table = Table(width='100%')
+            table.AddRow([Center(Header(2, _('Additional Member Tasks')))])
+            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
+                              bgcolor=mm_cfg.WEB_HEADER_COLOR)
+            table.AddRow([_(
+                '''<li>Find members by
+                <a href="http://www.python.org/doc/current/lib/re-syntax.html"
+                >Python regular expression</a> (<em>regexp</em>)<br>''')])
+            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+            table.AddRow([Label(_('Regexp:')),
+                          TextBox('findmember',
+                                  value=cgidata.getvalue('findmember', ''),
+                                  size='75%')])
+            table.AddRow([Center(SubmitButton('findmember_btn',
+                                              _('Search...')))])
+            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+            # Add a blank separator row
+            table.AddRow(['&nbsp;', '&nbsp;'])
+            # Add a section to set the moderation bit for all members
+            table.AddRow([_("""<li>Set everyone's moderation bit, including
+            those members not currently visible""")])
+            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+            table.AddRow([RadioButtonArray('allmodbit_val',
+                                           (_('Off'), _('On')),
+                                           mlist.default_member_moderation),
+                          SubmitButton('allmodbit_btn', 'Set')])
+            form.AddItem(table)
     elif category == 'passwords':
         form.AddItem(Center(password_inputs()))
         form.AddItem(Center(submit_button()))
@@ -906,7 +927,6 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                                           langdescs, selected)).Format())
         usertable.AddRow(cells)
     # Add the usertable and a legend
-    container.AddItem(Center(usertable))
     legend = UnorderedList()
     legend.AddItem(
         _('<b>unsub</b> -- Click on this to unsubscribe the member.'))
@@ -932,6 +952,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         text digests?  (otherwise, MIME)'''))
     legend.AddItem(_("<b>language</b> -- Language preferred by the user"))
     container.AddItem(legend.Format())
+    container.AddItem(Center(usertable))
 
     # There may be additional chunks
     if chunkindex is not None:
@@ -1067,9 +1088,9 @@ above.""")])
 
 
 
-def submit_button():
+def submit_button(name='submit'):
     table = Table(border=0, cellspacing=0, cellpadding=2)
-    table.AddRow([Bold(SubmitButton('submit', _('Submit Your Changes')))])
+    table.AddRow([Bold(SubmitButton(name, _('Submit Your Changes')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, align='middle')
     return table
 
@@ -1318,10 +1339,22 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 color='#ff0000', size='+2')).Format()))
             doc.AddItem(UnorderedList(*unsubscribe_errors))
             doc.AddItem('<p>')
-    #
+    # See if this was a moderation bit operation
+    if cgidata.has_key('allmodbit_btn'):
+        val = cgidata.getvalue('allmodbit_val')
+        try:
+            val = int(val)
+        except VallueError:
+            val = None
+        if val not in (0, 1):
+            add_error_message(doc, _('Bad moderation flag value'),
+                              tag=_('Error: '))
+        else:
+            for member in mlist.getMembers():
+                mlist.setMemberOption(member, mm_cfg.Moderate, val)
     # do the user options for members category
-    if cgidata.has_key('user'):
-        user = cgidata["user"]
+    if cgidata.has_key('setmemberopts_btn') and cgidata.has_key('user'):
+        user = cgidata['user']
         if type(user) is ListType:
             users = []
             for ui in range(len(user)):
