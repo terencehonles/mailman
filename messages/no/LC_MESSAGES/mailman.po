@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Tue Feb  4 00:15:28 2003\n"
-"PO-Revision-Date: 2002-12-25 15:10+0100\n"
+"PO-Revision-Date: 2003-02-10 10:31+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2175,9 +2175,8 @@ msgid "No address given"
 msgstr "Ingen epostadresse angitt"
 
 #: Mailman/Cgi/options.py:110
-#, fuzzy
 msgid "Illegal Email Address: %(safeuser)s"
-msgstr "Feil/Ugyldig epostadresse: %(member)s"
+msgstr "Feil/Ugyldig epostadresse: %(safeuser)s"
 
 #: Mailman/Cgi/options.py:117 Mailman/Cgi/options.py:166
 #: Mailman/Cgi/options.py:188
@@ -2198,9 +2197,8 @@ msgid "Authentication failed."
 msgstr "Innlogging mislyktes."
 
 #: Mailman/Cgi/options.py:243
-#, fuzzy
 msgid "List subscriptions for %(safeuser)s on %(hostname)s"
-msgstr "Vise listemedlemskap for %(user)s p&aring; %(hostname)s"
+msgstr "Vise listemedlemskap for %(safeuser)s p&aring; %(hostname)s"
 
 #: Mailman/Cgi/options.py:246
 msgid ""
@@ -2219,7 +2217,6 @@ msgid "You are already using that email address"
 msgstr "Den epostadressen er du allerede p&aring;meldt listen med"
 
 #: Mailman/Cgi/options.py:312
-#, fuzzy
 msgid ""
 "The new address you requested %(newaddr)s is already a member of the\n"
 "%(listname)s mailing list, however you have also requested a global change "
@@ -2229,7 +2226,7 @@ msgid ""
 msgstr ""
 "Den nye adressen %(newaddr)s er allerede påmeldt epostlisten %(listname)s,\n"
 "men du har også bedt om endring på alle lister. Etter ditt samtykke vil\n"
-"alle andre epostlister som inneholder %(user)s bli endret. "
+"alle andre epostlister som inneholder %(safeuser)s bli endret. "
 
 #: Mailman/Cgi/options.py:321
 msgid "The new address is already a member: %(newaddr)s"
@@ -2413,9 +2410,8 @@ msgid "email address and "
 msgstr "epostadressen og "
 
 #: Mailman/Cgi/options.py:765
-#, fuzzy
 msgid "%(realname)s list: member options for user %(safeuser)s"
-msgstr "%(realname)s: personlige innstillinger for %(user)s"
+msgstr "%(realname)s: personlige innstillinger for %(safeuser)s"
 
 #: Mailman/Cgi/options.py:790
 msgid ""
