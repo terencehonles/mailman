@@ -116,7 +116,7 @@ LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'master-qrunner')
 LOCK_LIFETIME = mm_cfg.days(1) + mm_cfg.hours(6)
 SNOOZE = mm_cfg.days(1)
 
-LogStdErr('error', 'mailmanctl', manual_reprime=0, tee_to_stdout=0)
+LogStdErr('error', 'mailmanctl', manual_reprime=0, tee_to_stdout=1)
 
 
 

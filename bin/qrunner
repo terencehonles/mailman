@@ -76,7 +76,7 @@ from Mailman.Logging.Utils import LogStdErr
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
 
-LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
+LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=1)
 
 
 
