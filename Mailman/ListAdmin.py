@@ -208,6 +208,12 @@ class ListAdmin:
                 return LOST
             msg = Message.Message(fp)
             msgdata['approved'] = 1
+            # Calculate a new filebase for the approved message, otherwise
+            # delivery errors will cause duplicates.
+            try:
+                del msgdata['filebase']
+            except KeyError:
+                pass
             # Queue the file for delivery by qrunner.  Trying to deliver the
             # message directly here can lead to a huge delay in web
             # turnaround.
