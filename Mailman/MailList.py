@@ -714,11 +714,13 @@ it will not be changed."""),
              " matching is performed with Python's re.match() function,"
              " meaning they are anchored to the start of the string."
              " <p>For backwards compatibility with Mailman 1.1, if the regexp"
-             " contains an `@', then the entire recipient address is matched"
-             " against the regexp.  Otherwise, only the localpart of the"
-             " address is matched.  This behavior is deprecated, and in a"
-             " future release, only the entire recipient address will be"
-             " matched against."),
+             " does not contain an `@', then the pattern is matched against"
+             " just the local part of the recipient address.  If that match"
+             " fails, or if the pattern does contain an `@', then the pattern"
+             " is matched against the entire recipient address. "
+             " <p>Matching against the local part is deprecated; in a future"
+             " release, the patterm will always be matched against the "
+             " entire recipient address."),
 
 	    ('max_num_recipients', mm_cfg.Number, 5, 0, 
 	     'Ceiling on acceptable number of recipients for a posting.',
@@ -1215,36 +1217,47 @@ it will not be changed."""),
         # this is the list's full address
         listfullname = '%s@%s' % (self.internal_name(), self.host_name)
         recips = []
-        # check all recipient addresses against the list's full address...
+        # check all recipient addresses against the list's explicit address.
         for fullname, addr in msg.getaddrlist('to') + msg.getaddrlist('cc'):
-            localpart = string.lower(string.split(addr, '@')[0])
-            laddr = string.lower(addr)
+            addr = string.lower(addr)
+            localpart = string.split(addr, '@')[0]
             if (# TBD: backwards compatibility: deprecated
                     localpart == self.internal_name() or
-                    # new behavior
-                    laddr == listfullname):
+                    # exact match against the complete list address
+                    addr == listfullname):
                 return 1
-            recips.append((laddr, localpart))
-        # ... and only then try the regexp acceptable aliases.
-        for laddr, localpart in recips:
+            recips.append((addr, localpart))
+        #
+        # helper function used to match a pattern against an address.  Do it
+        def domatch(pattern, addr):
+            try:
+                if re.match(pattern, addr):
+                    return 1
+            except re.error:
+                # The pattern is a malformed regexp -- try matching safely,
+                # with all non-alphanumerics backslashed:
+                if re.match(re.escape(pattern), addr):
+                    return 1
+        #
+        # Here's the current algorithm for matching acceptable_aliases:
+        #
+        # 1. If the pattern does not have an `@' in it, we first try matching
+        #    it against just the localpart.  This was the behavior prior to
+        #    2.0beta3, and is kept for backwards compatibility.
+        #    (deprecated).
+        #
+        # 2. If that match fails, or the pattern does have an `@' in it, we
+        #    try matching against the entire recip address.
+        for addr, localpart in recips:
             for alias in string.split(self.acceptable_aliases, '\n'):
                 stripped = string.strip(alias)
-                if '@' in stripped:
-                    # new behavior: match the entire recipient string
-                    recip = laddr
-                else:
-                    # TBD: backwards compatibility: deprecated
-                    recip = localpart
-                try:
-                    # The list alias in `stripped` is a user supplied regexp,
-                    # which could be malformed.
-                    if stripped and re.match(stripped, recip):
-                        return 1
-                except re.error:
-                    # `stripped' is a malformed regexp -- try matching
-                    # safely, with all non-alphanumerics backslashed:
-                    if stripped and re.match(re.escape(stripped), recip):
-                        return 1
+                if not stripped:
+                    # ignore blank or empty lines
+                    continue
+                if '@' not in stripped and domatch(stripped, localpart):
+                    return 1
+                if domatch(stripped, addr):
+                    return 1
 	return 0
 
     def parse_matching_header_opt(self):
