@@ -16,32 +16,44 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Check the databases for mailing lists.
+"""Check a list's config database file for integrity.
 
-Both the config.db and config.db.last files are checked for corruption.
+All of the following files are checked:
+
+    config.pck
+    config.pck.last
+    config.db
+    config.db.last
+    config.safety
+
+It's okay if any of these are missing.  config.pck and config.pck.last are
+pickled versions of the config database file for 2.1a3 and beyond.  config.db
+and config.db.last are used in all earlier versions, and these are Python
+marshals.  config.safety is a pickle written by 2.1a3 and beyond when the
+primary config.pck file could not be read.
 
 Usage: %(PROGRAM)s [options] [listname [listname ...]]
 
 Options:
 
-    --all
-    -a
-        Check all databases.  Otherwise only the lists named on the command
-        line are checked.
+    --all / -a
+        Check the databases for all lists.  Otherwise only the lists named on
+        the command line are checked.
 
-    --verbose
-    -v
-        Verbose output.
+    --verbose / -v
+        Verbose output.  The state of every tested file is printed.
+        Otherwise only corrupt files are displayed.
 
-    --help
-    -h
+    --help / -h
         Print this text and exit.
 """
 
 import sys
 import os
+import errno
 import getopt
 import marshal
+import cPickle
 
 import paths
 from Mailman import mm_cfg
@@ -60,23 +72,18 @@ def usage(code, msg=''):
 
 
 
-def testfile(filename):
-    try:
-        fp = open(filename)
-    except IOError, (code, msg):
-        print _('%(filename)s cannot be opened for reading:\n\t'), msg
-        return 1
+def testfile(dbfile):
+    if dbfile.endswith('.db') or dbfile.endswith('.db.last'):
+        loadfunc = marshal.load
+    elif dbfile.endswith('.pck') or dbfile.endswith('.pck.last'):
+        loadfunc = cPickle.load
     else:
-        try:
-            try:
-                d = marshal.load(fp)
-            except (EOFError, ValueError, TypeError), msg:
-                print _('%(filename)s contains a corrupt marshal:\n\t'), msg
-                return 1
-            else:
-                return 0
-        finally:
-            fp.close()
+        assert 0
+    fp = open(dbfile)
+    try:
+        loadfunc(fp)
+    finally:
+        fp.close()
 
 
 def main():
@@ -106,33 +113,34 @@ def main():
         if not Utils.list_exists(listname):
             print _('No list named:'), listname
             continue
-        configdb = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db')
-        lastdb = configdb + '.last'
 
-        origbad = testfile(configdb)
-        lastbad = testfile(lastdb)
+        pfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.pck')
+        plast = pfile + '.last'
+        dfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db')
+        dlast = dfile + '.last'
 
-        if origbad and not lastbad:
-            print _("""\
-***** ALERT *****
-The original database file for the list `%(listname)s' is corrupt, but the
-backup seems fine.  Consider copying
-    %(lastdb)s
-to
-    %(configdb)s
-however, you may lose some data.""")
-        elif origbad and backupbad:
-            print _("""
-***** ALERT *****
-Both the original database file and the backup for list `%(listname)s' seem
-corrupted.  You will probably need to recover both
-    %(configdb)s
-and
-    %(lastdb)s
-from a system backup, or remove the list `%(listname)s' and
-re-create it from scratch.""")
-        elif verbose:
-            print _("The list `%(listname)s' databases seem fine.")
+        if verbose:
+            print _('List:'), listname
+
+        for file in (pfile, plast, dfile, dlast):
+            status = 0
+            try:
+                testfile(file)
+            except IOError, e:
+                # Don't report ENOENT unless we're in verbose mode
+                if verbose or e.errno <> errno.ENOENT:
+                    status = e
+            except Exception, e:
+                status = e
+            # Report errors
+            if status:
+                if isinstance(status, EnvironmentError):
+                    # This already includes the file name
+                    print '   ', status
+                else:
+                    print '    %s: %s' % (file, status)
+            elif verbose:
+                print _('   %(file)s: okay')
 
 
 

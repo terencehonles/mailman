@@ -271,7 +271,8 @@ def checkmta():
 
 def checkdata():
     targetmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
-    checkfiles = ('config.db', 'config.db.last',
+    checkfiles = ('config.pck', 'config.pck.last',
+                  'config.db', 'config.db.last',
                   'next-digest', 'next-digest-topics', 'request.db')
     if STATE.VERBOSE:
         print _('checking permissions on list data')
