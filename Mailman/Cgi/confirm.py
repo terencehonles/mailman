@@ -348,6 +348,11 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             address that has already been unsubscribed.'''))
         except Errors.MMAlreadyAMember:
             doc.addError(_("You are already a member of this mailing list!"))
+        except Errors.HostileSubscriptionError:
+            doc.addError(_("""\
+            You were not invited to this mailing list.  The invitation has
+            been discarded, and both list administrators have been
+            alerted."""))
         else:
             # Use the user's preferred language
             i18n.set_language(lang)
