@@ -55,6 +55,7 @@ class Archiver:
 	    ]
 
     def UpdateArchive(self):
+	# This method is being deprecated, in favor of external archiver!
 	if not self.archive:
 	    return
 	archive_file_name = os.path.join(self._full_path, ARCHIVE_PENDING)
