@@ -173,7 +173,7 @@ def admin_overview(msg=''):
     # This page should be displayed in the server's default language, which
     # should have already been set.
     hostname = mm_cfg.DEFAULT_HOST_NAME
-    legend = _('%(default_hostname)s mailing lists - Admin Links')
+    legend = _('%(hostname)s mailing lists - Admin Links')
     # The html `document'
     doc = Document()
     doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
@@ -227,7 +227,7 @@ def admin_overview(msg=''):
              _('the mailing list overview page')),
         '.',
         _('<p>(Send questions and comments to '),
-        Link('mailto:%(mailman_owner)s', mailman_owner),
+        Link('mailto:%s' % mailman_owner, mailman_owner),
         '.)<p>',
         ])
 
