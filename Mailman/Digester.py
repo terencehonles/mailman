@@ -42,6 +42,7 @@ class Digester:
 	self.digest_footer = mm_cfg.DEFAULT_DIGEST_FOOTER
         self.digest_volume_frequency = mm_cfg.DEFAULT_DIGEST_VOLUME_FREQUENCY
 	# Non-configurable.
+        self.one_last_digest = {}
 	self.digest_members = {}
 	self.next_digest_number = 1
         self.digest_last_sent_at = 0
