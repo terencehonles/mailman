@@ -121,7 +121,7 @@ class Table:
 		output = output + ' NOWRAP'
 		continue
 	    else:
-		output = output + ' %s=%s' %(string.upper(key), val) 
+		output = output + ' %s="%s"' %(string.upper(key), val) 
 
 	return output
 
@@ -132,7 +132,7 @@ class Table:
 	for (key, val) in info.items():
 	    if not key in valid_mods:
 		continue
-	    output = output + ' %s=%s' %(string.upper(key), val) 
+	    output = output + ' %s="%s"' %(string.upper(key), val) 
 
 	return output
 
@@ -149,7 +149,7 @@ class Table:
 		output = output + ' BORDER'
 		continue
 	    else:	
-		output = output + ' %s=%s' %(string.upper(key), val) 	
+		output = output + ' %s="%s"' %(string.upper(key), val) 	
 
 	return output
 
@@ -284,7 +284,7 @@ class Document(Container):
 	else:
 	    output = output + '>\n'
 	output = output + Container.Format(self, indent)
-	output = output + '%s</html>\n' % spaces
+	output = output + '%s</body>\n%s</html>\n' % (spaces, spaces)
 	return output
 
 class HeadlessDocument(Document):
