@@ -437,24 +437,6 @@ def UnobscureEmail(addr):
 
 
 
-def chunkify(members, chunksize=None):
-     """
-     return a list of lists of members
-     """
-     if chunksize is None:
-         chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
-     members.sort()
-     res = []
-     while 1:
-         if not members:
-             break
-         chunk = members[:chunksize]
-         res.append(chunk)
-         members = members[chunksize:]
-     return res
-
-
-
 def maketext(templatefile, dict=None, raw=0, lang=None):
     """Make some text from a template file.
 
