@@ -13,7 +13,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
-"POT-Creation-Date: Fri May 18 17:51:29 2001\n"
+"POT-Creation-Date: Tue May 22 01:22:03 2001\n"
 "PO-Revision-Date: 2000-12-24 12:00+02\n"
 "Last-Translator: Juan Carlos Rey Anaya <jcrey@uma.es>\n"
 "Language-Team: Spanish <LL@li.org>\n"
@@ -29,10 +29,7 @@ msgstr " la administra "
 msgid "That password was incorrect."
 msgstr "La clave es incorrecta"
 
-#: admin/www/MMGenerator.py:111
-msgid "Return darkest of 3 color scheme shade."
-msgstr ""
-
+#. docstring
 #: Mailman/Archiver/Archiver.py:156
 msgid "Retain a text copy of the message in an mbox file."
 msgstr ""
@@ -46,6 +43,7 @@ msgstr "<em>Indique el texto abajo, o...</em><br>"
 msgid "Password changed."
 msgstr "Su clave ha sido cambiada."
 
+#. docstring
 #: Mailman/LockFile.py:114
 msgid "The timeout interval elapsed before the lock succeeded."
 msgstr ""
@@ -59,6 +57,7 @@ msgstr ""
 "La solicitud de su subscripción ha sido reenviada a la dirección\n"
 "%s del administrador de la lista para que le de el visto bueno."
 
+#. docstring
 #: Mailman/Utils.py:613
 msgid ""
 "Return the full virtual path this CGI script was invoked with.\n"
@@ -74,6 +73,7 @@ msgid ""
 "    "
 msgstr ""
 
+#. docstring
 #: Mailman/Bouncer.py:305
 msgid ""
 "Unsubscribe user with bouncing address.\n"
@@ -102,6 +102,7 @@ msgid "Try to figure out error messages automatically?"
 msgstr ""
 "&iquest;Tratar de imaginarse los mensajes de error autom&aacute;ticamente?"
 
+#. docstring
 #: Mailman/Archiver/HyperArch.py:342
 msgid "Return the message body ready for HTML, decoded if necessary"
 msgstr ""
@@ -110,7 +111,7 @@ msgstr ""
 msgid " (Digest mode)"
 msgstr " (Modo Resumen)"
 
-#: bin/.#withlist.2.2:177 bin/withlist:177
+#: bin/withlist:177
 msgid "Loading list %(listname)s"
 msgstr ""
 
@@ -118,7 +119,7 @@ msgstr ""
 msgid "Auto-responder"
 msgstr ""
 
-#: Mailman/MailList.py:443
+#: Mailman/MailList.py:448
 #, fuzzy
 msgid ""
 "This option controls what Mailman does to the\n"
@@ -208,19 +209,20 @@ msgstr ""
 msgid "Visit Subscriber List"
 msgstr "Visitar la lista de subscriptores"
 
+#. docstring
 #: Mailman/Utils.py:321
 msgid ""
 "List2Dict returns a dict keyed by the entries in the list\n"
 "    passed to it."
 msgstr ""
 
-#: Mailman/MailList.py:814
+#: Mailman/MailList.py:819
 msgid "Footer added to mail sent to regular list members"
 msgstr ""
 "Pi&eacute; de p&aacute;gina a a&ntilde;adir al correo enviado a los "
 "subscriptores regulares de la lista"
 
-#: Mailman/MailList.py:1064
+#: Mailman/MailList.py:1069
 #, fuzzy
 msgid "subscriptions to %(realname)s require administrator approval"
 msgstr "las subscripciones a %s necesitan el visto bueno del administrador"
@@ -235,6 +237,7 @@ msgstr ""
 msgid "Your stored password is bogus."
 msgstr "Tu clave almacenada es falsa"
 
+#. docstring
 #: Mailman/MailList.py:97
 msgid "returns a list of digest members. (all lowercase)"
 msgstr ""
@@ -281,10 +284,12 @@ msgstr "[No se ha dado ninguna razón]"
 msgid "Send notifications to the list owner? "
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/HyperArch.py:376
 msgid "Add encoded-word keys to HTML output"
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/Archiver.py:139
 msgid "The mbox name where messages are left for archive construction."
 msgstr ""
@@ -301,7 +306,8 @@ msgstr ""
 msgid "Subscription request confirmed"
 msgstr "Solicitud de subscripción"
 
-#: Mailman/MailList.py:1304
+#. docstring
+#: Mailman/MailList.py:1309
 msgid ""
 "True if list name or any acceptable_alias is included among the\n"
 "        to or cc addrs."
@@ -326,7 +332,8 @@ msgstr "No existe tal lista \"%s\": %s\n"
 msgid "legal values are:"
 msgstr ""
 
-#: Mailman/MailList.py:1396
+#. docstring
+#: Mailman/MailList.py:1401
 msgid ""
 "Return true if named header field matches a regexp in the\n"
 "        bounce_matching_header list variable.\n"
@@ -349,12 +356,12 @@ msgstr ""
 msgid "Reason:"
 msgstr "Motivo:"
 
-#: bin/change_pw.~1~:111 bin/config_list:249
+#: bin/config_list:249
 #, fuzzy
 msgid "List name is required"
 msgstr "Nombre de la m&aacute;quina que prefiere la lista."
 
-#: Mailman/MailList.py:796
+#: Mailman/MailList.py:801
 #, fuzzy
 msgid ""
 "Hide the sender of a message, replacing it with the list\n"
@@ -370,6 +377,7 @@ msgid ""
 "\t"
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/HyperArch.py:772 Mailman/Archiver/pipermail.py:640
 msgid ""
 "Return a list of indexes where the article should be filed.\n"
@@ -393,6 +401,7 @@ msgstr "\tdescripción: "
 msgid "general"
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/pipermail.py:298
 msgid "Close an archive, save its state, and update any changed archives."
 msgstr ""
@@ -401,7 +410,7 @@ msgstr ""
 msgid "    address not found:"
 msgstr ""
 
-#: Mailman/MailList.py:414
+#: Mailman/MailList.py:419
 #, fuzzy
 msgid ""
 "This text will be prepended to subject lines of messages\n"
@@ -437,11 +446,6 @@ msgstr ""
 "Si desea suscribirse, visite %(listurl)s o envie un mensaje con la palabra "
 "'help' a la direcci&oacute;n, %(request)s , para obtener instrucciones"
 
-#: bin/genaliases.~1~:78 bin/rmlang:89
-#, fuzzy
-msgid "no languages given"
-msgstr "idioma"
-
 #: Mailman/Cgi/admindb.py:289
 msgid "Additionally, forward this message to: "
 msgstr "Adicionalmente, puede reenviar este mensaje a: "
@@ -459,10 +463,6 @@ msgstr "Preparando el estado del archivo a  "
 msgid "nondigest"
 msgstr "agrupado"
 
-#: misc/Cookie.py:520
-msgid "Return a string suitable for HTTP."
-msgstr ""
-
 #: Mailman/MTA/Postfix.py:241
 msgid "checking ownership of %(DBFILE)s"
 msgstr ""
@@ -479,7 +479,7 @@ msgstr "El envio a %(listname)s de %(sender)s precisa de aprobacion"
 msgid "Can't have empty html page."
 msgstr "No se puede tener una p&aacute;agina html vac&iacute;a."
 
-#: Mailman/MailList.py:672
+#: Mailman/MailList.py:677
 #, fuzzy
 msgid ""
 "When set, the list of subscribers is protected by member or\n"
@@ -488,25 +488,22 @@ msgstr ""
 "Cuando est&eacute; activo, la lista de subcriptores se protege pidiendo la "
 "clave del administrador o de un subscriptor."
 
-#: bin/genaliases.~1~:76 bin/newlang:79 bin/rmlang:87
+#: bin/addlang:79
 #, fuzzy
 msgid "--listname/-l is required"
 msgstr "Nombre de la m&aacute;quina que prefiere la lista."
 
+#. docstring
 #: Mailman/EncWord.py:91
 msgid "Q encoding defined by RFC 2047"
 msgstr ""
-
-#: bin/rmlang:67
-#, fuzzy
-msgid "not found as"
-msgstr "Usuario no encontrado."
 
 #: bin/list_lists:97
 #, fuzzy
 msgid "No matching mailing lists found"
 msgstr " anunciadas p&uacute;blicamente en %s."
 
+#. docstring
 #: Mailman/Message.py:105
 msgid ""
 "Prepares the message for sending by enqueing it to the `virgin'\n"
@@ -524,6 +521,7 @@ msgstr ""
 msgid "You must specify a list."
 msgstr "Debe especificar una lista."
 
+#. docstring
 #: Mailman/LockFile.py:111
 msgid "An attempt is made to unlock an object that isn't locked."
 msgstr ""
@@ -545,11 +543,7 @@ msgstr ""
 msgid "private archives"
 msgstr "Error en el Archivo Privado"
 
-#: admin/www/MMGenerator.py:107
-msgid "Return lightest of 3 color scheme shade."
-msgstr ""
-
-#: Mailman/MailList.py:725
+#: Mailman/MailList.py:730
 #, fuzzy
 msgid ""
 "Many (in fact, most) spams do not explicitly name their\n"
@@ -647,7 +641,7 @@ msgstr "P&aacute;gina de resultados de cambio de opciones del usuario"
 msgid "List my other subscriptions"
 msgstr "Listar mis otras suscripciones"
 
-#: Mailman/MailList.py:667
+#: Mailman/MailList.py:672
 msgid "Membership exposure"
 msgstr "Exposici&oacute;n de los miembros"
 
@@ -680,15 +674,16 @@ msgstr ""
 msgid "Private list: No one may see subscription list."
 msgstr "Lista privada: Nadie puede ver la lista de subscriptores."
 
-#: bin/pygettext.py:447 bin/pygettext.py:447
+#: bin/pygettext.py:458
 msgid "Can't read --exclude-file: %s"
 msgstr ""
 
-#: Mailman/MailList.py:1363
+#. docstring
+#: Mailman/MailList.py:1368
 msgid "Return a list of triples [(field name, regex, line), ...]."
 msgstr ""
 
-#: Mailman/MailList.py:616
+#: Mailman/MailList.py:621
 #, fuzzy
 msgid ""
 "None - no verification steps (<em>Not\n"
@@ -757,6 +752,7 @@ msgstr ""
 msgid "Should Mailman start a new digest volume?"
 msgstr ""
 
+#. docstring
 #: Mailman/Utils.py:423
 msgid ""
 "Make email address unrecognizable to web spiders, but invertable.\n"
@@ -788,7 +784,7 @@ msgid ""
 "%(owner)s %(listname)s-admin\n"
 msgstr ""
 
-#: Mailman/MailList.py:678
+#: Mailman/MailList.py:683
 #, fuzzy
 msgid ""
 "Setting this option causes member email addresses to be\n"
@@ -824,22 +820,12 @@ msgstr ""
 msgid "Auto-response text to send to -request emails."
 msgstr ""
 
+#. docstring
 #: Mailman/MailList.py:93
 msgid "returns a list of the members. (all lowercase)"
 msgstr ""
 
-#: misc/Cookie.py:538
-msgid ""
-"Load cookies from a string (presumably HTTP_COOKIE) or\n"
-"\t\tfrom a dictionary.  Loading cookies from a dictionary 'd'\n"
-"\t\tis equivalent to calling:\n"
-"\t\t       map(Cookie.__setitem__, d.keys(), d.values())\n"
-"\t\tUnfortunately, this does NOT allow merging of two Cookie\n"
-"\t\tdictionaries!\n"
-"\t\t"
-msgstr ""
-
-#: bin/pygettext.py:424 bin/pygettext.py:424
+#: bin/pygettext.py:435
 msgid "pygettext.py (xgettext for Python) %s"
 msgstr ""
 
@@ -847,6 +833,7 @@ msgstr ""
 msgid "Could not open file for reading: %(filename)s."
 msgstr ""
 
+#. docstring
 #: Mailman/Logging/StampedLogger.py:42
 msgid ""
 "If specified, optional label is included after timestamp.\n"
@@ -854,17 +841,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: bin/change_pw.~1~:138
-msgid ""
-"The site administrator at %(hostname)s has changed the password for your\n"
-"mailing list %(listname)s.  It is now\n"
-"\n"
-"    %(password)s\n"
-"\n"
-"Please be sure to use this for all future list administration.\n"
-msgstr ""
-
-#: Mailman/MailList.py:580
+#: Mailman/MailList.py:585
 #, fuzzy
 msgid "Host name this list prefers for email."
 msgstr "Nombre de la m&aacute;quina que prefiere la lista."
@@ -901,6 +878,7 @@ msgid "Is archive file source for public or private archival?"
 msgstr ""
 "&iquest;El fichero es la fuente para el archivo p&uacute;blico o privado?"
 
+#. docstring
 #: Mailman/Utils.py:154
 msgid "Verify that the an email address isn't grossly invalid."
 msgstr ""
@@ -910,7 +888,7 @@ msgstr ""
 msgid "User %(addr)s on list %(internalname)s has no password"
 msgstr "El usuario %s de la lista %s no tiene clave"
 
-#: Mailman/MailList.py:393
+#: Mailman/MailList.py:398
 msgid "A terse phrase identifying this list."
 msgstr "Una frase breve que identifique a esta lista"
 
@@ -918,6 +896,7 @@ msgstr "Una frase breve que identifique a esta lista"
 msgid "Other Administrative Activities"
 msgstr "Otras actividades administrativas"
 
+#. docstring
 #: Mailman/Utils.py:68
 msgid ""
 "Wrap and fill the text to the specified column.\n"
@@ -959,16 +938,10 @@ msgstr ""
 msgid "Only one of -i or -o is allowed"
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/Archiver.py:181
 msgid "Store postings in mbox and/or pipermail archive, depending."
 msgstr ""
-
-#: bin/change_pw.~1~:133
-#, fuzzy
-msgid "New %(listname)s password: %(password)s"
-msgstr ""
-"Estás subscrito como %s,\n"
-" con la clave: %s"
 
 #: Mailman/MailCommandHandler.py:436
 #, fuzzy
@@ -1000,7 +973,7 @@ msgstr ""
 "activando este valor realiza una acci&oacute;n inmediata pero no modifica \n"
 "el estado permanente.</em></div>"
 
-#: Mailman/MailList.py:532
+#: Mailman/MailList.py:537
 #, fuzzy
 msgid ""
 "When \"umbrella_list\" is set to indicate that this list has\n"
@@ -1023,7 +996,7 @@ msgstr ""
 "del miembro para tales notificaciones. '-owner' es la elecci&oacute;n "
 "t&iacute;pica. Esta opci&oacute;n no tiene efecto si \"umbrella_list\" es No."
 
-#: Mailman/MailList.py:517
+#: Mailman/MailList.py:522
 #, fuzzy
 msgid ""
 "Send password reminders to, eg, \"-owner\" address instead of\n"
@@ -1032,6 +1005,7 @@ msgstr ""
 "Mandar el recordatorio de las claves a la direcci&oacute;n \"-owner\" en vez "
 "de mandarlo al usuario directamente"
 
+#. docstring
 #: Mailman/LockFile.py:312
 msgid ""
 "Returns 1 if we own the lock, 0 if we do not.\n"
@@ -1085,7 +1059,7 @@ msgid "Which delivery mode is the default for new users?"
 msgstr ""
 "&iquest;Que tipo de entrega van a tener los nuevos usuarios por defecto?"
 
-#: bin/pygettext.py:463 bin/pygettext.py:463
+#: bin/pygettext.py:474
 msgid "Working on %s"
 msgstr ""
 
@@ -1093,10 +1067,12 @@ msgstr ""
 msgid "This list only supports digest subscriptions!"
 msgstr "Esta lista solo admite subscripciones tipo digest"
 
+#. docstring
 #: Mailman/Utils.py:279
 msgid "True when username matches and host addr of one addr contains other's."
 msgstr ""
 
+#. docstring
 #: Mailman/MailList.py:279
 msgid "Assign default values - some will be overriden by stored state."
 msgstr ""
@@ -1109,7 +1085,7 @@ msgstr "No hay peticiones pendientes."
 msgid "Subscription request"
 msgstr "Solicitud de subscripción"
 
-#: Mailman/MailList.py:611 Mailman/MailList.py:634
+#: Mailman/MailList.py:616 Mailman/MailList.py:639
 msgid "confirm"
 msgstr "confirmar"
 
@@ -1124,6 +1100,7 @@ msgstr ""
 "Est&aacute; suscrito a la lista con la direcci&oacute;n <em>%s</em> "
 "preservando may&uacute;sculas y min&uacute;sculas."
 
+#. docstring
 #: Mailman/versions.py:180
 msgid "Add defaults for these new variables if they don't exist."
 msgstr ""
@@ -1142,6 +1119,7 @@ msgstr "%s -- Edici&oacute;n del c&oacute;digo HTML de las P&aacute;ginas"
 msgid "Posting of your message titled \"%(subject)s\""
 msgstr "El mensaje enviado tenía como asunto \"%s\""
 
+#. docstring
 #: Mailman/MailList.py:201
 msgid "Return user's setting for option, defaulting to 0 if no settings."
 msgstr ""
@@ -1179,7 +1157,7 @@ msgstr "La lista no acepta subscriptores que quieran recibir digests"
 msgid "Nothing to do."
 msgstr ""
 
-#: Mailman/MailList.py:546
+#: Mailman/MailList.py:551
 msgid "Send welcome message when people subscribe?"
 msgstr "&iquest;Mando el mensaje de bienvenida cuando se subscriba la gente?"
 
@@ -1203,7 +1181,7 @@ msgid ""
 "Exiting."
 msgstr ""
 
-#: Mailman/MailList.py:576
+#: Mailman/MailList.py:581
 #, fuzzy
 msgid ""
 "Maximum length in Kb of a message body.  Use 0 for no\n"
@@ -1234,7 +1212,7 @@ msgstr ""
 msgid "Return to the "
 msgstr ""
 
-#: Mailman/MailList.py:556
+#: Mailman/MailList.py:561
 #, fuzzy
 msgid ""
 "List admins are sent daily reminders of pending admin\n"
@@ -1252,10 +1230,12 @@ msgstr ""
 "opci&oacute;n causa que las notificaciones se env&iacute;en inmediatamente "
 "cuando llegen nuevas peticiones."
 
+#. docstring
 #: Mailman/versions.py:204
 msgid "Transform sense of changed user options."
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/HyperArch.py:948
 msgid ""
 "Pick a charset for the index files\n"
@@ -1306,11 +1286,12 @@ msgstr "Diferir"
 msgid "password"
 msgstr "contrase&ntilde;a"
 
+#. docstring
 #: Mailman/Errors.py:83
 msgid "Email address is invalid (empty string or not fully qualified)."
 msgstr ""
 
-#: Mailman/MailList.py:809
+#: Mailman/MailList.py:814
 #, fuzzy
 msgid ""
 "Text prepended to the top of every immediately-delivery\n"
@@ -1323,6 +1304,7 @@ msgstr ""
 msgid " <p>Enter your "
 msgstr " <p>Introduzca su "
 
+#. docstring
 #: Mailman/Logging/StampedLogger.py:22
 msgid ""
 "Record messages in log files, including date stamp and optional label.\n"
@@ -1349,7 +1331,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: Mailman/MailList.py:547
+#: Mailman/MailList.py:552
 #, fuzzy
 msgid ""
 "Turn this on only if you plan on subscribing people manually\n"
@@ -1369,6 +1351,7 @@ msgstr ""
 msgid "Mass Subscription"
 msgstr "Solicitud de subscripción"
 
+#. docstring
 #: Mailman/Archiver/HyperDatabase.py:48
 msgid ""
 "Stores pickles of Article objects\n"
@@ -1433,6 +1416,7 @@ msgstr " Introduzca la nueva clave:"
 msgid "%(dbdir)s \"other\" perms must be 000"
 msgstr ""
 
+#. docstring
 #: Mailman/HTMLFormatter.py:261
 msgid "Provide avenue to subscribers roster, contingent to .private_roster."
 msgstr ""
@@ -1456,6 +1440,7 @@ msgstr "%s -- Editar el c&oacute;digo html para %s"
 msgid "from %(start)s to %(end)s"
 msgstr "de %s a %s"
 
+#. docstring
 #: Mailman/LockFile.py:289
 msgid ""
 "Unlock the lock.\n"
@@ -1479,7 +1464,7 @@ msgstr "No se permite que la clave del administrador est&eacute; vac&iacute;a"
 msgid "You have successfully set your options."
 msgstr "Ha definido sus opciones con &eacute;xito."
 
-#: Mailman/MailList.py:610
+#: Mailman/MailList.py:615
 msgid "none"
 msgstr "ninguno"
 
@@ -1492,7 +1477,7 @@ msgstr "Suscripci&oacute;n a  %s realizada con &eacute;xito."
 msgid "Your cookie has gone stale, enter password to get a new one."
 msgstr "Su cookie ha caducado, introduzca la clave para conseguir otra."
 
-#: bin/.#withlist.2.2:194 bin/withlist:194
+#: bin/withlist:194
 msgid "Importing %(module)s..."
 msgstr ""
 
@@ -1511,7 +1496,7 @@ msgstr ""
 msgid "Enter the email of the person running the list: "
 msgstr ""
 
-#: bin/pygettext.py:496 bin/pygettext.py:496
+#: bin/pygettext.py:507
 msgid "a unicode string"
 msgstr ""
 
@@ -1530,6 +1515,7 @@ msgstr ""
 msgid "Membership Management"
 msgstr "Administraci&oacute;n de los subscriptores"
 
+#. docstring
 #: Mailman/Handlers/Hold.py:51
 msgid "Sender is explicitly forbidden"
 msgstr ""
@@ -1567,11 +1553,11 @@ msgstr ""
 msgid "%(DBFILE)s permissions must be 066x (got %(octmode)s)"
 msgstr ""
 
-#: bin/pygettext.py:430 bin/pygettext.py:430
+#: bin/pygettext.py:441
 msgid "--width argument must be an integer: %s"
 msgstr ""
 
-#: Mailman/MailList.py:563
+#: Mailman/MailList.py:568
 #, fuzzy
 msgid ""
 "Should administrator get notices of subscribes and\n"
@@ -1588,7 +1574,7 @@ msgstr "Confirmar los cambios"
 msgid "%(pwfile)s permissions must be exactly 0640 (got %(octmode)s)"
 msgstr ""
 
-#: Mailman/MailList.py:743
+#: Mailman/MailList.py:748
 #, fuzzy
 msgid ""
 "Alias names (regexps) which qualify as explicit to or cc\n"
@@ -1597,19 +1583,16 @@ msgstr ""
 "Alias (expresi&oacute;nes regulares) que cualifiquen como destino "
 "expl&iacute;cito"
 
+#. docstring
 #: Mailman/HTMLFormatter.py:224
 msgid "Present editing options, according to list privacy."
 msgstr ""
 
-#: bin/genaliases.~1~:108
-#, fuzzy
-msgid "No languages added to list: %(listname)s"
-msgstr "No existe tal lista \"%s\": %s\n"
-
-#: Mailman/MailList.py:475
+#: Mailman/MailList.py:480
 msgid "Explicit <tt>Reply-To:</tt> header."
 msgstr "Cabecera expl&iacute;ncita <tt>Reply-To:</tt>"
 
+#. docstring
 #: Mailman/Errors.py:93
 #, fuzzy
 msgid "Held message was lost."
@@ -1661,6 +1644,7 @@ msgstr ""
 "Se le ha mandado un recordatorio de su clave por correo "
 "electr&oacute;nico.<p>"
 
+#. docstring
 #: Mailman/Handlers/SpamDetect.py:31
 msgid "The message contains known spam"
 msgstr ""
@@ -1670,11 +1654,12 @@ msgstr ""
 msgid "Send welcome message to this batch? "
 msgstr "&iquest;Mandarle el mensaje de bienvenida a este lote? "
 
-#: bin/change_pw:142 bin/change_pw.~1~:116
+#: bin/change_pw:142
 #, fuzzy
 msgid "Empty list passwords are not allowed"
 msgstr "No se permite que la clave del administrador est&eacute; vac&iacute;a"
 
+#. docstring
 #: Mailman/LockFile.py:189
 msgid "Return the lock's lifetime."
 msgstr ""
@@ -1690,6 +1675,7 @@ msgstr ""
 "&iquest;Que tama&ntilde;o en Kb deber&iacute;a alcanzar un digest antes de "
 "que se llegue a mandar?"
 
+#. docstring
 #: Mailman/LockFile.py:181
 msgid ""
 "Set a new lock lifetime.\n"
@@ -1699,6 +1685,7 @@ msgid ""
 "        "
 msgstr ""
 
+#. docstring
 #: Mailman/EncWord.py:33
 msgid "Decode mail header encoded-word format defined by RFC 2047"
 msgstr ""
@@ -1738,7 +1725,7 @@ msgstr "Categor&iacute;as de configuraci&oacute;n"
 msgid " no "
 msgstr " no "
 
-#: Mailman/MailList.py:368
+#: Mailman/MailList.py:373
 msgid ""
 "Fundamental list characteristics, including descriptive info and basic "
 "behaviors."
@@ -1751,7 +1738,7 @@ msgstr ""
 msgid "Usage: confirm <confirmation string>\n"
 msgstr "Sintaxis: confirm <número de confirmación>\n"
 
-#: Mailman/MailList.py:437
+#: Mailman/MailList.py:442
 msgid "Poster"
 msgstr "Remitente"
 
@@ -1764,11 +1751,7 @@ msgstr ""
 msgid "non-digest header"
 msgstr "Cabecera del resumen (digest)"
 
-#: schema/MailList.py:11
-msgid "Realname differs from listname by other than case."
-msgstr ""
-
-#: Mailman/MailList.py:395
+#: Mailman/MailList.py:400
 #, fuzzy
 msgid ""
 "This description is used when the mailing list is listed with\n"
@@ -1826,6 +1809,7 @@ msgstr ""
 msgid "MIME"
 msgstr "MIME"
 
+#. docstring
 #: Mailman/Handlers/Sendmail.py:44
 msgid ""
 "Process the message object for the given list.\n"
@@ -1871,6 +1855,7 @@ msgstr "Sitio Web "
 msgid "You must specify a list name.  Here is the "
 msgstr "Debe especificar un nombre de lista. Aqu&iacute; est&aacute; la"
 
+#. docstring
 #: Mailman/MailCommandHandler.py:604
 #, fuzzy
 msgid "Parse subscription request and send confirmation request."
@@ -1900,7 +1885,7 @@ msgid ""
 "             -admin and -owner addresses?"
 msgstr ""
 
-#: Mailman/MailList.py:477
+#: Mailman/MailList.py:482
 #, fuzzy
 msgid ""
 "This is the address set in the <tt>Reply-To:</tt> header\n"
@@ -1977,7 +1962,7 @@ msgstr ""
 "<tt>Reply-To:</tt>,\n"
 "dicha cabecera no se reemplazar&aacute;"
 
-#: bin/.#withlist.2.2:147 bin/withlist:147
+#: bin/withlist:147
 msgid "Finalizing"
 msgstr ""
 
@@ -2012,7 +1997,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: Mailman/MailList.py:808
+#: Mailman/MailList.py:813
 msgid "Header added to mail sent to regular list members"
 msgstr ""
 "Cabecera a a&ntilde;adir al correo enviado a los subscriptores regulares de "
@@ -2035,12 +2020,14 @@ msgstr ""
 "N&uacute;mero m&iacute;nimo de d&iacute;as que una direcci&oacute;n puede "
 "estar dando problemas antes de que tomemos acciones"
 
+#. docstring
 #: Mailman/Handlers/Hold.py:63
 msgid "Posting to a restricted list by sender requires approval"
 msgstr ""
 "Los env&iacute;s del remitente a un lista restringida necesitan "
 "aprobaci&oacute;n"
 
+#. docstring
 #: Mailman/versions.py:75
 msgid ""
 "Use specified old value if new value is not in stored state.\n"
@@ -2112,10 +2099,6 @@ msgstr ""
 msgid "Error decoding authorization cookie."
 msgstr "Error al decodificar la autorizaci&oacute;n del cookie"
 
-#: misc/Cookie.py:530
-msgid "Return a string suitable for JavaScript."
-msgstr ""
-
 #: Mailman/Cgi/admin.py:50
 msgid "Bounce Options"
 msgstr "Opciones de rechazo"
@@ -2128,6 +2111,7 @@ msgstr ""
 msgid "You are already receiving digests."
 msgstr "Ya estás recibiendo digests."
 
+#. docstring
 #: Mailman/htmlformat.py:39
 msgid ""
 "Return a presentation of an object, invoking their Format method if any."
@@ -2145,7 +2129,7 @@ msgstr "\tpeticiones a: "
 msgid "Hit enter to notify %(listname)s owner..."
 msgstr ""
 
-#: bin/change_pw:179 bin/change_pw.~1~:137
+#: bin/change_pw:179
 msgid "Your new %(listname)s list password"
 msgstr ""
 
@@ -2161,7 +2145,7 @@ msgstr "Confirme la nueva clave:"
 msgid "directory permissions must be %(octperms)s: %(path)s"
 msgstr ""
 
-#: Mailman/MailList.py:1050
+#: Mailman/MailList.py:1055
 #, fuzzy
 msgid "%(realname)s -- confirmation of subscription -- confirm %(cookie)s"
 msgstr "%s -- confirmation of subscription -- request %d"
@@ -2242,7 +2226,7 @@ msgstr "Direcci&oacute;n de correo-e "
 msgid "You must supply a list name"
 msgstr "Debe especificar una lista."
 
-#: bin/pygettext.py:159 bin/pygettext.py:159
+#: bin/pygettext.py:160
 msgid ""
 "# SOME DESCRIPTIVE TITLE.\n"
 "# Copyright (C) YEAR ORGANIZATION\n"
@@ -2288,6 +2272,7 @@ msgid "Bad/Invalid email address"
 msgstr ""
 "Direcci&oacute;n de correo electr&oacute;nico incorrecta/inv&aacute;lida"
 
+#. docstring
 #: Mailman/Utils.py:433
 msgid "Invert ObscureEmail() conversion."
 msgstr ""
@@ -2302,17 +2287,19 @@ msgstr "Entregado via Mailman<br>versi&acute;n %s"
 msgid "%(hostname)s mailing lists - Admin Links"
 msgstr "Listas de distribuci&oacute;n en %s - Enlaces de administraci&oacute;"
 
+#. docstring
 #: Mailman/versions.py:70
 msgid ""
 "Transform old variable values into new ones, deleting old ones.\n"
 "    stored_state is last snapshot from file, as opposed to from InitVars()."
 msgstr ""
 
-#: Mailman/MailList.py:372
+#: Mailman/MailList.py:377
 msgid "The public name of this list (make case-changes only)."
 msgstr "El nombre p&uacute;blico de esta lista (solo cambios convincentes)"
 
-#: bin/.#withlist.2.2:135 bin/withlist:135
+#. docstring
+#: bin/withlist:135
 msgid ""
 "Unlock a locked list, but do not implicitly Save() it.\n"
 "\n"
@@ -2334,7 +2321,7 @@ msgstr ""
 msgid "Email address '%(origsender)s' not accepted by Mailman."
 msgstr "Mailman no acepta la dirección de correo electrónica %s."
 
-#: Mailman/MailList.py:1084
+#: Mailman/MailList.py:1089
 #, fuzzy
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr "las subscripciones a %s necesitan el visto bueno del administrador"
@@ -2352,15 +2339,15 @@ msgstr ""
 #: Mailman/Bouncer.py:67 Mailman/Digester.py:55 Mailman/Digester.py:71
 #: Mailman/Digester.py:93 Mailman/Digester.py:98 Mailman/GatewayManager.py:53
 #: Mailman/GatewayManager.py:57 Mailman/GatewayManager.py:61
-#: Mailman/MailList.py:506 Mailman/MailList.py:516 Mailman/MailList.py:541
-#: Mailman/MailList.py:545 Mailman/MailList.py:552 Mailman/MailList.py:562
-#: Mailman/MailList.py:567 Mailman/MailList.py:661 Mailman/MailList.py:675
-#: Mailman/MailList.py:686 Mailman/MailList.py:689 Mailman/MailList.py:721
-#: Mailman/MailList.py:795 Mailman/MailList.py:803
+#: Mailman/MailList.py:511 Mailman/MailList.py:521 Mailman/MailList.py:546
+#: Mailman/MailList.py:550 Mailman/MailList.py:557 Mailman/MailList.py:567
+#: Mailman/MailList.py:572 Mailman/MailList.py:666 Mailman/MailList.py:680
+#: Mailman/MailList.py:691 Mailman/MailList.py:694 Mailman/MailList.py:726
+#: Mailman/MailList.py:800 Mailman/MailList.py:808
 msgid "Yes"
 msgstr "Si"
 
-#: Mailman/MailList.py:693
+#: Mailman/MailList.py:698
 #, fuzzy
 msgid ""
 "Use this option if you want to restrict posting to list\n"
@@ -2395,10 +2382,12 @@ msgstr "Ya tenías desactivado los digests"
 msgid "checking permissions on %(pwfile)s"
 msgstr ""
 
+#. docstring
 #: Mailman/Errors.py:87
 msgid "Email address has potentially hostile characters in it."
 msgstr ""
 
+#. docstring
 #: Mailman/MailCommandHandler.py:684
 msgid "Validate confirmation and carry out the subscription."
 msgstr ""
@@ -2503,7 +2492,7 @@ msgstr ""
 msgid "<b>Cancel</b> and return to list administration"
 msgstr ""
 
-#: Mailman/MailList.py:424
+#: Mailman/MailList.py:429
 #, fuzzy
 msgid ""
 "This value, if any, will be added to the front of the\n"
@@ -2525,7 +2514,7 @@ msgstr ""
 "informaci&oacute;n especifica al objetivo de la lista, como la politica de "
 "la lista u orientaci&oacute;n a los usuarios, o cualquier otra cosa similar."
 
-#: Mailman/MailList.py:373
+#: Mailman/MailList.py:378
 #, fuzzy
 msgid ""
 "The capitalization of this name can be changed to make it\n"
@@ -2556,7 +2545,7 @@ msgstr "Le ha pasado argumentos incorrectos al programa CGI"
 msgid "- updating old private mbox file"
 msgstr ""
 
-#: Mailman/MailList.py:520
+#: Mailman/MailList.py:525
 #, fuzzy
 msgid ""
 "Set this to yes when this list is intended to cascade only\n"
@@ -2617,6 +2606,7 @@ msgid ""
 "re-create it from scratch."
 msgstr ""
 
+#. docstring
 #: Mailman/Queue/Switchboard.py:215
 msgid "Native (i.e. compiled-in) Berkeley db format."
 msgstr ""
@@ -2635,7 +2625,7 @@ msgstr ""
 "Error de Mailman inesperado:\n"
 "%s"
 
-#: Mailman/MailList.py:553
+#: Mailman/MailList.py:558
 #, fuzzy
 msgid ""
 "Should administrator get immediate notice of new requests,\n"
@@ -2653,7 +2643,7 @@ msgstr "Plano"
 msgid "Archive messages?"
 msgstr "&iquest;Almacenar los mensajes?"
 
-#: Mailman/MailList.py:570
+#: Mailman/MailList.py:575
 #, fuzzy
 msgid ""
 "Approval notices are sent when mail triggers certain of the\n"
@@ -2706,7 +2696,7 @@ msgstr ""
 msgid "%(user)s is not subscribed to this list."
 msgstr "%s no estaá subscrito a esta lista."
 
-#: Mailman/MailList.py:582
+#: Mailman/MailList.py:587
 #, fuzzy
 msgid ""
 "The \"host_name\" is the preferred name for email to\n"
@@ -2733,18 +2723,16 @@ msgstr ""
 msgid "No such list <em>%(listname)s</em>"
 msgstr "No existe la lista <em>%s</em>"
 
-#: bin/genaliases.~1~:89 bin/rmlang:100
-msgid "Could't acquire list lock, try again later: %(listname)s"
-msgstr ""
-
 #: Mailman/Defaults.py:637
 msgid "Italian"
 msgstr "Italiano"
 
+#. docstring
 #: Mailman/Handlers/Hold.py:67
 msgid "Too many recipients to the message"
 msgstr "Demasiados destinatarios en el mensaje"
 
+#. docstring
 #: Mailman/EncWord.py:38
 msgid ""
 "Decode an encoded-word.\n"
@@ -2832,10 +2820,12 @@ msgstr ""
 "hora. (Si, la detecci&oacute;n de rebotes encuentra esta informaci&oacute;n "
 "&uacute;til)"
 
+#. docstring
 #: Mailman/Cgi/admin.py:549
 msgid "Return a representation of an item's settings."
 msgstr ""
 
+#. docstring
 #: Mailman/versions.py:48
 msgid ""
 "Dispose of old vars and user options, mapping to new ones when suitable."
@@ -2868,6 +2858,7 @@ msgstr ""
 msgid "Again to confirm password: "
 msgstr "Confirme la nueva clave:"
 
+#. docstring
 #: Mailman/versions.py:214
 msgid "Keys in user_options must be lower case."
 msgstr ""
@@ -2877,7 +2868,7 @@ msgstr ""
 msgid "administrative list overview"
 msgstr "Interfaz administrativa de %s"
 
-#: Mailman/MailList.py:655
+#: Mailman/MailList.py:660
 #, fuzzy
 msgid ""
 "List access policies, including anti-spam measures, covering\n"
@@ -2891,6 +2882,7 @@ msgstr ""
 "tambi&eacute;n las <a href=\"%s/archive\"> Secci&oacute;n de opciones de "
 "almacenaje </a> para separar las opciones de privacidad del archivo.)"
 
+#. docstring
 #: Mailman/Archiver/HyperArch.py:236
 msgid ""
 "Check From and Subject for encoded-words\n"
@@ -2914,7 +2906,7 @@ msgstr ""
 "A los que no est´en subscritos no se les permite mandar mensajes a esta "
 "lista."
 
-#: Mailman/MailList.py:801
+#: Mailman/MailList.py:806
 msgid "Policies concerning immediately delivered list traffic."
 msgstr ""
 "Pol&iacute;tica referente a la entrega del tr&aacute;fico de la lista a "
@@ -2954,7 +2946,7 @@ msgstr "la p&aacute;gina panor&aacute;mica de administraci&oacute;n de listas"
 msgid "Logout"
 msgstr "Desconexi&oacute;n"
 
-#: Mailman/MailList.py:771
+#: Mailman/MailList.py:776
 #, fuzzy
 msgid ""
 "Email addresses whose posts should always be held for\n"
@@ -2967,7 +2959,7 @@ msgstr ""
 "otras opciones haya activado. Vea tambi&eacute;n la opci&oacute;n "
 "subsiguiente que se aplica al contenido arbitrario de distintas cabeceras"
 
-#: Mailman/MailList.py:669
+#: Mailman/MailList.py:674
 msgid "List admin only"
 msgstr "Solo los administradores de la lista"
 
@@ -2990,6 +2982,7 @@ msgstr ""
 "Sintaxis: set <option> <on|off> <clave>\n"
 "Las opciones válidas son:\n"
 
+#. docstring
 #: Mailman/Utils.py:330
 msgid ""
 "Given an email address, and any number of dictionaries keyed by\n"
@@ -3007,6 +3000,7 @@ msgstr ""
 "Esta es %s una lista privada, lo que significa que los subscriptores de la "
 "lista no est&aacute;n disponibles a los que no est&eacute;n subscritos.   "
 
+#. docstring
 #: Mailman/Archiver/pipermail.py:78
 msgid ""
 "Define the basic sorting logic for a database\n"
@@ -3021,6 +3015,7 @@ msgstr ""
 msgid "Cannot unsubscribe non-members:"
 msgstr "Suscripci&oacute;n en bloque"
 
+#. docstring
 #: Mailman/MailList.py:264
 msgid "Set transient variables of this and inherited classes."
 msgstr ""
@@ -3055,6 +3050,7 @@ msgid "Edit the HTML for the public list pages"
 msgstr ""
 "Editar el c&oacute;digo HTML de las distintas p&aacute;ginas de la lista"
 
+#. docstring
 #: Mailman/Archiver/HyperArch.py:299 Mailman/Archiver/HyperArch.py:325
 msgid "Return the href and subject for the previous message"
 msgstr ""
@@ -3091,7 +3087,7 @@ msgid ""
 "             posters?"
 msgstr ""
 
-#: bin/pygettext.py:458 bin/pygettext.py:458
+#: bin/pygettext.py:469
 msgid "Reading standard input"
 msgstr ""
 
@@ -3108,11 +3104,13 @@ msgstr "No se ha encontrado la clave de %s"
 msgid "<b>subscr</b> -- Is the member subscribed?"
 msgstr "<b>subscr</b> -- &iquest;Est&aacute; la persona subscrita?"
 
+#. docstring
 #: Mailman/MailList.py:177
 msgid "Return the member's address lower cased."
 msgstr ""
 
-#: Mailman/MailList.py:1142
+#. docstring
+#: Mailman/MailList.py:1147
 msgid ""
 "Subscribe members in list `names'.\n"
 "\n"
@@ -3141,7 +3139,7 @@ msgstr " si tiene alguna duda."
 msgid "List Subscriptions for %(user)s on %(hostname)s"
 msgstr "Suscripciones a listas de %s en %s"
 
-#: Mailman/MailList.py:389
+#: Mailman/MailList.py:394
 #, fuzzy
 msgid ""
 "All messages not related to an specific user will be\n"
@@ -3150,6 +3148,7 @@ msgstr ""
 "Los mensajes que no est&eacute;n relacionados con un usuario concreto, se "
 "visualizar&aacute;n en este idioma"
 
+#. docstring
 #: Mailman/Pending.py:75
 msgid "Return data for cookie, removing it from db, or None if not found."
 msgstr ""
@@ -3178,12 +3177,8 @@ msgstr ""
 msgid "You have no password. Contact the list administrator."
 msgstr "No tiene clave. Contacte con el administrador de la lista"
 
-#: bin/genaliases.~1~:117
-msgid "added"
-msgstr ""
-
-#: bin/arch:91 bin/change_pw:100 bin/change_pw.~1~:124 bin/config_list:101
-#: bin/config_list:192 bin/genaliases.~1~:84 bin/newlang:87 bin/rmlang:95
+#: bin/addlang:87 bin/arch:91 bin/change_pw:100 bin/config_list:101
+#: bin/config_list:192
 #, fuzzy
 msgid ""
 "No such list \"%(listname)s\"\n"
@@ -3194,7 +3189,7 @@ msgstr "No existe tal lista \"%s\": %s\n"
 msgid "You must specify your password."
 msgstr "Debe especificar su clave."
 
-#: Mailman/MailList.py:669
+#: Mailman/MailList.py:674
 msgid "List members"
 msgstr "Componentes de la lista"
 
@@ -3231,7 +3226,7 @@ msgstr ""
 "informaci&oacute;n sobre dicha lista, para subscribirse a ella, borrarse, \n"
 "o cambiar las preferencias de su subscripci&oacute;n."
 
-#: Mailman/MailList.py:413
+#: Mailman/MailList.py:418
 msgid "Prefix for subject line of list postings."
 msgstr "Prefijo para la l&iacute;nea subject de los env&iacute;os de la lista"
 
@@ -3239,7 +3234,7 @@ msgstr "Prefijo para la l&iacute;nea subject de los env&iacute;os de la lista"
 msgid "New %(listname)s password: %(notifypassword)s"
 msgstr ""
 
-#: Mailman/MailList.py:687
+#: Mailman/MailList.py:692
 msgid "Must posts be approved by an administrator?"
 msgstr "&iquest;Debe el administrador aprobar los env&iacute;os a la lista?"
 
@@ -3282,7 +3277,7 @@ msgstr ""
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
 msgstr ""
 
-#: Mailman/MailList.py:722
+#: Mailman/MailList.py:727
 #, fuzzy
 msgid ""
 "Must posts have list named in destination (to, cc) field\n"
@@ -3296,12 +3291,9 @@ msgstr ""
 msgid "No one can subscribe to the digest of this list!"
 msgstr "Nadie puede recibir digests en esta lista."
 
+#. docstring
 #: Mailman/Logging/StampedLogger.py:52
 msgid "Reset so timestamp will be included with next write."
-msgstr ""
-
-#: misc/Cookie.py:513
-msgid "Dictionary style assignment."
 msgstr ""
 
 #: Mailman/Cgi/admin.py:822
@@ -3327,6 +3319,7 @@ msgstr "Pié de página del digest"
 msgid "Also delete archives?"
 msgstr ""
 
+#. docstring
 #: Mailman/MailList.py:121
 msgid ""
 "adds the appropriate data to the internal members dict.\n"
@@ -3337,15 +3330,17 @@ msgid ""
 "        "
 msgstr ""
 
+#. docstring
 #: Mailman/Message.py:88
 msgid "Class for internally crafted messages."
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/pipermail.py:37
 msgid "Canonicalize a name into Last, First format"
 msgstr ""
 
-#: Mailman/MailList.py:507
+#: Mailman/MailList.py:512
 #, fuzzy
 msgid ""
 "(Administrivia filter) Check postings and intercept ones\n"
@@ -3374,7 +3369,7 @@ msgstr ""
 "Cuando esté activado, no recibirá correo electrónico, pero seguirá estando "
 "subscrito a la lista. Esto es útil si tiene previsto tomarse unas vacaciones."
 
-#: Mailman/MailList.py:433
+#: Mailman/MailList.py:438
 #, fuzzy
 msgid ""
 "Text sent to people leaving the list.  If empty, no special\n"
@@ -3384,7 +3379,7 @@ msgstr ""
 "se a&ntilde;adir&aacute; ning&uacute;n texto en especial al mensaje de "
 "desubscripci&oacute;n."
 
-#: Mailman/MailList.py:1029 Mailman/MailList.py:1103
+#: Mailman/MailList.py:1034 Mailman/MailList.py:1108
 #, fuzzy
 msgid " from %(remote)s"
 msgstr " desde %s"
@@ -3396,7 +3391,7 @@ msgid ""
 "        the %(listname)s mailing list."
 msgstr ""
 
-#: Mailman/MailList.py:568
+#: Mailman/MailList.py:573
 msgid "Send mail to poster when their posting is held for approval?"
 msgstr ""
 "&iquest;Enviar un mensaje al remitente cuando su mensaje se retiene en "
@@ -3455,7 +3450,7 @@ msgstr ""
 msgid "Password change failed."
 msgstr ""
 
-#: Mailman/MailList.py:438
+#: Mailman/MailList.py:443
 #, fuzzy
 msgid ""
 "Where are replies to list messages directed?\n"
@@ -3467,11 +3462,7 @@ msgstr ""
 "lista? El <tt>remitente original</tt> se recomienda <em> "
 "en&eacute;rgicamente</em>."
 
-#: bin/rmlang:109
-msgid "%(lang)s is the server default language and cannot be removed"
-msgstr ""
-
-#: Mailman/MailList.py:542
+#: Mailman/MailList.py:547
 #, fuzzy
 msgid ""
 "Send monthly password reminders or no? Overrides the\n"
@@ -3484,7 +3475,7 @@ msgstr ""
 msgid "Privacy Options"
 msgstr "Opciones de Privacidad"
 
-#: bin/genaliases.~1~:97 bin/newlang:97
+#: bin/addlang:97
 msgid "No template directory for language: %(dir)s"
 msgstr ""
 
@@ -3496,7 +3487,7 @@ msgstr ""
 msgid "Mail-News and News-Mail gateways"
 msgstr "Pasarela de Correo a Noticias y de Noticas a Correo"
 
-#: Mailman/MailList.py:1282
+#: Mailman/MailList.py:1287
 msgid "%s unsubscribe notification"
 msgstr "notificacion de desubscripcion de %s"
 
@@ -3530,6 +3521,7 @@ msgstr ""
 msgid "digest footer"
 msgstr "Pié de página del digest"
 
+#. docstring
 #: Mailman/Queue/Switchboard.py:175
 msgid "Python marshal format."
 msgstr ""
@@ -3538,6 +3530,7 @@ msgstr ""
 msgid "One of -i or -o is required"
 msgstr ""
 
+#. docstring
 #: Mailman/Logging/Utils.py:28
 msgid ""
 "Establish a StampedLogger on sys.stderr if possible.  sys.stdout\n"
@@ -3546,10 +3539,12 @@ msgid ""
 "    Returns the MultiLogger if successful, None otherwise."
 msgstr ""
 
+#. docstring
 #: Mailman/MailList.py:101 Mailman/MailList.py:111
 msgid "returns a list of the members with username case preserved."
 msgstr ""
 
+#. docstring
 #: Mailman/Errors.py:103
 msgid "Base class for all message-being-held short circuits."
 msgstr ""
@@ -3567,7 +3562,7 @@ msgstr "Preservar el mensaje para el administrador del gestor de listas"
 msgid "done"
 msgstr "ninguno"
 
-#: Mailman/MailList.py:685
+#: Mailman/MailList.py:690
 msgid "General posting filters"
 msgstr "Filtrado general de los env&iacute;os"
 
@@ -3593,15 +3588,11 @@ msgid ""
 "however, you may lose some data."
 msgstr ""
 
-#: schema/MailList.py:8
-#, fuzzy
-msgid "General mailing list related errors."
-msgstr "Recordatorio de la lista de distribucion %s"
-
 #: Mailman/Cgi/admindb.py:166
 msgid "Subscription Requests"
 msgstr "Peticiones de Subscripci&oacute;n"
 
+#. docstring
 #: Mailman/MailList.py:245
 msgid ""
 "Return the lowercased version of the subscribed email address.\n"
@@ -3613,7 +3604,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: Mailman/MailList.py:662
+#: Mailman/MailList.py:667
 #, fuzzy
 msgid ""
 "Advertise this list when people ask what lists are on this\n"
@@ -3622,7 +3613,7 @@ msgstr ""
 "&iquest;Anunciar esta lista cuando la gente pida que listas est&aacute;n en "
 "esta m&aacute;quina?"
 
-#: bin/newlang:115
+#: bin/addlang:115
 msgid "Language support for %(okmsg)s added"
 msgstr ""
 
@@ -3635,10 +3626,11 @@ msgstr ""
 "\n"
 "Listas de distribución públicas que residen en mailman@%s"
 
-#: Mailman/MailList.py:660
+#: Mailman/MailList.py:665
 msgid "Subscribing"
 msgstr "Subscripci&oacute;n"
 
+#. docstring
 #: Mailman/Cgi/private.py:40
 msgid "Ensure that the path is safe by removing .."
 msgstr ""
@@ -3655,15 +3647,17 @@ msgstr ""
 msgid "New %(pwdesc)s Password: "
 msgstr ""
 
+#. docstring
 #: Mailman/SecurityManager.py:154
 msgid "True if password is valid for site, list admin, or specific user."
 msgstr ""
 
+#. docstring
 #: Mailman/Pending.py:45
 msgid "Create a new entry in the pending database, returning cookie for it."
 msgstr ""
 
-#: Mailman/MailList.py:778
+#: Mailman/MailList.py:783
 #, fuzzy
 msgid ""
 "Use this option to prohibit posts according to specific\n"
@@ -3700,6 +3694,7 @@ msgstr ""
 "tambi&eacute;n la opci&oacute;n <em>forbidden_posters</em> como mecanismo "
 "relacionado"
 
+#. docstring
 #: Mailman/Utils.py:57
 msgid "Return the names of all lists in default list directory."
 msgstr ""
@@ -3710,7 +3705,7 @@ msgid ""
 "%(e)s"
 msgstr ""
 
-#: Mailman/MailList.py:690
+#: Mailman/MailList.py:695
 #, fuzzy
 msgid ""
 "Restrict posting privilege to list members?\n"
@@ -3739,11 +3734,12 @@ msgstr "Debe especificar su clave antigua, y la nueva dos veces."
 msgid "Updating Usenet watermarks"
 msgstr ""
 
-#: bin/.#withlist.2.2:172 bin/withlist:172
+#: bin/withlist:172
 #, fuzzy
 msgid "No list name supplied."
 msgstr "Nombre de la m&aacute;quina que prefiere la lista."
 
+#. docstring
 #: Mailman/Bouncer.py:277
 msgid ""
 "Disable delivery for bouncing user address.\n"
@@ -3761,10 +3757,12 @@ msgstr "Listas de distribuci&oacute;n en %s"
 msgid "Hostile Address (illegal characters)"
 msgstr "Direcci&oacute;n hostil (caracteres no v&aacute;lidos)"
 
+#. docstring
 #: Mailman/Utils.py:267
 msgid "returns the address with the domain part lowercased"
 msgstr ""
 
+#. docstring
 #: Mailman/LockFile.py:164
 msgid ""
 "Create the resource lock using lockfile as the global lock file.\n"
@@ -3785,6 +3783,7 @@ msgstr ""
 msgid "members"
 msgstr "Subscriptores de la lista"
 
+#. docstring
 #: Mailman/Utils.py:592
 msgid ""
 "Like `rm -r'\n"
@@ -3794,7 +3793,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: bin/change_pw:138 bin/change_pw.~1~:108
+#: bin/change_pw:138
 msgid "Bad arguments: %(strargs)s"
 msgstr ""
 
@@ -3814,6 +3813,7 @@ msgstr ""
 "cualquier caso, para habilitar de nuevo la recepci&oacute;n de los mensajes "
 "de la lista cambie la opci&oacute;n "
 
+#. docstring
 #: Mailman/versions.py:232
 msgid "With version 1.2, we use a new pending request database schema."
 msgstr ""
@@ -3830,6 +3830,7 @@ msgstr ""
 "las claves se mandarán a la dirección administrativa de su dirección,\n"
 "   %s.\n"
 
+#. docstring
 #: Mailman/Archiver/Archiver.py:144
 msgid "Open (creating, if necessary) the named archive file."
 msgstr ""
@@ -3838,7 +3839,7 @@ msgstr ""
 msgid "Your new mailing list: %(listname)s"
 msgstr ""
 
-#: bin/pygettext.py:341 bin/pygettext.py:341
+#: bin/pygettext.py:352
 msgid " %(filename)s:%(lineno)d"
 msgstr ""
 
@@ -3854,7 +3855,7 @@ msgstr "El nombre del grupo de Usenet (noticias) al que mandar y/o recibir."
 msgid "Command? "
 msgstr "¿Orden? "
 
-#: Mailman/MailList.py:1230
+#: Mailman/MailList.py:1235
 #, fuzzy
 msgid "%(realname)s subscription notification"
 msgstr "La autenticaci&oacute;n del suscriptor de %s fall&oacute;."
@@ -3873,12 +3874,14 @@ msgstr "Asuntos del día"
 msgid "autoreply"
 msgstr ""
 
+#. docstring
 #: Mailman/MailList.py:161
 msgid ""
 "Return the member's case preserved address.\n"
 "        "
 msgstr ""
 
+#. docstring
 #: Mailman/Utils.py:301
 msgid ""
 "returns a sorted list of addresses that could possibly match\n"
@@ -3899,7 +3902,7 @@ msgstr "Actualizando ficheros de &iacute;ndice para archivo"
 msgid "return to the %(category)s options page."
 msgstr "Volver a la p&aacute;gina de opci&oacute;n de %s"
 
-#: Mailman/MailList.py:388
+#: Mailman/MailList.py:393
 msgid "Default language for this list."
 msgstr "El idioma por defecto para esta lista"
 
@@ -3928,11 +3931,11 @@ msgstr "%s: Miembro inexistente %s."
 msgid "You are already subscribed!"
 msgstr "Ya estás subscrito!"
 
-#: bin/genaliases.~1~:101 bin/newlang:108
+#: bin/addlang:108
 msgid "List already supports language: %(lang)s"
 msgstr ""
 
-#: Mailman/MailList.py:770
+#: Mailman/MailList.py:775
 msgid "Addresses whose postings are always held for approval."
 msgstr ""
 "Direcciones cuyos env&iacute;os a la lista se retendr&aacute;n siempre para "
@@ -3979,14 +3982,16 @@ msgstr ""
 "Se ha ignorado la linea que corresponde al Asunto:\n"
 "  "
 
+#. docstring
 #: Mailman/Errors.py:114
 msgid "The message can be discarded with no further action"
 msgstr ""
 
-#: Mailman/MailList.py:669
+#: Mailman/MailList.py:674
 msgid "Anyone"
 msgstr "Cualquiera"
 
+#. docstring
 #: Mailman/Cgi/subscribe.py:101
 msgid "A hack to call one of the other CGI scripts."
 msgstr ""
@@ -4003,7 +4008,7 @@ msgstr ""
 msgid " Enter current password:"
 msgstr " Introduzca la clave actual:"
 
-#: bin/.#withlist.2.2:181 bin/withlist:181
+#: bin/withlist:181
 msgid "(unlocked)"
 msgstr ""
 
@@ -4012,7 +4017,7 @@ msgstr ""
 msgid "End of "
 msgstr "Fin: "
 
-#: Mailman/MailList.py:699
+#: Mailman/MailList.py:704
 #, fuzzy
 msgid ""
 "Addresses of members accepted for posting to this list\n"
@@ -4026,7 +4031,7 @@ msgstr ""
 "\"Restringir...a los miembros de la lista\" si desea (o no) que estas "
 "direcciones se a&ntilde;adan a los remitentes autorizados."
 
-#: bin/.#withlist.2.2:144 bin/withlist:144
+#: bin/withlist:144
 msgid "Unlocking (but not saving) list:"
 msgstr ""
 
@@ -4044,7 +4049,7 @@ msgid ""
 "             with the next digest sent out."
 msgstr ""
 
-#: Mailman/MailList.py:615 Mailman/MailList.py:638
+#: Mailman/MailList.py:620 Mailman/MailList.py:643
 msgid "What steps are required for subscription?<br>"
 msgstr "&iquest;Que pasos hacen falta para la subcripci&oacute;n?<br>"
 
@@ -4063,10 +4068,6 @@ msgstr "<em>Se ha perdido el mensaje con el identificador #%d"
 
 #: bin/check_perms:221
 msgid "%(path)s must be set-gid"
-msgstr ""
-
-#: bin/rmlang:61 bin/rmlang:64
-msgid "Removing"
 msgstr ""
 
 #: Mailman/MTA/Qmail.py:31
@@ -4121,6 +4122,7 @@ msgstr "Error dando de baja la subscripci&oacute;n:"
 msgid "Your message had a suspicious header."
 msgstr "Su mensaje tiene una cabecera sospechosa."
 
+#. docstring
 #: Mailman/Handlers/Hold.py:92
 msgid "Message body is too big: %d bytes but there's a limit of %d KB"
 msgstr ""
@@ -4132,6 +4134,7 @@ msgstr ""
 msgid "%(realname)s Administrative Database"
 msgstr "Interfaz administrativa de %s"
 
+#. docstring
 #: Mailman/Errors.py:79
 msgid "Base class for email address validation errors."
 msgstr ""
@@ -4154,7 +4157,7 @@ msgstr ""
 "Explicación de las opciones:\n"
 "---------------------------"
 
-#: bin/.#withlist.2.2:179 bin/withlist:179
+#: bin/withlist:179
 msgid "(locked)"
 msgstr ""
 
@@ -4179,6 +4182,7 @@ msgstr ""
 msgid "Your passwords did not match.<br>"
 msgstr "Sus claves no coinciden.<br>"
 
+#. docstring
 #: Mailman/HTMLFormatter.py:376
 msgid ""
 "\n"
@@ -4200,6 +4204,7 @@ msgstr "No existe tal lista \"%s\": %s\n"
 msgid "Auto-response text to send to mailing list posters."
 msgstr ""
 
+#. docstring
 #: Mailman/Bouncer.py:97
 msgid ""
 "Detect and handle repeat-offender bounce addresses.\n"
@@ -4215,6 +4220,7 @@ msgstr ""
 msgid "Gnu's Not Unix"
 msgstr "GNU no es UNIX"
 
+#. docstring
 #: Mailman/LockFile.py:207
 msgid ""
 "Acquire the lock.\n"
@@ -4229,7 +4235,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: Mailman/MailList.py:510
+#: Mailman/MailList.py:515
 #, fuzzy
 msgid ""
 "Administrivia tests will check postings to see whether it's\n"
@@ -4275,7 +4281,7 @@ msgstr "&iexcl;Ya est&aacute; suscrito!<p>"
 msgid "digest"
 msgstr "agrupado"
 
-#: Mailman/MailList.py:676
+#: Mailman/MailList.py:681
 #, fuzzy
 msgid ""
 "Show member addrs so they're not directly recognizable as\n"
@@ -4288,7 +4294,7 @@ msgstr ""
 msgid " is already a member"
 msgstr " ya es un subscriptor"
 
-#: Mailman/MailList.py:639
+#: Mailman/MailList.py:644
 #, fuzzy
 msgid ""
 "confirm (*) - email confirmation required <br>\n"
@@ -4322,7 +4328,7 @@ msgstr ""
 "\n"
 "Se han encontrado demasiados errores, el resto del mensaje se ignora:"
 
-#: Mailman/MailList.py:670
+#: Mailman/MailList.py:675
 msgid "Who can view subscription list?"
 msgstr "&iquest;Quien puede ver la lista de subcriptores?"
 
@@ -4341,11 +4347,12 @@ msgstr ""
 "Se le ha mandado un recordatorio de su clave por correo "
 "electr&oacute;nico.<p>"
 
+#. docstring
 #: Mailman/Cgi/Auth.py:28
 msgid "Exception raised when no matching admin cookie was found."
 msgstr ""
 
-#: Mailman/MailList.py:766
+#: Mailman/MailList.py:771
 #, fuzzy
 msgid ""
 "If a posting has this number, or more, of recipients, it is\n"
@@ -4462,7 +4469,7 @@ msgstr ""
 msgid "Error"
 msgstr "Error"
 
-#: Mailman/MailList.py:704
+#: Mailman/MailList.py:709
 #, fuzzy
 msgid ""
 "Adding entries here will have one of two effects, according\n"
@@ -4490,6 +4497,7 @@ msgstr ""
 "a la lista sin que se produzca aprobaci&oacute;n por parte del "
 "administrador.</ul>"
 
+#. docstring
 #: Mailman/LockFile.py:119
 msgid ""
 "A portable way to lock resources by way of the file system.\n"
@@ -4560,6 +4568,7 @@ msgstr ""
 "Error de Mailman inesperado:\n"
 "%s"
 
+#. docstring
 #: Mailman/HTMLFormatter.py:155
 msgid "Tailor to approval, roster privacy, and web vetting requirements."
 msgstr ""
@@ -4581,7 +4590,7 @@ msgstr ""
 "    %(url)s\n"
 "\n"
 
-#: Mailman/MailList.py:382
+#: Mailman/MailList.py:387
 #, fuzzy
 msgid ""
 "The list admin's email address - having multiple\n"
@@ -4599,6 +4608,7 @@ msgstr "Debe especificar una lista."
 msgid "No subject"
 msgstr "Sin asunto"
 
+#. docstring
 #: Mailman/Errors.py:125
 msgid "We've seen this message before"
 msgstr ""
@@ -4612,10 +4622,12 @@ msgid ""
 "                please try to re-submit your subscription."
 msgstr ""
 
+#. docstring
 #: Mailman/Handlers/Hold.py:77
 msgid "Message may contain administrivia"
 msgstr "El mensaje puede que contenga ordenes administrativas"
 
+#. docstring
 #: Mailman/Queue/Switchboard.py:241
 msgid ""
 "Human readable .db file format.\n"
@@ -4628,6 +4640,7 @@ msgid ""
 "    "
 msgstr ""
 
+#. docstring
 #: Mailman/htmlformat.py:318
 msgid "Document without head section, for templates that provide their own."
 msgstr ""
@@ -4688,18 +4701,22 @@ msgid ""
 "    you're either one brave soul, or you already ran me"
 msgstr ""
 
+#. docstring
 #: Mailman/Errors.py:72
 msgid "Post already went through this list!"
 msgstr ""
 
+#. docstring
 #: Mailman/LockFile.py:105
 msgid "Base class for all exceptions in this module."
 msgstr ""
 
+#. docstring
 #: Mailman/EncWord.py:113
 msgid "B encoding == base64 encoding defined by RFC 2045"
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/HyperArch.py:313
 msgid ""
 "Return the subject of art, decoded if possible.\n"
@@ -4709,7 +4726,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: Mailman/MailList.py:612 Mailman/MailList.py:635
+#: Mailman/MailList.py:617 Mailman/MailList.py:640
 msgid "require approval"
 msgstr "precisa de aprobaci&oacute;n"
 
@@ -4717,7 +4734,7 @@ msgstr "precisa de aprobaci&oacute;n"
 msgid "No file"
 msgstr "No hay fichero"
 
-#: Mailman/MailList.py:401
+#: Mailman/MailList.py:406
 #, fuzzy
 msgid ""
 "An introductory description - a few paragraphs - about the\n"
@@ -4731,6 +4748,7 @@ msgstr ""
 "informaci&oacute;n de la lista. Los retornos de carro finalizar&aacute;n un "
 "p&aacute;rrafo - vea los detalles para m&aacute;s informaci&oacute;n"
 
+#. docstring
 #: Mailman/Bouncer.py:178
 msgid "Disable or remove addr according to bounce_action setting."
 msgstr ""
@@ -4776,7 +4794,7 @@ msgstr "  Hilo"
 msgid "You must fix the preceding invalid addresses first."
 msgstr ""
 
-#: Mailman/MailList.py:437
+#: Mailman/MailList.py:442
 msgid "This list"
 msgstr "Esta lista"
 
@@ -4809,6 +4827,7 @@ msgstr ""
 "<b>sincorreo</b> -- ¿Est&aacute; inhabilitada la entrega de correo al "
 "subscriptor?"
 
+#. docstring
 #: Mailman/MailList.py:145
 msgid ""
 "Usually the member addr, but modified for umbrella lists.\n"
@@ -4833,6 +4852,7 @@ msgstr ""
 "correo electrónica v&alida.\n"
 "(&iquest; Contiene alguna @ ?)"
 
+#. docstring
 #: Mailman/EncWord.py:119
 msgid "Decode a string containing encoded words"
 msgstr ""
@@ -4846,6 +4866,7 @@ msgstr ""
 "La direcci&oacute;n Internet en la que se est&aacute; ejecutando su servidor "
 "de noticias."
 
+#. docstring
 #: Mailman/Utils.py:224
 msgid ""
 "target - scriptname only, nothing extra\n"
@@ -4854,7 +4875,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: Mailman/MailList.py:815
+#: Mailman/MailList.py:820
 #, fuzzy
 msgid ""
 "Text appended to the bottom of every immediately-delivery\n"
@@ -4871,6 +4892,7 @@ msgstr "Sintaxis: password [<clave_antigua> <clave_nueva>]"
 msgid "%(private)s must not be other-readable"
 msgstr ""
 
+#. docstring
 #: Mailman/Errors.py:100
 msgid "Base class for all handler errors."
 msgstr ""
@@ -4883,6 +4905,7 @@ msgstr "Lista de subscriptores"
 msgid "Archive File Not Found"
 msgstr "Fichero De Archivo No Encontrado"
 
+#. docstring
 #: Mailman/Cgi/subscribe.py:267
 msgid "Try to return the remote addr, or if unavailable, None."
 msgstr ""
@@ -4909,7 +4932,7 @@ msgstr ""
 msgid "    clone address is already a member:"
 msgstr " ya es un subscriptor"
 
-#: Mailman/MailList.py:528
+#: Mailman/MailList.py:533
 #, fuzzy
 msgid ""
 "Suffix for use when this list is an umbrella for other\n"
@@ -4956,14 +4979,12 @@ msgstr ""
 msgid "WARNING: could not acquire lock for list: %(listname)s"
 msgstr ""
 
+#. docstring
 #: Mailman/Archiver/pipermail.py:27
 msgid "Remove quotes or parenthesization from a Message-ID string"
 msgstr ""
 
-#: bin/rmlang:117
-msgid "language support for %(lang)s"
-msgstr ""
-
+#. docstring
 #: Mailman/LockFile.py:193
 msgid ""
 "Refreshes the lifetime of a locked file.\n"
@@ -4977,10 +4998,12 @@ msgid ""
 "        "
 msgstr ""
 
+#. docstring
 #: Mailman/Utils.py:48
 msgid "Return true iff list `listname' exists."
 msgstr ""
 
+#. docstring
 #: Mailman/LockFile.py:108
 msgid "An attempt is made to lock an already locked object."
 msgstr ""
@@ -5011,16 +5034,16 @@ msgstr "Creando directorio de almacenaje"
 #: Mailman/Autoresponder.py:81 Mailman/Bouncer.py:67 Mailman/Digester.py:55
 #: Mailman/Digester.py:71 Mailman/Digester.py:93 Mailman/Digester.py:98
 #: Mailman/GatewayManager.py:53 Mailman/GatewayManager.py:57
-#: Mailman/GatewayManager.py:61 Mailman/MailList.py:506
-#: Mailman/MailList.py:516 Mailman/MailList.py:541 Mailman/MailList.py:545
-#: Mailman/MailList.py:552 Mailman/MailList.py:562 Mailman/MailList.py:567
-#: Mailman/MailList.py:661 Mailman/MailList.py:675 Mailman/MailList.py:686
-#: Mailman/MailList.py:689 Mailman/MailList.py:721 Mailman/MailList.py:795
-#: Mailman/MailList.py:803
+#: Mailman/GatewayManager.py:61 Mailman/MailList.py:511
+#: Mailman/MailList.py:521 Mailman/MailList.py:546 Mailman/MailList.py:550
+#: Mailman/MailList.py:557 Mailman/MailList.py:567 Mailman/MailList.py:572
+#: Mailman/MailList.py:666 Mailman/MailList.py:680 Mailman/MailList.py:691
+#: Mailman/MailList.py:694 Mailman/MailList.py:726 Mailman/MailList.py:800
+#: Mailman/MailList.py:808
 msgid "No"
 msgstr "No"
 
-#: bin/.#withlist.2.2:196 bin/withlist:196
+#: bin/withlist:196
 msgid "Running %(module)s.%(callable)s()..."
 msgstr ""
 
@@ -5046,11 +5069,12 @@ msgstr "<em>Se ha perdido el mensaje con el identificador #%d"
 msgid "Yes, w/forward"
 msgstr ""
 
+#. docstring
 #: Mailman/Errors.py:67
 msgid "Base class for all Mailman exceptions."
 msgstr ""
 
-#: Mailman/MailList.py:437
+#: Mailman/MailList.py:442
 msgid "Explicit address"
 msgstr "Direcci&oacute;n expl&iacute;cita"
 
@@ -5058,7 +5082,8 @@ msgstr "Direcci&oacute;n expl&iacute;cita"
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr ""
 
-#: Mailman/MailList.py:977
+#. docstring
+#: Mailman/MailList.py:982
 msgid "Normalize selected values to known formats."
 msgstr ""
 
@@ -5066,7 +5091,7 @@ msgstr ""
 msgid "User specific options page"
 msgstr "P&aacute;gina de opciones espec&iacute;ficas del usuario"
 
-#: Mailman/MailList.py:421
+#: Mailman/MailList.py:426
 #, fuzzy
 msgid ""
 "List-specific text prepended to new-subscriber welcome\n"
@@ -5142,6 +5167,7 @@ msgstr "<p> Continue "
 msgid "Succeeded."
 msgstr "Completado con éxito."
 
+#. docstring
 #: Mailman/SafeDict.py:25
 msgid ""
 "Dictionary which returns a default value for unknown keys.\n"
@@ -5164,7 +5190,7 @@ msgstr "Error de autenticaci&oacute;n"
 msgid "file permissions must be at least 660: %(path)s"
 msgstr ""
 
-#: Mailman/MailList.py:613 Mailman/MailList.py:636
+#: Mailman/MailList.py:618 Mailman/MailList.py:641
 msgid "confirm+approval"
 msgstr "confirmaci&oacute;n y approbaci&oacute;n"
 
@@ -5295,15 +5321,11 @@ msgstr ": "
 msgid "No list named:"
 msgstr ""
 
-#: bin/rmlang:113
-msgid "Language %(lang)s not supported by list: %(listname)s"
-msgstr ""
-
 #: bin/sync_members:169
 msgid "Cannot read address file: %(filename)s: %(msg)s"
 msgstr ""
 
-#: Mailman/MailList.py:764
+#: Mailman/MailList.py:769
 msgid "Ceiling on acceptable number of recipients for a posting."
 msgstr "N&uacute;mero m&aacute;ximo aceptable de destinatarios en una entrega"
 
@@ -5325,10 +5347,12 @@ msgstr ""
 msgid "public"
 msgstr "publico"
 
-#: Mailman/MailList.py:963
+#. docstring
+#: Mailman/MailList.py:968
 msgid "Migrate prior version's state to new structure, if changed."
 msgstr ""
 
+#. docstring
 #: Mailman/htmlformat.py:230
 msgid "Present arbitrary font attributes."
 msgstr ""
@@ -5351,6 +5375,7 @@ msgstr ""
 msgid "Incorrect password."
 msgstr "Contrase&ntilde;a incorrecta."
 
+#. docstring
 #: Mailman/Handlers/Hold.py:88
 msgid "Message has a suspicious header"
 msgstr "El mensaje tiene una cabecera sospechosa"
@@ -5388,6 +5413,7 @@ msgstr ". Contacte con "
 msgid "Mass Subscriptions"
 msgstr "Solicitud de subscripción"
 
+#. docstring
 #: Mailman/Handlers/Hold.py:55
 msgid "Post to moderated list"
 msgstr "Envío a una lista moderada"
@@ -5406,7 +5432,7 @@ msgstr " si "
 msgid "digest header"
 msgstr "Cabecera del resumen (digest)"
 
-#: bin/pygettext.py:416 bin/pygettext.py:416
+#: bin/pygettext.py:427
 msgid "Invalid value for --style: %s"
 msgstr ""
 
@@ -5418,6 +5444,7 @@ msgid ""
 "        <b>%(owner)s</b>.  You can now:"
 msgstr ""
 
+#. docstring
 #: Mailman/Handlers/Hold.py:59
 msgid "Post by non-member to a members-only list"
 msgstr ""
@@ -5463,7 +5490,7 @@ msgstr "Cabeceras del mensaje:"
 msgid "checking set-gid for %(wrapper)s"
 msgstr ""
 
-#: Mailman/MailList.py:1120
+#: Mailman/MailList.py:1125
 msgid "%(realname)s -- confirmation of removal -- confirm %(cookie)s"
 msgstr ""
 
@@ -5481,7 +5508,7 @@ msgstr ""
 msgid " (requires authorization)"
 msgstr " (requiere autorizaci&oacute;n)"
 
-#: bin/pygettext.py:334 bin/pygettext.py:334
+#: bin/pygettext.py:345
 msgid "# File: %(filename)s, line: %(lineno)d"
 msgstr ""
 
@@ -5494,7 +5521,7 @@ msgstr "El mensaje enviado tenía como asunto \"%s\""
 msgid "Remove and notify me"
 msgstr "Borrar y notificarme"
 
-#: Mailman/MailList.py:804
+#: Mailman/MailList.py:809
 #, fuzzy
 msgid ""
 "Can subscribers choose to receive mail immediately, rather\n"
@@ -5508,6 +5535,7 @@ msgstr ""
 msgid " (%(count)d of %(total)d)"
 msgstr " (%d de %d)"
 
+#. docstring
 #: Mailman/htmlformat.py:217
 msgid "FontSize is being deprecated - use FontAttr(..., size=\"...\") instead."
 msgstr ""
@@ -5526,6 +5554,7 @@ msgstr "sincorreo"
 msgid "You have been unsubscribed."
 msgstr "Ha sido dado de baja."
 
+#. docstring
 #: Mailman/Utils.py:179
 msgid ""
 "Parse common types of email addresses:\n"
@@ -5549,7 +5578,7 @@ msgstr ""
 msgid "Submit All Data"
 msgstr "Enviar todos los datos"
 
-#: Mailman/MailList.py:405
+#: Mailman/MailList.py:410
 #, fuzzy
 msgid ""
 "The text will be treated as html <em>except</em> that\n"
@@ -5590,7 +5619,7 @@ msgstr "Parece que usted ya no es miembro de la lista."
 msgid "matching mailing lists found:"
 msgstr " anunciadas p&uacute;blicamente en %s."
 
-#: Mailman/MailList.py:746
+#: Mailman/MailList.py:751
 #, fuzzy
 msgid ""
 "Alternate addresses that are acceptable when\n"
@@ -5635,6 +5664,7 @@ msgstr ""
 msgid "Admin address:"
 msgstr "Direcci&oacute;n de correo-e "
 
+#. docstring
 #: Mailman/Archiver/Archiver.py:18
 msgid ""
 "Mixin class for putting new messages in the right place for archival.\n"
@@ -5669,7 +5699,7 @@ msgstr ""
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr ""
 
-#: Mailman/MailList.py:718
+#: Mailman/MailList.py:723
 msgid "Spam-specific posting filters"
 msgstr "Filtrado de los mensajes espec&iacute;fico para el correo basura"
 
@@ -5677,7 +5707,7 @@ msgstr "Filtrado de los mensajes espec&iacute;fico para el correo basura"
 msgid "Problems found:"
 msgstr ""
 
-#: Mailman/MailList.py:777
+#: Mailman/MailList.py:782
 msgid "Hold posts with header value matching a specified regexp."
 msgstr ""
 "Retener env&iacute;os con un valor de cabecera que coincide con una "
@@ -5733,6 +5763,7 @@ msgstr "Confirmación de envío a lista de distribución %(realname)s"
 msgid "Find members by regular expression:"
 msgstr ""
 
+#. docstring
 #: Mailman/Errors.py:117
 msgid "Delivery to some or all recipients failed"
 msgstr ""
@@ -5767,6 +5798,7 @@ msgstr ""
 msgid "Submit Your Changes"
 msgstr "Enviar los cambios"
 
+#. docstring
 #: Mailman/Archiver/pipermail.py:124
 msgid "Store article without message body to save space"
 msgstr ""
@@ -5789,6 +5821,7 @@ msgstr "La autenticaci&oacute;n del administrador de %s fall&oacute;."
 msgid "%(rname)s member %(addr)s bouncing - %(negative)s%(did)s"
 msgstr "El subscriptor de %s %s est&aacute; rebotando su correo - %s%s"
 
+#. docstring
 #: Mailman/Handlers/Hold.py:71
 msgid "Message has implicit destination"
 msgstr "El mensaje no está destinado explícitamente a esta lista "
@@ -5819,10 +5852,6 @@ msgstr ""
 msgid "Mailman"
 msgstr ""
 
-#: bin/genaliases.~1~:114
-msgid "Language support for"
-msgstr ""
-
 #: Mailman/Cgi/admin.py:177
 #, fuzzy
 msgid ""
@@ -5838,6 +5867,28 @@ msgstr ""
 msgid "Bad owner email address: %(owner)s"
 msgstr ""
 "Direcci&oacute;n de correo electr&oacute;nico incorrecta/inv&aacute;lida"
+
+#, fuzzy
+#~ msgid "no languages given"
+#~ msgstr "idioma"
+
+#, fuzzy
+#~ msgid "not found as"
+#~ msgstr "Usuario no encontrado."
+
+#, fuzzy
+#~ msgid "New %(listname)s password: %(password)s"
+#~ msgstr ""
+#~ "Estás subscrito como %s,\n"
+#~ " con la clave: %s"
+
+#, fuzzy
+#~ msgid "No languages added to list: %(listname)s"
+#~ msgstr "No existe tal lista \"%s\": %s\n"
+
+#, fuzzy
+#~ msgid "General mailing list related errors."
+#~ msgstr "Recordatorio de la lista de distribucion %s"
 
 #~ msgid "If you refuse this subscription, please explain (optional)"
 #~ msgstr ""
