@@ -225,6 +225,7 @@ class HTMLFormatter:
                 + '  '
                 + SubmitButton('UserOptions',
                                _('Unsubscribe or edit options')).Format()
+                + Hidden('language', lang).Format()
                 + '</center>')
         if self.private_roster == 0:
             text += _('''<p>... <b><i>or</i></b> select your entry from
@@ -249,6 +250,7 @@ class HTMLFormatter:
 
     def RosterOption(self, lang):
         container = Container()
+        container.AddItem(Hidden('language', lang))
         if not self.private_roster:
             container.AddItem(_("Click here for the list of ")
                               + self.real_name
@@ -326,20 +328,8 @@ class HTMLFormatter:
     # This needs to wait until after the list is inited, so let's build it
     # when it's needed only.
     def GetStandardReplacements(self, lang=None):
-        if lang is None:
-            lang = self.preferred_language
         dmember_len = len(self.getDigestMemberKeys())
         member_len = len(self.getRegularMemberKeys())
-        values = self.GetAvailableLanguages()
-        legend = map(_, map(Utils.GetLanguageDescr, values))
-        try:
-            selected = values.index(lang)
-        except ValueError:
-            try:
-                selected = values.index(self.preferred_language)
-            except ValueError:
-                selected = mm_cfg.DEFAULT_SERVER_LANGUAGE
-
         return { 
             '<mm-mailman-footer>' : self.GetMailmanFooter(),
             '<mm-list-name>' : self.real_name,
@@ -361,8 +351,7 @@ class HTMLFormatter:
             '<mm-owner>' : self.GetAdminEmail(),
             '<mm-reminder>' : self.FormatReminder(self.preferred_language),
             '<mm-host>' : self.host_name,
-            '<mm-list-langs>' : SelectOptions('language', values, legend,
-                                              selected).Format(),
+            '<mm-list-langs>' : self.GetLangSelectBox().Format(),
             }
 
     def GetAllReplacements(self, lang=None):
@@ -376,3 +365,19 @@ class HTMLFormatter:
         d.update({"<mm-regular-users>": self.FormatUsers(0, lang),
                   "<mm-digest-users>": self.FormatUsers(1, lang)})
         return d
+
+    def GetLangSelectBox(self, lang=None, varname='language'):
+        if lang is None:
+            lang = self.preferred_language
+        # Figure out the available languages
+        values = self.GetAvailableLanguages()
+        legend = map(_, map(Utils.GetLanguageDescr, values))
+        try:
+            selected = values.index(lang)
+        except ValueError:
+            try:
+                selected = values.index(self.preferred_language)
+            except ValueError:
+                selected = mm_cfg.DEFAULT_SERVER_LANGUAGE
+        # Return the widget
+        return SelectOptions(varname, values, legend, selected)
