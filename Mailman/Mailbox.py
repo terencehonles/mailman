@@ -17,20 +17,29 @@
 
 "Extend mailbox.UnixMailbox."
 
-
+import errno
 import mailbox
 
+
+
 class Mailbox(mailbox.UnixMailbox):
     # msg should be an rfc822 message or a subclass.
     def AppendMessage(self, msg):
-	# seek to the last char of the mailbox
-	self.fp.seek(1,2)
-	if self.fp.read(1) <> '\n':
-	    self.fp.write('\n')
+	# Check the last character of the file and write a newline if it isn't
+	# a newline (but not at the beginning of an empty file.
+        try:
+            self.fp.seek(-1, 2)
+        except IOError, e:
+            if e.errno <> errno.EINVAL: raise
+            # the file must be empty
+        else:
+            if self.fp.read(1) <> '\n':
+                self.fp.write('\n')
+        # seek to the last char of the mailbox
+        self.fp.seek(1, 2)
 	self.fp.write(msg.unixfrom)
 	for line in msg.headers:
 	    self.fp.write(line)
 	if not msg.body or msg.body[0] <> '\n':
 	    self.fp.write('\n') 
 	self.fp.write(msg.body)
-	
