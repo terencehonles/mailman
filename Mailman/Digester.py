@@ -17,6 +17,7 @@
 
 """Mixin class with list-digest handling methods and settings."""
 
+import os
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
@@ -40,6 +41,7 @@ class Digester:
 
     def GetConfigInfo(self):
         WIDTH = mm_cfg.TEXTFIELDWIDTH
+        os.environ['LANG'] = self.preferred_language
 
 	return [
             _("Batched-delivery digest characteristics."),
@@ -68,12 +70,14 @@ class Digester:
 	     _('Header added to every digest'),
              _("Text attached (as an initial message, before the table"
                " of contents) to the top of digests. ")
-             + Utils.maketext('headfoot.html', raw=1)),
+             + Utils.maketext('headfoot.html', lang=self.preferred_language,
+                              raw=1)),
 
 	    ('digest_footer', mm_cfg.Text, (4, WIDTH), 0,
 	     _('Footer added to every digest'),
              _("Text attached (as a final message) to the bottom of digests. ")
-             + Utils.maketext('headfoot.html', raw=1)),
+             + Utils.maketext('headfoot.html', lang=self.preferred_language,
+                              raw=1)),
 	    ]
 
     def SetUserDigest(self, sender, value, force=0):
