@@ -247,7 +247,7 @@ def send_i18n_digests(mlist, mboxfp):
         # headers according to rfc1153.
         keeper = {}
         for keep in KEEP:
-            keeper[keep] = msg.get_all(keep)
+            keeper[keep] = msg.get_all(keep, [])
         # Now remove all unkempt headers :)
         for header in msg.keys():
             del msg[header]
