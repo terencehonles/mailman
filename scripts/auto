@@ -1,0 +1,92 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+# To use, set the following in your main.cf file:
+#
+# recipient_delimiter = +
+# luser_relay = mm+$user@yourdomain.com
+# owner_request_special = no
+
+import sys
+import os
+
+import paths
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import Message
+from Mailman import Errors
+from Mailman.Logging.Utils import LogStdErr
+from Mailman.Logging.Syslog import syslog
+
+# Error code if it's really not a Mailman list addr destination
+EX_NOUSER = 67
+
+LogStdErr('auto', 'auto')
+
+DISPOSE_MAP = {None     : 'tolist',
+               'request': 'torequest',
+               'admin'  : 'toadmin',
+               'owner'  : 'toadmin',
+               }
+
+
+
+def fqdn_listname(listname, hostname):
+    return ('%s@%s' % (listname, hostname)).lower()
+
+
+
+def main():
+    # Postfix sets some environment variables based on information gleaned
+    # from the original message.  This is the most direct way to figure out
+    # which list the message was intended for.
+    extension = os.environ.get('EXTENSION', '').lower()
+    try:
+        listname, subdest = extension.split('-', 1)
+        subdest = DISPOSE_MAP.get(subdest)
+    except ValueError:
+        listname = extension
+        subdest = 'tolist'
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMListError:
+        print >> sys.stderr, 'List not found:', listname
+        return EX_NOUSER
+
+    domain = os.environ.get('DOMAIN', '').lower()
+    if domain <> mlist.host_name:
+        print >> sys.stderr, 'Domain mismatch: %s@%s' % (listname,
+                                                         mlist.host_name)
+        return EX_NOUSER
+
+    if subdest is None:
+        print >> sys.stderr, 'Bad sub-destination:', extension
+        return EX_NOUSER
+
+    # Get the message from standard input
+    msg = Message.Message(sys.stdin)
+    msg.Enqueue(mlist, **{subdest: 1})
+    # success
+    return 0
+
+
+
+if __name__ == '__main__':
+    code = main()
+    sys.exit(code)
