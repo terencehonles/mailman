@@ -206,7 +206,7 @@ def process_request(doc, cgidata):
 
     # And send the notice to the list owner.
     if notify:
-        siteadmin = Utils.get_site_email(mlist.host_name, '-admin')
+        siteadmin = Utils.get_site_email(mlist.host_name, 'admin')
         text = Utils.maketext(
             'newlist.txt',
             {'listname'    : listname,
