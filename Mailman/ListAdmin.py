@@ -539,7 +539,7 @@ class ListAdmin:
                     # pre-2.1a2 compatibility
                     when, addr, passwd, digest = info
                     fullname = ''
-                    lang = mlist.preferred_language
+                    lang = self.preferred_language
                 elif len(info) == 5:
                     # pre-2.1a4 compatibility
                     when, addr, passwd, digest, lang = info
