@@ -44,7 +44,7 @@ SHELL=		/bin/sh
 SCRIPTS=	digest_arch mmsitepass newlist rmlist add_members \
 		list_members remove_members clone_member update arch \
 		sync_members check_db withlist check_perms find_member \
-		version move_list
+		version move_list config_list
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
