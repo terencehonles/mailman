@@ -2,7 +2,7 @@
 0 17 * * * /usr/local/bin/python /home/mailman/mailman/cron/checkdbs
 #
 # Noon, mail digests for lists that do periodic as well as threshhold delivery.
-0 12 * * * /usr/local/bin/python /home/mailman/mailman/cron/checkdigests
+0 12 * * * /usr/local/bin/python /home/mailman/mailman/cron/senddigests
 #
 # 5 AM on the first of each month, mail out password reminders.
 0 5 1 * * /usr/local/bin/python /home/mailman/mailman/cron/mailpasswds
