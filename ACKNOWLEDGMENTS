@@ -9,7 +9,14 @@ code, and have assigned copyright for this code to the FSF:
 
 	Scott Cotton, Cookie Monster
 
-And here is the list of other people who have contributed useful
+Here is a list of authors of separate modules which are currently
+distributed with Mailman, but are not part of Mailman:
+
+	Timothy O'Malley, author of misc/Cookie.py.  This file is
+	distributed under the GNU LGPL, and is included in the Mailman
+	distribution for convenience only.  It is not part of Mailman.
+
+Here is the list of other people who have contributed useful
 ideas, suggestions, bug fixes, testing, etc.:
 
 	Michael Mclay
