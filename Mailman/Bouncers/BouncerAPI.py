@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,8 +29,6 @@ from types import ListType
 if __name__ == '__main__':
     execfile('bin/paths.py')
 
-from Mailman import mm_cfg
-from Mailman import Errors
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
@@ -43,7 +41,6 @@ def ScanMessages(mlist, msg, testing=0):
                 'Postfix',
                 'Yahoo',
                 'Caiwireless',
-                'Smail',
                 'Exim',
                 'Netscape',
                 'Compuserve',
@@ -51,7 +48,7 @@ def ScanMessages(mlist, msg, testing=0):
                 'GroupWise',
                 'SMTP32',
                 'SimpleMatch',
-                'Catchall',
+                'Yale',
                 ]
     for modname in pipeline:
         mod = __import__('Mailman.Bouncers.'+modname)
@@ -70,11 +67,9 @@ def ScanMessages(mlist, msg, testing=0):
                         syslog('error', s.getvalue())
                         return 0
                 else:
-                    print '%16s: detected address <%s>' % (modname, addr)
+                    print '\t%s: detected address <%s>' % (modname, addr)
             # we saw some bounces
             return 1
-        elif testing:
-            print '%16s: no bounces detected' % modname
     # no bounces detected
     return 0
 
@@ -82,21 +77,24 @@ def ScanMessages(mlist, msg, testing=0):
 
 # for testing
 if __name__ == '__main__':
-    import mimetools
-    from Mailman import MailList
+    from Mailman import Message
+    from Mailman.i18n import _
+    from mimelib import Parser
 
     def usage(code, msg=''):
-        print __doc__
+        print >> sys.stderr, _(__doc__)
         if msg:
-            print msg
+            print >> sys.stderr, msg
         sys.exit(code)
 
     if len(sys.argv) < 2:
         usage(1, 'required arguments: <file> [, <file> ...]')
 
+    p = Parser.Parser(_class=Message.Message)
+
     for filename in sys.argv[1:]:
         print 'scanning file', filename
         fp = open(filename)
-        msg = mimetools.Message(fp)
-        ScanMessages(None, msg, testing=1)
+        msg = p.parse(fp)
         fp.close()
+        ScanMessages(None, msg, testing=1)
