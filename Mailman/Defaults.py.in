@@ -1066,10 +1066,11 @@ add_language('ru',   _('Russian'),             'koi8-r')
 
 del _                                   
 
-# Include Python's site-packages directory.  We need this until we require
-# Python 2.2, which includes the email package in its standard library.  Until
-# then, we distribute the email package as a distutils install.
+# Include Python's site-packages directory.  We need this even for Python 2.2
+# since the email package has some patches not included in 2.2 final (though
+# likely included in a 2.2 patch release, not available as of this writing
+# 29-Jan-2002).  That's why we prepend sitedir to sys.path, not append it.
 import sys
 sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
                        'site-packages')
-sys.path.append(sitedir)
+sys.path.insert(0, sitedir)
