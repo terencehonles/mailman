@@ -52,6 +52,9 @@ if _translation is None:
 
 
 def _(s):
+    if s == '':
+        return s
+    assert s
     # Do translation of the given string into the current language, and do
     # Ping-string interpolation into the resulting string.
     #
