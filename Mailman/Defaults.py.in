@@ -88,8 +88,8 @@ ARCHIVE_TO_MBOX = 2
 # 2 - quarterly
 # 3 - weekly
 # 4 - daily
-#
 DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
+DEFAULT_DIGEST_VOLUME_FREQUENCY = 1
 
 # These variables control the use of an external archiver.  Normally if
 # archiving is turned on (see ARCHIVE_TO_MBOX above and the list's archive*
@@ -110,6 +110,18 @@ PRIVATE_EXTERNAL_ARCHIVER = 0
 # collect the messages in the associated .txt file and run a cron job every
 # night to generate the txt.gz file.  See cron/nightly_gzip for details.
 GZIP_ARCHIVE_TXT_FILES = 0
+
+# This sets the default `clobber date' policy for the archiver.  When a
+# message is to be archived either by Pipermail or an external archiver,
+# Mailman can modify the Date: header to be the date the message was received
+# instead of the Date: in the original message.  This is useful if you
+# typically receive messages with outrageous dates.  Set this to 0 to retain
+# the date of the original message, or to 1 to always clobber the date.  Set
+# it to 2 to perform `smart overrides' on the date; when the date is outside
+# ARCHIVER_ALLOWABLE_SANE_DATE_SKEW (either too early or too late), then the
+# received date is substituted instead.
+ARCHIVER_CLOBBER_DATE_POLICY = 2
+ARCHIVER_ALLOWABLE_SANE_DATE_SKEW = days(15)
 
 # Pipermail archives contain the raw email addresses of the posting authors.
 # Some view this as a goldmine for spam harvesters.  Set this to false to
@@ -265,6 +277,7 @@ USE_ENVELOPE_SENDER = 0
 # same address as user@Host.DoMain, but different than user@domain.  Usernames
 # will always be case preserved, and host parts of addresses will all be
 # lowercased.
+# FIXME: NOT ALWAYS THE RIGHT THING TO DO FOR COUNTRY CODE TLDS
 SMART_ADDRESS_MATCH = 1
 
 # When set, the listinfo web page overview of lists on the machine will be
