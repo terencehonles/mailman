@@ -1,20 +1,36 @@
 #! /usr/local/bin/python 
-# 
-# This script gets called by the wrapper.
-# Stdin is the mail message, and argv[1] is the name of the mailing list
-# being posted to.
+
+"""Handle emailed request commands.
+
+
+Called by the wrapper, stdin is the mail message, and argv[1] is the name
+of the target mailing list."""
 
 import sys
-f = open('/tmp/mailcmd.err', 'a+')
-sys.stderr = f
 
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist
+import maillist, mm_utils
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label='scripts/mailcmd')
+except IOError, reason:
+    pass                                # SOL on redirecting.
+
 
 # Only let one program run at once per list.
 
-# TODO: This can fail, and should send back an error message when it does.
+if sys.argv[1] not in mm_utils.list_names():
+    import mm_cfg
+    mm_utils.SendTextToUser("Misconfigured list %s" % sys.argv[1],
+                            ("List %s in aliases but not among "
+                             "list_names?\n\n"
+                             "---------- Forwarded message ----------\n"
+                             "%s"
+                             % (mm_cfg.MAILMAN_OWNER, sys.stdin.read())),
+                            mm_cfg.MAILMAN_OWNER,
+                            sender=mm_cfg.MAILMAN_OWNER)
+
 list = maillist.MailList(sys.argv[1])
 
 try:
