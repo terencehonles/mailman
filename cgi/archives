@@ -1,10 +1,18 @@
 #!/usr/local/bin/python
 # We don't need to lock in this script, because we're never going to change data.
 
-import sys, os, types, posix, string
-sys.stderr = sys.stdout
+import sys
 sys.path.append('/home/mailman/mailman/modules')
+
+import os, types, posix, string
 import mm_utils, maillist, htmlformat
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'mmroster',
+                                        manual_reprime=1, nofail=0)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
+
 
 print "Content-type: text/html"
 print
