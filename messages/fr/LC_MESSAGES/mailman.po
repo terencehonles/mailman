@@ -2503,9 +2503,9 @@ msgid ""
 "        supplied with in mailback confirmation notice.\n"
 msgstr ""
 "\n"
-"    confirmer <chaîne-de-confirmation>\n"
+"    confirm <chaîne-de-confirmation>\n"
 "        Confirmer une action. La chaîne-de-confirmation est requise et\n"
-"        doit être fournit avec le courriel renvoyée suite à lávis de\n"
+"        doit être fournit avec le courriel renvoyée suite à l'avis de\n"
 "        confirmation.\n"
 
 #: Mailman/Commands/cmd_confirm.py:39 Mailman/Commands/cmd_lists.py:40
