@@ -1,0 +1,90 @@
+#! /usr/bin/env python
+
+import sys, os, string
+import paths
+from Mailman.MailList import MailList
+from Mailman.Utils import list_names
+import Mailman.mm_cfg
+
+
+
+def makeabs(relpath):
+    return os.path.join(Mailman.mm_cfg.PREFIX, relpath)
+
+
+
+def dolist(list):
+    l = MailList(list)
+
+    mbox_dir = makeabs('archives/private/%s.mbox' % (list))
+    mbox_file = makeabs('archives/private/%s.mbox/%s' % (list, list))
+
+    o_pub_mbox_file = makeabs('archives/public/%s' % (list))
+    o_pri_mbox_file = makeabs('archives/private/%s' % (list))
+
+    html_dir = o_pri_mbox_file
+    o_html_dir = makeabs('public_html/archives/%s' % (list))
+
+    #
+    # make the mbox directory if it's not there.
+    #
+    if not os.path.exists(mbox_dir):
+        ou = os.umask(0)
+        os.mkdir(mbox_dir, 02775)
+        os.umask(ou)
+
+    # Move any existing mboxes around, but watch out for both a public and a
+    # private one existing
+    if os.path.isfile(o_pri_mbox_file) and os.path.isfile(o_pub_mbox_file):
+        print """\
+I found both a private and a public mbox archive file
+    private: %s
+    public : %s
+
+I won't move either file, but you should choose one and move it to
+
+    %s
+
+You may want to merge them manually, but be careful about exposing private
+correspondences to the public.""" % (
+    o_pri_mbox_file, o_pub_mbox_file, mbox_file)
+
+    #
+    else:
+        #
+        # move private archive mbox there if it's around
+        #
+        if os.path.isfile(o_pri_mbox_file):
+            os.rename(o_pri_mbox_file, mbox_file)
+        #
+        # move public archive mbox there if it's around
+        #
+        # TBD: what happens if both the public and private archives exist???
+        #
+        if os.path.exists(o_pub_mbox_file):
+            os.rename(o_pub_mbox_file, mbox_file)
+    #
+    # move the html archives there
+    #
+    if os.path.exists(o_html_dir):
+        os.rename(o_html_dir, html_dir)
+        #
+        # chmod the html archives
+        #
+        os.chmod(html_dir, 02775)
+    #
+    # save the new variables and
+    # let it create public symlinks if necessary
+    #
+    l.archive_directory = makeabs('archives/private/%s' % (list))
+    l.private_archive_file_dir = makeabs('archives/private/%s.mbox' % (list))
+
+    l.Save()
+
+
+
+if __name__ == '__main__':
+    os.system("chmod g+s `find %s -type d -print`" % Mailman.mm_cfg.PREFIX)
+    for list in list_names():
+        print 'Updating mailing list: ', list
+        dolist(list)
