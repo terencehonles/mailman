@@ -32,11 +32,13 @@ def process(mlist, msg):
     if ack == 'no':
         return
     # Check to see if the list is even configured to autorespond to this email
-    # message.  Note: the mailowner script sets the `toadmin' attribute.
+    # message.  Note: the mailowner script sets the `toadmin' attribute, and
+    # the mailcmd script sets the `torequest' attribute.
     toadmin = getattr(msg, 'toadmin', 0)
-    if toadmin and not mlist.autorespond_admin:
-        return
-    if not mlist.autorespond_postings:
+    torequest = getattr(msg, 'torequest', 0)
+    if (toadmin and not mlist.autorespond_admin) or \
+       (torequest and not mlist.autorespond_requests) or \
+       not mlist.autorespond_postings:
         return
     #
     # Now see if we're in the grace period for this sender (guaranteed to be
@@ -48,6 +50,8 @@ def process(mlist, msg):
     if graceperiod > 0 and ack <> 'yes':
         if toadmin:
             quite_until = mlist.admin_responses.get(sender, 0)
+        elif torequest:
+            quite_until = mlist.request_responses.get(sender, 0)
         else:
             quite_until = mlist.postings_responses.get(sender, 0)
         if quite_until > now:
@@ -55,7 +59,8 @@ def process(mlist, msg):
     #
     # Okay, we know we're going to auto-respond to this sender, craft the
     # message, send it, and update the database.
-    subject = 'Auto-response for the "%s" mailing list' % mlist.real_name
+    subject = 'Auto-response for your message to ' + \
+              msg.get('to',  'the "%s" mailing list' % mlist.real_name)
     # Do string interpolation
     d = Utils.SafeDict({'listname'    : mlist.real_name,
                         'listurl'     : mlist.GetScriptURL('listinfo'),
@@ -64,6 +69,8 @@ def process(mlist, msg):
                         })
     if toadmin:
         text = mlist.autoresponse_admin_text % d
+    elif torequest:
+        text = mlist.autoresponse_request_text % d
     else:
         text = mlist.autoresponse_postings_text % d
     outmsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
@@ -78,5 +85,7 @@ def process(mlist, msg):
         quite_until = now + graceperiod * 24 * 60 * 60
         if toadmin:
             mlist.admin_responses[sender] = quite_until
+        elif torequest:
+            mlist.request_responses[sender] = quite_until
         else:
             mlist.postings_responses[sender] = quite_until
