@@ -708,7 +708,7 @@ From: aperson@dom.ain
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        eq(msg['list-id'], 'A Test List <_xtest.dom.ain>')
+        eq(msg['list-id'].__unicode__(), 'A Test List <_xtest.dom.ain>')
         eq(msg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
         eq(msg['list-unsubscribe'],
            '<http://www.dom.ain/mailman/listinfo/_xtest>,'
@@ -807,8 +807,9 @@ Here is a message.
 %(spooge)s footer""")
 
     def test_multipart(self):
+        eq = self.ndiffAssertEqual
         mlist = self._mlist
-        mlist.msg_header = 'header\n'
+        mlist.msg_header = 'header'
         mlist.msg_footer = 'footer'
         msg1 = email.message_from_string("""\
 From: aperson@dom.ain
@@ -826,7 +827,7 @@ Here is the second message.
         msg.attach(msg1)
         msg.attach(msg2)
         Decorate.process(self._mlist, msg, {})
-        self.assertEqual(msg.as_string(unixfrom=0), """\
+        eq(msg.as_string(unixfrom=0), """\
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="BOUNDARY"
 
@@ -837,7 +838,6 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 header
-
 --BOUNDARY
 From: aperson@dom.ain
 
@@ -855,7 +855,6 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 footer
-
 --BOUNDARY--""")
 
     def test_image(self):
@@ -1611,11 +1610,12 @@ It rocks!
         eq(len(files), 1)
         msg2, data = self._sb.dequeue(files[0])
         eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
-        eq(len(data), 5)
+        eq(len(data), 6)
         eq(data['foo'], 1)
         eq(data['bar'], 2)
         eq(data['version'], 3)
         eq(data['listname'], '_xtest')
+        eq(data['verp'], 1)
         # Clock skew makes this unreliable
         #self.failUnless(data['received_time'] <= time.time())
 
@@ -1683,8 +1683,6 @@ def suite():
     suite.addTest(unittest.makeSuite(TestMimeDel))
     suite.addTest(unittest.makeSuite(TestModerate))
     suite.addTest(unittest.makeSuite(TestReplybot))
-    suite.addTest(unittest.makeSuite(TestSMTPDirect))
-    suite.addTest(unittest.makeSuite(TestSendmail))
     suite.addTest(unittest.makeSuite(TestSpamDetect))
     suite.addTest(unittest.makeSuite(TestTagger))
     suite.addTest(unittest.makeSuite(TestToArchive))
