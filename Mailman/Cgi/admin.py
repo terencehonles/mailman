@@ -779,15 +779,6 @@ def ChangeOptions(lst, category, cgi_info, document):
             if not lst.nondigestable:
                 digest = 1
 	    try:
-                # catches blank lines or whitespace-only lines in mass
-                # subscribe dialog
-                if not new_name:
-                    # TBD: we raise the exception here instead of just
-                    # appending to subscribe_errors and doing a continue,
-                    # because as of Python 1.5.2, this is not supported syntax
-                    # (a continue inside the try inside a loop).
-                    new_name = '&lt;blank line&gt;'
-                    raise Errors.MMBadEmailError
                 Utils.ValidateEmail(new_name)
 		lst.ApprovedAddMember(
                     new_name,
@@ -797,6 +788,8 @@ def ChangeOptions(lst, category, cgi_info, document):
 	    except Errors.MMAlreadyAMember:
                 subscribe_errors.append((new_name, 'Already a member'))
             except Errors.MMBadEmailError:
+                if new_name == '':
+                    new_name = '&lt;blank line&gt;'
                 subscribe_errors.append(
                     (new_name, "Bad/Invalid email address"))
             except Errors.MMHostileAddress:
