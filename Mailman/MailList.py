@@ -544,7 +544,7 @@ it will not be changed."""),
              " multiple addresses."),
 
  	    ('web_page_url', mm_cfg.String, WIDTH, 0,
- 	     'Base URL for Mailman web interface',
+ 	     'Base URL for Mailman web interface (must end in a single "/")',
 
              "This is the common root for all mailman URLs concerning this"
              " list.  It is also used in the listinfo overview of mailing"
