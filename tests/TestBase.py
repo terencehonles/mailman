@@ -19,15 +19,34 @@
 
 import os
 import shutil
+import difflib
 import unittest
+from cStringIO import StringIO
 
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import mm_cfg
 
+NL = '\n'
+
 
 
 class TestBase(unittest.TestCase):
+    if hasattr(difflib, 'ndiff'):
+        # Python 2.2 and beyond
+        def ndiffAssertEqual(self, first, second):
+            """Like failUnlessEqual except use ndiff for readable output."""
+            if first <> second:
+                sfirst = str(first)
+                ssecond = str(second)
+                diff = difflib.ndiff(sfirst.splitlines(), ssecond.splitlines())
+                fp = StringIO()
+                print >> fp, NL, NL.join(diff)
+                raise self.failureException, fp.getvalue()
+    else:
+        # Python 2.1
+        ndiffAssertEqual = unittest.TestCase.assertEqual
+
     def setUp(self):
         mlist = MailList.MailList()
         mlist.Create('_xtest', 'test@dom.ain', 'xxxxx')
