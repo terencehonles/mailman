@@ -27,6 +27,7 @@ srcdir=		@srcdir@
 bindir=		@bindir@
 prefix=		@prefix@
 exec_prefix=	@exec_prefix@
+var_prefix=	@VAR_PREFIX@
 
 CC=		@CC@
 INSTALL=	@INSTALL@
@@ -41,10 +42,11 @@ MAILMAN_UID=	@MAILMAN_UID@
 OPT=		@OPT@
 CFLAGS=		@CFLAGS@ $(OPT) $(DEFS)
 
+VAR_DIRS= \
+	logs archives lists locks qfiles data spam filters \
+	archives/private archives/public
 ARCH_INDEP_DIRS= \
-	logs archives bin lists locks templates scripts \
-	qfiles filters cron data spam \
-	archives/private archives/public \
+	bin templates scripts cron \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
 	Mailman/Handlers Mailman/Bouncers Mailman/pythonlib \
 	icons
@@ -78,6 +80,18 @@ install: doinstall update
 
 doinstall: $(SUBDIRS)
 	@echo "Creating architecture independent directories..."
+	@for d in $(VAR_DIRS); \
+	do \
+	    dir=$(var_prefix)/$$d; \
+	    if test ! -d $$dir; then \
+		echo "Creating directory hierarchy $$dir"; \
+		./mkinstalldirs $$dir; \
+		chmod $(DIRMODE) $$dir; \
+		$(DIRSETGID) $$dir; \
+	    else true; \
+	    fi; \
+	done
+	chmod o-r $(var_prefix)/archives/private
 	@for d in $(ARCH_INDEP_DIRS); \
 	do \
 	    dir=$(prefix)/$$d; \
@@ -89,7 +103,6 @@ doinstall: $(SUBDIRS)
 	    else true; \
 	    fi; \
 	done
-	chmod o-r $(prefix)/archives/private
 	@echo "Creating architecture dependent directories..."
 	@for d in $(ARCH_DEP_DIRS); \
 	do \
