@@ -1,0 +1,7 @@
+Mailman ha notato in .MailUserPassword() che:
+
+    Utente: %(username)s
+    Lista : %(internal_name)s
+
+non ha una password.  
+Per favore avverti l'amministratore del sistema di questa anomalia!

@@ -1,0 +1,98 @@
+Aiuto per la lista %(listname)s:
+
+Questo è il messaggio di aiuto per la versione %(version)s del
+list-manager "Mailman".  Il testo seguente descrive i comandi che puoi
+mandare per ricevere informazioni e per controllare la tua iscrizione
+alle liste di Mailman di questo sito. 
+Un comando può essere inviato nel soggetto o nel corpo del messaggio.
+
+Nota che molto di quello che segue può essere compiuto via World Wide
+Web, all'indirizzo:
+
+    %(listinfo_url)s
+
+In particolare, puoi usare il sito Web per avere la tua password
+inviata all'indirizzo con il quale sei iscritto alla lista.
+
+I comandi specifici (subscribe, who, ecc.) possono essere inviati
+all'indirizzo *-request per la lista interessata, ad es. per la lista
+'mailman', usa 'mailman-request@...'.
+
+Riguardo le convenzioni - le parole tra "<>" sono RICHIESTE mentre
+quelle tra "[]" sono OPZIONALI.  Non includere "<>" o "[]" quando usi
+i comandi.
+
+I seguenti comandi sono validi:
+
+    subscribe [password] [digest-option] [address=<indirizzo>]
+        Ti iscrive alla mailing list. La tua password deve essere
+    fornita per cancellarti o cambiare le tue opzioni. Quando ti 
+    iscrivi alla lista, ti verrà ricordata periodicamente la tua 
+    password.
+	'digest-option' può essere 'nodigest' o 'digest' (senza apici!).
+	Se desideri iscrivere un indirizzo diverso da quello con cui hai
+	inviato la richiesta, devi specificare "address=<indirizzo email>"
+	(non mettere le parentesi all'indirizzo email e non usare gli apici!).
+    
+    unsubscribe <password> [indirizzo]
+        Ti cancella dalla mailing list.  La password deve essere la
+	stessa che hai ricevuto quando ti sei iscritto. Se stai cercando 
+	di cancellarti da un indirizzo differente da quello con cui ti sei
+	iscritto, devi specificarlo nel campo 'address'.
+
+    who
+        Mostra l'elenco degli iscritti alla mailing list.
+	
+    info
+        Mostra le informazioni introduttive per questa lista.
+	
+    lists
+        Mostra l'elenco delle mailing lists presenti sul server.
+
+    help
+        Questo messaggio.
+
+    set <option> <on|off> <password> 
+        Attiva o meno le opzioni della lista. Le opzioni valide sono:
+
+    ack:
+         Attivalo per ricevere un email di conferma quando mandi un
+         messaggio alla lista.
+	   
+    digest:
+         Ricevi le mail raccolte insieme invece di una mail alla volta.   
+
+    plain:
+         Ricevi i digest in testo normale, non in formato MIME 
+         (solo se digest è settato).
+
+    nomail:
+         Smetti di ricevere email senza cancellarti dalla lista.  
+         Utile se decidi di prendere una piccola vacanza.
+	    
+    norcv:
+         Attivalo per NON ricevere le email che mandi alla lista.
+         Non funziona se digest è settato.
+	    
+    hide:
+         Nasconde il tuo indirizzo quando qualcuno chiede l'elenco
+         degli iscritti in questa lista.
+	 
+    options:
+        Mostra i settaggi correnti delle tue opzioni per la lista.
+	
+    password <vecchiapassword> <nuovapassword> : 
+        Cambia la tua password.
+    
+    end o --
+       
+       Smette di processare i comandi (utile se il tuo client di 
+       posta aggiunge automaticamente una firma - ti eviterà 
+       parecchio lavoro).
+      
+
+I comandi possono essere inviati a %(requestaddr)s
+
+Domande e richieste di intervento manuale possono essere inviati a:
+
+    %(adminaddr)s

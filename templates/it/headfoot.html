@@ -1,0 +1,26 @@
+Questo testo pu&ograve; includere simboli del tipo
+<b><code>%(attributo)s</code></b> che saranno sostituiti
+automaticamente dai valori degli attributi della lista.
+Alcuni attributi utili sono:
+<ul>
+    <li><b><code>real_name</code></b> - Il nome `di facciata' della 
+	lista; di solito &egrave; il nome della lista con lettere maiuscole.
+
+    <li><b><code>_internal_name</code></b> - Il nome con cui la lista 
+	&egrave; identificata negli URL, dove maiuscole e minuscole sono 
+	importanti.
+
+    <li><b><code>host_name</code></b> - Il nome FQDN dell'host sul 
+    quale viene eseguito il list server.
+	                                                  
+    <li><b><code>web_page_url</code></b> - L'URL di base per Mailman.
+	A questo valore viene appeso ad esempio 
+    <em><code>listinfo/%(_internal_name)s</code></em> per ottenere
+	l'indirizzo della pagina listinfo per la lista.
+
+    <li><b><code>description</code></b> - La descrizione sommaria 
+	della lista.
+
+    <li><b><code>info</code></b> - La descrizione completa della 
+	lista.
+</ul>

@@ -1,0 +1,13 @@
+Come amministratore della lista, la tua autorizzazione è 
+richiesta per il seguente messaggio:
+
+    Lista:     %(listname)s@%(hostname)s
+    Mittente:  %(sender)s
+    Soggetto:  %(subject)s
+    Motivo:    %(reason)s
+
+Se credi, visita:
+
+    %(admindb_url)s
+        
+per approvare o rifiutare la richiesta.
