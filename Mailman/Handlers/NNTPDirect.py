@@ -45,8 +45,8 @@ def process(mlist, msg, msgdata):
             syslog('error', '(NNTPDirect) NNTP error for list "%s": %s' %
                    (mlist.internal_name(), e))
         except socket.error, e:
-            syslog('error', '(NNTPDirect) socket error for list "%s": %s'
-                   % (mlist.internal_name(), e))
+            syslog('error', '(NNTPDirect) socket error for list "%s": %s' %
+                   (mlist.internal_name(), e))
     finally:
         if conn:
             conn.quit()
