@@ -1,3 +1,5 @@
+#! @PYTHON@
+#
 # Copyright (C) 2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -21,6 +23,7 @@ This script is intended to be run as a bin/withlist script, i.e.
 % bin/withlist -l -r convert <mylist>
 """
 
+import paths
 from Mailman import Utils
 from Mailman.i18n import _
 
@@ -34,3 +37,8 @@ def convert(mlist):
     mlist.use_dollar_strings = 1
     print _('Saving list')
     mlist.Save()
+
+
+
+if __name__ == '__main__':
+    print _(__doc__.replace('%', '%%'))

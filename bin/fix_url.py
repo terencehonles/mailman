@@ -1,3 +1,5 @@
+#! @PYTHON@
+#
 # Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -21,6 +23,7 @@ This script is intended to be run as a bin/withlist script, i.e.
 % bin/withlist -l -r fix_url <mylist>
 """
 
+import paths
 from Mailman import mm_cfg
 from Mailman.i18n import _
 
@@ -30,3 +33,8 @@ def fix_url(mlist):
     mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST
     print _('Saving list')
     mlist.Save()
+
+
+
+if __name__ == '__main__':
+    print _(__doc__.replace('%', '%%'))
