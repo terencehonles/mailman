@@ -8,5 +8,8 @@ The reason it is being held:
 
     %(reason)s
 
-Either the message will get posted to the list, or you will receive 
-notification of the moderator's decision.
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
+
+    %(confirmurl)s
