@@ -231,7 +231,7 @@ def main(lock):
             continue
         mlist = open_list(listname)
         if not mlist:
-            syslog('qurnner',
+            syslog('qrunner',
                    'Dequeuing message destined for missing list: %s' % root)
             dequeue(root)
             continue
