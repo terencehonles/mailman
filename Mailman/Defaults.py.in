@@ -547,6 +547,22 @@ VERP_PERSONALIZED_DELIVERIES = 0
 # 1 to VERP every delivery, or to some number > 1 for only occasional VERPs.
 VERP_DELIVERY_INTERVAL = 0
 
+# For nicer confirmation emails, use a VERP-like format which encodes the
+# confirmation cookie in the reply address.  This lets us put a more user
+# friendly Subject: on the message, but requires cooperation from the MTA.
+# Format is like VERP_FORMAT above, but with the following substitutions:
+#
+# %(confirm)s -- the list-confirm mailbox will be set here
+# %(cookie)s  -- the confirmation cookie will be set here
+VERP_CONFIRM_FORMAT = '%(addr)s+%(cookie)s'
+
+# This is analogous to VERP_REGEXP, but for splitting apart the
+# VERP_CONFIRM_FORMAT.
+VERP_CONFIRM_REGEXP = r'^(?P<addr>[^+]+?)\+(?P<cookie>[^@]+)@.*$'
+
+# Set this to true to enable VERP-like (more use friendly) confirmations
+VERP_CONFIRMATIONS = 0
+
 
 
 #####
