@@ -511,7 +511,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	else:
 	    self.members.append(name)
             kind = ""
-        self.LogMsg("subscribe", "%s: new%s, %s",
+        self.LogMsg("subscribe", "%s: new%s %s",
                     self._internal_name, kind, name)
 	self.passwords[name] = password
 	self.Save()
@@ -649,7 +649,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 						       self.forbidden_posters)
 		if len(addrs):
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				    'Post from a forbidden address.',
+				    mm_err.FORBIDDEN_SENDER_MSG,
 				    msg.getheader('subject'))
 	    if len(self.posters):
 		addrs = mm_utils.FindMatchingAddresses(sender, self.posters)
@@ -681,7 +681,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	    if (self.require_explicit_destination and
  		  not self.HasExplicitDest(msg)):
  		self.AddRequest('post', mm_utils.SnarfMessage(msg),
- 				'List is an implicit destination.',
+ 				mm_err.IMPLICIT_DEST_MSG,
 				msg.getheader('subject'))
  	    if self.bounce_matching_headers:
 		triggered = self.HasMatchingHeader(msg)
@@ -689,7 +689,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    # Darn - can't include the matching line for the admin
 		    # message because the info would also go to the sender.
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				    'Suspicious header content.',
+				    mm_err.SUSPICIOUS_HEADER_MSG,
 				    msg.getheader('subject'))
 	    if self.max_message_size > 0:
 		if len(msg.body)/1024. > self.max_message_size:
