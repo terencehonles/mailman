@@ -108,7 +108,9 @@ class Archiver:
         if self.archive_private:
             return self.GetScriptURL('private', absolute=1) + '/'
         else:
-            return '%s/%s/' % (mm_cfg.PUBLIC_ARCHIVE_URL, self._internal_name)
+            return mm_cfg.PUBLIC_ARCHIVE_URL % {
+                'listname': self.internal_name(),
+                }
 
     def __archive_file(self, afn):
 	"""Open (creating, if necessary) the named archive file."""
