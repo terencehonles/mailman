@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 529 $"
+__version__ = "$Revision: 530 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -283,7 +283,7 @@ class Bouncer:
 	messy_pattern_6 = regex.compile('^[ \t]*[^ ]+: User unknown.*$')
 	messy_pattern_7 = regex.compile('^[^ ]+ - User currently disabled.*$')
 
-	message_groked = 0
+	message_grokked = 0
 
 	for line in string.split(relevant_text, '\n'):
 	    for pattern, action in simple_bounce_pats:
@@ -291,16 +291,16 @@ class Bouncer:
 		    email = self.ExtractBouncingAddr(line)
 		    if action == REMOVE:
 			candidates = candidates + string.split(email,',')
-			message_groked = 1
+			message_grokked = 1
 			continue
 		    elif action == BOUNCE:
 			emails = string.split(email,',')
 			for email_addr in emails:
 			    self.RegisterBounce(email_addr)
-			message_groked = 1
+			message_grokked = 1
 			continue
 		    else:
-			message_groked = 1
+			message_grokked = 1
 			continue
 
 	    # Now for the special case messages that are harder to parse...
@@ -308,24 +308,24 @@ class Bouncer:
                 or messy_pattern_2.match(line) <> -1):
 		username = string.split(line)[1]
 		self.RegisterBounce('%s@%s' % (username, remote_host))
-		message_groked = 1
+		message_grokked = 1
 		continue
 	    if (messy_pattern_3.match(line) <> -1
                 or messy_pattern_4.match(line) <> -1
                 or messy_pattern_5.match(line) <> -1):
 		username = string.split(line)[1]
                 candidates.append('%s@%s' % (username, remote_host))
-		message_groked = 1
+		message_grokked = 1
 		continue
 	    if messy_pattern_6.match(line) <> -1:
 		username = string.split(string.strip(line))[0][:-1]
                 candidates.append('%s@%s' % (username, remote_host))
-		message_groked = 1
+		message_grokked = 1
 		continue
 	    if messy_pattern_7.match(line) <> -1:
 		username = string.split(string.strip(line))[0]
                 candidates.append('%s@%s' % (username, remote_host))
-		message_groked = 1
+		message_grokked = 1
 		continue
 
         did = []
@@ -339,7 +339,7 @@ class Bouncer:
             if i not in did:
                 self.HandleBouncingAddress(i)
                 did.append(i)
-	return message_groked
+	return message_grokked
 
     def ExtractBouncingAddr(self, line):
 	email = regsub.splitx(line, '[^ \t@<>]+@[^ \t@<>]+\.[^ \t<>.]+')[1]
