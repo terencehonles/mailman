@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 707 $)
+AC_REVISION($Revision: 711 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -122,7 +122,7 @@ gid = ''
 for group in string.split("$2"):
     try:
         try:
-	    gid = grp.getgrgid(int(group))
+	    gid = grp.getgrgid(int(group))[2]
 	    break
 	except ValueError:
 	    gid = grp.getgrnam(group)[2]
@@ -290,6 +290,7 @@ AC_MSG_RESULT($URL)
 rm -f conftest.out conftest.py
 
 # Checks for libraries.
+AC_CHECK_FUNCS(strerror)
 
 # Checks for header files.
 AC_HEADER_STDC
