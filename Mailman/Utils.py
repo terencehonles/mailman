@@ -145,12 +145,10 @@ def wrap(text, column=70, honor_leading_ws=True):
                     if eol == 0:
                         # break on whitespace after column
                         eol = column
-                        while eol < len(text) and \
-                              text[eol] not in whitespace:
+                        while eol < len(text) and text[eol] not in whitespace:
                             eol += 1
                         bol = eol
-                        while bol < len(text) and \
-                              text[bol] in whitespace:
+                        while bol < len(text) and text[bol] in whitespace:
                             bol += 1
                         bol -= 1
                     line = text[:eol+1] + '\n'
