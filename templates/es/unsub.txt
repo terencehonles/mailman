@@ -1,7 +1,7 @@
 Mensaje de confirmación para la anulación de la subscripción
 a la lista de distribución %(listname)s
 
-Se ha recibido una solicitud %(remote) para quitar su dirección de
+Se ha recibido una solicitud %(remote)s para quitar su dirección de
 correo electrónico "%(email)s" de la lista de distribución %(listaddr)s.
 Para confirmar que quiere borrarse de esta lista de distribución, solo
 tiene que responder este mensaje, manteniendo intacta la cabecera del
