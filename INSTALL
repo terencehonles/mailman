@@ -330,6 +330,8 @@ configure and install the Mailman software.
               or /usr/admin/sm.bin.  Note that on Debian linux, the system
               makes /usr/lib/sm.bin, which is wrong, you will need to create
               the directory /usr/admin/sm.bin and add the link there.
+              NOTE: any aliases newaliases spits out will need to be
+              adjusted to point to the secure link to the wrapper.
 
 
 Local Variables:
