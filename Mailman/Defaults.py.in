@@ -205,6 +205,16 @@ ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 #     attachments which can be separately viewed.  Outer text/html parts are
 #     simply HTML-escaped.
 # 2 - Leave it inline, but HTML-escape it
+# 3 - Remove text/html as attachments but don't HTML-escape them. Note: this
+#     is very dangerous because it essentially means anybody can send an HTML
+#     email to your site containing evil JavaScript or web bugs, or other
+#     nasty things, and folks viewing your archives will be susceptible.  You
+#     should only consider this option if you do heavy moderation of your list
+#     postings.
+#
+# Note: given the current archiving code, it is not possible to leave
+# text/html parts inline and un-escaped.  I wouldn't think it'd be a good idea
+# to do anyway.
 #
 # The value can also be a string, in which case it is the name of a command to
 # filter the HTML page through.  The resulting output is left in an attachment
