@@ -638,23 +638,19 @@ def GetValidValue(lst, prop, my_type, val, dependant):
 	return val
     elif my_type == mm_cfg.Email:
 	try:
-	    valid = Utils.ValidEmail(val)
-	    if valid:
-		return val
-	except:
-	    pass
+            Utils.ValidateEmail(val)
+            return val
+        except Errors.EmailAddressError:
+            pass
 	# Revert to the old value.
 	return getattr(lst, prop)
     elif my_type == mm_cfg.EmailList:
 	def SafeValidAddr(addr):
 	    try:
-		valid = Utils.ValidEmail(addr)
-		if valid:
-		    return 1
-		else:
-		    return 0
-	    except:
-		return 0
+                Utils.ValidateEmail(addr)
+                return 1
+            except Errors.EmailAddressError:
+                return 0
 
 	val = filter(SafeValidAddr,
 		     map(string.strip, string.split(val, '\n')))
@@ -792,6 +788,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                     # (a continue inside the try inside a loop).
                     new_name = '&lt;blank line&gt;'
                     raise Errors.MMBadEmailError
+                Utils.ValidateEmail(new_name)
 		lst.ApprovedAddMember(
                     new_name,
                     Utils.GetRandomSeed() + Utils.GetRandomSeed(),
