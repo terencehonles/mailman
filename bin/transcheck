@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! @PYTHON@
 #
 # transcheck - (c) 2002 by Simone Piunno <pioppo@ferrara.linux.it>
 #
