@@ -45,13 +45,13 @@ KIDS = {}
 # cause a new StampedLogger to be opened the next time a message is logged.
 def sighup_handler(signum, frame):
     syslog.close()
-    # SIGINT all the children so that they'll restart automatically.  Don't
+    # SIGHUP all the children so that they'll restart automatically.  Don't
     # kill the process group because we don't want ourselves to get the
     # signal!
     for pid in KIDS.keys():
-        os.kill(pid, signal.SIGINT)
+        os.kill(pid, signal.SIGHUP)
     # And just to tweak things...
-    syslog('qrunner', 'qrunner caught SIGHUP.  Re-opening log files.')
+    syslog('qrunner', 'Master qrunner caught SIGHUP.  Re-opening log files.')
 
 
 
@@ -61,13 +61,27 @@ def start_lock_refresher(lock):
     if pid:
         # parent
         return pid
-    # In the child, we simply wake up once per day and refresh the lock
-    try:
-        while 1:
-            time.sleep(SNOOZE)
-            lock.refresh()
-    except KeyboardInterrupt:
-        pass
+    # In the child, we simply wake up once per day and refresh the lock.
+    # Install a SIGHUP handler to break out of the loop cleanly.
+    class Loop:
+        def __init__(self):
+            self._stop = 0
+        def stop(self):
+            self._stop = 1
+        def continue_p(self):
+            return not self._stop
+
+    loop = Loop()
+    def sighup_handler(signum, frame, loop=loop):
+        syslog('qrunner', 'Lock refresher caught SIGHUP.  Stopping.')
+        loop.stop()
+    # Enable the lock refresher's SIGHUP handler
+    signal.signal(signal.SIGHUP, sighup_handler)
+    syslog('qrunner', 'Lock refresher started.')
+    while loop.continue_p():
+        time.sleep(SNOOZE)
+        lock.refresh()
+    syslog('qrunner', 'Lock refresher exited.')
     os._exit(0)
 
 
@@ -76,24 +90,27 @@ def start_runner(qrclass, slice, count):
     pid = os.fork()
     if pid:
         # parent
-        syslog('qrunner', '%s qrunner started with pid: %d', qrclass, pid)
         return pid
     else:
         # child
-        try:
-            qrunner = qrclass(slice, count).run()
-            syslog('qrunner', '%s qrunner exiting', qrclass)
-        except KeyboardInterrupt:
-            # Due to race conditions, the subproc could get the SIGINT inside
-            # the syslog call.  It's of no consequence.
-            pass
+        qrunner = qrclass(slice, count)
+        def sighup_handler(signum, frame, qrunner=qrunner):
+            # Exit the qrunner cleanly.
+            qrunner.stop()
+            syslog('qrunner', '%s qrunner caught SIGHUP.  Stopping.' %
+                   qrunner.__class__.__name__)
+        # Enable the child's SIGHUP handler
+        signal.signal(signal.SIGHUP, sighup_handler)
+        syslog('qrunner', '%s qrunner started.', qrclass.__name__)
+        qrunner.run()
+        syslog('qrunner', '%s qrunner exiting.', qrclass.__name__)
         os._exit(0)
 
 
 
 def master(restart, lock):
     # Start up the lock refresher process
-    watchdog_pid = start_lock_refresher(lock)
+    refresher_pid = start_lock_refresher(lock)
     # Start up all the qrunners
     for classname, count in mm_cfg.QRUNNERS:
         modulename = 'Mailman.Queue.' + classname
@@ -120,20 +137,20 @@ def master(restart, lock):
                 killsig = status & 0xff
                 exitstatus = (status >> 8) & 0xff
                 # What should we do with this information other than log it?
-                if pid == watchdog_pid:
+                if pid == refresher_pid:
                     syslog('qrunner', '''\
-qrunner watchdog detected lock refresher exit
+Master qrunner detected lock refresher exit
     (pid: %d, sig: %d, sts: %d) %s''', 
                            pid, killsig, exitstatus, restarting)
                     if restart:
-                        watchdog_pid = start_lock_refresher(lock)
+                        refresher_pid = start_lock_refresher(lock)
                 else:
                     qrclass, slice, count = KIDS[pid]
                     syslog('qrunner', '''\
-qrunner watchdog detected subprocess exit
-    (pid: %d, sig: %d, sts: %d, class: %s, slice %d of %d) %s''',
-                           pid, killsig, exitstatus, qrclass, slice, count,
-                           restarting)
+Master qrunner detected subprocess exit
+    (pid: %d, sig: %d, sts: %d, class: %s, slice: %d/%d) %s''',
+                           pid, killsig, exitstatus, qrclass.__name__,
+                           slice+1, count, restarting)
                     del KIDS[pid]
                     # Now perhaps restart the process
                     if restart:
@@ -143,12 +160,13 @@ qrunner watchdog detected subprocess exit
             pass
     finally:
         # Should we leave the main loop for any reason, we want to be sure all
-        # of our children are exited cleanly.  Send SIGINTs to all the child
-        # processes and wait for them all to exit.  Include the watchdog!
-        KIDS[watchdog_pid] = watchdog_pid
+        # of our children are exited cleanly.  Send SIGHUPs to all the child
+        # processes and wait for them all to exit.  Include the lock
+        # refresher.
+        KIDS[refresher_pid] = refresher_pid
         for pid in KIDS.keys():
             try:
-                os.kill(pid, signal.SIGINT)
+                os.kill(pid, signal.SIGHUP)
             except OSError, e:
                 if e.errno == errno.ESRCH:
                     # The child has already exited
