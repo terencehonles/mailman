@@ -43,8 +43,7 @@ from Mailman import Message
 from Mailman import i18n
 from Mailman.Handlers.Decorate import decorate
 from Mailman.Queue.sbcache import get_switchboard
-
-from Mailman.pythonlib import mailbox
+from Mailman.Mailbox import Mailbox
 
 _ = i18n._
 
@@ -89,15 +88,6 @@ def process(mlist, msg, msgdata):
 
 
 
-# factory callable for UnixMailboxes.  This ensures that any object we get out
-# of the mailbox is an instance of our subclass.  (requires Python 2.1's
-# mailbox module)
-def msgfactory(fp):
-    p = Parser(Message.Message)
-    return p.parse(fp)
-        
-
-
 def send_digests(mlist, mboxfp):
     # Set the digest volume and time
     if mlist.digest_last_sent_at:
@@ -140,7 +130,7 @@ def send_digests(mlist, mboxfp):
 
 
 def send_i18n_digests(mlist, mboxfp):
-    mbox = mailbox.UnixMailbox(mboxfp, msgfactory)
+    mbox = Mailbox(mboxfp)
     # Prepare common information
     lang = mlist.preferred_language
     realname = mlist.real_name
