@@ -41,7 +41,7 @@ class MMGenerator(Skeleton, Sidebar, Banner):
         self.__body = None
         root, ext = os.path.splitext(file)
         html = root + '.html'
-        p = self.__parser = HTParser(file, 'mailman-cabal@python.org')
+        p = self.__parser = HTParser(file, 'mailman-users@python.org')
         f = self.__linkfixer = LinkFixer(html, rootdir, relthis)
         p.process_sidebar()
         p.sidebar.append(BLANKCELL)
