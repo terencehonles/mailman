@@ -20,6 +20,13 @@ Title: Mailman Frequently Asked Questions
    README.EXIM for details.  Other MTAs have (of course) different
    parameters and defaults that control this.  First check the README
    file for your MTA and then consult your MTA's own documentation.
+<p> <b> Q. My list members are complaining about Mailman's List-* headers!
+   What can I do about this?
+
+</b><br> A. These headers are added by Mailman for the long-term benefit of
+   end-users.  Mailman is compliant with RFC 2369, which is where
+   these headers are defined.  See the file README.USERAGENT for hints
+   on what to tell your end users.
 <p> <b> Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
@@ -85,7 +92,7 @@ Title: Mailman Frequently Asked Questions
    archives always reside in the private tree, and only when archives
    are public, is the symlink followed. See this archive message for
    more details:
-<p>    <a href="http://www.python.org/pipermail/mailman-users/1998-November/000173.html">http://www.python.org/pipermail/mailman-users/1998-November/000173.html</a>
+<p>    <a href="http://mail.python.org/pipermail/mailman-users/1998-November/000150.html">http://mail.python.org/pipermail/mailman-users/1998-November/000150.html</a>
 <p> <b> Q. Still having problems?  Running QMail?
 
 </b><br> A. Make sure that you are using "preline" before calling "wrapper":
