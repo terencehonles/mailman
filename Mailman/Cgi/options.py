@@ -436,7 +436,6 @@ def main():
             # flags.
             if newval is None:
                 continue
-            
             elif flag == mm_cfg.DisableDelivery:
                 status = mlist.getDeliveryStatus(user)
                 # Here, newval == 0 means enable, newval == 1 means disable
@@ -446,9 +445,12 @@ def main():
                     newval = MemberAdaptor.BYUSER
                 else:
                     continue
-    
             elif newval == mlist.getMemberOption(user, flag):
                 continue
+            # Should we warn about one more digest?
+            if flag == mm_cfg.Digests and \
+                   newval == 0 and mlist.getMemberOption(user, flag):
+                digestwarn = 1
 
             newvals.append((flag, newval))
 
@@ -490,7 +492,12 @@ def main():
                 elif flag == mm_cfg.DisableDelivery:
                     mlist.setDeliveryStatus(user, newval)
                 else:
-                    mlist.setMemberOption(user, flag, newval)
+                    try:
+                        mlist.setMemberOption(user, flag, newval)
+                    except Errors.CantDigestError:
+                        cantdigest = 1
+                    except Errors.MustDigestError:
+                        mustdigest = 1
             # Set the topics information.
             mlist.setMemberTopics(user, topicnames)
             mlist.Save()
