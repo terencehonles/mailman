@@ -11,7 +11,7 @@ import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat
 
 try:
     sys.stderr = mm_utils.StampedLogger("error", label = 'subscribe',
-                                        manual_reprime=1)
+                                        manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
