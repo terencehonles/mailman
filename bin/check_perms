@@ -268,7 +268,8 @@ def checkdata():
     targetmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
     checkfiles = ('config.pck', 'config.pck.last',
                   'config.db', 'config.db.last',
-                  'next-digest', 'next-digest-topics', 'request.db')
+                  'next-digest', 'next-digest-topics',
+                  'request.db', 'request.db.tmp')
     if STATE.VERBOSE:
         print _('checking permissions on list data')
     # BAW: This needs to be converted to the Site module abstraction
