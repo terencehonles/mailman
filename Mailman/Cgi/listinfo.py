@@ -71,7 +71,7 @@ def FormatListinfoOverview(error=None):
 	host_name = mm_cfg.DEFAULT_HOST_NAME
 
     doc = Document()
-    legend = "%s mailing lists" % host_name
+    legend = "%s Mailing Lists" % host_name
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -98,7 +98,7 @@ def FormatListinfoOverview(error=None):
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
     else:
-	greeting = "Welcome!"
+	greeting = FontAttr('Welcome!', size='+2')
 
     if not advertised:
         welcome_items = (greeting,
@@ -110,13 +110,10 @@ def FormatListinfoOverview(error=None):
     else:
         welcome_items = (
 	    greeting,
-            "<p>"
-            " Below is the collection of publicly-advertised ",
-            Link(mm_cfg.MAILMAN_URL, "Mailman"),
-            " mailing lists on %s." % host_name,
-            (' Click on a list name to visit the info page'
-             ' for that list.  There you can learn more about the list,'
-             ' subscribe to it, or find the roster of current subscribers.'),
+            '''<p>Below is a listing of all the public mailing lists on
+            %(hostname)s.  Click on a list name to get more information about
+            the list, or to subscribe, unsubscribe, and change the preferences
+            on your subscription.''' % {'hostname': host_name},
             )
 
     welcome_items = (welcome_items +
@@ -141,7 +138,9 @@ def FormatListinfoOverview(error=None):
 
     if advertised:
         table.AddRow(['&nbsp;', '&nbsp;'])
-        table.AddRow([Bold("List"), Bold("Description")])
+        table.AddRow([Bold(FontAttr('List', size='+2')),
+                      Bold(FontAttr('Description', size='+2'))
+                      ])
     for mlist in advertised:
         table.AddRow(
             [Link(mlist.GetRelativeScriptURL('listinfo'), 
