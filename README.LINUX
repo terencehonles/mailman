@@ -16,6 +16,13 @@ GNU/LINUX ISSUES
     concerned by this.
 
 
+DEBIAN NOTES
+
+    If you installed Python 2.2 using the Debian packages, be sure to
+    install the python2.2-dev package, otherwise you won't get
+    everything you need.
+
+
 
 Local Variables:
 mode: text
