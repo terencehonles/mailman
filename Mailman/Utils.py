@@ -46,11 +46,16 @@ DOT = '.'
 
 def list_exists(listname):
     """Return true iff list `listname' exists."""
-    # It is possible that config.db got removed erroneously, in which case we
-    # can fall back to config.db.last
-    dbfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db')
-    lastfile = dbfile + '.last'
-    return os.path.exists(dbfile) or os.path.exists(lastfile)
+    # The existance of any of the following file proves the list exists
+    # <wink>: config.pck, config.pck.last, config.db, config.db.last
+    #
+    # The former two are for 2.1alpha3 and beyond, while the latter two are
+    # for all earlier versions.
+    for ext in ('.pck', '.pck.last', '.db', '.db.last'):
+        dbfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config' + ext)
+        if os.path.exists(dbfile):
+            return 1
+    return 0
 
 
 def list_names():
