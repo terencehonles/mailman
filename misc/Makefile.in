@@ -51,7 +51,7 @@ FILEMODE=	644
 DATAMODE=	664
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 
-PATHSDIRS=	bin cron scripts mail
+PATHSDIRS=	bin cron scripts
 
 
 # Rules
