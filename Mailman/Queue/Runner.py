@@ -242,4 +242,4 @@ class Runner:
 
         You could, for example, implement a throttling algorithm here.
         """
-        return 0
+        return self._stop
