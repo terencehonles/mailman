@@ -17,6 +17,7 @@
 """Cook a message's Subject header.
 """
 
+import string
 import re
 import urlparse
 from Mailman import mm_cfg
@@ -115,6 +116,11 @@ def process(mlist, msg, msgdata):
     # one copy of each, and we want to be sure it's ours.
     for h, v in headers.items():
         del msg[h]
+        # Wrap these lines if they are too long.  78 character width probably
+        # shouldn't be hardcoded.  The adding of 2 is for the colon-space
+        # separator.
+        if len(h) + 2 + len(v) > 78:
+            v = string.join(string.split(v, ', '), ',\n\t')
         msg[h] = v
     #
     # Always delete List-Archive header, but only add it back if the list is
