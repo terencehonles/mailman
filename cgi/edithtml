@@ -120,18 +120,22 @@ try:
     cgi_data = cgi.FieldStorage()
     if len(cgi_data.keys()):
 	if not cgi_data.has_key('adminpw'):
-	    doc.AddItem(
-		htmlformat.Header(3, htmlformat.Italic('Error: '
-		    'You must supply the admin password to edit html.')))
+	    m = 'Error: You must supply the admin password to edit html.'
+	    doc.AddItem(htmlformat.Header(3,
+					  htmlformat.Italic(
+					      htmlformat.FontAttr(
+						  m, color="ff5060"))))
 	    doc.AddItem('<hr>')
 	else:
 	    try:
 		list.ConfirmAdminPassword(cgi_data['adminpw'].value)
 		ChangeHTML(list, cgi_data, template_name, doc)
 	    except:
-		doc.AddItem(
-		    htmlformat.Header(3, htmlformat.Italic(
-			'Error: Incorrect admin password.')))
+		m = 'Error: Incorrect admin password.'
+		doc.AddItem(htmlformat.Header(3, 
+					      htmlformat.Italic(
+						  htmlformat.FontAttr(
+						      m, color="ff5060"))))
 		doc.AddItem('<hr>')
 
 		

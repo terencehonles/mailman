@@ -75,17 +75,17 @@ def FormatConfiguration(doc):
 
     link = htmlformat.Link(list.GetScriptURL('admindb'), 
 			   'View or edit the administrative requests database.')
-    doc.AddItem(htmlformat.FontSize("+1", link))
+    doc.AddItem(htmlformat.FontAttr(link, size="+1"))
     doc.AddItem('<p>')
 
     link = htmlformat.Link(list.GetScriptURL('listinfo'),
 			   'Go to the general list information page.')
-    doc.AddItem(htmlformat.FontSize("+1", link))
+    doc.AddItem(htmlformat.FontAttr(link, size="+1"))
     doc.AddItem('<p>')
     
     link = htmlformat.Link(list.GetScriptURL('edithtml'),
 			   'Edit the HTML for the public list pages.')
-    doc.AddItem(htmlformat.FontSize("+1", link))
+    doc.AddItem(htmlformat.FontAttr(link, size="+1"))
     doc.AddItem('<p>')
 
     doc.AddItem('<hr>')
@@ -309,11 +309,19 @@ def ChangeOptions(list, opt_list, cgi_info, document):
 	    if new == confirm:
 		list.password = crypt.crypt(new, mm_utils.GetRandomSeed())
 	    else:
-		document.AddItem(htmlformat.Header(3, htmlformat.Italic(
-		    'Error: Passwords did not match.')))
+		m = 'Error: Passwords did not match.'
+		document.AddItem(
+		    htmlformat.Header(3,
+				      htmlformat.Italic(
+					  htmlformat.FontAttr(
+					      m, color="ff5060"))))
+
 	else:
-	    document.AddItem(htmlformat.Header(3, htmlformat.Italic(
-		'Error: You must type in your new password twice.')))
+	    m = 'Error: You must type in your new password twice.'
+	    document.AddItem(htmlformat.Header(3, 
+					       htmlformat.Italic(
+						   htmlformat.FontAttr(
+						       m, color="ff5060"))))
 	    
     list.Save()
     
@@ -333,9 +341,11 @@ try:
     if len(cgi_data.keys()):
 	if not cgi_data.has_key('adminpw'):
 	    doc.AddItem('<hr>')
-	    doc.AddItem(
-		htmlformat.Header(3, htmlformat.Italic('Error: '
-		    'You must supply the admin password to change options.')))
+	    m = 'Error: You must supply the admin password to change options.'
+	    doc.AddItem(htmlformat.Header(3,
+					  htmlformat.Italic(
+					      htmlformat.FontAttr(
+						  m, color="ff5060"))))
 	else:
 	    try:
 		list.ConfirmAdminPassword(cgi_data['adminpw'].value)
@@ -346,9 +356,11 @@ try:
 		    list.nondigestable = 1
 	    except:
 		doc.AddItem('<hr>')
-		doc.AddItem(
-		    htmlformat.Header(3, htmlformat.Italic(
-			'Error: Incorrect admin password.')))
+		m = 'Error: Incorrect admin password.'
+		doc.AddItem(htmlformat.Header(3,
+					      htmlformat.Italic(
+						  htmlformat.FontAttr(
+						      m, color="ff5060"))))
 
     if not list.digestable and len(list.digest_members):
 	doc.AddItem('<hr>')
