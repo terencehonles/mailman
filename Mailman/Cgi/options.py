@@ -4,18 +4,19 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Produce and handle the member options."""
 
+import sys
 import os
 import cgi
 import signal
@@ -139,7 +140,7 @@ def main():
     if varhelp:
         topic_details(mlist, doc, user, cpuser, userlang, varhelp)
         return
-    
+
     # Are we processing an unsubscription request from the login screen?
     if cgidata.has_key('login-unsub'):
         # Because they can't supply a password for unsubscribing, we'll need
@@ -532,7 +533,7 @@ address.  Upon confirmation, any other mailing list containing the address
             mlist.Save()
         finally:
             mlist.Unlock()
-        
+
         # A bag of attributes for the global options
         class Global:
             enable = None
