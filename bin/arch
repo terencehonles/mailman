@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Rebuild a list's archive.
@@ -40,7 +40,7 @@ Where options are:
         possible to index the mbox entirely.  For that reason, you can specify
         the start and end article numbers.
 
-Where <mbox> is the path to a list's complete mbox archive.  Usually this will 
+Where <mbox> is the path to a list's complete mbox archive.  Usually this will
 be some path in the archives/private directory.  For example:
 
 %% bin/arch mylist archives/private/mylist.mbox/mylist.mbox
@@ -59,9 +59,12 @@ from Mailman import Errors
 from Mailman.MailList import MailList
 from Mailman.Archiver.HyperArch import HyperArchive, Article
 from Mailman.LockFile import LockFile
-from Mailman.i18n import _
+from Mailman import i18n
+
+_ = i18n._
 
 PROGRAM = sys.argv[0]
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
@@ -129,7 +132,7 @@ def main():
         # XXX: processUnixMailbox() should refresh the lock.
         #
         # XXX: this may not be necessary because I think we lay claim to the
-        # list lock up above, although that may be too short to be of use (and 
+        # list lock up above, although that may be too short to be of use (and
         # maybe we don't really want to lock the list anyway).
         #
         lockfile = os.path.join(mm_cfg.LOCK_DIR, mlist._internal_name) + \
