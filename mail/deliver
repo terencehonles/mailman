@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import sys, tempfile
+import sys
 #sys.stderr = open("/home/mailman/mailman/logs/debug","a+")
 #sys.stdout = sys.stderr
 """Partition a mass delivery into a suitable set of subdeliveries."""
@@ -30,10 +30,11 @@ if not os.fork():
     import string, sys, regsub
     import paths
     import mm_cfg
-    def ContactTransport(sender, recip, filename):
+    def ContactTransport(sender, recip, text):
         cmd = os.path.join(mm_cfg.SCRIPTS_DIR, "contact_transport")
-	os.execv(cmd, [cmd,sender,filename]+recip)
-
+	file = os.popen(string.join([cmd,sender]+recip," "), 'w')
+	file.write(text)
+	file.close()
     domain_info = {}
     def GroupByDomain(addr):
         "Collect addrs by major subdomain - e.g. the 'python' in python.org."
@@ -71,28 +72,20 @@ if not os.fork():
 	    groups.append(lastgroup)
 	return groups
 
-    def ContactTransportForEachGroup(sender, groups, file_name):
+    def ContactTransportForEachGroup(sender, groups, text):
 	if len(groups) == 1:
-            ContactTransport(sender,group,file_name)
+            ContactTransport(sender,group,text)
             return
-        f = open(file_name, "r")
-	text = f.read()
-        f.close()
-        tempfile.tempdir = "/tmp"
-        tempfile.template = "mm.delivery"
 	for group in groups:
-	    tmpname = tempfile.mktemp()
-            file = open(tmpname, "w")
-	    file.write(text)
- 	    file.close()
 	    if not os.fork():
-		ContactTransport(sender,group,tmpname)
+		ContactTransport(sender,group,text)
 		os._exit(0)
-        os.unlink(file_name)
 
     sender = sys.argv[2]
     spawns = eval(sys.argv[3])
-    file_name = sys.argv[1]
+    file = open(sys.argv[1], "r")
+    text = file.read()
+    file.close()
     if spawns > mm_cfg.MAX_SPAWNS:
 	spawns = mm_cfg.MAX_SPAWNS
     if spawns < 1:
@@ -101,4 +94,5 @@ if not os.fork():
 
     map(GroupByDomain, to_list)
     final_groups = BuildGroups(domain_info.values(), len(to_list))
-    ContactTransportForEachGroup(sender, final_groups, file_name)
+    ContactTransportForEachGroup(sender, final_groups, text)
+    os.unlink(sys.argv[1])

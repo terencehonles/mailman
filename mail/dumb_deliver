@@ -20,12 +20,16 @@ import os
 
 if not os.fork():
     import string, sys
-    def ContactTransport(sender, recip, filename):
+    def ContactTransport(sender, recip, text):
         cmd = os.path.join(mm_cfg.SCRIPTS_DIR, "contact_transport")
-	os.execv(cmd, [cmd,sender,filename]+recip)
-
+	file = os.popen(string.join([cmd,sender]+recip," "), 'w')
+	file.write(text)
+	file.close()
 
     sender = sys.argv[2]
     to_list = sys.argv[3:]
-    file _name sys.argv[1]
-    ContactTransport(sender, to_list, file_name)
+    file = open(sys.argv[1], 'r')
+    text = file.read()
+    file.close()    
+    ContactTransport(sender, to_list, text)
+    os.unlink(sys.argv[1])

@@ -24,15 +24,11 @@ import smtplib,mm_cfg
 #sys.stdout = sys.stderr
 
 from_addr = sys.argv[1]
-tmp_file  = sys.argv[2]
-to_addrs  = sys.argv[3:]
+to_addrs  = sys.argv[2:]
 
-file = open(tmp_file, "r")
-text = file.read()
-file.close()
+text = sys.stdin.read()
 con = smtplib.SmtpConnection(mm_cfg.SMTPHOST)
 con.helo(mm_cfg.DEFAULT_HOST_NAME)
 con.send(to=to_addrs, frm=from_addr, text=text)
 con.quit()
-os.unlink(tmp_file)
 
