@@ -17,7 +17,7 @@
 
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 546 $"
 
 
 import string, os, sys, tempfile
@@ -35,7 +35,7 @@ was successfully received by the %s maillist.
 (List info page: %s )
 '''
 
-SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list!
+SUBSCRIBEACKTEXT = '''Welcome %s to the %s@%s mailing list!
 %s%s
 General information about the maillist is at:
 
@@ -75,7 +75,7 @@ To post to this list, send your email to:
 USERPASSWORDTEXT = '''
 This is a reminder of how to unsubscribe or change your configuration
 for the mailing list "%s".  You need to have your password for
-these things.  YOUR PASSWORD IS:
+these things.  YOUR %s PASSWORD IS:
 
   %s
 
@@ -182,7 +182,8 @@ class Deliverer:
 	    header = ''
 	    welcome = ''
 
-        body = (SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
+        body = (SUBSCRIBEACKTEXT % (name, 
+				    self.real_name, self.host_name,
                                     header, welcome,
                                     self.GetScriptURL('listinfo'),
                                     self.GetOptionsURL(name),
@@ -198,9 +199,14 @@ class Deliverer:
 	else:
 	    digest_mode = ''
 
+	if self.reminders_to_admins:
+	    recipient = "%s-admin@%s" % tuple(string.split(name, '@'))
+	else:
+	    recipient = name
+
         self.SendTextToUser(subject = 'Welcome To "%s"! %s' % (self.real_name, 
 							       digest_mode),
-			    recipient = name, 
+			    recipient = recipient,
 			    text = self.CreateSubscribeAck(name, password))
 
     def SendUnsubscribeAck(self, name):
@@ -212,9 +218,13 @@ class Deliverer:
         subjpref = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
         if self.passwords.has_key(user):
-            recipient = user
+	    if self.reminders_to_admins:
+		recipient = "%s-admin@%s" % tuple(string.split(user, '@'))
+	    else:
+		recipient = user
             subj = '%s maillist reminder\n' % subjpref
-            text = USERPASSWORDTEXT % (self.real_name,
+            text = USERPASSWORDTEXT % (user,
+				       self.real_name,
                                        self.passwords[user],
                                        self.GetOptionsURL(user),
                                        self.GetRequestEmail(),
