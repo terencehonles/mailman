@@ -63,7 +63,9 @@ configure and install the Mailman software.
     You do not need to be root to perform the steps in the section.
     Do them under your own login, or whatever account you typically
     install software as.  However, make sure that you have write
-    permissions to the directory you'll be installing into.
+    permissions to the target installation directory, and permission
+    to create a setgid file in the fs where it resides.  (NFS and
+    other mounts can be configured to inhibit setgid settings.)
 
     - If you've installed other GNU software, you should be familar
       with the configure script.  Usually you can just cd to the
