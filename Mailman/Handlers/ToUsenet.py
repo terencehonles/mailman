@@ -23,11 +23,6 @@ import re
 
 from Mailman.pythonlib.StringIO import StringIO
 
-# The version we have is from Python 1.5.2+ and fixes the "mode reader"
-# problem.
-from Mailman.pythonlib import nntplib
-
-
 
 def process(mlist, msg):
     # short circuits
@@ -58,8 +53,9 @@ def process(mlist, msg):
 
 
 def do_child(mlist, msg):
-    # child
-    import nntplib
+    # The version we have is from Python 1.5.2+ and fixes the "mode reader"
+    # problem.
+    from Mailman.pythonlib import nntplib
     # Ok, munge headers, etc.
     subj = msg.getheader('subject')
     if subj:
