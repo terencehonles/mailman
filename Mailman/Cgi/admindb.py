@@ -30,7 +30,13 @@ def main():
 
     doc = htmlformat.Document()
 
-    path = os.environ['PATH_INFO']
+    try:
+        path = os.environ['PATH_INFO']
+    except KeyError:
+        doc.SetTitle("Admindb Error")
+        doc.AddItem(htmlformat.Header(2, "You must specify what list you are intenting to visit"))
+        print doc.Format(bgcolor="#ffffff")
+        sys.exit(0)
     list_info = Utils.GetPathPieces(path)
 
 
