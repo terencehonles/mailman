@@ -150,7 +150,7 @@ def checkarchivedbs():
             raise
         if mode & S_IRWXO:
             STATE.ERRORS = STATE.ERRORS + 1
-            print dbdir, 'must be other 000',
+            print dbdir, '"other" perms must be 000',
             if STATE.FIX:
                 print '(fixing)'
                 os.chmod(dbdir, mode & ~S_IRWXO)
@@ -240,4 +240,4 @@ if __name__ == '__main__':
         print 'No problems found'
     else:
         print 'Problems found:', STATE.ERRORS
-        print 'Re-run as root with -f flag until no errors are found'
+        print 'Re-run as owner (or root) with -f flag until no errors are found'
