@@ -220,5 +220,132 @@ Title: Mailman Frequently Asked Questions
      type the password in every time.
 <p> <b> Q. How do I rename a list?
 
-</b><br> A. XXX
+</b><br> A. Renaming a list is currently a bit of a pain to do completely
+   correctly, especially if you want to make sure that the old list
+   contacts are automatically forwarded to the new list.  This ought
+   to be easier. :(
+<p>    The biggest problem you have is how to stop mail and web traffic to
+   your list during the transition, and what to do about any mail
+   undelivered to the old list after the move.  I don't think there
+   are any foolproof steps, but here's how you can reduce the risk:
+<p>    - Temporarily disable qrunner.  To do this, you need to edit the
+     user `mailman's crontab entry.  Execute the following command,
+     commenting out the qrunner line when you're dropped into your
+     editor.  Then save the file and quit the editor.
+<p>      % crontab -u mailman -e
+<p>    - Turn off your mail server.  This is mostly harmless since remote
+     MTAs will just keep retrying until you turn it back on, and it's
+     not going to be off for very long.
+<p>    - Next turn off your web server if possible.  This of course means
+     your entire site will be off-line while you make the switch and
+     this may not be acceptable to you.  The next best suggestion is
+     to set up your permanent redirects now for the list you're
+     moving.  This means that anybody looking for the list under its
+     old name will be redirected to the new name, but they'll get
+     errors until you've completed the move.
+<p>      Let's say the old name is "oldname" and the new name is
+     "newname".  Here are some Apache directives that will do the
+     trick, though YMMV:
+<p>      RedirectMatch permanent /mailman/(.*)/oldname(.*) <a href="http://www.dom.ain/mailman/$1/newname$2">http://www.dom.ain/mailman/$1/newname$2</a>
+     RedirectMatch permanent /pipermail/oldname(.*)    <a href="http://www.dom.ain/pipermail/newname$1">http://www.dom.ain/pipermail/newname$1</a>
+<p>      Add these to your httpd.conf file and restart Apache.
+<p>    - Now cd to the directory where you've installed Mailman.  Let's
+     say it's /usr/local/mailman:
+<p>      % cd /usr/local/mailman
+<p>      and cd to the `lists' subdirectory:
+<p>      % cd lists
+<p>      You should now see the directory `oldname'.  Move this to
+     `newname':
+<p>      % mv oldname newname
+<p>    - Now cd to the private archives directory:
+<p>      % cd ../archives/private
+<p>      You will need to move the oldname's .mbox directory, and the
+     .mbox file within that directory.  Don't worry about the public
+     archives; the next few steps will take care of them without
+     requiring you to fiddle around in the file system:
+<p>      % mv oldname.mbox newname.mbox
+     % mv newname.mbox/oldname.mbox newname.mbox/newname.mbox
+<p>    - You now need to run the `bin/move_list' script to update some of
+     the internal archiver paths.  IMPORTANT: Skip this step if you
+     are using Mailman 2.1!
+<p>      % cd ../..
+     % bin/move_list newname
+<p>    - You should now regenerate the public archives:
+<p>      % bin/arch newname
+<p>    - You'll likely need to change some of your list's configuration
+     options, especially if you want to accept postings addressed to
+     the old list on the new list.  Visit the admin interface for your
+     new list:
+<p>      o Go to the General options
+<p>      o Change the "real_name" option to reflect the new list's name,
+       e.g. "Newname"
+<p>      o Change the subject prefix to reflect the new list's name,
+       e.g. "[Newname] " (yes, that's a trailing space character).
+<p>      o Optionally, update other configuration fields like info,
+       description, or welcome_msg.  YMMV.
+<p>      o Save your changes
+<p>      o Go to the Privacy options
+<p>      o Add the old list's address to acceptable_aliases.
+       E.g. "oldname@dom.ain".  This way, (after the /etc/aliases
+       changes described below) messages posted to the old list will
+       not be held by the new list for "implicit destination"
+       approval.
+<p>      o Save your changes
+<p>    - Now you want to update your /etc/aliases file to include the
+     aliases for the new list, and forwards for the old list to the
+     new list.  Note that these instructions are for Sendmail style
+     alias files, adjust to the specifics of how your MTA is set up.
+<p>      o Find the lines defining the aliases for your old list's name
+<p>      o Copy and paste them just below the originals.
+<p>      o Change all the references of "oldname" to "newname" in the
+       pasted stanza.
+<p>      o Now change the targets of the original aliases to forward to
+       the new aliases.  When you're done, you will end up with
+       /etc/aliases entries like the following (YMMV):
+<p>        # Forward the oldname list to the newname list
+       oldname:         newname@dom.ain
+       oldname-request: newname-request@dom.ain
+       oldname-admin:   newname-admin@dom.ain
+       oldname-owner:   newname-owner@dom.ain
+<p>        newname:         "|/usr/local/mailman/mail/wrapper post newname"
+       newname-admin:   "|/usr/local/mailman/mail/wrapper mailowner newname"
+       newname-request: "|/usr/local/mailman/mail/wrapper mailcmd newname"
+       newname-owner:   newname-admin
+<p>      o Run newaliases
+<p>    - Before you restart everything, you want to make one last check.
+     You're looking for files in the qfiles/ directory that may have
+     been addressed to the old list but weren't delivered before you
+     renamed the list.  Do something like the following:
+<p>      % cd /usr/local/mailman/qfiles
+     % grep oldname *.msg
+<p>      If you get no hits, skip to the next step, you've got nothing to
+     worry about.
+<p>      If you did get hits, then things get complicated.  I warn you
+     that the rest of this step is untested. :(
+<p>      For each of the .msg files that were destined for the old list,
+     you need to change the corresponding .db file.  Unfortunately
+     there's no easy way to do this.  Anyway...
+<p>      Save the following Python code in a file called 'hackdb.py':
+<p>      -------------------------hackdb.py
+     import sys
+     import marshal
+     fp = open(sys.argv[1])
+     d = marshal.load(fp)
+     fp.close()
+     d['listname'] = sys.argv[2]
+     fp = open(sys.argv[1], 'w')
+     marshal.dump(d, fp)
+     fp.close()
+     -------------------------
+<p>      And then for each file that matched your grep above, do the
+     following:
+<p>      % python hackdb.py reallylonghexfilenamematch1.db newname
+<p>    - It's now safe to turn your MTA back on.
+<p>    - Turn your qrunner back on by running
+<p>      % crontab -u mailman -e
+<p>      again and this time uncommenting the qrunner line.  Save the file
+     and quit your editor.
+<p>    - Rejoice, you're done.  Send $100,000 in shiny new pennies to the
+     Mailman cabal as your downpayment toward making this easier for
+     the next list you have to rename. :)
 <p> <p>
