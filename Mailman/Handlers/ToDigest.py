@@ -152,10 +152,12 @@ def inject_digest(mlist, digestfile, topicsfile):
         digest = Digest(mlist, topicsdata, fp.read())
         mimemsg = digest.asMIME()
         mimemsg.recips = mime_recips
-        mlist.inject(mimemsg)
+        mimemsg.isdigest = 1
+        mlist.Post(mimemsg)
         textmsg = digest.asText()
         textmsg.recips = text_recips
-        mlist.inject(textmsg)
+        mimemsg.isdigest = 1
+        mlist.Post(textmsg)
     # zap accumulated digest information for the next round
     os.unlink(digestfile)
     os.unlink(topicsfile)
