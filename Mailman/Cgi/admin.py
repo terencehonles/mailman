@@ -364,7 +364,8 @@ def option_help(mlist, varhelp):
         url = '%s/%s/%s' % (adminurl, category, subcat)
     else:
         url = '%s/%s' % (adminurl, category)
-    doc.AddItem(Link(url, _('return to the %(category)s options page.')))
+    categoryname = mlist.GetConfigCategories()[category][0]
+    doc.AddItem(Link(url, _('return to the %(categoryname)s options page.')))
     doc.AddItem('</em>')
     doc.AddItem(mlist.GetMailmanFooter())
     print doc.Format()
