@@ -1,0 +1,3 @@
+%(member)s hat %(listname)s erfolgreich abonniert.
+
+

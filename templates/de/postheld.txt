@@ -1,0 +1,15 @@
+Ihre Mail an '%(listname)s' mit dem Subject/Betreff
+
+    %(subject)s
+
+wird zurueckgehalten bis der Listenmoderator Ihre Email genehmigt.
+
+Der Grund, weshalb eine Genehmigung erforderlich ist:
+
+    %(reason)s
+
+Entweder wird die Email die Liste erreichen, oder Sie erhalten eine
+Mitteilung ueber die Entscheidung des Moderators. Falls Sie diese Email
+zurueckziehen moechten, besuchen Sie bitte:
+
+    %(confirmurl)s

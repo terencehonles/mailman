@@ -1,0 +1,2 @@
+%(member)s wurde von der Liste %(listname)s entfernt.
+

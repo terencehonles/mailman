@@ -1,0 +1,140 @@
+<!-- $Revision: 4107 $ -->
+<HTML>
+  <HEAD>
+    <TITLE><MM-List-Name> Informationsseite</TITLE>
+  
+  </HEAD>
+  <BODY BGCOLOR="#ffffff">
+
+    <P>
+      <TABLE COLS="1" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+	<TR>
+	  <TD COLSPAN="2" WIDTH="100%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+	    <B><FONT COLOR="#000000" SIZE="+1"><MM-List-Name> --
+	<MM-List-Description></FONT></B>
+	  </TD>
+	</TR>
+	<tr>
+	    <td colspan="2">
+	      <p>&nbsp;
+	    </td>
+	  </tr>
+	  <tr>
+	    <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
+	      <B><FONT COLOR="#000000">About <MM-List-Name></FONT></B>
+	    </TD>
+            <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
+              <MM-lang-form-start><MM-displang-box> <MM-list-langs>
+              <MM-form-end>
+    <MM-Subscribe-Form-Start>
+            </TD>
+	  </TR>
+	    <tr>
+	      <td colspan="2">
+		<P><MM-List-Info></P>
+	  <p> Um ein Archiv alter Nachrichten an diese Liste zu sehen,
+besuchen Sie bitte die <MM-Archive>Archive der Liste <MM-List-Name></MM-Archive>.
+	      <MM-Restricted-List-Message>
+	  </p>
+	</TD>
+      </TR>
+      <TR>
+	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	  <B><FONT COLOR="#000000">Benutzung von <MM-List-Name></FONT></B>
+	</TD>
+      </TR>
+      <tr>
+	<td colspan="2">
+	  Um eine Nachricht an alle Listenmitglieder zu senden, schicken Sie eine Email an
+	  <A HREF="mailto:<MM-Posting-Addr>"><MM-Posting-Addr></A>.
+
+	  <p>Sie können in dem folgenden Abschnitt diese Liste abonnieren
+             oder Ihr bestehendes Abonnement aendern.
+	</td>
+      </tr>
+      <TR>
+	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	  <B><FONT COLOR="#000000">Abonnieren von <MM-List-Name></FONT></B>
+	</TD>
+      </TR>
+      <tr>
+	<td colspan="2">
+	  <P>
+	    Abonnieren Sie <MM-List-Name> indem Sie das folgende Formular ausfuellen.
+	  <MM-List-Subscription-Msg>
+	  <ul>
+	      <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2"
+		WIDTH="70%" HEIGHT= "112">
+		<TR>
+		  <TD BGCOLOR="#dddddd" WIDTH="55%">Ihre Emailadresse:</TD>
+		  <TD WIDTH="33%"><MM-Subscribe-Box>
+	</TD>
+	<TD WIDTH="12%">&nbsp;</TD></TR>
+      <tr>
+        <td bgcolor="#dddddd" width="55%">Ihre Name (optional):</td>
+        <td width="33%"><mm-fullname-box></td>
+	<TD WIDTH="12%">&nbsp;</TD></TR>
+      <TR>
+	<TD COLSPAN="3"><FONT SIZE=-1>Sie können weiter unten ein Passwort
+	    eingeben. Dieses Passwort bietet nur eine geringe Sicherheit,
+            aber sollte verhindern, dass andere Ihr Abonnement
+            manipulieren. <b>Verwenden Sie keine wertvollen Passwörter</b>,
+            da die Passwörter ab und zu im Klartext an Sie geschickt werden.
+
+            <p>Wenn Sie kein Passwort eingeben, wird fuer Sie ein
+            Zufallspasswort generiert und Ihnen zugeschickt, sobald Sie Ihr
+            Abonnement bestätigt haben. Sie können sich Ihr Passwort
+            jederzeit per Email zuschicken lassen wenn Sie Ihre
+            persönlichen Einstellungen ändern.
+	    <MM-Reminder>
+	</TD>
+      </TR>  
+      <TR>
+	<TD BGCOLOR="#dddddd">Wählen Sie ein Passwort:</TD>
+	<TD><MM-New-Password-Box></TD>
+	<TD>&nbsp;</TD></TR>
+      <TR> 
+	<TD BGCOLOR="#dddddd">Erneute Eingabe zur Bestätigung:</TD>
+	<TD><MM-Confirm-Password></TD>
+	<TD>&nbsp; </TD></TR>
+      <tr>
+        <TD BGCOLOR="#dddddd">Welche Sprache bevorzugen Sie zur Benutzerführung?</TD> 
+        <TD> <MM-list-langs></TD>
+        <TD>&nbsp; </TD></TR>
+      <tr>
+	<td>Möchten Sie die Listenmails gebündelt in Form einer täglichen
+            Zusammenfassung erhalten?
+	  </td>
+	<td><MM-Undigest-Radio-Button>Nein
+	    <MM-Digest-Radio-Button>Ja
+	</TD>
+      </tr>
+      <tr>
+	<td colspan="3">
+	  <center><MM-Subscribe-Button></P></center>
+    </TABLE>
+    <MM-Form-End>
+    </ul>
+    </td>
+    </tr>
+    <TR>
+      <TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	<a name="subscribers">
+        <B><FONT COLOR="#000000"><MM-List-Name> Abonnenten</FONT></B></a>
+      </TD>
+    </TR>
+    <tr>
+      <TD COLSPAN="2" WIDTH="100%">
+	<MM-Roster-Form-Start>
+	<MM-Roster-Option>
+	    <MM-Form-End>
+	  <p>
+	<MM-Options-Form-Start>
+	<MM-Editing-Options>
+		<MM-Form-End>
+      </td>
+    </tr>
+  </table>
+<MM-Mailman-Footer>
+</BODY>
+</HTML>

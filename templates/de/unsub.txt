@@ -1,0 +1,22 @@
+Bestaetigung der Abbestellung von der Mailing-Liste %(listname)s
+
+Wir haben eine Anfrage erhalten, derzufolge nach Ihre Email-Adresse
+"%(email)s" von der Mailingliste %(listaddr)s gestrichen werden soll.
+Um dies zu bestaetigen, antworten Sie bitte auf diese Email, wobie das
+Subject/Betreff intakt bleiben muss.
+ALternativ koennen Sie auch die Seite:
+
+    %(confirmurl)s
+
+besuchen. EIne weiter Moeglichkeit besteht darin, die folgende Zeile (UND
+NUR die folgende Zeile!!) an %(requestaddr)s zu schicken:
+
+    confirm %(cookie)s
+
+Normalerweise reicht eine einfache Antwort aus diese EMail voellig aus, da
+das Generieren einer Antwort das "Subject:" bzw. "Betreff:" intakt laesst
+(das zusaetzliche "Re:" im "Subject:" bzw. "Betreff:" ist kein Problem).
+
+Wenn Sie diese Liste nicht abonnieren wollen, ignorieren Sie diese Nachricht
+einfach. Wenn Sie meinen, ungefragterweise auf diese Liste geraten zu sein
+oder andere Fragen haben, schicken Sie diese bitte an %(listadmin)s.

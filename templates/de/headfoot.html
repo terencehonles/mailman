@@ -1,0 +1,23 @@
+Dieser Text kann <b><code>%(attribute)s</code></b> Format Strings
+enthalten, welche durch Listenattribute ersetzt werden.  Für Details
+konsultieren Sie bitte <a href="http://www.python.org/doc/current/lib/typesseq-strings.html">Pythons
+String Formatting Rules</a>.  Einige nützliche Attribute sind:
+
+<ul>
+    <li><b><code>real_name</code></b> - Der `hübsche' Name der Liste;
+    normalerweise der Listenname mit Groß- und Kleinschreibung.
+
+    <li><b><code>_internal_name</code></b> - Der Name unter dem die Liste in
+    URLs bekannt ist; dabie ist Groß- und Kleinschreibung wichtig!
+
+    <li><b><code>host_name</code></b> - Der FQDN des Listenservers.
+
+    <li><b><code>web_page_url</code></b> - Die Basis URL für Mailman.  Daran
+    wird z.B. <em><code>listinfo/%(_internal_name)s</code></em> angehaengt,
+    um die URL der Informationsseite der Mailingliste zu erhalten.
+
+    <li><b><code>description</code></b> - Die Kurzbeschreibung der
+    Mailingliste.
+
+    <li><b><code>info</code></b> - Die volle Beschreibung der Mailingliste.
+</ul>

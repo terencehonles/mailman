@@ -1,0 +1,9 @@
+Die Mailing_liste %(real_name)s@%(host_name)s hat %(count)d Anfragen, die
+Ihrer Aufmerksamkeit benoetigen. Bitte nehmen Sie sich dieser Anfragen unter
+der Adresse
+
+	%(adminDB)s
+	
+baldmoeglichst an.
+
+Diese Benachrichtigung wird bei Bedarf taeglich verschickt.

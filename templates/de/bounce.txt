@@ -1,0 +1,18 @@
+Diese MIME Nachricht sollte als normaler Text lesbar sein.
+
+--%(boundary)s
+
+Content-type: text/plain; charset=us-ascii
+
+This is a Mailman mailing list bounce action notice:
+
+    Liste:      %(listname)s
+    Abonnent:   %(addr)s
+    Aktion:     Abonnement %(negative)s%(did)s.
+    Grund:      Exzessive oder fatale Bounces
+    %(but)s
+
+%(reenable)s
+The triggering bounce notice is attached below.
+
+Fragen? Kontaktieren Sie den Mailman Site Administrator unter %(owneraddr)s.

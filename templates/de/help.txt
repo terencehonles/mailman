@@ -1,0 +1,101 @@
+Hilfe fuer die Mailingliste %(listname)s:
+
+Dies Ist die Emai-Kommando Hilfe fuer die Version %(version)s des "Mailman"
+Listenservers. Im folgenden werden die Kommandos beschrieben, mit derer
+Hilfe Sie Ihre Abonnement-Optionen steuern koennen.
+Jedes Kommando kann im Subject/Betreff oder im Text der Email enthalten sein.
+
+Viele der folgenden Operationen koennen auch ueber ein Webinterface
+vorgenommen werde, das Sie unter:
+
+    %(listinfo_url)s
+
+finden.
+
+Insbesondere koennen Sie ueber das Webinterface erreichen, dass Ihnen Ihr
+Passwort an die Abonnementsadresse geschickt wird.
+
+Listen-spezifische Kommandos (subscribe, who, usw.) sollten an die *-request
+Adresse der Liste geschickt werden, z.B. fuer die 'mailman' Liste waere diese
+'mailman-request@...'.
+
+Worte in "<>" (spitze Klammern) sind ERFORDERLICHE Eintrage, und Worte in
+"[]" (eckigen Klammern) sind OPTIONALE Eintraege.
+
+Die Klammern "<>" oder "[]" gehoeren NICHT zu den Kommandos.
+
+Die folgenden Kommandos sind gueltig:
+
+    subscribe [Passwort] [Digest-Option] [address=<name@host>]
+        Subscribe to the mailing list.  Your password must be given to
+        unsubscribe or change your options.  When you subscribe to the
+        list, you'll be reminded of your password periodically.
+        'Digest-Option' may be either: 'nodigest' or 'digest' (no
+        quotes!)  If you wish to subscribe an address other than the
+        address you send this request from, you may specify
+        "address=<email address>" (no brackets around the email
+        address, no quotes!)
+
+    unsubscribe <password> [address]
+        Unsubscribe from the mailing list.  Your password must match
+        the one you gave when you subscribed.  If you are trying to
+        unsubscribe from a different address than the one you
+        subscribed from, you may specify it in the 'address' field.
+
+    who
+        See everyone who is on this mailing list.
+
+    info
+        View the introductory information for this list.
+
+    lists
+        See what mailing lists are run by this Mailman server.
+
+    help
+        This message.
+
+    set <option> <on|off> <password> 
+        Turn on or off list options.  Valid options are:
+
+        ack:
+            Turn this on to receive acknowledgement mail when you send
+            mail to the list.
+
+        digest:
+            Receive mail from the list bundled together instead of one
+            post at a time.
+
+        plain:
+            Get plain-text, not MIME-compliant, digests (only if
+            digest is set)
+
+        nomail:
+            Stop delivering mail.  Useful if you plan on taking a
+            short vacation.
+
+        norcv:
+            Turn this on to NOT receive posts you send to the list.
+            Does not work if digest is set.
+
+        hide:
+            Conceals your address when people look at who is on this
+            list.
+
+
+    options
+        Show the current values of your list options.
+
+    password <oldpassword> <newpassword> 
+        Change your list password.
+    
+    end or --
+       Stop processing commands (good to do if your mailer
+       automatically adds a signature file - it'll save you from a lot
+       of cruft).
+
+
+Commands should be sent to %(requestaddr)s
+
+Questions and concerns for the attention of a person should be sent to
+
+    %(adminaddr)s
