@@ -16,6 +16,9 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import sys, tempfile
+#sys.stderr = open("/home/mailman/mailman/logs/debug","a+")
+#sys.stdout = sys.stderr
 """Partition a mass delivery into a suitable set of subdeliveries."""
 
 # Heh, heh, heh, this partition reminds me of the knapsack problem ;-)
@@ -28,16 +31,14 @@ if not os.fork():
     import paths
     import mm_cfg
     def ContactTransport(sender, recip, filename):
-	os.execv(os.path.join(os.path.join(paths.prefix,"mail"),
-	                                     "contact_transport")
-                                         [sender,tmp_file]+to_addrs)
+        cmd = os.path.join(mm_cfg.SCRIPTS_DIR, "contact_transport")
+	os.execv(cmd, [cmd,sender,filename]+recip)
 
     domain_info = {}
     def GroupByDomain(addr):
         "Collect addrs by major subdomain - e.g. the 'python' in python.org."
 	parts = regsub.split(addr, '[.@]')
 	key = string.join(parts[-2:])
-        addr = repr(addr)
 	if not domain_info.has_key(key):
 	    domain_info[key] = [addr]
 	else:
@@ -70,11 +71,24 @@ if not os.fork():
 	    groups.append(lastgroup)
 	return groups
 
-    def ContactTranportForEachGroup(sender, groups, file_name):
+    def ContactTransportForEachGroup(sender, groups, file_name):
+	if len(groups) == 1:
+            ContactTransport(sender,group,file_name)
+            return
+        f = open(file_name, "r")
+	text = f.read()
+        f.close()
+        tempfile.tempdir = "/tmp"
+        tempfile.template = "mm.delivery"
 	for group in groups:
+	    tmpname = tempfile.mktemp()
+            file = open(tmpname, "w")
+	    file.write(text)
+ 	    file.close()
 	    if not os.fork():
-		ContactTransport(sender,group,file_name)
+		ContactTransport(sender,group,tmpname)
 		os._exit(0)
+        os.unlink(file_name)
 
     sender = sys.argv[2]
     spawns = eval(sys.argv[3])
@@ -87,5 +101,4 @@ if not os.fork():
 
     map(GroupByDomain, to_list)
     final_groups = BuildGroups(domain_info.values(), len(to_list))
-    
     ContactTransportForEachGroup(sender, final_groups, file_name)
