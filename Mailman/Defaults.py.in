@@ -566,6 +566,10 @@ DEFAULT_SEND_REMINDERS = 1
 # Send welcome messages to new users?  Probably should keep this set to 1.
 DEFAULT_SEND_WELCOME_MSG = 1
 
+# Send goodbye messages to unsubscribed members?  Probably should keep this
+# set to 1.
+DEFAULT_SEND_GOODBYE_MSG = 1
+
 # Wipe sender information, and make it look like the list-admin
 # address sends all messages
 DEFAULT_ANONYMOUS_LIST = 0
@@ -607,12 +611,28 @@ DEFAULT_SUBSCRIBE_POLICY = 1
 # does this site allow completely unchecked subscriptions?
 ALLOW_OPEN_SUBSCRIBE = 0
 
+# The default policy for unsubscriptions.  0 (unmoderated unsubscribes) is
+# highly recommended!
+# 0 - unmoderated unsubscribes
+# 1 - unsubscribes require approval
+DEFAULT_UNSUBSCRIBE_POLICY = 0
+
 # Private_roster == 0: anyone can see, 1: members only, 2: admin only.
 DEFAULT_PRIVATE_ROSTER = 0
 
 # When exposing members, make them unrecognizable as email addrs, so
 # web-spiders can't pick up addrs for spam purposes.
 DEFAULT_OBSCURE_ADDRESSES = 1
+
+# RFC 2369 defines List-* headers which are added to every message sent
+# through to the mailing list membership.  These are a very useful aid to end
+# users and should always be added.  However, not all MUAs are compliant and
+# if a list's membership has many such users, they may clamor for these
+# headers to be suppressed.  Because standards compliance is of high
+# importance, by default list owners cannot suppress these headers.  By
+# setting this variable to 1, list owners will be given the option to suppress
+# these headers.
+ALLOW_RFC2369_OVERRIDES = 0
 
 
 
@@ -770,6 +790,7 @@ APPROVE = 1
 REJECT = 2
 DISCARD = 3
 SUBSCRIBE = 4
+UNSUBSCRIBE = 5
 
 # Standard text field width
 TEXTFIELDWIDTH = 40
