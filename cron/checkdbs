@@ -28,23 +28,19 @@ def main():
 
     for name in Utils.list_names():
 	list = MailList.MailList(name, lock = 0)
-	count = list.RequestsPending()
+        count = list.NumRequestsPending()
 	if count:
+            text = Utils.maketext('checkdbs.txt',
+                                  {'count': count,
+                                   'host_name': list.host_name,
+                                   'adminDB':
+                                   list.GetAbsoluteScriptURL('admindb'),
+                                   'real_name': list.real_name,
+                                   })
 	    list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 
 				(count, list.real_name),
 				recipient = list.GetAdminEmail(),
-				text = '''
-The %s mailing list has %d request(s) waiting 
-for your consideration at:
-
-	%s
-	
-Please attend to this at your earliest convenience.  A reminder like this
-of the pending requests, if any, will be sent out daily.
-
-%s
-	''' % (list.real_name, count, list.GetAbsoluteScriptURL('admindb'),
-		 pending_requests(list)))
+				text = text % pending_requests(list))
 
 def pending_requests(list):
     import time, string
