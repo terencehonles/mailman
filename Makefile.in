@@ -106,11 +106,15 @@ install: $(SUBDIRS)
 #	    (cd $$d; $(MAKE) finish); \
 #	done
 
+update:
+	@(cd $(prefix) ; bin/update_to_10b6) | tee ./update.log
+
 clean: $(SUBDIRS)
 	@for d in $(SUBDIRS); \
 	do \
 	    (cd $$d; $(MAKE) clean); \
 	done
+	-rm update.log
 
 distclean: $(SUBDIRS)
 	@for d in $(SUBDIRS); \
