@@ -134,7 +134,7 @@ class BounceRunner(Runner):
             # these, but do log it.
             syslog('bounce', 'bounce message with non-members of %s: %s',
                    listname, COMMASPACE.join(addrs))
-            maybe_forward(mlist, msg)
+            #maybe_forward(mlist, msg)
 
 
 
