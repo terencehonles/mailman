@@ -182,6 +182,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetRequestEmail(self):
         return self.getListAddress('request')
 
+    def GetConfirmEmail(self, cookie):
+        return mm_cfg.VERP_CONFIRM_FORMAT % {
+            'addr'  : '%s-confirm' % self.internal_name(),
+            'cookie': cookie,
+            } + '@' + self.host_name
+
     def GetListEmail(self):
         return self.getListAddress()
 
@@ -579,6 +585,41 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     #
     # Membership management front-ends and assertion checks
     #
+    def InviteNewMember(self, userdesc):
+        """Invite a new member to the list.
+
+        This is done by creating a subscription pending for the user, and then
+        crafting a message to the member informing them of the invitation.
+        """
+        invitee = userdesc.address
+        requestaddr = self.GetRequestEmail()
+        cookie = Pending.new(Pending.SUBSCRIPTION, userdesc)
+        confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
+                                cookie)
+        listname = self.real_name
+        text = Utils.maketext(
+            'invite.txt',
+            {'email'      : invitee,
+             'listname'   : listname,
+             'hostname'   : self.host_name,
+             'confirmurl' : confirmurl,
+             'requestaddr': requestaddr,
+             'cookie'     : cookie,
+             'listowner'  : self.GetOwnerEmail(),
+             }, mlist=self)
+        if mm_cfg.VERP_CONFIRMATIONS:
+            subj = _(
+                'You have been invited to join the %(listname)s mailing list')
+            sender = self.GetConfirmEmail(cookie)
+        else:
+            # Do it the old fashioned way
+            subj = 'confirm ' + cookie
+            sender = requestaddr
+        msg = Message.UserNotification(
+            invitee, sender, subj,
+            text, lang=self.preferred_language)
+        msg.send(self)
+
     def AddMember(self, userdesc, remote=None):
         """Front end to member subscription.
 
@@ -665,8 +706,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
             # User confirmation required.  BAW: this should probably just
             # accept a userdesc instance.
-            cookie = Pending.new(Pending.SUBSCRIPTION,
-                                 email, name, password, digest, lang)
+            cookie = Pending.new(Pending.SUBSCRIPTION, userdesc)
             # Send the user the confirmation mailback
             if remote is None:
                 by = remote = ''
@@ -931,7 +971,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMBadConfirmation, 'op-less data %s' % (data,)
         if op == Pending.SUBSCRIPTION:
             try:
-                addr, fullname, password, digest, lang = data
+                userdesc = data[0]
+                # BAW: This should eventually be refactored
+                addr = userdesc.address
+                fullname = userdesc.fullname
+                password = userdesc.password
+                digest = userdesc.digest
+                lang = userdesc.language
             except ValueError:
                 raise Errors.MMBadConfirmation, 'bad subscr data %s' % (data,)
             if self.subscribe_policy == 3: # confirm + approve
@@ -939,7 +985,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
                     'subscriptions to %(name)s require administrator approval')
-            userdesc = UserDesc(addr, fullname, password, digest, lang)
             # If confirmation comes from the web, context should be a UserDesc
             # instance which contains overrides of the original subscription
             # information.  If it comes from email, then context is a Message
