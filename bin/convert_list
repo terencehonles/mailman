@@ -21,10 +21,12 @@ def GetRandomPassword():
 def SendExplanation(users):
     msg = mm_message.OutgoingMessage()
     msg.SetSender(list.GetAdminEmail())
-    msg.SetHeader('subject', 'Big change in %s mailing list' % list.real_name)
+    msg.SetHeader('subject', ('Big change in %s@%s mailing list'
+			      % (list.real_name, list.host_name)))
     # Yuck, a quick macro, undo this soon.
     ma = msg.AppendToBody
-    ma('The %s mailing list has just undergone a big change.\n' % list.real_name)
+    ma('The %s mailing list has just undergone a big change.\n'
+       % list.real_name)
     ma('It is running on a new mailing list package called "Mailman".\n')
     ma('This will hopefully solve a lot of problems that administering\n')
     ma('this list has presented.\n\n')
@@ -56,7 +58,8 @@ def SendExplanation(users):
 
 
 if len(sys.argv) <> 4:
-    print 'Usage: convert_list <list name> <non-digest-members-file> <digest-members-file>'
+    print ('Usage: convert_list <list name> <non-digest-members-file> '
+					    '<digest-members-file>')
     sys.exit(0)
 
 try:
