@@ -52,7 +52,7 @@ class Logger:
 	    try:
 		ou = os.umask(002)
 		try:
-		    f = self.__fp = open(self.__filename, 'a+')
+		    f = self.__fp = open(self.__filename, 'a+', 1)
 		finally:
 		    os.umask(ou)
 	    except IOError, e:
