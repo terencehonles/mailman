@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 4991 $)
+AC_REVISION($Revision: 4992 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -475,7 +475,6 @@ bin/check_perms \
 bin/cleanarch \
 bin/clone_member \
 bin/config_list \
-bin/digest_arch \
 bin/dumpdb \
 bin/find_member \
 bin/genaliases \

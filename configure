@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.23 
+# From configure.in Revision: 2.24 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -1987,7 +1987,6 @@ build/bin/check_perms:bin/check_perms \
 build/bin/cleanarch:bin/cleanarch \
 build/bin/clone_member:bin/clone_member \
 build/bin/config_list:bin/config_list \
-build/bin/digest_arch:bin/digest_arch \
 build/bin/dumpdb:bin/dumpdb \
 build/bin/find_member:bin/find_member \
 build/bin/genaliases:bin/genaliases \
@@ -2325,7 +2324,7 @@ chmod -R +x build
 
 # Test for the Chinese codecs.
 echo $ac_n "checking for Python Chinese Unicode codecs""... $ac_c" 1>&6
-echo "configure:2329: checking for Python Chinese Unicode codecs" >&5
+echo "configure:2328: checking for Python Chinese Unicode codecs" >&5
 cat > conftest.py <<EOF
 try:
   unicode("abc", "big5-tw")
