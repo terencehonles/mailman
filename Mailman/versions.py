@@ -70,6 +70,8 @@ def UpdateOldVars(l, stored_state):
         else:
             l.subscribe_policy = 2      # admin approval
         delattr(l, "open_subscribe")
+    if not hasattr(l, "administrivia"):
+        setatrr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
     #  - dropped vars:
 #    for a in ['archive_retain_text_copy',
 #              'archive_update_frequency']:

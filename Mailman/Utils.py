@@ -368,15 +368,16 @@ def ObscureEmail(addr, for_text=0):
     When for_text option is set (not default), make a sentence fragment
     instead of a token."""
     if for_text:
-	return re.sub("@", " at ", addr)
+	return string.replace(addr, "@", " at ")
     else:
-	return re.sub("@", "__at__", addr)
+	return string.replace(addr, "@", "__at__")
 
 def UnobscureEmail(addr):
     """Invert ObscureEmail() conversion."""
     # Contrived to act as an identity operation on already-unobscured
     # emails, so routines expecting obscured ones will accept both.
-    return re.sub("__at__", "@", addr)
+    return string.replace(addr, "__at__", "@")
+
 
 def map_maillists(func, names=None, unlock=None, verbose=0):
     """Apply function (of one argument) to all list objs in turn.
@@ -435,6 +436,59 @@ def maketext(templatefile, dict, raw=0):
         return template % dict
     return wrap(template % dict)
 
+
+#
+# given an IncomingMessage object,
+# test for administrivia (eg subscribe, unsubscribe, etc).
+# the test must be a good guess -- messages that return true
+# get sent to the list admin instead of the entire list.
+#
+def IsAdministrivia(msg):
+    lines = map(string.lower, msg.readlines())
+    if len(lines) > 30:
+        return 0
+    #
+    # check to see how many lines that actually have text in them there are
+    # 
+    admin_data = {"subscribe": (0, 3),
+                  "unsubscribe": (0, 1),
+                  "who": (0,0),
+                  "info": (0,0),
+                  "lists": (0,0),
+                  "set": (2, 3),
+                  "help": (0,0),
+                  "password": (2, 2),
+                  "options": (0,0),
+                  "remove": (0, 0)}
+    lines_with_text = 0
+    for line in lines:
+        if string.strip(line):
+            lines_with_text = lines_with_text + 1
+        if lines_with_text > 10: # we might want to change this to mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES.
+            return 0
+    if admin_data.has_key(string.lower(string.strip(msg.body))):
+        return 1
+    try:
+        if admin_data.has_key(string.lower(string.strip(msg["subject"]))):
+            return 1
+    except KeyError:
+        pass
+    for line in lines[:5]:
+        if not string.strip(line):
+            return
+        words = string.split(line)
+        if admin_data.has_key(words[0]):
+            min_args, max_args = admin_data[words[0]]
+            if min_args <= len(words[1:]) <= max_args:
+                return 1
+    return 0
+
+        
+            
+
+
+
+        
 
 
 

@@ -184,6 +184,8 @@ DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
 # get in 1 hour.
 DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
 
+DEFAULT_ADMINISTRIVIA = 1
+
 #
 # how long the cookie authorizing administrative
 # changes via the admin cgi lasts
@@ -194,6 +196,8 @@ ADMIN_COOKIE_LIFE = 60 * 20 # 20 minutes
 # on the admin cgi to unsubscribe them or change their options
 #
 ADMIN_MEMBER_CHUNKSIZE = 10
+
+
 
 # These directories are used to find various important files in the Mailman
 # installation.  PREFIX and EXEC_PREFIX are set by configure and should point
@@ -250,4 +254,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 5
+DATA_FILE_VERSION = 6

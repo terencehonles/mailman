@@ -278,6 +278,18 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              '"Reply-To" Munging Considered Harmful</a> for a general.'
              " discussion of this issue."),
 
+            ('administrivia', mm_cfg.Radio, ('No', 'Yes'), 0,
+             "check messages that are destined for the list for"
+             " adminsitrative request content?",
+
+             "Administrivia tests will chech mail that is destined for the list "
+             " for adminstriative contect (like subscribe, unsubscribe, etc). "
+             " If the message looks like an adminitrative request, it will "
+             "be added to the administrative requests database and the administrator "
+             "will be notified. "),
+
+
+
 	    ('reminders_to_admins', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Send password reminders to "-admin" address instead of'
 	     ' directly to user.',
@@ -780,8 +792,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def DeleteMember(self, name, whence=None):
 	self.IsListInitialized()
-# FindMatchingAddresses *should* never return more than 1 address.
-# However, should log this, just to make sure.
+        # FindMatchingAddresses *should* never return more than 1 address.
+        # However, should log this, just to make sure.
 	aliases = Utils.FindMatchingAddresses(name, self.members + 
 						 self.digest_members)
 	if not len(aliases):
@@ -897,7 +909,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    return line
 	return 0
 
-#msg should be an IncomingMessage object.
+    # msg should be an IncomingMessage object.
     def Post(self, msg, approved=0):
 	self.IsListInitialized()
         # Be sure to ExtractApproval, whether or not flag is already set!
@@ -953,6 +965,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  		self.AddRequest('post', Utils.SnarfMessage(msg),
  				Errors.IMPLICIT_DEST_MSG,
 				msg.getheader('subject'))
+            if self.administrivia and Utils.IsAdministrivia(msg):
+                self.AddRequest('post', Utils.SnarfMessage(msg),
+                                'possible administrivia to list',
+                                msg.getheader("subject"))
+                
  	    if self.bounce_matching_headers:
 		triggered = self.HasMatchingHeader(msg)
 		if triggered:
