@@ -756,31 +756,32 @@ def ChangeOptions(mlist, category, cgi_info, document):
     confirmed = 0
     if cgi_info.has_key('newpw'):
 	if cgi_info.has_key('confirmpw'):
-            if cgi_info.has_key('adminpw'):
+            if cgi_info.has_key('adminpw') and cgi_info['adminpw'].value:
                 try:
                     mlist.ConfirmAdminPassword(cgi_info['adminpw'].value)
                     confirmed = 1
                 except Errors.MMBadPasswordError:
-                    m = "Error: incorrect administrator password"
-                    document.AddItem(
-                        Header(3, Italic(FontAttr(m, color="ff5060"))))
-                    confirmed = 0
+                    AddErrorMessage(document,
+                                    'Incorrect administrator password',
+                                    tag='Error: ')
             if confirmed:
-                new = cgi_info['newpw'].value
-                confirm = cgi_info['confirmpw'].value
-                if new == confirm:
+                new = string.strip(cgi_info['newpw'].value)
+                confirm = string.strip(cgi_info['confirmpw'].value)
+                if new == '' and confirm == '':
+                    AddErrorMessage(document,
+                                    'Empty admin passwords are not allowed',
+                                    tag='Error: ')
+                elif new == confirm:
                     mlist.password = crypt(new, Utils.GetRandomSeed())
                     # Re-authenticate (to set new cookie)
                     mlist.WebAuthenticate(password=new, cookie='admin')
                 else:
-                    m = 'Error: Passwords did not match.'
-                    document.AddItem(
-                        Header(3, Italic(FontAttr(m, color="ff5060"))))
-
+                    AddErrorMessage(document, 'Passwords did not match',
+                                    tag='Error: ')
 	else:
-	    m = 'Error: You must type in your new password twice.'
-	    document.AddItem(
-                Header(3, Italic(FontAttr(m, color="ff5060"))))
+            AddErrorMessage(document,
+                            'You must type in your new password twice',
+                            tag='Error: ')
     #
     # for some reason, the login page mangles important values for the list
     # such as .real_name so we only process these changes if the category
@@ -920,9 +921,9 @@ def ChangeOptions(mlist, category, cgi_info, document):
 
 
 
-def AddErrorMessage(doc, errmsg, *args):
+def AddErrorMessage(doc, errmsg, tag='Warning: ', *args):
     doc.AddItem(Header(3, Bold(FontAttr(
-        'Warning: ', color="#ff0000", size="+2")).Format() +
+        tag, color="#ff0000", size="+2")).Format() +
                        Italic(errmsg % args).Format()))
 
 
