@@ -221,7 +221,10 @@ def prefix_subject(mlist, msg, msgdata):
     prefix = mlist.subject_prefix
     subject = msg.get('subject', '')
     # Try to figure out what the continuation_ws is for the header
-    lines = subject.splitlines()
+    if isinstance(subject, Header):
+        lines = str(subject).splitlines()
+    else:
+        lines = subject.splitlines()
     ws = '\t'
     if len(lines) > 1 and lines[1] and lines[1][0] in ' \t':
         ws = lines[1][0]
