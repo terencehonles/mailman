@@ -34,8 +34,4 @@ if exec_prefix == '${prefix}':
 # hack the path to include the parent directory of the $prefix/Mailman package
 # directory.
 import sys
-import os
-
-# Insert the path to the package in front while migrating. Eventually the
-# above line should disappear.
 sys.path.insert(0, prefix)
