@@ -700,9 +700,9 @@ def ChangeOptions(lst, category, cgi_info, document):
         subscribe_success = []
         subscribe_errors = []
         if lst.send_welcome_msg:
-            send_ack = 1
+            noack = 0
         else:
-            send_ack = 0
+            noack = 1
 	for new_name in map(string.strip,names):
             digest = 0
             if not lst.digestable:
@@ -711,7 +711,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 digest = 1
 	    try:
 		lst.ApprovedAddMember(new_name, (Utils.GetRandomSeed() +
-                                                  Utils.GetRandomSeed()), digest, send_ack)
+                                                  Utils.GetRandomSeed()), digest, noack)
                 subscribe_success.append(new_name)
 	    except Errors.MMAlreadyAMember:
                 subscribe_errors.append((new_name, 'Already a member'))
