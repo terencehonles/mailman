@@ -298,7 +298,7 @@ class ListAdmin:
                 {'username'   : addr,
                  'listname'   : self.real_name,
                  'hostname'   : self.host_name,
-                 'admindb_url': self.GetAbsoluteScriptURL('admindb'),
+                 'admindb_url': self.GetScriptURL('admindb', absolute=1),
                  })
             adminaddr = self.GetAdminEmail()
             msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
