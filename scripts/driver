@@ -84,7 +84,11 @@ def run_main():
         module = getattr(pkg, scriptname)
         main = getattr(module, 'main')
         try:
-            main()
+            try:
+                sys.stderr = logger
+                main()
+            finally:
+                sys.stderr = sys.__stderr__
         except SystemExit:
             # this is a valid way for the function to exit
             pass
@@ -180,12 +184,6 @@ def print_environment(logfp=None):
 
 
 try:
-    # Python 1.5 doesn't have these by default.  Let's make our lives easy
-    if not hasattr(sys, '__stderr__'):
-        sys.__stderr__ = sys.stderr
-    if not hasattr(sys, '__stdout__'):
-        sys.__stdout__ = sys.stdout
-
     run_main()
 except:
     # Some exception percolated all the way back up to the top.  This
