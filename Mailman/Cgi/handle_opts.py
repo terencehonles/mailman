@@ -140,6 +140,10 @@ def process_form(mlist, user, doc):
                              "You seem to no longer be a list member.")
             except Errors.MMBadPasswordError:
                 PrintResults(mlist, operation, doc, "Incorrect password.")
+            except Errors.MMBadUserError:
+                PrintResults(
+                    mlist, operation, doc,
+                    "You have no password.  Contact the list administrator.")
 
             doc.AddItem(Header(2, "List Subscriptions for %s on %s"
                                % (user, mlist.host_name)))
