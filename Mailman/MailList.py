@@ -576,7 +576,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              limit.''')),
 
             ('host_name', mm_cfg.Host, WIDTH, 0,
-             _('Host name this list prefers.'),
+             _('Host name this list prefers for email.'),
 
              _("""The "host_name" is the preferred name for email to
              mailman-related addresses on this host, and generally should be
@@ -584,24 +584,24 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              useful for selecting among alternative names of a host that has
              multiple addresses.""")),
 
-            ('web_page_url', mm_cfg.String, WIDTH, 0,
-             _('''Base URL for Mailman web interface.  The URL must end in a
-             single "/".  See also the details for an important warning when
-             changing this value.'''),
+##            ('web_page_url', mm_cfg.String, WIDTH, 0,
+##             _('''Base URL for Mailman web interface.  The URL must end in a
+##             single "/".  See also the details for an important warning when
+##             changing this value.'''),
 
-             _("""This is the common root for all Mailman URLs referencing
-             this mailing list.  It is also used in the listinfo overview of
-             mailing lists to identify whether or not this list resides on the
-             virtual host identified by the overview URL; i.e. if this value
-             is found (anywhere) in the URL, then this list is considered to
-             be on that virtual host.  If not, then it is excluded from the
-             listing.
+##             _("""This is the common root for all Mailman URLs referencing
+##             this mailing list.  It is also used in the listinfo overview of
+##             mailing lists to identify whether or not this list resides on the
+##             virtual host identified by the overview URL; i.e. if this value
+##             is found (anywhere) in the URL, then this list is considered to
+##             be on that virtual host.  If not, then it is excluded from the
+##             listing.
 
-             <p><b><font size="+1">Warning:</font></b> setting this value to
-             an invalid base URL will render the mailing list unusable.  You
-             will also not be able to fix this from the web interface!  In
-             that case, the site administrator will have to fix the mailing
-             list from the command line.""")),
+##             <p><b><font size="+1">Warning:</font></b> setting this value to
+##             an invalid base URL will render the mailing list unusable.  You
+##             will also not be able to fix this from the web interface!  In
+##             that case, the site administrator will have to fix the mailing
+##             list from the command line.""")),
           ]
         if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
