@@ -6,7 +6,7 @@ We accumulate users and their passwords, and use the last list to send a
 single message to each user with their complete collection of passwords,
 rather than sending a single message for each password."""
 
-__version__ = "$Revision: 388 $"
+__version__ = "$Revision: 408 $"
 
 # This puppy should probably do lots of logging.
 
@@ -69,25 +69,29 @@ def MailAllPasswords(list, users):
  			    sender = mm_cfg.MAILMAN_OWNER,
                             add_headers = ["X-No-Archive: yes"])
 
-# Consolidate all the list/url/password info for each user, so we send
-# the user a single message with the info for all their lists on this
-# site.
-list = None
-for name in mm_utils.list_names():
-    list = maillist.MailList(name)
-    list_name = list.real_name
-    for user, password in list.passwords.items():
-	url = list.GetOptionsURL(user)
-	if users.has_key(user):
-	    users[user].append(list_name, password, url)
-	else:
-	    users[user] = [(list_name, password, url)]
-    # Unlocking each list after identifying passwords, but before having
-    # the consolidated list, means that there is a window for discrepancy
-    # between the reported and actual password.  Big deal - if the user
-    # changed the password in the meanwhile, they'll realize it, and it's
-    # not worth the extra deadlock risk.
-    list.Unlock()
+def main():
+    """Consolidate all the list/url/password info for each user, so we send 
+    the user a single message with the info for all their lists on this
+    site."""
+    list = None
+    for name in mm_utils.list_names():
+	list = maillist.MailList(name)
+	list_name = list.real_name
+	for user, password in list.passwords.items():
+	    url = list.GetOptionsURL(user)
+	    if users.has_key(user):
+		users[user].append(list_name, password, url)
+	    else:
+		users[user] = [(list_name, password, url)]
+	# Unlocking each list after identifying passwords, but before having
+	# the consolidated list, means that there is a window for discrepancy
+	# between the reported and actual password.  Big deal - if the user
+	# changed the password in the meanwhile, they'll realize it, and it's
+	# not worth the extra deadlock risk.
+	list.Unlock()
 
-if list:
-    MailAllPasswords(list, users)
+    if list:
+	MailAllPasswords(list, users)
+
+if __name__ == "__main__":
+    main()
