@@ -125,15 +125,14 @@ class Runner:
         # Find out which mailing list this message is destined for.
         listname = msgdata.get('listname')
         if not listname:
-            mlist = None
-        else:
-            mlist = self._open_list(listname)
-            if not mlist:
-                syslog('error',
-                       'Dequeuing message destined for missing list: %s',
-                       listname)
-                self._shunt.enqueue(msg, msgdata)
-                return
+            listname = mm_cfg.MAILMAN_SITE_LIST
+        mlist = self._open_list(listname)
+        if not mlist:
+            syslog('error',
+                   'Dequeuing message destined for missing list: %s',
+                   listname)
+            self._shunt.enqueue(msg, msgdata)
+            return
         # Now process this message, keeping track of any subprocesses that may
         # have been spawned.  We'll reap those later.
         #
