@@ -334,17 +334,33 @@ upgrade.
           % bin/mailmanctl start
 
       If you want to start Mailman every time you reboot your system,
-      you should do the following as root (note I'm assuming you have
-      an /etc/init.d directory; some Unixes may put that in
-      /etc/rc.d/init.d):
+      and your OS supports the chkconfig command (e.g. RedHat and
+      Mandrake Linuxes) you can simply do the following as root:
 
-          % cp misc/S98mailman /etc/init.d/mailman
-          % cd /etc/rc.d/rc2.d
+          % cp misc/mailman /etc/init.d/mailman
+          % chkconfig --add mailman
+
+      (Note that /etc/init.d may be /etc/rc.d/init.d on some systems.)
+
+      For Unixes that don't support chkconfig, simply copy
+      misc/mailman as above, then set up the following symbolic links,
+      again as root:
+
+          % cp misc/mailman /etc/init.d
+          % cd /etc/rc.d/rc0.d
+          % ln -s ../init.d/mailman K12mailman
+          % cd ../rc1.d
+          % ln -s ../init.d/mailman K12mailman
+          % cd ../rc2.d
           % ln -s ../init.d/mailman S98mailman
           % cd ../rc3.d
           % ln -s ../init.d/mailman S98mailman
+          % cd ../rc4.d
+          % ln -s ../init.d/mailman S98mailman
           % cd ../rc5.d
           % ln -s ../init.d/mailman S98mailman
+          % cd ../rc6.d
+          % ln -s ../init.d/mailman K12mailman
 
     - Add aliases for `mailman' and `mailman-owner' to the system's
       mail alias database.  These aliases should point to whoever is
