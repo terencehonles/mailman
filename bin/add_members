@@ -26,29 +26,35 @@
 """Add members to a list from the command line.
 
 Usage:
-    add_members [-n <file>] [-d <file>] [-c <y|n>] [-w <y|n>] [-h] listname
+    add_members [options] listname
 
-Where:
+Options:
 
-    --non-digest-members-file <file>
-    -n <file>
+    --non-digest-members-file=file
+    -n file
         A file containing addresses of the members to be added, one
         address per line.  This list of people become non-digest
-        members.  If <file> is `-', read addresses from stdin.
+        members.  If file is `-', read addresses from stdin.
 
-    --digest-members-file <file>
-    -d <file>
+    --digest-members-file=file
+    -d=file
         Similar to above, but these people become digest members.
 
     --changes-msg=<y|n>
     -c <y|n> 
-	set whether or not to send the list members the `there's going to be
+	Set whether or not to send the list members the `there's going to be
 	big changes to your list' message. defaults to no.
 
     --welcome-msg=<y|n>
     -w <y|n>
-        set whether or not to send the list members a welcome message,
+        Set whether or not to send the list members a welcome message,
         overriding whatever the list's `send_welcome_msg' setting is.
+
+    --admin-notify=<y|n>
+    -a <y|n>
+        Set whether or not to send the list administrators a notification on
+        the success/failure of these subscriptions, overriding whatever the
+        list's `admin_notify_mchanges' setting is.
 
     --help
     -h
@@ -65,14 +71,18 @@ files can be `-'.
 import sys
 import os
 import getopt
-import paths
 
+import paths
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
+from Mailman.pythonlib.StringIO import StringIO
 from Mailman.i18n import _
+
+# WIBNI I could get parseaddr() from mimelib.address?
+from Mailman.pythonlib.rfc822 import parseaddr
 
 
 
@@ -116,11 +126,48 @@ def SendExplanation(mlist, users):
 
 
 
+class Tee:
+    def __init__(self, outfp):
+        self.__outfp = outfp
+
+    def write(self, msg):
+        sys.stdout.write(msg)
+        self.__outfp.write(msg)
+
+
+class UserDesc: pass
+
+
+
+def addall(mlist, members, digest, ack, outfp):
+    tee = Tee(outfp)
+    for member in members:
+        userdesc = UserDesc()
+        userdesc.fullname, userdesc.address = parseaddr(member)
+        userdesc.digest = digest
+
+        try:
+            mlist.ApprovedAddMember(userdesc, ack, 0)
+        except Errors.MMAlreadyAMember:
+            print >> tee, _('Already a member: %(member)s')
+        except Errors.MMBadEmailError:
+            if userdesc.address == '':
+                print >> tee, _('Bad/Invalid email address: blank line')
+            else:
+                print >> tee, _('Bad/Invalid email address: %(member)s')
+        except MMHostileAddress:
+            print >> tee, _('Hostile address (illegal characters): %(member)s')
+        else:
+            print >> tee, _('Subscribed: %(member)s')
+        
+
+
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   'n:d:c:w:h',
-                                   ['non-digest-members-file=',
+                                   'a:n:d:c:w:h',
+                                   ['admin-notify=',
+                                    'non-digest-members-file=',
                                     'digest-members-file=',
                                     'changes-msg=',
 				    'welcome-msg=',
@@ -135,7 +182,8 @@ def main():
     nfile = None
     dfile = None
     send_changes_msg = 0
-    send_welcome_msg = -1
+    send_welcome_msg = None
+    admin_notif = None
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -144,19 +192,26 @@ def main():
         elif opt in ('-n', '--non-digest-members-file'):
             nfile = arg
         elif opt in ('-c', '--changes-msg'):
-            if arg == 'y':
+            if arg.lower()[0] == 'y':
                 send_changes_msg = 1
-            elif arg == 'n':
+            elif arg.lower()[0] == 'n':
                 send_changes_msg = 0
             else:
-                usage(1)
+                usage(1, _('Bad argument to -c/--changes-msg: %(arg)s'))
         elif opt in ('-w', '--welcome-msg'):
-            if arg == 'y':
+            if arg.lower()[0] == 'y':
                 send_welcome_msg = 1
-            elif arg == 'n':
+            elif arg.lower()[0] == 'n':
                 send_welcome_msg = 0
             else:
-                usage(1)
+                usage(1, _('Bad argument to -w/--welcome-msg: %(arg)s'))
+        elif opt in ('-a', '--admin-notify'):
+            if arg.lower()[0] == 'y':
+                admin_notif = 1
+            elif arg.lower()[0] == 'n':
+                admin_notif = 0
+            else:
+                usage(1, _('Bad argument to -a/--admin-notify: %(arg)s'))
                 
     if dfile is None and nfile is None:
         usage(1)
@@ -166,60 +221,53 @@ def main():
                    'from standard input.'))
 
     try:
-        ml = MailList.MailList(listname)
+        mlist = MailList.MailList(listname)
     except Errors.MMUnknownListError:
-        usage(1, _('You must first create the list by running: '
-                   'newlist %(listname)s'))
-    if send_welcome_msg == -1:
-        send_welcome_msg = ml.send_welcome_msg
+        usage(1, _('No such list: %(listname)s'))
+
+    # Set up defaults
+    if send_welcome_msg is None:
+        send_welcome_msg = mlist.send_welcome_msg
+    if admin_notif is None:
+        admin_notif = mlist.admin_notify_mchanges
+
+    # Read the regular and digest member files
     try:
         dmembers = []
         if dfile:
-            try:
-                dmembers = readfile(dfile)
-            except IOError:
-                pass
+            dmembers = readfile(dfile)
 
         nmembers = []
         if nfile:
-            try:
-                nmembers = readfile(nfile)
-            except IOError:
-                pass
+            nmembers = readfile(nfile)
 
         if not dmembers and not nmembers:
-            usage(1)
+            usage(0, _('Nothing to do.'))
+
+        s = StringIO()
 
         if nmembers:
-            nres = ml.ApprovedAddMembers(nmembers, None, 0, send_welcome_msg)
-        else:
-            nres = {}
+            addall(mlist, nmembers, 0, send_welcome_msg, s)
 
         if dmembers:
-            dres = ml.ApprovedAddMembers(dmembers, None, 1, send_welcome_msg)
-        else:
-            dres = {}
+            addall(mlist, dmembers, 1, send_welcome_msg, s)
 
-        for result in (nres, dres):
-            for name in result.keys():
-                if result[name] is None:
-                    pass
-                else:
-                    # `name' was not subscribed, find out why.  On failures,
-                    # result[name] is set from sys.exc_info()[:2]
-                    e, v = result[name]
-                    if e is Errors.MMAlreadyAMember:
-                        print >> sys.stderr, \
-                              _('Already subscribed (skipping):'), name
-                    elif issubclass(e, Errors.EmailAddressError):
-                        if not name:
-                            name = _('( blank line )')
-                        print >> sys.stderr, \
-                              _('Not a valid email address:'), name
+        if admin_notif:
+            adminaddr = mlist.GetAdminEmail()
+            realname = mlist.real_name
+            subject = _('%(realname)s subscription notification')
+            msg = Message.UserNotification(
+                mlist.owner, mm_cfg.MAILMAN_OWNER, subject, s.getvalue())
+            msg.send(mlist)
 
         if send_changes_msg:
-            SendExplanation(ml, nmembers + dmembers)
-    finally:
-        ml.Unlock()
+            SendExplanation(mlist, nmembers + dmembers)
 
-main()
+        mlist.Save()
+    finally:
+        mlist.Unlock()
+
+
+
+if __name__ == '__main__':
+    main()
