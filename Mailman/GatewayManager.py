@@ -50,10 +50,18 @@ class GatewayManager:
               'The name of the Usenet group to gateway to and/or from.'),
 
             ('gateway_to_news',  mm_cfg.Toggle, ('No', 'Yes'), 0,
-             'Should posts to the mailing list be resent to the '
-             'newsgroup?'),
+             'Should new posts to the mailing list be sent to the newsgroup?'),
 
             ('gateway_to_mail',  mm_cfg.Toggle, ('No', 'Yes'), 0,
-             'Should newsgroup posts not sent from the list be resent '
-             'to the list?')
+             'Should new posts to the newsgroup be sent to the mailing list?'),
+
+            ('_mass_catchup', mm_cfg.Toggle, ('No', 'Yes'), 0,
+             'Should Mailman perform a <em>catchup</em> on the newsgroup?',
+             '''When you tell Mailman to perform a catchup on the newsgroup,
+             this means that you want to start gating messages to the mailing
+             list with the next new message found.  All earlier
+             messages on the newsgroup will be ignored.  This is as if you
+             were reading the newsgroup yourself, and you marked all current
+             messages as <em>read</em>.  By catching up, your mailing list
+             members will not see any of the earlier messages.''')
             ]
