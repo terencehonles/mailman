@@ -329,6 +329,7 @@ def NewVars(l):
                         mm_cfg.DEFAULT_NEW_MEMBER_OPTIONS)
     # Emergency moderation flag
     add_only_if_missing('emergency', 0)
+    add_only_if_missing('hold_and_cmd_autoresponses', {})
 
 
 
