@@ -132,7 +132,8 @@ your membership administrative address, %(addr)s.'''))
                         _charset=Utils.GetCharSet(self.preferred_language))
         attachment = MIMEMessage(msg)
         notice = Message.UserNotification(
-            recips, self.GetBouncesEmail(), subject)
+            recips, self.GetBouncesEmail(), subject,
+            lang=self.preferred_language)
         notice.set_type('multipart/mixed')
         notice.attach(text)
         notice.attach(attachment)
