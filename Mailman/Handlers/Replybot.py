@@ -36,20 +36,19 @@ def process(mlist, msg, msgdata):
     # replybot
     precedence = msg.get('precedence', '').lower()
     if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
-        syslog('vette', 'Precedence: bulk/junk/list message discarded by: %s',
-               mlist.GetRequestEmail())
+        syslog('vette', 'Precedence: %s message ignored by: %s',
+               precedence, mlist.GetRequestEmail())
         return
     # Check to see if the list is even configured to autorespond to this email
     # message.  Note: the mailowner script sets the `toadmin' or `toowner' key
     # (which for replybot purposes are equivalent), and the mailcmd script
     # sets the `torequest' key.
-    toadmin = msgdata.get('toadmin', msgdata.get('toowner'))
+    toadmin = msgdata.get('toowner')
     torequest = msgdata.get('torequest')
     if ((toadmin and not mlist.autorespond_admin) or
            (torequest and not mlist.autorespond_requests) or \
            (not toadmin and not torequest and not mlist.autorespond_postings)):
         return
-    #
     # Now see if we're in the grace period for this sender.  graceperiod <= 0
     # means always autorespond, as does an "X-Ack: yes" header (useful for
     # debugging).
@@ -75,6 +74,8 @@ def process(mlist, msg, msgdata):
     d = SafeDict({'listname'    : realname,
                   'listurl'     : mlist.GetScriptURL('listinfo'),
                   'requestemail': mlist.GetRequestEmail(),
+                  # BAW: Deprecate adminemail; it's not advertised but still
+                  # supported for backwards compatibility.
                   'adminemail'  : mlist.GetBouncesEmail(),
                   'owneremail'  : mlist.GetOwnerEmail(),
                   })
