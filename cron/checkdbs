@@ -50,10 +50,11 @@ def pending_requests(list):
 	    pending.append("")
 	pending.append("Pending posts:")
 	for req in requests['post']:
-	    id, when, (who, msg), objection = req
-	    pending.append("\t%s %s:\n\t\t%s" % (string.strip(who),
-						 time.ctime(when),
-						 `string.strip(objection)`))
+	    id, when, (who, msg), cause, subj = req
+	    pending.append("\tFrom: %s on %s:\n\tCause: %s"
+                           % (string.strip(who),
+                              time.ctime(when),
+                              `string.strip(cause)`))
     return string.join(pending, '\n')
 
 if __name__ == "__main__":
