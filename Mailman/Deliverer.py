@@ -145,6 +145,7 @@ class Deliverer:
         # these can be used to surreptitiously gather membership info
         del msg['return-receipt-to']
         del msg['disposition-notification-to']
+        del msg['x-confirm-reading-to']
         # get rid of duplicate fields
         del msg['sender']
         del msg['errors-to']
