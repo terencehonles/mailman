@@ -160,8 +160,7 @@ class Archiver:
             mbox.AppendMessage(post)
             mbox.fp.close()
         except IOError, msg:
-            syslog('error', 'Archive file access failure:\n\t%s %s' %
-                   (afn, msg))
+            syslog('error', 'Archive file access failure:\n\t%s %s', afn, msg)
             raise
 
     def ExternalArchive(self, ar, txt):
@@ -171,7 +170,7 @@ class Archiver:
         extarch.write(txt)
         status = extarch.close()
         if status:
-            syslog('error', 'external archiver non-zero exit status: %d\n' %
+            syslog('error', 'external archiver non-zero exit status: %d\n',
                    (status & 0xff00) >> 8)
 
     #
@@ -214,7 +213,7 @@ class Archiver:
                 f.close()
         except:
             traceback.print_exc()
-            syslog('error', 'CORRUPT ARCHIVE FOR LIST: %s' %
+            syslog('error', 'CORRUPT ARCHIVE FOR LIST: %s',
                    self.internal_name())
         else:
             t1 = time.time()
