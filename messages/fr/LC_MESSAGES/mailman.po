@@ -808,7 +808,7 @@ msgstr "Motifs du refus"
 #: Mailman/Cgi/admindb.py:275 Mailman/Cgi/admindb.py:320
 #: Mailman/Cgi/admindb.py:359 Mailman/Cgi/admindb.py:570
 msgid "Defer"
-msgstr "Différer"
+msgstr "Repousser"
 
 #: Mailman/Cgi/admindb.py:276 Mailman/Cgi/admindb.py:321
 #: Mailman/Cgi/admindb.py:570
@@ -819,7 +819,7 @@ msgstr "Approuver"
 #: Mailman/Cgi/admindb.py:359 Mailman/Cgi/admindb.py:570
 #: Mailman/Gui/Privacy.py:206 Mailman/Gui/Privacy.py:280
 msgid "Reject"
-msgstr "Rejet"
+msgstr "Rejeter"
 
 #: Mailman/Cgi/admindb.py:278 Mailman/Cgi/admindb.py:323
 #: Mailman/Cgi/admindb.py:359 Mailman/Cgi/admindb.py:570
@@ -853,7 +853,7 @@ msgstr "Accepter"
 
 #: Mailman/Cgi/admindb.py:367
 msgid "Preserve messages for the site administrator"
-msgstr "Concerver les messages pour l'administrateur du site"
+msgstr "Concerver une copie de ce message pour l'administrateur du site"
 
 #: Mailman/Cgi/admindb.py:373
 msgid "Forward messages (individually) to:"
@@ -950,7 +950,7 @@ msgstr "Concerver les messages pour l'administrateur du site"
 
 #: Mailman/Cgi/admindb.py:584
 msgid "Additionally, forward this message to: "
-msgstr "De plus, faîtes suivre ce message à:"
+msgstr "De plus, faire suivre ce message à:"
 
 #: Mailman/Cgi/admindb.py:589
 msgid "If you reject this post,<br>please explain (optional):"
@@ -5993,7 +5993,7 @@ msgstr "Le mot de passe fournit n'est pas correcte."
 #: Mailman/MailCommandHandler.py:362 Mailman/MailCommandHandler.py:452
 #: Mailman/MailCommandHandler.py:617
 msgid "Succeeded."
-msgstr "Réussit."
+msgstr "Réussi."
 
 #: Mailman/MailCommandHandler.py:364 Mailman/MailCommandHandler.py:370
 #: Mailman/MailCommandHandler.py:438 Mailman/MailCommandHandler.py:623
