@@ -1204,5 +1204,6 @@ add_language('nl',   _('Dutch'),               'iso-8859-1')
 add_language('no',   _('Norwegian'),           'iso-8859-1')
 add_language('pt_BR', _('Portuguese (Brazil)'), 'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
+add_language('sv',   _('Swedish'),             'iso-8859-1')
 
 del _
