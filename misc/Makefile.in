@@ -48,7 +48,7 @@ PYTHONLIBDIR=	$(prefix)/pythonlib
 SETUPINSTOPTS=	--install-lib $(PYTHONLIBDIR) --install-purelib $(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
-EMAILPKG=	email-2.0.2
+EMAILPKG=	email-2.0.4
 JACODECSPKG=	JapaneseCodecs-1.4.5
 KOCODECSPKG=	KoreanCodecs-2.0.4
 
