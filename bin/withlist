@@ -96,16 +96,16 @@ Running listaddr.requestaddr() ...
 mylist-request@myhost.com
 
 As another example, say you wanted to change the password for a particular
-user on a particular list.  You could put the following function in a file called `changepw.py':
+user on a particular list.  You could put the following function in a file
+called `changepw.py':
 
-import string
+from Mailman.Errors import NotAMember
 
 def changepw(mlist, addr, newpasswd):
-    addr = string.lower(addr)
-    if mlist.passwords.has_key(addr):
-        mlist.passwords[string.lower(addr)] = newpasswd
+    try:
+        mlist.setMemberPassword(addr, newpasswd)
         mlist.Save()
-    else:
+    except NotAMember:
         print 'No address matched:', addr
 
 and run this from the command line:
