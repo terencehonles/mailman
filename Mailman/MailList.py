@@ -808,15 +808,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              _('Header added to mail sent to regular list members'),
              _('''Text prepended to the top of every immediately-delivery
              message. ''') + Utils.maketext('headfoot.html',
-                                            lang=self.preferred_language,
-                                            raw=1)),
+                                            raw=1, mlist=self)),
             
             ('msg_footer', mm_cfg.Text, (4, WIDTH), 0,
              _('Footer added to mail sent to regular list members'),
              _('''Text appended to the bottom of every immediately-delivery
              message. ''') + Utils.maketext('headfoot.html',
-                                            lang=self.preferred_language,
-                                            raw=1)),
+                                            raw=1, mlist=self)),
             ]
 
         config_info['bounce'] = Bouncer.GetConfigInfo(self)
@@ -1046,7 +1044,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  'remote'      : remote,
                  'listadmin'   : self.GetAdminEmail(),
                  'confirmurl'  : confirmurl,
-                 }, lang=lang)
+                 }, lang=lang, mlist=self)
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
        _('%(realname)s -- confirmation of subscription -- confirm %(cookie)s'),
@@ -1116,7 +1114,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              'remote'      : remote,
              'listadmin'   : self.GetAdminEmail(),
              'confirmurl'  : confirmurl,
-             }, lang=lang)
+             }, lang=lang, mlist=self)
         msg = Message.UserNotification(
             addr, self.GetRequestEmail(),
             _('%(realname)s -- confirmation of removal -- confirm %(cookie)s'),
@@ -1234,7 +1232,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                             "adminsubscribeack.txt",
                             {"listname" : self.real_name,
                              "member"   : name,
-                             }, lang=lang)
+                             }, lang=lang, mlist=self)
                         msg = Message.UserNotification(
                             self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
                         msg.send(self)
@@ -1286,7 +1284,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 'adminunsubscribeack.txt',
                 {'member'  : name,
                  'listname': self.real_name,
-                 }, lang=self.preferred_language)
+                 }, mlist=self)
             msg = Message.UserNotification(self.owner,
                                            mm_cfg.MAILMAN_OWNER,
                                            subject, text)
