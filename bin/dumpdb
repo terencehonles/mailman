@@ -48,7 +48,7 @@ import cPickle
 from mimelib.Generator import Generator
 
 import paths
-from Mailman.Queue.Switchboard import Switchboard
+from Mailman.Queue.Switchboard import DumperSwitchboard
 from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
@@ -101,8 +101,9 @@ def main():
 
     # Handle dbs
     if filetype == 1:
-        # Note: this uses a protected interface
-        d = Switchboard(os.path.split(filename)[0])._ext_read(filename)
+        # BAW: this probably doesn't work if there are mixed types of .db
+        # files (i.e. some marshals, some bdbs).
+        d = DumperSwitchboard().read(filename)
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(d)
     else:
