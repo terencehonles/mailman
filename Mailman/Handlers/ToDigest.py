@@ -147,12 +147,14 @@ def send_i18n_digests(mlist, mboxfp):
     mimemsg['From'] = mlist.GetRequestEmail()
     mimemsg['Subject'] = digestid
     mimemsg['To'] = mlist.GetListEmail()
+    mimemsg['Reply-To'] = mlist.GetListEmail()
     # Set things up for the rfc1153 digest
     plainmsg = StringIO()
     rfc1153msg = Message.Message()
     rfc1153msg['From'] = mlist.GetRequestEmail()
     rfc1153msg['Subject'] = digestid
     rfc1153msg['To'] = mlist.GetListEmail()
+    rfc1153msg['Reply-To'] = mlist.GetListEmail()
     separator70 = '-' * 70
     separator30 = '-' * 30
     # In the rfc1153 digest, the masthead contains the digest boilerplate plus
