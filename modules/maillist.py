@@ -279,7 +279,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'this machine?'),
 
 	    ('open_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Are subscribes done without admins approval (<em>open</em>)?',
+	     'Are subscribes done without admins approval (ie, is this'
+             ' an <em>open</em> list)?',
 
              "Disabling this option makes the list <em>closed</em>, where"
              " members are admitted at the discretion of the administrator."),
