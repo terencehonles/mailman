@@ -64,6 +64,7 @@ STATE = State()
 
 DIRPERMS = S_ISGID | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
 QFILEPERMS = S_ISGID | S_IRWXU | S_IRWXG
+PYFILEPERMS = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
 
 
 
@@ -119,6 +120,16 @@ def checkwalk(arg, dirname, names):
                 os.chmod(path, mode | targetperms)
             else:
                 print
+        elif os.path.splitext(path)[1] in ('.py', '.pyc', '.pyo'):
+            octperms = oct(PYFILEPERMS)
+            if mode & PYFILEPERMS <> PYFILEPERMS:
+                print _('source perms must be %(octperms)s: %(path)s'),
+                arg.ERRORS += 1
+                if STATE.FIX:
+                    print _('(fixing)')
+                    os.chmod(path, mode | PYFILEPERMS)
+                else:
+                    print
 
 def checkall():
     # first check PREFIX
