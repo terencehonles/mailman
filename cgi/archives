@@ -8,7 +8,7 @@ import os, types, posix, string
 import mm_utils, maillist, htmlformat
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error", label = 'mmroster',
+    sys.stderr = mm_utils.StampedLogger("error", label = 'archives',
                                         manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
