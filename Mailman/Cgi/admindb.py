@@ -202,7 +202,7 @@ def show_requests(mlist, doc):
             addr = mlist.GetRecord(id)
             fullname = mlist.getMemberName(addr)
             if fullname is None:
-                fullname = _('n/a')
+                fullname = ''
             table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
                           RadioButtonArray(id, (_('Defer'),
                                                 _('Approve'),
