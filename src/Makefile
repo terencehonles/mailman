@@ -1,43 +1,45 @@
 HOME=/home/mailman
-MAILMAN=/home/mailman/mailman
+CGI=${HOME}/cgi-bin
+MAILMAN=${HOME}/mailman
+
 
 all: admin_wrapper admindb_wrapper archives_wrapper edithtml_wrapper options_wrapper listinfo_wrapper subscribe_wrapper roster_wrapper handle_opts_wrapper mail_wrapper alias_wrapper
 
 admin_wrapper:
-	gcc -o ${HOME}/cgi-bin/admin admin-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/admin
+	gcc -D SCRIPT="\"admin\"" -o ${CGI}/admin cgi-wrapper.c
+	chmod a+sx ${CGI}/admin
 
 admindb_wrapper:
-	gcc -o ${HOME}/cgi-bin/admindb admindb-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/admindb
+	gcc -D SCRIPT="\"admindb\"" -o ${CGI}/admindb cgi-wrapper.c
+	chmod a+sx ${CGI}/admindb
 
 archives_wrapper:
-	gcc -o ${HOME}/cgi-bin/archives archives-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/archives
+	gcc -D SCRIPT="\"archives\"" -o ${CGI}/archives cgi-wrapper.c
+	chmod a+sx ${CGI}/archives
 
 edithtml_wrapper:
-	gcc -o ${HOME}/cgi-bin/edithtml edithtml-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/edithtml
+	gcc -D SCRIPT="\"edithtml\"" -o ${CGI}/edithtml cgi-wrapper.c
+	chmod a+sx ${CGI}/edithtml
 
 options_wrapper: 
-	gcc -o ${HOME}/cgi-bin/options options-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/options
+	gcc -D SCRIPT="\"options\"" -o ${CGI}/options cgi-wrapper.c
+	chmod a+sx ${CGI}/options
 
 listinfo_wrapper:
-	gcc -o ${HOME}/cgi-bin/listinfo listinfo-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/listinfo
+	gcc -D SCRIPT="\"listinfo\"" -o ${CGI}/listinfo cgi-wrapper.c
+	chmod a+sx ${CGI}/listinfo
 
 subscribe_wrapper:
-	gcc -o ${HOME}/cgi-bin/subscribe subscribe-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/subscribe
+	gcc -D SCRIPT="\"subscribe\"" -o ${CGI}/subscribe cgi-wrapper.c
+	chmod a+sx ${CGI}/subscribe
 
 roster_wrapper:
-	gcc -o ${HOME}/cgi-bin/roster roster-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/roster
+	gcc -D SCRIPT="\"roster\"" -o ${CGI}/roster cgi-wrapper.c
+	chmod a+sx ${CGI}/roster
 
 handle_opts_wrapper:
-	gcc -o ${HOME}/cgi-bin/handle_opts handle_opts-wrapper.c
-	chmod a+sx ${HOME}/cgi-bin/handle_opts
+	gcc -D SCRIPT="\"handle_opts\"" -o ${CGI}/handle_opts cgi-wrapper.c
+	chmod a+sx ${CGI}/handle_opts
 
 mail_wrapper:
 	gcc -o ${MAILMAN}/mail/wrapper mail-wrapper.c
