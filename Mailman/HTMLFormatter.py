@@ -61,15 +61,15 @@ class HTMLFormatter:
         conceal_sub = mm_cfg.ConcealSubscription
         people = []
         if digest:
-            digestmembers = self.GetDigestMembers()
+            digestmembers = self.getDigestMemberKeys()
             for dm in digestmembers:
-                if not self.GetUserOption(dm, conceal_sub):
+                if not self.getMemberOption(dm, conceal_sub):
                     people.append(dm)
             num_concealed = len(digestmembers) - len(people)
         else:
-            members = self.GetMembers()
+            members = self.getRegularMemberKeys()
             for m in members:
-                if not self.GetUserOption(m, conceal_sub):
+                if not self.getMemberOption(m, conceal_sub):
                     people.append(m)
             num_concealed = len(members) - len(people)
         people.sort()
@@ -90,7 +90,7 @@ class HTMLFormatter:
             else:
                 showing = person
             got = Link(url, showing)
-            if self.GetUserOption(person, disdel):
+            if self.getMemberOption(person, disdel):
                 got = Italic("(", got, ")")
             items.append(got)
         # Just return the .Format() so this works until I finish
@@ -100,7 +100,7 @@ class HTMLFormatter:
 
 
     def FormatOptionButton(self, type, value, user):
-        users_val = self.GetUserOption(user, type)
+        users_val = self.getMemberOption(user, type)
         if users_val == value:
             checked = ' CHECKED'
         else:
@@ -112,6 +112,7 @@ class HTMLFormatter:
                 mm_cfg.Digests                  : 'digest',
                 mm_cfg.ConcealSubscription      : 'conceal',
                 mm_cfg.SuppressPasswordReminder : 'remind',
+                mm_cfg.ReceiveNonmatchingTopics : 'rcvtopic',
                 }[type]
         return '<input type=radio name="%s" value="%d"%s>' % (
             name, value, checked)
@@ -124,7 +125,7 @@ class HTMLFormatter:
         return '<input type=radio name="digest" value="1"%s>' % checked
 
     def FormatDisabledNotice(self, user):
-        if self.GetUserOption(user, mm_cfg.DisableDelivery):
+        if self.getMemberOption(user, mm_cfg.DisableDelivery):
             note = FontSize('+1', _(
                 'Note: your list delivery is currently disabled.')).Format()
             link = Link('#disable', _('Mail delivery')).Format()
@@ -304,8 +305,9 @@ class HTMLFormatter:
     def FormatFormEnd(self):
         return '</FORM>'
 
-    def FormatBox(self, name, size=20):
-        return '<INPUT type="Text" name="%s" size="%d">' % (name, size)
+    def FormatBox(self, name, size=20, value=''):
+        return '<INPUT type="Text" name="%s" size="%d" value="%s">' % (
+            name, size, value)
 
     def FormatSecureBox(self, name):
         return '<INPUT type="Password" name="%s" size="15">' % name
@@ -337,8 +339,8 @@ class HTMLFormatter:
     def GetStandardReplacements(self, lang=None):
         if lang is None:
             lang = self.preferred_language
-        dmember_len = len(self.GetDigestMembers())
-        member_len = len(self.GetMembers())
+        dmember_len = len(self.getDigestMemberKeys())
+        member_len = len(self.getRegularMemberKeys())
         values = self.GetAvailableLanguages()
         legend = map(_, map(Utils.GetLanguageDescr, values))
         try:
