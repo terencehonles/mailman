@@ -41,13 +41,13 @@ def main():
     try:
         listname = sys.argv[1]
     except IndexError:
-        sys.stderr.write('Mailman error: mailcmd got no listname.\n')
+        print >> sys.stderr, 'Mailman error: mailcmd got no listname.'
         sys.exit(1)
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        sys.stderr.write('Mailman error: mailcmd got bad listname: %s\n%s' %
-                         (listname, e))
+        print >> sys.stderr 'Mailman error: mailcmd got bad listname: %s\n%s' \
+              % (listname, e)
         sys.exit(1)
     # Create the message object
     msg = Message.Message(sys.stdin)
