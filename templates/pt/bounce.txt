@@ -1,0 +1,21 @@
+Esta mensagem MIME deve ser lida como texto plano.
+
+--%(boundary)s
+
+Content-type: text/plain; charset=us-ascii
+
+Esta é uma notificação de ação de recusão de recebimento do 
+MailMan:
+
+    Lista :     %(listname)s
+    Membro:     %(addr)s
+    Ação .:     Inscrição %(negative)s%(did)s.
+    Razão :     Excesso de recusas de recebimento.
+    %(excessão)ões
+
+%(reenable)s
+
+A notificaao de recusa está anexada abaixo.
+
+Questões? Entre em contato com o administrador do site do Mailman em 
+%(owneraddr)s.

@@ -1,0 +1,34 @@
+Bem vindo a lista de discussão %(real_name)s@%(host_name)s!
+%(welcome)s
+Para enviar uma mensagem a esta lista, mande seu email para:
+
+  %(emailaddr)s
+
+Informações gerais sobre a lista de discussão se encontra em:
+
+  %(listinfo_url)s
+
+Se desejar desinscrever ou mudar suas opções (eg, alterar o modo
+digest, muda sua senha, etc.), visite a página de inscrição em:
+
+  %(optionsurl)s
+%(umbrella)s
+Você também poderá fazer tais ajustes via email enviando uma mensagem
+para:
+
+  %(real_name)s-request@%(host_name)s
+
+com a palavra 'help' no assunto ou corpo (não inclua 
+as aspas), e receberá uma mensagem contendo mais instruções. 
+
+Você deverá saber sua senha para mudar suas opções 
+(incluindo modificar sua senha) ou se descadastrar. Ela é:
+
+  %(password)s
+
+Normalmente, o Mailman te lembrará de suas senhas das listas 
+de discussão a cada mês, mas você poderá desativa-las se preferir.
+Este lembrete também inclui instruções de como descadastrar-se ou 
+modificar suas opções de contas. Também existe um botão em 
+sua página de opções que enviará a senha para  seu endereço de 
+email. 
