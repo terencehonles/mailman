@@ -46,7 +46,7 @@ from Mailman.SecurityManager import SecurityManager
 from Mailman.Bouncer import Bouncer
 from Mailman.GatewayManager import GatewayManager
 from Mailman.Autoresponder import Autoresponder
-from Mailman.Logging.StampedLogger import StampedLogger
+from Mailman.Logging.Syslog import syslog
 
 # other useful classes
 from Mailman.pythonlib.StringIO import StringIO
@@ -79,11 +79,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 raise
 
     def __del__(self):
-        try:
-            self.CloseLogs()
-        except AttributeError:
-            # List didn't get far enough to have _log_files
-            pass
         try:
             self.Unlock()
         except AttributeError:
@@ -287,11 +282,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.__lock = LockFile.LockFile(
             os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
             # TBD: is this a good choice of lifetime?
-            lifetime = mm_cfg.LIST_LOCK_LIFETIME,
-            withlogging = mm_cfg.LIST_LOCK_DEBUGGING)
+            lifetime = mm_cfg.LIST_LOCK_LIFETIME)
 	self._internal_name = name
 	self._ready = 0
-	self._log_files = {}		# 'class': log_file_obj
 	if name:
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
         else:
@@ -834,9 +827,9 @@ it will not be changed."""),
                 fp = open(fname_tmp, 'w')
                 marshal.dump(dict, fp)
             except (ValueError, IOError), e:
-                self.LogMsg('error',
-                            'Failed config.db file write, retaining old state.'
-                            '\n%s' % e)
+                syslog('error',
+                       'Failed config.db file write, retaining old state.\n%s'
+                       % e)
                 if fp:
                     os.unlink(fname_tmp)
                 raise
@@ -919,13 +912,13 @@ it will not be changed."""),
         if dict is None:
             # Had problems with config.db.  Either it's missing or it's
             # corrupted.  Try config.db.last as a fallback.
-            self.LogMsg('error', '%s db file was corrupt, using fallback: %s'
-                        % (self.internal_name(), lastfile))
+            syslog('error', '%s db file was corrupt, using fallback: %s'
+                   % (self.internal_name(), lastfile))
             dict, e = self.__load(lastfile)
             if dict is None:
                 # config.db.last is busted too.  Nothing much we can do now.
-                self.LogMsg('error', '%s fallback was corrupt, giving up'
-                            % self.internal_name())
+                syslog('error', '%s fallback was corrupt, giving up'
+                       % self.internal_name())
                 raise Errors.MMCorruptListDatabaseError, e
             # We had to read config.db.last, so copy it back to config.db.
             # This allows the logic in Save() to remain unchanged.  Ignore
@@ -943,26 +936,6 @@ it will not be changed."""),
         if check_version:
             self.CheckValues()
             self.CheckVersion(dict)
-
-    def LogMsg(self, kind, msg, *args):
-	"""Append a message to the log file for messages of specified kind."""
-	# For want of a better fallback,  we use sys.stderr if we can't get
-	# a log file.  We need a better way to warn of failed log access...
-	if self._log_files.has_key(kind):
-	    logf = self._log_files[kind]
-	else:
-	    logf = self._log_files[kind] = StampedLogger(kind)
-        logf.write(msg % args + '\n')
-	logf.flush()
-
-    def CloseLogs(self):
-        """Close all of this list's open log files.
-
-        Useful to avoid 'Too many open files' errors when iterating over
-        lots of lists."""
-        for kind, logger in self._log_files.items():
-            del self._log_files[kind]
-            logger.close()
 
     def CheckVersion(self, stored_state):
         """Migrate prior version's state to new structure, if changed."""
@@ -1053,10 +1026,8 @@ it will not be changed."""),
             if recipient != name:
                 who = "%s (%s)" % (name, string.split(recipient, '@')[0])
             else: who = name
-            self.LogMsg("subscribe", "%s: pending %s %s",
-                        self._internal_name,
-                        who,
-                        by)
+            syslog('subscribe', '%s: pending %s %s' %
+                   (self.internal_name(), who, by))
             raise Errors.MMSubscribeNeedsConfirmation
         else:
             # subscription approval is required.  add this entry to the admin
@@ -1175,8 +1146,8 @@ it will not be changed."""),
                 kind = ""
             for name in result.keys():
                 if result[name] is None:
-                    self.LogMsg("subscribe", "%s: new%s %s",
-                                self._internal_name, kind, name)
+                    syslog('subscribe', '%s: new%s %s' %
+                           (self.internal_name(), kind, name))
                     if ack:
                         self.SendSubscribeAck(
                             name,
@@ -1252,8 +1223,8 @@ it will not be changed."""),
             whence = "; %s" % whence
         else:
             whence = ""
-        self.LogMsg("subscribe", "%s: deleted %s%s",
-                    self._internal_name, name, whence)
+        syslog('subscribe', '%s: deleted %s%s' %
+               (self.internal_name(), name, whence))
 
     def IsMember(self, address):
 	return len(Utils.FindMatchingAddresses(address, self.members,
@@ -1328,16 +1299,14 @@ it will not be changed."""),
                     except re.error, cause:
                         # The regexp in this line is malformed -- log it
                         # and ignore it
-                        self.LogMsg("config", "%s - "
-                                    "bad regexp %s [%s] "
-                                    "in bounce_matching_header line %s"
-                                    % (self.real_name, `e`,
-                                       `cause`, `stripped`))
+                        syslog('config',
+                               '%s - bad regexp %s [%s] '
+                               'in bounce_matching_header line %s'
+                               % (self.real_name, `e`, `cause`, `stripped`))
 		except ValueError:
 		    # Whoops - some bad data got by:
-		    self.LogMsg("config", "%s - "
-				"bad bounce_matching_header line %s"
-				% (self.real_name, `stripped`))
+		    syslog('config', '%s - bad bounce_matching_header line %s'
+                           % (self.real_name, `stripped`))
 	return all
 
     def HasMatchingHeader(self, msg):
