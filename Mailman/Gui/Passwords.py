@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,13 +18,14 @@
 """
 
 from Mailman.i18n import _
+from Mailman.Gui.GUIBase import GUIBase
 
 
 
-class Passwords:
+class Passwords(GUIBase):
     def GetConfigCategory(self):
         return 'passwords', _('Passwords')
 
-    def HandleForm(self, mlist, cgidata, doc):
+    def handleForm(self, mlist, category, subcat, cgidata, doc):
         # Nothing more needs to be done
         pass
