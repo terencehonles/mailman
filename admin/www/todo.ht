@@ -181,6 +181,13 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
 </ul>
 <h3> Site Administration
 </h3>
@@ -240,8 +247,18 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
+
+    <li> Allow the site admin to send an email message to all the list admins using a mechanism similar to the Urgent: header (possibly
+ by addressing it to mailman@site.dom).
 
 </ul>
 <h3> Other Usability Improvments
@@ -302,8 +319,18 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
+
+    <li> Allow the site admin to send an email message to all the list admins using a mechanism similar to the Urgent: header (possibly
+ by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
@@ -371,8 +398,18 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
+
+    <li> Allow the site admin to send an email message to all the list admins using a mechanism similar to the Urgent: header (possibly
+ by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
@@ -450,8 +487,18 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
+
+    <li> Allow the site admin to send an email message to all the list admins using a mechanism similar to the Urgent: header (possibly
+ by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
@@ -545,8 +592,18 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
+
+    <li> Allow the site admin to send an email message to all the list admins using a mechanism similar to the Urgent: header (possibly
+ by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
@@ -644,8 +701,18 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
+
+    <li> Allow the site admin to send an email message to all the list admins using a mechanism similar to the Urgent: header (possibly
+ by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
@@ -752,8 +819,18 @@ Title: The Mailman Wishlist
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
 
+    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
+ about the list.
+
+    <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
+ date they last sent a message through the list.  Perhaps also
+ log each message they send through the list.
+
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
+
+    <li> Allow the site admin to send an email message to all the list admins using a mechanism similar to the Urgent: header (possibly
+ by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
