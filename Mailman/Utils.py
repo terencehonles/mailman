@@ -135,9 +135,9 @@ def wrap(text, column=70):
 def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
     import Message
     msg = Message.OutgoingMessage()
-    msg.SetSender(sender)
-    msg.SetHeader('Subject', subject, 1)
-    msg.SetBody(QuotePeriods(text))
+    msg['From'] = sender
+    msg['Subject'] = subject
+    msg.body = QuotePeriods(text)
     DeliverToUser(msg, recipient, add_headers=add_headers)
 
 
@@ -708,16 +708,13 @@ def maketext(templatefile, dict, raw=0):
 
 
 
-# given an IncomingMessage object,
-# test for administrivia (eg subscribe, unsubscribe, etc).
-# the test must be a good guess -- messages that return true
-# get sent to the list admin instead of the entire list.
+# given a Message.Message object, test for administrivia (eg subscribe,
+# unsubscribe, etc).  the test must be a good guess -- messages that return
+# true get sent to the list admin instead of the entire list.
 #
 def IsAdministrivia(msg):
     lines = map(string.lower, string.split(msg.body, "\n"))
-    #
     # check to see how many lines that actually have text in them there are
-    # 
     admin_data = {"subscribe": (0, 3),
                   "unsubscribe": (0, 1),
                   "who": (0,0),
