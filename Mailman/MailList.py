@@ -40,6 +40,7 @@ from Digester import Digester
 from SecurityManager import SecurityManager
 from Bouncer import Bouncer
 from GatewayManager import GatewayManager
+from Mailman.Logging.StampedLogger import StampedLogger
 
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
@@ -592,7 +593,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	if self._log_files.has_key(kind):
 	    logf = self._log_files[kind]
 	else:
-	    logf = self._log_files[kind] = Utils.StampedLogger(kind)
+	    logf = self._log_files[kind] = StampedLogger(kind)
  	logf.write("%s\n" % (msg % args))
 	logf.flush()
 
