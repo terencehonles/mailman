@@ -90,12 +90,12 @@ option_desc = {'hide'    : HIDE,
 # jcrey: and then the real one
 _ = Mailman.i18n._
 
-option_info = {'digest'  : 0,
+option_info = {'hide'    : mm_cfg.ConcealSubscription,
                'nomail'  : mm_cfg.DisableDelivery,
-               'notmetoo': mm_cfg.DontReceiveOwnPosts,
                'ack'     : mm_cfg.AcknowledgePosts,
+               'notmetoo': mm_cfg.DontReceiveOwnPosts,
+               'digest'  : 0,
                'plain'   : mm_cfg.DisableMime,
-               'hide'    : mm_cfg.ConcealSubscription
                }
 
 # ordered list
@@ -329,45 +329,44 @@ The following is a detailed description of the problems.
             self.__errors = 0
 
     def ProcessPasswordCmd(self, args, cmd, mail):
-        if len(args) not in [0,2]:
+        if len(args) <> 0 and len(args) <> 2:
             self.AddError(_("Usage: password [<oldpw> <newpw>]"))
             return
         sender = mail.get_sender()
-        if len(args) == 0:
+        if not args:
             # Mail user's password to user
-            user = self.FindUser(sender)
-            if user and self.passwords.has_key(user):
-                password = self.passwords[user]
-                self.AddToResponse(_("You are subscribed as %(user)s,\n"
-                                   "  with password: %(password)s"),
+            try:
+                password = self.getMemberPassword(sender)
+            except Errors.NotAMember:
+                password = None
+            if self.isMember(sender) and password:
+                user = self.getMemberCPAddress(sender)
+                self.AddToResponse(_(
+               'You are subscribed as %(user)s, with password: %(password)s'),
                                    trunc=0)
             else:
-                self.AddError(_("Found no password for %(sender)s"), trunc=0)
+                self.AddError(_('Found no password for %(sender)s'), trunc=0)
             return
         # Try to change password
         try:
-            self.ConfirmUserPassword(sender, args[0])
-            self.ChangeUserPassword(sender, args[1], args[1])
-            self.AddToResponse(_('Succeeded.'))
-        except Errors.MMListNotReadyError:
-            self.AddError(_("List is not functional."))
-        except Errors.MMNotAMemberError:
+            oldpw = self.getMemberPassword(sender)
+            if oldpw <> args[0]:
+                self.AddError(_('You gave the wrong password.'))
+            else:
+                self.setMemberPassword(sender, args[1])
+                self.AddToResponse(_('Succeeded.'))
+        except Errors.NotAMemberError:
             self.AddError(_("%(sender)s isn't subscribed to this list."),
                           trunc=0)
-        except Errors.MMBadPasswordError:
-            self.AddError(_("You gave the wrong password."))
-        except Errors.MMBadUserError:
-            self.AddError(_("Bad user - %(sender)s."), trunc=0)
 
     def ProcessOptionsCmd(self, args, cmd, mail):
-        sender = self.FindUser(mail.get_sender())
-        if not sender:
-            origsender = mail.get_sender()
-            self.AddError(_("%(origsender)s is not a member of the list."),
+        sender = mail.get_sender()
+        if not self.isMember(sender):
+            self.AddError(_("%(sender)s is not a member of the list."),
                           trunc=0)
             return
         for option in options:
-            if self.GetUserOption(sender, option_info[option]):
+            if self.getMemberOption(sender, option_info[option]):
                 value = 'on'
             else:
                 value = 'off'
@@ -383,70 +382,62 @@ The following is a detailed description of the problems.
             self.AddToResponse(Utils.wrap(_(option_desc[option])) + '\n',
                                trunc=0, prefix="  ")
             
-    def ProcessSetCmd(self, args, cmd, mail):
-        origsender = mail.get_sender()
-        def ShowSetUsage(s=self, od = option_desc):
-            options = od.keys()
-            options.sort()
-            desc_text = ""
-            for option in options:
-                desc_text = (desc_text +
-                             "%12s:  %s\n" % (option, _(od[option])))
-            s.AddError(_("Usage: set <option> <on|off> <password>\n"
-                       "Valid options are:\n") +
-                       desc_text)
+    def __setcmd_usage(self):
+        options = option_desc.keys()
+        options.sort()
+        text = []
+        for option in options:
+            text.append('%12s:  %s' % (option, _(option_desc[option])))
+        self.AddError(_('''\
+Usage: set <option> <on|off> <password>
+Valid options are:
+''') + NL.join(text), trunc=0)
+
+    def ProcessSetCmd(self, args, cmd, msg):
+        sender = msg.get_sender()
         if len(args) <> 3:
-            ShowSetUsage()
+            self.__setcmd_usage()
             return
         if args[1] == 'on':
             value = 1
         elif args[1] == 'off':
             value = 0
         else:
-            ShowSetUsage()
+            self.__setcmd_usage()
             return
+        # Check the command
+        option = args[0]
+        # Backwards compatibility
+        if option == 'norcv':
+            option = 'notmetoo'
+        if not option_info.has_key(option):
+            self.__setcmd_usage()
+            return
+        # Confirm the password
         try:
-            sender = self.FindUser(origsender)
-            self.ConfirmUserPassword(sender, args[2])
-        except Errors.MMNotAMemberError:
-            self.AddError(_("%(origsender)s isn't subscribed to this list."),
+            password = self.getMemberPassword(sender)
+        except Errors.NotAMemberError:
+            self.AddError(_("%(sender)s isn't subscribed to this list."),
                           trunc=0)
             return
-        except Errors.MMBadPasswordError:
-            self.AddError(_("You gave the wrong password."))
+        if password <> args[2]:
+            self.AddError(_('You gave the wrong password.'))
             return
-        if args[0] == 'digest':
-            try:
-                self.SetUserDigest(origsender, value)
-                self.AddToResponse(_("Succeeded."))
-            except Errors.MMAlreadyDigested:
-                self.AddError(_("You are already receiving digests."))
-            except Errors.MMAlreadyUndigested:
-                self.AddError(_("You already have digests off."))
-            except Errors.MMBadEmailError:
-                self.AddError(_(
-                    "Email address '%(origsender)s' not accepted by Mailman."),
-                              trunc=0)
-            except Errors.MMMustDigestError:
-                self.AddError(_("List only accepts digest members."))
-            except Errors.MMCantDigestError:
-                self.AddError(_("List doesn't accept digest members."))
-            except Errors.MMListNotReadyError:
-                self.AddError(_("List is not functional."))
-            except Errors.MMNoSuchUserError:
-                self.AddError(_(
-                    "%(origsender)s is not subscribed to this list."),
-                              trunc=0)
-            except Errors.MMNeedApproval:
-                self.AddApprovalMsg(cmd)
-        elif not option_info.has_key(args[0]):
-            ShowSetUsage()
-            return
-        # for backwards compatibility
-        if args[0] == 'norcv':
-            args[0] = 'notmetoo'
-        self.SetUserOption(sender, option_info[args[0]], value)
-        self.AddToResponse(_("Succeeded."))
+
+        # Set the option
+        try:
+            self.setMemberOption(sender, option_info[option], value)
+            self.AddToResponse(_('Succeeded.'))
+        except Errors.AlreadyReceivingDigests:
+            self.AddError(_('You are already receiving digests.'))
+        except Errors.AlreadyReceivingRegularDeliveries:
+            self.AddError(_('You already have digests off.'))
+        except Errors.MustDigestError:
+            self.AddError(_('List only accepts digest members.'))
+        except Errors.CantDigestError:
+            self.AddError(_("List doesn't accept digest members."))
+        except Errors.MMNeedApproval:
+            self.AddApprovalMsg(cmd)
             
     def ProcessListsCmd(self, args, cmd, mail):
         if len(args) != 0:
@@ -488,7 +479,7 @@ The following is a detailed description of the problems.
                           "to get info for all the lists."))
             return
 
-        if self.private_roster and not self.IsMember(mail.get_sender()):
+        if self.private_roster and not self.isMember(mail.get_sender()):
             self.AddError(_("Private list: only members may see info."))
             return
 
@@ -516,20 +507,20 @@ background and instructions for subscribing to and using it, visit:
         if self.private_roster == 2:
             self.AddError(_("Private list: No one may see subscription list."))
             return
-        if self.private_roster and not self.IsMember(mail.get_sender()):
+        if self.private_roster and not self.isMember(mail.get_sender()):
             self.AddError(_("Private list: only members may see list "
                           "of subscribers."))
             return
-        digestmembers = self.GetDigestMembers()
-        members = self.GetMembers()
-        if not len(digestmembers) and not len(members):
+        digestmembers = self.getDigestMemberKeys()
+        members = self.getRegularMemberKeys()
+        if not digestmembers and not members:
             self.AddToResponse(_("NO MEMBERS."))
             return
         
         def AddTab(str):
             return '\t' + str
         def NotHidden(x, s=self, v=mm_cfg.ConcealSubscription):
-            return not s.GetUserOption(x, v)
+            return not s.getMemberOption(x, v)
 
         if len(digestmembers):
             digestmembers.sort()
@@ -544,12 +535,12 @@ background and instructions for subscribing to and using it, visit:
                                                           members))),
                                trunc=0)
 
-    def ProcessUnsubscribeCmd(self, args, cmd, mail):
+    def ProcessUnsubscribeCmd(self, args, cmd, msg):
         password = None
         if not args:
             # No password and no address.  We can sniff the address, and we
             # will do a confirmation notice.
-            addr = mail.get_sender()
+            addr = msg.get_sender()
         elif len(args) == 1:
             # We only got one argument, so we're not sure if that's the user's
             # address or password.  If the argument is a subscribed user, then
@@ -557,10 +548,10 @@ background and instructions for subscribing to and using it, visit:
             # Otherwise, assume it's a password.  This could seem weird if
             # they're using their address as their password, but even still,
             # it's not too bad.
-            if self.FindUser(args[0]):
+            if self.isMember(args[0]):
                 addr = args[0]
             else:
-                addr = mail.get_sender()
+                addr = msg.get_sender()
                 password = args[0]
         elif len(args) == 2:
             password = args[0]
@@ -576,30 +567,24 @@ background and instructions for subscribing to and using it, visit:
             return
         try:
             if password is None:
-                # Send a confirmation instead of unsubscribing them
-                if self.FindUser(addr):
-                    self.ConfirmUnsubscription(addr)
-                    self.AddToResponse(
-                        _('A removal confirmation message has been sent.'))
-                else:
-                    # Slightly bogus, but convenient
-                    raise Errors.MMNoSuchUserError
+                # If no password was given, we need to do a mailback
+                # confirmation instead of unsubscribing them here.
+                cpaddr = self.getMemberCPAddress(addr)
+                self.ConfirmUnsubscription(cpaddr)
+                self.AddToResponse(
+                    _('A removal confirmation message has been sent.'))
             else:
-                self.ConfirmUserPassword(addr, password)
-                self.DeleteMember(addr, "mailcmd")
-                self.AddToResponse(_("Succeeded."))
-        except Errors.MMListNotReadyError:
-            self.AddError(_("List is not functional."))
-        except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError):
+                oldpw = self.getMemberPassword(addr)
+                if oldpw <> password:
+                    self.AddError(_('You gave the wrong password.'))
+                else:
+                    self.ApprovedDeleteMember(addr, 'mailcmd')
+                    self.AddToResponse(_("Succeeded."))
+        # FIXME: we really need to make these exceptions sane!
+        except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError,
+                Errors.NotAMemberError):
             self.AddError(_("%(addr)s is not subscribed to this list."),
                           trunc=0)
-        except Errors.MMBadPasswordError:
-            self.AddError(_("You gave the wrong password."))
-        except Errors.MMBadUserError:
-            self.AddError(_('Your stored password is bogus.'))
-            syslog('subscribe',
-                   'User %s on list %s has no password',
-                   addr, self.internal_name())
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
         """Parse subscription request and send confirmation request."""
