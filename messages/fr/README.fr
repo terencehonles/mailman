@@ -1,0 +1,19 @@
+Francisation de Mailman.
+
+Je vous invite à relire les catalogues et les templates qui sont
+écrites pour la plupart par un Francophone dont la langue maternelle
+n'est pas le français, qui plus est n'est ni doué en grammaire ni
+érudit.  Si vous ne relisez rien et que vous y trouvez des fautes, ne
+grognez surtout pas, suggérez gentillement vos corrections, et elles
+seront apportées illico.
+
+Questions, suggestions: wilane@yahoo.com
+
+Ousmane Wilane <wilane@yahoo.com>
+
+
+Local Variables:
+mode: indented-text
+indent-tabs-mode: nil
+End:
+
