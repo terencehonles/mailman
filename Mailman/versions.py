@@ -307,6 +307,8 @@ def NewVars(l):
     # the current GUI description model.  So, 0==Hold, 1==Reject, 2==Discard
     add_only_if_missing('member_moderation_action', 0)
     add_only_if_missing('member_moderation_notice', '')
+    add_only_if_missing('new_member_options',
+                        mm_cfg.DEFAULT_NEW_MEMBER_OPTIONS)
 
 
 
