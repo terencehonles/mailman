@@ -34,6 +34,10 @@ import regsub
 import random
 import mm_cfg
 import Errors
+##try:
+##    import md5
+##except ImportError:
+##    md5 = None
 
 
 
@@ -138,6 +142,8 @@ def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
 
 
 
+_children = []
+
 def DeliverToUser(msg, recipient, add_headers=[]):
     """Use smtplib to deliver message.
 
@@ -155,7 +161,7 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     # foreground*.  If the errorsto happens to be the list owner for a list
     # that is doing the send - and holding a lock - then the delivery will
     # hang pending release of the lock - deadlock.
-
+    global _children
     sender = msg.GetSender()
     try:
         msg.headers.remove('\n')
@@ -167,17 +173,19 @@ def DeliverToUser(msg, recipient, add_headers=[]):
         if i and i[-1] != '\n':
             i = i + '\n'
         msg.headers.append(i)
-
     text = string.join(msg.headers, '') + '\n' + QuotePeriods(msg.body)
     import OutgoingQueue
     queue_id = OutgoingQueue.enqueueMessage(sender, recipient, text)
-
     # If the fork (or anything the child does) fails and raises an
     # exception, e.g. due to memory exhaustion, the queue runner
     # will pick up the queue file.
     try:
-        if not os.fork():
-            # child
+        pid = os.fork()
+        if pid:
+            # in the parent
+            _children.append(pid)
+        else:
+            # in the child
             try:
                 TrySMTPDelivery(recipient,sender,text,queue_id)
             finally:
@@ -186,11 +194,24 @@ def DeliverToUser(msg, recipient, add_headers=[]):
         OutgoingQueue.deferMessage(queue_id)
 
 
+def Reap():
+    global _children
+    try:
+        pid, sts = os.waitpid(-1, os.WNOHANG)
+        try:
+            _children.remove(pid)
+        except ValueError:
+            pass
+    except os.error:
+        pass
+    return len(_children)
+
+
 
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
     import socket
     import OutgoingQueue
-
+    from Logging.StampedLogger import StampedLogger
     # We need to get a modern smtplib.  The Python 1.5.1 version does not
     # support ehlo (ESMTP), but the Python 1.5.2 version does.  However, the
     # interface to conn.ehlo() has changed between Python 1.5.2beta and 1.5.2
@@ -213,6 +234,33 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         # here to disable/remove bad local addresses.  Currently we don't
         # know which list(s) the address is on :(
         refused = conn.sendmail(sender, recipient, text, rcpt_options=ropts)
+        #
+        # debugging
+        #
+##        l = StampedLogger('smtp-delivery', 'TrySMTPDelivery', immediate=1)
+##        sys.stdout = l
+##        try:
+##            print 'SMTP delivery:',
+##            if refused: print 'partial'
+##            else: print 'full'
+##            print 'queue_entry:', queue_entry
+##            print 'sender:', sender
+##            print 'recipient:', recipient
+##            if md5:
+##                texthash = md5.new(text).digest()
+##                x = []
+##                for c in texthash:
+##                    z = hex(ord(c))[2:]
+##                    if len(z) == 1: z = '0'+z
+##                    x.append(z)
+##                print 'md5 of text:', string.join(x, '')
+##            if refused:
+##                print 'refused:', refused
+##        finally:
+##            sys.stdout = sys.__stdout__
+        #
+        # end debugging
+        #
         conn.quit()
         defer = 0
         failure = None
@@ -276,7 +324,6 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         t, v = failure[0], failure[1]
         # XXX Here may be the place to get the failure info back to the list
         # object, so it can disable the recipient, etc.  But how?
-        from Logging.StampedLogger import StampedLogger
         l = StampedLogger("smtp-failures", "TrySMTPDelivery", immediate=1)
         l.write("To %s:\n" % recipient)
         l.write("\t %s" % t)
