@@ -1,6 +1,4 @@
-#! /usr/bin/env python
-#
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,11 +24,10 @@
 # mylist-request -> mailcmd
 # mylist-owner   -> mailowner (through an alias to mylist-admin)
 #
-# Only 3 scripts are used for historical purposes, and this is unlikely to
-# change to due backwards compatibility.  That's immaterial though since the
-# mailowner script can determine which alias it received the message on.
+# Only 3 scripts are used for historical purposes, but some MTAs have more
+# direct ways to shuttle messages into the Mailman incoming queues.
 #
-# mylist-request is a robot address; it's sole purpose is to process emailed
+# mylist-request is a robot address; its sole purpose is to process emailed
 # commands in a Majordomo-like fashion.  mylist-admin is supposed to reach the
 # list owners, but it performs one vital step before list owner delivery - it
 # examines the message for bounce content.  mylist-owner is the fallback for
@@ -70,106 +67,90 @@
 #                                           |                      |
 #                                           |[bounces]             |
 #                                           +----------------------+
-
+#
+# With Mailman 2.1 we're splitting the normal incoming mail from the
+# owner/admin/request mail because we'd like to be able to tune each queue
+# separately.  The IncomingRunner handles only mail sent to the list, which
+# ends up in qfiles/in
 
 
-import mimetools
+import sys
+import os
 
 from Mailman import mm_cfg
-from Mailman.Queue import Runner
-from Mailman.Handlers import HandlerAPI
-from Mailman.Bouncers import BouncerAPI
+from Mailman import Errors
+from Mailman import LockFile
+from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
 
 
-class IncomingRunner(Runner.Runner):
-    def __init__(self, cachelists=1):
-        Runner.Runner.__init__(self, mm_cfg.INQUEUE_DIR)
+class IncomingRunner(Runner):
+    def __init__(self, slice=None, numslices=1, cachelists=1):
+        Runner.__init__(self, mm_cfg.INQUEUE_DIR,
+                        slice, numslices, cachelists)
 
-    def _dispose_message(self, msg, msgdata):
-        # TBD: refactor this stanza.
-        # Find out which mailing list this message is destined for
-        listname = msgdata.get('listname')
-        if not listname:
-            syslog('qrunner', 'qfile metadata specifies no list: %s' % root)
-            return 1
-        mlist = self._open_list(listname)
-        if not mlist:
-            syslog('qrunner',
-                   'Dequeuing message destined for missing list: %s' % root)
-            self._dequeue(root)
-            return 1
-        # Now try to get the list lock
+    def _dispose(self, mlist, msg, msgdata):
+        # Try to get the list lock.
         try:
             mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
         except LockFile.TimeOutError:
-            # oh well, try again later
+            # Oh well, try again later
             return 1
         #
-        # runner specific code
+        # Process the message through a handler pipeline.  The handler
+        # pipeline can actually come from one of three places: the message
+        # metadata, the mlist, or the global pipeline.
+        #
+        # If a message was requeued due to an uncaught exception, its metadata
+        # will contain the retry pipeline.  Use this above all else.
+        # Otherwise, if the mlist has a `pipeline' attribute, it should be
+        # used.  Final fallback is the global pipeline.
         try:
-            # The message may be destined for one of three subsystems: the
-            # list delivery subsystem (i.e. the message gets delivered to
-            # every member of the list), the bounce detector (i.e. this was a
-            # message to the -owner address), or the mail command handler
-            # (i.e. this was a message to the -request address).  The flags
-            # controlling this path are found in the message metadata.
-            #
-            # post      - no `toadmin' or `torequest' key
-            # mailowner - `toadmin' == true
-            # mailcmd   - `torequest' == true
-            #
-            if msgdata.get('toadmin'):
-                s = StringIO(str(msg))
-                mimemsg = mimetools.Message(s)
-                if mlist.bounce_processing:
-                    if BouncerAPI.ScanMessages(mlist, mimemsg):
-                        return 0
-                # Either bounce processing isn't turned on or the bounce
-                # detector found no recognized bounce format in the message.
-                # In either case, forward the dang thing off to the list
-                # owners.  Be sure to munge the headers so that any bounces
-                # from the list owners goes to the -owner address instead of
-                # the -admin address.  This will avoid bounce loops.
-                msgdata.update({'recips'  : mlist.owner[:],
-                                'errorsto': mlist.GetOwnerEmail(),
-                                'noack'   : 0,            # enable Replybot
-                                })
-                return HandlerAPI.DeliverToUser(mlist, msg, msgdata)
-            elif msgdata.get('toowner'):
-                # The message could have been a bounce from a broken list
-                # admin address.  About the only other test we can do is to
-                # see if the message is appearing to come from a well-known
-                # MTA generated address.
-                sender = msg.GetSender()
-                i = sender.find('@')
-                if i >= 0:
-                    senderlhs = sender[:i].lower()
-                else:
-                    senderlhs = sender
-                if senderlhs in mm_cfg.LIKELY_BOUNCE_SENDERS:
-                    syslog('error', 'bounce loop detected from: %s' % sender)
-                    return 0
-                # Any messages to the owner address must have Errors-To: set
-                # back to the owners address so bounce loops can be broken, as
-                # per the code above.
-                msgdata.update({'recips'  : mlist.owner[:],
-                                'errorsto': mlist.GetOwnerEmail(),
-                                'noack'   : 0,            # enable Replybot
-                                })
-                return HandlerAPI.DeliverToUser(mlist, msg, msgdata)
-            elif msgdata.get('torequest'):
-                mlist.ParseMailCommands(msg)
-                return 0
-            else:
-                # Pre 2.0beta3 qfiles have no schema version number
-                if msgdata.get('version', 0) < 1:
-                    msg.Requeue(mlist, newdata=msgdata,
-                                pipeline = [mm_cfg.DELIVERY_MODULE])
-                    return
-                return HandlerAPI.DeliverToList(mlist, msg, msgdata)
+            pipeline = self._get_pipeline(mlist, msg, msgdata)
+            return self._dopipeline(mlist, msg, msgdata, pipeline)
         finally:
             mlist.Save()
             mlist.Unlock()
+
+    # Overridable
+    def _get_pipeline(self, mlist, msg, msgdata):
+        # We must return a copy of the list, otherwise, the first message that
+        # flows through the pipeline will empty it out!
+        return msgdata.get('pipeline',
+                           getattr(mlist, 'pipeline',
+                                   mm_cfg.GLOBAL_PIPELINE))[:]
+
+    def _dopipeline(self, mlist, msg, msgdata, pipeline):
+        while pipeline:
+            handler = pipeline.pop(0)
+            modname = 'Mailman.Handlers.' + handler
+            mod = __import__(modname)
+            func = getattr(sys.modules[modname], 'process')
+            try:
+                pid = os.getpid()
+                func(mlist, msg, msgdata)
+                # Failsafe -- a child may have leaked through.
+                if pid <> os.getpid():
+                    syslog('error', 'child process leaked through: %s' %
+                           modname)
+                    os._exit(1)
+            except Errors.DiscardMessage:
+                # Throw the message away; we need do nothing else with it.
+                return 0
+            except Errors.MessageHeld:
+                # Let the approval process take it from here.  The message no
+                # longer needs to be queued.
+                return 0
+            except Exception, e:
+                # Some other exception occurred, which we definitely did not
+                # expect, so set this message up for requeuing.
+                self._log(e)
+                # We stick the name of the failed module back into the front
+                # of the pipeline list so that it can resume where it left off
+                # when qrunner tries to redeliver it.
+                pipeline.insert(0, handler)
+                return 1
+        # We've successfully completed handling of this message
+        return 0
