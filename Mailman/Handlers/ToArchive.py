@@ -16,7 +16,6 @@
 
 """Add the message to the archives."""
 
-import string
 import time
 
 
@@ -27,8 +26,8 @@ def process(mlist, msg, msgdata):
         return
     # Common practice seems to favor "X-No-Archive: yes".  I'm keeping
     # "X-Archive: no" for backwards compatibility.
-    if string.lower(msg.getheader('x-no-archive', '')) == 'yes' or \
-       string.lower(msg.getheader('x-archive', '')) == 'no':
+    if msg.getheader('x-no-archive', '').lower() == 'yes' or \
+           msg.getheader('x-archive', '').lower() == 'no':
         return
     #
     # TBD: This is a kludge around the archiver to properly support

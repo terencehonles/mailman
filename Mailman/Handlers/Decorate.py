@@ -17,8 +17,6 @@
 """Decorate a message by sticking the header and footer around it.
 """
 
-import string
-
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Logging.Syslog import syslog
@@ -33,12 +31,12 @@ def process(mlist, msg, msgdata):
     d['cgiext'] = mm_cfg.CGIEXT
     # interpolate into the header
     try:
-        header = string.replace(mlist.msg_header % d, '\r\n', '\n')
+        header = (mlist.msg_header % d).replace('\r\n', '\n')
     except ValueError, e:
         syslog('error', 'Exception while calculating message header:\n%s' % e)
         header = '[INVALID HEADER]'
     try:
-        footer = string.replace(mlist.msg_footer % d, '\r\n', '\n')
+        footer = (mlist.msg_footer % d).replace('\r\n', '\n')
     except ValueError, e:
         syslog('error', 'Exception while calculating message footer:\n%s' % e)
         footer = '[INVALID FOOTER]'

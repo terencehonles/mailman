@@ -17,18 +17,19 @@
 """Handler for auto-responses.
 """
 
-import string
 import time
 import HandlerAPI
 
 from Mailman import Utils
 from Mailman import Message
 
+NL = '\n'
+
 
 
 def process(mlist, msg, msgdata):
     # "X-Ack: No" header in the original message disables the replybot
-    ack = string.lower(msg.get('x-ack', ''))
+    ack = msg.get('x-ack', '').lower()
     if ack == 'no' or msgdata.get('noack'):
         return
     #
@@ -81,10 +82,10 @@ def process(mlist, msg, msgdata):
     # and body will be mixed up.  The fix is to include a blank delimiting
     # line at the front of the wrapped text.
     text = Utils.wrap(text)
-    lines = string.split(text, '\n')
-    if string.find(lines[0], ':') >= 0:
+    lines = text.split('\n')
+    if lines[0].find(':') >= 0:
         lines.insert(0, '')
-    text = string.join(lines, '\n')
+    text = NL.join(lines)
     outmsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
                                       subject, text)
     outmsg['X-Mailer'] = 'The Mailman Replybot '
