@@ -172,7 +172,7 @@ def ParseEmail(email):
     email = email.lower()
     at_sign = email.find('@')
     if at_sign < 1:
-	return email, None
+        return email, None
     user = email[:at_sign]
     rest = email[at_sign+1:]
     domain = rest.split('.')
@@ -202,7 +202,7 @@ def ValidateEmail(s):
     if not domain_parts:
         raise Errors.MMBadEmailError
     if len(domain_parts) < 2:
-	raise Errors.MMBadEmailError
+        raise Errors.MMBadEmailError
 
 
 
@@ -254,7 +254,7 @@ def AddressesMatch(addr1, addr2):
     user1, domain1 = ParseEmail(addr1)
     user2, domain2 = ParseEmail(addr2)
     if user1 != user2:
-	return 0
+        return 0
     if domain1 == domain2:
         return 1
     elif not domain1 or not domain2:
@@ -406,9 +406,9 @@ def ObscureEmail(addr, for_text=0):
     When for_text option is set (not default), make a sentence fragment
     instead of a token."""
     if for_text:
-	return addr.replace('@', ' at ')
+        return addr.replace('@', ' at ')
     else:
-	return addr.replace('@', '--at--')
+        return addr.replace('@', '--at--')
 
 def UnobscureEmail(addr):
     """Invert ObscureEmail() conversion."""
