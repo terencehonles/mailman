@@ -213,7 +213,7 @@ class SecurityManager:
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)
         if key is None or secret is None:
-            raise MMBadUserError
+            raise Errors.MMBadUserError
         # Timestamp
         issued = int(time.time())
         # Get a digest of the secret, plus other information.
