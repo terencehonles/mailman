@@ -179,6 +179,12 @@ class LockFile:
         # For transferring ownership across a fork.
         self.__owned = 1
 	
+    def __repr__(self):
+        return '<LockFile %s: %s [%s: %ssec]>' % (
+            id(self), self.__lockfile,
+            self.locked() and 'locked' or 'unlocked',
+            self.__lifetime)
+
     def set_lifetime(self, lifetime):
         """Set a new lock lifetime.
 
