@@ -41,6 +41,9 @@ Where:
         "enabled" which prints just those member for whom delivery is
         enabled.
 
+    --fullnames / -f
+        Include the full names in the output.
+
     --preserve
     -p
         Output member addresses case preserved the way they were added to the
@@ -65,6 +68,8 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import MemberAdaptor
 from Mailman.i18n import _
+
+from email.Utils import formataddr
 
 PROGRAM = sys.argv[0]
 WHYCHOICES = {'enabled' : MemberAdaptor.ENABLED,
@@ -103,6 +108,7 @@ def main():
     nomail = None
     why = None
     kind = None
+    fullnames = 0
 
     # Throw away the first (program) argument
     args = sys.argv[1:]
@@ -116,6 +122,8 @@ def main():
             usage(1)
         if opt in ('-h', '--help'):
             usage(0)
+        elif opt in ('-f', '--fullnames'):
+            fullnames = 1
         elif opt in ('-p', '--preserve'):
             preserve = 1
         elif opt in ('-r', '--regular'):
@@ -187,13 +195,15 @@ def main():
     if regular:
         rmembers.sort()
         for addr in rmembers:
+            name = fullnames and mlist.getMemberName(addr)
             # Filter out nomails
             if nomail and not whymatches(mlist, addr, why):
                 continue
-            print >> fp, addr
+            print >> fp, formataddr((name, addr))
     if digest:
         dmembers.sort()
         for addr in dmembers:
+            name = fullnames and mlist.getMemberName(addr)
             # Filter out nomails
             if nomail and not whymatches(mlist, addr, why):
                 continue
@@ -206,7 +216,7 @@ def main():
                 # They're getting MIME digests
                 if kind == 'plain':
                     continue
-            print >> fp, addr
+            print >> fp, formataddr((name, addr))
 
 
 if __name__ == '__main__':
