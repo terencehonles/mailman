@@ -102,8 +102,13 @@ def main():
         print 'No user:', fromaddr
         return
 
-    # get the user's current options and password
-    options = mlist.user_options[lfromaddr]
+    # Get the user's current options and password.  TBD: Ugly hack: if a
+    # user's options would have been zero, then Mailman saves room by deleting
+    # the entry for the user from the user_options dictionary.  Note that
+    # /really/ it would be better if Mailman.GetUserOption() and
+    # Mailman.SetUserOption() supported an interface to get the entire option
+    # value.
+    options = mlist.user_options.get(lfromaddr, 0)
     password = mlist.passwords[lfromaddr]
 
     # now add the new user
@@ -113,7 +118,11 @@ def main():
         print 'Already a member:', toaddr
 
     # and finally hack the options
-    mlist.user_options[string.lower(toaddr)] = options
+    cftoaddr = string.lower(toaddr)
+    if not options:
+        del mlist.user_options[cftoaddr]
+    else:
+        mlist.user_options[cftoaddr] = options
     mlist.Save()
 
 
