@@ -169,12 +169,16 @@ def maybe_forward(mlist, msg):
     # Does the list owner want to get non-matching bounce messages?
     # If not, simply discard it.
     if mlist.bounce_unrecognized_goes_to_list_owner:
+        adminurl = mlist.GetScriptURL('admin', absolute=1) + '/bounce'
         mlist.ForwardMessage(msg,
                              text=_("""\
 The attached message was received as a bounce, but either the bounce format
 was not recognized, or no member addresses could be extracted from it.  This
 mailing list has been configured to send all unrecognized bounce messages to
 the list administrator(s).
+
+For more information see:
+%(adminurl)s
 
 """),
                              subject=_('Uncaught bounce notification'),
