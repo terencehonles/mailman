@@ -47,7 +47,7 @@ MSGFMT= 	msgfmt
 MSGMERGE=	msgmerge
 
 # CVS available languages
-LANGUAGES=	es ja fr no
+LANGUAGES=	big5 es fr ja no
 LANGDIRS=	$(LANGUAGES:%=messages/%/LC_MESSAGES)
 # Human readable po file
 POFILES=	$(LANGUAGES:%=%/LC_MESSAGES/mailman.po)
@@ -111,11 +111,11 @@ distclean:
 	-rm -f Makefile */LC_MESSAGES/mailman.mo */LC_MESSAGES/mailman.po.old $(POTFILE)
 
 
-marked.files: FORCE
+marked.files:
 	@echo "Calculating marked input files for pygettext"
 	(cd ..; find Mailman -path '*pythonlib' -prune -o -name '*.py' -print >| messages/$@)
 
-docstring.files: FORCE
+docstring.files:
 	@echo "Calculating script input files for pygettext"
 	(cd ..; grep -d skip -l '^#! /usr/bin/env python' `find bin cron scripts -name ".#*" -prune -o -print` >| messages/$@)
 
