@@ -21,34 +21,14 @@
 # When an operation can't be completed, and is sent to the list admin for
 # Handling, we consider that an error condition, and raise MMNeedApproval
 
-import mm_err, mm_cfg, mm_message
-import os, marshal, time, string
+import os
+import marshal
+import time
+import string
+import Errors
+import Message
+import Utils
 
-SUBSCRIPTION_AUTH_TEXT = """
-Your authorization is required for a maillist subscription request approval:
-
-    For:	%s
-    List:	%s@%s
-
-At your convenience, visit:
-
-	%s
-	
-to process the request."""
-
-POSTING_AUTH_TEXT = """
-Your authorization is required for a maillist posting request approval:
-
-    List:		%s@%s
-    Reason held:	%s
-    From:		%s
-    Subject:    	%s
-
-At your convenience, visit:
-
-	%s
-	
-to approve or deny the request."""
 
 class ListAdmin:
     def InitVars(self):
@@ -71,14 +51,17 @@ class ListAdmin:
 	    if self.admin_immed_notify:
 		subj = 'New %s subscription request: %s' % (self.real_name,
 							    who)
+                text = Utils.maketext(
+                    'subauth.txt',
+                    {'username'   : who,
+                     'listname'   : self.real_name,
+                     'hostname'   : self.host_name,
+                     'admindb_url': self.GetAbsoluteScriptURL('admindb'),
+                     })
 		self.SendTextToUser(subject = subj,
 				    recipient = self.GetAdminEmail(),
-				    text = (SUBSCRIPTION_AUTH_TEXT
-					    % (who,
-					       self.real_name,
-					       self.host_name,
-					       self.GetAbsoluteScriptURL('admindb'))))
-	    raise mm_err.MMNeedApproval, "Admin approval required to subscribe"
+				    text = text)
+	    raise Errors.MMNeedApproval, "Admin approval required to subscribe"
 
 	elif request == 'post':
 	    sender = args[0][0]
@@ -89,16 +72,19 @@ class ListAdmin:
 	    if self.admin_immed_notify:
 		subj = '%s post approval required for %s' % (self.real_name,
 							     sender)
+                text = Utils.maketext(
+                    'postauth.txt',
+                    {'listname'   : self.real_name,
+                     'hostname'   : self.host_name,
+                     'reason'     : reason,
+                     'sender'     : sender,
+                     'subject'    : subject,
+                     'admindb_url': self.GetAbsoluteScriptURL('admindb'),
+                     })
 		self.SendTextToUser(subject = subj,
 				    recipient = self.GetAdminEmail(),
-				    text = (POSTING_AUTH_TEXT
-					    % (self.real_name,
-					       self.host_name,
-					       reason,
-					       sender,
-					       subject,
-					       self.GetAbsoluteScriptURL('admindb'))))
-	    raise mm_err.MMNeedApproval, args[1]
+				    text = text)
+	    raise Errors.MMNeedApproval, args[1]
 
     def CleanRequests(self):
 	for (key, val) in self.requests.items():
@@ -110,7 +96,7 @@ class ListAdmin:
 	    for i in range(len(val)):
 		if val[i][0] == id:
 		    return (key, i)
-	raise mm_err.MMBadRequestId
+	raise Errors.MMBadRequestId
 
     def RemoveRequest(self, id):
 	for (key, val) in self.requests.items():
@@ -118,7 +104,7 @@ class ListAdmin:
 		if item[0] == id:
 		    val.remove(item)
 		    return
-	raise mm_err.MMBadRequestId
+	raise Errors.MMBadRequestId
 
     def RequestsPending(self):
 	self.CleanRequests()
@@ -139,7 +125,7 @@ class ListAdmin:
 
     def HandlePostRequest(self, data, value, comment):
 	destination_email = data[0][0]
-	msg = mm_message.IncomingMessage(data[0][1])
+	msg = Message.IncomingMessage(data[0][1])
 	rejection = None
 	if not value:
             # Accept.
@@ -187,7 +173,7 @@ class ListAdmin:
 	else:
 	    try:
 		self.ApprovedAddMember(destination_email, pw, digest)
-	    except mm_err.MMAlreadyAMember:
+	    except Errors.MMAlreadyAMember:
 		pass
 
 
@@ -201,6 +187,7 @@ class ListAdmin:
 	return id
 
     def RefuseRequest(self, request, destination_email, comment, msg=None):
+        # XXX: convert to Utils.maketext() style
 	text = '''Your request to the '%s' mailing-list:
 
 	%s
