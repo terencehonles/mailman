@@ -597,10 +597,9 @@ turn_on_moderation = 0
 def GetValidValue(lst, prop, my_type, val, dependant):
     if my_type == mm_cfg.Radio or my_type == mm_cfg.Toggle:
 	if type(val) <> types.IntType:
-	    try:
-                # XXX Security!?
-		val = eval(val)
-	    except:
+            try:
+                val = int(val)
+            except ValueError:
 		pass
 		# Don't know what to do here...
 	    return val
