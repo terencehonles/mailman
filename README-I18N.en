@@ -41,9 +41,7 @@ ADDING NEW TRANSLATIONS
     Emacs, for this part of the job.
 
     Once you've added your translations, you can then run msgfmt over
-    your .po file to generate messages/xx/LC_MESSAGE/mailman.mo (it
-    would also be a good idea to donate your translated .po file back
-    to the Mailman project!)
+    your .po file to generate messages/xx/LC_MESSAGE/mailman.mo.
 
     Next, create the subdirectory templates/xx and translate each of
     the files in templates/en/*.{html,txt}.  These you should also
@@ -66,12 +64,61 @@ RESYNCHRONIZING THE CATALOG
     mailman.po files from SF or CVS and update the translated
     messages.  They should also update the template translations.
 
+    The language packs will be made available on SourceForge under the
+    i18n project, using the following URL
+
+    http://sourceforge.net/project/showfiles.php?group_id=103
+
+    The README-I18N.en file will be a copy of this one, although the
+    version in CVS will always be the most up-to-date.  The "langpack"
+    tarball will contain all the templates and message catalogs you'd
+    need, although again, CVS is the most current.
+
     For best results, you will probably want to keep current on
     changes to Mailman 2.1 in the CVS.  As Mailman 2.1 moves towards
     final release, the catalogs and templates should start to
     stabilize.  Alternatively, occasionally I will make new English
     language packs available on SourceForge, and you can use these to
     create your translations.
+
+
+DONATING YOUR TRANSLATION BACK TO MAILMAN
+
+    We'd really appreciate it if you donate your translations back to
+    the Mailman project, so that others can benefit from your effort.
+    You'll get credit of course, in the Mailman documentation.  Here
+    are the steps to donate your translations, either the first time
+    or subsequent updates.
+
+    The best thing to do is to send me <barry@zope.com> a "tarball",
+    i.e. a gzip'd tarfile, that can be unpacked in the top level
+    directory of the Mailman CVS tree.  This would be the directory
+    containing this README-I18N.en file.
+
+    Your tarball should contain two directories, where your donated
+    language is `xx':
+
+    templates/xx
+    messages/xx
+
+    In templates/xx there should be the translated templates, all the
+    .txt and .html files, for your language, mirroring those in the
+    English template directory (always the master copy).
+
+    In messages/xx you should have a single directory LC_MESSAGES, and
+    in that directory a file called mailman.po, which is the human
+    readable catalog for your language.  Do not send me the mailman.mo
+    file, since I'll recreate it on my end, and that'll save on the
+    size of the tarball.
+
+    That's basically it.  If you need to include a README, please call
+    it README.xx and put it in the messages/xx directory.  README.xx
+    can be in your native language.
+
+    You can email the tarball to me, and if this is the first
+    installation of the language, please tell me what the
+    add_language() call in Defaults.py.in should be for your
+    language.
 
 
 CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
@@ -83,6 +130,7 @@ CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
     - English
     - French
     - Hungarian
+    - Italian
     - Japanese
     - Spanish
     - Norwegian
@@ -94,6 +142,7 @@ CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
     - Dutch
     - German
     - Polish
+    - Portuguese
     - Swedish
 
     Hopefully more translations will be donated as Mailman 2.1
