@@ -179,7 +179,7 @@ def process_form(mlist, doc):
             results = results + ("Mailman won't accept the given email "
                                  "address as a valid address. (Does it "
                                  "have an @ in it???)<p>")
-        except Errors.MMListNotReady:
+        except Errors.MMListError:
             results = results + ("The list is not fully functional, and "
                                  "can not accept subscription requests.<p>")
         except Errors.MMSubscribeNeedsConfirmation:
