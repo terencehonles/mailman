@@ -42,17 +42,14 @@ PACKAGEDIR= 	$(prefix)/Mailman
 CGIDIR=		$(PACKAGEDIR)/Cgi
 SHELL=		/bin/sh
 
-MODULES=	__init__.py aliases.py htmlformat.py maillist.py \
-mm_admin.py mm_archive.py mm_bouncer.py mm_defaults.py \
-mm_deliver.py mm_digest.py mm_err.py mm_html.py mm_mailcmd.py \
-mm_mbox.py mm_message.py mm_security.py mm_utils.py \
-mm_pending.py mm_crypt.py mm_gateway.py \
-pipermail.py smtplib.py versions.py 
+MODULES=	__init__.py aliases.py htmlformat.py \
+MailList.py ListAdmin.py Archiver.py Bouncer.py Defaults.py \
+Deliverer.py Digester.py Errors.py HTMLFormatter.py \
+MailCommandHandler.py Mailbox.py Message.py SecurityManager.py \
+Utils.py Pending.py Crypt.py GatewayManager.py \
+pipermail.py smtplib.py versions.py flock.py
 
-CGI_MODULES=	__init__.py admin.py admindb.py archives.py \
-edithtml.py handle_opts.py listinfo.py options.py private.py \
-roster.py subscribe.py
-
+SUBDIRS=	Cgi
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -66,24 +63,35 @@ INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 # Rules
 
 all:
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE)); \
+	done
 
-install:
+install: 
 	for f in $(MODULES); \
 	do \
 	    $(INSTALL) -m $(FILEMODE) $$f $(PACKAGEDIR); \
 	done
-	$(INSTALL) -d $(PACKAGEDIR)/Cgi
-	for f in $(CGI_MODULES); \
-	do \
-	    $(INSTALL) -m $(FILEMODE) Cgi/$$f $(PACKAGEDIR)/Cgi; \
-        done
 	$(INSTALL) -m $(FILEMODE) mm_cfg.py $(PACKAGEDIR)/mm_cfg.py.dist
 	if test ! -f $(PACKAGEDIR)/mm_cfg.py; \
 	then \
 	    $(INSTALL) -m $(FILEMODE) mm_cfg.py $(PACKAGEDIR); \
 	fi
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) install); \
+	done
 
 clean:
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) clean); \
+	done
 
 distclean:
-	-rm Makefile mm_defaults.py
+	-rm Makefile Defaults.py
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) distclean); \
+	done
