@@ -150,9 +150,15 @@ To obtain instructions, send a message containing just the word "help".
             resp.append(_('\n- Ignored:'))
             resp.extend(indent(self.ignored))
         resp.append(_('\n- Done.\n\n'))
-        results = MIMEText(
-            NL.join(resp),
-            _charset=Utils.GetCharSet(self.mlist.preferred_language))
+        # Encode any unicode strings into the list characterset,
+        # so we don't try to join unicode strings and invalid ASCII.
+        charset = Utils.GetCharSet(self.mlist.preferred_language)
+        encoded_resp = []
+        for item in resp:
+            if isinstance(item, UnicodeType):
+                item = item.encode(charset, 'replace')
+            encoded_resp.append(item)
+        results = MIMEText(NL.join(encoded_resp), _charset=charset)
         # Safety valve for mail loops with misconfigured email 'bots.  We
         # don't respond to commands sent with "Precedence: bulk|junk|list"
         # unless they explicitly "X-Ack: yes", but not all mail 'bots are
