@@ -117,14 +117,17 @@ def dolist(mlist, options):
                 print _('(no change)')
 
     # see if the fromaddr is a digest member or regular member
-    if options.lfromaddr in mlist.GetDigestMembers():
+    if options.lfromaddr in mlist.getDigestMemberKeys():
         digest = 1
-    elif options.lfromaddr in mlist.GetMembers():
+    elif options.lfromaddr in mlist.getRegularMemberKeys():
         digest = 0
     else:
         if not options.quiet:
             print _('    address not found:'), options.fromaddr
         return
+
+    # XXX change this stuff to use changeMemberAddress()
+    # FIXME
 
     # Get the user's current options and password.  Ugly hack: if a user's
     # options would have been zero, then Mailman saves room by deleting the
