@@ -276,19 +276,16 @@ the list administrator automatically.'''))
                         syslog('error',
                                'Unexpected Mailman error:\n%s', tbmsg)
                         # and send the traceback to the user
+                        lang = msgdata.get('lang',
+                                           self.getMemberLanguage(admin))
                         responsemsg = Message.UserNotification(
                             admin, admin, _('Unexpected Mailman error'),
                             _('''\
 An unexpected Mailman error has occurred in
 MailCommandHandler.ParseMailCommands().  Here is the traceback:
 
-''') + tbmsg)
+''') + tbmsg, lang=lang)
                         responsemsg['X-No-Archive'] = 'yes'
-                        lang = msgdata.get('lang',
-                                           self.getMemberLanguage(admin))
-                        responsemsg['MIME-Version'] = '1.0'
-                        responsemsg.add_header('Content-Type', 'text/plain',
-                                               charset=Utils.GetCharSet(lang))
                         responsemsg.send(self)
                         break
         # send the response
@@ -320,10 +317,7 @@ The following is a detailed description of the problems.
             responsemsg = Message.UserNotification(msg.get_sender(),
                                                    self.GetRequestEmail(),
                                                    subject,
-                                                   self.__respbuf)
-            responsemsg['MIME-Version'] = '1.0'
-            responsemsg.add_header('Content-Type', 'text/plain',
-                                   charset=Utils.GetCharSet(lang))
+                                                   self.__respbuf, lang)
             responsemsg.send(self)
             self.__respbuf = ''
             self.__errors = 0
