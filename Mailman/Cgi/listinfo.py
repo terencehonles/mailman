@@ -173,12 +173,14 @@ def list_listinfo(mlist, lang):
     replacements['<mm-confirm-password>'] = mlist.FormatSecureBox('pw-conf')
     replacements['<mm-subscribe-form-start>'] = mlist.FormatFormStart(
         'subscribe')
+    # Roster form substitutions
     replacements['<mm-roster-form-start>'] = mlist.FormatFormStart('roster')
+    replacements['<mm-roster-option>'] = mlist.FormatRosterOptionForUser(lang)
+    # Options form substitutions
     replacements['<mm-options-form-start>'] = mlist.FormatFormStart('options')
     replacements['<mm-editing-options>'] = mlist.FormatEditingOption(lang)
     replacements['<mm-info-button>'] = SubmitButton('UserOptions',
                                                     _('Edit Options')).Format()
-    replacements['<mm-roster-option>'] = mlist.FormatRosterOptionForUser(lang)
     replacements['<mm-displang-box>'] = mlist.FormatButton('displang-button',
                              text = _("View this page in"))
     replacements['<mm-lang-form-start>'] = mlist.FormatFormStart('listinfo')
