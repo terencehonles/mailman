@@ -62,8 +62,8 @@ class GatewayManager:
 	    headers = con.head(`num`)[3]
 	    found_to = 0
             for header in headers:
-	      i = string.index(header, ':')
-    	      if string.lower(header[:i]) == 'to':
+	      i = string.find(header, ':')
+    	      if i > 0 and string.lower(header[:i]) == 'to':
 	        found_to = 1
 	      if header[:i] <> 'X-BeenThere':
 	        continue
