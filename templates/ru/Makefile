@@ -1,5 +1,5 @@
 # FILES=admindbpreamble.html adminsubscribeack.txt adminunsubscribeack.txt admlogin.html approve.txt article.html bounce.txt checkdbs.txt convert.txt cronpass.txt headfoot.html help.txt listinfo.html masthead.txt newlist.txt nopass.txt options.html postack.txt postauth.txt postheld.txt private.html reenable.txt refuse.txt roster.html subauth.txt subscribeack.txt subscribe.html unsub.txt userpass.txt verify.txt
-FILES=$(shell cat status | while read a b; do echo $a; done)
+FILES=$(shell cat status | sed -e 's/ .*$$//')
 TARGET=/var/home/mailman/templates/ru
 
 TFILES=$(addprefix $(TARGET),$(FILES))
