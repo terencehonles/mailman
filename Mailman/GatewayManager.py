@@ -20,6 +20,7 @@
 # at the top level
 import os
 import string
+import re
 import time
 import mm_cfg
 
@@ -127,7 +128,11 @@ class GatewayManager:
             msg = Message.NewsMessage(mail_msg)
             # Ok, munge headers, etc.
             subj = msg.getheader('subject')
-            if not subj:
+            if subj:
+                subjpref = self.subject_prefix
+                if not re.match(re.escape(subjpref), subj, re.I):
+                    msg.SetHeader('Subject', '%s%s' % (subjpref, subj))
+            else:
                 msg.SetHeader('Subject', '%s(no subject)' % prefix)
             if self.reply_goes_to_list:
                 del msg['reply-to']
