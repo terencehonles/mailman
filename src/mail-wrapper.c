@@ -63,7 +63,7 @@ main(int argc, char** argv, char** env)
 	/* sanity check arguments */
 	if (argc < 2)
 		fatal(logident, MAIL_USAGE_ERROR,
-		      "Usage: %s program [args...]\n", argv[0]);
+		      "Usage: %s program [args...]", argv[0]);
 
 	if (!check_command(argv[1]))
 		fatal(logident, MAIL_ILLEGAL_COMMAND,
