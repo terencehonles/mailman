@@ -38,9 +38,9 @@ import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 QRUNNER_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'qrunner.lock')
-QRUNNER_LOCK_LIFETIME = 60 * 10                   # 10 minutes
+QRUNNER_LOCK_LIFETIME = 60 * 30                   # 30 minutes
 
-LogStdErr('error', 'qrunner', tee_to_stdout=0)
+LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
 
 
 
