@@ -8,15 +8,15 @@ import string, types
 
 # Format an arbitrary object.
 def HTMLFormatObject(item, indent):
-    try:
+##    try:
         if type(item) == type(''):
            return item
         if type(item) == type(2):
 	    return `item`
 
 	return item.Format(indent)
-    except:
-	return `item`
+##     except:
+## 	return `item`
 	
 
 def CaseInsensitiveKeyedDict(d):
@@ -154,8 +154,8 @@ class Table:
 	    output = output + self.ExtractRowInfo(my_info)
 	output = output + '>'
 
-	for i in range(len(self.cells[row])):
-	    output = output + self.FormatCell(row, i, indent + 2)
+        for i in range(len(self.cells[row])):
+            output = output + self.FormatCell(row, i, indent + 2)
 
 	output = output + '\n' + ' '*indent + '</tr>'
 
