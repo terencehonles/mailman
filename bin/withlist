@@ -90,17 +90,20 @@ mylist-request@myhost.com
 import sys
 import getopt
 import string
+
 import paths
+from Mailman.Utils import write
 from Mailman.MailList import MailList
 
 m = None
 r = None
 
+
 
 def usage(msg='', code=1):
-    print __doc__ % globals()
+    write(__doc__ % globals(), file=sys.stderr)
     if msg:
-        print msg
+        write(msg, file=sys.stdout)
     sys.exit(code)
 
 
@@ -114,9 +117,10 @@ def atexit():
     if not m:
         return
     if m.Locked():
-        print 'Unlocking (but not saving) list:', m.internal_name()
+        write('Unlocking (but not saving) list:', m.internal_name(),
+              file=sys.stderr)
         m.Unlock()
-    print 'Finalizing'
+    write('Finalizing', file=sys.stderr)
     del m
 
 
@@ -146,11 +150,11 @@ def main():
             run = arg
 
     # first try to open mailing list
-    print 'Loading list:', listname,
+    write('Loading list:', listname, file=sys.stderr, nl=0)
     if lock:
-        print '(locked)'
+        write('(locked)', file=sys.stderr)
     else:
-        print '(unlocked)'
+        write('(unlocked)', file=sys.stderr)
 
     m = MailList(listname, lock=lock)
 
@@ -163,9 +167,9 @@ def main():
         else:
             module = run[:i]
             callable = run[i+1:]
-        print 'Importing', module, '...'
+        write('Importing', module, '...', file=sys.stderr)
         mod = __import__(module)
-        print 'Running %s.%s()' % (module, callable), '...'
+        write('Running %s.%s()' % (module, callable), '...', file=sys.stderr)
         r = getattr(mod, callable)(m)
 
 
