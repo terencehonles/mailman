@@ -54,9 +54,13 @@ def checkwalk(arg, dirname, names):
                 continue
             raise
         if gid <> MAILMAN_GID:
+            try:
+                groupname = grp.getgrgid(gid)[0]
+            except KeyError:
+                groupname = '<anon gid %d>' % gid
             arg.ERRORS = arg.ERRORS + 1
             print path, 'bad gid (has: %s, expected %s)' % (
-                grp.getgrgid(gid)[0], MAILMAN_GRPNAME),
+                groupname, MAILMAN_GRPNAME),
             if STATE.FIX:
                 print '(fixing)'
                 os.chown(path, -1, MAILMAN_GID)
