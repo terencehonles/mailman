@@ -58,13 +58,12 @@ def MailAllPasswords(list, users):
              'header'  : header,
              'table'   : string.join(table, '\n'),
              'one_list': l,
-             })
+             }, raw=1)
    	list.SendTextToUser(subject = subj,
    			    recipient = user,
    			    text = text,
  			    sender = mm_cfg.MAILMAN_OWNER,
-                            add_headers = ["X-No-Archive: yes"],
-                            raw=1)
+                            add_headers = ["X-No-Archive: yes"])
         count = count - 1
         if count == 0:
             # The pause that refreshes.
