@@ -315,6 +315,10 @@ def NewVars(l):
         'bounce_notify_owner_on_removal',
         mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
     add_only_if_missing('ban_list', [])
+    add_only_if_missing('filter_mime_types', mm_cfg.DEFAULT_FILTER_MIME_TYPES)
+    add_only_if_missing('filter_content', mm_cfg.DEFAULT_FILTER_CONTENT)
+    add_only_if_missing('convert_html_to_plaintext',
+                        mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
     add_only_if_missing('delivery_status', {})
     # This really ought to default to mm_cfg.HOLD, but that doesn't work with
     # the current GUI description model.  So, 0==Hold, 1==Reject, 2==Discard
