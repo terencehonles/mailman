@@ -124,9 +124,8 @@ def FormatListinfoOverview(error=None):
                        % ((error and "right ") or ""))
                       +
                       '<p> List administrators, you can visit ',
-                      Link("%sadmin%s/" % ('../' * Utils.GetNestingLevel(),
-                                           mm_cfg.CGIEXT),
-                           "the list admin overview page"),
+                      Link(Utils.ScriptURL('admin'),
+                           'the list admin overview page'),
                       " to find the management interface for your list."
                       "<p>(Send questions or comments to ",
                       Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
@@ -143,8 +142,7 @@ def FormatListinfoOverview(error=None):
                       ])
     for mlist in advertised:
         table.AddRow(
-            [Link(mlist.GetRelativeScriptURL('listinfo'), 
-                  Bold(mlist.real_name)),
+            [Link(mlist.GetScriptURL('listinfo'), Bold(mlist.real_name)),
              mlist.description or Italic('[no description available]')])
 
     doc.AddItem(table)
