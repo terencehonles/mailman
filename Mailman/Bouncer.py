@@ -164,8 +164,8 @@ class Bouncer:
                                               negative, did)),
                                 recipient = recipient,
                                 sender = mm_cfg.MAILMAN_OWNER,
-                                add_to_headers = ["Errors-To: %s"
-                                                  % mm_cfg.MAILMAN_OWNER],
+                                add_headers = ["Errors-To: %s"
+					       % mm_cfg.MAILMAN_OWNER],
                                 text = text)
     def DisableBouncingAddress(self, addr):
         if not self.IsMember(addr):
