@@ -17,6 +17,7 @@
 # This is mailman's interface to the alias database.
 
 # TODO:
+#     - fix this file!  /etc/alias hacking no longer works
 
 # Write a wrapper program w/ root uid that allows the mailman user
 # only to update the alias database.
