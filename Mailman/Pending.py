@@ -76,9 +76,14 @@ def new(*content):
 
 
 
-def confirm(cookie):
-    """Return data for cookie, removing it from db, or None if not found."""
+def confirm(cookie, expunge=1):
+    """Return data for cookie, or None if not found.
+
+    If optional expunge is true (the default), the record is also removed from
+    the database.
+    """
     # Acquire the pending database lock, letting TimeOutError percolate up.
+    # BAW: we perhaps shouldn't acquire the lock if expunge==0.
     lock = LockFile.LockFile(LOCKFILE)
     lock.lock(timeout=30)
     try:
@@ -89,8 +94,9 @@ def confirm(cookie):
         if content is missing:
             return None
         # Remove the entry from the database
-        del db[cookie]
-        _save(db)
+        if expunge:
+            del db[cookie]
+            _save(db)
         return content
     finally:
         lock.unlock()
