@@ -33,12 +33,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._internal_name = name
 	self._ready = 0
 	if name:
+	    if name not in list_names():
+		raise mm_err.MMUnknownListError, 'list not found'
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
-	    # Load in the default values so that old data files aren't hosed
-	    # by new versions of the program.
+	    # Load in the default values so that old data files aren't
+	    # hosed by new versions of the program.
 	    self.InitVars(name)
 	    self.Load()
-
 
     def GetAdminEmail(self):
 	return '%s-admin@%s' % (self._internal_name, self.host_name)
@@ -162,12 +163,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Subject line prefix - to distinguish list messages in '
 	     'mailbox summaries.'),
 
-	    ('msg_header', mm_cfg.Text, (4, 65), 0,
-	     'Header added to mail sent to regular list members'),
-	    
-	    ('msg_footer', mm_cfg.Text, (4, 65), 0,
-	     'Footer added to mail sent to regular list members'),
-
 	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Advertise this list when people ask what lists are on '
 	     'this machine?'),
@@ -243,6 +238,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Can subscribers choose to receive mail singly, '
 	     'rather than in digests?'),
 
+	    ('msg_header', mm_cfg.Text, (4, 65), 0,
+	     'Header added to mail sent to regular list members'),
+	    
+	    ('msg_footer', mm_cfg.Text, (4, 65), 0,
+	     'Footer added to mail sent to regular list members'),
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
@@ -289,8 +289,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def Load(self):
 	self.Lock()
-	file = open(os.path.join(self._full_path, 'config.db'), 'r')
-	dict = marshal.load(file)
+	try:
+	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
+	except IOError:
+	    raise mm_cfg.MMBadListError, 'Failed to access config info'
+	try:
+	    dict = marshal.load(file)
+	except (EOFError, ValueError, TypeError):
+	    raise mm_cfg.MMBadListError, 'Failed to unmarshal config info'
 	for (key, value) in dict.items():
 	    setattr(self, key, value)
 	file.close()
