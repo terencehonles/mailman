@@ -234,7 +234,7 @@ def PrintRequests(doc):
 	t = htmlformat.Table(border=2)
 	t.AddRow([
 	    htmlformat.Bold('Email'),
-	    htmlformat.Bold('Descision'),
+	    htmlformat.Bold('Decision'),
 	    htmlformat.Bold('Reasoning for subscription refusal (optional)')])
 	for request in list.requests['add_member']:
 	    PrintAddMemberRequest(request, t)
@@ -252,7 +252,8 @@ def PrintRequests(doc):
     if list.requests.has_key('post'):
 	for request in list.requests['post']:
 	    form.AddItem('<hr>')
-	    form.AddItem(htmlformat.Center(htmlformat.Header(2, "Held Message")))
+	    form.AddItem(htmlformat.Center(htmlformat.Header(2,
+                                                             "Held Message")))
 	    PrintPostRequest(request, form)
     doc.AddItem(list.GetMailmanFooter())
 
