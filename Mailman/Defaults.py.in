@@ -204,6 +204,7 @@ ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 # 1 - Remove any embedded text/html parts, leaving them as HTML-escaped
 #     attachments which can be separately viewed.  Outer text/html parts are
 #     simply HTML-escaped.
+# 2 - Leave it inline, but HTML-escape it
 #
 # The value can also be a string, in which case it is the name of a command to
 # filter the HTML page through.  The resulting output is left in an attachment
@@ -211,7 +212,8 @@ ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 # format of the string must include a "%(filename)s" which will contain the
 # name of the temporary file that the program should operate on.  It should
 # write the processed message to stdout.
-ARCHIVE_HTML_SANITIZER = '/usr/bin/lynx -dump %(filename)s'
+#ARCHIVE_HTML_SANITIZER = '/usr/bin/lynx -dump %(filename)s'
+ARCHIVE_HTML_SANITIZER = 1
 
 # Set this to 1 to enable gzipping of the downloadable archive .txt file.
 # Note that this is /extremely/ inefficient, so an alternative is to just
