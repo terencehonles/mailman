@@ -17,7 +17,8 @@
       <TD> <INPUT TYPE=password NAME=adminpw SIZE=30></TD>
     </tr>
     <tr>
-      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="request_login">
+      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="request_login"
+						     value="Let me in...">
       </td>
     </tr>
   </TABLE>
