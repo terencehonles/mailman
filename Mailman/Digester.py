@@ -18,9 +18,12 @@
 """Mixin class with list-digest handling methods and settings."""
 
 import os
+from stat import ST_SIZE
+
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
+from Mailman.Handlers import ToDigest
 from Mailman.i18n import _
 
 
@@ -36,9 +39,11 @@ class Digester:
 	self.next_post_number = 1
 	self.digest_header = mm_cfg.DEFAULT_DIGEST_HEADER
 	self.digest_footer = mm_cfg.DEFAULT_DIGEST_FOOTER
+        self.digest_volume_frequency = mm_cfg.DEFAULT_DIGEST_VOLUME_FREQUENCY
 	# Non-configurable.
 	self.digest_members = {}
 	self.next_digest_number = 1
+        self.digest_last_sent_at = 0
 
     def GetConfigInfo(self):
         WIDTH = mm_cfg.TEXTFIELDWIDTH
@@ -79,6 +84,22 @@ class Digester:
              _("Text attached (as a final message) to the bottom of digests. ")
              + Utils.maketext('headfoot.html', lang=self.preferred_language,
                               raw=1)),
+
+            ('digest_volume_frequency', mm_cfg.Radio,
+             (_('Yearly'), _('Monthly'), _('Quarterly'),
+              _('Weekly'), _('Daily')), 0,
+             _('How often should a new digest volume be started?'),
+             _('''When a new digest volume is started, the volume number is
+             incremented and the issue number is reset to 1.''')),
+
+            ('_new_volume', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+             _('Should Mailman start a new digest volume?'),
+             _('''Setting this option instructs Mailman to start a new volume
+             with the next digest sent out.''')),
+
+            ('_send_digest_now', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+             _('''Should Mailman send the next digest right now, if it is not
+             empty?''')),
 	    ]
 
     def SetUserDigest(self, sender, value, force=0):
@@ -108,3 +129,26 @@ class Digester:
 		del self.digest_members[addr]
 		self.members[addr] = cpuser
 	self.Save()
+
+    def send_digest_now(self):
+        # Note: Handler.ToDigest.send_digests() handles bumping the digest
+        # volume and issue number.
+        digestmbox = os.path.join(self.fullpath(), 'digest.mbox')
+        try:
+            try:
+                mboxfp = None
+                # See if there's a digest pending for this mailing list
+                if os.stat(digestmbox)[ST_SIZE] > 0:
+                    mboxfp = open(digestmbox)
+                    ToDigest.send_digests(self, mboxfp)
+                    os.unlink(digestmbox)
+            finally:
+                if mboxfp:
+                    mboxfp.close()
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+            # List has no outstanding digests
+
+    def bump_digest_volume(self):
+        mlist.volume += 1
+        mlist.next_digest_number = 1
