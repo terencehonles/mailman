@@ -306,16 +306,16 @@ class Message:
         """
         raw = []
         for h in self.getallmatchingheaders(name):
-            i = string.find(h, ':')
-            if i > 0:
-                addr = string.strip(h[i+1:])
-            # its a continuation line
-            elif h[0] in ' \t':
-                addr = string.strip(h)
-            if addr[-1] == ',':
-                addr = addr[:-1]
-            raw.append(addr)
-        alladdrs = string.join(raw, ', ')
+	    if h[0] in ' \t':
+	        raw.append(h)
+	    else:
+	        if raw:
+		    raw.append(', ')
+                i = string.find(h, ':')
+                if i > 0:
+                    addr = h[i+1:]
+                raw.append(addr)
+        alladdrs = string.join(raw, '')
         a = AddrlistClass(alladdrs)
         return a.getaddrlist()
     
@@ -474,9 +474,8 @@ class AddrlistClass:
         self.specials = '()<>@,:;.\"[]'
         self.pos = 0
         self.LWS = ' \t'
-        self.CR = '\r'
+        self.CR = '\r\n'
         self.atomends = self.specials + self.LWS + self.CR
-        
         self.field = field
         self.commentlist = []
     
@@ -548,6 +547,8 @@ class AddrlistClass:
         else:
             if plist:
                 returnlist = [(string.join(self.commentlist), plist[0])]
+            elif self.field[self.pos] in self.specials:
+                self.pos = self.pos + 1
         
         self.gotonext()
         if self.pos < len(self.field) and self.field[self.pos] == ',':
@@ -627,7 +628,6 @@ class AddrlistClass:
             elif self.field[self.pos] in self.atomends:
                 break
             else: sdlist.append(self.getatom())
-        
         return string.join(sdlist, '')
     
     def getdelimited(self, beginchar, endchars, allowcomments = 1):
