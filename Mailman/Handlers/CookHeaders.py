@@ -132,13 +132,25 @@ def process(mlist, msg, msgdata):
     requestaddr = mlist.GetRequestEmail()
     subfieldfmt = '<%s>, <mailto:%s?subject=%ssubscribe>'
     listinfo = mlist.GetScriptURL('listinfo', absolute=1)
+    # We always add a List-ID: header.  For internally crafted messages, we
+    # also add a (nonstandard), "X-List-Administrivia: yes" header.  For all
+    # others (i.e. those coming from list posts), we adda a bunch of other RFC
+    # 2369 headers.
     headers = {
         'List-Id'         : listid,
-        'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
-        'List-Unsubscribe': subfieldfmt % (listinfo, requestaddr, 'un'),
-        'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
-        'List-Post'       : '<mailto:%s>' % mlist.GetListEmail(),
         }
+    if msgdata.get('reduced_list_headers'):
+        headers['X-List-Administrivia'] = 'yes'
+    else:
+        headers.update({
+            'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
+            'List-Unsubscribe': subfieldfmt % (listinfo, requestaddr, 'un'),
+            'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
+            'List-Post'       : '<mailto:%s>' % mlist.GetListEmail(),
+            })
+        # Add this header if we're archiving
+        if mlist.archive:
+            headers['List-Archive'] = mlist.GetBaseArchiveURL()
     # First we delete any pre-existing headers because the RFC permits only
     # one copy of each, and we want to be sure it's ours.
     for h, v in headers.items():
@@ -149,8 +161,3 @@ def process(mlist, msg, msgdata):
         if len(h) + 2 + len(v) > 78:
             v = CONTINUATION.join(v.split(', '))
         msg[h] = v
-    # Always delete List-Archive header, but only add it back if the list is
-    # actually archiving
-    del msg['list-archive']
-    if mlist.archive:
-        msg['List-Archive'] = mlist.GetBaseArchiveURL()
