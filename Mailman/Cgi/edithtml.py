@@ -45,6 +45,7 @@ def main():
         ('handle_opts.html', _('Changing user options results page')),
         )
 
+    _ = i18n._
     doc = Document()
 
     # Set up the system default language
