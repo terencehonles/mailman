@@ -77,7 +77,7 @@ def addlist(mlist, db, fp):
     listname = mlist.internal_name()
     fieldsz = len(listname) + len('-request')
     # Seek to the end of the file, but if it's empty write the standard
-    # disclaimer.
+    # disclaimer, and the loop catch address.
     fp.seek(0, 2)
     if not fp.tell():
         print >> fp, """\
@@ -86,6 +86,12 @@ def addlist(mlist, db, fp):
 # unless you know what you're doing, and can keep the two files properly
 # in sync.  If you screw it up, you're on your own.
 """
+        loopaddr = mm_cfg.MAILMAN_SITE_LIST + '-loop'
+        loopmbox = os.path.join(mm_cfg.DATA_DIR, 'owner-bounces.mbox')
+        print >> fp, '# For breaking bounce loops'
+        print >> fp, '%s: %s' % (loopaddr, loopmbox)
+        print >> fp
+        db[loopaddr + '\0'] = loopmbox + '\0'
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
