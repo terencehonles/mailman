@@ -229,6 +229,8 @@ def prefix_subject(mlist, msg, msgdata):
     if len(lines) > 1 and lines[1] and lines[1][0] in ' \t':
         ws = lines[1][0]
     msgdata['origsubj'] = subject
+    if not subject:
+        subject = _('(no subject)')
     # The header may be multilingual; decode it from base64/quopri and search
     # each chunk for the prefix.  BAW: Note that if the prefix contains spaces
     # and each word of the prefix is encoded in a different chunk in the
@@ -241,8 +243,6 @@ def prefix_subject(mlist, msg, msgdata):
                 # The subject's already got the prefix, so don't change it
                 return
     del msg['subject']
-    if not subject:
-        subject = _('(no subject)')
     # Get the header as a Header instance, with proper unicode conversion
     h = uheader(mlist, prefix, 'Subject', continuation_ws=ws)
     for s, c in headerbits:
