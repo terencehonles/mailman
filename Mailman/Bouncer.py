@@ -225,11 +225,17 @@ class Bouncer:
         optionsurl = self.GetOptionsURL(member, absolute=1)
         reqaddr = self.GetRequestEmail()
         lang = self.getMemberLanguage(member)
-        reason = REASONS.get(reason)
-        if reason is None:
-            reason = _('for unknown reasons')
+        txtreason = REASONS.get(reason)
+        if txtreason is None:
+            txtreason = _('for unknown reasons')
         else:
-            reason = _(reason)
+            txtreason = _(txtreason)
+        # Give a little bit more detail on bounce disables
+        if reason == MemberAdaptor.BYBOUNCE:
+            date = time.strftime('%d-%b-%Y',
+                                 time.localtime(Utils.midnight(info.date)))
+            extra = _(' The last bounce received from you was dated %(date)s')
+            txtreason += extra
         text = Utils.maketext(
             'disabled.txt',
             {'listname'   : self.real_name,
@@ -238,7 +244,7 @@ class Bouncer:
              'optionsurl' : optionsurl,
              'password'   : self.getMemberPassword(member),
              'owneraddr'  : self.GetOwnerEmail(),
-             'reason'     : reason,
+             'reason'     : txtreason,
              }, lang=lang, mlist=self)
         msg = Message.UserNotification(member, reqaddr, text=text, lang=lang)
         # BAW: See the comment in MailList.py ChangeMemberAddress() for why we
