@@ -222,8 +222,8 @@ class Bouncer:
             if disabled and succeeded == 1:
                 reenable = Utils.maketext(
                     'reenable.txt',
-                    {'admin_url': self.GetScriptURL('admin', absolute=1),
-                     }, lang=self.preferred_language)
+                    {'admin_url': self.GetScriptURL('admin', absolute=1),},
+                    mlist=self)
             else:
                 reenable = ''
             # the mail message text
@@ -237,7 +237,7 @@ class Bouncer:
                  'but'      : but,
                  'reenable' : reenable,
                  'owneraddr': mm_cfg.MAILMAN_OWNER,
-                 }, lang=self.preferred_language)
+                 }, mlist=self)
             # add this here so it doesn't get wrapped/filled
             # FIXME
             text = text + '\n\n--' + boundary + \
