@@ -119,7 +119,7 @@ confirmation, reply to this mail, and put in the body: 	subscribe %s
     except mm_err.MMListNotReady:
         results = results + "The list is not fully functional, and can not accept subscription requests.<p>"
     except mm_err.MMNeedApproval, x:
-        results = results + "Subscription was <em>refused</em> because:<br> %s<p>Your request must be approved by the list admin.  You will receive email informing you of the moderator's descision when he or she gets to your request.<p>" % x
+        results = results + "Subscription was <em>deferred</em> because:<br> %s<p>Your request must be approved by the list admin.  You will receive email informing you of the moderator's descision when he or she gets to your request.<p>" % x
     except mm_err.MMHostileAddress:
         results = results + "Your subscription is not allowed because the email address you gave is insecure.<p>"
     except mm_err.MMAlreadyAMember:
