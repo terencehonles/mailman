@@ -541,9 +541,18 @@ def FormatMembershipOptions(lst):
     t.AddCellInfo(t.GetCurrentRowIndex(),
                   t.GetCurrentCellIndex(),
                   bgcolor="#cccccc", colspan=8)
+    if lst.send_welcome_msg:
+        nochecked = 0
+        yeschecked = 1
+    else:
+        nochecked = 1
+        yeschecked = 0
+    t.AddRow([("<b>1.</b> Send Welcome message to this batch? " +
+               RadioButton("send_welcome_msg_to_this_batch", 0, nochecked).Format() + " no " +
+               RadioButton("send_welcome_msg_to_this_batch", 1, yeschecked).Format() + " yes ")])
+    t.AddRow(["<b>2.</b> Enter one addres per line: <p>"])
     container.AddItem(Center(t))
     container.AddItem(Center(TextArea(name='subscribees', rows=10,cols=60,wrap=None)))
-    container.AddItem(Center("<em> Enter One address per line</em><p>"))
     return container
 
 def FormatPasswordStuff():
@@ -719,6 +728,7 @@ def ChangeOptions(lst, category, cgi_info, document):
             names.remove('')
         subscribe_success = []
         subscribe_errors = []
+        send_welcome_msg = string.atoi(cgi_info["send_welcome_msg_to_this_batch"].value)
 	for new_name in map(string.strip,names):
             digest = 0
             if not lst.digestable:
@@ -727,7 +737,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 digest = 1
 	    try:
 		lst.ApprovedAddMember(new_name, (Utils.GetRandomSeed() +
-                                                  Utils.GetRandomSeed()), digest)
+                                                  Utils.GetRandomSeed()), digest, send_welcome_msg)
                 subscribe_success.append(new_name)
 	    except Errors.MMAlreadyAMember:
                 subscribe_errors.append((new_name, 'Already a member'))
@@ -763,7 +773,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 continue
             if not cgi_info.has_key("%s_digest" % (user)):
                 if user in lst.digest_members:
-                    lst.digest_members.remove(user)
+                    list.digest_members.remove(user)
                     dirty = 1
                 if user not in lst.members:
                     lst.members.append(user)
