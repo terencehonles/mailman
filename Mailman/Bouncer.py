@@ -30,6 +30,7 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
 from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 EMPTYSTRING = ''
 
@@ -37,7 +38,7 @@ EMPTYSTRING = ''
 
 class Bouncer:
     def InitVars(self):
-	# Not configurable...
+        # Not configurable...
 
         # self.bounce_info registers observed bounce incidents.  It's a
         # dict mapping members addrs to a list:
@@ -46,45 +47,51 @@ class Bouncer:
         #    post_id of first offending bounce in current sequence,
         #    post_id of last offending bounce in current sequence
         #  ]
-	self.bounce_info = {}
+        self.bounce_info = {}
 
-	# Configurable...
-	self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
-	self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
-	self.minimum_post_count_before_bounce_action = \
-		mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION
-	self.automatic_bounce_action = mm_cfg.DEFAULT_AUTOMATIC_BOUNCE_ACTION
-	self.max_posts_between_bounces = \
-		mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
+        # Configurable...
+        self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
+        self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
+        self.minimum_post_count_before_bounce_action = \
+                mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION
+        self.automatic_bounce_action = mm_cfg.DEFAULT_AUTOMATIC_BOUNCE_ACTION
+        self.max_posts_between_bounces = \
+                mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
 
     def GetConfigInfo(self):
-	return [
-            _("Policies regarding systematic processing of bounce messages,"
-            " to help automate recognition and handling of defunct"
-            " addresses."),
-	    ('bounce_processing', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
-	     _('Try to figure out error messages automatically? ')),
-	    ('minimum_removal_date', mm_cfg.Number, 3, 0,
-	     _('Minimum number of days an address has been non-fatally '
-               'bad before we take action')),
-	    ('minimum_post_count_before_bounce_action', mm_cfg.Number, 3, 0,
-	     _('Minimum number of posts to the list since members first '
-               'bounce before we consider removing them from the list')),
-	    ('max_posts_between_bounces', mm_cfg.Number, 3, 0,
-	     _("Maximum number of messages your list gets in an hour.  "
-               "(Yes, bounce detection finds this info useful)")),
-	    ('automatic_bounce_action', mm_cfg.Radio,
-	     (_("Do nothing"),
+        return [
+            _('''Policies regarding systematic processing of bounce messages,
+            to help automate recognition and handling of defunct
+            addresses.'''),
+            
+            ('bounce_processing', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+             _('Try to figure out error messages automatically?')),
+
+            ('minimum_removal_date', mm_cfg.Number, 3, 0,
+             _('''Minimum number of days an address has been non-fatally bad
+             before we take action''')),
+
+            ('minimum_post_count_before_bounce_action', mm_cfg.Number, 3, 0,
+             _('''Minimum number of posts to the list since members first
+             bounce before we consider removing them from the list''')),
+
+            ('max_posts_between_bounces', mm_cfg.Number, 3, 0,
+             _('''Maximum number of messages your list gets in an hour. (Yes,
+             bounce detection finds this info useful)''')),
+
+            ('automatic_bounce_action', mm_cfg.Radio,
+             (_("Do nothing"),
               _("Disable and notify me"),
               _("Disable and DON'T notify me"),
-	      _("Remove and notify me")),
-	     0, _("Action when critical or excessive bounces are detected."))
-	    ]
+              _("Remove and notify me")),
+             0,
+             _("Action when critical or excessive bounces are detected."))
+            ]
 
     def ClearBounceInfo(self, email):
-	email = email.lower()
-	if self.bounce_info.has_key(email):
-	    del self.bounce_info[email]
+        email = email.lower()
+        if self.bounce_info.has_key(email):
+            del self.bounce_info[email]
 
     def RegisterBounce(self, email, msg):
         """Detect and handle repeat-offender bounce addresses.
@@ -92,7 +99,8 @@ class Bouncer:
         We use very sketchy bounce history profiles in self.bounce_info
         (see comment above it's initialization), together with list-
         specific thresholds self.minimum_post_count_before_bounce_action
-        and self.max_posts_between_bounces."""
+        and self.max_posts_between_bounces.
+        """
 
         # Set 'dirty' if anything needs to be save in the finally clause.
         report = "%s: %s - " % (self.real_name, email)
@@ -171,17 +179,17 @@ class Bouncer:
         if self.automatic_bounce_action == 0:
             return
         elif self.automatic_bounce_action == 1:
-	    # Only send if call works ok.
+            # Only send if call works ok.
             (succeeded, send) = self.DisableBouncingAddress(addr)
             did = "disabled"
         elif self.automatic_bounce_action == 2:
             (succeeded, send) = self.DisableBouncingAddress(addr)
             did = "disabled"
-	    # Never send.
+            # Never send.
             send = 0
         elif self.automatic_bounce_action == 3:
             (succeeded, send) = self.RemoveBouncingAddress(addr)
-	    # Always send.
+            # Always send.
             send = 1
             did = "removed"
         if send:
@@ -212,7 +220,7 @@ class Bouncer:
                 reenable = Utils.maketext(
                     'reenable.txt',
                     {'admin_url': self.GetScriptURL('admin', absolute=1),
-                     }, self.preferred_language)
+                     }, lang=self.preferred_language)
             else:
                 reenable = ''
             # the mail message text
@@ -226,8 +234,9 @@ class Bouncer:
                  'but'      : but,
                  'reenable' : reenable,
                  'owneraddr': mm_cfg.MAILMAN_OWNER,
-                 }, self.preferred_language)
+                 }, lang=self.preferred_language)
             # add this here so it doesn't get wrapped/filled
+            # FIXME
             text = text + '\n\n--' + boundary + \
                    '\nContent-type: text/plain; charset=' + Utils.GetCharSet()
 
@@ -252,59 +261,60 @@ class Bouncer:
                 negative = negative.upper()
 
             # send the bounce message
+            rname = self.real_name
             msg = Message.UserNotification(
                 recipient, mm_cfg.MAILMAN_OWNER,
-                _('%s member %s bouncing - %s%s') % (self.real_name, addr,
-                                                  negative, did),
+                _('%(rname)s member %(addr)s bouncing - %(negative)s%(did)s'),
                 text)
             msg['MIME-Version'] = '1.0'
             msg['Content-Type'] = 'multipart/mixed; boundary="%s"' % boundary
             msg.send(self)
 
     def DisableBouncingAddress(self, addr):
-	"""Disable delivery for bouncing user address.
+        """Disable delivery for bouncing user address.
 
-	Returning success and notification status."""
+        Returning success and notification status.
+        """
         if not self.IsMember(addr):
-            reason = "User not found."
-	    syslog("bounce", "%s: NOT disabled %s: %s" %
+            reason = _('User not found.')
+            syslog("bounce", "%s: NOT disabled %s: %s" %
                    (self.real_name, addr, reason))
             return reason, 1
-	try:
-	    if self.GetUserOption(addr, mm_cfg.DisableDelivery):
-		# No need to send out notification if they're already disabled.
-		syslog("bounce", "%s: already disabled %s" %
+        try:
+            if self.GetUserOption(addr, mm_cfg.DisableDelivery):
+                # No need to send out notification if they're already disabled.
+                syslog("bounce", "%s: already disabled %s" %
                        (self.real_name, addr))
-		return 1, 0
-	    else:
-		self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
-		syslog("bounce", "%s: disabled %s" % (self.real_name, addr))
-		self.Save()
-		return 1, 1
-	except Errors.MMNoSuchUserError:
+                return 1, 0
+            else:
+                self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
+                syslog("bounce", "%s: disabled %s" % (self.real_name, addr))
+                self.Save()
+                return 1, 1
+        except Errors.MMNoSuchUserError:
             syslog("bounce", "%s: NOT disabled %s: %s" %
                    (self.real_name, addr, Errors.MMNoSuchUserError))
-	    self.ClearBounceInfo(addr)
+            self.ClearBounceInfo(addr)
             self.Save()
             return Errors.MMNoSuchUserError, 1
-	    
+            
     def RemoveBouncingAddress(self, addr):
-	"""Unsubscribe user with bouncing address.
+        """Unsubscribe user with bouncing address.
 
-	Returning success and notification status."""
+        Returning success and notification status."""
         if not self.IsMember(addr):
-            reason = _("User not found.")
-	    syslog("bounce", "%s: NOT removed %s: %s" %
+            reason = _('User not found.')
+            syslog("bounce", "%s: NOT removed %s: %s" %
                    (self.real_name, addr, reason))
             return reason, 1
-	try:
-	    self.DeleteMember(addr, "bouncing addr")
-	    syslog("bounce", "%s: removed %s" % (self.real_name, addr))
+        try:
+            self.DeleteMember(addr, "bouncing addr")
+            syslog("bounce", "%s: removed %s" % (self.real_name, addr))
             self.Save()
             return 1, 1
-	except Errors.MMNoSuchUserError:
-	    syslog("bounce", "%s: NOT removed %s: %s" %
+        except Errors.MMNoSuchUserError:
+            syslog("bounce", "%s: NOT removed %s: %s" %
                    (self.real_name, addr, Errors.MMNoSuchUserError))
-	    self.ClearBounceInfo(addr)
+            self.ClearBounceInfo(addr)
             self.Save()
             return Errors.MMNoSuchUserError, 1
