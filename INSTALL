@@ -1,0 +1,185 @@
+Mailman - a mailing list management system
+Copyright (C) 1998 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
+This file contains installation instructions.  Mailman is now
+configured using the standard GNU autoconf software.  You should first
+set up your system as outlined in section 1 below, and then configure
+and install the Mailman software.
+
+0. Installation requirements
+
+    You must have the Python interpreter installed somewhere on your
+    system.  Currently Python 1.5 or later is required.  For
+    information about obtaining Python source code, or pre-compiled
+    binaries please see the Python Web site at
+
+        <http://www.python.org/>
+
+    You must also have a C compiler in order to build the wrapper
+    programs which are used for improved security.  The GNU C compiler 
+    gcc 2.8.1 is known to work well.  For more information about
+    obtaining gcc, see
+
+        <http://www.gnu.org/>
+
+1. System setup
+
+    Before installing the Mailman software, you need to prepare your
+    system by adding certain users and groups.  You will need root
+    access on your machine in order to do these things.
+
+    - Add a new user called `mailman'.  Typically this is added to
+      your /etc/passwd file.
+
+    - Add a new group called `mailman'.  Typically this is added to
+      your /etc/group file.  The Mailman files will be installed under
+      the `mailman' group, with the set-group-id bit.  This is so both 
+      the Web based and mail based programs will have the proper write 
+      permissions.
+
+    - Make sure you also have the following user ids:
+        nobody
+        daemon
+
+      and the following groups:
+        nobody
+        mail
+
+      These user and group ids are compiled into the wrapper programs
+      for improved security.  If you don't want to or can't added
+      these users and groups, see below for specifying alternative
+      user and group ids for the wrapper programs.
+
+    - Create an installation directory (called $prefix in the
+      documentation that follows).  All of the Mailman files will be
+      installed under $prefix.  Make sure this directory is group
+      `mailman' and has the group sticky bit set.  For example, these
+      shell commands will accomplish this:
+
+          % cd $prefix
+          % chgrp mailman .
+          % chmod g+s .
+
+      You are now ready to configure and install the Mailman software.
+
+2. Running configure
+
+    - If you've installed other GNU software, you should be familar
+      with the configure script.  Usually you can just run configure
+      with no arguments:
+
+          % ./configure
+
+      and then run `make install'.  The following options allow you to 
+      customize your Mailman installation.
+
+      --prefix=dir
+            Standard GNU configure option which changes the base
+            directory that Mailman is installed into.  By default
+            $prefix is /home/mailman.  This directory must already
+            exist, and be set up as described in section 1 above.
+
+      --exec_prefix=dir
+            Standard GNU configure option which lets you specify a
+            different installation directory for architecture
+            dependent binaries.
+
+      --with-python=/path/to/python
+            Specify an alternative Python interpreter to use for the
+            wrapper programs.  The default is to use the interpreter
+            found first on your shell's $PATH.  Note that when running
+            the scripts from the command line, the first Python
+            interpreter found on $PATH is always used.
+
+      --with-gcc=no
+            Don't use gcc, even if it is found.  `cc' must be found on
+            your $PATH
+
+      Also, a number of shell environment variables can be used on the
+      configure command line to customize things.
+
+      $CC         The C compiler to use
+
+      $CGI_UID    The uid to use in the CGI wrapper (default is
+                  the uid for the user `nobody')
+
+      $CGI_GID    The gid to use in the CGI wrapper (default is
+                  the gid for the group `nobody')
+
+      $MAIL_UID   The uid to use in the mail wrapper (default is
+                  the uid for the user `daemon)
+
+      $MAIL_GID   The gid to use in the CGI wrapper (default is
+                  the gid for the group `mail')
+
+      For $CGI_UID and $CGI_GID, consult your Web server's
+      documentation.  This uid and gid should match the user and group 
+      that the Web server will execute CGI scripts as.
+
+      For $MAIL_UID and $MAIL_GID, consult your sendmail documentation
+      or sendmail.cf file.  This is the user and group that your mail
+      delivery will execute filter programs as.
+
+    - Run `make install'
+
+3. Final system set-up
+
+    - Configure your web server to give $prefix/cgi-bin permission to
+      run CGI scripts, and restart your Web server.  You probably need 
+      to be root to do this.
+
+      The line you should add might look something like the following
+      (with the real absolute directory substituted for $prefix, of
+      course):
+
+          Exec          /mailman/*      $prefix/cgi-bin/*
+      or:
+          ScriptAlias   /mailman/       $prefix/cgi-bin/
+
+      Consult your Web server's documentation for details.
+
+    - Add `mailman' as a trusted mail user.  You probably need to be
+      root to do this.  This is usually done by adding the following
+      line to your /etc/sendmail.cf file:
+
+          Tmailman
+
+      under the line that says
+
+          Troot
+
+    - As user `mailman', add $prefix/cron/crontab.in as a crontab
+      entry.  This is usually done with the following:
+
+          % su - mailman
+          % cd $prefix/cron
+          % crontab crontab.in
+
+4. Customize Mailman
+
+    - Edit the file $prefix/Mailman/mm_cfg.py.  If you don't yet have
+      such a file, make a copy of the mm_cfg.dist file:
+
+          % cd $prefix/Mailman
+          % cp mm_cfg.dist mm_cfg.py
+
+      Consult $prefix/Mailman/mm_defaults.py for defaults, and add any 
+      settings in mm_cfg.py that you want to change for your site.
+      You will probably want to change at least DEFAULT_HOST_NAME and
+      DEFAULT_URL.
+
+      Note: Do *not* change HOME_DIR or MAILMAN_DIR.  These are set
+      automatically by the configure script.
+
+    - Create the site password using:
+
+        % $prefix/bin/mmsitepass <your-site-password>
+
+    - Point an external archiver at the public and private archives.
+      We recommend Andrew Kuchling's Pipermail, which can be found at: 
+
+          <http://starship.skyport.net/crew/amk/maintained/pipermail.html>
+
+      Future release of Mailman will probably come bundled with
+      Pipermail.
