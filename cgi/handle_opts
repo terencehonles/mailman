@@ -4,12 +4,13 @@
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
+
 import os, cgi, string
 import mm_utils, maillist, mm_err, mm_cfg, htmlformat
 
 try:
     sys.stderr = mm_utils.StampedLogger("error", label = 'handle_opts',
-                                        manual_reprime=1)
+                                        manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
