@@ -306,8 +306,6 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
         andpassmsg = ""
     form.AddItem("Make your changes below, and then submit them"
                  " using the button at the bottom.%s<p>"
-                 "<STRONG>NOTE:</STRONG> Changes will only take effect"
-                 " if your browser supports \"cookies\".<P>"
                  % andpassmsg)
 
     form.AddItem(FormatOptionsSection(category, mlist, cgi_data))
@@ -707,6 +705,8 @@ def GetValidValue(mlist, prop, my_type, val, dependant):
             Utils.ValidateEmail(val)
             return val
         except Errors.EmailAddressError:
+            # TBD: should have a way of displaying the results of the
+            # operation.
             pass
 	# Revert to the old value.
 	return getattr(mlist, prop)
