@@ -1,0 +1,18 @@
+#!/usr/local/bin/python 
+# 
+# This script gets called by cron.
+# It updates the archive for all mailing lists.
+
+
+import sys
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import maillist, mm_cfg
+
+list_name = sys.argv[1]
+
+
+list = maillist.MailList(list_name)
+list.UpdateArchive()
+list.Unlock()
