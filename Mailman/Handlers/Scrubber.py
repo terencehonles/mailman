@@ -80,7 +80,11 @@ def process(mlist, msg, msgdata=None):
             payload = part.get_payload()
             ctype = part.get_type()
             size = len(payload)
-            url = save_attachment(mlist, part)
+            omask = os.umask(002)
+            try:
+                url = save_attachment(mlist, part)
+            finally:
+                os.umask(omask)
             desc = part.get('content-description', _('not available'))
             part.set_payload(_("""\
 A non-text attachment was scrubbed...
@@ -152,11 +156,7 @@ def save_attachment(mlist, msg):
         # We don't know what it is, so assume it's just a shapeless
         # application/octet-stream
         ext = '.bin'
-    omask = os.umask(002)
-    try:
-        fp = open(os.path.join(dir, file + ext), 'w')
-    finally:
-        os.umask(omask)
+    fp = open(os.path.join(dir, file + ext), 'w')
     fp.write(decodedpayload)
     fp.close()
     # Now calculate the url
