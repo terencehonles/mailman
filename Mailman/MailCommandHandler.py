@@ -557,7 +557,17 @@ the `-request' address for that list."""),
                           trunc = 0)
             return
         try:
-            if password is None:
+            if self.unsubscribe_policy:
+                # If we're doing admin-approved unsubs, then don't worry about
+                # the password.
+                try:
+                    self.DeleteMember(addr, 'mailcmd')
+                except Errors.MMNeedApproval:
+                    self.AddToResponse(
+                        _("""\
+Your unsubscription request has been forwarded to the list administrator for
+approval."""), trunc=0)
+            elif password is None:
                 # If no password was given, we need to do a mailback
                 # confirmation instead of unsubscribing them here.
                 cpaddr = self.getMemberCPAddress(addr)
@@ -565,11 +575,13 @@ the `-request' address for that list."""),
                 self.AddToResponse(
                     _('A removal confirmation message has been sent.'))
             else:
+                # No admin approval is necessary, so we can just delete them
+                # if the passwords match.a
                 oldpw = self.getMemberPassword(addr)
                 if oldpw <> password:
                     self.AddError(_('You gave the wrong password.'))
                 else:
-                    self.DeleteMember(addr, 'mailcmd')
+                    self.ApprovedDeleteMember(addr, 'mailcmd')
                     self.AddToResponse(_("Succeeded."))
         # FIXME: we really need to make these exceptions sane!
         except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError,
