@@ -34,11 +34,14 @@ The following commands are valid:
         "address=<email address>" (no brackets around the email
         address, no quotes!)
 
-    unsubscribe <password> [address]
-        Unsubscribe from the mailing list.  Your password must match
-        the one you gave when you subscribed.  If you are trying to
-        unsubscribe from a different address than the one you
-        subscribed from, you may specify it in the 'address' field.
+    unsubscribe [password] [address]
+        Unsubscribe from the mailing list.  If your password is given
+        it must match the one you gave when you subscribed.  If your
+        password is missing, a confirmation message will be sent
+        before you will be unsubscribed from the list.  If you are
+        trying to unsubscribe from a different address than the one
+        you subscribed from, you may specify it in the 'address'
+        field.
 
     who
         See everyone who is on this mailing list.
