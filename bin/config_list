@@ -1,0 +1,233 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 1998 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""Configure a list from a text file description.
+
+Usage: config_list [options] listname
+
+Options:
+    --inputfile filename
+    -i filename
+        Configure the list by assigning each module-global variable in the
+        file to an attribute on the list object, then saving the list.  The
+        named file is loaded with execfile() and must be legal Python code.
+        Any variable that isn't already an attribute of the list object is
+        ignored (a warning message is printed).  See also the -c option.
+
+        A special variable named `mlist' is put into the globals during the
+        execfile, which is bound to the actual MailList object.  This lets you
+        do all manner of bizarre thing to the list object, but BEWARE!  Using
+        this can severely (and possibly irreparably) damage your mailing list!
+
+    --outputfile filename
+    -o filename
+        Instead of configuring the list, print out a list's configuration
+        variables in a format suitable for input using this script.  In this
+        way, you can easily capture the configuration settings for a
+        particular list and imprint those settings on another list.  filename
+        is the file to output the settings to.  If filename is `-', standard
+        out is used.
+
+    --checkonly
+    -c
+        With this option, the modified list is not actually changed.  Only
+        useful with -i.
+
+    --verbose
+    -v
+        Print the name of each attribute as it is being changed.  Only useful
+        with -i.
+
+    --help
+    -h
+        Print this help message and exit.
+
+The options -o and -i are mutually exclusive.
+
+"""
+
+import sys
+import time
+import string
+import getopt
+from types import TupleType
+
+import paths
+from Mailman import mm_cfg
+from Mailman import MailList
+from Mailman import Utils
+
+
+
+def usage(code, msg=''):
+    print __doc__
+    if msg:
+        print msg
+    sys.exit(code)
+
+
+
+def do_output(listname, outfile):
+    closep = 0
+    stdout = sys.stdout
+    try:
+        if outfile == '-':
+            outfp = sys.stdout
+        else:
+            outfp = open(outfile, 'w')
+            closep = 1
+        sys.stdout = outfp
+        # open the specified list unlocked, since we're only reading it
+        try:
+            mlist = MailList.MailList(listname, lock=0)
+        except Errors.MMUnknownListError:
+            usage(1, 'List not found: ' + listname)
+        # get all the list config info.  all this stuff is accessible via the
+        # web interface
+        print '## "%s" mailing list configuration settings' % listname,
+        print '-*- python -*-'
+        print '## captured on', time.ctime(time.time())
+        print
+        config = mlist.GetConfigInfo()
+        categories = ('general', 'privacy', 'nondigest', 'digest', 'bounce',
+                      'archive', 'gateway')
+        for k in categories:
+            info = config[k]
+            print '##', string.capitalize(k), 'options'
+            print '#'
+            desc = Utils.wrap(info[0])
+            for line in string.split(desc, '\n'):
+                print '#', line
+            print
+            for data in info[1:]:
+                if type(data) <> TupleType:
+                    continue
+                varname = data[0]
+                vtype = data[1]
+                desc = Utils.wrap(data[-1])
+                for line in string.split(desc, '\n'):
+                    print '#', line
+                # munge the value based on its type
+                value = getattr(mlist, varname)
+                if vtype == mm_cfg.Text:
+                    print varname, '=',
+                    lines = string.split(string.replace(value, '\r', ''), '\n')
+                    if len(lines) == 1:
+                        print repr(value)
+                    else:
+                        first = 1
+                        sys.stdout.write('"""')
+                        for line in lines:
+                            if first:
+                                first = 0
+                            else:
+                                print
+                            sys.stdout.write(string.replace(line, '"', '\\"'))
+                        print '"""'
+                elif vtype in (mm_cfg.Radio, mm_cfg.Toggle):
+                    print '#'
+                    print '# legal values are:'
+                    i = 0
+                    for choice in data[2]:
+                        print '#   ', i, '= "%s"' % choice
+                        i = i + 1
+                    print varname, '=', repr(value)
+                else:
+                    print varname, '=', repr(value)
+                print
+    finally:
+        if closep:
+            outfp.close()
+        sys.stdout = stdout
+
+
+
+def do_input(listname, infile, checkonly, verbose):
+    # open the specified list locked, unless checkonly is set
+    try:
+        mlist = MailList.MailList(listname, lock=not checkonly)
+    except Errors.MMUnknownListError:
+        usage(1, 'List not found: ' + listname)
+    savelist = 0
+    try:
+        globals = {'mlist': mlist}
+        # any exception that occurs in execfile() will cause the list to not
+        # be saved, but any other problems are not save-fatal
+        execfile(infile, globals)
+        savelist = 1
+        for k, v in globals.items():
+            if k in ('mlist', '__builtins__'):
+                continue
+            if not hasattr(mlist, k):
+                print 'attribute "%s" ignored' % k
+                continue
+            if verbose:
+                print 'attribute "%s" changed' % k
+            setattr(mlist, k, v)
+    finally:
+        if savelist and not checkonly:
+            mlist.Save()
+        mlist.Unlock()
+
+
+
+def main():
+    try:
+        opts, args = getopt.getopt(
+            sys.argv[1:], 'ci:o:vh',
+            ['checkonly', 'inputfile=', 'outputfile=', 'verbose', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    # defaults
+    infile = None
+    outfile = None
+    checkonly = 0
+    verbose = 0
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-o', '--outputfile'):
+            outfile = arg
+        elif opt in ('-i', '--inputfile'):
+            infile = arg
+        elif opt in ('-c', '--checkonly'):
+            checkonly = 1
+        elif opt in ('-v', '--verbose'):
+            verbose = 1
+
+    # sanity check
+    if infile is not None and outfile is not None:
+        usage(1, 'only one of -i or -o is allowed')
+    if infile is None and outfile is None:
+        usage(1, 'one of -i or -o is required')
+
+    # get the list name
+    if len(args) <> 1:
+        usage(1, 'list name is required')
+    listname = args[0]
+
+    if outfile:
+        do_output(listname, outfile)
+    else:
+        do_input(listname, infile, checkonly, verbose)
+
+
+
+if __name__ == '__main__':
+    main()
