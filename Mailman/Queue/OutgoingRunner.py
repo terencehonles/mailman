@@ -1,4 +1,4 @@
-# Copyright (C) 2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,16 +42,14 @@ class OutgoingRunner(Runner):
         # Maps mailing lists to (recip, msg) tuples
         self._permfailures = {}
         self._permfail_counter = 0
+        # We never lock the lists, but we need to be sure that MailList
+        # objects read from the cache are always fresh.
+        self._freshen = 1
 
     def _dispose(self, mlist, msg, msgdata):
-        # See if we should VERP this message.
-        if mm_cfg.VERP_DELIVERY_INTERVAL > 0:
-            if mm_cfg.VERP_DELIVERY_INTERVAL == 1:
-                # VERP every time
-                msgdata['verp'] = 1
-            elif not int(mlist.post_id) % mm_cfg.VERP_DELIVERY_INTERVAL:
-                msgdata['verp'] = 1
-        # Fortunately, we do not need the list lock to do deliveries.
+        # Fortunately, we do not need the list lock to do deliveries.  However
+        # this does mean that we aren't as responsive to changes in list
+        # configuration, since we never reload the list configuration.
         handler = mm_cfg.DELIVERY_MODULE
         modname = 'Mailman.Handlers.' + handler
         mod = __import__(modname)
