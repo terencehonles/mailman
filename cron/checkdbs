@@ -54,7 +54,7 @@ def main():
             midnightToday = Utils.midnight()
             evictions = []
             for sender in mlist.hold_and_cmd_autoresponses.keys():
-                date, count = mlist.hold_and_cmd_autoresponses[sender]
+                date, respcount = mlist.hold_and_cmd_autoresponses[sender]
                 if Utils.midnight(date) < midnightToday:
                     evictions.append(sender)
             if evictions:
