@@ -113,8 +113,10 @@ if you want to keep your existing installation intact.
             This is highly system dependent and you must get this
             right, because the group id is compiled into the mail
             wrapper program for added security.  On systems using
-            sendmail, check your sendmail.cf file to see what group it
-            runs programs as.
+            sendmail, its sendmail.cf configuration file may designate
+            the groupid of sendmail processes using the "DefaultUser"
+            option.  (If commented out, it still may be indicating the
+            default...)
 
       --with-cgi-gid=<group-or-groups>
             Specify an alternative group for running scripts via the
