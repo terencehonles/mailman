@@ -76,14 +76,12 @@ class Digester:
 	     _('Header added to every digest'),
              _("Text attached (as an initial message, before the table"
                " of contents) to the top of digests. ")
-             + Utils.maketext('headfoot.html', lang=self.preferred_language,
-                              raw=1)),
+             + Utils.maketext('headfoot.html', raw=1, mlist=self)),
 
 	    ('digest_footer', mm_cfg.Text, (4, WIDTH), 0,
 	     _('Footer added to every digest'),
              _("Text attached (as a final message) to the bottom of digests. ")
-             + Utils.maketext('headfoot.html', lang=self.preferred_language,
-                              raw=1)),
+             + Utils.maketext('headfoot.html', raw=1, mlist=self)),
 
             ('digest_volume_frequency', mm_cfg.Radio,
              (_('Yearly'), _('Monthly'), _('Quarterly'),
@@ -128,6 +126,7 @@ class Digester:
                     self.one_last_digest = {addr: self.digest_members[addr]}
 		del self.digest_members[addr]
 		self.members[addr] = cpuser
+        # BAW: This Save() can probably go away.
 	self.Save()
 
     def send_digest_now(self):
