@@ -35,7 +35,6 @@ from mimelib.Generator import Generator
 from mimelib.MIMEBase import MIMEBase
 from mimelib.Text import Text
 from mimelib.address import getaddresses
-from mimelib.StringableMixin import StringableMixin
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -97,11 +96,6 @@ def msgfactory(fp):
     return p.parse(fp)
         
 
-# We want mimelib's MIMEBase class, but we also want a str() able object.
-class StringableMIME(MIMEBase, StringableMixin):
-    pass
-
-
 
 def send_digests(mlist, mboxfp):
     # Set the digest volume and time
@@ -154,7 +148,9 @@ def send_i18n_digests(mlist, mboxfp):
     digestid = _('%(realname)s Digest, Vol %(volume)d, Issue %(issue)d')
     # Set things up for the MIME digest.  Only headers not added by
     # CookHeaders need be added here.
-    mimemsg = StringableMIME('multipart', 'mixed')
+    mimemsg = Message.Message()
+    mimemsg['Content-Type'] = 'multipart/mixed'
+    mimemsg['MIME-Version'] = '1.0'
     mimemsg['From'] = mlist.GetRequestEmail()
     mimemsg['Subject'] = digestid
     mimemsg['To'] = mlist.GetListEmail()
