@@ -94,9 +94,9 @@ class Deliverer:
 	cmdproc.write(self.QuotePeriods(msg.body))
 	status = cmdproc.close()
         if status:
-            sys.stderr.write('Non-zero exit status: %d'
-                             '\nCommand: %s' % ((status >> 8), cmd))
-        
+            self.LogMsg('deliverer',
+                        'Non-zero exit status: %d\nCommand: %s'
+                        (status >> 8), cmd)
 
     def DeliverToList(self, msg, recipients, 
                       header="", footer="", remove_to=0, tmpfile_prefix = ""):
@@ -136,10 +136,10 @@ class Deliverer:
 	    cmdproc.write(footer)
 
 	status = cmdproc.close()
-
         if status:
-            sys.stderr.write('Non-zero exit status: %d'
-                             '\nCommand: %s' % ((status >> 8), cmd))
+            self.LogMsg('deliverer', 
+                        'Non-zero exit status: %d\nCommand: %s',
+                        (status >> 8), cmd)
 
     def SendPostAck(self, msg, sender):
 	subject = msg.getheader('subject')
