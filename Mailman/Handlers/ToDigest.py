@@ -51,7 +51,11 @@ def process(mlist, msg):
         topicsfp = open(topicsfile, 'a+')
     finally:
         os.umask(omask)
-    sender = quotemime(msg.GetSenderName())
+    # For the sender, use either the From: field's name comment or the mail
+    # address.  Don't use Sender: field because by now it's been munged into
+    # the list-admin's address
+    name, addr = msg.getaddr('from')
+    sender = quotemime(name or addr)
     fromline = quotemime(msg.getheader('from'))
     date = quotemime(msg.getheader('date'))
     body = quotemime(msg.body)
@@ -170,6 +174,9 @@ def inject_digest(mlist, digestfile, topicsfile):
     os.unlink(topicsfile)
     mlist.next_digest_number = mlist.next_digest_number + 1
     mlist.next_post_number = 1
+    mlist.LogMsg('digest', 'next %s digest: #%d, post#%d' %
+                 (mlist.internal_name(), mlist.next_digest_number,
+                  mlist.next_post_number))
 
 
 
