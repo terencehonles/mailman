@@ -28,6 +28,9 @@ Where options are:
     -h / --help
         Print this help message and exit.
 
+    -q / --quiet
+        Make the archiver output less verbose.
+
     -s N
     --start=N
         Start indexing at article N, where article 0 is the first in the mbox.
@@ -83,13 +86,14 @@ def usage(code, msg=''):
 def main():
     # get command line arguments
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hs:e:',
-                                   ['help', 'start', 'end'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hs:e:q',
+                                   ['help', 'start', 'end', 'quiet'])
     except getopt.error, msg:
         usage(1, msg)
 
     start = None
     end = None
+    verbose = 1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -103,6 +107,8 @@ def main():
                 end = int(arg)
             except ValueError:
                 usage(1)
+        elif opt in ('-q', '--quiet'):
+            verbose = 0
 
     # grok arguments
     if len(args) < 1:
@@ -150,7 +156,7 @@ def main():
             usage(3, _('Cannot open mbox file %(mbox)s: %(msg)s'))
 
         archiver = HyperArchive(mlist)
-        archiver.VERBOSE = 1
+        archiver.VERBOSE = verbose
         try:
             archiver.processUnixMailbox(fp, start, end)
         finally:
