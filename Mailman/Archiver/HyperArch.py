@@ -328,8 +328,7 @@ class Article(pipermail.Article):
             self.decoded = {}
 
     def setListIfUnset(self, mlist):
-        mylist = getattr(mlist, '_mlist', None)
-        if mlist is None:
+        if getattr(self, '_mlist', None) is None:
             self._mlist = mlist
 
     def quote(self, buf):
