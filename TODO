@@ -71,11 +71,21 @@ List Membership
       with URLs to retrieve the article)
     - Timed vacations, allowing a user to postpone or discard email
       for a certain number of days or weeks.
+    - Mailing list invitations; i.e. a middle ground between "mass
+      subscribe" and informally mailing a bunch of folks to tell them
+      about the list.
+    - Keep user-centric stats, such as the date the user was
+      subscribed, the date of their last change to their account, the
+      date they last sent a message through the list.  Perhaps also
+      log each message they send through the list.
 
 Site Administration
     - Allow the site admin to define list styles or themes, and list
       admins to choose one of the canned styles to apply to their
       list.
+    - Allow the site admin to send an email message to all the list
+      admins using a mechanism similar to the Urgent: header (possibly
+      by addressing it to mailman@site.dom).
 
 Other Usability Improvments
     - A better strategy is needed for sub-lists and super-lists,
