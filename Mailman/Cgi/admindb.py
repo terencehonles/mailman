@@ -246,10 +246,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     t.AddRow([Bold(_('From:')), sender])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    # HTML quote the subject so it doesn't mess up the page.  E.g. a message
-    # with "Subject: </table>"
-    quoted = subject.replace('<', '&lt;').replace('>', '&gt;')
-    t.AddRow([Bold(_('Subject:')), quoted])
+    t.AddRow([Bold(_('Subject:')), cgi.escape(subject)])
     t.AddCellInfo(row+1, col-1, align='right')
     t.AddRow([Bold(_('Reason:')), reason])
     t.AddCellInfo(row+2, col-1, align='right')
