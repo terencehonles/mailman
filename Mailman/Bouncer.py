@@ -106,7 +106,11 @@ class Bouncer:
             lastbounce = time.mktime(info.date + (0,) * 6)
             if lastbounce + self.bounce_info_stale_after < now:
                 # Information is stale, so simply reset it
-                info = _BounceInfo(member, weight, today, 0)
+                info.score = weight
+                info.date = today
+                info.noticesleft = 0
+                info.lastnotice = None
+                # BAW: The following isn't strictly necessary
                 self.setBounceInfo(member, info)
                 syslog('bounce', '%s: %s has stale bounce info, resetting',
                        self.internal_name(), member)
@@ -115,6 +119,7 @@ class Bouncer:
                 # score and take any necessary action.
                 info.score += weight
                 info.date = today
+                # BAW: The following isn't strictly necessary
                 self.setBounceInfo(member, info)
                 syslog('bounce', '%s: %s current bounce score: %s',
                        member, self.internal_name(), info.score)
