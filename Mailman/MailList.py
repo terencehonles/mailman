@@ -1332,9 +1332,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 pass
         self.LogMsg("post", "post to %s from %s size=%d",
                     self._internal_name, msg.GetSender(), len(msg.body))
+        d = self.__dict__.copy()
+        d['cgiext'] = mm_cfg.CGIEXT
 	self.DeliverToList(msg, recipients, 
-			   header = self.msg_header % self.__dict__,
-			   footer = self.msg_footer % self.__dict__)
+			   header = self.msg_header % d,
+			   footer = self.msg_footer % d)
 	if ack_post:
 	    self.SendPostAck(msg, sender)
 	self.last_post_time = time.time()
