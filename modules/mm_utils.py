@@ -63,7 +63,7 @@ def GetPathPieces(path):
     try:
 	while 1:
 	    l.remove('')
-    except:
+    except ValueError:
 	pass
     return l
 
