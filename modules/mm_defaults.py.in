@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b2'
-__version__ = "$Revision: 488 $"
+__version__ = "$Revision: 495 $"
 
 		   # Many site-specific settings #
 
@@ -101,7 +101,7 @@ DEFAULT_DIGEST_HEADER = ""
 DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
 
 DEFAULT_DIGEST_IS_DEFAULT = 0
-DEFAULT_MIME_IS_DEFAULT_DIGEST = 1
+DEFAULT_MIME_IS_DEFAULT_DIGEST = 0
 DEFAULT_DIGEST_SIZE_THRESHHOLD = 30	# KB
 DEFAULT_DIGEST_SEND_PERIODIC = 1
 # We're only retaining the text file, an external pipermail (andrew's
