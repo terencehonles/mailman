@@ -152,7 +152,7 @@ class Article(pipermail.Article):
 	    d["prev"] = d["prev_wsubj"] = ""
 	    
 	if self.next:
-	    d["next"] = '<LI> Next message: <A HREF="%s"></A></li>' % \
+	    d["next"] = '<LINK REL="Next" HREF="%s">' % \
 			(html_quote(self.next.filename))
 	    d["next_wsubj"] = '<LI> Next message: <A HREF="%s">%s</A></li>' % \
 			      (url_quote(self.next.filename), html_quote(self.next.subject))	    
