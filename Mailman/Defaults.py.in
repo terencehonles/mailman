@@ -614,7 +614,7 @@ def _(string):
 
 LC_DESCRIPTIONS = {'es': [_("Spanish (Spain)"),      'iso-8859-1'],
 		   'it': [_("Italian"),              'iso-8859-1'],
-                   'en': [_("English (USA)"),         'us-ascii'],
+                   'en': [_("English (USA)"),        'us-ascii'],
                    }
 del _				        
 
