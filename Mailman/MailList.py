@@ -936,7 +936,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # specifically To: Cc: and Resent-to:
         to = []
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-            to.extend(getaddresses(msg.get_all(header)))
+            to.extend(getaddresses(msg.get_all(header, [])))
         for fullname, addr in to:
             # It's possible that if the header doesn't have a valid
             # (i.e. RFC822) value, we'll get None for the address.  So skip
@@ -1024,7 +1024,7 @@ bad regexp in bounce_matching_header line: %s
         matches.
         """
         for header, cre, line in self.parse_matching_header_opt():
-            for value in msg.get_all(header):
+            for value in msg.get_all(header, []):
                 if cre.search(value):
                     return line
         return 0
