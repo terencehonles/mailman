@@ -38,7 +38,7 @@ def process(mlist, msg):
     torequest = getattr(msg, 'torequest', 0)
     if (toadmin and not mlist.autorespond_admin) or \
        (torequest and not mlist.autorespond_requests) or \
-       not mlist.autorespond_postings:
+       (not toadmin and not torequest and not mlist.autorespond_postings):
         return
     #
     # Now see if we're in the grace period for this sender (guaranteed to be
