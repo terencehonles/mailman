@@ -141,6 +141,8 @@ The Mailman TODO list
 - Need to go through and verify there are no obvious security problems.
 - Restrict file and directory permissions as much as possible without
   breaking Mailman functionality.
+- Add a limit on the number of posts from any one individual within a
+  period of time (1 post per day, 10 per week, etc).
 
 
 Local Variables:
