@@ -51,18 +51,23 @@ def SubscribeNone():
 	else:
 	    list.HandleRequest(('add_member', 0), 0)
 
-def PrintHeader(str):
-    doc.AddItem(htmlformat.Header(3, htmlformat.Italic(str)))
+def PrintHeader(str, error=0):
+    if error:
+	it = htmlformat.FontAttr(str, color="ff5060")
+    else:
+	it = str
+    doc.AddItem(htmlformat.Header(3, htmlformat.Italic(it)))
     doc.AddItem('<hr>')
 
 def HandleRequests(doc):
     if not form.has_key('adminpw'):
-	PrintHeader('You need to supply the admin password to answer requests.')
+	PrintHeader('You need to supply the admin password '
+		    'to answer requests.', error=1)
 	return
     try:
 	list.ConfirmAdminPassword(form['adminpw'].value)
     except:
-	PrintHeader('Incorrect admin password.')
+	PrintHeader('Incorrect admin password.', error=1)
 	return
     ignore_subscribes = 0
     if form.has_key('subscribe_all'):
@@ -117,8 +122,7 @@ def PrintPostRequest(val, form):
     t.AddRow([
 	htmlformat.FontSize("+1", 
 			    htmlformat.Bold('If you reject this post, '
-					    'why you chose to reject it '
-					    '(optional):')),
+					    'explain (optional):')),
 	htmlformat.TextBox("comment-%d" % val[0], size=50)])
 
     cur_row = t.GetCurrentRowIndex()
