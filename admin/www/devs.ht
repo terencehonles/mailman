@@ -3,4 +3,15 @@ Links: links.h doco-links.h
 
 <h3>Developer Documentation</h3>
 
-Coming soon, all the gory details...
+If you're the kind of person who loves to hack on the nitty gritty,
+you can start by <a href="admins.html">looking at</a> the
+<code>bin/withlist</code> script.  With this script you can directly
+examine and manipulate list object attributes.
+
+<p>Coming soon, all the rest of the gory details...
+
+<h3>SourceForge project</h3>
+
+Developers should start with the
+<a href="http://sourceforge.net/projects/mailman">Mailman project at
+SourceForge</a>.
