@@ -1,4 +1,4 @@
-HT2HTML = /home/bwarsaw/projects/ht2html/ht2html.py
+HT2HTML = $(HOME)/projects/ht2html/ht2html.py
 
 HTSTYLE = MMGenerator
 HTALLFLAGS = -f -s $(HTSTYLE)
