@@ -42,7 +42,6 @@ def main():
         ('listinfo.html',    _('General list information page')),
         ('subscribe.html',   _('Subscribe results page')),
         ('options.html',     _('User specific options page')),
-        ('handle_opts.html', _('Changing user options results page')),
         )
 
     _ = i18n._
