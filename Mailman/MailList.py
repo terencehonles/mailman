@@ -4,7 +4,6 @@
 # list once, but it sucked hard, because you'd see the footer 100
 # times in each digest.
 
-
 import sys, os, marshal, string, posixfile, time
 import re
 import mm_cfg, mm_utils, mm_err
@@ -170,11 +169,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Footer added to mail sent to regular list members'),
 
 	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Advertise this mailing list when people ask what lists are on '
+	     'Advertise this list when people ask what lists are on '
 	     'this machine?'),
 
 	    ('welcome_msg', mm_cfg.Text, (4, 65), 0,
-	     'List specific welcome sent to new subscribers'),
+	     'List specific portion of welcome sent to new subscribers'),
 
 	    ('goodbye_msg', mm_cfg.Text, (4, 65), 0,
 	     'Text sent to people leaving the list.'
@@ -187,7 +186,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Posts have to be approved by a moderator'),
 
  	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
- 	     'Posts must have list named in destination (to, cc) field'
+ 	     'Posts must have list named in destination (to, cc) field?'
 	     ' (anti-spam)'),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
@@ -217,18 +216,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     ('Yes', 'No'), 0, 'Send mail to the poster when his mail '
 	     'is held, waiting for approval?'),
 
-	    ('filter_prog', mm_cfg.String, 20, 0,
+	    ('filter_prog', mm_cfg.String, 40, 0,
 	     'Program to pass text through before processing, if any? '
-	     '(This would be useful for auto-stripping signatures, etc...)'),
+	     '(Useful, eg, for signature auto-stripping, etc...)'),
 
 	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
-	     'If there are more than this number of recipients '
-	     'in the TO and CC list, require admin approval '
-	     '(To prevent spams)  Make it 0 for no limit.'),
+	     'Max number of TO and CC recipients before admin approval is'
+	     'required (anti-spam).  Use 0 for no limit.'),
 
 	    ('max_message_size', mm_cfg.Number, 3, 0,
 	     'Maximum length in Kb of a message body. '
-	     '(Make it 0 for no limit).'),
+	     'Use 0 for no limit.'),
 
 	    ('num_spawns', mm_cfg.Number, 3, 0,
 	     'Number of outgoing connections to open at once '
@@ -242,7 +240,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	config_info['nondigest'] = [
 	    ('nondigestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
-	     'Can subscribers choose to receive individual mail?'),
+	     'Can subscribers choose to receive mail singly, '
+	     'rather than in digests?'),
 
 	    ]
 
