@@ -48,7 +48,8 @@ class NonDigest(GUIBase):
 
         if mm_cfg.OWNERS_CAN_ENABLE_PERSONALIZATION:
             info.extend([
-                ('personalize', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
+                ('personalize', mm_cfg.Radio,
+                 (_('No'), _('Yes'), _('Full Personalization')), 1,
 
                  _('''Should Mailman personalize each non-digest delivery?
                  This is often useful for announce-only lists, but <a
@@ -70,15 +71,18 @@ class NonDigest(GUIBase):
                  You should also carefully monitor your system load to make
                  sure it is acceptable.
 
-                 <p>When personalized lists are enabled, two things happen.
-                 First, the <code>To:</code> header of the posted message is
-                 modified so that each individual user is addressed
-                 specifically.  I.e. it looks like the message was addressed
-                 to the recipient instead of to the list.
+                 <p>Select <em>No</em> to disable personalization and send
+                 messages to the members in batches.  Select <em>Yes</em> to
+                 personalize deliveries and allow additional substitution
+                 variables in message headers and footers (see below).  In
+                 addition, by selecting <em>Full Personalization</em>, the
+                 <code>To</code> header of posted messages will be modified to
+                 include the member's address instead of the list's posting
+                 address.
 
-                 <p>Second a few more expansion variables that can be included
-                 in the <a href="?VARHELP=nondigest/msg_header">message
-                 header</a> and
+                 <p>When personalization is enabled, a few more expansion
+                 variables that can be included in the <a
+                 href="?VARHELP=nondigest/msg_header">message header</a> and
                  <a href="?VARHELP=nondigest/msg_footer">message footer</a>.
 
                  <p>These additional substitution variables will be available
