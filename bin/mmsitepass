@@ -79,7 +79,7 @@ def main():
         pw1 = args[0]
     else:
         try:
-            pw1 = getpass.getpass(_('New %(pwdesc)s Password: '))
+            pw1 = getpass.getpass(_('New %(pwdesc)s password: '))
             pw2 = getpass.getpass(_('Again to confirm password: '))
             if pw1 <> pw2:
                 print _('Passwords do not match; no changes made.')
