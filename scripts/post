@@ -39,8 +39,12 @@ try:
 	current_list.Post(msg)
     except mm_err.MMNeedApproval, err_msg:
 	if (current_list.dont_respond_to_post_requests
-            or err_msg == mm_err.MODERATED_LIST_MSG):
-            # Do not send hold-for-approval notices for moderated messages.
+            or err_msg == mm_err.MODERATED_LIST_MSG
+            or err_msg == mm_err.IMPLICIT_DEST_MSG
+            or err_msg == mm_err.SUSPICIOUS_HEADER_MSG
+            or err_msg == mm_err.FORBIDDEN_SENDER_MSG):
+            # Do not send hold-for-approval notices for moderated messages
+	    # or potential spam.
 	    sys.exit(0)
             
 	the_sender = msg.GetSender()
