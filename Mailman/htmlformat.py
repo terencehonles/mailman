@@ -284,6 +284,7 @@ class Document(Container):
     title = None
     language = None
     bgcolor = mm_cfg.WEB_BG_COLOR
+    suppress_head = 0
 
     def set_language(self, lang=None):
         self.language = lang
@@ -292,7 +293,7 @@ class Document(Container):
         ctype = 'Content-type: text/html'
         if self.language:
             ctype += '; charset=' + Utils.GetCharSet(self.language)
-        return ctype
+        return ctype + '\n'
 
     def set_bgcolor(self, color):
         self.bgcolor = color
@@ -301,40 +302,38 @@ class Document(Container):
 	self.title = title
 
     def Format(self, indent=0, **kws):
-        kws.setdefault('bgcolor', self.bgcolor)
-        tab = ' ' * indent
-        output = [self.get_content_type(),
-                  '',
-                  tab,
-                  '<HTML>',
-                  '<HEAD>'
-                  ]
-        if self.title:
-            output.append('%s<TITLE>%s</TITLE>' % (tab, self.title))
-        output.append('%s</HEAD>' % tab)
-        output.append('%s<BODY' % tab)
-	quals = []
-        # Default link colors
-        if mm_cfg.WEB_VLINK_COLOR:
-            kws.setdefault('vlink', mm_cfg.WEB_VLINK_COLOR)
-        if mm_cfg.WEB_ALINK_COLOR:
-            kws.setdefault('alink', mm_cfg.WEB_ALINK_COLOR)
-        if mm_cfg.WEB_LINK_COLOR:
-            kws.setdefault('alink', mm_cfg.WEB_LINK_COLOR)
-	for k, v in kws.items():
-	    quals.append('%s="%s"' % (k, v))
-        output.append('%s<BODY %s>' % (tab, SPACE.join(quals)))
+        output = [self.get_content_type()]
+        if not self.suppress_head:
+            kws.setdefault('bgcolor', self.bgcolor)
+            tab = ' ' * indent
+            output.extend([tab,
+                           '<HTML>',
+                           '<HEAD>'
+                           ])
+            if self.title:
+                output.append('%s<TITLE>%s</TITLE>' % (tab, self.title))
+            output.append('%s</HEAD>' % tab)
+            quals = []
+            # Default link colors
+            if mm_cfg.WEB_VLINK_COLOR:
+                kws.setdefault('vlink', mm_cfg.WEB_VLINK_COLOR)
+            if mm_cfg.WEB_ALINK_COLOR:
+                kws.setdefault('alink', mm_cfg.WEB_ALINK_COLOR)
+            if mm_cfg.WEB_LINK_COLOR:
+                kws.setdefault('alink', mm_cfg.WEB_LINK_COLOR)
+            for k, v in kws.items():
+                quals.append('%s="%s"' % (k, v))
+            output.append('%s<BODY %s>' % (tab, SPACE.join(quals)))
+        # Always do this...
         output.append(Container.Format(self, indent))
-        output.append('%s</BODY>' % tab)
-        output.append('%s</HTML>' % tab)
+        if not self.suppress_head:
+            output.append('%s</BODY>' % tab)
+            output.append('%s</HTML>' % tab)
         return NL.join(output)
-
 
 class HeadlessDocument(Document):
     """Document without head section, for templates that provide their own."""
-    def Format(self, indent=0, **kws):
-        return self.get_content_type() + '\n\n' + \
-               Container.Format(self, indent)
+    suppress_head = 1
     
 class StdContainer(Container):
     def Format(self, indent=0):
