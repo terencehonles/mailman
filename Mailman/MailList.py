@@ -627,7 +627,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
-                'confirm %(cookie)s',
+                'confirm %s' % cookie,
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
             msg.send(self)
@@ -804,7 +804,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              }, lang=self.getMemberLanguage(oldaddr), mlist=self)
         msg = Message.UserNotification(
             newaddr, self.GetRequestEmail(),
-            'confirm %(cookie)s',
+            'confirm %s' % cookie,
             text)
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
@@ -897,7 +897,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              }, lang=lang, mlist=self)
         msg = Message.UserNotification(
             addr, self.GetRequestEmail(),
-            'confirm %(cookie)s',
+            'confirm %s' % cookie,
             text)
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
