@@ -99,6 +99,10 @@ install: $(SUBDIRS)
 	do \
 	    (cd $$d; $(MAKE) install); \
 	done
+        @echo "*****"
+        @echo "***** If you are installing over an old installation, please"
+        @echo "***** run \"make update\".  See the UPGRADING file for details."
+        @echo "*****"
 
 #finish:
 #	@for d in $(SUBDIRS); \
