@@ -38,6 +38,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	MailCommandHandler.__init__(self)
 	self._internal_name = name
 	self._ready = 0
+	self._log_files = {}		# 'class': log_file_obj
 	if name:
 	    if name not in list_names():
 		raise mm_err.MMUnknownListError, 'list not found'
@@ -117,6 +118,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.moderated = mm_cfg.DEFAULT_MODERATED
 	self.require_explicit_destination = \
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
+	self.bounce_matching_headers = \
+		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
 				   self._internal_name[1:])
 	self.description = ''
@@ -180,30 +183,38 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Text sent to people leaving the list.'
 	     'If empty, no unsubscribe message will be sent.'),
 
-	    ('reply_goes_to_list', mm_cfg.Radio, ('Sender', 'List'), 0,
-	     'Replies to a post go to the sender or the list?'),
+	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
+	     'Are replies to a post directed to poster or the list?'),
 
 	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Posts have to be approved by a moderator'),
+	     'Anti-spam: Must posts be approved by a moderator?'),
 
  	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
- 	     'Posts must have list named in destination (to, cc) field?'
-	     ' (anti-spam)'),
+ 	     'Anti-spam: Must posts have list named in destination (to, cc) '
+	     '  field?'),
+
+	    # Note that leading whitespace in the matchexp is trimmed - you can
+	    # defeat that by, eg, containing it in gratuitous square brackets.
+ 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '40'), 0,
+ 	     'Anti-spam: Bounce posts with header matching specified'
+	     ' regexp; divide header name and (case-insensitive) match regexp'
+	     ' with colon'),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
 	     'Email addresses whose posts are auto-approved '
 	     '(adding anyone to this list will make this a moderated list)'),
 
 	    ('bad_posters', mm_cfg.EmailList, (5, 30), 1,
-	     'Email addresses whose posts should always be bounced until '
-	     'you approve them, no matter what other options you have set'
-	     ' (anti-spam)'),
+	     'Anti-spam: Email addresses whose posts should always be '
+	     'bounced until you approve them, no matter what other options '
+	     'you have set'),
 
 	    ('closed', mm_cfg.Radio, ('Anyone', 'List members', 'No one'), 0,
-	     'Who can view subscription list'),
+	     'Anti-spam: Who can view subscription list'),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Only list members can send mail to the list without approval'),
+	     'Anti-spam: Only list members can send mail to the list '
+	     'without approval'),
 
 	    ('auto_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Subscribes are done automatically w/o admins approval'),
@@ -213,17 +224,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
 	     'Extra confirmation for off-the-web subscribes'),
 
-	    ('dont_respond_to_post_requests', mm_cfg.Radio,
-	     ('Yes', 'No'), 0, 'Send mail to the poster when his mail '
-	     'is held, waiting for approval?'),
+	    ('dont_respond_to_post_requests', mm_cfg.Radio, ('Yes', 'No'), 0,
+	     'Send mail to poster when their mail is held awaiting approval?'),
 
 	    ('filter_prog', mm_cfg.String, 40, 0,
 	     'Program to pass text through before processing, if any? '
 	     '(Useful, eg, for signature auto-stripping, etc...)'),
 
 	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
-	     'Max number of TO and CC recipients before admin approval '
-	     'is required (anti-spam).  Use 0 for no limit.'),
+	     'Anti-spam: Max number of TO and CC recipients before admin '
+	     'approval is required.  Use 0 for no limit.'),
 
 	    ('max_message_size', mm_cfg.Number, 3, 0,
 	     'Maximum length in Kb of a message body. '
@@ -271,21 +281,31 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def CreateFiles(self):
 	# Touch these files so they have the right dir perms no matter what.
 	# A "just-in-case" thing.  This shouldn't have to be here.
-	import mm_archive
-	open(os.path.join(self._full_path,
-			  mm_archive.ARCHIVE_PENDING), "a+").close()
-	open(os.path.join(self._full_path,
-			  mm_archive.ARCHIVE_RETAIN), "a+").close()
-	open(os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % 
-			       self._internal_name), 'a+').close()
-	open(os.path.join(self._full_path, "next-digest"), "a+").close()
-	open(os.path.join(self._full_path, "next-digest-topics"), "a+").close()
+	ou = os.umask(002)
+	try:
+	    import mm_archive
+	    open(os.path.join(self._full_path,
+			      mm_archive.ARCHIVE_PENDING), "a+").close()
+	    open(os.path.join(self._full_path,
+			      mm_archive.ARCHIVE_RETAIN), "a+").close()
+	    open(os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % 
+			      self._internal_name), 'a+').close()
+	    open(os.path.join(self._full_path, "next-digest"), "a+").close()
+	    open(os.path.join(self._full_path, "next-digest-topics"),
+		 "a+").close()
+	finally:
+	    os.umask(ou)
 	
     def Save(self):
 	# If more than one client is manipulating the database at once, we're
-	# pretty hosed.  That's a good reason to make this a daemon not a program.
+	# pretty hosed.  That's a good reason to make this a daemon not a
+	# program.
 	self.IsListInitialized()
-	file = open(os.path.join(self._full_path, 'config.db'), 'w')
+	ou = os.umask(002)
+	try:
+	    file = open(os.path.join(self._full_path, 'config.db'), 'w')
+	finally:
+	    os.umask(ou)
 	dict = {}
 	for (key, value) in self.__dict__.items():
 	    if key[0] <> '_':
@@ -308,6 +328,33 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	file.close()
 	self._ready = 1
 	self.CheckVersion()
+
+    def LogMsg(self, kind, msg, *args):
+	"""Append a message to the log file for messages of specified kind."""
+	# For want of a better fallback,  we use sys.stderr if we can't get
+	# a log file.  We need a better way to warn of failed log access...
+	if self._log_files.has_key(kind):
+	    logf = self._log_files[kind]
+	else:
+	    logfn = os.path.join(mm_cfg.LOG_DIR, kind)
+	    ou = os.umask(002)
+	    try:
+		try:
+		    logf = self._log_files[kind] = open(logfn, 'a+')
+		except IOError, diag:
+		    logf = self._log_files[kind] = sys.stderr
+		    self._log_files['config'] = sys.stderr
+		    self.LogMsg('config',
+				"Access failed to log file %s, %s, "
+				"using sys.stderr.",
+				logfn, `str(diag)`)
+	    finally:
+		os.umask(ou)
+	stamp = time.strftime("%b %d %H:%M:%S %Y",
+			      time.localtime(time.time()))
+	logf.write("%s %s\n" % (stamp, msg % args))
+	if hasattr(logf, 'flush'):
+	    logf.flush()
 
     def CheckVersion(self):
 	if self.data_version == mm_cfg.VERSION:
@@ -353,6 +400,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		self.AddRequest('add_member', digest, name, password)
 
     def ApprovedAddMember(self, name, password, digest):
+	if self.IsMember(name):
+	    raise mm_err.MMAlreadyAMember
 	if digest:
 	    self.digest_members.append(name)
 	    self.digest_members.sort()
@@ -407,20 +456,77 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		return 1
 	return 0
 
+    def parse_matching_header_opt(self):
+	"""Return a list of triples [(field name, regex, and line), ...]."""
+	# Note that leading whitespace in the matchexp is trimmed - you can
+	# defeat that by, eg, containing it in gratuitous square brackets.
+	mho = self.bounce_matching_headers
+	all = []
+	for line in string.split(mho, '\n'):
+	    if not string.strip(line):
+		# Skip blank lines.
+		continue
+	    try:
+		h, e = re.split(":[ 	]*", line)
+		all.append((h, e, line))
+	    except ValueError:
+		raise mm_err.MMBadConfigError, line
+	return all
+
+
+    def HasMatchingHeader(self, msg):
+	"""True if named header field (case-insensitive matches regexp.
+
+	Case insensitive.
+
+	Returns constraint line which matches or empty string for no
+	matches."""
+	
+	try:
+	    pairs = self.parse_matching_header_opt()
+	except mm_err.MMBadConfigError, line:
+	    # Whoops - some bad data got by:
+	    self.LogMsg("config", "%s - "
+			"bad bounce_matching_header line %s"
+			% (self.real_name, `line`))
+
+	for field, matchexp, line in pairs:
+	    fragments = msg.getallmatchingheaders(field)
+	    subjs = []
+	    l = len(field)
+	    for f in fragments:
+		# Consolidate header lines, stripping header name & whitespace.
+		if (len(f) > l
+		    and f[l] == ":"
+		    and string.lower(field) == string.lower(f[0:l])):
+		    # Non-continuation line - trim header name:
+		    subjs.append(f[l+1:])
+		elif not subjs:
+		    # Whoops - non-continuation that matches?
+		    subjs.append(f)
+		else:
+		    # Continuation line.
+		    subjs[-1] = subjs[-1] + f
+	    for s in subjs:
+		if re.search(matchexp, s, re.I):
+		    return line
+	return 0
+
 #msg should be an IncomingMessage object.
     def Post(self, msg, approved=0):
+##	print "Post in"			# DEBUG
 	self.IsListInitialized()
 	sender = msg.GetSender()
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
 	if not approved:
+##	    print "Post checking..."			# DEBUG
 	    if len(self.bad_posters):
 		addrs = mm_utils.FindMatchingAddresses(sender,
 						       self.bad_posters)
 		if len(addrs):
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				'Post from an untrusted email address requires '
-				'moderator approval.')
+				'Post from an untrusted origin.')
 	    if len(self.posters):
 		addrs = mm_utils.FindMatchingAddresses(sender, self.posters)
 		if not len(addrs):
@@ -429,14 +535,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 				    'moderator approval.')
 	    elif self.moderated:
 		self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				'Moderated list: Moderator approval required.',
+				'Moderated list.',
 				# Add an extra arg to avoid generating an
 				# error mail.
 				1)
 	    if self.member_posting_only and not self.IsMember(sender):
 		self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				'Posters to the list must send mail from an '
-				'email address on the list.')
+				'Postings from member addresses only.')
 	    if self.max_num_recipients > 0:
 		recips = []
 		toheader = msg.getheader('to')
@@ -451,8 +556,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	    if (self.require_explicit_destination and
  		  not self.HasExplicitDest(msg)):
  		self.AddRequest('post', mm_utils.SnarfMessage(msg),
- 				'Missing explicit list destination: '
- 				'Admin approval required.')
+ 				'Missing explicit list destination.')
+ 	    if self.bounce_matching_headers:
+		triggered = self.HasMatchingHeader(msg)
+		if triggered:
+		    # Darn - can't include the matching line for the admin
+		    # message because the info would also go to the sender.
+		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
+				    'Suspicious header content.')
 	    if self.max_message_size > 0:
 		if len(msg.body)/1024. > self.max_message_size:
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
@@ -483,17 +594,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if self.GetUserOption(sender, mm_cfg.AcknowlegePosts):
 		ack_post = 1
 	# Deliver the mail.
+##	print "post about to deliver"	# DEBUG
 	recipients = self.members[:] 
 	if dont_send_to_sender:
 	    recipients.remove(sender)
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
 	recipients = filter(DeliveryEnabled, recipients)
+##	print "post delivering"	# DEBUG
 	self.DeliverToList(msg, recipients, self.msg_header, self.msg_footer)
 	if ack_post:
 	    self.SendPostAck(msg, sender)
 	self.last_post_time = time.time()
 	self.post_id = self.post_id + 1
+##	print "post done"	# DEBUG
 	self.Save()
 
     def Lock(self):
@@ -502,14 +616,26 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		return
 	except AttributeError:
 	    return
-	self._lock_file = posixfile.open(
-	    os.path.join(mm_cfg.LOCK_DIR, '%s.lock'% self._internal_name), 'a+')
+	ou = os.umask(0)
+	try:
+	    self._lock_file = posixfile.open(
+		os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % self._internal_name),
+		'a+')
+	finally:
+	    os.umask(ou)
 	self._lock_file.lock('w|', 1)
     
     def Unlock(self):
 	self._lock_file.lock('u')
 	self._lock_file.close()
 	self._lock_file = None
+
+    def __repr__(self):
+	if self._lock_file: un = ""
+	else: un = "un"
+	return ("<%s.%s %slocked instance at %s>"
+		% (self.__module__, self.__class__.__name__,
+		   un, hex(id(self))[2:]))
 
 def list_names():
     """Return the names of all lists in default list directory."""
