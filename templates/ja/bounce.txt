@@ -1,8 +1,3 @@
-This MIME message should be readable as plain text.
-
---%(boundary)s
-Content-type: text/plain; charset=euc-jp
-
 これは Mailman メーリングリストの配送不可通知です.
 
     リスト:     %(listname)s
