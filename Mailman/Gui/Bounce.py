@@ -23,7 +23,7 @@ from Mailman.Gui.GUIBase import GUIBase
 
 class Bounce(GUIBase):
     def GetConfigCategory(self):
-        return 'bounce', _('Bounce detection')
+        return 'bounce', _('Bounce processing')
 
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'bounce':
@@ -99,6 +99,32 @@ class Bounce(GUIBase):
             ('bounce_you_are_disabled_warnings_interval', mm_cfg.Number, 5, 0,
              _("""The number of days between sending the <em>Your Membership
              Is Disabled</em> warnings.  This value must be an integer.""")),
+
+            ('bounce_unrecognized_goes_to_list_owner', mm_cfg.Toggle,
+             (_('No'), _('Yes')), 0,
+             _('''Should Mailman send you, the list owner, any bounce messages
+             that failed to be detected by the bounce processor?  <em>Yes</em>
+             is recommended.'''),
+             _("""While Mailman's bounce detector is fairly robust, it's
+             impossible to detect every bounce format in the world.  You
+             should keep this variable set to <em>Yes</em> for two reasons: 1)
+             If this really is a permanent bounce from one of your members,
+             you should probably manually remove them from your list, and 2)
+             you might want to send the message on to the Mailman developers
+             so that this new format can be added to its known set.
+
+             <p>If you really can't be bothered, then set this variable to
+             <em>No</em> and all non-detected bounces will be discarded
+             without further processing.
+
+             <p><b>Note:</b> This setting will also affect all messages sent
+             to your list's -admin address.  This address is deprecated and
+             should never be used, but some people may still send mail to this
+             address.  If this happens, and this variable is set to
+             <em>No</em> those messages too will get discarded.  You may want
+             to set up an
+             <a href="?VARHELP=autoreply/autoresponse_admin_text">autoresponse
+             message</a> for email to the -owner and -admin address.""")),
             ]
 
     def _setValue(self, mlist, property, val, doc):
