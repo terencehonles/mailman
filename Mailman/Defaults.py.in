@@ -26,6 +26,17 @@ this file, to override the distributed defaults with site-specific ones.
 
 import os
 
+def seconds(s): return s
+def minutes(m): return m * 60
+def hours(h): return h * 60 * 60
+def days(d): return d * 60 * 60 * 24
+
+
+
+#####
+# General system-wide defaults
+#####
+
 # Should image logos be used?  Set this to false to disable image logos from
 # "our sponsors" and just use textual links instead.  Otherwise, this should
 # contain the URL base path to the logo images (and must contain the trailing
@@ -44,6 +55,15 @@ DEFAULT_HOST_NAME   = '@FQDN@'
 DEFAULT_URL         = 'http://@URL@/mailman/'
 PUBLIC_ARCHIVE_URL  = '/pipermail'
 PRIVATE_ARCHIVE_URL = '/mailman/private'
+
+HOME_PAGE         = 'index.html'
+MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
+
+
+
+#####
+# Archive defaults
+#####
 
 DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
 
@@ -80,7 +100,6 @@ DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
 PUBLIC_EXTERNAL_ARCHIVER = 0
 PRIVATE_EXTERNAL_ARCHIVER = 0
 
-
 # Set this to 1 to enable gzipping of the downloadable archive .txt file.
 # Note that this is /extremely/ inefficient, so an alternative is to just
 # collect the messages in the associated .txt file and run a cron job every
@@ -88,20 +107,29 @@ PRIVATE_EXTERNAL_ARCHIVER = 0
 GZIP_ARCHIVE_TXT_FILES = 0
 
 
-HOME_PAGE         = 'index.html'
-MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
+
+#####
+# Delivery defaults
+#####
 
-
-# System ceiling on number of batches into which deliveries are divided:
-MAX_SPAWNS        = 40
-
+# Delivery module for the message pipeline.  See
+# Mailman/Handlers/HandlerAPI.py for details.  Unless overridden specifically
+# in that module, this handler is used for message delivery to the list, and
+# to an individual user.  This value must be a string naming a module in the
+# Mailman.Handlers package.
 #
-# Ceiling on the number of recipients that can be specified in a single
-# smtp transaction.  Set to 0 to relay the entire recipient list in one
-# transaction.
+# SECURITY WARNING: The Sendmail module is not secure!  Please read the
+# comments in Mailman/Handlers/Sendmail.py for details.  Use at your own
+# risk.
+#
+#DELIVERY_MODULE = 'Sendmail'
+DELIVERY_MODULE = 'SMTPDirect'
+
+# Ceiling on the number of recipients that can be specified in a single SMTP
+# transaction.  Set to 0 to submit the entire recipient list in one
+# transaction.  Only used with the SMTPDirect DELIVERY_MODULE.
 SMTP_MAX_RCPTS = 500
 
-#
 # Maximum number of simulatenous subthreads that will be used for SMTP
 # delivery.  After the recipients list is chunked according to SMTP_MAX_RCPTS,
 # each chunk is handed off to the smptd by a separate such thread.  If your
@@ -111,46 +139,42 @@ SMTP_MAX_RCPTS = 500
 #
 # NOTE: This is an experimental feature and limited testing shows that it may
 # in fact degrade performance, possibly due to Python's global interpreter
-# lock.
+# lock.  Use with caution.
 MAX_DELIVERY_THREADS = 0
-
-#
-# Delivery module for the message pipeline.  See
-# Mailman/Handlers/HandlerAPI.py for details.  Unless overridden specifically
-# in that module, this handler is used for message delivery to the list, and
-# to an individual user.  This value must be a string naming a module in the
-# Mailman.Handlers package.
-#DELIVERY_MODULE = 'Sendmail'
-DELIVERY_MODULE = 'SMTPDirect'
-
-# Command for direct command pipe delivery to sendmail compatible program,
-# when DELIVERY_MODULE is 'Sendmail'.
-SENDMAIL_CMD = '/usr/lib/sendmail'
 
 # SMTP host and port, when DELIVERY_MODULE is 'SMTPDirect'
 SMTPHOST = 'localhost'
 SMTPPORT = 0                                      # default from smtplib
 
+# Command for direct command pipe delivery to sendmail compatible program,
+# when DELIVERY_MODULE is 'Sendmail'.
+SENDMAIL_CMD = '/usr/lib/sendmail'
+
 # Set these variables if you need to authenticate to your NNTP server for
-# Usenet posting or reading.  None indicates no authentication is needed.
+# Usenet posting or reading.  If no authentication is necessary, specify None
+# for both variables.
 NNTP_USERNAME = None
 NNTP_PASSWORD = None
 
-# 1 to use crypt for passwords instead of md5.
-# Crypt may not work on all python installs.
-# Don't change this value once you have lists running...
-# In fact, you should just let configure set this one and leave it alone.
-USE_CRYPT = 1
 
-			 # General Defaults #
+
+#####
+# General defaults
+#####
+
+# Set to true to use the crypt module for passwords instead of md5.  Crypt may
+# not work on all Python installations.  Don't change this value once you have
+# lists running...  In fact, you should just let configure set this one and
+# leave it alone.
+USE_CRYPT = 1
 
 # When allowing only members to post to a mailing list, how is the sender of
 # the message determined?  If this variable is set to 1, then first the
-# message's envelope sender is used, with a fallback to the sender if there is 
+# message's envelope sender is used, with a fallback to the sender if there is
 # no envelope sender.  Set this variable to 0 to always use the sender.
 #
 # The envelope sender is set by the SMTP delivery and is thus less easily
-# spoofed than the sender, which is typically just taken from the From: header 
+# spoofed than the sender, which is typically just taken from the From: header
 # and thus easily spoofed by the end-user.  However, sometimes the envelope
 # sender isn't set correctly and this will manifest itself by postings being
 # held for approval even if they appear to come from a list member.  If you
@@ -158,21 +182,39 @@ USE_CRYPT = 1
 # spoofed messages may get through.
 USE_ENVELOPE_SENDER = 0
 
-# When true, mailman will consider user@host.domain to be the same address
-# as user@domain.  If set to 0, mailman will consider user@host.domain to 
-# be the same address as user@Host.DoMain, but different than user@domain.
-# Usernames will be case preserved, and host parts of addresses will all be
+# When true, Mailman will consider user@host.domain to be the same address as
+# user@domain.  If set to 0, Mailman will consider user@host.domain to be the
+# same address as user@Host.DoMain, but different than user@domain.  Usernames
+# will always be case preserved, and host parts of addresses will all be
 # lowercased.
 SMART_ADDRESS_MATCH = 1
+
 # When set, the listinfo web page overview of lists on the machine will be
-# confined to only those lists whose web_page_url configuration option host
-# is included within the URL by which the page is visited - only those "on
-# the virtual host".  If unset, then all lists are included in the
-# overview.  (The admin page overview always includes all the lists.)
+# confined to only those lists whose web_page_url configuration option host is
+# included within the URL by which the page is visited - only those "on the
+# virtual host".  If unset, then all lists are included in the overview.  The
+# admin page overview always includes all the lists.
 VIRTUAL_HOST_OVERVIEW = 1
 DEFAULT_FILTER_PROG = ''                # Currently not used!
-# Default number of batches in which to divide large deliveries:
-DEFAULT_NUM_SPAWNS = 5
+
+# How many members to display at a time on the admin cgi to unsubscribe them
+# or change their options?
+DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
+
+# how many bytes of a held message post should be displayed in the admindb web
+# page?  Use a negative number to indicate the entire message, regardless of
+# size (though this will slow down rendering those pages).
+ADMINDB_PAGE_TEXT_LIMIT = 4096
+
+
+
+#####
+# List defaults
+#####
+
+# Should a list, by default be advertised?  What is the default maximum number
+# of explicit recipients allowed?  What is the default maximum message size
+# allowed?
 DEFAULT_LIST_ADVERTISED = 1
 DEFAULT_MAX_NUM_RECIPIENTS = 10
 DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
@@ -190,35 +232,40 @@ DEFAULT_MSG_FOOTER = """_______________________________________________
 # Mail command processor will ignore mail command lines after designated max.
 DEFAULT_MAIL_COMMANDS_MAX_LINES = 25
 
-		     # List Accessibility Defaults #
-
-# Is admin notified of admin requests immediately by mail, as well as by
-# daily pending-request reminder?
+# Is the list owner notified of admin requests immediately by mail, as well as
+# by daily pending-request reminder?
 DEFAULT_ADMIN_IMMED_NOTIFY = 1
-#
-# Is admin notified of subscribes/unsubscribes?
-#
+
+# Is the list owner notified of subscribes/unsubscribes?
 DEFAULT_ADMIN_NOTIFY_MCHANGES = 0
 
+# Are lists, by default, moderated?
 DEFAULT_MODERATED = 0
 
-# Bounce if 'to' or 'cc' fields don't explicitly name list (anti-spam)?
+# Bounce if 'To:', 'Cc:', or 'Resent-To:' fields don't explicitly name list?
+# This is an anti-spam measure
 DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
+
 # Alternate names acceptable as explicit destinations for this list.
 DEFAULT_ACCEPTABLE_ALIASES ="""
 """
 # For mailing lists that have only other mailing lists for members:
 DEFAULT_UMBRELLA_LIST = 0
+
 # For umbrella lists, the suffix for the account part of address for
 # administrative notices (subscription confirmations, password reminders):
 DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX = "-owner"
+
 # This variable controlls whether monthly password reminders are sent.
 DEFAULT_SEND_REMINDERS = 1
+
 # Send welcome messages to new users?  Probably should keep this set to 1.
 DEFAULT_SEND_WELCOME_MSG = 1
+
 # Wipe sender information, and make it look like the list-admin
 # address sends all messages
 DEFAULT_ANONYMOUS_LIST = 0
+
 # {header-name: regexp} spam filtering - we include some for example sake.
 DEFAULT_BOUNCE_MATCHING_HEADERS = """
 # Lines that *start* with a '#' are comments.
@@ -239,21 +286,29 @@ DEFAULT_REPLY_GOES_TO_LIST = 0
 # ** please do not choose option 0 if you are not allowing open
 # subscribes (next variable)
 DEFAULT_SUBSCRIBE_POLICY = 1
+
 # does this site allow completely unchecked subscriptions?
 ALLOW_OPEN_SUBSCRIBE = 0
 
 # Private_roster == 0: anyone can see, 1: members only, 2: admin only.
 DEFAULT_PRIVATE_ROSTER = 0
+
 # When exposing members, make them unrecognizable as email addrs, so
 # web-spiders can't pick up addrs for spam purposes.
 DEFAULT_OBSCURE_ADDRESSES = 1
+
 # Make it 1 when it works.
 DEFAULT_MEMBER_POSTING_ONLY = 0
 
-		     # Digestification Defaults #
+
+
+#####
+# Digestification defaults
+#####
 
 # Will list be available in non-digested form?
 DEFAULT_NONDIGESTABLE = 1
+
 # Will list be available in digested form?
 DEFAULT_DIGESTABLE = 1
 DEFAULT_DIGEST_HEADER = ""
@@ -267,21 +322,29 @@ DEFAULT_PLAIN_DIGEST_KEEP_HEADERS = ['message', 'date', 'from',
                                      'subject', 'to', 'cc',
                                      'reply-to', 'organization']
 
-		    # Bounce Processing Defaults #
+
+
+#####
+# Bounce processing defaults
+#####
 
 # Should we do any bounced mail response at all?
 DEFAULT_BOUNCE_PROCESSING = 1
+
 # Minimum number of days that address has been undeliverable before 
 # we take the automatic bounce action.
 DEFAULT_MINIMUM_REMOVAL_DATE = 5
+
 # Minimum number of delivery failure notices for an account before we
 # consider doing the automatic bounce action.
 DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION = 3
+
 # 0 means do nothing
 # 1 means disable and send admin a report,
 # 2 means nuke'em (remove) and send admin a report,
 # 3 means nuke 'em and don't report (whee:)
 DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
+
 # Maximum number of posts that can go by w/o a bounce before we figure 
 # delivery failures to a particular recipient have been resolved.  This
 # needs to account for the big lag between delivery attempt and issuance of 
@@ -289,65 +352,76 @@ DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
 # of messages you'd reasonably expect an average list to get in 1 hour.
 DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
 
+# Check for administrivia in messages sent to the main list?
 DEFAULT_ADMINISTRIVIA = 1
 
-# How long the cookie authorizing administrative changes via the admin cgi
-# lasts before it needs to be reauthenticated (ie, password demanded).
-ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
 
-# How long subscriptions request should await confirmation before being
-# dropped.
-PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
+
+#####
+# General time limits
+#####
+
+# How long should the cookie authorizing administrative changes via the admin
+# cgi last before it needs to be reauthenticated?
+ADMIN_COOKIE_LIFE = hours(3)
+
+# How long should subscriptions requests await confirmation before being
+# dropped?
+PENDING_REQUEST_LIFE = days(3)
 
 # How long should messages which have delivery failures continue to be
 # retried?  After this period of time, a message that has failed recipients
 # will be dequeued and those recipients will never receive the message.
-DELIVERY_RETRY_PERIOD = 60 * 60 * 24 * 5 # 5 days
+DELIVERY_RETRY_PERIOD = days(5)
 
 
-# These variables control certain aspects of MailList lock acquisition and
-# retention.  They should be tuned as appropriate for your environment.  All
-# variables are specified in units of floating point seconds.
-#
-# LIST_LOCK_DEBUGGING specifies whether lock debug messages should be written
-# to logs/locks.  If you think you're having lock problems, or just want to
-# tune the locks for your system, turn on lock debugging.
-#
-# LIST_LOCK_LIFETIME specifies how long the lock will be retained for a
-# specific operation on a mailing list.  Watch your logs/lock file and if you
-# see a lot of lock breakages, you might need to bump this up.  However if you
-# set this too high, a faulty script (or incorrect use of bin/withlist) can
-# prevent the list from being used until the lifetime expires.
-#
-# LIST_LOCK_TIMEOUT specifies how long an attempt will be made to acquire a
-# list lock.  If the lock acquisition times out, the operation will fail.
-# Most entry-level scripts that handle messages will safely queue the message
-# for another attempt later, but this is currently not as well tested as it
-# should be.  If you're using an MTA, such as Postfix, that has its own
-# command time out limit, make sure this lock timeout is set sufficiently
-# below that value.  Postfix for example kills it's filter processes with
-# SIGKILL, which can't be caught, and if triggered, can cause message loss.
+
+#####
+# Lock management defaults
+#####
+
+# These variables control certain aspects of lock acquisition and retention.
+# They should be tuned as appropriate for your environment.  All variables are
+# specified in units of floating point seconds.  YOU MAY NEED TO TUNE THESE
+# VARIABLES DEPENDING ON THE SIZE OF YOUR LISTS, THE PERFORMANCE OF YOUR
+# HARDWARE, NETWORK AND GENERAL MAIL HANDLING CAPABILITIES, ETC.
+
+# Set this to true to turn on MailList object lock debugging messages, which
+# will be written to logs/locks.  If you think you're having lock problems, or
+# just want to tune the locks for your system, turn on lock debugging.
 LIST_LOCK_DEBUGGING = 0
-LIST_LOCK_LIFETIME = 120
-# Postfix's default command_time_limit is 1000 seconds.
-LIST_LOCK_TIMEOUT = 500
 
-# how many members to display at a time on the admin cgi to unsubscribe
-# them or change their options.
-DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
+# This variable specifies how long the lock will be retained for a specific
+# operation on a mailing list.  Watch your logs/lock file and if you see a lot
+# of lock breakages, you might need to bump this up.  However if you set this
+# too high, a faulty script (or incorrect use of bin/withlist) can prevent the
+# list from being used until the lifetime expires.  This is probably one of
+# the most crucial tuning variables in the system.
+LIST_LOCK_LIFETIME = hours(5)
 
-# how many bytes of a held message post should be displayed in the admindb web
-# page?  Use a negative number to indicate the entire message, regardless of
-# size (though this will slow down rendering those pages).
-ADMINDB_PAGE_TEXT_LIMIT = 4096
+# This variable specifies how long an attempt will be made to acquire a list
+# lock by the qrunner process.  If the lock acquisition times out, the message
+# will be re-queued for later delivery.
+LIST_LOCK_TIMEOUT = seconds(10)
 
+# cron/qrunner lock lifetime.  This is probably the second most crucial tuning
+# variable in the system.  See the notes for LIST_LOCK_LIFETIME above.  Watch
+# your logs/smtp file and make sure that QRUNNER_LOCK_LIFETIME is set longer
+# than the longest period you see here.  It is a bad thing if multiple
+# qrunners run at the same time.
+QRUNNER_LOCK_LIFETIME = hours(10)
+
+
+
+#####
+# Nothing below here is user configurable.  Most of these values are in this
+# file for convenience.  Don't change any of them or override any of them in
+# your mm_cfg.py file!
+#####
 
 # These directories are used to find various important files in the Mailman
 # installation.  PREFIX and EXEC_PREFIX are set by configure and should point
 # to the installation directory of the Mailman package.
-#
-# Do not override these in mm_cfg.py!
-
 PYTHON  	= '@PYTHON@'
 PREFIX  	= '@prefix@'
 EXEC_PREFIX	= '@exec_prefix@'
@@ -359,26 +433,19 @@ if EXEC_PREFIX == '${prefix}':
 # CGI extension, change using configure script
 CGIEXT = '@CGIEXT@'
 
-
-# Don't change anything from here down unless you know what you're doing...
-
-
 # Enumeration for types of configurable variables in Mailman.
-Toggle    = 1
-Radio     = 2
-String    = 3
-Text      = 4
-Email     = 5
-EmailList = 6
-Host      = 7
-Number    = 8
-FileUpload =9
+Toggle     = 1
+Radio      = 2
+String     = 3
+Text       = 4
+Email      = 5
+EmailList  = 6
+Host       = 7
+Number     = 8
+FileUpload = 9
 
 # Standard text field width
 TEXTFIELDWIDTH = 40
-
-# could add Directory and URL
-
 
 # Bitfield for user options
 Digests             = 0 # handled by other mechanism, doesn't need a flag.
@@ -388,7 +455,7 @@ AcknowledgePosts    = 4
 DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
 
-
+# Useful directories
 LIST_DATA_DIR	= os.path.join(PREFIX, 'lists')
 HTML_DIR	= os.path.join(PREFIX, 'public_html')
 CGI_DIR 	= os.path.join(EXEC_PREFIX, 'cgi-bin')
@@ -399,8 +466,8 @@ QUEUE_DIR       = os.path.join(PREFIX, 'qfiles')
 WRAPPER_DIR	= os.path.join(EXEC_PREFIX, 'mail')
 SCRIPTS_DIR	= os.path.join(PREFIX, 'scripts')
 TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
-PUBLIC_ARCHIVE_FILE_DIR 	= os.path.join(PREFIX, 'archives/public')
-PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
+PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(PREFIX, 'archives/public')
+PRIVATE_ARCHIVE_FILE_DIR = os.path.join(PREFIX, 'archives/private')
 
-# The Mailman version
+# Import a bunch of version numbers
 from Version import *
