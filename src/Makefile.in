@@ -42,7 +42,6 @@ CGI_GID=	@CGI_GID@
 #ALIAS_GID=	@ALIAS_GID@
 
 # Customizable but not set by configure
-
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 CGIDIR= 	$(exec_prefix)/cgi-bin
