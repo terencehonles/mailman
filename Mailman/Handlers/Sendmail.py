@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -88,14 +88,14 @@ def process(mlist, msg, msgdata):
         if status:
             errcode = (status & 0xff00) >> 8
             syslog('post', 'post to %s from %s, size=%d, failure=%d' %
-                   (mlist.internal_name(), msg.GetSender(),
+                   (mlist.internal_name(), msg.get_sender(),
                     len(msg.body), errcode))
             # TBD: can we do better than this?  What if only one recipient out
             # of the entire chunk failed?
             failedrecips.append(chunk)
         # Log the successful post
         syslog('post', 'post to %s from %s, size=%d, success' %
-               (mlist.internal_name(), msg.GetSender(), len(msg.body)))
+               (mlist.internal_name(), msg.get_sender(), len(msg.body)))
     if failedrecips:
         msgdata['recips'] = failedrecips
         raise Errors.SomeRecipientsFailed
