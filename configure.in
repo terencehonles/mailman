@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 562 $)
+AC_REVISION($Revision: 599 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -188,6 +188,51 @@ MM_FIND_USER_ID(MAIL_UID, daemon, mail_wrapper)
 MM_FIND_GROUP_ID(MAIL_GID, mail, mail_wrapper)
 
 
+# figure out the DEFAULT_HOST_NAME and DEFAULT_URL
+AC_SUBST(FQDN)
+AC_SUBST(URL)
+changequote(,)
+cat > conftest.py <<EOF
+# attempt to figure out the default hostname and URL
+from socket import *
+import string
+fqdn = None
+www = None
+host, aliases, ipaddrs = gethostbyaddr(gethostbyname(gethostname()))
+aliases.insert(0, host)
+for h in aliases:
+    parts = string.split(h, '.')
+    if len(parts) > 1:
+        if parts[0] == 'www':
+            www = h
+        elif not fqdn:
+            fqdn = h
+fp = open('conftest.out', 'w')
+if not www and fqdn:
+    fp.write('%s\n%s\n' % (fqdn, fqdn))
+elif www:
+    dhn = string.join(string.split(www, '.')[1:], '.')
+    fp.write('%s\n%s\n' % (dhn, www))
+else:
+    fp.write('please.change.me\nwww.please.change.me\n')
+fp.close()
+EOF
+python conftest.py
+changequote([, ])
+AC_MSG_CHECKING(for default fully qualified host name)
+if test -z "$FQDN"
+then
+    FQDN=`head -1 conftest.out`
+fi
+AC_MSG_RESULT($FQDN)
+AC_MSG_CHECKING(for default URL host component)
+if test -z "$URL"
+then
+    URL=`tail -1 conftest.out`
+fi
+AC_MSG_RESULT($URL)
+rm -f conftest.out conftest.py
+
 # Checks for libraries.
 
 # Checks for header files.
@@ -205,4 +250,5 @@ dnl Output everything
 AC_OUTPUT([misc/paths.py modules/mm_defaults.py
            src/Makefile misc/Makefile bin/Makefile modules/Makefile
 	   mail/Makefile templates/Makefile cgi/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile Makefile])
+	   filters/Makefile scripts/Makefile modules/mm_cfg.py
+	   Makefile])
