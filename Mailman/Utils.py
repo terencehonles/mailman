@@ -47,21 +47,33 @@ def SendTextToUser(subject, text, recipient, sender, errorsto=None):
     msg.SetBody(QuotePeriods(text))
     DeliverToUser(msg, recipient, errorsto=errorsto)
 
-# This method assumes the sender is the one given by the message.
 def DeliverToUser(msg, recipient, errorsto=None):
-    file = os.popen(mm_cfg.SENDMAIL_CMD % (msg.GetSender(), recipient),
-		    'w')
+    """Use sendmail to deliver message."""
+
+    # We fork to ensure no deadlock.  Otherwise, even if sendmail is
+    # invoked in forking mode, if it eg detects a bad address before
+    # forking, then it will try deliver to the errorsto addr *in the
+    # foreground*.  If the errorsto happens to be the list owner for a list
+    # that is doing the send - and holding a lock - then the delivery will
+    # hang pending release of the lock - deadlock.
+    if os.fork():
+        return
     try:
-	msg.headers.remove('\n')
-    except ValueError:
-	pass
-    if not msg.getheader('to'):
-	msg.headers.append('To: %s\n' % recipient)
-    if errorsto:
-	msg.headers.append('Errors-To: %s\n' % errorsto)
-    file.write(string.join(msg.headers, '')+ '\n') 
-    file.write(QuotePeriods(msg.body))
-    file.close()
+        file = os.popen(mm_cfg.SENDMAIL_CMD % (msg.GetSender(), recipient),
+                        'w')
+        try:
+            msg.headers.remove('\n')
+        except ValueError:
+            pass
+        if not msg.getheader('to'):
+            msg.headers.append('To: %s\n' % recipient)
+        if errorsto:
+            msg.headers.append('Errors-To: %s\n' % errorsto)
+        file.write(string.join(msg.headers, '')+ '\n') 
+        file.write(QuotePeriods(msg.body))
+        file.close()
+    finally:
+        os._exit(0)
 
 def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
@@ -142,22 +154,19 @@ def ParseEmail(email):
 # There's password protection anyway.
 
 def AddressesMatch(addr1, addr2):
+    "True when username matches and host addr of one addr contains other's."
     user1, domain1 = ParseEmail(addr1)
     user2, domain2 = ParseEmail(addr2)
-    if user1 <> user2:
+    if user1 != user2:
 	return 0
     if domain1 == domain2:
-	return 1
-    if not (domain1 and domain2):
-	return 0
-    l = max(len(domain1), len(domain2)) - 1
-    if l < 2:
-	return 0
-    for i in range(l):
-	if domain1[-(i+1)] <> domain2[-(i+1)]:
-	    return 0
-	return 1
-    return 0
+        return 1
+    for i in range(-1 * min(len(domain1), len(domain2)), 0):
+        # By going from most specific component of host part we're likely
+        # to hit a difference sooner.
+        if domain1[i] != domain2[i]:
+            return 0
+    return 1
 
 
 def FindMatchingAddresses(name, array):
