@@ -28,6 +28,7 @@ bindir=		@bindir@
 prefix=		@prefix@
 exec_prefix=	@exec_prefix@
 var_prefix=	@VAR_PREFIX@
+DESTDIR=
 
 CC=		@CC@
 INSTALL=	@INSTALL@
@@ -86,7 +87,7 @@ doinstall: $(SUBDIRS)
 	@echo "Creating architecture independent directories..."
 	@for d in $(VAR_DIRS); \
 	do \
-	    dir=$(var_prefix)/$$d; \
+	    dir=$(DESTDIR)$(var_prefix)/$$d; \
 	    if test ! -d $$dir; then \
 		echo "Creating directory hierarchy $$dir"; \
 		$(srcdir)/mkinstalldirs $$dir; \
@@ -95,10 +96,10 @@ doinstall: $(SUBDIRS)
 	    else true; \
 	    fi; \
 	done
-	chmod o-r $(var_prefix)/archives/private
+	chmod o-r $(DESTDIR)$(var_prefix)/archives/private
 	@for d in $(ARCH_INDEP_DIRS); \
 	do \
-	    dir=$(prefix)/$$d; \
+	    dir=$(DESTDIR)$(prefix)/$$d; \
 	    if test ! -d $$dir; then \
 		echo "Creating directory hierarchy $$dir"; \
 		$(srcdir)/mkinstalldirs $$dir; \
@@ -110,7 +111,7 @@ doinstall: $(SUBDIRS)
 	@echo "Creating architecture dependent directories..."
 	@for d in $(ARCH_DEP_DIRS); \
 	do \
-	    dir=$(exec_prefix)/$$d; \
+	    dir=$(DESTDIR)$(exec_prefix)/$$d; \
 	    if test ! -d $$dir; then \
 		echo "Creating directory hierarchy $$dir"; \
 		$(srcdir)/mkinstalldirs $$dir; \
@@ -121,12 +122,15 @@ doinstall: $(SUBDIRS)
 	done
 	@for d in $(SUBDIRS); \
 	do \
-	    (cd $$d; $(MAKE) install); \
+	    (cd $$d; $(MAKE) DESTDIR=$(DESTDIR) install); \
 	done
-	$(PYTHON) -c 'from compileall import *; compile_dir("$(prefix)/Mailman")'
+	$(PYTHON) -c 'from compileall import *; compile_dir("$(DESTDIR)$(prefix)/Mailman")'
 
+# Only run bin/update if we aren't installing in DESTDIR, as this
+# means there are probably no lists to deal with, and it wouldn't
+# work anyway (because of import paths.)
 update:
-	@(cd $(prefix) ; bin/update)
+	@(cd $(DESTDIR)$(prefix) ; test -n "$(DESTDIR)" || bin/update)
 
 clean: $(SUBDIRS)
 	@for d in $(SUBDIRS); \

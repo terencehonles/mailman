@@ -25,6 +25,7 @@ srcdir= 	@srcdir@
 bindir= 	@bindir@
 prefix=   	@prefix@
 exec_prefix=	@exec_prefix@
+DESTDIR=
 
 CC=		@CC@
 CHMOD=  	@CHMOD@
@@ -59,10 +60,10 @@ all:
 install:
 	for d in $(LANGUAGES); \
 	do \
-	    $(srcdir)/../mkinstalldirs $(TEMPLATEDIR)/$$d; \
+	    $(srcdir)/../mkinstalldirs $(DESTDIR)$(TEMPLATEDIR)/$$d; \
 	    for f in $(srcdir)/$$d/*.html $(srcdir)/$$d/*.txt; \
 	    do \
-	    	$(INSTALL) -m $(FILEMODE) $$f $(TEMPLATEDIR)/$$d; \
+	    	$(INSTALL) -m $(FILEMODE) $$f $(DESTDIR)$(TEMPLATEDIR)/$$d; \
 	    done; \
 	done
 

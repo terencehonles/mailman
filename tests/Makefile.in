@@ -25,6 +25,7 @@ srcdir= 	@srcdir@
 bindir= 	@bindir@
 prefix=   	@prefix@
 exec_prefix=	@exec_prefix@
+DESTDIR=
 
 CC=		@CC@
 CHMOD=  	@CHMOD@
@@ -59,15 +60,15 @@ all:
 install:
 	for f in $(TEST_MODULES); \
 	do \
-	    $(INSTALL) -m $(FILEMODE) $$f $(TESTDIR); \
+	    $(INSTALL) -m $(FILEMODE) $$f $(DESTDIR)$(TESTDIR); \
         done
 	for f in $(EXECS); \
 	do \
-	    $(INSTALL) -m $(EXEMODE) $$f $(TESTDIR); \
-        done
+	    $(INSTALL) -m $(EXEMODE) $$f $(DESTDIR)$(TESTDIR); \
+	done
 	for d in $(SUBDIRS); \
 	do \
-	    (cd $$d; $(MAKE) install); \
+	    (cd $$d; $(MAKE) DESTDIR=$(DESTDIR) install); \
 	done
 
 finish:

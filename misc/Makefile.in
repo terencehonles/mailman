@@ -26,6 +26,7 @@ bindir= 	@bindir@
 prefix=   	@prefix@
 exec_prefix=	@exec_prefix@
 var_prefix=	@VAR_PREFIX@
+DESTDIR=
 
 CC=		@CC@
 CHMOD=  	@CHMOD@
@@ -40,14 +41,14 @@ OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 PACKAGEDIR=	$(prefix)/Mailman
 DATADIR=	$(var_prefix)/data
-ICONDIR=        $(prefix)/icons
+ICONDIR=	$(prefix)/icons
 SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
 PYTHONLIBDIR=	$(prefix)/pythonlib
-SETUPINSTOPTS=	--install-lib $(PYTHONLIBDIR) \
-		--install-purelib $(PYTHONLIBDIR) \
-		--install-data $(PYTHONLIBDIR)
+SETUPINSTOPTS=	--install-lib $(DESTDIR)$(PYTHONLIBDIR) \
+		--install-purelib $(DESTDIR)$(PYTHONLIBDIR) \
+		--install-data $(DESTDIR)$(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
 EMAILPKG=	email-2.4.3
@@ -75,13 +76,13 @@ all:
 install: install-other install-packages
 
 install-other:
-	$(INSTALL) -m $(FILEMODE) $(ICONS) $(ICONDIR)
+	$(INSTALL) -m $(FILEMODE) $(ICONS) $(DESTDIR)$(ICONDIR)
 	for d in $(PATHSDIRS); \
 	do \
-	    dir=$(prefix)/$$d; \
+	    dir=$(DESTDIR)$(prefix)/$$d; \
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
-	$(INSTALL) -m $(EXEMODE) mailman $(SCRIPTSDIR)
+	$(INSTALL) -m $(EXEMODE) mailman $(DESTDIR)$(SCRIPTSDIR)
 
 install-packages:
 	for p in $(PACKAGES); \

@@ -25,6 +25,7 @@ srcdir= 	@srcdir@
 bindir= 	@bindir@
 prefix=   	@prefix@
 exec_prefix=	@exec_prefix@
+DESTDIR=
 
 CC=		@CC@
 CHMOD=  	@CHMOD@
@@ -57,7 +58,7 @@ all:
 install: 
 	for f in $(MODULES); \
 	do \
-	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(PACKAGEDIR); \
+	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(DESTDIR)$(PACKAGEDIR); \
 	done
 
 finish:

@@ -29,6 +29,7 @@ srcdir= 	@srcdir@
 bindir= 	@bindir@
 prefix=   	@prefix@
 exec_prefix=	@exec_prefix@
+DESTDIR=
 
 CC=		@CC@
 CHMOD=  	@CHMOD@
@@ -87,7 +88,7 @@ install: doinstall
 doinstall: 
 	@for d in $(LANGDIRS); \
 	do \
-	    dir=$(prefix)/$$d; \
+	    dir=$(DESTDIR)$(prefix)/$$d; \
 	    echo "Creating language directory $$dir"; \
 	    $(srcdir)/../mkinstalldirs $$dir; \
 	    chmod $(DIRMODE) $$dir; \
@@ -98,14 +99,14 @@ doinstall:
 	    readme=$(srcdir)/$$d/README.$$d; \
 	    if test -f $$readme; \
 	    then \
-		$(INSTALL) -m $(FILEMODE) $$readme $(prefix)/messages/$$d; \
+		$(INSTALL) -m $(FILEMODE) $$readme $(DESTDIR)$(prefix)/messages/$$d; \
 	    fi; \
 	done
 	@for d in $(LANGUAGES); \
 	do \
 	    po=$(srcdir)/$$d/LC_MESSAGES/mailman.po; \
 	    mo=$(srcdir)/$$d/LC_MESSAGES/mailman.mo; \
-	    dir=$(prefix)/messages/$$d/LC_MESSAGES; \
+	    dir=$(DESTDIR)$(prefix)/messages/$$d/LC_MESSAGES; \
 	    $(INSTALL) -m $(FILEMODE) $$po $$mo $$dir; \
 	done
 
