@@ -553,10 +553,11 @@ Two differences from os.mkdir():
 
 def open_ex(filename, mode='r', bufsize=-1, perms=0664):
     """Use os.open() to open a file in a particular mode.
-Returns a file-like object instead of a file descriptor.  Also umask is forced
-to 0 during the open().
 
-`b' flag is currently unsupported."""
+    Returns a file-like object instead of a file descriptor.
+    Also umask is forced to 0 during the open().
+
+    `b' flag is currently unsupported."""
     modekey = mode
     trunc = os.O_TRUNC
     if mode == 'r':
