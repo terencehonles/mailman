@@ -66,10 +66,10 @@ install:
 	do \
 	    $(INSTALL) -m $(FILEMODE) $$f $(PACKAGEDIR); \
 	done
-	$(INSTALL) -m $(FILEMODE) mm_cfg.py $(PACKAGEDIR)/mm_cfg.py.dist
-	if test ! -f $(PACKAGEDIR)/mm_cfg.py; \
+	$(INSTALL) -m $(FILEMODE) mm_cfg.py.dist $(PACKAGEDIR)
+	if [ ! -f $(PACKAGEDIR)/mm_cfg.py ]; \
 	then \
-	    $(INSTALL) -m $(FILEMODE) mm_cfg.py $(PACKAGEDIR); \
+	    $(INSTALL) -m $(FILEMODE) mm_cfg.py.dist $(PACKAGEDIR)/mm_cfg.py; \
 	fi
 	for d in $(SUBDIRS); \
 	do \
@@ -89,7 +89,8 @@ clean:
 	done
 
 distclean:
-	-rm Makefile Defaults.py mm_cfg.py
+	-rm Makefile Defaults.py mm_cfg.py.dist
+	-rm *.pyc
 	for d in $(SUBDIRS); \
 	do \
 	    (cd $$d; $(MAKE) distclean); \
