@@ -131,7 +131,12 @@ def main():
     if cgidata.has_key('login-unsub'):
         # Because they can't supply a password for unsubscribing, we'll need
         # to do the confirmation dance.
-        mlist.ConfirmUnsubscription(user, userlang)
+        if mlist.isMember(user):
+            mlist.ConfirmUnsubscription(user, userlang)
+        else:
+            syslog('mischief',
+                   'Unsubscribe attempt of non-member w/ private rosters: %s',
+                   user)
         add_error_message(
             doc,
             _('The confirmation email has been sent.'),
@@ -142,7 +147,12 @@ def main():
 
     # Are we processing a password reminder from the login screen?
     if cgidata.has_key('login-remind'):
-        mlist.MailUserPassword(user)
+        if mlist.isMember(user):
+            mlist.MailUserPassword(user)
+        else:
+            syslog('mischief',
+                   'Reminder attempt of non-member w/ private rosters: %s',
+                   user)
         add_error_message(
             doc,
             _('A reminder of your password has been emailed to you.'),
@@ -166,6 +176,9 @@ def main():
             # So as not to allow membership leakage, prompt for the email
             # address and the password here.
             if mlist.private_roster <> 0:
+                syslog('mischief',
+                       'Login failure with private rosters: %s',
+                       user)
                 user = None
         loginpage(mlist, doc, user, cgidata)
         print doc.Format()
@@ -678,30 +691,27 @@ def loginpage(mlist, doc, user, cgidata):
     ptable.AddRow([Center(SubmitButton('login', _('Log in')))])
     ptable.AddCellInfo(ptable.GetCurrentRowIndex(), 0, colspan=2)
     table.AddRow([Center(ptable)])
-    # Unsubscribe section, but only if the user didn't just unsubscribe
-    if not cgidata.has_key('login-unsub'):
-        table.AddRow([Center(Header(2, _('Unsubscribe')))])
-        table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                          bgcolor=mm_cfg.WEB_HEADER_COLOR)
+    # Unsubscribe section
+    table.AddRow([Center(Header(2, _('Unsubscribe')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
-        table.AddRow([_("""By clicking on the <em>Unsubscribe</em> button, a
-        confirmation message will be emailed to you.  This message will have a
-        link that you should click on to complete the removal process (you can
-        also confirm by email; see the instructions in the confirmation
-        message).""")])
+    table.AddRow([_("""By clicking on the <em>Unsubscribe</em> button, a
+    confirmation message will be emailed to you.  This message will have a
+    link that you should click on to complete the removal process (you can
+    also confirm by email; see the instructions in the confirmation
+    message).""")])
 
-        table.AddRow([Center(SubmitButton('login-unsub', _('Unsubscribe')))])
-    # Password reminder section, but only if the user didn't just request a
-    # password reminder
-    if not cgidata.has_key('login-remind'):
-        table.AddRow([Center(Header(2, _('Password reminder')))])
-        table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                          bgcolor=mm_cfg.WEB_HEADER_COLOR)
+    table.AddRow([Center(SubmitButton('login-unsub', _('Unsubscribe')))])
+    # Password reminder section
+    table.AddRow([Center(Header(2, _('Password reminder')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
-        table.AddRow([_("""By clicking on the <em>Remind</em> button, your
-        password will be emailed to you.""")])
+    table.AddRow([_("""By clicking on the <em>Remind</em> button, your
+    password will be emailed to you.""")])
 
-        table.AddRow([Center(SubmitButton('login-remind', _('Remind')))])
+    table.AddRow([Center(SubmitButton('login-remind', _('Remind')))])
     # Finish up glomming together the login page
     form.AddItem(table)
     doc.AddItem(form)
