@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,14 +42,14 @@ immediately.  Otherwise, the script hangs pending input, to give time for
 the person creating the list to customize it before sending the admin an
 email notice about the existence of the new list.
 
-Note that listnames are forced to lowercase.
-"""
+Note that listnames are forced to lowercase."""
 
 import sys
 import os
 import time
 import getpass
 import getopt
+import sha
 
 import paths
 from Mailman import mm_cfg
@@ -57,8 +57,6 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
 from Mailman import Message
-from Mailman.Handlers import HandlerAPI
-from Mailman.Crypt import crypt
 from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
@@ -89,7 +87,7 @@ chmod 644 ~alias/.qmail-owner-%(listname)s
 STDOUTMSG = 'Entry for aliases file:'
 ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
 
-style = string.lower(mm_cfg.MTA_ALIASES_STYLE)
+style = mm_cfg.MTA_ALIASES_STYLE.lower()
 if style  == 'qmail':
     ALIASTEMPLATE = QMAIL_ALIAS_TEMPLATE
 elif style <> 'sendmail':
@@ -153,17 +151,17 @@ def main():
 	    _('Enter the email of the person running the list: '))
 
     if len(args) > 2:
-	list_pw = args[2]
+	listpasswd = args[2]
     else:
-        list_pw = getpass.getpass(_('Initial %(listname)s password: '))
+        listpasswd = getpass.getpass(_('Initial %(listname)s password: '))
     # List passwords cannot be empty
-    list_pw = list_pw.strip()
-    if not list_pw:
+    listpasswd = listpasswd.strip()
+    if not listpasswd:
         usage(1, _('The list password cannot be empty'))
 
     mlist = MailList.MailList()
     try:
-        pw = crypt(list_pw , Utils.GetRandomSeed())
+        pw = sha.new(listpasswd).hexdigest()
         # guarantee that all newly created files have the proper permission.
         # proper group ownership should be assured by the autoconf script
         # enforcing that all directories have the group sticky bit set
@@ -202,18 +200,18 @@ def main():
             text = Utils.maketext(
                 'newlist.txt',
                 {'listname'    : listname,
-                 'password'    : list_pw, 
+                 'password'    : listpasswd, 
                  'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
                  'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
                  'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
                  'hostname'    : mlist.host_name,
-                 }, mlist.preferred_language))
+                 }, mlist.preferred_language)
             msg = Message.UserNotification(
                 owner_mail,
                 'mailman-owner@' + mlist.host_name,
                 _('Your new mailing list: %(listname)s'),
                 text)
-            HandlerAPI.DeliverToUser(mlist, msg)
+            msg.send(mlist)
     finally:
         mlist.Unlock()
 
