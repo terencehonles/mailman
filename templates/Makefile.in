@@ -42,7 +42,8 @@ TEMPLATEDIR= 	$(prefix)/templates
 
 SHELL=		/bin/sh
 
-LANGUAGES=	big5 cs en es et de fi fr gb hu it ja ko lt nl no pt_BR ru sv
+LANGUAGES=	big5 cs en es et de fi fr gb hu it ja ko lt nl \
+		no pt pt_BR ru sv
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but

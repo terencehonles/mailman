@@ -48,7 +48,7 @@ MSGFMT= 	msgfmt
 MSGMERGE=	msgmerge
 
 # CVS available languages
-LANGUAGES=	cs de es et fi fr hu it ja ko lt nl no pt_BR ru sv
+LANGUAGES=	cs de es et fi fr hu it ja ko lt nl no pt pt_BR ru sv
 LANGDIRS=	$(LANGUAGES:%=messages/%/LC_MESSAGES)
 # Human readable po file
 POFILES=	$(LANGUAGES:%=%/LC_MESSAGES/mailman.po)
