@@ -38,10 +38,18 @@ if not list._ready:
     print doc.Format()
     sys.exit(0)
 
+if string.lower(user) not in list.members:
+    doc.AddItem(htmlformat.Header(2,
+                                  "%s: No such member %s."
+                                  % (list_name, `user`)))
+    print doc.Format()
+    sys.exit(0)
+
 if list.obscure_addresses:
     presentable_user = mm_utils.ObscureEmail(user, for_text=1)
 else:
     presentable_user = user
+
 
 replacements = list.GetStandardReplacements()
 replacements['<mm-digest-radio-button>'] = list.FormatOptionButton(
@@ -81,6 +89,7 @@ replacements['<mm-form-start>'] = list.FormatFormStart('handle_opts', user)
 replacements['<mm-user>'] = user
 replacements['<mm-presentable-user>'] = presentable_user
 replacements['<mm-email-my-pw>'] = list.FormatButton('emailpw', 'Email my password')
+
 
 doc.AddItem(list.ParseTags('options.html', replacements))
 print doc.Format()
