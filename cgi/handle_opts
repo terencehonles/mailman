@@ -2,7 +2,7 @@
 
 """Process input to user options form."""
 
-__version__ = "$Revision: 388 $"
+__version__ = "$Revision: 534 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -79,7 +79,7 @@ if form.has_key("unsub"):
 	try:
 	    pw = form["upw"].value
 	    if list.ConfirmUserPassword(user, pw):
-		list.DeleteMember(user, "handle_opts")
+		list.DeleteMember(user, "web cmd")
 	except mm_err.MMListNotReady:
 	    PrintResults("List is not functional.")
 	except mm_err.MMNoSuchUserError:
