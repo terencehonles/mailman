@@ -106,15 +106,17 @@ def main():
             info = mlist.getBounceInfo(member)
             if not isinstance(info, _BounceInfo):
                 # It's old bounce data, which is useless to us.  Reset.
-                mlist.setBounceInfo(member, None)
-                continue
-            if info.score >= mlist.bounce_score_threshold:
+                disables.append((member, None))
+            elif info.score >= mlist.bounce_score_threshold:
                 disables.append((member, info))
         if disables:
             mlist.Lock()
             try:
                 for member, info in disables:
-                    mlist.disableBouncingMember(member, info, msg)
+                    if info is None:
+                        mlist.setBounceInfo(member, None)
+                    else:
+                        mlist.disableBouncingMember(member, info, msg)
                 mlist.Save()
             finally:
                 mlist.Unlock()
