@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -64,6 +64,7 @@ def main():
         return
 
     path = os.environ.get('PATH_INFO')
+    # BAW: This needs to be converted to the Site module abstraction
     true_filename = os.path.join(
         mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
         true_path(path))

@@ -276,6 +276,7 @@ def checkdata():
                   'next-digest', 'next-digest-topics', 'request.db')
     if STATE.VERBOSE:
         print _('checking permissions on list data')
+    # BAW: This needs to be converted to the Site module abstraction
     for dir in os.listdir(mm_cfg.LIST_DATA_DIR):
         for file in checkfiles:
             path = os.path.join(mm_cfg.LIST_DATA_DIR, dir, file)
