@@ -76,7 +76,7 @@ UPGRADING FROM 1.x to 2.x
     make sure your Mailman queue is cleared /before/ upgrading.
 
     Mailman version 1.x had a cron script called run_queue which was
-    part of it's bulk mailer.  With Mailman 2.x there is no default
+    part of its bulk mailer.  With Mailman 2.x there is no default
     bulk mailer (it lets the MTA handle this), and it is currently
     unknown what the effects of upgrading are on the run_queue script,
     but I'll bet it's not good. :)
