@@ -138,8 +138,8 @@ class Privacy(GUIBase):
              admin password authentication.''')),
 
             ('obscure_addresses', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _("""Show member addrs so they're not directly recognizable as
-             email addrs?"""),
+             _("""Show member addresses so they're not directly recognizable
+             as email addresses?"""),
              _("""Setting this option causes member email addresses to be
              transformed when they are presented on list web pages (both in
              text and as links), so they're not trivially recognizable as
