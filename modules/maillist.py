@@ -6,6 +6,7 @@
 
 
 import sys, os, marshal, string, posixfile, time
+import re
 import mm_cfg, mm_utils, mm_err
 
 from mm_admin import ListAdmin
@@ -17,6 +18,8 @@ from mm_digest import Digester
 from mm_security import SecurityManager
 from mm_bouncer import Bouncer
 
+# Expression for generally matching the "Re: " prefix in message subject lines:
+SUBJ_REGARDS_PREFIX = "[rR][eE][: ]*[ ]*"
 
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
@@ -71,7 +74,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.Save()
 
     def FindUser(self, email):
-	matches = mm_utils.FindMatchingAddresses(email, self.members + self.digest_members)
+	matches = mm_utils.FindMatchingAddresses(email,
+						 (self.members
+						  + self.digest_members))
 	if not matches or not len(matches):
 	    return None
 	return matches[0]
@@ -87,43 +92,40 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.members = [] # self.digest_members is inited in mm_digest
 	self.data_version = mm_cfg.VERSION
 	self.last_post_time = 0
-	self.post_id = 1.  # Make it a float so it doesn't ever have a chance at overflow
+	
+	self.post_id = 1.  # A float so it never has a chance to overflow.
 	self.user_options = {}
 
 	# This stuff is configurable
-	self.filter_prog = ''
+	self.filter_prog = mm_cfg.DEFAULT_FILTER_PROG
 	self.dont_respond_to_post_requests = 0
-	self.num_spawns = 5
-	self.subject_prefix = ''
-	self.advertised = 1
-	self.max_num_recipients = 5
-	self.max_message_size = 40
+	self.num_spawns = mm_cfg.DEFAULT_NUM_SPAWNS
+	self.advertised = mm_cfg.DEFAULT_LIST_ADVERTISED
+	self.max_num_recipients = mm_cfg.DEFAULT_MAX_NUM_RECIPIENTS
+	self.max_message_size = mm_cfg.DEFAULT_MAX_MESSAGE_SIZE
 	self.web_page_url = mm_cfg.DEFAULT_URL   
 	self.owner = [admin]
-	self.reply_goes_to_list = 0
+	self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
 	self.posters = []
 	self.bad_posters = []
-	self.moderated = 0
-	self.require_explicit_destination = 1
+	self.moderated = mm_cfg.DEFAULT_MODERATED
+	self.require_explicit_destination = \
+		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
 				   self._internal_name[1:])
 	self.description = ''
 	self.info = ''
 	self.welcome_msg = None
 	self.goodbye_msg = None
-	self.auto_subscribe = 1
-	self.closed = 0
-	self.member_posting_only = 0  # Make it 1 when it works
-	# Make this 1 to mean email confirmation,
-	# make it 2 to mean admin confirmation
-	self.web_subscribe_requires_confirmation = 2
+	self.auto_subscribe = mm_cfg.DEFAULT_AUTO_SUBSCRIBE
+	self.closed = mm_cfg.DEFAULT_CLOSED
+	self.member_posting_only = mm_cfg.DEFAULT_MEMBER_POSTING_ONLY
+	self.web_subscribe_requires_confirmation = \
+		mm_cfg.DEFAULT_WEB_SUBSCRIBE_REQUIRES_CONFIRMATION
 	self.host_name = mm_cfg.DEFAULT_HOST_NAME
 
 	# Analogs to these are initted in Digester.InitVars
-	# Can we get this mailing list in non-digest format?
-	self.nondigestable = 1
-	self.msg_header = None
-	self.msg_footer = None
+	self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
 
 	Digester.InitVars(self) # has configurable stuff
 	SecurityManager.InitVars(self, crypted_password)
@@ -131,6 +133,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	Archiver.InitVars(self) # has configurable stuff
 	ListAdmin.InitVars(self)
 	Bouncer.InitVars(self)
+
+	# These need to come near the bottom because they're dependent on
+	# other settings.
+	self.subject_prefix = mm_cfg.DEFAULT_SUBJECT_PREFIX % self.__dict__
+	self.msg_header = mm_cfg.DEFAULT_MSG_HEADER % self.__dict__
+	self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER % self.__dict__
 
     def GetConfigInfo(self):
 	config_info = {}
@@ -151,6 +159,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('info', mm_cfg.Text, (7, 65), 0, 
 	     'An informational paragraph about the list'),
 
+	    ('subject_prefix', mm_cfg.String, 10, 0,
+	     'Subject line prefix - to distinguish list messages in '
+	     'mailbox summaries.'),
+
+	    ('msg_header', mm_cfg.Text, (4, 65), 0,
+	     'Header added to mail sent to regular list members'),
+	    
+	    ('msg_footer', mm_cfg.Text, (4, 65), 0,
+	     'Footer added to mail sent to regular list members'),
+
 	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Advertise this mailing list when people ask what lists are on '
 	     'this machine?'),
@@ -160,8 +178,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    ('goodbye_msg', mm_cfg.Text, (4, 65), 0,
 	     'Text sent to people leaving the list.'
-	     'If you don\'t provide text, no special message '
-	     'will be sent upon unsubscribe.'),
+	     'If empty, no unsubscribe message will be sent.'),
 
 	    ('reply_goes_to_list', mm_cfg.Radio, ('Sender', 'List'), 0,
 	     'Replies to a post go to the sender or the list?'),
@@ -183,7 +200,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     ' (anti-spam)'),
 
 	    ('closed', mm_cfg.Radio, ('Anyone', 'List members', 'No one'), 0,
-	     'Who can see the subscription list'),
+	     'Who can view subscription list'),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Only list members can send mail to the list without approval'),
@@ -193,7 +210,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    # If auto_subscribe is off, this is ignored, essentially.
 	    ('web_subscribe_requires_confirmation', mm_cfg.Radio,
-	     ('None', 'Requestor sends email', 'Admin approves'), 0,
+	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
 	     'Extra confirmation for off-the-web subscribes'),
 
 	    ('dont_respond_to_post_requests', mm_cfg.Radio,
@@ -227,16 +244,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('nondigestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
 	     'Can subscribers choose to receive individual mail?'),
 
-	    ('msg_header', mm_cfg.Text, (4, 65), 0,
-	     'Header added to mail sent to regular list members'),
-	    
-	    ('msg_footer', mm_cfg.Text, (4, 65), 0,
-	     'Footer added to mail sent to regular list members'),
-
-	    ('subject_prefix', mm_cfg.String, 10, 0,
-	     'Prefix to add to subject lines.  This is intended to make it '
-	     'obvious to the mail reader which mail comes from the list.'),
-
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
@@ -259,7 +266,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def CreateFiles(self):
 	# Touch these files so they have the right dir perms no matter what.
 	# A "just-in-case" thing.  This shouldn't have to be here.
-	open(os.path.join(self._full_path, "archived.mail"), "a+").close()
+	import mm_archive
+	open(os.path.join(self._full_path,
+			  mm_archive.ARCHIVE_PENDING), "a+").close()
+	open(os.path.join(self._full_path,
+			  mm_archive.ARCHIVE_RETAIN), "a+").close()
 	open(os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % 
 			       self._internal_name), 'a+').close()
 	open(os.path.join(self._full_path, "next-digest"), "a+").close()
@@ -393,7 +404,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# we can skip a large number of checks.
 	if not approved:
 	    if len(self.bad_posters):
-		addrs = mm_utils.FindMatchingAddresses(sender, self.bad_posters)
+		addrs = mm_utils.FindMatchingAddresses(sender,
+						       self.bad_posters)
 		if len(addrs):
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
 				'Post from an untrusted email address requires '
@@ -446,7 +458,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    prefix = prefix + ' '
 	if not subj:
 	    msg.SetHeader('Subject', '%s(no subject)' % prefix)
-	else:
+	elif not re.match("(re:? *)?" + re.escape(self.subject_prefix),
+			  subj, re.I):
 	    msg.SetHeader('Subject', '%s%s' % (prefix, subj))
 
 	dont_send_to_sender = 0
