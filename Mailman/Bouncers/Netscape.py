@@ -40,7 +40,7 @@ acre = re.compile(
 
 def flatten(msg, leaves):
     # give us all the leaf (non-multipart) subparts
-    if msg.ismultipart():
+    if msg.is_multipart():
         for part in msg.get_payload():
             flatten(part, leaves)
     else:
@@ -53,7 +53,7 @@ def process(msg):
     #     multipart/report; report-type=delivery-status
     # and some show
     #     multipart/mixed;
-    if not msg.ismultipart():
+    if not msg.is_multipart():
         return None
     # We're looking for a text/plain subpart occuring before a
     # message/delivery-status subpart.
@@ -61,8 +61,8 @@ def process(msg):
     leaves = []
     flatten(msg, leaves)
     for i, subpart in zip(range(len(leaves)-1), leaves):
-        if subpart.gettype() == 'text/plain' and \
-               leaves[i+1].getmaintype() == 'message':
+        if subpart.get_type() == 'text/plain' and \
+               leaves[i+1].get_main_type() == 'message':
             plainmsg = subpart
             break
     if not plainmsg:

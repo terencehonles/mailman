@@ -26,4 +26,5 @@ from email.Utils import getaddresses
 
 
 def process(msg):
-    return [a for n, a in getaddresses(msg.getall('x-failed-recipients'))]
+    all = msg.get_all('x-failed-recipients', [])
+    return [a for n, a in getaddresses(all)]

@@ -25,16 +25,12 @@ acre = re.compile(r'Invalid receiver address: (?P<addr>.*)')
 
 
 def process(msg):
-    mi = email.Iterators.body_line_iterator(msg)
     # simple state machine
     #    0 = nothing seen yet
     #    1 = intro line seen
     state = 0
     addrs = []
-    while 1:
-        line = mi.readline()
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         if state == 0:
             mo = dcre.search(line)
             if mo:

@@ -27,18 +27,14 @@ acre = re.compile(r'<(?P<addr>[^>]*)>')
 
 
 def process(msg):
-    if msg.gettype() <> 'multipart/mixed':
+    if msg.get_type() <> 'multipart/mixed':
         return None
-    # This format thinks it's a MIME, but it really isn't
-    mi = email.Iterators.body_line_iterator(msg)
     # simple state machine
     #     0 == nothing seen
     #     1 == tag line seen
     state = 0
-    while 1:
-        line = mi.readline()
-        if not line:
-            return None
+    # This format thinks it's a MIME, but it really isn't
+    for line in email.Iterators.body_line_iterator(msg):
         line = line.strip()
         if state == 0 and tcre.match(line):
             state = 1

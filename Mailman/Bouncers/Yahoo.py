@@ -30,16 +30,12 @@ def process(msg):
     # an x-uidl: header, the value of which seems unimportant.
     if msg.get('from', '').lower() <> 'mailer-daemon@yahoo.com':
         return None
-    mi = email.Iterators.body_line_iterator(msg)
     addrs = []
     # simple state machine
     #     0 == nothing seen
     #     1 == tag line seen
     state = 0
-    while 1:
-        line = mi.readline()
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         line = line.strip()
         if state == 0 and tcre.match(line):
             state = 1
