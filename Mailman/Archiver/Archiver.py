@@ -35,7 +35,7 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-from Mailman.Utils import reraise, mkdir
+from Mailman.Utils import reraise, mkdir, SafeDict
 
 #
 # package/project modules
@@ -182,6 +182,13 @@ class Archiver:
             # Resurrect original date setting.
             post.SetHeader('Date', olddate)
 
+    def ExternalArchive(self, ar, txt):
+        d = SafeDict({'listname': self.real_name})
+        cmd = ar % d
+        extarch = os.popen(cmd, 'w')
+        extarch.write(txt)
+        extarch.close()
+
     #
     # archiving in real time  this is called from list.post(msg)
     #
@@ -216,12 +223,20 @@ class Archiver:
                     if line and line[:5] == 'From ':
                         line = '>' + line
                     txt = txt + "%s\n" % line
-                f = StringIO(txt)
-                import HyperArch
-                h = HyperArch.HyperArchive(self)
-                h.processUnixMailbox(f, HyperArch.Article)
-                h.close()
-                f.close()
+                # should we use the internal or external archiver?
+                private_p = self.archive_private
+                if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
+		    self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
+                elif mm_cfg.PRIVATE_EXTERNAL_ARCHIVER and private_p:
+                    self.ExternalArchive(mm_cfg.PRIVATE_EXTERNAL_ARCHIVER, txt)
+                else:
+                    # use the internal archiver
+                    f = StringIO(txt)
+                    import HyperArch
+                    h = HyperArch.HyperArchive(self)
+                    h.processUnixMailbox(f, HyperArch.Article)
+                    h.close()
+                    f.close()
             except:
                 traceback.print_exc(file=sys.stderr)
         finally:
