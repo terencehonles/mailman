@@ -72,7 +72,7 @@ def ScanMessages(mlist, msg, testing=0):
                 # we found a bounce or a list of bounce addrs
                 if not testing:
                     try:
-                        mlist.RegisterBounce(addr, msg)
+                        mlist.registerBounce(addr, msg)
                     except Exception, e:
                         syslog('error', 'Bouncer exception: %s', e)
                         s = StringIO()
