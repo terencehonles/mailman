@@ -545,7 +545,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.Load(check_version=0)
             # We must hold the list lock in order to update the schema
             waslocked = self.Locked()
-            self.Lock()
+            if not waslocked:
+                self.Lock()
             try:
                 from versions import Update
                 Update(self, stored_state)
