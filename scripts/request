@@ -32,6 +32,7 @@ from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Message
+from Mailman import Errors
 from Mailman.pythonlib.StringIO import StringIO
 from Mailman.Logging.Utils import LogStdErr
 
@@ -39,18 +40,35 @@ LogStdErr("error", "mailcmd")
 
 
 
-def main():
-    # allow misconfigurations to be logged in logs/error
-    mlist = MailList.MailList(sys.argv[1])
+def main(mlist):
+    try:
+        listname = sys.argv[1]
+    except IndexError:
+        sys.stderr.write('Mailman error: mailcmd got no listname.\n')
+        sys.exit(1)
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMListError, e:
+        sys.stderr.write('Mailman error: mailcmd got bad listname: %s\n%s' %
+                         (listname, e))
+        sys.exit(1)
+    # Try to obtain the mailing list lock.  If that fails, enqueue the message
+    # for delivery by the qrunner cron job.
+    try:
+        mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+    except LockFile.TimeOutError:
+        msg.Enqueue(mlist)
+        return
     try:
         s = StringIO(sys.stdin.read())
         msg = Message.Message(s)
-        msg.torequest = 1
+        # Moved the setting of 'torequest' into MailCommandHandler
         mlist.ParseMailCommands(msg)
     finally:
         mlist.Save()
         mlist.Unlock()
 
 
+
 if __name__ == '__main__':
     main()
