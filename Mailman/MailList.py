@@ -355,6 +355,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.subject_prefix = mm_cfg.DEFAULT_SUBJECT_PREFIX % self.__dict__
         self.msg_header = mm_cfg.DEFAULT_MSG_HEADER
         self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER
+        # Set this to Never if the list's preferred language uses us-ascii,
+        # otherwise set it to As Needed
+        if Utils.GetCharSet(self.preferred_language) == 'us-ascii':
+            self.encode_ascii_prefixes = 0
+        else:
+            self.encode_ascii_prefixes = 2
 
 
     #
