@@ -53,6 +53,8 @@ MAILMAN_UID = pwd.getpwnam(MAILMAN_USER)[2]
 
 PROGRAM = sys.argv[0]
 
+# Gotta check the archives/private/*/database/* files
+
 
 
 class State:
@@ -65,6 +67,7 @@ STATE = State()
 DIRPERMS = S_ISGID | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
 QFILEPERMS = S_ISGID | S_IRWXU | S_IRWXG
 PYFILEPERMS = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+ARTICLEFILEPERMS = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
 
 
 
@@ -128,6 +131,17 @@ def checkwalk(arg, dirname, names):
                 if STATE.FIX:
                     print _('(fixing)')
                     os.chmod(path, mode | PYFILEPERMS)
+                else:
+                    print
+        elif path.endswith('-article'):
+            # Article files must be group writeable
+            octperms = oct(ARTICLEFILEPERMS)
+            if mode & ARTICLEFILEPERMS <> ARTICLEFILEPERMS:
+                print _('article db files must be %(octperms)s: %(path)s'),
+                arg.ERRORS += 1
+                if STATE.FIX:
+                    print _('(fixing)')
+                    os.chmod(path, mode | ARTICLEFILEPERMS)
                 else:
                     print
 
