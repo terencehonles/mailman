@@ -64,9 +64,8 @@ class ListAdmin:
 	    sender = args[0][0]
 	    reason = args[1]
 	    subject = args[2]
-	    self.LogMsg("vette",
-			("%s: %s post hold, %s"
-			 % (self.real_name, sender, `reason`)))
+	    self.LogMsg("vette", ("%s: %s post hold\n\t%s"
+				  % (self.real_name, sender, `reason`)))
 	    if self.admin_immed_notify:
 		subj = '%s post approval required for %s' % (self.real_name,
 							     sender)
