@@ -6,7 +6,9 @@ class Digester:
 	# Configurable
 	self.digestable = mm_cfg.DEFAULT_DIGESTABLE
 	self.digest_is_default = mm_cfg.DEFAULT_DIGEST_IS_DEFAULT
-	self.digest_size_threshhold = mm_cfg.DEFAULT_DIGEST_SIZE_THRESHOLD
+	self.mime_is_default_digest = mm_cfg.DEFAULT_MIME_IS_DEFAULT_DIGEST
+	self.digest_size_threshhold = mm_cfg.DEFAULT_DIGEST_SIZE_THRESHHOLD
+	self.digest_send_periodic = mm_cfg.DEFAULT_DIGEST_SEND_PERIODIC
 	self.next_post_number = 1
 	self.digest_header = mm_cfg.DEFAULT_DIGEST_HEADER
 	self.digest_footer = mm_cfg.DEFAULT_DIGEST_FOOTER
@@ -22,8 +24,20 @@ class Digester:
 	     'Can list members choose to receive list traffic '
 	     'bunched in digests?'),
 
+	    ('digest_is_default', mm_cfg.Radio, 
+	     ('Regular', 'Digest'), 0,
+	     'Which delivery mode is the default for new users?'),
+
+	    ('mime_is_default_digest', mm_cfg.Radio, 
+	     ('Mime', 'Plain'), 0,
+	     'When receiving digests, which format is default?'),
+
 	    ('digest_size_threshhold', mm_cfg.Number, 3, 0,
 	     'How big in Kb should a digest be before it gets sent out?'),
+
+	    ('digest_send_periodic', mm_cfg.Number, 3, 0,
+	     'Should a digest be dispatched daily when the size threshold '
+	     "isn't reached?"),
 
 	    ('digest_header', mm_cfg.Text, (4, 65), 0,
 	     'Header added to every digest'),
@@ -32,10 +46,6 @@ class Digester:
 	    ('digest_footer', mm_cfg.Text, (4, 65), 0,
 	     'Footer added to every digest'),
 	    # See msg_header option note.
-
-	    ('digest_is_default', mm_cfg.Radio, 
-	     ('Regular mail', 'Digests'), 0,
-	     'Which mode is the default?')
 	    ]
 
 
@@ -78,19 +88,34 @@ class Digester:
 	body = self.QuoteMime(post.body)
 	topics_file.write("  %d. %s (%s)\n" % (self.next_post_number,
 					       subject, sender))
-	digest_file.write("--%s\n\nFrom: %s\nDate: %s\nSubject: %s\n\n" % 
-			 (self._mime_separator, fromline, date, subject))
-	digest_file.write("** Message %d: **\n\n%s\n" % 
-			  (self.next_post_number, body))
-	digest_file.write("** End of message %d from %s **\n" % 
-			  (self.next_post_number, fromline))
+	digest_file.write("--%s\n\nMessage: %d"
+			  "\nFrom: %s\nDate: %s\nSubject: %s\n\n%s" % 
+			 (self._mime_separator, self.next_post_number,
+			  fromline, date, subject,
+			  body))
 	self.next_post_number = self.next_post_number + 1
 	topics_file.close()
 	digest_file.close()    
-	# Stat the digest file for length, and call SendDigest if it's too big
-	size = os.stat(os.path.join(self._full_path, "next-digest"))[6]
-	if (size/1024.) >= self.digest_size_threshhold:
-	    self.SendDigest()
+	self.SendDigestOnSize(self.digest_size_threshhold)
+
+    def SendDigestIfAny(self):
+	"""Send the digest if there are any messages pending."""
+	self.SendDigestOnSize(0)
+
+    def SendDigestOnSize(self, threshhold):
+	""""Call SendDigest if accumulated digest exceeds threshhold.
+
+	(There must be some content, even if threshhold is 0.)"""
+	try:
+	    size = os.stat(os.path.join(self._full_path, "next-digest"))[6]
+	    if size == 0:
+		return
+	    elif (size/1024.) >= threshhold:
+		self.SendDigest()
+	except os.error, err:
+	    if err[0] == 2:
+		# No such file or directory
+		pass
 
 # If the mime separator appears in the text anywhere, throw a space on
 # both sides of it, so it doesn't get interpreted as a real mime separator.
@@ -104,11 +129,11 @@ class Digester:
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
 
-	def LikesMime(x, s=self, v=mm_cfg.EnableMime):
-	    return s.GetUserOption(x, v)
-
-	def HatesMime(x, s=self, v=mm_cfg.EnableMime):
+	def LikesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return not s.GetUserOption(x, v)
+
+	def HatesMime(x, s=self, v=mm_cfg.DisableMime):
+	    return s.GetUserOption(x, v)
 
 	recipients = filter(DeliveryEnabled, self.digest_members)
 	mime_recipients = filter(LikesMime, recipients)
@@ -172,11 +197,11 @@ Date: %s
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
 
-	def LikesMime(x, s=self, v=mm_cfg.EnableMime):
-	    return s.GetUserOption(x, v)
-
-	def HatesMime(x, s=self, v=mm_cfg.EnableMime):
+	def LikesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return not s.GetUserOption(x, v)
+
+	def HatesMime(x, s=self, v=mm_cfg.DisableMime):
+	    return s.GetUserOption(x, v)
 
 	recipients = filter(DeliveryEnabled, self.digest_members)
 	mime_recipients = filter(LikesMime, recipients)
