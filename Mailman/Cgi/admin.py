@@ -422,7 +422,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         else:
             categorylinks.AddItem(Link(url, label))
         counter += 1
-        if counter > half:
+        if counter >= half:
             categorylinks_2 = categorylinks = UnorderedList()
             counter = -len(categorykeys)
     # Add all the links to the links table...
@@ -442,17 +442,13 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         form = Form('%s/%s' % (adminurl, category_suffix), encoding=encoding)
     else:
         form = Form(adminurl)
-    # The general category supports changing the password.
-    if category == 'general':
-        andpassmsg = _('  (You can change your password there, too.)')
-    else:
-        andpassmsg = ''
     form.AddItem(
         _('''Make your changes in the following section, then submit them
         using the <em>Submit Your Changes</em> button below.''')
-        + andpassmsg
         + '<p>')
 
+    # The members and passwords categories are special in that they aren't
+    # defined in terms of gui elements.  Create those pages here.
     if category == 'members':
         # Figure out which subcategory we should display
         subcat = Utils.GetPathPieces()[-1]
@@ -461,7 +457,6 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         # Add member category specific tables
         form.AddItem(membership_options(mlist, subcat, cgidata, doc, form))
         form.AddItem(Center(submit_button()))
-        form.AddItem('<hr>')
         # In "list" subcategory, we can also search for members
         if subcat == 'list':
             form.AddItem(_('''Find members by
@@ -471,14 +466,14 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
                                  value=cgidata.getvalue('findmember', ''),
                                  size='50%'))
             form.AddItem(SubmitButton('findmember_btn', _('Search...')))
-            form.AddItem('<hr>')
+    elif category == 'passwords':
+        form.AddItem(Center(password_inputs()))
+        form.AddItem(Center(submit_button()))
     else:
         form.AddItem(show_variables(mlist, category, cgidata, doc))
-        if category == 'general':
-            form.AddItem(Center(password_inputs()))
         form.AddItem(Center(submit_button()))
-        form.AddItem('<hr>')
-
+    # Add the separator
+    form.AddItem('<hr>')
     # And add the form
     doc.AddItem(form)
     doc.AddItem(linktable)
