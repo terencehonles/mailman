@@ -25,6 +25,14 @@ A. What's likely happening is that your MTA is doing DNS resolution on
    parameters and defaults that control this.  First check the README
    file for your MTA and then consult your MTA's own documentation.
 
+Q. My list members are complaining about Mailman's List-* headers!
+   What can I do about this?
+
+A. These headers are added by Mailman for the long-term benefit of
+   end-users.  Mailman is compliant with RFC 2369, which is where
+   these headers are defined.  See the file README.USERAGENT for hints
+   on what to tell your end users.
+
 Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
