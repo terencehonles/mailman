@@ -19,10 +19,6 @@ Email Handling
     - For low-traffic sites, a queued message could trigger a qrunner
       process.  It would work until all mail was delivered, then sleep
       and exit if no new work arrived.
-    - We could get rid of the wrappers by doing a file delivery at the
-      aliases, then having qrunner use UnixMailbox to deliver each
-      message.  There would have to be some locking between the MTA
-      and Mailman.
 
 Documentation
     - A detailed feature list
@@ -69,6 +65,11 @@ List Administration
       some period of time) and discard it.  The admin should be able
       to see all these super-quarantined messages with the flip of a
       button.
+    - Add a moderation option to pass through any message which is a
+      reply to a message previously distributed through the list, even
+      if it comes from a non-member.  Treat that non-member as a
+      member for the duration of the thread.  Use In-Reply-To,
+      References and Message-ID to match these up.
 
 List Membership
     - Have one account per user per site, with multiple email
