@@ -26,11 +26,21 @@ usually <code>/home/mailman</code></em>.
     members, select whether various notification emails are sent, and
     choose which list to add the members to.
 
+<dt><b>addlang</b>
+<dd>Use this to add language support to a specific list.  The site
+    itself must have the language pack to add already installed.  Note
+    that removing language support from a list requires you to
+    manually <tt>rm</tt> the lists/<em>yourlist</em>/<em>lang</em>
+    subdirectory.
+
 <dt><b>arch</b>
 <dd>Use this to rebuild a list's archive.  This script can't be used
     to modify a list's raw mbox file, but once you've edited the mbox
     file some other way, you can use this script to regenerate the
     HTML version of the on-line archive.
+
+<dt><b>change_pw</b>
+<dd>Use this to change the password for a specific mailing list.
 
 <dt><b>check_db</b>
 <dd>Use this script to check the integrity of a list's
@@ -80,12 +90,20 @@ web_page_url = 'http://www.mynewsite.com/mailman-relocated/'
     database file.  These files usually contain Python marshaled
     dictionaries, and can be found in the <code>qfiles</code>
     directory, the <code>lists/<em>listname</em></code> directory,
-    etc.
+    etc.  This script can also be used to print out the contents of a
+    pickled message file, which are stored in <code>.pck</code> files.
 
 <dt><b>find_member</b>
 <dd>Use this script to search all the lists, or some subset of lists,
     for an address matching a regular expression.  command line
     options let you also search the list managers as well.
+
+<dt><b>genaliases</b>
+<dd>Use this script to regenerate the plain text and <em>db</em> alias
+    files for Postfix (if you're using Postfix as you're MTA).
+
+<dt><b>list_admins</b>
+<dd>List all the owners of a mailing list.
 
 <dt><b>list_lists</b>
 <dd>List all, or some subset of, the mailing lists in the system.
@@ -94,6 +112,10 @@ web_page_url = 'http://www.mynewsite.com/mailman-relocated/'
 <dd>List the members of a mailing list.  Command line options let you
     print just the regular or just the digest members, print the
     case-preserved addresses of the members, etc.
+
+<dt><b>mailmanctl</b>
+<dd>The main qrunner control script.  Use this to start, stop, and
+    restart the qrunner.
 
 <dt><b>mmsitepass</b>
 <dd>Use this script to set the site password, which can be used any
@@ -106,6 +128,9 @@ web_page_url = 'http://www.mynewsite.com/mailman-relocated/'
 
 <dt><b>newlist</b>
 <dd>Use this script to create new mailing lists.
+
+<dt><b>qrunner</b>
+<dd>Use this to run a single qrunner once (for debugging).
 
 <dt><b>remove_members</b>
 <dd>Use this list to remove members from a mailing list.
@@ -208,10 +233,6 @@ cron scripts do:
 
 <dt><b>nightly_gzip</b>
 <dd>Regenerates the Pipermail <code>gzip</code>'d flat archive files.
-
-<dt><b>qrunner</b>
-<dd>This is the primary cron script for processing messages in
-    Mailman's queue directory <code>qfiles</code>.
 
 <dt><b>senddigests</b>
 <dd>Sends all accumulated digests.

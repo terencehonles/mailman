@@ -46,7 +46,7 @@ Title: Mailman Frequently Asked Questions
    you can use add-on tools such as demime or stripmime.  More
    information on these tools can be found at:
 <p>    (Stripmime) <a href="http://www.phred.org/~alex/stripmime.html.">http://www.phred.org/~alex/stripmime.html.</a>
-   (Demime)    <a href="http://scifi.squawk.com/demime.html.">http://scifi.squawk.com/demime.html.</a>
+<p>    (Demime)    <a href="http://scifi.squawk.com/demime.html.">http://scifi.squawk.com/demime.html.</a>
 <p> <b> Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
@@ -61,8 +61,8 @@ Title: Mailman Frequently Asked Questions
    for details.
 <p>    These errors are logged to syslog and they do not show up in the
    Mailman log files.  Problems with the CGI wrapper do get reported
-   in the Web browser though, and include the expected GID, so that
-   should help a lot.
+   in the web browser though (unless STEALTH_MODE is enabled), and
+   include the expected GID, so that should help a lot.
 <p>    You may want to have syslog running and configured to log the
    mail.error log class somewhere; on Solaris systems, the line
 <p>        mail.debug                /var/log/syslog
@@ -73,6 +73,14 @@ Title: Mailman Frequently Asked Questions
    visit the mailman/listinfo web page, and it's due to a UID or GID
    mismatch, then you should get an entry at the end of
    /var/log/syslog identifying the expected and received values.
+<p>    If you are not getting any log messages in syslog, or in Mailman's
+   own log files, but messages are still not being delivered, then it
+   is likely that qrunner is not running (qrunner is the process that
+   handles all mail in the system).  In Mailman 2.0, qrunner was
+   invoked from cron so make sure your crontab entries for the
+   `mailman' user have been installed.  In Mailman 2.1, qrunner is
+   started with the bin/mailmanctl script, which can be invoked
+   manually, or merged with your OS's init scripts.
 <p> <b> Q. Why do my web pages hang?
 
 </b><br> A. CERN Web servers might leave Python processes running, and in some
@@ -91,14 +99,17 @@ Title: Mailman Frequently Asked Questions
    ~mailman/logs/error, and some of the modules write caught errors
    there, as well, so you should check there at least occasionally to
    look for bugs in the code and problems in your setup.
-<p>    One thing that is *not* caught by the standard error hook is syntax
-   errors, but any of these should have been caught in the
-   installation phase, which byte-compiles all .py files in the
-   distribution.  There may be syntax errors lurking if you hacked the
-   code, or in the scripts that are not modules.
+<p>    One thing that is reported in logs/error is syntax errors, but any
+   of these should have been caught in the installation phase, which
+   byte-compiles all .py files in the distribution.  There may be
+   syntax errors lurking if you hacked the code, or in the scripts
+   that are not modules.
 <p>    You can always use the Python module `compile' or `compileall' to
    force byte compilation of a file, or just fire up the Python
    interpreter and try importing the module.
+<p>    You may want to periodically check the other log files in the logs/
+   directory, perhaps occasionally rotating them with something like
+   the Linux logrotate script.
 <p> <b> Q. Why doesn't the archive link work?
 
 </b><br> A. Have any messages been posted to the list?  This is a known buglet;

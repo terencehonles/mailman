@@ -3,9 +3,9 @@ Links: links.h install-links.h
 
 <h3>Check your installation</h3>
 
-    To check that your installation has all the correct permissions
-    and group ownerships, you should run the <code>check_perms</code>
-    script:
+    After you've run "make install", you can check that your
+    installation has all the correct permissions and group ownerships
+    by running the check_perms script:
 
 <blockquote>
 <pre>

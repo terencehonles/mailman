@@ -5,6 +5,8 @@ Other-links:
 
 <h3>Mailman Features</h3>
 
+This is just a short summary of all the features of Mailman.
+
 <ul>
 <li>Web based list administration for nearly all tasks, including list
     configuration, moderation (post approvals), management of user
@@ -16,13 +18,21 @@ Other-links:
 
 <li>A customizable <em>home page</em> for each mailing list.
 
+<li>Through-the-web list creation and removal (with automatic support
+    depending on the MTA).
+
 <li>Per-list privacy features, such as closed-subscriptions, private
     archives, private membership rosters, etc.
+
+<li>Multi-lingual support: list web pages and email notices can be in
+    any supported language, configurable per-site, per-list, and
+    per-user.
 
 <li>Configurable (per-list and per-user) delivery mode
     <ul><li>Regular (immediate) delivery
         <li>MIME digest
-        <li>Plain (RFC 934) digests
+        <li>Plain (<a href="http://www.faqs.org/rfcs/rfc1153.html">RFC
+        1153</a>) digests
     </ul>
 
 <li>Integrated bounce detection within an extensible framework.
@@ -45,8 +55,10 @@ Other-links:
   
 <li>Support for virtual domains.
 
-<li>Runs on most Un*x-like systems, compatible with most web
-    servers and browsers, and most SMTP servers.  Requires Python
-    1.5.2 or newer (works with Python 1.6 and 2.0).
+<li>Runs on GNU/Linux and most Un*x-like systems, compatible with most
+    web servers and browsers, and most SMTP servers.  Requires Python
+    2.0 or newer.
 
 <li>An extensible mail delivery pipeline.
+
+<li>High-performance mail delivery, with a scalable architecture.

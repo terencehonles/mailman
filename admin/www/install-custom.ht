@@ -12,9 +12,11 @@ Links: links.h install-links.h
       override them in <code>$prefix/Mailman/mm_cfg.py</code>, <b>NOT
       IN</b> <code>Defaults.py</code>!  See the comments in
       <code>Defaults.py</code> for details.  Once a list is created,
-      editing many of these variables will have no effect (you need to
+      editing many of these variables will have no effect At that
+      point, you'll need to
       configure your lists through the web admin interface or through
-      the command line script <code>bin/config_list</code>).
+      the command line script <code>bin/config_list</code> or
+      <code>bin/withlist</code>. 
 
       <p>Specifically check to make sure the variables
       <em>DEFAULT_HOST_NAME</em> and <em>DEFAULT_URL</em> are
@@ -40,4 +42,11 @@ $prefix/bin/mmsitepass your-site-password
         mailing list administrator passwords are required, giving the
         mailman site administrator the ability to adjust these things
         when necessary.
+
+      <p>You may also want to create a password for the site-wide
+      <em>list creator</em> role (someone other than the site
+      administrator who as privileges to create and remove lists
+      through the web).  Use the <tt>-c</tt> option to mmsitepass to
+      set this.
+
      </ul>

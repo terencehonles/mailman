@@ -3,14 +3,13 @@ Links: links.h install-links.h
 
 <h3>Running configure</h3>
 
-    <em>TAKE SPECIAL NOTE OF THE <code>--with-mail-gid</code> AND
-    <code>--with-cgi-gid</code> OPTIONS BELOW.  YOU WILL PROBABLY NEED
-    TO USE THESE!</em>
+    <strong>TAKE SPECIAL NOTE OF THE --with-mail-gid AND --with-cgi-gid
+    OPTIONS BELOW.  YOU WILL PROBABLY NEED TO USE THESE!</strong>
 
-    <p>You should <b>not be root</b> while performing the
-    steps in this section.  Do them under your own login, or whatever
-    account you typically install software as.  You do not need to do
-    these steps as user <code>mailman</code>, but you could.
+    <p>You should not be root while performing the steps in this
+    section.  Do them under your own login, or whatever account you
+    typically install software as.  You do not need to do these steps
+    as user <tt>mailman</tt>, but you could.
 
     <p>Make sure that you have write permissions to the target
     installation directory, and permission to create a setgid file in
@@ -18,111 +17,103 @@ Links: links.h install-links.h
     configured to inhibit setgid settings).
 
     <p>If you've installed other GNU software, you should be familiar
-    with the <code>configure</code> script.  Usually you can just
-    cd to the directory you unpacked Mailman into, and run
-    <code>configure</code> with no arguments:
+    with the configure script.  Usually you can just cd to the
+    directory you unpacked Mailman into, and run configure with no
+    arguments:
 
 <blockquote>
 <pre>
-% cd mailman-version
+% cd mailman-<em>version</em>
 % ./configure
 % make install
 </pre>
 </blockquote>
 
-If you need to run configure with some options, you can do it like
-this:
-
-<blockquote>
-<pre>
-% ./configure --with-mail-gid=mail --with-cgi-gid=nobody
-</pre>
-</blockquote>
-
-<h3>Configure options</h3>
-
-    The following options allow you to customize your Mailman
+    <p>The following options allow you to customize your Mailman
     installation.
 
-      <dl>
-      <dt>--prefix=<em>dir</em>
-      <dd>Standard GNU configure option which changes the base
-          directory that Mailman is installed into.  By default
-          <code>$prefix</code> is <code>/home/mailman</code>.  This
-          directory must already exist, and be set up as described in
-          section 1 above.
+    <dl>
+      <p><dt>--prefix=<em>dir</em>
+            <dd>Standard GNU configure option which changes the base
+            directory that Mailman is installed into.  By default
+            <em>$prefix</em> is <tt>/usr/local/mailman</tt>.  This
+            directory must already exist, and be set up as described
+            in section 1 above.
 
-      <dt>--exec-prefix=<em>dir</em>
-      <dd>Standard GNU configure option which lets you specify a
-          different installation directory for architecture dependent
-          binaries.
+      <p><dt>--exec-prefix=<em>dir</em>
+            <dd>Standard GNU configure option which lets you specify a
+            different installation directory for architecture
+            dependent binaries.
 
-      <dt>--with-var-prefix=<em>dir</em>
-      <dd>Store mutable data under <em>dir</em> instead of under
-          <code>$prefix</code> or <code>$exec_prefix</code>.
+      <p><dt>--with-var-prefix=<em>dir</em>
+            <dd>Store mutable data under <em>dir</em> instead of under
+            the prefix or exec_prefix.
 
-      <dt>--with-python=<em>/path/to/python</em>
-      <dd>Specify an alternative Python interpreter to use for the
-          wrapper programs.  The default is to use the interpreter
-          found first on your shell's <code>$PATH</code>.  Note that
-          when running the scripts from the command line, the first
-          Python interpreter found on <code>$PATH</code> is always
-          used.
+      <p><dt>--with-python=<em>/path/to/python</em>
+            <dd>Specify an alternative Python interpreter to use for
+            the wrapper programs.  The default is to use the
+            interpreter found first on your shell's <tt>$PATH</tt>.
+            Note that when running the scripts from the command line,
+            the first Python interpreter found on <tt>$PATH</tt> is
+            always used.
 
-      <dt>--with-username=<em>username-or-uid</em>
-      <dd>Specify a different username than <code>mailman</code> to use as a
-          default.  Use this only if the username <code>mailman</code>
-          is already in use by somebody (e.g. Mark Ailman's login
-          name).  Can take an integer user id.  Be sure your
-          <code>$prefix</code> directory is owned by this user.
+      <p><dt>--with-username=<em>username-or-uid</em>
+            <dd>Specify a different username than <tt>mailman</tt> to use
+            as a default.  Use this only if the username
+            <tt>mailman</tt> is already in use by somebody (e.g. Mark
+            Ailman's login name).  This switch can take an integer
+            user id or a user name.  Be sure your <em>$prefix</em>
+            directory is owned by this user.
 
-      <dt>--with-groupname=<em>groupname-or-gid</em>
-      <dd>Specify a different groupname than <code>mailman</code> to use as a
-          default.  Use this only if the groupname
-          <code>mailman</code> is already in use.  Can take an integer
-          group id.  Be sure your <code>$prefix</code> directory is
-          group-owned by this group.
+      <p><dt>--with-groupname=<em>groupname-or-gid</em>
+            <dd>Specify a different groupname than <tt>mailman</tt> to use
+            as a default.  Use this only if the groupname
+            <tt>mailman</tt> is already in use.  This switch can take
+            an integer group id or a group name.  Be sure your
+            <em>$prefix</em> directory is group-owned by this group.
 
-      <dt>--with-mail-gid=<em>group-or-groups</em>
-      <dd>Specify an alternative group for running scripts via the
-          mail wrapper.  <em>group-or-groups</em> can be a list of one
-          or more integer group ids or symbolic group names.  The
-          first value in the list that resolves to an existing group
-          is used.  By default, the value is the list <code>other,
-          daemon</code>.
+      <p><dt>--with-mail-gid=<em>group-or-groups</em>
+            <dd>Specify an alternative group for running scripts via the
+            mail wrapper.  <em>group-or-groups</em> can be a list of one or
+            more integer group ids or symbolic group names.  The first
+            value in the list that resolves to an existing group is
+            used.  By default, the value is the list <tt>other daemon</tt>.
 
-          <p>This is highly system dependent and you must get this
-          right, because the group id is compiled into the mail
-          wrapper program for added security.  On systems using
-          sendmail, the <code>sendmail.cf</code> configuration file
-          designates the group id of sendmail processes using the
-          <em>DefaultUser</em> option.  (If commented out, it still
-          may be indicating the default...)
+            <p>This is highly system dependent and you must get this
+            right, because the group id is compiled into the mail
+            wrapper program for added security.  On systems using
+            sendmail, the sendmail.cf configuration file designates
+            the group id of sendmail processes using the "DefaultUser"
+            option.  (If commented out, it still may be indicating the
+            default...)
 
-      <dt>--with-cgi-gid=<em>group-or-groups</em>
-      <dd>Specify an alternative group for running scripts via the
-          CGI wrapper.  <em>group-or-groups</em> can be a list of one
-          or more integer group ids or symbolic group names.  The
-          first value in the list that resolves to an existing group
-          is used.  By default, the value is the the list
-          <code>www, www-data, nobody</code>.
+            <p>Check your MTA's documentation and configuration files to
+            find the right value for this switch.
 
-          <p>The proper value for this is dependent on your web server
-          configuration.  You must get this right, because the group
-          id is compiled into the CGI wrapper program for added
-          security, and no Mailman CGI scripts will run if this is
-          incorrect.
+      <p><dt>--with-cgi-gid=<em>group-or-groups</em>
+            <dd>Specify an alternative group for running scripts via the
+            CGI wrapper.  <em>group-or-groups</em> can be a list of one or
+            more integer group ids or symbolic group names.  The first
+            value in the list that resolves to an existing group is
+            used.  By default, the value is the the list <tt>www www-data
+            nobody</tt>.
 
-          <p>If you're using Apache, check the values for the <em>Group</em>
-          option in your <code>httpd.conf</code> file.
+            <p>The proper value for this is dependent on your web server
+            configuration.  You must get this right, because the group
+            id is compiled into the CGI wrapper program for added
+            security, and no Mailman CGI scripts will run if this is
+            incorrect.
 
-      <dt>--with-cgi-ext=<em>extension</em>
-      <dd>Specify an extension for cgi-bin programs.  The CGI
-          wrappers placed in <code>$PREFIX/cgi-bin</code> will have this
-          extension (some web servers require an extension).
-          <em>extension</em> must include the dot.
+            <p>If you're using Apache, check the values for the `Group'
+            option in your httpd.conf file.
 
-      <dt>--with-gcc=no
-      <dd>Don't use gcc, even if it is found.  cc must be found on
-          your <code>$PATH</code>
+      <p><dt>--with-cgi-ext=<em>extension</em>
+            <dd>Specify an extension for cgi-bin programs.  The CGI
+            wrappers placed in <em>$PREFIX/cgi-bin</em> will have this
+            extension (some web servers require an extension).
+            <em>extension</em> must include the dot.
+
+      <p><dt>--with-gcc=no
+            <dd>Don't use gcc, even if it is found.  `cc' must be found on
+            your <em>$PATH</em>.
       </dl>

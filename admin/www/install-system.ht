@@ -11,41 +11,46 @@ Links: links.h install-links.h
 
     <ul>
 
-    <li>Add a new user called <code>mailman</code>.  Typically
-        this is added to your <code>/etc/passwd</code> file.  If
-        username <code>mailman</code> is already in use, choose
-        something else unique and see the
-        <code>--with-ownername</code> flag below.
+    <li>Add a new user called <tt>mailman</tt>.  Typically this is added to
+      your <tt>/etc/passwd</tt> file.  If username <tt>mailman</tt>'is
+      already in use, choose something else unique and see the
+      <tt>--with-ownername</tt> flag below.
 
-    <p><li>Add a new group called <code>mailman</code>.  Typically this
-        is added to your <code>/etc/group</code> file.  The Mailman
-        files will be installed under the <code>mailman</code> group,
-        with the <em>set-group-id</em> bit.  This is so both the web
-        based and mail based programs will have the proper write
-        permissions.  If groupname <code>mailman</code> is already in
-        use, choose something else unique and see the
-        <code>--with-ownergroup</code> below.
+    <p><li>Add a new group called <tt>mailman</tt>.  Typically this is added to
+      your <tt>/etc/group</tt> file.  The Mailman files will be
+      installed under the <tt>mailman</tt> group, with the
+      <em>set-group-id</em> bit.  Mailman's security is based on
+      group-ownership permissions, so it is important to get this step
+      right.  If groupname <tt>mailman</tt> is already in use, choose
+      something else unique and see the <tt>--with-ownergroup</tt> below.
 
-    <p><li>Create an installation directory (called <code>$prefix</code>
-        in the documentation that follows).  All of the Mailman files
-        will be installed under <code>$prefix</code>.  Run
-        <code>configure --help</code> for ways to split the
-        installation up based on read-only vs. read/write files.
+    <p><li>Create an installation directory (called <em>$prefix</em> in the
+      documentation that follows).  All of the Mailman files will be
+      installed under $prefix.  Run <tt>configure --help</tt> for ways
+      to split the installation up based on read-only vs. read/write
+      files.
 
-        <p>The default directory for installing is
-        <code>/home/mailman</code>, but some sites do things like
-        mount <code>/home</code> with the <em>nosuid</em> option.
-        This will break Mailman, which relies on setgid programs for
-        its security.  If this describes your environment, simply
-        install Mailman in a location that allows setgid programs.
+      <p>The default installation directory for Mailman 2.1 is
+      <tt>/usr/local/mailman</tt>.  It used to be
+      <tt>/home/mailman</tt> for all versions prior to Mailman
+      2.1alpha2.  You can override the default by using the
+      <tt>--prefix</tt> option to configure (see below).  If you're
+      upgrading from a version previous to Mailman2.1alpha2, you will
+      need to use <tt>--prefix</tt> unless you move your mailing lists.
 
-        <p>Make sure this directory is set to group <code>mailman</code>
-        (or whatever you're going to specify as
-        <code>--with-ownergroup</code>) and has the setgid bit set
-        (but see the README.BSD file in the source distribution if
-        you're on a BSD system).  You probably also want to guarantee
-        that this directory is readable and executable by everyone.
-        For example, these shell commands will accomplish this:
+      <p>Watch out if your site does something like mount
+      <tt>/usr/local</tt> with the nosuid option.  This will break
+      Mailman, which relies on set-gid programs for its security.  If
+      this describes your environment, simply install Mailman in a
+      location that allows setgid programs.
+
+      <p>Make sure the install directory is set to group
+      <tt>mailman</tt> (or whatever you're going to specify as
+      <tt>--with-ownergroup</tt>) and has the setgid bit set (but see
+      <em>README.BSD</em> if you're on a BSD system).  You probably
+      also want to guarantee that this directory is readable and
+      executable by everyone.  For example, these shell commands will
+      accomplish this:
 
 <blockquote>
 <pre>
@@ -56,4 +61,5 @@ Links: links.h install-links.h
 </blockquote>
 
       You are now ready to configure and install the Mailman software.
-      </ul>
+    </ul>
+

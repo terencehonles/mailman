@@ -11,22 +11,22 @@ Other-links:
 
 <h3>Mailman, the GNU Mailing List Manager</h3>
 
-Mailman is software to help manage electronic mail discussion lists,
-much like Majordomo or SmartList.  Mailman gives each mailing list a
-unique web page and allows users to subscribe, unsubscribe, and change
-their account options over the web.  Even the list manager can
-administer his or her list entirely via the web.  Mailman has most of
-the features that people want in a mailing list management system,
-including built-in archiving, mail-to-news gateways, spam filters,
-bounce detection, digest delivery, and so on.  See the
-<a href="features.html">features page</a> for more detail.
+Mailman is software to help manage electronic mail discussion lists.
+Mailman gives each mailing list a unique web page and allows users to
+subscribe, unsubscribe, and change their account options over the web.
+Even the list manager can administer his or her list entirely via the
+web.  Mailman has most of the features that people want in a mailing
+list management system, including built-in archiving, mail-to-news
+gateways, spam filters, bounce detection, digest delivery, and so on.
+See the <a href="features.html">features page</a> for more detail.
 
 <p>Mailman is free software.  It is distributed under the
 <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public
 License</a>.  The canonical Mailman home page is at
 <a href="http://www.gnu.org/software/mailman/">
-www.gnu.org/software/mailman</a>, with more information
-available at <a href="http://www.list.org/">www.list.org</a>.  Mailman
+www.gnu.org/software/mailman</a>, which is mirrored at
+<a href="http://www.list.org/">www.list.org</a> and
+<a href="http://sf.net/projects/mailman">SourceForge</a>.  Mailman
 is written in the <a href="http://www.python.org/">Python</a>
 programming language, with a little bit of C code for security.
 
@@ -38,16 +38,16 @@ StudlyCaps).
 <h3>Current Version</h3>
 
 <p>Version
-(<!-VERSION--->2.1a1<!-VERSION--->,
+(<!-VERSION--->2.1a2<!-VERSION--->,
 released on
-<!-DATE--->Mar  4 2001<!-DATE--->)
+<!-DATE--->11-Jul-2001<!-DATE--->)
 is the current stable GNU release.
 
 <h3>Acknowledgements</h3>
 
 <p>Mailman is brought to you by the <em>Mailman Cabal</em>, currently
 composed of the following core developers:
-<a href="http://barry.wooz.org/">Barry Warsaw</a>, Harald
+<a href="http://barry.wooz.org/">Barry Warsaw</a>, Thomas Wouters, Harald
 Meland, Ken Manheimer, Scott Cotton, and John Viega.  Mailman was
 originally written by John Viega.
 
@@ -58,7 +58,7 @@ Timothy O'Malley, Balazs Nagy, Michael Mclay, Greg Stein, Gergely
 Madarasz, Andrew Kuchling, Jeff Hahn, Paul Hebble, Christopher
 P. Lindsey, Chris Kolar, J C Lawrence, Jeremy Hylton, Nigel
 Metheringham, Dan Mick, Jim Tittsler, Ricardo Kustner, Bernhard
-Reiter, Thomas Wouters, Jeff Berliner, Ted Cabeen, Michael Yount, Ron
+Reiter, Guido van Rossum, Jeff Berliner, Ted Cabeen, Michael Yount, Ron
 Jarrell, Chris Snell, David Champion, Darrell Fuhriman, Owen Taylor,
 Fil, Noam Zeilberger, Mark MERLIN, John A. Martin, Erik Forsberg,
 Tanner Lovelace, Les Niles, Mike Noyes, Tokio Kikuchi, Vizi Szilard,

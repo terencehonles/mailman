@@ -12,11 +12,19 @@ information.
 You first need to prepare your system as outlined in the sections
 below, and then configure and install the Mailman software.
 
-<p><em>IMPORTANT: Pay special attention to the step below where
-you have to set up your crontab entries.  If you do not do this,
-Mailman will not work.</em>
-
 <p><em>UPGRADING: Upgrading is usually as easy as just installing the
 new version over the existing installation.  However, you should read
 the notes in the file UPGRADING for important information before you
 upgrade.</em>
+
+<p><ol>
+<li><a href="install-start.html">Start installing</a>
+<li><a href="install-system.html">System setup</a>
+<li><a href="install-config.html">Running configure</a>
+<li><a href="install-check.html">Check your installation</a>
+<li><a href="install-final.html">Final system setup</a>
+<li><a href="install-custom.html">Customize Mailman</a>
+<li><a href="install-test.html">Create a test list</a>
+<li><a href="install-trouble.html">Troubleshooting</a>
+<li><a href="install-faq.html">Common problems FAQ</a>
+</ol>

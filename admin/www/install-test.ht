@@ -3,21 +3,63 @@ Links: links.h install-links.h
 
 <h3>Create a test list</h3>
 
-Create a list named <em>test</em>.  To do so, run the program
-<code>$prefix/bin/newlist</code>.  You will be prompted for the name
-of the list, as well as the email address of the person running the
-list.  Put your own email address as the list administrator's address.
-       
-<p>Running newlist will generate a list of aliases that must be added
-to the system.  If you are running Sendmail, you may add the lines
-output directly to the file <code>/etc/aliases</code>.  You may need
-to run the command <code>newaliases</code> (all as <b>root</b>).  Now
-the mailing address for your list as well as its administrative
-addresses will be set up.  If you are not running Sendmail, consult
-your MTA's documentation for information on adding aliases.
+    To create and test your first list, try the following:
 
-<p>You will receive email instructions on how to visit the list you
-just created.  Using these instructions, subscribe to the mailing
-list.  Once you have subscribed (which requires a confirmation step!),
-send a message to the list, and see if you get it.  If so, then you
-have successfully installed Mailman, and set up your first list!
+    <p><li>First, initialize the site administrator's password by cd'ing to
+      the install directory (by default <tt>/usr/local/mailman</tt>)
+      and typing
+
+<blockquote>
+<pre>
+% bin/mmsitepass
+New site password: [yourpassword]
+Again to confirm password: [yourpassword]
+Password changed.
+</pre>
+</blockquote>
+
+    <p><li>Visit the url
+
+<blockquote>
+<pre>
+http://my.dom.ain/mailman/create
+</pre>
+</blockquote>
+
+      <p>Fill out the form as described in the on-screen instructions,
+      and in the <em>List creator's password</em> field, type the
+      password you entered above.  Type your own email address for the
+      <em>Initial list owner address</em>, and select <em>Yes</em> to
+      notify the list administrator.
+
+    <p><li>Hit <em>Create List</em>
+
+    <p><li>Check your email for a message from Mailman informing you that
+      your new mailing list was created.
+
+    <p><li>NOTE: If you are using an MTA other than Exim or Postfix
+      (e.g. Sendmail or Qmail), then you'll need to do the extra step
+      of installing the mailing list aliases manually.  Follow the
+      instructions in an email message that you should have received
+      (you'll need to know how to do this for your particular MTA, see
+      the README for your MTA for more information).
+
+    <p><li>Now visit the list's admin page (either by following the link on
+      the web page or entering the link from the email Mailman just
+      sent you).  Type in the list's password and click on
+      <em>Let me in...</em>
+    
+    <p><li>Click on <em>Membership Management</em> and then on
+        <em>Mass Subscription</em>.
+
+    <p><li>Enter your email address in the big text field, and click on
+      <em>Submit Your Changes</em>
+
+    <p><li>Now go to your email and send a message to yourlist@my.dom.ain.
+      Within a minute or two you should see your message reflected
+      back to you via Mailman.
+
+    <p>Congratulations!  You've just set up and tested your first Mailman
+    mailing list.  If you had any problems along the way, please see
+    the <a href="install-trouble.html">Troubleshooting</a> section.
+</ul>

@@ -15,30 +15,32 @@ Other-links:
 
 <h3>Requirements</h3>
 
-<p>Mailman currently runs only on Unix-y systems, such as GNU/Linux,
-Solaris, *BSD, etc.  It should work on MacOSX but not earlier versions
-of MacOS.  It probably does not work on Windows, although it's
-possible you could get it running on a Cygwin system (please
-<a href="mailto:mailman-developers@python.org">let the developer
+<p>Mailman currently runs only on GNU/Linux and any other Un*x-like
+operating system, such as *BSD, Solaris, etc.  It should work on
+MacOSX but not earlier versions of MacOS.  It probably does not work
+on Windows, although it's possible you could get it running on a
+Cygwin system (please <a
+href="mailto:mailman-developers@python.org">let the developer
 community know</a> if you have success with this!)
 
 <p>
 Before you can run Mailman, you need to make sure that
-<a href="http://www.python.org/">Python</a> is installed.  Mailman
-requires at least Python 1.5.2 and is known to work with Python 1.6
-and Python 2.0.  Most GNU/Linux systems come with Python pre-installed, so
-you just need to make sure you're running an up-to-date version.  You
-can do this by executing the following at your shell's command line:
+<a href="http://www.python.org/">Python</a> is installed.  Mailman 2.1
+requires at least Python 2.0 and is known to work with Python versions
+up to and including Python 2.2alpha.  Most GNU/Linux systems come with
+Python pre-installed, so you just need to make sure you're running an
+up-to-date version.  You can do this by executing the following at
+your shell's command line:
 
 <blockquote>
 <pre>
-% python
-Python 2.0 (#128, Oct 18 2000, 04:48:44) 
-[GCC egcs-2.91.66 19990314/Linux (egcs-1.1.2 release)] on linux2
-Type "copyright", "credits" or "license" for more information.
->>> ^D
+% python -V
+Python 2.1
 </pre>
 </blockquote>
+
+If your Python executable doesn't understand the <code>-V</code>
+option, it's probably too old!
 
 <p>You will also need an SMTP server (a.k.a. mail transport agent or
 <em>MTA</em>) for mail delivery and reception.
@@ -65,10 +67,13 @@ gcc 2.8.1 or later is known to work well.
 <h3>Downloading</h3>
 
 <p>Version
-(<!-VERSION--->2.1a1<!-VERSION--->,
+(<!-VERSION--->2.1a2<!-VERSION--->,
 released on
-<!-DATE--->Mar  4 2001<!-DATE--->)
-is the current GNU release.  It is available from the following mirror sites:
+<!-DATE--->11-Jul-2001<!-DATE--->)
+is an alpha release of the next version.  It is not recommended that
+this version be used in production systems yet.  It, and the current
+stable version 2.0.5, is available from
+the following mirror sites:
 
 <ul>
     <li><a href="ftp://ftp.gnu.org/gnu/mailman/">From GNU</a>

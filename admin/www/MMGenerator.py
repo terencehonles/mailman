@@ -105,8 +105,11 @@ class MMGenerator(Skeleton, Sidebar, Banner):
 
     def get_lightshade(self):
         """Return lightest of 3 color scheme shade."""
-        return '#99997c'
+        # The Mailman logo's foreground is approximately #da7074
+        #return '#99997c'
+        #return '#a39c82'
+        return '#caa08f'
 
     def get_darkshade(self):
         """Return darkest of 3 color scheme shade."""
-        return '#663300'
+        return '#545454'

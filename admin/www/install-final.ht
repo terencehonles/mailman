@@ -7,8 +7,15 @@ Links: links.h install-links.h
     everything running you need to hook Mailman up to both your web
     server and your mail system.
 
-    <ul>
-    <li>If you plan on running your MTA and web server on different
+    <ul><p><li>If there is a <tt>README.<em>yourMTA</em>></tt> file
+      that describes your mail
+      server (MTA), read it now.  Some MTAs are more compatible with
+      Mailman such that you can do automatic creation and removal of
+      mailing lists, including through-the-web operations.  Examples
+      are Exim and Postfix.  Setup instructions for specific MTAs are
+      contained in these README files.
+
+    <p><li>If you plan on running your MTA and web server on different
         machines, sharing Mailman installations via NFS, be sure that
         the clocks on those two machines are synchronized closely.
         You might take a look at the file
@@ -85,15 +92,34 @@ Alias /pipermail/ $varprefix/archives/public/
 
         <p>Now restart your web server.
 
-    <p><li><b>IMPERATIVE!  IMPORTANT!  DO THIS!  YOU'LL BE SORRY IF
-    YOU DON'T!</b>
+    <p><li>Set up the crontab entries.  Mailman runs a number of cron jobs
+      for its basic functionality.  In version of Mailman prior to
+      2.1alpha2, setting up your crontab was imperative to getting
+      Mailman to work.  With MM2.1alpha2 though, the qrunner is
+      started from the <tt>bin/mailmanctl</tt> script (see below)
+      instead of cron.  You still want to set up crontab to run the
+      ancillary scripts, but it isn't as crucial to getting Mailman
+      working as it once was.  Note that if you're upgrading from a
+      previous version of Mailman, you'll want to install the new
+      crontab, but be careful if you're running multiple Mailman
+      installations on your site!  Changing the crontab could mess
+      with other parallel Mailman installations.
 
-        <p>Set up the crontab entries.  Mailman runs a number of cron
-        jobs for its basic functionality.  You need to be user
-        <code>mailman</code> (or whatever you specified as
-        <code>--with-ownername</code>) to perform this step.  Add
-        <code>$prefix/cron/crontab.in</code> as a crontab entry by
-        executing these commands:
+      <p>If your version of crontab supports the -u option, you must be
+      root to do this next step.  Add $prefix/cron/crontab.in as a
+      crontab entry by executing these commands:
+
+<blockquote>
+<pre>
+% cd $prefix/cron
+% crontab -u mailman crontab.in
+</pre>
+</blockquote>
+
+      <p>If you used the <tt>--with-ownername</tt> option, use that
+      user name instead of mailman for the <tt>-u</tt> argument value.
+      If your crontab does not support the <tt>-u</tt> option, try these
+      commands:
 
 <blockquote>
 <pre>
@@ -103,9 +129,17 @@ Alias /pipermail/ $varprefix/archives/public/
 </pre>
 </blockquote>
 
-    <p><li>Look to see if there is special instructions about hooking your
-        MTA up to Mailman.  If so, there will be a
-        README.<em>yourMTA</em> file in the Mailman source directory.
+    <p><li>Start the Mailman qrunner daemon, by executing the following
+      from the <tt>$prefix</tt> directory:
+
+<blockquote>
+<pre>
+% bin/mailmanctl start
+</pre>
+</blockquote>
+
+      You can use the mailmanctl script as a typical Unix init
+      script.  <strong>BAW: add more here.</strong>
 
     <p><li>Add aliases for <code>mailman</code> and
         <code>mailman-owner</code> to the system's mail alias
