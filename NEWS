@@ -11,6 +11,11 @@ Here is a history of user visible changes to Mailman.
       URL is generated in the confirmation message.  Simply visiting
       this URL completes the subscription process.
 
+    - In a similar manner, removal requests (via web or email command)
+      no longer require the password.  If the correct password is
+      given, the removal is performed immediately.  If no password is
+      given, then a confirmation message is generated.
+
     - Fixes in 2.0.3 ported forward:
 
         Bug fix release.  There was a small typo in 2.0.2 in
