@@ -192,6 +192,8 @@ def CanonicalizeUserOptions(l):
     # but merge options for both cases
     options = {}
     for k, v in l.user_options.items():
+        if k is None:
+            continue
         lcuser = string.lower(k)
         flags = 0
         if options.has_key(lcuser):
