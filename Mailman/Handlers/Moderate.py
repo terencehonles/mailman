@@ -32,7 +32,7 @@ from Mailman.Logging.Syslog import syslog
 
 
 class ModeratedMemberPost(Hold.ModeratedPost):
-    reason = _('Post by a moderated member')
+    reason = _('Posts by member are currently quarantined for moderation')
 
 
 
