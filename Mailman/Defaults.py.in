@@ -107,6 +107,12 @@ PRIVATE_EXTERNAL_ARCHIVER = 0
 # night to generate the txt.gz file.  See cron/nightly_gzip for details.
 GZIP_ARCHIVE_TXT_FILES = 0
 
+# Pipermail archives contain the raw email addresses of the posting authors.
+# Some view this as a goldmine for spam harvesters.  Set this to false to
+# moderately obscure email addresses, but note that this breaks mailto: URLs
+# in the archives too.
+ARCHIVER_OBSCURES_EMAILADDRS = 0
+
 
 
 #####
