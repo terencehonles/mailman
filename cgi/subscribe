@@ -10,17 +10,18 @@ sys.path.append('/home/mailman/mailman/modules')
 import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat
 
 NEED_CONFIRM_NOTICE = """
-A subscription to the %s mailing has been submitted for you%s
+A request for your subscription to the %s mailing list
+has been received at %s%s
 
 This is a confirmation request, to prevent someone subscribing you
 against your wishes.  In order to complete this subscription you
-must send a confirming email by repling to this mail, and putting the
+must send a confirming email by repling to this mail, including just the
 line: 
 
 subscribe %s
 
-in the body.  If you do not actually wish to subscribe you need not do
-anything.
+in the body or as the subject line.  If you do not actually wish to
+subscribe you need not do anything.
 
 Questions or comments?  Send them to """ + mm_cfg.MAILMAN_OWNER
 
@@ -135,15 +136,16 @@ else:
 			     "subscribing other people.  Instructions "
 			     "are being sent to you at %s." % email)
 	if os.environ.has_key('REMOTE_HOST'):
-	    remote = " from\n%s. " % os.environ['REMOTE_HOST']
+	    remote = " from %s. " % os.environ['REMOTE_HOST']
 	elif os.environ.has_key('REMOTE_ADDR'):
-	    remote = " from\n%s." % os.environ['REMOTE_ADDR']
+	    remote = " from %s." % os.environ['REMOTE_ADDR']
 	else:
 	    remote = "."
 	list.SendTextToUser(subject = 'Subscribing to %s' % list.real_name,
 			    recipient = email,
 			    sender = list.GetRequestEmail(),
 			    text = NEED_CONFIRM_NOTICE % (list.real_name,
+							  list.host_name,
 							  remote,
 							  pw))
     except mm_err.MMBadEmailError:
