@@ -157,9 +157,9 @@ class SmtpConnection:
         bad = None
 	if c == '4':
             bad = error_temp
-	if c == '5':
+	elif c == '5':
             bad = error_perm
-	if c not in '123':
+	elif c not in '123':
             bad = error_proto
         if bad:
             if impunity:
