@@ -43,9 +43,12 @@ acre = re.compile(
 
 
 def process(msg):
-    if msg.gettype() <> 'multipart/report' or \
-       msg.getparam('report-type') <> 'delivery-status':
-        # then
+    # Sigh.  Some show NMS 3.6's show
+    #     multipart/report; report-type=delivery-status
+    # and some show
+    #     multipart/mixed;
+    # TBD: should we tighten this check?
+    if msg.getmaintype() <> 'multipart':
         return None
     boundary = msg.getparam('boundary')
     msg.fp.seek(0)
@@ -69,7 +72,7 @@ def process(msg):
             # Not properly formatted MIME
             return None
         msg = mimetools.Message(s)
-        if msg.gettype() == 'message/delivery-status':
+        if msg.getmaintype() == 'message':
             break
         elif msg.gettype() <> 'text/plain':
             # we're looking at something else entirely
