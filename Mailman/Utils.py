@@ -280,7 +280,7 @@ def List2Dict(L, foldcase=False):
         for i in L:
             d[i.lower()] = True
     else:
-        for i in list:
+        for i in L:
             d[i] = True
     return d
 
