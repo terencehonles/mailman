@@ -82,7 +82,7 @@ def main():
         msg = Message.OutgoingMessage(msgtext)
         try:
             mlist = MailList.MailList(listname)
-        except (Errors.MMUnknownListError, Errors.MMBadListError), e:
+        except Errors.MMListError, e:
             sys.stderr.write('Problem opening mailing list %s: %s' %
                              (listname, e))
             continue
