@@ -420,7 +420,10 @@ def show_helds_overview(mlist, form):
                     '&nbsp;' +
                     _("Clear this member's <em>moderate</em> flag")
                     ])
-                left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
+            else:
+                left.AddRow(
+                    [_('<em>The sender is now a member of this list</em>')])
+            left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
         elif sender not in (mlist.accept_these_nonmembers +
                             mlist.hold_these_nonmembers +
                             mlist.reject_these_nonmembers +
