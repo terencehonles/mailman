@@ -44,6 +44,8 @@ pre = re.compile(r'[/\\:]')
 # All other characters to strip out of Content-Disposition: filenames
 # (essentially anything that isn't an alphanum, dot, slash, or underscore.
 sre = re.compile(r'[^-\w.]')
+# Regexp to strip out leading dots
+dre = re.compile(r'^\.*')
 
 BR = '<br>\n'
 
@@ -265,6 +267,8 @@ def save_attachment(mlist, msg, dir, filter_html=1):
             # Sanitize the filename given in the message headers
             parts = pre.split(filename)
             filename = parts[-1]
+            # Strip off leading dots
+            filename = dre.sub('', filename)
             # Allow only alphanumerics, dash, underscore, and dot
             filename = sre.sub('', filename)
             # If the filename's extension doesn't match the type we guessed,
