@@ -325,7 +325,13 @@ class General(GUIBase):
 
             ('new_member_options', mm_cfg.Checkbox,
              (opttext, optvals, 0, OPTIONS),
-             0, _('''Default options for new members joining this list.'''),
+             # The description for new_member_options includes a kludge where
+             # we add a hidden field so that even when all the checkboxes are
+             # deselected, the form data will still have a new_member_options
+             # key (it will always be a list).  Otherwise, we'd never be able
+             # to tell if all were deselected!
+             0, _('''Default options for new members joining this list.<input
+             type="hidden" name="new_member_options" value="ignore">'''),
              
              _("""When a new member is subscribed to this list, their initial
              set of options is taken from the this variable's setting.""")),
