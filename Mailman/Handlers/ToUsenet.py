@@ -22,8 +22,10 @@ import string
 import re
 import socket
 
+from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
+
 
 
 def process(mlist, msg, msgdata):
@@ -130,7 +132,9 @@ def do_child(mlist, msg):
     conn = None
     try:
         try:
-            conn = nntplib.NNTP(mlist.nntp_host, readermode=1)
+            conn = nntplib.NNTP(mlist.nntp_host, readermode=1,
+                                user=mm_cfg.NNTP_USERNAME,
+                                password=mm_cfg.NNTP_PASSWORD)
             conn.post(fp)
         except nntplib.error_temp, e:
             syslog('error', '(ToUsenet) NNTP error for list "%s": %s' %
