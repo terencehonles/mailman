@@ -19,152 +19,170 @@
 import os
 import types
 import cgi
-from errno import ENOENT
+import errno
 
 from mimelib.Parser import Parser
+from mimelib.MsgReader import MsgReader
+import mimelib.Errors
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import Message
+from Mailman import i18n
 from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
-from Mailman.i18n import _
 
 NL = '\n'
 
+# Set up i18n.  Until we know which list is being requested, we use the
+# server's default.
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
 
 
-def handle_no_list(doc, extra=''):
-    doc.SetTitle(_('Mailman Admindb Error'))
-    doc.AddItem(Header(2, _('Mailman Admindb Error')))
-    doc.AddItem(extra)
+def main():
+    # Figure out which list is being requested
+    parts = Utils.GetPathPieces()
+    if not parts:
+        handle_no_list()
+        return
+
+    listname = parts[0].lower()
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMListError, e:
+        handle_no_list(doc, _('No such list <em>%(listname)s</em>'))
+        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        return
+
+    # Now that we know which list to use, set the system's language to it.
+    i18n.set_language(mlist.preferred_language)
+
+    # Make sure the user is authorized to see this page.
+    cgidata = cgi.FieldStorage()
+    try:
+        Auth.authenticate(mlist, cgidata)
+    except Auth.NotLoggedInError, e:
+        Auth.loginpage(mlist, 'admindb', e.message)
+        return
+
+    # Set up the results document
+    doc = Document()
+    doc.set_language(mlist.preferred_language)
+    
+    # Lock the list for the next operation.  BAW: Strictly speaking, the list
+    # should not need to be locked just to read the request database.  However
+    # the request database asserts that the list is locked in order to load
+    # it and it's not worth complicating that logic.
+    mlist.Lock()
+    try:
+        realname = mlist.real_name
+        if not cgidata.keys():
+            # If this is not a form submission (i.e. there are no keys in the
+            # form), then all we don't need to do much special.
+            doc.SetTitle(_('%(realname)s Administrative Database'))
+        else:
+            # This is a form submission
+            doc.SetTitle(_('%(realname)s Administrative Database Results'))
+            process_form(mlist, doc, cgidata)
+        # Now print the results and we're done
+        show_requests(mlist, doc)
+    finally:
+        mlist.Save()
+        mlist.Unlock()
+
+    print doc.Format(bgcolor='#ffffff')
+
+
+
+def handle_no_list(msg=''):
+    # Print something useful if no list was given.
+    doc = Document()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+    header = _('Mailman Administrative Database Error')
+    doc.SetTitle(header)
+    doc.AddItem(Header(2, header))
+    doc.AddItem(msg)
     doc.AddItem(_('You must specify a list name.  Here is the '))
+    # Server's top level URL -- it must end in a slash!
     link = mm_cfg.DEFAULT_URL
-    if link[-1] <> '/':
-        link = link + '/'
-    link = link + 'admin'
+    if not link.endswith('/'):
+        link += '/'
+    link += 'admin'
     doc.AddItem(Link(link, _('list of available mailing lists.')))
     print doc.Format(bgcolor="#ffffff")
 
 
 
-def main():
-    doc = Document()
-    # figure out which list we're going to process
-    parts = Utils.GetPathPieces()
-    if not parts:
-        handle_no_list(doc)
-        return
-    # get URL components.  the list name should be the zeroth part
-    try:
-        listname = parts[0].lower()
-    except IndexError:
-        handle_no_list(doc)
-        return
-    # now that we have the list name, create the list object
-    try:
-        mlist = MailList.MailList(listname)
-    except Errors.MMListError, e:
-        handle_no_list(doc, _('No such list <em>%(listname)s</em><p>'))
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
-        return
-
-    os.environ['LANG'] = mlist.preferred_language
-
-    #
-    # now we must authorize the user to view this page, and if they are, to
-    # handle both the printing of the current outstanding requests, and the
-    # selected actions
-    try:
-        cgidata = cgi.FieldStorage()
-        try:
-            Auth.authenticate(mlist, cgidata)
-        except Auth.NotLoggedInError, e:
-            Auth.loginpage(mlist, 'admindb', e.message)
-            return
-
-        # If this is a form submission, then we'll process the requests and
-        # print the results.  otherwise (there are no keys in the form), we'll
-        # print out the list of pending requests
-        #
-        realname = mlist.real_name
-        if len(cgidata.keys()):
-            doc.SetTitle(_("%(realname)s Admindb Results"))
-            HandleRequests(mlist, doc, cgidata)
-        else:
-            doc.SetTitle(_("%(realname)s Admindb"))
-        PrintRequests(mlist, doc)
-        text = doc.Format(bgcolor="#ffffff")
-        print text
-    finally:
-        mlist.Save()
-        mlist.Unlock()
-
-
-
-def PrintRequests(mlist, doc):
-    # The only types of requests we know about are add member and post.
-    # Anything else that might have gotten in here somehow we'll just ignore
-    # (This should never happen unless someone is hacking at the code).
-    doc.AddItem(Header(2, _('Administrative requests for mailing list:') + ' <em>' +
-                       mlist.real_name + '</em>'))
-    # short circuit for when there are no pending requests
+def show_requests(mlist, doc):
+    # Print all the requests outstanding in the database.  The only ones we
+    # know about are subscription and post requests.  Anything else that might
+    # have gotten in here somehow we'll just ignore (This should never happen
+    # unless someone is hacking at the code).
+    doc.AddItem(Header(2, _('Administrative requests for mailing list:')
+                       + ' <em>%s</em>' % mlist.real_name))
+    # Short circuit for when there are no pending requests
     if not mlist.NumRequestsPending():
         doc.AddItem(_('There are no pending requests.'))
         doc.AddItem(mlist.GetMailmanFooter())
         return
 
+    # Add the preamble template
     doc.AddItem(Utils.maketext(
-        'admindbpreamble.html', {'listname': mlist.real_name},
+        'admindbpreamble.html',
+        {'listname': mlist.real_name},
         lang=mlist.preferred_language, raw=1))
-    doc.AddItem('.<p>')
+
+    # Form submits back to this script
     form = Form(mlist.GetScriptURL('admindb'))
     doc.AddItem(form)
     form.AddItem(SubmitButton('submit', _('Submit All Data')))
-    #
     # Add the subscription request section
     subpendings = mlist.GetSubscriptionIds()
     if subpendings:
         form.AddItem('<hr>')
         form.AddItem(Center(Header(2, _('Subscription Requests'))))
-        t = Table(border=2)
-        t.AddRow([
-            Bold(_('Address')),
-            Bold(_('Your Decision')),
-            Bold(_('If you refuse this subscription, please explain (optional)'))
-            ])
+        table = Table(border=2)
+        table.AddRow([Center(Bold(_('Address'))),
+                      Center(Bold(_('Your Decision'))),
+                      Center(Bold(_('Reason for refusal')))
+                      ])
         for id in subpendings:
-            PrintAddMemberRequest(mlist, id, t)
-        form.AddItem(t)
-    # Post holds are now handled differently
+            time, addr, passwd, digest, lang = mlist.GetRecord(id)
+            table.AddRow([addr,
+                          RadioButtonArray(id, (_('Defer'),
+                                                _('Approve'),
+                                                _('Reject'),
+                                                _('Discard')),
+                                           values=(mm_cfg.DEFER,
+                                                   mm_cfg.SUBSCRIBE,
+                                                   mm_cfg.REJECT,
+                                                   mm_cfg.DISCARD),
+                                           checked=0),
+                          TextBox('comment-%d' % id, size=45)
+                          ])
+        form.AddItem(table)
+    # Post holds are handled differently
     heldmsgs = mlist.GetHeldMessageIds()
     total = len(heldmsgs)
     if total:
         count = 1
         for id in heldmsgs:
             info = mlist.GetRecord(id)
-            PrintPostRequest(mlist, id, info, total, count, form)
-            count = count + 1
+            show_post_requests(mlist, id, info, total, count, form)
+            count += 1
     form.AddItem('<hr>')
     form.AddItem(SubmitButton('submit', _('Submit All Data')))
     doc.AddItem(mlist.GetMailmanFooter())
 
 
 
-def PrintAddMemberRequest(mlist, id, table):
-    time, addr, passwd, digest, lang  = mlist.GetRecord(id)
-    table.AddRow([addr,
-                  RadioButtonArray(id, (_('Subscribe'), _('Refuse')),
-                                   values=(mm_cfg.SUBSCRIBE, mm_cfg.REJECT)),
-                  TextBox('comment-%d' % id, size=60)
-                  ])
-
-
-
-def PrintPostRequest(mlist, id, info, total, count, form):
+def show_post_requests(mlist, id, info, total, count, form):
     # For backwards compatibility with pre 2.0beta3
     if len(info) == 5:
         ptime, sender, subject, reason, filename = info
@@ -172,28 +190,58 @@ def PrintPostRequest(mlist, id, info, total, count, form):
     else:
         ptime, sender, subject, reason, filename, msgdata = info
     form.AddItem('<hr>')
+    # Header shown on each held posting (including count of total)
     msg = _('Posting Held for Approval')
     if total <> 1:
-        msg = msg + _(' (%d of %d)') % (count, total)
+        msg += _(' (%d of %d)') % (count, total)
     form.AddItem(Center(Header(2, msg)))
+    # We need to get the headers and part of the textual body of the message
+    # being held.  The best way to do this is to use the mimelib Parser to get
+    # an actual object, which will be easier to deal with.  We probably could
+    # just do raw reads on the file.
     p = Parser(Message.Message)
     try:
         fp = open(os.path.join(mm_cfg.DATA_DIR, filename))
         msg = p.parse(fp)
         fp.close()
-        text = msg.get_text()[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
-    except IOError, (code, msg):
-        if code == ENOENT:
-            form.AddItem(_('<em>Message with id #%d was lost.') % id)
-            form.AddItem('<p>')
-            # TBD: kludge to remove id from requests.db.  value==2 means
-            # discard the message.
-            try:
-                mlist.HandleRequest(id, mm_cfg.DISCARD)
-            except Errors.LostHeldMessage:
-                pass
-            return
-        raise
+    except IOError, e:
+        if e.code <> errno.ENOENT:
+            raise
+        form.AddItem(_('<em>Message with id #%(id)d was lost.'))
+        form.AddItem('<p>')
+        # BAW: kludge to remove id from requests.db.
+        try:
+            mlist.HandleRequest(id, mm_cfg.DISCARD)
+        except Errors.LostHeldMessage:
+            pass
+        return
+    except mimelib.Errors.MessageParseError:
+        form.AddItem(_('<em>Message with id #%(id)d is corrupted.'))
+        # BAW: Should we really delete this, or shuttle it off for site admin
+        # to look more closely at?
+        form.AddItem('<p>')
+        # BAW: kludge to remove id from requests.db.
+        try:
+            mlist.HandleRequest(id, mm_cfg.DISCARD)
+        except Errors.LostHeldMessage:
+            pass
+        return
+    # Get the header text and the message body excerpt
+    lines = []
+    chars = 0
+    reader = MsgReader(msg)
+    while 1:
+        line = reader.readline()
+        if not line:
+            break
+        lines.append(line)
+        chars += len(line)
+        if chars > mm_cfg.ADMINDB_PAGE_TEXT_LIMIT:
+            break
+    body = NL.join(lines)[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
+    hdrtxt = NL.join(['%s: %s' % (k, v) for k, v in msg.items()])
+
+    # Okay, we've reconstituted the message just fine.  Now for the fun part!
     t = Table(cellspacing=0, cellpadding=0, width='100%')
     t.AddRow([Bold(_('From:')), sender])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
@@ -237,21 +285,21 @@ def PrintPostRequest(mlist, id, info, total, count, form):
         ])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    hdrtxt = NL.join(['%s: %s' % (k, v) for k, v in msg.items()])
     t.AddRow([Bold(_('Message Headers:')),
               TextArea('headers-%d' % id, hdrtxt,
                        rows=10, cols=80)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    t.AddRow    ([Bold(_('Message Excerpt:')),
-              TextArea('fulltext-%d' % id, text, rows=10, cols=80)])
+    t.AddRow([Bold(_('Message Excerpt:')),
+              TextArea('fulltext-%d' % id, body, rows=10, cols=80)])
     t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)
     form.AddItem('<p>')
 
 
 
-def HandleRequests(mlist, doc, cgidata):
+def process_form(mlist, doc, cgidata):
+    # Process the form and make updates to the admin database.
     erroraddrs = []
     for k in cgidata.keys():
         formv = cgidata[k]
@@ -262,12 +310,12 @@ def HandleRequests(mlist, doc, cgidata):
             request_id = int(k)
         except ValueError:
             continue
-        # get the action comment and reasons if present
+        # Get the action comment and reasons if present.
         commentkey = 'comment-%d' % request_id
         preservekey = 'preserve-%d' % request_id
         forwardkey = 'forward-%d' % request_id
         forwardaddrkey = 'forward-addr-%d' % request_id
-        # defaults
+        # Defaults
         comment = _('[No reason given]')
         preserve = 0
         forward = 0
@@ -280,19 +328,17 @@ def HandleRequests(mlist, doc, cgidata):
             forward = cgidata[forwardkey].value
         if cgidata.has_key(forwardaddrkey):
             forwardaddr = cgidata[forwardaddrkey].value
-        #
-        # handle the request id
+        # Handle the request id
         try:
             mlist.HandleRequest(request_id, v, comment,
                                 preserve, forward, forwardaddr)
         except (KeyError, Errors.LostHeldMessage):
-            # that's okay, it just means someone else has already updated the
-            # database, so just ignore this id
+            # That's okay, it just means someone else has already updated the
+            # database while we were staring at the page, so just ignore it
             continue
         except Errors.MMAlreadyAMember, v:
             erroraddrs.append(v)
     # save the list and print the results
-    mlist.Save()
     doc.AddItem(Header(2, _('Database Updated...')))
     if erroraddrs:
         for addr in erroraddrs:
