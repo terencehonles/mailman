@@ -27,6 +27,7 @@ Stdin is the mail message, and argv[1] is the name of the target mailing list.
 """
 
 import sys
+import time
 
 import paths
 from Mailman import mm_cfg
@@ -59,7 +60,10 @@ def main():
     # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
     # no chance to save the message.
     inq = get_switchboard(mm_cfg.INQUEUE_DIR)
-    inq.enqueue(sys.stdin.read(), listname=listname, tolist=1)
+    inq.enqueue(sys.stdin.read(),
+                listname=listname,
+                tolist=1,
+                received_time=time.time())
 
 
 
