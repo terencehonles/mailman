@@ -35,6 +35,8 @@ class Archiver:
 
     def GetConfigInfo(self):
 	return [
+            "List traffic archival policies.",
+
 	    ('archive', mm_cfg.Toggle, ('No', 'Yes'), 0, 
 	     'Archive messages?'),
 
