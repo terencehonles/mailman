@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 3645 $)
+AC_REVISION($Revision: 3685 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -474,7 +474,7 @@ AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
 	   Mailman/Makefile Mailman/Cgi/Makefile Mailman/Logging/Makefile
 	   Mailman/Archiver/Makefile Mailman/pythonlib/Makefile
 	   Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
-	   Mailman/Queue/Makefile Mailman/MTA/Makefile
+	   Mailman/Queue/Makefile Mailman/MTA/Makefile Mailman/Gui/Makefile
 	   templates/Makefile cron/Makefile
 	   filters/Makefile scripts/Makefile messages/Makefile
 	   cron/crontab.in Makefile])
