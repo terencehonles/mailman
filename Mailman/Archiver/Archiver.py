@@ -179,11 +179,15 @@ class Archiver:
             post.SetHeader('Date', olddate)
 
     def ExternalArchive(self, ar, txt):
-        d = SafeDict({'listname': self.real_name})
+        d = SafeDict({'listname': self.internal_name()})
         cmd = ar % d
         extarch = os.popen(cmd, 'w')
         extarch.write(txt)
-        extarch.close()
+        status = extarch.close()
+        if status:
+            self.LogMsg('error',
+                        'external archiver non-zero exit status: %d\n' %
+                        (status & 0xff00) >> 8)
 
     #
     # archiving in real time  this is called from list.post(msg)
