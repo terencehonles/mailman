@@ -61,36 +61,6 @@ class Bouncer:
         self.max_posts_between_bounces = \
                 mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
 
-    def GetConfigInfo(self):
-        return [
-            _('''Policies regarding systematic processing of bounce messages,
-            to help automate recognition and handling of defunct
-            addresses.'''),
-            
-            ('bounce_processing', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
-             _('Try to figure out error messages automatically?')),
-
-            ('minimum_removal_date', mm_cfg.Number, 3, 0,
-             _('''Minimum number of days an address has been non-fatally bad
-             before we take action''')),
-
-            ('minimum_post_count_before_bounce_action', mm_cfg.Number, 3, 0,
-             _('''Minimum number of posts to the list since members first
-             bounce before we consider removing them from the list''')),
-
-            ('max_posts_between_bounces', mm_cfg.Number, 3, 0,
-             _('''Maximum number of messages your list gets in an hour. (Yes,
-             bounce detection finds this info useful)''')),
-
-            ('automatic_bounce_action', mm_cfg.Radio,
-             (_("Do nothing"),
-              _("Disable and notify me"),
-              _("Disable and DON'T notify me"),
-              _("Remove and notify me")),
-             0,
-             _("Action when critical or excessive bounces are detected."))
-            ]
-
     def ClearBounceInfo(self, email):
         email = email.lower()
         if self.bounce_info.has_key(email):
@@ -278,19 +248,19 @@ Bad admin recipient: %s''', self.internal_name(), addr)
 
         Returning success and notification status.
         """
-        if not self.IsMember(addr):
+        if not self.isMember(addr):
             reason = _('User not found.')
             syslog('bounce', '%s: NOT disabled %s: %s',
                    self.real_name, addr, reason)
             return reason, 1
         try:
-            if self.GetUserOption(addr, mm_cfg.DisableDelivery):
+            if self.getMemberOption(addr, mm_cfg.DisableDelivery):
                 # No need to send out notification if they're already disabled.
                 syslog('bounce', '%s: already disabled %s' %
                        self.real_name, addr)
                 return 1, 0
             else:
-                self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
+                self.setMemberOption(addr, mm_cfg.DisableDelivery, 1)
                 syslog('bounce', '%s: disabled %s', self.real_name, addr)
                 self.Save()
                 return 1, 1
@@ -305,13 +275,13 @@ Bad admin recipient: %s''', self.internal_name(), addr)
         """Unsubscribe user with bouncing address.
 
         Returning success and notification status."""
-        if not self.IsMember(addr):
+        if not self.isMember(addr):
             reason = _('User not found.')
             syslog('bounce', '%s: NOT removed %s: %s',
                    self.real_name, addr, reason)
             return reason, 1
         try:
-            self.DeleteMember(addr, "bouncing addr")
+            self.ApprovedDeleteMember(addr, "bouncing addr")
             syslog('bounce', '%s: removed %s', self.real_name, addr)
             self.Save()
             return 1, 1

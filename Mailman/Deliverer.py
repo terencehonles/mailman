@@ -69,7 +69,6 @@ your membership administrative address, %(addr)s.'''))
         msg.send(self)
 
     def SendUnsubscribeAck(self, name):
-        os.environ['LANG'] = self.GetPreferredLanguage(name)
         realname = self.real_name
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetAdminEmail(),
@@ -78,14 +77,12 @@ your membership administrative address, %(addr)s.'''))
         msg.send(self)
 
     def MailUserPassword(self, user):
-        os.environ['LANG'] = self.GetPreferredLanguage(user)
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
-        # find the lowercased version of the user's address
-        user = self.FindUser(user)
         requestaddr = self.GetRequestEmail()
-        if user and self.passwords.has_key(user):
-            cpuser = self.GetUserSubscribedAddress(user)
+        # find the lowercased version of the user's address
+        if self.isMember(user) and self.getMemberPassword(user):
+            cpuser = self.getMemberCPAddress(user)
             recipient = self.GetMemberAdminEmail(cpuser)
             subject = _('%(listfullname)s mailing list reminder')
             adminaddr = self.GetAdminEmail()
