@@ -20,13 +20,23 @@ from Mailman import mm_cfg
 from Mailman import Errors
 
 class HandlerError(Errors.MailmanError):
-    """Base class for all handler errors"""
+    """Base class for all handler errors."""
     pass
-
 
 class MessageHeld(HandlerError):
-    """Base class for all message-being-held short circuits"""
+    """Base class for all message-being-held short circuits."""
     pass
+
+
+
+def pipeline_delivery(mlist, msg, pipeline):
+    for modname in pipeline:
+        mod = __import__('Mailman.Handlers.'+modname)
+        func = getattr(getattr(getattr(mod, 'Handlers'), modname), 'process')
+        try:
+            func(mlist, msg)
+        except MessageHeld:
+            break
 
 
 
@@ -48,13 +58,15 @@ def DeliverToList(mlist, msg):
                 'Acknowledge',
                 'AfterDelivery',
                 ]
-    for modname in pipeline:
-        mod = __import__('Mailman.Handlers.'+modname)
-        func = getattr(getattr(getattr(mod, 'Handlers'), modname), 'process')
-        try:
-            func(mlist, msg)
-        except MessageHeld:
-            break
+    pipeline_delivery(mlist, msg, pipeline)
+
+
+
+# for messages that qrunner tries to re-deliver
+def RedeliverMessage(mlist, msg):
+    pipeline = [mm_cfg.DELIVERY_MODULE,
+                ]
+    pipeline_delivery(mlist, msg, pipeline)
 
 
 
@@ -67,8 +79,4 @@ def DeliverToUser(mlist, msg):
                 mm_cfg.DELIVERY_MODULE,
                 ]
     msg.fasttrack = 1
-    for modname in pipeline:
-        mod = __import__('Mailman.Handlers.'+modname)
-        func = getattr(getattr(getattr(mod, 'Handlers'), modname), 'process')
-        # None of these modules should ever generate a MessageHeld exception
-        func(mlist, msg)
+    pipeline_delivery(mlist, msg, pipeline)
