@@ -25,7 +25,7 @@ class Archiver:
 
 	    ('archive_volume_frequency', mm_cfg.Radio, ('Yearly', 'Monthly'),
 	     0,
-	     'How often should the archive volume go up?'),
+	     'How often should a new archive volume be started?'),
 
 	    ('clobber_date', mm_cfg.Radio, ('When sent', 'When resent'), 0,
 	     'Set date in archive to when the mail is claimed to have been '
