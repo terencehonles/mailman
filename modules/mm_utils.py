@@ -5,7 +5,7 @@ message and address munging, a handy-dandy routine to map a function on all
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
 
-__version__ = "$Revision: 437 $"
+__version__ = "$Revision: 462 $"
 
 
 import sys, string, fcntl, os, random, regsub, re
@@ -35,7 +35,7 @@ valid_toplevels = ["com", "edu", "gov", "int", "mil", "net", "org",
 "sj", "sz", "se", "ch", "sy", "tw", "tj", "tz", "th", "tg", "tk",
 "to", "tt", "tn", "tr", "tm", "tc", "tv", "ug", "ua", "um", "us",
 "uy", "uz", "vu", "va", "ve", "vn", "vg", "vi", "wf", "eh", "ws",
-"ye", "yu", "zr", "zm", "zw"]
+"ye", "yu", "zr", "zm", "zw", "su"]
 
 def list_names():
     """Return the names of all lists in default list directory."""
