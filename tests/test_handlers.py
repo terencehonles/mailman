@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -43,6 +43,7 @@ from Mailman.Handlers import CookHeaders
 from Mailman.Handlers import Decorate
 from Mailman.Handlers import FileRecips
 from Mailman.Handlers import Hold
+from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
 from Mailman.Handlers import Personalize
 from Mailman.Handlers import Replybot
@@ -1158,6 +1159,176 @@ From: aperson@dom.ain
 
 
 
+class TestMimeDel(TestBase):
+    def setUp(self):
+        TestBase.setUp(self)
+        self._mlist.filter_content = 1
+        self._mlist.filter_mime_types = ['image/jpeg']
+        self._mlist.convert_html_to_plaintext = 1
+
+    def test_outer_matches(self):
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Content-Type: image/jpeg
+MIME-Version: 1.0
+
+xxxxx
+""")
+        self.assertRaises(Errors.DiscardMessage, MimeDel.process,
+                          self._mlist, msg, {})
+
+    def test_strain_multipart(self):
+        eq = self.assertEqual
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Content-Type: multipart/mixed; boundary=BOUNDARY
+MIME-Version: 1.0
+
+--BOUNDARY
+Content-Type: image/jpeg
+MIME-Version: 1.0
+
+xxx
+
+--BOUNDARY
+Content-Type: image/gif
+MIME-Version: 1.0
+
+yyy
+--BOUNDARY--
+""")
+        MimeDel.process(self._mlist, msg, {})
+        eq(len(msg.get_payload()), 1)
+        subpart = msg.get_payload(0)
+        eq(subpart.get_type(), 'image/gif')
+        eq(subpart.get_payload(), 'yyy')
+
+    def test_collapse_multipart_alternative(self):
+        eq = self.assertEqual
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Content-Type: multipart/mixed; boundary=BOUNDARY
+MIME-Version: 1.0
+
+--BOUNDARY
+Content-Type: multipart/alternative; boundary=BOUND2
+MIME-Version: 1.0
+
+--BOUND2
+Content-Type: image/jpeg
+MIME-Version: 1.0
+
+xxx
+
+--BOUND2
+Content-Type: image/gif
+MIME-Version: 1.0
+
+yyy
+--BOUND2--
+
+--BOUNDARY--
+""")
+        MimeDel.process(self._mlist, msg, {})
+        eq(len(msg.get_payload()), 1)
+        eq(msg.get_type(), 'multipart/mixed')
+        subpart = msg.get_payload(0)
+        eq(subpart.get_type(), 'image/gif')
+        eq(subpart.get_payload(), 'yyy')
+
+    def test_convert_to_plaintext(self):
+        # BAW: This test is dependent on your particular lynx version
+        eq = self.assertEqual
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Content-Type: text/html
+MIME-Version: 1.0
+
+<html><head></head>
+<body></body></html>
+""")
+        MimeDel.process(self._mlist, msg, {})
+        eq(msg.get_type(), 'text/plain')
+        eq(msg.get_payload(), '\n   \n\n')
+
+    def test_deep_structure(self):
+        eq = self.assertEqual
+        self._mlist.filter_mime_types.append('text/html')
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Content-Type: multipart/mixed; boundary=AAA
+
+--AAA
+Content-Type: multipart/mixed; boundary=BBB
+
+--BBB
+Content-Type: image/jpeg
+
+xxx
+--BBB
+Content-Type: image/jpeg
+
+yyy
+--BBB---
+--AAA
+Content-Type: multipart/alternative; boundary=CCC
+
+--CCC
+Content-Type: text/html
+
+<h2>This is a header</h2>
+
+--CCC
+Content-Type: text/plain
+
+A different message
+--CCC--
+--AAA
+Content-Type: image/gif
+
+zzz
+--AAA
+Content-Type: image/gif
+
+aaa
+--AAA--
+""")
+        MimeDel.process(self._mlist, msg, {})
+        payload = msg.get_payload()
+        eq(len(payload), 3)
+        part1 = msg.get_payload(0)
+        eq(part1.get_type(), 'text/plain')
+        eq(part1.get_payload(), 'A different message')
+        part2 = msg.get_payload(1)
+        eq(part2.get_type(), 'image/gif')
+        eq(part2.get_payload(), 'zzz')
+        part3 = msg.get_payload(2)
+        eq(part3.get_type(), 'image/gif')
+        eq(part3.get_payload(), 'aaa')
+
+    def test_top_multipart_alternative(self):
+        eq = self.assertEqual
+        self._mlist.filter_mime_types.append('text/html')
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Content-Type: multipart/alternative; boundary=AAA
+
+--AAA
+Content-Type: text/html
+
+<b>This is some html</b>
+--AAA
+Content-Type: text/plain
+
+This is plain text
+--AAA--
+""")
+        MimeDel.process(self._mlist, msg, {})
+        eq(msg.get_type(), 'text/plain')
+        eq(msg.get_payload(), 'This is plain text')
+
+
+
 class TestModerate(TestBase):
     pass
 
@@ -1209,8 +1380,13 @@ A message.
 
 
 class TestTagger(TestBase):
+    def setUp(self):
+        TestBase.setUp(self)
+        self._mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
+        self._mlist.topics_enabled = 1
+
     def test_short_circuit(self):
-        self._mlist.topics = 0
+        self._mlist.topics_enabled = 0
         rtn = Tagger.process(self._mlist, None, {})
         # Not really a great test, but there's little else to assert
         self.assertEqual(rtn, None)
@@ -1218,7 +1394,6 @@ class TestTagger(TestBase):
     def test_simple(self):
         eq = self.assertEqual
         mlist = self._mlist
-        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
         mlist.topics_bodylines_limit = 0
         msg = email.message_from_string("""\
 Subject: foobar
@@ -1233,7 +1408,6 @@ Keywords: barbaz
     def test_all_body_lines_plain_text(self):
         eq = self.assertEqual
         mlist = self._mlist
-        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
         mlist.topics_bodylines_limit = -1
         msg = email.message_from_string("""\
 Subject: Was
@@ -1250,7 +1424,6 @@ Keywords: barbaz
     def test_no_body_lines(self):
         eq = self.assertEqual
         mlist = self._mlist
-        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
         mlist.topics_bodylines_limit = 0
         msg = email.message_from_string("""\
 Subject: Was
@@ -1267,7 +1440,6 @@ Keywords: barbaz
     def test_body_lines_in_multipart(self):
         eq = self.assertEqual
         mlist = self._mlist
-        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
         mlist.topics_bodylines_limit = -1
         msg = email.message_from_string("""\
 Subject: Was
@@ -1291,7 +1463,6 @@ Keywords: barbaz
     def test_body_lines_no_part(self):
         eq = self.assertEqual
         mlist = self._mlist
-        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
         mlist.topics_bodylines_limit = -1
         msg = email.message_from_string("""\
 Subject: Was
@@ -1551,6 +1722,7 @@ def suite():
     suite.addTest(unittest.makeSuite(TestDecorate))
     suite.addTest(unittest.makeSuite(TestFileRecips))
     suite.addTest(unittest.makeSuite(TestHold))
+    suite.addTest(unittest.makeSuite(TestMimeDel))
     suite.addTest(unittest.makeSuite(TestModerate))
     suite.addTest(unittest.makeSuite(TestReplybot))
     suite.addTest(unittest.makeSuite(TestSMTPDirect))
