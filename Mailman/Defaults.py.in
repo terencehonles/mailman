@@ -1172,6 +1172,7 @@ add_language('ja',   _('Japanese'),            'euc-jp')
 add_language('ko',   _('Korean'),              'euc-kr')
 add_language('nl',   _('Dutch'),               'iso-8859-1')
 add_language('no',   _('Norwegian'),           'iso-8859-1')
+add_language('pt',   _('Portuguese'),          'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
 
 del _                                   
