@@ -2,7 +2,45 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+2.0 beta 2 (07-Apr-2000)
+
+    - Rewritten gate_news cron script which should be more efficient
+      and avoid race and locking problems.  Each list now maintains
+      its own watermark, and when you use the admin CGI script to turn
+      on gating from Usenet->mail, an automatic mass catch up is done
+      to avoid flooding the mailing list.  cron/gate_news's command
+      line interface has also changed.  See its docstring for
+      details.
+
+    - A new cron script called qrunner has been added to retry message
+      deliveries that fail because of temporary smtpd problems.
+
+    - New command line script called bin/list_lists which does exactly
+      that: lists all the mailing lists on the system (much like the
+      listinfo CGI does).
+
+    - bin/withlist is now directly executable, however if you want to
+      use python -i, you must still explicitly invoke it.
+      bin/withlist also now cleans up after itself by unlocking any
+      locked lists.  It does NOT save any dirty lists though - you
+      must do this explicitly.
+
+    - $prefix permissions (and all subdirs) must now be 02775.
+      bin/check_perms has been updated to fix all the subdir
+      permissions.
+
+    - "make update" (a.k.a. bin/update) is run automatically when you
+      do a "make install"
+
+    - The CGI driver script now puts information about the Python
+      environment into the logs/error file (but not the diagnostic web
+      page).
+
+    - Bug fixes and some performance improvements
+
 2.0 beta 1 (19-Mar-2000)
+
+    - Python 1.5.2 (or newer) is now required.
 
     - A new bundled auto-responder has been added.  You can now
       configure an autoresponse text for each list's primary
