@@ -1,24 +1,29 @@
 import string, os, sys, tempfile
-import mm_cfg, mm_message, mm_err
+import mm_cfg, mm_message, mm_err, mm_utils
 
 # Text for various messages:
 
 POSTACKTEXT = '''
 Your message entitled:
+
 	%s
 
-was successfully received by %s.
+was successfully received by the %s maillist.
+
+(List info page: %s )
 '''
 
-## CHANGETEXT = '''[PSA SIG maillist member: Your mailing list is being migrated to a new
-## maillist mechanism which offers more control both to the list members and
-## to the administrator.  Info about getting at the new features is detailed
-## below.  We will be switching over to the new list immediately after the
-## subscriptions are transferred, and besides this message (and barring
-## unforseen bugs^H^H^H^H circumstances), the changeover should be fairly
-## transparent.  Bon voyage!  Ken Manheimer, klm@python.org.]
+CHANGETEXT = '''[PSA SIG maillist member: Your mailing list is being migrated to a new
+maillist mechanism which offers more control both to the list members and
+to the administrator (and which, surprise surprise, happens to be written
+in python).  See more details below.  We will be switching over immediately
+after the subscriptions are transferred.  Actual communication on the list
+should work pretty much the same (unless, eg, you elect to receive it in
+digest mode...)
 
-## '''
+Ken Manheimer, klm@python.org.]
+
+'''
 
 SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list! 
 
@@ -40,8 +45,8 @@ password, itself) or to unsubscribe.  It is:
       %s
 
 If you forget your password, don't worry, you will receive a monthly 
-reminder telling you what your password is, and how to unsubscribe or 
-change your options.  
+reminder telling you what all your %s maillist passwords are,
+and how to unsubscribe or change your options.
 
 You may also have your password mailed to you automatically off of 
 the web page noted above.
@@ -79,33 +84,15 @@ Questions or comments?  Send mail to Mailman-owner@%s
 # We could abstract these two better...
 class Deliverer:
     # This method assumes the sender is list-admin if you don't give one.
-    def SendTextToUser(self, subject, text, recipient,
-		       sender=None, errors=None):
+    def SendTextToUser(self, subject, text, recipient, sender=None):
 	if not sender:
 	    sender = self.GetAdminEmail()
+        mm_utils.SendTextToUser(subject, text, recipient, sender)
 
-	msg = mm_message.OutgoingMessage()
-	msg.SetSender(sender)
-	msg.SetHeader('Subject', subject, 1)
-	if errors:
-	    msg.SetHeader('Errors-to', errors, 1)
-	msg.SetBody(self.QuotePeriods(text))
-	self.DeliverToUser(msg, recipient)
-
-    # This method assumes the sender is the one given by the message.
     def DeliverToUser(self, msg, recipient):
-	file = os.popen(mm_cfg.SENDMAIL_CMD % (msg.GetSender(), recipient),
-			'w')
-	try:
-	    msg.headers.remove('\n')
-	except:
-	    pass
-	if not msg.getheader('to'):
-	    msg.headers.append('To: %s\n' % recipient)
-	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
-	file.write(string.join(msg.headers, '')+ '\n') 
-	file.write(self.QuotePeriods(msg.body))
-	file.close()
+        # This method assumes the sender is the one given by the message.
+        mm_utils.DeliverToUser(msg, recipient,
+                               errorsto=Self.GetAdminEmail())
 
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
@@ -158,8 +145,16 @@ class Deliverer:
 	subject = msg.getheader('subject')
 	if not subject:
 	    subject = '[none]'
-	body = POSTACKTEXT % (subject, self.real_name)
-	self.SendTextToUser('Post acknowlegement', body, sender)
+        else:
+            sp = self.subject_prefix
+            if (len(subject) > len(sp)
+                and subject[0:len(sp)] == sp):
+                # Trim off subject prefix
+                subject = subject[len(sp) + 1:]
+	body = POSTACKTEXT % (subject, self.real_name,
+                              self.GetScriptURL('listinfo'))
+	self.SendTextToUser('%s post acknowlegement' % self.real_name,
+                            body, sender)
 
     def SendSubscribeAck(self, name, password, digest):
 	if digest:
@@ -174,12 +169,13 @@ class Deliverer:
 	    header = ''
 	    welcome = ''
 
-##	body = (CHANGETEXT +
-##              SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
+##        body = (CHANGETEXT +
+##                SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
         body = (SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
 				   self.GetScriptURL('listinfo'),
 				   self.real_name, self.host_name,
 				   password,
+                                   self.host_name,
 				   self.GetListEmail(),
 				   header,
 				   welcome))
