@@ -372,7 +372,7 @@ TOC_entry_template = '''\
               <A href="%(archive)s/author.html">[ Author ]</a>
               <A href="%(archive)s/date.html">[ Date ]</a>
             </td>
-            <td><A href="%(archive)s.txt">[ Text ]</a></td>
+            <td><A href="%(archive)s.txt.gz">[ Text ]</a></td>
             </tr>
 
 '''
