@@ -1033,7 +1033,7 @@ msgstr "アドレス/名前"
 
 #: Mailman/Cgi/admindb.py:271 Mailman/Cgi/admindb.py:320
 msgid "Your decision"
-msgstr "決済"
+msgstr "決裁"
 
 #: Mailman/Cgi/admindb.py:272 Mailman/Cgi/admindb.py:321
 msgid "Reason for refusal"
