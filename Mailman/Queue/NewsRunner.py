@@ -1,4 +1,4 @@
-# Copyright (C) 2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ class NewsRunner(Runner):
             prepare_message(mlist, msg, msgdata)
         try:
             # Flatten the message object, sticking it in a StringIO object
-            fp = StringIO(str(msg))
+            fp = StringIO(msg.as_string())
             conn = None
             try:
                 try:
