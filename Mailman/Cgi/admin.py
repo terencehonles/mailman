@@ -377,7 +377,7 @@ def FormatOptionsSection(category, mlist, cgi_data):
 
 
 
-def AddOptionsTableItem(table, item, category, mlist, nodetails=0):
+def AddOptionsTableItem(table, item, category, mlist, detailsp=1):
     """Add a row to an options table with the item description and value."""
     try:
 	got = GetItemCharacteristics(item)
@@ -385,8 +385,7 @@ def AddOptionsTableItem(table, item, category, mlist, nodetails=0):
     except ValueError, msg:
         mlist.LogMsg("error", "admin: %s", msg)
         return Italic("<malformed option>")
-    descr = GetItemGuiDescr(mlist, category, varname, descr,
-			    elaboration, nodetails)
+    descr = GetItemGuiDescr(mlist, category, varname, descr, detailsp)
     val = GetItemGuiValue(mlist, kind, varname, params)
     table.AddRow([descr, val])
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 1,
@@ -397,7 +396,7 @@ def AddOptionsTableItem(table, item, category, mlist, nodetails=0):
 
 
 def FormatOptionHelp(doc, varref, mlist):
-    item = bad = None
+    item = None
     reflist = string.split(varref, '/')
     if len(reflist) == 2:
         category, varname = reflist
@@ -409,18 +408,16 @@ def FormatOptionHelp(doc, varref, mlist):
     if not item:
 	bad = ("Option %s/%s not found. %s"
 	       % (category, varname, os.environ['PATH_INFO']))
-    else:
-	try:
-	    got = GetItemCharacteristics(item)
-	    varname, kind, params, dependancies, descr, elaboration = got
-	except ValueError, msg:
-	    bad = msg
-    if not bad and not elaboration:
-        bad = "Option %s has no extended help." % varname
-    if bad:
-	AddErrorMessage(doc, bad)
-	return
-
+        AddErrorMessage(doc, bad)
+        return
+    got = GetItemCharacteristics(item)
+    try:
+        varname, kind, params, dependancies, descr, elaboration = got
+        if elaboration is None:
+            elaboration = ''
+    except ValueError, msg:
+        varname, kind, params, dependancies, descr = got
+        elaboration = descr
     header = Table(width="100%")
     legend = ('%s Mailing list Configuration Help<br><em>%s</em> Option'
 	      % (mlist.real_name, varname))
@@ -429,19 +426,23 @@ def FormatOptionHelp(doc, varref, mlist):
                        colspan=2, bgcolor="#99ccff")
     doc.SetTitle("Mailman %s List Option Help" % varname)
     doc.AddItem(header)
-    doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, item[4]))
-    doc.AddItem("%s<p>" % item[5])
+    doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, descr))
+    doc.AddItem("%s<p>" % elaboration)
 
     form = Form("%s/%s" % (mlist.GetRelativeScriptURL('admin'), category))
     valtab = Table(cellspacing=3, cellpadding=4)
-    AddOptionsTableItem(valtab, item, category, mlist, nodetails=1)
+    AddOptionsTableItem(valtab, item, category, mlist, detailsp=0)
     form.AddItem(valtab)
     # XXX I don't think we want to be able to set options from two places,
     #     since they'll go out of sync.
     #form.AddItem(Center(FormatPasswordStuff()))
     doc.AddItem(Center(form))
     doc.AddItem("(<em><strong>Don't change the option here.</strong> "
-                'Use the main options page instead.</em>)')
+                'Use the ')
+    doc.AddItem(Link('%s/%s' % (mlist.GetRelativeScriptURL('admin'),
+                                category),
+                     category + ' options page'))
+    doc.AddItem(' instead.</em>)')
 
 
 
@@ -516,17 +517,20 @@ def GetItemGuiValue(mlist, kind, varname, params):
         return container
 
 
-def GetItemGuiDescr(mlist, category, varname, descr, elaboration, nodetails):
-    """Return a representation of an item's description, with link to
-    elaboration if any."""
-    descr = '<div ALIGN="right">' + descr
-    if not nodetails and elaboration:
-        ref = "../" * (Utils.GetNestingLevel()-1) + mlist.internal_name() + "/"
-        ref = ref + '?VARHELP=' + category + "/" + varname
-        descr = Container(descr, Link(ref, " (Details)"), "</div>")
-    else:
-        descr = descr + "</div>"
-    return descr
+def GetItemGuiDescr(mlist, category, varname, descr, detailsp):
+    """Return the item's description, with link to details.
+
+    Details are not included if this is a VARHELP page, because that /is/ the
+    details page!
+    """
+    if not detailsp:
+        return '<div ALIGN="right">' + descr + '</div>'
+    return Container('<div ALIGN="right">' + descr + ' ',
+                     Link(('../' * (Utils.GetNestingLevel()-1) +
+                           mlist.internal_name() +
+                           '/?VARHELP=' + category + '/' + varname),
+                          '(Details)'),
+                     '</div>')
 
 
 
