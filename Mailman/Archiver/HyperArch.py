@@ -35,9 +35,7 @@ import sys
 import re
 import cgi
 import urllib
-import string
 import time
-import pickle
 import os
 import posixfile
 import HyperDatabase
@@ -55,6 +53,10 @@ if mm_cfg.GZIP_ARCHIVE_TXT_FILES:
     except ImportError:
         pass
 
+EMPTYSTRING = ''
+NL = '\n'
+
+
 
 def html_quote(s):
     repls = ( ('&', '&amp;'),
@@ -62,14 +64,14 @@ def html_quote(s):
 	      (">", '&gt;'),
 	      ('"', '&quot;'))
     for thing, repl in repls:
-	s = string.replace(s, thing, repl)
+	s = s.replace(thing, repl)
     return s
 
 def url_quote(s):
     return urllib.quote(s)
 
 def null_to_space(s):
-    return string.replace(s, '\000', ' ')
+    return s.replace('\000', ' ')
 
 def sizeof(filename):
     size = os.path.getsize(filename)
@@ -86,7 +88,7 @@ html_charset = '<META http-equiv="Content-Type" ' \
 
 def CGIescape(arg): 
     s = cgi.escape(str(arg))
-    return string.replace(s, '"', '&quot;')
+    return s.replace('"', '&quot;')
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])') 
@@ -165,14 +167,14 @@ class Article(pipermail.Article):
 
         # Snag the content-* headers.  RFC 1521 states that their values are
         # case insensitive.
-        ctype = message.getheader('Content-Type', 'text/plain')
-        cenc = message.getheader('Content-Transfer-Encoding', '')
-        self.ctype = string.lower(ctype)
-        self.cenc = string.lower(cenc)
+        ctype = message.get('Content-Type', 'text/plain')
+        cenc = message.get('Content-Transfer-Encoding', '')
+        self.ctype = ctype.lower()
+        self.cenc = cenc.lower()
         self.decoded = {}
         mo = rx_charset.search(self.ctype)
         if mo:
-            self.check_header_charsets(string.lower(mo.group(1)))
+            self.check_header_charsets(mo.group(1).lower())
         else:
             self.check_header_charsets()
         if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
@@ -213,13 +215,13 @@ class Article(pipermail.Article):
                 self.decoded['subject'] = subject
 
     def decode_charset(self, field):
-        if string.find(field, "=?") == -1:
+        if field.find("=?") == -1:
             return None, None
         try:
             s, c = EncWord.decode(field)
         except ValueError:
             return None, None
-        return s, string.lower(c)
+        return s, c.lower()
 
     def as_html(self):
 	d = self.__dict__.copy()
@@ -293,7 +295,7 @@ class Article(pipermail.Article):
         except AttributeError:
             body = self.body
         if self.charset is None or self.cenc != "quoted-printable":
-            return null_to_space(string.join(body, ""))
+            return null_to_space(EMPTYSTRING.join(body))
         # the charset is specified and the body is quoted-printable
         # first get rid of soft line breaks, then decode literals
         lines = []
@@ -301,10 +303,10 @@ class Article(pipermail.Article):
         for line in body:
             mo = rx.search(line)
             if mo:
-                i = string.rfind(line, "=")
+                i = line.rfind("=")
                 line = line[:i]
             lines.append(line)
-        buf = string.join(lines, "")
+        buf = EMPTYSTRING.join(lines)
         
         chunks = []
         offset = 0
@@ -317,8 +319,8 @@ class Article(pipermail.Article):
             i = mo.start()
             chunks.append(buf[offset:i])
             offset = i + 3
-            chunks.append(chr(string.atoi(mo.group(1), 16)))
-        return null_to_space(string.join(chunks, ""))
+            chunks.append(chr(int(mo.group(1), 16)))
+        return null_to_space(EMPTYSTRING.join(chunks))
 
     def _add_decoded(self, d):
         """Add encoded-word keys to HTML output"""
@@ -332,11 +334,11 @@ class Article(pipermail.Article):
 	d = self.__dict__.copy()
         # We need to guarantee a valid From_ line, even if there are
         # bososities in the headers.
-        if not string.strip(d.get('fromdate', '')):
+        if not d.get('fromdate', '').strip():
             d['fromdate'] = time.ctime(time.time())
-        if not string.strip(d.get('email', '')):
+        if not d.get('email', '').strip():
             d['email'] = 'bogus@does.not.exist.com'
-        if not string.strip(d.get('datestr', '')):
+        if not d.get('datestr', '').strip():
             d['datestr'] = time.ctime(time.time())
         #
         headers = ['From %(email)s  %(fromdate)s',
@@ -349,9 +351,9 @@ class Article(pipermail.Article):
             headers.append('References: %(_references)s')
         if d['_message_id']:
             headers.append('Message-ID: %(_message_id)s')
-        return string.join(headers, '\n') % d + \
+        return NL.join(headers) % d + \
                '\n\n' + \
-               string.join(self.body, '')
+               EMPTYSTRING.join(self.body)
 
     def _set_date(self, message):
         self.__super_set_date(message)
@@ -365,10 +367,10 @@ class Article(pipermail.Article):
             if not line:
                 break
             if not begin:
-                if string.strip(line) == '<!--beginarticle-->':
+                if line.strip() == '<!--beginarticle-->':
                     begin = 1
                 continue
-            if string.strip(line) == '<!--endarticle-->':
+            if line.strip() == '<!--endarticle-->':
                 break
             self.body.append(line)
 
@@ -554,7 +556,7 @@ class HyperArchive(pipermail.T):
 	     "listinfo": self.maillist.GetScriptURL('listinfo', absolute=1),
 	     "version": self.version}
 	for t in ("thread", "subject", "author", "date"):
-	    cap = string.upper(t[0]) + t[1:]
+	    cap = t[0].upper() + t[1:]
 	    if self.type == cap:
 		d["%s_ref" % (t)] = ""
 	    else:
@@ -573,7 +575,7 @@ class HyperArchive(pipermail.T):
 	     "size": self.size,
 	     }
 	for t in ("thread", "subject", "author", "date"):
-	    cap = string.upper(t[0]) + t[1:]
+	    cap = t[0].upper() + t[1:]
 	    if self.type == cap:
 		d["%s_ref" % (t)] = ""
 	    else:
@@ -606,7 +608,7 @@ class HyperArchive(pipermail.T):
             accum = []
             for a in self.archives:
                 accum.append(self.html_TOC_entry(a))
-            d["archive_listing"] = string.join(accum, '')
+            d["archive_listing"] = EMPTYSTRING.join(accum)
         if not d.has_key("encoding"):
             d["encoding"] = ""
         return self.html_TOC_tmpl % d
@@ -721,7 +723,7 @@ Archive working file %s present.  Check %s for possibly unarchived msgs',
 	"""Return a list of indexes where the article should be filed.
 	A string can be returned if the list only contains one entry, 
 	and the empty list is legal."""
-        res = self.dateToVolName(string.atof(article.date))
+        res = self.dateToVolName(float(article.date))
         self.message("figuring article archives\n")
         self.message(res + "\n")
         return res
@@ -756,8 +758,8 @@ Archive working file %s present.  Check %s for possibly unarchived msgs',
 
 
     def volNameToDate(self,volname):
-        volname=string.strip(volname)
-        volre= { 'year' : r'^(?P<year>[0-9]{4,4})$',
+        volname = volname.strip()
+        volre = {'year' : r'^(?P<year>[0-9]{4,4})$',
                  'quarter' : r'^(?P<year>[0-9]{4,4})q(?P<quarter>[1234])$',
                  'month' : r'^(?P<year>[0-9]{4,4})-(?P<month>[a-zA-Z]+)$',
 		 'week': r'^Week-of-Mon-(?P<year>[0-9]{4,4})(?P<month>[01][0-9])(?P<day>[0123][0-9])',
@@ -765,25 +767,25 @@ Archive working file %s present.  Check %s for possibly unarchived msgs',
         for each in volre.keys():
             match=re.match(volre[each],volname)
             if match:
-                year=string.atoi(match.group('year'))
+                year=int(match.group('year'))
                 month=1
 		day = 1
                 if each == 'quarter':
-                    q=string.atoi(match.group('quarter'))
+                    q=int(match.group('quarter'))
                     month=(q*3)-2
                 elif each == 'month':
-                    monthstr=string.lower(match.group('month'))
+                    monthstr=match.group('month').lower()
                     m=[]
                     for i in range(1,13):
-                        m.append(string.lower(
-                                 time.strftime("%B",(1999,i,1,0,0,0,0,1,0))))
+                        m.append(
+                            time.strftime("%B",(1999,i,1,0,0,0,0,1,0)).lower())
                     try:
                         month=m.index(monthstr)+1
                     except ValueError:
                         pass
 		elif each == 'week' or each == 'day':
-		    month = string.atoi(match.group("month"))
-		    day = string.atoi(match.group("day"))
+		    month = int(match.group("month"))
+		    day = int(match.group("day"))
                 return time.mktime((year,month,1,0,0,0,0,1,-1))
         return 0.0
 
@@ -958,7 +960,7 @@ Archive working file %s present.  Check %s for possibly unarchived msgs',
         d={}
         for each in self.__dict__.keys():
             if not (each in self._skip_attrs
-                    or string.upper(each) == each):
+                    or each.upper() == each):
                 d[each] = self.__dict__[each]
         return d
 
