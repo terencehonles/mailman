@@ -6,6 +6,16 @@ Here is a history of user visible changes to Mailman.
 
 2.1 alpha 2 (XXX)
 
+    - Redesign of the membership management page.  The page is now
+      split into three subcategories (Membership List, Mass
+      Subscription, and Mass Removal).  The Membership List
+      subcategory now supports searching for member addresses by
+      regular expression, and if necessary, it groups member addresses
+      first alphabetically, and then by chunks.
+
+      Mass Subscription and Mass Removal now alternatively support
+      file upload, with one address per line.
+
     - Subscription confirmations can now be performed via email or via
       URL.  When a subscription is received, a unique (sha) confirm
       URL is generated in the confirmation message.  Simply visiting
