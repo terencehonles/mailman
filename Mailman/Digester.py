@@ -17,7 +17,7 @@
 
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 693 $"
+__version__ = "$Revision: 719 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string, re
@@ -74,7 +74,8 @@ class Digester:
 	     'How big in Kb should a digest be before it gets sent out?'),
             # Should offer a 'set to 0' for no size threshhold.
 
-	    ('digest_send_periodic', mm_cfg.Number, 3, 0,
+#	    ('digest_send_periodic', mm_cfg.Number, 3, 0,
+ 	    ('digest_send_periodic', mm_cfg.Radio, ('No', 'Yes'), 1,
 	     'Should a digest be dispatched daily when the size threshold '
 	     "isn't reached?"),
 
