@@ -31,6 +31,11 @@ Where options are:
     -q / --quiet
         Make the archiver output less verbose.
 
+    --wipe
+        First wipe out the original archive before regenerating.  You usually
+        want to specify this argument unless you're generating the archive in
+        chunks.
+
     -s N
     --start=N
         Start indexing at article N, where article 0 is the first in the mbox.
@@ -51,9 +56,10 @@ be some path in the archives/private directory.  For example:
 <mbox> is optional.  If it is missing, it is calculated.
 """
 
-import sys
 import os
+import sys
 import getopt
+import shutil
 
 import paths
 from Mailman import mm_cfg
@@ -86,14 +92,16 @@ def usage(code, msg=''):
 def main():
     # get command line arguments
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hs:e:q',
-                                   ['help', 'start', 'end', 'quiet'])
+        opts, args = getopt.getopt(
+            sys.argv[1:], 'hs:e:q',
+            ['help', 'start', 'end', 'quiet', 'wipe'])
     except getopt.error, msg:
         usage(1, msg)
 
     start = None
     end = None
     verbose = 1
+    wipe = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -109,6 +117,8 @@ def main():
                 usage(1)
         elif opt in ('-q', '--quiet'):
             verbose = 0
+        elif opt == '--wipe':
+            wipe = 1
 
     # grok arguments
     if len(args) < 1:
@@ -150,6 +160,9 @@ def main():
         # set the lock lifetime to 3 hours.  XXX is this reasonable???
         lock = LockFile(lockfile, lifetime=3*60*60)
         lock.lock()
+        # Maybe wipe the old archives
+        if wipe:
+            shutil.rmtree(mlist.archive_dir())
         try:
             fp = open(mbox)
         except IOError, msg:
