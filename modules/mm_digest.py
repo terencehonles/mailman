@@ -63,7 +63,6 @@ class Digester:
 		    raise mm_err.MMCantDigestError
 		self.members.remove(addr)
 		self.digest_members.append(addr)
-                self.digest_members.sort()
 	else:
 	    if value == 1:
 		raise mm_err.MMAlreadyDigested
@@ -72,7 +71,6 @@ class Digester:
 		    raise mm_err.MMMustDigestError
 		self.digest_members.remove(addr)
 		self.members.append(addr)
-                self.members.sort()
 	self.Save()
 
 
