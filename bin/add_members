@@ -32,9 +32,9 @@ Where:
 
     --non-digest-members-file <file>
     -n <file>
-        The /etc/aliases style file containing addresses of the members of the
-        old list (e.g. it contains one address per line).  This list of people
-        become non-digest members.
+        A file containing addresses of the members to be added, one
+        address per line.  This list of people become non-digest
+        members.  If <file> is `-', read addresses from stdin.
 
     --digest-members-file <file>
     -d <file>
@@ -58,7 +58,8 @@ Where:
         The name of the Mailman list you are adding members to.  It must
         already exist.
 
-You must supply one or both of -n and -d options.
+You must supply at least one of -n and -d options.  At most one of the
+files can be `-'.
 
 """
 
@@ -79,6 +80,17 @@ def usage(status, msg=''):
         print msg
     print __doc__ % globals()
     sys.exit(status)
+
+
+def ReadFile(filename):
+    lines = []
+    if filename == "-":
+        fp = sys.stdin
+    else:
+        fp = open(filename)
+    lines = filter(None, map(string.strip, fp.readlines()))
+    fp.close()
+    return lines
 
 
 def GetRandomPassword():
@@ -164,6 +176,10 @@ def main():
     if dfile is None and nfile is None:
         usage(1)
 
+    if dfile == "-" and nfile == "-":
+        print "Sorry, can't read both digest *and* normal members from stdin."
+        sys.exit(1)
+
     try:
         ml = Mailman.MailList.MailList(listname)
     except Mailman.Errors.MMUnknownListError:
@@ -175,18 +191,14 @@ def main():
         dmembers = []
         if dfile:
             try:
-                fp = open(dfile)
-                dmembers = filter(None, map(string.strip, fp.readlines()))
-                fp.close()
+                dmembers = ReadFile(dfile)
             except IOError:
                 pass
 
         nmembers = []
         if nfile:
             try:
-                fp = open(nfile)
-                nmembers = filter(None, map(string.strip, fp.readlines()))
-                fp.close()
+                nmembers = ReadFile(nfile)
             except IOError:
                 pass
 
