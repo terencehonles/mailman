@@ -56,6 +56,15 @@ INTEGRATING POSTFIX AND MAILMAN
     inconvenience.
   
 
+AN ALTERNATIVE APPROACH
+
+    Fil <fil@rezo.net> has an alternative approach based on virtual
+    maps and regular expressions, as described at:
+
+    (French)  http://listes.rezo.net/comment.php
+    (English) http://listes.rezo.net/how.php
+
+
 
 Local Variables:
 mode: text
