@@ -759,14 +759,14 @@ LC_DESCRIPTIONS = {}
 def add_language(code, description, charset):
     LC_DESCRIPTIONS[code] = (description, charset)
 
-add_language('big5' _('Traditional Chinese'), 'big5')
-add_language('en',  _('English (USA)'),       'us-ascii')
-add_language('es',  _('Spanish (Spain)'),     'iso-8859-1')
-add_language('fr',  _('French'),              'iso-8859-1')
-add_language('gb',  _('Simplified Chinese'),  'gb2312')
-add_language('it',  _('Italian'),             'iso-8859-1')
-add_language('ja',  _('Japanese'),            'euc-jp')
-add_language('no',  _('Norwegian'),           'iso-8859-1')
+add_language('big5', _('Traditional Chinese'), 'big5')
+add_language('en',   _('English (USA)'),       'us-ascii')
+add_language('es',   _('Spanish (Spain)'),     'iso-8859-1')
+add_language('fr',   _('French'),              'iso-8859-1')
+add_language('gb',   _('Simplified Chinese'),  'gb2312')
+add_language('it',   _('Italian'),             'iso-8859-1')
+add_language('ja',   _('Japanese'),            'euc-jp')
+add_language('no',   _('Norwegian'),           'iso-8859-1')
 
 del _                                   
 
