@@ -18,92 +18,66 @@
 
 """Accept posts to a list and handle them properly.
 
-This script is invoked via the mail wrapper.
+This script is invoked via the mail wrapper.  stdin is the mail message, and
+argv[1] is the name of the target mailing list.
 
-Stdin is the mail message, and argv[1] is the name of the target mailing
-list.  If there's an argv[2], then this post was gated from news, and
-thus should not be re-posted to news if the list gates to a newsgroup.
 """
 
-
-# Todo: check size of To: list < 100
-# Send back why the post was rejected.
-
 import sys
-import paths
 
+import paths
+from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
 from Mailman import Utils
 from Mailman.Logging.Utils import LogStdErr
-from Mailman.pythonlib.StringIO import StringIO
+from Mailman.Handlers import HandlerAPI
 
 LogStdErr("error", "post")
 
-# Only let one program run at once per list.
 
-# TODO: This can fail, and should send back an error message when it does.
-mlist = MailList.MailList(sys.argv[1])
-if len(sys.argv) > 2:
-    # assert sys.argv[1] == 'fromusenet'
-    fromusenet = 1
-else:
-    fromusenet = 0
-try:
-    prog = mlist.filter_prog
-    msg = None
-    if prog:
-	import os, __main__
-	file = os.path.join(paths.prefix, 'filters', prog)
-	try:
-	    execfile(file)
-            msg = Message.Message(StringIO(__main__.mailman_text))
-	except:
-	    pass
-    if msg is None:
-        msg = Message.Message(sys.stdin)
-    # this attribute is a flag to both the GatewayManager and the approval
-    # mechanism.  When a message originates from Usenet, we do not want to
-    # post it back there again.  Also, such messages are never held for
-    # approval.  It makes no sense to send an acknowledgement to the author --
-    # who may not even know of the mailing list's existance.  It *might* still
-    # make sense to hold the message for approval, but I suspect that's just
-    # more of a PITA for the list owner.
-    msg.fromusenet = fromusenet
+
+def main():
+    mlist = MailList.MailList(sys.argv[1])
     try:
-	mlist.Post(msg)
-    # TBD: change this to use LoopError
-    except Errors.MMLoopingPost:
-        # let the list admin know this happened, but don't otherwise hold the
-        # message for approval.
-        sys.stderr.write('Message already came through this list\n')
-        map(sys.stderr.write, msg.headers)
-        sys.stderr.write('[body of message suppressed]\n')
-        mlist.SendTextToUser(
-            subject='Message loop detected [message discarded]',
-            text=Utils.SnarfMessage(msg)[1],
-            recipient=mlist.GetAdminEmail())
-    except Errors.MMNeedApproval, err_msg:
-	if (mlist.dont_respond_to_post_requests
-            or err_msg == Errors.MODERATED_LIST_MSG):
-            # Do not send hold-for-approval notices for moderated messages.
-            mlist.Unlock()
-	    sys.exit(0)
-	the_sender = msg.GetSender()
-	subj = msg.getheader('subject')
-	if not subj:
-	    subj = '[no subject]'
-        body = Utils.maketext(
-            'postheld.txt',
-            {'list_name': mlist.real_name,
-             'subject'  : subj,
-             'reason'   : err_msg,
-             })
-	mlist.SendTextToUser(
-            subject = 'Mail sent to %s' % mlist.real_name,
-            recipient = the_sender,
-            text = body)
-# Let another process run.
-finally:
-    mlist.Unlock()
+        # get the message text, which might flow through a filter module
+        prog = mlist.filter_prog
+        msg = None
+        if prog:
+            import os, __main__
+            file = os.path.join(mm_cfg.PREFIX, 'filters', prog)
+            try:
+                execfile(file)
+                msg = Message.Message(StringIO(__main__.mailman_text))
+            except:
+                pass
+        if msg is None:
+            msg = Message.Message(sys.stdin)
+        # go ahead and post the message
+        adminaddr = mlist.GetAdminEmail()
+        try:
+            mlist.Post(msg)
+        # TBD: change this to use LoopError and/or move this to the message
+        # pipeline where it probably ought to be.
+        except Errors.MMLoopingPost:
+            # let the list admin know this happened, but don't otherwise hold
+            # the message for approval.
+            sys.stderr.write('Message already came through this list\n')
+            map(sys.stderr.write, msg.headers)
+            sys.stderr.write('[body of message suppressed]\n')
+            noticemsg = Message.UserNotification(
+                adminaddr, adminaddr,
+                'Message loop detected [message discarded]',
+                '\n---------- Original Message ----------\n' +
+                str(msg))
+            HandlerAPI.DeliverToUser(mlist, noticemsg)
+    # Let another process run.
+    finally:
+        mlist.Save()
+        mlist.Unlock()
+
+
+
+if __name__ == '__main__':
+    main()
