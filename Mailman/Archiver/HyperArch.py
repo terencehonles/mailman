@@ -32,10 +32,17 @@
 """   
 
 import sys
-import re, cgi, urllib, string
-import time, pickle, os, posixfile
+import re
+import cgi
+import urllib
+import string
+import time
+import pickle
+import os
+import posixfile
 import HyperDatabase
 import pipermail
+
 from Mailman import mm_cfg
 
 from Mailman.Utils import mkdir, open_ex
