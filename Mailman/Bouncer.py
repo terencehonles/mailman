@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 530 $"
+__version__ = "$Revision: 532 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -53,7 +53,7 @@ class Bouncer:
 	if self.bounce_info.has_key(email):
 	    del self.bounce_info[email]
 
-    def RegisterBounce(self, email):
+    def RegisterBounce(self, email, msg):
 	report = "%s: %s - " % (self.real_name, email)
 	bouncees = self.bounce_info.keys()
 	this_dude = mm_utils.FindMatchingAddresses(email, bouncees)
@@ -84,7 +84,7 @@ class Bouncer:
                  self.minimum_post_count_before_bounce_action)
 		and difference > self.minimum_removal_date * 24 * 60 * 60):
 		self.LogMsg("bounce", report + "exceeded limits")
-		self.HandleBouncingAddress(addr)
+		self.HandleBouncingAddress(addr, msg)
 		return
 	    else:
 		post_count = (self.minimum_post_count_before_bounce_action - 
@@ -107,7 +107,7 @@ class Bouncer:
 		return
 	    if difference > self.minimum_removal_date * 24 * 60 * 60:
 		self.LogMsg("bounce", "exceeded limits (D)")
-		self.HandleBouncingAddress(addr)
+		self.HandleBouncingAddress(addr, msg)
 		return 
 	    self.LogMsg("bounce",
 			"digester lucked out")
@@ -117,7 +117,7 @@ class Bouncer:
 			self._internal_name,
 			addr)
 
-    def HandleBouncingAddress(self, addr):
+    def HandleBouncingAddress(self, addr, msg):
         """Disable or remove addr according to bounce_action setting."""
         if self.automatic_bounce_action == 0:
             return
@@ -138,29 +138,61 @@ class Bouncer:
         if send:
             if succeeded != 1:
                 negative="not "
-                recipient = mm_cfg.MAILMAN_OWNER
             else:
                 negative=""
-                recipient = self.GetAdminEmail()
-            text = ("This is a mailman maillist administrator notice.\n"
-                    "\n\tMaillist:\t%s\n"
-                    "\tMember:\t\t%s\n"
-                    "\tAction:\t\tSubscription %s%s.\n"
-                    "\tReason:\t\tExcessive or fatal bounces.\n"
-                    % (self.real_name, addr, negative, did))
+            recipient = self.GetAdminEmail()
+            if addr in self.owner + [recipient]:
+                # Whoops!  This is a bounce of a bounce notice - do not
+                # perpetuate the bounce loop!  Log it prominently and be
+                # satisfied with that.
+                self.LogMsg("error",
+                            "%s: Bounce recipient loop"
+                            " encountered!\n\t%s\n\tBad admin recipient: %s",
+                            self._internal_name,
+                            "(Ie, bounce notification addr, itself, bounces.)",
+                            addr)
+                return
+            import mimetools
+            boundary = mimetools.choose_boundary()
+            text = [""]
+            text.append("(This MIME message should be"
+                        " readable as plain text.)")
+            text.append("")
+            text.append("--" + boundary)
+            text.append("Content-type: text/plain; charset=us-ascii")
+            text.append("")
+            text.append("This is a mailman mailing list bounce action notice:")
+            text.append("")
+            text.append("\tMaillist:\t%s" % self.real_name)
+            text.append("\tMember:\t\t%s" % addr)
+            text.append("\tAction:\t\tSubscription %s%s." % (negative, did))
+            text.append("\tReason:\t\tExcessive or fatal bounces.")
             if succeeded != 1:
-                text = text + "\tBUT:\t\t%s\n\n" % succeeded
-            else:
-                text = text + "\n"
+                text.append("\tBUT:\t\t%s\n" % succeeded)
+            text.append("")
             if did == "disabled" and succeeded == 1:
-                text = text + (
-                    "You can reenable their subscription by visiting "
-                    "their options page\n"
-                    "(via %s) and using your\n"
-                    "list admin password to authorize the option change.\n\n"
-                    % self.GetScriptURL('listinfo'))
-            text = text + ("Questions?  Contact the mailman site admin,\n%s"
-                           % mm_cfg.MAILMAN_OWNER)
+                text.append("You can reenable their subscription by visiting "
+                            "their options page")
+                text.append("(via %s) and using your"
+                            % self.GetScriptURL('listinfo'))
+                text.append(
+                    "list admin password to authorize the option change.")
+            text.append("")
+            text.append("The triggering bounce notice is attached below.")
+            text.append("")
+            text.append("Questions?  Contact the mailman site admin,")
+            text.append("\t" + mm_cfg.MAILMAN_OWNER)
+
+            text.append("")
+            text.append("--" + boundary)
+            text.append("Content-type: text/plain; charset=us-ascii")
+            text.append("")
+            text.append(string.join(msg.headers, ''))
+            text.append("")
+            text.append(mm_utils.QuotePeriods(msg.body))
+            text.append("")
+            text.append("--" + boundary + "--")
+
             if negative:
                 negative = string.upper(negative)
             self.SendTextToUser(subject = ("%s member %s %s%s due to bounces"
@@ -168,9 +200,12 @@ class Bouncer:
                                               negative, did)),
                                 recipient = recipient,
                                 sender = mm_cfg.MAILMAN_OWNER,
-                                add_headers = ["Errors-To: %s"
-					       % mm_cfg.MAILMAN_OWNER],
-                                text = text)
+                                add_headers = [
+                                    "Errors-To: %s" % mm_cfg.MAILMAN_OWNER,
+                                    "MIME-version: 1.0",
+                                    "Content-type: multipart/mixed;"
+                                    ' boundary="%s"' % boundary],
+                                text = string.join(text, '\n'))
     def DisableBouncingAddress(self, addr):
 	"""Disable delivery for bouncing user address.
 
@@ -296,7 +331,7 @@ class Bouncer:
 		    elif action == BOUNCE:
 			emails = string.split(email,',')
 			for email_addr in emails:
-			    self.RegisterBounce(email_addr)
+			    self.RegisterBounce(email_addr, msg)
 			message_grokked = 1
 			continue
 		    else:
@@ -307,7 +342,7 @@ class Bouncer:
 	    if (messy_pattern_1.match(line) <> -1
                 or messy_pattern_2.match(line) <> -1):
 		username = string.split(line)[1]
-		self.RegisterBounce('%s@%s' % (username, remote_host))
+		self.RegisterBounce('%s@%s' % (username, remote_host), msg)
 		message_grokked = 1
 		continue
 	    if (messy_pattern_3.match(line) <> -1
@@ -337,7 +372,7 @@ class Bouncer:
 		# Use stuff after open angle and before (optional) close:
 		i = regsub.splitx(i[1:], ">")[0]
             if i not in did:
-                self.HandleBouncingAddress(i)
+                self.HandleBouncingAddress(i, msg)
                 did.append(i)
 	return message_grokked
 
