@@ -1,4 +1,4 @@
-<!-- $Revision: 3790 $ -->
+<!-- $Revision: 3986 $ -->
 <html>
 <head>
 <title><MM-List-Name> メーリングリストでの <MM-Presentable-User> の設定</title>
@@ -17,13 +17,15 @@
     <tr><td>
         <b><MM-List-Name> メーリングリストでの<MM-Presentable-User></b> さんの
         会員設定状況，パスワード，オプションの設定状況．
+        </td><td><mm-logout-button></td>
+    </tr><tr>
+        <td colspan="2">
         <MM-Case-Preserved-User>
 
         <MM-Disabled-Notice>
 
         <p><mm-results>
         </td>
-        <td><mm-logout-button></td>
     </tr>
 </table>
 <p>
@@ -32,17 +34,22 @@
         <font color="#000000">
         <b>あなたの <MM-List-Name> 会員アドレス変更</b>
         </font></td></tr>
-    <tr><td width="50%">このメーリングリストに登録されている配送アドレス
+    <tr><td colspan="2">このメーリングリストに登録されている配送アドレス
         を変更するには、下の欄に新しいアドレスを入力してください。
         その新アドレスに確認のメールが届けられますので、確認の返事が
         来るまでは処理は保留されます。
 
-        <p>約<mm-pending-days>日後に確認の期限が切れます。
+        <p>約<mm-pending-days>後に確認の期限が切れます。
+
+        <p>また、オプションであなたの実名(例:<em>寺田寅彦</em>)を
+	設定したり変更したりできます。
+
         <p>もし、<mm-host>に登録された全てのメーリングリストに
         ついて、会員アドレスを変更するのであれば、
         <em>全部変更</em>ボックスをチェックしてください。
-    </td><td><center>
-        <table border="0" cellspacing="2" cellpadding="2" width="70%" cols="2">
+        </td></tr>
+    <tr><td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
         <tr><td bgcolor="#dddddd"><div align="right">新アドレス:</div></td>
             <td><mm-new-address-box></td>
             </tr>
@@ -50,11 +57,21 @@
             もう一度:</div></td>
             <td><mm-confirm-address-box></td>
             </tr>
-        <tr><td colspan="2"><center><mm-change-address-button>
+        </tr></table></center>
+        </td>
+        <td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
+            <tr><td bgcolor="#dddddd"><div align="right">あなたのお名前
+            (オプション):</div></td>
+            <td><mm-fullname-box></td>
+            </tr>
+        </table></center>
+        </td>
+        </tr>
+    <tr><td colspan="2"><center><mm-change-address-button>
             <p><mm-global-change-of-address>全部変更
             </center></td>
-        </tr></table></center>
-    </td>
+    </tr>
 </table>
 
 <p>
@@ -115,9 +132,7 @@
             </TR>
         </table>
         <MM-Change-Pass-Button>
-        <p><center><mm-global-pw-changes-button>
-        <mm-host>で私が入会している全てのメーリングリストについて
-        このパスワードに変更します。
+        <p><center><mm-global-pw-changes-button>全部変更
         </center>
 </TABLE>
 
@@ -219,6 +234,36 @@
         <strong> どの言語を使いますか?</strong><p>
         </td><td bgcolor="#cccccc">
         <MM-list-langs>
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>どの話題分類を購読したいですか?</strong><p>
+		話題を選ぶことで、メーリングリストを流れるメールに
+		フィルターをかけることができます。つまり、メールの
+		一部分だけを受け取るようになります。もし、メールが
+		選んだ話題に合っていればメールを受け取り、合わなければ
+		受け取りません。
+		<p>もし、メールがどの話題にも合わなければ、配送の
+		規則は下のオプションの設定によって変わります。
+		もし、何も話題を選ばなければ、全部のメールを受け取ります。
+        </td><td bgcolor="#cccccc">
+        <mm-topics>
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>どの話題フィルターにも適合しないメールを受け取りますか?</strong><p>
+		このオプションは、あなたが少なくともひとつ話題を選んでいる
+		場合に有効になります。話題フィルターのどれにも合わなかった
+		メールがあるとき、デフォルトの配送規則を定めます。
+		<em>いいえ</em>を選ぶと、どの話題フィルターにも
+		合わなかったメールは、あなたに配送されません。
+		もし、<em>はい</em>を選ぶと、このような適合しないメールは
+		配送されます。
+		<p>もし、話題がひとつも選択されなかった場合には、
+		メーリングリストに投稿される全部のメールを受け取ることになります。
+        </td><td bgcolor="#cccccc">
+        <mm-suppress-nonmatching-topics>いいえ<br>
+        <mm-receive-nonmatching-topics>はい
         </td></tr>
 
     <tr><TD colspan="2">
