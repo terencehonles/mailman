@@ -20,6 +20,7 @@
 import sys
 import mailbox
 
+import email
 from email.Generator import Generator
 from email.Parser import Parser
 
