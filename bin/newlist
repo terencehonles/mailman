@@ -10,8 +10,7 @@ immediately.  Otherwise, the script hangs pending input, to give time for
 the person creating the list to customize it before sending the admin an
 email notice about the existence of the new list."""
 
-__version__ = "$Revision: 512 $"
-# $Source$
+__version__ = "$Revision: 515 $"
 
 ADDALIASES_CMD = '/home/mailman/mailman/bin/addaliases'
 
