@@ -48,9 +48,38 @@ Options:
 
         The global variable `r' will be set to the results of this call.
 
+        See below for an example.
+
     --help
     -h
         Print this message and exit
+
+Here's an example of how to use the -r option.  Say you have a file in the
+Mailman installation directory called `listaddr.py', with the following
+two functions:
+
+def listaddr(mlist):
+    print mlist.GetListEmail()
+
+def requestaddr(mlist):
+    print mlist.GetRequestEmail()
+
+Now, from the command line you can print the list's posting address by running
+the following from the command line:
+
+% python bin/withlist -r listaddr mylist
+Loading list: mylist (unlocked)
+Importing listaddr ...
+Running listaddr.listaddr() ...
+mylist@myhost.com
+
+And you can print the list's request address by running:
+
+% python bin/withlist -r listaddr.requestaddr mylist
+Loading list: mylist (unlocked)
+Importing listaddr ...
+Running listaddr.requestaddr() ...
+mylist-request@myhost.com
 
 """
 
