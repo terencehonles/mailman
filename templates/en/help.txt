@@ -79,6 +79,12 @@ The following commands are valid:
             Conceals your address when people look at who is on this
             list.
 
+        nodupes:
+            Turn this on if you do not want to receive duplicate mail
+            from the list, in case you are explicitly in the To: or
+            Cc: fields already or are included in multiple lists in
+            one message.
+
 
     options
         Show the current values of your list options.
