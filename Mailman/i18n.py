@@ -4,18 +4,20 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 import sys
+import time
 import gettext
+from types import StringType
 
 from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
@@ -74,3 +76,47 @@ def _(s):
     dict.update(frame.f_locals)
     # Translate the string, then interpolate into it.
     return _translation.gettext(s) % dict
+
+
+
+def ctime(date):
+    # Don't make these module globals since we have to do runtime translation
+    # of the strings anyway.
+    daysofweek = [
+        _('Mon'), _('Tue'), _('Wed'), _('Thu'),
+        _('Fri'), _('Sat'), _('Sun')
+        ]
+    months = [
+        '',
+        _('Jan'), _('Feb'), _('Mar'), _('Apr'), _('May'), _('Jun'),
+        _('Jul'), _('Aug'), _('Sep'), _('Oct'), _('Nov'), _('Dec')
+        ]
+
+    if isinstance(date, StringType):
+        try:
+            wday, mon, day, hms, year = date.split()
+            hh, mm, ss = hms.split(':')
+            year = int(year)
+            day = int(day)
+            hh = int(hh)
+            mm = int(mm)
+            ss = int(ss)
+        except ValueError:
+            return date
+
+        for i in range(0, 7):
+            wconst = (1999, 1, 1, 0, 0, 0, i, 1, 0)
+            if wday.lower() == time.strftime('%a', wconst).lower():
+                wday = i
+                break
+        for i in range(1, 13):
+            mconst = (1999, i, 1, 0, 0, 0, 0, 1, 0)
+            if mon.lower() == time.strftime('%b', mconst).lower():
+                mon = i
+                break
+    else:
+        year, mon, day, hh, mm, ss, wday, yday, dst = time.localtime(date)
+
+    wday = daysofweek[wday]
+    mon = months[mon]
+    return _('%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i')
