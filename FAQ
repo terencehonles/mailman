@@ -268,6 +268,11 @@ A. If your Mailman installation run on an SSL-enabled web server
      considered the price to pay for the convenience of not having to
      type the password in every time.
 
+Q. I want to backup my lists.  What do I need to save?
+
+A. See this FAQ wizard entry:
+   http://www.python.org/cgi-bin/faqw-mm.py?req=show&file=faq04.006.htp
+
 Q. How do I rename a list?
 
 A. Renaming a list is currently a bit of a pain to do completely
