@@ -256,7 +256,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.passwords = {}
 
         # This stuff is configurable
-        self.dont_respond_to_post_requests = 0
+        self.respond_to_post_requests = 1
         self.advertised = mm_cfg.DEFAULT_LIST_ADVERTISED
         self.max_num_recipients = mm_cfg.DEFAULT_MAX_NUM_RECIPIENTS
         self.max_message_size = mm_cfg.DEFAULT_MAX_MESSAGE_SIZE
@@ -645,9 +645,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # Subscription approval is required.  Add this entry to the admin
             # requests database.  BAW: this should probably take a userdesc
             # just like above.
-            self.HoldSubscription(email, fullname, password, digest, lang)
+            self.HoldSubscription(email, name, password, digest, lang)
             raise Errors.MMNeedApproval, _(
-                'subscriptions to %(realname)s require administrator approval')
+                'subscriptions to %(realname)s require moderator approval')
 
     def ApprovedAddMember(self, userdesc, ack=None, admin_notif=None):
         """Add a member right now.
