@@ -2,26 +2,25 @@
 <H1> The Mailman TODO list </H1>
 <H2>Categories:</H2>
 <UL>
-<LI><FONT SIZE=+1><A href=#c1>Bugs</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c1>Email Handling</A></FONT></LI>
 <LI><FONT SIZE=+1><A href=#c2>Documentation</A></FONT></LI>
 <LI><FONT SIZE=+1><A href=#c3>General Web UI</A></FONT></LI>
 <LI><FONT SIZE=+1><A href=#c4>List Admin UI</A></FONT></LI>
 <LI><FONT SIZE=+1><A href=#c5>List Member UI</A></FONT></LI>
 <LI><FONT SIZE=+1><A href=#c6>Site Administrator's UI</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c7>Email Handling</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c8>Mailcmd interface</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c9>Portability concerns</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c10>Bounce handling</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c11>Pipermail + Archiving mechanism</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c12>Code cleanup</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c13>News</A></FONT></LI>
-<LI><FONT SIZE=+1><A href=#c14>Misc</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c7>Mailcmd interface</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c8>Portability concerns</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c9>Bounce handling</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c10>Pipermail + Archiving mechanism</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c11>Code cleanup</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c12>News</A></FONT></LI>
+<LI><FONT SIZE=+1><A href=#c13>Misc</A></FONT></LI>
 </UL>
 <HR>
-<A NAME=c1><H3>Bugs</H3>
+<A NAME=c1><H3>Email Handling</H3>
 <UL>
-<LI> "Stale" addresses don't update properly when new bounces come in   (stale means we had some bounces, but delivery to that address started   working again before we booted them from the list)</LI>
-<LI> Treat corrupted queue files more gracefully.</LI>
+<LI> Use VERP or DSN for address tracing.</LI>
+<LI> Implement multiple subprocs for MTA handoff, or divorce MTA handoff  from the rest of Mailman explicitly.  Multi-threading doesn't seem  to help, possibly because of Python's global interpreter lock.</LI>
 </UL>
 <A NAME=c2><H3>Documentation</H3>
 <UL>
@@ -56,7 +55,7 @@
 <LI> Revamp the admindb user interface, it's fairly clunky (include a decent   cataloging mechanism based on the file system).</LI>
 <LI> Be able to edit ALL the web pages, as well as the mail messages.</LI>
 <LI> Use templates from the templates dir until the list owner changes  the page, so the site admin can change them...</LI>
-<LI> All the list-admin to require approvals for unsubs</LI>
+<LI> Allow the list-admin to require approvals for unsubs</LI>
 <LI> Allow the admin to disable option settings by users</LI>
 <LI> Allow the admin to easily "retire" a list, both through the Web or  email commands.</LI>
 <LI> Ability to set defaults for the various user settings from the  "Membership Management" page. </LI>
@@ -77,31 +76,24 @@
 <LI> Use a better storage mechanism for the site admin password</LI>
 <LI> Improve list deletion by requiring a valid password (from the shell script)</LI>
 </UL>
-<A NAME=c7><H3>Email Handling</H3>
-<UL>
-<LI> Implement a more general (form-based, like the netscape email  filter) filtering/bouncing/etc. mechanism.  Or use VERP.</LI>
-<LI> Allow for programs to run that perform filtering / reformatting.</LI>
-<LI> Set aside messages IMMEDIATELY as a rescue mechanism... make sure no  mails are ever lost, even if there turned out to be a bad Mailman bug.</LI>
-</UL>
-<A NAME=c8><H3>Mailcmd interface</H3>
+<A NAME=c7><H3>Mailcmd interface</H3>
 <UL>
 <LI> Provide an email interface to administrative commands.</LI>
 <LI> Allow email unsubs from matching address to unsubscribe, possibly  adding an "allow open unsubscribes" option to control this.  Also,  adding a confirmation with hit-reply to resubscribe.</LI>
 </UL>
-<A NAME=c9><H3>Portability concerns</H3>
+<A NAME=c8><H3>Portability concerns</H3>
 <UL>
 <LI> Replace cron stuff with our own scheduling mechanism</LI>
 </UL>
-<A NAME=c10><H3>Bounce handling</H3>
+<A NAME=c9><H3>Bounce handling</H3>
 <UL>
-<LI> Add more patterns for bounce handling</LI>
+<LI> Add more patterns for bounce handling (never ending)</LI>
 <LI> Occasionally remove stale bounce entries</LI>
 <LI> Send mail to people who are being removed without their knowledge  (even though they're likely not to get it).</LI>
-<LI> Clean the code up, make it more robust and efficient (see also BUGS)</LI>
-<LI> Or trash the current approach and use something better</LI>
 <LI> Reminders to disabled addresses.  The idea is that if an addr is  disabled due to bouncing, we should send out periodic reminders.  We  may want to do this for explicitly disabled addrs too, but perhaps  with a different schedule.</LI>
+<LI> Handle MTA warnings by discarding the messages but not registering  them as bounces.</LI>
 </UL>
-<A NAME=c11><H3>Pipermail + Archiving mechanism</H3>
+<A NAME=c10><H3>Pipermail + Archiving mechanism</H3>
 <UL>
 <LI> Search engine for archives</LI>
 <LI> Provide downloadable tar.gz's of the html archives</LI>
@@ -111,7 +103,7 @@
 <LI> archive link should do *something* reasonable before the first  message has been posted to the list.</LI>
 <LI> optional form front-end to public interfaces as a filter to address  harvesters.</LI>
 </UL>
-<A NAME=c12><H3>Code cleanup</H3>
+<A NAME=c11><H3>Code cleanup</H3>
 <UL>
 <LI> Use the re module where regexp and regsub are used.</LI>
 <LI> Refine any remaining unqualified exception guards to specify target   exceptions, when appropriate.</LI>
@@ -120,11 +112,11 @@
 <LI> Separate edit-options from the subscribe script.</LI>
 <LI> Remove dead code, etc.</LI>
 </UL>
-<A NAME=c13><H3>News</H3>
+<A NAME=c12><H3>News</H3>
 <UL>
 <LI> Allow crossposting.  This means no errors on duplicate messages, and   also avoiding the need to approve separately for each list.</LI>
 </UL>
-<A NAME=c14><H3>Misc</H3>
+<A NAME=c13><H3>Misc</H3>
 <UL>
 <LI> Automatically update aliases again (fix alias wrapper)</LI>
 <LI> Make the listinfo pages static, and have them regenerate when options are   changed, or html is edited.</LI>
