@@ -1,6 +1,4 @@
-#! /usr/bin/env python
-#
-# Copyright (C) 2000 by the Free Software Foundation, Inc.
+# Copyright (C) 2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,30 +16,130 @@
 
 """NNTP queue runner."""
 
+import os
+import time
+import re
+import socket
+import nntplib
+from mimelib.MsgReader import MsgReader
+from mimelib.address import getaddresses
+
+COMMASPACE = ', '
+
 from Mailman import mm_cfg
-from Mailman.Queue import Runner
-from Mailman.Handlers import HandlerAPI
+from Mailman.Queue.Runner import Runner
+from Mailman.pythonlib.StringIO import StringIO
+
+# Matches our Mailman crafted Message-IDs
+mcre = re.compile(r'<mailman.\d+.\d+.(?P<listname>[^@]+)@(?P<hostname>[^>]+)>')
 
 
 
-class NewsRunner(Runner.Runner):
-    def __init__(self, cachelists=1):
-        Runner.Runner.__init__(self, mm_cfg.NEWSQUEUE_DIR)
+class NewsRunner(Runner):
+    def __init__(self, slice=None, numslices=1, cachelists=1):
+        Runner.__init__(self, mm_cfg.NEWSQUEUE_DIR,
+                        slice, numslices, cachelists)
 
-    def _dispose_message(self, msg, msgdata):
-        # TBD: refactor this stanza.
-        # Find out which mailing list this message is destined for
-        listname = msgdata.get('listname')
-        if not listname:
-            syslog('qrunner', 'qfile metadata specifies no list: %s' % root)
+    def _dispose(self, mlist, msg, msgdata):
+        if not msgdata.get('prepped'):
+            prepare_message(mlist, msg, msgdata)
+        try:
+            # Flatten the message object, sticking it in a StringIO object
+            fp = StringIO(str(msg))
+            conn = None
+            try:
+                try:
+                    conn = nntplib.NNTP(mlist.nntp_host, readermode=1,
+                                        user=mm_cfg.NNTP_USERNAME,
+                                        password=mm_cfg.NNTP_PASSWORD)
+                    conn.post(fp)
+                except nntplib.error_temp, e:
+                    syslog('error',
+                           '(NNTPDirect) NNTP error for list "%s": %s' %
+                           (mlist.internal_name(), e))
+                except socket.error, e:
+                    syslog('error',
+                           '(NNTPDirect) socket error for list "%s": %s' %
+                           (mlist.internal_name(), e))
+            finally:
+                if conn:
+                    conn.quit()
+        except Exception, e:
+            # Some other exception occurred, which we definitely did not
+            # expect, so set this message up for requeuing.
+            self._log(e)
             return 1
-        mlist = self._open_list(listname)
-        if not mlist:
-            syslog('qrunner',
-                   'Dequeuing message destined for missing list: %s' % root)
-            self._dequeue(root)
-            return 1
-        # The mailing list object does not need to be locked
-        pipeline = HandlerAPI.do_pipeline(mlist, msg, msgdata,
-                                          ['NNTPDirect'])
-        return len(pipeline)
+        return 0
+
+
+
+def prepare_message(mlist, msg, msgdata):
+    # Add the appropriate Newsgroups: header
+    ngheader = msg['newsgroups']
+    if ngheader is not None:
+        # See if the Newsgroups: header already contains our linked_newsgroup.
+        # If so, don't add it again.  If not, append our linked_newsgroup to
+        # the end of the header list
+        ngroups = [s.strip() for s in ngheader.split(',')]
+        if mlist.linked_newsgroup not in ngroups:
+            ngroups.append(mlist.linked_newsgroup)
+            # Subtitute our new header for the old one.
+            del msg['newsgroups']
+            msg['Newsgroups'] = COMMA.join(ngroups)
+    else:
+        # Newsgroups: isn't in the message
+        msg['Newsgroups'] = mlist.linked_newsgroup
+    #
+    # Note: We need to be sure two messages aren't ever sent to the same list
+    # in the same process, since message ids need to be unique.  Further, if
+    # messages are crossposted to two Usenet-gated mailing lists, they each
+    # need to have unique message ids or the nntpd will only accept one of
+    # them.  The solution here is to substitute any existing message-id that
+    # isn't ours with one of ours, so we need to parse it to be sure we're not
+    # looping.
+    #
+    # Our Message-ID format is <mailman.secs.pid.listname@hostname>
+    msgid = msg['message-id']
+    hackmsgid = 1
+    if msgid:
+        mo = mcre.search(msgid)
+        if mo:
+            lname, hname = mo.group('listname', 'hostname')
+            if lname == mlist.internal_name() and hname == mlist.host_name:
+                hackmsgid = 0
+    if hackmsgid:
+        del msg['message-id']
+        msg['Message-ID'] = '<mailman.%d.%d.%s@%s>' % (
+            time.time(), os.getpid(), mlist.internal_name(), mlist.host_name)
+    #
+    # Lines: is useful
+    if msg['Lines'] is None:
+        # BAW: is there a better way?
+        reader = MsgReader(msg)
+        count = 0
+        while 1:
+            line = reader.readline()
+            if not line:
+                break
+            count += 1
+        msg['Lines'] = str(count)
+    #
+    # Get rid of these lines
+    del msg['received']
+    #
+    # BAW: Gross hack to ensure that we have only one
+    # content-transfer-encoding header.  More than one barfs NNTP.  I don't
+    # know why we sometimes have more than one such header, and it probably
+    # isn't correct to take the value of just the first one.  What if there
+    # are conflicting headers???
+    #
+    # This relies on the fact that the legal values are usually not parseable
+    # as addresses.  Yes this is another bogosity.
+    cteheaders = getaddresses(msg.getall('content-transfer-encoding'))
+    if cteheaders:
+        ctetuple = cteheaders[0]
+        ctevalue = ctetuple[1]
+        del msg['content-transfer-encoding']
+        msg['content-transfer-encoding'] = ctevalue
+    # Mark this message as prepared in case it has to be requeued
+    msgdata['prepped'] = 1
