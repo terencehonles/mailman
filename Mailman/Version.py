@@ -39,4 +39,4 @@ HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
 DATA_FILE_VERSION = 21
 
 # qfile/*.db schema version number
-QFILE_SCHEMA_VERSION = 1
+QFILE_SCHEMA_VERSION = 2
