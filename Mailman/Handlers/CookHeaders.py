@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,7 +42,6 @@ def process(mlist, msg, msgdata):
     # but we need it for the Acknowledge module later.
     msgdata['original_sender'] = msg.get_sender()
     subject = msg['subject']
-    bounceaddr = mlist.getListAddress('bounces')
     # VirginRunner sets _fasttrack for internally crafted messages.
     fasttrack = msgdata.get('_fasttrack')
     if not msgdata.get('isdigest') and not fasttrack:
@@ -58,11 +57,6 @@ def process(mlist, msg, msgdata):
         elif prefix and not re.search(re.escape(prefix), subject, re.I):
             del msg['subject']
             msg['Subject'] = prefix + subject
-    # get rid of duplicate headers
-    del msg['sender']
-    del msg['errors-to']
-    msg['Sender'] = msgdata.get('errorsto', bounceaddr)
-    msg['Errors-To'] = msgdata.get('errorsto', bounceaddr)
     # Mark message so we know we've been here, but leave any existing
     # X-BeenThere's intact.
     msg['X-BeenThere'] = mlist.GetListEmail()
