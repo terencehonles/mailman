@@ -164,8 +164,8 @@ def show_requests(mlist, doc):
     doc.AddItem(form)
     form.AddItem(SubmitButton('submit', _('Submit All Data')))
     # Add the subscription request section
-    subpendings = mlist.GetSubscriptionIds()
-    if subpendings:
+    pendingsubs = mlist.GetSubscriptionIds()
+    if pendingsubs:
         form.AddItem('<hr>')
         form.AddItem(Center(Header(2, _('Subscription Requests'))))
         table = Table(border=2)
@@ -173,7 +173,7 @@ def show_requests(mlist, doc):
                       Center(Bold(_('Your decision'))),
                       Center(Bold(_('Reason for refusal')))
                       ])
-        for id in subpendings:
+        for id in pendingsubs:
             time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
             table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
                           RadioButtonArray(id, (_('Defer'),
@@ -182,6 +182,34 @@ def show_requests(mlist, doc):
                                                 _('Discard')),
                                            values=(mm_cfg.DEFER,
                                                    mm_cfg.SUBSCRIBE,
+                                                   mm_cfg.REJECT,
+                                                   mm_cfg.DISCARD),
+                                           checked=0),
+                          TextBox('comment-%d' % id, size=45)
+                          ])
+        form.AddItem(table)
+    # Add the pending unsubscription request section
+    pendingunsubs = mlist.GetUnsubscriptionIds()
+    if pendingunsubs:
+        form.AddItem('<hr>')
+        form.AddItem(Center(Header(2, _('Unsubscription Requests'))))
+        table = Table(border=2)
+        table.AddRow([Center(Bold(_('User address/name'))),
+                      Center(Bold(_('Your decision'))),
+                      Center(Bold(_('Reason for refusal')))
+                      ])
+        for id in pendingunsubs:
+            addr = mlist.GetRecord(id)
+            fullname = mlist.getMemberName(addr)
+            if fullname is None:
+                fullname = _('n/a')
+            table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
+                          RadioButtonArray(id, (_('Defer'),
+                                                _('Approve'),
+                                                _('Reject'),
+                                                _('Discard')),
+                                           values=(mm_cfg.DEFER,
+                                                   mm_cfg.UNSUBSCRIBE,
                                                    mm_cfg.REJECT,
                                                    mm_cfg.DISCARD),
                                            checked=0),
