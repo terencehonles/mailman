@@ -261,7 +261,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         """Set transient variables of this and inherited classes."""
 	self.__createlock_p = lock
 	self.__lock = LockFile.LockFile(
-            os.path.join(mm_cfg.LOCK_DIR, name) + '.lock',
+            os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
             # TBD: is this a good choice of lifetime?
             lifetime = 60)
 	self._internal_name = name
