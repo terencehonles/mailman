@@ -61,9 +61,17 @@ def main():
     # could take a long time to acquire the lock.  This way we're fairly safe
     # against catastrophe at the expense of more disk I/O.
     #
-    # The `toadmin' flag is a message to qrunner that an alternative route
-    # should be taken for this message.
-    msg.Enqueue(mlist, toadmin=1)
+    # Try to figure out if the message came to the listname-admin@ or
+    # listname-owner@ address.  Ideally these would get delivered to different
+    # programs, but for backwards compatibility, they both get delivered to
+    # mailowner.  We don't want -owner messages to get processed by the bounce
+    # processor.
+    #
+    # See cron/qrunner for the paths these to flagged messages take.
+    if msg.get('to') == mlist.GetOwnerEmail():
+        msg.Enqueue(mlist, toowner=1)
+    else:
+        msg.Enqueue(mlist, toadmin=1)
 
 
 
