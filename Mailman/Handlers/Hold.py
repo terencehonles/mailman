@@ -123,6 +123,11 @@ def process(mlist, msg, msgdata):
     if not sender or sender[:len(listname)+6] == adminaddr:
         sender = msg.get_sender(use_envelope=0)
     #
+    # Possible administrivia?
+    if mlist.administrivia and Utils.is_administrivia(msg):
+        hold_for_approval(mlist, msg, msgdata, Administrivia)
+        # no return
+    #
     # Is the poster in the list of explicitly forbidden posters?
     if len(mlist.forbidden_posters):
         forbiddens = Utils.List2Dict(mlist.forbidden_posters)
@@ -180,11 +185,6 @@ def process(mlist, msg, msgdata):
            not msgdata.get('fromusenet'):
         # then
         hold_for_approval(mlist, msg, msgdata, ImplicitDestination)
-        # no return
-    #
-    # Possible administrivia?
-    if mlist.administrivia and Utils.is_administrivia(msg):
-        hold_for_approval(mlist, msg, msgdata, Administrivia)
         # no return
     #
     # Suspicious headers?
