@@ -15,9 +15,20 @@ upgrade.
 
 0. Installation requirements
 
+    You must have a mail server (MTA) that you can send messages to,
+    and a web server that supports the CGI/1.1 API.  Apache makes a
+    fine choice for web server, and MTAs such as Postfix, Exim, and
+    Sendmail should work just fine.
+
+    You will need an ANSI C compiler to build Mailman's security
+    wrappers.  The GNU C compiler gcc 2.8.1 or later is known to work
+    well.  For more information about obtaining gcc, see
+
+        http://www.gnu.org
+
     You must have the Python interpreter installed somewhere on your
-    system.  Currently Python 2.0 or later is required, although
-    Python 2.1.1 or Python 2.2 is recommended.  For information about
+    system.  Currently Python 2.1 or later is required; Python
+    2.1.2 or Python 2.2 is recommended.  For information about
     obtaining Python source code, RPM packages, or pre-compiled
     binaries please see:
 
@@ -28,13 +39,6 @@ upgrade.
     OSes.  If you run "make test", you'll see a bunch of tests skipped
     -- don't worry, you probably won't need them.  Mailman tries to
     stick to the basics that compile on most systems.
-
-    You must also have an ANSI C compiler in order to build the
-    wrapper programs which are used for improved security.  The GNU C
-    compiler gcc 2.8.1 or later is known to work well.  For more
-    information about obtaining gcc, see
-
-        http://www.gnu.org
 
     If there is a README.<yourMTA> file that describes your mail
     server (MTA), read it now.  Some MTAs are more compatible with
@@ -76,7 +80,7 @@ upgrade.
       default by using the --prefix option to configure (see below).
       If you're upgrading from a version previous to Mailman2.1alpha2,
       you will need to use --prefix unless you move your mailing
-      lists.
+      lists (this can be a wise upgrade strategy).
 
       Watch out if your site does something like mount /usr/local with
       the nosuid option.  This will break Mailman, which relies on
@@ -341,6 +345,12 @@ upgrade.
 
       (Note that /etc/init.d may be /etc/rc.d/init.d on some systems.)
 
+      On Debian, you probably want to use
+
+          % update-rc.d mailman defaults
+
+      instead of chkconfig.
+
       For Unixes that don't support chkconfig, simply copy
       misc/mailman as above, then set up the following symbolic links,
       again as root:
@@ -371,6 +381,9 @@ upgrade.
       mm_cfg.py (see below).
 
       % bin/newlist mailman
+
+      Follow the prompts, and see the README file for more
+      information.
 
     - You should then subscribe yourself to the mailman list.
 
