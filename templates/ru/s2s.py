@@ -30,6 +30,8 @@ for line in sys.stdin.readlines ():
 
 # pprint (files)
 
+action = 0
+
 for line in open ('status', 'r').readlines ():
     parts = string.split (chop (line))
 
@@ -39,10 +41,16 @@ for line in open ('status', 'r').readlines ():
 
             if files[parts[0]] != parts[1]:
                 print 'Update: %s (%s -> %s)' % (parts[0], parts[1], files[parts[0]])
+                action = 1
 
             del files[parts[0]] # delete the item
         else:
             print 'Delete:', parts[0]
+            action = 1
 
 for file in files.keys ():
     print 'New:', file
+    action = 1
+
+if not action:
+    print 'You are translating the latest versions'
