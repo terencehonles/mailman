@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -939,9 +939,24 @@ DEFAULT_DIGEST_IS_DEFAULT = 0
 DEFAULT_MIME_IS_DEFAULT_DIGEST = 0
 DEFAULT_DIGEST_SIZE_THRESHHOLD = 30     # KB
 DEFAULT_DIGEST_SEND_PERIODIC = 1
-DEFAULT_PLAIN_DIGEST_KEEP_HEADERS = ['message', 'date', 'from',
-                                     'subject', 'to', 'cc',
-                                     'reply-to', 'organization']
+
+# Headers which should be kept in both RFC 1153 (plain) and MIME digests.  RFC
+# 1153 also specifies these headers in this exact order, so order matters.
+MIME_DIGEST_KEEP_HEADERS = [
+    'Date', 'From', 'To', 'Cc', 'Subject', 'Message-ID', 'Keywords',
+    # I believe we should also keep these headers though.
+    'In-Reply-To', 'References', 'Content-Type', 'MIME-Version',
+    'Content-Transfer-Encoding', 'Precedence', 'Reply-To',
+    # Mailman 2.0 adds these headers
+    'Message',
+    ]
+
+PLAIN_DIGEST_KEEP_HEADERS = [
+    'Message', 'Date', 'From',
+    'Subject', 'To', 'Cc',
+    'Message-ID', 'Keywords',
+    'Content-Type',
+    ]
 
 
 
