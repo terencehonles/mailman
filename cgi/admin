@@ -1,0 +1,364 @@
+#!/usr/local/bin/python
+import sys, os, cgi, string, crypt, types
+f = open('/tmp/quick', 'a+')
+#sys.stderr = sys.stdout
+sys.stderr = f
+sys.path.append('/home/mailman/mailman/modules')
+import mm_utils, maillist, mm_cfg, htmlformat
+
+
+def InitDocument():
+    return htmlformat.Document()
+
+doc = InitDocument()
+
+path = os.environ['PATH_INFO']
+list_info = mm_utils.GetPathPieces(path)
+
+if len(list_info) < 1:
+    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    print doc.Format()
+    sys.exit(0)
+
+list_name = list_info[0]
+
+try:
+    list = maillist.MailList(list_name)
+except:
+    doc.AddItem(htmlformat.Header(2, "%s : No such list" % list_name))
+    print doc.Format()
+    sys.exit(0)
+
+if not list._ready:
+    doc.AddItem(htmlformat.Header(2, "%s : No such list" % list_name))
+    print doc.Format()
+    sys.exit(0)
+
+
+def GetGuiItem(table_entry):
+    varname, type, params, dependancies, descr = table_entry
+    if type == mm_cfg.Radio or type == mm_cfg.Toggle:
+	gui_part = htmlformat.RadioButtonArray(varname, params, 
+					      getattr(list, varname))
+    elif (type == mm_cfg.String or type == mm_cfg.Email or type == mm_cfg.Host 
+	  or type == mm_cfg.Number):
+	gui_part = htmlformat.TextBox(varname, getattr(list, varname), params)
+    elif type == mm_cfg.Text:
+	if params:
+	    r, c = params
+	else:
+	    r, c = None, None
+	val = getattr(list, varname)
+	if not val:
+	    val = ''
+	gui_part = htmlformat.TextArea(varname, val, r, c)
+    elif type == mm_cfg.EmailList:
+	if params:
+	    r, c = params
+	else:
+	    r, c = None, None
+	res = string.join(getattr(list, varname), '\n')
+	gui_part = htmlformat.TextArea(varname, res, r, c, wrap='off')
+    return gui_part
+
+def FormatConfiguration(doc):
+    doc.SetTitle('%s Administration' % list.real_name)
+    doc.AddItem(htmlformat.Header(2, 'Configuration for %s' % list.real_name))
+
+
+    doc.AddItem('<hr>')
+
+    link = htmlformat.Link(list.GetScriptURL('admindb'), 
+			   'View or edit the administrative requests database.')
+    doc.AddItem(htmlformat.FontSize("+1", link))
+    doc.AddItem('<p>')
+
+    link = htmlformat.Link(list.GetScriptURL('listinfo'),
+			   'Go to the general list information page.')
+    doc.AddItem(htmlformat.FontSize("+1", link))
+    doc.AddItem('<p>')
+    
+    link = htmlformat.Link(list.GetScriptURL('edithtml'),
+			   'Edit the HTML for the public list pages.')
+    doc.AddItem(htmlformat.FontSize("+1", link))
+    doc.AddItem('<p>')
+
+    doc.AddItem('<hr>')
+
+
+    form = htmlformat.Form(list.GetScriptURL('admin'))
+    doc.AddItem(form)
+
+    password_table = htmlformat.Table()
+    password_table.AddRow(['Enter the admin password to change options:',
+			   htmlformat.PasswordBox('adminpw')])
+    password_table.AddRow(['When you are done...', 
+			   htmlformat.SubmitButton('submit', 'Submit Changes')])
+
+    form.AddItem(password_table)
+
+    big_table = htmlformat.Table(border=2)
+    big_table.AddRow([htmlformat.Center(htmlformat.Header(2, 'General Options'))])
+    big_table.AddCellInfo(0,0,colspan=2)
+    big_table.AddRow([htmlformat.Bold('Option'), htmlformat.Bold('Value')])
+
+    for item in general:
+	gui_item = GetGuiItem(item)
+	big_table.AddRow([item[4], gui_item])
+	# This wasn't handled too well.
+	if item[1] == mm_cfg.Toggle:
+	    big_table.AddRow([htmlformat.Header(2, "If so:")])
+	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+
+    big_table.AddRow(['<br>'])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Center(htmlformat.Header(2, 'Digest Options'))])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Bold('Option'), htmlformat.Bold('Value')])
+
+    for item in digest:
+	gui_item = GetGuiItem(item)
+	big_table.AddRow([item[4], gui_item])
+	# Yuck.
+	if item[1] == mm_cfg.Toggle:
+	    big_table.AddRow([htmlformat.Header(2, "If so:")])
+	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+
+    big_table.AddRow(['<br>'])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Center(htmlformat.Header(2, 
+						      'Non-Digested Options'))])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Bold('Option'), htmlformat.Bold('Value')])
+
+    for item in nodigest:
+	gui_item = GetGuiItem(item)
+	big_table.AddRow([item[4], gui_item])
+	# *sigh*
+	if item[1] == mm_cfg.Toggle:
+	    big_table.AddRow([htmlformat.Header(2, "If so:")])
+	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow(['<br>'])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+    big_table.AddRow([htmlformat.Center(htmlformat.Header(2, 'Bounce Administration Options'))])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+    for item in bounce:
+	gui_item = GetGuiItem(item)
+	big_table.AddRow([item[4], gui_item])
+	# This code sux...
+	if item[1] == mm_cfg.Toggle:
+	    big_table.AddRow([htmlformat.Header(2, "If so:")])
+	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+    
+    big_table.AddRow(['<br>'])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Center(htmlformat.Header(2, 'Archival Options'))])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Bold('Option'), htmlformat.Bold('Value')])
+
+    for item in archives:
+	gui_item = GetGuiItem(item)
+	big_table.AddRow([item[4], gui_item])
+	# This code sux...
+	if item[1] == mm_cfg.Toggle:
+	    big_table.AddRow([htmlformat.Header(2, "If so:")])
+	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+
+    form.AddItem(big_table)
+    form.AddItem('<p>')
+
+    change_pw_table = htmlformat.Table(border=2)
+    change_pw_table.AddRow([htmlformat.Header(2,
+					      htmlformat.Center(
+						  'Change Your Password:'))])
+    change_pw_table.AddCellInfo(change_pw_table.GetCurrentRowIndex(), 0,
+				colspan=2)
+			  
+    change_pw_table.AddRow(['Enter your new password:', 
+			   htmlformat.PasswordBox('newpw')])
+    change_pw_table.AddRow(['And also confirm it:', 
+			   htmlformat.PasswordBox('confirmpw')])
+
+    form.AddItem(htmlformat.Center(change_pw_table))
+    # Improve the html here...
+    form.AddItem('<hr>')
+    form.AddItem('<h3>Mass Subscribe People</h3>')
+    form.AddItem('<h4>enter one email address per line</h4>')
+    form.AddItem(htmlformat.TextArea(name='subscribees',rows=20,cols=60,wrap=None))
+    form.AddItem(list.GetMailmanFooter())
+    
+
+turn_on_moderation = 0
+
+def GetValidValue(list, prop, my_type, val, dependant):
+    if my_type == mm_cfg.Radio or my_type == mm_cfg.Toggle:
+	if type(val) <> types.IntType:
+	    try:
+		val = eval(val)
+	    except:
+		pass
+		# Don't know what to do here...
+	    return val
+    elif my_type == mm_cfg.String or my_type == mm_cfg.Text:
+	return val
+    elif my_type == mm_cfg.Email:
+	try:
+	    valid = mm_utils.ValidEmail(val)
+	    if valid:
+		return val
+	except:
+	    pass
+	# Revert to the old value.
+	return getattr(list, prop)
+    elif my_type == mm_cfg.EmailList:
+	def SafeValidAddr(addr):
+	    import mm_utils
+	    try:
+		valid = mm_utils.ValidEmail(addr)
+		if valid:
+		    return 1
+		else:
+		    return 0
+	    except:
+		return 0
+
+	val = filter(SafeValidAddr, map(string.strip, string.split(val, '\n')))
+	if dependant and len(val):
+	    # Wait till we've set everything to turn it on,
+	    # as we don't want to clobber our special case.
+	    turn_on_moderation = 1
+	return val
+    elif my_type == mm_cfg.Host:
+	return val
+##
+##      This code is sendmail dependant, so we'll just live w/o the error
+##      Checking for now.
+##
+## 	# Shouldn't have to read in the whole file.
+## 	file = open('/etc/sendmail.cf', 'r')
+## 	lines = string.split(file.read(), '\n')
+## 	file.close()
+## 	def ConfirmCWEntry(item):
+## 	    return item[0:2] == 'Cw'
+## 	lines = filter(ConfirmCWEntry, lines)
+## 	if not len(lines):
+## 	    # Revert to the old value.
+## 	    return getattr(list, prop)
+## 	for line in lines:
+## 	    if string.lower(string.strip(line[2:])) == string.lower(val):
+## 		return val
+## 	return getattr(list, prop)
+    elif my_type == mm_cfg.Number:
+	try:
+	    num = eval(val)
+	    if num < 0:
+		return getattr(list, prop)
+	    return num
+	except:
+	    return getattr(list, prop)
+    else:
+	# Should never get here...
+	return val
+	    
+
+def ChangeOptions(list, opt_list, cgi_info, document):
+    for item in opt_list:
+	property, type, args, dependancies, desc = item
+	if not cgi_info.has_key(property):
+	    if (type <> mm_cfg.Text and 
+		type <> mm_cfg.String and 
+		type <> mm_cfg.EmailList):
+		continue
+	    else:
+		val = ''
+	else:
+	    val = cgi_info[property].value
+	value = GetValidValue(list, property, type, val, dependancies)
+	setattr(list, property, value)
+    if cgi_info.has_key('subscribees'):
+	name_text = cgi_info['subscribees'].value
+	names = string.split(name_text, '\r\n')
+	for new_name in names:
+            try:
+#FIXME: The admin needs to be able to specify the options to subscribe w/
+		list.AddMember(new_name, mm_utils.GetRandomSeed())
+#FIXME: Give some sort of an indication of which names didn't work, and why
+#       they didn't work...	
+	    except:
+		pass
+    if cgi_info.has_key('newpw'):
+	if cgi_info.has_key('confirmpw'):
+	    new = cgi_info['newpw'].value
+	    confirm = cgi_info['confirmpw'].value
+	    if new == confirm:
+		list.password = crypt.crypt(new, mm_utils.GetRandomSeed())
+	    else:
+		document.AddItem(htmlformat.Header(3, htmlformat.Italic(
+		    'Error: Passwords did not match.')))
+	else:
+	    document.AddItem(htmlformat.Header(3, htmlformat.Italic(
+		'Error: You must type in your new password twice.')))
+	    
+    list.Save()
+    
+
+try:
+    info = list.GetConfigInfo()
+    general  = info['general']
+    nodigest = info['nondigest']
+    digest   = info['digest']
+    archives = info['archive'] 
+    if len(list._internal_name) < 3 or list._internal_name[-3:] <> '.jp':
+	bounce   = info['bounce']
+    else:
+	bounce = []
+
+    cgi_data = cgi.FieldStorage()
+    if len(cgi_data.keys()):
+	if not cgi_data.has_key('adminpw'):
+	    doc.AddItem('<hr>')
+	    doc.AddItem(
+		htmlformat.Header(3, htmlformat.Italic('Error: '
+		    'You must supply the admin password to change options.')))
+	else:
+	    try:
+		list.ConfirmAdminPassword(cgi_data['adminpw'].value)
+		ChangeOptions(list, general + nodigest + digest + archives + bounce,
+			      cgi_data, doc)
+		# Yuck.  This shouldn't need to be here.
+		if not list.digestable and not list.nondigestable:
+		    list.nondigestable = 1
+	    except:
+		doc.AddItem('<hr>')
+		doc.AddItem(
+		    htmlformat.Header(3, htmlformat.Italic(
+			'Error: Incorrect admin password.')))
+
+    if not list.digestable and len(list.digest_members):
+	doc.AddItem('<hr>')
+	doc.AddItem(htmlformat.Header(3, 'Warning:  you have digest members, '
+	'but digests are turned off.  Those people will not receive mail.'))
+    if not list.nondigestable and len(list.members):
+	doc.AddItem('<hr>')
+	doc.AddItem(htmlformat.Header(3, 'Warning: you have list members, but '
+        'non-digestified mail is turned off.  They will receive mail until '
+	'you fix this problem.'))
+	
+    FormatConfiguration(doc)
+
+finally:
+    try:
+	print doc.Format()
+    except:
+	pass
+    list.Unlock()
