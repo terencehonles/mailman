@@ -19,23 +19,27 @@
 """Find all lists that a member's address is on.
 
 Usage:
-    find_member [-h] [-l listname] [-x listname] regex
+    find_member [options] regex [regex [...]]
 
 Where:
-    --list listname
+    --listname=listname
     -l listname
-        Include only the named list in the search
+        Include only the named list in the search.
 
-    --exclude listname
+    --excluded=listname
     -x listname
-        Exclude the named list from the search
+        Exclude the named list from the search.
+
+    --owners
+    -w
+        Search list owners as well as members.
 
     --help
     -h
         Print this help message and exit.
 
     regex
-        A Python regular expression to match against
+        A Python regular expression to match against.
 
 The interaction between -l and -x is as follows.  If any -l option is given
 then only the named list will be included in the search.  If any -x option is
@@ -49,17 +53,23 @@ http://www.python.org/doc/current/lib/module-re.html
 
 Address matches are case-insensitive, but case-preserved addresses are
 displayed.
+
 """
 
 import sys
 import re
+import getopt
 
 import paths
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 
+AS_MEMBER = 0x01
+AS_OWNER = 0x02
 
+
+
 def usage(code, msg=''):
     print __doc__ % globals()
     if msg:
@@ -68,77 +78,99 @@ def usage(code, msg=''):
 
 
 
-def scanlists(listnames, cre):
+def scanlists(options):
+    cres = []
+    for r in options.regexps:
+        cres.append(re.compile(r, re.IGNORECASE))
+    #
+    # dictionary of {address, (listname, ownerp)}
     matches = {}
-    for name in listnames:
+    for listname in options.listnames:
         try:
-            m = MailList.MailList(name, lock=0)
+            mlist = MailList.MailList(listname, lock=0)
         except Errors.MMListError:
             print 'No such list "%s"' % name
             continue
-##        print 'Scanning list "%s"' % name
-        allmembers = m.GetMembers() + m.GetDigestMembers()
-        for member in allmembers:
-            if cre.search(member):
-                addr = m.GetUserSubscribedAddress(member)
-                foundlists = matches.get(addr, {})
-                foundlists[name] = addr
-                matches[addr] = foundlists
+        if options.owners:
+            owners = mlist.owner
+        else:
+            owners = []
+        for cre in cres:
+            for member in mlist.GetMembers() + mlist.GetDigestMembers():
+                if cre.search(member):
+                    addr = mlist.GetUserSubscribedAddress(member)
+                    entries = matches.get(addr, {})
+                    aswhat = entries.get(listname, 0)
+                    aswhat = aswhat | AS_MEMBER
+                    entries[listname] = aswhat
+                    matches[addr] = entries
+            for owner in owners:
+                if cre.search(owner):
+                    entries = matches.get(addr, {})
+                    aswhat = entries.get(listname, 0)
+                    aswhat = aswhat | AS_OWNER
+                    entries[listname] = aswhat
+                    matches[addr] = entries
     return matches
 
 
 
-def main():
+class Options:
     listnames = Utils.list_names()
-    loptseen = 0
-    searchre = None
-    # parse options and figure out the lists to search
+    owners = None
+
+def main():
     try:
-        argvi = 1
-        while argvi < len(sys.argv):
-            argv = sys.argv[argvi]
-            if argv in ('-h', '--help'):
-                usage(0)
-            elif argv in ('-l', '--list'):
-                argvi = argvi + 1
-                name = sys.argv[argvi]
-                if not loptseen:
-                    listnames = []
-                    loptseen = 1
-                listnames.append(name)
-            elif argv in ('-x', '--exclude'):
-                argvi = argvi + 1
-                name = sys.argv[argvi]
-                try:
-                    listnames.remove(name)
-                except ValueError:
-                    pass
-            elif searchre:
-                usage(1, 'multiple search regexps not allowed')
-            else:
-                searchre = argv
-            argvi = argvi + 1
-    except IndexError:
-        usage(2)
+        opts, args = getopt.getopt(sys.argv[1:], 'l:x:wh',
+                                   ['listname=', 'excluded=', 'owners',
+                                    'help'])
+    except getopt.error, e:
+        usage(1, e)
 
-    if not listnames:
+    options = Options()
+    loptseen = 0
+    excludes = []
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-l', '--listname'):
+            if not loptseen:
+                options.listnames = []
+                loptseen = 1
+            options.listnames.append(arg)
+        elif opt in ('-x', '--exclude'):
+            excludes.append(arg)
+        elif opt in ('-w', '--owners'):
+            options.owners = 1
+
+    for ex in excludes:
+        try:
+            options.listnames.remove(ex)
+        except ValueError:
+            pass
+
+    if not args:
+        usage(1, 'search regular expression required')
+
+    options.regexps = args
+
+    if not options.listnames:
         print 'No lists to search'
-        sys.exit(0)
+        return
 
-    if not searchre:
-        usage(3, 'no regexp provided')
-
-    matches = scanlists(listnames, re.compile(searchre, re.IGNORECASE))
+    matches = scanlists(options)
     addrs = matches.keys()
     addrs.sort()
     for k in addrs:
-        lists = matches[k].keys()
-        if len(lists) == 1:
-            print k, 'found in list', lists[0]
-        else:
-            print k, 'found in:'
-            for name in lists:
-                print '   ', name
+        hits = matches[k]
+        lists = hits.keys()
+        print k, 'found in:'
+        for name in lists:
+            aswhat = hits[name]
+            if aswhat & AS_MEMBER:
+                print '    ', name
+            if aswhat & AS_OWNER:
+                print '    ', name, '(as owner)'
 
 
 
