@@ -67,16 +67,21 @@ def GetPathPieces(path):
 	pass
     return l
 
-def MakeDirTree(path, perms=0744, verbose=0):
+def MakeDirTree(path, perms=0774, verbose=0):
     made_part = '/'
     path_parts = GetPathPieces(path)
     for item in path_parts:
 	made_part = os.path.join(made_part, item)
 	if os.path.exists(made_part):
 	    if not os.path.isdir(made_part):
-		raise "RuntimeError", "Couldn't make dir tree for %s.  (%s already exists)" % (path, made_part)
+		raise "RuntimeError", ("Couldn't make dir tree for %s.  (%s"
+				       " already exists)" % (path, made_part))
 	else:
-	    os.mkdir(made_part, perms)
+	    ou = os.umask(0)
+	    try:
+		os.mkdir(made_part, perms)
+	    finally:
+		os.umask(ou)
 	    if verbose:
 		print 'made directory: ', madepart
   
