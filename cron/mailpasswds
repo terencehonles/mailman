@@ -155,25 +155,27 @@ def main():
             header = '%-40s %-10s\n%-40s %-10s' % (
                 _('List'), _('Password // URL'), '----', '--------')
             # Now we're finally ready to send the email!
-            siteadmin = Utils.get_site_email(host, '-admin')
-            sitereq = Utils.get_site_email(host, '-request')
+            siteowner = Utils.get_site_email(host, 'owner')
+            sitereq = Utils.get_site_email(host, 'request')
+            sitebounce = Utils.get_site_email(host, 'bounces')
             text = Utils.maketext(
                 'cronpass.txt',
                 {'hostname': host,
                  'useraddr': addr,
                  'exreq'   : sitereq,
-                 'owner'   : siteadmin,
+                 'owner'   : siteowner,
                  }, lang=poplang)
             # Add the table to the end so it doesn't get wrapped/filled
             text += (header + '\n' + NL.join(table))
-            msg = Message.UserNotification(addr, sitereq, subj, text)
+            msg = Message.UserNotification(addr, siteowner, subj, text)
             msg['X-No-Archive'] = 'yes'
             # We want to make this look like it's coming from the siteowner's
             # list, but we also want to be sure that the apparent host name is
             # the current virtual host.  Look in CookHeaders.py for why this
             # trick works.  Blarg.
-            msg.send(sitelist, **{'errorsto': sitereq,
+            msg.send(sitelist, **{'errorsto': sitebounce,
                                   '_nolist' : 1,
+                                  'verp'    : mm_cfg.VERP_PASSWORD_REMINDERS,
                                   })
 
 
