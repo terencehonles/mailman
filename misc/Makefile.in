@@ -65,6 +65,7 @@ install:
 	    dir=$(prefix)/$$d; \
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
+	$(INSTALL) -m $(FILEMODE) pending_subscriptions.db $(prefix)/misc
 
 clean:
 
