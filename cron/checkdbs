@@ -23,12 +23,12 @@ list moderators if necessary.
 import sys
 import time
 from types import UnicodeType
-from email.Charset import Charset
 
 import paths
-# mm_cfg must be imported before the other modules, due to the side-effect of
-# it hacking sys.paths to include site-packages.  Without this, running this
-# script from cron with python -S will fail.
+
+# Import this after paths so we get Mailman's copy of the email package
+from email.Charset import Charset
+
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
