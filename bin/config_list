@@ -62,6 +62,7 @@ The options -o and -i are mutually exclusive.
 """
 
 import sys
+import re
 import time
 import getopt
 from types import TupleType
@@ -72,6 +73,8 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
 from Mailman.i18n import _
+
+NL = '\n'
 
 
 
@@ -111,7 +114,12 @@ def do_output(listname, outfile):
             info = config[k]
             print >> outfp, '##', k.capitalize(), _('options')
             print >> outfp, '#'
-            desc = Utils.wrap(info[0])
+            # First, massage the descripton text, which could have obnoxious
+            # leading whitespace on second and subsequent lines due to
+            # triple-quoted string nonsense in the source code.
+            desc = NL.join([s.lstrip() for s in info[0].split('\n')])
+            # Print out the category description
+            desc = Utils.wrap(desc)
             for line in desc.split('\n'):
                 print >> outfp, '#', line
             print >> outfp
@@ -123,7 +131,17 @@ def do_output(listname, outfile):
                 if varname[0] == '_':
                     continue
                 vtype = data[1]
-                desc = Utils.wrap(data[-1])
+                # First, massage the descripton text, which could have
+                # obnoxious leading whitespace on second and subsequent lines
+                # due to triple-quoted string nonsense in the source code.
+                desc = NL.join([s.lstrip() for s in data[-1].split('\n')])
+                # Now strip out all HTML tags
+                desc = re.sub('<.*?>', '', desc)
+                # And convert &lt;/&gt; to <>
+                desc = re.sub('&lt;', '<', desc)
+                desc = re.sub('&gt;', '>', desc)
+                # Print out the variable description.
+                desc = Utils.wrap(desc)
                 for line in desc.split('\n'):
                     print >> outfp, '#', line
                 # munge the value based on its type
