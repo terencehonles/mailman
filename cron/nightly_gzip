@@ -111,11 +111,11 @@ def main():
             if mlist.last_post_time > 0:
                 print 'List', name, 'has a bogus archive_directory:', dir
             continue
+        if VERBOSE:
+            print 'Processing list:', name
         files = []
         for f in allfiles:
-            try:
-                time.strptime(f, '%Y-%B.txt')
-            except ValueError:
+            if f[-4:] <> '.txt':
                 continue
             # stat both the .txt and .txt.gz files and append them only if 
             # the former is newer than the latter.
