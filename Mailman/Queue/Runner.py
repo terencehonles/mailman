@@ -165,7 +165,7 @@ class Runner:
     def _open_list(self, listname):
         # Cache the opening of the list object given its name.  The probably
         # is only a moderate win because when a list is locked, all its
-        # attributes are re-read from the config.db file.  This may help more
+        # attributes are re-read from the config.pck file.  This may help more
         # when there's a real backing database.
         if self._cachelists:
             mlist = self._listcache.get(listname)
