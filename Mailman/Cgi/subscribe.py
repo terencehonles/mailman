@@ -26,7 +26,11 @@ from Mailman import mm_cfg
 
 def main():
     doc = htmlformat.Document()
-
+    if not os.environ.has_key("PATH_INFO"):
+        doc.AddItem(htmlformat.Header(2, "Error"))
+        doc.AddItem(htmlformat.Bold("You must include a listname in the url."))
+        print doc.Format(bgcolor="#ffffff")
+        sys.exit(0)
     path = os.environ['PATH_INFO']
     list_info = Utils.GetPathPieces(path)
     list_name = string.lower(list_info[0])
