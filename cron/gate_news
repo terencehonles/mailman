@@ -33,6 +33,7 @@ import os
 import string
 import time
 import getopt
+import traceback
 
 import paths
 from Mailman import mm_cfg
@@ -54,7 +55,7 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 GATENEWS_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_news.lock')
 
-LogStdErr('fromusenet', 'gate_news', manual_reprime=0, tee_to_stdout=1)
+LogStdErr('error', 'gate_news', manual_reprime=0, tee_to_stdout=1)
 
 
 
@@ -120,13 +121,13 @@ def poll_newsgroup(mlist, conn, first, last):
                                                       '_enqueue_immediate': 1})
                 syslog('fromusenet', 'posted msgid %d to list %s' %
                        (num, mlist.internal_name()))
-            # Even if we don't post the message because it was seen on the
-            # list already, update the watermark
-            mlist.usenet_watermark = num
         except nntplib.error_temp, msg:
             syslog('fromusenet', 'NNTP error for list %s, article %d' %
                    (mlist.internal_name(), num))
             syslog('fromusenet', str(msg))
+        # Even if we don't post the message because it was seen on the
+        # list already, update the watermark
+        mlist.usenet_watermark = num
 
 
 
@@ -167,32 +168,39 @@ def process_lists():
         mlist = MailList.MailList(listname, lock=0)
         if not mlist.gateway_to_mail:
             continue
-        pid = os.fork()
+        try:
+            pid = os.fork()
+        except OSError, e:
+            # The fork failed, so there's not much we can do from here on out.
+            syslog('fromusenet', 'fork failed: %s' % e)
+            return kids
         if pid:
             # In the parent.
             kids[pid] = pid
-        else:
-            # In the child.  Try to get the list lock.
+            continue
+        # In the child
+        locked = 0
+        try:
             try:
                 mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-            except LockFile.TimeOutError:
-                # oh well, try again later
-                os._exit(0)
-            try:
+                locked = 1
                 gate_list(mlist)
+            finally:
+                if locked:
+                    try:
+                        mlist.Save()
+                    finally:
+                        # Be dang sure we unlock the list.
+                        mlist.Unlock()
                 syslog('fromusenet', '%s watermark: %d' %
                        (mlist.internal_name(), mlist.usenet_watermark))
-            finally:
-                mlist.Save()
-                mlist.Unlock()
-            # TBD: I'm not 100% sure this is the right thing to do here.  What
-            # we want is to guarantee that no matter what happens, the list
-            # data is saved and the lock is relinquished.  The finally clause
-            # should make sure about this.  If no exception occurs, a child
-            # exit status of 0 should signal a-okay.  Otherwise, the exception
-            # should percolate to the top, causing a non-zero exit status,
-            # which will trigger an email by cron.
             os._exit(0)
+        except LockFile.TimeOutError:
+            # Couldn't get the list lock.  Try again later.
+            os._exit(0)
+        except:
+            traceback.print_exc()
+            os._exit(1)
     return kids
 
 
@@ -202,16 +210,23 @@ def main():
                              # it's okay to hijack this
                              lifetime=mm_cfg.QRUNNER_LOCK_LIFETIME)
     try:
-        # gate_news runs every 10 minutes
-        lock.lock(timeout=mm_cfg.minutes(5))
+        lock.lock(timeout=0.5)
     except LockFile.TimeOutError:
         syslog('fromusenet', 'could not acquire gate_news lock')
         return
     try:
+        pid = os.getpid()
         kids = process_lists()
+        # Failsafe -- child process may have leaked through.
+        if pid <> os.getpid(): os._exit(1)
+        # This function will touching the gate_news lock file so it doesn't
+        # get stale as the child processes are running.
+        def keepalive(lock=lock):
+            lock.refresh()
+        # Wait until all the child processes have exited.
+        Utils.reap(kids, keepalive)
     finally:
         lock.unlock(unconditionally=1)
-    Utils.reap(kids)
             
 
 
