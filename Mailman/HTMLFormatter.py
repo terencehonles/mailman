@@ -20,9 +20,13 @@
 
 import os
 import errno
-# XXX: should be converted to use re module
+# BAW: should be converted to use re module
 import regsub 
+# BAW: this should be de-string-module-ified
 import string
+import shutil
+
+# BAW: these should import from Mailman
 import mm_cfg
 import Utils
 from htmlformat import *
@@ -412,22 +416,22 @@ class HTMLFormatter:
         return d
                   
     def InitTemplates(self, langs=None):
-	def ExtensionFilter(item):
-	    return item[-5:] == '.html'
-
-        if not langs:
+        if langs is None:
             langs = [mm_cfg.DEFAULT_SERVER_LANGUAGE]
-
         for L in langs:
-            files = filter(ExtensionFilter,
-                           os.listdir(os.path.join(mm_cfg.TEMPLATE_DIR, L)))
-            Utils.MakeDirTree(os.path.join(self._template_dir, L))
-
-            for filename in files:
-                file1 = open(os.path.join(mm_cfg.TEMPLATE_DIR, L, filename))
-                text = file1.read()
-                file1.close()
-                file2 = open(os.path.join(self._template_dir, L, filename),
-                             'w+')
-                file2.write(text)
-                file2.close()
+            # srcdir is where the language template .html files will come
+            # from.  Usually $MAILMAN/templates/<lang> but if that doesn't
+            # exist, default to $MAILMAN/templates for the English templates.
+            srcdir = os.path.join(mm_cfg.TEMPLATE_DIR, L)
+            if not os.path.isdir(srcdir):
+                srcdir = mm_cfg.TEMPLATE_DIR
+            # dstdir is where to copy the language templates to.
+            dstdir = os.path.join(self._template_dir, L)
+            omask = os.umask(0)
+            try:
+                os.makedirs(dstdir, 02775)
+            finally:
+                os.umask(omask)
+            # Now copy all the .html files over
+            for file in [f for f in os.listdir(srcdir) if f.endswith('.html')]:
+                shutil.copy(os.path.join(srcdir, file), dstdir)
