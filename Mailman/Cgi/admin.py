@@ -18,14 +18,18 @@
 
 """Process and produce the list-administration options forms.
 
-To run stand-alone for debugging, set env var PATH_INFO to name of list
-and, optionally, options category."""
+"""
 
+import os
+import cgi
+import string
+import types
 
-import sys
-import os, cgi, string, types, time
-import paths                                      # path hacking
-from Mailman import Utils, MailList, Errors, MailCommandHandler
+import paths
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import Errors
+from Mailman import MailCommandHandler
 from Mailman.htmlformat import *
 from Mailman.Crypt import crypt
 from Mailman import mm_cfg
@@ -40,47 +44,42 @@ CATEGORIES = [('general', "General Options"),
 	      ('gateway', "Mail-News and News-Mail gateways")]
 
 
+
 def main():
     """Process and produce list options form.
 
     CGI input indicates that we're returning from submission of some new
-    settings, which is processed before producing the new version."""
-    global list_name, list_info, doc
-    doc = Document()
+    settings, which is processed before producing the new version.
 
+    """
+    doc = Document()
     try:
         path = os.environ['PATH_INFO']
     except KeyError:
-        path = ""
-    list_info = Utils.GetPathPieces(path)
+        path = ''
+    parts = Utils.GetPathPieces(path)
     # How many ../'s we need to get back to http://host/mailman
-
-    if len(list_info) == 0:
+    if len(parts) == 0:
         FormatAdminOverview()
 	return
-
-    list_name = string.lower(list_info[0])
-
+    # get the list object
+    listname = string.lower(parts[0])
     try: 
-        lst = MailList.MailList(list_name)
-    except Errors.MMUnknownListError:
-        lst = None
-    try:
-	if not (lst and lst._ready):
-            FormatAdminOverview(error="List <em>%s</em> not found."
-                                % list_name)
+        mlist = MailList.MailList(listname)
+    except (Errors.MMUnknownListError, Errors.MMListNotReady):
+            FormatAdminOverview(error="List <em>%s</em> not found." % listname)
             return
-
-        if len(list_info) == 1:
+    try:
+        if len(parts) == 1:
             category = 'general'
             category_suffix = ''
         else:
-            category = list_info[1]
+            category = parts[1]
             category_suffix = category
 
         if category not in map(lambda x: x[0], CATEGORIES):
             category = 'general'
-        global cgi_data
+
         cgi_data = cgi.FieldStorage()
 
         # Authenticate.
@@ -100,8 +99,7 @@ def main():
             adminpw = cgi_data['adminpw'].value
         try:
             # admin uses cookies with -admin name suffix
-            is_auth = lst.WebAuthenticate(password=adminpw,
-                                          cookie='admin')
+            is_auth = mlist.WebAuthenticate(password=adminpw, cookie='admin')
         except Errors.MMBadPasswordError:
             message = 'Sorry, wrong password.  Try again.'
         except Errors.MMExpiredCookieError:
@@ -113,14 +111,14 @@ def main():
             message = 'Authentication error.'
 
         if not is_auth:
-            defaulturi = '/mailman/admin%s/%s' % (mm_cfg.CGIEXT, list_name)
+            defaulturi = '/mailman/admin%s/%s' % (mm_cfg.CGIEXT, listname)
             if message:
                 message = FontAttr(
                     message, color='FF5060', size='+1').Format()
             print 'Content-type: text/html\n\n'
             text = Utils.maketext(
                 'admlogin.txt',
-                {'listname': list_name,
+                {'listname': listname,
                  'path'    : Utils.GetRequestURI(defaulturi),
                  'message' : message,
                  })
@@ -139,41 +137,42 @@ def main():
             if qs and type(qs) == types.ListType:
                 varhelp = qs[0]
         if varhelp:
-            FormatOptionHelp(doc, varhelp, lst)
+            FormatOptionHelp(doc, varhelp, mlist)
             print doc.Format(bgcolor="#ffffff")
             return
 
         if cgi_data.has_key('bounce_matching_headers'):
             try:
-                pairs = lst.parse_matching_header_opt()
+                pairs = mlist.parse_matching_header_opt()
             except Errors.MMBadConfigError, line:
                 AddErrorMessage(doc,
                                 'Warning: bad matching-header line'
                                 ' (does it have the colon?)<ul> %s </ul>',
                                 line)
 
-	if not lst.digestable and len(lst.GetDigestMembers()):
+	if not mlist.digestable and len(mlist.GetDigestMembers()):
 	    AddErrorMessage(doc,
                             'Warning:  you have digest members,'
                             ' but digests are turned off.'
                             '  Those people will not receive mail.')
-	if not lst.nondigestable and len(lst.GetMembers()):
+	if not mlist.nondigestable and len(mlist.GetMembers()):
 	    AddErrorMessage(doc,
-                            'Warning:  you have lst members,'
+                            'Warning:  you have list members,'
                             ' but non-digestified mail is turned'
                             ' off.  They will receive mail until'
                             ' you fix this problem.')
         if len(cgi_data.keys()):
-            ChangeOptions(lst, category, cgi_data, doc)
-	FormatConfiguration(doc, lst, category, category_suffix)
+            ChangeOptions(mlist, category, cgi_data, doc)
+	FormatConfiguration(doc, mlist, category, category_suffix, cgi_data)
 	print doc.Format(bgcolor="#ffffff")
 
     finally:
-        if lst:
-  	    lst.Unlock()
+        mlist.Save()
+        mlist.Unlock()
 
+
+
 # Form Production:
-
 def FormatAdminOverview(error=None):
     "Present a general welcome and itemize the (public) lists."
     doc = Document()
@@ -190,7 +189,8 @@ def FormatAdminOverview(error=None):
     names.sort()
     for n in names:
 	l = MailList.MailList(n, lock=0)
-        if l.advertised: advertised.append(l)
+        if l.advertised:
+            advertised.append(l)
 
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
@@ -205,7 +205,6 @@ def FormatAdminOverview(error=None):
 			 " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
 			 )
     else:
-
         welcome_items = (
 	    greeting,
             "<p>"
@@ -240,23 +239,30 @@ def FormatAdminOverview(error=None):
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0, colspan=2)
 
     if advertised:
-        table.AddRow([Italic("List"), Italic("Description")])
+        table.AddRow(['&nbsp;', '&nbsp;'])
+        table.AddRow([Bold("List"), Bold("Description")])
         for l in advertised:
-            table.AddRow([Link(l.GetRelativeScriptURL('admin'), 
-	                  Bold(l.real_name)),l.description])
+            table.AddRow(
+                [Link(l.GetRelativeScriptURL('admin'), 
+                      Bold(l.real_name)),
+                 l.description or Italic('[no description provided]')])
 
     doc.AddItem(table)
-
+    doc.AddItem('<hr>')
+    doc.AddItem(MailmanLogo())
     print doc.Format(bgcolor="#ffffff")
 
-def FormatConfiguration(doc, lst, category, category_suffix):
+
+
+def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
     """Produce the overall doc, *except* any processing error messages."""
     for k, v in CATEGORIES:
-        if k == category: label = v
+        if k == category:
+            label = v
 
-    doc.SetTitle('%s Administration' % lst.real_name)
+    doc.SetTitle('%s Administration' % mlist.real_name)
     doc.AddItem(Center(Header(2, ('%s Mailing list Configuration - %s Section'
-                                  % (lst.real_name, label)))))
+                                  % (mlist.real_name, label)))))
     doc.AddItem('<hr>')
 
     links_table = Table(valign="top")
@@ -264,13 +270,13 @@ def FormatConfiguration(doc, lst, category, category_suffix):
     links_table.AddRow([Center(Bold("Configuration Categories")),
                         Center(Bold("Other Administrative Activities"))])
     other_links = UnorderedList()
-    link = Link(lst.GetRelativeScriptURL('admindb'), 
+    link = Link(mlist.GetRelativeScriptURL('admindb'), 
                 'Tend to pending administrative requests.')
     other_links.AddItem(link)
-    link = Link(lst.GetRelativeScriptURL('listinfo'),
+    link = Link(mlist.GetRelativeScriptURL('listinfo'),
                 'Go to the general list information page.')
     other_links.AddItem(link)
-    link = Link(lst.GetRelativeScriptURL('edithtml'),
+    link = Link(mlist.GetRelativeScriptURL('edithtml'),
                 'Edit the HTML for the public list pages.')
     other_links.AddItem(link)
 
@@ -280,7 +286,7 @@ def FormatConfiguration(doc, lst, category, category_suffix):
             these_links.AddItem("<b> =&gt; " + v + " &lt;= </b>")
         else:
             these_links.AddItem(Link("%s/%s" % 
-	                 (lst.GetRelativeScriptURL('admin'),k),v))
+	                 (mlist.GetRelativeScriptURL('admin'),k),v))
 
     links_table.AddRow([these_links, other_links])
     links_table.AddRowInfo(max(links_table.GetCurrentRowIndex(), 0),
@@ -289,10 +295,10 @@ def FormatConfiguration(doc, lst, category, category_suffix):
     doc.AddItem(links_table)
     doc.AddItem('<hr>')
     if category_suffix:
-        form = Form("%s/%s" % (lst.GetRelativeScriptURL('admin'),
+        form = Form("%s/%s" % (mlist.GetRelativeScriptURL('admin'),
                                   category_suffix))
     else:
-        form = Form(lst.GetRelativeScriptURL('admin'))
+        form = Form(mlist.GetRelativeScriptURL('admin'))
     doc.AddItem(form)
 
     if category == 'general':
@@ -303,24 +309,24 @@ def FormatConfiguration(doc, lst, category, category_suffix):
                  " using the button at the bottom.%s<p>"
                  % andpassmsg)
 
-    form.AddItem(FormatOptionsSection(category, lst))
+    form.AddItem(FormatOptionsSection(category, mlist, cgi_data))
 
     if category == 'general':
         form.AddItem(Center(FormatPasswordStuff()))
 
     form.AddItem("<p>")
-
     form.AddItem(Center(FormatSubmit()))
+    form.AddItem(mlist.GetMailmanFooter())
 
-    form.AddItem(lst.GetMailmanFooter())
 
-def FormatOptionsSection(category, lst):
+
+def FormatOptionsSection(category, mlist, cgi_data):
     """Produce the category-specific options table."""
     if category == 'members':
         # Special case for members section.
-        return FormatMembershipOptions(lst)
+        return FormatMembershipOptions(mlist, cgi_data)
 
-    options = GetConfigOptions(lst, category)
+    options = GetConfigOptions(mlist, category)
 
     big_table = Table(cellspacing=3, cellpadding=4)
 
@@ -358,34 +364,38 @@ def FormatOptionsSection(category, lst):
                 # ... but do col header before anything else.
                 ColHeader()
                 did_col_header = 1
-	    AddOptionsTableItem(big_table, item, category, lst)
+	    AddOptionsTableItem(big_table, item, category, mlist)
     big_table.AddRow(['<br>'])
     big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
     return big_table
 
-def AddOptionsTableItem(table, item, category, lst, nodetails=0):
+
+
+def AddOptionsTableItem(table, item, category, mlist, nodetails=0):
     """Add a row to an options table with the item description and value."""
     try:
 	got = GetItemCharacteristics(item)
 	varname, kind, params, dependancies, descr, elaboration = got
     except ValueError, msg:
-        lst.LogMsg("error", "admin: %s", msg)
+        mlist.LogMsg("error", "admin: %s", msg)
         return Italic("<malformed option>")
-    descr = GetItemGuiDescr(lst, category, varname, descr,
+    descr = GetItemGuiDescr(mlist, category, varname, descr,
 			    elaboration, nodetails)
-    val = GetItemGuiValue(lst, kind, varname, params)
+    val = GetItemGuiValue(mlist, kind, varname, params)
     table.AddRow([descr, val])
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 1,
 		      bgcolor="#cccccc")
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
 		      bgcolor="#cccccc")
 
-def FormatOptionHelp(doc, varref, lst):
+
+
+def FormatOptionHelp(doc, varref, mlist):
     item = bad = None
     reflist = string.split(varref, '/')
     if len(reflist) == 2:
         category, varname = reflist
-        options = GetConfigOptions(lst, category)
+        options = GetConfigOptions(mlist, category)
         for i in options:
             if i and i[0] == varname:
                 item = i
@@ -407,7 +417,7 @@ def FormatOptionHelp(doc, varref, lst):
 
     header = Table(width="100%")
     legend = ('%s Mailing list Configuration Help<br><em>%s</em> Option'
-	      % (lst.real_name, varname))
+	      % (mlist.real_name, varname))
     header.AddRow([Center(Header(3, legend))])
     header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
                        colspan=2, bgcolor="#99ccff")
@@ -416,15 +426,17 @@ def FormatOptionHelp(doc, varref, lst):
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, item[4]))
     doc.AddItem("%s<p>" % item[5])
 
-    form = Form("%s/%s" % (lst.GetRelativeScriptURL('admin'), category))
+    form = Form("%s/%s" % (mlist.GetRelativeScriptURL('admin'), category))
     valtab = Table(cellspacing=3, cellpadding=4)
-    AddOptionsTableItem(valtab, item, category, lst, nodetails=1)
+    AddOptionsTableItem(valtab, item, category, mlist, nodetails=1)
     form.AddItem(valtab)
     # XXX I don't think we want to be able to set options from two places,
     #     since they'll go out of sync.
     #form.AddItem(Center(FormatPasswordStuff()))
     doc.AddItem(Center(form))
 
+
+
 def GetItemCharacteristics(table_entry):
     """Break out the components of an item description from its table entry:
       0 option-var name
@@ -443,30 +455,32 @@ def GetItemCharacteristics(table_entry):
 			   % table_entry)
     return (varname, kind, params, dependancies, descr, elaboration)
 
-def GetItemGuiValue(lst, kind, varname, params):
+
+
+def GetItemGuiValue(mlist, kind, varname, params):
     """Return a representation of an item's settings."""
     if kind == mm_cfg.Radio or kind == mm_cfg.Toggle:
         #
         # if we are sending returning the option for subscribe
         # policy and this site doesn't allow open subscribes,
-        # then we have to alter the value of lst.subscribe_policy
+        # then we have to alter the value of mlist.subscribe_policy
         # as passed to RadioButtonArray in order to compensate
         # for the fact that there is one fewer option. correspondingly,
         # we alter the value back in the change options function -scott
         #
         if varname == "subscribe_policy" and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-            return RadioButtonArray(varname, params, getattr(lst, varname) - 1)
+            return RadioButtonArray(varname, params, getattr(mlist, varname)-1)
         else:
-            return RadioButtonArray(varname, params, getattr(lst, varname))
+            return RadioButtonArray(varname, params, getattr(mlist, varname))
     elif (kind == mm_cfg.String or kind == mm_cfg.Email or
 	  kind == mm_cfg.Host or kind == mm_cfg.Number):
-	return TextBox(varname, getattr(lst, varname), params)
+	return TextBox(varname, getattr(mlist, varname), params)
     elif kind == mm_cfg.Text:
 	if params:
 	    r, c = params
 	else:
 	    r, c = None, None
-	val = getattr(lst, varname)
+	val = getattr(mlist, varname)
 	if not val:
 	    val = ''
 	return TextArea(varname, val, r, c)
@@ -475,15 +489,17 @@ def GetItemGuiValue(lst, kind, varname, params):
 	    r, c = params
 	else:
 	    r, c = None, None
-	res = string.join(getattr(lst, varname), '\n')
+	res = string.join(getattr(mlist, varname), '\n')
 	return TextArea(varname, res, r, c, wrap='off')
     
-def GetItemGuiDescr(lst, category, varname, descr, elaboration, nodetails):
+
+
+def GetItemGuiDescr(mlist, category, varname, descr, elaboration, nodetails):
     """Return a representation of an item's description, with link to
     elaboration if any."""
     descr = '<div ALIGN="right">' + descr
     if not nodetails and elaboration:
-        ref = "../" * (Utils.GetNestingLevel()-1) + list_name + "/"
+        ref = "../" * (Utils.GetNestingLevel()-1) + mlist.internal_name() + "/"
         ref = ref + '?VARHELP=' + category + "/" + varname
         descr = Container(descr,
 			  Link(ref, " (Details)", target="MMHelp"),
@@ -492,7 +508,9 @@ def GetItemGuiDescr(lst, category, varname, descr, elaboration, nodetails):
         descr = descr + "</div>"
     return descr
 
-def FormatMembershipOptions(lst):
+
+
+def FormatMembershipOptions(mlist, cgi_data):
     container = Container()
     header = Table(width="100%")
     header.AddRow([Center(Header(2, "Membership Management"))])
@@ -506,9 +524,9 @@ def FormatMembershipOptions(lst):
                            bgcolor="#cccccc", colspan=8)
     user_table.AddRow(
         [Center(Italic("(%s members total, max. %s at a time displayed)" %
-                       (len(lst.members)
-                        + len(lst.digest_members),
-                        lst.admin_member_chunksize)))])
+                       (len(mlist.members)
+                        + len(mlist.digest_members),
+                        mlist.admin_member_chunksize)))])
     user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
                            user_table.GetCurrentCellIndex(),
                            bgcolor="#cccccc", colspan=8)
@@ -519,9 +537,9 @@ def FormatMembershipOptions(lst):
     rowindex = user_table.GetCurrentRowIndex()
     for i in range(8):
         user_table.AddCellInfo(rowindex, i, bgcolor='#cccccc')
-    all = lst.GetMembers() + lst.GetDigestMembers()
-    if len(all) > lst.admin_member_chunksize:
-        chunks = Utils.chunkify(all, lst.admin_member_chunksize)
+    all = mlist.GetMembers() + mlist.GetDigestMembers()
+    if len(all) > mlist.admin_member_chunksize:
+        chunks = Utils.chunkify(all, mlist.admin_member_chunksize)
         if not cgi_data.has_key("chunk"):
             chunk = 0
         else:
@@ -534,7 +552,7 @@ def FormatMembershipOptions(lst):
         buttons = []
         for ci in chunk_indices:
             start, end = chunks[ci][0], chunks[ci][-1]
-	    url = lst.GetAbsoluteScriptURL('admin')
+	    url = mlist.GetAbsoluteScriptURL('admin')
             buttons.append("<a href=%s/members?chunk=%d> from %s to %s </a>"
                            % ( url,  ci, start, end))
         buttons = apply(UnorderedList, tuple(buttons))
@@ -544,12 +562,12 @@ def FormatMembershipOptions(lst):
         footer = "<p>"
     for member in all:
         mtext = '<a href="%s">%s</a>' % (
-            lst.GetAbsoluteOptionsURL(member, obscured=1),
-            lst.GetUserSubscribedAddress(member))
+            mlist.GetAbsoluteOptionsURL(member, obscured=1),
+            mlist.GetUserSubscribedAddress(member))
         cells = [mtext + "<input type=hidden name=user value=%s>" % (member),
                  Center(CheckBox(member + "_subscribed", "on", 1).Format())]
         for opt in ("hide", "nomail", "ack", "notmetoo"):
-            if lst.GetUserOption(member, MailCommandHandler.option_info[opt]):
+            if mlist.GetUserOption(member, MailCommandHandler.option_info[opt]):
                 value = "on"
                 checked = 1
             else:
@@ -557,13 +575,13 @@ def FormatMembershipOptions(lst):
                 checked = 0
             box = CheckBox("%s_%s" % (member, opt), value, checked)
             cells.append(Center(box.Format()))
-        if lst.members.has_key(member):
+        if mlist.members.has_key(member):
             cells.append(Center(CheckBox(member + "_digest",
                                          "off", 0).Format()))
         else:
             cells.append(Center(CheckBox(member + "_digest",
                                          "on", 1).Format()))
-        if lst.GetUserOption(member, MailCommandHandler.option_info['plain']):
+        if mlist.GetUserOption(member, MailCommandHandler.option_info['plain']):
             value = 'on'
             checked = 1
         else:
@@ -595,7 +613,7 @@ def FormatMembershipOptions(lst):
     t.AddCellInfo(t.GetCurrentRowIndex(),
                   t.GetCurrentCellIndex(),
                   bgcolor="#cccccc", colspan=8)
-    if lst.send_welcome_msg:
+    if mlist.send_welcome_msg:
         nochecked = 0
         yeschecked = 1
     else:
@@ -614,6 +632,8 @@ def FormatMembershipOptions(lst):
                                       rows=10,cols=60,wrap=None)))
     return container
 
+
+
 def FormatPasswordStuff():
     change_pw_table = Table(bgcolor="#99cccc", border=0,
                             cellspacing=0, cellpadding=2,
@@ -636,6 +656,8 @@ def FormatPasswordStuff():
     #change_pw_table.AddCellInfo(1, 1, align="left", valign="top")
     return change_pw_table
 
+
+
 def FormatSubmit():
     submit = Table(bgcolor="#99ccff",
                    border=0, cellspacing=0, cellpadding=2)
@@ -643,12 +665,13 @@ def FormatSubmit():
     submit.AddCellInfo(submit.GetCurrentRowIndex(), 0, align="middle")
     return submit
 
+
+
 # XXX klm - looks like turn_on_moderation is orphaned.
-turn_on_moderation = 0
+#turn_on_moderation = 0
 
 # Options processing
-
-def GetValidValue(lst, prop, my_type, val, dependant):
+def GetValidValue(mlist, prop, my_type, val, dependant):
     if my_type == mm_cfg.Radio or my_type == mm_cfg.Toggle:
 	if type(val) <> types.IntType:
             try:
@@ -666,7 +689,7 @@ def GetValidValue(lst, prop, my_type, val, dependant):
         except Errors.EmailAddressError:
             pass
 	# Revert to the old value.
-	return getattr(lst, prop)
+	return getattr(mlist, prop)
     elif my_type == mm_cfg.EmailList:
 	def SafeValidAddr(addr):
 	    try:
@@ -677,11 +700,11 @@ def GetValidValue(lst, prop, my_type, val, dependant):
 
 	val = filter(SafeValidAddr,
 		     map(string.strip, string.split(val, '\n')))
-	if dependant and len(val):
-	    # Wait till we've set everything to turn it on,
-	    # as we don't want to clobber our special case.
-	    # XXX klm - looks like turn_on_moderation is orphaned?
-	    turn_on_moderation = 1
+##	if dependant and len(val):
+##	    # Wait till we've set everything to turn it on,
+##	    # as we don't want to clobber our special case.
+##	    # XXX klm - looks like turn_on_moderation is orphaned?
+##	    turn_on_moderation = 1
 	return val
     elif my_type == mm_cfg.Host:
 	return val
@@ -714,37 +737,40 @@ def GetValidValue(lst, prop, my_type, val, dependant):
             except ValueError:
                 pass
         if num < 0:
-            return getattr(lst, prop)
+            return getattr(mlist, prop)
         return num
     else:
 	# Should never get here...
 	return val
 
 
-def ChangeOptions(lst, category, cgi_info, document):
+
+def ChangeOptions(mlist, category, cgi_info, document):
     dirty = 0
     confirmed = 0
     if cgi_info.has_key('newpw'):
 	if cgi_info.has_key('confirmpw'):
             if cgi_info.has_key('adminpw'):
                 try:
-                    lst.ConfirmAdminPassword(cgi_info['adminpw'].value)
+                    mlist.ConfirmAdminPassword(cgi_info['adminpw'].value)
                     confirmed = 1
                 except Errors.MMBadPasswordError:
                     m = "Error: incorrect administrator password"
-                    document.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))
+                    document.AddItem(
+                        Header(3, Italic(FontAttr(m, color="ff5060"))))
                     confirmed = 0
             if confirmed:
                 new = cgi_info['newpw'].value
                 confirm = cgi_info['confirmpw'].value
                 if new == confirm:
-                    lst.password = crypt(new, Utils.GetRandomSeed())
+                    mlist.password = crypt(new, Utils.GetRandomSeed())
                     dirty = 1
                     # Re-authenticate (to set new cookie)
-                    lst.WebAuthenticate(password=new, cookie='admin')
+                    mlist.WebAuthenticate(password=new, cookie='admin')
                 else:
                     m = 'Error: Passwords did not match.'
-                    document.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))
+                    document.AddItem(
+                        Header(3, Italic(FontAttr(m, color="ff5060"))))
 
 	else:
 	    m = 'Error: You must type in your new password twice.'
@@ -756,8 +782,10 @@ def ChangeOptions(lst, category, cgi_info, document):
     # is not "members" and the request is not from the login page
     # -scott 19980515
     #
-    if category != 'members' and not cgi_info.has_key("request_login") and\
-       len(cgi_info.keys()) > 1:
+    if category != 'members' and \
+            not cgi_info.has_key("request_login") and \
+            len(cgi_info.keys()) > 1:
+        # then
         if cgi_info.has_key("subscribe_policy"):
             if not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
                 #
@@ -767,7 +795,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 page_setting = string.atoi(cgi_info["subscribe_policy"].value)
                 cgi_info["subscribe_policy"].value = str(page_setting + 1)
 
-        opt_list = GetConfigOptions(lst, category)
+        opt_list = GetConfigOptions(mlist, category)
         for item in opt_list:
             if len(item) < 5:
                 continue
@@ -782,9 +810,9 @@ def ChangeOptions(lst, category, cgi_info, document):
                     val = ''
             else:
                 val = cgi_info[property].value
-            value = GetValidValue(lst, property, kind, val, deps)
-            if getattr(lst, property) != value:
-                setattr(lst, property, value)
+            value = GetValidValue(mlist, property, kind, val, deps)
+            if getattr(mlist, property) != value:
+                setattr(mlist, property, value)
                 dirty = 1
     #
     # mass subscription processing for members category
@@ -796,13 +824,13 @@ def ChangeOptions(lst, category, cgi_info, document):
         send_welcome_msg = string.atoi(
             cgi_info["send_welcome_msg_to_this_batch"].value)
         digest = 0
-        if not lst.digestable:
+        if not mlist.digestable:
             digest = 0
-        if not lst.nondigestable:
+        if not mlist.nondigestable:
             digest = 1
         subscribe_errors = []
         subscribe_success = []
-        result = lst.ApprovedAddMembers(names, None,
+        result = mlist.ApprovedAddMembers(names, None,
                                         digest, send_welcome_msg)
         for name in result.keys():
             if result[name] is None:
@@ -847,52 +875,54 @@ def ChangeOptions(lst, category, cgi_info, document):
         for user in users:
             if not cgi_info.has_key('%s_subscribed' % (user)):
                 try:
-                    lst.DeleteMember(user)
+                    mlist.DeleteMember(user)
                     dirty = 1
                 except Errors.MMNoSuchUserError:
                     unsubscribe_errors.append((user, 'Not subscribed'))
                 continue
             if not cgi_info.has_key("%s_digest" % (user)):
-                if lst.digest_members.has_key(user):
-                    del lst.digest_members[user]
+                if mlist.digest_members.has_key(user):
+                    del mlist.digest_members[user]
                     dirty = 1
-                if not lst.members.has_key(user):
-                    lst.members[user] = 0
+                if not mlist.members.has_key(user):
+                    mlist.members[user] = 0
                     dirty = 1
             else:
-                if not lst.digest_members.has_key(user):
-                    lst.digest_members[user] = 0
+                if not mlist.digest_members.has_key(user):
+                    mlist.digest_members[user] = 0
                     dirty = 1
-                if lst.members.has_key(user):
-                    del lst.members[user]
+                if mlist.members.has_key(user):
+                    del mlist.members[user]
                     dirty = 1
                 
             for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
                 okey = MailCommandHandler.option_info[opt]
                 if cgi_info.has_key("%s_%s" % (user, opt)):
-                    lst.SetUserOption(user, okey, 1)
+                    mlist.SetUserOption(user, okey, 1)
                     dirty = 1
                 else:
-                    lst.SetUserOption(user, okey, 0)
+                    mlist.SetUserOption(user, okey, 0)
                     dirty = 1
         if unsubscribe_errors:
             document.AddItem(Header(5, "Error Unsubscribing:"))
-            items = map(lambda x: "%s -- %s" % (x[0], x[1]), unsubscribe_errors)
+            items = map(lambda x: "%s -- %s" % (x[0], x[1]),
+                        unsubscribe_errors)
             document.AddItem(apply(UnorderedList, tuple((items))))
             document.AddItem("<p>")
-
     if dirty:
-        lst.Save()
+        mlist.Save()
 
+
+
 def AddErrorMessage(doc, errmsg, *args):
     doc.AddItem(Header(3, Italic(FontAttr(errmsg % args,
                                           color="#ff66cc"))))
 
 
+
 _config_info = None
-def GetConfigOptions(lst, category):
+def GetConfigOptions(mlist, category):
     global _config_info
     if _config_info == None:
-        _config_info = lst.GetConfigInfo()
+        _config_info = mlist.GetConfigInfo()
     return _config_info[category]
-
