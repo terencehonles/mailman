@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -63,7 +63,5 @@ def process(mlist, msg, msgdata):
     # queue.
     subject = _('%(realname)s post acknowledgement')
     usermsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
-                                       subject, text)
-    usermsg.add_header('Content-Type', 'text/plain',
-                       charset=Utils.GetCharSet(lang))
+                                       subject, text, lang)
     usermsg.send(mlist)

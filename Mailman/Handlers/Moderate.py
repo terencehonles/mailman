@@ -135,7 +135,8 @@ def do_discard(mlist, msg):
                   mlist.GetScriptURL('admin', absolute=1)
         nmsg = Message.UserNotification(mlist.GetOwnerEmail(),
                                         mlist.GetAdminEmail(),
-                                        _('Auto-discard notification'))
+                                        _('Auto-discard notification'),
+                                        mlist.preferred_language)
         nmsg['Content-Type'] = 'multipart/mixed'
         nmsg['MIME-Version'] = '1.0'
         text = MIMEText(Utils.wrap(_("""\

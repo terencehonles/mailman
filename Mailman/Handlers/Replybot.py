@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -90,7 +90,7 @@ def process(mlist, msg, msgdata):
     # Wrap the response.
     text = Utils.wrap(text)
     outmsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
-                                      subject, text)
+                                      subject, text, mlist.preferred_language)
     outmsg['X-Mailer'] = _('The Mailman Replybot')
     # prevent recursions and mail loops!
     outmsg['X-Ack'] = 'No'
