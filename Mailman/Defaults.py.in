@@ -359,4 +359,4 @@ PUBLIC_ARCHIVE_FILE_DIR 	= os.path.join(PREFIX, 'archives/public')
 PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 
 # The Mailman version
-from Version import VERSION, DATA_FILE_VERSION
+from Version import VERSION, DATA_FILE_VERSION, HEX_VERSION
