@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -359,7 +359,7 @@ class LockFile:
             filename = fp.read()
             fp.close()
             return filename
-        except (OSError, IOError), e:
+        except EnvironmentError, e:
             if e.errno <> errno.ENOENT: raise
             return None
 
@@ -471,7 +471,7 @@ def _seed():
         fp = open('/dev/random')
         d = fp.read(40)
         fp.close()
-    except (IOError, OSError), e:
+    except EnvironmentError, e:
         if e.errno <> errno.ENOENT:
             raise
         import sha
