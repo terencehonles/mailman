@@ -592,6 +592,14 @@ VERP_CONFIRM_REGEXP = r'^(?P<addr>[^+]+?)\+(?P<cookie>[^@]+)@.*$'
 # Set this to true to enable VERP-like (more user friendly) confirmations
 VERP_CONFIRMATIONS = 0
 
+# This is the maximum number of automatic responses sent to an address because
+# of -request messages or posting hold messages.  This limit prevents response
+# loops between Mailman and misconfigured remote email robots.  Mailman
+# already inhibits automatic replies to any message labeled with a header
+# "Precendence: bulk|list|junk".  This is a fallback safety valve so it should
+# be set fairly high.
+MAX_AUTORESPONSES_PER_DAY = 10
+
 
 
 #####
