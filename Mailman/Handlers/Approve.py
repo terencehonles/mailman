@@ -36,7 +36,9 @@ def process(mlist, msg, msgdata):
         # above may not be entirely correct.
         return
     # See if the message has an Approved: or Approve: header with a valid
-    # list-moderator, list-admin, or site-admin password
+    # list-moderator, list-admin.  We are specifically /not/ allowing the site
+    # admins password to work here because we want to discourage the practice
+    # of sending the site admin password through email in the clear.
     missing = []
     passwd = msg.get('approved', msg.get('approve', missing))
     if passwd is not missing and mlist.Authenticate((mm_cfg.AuthListModerator,
