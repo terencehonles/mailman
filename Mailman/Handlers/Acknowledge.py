@@ -37,9 +37,8 @@ def process(mlist, msg, msgdata):
         if subject:
             # trim off the subject prefix
             prefix = mlist.subject_prefix
-            plen = len(prefix)
-            if len(subject) > plen and subject[0:plen] == prefix:
-                   subject = subject[plen:]
+            if subject.startswith(prefix):
+                subject = subject[len(prefix):]
         # get the text from the template
         realname = mlist.real_name
         text = Utils.maketext(
