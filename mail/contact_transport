@@ -20,17 +20,19 @@ import sys, os
 import paths
 
 # XXX: this really should be merged with Python's standard smtplib library
-from Mailman import smtplib
 from Mailman import mm_cfg
+from Mailman import smtplib
+from Mailman import Utils
+from Mailman import OutgoingQueue
 
-#sys.stderr = open("/home/mailman/mailman/logs/debug","a+")
-#sys.stdout = sys.stderr
+from Mailman.Logging.Utils import LogStdErr
+LogStdErr("error", "contact_transport")
 
 from_addr = sys.argv[1]
 to_addrs  = sys.argv[2:]
 
 text = sys.stdin.read()
-queue_id = Mailman.OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
-TrySMTPDelivery(from_addr, to_addrs, text, queue_id)
-Mailman.OutgoingQueue.processQueue()
+queue_id = OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
+Utils.TrySMTPDelivery(from_addr, to_addrs, text, queue_id)
+OutgoingQueue.processQueue()
 
