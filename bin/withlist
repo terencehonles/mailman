@@ -158,6 +158,8 @@ def main():
     except getopt.error, msg:
         usage(1, msg)
 
+    lock = 0
+    run = None
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -170,8 +172,6 @@ def main():
         usage(1, _('No list name supplied.'))
 
     listname = args.pop(0).lower().strip()
-    lock = 0
-    run = None
 
     # first try to open mailing list
     print >> sys.stderr, _('Loading list %(listname)s'),
