@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 UPGRADING FROM PREVIOUS VERSIONS
@@ -31,7 +31,12 @@ UPGRADING FROM PREVIOUS VERSIONS
     Chuq Von Rospach gives some useful advice in this message to the
     users mailing list:
 
-    http://www.python.org/pipermail/mailman-users/2000-September/007523.html
+    http://mail.python.org/pipermail/mailman-users/2000-September/006826.html
+
+UPGRADING FROM 2.0 to 2.0.1
+
+    Nothing much more than running "make install" (after upgrading)
+    should be necessary.
 
 UPGRADING FROM 2.0 beta to 2.0 final
 
