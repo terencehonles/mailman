@@ -213,7 +213,7 @@ def PrintPostRequest(mlist, id, info, total, count, form):
             # TBD: kludge to remove id from requests.db.  value==2 means
             # discard the message.
             try:
-                mlist.HandleRequest(id, 2, None)
+                mlist.HandleRequest(id, 3, None, None, None, None)
             except Errors.LostHeldMessage:
                 pass
             return
