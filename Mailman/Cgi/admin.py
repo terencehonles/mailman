@@ -255,7 +255,7 @@ def option_help(mlist, varhelp):
     doc.set_language(mlist.preferred_language)
     # Find out which category and variable help is being requested for.
     item = None
-    reflist = varref.split('/')
+    reflist = varhelp.split('/')
     if len(reflist) == 2:
         category, varname = reflist
         options = get_config_options(mlist, category)
@@ -274,7 +274,7 @@ def option_help(mlist, varhelp):
     varname, kind, params, dependancies, description, elaboration = \
              get_item_characteristics(item)
     if elaboration is None:
-        elaboration = desc
+        elaboration = description
     #
     # Set up the document
     realname = mlist.real_name
@@ -287,7 +287,7 @@ def option_help(mlist, varhelp):
                        colspan=2, bgcolor="#99ccff")
     doc.SetTitle(_("Mailman %(varname)s List Option Help"))
     doc.AddItem(header)
-    doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, descr))
+    doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, description))
     doc.AddItem("%s<p>" % elaboration)
 
     form = Form("%s/%s" % (mlist.GetScriptURL('admin'), category))
