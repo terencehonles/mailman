@@ -49,7 +49,7 @@ SETUPINSTOPTS=	--install-lib $(PYTHONLIBDIR) --install-purelib $(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
 EMAILPKG=	email-2.1
-JACODECSPKG=	JapaneseCodecs-1.4.5
+JACODECSPKG=	JapaneseCodecs-1.4.7
 KOCODECSPKG=	KoreanCodecs-2.0.4
 
 PACKAGES= $(EMAILPKG) $(JACODECSPKG) $(KOCODECSPKG)
