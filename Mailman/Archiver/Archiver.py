@@ -30,7 +30,6 @@ from cStringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Mailbox
-from Mailman import LockFile
 from Mailman import Utils
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
