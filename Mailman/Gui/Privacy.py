@@ -19,10 +19,11 @@
 
 from Mailman import mm_cfg
 from Mailman.i18n import _
+from Mailman.Gui.GUIBase import GUIBase
 
 
 
-class Privacy:
+class Privacy(GUIBase):
     def GetConfigCategory(self):
         return 'privacy', _('Privacy options')
 
@@ -384,3 +385,11 @@ class Privacy:
             return spam_rtn
         else:
             return subscribing_rtn
+
+    def _setValue(self, mlist, property, val, doc):
+        # For subscribe_policy when ALLOW_OPEN_SUBSCRIBE is true, we need to
+        # add one to the value because the page didn't present an open list as
+        # an option.
+        if property == 'subscribe_policy' and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+            val += 1
+        setattr(mlist, property, val)
