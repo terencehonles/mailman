@@ -10,11 +10,12 @@ import cPickle as pickle
 from cStringIO import StringIO
 from string import lowercase
 
-__version__ = '0.07 (Mailman edition)'
+__version__ = '0.08 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
-from Mailman.Mailbox import Mailbox
+from Mailman import Errors
+from Mailman.Mailbox import ArchiverMailbox
 from Mailman.i18n import _
 
 SPACE = ' '
@@ -517,9 +518,12 @@ class T:
     # object will then be archived.
     
     def processUnixMailbox(self, input, articleClass = Article):
-	mbox = Mailbox(input)
+	mbox = ArchiverMailbox(input, self.maillist)
 	while 1:
-	    m = mbox.next()
+            try:
+                m = mbox.next()
+            except Errors.DiscardMessage:
+                continue
 	    if not m:
                 break
 	    a = articleClass(m, self.sequence)
