@@ -249,7 +249,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     #
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
-    if not fromusenet and not mlist.dont_respond_to_post_requests:
+    if not fromusenet and mlist.respond_to_post_requests:
         # Get a confirmation cookie
         cookie = Pending.new(Pending.HELD_MESSAGE, id)
         d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
