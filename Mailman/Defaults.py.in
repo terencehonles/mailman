@@ -241,6 +241,7 @@ GLOBAL_PIPELINE = [
     'CookHeaders',
     'ToDigest',
     'ToArchive',
+    'Personalize',
     'Decorate',
     'AfterDelivery',
     'Acknowledge',
@@ -396,6 +397,13 @@ ADMINDB_PAGE_TEXT_LIMIT = 4096
 # this variable to 0 instead requires list removal to be done by the site
 # administrator, via the command line script bin/rmlist.
 OWNERS_CAN_DELETE_THEIR_OWN_LISTS = 0
+
+# Set this variable to 1 to allow list owners to set the "personalized" flags
+# on their mailing lists.  Turning these on tells Mailman to send separate
+# email messages to each user instead of batching them together for delivery
+# to the MTA.  This gives each member a more personalized message, but can
+# have a heavy impact on the performance of your system.
+OWNERS_CAN_ENABLE_PERSONALIZATION = 0
 
 # These define the available types of external message metadata formats, and
 # the one to use by default.  MARSHAL format uses Python's built-in marshal
