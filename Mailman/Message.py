@@ -19,7 +19,16 @@
 
 
 import sys
-import rfc822, string, time
+import string
+import time
+
+# get our hacked copy of Python 1.5.2's rfc822.py
+import rfc822
+try:
+    rfc822.Message.getallrecipients
+except AttributeError:
+    # the standard module doesn't have our enhancement
+    from Mailman.pythonlib import rfc822
 
 
 # Utility functions 2 of these classes use:
