@@ -155,11 +155,16 @@ exactly what happened to provoke this error.<p>'''
                                           "List Subscriptions for %s on %s"
                                           % (user, list.host_name)))
             doc.AddItem("Click a link to visit your options page for"
-                        " that mailing list.")
+                        " that mailing list:")
             def optionslinks(l, user=user):
-                if l.IsMember(user):
-                    link = htmlformat.Link(l.GetAbsoluteOptionsURL(user),
-                                           l.real_name)
+                addrs = Utils.FindMatchingAddresses(user, l.members,
+                                                    l.digest_members)
+                if addrs:
+                    addr = Utils.ObscureEmail(addrs[0])
+                    if l.obscure_addresses:
+                        addr = Utils.ObscureEmail(addr)
+                    url = l.GetAbsoluteOptionsURL(addr)
+                    link = htmlformat.Link(url, l.real_name)
                     return l._internal_name, link
             all_links = filter(None, Utils.map_maillists(optionslinks))
             all_links.sort()
