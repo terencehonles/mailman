@@ -47,7 +47,7 @@ SHELL=		/bin/sh
 PYTHONLIBDIR=	$(prefix)/pythonlib
 SETUPCMD=	setup.py --quiet install --install-lib
 
-EMAILPKG=	email-1.1
+EMAILPKG=	email-1.2
 JACODECSPKG=	JapaneseCodecs-1.4.4
 
 # Modes for directories and executables created by the install
