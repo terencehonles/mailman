@@ -165,7 +165,7 @@ Here is a history of user visible changes to Mailman.
 
     - Patches and bug fixes
         o SF patches and bug fixes applied: 420396, 424389, 227694,
-          426002, 401372 (partial)
+          426002, 401372 (partial), 401452.
 
         o Fixes in 2.0.5 ported forward:
             Fix a lock stagnation problem that can result when the
