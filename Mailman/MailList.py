@@ -571,8 +571,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # mailing list object, then run sanity check on the data.
         self.__dict__.update(dict)
         if check_version:
-            self.CheckValues()
             self.CheckVersion(dict)
+            self.CheckValues()
 
 
     #
