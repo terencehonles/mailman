@@ -18,6 +18,7 @@
 """
 
 import os
+import shutil
 import unittest
 
 from Mailman import MailList
@@ -49,4 +50,4 @@ class TestBase(unittest.TestCase):
             if os.path.islink(dir):
                 os.unlink(dir)
             elif os.path.isdir(dir):
-                Utils.rmdirhier(dir)
+                shutil.rmtree(dir)
