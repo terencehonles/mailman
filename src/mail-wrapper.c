@@ -39,7 +39,7 @@ const char *LEGAL_PARENT_NAMES[] = {
 
 /* Should make these arrays too... */
 const int  LEGAL_PARENT_UID = 1;  /* mail's UID */
-const int  LEGAL_PARENT_GID = 1; /* mail's GID */
+const int  LEGAL_PARENT_GID = 9001; /* mail's GID */
 
 
 /*
@@ -80,12 +80,14 @@ int legal_caller() {
     /* compare to our parent's uid */
     if(LEGAL_PARENT_UID != getuid()) 
       {
-	fprintf(f,"GOT UID %d.\n", getuid());
+	/*	fprintf(f,"GOT UID %d.\n", getuid()); */
+	printf("GOT UID %d.\n", getuid());
         return 0;
       }
     if(LEGAL_PARENT_GID != getgid())
       {
-	fprintf(f,"GOT GID %d.\n", getgid());
+	/* fprintf(f,"GOT GID %d.\n", getgid()); */
+	printf("GOT GID %d.\n", getgid());
         return 0;
       }
     return 1;
@@ -109,7 +111,6 @@ void main(int argc, char **argv) {
   char  *command;
   int   i;
   
-  /* f = fopen("/tmp/fart", "w+"); */
   if(argc < 2)
     {
       printf("Usage: %s program [args...]\n", argv[0]);
@@ -121,7 +122,7 @@ void main(int argc, char **argv) {
   sprintf(command, "%s/%s", COMMAND_LOCATION, argv[1]);
 
   if(!valid_command(argv[1])){
-      printf("Illegal command.\n");
+    printf("Illegal command.\n");
     }
   else{
     if(legal_caller()) {
