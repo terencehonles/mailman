@@ -29,3 +29,10 @@
 void fatal(const char*, const char*, ...);
 void check_caller(const char*, gid_t);
 int run_script(const char*, int, char**, char**);
+
+
+/*
+ * Local Variables:
+ * c-file-style: "python"
+ * End:
+ */
