@@ -361,7 +361,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Set things up for the language choices
         langs = self.GetAvailableLanguages()
         langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]
-        langi = langs.index(self.preferred_language)
+        try:
+            langi = langs.index(self.preferred_language)
+        except ValueError:
+            # Someone must have deleted the list's preferred language.  Could
+            # be other trouble lurking!
+            langi = 0
 
         # XXX: Should this text be migrated into the templates dir?
         config_info['general'] = [
@@ -1449,4 +1454,5 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return self.language.get(lcname, self.preferred_language)
 
     def GetAvailableLanguages(self):
-        return Utils.GetDirectories(self._full_path)
+        dirs = Utils.GetDirectories(self._full_path)
+        return [d for d in dirs if mm_cfg.LC_DESCRIPTIONS.has_key(d)]
