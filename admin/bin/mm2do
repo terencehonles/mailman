@@ -30,7 +30,6 @@ print >> outfp, '<body bgcolor="#ffffff">'
 
 def dumpsection(header, items, hasitems):
     # We're looking at a header
-    print header, items, hasitems
     if header:
         # output the previous section
         print >> outfp, '<h1>', header, '</h1>'
