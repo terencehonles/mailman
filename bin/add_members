@@ -68,11 +68,12 @@ import os
 import string
 import getopt
 import paths
-import Mailman.MailList
-import Mailman.Utils
-import Mailman.Message
-import Mailman.Errors
-import Mailman.mm_cfg
+
+from Mailman import MailList
+from Mailman import Utils
+from Mailman import Message
+from Mailman import Errors
+from Mailman import mm_cfg
 
 
 def usage(status, msg=''):
@@ -93,21 +94,23 @@ def ReadFile(filename):
     return lines
 
 
-def SendExplanation(ml, users):
-    msg = Mailman.Message.OutgoingMessage()
-    msg['From'] = ml.GetAdminEmail())
-    dict = {'listname'    : ml.real_name,
-            'listhost'    : ml.host_name,
-            'listaddr'    : ml.GetListEmail(),
-            'listinfo_url': ml.GetAbsoluteScriptURL('listinfo'),
-            'requestaddr' : ml.GetRequestEmail(),
-            'adminaddr'   : ml.GetAdminEmail(),
-            'version'     : Mailman.mm_cfg.VERSION,
-            }
-    header = 'Big change in %(listname)s@%(listhost)s mailing list' % dict
-    msg['Subject'] = header
-    msg.AppendToBody(Mailman.Utils.maketext('convert.txt', dict))
-    ml.DeliverToList(msg, users, None, None)
+def SendExplanation(mlist, users):
+    adminaddr = mlist.GetAdminEmail()
+    d = {'listname'    : mlist.real_name,
+         'listhost'    : mlist.host_name,
+         'listaddr'    : mlist.GetListEmail(),
+         'listinfo_url': mlist.GetAbsoluteScriptURL('listinfo'),
+         'requestaddr' : mlist.GetRequestEmail(),
+         'adminaddr'   : adminaddr,
+         'version'     : mm_cfg.VERSION,
+         }
+    text = Utils.maketext('convert.txt', d)
+    subject = 'Big change in %(listname)s@%(listhost)s mailing list' % d
+    msg = Message.OutgoingMessage(text)
+    msg['From'] = adminaddr
+    msg['Subject'] = subject
+    msg.recips = users
+    HandlerAPI.DeliverToUser(mlist, msg)
 
 
 
@@ -161,8 +164,8 @@ def main():
         sys.exit(1)
 
     try:
-        ml = Mailman.MailList.MailList(listname)
-    except Mailman.Errors.MMUnknownListError:
+        ml = MailList.MailList(listname)
+    except Errors.MMUnknownListError:
         usage(1, 'You must first create the list by running: newlist %s' %
               listname)
     if send_welcome_msg == -1:
@@ -201,19 +204,15 @@ def main():
                     # `name' was not subscribed, find out why.  On failures,
                     # result[name] is set from sys.exc_info()[:2]
                     e, v = result[name]
-                    if e is Mailman.Errors.MMAlreadyAMember:
+                    if e is Errors.MMAlreadyAMember:
                         print 'Already subscribed (skipping):', name
-                    elif issubclass(e, Mailman.Errors.EmailAddressError):
+                    elif issubclass(e, Errors.EmailAddressError):
                         if name == '': name = '( blank line )'
                         print "Not a valid email address:", name
 
         if send_changes_msg:
             SendExplanation(ml, nmembers + dmembers)
     finally:
-        while 1:
-            children = Mailman.Utils.Reap()
-            if not children:
-                break
         ml.Unlock()
 
 main()
