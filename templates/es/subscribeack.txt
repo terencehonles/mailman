@@ -9,14 +9,14 @@ Puede obtener información general sobre la lista en:
 
    %(listinfo_url)s
 
-Si alguna vez desea anular su subscripción o cambiar las opciones
+Si alguna vez desea anular  su  subscripción o cambiar las  opciones
 de la misma (p.ej.: cambiarse a modo resumido o no, cambiar su clave,
 etc.), consulte la página de su subscripción en:
 
   %(optionsurl)s
 %(umbrella)s
 
-Tambien puede realizar estos cambios por medio de correo electrónico,
+También puede realizar estos cambios por medio de correo electrónico,
 enviando un mensaje a:
 
   %(real_name)s-request@%(host_name)s
@@ -24,14 +24,14 @@ enviando un mensaje a:
 indicando la palabra "help" en el asunto (subject) o en el cuerpo del
 mensaje. Se le devolverá un mensaje con instrucciones.
 
-Tiene que saber su clave para poder cambiar sus opciones (incluido
-el cambio de la propia clave) o para anular su subscripción. Su clave es:
+Tiene que saber su clave para poder cambiar sus opciones (incluido el
+cambio de la propia clave) o para anular su subscripción. Su clave es:
 
   %(password)s
 
-Si se le olvida la clave, no se preocupe, todos los meses se le enviará
-un recordatorio con todas las claves de las listas a las que está
-subscrito en %(host_name)s y con información de como cancelar las
-subscripciones o cambiar sus opciones. Tambien existe un botón en la
-página de su subscripción con el que solicitar que se le envie su clave
-a su dirección de correo electrónico.
+Normalmente, Mailman le recordará  mensualmente las claves  que tenga en
+las listas de distribución de %(host_name)s, aunque si lo prefiere puede
+inhabilitar este comportamiento.  El recordatorio también incluirá
+instrucciones sobre como anular su subscripción o como cambiar los
+parámetros de subscripción. En la página de opciones hay un botón que le
+enviará un mensaje de correo electrónico con su clave.
