@@ -53,6 +53,12 @@ file UPGRADING for important information before you upgrade.
       the default location (/home/mailman), that directory may have
       already been made for you.
 
+      The default directory for installing is /home/mailman, but some
+      sites do things like mount /home with the nosuid option.  This
+      will break Mailman, which relies on set-gid programs for its
+      security.  If this describes your environment, simply install
+      Mailman in a location that allows setgid programs.
+
       Make sure this directory is set to group `mailman' and has the
       setgid bit set.  You probably also want to guarantee that this
       directory is read and executeable by everyone. For example,
