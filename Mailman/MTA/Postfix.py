@@ -108,7 +108,7 @@ def addlist(mlist, db, fp):
 
 
 
-def create(mlist):
+def create(mlist, cgi=0):
     # Acquire the global list database lock
     lock = makelock()
     lock.lock()
@@ -143,7 +143,7 @@ def create(mlist):
 
 
 
-def remove(mlist):
+def remove(mlist, cgi=0):
     # Acquire the global list database lock
     lock = LockFile.LockFile(LOCKFILE)
     lock.lock()
