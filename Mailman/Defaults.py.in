@@ -355,6 +355,14 @@ DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
 # Check for administrivia in messages sent to the main list?
 DEFAULT_ADMINISTRIVIA = 1
 
+# List of addresses (lhs of the @) that likely come only from MTAs bouncing
+# messages.  This is used in qrunner and MailCommandHandler.py to stop
+# processing or forwarding such messages.
+#
+# TBD: why orphanage?  why postoffice?
+LIKELY_BOUNCE_SENDERS = ('daemon', 'mailer-daemon', 'postmaster',
+                         'orphanage', 'postoffice')
+
 
 
 #####
