@@ -4,6 +4,75 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.1 beta 3 (09-Aug-2002)
+
+    The usual assortment of bug fixes and language updates.
+
+    - New languages: Dutch, Portuguese (Brazil)
+
+    - New configure script options: --with-mailhost, --with-urlhost,
+      --without-permcheck.  See ./configure --help for details.
+
+    - The encoding of Subject: prefixes is controlled by a new list
+      option encode_ascii_prefixes.  This is useful for languages with
+      character sets other than us-ascii.  See the Languages admin
+      page for details.
+
+    - A new list option news_prefix_subject_too controls whether
+      postings gated from mail to news should have the subject prefix
+      added to their Subject: header.
+
+    - The algorithm for upgrading the moderation controls for a
+      Mailman 2.0.x list has changed.  The change should be
+      transparent, but you'll want to double check the moderation
+      controls after upgrading from MM2.0.x.  This should have no
+      effect for upgrades from a previous MM2.1 beta.
+
+      See the UPGRADING file for details.
+
+    - On the Mass Subscribe admin page, a text box has been added so
+      that the admin can add a custom message to be prepended to the
+      welcome/invite notification.
+
+    - On the admindb page, a link is included to more easily reload
+      the page.
+
+    - The Sendmail.py delivery module is sabotaged so that it can't be
+      used naively.  You need to read the comments in the file and
+      edit the code to use this unsafe module.
+
+    - When a member sends a `help' command to the request address,
+      the url to their options page is included in the response.
+
+    - Autoresponses, -request command responses, and posting hold
+      notifications are inhibited for any message that has a
+      Precedence: {bulk|list|junk} header.  This is to avoid mail
+      loops between email 'bots.  If the original message has an
+      X-Ack: yes header, the response is sent.
+
+      Responses are also limited to a maximum number per day, as
+      defined in the site variable MAX_AUTORESPONSES_PER_DAY.  This is
+      another guard against 'bot loops, and it defaults to 10.
+
+    - When a Reply-To: header is munged to include both the original
+      and the list address, the list address is always added last.
+
+    - The cron/mailpasswds script has grown a -l/--listname option.
+
+    - The cron/disabled script has grown options to send out
+      notifications for reasons other than bounce-disabled.  It has
+      also grown a -f/--force option.  See cron/disabled --help for
+      details.
+
+    - The bin/dumpdb script has grown a -n/--noprint option.
+
+    - An experimental new mechanism for processing incoming messages
+      has been added.  If you can configure your MTA to do qmail-style
+      Maildir delivery, Mailman now has a MaildirRunner qrunner.  This
+      may turn out to be much more efficient and scalable, but for
+      MM2.1, it will not be officially supported.  See Defaults.py.in
+      and Mailman/Queue/MaildirRunner.py for details.
+
 2.1 beta 2 (05-May-2002)
 
     Lots of bug fixing, and the following new features and changes:
