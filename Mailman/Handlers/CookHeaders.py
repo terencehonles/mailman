@@ -219,7 +219,7 @@ def prefix_subject(mlist, msg, msgdata):
     # tracked (e.g. internally crafted, delivered to a single user such as the
     # list admin).
     prefix = mlist.subject_prefix
-    subject = msg['subject']
+    subject = msg.get('subject', '')
     # Try to figure out what the continuation_ws is for the header
     lines = subject.splitlines()
     ws = '\t'
