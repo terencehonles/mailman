@@ -569,7 +569,7 @@ the `-request' address for that list."""),
                 if oldpw <> password:
                     self.AddError(_('You gave the wrong password.'))
                 else:
-                    self.ApprovedDeleteMember(addr, 'mailcmd')
+                    self.DeleteMember(addr, 'mailcmd')
                     self.AddToResponse(_("Succeeded."))
         # FIXME: we really need to make these exceptions sane!
         except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError,
