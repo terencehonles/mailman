@@ -16,16 +16,19 @@
 
 """Inject the message to Usenet."""
 
+import os
 import string
 import re
+
+from Mailman.pythonlib.StringIO import StringIO
 
 
 
 def process(mlist, msg):
     # short circuits
     if not mlist.gateway_to_news or \
-       hasattr(msg, 'isdigest', 0) or \
-       hasattr(msg, 'fromusenet', 0):
+            getattr(msg, 'isdigest', 0) or \
+            getattr(msg, 'fromusenet', 0):
         # then
         return
     # sanity checks
@@ -43,9 +46,6 @@ def process(mlist, msg):
     if not os.fork():
         # child
         import nntplib
-        from Mailman import Message
-        # Now make the news message...
-        msg = Message.NewsMessage(msg)
         # Ok, munge headers, etc.
         subj = msg.getheader('subject')
         if subj:
@@ -110,7 +110,10 @@ def process(mlist, msg):
             i = string.find(line,":")
             if i <> -1 and line[i+1] <> ' ':
                 msg.headers[n] = line[:i+1] + ' ' + line[i+1:]
+        # flatten the message object, stick it in a StringIO object and post
+        # that resulting thing to the newsgroup
+        fp = StringIO(str(msg))
         conn = nntplib.NNTP(mlist.nntp_host)
-        conn.post(msg)
+        conn.post(fp)
         conn.quit()
         os._exit(0)
