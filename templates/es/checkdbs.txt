@@ -1,5 +1,5 @@
 La lista de distribución %(real_name)s@%(host_name)s tiene
-%(count)d peticione(s) pendientes para que usted las revise en la
+%(count)d peticion(es) pendientes para que usted las revise en la
 siguiente página:
 
 	%(adminDB)s
