@@ -180,7 +180,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         # Go ahead and instantiate it now.
         exc = exc()
     listname = mlist.real_name
-    sender = msg.get_sender()
+    sender = msgdata.get('sender', msg.get_sender())
     owneraddr = mlist.GetOwnerEmail()
     adminaddr = mlist.GetBouncesEmail()
     requestaddr = mlist.GetRequestEmail()

@@ -54,6 +54,7 @@ def process(mlist, msg, msgdata):
             if mlist.member_moderation_action == 0:
                 # Hold.  BAW: WIBNI we could add the member_moderation_notice
                 # to the notice sent back to the sender?
+                msgdata['sender'] = sender
                 Hold.hold_for_approval(mlist, msg, msgdata,
                                        ModeratedMemberPost)
             elif mlist.member_moderation_action == 1:
