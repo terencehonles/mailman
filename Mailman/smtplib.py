@@ -1,3 +1,4 @@
+
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -120,7 +121,6 @@ class SmtpConnection:
 	    self._sock.send(line + '\r\n')
 	self._sock.send('.\r\n')
 	self.getresp()
-        print "send: done"
 
 # Private crap from here down.
     def getline(self):
