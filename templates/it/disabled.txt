@@ -1,6 +1,6 @@
-La tua iscrizione alla lista %(listname)s è stata disabilitata a causa di
-eccessivi errori di invio al tuo indirizzo. Non riceverai ulteriori 
-messaggi da questa lista fino a che non riattiverai la tua iscrizione. 
+La tua iscrizione alla lista %(listname)s è stata disabilitata 
+%(reason)s. Non riceverai ulteriori messaggi
+da questa lista fino a che non riattiverai la tua iscrizione. 
 Riceverai altre %(noticesleft)s come questa prima che la tua iscrizione
 alla lista sia eliminata.
 
