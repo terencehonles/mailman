@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,7 +22,6 @@
 
 import os
 import sys
-import string
 import re
 import traceback
 
@@ -30,7 +29,6 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.Handlers import HandlerAPI
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 import gettext
@@ -39,11 +37,14 @@ import gettext
 MAXERRORS = 5
 MAXCOLUMN = 70
 
+NL = '\n'
+
+
 # jcrey: I must to do a trick to make pygettext detect this strings.  First we
 # define a fake function.  Idea taken from Mads.
 
-def _(string):
-    return string
+def _(s):
+    return s
 
 
 
@@ -112,7 +113,7 @@ class MailCommandHandler:
         # Strip final newline
         if text and text[-1] == '\n':
             text = text[:-1]
-        for line in string.split(text, '\n'):
+        for line in text.split('\n'):
             line = prefix + line
             if trunc and len(line) > trunc:
                 line = line[:trunc-3] + '...'
@@ -140,9 +141,9 @@ class MailCommandHandler:
                 # Yes, auto-respond and discard
                 return
 	subject = msg.getheader("subject")
-        sender = string.lower(msg.GetSender())
+        sender = msg.get_sender().lower()
         os.environ['LANG'] = self.GetPreferredLanguage(sender)
-        sender = string.split(sender, "@")[0]
+        sender = sender.split('@')[0]
         #
         # XXX: why 'orphanage'?
         if sender in mm_cfg.LIKELY_BOUNCE_SENDERS:
@@ -157,16 +158,18 @@ class MailCommandHandler:
                                         subject))
             return
 	if subject:
-	    subject = string.strip(subject)
+	    subject = subject.strip()
             # remove quotes so "help" works
             mo = quotecre.search(subject)
             if mo:
                 subject = mo.group('cmd')
 	if (subject and
-            self.__dispatch.has_key(string.lower(string.split(subject)[0]))):
-	    lines = [subject] + string.split(msg.body, '\n')
+            self.__dispatch.has_key(subject.split()[0].lower())):
+            # FIXME
+	    lines = [subject] + msg.body.split('\n')
         else:
-	    lines = string.split(msg.body, '\n')
+            # FIXME
+	    lines = msg.body.split('\n')
 	    if subject:
 		#
 		# check to see if confirmation request -- special handling
@@ -189,11 +192,11 @@ class MailCommandHandler:
                 for line in lines[linecount:]:
                     self.AddToResponse("> " + line, trunc=0)
                 break
-	    line = string.strip(lines[linecount])
+	    line = lines[linecount].strip()
 	    if not line:
 		continue
-	    args = string.split(line)
-	    cmd = string.lower(args[0])
+	    args = line.split()
+	    cmd = args[0].lower()
             # remove quotes so "help" or `help' works
             mo = quotecre.search(cmd)
             if mo:
@@ -260,8 +263,7 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
 
 ''') + tbmsg)
                         responsemsg['X-No-Archive'] = 'yes'
-                        # TBD: This should check the return value
-                        HandlerAPI.DeliverToUser(self, responsemsg)
+                        responsemsg.send(self)
                         break
         # send the response
         if not self.__NoMailCmdResponse:
@@ -292,8 +294,7 @@ The following is a detailed description of the problems.
                                                    self.GetRequestEmail(),
                                                    subject,
                                                    self.__respbuf)
-            # TBD: This should check the return value
-            HandlerAPI.DeliverToUser(self, responsemsg)
+            responsemsg.send(self)
             self.__respbuf = ''
             self.__errors = 0
             self.__NoMailCmdResponse = 0
@@ -500,16 +501,15 @@ background and instructions for subscribing to and using it, visit:
 	if len(digestmembers):
             digestmembers.sort()
 	    self.AddToResponse(_("Digest Members:\n") +
-                               string.join(map(AddTab,
-                                               filter(NotHidden,
-                                                      digestmembers)),
-                                           "\n"), trunc=0)
+                               NL.join(map(AddTab, filter(NotHidden,
+                                                          digestmembers))),
+                               trunc=0)
 	if len(members):
             members.sort()
 	    self.AddToResponse(_("Non-Digest Members:\n") +
-                               string.join(map(AddTab,
-                                               filter(NotHidden, members)),
-                                           "\n"), trunc=0)
+                               NL.join(map(AddTab, filter(NotHidden,
+                                                          members))),
+                               trunc=0)
 
     def ProcessUnsubscribeCmd(self, args, cmd, mail):
 	if not len(args):
@@ -556,13 +556,13 @@ background and instructions for subscribing to and using it, visit:
             return
         else:
             for arg in args:
-                if string.lower(arg) == 'digest' and not done_digest:
+                if arg.lower() == 'digest' and not done_digest:
                     digest = 1
                     done_digest = 1
-                elif string.lower(arg) == 'nodigest' and not done_digest:
+                elif arg.lower() == 'nodigest' and not done_digest:
                     digest = 0
                     done_digest = 1
-                elif string.lower(arg)[:8] == 'address=' and not address:
+                elif arg.lower()[:8] == 'address=' and not address:
                     address = Utils.LCDomain(arg[8:])
                 elif not password:
                     password = arg
@@ -627,7 +627,7 @@ background and instructions for subscribing to and using it, visit:
             self.AddError(_("Usage: confirm <confirmation number>\n"))
             return
         try:
-            cookie = string.atoi(args[0])
+            cookie = int(args[0])
         except:
             self.AddError(_("Usage: confirm <confirmation number>\n"))
             return
