@@ -17,8 +17,9 @@
 """Contains all the common functionality for the msg handler API."""
 
 from Mailman import mm_cfg
+from Mailman import Errors
 
-class HandlerError(Exception):
+class HandlerError(Errors.MailmanError):
     """Base class for all handler errors"""
     pass
 
