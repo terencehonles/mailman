@@ -61,4 +61,4 @@ def process(mlist, msg):
 
 
 def filterfunc(s):
-    return string.split(s, ': ')[1][-1]
+    return string.strip(string.split(s, ': ')[1])
