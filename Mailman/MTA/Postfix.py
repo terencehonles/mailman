@@ -88,7 +88,7 @@ def addlist(mlist, db, fp):
 """
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
-    print >> fp, '# CREATED:', time.ctime()
+    print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(listname):
         # Every key and value in the dbhash file as created by Postfix
