@@ -35,11 +35,9 @@ SITE_PW_FILE = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
 
 class SecurityManager:
     def SetSiteAdminPassword(self, pw):
-    	old = os.umask(0022)
-	f = open(SITE_PW_FILE, "w+")
-	f.write(Crypt.crypt(pw, Utils.GetRandomSeed()))
-	f.close()
-        os.umask(old)
+        fp = Utils.open_ex(SITE_PW_FILE, 'w', perms=0640)
+        fp.write(Crypt.crypt(pw, Utils.GetRandomSeed()))
+        fp.close()
 
     def CheckSiteAdminPassword(self, str):
 	try:
