@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -659,6 +659,12 @@ Usage: subscribe [password] [digest|nodigest] [address=<email-address>]"""))
                                 digest=digest)
             self.AddMember(userdesc, remote)
             self.Save()
+        except Errors.MembershipIsBanned:
+            listowner = self.GetOwnerEmail()
+            self.AddToResponse(_("""\
+The email address you supplied is banned from this mailing list.
+If you think this restriction is erroneous, please contact the list
+owners at %(listowner)s."""))
         except Errors.MMSubscribeNeedsConfirmation:
             #
             # the confirmation message that's been sent takes place 
