@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Creation/deletion hooks for manual /etc/aliases files."""
@@ -45,8 +45,8 @@ def clear():
 
 # nolock argument is ignored, but exists for interface compliance
 def create(mlist, cgi=0, nolock=0):
-    listname = mlist.internal_name()
-    fieldsz = len(listname) + len('-unsubscribe')
+    if mlist is None:
+        return
     if cgi:
         # If a list is being created via the CGI, the best we can do is send
         # an email message to mailman-owner requesting that the proper aliases
