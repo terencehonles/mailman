@@ -1164,7 +1164,7 @@ and also provide the email addresses of the list moderators in the
                    bgcolor=mm_cfg.WEB_ADMINPW_COLOR)
     atable.AddRow([Label(_('Enter new administrator password:')),
                    PasswordBox('newpw', size=20)])
-    atable.AddRow([Label(_('Confirm administator password:')),
+    atable.AddRow([Label(_('Confirm administrator password:')),
                    PasswordBox('confirmpw', size=20)])
     # Set up the moderator password table on the right
     mtable = Table(border=0, cellspacing=3, cellpadding=4,
@@ -1205,7 +1205,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             # password doesn't get you into these pages.
         else:
             doc.addError(_('Moderator passwords did not match'))
-    # Handle changes to the list administator password
+    # Handle changes to the list administrator password
     new = cgidata.getvalue('newpw', '').strip()
     confirm = cgidata.getvalue('confirmpw', '').strip()
     if new or confirm:
@@ -1214,7 +1214,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             # Set new cookie
             print mlist.MakeCookie(mm_cfg.AuthListAdmin)
         else:
-            doc.addError(_('Administator passwords did not match'))
+            doc.addError(_('Administrator passwords did not match'))
     # Give the individual gui item a chance to process the form data
     categories = mlist.GetConfigCategories()
     label, gui = categories[category]

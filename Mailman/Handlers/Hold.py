@@ -22,7 +22,7 @@ or denials are handled by a different module.
 
 If no determination can be made (i.e. none of the hold criteria matches), then
 we do nothing.  If the message must be held for approval, then the hold
-database is updated and any administator notification messages are sent.
+database is updated and any administrator notification messages are sent.
 Finally an exception is raised to let the pipeline machinery know that further
 message handling should stop.
 

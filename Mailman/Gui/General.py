@@ -91,7 +91,7 @@ class General(GUIBase):
              <a href="passwords">set a separate moderator password</a>,
              and also provide the <a href="?VARHELP=general/moderator">email
              addresses of the list moderators</a>.  Note that the field you
-             are changing here specifies the list administators.''')),
+             are changing here specifies the list administrators.''')),
 
             ('moderator', mm_cfg.EmailList, (3, WIDTH), 0,
              _("""The list moderator email addresses.  Multiple
