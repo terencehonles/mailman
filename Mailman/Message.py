@@ -130,7 +130,8 @@ class IncomingMessage(rfc822.Message):
         # 
         if not self.unixfrom:
             return None
-        parts = string.split(self.unixfrom) # XXX assumes no whitespace in address
+        # XXX assumes no whitespace in address
+        parts = string.split(self.unixfrom)
         for part in parts:
             #
             # perform minimal check for the address
@@ -143,7 +144,6 @@ class IncomingMessage(rfc822.Message):
                     continue
                 return part
         return None
-    
                 
 
     def GetSenderName(self):
