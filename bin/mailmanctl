@@ -56,6 +56,10 @@ Options:
         and the program is run as the current user and group.  This flag is
         not recommended for normal production environments.
 
+        Note though, that if you run with -u and are not in the mailman group,
+        you may have permission problems, such as begin unable to delete a
+        list's archives through the web.  Tough luck!
+
     -s/--stale-lock-cleanup
         If mailmanctl finds an existing master lock, it will normally exit
         with an error message.  With this option, mailmanctl will perform an
@@ -313,6 +317,8 @@ def main():
 
     if checkprivs:
         check_privs()
+    else:
+        print _('Warning!  You may encounter permission problems.')
 
     # Handle the commands
     command = args[0].lower()
