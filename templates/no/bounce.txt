@@ -1,0 +1,18 @@
+Denne MIME meldingen bør kunne leses som ren tekst.
+
+--%(boundary)s
+
+Content-type: text/plain; charset=iso-8859-1
+
+Dette er en returmelding fra listesystemet Mailman:
+
+    Liste:        %(listname)s
+    Medlem:       %(addr)s
+    Hendelse:     Medlemsskapet %(negative)s%(did)s.
+    På grunn av:  Permanent retur eller for mye i retur
+    %(but)s
+
+%(reenable)s
+Meldingen om retur er gjengitt nedenfor.
+
+Spørsmål? Kontakt Mailman systemadministrator på %(owneraddr)s.

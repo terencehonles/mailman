@@ -1,0 +1,13 @@
+Du sendte en epost til '%(listname)s' med emnet
+
+    %(subject)s
+
+Den holdes foreløpig igjen inntil moderatoren kan lese den for å
+godkjenne eller avslå den.
+
+Grunnen til at den holdes tilbake er:
+
+    %(reason)s
+
+Enten vil eposten din sendes ut på listen, eller du får den i retur
+med begrunnelse for hvorfor den ikke ble sendt ut.

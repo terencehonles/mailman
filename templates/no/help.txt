@@ -1,0 +1,119 @@
+Hjelp for epostlisten %(listname)s:
+
+Her er kommando hjelp for versjon %(version)s av epostlistesystemet
+"Mailman". Kommandoene som beskrives nedenfor vil kunne hjelpe deg til
+å melde deg på og av epostlister, og å gjøre andre endringer.
+
+En kommando skrives i emnefeltet eller i innholdet i en epost, og
+sendes til %(requestaddr)s
+
+Husk at mesteparten av det disse kommandoen gjør, kan også gjøres via
+listens webside:
+
+    %(listinfo_url)s
+
+For eksempel kan du fra websiden be om å få tilsendt passordet ditt.
+
+Kommandoer som er spesifikk for en liste (f.eks. subscribe, who,
+osv.), må sendes til listens *-request adresse, f.eks. for en liste
+som heter 'mailman', bruk adressen 'mailman-request@...'.
+
+Forklaring til beskrivelsen:
+Ord med <> rundt forteller at en parameter kreves,
+ord med [] rundt forteller at en parameter er valgfri.
+IKKE ta med selve tegnene <> og [] når du sender kommandoer.
+
+Følgende kommandoer er gyldige:
+
+    subscribe [passord] [digest-option] [address=<address>]
+        Melder deg på en liste. Dersom du ikke gir noe passord, vil du
+        få tildelt et passord, som du senere må bruke hvis du vil
+        melde deg av eller endre innstillinger. Når du er medlem av en
+        liste, kan det være du får tilsendt passordet ditt en gang i
+        måneden. Får du ikke det, kan du gå på listens webside for å
+        få tilsendt passordet.
+        digest-option:
+            Her kan du skrive ordet 'nodigest' eller ordet 'digest'
+            (selvsagt uten apostrofer) Skriver du ingen av disse
+            ordene, vil det komme an på oppsettet av listen hvilken
+            verdi som blir valgt. (Vanligvis 'nodigest')
+            'nodigest' vil si at du mottar all epost som sendes til
+                listen.
+            'digest' vil si at du kun mottar en epost med visse
+                mellomrom, som inneholder all epost sendt siden sist.
+        address=<address>:
+            Hvis du vil melde deg på med en annen epostadresse enn
+            den du sender påmeldingen fra, kan du spesifisere
+            epostadressen med denne parameteren.
+
+    unsubscribe <password> [address]
+        Melder deg av en liste. Du må skrive passordet du oppga når du
+        meldte deg på, eller det du fikk tildelt.
+        Hvis du skal melde deg av listen fra en annen epostadresse
+        enn den som er påmeldt listen, må du også oppgi epostadressen
+        som er påmeldt listen. (F.eks. hvis du har fått ny
+        epostadresse, må du spesifisere den gamle adressen her, og så
+        etterpå bruke subscribe-kommandoen ovenfor til å melde på den
+        nye epostadressen.)
+
+    who
+        Se epostadressene til alle som er på listen. (Bortsett fra de
+        som har reservert seg mot dette, se 'hide' valget til 'set'
+        kommandoen nedenfor.)
+
+    info
+        Se informasjonen for denne listen.
+
+    lists
+        Få en liste over alle lister som finnes i epostlistesystemet.
+
+    help
+        Gir hjelpe-eposten du leser nå.
+
+    set <valg> <on|off> <passord> 
+        Skrur av og på listevalg. Mulige valg er:
+
+        ack:
+            Setter du denne til 'on', får du en epost med bekreftelse
+            hver gang du sender en epost til listen.
+
+        digest:
+            Bytter til sammendrag-modus. Setter du denne til 'on' vil
+            du ikke få all epost som sendes til listen, men en epost
+            med visse mellomrom som inneholder alle eposter siden
+            sist.
+
+        plain:
+            Gjelder kun for sammendrag-modus. Epostene du mottar
+            sendes som ren tekst, og ikke i MIME format.
+
+        nomail:
+            Setter du denne til 'on', slutter du å få epost som sendes
+            til listen. Nyttig hvis du skal på ferie...
+
+        norcv:
+            Setter du denne til 'on', mottar du IKKE din egne eposter
+            du sender til listen. Har ingen betydning i
+            sammendrag-modus.
+
+        hide:
+            Reserverer deg fra å vises på listen over medlemmer på
+            epostlisten.
+
+
+    options
+        Viser innstillingene dine.
+
+    password <gammeltpassord> <nyttpassord>
+        Med denne kommandoen kan du bytte passord.
+
+    end eller --
+        Forteller epostlistesystemet at den kan overse resten av
+        eposten. Nyttig hvis epostprogrammet ditt legger til
+        signaturfil o.l.
+
+
+Spørsmål og andre henvendelser du eventuelt måtte ha om systemet,
+kan du sende til:
+
+    %(adminaddr)s

@@ -1,0 +1,7 @@
+I .MailUserPassword() oppdaget Mailman at:
+
+    Medlem: %(username)s
+    Liste:  %(internal_name)s
+
+har ikke noe passord. Vennligst rapporter dette til Mailmans system-
+administrator!
