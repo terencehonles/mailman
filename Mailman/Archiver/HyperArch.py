@@ -84,7 +84,8 @@ article_template='''\
  <BODY BGCOLOR="#ffffff">
    <H1>%(subject_html)s</H1>
     <B>%(author_html)s</B> 
-    <A HREF="mailto:%(email_url)s" TITLE="%(subject_html)s">%(email_html)s</A><BR>
+    <A HREF="mailto:%(email_url)s"
+       TITLE="%(subject_html)s">%(email_html)s</A><BR>
     <I>%(datestr_html)s</I>
     <P><UL>
         %(prev_wsubj)s
@@ -144,9 +145,9 @@ nohtmlpat=re.compile(r'^\s*</HTML>\s*$', re.IGNORECASE)
 quotedpat=re.compile(r'^([>|:]|&gt;)+')
 
 
-# Note: I'm overriding most, if not all of the pipermail Article class here -ddm
-# The Article class encapsulates a single posting.  The attributes 
-# are:
+# Note: I'm overriding most, if not all of the pipermail Article class
+#       here -ddm
+# The Article class encapsulates a single posting.  The attributes are:
 #
 #  sequence : Sequence number, unique for each article in a set of archives
 #  subject  : Subject
@@ -157,7 +158,8 @@ quotedpat=re.compile(r'^([>|:]|&gt;)+')
 #  email    : The author's e-mail address
 #  msgid    : A unique message ID
 #  in_reply_to : If !="", this is the msgid of the article being replied to
-#  references: A (possibly empty) list of msgid's of earlier articles in the thread
+#  references: A (possibly empty) list of msgid's of earlier articles in
+#	       the thread 
 #  body     : A list of strings making up the message body
 
 class Article(pipermail.Article):
@@ -170,18 +172,21 @@ class Article(pipermail.Article):
     def as_html(self):
 	d = self.__dict__.copy()
 	if self.prev:
-	    d["prev"] = '<LINK REL="Previous"  HREF="%s">' % \
-			(url_quote(self.prev.filename))
-	    d["prev_wsubj"] = '<LI> Previous message: <A HREF="%s">%s</A></li>' % \
-			      (url_quote(self.prev.filename), html_quote(self.prev.subject))
+	    d["prev"] = ('<LINK REL="Previous"  HREF="%s">'
+                         % (url_quote(self.prev.filename)))
+	    d["prev_wsubj"] = ('<LI> Previous message:'
+                               ' <A HREF="%s">%s</A></li>'
+                               % (url_quote(self.prev.filename),
+                                  html_quote(self.prev.subject)))
 	else:
 	    d["prev"] = d["prev_wsubj"] = ""
 	    
 	if self.next:
-	    d["next"] = '<LINK REL="Next" HREF="%s">' % \
-			(html_quote(self.next.filename))
-	    d["next_wsubj"] = '<LI> Next message: <A HREF="%s">%s</A></li>' % \
-			      (url_quote(self.next.filename), html_quote(self.next.subject))	    
+	    d["next"] = ('<LINK REL="Next" HREF="%s">'
+                         % (html_quote(self.next.filename)))
+	    d["next_wsubj"] = ('<LI> Next message: <A HREF="%s">%s</A></li>'
+                               % (url_quote(self.next.filename),
+                                  html_quote(self.next.subject)))
 	else:
 	    d["next"] = d["next_wsubj"] = ""
 	
@@ -257,8 +262,11 @@ class Article(pipermail.Article):
 	    else: self.in_reply_to=pipermail.strip_separators(match.group(1))
 		
 	references=message.getheader('References')
-	if references==None: self.references=[]
-	else: self.references=map(pipermail.strip_separators, string.split(references))
+	if references==None:
+            self.references=[]
+	else:
+            self.references = map(pipermail.strip_separators,
+                                  string.split(references))
 
 	# Save any other interesting headers
 	self.headers={}
@@ -317,7 +325,8 @@ index_header_template='''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 		%(author_ref)s
 		%(date_ref)s
 
-	     <li><b><a href="%(listinfo)s">More info on this list...</a></b></li>
+	     <li><b><a href="%(listinfo)s">More info on this list...
+                    </a></b></li>
       </ul>
       <p><b>Starting:</b> <i>%(firstdate)s</i><br>
          <b>Ending:</b> <i>%(lastdate)s</i><br>
@@ -338,7 +347,8 @@ index_footer_template='''\
 		%(subject_ref)s
 		%(author_ref)s
 		%(date_ref)s
-	     <li><b><a href="%(listinfo)s">More info on this list...</a></b></li>
+	     <li><b><a href="%(listinfo)s">More info on this list...
+                    </a></b></li>
      </ul>
      <p>
      <hr>
@@ -384,7 +394,9 @@ TOC_entry_template = '''\
 '''
 arch_listing_start = '''\
 	<table border=3>
-          <tr><td>Archive</td> <td>View by:</td> <td>Downloadable version</td></tr>
+          <tr><td>Archive</td>
+          <td>View by:</td>
+          <td>Downloadable version</td></tr>
 '''
 
 arch_listing_end = '''\
@@ -428,7 +440,8 @@ class HyperArchive(pipermail.T):
 	    if self.type == cap:
 		d["%s_ref" % (t)] = ""
 	    else:
-		d["%s_ref" % (t)] = '<a href="%s.html#start">[ %s ]</a>' % (t, t)	
+		d["%s_ref" % (t)] = ('<a href="%s.html#start">[ %s ]</a>'
+                                     % (t, t))
         return self.html_foot_tmpl % d
 
 
@@ -446,7 +459,8 @@ class HyperArchive(pipermail.T):
 	    if self.type == cap:
 		d["%s_ref" % (t)] = ""
 	    else:
-		d["%s_ref" % (t)] = '<a href="%s.html#start">[ %s ]</a>' % (t, t)
+		d["%s_ref" % (t)] = ('<a href="%s.html#start">[ %s ]</a>'
+                                     % (t, t))
         return self.html_hdr_tmpl % d
 
 
@@ -548,8 +562,8 @@ class HyperArchive(pipermail.T):
         ou = os.umask(0)
         try:
             self._lock_file = posixfile.open(
-                              os.path.join(mm_cfg.LOCK_DIR, '%s@arch.lock' % 
-                              self.maillist._internal_name), 'a+')
+                os.path.join(mm_cfg.LOCK_DIR, '%s@arch.lock'
+                             % self.maillist._internal_name), 'a+')
         finally:
             os.umask(ou)
         # minor race condition here, there is no way to atomicly 
@@ -586,8 +600,8 @@ class HyperArchive(pipermail.T):
 	try:
             wf=open(wname,'r')
             self.maillist.LogMsg("error","Archive working file %s present. "
-                                 "Check %s for possibly unarchived msgs" %
-                                  (wname,ename) )
+                                 "Check %s for possibly unarchived msgs"
+                                 % (wname,ename))
             ef=open(ename, 'a+')
             ef.seek(1,2)
             if ef.read(1) <> '\n':
@@ -698,6 +712,7 @@ class HyperArchive(pipermail.T):
             self.archives.sort(sf)
         else:
             self.archives.sort()
+        self.archives.reverse()
 
     def message(self, msg):
 	if self.VERBOSE:
@@ -730,9 +745,10 @@ class HyperArchive(pipermail.T):
         print self.html_foot()
 
     def write_index_entry(self, article):
-	print '<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>' % (urllib.quote(article.filename), 
-								     CGIescape(article.subject), article.sequence, 
-								     CGIescape(article.author))
+	print ('<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>' %
+               (urllib.quote(article.filename), 
+                CGIescape(article.subject), article.sequence, 
+                CGIescape(article.author)))
 
     def write_threadindex_entry(self, article, depth):
 	if depth<0: 
@@ -745,9 +761,10 @@ class HyperArchive(pipermail.T):
 	    for i in range(depth-self.depth): print '<UL>'
 	print '<!--%i %s -->' % (depth, article.threadKey)
 	self.depth=depth
-	print '<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>' % (CGIescape(urllib.quote(article.filename)),
-								     CGIescape(article.subject), article.sequence+910, 
-								     CGIescape(article.author))
+	print ('<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>'
+               % (CGIescape(urllib.quote(article.filename)),
+                  CGIescape(article.subject), article.sequence+910, 
+                  CGIescape(article.author)))
 
     def write_TOC(self):
         self.sortarchives()
@@ -760,15 +777,20 @@ class HyperArchive(pipermail.T):
     def add_article(self, article):
         # Determine into what archives the article should be placed
         archives=self.get_archives(article)
-        if archives==None: archives=[]        # If no value was returned, ignore it
-        if type(archives)==type(''): archives=[archives]        # If a string was returned, convert to a list
+        # If no value was returned, ignore it:
+        if archives==None: archives=[]
+        # If a string was returned, convert to a list:
+        if type(archives)==type(''): archives=[archives]
         if archives==[]: return         # Ignore the article
 
         # Add the article to each archive in turn
         article.filename=filename=self.get_filename(article)
         article_text=article.as_text()
         temp=self.format_article(article) # Reformat the article
-        self.message("Processing article #"+str(article.sequence)+' into archives '+str(archives))
+        self.message("Processing article #"
+                     + str(article.sequence)
+                     + ' into archives '
+                     + str(archives))
         for i in archives:
             self.archive=i
             archivedir=os.path.join(self.basedir, i)
@@ -807,27 +829,36 @@ class HyperArchive(pipermail.T):
             if article.in_reply_to!='': parentID=article.in_reply_to
             elif article.references!=[]: 
                 # Remove article IDs that aren't in the archive
-                refs=filter(lambda x, self=self: self.database.hasArticle(self.archive, x), 
+                refs=filter(
+                    lambda x, self=self: self.database.hasArticle(self.archive,
+                                                                  x),
                             article.references)
                 if len(refs):
-                    refs=map(lambda x, s=self: s.database.getArticle(s.archive, x), refs)
+                    refs=map(
+                        lambda x, s=self: s.database.getArticle(s.archive, x),
+                        refs)
                     maxdate=refs[0]
                     for ref in refs[1:]: 
                         if ref.date>maxdate.date: maxdate=ref
                     parentID=maxdate.msgid
             else:
-                # Get the oldest article with a matching subject, and assume this is 
-                # a follow-up to that article
-                parentID=self.database.getOldestArticle(self.archive, article.subject)
+                # Get the oldest article with a matching subject, and assume 
+                # this is a follow-up to that article
+                parentID=self.database.getOldestArticle(self.archive,
+                                                        article.subject)
 
-            if parentID!=None and not self.database.hasArticle(self.archive, parentID): 
+            if parentID!=None and not self.database.hasArticle(self.archive,
+                                                               parentID): 
                 parentID=None
             article.parentID=parentID 
             if parentID!=None:
                 parent=self.database.getArticle(self.archive, parentID)
                 article.threadKey=parent.threadKey+article.date+'-'
             else: article.threadKey=article.date+'-'
-            self.database.setThreadKey(self.archive, article.threadKey+'\000'+article.msgid, article.msgid)
+            self.database.setThreadKey(self.archive,
+                                       article.threadKey
+                                       + '\000' + article.msgid,
+                                       article.msgid)
             self.database.addArticle(i, temp, subjectkey, authorkey)
             
             if i not in self._dirty_archives: 
@@ -875,7 +906,8 @@ class HyperArchive(pipermail.T):
             self.update_TOC=0
             self.write_TOC()
         # Save the collective state 
-        self.message('Pickling archive state into '+os.path.join(self.basedir, 'pipermail.pck'))
+        self.message('Pickling archive state into '
+                     + os.path.join(self.basedir, 'pipermail.pck'))
         self.database.close()
         del self.database
         f=open(os.path.join(self.basedir, 'pipermail.pck'), 'w')
@@ -919,13 +951,16 @@ class HyperArchive(pipermail.T):
 		else: j = jr.start(0)
 		if kr==None: k=-1
 		else: k = kr.start(0)
-		if j!=-1 and (j<k or k==-1): text=jr.group(1) ; URL='mailto:'+text ; pos=j
+		if j!=-1 and (j<k or k==-1):
+                    text=jr.group(1) ; URL='mailto:'+text ; pos=j
 		elif k!=-1 and (j>k or j==-1): text=URL=kr.group(1) ; pos=k
 		else: # j==k
 		    raise ValueError, "j==k: This can't happen!"
 		length=len(text)
-#		self.message("URL: %s %s %s \n" % (CGIescape(L[:pos]), URL, CGIescape(text)))
-		L2=L2+'%s<A HREF="%s">%s</A>' % (CGIescape(L[:pos]), URL, CGIescape(text))
+		#self.message("URL: %s %s %s \n"
+                #             % (CGIescape(L[:pos]), URL, CGIescape(text)))
+                L2 = L2 + ('%s<A HREF="%s">%s</A>'
+                           % (CGIescape(L[:pos]), URL, CGIescape(text)))
 		L=L[pos+length:]
 		jr=emailpat.search(L) ; kr=urlpat.search(L)
 	    if jr==None and kr==None: L=CGIescape(L)
@@ -995,7 +1030,8 @@ class HyperArchive(pipermail.T):
             article.loadbody_fromHTML(f)
 	    f.close()
         except IOError:
-            self.message("article file %s is missing!" % os.path.join(arcdir, article.filename)) 
+            self.message("article file %s is missing!"
+                         % os.path.join(arcdir, article.filename))
         article.prev=prev
         article.next=next
 	f=open(os.path.join(arcdir, article.filename), 'w')
