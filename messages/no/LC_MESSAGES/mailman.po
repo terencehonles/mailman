@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Mailman 2.1b2\n"
+"Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Tue Oct 29 15:07:11 2002\n"
-"PO-Revision-Date: 2002-10-28 00:09+0100\n"
+"PO-Revision-Date: 2002-10-29 23:30+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -524,9 +524,8 @@ msgid "...after this one."
 msgstr "...etter denne."
 
 #: Mailman/Cgi/admin.py:747
-#, fuzzy
 msgid "<br>(Edit <b>%(varname)s</b>)"
-msgstr "<br>(Detaljer for <b>%(varname)s</b>)"
+msgstr "<br>(Redigere <b>%(varname)s</b>)"
 
 #: Mailman/Cgi/admin.py:749
 msgid "<br>(Details for <b>%(varname)s</b>)"
@@ -10017,6 +10016,17 @@ msgid ""
 "Optional `directory' specifies a directory to dequeue from other than\n"
 "qfiles/shunt.\n"
 msgstr ""
+"Flytte en melding fra shunt køen til den opprinnelige køen.\n"
+"\n"
+"Brukes slik: %(PROGRAM)s [valg] [katalog]\n"
+"\n"
+"Valg:\n"
+"\n"
+"    -h / --help\n"
+"        Viser denne hjelpeteksten.\n"
+"\n"
+"Den valgfrie \"katalog\" parameteren kan benyttes hvis du ønsker å flytte\n"
+"meldinger fra en annen katalog enn qfiles/shunt.\n"
 
 #: bin/unshunt:81
 msgid ""
@@ -10072,7 +10082,7 @@ msgstr "ADVARSEL: kunne ikke låse listen: %(listname)s"
 
 #: bin/update:209
 msgid "Resetting %(n)s BYBOUNCEs disabled addrs with no bounce info"
-msgstr ""
+msgstr "Resetter %(n)s adresser som ble stoppet grunnet returmeldinger, men som ikke har noe returmeldinginformasjon"
 
 #: bin/update:215
 msgid "Updating the held requests database."
@@ -10571,14 +10581,14 @@ msgstr ""
 "Epost til listen som krever godkjenning:"
 
 #: cron/checkdbs:114
-#, fuzzy
 msgid ""
 "From: %(sender)s on %(date)s\n"
 "Subject: %(subject)s\n"
 "Cause: %(reason)s"
 msgstr ""
-"      Fra: %(sender)s %(date)s\n"
-"    Fordi: %(reason)s"
+"Fra: %(sender)s %(date)s\n"
+"Tittel: %(subject)s\n"
+"Fordi: %(reason)s"
 
 #: cron/disabled:19
 msgid ""
