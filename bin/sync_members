@@ -63,8 +63,9 @@ Where:
 import sys
 import string
 import paths
-from Mailman import MailList
-from Mailman import Errors
+import Mailman.MailList
+import Mailman.Errors
+import Mailman.Utils
 
 program = sys.argv[0]
 
@@ -92,12 +93,12 @@ def yesno(opt):
     elif yesno in ('n', 'no'):
         return 0
     else:
-        usage(0)
+        usage(1, 'Bad choice: ' + yesno)
         # no return
 
 
 def main():
-    dryrun = 1
+    dryrun = 0
     digest = 0
     welcome = None
     filename = None
@@ -125,28 +126,32 @@ def main():
             i = i + 1
         elif opt in ('-f', '--file'):
             if filename is not None:
-                usage(1)
+                usage(1, 'Only one -f switch allowed')
             try:
                 filename = sys.argv[i+1]
             except IndexError:
-                usage(1)
+                usage(1, 'No argument to -f given')
             i = i + 2
         elif opt[0] == '-':
             usage(1, 'Illegal option: ' + opt)
         else:
             try:
-                listname = sys.argv[i+1]
-                i = i + 2
+                listname = sys.argv[i]
+                i = i + 1
             except IndexError:
-                usage(1)
+                usage(1, 'No listname given')
             break
         
     if listname is None or filename is None:
-        usage(1)
+        usage(1, 'Must have a listname and a filename')
 
     # read the list of addresses to sync to from the file
     if filename == '-':
         filemembers = sys.argv[i:]
+        # if there were no arguments on the command line, then it's probably
+        # a user error.  XXX this is questionable
+        if not filemembers:
+            usage(1, 'No addresses found on the command line')
     else:
         try:
             fp = open(filename)
@@ -156,37 +161,69 @@ def main():
         filemembers = fp.readlines()
         fp.close()
 
+    # first filter out any invalid addresses
+    filemembers = Mailman.Utils.ParseAddrs(filemembers)
+    invalid = 0
+    for addr in filemembers:
+        try:
+            Mailman.Utils.ValidateEmail(addr)
+        except Mailman.Errors.EmailAddressError:
+            print 'Invalid :  %30s' % addr
+            invalid = 1
+    if invalid:
+        print 'You must fix the preceding invalid addresses first.'
+        sys.exit(1)
+
+    # get the locked list object
     try:
-        mlist = MailList.MailList(listname)
-    except Errors.MMUnknownListError:
+        mlist = Mailman.MailList.MailList(listname)
+    except Mailman.Errors.MMUnknownListError:
         print 'No list:', listname
         sys.exit(1)
 
-    # get the list of addresses currently subscribed
-    addrs = {}
-    needsadding = {}
-    for addr in mlist.GetDeliveryMembers() + mlist.GetDigestDeliveryMembers():
-        addrs[string.lower(addr)] = addr
 
-    for addr in filemembers:
-        # any address found in the file that is also in the list can be
-        # ignored.  if not found in the list, it must be added later
-        laddr = string.lower(addr)
-        if addrs.has_key(laddr):
-            del addrs[laddr]
-        else:
-            needsadding[laddr] = addr
+    try:
+        # get the list of addresses currently subscribed
+        addrs = {}
+        needsadding = {}
+        for addr in (mlist.GetDeliveryMembers() +
+                     mlist.GetDigestDeliveryMembers()):
+            addrs[string.lower(addr)] = addr
 
-    # addrs contains now all the addresses that need removing
-    for laddr, addr in needsadding.items():
-        print 'Adding %30s (%30s)' % (laddr, addr)
-        if dryrun:
-            continue
+        for addr in filemembers:
+            # any address found in the file that is also in the list can be
+            # ignored.  if not found in the list, it must be added later
+            laddr = string.lower(addr)
+            if addrs.has_key(laddr):
+                del addrs[laddr]
+            else:
+                needsadding[laddr] = addr
 
-    for laddr, addr in addrs.items():
-        print 'Removing %30s (%30s)' % (laddr, addr)
-        if dryrun:
-            continue
+        if not needsadding and not addrs:
+            print 'Nothing to do.'
+            sys.exit(0)
+
+        # addrs contains now all the addresses that need removing
+        for laddr, addr in needsadding.items():
+            print 'Adding  : %30s (%30s)' % (laddr, addr)
+            if dryrun:
+                continue
+            pw = '%s%s' % (Mailman.Utils.GetRandomSeed(),
+                           Mailman.Utils.GetRandomSeed())
+            # should not already be subscribed, otherwise our test above is
+            # broken
+            mlist.ApprovedAddMember(addr, pw, digest, welcome)
+
+        for laddr, addr in addrs.items():
+            print 'Removing: %30s (%30s)' % (laddr, addr)
+            if dryrun:
+                continue
+            # should be a member, otherwise our test above is broken
+            mlist.DeleteMember(addr)
+
+        mlist.Save()
+    finally:
+        mlist.Unlock()
 
 
 if __name__ == '__main__':
