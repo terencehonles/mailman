@@ -92,7 +92,7 @@ def process(mlist, msg, msgdata):
                     len(msg.body), errcode))
             # TBD: can we do better than this?  What if only one recipient out
             # of the entire chunk failed?
-            failedrecips.extend(chunk)
+            failedrecips.append(chunk)
         # Log the successful post
         syslog('post', 'post to %s from %s, size=%d, success' %
                (mlist.internal_name(), msg.GetSender(), len(msg.body)))
