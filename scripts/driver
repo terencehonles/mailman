@@ -35,6 +35,7 @@ def open(filename, mode='r', bufsize=-1, realopen=realopen):
     except IOError, e:
         strerror = e.strerror + ': ' + filename
         e.strerror = strerror
+        e.filename = filename
         e.args = (e.args[0], strerror)
         # Python 1.5
         raise e, None, sys.exc_info()[2]
