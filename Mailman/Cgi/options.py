@@ -92,7 +92,6 @@ def main():
     if not mlist.isMember(user):
         add_error_message(doc, _('No such member: %(user)s.'))
         loginpage(mlist, doc, None, cgidata)
-        doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
 
