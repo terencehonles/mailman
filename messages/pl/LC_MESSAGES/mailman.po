@@ -1083,7 +1083,7 @@ msgstr "Zachowaj list dla administratora serwera"
 
 #: Mailman/Cgi/admindb.py:403
 msgid "Forward messages (individually) to:"
-msgstr "Prze¶lij wiadomo¶ci (pojedyñczo) do:""
+msgstr "Prze¶lij wiadomo¶ci (pojedyñczo) do:"
 
 #: Mailman/Cgi/admindb.py:421
 msgid "Clear this member's <em>moderate</em> flag"
@@ -6663,6 +6663,9 @@ msgid ""
 "equivalent) file by adding the following lines, and possibly running the\n"
 "`newaliases' program:\n"
 msgstr ""
+"¯eby zakoñczyæ proces tworzenia listy dyskusyjnej musisz jeszcze dodaæ \n"
+"poni¿sze linie do pliku /etc/aliases (lub odpowiednika), oraz od¶wie¿yæ \n"
+"bazê aliasów poleceniem 'newaliases' (szczegó³y zale¿± od Twojego MTA):\n"
 
 #: Mailman/MTA/Manual.py:80
 msgid "## %(listname)s mailing list"
@@ -8321,7 +8324,7 @@ msgstr ""
 
 #: bin/newlist:118
 msgid "Unknown language: %(lang)s"
-msgstr "Nieznany jêzyk: %(lang)s""
+msgstr "Nieznany jêzyk: %(lang)s"
 
 #: bin/newlist:123
 msgid "Enter the name of the list: "
@@ -8341,7 +8344,7 @@ msgstr "Has³o listy nie mo¿e byæ puste"
 
 #: bin/newlist:190
 msgid "Hit enter to notify %(listname)s owner..."
-msgstr "Naci¶nij Enter aby wys³aæ powiadomienie do opiekuna listy..."
+msgstr "Naci¶nij Enter powiadomiæ opiekuna listy %(listname)s..."
 
 #: bin/qrunner:19
 msgid ""
