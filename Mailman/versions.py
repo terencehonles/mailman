@@ -329,6 +329,10 @@ def UpdateOldUsers(l):
 
 def CanonicalizeUserOptions(l):
     """Fix up the user options."""
+    # I want to put a flag in the list database which tells this routine to
+    # never try to canonicalize the user options again.
+    if getattr(l, 'useropts_version', 0) > 0:
+        return
     # pre 1.0rc2 to 1.0rc3.  For all keys in l.user_options to be lowercase,
     # but merge options for both cases
     options = {}
@@ -346,10 +350,15 @@ def CanonicalizeUserOptions(l):
     # get/setDeilveryStatus().  This must be done after the addresses are
     # canonicalized.
     for k, v in l.user_options.items():
+        if not l.isMember(k):
+            # There's a key in user_options that isn't associated with a real
+            # member address.  This is likely caused by an earlier bug.
+            del l.user_options[k]
         if l.getMemberOption(k, mm_cfg.DisableDelivery):
             # Convert this flag into a legacy disable
             l.setDeliveryStatus(k, UNKNOWN)
             l.setMemberOption(k, mm_cfg.DisableDelivery, 0)
+    l.useropts_version = 1
 
 
 
