@@ -77,6 +77,12 @@ FREQUENTLY ASKED QUESTIONS
       will handle many other cases where files are unsuccessfully
       referenced.
 
+5. Why doesn't the archive link work?
+
+      Have any messages been posted to the list?  This is a known
+      buglet; the archive link doesn't work until at least one message 
+      has been posted.
+
 
 Local Variables:
 mode: text
