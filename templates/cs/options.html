@@ -1,4 +1,4 @@
-<!-- $Revision: 5009 $ -->
+<!-- $Revision: 5015 $ -->
 <html>
 <head>
     <link rel="SHORTCUT ICON" href="<mm-favicon>">
@@ -11,13 +11,12 @@
 	<FONT COLOR="#000000" SIZE=+1>
 <MM-List-Name> Nastavení pro u¾ivatele: <MM-Presentable-User>
 	</FONT></B></TD></TR> </TABLE>
-<MM-Form-Start>
 <p>
 <table width="100%" border="0" cellspacing="5" cellpadding="5">
     <tr><td>
         <b>U¾ivatel <MM-Presentable-User></b>, konfigurace
 	u¾ivatelského úètu pro konferenci <MM-List-Name>.
-        </td><td><mm-logout-button></td>
+        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -29,6 +28,7 @@
     </tr>
 </table>
 
+<MM-Form-Start>
 <p>
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">

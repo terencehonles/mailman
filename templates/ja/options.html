@@ -1,4 +1,4 @@
-<!-- $Revision: 5009 $ -->
+<!-- $Revision: 5015 $ -->
 <html>
 <head>
     <link rel="SHORTCUT ICON" href="<mm-favicon>">
@@ -12,13 +12,12 @@
         <MM-List-Name> メーリングリストでの <MM-Presentable-User> の設定
 	</FONT></B></TD></TR>
     </TABLE>
-<MM-Form-Start>
 <p>
 <table width="100%" border="0" cellspacing="5" cellpadding="5">
     <tr><td>
         <b><MM-List-Name> メーリングリストでの<MM-Presentable-User></b> さんの
         会員設定状況，パスワード，オプションの設定状況．
-        </td><td><mm-logout-button></td>
+        </td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -29,6 +28,8 @@
         </td>
     </tr>
 </table>
+
+<MM-Form-Start>
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="5">
     <tr><td width="100%" bgcolor="#fff0d0" colspan="2">

@@ -1,4 +1,4 @@
-<!-- $Revision: 5009 $ -->
+<!-- $Revision: 5015 $ -->
 <html>
 <head>
     <link rel="SHORTCUT ICON" href="<mm-favicon>">
@@ -12,13 +12,12 @@
         Persönliche Einstellungen für <MM-Presentable-User> und die Liste <MM-List-Name>
 	</FONT></B></TD></TR>
     </TABLE>
-<MM-Form-Start>
 <p>
 <table width="100%" border="0" cellspacing="5" cellpadding="5">
     <tr><td>
         <b>Abonnenment Status von <MM-Presentable-User></b>, Passwort und
         persönliche Einstellungen für die Liste <MM-List-Name>.
-        </td><td><mm-logout-button></td>
+        </td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -30,6 +29,7 @@
     </tr>
 </table>
 
+<MM-Form-Start>
 <p>
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
