@@ -32,9 +32,9 @@ def process(mlist, msg, msgdata):
     # that runner loads the list unlocked and we can't have it re-load the
     # list state for every cycle through its mainloop.
     interval = mm_cfg.VERP_DELIVERY_INTERVAL
-    # If occasional VERPing is turned on, and we aren't already VERPing the
-    # message...
-    if interval > 0 and not msgdata.get('verp'):
+    # If occasional VERPing is turned on, and we haven't't already made a
+    # VERPing decision...
+    if interval > 0 and not msgdata.has_key('verp'):
         if interval == 1:
             # VERP every time
             msgdata['verp'] = 1
