@@ -44,6 +44,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
 from Mailman import i18n
+from Mailman.Mailbox import Mailbox
 from Mailman.MemberAdaptor import ENABLED
 from Mailman.Handlers.Decorate import decorate
 from Mailman.Queue.sbcache import get_switchboard
@@ -74,8 +75,8 @@ def process(mlist, msg, msgdata):
         mboxfp = open(mboxfile, 'a+')
     finally:
         os.umask(omask)
-    g = Generator(mboxfp)
-    g.flatten(msg, unixfrom=True)
+    mbox = Mailbox(mboxfp)
+    mbox.AppendMessage(msg)
     # Calculate the current size of the accumulation file.  This will not tell
     # us exactly how big the MIME, rfc1153, or any other generated digest
     # message will be, but it's the most easily available metric to decide
