@@ -17,8 +17,6 @@
 
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 547 $"
-
 
 import string, os, sys, tempfile
 import mm_cfg, mm_message, mm_err, mm_utils
@@ -30,47 +28,49 @@ Your message entitled:
 
 	%s
 
-was successfully received by the %s maillist.
+was successfully received by the %s mailing list.
 
-(List info page: %s )
+List info page: %s
 '''
 
-SUBSCRIBEACKTEXT = '''Welcome %s to the %s@%s mailing list!
-%s%s
-General information about the maillist is at:
-
-  %s
-
-If you ever want to unsubscribe or change your options (eg, switch to  
-or from digest mode, change your password, etc.), visit your subscription
-page at:
-
-  %s
-
-You can also make such adjustments via email - send a message to:
-
-  %s-request@%s
-
-with the text "help" in the subject or body, and you will get back a
-message with instructions.
-
-You must know your password to change your options (including changing the
-password, itself) or to unsubscribe.  It is:
-
-  %s
-
-If you forget your password, don't worry, you will receive a monthly 
-reminder telling you what all your %s maillist passwords are,
-and how to unsubscribe or change your options.  There is also a button on
-your options page that will email your current password to you.
-
-You may also have your password mailed to you automatically off of 
-the web page noted above.
-
+SUBSCRIBEACKTEXT = """Welcome to the %(real_name)s@%(host_name)s mailing list!
+%(welcome)s
 To post to this list, send your email to:
 
-   %s
-'''
+  %(emailaddr)s
+
+General information about the mailing list is at:
+
+  %(generalurl)s
+
+If you ever want to unsubscribe or change your options (eg, switch to or
+from digest mode, change your password, etc.), visit your subscription
+page at:
+
+  %(optionsurl)s
+
+You can also make such adjustments via email by sending a message to:
+
+  %(real_name)s-request@%(host_name)s
+
+with the word `help' in the subject or body, and you will get back a
+message with instructions.
+
+You must know your password to change your options (including changing
+the password, itself) or to unsubscribe.  It is:
+
+  %(password)s
+
+If you forget your password, don't worry, you will receive a monthly
+reminder telling you what all your %(host_name)s mailing list passwords
+are, and how to unsubscribe or change your options.  There is also a
+button on your options page that will email your current password to
+you.
+
+You may also have your password mailed to you automatically off of the
+web page noted above.
+
+"""
 
 USERPASSWORDTEXT = '''
 This is a reminder of how to unsubscribe or change your configuration
@@ -98,12 +98,12 @@ Questions or comments?  Please send them to %s.
 class Deliverer:
     # This method assumes the sender is list-admin if you don't give one.
     def SendTextToUser(self, subject, text, recipient, sender=None,
-                       add_headers=[]):
+                       add_headers=[], raw=0):
         # repr(recipient) necessary for addresses containing "'" quotes!
         if not sender:
             sender = self.GetAdminEmail()
         mm_utils.SendTextToUser(subject, text, recipient, sender,
-                                add_headers=add_headers)
+                                add_headers=add_headers, raw=raw)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
@@ -152,12 +152,16 @@ class Deliverer:
 	if footer:
 	    tmp_file.write(footer)
 	tmp_file.close()
-        file = os.popen("%s %s %s %s %s" %
-			(os.path.join(mm_cfg.MAILMAN_DIR, "mail/deliver"),
-                         tmp_file_name, self.GetAdminEmail(),
-			 self.num_spawns, to_list))
-
-	file.close()
+        cmd = "%s %s %s %s %s %s" % (
+            mm_cfg.PYTHON,
+            os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"),
+            tmp_file_name, self.GetAdminEmail(),
+            self.num_spawns, to_list)
+        file = os.popen(cmd)
+	status = file.close()
+        if status:
+            sys.stderr.write('Non-zero exit status: %d'
+                             '\nCmd: %s' % ((status >> 8), cmd))
 
     def SendPostAck(self, msg, sender):
 	subject = msg.getheader('subject')
@@ -176,21 +180,18 @@ class Deliverer:
 
     def CreateSubscribeAck(self, name, password):
 	if self.welcome_msg:
-	    header = '\nHere is the list-specific welcome message:\n\n'
 	    welcome = self.welcome_msg + '\n'
 	else:
-	    header = ''
 	    welcome = ''
 
-        body = (SUBSCRIBEACKTEXT % (name, 
-				    self.real_name, self.host_name,
-                                    header, welcome,
-                                    self.GetScriptURL('listinfo'),
-                                    self.GetOptionsURL(name),
-                                    self.real_name, self.host_name,
-                                    password,
-                                    self.host_name,
-                                    self.GetListEmail()))
+        body = SUBSCRIBEACKTEXT % {'real_name' : self.real_name,
+                                   'host_name' : self.host_name,
+                                   'welcome'   : welcome,
+                                   'emailaddr' : self.GetListEmail(),
+                                   'generalurl': self.GetScriptURL('listinfo'),
+                                   'optionsurl': self.GetOptionsURL(name),
+                                   'password'  : password,
+                                   }
         return body
 
     def SendSubscribeAck(self, name, password, digest):
