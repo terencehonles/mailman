@@ -78,6 +78,8 @@ int main(int argc, char **argv, char **env)
   else
     {
       printf("Illegal caller!\n");
+      return 1;
     }
+  return 0;
 }
 
