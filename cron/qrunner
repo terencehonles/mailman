@@ -205,14 +205,15 @@ def main(lock):
             continue
         msgfp = dbfp = None
         try:
-            msgfp = open(root + '.msg')
-            msg = Message.Message(msgfp)
-            msgfp.close()
-            msgfp = None
             dbfp = open(root + '.db')
             msgdata = marshal.load(dbfp)
             dbfp.close()
             dbfp = None
+            msgfp = open(root + '.msg')
+            # re-establish the file base for re-queuing
+            msg = Message.Message(msgfp, filebase=msgdata.get('filebase'))
+            msgfp.close()
+            msgfp = None
         except (EOFError, ValueError, TypeError, IOError), e:
             # For some reason we had trouble getting all the information out
             # of the queued files.  log this and move on (we figure it's a
