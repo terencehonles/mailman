@@ -82,11 +82,7 @@ def call_script(which, pathinfo):
 #######
 # Preliminaries done, actual processing of the form input below.
 
-if form.has_key("SubscriberRoster"):
-    # Get the roster of subscribers.
-    call_script('mmroster', [list._internal_name])
-    
-elif (form.has_key("UserOptions")
+if (form.has_key("UserOptions")
       or (form.has_key("info") and not form.has_key("email"))):
     # Go to user options section.
     if not form.has_key("info"):
@@ -179,8 +175,8 @@ else:
                                        list.GetRequestEmail(),
                                        pw,
                                        digesting)),
-                            add_to_headers = ["Errors-To: %s"
-                                              % list.GetAdminEmail()])
+                            add_headers = ["Errors-To: %s"
+					   % list.GetAdminEmail()])
     except mm_err.MMBadEmailError:
 	results = results + ("Mailman won't accept the given email "
 			     "address as a valid address. (Does it "
