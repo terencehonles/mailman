@@ -587,8 +587,11 @@ def loginpage(mlist, doc, user, cgidata):
 
 
 def add_error_message(doc, errmsg, tag='Error: ', *args):
+    # Don't translate the tag if it's the empty string
+    if tag:
+        tag = _(tag)
     doc.AddItem(Header(3, Bold(FontAttr(
-        _(tag), color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
+        tag, color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
                        Italic(errmsg % args).Format()))
 
 
