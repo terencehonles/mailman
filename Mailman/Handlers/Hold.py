@@ -247,7 +247,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     if not fromusenet and not mlist.dont_respond_to_post_requests:
         lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
         subject = _('Your message to %(listname)s awaits moderator approval')
-        text = Utils.maketext('postheld.txt', d, lang=lang)
+        text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
         msg.addheader('Content-Type', 'text/plain',
                       charset=Utils.GetCharSet(lang))
@@ -263,9 +263,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             usersubject = msg.get('subject', _('(no subject)'))
             d['reason'] = _(reason)
             d['subject'] = usersubject
-            text = Utils.maketext('postauth.txt', d,
-                                  lang=mlist.preferred_language,
-                                  raw=1)
+            text = Utils.maketext('postauth.txt', d, raw=1, mlist=mlist)
             # craft the admin notification message and deliver it
             subject = _('%(listname)s post from %(sender)s requires approval')
             msg = Message.UserNotification(adminaddr, adminaddr, subject,
