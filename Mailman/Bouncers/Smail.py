@@ -19,12 +19,10 @@
 import string
 import re
 
-introtag = '|------------------------- ' \
-           'Failed addresses follow: ---------------------|'
-endtag   = '|------------------------- ' \
-           'Message text follows: ------------------------|'
+scre = re.compile(r'failed addresses follow:', re.IGNORECASE)
+ecre = re.compile(r'message text follows:', re.IGNORECASE)
+acre = re.compile(r'<(?P<addr>[^>]*)>')
 
-acre = re.compile(r'\s*address:\s*<(?P<addr>[^>]*)>')
 
 
 def process(msg):
@@ -38,13 +36,15 @@ def process(msg):
         line = msg.fp.readline()
         if not line:
             break
-        line = string.strip(line)
-        if state == 0 and line == introtag:
-            state = 1
-        elif state == 2 and line == endtag:
-            break
-        mo = acre.match(line)
-        if mo:
-            addrs.append(mo.group('addr'))
-        # don't know what we're looking at
+        if state == 0:
+            mo = scre.search(line)
+            if mo:
+                state = 1
+        elif state == 1:
+            mo = ecre.search(line)
+            if mo:
+                break
+            mo = acre.search(line)
+            if mo:
+                addrs.append(mo.group('addr'))
     return addrs or None
