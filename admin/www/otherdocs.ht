@@ -1,0 +1,23 @@
+Title: Other Documentation
+Links: links.h doco-links.h
+
+<h3>Other Documentation</h3>
+
+<p>The <a href="faq.html">Frequently Asked Questions (FAQ)</a> is
+available to answer most questions.  For issues not covered in the
+FAQ, please post your questions to the 
+<a href="lists.html">Mailman-Users</a> mailing list.
+
+<p><a href="http://www.aurora.edu/~ckolar">Chris Kolar</a> has made
+available <a href="http://www.aurora.edu/~ckolar/mailman/">Mailman
+documentation</a>, primarily for list owners who are not necessarily
+technical, but who own Mailman mailing lists.
+
+<p>Nigel Metheringham has posted a
+<a href="http://www.exim.org/howto/mailman.html">HOWTO on using Exim
+and Mailman</a> together.  If you're using the
+<a href="http://www.exim.org">Exim MTA</a> you should check this out.
+
+<p>The <a href="download.html">Mailman source distribution</a> itself
+contains many README files for discussion of issues specific to
+operating system, mail transport agent, or web server.

@@ -1,15 +1,15 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Nov  8 13:38:25 2000 -->
+<!-- Wed Nov  8 13:38:28 2000 -->
 <!-- USING HT2HTML 1.1 -->
 <!-- SEE http://www.python.org/~bwarsaw/software/pyware.html -->
 <!-- User-specified headers:
-Title: Mailman Features
+Title: Start installing Mailman
 
 -->
 
 <HEAD>
-<TITLE>Mailman Features</TITLE>
+<TITLE>Start installing Mailman</TITLE>
 
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#000000"
@@ -46,7 +46,7 @@ CELLSPACING=0 CELLPADDING=0
     </TD>
 </TR><TR>
     <TD BGCOLOR="#99997c">
-<a href="./install-start.html">Installation</a>
+<b>Installation</b>
     </TD>
     <TD BGCOLOR="#99997c">
 <a href="./mgrs.html">List Managers</a>
@@ -92,13 +92,13 @@ Overview
 <A HREF="index.html">Home</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<b>Features</b>
+<A HREF="features.html">Features</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
 <A HREF="download.html">Requirements, Download</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<A HREF="install-start.html">Installation</A>
+<b>Installation</b>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
 <A HREF="lists.html">Discussion Lists</A>
@@ -117,10 +117,34 @@ Overview
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
-Exits
+Installing Mailman
 </FONT></B></TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<A HREF="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</A>
+<b>Start installing</b>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-system.html">System setup</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-config.html">Running configure</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-check.html">Check your installation</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-final.html">Final system setup</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-custom.html">Customize Mailman</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-test.html">Create a test list</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-trouble.html">Troubleshooting</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-faq.html">Common problems FAQ</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
@@ -153,53 +177,25 @@ Free Software Foundation, Inc.
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <TD VALIGN=TOP WIDTH="90%"><BR>
-<h3>Mailman Features</h3>
+<h3>Start installing Mailman</h3>
 
-<ul>
-<li>Web based list administration for nearly all tasks, including list
-    configuration, moderation (post approvals), management of user
-    accounts.
+These are the on-line instructions for installing Mailman from source.
+You should always double check the README, INSTALL, and UPGRADING
+files in your Mailman distribution for the most up-to-date
+information.
 
-<li>Web based subscribing and unsubscribing, and user configuration
-    management.  Users can temporarily disable their accounts, select
-    digest modes, hide their email addresses from other members, etc.
+<p>Mailman is configured using the standard GNU autoconf software.
+You first need to prepare your system as outlined in the sections
+below, and then configure and install the Mailman software.
 
-<li>A customizable <em>home page</em> for each mailing list.
+<p><em>IMPORTANT: Pay special attention to the step below where
+you have to set up your crontab entries.  If you do not do this,
+Mailman will not work.</em>
 
-<li>Per-list privacy features, such as closed-subscriptions, private
-    archives, private membership rosters, etc.
-
-<li>Configurable (per-list and per-user) delivery mode
-    <ul><li>Regular (immediate) delivery
-        <li>MIME digest
-        <li>Plain (RFC 934) digests
-    </ul>
-
-<li>Integrated bounce detection within an extensible framework.
-    Automatic disposition of bouncing addresses (disable,
-    unsubscribe).
-
-<li>Integrated spam filters.
-
-<li>Automatic web-based Hypermail-style archiving, with hooks for
-    external archivers such as
-    <a href="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</a>.
-  
-<li>Integrated Usenet gatewaying.
-
-<li>Integrated auto-replies.
-
-<li>Majordomo-style email based commands.
-
-<li>Multiple list owners and moderators are possible.
-  
-<li>Support for virtual domains.
-
-<li>Runs on most Un*x-like systems, compatible with most web
-    servers and browsers, and most SMTP servers.  Requires Python
-    1.5.2 or newer (works with Python 1.6 and 2.0).
-
-<li>An extensible mail delivery pipeline.
+<p><em>UPGRADING: Upgrading is usually as easy as just installing the
+new version over the existing installation.  However, you should read
+the notes in the file UPGRADING for important information before you
+upgrade.</em>
 
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->

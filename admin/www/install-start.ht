@@ -1,0 +1,22 @@
+Title: Start installing Mailman
+Links: links.h install-links.h
+
+<h3>Start installing Mailman</h3>
+
+These are the on-line instructions for installing Mailman from source.
+You should always double check the README, INSTALL, and UPGRADING
+files in your Mailman distribution for the most up-to-date
+information.
+
+<p>Mailman is configured using the standard GNU autoconf software.
+You first need to prepare your system as outlined in the sections
+below, and then configure and install the Mailman software.
+
+<p><em>IMPORTANT: Pay special attention to the step below where
+you have to set up your crontab entries.  If you do not do this,
+Mailman will not work.</em>
+
+<p><em>UPGRADING: Upgrading is usually as easy as just installing the
+new version over the existing installation.  However, you should read
+the notes in the file UPGRADING for important information before you
+upgrade.</em>

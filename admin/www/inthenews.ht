@@ -1,0 +1,128 @@
+Title: Mailman in Use and in the News
+
+<h3>Mailman in Use and in the News</h3>
+
+Mailman was featured in a
+<a href="http://www.sunworld.com/swol-03-1999/swol-03-mailtools.html">
+cover story article</a> in the March 1999 issue
+of SunWorld.  The article was written by Cameron Laird and Kathryn
+Soraiz.
+
+<p>Mailman was briefly mentioned in
+<a href="http://www.zdnet.com/sr/stories/issue/0,4537,387506,00.html">
+a ZDNet article</a> on Linux.  This was picked up by
+<a href="http://www.msnbc.com/news/244979.asp">MSNBC</a> (I won't
+comment on the irony there).
+
+<p>The following sites (in no particular order) are known to use
+Mailman or Mailman technology to run their mailing lists.  If you'd
+like to be included in this list, please 
+<a href="mailto:mailman-cabal@python.org">let us know</a>.
+
+<ul>
+    <!-- Chuq von Rospach -->
+    <li><a href="http://lists.apple.com/">Apple Computer, Inc.</a>
+    <!-- Keith Packard -->
+    <li><a href="http://xfree86.org/">The XFree86 Project, Inc.</a>
+    <!-- Marc Merlin -->
+    <li><a href="http://valinux.com/">VA Linux</a>
+    <li><a href="http://sourceforge.net/">SourceForge</a>
+    <!-- Ricardo Kustner -->
+    <li><a href="http://www.freshmeat.net/">FreshMeat</a>
+    <!-- Jeff Barger -->
+    <li><a href="http://www.listserve.com/">ListServe.com</a>
+    <!-- Sean Reifschneider -->
+    <li><a href="http://tummy.com/">tummy.com</a> (lots of Linux
+    lists)
+    <!-- Roger Pena -->
+    <li><a href="http://www.redhat.com/">RedHat, Inc.</a>
+    <li><a href="http://lists.samba.org/">Samba</a>
+
+    <!-- Barry Warsaw -->
+    <li><a href="http://www.python.org/sigs/">Python.Org</a>
+    <!-- Owen Taylor -->
+    <li><a href="http://mail.gnome.org/">GNOME.Org</a>
+    <!-- Nigel Metheringham -->
+    <li><a href="http://www.exim.org/">Exim.Org</a> (see also Nigel's
+    <a href="http://www.exim.org/pipermail/exim-users">htdig
+    extensions</a> in action for searchable archives)
+    <li><a href="http://list.wylug.org.uk/mailman/listinfo">Yorkshire
+    Linux User Group mailing lists</a>
+    <!-- Marc Merlin -->
+    <li><a href="http://linuxia64.org/">IA-64 Linux Project</a>
+    <!-- Jim Hebert -->
+    <li><a href="http://www.cosource.com/">Cosource.com</a>
+    <li><a href="http://www.vistasource.com/">VistaSource.com</a>
+    (private lists only, currently)
+    <!-- Bill Bradford -->
+    <li><a href="http://www.sunhelp.org/mailman/listinfo/">SunHelp.Org</a>
+
+    <!-- J C Lawrence
+      -- <li><a href="https://www.kanga.nu/lists/listinfo/">Kanga.NU<a>
+      -- currently having h/w problems
+      -->
+
+    <!-- Michael Dunston -->
+    <li><a href="http://www.music.vt.edu">Music and Technology
+    Department, Virginia Tech School of the Arts</a>
+    <!-- Nick Marouf -->
+    <li><a href="http://www.earlham.edu">Earlham College</a>
+    <!-- Mike Richardson -->
+    <li><a href="http://lists.man.ac.uk/mailman/listinfo">University
+    of Manchester</a>
+    <!-- Jeff Berliner -->
+    <li><a href="http://endeavor.med.nyu.edu/mailman/listinfo">New York
+    University School of Medicine</a>
+
+    <!-- Chuq von Rospach's alter ego -->
+    <li><a href="http://www.hockeyfanz.com/">HockeyFanz.com</a>
+    <!-- Johnny Fuerst -->
+    <li><a href="http://mail.cathat.net/mailman/listinfo/">The CatHat
+    Republic</a>
+    <!-- Phil Barnett -->
+    <li><a
+    href="http://www.matrixlist.com/mailman/listinfo">www.matrixlist.com</a>
+    <!-- John A. Martin -->
+    <li><a href="http://lists.essential.org/">lists.essential.org</a>
+    <!-- Dan Mick -->
+    <li><a href="http://socal-raves.org/">SoCal-Raves.org</a>
+    <!-- Peter Murray -->
+    <li><a href="http://www.ravedata.com/">ravedata.com</a>
+    <!-- Satya -->
+    <li><a href="http://txr.cjb.net/ml.html">TSEC mailing list</a>
+    <li><a href="http://quickapps.cjb.net/ml.html">GRE (grad studies)
+    mailing list</a>
+    <!-- tim -->
+    <li><a href="http://www.hal2001.org">HAL (Hackers at Large) 2001</a>
+    <!-- Rodrigo Moya -->
+    <li><a href="http://www.essential-is.com/">www.essential-is.com</a>
+    <!-- Kevin N. Carpenter -->
+    <li><a href="http://www.seaplace.org/">FishRoom</a>
+    <!-- Dan Ohnesorg -->
+    <li><a href="http://www.debian.cz/">www.debian.cz</a>
+    <li><a href="http://dali.feld.cvut.cz/">dali.feld.cvut.cz</a>
+    <!-- Stephan Berndts -->
+    <li><a href="http://lists.spline.de/">lists.spline.de</a>
+    <!-- W. Reilly Cooley -->
+    <li><a href="http://mail.wirex.com/">mail.wirex.com</a>
+    <!-- Roger Pena -->
+    <li><a href="http://www.linux.cu/">linux.cu</a>
+    <!-- Ricardo Kustner -->
+    <li><a href="http://www.miss-janet.com/">www.miss-janet.com</a>
+    <!-- I.Ioannou -->
+    <li><a href="http://lists.hellug.gr">Greek LUG</a>
+    <!-- George Dinwiddie -->
+    <li><a href="http://www.alberg30.org/">alberg30.org</a>
+    <!-- Jeff Berliner -->
+    <li><a href="http://www.anthem2000.com/">anthem2000.com</a>
+    <!-- Mentor Cana -->
+    <li><a href="http://www.alb-net.com/mailman/listinfo">www.alb-net.com</a>
+    <!-- Les Niles -->
+    <li><a
+    href="http://www.aviating.com/mooney/">www.aviating.com</a>
+    <li><a href="http://www.kjsl.com/">www.kjsl.com</a>
+    <!-- Brian Edmonds -->
+    <li><a href="http://gweep.ca/">gweep.ca</a>
+    <li><a href="http://antarti.ca/">antarti.ca</a>
+
+</ul>

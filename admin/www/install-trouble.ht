@@ -1,0 +1,22 @@
+Title: Troubleshooting
+Links: links.h install-links.h
+
+<h3>Troubleshooting</h3>
+  
+    If you encounter problems with running Mailman, first check the
+    "Common Problems" section, below.  If your problem is not covered
+    there, check the file <a href="faq.html">FAQ</a> and FAQ.LINUX.
+    Then check for a log entry from Mailman in your syslog.
+    
+    <p>Where syslog lives on your particular machine may vary.  It may
+    be in <code>/var/log/maillog</code>.  It may also be in
+    <code>/var/log/syslog</code>.  On many machines, syslog files live
+    in <code>/adm/log/</code> instead of <code>/var/log</code>.
+
+    <p>If you encounter an error, send an error report to
+    <a
+    href="mailto:mailman-users@python.org">mailman-users@python.org</a>.
+    Include a description of what you're
+    doing to cause the problem, and the relevant lines from your
+    syslog.  Also include information on your operating system and
+    version of Python.

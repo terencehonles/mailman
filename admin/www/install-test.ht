@@ -1,0 +1,23 @@
+Title: Create a test list
+Links: links.h install-links.h
+
+<h3>Create a test list</h3>
+
+Create a list named <em>test</em>.  To do so, run the program
+<code>$prefix/bin/newlist</code>.  You will be prompted for the name
+of the list, as well as the email address of the person running the
+list.  Put your own email address as the list administrator's address.
+       
+<p>Running newlist will generate a list of aliases that must be added
+to the system.  If you are running Sendmail, you may add the lines
+output directly to the file <code>/etc/aliases</code>.  You may need
+to run the command <code>newaliases</code> (all as <b>root</b>).  Now
+the mailing address for your list as well as its administrative
+addresses will be set up.  If you are not running Sendmail, consult
+your MTA's documentation for information on adding aliases.
+
+<p>You will receive email instructions on how to visit the list you
+just created.  Using these instructions, subscribe to the mailing
+list.  Once you have subscribed (which requires a confirmation step!),
+send a message to the list, and see if you get it.  If so, then you
+have successfully installed Mailman, and set up your first list!

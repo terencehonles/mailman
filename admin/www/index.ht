@@ -1,0 +1,77 @@
+Title: Mailman, the GNU Mailing List Manager
+Links: links.h doco-links.h
+Other-links:
+    <h3>Exits</h3>
+    <li><a href="http://www.python.org/">Python</a>
+    <li><a href="http://www.gnu.org/">GNU/FSF</a>
+    <li><a href="http://www.gnu.org/software/mailman/mailman.html">Mailman&nbsp;at&nbsp;GNU</a>
+    <li><a href="http://www.list.org/">List.Org&nbsp;mirror</a>
+    <li><a href="http://www.wooz.org/barry/">Barry Warsaw</a>
+
+
+<h3>Mailman, the GNU Mailing List Manager</h3>
+
+Mailman is software to help manage electronic mail discussion lists,
+much like Majordomo or Smartmail.  Mailman gives each mailing list a
+unique web page and allows users to subscribe, unsubscribe, and change
+their account options over the web.  Even the list manager can
+administer his or her list entirely via the web.  Mailman has most of
+the features that people want in a mailing list management system,
+including built-in archiving, mail-to-news gateways, spam filters,
+bounce detection, digest delivery, and so on.  See the
+<a href="features.html">features page</a> for more detail.
+
+<p>Mailman is free software.  It is distributed under the
+<a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public
+License</a>.  The canonical Mailman home page is at
+<a href="http://www.gnu.org/software/mailman/mailman.html">
+www.gnu.org/software/mailman/mailman.html</a>, with more information
+available at <a href="http://www.list.org/">www.list.org</a>.  Mailman
+is written in the <a href="http://www.python.org/">Python</a>
+programming language, with a little bit of C code for security.
+
+<p>By the way, the name of this software is spelled <em>Mailman</em>
+with a capital leading <em>M</em> and a lowercase second <em>m</em>.
+It is incorrect to spell it "MailMan" (i.e. you should not use
+StudlyCaps).
+
+<h3>Acknowledgements</h3>
+
+<p>Mailman is brought to you by the <em>Mailman Cabal</em>, currently
+composed of the following core developers:
+<a href="http://www.wooz.org/barry/">Barry Warsaw</a>, Harald
+Meland, Ken Manheimer, Scott Cotton, and John Viega.  Mailman was
+originally written by John Viega.
+
+<p>The Cabal would like to thank the following other developers for
+their important contributions (in no particular order): Juan Carlos
+Rey Anaya, Victoriano Giralt, Mads Kiilerich, The Dragon De Monsyne,
+Timothy O'Malley, Balazs Nagy, Michael Mclay, Greg Stein, Gergely
+Madarasz, Andrew Kuchling, Jeff Hahn, Paul Hebble, Christopher
+P. Lindsey, Chris Kolar, J C Lawrence, Jeremy Hylton, Nigel
+Metheringham, Dan Mick, Jim Tittsler, Ricardo Kustner, Bernhard
+Reiter, Thomas Wouters, Jeff Berliner, Ted Cabeen, Michael Yount, Ron
+Jarrell, Chris Snell, David Champion, Darrell Fuhriman, Owen Taylor,
+Fil.
+<em>We have a extensive wish list and welcome anyone else who would
+like to contribute!</em>
+
+<h3>Papers</h3>
+
+<p>A number of papers and other material presented at
+<a href="http://www.foretec.com/python/workshops/1998-11/proceedings.html">
+the 7th International Python Conference</a> and the 12th Usenix LISA
+conference are available <a href="mailman-docs.tar.gz">here</a>.
+
+<h3>Logos</h3>
+
+The Dragon De Monsyne created and donated two logos for Mailman which
+you can use to link back to the Mailman website.
+
+<table>
+<tr><td><img src="images/logo-sm.jpg"></td>
+    <td><img src="images/logo-lg.jpg"></td>
+</tr><tr><td><center>Small Logo (110x35)</center></td>
+	 <td><center>Large Logo (247x93)</center></td>
+</tr>
+</table>

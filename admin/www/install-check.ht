@@ -1,0 +1,34 @@
+Title: Check your installation
+Links: links.h install-links.h
+
+<h3>Check your installation</h3>
+
+    To check that your installation has all the correct permissions
+    and group ownerships, you should run the <code>check_perms</code>
+    script:
+
+<blockquote>
+<pre>
+% cd $prefix
+% bin/check_perms
+</pre>
+</blockquote>
+
+    <p>Don't try to run <code>check_perms</code> from the source
+    directory; it will only run from the install
+    (i.e. <code>$prefix</code>) directory.
+
+    <p>If this reports no problems, then it's very likely that your
+    installation is set up correctly <tt>:)</tt> If it reports
+    problems, then you can either fix them manually, re-run the
+    installation, or use <code>check_perms</code> to fix the problems
+    (probably the easiest solution):
+
+    <ul>
+    <li>You need to become the user that did the installation (and that
+        owns all the files in <code>$prefix</code>), or <b>root</b>.
+
+    <li>Run <code>bin/check_perms -f</code>
+
+    <li>Repeat previous step until no more errors are reported!
+    </ul>

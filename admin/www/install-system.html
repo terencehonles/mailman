@@ -1,15 +1,15 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Nov  8 13:38:25 2000 -->
+<!-- Wed Nov  8 13:38:29 2000 -->
 <!-- USING HT2HTML 1.1 -->
 <!-- SEE http://www.python.org/~bwarsaw/software/pyware.html -->
 <!-- User-specified headers:
-Title: Mailman Features
+Title: System setup
 
 -->
 
 <HEAD>
-<TITLE>Mailman Features</TITLE>
+<TITLE>System setup</TITLE>
 
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#000000"
@@ -92,7 +92,7 @@ Overview
 <A HREF="index.html">Home</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<b>Features</b>
+<A HREF="features.html">Features</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
 <A HREF="download.html">Requirements, Download</A>
@@ -117,10 +117,34 @@ Overview
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
-Exits
+Installing Mailman
 </FONT></B></TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<A HREF="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</A>
+<A HREF="install-start.html">Start installing</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<b>System setup</b>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-config.html">Running configure</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-check.html">Check your installation</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-final.html">Final system setup</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-custom.html">Customize Mailman</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-test.html">Create a test list</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-trouble.html">Troubleshooting</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-faq.html">Common problems FAQ</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
@@ -153,53 +177,62 @@ Free Software Foundation, Inc.
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <TD VALIGN=TOP WIDTH="90%"><BR>
-<h3>Mailman Features</h3>
+<h3>System setup</h3>
 
-<ul>
-<li>Web based list administration for nearly all tasks, including list
-    configuration, moderation (post approvals), management of user
-    accounts.
+    <p><em>You will need to be <b>root</b> to perform the steps in this
+    section.</em>
 
-<li>Web based subscribing and unsubscribing, and user configuration
-    management.  Users can temporarily disable their accounts, select
-    digest modes, hide their email addresses from other members, etc.
+    <p>Before installing the Mailman software, you need to prepare your
+    system by adding certain users and groups.
 
-<li>A customizable <em>home page</em> for each mailing list.
+    <ul>
 
-<li>Per-list privacy features, such as closed-subscriptions, private
-    archives, private membership rosters, etc.
+    <li>Add a new user called <code>mailman</code>.  Typically
+        this is added to your <code>/etc/passwd</code> file.  If
+        username <code>mailman</code> is already in use, choose
+        something else unique and see the
+        <code>--with-ownername</code> flag below.
 
-<li>Configurable (per-list and per-user) delivery mode
-    <ul><li>Regular (immediate) delivery
-        <li>MIME digest
-        <li>Plain (RFC 934) digests
-    </ul>
+    <p><li>Add a new group called <code>mailman</code>.  Typically this
+        is added to your <code>/etc/group</code> file.  The Mailman
+        files will be installed under the <code>mailman</code> group,
+        with the <em>set-group-id</em> bit.  This is so both the web
+        based and mail based programs will have the proper write
+        permissions.  If groupname <code>mailman</code> is already in
+        use, choose something else unique and see the
+        <code>--with-ownergroup</code> below.
 
-<li>Integrated bounce detection within an extensible framework.
-    Automatic disposition of bouncing addresses (disable,
-    unsubscribe).
+    <p><li>Create an installation directory (called <code>$prefix</code>
+        in the documentation that follows).  All of the Mailman files
+        will be installed under <code>$prefix</code>.  Run
+        <code>configure --help</code> for ways to split the
+        installation up based on read-only vs. read/write files.
 
-<li>Integrated spam filters.
+        <p>The default directory for installing is
+        <code>/home/mailman</code>, but some sites do things like
+        mount <code>/home</code> with the <em>nosuid</em> option.
+        This will break Mailman, which relies on setgid programs for
+        its security.  If this describes your environment, simply
+        install Mailman in a location that allows setgid programs.
 
-<li>Automatic web-based Hypermail-style archiving, with hooks for
-    external archivers such as
-    <a href="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</a>.
-  
-<li>Integrated Usenet gatewaying.
+        <p>Make sure this directory is set to group <code>mailman</code>
+        (or whatever you're going to specify as
+        <code>--with-ownergroup</code>) and has the setgid bit set
+        (but see the README.BSD file in the source distribution if
+        you're on a BSD system).  You probably also want to guarantee
+        that this directory is readable and executable by everyone.
+        For example, these shell commands will accomplish this:
 
-<li>Integrated auto-replies.
+<blockquote>
+<pre>
+% cd $prefix
+% chgrp mailman .
+% chmod a+rx,g+ws .
+</pre>
+</blockquote>
 
-<li>Majordomo-style email based commands.
-
-<li>Multiple list owners and moderators are possible.
-  
-<li>Support for virtual domains.
-
-<li>Runs on most Un*x-like systems, compatible with most web
-    servers and browsers, and most SMTP servers.  Requires Python
-    1.5.2 or newer (works with Python 1.6 and 2.0).
-
-<li>An extensible mail delivery pipeline.
+      You are now ready to configure and install the Mailman software.
+      </ul>
 
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->

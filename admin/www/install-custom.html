@@ -1,15 +1,15 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Nov  8 13:38:25 2000 -->
+<!-- Wed Nov  8 13:38:27 2000 -->
 <!-- USING HT2HTML 1.1 -->
 <!-- SEE http://www.python.org/~bwarsaw/software/pyware.html -->
 <!-- User-specified headers:
-Title: Mailman Features
+Title: Customize Mailman
 
 -->
 
 <HEAD>
-<TITLE>Mailman Features</TITLE>
+<TITLE>Customize Mailman</TITLE>
 
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#000000"
@@ -92,7 +92,7 @@ Overview
 <A HREF="index.html">Home</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<b>Features</b>
+<A HREF="features.html">Features</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
 <A HREF="download.html">Requirements, Download</A>
@@ -117,10 +117,34 @@ Overview
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
-Exits
+Installing Mailman
 </FONT></B></TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<A HREF="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</A>
+<A HREF="install-start.html">Start installing</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-system.html">System setup</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-config.html">Running configure</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-check.html">Check your installation</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-final.html">Final system setup</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<b>Customize Mailman</b>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-test.html">Create a test list</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-trouble.html">Troubleshooting</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-faq.html">Common problems FAQ</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
@@ -153,53 +177,45 @@ Free Software Foundation, Inc.
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <TD VALIGN=TOP WIDTH="90%"><BR>
-<h3>Mailman Features</h3>
+<h3>Customize Mailman</h3>
 
-<ul>
-<li>Web based list administration for nearly all tasks, including list
-    configuration, moderation (post approvals), management of user
-    accounts.
+    You should do these steps using the account you installed Mailman
+    under in section 2 above.
 
-<li>Web based subscribing and unsubscribing, and user configuration
-    management.  Users can temporarily disable their accounts, select
-    digest modes, hide their email addresses from other members, etc.
+    <ul>
+    <li>The file <code>$prefix/Mailman/Defaults.py</code> contains a number of
+      defaults for your installation.  If any of these are incorrect,
+      override them in <code>$prefix/Mailman/mm_cfg.py</code>, <b>NOT
+      IN</b> <code>Defaults.py</code>!  See the comments in
+      <code>Defaults.py</code> for details.  Once a list is created,
+      editing many of these variables will have no effect (you need to
+      configure your lists through the web admin interface or through
+      the command line script <code>bin/config_list</code>).
 
-<li>A customizable <em>home page</em> for each mailing list.
+      <p>Specifically check to make sure the variables
+      <em>DEFAULT_HOST_NAME</em> and <em>DEFAULT_URL</em> are correct.
 
-<li>Per-list privacy features, such as closed-subscriptions, private
-    archives, private membership rosters, etc.
+      <p>The install process will not overwrite an existing
+      <code>mm_cfg.py</code> file so you can freely make changes to
+      this file.
 
-<li>Configurable (per-list and per-user) delivery mode
-    <ul><li>Regular (immediate) delivery
-        <li>MIME digest
-        <li>Plain (RFC 934) digests
-    </ul>
+      <p><b>Note:</b> Do <b>not</b> change <em>HOME_DIR</em> or
+      <em>MAILMAN_DIR</em>.  These are set automatically by the
+      configure script.
 
-<li>Integrated bounce detection within an extensible framework.
-    Automatic disposition of bouncing addresses (disable,
-    unsubscribe).
+    <p><li>Create the site password using:
 
-<li>Integrated spam filters.
+<blockquote>
+<pre>
+$prefix/bin/mmsitepass your-site-password
+</pre>
+</blockquote>
 
-<li>Automatic web-based Hypermail-style archiving, with hooks for
-    external archivers such as
-    <a href="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</a>.
-  
-<li>Integrated Usenet gatewaying.
-
-<li>Integrated auto-replies.
-
-<li>Majordomo-style email based commands.
-
-<li>Multiple list owners and moderators are possible.
-  
-<li>Support for virtual domains.
-
-<li>Runs on most Un*x-like systems, compatible with most web
-    servers and browsers, and most SMTP servers.  Requires Python
-    1.5.2 or newer (works with Python 1.6 and 2.0).
-
-<li>An extensible mail delivery pipeline.
+        <p>This password can be used anywhere that individual user or
+        mailing list administrator passwords are required, giving the
+        mailman site administrator the ability to adjust these things
+        when necessary.
+     </ul>
 
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->

@@ -1,0 +1,132 @@
+Title: Common problems FAQ
+Links: links.h install-links.h
+
+<h3>Common Problems FAQ</h3>
+
+    <b>Problem:</b>  All Mailman web pages give a <em>404 File not
+    found</em> error.
+
+    <br><b>Solution:</b> Your web server has not been set up properly
+        for handling Mailman's cgi commands.  Make sure you've:
+
+        <ol><li>Configured the web server to give permissions to
+                <code>$prefix/cgi-bin</code>
+            <li>Restarted the web server properly.
+        </ol>
+        Consult your web server's documentation for instructions
+        on how to do these things.
+
+    <p><b>Problem:</b> All Mailman web pages give an <em>Internal
+        Server Error</em>.
+
+    <br><b>Solution:</b> The likely problem is that you are using the
+        wrong GID or UID for CGI scripts.  Check your syslog.  If you
+        see, for example, a line like:
+
+<blockquote>
+<pre>
+Attempt to exec script with invalid gid 51, expected 99
+</pre>
+</blockquote>
+
+        You need to reinstall Mailman, and specify
+        <code>$CGI_GID</code> to be 51, as described in the
+        installation instructions.
+
+    <p><b>Problem:</b>  I send mail to the list, and get back mail saying the
+        list is not found!
+
+    <br><b>Solution:</b> You probably didn't add the necessary aliases
+        to the system alias database, given to you when you ran the
+        <code>newlist</code> command.  If you did add them, you likely
+        did not update the alias database, or your system requires you
+        to run <code>newaliases</code> explicitly.  Refer to section 5
+        above for more information.
+
+
+    <p><b>Problem:</b>  I send mail to the list, and get back mail saying,
+          <em>unknown mailer error</em>.
+
+    <br><b>Solution:</b> The likely problem is that you are using the
+        wrong GID or UID for mail.  Check your syslog.  If you see, for
+        example, a line like:
+
+<blockquote>
+<pre>
+Attempt to exec script with invalid gid 51, expected 99
+</pre>
+</blockquote>
+
+        You need to reinstall Mailman, and specify
+        <code>$MAIL_GID</code> to be 51, as described in the
+        installation instructions. see notes on Postfix below, as by
+        default it will create these problems on installation.
+
+
+    <p><b>Problem:</b>  I use Postfix for my MTA and the mail wrapper programs
+       are logging complaints about the wrong GID.
+
+    <br><b>Solution:</b> Create a separate aliases file for Postfix in its
+        <code>main.cf</code> config file under the variable
+        <em>alias_maps</em>. Put the file somewhere in Mailman's home
+        directory, or somewhere else where the user
+        <code>mailman</code> has write access to it; <em>as user
+        mailman</em> call Postfix's <code>postalias</code> on the
+        alias file.
+
+<blockquote>
+<pre>
+% postalias the-alias-file
+</pre>
+</blockquote>
+
+        Also as user mailman, run 
+
+<blockquote>
+<pre>
+% python -c'import os; print os.getgid()' 
+</pre>
+</blockquote>
+
+        <p>This should print out the group id that Mailman should be
+        configured to expect when the mail wrapper programs are run.
+        Call it <em>thegid</em>.  Rebuild Mailman with
+
+<blockquote>
+<pre>
+% ./configure --with-mail-gid=thegid
+</pre>
+</blockquote>
+
+    <p><b>Problem:</b>  I send mail to the list, and get back mail saying,
+       <em>sh: wrapper not available for sendmail programs</em>
+
+    <br><b>Solution:</b> Your system uses sendmail restricted shell
+        (smrsh).  You need to configure smrsh by creating a symbolic
+        link from the mail wrapper (<code>$prefix/mail/wrapper</code>)
+        to the directory identifying executables allowed to run under
+        smrsh.
+
+        <p>Some common names for this directory are
+        <code>/var/admin/sm.bin</code>, <code>/usr/admin/sm.bin</code>
+        or <code>/etc/smrsh</code>.
+
+        <p>Note that on Debian Linux, the system makes
+        <code>/usr/lib/sm.bin</code>, which is wrong, you will need to
+        create the directory <code>/usr/admin/sm.bin</code> and add
+        the link there.  Note further that any aliases
+        <code>newaliases</code> spits out will need to be adjusted to
+        point to the secure link to the wrapper.
+
+    <p><b>Problem:</b>  I messed up when I called configure.  How do I clean
+        things up and re-install?
+
+    <br><b>Solution:</b>
+
+<blockquote>
+<pre>
+% make clean
+% ./configure --with-the-right-options
+% make install
+</pre>
+</blockquote>

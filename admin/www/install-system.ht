@@ -1,0 +1,59 @@
+Title: System setup
+Links: links.h install-links.h
+
+<h3>System setup</h3>
+
+    <p><em>You will need to be <b>root</b> to perform the steps in this
+    section.</em>
+
+    <p>Before installing the Mailman software, you need to prepare your
+    system by adding certain users and groups.
+
+    <ul>
+
+    <li>Add a new user called <code>mailman</code>.  Typically
+        this is added to your <code>/etc/passwd</code> file.  If
+        username <code>mailman</code> is already in use, choose
+        something else unique and see the
+        <code>--with-ownername</code> flag below.
+
+    <p><li>Add a new group called <code>mailman</code>.  Typically this
+        is added to your <code>/etc/group</code> file.  The Mailman
+        files will be installed under the <code>mailman</code> group,
+        with the <em>set-group-id</em> bit.  This is so both the web
+        based and mail based programs will have the proper write
+        permissions.  If groupname <code>mailman</code> is already in
+        use, choose something else unique and see the
+        <code>--with-ownergroup</code> below.
+
+    <p><li>Create an installation directory (called <code>$prefix</code>
+        in the documentation that follows).  All of the Mailman files
+        will be installed under <code>$prefix</code>.  Run
+        <code>configure --help</code> for ways to split the
+        installation up based on read-only vs. read/write files.
+
+        <p>The default directory for installing is
+        <code>/home/mailman</code>, but some sites do things like
+        mount <code>/home</code> with the <em>nosuid</em> option.
+        This will break Mailman, which relies on setgid programs for
+        its security.  If this describes your environment, simply
+        install Mailman in a location that allows setgid programs.
+
+        <p>Make sure this directory is set to group <code>mailman</code>
+        (or whatever you're going to specify as
+        <code>--with-ownergroup</code>) and has the setgid bit set
+        (but see the README.BSD file in the source distribution if
+        you're on a BSD system).  You probably also want to guarantee
+        that this directory is readable and executable by everyone.
+        For example, these shell commands will accomplish this:
+
+<blockquote>
+<pre>
+% cd $prefix
+% chgrp mailman .
+% chmod a+rx,g+ws .
+</pre>
+</blockquote>
+
+      You are now ready to configure and install the Mailman software.
+      </ul>

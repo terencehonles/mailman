@@ -1,15 +1,15 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Nov  8 13:38:25 2000 -->
+<!-- Wed Nov  8 13:38:26 2000 -->
 <!-- USING HT2HTML 1.1 -->
 <!-- SEE http://www.python.org/~bwarsaw/software/pyware.html -->
 <!-- User-specified headers:
-Title: Mailman Features
+Title: Check your installation
 
 -->
 
 <HEAD>
-<TITLE>Mailman Features</TITLE>
+<TITLE>Check your installation</TITLE>
 
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#000000"
@@ -92,7 +92,7 @@ Overview
 <A HREF="index.html">Home</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<b>Features</b>
+<A HREF="features.html">Features</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">
 <A HREF="download.html">Requirements, Download</A>
@@ -117,10 +117,34 @@ Overview
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
-Exits
+Installing Mailman
 </FONT></B></TD></TR>
 <TR><TD BGCOLOR="#99997c">
-<A HREF="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</A>
+<A HREF="install-start.html">Start installing</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-system.html">System setup</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-config.html">Running configure</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<b>Check your installation</b>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-final.html">Final system setup</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-custom.html">Customize Mailman</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-test.html">Create a test list</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-trouble.html">Troubleshooting</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99997c">
+<A HREF="install-faq.html">Common problems FAQ</A>
 </TD></TR>
 <TR><TD BGCOLOR="#99997c">&nbsp;
 <TR><TD BGCOLOR="#663300"><B><FONT COLOR="#ffffff">
@@ -153,53 +177,37 @@ Free Software Foundation, Inc.
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <TD VALIGN=TOP WIDTH="90%"><BR>
-<h3>Mailman Features</h3>
+<h3>Check your installation</h3>
 
-<ul>
-<li>Web based list administration for nearly all tasks, including list
-    configuration, moderation (post approvals), management of user
-    accounts.
+    To check that your installation has all the correct permissions
+    and group ownerships, you should run the <code>check_perms</code>
+    script:
 
-<li>Web based subscribing and unsubscribing, and user configuration
-    management.  Users can temporarily disable their accounts, select
-    digest modes, hide their email addresses from other members, etc.
+<blockquote>
+<pre>
+% cd $prefix
+% bin/check_perms
+</pre>
+</blockquote>
 
-<li>A customizable <em>home page</em> for each mailing list.
+    <p>Don't try to run <code>check_perms</code> from the source
+    directory; it will only run from the install
+    (i.e. <code>$prefix</code>) directory.
 
-<li>Per-list privacy features, such as closed-subscriptions, private
-    archives, private membership rosters, etc.
+    <p>If this reports no problems, then it's very likely that your
+    installation is set up correctly <tt>:)</tt> If it reports
+    problems, then you can either fix them manually, re-run the
+    installation, or use <code>check_perms</code> to fix the problems
+    (probably the easiest solution):
 
-<li>Configurable (per-list and per-user) delivery mode
-    <ul><li>Regular (immediate) delivery
-        <li>MIME digest
-        <li>Plain (RFC 934) digests
+    <ul>
+    <li>You need to become the user that did the installation (and that
+        owns all the files in <code>$prefix</code>), or <b>root</b>.
+
+    <li>Run <code>bin/check_perms -f</code>
+
+    <li>Repeat previous step until no more errors are reported!
     </ul>
-
-<li>Integrated bounce detection within an extensible framework.
-    Automatic disposition of bouncing addresses (disable,
-    unsubscribe).
-
-<li>Integrated spam filters.
-
-<li>Automatic web-based Hypermail-style archiving, with hooks for
-    external archivers such as
-    <a href="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</a>.
-  
-<li>Integrated Usenet gatewaying.
-
-<li>Integrated auto-replies.
-
-<li>Majordomo-style email based commands.
-
-<li>Multiple list owners and moderators are possible.
-  
-<li>Support for virtual domains.
-
-<li>Runs on most Un*x-like systems, compatible with most web
-    servers and browsers, and most SMTP servers.  Requires Python
-    1.5.2 or newer (works with Python 1.6 and 2.0).
-
-<li>An extensible mail delivery pipeline.
 
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->
