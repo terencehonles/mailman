@@ -265,10 +265,22 @@ The following is a detailed description of the problems.
         self.__NoMailCmdResponse = 0
 
     def ProcessPasswordCmd(self, args, cmd, mail):
-	if len(args) <> 2:
-	    self.AddError("Usage: password <oldpw> <newpw>")
+        if len(args) not in [0,2]:
+	    self.AddError("Usage: password [<oldpw> <newpw>]")
 	    return
         sender = mail.GetSender()
+        if len(args) == 0:
+            # Mail user's password to user
+            user = self.FindUser(sender)
+            if user and self.passwords.has_key(user):
+                self.AddToResponse("You are subscribed as %s,\n"
+                                   "  with password: %s" %
+                                   (user, self.passwords[user]),
+                                   trunc=0)
+            else:
+                self.AddError("Found no password for %s" %sender, trunc=0)
+            return
+        # Try to change password
 	try:
             self.ConfirmUserPassword(sender, args[0])
 	    self.ChangeUserPassword(sender, args[1], args[1])
