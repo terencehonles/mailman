@@ -29,7 +29,6 @@ import string
 import re
 # XXX: obsolete, should use re module
 import regsub
-import fcntl
 import random
 import mm_cfg
 import Errors
