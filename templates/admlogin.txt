@@ -21,5 +21,12 @@
 						     value="Let me in...">
       </td>
     </tr>
+    <tr>
+      <td colspan=2 align=middle>
+      <strong><em>From this point on, you must have
+      cookies enabled in your browser, otherwise no administrative changes
+      will take effect</em></strong>
+      </td>
+    </tr>
   </TABLE>
 </FORM>
