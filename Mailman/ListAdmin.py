@@ -350,9 +350,13 @@ class ListAdmin:
         else:
             # subscribe
             assert value == mm_cfg.SUBSCRIBE
-            self.ApprovedAddMember(addr, password, digest, lang)
-            # TBD: disgusting hack: ApprovedAddMember() can end up closing the
-            # request database.
+            try:
+                self.ApprovedAddMember(addr, password, digest, lang)
+            except Errors.MMAlreadyMember:
+                # User has already been subscribed, after sending the request
+                pass
+            # TBD: disgusting hack: ApprovedAddMember() can end up closing
+            # the request database.
             self.__opendb()
         return REMOVE
 
