@@ -270,7 +270,11 @@ def show_pending_subs(mlist, form):
         byaddrs.setdefault(addr, []).append(id)
     addrs = byaddrs.keys()
     addrs.sort()
-    for id in reduce(lambda x, y: x + y, [byaddrs[k] for k in addrs]):
+    for addr, ids in byaddrs.items():
+        # Eliminate duplicates
+        for id in ids[1:]:
+            mlist.HandleRequest(id, mm_cfg.DISCARD)
+        id = ids[0]
         time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
         radio = RadioButtonArray(id, (_('Defer'),
                                       _('Approve'),
@@ -311,7 +315,11 @@ def show_pending_unsubs(mlist, form):
         byaddrs.setdefault(addr, []).append(id)
     addrs = byaddrs.keys()
     addrs.sort()
-    for id in reduce(lambda x, y: x + y, [byaddrs[k] for k in addrs]):
+    for addr, ids in byaddrs.items():
+        # Eliminate duplicates
+        for id in ids[1:]:
+            mlist.HandleREquest(id, mm_cfg.DISCARD)
+        id = ids[0]
         addr = mlist.GetRecord(id)
         fullname = mlist.getMemberName(addr)
         if fullname is None:
