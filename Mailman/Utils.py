@@ -484,6 +484,7 @@ def IsAdministrivia(msg):
     return 0
 
         
+
 def reraise(exc):
     """Use this function to re-raise an exception.
     This implementation hides the differences between Python versions.
@@ -494,14 +495,50 @@ def reraise(exc):
     raise exc, None, sys.exc_info()[2]
 
 
-def mkdir(dir, mode=02770):
+def mkdir(dir, mode=02775):
     """Wraps os.mkdir() in a umask saving try/finally.
 Two differences from os.mkdir():
     - umask is forced to 0 during mkdir()
-    - default mode is 02770
+    - default mode is 02775
 """
     ou = os.umask(0)
     try:
         os.mkdir(dir, mode)
+    finally:
+        os.umask(ou)
+
+def open_ex(filename, mode='r', bufsize=-1, perms=0664):
+    """Use os.open() to open a file in a particular mode.
+Returns a file-like object instead of a file descriptor.  Also umask is forced
+to 0 during the open().
+
+`b' flag is currently unsupported."""
+    modekey = mode
+    trunc = os.O_TRUNC
+    if mode == 'r':
+        trunc = 0
+    elif mode[-1] == '+':
+        trunc = 0
+        modekey = mode[:-1]
+    else:
+        trunc = os.O_TRUNC
+    flags = {'r' : os.O_RDONLY,
+             'w' : os.O_WRONLY | os.O_CREAT,
+             'a' : os.O_RDWR   | os.O_CREAT | os.O_APPEND,
+             'rw': os.O_RDWR   | os.O_CREAT,
+             # TBD: should also support `b'
+             }.get(modekey)
+    if flags is None:
+        raise TypeError, 'Unsupported file mode: ' + mode
+    flags = flags | trunc
+    ou = os.umask(0)
+    try:
+        try:
+            fd = os.open(filename, flags, perms)
+            fp = os.fdopen(fd, mode, bufsize)
+            return fp
+        # transform any os.errors into IOErrors
+        except os.error, e:
+            raise IOError, e, sys.exc_info()[2]
     finally:
         os.umask(ou)
