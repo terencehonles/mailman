@@ -26,6 +26,7 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
+from Mailman.UserDesc import UserDesc
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
@@ -198,15 +199,7 @@ def process_form(mlist, doc, cgidata, lang):
         try:
             if mlist.isMember(email):
                 raise Errors.MMAlreadyAMember, email
-
-            class UserDesc: pass
-            userdesc = UserDesc()
-            userdesc.address = email
-            userdesc.fullname = fullname
-            userdesc.digest = digest
-            userdesc.language = lang
-            userdesc.password = password
-
+            userdesc = UserDesc(email, fullname, password, digest, lang)
             mlist.AddMember(userdesc, remote)
         # check for all the errors that mlist.AddMember can throw
         # options  on the web page for this cgi
