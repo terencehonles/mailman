@@ -111,7 +111,7 @@ def _addlist(mlist, fp):
 
 def _addvirtual(mlist, fp):
     listname = mlist.internal_name()
-    fieldsz = len(listname) + len('request')
+    fieldsz = len(listname) + len('-unsubscribe')
     hostname = mlist.host_name
     # Set up the mailman-loop address
     loopaddr = Utils.get_site_email(mlist.host_name, extra='loop')
@@ -140,7 +140,7 @@ def _addvirtual(mlist, fp):
     for k, v in makealiases(listname):
         fqdnaddr = '%s@%s' % (k, hostname)
         # Format the text file nicely
-        print >> fp, fqdnaddr, ((fieldsz - len(k) + 1) * ' '), '\t', k
+        print >> fp, fqdnaddr, ((fieldsz - len(k)) * ' '), k
     # Finish the text file stanza
     print >> fp, '# STANZA END:', listname
     print >> fp
@@ -158,14 +158,31 @@ def _check_for_virtual_loopaddr(mlist, filename):
     finally:
         os.umask(omask)
     try:
+        # Find the start of the loop address block
         while 1:
             line = infp.readline()
             if not line:
                 break
             outfp.write(line)
             if line.startswith('# LOOP ADDRESSES START'):
-                print >> outfp, '%s\t%s' % (loopaddr, loopdest)
                 break
+        # Now see if our domain has already been written
+        while 1:
+            line = infp.readline()
+            if not line:
+                break
+            if line.startswith('# LOOP ADDRESSES END'):
+                # It hasn't
+                print >> outfp, '%s\t%s' % (loopaddr, loopdest)
+                outfp.write(line)
+                break
+            elif line.startswith(loopaddr):
+                # We just found it
+                outfp.write(line)
+                break
+            else:
+                # This isn't our loop address, so spit it out and continue
+                outfp.write(line)
         outfp.writelines(infp.readlines())
     finally:
         infp.close()
@@ -187,11 +204,11 @@ def _do_create(mlist, textfile, func):
             os.umask(omask)
     try:
         func(mlist, fp)
-        # Now double check the virtual plain text file
-        if func is _addvirtual:
-            _check_for_virtual_loopaddr(mlist, textfile)
     finally:
         fp.close()
+    # Now double check the virtual plain text file
+    if func is _addvirtual:
+        _check_for_virtual_loopaddr(mlist, textfile)
     
 
 def create(mlist, cgi=0, nolock=0):
