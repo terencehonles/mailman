@@ -40,7 +40,7 @@ def find_textplain(msg):
 
 
 def process(msg):
-    if msg.gettype() <> 'multipart/mixed':
+    if msg.gettype() <> 'multipart/mixed' or not msg['x-mailer']:
         return None
     addrs = {}
     # find the first text/plain part in the message
