@@ -1,2 +1,0 @@
-Sie koennen Ihr Abonnement reaktivieren, indem Sie die Seite
-%(admin_url)s/members besuchen und die Optionen dementsprechen aendern.

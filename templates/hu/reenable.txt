@@ -1,2 +1,0 @@
-A feliratkozásokat a(z) %(admin_url)s/members címen állíthatod át
-az igényeknek megfelelõen.

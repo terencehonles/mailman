@@ -1,3 +1,0 @@
-Puoi riabilitare la loro iscrizione visitando la pagina di 
-gestione dei membri all'indirizzo %(admin_url)s/members e 
-modificando di conseguenza le loro opzioni.

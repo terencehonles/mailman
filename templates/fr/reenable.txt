@@ -1,3 +1,0 @@
-Vous pouvez réactiver leur abonnement en consultant la page de gestion 
-des abonnements à l'adresse %(admin_url)s/members et en modifiant leurs
-options en conséquence.

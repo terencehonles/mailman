@@ -1,2 +1,0 @@
-Du kan reaktivere medlemsskapet deres ved å gå inn på "Administrere
-medlemmer" på %(admin_url)s/members
