@@ -14,6 +14,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import os
 import time
 from Logger import Logger
 
@@ -66,7 +67,7 @@ class StampedLogger(Logger):
             else:
                 label = "%s:" % self.__label
             prefix = stamp + label
-        Logger.write(self, "%s %s" % (prefix, msg))
+        Logger.write(self, "%s(%d) %s" % (prefix, os.getpid(), msg))
         if msg and msg[-1] == '\n':
             self.__bol = 1
         else:
