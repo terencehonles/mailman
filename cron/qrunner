@@ -83,6 +83,13 @@ def main():
             dbfp = open(root + '.db')
             msgdata = marshal.load(dbfp)
             dbfp.close()
+            # TBD: The `kids' key is special.  It contains the pids of
+            # subprocesses that need to be waited on by the delivery module.
+            # For implementation ease, it can get stored in the message data,
+            # but since this refers to pids not descendent from us, it should
+            # just be chucked.
+            if msgdata.has_key('kids'):
+                del msgdata['kids']
         except (EOFError, ValueError, TypeError, IOError), e:
             # For some reason we had trouble getting all the information out
             # of the queued files.  log this and move on (we figure it's a
