@@ -7406,7 +7406,7 @@ msgid ""
 "%(kb)d KB in size."
 msgstr ""
 "Uw bericht was te groot.Het mag maar\n"
-"%(limit)d KB groot zijn."
+"%(kb)d KB groot zijn."
 
 #: Mailman/Handlers/Hold.py:110
 msgid "Posting to a moderated newsgroup"
