@@ -16,16 +16,16 @@
 
 """Incoming queue runner."""
 
-# A typical Mailman list exposes four aliases which point to three different
+# A typical Mailman list exposes seven aliases which point to four different
 # wrapped scripts.  E.g. for a list named `mylist', you'd have:
 #
 # mylist         -> post
-# mylist-admin   -> mailowner
+# mylist-admin   -> bounces
 # mylist-request -> mailcmd
-# mylist-owner   -> mailowner (through an alias to mylist-admin)
-#
-# Only 3 scripts are used for historical purposes, but some MTAs have more
-# direct ways to shuttle messages into the Mailman incoming queues.
+# mylist-join    -> mailcmd
+# mylist-leave   -> mailcmd
+# mylist-owner   -> mailowner
+# mylist-bounces -> bounces
 #
 # mylist-request is a robot address; its sole purpose is to process emailed
 # commands in a Majordomo-like fashion.  mylist-admin is supposed to reach the
@@ -33,6 +33,8 @@
 # examines the message for bounce content.  mylist-owner is the fallback for
 # delivery to the list owners; it performs no bounce detection, but it /does/
 # look for bounce loops, which can occur if a list owner address is bouncing.
+# mylist-bounces is a reception robot that receives all normal delivery
+# bounces.  Its messages are not handled by the incoming qrunner.
 #
 # So delivery flow of messages look like this:
 #
