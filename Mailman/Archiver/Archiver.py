@@ -45,7 +45,7 @@ def makelink(old, new):
     except os.error, e:
         code, msg = e
         if code <> errno.EEXIST:
-            reraise(e)
+            reraise()
 
 def breaklink(link):
     try:
@@ -53,7 +53,7 @@ def breaklink(link):
     except os.error, e:
         code, msg = e
         if code <> errno.ENOENT:
-            reraise(e)
+            reraise()
 
 
 
@@ -111,7 +111,7 @@ class Archiver:
         except os.error, e:
             code, msg = e
             if code <> errno.EEXIST:
-                reraise(e)
+                reraise()
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
@@ -167,7 +167,7 @@ class Archiver:
             self.LogMsg("error", ("Archive file access failure:\n"
                                   "\t%s %s"
                                   % (afn, `msg`)))
-            reraise(msg)
+            reraise()
         if self.clobber_date:
             # Resurrect original date setting.
             post.SetHeader('Date', olddate)
