@@ -248,8 +248,11 @@ def main():
         return
 
     if cgidata.has_key('change-of-address'):
-        # We could be changing the user's full name, email address, or both
+        # We could be changing the user's full name, email address, or both.
+        # Watch out for non-ASCII characters in the member's name.
         membername = cgidata.getvalue('fullname')
+        # Canonicalize the member's name
+        membername = Utils.canonstr(membername, language)
         newaddr = cgidata.getvalue('new-address')
         confirmaddr = cgidata.getvalue('confirm-address')
 
@@ -610,9 +613,9 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
     else:
         presentable_user = user
 
-    name = mlist.getMemberName(user)
-    if name:
-        presentable_user += ', %s' % name
+    fullname = Utils.uncanonstr(mlist.getMemberName(user), userlang)
+    if fullname:
+        presentable_user += ', %s' % fullname
 
     # Do replacements
     replacements = mlist.GetStandardReplacements(userlang)
@@ -698,12 +701,8 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
         'change-of-address', _('Change My Address and Name'))
     replacements['<mm-global-change-of-address>'] = CheckBox(
         'changeaddr-globally', 1, checked=0).Format()
-
-    membername = mlist.getMemberName(user)
-    if membername is None:
-        membername = ''
-    replacements['<mm-fullname-box>'] = mlist.FormatBox('fullname',
-                                                        value=membername)
+    replacements['<mm-fullname-box>'] = mlist.FormatBox(
+        'fullname', value=fullname)
 
     # Create the topics radios.  BAW: what if the list admin deletes a topic,
     # but the user still wants to get that topic message?
