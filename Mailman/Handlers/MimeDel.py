@@ -31,8 +31,11 @@ from email.Iterators import typed_subpart_iterator
 
 from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman.Message import UserNotification
+from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
 from Mailman.Version import VERSION
+from Mailman.i18n import _
 
 
 
@@ -49,11 +52,13 @@ def process(mlist, msg, msgdata):
     filtertypes = mlist.filter_mime_types
     passtypes = mlist.pass_mime_types
     if ctype in filtertypes or mtype in filtertypes:
-        raise Errors.DiscardMessage
+        dispose(mlist, msg, msgdata,
+                _("The message's content type was explicitly disallowed"))
     # Check to see if there is a pass types and the outer type doesn't match
     # one of these types
     if passtypes and not (ctype in passtypes or mtype in passtypes):
-        raise Errors.DiscardMessage
+        dispose(mlist, msg, msgdata,
+                _("The message's content type was not explicitly allowed"))
     numparts = len([subpart for subpart in msg.walk()])
     # If the message is a multipart, filter out matching subparts
     if msg.is_multipart():
@@ -64,7 +69,8 @@ def process(mlist, msg, msgdata):
         # before!) then, again it gets discarded.
         postlen = len(msg.get_payload())
         if postlen == 0 and prelen > 0:
-            raise Errors.DiscardMessage
+            dispose(mlist, msg, msgdata,
+                    _("After content filtering, the message was empty"))
     # Now replace all multipart/alternatives with just the first non-empty
     # alternative.  BAW: We have to special case when the outer part is a
     # multipart/alternative because we need to retain most of the outer part's
@@ -186,3 +192,29 @@ def to_plaintext(msg):
         subpart.set_type('text/plain')
         changedp = 1
     return changedp
+
+
+
+def dispose(mlist, msg, msgdata, why):
+    # filter_action == 0 just discards, see below
+    if mlist.filter_action == 1:
+        # Bounce the message to the original author
+        raise Errors.RejectMessage, why
+    if mlist.filter_action == 2:
+        # Forward it on to the list owner
+        listname = mlist.internal_name()
+        mlist.ForwardMessage(
+            msg,
+            text=_("""\
+The attached message matched the %(listname)s mailing list's content filtering
+rules and was prevented from being forwarded on to the list membership.  You
+are receiving the only remaining copy of the discarded message.
+
+"""),
+            subject=_('Content filtered message notification'))
+    if mlist.filter_action == 3 and \
+           mm_cfg.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
+        badq = get_switchboard(mm_cfg.BADQUEUE_DIR)
+        badq.enqueue(msg, msgdata)
+    # Most cases also discard the message
+    raise Errors.DiscardMessage
