@@ -1,9 +1,6 @@
 The Mailman TODO list
 
 *Bugs
-- Apparently two confirmation notices seem to show up now.
-- Confirmation step seems to always happen, even if no confirmation
-is required.  Need to check about w/ admin-approval on, etc...
 - Turning off bounce processing doesn't seem to work (still?).
 - Turning on non-member post exclusion doesn't seem to work (Still?).
 - "Stale" addresses don't update properly when new bounces come in 
@@ -87,17 +84,8 @@ they're likely not to get it).
 - Clean the code up, make it more robust and efficent (see also bugs)
 
 *Pipermail + Archiving mechanism
-- Hook it back up in the default distribution
 - Search engine for archives
-- Format the list of archives nicely by default, perhaps in a table:
-<table border=3>
-<tr><td>Archive</td> <td>Date</td><td>View by:</td></tr>     
-<tr><td>Vol. 1</td> <td>Q4, 1998</td><td>DATE THREAD AUTHOR </td></tr> 
-</table>
-(Date thread and author would all be links)
-- Provide downloadable tar.gz's of the archives
-- When a list switches on archiving, automatically do the archiving 
-  regularly (right now you have to install a cron script).
+- Provide downloadable tar.gz's of the html archives
 
 *Code cleanup
 - Use the re module where regexp and regsub are used.
@@ -122,3 +110,6 @@ organization, description, etc, and default option settings.  The
 lists still can have their own data, but the user can set defaults in
 their profile...
 - Need to go through and verify there are no obvious security problems.
+
+
+
