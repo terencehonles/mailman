@@ -33,6 +33,7 @@ from types import StringType, UnicodeType
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
+from Mailman.Handlers import Replybot
 from Mailman.i18n import _
 from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
@@ -163,10 +164,12 @@ class CommandRunner(Runner):
         precedence = msg.get('precedence', '').lower()
         ack = msg.get('x-ack', '').lower()
         if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
-            syslog('vette',
-                   'Precedence: bulk/junk/list message discarded by: %s',
-                   mlist.GetRequestEmail())
+            syslog('vette', 'Precedence: %s message discarded by: %s',
+                   precedence, mlist.GetRequestEmail())
             return 0
+        # Do replybot for commands
+        Replybot.process(mlist, msg, msgdata)
+        # Now craft the response
         res = Results(mlist, msg, msgdata)
         # BAW: Not all the functions of this qrunner require the list to be
         # locked.  Still, it's more convenient to lock it here and now and
