@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.1'
-__version__ = VERSION + "$Revision: 123 $"
+__version__ = VERSION + "$Revision: 149 $"
 
 		   # Many site-specific settings #
 
@@ -21,19 +21,17 @@ ARCHIVE_URL       = 'http://www.OVERRIDE.WITH.YOUR.ARCHIVE.DIR/'
 # Once we know our home directory we can figure out the rest.
 HOME_DIR	  = '/home/mailman'		# Override if you change
 MAILMAN_DIR       = '/home/mailman/mailman'	# Override if you change
-
-# System ceiling on number of batches into which deliveries are divided:
-MAX_SPAWNS        = 40
-
 LIST_DATA_DIR     = os.path.join(MAILMAN_DIR, 'lists')
 HTML_DIR	  = os.path.join(HOME_DIR, 'public_html')
 CGI_DIR           = os.path.join(HOME_DIR, 'cgi-bin')
+LOG_DIR           = os.path.join(HOME_DIR, 'logs')
 LOCK_DIR          = os.path.join(MAILMAN_DIR, 'locks')
 TEMPLATE_DIR      = os.path.join(MAILMAN_DIR, 'templates')
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
-# I don't think this is used any more
-MAIL_LOG          = '/var/log/maillog'
+
+# System ceiling on number of batches into which deliveries are divided:
+MAX_SPAWNS        = 40
 
 			 # General Defaults #
 
@@ -58,6 +56,10 @@ DEFAULT_MSG_FOOTER = """----------------------------
 DEFAULT_MODERATED = 0
 # Bounce if 'to' or 'cc' fields don't explicitly name list (anti-spam)?
 DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
+# {header-name: regexp} spam filtering - we include one for example sake!
+DEFAULT_BOUNCE_MATCHING_HEADERS = """
+to: friend@public.com
+"""
 # Replies to posts inherently directed to list or original sender?
 DEFAULT_REPLY_GOES_TO_LIST = 0
 # Admin approval unnecessary for subscribes?
