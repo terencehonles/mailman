@@ -114,7 +114,7 @@ def main():
                 try:
                     list.ConfirmAdminPassword(cgi_data['adminpw'].value)
                     ChangeHTML(list, cgi_data, template_name, doc)
-                except Errors.MMBadPassword:
+                except Errors.MMBadPasswordError:
                     m = 'Error: Incorrect admin password.'
                     doc.AddItem(htmlformat.Header(3, 
                                                   htmlformat.Italic(
