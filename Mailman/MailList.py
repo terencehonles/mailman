@@ -750,6 +750,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def AddMember(self, name, password, digest=0, remote=None):
 	self.IsListInitialized()
+        # normalize the name, it could be of the form
+        #
+        # <person@place.com> User Name
+        # person@place.com (User Name)
+        # etc
+        #
+        name = Utils.ParseAddrs(name)
 	# Remove spaces... it's a common thing for people to add...
 	name = string.join(string.split(name), '')
         # lower case only the domain part
@@ -827,6 +834,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 admin_notif = 1
             else:
                 admin_notif = 0
+        # normalize the name, it could be of the form
+        #
+        # <person@place.com> User Name
+        # person@place.com (User Name)
+        # etc
+        #
+        name = Utils.ParseAddrs(name)
         name = Utils.LCDomain(name)
 	if self.IsMember(name):
 	    raise Errors.MMAlreadyAMember
