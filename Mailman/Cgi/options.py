@@ -44,7 +44,7 @@ def main():
     doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
-    lenparts = len(parts)
+    lenparts = parts and len(parts)
     if not parts or lenparts < 1:
         title = _('CGI script error')
         doc.SetTitle(title)
@@ -88,8 +88,9 @@ def main():
     i18n.set_language(mlist.preferred_language)
     doc.set_language(mlist.preferred_language)
 
-    # Sanity check the user
-    if not mlist.isMember(user):
+    # Sanity check the user, but be careful about leaking membership
+    # information when we're using private rosters.
+    if not mlist.isMember(user) and mlist.private_roster == 0:
         add_error_message(doc, _('No such member: %(user)s.'))
         loginpage(mlist, doc, None, cgidata)
         print doc.Format()
@@ -97,7 +98,11 @@ def main():
 
     # Find the case preserved email address (the one the user subscribed with)
     lcuser = user.lower()
-    cpuser = mlist.getMemberCPAddress(lcuser)
+    try:
+        cpuser = mlist.getMemberCPAddress(lcuser)
+    except Errors.NotAMemberError:
+        # This happens if the user isn't a member but we've got private rosters
+        cpuser = None
     if lcuser == cpuser:
         cpuser = None
 
@@ -156,9 +161,12 @@ def main():
         # Not authenticated, so throw up the login page again.  If they tried
         # to authenticate via cgi (instead of cookie), then print an error
         # message.
-        if cgidata.has_key('login'):
+        if cgidata.has_key('password'):
             add_error_message(doc, _('Authentication failed.'))
-
+            # So as not to allow membership leakage, prompt for the email
+            # address and the password here.
+            if mlist.private_roster <> 0:
+                user = None
         loginpage(mlist, doc, user, cgidata)
         print doc.Format()
         return
@@ -614,14 +622,13 @@ You are subscribed to this list with the case-preserved address
 
 def loginpage(mlist, doc, user, cgidata):
     realname = mlist.real_name
+    actionurl = mlist.GetScriptURL('options')
     if user is None:
         title = _('%(realname)s list: member options login page')
-        actionurl = mlist.GetScriptURL('options')
         extra = _('email address and ')
     else:
         title = _('%(realname)s list: member options for user %(user)s')
         obuser = Utils.ObscureEmail(user)
-        actionurl = '%s/%s' % (mlist.GetScriptURL('options'), obuser)
         extra = ''
     # Set up the login page
     form = Form(actionurl)
@@ -654,6 +661,8 @@ def loginpage(mlist, doc, user, cgidata):
     if user is None:
         ptable.AddRow([Label(_('Email address:')),
                        TextBox('email', size=20)])
+    else:
+        ptable.AddRow([Hidden('email', user)])
     ptable.AddRow([Label(_('Password:')),
                    PasswordBox('password', size=20)])
     ptable.AddRow([Center(SubmitButton('login', _('Log in')))])
