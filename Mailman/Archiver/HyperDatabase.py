@@ -197,9 +197,10 @@ class DumbBTree:
 class HyperDatabase(pipermail.Database):
     __super_addArticle = pipermail.Database.addArticle
 
-    def __init__(self, basedir):
+    def __init__(self, basedir, mlist):
         self.__cache = {}
         self.__currentOpenArchive = None   # The currently open indices
+        self._mlist = mlist
         self.basedir = os.path.expanduser(basedir)
         # Recently added articles, indexed only by message ID
         self.changed={}
@@ -282,6 +283,8 @@ class HyperDatabase(pipermail.Database):
             # get the pickled object out of the DumbBTree
             buf = self.articleIndex[msgid]
             article = self.__cache[msgid] = pickle.loads(buf)
+            # For upgrading older archives
+            article.setListIfUnset(self._mlist)
         else:
             article = self.__cache[msgid]
         return article
