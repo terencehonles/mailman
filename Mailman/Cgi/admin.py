@@ -29,6 +29,8 @@ import signal
 from string import lowercase, digits
 
 from mimelib.address import unquote
+# WIBNI I could just import this from mimelib.address?
+from Mailman.pythonlib.rfc822 import parseaddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -1157,8 +1159,9 @@ def change_options(mlist, category, cgidata, doc):
     subscribers += cgidata.getvalue('subscribees', '')
     subscribers += cgidata.getvalue('subscribees_upload', '')
     if subscribers:
-        names = filter(None, [unquote(n.strip())
-                              for n in subscribers.replace('\r','').split(NL)])
+        entries = filter(
+            None,
+            [n.strip() for n in subscribers.replace('\r','').split(NL)])
         send_welcome_msg = mlist.send_welcome_msg
         if cgidata.has_key('send_welcome_msg_to_this_batch'):
             send_welcome_msg = int(
@@ -1174,31 +1177,35 @@ def change_options(mlist, category, cgidata, doc):
             digest = 1
         subscribe_errors = []
         subscribe_success = []
-        result = mlist.ApprovedAddMembers(names, None, digest,
-                                          ack=send_welcome_msg,
-                                          admin_notif=send_admin_notif)
-        for name in result.keys():
-            if result[name] is None:
-                subscribe_success.append(name)
+
+        # for satisfying the ApprovedAddMember() interface
+        class UserDesc: pass
+
+        for entry in entries:
+            userdesc = UserDesc()
+            userdesc.fullname, userdesc.address = parseaddr(entry)
+            userdesc.digest = digest
+            try:
+                mlist.ApprovedAddMember(userdesc, send_welcome_msg,
+                                       send_admin_notif)
+            except Errors.MMAlreadyAMember:
+                subscribe_errors.append((entry, _('Already a member')))
+            except Errors.MMBadEmailError:
+                if userdesc.address == '':
+                    subscribe_errors.append((_('&lt;blank line&gt;'),
+                                             _('Bad/Invalid email address')))
+                else:
+                    subscribe_errors.append((entry,
+                                             _('Bad/Invalid email address')))
+            except Errors.MMHostileAddress:
+                subscribe_errors.append(
+                    (entry, _('Hostile address (illegal characters)')))
             else:
-                # `name' was not subscribed, find out why.  On failures,
-                # result[name] is set from sys.exc_info()[:2]
-                e, v = result[name]
-                if e is Errors.MMAlreadyAMember:
-                    subscribe_errors.append((name, _('Already a member')))
-                elif e is Errors.MMBadEmailError:
-                    if name == '':
-                        name = '&lt;blank line&gt;'
-                    subscribe_errors.append(
-                        (name, _('Bad/Invalid email address')))
-                elif e is Errors.MMHostileAddress:
-                    subscribe_errors.append(
-                        (name, _('Hostile Address (illegal characters)')))
+                subscribe_success.append(entry)
         if subscribe_success:
             doc.AddItem(Header(5, _('Successfully Subscribed:')))
             doc.AddItem(UnorderedList(*subscribe_success))
             doc.AddItem('<p>')
-            # ApprovedAddMembers will already have saved the list for us.
         if subscribe_errors:
             doc.AddItem(Header(5, _('Error Subscribing:')))
             items = ['%s -- %s' % (x0, x1) for x0, x1 in subscribe_errors]
@@ -1233,7 +1240,6 @@ def change_options(mlist, category, cgidata, doc):
             doc.AddItem(Header(5, _('Successfully Unsubscribed:')))
             doc.AddItem(UnorderedList(*unsubscribe_success))
             doc.AddItem('<p>')
-            # ApprovedAddMembers will already have saved the list for us.
         if unsubscribe_errors:
             doc.AddItem(Header(3, Bold(FontAttr(
                 _('Cannot unsubscribe non-members:'),
