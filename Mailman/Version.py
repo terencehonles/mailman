@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 # Mailman version
-VERSION = "2.0beta1"
+VERSION = "2.0beta2"
 
 # Data file version number, for changes to the schema
 DATA_FILE_VERSION = 19
