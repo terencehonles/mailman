@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@ from Mailman import LockFile
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
+from Mailman.i18n import _
 
 
 
@@ -130,12 +131,16 @@ class Archiver:
 	    ('archive_private', mm_cfg.Radio, (_('public'), _('private')), 0,
              _('Is archive file source for public or private archival?')),
 
-	    ('clobber_date', mm_cfg.Radio, (_('When sent'), _('When resent')), 0,
-	     _('Set date in archive to when the mail is claimed to have been '
-               'sent, or to the time we resend it?')),
+	    ('clobber_date', mm_cfg.Radio,
+             (_('When sent'), _('When resent')),
+             0,
+	     _('''Set date in archive to when the mail is claimed to have been
+             sent, or to the time we resend it?''')),
 
  	    ('archive_volume_frequency', mm_cfg.Radio, 
-               (_('Yearly'), _('Monthly'),_('Quarterly'), _('Weekly'), _('Daily')), 0,
+             (_('Yearly'), _('Monthly'), _('Quarterly'),
+              _('Weekly'), _('Daily')),
+             0,
  	     _('How often should a new archive volume be started?')),
 	    ]
 
