@@ -3,66 +3,57 @@ Copyright (C) 2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
-CONFIGURATION ISSUES
-
-Postfix typically sends email as "nobody" so when configuring Mailman
-use:
-
---with-mail-gid=99
-
-or whichver gid is appropriate for "nobody" on your system.  Using the
-GID of Postfix (i.e. 89) will not work and when Mailman tries to send
-mail it will generate an email error telling you which GID it
-attempted to use, and which one you should be using.  Simply re-run
-./configure with the proper --with-mail-gid switch and then re-run
-"make install".
-
-
 INTEGRATING POSTFIX AND MAILMAN
 
-You can integrate Postfix and Mailman such that when new lists are
-created, or lists are removed, Postfix's alias database will
-automatically be updated.  This is done by Mailman writing alias
-entries to a DB hash file that Postfix has been configured to consult
-when looking for local delivery addresses.  The following are the
-steps you need to take to make this work.
+    You can integrate Postfix and Mailman such that when new lists are
+    created, or lists are removed, Postfix's alias database will
+    automatically be updated.  This is done by Mailman writing alias
+    entries to a DB hash file that Postfix has been configured to consult
+    when looking for local delivery addresses.  The following are the
+    steps you need to take to make this work.
 
-In the description below, $mailman is the directory into which you've
-installed Mailman.  I.e. it is /home/mailman if you did not use the
---prefix switch when you configured Mailman, otherwise it is the
-directory you specified with --prefix.  Note that if you used
---with-var-prefix then $mailman is this directory.
+    In the description below, $mailman is the directory into which you've
+    installed Mailman.  I.e. it is /home/mailman if you did not use the
+    --prefix switch when you configured Mailman, otherwise it is the
+    directory you specified with --prefix.  Note that if you used
+    --with-var-prefix then $mailman is this directory.
 
-- As root, touch $mailman/data/aliases.db.  Make sure the owner is
-  root and the group is mailman, and that both owner and group have
-  read and write permission.
+    - touch the file $mailman/data/aliases.db and make sure that both
+      the owner and group-owner of the file is `mailman'.  Make sure
+      that both owner and group have read and write permission.
 
-- Hack your Postfix's main.cf file to include $mailman/data/aliases
-  (no trailing .db) in the alias_map variable but not alias_database.
-  This is because you do not want Postfix's newalias command to modify
-  Mailman's aliases.db file, but you do want Postfix to consult
-  aliases.db when looking for local addresses.
+    - Hack your Postfix's main.cf file to include $mailman/data/aliases
+      (no trailing .db) in the alias_map variable but not alias_database.
+      This is because you do not want Postfix's newalias command to modify
+      Mailman's aliases.db file, but you do want Postfix to consult
+      aliases.db when looking for local addresses.
 
-  You want to be sure that that you're using the hash: style database
-  for this entry.  Here's an example:
+      You want to be sure that that you're using the hash: style database
+      for this entry.  Here's an example:
 
-  alias_maps = hash:/etc/postfix/aliases, hash:/home/mailman/data/aliases
+      alias_maps = hash:/etc/postfix/aliases, hash:/home/mailman/data/aliases
 
-- Add this to Mailman's mm_cfg.py file:
+    - When you configure Mailman, use the --with-mail-gid=mailman
+      switch.  Because the owner of the aliases.db file is `mailman',
+      Postfix will execute Mailman's wrapper program as uid and gid
+      mailman.  If you don't use the --with-mail-gid switch, the
+      wrapper will bounce messages, complaining of a gid mismatch.
 
-  MTA = 'Postfix'
+    - Add this to Mailman's mm_cfg.py file:
 
-  The MTA variable names a module in Mailman/MTA which contains the
-  MTA-specific functions to be executed when a list is created or
-  removed.
+      MTA = 'Postfix'
 
-That's it!  One caveat: when you add or remove a list, the aliases.db
-file will be modified by Mailman, but it will not automatically run
-"postfix reload".  This is because you need to be root to run this and
-suid-root scripts are not secure.  The only effect of this is that it
-will take one minute for Postfix to notice the change to the
-aliases.db file and update its tables.  I consider this a minor
-inconvenience.
+      The MTA variable names a module in Mailman/MTA which contains the
+      MTA-specific functions to be executed when a list is created or
+      removed.
+
+    That's it!  One caveat: when you add or remove a list, the aliases.db
+    file will be modified by Mailman, but it will not automatically run
+    "postfix reload".  This is because you need to be root to run this and
+    suid-root scripts are not secure.  The only effect of this is that it
+    will take one minute for Postfix to notice the change to the
+    aliases.db file and update its tables.  I consider this a minor
+    inconvenience.
   
 
 
