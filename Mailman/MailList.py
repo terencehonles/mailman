@@ -173,6 +173,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    ('info', mm_cfg.Text, (7, 65), 0, 
 	     'An informational paragraph about the list'),
+	    # NOTES: The text will be treated as html *except* that
+	    # newlines will be translated to <br> - so you can use links,
+	    # preformatted text, etc, but don't put in carriage returns
+	    # except where you need them.  And review your changes - bad
+	    # html (like an unclosed quote) can mess up the entire page.
 
 	    ('subject_prefix', mm_cfg.String, 10, 0,
 	     'Subject line prefix - to distinguish list messages in '
@@ -381,31 +386,32 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.IsListInitialized()
 	# Remove spaces... it's a common thing for people to add...
 	name = string.join(string.split(string.lower(name)), '')
+
 	# Validate the e-mail address to some degree.
 	if not mm_utils.ValidEmail(name):
-	    raise mm_err.MMBadEmailError
+            raise mm_err.MMBadEmailError
 	if self.IsMember(name):
-	    raise mm_err.MMAlreadyAMember
-	if not digest:
-	    if not self.nondigestable:
-		raise mm_err.MMMustDigestError
-	    if (self.open_subscribe and web_subscribe and 
-		self.web_subscribe_requires_confirmation):
-		if self.web_subscribe_requires_confirmation == 1:
-		    raise mm_err.MMWebSubscribeRequiresConfirmation
-		else:
-		    self.AddRequest('add_member', digest, name, password)
-	    elif self.open_subscribe:
-		self.ApprovedAddMember(name, password, digest)
-	    else:
-		self.AddRequest('add_member', digest, name, password)
-	else: 
-	    if not self.digestable:
-		raise mm_err.MMCantDigestError
-	    if self.open_subscribe:
-		self.ApprovedAddMember(name, password, digest)
-	    else:
-		self.AddRequest('add_member', digest, name, password)
+            raise mm_err.MMAlreadyAMember
+
+	if digest and not self.digestable:
+            raise mm_err.MMCantDigestError
+	elif not digest and not self.nondigestable:
+            raise mm_err.MMMustDigestError
+
+        if self.open_subscribe:
+            if (web_subscribe and self.web_subscribe_requires_confirmation):
+                if self.web_subscribe_requires_confirmation == 1:
+                    # Requester confirmation required.
+                    raise mm_err.MMWebSubscribeRequiresConfirmation
+                else:
+                    # Admin approval required.
+                    self.AddRequest('add_member', digest, name, password)
+            else:
+                # No approval required.
+                self.ApprovedAddMember(name, password, digest)
+        else:
+            # Blanket admin approval requred...
+            self.AddRequest('add_member', digest, name, password)
 
     def ApprovedAddMember(self, name, password, digest):
 	if self.IsMember(name):
