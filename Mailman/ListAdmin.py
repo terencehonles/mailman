@@ -148,14 +148,20 @@ class ListAdmin:
             # Discard.
 	    rejection = "Discarded"
 	if rejection:
-	    note = "%s: %s posting:" % (self._internal_name, rejection)
-	    note = note + "\n\tFrom: %s" % msg.GetSender()
-	    note = note + ("\n\tSubject: %s"
-			   % (msg.getheader('subject') or '<none>'))
+            note = '''%(listname)s: %(rejection)s posting:
+\tFrom: %(sender)s
+\tSubject: %(subject)s''' % {'listname' : self._internal_name,
+                             'rejection': rejection,
+                             'sender'   : msg.GetSender(),
+                             'subject'  : msg.getheader('subject', '<none>'),
+                             }
+            def strquote(s):
+                return string.replace(s, '%', '%%')
+            
 	    if data[1]:
-		note = note + "\n\tHeld: %s" % data[1]
+		note = note + '\n\tHeld: ' + strquote(data[1])
 	    if comment:
-		note = note + "\n\tDiscarded: %s" % comment
+		note = note + '\n\tDiscarded: ' + strquote(comment)
             self.LogMsg("vette", note)
 
     def HandleAddMemberRequest(self, data, value, comment):
