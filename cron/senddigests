@@ -39,16 +39,26 @@ def main():
     for listname in Utils.list_names():
         mlist = MailList.MailList(listname, lock=0)
         if mlist.digest_send_periodic:
-            # send the digest if there are any partially built
-            digestfile = os.path.join(mlist.fullpath(), 'next-digest')
-            topicsfile = os.path.join(mlist.fullpath(), 'next-digest-topics')
-            try:
-                if os.stat(digestfile)[ST_SIZE] > 0:
-                    ToDigest.inject_digest(mlist, digestfile, topicsfile)
-            except os.error, (code, msg):
-                if code <> ENOENT:
-                    raise
-                # otherwise, this list doesn't have any outstanding digests
+            send_list_digest(mlist)
+
+
+def send_list_digest(mlist):
+    mlist.Lock()
+    try:
+        # send the digest if there are any partially built
+        digestfile = os.path.join(mlist.fullpath(), 'next-digest')
+        topicsfile = os.path.join(mlist.fullpath(), 'next-digest-topics')
+        try:
+            if os.stat(digestfile)[ST_SIZE] > 0:
+                ToDigest.inject_digest(mlist, digestfile, topicsfile)
+        except os.error, (code, msg):
+            if code <> ENOENT:
+                raise
+            # otherwise, this list doesn't have any outstanding digests
+    finally:
+        mlist.Save()
+        mlist.Unlock()
+
 
 
 if __name__ == "__main__":
