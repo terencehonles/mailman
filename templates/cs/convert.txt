@@ -40,12 +40,3 @@ konference na adrese:
 Tato zprávy byla generována automaticky programem Mailman verze %(version)s.
 Jakékoliv dal¹í informace o tomto programu naleznete na adrese:
 http://www.list.org/
-
-
-
-
-
-
-
-
-

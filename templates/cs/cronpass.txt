@@ -19,5 +19,3 @@ Hesla pro %(useraddr)s:
 
 
 
-
-

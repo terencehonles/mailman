@@ -155,12 +155,12 @@ msgstr "Generuji index pro pøíspìvky sdru¾ené do vláken\n"
 #: Mailman/Archiver/HyperArch.py:1261
 #, fuzzy
 msgid "Updating HTML for article %(seq)s"
-msgstr "Aktualizuji HTML stránky archivu"
+msgstr "Aktualizuji HTML stránky pro pøíspìvek %(seq)s"
 
 #: Mailman/Archiver/HyperArch.py:1268
 #, fuzzy
 msgid "article file %(filename)s is missing!"
-msgstr "soubor %s ve kterém je ulo¾en pøíspìvìk nebyl nalezen!"
+msgstr "soubor %(filename)s ve kterém je ulo¾en pøíspìvìk nebyl nalezen!"
 
 #: Mailman/Archiver/pipermail.py:168 Mailman/Archiver/pipermail.py:169
 msgid "No subject"
@@ -392,7 +392,7 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:368
 msgid "return to the %(categoryname)s options page."
-msgstr "pøejít zpìt na stránku %(category)s."
+msgstr "pøejít zpìt na stránku %(categoryname)s."
 
 #: Mailman/Cgi/admin.py:383
 msgid "%(realname)s Administration (%(label)s)"
@@ -7204,7 +7204,7 @@ msgstr ""
 #, fuzzy
 msgid ""
 "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
-msgstr "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
+msgstr "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
 
 #: bin/add_members:26
 msgid ""
