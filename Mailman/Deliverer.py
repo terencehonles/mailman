@@ -57,6 +57,7 @@ your membership administrative address, %(addr)s.'''))
              'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'optionsurl'  : self.GetOptionsURL(name, absolute=1),
              'password'    : password,
+             'user'        : self.getMemberCPAddress(name),
              }, lang=pluser, mlist=self)
         if digest:
             digmode = _(' (Digest mode)')
