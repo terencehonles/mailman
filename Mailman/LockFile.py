@@ -174,7 +174,7 @@ class LockFile:
 
     def __init__(self, lockfile,
                  lifetime=DEFAULT_LOCK_LIFETIME,
-                 withlogging=True):
+                 withlogging=False):
         """Create the resource lock using lockfile as the global lock file.
 
         Each process laying claim to this resource lock will create their own
