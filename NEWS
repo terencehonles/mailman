@@ -4,6 +4,57 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.1 beta 2 (05-May-2002)
+
+    Lots of bug fixing, and the following new features and changes:
+
+    - A "de-mime" content filter feature has been added.  This
+      oft-requested feature allows you to specify MIME types that
+      Mailman should strip off of any messages before they're posted
+      to the list.  You can also optionally convert text/html to
+      text/plain (by default, through lynx if it's available).
+
+    - Changes to the way the RFC 2919 and 2369 headers (i.e. the
+      List-*: headers) are added:
+          o List-Id: is always added
+          o List-Post:, List-Help:, List-Subscribe:,
+            List-Unsubscribe:, and List-Archive: are only added to
+            posting messages.
+          o X-List-Administrivia: is only added to messages Mailman
+            creates and sends out of its own accord.
+
+      Also, if the site administrator allows it, list owners can
+      suppress the addition of all the List-*: headers.  List owners
+      can also separately suppress the List-Post: header for
+      announce-only lists.
+
+    - A new framework for email commands has been added.  This allows
+      you to easily add, delete, or change the email commands that
+      Mailman understands, on a per-site, per-list, or even per-user
+      basis.
+
+    - Users can now change their digest delivery type from MIME to
+      plain text globally, for all lists they are subscribed to.
+
+    - No language select pulldowns are shown if the list only supports
+      one language.
+
+    - More mylist-admin eradication.
+
+    - Several performance improvements in the bounce qrunner, one of
+      which is to make it run only once per minute instead of once per
+      second.
+
+    - Korean language support as been added.
+
+    - Gatewaying from news -> mail uses its connections to the nntpd
+      more efficiently.
+
+    - In bin/add_members, -n/--non-digest-members-file command line
+      switch is deprecated in favor of -r/--regular-members-file.
+
+    - bin/sync_members grew a -g/--goodbye-msg switch.
+
 2.1 beta 1 (16-Mar-2002)
 
     In addition to the usual bug fixes, performance improvements, and
