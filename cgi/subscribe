@@ -1,10 +1,5 @@
 #!/usr/local/bin/python
-f = open('/tmp/fart', 'a+')
-f.write("Test")
-f.flush()
 import sys, os, cgi, string
-sys.stderr = f
-f.write('hello world')
 from regsub import gsub
 sys.path.append('/home/mailman/mailman/modules')
 import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat

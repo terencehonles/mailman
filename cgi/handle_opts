@@ -1,9 +1,7 @@
 #!/usr/local/bin/python
 
 import sys, os, cgi, string
-f = open('/tmp/cbgb', 'a+')
-sys.stderr = f
-#sys.stderr = sys.stdout
+sys.stderr = sys.stdout
 sys.path.append('/home/mailman/mailman/modules')
 import mm_utils, maillist, mm_err, mm_cfg, htmlformat
 
@@ -106,7 +104,6 @@ exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER, mm_cfg.MA
     else:
 	PrintResults("You must supply your old password, and your new password twice.")
 else:
-    f.write("User = %s\n" % user)
     # If keys don't exist, set them to whatever they were. (essentially a noop)
     if form.has_key("digest"):
 	digest_value = eval(form["digest"].value)
@@ -114,27 +111,22 @@ else:
 	digest_value = list.GetUserOption(user, mm_cfg.Digests)
     if form.has_key("mime"):
 	mime = eval(form["mime"].value)
-	f.write("mime = %d\n" % mime)
     else:
 	mime = list.GetUserOption(user, mm_cfg.DisableMime)
     if form.has_key("dontreceive"):
 	dont_receive = eval(form["dontreceive"].value)
-	f.write("dont_receive = %d\n" % dont_receive)
     else:
 	dont_receive = list.GetUserOption(user, mm_cfg.DontReceiveOwnPosts)
     if form.has_key("ackposts"):
 	ack_posts    = eval(form["ackposts"].value)
-	f.write("ack_posts = %d\n" % ack_posts)
     else:
 	ack_posts    = list.GetUserOption(user, mm_cfg.AcknowlegePosts)
     if form.has_key("disablemail"):
 	disable_mail = eval(form["disablemail"].value)
-	f.write("disable_mail = %d\n" % disable_mail)
     else:
 	disable_mail = list.GetUserOption(user, mm_cfg.DisableDelivery)
     if form.has_key("conceal"):
 	conceal = eval(form["conceal"].value)
-	f.write("conceal = %d\n" % conceal)
     else:
 	conceal = list.GetUserOption(user, mm_cfg.ConcealSubscription)
 
