@@ -1,24 +1,30 @@
-Este texto puede incluir cadenas de formato tipo <b>%(campo)s</b> que 
-ser&aacute;n sustituidas por los atributos de la lista. Si desea ver
-m&aacute;s detalles, consulte
-<a href="http://www.python.org/doc/current/lib/typesseq-strings.html">
-Reglas de formateo de las cadenas en Python</a>.
-Algunos atributos utiles:
+Este texto puede incluir c<a href="http://www.python.org/doc/current/lib/typesseq-strings.html">adenas de formato Python</a> que 
+ser&aacute;n sustituidas por los atributos de la lista. La lista de substituciones
+permitidas son:
 
 <ul>
     <li><b><code>real_name</code></b> - El nombre 'presentable' de la lista.
     Suele ser el nombre de la lista con la primera letra en may&uacute;scula.
     
-    <li><b><code>_internal_name</code></b> - El nombre de dominio totalmente
-    cualificado donde reside el servidor de listas.
+
+    <li><b><code>list_name</code></b> - El nombre por el cual se identifica la lista
+    en las URLs, se distinguen las may&uacute;sculas de las min&uacute;sculas. (Debido a
+    compatibilidad con lo existente, es equivalente a  <code>_internal_name</code>)
+
+    <li><b><code>host_name</code></b> - El nombre can&oacute;nico del servidor que
+    alberga la lista.
+
 
     <li><b><code>web_page_url</code></b> - El URL base de Mailman. Por ejemplo
     para indicar la p&aacute;gina de informaci&oacute;n de la lista:<br>
     <em><code>listinfo/%(_internal_name)s</code></em>
 
-    <li><b><code>description</code></b> - Una descripci&oacute;n breve sobre
+    <li><b><code>description</code></b> - Una descripci&oacute;n concisa sobre
     la lista de distribuci&oacute;n.
 
     <li><b><code>info</code></b> - La descripci&oacute;n completa sobre la
     lista de distribuci&oacute;n.
+
+    <li><b><code>cgiext</code></b> - La extensi&oacute;n que se agrega a los guiones
+    CGI.
 </ul>

@@ -46,4 +46,37 @@ que ya tenemos. Para compararlo tendremos que ejecutar:
 
 Para donar la traducción de un nuevo idioma
 -------------------------------------------
-Falta por concretar.
+      Apreciamos la donación de cualquier traducción al proyecto mailman,
+      de manera que cualquiera pueda beneficiarse de tu esfuerzo. Por
+      supuesto, cualquier labor realizada será reconocida públicamente,
+      dentro de la documentación de Mailman. Esto es lo que hay que hacer
+      para donar cualquier traducción, ya sea la primera vez que se haga o
+      cualquier actualización posterior.
+
+      Lo mejor que se puede hacer es mandar un fichero en formato 'tar' a
+      <barry@zope.com> que se pueda desempaquetar en la parte superior 
+      donde empieza la jerarquía de directorios del CVS.
+
+      Tu fichero 'tar' debería tener dos directorios, donde están contenidos
+      los ficheros pertenecientes a la traducción del lenguaje 'xx':
+ 
+      templates/xx
+      messages/xx
+ 
+      En templates/xx deberían estar las plantillas, todos los ficheros .txt y
+      .html traducidas en tu idioma, a partir de las plantillas en Inglés (que
+      siempre son las copias primarias).
+
+      En messages/xx solo debería haber un único directorio llamado
+      LC_MESSAGES y dentro de él un fichero llamado mailman.po, que es el
+      catálogo perteneciente a tu idioma. No envíes el fichero mailman.mo
+      porque de eso me encargo yo.
+
+      Prácticamente eso es todo. Si necesitas incluir un fichero README, por
+      favor nómbralo como README.xx y mételo en el directorio messages/xx.
+      README.xx debería estar en tu idioma.
+
+      Puedes mandarme el fichero 'tar' por correo electrónico. Si es la
+      primera vez que mandas la traducción, por favor, dime que debo poner en
+      la invocación de add_language() dentro del fichero Defaults.py para
+      incorporar tu idioma.
