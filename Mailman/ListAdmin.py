@@ -41,6 +41,7 @@ from Mailman.pythonlib.StringIO import StringIO
 from Mailman.i18n import _
 
 # Request types requiring admin approval
+IGN = 0
 HELDMSG = 1
 SUBSCRIPTION = 2
 
@@ -76,12 +77,31 @@ class ListAdmin:
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 self.__db = {}
+            # Migrate pre-2.1a3 held subscription records to include the
+            # fullname data field.
+            type, version = self.__db.get('version', (IGN, None))
+            if version is None:
+                # No previous revisiont number, must be upgrading to 2.1a3 or
+                # beyond from some unknown earlier version.
+                for id, (type, data) in self.__db.items():
+                    if id == IGN:
+                        pass
+                    elif id == HELDMSG and len(data) == 5:
+                        # tack on a msgdata dictionary
+                        self.__db[id] = data + ({},)
+                    elif id == SUBSCRIPTION and len(data) == 5:
+                        # a fullname field was added
+                        stime, addr, password, digest, lang = data
+                        self.__db[id] = stime, addr, '', password, digest, lang
+                        
 
     def __closedb(self):
         if self.__db is not None:
             assert self.Locked()
             omask = os.umask(002)
             try:
+                # Save the version number
+                self.__db['version'] = IGN, mm_cfg.REQUESTS_FILE_SCHEMA_VERSION
                 fp = open(self.__filename, 'w')
                 marshal.dump(self.__db, fp)
                 fp.close()
@@ -99,7 +119,8 @@ class ListAdmin:
 
     def NumRequestsPending(self):
         self.__opendb()
-        return len(self.__db)
+        # Subtrace one for the version pseudo-entry
+        return len(self.__db) - 1
 
     def __getmsgids(self, rtype):
         self.__opendb()
@@ -177,12 +198,7 @@ class ListAdmin:
 
     def __handlepost(self, record, value, comment, preserve, forward, addr):
         # For backwards compatibility with pre 2.0beta3
-        if len(record) == 5:
-            ptime, sender, subject, reason, filename = record
-            msgdata = {}
-        else:
-            # New format of record
-            ptime, sender, subject, reason, filename, msgdata = record
+        ptime, sender, subject, reason, filename, msgdata = record
         path = os.path.join(mm_cfg.DATA_DIR, filename)
         # Handle message preservation
         if preserve:
@@ -292,7 +308,7 @@ class ListAdmin:
                 return LOST
         return status
             
-    def HoldSubscription(self, addr, password, digest, lang):
+    def HoldSubscription(self, addr, fullname, password, digest, lang):
         # assure that the database is open for writing
         self.__opendb()
         # get the next unique id
@@ -309,7 +325,7 @@ class ListAdmin:
         # the digest flag
 	# the user's preferred language
         #
-        data = time.time(), addr, password, digest, lang
+        data = time.time(), addr, fullname, password, digest, lang
         self.__db[id] = (SUBSCRIPTION, data)
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
@@ -335,7 +351,7 @@ class ListAdmin:
             msg.send(self, **{'tomoderators': 1})
 
     def __handlesubscription(self, record, value, comment):
-        stime, addr, password, digest, lang = record
+        stime, addr, fullname, password, digest, lang = record
         if value == mm_cfg.DEFER:
             return DEFER
         elif value == mm_cfg.DISCARD:
