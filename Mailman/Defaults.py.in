@@ -62,15 +62,20 @@ MAX_SPAWNS        = 40
 USE_CRYPT         = 1
 
 			 # General Defaults #
-#
-# if this is set to 1, then mailman will consider user@host.domain as
-# the same address as user@domain.  if it is set to 0, mailman will consider
-# user@host.domain the same address as user@Host.DoMain, but different
-# than user@domain.  usernames will be case preserved, host parts of addresses
-# will all be lowercased.
-#
+
+# When true, mailman will consider user@host.domain to be the same address
+# as user@domain.  If set to 0, mailman will consider user@host.domain to 
+# be the same address as user@Host.DoMain, but different than user@domain.
+# Usernames will be case preserved, and host parts of addresses will all be
+# lowercased.
 SMART_ADDRESS_MATCH = 1
-DEFAULT_FILTER_PROG = ''
+# When set, the listinfo web page overview of lists on the machine will be
+# confined to only those lists whose web_page_url configuration option host
+# is included within the URL by which the page is visited - only those "on
+# the virtual host".  If unset, then all lists are included in the
+# overview.  (The admin page overview always includes all the lists.)
+VIRTUAL_HOST_OVERVIEW = 1
+DEFAULT_FILTER_PROG = ''                # Currently not used!
 # Default number of batches in which to divide large deliveries:
 DEFAULT_NUM_SPAWNS = 5
 DEFAULT_LIST_ADVERTISED = 1
@@ -126,9 +131,9 @@ DEFAULT_REPLY_GOES_TO_LIST = 0
 #
 # SUBSCRIBE POLICY
 # 0 - open list (only when ALLOW_OPEN_SUBSCRIBE is set to 1) **
-# 1 - confirmations required for subscribes
+# 1 - confirmation required for subscribes
 # 2 - admin approval required for subscribes
-# 3 - both confirmations and admin approval required
+# 3 - both confirmation and admin approval required
 #
 # ** please do not choose option 0 if you are not allowing open
 # subscribes (next variable)
