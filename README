@@ -39,7 +39,8 @@ Install:
     previous sentence should say "copy the contents of the mailman dir
     to..."  klm.] 
   o As mailman, in /home/mailman make public_html, cgi-bin, and logs
-    directories. 
+    directories.  (Chmod g+sw if multiple members of a group are
+    experimenting.)
   o As root, Configure your web server to give /home/mailman/cgi-bin
     perms to run cgi in the cgi-bin dir, and restart the web server.
     The line you should add should look something like:
