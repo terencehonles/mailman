@@ -60,12 +60,13 @@ equivalent) file by adding the following lines, and possibly running the
     if not cgi:
         print >> outfp
         return
+    siteowner = Utils.get_site_email()
     msg = Message.UserNotification(
-        mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER,
+        siteowner, siteowner,
         _('Mailing list creation request for list %(listname)s'),
         sfp.getvalue())
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
-    outq.enqueue(msg, recips=[mm_cfg.MAILMAN_OWNER])
+    outq.enqueue(msg, recips=[siteowner])
 
 
 
@@ -102,9 +103,10 @@ equivalent) file by removing the following lines, and possibly running the
     if not cgi:
         print >> outfp
         return
+    siteowner = Utils.get_site_email()
     msg = Message.UserNotification(
-        mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER,
+        siteowner, siteowner,
         _('Mailing list removal request for list %(listname)s'),
         sfp.getvalue())
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
-    outq.enqueue(msg, recips=[mm_cfg.MAILMAN_OWNER])
+    outq.enqueue(msg, recips=[siteowner])
