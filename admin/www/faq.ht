@@ -26,30 +26,29 @@ FAQ Wizard</a> for more information.
 <p> <b> Q. My list members are complaining about Mailman's List-* headers!
    What can I do about this?
 
-</b><br> A. These headers are added by Mailman for the long-term benefit of
-   end-users.  Mailman is compliant with RFC 2369, which is where
-   these headers are defined.  See the file README.USERAGENT for hints
-   on what to tell your end users.
+</b><br> A. These headers are described in RFC 2369 and are added by Mailman
+   for the long-term benefit of end-users.  While discouraged, the
+   list admin can disable these via the General Options page.  See
+   also README.USERAGENT for more information.
 <p> <b> Q. Can I put the user's address in the footer that Mailman adds to
    each message?
 
-</b><br> A. No.  The reason is that, for efficiency, Mailman batches together
-   message delivery for many users at once.  Putting the user's
-   address in the footer would require Mailman to craft a unique
-   message for each recipient, and this would likely unacceptably bog
-   down your system.
-<p>    Some MTAs may provide may provide the ability to accomplish this,
-   using a technique akin to VERP (variable envelope return path).
-   You'll need to investigate the configuration options of your MTA
-   for details.
+</b><br> A. Yes, in Mailman 2.1.  The site admin needs to enable
+   personalization by setting the following variables in the mm_cfg.py
+   file:
+<p>     VERP_PASSWORD_REMINDERS = 1
+    VERP_PERSONALIZED_DELIVERIES = 1
+    VERP_DELIVERY_INTERVAL = 1
+    VERP_CONFIRMATIONS = 1
+<p>    Once this is done, list admins can enable personalization for
+   regular delivery members (digest deliveries can't be
+   personalized currently).  A personalized list can include the
+   user's address in the footer.
 <p> <b> Q. My users hate HTML in their email and for security reasons, I want
    to strip out all MIME attachments.  How can I do this?
 
-</b><br> A. Mailman 2.1 will probably have this feature built-in, but for now
-   you can use add-on tools such as demime or stripmime.  More
-   information on these tools can be found at:
-<p>    (Stripmime) <a href="http://www.phred.org/~alex/stripmime.html">http://www.phred.org/~alex/stripmime.html</a>
-<p>    (Demime)    <a href="http://scifi.squawk.com/demime.html">http://scifi.squawk.com/demime.html</a>
+</b><br> A. Mailman 2.1 has this feature built-in.  See the Content Filtering
+   Options page in the admin interface.
 <p> <b> Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
@@ -84,42 +83,16 @@ FAQ Wizard</a> for more information.
    `mailman' user have been installed.  In Mailman 2.1, qrunner is
    started with the bin/mailmanctl script, which can be invoked
    manually, or merged with your OS's init scripts.
-<p> <b> Q. Why do my web pages hang?
-
-</b><br> A. CERN Web servers might leave Python processes running, and in some
-   cases might hang the CGI completely.  In that case, switch to
-   Apache.
-<p>    It is also possible that you have stale locks.  Mailman tries to
-   be very careful about the lock files it creates to ensure the
-   integrity of its databases, but sometimes system faults can
-   cause stale locks to persist.  Look in $prefix/locks for any
-   stale list locks and remove them (you can determine if they're
-   stale by getting the pid from the file contents and using ps to
-   see if those processes are still running or not).
 <p> <b> Q. What should I check periodically?
 
 </b><br> A. Many of the scripts have their standard error logged to
-   ~mailman/logs/error, and some of the modules write caught errors
+   $prefix/logs/error, and some of the modules write caught errors
    there, as well, so you should check there at least occasionally to
    look for bugs in the code and problems in your setup.
-<p>    One thing that is reported in logs/error is syntax errors, but any
-   of these should have been caught in the installation phase, which
-   byte-compiles all .py files in the distribution.  There may be
-   syntax errors lurking if you hacked the code, or in the scripts
-   that are not modules.
-<p>    You can always use the Python module `compile' or `compileall' to
-   force byte compilation of a file, or just fire up the Python
-   interpreter and try importing the module.
 <p>    You may want to periodically check the other log files in the logs/
    directory, perhaps occasionally rotating them with something like
    the Linux logrotate script.
-<p> <b> Q. Why doesn't the archive link work?
-
-</b><br> A. Have any messages been posted to the list?  This is a known buglet;
-   the archive link doesn't work until at least one message has been
-   posted.
-<p> <b> Q. Okay, the archive link works, but I can't access the public
-   archives.  Why?
+<p> <b> Q. I can't access the public archives.  Why?
 
 </b><br> A. If you are using Apache, you must make sure that FollowSymLinks is
    enabled for the path to the public archives.  Note that the actual
@@ -150,39 +123,7 @@ FAQ Wizard</a> for more information.
 <li>
     edit $prefix/archives/private/<em>listname</em>.mbox/<em>listname</em>.mbox [optional]
 <li>
-    run $prefix/bin/arch <em>listname</em> 
-<p> <b> Q. I set member_posting_only to yes because I want to limit posts to
-   members only, however it seems like all messages coming from
-   members are held for approval.  Why?
-
-</b><br> A. There appears to be a problem on some systems where the envelope
-   sender (e.g. the Unix "From " line) is set incorrectly.  This will
-   cause a negative match when checking to see if the sender is a
-   member of the list.  Until 1.0b12, Mailman defaulted to using the
-   envelope sender before the sender (i.e. "From:" header) because the
-   former is set by the SMTP agent while the latter is easily
-   spoofable by the end user.
-<p>    [ The possible causes for envelope sender munging taking place are
-     many, but the "owner-alias" sendmail feature probably deserves
-     special mention:
-<p>      If mail arrives for list "foo", and there is an alias entry for
-     "owner-foo" as well, the envelope sender of the message will be
-     changed to the single-level expansion of the "owner-foo" alias.
-<p>      Code has been included in post-1.0rc2 Mailman releases to try
-     working around the problem this (unconfigurable) sendmail feature
-     constitutes.  Prior to this, some people worked around the
-     problem by not including the suggested "owner-LISTNAME" alias
-     entries for Mailman lists in their alias files. ]
-<p>    However, if you are having this problem, you may opt to favor the
-   From: header over the envelope sender.  Do this by adding the
-   following line to your mm_cfg.py file:
-<p>    USE_ENVELOPE_SENDER=0
-<p>    if you want (arguably) more security, add this to your mm_cfg.py
-   file:
-<p>    USE_ENVELOPE_SENDER=1
-<p>    However, read the comments about this variable in the Defaults.py
-   file for a full discussion of the issues.  By default, Mailman 2.0
-   relies on the From: header for doing address matching.
+    run $prefix/bin/arch <em>listname</em>
 <p> <b> Q. How secure are the authentication mechanisms used in Mailman's web
    interface?
 
