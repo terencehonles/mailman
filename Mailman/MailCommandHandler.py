@@ -120,14 +120,19 @@ class MailCommandHandler:
 		else:
 		    self.AddError("Subject line ignored: %s" % subject)
         processed = {}                      # For avoiding redundancies.
-	for line in lines:
-	    line = string.strip(line)
+        maxlines = mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES
+	for linecount in range(len(lines)):
+	    line = string.strip(lines[linecount])
 	    if not line:
 		continue
+            if linecount > maxlines:
+                self.AddToResponse("\n")
+                self.AddError("Maximum command lines (%d) encountered,"
+                              " ignoring the rest..." % maxlines)
+                self.AddToResponse("<<< " + string.join(lines[linecount:],
+                                                      "\n<<< "))
+                break
 	    self.AddToResponse("\n>>>> %s" % line)
-	    line = string.strip(line)
-	    if not line:
-		continue
 	    args = string.split(line)
 	    cmd = string.lower(args[0])
 	    args = args[1:]
