@@ -7,14 +7,11 @@ configured using the standard GNU autoconf software.  You first need
 to prepare your system as outlined in the sections below, and then
 configure and install the Mailman software.
 
-IMPORTANT: Pay special attention to the step below where you have to
-set up your crontab entries.  If you do not do this, Mailman will not
-work.
-
 UPGRADING: Upgrading is usually as easy as just installing the new
 version over the existing installation.  However, you should read the
 notes in the file UPGRADING for important information before you
 upgrade.
+
 
 0. Installation requirements
 
@@ -36,11 +33,11 @@ upgrade.
     the official file releases, or by checking out via CVS, you must
     download and install the mimelib package.
 
-    http://barry.wooz.org/software/Code/mimelib-0.2.tar.gz
+        http://sf.net/projects/mimelib
 
-    You need mimelib 0.2 or better.  mimelib will eventually be
-    bundled with Mailman 2.1 and may even become part of the Python
-    2.2 distribution.
+    Mailman 2.1alpha2 requires mimelib 0.4 or better.  mimelib will
+    eventually be bundled with Mailman 2.1 and Python 2.2.
+
 
 1. System setup
 
@@ -56,10 +53,11 @@ upgrade.
 
     - Add a new group called `mailman'.  Typically this is added to
       your /etc/group file.  The Mailman files will be installed under
-      the `mailman' group, with the set-group-id bit.  This is so both
-      the web based and mail based programs will have the proper write
-      permissions.  If groupname `mailman' is already in use, choose
-      something else unique and see the --with-ownergroup below.
+      the `mailman' group, with the set-group-id bit.  Mailman's
+      security is based on group-ownership permissions, so it is
+      important to get this step right.  If groupname `mailman' is
+      already in use, choose something else unique and see the
+      --with-ownergroup below.
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
@@ -67,24 +65,33 @@ upgrade.
       split the installation up based on read-only vs. read/write
       files.
 
-      The default directory for installing is /home/mailman, but some
-      sites do things like mount /home with the nosuid option.  This
-      will break Mailman, which relies on set-gid programs for its
-      security.  If this describes your environment, simply install
-      Mailman in a location that allows setgid programs.
+      The default installation directory for Mailman 2.1 is
+      /usr/local/mailman.  It used to be /home/mailman for all
+      versions prior to Mailman 2.1alpha2.  You can override the
+      default by using the --prefix option to configure (see below).
+      If you're upgrading from a version previous to Mailman2.1alpha2,
+      you will need to use --prefix unless you move your mailing
+      lists.
 
-      Make sure this directory is set to group `mailman' (or whatever
-      you're going to specify as --with-ownergroup) and has the setgid
-      bit set (but see README.BSD if you're on a BSD system).  You
-      probably also want to guarantee that this directory is readable
-      and executable by everyone.  For example, these shell commands
-      will accomplish this:
+      Watch out if your site does something like mount /usr/local with
+      the nosuid option.  This will break Mailman, which relies on
+      set-gid programs for its security.  If this describes your
+      environment, simply install Mailman in a location that allows
+      setgid programs.
+
+      Make sure the install directory is set to group `mailman' (or
+      whatever you're going to specify as --with-ownergroup) and has
+      the setgid bit set (but see README.BSD if you're on a BSD
+      system).  You probably also want to guarantee that this
+      directory is readable and executable by everyone.  For example,
+      these shell commands will accomplish this:
 
           % cd $prefix
           % chgrp mailman .
           % chmod a+rx,g+ws .
 
       You are now ready to configure and install the Mailman software.
+
 
 2. Running configure
 
@@ -116,8 +123,9 @@ upgrade.
       --prefix=<dir>
             Standard GNU configure option which changes the base
             directory that Mailman is installed into.  By default
-            $prefix is /home/mailman.  This directory must already
-            exist, and be set up as described in section 1 above.
+            $prefix is /usr/local/mailman.  This directory must
+            already exist, and be set up as described in section 1
+            above.
 
       --exec-prefix=<dir>
             Standard GNU configure option which lets you specify a
@@ -139,14 +147,16 @@ upgrade.
             Specify a different username than `mailman' to use as a
             default.  Use this only if the username `mailman' is
             already in use by somebody (e.g. Mark Ailman's login
-            name).  Can take an integer user id.  Be sure your $prefix
-            directory is owned by this user.
+            name).  This switch can take an integer user id or a user
+            name.  Be sure your $prefix directory is owned by this
+            user.
 
       --with-groupname=<groupname-or-gid>
             Specify a different groupname than `mailman' to use as a
             default.  Use this only if the groupname `mailman' is
-            already in use.  Can take an integer group id.  Be sure
-            your $prefix directory is group-owned by this group.
+            already in use.  This switch can take an integer group id
+            or a group name.  Be sure your $prefix directory is
+            group-owned by this group.
 
       --with-mail-gid=<group-or-groups>
             Specify an alternative group for running scripts via the
@@ -162,6 +172,9 @@ upgrade.
             the group id of sendmail processes using the "DefaultUser"
             option.  (If commented out, it still may be indicating the
             default...)
+
+            Check your MTA's documentation and configuration files to
+            find the right value for this switch.
 
       --with-cgi-gid=<group-or-groups>
             Specify an alternative group for running scripts via the
@@ -193,8 +206,9 @@ upgrade.
 
 3. Check your installation
 
-    To check that your installation has all the correct permissions
-    and group ownerships, you should run the check_perms script:
+    After you've run "make install", you can check that your
+    installation has all the correct permissions and group ownerships
+    by running the check_perms script:
 
     - cd to $prefix
 
@@ -203,10 +217,11 @@ upgrade.
     Don't try to run bin/check_perms from the source directory; it
     will only run from the install (i.e. $prefix) directory.
 
-    If this reports no problems, then it's very likely that your
-    installation is set up correctly :)  If it reports problems, then
-    you can either fix them manually, re-run the installation, or use 
-    check_perms to fix the problems (probably the easiest solution):
+    If this reports no problems, then it's very likely <wink> that
+    your installation is set up correctly.  If it reports problems,
+    then you can either fix them manually, re-run the installation, or
+    use check_perms to fix the problems (probably the easiest
+    solution):
 
     - You need to become the user that did the installation (and that
       owns all the files in $prefix), or root.
@@ -215,11 +230,19 @@ upgrade.
 
     - Repeat previous step until no more errors are reported!
 
+
 4. Final system set-up
 
     Congratulations!  You've installed the Mailman software.  To get
     everything running you need to hook Mailman up to both your web
     server and your mail system.
+
+    - If there is a README.<yourMTA> file that describes your mail
+      server (MTA), read it now.  Some MTAs are more compatible with
+      Mailman such that you can do automatic creation and removal of
+      mailing lists, including through-the-web operations.  Examples
+      are Exim and Postfix.  Setup instructions for specific MTAs are
+      contained in these README files.
 
     - If you plan on running your MTA and web server on different
       machines, sharing Mailman installations via NFS, be sure that
@@ -277,13 +300,22 @@ upgrade.
 
       Now restart your web server.
 
-    - IMPERATIVE!  IMPORTANT!  DO THIS!  YOU'LL BE SORRY IF YOU DON'T!
+    - Set up the crontab entries.  Mailman runs a number of cron jobs
+      for its basic functionality.  In version of Mailman prior to
+      2.1alpha2, setting up your crontab was imperative to getting
+      Mailman to work.  With MM2.1alpha2 though, the qrunner is
+      started from the bin/mailmanctl script (see below) instead of
+      cron.  You still want to set up crontab to run the ancillary
+      scripts, but it isn't as crucial to getting Mailman working as
+      it once was.  Note that if you're upgrading from a previous
+      version of Mailman, you'll want to install the new crontab, but
+      be careful if you're running multiple Mailman installations on
+      your site!  Changing the crontab could mess with other parallel
+      Mailman installations.
 
-      Set up the crontab entries.  Mailman runs a number of cron jobs
-      for its basic functionality.  If your version of crontab
-      supports the -u option, you must be root to do this next step.
-      Add $prefix/cron/crontab.in as a crontab entry by executing
-      these commands:
+      If your version of crontab supports the -u option, you must be
+      root to do this next step.  Add $prefix/cron/crontab.in as a
+      crontab entry by executing these commands:
 
           % cd $prefix/cron
           % crontab -u mailman crontab.in
@@ -295,10 +327,6 @@ upgrade.
           % cd $prefix/cron
           % su - mailman
           % crontab crontab.in
-
-    - Look to see if there is special instructions about hooking your
-      MTA up to Mailman.  If so, there will be a README.<yourMTA> file
-      in the Mailman source directory.
 
     - Add aliases for `mailman' and `mailman-owner' to the system's
       mail alias database.  These aliases should point to whoever is
@@ -318,6 +346,7 @@ upgrade.
       If you don't run sendmail, consult the documentation of your
       mail transport program for information on adding these aliases.
 
+
 5. Customize Mailman
 
     You should do these steps using the account you installed Mailman
@@ -327,9 +356,10 @@ upgrade.
       defaults for your installation.  If any of these are incorrect,
       override them in $prefix/Mailman/mm_cfg.py, NOT IN Defaults.py!
       See the comments in Defaults.py for details.  Once a list is
-      created, editing many of these variables will have no effect
-      (you need to configure your lists through the web admin
-      interface or through the command line script bin/config_list).
+      created, editing many of these variables will have no effect.
+      At that point, you'll need to configure your lists through the
+      web admin interface or through the command line script
+      bin/config_list or bin/withlist.
 
       Specifically check to make sure the variables DEFAULT_HOST_NAME
       and DEFAULT_URL are correct.  The latter MUST end in a slash.
@@ -349,37 +379,24 @@ upgrade.
       mailman site administrator the ability to adjust these things
       when necessary.
 
+      You may also want to create a password for the site-wide "list
+      creator" role (someone other than the site administrator who as
+      privileges to create and remove lists through the web).  Use the
+      -c option to mmsitepass to set this.
+
+
 6. Getting started
 
-    - Create a list named `test'.  To do so, run the program
-      $prefix/bin/newlist.  You will be prompted for the name of the
-      list, as well as the email address of the person running the
-      list.  Put your own email address as the list administrator's
-      address.
-       
-    - Running newlist will generate a list of aliases that must be
-      added to the system.  If you are running Sendmail, you may add
-      the lines output directly to the file /etc/aliases.  You may
-      need to run the command 'newaliases' (all as root).  Now the
-      mailing address for your list as well as its administrative
-      addresses will be set up.  If you are not running Sendmail,
-      consult your MTA's documentation for information on adding
-      aliases.
-
-    - You will receive email instructions on how to visit the list you
-      just created.  Using these instructions, subscribe to the
-      mailing list.  Once you have subscribed (which requires a
-      confirmation step!), send a message to the list, and see if you
-      get it.  If so, then you have successfully installed Mailman,
-      and set up your first list!
+    See the README file under the section "CREATE YOUR FIRST LIST" for
+    a quick introduction to creating an initial test list.
 
 
 7. Troubleshooting
   
     If you encounter problems with running Mailman, first check the
     "Common Problems" section, below.  If your problem is not covered
-    there, check the file FAQ and FAQ.LINUX.  Then check for a log
-    entry from Mailman in your syslog.
+    there, check the FAQ.  Then check for a log entry from Mailman in
+    your syslog and in the $prefix/logs/error file.
     
     Where syslog lives on your particular machine may vary.  It may be
     in /var/log/maillog.  It may also be in /var/log/syslog.  On many
@@ -388,8 +405,10 @@ upgrade.
     If you encounter an error, send an error report to
     mailman-users@python.org.  Include a description of what you're
     doing to cause the problem, and the relevant lines from your
-    syslog.  Also include information on your operating system and
-    version of Python.
+    syslog.  Also include information on your operating system, which
+    version of Python you're using, and which version of Mailman
+    you're installing.
+
 
 8. Common Problems
 
@@ -466,6 +485,9 @@ upgrade.
 
               % ./configure --with-mail-gid=thegid
 
+              See also the README.POSTFIX file for more information on
+              connecting Postfix and Mailman.
+
 
     Problem:  I send mail to the list, and get back mail saying,
               "sh: wrapper not available for sendmail programs"
@@ -484,6 +506,7 @@ upgrade.
               Note further any aliases newaliases spits out will need
               to be adjusted to point to the secure link to the
               wrapper.
+
 
     Problem:  I messed up when I called configure.  How do I clean
               things up and re-install?
