@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 502 $"
+__version__ = "$Revision: 503 $"
 
 try:
     import mm_cfg
@@ -174,7 +174,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'The public name of this list',
 
              "The capitalization of this name can be changed to make it"
-             " presentable in polite company as a noun, or to make an"
+             " presentable in polite company as a proper noun, or to make an"
              " acronym part all upper case, etc.  However, the name"
              " will be advertised as the email address (e.g., in subscribe"
              " confirmation notices), so it should <em>not</em> be otherwise"
