@@ -88,7 +88,11 @@ def main():
     if lenparts < 2:
         user = cgidata.getvalue('email')
         if not user:
-            doc.addError(_('No address given'))
+            # If we're coming from the listinfo page and we left the email
+            # address field blank, it's not an error.  listinfo.html names the
+            # button UserOptions; we can use that as the descriminator.
+            if not cgidata.getvalue('UserOptions'):
+                doc.addError(_('No address given'))
             loginpage(mlist, doc, None, cgidata)
             print doc.Format()
             return
@@ -727,13 +731,17 @@ def loginpage(mlist, doc, user, cgidata):
     # We use a subtable here so we can put a language selection box in
     lang = cgidata.getvalue('language', mlist.preferred_language)
     table = Table(width='100%', border=0, cellspacing=4, cellpadding=5)
-    langform = Form(actionurl)
-    langform.AddItem(SubmitButton('displang-button', _('View this page in')))
-    langform.AddItem(mlist.GetLangSelectBox(lang))
+    # If only one language is enabled for this mailing list, omit the choice
+    # buttons.
     table.AddRow([Center(Header(2, title))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
-    table.AddRow([Center(langform)])
+    if len(mlist.GetAvailableLanguages()) > 1:
+        langform = Form(actionurl)
+        langform.AddItem(SubmitButton('displang-button',
+                                      _('View this page in')))
+        langform.AddItem(mlist.GetLangSelectBox(lang))
+        table.AddRow([Center(langform)])
     doc.AddItem(table)
     # Preamble
     # Set up the login page
@@ -749,12 +757,6 @@ def loginpage(mlist, doc, user, cgidata):
     <p><strong><em>Important:</em></strong> From this point on, you must have
     cookies enabled in your browser, otherwise none of your changes will take
     effect.
-
-    <p>Session cookies are used in Mailman's membership options interface so
-    that you don't need to re-authenticate with every operation.  This cookie
-    will expire automatically when you exit your browser, or you can
-    explicitly expire the cookie by hitting the <em>Logout</em> link (which
-    you'll see once you successfully log in).
     """)])
     # Password and login button
     ptable = Table(width='50%', border=0, cellspacing=4, cellpadding=5)

@@ -357,6 +357,12 @@ class HTMLFormatter:
     def GetStandardReplacements(self, lang=None):
         dmember_len = len(self.getDigestMemberKeys())
         member_len = len(self.getRegularMemberKeys())
+        # If only one language is enabled for this mailing list, omit the
+        # language choice buttons.
+        if len(self.GetAvailableLanguages()) == 1:
+            listlangs = ''
+        else:
+            listlangs = self.GetLangSelectBox(lang).Format()
         return { 
             '<mm-favicon>' : mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON,
             '<mm-mailman-footer>' : self.GetMailmanFooter(),
@@ -379,7 +385,7 @@ class HTMLFormatter:
             '<mm-owner>' : self.GetAdminEmail(),
             '<mm-reminder>' : self.FormatReminder(self.preferred_language),
             '<mm-host>' : self.host_name,
-            '<mm-list-langs>' : self.GetLangSelectBox(lang).Format(),
+            '<mm-list-langs>' : listlangs,
             }
 
     def GetAllReplacements(self, lang=None):

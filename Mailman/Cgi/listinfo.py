@@ -181,8 +181,14 @@ def list_listinfo(mlist, lang):
     replacements['<mm-editing-options>'] = mlist.FormatEditingOption(lang)
     replacements['<mm-info-button>'] = SubmitButton('UserOptions',
                                                     _('Edit Options')).Format()
-    replacements['<mm-displang-box>'] = mlist.FormatButton('displang-button',
-                             text = _("View this page in"))
+    # If only one language is enabled for this mailing list, omit the choice
+    # buttons.
+    if len(mlist.GetAvailableLanguages()) == 1:
+        displang = ''
+    else:
+        displang = mlist.FormatButton('displang-button',
+                                      text = _("View this page in"))
+    replacements['<mm-displang-box>'] = displang 
     replacements['<mm-lang-form-start>'] = mlist.FormatFormStart('listinfo')
     replacements['<mm-fullname-box>'] = mlist.FormatBox('fullname', size=30)
 
