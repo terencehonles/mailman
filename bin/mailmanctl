@@ -264,12 +264,13 @@ def check_privs():
     # If we're running as root (uid == 0), coerce the uid and gid to that
     # which Mailman was configured for, and refuse to run if we didn't coerce
     # the uid/gid.
-    if os.getuid() == 0:
-        gid = grp.getgrnam(mm_cfg.MAILMAN_GROUP)[2]
-        uid = pwd.getpwnam(mm_cfg.MAILMAN_USER)[2]
+    gid = grp.getgrnam(mm_cfg.MAILMAN_GROUP)[2]
+    uid = pwd.getpwnam(mm_cfg.MAILMAN_USER)[2]
+    myuid = os.getuid()
+    if myuid == 0:
         os.setgid(gid)
         os.setuid(uid)
-    if os.getuid() <> uid:
+    elif myuid <> uid:
         name = mm_cfg.MAILMAN_USER
         usage(1, _(
             'Run this program as root or as the %(name)s user, or use -u.'))
