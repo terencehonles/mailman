@@ -46,7 +46,6 @@
 # difficulty and expense of retrying the cgi dialog for each attempt.  It
 # also relies on the security of SHA1.
 
-
 import os
 import time
 import sha
@@ -139,6 +138,19 @@ class SecurityManager:
                 if ok:
                     return mm_cfg.AuthSiteAdmin
             elif ac == mm_cfg.AuthListAdmin:
+                def cryptmatchp(response, secret):
+                    try:
+                        salt = secret[:2]
+                        if crypt and crypt.crypt(response, salt) == secret:
+                            return 1
+                        return 0
+                    except TypeError:
+                        # BAW: Hard to say why we can get a TypeError here.
+                        # SF bug report #585776 says crypt.crypt() can raise
+                        # this if salt contains null bytes, although I don't
+                        # know how that can happen (perhaps if a MM2.0 list
+                        # with USE_CRYPT = 0 has been updated?  Doubtful.
+                        return 0
                 # The password for the list admin and list moderator are not
                 # kept as plain text, but instead as an sha hexdigest.  The
                 # response being passed in is plain text, so we need to
@@ -156,7 +168,7 @@ class SecurityManager:
                 elif md5.new(response).digest() == secret:
                     ok = 1
                     upgrade = 1
-                elif crypt and crypt.crypt(response, secret[:2]) == secret:
+                elif cryptmatchp(response, secret):
                     ok = 1
                     upgrade = 1
                 if upgrade:
