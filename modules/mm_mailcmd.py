@@ -1,4 +1,6 @@
-"""Process commands arriving via email."""
+"""Process maillist user commands arriving via email."""
+
+__version__ = "$Revision: 398 $"
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
