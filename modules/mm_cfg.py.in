@@ -1,10 +1,16 @@
 """This is the module which take your site-specific settings.
 
-See ./mm_defaults for the all the options.  Override only those you want to 
-change, after the 'from mm_defaults import *' line.
+From a raw distribution it should be moved to be named mm_cfg.py.  If you
+already have an mm_cfg.py, be careful to add in only the new settings you
+want.  The complete set of distributed defaults are in ./mm_defaults.  In
+mm_cfg, override only those you want to change, after the
 
-Note that these are just default settings - many of them can be overridden
-via the admin and user interfaces on a per-list and per-user basis.
+  from mm_defaults import *
+
+line, below.
+
+Note that these are just default settings - many can be overridden via the
+admin and user interfaces on a per-list or per-user basis.
 
 Note also that some of the settings are resolved against the active list
 setting by using the value as a format string against the
@@ -13,12 +19,9 @@ DEFAULT_MSG_FOOTER for an example."""
 
 from mm_defaults import *
 
-# Put your site specific configurations below here.
+#######################################################
+#  Put your site specific configurations below here.  #
 
-import os
-
-MAILMAN_URL       = 'http://www.python.org/ftp/python/contrib/Network/mailman/'
-MAX_SPAWNS        = 40
 DEFAULT_HOST_NAME = 'python.org'
 SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'
 DEFAULT_URL       = 'http://www.python.org/mailman'
