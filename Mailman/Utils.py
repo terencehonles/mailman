@@ -52,7 +52,6 @@ def list_exists(listname):
     return os.path.exists(dbfile) or os.path.exists(lastfile)
 
 
-
 def list_names():
     """Return the names of all lists in default list directory."""
     got = []
@@ -376,18 +375,29 @@ def GetRandomSeed():
         return c
     return "%c%c" % tuple(map(mkletter, (chr1, chr2)))
 
-def SetSiteAdminPassword(pw):
+
+
+def set_global_password(pw, siteadmin=1):
+    if siteadmin:
+        filename = mm_cfg.SITE_PW_FILE
+    else:
+        filename = mm_cfg.LISTCREATOR_PW_FILE
     omask = os.umask(026)                         # rw-r-----
     try:
-        fp = open(mm_cfg.SITE_PW_FILE, 'w')
+        fp = open(filename, 'w')
         fp.write(sha.new(pw).hexdigest() + '\n')
         fp.close()
     finally:
         os.umask(omask)
+    
 
-def CheckSiteAdminPassword(response):
+def check_global_password(response, siteadmin=1):
+    if siteadmin:
+        filename = mm_cfg.SITE_PW_FILE
+    else:
+        filename = mm_cfg.LISTCREATOR_PW_FILE
     try:
-        fp = open(mm_cfg.SITE_PW_FILE)
+        fp = open(filename)
         challenge = fp.read()[:-1]                # strip off trailing nl
         fp.close()
     except IOError, e:
@@ -518,15 +528,36 @@ def is_administrivia(msg):
 
 def mkdir(dir, mode=02775):
     """Wraps os.mkdir() in a umask saving try/finally.
-Two differences from os.mkdir():
-    - umask is forced to 0 during mkdir()
-    - default mode is 02775
-"""
+
+    Two differences from os.mkdir():
+        - umask is forced to 0 during mkdir()
+        - default mode is 02775
+    """
     ou = os.umask(0)
     try:
         os.mkdir(dir, mode)
     finally:
         os.umask(ou)
+
+
+def rmdirhier(dir):
+    """Like `rm -r'
+
+    Completely and recursively removes a directory and all its contents,
+    unlike os.removedirs().
+    """
+    files = []
+    def ls(arg, dirname, names):
+        for name in names:
+            arg.append(os.path.join(dirname, name))
+    os.path.walk(dir, ls, files)
+    files.reverse()
+    for file in files:
+        if os.path.isdir(file):
+            os.rmdir(file)
+        else:
+            os.unlink(file)
+    os.rmdir(dir)
 
 
 
@@ -579,3 +610,16 @@ def GetLanguageDescr(lang):
 
 def GetCharSet(lang):
     return mm_cfg.LC_DESCRIPTIONS[lang][1]
+
+
+
+def get_domain():
+    host = os.environ.get('HTTP_HOST', os.environ.get('SERVER_NAME'))
+    port = os.environ.get('SERVER_PORT')
+    # Strip off the port if there is one
+    if port and host.endswith(':' + port):
+        host = host[:-len(port)-1]
+    if mm_cfg.VIRTUAL_HOST_OVERVIEW and host:
+        return host
+    else:
+        return mm_cfg.DEFAULT_HOST_NAME
