@@ -53,7 +53,7 @@ def main():
     except Errors.MMListError, e:
         doc.AddItem(Header(2, 'No such list <em>%s</em>' % listname))
         print doc.Format(bgcolor='#ffffff')
-        syslog('No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
     # get the list._template_dir attribute
