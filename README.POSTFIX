@@ -3,17 +3,57 @@ Copyright (C) 2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
+GENERAL SETUP INFORMATION
+
+    Mailman should work pretty much out of the box with a standard
+    Postfix installation.  As of this writing (25-Nov-2001) I've
+    tested it with Postfix 19991231 up to pl13, and with 200010228 up
+    to pl08.
+
+    It is recommended that you set "owner_request_special = no" in
+    your main.cf config file so that Postfix won't treat -owner and
+    -request addresses specially (we want Postfix to simply deliver
+    such messages to the Mailman wrapper).  The default is "yes" I
+    believe.
+
+    In order to support Mailman's optional VERP delivery, you will
+    want to disable luser_relay (the default) and you will want to set
+    recipient_delimiter for extended address semantics.  Here my
+    recommendations are to comment out any luser_relay value in your
+    main.cf and just go with the defaults.  Also, set
+    "recipient_delimiter = +" so that the symbol used to separate an
+    address from its extended semantics is a + sign.  This will work
+    well with the default values for VERP_FORMAT and VERP_REGEXP in
+    Defaults.py.
+
+    Finally, if you are using Postfix-style virtual domains, read the
+    section on virtual domain support below.
+
+
 INTEGRATING POSTFIX AND MAILMAN
 
     You can integrate Postfix and Mailman such that when new lists are
-    created, or lists are removed, Postfix's alias database will
-    automatically be updated.  The following are the steps you need to
+    created, or lists are removed, Postfix's alias database will be
+    automatically updated.  The following are the steps you need to
     take to make this work.
 
     In the description below, we assume that you've installed Mailman
     in the default location, i.e. /usr/local/mailman.  If that's not
     the case, adjust the instructions according to your use of
     configure's --prefix and --with-var-prefix options.
+
+    A WORD OF CAUTION: The version of BerkeleyDB that Postfix was
+    linked against MUST match the version that Python's bsddb module
+    was linked against.  If they don't, you will get an exception from
+    genaliases (see below) that says "Invalid argument".  You can use
+    ldd to see which version each was linked against, and if they
+    don't match, you'll have to recompile either Python or Postfix so
+    that they do match.  You'll probably find the most luck with
+    libdb.so.3 and Python 2.1.1.
+
+    - If you are using Postfix-style virtual domains and you want
+      Mailman to honor your virtual domains, read the section below
+      first!
 
     - Run the genaliases script to initialize your aliases file.
 
@@ -27,11 +67,15 @@ INTEGRATING POSTFIX AND MAILMAN
       % su
       % chown mailman.mailman data/aliases*
 
-    - Hack your Postfix's main.cf file to include $mailman/data/aliases
-      (no trailing .db) in the alias_map variable but not alias_database.
-      This is because you do not want Postfix's newalias command to modify
-      Mailman's aliases.db file, but you do want Postfix to consult
-      aliases.db when looking for local addresses.
+    - Hack your Postfix's main.cf file to include the following path
+      in your alias_map variable:
+
+          /usr/local/mailman/data/aliases
+
+      (no trailing .db).  Do not include this in your alias_database
+      variable.  This is because you do not want Postfix's newaliases
+      command to modify Mailman's aliases.db file, but you do want
+      Postfix to consult aliases.db when looking for local addresses.
 
       You want to be sure that that you're using the hash: style database
       for this entry.  Here's an example:
@@ -62,6 +106,81 @@ INTEGRATING POSTFIX AND MAILMAN
     tables.  I consider this a minor inconvenience.
   
 
+VIRTUAL DOMAINS
+
+    Postfix supports two styles of virtual domains, called
+    "Postfix-style" and "Sendmail-style".  With the latter, all
+    aliases are visible in all domains, and nothing special need be
+    done with Mailman.
+
+    With Postfix-style virtual domains, things are a little trickier,
+    although Mailman should work well with it.  First, you'll need to
+    a path to Postfix's virtual_maps variable:
+
+    virtual_maps = <your normal virtual files>,
+        hash:/usr/local/mailman/data/virtual-mailman
+
+    assuming you've installed Mailman in the default location.  Note
+    that you must follow Postfix's instructions for setting up the
+    virtual domains; get your virtual domains working in Postfix
+    first before integrating Mailman.
+
+    Next, in your mm_cfg.py file, you will want to set the variable
+    POSTFIX_STYLE_VIRTUAL_DOMAINS to the list of virtual domains that
+    Mailman should update.  This may not be all of the virtual domains
+    that your Postfix installation supports!  The values in this list
+    will be matched against the host_name attribute of mailing lists
+    objects, and must be an exact match.
+
+    Here's an example:
+
+    Let's say I've set up Postfix to handle the virtual domains
+    dom1.ain, dom2.ain, and dom3.ain.  Let's say further that in
+    main.cf you've got the following settings:
+
+        myhostname = mail.dom1.ain
+        mydomain = dom1.ain
+        mydestination = $myhostname, localhost.$mydomain
+        virtual_maps = hash:/some/path/to/virtual-dom1,
+            hash:/some/path/to/virtual-dom2,
+            hash:/some/path/to/virtual-dom2
+
+    Let's say further that in virtual-dom1, you've got the following
+    lines:
+
+        dom1.ain  IGNORE
+        @dom1.ain @mail.dom1.ain
+
+    This tells Postfix to deliver anything addressed to dom1.ain to
+    the same mailbox at mail.dom1.com, it's default destination.
+
+    In this case you would not include dom1.ain in
+    POSTFIX_STYLE_VIRTUAL_DOMAINS because otherwise Mailman will write
+    entries for mailing lists in the dom1.ain domain as
+
+        mylist@dom1.ain         mylist
+        mylist-request@dom1.ain mylist-request
+        # and so on...
+
+    The more specific entries trump your more general entries and thus
+    breaking the delivery of any dom1.ain mailing list.
+
+    However, you would include dom2.ain and dom3.ain in mm_cfg.py:
+    
+        POSTFIX_STYLE_VIRTUAL_DOMAINS = ['dom2.ain', 'dom3.ain']
+
+    Now, any list that Mailman creates in either of those two domains,
+    will have the correct entries written to
+    /usr/local/mailman/data/virtual-mailman
+
+    As above with the data/aliases* files, you want to make sure that
+    both data/virtual-mailman and data/virtual-mailman.db are user and
+    group owned by the `mailman' user/group.  So to get things
+    started, set up your virtual domains, run bin/genaliases, and
+    check the ownerships of the files.  From here on out, you should
+    be good to go.
+
+
 AN ALTERNATIVE APPROACH
 
     Fil <fil@rezo.net> has an alternative approach based on virtual
@@ -69,6 +188,13 @@ AN ALTERNATIVE APPROACH
 
     (French)  http://listes.rezo.net/comment.php
     (English) http://listes.rezo.net/how.php
+
+    This is a good (and simpler) alternative if you don't mind
+    exposing an additional hostname in the domain part of the
+    addresses people will use to contact your list.  I.e. if people
+    should use mylist@lists.dom.ain instead of mylist@dom.ain.
+
+    I have not extensively tested this approach however.
 
 
 
