@@ -14,7 +14,12 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Re-queue the message to the outgoing queue."""
+"""Re-queue the message to the outgoing queue.
+
+This module is only for use by the IncomingRunner for delivering messages
+posted to the list membership.  Anything else that needs to go out to some
+recipient should just be placed in the out queue directly.
+"""
 
 from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
@@ -22,5 +27,6 @@ from Mailman.Queue.sbcache import get_switchboard
 
 
 def process(mlist, msg, msgdata):
+    # And now drop the message in qfiles/out
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
     outq.enqueue(msg, msgdata, listname=mlist.internal_name())
