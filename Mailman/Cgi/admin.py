@@ -21,16 +21,18 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 742 $"
 
 import sys
-import os, cgi, string, crypt, types, time
+import os, cgi, string, types, time
 import paths                                      # path hacking
-import mm_utils, maillist, mm_cfg, mm_err, mm_mailcmd, Cookie
-from htmlformat import *
+from Mailman import Utils, MailList, Errors, MailCommandHandler
+from Mailman import Cookie
+from Mailman.htmlformat import *
+from Mailman.Crypt import crypt
+from Mailman import mm_cfg
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error", label = 'admin',
+    sys.stderr = Utils.StampedLogger("error", label = 'admin',
                                         manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
@@ -45,35 +47,6 @@ CATEGORIES = [('general', "General Options"),
 	      ('gateway', "Mail-News and News-Mail gateways")]
 
 
-LOGIN_PAGE = """
-<html>
-<head>
-  <title>%(listname)s Administrative Authentication</title>
-</head>
-<body bgcolor="#ffffff">
-<FORM METHOD=POST ACTION="%(path)s">
-%(message)s
-  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
-    <TR>
-      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
-	<B><FONT COLOR="#000000" SIZE="+1">%(listname)s Administrative
-	    Authentication</FONT></B>
-      </TD>
-    </TR>
-    <tr>
-      <TD> <div ALIGN="Right"> List Administrative Password: </div> </TD>
-      <TD> <INPUT TYPE=password NAME=adminpw SIZE=30></TD>
-    </tr>
-    <tr>
-      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="request_login">
-      </td>
-    </tr>
-  </TABLE>
-</FORM>
-"""
-
-# " <- icky emacs font-lock bug workaround
-
 SECRET="monty"
 
 def isAuthenticated(list, password=None, SECRET="SECRET"):                      
@@ -81,7 +54,7 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
     if password is not None:  # explicit login
         try:             
             list.ConfirmAdminPassword(password)
-        except mm_err.MMBadPasswordError:
+        except Errors.MMBadPasswordError:
             AddErrorMessage(doc, 'Error: Incorrect admin password.')
             return 0
         except:
@@ -134,7 +107,7 @@ def main():
         path = os.environ['PATH_INFO']
     except KeyError:
         path = ""
-    list_info = mm_utils.GetPathPieces(path)
+    list_info = Utils.GetPathPieces(path)
     # How many ../'s we need to get back to http://host/mailman
 
     if len(list_info) == 0:
@@ -144,8 +117,8 @@ def main():
     list_name = string.lower(list_info[0])
 
     try: 
-        lst = maillist.MailList(list_name)
-    except mm_err.MMUnknownListError:
+        lst = MailList.MailList(list_name)
+    except Errors.MMUnknownListError:
         lst = None
     try:
 	if not (lst and lst._ready):
@@ -174,9 +147,13 @@ def main():
              message = ""
         if not is_auth:
             print "Content-type: text/html\n\n"
-            print LOGIN_PAGE % ({"listname": list_name,
-                                 "path": os.environ.get("REQUEST_URI", "/mailman/admin"),
-                                 "message": message})
+            text = Utils.maketext(
+                'admlogin.txt',
+                {"listname": list_name,
+                 "path"    : os.environ.get("REQUEST_URI", "/mailman/admin"),
+                 "message" : message,
+                 })
+            print text
             return
         
         if len(cgi_data.keys()):
@@ -187,7 +164,7 @@ def main():
 	    if (cgi_data.has_key('bounce_matching_headers')):
 		try:
 		    pairs = lst.parse_matching_header_opt()
-		except mm_err.MMBadConfigError, line:
+		except Errors.MMBadConfigError, line:
                     AddErrorMessage(doc,
                                     'Warning: bad matching-header line'
                                     ' (does it have the colon?)<ul> %s </ul>',
@@ -218,7 +195,7 @@ def main():
 def FormatAdminOverview(error=None):
     "Present a general welcome and itemize the (public) lists."
     doc = Document()
-    legend = "%s maillists - Admin Links" % mm_cfg.DEFAULT_HOST_NAME
+    legend = "%s mailing lists - Admin Links" % mm_cfg.DEFAULT_HOST_NAME
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -227,10 +204,10 @@ def FormatAdminOverview(error=None):
                       colspan=2, bgcolor="#99ccff")
 
     advertised = []
-    names = mm_utils.list_names()
+    names = Utils.list_names()
     names.sort()
     for n in names:
-	l = maillist.MailList(n, lock=0)
+	l = MailList.MailList(n, lock=0)
         if l.advertised: advertised.append(l)
 
     if error:
@@ -243,7 +220,7 @@ def FormatAdminOverview(error=None):
 			 "<p>"
 			 " There currently are no publicly-advertised ",
 			 Link(mm_cfg.MAILMAN_URL, "mailman"),
-			 " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+			 " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
 			 )
     else:
 
@@ -252,7 +229,7 @@ def FormatAdminOverview(error=None):
             "<p>"
             " Below is the collection of publicly-advertised ",
             Link(mm_cfg.MAILMAN_URL, "mailman"),
-            " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+            " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
             (' Click on a list name to visit the configuration pages'
              ' for that list.'
              )
@@ -266,8 +243,8 @@ def FormatAdminOverview(error=None):
                        % ((error and "the right ") or ""))
                       +
                       " General list information can be found at ",
-                      Link(os.path.join('../'* mm_utils.GetNestingLevel(), 
-                          "listinfo/"), "the maillist overview page"),
+                      Link(os.path.join('../'* Utils.GetNestingLevel(), 
+                          "listinfo/"), "the mailing list overview page"),
                       "."
                       "<p>(Send questions and comments to ",
                      Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
@@ -295,7 +272,7 @@ def FormatConfiguration(doc, lst, category, category_suffix):
         if k == category: label = v
 
     doc.SetTitle('%s Administration' % lst.real_name)
-    doc.AddItem(Center(Header(2, ('%s Maillist Configuration - %s Section'
+    doc.AddItem(Center(Header(2, ('%s Mailing list Configuration - %s Section'
                                   % (lst.real_name, label)))))
     doc.AddItem('<hr>')
 
@@ -437,7 +414,7 @@ def FormatOptionHelp(doc, varref, lst):
 	return
 
     header = Table(width="100%")
-    legend = ('%s Maillist Configuration Help<br><em>%s</em> Option'
+    legend = ('%s Mailing list Configuration Help<br><em>%s</em> Option'
 	      % (lst.real_name, varname))
     header.AddRow([Center(Header(3, legend))])
     header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
@@ -503,7 +480,7 @@ def GetItemGuiDescr(lst, category, varname, descr, elaboration, nodetails):
     elaboration if any."""
     descr = '<div ALIGN="right">' + descr
     if not nodetails and elaboration:
-        ref = "../" * (mm_utils.GetNestingLevel()-1) + list_name + "/"
+        ref = "../" * (Utils.GetNestingLevel()-1) + list_name + "/"
         ref = ref + '?VARHELP=' + category + "/" + varname
         descr = Container(descr,
 			  Link(ref, " (Details)", target="MMHelp"),
@@ -533,7 +510,7 @@ def FormatMembershipOptions(lst):
         digests[member] = 1
     all = lst.members + lst.digest_members
     if len(all) > mm_cfg.ADMIN_MEMBER_CHUNKSIZE:
-        chunks = mm_utils.chunkify(all)
+        chunks = Utils.chunkify(all)
         if not cgi_data.has_key("chunk"):
             chunk = 0
         else:
@@ -563,7 +540,7 @@ def FormatMembershipOptions(lst):
         else:
             cells.append("digest " + CheckBox(member + "_digest", "on", 1).Format())
         for opt in ("hide", "nomail", "ack", "norcv", "plain"):
-            if lst.GetUserOption(member, mm_mailcmd.option_info[opt]):
+            if lst.GetUserOption(member, MailCommandHandler.option_info[opt]):
                 value = "on"
                 checked = 1
             else:
@@ -624,7 +601,7 @@ def GetValidValue(lst, prop, my_type, val, dependant):
 	return val
     elif my_type == mm_cfg.Email:
 	try:
-	    valid = mm_utils.ValidEmail(val)
+	    valid = Utils.ValidEmail(val)
 	    if valid:
 		return val
 	except:
@@ -633,9 +610,8 @@ def GetValidValue(lst, prop, my_type, val, dependant):
 	return getattr(lst, prop)
     elif my_type == mm_cfg.EmailList:
 	def SafeValidAddr(addr):
-	    import mm_utils
 	    try:
-		valid = mm_utils.ValidEmail(addr)
+		valid = Utils.ValidEmail(addr)
 		if valid:
 		    return 1
 		else:
@@ -693,7 +669,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 try:
                     lst.ConfirmAdminPassword(cgi_info['adminpw'].value)
                     confirmed = 1
-                except mm_err.MMBadPasswordError:
+                except Errors.MMBadPasswordError:
                     m = "Error: incorrect administrator password"
                     document.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))
                     confirmed = 0
@@ -701,7 +677,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 new = cgi_info['newpw'].value
                 confirm = cgi_info['confirmpw'].value
                 if new == confirm:
-                    lst.password = crypt.crypt(new, mm_utils.GetRandomSeed())
+                    lst.password = crypt(new, Utils.GetRandomSeed())
                     dirty = 1
                 else:
                     m = 'Error: Passwords did not match.'
@@ -756,15 +732,15 @@ def ChangeOptions(lst, category, cgi_info, document):
             if not lst.nondigestable:
                 digest = 1
 	    try:
-		lst.ApprovedAddMember(new_name, (mm_utils.GetRandomSeed() +
-                                                  mm_utils.GetRandomSeed()), digest)
+		lst.ApprovedAddMember(new_name, (Utils.GetRandomSeed() +
+                                                  Utils.GetRandomSeed()), digest)
                 subscribe_success.append(new_name)
-	    except mm_err.MMAlreadyAMember:
+	    except Errors.MMAlreadyAMember:
                 subscribe_errors.append((new_name, 'Already a member'))
                 
-            except mm_err.MMBadEmailError:
+            except Errors.MMBadEmailError:
                 subscribe_errors.append((new_name, "Bad/Invalid email address"))
-            except mm_err.MMHostileAddress:
+            except Errors.MMHostileAddress:
                 subscribe_errors.append((new_name, "Hostile Address (illegal characters)"))
         if subscribe_success:
             document.AddItem(Header(5, "Successfully Subscribed:"))
@@ -808,10 +784,10 @@ def ChangeOptions(lst, category, cgi_info, document):
                 
             for opt in ("hide", "nomail", "ack", "norcv", "plain"):
                 if cgi_info.has_key("%s_%s" % (user, opt)):
-                    lst.SetUserOption(user, mm_mailcmd.option_info[opt], 1)
+                    lst.SetUserOption(user, MailCommandHandler.option_info[opt], 1)
                     dirty = 1
                 else:
-                    lst.SetUserOption(user, mm_mailcmd.option_info[opt], 0)
+                    lst.SetUserOption(user, MailCommandHandler.option_info[opt], 0)
                     dirty = 1
 
 
