@@ -115,6 +115,12 @@ def UpdateOldVars(l, stored_state):
         for dm in l.digest_members:
             dmembers[dm] = 1
         l.digest_members = dmembers
+    #
+    # set admin_notify_mchanges
+    #
+    if not hasattr(l, "admin_notify_mchanges"):
+        setatrr(l, "admin_notify_mchanges",
+                mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES)
 
 
 def UpdateOldUsers(l):

@@ -191,6 +191,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.posters = []
 	self.forbidden_posters = []
 	self.admin_immed_notify = mm_cfg.DEFAULT_ADMIN_IMMED_NOTIFY
+        self.admin_notify_mchanges = \
+                mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES
 	self.moderated = mm_cfg.DEFAULT_MODERATED
 	self.require_explicit_destination = \
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
@@ -373,6 +375,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     " option causes notices to be sent immediately on the arrival"
 	     " of new requests, as well."),
 
+            ('admin_notify_mchanges', mm_cfg.Radio, ('No', 'Yes'), 0,
+             'Should administrator get notices of subscribes/unsubscribes?'),
+            
 	    ('dont_respond_to_post_requests', mm_cfg.Radio, ('Yes', 'No'), 0,
 	     'Send mail to poster when their posting is held for approval?',
 
@@ -774,12 +779,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         
 
 
-    def ApprovedAddMember(self, name, password, digest, ack=None):
+    def ApprovedAddMember(self, name, password, digest, ack=None, admin_notif=None):
         if ack is None:
             if self.send_welcome_msg:
                 ack = 1
             else:
                 ack = 0
+        if admin_notif is None:
+            if self.admin_notify_mchanges:
+                admin_notif = 1
+            else:
+                admin_notif = 0
         name = Utils.LCDomain(name)
 	if self.IsMember(name):
 	    raise Errors.MMAlreadyAMember
@@ -794,9 +804,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.LogMsg("subscribe", "%s: new%s %s",
                     self._internal_name, kind, name)
 	self.passwords[name] = password
-	self.Save()
         if ack:
             self.SendSubscribeAck(name, password, digest)
+        if admin_notif:
+	    import Message
+	    txt = Utils.maketext("adminsubscribeack.txt",
+				 {"mmowner": mm_cfg.MAILMAN_OWNER,
+				  "admin_email": self.GetAdminEmail(),
+				  "listname": self.real_name,
+				  "member": name}, 1)
+	    msg = Message.IncomingMessage(txt)
+	    self.DeliverToOwner(msg, self.owner)
             
 
     def ProcessConfirmation(self, cookie):
@@ -813,7 +831,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 
 
-    def DeleteMember(self, name, whence=None):
+    def DeleteMember(self, name, whence=None, admin_notif=None):
 	self.IsListInitialized()
         # FindMatchingAddresses *should* never return more than 1 address.
         # However, should log this, just to make sure.
@@ -846,6 +864,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.SendUnsubscribeAck(name)
 	self.ClearBounceInfo(name)
 	self.Save()
+        if admin_notif is None:
+            if self.admin_notify_mchanges:
+                admin_notif = 1
+            else:
+                admin_notif = 0
+	if admin_notif:
+	    import Message
+	    txt = Utils.maketext("adminunsubscribeack.txt",
+				 {"mmowner": mm_cfg.MAILMAN_OWNER,
+				  "admin_email": self.GetAdminEmail(),
+				  "listname": self.real_name,
+				  "member": name}, 1)
+	    msg = Message.IncomingMessage(txt)
+	    self.DeliverToOwner(msg, self.owner)
         if whence: whence = "; %s" % whence
         else: whence = ""
         self.LogMsg("subscribe", "%s: deleted %s%s",

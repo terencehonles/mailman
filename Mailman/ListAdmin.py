@@ -172,6 +172,7 @@ class ListAdmin:
 	else:
 	    try:
 		self.ApprovedAddMember(destination_email, pw, digest)
+                self.Save()
 	    except Errors.MMAlreadyAMember:
 		pass
 

@@ -763,6 +763,7 @@ def ChangeOptions(lst, category, cgi_info, document):
             document.AddItem(Header(5, "Successfully Subscribed:"))
             document.AddItem(apply(UnorderedList, tuple((subscribe_success))))
             document.AddItem("<p>")
+            dirty = 1
         if subscribe_errors:
             document.AddItem(Header(5, "Error Subscribing:"))
             items = map(lambda x: "%s -- %s" % (x[0], x[1]), subscribe_errors)

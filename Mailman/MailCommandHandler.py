@@ -456,6 +456,7 @@ class MailCommandHandler:
         remote = mail.GetSender()
         try:
             self.AddMember(subscribe_address, password, digest, remote)
+            self.Save()
         except Errors.MMSubscribeNeedsConfirmation:
             #
             # the confirmation message that's been sent takes place 

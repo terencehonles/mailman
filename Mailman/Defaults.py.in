@@ -110,6 +110,11 @@ DEFAULT_MAIL_COMMANDS_MAX_LINES = 25
 # Is admin notified of admin requests immediately by mail, as well as by
 # daily pending-request reminder?
 DEFAULT_ADMIN_IMMED_NOTIFY = 1
+#
+# Is admin notified of subscribes/unsububscribes?
+#
+DEFAULT_ADMIN_NOTIFY_MCHANGES = 0
+
 DEFAULT_MODERATED = 0
 
 # Bounce if 'to' or 'cc' fields don't explicitly name list (anti-spam)?
@@ -269,4 +274,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 11
+DATA_FILE_VERSION = 12

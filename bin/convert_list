@@ -195,6 +195,7 @@ def main():
 
         for member in dmembers:
             AddMember(ml, member, 1, send_welcome_msg)
+	ml.Save()
         if send_changes_msg:
             SendExplanation(ml, nmembers + dmembers)
     finally:
