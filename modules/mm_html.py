@@ -44,8 +44,14 @@ class HTMLFormatter:
 	    return 'Sorry, not available over the web.'
 	if digest:
 	    people = filter(NotHidden, self.digest_members)
+	    num_concealed = len(self.digest_members) - len(people)
 	else:
 	    people = filter(NotHidden, self.members)
+	    num_concealed = len(self.digest_members) - len(people)
+ 	if (num_concealed > 0):
+	    concealed = "<br><em>(%d private)</em><br>" % num_concealed
+ 	else:
+ 	    concealed = ""
 
 	def FormatOneUser(person, me=self):
 	    import htmlformat, os
@@ -59,7 +65,8 @@ class HTMLFormatter:
 	items = map(FormatOneUser, people) 
 	# Just return the .Format() so this works until I finish
 	# converting everything to htmlformat...
-	return apply(htmlformat.UnorderedList, tuple(items)).Format()
+	return (apply(htmlformat.UnorderedList, tuple(items)).Format()
+		+ concealed)
 
     def FormatOptionButton(self, type, value, user):
 	users_val = self.GetUserOption(user, type)
