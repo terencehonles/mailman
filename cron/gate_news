@@ -20,7 +20,7 @@ import os
 import marshal
 import paths
 from Mailman import MailList
-import Mailman mm_cfg
+from Mailman import mm_cfg
 from Mailman import Utils
 
 
