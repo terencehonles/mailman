@@ -83,6 +83,8 @@ def UpdateOldVars(l, stored_state):
         delattr(l, "open_subscribe")
     if not hasattr(l, "administrivia"):
         setattr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
+    if not hasattr(l, "admin_member_chunksize"):
+        setattr(l, "admin_member_chunksize", mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE)
     if not hasattr(l, "posters_includes_members"):
         setattr(l, "posters_includes_members",
                 mm_cfg.DEFAULT_POSTERS_INCLUDES_MEMBERS)

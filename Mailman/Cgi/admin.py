@@ -494,8 +494,8 @@ def FormatMembershipOptions(lst):
     for member in lst.digest_members:
         digests[member] = 1
     all = lst.members + lst.digest_members
-    if len(all) > mm_cfg.ADMIN_MEMBER_CHUNKSIZE:
-        chunks = Utils.chunkify(all)
+    if len(all) > lst.admin_member_chunksize:
+        chunks = Utils.chunkify(all, lst.admin_member_chunksize)
         if not cgi_data.has_key("chunk"):
             chunk = 0
         else:

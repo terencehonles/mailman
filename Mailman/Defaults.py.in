@@ -213,7 +213,7 @@ PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
 # how many members to display at a time on the admin cgi to unsubscribe
 # them or change their options.
-ADMIN_MEMBER_CHUNKSIZE = 30
+DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
 
 
 # These directories are used to find various important files in the Mailman
@@ -271,4 +271,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 8
+DATA_FILE_VERSION = 9

@@ -406,7 +406,7 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
     return got
 
 
-def chunkify(members, chunksize=mm_cfg.ADMIN_MEMBER_CHUNKSIZE):
+def chunkify(members, chunksize=mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE):
      """
      return a list of lists of members
      """
