@@ -41,6 +41,11 @@ from Mailman.Utils import mkdir, open_ex
 # TBD: ugly, ugly, ugly -baw
 open = open_ex
 
+try:
+    import gzip
+except ImportError:
+    gzip = None
+
 
 def html_quote(s):
     repls = ( ('&', '&amp;'),
@@ -372,7 +377,7 @@ TOC_entry_template = '''\
               <A href="%(archive)s/author.html">[ Author ]</a>
               <A href="%(archive)s/date.html">[ Date ]</a>
             </td>
-            <td><A href="%(archive)s.txt.gz">[ Text ]</a></td>
+            <td><A href="%(archive)s.txt%(gzip)s">[ Text ]</a></td>
             </tr>
 
 '''
@@ -459,7 +464,11 @@ class HyperArchive(pipermail.T):
             d["archive_listing_start"] = self.arch_listing_start
             d["archive_listing_end"] = self.arch_listing_end
             for a in self.archives:
-                listing = listing + self.TOC_entry_tmpl % {"archive": a}
+                listing = listing + self.TOC_entry_tmpl % \
+                          {'archive': a,
+                           # only add .gz extension if gzip module was
+                           # imported
+                           'gzip': gzip and '.gz' or ''}
         d["archive_listing"] = listing
         return self.html_TOC_tmpl % d
 
@@ -803,29 +812,30 @@ class HyperArchive(pipermail.T):
             self.update_archive(i)
             archz=None
             archt=None
-            try:
-                import gzip
-                try: 
-                    archt=open(os.path.join(self.basedir,"%s.txt" % i),"r") 
-                    try: 
-                        os.rename(os.path.join(self.basedir,"%s.txt.gz" % i),
-                              os.path.join(self.basedir,"%s.old.txt.gz" % i))
-                        archz=gzip.open(os.path.join(self.basedir,"%s.old.txt.gz" % i),"r")
+            # only do this if the gzip module was imported globally
+            if gzip:
+                try:
+                    txtfile = os.path.join(self.basedir, '%s.txt' % i)
+                    gzipfile = os.path.join(self.basedir, '%s.txt.gz' % i)
+                    oldgzip = os.path.join(self.basedir, '%s.old.txt.gz' % i)
+
+                    archt = open(txtfile, 'r') 
+                    try:
+                        os.rename(gzipfile, oldgzip)
+                        archz = gzip.open(oldgzip)
                     except (IOError, RuntimeError, os.error):
                         pass
-                    newz=gzip.open(os.path.join(self.basedir,"%s.txt.gz" % i),"w") 
+                    newz = gzip.open(gzipfile, 'w') 
 		    if archz :
                         newz.write(archz.read())
                         archz.close()
-                        os.unlink(os.path.join(self.basedir,"%s.old.txt.gz" % i))
+                        os.unlink(oldgzip)
                     newz.write(archt.read())
                     newz.close()
                     archt.close()
-                    os.unlink(os.path.join(self.basedir,"%s.txt" % i))
+                    os.unlink(txtfile)
                 except IOError:
                     pass
-            except ImportError:
-                pass
         self._dirty_archives=[]
 
     def close(self):
