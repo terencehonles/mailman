@@ -162,7 +162,6 @@ def main():
             ChangeOptions(mlist, category, cgi_data, doc)
 	FormatConfiguration(doc, mlist, category, category_suffix, cgi_data)
 	print doc.Format(bgcolor="#ffffff")
-
     finally:
         mlist.Save()
         mlist.Unlock()
@@ -257,9 +256,9 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
         if k == category:
             label = v
 
-    doc.SetTitle('%s Administration' % mlist.real_name)
-    doc.AddItem(Center(Header(2, ('%s Mailing list Configuration - %s Section'
-                                  % (mlist.real_name, label)))))
+    doc.SetTitle('%s Administration (%s)' % (mlist.real_name, label))
+    doc.AddItem(Center(Header(2, '%s mailing list administration<br>%s'
+                              % (mlist.real_name, label + ' Section'))))
     doc.AddItem('<hr>')
 
     links_table = Table(valign="top")
@@ -280,7 +279,7 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
     these_links = UnorderedList()
     for k, v in CATEGORIES:
         if k == category:
-            these_links.AddItem("<b> =&gt; " + v + " &lt;= </b>")
+            these_links.AddItem("<em>" + v + "</em>")
         else:
             these_links.AddItem(Link("%s/%s" % 
 	                 (mlist.GetRelativeScriptURL('admin'),k),v))
