@@ -46,6 +46,7 @@ def Update(l, stored_state):
     # No worry about entirely new vars because InitVars() takes care of them.
     UpdateOldVars(l, stored_state)
     UpdateOldUsers(l)
+    CanonicalizeUserOptions(l)
 
 uniqueval = []
 def UpdateOldVars(l, stored_state):
@@ -163,6 +164,20 @@ def UpdateOldUsers(l):
         passwords[string.lower(k)] = v
     l.passwords = passwords
 
+
+def CanonicalizeUserOptions(l):
+    """Keys in user_options must be lower case."""
+    # pre 1.0rc2 to 1.0rc3.  For all keys in l.user_options to be lowercase,
+    # but merge options for both cases
+    options = {}
+    for k, v in l.user_options.items():
+        lcuser = string.lower(k)
+        flags = 0
+        if options.has_key(lcuser):
+            flags = options[lcuser]
+        flags = flags | v
+        options[lcuser] = flags
+    l.user_options = options
 
 def older(version, reference):
     """True if version is older than current.
