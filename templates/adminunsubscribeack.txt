@@ -1,9 +1,2 @@
-From %(mmowner)s
-From: %(mmowner)s
-To: %(admin_email)s
-Subject: %(listname)s Unsubscribe Notification
-
-
 %(member)s has been removed from %(listname)s.
-
 
