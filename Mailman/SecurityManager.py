@@ -71,16 +71,20 @@ class SecurityManager:
         """True if password is valid for site, list admin, or specific user."""
         if self.ValidAdminPassword(pw):
             return 1
+
         # We need to obtain the right letter-case translated version, if any:
         got = self.members.get(string.lower(user), None)
         if got == None:
             got = self.digest_members.get(string.lower(user), None)
-        if got == 0:                    # Found, and case translation unneeded:
-            normalized = user
-        elif got == None:               # Not found in either members dict:
+        if got == None:
+            # Not found in either members dict, resort to expensive FindUser.
             normalized = self.FindUser(user)
-        else:                           # Found, use case translation version:
+        elif type(got) == types.StringType:
+            # Found case translated version, use it:
             normalized = got
+        else:                           # Found, no case translation needed:
+            normalized = user
+
         try:
             # XXX  Huh??  Why eliminate password case info??  klm # 11/23/98.
             if (string.lower(pw) <> string.lower(self.passwords[normalized])):
