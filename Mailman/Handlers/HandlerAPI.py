@@ -64,7 +64,7 @@ LIST_PIPELINE = ['SpamDetect',
 
 # Central mail delivery handler
 def DeliverToList(mlist, msg, msgdata):
-    pipeline = msgdata.get('pipeline', LIST_PIPELINE)
+    pipeline = msgdata.get('pipeline', LIST_PIPELINE[:])
     while pipeline:
         modname = pipeline.pop(0)
         mod = __import__('Mailman.Handlers.' + modname)
