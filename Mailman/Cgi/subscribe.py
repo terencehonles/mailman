@@ -58,12 +58,13 @@ def main():
     error = 0
     results = ''
 
-    def call_script(which, pathinfo):
+    def call_script(which, pathinfo, list):
         "A little bit of a hack to call one of the scripts..."
         os.environ['PATH_INFO'] = string.join(pathinfo, '/')
-        file = os.path.join(mm_cfg.SCRIPTS_DIR, which)
         list.Unlock()
-        execfile(file)
+        pkg = __import__('Mailman.Cgi', globals(), locals(), [which])
+        mod = getattr(pkg, which)
+        mod.main()
         sys.exit(0)
 
     #######
@@ -92,7 +93,7 @@ def main():
             print doc.Format()
             list.Unlock()
             sys.exit(0)
-        call_script('options', [list._internal_name, member])
+        call_script('options', [list._internal_name, member], list)
     if not form.has_key("email"):
         error = 1
         results = results + "You must supply a valid email address.<br>"
