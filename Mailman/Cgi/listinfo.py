@@ -66,19 +66,7 @@ def main():
 
 def listinfo_overview(msg=''):
     # Present the general listinfo overview
-    #
-    # TBD: We need a portable way to determine the host by which we are being
-    # visited!  An absolute URL would do...
-    http_host = os.environ.get('HTTP_HOST', os.environ.get('SERVER_NAME'))
-    port = os.environ.get('SERVER_PORT')
-    # Strip off the port if there is one
-    if port and http_host[-len(port)-1:] == ':'+port:
-        http_host = http_host[:-len(port)-1]
-    if mm_cfg.VIRTUAL_HOST_OVERVIEW and http_host:
-        hostname = http_host
-    else:
-        hostname = mm_cfg.DEFAULT_HOST_NAME
-
+    hostname = Utils.get_domain()
     # Set up the document and assign it the correct language.  The only one we
     # know about at the moment is the server's default.
     doc = Document()
@@ -101,9 +89,9 @@ def listinfo_overview(msg=''):
         mlist = MailList.MailList(name, lock=0)
         if mlist.advertised:
             if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
-                    http_host and \
-                    http_host.find(mlist.web_page_url) == -1 and \
-                    mlist.web_page_url.find(http_host) == -1:
+                    hostname and \
+                    hostname.find(mlist.web_page_url) == -1 and \
+                    mlist.web_page_url.find(hostname) == -1:
                 # List is for different identity of this host - skip it.
                 continue
             else:
