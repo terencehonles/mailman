@@ -404,8 +404,11 @@ class LockFile:
         # unlink their temp file -- this doesn't wreck the locking algorithm,
         # but will leave temp file turds laying around, a minor inconvenience.
         winner = self.__read()
-        if winner:
-            os.unlink(winner)
+        try:
+            if winner:
+                os.unlink(winner)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
         # Now remove the global lockfile, which actually breaks the lock.
         try:
             os.unlink(self.__lockfile)
