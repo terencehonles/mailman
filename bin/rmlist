@@ -7,12 +7,33 @@
 MAILMAN_DIR='/home/mailman/mailman'
 HTML_DIR='/home/mailman/public_html'  
 
-echo "Removing list info."
-rm -rf ${MAILMAN_DIR}/lists/$1
-echo "Removing web pages."
-rm -rf ${MAILMAN_DIR}/templates/$1
-echo "Removing archives."
-rm -rf ${HTML_DIR}/archives/$1
-echo "Removing lock file."
-rm -rf ${MAILMAN_DIR}/locks/$1.lock
+removeArchives=""
+if [ "$1" = "-a" ]; then
+  shift
+  removeArchives=1
+fi
 
+if [ -z "$1" ]; then
+  echo "Usage: $0 [ -a ] list-name"
+  exit 1
+else
+  listname="$1"
+fi
+
+rmit () {
+  if [ -d "$2" ]; then
+    echo Removing "$1"
+    rm -rf "$2"
+  else
+    echo "$listname $1 not found"
+  fi
+}
+
+rmit "list info" "${MAILMAN_DIR}/lists/$listname"
+rmit "web pages" "${MAILMAN_DIR}/templates/$listname"
+if [ -n "$removeArchives" ]; then
+  rmit "archives" "${HTML_DIR}/archives/$listname"
+else
+  echo "Not removing archives - reinvoke with '-a' option to remove them."
+fi
+rmit "lock file" "${MAILMAN_DIR}/locks/$listname.lock"
