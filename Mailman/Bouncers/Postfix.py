@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,8 +20,8 @@ This also matches something called `Keftamail' which looks just like Postfix
 bounces with the word Postfix scratched out and the word `Keftamail' written
 in in crayon.
 
-It also matches something claiming to be `The BNS Postfix program'.
-/Everybody's/ gotta be different, huh?
+It also matches something claiming to be `The BNS Postfix program', and
+`SMTP_Gateway'.  /Everybody's/ gotta be different, huh?
 
 """
 
@@ -42,7 +42,8 @@ def flatten(msg, leaves):
 
 
 # are these heuristics correct or guaranteed?
-pcre = re.compile(r'[ \t]*the\s*(bns)?\s*(postfix|keftamail)', re.IGNORECASE)
+pcre = re.compile(r'[ \t]*the\s*(bns)?\s*(postfix|keftamail|smtp_gateway)',
+                  re.IGNORECASE)
 rcre = re.compile(r'failure reason:$', re.IGNORECASE)
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
