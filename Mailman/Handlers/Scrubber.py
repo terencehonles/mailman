@@ -71,10 +71,11 @@ def process(mlist, msg, msgdata=None):
     sanitize = mm_cfg.ARCHIVE_HTML_SANITIZER
     outer = 1
     for part in msg.walk():
+        ctype = part.get_type(part.get_default_type())
         # If the part is text/plain, we leave it alone
-        if part.get_type('text/plain') == 'text/plain':
+        if ctype == 'text/plain':
             pass
-        elif part.get_type() == 'text/html' and isinstance(sanitize, IntType):
+        elif ctype == 'text/html' and isinstance(sanitize, IntType):
             if sanitize == 0:
                 if outer:
                     raise DiscardMessage
@@ -117,9 +118,9 @@ URL: %(url)s
 An HTML attachment was scrubbed...
 URL: %(url)s
 """))
-        elif part.get_type() == 'message/rfc822':
+        elif ctype == 'message/rfc822':
             # This part contains a submessage, so it too needs scrubbing
-            submsg = part.get_payload()
+            submsg = part.get_payload(0)
             omask = os.umask(002)
             try:
                 url = save_attachment(mlist, part)
