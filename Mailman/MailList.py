@@ -1083,7 +1083,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# Deliver the mail.
 	recipients = self.members[:] 
 	if dont_send_to_sender:
-	    recipients.remove(sender)
+            try:
+                recipients.remove(sender)
+            #
+            # sender not in list (case sensitive username problem?)
+            #
+            except ValueError:
+                self.LogMsg("error",
+                            "couldn't remove %s from recipient list: %s",
+                            sender,
+                            str(recipients))
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
 	recipients = filter(DeliveryEnabled, recipients)
