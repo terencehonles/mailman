@@ -373,10 +373,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         Utils.ValidateEmail(admin)
         omask = os.umask(0)
         try:
-            try:
-                os.makedirs(os.path.join(mm_cfg.LIST_DATA_DIR, name), 02775)
-            except OSError:
-                raise Errors.MMUnknownListError
+            os.makedirs(os.path.join(mm_cfg.LIST_DATA_DIR, name), 02775)
         finally:
             os.umask(omask)
         self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
@@ -389,7 +386,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.available_languages = [self.preferred_language]
         else:
             self.available_languages = langs
-        self.Save()
+
         
 
     #
