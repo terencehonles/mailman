@@ -298,34 +298,21 @@ class Message:
     
     def getaddrlist(self, name):
         """Get a list of addresses from a header.
-        
-        Retrieves a list of addresses from a header, where each
-        address is a tuple as returned by getaddr().
-        """
-        # New, by Ben Escoto
-        try:
-            data = self[name]
-        except KeyError:
-            return []
-        a = AddrlistClass(data)
-        return a.getaddrlist()
-    
-    def getallrecipients(self):
-        """Returns a list of the all the recipient addresses.
 
-        This list is of 2-tuple elements as returned by getaddr(), but is a
-        collation of all the To: and Cc: headers found in the message.
+        Retrieves a list of addresses from a header, where each address is a
+        tuple as returned by getaddr().  Scans all named headers, so it works
+        properly with multiple To: or Cc: headers for example.
+
         """
-        rawrecips = []
-        for h in (self.getallmatchingheaders('to') +
-                  self.getallmatchingheaders('cc')):
+        raw = []
+        for h in self.getallmatchingheaders(name):
             i = string.find(h, ':')
             if i > 0:
-                rawrecips.append(string.strip(h[i+1:]))
-        alladdrs = string.join(rawrecips, ', ')
-        a = AddressList(alladdrs)
-        return a.addresslist
-
+                raw.append(string.strip(h[i+1:]))
+        alladdrs = string.join(raw, ', ')
+        a = AddrlistClass(alladdrs)
+        return a.getaddrlist()
+    
     def getdate(self, name):
         """Retrieve a date field from a header.
         
