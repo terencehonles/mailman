@@ -32,6 +32,7 @@ from types import StringType
 # XXX: obsolete, should use re module
 import regsub
 import random
+import urlparse
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -219,18 +220,28 @@ def GetPathPieces(path):
     return l
 
 
-_nesting_level = None
-def GetNestingLevel():
-    global _nesting_level
-    if _nesting_level == None:
-        try:
-            path = os.environ['PATH_INFO']
-            if path[0] <> '/': 
-                path= '/' + path
-            _nesting_level = string.count(path, '/')
-        except KeyError:
-            _nesting_level = 0
-    return _nesting_level
+def ScriptURL(target, web_page_url=mm_cfg.DEFAULT_URL, absolute=0):
+    """target - scriptname only, nothing extra
+    web_page_url - the list's configvar of the same name
+    absolute - a flag which if set, generates an absolute url
+    """
+    fullpath = os.environ.get('REQUEST_URI')
+    if fullpath is None:
+        fullpath = os.environ.get('SCRIPT_NAME', '') + \
+                   os.environ.get('PATH_INFO', '')
+    baseurl = urlparse.urlparse(web_page_url)[2]
+    if not absolute and fullpath[:len(baseurl)] == baseurl:
+        # Use relative addressing
+        fullpath = fullpath[len(baseurl):]
+        i = string.find(fullpath, '?')
+        if i > 0:
+            count = string.count(fullpath, '/', 0, i)
+        else:
+            count = string.count(fullpath, '/')
+        path = ('../' * count) + target
+    else:
+        path = web_page_url + target
+    return path + mm_cfg.CGIEXT
 
 
 
