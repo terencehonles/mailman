@@ -146,8 +146,11 @@ class Message(rfc822.Message):
         if self.__filebase is None:
             hashfood = text + mlist.internal_name() + `time.time()`
             self.__filebase = sha.new(hashfood).hexdigest()
-        msgfile = os.path.join(mm_cfg.QUEUE_DIR, self.__filebase + '.msg')
-        dbfile = os.path.join(mm_cfg.QUEUE_DIR, self.__filebase + '.db')
+        # calculate metadata from parameter list
+        newdata.update(kws)
+        whichq = newdata.get('_whichq', mm_cfg.INQUEUE_DIR)
+        msgfile = os.path.join(whichq, self.__filebase + '.msg')
+        dbfile = os.path.join(whichq, self.__filebase + '.db')
         # Initialize the information about this message delivery.  It's
         # possible a delivery attempt has been previously tried on this
         # message, in which case, we'll just update the data.
@@ -159,12 +162,11 @@ class Message(rfc822.Message):
         except (EOFError, ValueError, TypeError, IOError):
             msgdata = {'listname' : mlist.internal_name(),
                        'version'  : mm_cfg.QFILE_SCHEMA_VERSION,
-                       'filebase' : self.__filebase,
                        }
             existsp = 0
         # Merge in the additional msgdata
         msgdata.update(newdata)
-        msgdata.update(kws)
+        msgdata['filebase'] = self.__filebase
         # Get rid of volatile entries, which have the convention of starting
         # with an underscore (TBD: should we use v_ as a naming convention?).
         # Need the _dirty flag for later though.
@@ -172,16 +174,26 @@ class Message(rfc822.Message):
         for k in msgdata.keys():
             if k[0] == '_':
                 del msgdata[k]
-        # Write the data file
-        dbfp = Utils.open_ex(dbfile, 'w')
-        marshal.dump(msgdata, dbfp)
-        dbfp.close()
         # If it doesn't already exist, or if the text of the message has
         # changed, write the message file to disk.
         if not existsp or dirty:
             msgfp = Utils.open_ex(msgfile, 'w')
             msgfp.write(text)
             msgfp.close()
+        # Write the data file, first to a tmp file and then move it to the .db
+        # file.  Do this to avoid race conditions when re-queuing to another
+        # message queue.  We only need to do the .db files because Runner only
+        # looks at .db files.
+        tmpfile = dbfile + '.tmp'
+        dbfp = Utils.open_ex(tmpfile, 'w')
+        marshal.dump(msgdata, dbfp)
+        dbfp.close()
+        os.rename(tmpfile, dbfile)
+
+    def Requeue(self, mlist, newdata={}, **kws):
+        """Like Enqueing, but force a new filebase calculation."""
+        self.__filebase = None
+        self.Enqueue(mlist, newdata=newdata, **kws)
 
 
 
