@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = VERSION + "$Revision: 278 $"
+__version__ = VERSION + "$Revision: 279 $"
 
 		   # Many site-specific settings #
 
@@ -68,6 +68,7 @@ DEFAULT_BOUNCE_MATCHING_HEADERS = """
 to: friend@public.com
 message-id: relay.comanche.denmark.eu
 from: list@listme.com
+from: .*@uplinkpro.com
 """
 # Replies to posts inherently directed to list or original sender?
 DEFAULT_REPLY_GOES_TO_LIST = 0
