@@ -33,17 +33,24 @@ class MMBadEmailError(EmailAddressError):
 class MMHostileAddress(EmailAddressError):
     pass
 
+# Exception hierarchy for various authentication failures, can be
+# raised from functions in SecurityManager.py
+class MMAuthenticationError(Exception): pass
+class MMBadPasswordError(MMAuthenticationError): pass
+class MMPasswordsMustMatch(MMAuthenticationError): pass
+class MMCookieError(MMAuthenticationError): pass
+class MMExpiredCookieError(MMCookieError): pass
+class MMInvalidCookieError(MMCookieError): pass
+
 MMMustDigestError    = "MMMustDigestError"
 MMCantDigestError    = "MMCantDigestError"
 MMNotAMemberError    = "MMNotAMemberError"
 MMListNotReady       = "MMListNotReady"
 MMNoSuchUserError    = "MMNoSuchUserError"
-MMBadPasswordError   = "MMBadPasswordError"
 MMNeedApproval       = "MMNeedApproval"
 MMSubscribeNeedsConfirmation = "MMSubscribeNeedsConfirmation"
 MMBadConfirmation    = "MMBadConfirmation"
 MMAlreadyAMember     = "MMAlreadyAMember"
-MMPasswordsMustMatch = "MMPasswordsMustMatch"
 MMAlreadyDigested    = "MMAlreadyDigested"
 MMAlreadyUndigested  = "MMAlreadyUndigested"
 MMBadRequestId       = "MMBadRequestId"
