@@ -258,6 +258,9 @@ class Article(pipermail.Article):
         self.cenc = cenc.lower()
         self.decoded = {}
         charset = message.get_param('charset')
+        if isinstance(charset, types.TupleType):
+            # An RFC 2231 charset
+            charset = unicode(charset[2], charset[0])
         if charset:
             charset = charset.lower().strip()
             if charset[0]=='"' and charset[-1]=='"':
