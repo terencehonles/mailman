@@ -169,24 +169,16 @@ def maybe_forward(mlist, msg, msgdata, outq):
     # Does the list owner want to get non-matching bounce messages?
     # If not, simply discard it.
     if mlist.bounce_unrecognized_goes_to_list_owner:
-        recips = mlist.owner[:]
-        recips.extend(mlist.moderator)
-        # Wrap the message as an attachment
-        text = MIMEText(Utils.wrap(_("""\
+        mlist.ForwardMessage(
+            msg,
+            text=_("""\
 The attached message was received as a bounce, but either the bounce format
 was not recognized, or no member addresses could be extracted from it.  You,
 as the list administrators have requested to receive all unrecognized bounce
 messages.
 
-""")),
-                        _charset=Utils.GetCharSet(mlist.preferred_language))
-        attachment = MIMEMessage(msg)
-        notice = UserNotification(recips, mlist.GetBouncesEmail(),
-                                  _('Uncaught bounce notification'))
-        notice.set_type('multipart/mixed')
-        notice.attach(text)
-        notice.attach(attachment)
-        notice.send(mlist)
+"""),
+            subject=_('Uncaught bounce notification'))
         syslog('bounce', 'forwarding unrecognized, message-id: %s',
                msg.get('message-id', 'n/a'))
     else:
