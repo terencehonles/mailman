@@ -49,12 +49,13 @@ def main():
     listname = string.lower(parts[0])
     try:
         mlist = MailList.MailList(listname)
-    except (Errors.MMUnknownListError, Errors.MMListNotReady):
+        mlist.IsListInitialized()
+    except Errors.MMListError, e:
         doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold("%s: No such list." % listname))
+        doc.AddItem(Bold('No such list <em>%s</em>' % listname))
         print doc.Format(bgcolor="#ffffff")
+        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
         return
-
     try:
         process_form(mlist, doc)
     finally:

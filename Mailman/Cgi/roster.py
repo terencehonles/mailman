@@ -79,7 +79,6 @@ def main():
 
 def get_list():
     "Return list or bail out with error page."
-
     list_info = []
     try:
         list_info = Utils.GetPathPieces(os.environ['PATH_INFO'])
@@ -88,19 +87,20 @@ def get_list():
     if len(list_info) != 1:
         error_page("Invalid options to CGI script.")
         sys.exit(0)
-    list_name = string.lower(list_info[0])
+    listname = string.lower(list_info[0])
     try:
-        list = MailList.MailList(list_name, lock = 0)
-    except Errors.MMUnknownListError:
-        error_page("%s: No such list.", list_name)
+        mlist = MailList.MailList(listname, lock=0)
+        mlist.IsListInitialized()
+    except Errors.MMListError, e:
+        error_page('No such list <em>%s</em>' % listname)
+        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
         sys.exit(0)
-    if not list._ready:
-        error_page("%s: No such list.", list_name)
-        sys.exit(0)
-    return list
+    return mlist
+
 
 def error_page(errmsg, *args):
     print apply(error_page_doc, (errmsg,) + args).Format()
+
 
 def error_page_doc(errmsg, *args):
     """Produce a simple error-message page on stdout and exit.

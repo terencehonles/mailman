@@ -19,12 +19,13 @@
 
 # No lock needed in this script, because we don't change data.
 
+import sys
 import os
 import string
 
+from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
-from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman.htmlformat import *
 
@@ -45,8 +46,9 @@ def main():
     listname = string.lower(parts[0])
     try:
         mlist = MailList.MailList(listname, lock=0)
-    except (Errors.MMUnknownListError, Errors.MMListNotReady):
-        FormatListinfoOverview(error="List <em>%s</em> not found." % listname)
+    except Errors.MMListError, e:
+        FormatListinfoOverview('No such list <em>%s</em>' % listname)
+        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
         return
 
     FormatListListinfo(mlist)

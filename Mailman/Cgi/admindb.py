@@ -17,14 +17,17 @@
 """Produce and process the pending-approval items for a list."""
 
 import os
+import sys
 import string
 import types
 import cgi
 from errno import ENOENT
 
-from Mailman import Utils, MailList, Errors
-from Mailman.htmlformat import *
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import Errors
+from Mailman.htmlformat import *
 
 
 
@@ -60,8 +63,9 @@ def main():
     # now that we have the list name, create the list object
     try:
         mlist = MailList.MailList(listname)
-    except (Errors.MMUnknownListError, Errors.MMListNotReady):
-        handle_no_list(doc, 'No such list: <tt>%s</tt><p>' % listname)
+    except Errors.MMListError, e:
+        handle_no_list(doc, 'No such list <em>%s</em><p>' % listname)
+        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
         return
     #
     # now we must authorize the user to view this page, and if they are, to

@@ -21,9 +21,11 @@ import os
 import string
 import cgi
 
-from Mailman.htmlformat import *
-from Mailman import Utils, MailList, Errors
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import Errors
+from Mailman.htmlformat import *
 
 
 
@@ -65,10 +67,11 @@ def main():
 
     try:
         mlist = MailList.MailList(listname)
-    except (Errors.MMUnknownListError, Errors.MMListNotReady):
+    except Errors.MMListError, e:
         doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold("%s: No such list." % listname))
+        doc.AddItem(Bold('No such list <em>%s</em>' % listname))
         print doc.Format(bgcolor="#ffffff")
+        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
         return
 
     try:

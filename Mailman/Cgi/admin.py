@@ -18,6 +18,7 @@
 
 """
 
+import sys
 import os
 import cgi
 import string
@@ -65,8 +66,9 @@ def main():
     listname = string.lower(parts[0])
     try: 
         mlist = MailList.MailList(listname)
-    except (Errors.MMUnknownListError, Errors.MMListNotReady):
-            FormatAdminOverview(error="List <em>%s</em> not found." % listname)
+    except Errors.MMListError, e:
+            FormatAdminOverview('No such list <em>%s</em>' % listname)
+            sys.stderr.write('No such list "%s": %s\n' % (listname, e))
             return
     try:
         if len(parts) == 1:
@@ -141,13 +143,7 @@ def main():
             return
 
         if cgi_data.has_key('bounce_matching_headers'):
-            try:
-                pairs = mlist.parse_matching_header_opt()
-            except Errors.MMBadConfigError, line:
-                AddErrorMessage(doc,
-                                'Warning: bad matching-header line'
-                                ' (does it have the colon?)<ul> %s </ul>',
-                                line)
+            pairs = mlist.parse_matching_header_opt()
 
 	if not mlist.digestable and len(mlist.GetDigestMembers()):
 	    AddErrorMessage(doc,

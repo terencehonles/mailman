@@ -104,7 +104,7 @@ def main():
         doc.AddItem(Header(3, "You must specify a list."))
         print doc.Format(bgcolor="#FFFFFF")
         sys.exit(0)
-    list_name = string.lower(list_info[0])
+    listname = string.lower(list_info[0])
 
     # If it's a directory, we have to append index.html in this script.  We
     # must also check for a gzipped file, because the text archives are
@@ -117,14 +117,14 @@ def main():
         true_filename = true_filename + '.gz'
 
     try:
-        listobj = MailList.MailList(list_name, lock=0)
-    except Errors.MMUnknownListError:
-        listobj = None
-    if not (listobj and listobj._ready):
-        msg = "%s: No such list." % list_name
+        listobj = MailList.MailList(listname, lock=0)
+        listobj.IsListInitialized()
+    except Errors.MMListError, e:
+        msg = 'No such list <em>%s</em>' % listname
         doc.SetTitle("Private Archive Error - %s" % msg)
         doc.AddItem(Header(2, msg))
         print doc.Format(bgcolor="#FFFFFF")
+        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
         sys.exit(0)
 
     form = cgi.FieldStorage()
