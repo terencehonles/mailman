@@ -35,30 +35,58 @@ class ContentFilter(GUIBase):
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         return [
-            _('Policies concerning concerning the content of list traffic.'),
+            _("""Policies concerning concerning the content of list traffic.
+
+            <p>Content filtering works like this: when a message is
+            received by the list and you have enabled content filtering, the
+            individual attachments are first compared to the
+            <a href="?VARHELP=contentfilter/filter_mime_types">filter
+            types</a>.  If the attachment type matches an entry in the filter
+            types, it is discarded.
+
+            <p>Then, if there are <a
+            href="?VARHELP=contentfilter/pass_mime_types">pass types</a>
+            defined, any attachment type that does <em>not</em> match a
+            pass type is also discarded.  If there are no pass types defined,
+            this check is skipped.
+
+            <p>After this initial filtering, any <tt>multipart</tt>
+            attachments that are empty are removed.  If the outer message is
+            left empty after this filtering, then the whole message is
+            discarded.  Then, each <tt>multipart/alternative</tt> section will
+            be replaced by just the first alternative that is non-empty after
+            filtering.
+
+            <p>Finally, any <tt>text/html</tt> parts that are left in the
+            message may be converted to <tt>text/plain</tt> if
+            <a href="?VARHELP=contentfilter/convert_html_to_plaintext"</a> is
+            enabled and the site is configured to allow these conversions."""),
 
             ('filter_content', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _("""Should Mailman filter the content of list traffic according
              to the settings below?""")),
 
             ('filter_mime_types', mm_cfg.Text, (10, WIDTH), 0,
-             _("""Remove sections of messages that have a matching MIME
+             _("""Remove message attachments that have a matching content
              type."""),
              
-             _("""Use this option to remove each message section with a
-             matching MIME type.  Each line should contain a string naming a
-             MIME <tt>type/subtype</tt>, e.g. <tt>image/gif</tt>.  Leave off
-             the subtype to remove all parts with a matching MIME major type,
-             e.g. <tt>image</tt>.  Blank lines are ignored.
+             _("""Use this option to remove each message attachment that
+             matches one of these content types.  Each line should contain a
+             string naming a MIME <tt>type/subtype</tt>,
+             e.g. <tt>image/gif</tt>.  Leave off the subtype to remove all
+             parts with a matching major content type, e.g. <tt>image</tt>.
 
-             <p>After stripping message parts, any <tt>multipart</tt>
-             attachment that is empty as a result is removed all together.  If
-             the outer part's MIME type matches one of the strip types, or if
-             all of the outer part's subparts are stripped, then the whole
-             message is discarded.  Finally, each
-             <tt>multipart/alternative</tt> section will be replaced by just
-             the first alternative that is non-empty after the specified types
-             have been removed.""")),
+             <p>Blank lines are ignored.""")),
+
+            ('pass_mime_types', mm_cfg.Text, (10, WIDTH), 0,
+             _("""Remove message attachments that don't have a matching
+             content type.  Leave this field blank to skip this filter
+             test."""),
+
+             _("""Use this option to remove each message attachment that does
+             not have a matching content type.  Requirements and formats are
+             exactly like <a href="?VARHELP=contentfilter/filter_mime_types"
+             >filter_mime_types</a>.""")),
 
             ('convert_html_to_plaintext',
              mm_cfg.Radio, (_('No'), _('Yes')), 0,
@@ -68,18 +96,23 @@ class ContentFilter(GUIBase):
             ]
 
     def _setValue(self, mlist, property, val, doc):
-        if property == 'filter_mime_types':
+        if property in ('filter_mime_types', 'pass_mime_types'):
             types = []
-            for spectype in val.splitlines():
+            for spectype in [s.strip() for s in val.splitlines()]:
                 if 0 > spectype.count('/') > 1:
                     doc.addError(_('Bad MIME type ignored: %(spectype)s'))
                 else:
                     types.append(spectype.strip().lower())
-            mlist.filter_mime_types = types
+	    if property == 'filter_mime_types':
+                mlist.filter_mime_types = types
+	    elif property == 'pass_mime_types':
+                mlist.pass_mime_types = types
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
 
     def getValue(self, mlist, kind, property, params):
         if property == 'filter_mime_types':
             return NL.join(mlist.filter_mime_types)
+        if property == 'pass_mime_types':
+            return NL.join(mlist.pass_mime_types)
         return None
