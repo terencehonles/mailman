@@ -81,16 +81,6 @@ def sizeof(filename):
     return ' %d MB ' % (size / 1000000)
 
 
-article_text_template="""\
-From %(email)s  %(fromdate)s
-Date: %(datestr)s
-From: %(email)s (%(author)s)
-Subject: %(subject)s
-
-%(body)s
-
-"""
-
 article_template='''\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
@@ -201,7 +191,6 @@ class Article(pipermail.Article):
     _last_article_time = time.time()
 
     html_tmpl = article_template
-    text_tmpl = article_text_template
 
     # for compatibility with old archives loaded via pickle
     charset = mm_cfg.DEFAULT_CHARSET
@@ -394,12 +383,26 @@ class Article(pipermail.Article):
 	d = self.__dict__.copy()
         # We need to guarantee a valid From_ line, even if there are
         # bososities in the headers.
-        if not string.strip(d.get('fromdate')):
+        if not string.strip(d.get('fromdate', '')):
             d['fromdate'] = time.ctime(time.time())
-        if not string.strip(d.get('email')):
+        if not string.strip(d.get('email', '')):
             d['email'] = 'bogus@does.not.exist.com'
-	d['body'] = string.join(self.body, '')
-        return self.text_tmpl % d
+        if not string.strip(d.get('datestr', '')):
+            d['datestr'] = time.ctime(time.time())
+        #
+        headers = ['From %(email)s  %(fromdate)s',
+                 'From: %(email)s (%(author)s)',
+                 'Date: %(datestr)s',
+                 'Subject: %(subject)s']
+        if d['_in_reply_to']:
+            headers.append('In-Reply-To: %(_in_reply_to)s')
+        if d['_references']:
+            headers.append('References: %(_references)s')
+        if d['_message_id']:
+            headers.append('Message-ID: %(_message_id)s')
+        return string.join(headers, '\n') % d + \
+               '\n\n' + \
+               string.join(self.body, '')
 
     def _set_date(self, message):
         self.__super_set_date(message)
