@@ -22,6 +22,7 @@ import string
 import re
 import socket
 
+from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
 
@@ -38,8 +39,8 @@ def process(mlist, msg, msgdata):
     if not mlist.nntp_host:
         error.append('no NNTP host')
     if error:
-        mlist.LogMsg('NNTP gateway improperly configured: ' +
-                     string.join(error, ', '))
+        syslog('NNTP gateway improperly configured: ' +
+               string.join(error, ', '))
         return
     # Fork in case the nntp connection hangs.
     pid = os.fork()
@@ -132,11 +133,11 @@ def do_child(mlist, msg):
             conn = nntplib.NNTP(mlist.nntp_host, readermode=1)
             conn.post(fp)
         except nntplib.error_temp, e:
-            mlist.LogMsg('error', '(ToUsenet) NNTP error for list "%s": %s' %
-                         (mlist.internal_name(), e))
+            syslog('error', '(ToUsenet) NNTP error for list "%s": %s' %
+                   (mlist.internal_name(), e))
         except socket.error, e:
-            mlist.LogMsg('error', '(ToUsenet) socket error for list "%s": %s'
-                         % (mlist.internal_name(), e))
+            syslog('error', '(ToUsenet) socket error for list "%s": %s'
+                   % (mlist.internal_name(), e))
     finally:
         if conn:
             conn.quit()

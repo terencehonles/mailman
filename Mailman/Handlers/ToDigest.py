@@ -25,9 +25,11 @@ and injecting it into the pipeline.
 import os
 import string
 import re
+
 from Mailman import Utils
 from Mailman import Message
 from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
 
 from stat import ST_SIZE
 from errno import ENOENT
@@ -112,8 +114,8 @@ def process(mlist, msg, msgdata):
     except OSError, e:
         code, msg = e
         if code == ENOENT:
-            mlist.LogMsg('error', 'Lost digest file: %s' % digestfile)
-            mlist.LogMsg('error', str(e))
+            syslog('error', 'Lost digest file: %s' % digestfile)
+            syslog('error', str(e))
     
 
 
@@ -147,11 +149,11 @@ def inject_digest(mlist, digestfile, topicsfile):
     text_recips = filter(hates_mime_p, recipients)
     #
     # log this digest injection
-    mlist.LogMsg('digest',
-                 '%s v %d - %d msgs, %d recips (%d mime, %d text, %d disabled)'
-                 % (mlist.real_name, mlist.next_digest_number, topicscount,
-                    len(digestmembers), len(mime_recips), len(text_recips),
-                    len(digestmembers) - len(recipients)))
+    syslog('digest',
+           '%s v %d - %d msgs, %d recips (%d mime, %d text, %d disabled)' %
+           (mlist.real_name, mlist.next_digest_number, topicscount,
+            len(digestmembers), len(mime_recips), len(text_recips),
+            len(digestmembers) - len(recipients)))
     # do any deliveries
     if mime_recips or text_recips:
         digest = Digest(mlist, topicsdata, fp.read())
@@ -169,9 +171,9 @@ def inject_digest(mlist, digestfile, topicsfile):
     os.unlink(topicsfile)
     mlist.next_digest_number = mlist.next_digest_number + 1
     mlist.next_post_number = 1
-    mlist.LogMsg('digest', 'next %s digest: #%d, post#%d' %
-                 (mlist.internal_name(), mlist.next_digest_number,
-                  mlist.next_post_number))
+    syslog('digest', 'next %s digest: #%d, post#%d' %
+           (mlist.internal_name(), mlist.next_digest_number,
+            mlist.next_post_number))
 
 
 

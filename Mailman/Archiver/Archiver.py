@@ -33,6 +33,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Mailbox
 from Mailman import LockFile
+from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
 
@@ -165,9 +166,8 @@ class Archiver:
                 mbox.AppendMessage(post)
                 mbox.fp.close()
             except IOError, msg:
-                self.LogMsg('error',
-                            'Archive file access failure:\n\t%s %s' %
-                            (afn, msg))
+                syslog('error', 'Archive file access failure:\n\t%s %s' %
+                       (afn, msg))
                 raise
         finally:
             if self.clobber_date:
@@ -181,9 +181,8 @@ class Archiver:
         extarch.write(txt)
         status = extarch.close()
         if status:
-            self.LogMsg('error',
-                        'external archiver non-zero exit status: %d\n' %
-                        (status & 0xff00) >> 8)
+            syslog('error', 'external archiver non-zero exit status: %d\n' %
+                   (status & 0xff00) >> 8)
 
     #
     # archiving in real time  this is called from list.post(msg)

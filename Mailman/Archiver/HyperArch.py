@@ -44,6 +44,7 @@ import HyperDatabase
 import pipermail
 
 from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
 
 from Mailman.Utils import mkdir, open_ex
 # TBD: ugly, ugly, ugly -baw
@@ -612,9 +613,9 @@ class HyperArchive(pipermail.T):
         # crashed during archiving. Save it, log an error, and move on. 
 	try:
             wf=open(wname,'r')
-            self.maillist.LogMsg("error","Archive working file %s present. "
-                                 "Check %s for possibly unarchived msgs"
-                                 % (wname,ename))
+            syslog("error","Archive working file %s present. "
+                   "Check %s for possibly unarchived msgs"
+                   % (wname,ename))
             ef=open(ename, 'a+')
             ef.seek(1,2)
             if ef.read(1) <> '\n':
