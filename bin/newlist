@@ -156,8 +156,10 @@ def main():
                 mlist.Create(listname, owner_mail, pw)
             finally:
                 os.umask(oldmask)
-        except Errors.MMBadEmailError:
-            usage(1, _('Bad owner email address: %(owner_mail)s'))
+        except Errors.BadListNameError, s:
+            usage(1, _('Illegal list name: %(s)s'))
+        except Errors.MMBadEmailError, s:
+            usage(1, _('Bad owner email address: %(s)s'))
         except Errors.MMListAlreadyExistsError:
             usage(1, _('List already exists: %(listname)s'))
 
