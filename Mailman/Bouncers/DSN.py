@@ -24,6 +24,8 @@ from email.Iterators import typed_subpart_iterator
 from email.Utils import parseaddr
 from cStringIO import StringIO
 
+from Mailman.BouncerAPI import Stop
+
 
 
 def check(msg):
@@ -43,13 +45,10 @@ def check(msg):
             # that for other purposes :(
             #
             # Also grok out Action so we can do something with that too.
-            action = msgblock.get('action', '')
-            # BAW: Should we treat delayed bounces the same?  Yes, because if
-            # the transient problem clears up, they should get unbounced.  The
-            # other problem is what to do about a DSN that has both delayed
-            # and failed actions in multiple header blocks?  We're not
-            # architected to handle that. ;/
-            if action.lower() not in ('failed', 'failure', 'delayed'):
+            action = msgblock.get('action', '').lower()
+            if action == 'delayed':
+                return Stop
+            if action not in ('failed', 'failure'):
                 # Some non-permanent failure, so ignore this block
                 continue
             params = []
