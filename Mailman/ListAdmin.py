@@ -378,7 +378,9 @@ class ListAdmin:
         elif value == mm_cfg.DISCARD:
             pass
         elif value == mm_cfg.REJECT:
-            self.__refuse(_('Subscription request'), addr, comment, lang=lang)
+            self.__refuse(_('Subscription request'), addr,
+                          comment or _('[No reason given]'),
+                          lang=lang)
         else:
             # subscribe
             assert value == mm_cfg.SUBSCRIBE
