@@ -47,3 +47,10 @@ sys.path.insert(0, os.path.join(prefix, 'pythonlib'))
 sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
                        'site-packages')
 sys.path.append(sitedir)
+
+
+# In a normal interactive Python environment, the japanese.pth and korean.pth
+# files would be imported automatically.  But because we inhibit the importing
+# of the site module, we need to be explicit about importing these codecs.
+import japanese
+import korean
