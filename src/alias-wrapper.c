@@ -2,7 +2,7 @@
 
 
 const int  LEGAL_PARENT_UID = 9001;  /* mailman's UID */
-const int  LEGAL_PARENT_GID = 4130; /* mailman's GID */
+const int  LEGAL_PARENT_GID = 6; /* mailman's GID */
 
 const char* SENDMAIL_CMD = "/usr/sbin/sendmail";
 const char* ALIAS_FILE   = "/etc/aliases";
