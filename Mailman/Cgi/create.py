@@ -196,7 +196,8 @@ def process_request(doc, cgidata):
         hostname = Utils.get_domain()
         mlist.default_member_moderation = moderate
         mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % hostname
-        mlist.host_name = mm_cfg.VIRTUAL_HOSTS.get(hostname, hostname)
+        mlist.host_name = mm_cfg.VIRTUAL_HOSTS.get(
+            hostname, mm_cfg.DEFAULT_EMAIL_HOST)
         mlist.Save()
     finally:
         # Now be sure to unlock the list.  It's okay if we get a signal here
