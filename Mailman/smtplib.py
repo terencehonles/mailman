@@ -30,10 +30,14 @@ from socket import *
 import string, types
 
 ## DEBUG ...
-#import sys
-#from Mailman.Logging.StampedLogger import StampedLogger
-#sys.error = StampedLogger("debug", label = 'smtplib', manual_reprime=1)
-#sys.error.write("smtplib got debug\n")
+## import sys
+## try:
+##     from Mailman.Logging.StampedLogger import StampedLogger
+##     sys.error = StampedLogger("debug", label = 'smtplib', manual_reprime=1)
+##     sys.error.write("smtplib got debug\n")
+##     sys.error.flush()
+## except:
+##     pass
 ## ... DEBUG
 
 SMTP_PORT = 25
@@ -118,9 +122,9 @@ class SmtpConnection:
 
     def getresp(self, impunity=0):
 	resp = self.getmultiline()
+	self.lastresp = resp[:3]
         if impunity:
             return resp
-	self.lastresp = resp[:3]
 	c = resp[:1]
 	if c == '4':
 	    raise error_temp, resp
