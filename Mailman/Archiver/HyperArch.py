@@ -71,10 +71,20 @@ def url_quote(s):
 def null_to_space(s):
     return string.replace(s, '\000', ' ')
 
+def sizeof(filename):
+    size = os.path.getsize(filename)
+    if size < 1000:
+        return ' %d bytes ' % size
+    elif size < 1000000:
+        return ' %d KB ' % (size / 1000)
+    # GB?? :-)
+    return ' %d MB ' % (size / 1000000)
+
+
 article_text_template="""\
 From %(email)s  %(fromdate)s
 Date: %(datestr)s
-From: %(author)s %(email)s
+From: %(email)s (%(author)s)
 Subject: %(subject)s
 
 %(body)s
@@ -382,7 +392,13 @@ class Article(pipermail.Article):
     
     def as_text(self):
 	d = self.__dict__.copy()
-	d["body"] = string.join(self.body, "")
+        # We need to guarantee a valid From_ line, even if there are
+        # bososities in the headers.
+        if not string.strip(d.get('fromdate')):
+            d['fromdate'] = time.ctime(time.time())
+        if not string.strip(d.get('email')):
+            d['email'] = 'bogus@does.not.exist.com'
+	d['body'] = string.join(self.body, '')
         return self.text_tmpl % d
 
     def _set_date(self, message):
@@ -486,7 +502,9 @@ TOC_template='''\
   <BODY BGCOLOR="#ffffff">
      <h1>The %(listname)s Archives </h1>
      <p>
-      <a href="%(listinfo)s">More info on this list...</a>
+      You can get <a href="%(listinfo)s">more information about this list</a>
+      or you can <a href="%(fullarch)s">download the full raw archive</a>
+      (%(size)s).
      </p>
      %(noarchive_msg)s
      %(archive_listing_start)s
@@ -616,8 +634,13 @@ class HyperArchive(pipermail.T):
         return self.html_hdr_tmpl % d
 
     def html_TOC(self):
+        listname = self.maillist.internal_name()
+        mbox = os.path.join(self.maillist.archive_directory+'.mbox',
+                            listname+'.mbox')
         d = {"listname": self.maillist.real_name,
-             "listinfo": self.maillist.GetScriptURL('listinfo', absolute=1)
+             "listinfo": self.maillist.GetScriptURL('listinfo', absolute=1),
+             "fullarch": '../%s.mbox/%s.mbox' % (listname, listname),
+             "size": sizeof(mbox),
              }
         if not self.archives:
             d["noarchive_msg"] = '<P>Currently, there are no archives. </P>'
@@ -657,21 +680,10 @@ class HyperArchive(pipermail.T):
             file = None
         # in Python 1.5.2 we have an easy way to get the size
         if file:
-            try:
-                size = os.path.getsize(file)
-            except AttributeError:
-                # getsize() probably does this anyway ;-)
-                size = os.stat(file)[6]
-            if size < 1000:
-                sz = ' %d bytes ' % size
-            elif size < 1000000:
-                sz = ' %d KB ' % (size / 1000)
-            else:
-                sz = ' %d MB ' % (size / 1000000)
-                # GB?? :-)
             textlink = templ % {'url': url,
                                 'fmt': fmt,
-                                'sz' : sz}
+                                'sz' : sizeof(file),
+                                }
         else:
             # there's no archive file at all... hmmm.
             textlink = ''
@@ -903,7 +915,7 @@ class HyperArchive(pipermail.T):
 
         # Write the text article to the text archive.
         path = os.path.join(self.basedir, "%s.txt" % index)
-        f =open_ex(path, 'a+')
+        f = open_ex(path, 'a+')
         f.write(article.as_text())
         f.close()
 
