@@ -19,7 +19,9 @@ INTRODUCTION
     core contributors being: Barry Warsaw, Ken Manheimer, Scott
     Cotton, Harald Meland, and John Viega.  Version 1.0 and beyond
     have been primarily maintained by Barry Warsaw with contributions
-    from many; see the ACKNOWLEDGMENTS file for details.
+    from many; see the ACKNOWLEDGMENTS file for details.  Jeremy
+    Hylton has helped considerably with the Pipermail code in Mailman
+    2.0.
 
     The Mailman home page is
 
@@ -33,6 +35,8 @@ INTRODUCTION
     from
 
         http://www.python.org
+
+    It should work fine with Python 1.6 and 2.0 (final or beta).
 
     You will also need an ANSI C compiler; gcc (the GNU C compiler)
     works just fine.  Mailman currently works only on Unix-alike
