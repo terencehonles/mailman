@@ -1,4 +1,4 @@
-# Copyright (C) 2000 by the Free Software Foundation, Inc.
+# Copyright (C) 2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@ import sys
 import gettext
 
 from Mailman import mm_cfg
-from Mailman.Utils import SafeDict
+from Mailman.SafeDict import SafeDict
 
 
 
