@@ -727,6 +727,8 @@ HOLD_MESSAGES_AS_PICKLES = 1
 # format is a dumb repr()-based format with "key = value" Python assignments.
 # It is human readable and editable (as Python source code) and is appropriate
 # for execfile() food.
+#
+# Note!  Make sure your queues are empty before you change this.
 METAFMT_MARSHAL      = 1
 METAFMT_BSDDB_NATIVE = 2
 METAFMT_ASCII        = 3
