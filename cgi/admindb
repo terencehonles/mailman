@@ -1,5 +1,9 @@
 #!/usr/local/bin/python
 
+"""Produce and process the pending-approval items for a list."""
+
+__version__ = "$Revision: 384 $"
+
 import sys
 sys.path.append('/home/mailman/mailman/modules')
 
