@@ -9,13 +9,13 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = VERSION + "$Revision: 225 $"
+__version__ = VERSION + "$Revision: 244 $"
 
 		   # Many site-specific settings #
 
 MAILMAN_URL       = 'http://www.python.org/ftp/python/contrib/Network/mailman/'
 DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.OR.HOST.NAME'
-SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s' # yours may be different
+SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'     # yours may be different
 DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
 ARCHIVE_URL       = 'http://www.OVERRIDE.WITH.YOUR.ARCHIVE.DIR/'
 # Once we know our home directory we can figure out the rest.
@@ -113,10 +113,12 @@ DEFAULT_BOUNCE_PROCESSING = 1
 # we consider nuking it..
 DEFAULT_MINIMUM_REMOVAL_DATE = 5
 # Minimum number of bounced posts to the list before we consider nuking it.
-DEFAULT_MINIMUM_POST_COUNT_BEFORE_REMOVAL = 3
-# 0 means no, 1 means yes but send admin a report,
-# 2 means nuke 'em all and don't tell me (whee:)
-DEFAULT_AUTOMATICALLY_REMOVE = 0
+DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION = 3
+# 0 means do nothing
+# 1 means disable and send admin a report,
+# 2 means nuke'em (remove) and send admin a report,
+# 3 means nuke 'em and don't report (whee:)
+DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
 # Maximum number of posts that can go by w/o a bounce before we figure your
 # problem must have gotten resolved...  usually this could be 1, but we
 # need to account for lag time in getting the error messages.  I'd set this
