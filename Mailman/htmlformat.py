@@ -539,23 +539,13 @@ def MailmanLogo():
     if mm_cfg.IMAGE_LOGOS:
         def logo(file):
             return mm_cfg.IMAGE_LOGOS + file
-        mmlink = Link(MAILMAN_URL,
-                      '<img src="%s" alt="Delivered by Mailman" border=0>'
-                      '<br>version %s'
-                      % (logo(DELIVERED_BY), mm_cfg.VERSION))
-        pylink = Link(PYTHON_URL,
-                      '<img src="%s" alt="Python Powered" border=0>' %
-                      logo(PYTHON_POWERED))
-        gnulink = Link(GNU_URL,
-                       '<img src="%s" alt="GNU\'s Not Unix" border=0>' %
-                       logo(GNU_HEAD))
-        text = Container(Link(MAILMAN_URL, _('Mailman home page')),
-                         '<br>',
-                         Link(PYTHON_URL, _('Python home page')),
-                         '<br>',
-                         Link(GNU_URL, _('GNU home page')),
-                         )
-        t.AddRow([mmlink, pylink, gnulink, text])
+        mmlink = '<img src="%s" alt="Delivered by Mailman" border=0>' \
+                 '<br>version %s' % (logo(DELIVERED_BY), mm_cfg.VERSION)
+        pylink = '<img src="%s" alt="Python Powered" border=0>' % \
+                 logo(PYTHON_POWERED)
+        gnulink = '<img src="%s" alt="GNU\'s Not Unix" border=0>' % \
+                  logo(GNU_HEAD)
+        t.AddRow([mmlink, pylink, gnulink])
     else:
         # use only textual links
         version = mm_cfg.VERSION
