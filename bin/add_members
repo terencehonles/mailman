@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -60,7 +60,6 @@ Where:
 
 You must supply at least one of -n and -d options.  At most one of the
 files can be `-'.
-
 """
 
 import sys
@@ -73,7 +72,6 @@ from Mailman import Utils
 from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
-from Mailman.Handlers import HandlerAPI
 from Mailman.i18n import _
 
 
@@ -113,10 +111,8 @@ def SendExplanation(mlist, users):
          }
     text = Utils.maketext('convert.txt', d)
     subject = _('Big change in %(listname)s@%(listhost)s mailing list') % d
-    msg = Message.OutgoingMessage(text)
-    msg['From'] = adminaddr
-    msg['Subject'] = subject
-    HandlerAPI.DeliverToUser(mlist, msg, {'recips': users})
+    msg = Message.UserNotification(users, adminaddr, subject, text)
+    msg.send(mlist)
 
 
 
