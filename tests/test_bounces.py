@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -39,6 +39,7 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'simple_02.txt', ['chris.ggggmmmm@usa.net']),
         ('SimpleMatch', 'simple_04.txt', ['claird@starbase.neosoft.com']),
         ('SimpleMatch', 'newmailru_01.txt', ['zzzzz@newmail.ru']),
+        ('SimpleMatch', 'hotpot_01.txt', ['allensmithee@hotpop.com']),
         # SimpleWarning
         ('SimpleWarning', 'simple_03.txt', ['jacobus@geo.co.za']),
         # GroupWise
