@@ -24,7 +24,7 @@ warning header, or pass it through, depending on the user's preferences.
 
 from Mailman import mm_cfg
 
-from email.Utils import getaddresses
+from email.Utils import getaddresses, formataddr
 
 
 
@@ -33,15 +33,29 @@ def process(mlist, msg, msgdata):
     # Short circuit
     if not recips:
         return
-    # Figure out the set of explicit recipients
+    # Seed this set with addresses we don't care about dup avoiding
     explicit_recips = {}
+    listaddrs = [mlist.GetListEmail(), mlist.GetBouncesEmail(),
+                 mlist.GetOwnerEmail(), mlist.GetRequestEmail()]
+    for addr in listaddrs:
+        explicit_recips[addr] = 1
+    # Figure out the set of explicit recipients
+    ccaddrs = {}
     for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-        for name, addr in getaddresses(msg.get_all(header, [])):
+        addrs = getaddresses(msg.get_all(header, []))
+        if header == 'cc':
+            for name, addr in addrs:
+                ccaddrs[addr] = name, addr
+        for name, addr in addrs:
             if not addr:
                 continue
+            # Ignore the list addresses for purposes of dup avoidance
             explicit_recips[addr] = 1
+    # Now strip out the list addresses
+    for addr in listaddrs:
+        del explicit_recips[addr]
     if not explicit_recips:
-        # No one was explicitly addressed, so we can do any dup collapsing
+        # No one was explicitly addressed, so we can't do any dup collapsing
         return
     newrecips = []
     for r in recips:
@@ -60,6 +74,8 @@ def process(mlist, msg, msgdata):
             if send_duplicate:
                 msgdata.setdefault('add-dup-header', {})[r] = 1
                 newrecips.append(r)
+            elif ccaddrs.has_key(r):
+                del ccaddrs[r]
         else:
             # Otherwise, this is the first time they've been in the recips
             # list.  Add them to the newrecips list and flag them as having
@@ -67,3 +83,6 @@ def process(mlist, msg, msgdata):
             newrecips.append(r)
     # Set the new list of recipients
     msgdata['recips'] = newrecips
+    del msg['cc']
+    for item in ccaddrs.values():
+        msg['cc'] = formataddr(item)
