@@ -228,21 +228,19 @@ def admin_overview(msg=''):
         greeting = _("Welcome!")
 
     welcome = []
+    mailmanlink = Link(mm_cfg.MAILMAN_URL, _('Mailman')).Format()
     if not advertised:
         welcome.extend([
             greeting,
-            _('<p>There currently are no publicly-advertised '),
-            Link(mm_cfg.MAILMAN_URL, _('Mailman')),
-            _(' mailing lists on %(hostname)s.'),
+            _('''<p>There currently are no publicly-advertised %(mailmanlink)s
+            mailing lists on %(hostname)s.'''),
             ])
     else:
         welcome.extend([
             greeting,
-            _('<p>Below is the collection of publicly-advertised '),
-            Link(mm_cfg.MAILMAN_URL, _('Mailman')),
-            _(' mailing lists on %(hostname)s.'),
-            _(''' Click on a list name to visit the configuration pages for
-            that list.'''),
+            _('''<p>Below is the collection of publicly-advertised
+            %(mailmanlink)s mailing lists on %(hostname)s.  Click on a list
+            name to visit the configuration pages for that list.'''),
             ])
 
     creatorurl = Utils.ScriptURL('create')
