@@ -32,7 +32,6 @@ pcre = re.compile(r'The following recipients did not receive your message:',
 acre = re.compile(r'<(?P<addr>[^>]*)>')
 
 
-
 
 def process(msg):
     if msg.gettype() <> 'multipart/report' or \
