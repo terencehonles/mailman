@@ -1,6 +1,6 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 396 $"
+__version__ = "$Revision: 445 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string
@@ -185,10 +185,26 @@ From: %s
 Subject: Contents of %s digest, Volume %d #%d
 Date: %s
 
+When replying, please edit your Subject line so it is more specific than
+"Re: Contents of %s digest..."
+
+Send %s maillist submissions to
+	%s
+To subscribe or unsubscribe via the web, visit
+	%s
+or send email to %s
+
 Topics for this digest:
 %s
-''' % (self._mime_separator, msg.GetSender(), self.real_name, self.volume, 
-            self.next_digest_number, time.ctime(time.time()), topics_text)
+''' %  (self._mime_separator,
+        msg.GetSender(),
+        self.real_name, self.volume, self.next_digest_number,
+        time.ctime(time.time()),
+        self.real_name, self.GetListEmail(),
+        self.real_name,
+        self.GetScriptURL('listinfo'),
+        self.GetRequestEmail(),
+        topics_text)
 
         if self.digest_header:
 	    digest_header = digest_header + (self.digest_header

@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = "$Revision: 423 $"
+__version__ = "$Revision: 445 $"
 
 		   # Many site-specific settings #
 
@@ -21,8 +21,10 @@ DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
 PUBLIC_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PUBLIC.ARCHIVE.URL/'
 PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
 # Once we know our home directory we can figure out the rest.
-HOME_DIR	  = '/home/mailman'		# Override if you change
-MAILMAN_DIR       = '/home/mailman/mailman'	# Override if you change
+# BUT, if you override these in mm_cfg.py, you have to override the dependants
+#      as well.
+HOME_DIR	  = '/home/mailman'
+MAILMAN_DIR       = '/home/mailman/mailman'
 LIST_DATA_DIR     = os.path.join(MAILMAN_DIR, 'lists')
 HTML_DIR	  = os.path.join(HOME_DIR, 'public_html')
 CGI_DIR           = os.path.join(HOME_DIR, 'cgi-bin')
