@@ -142,8 +142,10 @@ WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
 # list's listinfo page, and on the list's admin page.
 #
 # This should be a string with "%(listname)s" somewhere in it.  Mailman will
-# interpolate the name of the list into this.
-PUBLIC_ARCHIVE_URL  = '/pipermail/%(listname)s'
+# interpolate the name of the list into this.  You can also include a
+# "%(hostname)s" in the string, into which Mailman will interpolate
+# the host name (usually DEFAULT_URL_HOST).
+PUBLIC_ARCHIVE_URL = 'http://%(hostname)s/pipermail/%(listname)s'
 
 # Are archives on or off by default?
 DEFAULT_ARCHIVE = 1                               # 0=Off, 1=On
@@ -192,6 +194,24 @@ PRIVATE_EXTERNAL_ARCHIVER = 0
 # Errors.DiscardMessage if it wants to throw the message away.  Otherwise it
 # should modify the Message object as necessary.
 ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
+
+# This variable defines what happens to text/html subparts.  They can be
+# stripped completely, escaped, or filtered through an external program.  The
+# legal values are:
+# 0 - Strip out text/html parts completely, leaving a notice of the removal in
+#     the message.  If the outer part is text/html, the entire message is
+#     discarded.
+# 1 - Remove any embedded text/html parts, leaving them as HTML-escaped
+#     attachments which can be separately viewed.  Outer text/html parts are
+#     simply HTML-escaped.
+#
+# The value can also be a string, in which case it is the name of a command to
+# filter the HTML page through.  The resulting output is left in an attachment
+# or as the entirety of the message when the outer part is text/html.  The
+# format of the string must include a "%(filename)s" which will contain the
+# name of the temporary file that the program should operate on.  It should
+# write the processed message to stdout.
+ARCHIVE_HTML_SANITIZER = '/usr/bin/lynx -dump %(filename)s'
 
 # Set this to 1 to enable gzipping of the downloadable archive .txt file.
 # Note that this is /extremely/ inefficient, so an alternative is to just
