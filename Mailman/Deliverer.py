@@ -183,6 +183,7 @@ class Deliverer:
                             text = text,
                             add_headers=["Errors-To: %s"
                                          % self.GetAdminEmail(),
-                                         "X-No-Archive: yes"])
+                                         "X-No-Archive: yes",
+                                         "Precedence: bulk"])
         if not ok:
              raise Errors.MMBadUserError
