@@ -18,10 +18,11 @@ import sys
 import traceback
 
 
-def __logexc(logger=None, msg=''):
+def _logexc(logger=None, msg=''):
     sys.__stderr__.write('Logging error: %s\n' % logger)
     traceback.print_exc(file=sys.__stderr__)
     sys.__stderr__.write('Original log message:\n%s\n' % msg)
+
 
 def LogStdErr(category, label, manual_reprime=1, tee_to_stdout=1):
     """Establish a StampedLogger on sys.stderr if possible.  sys.stdout
