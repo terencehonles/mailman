@@ -520,7 +520,7 @@ def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
     if dict is not None:
         try:
             text = template % SafeDict(dict)
-        except TypeError:
+        except (TypeError, ValueError):
             # The template is really screwed up
             pass
     if raw:
