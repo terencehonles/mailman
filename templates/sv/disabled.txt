@@ -1,5 +1,5 @@
 Ditt medlemskap på e-postlistan %(listname)s är för närvarande avaktiverat 
-på grund av för många returmeddelanden från din e-postadress. Du kommer
+%(reason)s. Du kommer
 inte att få ta emot fler meddelanden från denna lista förrän du aktiverar 
 ditt medlemskap igen. Du kommer att få %(noticesleft)s påminnelser som denna 
 innan du blir permanent avanmäld från listan.

@@ -18,7 +18,7 @@ Kommandon som är specifika för en lista (till exempel subscribe, who,
 osv.), måste skickas till listans *-request adress, (exempel: för en lista
 som heter 'mailman', används adressen 'mailman-request@...'.)
 
-FÖrklaring till beskrivningen
+Förklaring till beskrivningen
 Ord med <> runt berättar att en parameter krävs,
 ord med [] runt berättar att en parameter är valfri.
 Ta INTE med själva tecknen <> och [] när du skickar kommandon.

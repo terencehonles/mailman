@@ -8,9 +8,10 @@ Hur påverkar det mig?
 
 2) Du har fått dig tilldelat ett lösenord som ska förhindra andra från att
    avanmäla dig från listan utan att du vet om det. Du kommer att få lösenordet
-   i ett e-postbrev, som du kanske redan fått. Var inte rädd för att du ska glömma
-   bort lösenordet. Det kan bli så att du kommer att få ta emot en påminnelse om 
-   lösenordet en gång i månaden. Dessutom kan du via webbsidan be att få det skickat        till dig.
+   i ett e-postbrev, som du kanske redan fått. Var inte rädd för att du ska
+   glömma bort lösenordet. Det kan bli så att du kommer att få ta emot en
+   påminnelse om lösenordet en gång i månaden. Dessutom kan du via webbsidan be
+   att få det skickat till dig.
 
 3) Om du har tillgång till Internet, kan du gå in på e-postlistans webbsida
    när som helst för att avanmäla dig, ta emot sammandrag av trafik på
@@ -21,8 +22,8 @@ Hur påverkar det mig?
 
 4) Har du inte tillgång till Internet, kan du göra detta via e-post.
    Skicka ett e-postbrev till %(requestaddr)s med ordet "help" i ämnesfältet
-   eller som innehåll i e-postbrevet. Du kommer då att få ett automatiskt svar med
-   hjälp och ytterligare förklaring.
+   eller som innehåll i e-postbrevet. Du kommer då att få ett automatiskt svar
+   med hjälp och ytterligare förklaring.
 
 Eventuella frågor eller problem med det nya systemet skickas till:
 %(adminaddr)s
