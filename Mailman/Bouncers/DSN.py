@@ -39,8 +39,11 @@ def check(msg):
             #
             # Also grok out Action so we can do something with that too.
             action = msgblock.get('action', '')
-            # Should we treat delayed bounces the same?  Yes, because if the
-            # transient problem clears up, they should get unbounced.
+            # BAW: Should we treat delayed bounces the same?  Yes, because if
+            # the transient problem clears up, they should get unbounced.  The
+            # other problem is what to do about a DSN that has both delayed
+            # and failed actions in multiple header blocks?  We're not
+            # architected to handle that. ;/
             if action.lower() not in ('failed', 'failure', 'delayed'):
                 # Some non-permanent failure, so ignore this block
                 continue
