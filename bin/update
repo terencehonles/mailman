@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 
-"""Use this script to help you update to Mailman 1.0b6 from previous versions.
+"""Use this script to help you update to the latest release of Mailman from
+some previous version.  It knows about versions back to 1.0b4 (?).
+
 """
 
 import sys, os, string
@@ -182,7 +184,8 @@ def remove_old_sources(module):
 
 
 if __name__ == '__main__':
-    for mod in ("Archiver", "HyperArch", "HyperDatabase", "pipermail"):
+    for mod in ("Archiver", "HyperArch", "HyperDatabase", "pipermail",
+                'smtplib'):
         remove_old_sources(mod)
     lists = list_names()
     if not lists:
