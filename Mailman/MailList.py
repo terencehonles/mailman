@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
@@ -52,7 +52,7 @@ from Mailman.Bouncer import Bouncer
 from Mailman.Deliverer import Deliverer
 from Mailman.Digester import Digester
 from Mailman.GatewayManager import GatewayManager
-from Mailman.HTMLFormatter import HTMLFormatter 
+from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.ListAdmin import ListAdmin
 from Mailman.SecurityManager import SecurityManager
 from Mailman.TopicMgr import TopicMgr
@@ -74,7 +74,7 @@ EMPTYSTRING = ''
 
 
 # Use mixins here just to avoid having any one chunk be too large.
-class MailList(HTMLFormatter, Deliverer, ListAdmin, 
+class MailList(HTMLFormatter, Deliverer, ListAdmin,
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
                Autoresponder, TopicMgr):
 
@@ -148,7 +148,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         except Exception:
             self.Unlock()
             raise
-    
+
     def Unlock(self):
         self.__lock.unlock(unconditionally=1)
 
@@ -249,7 +249,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
 
     def InitVars(self, name=None, admin='', crypted_password=''):
         """Assign default values - some will be overriden by stored state."""
-        # Non-configurable list info 
+        # Non-configurable list info
         if name:
           self._internal_name = name
 
@@ -261,7 +261,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.members = {} # self.digest_members is initted in mm_digest
         self.data_version = mm_cfg.DATA_FILE_VERSION
         self.last_post_time = 0
-        
+
         self.post_id = 1.  # A float so it never has a chance to overflow.
         self.user_options = {}
         self.language = {}
@@ -314,6 +314,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.include_rfc2369_headers = 1
         self.include_list_post_header = 1
         self.filter_mime_types = mm_cfg.DEFAULT_FILTER_MIME_TYPES
+        self.pass_mime_types = mm_cfg.DEFAULT_PASS_MIME_TYPES
         self.filter_content = mm_cfg.DEFAULT_FILTER_CONTENT
         self.convert_html_to_plaintext = \
             mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT
@@ -920,7 +921,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                  'listname': self.real_name,
                  }, mlist=self)
             msg = Message.UserNotification(
-                self.GetOwnerEmail(), 
+                self.GetOwnerEmail(),
                 Utils.get_site_email(self.host_name, 'owner'),
                 subject, text, self.preferred_language)
             msg.send(self)
