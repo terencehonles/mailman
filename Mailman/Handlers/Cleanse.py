@@ -26,6 +26,7 @@ def process(mlist, msg, msgdata):
     del msg['urgent']
     # We remove other headers from anonymous lists
     if mlist.anonymous_list:
+        del msg['from']
         del msg['reply-to']
         del msg['sender']
         msg['From'] = mlist.GetAdminEmail()
