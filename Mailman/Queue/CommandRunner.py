@@ -150,8 +150,8 @@ To obtain instructions, send a message containing just the word "help".
             resp.append(_('\n- Ignored:'))
             resp.extend(indent(self.ignored))
         resp.append(_('\n- Done.\n\n'))
-        # Encode any unicode strings into the list characterset,
-        # so we don't try to join unicode strings and invalid ASCII.
+        # Encode any unicode strings into the list charset, so we don't try to
+        # join unicode strings and invalid ASCII.
         charset = Utils.GetCharSet(self.mlist.preferred_language)
         encoded_resp = []
         for item in resp:
