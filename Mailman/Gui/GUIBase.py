@@ -167,13 +167,12 @@ class GUIBase:
             badkeys.sort()
             bad = BADJOINER.join(badkeys)
             doc.addError(_(
-                """The following illegal interpolation variables were
+                """The following illegal substitution variables were
                 found in the <code>%(property)s</code> string:
                 <code>%(bad)s</code>
-                <p>Your changes will be discarded.  Please correct the
-                mistakes and try again."""),
-                         tag=_('Error: '))
-            return None
+                <p>Your list may not operate properly until you correct this
+                problem."""), tag=_('Warning: '))
+            return val
         # Now if we're still using %-strings, do a roundtrip conversion and
         # see if the converted value is the same as the new value.  If not,
         # then they probably left off a trailing `s'.  We'll warn them and use
