@@ -48,7 +48,7 @@ def process(mlist, msg, msgdata):
     # VirginRunner sets _fasttrack for internally crafted messages.
     fasttrack = msgdata.get('_fasttrack')
     if not msgdata.get('isdigest') and not fasttrack:
-        prefix_subject(mlist, msg)
+        prefix_subject(mlist, msg, msgdata)
     # Mark message so we know we've been here, but leave any existing
     # X-BeenThere's intact.
     msg['X-BeenThere'] = mlist.GetListEmail()
@@ -163,12 +163,13 @@ def process(mlist, msg, msgdata):
 
 
 
-def prefix_subject(mlist, msg):
+def prefix_subject(mlist, msg, msgdata):
     # Add the subject prefix unless the message is a digest or is being fast
     # tracked (e.g. internally crafted, delivered to a single user such as the
     # list admin).
     prefix = mlist.subject_prefix
     subject = msg['subject']
+    msgdata['origsubj'] = subject
     # The header may be multilingual; decode it from base64/quopri and search
     # each chunk for the prefix.
     headerbits = decode_header(subject)
