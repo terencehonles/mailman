@@ -191,7 +191,8 @@ def hold_for_approval(mlist, msg, excclass):
         msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
     # We may want to send a notification to the original sender too
-    if not mlist.dont_respond_to_post_requests:
+    fromusenet = getattr(msg, 'fromusenet', 0)
+    if not fromusenet and not mlist.dont_respond_to_post_requests:
         text = Utils.maketext('postheld.txt', d)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
