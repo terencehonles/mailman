@@ -69,4 +69,4 @@ finish:
 clean:
 
 distclean:
-	-rm Makefile check_perms
+	-rm Makefile

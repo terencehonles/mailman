@@ -16,10 +16,12 @@ import errno
 import getopt
 import grp
 from stat import *
+import paths
+import Mailman.mm_cfg
 
-MAILMAN_GID = @MAILMAN_GID@
-PREFIX = '@prefix@'
-MAILMAN_GRPNAME = grp.getgrgid(MAILMAN_GID)[0]
+MAILMAN_GRPNAME = 'mailman'
+MAILMAN_GID = grp.getgrnam(MAILMAN_GRPNAME)[2]
+PREFIX = Mailman.mm_cfg.PREFIX
 
 PROGRAM = sys.argv[0]
 
