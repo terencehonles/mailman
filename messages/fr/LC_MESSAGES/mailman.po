@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
-"POT-Creation-Date: Fri Jul 27 12:36:17 2001\n"
-"PO-Revision-Date: Thu Jul 11 11:11:11 2001\n"
+"POT-Creation-Date: Sat Jul 28 00:13:53 2001\n"
+"PO-Revision-Date: Thu Jul 28 00:32:21 2001\n"
 "Last-Translator: Ousmane Wilane <wilane@mint.sn>\n"
 "Language-Team: French <traduc@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -571,7 +571,7 @@ msgid "Moderator passwords did not match"
 msgstr "Les mots de passe de modération ne correspondent pas.<br>"
 
 #: Mailman/Cgi/admin.py:1075 Mailman/Cgi/admin.py:1087
-#: Mailman/Cgi/create.py:250 Mailman/Cgi/rmlist.py:183
+#: Mailman/Cgi/create.py:251 Mailman/Cgi/rmlist.py:183
 msgid "Error: "
 msgstr "Erreur: "
 
@@ -875,20 +875,20 @@ msgstr "<br>Revenir à "
 msgid "administrative list overview"
 msgstr "Panorama administrative de la liste"
 
-#: Mailman/Cgi/create.py:90
+#: Mailman/Cgi/create.py:91
 msgid "List name must not include \"@\": %(listname)s"
 msgstr "Le nom d'une liste ne peut contenir le caractère \"@\": %(listname)s"
 
-#: Mailman/Cgi/create.py:96 Mailman/Cgi/create.py:165 bin/newlist:123
+#: Mailman/Cgi/create.py:97 Mailman/Cgi/create.py:166 bin/newlist:123
 #: bin/newlist:155
 msgid "List already exists: %(listname)s"
 msgstr "La liste existe: %(listname)s"
 
-#: Mailman/Cgi/create.py:100
+#: Mailman/Cgi/create.py:101
 msgid "You forgot to specify the list owner"
 msgstr "Vous avez oublié de préciser le propriétaire de la liste"
 
-#: Mailman/Cgi/create.py:107
+#: Mailman/Cgi/create.py:108
 msgid ""
 "Leave the initial password (and confirmation) fields\n"
 "                blank if you want Mailman to autogenerate the list\n"
@@ -898,23 +898,23 @@ msgstr ""
 "si vous voulez que Mailman génère automatiquement les mots de passe\n"
 "pour vous."
 
-#: Mailman/Cgi/create.py:115
+#: Mailman/Cgi/create.py:116
 msgid "Initial list passwords do not match"
 msgstr "Les mots de passe ne correspindent pas"
 
-#: Mailman/Cgi/create.py:119 bin/newlist:138
+#: Mailman/Cgi/create.py:120 bin/newlist:138
 msgid "The list password cannot be empty"
 msgstr "Le mot de passe de la liste ne peut être vide"
 
-#: Mailman/Cgi/create.py:131
+#: Mailman/Cgi/create.py:132
 msgid "You are not authorized to create new mailing lists"
 msgstr "Vous n'êtes pas autorisé à créer de nouvelles listes"
 
-#: Mailman/Cgi/create.py:161
+#: Mailman/Cgi/create.py:162
 msgid "Bad owner email address: %(owner)s"
 msgstr "Mauvaise adresse courriel du propriétaire: %(owner)s"
 
-#: Mailman/Cgi/create.py:170
+#: Mailman/Cgi/create.py:171
 msgid ""
 "Some unknown error occurred while creating the list.\n"
 "                Please contact the site administrator for assistance."
@@ -923,15 +923,15 @@ msgstr ""
 "liste\n"
 "\tPour assistance veillez contactez l'administrateur du site."
 
-#: Mailman/Cgi/create.py:195 bin/newlist:184
+#: Mailman/Cgi/create.py:196 bin/newlist:184
 msgid "Your new mailing list: %(listname)s"
 msgstr "Votre nouvelle liste de diffusion: %(listname)s"
 
-#: Mailman/Cgi/create.py:204
+#: Mailman/Cgi/create.py:205
 msgid "Mailing list creation results"
 msgstr "Resultats de la création de la liste de diffusion"
 
-#: Mailman/Cgi/create.py:210
+#: Mailman/Cgi/create.py:211
 msgid ""
 "You have successfully created the mailing list\n"
 "        <b>%(listname)s</b> and notification has been sent to the list "
@@ -942,23 +942,23 @@ msgstr ""
 "<b>%(listname)s</b> et un avis a été envoyé au propriétaire de la liste\n"
 "<b>%(owner)s</b>.  Vous pouvez à présent:"
 
-#: Mailman/Cgi/create.py:214
+#: Mailman/Cgi/create.py:215
 msgid "Visit the list's info page"
 msgstr "Visitez la page info de la liste"
 
-#: Mailman/Cgi/create.py:215
+#: Mailman/Cgi/create.py:216
 msgid "Visit the list's admin page"
 msgstr "Visitez la page admin de la liste"
 
-#: Mailman/Cgi/create.py:216
+#: Mailman/Cgi/create.py:217
 msgid "Create another list"
 msgstr "Créer une autre liste"
 
-#: Mailman/Cgi/create.py:241
+#: Mailman/Cgi/create.py:242
 msgid "Create a %(hostname)s Mailing List"
 msgstr "Créer une liste de diffusion sur %(hostname)s"
 
-#: Mailman/Cgi/create.py:252
+#: Mailman/Cgi/create.py:253
 msgid ""
 "You can create a new mailing list by entering the\n"
 "    relevant information into the form below.  The name of the mailing list\n"
@@ -1008,19 +1008,19 @@ msgstr ""
 "\tdu site peut être utilisé pour l'authentification.\n"
 "\t"
 
-#: Mailman/Cgi/create.py:278
+#: Mailman/Cgi/create.py:279
 msgid "Name of list:"
 msgstr "Nom de la liste"
 
-#: Mailman/Cgi/create.py:283
+#: Mailman/Cgi/create.py:284
 msgid "Initial list owner address:"
 msgstr "Adresse du propriétaire initiale de la liste:"
 
-#: Mailman/Cgi/create.py:292
+#: Mailman/Cgi/create.py:293
 msgid "Auto-generate initial list password?"
 msgstr "Génération automatique des mots de passe initiaux de la liste?"
 
-#: Mailman/Cgi/create.py:293 Mailman/Cgi/create.py:314
+#: Mailman/Cgi/create.py:294 Mailman/Cgi/create.py:315
 #: Mailman/Gui/Archive.py:30 Mailman/Gui/Autoresponse.py:48
 #: Mailman/Gui/Autoresponse.py:65 Mailman/Gui/Bounce.py:32
 #: Mailman/Gui/Digest.py:35 Mailman/Gui/Digest.py:51 Mailman/Gui/Digest.py:73
@@ -1036,7 +1036,7 @@ msgstr "Génération automatique des mots de passe initiaux de la liste?"
 msgid "No"
 msgstr "Non"
 
-#: Mailman/Cgi/create.py:293 Mailman/Cgi/create.py:314
+#: Mailman/Cgi/create.py:294 Mailman/Cgi/create.py:315
 #: Mailman/Gui/Archive.py:30 Mailman/Gui/Autoresponse.py:48
 #: Mailman/Gui/Bounce.py:32 Mailman/Gui/Digest.py:35 Mailman/Gui/Digest.py:51
 #: Mailman/Gui/Digest.py:73 Mailman/Gui/Digest.py:78
@@ -1051,27 +1051,27 @@ msgstr "Non"
 msgid "Yes"
 msgstr "Oui"
 
-#: Mailman/Cgi/create.py:299
+#: Mailman/Cgi/create.py:300
 msgid "Initial list password:"
 msgstr "Mot de passe initial de la liste:"
 
-#: Mailman/Cgi/create.py:304
+#: Mailman/Cgi/create.py:305
 msgid "Confirm initial password:"
 msgstr "Confirme le mot de passe initial:"
 
-#: Mailman/Cgi/create.py:313
+#: Mailman/Cgi/create.py:314
 msgid "Send \"list created\" email to list owner?"
 msgstr "Envoyez un message \"liste crée\" au propriétaire de la liste?"
 
-#: Mailman/Cgi/create.py:322
+#: Mailman/Cgi/create.py:323
 msgid "List creator's (authentication) password:"
 msgstr "Le mot de passe du créateur de la liste (authentification):"
 
-#: Mailman/Cgi/create.py:327
+#: Mailman/Cgi/create.py:328
 msgid "Create List"
 msgstr "Créer la liste"
 
-#: Mailman/Cgi/create.py:328
+#: Mailman/Cgi/create.py:329
 msgid "Clear Form"
 msgstr "Effacer le formulaire"
 
@@ -1744,6 +1744,10 @@ msgstr "Italien"
 
 #: Mailman/Defaults.py:766
 msgid "Japanese"
+msgstr "Japonais"
+
+#: Mailman/Defaults.py:767
+msgid "Norwegian"
 msgstr ""
 
 #: Mailman/Deliverer.py:41
@@ -1781,9 +1785,8 @@ msgid "Your message was rejected"
 msgstr "Votre message a été rejeté"
 
 #: Mailman/Gui/Archive.py:24
-#, fuzzy
 msgid "Archiving Options"
-msgstr "Options d'archivage"
+msgstr "Options d'Archivage"
 
 #: Mailman/Gui/Archive.py:28
 msgid "List traffic archival policies."
@@ -1936,9 +1939,8 @@ msgstr ""
 "grâce (i.e. une réponse automatique à tous les messages)."
 
 #: Mailman/Gui/Bounce.py:24
-#, fuzzy
 msgid "Bounce detection"
-msgstr "Options de rebond"
+msgstr "Détection de rebond"
 
 #: Mailman/Gui/Bounce.py:28
 msgid ""
@@ -2000,7 +2002,6 @@ msgid "Action when critical or excessive bounces are detected."
 msgstr "Action lorsque des non-remises critiques ou excessives sont détéctées."
 
 #: Mailman/Gui/Digest.py:27
-#, fuzzy
 msgid "Digest options"
 msgstr "Options de remise groupée"
 
@@ -2771,7 +2772,7 @@ msgstr "Suppression en masse"
 
 #: Mailman/Gui/NonDigest.py:28
 msgid "Non-digest delivery options"
-msgstr ""
+msgstr "Options de remise normale"
 
 #: Mailman/Gui/NonDigest.py:34
 msgid "Policies concerning immediately delivered list traffic."
@@ -3226,28 +3227,24 @@ msgstr ""
 "\t(supprimer les champs From, Sender et Reply-To)"
 
 #: Mailman/Gui/Topics.py:25
-#, fuzzy
 msgid "Topic filters"
-msgstr "Détails du filtre de thème"
+msgstr "Filtre de thème"
 
 #: Mailman/Gui/Topics.py:31
-#, fuzzy
 msgid "List topic keywords"
-msgstr "Mot de passe de la liste:"
+msgstr "Mot clés du thème de la liste"
 
 #: Mailman/Gui/Topics.py:33
-#, fuzzy
 msgid "Disabled"
-msgstr "désactivé"
+msgstr "Désactivé"
 
 #: Mailman/Gui/Topics.py:33
-#, fuzzy
 msgid "Enabled"
-msgstr "désactivé"
+msgstr "Activé"
 
 #: Mailman/Gui/Topics.py:34
 msgid "Should the topic filter be enabled or disabled?"
-msgstr ""
+msgstr "Le filtre de thème doit-il être activé ou désactivé?"
 
 #: Mailman/Gui/Topics.py:36
 msgid ""
@@ -3276,10 +3273,31 @@ msgid ""
 "href=\"?VARHELP=topics/topics_bodylines_limit\">topics_bodylines_limit</a>\n"
 "             configuration variable."
 msgstr ""
+"Le filtre de thème place chaque courriel qui arrive dans une catégorie\n"
+"sur la base <a\n"
+"href=\"http://www.python.org/doc/current/lib/module-re.html\">\n"
+"des expressions régulières filtres</a> que vous avez défini ci-dessus.\n"
+"Si l'en-tête <code>Objet:</code> ou <code>Mots Clés:</code> correspond\n"
+"a un thème, alors le message est logiquement placé dans dans un\n"
+"<em>seau</em> de thème. Dés lors, chaque utilisateur peut choisir de ne\n"
+"recevoir de la liste que des messages d'un seau(x) de thème particulier.\n"
+"Tout message qui n'entre pas dans une catégorie de seau de thème déclaré\n"
+"par l'utilisateur ne sera pas remis à la liste.\n"
+"\n"
+"<p>Notez que cette fonctionnalité n'est active qu'en mode de remise\n"
+"normale et est sans effet pour les remises groupées.\n"
+"\n"
+"<p>Le corps du message pourrait accessoirement être analysé à la recherche\n"
+"d'en-têtes <code>Objet:</code> et <code>Mot Clé:</code> en conformité avec\n"
+"la variable de configuration\n"
+"<a href=\"?VARHELP=topics/topics_bodylines_limit\">\n"
+"topics_bodylines_limit</a>."
 
 #: Mailman/Gui/Topics.py:57
 msgid "How many body lines should the topic matcher scan?"
 msgstr ""
+"Combien de lignes le moteur de thème doit-il analyser dans le corps\n"
+"du message?"
 
 #: Mailman/Gui/Topics.py:59
 msgid ""
@@ -3299,10 +3317,21 @@ msgid ""
 "             until a non-header-like line is encountered.\n"
 "             "
 msgstr ""
+"Le moteur de thème va analyser un nombre de lignes égal à celui-ci dans\n"
+"le corps du message à la recherche d'une correspondance du thème. Cette\n"
+"opération s'arrête lorsque\n"
+"le nombre de ligne cité est couvert à moins qu'une ligne qui ne\n"
+"ressemblerait pas à un corps de message ne soit rencontré. Porter cette\n"
+"valeur à 0 signifie que le corps du message ne sera pas analysé (i.e. que\n"
+"seuls les en-têtes <code>Objet:</code> et <code>Mots Clés:</code> seront\n"
+"analysés). Si la valeur est négative alors toutes les lignes du corps\n"
+"seront analysées jusqu'à ce qu'une ligne ne ressemblant pas à une en-tête\n"
+"soit rencontrée\n"
+"\t\t"
 
 #: Mailman/Gui/Topics.py:70
 msgid "Topic keywords, one per line, to match against each message."
-msgstr ""
+msgstr "Les mots clés du thème, un par ligne, à comparer à chaque message"
 
 #: Mailman/Gui/Topics.py:72
 msgid ""
@@ -3316,11 +3345,16 @@ msgid ""
 "             contain a <code>Keywords:</code> and <code>Subject:</code>\n"
 "             \"header\" on which matching is also performed."
 msgstr ""
+"Chaque mot clé pour un thème est actuellement une expression régulière\n"
+"comparée à certaines partie du courriel, les en-têtes <code>Mots Clés:\n"
+"</code> et <code>Objet:</code> en particulier. Notez que les premières\n"
+"lignes du corps du message peuvent contenir les \"en-têtes\"\n"
+"<code>Mots Clés:</code> et <code>Objet:</code> sur lesquelles la\n"
+"comparaison se ferra."
 
 #: Mailman/Gui/Usenet.py:24
-#, fuzzy
 msgid "Mail &lt;-&gt; News Gateways"
-msgstr "Passerelle Courriel-News et News-Courriel"
+msgstr "Courriel &lt;-&gt; Passerelle News"
 
 #: Mailman/Gui/Usenet.py:30
 msgid "Mail-to-News and News-to-Mail gateway services."
@@ -6286,9 +6320,8 @@ msgstr ""
 "et UPGRADE pour plus d'informations.\n"
 
 #: bin/version:19
-#, fuzzy
 msgid "Print the Mailman version.\n"
-msgstr "Utilisation de la version de Mailman:"
+msgstr "Afficher la version de Mailman.\n"
 
 #: bin/version:26
 msgid "Using Mailman version:"
@@ -6479,15 +6512,15 @@ msgid "%(count)d %(realname)s moderator request(s) waiting"
 msgstr ""
 
 #: cron/checkdbs:80
-#, fuzzy
 msgid "Pending subscriptions:"
-msgstr "Abonnement en masse"
+msgstr "Abonnements en attente"
 
 #: cron/checkdbs:87
+#, fuzzy
 msgid ""
 "\n"
 "Pending posts:"
-msgstr ""
+msgstr "Abonnements en attente"
 
 #: cron/checkdbs:96
 msgid ""
@@ -6541,14 +6574,12 @@ msgid ""
 msgstr ""
 
 #: cron/mailpasswds:67
-#, fuzzy
 msgid " %(host)s mailing list memberships reminder"
-msgstr "Rappel de la liste de diffusion %(listfullname)s"
+msgstr "Rappel pour les abonnements aux listes sur %(host)s"
 
 #: cron/mailpasswds:76
-#, fuzzy
 msgid "Password // URL"
-msgstr "Mot de passe:"
+msgstr "Mot de passe // URL"
 
 #: cron/mailpasswds:93
 msgid ""
@@ -6606,13 +6637,13 @@ msgid ""
 msgstr ""
 
 #: scripts/join:44
+#, fuzzy
 msgid "join script got no listname."
-msgstr ""
+msgstr "script join, liste introuvable: %(listname)s"
 
 #: scripts/join:48
-#, fuzzy
 msgid "join script, list not found: %(listname)s"
-msgstr "Liste introuvable: %(listname)s"
+msgstr "script join, liste introuvable: %(listname)s"
 
 #: scripts/leave:19
 msgid ""
@@ -6625,13 +6656,13 @@ msgid ""
 msgstr ""
 
 #: scripts/leave:44
+#, fuzzy
 msgid "leave script got no listname."
-msgstr ""
+msgstr "script leave, liste introuvable: %(listname)s"
 
 #: scripts/leave:48
-#, fuzzy
 msgid "leave script, list not found: %(listname)s"
-msgstr "Liste introuvable: %(listname)s"
+msgstr "script leave, liste introuvable: %(listname)s"
 
 #: scripts/mailcmd:19
 msgid ""
@@ -6644,13 +6675,13 @@ msgid ""
 msgstr ""
 
 #: scripts/mailcmd:44
+#, fuzzy
 msgid "mailcmd script got no listname."
-msgstr ""
+msgstr "script mailcmd, liste introuvable: %(listname)s"
 
 #: scripts/mailcmd:48
-#, fuzzy
 msgid "mailcmd script, list not found: %(listname)s"
-msgstr "Liste introuvable: %(listname)s"
+msgstr "script mailcmd, liste introuvable: %(listname)s"
 
 #: scripts/mailowner:19
 msgid ""
@@ -6667,13 +6698,13 @@ msgid ""
 msgstr ""
 
 #: scripts/mailowner:46
+#, fuzzy
 msgid "mailowner got no listname."
-msgstr ""
+msgstr "script mailowner, liste introuvable: %(listname)s"
 
 #: scripts/mailowner:50
-#, fuzzy
 msgid "mailowner script, list not found: %(listname)s"
-msgstr "Liste introuvable: %(listname)s"
+msgstr "script mailowner, liste introuvable: %(listname)s"
 
 #: scripts/post:19
 msgid ""
@@ -6689,13 +6720,13 @@ msgid ""
 msgstr ""
 
 #: scripts/post:50
+#, fuzzy
 msgid "post script got no listname."
-msgstr ""
+msgstr "script post, liste introuvable: %(listname)s"
 
 #: scripts/post:54
-#, fuzzy
 msgid "post script, list not found: %(listname)s"
-msgstr "Liste introuvable: %(listname)s"
+msgstr "script post, liste introuvable: %(listname)s"
 
 #~ msgid ""
 #~ "Mixin class for putting new messages in the right place for archival.\n"
@@ -8029,4 +8060,4 @@ msgstr "Liste introuvable: %(listname)s"
 #~ msgstr "Déjà abonné (au suivant):"
 
 #~ msgid "Not a valid email address:"
-#~ msgstr "N'est pas une adresse courriel valide"
+#~ msgstr "N'est pas une adresse courriel valide:"
