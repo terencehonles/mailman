@@ -2,11 +2,20 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-Bugs are now managed by a Jitterbug database.  Please visit the
-following URL to view current resolved and open bugs, or to report a
-new bug in Mailman.
+The Mailman project is being successfully managed on SourceForge at
 
-    http://www.python.org/mailman-bugs
+    http://sourceforge.net/projects/mailman
+
+You should submit bugs to the SourceForge bug manager at
+
+    http://sourceforge.net/bugs/?group_id=103
+
+If you're able, please also submit a patch to the SourceForge patch
+manager, taking care to reference your bug report (which should be
+submitted first).  The patch manager is at
+
+    http://sourceforge.net/patch/?group_id=103
+
 
 
 Local Variables:
