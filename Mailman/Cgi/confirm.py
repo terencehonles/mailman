@@ -1,17 +1,17 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Confirm a pending action via URL."""
@@ -183,7 +183,7 @@ def ask_for_cookie(mlist, doc, extra=''):
     if extra:
         table.AddRow([Bold(FontAttr(extra, size='+1'))])
         table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
-        
+
     # Add cookie entry box
     table.AddRow([_("""Please enter the confirmation string
     (i.e. <em>cookie</em>) that you received in your email message, in the box
@@ -313,6 +313,8 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             # Some pending values may be overridden in the form.  email of
             # course is hardcoded. ;)
             lang = cgidata.getvalue('language')
+            if not Utils.IsLanguage(lang):
+                lang = mlist.preferred_language
             i18n.set_language(lang)
             doc.set_language(lang)
             if cgidata.has_key('digests'):
@@ -368,7 +370,7 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
         mlist.Save()
     finally:
         mlist.Unlock()
-    
+
 
 
 def unsubscription_cancel(mlist, doc, cookie):
@@ -456,7 +458,7 @@ def unsubscription_prompt(mlist, doc, cookie, addr):
 
     form.AddItem(table)
     doc.AddItem(form)
-    
+
 
 
 def addrchange_cancel(mlist, doc, cookie):
