@@ -33,9 +33,13 @@ Install:
 	handled by a config program)
   o As root, add a mailman user
   o As mailman, copy the mailman dir to /home/mailman.  Currently the
-    system requires the source be located there.  [I've been making it 
-    a subdir of /home/mailman, ie, /home/mailman/mailman.  klm.]
-  o As mailman, make /home/mailman/public_html and /home/mailman/cgi-bin
+    system requires the source be located there.
+    [I've been making it a subdir of /home/mailman, ie,
+    /home/mailman/mailman.  If it really should be the same dir, the
+    previous sentence should say "copy the contents of the mailman dir
+    to..."  klm.] 
+  o As mailman, in /home/mailman make public_html, cgi-bin, and logs
+    directories. 
   o As root, Configure your web server to give /home/mailman/cgi-bin
     perms to run cgi in the cgi-bin dir, and restart the web server.
     The line you should add should look something like:
