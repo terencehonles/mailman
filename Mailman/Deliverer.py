@@ -165,7 +165,7 @@ action by you is required.""")))
             # Avoid import loops
             from Mailman.MailList import MailList
             mlist = MailList(listname, lock=False)
-        except MMListError:
+        except Errors.MMListError:
             # Oh well
             return
         otrans = i18n.get_translation()
