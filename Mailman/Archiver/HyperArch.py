@@ -193,6 +193,7 @@ class Article(pipermail.Article):
 
     # for compatibility with old archives loaded via pickle
     charset = None
+    cenc = None
     decoded = {}
 
     def __init__(self, message=None, sequence=0, keepHeaders=[]):
@@ -216,6 +217,7 @@ class Article(pipermail.Article):
 
         # snag the content-type
         self.ctype = message.getheader('Content-Type') or "text/plain"
+        self.cenc = message.getheader('Content-Transfer-Encoding')
         self.decoded = {}
         mo = rx_charset.search(self.ctype)
         if mo:
@@ -293,7 +295,7 @@ class Article(pipermail.Article):
 	d["author_html"] = html_quote(self.author)
 	d["email_url"] = url_quote(self.email)
 	d["datestr_html"] = html_quote(self.datestr)
-	d["body"] = string.join(self.body, "")
+        d["body"] = self._get_body()
 
         if self.charset is not None:
             d["encoding"] = html_charset % self.charset
@@ -303,6 +305,39 @@ class Article(pipermail.Article):
         self._add_decoded(d)
             
         return self.html_tmpl % d
+
+    _rx_quote = re.compile('=([A-Z0-9][A-Z0-9])')
+    _rx_softline = re.compile('=[ \t]*$')
+
+    def _get_body(self):
+        """Return the message body ready for HTML, decoded if necessary"""
+        if self.charset is None or self.cenc != "quoted-printable":
+            return string.join(self.body, "")
+        # the charset is specified and the body is quoted-printable
+        # first get rid of soft line breaks, then decode literals
+        lines = []
+        rx = self._rx_softline
+        for line in self.body:
+            mo = rx.search(line)
+            if mo:
+                i = string.rfind(line, "=")
+                line = line[:i]
+            lines.append(line)
+        buf = string.join(lines, "")
+        
+        chunks = []
+        offset = 0
+        rx = self._rx_quote
+        while 1:
+            mo = rx.search(buf, offset)
+            if not mo:
+                chunks.append(buf[offset:])
+                break
+            i = mo.start()
+            chunks.append(buf[offset:i])
+            offset = i + 3
+            chunks.append(chr(int(mo.group(1), 16)))
+        return string.join(chunks, "")
 
     def _add_decoded(self, d):
         """Add encoded-word keys to HTML output"""
@@ -473,8 +508,7 @@ class HyperArchive(pipermail.T):
     SHOWBR = 0                # Add <br> onto every line
 
     def __init__(self, maillist, unlock=1):
-        # can't init the database while other
-        # processes are writing to it!
+        # can't init the database while other processes are writing to it!
         # XXX TODO- implement native locking
         # with mailman's LockFile module for HyperDatabase.HyperDatabase
         #
@@ -904,7 +938,7 @@ class HyperArchive(pipermail.T):
             os.unlink(txtfile)
 
     _skip_attrs = ('maillist', '_lock_file', '_unlocklist',
-                   '_charsets', 'charset')
+                   'charset')
     
     def getstate(self):
         d={}
