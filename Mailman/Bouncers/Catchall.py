@@ -112,7 +112,7 @@ def process(msg):
 
     # Patterns for cases where email addr is separate from error cue.
     separate_cue_1 = re.compile(
-        '^554 [^ ]+\.\.\. unknown mailer error.*$', re.I)
+        '^554 .+\.\.\. unknown mailer error.*$', re.I)
     separate_addr_1 = regex.compile('expanded from: %s' % email_regexp)
 
     message_grokked = 0
