@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 5954 $)
+AC_REVISION($Revision: 6093 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -91,11 +91,17 @@ AC_MSG_CHECKING(that Python has distutils)
 changequote(,)
 cat > conftest.py <<EOF
 try:
-    import distutils
+    import distutils.errors
+    import distutils.sysconfig
 except ImportError:
     res = "no"
 else:
-    res = "yes"
+    try:
+	distutils.sysconfig.get_config_vars()
+    except distutils.errors.DistutilsPlatformError:
+	res = "no"
+    else:
+        res = "yes"
 fp = open("conftest.out", "w")
 fp.write("%s\n" % res)
 fp.close()
@@ -108,7 +114,7 @@ if test "$havedistutils" != "yes"
 then
     AC_MSG_ERROR([
 
-***** Distutils is not available for $PYTHON
+***** Distutils is not available or is incomplete for $PYTHON
 ***** If you installed Python from RPM (or other package manager)
 ***** be sure to install the -devel package, or install Python
 ***** from source.  See README.LINUX for details])
