@@ -352,7 +352,7 @@ class ListAdmin:
             assert value == mm_cfg.SUBSCRIBE
             try:
                 self.ApprovedAddMember(addr, password, digest, lang)
-            except Errors.MMAlreadyMember:
+            except Errors.MMAlreadyAMember:
                 # User has already been subscribed, after sending the request
                 pass
             # TBD: disgusting hack: ApprovedAddMember() can end up closing
