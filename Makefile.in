@@ -46,7 +46,8 @@ ARCH_INDEP_DIRS= \
 	qfiles filters cron data spam \
 	archives/private archives/public \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
-	Mailman/Handlers Mailman/Bouncers Mailman/pythonlib
+	Mailman/Handlers Mailman/Bouncers Mailman/pythonlib \
+	icons
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
