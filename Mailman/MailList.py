@@ -316,6 +316,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.web_page_url = mm_cfg.DEFAULT_URL   
 	self.owner = [admin]
 	self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
+        self.reply_to_address = ''
 	self.posters = []
 	self.forbidden_posters = []
 	self.admin_immed_notify = mm_cfg.DEFAULT_ADMIN_IMMED_NOTIFY
@@ -371,11 +372,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	config_info['gateway'] = GatewayManager.GetConfigInfo(self)
         config_info['autoreply'] = Autoresponder.GetConfigInfo(self)
 
+        WIDTH = mm_cfg.TEXTFIELDWIDTH
+
         # XXX: Should this text be migrated into the templates dir?
 	config_info['general'] = [
             "Fundamental list characteristics, including descriptive"
             " info and basic behaviors.",
-	    ('real_name', mm_cfg.String, 50, 0,
+	    ('real_name', mm_cfg.String, WIDTH, 0,
 	     'The public name of this list (make case-changes only).',
 
              "The capitalization of this name can be changed to make it"
@@ -386,11 +389,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " altered.  (Email addresses are not case sensitive, but"
              " they are sensitive to almost everything else:-)"),
 
-	    ('owner', mm_cfg.EmailList, (3,30), 0,
+	    ('owner', mm_cfg.EmailList, (3, WIDTH), 0,
 	     "The list admin's email address - having multiple"
 	     " admins/addresses (on separate lines) is ok."),
 
-	    ('description', mm_cfg.String, 50, 0,
+	    ('description', mm_cfg.String, WIDTH, 0,
 	     'A terse phrase identifying this list.',
 
              "This description is used when the mailing list is listed with"
@@ -398,7 +401,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " be as succinct as you can get it, while still identifying"
              " what the list is."),
 
-	    ('info', mm_cfg.Text, (7, 50), 0, 
+	    ('info', mm_cfg.Text, (7, WIDTH), 0, 
 	     ' An introductory description - a few paragraphs - about the'
 	     ' list.  It will be included, as html, at the top of the'
 	     ' listinfo page.  Carriage returns will end a paragraph - see'
@@ -411,7 +414,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " review your changes - bad html (like some unterminated HTML"
              " constructs) can prevent display of the entire listinfo page."),
 
-	    ('subject_prefix', mm_cfg.String, 10, 0,
+	    ('subject_prefix', mm_cfg.String, WIDTH, 0,
 	     'Prefix for subject line of list postings.',
 
              "This text will be prepended to subject lines of messages"
@@ -420,7 +423,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " to shorten long mailing list names to something more concise,"
              " as long as it still identifies the mailing list."),
 
-	    ('welcome_msg', mm_cfg.Text, (4, 50), 0,
+	    ('welcome_msg', mm_cfg.Text, (4, WIDTH), 0,
 	     'List-specific text prepended to new-subscriber welcome message',
 
              "This value, if any, will be added to the front of the"
@@ -431,22 +434,51 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " mission-specific kinds of things, like etiquette policies"
              " or team orientation, or that kind of thing."),
 
-	    ('goodbye_msg', mm_cfg.Text, (4, 50), 0,
+	    ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
 	     'Text sent to people leaving the list.  If empty, no special'
 	     ' text will be added to the unsubscribe message.'),
 
-	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
-	     'Are replies to a post directed to the original poster'
-	     ' or to the list?  <tt>Poster</tt> is <em>strongly</em>'
-             ' recommended.',
+	    ('reply_goes_to_list', mm_cfg.Radio,
+             ('Poster', 'This list', 'Explicit address'), 0,
+             '''Where are replies to list messages directed?  <tt>Poster</tt>
+is <em>strongly</em> recommended for most mailing lists.''',
 
-             "There are many reasons not to introduce headers like reply-to"
-             " into other peoples messages - one is that some posters depend"
-             " on their own reply-to setting to convey their valid email"
-             " addr.  See"
-             ' <a href="http://www.unicom.com/pw/reply-to-harmful.html">'
-             '"Reply-To" Munging Considered Harmful</a> for a general.'
-             " discussion of this issue."),
+             # Details for reply_goes_to_list
+             """There are many reasons not to introduce headers like
+<tt>Reply-To:</tt> into other people's messages.  One is that some posters
+depend on their own <tt>Reply-To:</tt> settings to convey their valid return
+address.  See 
+<a href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To' Munging
+Considered Harmful</a> for a general discussion of this issue.
+
+<p>Some mailing lists have restricted posting privileges, with a parallel list
+devoted to discussions.  Examples are `patches' or `checkin' lists, where
+software changes are posted by a revision control system, but discussion about
+the changes occurs on a developers mailing list.  To support these types of
+mailing lists, select <tt>Explicit address</tt> and set the <tt>Reply-To:</tt>
+address below to point to the parallel list."""),
+
+            ('reply_to_address', mm_cfg.String, WIDTH, 0,
+             '''Explicit <tt>Reply-To:</tt> header.''',
+
+             # Details for reply_to_address
+             """There are many reasons not to introduce headers like
+<tt>Reply-To:</tt> into other people's messages.  One is that some posters
+depend on their own <tt>Reply-To:</tt> settings to convey their valid return
+address.  See 
+<a href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To' Munging
+Considered Harmful</a> for a general discussion of this issue.
+
+<p>Some mailing lists have restricted posting privileges, with a parallel list
+devoted to discussions.  Examples are `patches' or `checkin' lists, where
+software changes are posted by a revision control system, but discussion about
+the changes occurs on a developers mailing list.  To support these types of
+mailing lists, specify the explicit <tt>Reply-To:</tt> address here.  You must
+also specify <tt>Explicit address</tt> in the <tt>reply_goes_to_list</tt>
+variable.
+
+<p>Note that if the original message contains a <tt>Reply-To:</tt> header,
+it will not be changed."""),
 
             ('administrivia', mm_cfg.Radio, ('No', 'Yes'), 0,
              "(Administrivia filter) Check postings and intercept ones"
@@ -470,7 +502,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              ' \"umbrella_member_suffix\" appended to the'
              " member\'s account name."),
 
-	    ('umbrella_member_suffix', mm_cfg.String, 8, 0,
+	    ('umbrella_member_suffix', mm_cfg.String, WIDTH, 0,
 	     'Suffix for use when this list is an umbrella for other lists,'
              ' according to setting of previous "umbrella_list" setting.',
 
@@ -516,17 +548,18 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     " filters, for which notices are <em>not</em> sent.  This"
 	     " option overrides ever sending the notice."),
 
-	    ('max_message_size', mm_cfg.Number, 5, 0,
+	    ('max_message_size', mm_cfg.Number, 7, 0,
 	     'Maximum length in Kb of a message body.  Use 0 for no limit.'),
 
-	    ('num_spawns', mm_cfg.Number, 3, 0,
+	    ('num_spawns', mm_cfg.Number, 7, 0,
 	     'Number of outgoing connections to open at once '
 	     '(expert users only).',
 
              "This determines the maximum number of batches into which"
              " a mass posting will be divided."),
 
-	    ('host_name', mm_cfg.Host, 50, 0, 'Host name this list prefers.',
+	    ('host_name', mm_cfg.Host, WIDTH, 0,
+             'Host name this list prefers.',
 
              "The host_name is the preferred name for email to mailman-related"
              " addresses on this host, and generally should be the mail"
@@ -534,7 +567,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " for selecting among alternative names of a host that has"
              " multiple addresses."),
 
- 	    ('web_page_url', mm_cfg.String, 50, 0,
+ 	    ('web_page_url', mm_cfg.String, WIDTH, 0,
  	     'Base URL for Mailman web interface',
 
              "This is the common root for all mailman URLs concerning this"
@@ -636,7 +669,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " post, plus a handful of other posters, see the <i> posters </i>"
              " setting below"),
 
-	    ('posters', mm_cfg.EmailList, (5, 30), 1,
+	    ('posters', mm_cfg.EmailList, (5, WIDTH), 1,
              'Addresses of members accepted for posting to this'
              ' list without implicit approval requirement. (See'
              ' "Restrict ... to list members"'
@@ -671,7 +704,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " <li>The relaying address name is included on the options that"
              " specifies acceptable aliases for the list. </ol>"),
 
- 	    ('acceptable_aliases', mm_cfg.Text, ('4', '30'), 0,
+ 	    ('acceptable_aliases', mm_cfg.Text, (4, WIDTH), 0,
  	     'Alias names (regexps) which qualify as explicit to or cc'
              ' destination names for this list.',
 
@@ -681,13 +714,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " mailing lists and relays while the constraint is still"
              " preventing random spams."), 
 
-	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
+	    ('max_num_recipients', mm_cfg.Number, 5, 0, 
 	     'Ceiling on acceptable number of recipients for a posting.',
 
              "If a posting has this number, or more, of recipients, it is"
              " held for admin approval.  Use 0 for no ceiling."),
 
-	    ('forbidden_posters', mm_cfg.EmailList, (5, 30), 1,
+	    ('forbidden_posters', mm_cfg.EmailList, (5, WIDTH), 1,
              'Addresses whose postings are always held for approval.',
 
 	     "Email addresses whose posts should always be held for"
@@ -695,7 +728,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " See also the subsequent option which applies to arbitrary"
              " content of arbitrary headers."),
 
- 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '50'), 0,
+ 	    ('bounce_matching_headers', mm_cfg.Text, (6, WIDTH), 0,
  	     'Hold posts with header value matching a specified regexp.',
 
              "Use this option to prohibit posts according to specific header"
@@ -725,13 +758,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Can subscribers choose to receive mail immediately,'
 	     ' rather than in batched digests?'),
 
-	    ('msg_header', mm_cfg.Text, (4, 55), 0,
+	    ('msg_header', mm_cfg.Text, (4, WIDTH), 0,
 	     'Header added to mail sent to regular list members',
 
              "Text prepended to the top of every immediately-delivery"
              " message.  <p>" + Errors.MESSAGE_DECORATION_NOTE),
 	    
-	    ('msg_footer', mm_cfg.Text, (4, 55), 0,
+	    ('msg_footer', mm_cfg.Text, (4, WIDTH), 0,
 	     'Footer added to mail sent to regular list members',
 
              "Text appended to the bottom of every immediately-delivery"
