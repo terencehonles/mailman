@@ -21,7 +21,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 638 $"
+__version__ = "$Revision: 648 $"
 
 import sys
 import os, cgi, string, crypt, types, time
@@ -41,7 +41,8 @@ CATEGORIES = [('general', "General Options"),
               ('nondigest', "Regular-member (non-digest) Options"),
               ('digest', "Digest-member Options"),
               ('bounce', "Bounce Options"),
-              ('archive', "Archival Options")]
+              ('archive', "Archival Options"),
+	      ('gateway', "Mail-News and News-Mail gateways")]
 
 
 LOGIN_PAGE = """
