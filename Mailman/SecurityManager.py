@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ class SecurityManager:
 	self.passwords = {}
 
     def ValidAdminPassword(self, response):
-        if Utils.CheckSiteAdminPassword(response):
+        if Utils.check_global_password(response):
             return 1
         # Old passwords may have been encrypted w/crypt.  First try comparing
         # challenge with sha hashed response and if that fails, use crypt and
