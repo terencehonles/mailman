@@ -322,6 +322,8 @@ def NewVars(l):
     add_only_if_missing('member_moderation_notice', '')
     add_only_if_missing('new_member_options',
                         mm_cfg.DEFAULT_NEW_MEMBER_OPTIONS)
+    # Emergency moderation flag
+    add_only_if_missing('emergency', 0)
 
 
 
