@@ -194,7 +194,9 @@ def prefix_subject(mlist, msg, msgdata):
     subject = msg['subject']
     msgdata['origsubj'] = subject
     # The header may be multilingual; decode it from base64/quopri and search
-    # each chunk for the prefix.
+    # each chunk for the prefix.  BAW: Note that if the prefix contains spaces
+    # and each word of the prefix is encoded in a different chunk in the
+    # header, we won't find it.  I think in practice that's unlikely though.
     headerbits = decode_header(subject)
     has_prefix = 0
     if prefix and subject:
