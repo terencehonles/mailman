@@ -36,6 +36,8 @@ class General:
             _('''Fundamental list characteristics, including descriptive
             info and basic behaviors.'''),
 
+            _('General list personality'),
+
             ('real_name', mm_cfg.String, WIDTH, 0,
              _('The public name of this list (make case-changes only).'),
              _('''The capitalization of this name can be changed to make it
@@ -146,6 +148,13 @@ class General:
              _('''Text sent to people leaving the list.  If empty, no special
              text will be added to the unsubscribe message.''')),
 
+            _('''<tt>Reply-To:</tt> header munging'''),
+
+            ('first_strip_reply_to', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _('''Before adding a list-specific <tt>Reply-To:</tt> header,
+             should any existing <tt>Reply-To:</tt> field be stripped from
+             the message?''')),
+
             ('reply_goes_to_list', mm_cfg.Radio,
              (_('Poster'), _('This list'), _('Explicit address')), 0,
              _('''Where are replies to list messages directed?
@@ -216,15 +225,7 @@ class General:
              <p>Note that if the original message contains a
              <tt>Reply-To:</tt> header, it will not be changed.""")),
 
-            ('administrivia', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''(Administrivia filter) Check postings and intercept ones
-             that seem to be administrative requests?'''),
-
-             _("""Administrivia tests will check postings to see whether it's
-             really meant as an administrative request (like subscribe,
-             unsubscribe, etc), and will add it to the the administrative
-             requests queue, notifying the administrator of the new request,
-             in the process.""")),
+            _('Umbrella list settings'),
 
             ('umbrella_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('''Send password reminders to, eg, "-owner" address instead of
@@ -250,6 +251,8 @@ class General:
              the member's account name for such notices.  `-owner' is the
              typical choice.  This setting has no effect when "umbrella_list"
              is "No".""")),
+
+            _('Notifications'),
 
             ('send_reminders', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('''Send monthly password reminders or no? Overrides the
@@ -284,6 +287,18 @@ class General:
              limits <em>except</em> routine list moderation and spam filters,
              for which notices are <em>not</em> sent.  This option overrides
              ever sending the notice.""")),
+
+            _('Additional settings'),
+
+            ('administrivia', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _('''(Administrivia filter) Check postings and intercept ones
+             that seem to be administrative requests?'''),
+
+             _("""Administrivia tests will check postings to see whether it's
+             really meant as an administrative request (like subscribe,
+             unsubscribe, etc), and will add it to the the administrative
+             requests queue, notifying the administrator of the new request,
+             in the process.""")),
 
             ('max_message_size', mm_cfg.Number, 7, 0,
              _('''Maximum length in kilobytes (KB) of a message body.  Use 0
