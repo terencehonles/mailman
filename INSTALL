@@ -335,7 +335,7 @@ if you want to keep your existing installation intact.
               to it; *as user mailman* call vmailer's "mkalias" on the
               alias file.  
 
-              % mkmalias <the alias file>
+              % mkalias <the alias file>
 
               Also as user mailman, run 
 
