@@ -304,9 +304,14 @@ upgrade.
 
       Also, if you're going to be supporting internationalized public
       archives, you will probably want to turn off any default charset
-      directive, otherwise your multilingual archive pages won't show
-      up correct.  Be sure you have "AddDefaultCharset off" in your
-      Apache config file for example.
+      directive for the Pipermail directory, otherwise your
+      multilingual archive pages won't show up correct.  Here's an
+      example for Apache, based on the standard installation
+      directories:
+
+      <Directory "/usr/local/mailman/archives/public/">
+          AddDefaultCharset Off
+      </Directory>
 
       Now restart your web server.
 
