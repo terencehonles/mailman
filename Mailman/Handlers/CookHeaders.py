@@ -20,12 +20,15 @@
 import re
 import urlparse
 
+import email.Utils
+
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 from Mailman.i18n import _
 
 CONTINUATION = ',\n\t'
+COMMASPACE = ', '
 
 
 
@@ -86,14 +89,16 @@ def process(mlist, msg, msgdata):
     # Reply-To: munging.  Do not do this if the message is "fast tracked",
     # meaning it is internally crafted and delivered to a specific user.  BAW:
     # Yuck, I really hate this feature but I've caved under the sheer pressure
-    # of the (very vocal) folks want it.
+    # of the (very vocal) folks want it.  OTOH, RFC 2822 allows Reply-To: to
+    # be a list of addresses, so instead of replacing the original, simply
+    # augment it.  RFC 2822 allows max one Reply-To: header so collapse them
+    # if we're adding a value, otherwise don't touch it.  (Should we collapse
+    # in all cases?)
     if not fasttrack:
-        xreplyto = None
         # Set Reply-To: header to point back to this list
+        replyto = []
         if mlist.reply_goes_to_list == 1:
-            xreplyto = msg.get('reply-to')
-            del msg['reply-to']
-            msg['Reply-To'] = mlist.GetListEmail()
+            replyto.append(('', mlist.GetListEmail()))
         # Set Reply-To: an explicit address, but only if reply_to_address is a
         # valid email address.  BAW: this really should be validated on input.
         elif mlist.reply_goes_to_list == 2:
@@ -102,13 +107,27 @@ def process(mlist, msg, msgdata):
             except Errors.EmailAddressError:
                 pass
             else:
-                xreplyto = msg.get('reply-to')
-                del msg['reply-to']
-                msg['Reply-To'] = mlist.reply_to_address
-        # Give the recipient some ability to un-munge things.
-        if xreplyto:
-            del msg['x-reply-to']
-            msg['X-Reply-To'] = xreplyto
+                replyto.append(('', mlist.reply_to_address))
+        # If we're not first stripping existing Reply-To: then we need to add
+        # the original Reply-To:'s to the list we're building up.  In both
+        # cases we'll zap the existing field because RFC 2822 says max one is
+        # allowed.
+        if not mlist.first_strip_reply_to:
+            orig = msg.get_all('reply-to', [])
+            replyto.extend(email.Utils.getaddresses(orig))
+        del msg['reply-to']
+        # Get rid of duplicates.  BAW: does order matter?  It might, because
+        # not all MUAs respect Reply-To: as a list of addresses.  Also, note
+        # duplicates are based on case folded email address, which means in
+        # the case of dupes, the last one wins (will mostly affect the real
+        # name clobbering).
+        d = {}
+        for name, addr in replyto:
+            d[addr.lower()] = (name, addr)
+        if d:
+            # Don't add one back if there's nothing to add!
+            msg['Reply-To'] = COMMASPACE.join(
+                [email.Utils.dump_address_pair(pair) for pair in d.values()])
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
     # if the message is being crafted for a specific list (e.g. not for the
     # password reminders).
