@@ -166,7 +166,7 @@ run_script(const char* script, int argc, char** argv, char** env)
 	/* filter out any existing PYTHONPATH in the environment */
 	for (i = 0, j = 0; i < envcnt; i++)
 		if (strncmp(envstr, env[i], envlen)) {
-			newenv[i] = env[j];
+			newenv[j] = env[i];
 			j++;
 		}
 
