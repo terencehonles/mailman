@@ -45,15 +45,18 @@ CFLAGS=		@CFLAGS@ $(OPT) $(DEFS)
 VAR_DIRS= \
 	logs archives lists locks data spam qfiles \
 	archives/private archives/public
+
 ARCH_INDEP_DIRS= \
 	bin templates scripts cron \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Bouncers Mailman/pythonlib \
-	Mailman/MTA Mailman/Gui messages icons
+	Mailman/MTA Mailman/Gui messages icons \
+	tests tests/bounces tests/msgs
+
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
-SUBDIRS=	bin cron misc Mailman scripts src templates messages
+SUBDIRS=	bin cron misc Mailman scripts src templates messages tests
 
 
 # Modes for directories and executables created by the install
