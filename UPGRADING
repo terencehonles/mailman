@@ -27,6 +27,16 @@ UPGRADING FROM PREVIOUS VERSIONS
       Mailman URLs.  Refer to your web server documentation for
       details.
 
+UPGRADING FROM 2.0 beta to 2.0 final
+
+    The cron jobs for Mailman 2.0 final have changed considerably,
+    including the frequency with which they run.  You should reload
+    misc/crontab.in for the `mailman' user to get the right settings.
+    See the INSTALL file for details.
+
+    FAILURE TO DO THIS WILL RESULT IN A LESS THAN OPTIMALLY FUNCTIONAL
+    MAILMAN INSTALLATION.
+
 UPGRADING FROM 1.x to 2.x
 
     In addition to the instructions above, I highly recommend that you
