@@ -55,6 +55,7 @@ QF_MODE = 0660
 MAX_ACTIVE = 7200 # 2 hours
 
 
+
 #
 # 1) get global lock so only of these
 #    procedures can run at a time
@@ -90,10 +91,11 @@ def processQueue():
     lock_file.unlock()
 
 
+
 #
 # this function is used by any process that
 # attempts to deliver a message for the first time
-# so the entry is set with the sticky bit.
+# so the entry is set with the SUID bit.
 #
 def enqueueMessage(the_sender, recip, text):
     tempfile.tempdir = mm_cfg.DATA_DIR
