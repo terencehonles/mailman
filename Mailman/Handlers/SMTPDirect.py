@@ -44,7 +44,8 @@ def process(mlist, msg):
         try:
             # make sure the connect happens, which won't be done by the
             # constructor if SMTPHOST is false
-            refused = conn.sendmail(msg.GetSender(), msg.recips, str(msg))
+            envsender = mlist.GetAdminEmail()
+            refused = conn.sendmail(envsender, msg.recips, str(msg))
         finally:
             t1 = time.time()
             mlist.LogMsg('smtp',
