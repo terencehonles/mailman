@@ -89,7 +89,7 @@ def process(mlist, msg, msgdata):
     #
     # http://www.dsv.su.se/~jpalme/ietf/mail-attributes.html
     #
-    if not msg.get('list-id'):
+    if not msg.get('list-id') and not msgdata.get('_nolist'):
         msg['List-Id'] = mlist.GetListIdentifier()
     #
     # These currently seem like overkill.  Maybe add them in later when
