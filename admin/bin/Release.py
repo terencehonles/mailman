@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -48,13 +48,13 @@ Where `options' are:
     the version number for the release, and is required.
 """
 
-import sys
 import os
-import errno
 import re
+import sys
 import time
-import tempfile
+import errno
 import getopt
+import tempfile
 
 program = sys.argv[0]
 
@@ -101,6 +101,17 @@ def checkout(tagname, tail):
     relname = tag2rel(tagname)
     cvsdo('export -k kv -r %s -d %s mailman' % (relname, tail))
     os.rename('%s/doc' % tail, 'mailman-doc')
+    print 'cleaning...'
+    # Remove the .mo's that cvs insists on checking out from the attic
+    mos = []
+    def visit(arg, dirname, names):
+        for file in names:
+            if file.endswith('.mo'):
+                mos.append(os.path.join(dirname, file))
+    os.path.walk(tail, visit, None)
+    for file in mos:
+        print 'removing:', file
+        os.unlink(file)
 
 
 
@@ -146,9 +157,9 @@ def do_bump(newvers):
     print 'Version.py...',
     infp = open('Mailman/Version.py')
     outfp = open('Mailman/Version.py.new', 'w')
-    matched = 0
+    matched = False
     cre = re.compile(r'^VERSION(?P<ws>[ \t]*)=')
-    while 1:
+    while True:
         line = infp.readline()
         if not line:
             if not matched:
@@ -159,7 +170,7 @@ def do_bump(newvers):
             outfp.write(line)
         else:
             outfp.write('VERSION%s= "%s"\n' % (mo.group('ws'), newvers))
-            matched = 1
+            matched = True
     infp.close()
     outfp.close()
     os.rename('Mailman/Version.py.new', 'Mailman/Version.py')
@@ -191,23 +202,23 @@ def main():
     print 'Using CVSROOT:', os.environ['CVSROOT']
 
     # default options
-    tag = 0
-    retag = 0
-    package = 0
-    bump = 0
+    tag = False
+    retag = False
+    package = False
+    bump = False
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-t', '--tag'):
-            tag = 1
+            tag = True
         elif opt in ('-T', '--TAG'):
-            tag = 1
-            retag = 1
+            tag = True
+            retag = True
         elif opt in ('-p', '--package'):
-            package = 1
+            package = True
         elif opt in ('-b', '--bump'):
-            bump = 1
+            bump = True
 
     # very important!!!
     omask = os.umask(0)
