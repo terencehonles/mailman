@@ -91,13 +91,13 @@ class SecurityManager:
         # AuthUser, but the user isn't a member of this mailing list, raise a
         # MMNotAMemberError error.  If the user's secret is None, raise a
         # MMBadUserError.
-        key = self.internal_name() + ':'
+        key = self.internal_name() + '+'
         if authcontext == mm_cfg.AuthUser:
             if user is None:
                 # A bad system error
                 raise TypeError, 'No user supplied for AuthUser context'
             secret = self.getMemberPassword(user)
-            key += 'user:%s' % user
+            key += 'user+%s' % user
         elif authcontext == mm_cfg.AuthListModerator:
             secret = self.mod_password
             key += 'moderator'
