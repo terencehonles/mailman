@@ -223,9 +223,10 @@ def main():
             # Show a summary of all requests
             doc.AddItem(Utils.maketext('admindbsummary.html', d,
                                        raw=1, mlist=mlist))
-            show_pending_subs(mlist, form)
-            show_pending_unsubs(mlist, form)
-            show_helds_overview(mlist, form)
+            num = show_pending_subs(mlist, form)
+            num += show_pending_unsubs(mlist, form)
+            num += show_helds_overview(mlist, form)
+            addform = num > 0
         # Finish up the document, adding buttons to the form
         if addform:
             doc.AddItem(form)
@@ -262,7 +263,7 @@ def show_pending_subs(mlist, form):
     # Add the subscription request section
     pendingsubs = mlist.GetSubscriptionIds()
     if not pendingsubs:
-        return
+        return 0
     form.AddItem('<hr>')
     form.AddItem(Center(Header(2, _('Subscription Requests'))))
     table = Table(border=2)
@@ -277,6 +278,7 @@ def show_pending_subs(mlist, form):
         byaddrs.setdefault(addr, []).append(id)
     addrs = byaddrs.keys()
     addrs.sort()
+    num = 0
     for addr, ids in byaddrs.items():
         # Eliminate duplicates
         for id in ids[1:]:
@@ -300,7 +302,10 @@ def show_pending_subs(mlist, form):
                       radio,
                       TextBox('comment-%d' % id, size=40)
                       ])
-    form.AddItem(table)
+        num += 1
+    if num > 0:
+        form.AddItem(table)
+    return num
 
     
 
@@ -309,9 +314,7 @@ def show_pending_unsubs(mlist, form):
     lang = mlist.preferred_language
     pendingunsubs = mlist.GetUnsubscriptionIds()
     if not pendingunsubs:
-        return
-    form.AddItem('<hr>')
-    form.AddItem(Center(Header(2, _('Unsubscription Requests'))))
+        return 0
     table = Table(border=2)
     table.AddRow([Center(Bold(_('User address/name'))),
                   Center(Bold(_('Your decision'))),
@@ -324,13 +327,21 @@ def show_pending_unsubs(mlist, form):
         byaddrs.setdefault(addr, []).append(id)
     addrs = byaddrs.keys()
     addrs.sort()
+    num = 0
     for addr, ids in byaddrs.items():
         # Eliminate duplicates
         for id in ids[1:]:
             mlist.HandleRequest(id, mm_cfg.DISCARD)
         id = ids[0]
         addr = mlist.GetRecord(id)
-        fullname = Utils.uncanonstr(mlist.getMemberName(addr), lang)
+        try:
+            fullname = Utils.uncanonstr(mlist.getMemberName(addr), lang)
+        except Errors.NotAMemberError:
+            # They must have been unsubscribed elsewhere, so we can just
+            # discard this record.
+            mlist.HandleRequest(id, mm_cfg.DISCARD)
+            continue
+        num += 1
         table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
                       RadioButtonArray(id, (_('Defer'),
                                             _('Approve'),
@@ -343,7 +354,11 @@ def show_pending_unsubs(mlist, form):
                                        checked=0),
                       TextBox('comment-%d' % id, size=45)
                       ])
-    form.AddItem(table)
+    if num > 0:
+        form.AddItem('<hr>')
+        form.AddItem(Center(Header(2, _('Unsubscription Requests'))))
+        form.AddItem(table)
+    return num
 
 
 
@@ -351,7 +366,7 @@ def show_helds_overview(mlist, form):
     # Sort the held messages by sender
     bysender = helds_by_sender(mlist)
     if not bysender:
-        return
+        return 0
     # Add the by-sender overview tables
     admindburl = mlist.GetScriptURL('admindb', absolute=1)
     table = Table(border=0)
@@ -469,6 +484,7 @@ def show_helds_overview(mlist, form):
             right.AddRow([t])
         stable.AddRow([left, right])
         table.AddRow([stable])
+    return 1
 
 
 
