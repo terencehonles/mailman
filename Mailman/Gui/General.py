@@ -145,6 +145,10 @@ class General(GUIBase):
              long mailing list names to something more concise, as long as it
              still identifies the mailing list.""")),
 
+            ('anonymous_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _("""Hide the sender of a message, replacing it with the list
+             address (Removes From, Sender and Reply-To fields)""")),
+
             _('''<tt>Reply-To:</tt> header munging'''),
 
             ('first_strip_reply_to', mm_cfg.Radio, (_('No'), _('Yes')), 0,

@@ -31,6 +31,7 @@ class Privacy(GUIBase):
         if category == 'privacy':
             return [('subscribing', _('Subscription&nbsp;rules')),
                     ('sender',      _('Sender&nbsp;filters')),
+                    ('recipient',   _('Recipient&nbsp;filters')),
                     ('spam',        _('Spam&nbsp;filters')),
                     ]
         return None
@@ -298,13 +299,11 @@ class Privacy(GUIBase):
 
             ]
 
-        spam_rtn = [
-            _("""This section allows you to configure various anti-spam
-            filters posting filters, which can help reduce the amount of spam
-            your list members end up receiving.
-            """),
+        recip_rtn = [
+            _("""This section allows you to configure various filters based on
+            the recipient of the message."""),
 
-            _("Anti-Spam filters"),
+            _('Recipient filters'),
 
             ('require_explicit_destination', mm_cfg.Radio,
              (_('No'), _('Yes')), 0,
@@ -354,6 +353,15 @@ class Privacy(GUIBase):
 
              _('''If a posting has this number, or more, of recipients, it is
              held for admin approval.  Use 0 for no ceiling.''')),
+            ]
+
+        spam_rtn = [
+            _("""This section allows you to configure various anti-spam
+            filters posting filters, which can help reduce the amount of spam
+            your list members end up receiving.
+            """),
+
+            _("Anti-Spam filters"),
 
             ('bounce_matching_headers', mm_cfg.Text, (6, WIDTH), 0,
              _('Hold posts with header value matching a specified regexp.'),
@@ -370,14 +378,12 @@ class Privacy(GUIBase):
              <p>Note that leading whitespace is trimmed from the regexp.  This
              can be circumvented in a number of ways, e.g. by escaping or
              bracketing it.""")),
-
-          ('anonymous_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-           _("""Hide the sender of a message, replacing it with the list
-           address (Removes From, Sender and Reply-To fields)""")),
           ]
 
         if subcat == 'sender':
             return sender_rtn
+        elif subcat == 'recipient':
+            return recip_rtn
         elif subcat == 'spam':
             return spam_rtn
         else:
