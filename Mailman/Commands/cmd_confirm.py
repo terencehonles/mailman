@@ -22,6 +22,7 @@
 
 from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman import Pending
 from Mailman.i18n import _
 
 STOP = 1
@@ -63,15 +64,21 @@ Your request has been forwarded to the list moderator for approval."""))
 You are not current a member.  Have you already unsubscribed or changed
 your email address?"""))
     else:
-        res.results.append(_('Confirmation succeeded'))
-        # Consume any other confirmation strings with the same cookie so the
-        # user doesn't get a misleading "unprocessed" message.
-        match = 'confirm ' + cookie
-        unprocessed = []
-        for line in res.commands:
-            if line.lstrip() == match:
-                continue
-            unprocessed.append(line)
-        res.commands = unprocessed
+        if ((results[0] == Pending.SUBSCRIPTION and mlist.send_welcome_msg)
+            or
+            (results[0] == Pending.UNSUBSCRIPTION and mlist.send_goodbye_msg)):
+            # We don't also need to send a confirmation succeeded message
+            res.respond = 0
+        else:
+            res.results.append(_('Confirmation succeeded'))
+            # Consume any other confirmation strings with the same cookie so
+            # the user doesn't get a misleading "unprocessed" message.
+            match = 'confirm ' + cookie
+            unprocessed = []
+            for line in res.commands:
+                if line.lstrip() == match:
+                    continue
+                unprocessed.append(line)
+            res.commands = unprocessed
     # Process just one confirmation string per message
     return STOP
