@@ -468,8 +468,8 @@ class T:
 	# Add the article to each archive in turn
 	article.filename = filename = self.get_filename(article)
 	temp = self.format_article(article) # Reformat the article
-	self.message("Processing article #" + str(article.sequence)+ \
-                     "into archives " + str(archives)) 
+        fmt = "Processing article #%s into archives %s"
+	self.message(fmt % (article.sequence, archives))
 	for i in archives:
 	    self.archive = i
 	    archivedir = os.path.join(self.basedir, i)
@@ -488,13 +488,8 @@ class T:
 		self.open_new_archive(i, archivedir)
 		
 	    # Write the HTML-ized article
-	    f = open(os.path.join(archivedir, filename), 'w')
-	    temp_stdout, sys.stdout = sys.stdout, f
-	    self.write_article_header(temp)
-	    sys.stdout.writelines(temp.body)
-	    self.write_article_footer(temp)
-	    sys.stdout = temp_stdout
-	    f.close()
+            self.write_article(i, temp, os.path.join(archivedir,
+                                                     filename))  
 
 	    authorkey = fixAuthor(article.author)+'\000'+article.date
 	    subjectkey = string.lower(article.subject)+'\000'+article.date
@@ -506,7 +501,12 @@ class T:
 	    elif article.references: 
 		refs = self._remove_external_references(article.references)
                 if refs:
-                    maxdata = max(map(lambda ref:ref.data, refs))
+                    maxdate = self.database.getArticle(self.archive,
+                                                       refs[0])
+                    for ref in refs[1:]:
+                        a = self.database.getArticle(self.archive, ref)
+                        if a.date > maxdate.date:
+                            maxdate = a
 		    parentID = maxdate.msgid
 	    else:
 		# Get the oldest article with a matching subject, and
@@ -529,11 +529,21 @@ class T:
 	    if i not in self._dirty_archives: 
 		self._dirty_archives.append(i)
 
+    def write_article(self, index, article, path):
+        f = open(path, 'w')
+        temp_stdout, sys.stdout = sys.stdout, f
+        self.write_article_header(article)
+        sys.stdout.writelines(article.body)
+        self.write_article_footer(article)
+        sys.stdout = temp_stdout
+        f.close()
+
     def _remove_external_references(self, refs):
         keep = []
         for ref in refs:
             if self.database.hasArticle(self.archive, ref):
-                kepp.append(ref)
+                keep.append(ref)
+        return keep
 
     # Abstract methods: these will need to be overridden by subclasses
     # before anything useful can be done.

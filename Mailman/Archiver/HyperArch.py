@@ -47,8 +47,6 @@ from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
 
 from Mailman.Utils import mkdir, open_ex
-# TBD: ugly, ugly, ugly -baw
-open = open_ex
 
 gzip = None
 if mm_cfg.GZIP_ARCHIVE_TXT_FILES:
@@ -553,11 +551,11 @@ class HyperArchive(pipermail.T):
         #if the working file is still here, the archiver may have 
         # crashed during archiving. Save it, log an error, and move on. 
 	try:
-            wf=open(wname,'r')
+            wf=open_ex(wname,'r')
             syslog("error","Archive working file %s present. "
                    "Check %s for possibly unarchived msgs"
                    % (wname,ename))
-            ef=open(ename, 'a+')
+            ef=open_ex(ename, 'a+')
             ef.seek(1,2)
             if ef.read(1) <> '\n':
                 ef.write('\n')
@@ -570,7 +568,7 @@ class HyperArchive(pipermail.T):
         os.rename(name,wname)
         if self._unlocklist:
             self.maillist.Unlock()
-        archfile=open(wname,'r')
+        archfile=open_ex(wname,'r')
         self.processUnixMailbox(archfile, Article)
         archfile.close()
         os.unlink(wname)
@@ -722,104 +720,21 @@ class HyperArchive(pipermail.T):
 
     def write_TOC(self):
         self.sortarchives()
-        toc=open(os.path.join(self.basedir, 'index.html'), 'w')
+        toc=open_ex(os.path.join(self.basedir, 'index.html'), 'w')
         toc.write(self.html_TOC())
         toc.close()
 
+    def write_article(self, index, article, path):
+        f = open_ex(path, 'w')
+        f.write(article.as_html())
+        f.close()
 
-    # Archive an Article object.
-    def add_article(self, article):
-        # Determine into what archives the article should be placed
-        archives=self.get_archives(article)
-        # If no value was returned, ignore it:
-        if archives==None: archives=[]
-        # If a string was returned, convert to a list:
-        if type(archives)==type(''): archives=[archives]
-        if archives==[]: return         # Ignore the article
-
-        # Add the article to each archive in turn
-        article.filename=filename=self.get_filename(article)
-        article_text=article.as_text()
-        temp=self.format_article(article) # Reformat the article
-        self.message("Processing article #"
-                     + str(article.sequence)
-                     + ' into archives '
-                     + str(archives))
-        for i in archives:
-            self.archive=i
-            archivedir=os.path.join(self.basedir, i)
-            # If it's a new archive, create it
-            if i not in self.archives: 
-                self.archives.append(i)
-                self.update_TOC=1
-                self.database.newArchive(i)
-                # If the archive directory doesn't exist, create it
-                try: os.stat(archivedir)
-                except os.error, errdata:
-                    errno, errmsg=errdata
-                    if errno==2: 
-                        mkdir(archivedir)
-                    else: raise os.error, errdata
-                self.open_new_archive(i, archivedir)
-
-            # Write the HTML-ized article to the html archive.
-            f=open(os.path.join(archivedir, filename), 'w')
-
-            f.write(temp.as_html())
-            f.close()
-
-            # Write the text article to the text archive.
-            archivetextfile=os.path.join(self.basedir,"%s.txt" % i)
-            f=open(archivetextfile, 'a+')
-
-            f.write(article_text)
-            f.close()
-
-            authorkey=pipermail.fixAuthor(article.author)+'\000'+article.date
-            subjectkey=string.lower(article.subject)+'\000'+article.date
-
-            # Update parenting info
-            parentID=None
-            if article.in_reply_to!='': parentID=article.in_reply_to
-            elif article.references!=[]: 
-                # Remove article IDs that aren't in the archive
-                refs=filter(
-                    lambda x, self=self: self.database.hasArticle(self.archive,
-                                                                  x),
-                            article.references)
-                if len(refs):
-                    refs=map(
-                        lambda x, s=self: s.database.getArticle(s.archive, x),
-                        refs)
-                    maxdate=refs[0]
-                    for ref in refs[1:]: 
-                        if ref.date>maxdate.date: maxdate=ref
-                    parentID=maxdate.msgid
-            else:
-                # Get the oldest article with a matching subject, and assume 
-                # this is a follow-up to that article
-                parentID=self.database.getOldestArticle(self.archive,
-                                                        article.subject)
-
-            if parentID!=None and not self.database.hasArticle(self.archive,
-                                                               parentID): 
-                parentID=None
-            article.parentID=parentID 
-            if parentID!=None:
-                parent=self.database.getArticle(self.archive, parentID)
-                article.threadKey=parent.threadKey+article.date+'-'
-            else: article.threadKey=article.date+'-'
-            self.database.setThreadKey(self.archive,
-                                       article.threadKey
-                                       + '\000' + article.msgid,
-                                       article.msgid)
-            self.database.addArticle(i, temp, subjectkey, authorkey)
-            
-            if i not in self._dirty_archives: 
-                self._dirty_archives.append(i)
-        del temp
-
-
+        # Write the text article to the text archive.
+        path = os.path.join(self.basedir, "%s.txt" % index)
+        f =open_ex(path, 'a+')
+        f.write(article.as_text())
+        f.close()
+        
     # Update only archives that have been marked as "changed".
     def update_dirty_archives(self):
         for i in self._dirty_archives:
@@ -835,7 +750,7 @@ class HyperArchive(pipermail.T):
                     gzipfile = os.path.join(self.basedir, '%s.txt.gz' % i)
                     oldgzip = os.path.join(self.basedir, '%s.old.txt.gz' % i)
                     # open the plain text file
-                    archt = open(txtfile, 'r') 
+                    archt = open_ex(txtfile, 'r') 
                     try:
                         os.rename(gzipfile, oldgzip)
                         archz = gzip.open(oldgzip)
@@ -870,7 +785,7 @@ class HyperArchive(pipermail.T):
                      + os.path.join(self.basedir, 'pipermail.pck'))
         self.database.close()
         del self.database
-        f=open(os.path.join(self.basedir, 'pipermail.pck'), 'w')
+        f=open_ex(os.path.join(self.basedir, 'pipermail.pck'), 'w')
         pickle.dump(self.getstate(), f)
         f.close()
 
@@ -985,7 +900,7 @@ class HyperArchive(pipermail.T):
     def update_article(self, arcdir, article, prev, next):
 	self.message('Updating HTML for article '+str(article.sequence))
 	try:
-	    f=open(os.path.join(arcdir, article.filename), 'r')
+	    f=open_ex(os.path.join(arcdir, article.filename), 'r')
             article.loadbody_fromHTML(f)
 	    f.close()
         except IOError:
@@ -993,6 +908,6 @@ class HyperArchive(pipermail.T):
                          % os.path.join(arcdir, article.filename))
         article.prev=prev
         article.next=next
-	f=open(os.path.join(arcdir, article.filename), 'w')
+	f=open_ex(os.path.join(arcdir, article.filename), 'w')
 	f.write(article.as_html())
 	f.close()
