@@ -36,8 +36,10 @@ run again until another version change is detected.
 import re
 import string
 from types import ListType, StringType
-import mm_cfg
-import Utils
+
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import Message
 
 
 
@@ -47,6 +49,7 @@ def Update(l, stored_state):
     UpdateOldVars(l, stored_state)
     UpdateOldUsers(l)
     CanonicalizeUserOptions(l)
+    NewRequestsDatabase(l)
 
 
 
@@ -207,13 +210,46 @@ def CanonicalizeUserOptions(l):
 
 
 
-def older(version, reference):
-    """True if version is older than current.
-
-    Different numbering systems imply version is older."""
-    if type(version) != type(reference):
-      return 1
-    if version >= reference:
-      return 0  
-    else:
-      return 1
+def NewRequestsDatabase(l):
+    """With version 1.2, we use a new pending request database schema."""
+    r = getattr(l, 'requests', {})
+    if not r:
+        # no old-style requests
+        return
+    for k, v in r.items():
+        if k == 'post':
+            # This is a list of tuples with the following format
+            #
+            # a sequential request id integer
+            # a timestamp float
+            # a message tuple: (author-email-str, message-text-str)
+            # a reason string
+            # the subject string
+            #
+            # We'll re-submit this as a new HoldMessage request, but we'll
+            # blow away the original timestamp and request id.  This means the
+            # request will live a little longer than it possibly should have,
+            # but that's no big deal.
+            for p in v:
+                author, text = p[2]
+                reason = p[3]
+                msg = Message.OutgoingMessage(text)
+                l.HoldMessage(msg, reason)
+            del r[k]
+        elif k == 'add_member':
+            # This is a list of tuples with the following format
+            #
+            # a sequential request id integer
+            # a timestamp float
+            # a digest flag (0 == nodigest, 1 == digest)
+            # author-email-str
+            # password
+            #
+            # See the note above; the same holds true.
+            for ign, ign, digest, addr, password in v:
+                l.HoldSubscription(addr, password, digest)
+            del r[k]
+        else:
+            l.LogMsg('error',
+                     "VERY BAD NEWS.  Unknown pending request type `%s' found"
+                     ' for list: %s' % (k, l._internal_name))
