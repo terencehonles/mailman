@@ -1205,6 +1205,11 @@ it will not be changed."""),
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
             to.extend(msg.getaddrlist(header))
         for fullname, addr in to:
+            # It's possible that if the header doesn't have a valid
+            # (i.e. RFC822) value, we'll get None for the address.  So skip
+            # it.
+            if addr is None:
+                continue
             addr = string.lower(addr)
             localpart = string.split(addr, '@')[0]
             if (# TBD: backwards compatibility: deprecated
