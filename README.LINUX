@@ -5,33 +5,14 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
 LINUX ISSUES
 
 Linux seems to be the most popular platform on which to run Mailman,
-which really shouldn't be a big surprise.  We have found that there
-are a number of issues that come up when running Mailman on various
-versions of Linux.
+which really shouldn't be a big surprise.  Here are some hints on
+getting Mailman to run on Linux:
 
-1. When I send mail to a Mailman list, messages silently disappear.
-
-   Some versions of SuSE Linux have a pecular problem/bug/feature
-   where effective group ids are not preserved across popen() calls.
-   Unfortunately, Mailman uses several popen() calls during the
-   delivery of messages, so if your Linux exhibits this behavior, your 
-   mail will silently disappear.
-
-   With Mailman 1.0b8+, we have a workaround that should fix this for
-   affected Linux systems, if your system has the setregid() call.  If 
-   you don't have this function, and you see messages disappearing,
-   you can try the following unsupported workaround: chmod
-   $prefix/mailman/data to the uid that mail programs run as.  You can 
-   find this uid by investigating your MTA documentation or
-   configuration.  This workaround is unsupported in that it is not
-   known whether anything else will break because of this change.
-
-2. When do I get an Operation not permitted error in aside_new()?
-
-   If you are running secure_linux, you probably have restricted
-   hardlinks turned on.  Gergely Madarasz says that this not only 
-   restricts hardlinks in /tmp, but also in any non +t directory.
-   You must turn restricted hardlinks off.
+If you are running secure_linux, you probably have restricted
+hardlinks turned on.  Gergely Madarasz says that this not only
+restricts hardlinks in /tmp, but also in any non +t directory.  This
+can cause "Operation not permitted" errors in aside_new() -- you will
+see a traceback.  You must turn restricted hardlinks off.
 
 
 
