@@ -275,6 +275,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 mm_cfg.DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX
         self.send_reminders = mm_cfg.DEFAULT_SEND_REMINDERS
         self.send_welcome_msg = mm_cfg.DEFAULT_SEND_WELCOME_MSG
+        self.send_goodbye_msg = mm_cfg.DEFAULT_SEND_GOODBYE_MSG
         self.bounce_matching_headers = \
                 mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
         self.anonymous_list = mm_cfg.DEFAULT_ANONYMOUS_LIST
@@ -285,6 +286,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.welcome_msg = ''
         self.goodbye_msg = ''
         self.subscribe_policy = mm_cfg.DEFAULT_SUBSCRIBE_POLICY
+        self.unsubscribe_policy = mm_cfg.DEFAULT_UNSUBSCRIBE_POLICY
         self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
         self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
         self.host_name = mm_cfg.DEFAULT_HOST_NAME
@@ -292,6 +294,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.administrivia = mm_cfg.DEFAULT_ADMINISTRIVIA
         self.preferred_language = mm_cfg.DEFAULT_SERVER_LANGUAGE
         self.available_languages = []
+        self.include_rfc2369_headers = 1
         # Analogs to these are initted in Digester.InitVars
         self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
         self.personalize = 0
@@ -690,7 +693,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             ack = self.send_welcome_msg
         if admin_notif is None:
             admin_notif = self.admin_notify_mchanges
-
         # Suck values out of userdesc, and apply defaults.
         email = Utils.LCDomain(userdesc.address)
         name = getattr(userdesc, 'fullname', '')
@@ -702,12 +704,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 digest = 0
             else:
                 digest = 1
-
         # Let's be extra cautious
         Utils.ValidateEmail(email)
         if self.isMember(email):
             raise Errors.MMAlreadyAMember, email
-
+        # Do the actual addition
         self.addNewMember(email, realname=name, digest=digest,
                           password=password, language=lang)
         self.setMemberOption(email, mm_cfg.DisableMime,
@@ -719,10 +720,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             kind = ' (digest)'
         else:
             kind = ''
-
         syslog('subscribe', '%s: new%s %s (%s)', self.internal_name(),
                kind, email, name)
-
         if ack:
             self.SendSubscribeAck(email, self.getMemberPassword(email), digest)
         if admin_notif:
@@ -739,11 +738,21 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 subject, text)
             msg.send(self)
 
+    def DeleteMember(self, name, whence=None, admin_notif=0, userack=1):
+        realname, email = parseaddr(name)
+        if self.unsubscribe_policy == 0:
+            self.ApprovedDeleteMember(name, whence, admin_notif, userack)
+        else:
+            self.HoldUnsubscription(email)
+            raise Errors.MMNeedApproval, _(
+                'unsubscriptions require moderator approval')
+
     def ApprovedDeleteMember(self, name, whence=None,
-                             admin_notif=None, userack=1):
+                             admin_notif=None, userack=None):
+        if userack is None:
+            userack = self.send_goodbye_msg
         if admin_notif is None:
             admin_notif = self.admin_notify_mchanges
-
         # Delete a member, for which we know the approval has been made
         fullname, emailaddr = parseaddr(name)
         if not self.isMember(emailaddr):
@@ -751,7 +760,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Remove the member
         self.removeMember(emailaddr)
         # And send an acknowledgement to the user...
-        if userack and self.goodbye_msg and len(self.goodbye_msg):
+        if userack:
             self.SendUnsubscribeAck(name)
         # ...and to the administrator
         if admin_notif:
