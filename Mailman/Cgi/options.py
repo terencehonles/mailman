@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -221,7 +221,7 @@ def main():
         # Troll through all the mailing lists that match host_name and see if
         # the user is a member.  If so, add it to the list.
         onlists = []
-        for gmlist in lists_of_member(mlist.host_name, user):
+        for gmlist in lists_of_member(mlist, user) + [mlist]:
             url = gmlist.GetOptionsURL(user)
             link = Link(url, gmlist.real_name)
             onlists.append((gmlist.real_name, link))
@@ -326,10 +326,9 @@ def main():
             return
 
         # See if the user wants to change their passwords globally
+        mlists = [mlist]
         if cgidata.getvalue('pw-globally'):
-            mlists = lists_of_member(mlist.host_name, user)
-        else:
-            mlists = [mlist]
+            mlists.extend(lists_of_member(mlist, user))
 
         for gmlist in mlists:
             change_password(gmlist, user, newpw, confirmpw)
@@ -504,7 +503,7 @@ def main():
                     break
 
         if global_enable is not None or global_remind is not None:
-            for gmlist in lists_of_member(mlist.host_name, user):
+            for gmlist in lists_of_member(mlist, user):
                 global_options(gmlist, user, global_enable, global_remind)
 
         # Now print the results
@@ -761,15 +760,19 @@ def add_error_message(doc, errmsg, tag='Error: ', *args):
 
 
 
-def lists_of_member(hostname, user):
+def lists_of_member(mlist, user):
+    hostname = mlist.host_name
     onlists = []
     for listname in Utils.list_names():
-        mlist = MailList.MailList(listname, lock=0)
-        if mlist.host_name <> hostname:
+        # The current list will always handle things in the mainline
+        if listname == mlist.internal_name():
             continue
-        if not mlist.isMember(user):
+        glist = MailList.MailList(listname, lock=0)
+        if glist.host_name <> hostname:
             continue
-        onlists.append(mlist)
+        if not glist.isMember(user):
+            continue
+        onlists.append(glist)
     return onlists
 
 
@@ -816,12 +819,8 @@ def global_options(mlist, user, global_enable, global_remind):
         # Install the emergency shutdown signal handler
         signal.signal(signal.SIGTERM, sigterm_handler)
 
-        if global_enable is None:
-            pass
-        elif global_enable:
-            mlist.setDeliveryStatus(user, ENABLED)
-        else:
-            mlist.setDeliveryStatus(user, BYCHOICE)
+        if global_enable is not None:
+            mlist.setDeliveryStatus(user, global_enable)
 
         if global_remind is not None:
             mlist.setMemberOption(user, mm_cfg.SuppressPasswordReminder,
