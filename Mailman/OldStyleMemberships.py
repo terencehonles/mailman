@@ -271,11 +271,11 @@ class OldStyleMemberships(MemberAdaptor):
         # no options set (i.e. the value would be 0), then they have no entry
         # in the user_options dict.  We use setdefault() here, and then del
         # the entry below just to make things (questionably) cleaner.
-        flags = self.__mlist.user_options.setdefault(memberkey, 0)
+        self.__mlist.user_options.setdefault(memberkey, 0)
         if value:
-            self.__mlist.user_options[memberkey] |= flags
+            self.__mlist.user_options[memberkey] |= flag
         else:
-            self.__mlist.user_options[memberkey] &= ~flags
+            self.__mlist.user_options[memberkey] &= ~flag
         if not self.__mlist.user_options[memberkey]:
             del self.__mlist.user_options[memberkey]
 
