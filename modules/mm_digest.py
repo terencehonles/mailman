@@ -29,7 +29,7 @@ class Digester:
 	     'Which delivery mode is the default for new users?'),
 
 	    ('mime_is_default_digest', mm_cfg.Radio, 
-	     ('Mime', 'Plain'), 0,
+	     ('Plain', 'Mime'), 0,
 	     'When receiving digests, which format is default?'),
 
 	    ('digest_size_threshhold', mm_cfg.Number, 3, 0,
