@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 503 $"
+__version__ = "$Revision: 504 $"
 
 try:
     import mm_cfg
@@ -171,7 +171,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             "Fundamental list characteristics, including descriptive"
             " info and basic behaviors.",
 	    ('real_name', mm_cfg.String, 50, 0,
-	     'The public name of this list',
+	     'The public name of this list (make case-changes only).',
 
              "The capitalization of this name can be changed to make it"
              " presentable in polite company as a proper noun, or to make an"
