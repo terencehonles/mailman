@@ -14,6 +14,7 @@ import mm_utils, maillist, mm_cfg, htmlformat, mm_err
 
 def main():
 
+    global doc, list_name		# For encompassing try/except.
     doc = htmlformat.Document()
 
     path = os.environ['PATH_INFO']
@@ -158,21 +159,25 @@ def FormatConfiguration(doc, list):
 				      % list.real_name)))
     doc.AddItem('<hr>')
 
+    links = htmlformat.UnorderedList()
+
     link = htmlformat.Link(list.GetScriptURL('admindb'), 
 			   'View or edit the administrative '
 			   'requests database.')
-    doc.AddItem(htmlformat.FontAttr(link, size="+1"))
-    doc.AddItem('<p>')
+    link = htmlformat.FontAttr(link, size="+1")
+    links.AddItem(link)
 
     link = htmlformat.Link(list.GetScriptURL('listinfo'),
 			   'Go to the general list information page.')
-    doc.AddItem(htmlformat.FontAttr(link, size="+1"))
-    doc.AddItem('<p>')
+    link = htmlformat.FontAttr(link, size="+1")
+    links.AddItem(link)
 
     link = htmlformat.Link(list.GetScriptURL('edithtml'),
 			   'Edit the HTML for the public list pages.')
-    doc.AddItem(htmlformat.FontAttr(link, size="+1"))
-    doc.AddItem('<p>')
+    link = htmlformat.FontAttr(link, size="+1")
+    links.AddItem(link)
+
+    doc.AddItem(links)
 
     doc.AddItem('<hr>')
 
@@ -180,31 +185,20 @@ def FormatConfiguration(doc, list):
     form = htmlformat.Form(list.GetScriptURL('admin'))
     doc.AddItem(form)
 
-    password_table = htmlformat.Table()
-    password_table.AddRow(['Enter the admin password to change options:',
+    password_submit = htmlformat.Table()
+    password_submit.AddRow([htmlformat.Bold('For changes, enter the '
+					    'admin password:'),
 			   htmlformat.PasswordBox('adminpw')])
-    password_table.AddRow(['When you are done...', 
-			   htmlformat.SubmitButton('submit',
-						   'Submit Changes')])
+    rdy = htmlformat.Center(htmlformat.Bold("And when you're ready... "))
+    password_submit.AddRow([rdy,
+			    htmlformat.FontAttr(
+				htmlformat.SubmitButton('submit',
+							'Submit Changes'),
+				color='red'),])
 
-    form.AddItem(password_table)
-
-    big_table = htmlformat.Table(border=2)
-
-    FormatOptionsSection('General Options', general, big_table, list)
-    FormatOptionsSection('Non-Digest Options', nodigest, big_table, list)
-    FormatOptionsSection('Digest Options', digest, big_table, list)
-    FormatOptionsSection('Bounce Administration Options',
-			 bounce, big_table, list)
-    FormatOptionsSection('Archival Options', archives, big_table, list)
-
-    form.AddItem(big_table)
-    form.AddItem('<p>')
-
-    change_pw_table = htmlformat.Table(border=2)
+    change_pw_table = htmlformat.Table()
     change_pw_table.AddRow(
-	[htmlformat.Header(
-	    2, htmlformat.Center('Change Your Password:'))])
+	[htmlformat.Underline(htmlformat.Center('Change Your Password'))])
     change_pw_table.AddCellInfo(change_pw_table.GetCurrentRowIndex(),
 				0,
 				colspan=2)
@@ -214,13 +208,37 @@ def FormatConfiguration(doc, list):
     change_pw_table.AddRow(['And also confirm it:', 
 			   htmlformat.PasswordBox('confirmpw')])
 
-    form.AddItem(htmlformat.Center(change_pw_table))
+    password_stuff = htmlformat.Table(border=1)
+    password_stuff.AddRow([password_submit, change_pw_table])
+    form.AddItem(password_stuff)
+
+    big_table = htmlformat.Table(border=1)
+
+    FormatOptionsSection('General Options', general, big_table, list)
+    FormatOptionsSection('Non-Digest Options', nodigest, big_table, list)
+    FormatOptionsSection('Digest Options', digest, big_table, list)
+    FormatOptionsSection('Bounce Administration Options',
+			 bounce, big_table, list)
+    FormatOptionsSection('Archival Options', archives, big_table, list)
+
+    form.AddItem(big_table)
     # Improve the html here...
-    form.AddItem('<hr>')
-    form.AddItem('<h3>Mass Subscribe People</h3>')
-    form.AddItem('<h4>enter one email address per line</h4>')
+    form.AddItem('<h3>Mass Subscribe Members</h3>')
+    form.AddItem('<h4>Enter one email address per line</h4>')
     form.AddItem(htmlformat.TextArea(name='subscribees',
 				     rows=20,cols=60,wrap=None))
+
+    form.AddItem('<h3>To Unsubscribe Members...</h3>')
+    form.AddItem("""
+    The key to unsubscribing members is the fact that you can use your
+    admin password in place of the user's password to change user options
+    or unsubscribe them.  Visit the user in question's options page (from
+    the <a href="%s">listinfo</a> page) and do the unsubscribe procedure,
+    providing the admin password instead of the user's privacy password.
+    <p>Note that you can also use the subscriber option to inhibit their
+    delivery of messages, if you figure the bounces are transient."""  %
+    list.GetScriptURL('listinfo'))
+
     form.AddItem(list.GetMailmanFooter())
 
 def FormatOptionsSection(name, options, big_table, list):
@@ -284,9 +302,9 @@ def GetValidValue(list, prop, my_type, val, dependant):
 	val = filter(SafeValidAddr,
 		     map(string.strip, string.split(val, '\n')))
 	if dependant and len(val):
-	    # XXX klm - looks like turn_on_moderation is orphaned
 	    # Wait till we've set everything to turn it on,
 	    # as we don't want to clobber our special case.
+	    # XXX klm - looks like turn_on_moderation is orphaned?
 	    turn_on_moderation = 1
 	return val
     elif my_type == mm_cfg.Host:
@@ -374,13 +392,16 @@ def ChangeOptions(list, opt_list, cgi_info, document):
 
     list.Save()
 
-
 if __name__ == "__main__":
     try:
 	main()
     except KeyboardInterrupt:
 	print "Interrupted!"
-	raise SystemExit, 1
+	raise SystemExit, 0
+    except mm_err.MMUnknownListError, msg:
+	doc.AddItem(htmlformat.Header(2, "%s: %s" % (list_name, msg)))
+	print doc.Format()
+	raise SystemExit, 0
     except:
 	print "Content-type: text/html\n"
 
