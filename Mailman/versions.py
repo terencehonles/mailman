@@ -175,6 +175,7 @@ def NewVars(l):
     add_only_if_missing('autoresponse_graceperiod', 90, l)
     add_only_if_missing('postings_responses', {}, l)
     add_only_if_missing('admin_responses', {}, l)
+    add_only_if_missing('reply_goes_to_list', '', l)
 
 
 
