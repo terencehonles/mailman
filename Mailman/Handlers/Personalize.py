@@ -51,7 +51,6 @@ def process(mlist, msg, msgdata):
         del msg['x-mailman-copy']
         if msgdata.get('add-dup-header', {}).has_key(member):
             msg['X-Mailman-Copy'] = 'yes'
-
         # See if we're taking the opportunity to VERP for more reliable bounce
         # processing.
         metadatacopy['verp'] = mm_cfg.VERP_PERSONALIZED_DELIVERIES
