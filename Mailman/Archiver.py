@@ -19,11 +19,15 @@
 
 Public archives are separated from private ones.  An external archival
 mechanism (eg, pipermail) should be pointed to the right places, to do the
-archival."""
+archival.
+"""
 
 
 import sys, os, string
-import mm_utils, mm_mbox, mm_cfg, mm_message
+import Utils
+import Mailbox
+import mm_cfg
+
 
 ## ARCHIVE_PENDING = "to-archive.mail"
 ## # ARCHIVE_RETAIN will be ignored, below, in our hook up with andrew's new
@@ -104,7 +108,7 @@ class Archiver:
 	archive_file.close()
 	if not text:
 	    return
-	mm_utils.MakeDirTree(archive_dir, 0755)
+	Utils.MakeDirTree(archive_dir, 0755)
 	# Pipermail 0.0.2 always looks at sys.argv, and I wasn't into hacking
 	# it more than I had to, so here's a small hack to get around that,
 	# calling pipermail w/ the correct options.
@@ -153,9 +157,8 @@ class Archiver:
 	ou = os.umask(002)
 	try:
 	    try:
-		return mm_mbox.Mailbox(open(afn, "a+"))
+		return Mailbox.Mailbox(open(afn, "a+"))
 	    except IOError, msg:
 		raise IOError, msg
 	finally:
 	    os.umask(ou)
-	    

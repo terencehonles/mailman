@@ -16,7 +16,11 @@
 
 '''Mixin class for gatewaying mail to news, and news to mail.'''
 
+
+# XXX: This should be integrated with the Errors module
 ImproperNNTPConfigError = "ImproperNNTPConfigError"
+
+
 class GatewayManager:
   def InitVars(self):
     # Configurable
@@ -88,7 +92,7 @@ class GatewayManager:
  	return eval(l)
 				
   def SendMailToNewsGroup(self, mail_msg):
-	import mm_message
+	import Message
 	import os
 	#if self.gateway_to_news == 0:
 	#  return
@@ -103,7 +107,7 @@ class GatewayManager:
 	x = os.fork()
 	if not x:
 	  # Now make the news message...
-	  msg = mm_message.NewsMessage(mail_msg)
+	  msg = Message.NewsMessage(mail_msg)
 
   	  import nntplib,string
 
