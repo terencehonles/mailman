@@ -43,7 +43,7 @@ import posixfile
 import HyperDatabase
 import pipermail
 
-from Mailman import mm_cfg, EncWord
+from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
 
 from Mailman.Utils import mkdir, open_ex
