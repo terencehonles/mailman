@@ -640,7 +640,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     # Membership management front-ends and assertion checks
     #
-    def InviteNewMember(self, userdesc):
+    def InviteNewMember(self, userdesc, text=''):
         """Invite a new member to the list.
 
         This is done by creating a subscription pending for the user, and then
@@ -648,11 +648,16 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         """
         invitee = userdesc.address
         requestaddr = self.GetRequestEmail()
+        # Hack alert!  Squirrel away a flag that only invitations have, so
+        # that we can do something slightly different when an invitation
+        # subscription is confirmed.  In those cases, we don't need further
+        # admin approval, even if the list is so configured
+        userdesc.invitation = 1
         cookie = Pending.new(Pending.SUBSCRIPTION, userdesc)
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
         listname = self.real_name
-        text = Utils.maketext(
+        text += Utils.maketext(
             'invite.txt',
             {'email'      : invitee,
              'listname'   : listname,
@@ -807,7 +812,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMNeedApproval, _(
                 'subscriptions to %(realname)s require moderator approval')
 
-    def ApprovedAddMember(self, userdesc, ack=None, admin_notif=None):
+    def ApprovedAddMember(self, userdesc, ack=None, admin_notif=None, text=''):
         """Add a member right now.
 
         The member's subscription must be approved by what ever policy the
@@ -859,7 +864,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         syslog('subscribe', '%s: new%s %s (%s)', self.internal_name(),
                kind, email, name)
         if ack:
-            self.SendSubscribeAck(email, self.getMemberPassword(email), digest)
+            self.SendSubscribeAck(email, self.getMemberPassword(email),
+                                  digest, text)
         if admin_notif:
             realname = self.real_name
             subject = _('%(realname)s subscription notification')
@@ -1035,10 +1041,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 lang = userdesc.language
             except ValueError:
                 raise Errors.MMBadConfirmation, 'bad subscr data %s' % (data,)
+            # Hack alert!  Was this a confirmation of an invitation?
+            invitation = getattr(userdesc, 'invitation', 0)
             # We check for both 2 (approval required) and 3 (confirm +
             # approval) because the policy could have been changed in the
             # middle of the confirmation dance.
-            if self.subscribe_policy in (2, 3):
+            if not invitation and self.subscribe_policy in (2, 3):
                 self.HoldSubscription(addr, fullname, password, digest, lang)
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
