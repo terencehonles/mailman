@@ -79,7 +79,7 @@ def process(mlist, msg, msgdata):
     # or if there is already a reply-to set.  If the user has set
     # one we assume they have a good reason for it, and we don't
     # second guess them.
-    if not fasttrack or msg.get('reply-to'):
+    if not fasttrack and not msg.get('reply-to'):
         # Set Reply-To: header to point back to this list
         if mlist.reply_goes_to_list == 1:
             msg['Reply-To'] = mlist.GetListEmail()
