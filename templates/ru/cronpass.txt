@@ -3,15 +3,14 @@
 также сообщается о том, как получить более подробную информацию о
 Вашей подписке, как изменить ее параметры, а также как ее удалить.
 
-You can visit the URLs to change your membership status or
-configuration, including unsubscribing, setting digest-style delivery
-or disabling delivery altogether (e.g., for a vacation), and so on.
+Для изменения параметров своей подписки, Вы можете воспользоваться
+указанными страницами.
 
-In addition to the URL interfaces, you can also use email to make such
-changes.  For more info, send a message to the '-request' address of
-the list (for example, %(exreq)s) containing just the word 'help' in
-the message body, and an email message will be sent to you with
-instructions.
+Для выполенения тех же действий вы можете воспользоваться электронной
+почтоый.  Для получения полной информации об этой возможнрости по
+адресу '-request' (например, %(exreq)s) отправьте письмо, в теле
+которого укажите слово 'help'.  В ответ почтовый сервер вам пришлет
+письмо с подробной инструкцией.
 
 Если у вас возникли вопросы, Вы можете задать их, отправив письмо по
 адресу %(owner)s.
