@@ -83,10 +83,16 @@ def process_request(doc, cgidata):
         notify  = int(cgidata.getvalue('notify', '0'))
     except ValueError:
         notify = 0
+    try:
+        moderate = int(cgidata.getvalue('moderate', '0'))
+    except ValueError:
+        moderate = mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+        
     password = cgidata.getvalue('password', '').strip()
     confirm  = cgidata.getvalue('confirm', '').strip()
     auth     = cgidata.getvalue('auth', '').strip()
     langs    = cgidata.getvalue('langs', [mm_cfg.DEFAULT_SERVER_LANGUAGE])
+
     if type(langs) <> ListType:
         langs = [langs]
     # Sanity check
@@ -188,6 +194,7 @@ def process_request(doc, cgidata):
         # Initialize the host_name and web_page_url attributes, based on
         # virtual hosting settings and the request environment variables.
         hostname = Utils.get_domain()
+        mlist.default_member_moderation = moderate
         mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % hostname
         mlist.host_name = mm_cfg.VIRTUAL_HOSTS.get(hostname, hostname)
         mlist.Save()
@@ -294,6 +301,9 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     ftable = Table(border=0, cols='2', width='100%',
                    cellspacing=3, cellpadding=4)
 
+    ftable.AddRow([Center(Italic(_('List Identity')))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
+
     ftable.AddRow([Label(_('Name of list:')),
                    TextBox('listname', cgidata.getvalue('listname', ''))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
@@ -329,6 +339,20 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
         notify = int(cgidata.getvalue('notify', '1'))
     except ValueError:
         notify = 1
+
+    ftable.AddRow([Center(Italic(_('List Characteristics')))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
+
+    ftable.AddRow([
+        Label(_("""Should new members be quarantined before they
+    are allowed to post unmoderated to this list?  Answer <em>Yes</em> to hold
+    new member postings for moderator approval by default.""")),
+        RadioButtonArray('moderate', (_('No'), _('Yes')),
+                         checked=mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION,
+                         values=(0,1))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
+
     # Create the table of initially supported languages
     langs = Utils.GetDirectories(mm_cfg.TEMPLATE_DIR)
     langs.sort()
