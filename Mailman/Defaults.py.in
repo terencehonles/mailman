@@ -44,6 +44,12 @@ MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 # System ceiling on number of batches into which deliveries are divided:
 MAX_SPAWNS        = 40
 
+# 1 to use crypt for passwords instead of md5.
+# Crypt may not work on all python installs.
+# Don't change this value once you have lists running...
+# In fact, you should just let configure set this one and leave it alone.
+USE_CRYPT         = 1
+
 			 # General Defaults #
 
 DEFAULT_FILTER_PROG = ''
