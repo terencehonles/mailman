@@ -97,7 +97,7 @@ class SecurityManager:
                 # A bad system error
                 raise TypeError, 'No user supplied for AuthUser context'
             secret = self.getMemberPassword(user)
-            key += 'user+%s' % user
+            key += 'user+%s' % Utils.ObscureEmail(user)
         elif authcontext == mm_cfg.AuthListModerator:
             secret = self.mod_password
             key += 'moderator'
@@ -202,14 +202,14 @@ class SecurityManager:
             if ac:
                 print self.MakeCookie(ac, user)
                 return 1
-        except Errors.MMNotAMemberError:
+        except Errors.NotAMemberError:
             pass
         return 0
 
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)
         if key is None or secret is None or not isinstance(secret, StringType):
-            raise Errors.MMBadUserError
+            raise ValueError
         # Timestamp
         issued = int(time.time())
         # Get a digest of the secret, plus other information.
@@ -266,12 +266,13 @@ class SecurityManager:
                 usernames = [user]
             else:
                 usernames = []
-                prefix = self.internal_name() + ':user:'
+                prefix = self.internal_name() + '+user+'
                 for k in c.keys():
                     if k.startswith(prefix):
                         usernames.append(k[len(prefix):])
-            # If any check out, we're golden
-            for user in usernames:
+            # If any check out, we're golden.  Note: `@'s are no longer legal
+            # values in cookie keys.
+            for user in [Utils.UnobscureEmail(u) for u in usernames]:
                 ok = self.__checkone(c, authcontext, user)
                 if ok:
                     return 1
