@@ -245,7 +245,7 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
 	if verbose: print i,
 	l = MailList(i)
 	if verbose: print
-	if unlock:
+	if unlock and l.Locked():
 	    l.Unlock()
 	got.append(apply(func, (l,)))
 	if verbose: print got[-1]
