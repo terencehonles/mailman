@@ -30,5 +30,5 @@ i cambi della stessa password) o per cancellarti.  La password è:
 Se dimentichi la password, non preoccuparti, riceverai mensilmente un 
 promemoria che ti elencherà tutte le tue password nelle nostre liste 
 su %(host_name)s e ti spiegherà come cancellarti o cambiare le tue 
-opzioni.  C'è anche un bottone, nella tua pagina delle opzioni, che
+opzioni.  C'è anche un pulsante, nella tua pagina delle opzioni, che
 ti spedirà la password ogni volta che lo premerai.

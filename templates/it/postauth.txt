@@ -1,5 +1,5 @@
-Come amministratore della lista, la tua autorizzazione è 
-richiesta per il seguente messaggio:
+E' richiesta la tua autorizzazione è per approvare il seguente 
+messaggio:
 
     Lista:     %(listname)s@%(hostname)s
     Mittente:  %(sender)s

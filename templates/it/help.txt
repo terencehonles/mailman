@@ -11,8 +11,8 @@ Web, all'indirizzo:
 
     %(listinfo_url)s
 
-In particolare, puoi usare il sito Web per avere la tua password
-inviata all'indirizzo con il quale sei iscritto alla lista.
+In particolare, puoi usare le pagine web per farti inviare la tua
+password all'indirizzo con il quale ti sei iscritto alla lista.
 
 I comandi specifici (subscribe, who, ecc.) possono essere inviati
 all'indirizzo *-request per la lista interessata, ad es. per la lista
@@ -22,12 +22,12 @@ Riguardo le convenzioni - le parole tra "<>" sono RICHIESTE mentre
 quelle tra "[]" sono OPZIONALI.  Non includere "<>" o "[]" quando usi
 i comandi.
 
-I seguenti comandi sono validi:
+Puoi inviare i seguenti comandi:
 
     %(commands)s
 
 I comandi possono essere inviati a %(requestaddr)s
 
-Domande e richieste di intervento manuale possono essere inviati a:
+Domande e richieste di intervento manuale possono essere inviate a:
 
     %(adminaddr)s
