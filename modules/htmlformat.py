@@ -388,11 +388,11 @@ class RadioButtonArray:
 	l = len(self.button_names)
   	for i in range(l):
   	    if self.checked == i:
-  		items.append(self.button_names[i])
   		items.append(RadioButton(self.name, i, 1))
-  	    else:
   		items.append(self.button_names[i])
+  	    else:
   		items.append(RadioButton(self.name, i))
+  		items.append(self.button_names[i])
 	if self.horizontal:
 	    t.AddRow(items)
 	else:
