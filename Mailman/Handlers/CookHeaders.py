@@ -244,6 +244,11 @@ def prefix_subject(mlist, msg, msgdata):
             c = Charset(c)
         if not _isunicode(s):
             codec = c.input_codec or 'ascii'
-            s = unicode(s, codec, 'replace')
+            try:
+                s = unicode(s, codec, 'replace')
+            except LookupError:
+                # Unknown codec, is this default reasonable?
+                s = unicode(s, Utils.GetCharSet(mlist.preferred_language),
+                            'replace')
         h.append(s, c)
     msg['Subject'] = h
