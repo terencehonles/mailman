@@ -9,12 +9,13 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = VERSION + "$Revision: 305 $"
+__version__ = VERSION + "$Revision: 342 $"
 
 		   # Many site-specific settings #
 
 MAILMAN_URL       = 'http://www.python.org/ftp/python/contrib/Network/mailman/'
 DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.OR.HOST.NAME'
+SMTPHOST	  = 'localhost'
 SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'     # yours may be different
 DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
 ARCHIVE_URL       = 'http://www.OVERRIDE.WITH.YOUR.ARCHIVE.DIR/'
@@ -52,6 +53,27 @@ DEFAULT_MSG_HEADER = ""
 DEFAULT_MSG_FOOTER = """------------------------------------------------------
 %(real_name)s maillist  -  %(real_name)s@%(host_name)s
 %(web_page_url)slistinfo/%(_internal_name)s
+"""
+
+MESSAGE_DECORATION_NOTE = """This text can include  %(field)s format strings
+which is resolved against the list's attribute dictionary (__dict__).  Some 
+useful fields are:
+
+<dl>
+  <dt>real_name
+  <dd>The "pretty" name of the list, with capitalization.
+  <dt>_internal_name
+  <dd>The name by which the list is identified in URLs, where case
+      is germane.
+  <dt>host_name
+  <dd>The domain-qualified host name where the list server runs.
+  <dt>web_page_url
+  <dd>The mailman root URL to which, eg, 'listinfo/%(_internal_name)
+      can be appended to yield the listinfo page for the list.
+  <dt>description
+  <dd>The brief description of the list.
+  <dt>info
+  <dd>The less brief paragraph or two describing the list.
 """
 
 		     # List Accessibility Defaults #
