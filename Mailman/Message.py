@@ -166,7 +166,9 @@ class Message(rfc822.Message):
         msgdata.update(newdata)
         msgdata.update(kws)
         # Get rid of volatile entries, which have the convention of starting
-        # with an underscore (TBD: should we use v_ as a naming convention?)
+        # with an underscore (TBD: should we use v_ as a naming convention?).
+        # Need the _dirty flag for later though.
+        dirty = msgdata.get('_dirty')
         for k in msgdata.keys():
             if k[0] == '_':
                 del msgdata[k]
@@ -174,8 +176,9 @@ class Message(rfc822.Message):
         dbfp = Utils.open_ex(dbfile, 'w')
         marshal.dump(msgdata, dbfp)
         dbfp.close()
-        # if it doesn't already exist, write the message file
-        if not existsp:
+        # If it doesn't already exist, or if the text of the message has
+        # changed, write the message file to disk.
+        if not existsp or dirty:
             msgfp = Utils.open_ex(msgfile, 'w')
             msgfp.write(text)
             msgfp.close()
