@@ -204,6 +204,7 @@ def NewVars(l):
     add_only_if_missing('topics_bodylines_limit', 5)
     add_only_if_missing('one_last_digest', {})
     add_only_if_missing('usernames', {})
+    add_only_if_missing('personalize', 0)
 
 
 
