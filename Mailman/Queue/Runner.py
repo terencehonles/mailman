@@ -74,7 +74,6 @@ class Runner:
             self._cleanup()
 
     def __oneloop(self):
-        syslog('debug', '===== starting loop')
         # First, list all the files in our queue directory.
         # Switchboard.files() is guaranteed to hand us the files in FIFO
         # order.  Return an integer count of the number of files that were
@@ -112,7 +111,6 @@ class Runner:
             self._doperiodic()
             if self._shortcircuit():
                 break
-        syslog('debug', '===== finished loop (%s)', len(self._listcache))
         return len(files)
 
     def __onefile(self, msg, msgdata):
