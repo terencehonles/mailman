@@ -73,8 +73,8 @@ A. The most likely cause of this is that the GID that is compiled into
 
    These errors are logged to syslog and they do not show up in the
    Mailman log files.  Problems with the CGI wrapper do get reported
-   in the Web browser though, and include the expected GID, so that
-   should help a lot.
+   in the web browser though (unless STEALTH_MODE is enabled), and
+   include the expected GID, so that should help a lot.
 
    You may want to have syslog running and configured to log the
    mail.error log class somewhere; on Solaris systems, the line
@@ -89,6 +89,15 @@ A. The most likely cause of this is that the GID that is compiled into
    visit the mailman/listinfo web page, and it's due to a UID or GID
    mismatch, then you should get an entry at the end of
    /var/log/syslog identifying the expected and received values.
+
+   If you are not getting any log messages in syslog, or in Mailman's
+   own log files, but messages are still not being delivered, then it
+   is likely that qrunner is not running (qrunner is the process that
+   handles all mail in the system).  In Mailman 2.0, qrunner was
+   invoked from cron so make sure your crontab entries for the
+   `mailman' user have been installed.  In Mailman 2.1, qrunner is
+   started with the bin/mailmanctl script, which can be invoked
+   manually, or merged with your OS's init scripts.
 
 Q. Why do my web pages hang?
 
@@ -111,15 +120,19 @@ A. Many of the scripts have their standard error logged to
    there, as well, so you should check there at least occasionally to
    look for bugs in the code and problems in your setup.
 
-   One thing that is *not* caught by the standard error hook is syntax
-   errors, but any of these should have been caught in the
-   installation phase, which byte-compiles all .py files in the
-   distribution.  There may be syntax errors lurking if you hacked the
-   code, or in the scripts that are not modules.
+   One thing that is reported in logs/error is syntax errors, but any
+   of these should have been caught in the installation phase, which
+   byte-compiles all .py files in the distribution.  There may be
+   syntax errors lurking if you hacked the code, or in the scripts
+   that are not modules.
 
    You can always use the Python module `compile' or `compileall' to
    force byte compilation of a file, or just fire up the Python
    interpreter and try importing the module.
+
+   You may want to periodically check the other log files in the logs/
+   directory, perhaps occasionally rotating them with something like
+   the Linux logrotate script.
 
 Q. Why doesn't the archive link work?
 
