@@ -16,12 +16,8 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# NOTE: This is being deprecated since mailman has been shifted over to an
-#       external archiver (ie, andrew kuchling's latest version of pipermail.)
-#
-# This script gets called by cron.
-# It updates the archive for all mailing lists with update-frequency equal
-# to or greater than the specified archive level.
+# This script is meant to be periodically applied by cron, to dispatch
+# messages pending delivery on the mailman mail queue.
 
 
 import sys
