@@ -17,7 +17,7 @@
 
 """Embody incoming and outgoing messages as objects."""
 
-__version__ = "$Revision: 646 $"
+__version__ = "$Revision: 670 $"
 
 
 import sys
@@ -63,6 +63,11 @@ class FakeFile:
 	startline = self.curline
 	self.curline = self.lastline + 1
 	return self.lines[startline:]
+    def seek(self, pos):
+	if pos <> 0:
+	  raise ValueError, "FakeFiles can only seek to the beginning."
+	self.curline = 0
+	
     
 
 # We know the message is gonna come in on stdin or from text for our purposes.
@@ -74,10 +79,25 @@ class IncomingMessage(rfc822.Message):
 	else:
 	    rfc822.Message.__init__(self, FakeFile(text), 0)
 	    self.body = self.fp.read()
+	self.file_count = None
 
     def readlines(self):
+	if self.file_count <> None:
+	  x = self.file_count
+	  self.file_count = len(self.file_data)
+	  return self.file_data[x:]
         return map(RemoveNewline, self.headers) + [''] + \
 	       string.split(self.body,'\n')
+
+    def readline(self):
+	if self.file_count == None:
+	  self.file_count = 0
+	  self.file_data = map(RemoveNewline, self.headers) + [''] + \
+	       string.split(self.body,'\n')
+	if self.file_count >= len(self.file_data):
+		return ''	
+	self.file_count = self.file_count + 1
+	return self.file_data[self.file_count-1] + '\n'
 
     def GetSender(self):
 	# Look for a Sender field.
@@ -152,8 +172,22 @@ class OutgoingMessage:
 	self.sender = sender
 
     def readlines(self):
-        return map(RemoveNewline,self.headers) + [''] + \
+	if self.file_count <> None:
+	  x = self.file_count
+	  self.file_count = len(self.file_data)
+	  return self.file_data[x:]
+        return map(RemoveNewline, self.headers) + [''] + \
 	       string.split(self.body,'\n')
+
+    def readline(self):
+	if self.file_count == None:
+	  self.file_count = 0
+	  self.file_data = map(RemoveNewline, self.headers) + [''] + \
+	       string.split(self.body,'\n')
+	if self.file_count >= len(self.file_data):
+		return ''	
+	self.file_count = self.file_count + 1
+	return self.file_data[self.file_count-1] + '\n'
 
     def SetHeaders(self, headers):
         self.headers = map(AddBackNewline, string.split(headers, '\n'))
@@ -222,3 +256,13 @@ class OutgoingMessage:
             newheaders.append(h)
         self.headers = newheaders
         self.CacheHeaders()
+
+
+
+class NewsMessage(IncomingMessage):
+    def __init__(self, mail_msg):
+	self.fp = mail_msg.fp
+	self.fp.seek(0)
+	rfc822.Message.__init__(self, self.fp, 0)
+	self.body = self.fp.read()
+	self.file_count = None
