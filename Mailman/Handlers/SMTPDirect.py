@@ -75,9 +75,19 @@ def process(mlist, msg, msgdata):
     finally:
         t1 = time.time()
         mlist.Lock()
-    # Process any failed deliveries.
+    # Log the successful post
     syslog('smtp', 'smtp for %d recips, completed in %.3f seconds' %
            (len(recips), (t1-t0)))
+
+    if refused:
+        syslog('post', 'post to %s from %s, size=%d, %d failures' %
+               (mlist.internal_name(), msg.GetSender(), len(msg.body),
+                len(refused)))
+    else:
+        syslog('post', 'post to %s from %s, size=%d, success' %
+               (mlist.internal_name(), msg.GetSender(), len(msg.body)))
+
+    # Process any failed deliveries.
     tempfailures = []
     for recip, (code, smtpmsg) in refused.items():
         # DRUMS is an internet draft, but it says:
