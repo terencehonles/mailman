@@ -65,6 +65,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return os.path.join(self.web_page_url, '%s/%s' % 
 			    (script_name, self._internal_name))
 
+    def GetOptionsURL(self, addr):
+	options = self.GetScriptURL('options')
+        if self.obscure_addresses:
+            treated = mm_utils.ObscureEmail(addr, for_text=0)
+        else:
+            treated = addr
+        return os.path.join(options, treated)
 
     def GetUserOption(self, user, option):
 	if option == mm_cfg.Digests:
@@ -123,7 +130,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.moderated = mm_cfg.DEFAULT_MODERATED
 	self.require_explicit_destination = \
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
-        self.accepable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
+        self.acceptable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
 	self.bounce_matching_headers = \
 		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
@@ -419,6 +426,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.AddRequest('add_member', digest, name, password)
 
     def ApprovedAddMember(self, name, password, digest):
+        # XXX klm: It *might* be nice to leave the case of the name alone,
+        #          but provide a common interface that always returns the
+        #          lower case version for computations.
+        name = string.lower(name)
 	if self.IsMember(name):
 	    raise mm_err.MMAlreadyAMember
 	if digest:
@@ -546,6 +557,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 #msg should be an IncomingMessage object.
     def Post(self, msg, approved=0):
 	self.IsListInitialized()
+        msgapproved = self.ExtractApproval(msg)
+        if not approved:
+            approved = msgapproved
 	sender = msg.GetSender()
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
