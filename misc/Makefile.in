@@ -25,6 +25,7 @@ srcdir= 	@srcdir@
 bindir= 	@bindir@
 prefix=   	@prefix@
 exec_prefix=	@exec_prefix@
+var_prefix=	@VAR_PREFIX@
 
 CC=		@CC@
 CHMOD=  	@CHMOD@
@@ -37,7 +38,7 @@ DEFS=   	@DEFS@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 PACKAGEDIR=	$(prefix)/Mailman
-DATADIR=	$(prefix)/data
+DATADIR=	$(var_prefix)/data
 ICONDIR=        $(prefix)/icons
 
 SHELL=		/bin/sh
@@ -67,7 +68,7 @@ install:
 	    dir=$(prefix)/$$d; \
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
-	$(INSTALL) -m $(DATAMODE) pending_subscriptions.db $(prefix)/data
+	$(INSTALL) -m $(DATAMODE) pending_subscriptions.db $(DATADIR)
 
 finish:
 
