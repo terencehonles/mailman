@@ -188,7 +188,8 @@ class Bouncer:
         # BAW: Be sure you set the type before trying to attach, or you'll get
         # a MultipartConversionError.
         umsg.set_type('multipart/mixed')
-        umsg.attach(MIMEText(text))
+        umsg.attach(
+            MIMEText(text, _charset=Utils.GetCharSet(self.preferred_language))
         if isinstance(msg, StringType):
             umsg.attach(MIMEText(msg))
         else:
