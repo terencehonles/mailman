@@ -25,6 +25,7 @@ srcdir= 	@srcdir@
 bindir= 	@bindir@
 prefix=   	@prefix@
 exec_prefix=	@exec_prefix@
+var_prefix=	@VAR_PREFIX@
 
 CC=		@CC@
 CHMOD=  	@CHMOD@
@@ -36,7 +37,7 @@ DEFS=   	@DEFS@
 
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
-FILTERSDIR= 	$(prefix)/filters
+FILTERSDIR= 	$(var_prefix)/filters
 
 SHELL=		/bin/sh
 
