@@ -26,7 +26,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b3'
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 545 $"
 
 # The URL for Mailman sources, etc. - you probably don't want to change this.
 MAILMAN_URL       = 'http://www.list.org/'
@@ -88,6 +88,10 @@ DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
 # Alternate names acceptable as explicit destinations for this list.
 DEFAULT_ACCEPTABLE_ALIASES ="""
 """
+# This provisional measure is for maillists that have only other maillists
+# for members.  Ultimately we will probably use surrogate administrative
+# message delivery addresses, instead.
+DEFAULT_REMINDERS_TO_ADMINS = 0
 # {header-name: regexp} spam filtering - we include some for example sake.
 DEFAULT_BOUNCE_MATCHING_HEADERS = """
 # Lines that *start* with a '#' are comments.
