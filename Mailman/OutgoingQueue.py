@@ -36,6 +36,7 @@
 # only one such process to happen at a time.
 #
 
+import sys
 import os
 import stat
 import marshal
@@ -117,10 +118,31 @@ def processQueue():
             st[stat.ST_CTIME] > (time.time() - MAX_ACTIVE)):
             # then
             continue
-        f = open(full_fname,"r")
-        recip,sender,text = marshal.load(f)
-        f.close()
-        Utils.TrySMTPDelivery(recip,sender,text,full_fname)
+        try:
+            f = open(full_fname,"r")
+            recip,sender,text = marshal.load(f)
+            f.close()
+            Utils.TrySMTPDelivery(recip,sender,text,full_fname)
+            failure = None
+        except (# marshal.load() failed
+            EOFError, ValueError, TypeError,
+            # open() or close() failed
+            IOError):
+            failure = sys.exc_info()
+
+        if failure:
+            # Should we risk moving the queue file out of the way?  That
+            # might cause another exception, if the permissions are
+            # wrong enough...
+            t, v = failure[0], failure[1]
+            from Logging.StampedLogger import StampedLogger
+            l = StampedLogger("error", "processQueue", immediate=1)
+            l.write("Processing of queue file %s failed:\n" % full_fname)
+            l.write("\t %s" % t)
+            if v:
+                l.write(' / %s' % v)
+            l.write('\n')
+            l.flush()
     lock_file.unlock()
 
 
