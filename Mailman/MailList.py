@@ -29,7 +29,7 @@ import sys, os, marshal, string, posixfile, time
 import re
 import Utils
 import Errors
-from types import StringType, IntType
+from types import StringType, IntType, DictType
 
 from ListAdmin import ListAdmin
 from Deliverer import Deliverer
@@ -765,11 +765,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	try:
 	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
 	except IOError:
-	    raise mm_cfg.MMBadListError, 'Failed to access config info'
+	    raise Errors.MMBadListError, 'Failed to access config info'
 	try:
 	    dict = marshal.load(file)
+            if type(dict) <> DictType:
+                raise Errors.MMBadListError, \
+                      'Unmarshaled config info is not a dictionary'
 	except (EOFError, ValueError, TypeError):
-	    raise mm_cfg.MMBadListError, 'Failed to unmarshal config info'
+	    raise Errors.MMBadListError, 'Failed to unmarshal config info'
 	for key, value in dict.items():
 	    setattr(self, key, value)
 	file.close()
