@@ -34,7 +34,7 @@ like to be included in this list, please
     <li><a href="http://xfree86.org/">The XFree86 Project, Inc.</a>
     <!-- Marc Merlin -->
     <li><a href="http://valinux.com/">VA Linux</a>
-    <li><a href="http://sourceforge.net/">SourceForge</a>
+    <li><a href="http://sourceforge.net/">SourceForge.net</a>
     <!-- Ricardo Kustner -->
     <li><a href="http://www.freshmeat.net/">FreshMeat</a>
     <!-- Jason R. Mastaler -->
@@ -388,5 +388,8 @@ like to be included in this list, please
     <a href="http://www.osthyvel.net">Osthyvel.net</a>
     <!-- Nemeth Tamas -->
     <a href="http://lists.sek.nyme.hu">University of West Hungary</a>
+    <!-- Marc MERLIN -->
+    <a href="http://lists.svlug.org/lists/listinfo/">Silicon Valley
+    Linux Users' Group</a>
 
 </ul>
