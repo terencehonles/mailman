@@ -16,6 +16,7 @@
 
 """Inject the message to Usenet."""
 
+import sys
 import os
 import string
 import re
