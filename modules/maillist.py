@@ -417,8 +417,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.members.append(name)
 	    self.members.sort()
 	self.passwords[name] = password
-	self.SendSubscribeAck(name, password, digest)
 	self.Save()
+	self.SendSubscribeAck(name, password, digest)
 
     def DeleteMember(self, name):
 	self.IsListInitialized()
@@ -620,6 +620,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.post_id = self.post_id + 1
 	self.Save()
 
+    def Locked(self):
+        try:
+            return self._lock_file and 1
+        except AttributeError:
+            return 0
+
     def Lock(self):
 	try:
 	    if self._lock_file:
@@ -641,7 +647,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._lock_file = None
 
     def __repr__(self):
-	if self._lock_file: status = " (locked)"
+	if self.Locked(): status = " (locked)"
 	else: status = ""
 	return ("<%s.%s %s%s at %s>"
 		% (self.__module__, self.__class__.__name__,
