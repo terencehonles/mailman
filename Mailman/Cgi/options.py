@@ -64,7 +64,7 @@ def main():
         print doc.Format()
         sys.exit(0)
 
-    if string.lower(user) not in list.members + list.digest_members:
+    if Utils.LCDomain(user) not in list.members + list.digest_members:
         doc.AddItem(htmlformat.Header(2, "Error"))
         doc.AddItem(htmlformat.Bold("%s: No such member %s."
                                     % (list_name, `user`)))
