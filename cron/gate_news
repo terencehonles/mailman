@@ -20,14 +20,18 @@
 """
 
 import os
+import string
+import time
 import marshal
 import paths
 import nntplib
 import errno
+
 from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import LockFile
+
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -98,7 +102,7 @@ def main():
                 # the file open for writing and when we're done writing it
                 # (during the steal()), but that should be very small.
                 lock.steal()
-                mlist.PollNewsGroup(conn, wm, first, last)
+                poll_newsgroup(mlist, conn, wm, first, last)
                 lock.unlock()
                 os._exit(0)
         # Save the new watermarks after every newsgroup gating has
@@ -116,5 +120,63 @@ def main():
             os.umask(omask)
 
 
+
+# XXX: Bogus, but might as we do it `legally'
+QuickEscape = 'QuickEscape'
+
+def poll_newsgroup(mlist, conn, wm, first, last):
+    # NEWNEWS is not portable and has synchronization issues...  Use a
+    # watermark system instead.
+    for num in range(max(wm+1, first), last+1):
+        try:
+            headers = conn.head(`num`)[3]
+            found_to = 0
+            for header in headers:
+                i = string.find(header, ':')
+                value = string.lower(header[:i])
+                if i > 0 and value == 'to':
+                    found_to = 1
+                if value <> 'x-beenthere':
+                    continue
+                if header[i:] == ': %s' % mlist.GetListEmail():
+                    raise QuickEscape
+            body = conn.body(`num`)[3]
+            # Create the pipe to the Mail posting script.  Note that it is not
+            # installed executable, so we'll tack on the path to Python we
+            # discovered when we configured Mailman.  The extra argument to
+            # `post' informs the system that the message is originating from
+            # Usenet and so should not get posted back to Usenet.  I think
+            # this is mostly redundant with the X-BeenThere header, but I'm a
+            # little afraid to muck with that.
+            #
+            # TBD: This should just be injected directly into the message
+            # delivery pipeline.
+            cmd = '%s %s %s fromusenet' % (
+                mm_cfg.PYTHON,
+                os.path.join(mm_cfg.SCRIPTS_DIR, 'post'),
+                mlist._internal_name())
+            file = os.popen(cmd, 'w')
+            # Usenet originated messages will not have a Unix envelope
+            # (i.e. "From " header).  This breaks Pipermail archiving, so
+            # we will synthesize one.  Be sure to use the format searched
+            # for by mailbox.UnixMailbox._isrealfromline()
+            timehdr = time.asctime(time.localtime(time.time()))
+            envhdr = 'From ' + mlist.GetAdminEmail() + '  ' + timehdr
+            file.write(envhdr + '\n')
+            file.write(string.join(headers,'\n'))
+            # If there wasn't already a TO: header, add one.
+            if not found_to:
+                file.write("\nTo: %s" % mlist.GetListEmail())
+            file.write('\n\n')
+            file.write(string.join(body,'\n'))
+            file.write('\n')
+            file.close()
+        except nntplib.error_temp:
+            pass # Probably canceled, etc...        
+        except QuickEscape:
+            pass # We gated this TO news, don't repost it!
+
+
+
 if __name__ == '__main__':
     main()
