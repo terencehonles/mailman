@@ -176,27 +176,30 @@ class Bouncer:
 
     def HandleBouncingAddress(self, addr, msg):
         """Disable or remove addr according to bounce_action setting."""
+        disabled = 0
         if self.automatic_bounce_action == 0:
             return
         elif self.automatic_bounce_action == 1:
             # Only send if call works ok.
             (succeeded, send) = self.DisableBouncingAddress(addr)
-            did = "disabled"
+            did = _('disabled')
+            disabled = 1
         elif self.automatic_bounce_action == 2:
             (succeeded, send) = self.DisableBouncingAddress(addr)
-            did = "disabled"
+            did = _('disabled')
+            disabled = 1
             # Never send.
             send = 0
         elif self.automatic_bounce_action == 3:
-            (succeeded, send) = self.RemoveBouncingAddress(addr)
+            succeeded, send = self.RemoveBouncingAddress(addr)
+            did = _('removed')
             # Always send.
             send = 1
-            did = "removed"
         if send:
-            if succeeded != 1:
-                negative=_("not ")
+            if succeeded <> 1:
+                negative = _('not ')
             else:
-                negative=""
+                negative = ''
             recipient = self.GetAdminEmail()
             if addr in self.owner + [recipient]:
                 # Whoops!  This is a bounce of a bounce notice - do not
@@ -214,9 +217,9 @@ class Bouncer:
             # report about success
             but = ''
             if succeeded <> 1:
-                but = 'BUT:        %s' % succeeded
+                but = _('BUT:        %(succeeded)s')
             # disabled?
-            if did == 'disabled' and succeeded == 1:
+            if disabled and succeeded == 1:
                 reenable = Utils.maketext(
                     'reenable.txt',
                     {'admin_url': self.GetScriptURL('admin', absolute=1),
