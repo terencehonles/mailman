@@ -57,6 +57,8 @@ Features:
 			    =============
 Requirements:
 
+  [XXX: This needs to be reviewed]
+
   You must  be root on a machine  running a mail transport  program that
   uses an /etc/aliases file, and has a sendmail executable (smail should
   be OK).  We will    soon be switching     over to use a  direct   SMTP
