@@ -33,9 +33,10 @@ def process(mlist, msg, msgdata):
         return
     #
     # Check to see if the list is even configured to autorespond to this email
-    # message.  Note: the mailowner script sets the `toadmin' key, and the
-    # mailcmd script sets the `torequest' key.
-    toadmin = msgdata.get('toadmin')
+    # message.  Note: the mailowner script sets the `toadmin' or `toowner' key
+    # (which for replybot purposes are equivalent), and the mailcmd script
+    # sets the `torequest' key.
+    toadmin = msgdata.get('toadmin', msgdata.get('toowner'))
     torequest = msgdata.get('torequest')
     if ((toadmin and not mlist.autorespond_admin) or
            (torequest and not mlist.autorespond_requests) or \
@@ -67,6 +68,7 @@ def process(mlist, msg, msgdata):
                         'listurl'     : mlist.GetScriptURL('listinfo'),
                         'requestemail': mlist.GetRequestEmail(),
                         'adminemail'  : mlist.GetAdminEmail(),
+                        'owneremail'  : mlist.GetOwnerEmail(),
                         })
     if toadmin:
         text = mlist.autoresponse_admin_text % d
