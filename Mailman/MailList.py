@@ -714,8 +714,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def Create(self, name, admin, crypted_password):
 	if name in Utils.list_names():
 	    raise ValueError, 'List %s already exists.' % name
-	else:
-	    Utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
+        Utils.ValidateEmail(admin)
+        Utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
 	self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	self._internal_name = name
 	self.Lock()
