@@ -24,7 +24,7 @@ file.
 Usage: genaliases [options]
 Options:
 
-    -q/--quite
+    -q/--quiet
         Some MTA output can include more verbose help text.  Use this to tone
         down the verbosity.
 
