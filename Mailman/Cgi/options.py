@@ -341,9 +341,13 @@ def main():
         # list admin?) is informed of the removal.
         signal.signal(signal.SIGTERM, sigterm_handler)
         mlist.Lock()
+        needapproval = 0
         try:
-            mlist.ApprovedDeleteMember(
-                user, _('via the member options page'), userack=1)
+            try:
+                mlist.DeleteMember(
+                    user, _('via the member options page'), userack=1)
+            except Errors.MMNeedApproval:
+                needapproval = 1
             mlist.Save()
         finally:
             mlist.Unlock()
@@ -356,11 +360,17 @@ def main():
         title = _('Unsubscription results')
         doc.SetTitle(title)
         doc.AddItem(Header(2, title))
-        doc.AddItem(_("""You have been successfully unsubscribed from the
-        mailing list %(fqdn_listname)s.  If you were receiving digest
-        deliveries you may get one more digest.  If you have any questions
-        about your unsubscription, please contact the list owners at
-        %(owneraddr)s."""))
+        if needapproval:
+            doc.AddItem(_("""Your unsubscription request has been received and
+            forwarded on to the list moderators for approval.  You will
+            receive notification once the list moderators have made their
+            decision."""))
+        else:
+            doc.AddItem(_("""You have been successfully unsubscribed from the
+            mailing list %(fqdn_listname)s.  If you were receiving digest
+            deliveries you may get one more digest.  If you have any questions
+            about your unsubscription, please contact the list owners at
+            %(owneraddr)s."""))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
