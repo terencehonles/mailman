@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,16 +25,17 @@ elsewhere (currently).
 """
 
 import os
-import string
 import time
 import marshal
 import errno
+from mimelib import Generator
+from mimelib import Parser
 
 from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
-from Mailman.Handlers import HandlerAPI
+from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
@@ -46,6 +47,9 @@ SUBSCRIPTION = 2
 DEFER = 0
 REMOVE = 1
 LOST = 2
+
+DASH = '-'
+NL = '\n'
 
 
 
@@ -86,7 +90,7 @@ class ListAdmin:
 
     def __request_id(self):
 	id = self.next_request_id
-	self.next_request_id = self.next_request_id + 1
+	self.next_request_id += 1
 	return id
 
     def SaveRequestsDb(self):
@@ -98,10 +102,7 @@ class ListAdmin:
 
     def __getmsgids(self, rtype):
         self.__opendb()
-        ids = []
-        for k, (type, data) in self.__db.items():
-            if type == rtype:
-                ids.append(k)
+        ids = [k for k, (type, data) in self.__db.items() if type == rtype]
         ids.sort()
         return ids
 
@@ -153,7 +154,8 @@ class ListAdmin:
         omask = os.umask(002)
         try:
             fp = open(os.path.join(mm_cfg.DATA_DIR, filename), 'w')
-            fp.write(repr(msg))
+            g = Generator(fp)
+            g.write(msg)
             fp.close()
         finally:
             os.umask(omask)
@@ -183,9 +185,9 @@ class ListAdmin:
         path = os.path.join(mm_cfg.DATA_DIR, filename)
         # Handle message preservation
         if preserve:
-            parts = string.split(os.path.split(path)[1], '-')
+            parts = os.path.split(path)[1].split(DASH)
             parts[0] = 'spam'
-            spamfile = string.join(parts, '-')
+            spamfile = DASH.join(parts)
             import shutil
             try:
                 shutil.copy(path, os.path.join(mm_cfg.SPAM_DIR, spamfile))
@@ -194,6 +196,7 @@ class ListAdmin:
                 return LOST
         # Now handle updates to the database
         rejection = None
+        fp = None
         msg = None
         status = REMOVE
         if value == mm_cfg.DEFER:
@@ -206,7 +209,8 @@ class ListAdmin:
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 return LOST
-            msg = Message.Message(fp)
+            p = Parser(Message.Message)
+            msg = p.parse(fp)
             msgdata['approved'] = 1
             # Calculate a new filebase for the approved message, otherwise
             # delivery errors will cause duplicates.
@@ -218,7 +222,10 @@ class ListAdmin:
             # message directly here can lead to a huge delay in web
             # turnaround.
             syslog('vette', 'approved held message enqueued: %s' % filename)
-            msg.Enqueue(self, newdata=msgdata)
+            # Stick the message back in the incoming queue for further
+            # processing.
+            inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+            inq.enqueue(msg, _metadata=msgdata)
         elif value == mm_cfg.REJECT:
             # Rejected
             rejection = 'Refused'
@@ -237,25 +244,26 @@ class ListAdmin:
             # completely unique second message for the forwarding operation,
             # since we don't want to share any state or information with the
             # normal delivery.
+            p = Parser(Message.Message)
             if msg:
                 fp.seek(0)
-                msg = Message.Message(fp)
             else:
                 try:
                     fp = open(path)
                 except IOError, e:
                     if e.errno <> errno.ENOENT: raise
                     raise Errors.LostHeldMessage(path)
-                msg = Message.Message(fp)
+            msg = p.parse(fp)
+            if fp:
+                fp.close()
             # We don't want this message getting delivered to the list twice.
             # This should also uniquify the message enough for the hash-based
             # file naming (not foolproof though).
+            del msg['resent-to']
             msg['Resent-To'] = addr
-            HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1,
-                                                 'recips': [addr]})
-        # for safety
-        def strquote(s):
-            return string.replace(s, '%', '%%')
+            virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
+            virginq.enqueue(msg, listname=self.internal_name(),
+                            recips=[addr])
         #
         # Log the rejection
 	if rejection:
@@ -264,11 +272,11 @@ class ListAdmin:
 \tSubject: %(subject)s''' % {
                 'listname' : self.internal_name(),
                 'rejection': rejection,
-                'sender'   : strquote(sender),
-                'subject'  : strquote(subject),
+                'sender'   : sender.replace('%', '%%'),
+                'subject'  : subject.replace('%', '%%'),
                 }
             if comment:
-                note = note + '\n\tReason: ' + strquote(comment)
+                note += '\n\tReason: ' + comment.replace('%', '%%')
             syslog('vette', note)
         # Always unlink the file containing the message text.  It's not
         # necessary anymore, regardless of the disposition of the message.
@@ -323,7 +331,7 @@ class ListAdmin:
                  }, self.preferred_language)
             adminaddr = self.GetAdminEmail()
             msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
-            HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
+            msg.send(self)
 
     def __handlesubscription(self, record, value, comment):
         stime, addr, password, digest, lang = record
@@ -354,10 +362,11 @@ class ListAdmin:
             }, lang)
         # add in original message, but not wrap/filled
         if origmsg:
-            text = string.join([text,
-                                '---------- ' + _('Original Message') + ' ----------',
-                                str(origmsg)], '\n')
+            text = NL.join(
+                [text,
+                 '---------- ' + _('Original Message') + ' ----------',
+                 str(origmsg)
+                 ])
         subject = _('Request to mailing list %s rejected') % self.real_name
         msg = Message.UserNotification(recip, adminaddr, subject, text)
-        HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
-
+        msg.send(self)
