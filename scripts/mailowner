@@ -29,22 +29,26 @@ import sys
 import paths
 from Mailman import MailList
 from Mailman import Message
-from Mailman.Logging.StampedLogger import StampedLogger
+from Mailman.Handlers import HandlerAPI
+from Mailman.Logging.Utils import LogStdErr
 
-try:
-    sys.stderr = StampedLogger("error", label = 'post',
-                               manual_reprime=1, nofail=0)
-except IOError:
-    pass                        # Oh well - SOL on redirect, errors show thru.
+LogStdErr('error', 'post')
 
-# Only let one program per list run at any one time.  TBD: This *can* fail,
-# and should send back an error message when it does.
-mlist = MailList.MailList(sys.argv[1])
-try:
-    msg = Message.Message(sys.stdin)
-    if not mlist.bounce_processing or not mlist.ScanMessage(msg):
-        mlist.DeliverToOwner(msg, mlist.owner)
 
-# Let another process run.
-finally:
-    mlist.Unlock()
+
+def main():
+    # Only let one program per list run at any one time.  TBD: This *can*
+    # fail, and should send back an error message when it does.
+    mlist = MailList.MailList(sys.argv[1])
+    try:
+        msg = Message.Message(sys.stdin)
+        if not mlist.bounce_processing or not mlist.ScanMessage(msg):
+            msg.recips = mlist.owner
+            HandlerAPI.DeliverToUser(mlist, msg)
+    finally:
+        mlist.Save()
+        mlist.Unlock()
+
+
+if __name__ == '__main__':
+    main()
