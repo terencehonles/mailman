@@ -924,9 +924,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._lock_file.lock('w|', 1)
     
     def Unlock(self):
-	self._lock_file.lock('u')
-	self._lock_file.close()
-	self._lock_file = None
+        if self.Locked():
+            self._lock_file.lock('u')
+            self._lock_file.close()
+            self._lock_file = None
 
     def __repr__(self):
 	if self.Locked(): status = " (locked)"
