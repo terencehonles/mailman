@@ -45,11 +45,10 @@ class ListAdmin:
 	    self.requests[request].append( (request_id, now) + args )
 	self.Save()
 	if request == 'add_member':
-	    self.LogMsg("vette", ("%s: %s for %s" % (self.real_name,
-						     "Subscription request",
-						     args[2])))
+	    who = args[1]
+	    self.LogMsg("vette", ("%s: Subscribe request, %s"
+				  % (self.real_name, who)))
 	    if self.admin_immed_notify:
-		who = args[1]
 		subj = 'New %s subscription request: %s' % (self.real_name,
 							    who)
 		self.SendTextToUser(subject = subj,
@@ -66,10 +65,11 @@ class ListAdmin:
 	    reason = args[1]
 	    subject = args[2]
 	    self.LogMsg("vette",
-			"%s: %s %s" % (self.real_name, reason, sender))
+			("%s: %s posting request, %s"
+			 % (self.real_name, sender, `reason`)))
 	    if self.admin_immed_notify:
-		subj = '%s posting approval for: %s' % (self.real_name,
-							   sender)
+		subj = '%s post approval required for %s' % (self.real_name,
+							     sender)
 		self.SendTextToUser(subject = subj,
 				    recipient = self.GetAdminEmail(),
 				    text = (POSTING_AUTH_TEXT
