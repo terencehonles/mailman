@@ -58,12 +58,18 @@ char* strerror(int errno)
 #define BUFSIZE 1024
 
 void
-fatal(const char* ident, int exitcode, const char* format, ...)
+fatal(const char* ident, int exitcode, char* format, ...)
 {
+#ifndef HAVE_VSNPRINTF
+	/* a replacement is provided in vsnprintf.c */
+	int vsnprintf(char* s, int n, char* fmt, ...);
+#endif /* !HAVE_VSNPRINTF */
+
 	char log_entry[BUFSIZE];
 
 	va_list arg_ptr;
 	va_start(arg_ptr, format);
+
 	vsnprintf(log_entry, BUFSIZE, format, arg_ptr);
 	va_end(arg_ptr);
 
