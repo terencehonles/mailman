@@ -34,7 +34,6 @@ from Mailman import Errors
 from Mailman import LockFile
 
 # base classes
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman.ListAdmin import ListAdmin
 from Mailman.Deliverer import Deliverer
 from Mailman.MailCommandHandler import MailCommandHandler 
@@ -45,6 +44,11 @@ from Mailman.SecurityManager import SecurityManager
 from Mailman.Bouncer import Bouncer
 from Mailman.GatewayManager import GatewayManager
 from Mailman.Logging.StampedLogger import StampedLogger
+
+# other useful classes
+from Mailman.pythonlib.StringIO import StringIO
+from Mailman import Message
+from Mailman.Handlers import HandlerAPI
 
 
 
@@ -918,14 +922,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                                    "remote"     : remote,
                                    "listadmin"  : self.GetAdminEmail(),
                                    })
-            self.SendTextToUser(
-                subject=("%s -- confirmation of subscription -- request %d" % 
-                         (self.real_name, cookie)),
-                recipient = recipient,
-                sender = self.GetRequestEmail(),
-                text = text,
-                add_headers = ["Reply-to: %s" % self.GetRequestEmail(),
-                               "Errors-To: %s" % self.GetAdminEmail()])
+            msg = Message.UserNotification(
+                recipient, self.GetRequestEmail(),
+                '%s -- confirmation of subscription -- request %d' %
+                (self.real_name, cookie),
+                text)
+            msg['Reply-To'] = self.GetRequestEmail()
+            HandlerAPI.DeliverToUser(self, msg)
             if recipient != name:
                 who = "%s (%s)" % (name, string.split(recipient, '@')[0])
             else: who = name
@@ -1050,7 +1053,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             else:
                 kind = ""
             for name in result.keys():
-                Utils.Reap()
                 if result[name] is None:
                     self.LogMsg("subscribe", "%s: new%s %s",
                                 self._internal_name, kind, name)
@@ -1060,15 +1062,19 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                             self.passwords[string.lower(name)],
                             digest)
                     if admin_notif:
-                        import Message
-                        txt = Utils.maketext(
+                        adminaddr = self.GetAdminEmail()
+                        subject = ('%s subscription notification' %
+                                   self.real_name)
+                        text = Utils.maketext(
                             "adminsubscribeack.txt",
-                            {"mmowner": mm_cfg.MAILMAN_OWNER,
-                             "admin_email": self.GetAdminEmail(),
-                             "listname": self.real_name,
-                             "member": name}, 1)
-                        msg = Message.Message(StringIO(txt))
-                        self.DeliverToOwner(msg, self.owner)
+                            {"listname" : self.real_name,
+                             "member"   : name,
+                             })
+                        msg = Message.OutgoingMessage(text)
+                        msg['From'] = mm_cfg.MAILMAN_OWNER
+                        msg['Subject'] = subject
+                        msg.recips = self.owner
+                        HandlerAPI.DeliverToUser(self, msg)
         return result
 
     def DeleteMember(self, name, whence=None, admin_notif=None):
@@ -1110,16 +1116,21 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             else:
                 admin_notif = 0
 	if admin_notif:
-	    import Message
-	    txt = Utils.maketext("adminunsubscribeack.txt",
-				 {"mmowner": mm_cfg.MAILMAN_OWNER,
-				  "admin_email": self.GetAdminEmail(),
-				  "listname": self.real_name,
-				  "member": name}, 1)
-	    msg = Message.Message(StringIO(txt))
-	    self.DeliverToOwner(msg, self.owner)
-        if whence: whence = "; %s" % whence
-        else: whence = ""
+            subject = '%s unsubscribe notification' % self.real_name
+            text = Utils.maketext(
+                'adminunsubscribeack.txt',
+                {'member'  : name,
+                 'listname': self.real_name,
+                 })
+            msg = Message.OutgoingMessage(text)
+            msg['From'] = mm_cfg.MAILMAN_OWNER
+            msg['Subject'] = subject
+            msg.recips = self.owner
+            HandlerAPI.DeliverToUser(self, msg)
+        if whence:
+            whence = "; %s" % whence
+        else:
+            whence = ""
         self.LogMsg("subscribe", "%s: deleted %s%s",
                     self._internal_name, name, whence)
 
@@ -1228,7 +1239,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.IsListInitialized()
         # TBD: this is bogus and will later be configurable
         import Mailman.Handlers.HandlerAPI
-        Mailman.Handlers.HandlerAPI.process(self, msg)
+        Mailman.Handlers.HandlerAPI.DeliverToList(self, msg)
 	self.Save()
 
     def Locked(self):
