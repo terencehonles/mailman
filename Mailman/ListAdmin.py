@@ -429,10 +429,8 @@ class ListAdmin:
             # This message should appear to come from the <list>-owner so as
             # to avoid any useless bounce processing.
             owneraddr = self.GetOwnerEmail()
-            msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
-            msg['MIME-Version'] = '1.0'
-            msg.add_header('Content-Type', 'text/plain',
-                           charset=Utils.GetCharSet(self.preferred_language))
+            msg = Message.UserNotification(owneraddr, owneraddr, subject, text,
+                                           self.preferred_language)
             msg.send(self, **{'tomoderators': 1})
 
     def __handleunsubscription(self, record, value, comment):
@@ -453,10 +451,13 @@ class ListAdmin:
         return REMOVE
 
     def __refuse(self, request, recip, comment, origmsg=None, lang=None):
+        # As this message is going to the requestor, try to set the language
+        # to his/her language choice, if they are a member.  Otherwise use the
+        # list's preferred language.
         adminaddr = self.GetAdminEmail()
         realname = self.real_name
 	if lang is None:
-            lang = self.preferred_language
+            lang = self.getMemberLanguage(recip)
         text = Utils.maketext(
             'refuse.txt',
             {'listname' : realname,
@@ -464,15 +465,20 @@ class ListAdmin:
              'reason'   : comment,
              'adminaddr': adminaddr,
             }, lang=lang, mlist=self)
-        # add in original message, but not wrap/filled
-        if origmsg:
-            text = NL.join(
-                [text,
-                 '---------- ' + _('Original Message') + ' ----------',
-                 str(origmsg)
-                 ])
-        subject = _('Request to mailing list %(realname)s rejected')
-        msg = Message.UserNotification(recip, adminaddr, subject, text)
+        otrans = i18n.get_translation()
+        i18n.set_language(lang)
+        try:
+            # add in original message, but not wrap/filled
+            if origmsg:
+                text = NL.join(
+                    [text,
+                     '---------- ' + _('Original Message') + ' ----------',
+                     str(origmsg)
+                     ])
+            subject = _('Request to mailing list %(realname)s rejected')
+        finally:
+            i18n.set_translation(otrans)
+        msg = Message.UserNotification(recip, adminaddr, subject, text, lang)
         msg.send(self)
 
 
