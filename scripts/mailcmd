@@ -1,0 +1,24 @@
+#! /usr/local/bin/python 
+# 
+# This script gets called by the wrapper.
+# Stdin is the mail message, and argv[1] is the name of the mailing list
+# being posted to.
+
+import sys
+f = open('/tmp/mailcmd.err', 'a+')
+sys.stderr = f
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import maillist
+
+# Only let one program run at once per list.
+
+# TODO: This can fail, and should send back an error message when it does.
+list = maillist.MailList(sys.argv[1])
+
+try:
+    list.ParseMailCommands()
+finally:
+    list.Unlock()
+
