@@ -17,12 +17,14 @@
 """Confirm a pending action via URL."""
 
 import signal
+import cgi
 
 from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import i18n
 from Mailman import MailList
 from Mailman import Pending
+from Mailman.UserDesc import UserDesc
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
@@ -37,7 +39,7 @@ def main():
     doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
-    if not parts:
+    if not parts or len(parts) < 1:
         bad_confirmation(doc)
         doc.AddItem(MailmanLogo())
         print doc.Format()
@@ -57,43 +59,73 @@ def main():
     i18n.set_language(mlist.preferred_language)
     doc.set_language(mlist.preferred_language)
 
-    # See the comment in admin.py about the need for the signal handler.
-    def sigterm_handler(signum, frame, mlist=mlist):
-        mlist.Unlock()
+    # Get the form data to see if this is a second-step confirmation
+    cgidata = cgi.FieldStorage(keep_blank_values=1)
+    cookie = cgidata.getvalue('cookie')
+    if cookie == '':
+        ask_for_cookie(mlist, doc, _('Confirmation string was empty.'))
+        return
 
-    # Now dig out the cookie
-    mlist.Lock()
-    try:
-        signal.signal(signal.SIGTERM, sigterm_handler)
-        try:
-            cookie = parts[1]
-            data = mlist.ProcessConfirmation(cookie)
-            success(mlist, doc, *data)
-        except (Errors.MMBadConfirmation, IndexError):
-            days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
-            bad_confirmation(doc, _('''Invalid confirmation string.  Note that
-            confirmation strings expire approximately %(days)s days after the
-            initial subscription request.  If your confirmation has expired,
-            please try to re-submit your subscription.'''))
-        except Errors.MMNoSuchUserError:
-            bad_confirmation(doc, _('''Invalid confirmation string.  It is
-            possible that you are attempting to confirm a request for an
-            address that has already been unsubscribed.'''))
-        except Errors.MMNeedApproval:
-            title = _('Awaiting moderator approval')
-            doc.SetTitle(title)
-            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
-            doc.AddItem(_("""\
-            You have successfully confirmed your subscription request to the
-            mailing list %(listname)s, however final approval is required from
-            the list moderator before you will be subscribed.  Your request
-            has been forwarded to the list moderator, and you will be notified
-            of the moderator's decision."""))
+    if not cookie and len(parts) == 2:
+        cookie = parts[1]
+
+    if len(parts) > 2:
+        bad_confirmation(doc)
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
-        mlist.Save()
-    finally:
-        mlist.Unlock()
+        return
+
+    if not cookie:
+        ask_for_cookie(mlist, doc)
+        return
+
+    days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
+    confirmurl = mlist.GetScriptURL('confirm', absolute=1)
+    badconfirmstr = _('''<b>Invalid confirmation string:</b>
+    %(cookie)s.
+
+    <p>Note that confirmation strings expire approximately
+    %(days)s days after the initial subscription request.  If your
+    confirmation has expired, please try to re-submit your subscription.
+    Otherwise, <a href="%(confirmurl)s">re-enter</a> your confirmation
+    string.''')
+
+    content = Pending.confirm(cookie, expunge=0)
+    if content is None:
+        bad_confirmation(doc, badconfirmstr)
+        doc.AddItem(mlist.GetMailmanFooter())
+        print doc.Format()
+        return
+
+    try:
+        if content[0] == Pending.SUBSCRIPTION:
+            if cgidata.getvalue('cancel'):
+                subscription_cancel(mlist, doc, cookie)
+            elif cgidata.getvalue('submit'):
+                subscription_confirm(mlist, doc, cookie, cgidata)
+            else:
+                subscription_prompt(mlist, doc, cookie, *content[1:])
+        elif content[0] == Pending.UNSUBSCRIPTION:
+            if cgidata.getvalue('cancel'):
+                unsubscription_cancel(mlist, doc, cookie)
+            elif cgidata.getvalue('submit'):
+                unsubscription_confirm(mlist, doc, cookie)
+            else:
+                unsubscription_prompt(mlist, doc, cookie, *content[1:])
+        elif content[0] == Pending.CHANGE_OF_ADDRESS:
+            if cgidata.getvalue('cancel'):
+                addrchange_cancel(mlist, doc, cookie)
+            elif cgidata.getvalue('submit'):
+                addrchange_confirm(mlist, doc, cookie)
+            else:
+                addrchange_prompt(mlist, doc, cookie, *content[1:])
+        else:
+            bad_confirmation(doc)
+    except Errors.MMBadConfirmation:
+        bad_confirmation(doc, badconfirmstr)
+
+    doc.AddItem(mlist.GetMailmanFooter())
+    print doc.Format()
 
 
 
@@ -105,33 +137,336 @@ def bad_confirmation(doc, extra=''):
 
 
 
-def success(mlist, doc, op, addr, password=None, digest=None, lang=None):
-    listname = mlist.real_name
-    # Different title based on operation performed
-    if op == Pending.SUBSCRIPTION:
-        title = _('Subscription request confirmed')
-    elif op == Pending.UNSUBSCRIPTION:
-        title = _('Removal request confirmed')
-        lang = mlist.GetPreferredLanguage(addr)
-    elif op == Pending.CHANGE_OF_ADDRESS:
-        title = _('Change of address confirmed')
-    # Use the user's preferred language
-    i18n.set_language(lang)
-    doc.set_language(lang)
-    # Now set the title and report the results
+def ask_for_cookie(mlist, doc, extra=''):
+    title = _('Enter confirmation cookie')
     doc.SetTitle(title)
-    doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
-    if op == Pending.SUBSCRIPTION:
-        doc.AddItem(_('''\
-        You have successfully confirmed your subscription request for
-        "%(addr)s" to the %(listname)s mailing list.  A separate confirmation
-        message will be sent to your email address, along with your password,
-        and other useful information and links.'''))
-    elif op == Pending.UNSUBSCRIPTION:
-        doc.AddItem(_('''\
-        You have successfully confirmed your removal request for "%(addr)s" to
-        the %(listname)s mailing list.'''))
-    elif op == Pending.CHANGE_OF_ADDRESS:
-        doc.AddItem(_('''\
-        You have successfully confirmed your change of address to "%(addr)s"
-        for the %(listname)s mailing list.'''))
+    form = Form(mlist.GetScriptURL('confirm', 1))
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+
+    if extra:
+        table.AddRow([Bold(FontAttr(extra, size='+1'))])
+        table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+        
+    # Add cookie entry box
+    table.AddRow([_("""Please enter the confirmation string
+    (i.e. <em>cookie</em>) that you received in your email message, in the box
+    below.  Then hit the <em>Submit</em> button to proceed to the next
+    confirmation step.""")])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Label(_('Confirmation string:')),
+                  TextBox('cookie')])
+    table.AddRow([Center(SubmitButton('submit_cookie', _('Submit')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    form.AddItem(table)
+    doc.AddItem(form)
+    doc.AddItem(mlist.GetMailmanFooter())
+    print doc.Format()
+
+
+
+def subscription_prompt(mlist, doc, cookie,
+                         email, name, password, digest, lang):
+    title = _('Confirm subscription request')
+    doc.SetTitle(title)
+    form = Form(mlist.GetScriptURL('confirm', 1))
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+
+    listname = mlist.real_name
+    table.AddRow([_("""Your confirmation is required in order to complete the
+    subscription request to the mailing list <em>%(listname)s</em>.  Your
+    subscription settings are shown below; make any necessary changes and hit
+    <em>Subscribe</em> to complete the confirmation process.  Once you've
+    confirmed your subscription request, you will be shown your account
+    options page which you can use to further customize your membership
+    options.
+
+    <p>Or hit <em>Cancel and discard</em> to cancel this subscription
+    request.""") + '<p><hr>'])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+
+    table.AddRow([Label(_('Your email address:')), email])
+    table.AddRow([Label(_('Your real name:')),
+                  TextBox('realname', name)])
+    table.AddRow([Label(_('Password:')),
+                  PasswordBox('password', password)])
+    table.AddRow([Label(_('Password (confirm):')),
+                  PasswordBox('pwconfirm', password)])
+    table.AddRow([Label(_('Receive digests?')),
+                  RadioButtonArray('digests', (_('No'), _('Yes')),
+                                   checked=digest, values=(0, 1))])
+    langs = mlist.GetAvailableLanguages()
+    values = [mm_cfg.LC_DESCRIPTIONS[l][0] for l in langs]
+    try:
+        selected = langs.index(lang)
+    except ValueError:
+        selected = lang.index(mlist.preferred_language)
+    table.AddRow([Label(_('Preferred language:')),
+                  SelectOptions('language', langs, values, selected)])
+    table.AddRow([Hidden('cookie', cookie)])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([SubmitButton('submit', _('Subscribe')),
+                  SubmitButton('cancel', _('Cancel and discard'))])
+
+    form.AddItem(table)
+    doc.AddItem(form)
+
+
+
+def subscription_cancel(mlist, doc, cookie):
+    # Discard this cookie
+    Pending.confirm(cookie, expunge=1)
+    doc.AddItem(_('You have canceled your subscription request.'))
+
+
+
+def subscription_confirm(mlist, doc, cookie, cgidata, badconfirmstr):
+    # See the comment in admin.py about the need for the signal
+    # handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+        sys.exit(0)
+
+    mlist.Lock()
+    try:
+        try:
+            # Some pending values may be overridden in the form.  email of
+            # course is hardcoded. ;)
+            cgipasswd = cgidata.getvalue('password')
+            cgiconfirm = cgidata.getvalue('pwconfirm')
+            if cgipasswd <> cgiconfirm:
+                setformpasswd = 0
+                pw = None
+            else:
+                setformpasswd = 1
+                pw = cgipasswd
+            lang = cgidata.getvalue('language')
+            userdesc = UserDesc(fullname=cgidata.getvalue('realname', None),
+                                password=pw,
+                                digest=cgidata.getvalue('digests', None),
+                                lang=lang)
+            op, addr, pw, digest, lang = mlist.ProcessConfirmation(
+                cookie, userdesc)
+        except Errors.MMNeedApproval:
+            title = _('Awaiting moderator approval')
+            doc.SetTitle(title)
+            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
+            doc.AddItem(_("""\
+            You have successfully confirmed your subscription request to the
+            mailing list %(listname)s, however final approval is required from
+            the list moderator before you will be subscribed.  Your request
+            has been forwarded to the list moderator, and you will be notified
+            of the moderator's decision."""))
+        except Errors.MMNoSuchUserError:
+            bad_confirmation(doc, _('''Invalid confirmation string.  It is
+            possible that you are attempting to confirm a request for an
+            address that has already been unsubscribed.'''))
+        else:
+            # Use the user's preferred language
+            i18n.set_language(lang)
+            doc.set_language(lang)
+            # The response
+            listname = mlist.real_name
+            title = _('Subscription request confirmed')
+            optionsurl = mlist.GetOptionsURL(addr, absolute=1)
+            doc.SetTitle(title)
+            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
+            if not setformpasswd:
+                doc.AddItem(_("""\
+                The passwords you entered in the confirmation screen did not
+                match, so your original subscription password will be used
+                instead.  Your password will have been generated by Mailman if
+                you left the password fields blank.  In any event, your
+                membership password will be sent to you in a separate
+                acknowledgement email.<p>"""))
+            doc.AddItem(_('''\
+            You have successfully confirmed your subscription request for
+            "%(addr)s" to the %(listname)s mailing list.  A separate
+            confirmation message will be sent to your email address, along
+            with your password, and other useful information and links.
+
+            <p>You can now
+            <a href="%(optionsurl)s">proceed to your membership login
+            page</a>.'''))
+        mlist.Save()
+    finally:
+        mlist.Unlock()
+    
+
+
+def unsubscription_cancel(mlist, doc, cookie):
+    # Discard this cookie
+    Pending.confirm(cookie, expunge=1)
+    doc.AddItem(_('You have canceled your unsubscription request.'))
+
+
+
+def unsubscription_confirm(mlist, doc, cookie):
+    # See the comment in admin.py about the need for the signal
+    # handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+        sys.exit(0)
+
+    mlist.Lock()
+    try:
+        try:
+            # Do this in two steps so we can get the preferred language for
+            # the user who is unsubscribing.
+            op, addr = Pending.confirm(cookie, expunge=0)
+            lang = mlist.getMemberLanguage(addr)
+            i18n.set_language(lang)
+            doc.set_language(lang)
+            op, addr = mlist.ProcessConfirmation(cookie)
+        except Errors.MMNoSuchUserError:
+            bad_confirmation(doc, _('''Invalid confirmation string.  It is
+            possible that you are attempting to confirm a request for an
+            address that has already been unsubscribed.'''))
+        else:
+            # The response
+            listname = mlist.real_name
+            title = _('Unsubscription request confirmed')
+            listinfourl = mlist.GetScriptURL('listinfo', absolute=1)
+            doc.SetTitle(title)
+            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
+            doc.AddItem(_("""\
+            You have successfully unsubscribed from the %(listname)s mailing
+            list.  You can now <a href="%(listinfourl)s">visit the list's main
+            information page</a>."""))
+        mlist.Save()
+    finally:
+        mlist.Unlock()
+
+
+
+def unsubscription_prompt(mlist, doc, cookie, addr):
+    title = _('Confirm unsubscription request')
+    doc.SetTitle(title)
+    form = Form(mlist.GetScriptURL('confirm', 1))
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+
+    listname = mlist.real_name
+    fullname = mlist.getMemberName(addr)
+    if fullname is None:
+        fullname = _('<em>Not available</em>')
+    table.AddRow([_("""Your confirmation is required in order to complete the
+    unsubscription request from the mailing list <em>%(listname)s</em>.  You
+    are currently subscribed with
+
+    <ul><li><b>Real name:</b> %(fullname)s
+        <li><b>Email address:</b> %(addr)s
+    </ul>
+
+    Hit the <em>Unsubscribe</em> button below to complete the confirmation
+    process.
+
+    <p>Or hit <em>Cancel and discard</em> to cancel this unsubscription
+    request.""") + '<p><hr>'])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Hidden('cookie', cookie)])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([SubmitButton('submit', _('Unsubscribe')),
+                  SubmitButton('cancel', _('Cancel and discard'))])
+
+    form.AddItem(table)
+    doc.AddItem(form)
+    
+
+
+def addrchange_cancel(mlist, doc, cookie):
+    # Discard this cookie
+    Pending.confirm(cookie, expunge=1)
+    doc.AddItem(_('You have canceled your change of address request.'))
+
+
+
+def addrchange_confirm(mlist, doc, cookie):
+    # See the comment in admin.py about the need for the signal
+    # handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+        sys.exit(0)
+
+    mlist.Lock()
+    try:
+        try:
+            # Do this in two steps so we can get the preferred language for
+            # the user who is unsubscribing.
+            op, oldaddr, newaddr, globally = Pending.confirm(cookie, expunge=0)
+            lang = mlist.getMemberLanguage(oldaddr)
+            i18n.set_language(lang)
+            doc.set_language(lang)
+            op, oldaddr, newaddr = mlist.ProcessConfirmation(cookie)
+        except Errors.MMNoSuchUserError:
+            bad_confirmation(doc, _('''Invalid confirmation string.  It is
+            possible that you are attempting to confirm a request for an
+            address that has already been unsubscribed.'''))
+        else:
+            # The response
+            listname = mlist.real_name
+            title = _('Change of address request confirmed')
+            optionsurl = mlist.GetOptionsURL(newaddr, absolute=1)
+            doc.SetTitle(title)
+            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
+            doc.AddItem(_("""\
+            You have successfully changed your address on the %(listname)s
+            mailing list from <b>%(oldaddr)s</b> to <b>%(newaddr)s</b>.  You
+            can now <a href="%(optionsurl)s">proceed to your membership
+            login page</a>."""))
+        mlist.Save()
+    finally:
+        mlist.Unlock()
+
+
+
+def addrchange_prompt(mlist, doc, cookie, oldaddr, newaddr, globally):
+    title = _('Confirm change of address request')
+    doc.SetTitle(title)
+    form = Form(mlist.GetScriptURL('confirm', 1))
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+
+    listname = mlist.real_name
+    fullname = mlist.getMemberName(oldaddr)
+    if fullname is None:
+        fullname = _('<em>Not available</em>')
+    if globally:
+        globallys = _('globally')
+    else:
+        globallys = ''
+    table.AddRow([_("""Your confirmation is required in order to complete the
+    change of address request for the mailing list <em>%(listname)s</em>.  You
+    are currently subscribed with
+
+    <ul><li><b>Real name:</b> %(fullname)s
+        <li><b>Old email address:</b> %(oldaddr)s
+    </ul>
+
+    and you have requested to %(globallys)s change your email address to
+
+    <ul><li><b>New email address:</b> %(newaddr)s
+    </ul>
+
+    Hit the <em>Change address</em> button below to complete the confirmation
+    process.
+
+    <p>Or hit <em>Cancel and discard</em> to cancel this change of address
+    request.""") + '<p><hr>'])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Hidden('cookie', cookie)])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([SubmitButton('submit', _('Change address')),
+                  SubmitButton('cancel', _('Cancel and discard'))])
+
+    form.AddItem(table)
+    doc.AddItem(form)
