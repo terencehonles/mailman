@@ -46,7 +46,8 @@ MODULES=	__init__.py aliases.py htmlformat.py maillist.py \
 mm_admin.py mm_archive.py mm_bouncer.py mm_defaults.py \
 mm_deliver.py mm_digest.py mm_err.py mm_html.py mm_mailcmd.py \
 mm_mbox.py mm_message.py mm_security.py mm_utils.py \
-mm_pending.py mm_crypt.py pipermail.py smtplib.py versions.py 
+mm_pending.py mm_crypt.py mm_gateway.py \
+pipermail.py smtplib.py versions.py 
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
