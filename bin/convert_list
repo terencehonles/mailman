@@ -42,13 +42,13 @@ Where:
 
     --changes-msg=<y|n>
     -c <y|n> 
-	set whether or not to send the list members the "there's going to be 
-	big changes to your list" message. defaults to yes.
+	set whether or not to send the list members the `there's going to be 
+	big changes to your list' message. defaults to yes.
 
     --welcome-msg=<y|n>
     -w <y|n>
-        set whether or not to send the list members a welcome message, overriding
-        whatever the list's "send_welcome_msg" setting is.
+        set whether or not to send the list members a welcome message,
+        overriding whatever the list's `send_welcome_msg' setting is.
 
     --help
     -h
