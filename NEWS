@@ -4,6 +4,17 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.0 beta 5 (01-Aug-2000)
+
+    - Bug fix release.  This includes a fix for a small security hole
+      which could be exploited to gain mailman group access by a local
+      user (not a mail or web user).
+
+    - As part of the fix for the "cookie reauthorization" bug, only
+      session cookies are used now.  This means that administrative
+      and private archive cookies expire only when the browser session
+      is quit, however an explicit "Logout" button has been added.
+
 2.0 beta 4 (06-Jul-2000)
 
     - Bug fix release.
