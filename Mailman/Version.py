@@ -35,7 +35,7 @@ REL_SERIAL = 3
 HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))
 
-# config.db schema version number
+# config.pck schema version number
 DATA_FILE_VERSION = 36
 
 # qfile/*.db schema version number
