@@ -113,7 +113,7 @@ def main():
             text = Utils.maketext(
                 'admlogin.txt',
                 {'listname': list_name,
-                 'path'    : os.environ.get('REQUEST_URI', defaulturi),
+                 'path'    : Utils.GetRequestURI(defaulturi),
                  'message' : message,
                  })
             print text

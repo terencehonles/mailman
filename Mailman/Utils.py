@@ -664,3 +664,22 @@ def open_ex(filename, mode='r', bufsize=-1, perms=0664):
             reraise(IOError, e)
     finally:
         os.umask(ou)
+
+def GetRequestURI(fallback=None):
+    """Return the full virtual path this CGI script was invoked with.
+
+    Newer web servers seems to supply this info in the REQUEST_URI
+    environment variable -- which isn't part of the CGI/1.1 spec.
+    Thus, if REQUEST_URI isn't available, we concatenate SCRIPT_NAME
+    and PATH_INFO, both of which are part of CGI/1.1.
+
+    Optional argument `fallback' (default `None') is returned if both of
+    the above methods fail.
+
+    """
+    if os.environ.has_key('REQUEST_URI'):
+        return os.environ['REQUEST_URI']
+    elif os.environ.has_key('SCRIPT_NAME') and os.environ.has_key('PATH_INFO'):
+        return os.environ['SCRIPT_NAME'] + os.environ['PATH_INFO']
+    else:
+        return fallback
