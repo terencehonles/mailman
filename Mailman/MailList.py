@@ -550,23 +550,22 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         """Auto-update schema if necessary."""
         if self.data_version >= mm_cfg.DATA_FILE_VERSION:
             return
-        else:
-            # Initialize any new variables
-            self.InitVars()
-            # Then reload the database (but don't recurse)
-            self.Load(check_version=0)
-            # We must hold the list lock in order to update the schema
-            waslocked = self.Locked()
+        # Initialize any new variables
+        self.InitVars()
+        # Then reload the database (but don't recurse)
+        self.Load(check_version=0)
+        # We must hold the list lock in order to update the schema
+        waslocked = self.Locked()
+        if not waslocked:
+            self.Lock()
+        try:
+            from versions import Update
+            Update(self, stored_state)
+            self.data_version = mm_cfg.DATA_FILE_VERSION
+            self.Save()
+        finally:
             if not waslocked:
-                self.Lock()
-            try:
-                from versions import Update
-                Update(self, stored_state)
-                self.data_version = mm_cfg.DATA_FILE_VERSION
-                self.Save()
-            finally:
-                if not waslocked:
-                    self.Unlock()
+                self.Unlock()
 
     def CheckValues(self):
         """Normalize selected values to known formats."""
