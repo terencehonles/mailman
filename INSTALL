@@ -61,7 +61,7 @@ if you want to keep your existing installation intact.
 
           % cd $prefix
           % chgrp mailman .
-          % chmod a+rx,g+s .
+          % chmod a+rx,g+ws .
 
       You are now ready to configure and install the Mailman software.
 
@@ -70,7 +70,7 @@ if you want to keep your existing installation intact.
     TAKE SPECIAL NOTE OF THE --with-mail-gid AND --with-cgi-gid
     OPTIONS BELOW.  YOU WILL PROBABLY NEED TO USE THESE!
 
-    You should not be root while performing the steps in the section.
+    You should not be root while performing the steps in this section.
     Do them under your own login, or whatever account you typically
     install software as.
 
@@ -342,18 +342,18 @@ if you want to keep your existing installation intact.
 
               You need to reinstall Mailman, and specify $MAIL_GID to
               be 51, as described in the installation
-              instructions. see notes on vmailer below, as by default
+              instructions. see notes on Postfix below, as by default
               it will create these problems on installation.
 
 
-    Problem:  I use vmailer for my MTA and the mail wrapper programs
+    Problem:  I use Postfix for my MTA and the mail wrapper programs
               are logging complaints about the wrong GID.
 
-    Solution: create a separate aliases file for vmailer in it's
-              main.cf config file under the variable "alias_maps". put
+    Solution: Create a separate aliases file for Postfix in it's
+              main.cf config file under the variable "alias_maps". Put
               the file somewhere in mailman's home directory, or
               somewhere else where the user mailman has write access
-              to it; *as user mailman* call vmailer's "mkalias" on the
+              to it; *as user mailman* call Postfix's "mkalias" on the
               alias file.  
 
               % mkalias <the alias file>
@@ -362,9 +362,9 @@ if you want to keep your existing installation intact.
 
               % python -c'import os; print os.getgid()' 
               
-              this should print out the group id that mailman should
+              This should print out the group id that mailman should
               be configured to expect when the mail wrapper programs
-              are run.  call it "thegid".  rebuild mailman with
+              are run.  Call it "thegid".  Rebuild mailman with
 
               % ./configure --with-mail-gid=thegid
 
