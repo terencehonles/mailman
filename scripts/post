@@ -88,11 +88,8 @@ def main():
         return
     try:
         msgdata = {}
-        enqueue = HandlerAPI.DeliverToList(mlist, msg, msgdata)
-        if enqueue:
-            # The delivery failed for some reason.  Queue the message up for
-            # another attempt later.
-            msg.Enqueue(mlist, newdata=msgdata)
+        # ignore return value
+        HandlerAPI.DeliverToList(mlist, msg, msgdata)
     finally:
         mlist.Save()
         mlist.Unlock()
