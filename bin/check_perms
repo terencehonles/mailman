@@ -49,6 +49,8 @@ class State:
 
 STATE = State()
 
+DIRPERMS = S_ISGID | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+
 
 
 def statmode(path):
@@ -62,7 +64,7 @@ def checkwalk(arg, dirname, names):
     for name in names:
         path = os.path.join(dirname, name)
         if arg.VERBOSE:
-            print 'checking gid and modes for', path
+            print 'checking gid and mode for', path
         try:
             mode, gid = statgidmode(path)
         except os.error, (code, msg):
@@ -82,26 +84,33 @@ def checkwalk(arg, dirname, names):
                 os.chown(path, -1, MAILMAN_GID)
             else:
                 print
-        # all directories must be setgid
-        if S_ISDIR(mode) and not mode & S_ISGID:
+        # all directories must be at least rwxrwsr-x.  Don't check the private
+        # archive directory or database directory themselves since these are
+        # checked in checkarchives below.
+        private = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
+        if path == private or (os.path.commonprefix((path, private)) == private
+                               and os.path.split(path)[1] == 'database'):
+            continue
+        if S_ISDIR(mode) and (mode & DIRPERMS) <> DIRPERMS:
             arg.ERRORS = arg.ERRORS + 1
-            print path, 'directory is not setgid',
+            print 'directory must be at least 02775:', path,
             if STATE.FIX:
                 print '(fixing)'
-                os.chmod(path, mode | S_ISGID)
+                os.chmod(path, mode | DIRPERMS)
             else:
                 print
 
 def checkall():
     # first check PREFIX
+    if STATE.VERBOSE:
+        print 'checking mode for', mm_cfg.PREFIX,
     mode = statmode(mm_cfg.PREFIX)
-    perms = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH
-    if (mode & perms) <> perms:
+    if (mode & DIRPERMS) <> DIRPERMS:
         STATE.ERRORS = STATE.ERRORS + 1
-        print mm_cfg.PREFIX, 'must be at least 02755',
+        print 'directory must be at least 02775:', mm_cfg.PREFIX,
         if STATE.FIX:
             print '(fixing)'
-            os.chmod(mm_cfg.PREFIX, mode | perms)
+            os.chmod(mm_cfg.PREFIX, mode | DIRPERMS)
         else:
             print
     # check all subdirs
