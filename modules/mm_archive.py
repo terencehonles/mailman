@@ -12,6 +12,10 @@ class Archiver:
 	self.archive = 1
 	# 0=public, 1=private:
 	self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
+	# Though the archive file dirs are instance vars, they are not
+	# settable from the web interface.  If you REALLY want to redirect
+	# something to a different dir, you can set the member vars by
+	# hand, from the python interpreter!
 	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
 	self.private_archive_file_dir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
 	self.archive_directory = os.path.join(mm_cfg.HTML_DIR, "archives/%s" % 
@@ -107,10 +111,10 @@ class Archiver:
     def ArchiveFileName(self):
 	"""The mbox name where messages are left for archive construction."""
 	if self.archive_private:
-	    return os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
+	    return os.path.join(self.private_archive_file_dir,
 				self._internal_name)
 	else:
-	    return os.path.join(mm_cfg.PUBLIC_ARCHIVE_FILE_DIR,
+	    return os.path.join(self.public_archive_file_dir,
 				self._internal_name)
     def ArchiveFile(self, afn):
 	"""Open (creating, if necessary) the named archive file."""
