@@ -66,10 +66,16 @@ def main():
 
     sb = get_switchboard(qdir)
     for filebase in sb.files():
-        msg, msgdata = sb.dequeue(filebase)
-        whichq = msgdata.get('whichq', mm_cfg.INQUEUE_DIR)
-        tosb = get_switchboard(whichq)
-        tosb.enqueue(msg, msgdata)
+        try:
+            msg, msgdata = sb.dequeue(filebase)
+            whichq = msgdata.get('whichq', mm_cfg.INQUEUE_DIR)
+            tosb = get_switchboard(whichq)
+            tosb.enqueue(msg, msgdata)
+        except Exception, e:
+            # If there are any unshunting errors, log them and continue trying
+            # other shunted messages.
+            print >> sys.stderr, _(
+                'Cannot unshunt message %(filebase)s, skipping:\n%(e)s')
 
 
 
