@@ -62,7 +62,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        doc.AddItem(Header(2, _('No such list <em>%(listname)s</em>')))
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
+        doc.AddItem(Header(2, _('No such list <em>%(safelistname)s</em>')))
         print doc.Format()
         syslog('error', 'No such list "%s": %s', listname, e)
         return
@@ -96,8 +98,10 @@ def main():
                     '%(realname)s -- Edit html for %(template_info)s'))
                 break
         else:
+            # Avoid cross-site scripting attacks
+            safetemplatename = cgi.escape(template_name)
             doc.SetTitle(_('Edit HTML : Error'))
-            doc.AddItem(Header(2, _("%(template_name)s: Invalid template")))
+            doc.AddItem(Header(2, _("%(safetemplatename)s: Invalid template")))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format()
             return

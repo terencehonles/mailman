@@ -61,10 +61,12 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
         title = _('CGI script error')
         doc.SetTitle(title)
         doc.AddItem(Header(2, title))
-        add_error_message(doc, _('No such list <em>%(listname)s</em>'))
+        add_error_message(doc, _('No such list <em>%(safelistname)s</em>'))
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
@@ -91,7 +93,9 @@ def main():
     # Sanity check the user, but be careful about leaking membership
     # information when we're using private rosters.
     if not mlist.isMember(user) and mlist.private_roster == 0:
-        add_error_message(doc, _('No such member: %(user)s.'))
+        # Avoid cross-site scripting attacks
+        safeuser = cgi.escape(user)
+        add_error_message(doc, _('No such member: %(safeuser)s.'))
         loginpage(mlist, doc, None, cgidata)
         print doc.Format()
         return

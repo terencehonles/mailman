@@ -92,7 +92,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        msg = _('No such list <em>%(listname)s</em>')
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
+        msg = _('No such list <em>%(safelistname)s</em>')
         doc.SetTitle(_("Private Archive Error - %(msg)s"))
         doc.AddItem(Header(2, msg))
         print doc.Format()
@@ -148,11 +150,11 @@ def main():
         else:
             f = open(true_filename, 'r')
     except IOError:
-        charset = Utils.GetCharSet(lang)
-        print 'Content-type: text/html; charset=' + charset + '\n\n'
-
-        print "<H3>" + _("Archive File Not Found") + "</H3>"
-        print _("No file"), path, '(%s)' % true_filename
+        msg = _('Private archive file not found')
+        doc.SetTitle(msg)
+        doc.AddItem(Header(2, msg))
+        print doc.Format()
+        syslog('error', 'Private archive file not found: %s', true_filename)
     else:
         print 'Content-type: %s\n' % ctype
         sys.stdout.write(f.read())

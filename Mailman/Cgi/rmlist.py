@@ -57,7 +57,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        title = _('No such list <em>%(listname)s</em>')
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
+        title = _('No such list <em>%(safelistname)s</em>')
         doc.SetTitle(title)
         doc.AddItem(
             Header(3,
@@ -71,17 +73,6 @@ def main():
     # Now that we have a valid mailing list, set the language
     i18n.set_language(mlist.preferred_language)
     doc.set_language(mlist.preferred_language)
-
-    if len(parts) <> 1:
-        # Bad URL specification
-        title = _('Bad URL specification')
-        doc.SetTitle(title)
-        doc.AddItem(
-            Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
-        doc.AddItem(mlist.GetMailmanFooter())
-        print doc.Format()
-        syslog('error', 'Bad URL specification: %s', parts)
-        return
 
     # Be sure the list owners are not sneaking around!
     if not mm_cfg.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:

@@ -49,7 +49,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        bad_confirmation(doc, _('No such list <em>%(listname)s</em>'))
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
+        bad_confirmation(doc, _('No such list <em>%(safelistname)s</em>'))
         doc.AddItem(MailmanLogo())
         print doc.Format()
         syslog('error', 'No such list "%s": %s', listname, e)
@@ -81,8 +83,10 @@ def main():
 
     days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
     confirmurl = mlist.GetScriptURL('confirm', absolute=1)
+    # Avoid cross-site scripting attacks
+    safecookie = cgi.escape(cookie)
     badconfirmstr = _('''<b>Invalid confirmation string:</b>
-    %(cookie)s.
+    %(safecookie)s.
 
     <p>Note that confirmation strings expire approximately
     %(days)s days after the initial subscription request.  If your

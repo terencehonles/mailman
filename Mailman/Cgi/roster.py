@@ -52,7 +52,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        error_page(_('No such list <em>%(listname)s</em>'))
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
+        error_page(_('No such list <em>%(safelistname)s</em>'))
         syslog('error', 'roster: no such list "%s": %s', listname, e)
         return
 

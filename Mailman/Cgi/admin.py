@@ -61,7 +61,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        admin_overview(_('No such list <em>%(listname)s</em>'))
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
+        admin_overview(_('No such list <em>%(safelistname)s</em>'))
         syslog('error', 'admin.py access for non-existent list: %s',
                listname)
         return

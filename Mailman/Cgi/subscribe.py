@@ -55,8 +55,10 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
+        # Avoid cross-site scripting attacks
+        safelistname = cgi.escape(listname)
         doc.AddItem(Header(2, _("Error")))
-        doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
+        doc.AddItem(Bold(_('No such list <em>%(safelistname)s</em>')))
         print doc.Format()
         syslog('error', 'No such list "%s": %s\n', listname, e)
         return
