@@ -169,7 +169,7 @@ def send_i18n_digests(mlist, mboxfp):
     # MIME
     masthead = MIMEText(mastheadtxt, _charset=Utils.GetCharSet(lang))
     masthead['Content-Description'] = digestid
-    mimemsg.add_payload(masthead)
+    mimemsg.attach(masthead)
     # rfc1153
     print >> plainmsg, mastheadtxt
     print >> plainmsg
@@ -179,7 +179,7 @@ def send_i18n_digests(mlist, mboxfp):
         # MIME
         header = MIMEText(headertxt)
         header['Content-Description'] = _('Digest Header')
-        mimemsg.add_payload(header)
+        mimemsg.attach(header)
         # rfc1153
         print >> plainmsg, headertxt
         print >> plainmsg
@@ -259,7 +259,7 @@ def send_i18n_digests(mlist, mboxfp):
     # MIME
     tocpart = MIMEText(toctext)
     tocpart['Content-Description']= _("Today's Topics (%(msgcount)d messages)")
-    mimemsg.add_payload(tocpart)
+    mimemsg.attach(tocpart)
     # rfc1153
     print >> plainmsg, toctext
     print >> plainmsg
@@ -269,11 +269,11 @@ def send_i18n_digests(mlist, mboxfp):
     # Now go through and add each message
     mimedigest = MIMEBase('multipart', 'digest')
     mimedigest.set_payload([])
-    mimemsg.add_payload(mimedigest)
+    mimemsg.attach(mimedigest)
     first = 1
     for msg in messages:
         # MIME
-        mimedigest.add_payload(msg)
+        mimedigest.attach(msg)
         # rfc1153
         if first:
             first = 0
@@ -288,7 +288,7 @@ def send_i18n_digests(mlist, mboxfp):
         # MIME
         footer = MIMEText(footertxt)
         footer['Content-Description'] = _('Digest Footer')
-        mimemsg.add_payload(footer)
+        mimemsg.attach(footer)
         # rfc1153
         # BAW: This is not strictly conformant rfc1153.  The trailer is only
         # supposed to contain two lines, i.e. the "End of ... Digest" line and
@@ -336,7 +336,7 @@ def send_i18n_digests(mlist, mboxfp):
     # MIME
     virginq.enqueue(mimemsg, recips=mimerecips, listname=mlist.internal_name())
     # rfc1153
-    rfc1153msg.add_payload(plainmsg.getvalue())
+    rfc1153msg.set_payload(plainmsg.getvalue())
     virginq.enqueue(rfc1153msg,
                     recips = plainrecips,
                     listname = mlist.internal_name())
