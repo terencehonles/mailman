@@ -109,6 +109,12 @@ class MailCommandHandler:
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
 	
     def ParseMailCommands(self, msg):
+        # Break any infloops.  If this has come from a Mailman server then
+        # it'll have this header.  It's still possible to infloop between two
+        # servers because there's no guaranteed way to know it came from a
+        # bot.
+        if msg.get('x-beenthere') or msg.get('list-id'):
+            return
         # check the autoresponse stuff
         if self.autorespond_requests:
             from Mailman.Handlers import Replybot
