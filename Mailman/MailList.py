@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 518 $"
+__version__ = "$Revision: 524 $"
 
 try:
     import mm_cfg
@@ -605,6 +605,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		del me.passwords[alias]
 	    except KeyError: 
 		pass
+	    if me.user_options.has_key(alias):
+		del me.user_options[alias]
 	    try:
 		me.members.remove(alias)
 		kind = "regular"
