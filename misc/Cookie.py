@@ -4,6 +4,7 @@
 ####
 # Copyright (C) 1998 GTE Internetworking
 #    Author: Timothy O'Malley <timo@bbn.com>
+#    Hacked: Barry Warsaw <barry@zope.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
@@ -416,8 +417,8 @@ class Morsel(UserDict):
 		UserDict.__setitem__(self, K, V)
 	# end __setitem__
 
-	def set(self, key, val, coded_val):
-		if string.lower(key) in self.__reserved_keys:
+	def set(self, key, val, coded_val, strict=1):
+		if strict and string.lower(key) in self.__reserved_keys:
 			raise CookieError("Attempt to set a reserved key: %s" % key)
 		self.key		 = key
 		self.value		 = val
@@ -570,7 +571,7 @@ class Cookie(UserDict):
 				# (Does anyone care?)
 			else:
 				M = Morsel()
-				M.set(K, apply(self.net_setfunc, (V,)), V)
+				M.set(K, apply(self.net_setfunc, (V,)), V, strict=0)
 				UserDict.__setitem__(self, K, M)
 		return
 	# end __ParseString
