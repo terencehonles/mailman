@@ -123,6 +123,13 @@ def do_child(mlist, msg):
     # that resulting thing to the newsgroup
     fp = StringIO(str(msg))
     conn = nntplib.NNTP(mlist.nntp_host)
-    conn.post(fp)
-    conn.quit()
+    try:
+        try:
+            conn.post(fp)
+        except nntplib.error_temp, e:
+            sys.stderr.write('encountered NNTP error for list %s\n' %
+                             mlist.internal_name())
+            sys.stderr.write(str(e) + '\n')
+    finally:
+        conn.quit()
     os._exit(0)
