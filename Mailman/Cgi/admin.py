@@ -1234,7 +1234,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
         # Default is to subscribe
         subscribe_or_invite = safeint('subscribe_or_invite', 0)
         invitation = cgidata.getvalue('invitation', '')
-        digest = 0
+        digest = mlist.digest_is_default
         if not mlist.digestable:
             digest = 0
         if not mlist.nondigestable:
