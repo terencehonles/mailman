@@ -46,8 +46,7 @@ from Mailman.Handlers import Hold
 from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
 from Mailman.Handlers import Replybot
-from Mailman.Handlers import SMTPDirect
-from Mailman.Handlers import Sendmail
+# Don't test handlers such as SMTPDirect and Sendmail here
 from Mailman.Handlers import SpamDetect
 from Mailman.Handlers import Tagger
 from Mailman.Handlers import ToArchive
@@ -1304,16 +1303,6 @@ class TestModerate(TestBase):
 
 
 class TestReplybot(TestBase):
-    pass
-
-
-
-class TestSMTPDirect(TestBase):
-    pass
-
-
-
-class TestSendmail(TestBase):
     pass
 
 
