@@ -116,13 +116,13 @@ class Runner:
         # Find out which mailing list this message is destined for.
         listname = msgdata.get('listname')
         if not listname:
-            syslog('qrunner', 'qfile metadata specifies no list: %s' %
+            syslog('error', 'qfile metadata specifies no list: %s' %
                    filebase)
             self._shunt.enqueue(msg, metadata)
             return
         mlist = self._open_list(listname)
         if not mlist:
-            syslog('qrunner',
+            syslog('error',
                    'Dequeuing message destined for missing list: %s' %
                    filebase)
             self._shunt.enqueue(msg, metadata)
@@ -170,15 +170,15 @@ class Runner:
                 if self._cachelists:
                     self._listcache[listname] = mlist
             except Errors.MMListError, e:
-                syslog('qrunner', 'error opening list: %s\n%s' % (listname, e))
+                syslog('error', 'error opening list: %s\n%s' % (listname, e))
                 return None
         return mlist
 
     def _log(self, exc):
-        syslog('qrunner', 'Uncaught runner exception: %s' % exc)
+        syslog('error', 'Uncaught runner exception: %s' % exc)
         s = StringIO()
         traceback.print_exc(file=s)
-        syslog('qrunner', s.getvalue())
+        syslog('error', s.getvalue())
 
     #
     # Subclasses can override _cleanup(), _dispose(), and _doperiodic()
