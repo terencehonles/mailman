@@ -15,12 +15,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 3729 $)
+AC_REVISION($Revision: 3730 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
 
-# /home/mailman is the default installation directory
+# /usr/local/mailman is the default installation directory
 AC_PREFIX_DEFAULT(/usr/local/mailman)
 
 
@@ -255,7 +255,7 @@ GROUPNAME=$with_groupname
 AC_MSG_RESULT($GROUPNAME)
 
 
-# Group `mailman' must exist
+# Target group must exist
 AC_SUBST(MAILMAN_GID)
 AC_MSG_CHECKING(for $GROUPNAME GID)
 MM_FIND_GROUP_ID(MAILMAN_GID, $GROUPNAME)
@@ -270,8 +270,8 @@ fi
 
 
 # Now make sure that $prefix is set up correctly.  It must be group
-# owned by `mailman', it must have the group sticky bit set, and it
-# must be a+rx
+# owned by the target group, it must have the group sticky bit set, and
+# it must be a+rx
 if test "$VAR_PREFIX" = "NONE"
 then
     VAR_PREFIX=$ac_default_prefix
@@ -286,6 +286,7 @@ cat > conftest.py <<EOF
 import os, grp, string
 from stat import *
 prefix = "$prefixcheck"
+groupname = "$GROUPNAME"
 mailmangid = $MAILMAN_GID
 problems = []
 try: statdata = os.stat(prefix)
@@ -295,7 +296,8 @@ else:
     mode = statdata[ST_MODE]
     gid = statdata[ST_GID]
     if mailmangid <> gid:
-        problems.append("Directory must be owned by group mailman: " + prefix)
+        problems.append("Directory must be owned by group " +
+                        groupname + ": " + prefix)
     if (mode & S_ISGID) <> S_ISGID:
         problems.append("Set-gid bit must be set for directory: " +prefix)
     perms = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
