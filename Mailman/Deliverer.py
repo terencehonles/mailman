@@ -94,10 +94,11 @@ your membership administrative address, %(addr)s.'''))
                 'userpass.txt',
                 {'user'       : cpuser,
                  'listname'   : self.real_name,
+                 'fqdn_lname' : self.GetListEmail(),
                  'password'   : self.passwords[user],
                  'options_url': self.GetOptionsURL(user, absolute=1),
                  'requestaddr': requestaddr,
-                 'adminaddr'  : adminaddr,
+                 'owneraddr'  : self.GetOwnerEmail(),
                 }, lang=self.GetPreferredLanguage(user), mlist=self)
         else:
             ok = 0
@@ -108,7 +109,7 @@ your membership administrative address, %(addr)s.'''))
                 {'username'     : `user`,
                  'internal_name': self.internal_name(),
                  }, lang=self.GetPreferredLanguage(user), mlist=self)
-        msg = Message.UserNotification(recipient, requestaddr, subject, text)
+        msg = Message.UserNotification(recipient, adminaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
         if not ok:
