@@ -87,7 +87,7 @@ def main(argv):
     if '@' in listname:
         usage(1, 'List name must not include "@": ' + listname)
 
-    if listname in Utils.list_names():
+    if Utils.list_exists(listname):
         usage(1, 'List already exists: ' + listname)
 
     if len(argv) > 2:
@@ -114,7 +114,8 @@ def main(argv):
                 os.umask(oldmask)
         except Errors.MMBadEmailError:
             usage(1, 'Bad owner email address: ' + owner_mail)
-
+        except Errors.MMListAlreadyExistsError:
+            usage(1, 'List already exists: ' + listname)
 
         print ALIASTEMPLATE % {
             'listname': listname,
