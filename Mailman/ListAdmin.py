@@ -251,12 +251,26 @@ class ListAdmin:
             parts = os.path.split(path)[1].split(DASH)
             parts[0] = 'spam'
             spamfile = DASH.join(parts)
-            import shutil
+            # Preserve the message as plain text, not as a pickle
             try:
-                shutil.copy(path, os.path.join(mm_cfg.SPAM_DIR, spamfile))
+                fp = open(path)
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 return LOST
+            try:
+                msg = cPickle.load(fp)
+            finally:
+                fp.close()
+            # Save the plain text to a .msg file, not a .pck file
+            outpath = os.path.join(mm_cfg.SPAM_DIR, spamfile)
+            head, ext = os.path.splitext(outpath)
+            outpath = head + '.msg'
+            outfp = open(outpath, 'w')
+            try:
+                g = Generator(outfp)
+                g(msg, 1)
+            finally:
+                outfp.close()
         # Now handle updates to the database
         rejection = None
         fp = None
