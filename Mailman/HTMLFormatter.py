@@ -71,17 +71,10 @@ class HTMLFormatter:
             lang = self.preferred_language
         HTMLFormatter.InitVars(self)
 	filename = os.path.join(self._template_dir, lang, file)
-        try:
-            f = open(filename)
-        except IOError, e:
-            if e.errno <> errno.ENOENT: raise
-            # Could be a list that was created before i18n support was added.
-            # In that case, use the templates one directory higher.
-            filename = os.path.join(self._template_dir, file)
-            f = open(filename)
-	str = f.read()
-	f.close()
-	return str
+        fp = open(filename)
+	data = fp.read()
+	fp.close()
+	return data
 
     def FormatUsers(self, digest, lang=None):
         if lang is None:
