@@ -18,12 +18,11 @@
 
 """Send a message to the mailing list owner.
 
-The -owner address for alist should be filtered to this program, through the
-mail wrapper.  E.g. for list `test@yourdomain.com', the `test-owner' alias
-would deliver to this script.
+All messages to a list's -owner address should be piped through this script.
+The -owner address is defined to be delivered directly to the list owners plus
+the list moderators, with no intervention for bounce processing.
 
 Stdin is the mail message, and argv[1] is the name of the target mailing list.
-
 """
 
 import sys
@@ -36,6 +35,13 @@ from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 
 LogStdErr('error', 'mailowner')
+
+OWNER_PIPELINE = [
+    'SpamDetect',
+    'Replybot',
+    'OwnerRecips',
+    'ToOutgoing',
+    ]
 
 
 
@@ -50,19 +56,16 @@ def main():
         print >> sys.stderr, _(
             'mailowner script, list not found: %(listname)s')
         sys.exit(1)
-    # Immediately queue the message for the bounce/cmd qrunner to process.
-    # The advantage to this approach is that messages should never get lost --
-    # some MTAs have a hard limit to the time a filter prog can run.  Postfix
-    # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
-    # no chance to save the message.
-    #
-    # BAW: This script can receive both -owner and -admin messages.  This is
-    # bogus because there /is/ a distinction: -admin messages do bounce
-    # processing while -owner messages do not.  However, it's too expensive to
-    # make this determination here, so we defer it to the CommandRunner.
-    cmdq = get_switchboard(mm_cfg.CMDQUEUE_DIR)
-    cmdq.enqueue(sys.stdin.read(), listname=listname, toauthoritah=1,
-                 _plaintext=1)
+    # Queue the message for the owners.  We will send them through the
+    # incoming queue because we need some processing done on the message.  The
+    # processing is minimal though, so craft our own pipeline, expressly for
+    # the purpose of delivering to the list owners.
+    inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+    inq.enqueue(sys.stdin.read(),
+                listname=listname,
+                _plaintext=1,
+                envsender=Utils.get_site_email(extra='bounces'),
+                pipeline=OWNER_PIPELINE)
 
 
 
