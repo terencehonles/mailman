@@ -55,14 +55,16 @@ char* strerror(int errno)
 
 /* Report on errors and exit
  */
+#define BUFSIZE 1024
+
 void
 fatal(const char* ident, int exitcode, const char* format, ...)
 {
-	char log_entry[1024];
+	char log_entry[BUFSIZE];
 
 	va_list arg_ptr;
 	va_start(arg_ptr, format);
-	vsprintf(log_entry, format, arg_ptr);
+	vsnprintf(log_entry, BUFSIZE, format, arg_ptr);
 	va_end(arg_ptr);
 
 #ifdef HAVE_SYSLOG
