@@ -69,4 +69,5 @@ finish:
 clean:
 
 distclean:
+	-rm *.pyc
 	-rm Makefile
