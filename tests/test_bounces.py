@@ -69,7 +69,29 @@ class BounceTest(unittest.TestCase):
         ('Netscape', 'netscape_01.txt', ['aaaaa@corel.com',
                                          'bbbbb@corel.com']),
         # Yahoo's proprietary format
-        ('Yahoo', 'yahoo_01.txt', ['subscribe.motorcycles@listsociety.com'])
+        ('Yahoo', 'yahoo_01.txt', ['subscribe.motorcycles@listsociety.com']),
+        ('Yahoo', 'yahoo_02.txt', ['agarciamartiartu@yahoo.es']),
+        ('Yahoo', 'yahoo_03.txt', ['cresus22@yahoo.com']),
+        ('Yahoo', 'yahoo_04.txt', ['agarciamartiartu@yahoo.es',
+                                   'open00now@yahoo.co.uk']),
+        ('Yahoo', 'yahoo_05.txt', ['cresus22@yahoo.com',
+                                   'jjb700@yahoo.com']),
+        ('Yahoo', 'yahoo_06.txt', ['andrew_polevoy@yahoo.com',
+                                   'baruch_sterin@yahoo.com',
+                                   'rjhoeks@yahoo.com',
+                                   'tritonrugger91@yahoo.com']),
+        ('Yahoo', 'yahoo_07.txt', ['mark1960_1998@yahoo.com',
+                                   'ovchenkov@yahoo.com',
+                                   'tsa412@yahoo.com',
+                                   'vaxheadroom@yahoo.com']),
+        ('Yahoo', 'yahoo_08.txt', ['chatrathis@yahoo.com',
+                                   'crownjules01@yahoo.com',
+                                   'cwl_999@yahoo.com',
+                                   'eichaiwiu@yahoo.com',
+                                   'rjhoeks@yahoo.com',
+                                   'yuli_kolesnikov@yahoo.com']),
+        ('Yahoo', 'yahoo_09.txt', ['hankel_o_fung@yahoo.com',
+                                   'ultravirus2001@yahoo.com']),
         # No address can be detected in these...
         # dumbass_01.txt - We love Microsoft. :(
         # Done
