@@ -50,7 +50,7 @@ def main():
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'Bad URL specification: %s' % parts)
+        syslog('error', 'Bad URL specification: %s', parts)
         return
         
     listname = parts[0].lower()
@@ -65,7 +65,7 @@ def main():
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n', listname, e)
         return
 
     # Now that we have a valid mailing list, set the language
@@ -80,7 +80,7 @@ def main():
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
-        syslog('error', 'Bad URL specification: %s' % parts)
+        syslog('error', 'Bad URL specification: %s', parts)
         return
 
     # Be sure the list owners are not sneaking around!
@@ -91,7 +91,7 @@ def main():
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
-        syslog('error', 'Attempt to sneakily delete a list: %s' % listname)
+        syslog('mischief', 'Attempt to sneakily delete a list: %s', listname)
         return
 
     if cgidata.has_key('doit'):
