@@ -22,13 +22,17 @@ the filename containing the bounce message.
 
 """
 
+import traceback
+from types import ListType
+
 # testing kludge
 if __name__ == '__main__':
     execfile('bin/paths.py')
 
-from types import ListType
 from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman.Logging.Syslog import syslog
+from Mailman.pythonlib.StringIO import StringIO
 
 
 
@@ -52,7 +56,14 @@ def ScanMessages(mlist, msg, testing=0):
             for addr in addrs:
                 # we found a bounce or a list of bounce addrs
                 if not testing:
-                    mlist.RegisterBounce(addr, msg)
+                    try:
+                        mlist.RegisterBounce(addr, msg)
+                    except Exception, e:
+                        syslog('error', 'Delivery exception: %s' % e)
+                        s = StringIO()
+                        traceback.print_exc(file=s)
+                        syslog('error', s.getvalue())
+                        return 0
                 else:
                     print '%16s: detected address <%s>' % (modname, addr)
             # we saw some bounces
