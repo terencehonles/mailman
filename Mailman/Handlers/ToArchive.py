@@ -17,6 +17,7 @@
 """Add the message to the archives."""
 
 import string
+import time
 
 
 
@@ -27,5 +28,23 @@ def process(mlist, msg, msgdata):
     archivep = msg.getheader('x-archive')
     if archivep and string.lower(archivep) == 'no':
         return
-    # TBD: this needs to be converted to the new pipeline machinery
-    mlist.ArchiveMail(msg, msgdata)
+    #
+    # TBD: This is a kludge around the archiver to properly support
+    # clobber_date, which sets the date in the archive to the resent date
+    # (i.e. now) instead of the potentially bogus date in the original
+    # message.  We still want the outgoing message to contain the Date: header
+    # as originally sent.
+    #
+    # Note that there should be a third option here: to clobber the date only
+    # if it's bogus, i.e. way in the future or way in the past.
+    date = archivedate = msg.getheader('date')
+    try:
+        if mlist.clobber_date:
+            archivedate = time.ctime(time.time())
+            msg['Date'] = archivedate
+            msg['X-Original-Date'] = date
+        # TBD: this needs to be converted to the new pipeline machinery
+        mlist.ArchiveMail(msg, msgdata)
+    finally:
+        # Restore the original date
+        msg['Date'] = date
