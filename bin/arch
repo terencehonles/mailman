@@ -22,7 +22,7 @@ Use this command to rebuild the archives for a mailing list.  You may want to
 do this if you edit some messages in an archive, or remove some messages from
 an archive.
 
-Usage: %(PROGRAM)s [options] <listname> [<mbox>] [-h]
+Usage: %(PROGRAM)s [options] <listname> [<mbox>]
 
 Where options are:
     -h / --help
