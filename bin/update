@@ -210,3 +210,12 @@ if __name__ == '__main__':
     for list in lists:
         print 'Updating mailing list: ', list
         dolist(list)
+    print '\nNOTE NOTE NOTE NOTE NOTE'
+    print """You will need to manually update your mailing lists.
+For each mailing list you need to copy the file templates/options.html
+lists/<listname>/options.html.
+
+However, if you have edited this file via the Web interface, you will have to
+merge your changes into this file, otherwise you will lose your changes.
+"""
+    
