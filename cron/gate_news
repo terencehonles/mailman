@@ -46,6 +46,7 @@ from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 from Mailman.Logging.Syslog import syslog
 
+import mimelib.Errors
 from mimelib.Parser import Parser
 
 # Work around known problems with some RedHat cron daemons
@@ -115,7 +116,13 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 lines.extend(body)
                 lines.append('')
                 p = Parser(Message.Message)
-                msg = p.parsestr(NL.join(lines))
+                try:
+                    msg = p.parsestr(NL.join(lines))
+                except mimelib.Errors.MessageError, e:
+                    syslog('fromusenet',
+                           'mimelib exception for %s:%d\n%s',
+                           mlist.linked_newsgroup, num, e)
+                    continue
                 if found_to:
                     del msg['X-Originally']
                     msg['X-Originally-To'] = msg['To']
