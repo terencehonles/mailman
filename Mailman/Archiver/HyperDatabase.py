@@ -19,8 +19,6 @@
 #
 import os
 import marshal
-import string
-import sys
 import time
 import errno
 
@@ -51,11 +49,11 @@ class DumbBTree:
     objects.  The object itself is stored using marshal.  It would be
     much simpler, and probably faster, to store the actual objects in
     the DumbBTree and pickle it.
-    
+
     TBD: Also needs a more sensible name, like IteratableDictionary or
     SortedDictionary.
     """
-    
+
     def __init__(self, path):
         self.current_index = 0
         self.path = path
@@ -65,7 +63,7 @@ class DumbBTree:
         self.dict = {}
         self.sorted = []
         self.load()
-        
+
     def __repr__(self):
         return "DumbBTree(%s)" % self.path
 
@@ -74,7 +72,7 @@ class DumbBTree:
             self.sorted = self.dict.keys()
             self.sorted.sort()
             self.__dirty = 0
-        
+
     def lock(self):
         self.lockfile.lock()
 
@@ -83,28 +81,28 @@ class DumbBTree:
             self.lockfile.unlock()
         except LockFile.NotLockedError:
             pass
-        
+
     def __delitem__(self, item):
         # if first hasn't been called, we can skip the sort
         if self.current_index == 0:
             del self.dict[item]
             self.__dirty = 1
             return
-	try:
-	    ci = self.sorted[self.current_index]
-	except IndexError:
-	    ci = None
-	if ci == item:
-	    try:
-		ci = self.sorted[self.current_index + 1]
-	    except IndexError:
-		ci = None
-	del self.dict[item]
+        try:
+            ci = self.sorted[self.current_index]
+        except IndexError:
+            ci = None
+        if ci == item:
+            try:
+                ci = self.sorted[self.current_index + 1]
+            except IndexError:
+                ci = None
+        del self.dict[item]
         self.__sort(dirty=1)
-	if ci is not None:
-	    self.current_index = self.sorted.index(ci)
-	else:
-	    self.current_index = self.current_index + 1
+        if ci is not None:
+            self.current_index = self.sorted.index(ci)
+        else:
+            self.current_index = self.current_index + 1
 
     def clear(self):
         # bulk clearing much faster than deleting each item, esp. with the
@@ -118,22 +116,22 @@ class DumbBTree:
         else:
             key = self.sorted[0]
             self.current_index = 1
-	    return key, self.dict[key]
+            return key, self.dict[key]
 
     def last(self):
         if not self.sorted:
             raise KeyError
         else:
             key = self.sorted[-1]
-	    self.current_index = len(self.sorted) - 1
+            self.current_index = len(self.sorted) - 1
             return key, self.dict[key]
-	
+
     def next(self):
         try:
             key = self.sorted[self.current_index]
         except IndexError:
             raise KeyError
-	self.current_index = self.current_index + 1
+        self.current_index = self.current_index + 1
         return key, self.dict[key]
 
     def has_key(self, key):
@@ -154,10 +152,10 @@ class DumbBTree:
             self.dict[item] = val
             self.__dirty = 1
             return
-	try:
-	    current_item = self.sorted[self.current_index]
-	except IndexError:
-	    current_item = item
+        try:
+            current_item = self.sorted[self.current_index]
+        except IndexError:
+            current_item = item
         self.dict[item] = val
         self.__sort(dirty=1)
         self.current_index = self.sorted.index(current_item)
@@ -198,48 +196,48 @@ class DumbBTree:
 #
 class HyperDatabase(pipermail.Database):
     __super_addArticle = pipermail.Database.addArticle
-    
+
     def __init__(self, basedir):
         self.__cache = {}
-	self.__currentOpenArchive = None   # The currently open indices
-	self.basedir = os.path.expanduser(basedir)
+        self.__currentOpenArchive = None   # The currently open indices
+        self.basedir = os.path.expanduser(basedir)
         # Recently added articles, indexed only by message ID
         self.changed={}
 
     def firstdate(self, archive):
-	self.__openIndices(archive)
-	date = 'None'
-	try:
-	    datekey, msgid = self.dateIndex.first()
-	    date = time.asctime(time.localtime(string.atof(datekey[0])))
-	except KeyError:
+        self.__openIndices(archive)
+        date = 'None'
+        try:
+            datekey, msgid = self.dateIndex.first()
+            date = time.asctime(time.localtime(float(datekey[0])))
+        except KeyError:
             pass
-	return date
+        return date
 
     def lastdate(self, archive):
-	self.__openIndices(archive)
-	date = 'None'
-	try:
-	    datekey, msgid = self.dateIndex.last()
-	    date = time.asctime(time.localtime(string.atof(datekey[0])))
-	except KeyError:
+        self.__openIndices(archive)
+        date = 'None'
+        try:
+            datekey, msgid = self.dateIndex.last()
+            date = time.asctime(time.localtime(float(datekey[0])))
+        except KeyError:
             pass
-	return date
+        return date
 
     def numArticles(self, archive):
-	self.__openIndices(archive)
-	return len(self.dateIndex)    
+        self.__openIndices(archive)
+        return len(self.dateIndex)
 
     def addArticle(self, archive, article, subject=None, author=None,
                    date=None):
-	self.__openIndices(archive)
+        self.__openIndices(archive)
         self.__super_addArticle(archive, article, subject, author, date)
 
     def __openIndices(self, archive):
-	if self.__currentOpenArchive == archive:
+        if self.__currentOpenArchive == archive:
             return
-	self.__closeIndices()
-	arcdir = os.path.join(self.basedir, 'database')
+        self.__closeIndices()
+        arcdir = os.path.join(self.basedir, 'database')
         omask = os.umask(0)
         try:
             try:
@@ -248,38 +246,38 @@ class HyperDatabase(pipermail.Database):
                 if e.errno <> errno.EEXIST: raise
         finally:
             os.umask(omask)
-	for i in ('date', 'author', 'subject', 'article', 'thread'):
-	    t = DumbBTree(os.path.join(arcdir, archive + '-' + i)) 
-	    setattr(self, i + 'Index', t)
-	self.__currentOpenArchive = archive
+        for i in ('date', 'author', 'subject', 'article', 'thread'):
+            t = DumbBTree(os.path.join(arcdir, archive + '-' + i))
+            setattr(self, i + 'Index', t)
+        self.__currentOpenArchive = archive
 
     def __closeIndices(self):
-	for i in ('date', 'author', 'subject', 'thread', 'article'):
-	    attr = i + 'Index'
-	    if hasattr(self, attr): 
-		index = getattr(self, attr) 
-		if i == 'article': 
-	            if not hasattr(self, 'archive_length'):
+        for i in ('date', 'author', 'subject', 'thread', 'article'):
+            attr = i + 'Index'
+            if hasattr(self, attr):
+                index = getattr(self, attr)
+                if i == 'article':
+                    if not hasattr(self, 'archive_length'):
                         self.archive_length = {}
                     l = len(index)
                     self.archive_length[self.__currentOpenArchive] = l
-		index.close() 
-		delattr(self, attr)
-	self.__currentOpenArchive = None
-        
+                index.close()
+                delattr(self, attr)
+        self.__currentOpenArchive = None
+
     def close(self):
-	self.__closeIndices()
-        
-    def hasArticle(self, archive, msgid): 
-	self.__openIndices(archive)
-	return self.articleIndex.has_key(msgid)
-    
+        self.__closeIndices()
+
+    def hasArticle(self, archive, msgid):
+        self.__openIndices(archive)
+        return self.articleIndex.has_key(msgid)
+
     def setThreadKey(self, archive, key, msgid):
-	self.__openIndices(archive)
-	self.threadIndex[key]=msgid
-        
+        self.__openIndices(archive)
+        self.threadIndex[key]=msgid
+
     def getArticle(self, archive, msgid):
-	self.__openIndices(archive)
+        self.__openIndices(archive)
         if not self.__cache.has_key(msgid):
             # get the pickled object out of the DumbBTree
             buf = self.articleIndex[msgid]
@@ -288,50 +286,50 @@ class HyperDatabase(pipermail.Database):
             article = self.__cache[msgid]
         return article
 
-    def first(self, archive, index): 
-	self.__openIndices(archive)
-	index = getattr(self, index + 'Index')
-	try: 
-	    key, msgid = index.first()
-	    return msgid
-	except KeyError:
+    def first(self, archive, index):
+        self.__openIndices(archive)
+        index = getattr(self, index + 'Index')
+        try:
+            key, msgid = index.first()
+            return msgid
+        except KeyError:
             return None
-        
-    def next(self, archive, index): 
-	self.__openIndices(archive)
-	index = getattr(self, index + 'Index')
-	try: 
-	    key, msgid = index.next()
-	    return msgid
-	except KeyError:
+
+    def next(self, archive, index):
+        self.__openIndices(archive)
+        index = getattr(self, index + 'Index')
+        try:
+            key, msgid = index.next()
+            return msgid
+        except KeyError:
             return None
-	
+
     def getOldestArticle(self, archive, subject):
-	self.__openIndices(archive)
-	subject=string.lower(subject)
-	try: 
-	    key, tempid=self.subjectIndex.set_location(subject)
-	    self.subjectIndex.next()	
-	    [subject2, date]= string.split(key, '\0')
-	    if subject!=subject2: return None
-	    return tempid
-	except KeyError: 
-	    return None
+        self.__openIndices(archive)
+        subject = subject.lower()
+        try:
+            key, tempid=self.subjectIndex.set_location(subject)
+            self.subjectIndex.next()
+            [subject2, date]= key.split('\0')
+            if subject!=subject2: return None
+            return tempid
+        except KeyError:
+            return None
 
     def newArchive(self, archive):
         pass
-    
+
     def clearIndex(self, archive, index):
-	self.__openIndices(archive)
+        self.__openIndices(archive)
         if hasattr(self.threadIndex, 'clear'):
             self.threadIndex.clear()
             return
-	finished=0
-	try:
-	    key, msgid=self.threadIndex.first()	    		
-	except KeyError: finished=1
-	while not finished:
-	    del self.threadIndex[key]
-	    try:
-		key, msgid=self.threadIndex.next()	    		
-	    except KeyError: finished=1
+        finished=0
+        try:
+            key, msgid=self.threadIndex.first()
+        except KeyError: finished=1
+        while not finished:
+            del self.threadIndex[key]
+            try:
+                key, msgid=self.threadIndex.next()
+            except KeyError: finished=1
