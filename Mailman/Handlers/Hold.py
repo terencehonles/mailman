@@ -252,7 +252,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         subject = _('Your message to %(listname)s awaits moderator approval')
         d['reason'] = str(exc)
         d['subject'] = usersubject
-        text = Utils.maketext('postheld.txt', d, pluser)
+        text = Utils.maketext('postheld.txt', d, lang=pluser)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
         msg.send(mlist)
     # Log the held message
