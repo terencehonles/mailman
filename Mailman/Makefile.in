@@ -39,7 +39,6 @@ DEFS=   	@DEFS@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 PACKAGEDIR= 	$(prefix)/Mailman
-CGIDIR=		$(PACKAGEDIR)/Cgi
 SHELL=		/bin/sh
 
 MODULES=	__init__.py aliases.py htmlformat.py \
@@ -49,7 +48,7 @@ MailCommandHandler.py Mailbox.py Message.py SecurityManager.py \
 Utils.py Pending.py Crypt.py GatewayManager.py \
 pipermail.py smtplib.py versions.py flock.py
 
-SUBDIRS=	Cgi
+SUBDIRS=	Cgi Logging
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
