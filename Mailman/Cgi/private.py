@@ -1,25 +1,26 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Provide a password-interface wrapper around private archives.
 """
 
-import sys
 import os
+import sys
 import cgi
+import mimetypes
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -41,14 +42,6 @@ def true_path(path):
     path = path.replace('../', '')
     path = path.replace('./', '')
     return path[1:]
-
-
-def content_type(path):
-    if path[-3:] == '.gz':
-        path = path[:-3]
-    if path[-4:] == '.txt':
-        return 'text/plain'
-    return 'text/html'
 
 
 
@@ -140,12 +133,12 @@ def main():
 
     # Authorization confirmed... output the desired file
     try:
-        ctype = content_type(path)
+        ctype, enc = mimetypes.guess_type(path, strict=0)
         if mboxfile:
             f = open(os.path.join(mlist.archive_dir() + '.mbox',
                                   mlist.internal_name() + '.mbox'))
             ctype = 'text/plain'
-        elif true_filename[-3:] == '.gz':
+        elif true_filename.endswith('.gz'):
             import gzip
             f = gzip.open(true_filename, 'r')
         else:
