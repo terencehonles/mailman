@@ -355,7 +355,7 @@ class Bouncer:
 	    (regex.compile('.*552 %s.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*501 %s.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*553 %s.*' % email_regexp), BOUNCE),
-	    (regex.compile('.*550 %s.*' % email_regexp), REMOVE),
+	    (regex.compile('.*550 %s.*' % email_regexp), BOUNCE),
 	    (regex.compile('%s .bounced.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*%s\.\.\. Deferred.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*User %s not known.*' % email_regexp), REMOVE),
