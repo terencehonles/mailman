@@ -124,12 +124,15 @@ def main():
                                  "required, to prevent anyone from covertly "
                                  "subscribing you.  Instructions are being "
                                  "sent to you at %s." % email)
+
+            remote = ""
             if os.environ.has_key('REMOTE_HOST'):
                 remote = os.environ['REMOTE_HOST']
             elif os.environ.has_key('REMOTE_ADDR'):
                 remote = os.environ['REMOTE_ADDR']
-            else:
-                remote = "."
+            if remote:
+                remote = " from %s"
+
             if digest:
                 digesting = " digest"
             else:
@@ -144,6 +147,8 @@ def main():
                  "cookie"     : cookie,
                  "hostname"   : remote,
                  "requestaddr": list.GetRequestEmail(),
+                 "remote"     : remote,
+                 "listadmin"  : list.GetAdminEmail(),
                  })
             list.SendTextToUser(
                 subject="%s -- confirmation of subscription -- request %d" % \
