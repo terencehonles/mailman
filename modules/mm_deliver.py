@@ -173,7 +173,7 @@ class Deliverer:
                 # Trim off subject prefix
                 subject = subject[len(sp) + 1:]
 	body = POSTACKTEXT % (subject, self.real_name,
-                              self.GetScriptURL('listinfo'))
+                              self.GetAbsoluteScriptURL('listinfo'))
 	self.SendTextToUser('%s post acknowlegement' % self.real_name,
                             body, sender)
 
@@ -187,8 +187,8 @@ class Deliverer:
                                    'host_name' : self.host_name,
                                    'welcome'   : welcome,
                                    'emailaddr' : self.GetListEmail(),
-                                   'generalurl': self.GetScriptURL('listinfo'),
-                                   'optionsurl': self.GetOptionsURL(name),
+                                   'generalurl': self.GetAbsoluteScriptURL('listinfo'),
+                                   'optionsurl': self.GetAbsoluteOptionsURL(name),
                                    'password'  : password,
                                    }
         return body
@@ -226,7 +226,7 @@ class Deliverer:
             text = USERPASSWORDTEXT % (user,
 				       self.real_name,
                                        self.passwords[user],
-                                       self.GetOptionsURL(user),
+                                       self.GetAbsoluteOptionsURL(user),
                                        self.GetRequestEmail(),
                                        self.GetAdminEmail())
         else:

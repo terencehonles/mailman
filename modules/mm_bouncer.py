@@ -17,7 +17,7 @@
 
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 547 $"
+__version__ = "$Revision: 693 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -189,7 +189,7 @@ class Bouncer:
                 text.append("You can reenable their subscription by visiting "
                             "their options page")
                 text.append("(via %s) and using your"
-                            % self.GetScriptURL('listinfo'))
+                            % self.GetAbsoluteScriptURL('listinfo'))
                 text.append(
                     "list admin password to authorize the option change.")
             text.append("")

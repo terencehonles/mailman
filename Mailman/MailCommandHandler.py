@@ -17,7 +17,7 @@
 
 """Process maillist user commands arriving via email."""
 
-__version__ = "$Revision: 632 $"
+__version__ = "$Revision: 693 $"
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
@@ -300,7 +300,7 @@ class MailCommandHandler:
                            " background" % self.real_name)
         self.AddToResponse("and instructions for subscribing to and"
                            " using it, visit:\n\n\t%s\n"
-                           % self.GetScriptURL('listinfo'))
+                           % self.GetAbsoluteScriptURL('listinfo'))
 
 	if not self.info:
 	    self.AddToResponse("No other details about %s are available." %
@@ -601,7 +601,7 @@ Commands should be sent to %s
 Questions and concerns for the attention of a person should be sent to
 %s
 """ % (mm_cfg.VERSION,
-       self.GetScriptURL('listinfo'),
+       self.GetAbsoluteScriptURL('listinfo'),
        self.GetRequestEmail(),
        self.GetAdminEmail()))
 	

@@ -17,7 +17,7 @@
 
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 669 $"
+__version__ = "$Revision: 693 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string, re
@@ -320,7 +320,8 @@ class Digest:
             lst = self.list
             substs = {}
             substs.update(lst.__dict__)
-            substs.update({'got_listinfo_url': lst.GetScriptURL('listinfo'),
+            substs.update({'got_listinfo_url': 
+                                        lst.GetAbsoluteScriptURL('listinfo'),
                            'got_request_email': lst.GetRequestEmail(),
                            'got_list_email': lst.GetListEmail(),
                            'got_owner_email': lst.GetAdminEmail(),

@@ -17,7 +17,7 @@
 
 """Routines for presentation of list-specific HTML text."""
 
-__version__ = "$Revision: 547 $"
+__version__ = "$Revision: 693 $"
 
 
 import os
@@ -87,7 +87,7 @@ class HTMLFormatter:
 		showing = ObscureEmail(person, for_text=1)
 	    else:
 		showing = person
-	    got = Link(os.path.join(me.GetScriptURL('options'),
+	    got = Link(os.path.join(me.GetRelativeScriptURL('options'),
 				    id), showing)
             if me.GetUserOption(person, disdel):
                 got = Italic("(", got, ")")
@@ -261,7 +261,7 @@ class HTMLFormatter:
         return container
 
     def FormatFormStart(self, name, extra=''):
-	base_url = self.GetScriptURL(name)
+	base_url = self.GetRelativeScriptURL(name)
 	full_url = os.path.join(base_url, extra)
 	return ('<FORM Method=POST ACTION="%s">' % full_url)
 

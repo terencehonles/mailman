@@ -77,7 +77,7 @@ class ListAdmin:
 					    % (who,
 					       self.real_name,
 					       self.host_name,
-					       self.GetScriptURL('admindb'))))
+					       self.GetAbsoluteScriptURL('admindb'))))
 	    raise mm_err.MMNeedApproval, "Admin approval required to subscribe"
 
 	elif request == 'post':
@@ -97,7 +97,7 @@ class ListAdmin:
 					       reason,
 					       sender,
 					       subject,
-					       self.GetScriptURL('admindb'))))
+					       self.GetAbsoluteScriptURL('admindb'))))
 	    raise mm_err.MMNeedApproval, args[1]
 
     def CleanRequests(self):
