@@ -51,7 +51,7 @@ if _translation is None:
 
 
 
-def _x(s, frame):
+def _(s):
     # Do translation of the given string into the current language, and do
     # Ping-string interpolation into the resulting string.
     #
@@ -63,34 +63,11 @@ def _x(s, frame):
     # and have it Just Work.  Note that the lookup order for keys in the
     # original string is 1) locals dictionary, 2) globals dictionary.
     #
+    # First, get the frame of the caller
+    frame = sys._getframe(1)
     # A `safe' dictionary is used so we won't get an exception if there's a
     # missing key in the dictionary.
     dict = SafeDict(frame.f_globals.copy())
     dict.update(frame.f_locals)
     # Translate the string, then interpolate into it.
     return _translation.gettext(s) % dict
-    
-
-
-# Public version, to be used by most modules.  There are three ways to get the
-# stack frame to serve as the namespace source.  First, we try to use the
-# Python 2.1 extension to the sys module.  If that's not there, we fall back
-# to the optional Mailman enhancement module, and finally use the
-# tried-and-true (but slow) pure Python approach.  The latter should work in
-# every supported version of Python.
-if hasattr(sys, '_getframe'):
-    def _(s):
-        return _x(s, sys._getframe(1))
-else:
-    try:
-        import _mailman
-        def _(s):
-            return _x(s, _mailman._getframe(1))
-    except ImportError:
-        def _(s):
-            exc = 'exc'
-            try: raise exc
-            except exc:
-                # Get one frame up the stack.
-                frame = sys.exc_info()[2].tb_frame.f_back
-            return _x(s, frame)
