@@ -143,6 +143,8 @@ class SecurityManager:
         """True if password is valid for site, list admin, or specific user."""
         if self.ValidAdminPassword(pw):
             return 1
+        if user is None:
+            raise Errors.MMBadUserError
         addr = self.FindUser(user)
         if addr is None:
             raise Errors.MMNotAMemberError
