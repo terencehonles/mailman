@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,20 +27,21 @@ import sys
 import os
 import string
 import re
-from UserDict import UserDict
-from types import StringType
 # XXX: obsolete, should use re module
 import regsub
 import random
 import urlparse
+import sha
+import errno
+
+from mimelib.MsgReader import MsgReader
 
 from Mailman import mm_cfg
 from Mailman import Errors
-##try:
-##    import md5
-##except ImportError:
-##    md5 = None
-from Mailman import Crypt
+from Mailman.SafeDict import SafeDict
+
+EMPTYSTRING = ''
+NL = '\n'
 
 
 
@@ -384,7 +385,7 @@ def MakeRandomPassword(length=6):
     syls = []
     while len(syls)*2 < length:
         syls.append(random.choice(_syllables))
-    return string.join(syls, '')[:length]
+    return EMPTYSTRING.join(syls)[:length]
 
 def GetRandomSeed():
     chr1 = int(random.random() * 52)
@@ -398,19 +399,24 @@ def GetRandomSeed():
     return "%c%c" % tuple(map(mkletter, (chr1, chr2)))
 
 def SetSiteAdminPassword(pw):
-    fp = open_ex(mm_cfg.SITE_PW_FILE, 'w', perms=0640)
-    fp.write(Crypt.crypt(pw, GetRandomSeed()))
-    fp.close()
-
-def CheckSiteAdminPassword(pw1):
+    omask = os.umask(026)                         # rw-r-----
     try:
-        f = open(mm_cfg.SITE_PW_FILE)
-        pw2 = f.read()
-        f.close()
-        return Crypt.crypt(pw1, pw2[:2]) == pw2
-    # There probably is no site admin password if there was an exception
-    except IOError:
+        fp = open(mm_cfg.SITE_PW_FILE, 'w')
+        fp.write(sha.new(pw).hexdigest() + '\n')
+        fp.close()
+    finally:
+        os.umask(omask)
+
+def CheckSiteAdminPassword(response):
+    try:
+        fp = open(mm_cfg.SITE_PW_FILE)
+        challenge = fp.read()[-1]                 # strip off trailing nl
+        fp.close()
+    except IOError, e:
+        if e.errno <> errno.ENOENT: raise
+        # It's okay not to have a site admin password, just return false
         return 0
+    return challenge == sha.new(response).hexdigest()
 
 
 
@@ -469,28 +475,6 @@ def chunkify(members, chunksize=None):
 
 
 
-class SafeDict(UserDict):
-    """Dictionary which returns a default value for unknown keys.
-
-    This is used in maketext so that editing templates is a bit more robust.
-    """
-    def __init__(self, d=None):
-        # optional initial dictionary is a Python 1.5.2-ism.  Do it this way
-        # for portability
-        UserDict.__init__(self)
-        if d is not None:
-            self.update(d)
-
-    def __getitem__(self, key):
-        try:
-            return self.data[key]
-        except KeyError:
-            if type(key) == StringType:
-                return '%('+key+')s'
-            else:
-                return '<Missing key: %s>' % `key`
-
-
 def maketext(templatefile, dict=None, raw=0, lang=None):
     """Make some text from a template file.
 
@@ -513,52 +497,61 @@ def maketext(templatefile, dict=None, raw=0, lang=None):
 
 
 
-# given a Message.Message object, test for administrivia (eg subscribe,
-# unsubscribe, etc).  the test must be a good guess -- messages that return
+ADMINDATA = {
+    # admin keyword: (minimum #args, maximum #args)
+    'subscribe':   (0, 3),
+    'unsubscribe': (0, 1),
+    'who':         (0, 0),
+    'info':        (0, 0),
+    'lists':       (0, 0),
+    'set':         (3, 3),
+    'help':        (0, 0),
+    'password':    (2, 2),
+    'options':     (0, 0),
+    'remove':      (0, 0),
+    }
+
+# Given a Message.Message object, test for administrivia (eg subscribe,
+# unsubscribe, etc).  The test must be a good guess -- messages that return
 # true get sent to the list admin instead of the entire list.
-#
-def IsAdministrivia(msg):
-    lines = map(string.lower, string.split(msg.body, "\n"))
-    # check to see how many lines that actually have text in them there are
-    admin_data = {"subscribe": (0, 3),
-                  "unsubscribe": (0, 1),
-                  "who": (0,0),
-                  "info": (0,0),
-                  "lists": (0,0),
-                  "set": (3, 3),
-                  "help": (0,0),
-                  "password": (2, 2),
-                  "options": (0,0),
-                  "remove": (0, 0)}
-    lines_with_text = 0
-    for line in lines:
-        if string.strip(line):
-            lines_with_text = lines_with_text + 1
-        if lines_with_text > mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES:
+def is_administrivia(msg):
+    reader = MsgReader(msg)
+    linecnt = 0
+    lines = []
+    while 1:
+        line = reader.readline()
+        if not line:
+            break
+        # Strip out any signatures
+        if line == '-- ':
+            break
+        if line.strip():
+            linecnt += 1
+        if linecnt > mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES:
             return 0
-    sig_ind =  string.find(msg.body, "\n-- ")
-    if sig_ind != -1:
-        body = msg.body[:sig_ind]
-    else:
-        body = msg.body
-    if admin_data.has_key(string.lower(string.strip(body))):
+        lines.append(line)
+    bodytext = NL.join(lines)
+    # See if the body text has only one word, and that word is administrivia
+    if ADMINDATA.has_key(bodytext.strip().lower()):
         return 1
-    try:
-        if admin_data.has_key(string.lower(string.strip(msg["subject"]))):
-            return 1
-    except KeyError:
-        pass
+    # See if the subect has only one word, and that word is administrivia
+    if ADMINDATA.has_key(msg.get('subject', '').strip().lower()):
+        return 1
+    # Look at the first N lines and see if there is any administrivia on the
+    # line.  BAW: N is currently hardcoded to 5.
     for line in lines[:5]:
-        if not string.strip(line):
+        if not line.strip():
             continue
-        words = string.split(line)
-        if admin_data.has_key(words[0]):
-            min_args, max_args = admin_data[words[0]]
-            if min_args <= len(words[1:]) <= max_args:
-                if (words[0] == 'set'
-                    and (words[2] not in ['on', 'off'])):
-                    continue
-                return 1
+        words = [word.lower() for word in line.split()]
+        minargs, maxargs = ADMINDATA.get(words[0], (None, None))
+        if minargs is None and maxargs is None:
+            continue
+        if minargs <= len(words[1:]) <= maxargs:
+            # Special case the `set' keyword.  BAW: I don't know why this is
+            # here.
+            if words[0] == 'set' and words[2] not in ('on', 'off'):
+                continue
+            return 1
     return 0
 
         
@@ -572,46 +565,6 @@ Two differences from os.mkdir():
     ou = os.umask(0)
     try:
         os.mkdir(dir, mode)
-    finally:
-        os.umask(ou)
-
-
-
-def open_ex(filename, mode='r', bufsize=-1, perms=0664):
-    """Use os.open() to open a file in a particular mode.
-
-    Returns a file-like object instead of a file descriptor.
-    Also umask is forced to 0 during the open().
-
-    `b' flag is currently unsupported."""
-    modekey = mode
-    trunc = os.O_TRUNC
-    if mode == 'r':
-        trunc = 0
-    elif mode[-1] == '+':
-        trunc = 0
-        modekey = mode[:-1]
-    else:
-        trunc = os.O_TRUNC
-    flags = {'r' : os.O_RDONLY,
-             'w' : os.O_WRONLY | os.O_CREAT,
-             'a' : os.O_RDWR   | os.O_CREAT | os.O_APPEND,
-             'rw': os.O_RDWR   | os.O_CREAT,
-             # TBD: should also support `b'
-             }.get(modekey)
-    if flags is None:
-        raise TypeError, 'Unsupported file mode: ' + mode
-    flags = flags | trunc
-    ou = os.umask(0)
-    try:
-        try:
-            fd = os.open(filename, flags, perms)
-            fp = os.fdopen(fd, mode, bufsize)
-            return fp
-        # transform any os.errors into IOErrors
-        except OSError, e:
-            e.__class__ = IOError
-            raise IOError, e, sys.exc_info()[2]
     finally:
         os.umask(ou)
 
@@ -639,7 +592,7 @@ def GetRequestURI(fallback=None):
 
 
 # Wait on a dictionary of child pids
-def reap(kids, func=None):
+def reap(kids, func=None, once=0):
     while kids:
         if func:
             func()
@@ -650,33 +603,21 @@ def reap(kids, func=None):
             except KeyError:
                 # Huh?  How can this happen?
                 pass
+        if once:
+            break
 
 
-# Useful conversion routines
-# unhexlify(hexlify(s)) == s
-#
-# Python 2.0 has these in the binascii module
-try:
-    from binascii import hexlify, unhexlify
-except ImportError:
-    # Not the most efficient of implementations, but good enough for older
-    # versions of Python.
-    def hexlify(s):
-        acc = []
-        def munge(byte, append=acc.append, a=ord('a'), z=ord('0')):
-            if byte > 9: append(byte+a-10)
-            else: append(byte+z)
-        for c in s:
-            hi, lo = divmod(ord(c), 16)
-            munge(hi)
-            munge(lo)
-        return string.join(map(chr, acc), '')
+def GetDirectories(path):
+    from os import listdir
+    from os.path import isdir, join
+    return [f for f in listdir(path) if isdir(join(path, f))]
 
-    def unhexlify(s):
-        acc = []
-        append = acc.append
-        # In Python 2.0, we can use the int() built-in
-        int16 = string.atoi
-        for i in range(0, len(s), 2):
-            append(chr(int16(s[i:i+2], 16)))
-        return string.join(acc, '')
+
+def GetLanguageDescr(lang):
+    return mm_cfg.LC_DESCRIPTIONS[lang][0]
+
+
+def GetCharSet():
+    # BAW: Hmm...
+    lang = os.environ['LANG']
+    return mm_cfg.LC_DESCRIPTIONS[lang][1]
