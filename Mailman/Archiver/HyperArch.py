@@ -27,6 +27,7 @@
 
 import sys
 import re
+import errno
 import urllib
 import time
 import os
@@ -1228,19 +1229,21 @@ class HyperArchive(pipermail.T):
         return article
 
     def update_article(self, arcdir, article, prev, next):
-        self.message(_('Updating HTML for article ') + str(article.sequence))
+        seq = article.sequence
+        filename = os.path.join(arcdir, article.filename)
+        self.message(_('Updating HTML for article %(seq)s'))
         try:
-            f = open(os.path.join(arcdir, article.filename))
+            f = open(filename)
             article.loadbody_fromHTML(f)
             f.close()
-        except IOError:
-            self.message(_("article file %s is missing!")
-                         % os.path.join(arcdir, article.filename))
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+            self.message(_('article file %(filename)s is missing!'))
         article.prev = prev
         article.next = next
         omask = os.umask(002)
         try:
-            f = open(os.path.join(arcdir, article.filename), 'w')
+            f = open(filename, 'w')
         finally:
             os.umask(omask)
         f.write(article.as_html())
