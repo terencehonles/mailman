@@ -153,7 +153,7 @@ def show_requests(mlist, doc):
     doc.AddItem(Utils.maketext(
         'admindbpreamble.html',
         {'listname': mlist.real_name},
-        lang=mlist.preferred_language, raw=1))
+        raw=1, mlist=mlist))
 
     # Form submits back to this script
     form = Form(mlist.GetScriptURL('admindb'))
