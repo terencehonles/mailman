@@ -1,6 +1,6 @@
 """Embody incoming and outgoing messages as objects."""
 
-__version__ = "$Revision: 443 $"
+__version__ = "$Revision: 474 $"
 
 
 import sys
@@ -91,7 +91,7 @@ class IncomingMessage(rfc822.Message):
 		string.lower(name) + ':'):
 		self.headers[i] = '%s: %s' % (name, value)
 		
-    # XXX Eventually (1.5.1?) Python rfc822.Message() will have it's own
+    # XXX Eventually (1.5.1?) Python rfc822.Message() will have its own
     # __delitem__. 
     def __delitem__(self, name):
         """Delete all occurrences of a specific header, if it is present."""
@@ -128,13 +128,14 @@ class OutgoingMessage:
 	self.sender = sender
 
     def SetHeaders(self, headers):
-	self.headers = map(AddBackNewline, string.split(headers, '\n'))
+        self.headers = map(AddBackNewline, string.split(headers, '\n'))
+        self.CacheHeaders()
 
-	def CacheHeaders(header, s=self):
+    def CacheHeaders(self):
+        for header in self.headers:
 	    i = string.find(header, ':')
-	    s.cached_headers[string.lower(string.strip(header[:i]))
-                             ] = header[i+2:]
-	map(CacheHeaders, self.headers)
+	    self.cached_headers[string.lower(string.strip(header[:i]))
+                                ] = header[i+2:]
 
     def SetHeader(self, header, value, crush_duplicates=1):
 	if value[-1] <> '\n':
@@ -178,3 +179,18 @@ class OutgoingMessage:
 	if not self.cached_headers.has_key(str):
 	    return None
 	return self.cached_headers[str]
+
+    def __delitem__(self, name):
+        if not self.getheader(name):
+            return None
+        newheaders = []
+        name = string.lower(name)
+        nlen = len(name)
+        for h in self.headers:
+            if (len(h) > (nlen+1)
+                and h[nlen] == ":"
+                and string.lower(h[:nlen]) == name):
+                continue
+            newheaders.append(h)
+        self.headers = newheaders
+        self.CacheHeaders()
