@@ -1,4 +1,4 @@
-Mailman - The GNU Mailing List Management System
+facilityMailman - The GNU Mailing List Management System
 Copyright (C) 1998 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
@@ -230,6 +230,10 @@ if you want to keep your existing installation intact.
           % su - mailman
           % cd $prefix/cron
           % crontab crontab.in
+
+    - Look to see if there is special instructions about hooking your
+      MTA up to Mailman.  If so, there will be a README.<yourMTA> file
+      in the Mailman source directory.
 
     - Add aliases for `mailman' and `owner-mailman' to the system's
       mail alias database.  These aliases should point to whoever is
