@@ -208,7 +208,7 @@ class SecurityManager:
 
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)
-        if key is None or secret is None:
+        if key is None or secret is None or not isinstance(secret, StringType):
             raise Errors.MMBadUserError
         # Timestamp
         issued = int(time.time())
@@ -283,7 +283,7 @@ class SecurityManager:
         # Do the guts of the cookie check, for one authcontext/user
         # combination.
         key, secret = self.AuthContextInfo(authcontext, user)
-        if not c.has_key(key):
+        if not c.has_key(key) or not isinstance(secret, StringType):
             return 0
         # Undo the encoding we performed in MakeCookie() above
         try:
