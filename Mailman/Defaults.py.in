@@ -101,6 +101,20 @@ MAX_SPAWNS        = 40
 # transaction.
 SMTP_MAX_RCPTS = 500
 
+#
+# Maximum number of simulatenous subthreads that will be used for SMTP
+# delivery.  After the recipients list is chunked according to SMTP_MAX_RCPTS,
+# each chunk is handed off to the smptd by a separate such thread.  If your
+# Python interpreter was not built for threads, this feature is disabled.  You
+# can explicitly disable it in all cases by setting MAX_DELIVERY_THREADS to
+# 0.  This feature is only supported with the SMTPDirect DELIVERY_MODULE.
+#
+# NOTE: This is an experimental feature and limited testing shows that it may
+# in fact degrade performance, possibly due to Python's global interpreter
+# lock.
+MAX_DELIVERY_THREADS = 0
+
+#
 # Delivery module for the message pipeline.  See
 # Mailman/Handlers/HandlerAPI.py for details.  Unless overridden specifically
 # in that module, this handler is used for message delivery to the list, and
