@@ -249,26 +249,6 @@ def ScriptURL(target, web_page_url=None, absolute=0):
 
 
 
-def MakeDirTree(path, perms=0775, verbose=0):
-    made_part = '/'
-    path_parts = filter(None, string.split(path, '/'))
-    for item in path_parts:
-	made_part = os.path.join(made_part, item)
-	if os.path.exists(made_part):
-	    if not os.path.isdir(made_part):
-		raise "RuntimeError", ("Couldn't make dir tree for %s.  (%s"
-				       " already exists)" % (path, made_part))
-	else:
-	    ou = os.umask(0)
-	    try:
-		os.mkdir(made_part, perms)
-	    finally:
-		os.umask(ou)
-	    if verbose:
-		print 'made directory: ', madepart
-  
-
-
 # This takes an email address, and returns a tuple containing (user,host)
 def ParseEmail(email):
     user = None
@@ -487,7 +467,13 @@ def maketext(templatefile, dict=None, raw=0, lang=None):
     if dict is None:
         dict = {}
     file = os.path.join(mm_cfg.TEMPLATE_DIR, lang, templatefile)
-    fp = open(file)
+    try:
+        fp = open(file)
+    except IOError, e:
+        if e.errno <> errno.ENOENT: raise
+        # The language specific template directory may not yet exist
+        file = os.path.join(mm_cfg.TEMPLATE_DIR, templatefile)
+        fp = open(file)
     template = fp.read()
     fp.close()
     text = template % SafeDict(dict)
