@@ -62,14 +62,22 @@ def open_list(listname):
             mlist = MailList.MailList(listname, lock=0)
             _listcache[listname] = mlist
         except Errors.MMListError, e:
-            sys.stderr.write('qrunner error opening list: %s\n%s' %
+            sys.stderr.write('qrunner error opening list: %s\n%s\n' %
                              (listname, e))
     return mlist
 
 
 
+def dequeue(root):
+    # We're done with this message
+    os.unlink(root + '.db')
+    os.unlink(root + '.msg')
+
+
+
 _kids = {}
 def main():
+    stderr = sys.stderr
     global _kids
     for file in os.listdir(mm_cfg.QUEUE_DIR):
         root, ext = os.path.splitext(os.path.join(mm_cfg.QUEUE_DIR, file))
@@ -94,15 +102,18 @@ def main():
             # For some reason we had trouble getting all the information out
             # of the queued files.  log this and move on (we figure it's a
             # temporary problem)
-            sys.stderr.write('Exception reading qfile: %s\n%s' % (root, e))
+            stderr.write('Exception reading qfile: %s\n%s\n' % (root, e))
             continue
         # Dispose of it, after ensuring that we've got the lock on the list.
         listname = msgdata.get('listname')
         if not listname:
-            sys.stderr.write('qfile metadata specifies no list: %s' % root)
+            stderr.write('qfile metadata specifies no list: %s\n' % root)
             continue
         mlist = open_list(listname)
         if not mlist:
+            stderr.write('Dequeuing message destined for missing list: %s\n'
+                         % root)
+            dequeue(root)
             continue
         # Now try to get the list lock
         try:
@@ -121,8 +132,7 @@ def main():
                 del msgdata['kids']
             if not keepqueued:
                 # We're done with this message
-                os.unlink(root + '.db')
-                os.unlink(root + '.msg')
+                dequeue(root)
         finally:
             mlist.Save()
             mlist.Unlock()
@@ -144,7 +154,7 @@ if __name__ == '__main__':
         # lock is removed.  For now, we just log this potentially deadlocked
         # situation, but this should really be fixed (probably in LockFile.py
         # though).
-        sys.stderr.write('Could not acquire qrunner lock')
+        sys.stderr.write('Could not acquire qrunner lock\n')
     else:
         try:
             main()
