@@ -28,7 +28,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-extern void fatal(const char*, int, const char*, ...);
+extern void fatal(const char*, int, char*, ...);
 extern void check_caller(const char*, gid_t);
 extern int run_script(const char*, int, char**, char**);
 
