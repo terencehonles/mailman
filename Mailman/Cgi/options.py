@@ -82,7 +82,9 @@ def main():
     # we might have a 'language' key in the cgi data.  That was an explicit
     # preference to view the page in, so we should honor that here.  If that's
     # not available, use the list's default language.
-    language = cgidata.getvalue('language', mlist.preferred_language)
+    language = cgidata.getvalue('language')
+    if not mm_cfg.LC_DESCRIPTIONS.has_key(language):
+        language = mlist.preferred_language
     i18n.set_language(language)
     doc.set_language(language)
 
@@ -94,7 +96,7 @@ def main():
             # button UserOptions; we can use that as the descriminator.
             if not cgidata.getvalue('UserOptions'):
                 doc.addError(_('No address given'))
-            loginpage(mlist, doc, None, cgidata)
+            loginpage(mlist, doc, None, language)
             print doc.Format()
             return
     else:
@@ -102,11 +104,18 @@ def main():
 
     # Avoid cross-site scripting attacks
     safeuser = Utils.websafe(user)
-    # Sanity check the user, but be careful about leaking membership
-    # information when we're using private rosters.
+    try:
+        Utils.ValidateEmail(user)
+    except Errors.EmailAddressError:
+        doc.addError(_('Illegal Email Address: %(safeuser)s'))
+        loginpage(mlist, doc, None, language)
+        print doc.Format()
+        return
+    # Sanity check the user, but only give the "no such member" error when
+    # using public rosters, otherwise, we'll leak membership information.
     if not mlist.isMember(user) and mlist.private_roster == 0:
         doc.addError(_('No such member: %(safeuser)s.'))
-        loginpage(mlist, doc, None, cgidata)
+        loginpage(mlist, doc, None, language)
         print doc.Format()
         return
 
@@ -159,7 +168,7 @@ def main():
                        user)
                 doc.addError(_('The confirmation email has been sent.'),
                              tag='')
-        loginpage(mlist, doc, user, cgidata)
+        loginpage(mlist, doc, user, language)
         print doc.Format()
         return
 
@@ -182,7 +191,7 @@ def main():
                 doc.addError(
                     _('A reminder of your password has been emailed to you.'),
                     tag='')
-        loginpage(mlist, doc, user, cgidata)
+        loginpage(mlist, doc, user, language)
         print doc.Format()
         return
 
@@ -205,7 +214,7 @@ def main():
                        'Login failure with private rosters: %s',
                        user)
                 user = None
-        loginpage(mlist, doc, user, cgidata)
+        loginpage(mlist, doc, user, language)
         print doc.Format()
         return
 
@@ -215,7 +224,7 @@ def main():
 
     if cgidata.has_key('logout'):
         print mlist.ZapCookie(mm_cfg.AuthUser, user)
-        loginpage(mlist, doc, user, cgidata)
+        loginpage(mlist, doc, user, language)
         print doc.Format()
         return
 
@@ -229,7 +238,7 @@ def main():
 
     if cgidata.has_key('othersubs'):
         hostname = mlist.host_name
-        title = _('List subscriptions for %(user)s on %(hostname)s')
+        title = _('List subscriptions for %(safeuser)s on %(hostname)s')
         doc.SetTitle(title)
         doc.AddItem(Header(2, title))
         doc.AddItem(_('''Click on a link to visit your options page for the
@@ -302,7 +311,7 @@ def main():
 The new address you requested %(newaddr)s is already a member of the
 %(listname)s mailing list, however you have also requested a global change of
 address.  Upon confirmation, any other mailing list containing the address
-%(user)s will be changed. """)
+%(safeuser)s will be changed. """)
                     # Don't return
                 else:
                     options_page(
@@ -743,20 +752,20 @@ You are subscribed to this list with the case-preserved address
 
 
 
-def loginpage(mlist, doc, user, cgidata):
+def loginpage(mlist, doc, user, lang):
     realname = mlist.real_name
     actionurl = mlist.GetScriptURL('options')
     if user is None:
         title = _('%(realname)s list: member options login page')
         extra = _('email address and ')
     else:
-        title = _('%(realname)s list: member options for user %(user)s')
+        safeuser = Utils.websafe(user)
+        title = _('%(realname)s list: member options for user %(safeuser)s')
         obuser = Utils.ObscureEmail(user)
         extra = ''
     # Set up the title
     doc.SetTitle(title)
     # We use a subtable here so we can put a language selection box in
-    lang = cgidata.getvalue('language', mlist.preferred_language)
     table = Table(width='100%', border=0, cellspacing=4, cellpadding=5)
     # If only one language is enabled for this mailing list, omit the choice
     # buttons.
