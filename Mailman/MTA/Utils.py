@@ -36,13 +36,20 @@ def getusername():
 
 def makealiases(listname):
     wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'wrapper')
-    return (
-        # All the normal delivery addresses
-        (listname,              '"|%s post %s"'      % (wrapper, listname)),
-        (listname + '-admin',   '"|%s bounces %s"'   % (wrapper, listname)),
-        (listname + '-bounces', '"|%s bounces %s'    % (wrapper, listname)),
-        (listname + '-join',    '"|%s join %s"'      % (wrapper, listname)),
-        (listname + '-leave',   '"|%s leave %s"'     % (wrapper, listname)),
-        (listname + '-owner',   '"|%s mailowner %s'  % (wrapper, listname)),
-        (listname + '-request', '"|%s mailcmd %s"'   % (wrapper, listname)),
-        )
+    # Most of the list alias extensions are quite regular.  I.e. if the
+    # message is delivered to listname-foobar, it will be filtered to a
+    # program called foobar.  There are two exceptions:
+    #
+    # 1) Messages to listname (no extension) go to the post script.
+    # 2) Messages to listname-admin go to the bounces script.  This is for
+    #    backwards compatibility and may eventually go away (we really have no
+    #    need for the -admin address anymore).
+    #
+    # Seed this with the special cases.
+    aliases = [(listname,          '"|%s post %s"' % (wrapper, listname)),
+               (listname+'-admin', '"|%s bounces %s' % (wrapper, listname)),
+               ]
+    for ext in ('bounces', 'join', 'leave', 'owner', 'request'):
+        aliases.append(('%s-%s' % (listname, ext),
+                        '"|%s %s %s"' % (wrapper, ext, listname)))
+    return aliases
