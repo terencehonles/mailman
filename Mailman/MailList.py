@@ -545,17 +545,22 @@ it will not be changed."""),
              " multiple addresses."),
 
  	    ('web_page_url', mm_cfg.String, WIDTH, 0,
- 	     'Base URL for Mailman web interface (must end in a single "/")',
+ 	     '''Base URL for Mailman web interface.  The URL must end in a
+ 	     single "/".  See also the details for an important warning when
+ 	     changing this value.''',
 
-             "This is the common root for all mailman URLs concerning this"
-             " list.  It is also used in the listinfo overview of mailing"
-             " lists"
-             " to identify whether or not this list resides on the virtual"
-             " host identified by the overview URL - if this value is found"
-             " (anywhere) in the URL, then this list is considered to be"
-             " on that virtual host, and if not, then it is excluded from"
-             " the listing.  Note that you should use the \'advertised\'"
-             " privacy option to inhibit any listing of the host."),
+             """This is the common root for all Mailman URLs referencing this
+             mailing list.  It is also used in the listinfo overview of
+             mailing lists to identify whether or not this list resides on the
+             virtual host identified by the overview URL; i.e. if this value
+             is found (anywhere) in the URL, then this list is considered to
+             be on that virtual host.  If not, then it is excluded from the
+             listing.
+             <p><b><font size="+1">Warning:</font></b> setting this value to
+             an invalid base URL will render the mailing list unusable.  You
+             will also not be able to fix this from the web interface!  In
+             that case, the site administrator will have to fix the mailing
+             list from the command line."""),
           ]
         if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
