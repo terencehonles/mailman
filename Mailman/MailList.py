@@ -131,8 +131,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.info = ''
 	self.welcome_msg = None
 	self.goodbye_msg = None
-	self.auto_subscribe = mm_cfg.DEFAULT_AUTO_SUBSCRIBE
-	self.closed = mm_cfg.DEFAULT_CLOSED
+	self.open_subscribe = mm_cfg.DEFAULT_OPEN_SUBSCRIBE
+	self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
 	self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
 	self.member_posting_only = mm_cfg.DEFAULT_MEMBER_POSTING_ONLY
 	self.web_subscribe_requires_confirmation = \
@@ -218,7 +218,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'bounced until you approve them, no matter what other options '
 	     'you have set'),
 
-	    ('closed', mm_cfg.Radio, ('Anyone', 'List members', 'No one'), 0,
+	    ('private_roster', mm_cfg.Radio,
+	     ('Anyone', 'List members', 'No one'), 0,
 	     'Anti-spam: Who can view subscription list'),
 
 	    ('obscure_addresses', mm_cfg.Radio, ('No', 'Yes'), 0,
@@ -229,10 +230,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Anti-spam: Only list members can send mail to the list '
 	     'without approval'),
 
-	    ('auto_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
+	    ('open_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Subscribes are done automatically w/o admins approval'),
 
-	    # If auto_subscribe is off, this is ignored, essentially.
+	    # If open_subscribe is off, this is ignored, essentially.
 	    ('web_subscribe_requires_confirmation', mm_cfg.Radio,
 	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
 	     'Extra confirmation for off-the-web subscribes'),
@@ -354,25 +355,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	if self._log_files.has_key(kind):
 	    logf = self._log_files[kind]
 	else:
-	    logfn = os.path.join(mm_cfg.LOG_DIR, kind)
-	    ou = os.umask(002)
-	    try:
-		try:
-		    logf = self._log_files[kind] = open(logfn, 'a+')
-		except IOError, diag:
-		    logf = self._log_files[kind] = sys.stderr
-		    self._log_files['config'] = sys.stderr
-		    self.LogMsg('config',
-				"Access failed to log file %s, %s, "
-				"using sys.stderr.",
-				logfn, `str(diag)`)
-	    finally:
-		os.umask(ou)
-	stamp = time.strftime("%b %d %H:%M:%S %Y",
-			      time.localtime(time.time()))
-	logf.write("%s %s\n" % (stamp, msg % args))
-	if hasattr(logf, 'flush'):
-	    logf.flush()
+	    logf = self._log_files[kind] = mm_utils.StampedLogger(kind)
+ 	logf.write("%s\n" % (msg % args))
+	logf.flush()
 
     def CheckVersion(self):
 	if self.data_version == mm_cfg.VERSION:
@@ -404,20 +389,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	if not digest:
 	    if not self.nondigestable:
 		raise mm_err.MMMustDigestError
-	    if (self.auto_subscribe and web_subscribe and 
+	    if (self.open_subscribe and web_subscribe and 
 		self.web_subscribe_requires_confirmation):
 		if self.web_subscribe_requires_confirmation == 1:
 		    raise mm_err.MMWebSubscribeRequiresConfirmation
 		else:
 		    self.AddRequest('add_member', digest, name, password)
-	    elif self.auto_subscribe:
+	    elif self.open_subscribe:
 		self.ApprovedAddMember(name, password, digest)
 	    else:
 		self.AddRequest('add_member', digest, name, password)
 	else: 
 	    if not self.digestable:
 		raise mm_err.MMCantDigestError
-	    if self.auto_subscribe:
+	    if self.open_subscribe:
 		self.ApprovedAddMember(name, password, digest)
 	    else:
 		self.AddRequest('add_member', digest, name, password)
@@ -578,7 +563,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	    if (self.require_explicit_destination and
  		  not self.HasExplicitDest(msg)):
  		self.AddRequest('post', mm_utils.SnarfMessage(msg),
- 				'List name not among explicit destinations.',
+ 				'List is an implicit destination.',
 				msg.getheader('subject'))
  	    if self.bounce_matching_headers:
 		triggered = self.HasMatchingHeader(msg)
