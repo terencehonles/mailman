@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -231,6 +231,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         i18n.set_language(mlist.preferred_language)
         try:
             lang = mlist.preferred_language
+            charset = Utils.GetCharSet(lang)
             # We need to regenerate or re-translate a few values in d
             usersubject = msg.get('subject', _('(no subject)'))
             d['reason'] = _(reason)
@@ -238,11 +239,12 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             # craft the admin notification message and deliver it
             subject = _('%(listname)s post from %(sender)s requires approval')
             nmsg = Message.UserNotification(owneraddr, owneraddr, subject)
-            nmsg['Content-Type'] = 'multipart/mixed'
+            nmsg.add_header('Content-Type', 'multipart/mixed',
+                            charset=charset)
             nmsg['MIME-Version'] = '1.0'
             text = MIMEText(
                 Utils.maketext('postauth.txt', d, raw=1, mlist=mlist),
-                _charset=Utils.GetCharSet(lang))
+                _charset=charset)
             dmsg = MIMEText(Utils.wrap(_("""\
 If you reply to this message, keeping the Subject: header intact, Mailman will
 discard the held message.  Do this if the message is spam.  If you reply to
