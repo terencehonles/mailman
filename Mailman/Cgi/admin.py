@@ -763,7 +763,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 continue
             if not cgi_info.has_key("%s_digest" % (user)):
                 if user in lst.digest_members:
-                    list.digest_members.remove(user)
+                    lst.digest_members.remove(user)
                     dirty = 1
                 if user not in lst.members:
                     lst.members.append(user)
