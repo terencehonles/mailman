@@ -149,7 +149,7 @@ Project</a> for future language support.
     <li><a href="mailto:aleck@unesp.br">Aleck Zander</a>
     <li><a href="mailto:joseroberto@dicaslinux.com.br">Jose Roberto Kerne</a>.
     </ul>
-    They are working on both the Brazilian (pt_BR) and Portuguese (pt_PT)
+    They are working on both the Brazilian (pt_BR) and Portuguese (pt)
     translations, with help from <a href="mailto:moitinho@civil.ist.utl.pt"
     >Jose Paulo Moitinho de Almeida</a>.
 
@@ -171,6 +171,10 @@ Project</a> for future language support.
     <p><dt><b>Turkish</b></dt>
     <dd><a href="mailto:eguler@aegee.metu.edu.tr">Erdinc Guler</a>
     heads up the Turkish translation effort.
+
+    <p><dt><b>Ukrainian</b></dt>
+    <dd><a href="mailto:miroslav@ichistory.org">Miroslav Ris</a> heads
+    up the Ukrainian translations.
 
 </dl>
 
