@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ def makealiases(listname):
     #
     # Seed this with the special cases.
     aliases = [(listname,          '"|%s post %s"' % (wrapper, listname)),
-               (listname+'-admin', '"|%s bounces %s' % (wrapper, listname)),
+               (listname+'-admin', '"|%s bounces %s"' % (wrapper, listname)),
                ]
     for ext in ('bounces', 'join', 'leave', 'owner', 'request'):
         aliases.append(('%s-%s' % (listname, ext),
