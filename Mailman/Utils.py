@@ -27,9 +27,21 @@ valid_toplevels = ["com", "edu", "gov", "int", "mil", "net", "org",
 "uy", "uz", "vu", "va", "ve", "vn", "vg", "vi", "wf", "eh", "ws",
 "ye", "yu", "zr", "zm", "zw"]
 
-# Make sure the email address passed isn't grossly invalid.
-# Pretty minimal, cheesy check.  We could do better...
+def list_names():
+    """Return the names of all lists in default list directory."""
+    got = []
+    for fn in os.listdir(mm_cfg.LIST_DATA_DIR):
+	if not (
+	    os.path.exists(
+		os.path.join(os.path.join(mm_cfg.LIST_DATA_DIR, fn),
+			     'config.db'))):
+	    continue
+	got.append(fn)
+    return got
+
 def ValidEmail(str):
+    """Verify that the an email address isn't grossly invalid."""
+    # Pretty minimal, cheesy check.  We could do better...
     if ((string.find(str, '|') <> -1) or (string.find(str, ';') <> -1)
 	or str[0] == '-'):
 	raise mm_err.MMHostileAddress
