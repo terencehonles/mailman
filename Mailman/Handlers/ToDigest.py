@@ -29,12 +29,13 @@ import os
 import re
 import time
 from types import ListType
+from cStringIO import StringIO
 
-from mimelib.Parser import Parser
-from mimelib.Generator import Generator
-from mimelib.MIMEBase import MIMEBase
-from mimelib.Text import Text
-from mimelib.address import getaddresses
+from email.Parser import Parser
+from email.Generator import Generator
+from email.MIMEBase import MIMEBase
+from email.MIMEText import MIMEText
+from email.Utils import getaddresses
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -44,7 +45,6 @@ from Mailman.Handlers.Decorate import decorate
 from Mailman.Queue.sbcache import get_switchboard
 
 from Mailman.pythonlib import mailbox
-from Mailman.pythonlib.StringIO import StringIO
 
 _ = i18n._
 
@@ -72,7 +72,7 @@ def process(mlist, msg, msgdata):
     finally:
         os.umask(omask)
     g = Generator(mboxfp)
-    g.write(msg)
+    g(msg, unixfrom=1)
     # Calculate the current size of the accumulation file.  This will not tell
     # us exactly how big the MIME, rfc1153, or any other generated digest
     # message will be, but it's the most easily available metric to decide
@@ -175,7 +175,7 @@ def send_i18n_digests(mlist, mboxfp):
          'got_owner_email':   mlist.GetOwnerEmail(),
          }, mlist=mlist)
     # MIME
-    masthead = Text(mastheadtxt, _charset=Utils.GetCharSet(lang))
+    masthead = MIMEText(mastheadtxt, _charset=Utils.GetCharSet(lang))
     masthead['Content-Description'] = digestid
     mimemsg.add_payload(masthead)
     # rfc1153
@@ -185,7 +185,7 @@ def send_i18n_digests(mlist, mboxfp):
     if mlist.digest_header:
         headertxt = decorate(mlist, mlist.digest_header, _('digest header'))
         # MIME
-        header = Text(headertxt)
+        header = MIMEText(headertxt)
         header['Content-Description'] = _('Digest Header')
         mimemsg.add_payload(header)
         # rfc1153
@@ -265,7 +265,7 @@ def send_i18n_digests(mlist, mboxfp):
         return
     toctext = toc.getvalue()
     # MIME
-    tocpart = Text(toctext)
+    tocpart = MIMEText(toctext)
     tocpart['Content-Description']= _("Today's Topics (%(msgcount)d messages)")
     mimemsg.add_payload(tocpart)
     # rfc1153
@@ -289,12 +289,12 @@ def send_i18n_digests(mlist, mboxfp):
             print >> plainmsg, separator30
             print >> plainmsg
         g = Generator(plainmsg)
-        g.write(msg, unixfrom=0)
+        g(msg, unixfrom=0)
     # Now add the footer
     if mlist.digest_footer:
         footertxt = decorate(mlist, mlist.digest_footer, _('digest footer'))
         # MIME
-        footer = Text(footertxt)
+        footer = MIMEText(footertxt)
         footer['Content-Description'] = _('Digest Footer')
         mimemsg.add_payload(footer)
         # rfc1153
