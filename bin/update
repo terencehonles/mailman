@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -336,10 +336,8 @@ script.
 
 
 
-# this function is passed to os.path.walk
-# to fix the perms on old html archives.
-#
 def archive_path_fixer(unused_arg, dir, files):
+    # Passed to os.path.walk to fix the perms on old html archives.
     for f in files:
         abs = os.path.join(dir, f)
         if os.path.isdir(abs):
@@ -351,15 +349,19 @@ def archive_path_fixer(unused_arg, dir, files):
             os.chmod(abs, 0664)
 
 def remove_old_sources(module):
-    src = "%s/%s" % (mm_cfg.PREFIX, module)
+    # Also removes old directories.
+    src = '%s/%s' % (mm_cfg.PREFIX, module)
     pyc = src + "c"
-    if os.path.exists(src):
+    if os.path.isdir(src):
+        print _('removing directory %(src)s and everything underneath')
+        Utils.rmdirhier(src)
+    elif os.path.exists(src):
         print _('removing %(src)s')
         try:
             os.unlink(src)
         except os.error, rest:
             print _("Warning: couldn't remove %(src)s -- %(rest)s")
-    if module[-3:] == '.py' and os.path.exists(pyc):
+    if module.endswith('.py') and os.path.exists(pyc):
         try:
             os.unlink(pyc)
         except os.error, rest:
@@ -391,7 +393,7 @@ def main():
                 'Mailman/HyperDatabase.py', 'Mailman/pipermail.py',
                 'Mailman/smtplib.py', 'Mailman/Cookie.py',
                 'bin/update_to_10b6', 'scripts/mailcmd',
-                'scripts/mailowner', 'mail/wrapper'):
+                'scripts/mailowner', 'mail/wrapper', 'Mailman/pythonlib'):
         remove_old_sources(mod)
     listnames = Utils.list_names()
     if not listnames:
