@@ -23,8 +23,7 @@ from Mailman import Utils
 from Mailman import Message
 from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
-
-NL = '\n'
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -73,21 +72,23 @@ def process(mlist, msg, msgdata):
                   'adminemail'  : mlist.GetAdminEmail(),
                   'owneremail'  : mlist.GetOwnerEmail(),
                   })
+    # Just because we're using a SafeDict doesn't mean we can't get all sorts
+    # of other exceptions from the string interpolation.  Let's be ultra
+    # conservative here.
     if toadmin:
-        text = mlist.autoresponse_admin_text % d
+        rtext = mlist.autoresponse_admin_text
     elif torequest:
-        text = mlist.autoresponse_request_text % d
+        rtext = mlist.autoresponse_request_text
     else:
-        text = mlist.autoresponse_postings_text % d
-    #
-    # If the autoresponse text contains a colon in its first line, the headers
-    # and body will be mixed up.  The fix is to include a blank delimiting
-    # line at the front of the wrapped text.
+        rtext = mlist.autoresponse_postings_text
+    try:
+        text = rtext % d
+    except Exception, e:
+        syslog('error', 'Bad autoreply text for list: %s\n%s',
+               mlist.internal_name(), rtext)
+        text = rtext
+    # Wrap the response.
     text = Utils.wrap(text)
-    lines = text.split('\n')
-    if lines[0].find(':') >= 0:
-        lines.insert(0, '')
-    text = NL.join(lines)
     outmsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
                                       subject, text)
     outmsg['X-Mailer'] = _('The Mailman Replybot')
