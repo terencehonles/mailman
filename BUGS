@@ -1,0 +1,8 @@
+Known bugs:
+
+- There seems to be a problem building the C wrappers on FreeBSD
+  systems when not using GNU make (gmake).  The symptom is that you
+  get an undefined symbol `_main' in /usr/lib/crt0.o.  We don't know
+  anything more about the causes, and there is some suspicion that the 
+  problem is unrelated to Mailman.  Using gmake to build Mailman
+  appears to solve the problem.
