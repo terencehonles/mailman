@@ -111,4 +111,4 @@ def process(msg):
                           headers.get('final-recipient'))
         if val:
             addrs.append(parseaddr(val))
-    return addrs or None
+    return filter(None, addrs) or None
