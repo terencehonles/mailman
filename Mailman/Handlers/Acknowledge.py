@@ -46,6 +46,8 @@ def process(mlist, msg, msgdata):
         prefix = mlist.subject_prefix
         if subject.startswith(prefix):
             subject = subject[len(prefix):]
+    else:
+        subject = _('(no subject)')
     # Get the user's preferred language
     lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
     # Now get the acknowledgement template
@@ -62,6 +64,6 @@ def process(mlist, msg, msgdata):
     subject = _('%(realname)s post acknowledgement')
     usermsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
                                        subject, text)
-    usermsg.addheader('Content-Type', 'text/plain',
-                      charset=Utils.GetCharSet(lang))
+    usermsg.add_header('Content-Type', 'text/plain',
+                       charset=Utils.GetCharSet(lang))
     usermsg.send(mlist)
