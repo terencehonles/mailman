@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Thu May  2 02:22:17 2002\n"
+"POT-Creation-Date: Sun May  5 17:07:13 2002\n"
 "PO-Revision-Date: 2002-03-26 15:30+0900\n"
 "Last-Translator: Tokio Kikuchi <tkikuchi@is.kochi-u.ac.jp>\n"
 "Language-Team: Japanese <mmjp-users@mm.tkikuchi.net>\n"
@@ -341,7 +341,7 @@ msgstr "話題名:"
 msgid "Regexp:"
 msgstr "正規表現:"
 
-#: Mailman/Cgi/admin.py:702 Mailman/Cgi/options.py:916
+#: Mailman/Cgi/admin.py:702 Mailman/Cgi/options.py:918
 msgid "Description:"
 msgstr "説明:"
 
@@ -1294,7 +1294,7 @@ msgstr ""
 "できます."
 
 #: Mailman/Cgi/confirm.py:431 Mailman/Cgi/options.py:631
-#: Mailman/Cgi/options.py:774 Mailman/Cgi/options.py:784
+#: Mailman/Cgi/options.py:776 Mailman/Cgi/options.py:786
 msgid "Unsubscribe"
 msgstr "退会"
 
@@ -2090,7 +2090,7 @@ msgstr "メールアドレスと"
 msgid "%(realname)s list: member options for user %(user)s"
 msgstr "%(realname)sリスト: %(user)s 会員オプション"
 
-#: Mailman/Cgi/options.py:750
+#: Mailman/Cgi/options.py:752
 msgid ""
 "In order to change your membership option, you must\n"
 "    first log in by giving your %(extra)smembership password in the section\n"
@@ -2118,19 +2118,19 @@ msgstr ""
 "クッキーを有効にしておいてください. でないと, 変更が有効になりません. \n"
 " "
 
-#: Mailman/Cgi/options.py:764
+#: Mailman/Cgi/options.py:766
 msgid "Email address:"
 msgstr "メールアドレス:"
 
-#: Mailman/Cgi/options.py:768
+#: Mailman/Cgi/options.py:770
 msgid "Password:"
 msgstr "パスワード:"
 
-#: Mailman/Cgi/options.py:770
+#: Mailman/Cgi/options.py:772
 msgid "Log in"
 msgstr "ログイン"
 
-#: Mailman/Cgi/options.py:778
+#: Mailman/Cgi/options.py:780
 msgid ""
 "By clicking on the <em>Unsubscribe</em> button, a\n"
 "    confirmation message will be emailed to you.  This message will have a\n"
@@ -2144,11 +2144,11 @@ msgstr ""
 "(または, メールで確認することもできます; 詳しくは, そのメールに\n"
 "書かれた指示を読んでください). "
 
-#: Mailman/Cgi/options.py:786
+#: Mailman/Cgi/options.py:788
 msgid "Password reminder"
 msgstr "パスワード通知"
 
-#: Mailman/Cgi/options.py:790
+#: Mailman/Cgi/options.py:792
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
@@ -2156,27 +2156,27 @@ msgstr ""
 "<em>通知</em>ボタンをクリックすると, \n"
 "あなたのパスワードがメールで送信されます."
 
-#: Mailman/Cgi/options.py:793
+#: Mailman/Cgi/options.py:795
 msgid "Remind"
 msgstr "通知"
 
-#: Mailman/Cgi/options.py:893
+#: Mailman/Cgi/options.py:895
 msgid "<missing>"
 msgstr "<ありません>"
 
-#: Mailman/Cgi/options.py:904
+#: Mailman/Cgi/options.py:906
 msgid "Requested topic is not valid: %(topicname)s"
 msgstr "要求された話題が間違っています: %(topicname)s"
 
-#: Mailman/Cgi/options.py:909
+#: Mailman/Cgi/options.py:911
 msgid "Topic filter details"
 msgstr "話題フィルターの詳細"
 
-#: Mailman/Cgi/options.py:912
+#: Mailman/Cgi/options.py:914
 msgid "Name:"
 msgstr "名称:"
 
-#: Mailman/Cgi/options.py:914
+#: Mailman/Cgi/options.py:916
 msgid "Pattern (as regexp):"
 msgstr "パターン(正規表現):"
 
@@ -2449,10 +2449,13 @@ msgstr ""
 "      リスト司会者へ転送しました."
 
 #: Mailman/Commands/cmd_confirm.py:64
-msgid "You are not a member.  Have you already unsubscribed?"
+#, fuzzy
+msgid ""
+"You are not current a member.  Have you already unsubscribed or changed\n"
+"your email address?"
 msgstr "あなたは会員ではありません. 既に退会していますか?"
 
-#: Mailman/Commands/cmd_confirm.py:68
+#: Mailman/Commands/cmd_confirm.py:69
 #, fuzzy
 msgid "Confirmation succeeded"
 msgstr "確認文字列:"
@@ -6307,36 +6310,36 @@ msgstr "%(name)s への入会には管理者の承認が必要です"
 msgid "Ignoring non-text/plain MIME parts"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:121
+#: Mailman/Queue/CommandRunner.py:124
 msgid ""
 "The results of your email command are provided below.\n"
 "Attached is your original message.\n"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:126
+#: Mailman/Queue/CommandRunner.py:129
 msgid "- Results:"
-msgstr ""
-
-#: Mailman/Queue/CommandRunner.py:132
-msgid ""
-"\n"
-"- Unprocessed:"
 msgstr ""
 
 #: Mailman/Queue/CommandRunner.py:135
 msgid ""
 "\n"
+"- Unprocessed:"
+msgstr ""
+
+#: Mailman/Queue/CommandRunner.py:138
+msgid ""
+"\n"
 "- Ignored:"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:137
+#: Mailman/Queue/CommandRunner.py:140
 msgid ""
 "\n"
 "- Done.\n"
 "\n"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:144
+#: Mailman/Queue/CommandRunner.py:147
 msgid "The results of your email commands"
 msgstr ""
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
-"POT-Creation-Date: Thu May  2 02:22:17 2002\n"
+"POT-Creation-Date: Sun May  5 17:07:13 2002\n"
 "PO-Revision-Date: 2002-01-06 14:39+0100\n"
 "Last-Translator: Szilard Vizi <vizisz@freemail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -341,7 +341,7 @@ msgstr "Téma neve:"
 msgid "Regexp:"
 msgstr "Keresési feltétel:"
 
-#: Mailman/Cgi/admin.py:702 Mailman/Cgi/options.py:916
+#: Mailman/Cgi/admin.py:702 Mailman/Cgi/options.py:918
 msgid "Description:"
 msgstr "Leírás"
 
@@ -1295,7 +1295,7 @@ msgstr ""
 "    <em>Mégsem és elvet</em> gombot."
 
 #: Mailman/Cgi/confirm.py:431 Mailman/Cgi/options.py:631
-#: Mailman/Cgi/options.py:774 Mailman/Cgi/options.py:784
+#: Mailman/Cgi/options.py:776 Mailman/Cgi/options.py:786
 msgid "Unsubscribe"
 msgstr "Leiratkozás"
 
@@ -2113,7 +2113,7 @@ msgstr "e-mail címed és "
 msgid "%(realname)s list: member options for user %(user)s"
 msgstr "%(realname)s lista: %(user)s tag beállításai"
 
-#: Mailman/Cgi/options.py:750
+#: Mailman/Cgi/options.py:752
 #, fuzzy
 msgid ""
 "In order to change your membership option, you must\n"
@@ -2153,19 +2153,19 @@ msgstr ""
 "   "
 
 # In this entry insert a space at the end of string, it will be stripped.
-#: Mailman/Cgi/options.py:764
+#: Mailman/Cgi/options.py:766
 msgid "Email address:"
 msgstr "E-mail cím: "
 
-#: Mailman/Cgi/options.py:768
+#: Mailman/Cgi/options.py:770
 msgid "Password:"
 msgstr "Jelszó: "
 
-#: Mailman/Cgi/options.py:770
+#: Mailman/Cgi/options.py:772
 msgid "Log in"
 msgstr "Bejelentkezés"
 
-#: Mailman/Cgi/options.py:778
+#: Mailman/Cgi/options.py:780
 msgid ""
 "By clicking on the <em>Unsubscribe</em> button, a\n"
 "    confirmation message will be emailed to you.  This message will have a\n"
@@ -2179,11 +2179,11 @@ msgstr ""
 "        (vagy a megfelelõ e-mailt elküldeni; errõl a levélben lehet \n"
 "        részletesen olvasni)."
 
-#: Mailman/Cgi/options.py:786
+#: Mailman/Cgi/options.py:788
 msgid "Password reminder"
 msgstr "Jelszó emlékeztetõ"
 
-#: Mailman/Cgi/options.py:790
+#: Mailman/Cgi/options.py:792
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
@@ -2191,27 +2191,27 @@ msgstr ""
 "Az <em>Emlékeztetõ</em> gombra kattintva e-mailben elküldésre kerül\n"
 "        a jelszavad."
 
-#: Mailman/Cgi/options.py:793
+#: Mailman/Cgi/options.py:795
 msgid "Remind"
 msgstr "Emlékeztetõ"
 
-#: Mailman/Cgi/options.py:893
+#: Mailman/Cgi/options.py:895
 msgid "<missing>"
 msgstr "<hiányzik>"
 
-#: Mailman/Cgi/options.py:904
+#: Mailman/Cgi/options.py:906
 msgid "Requested topic is not valid: %(topicname)s"
 msgstr "A kért témaszûrés nem megfelelõ: %(topicname)s"
 
-#: Mailman/Cgi/options.py:909
+#: Mailman/Cgi/options.py:911
 msgid "Topic filter details"
 msgstr "Bõvebben a témák szûrésérõl"
 
-#: Mailman/Cgi/options.py:912
+#: Mailman/Cgi/options.py:914
 msgid "Name:"
 msgstr "Neve:"
 
-#: Mailman/Cgi/options.py:914
+#: Mailman/Cgi/options.py:916
 msgid "Pattern (as regexp):"
 msgstr "Szûrési feltétel (kifejezésként megadva)"
 
@@ -2480,10 +2480,13 @@ msgid "Your request has been forwarded to the list moderator for approval."
 msgstr "Kérésed a lista szerkesztõjéhez lett továbbítva jóváhagyásra."
 
 #: Mailman/Commands/cmd_confirm.py:64
-msgid "You are not a member.  Have you already unsubscribed?"
+#, fuzzy
+msgid ""
+"You are not current a member.  Have you already unsubscribed or changed\n"
+"your email address?"
 msgstr "Nem vagy listatag. Nem lehet, hogy leiratkoztál?"
 
-#: Mailman/Commands/cmd_confirm.py:68
+#: Mailman/Commands/cmd_confirm.py:69
 #, fuzzy
 msgid "Confirmation succeeded"
 msgstr "Megerõsítési azonosító"
@@ -6398,36 +6401,36 @@ msgstr ""
 msgid "Ignoring non-text/plain MIME parts"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:121
+#: Mailman/Queue/CommandRunner.py:124
 msgid ""
 "The results of your email command are provided below.\n"
 "Attached is your original message.\n"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:126
+#: Mailman/Queue/CommandRunner.py:129
 msgid "- Results:"
-msgstr ""
-
-#: Mailman/Queue/CommandRunner.py:132
-msgid ""
-"\n"
-"- Unprocessed:"
 msgstr ""
 
 #: Mailman/Queue/CommandRunner.py:135
 msgid ""
 "\n"
+"- Unprocessed:"
+msgstr ""
+
+#: Mailman/Queue/CommandRunner.py:138
+msgid ""
+"\n"
 "- Ignored:"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:137
+#: Mailman/Queue/CommandRunner.py:140
 msgid ""
 "\n"
 "- Done.\n"
 "\n"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:144
+#: Mailman/Queue/CommandRunner.py:147
 msgid "The results of your email commands"
 msgstr ""
 
