@@ -646,6 +646,7 @@ QRUNNERS = [
     ('NewsRunner',     1), # outgoing messages to the nntpd
     ('OutgoingRunner', 1), # outgoing messages to the smtpd
     ('VirginRunner',   1), # internally crafted (virgin birth) messages
+    ('RetryRunner',    1), # retry temporarily failed deliveries
     ]
 
 # Set this to Yes to use the `Maildir' delivery option.  If you change this
@@ -1045,9 +1046,6 @@ PENDING_REQUEST_LIFE = days(3)
 # will be dequeued and those recipients will never receive the message.
 DELIVERY_RETRY_PERIOD = days(5)
 
-# How long should we wait before we retry a temporary delivery failure?
-DELIVERY_RETRY_WAIT = hours(1)
-
 
 
 #####
@@ -1227,6 +1225,7 @@ ARCHQUEUE_DIR   = os.path.join(QUEUE_DIR, 'archive')
 SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
 VIRGINQUEUE_DIR = os.path.join(QUEUE_DIR, 'virgin')
 BADQUEUE_DIR    = os.path.join(QUEUE_DIR, 'bad')
+RETRYQUEUE_DIR  = os.path.join(QUEUE_DIR, 'retry')
 MAILDIR_DIR     = os.path.join(QUEUE_DIR, 'maildir')
 
 # Other useful files
