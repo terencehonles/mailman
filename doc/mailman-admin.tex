@@ -13,7 +13,7 @@
 
 \date{\today}			% XXX update before tagging release!
 \release{2.1}			% software release, not documentation
-\setreleaseinfo{b4}		% empty for final release
+\setreleaseinfo{}		% empty for final release
 \setshortversion{2.1}		% major.minor only for software
 
 \begin{document}
@@ -237,10 +237,6 @@ list information page and the list archives.  Note the big ``Logout''
 link; use this if you're finished configuring your list and don't want
 to leave the session cookie active in your browser.
 
-The other thing you'll see in the upper section is the emergency
-moderation checkbox.  This is described in more detail in the
-emergency moderation section.
-
 Below this common header, you'll find a list of this category's
 configuration variables, arranged in two columns.  In the left column
 is a brief description of the option, which also contains a
@@ -278,7 +274,7 @@ These variables, grouped under the general list personality section,
 control some public information about the mailing list.
 
 \begin{description}
-\item[real_name] --
+\item[real_name]
     Every mailing list has both a \emph{posting name} and a \emph{real
     name}.  The posting name shows up in urls and in email addresses,
     e.g. the \code{mylist} in \code{mylist@example.com}.  The posting
@@ -289,21 +285,21 @@ control some public information about the mailing list.
     case only.  For example, if the posting name is \code{mylist}, the
     real name can be \code{Posting}.
 
-\item[owner] --
+\item[owner]
     This variable contains a list of email addresses, one address per
     line, of the list owners.  These addresses are used whenever the
     list owners need to be contacted, either by the system or by end
     users.  Often, these addresses are used in combination with the
     \code{moderator} addresses (see below).
 
-\item[moderator] --
+\item[moderator]
     This variable contains a list of email addresses, one address per
     line, of the list moderators.  These addresses are often used in
     combination with the \code{owner} addresses.  For example, when
     you email \code{mylist-owner@example.com}, both the owner and
     moderator addresses will receive a copy of the message.
 
-\item[description] --
+\item[description]
     In the general list overview page, which shows you every available
     mailing list, each list is displayed with a short description.
     The contents of this variable is that description.  Note that in
@@ -311,7 +307,7 @@ control some public information about the mailing list.
     comment section of the \mailheader{To} address.  This text should
     be relatively short and no longer than one line.
 
-\item[info] --
+\item[info]
     This variable contains a longer description of the mailing list.
     It is included at the top of the list's information page, and it
     can contain HTML.  However, blank lines will be automatically
@@ -319,7 +315,7 @@ control some public information about the mailing list.
     because unclosed or invalid HTML can prevent display of parts of
     the list information page.
 
-\item[subject_prefix] --
+\item[subject_prefix]
     This is a string that will be prepended to the
     \mailheader{Subject} header of any message posted to the list.
     For example, if a message is posted to the list with a
@@ -343,7 +339,7 @@ control some public information about the mailing list.
     preferred language.  In this case, because of vagarities of the
     email standards, you may or may not want to add a trailing space.
 
-\item[anonymous_list] --
+\item[anonymous_list]
     This variable allows you to turn on some simple anonymizing
     features of Mailman.  When you set this option to \emph{Yes},
     Mailman will remove or replace the \mailheader{From},
@@ -393,7 +389,7 @@ flexibility to do whatever \mailheader{Reply-To} munging you might
 
 \begin{description}
 
-\item[first_strip_reply_to] --
+\item[first_strip_reply_to]
     This variable controls whether any \mailheader{Reply-To} header
     already present in the posted message should get removed before
     any other munging occurs.  Stripping this header will be done
@@ -408,7 +404,7 @@ flexibility to do whatever \mailheader{Reply-To} munging you might
     message may only have one \mailheader{Reply-To} header, but that
     that header may contain multiple addresses.
 
-\item[reply_goes_to_list] --
+\item[reply_goes_to_list]
     This variable controls whether Mailman will add its own
     \mailheader{Reply-To} header, and if so, what the value of that
     header will be (not counting original header stripping -- see
@@ -435,7 +431,7 @@ flexibility to do whatever \mailheader{Reply-To} munging you might
     header for the announce list to point to the discussion list's
     posting address.
 
-\item[reply_to_address] --
+\item[reply_to_address]
     This is the address that will be added in the
     \mailheader{Reply-To} header if \code{reply_goes_to_list} is set
     to \emph{Explicit address}.
@@ -456,7 +452,7 @@ Processing and Auto-responder categories for other notifications that
 Mailman can send.
 
 \begin{description}
-\item[send_reminders] --
+\item[send_reminders]
     By default Mailman sends all list members a monthly password
     reminder.  This notice serves two purposes.  First, it reminds
     people about all the lists they may be subscribed to on this
@@ -471,7 +467,7 @@ Mailman can send.
     the members, so you can disable them list-wide by setting the
     \code{send_reminders} variable to \emph{No}.
 
-\item[welcome_msg] --
+\item[welcome_msg]
     When new members are subscribed to the list, either by their own
     action, or the action of a list administrator, a welcome message
     can be sent to them.  The welcome message contains some common
@@ -482,22 +478,22 @@ Mailman can send.
     text box.  Note that because this text is sent as part of an
     email, it should \strong{not} contain HTML.
 
-\item[send_welcome_msg] --
+\item[send_welcome_msg]
     This flag controls whether or not the welcome message is sent to
     new subscribers.
 
-\item[goodbye_msg] --
+\item[goodbye_msg]
     Like the \code{welcome_msg}, a ``goodbye'' message can be sent to
     members when they unsubscribe from the list.  Unlike the welcome
     message, there's no boilerplate for the goodbye message.  Enter
     the entire goodbye message you'd like unsubscribing members to
     receive into the \code{goodbye_msg} text box.
 
-\item[send_goodbye_msg] --
+\item[send_goodbye_msg]
     This flag controls whether or not the goodbye message is sent to
     unsubscribing members.
 
-\item[admin_immed_notify] --
+\item[admin_immed_notify]
     List moderators get notifications of pending administrative
     actions, such as subscription or unsubscription requests that
     require moderator approval, or posted messages that are being held
@@ -508,11 +504,11 @@ Mailman can send.
     immediate notifications are sent or not.  It's generally a good
     idea to leave this set to \emph{Yes}.
 
-\item[admin_notify_mchanges] --
+\item[admin_notify_mchanges]
     This variable controls whether the list administrators should get
     notifications when members join or leave the list.
 
-\item[respond_to_post_requests] --
+\item[respond_to_post_requests]
     This variable controls whether the original sender of a posting
     gets a notice when their message is held for moderator approval.
 
@@ -524,7 +520,13 @@ This section contains some miscellaneous settings for your mailing
 list.
 
 \begin{description}
-\item[new_member_options] --
+\item[emergency]
+    When this option is enabled, all list traffic is emergency
+    moderated, i.e. held for moderation.  Turn this option on when
+    your list is experiencing a flamewar and you want a cooling off
+    period.
+
+\item[new_member_options]
     Each member has a set of subscription options which they can use
     to control how they receive messages and otherwise interact with
     the list.  While the members can change these settings by logging
@@ -549,7 +551,7 @@ list.
     Of course, members can always override these defaults by making
     changes on their membership options page.
 
-\item[administrivia] --
+\item[administrivia]
     This option specifies whether Mailman will search posted messages
     for \emph{admimistrivia}, in other words, email commands which
     usually should be posted to the \code{-request} address for the
@@ -559,11 +561,11 @@ list.
     If a message seems to contain administrivia, it is held for
     moderator approval.
 
-\item[max_message_size] --
+\item[max_message_size]
     This option specifies a maximum message size, in kilobytes, over
     which the message will be held for moderator approval.
 
-\item[host_name] --
+\item[host_name]
     This option specifies the host name part of email addresses used
     by this list.  For example, this is the \code{example.com} part of
     the posting address \code{mylist@example.com}.
@@ -576,7 +578,7 @@ list.
     This is because if you messed it up, you'd have to have the site
     administrator fix it.
 
-\item[include_rfc2369_headers] --
+\item[include_rfc2369_headers]
     \rfc{2369} is an internet standard that describes a bunch of
     headers that mailing list managers should add to messages to make
     it easier for people to interact with the list.  Mail reading
@@ -593,7 +595,7 @@ list.
     and how to hide them in their mail clients.  As a last resort you
     can disable these headers, but this is not recommended.
 
-\item[include_list_post_header] --
+\item[include_list_post_header]
     The \mailheader{List-Post} header is one of the headers
     recommended by \rfc{2369}.  However for some announce-only mailing
     lists, only a very select group of people are allowed to post to
@@ -646,21 +648,21 @@ list supports if no other language context is known.
 These variables control the language settings for your mailing list:
 
 \begin{description}
-\item[preferred_language] --
+\item[preferred_language]
     This is the list's preferred language, which is the language that
     the list administrative pages will be displayed in.  Also any
     messages sent to the list owners by Mailman will be sent in this
     language.  This option is presented as a drop-down list containing
     the language enabled in the \code{available_languages} variable.
 
-\item[available_languages] --
+\item[available_languages]
     This set of checkboxes contains all the natural languages that
     your site administrator has made available to your mailing lists.
     Select any language that you'd either like your members to be able
     to view the list in, or that you'd like to be able to use in your
     list's \code{preferred_language} variable.
 
-\item[encode_ascii_prefixes] --
+\item[encode_ascii_prefixes]
     If your mailing list's preferred language uses a non-ASCII
     character set and the \code{subject_prefix} contains non-ASCII
     characters, the prefix will always be encoded according to the
@@ -734,7 +736,7 @@ must be enabled by the site administrator before you can choose it.
 Here are the variables which control non-digest delivery:
 
 \begin{description}
-\item[nondigestable] --
+\item[nondigestable]
     This option controls whether members can receive immediate
     delivery or not.  If not, they will be forced to receive messages
     in digests.  You can't disable non-digest delivery if digests are
@@ -746,10 +748,7 @@ Here are the variables which control non-digest delivery:
 \item[msg_header]
     This text box lets you enter information that will be included in
     the header of every non-digest message sent through the
-    list\footnote{Well, \emph{almost} every message.  If the header
-    can't be added in a safe way, it won't be added.  For example, if
-    the message were an image, adding the header would corrupt the
-    image data.}.
+    list.
 
     See below for more information on what can go in the headers and
     footers.  If you leave this text box empty, no header will be
@@ -792,28 +791,28 @@ Here is the list of substitution variables available for your headers
 and footers:
 
 \begin{description}
-\item[real_name] --
+\item[real_name]
     This is the value of the \code{real_name} configuration variable
     in the General options category.
 
-\item[list_name] --
+\item[list_name]
     This is the canonical name of the mailing list.  In other words
     it's the posting address of the list\footnote{For backward
     compatibility, the variable \code{_internal_name} is
     equivalent.}.
 
-\item[host_name] --
+\item[host_name]
     This is the domain name part of the email address for this list.
 
-\item[web_page_url] --
+\item[web_page_url]
     This is the base url for contacting the list via the web.  It can
     be appended with \code{listinfo/\%(list_name)s} to yield the
     general list information page for the mailing list.
 
-\item[description] --
+\item[description]
     The brief description of the mailing list.
 
-\item[info] --
+\item[info]
     This is the full description of the mailing list.
 
 \item[cgiext]
@@ -830,10 +829,10 @@ When personalization is enabled, the following substitution variables
 are also available:
 
 \begin{description}
-\item[user_address] --
+\item[user_address]
     The address of the recipient of the message, coerced to lower case.
 
-\item[user_delivered_to] --
+\item[user_delivered_to]
     The case-preserved address that the user subscribed to the mailing
     list with\footnote{Usually it makes no difference which of
     \code{user_address} and \code{user_delivered_to} is used, but it's
@@ -842,25 +841,259 @@ are also available:
     to the member's subscription information, but it always delivers
     messages to the case-preserved version.}.
 
-\item[user_password] --
+\item[user_password]
     The user's password, in clear text.
 
-\item[user_name] --
+\item[user_name]
     The user's full name.
 
-\item[user_optionsurl] --
-    The url to the user's personaloptions page.
+\item[user_optionsurl]
+    The url to the user's personal options page.
 \end{description}
 
 \subsection{The Digest Options Category}
+
+Digest delivery is a way to bundle many articles together into one
+package, which can be delivered once per day (if there were any posted
+articles), or whenever the package is bigger than a specified limit.
+Some users may prefer this style of delivery for higher traffic lists
+since they will receive fewer messages.
+
+Mailman supports two standard digest formats, and if digests are
+enabled, users can select which of the two formats they receive.  One
+is MIME digests, where each message is an attachment inside a
+\mimetype{multipart/digest}.  This format also contains a summary
+table of contents, and of course the an optional header and footer,
+and it retains most of the headers of the original messages.
+
+The second type is called ``plaintext'' digests because they are
+readable in mail readers that don't support MIME.  Actually, they
+adhere to the \rfc{1153} digest standard.  The retain some, but not
+all of the original messages, but can also include a summary and
+headers and footers.
+
+Like non-digest delivery, you can enable or disable digest delivery,
+but you cannot disable both types of delivery.  You can specify
+different headers and footers for digest and non-digest deliveries.
+You cannot personalize digest deliveries.
+
+As list administrator, you may want to send an urgent message to all
+list members, bypassing the normal digest bundling.  To do this, send
+the message with a \mailheader{Urgent} header, where the value of the
+header is the list administrator's password.  Non-digest members will
+receive the message like normal, but digest members will receive the
+message immediately\footnote{They'll also receive the message in the
+digest.}.
+
+Here are the variables which control digest delivery:
+
+\begin{description}
+\item[digestable]
+    The option controls whether members can receive digest deliveries
+    or not.  If not, they will be forced to receive immediate
+    deliveries.  You can't disable digests if non-digests are already
+    disabled.
+
+\item[digest_is_default]
+    Controls which style of delivery is the default for new members.
+    You can choose \emph{Regular} (non-digest) or \emph{Digest}
+    delivery.
+
+\item[mime_is_default_digest]
+    If a member is allowed to choose digests, this variable controls
+    which is the default digest style they will receive.  \emph{Plain}
+    digests are \rfc{1153} format as described above.
+
+\item[digest_size_threshold]
+    Normally, digest members get at least one message per day, if
+    there have been any messages posted to the list.  However, for
+    high volume lists, you may want to send out digests when the size
+    has reached a certain threshold, otherwise, the one digest they
+    receive could be huge.  This variable controls the size threshold
+    by specifying the maximum digest size in kilobytes.  Note that
+    this threshold isn't exact.  Set this variable to zero to specify
+    that there is no size threshold, in which case no more than one
+    digest will be sent out per day.
+
+\item[digest_send_periodic]
+    This variable actually controls whether or not a digest is sent
+    daily when the size threshold has not yet been met.  If set to
+    \emph{No}, then digests will only be sent when they are bigger
+    than \code{digest_size_threshold}.
+
+\item[digest_header]
+    This text box lets you enter information that will be included in
+    the header of every digest message sent through the list.  The
+    same information can go in this header as can go in the
+    \code{msg_header}, except for the personalization variables.
+
+\item[digest_footer]
+    Just like with the header, you can add a footer to every message.
+    The same rules apply to digest footers as apply to digest headers.
+    
+\item[digest_volume_frequency]
+    Each digest is numbered with a volume and an issue.  This variable
+    controls how often a new digest volume is sent.  When the digest
+    volume number is incremented, the issue number is reset to 1.
+
+\item[_new_volume]
+    This is an action variable, which forces an increment of the
+    volume number as soon as you submit the form.
+
+\item[_send_digest_now]
+    This is another action variable.  Select \emph{Yes}, submit the
+    form, and the current digest is packaged up and sent to digest
+    members, regardless of size (well, there has to be at least one
+    message in the digest).
+\end{description}
+
 \subsection{The Privacy Options Category}
+
+The Privacy category lets you control how much of the list's
+information is public, as well as who can send messages to your list.
+It also contains some spam detection filters.  Note that this section
+is not used to control whether your list's archives are public or
+private; for that, use the \ref{Archiving options} category.
+
+There are four sub-categories:
+\begin{itemize}
+\item Subscription rules -- i.e. the rules for joining and leaving
+      your mailing list
+
+\item Sender filters -- the rules for who may post messages to your
+      list
+
+\item Recipient filters -- moderation rules based on the recipient of
+      the message
+
+\item Spam filters -- some regular expression based rules for header
+      matching
+\end{itemize}
+
+The sender, recipient, and spam filtering rules are part of the
+general list moderation features of Mailman.  When a message is posted
+to the list, it is matched against a number of criteria, the outcome
+of which determines whether the message is reflected to the membership
+or not.  In general, the outcome is one of four states:
+
+\begin{itemize}
+\item Approved or Accepted -- the message may be sent on to the
+      members of the mailing list.
+
+\item Hold -- the message will be held for moderator approval.  The
+      list owners and moderators will then have to explicitly approve
+      the message before the list members will see it.
+
+\item Reject -- the message is bounced back to the original sender,
+      often with a notice containing the reason the message was
+      rejected.  The list members never see rejected messages.
+
+\item Discard -- the message is simply thrown away without further
+      processing.
+\end{itemize}
+
+Many of the fields in this section are text boxes accepting addresses,
+one per line.  Unless otherwise noted, these also accept regular
+expressions which will be matched against an address, if the line
+begins with a \^ (caret) character.
+
+\subsubsection{Subscription rules}
+
+This subcategory controls the rules for exposing the existance of this
+list, and for what new members must do in order to subscribe to the
+list.
+
+\begin{description}
+\item[advertised]
+    This option controls whether this list will show up in the list
+    overview for the site.  Normally, an overview contains the name
+    and short description of every mailing list in the virtual
+    domain.  By setting this variable to \emph{No}, it will not show
+    up in this overview, nor will it show up in the administrative
+    overview.  The only way then to find the list is to guess (or
+    know!) its name.
+
+\item[subscribe_policy]
+    This option controls the steps that a new member must take to join
+    the list.  The available options may differ based on some defaults
+    that the site administrator chooses.  They are:
+
+    \begin{itemize}
+    \item None -- No verification is done on the subscribing
+          member. This is also called \emph{open subscriptions} and is
+          generally disabled by default.  The site administrator must
+          allow list admins to choose this option; if not, this option
+          will not be presented to you.
+
+    \item Confirm -- An email confirmation step is required before the
+          address is added to the list.  When a member requests
+          subscription, either via the web page or by sending a
+          message to \var{yourlist}\code{-join@example.com}, Mailman
+          will send a confirmation message to the requesting address.
+          This mail-back confirmation contains a unique identifier,
+          which the requester can present to Mailman in order to
+          confirm their subscription.  This can be done either by
+          replying to the mail-back, or by visiting the url in the
+          mail-back message.  The url points to a page that lets the
+          user either discard or confirm their request.
+
+    \item Require approval -- All subscription requests are held for
+          approval of the list moderator.  No mail-back confirmation
+          is sent, but the list admins will recieve a message
+          indicating that approval is pending.
+
+    \item Confirm and approve -- Here, a mail-back notice must first
+          be confirmed by the requester.  Once confirmed, the list
+          moderator must then approve the request.  This is the most
+          secure method for users to subscribe since it both verifies
+          the requesting address, and forces the list moderators to
+          approve the request.
+
+    \end{itemize}
+
+\item[unsubscribe_policy]
+    Specifies whether the list moderator's approval is required for
+    unsubscription requests.  \emph{No} is highly recommended, since
+    it is exceedingly impolite to not allow people to leave a mailing
+    list whenever they want (i.e. opt-out).  \emph{Yes} is useful in
+    some specialized contexts; e.g. you may not want to allow
+    employees to unsubscribe from the company newsletter.
+
+\item[ban_list]
+    This contains a list of addresses (or regular expressiosn), one
+    per line, that are banned from ever subscribing to your mailing
+    list.  If a match occurs during the subscription process, the
+    request will be automatically rejected, and the requester will get
+    a rejection notice.  You can use this to permanently ban
+    troublesome posters to a members-only list.
+
+\item[private_roster]
+    This specifies who is allowed to view the roster of member
+    addresses.  If you choose \emph{Anyone}, then the list membership
+    is completely public.  You can limit exposure of the roster to
+    just list members, or just to the list administrators.  In the
+    former case, a user must enter a valid member's address and
+    password before they can view the roster.  In the latter case, a
+    list administrator's password must be enter; if a matching admin
+    password is entered, address field is ignored.
+
+\item[obscure_addresses]
+    Controls whether some simple obfuscation of addresses is used when
+    member addresses are included on web pages.  This should reduce
+    the opportunity for email address harvesting by spammers, although
+    it probably doesn't eliminate it.
+\end{description}
+
+\subsubsection{Sender filters}
+
+XXX HERE
+
 \subsection{The Bounce Processing Category}
 \subsection{The Archiving Options Category}
-\subsection{The Mail <-> News Gateway Category}
+\subsection{The Mail/News Gateway Category}
 \subsection{The Auto-responder Category}
 \subsection{The Content Filtering Category}
 \subsection{The Topics Category}
-\subsection{Emergency Moderation}
 
 \section{Membership Management}
 \section{Tending to Pending Moderator Requests}
