@@ -160,7 +160,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.require_explicit_destination = \
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
         self.acceptable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
-	self.reminders_to_admins = mm_cfg.DEFAULT_REMINDERS_TO_ADMINS
+	self.umbrella_list = mm_cfg.DEFAULT_UMBRELLA_LIST
+	self.umbrella_member_suffix = \
+                mm_cfg.DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX
 	self.send_reminders = mm_cfg.DEFAULT_SEND_REMINDERS
     	self.send_welcome_msg = mm_cfg.DEFAULT_SEND_WELCOME_MSG
 	self.bounce_matching_headers = \
@@ -282,23 +284,36 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              "check messages that are destined for the list for"
              " adminsitrative request content?",
 
-             "Administrivia tests will chech mail that is destined for the list "
-             " for adminstriative contect (like subscribe, unsubscribe, etc). "
-             " If the message looks like an adminitrative request, it will "
-             "be added to the administrative requests database and the administrator "
-             "will be notified. "),
+             "Administrivia tests will check postings to see whether"
+             " it's really meant as an administrative request (like"
+             " subscribe, unsubscribe, etc), and will add it to the"
+             " the administrative requests queue, notifying the "
+             " administrator of the new request, in the process. "),
 
 
-
-	    ('reminders_to_admins', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Send password reminders to "-admin" address instead of'
+	    ('umbrella_list', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     'Send password reminders to, eg, "-owner" address instead of'
 	     ' directly to user.',
 
-	     "Set this to yes when this list is intended only to cascade to"
-	     " other maillists.  When set, the password reminders will be"
-	     " directed to an address derived from the member's address"
-	     ' - it will have "-admin" appended to the member\'s account'
-	     " name."),
+	     "Set this to yes when this list is intended to cascade only to"
+	     " other maillists.  When set, meta notices like confirmations"
+             " and password reminders will be directed to an address derived"
+             " from the member\'s address - it will have the value of"
+             ' \"umbrella_member_suffix\" appended to the'
+             " member\'s account name."),
+
+	    ('umbrella_member_suffix', mm_cfg.String, 8, 0,
+	     'Suffix for use when this list is an umbrella for other lists,'
+             ' according to setting of previous "umbrella_list" setting.',
+
+	     'When \"umbrella_list\" is set to indicate that this list has'
+             " other maillists as members, then administrative notices like"
+             " confirmations and password reminders need to not be sent"
+             " to the member list addresses, but rather to the owner of those"
+             " member lists.  In that case, the value of this setting is"
+             " appended to the member\'s account name for such notices."
+             " \'-owner\' is the typical choice.  This setting has no"
+             ' effect when \"umbrella_list\" is \"No\".'),
 
 	    ('send_reminders', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Send monthly password reminders or no? Overrides the previous '
@@ -365,31 +380,42 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
           ]
         if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
-                           ('none', 'confirm', 'require approval', 'confirm+approval'),  0,
-                           "What steps are required for subscription?",
-                           "None - no verification steps (<em>Not Recommended </em>)<br>"
-                           "confirm (*) - email confirmation step required <br>"
-                           "require approval - require list administrator approval for subscriptions <br>"
+                           ('none', 'confirm', 'require approval',
+                            'confirm+approval'),  0, 
+                           "What steps are required for subscription?<br>",
+                           "None - no verification steps (<em>Not"
+                           " Recommended </em>)<br>"
+                           "confirm (*) - email confirmation step"
+                           " required <br>"
+                           "require approval - require list administrator"
+                           " approval for subscriptions <br>"
                            "confirm+approval - both confirm and approve"
                            
-                           "<p> (*) when someone requests a subscription, mailman sends"
-                           "them a notice with a unique subscription request number that "
-                           "they must reply to in order to subscribe.<br> This prevents "
-                           "list abusers from subscribing people to your list who don't want"
-                           "to be subscribed."
+                           "<p> (*) when someone requests a subscription,"
+                           " mailman sends them a notice with a unique"
+                           " subscription request number that they must"
+                           " reply to in order to subscribe.<br> This"
+                           " prevents mischievous (or malicious) people"
+                           " from creating subscriptions for others"
+                           " without their consent."
                            )
         else:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
-                           ('confirm', 'require approval', 'confirm+approval'),  1,
-                           "What steps are required for subscription?",
+                           ('confirm', 'require approval',
+                            'confirm+approval'),  1,
+                           "What steps are required for subscription?<br>",
                            "confirm (*) - email confirmation required <br>"
-                           "require approval - require list administrator approval for subscription"
+                           "require approval - require list administrator"
+                           " approval for subscriptions <br>"
                            "confirm+approval - both confirm and approve"
-                           "<p> (*) when someone requests a subscription, mailman sends"
-                           "them a notice with a unique subscription request number that "
-                           "they must reply to in order to subscribe.<br> This prevents "
-                           "list abusers from subscribing people to your list who don't want"
-                           "to be subscribed." )
+                           "<p> (*) when someone requests a subscription,"
+                           " mailman sends them a notice with a unique"
+                           " subscription request number that they must"
+                           " reply to in order to subscribe.<br> This"
+                           " prevents mischievous (or malicious) people"
+                           " from creating subscriptions for others"
+                           " without their consent."
+                           )
 
 
         config_info['privacy'] = [
@@ -661,7 +687,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def Load(self, check_version = 1):
 	if self._tmp_lock:
-	   self.Lock()
+           self.Lock()
 	try:
 	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
 	except IOError:
@@ -754,17 +780,26 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                                    "remote"     : remote,
                                    "listadmin"  : self.GetAdminEmail(),
                                    })
+            if self.umbrella_list:
+                acct, host = tuple(string.split(name, '@'))
+                recipient = ("%s%s@%s" %
+                             (acct, self.umbrella_member_suffix, host))
+            else:
+                recipient = name
             self.SendTextToUser(
                 subject=("%s -- confirmation of subscription -- request %d" % 
                          (self.real_name, cookie)),
-                recipient = name,
+                recipient = recipient,
                 sender = self.GetRequestEmail(),
                 text = text,
                 add_headers = ["Reply-to: %s" % self.GetRequestEmail(),
                                "Errors-To: %s" % self.GetAdminEmail()])
+            if recipient != name:
+                who = "%s (%s%s)" % (acct, acct, self.umbrella_member_suffix)
+            else: who = name
             self.LogMsg("subscribe", "%s: pending %s %s",
                         self._internal_name,
-                        name,
+                        who,
                         by)
             raise Errors.MMSubscribeNeedsConfirmation
         else: # approval needed
