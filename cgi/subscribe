@@ -16,8 +16,8 @@ except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
 NEED_CONFIRM_NOTICE = """
-A web request for your subscription to the %s mailing list
-has been received at %s%s
+A request for subscription of your address to the %s@%s
+mailing list has been received via the web%s
 
 This is a confirmation request, to prevent anyone from subscribing
 you against your wishes.  In order to complete this subscription you
@@ -159,9 +159,9 @@ else:
 			     "subscribing you.  Instructions are being "
 			     "sent to you at %s." % email)
 	if os.environ.has_key('REMOTE_HOST'):
-	    remote = " from %s. " % os.environ['REMOTE_HOST']
+	    remote = ", from\n%s. " % os.environ['REMOTE_HOST']
 	elif os.environ.has_key('REMOTE_ADDR'):
-	    remote = " from %s." % os.environ['REMOTE_ADDR']
+	    remote = ", from\n%s." % os.environ['REMOTE_ADDR']
 	else:
 	    remote = "."
         if digest:
