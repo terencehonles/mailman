@@ -3,7 +3,7 @@
 Encapsulate HTML formatting directives in classes that act as containers
 for python and, recursively, for nested HTML formatting objects."""
 
-__version__ = "$Revision: 394 $"
+__version__ = "$Revision: 404 $"
 
 # Eventually could abstract down to HtmlItem, which outputs an arbitrary html
 # object given start / end tags, valid options, and a value.
@@ -265,6 +265,15 @@ class Document(Container):
 	    output = output + '>\n'
 	output = output + Container.Format(self, indent)
 	output = output + '%s</html>\n' % spaces
+	return output
+
+class HeadlessDocument(Document):
+    """Document without head section, for templates that provide their own."""
+    def Format(self, indent=0, **kw):
+	output = 'Content-type: text/html\n\n'
+	spaces = ' ' * indent
+	output = output + spaces
+	output = output + Container.Format(self, indent)
 	return output
     
 class StdContainer(Container):
