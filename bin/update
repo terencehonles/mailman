@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Perform all necessary upgrades.
@@ -48,6 +48,8 @@ from Mailman import MailList
 from Mailman.LockFile import TimeOutError
 from Mailman.i18n import _
 from Mailman.Queue.Switchboard import Switchboard
+from Mailman.OldStyleMemberships import OldStyleMemberships
+from Mailman.MemberAdaptor import BYBOUNCE, ENABLED
 
 FRESH = 0
 NOTFRESH = -1
@@ -176,7 +178,7 @@ def move_language_templates(mlist):
             if gcksum == tcksum:
                 os.unlink(os.path.join(mm_cfg.TEMPLATE_DIR,
                                        gtemplate + '.prev'))
-        
+
 
 
 def dolist(listname):
@@ -188,6 +190,26 @@ def dolist(listname):
         print >> sys.stderr, _('WARNING: could not acquire lock for list: '
                                '%(listname)s')
         return 1
+
+    # Sanity check the invariant that every BYBOUNCE disabled member must have
+    # bounce information.  Some earlier betas broke this.  BAW: we're
+    # submerging below the MemberAdaptor interface, so skip this if we're not
+    # using OldStyleMemberships.
+    if isinstance(mlist._memberadaptor, OldStyleMemberships):
+        noinfo = {}
+        for addr, (reason, when) in mlist.delivery_status.items():
+            if reason == BYBOUNCE and not mlist.bounce_info.has_key(addr):
+                noinfo[addr] = reason, when
+        # What to do about these folks with a BYBOUNCE delivery status and no
+        # bounce info?  This number should be very small, and I think it's
+        # fine to simple re-enable them and let the bounce machinery
+        # re-disable them if necessary.
+        n = len(noinfo)
+        if n > 0:
+            print _(
+                'Resetting %(n)s BYBOUNCEs disabled addrs with no bounce info')
+            for addr in noinfo.keys():
+                mlist.setDeliveryStatus(addr, ENABLED)
 
     # Update the held requests database
     print _("""Updating the held requests database.""")
@@ -274,7 +296,7 @@ script.
             print _("""\
     looks like you have a really recent CVS installation...
     you're either one brave soul, or you already ran me""")
-    
+
 
     #
     # move public archive mbox there if it's around
@@ -422,6 +444,7 @@ If your archives are big, this could take a minute or two...""")
     for listname in listnames:
         print _('Updating mailing list: %(listname)s')
         errors = errors + dolist(listname)
+        print
     print _('Updating Usenet watermarks')
     wmfile = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
     try:
