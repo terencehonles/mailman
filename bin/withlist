@@ -44,7 +44,7 @@ Options:
 
     -i / --interactive
         Leaves you at an interactive prompt after all other processing is
-        complete.
+        complete.  This is the default unless the -r option is given.
 
     --run [module.]callable
     -r [module.]callable
@@ -199,7 +199,7 @@ def main():
         usage(1, msg)
 
     run = None
-    interact = 0
+    interact = None
     all = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -220,6 +220,13 @@ def main():
 
     if all and not run:
         usage(1, _('--all requires --run'))
+
+    # The default for interact is 1 unless -r was given
+    if interact is None:
+        if run is None:
+            interact = 1
+        else:
+            interact = 0
 
     # try to import the module for the callable
     func = None
