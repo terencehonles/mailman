@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 467 $"
+__version__ = "$Revision: 529 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -122,17 +122,19 @@ class Bouncer:
         if self.automatic_bounce_action == 0:
             return
         elif self.automatic_bounce_action == 1:
-            succeeded = self.DisableBouncingAddress(addr)
+	    # Only send if call works ok.
+            (succeeded, send) = self.DisableBouncingAddress(addr)
             did = "disabled"
-            send = 1
         elif self.automatic_bounce_action == 2:
-            succeeded = self.DisableBouncingAddress(addr)
+            (succeeded, send) = self.DisableBouncingAddress(addr)
             did = "disabled"
+	    # Never send.
             send = 0
         elif self.automatic_bounce_action == 3:
-            succeeded = self.RemoveBouncingAddress(addr)
-            did = "removed"
+            (succeeded, send) = self.RemoveBouncingAddress(addr)
+	    # Always send.
             send = 1
+            did = "removed"
         if send:
             if succeeded != 1:
                 negative="not "
@@ -170,40 +172,53 @@ class Bouncer:
 					       % mm_cfg.MAILMAN_OWNER],
                                 text = text)
     def DisableBouncingAddress(self, addr):
+	"""Disable delivery for bouncing user address.
+
+	Returning success and notification status."""
         if not self.IsMember(addr):
             reason = "User not found."
 	    self.LogMsg("bounce", "%s: NOT disabled %s: %s",
                         self.real_name, addr, reason)
-            return reason
+            return reason, 1
 	try:
-	    self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
-	    self.LogMsg("bounce", "%s: disabled %s", self.real_name, addr)
-            self.Save()
-            return 1
+	    if self.GetUserOption(addr, mm_cfg.DisableDelivery):
+		# No need to send out notification if they're already disabled.
+		self.LogMsg("bounce",
+			    "%s: already disabled %s", self.real_name, addr)
+		return 1, 0
+	    else:
+		self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
+		self.LogMsg("bounce",
+			    "%s: disabled %s", self.real_name, addr)
+		self.Save()
+		return 1, 1
 	except mm_err.MMNoSuchUserError:
 	    self.LogMsg("bounce", "%s: NOT disabled %s: %s",
                         self.real_name, addr, mm_err.MMNoSuchUserError)
 	    self.ClearBounceInfo(addr)
             self.Save()
-            return mm_err.MMNoSuchUserError
+            return mm_err.MMNoSuchUserError, 1
 	    
     def RemoveBouncingAddress(self, addr):
+	"""Unsubscribe user with bouncing address.
+
+	Returning success and notification status."""
         if not self.IsMember(addr):
             reason = "User not found."
 	    self.LogMsg("bounce", "%s: NOT removed %s: %s",
                         self.real_name, addr, reason)
-            return reason
+            return reason, 1
 	try:
 	    self.DeleteMember(addr, "bouncing addr")
 	    self.LogMsg("bounce", "%s: removed %s", self.real_name, addr) 
             self.Save()
-            return 1
+            return 1, 1
 	except mm_err.MMNoSuchUserError:
 	    self.LogMsg("bounce", "%s: NOT removed %s: %s",
                         self.real_name, addr, mm_err.MMNoSuchUserError)
 	    self.ClearBounceInfo(addr)
             self.Save()
-            return mm_err.MMNoSuchUserError
+            return mm_err.MMNoSuchUserError, 1
 
     # Return 0 if we couldn't make any sense of it, 1 if we handled it.
     def ScanMessage(self, msg):
@@ -316,7 +331,11 @@ class Bouncer:
         did = []
         for i in candidates:
 	    el = string.find(i, "...")
-	    if el != -1: i = i[:el]
+	    if el != -1:
+		i = i[:el]
+	    if len(i) > 1 and i[0] == '<':
+		# Use stuff after open angle and before (optional) close:
+		i = regsub.splitx(i[1:], ">")[0]
             if i not in did:
                 self.HandleBouncingAddress(i)
                 did.append(i)
@@ -325,7 +344,6 @@ class Bouncer:
     def ExtractBouncingAddr(self, line):
 	email = regsub.splitx(line, '[^ \t@<>]+@[^ \t@<>]+\.[^ \t<>.]+')[1]
 	if email[0] == '<':
-	    # Remove what's within the angles.
 	    return regsub.splitx(email[1:], ">")[0]
 	else:
 	    return email
