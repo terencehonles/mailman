@@ -24,8 +24,11 @@
 # they are currently being delivered by the initial delivery attempt
 # and those that are queued because the first delivery attempt has
 # failed.  the former state is indicated by the fact that the filename
-# is setuid and has data written to it.  all queue entries in the latter
-# state are not setuid and have data in them.
+# is setuid.  all queue entries in the latter state are not setuid and
+# have data in them.  Since there's no way in python to create a file
+# that is setuid at creation time, all files that are empty are
+# considered to be in the first state (after the open call but before
+# the chmod call).
 
 #
 # protection from multiple processQueue procedures occuring
@@ -74,8 +77,8 @@ def processQueue():
         st = os.stat(full_fname)
         #
         # if the file is not a deferred q message, we check to
-        # see if the modification time was too long ago and process
-        # it anyway.  If the modification time was recent, leave it
+        # see if the creation time was too long ago and process
+        # it anyway.  If the creation time was recent, leave it
         # alone as it's probably being delivered by another process anyway
         #
         if not isDeferred(full_fname) and st[stat.ST_CTIME] > (time.time() - MAX_ACTIVE): 
@@ -100,7 +103,7 @@ def enqueueMessage(the_sender, recip, text):
     os.chmod(fname, QF_MODE | stat.S_ISUID) # make sure this is set right off the bat
     marshal.dump((recip,the_sender,text),f)
     f.close()
-    os.chmod(fname, QF_MODE | stat.S_ISUID)
+    os.chmod(fname, QF_MODE | stat.S_ISUID) # just in case .close() changes the perms
     return fname
 
 
@@ -114,7 +117,7 @@ def isDeferred(q_entry):
     mode = st[stat.ST_MODE]
     if mode & stat.S_ISUID: 
         return 0
-    elif not size: # the file was just opened, but not chmod'd
+    elif not size: # the file was just opened, but not yet chmod'd
         return 0
     else:
         return 1
@@ -133,8 +136,7 @@ def deferMessage(q_entry):
 
 #
 # given the full path to a q_entry
-# remove it from the queue - the queue
-# entry may or may not end in .deferred
+# remove it from the queue 
 #
 def dequeueMessage(q_entry):
     os.unlink(q_entry)
