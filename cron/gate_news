@@ -22,14 +22,6 @@ Usage: gate_news [options]
 
 Where options are
 
-    --stderrs
-    -s
-        Print errors to stderr in addition to being logged to logs/fromusenet
-
-    --quiet
-    -q
-        Run quietly.  Nothing is output unless there is an exception.
-
     --help
     -h
         Print this text and exit.
@@ -40,18 +32,17 @@ import sys
 import os
 import string
 import time
-import traceback
-import socket
 import getopt
-import errno
 
 import paths
 from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Message
+from Mailman import LockFile
 from Mailman.Handlers import HandlerAPI
 from Mailman.Logging.Utils import LogStdErr
+from Mailman.Logging.Syslog import syslog
 
 # The version we have is from Python 1.5.2+ and fixes the "mode reader"
 # problem.
@@ -61,9 +52,17 @@ from Mailman.pythonlib import nntplib
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
+GATENEWS_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_news.lock')
 
-VERBOSE = 1
-BLOCKFILE = 'gate_news.lck'
+LogStdErr('fromusenet', 'gate_news', manual_reprime=0, tee_to_stdout=1)
+
+
+
+def usage(status, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(status)
 
 
 
@@ -80,15 +79,14 @@ def open_newsgroup(mlist):
 
 
 
-# XXX: Bogus, but might as we do it `legally'
-QuickEscape = 'QuickEscape'
-
+# This function requires the list to be locked.
 def poll_newsgroup(mlist, conn, first, last):
     # NEWNEWS is not portable and has synchronization issues.
     for num in range(first, last):
         try:
             headers = conn.head(`num`)[3]
             found_to = 0
+            beenthere = 0
             for header in headers:
                 i = string.find(header, ':')
                 value = string.lower(header[:i])
@@ -97,42 +95,42 @@ def poll_newsgroup(mlist, conn, first, last):
                 if value <> 'x-beenthere':
                     continue
                 if header[i:] == ': %s' % mlist.GetListEmail():
-                    raise QuickEscape
-            body = conn.body(`num`)[3]
-            # Usenet originated messages will not have a Unix envelope
-            # (i.e. "From " header).  This breaks Pipermail archiving, so we
-            # will synthesize one.  Be sure to use the format searched for by
-            # mailbox.UnixMailbox._isrealfromline()
-            timehdr = time.ctime(time.time())
-            lines = ['From ' + mlist.GetAdminEmail() + '  ' + timehdr]
-            lines.extend(headers)
-            lines.append('')
-            lines.extend(body)
-            lines.append('')
-            msg = Message.OutgoingMessage(string.join(lines, '\n'))
-            msg.fromusenet = 1
-            if found_to:
-                msg['X-Originally-To'] = msg['To']
-            msg['To'] = mlist.GetListEmail()
-            # Post the message to the locked list
-            if VERBOSE:
-                sys.stderr.write('posting msgid %d to list %s\n' %
-                                 (num, mlist.internal_name()))
-            HandlerAPI.DeliverToList(mlist, msg, {})
-            # record the last gated article number
+                    beenthere = 1
+                    break
+            if not beenthere:
+                body = conn.body(`num`)[3]
+                # Usenet originated messages will not have a Unix envelope
+                # (i.e. "From " header).  This breaks Pipermail archiving, so
+                # we will synthesize one.  Be sure to use the format searched
+                # for by mailbox.UnixMailbox._isrealfromline()
+                timehdr = time.ctime(time.time())
+                lines = ['From ' + mlist.GetAdminEmail() + '  ' + timehdr]
+                lines.extend(headers)
+                lines.append('')
+                lines.extend(body)
+                lines.append('')
+                msg = Message.OutgoingMessage(string.join(lines, '\n'))
+                if found_to:
+                    msg['X-Originally-To'] = msg['To']
+                msg['To'] = mlist.GetListEmail()
+                # Post the message to the locked list
+                syslog('fromusenet', 'posting msgid %d to list %s' %
+                       (num, mlist.internal_name()))
+                HandlerAPI.DeliverToList(mlist, msg, {'fromusenet': 1,
+                                                      '_enqueue_immediate': 1})
+                syslog('fromusenet', 'posted msgid %d to list %s' %
+                       (num, mlist.internal_name()))
+            # Even if we don't post the message because it was seen on the
+            # list already, update the watermark
             mlist.usenet_watermark = num
-            if VERBOSE:
-                sys.stderr.write('posted msgid %d to list %s\n' %
-                                 (num, mlist.internal_name()))
         except nntplib.error_temp, msg:
-            sys.stderr.write('encountered NNTP error for list %s\n' %
-                             mlist.internal_name())
-            sys.stderr.write(str(msg) + '\n')
-        except QuickEscape:
-            pass # We gated this TO news, don't repost it!
+            syslog('fromusenet', 'NNTP error for list %s, article %d' %
+                   (mlist.internal_name(), num))
+            syslog('fromusenet', str(msg))
 
 
 
+# This function requires the list to be locked.
 def gate_list(mlist):
     # Get the list's watermark, i.e. the last article number that this gated
     # from news to mail.  None means that this list has never polled its
@@ -159,25 +157,9 @@ def gate_list(mlist):
 
 
 
-def reap(children):
-    if not children:
-        return
-    # See if any children have exited yet
-    pid, status = os.waitpid(-1, os.WNOHANG)
-    if pid == 0:
-        # Nope, none are ready
-        return
-    try:
-        del children[pid]
-    except KeyError:
-        # Huh?  how could this happen?
-        pass
-
-
-
 def process_lists():
     # for waitpids
-    children = {}
+    kids = {}
     for listname in Utils.list_names():
         # Open the list unlocked just to check to see if it is gating news to
         # mail.  If not, we're done with the list.  Otherwise, create a fork
@@ -187,72 +169,55 @@ def process_lists():
             continue
         pid = os.fork()
         if pid:
-            # In the parent.  record the pid of the child, the child's list
-            # name, and last message number.  when the child successfully
-            # exits, we'll update it's watermark
-            children[pid] = pid
+            # In the parent.
+            kids[pid] = pid
         else:
-            # In the child.
-            status = 0
+            # In the child.  Try to get the list lock.
             try:
-                try:
-                    mlist.Lock()
-                    gate_list(mlist)
-                    if VERBOSE:
-                        sys.stderr.write('%s watermark: %d\n' %
-                                         (mlist.internal_name(),
-                                          mlist.usenet_watermark))
-                except:
-                    # if anything else bad happens, log the exception to
-                    # stderr.  TBD: we should probably generalize
-                    # scripts/driver to handle this situation
-                    status = 1
-                    traceback.print_exc()
+                mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+            except LockFile.TimeOutError:
+                # oh well, try again later
+                os._exit(0)
+            try:
+                gate_list(mlist)
+                syslog('fromusenet', '%s watermark: %d' %
+                       (mlist.internal_name(), mlist.usenet_watermark))
             finally:
                 mlist.Save()
                 mlist.Unlock()
-                os._exit(status)
-    # we're done forking off all the gating children, now just wait for them
-    # all to exit, and then we're done
-    while children:
-        reap(children)
+            # TBD: I'm not 100% sure this is the right thing to do here.  What
+            # we want is to guarantee that no matter what happens, the list
+            # data is saved and the lock is relinquished.  The finally clause
+            # should make sure about this.  If no exception occurs, a child
+            # exit status of 0 should signal a-okay.  Otherwise, the exception
+            # should percolate to the top, causing a non-zero exit status,
+            # which will trigger an email by cron.
+            os._exit(0)
+    return kids
 
 
 
 def main():
-    # block any other gate_news process from running
-    blockfile = os.path.join(mm_cfg.DATA_DIR, BLOCKFILE)
+    lock = LockFile.LockFile(GATENEWS_LOCK_FILE,
+                             # it's okay to hijack this
+                             lifetime=mm_cfg.QRUNNER_LOCK_LIFETIME)
     try:
-        fd = os.open(blockfile, os.O_CREAT | os.O_EXCL)
-        os.close(fd)
-    except OSError, e:
-        if e.errno <> errno.EEXIST:
-            raise
-        # some other gate_news process is already running
-        if VERBOSE:
-            sys.stderr.write('some other gate_news is already running\n')
+        # gate_news runs every 10 minutes
+        lock.lock(timeout=mm_cfg.minutes(5))
+    except LockFile.TimeOutError:
+        syslog('fromusenet', 'could not acquire gate_news lock')
         return
     try:
-        process_lists()
+        kids = process_lists()
     finally:
-        os.unlink(blockfile)
-
-
-
-def usage(status, msg=''):
-    print __doc__ % globals()
-    if msg:
-        print msg
-    sys.exit(status)
-
+        lock.unlock(unconditionally=1)
+    Utils.reap(kids)
+            
 
 
 if __name__ == '__main__':
-    global VERBOSE
-
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'shq',
-                                   ['stderrs', 'quiet', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -260,19 +225,11 @@ if __name__ == '__main__':
         usage(1, 'No args are expected')
 
     tee_to_stdout = 0
-    VERBOSE = 1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
-        elif opt in ('-s', '--stderrs'):
-            tee_to_stdout = 1
-        elif opt in ('-q', '--quiet'):
-            VERBOSE = 0
 
     # Set up stderr
-    LogStdErr('fromusenet', 'gate_news', tee_to_stdout=tee_to_stdout)
-    if VERBOSE:
-        sys.stderr.write('begin gating\n')
+    syslog('fromusenet', 'begin gating')
     main()
-    if VERBOSE:
-        sys.stderr.write('end gating\n')
+    syslog('fromusenet', 'end gating')
