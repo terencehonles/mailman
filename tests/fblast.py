@@ -54,7 +54,7 @@ testing %(num)d
 """ % {'num'     : i,
        'FROMADDR': FROMADDR,
        'LISTADDR': LISTADDR,
-       }
+       })
         time.sleep(snooze)
 finally:
     conn.quit()
