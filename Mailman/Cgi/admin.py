@@ -485,12 +485,18 @@ def FormatMembershipOptions(lst):
     header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
                        colspan=2, bgcolor="#99ccff")
     container.AddItem(header)
-    user_table = Table(width="90%")
+    user_table = Table(width="90%", border='2')
     user_table.AddRow([Center(Header(4, "Membership  List"))])
     user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
                            user_table.GetCurrentCellIndex(),
                            bgcolor="#cccccc", colspan=8)
 
+    user_table.AddRow(map(Center, ['member address', 'subscr', 'digest',
+                                   'hide', 'nomail', 'ack', 'norcv',
+                                   'plain']))
+    rowindex = user_table.GetCurrentRowIndex()
+    for i in range(8):
+        user_table.AddCellInfo(rowindex, i, bgcolor='#cccccc')
     all = lst.GetMembers() + lst.GetDigestMembers()
     if len(all) > lst.admin_member_chunksize:
         chunks = Utils.chunkify(all, lst.admin_member_chunksize)
@@ -516,14 +522,11 @@ def FormatMembershipOptions(lst):
         footer = "<p>"
     for member in all:
         cells = [member + "<input type=hidden name=user value=%s>" % (member),
-                 "subscribed "
-                 + CheckBox(member + "_subscribed", "on", 1).Format()]
+                 CheckBox(member + "_subscribed", "on", 1).Format()]
         if lst.members.has_key(member):
-            cells.append("digest "
-                         + CheckBox(member + "_digest", "off", 0).Format())
+            cells.append(CheckBox(member + "_digest", "off", 0).Format())
         else:
-            cells.append("digest "
-                         + CheckBox(member + "_digest", "on", 1).Format())
+            cells.append(CheckBox(member + "_digest", "on", 1).Format())
         for opt in ("hide", "nomail", "ack", "norcv", "plain"):
             if lst.GetUserOption(member, MailCommandHandler.option_info[opt]):
                 value = "on"
@@ -532,9 +535,26 @@ def FormatMembershipOptions(lst):
                 value = "off"
                 checked = 0
             box = CheckBox("%s_%s" % (member, opt), value, checked)
-            cells.append("%s %s" % (opt, box.Format()))
+            cells.append(box.Format())
         user_table.AddRow(cells)
     container.AddItem(Center(user_table))
+    legend = UnorderedList()
+    legend.AddItem('<b>subscr</b> -- Is the member subscribed?')
+    legend.AddItem('<b>digest</b> -- '
+                   'Does the member get messages in digests? '
+                   '(otherwise, individual messages)')
+    legend.AddItem('<b>hide</b> -- '
+                   "Is the member's address hidden from Web browsers?")
+    legend.AddItem('<b>nomail</b> -- Is delivery to the member disabled?')
+    legend.AddItem('<b>ack</b> -- '
+                   'Does the member get acknowledgements of their posts?')
+    legend.AddItem('<b>norcv</b> -- '
+                   'Does the member get copies of their own posts?')
+    legend.AddItem(
+        '<b>plain</b> -- '
+        'If getting digests, does the member get plain text digests? '
+        '(otherwise, MIME)')
+    container.AddItem(legend.Format())
     container.AddItem(footer)
     t = Table(width="90%")
     t.AddRow([Center(Header(4, "Mass Subscribe Members"))])
