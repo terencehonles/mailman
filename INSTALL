@@ -303,3 +303,15 @@ and install the Mailman software.
               If you did add them, you likely did not update the alias
               database.  Refer to section 5 above for more information.
 
+
+    Problem:  I send mail to the list, and get back mail saying,
+               "unknown mailer error".
+
+    Solution: The likely problem is that you are using the wrong GID or 
+              UID for mail.  Check your syslog.  If you see, for example,
+              a line like: 
+
+                  Attempt to exec script with invalid gid 51, expected 99
+
+              You need to reinstall Mailman, and specify $MAIL_GID to be 51,
+              as described in the installation instructions.
