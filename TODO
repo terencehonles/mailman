@@ -50,7 +50,9 @@ The Mailman TODO list
 - Editing your user options should put you back to the edit-options page. 
 - Allow the user to be excluded from postings if they're getting them
   in the to: or cc: headers.
-- An option to change your email address.
+- An option to change your email address.  Or what might be easier:
+  allow a user to clone the options of an existing user into a new
+  address.
 - Allow users to specify a different address for password reminders
   (w/ confirmation), or come up w/ a better strategy for remailing lists
   (could be done as the default, given a generic filter mechanism).
