@@ -72,7 +72,7 @@ def main():
         return
 
     # The total contents of the user's response
-    cgidata = cgi.FieldStorage()
+    cgidata = cgi.FieldStorage(keep_blank_values=1)
 
     if lenparts < 2:
         user = cgidata.getvalue('email')
