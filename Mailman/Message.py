@@ -237,3 +237,18 @@ class UserNotification(Message):
                         nodecorate = 1,
                         reduced_list_headers = 1,
                         **_kws)
+
+
+
+class OwnerNotification(UserNotification):
+    """Like user notifications, but this message goes to the list owners."""
+
+    def __init__(self, mlist, sender, subject=None, text=None, tomoderators=1):
+        recips = mlist.owner[:]
+        if tomoderators:
+            recips.extend(mlist.moderator)
+        lang = mlist.preferred_language
+        UserNotification.__init__(self, recips, sender, subject, text, lang)
+        # Hack the To header to look like it's going to the -owner address
+        del self['to']
+        self['To'] = mlist.GetOwnerEmail()
