@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 532 $"
+__version__ = "$Revision: 533 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -88,12 +88,13 @@ class Bouncer:
 		return
 	    else:
 		post_count = (self.minimum_post_count_before_bounce_action - 
-			      self.post_id - inf[1])
+			      (self.post_id - inf[1]))
 		if post_count < 0:
 		    post_count = 0
                 remain = self.minimum_removal_date * 24 * 60 * 60 - difference
 		self.LogMsg("bounce",
-			    report + ("%d more posts, %d more secs"
+			    report + ("%d remaining delivery failures"
+                                      " within %d secs"
                                       % (post_count, remain)))
 		self.Save()
 		return
