@@ -1,3 +1,18 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
 # Deutsche Uebersetzung der Mailman messages
 # Jens Vagelpohl <jens@zope.com>, 2001.
 #
@@ -166,7 +181,7 @@ msgstr ""
 "Um die Konfigurationsseite fuer eine nicht oeffentlich verfuegbare\n"
 "        Liste zu sehen, haengen sie einfach '/' und den %(extra)s\n"
 "        an diese Addresse an. Falls Sie die erforderliche Zugangsberechtigung haben,\n"
-"        koennen sie auch eine <a href=\"%(creatorurl)s\">neue Liste einrichten</a>.\n"
+"        koennen sie auch eine <a href=\"%(creatorurl)s\">neue Liste einrichten</a>."
 
 #: Mailman/Cgi/admin.py:254
 msgid "the mailing list overview page"
@@ -213,7 +228,7 @@ msgid ""
 "    "
 msgstr ""
 "<em><strong>Achtung:</strong> Wenn diese Konfiguration veraendert wird,\n"
-"    muessen alle anderen geoeffneten Seiten neu geladen werden. Sie koennen auch\n"
+"    muessen alle anderen geoeffneten Seiten neu geladen werden. Sie koennen auch"
 
 #: Mailman/Cgi/admin.py:340
 msgid "return to the %(category)s options page."
@@ -790,7 +805,7 @@ msgstr ""
 "    <p>Bitte beachten Sie, dass Bestaetigungen ungefaehr %(days)s Tage\n"
 "    nach der Anfrage ungueltig werden. Falls Ihre Bestaetigung ungueltig\n"
 "    ist, senden Sie bitte eine neue Anfrage.\n"
-"    Andernfalls geben Sie Ihre Bestaetigung <a href=\"%(confirmurl)s\">erneut</a>.\n"
+"    Andernfalls geben Sie Ihre Bestaetigung <a href=\"%(confirmurl)s\">erneut</a>."
 
 #: Mailman/Cgi/confirm.py:140
 msgid "Bad confirmation string"
@@ -965,7 +980,7 @@ msgstr ""
 "                waren nicht gleich, daher wird das urspruengliche Passwort\n"
 "                benutzt. Wenn Sie kein Passwort angegeben haben wird eines\n"
 "                automatisch erzeugt.  Auf jeden Fall geht Ihnen das Passwort\n"
-"                der Mitgliedschaft in einer getrennt verschickten Email zu.<p>\n"
+"                der Mitgliedschaft in einer getrennt verschickten Email zu.<p>"
 
 #: Mailman/Cgi/confirm.py:299
 msgid ""
