@@ -36,9 +36,9 @@ Boober Bab Boober Bubs</a>. -->
 <h3>Current Version</h3>
 
 <p>Version
-<!-VERSION--->2.1rc1<!-VERSION--->,
+<!-VERSION--->2.1<!-VERSION--->,
 (released on
-<!-DATE--->24-Dec-2002<!-DATE--->)
+<!-DATE--->30-Dec-2002<!-DATE--->)
 is the current released version of Mailman, in production at many
 sites.
 
@@ -53,3 +53,4 @@ Corporation</a> for their support, as well as the
 <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mailman/mailman/ACKNOWLEDGMENTS?rev=HEAD&content-type=text/vnd.viewcvs-markup"
 >list of contributors</a>, bug hunters, big idea people, and others
 who have helped immensely with Mailman's development.
+t.
