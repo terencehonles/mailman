@@ -4,6 +4,10 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.0 final (21-Nov-2000)
+
+    No changes from rc3.
+
 2.0 release candidate 3 (16-Nov-2000)
 
     - By popular demand, Reply-To: munging policy is now to always
