@@ -55,7 +55,7 @@ class Connection:
 
     def sendmail(self, envsender, recips, msgtext):
         try:
-            return self.__conn.sendmail(envsender, recips, msgtext)
+            results = self.__conn.sendmail(envsender, recips, msgtext)
         except smtplib.SMTPException:
             # For safety, reconnect
             self.__conn.quit()
@@ -70,6 +70,7 @@ class Connection:
         if self.__numsessions == 0:
             self.__conn.quit()
             self.__connect()
+        return results
 
     def quit(self):
         self.__conn.quit()
@@ -107,11 +108,13 @@ def process(mlist, msg, msgdata):
         chunks = msgdata['undelivered']
     # If we're doing bulk delivery, then we can stitch up the message now.
     if deliveryfunc is None:
-        Decorate.process(mlist, msg, msgdata)
+        # Be sure never to decorate the message more than once!
+        if not msgdata.get('decorated'):
+            Decorate.process(mlist, msg, msgdata)
+            msgdata['decorated'] = 1
         deliveryfunc = bulkdeliver
     refused = {}
     t0 = time.time()
-    numsessions = mm_cfg.SMTP_MAX_SESSIONS_PER_CONNECTION
     # Open the initial connection
     origrecips = msgdata['recips']
     # `undelivered' is a copy of chunks that we pop from to do deliveries.
