@@ -149,6 +149,16 @@ class HTMLFormatter:
 	else:
 	    return ""
 
+    def FormatUmbrellaNotice(self, user, type):
+        if self.umbrella_list:
+            acct, host = tuple(string.split(user, '@'))
+	    return ("(Note - you are subscribing to a list of maillists, so"
+                    " the %s notice will be sent to the admin address"
+                    " for your membership, %s%s@%s.)<p>"
+                    % (type, acct, self.umbrella_member_suffix, host))
+	else:
+	    return ""
+
     def FormatSubscriptionMsg(self):
         "Tailor to approval, roster privacy, and web vetting requirements."
         msg = ""
@@ -183,6 +193,13 @@ class HTMLFormatter:
                              "not easily recognizable by spammers).  ")
             else:
                 msg = msg + ".  "
+
+        if self.umbrella_list:
+            msg = msg + ("<p>(Note that this is an umbrella list, intended to"
+                         " have only other maillists as members.  Among"
+                         " other things, this means that your confirmation"
+                         " request will be sent to the '%s' account for"
+                         " your address.)" % self.umbrella_member_suffix)
 
         return msg
 
