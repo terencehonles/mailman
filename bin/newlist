@@ -29,22 +29,35 @@ email notice about the existence of the new list.
 Note that list-names are forced to lowercase.
 """
 
-import sys, os, string
+import sys
+import os
+import string
 import time
-import paths                                      # path hacking
-try:
-    import getpass
-except ImportError:
-    # we must be in Python 1.5, which didn't have the getpass module
-    from Mailman.pythonlib import getpass
+
+import paths
+from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
-from Mailman import mm_cfg
+from Mailman import Message
+from Mailman.Handlers import HandlerAPI
 from Mailman.Crypt import crypt
+from Mailman.pythonlib import getpass
 
-ADDALIASES_CMD = paths.prefix + '/bin/addaliases'
 
+ALIASTEMPLATE = '''
+Entry for aliases file:
+
+## %(listname)s mailing list
+## created: %(date)s %(user)s
+%(list)s "|%(wrapper)s post %(listname)s"
+%(admin)s "|%(wrapper)s mailowner %(listname)s"
+%(request)s "|%(wrapper)s mailcmd %(listname)s"
+%(owner2)s %(listname)s-admin
+'''
+
+
+
 def getusername():
     username = os.environ.get('USER') or os.environ.get('LOGNAME')
     if not username:
@@ -55,22 +68,27 @@ def getusername():
     return username
 
 
+
+def usage(code, msg=''):
+    print __doc__
+    if msg:
+        print msg
+    sys.exit(code)
+
+
+
 def main(argv):
     if len(argv) > 1:
-	list_name = argv[1]
+	listname = argv[1]
     else:
-	list_name = raw_input("Enter the name of the list: ")
-    list_name = string.lower(list_name)
+	listname = raw_input("Enter the name of the list: ")
+    listname = string.lower(listname)
 
-    if '@' in list_name:
-	sys.stderr.write("** List name must not include '@': %s\n"
-			 % `list_name`)
-	sys.stderr.write("   (It's the list name, not address.)\n")
-	return 1
+    if '@' in listname:
+        usage(1, 'List name must not include "@": ' + listname)
 
-    if list_name in Utils.list_names():
-	sys.stderr.write("** List with name %s already exists\n" % `list_name`)
-	return 1
+    if listname in Utils.list_names():
+        usage(1, 'List already exists: ' + listname)
 
     if len(argv) > 2:
 	owner_mail = argv[2]
@@ -80,67 +98,57 @@ def main(argv):
     if len(argv) > 3:
 	list_pw = argv[3]
     else:
-        list_pw = getpass.getpass("Initial %s password: " % list_name)
+        list_pw = getpass.getpass("Initial %s password: " % listname)
 
-    newlist = MailList.MailList()
-    pw = crypt(list_pw , Utils.GetRandomSeed())
-    # guarantee that all newly created files have the proper permission.
-    # proper group ownership should be assured by the autoconf script
-    # enforcing that all directories have the group sticky bit set
-    oldmask = os.umask(002)
+    mlist = MailList.MailList()
     try:
+        pw = crypt(list_pw , Utils.GetRandomSeed())
+        # guarantee that all newly created files have the proper permission.
+        # proper group ownership should be assured by the autoconf script
+        # enforcing that all directories have the group sticky bit set
+        oldmask = os.umask(002)
         try:
-            newlist.Create(list_name, owner_mail, pw)
-        finally:
-            os.umask(oldmask)
-    except Errors.MMBadEmailError:
-        print 'Bad owner email address:', owner_mail
-        sys.exit(1)
-
-    ###os.system('%s %s' % (ADDALIASES_CMD, list_name))
-    print '''
-Entry for aliases file:
-
-## %(listname)s mailing list
-## created: %(date)s %(user)s
-%(list)s "|%(wrapper)s post %(listname)s"
-%(admin)s "|%(wrapper)s mailowner %(listname)s"
-%(request)s "|%(wrapper)s mailcmd %(listname)s"
-%(owner1)s %(listname)s-admin
-%(owner2)s %(listname)s-admin
-''' % {'listname': list_name,
-       'list'    : "%-24s" % (list_name + ":"),
-       'wrapper' : '%s/wrapper' % mm_cfg.WRAPPER_DIR,
-       'admin'   : "%-24s" % ("%s-admin:" % list_name),
-       'request' : "%-24s" % ("%s-request:" % list_name),
-       'owner1'  : "%-24s" % ("owner-%s:" % list_name),
-       'owner2'  : "%-24s" % ("%s-owner:" % list_name),
-       'date'    : time.strftime('%d-%b-%Y', time.localtime(time.time())),
-       'user'    : getusername(),
-       }
-
-    if len(argv) < 5:
-	print ("Hit enter to continue with %s owner notification..."
-	       % list_name),
-	sys.stdin.readline()
-    sendnotice(newlist, list_name, owner_mail, list_pw)
-    newlist.Unlock()
+            try:
+                mlist.Create(listname, owner_mail, pw)
+            finally:
+                os.umask(oldmask)
+        except Errors.MMBadEmailError:
+            usage(1, 'Bad owner email address: ' + owner_mail)
 
 
-def sendnotice(newlist, list_name, owner_mail, list_pw):
-    text = Utils.maketext(
-        'newlist.txt',
-        {'listname'    : list_name,
-         'password'    : list_pw, 
-         'admin_url'   : newlist.GetAbsoluteScriptURL('admin'), 
-         'listinfo_url': newlist.GetAbsoluteScriptURL('listinfo'),
-         'requestaddr' : "%s-request@%s" % (list_name, newlist.host_name),
-         'hostname'    : newlist.host_name,
-         })
-    newlist.SendTextToUser(subject="Your new mailing list",
-			   recipient=owner_mail,
-			   sender='mailman-owner@%s' % newlist.host_name, 
-			   text=text)
+        print ALIASTEMPLATE % {
+            'listname': listname,
+            'list'    : "%-24s" % (listname + ":"),
+            'wrapper' : '%s/wrapper' % mm_cfg.WRAPPER_DIR,
+            'admin'   : "%-24s" % ("%s-admin:" % listname),
+            'request' : "%-24s" % ("%s-request:" % listname),
+            'owner2'  : "%-24s" % ("%s-owner:" % listname),
+            'date'    : time.strftime('%d-%b-%Y', time.localtime(time.time())),
+            'user'    : getusername(),
+            }
 
-if __name__ == "__main__":
-    raise SystemExit(main(sys.argv))
+        if len(argv) < 5:
+            print ("Hit enter to continue with %s owner notification..."
+                   % listname),
+            sys.stdin.readline()
+        # send the notice to the list owner
+        text = Utils.maketext(
+            'newlist.txt',
+            {'listname'    : listname,
+             'password'    : list_pw, 
+             'admin_url'   : mlist.GetAbsoluteScriptURL('admin'), 
+             'listinfo_url': mlist.GetAbsoluteScriptURL('listinfo'),
+             'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
+             'hostname'    : mlist.host_name,
+             })
+        msg = Message.UserNotification(owner_mail,
+                                       'mailman-owner@' + mlist.host_name,
+                                       'Your new mailing list: ' + listname,
+                                       text)
+        HandlerAPI.DeliverToUser(mlist, msg)
+    finally:
+        mlist.Unlock()
+
+
+if __name__ == '__main__':
+    main(sys.argv)
