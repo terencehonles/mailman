@@ -19,6 +19,7 @@
 
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Errors
 from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
 # BAW: bogus!  This should be in a separate module (Utils?)
@@ -152,9 +153,10 @@ class General(GUIBase):
             _('''<tt>Reply-To:</tt> header munging'''),
 
             ('first_strip_reply_to', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Before adding a list-specific <tt>Reply-To:</tt> header,
-             should any existing <tt>Reply-To:</tt> field be stripped from
-             the message?''')),
+             _('''Should any existing <tt>Reply-To:</tt> header found in the
+             original message be stripped?  If so, this will be done
+             regardless of whether an explict <tt>Reply-To:</tt> header is
+             added by Mailman or not.''')),
 
             ('reply_goes_to_list', mm_cfg.Radio,
              (_('Poster'), _('This list'), _('Explicit address')), 0,
@@ -385,8 +387,7 @@ class General(GUIBase):
             # These values can't differ by other than case
             doc.addError(_("""<p><b>real_name</b> attribute not
             changed!  It must differ from the list's name by case
-            only.<p>"""),
-                         tag=_('Error: '))
+            only.<p>"""))
         elif property == 'new_member_options':
             newopts = 0
             for opt in OPTIONS:
@@ -394,5 +395,12 @@ class General(GUIBase):
                 if opt in val:
                     newopts |= bitfield
             mlist.new_member_options = newopts
+        elif property == 'reply_to_address':
+            try:
+                Utils.ValidateEmail(val)
+            except Errors.EmailAddressError:
+                doc.addError(_("""<p><b>reply_to_address</b> does not have a
+                valid email address!  Its valid will not be changed."""))
+            mlist.reply_to_address = val
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
