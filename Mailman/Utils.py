@@ -434,13 +434,14 @@ def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
     # language directories are for.
     #
     # A further complication is that the language to search for is determined
-    # by both the `lang' and `mlist' arguments.  the search order there is
+    # by both the `lang' and `mlist' arguments.  The search order there is
     # that if lang is given, then the 4 locations above are searched,
     # substituting lang for <language>.  If no match is found, and mlist is
     # given, then the 4 locations are searched using the list's preferred
     # language.  After that, the server default language is used for
-    # <language>.  If that still doesn't yield a template, you've got big
-    # problems. ;)
+    # <language>.  If that still doesn't yield a template, then the standard
+    # distribution's English language template is used as an ultimate
+    # fallback.  If that's missing you've got big problems. ;)
     #
     # A word on backwards compatibility: Mailman versions prior to 2.1 stored
     # templates in templates/*.{html,txt} and lists/<listname>/*.{html,txt}.
@@ -480,8 +481,14 @@ def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
     except quickexit:
         pass
     if fp is None:
-        # We never found the template.  BAD!
-        raise IOError(errno.ENOENT, 'No template file found', templatefile)
+        # Try one last time with the distro English template, which, unless
+        # you've got a really broken installation, must be there.
+        try:
+            fp = open(os.path.join(mm_cfg.TEMPLATE_DIR, 'en', templatefile))
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+            # We never found the template.  BAD!
+            raise IOError(errno.ENOENT, 'No template file found', templatefile)
     template = fp.read()
     fp.close()
     text = template
