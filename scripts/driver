@@ -69,6 +69,11 @@
 
 def run_main():
     try:
+        # These will ensure that even if something between now and the
+        # creation of the real logger below fails, we can still get
+        # *something* meaningful
+        logger = sys.stderr
+        multi = sys.stderr
         # insert the relative path to the parent of the Mailman package
         # directory, so we can pick up the Utils module
         import os
