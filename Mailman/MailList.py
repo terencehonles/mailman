@@ -150,7 +150,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # don't exist.
         try:
             self.Load()
-        except Errors.MMUnknownListError:
+        except Exception:
             self.Unlock()
             raise
     
