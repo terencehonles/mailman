@@ -185,35 +185,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return ("%s <%s.%s>" %
                 (self.description, self._internal_name, self.host_name))
 
-    def GetScriptURL(self, scriptname, relative=0):
-        if relative:
-            prefix = '../' * Utils.GetNestingLevel()
-            if not prefix:
-                prefix = './'
-        elif self.web_page_url:
-            prefix = self.web_page_url
-        else:
-            prefix = mm_cfg.DEFAULT_URL
-        i = len(prefix)-1
-        while i >= 0 and prefix[i] == '/':
-            i = i - 1
-        prefix = prefix[:i+1]
-        return '%s/%s%s/%s' % (prefix, scriptname, mm_cfg.CGIEXT,
-                               self.internal_name())
+    def GetScriptURL(self, scriptname, absolute=0):
+        return Utils.ScriptURL(scriptname, self.web_page_url, absolute) + \
+               '/' + self.internal_name()
 
-    def GetOptionsURL(self, addr, obscure=0, relative=0):
+    def GetOptionsURL(self, addr, obscure=0, absolute=0):
         addr = string.lower(addr)
-        url = self.GetScriptURL('options', relative)
+        url = self.GetScriptURL('options', absolute)
         if obscure:
             addr = Utils.ObscureEmail(addr)
         return '%s/%s' % (url, addr)
-
-    # TBD: backwards compatibility.  We should really just fix the code
-    GetAbsoluteOptionsURL = GetOptionsURL
-    GetAbsoluteScriptURL = GetScriptURL
-
-    def GetRelativeScriptURL(self, scriptname):
-        return self.GetScriptURL(scriptname, relative=1)
 
     def GetUserOption(self, user, option):
         """Return user's setting for option, defaulting to 0 if no settings."""
@@ -620,7 +601,7 @@ it will not be changed."""),
             " covering members and outsiders."
             '  (See also the <a href="%s/archive">Archival Options'
             ' section</a> for separate archive-privacy settings.)'
-            % (self.GetRelativeScriptURL('admin')),
+            % (self.GetScriptURL('admin')),
 
 	    "Subscribing",
 
