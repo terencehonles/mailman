@@ -160,7 +160,16 @@ class Privacy:
             posting from a non-member who is not explicitly accepted,
             rejected, or discarded, will have their posting filtered by the
             <a href="?VARHELP=privacy/sender/generic_nonmember_action">general
-            non-member rules</a>."""),
+            non-member rules</a>.
+
+            <p>In the text boxes below, add one address per line; start the
+            line with a ^ character to designate a <a href=
+            "http://www.python.org/doc/current/lib/module-re.html"
+            >Python regular expression</a>.  When entering backslashes, do so
+            as if you were using Python raw strings (i.e. you generally just
+            use a single backslash).
+
+            <p>Note that non-regexp matches are always done first."""),
 
             _("General sender filters"),
 
@@ -182,23 +191,27 @@ class Privacy:
              <a href="%(adminurl)s/members">membership management
              screens</a>.""")),
 
-            ('accept_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+            ('accept_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings should be
              automatically accepted."""),
 
              _("""Postings from any of these non-members will be automatically
-             accepted with no further moderation applied.""")),
+             accepted with no further moderation applied.  Add member
+             addresses one per line; start the line with a ^ character to
+             designate a regular expression match.""")),
 
-            ('hold_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+            ('hold_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings will be
              immediately held for moderation."""),
 
              _("""Postings from any of these non-members will be immediately
              and automatically held for moderation by the list moderators.
              The sender will receive a notification message which will allow
-             them to cancel their held message.""")),
+             them to cancel their held message.  Add member addresses one per
+             line; start the line with a ^ character to designate a regular
+             expression match.""")),
 
-            ('reject_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+            ('reject_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings will be
              automatically rejected."""),
 
@@ -208,9 +221,12 @@ class Privacy:
              option is not appropriate for known spam senders; their messages
              should be
              <a href="?VARHELP=privacy/sender/discard_these_nonmembers"
-             >automatically discarded</a>.""")),
+             >automatically discarded</a>.
 
-            ('discard_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+             <p>Add member addresses one per line; start the line with a ^
+             character to designate a regular expression match.""")),
+
+            ('discard_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings will be
              automatically discarded."""),
 
@@ -219,7 +235,10 @@ class Privacy:
              further processing or notification.  The sender will not receive
              a notification or a bounce, however the list moderators can
              optionally <a href="?VARHELP=privacy/sender/forward_auto_discards"
-             >receive copies of auto-discarded messages.</a>.""")),
+             >receive copies of auto-discarded messages.</a>.
+
+             <p>Add member addresses one per line; start the line with a ^
+             character to designate a regular expression match.""")),
 
             ('generic_nonmember_action', mm_cfg.Radio,
              (_('Accept'), _('Hold'), _('Reject'), _('Discard')), 0,
