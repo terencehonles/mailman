@@ -41,7 +41,7 @@ except IOError:
 # and should send back an error message when it does.
 mlist = MailList.MailList(sys.argv[1])
 try:
-    msg = Message.IncomingMessage()
+    msg = Message.Message(sys.stdin)
     if not mlist.bounce_processing or not mlist.ScanMessage(msg):
         mlist.DeliverToOwner(msg, mlist.owner)
 

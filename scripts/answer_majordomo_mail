@@ -32,7 +32,7 @@ try:
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
-msg = Message.IncomingMessage()
+msg = Message.Message(sys.stdin)
 txtfile = os.path.join(paths.prefix, 'misc/majordomo.answer.txt')
 text = open(txtfile, 'r').read()
 Utils.SendTextToUser('Your mail to Majordomo...', text, msg.GetSender(),
