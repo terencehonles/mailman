@@ -116,7 +116,7 @@ def checkarchivedbs():
         try:
             mode = statmode(dbdir)
         except os.error, (code, msg):
-            if code == ENOENT:
+            if code == errno.ENOENT:
                 continue
             raise
         if mode & S_IRWXO:
