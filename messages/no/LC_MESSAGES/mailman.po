@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
 "POT-Creation-Date: Tue Apr  2 00:37:35 2002\n"
-"PO-Revision-Date: 2002-04-02 23:30+0200\n"
+"PO-Revision-Date: 2002-04-22 09:24+0200\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -713,7 +713,7 @@ msgstr ""
 "m&aring; du sette et eget moderatorpassord i feltene nedenfor.\n"
 "(Passordet kan selvsagt v&aelig;re hva som helst, men er det det samme som\n"
 "administratorpassordet, har det jo ingen hensikt.)\n"
-"Du m&aring; ogs&aring; skrive inn epostadressen(e) til listemoderatoren(e)\n"
+"Du m&aring; ogs&aring; skrive inn epostadressen(e) til listemoderatoren(e) "
 "p&aring;<a href=\"%(adminurl)s/general\">Generelle innstillinger</a> siden."
 
 #: Mailman/Cgi/admin.py:1151
@@ -2670,7 +2670,7 @@ msgstr ""
 "</ul>\n"
 "\n"
 "<p>Du kan enten skrive teksten direkte inn i tekstboksene, eller du kan\n"
-"skrive inn navnet p&aring; en fil som inneholder teksten. Denne filen vil "
+"angi navnet p&aring; en fil som inneholder teksten. Denne filen vil "
 "s&aring; lastes inn\n"
 "i tekstboksen, fra ditt lokale filsystem."
 
@@ -2808,7 +2808,7 @@ msgstr ""
 "gj&oslash;res.\n"
 "Her er en oversikt over hvordan det fungerer.\n"
 "\n"
-"<p>N&aring;r Mailman mottar en returmeldinger, blir to ting fors&oslash;kt "
+"<p>N&aring;r Mailman mottar en returmelding, blir to ting fors&oslash;kt "
 "tolket.\n"
 "Det ene er epostadressen til medlemmet som egentlig skulle motta eposten,\n"
 "og det andre er &aring;rsaken til problemet. &Aring;rsaken tolkes til "
@@ -2829,11 +2829,11 @@ msgstr ""
 "p&aring; &eacute;n dag, vil\n"
 "tallet kun &oslash;kes med 1.\n"
 "\n"
-"<p>N&aring;r et returtallet for et medlem n&aring;r en viss <a href=\"?"
+"<p>N&aring;r returtallet for et medlem n&aring;r en viss <a href=\"?"
 "VARHELP=bounce/bounce_score_threshold\">grense</a>,\n"
 "stoppes levering til medlemmet. Dermed vil ikke medlemmet motta epost fra "
 "listen f&oslash;r\n"
-"levering skrus p&aring; igjen. Medlemmet vil med jevne mellomrom motta "
+"levering skrues p&aring; igjen. Medlemmet vil med jevne mellomrom motta "
 "melding om at dette\n"
 "har skjedd, og hva han/hun m&aring; gj&oslash;re for &aring; f&aring; epost "
 "fra listen igjen.\n"
@@ -2852,7 +2852,7 @@ msgstr ""
 "returtallet, kan du bestemme hvor lang tid det skal\n"
 "ta f&oslash;r levering til et medlem stoppes. Begge disse verdiene m&aring; "
 "du justere alt etter hvor ofte og hvor mye\n"
-"epost sendes til listen din."
+"epost som sendes til listen din."
 
 #: Mailman/Gui/Bounce.py:75
 msgid "Bounce detection sensitivity"
@@ -3195,11 +3195,11 @@ msgstr "Gjem medlemmets adresse"
 
 #: Mailman/Gui/General.py:50
 msgid "Acknowledge the member's posting"
-msgstr "Godkjenn medlemmets epost"
+msgstr "Send bekreftelse på meldinger sendt av medlemmet"
 
 #: Mailman/Gui/General.py:51
 msgid "Do not send a copy of a member's own post"
-msgstr "Ikke send medlemmet en kopi hans/hennes egen epost"
+msgstr "Ikke send medlemmet en kopi av hans/hennes egen epost"
 
 #: Mailman/Gui/General.py:53
 msgid "Get plain text digests (RFC 1153) rather than MIME digests"
@@ -3729,7 +3729,7 @@ msgid ""
 "List-specific text prepended to new-subscriber welcome\n"
 "             message"
 msgstr ""
-"Tekst som legges til velkomsthilsen for nye medlemmer p&aring; denne listen."
+"Tekst som legges til i velkomsthilsen for nye medlemmer p&aring; denne listen."
 
 #: Mailman/Gui/General.py:271
 msgid ""
@@ -8844,11 +8844,11 @@ msgstr "listeinformasjon"
 
 #: bin/rmlist:117 bin/rmlist:119
 msgid "private archives"
-msgstr "private arkivet"
+msgstr "private arkiv"
 
 #: bin/rmlist:121 bin/rmlist:123
 msgid "public archives"
-msgstr "offentlige arkivet"
+msgstr "offentlige arkiv"
 
 #: bin/sync_members:19
 msgid ""
