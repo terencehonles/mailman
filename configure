@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.30 
+# From configure.in Revision: 2.31 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -21,15 +21,15 @@ ac_help="$ac_help
 ac_help="$ac_help
   --with-var-prefix     directory for mutable data [/var/mailman]"
 ac_help="$ac_help
+  --without-permcheck	skip the check for target directory permissions"
+ac_help="$ac_help
   --with-username	specify a user name other than \"mailman\""
 ac_help="$ac_help
   --with-groupname	specify a group name other than \"mailman\""
 ac_help="$ac_help
-  --without-permcheck	skip the check for target directory permissions"
+  --with-mail-gid  	group name mail programs run as"
 ac_help="$ac_help
-  --with-mail-gid  	specify GID mail programs run as"
-ac_help="$ac_help
-  --with-cgi-gid  	specify GID CGI programs run as"
+  --with-cgi-gid  	group name CGI programs run as"
 ac_help="$ac_help
   --with-cgi-ext	specify extension for CGI programs (include dot)"
 ac_help="$ac_help
@@ -1119,138 +1119,8 @@ case "$with_var_prefix" in
 esac
 echo "$ac_t""$ans" 1>&6
 
-# new macro for finding GIDs
-
-
-
-# new macro for finding UIDs
-
-
-# Check for some other uid to use than `mailman'
-echo $ac_n "checking for --with-username""... $ac_c" 1>&6
-echo "configure:1132: checking for --with-username" >&5
-# Check whether --with-username or --without-username was given.
-if test "${with_username+set}" = set; then
-  withval="$with_username"
-  :
-fi
-
-
-if test -z "$with_username"
-then
-	with_username="mailman"
-fi
-USERNAME=$with_username
-echo "$ac_t""$USERNAME" 1>&6
-
-# User `mailman' must exist
-
-echo $ac_n "checking for $USERNAME UID""... $ac_c" 1>&6
-echo "configure:1150: checking for $USERNAME UID" >&5
-
-# MAILMAN_UID == variable name
-# $USERNAME == user id to check for
-
-
-if test -z "$MAILMAN_UID"
-then
-    cat > conftest.py <<EOF
-import pwd
-uid = ''
-for user in "$USERNAME".split():
-    try:
-        try:
-            uid = pwd.getpwuid(int(user))[2]
-            break
-	except ValueError:
-            uid = pwd.getpwnam(user)[2]
-            break
-    except KeyError:
-        uid = ''
-fp = open("conftest.out", "w")
-fp.write("%s\n" % uid)
-fp.close()
-EOF
-    $PYTHON conftest.py
-    MAILMAN_UID=`cat conftest.out`
-fi
-
-echo "$ac_t""$MAILMAN_UID" 1>&6
-rm -f conftest.out conftest.py
-if test -z "$MAILMAN_UID"
-then
-    { echo "configure: error: 
-***** No \"$USERNAME\" user found!
-***** Your system must have a \"$USERNAME\" user defined
-***** (usually in your /etc/passwd file).  Please see the INSTALL
-***** file for details." 1>&2; exit 1; }
-fi
-
-
-# Check for some other gid to use than `mailman'
-echo $ac_n "checking for --with-groupname""... $ac_c" 1>&6
-echo "configure:1193: checking for --with-groupname" >&5
-# Check whether --with-groupname or --without-groupname was given.
-if test "${with_groupname+set}" = set; then
-  withval="$with_groupname"
-  :
-fi
-
-
-if test -z "$with_groupname"
-then
-	with_groupname="mailman"
-fi
-GROUPNAME=$with_groupname
-echo "$ac_t""$GROUPNAME" 1>&6
-
-
-# Target group must exist
-
-echo $ac_n "checking for $GROUPNAME GID""... $ac_c" 1>&6
-echo "configure:1212: checking for $GROUPNAME GID" >&5
-
-# MAILMAN_GID == variable name
-# $GROUPNAME == user id to check for
-
-
-if test -z "$MAILMAN_GID"
-then
-    cat > conftest.py <<EOF
-import grp
-gid = ''
-for group in "$GROUPNAME".split():
-    try:
-        try:
-            gid = grp.getgrgid(int(group))[2]
-            break
-        except ValueError:
-            gid = grp.getgrnam(group)[2]
-            break
-    except KeyError:
-        gid = ''
-fp = open("conftest.out", "w")
-fp.write("%s\n" % gid)
-fp.close()
-EOF
-    $PYTHON conftest.py
-    MAILMAN_GID=`cat conftest.out`
-fi
-
-echo "$ac_t""$MAILMAN_GID" 1>&6
-rm -f conftest.out conftest.py
-if test -z "$MAILMAN_GID"
-then
-    { echo "configure: error: 
-***** No \"$GROUPNAME\" group found!
-***** Your system must have a \"$GROUPNAME\" group defined
-***** (usually in your /etc/group file).  Please see the INSTALL
-***** file for details." 1>&2; exit 1; }
-fi
-
-
 echo $ac_n "checking for --with-permcheck""... $ac_c" 1>&6
-echo "configure:1254: checking for --with-permcheck" >&5
+echo "configure:1124: checking for --with-permcheck" >&5
 # Check whether --with-permcheck or --without-permcheck was given.
 if test "${with_permcheck+set}" = set; then
   withval="$with_permcheck"
@@ -1273,15 +1143,152 @@ else
     prefixcheck=$VAR_PREFIX
 fi
 
+# new macro for finding group names
+
+
+
+# new macro for finding UIDs
+
+
+# Check for some other uid to use than `mailman'
+echo $ac_n "checking for --with-username""... $ac_c" 1>&6
+echo "configure:1156: checking for --with-username" >&5
+# Check whether --with-username or --without-username was given.
+if test "${with_username+set}" = set; then
+  withval="$with_username"
+  :
+fi
+
+
+if test -z "$with_username"
+then
+	with_username="mailman"
+fi
+USERNAME=$with_username
+echo "$ac_t""$USERNAME" 1>&6
+
+# User `mailman' must exist
+
+echo $ac_n "checking for user name \"$USERNAME\"""... $ac_c" 1>&6
+echo "configure:1174: checking for user name \"$USERNAME\"" >&5
+
+# MAILMAN_USER == variable name
+# $USERNAME == user id to check for
+
+
+if test -z "$MAILMAN_USER"
+then
+    cat > conftest.py <<EOF
+import pwd
+uid = ''
+for user in "$USERNAME".split():
+    try:
+        try:
+            uname = pwd.getpwuid(int(user))[0]
+            break
+	except ValueError:
+            uname = pwd.getpwnam(user)[0]
+            break
+    except KeyError:
+        uname = ''
+fp = open("conftest.out", "w")
+fp.write("%s\n" % uname)
+fp.close()
+EOF
+    $PYTHON conftest.py
+    MAILMAN_USER=`cat conftest.out`
+fi
+
+rm -f conftest.out conftest.py
+if test -z "$MAILMAN_USER"
+then
+  if test "$with_permcheck" = "yes"
+  then
+    { echo "configure: error: 
+***** No \"$USERNAME\" user found!
+***** Your system must have a \"$USERNAME\" user defined
+***** (usually in your /etc/passwd file).  Please see the INSTALL
+***** file for details." 1>&2; exit 1; }
+  fi
+fi
+echo "$ac_t""okay" 1>&6
+
+
+# Check for some other gid to use than `mailman'
+echo $ac_n "checking for --with-groupname""... $ac_c" 1>&6
+echo "configure:1220: checking for --with-groupname" >&5
+# Check whether --with-groupname or --without-groupname was given.
+if test "${with_groupname+set}" = set; then
+  withval="$with_groupname"
+  :
+fi
+
+
+if test -z "$with_groupname"
+then
+	with_groupname="mailman"
+fi
+GROUPNAME=$with_groupname
+echo "$ac_t""$GROUPNAME" 1>&6
+
+
+# Target group must exist
+
+echo $ac_n "checking for group name \"$GROUPNAME\"""... $ac_c" 1>&6
+echo "configure:1239: checking for group name \"$GROUPNAME\"" >&5
+
+# MAILMAN_GROUP == variable name
+# $GROUPNAME == user id to check for
+
+
+if test -z "$MAILMAN_GROUP"
+then
+    cat > conftest.py <<EOF
+import grp
+gid = ''
+for group in "$GROUPNAME".split():
+    try:
+        try:
+            gname = grp.getgrgid(int(group))[0]
+            break
+        except ValueError:
+            gname = grp.getgrnam(group)[0]
+            break
+    except KeyError:
+        gname = ''
+fp = open("conftest.out", "w")
+fp.write("%s\n" % gname)
+fp.close()
+EOF
+    $PYTHON conftest.py
+    MAILMAN_GROUP=`cat conftest.out`
+fi
+
+rm -f conftest.out conftest.py
+if test -z "$MAILMAN_GROUP"
+then
+  if test "$with_permcheck" = "yes"
+  then
+    { echo "configure: error: 
+***** No \"$GROUPNAME\" group found!
+***** Your system must have a \"$GROUPNAME\" group defined
+***** (usually in your /etc/group file).  Please see the INSTALL
+***** file for details." 1>&2; exit 1; }
+  fi
+fi
+echo "$ac_t""okay" 1>&6
+
+
 echo $ac_n "checking permissions on $prefixcheck""... $ac_c" 1>&6
-echo "configure:1278: checking permissions on $prefixcheck" >&5
+echo "configure:1284: checking permissions on $prefixcheck" >&5
 
 cat > conftest.py <<EOF
 import os, grp
 from stat import *
 prefix = "$prefixcheck"
 groupname = "$GROUPNAME"
-mailmangid = $MAILMAN_GID
+mailmangroup = "$MAILMAN_GROUP"
+mailmangid = grp.getgrnam(mailmangroup)[2]
 problems = []
 try: statdata = os.stat(prefix)
 except OSError:
@@ -1325,8 +1332,8 @@ echo "$ac_t""$status" 1>&6
 
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
-echo $ac_n "checking for mail wrapper GID; i.e. --with-mail-gid""... $ac_c" 1>&6
-echo "configure:1330: checking for mail wrapper GID; i.e. --with-mail-gid" >&5
+echo $ac_n "checking for mail wrapper group; i.e. --with-mail-gid""... $ac_c" 1>&6
+echo "configure:1337: checking for mail wrapper group; i.e. --with-mail-gid" >&5
 # Check whether --with-mail-gid or --without-mail-gid was given.
 if test "${with_mail_gid+set}" = set; then
   withval="$with_mail_gid"
@@ -1335,59 +1342,57 @@ fi
 
 if test -z "$with_mail_gid"
 then
-    if eval "test \"`echo '$''{'ac_cv_group_mail'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-      ac_cv_group_mail="mailman other mail daemon"
+    with_mail_gid="mailman other mail daemon"
 fi
 
-else
-    ac_cv_group_mail=$with_mail_gid
-fi
-
-# MAIL_GID == variable name
-# $ac_cv_group_mail == user id to check for
+# MAIL_GROUP == variable name
+# $with_mail_gid == user id to check for
 
 
-if test -z "$MAIL_GID"
+if test -z "$MAIL_GROUP"
 then
     cat > conftest.py <<EOF
 import grp
 gid = ''
-for group in "$ac_cv_group_mail".split():
+for group in "$with_mail_gid".split():
     try:
         try:
-            gid = grp.getgrgid(int(group))[2]
+            gname = grp.getgrgid(int(group))[0]
             break
         except ValueError:
-            gid = grp.getgrnam(group)[2]
+            gname = grp.getgrnam(group)[0]
             break
     except KeyError:
-        gid = ''
+        gname = ''
 fp = open("conftest.out", "w")
-fp.write("%s\n" % gid)
+fp.write("%s\n" % gname)
 fp.close()
 EOF
     $PYTHON conftest.py
-    MAIL_GID=`cat conftest.out`
+    MAIL_GROUP=`cat conftest.out`
 fi
 
-echo "$ac_t""$MAIL_GID" 1>&6
 rm -f conftest.out conftest.py
-if test -z "$MAIL_GID"
+if test -z "$MAIL_GROUP"
 then
+  if test "$with_permcheck" = "yes"
+  then
     { echo "configure: error: 
-***** No existing group found for the mail_wrapper program.
-***** This is the group that your mail delivery agent runs under, and
-***** uses to run filter programs.  You might want to specify an
-***** existing group with the --with-mail-gid configure option.
-***** Please see your mail agent's documentation, and the INSTALL file
-***** for details" 1>&2; exit 1; }
+***** No group name \"$with_mail_gid\" found for the mail wrapper program.
+***** This is the group that your mail server will use to run Mailman's
+***** programs.  You should specify an existing group with the
+***** --with-mail-gid configure option, or use --without-permcheck to
+***** skip this verification step.  See also your mail server's documentation,
+***** and Mailman's INSTALL file for details" 1>&2; exit 1; }
+  else
+    MAIL_GROUP=$with_mail_gid
+  fi
 fi
+echo "$ac_t""$MAIL_GROUP" 1>&6
 
 
-echo $ac_n "checking for CGI wrapper GID; i.e. --with-cgi-gid""... $ac_c" 1>&6
-echo "configure:1391: checking for CGI wrapper GID; i.e. --with-cgi-gid" >&5
+echo $ac_n "checking for CGI wrapper group; i.e. --with-cgi-gid""... $ac_c" 1>&6
+echo "configure:1396: checking for CGI wrapper group; i.e. --with-cgi-gid" >&5
 # Check whether --with-cgi-gid or --without-cgi-gid was given.
 if test "${with_cgi_gid+set}" = set; then
   withval="$with_cgi_gid"
@@ -1396,64 +1401,60 @@ fi
 
 if test -z "$with_cgi_gid"
 then
-    if eval "test \"`echo '$''{'ac_cv_group_cgi'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-      ac_cv_group_cgi="www www-data nobody"
-fi
-
-else
-    ac_cv_group_cgi=$with_cgi_gid
+    with_cgi_gid="www www-data nobody"
 fi
 
 
-# CGI_GID == variable name
-# $ac_cv_group_cgi == user id to check for
+# CGI_GROUP == variable name
+# $with_cgi_gid == user id to check for
 
 
-if test -z "$CGI_GID"
+if test -z "$CGI_GROUP"
 then
     cat > conftest.py <<EOF
 import grp
 gid = ''
-for group in "$ac_cv_group_cgi".split():
+for group in "$with_cgi_gid".split():
     try:
         try:
-            gid = grp.getgrgid(int(group))[2]
+            gname = grp.getgrgid(int(group))[0]
             break
         except ValueError:
-            gid = grp.getgrnam(group)[2]
+            gname = grp.getgrnam(group)[0]
             break
     except KeyError:
-        gid = ''
+        gname = ''
 fp = open("conftest.out", "w")
-fp.write("%s\n" % gid)
+fp.write("%s\n" % gname)
 fp.close()
 EOF
     $PYTHON conftest.py
-    CGI_GID=`cat conftest.out`
+    CGI_GROUP=`cat conftest.out`
 fi
 
-echo "$ac_t""$CGI_GID" 1>&6
 rm -f conftest.out conftest.py
-if test -z "$CGI_GID"
+if test -z "$CGI_GROUP"
 then
+  if test "$with_permcheck" = "yes"
+  then
     { echo "configure: error: 
-***** No existing group found for the cgi_wrapper program.
-***** This is the group that your Web server runs CGI scripts under.
-***** You might want to specify an existing group with the
-***** --with-cgi-gid configure option.  Please see your Web server's
-***** documentation, and the INSTALL file for details" 1>&2; exit 1; }
+***** No group name \"$with_cgi_gid\" found for the CGI wrapper program.
+***** This is the group that your web server will use to run Mailman's
+***** programs.  You should specify an existing group with the
+***** --with-cgi-gid configure option, or use --without-permcheck to
+***** skip this verification step.  See also your web server's documentation,
+***** and Mailman's INSTALL file for details" 1>&2; exit 1; }
+  else
+    CGI_GROUP=$with_cgi_gid
+  fi
 fi
+echo "$ac_t""$CGI_GROUP" 1>&6
 
-
-#MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
-#MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
 
 # Check for CGI extensions, required by some Web servers
 
 echo $ac_n "checking for CGI extensions""... $ac_c" 1>&6
-echo "configure:1457: checking for CGI extensions" >&5
+echo "configure:1458: checking for CGI extensions" >&5
 # Check whether --with-cgi-ext or --without-cgi-ext was given.
 if test "${with_cgi_ext+set}" = set; then
   withval="$with_cgi_ext"
@@ -1473,7 +1474,7 @@ echo "$ac_t""$with_cgi_ext" 1>&6
 # figure out the default mail hostname and url host component
 
 echo $ac_n "checking for --with-mailhost""... $ac_c" 1>&6
-echo "configure:1477: checking for --with-mailhost" >&5
+echo "configure:1478: checking for --with-mailhost" >&5
 # Check whether --with-mailhost or --without-mailhost was given.
 if test "${with_mailhost+set}" = set; then
   withval="$with_mailhost"
@@ -1491,7 +1492,7 @@ echo "$ac_t""$with_mailhost" 1>&6
 
 
 echo $ac_n "checking for --with-urlhost""... $ac_c" 1>&6
-echo "configure:1495: checking for --with-urlhost" >&5
+echo "configure:1496: checking for --with-urlhost" >&5
 # Check whether --with-urlhost or --without-urlhost was given.
 if test "${with_urlhost+set}" = set; then
   withval="$with_urlhost"
@@ -1520,14 +1521,14 @@ EOF
 $PYTHON conftest.py
 
 echo $ac_n "checking for default mail host name""... $ac_c" 1>&6
-echo "configure:1524: checking for default mail host name" >&5
+echo "configure:1525: checking for default mail host name" >&5
 if test -z "$MAILHOST"
 then
     MAILHOST=`sed q conftest.out`
 fi
 echo "$ac_t""$MAILHOST" 1>&6
 echo $ac_n "checking for default URL host component""... $ac_c" 1>&6
-echo "configure:1531: checking for default URL host component" >&5
+echo "configure:1532: checking for default URL host component" >&5
 if test -z "$URLHOST"
 then
     URLHOST=`sed -n '$p' conftest.out`
@@ -1539,12 +1540,12 @@ rm -f conftest.out conftest.py
 for ac_func in strerror setregid syslog
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:1543: checking for $ac_func" >&5
+echo "configure:1544: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1548 "configure"
+#line 1549 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -1567,7 +1568,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1571: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1572: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -1598,17 +1599,17 @@ if test $ac_cv_func_syslog = no; then
   # with the appropriate include.
   for lib in bsd socket inet; do
     echo $ac_n "checking for syslog in -l$lib""... $ac_c" 1>&6
-echo "configure:1602: checking for syslog in -l$lib" >&5
+echo "configure:1603: checking for syslog in -l$lib" >&5
     Mailman_LIBS_save="$LIBS"; LIBS="$LIBS -l$lib"
     cat > conftest.$ac_ext <<EOF
-#line 1605 "configure"
+#line 1606 "configure"
 #include "confdefs.h"
 #include <syslog.h>
 int main() {
 syslog(LOG_DEBUG, "Just a test...");
 ; return 0; }
 EOF
-if { (eval echo configure:1612: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1613: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6
       cat >> confdefs.h <<\EOF
@@ -1630,7 +1631,7 @@ fi
 
 # Checks for header files.
 echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
-echo "configure:1634: checking how to run the C preprocessor" >&5
+echo "configure:1635: checking how to run the C preprocessor" >&5
 # On Suns, sometimes $CPP names a directory.
 if test -n "$CPP" && test -d "$CPP"; then
   CPP=
@@ -1645,13 +1646,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 1649 "configure"
+#line 1650 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1655: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1656: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -1662,13 +1663,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 1666 "configure"
+#line 1667 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1672: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1673: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -1679,13 +1680,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -nologo -E"
   cat > conftest.$ac_ext <<EOF
-#line 1683 "configure"
+#line 1684 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1689: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1690: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -1710,12 +1711,12 @@ fi
 echo "$ac_t""$CPP" 1>&6
 
 echo $ac_n "checking for ANSI C header files""... $ac_c" 1>&6
-echo "configure:1714: checking for ANSI C header files" >&5
+echo "configure:1715: checking for ANSI C header files" >&5
 if eval "test \"`echo '$''{'ac_cv_header_stdc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1719 "configure"
+#line 1720 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 #include <stdarg.h>
@@ -1723,7 +1724,7 @@ else
 #include <float.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1727: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1728: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1740,7 +1741,7 @@ rm -f conftest*
 if test $ac_cv_header_stdc = yes; then
   # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1744 "configure"
+#line 1745 "configure"
 #include "confdefs.h"
 #include <string.h>
 EOF
@@ -1758,7 +1759,7 @@ fi
 if test $ac_cv_header_stdc = yes; then
   # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1762 "configure"
+#line 1763 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 EOF
@@ -1779,7 +1780,7 @@ if test "$cross_compiling" = yes; then
   :
 else
   cat > conftest.$ac_ext <<EOF
-#line 1783 "configure"
+#line 1784 "configure"
 #include "confdefs.h"
 #include <ctype.h>
 #define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
@@ -1790,7 +1791,7 @@ if (XOR (islower (i), ISLOWER (i)) || toupper (i) != TOUPPER (i)) exit(2);
 exit (0); }
 
 EOF
-if { (eval echo configure:1794: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:1795: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
 then
   :
 else
@@ -1817,17 +1818,17 @@ for ac_hdr in syslog.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:1821: checking for $ac_hdr" >&5
+echo "configure:1822: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1826 "configure"
+#line 1827 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1831: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1832: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1856,12 +1857,12 @@ done
 
 # Checks for typedefs, structures, and compiler characteristics.
 echo $ac_n "checking for uid_t in sys/types.h""... $ac_c" 1>&6
-echo "configure:1860: checking for uid_t in sys/types.h" >&5
+echo "configure:1861: checking for uid_t in sys/types.h" >&5
 if eval "test \"`echo '$''{'ac_cv_type_uid_t'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1865 "configure"
+#line 1866 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 EOF
@@ -1890,7 +1891,7 @@ EOF
 fi
 
 echo $ac_n "checking type of array argument to getgroups""... $ac_c" 1>&6
-echo "configure:1894: checking type of array argument to getgroups" >&5
+echo "configure:1895: checking type of array argument to getgroups" >&5
 if eval "test \"`echo '$''{'ac_cv_type_getgroups'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1898,7 +1899,7 @@ else
   ac_cv_type_getgroups=cross
 else
   cat > conftest.$ac_ext <<EOF
-#line 1902 "configure"
+#line 1903 "configure"
 #include "confdefs.h"
 
 /* Thanks to Mike Rendell for this test.  */
@@ -1923,7 +1924,7 @@ main()
 }
 
 EOF
-if { (eval echo configure:1927: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:1928: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
 then
     ac_cv_type_getgroups=gid_t
 else
@@ -1937,7 +1938,7 @@ fi
 
 if test $ac_cv_type_getgroups = cross; then
         cat > conftest.$ac_ext <<EOF
-#line 1941 "configure"
+#line 1942 "configure"
 #include "confdefs.h"
 #include <unistd.h>
 EOF
@@ -1965,12 +1966,12 @@ EOF
 for ac_func in vsnprintf
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:1969: checking for $ac_func" >&5
+echo "configure:1970: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1974 "configure"
+#line 1975 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -1993,7 +1994,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1997: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1998: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -2235,10 +2236,10 @@ s%@TRUE@%$TRUE%g
 s%@CC@%$CC%g
 s%@OPT@%$OPT%g
 s%@VAR_PREFIX@%$VAR_PREFIX%g
-s%@MAILMAN_UID@%$MAILMAN_UID%g
-s%@MAILMAN_GID@%$MAILMAN_GID%g
-s%@MAIL_GID@%$MAIL_GID%g
-s%@CGI_GID@%$CGI_GID%g
+s%@MAILMAN_USER@%$MAILMAN_USER%g
+s%@MAILMAN_GROUP@%$MAILMAN_GROUP%g
+s%@MAIL_GROUP@%$MAIL_GROUP%g
+s%@CGI_GROUP@%$CGI_GROUP%g
 s%@CGIEXT@%$CGIEXT%g
 s%@MAILHOST@%$MAILHOST%g
 s%@URLHOST@%$URLHOST%g
@@ -2371,7 +2372,7 @@ chmod -R +x build
 
 # Test for the Chinese codecs.
 echo $ac_n "checking for Python Chinese Unicode codecs""... $ac_c" 1>&6
-echo "configure:2375: checking for Python Chinese Unicode codecs" >&5
+echo "configure:2376: checking for Python Chinese Unicode codecs" >&5
 cat > conftest.py <<EOF
 try:
   unicode("abc", "big5-tw")
