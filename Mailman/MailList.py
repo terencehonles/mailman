@@ -572,7 +572,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # addr's domain part.
         email = Utils.LCDomain(userdesc.address)
         name = getattr(userdesc, 'fullname', '')
-        lang = getattr(userdesc, 'language', mlist.preferred_language)
+        lang = getattr(userdesc, 'language', self.preferred_language)
         digest = getattr(userdesc, 'digest', None)
         password = getattr(userdesc, 'password', Utils.MakeRandomPassword())
         if digest is None:
@@ -609,7 +609,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # User confirmation required.  BAW: this should probably just
             # accept a userdesc instance.
             cookie = Pending.new(Pending.SUBSCRIPTION,
-                                 email, fullname, password, digest, lang)
+                                 email, name, password, digest, lang)
             # Send the user the confirmation mailback
             if remote is None:
                 by = remote = ''
@@ -862,7 +862,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
                     'subscriptions to %(name)s require administrator approval')
-            self.ApprovedAddMember(addr, password, digest, lang)
+            class UserDesc: pass
+            userdesc = UserDesc()
+            userdesc.address = addr
+            userdesc.fullname = fullname
+            userdesc.password = password
+            userdesc.digest = digest
+            userdesc.lang = lang
+            self.ApprovedAddMember(userdesc)
             return op, addr, password, digest, lang
         elif op == Pending.UNSUBSCRIPTION:
             addr = data[0]
