@@ -2,6 +2,22 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+1.0rc1
+
+- There is a new Mailman logo, contributed by The Dragon De Monsyne.
+  Please read the INSTALL file for information about installing the
+  logo in a place your Web server can find it.
+
+- USE_ENVELOPE_SENDER is now set to 0 by default.  Turning this on
+  caused problems for too many users; lists restricted to member-only
+  posts were not matching the addresses correctly.
+
+- A revamped bin/withlist to be a little more useful.
+
+- A revamped cron/mailpasswds which groups users by virtual hosts.
+
+- The usual assortment of bug fixes.
+
 1.0b11
 
 - Bug fixes and improvements for case preservation of subscribed
