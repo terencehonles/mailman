@@ -117,6 +117,9 @@ class OldStyleMemberships(MemberAdaptor):
 
     def getMemberOption(self, member, flag):
         self.__assertIsMember(member)
+        if flag == mm_cfg.Digests:
+            cpaddr, where = self.__get_cp_member(member)
+            return where == ISDIGEST
         option = self.__mlist.user_options.get(member.lower(), 0)
         return not not (option & flag)
 
@@ -167,8 +170,6 @@ class OldStyleMemberships(MemberAdaptor):
             member = member.lower()
         if digest:
             self.__mlist.digest_members[member] = value
-            # Don't use setMemberOption() here because it does too much
-            self.__mlist.user_options[member] = mm_cfg.Digests
         else:
             self.__mlist.members[member] = value
         self.setMemberPassword(member, password)
@@ -263,6 +264,9 @@ class OldStyleMemberships(MemberAdaptor):
                 # things up so that the user receives one last digest,
                 # otherwise they may lose some email
                 self.__mlist.one_last_digest[memberkey] = cpuser
+            # We don't need to touch user_options because the digest state
+            # isn't kept as a bitfield flag.
+            return
         # This is a bit kludgey because the semantics are that if the user has
         # no options set (i.e. the value would be 0), then they have no entry
         # in the user_options dict.  We use setdefault() here, and then del
