@@ -136,8 +136,12 @@ def process(mlist, msg):
             hold_for_approval(mlist, msg, TooManyRecipients)
             # no return
     #
-    # implicit destination?
-    if mlist.require_explicit_destination and not mlist.HasExplicitDest(msg):
+    # implicit destination?  Note that message originating from the Usenet
+    # side of the world should never be implicitly destined
+    if mlist.require_explicit_destination and \
+       not mlist.HasExplicitDest(msg) and \
+       not getattr(msg, 'fromusenet', 0):
+        # then
         hold_for_approval(mlist, msg, ImplicitDestination)
         # no return
     #
