@@ -625,12 +625,13 @@ def heldmsg_prompt(mlist, doc, cookie, id):
         already been handled by the list administrator."""))
         return
 
+    # Unpack the data and present the confirmation message
+    ign, sender, msgsubject, givenreason, ign, ign = data
     # Now set the language to the sender's preferred.
     lang = mlist.getMemberLanguage(sender)
     i18n.set_language(lang)
     doc.set_language(lang)
-    # Unpack the data and present the confirmation message
-    ign, sender, msgsubject, givenreason, ign, ign = data
+
     subject = Utils.websafe(msgsubject)
     reason = Utils.websafe(givenreason)
     listname = mlist.real_name
