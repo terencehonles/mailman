@@ -1,4 +1,4 @@
-import string, os, sys
+import string, os, sys, tempfile
 import mm_cfg, mm_message, mm_err
 
 # Text for various messages:
@@ -9,6 +9,16 @@ Your message entitled:
 
 was successfully received by %s.
 '''
+
+## CHANGETEXT = '''[PSA SIG maillist member: Your mailing list is being migrated to a new
+## maillist mechanism which offers more control both to the list members and
+## to the administrator.  Info about getting at the new features is detailed
+## below.  We will be switching over to the new list immediately after the
+## subscriptions are transferred, and besides this message (and barring
+## unforseen bugs^H^H^H^H circumstances), the changeover should be fairly
+## transparent.  Bon voyage!  Ken Manheimer, klm@python.org.]
+
+## '''
 
 SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list! 
 
@@ -104,26 +114,29 @@ class Deliverer:
 	if not(len(recipients)):
 	    return
 	to_list = string.join(recipients)
+        tempfile.tempdir = '/tmp'
 
-# If this is a digest, or we ask to remove them,
-# Remove old To: headers.  We're going to stick our own in there.
-# Also skip: Sender, return-receipt-to, errors-to, return-path, reply-to,
-# (precidence, and received).
+## If this is a digest, or we ask to remove them,
+## Remove old To: headers.  We're going to stick our own in there.
+## Also skip: Sender, return-receipt-to, errors-to, return-path, reply-to,
+## (precedence, and received).
+
         if remove_to:
 	    # Writing to a file is better than waiting for sendmail to exit
-	    tmp_file_name = '/tmp/%smailman.%d.digest' % (tmpfile_prefix,
-							  os.getpid())
+            tempfile.template = tmpfile_prefix +'mailman-digest.'
 	    for item in msg.headers:
 		if (item[0:3] == 'To:' or 
 		    item[0:5] == 'X-To:'):
 		    msg.headers.remove(item)
 	    msg.headers.append('To: %s\n' % self.GetListEmail())
-	else:
-	    tmp_file_name = '/tmp/%smailman.%d' % (tmpfile_prefix, os.getpid())
+ 	else:
+            tempfile.template = tmpfile_prefix + 'mailman.'
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
-	tmp_file = open(tmp_file_name, 'w+')
 
-	tmp_file.write(string.join(msg.headers,''))
+        tmp_file_name = tempfile.mktemp()
+ 	tmp_file = open(tmp_file_name, 'w+')
+
+ 	tmp_file.write(string.join(msg.headers,''))
 	# If replys don't go to the list, then they should go to the
 	# real sender
 	if self.reply_goes_to_list:
@@ -161,13 +174,15 @@ class Deliverer:
 	    header = ''
 	    welcome = ''
 
-	body = SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
+##	body = (CHANGETEXT +
+##              SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
+        body = (SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
 				   self.GetScriptURL('listinfo'),
 				   self.real_name, self.host_name,
 				   password,
 				   self.GetListEmail(),
 				   header,
-				   welcome)
+				   welcome))
 
         self.SendTextToUser(subject = 'Welcome To "%s"! %s' % (self.real_name, 
 							       digest_mode),
