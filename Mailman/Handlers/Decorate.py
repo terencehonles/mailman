@@ -21,6 +21,7 @@ from types import ListType
 from email.MIMEText import MIMEText
 
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman import Errors
 from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
@@ -55,7 +56,17 @@ def process(mlist, msg, msgdata):
     # concatenation when the message is a non-multipart of type text/plain.
     # Otherwise, if it is not a multipart, we make it a multipart, and then we
     # add the header and footer as text/plain parts.
-    if not msg.is_multipart() and msg.get_type('text/plain') == 'text/plain':
+    #
+    # BJG: In addition, only add the footer if the message's character set
+    # matches the charset of the list's preferred language.  This is a
+    # suboptimal solution, and should be solved by allowing a list to have
+    # multiple headers/footers, for each language the list supports.
+    mcset = msg.get_param('charset', 'us-ascii')
+    lcset = Utils.GetCharSet(mlist.preferred_language)
+    msgtype = msg.get_type('text/plain')
+    # BAW: If the charsets don't match, should we add the header and footer by
+    # MIME multipart chroming the message?
+    if not msg.is_multipart() and msgtype == 'text/plain' and mcset == lcset:
         payload = header + msg.get_payload() + footer
         msg.set_payload(payload)
     elif msg.get_type() == 'multipart/mixed':
@@ -68,7 +79,7 @@ def process(mlist, msg, msgdata):
             payload = [payload]
         payload.append(mimeftr)
         payload.insert(0, mimehdr)
-        msg.set_payload(payload)
+        msg.set_payload(payload, mlist.preferred_language)
     elif msg.get_main_type() <> 'multipart':
         # Okay, we've got some 'image/*' or 'audio/*' -like type.  For now, we
         # simply refuse to add headers and footers to this message.  BAW:
@@ -103,6 +114,9 @@ def decorate(mlist, template, what, extradict={}):
                   'cgiext'        : mm_cfg.CGIEXT,
                   })
     d.update(extradict)
+    # Using $-strings?
+    if getattr(mlist, 'use_dollar_strings', 0):
+        template = Utils.to_percent(template)
     # Interpolate into the template
     try:
         text = (template % d).replace('\r\n', '\n')
