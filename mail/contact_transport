@@ -30,8 +30,7 @@ from_addr = sys.argv[1]
 to_addrs  = sys.argv[2:]
 
 text = sys.stdin.read()
-con = smtplib.SmtpConnection(mm_cfg.SMTPHOST)
-con.helo(mm_cfg.DEFAULT_HOST_NAME)
-con.send(to=to_addrs, frm=from_addr, text=text)
-con.quit()
+queue_id = Mailman.OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
+TrySMTPDelivery(from_addr, to_addrs, text, queue_id)
+Mailman.OutgoingQueue.processQueue()
 

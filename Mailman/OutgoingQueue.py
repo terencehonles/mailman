@@ -46,6 +46,3 @@ def enqueueMessage(the_sender, recip, text):
     marshal.dump((recip,the_sender,text),f)
     f.close()
     return fname
-
-
-  

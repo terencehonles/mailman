@@ -179,7 +179,7 @@ def DeliverToUser(msg, recipient, add_headers=[]):
 
         text = string.join(msg.headers, '')+ '\n'+ QuotePeriods(msg.body)
         import OutgoingQueue
-        OutgoingQueue.enqueueMessage(sender, recipient, text)
+        queue_id = OutgoingQueue.enqueueMessage(sender, recipient, text)
         TrySMTPDelivery(recipient,sender,text,queue_id)
         # Just in case there's still something waiting to be sent...
         OutgoingQueue.processQueue()
