@@ -258,6 +258,8 @@ class ListAdmin:
                 return LOST
             msg = readMessage(path)
             msgdata['approved'] = 1
+            # adminapproved is used by the Emergency handler
+            msgdata['adminapproved'] = 1
             # Calculate a new filebase for the approved message, otherwise
             # delivery errors will cause duplicates.
             try:
