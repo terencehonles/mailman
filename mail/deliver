@@ -103,7 +103,7 @@ def BuildGroups(biglist, num_addrs, spawns):
             newlist = newlist + biglist[j]
             biglist.remove(biglist[j])
         groups.append(newlist)
-        num_adders = num_addrs - len(newlist)
+        num_addrs = num_addrs - len(newlist)
     lastgroup = []
     for item in biglist:
         lastgroup = lastgroup + item
