@@ -1,4 +1,5 @@
-#!/usr/local/bin/python
+#! /usr/bin/env python
+#
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -14,13 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
+
 # This is another script that's really just for my use, but
 # feel free to use it if you know how...
 
 import sys
-
-sys.path.append('/home/mailman/mailman/modules')
+import os
+import paths
 import mm_message, mm_utils
 
 try:
@@ -31,6 +32,7 @@ except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
 msg = mm_message.IncomingMessage()
-text = open('/home/mailman/mailman/misc/majordomo.answer.txt', 'r').read()
+txtfile = os.path.join(paths.prefix, 'misc/majordomo.answer.txt')
+text = open(txtfile, 'r').read()
 mm_utils.SendTextToUser('Your mail to Majordomo...', text, msg.GetSender(),
                         'mailman-owner')
