@@ -80,10 +80,11 @@ def FormatListinfoOverview(error=None):
     for n in names:
 	l = MailList.MailList(n, lock = 0)
 	if l.advertised:
-	    if (http_host
-		and (string.find(http_host, l.host_name) == -1
-		     and string.find(l.host_name, http_host) == -1)):
-		# List is for different identity for this host - skip it.
+	    if (mm_cfg.VIRTUAL_HOST_OVERVIEW
+                and http_host
+		and (string.find(http_host, l.web_page_url) == -1
+		     and string.find(l.web_page_url, http_host) == -1)):
+		# List is for different identity of this host - skip it.
 		continue
 	    else:
 		advertised.append(l)
