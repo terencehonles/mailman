@@ -40,6 +40,15 @@ Where:
     -d <file>
         Similar to above, but these people become digest members.
 
+    --changes-msg=<y|n>
+    -c <y|n> 
+	set whether or not to send the list members the "there's going to be 
+	big changes to your list" message. defaults to yes.
+
+    --welcome-msg=<y|n>
+    -w <y|n>
+        set whether or not to send the list members a welcome message, overriding
+        whatever the list's "send_welcome_msg" setting is.
 
     --help
     -h
@@ -95,12 +104,12 @@ def SendExplanation(ml, users):
     ml.DeliverToList(msg, users, None, None)
 
 
-def AddMember(ml, addr, digest_p, noack):
+def AddMember(ml, addr, digest_p, send_welcome_msg):
     # if the line was empty, just ignore it
     pw = GetRandomPassword()
 
     try:
-        ml.ApprovedAddMember(addr, pw, digest_p, noack)
+        ml.ApprovedAddMember(addr, pw, digest_p, send_welcome_msg)
     except Mailman.Errors.MMAlreadyAMember:
         print 'Already subscribed (skipping):', addr
         
@@ -109,9 +118,11 @@ def AddMember(ml, addr, digest_p, noack):
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   'n:d:h',
+                                   'n:d:c:w:h',
                                    ['non-digest-members-file=',
                                     'digest-members-file=',
+                                    'changes-msg=',
+				    'welcome-msg=',
                                     'help'])
     except getopt.error, msg:
         usage(1, msg)
@@ -122,7 +133,8 @@ def main():
     listname = args[0]
     nfile = None
     dfile = None
-
+    send_changes_msg = 1
+    send_welcome_msg = -1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -130,7 +142,21 @@ def main():
             dfile = arg
         elif opt in ('-n', '--non-digest-members-file'):
             nfile = arg
-
+        elif opt in ('-c', '--changes-msg'):
+            if arg == 'y':
+                send_changes_msg = 1
+            elif arg == 'n':
+                send_changes_msg = 0
+            else:
+                usage(1)
+        elif opt in ('-w', '--welcome-msg'):
+            if arg == 'y':
+                send_welcome_msg = 1
+            elif arg == 'n':
+                send_welcome_msg = 0
+            else:
+                usage(1)
+                
     if dfile is None and nfile is None:
         usage(1)
 
@@ -139,10 +165,8 @@ def main():
     except Mailman.Errors.MMUnknownListError:
         usage(1, 'You must first create the list by running: newlist %s' %
               listname)
-    if ml.send_welcome_msg:
-	noack = 0
-    else:
-	noack = 1
+    if send_welcome_msg == -1:
+        send_welcome_msg = ml.send_welcome_msg
     try:
         dmembers = []
         if dfile:
@@ -165,13 +189,14 @@ def main():
         if not dmembers and not nmembers:
             usage(1)
 
+
         for member in nmembers:
-            AddMember(ml, member, 0, noack)
+             AddMember(ml, member, 0, send_welcome_msg)
 
         for member in dmembers:
-            AddMember(ml, member, 1, noack)
-
-        SendExplanation(ml, nmembers + dmembers)
+            AddMember(ml, member, 1, send_welcome_msg)
+        if send_changes_msg:
+            SendExplanation(ml, nmembers + dmembers)
     finally:
         ml.Unlock()
 
