@@ -43,9 +43,6 @@ class OutgoingRunner(Runner):
         # Maps mailing lists to (recip, msg) tuples
         self._permfailures = {}
         self._permfail_counter = 0
-        # We never lock the lists, but we need to be sure that MailList
-        # objects read from the cache are always fresh.
-        self._freshen = 1
         # We look this function up only at startup time
         modname = 'Mailman.Handlers.' + mm_cfg.DELIVERY_MODULE
         mod = __import__(modname)

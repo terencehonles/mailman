@@ -20,6 +20,7 @@
 import random
 import time
 import traceback
+import weakref
 from cStringIO import StringIO
 
 from Mailman import mm_cfg
@@ -34,22 +35,14 @@ from Mailman.Logging.Syslog import syslog
 
 
 class Runner:
-    CACHELISTS = 1
-
     def __init__(self, slice=None, numslices=1):
         self._kids = {}
-        self._cachelists = self.CACHELISTS
         # Create our own switchboard.  Don't use the switchboard cache because
         # we want to provide slice and numslice arguments.
         self._switchboard = Switchboard(self.QDIR, slice, numslices)
         # Create the shunt switchboard
         self._shunt = Switchboard(mm_cfg.SHUNTQUEUE_DIR)
         self._stop = 0
-        # Used by _open_list() to decide whether to freshen the state of any
-        # MailList object retrieved from the cache.  Most runners will
-        # eventually lock their lists, which automatically reloads their
-        # state.  It's only non-locking runners that need to set this.
-        self._freshen = 0
 
     def stop(self):
         self._stop = 1
@@ -62,11 +55,6 @@ class Runner:
                     # Once through the loop that processes all the files in
                     # the queue directory.
                     filecnt = self.__oneloop()
-                    # If the _freshen flag is set, then we evict all the
-                    # MailList objects from the cache so that their state will
-                    # be updated, the next time through the loop.
-                    if self._freshen:
-                        self._listcache.clear()
                     # Do the periodic work for the subclass.  BAW: this
                     # shouldn't be called here.  There should be one more
                     # _doperiodic() call at the end of the __oneloop() loop.
@@ -86,6 +74,7 @@ class Runner:
             self._cleanup()
 
     def __oneloop(self):
+        syslog('debug', '===== starting loop')
         # First, list all the files in our queue directory.
         # Switchboard.files() is guaranteed to hand us the files in FIFO
         # order.  Return an integer count of the number of files that were
@@ -123,6 +112,7 @@ class Runner:
             self._doperiodic()
             if self._shortcircuit():
                 break
+        syslog('debug', '===== finished loop (%s)', len(self._listcache))
         return len(files)
 
     def __onefile(self, msg, msgdata):
@@ -172,26 +162,22 @@ class Runner:
         if keepqueued:
             self._switchboard.enqueue(msg, msgdata)
         
-    # Mapping of listnames to MailList instances
-    _listcache = {}
+    # Mapping of listnames to MailList instances as a weak value dictionary.
+    _listcache = weakref.WeakValueDictionary()
 
     def _open_list(self, listname):
-        # Cache the opening of the list object given its name.  The probably
-        # is only a moderate win because when a list is locked, all its
-        # attributes are re-read from the config.pck file.  This may help more
-        # when there's a real backing database.
-        if self._cachelists:
-            mlist = self._listcache.get(listname)
-        else:
-            mlist = None
+        # Cache the open list so that any use of the list within this process
+        # uses the same object.  We use a WeakValueDictionary so that when the
+        # list is no longer necessary, its memory is freed.
+        mlist = self._listcache.get(listname)
         if not mlist:
             try:
                 mlist = MailList.MailList(listname, lock=0)
-                if self._cachelists:
-                    self._listcache[listname] = mlist
             except Errors.MMListError, e:
                 syslog('error', 'error opening list: %s\n%s', listname, e)
                 return None
+            else:
+                self._listcache[listname] = mlist
         return mlist
 
     def _log(self, exc):
@@ -210,7 +196,6 @@ class Runner:
         any necessary resource deallocation.  Its return value is irrelevant.
         """
         Utils.reap(self._kids)
-        self._listcache.clear()
 
     def _dispose(self, mlist, msg, msgdata):
         """Dispose of a single message destined for a mailing list.
