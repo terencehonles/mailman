@@ -39,24 +39,17 @@ SENDMAIL `smrsh' COMPATIBILITY
 
 INTEGRATING SENDMAIL AND MAILMAN
 
-    David Champion has contributed a Sendmail mailer which you can use
-    so that Sendmail will automatically deliver to Mailman mailing
-    lists without manual intervention (i.e. updated an aliases file or
-    running newaliases).  He suggests adding the following to your
-    sendmail.cf file:
+    David Champion has contributed a recipe for more closely
+    integrating Sendmail and Mailman, such that Sendmail will
+    automatically recognize and delivery to new mailing lists as they
+    are created, without having to manually edit alias tables.
 
-	MMailman,	P=/etc/mail/mm-handler, F=rDFMhlqSu, U=mailman:other,
-			S=EnvFromL, R=EnvToL/HdrToL,
-			A=mm-handler $h $u
+    In the contrib directory, you will find four files
 
-    The mm-handler script can be found in the contrib directory; copy
-    this script to /etc/mail and in your Mailman/mm_cfg.py file, add
-    the following:
-
-        MTA = None
-
-    Now Sendmail should automagically deliver to the standard Mailman
-    aliases for mailing lists.
+    mm-handler.readme - an explanation of how to set everything up
+    mm-handler        - the mail delivery agent (MDA)
+    mailman.mc        - a toy configuration file sample
+    virtusertable     - a sample for RFC 2142 address exceptions
 
 
 
