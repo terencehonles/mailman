@@ -570,7 +570,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
         if self.subscribe_policy == 0:
             # No confirmation or approval is necessary
-            self.ApprovedAddMember(emailaddr, fullname, password, digest, lang)
+            self.ApprovedAddMember(emailaddr, password, digest, lang)
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
             # User confirmation required
             cookie = Pending.new(Pending.SUBSCRIPTION,
@@ -851,14 +851,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             op = data[0]
             data = data[1:]
         except ValueError:
-            raise Errors.MMBadConfirmation, 'op-less data %s' % data
+            raise Errors.MMBadConfirmation, 'op-less data %s' % (data,)
         if op == Pending.SUBSCRIPTION:
             try:
-                addr, password, digest, lang = data
+                addr, fullname, password, digest, lang = data
             except ValueError:
-                raise Errors.MMBadConfirmation, 'bad subscr data %s' % data
+                raise Errors.MMBadConfirmation, 'bad subscr data %s' % (data,)
             if self.subscribe_policy == 3: # confirm + approve
-                self.HoldSubscription(addr, password, digest, lang)
+                self.HoldSubscription(addr, fullname, password, digest, lang)
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
                     'subscriptions to %(name)s require administrator approval')
