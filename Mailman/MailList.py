@@ -274,7 +274,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.__lock = LockFile.LockFile(
             os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
             # TBD: is this a good choice of lifetime?
-            lifetime = 60)
+            lifetime = 60,
+            withlogging=1)
 	self._internal_name = name
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
