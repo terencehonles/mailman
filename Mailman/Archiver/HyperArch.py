@@ -256,6 +256,8 @@ class Article(pipermail.Article):
 	d["email_html"] = self.quote(self.email)
 	d["title"] = self.quote(self.subject)
 	d["subject_html"] = self.quote(self.subject)
+        d["subject_url"] = url_quote(self.subject)
+        d["in_reply_to_url"] = url_quote(self.in_reply_to)
 	d["author_html"] = self.quote(self.author)
 	d["email_url"] = url_quote(self.email)
 	d["datestr_html"] = self.quote(self.datestr)
