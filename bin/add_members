@@ -103,7 +103,7 @@ def SendExplanation(mlist, users):
     d = {'listname'    : mlist.real_name,
          'listhost'    : mlist.host_name,
          'listaddr'    : mlist.GetListEmail(),
-         'listinfo_url': mlist.GetAbsoluteScriptURL('listinfo'),
+         'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
          'requestaddr' : mlist.GetRequestEmail(),
          'adminaddr'   : adminaddr,
          'version'     : mm_cfg.VERSION,
