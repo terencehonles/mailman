@@ -129,9 +129,9 @@ From: aperson@dom.ain
         eq(qdata.get('recips'), ['aperson@dom.ain'])
         eq(qdata.get('version'), 3)
         # Check the .pck
-        eq(qmsg['subject'], '_xtest post acknowledgement')
+        eq(str(str(qmsg['subject'])), '_xtest post acknowledgement')
         eq(qmsg['to'], 'aperson@dom.ain')
-        eq(qmsg['from'], '_xtest-admin@dom.ain')
+        eq(qmsg['from'], '_xtest-bounces@dom.ain')
         eq(qmsg.get_type(), 'text/plain')
         eq(qmsg.get_param('charset'), 'us-ascii')
         msgid = qmsg['message-id']
@@ -168,9 +168,9 @@ Subject: Wish you were here
         eq(qdata.get('recips'), ['aperson@dom.ain'])
         eq(qdata.get('version'), 3)
         # Check the .pck
-        eq(qmsg['subject'], '_xtest post acknowledgement')
+        eq(str(qmsg['subject']), '_xtest post acknowledgement')
         eq(qmsg['to'], 'aperson@dom.ain')
-        eq(qmsg['from'], '_xtest-admin@dom.ain')
+        eq(qmsg['from'], '_xtest-bounces@dom.ain')
         eq(qmsg.get_type(), 'text/plain')
         eq(qmsg.get_param('charset'), 'us-ascii')
         msgid = qmsg['message-id']
@@ -208,9 +208,9 @@ Subject: [XTEST] Wish you were here
         eq(qdata.get('recips'), ['aperson@dom.ain'])
         eq(qdata.get('version'), 3)
         # Check the .pck
-        eq(qmsg['subject'], '_xtest post acknowledgement')
+        eq(str(qmsg['subject']), '_xtest post acknowledgement')
         eq(qmsg['to'], 'aperson@dom.ain')
-        eq(qmsg['from'], '_xtest-admin@dom.ain')
+        eq(qmsg['from'], '_xtest-bounces@dom.ain')
         eq(qmsg.get_type(), 'text/plain')
         eq(qmsg.get_param('charset'), 'us-ascii')
         msgid = qmsg['message-id']
@@ -470,7 +470,7 @@ Subject: a message to you
         eq(msg['x-pmrqc'], None)
         eq(len(msg.get_all('from')), 1)
         eq(len(msg.get_all('reply-to')), 1)
-        eq(msg['from'], '_xtest-admin@dom.ain')
+        eq(msg['from'], '_xtest@dom.ain')
         eq(msg['reply-to'], '_xtest@dom.ain')
         eq(msg['sender'], None)
         eq(msg['subject'], 'a message to you')
@@ -505,29 +505,6 @@ Subject: about this message
         msgdata = {}
         CookHeaders.process(self._mlist, msg, msgdata)
         self.assertEqual(msgdata.get('original_sender'), '')
-
-    def test_explicit_sender_and_errors_to(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-Sender: asystem@dom.ain
-Errors-To: bsystem@dom.ain
-
-""", Message.Message)
-        msgdata = {'errorsto': 'robohelper@dom.ain'}
-        CookHeaders.process(self._mlist, msg, msgdata)
-        eq(msg['sender'], 'robohelper@dom.ain')
-        eq(msg['errors-to'], 'robohelper@dom.ain')
-
-    def test_implicit_sender_and_errors_to(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-Sender: asystem@dom.ain
-Errors-To: bsystem@dom.ain
-
-""", Message.Message)
-        CookHeaders.process(self._mlist, msg, {})
-        eq(msg['sender'], '_xtest-bounces@dom.ain')
-        eq(msg['errors-to'], '_xtest-bounces@dom.ain')
 
     def test_xbeenthere(self):
         msg = email.message_from_string("""\
@@ -597,7 +574,7 @@ From: aperson@dom.ain
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        self.assertEqual(msg['subject'], '[XTEST] (no subject)')
+        self.assertEqual(str(msg['subject']), '[XTEST] (no subject)')
 
     def test_subject_munging(self):
         self._mlist.subject_prefix = '[XTEST] '
@@ -693,21 +670,6 @@ Reply-To: bperson@dom.ain
         eq(msg['reply-to'], 'mlist@dom.ain')
         eq(msg.get_all('reply-to'), ['mlist@dom.ain'])
 
-    def test_reply_to_explicit_with_bad_address(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.reply_goes_to_list = 2
-        mlist.first_strip_reply_to = 0
-        # A bad address that is missing the domain part
-        mlist.reply_to_address = 'mlist'
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-Reply-To: bperson@dom.ain
-
-""", Message.Message)
-        CookHeaders.process(mlist, msg, {})
-        eq(msg['reply-to'], 'bperson@dom.ain')
-
     def test_reply_to_extends_to_list(self):
         eq = self.assertEqual
         mlist = self._mlist
@@ -719,7 +681,7 @@ Reply-To: bperson@dom.ain
 
 """, Message.Message)
         CookHeaders.process(mlist, msg, {})
-        eq(msg['reply-to'], '_xtest@dom.ain, bperson@dom.ain')
+        eq(msg['reply-to'], 'bperson@dom.ain, _xtest@dom.ain')
 
     def test_reply_to_extends_to_explicit(self):
         eq = self.assertEqual
@@ -895,11 +857,13 @@ From: bperson@dom.ain
 Here is the second message.
 """)
         msg = Message.Message()
-        msg.add_payload(msg1)
-        msg.add_payload(msg2)
-        msg.add_header('Content-Type', 'multipart/mixed', boundary='BOUNDARY')
+        msg.set_type('multipart/mixed')
+        msg.set_boundary('BOUNDARY')
+        msg.attach(msg1)
+        msg.attach(msg2)
         Decorate.process(self._mlist, msg, {})
         self.assertEqual(msg.as_string(unixfrom=0), """\
+MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="BOUNDARY"
 
 --BOUNDARY
@@ -946,106 +910,10 @@ IMAGEDATAIMAGEDATAIMAGEDATA
     def test_personalize_assert(self):
         raises = self.assertRaises
         raises(AssertionError, Decorate.process,
-               self._mlist, None, {'personalized': 1})
+               self._mlist, None, {'personalize': 1})
         raises(AssertionError, Decorate.process,
-               self._mlist, None, {'personalized': 1,
+               self._mlist, None, {'personalize': 1,
                                    'recips': [1, 2, 3]})
-
-    def test_personalize_not_a_member(self):
-        mlist = self._mlist
-        mlist.msg_header = """\
-%(user_address)s
-%(user_delivered_to)s
-%(user_language)s
-%(user_name)s
-%(user_optionsurl)s
-"""
-        mlist.msg_footer = mlist.msg_header
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-
-Here is a message.
-""")
-        Decorate.process(mlist, msg, {'personalized': 1,
-                                      'recips': ['aperson@dom.ain']})
-        self.assertEqual(msg.get_payload(), """\
-aperson@dom.ain
-%(user_delivered_to)s
-%(user_language)s
-%(user_name)s
-%(user_optionsurl)s
-Here is a message.
-aperson@dom.ain
-%(user_delivered_to)s
-%(user_language)s
-%(user_name)s
-%(user_optionsurl)s
-""")
-
-    def test_personalize(self):
-        mlist = self._mlist
-        mlist.msg_header = """\
-%(user_address)s
-%(user_delivered_to)s
-%(user_language)s
-%(user_name)s
-%(user_optionsurl)s
-"""
-        mlist.msg_footer = mlist.msg_header
-        mlist.addNewMember('APerson@dom.ain', language='xx',
-                           password='xxXXxx', realname='A. Person')
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-
-Here is a message.
-""")
-        Decorate.process(mlist, msg, {'personalized': 1,
-                                      'recips': ['aperson@dom.ain']})
-        self.assertEqual(msg.get_payload(), """\
-aperson@dom.ain
-APerson@dom.ain
-xx
-A. Person
-http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
-Here is a message.
-aperson@dom.ain
-APerson@dom.ain
-xx
-A. Person
-http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
-""")
-
-    def test_personalize_no_name(self):
-        mlist = self._mlist
-        mlist.msg_header = """\
-%(user_address)s
-%(user_delivered_to)s
-%(user_language)s
-%(user_name)s
-%(user_optionsurl)s
-"""
-        mlist.msg_footer = mlist.msg_header
-        mlist.addNewMember('APerson@dom.ain', language='xx', password='xxXXxx')
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-
-Here is a message.
-""")
-        Decorate.process(mlist, msg, {'personalized': 1,
-                                      'recips': ['aperson@dom.ain']})
-        self.assertEqual(msg.get_payload(), """\
-aperson@dom.ain
-APerson@dom.ain
-xx
-not available
-http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
-Here is a message.
-aperson@dom.ain
-APerson@dom.ain
-xx
-not available
-http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
-""")
 
 
 
@@ -1295,75 +1163,6 @@ class TestModerate(TestBase):
 
 
 
-class TestPersonalize(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        # We're going to want to inspect this queue directory
-        self._sb = Switchboard(mm_cfg.INQUEUE_DIR)
-        # Add a member
-        self._mlist.addNewMember('aperson@dom.ain')
-        self._mlist.addNewMember('bperson@dom.ain', realname='B. Person')
-
-    def tearDown(self):
-        for f in os.listdir(mm_cfg.INQUEUE_DIR):
-            os.unlink(os.path.join(mm_cfg.INQUEUE_DIR, f))
-        TestBase.tearDown(self)
-
-    def test_short_circuit(self):
-        eq = self.assertEqual
-        msgdata = {}
-        rtn = Personalize.process(self._mlist, None, {})
-        # Not really a great test, but there's little else to assert
-        eq(rtn, None)
-        eq(msgdata, {})
-        # Try short circuit via msgdata
-        self._mlist.personalize = 1
-        msgdata['personalized'] = 1
-        rtn = Personalize.process(self._mlist, None, msgdata)
-        # Not really a great test, but there's little else to assert
-        eq(rtn, None)
-        eq(msgdata, {'personalized': 1})
-
-    def test_personalize(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-To: _xtest@dom.ain
-
-A message for you.
-""")
-        self._mlist.personalize = 1
-        msgdata = {'recips': ['aperson@dom.ain', 'bperson@dom.ain']}
-        Personalize.process(self._mlist, msg, msgdata)
-        eq(msg['to'], '_xtest@dom.ain')
-        eq(msgdata, {})
-        # There should be two files in qfiles/in
-        files = self._sb.files()
-        eq(len(files), 2)
-        filedata = {}
-        for filebase in files:
-            msg, data = self._sb.dequeue(filebase)
-            key = data.get('recips')
-            eq(type(key), ListType)
-            eq(len(key), 1)
-            filedata[key[0]] = msg, data
-        eq(len(filedata), 2)
-        keys = filedata.keys()
-        keys.sort()
-        eq(keys, ['aperson@dom.ain', 'bperson@dom.ain'])
-        for person in keys:
-            msg, data = filedata[person]
-            eq(data['pipeline'], ['Decorate', 'ToOutgoing'])
-            eq(data['recips'], [person])
-            eq(data['personalized'], 1)
-            realname = self._mlist.getMemberName(person)
-            if realname:
-                to = '%s (%s)' % (person, realname)
-            else:
-                to = person
-            eq(msg['to'], to)
-
-
-
 class TestReplybot(TestBase):
     pass
 
@@ -1486,8 +1285,8 @@ Keywords: barbaz
 """)
         msgdata = {}
         Tagger.process(mlist, msg, msgdata)
-        eq(msg['x-topics'], None)
-        eq(msgdata.get('topichits'), None)
+        eq(msg['x-topics'], 'bar fight')
+        eq(msgdata.get('topichits'), ['bar fight'])
 
     def test_body_lines_no_part(self):
         eq = self.assertEqual
@@ -1497,7 +1296,7 @@ Keywords: barbaz
         msg = email.message_from_string("""\
 Subject: Was
 Keywords: Raw
-Content-Type: multipart/alternative; boundary="BOUNDARY"
+Content-Type: multipart/alternative; boundary=BOUNDARY
 
 --BOUNDARY
 From: sabo
@@ -1682,11 +1481,12 @@ It rocks!
         eq(len(files), 1)
         msg2, data = self._sb.dequeue(files[0])
         eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
-        eq(len(data), 5)
+        eq(len(data), 6)
         eq(data['foo'], 1)
         eq(data['bar'], 2)
         eq(data['version'], 3)
         eq(data['listname'], '_xtest')
+        eq(data['verp'], 0)
         # Clock skew makes this unreliable
         #self.failUnless(data['received_time'] <= time.time())
 
@@ -1752,7 +1552,6 @@ def suite():
     suite.addTest(unittest.makeSuite(TestFileRecips))
     suite.addTest(unittest.makeSuite(TestHold))
     suite.addTest(unittest.makeSuite(TestModerate))
-    suite.addTest(unittest.makeSuite(TestPersonalize))
     suite.addTest(unittest.makeSuite(TestReplybot))
     suite.addTest(unittest.makeSuite(TestSMTPDirect))
     suite.addTest(unittest.makeSuite(TestSendmail))

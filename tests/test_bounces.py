@@ -107,7 +107,11 @@ class BounceTest(unittest.TestCase):
         from Mailman.Bouncers import Caiwireless
         # BAW: this is a mostly bogus test; I lost the samples. :(
         msg = email.message_from_string("""\
-Content-Type: multipart/report
+Content-Type: multipart/report; boundary=BOUNDARY
+
+--BOUNDARY
+
+--BOUNDARY--
 
 """)
         self.assertEqual(None, Caiwireless.process(msg))
@@ -116,7 +120,11 @@ Content-Type: multipart/report
         from Mailman.Bouncers import Microsoft
         # BAW: similarly as above, I lost the samples. :(
         msg = email.message_from_string("""\
-Content-Type: multipart/report
+Content-Type: multipart/report; boundary=BOUNDARY
+
+--BOUNDARY
+
+--BOUNDARY--
 
 """)
         self.assertEqual(None, Microsoft.process(msg))
