@@ -424,6 +424,7 @@ def main():
                            ('conceal',     mm_cfg.ConcealSubscription),
                            ('remind',      mm_cfg.SuppressPasswordReminder),
                            ('rcvtopic',    mm_cfg.ReceiveNonmatchingTopics),
+                           ('nodupes',     mm_cfg.DontReceiveDuplicates),
                            ):
             try:
                 newval = int(cgidata.getvalue(item))
@@ -514,9 +515,18 @@ def main():
                     global_remind = newval
                     break
 
-        if global_enable is not None or global_remind is not None:
+        global_nodupes = None
+        if cgidata.getvalue('nodupes-globally'):
+            for flag, newval in newvals:
+                if flag == mm_cfg.DontReceiveDuplicates:
+                    global_nodupes = newval
+                    break
+
+        if global_enable is not None or global_remind is not None \
+               or global_nodupes is not None:
             for gmlist in lists_of_member(mlist, user):
-                global_options(gmlist, user, global_enable, global_remind)
+                global_options(gmlist, user,
+                               global_enable, global_remind, global_nodupes)
 
         # Now print the results
         if cantdigest:
@@ -591,6 +601,10 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
         mlist.FormatOptionButton(mm_cfg.ConcealSubscription, 0, user))
     replacements['<mm-hide-subscription-button>'] = mlist.FormatOptionButton(
         mm_cfg.ConcealSubscription, 1, user)
+    replacements['<mm-dont-receive-duplicates-button>'] = (
+        mlist.FormatOptionButton(mm_cfg.DontReceiveDuplicates, 1, user))
+    replacements['<mm-receive-duplicates-button>'] = (
+        mlist.FormatOptionButton(mm_cfg.DontReceiveDuplicates, 0, user))
     replacements['<mm-unsubscribe-button>'] = (
         mlist.FormatButton('unsub', _('Unsubscribe')) + '<br>' +
         CheckBox('unsubconfirm', 1, checked=0).Format() +
@@ -620,6 +634,8 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
         CheckBox('deliver-globally', 1, checked=0).Format())
     replacements['<mm-global-remind-button>'] = (
         CheckBox('remind-globally', 1, checked=0).Format())
+    replacements['<mm-global-nodupes-button>'] = (
+        CheckBox('nodupes-globally', 1, checked=0).Format())
 
     days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1))
     if days > 1:
@@ -806,7 +822,7 @@ def change_password(mlist, user, newpw, confirmpw):
 
 
 
-def global_options(mlist, user, global_enable, global_remind):
+def global_options(mlist, user, global_enable, global_remind, global_nodupes):
     def sigterm_handler(signum, frame, mlist=mlist):
         # Make sure the list gets unlocked...
         mlist.Unlock()
@@ -827,6 +843,10 @@ def global_options(mlist, user, global_enable, global_remind):
         if global_remind is not None:
             mlist.setMemberOption(user, mm_cfg.SuppressPasswordReminder,
                                   global_remind)
+
+        if global_nodupes is not None:
+            mlist.setMemberOption(user, mm_cfg.DontReceiveDuplicates,
+                                  global_nodupes)
 
         mlist.Save()
     finally:
