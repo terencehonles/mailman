@@ -20,6 +20,7 @@
 import random
 import time
 import traceback
+from cStringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -27,7 +28,6 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import i18n
 
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman.Queue.Switchboard import Switchboard
 from Mailman.Logging.Syslog import syslog
 

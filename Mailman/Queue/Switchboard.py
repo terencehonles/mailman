@@ -18,7 +18,7 @@
 """
 
 # enqueue() and dequeue() are not symmetric.  enqueue() takes a Message
-# object.  dequeue() returns a mimelib.Message object tree.
+# object.  dequeue() returns a email.Message object tree.
 #
 # Message metadata is represented internally as a Python dictionary.  Keys and
 # values must be strings.  When written to a queue directory, the metadata is
@@ -40,7 +40,7 @@ import marshal
 import errno
 import cPickle
 
-from mimelib.Parser import Parser
+import email
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -153,7 +153,7 @@ class _Switchboard:
                 msgfp = None
                 try:
                     msgfp = open(msgfile)
-                    msg = Parser(_class=Message.Message).parse(msgfp)
+                    msg = email.message_from_file(msgfp, Message.Message)
                     os.unlink(msgfile)
                 except EnvironmentError, e:
                     if e.errno <> errno.ENOENT: raise

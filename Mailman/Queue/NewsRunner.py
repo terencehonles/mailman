@@ -19,9 +19,10 @@
 import re
 import socket
 import nntplib
+from cStringIO import StringIO
 
-from mimelib.MsgReader import MsgReader
-from mimelib.address import getaddresses
+import email
+from email.Utils import getaddresses
 
 COMMASPACE = ', '
 
@@ -29,7 +30,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
+
 
 # Matches our Mailman crafted Message-IDs.  See Utils.unique_message_id()
 mcre = re.compile(r"""
@@ -124,13 +125,7 @@ def prepare_message(mlist, msg, msgdata):
     # Lines: is useful
     if msg['Lines'] is None:
         # BAW: is there a better way?
-        reader = MsgReader(msg)
-        count = 0
-        while 1:
-            line = reader.readline()
-            if not line:
-                break
-            count += 1
+        count = len(email.Iterators.body_line_iterator(msg))
         msg['Lines'] = str(count)
     #
     # Get rid of these lines

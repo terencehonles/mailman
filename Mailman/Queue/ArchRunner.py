@@ -17,8 +17,7 @@
 """Outgoing queue runner."""
 
 import time
-
-from mimelib.date import parsedate_tz, mktime_tz, formatdate
+from email.Utils import parsedate_tz, mktime_tz, formatdate
 
 from Mailman import mm_cfg
 from Mailman import LockFile

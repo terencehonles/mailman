@@ -76,13 +76,13 @@
 
 import sys
 import os
+from cStringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import LockFile
 from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
 
 
 

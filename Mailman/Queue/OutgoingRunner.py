@@ -20,7 +20,7 @@ import sys
 import os
 import time
 
-from mimelib.Parser import Parser
+import email
 
 from Mailman import mm_cfg
 from Mailman import Message
@@ -67,8 +67,7 @@ class OutgoingRunner(Runner):
             # HandleBouncingAddress().  I'm not sure this is necessary, or the
             # right thing to do.
             pcnt = len(e.permfailures)
-            p = Parser(Message.Message)
-            copy = p.parsestr(str(msg))
+            copy = email.message_from_string(str(msg))
             self._permfailures.setdefault(mlist, []).extend(
                 zip(e.permfailures, [copy] * pcnt))
             # Temporary failures
