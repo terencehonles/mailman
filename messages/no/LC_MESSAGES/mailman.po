@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Tue Nov 19 01:53:14 2002\n"
-"PO-Revision-Date: 2002-10-29 23:30+0100\n"
+"PO-Revision-Date: 2002-11-19 10:12+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -434,9 +434,8 @@ msgid "Logout"
 msgstr "Logg ut"
 
 #: Mailman/Cgi/admin.py:468
-#, fuzzy
 msgid "Emergency moderation of all list traffic is enabled"
-msgstr "Øyeblikkelig tilbakeholding av meldinger til listen"
+msgstr "Øyeblikkelig tilbakeholding av meldinger til listen er aktivert"
 
 #: Mailman/Cgi/admin.py:479
 msgid ""
@@ -1268,16 +1267,15 @@ msgid ""
 "been\n"
 "                unsubscribed, e.g. by the list administrator?"
 msgstr ""
+"Adressen som ba om å bli meldt ut av listen er ikke medlem av epostlisten.\n"
+"Kanskje er du allerede meldt ut, f.eks. av listeadministratoren?"
 
 #: Mailman/Cgi/confirm.py:138
-#, fuzzy
 msgid ""
 "The address requesting to be changed has\n"
 "                    been subsequently unsubscribed.  This request has been\n"
 "                    cancelled."
-msgstr ""
-"Addressen som skulle endres er ikke lenger medlem av epostlisten. "
-"Forespørsel om å endre epostadresse er avbrutt."
+msgstr "Addressen som skulle endres er ikke lenger medlem av epostlisten. Forespørselen ble derfor er avbrutt."
 
 #: Mailman/Cgi/confirm.py:157
 msgid "System error, bad content: %(content)s"
@@ -5056,9 +5054,8 @@ msgid "Additional settings"
 msgstr "Flere innstillinger"
 
 #: Mailman/Gui/General.py:326
-#, fuzzy
 msgid "Emergency moderation of all list traffic."
-msgstr "Øyeblikkelig tilbakeholding av meldinger til listen"
+msgstr "Øyeblikkelig tilbakeholding av meldinger til listen."
 
 #: Mailman/Gui/General.py:327
 msgid ""
@@ -5068,6 +5065,11 @@ msgid ""
 "off\n"
 "             period."
 msgstr ""
+"Når dette valget er aktivert, vil all epost til listen bli moderert.\n"
+"Dette valget kan være nyttig når epostlisten din f.eks. har en såkalt \"flamewar\",\n"
+"altså en \"krig\" der medlemmer bare kjefter og skjeller ut hverandre.\n"
+"En \"nød-moderasjon\" kan da hjelpe deg å plukke vekk usaklige meldinger til listen,\n"
+"og på den måten roe ned den opphetede diskusjonen."
 
 #: Mailman/Gui/General.py:339
 msgid ""
@@ -5408,7 +5410,7 @@ msgstr "Kan medlemmer velge normal-modus?"
 
 #: Mailman/Gui/NonDigest.py:52
 msgid "Full Personalization"
-msgstr ""
+msgstr "Full personliggj&oslash;ring"
 
 #: Mailman/Gui/NonDigest.py:54
 msgid ""
@@ -5427,7 +5429,6 @@ msgstr ""
 "vurdering med hensyn p&aring; ytelse."
 
 #: Mailman/Gui/NonDigest.py:60
-#, fuzzy
 msgid ""
 "Normally, Mailman sends the regular delivery messages to\n"
 "                 the mail server in batches.  This is much more efficent\n"
@@ -5485,45 +5486,31 @@ msgid ""
 "                 "
 msgstr ""
 "Vanligvis blir meldinger til listen sendt til mailserveren gruppevis.\n"
-"Denne metoden er mye mer effektiv og l&oslash;nnsom, fordi den reduserer "
-"trafikken\n"
+"Denne metoden er mye mer effektiv og l&oslash;nnsom, fordi den reduserer trafikken\n"
 "mellom Mailman og mailserveren.\n"
-"<p>For noen epostlister kan det imidlertid v&aelig;re &oslash;nskelig "
-"&aring; gj&oslash;re meldingene som\n"
-"distribueres til medlemmene litt mer personlig. Da vil Mailman v&aelig;re "
-"n&oslash;dt til\n"
-"&aring; lage en egen melding for hvert medlem, og det vil f&oslash;re til "
-"&oslash;kt trafikk og\n"
-"last p&aring; serveren. Dersom du tar i bruk denne muligheten, b&oslash;r du "
-"f&oslash;rst ha tenkt\n"
-"over at dette kan f&aring; konsekvenser for serveren og ytelsen p&aring; "
-"systemet, og om\n"
-"den eventuelle reduksjonen i ytelsen er verdt det. Kanskje kan det du "
-"&oslash;nsker &aring;\n"
-"oppn&aring; gj&oslash;res p&aring; en annen m&aring;te. Det kan ogs&aring; "
-"v&aelig;re lurt &aring; overv&aring;ke lasten p&aring;\n"
+"<p>For noen epostlister kan det imidlertid v&aelig;re &oslash;nskelig &aring; gj&oslash;re meldingene som\n"
+"distribueres til medlemmene litt mer personlig. Da vil Mailman v&aelig;re n&oslash;dt til\n"
+"&aring; lage en egen melding for hvert medlem, og det vil f&oslash;re til &oslash;kt trafikk og\n"
+"last p&aring; serveren. Dersom du tar i bruk denne muligheten, b&oslash;r du f&oslash;rst ha tenkt\n"
+"over at dette kan f&aring; konsekvenser for serveren og ytelsen p&aring; systemet, og om\n"
+"den eventuelle reduksjonen i ytelsen er verdt det. Kanskje kan det du &oslash;nsker &aring;\n"
+"oppn&aring; gj&oslash;res p&aring; en annen m&aring;te. Det kan ogs&aring; v&aelig;re lurt &aring; overv&aring;ke lasten p&aring;\n"
 "serveren dersom denne muligheten tas i bruk.\n"
-"<p>N&aring;r muligheten for personifisering av listen tas i bruk, skjer det "
-"to ting.\n"
-"Det ene er at <code>To:</code> feltet i meldingshodet til eposten som skal\n"
-"distribueres, modifiseres slik at eposten adresseres til det enkelte "
-"medlem.\n"
-"Det vil da se ut som om meldingen ble sendt rett til medlemmet, og ikke til\n"
-"listen.\n"
-"<p>Det andre er at noen flere variabler kan benyttes i\n"
+"<p>Velg <em>Nei</em> for &aring; sende ut epost til mange medlemmer om gangen, og ikke gj&oslash;re meldingene personlig.\n"
+"Velg <em>Ja</em> for &aring; gj&oslash;re meldingene personlige og tillate ytterligere variabler i topptekst og bunntekst (se nedenfor).\n"
+"I tillegg, ved &aring; velge <em>Full personliggj&oslash;ring</em>, vil <code>To:</code> feltet i meldingshodet modifiseres\n"
+"slik at det inneholder medlemmets adresse istedenfor listens adresse.\n"
+"<p>N&aring;r personliggj&oslash;ring av meldinger aktiveres, kan noen flere variabler benyttes i\n"
 "<a href=\"?VARHELP=nondigest/msg_header\">topptekst</a> og i\n"
 "<a href=\"?VARHELP=nondigest/msg_footer\">bunntekst</a>, nemlig\n"
 "f&oslash;lgende variabler:\n"
 "\n"
 "<ul>\n"
-"  <li><b>user_address</b> - medlemmets epostadresse, med sm&aring; "
-"bokstaver</li>\n"
-"  <li><b>user_delivered_to</b> - medlemmets epostadresse, slik den ble "
-"p&aring;meldt listen.</li>\n"
+"  <li><b>user_address</b> - medlemmets epostadresse, med sm&aring; bokstaver</li>\n"
+"  <li><b>user_delivered_to</b> - medlemmets epostadresse, slik den ble p&aring;meldt listen.</li>\n"
 "  <li><b>user_password</b> - medlemmets passord</li>\n"
 "  <li><b>user_name</b> - Medlemmets fulle navn</li>\n"
-"  <li><b>user_optionsurl</b> - URL til websiden med personlige innstillinger "
-"for medlemmet.\n"
+"  <li><b>user_optionsurl</b> - URL til websiden med personlige innstillinger for medlemmet.\n"
 "</ul>\n"
 " "
 
@@ -5781,13 +5768,10 @@ msgstr ""
 "bli beskyttet av medlemmenes eller adminstratorens passord."
 
 #: Mailman/Gui/Privacy.py:141
-#, fuzzy
 msgid ""
 "Show member addresses so they're not directly recognizable\n"
 "             as email addresses?"
-msgstr ""
-"Vise medlemmers epostadresse slik at den ikke umiddelbart ser ut som en "
-"epostadresse?"
+msgstr "Vise medlemmers epostadresser slik at de ikke umiddelbart ser ut som en epostadresse?"
 
 #: Mailman/Gui/Privacy.py:143
 msgid ""
@@ -6871,14 +6855,12 @@ msgstr ""
 "Dersom du lar feltet st&aring; tomt, vil du bli spurt om epostadressen din"
 
 #: Mailman/HTMLFormatter.py:274
-#, fuzzy
 msgid ""
 "(<i>%(which)s is only available to the list\n"
 "                members.</i>)"
 msgstr "(<i>%(which)s er kun tilgjengelig for medlemmer av listen.</i>)"
 
 #: Mailman/HTMLFormatter.py:278
-#, fuzzy
 msgid ""
 "(<i>%(which)s is only available to the list\n"
 "            administrator.</i>)"
@@ -6909,9 +6891,8 @@ msgid "Admin address:"
 msgstr "Administratoradresse:"
 
 #: Mailman/HTMLFormatter.py:302
-#, fuzzy
 msgid "The subscribers list"
-msgstr "liste over medlemmer"
+msgstr "Listen over medlemmer"
 
 #: Mailman/HTMLFormatter.py:304
 msgid " <p>Enter your "
@@ -6936,9 +6917,8 @@ msgstr ""
 "i en epost."
 
 #: Mailman/HTMLFormatter.py:391
-#, fuzzy
 msgid "The current archive"
-msgstr "n&aring;v&aelig;rende arkiv"
+msgstr "Arkivet"
 
 #: Mailman/Handlers/Acknowledge.py:59
 msgid "%(realname)s post acknowledgement"
@@ -7212,11 +7192,11 @@ msgstr ""
 
 #: Mailman/Handlers/Scrubber.py:232
 msgid "Skipped content of type %(partctype)s"
-msgstr ""
+msgstr "Hopper over innhold av typen %(partctype)s"
 
 #: Mailman/Handlers/Scrubber.py:249
 msgid "-------------- next part --------------\n"
-msgstr ""
+msgstr "-------------- neste del --------------\n"
 
 #: Mailman/Handlers/ToDigest.py:141
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
@@ -7727,7 +7707,6 @@ msgid "Nothing to do."
 msgstr "Ingenting å gjøre."
 
 #: bin/arch:19
-#, fuzzy
 msgid ""
 "Rebuild a list's archive.\n"
 "\n"
@@ -7770,10 +7749,8 @@ msgid ""
 msgstr ""
 "Bygger epostlistens arkiv på nytt.\n"
 "\n"
-"Bruk denne kommandoen for å bygge en epostlistes arkiv på nytt. Det kan "
-"være\n"
-"du får bruk for dette hvis du manuelt redigerer noen epost i et arkiv, "
-"eller\n"
+"Bruk denne kommandoen for å bygge en epostlistes arkiv på nytt. Det kan være\n"
+"du får bruk for dette hvis du manuelt redigerer noen epost i et arkiv, eller\n"
 "fjerner noen epost fra arkivet.\n"
 "\n"
 "Brukes slik: %(PROGRAM)s [valg] <listenavn> [<mbox-fil>]\n"
@@ -7783,10 +7760,12 @@ msgstr ""
 "    -h / --help\n"
 "        Viser denne hjelpeteksten.\n"
 "\n"
+"    -q / --quiet\n"
+"        Viser færre meldinger på skjermen under kjøring.\n"
+"\n"
 "    -s N\n"
 "    --start=N\n"
-"        Starter indekseringen på artikkel N, der artikkel 0 er første "
-"melding\n"
+"        Starter indekseringen på artikkel N, der artikkel 0 er første melding\n"
 "        i mbox-filen.\n"
 "        0 er standardverdi.\n"
 "\n"
@@ -7803,8 +7782,7 @@ msgstr ""
 "\n"
 "%% bin/arch minliste archives/private/minliste.mbox/minliste.mbox\n"
 "\n"
-"<mbox-fil> er valgfri. Angis den ikke, prøver kommandoen å gjette riktig "
-"navn.\n"
+"<mbox-fil> er valgfri. Angis den ikke, prøver kommandoen å gjette riktig navn.\n"
 
 #: bin/arch:115
 msgid "listname is required"
@@ -8101,14 +8079,12 @@ msgid "directory permissions must be %(octperms)s: %(path)s"
 msgstr "rettighetene på katalogen må være %(octperms)s: %(path)s"
 
 #: bin/check_perms:129
-#, fuzzy
 msgid "source perms must be %(octperms)s: %(path)s"
-msgstr "rettighetene på katalogen må være %(octperms)s: %(path)s"
+msgstr "rettighetene på kilden må være %(octperms)s: %(path)s"
 
 #: bin/check_perms:140
-#, fuzzy
 msgid "article db files must be %(octperms)s: %(path)s"
-msgstr "rettighetene på katalogen må være %(octperms)s: %(path)s"
+msgstr "rettighetene på artikkeldatabasefilene må være %(octperms)s: %(path)s"
 
 #: bin/check_perms:152
 msgid "checking mode for %(prefix)s"
@@ -8951,7 +8927,6 @@ msgid "List: %(listname)s, \tOwners: %(owners)s"
 msgstr "Liste: %(listname)s, \tEiere: %(owners)s"
 
 #: bin/list_lists:19
-#, fuzzy
 msgid ""
 "List all mailing lists.\n"
 "\n"
@@ -8989,8 +8964,10 @@ msgstr ""
 "        Viser bare epostlister på det angitte domenet. Dette valget kan kun\n"
 "        benyttes dersom VIRTUAL_HOST_OVERVIEW variabelen er satt.\n"
 "\n"
-"    --help\n"
-"    -h\n"
+"    -b / --bare\n"
+"        Viser kun listenavnet, uten beskrivelse.\n"
+"\n"
+"    -h / --help\n"
 "        Viser denne hjelpeteksten.\n"
 "\n"
 
