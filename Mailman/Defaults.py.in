@@ -44,17 +44,15 @@ DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
 # 1 - archive to mbox to use an external archiving mechanism only
 # 2 - archive to both mbox and builtin mailman html archiving -
 #     use this to make both external archiving mechanism work and
-#     mailman's builtin html archiving.  this could be useful if you
-#     have lists that use an external archiving mechanism, but want to
-#     integrate those archives with mailman's.
-#
+#     mailman's builtin html archiving.  the flat mail file can be
+#     useful for searching, external archivers, etc.
 ARCHIVE_TO_MBOX = 2
 
 # 0 - yearly
-# 1 - month
-# 2 - quarter
-# 3 - week
-# 4 - day
+# 1 - monthly
+# 2 - quarterly
+# 3 - weekly
+# 4 - daily
 DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
 
 
