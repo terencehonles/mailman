@@ -35,6 +35,14 @@ with a capital leading <em>M</em> and a lowercase second <em>m</em>.
 It is incorrect to spell it "MailMan" (i.e. you should not use
 StudlyCaps).
 
+<h3>Current Version</h3>
+
+<p>Version
+(<!-VERSION--->2.0<!-VERSION--->,
+released on
+<!-DATE--->Nov 21 2000<!-DATE--->)
+is the current stable GNU release.
+
 <h3>Acknowledgements</h3>
 
 <p>Mailman is brought to you by the <em>Mailman Cabal</em>, currently
