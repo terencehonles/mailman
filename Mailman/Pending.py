@@ -41,17 +41,17 @@ UNSUBSCRIPTION = 'U'
 CHANGE_OF_ADDRESS = 'C'
 HELD_MESSAGE = 'H'
 
+_ALLKEYS = [(x,) for x in (SUBSCRIPTION, UNSUBSCRIPTION,
+                           CHANGE_OF_ADDRESS, HELD_MESSAGE,
+                           )]
+
 
 
 def new(*content):
     """Create a new entry in the pending database, returning cookie for it."""
     # It's a programming error if this assertion fails!  We do it this way so
     # the assert test won't fail if the sequence is empty.
-    assert content[:1] in ((SUBSCRIPTION,),
-                           (UNSUBSCRIPTION,),
-                           (CHANGE_OF_ADDRESS,),
-                           (HELD_MESSAGE,),
-                           )
+    assert content[:1] in _ALLKEYS
     # Acquire the pending database lock, letting TimeOutError percolate up.
     lock = LockFile.LockFile(LOCKFILE)
     lock.lock(timeout=30)
