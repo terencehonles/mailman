@@ -26,11 +26,17 @@ whose owner(s) to send mail to.
 
 
 import sys
+import mimetools
+
 import paths
+
+from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Message
 from Mailman.Handlers import HandlerAPI
+from Mailman.Bouncers import BouncerAPI
 from Mailman.Logging.Utils import LogStdErr
+from Mailman.pythonlib.StringIO import StringIO
 
 LogStdErr('error', 'post')
 
@@ -41,14 +47,23 @@ def main():
     # fail, and should send back an error message when it does.
     mlist = MailList.MailList(sys.argv[1])
     try:
-        msg = Message.Message(sys.stdin)
-        if not mlist.bounce_processing or not mlist.ScanMessage(msg):
-            msg.recips = mlist.owner
-            HandlerAPI.DeliverToUser(mlist, msg)
+        s = StringIO(sys.stdin.read())
+        msg = mimetools.Message(s)
+        if mlist.bounce_processing:
+            if BouncerAPI.ScanMessages(mlist, msg):
+                return
+        # okay, no bounces were detected, but we have to convert this
+        # mimetools.Message thingie to one of our OutgoingMessages.
+        msg = Message.OutgoingMessage(s.getvalue())
+        msg.recips = mlist.owner[:]
+        # for debugging purposes
+        msg.recips.append(mm_cfg.MAILMAN_OWNER)
+        HandlerAPI.DeliverToUser(mlist, msg)
     finally:
         mlist.Save()
         mlist.Unlock()
 
 
+
 if __name__ == '__main__':
     main()
