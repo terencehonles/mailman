@@ -47,6 +47,8 @@ def clear():
 def create(mlist, cgi=0, nolock=0):
     if mlist is None:
         return
+    listname = mlist.internal_name()
+    fieldsz = len(listname) + len('-unsubscribe')
     if cgi:
         # If a list is being created via the CGI, the best we can do is send
         # an email message to mailman-owner requesting that the proper aliases
