@@ -172,7 +172,7 @@ def process(mlist, msg, msgdata):
     # side of the world should never be implicitly destined
     if mlist.require_explicit_destination and \
        not mlist.HasExplicitDest(msg) and \
-       not getattr(msg, 'fromusenet', 0):
+       not msgdata.get('fromusenet'):
         # then
         hold_for_approval(mlist, msg, msgdata, ImplicitDestination)
         # no return
@@ -233,7 +233,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
     # We may want to send a notification to the original sender too
-    fromusenet = getattr(msg, 'fromusenet', 0)
+    fromusenet = msgdata.get('fromusenet')
     if not fromusenet and not mlist.dont_respond_to_post_requests:
         subject = 'Your message to %s awaits moderator approval' % listname
         text = Utils.maketext('postheld.txt', d)
