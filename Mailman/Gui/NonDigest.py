@@ -30,23 +30,67 @@ class NonDigest:
     def GetConfigInfo(self, mlist):
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
-        return [
+        info = [
             _("Policies concerning immediately delivered list traffic."),
 
             ('nondigestable', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
              _("""Can subscribers choose to receive mail immediately, rather
              than in batched digests?""")),
 
-            ('msg_header', mm_cfg.Text, (4, WIDTH), 0,
+            ('msg_header', mm_cfg.Text, (10, WIDTH), 0,
              _('Header added to mail sent to regular list members'),
              _('''Text prepended to the top of every immediately-delivery
              message. ''') + Utils.maketext('headfoot.html',
                                             mlist=mlist, raw=1)),
             
-            ('msg_footer', mm_cfg.Text, (4, WIDTH), 0,
+            ('msg_footer', mm_cfg.Text, (10, WIDTH), 0,
              _('Footer added to mail sent to regular list members'),
              _('''Text appended to the bottom of every immediately-delivery
              message. ''') + Utils.maketext('headfoot.html',
                                             mlist=mlist, raw=1)),
             ]
 
+        if mm_cfg.OWNERS_CAN_ENABLE_PERSONALIZATION:
+            info.extend([
+                ('personalize', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
+
+                 _('''Should Mailman personalize each non-digest delivery?
+                 This is often useful for announce-only lists, but <a
+                 href="?VARHELP=nondigest/personalize">read the details</a>
+                 section for a discussion of important performance
+                 issues.'''),
+
+                 _("""Normally, Mailman sends the regular delivery messages to
+                 the mail server in batches.  This is much more efficent
+                 because it reduces the amount of traffic between Mailman and
+                 the mail server.
+
+                 <p>However, some lists can benefit from a more personalized
+                 approach.  In this case, Mailman crafts a new message for
+                 each member on the regular delivery list.  Turning this on
+                 adds a few more expansion variables that can be included in
+                 the <a href="?VARHELP=nondigest/msg_header">message header</a>
+                 and <a href="?VARHELP=nondigest/msg_footer">message footer</a>
+                 but it may degrade the performance of your site as
+                 a whole.
+
+                 <p>You need to carefully consider whether the trade-off is
+                 worth it, or whether there are other ways to accomplish what
+                 you want.  You should also carefully monitor your system load
+                 to make sure it is acceptable.
+
+                 <p>These additional substitution variables will be available
+                 for your headers and footers, when this feature is enabled:
+
+                 <ul><li><b>user_address</b> - The address of the user,
+                         coerced to lower case.
+                     <li><b>user_delivered_to</b> - The case-preserved address
+                         that the user is subscribed with.
+                     <li><b>user_password</b> - The user's password.
+                     <li><b>user_name</b> - The user's full name.
+                     <li><b>user_optionsurl</b> - The url to the user's option
+                         page.
+                 """))
+                ])
+
+        return info
