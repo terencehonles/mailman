@@ -5,7 +5,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 429 $"
+__version__ = "$Revision: 430 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -415,32 +415,30 @@ def FormatMembershipOptions(list):
     return container
 
 def FormatPasswordStuff():
-    password_submit = Table(width="100%", bgcolor="#99cccc", border=0,
-                            cellspacing=0, cellpadding=2)
+    password_submit = Table(bgcolor="#99cccc",
+                            border=0, cellspacing=0, cellpadding=2)
     password_submit.AddRow([Center(Bold('To Submit Your Changes'))])
     password_submit.AddCellInfo(password_submit.GetCurrentRowIndex(), 0,
 				colspan=2)
-    password_submit.AddRow(["Enter the Administrator Password:",
+    password_submit.AddRow(['<div ALIGN="right">Enter the administrator '
+                            'password:</div>',
                             PasswordBox('adminpw')])
-    password_submit.AddRow([Center("and..."),
-                            Center(Bold(SubmitButton('submit',
-                                                     'Submit Changes')))])
-    change_pw_table = Table(width="100%", bgcolor="#cccccc", border=0,
+    password_submit.AddRow(['<div ALIGN="right">And...</div>',
+                            Bold(SubmitButton('submit', 'Submit Changes'))])
+    change_pw_table = Table(bgcolor="#cccccc", border=0,
                             cellspacing=0, cellpadding=2)
-    change_pw_table.AddRow([Bold(Center('To Change Your Password'))])
+    change_pw_table.AddRow([Bold(Center('To Change The Administrator'
+                                        ' Password'))])
     change_pw_table.AddCellInfo(change_pw_table.GetCurrentRowIndex(), 0,
 				colspan=2)
-    change_pw_table.AddRow(['Enter your new password:', 
+    change_pw_table.AddRow(['<div ALIGN="right">Enter the new '
+                            'password:</div>',
 			   PasswordBox('newpw')])
-    change_pw_table.AddRow(['And also confirm it:', 
+    change_pw_table.AddRow(['<div ALIGN="right">And also confirm it:</div>', 
 			   PasswordBox('confirmpw')])
-    change_pw_table.AddRow([Center('... and then submit your changes, above.')])
-    change_pw_table.AddCellInfo(change_pw_table.GetCurrentRowIndex(), 0,
-				colspan=2)
 
-    password_stuff = Table()
-    password_stuff.AddRow([password_submit])
-    password_stuff.AddRow([change_pw_table])
+    password_stuff = Table(bgcolor="#99cccc")
+    password_stuff.AddRow([password_submit, change_pw_table])
     return password_stuff
 
 # XXX klm - looks like turn_on_moderation is orphaned.
