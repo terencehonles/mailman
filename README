@@ -1,23 +1,25 @@
-$Revision: 449 $, $Date: 1998-04-13 20:59:28 +0100 (Mon, 13 Apr 1998) $
+Mailman 1.0b2 (README $Revision: 450 $, $Date: 1998-04-13 21:13:07 +0100 (Mon, 13 Apr 1998) $)
 
 This is mailman, maillist management software written mostly in
 Python.  Mailman was originally developed by John Viega.  Ken
-Manheimer picked it up and refined some of the rough edges after some
-versions were lost in a system crash, enough so that mailman is now
-the production system for python.org.  Hopefully we will see continued
-development and blossoming of this very promising foundation through
-the efforts of a bunch of people - there's a lot of potential here.
-
-Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15 1996
-=======
-There's still much that I'd like to redo or add.  I'm not incredibly
-proud of the code, and it's a bit embarassing to be sharing it at this
-point. The weakest points in my mind are probably the cgi scripts and
-html formatting.  Unfortunately, I won't soon have the time to devote
-to doing it better.
+Manheimer picked it up after substantial revisions of the development
+version were lost in a system crash, and refined some of the rough
+edges, enough so that mailman is now the production system for
+python.org.  We expect to continue to develop mailman, and see
+blossoming of this very promising foundation as other people join in.
 
 Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15
-1996.  Mailman 1.0b2 and 1.0b1.1 developments by ken manheimer.
+1996.  Mailman 1.0b2 and 1.0b1.1 developments by ken manheimer,
+04/13/1998.
+
+For anyone interested in joining in on the development crowd, or just
+tracking the progress, there's a maillist for you to join (we're
+considering using mailman to run it - kidding!):
+
+	    mailman-developers@python.org
+
+Visit http://www.python.org/mailman/listinfo/mailman-developers for
+more info (and for an example of the system in action).
 
 See file DONE for info on changes since v. 0.9
 
