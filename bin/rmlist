@@ -1,4 +1,5 @@
-#!/bin/sh
+#! /usr/bin/env python
+#
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,39 +18,42 @@
 
 # Remove the components of a maillist with impunity - beware!
 
-__version__="$Revision: 549 $"
-# $Source$
+import os
+import sys
+import paths
 
-MAILMAN_DIR='/home/mailman/mailman'
-HTML_DIR='/home/mailman/public_html'  
+def usage():
+    print 'Usage: rmlist [-a] list-name'
+    sys.exit(1)
 
-removeArchives=""
-if [ "$1" = "-a" ]; then
-  shift
-  removeArchives=1
-fi
+try:
+    if sys.argv[1] == '-a':
+        removeArchives = 1
+        listname = sys.argv[2]
+    else:
+        removeArchives = 0
+        listname = sys.argv[1]
+        print 'Not removing archives.  Reinvoke with -a to remove them.'
+except IndexError:
+    usage()
 
-if [ -z "$1" ]; then
-  echo "Usage: rmlist [ -a ] list-name"
-  exit 1
-else
-  listname="$1"
-fi
 
-rmit () {
-  if [ -d "$2" ]; then
-    echo Removing "$1"
-    rm -rf "$2"
-  else
-    echo "$listname $1 not found as $2"
-  fi
-}
+def remove_it(dir, msg):
+    if os.path.exists(dir):
+        print 'Removing', msg
+        os.system('rm -rf ' + dir)
+    else:
+        print listname, msg, 'not found as', dir
 
-rmit "list info" "${MAILMAN_DIR}/lists/$listname"
-rmit "web pages" "${MAILMAN_DIR}/templates/$listname"
-if [ -n "$removeArchives" ]; then
-  rmit "archives" "${HTML_DIR}/archives/$listname"
-else
-  echo "Not removing archives - reinvoke with '-a' option to remove them."
-fi
-rmit "lock file" "${MAILMAN_DIR}/locks/$listname.lock"
+REMOVABLES = [('lists/%s',     'list info'),
+              ('templates/%s', 'web pages')
+              ]
+
+if removeArchives:
+    REMOVABLES.append(('archives/%s', 'archives'))
+
+REMOVABLES.append(('locks/%s.lock', 'lock file'))
+
+for dirtmpl, msg in REMOVABLES:
+    dir = os.path.join(paths.prefix, dirtmpl % listname)
+    remove_it(dir, msg)
