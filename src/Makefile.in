@@ -122,8 +122,8 @@ finish:
 	-for f in $(SUID_CGI_PROGS); \
 	do \
 	    exe=$(DESTDIR)$(CGIDIR)/$$f$(CGIEXT); \
-	    chmod u+s $$exe; \
 	    chown $(MAILMAN_USER) $$exe; \
+	    chmod u+s $$exe; \
 	done
 
 clean:
