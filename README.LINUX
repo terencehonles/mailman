@@ -12,7 +12,8 @@ If you are running secure_linux, you probably have restricted
 hardlinks turned on.  Gergely Madarasz says that this not only
 restricts hardlinks in /tmp, but also in any non +t directory.  This
 can cause "Operation not permitted" errors in MailList.Save() -- you
-will see a traceback.  You must turn restricted hardlinks off.
+will see a traceback.  You must turn restricted hardlinks off.  This
+is also known under the name of Openwall Security Patches.
 
 
 
