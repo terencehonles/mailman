@@ -105,10 +105,6 @@ urlpat = re.compile(r'(\w+://[^>)\s]+)') # URLs in text
 # Blank lines
 blankpat = re.compile(r'^\s*$')
 
-# content-type charset
-rx_charset = re.compile('charset="(\w+)"')
-
-# 
 # Starting <html> directive
 htmlpat = re.compile(r'^\s*<HTML>\s*$', re.IGNORECASE)    
 # Ending </html> directive
@@ -142,7 +138,7 @@ class Article(pipermail.Article):
     _last_article_time = time.time()
 
     # for compatibility with old archives loaded via pickle
-    charset = mm_cfg.DEFAULT_CHARSET
+    x, charset = mm_cfg.LC_DESCRIPTIONS[mm_cfg.DEFAULT_SERVER_LANGUAGE]
     cenc = None
     decoded = {}
 
@@ -172,9 +168,9 @@ class Article(pipermail.Article):
         self.ctype = ctype.lower()
         self.cenc = cenc.lower()
         self.decoded = {}
-        mo = rx_charset.search(self.ctype)
-        if mo:
-            self.check_header_charsets(mo.group(1).lower())
+        charset = message.get_param('charset')
+        if charset:
+            self.check_header_charsets(charset)
         else:
             self.check_header_charsets()
         if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
@@ -196,6 +192,7 @@ class Article(pipermail.Article):
         header, then an arbitrary charset is chosen.  Only those
         values that match the chosen charset are decoded.
         """
+        self.charset = msg_charset
         author, a_charset = self.decode_charset(self.author)
         subject, s_charset = self.decode_charset(self.subject)
         if author is not None or subject is not None:
@@ -529,7 +526,9 @@ class HyperArchive(pipermail.T):
         self._unlocklist = unlock
         self._lock_file = None
         self._charsets = {}
-        self.charset = None
+        x, self.charset = mm_cfg.LC_DESCRIPTIONS.get(
+            maillist.preferred_language,
+            mm_cfg.LC_DESCRIPTIONS[mm_cfg.DEFAULT_SERVER_LANGUAGE])
 
         if hasattr(self.maillist,'archive_volume_frequency'):
             if self.maillist.archive_volume_frequency == 0:
