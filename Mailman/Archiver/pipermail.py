@@ -178,6 +178,14 @@ class T:
 	    self._dirty_archives=[]  # Archives that will have to be updated
 	    self.sequence=0         # Sequence variable used for numbering articles
 	    self.update_TOC=0       # Does the TOC need updating?
+        #
+        # make the basedir variable work when passed in as an __init__ arg
+        # and different from the one in the pickle.  Let the one passed in
+        # as an __init__ arg take precedence if it's stated.  This way, an
+        # archive can be moved from one place to another and still work.
+        #
+        if basedir != self.basedir:
+            self.basedir = basedir
 
     def close(self):
 	"Close an archive, saving its state and updating any changed archives."
