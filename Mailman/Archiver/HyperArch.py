@@ -657,7 +657,7 @@ class HyperArchive(pipermail.T):
             accum = []
             for a in self.archives:
                 accum.append(self.html_TOC_entry(a))
-        d["archive_listing"] = string.join(accum, '')
+            d["archive_listing"] = string.join(accum, '')
         if not d.has_key("encoding"):
             d["encoding"] = ""
         return self.html_TOC_tmpl % d
