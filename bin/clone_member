@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -98,7 +98,7 @@ def dolist(mlist, options):
         newowners = {}
         foundp = 0
         for owner in mlist.owner:
-            if options.lfromaddr == owner.lower()
+            if options.lfromaddr == owner.lower():
                 foundp = 1
                 if options.remove:
                     continue
@@ -210,7 +210,7 @@ def main():
     try:
         Utils.ValidateEmail(toaddr)
     except Errors.EmailAddressError:
-        usage(1, _('Not a valid email address: %(toaddr)s')
+        usage(1, _('Not a valid email address: %(toaddr)s'))
     lfromaddr = fromaddr.lower()
     options.toaddr = toaddr
     options.fromaddr = fromaddr
