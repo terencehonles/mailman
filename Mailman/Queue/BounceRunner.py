@@ -38,7 +38,7 @@ COMMASPACE = ', '
 class BounceRunner(Runner):
     QDIR = mm_cfg.BOUNCEQUEUE_DIR
     # We only do bounce processing once per minute.
-    SLEEPTIME = 60
+    SLEEPTIME = mm_cfg.minutes(1)
 
     def _dispose(self, mlist, msg, msgdata):
         # Make sure we have the most up-to-date state
