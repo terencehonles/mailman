@@ -40,6 +40,12 @@ class Message(email.Message.Message):
     def __repr__(self):
         return self.__str__()
 
+    def __setstate__(self, d):
+        # The pickle format has changed between email version 0.97 and 1.1
+        self.__dict__ = d
+        if not d.has_key('_charset'):
+            self._charset = None
+
     def get_sender(self, use_envelope=None, preserve_case=0):
         """Return the address considered to be the author of the email.
 
