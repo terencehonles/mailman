@@ -501,7 +501,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
                           SubmitButton('allmodbit_btn', _('Set'))])
             form.AddItem(table)
     elif category == 'passwords':
-        form.AddItem(Center(password_inputs()))
+        form.AddItem(Center(password_inputs(mlist)))
         form.AddItem(Center(submit_button()))
     else:
         form.AddItem(show_variables(mlist, category, subcat, cgidata, doc))
@@ -1042,7 +1042,8 @@ def mass_remove(mlist, container):
 
 
 
-def password_inputs():
+def password_inputs(mlist):
+    adminurl = mlist.GetScriptURL('admin', absolute=1)
     table = Table(cellspacing=3, cellpadding=4)
     table.AddRow([Center(Header(2, _('Change list ownership passwords')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
@@ -1060,8 +1061,8 @@ subscription requests, and disposing of held postings.  Of course, the
 
 <p>In order to split the list ownership duties into administrators and
 moderators, you must set a separate moderator password in the fields below,
-and also provide the email addresses of the list moderators in the section
-above.""")])
+and also provide the email addresses of the list moderators in the
+<a href="%(adminurl)s/general">general options section</a>.""")])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     # Set up the admin password table on the left
     atable = Table(border=0, cellspacing=3, cellpadding=4,
