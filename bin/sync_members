@@ -182,7 +182,7 @@ def main():
         addr = filemembers[i].strip()
         if addr == '' or addr[:1] == '#':
             del filemembers[i]
-            print _('Ignore  :  %30(addr)s')
+            print _('Ignore  :  %(addr)30s')
 
     # first filter out any invalid addresses
     filemembers = email.Utils.getaddresses(filemembers)
