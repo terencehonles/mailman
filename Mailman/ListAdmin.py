@@ -179,9 +179,8 @@ class ListAdmin:
                 raise Errors.LostHeldMessage(path)
             msg = Message.Message(fp)
             msgdata['approved'] = 1
-            enqueue = HandlerAPI.DeliverToList(self, msg, newdata=msgdata)
-            if enqueue:
-                msg.Enqueue(self, msgdata)
+            # ignore return value
+            HandlerAPI.DeliverToList(self, msg, newdata=msgdata)
         elif value == 1:
             # Rejected
             rejection = 'Refused'
