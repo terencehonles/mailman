@@ -176,6 +176,8 @@ class LockFile:
             lockfile, socket.gethostname(), os.getpid())
         self.__withlogging = withlogging
         self.__logprefix = os.path.split(self.__lockfile)[1]
+        # For transferring ownership across a fork.
+        self.__owned = 1
 	
     def set_lifetime(self, lifetime):
         """Set a new lock lifetime.
@@ -333,7 +335,46 @@ class LockFile:
         self.unlock(unconditionally=1)
 
     def __del__(self):
-        self.finalize()
+        if self.__owned:
+            self.finalize()
+
+    # Use these only if you're transfering ownership to a child process across
+    # a fork.  Use at your own risk, but it should be race-condition safe.
+    # _transfer_to() is called in the parent, passing in the pid of the
+    # child.  _take_possession() is called in the child, and blocks until the
+    # parent has transferred possession to the child.
+    def _transfer_to(self, pid):
+        # First touch it so it won't get broken while we're fiddling about.
+        self.__touch()
+        # Find out current claim's temp filename
+        winner = self.__read()
+        # Now twiddle ours to the given pid
+        self.__tmpfname = '%s.%s.%d' % (
+            self.__lockfile, socket.gethostname(), pid)
+        # Create a hard link from the global lock file to the temp file.  This
+        # actually does things in reverse order of normal operation because we
+        # know that lockfile exists, and tmpfname better not!
+        os.link(self.__lockfile, self.__tmpfname)
+        # Now update the lock file to contain a reference to the new owner
+        self.__write()
+        # Toggle off our ownership of the file so we don't try to finalize it
+        # in our __del__()
+        self.__owned = 0
+        # Unlink the old winner, completing the transfer
+        os.unlink(winner)
+        # And do some sanity checks
+        assert self.__linkcount() == 2
+        assert self.locked()
+        self.__writelog('transferred the lock')
+
+    def _take_possession(self):
+        self.__tmpfname = '%s.%s.%d' % (
+            self.__lockfile, socket.gethostname(), os.getpid())
+        # Wait until the linkcount is 2, indicating the parent has completed
+        # the transfer.
+        while self.__linkcount() <> 2:
+            time.sleep(0.25)
+        self.__writelog('took possession of the lock')
 
     #
     # Private interface
