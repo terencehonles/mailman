@@ -124,6 +124,10 @@ def main():
         mm_cfg.DontReceiveOwnPosts, 0, user)
     replacements['<mm-dont-receive-own-mail-button>'] = (
         mlist.FormatOptionButton(mm_cfg.DontReceiveOwnPosts, 1, user))
+    replacements['<mm-dont-get-password-reminder-button>'] = (
+        mlist.FormatOptionButton(mm_cfg.SuppressPasswordReminder, 1, user))
+    replacements['<mm-get-password-reminder-button>'] = (
+        mlist.FormatOptionButton(mm_cfg.SuppressPasswordReminder, 0, user))
     replacements['<mm-public-subscription-button>'] = (
         mlist.FormatOptionButton(mm_cfg.ConcealSubscription, 0, user))
     replacements['<mm-hide-subscription-button>'] = mlist.FormatOptionButton(
