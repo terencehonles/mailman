@@ -39,7 +39,7 @@ from Mailman.i18n import _
 
 
 
-def usage(code, msg):
+def usage(code, msg=''):
     if code:
         fd = sys.stderr
     else:
