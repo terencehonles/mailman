@@ -1,0 +1,58 @@
+.\"
+.\" GNU Mailman Manual
+.\"
+.\" add_members 
+.\"
+.\" Documenter:   Terri Oda
+.\"               terri (at) zone12.com
+.\" Created:      September 12, 2004
+.\" Last Updated: September 12, 2004
+.\"
+.TH add_members 1 "September 12, 2004" "Mailman 2.1" "GNU Mailman Manual"
+.\"=====================================================================
+.SH NAME
+add_members \- Remove members from a Mailman mailing list.
+.\"=====================================================================
+.SH SYNOPSIS
+.B add_members 
+-r \fIfile\fP
+-d \fIfile\fP
+[-w <\fIy|n\fP>]
+[-a <\fIy|n\fP>]
+[-h]
+listname
+.\"=====================================================================
+.SH DESCRIPTION
+Adds members to a Mailman mailing list from the command line.
+.PP
+You must supply at least one of -r and -d options.  At most one of the
+files can be `-'.
+.\"=====================================================================
+.SH OPTIONS
+.IP "--regular-members-file=\fIfile\fP, -r \fIfile\fP"
+A file containing addresses of the members to be added, one
+address per line.  This list of people become non-digest
+members.  If file is `-', read addresses from stdin.  Note that
+-n/--non-digest-members-file are deprecated synonyms for this option.
+.IP "--digest-members-file=\fIfile\fP, -d \fIfile\fP"
+Similar to above, but these people become digest members.
+.IP "--welome-msg=<\fIy|n\fP>, -w <\fIy|n\fP>"
+Set whether or not to send the list members a welcome message,
+overriding whatever the list's `send_welcome_msg' setting is.
+.IP "--admin-notify=<\fIy|n\fP>, -a <\fIy|n\fP>"
+Set whether or not to send the list administrators a notification on
+the success/failure of these subscriptions, overriding whatever the
+list's `admin_notify_mchanges' setting is.
+.IP listname
+The name of the list to which you wish to add members.
+.\"=====================================================================
+.SH SEE ALSO
+.BR remove_members (1),
+.BR list_members (1),
+.BR find_member(1),
+.PP
+The Mailman website: http://www.list.org
+.\"=====================================================================
+.SH AUTHOR
+This man page was created by Terri Oda <terri (at) zone12.com>.
+Use <mailman-developers@python.org> to contact the developers.
