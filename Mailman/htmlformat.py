@@ -292,7 +292,8 @@ class Document(Container):
 class HeadlessDocument(Document):
     """Document without head section, for templates that provide their own."""
     def Format(self, indent=0, **kws):
-        return 'Content-type: text/html\n\n' + Container.Format(self, indent)
+        return 'Content-type: text/html; charset=' + Utils.GetCharSet() + \
+               '\n\n' + Container.Format(self, indent)
     
 class StdContainer(Container):
     def Format(self, indent=0):
@@ -544,3 +545,50 @@ def MailmanLogo():
         gnulink = Link(GNU_URL, _("Gnu's Not Unix"))
         t.AddRow([mmlink, pylink, gnulink])
     return t
+
+
+class SelectOptions:
+   def __init__(self, varname, values, legend, 
+                      selected=0, size=1, multiple=None):
+      self.varname  = varname
+      self.values   = values
+      self.legend   = legend
+      self.size     = size
+      self.multiple = multiple
+      # we convert any type to tuple, commas are needed 
+      if not multiple:
+         if type(selected) == types.IntType:
+             self.selected = (selected,)
+         elif type(selected) == types.TupleType:
+             self.selected = (selected[0],)
+         elif type(selected) == types.ListType:
+             self.selected = (selected[0],)
+         else:
+             self.selected = (0,)
+ 
+   def Format(self, indent=0):
+      spaces = " " * indent
+      items  = min( len(self.values), len(self.legend) )
+
+      # jcrey: If there is no argument, we return nothing to avoid errors
+      if items == 0:
+          return ""
+ 
+      text = "\n" + spaces + "<Select name=\"%s\"" % self.varname
+      if self.size > 1:
+          text = text + " size=%d" % self.size
+      if self.multiple:
+          text = text + " multiple"
+      text = text + ">\n"
+ 
+      for i in range(items):
+          if i in self.selected:
+              checked = " Selected"
+          else:
+              checked = ""
+ 
+          opt = " <option value=\"%s\"%s> %s </option>" % (
+              self.values[i], checked, self.legend[i])
+          text = text + spaces + opt + "\n"
+ 
+      return text + spaces + '</Select>'
