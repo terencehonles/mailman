@@ -22,7 +22,7 @@ from Mailman.Logging.Syslog import syslog
 
 class Topics:
     def GetConfigCategory(self):
-        return 'topics', _('Topic filters')
+        return 'topics', _('Topics')
 
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'topics':
