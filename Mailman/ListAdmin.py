@@ -179,8 +179,10 @@ class ListAdmin:
                 raise Errors.LostHeldMessage(path)
             msg = Message.Message(fp)
             msgdata['approved'] = 1
-            # ignore return value
-            HandlerAPI.DeliverToList(self, msg, msgdata)
+            # Queue the file for delivery by qrunner.  Trying to deliver the
+            # message directly here can lead to a huge delay in web
+            # turnaround.
+            msg.Enqueue(self, newdata=msgdata)
         elif value == 1:
             # Rejected
             rejection = 'Refused'
