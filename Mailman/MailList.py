@@ -472,44 +472,29 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             "General posting filters",
 
 	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Must posts be approved by an administrator?'
-             "If the 'posters' option has any entries then it forces the"
-             ' list to be moderated, regadless of this setting.'),
+	     'Must posts be approved by an administrator?'),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Restrict posting privilege to only list members?',
+	     'Restrict posting privilege to list members?',
 
 
-             "Use this option if you want posting from list members "
-             "<em>only</em>.  If you want list members to be able to "
+             "Use this option if you want to restrict posting to list members. "
+             "If you want list members to be able to "
              "post, plus a handful of other posters, see the <i> posters </i> "
-             "and <i>posters_includes_members</i> settings below"),
+             "setting below"),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
              'Addresses of members accepted for posting to this'
-             ' list with no required approval. (See <i> posters_includes_members </i> '
-             'below for whether or not list members are effected by adding '
+             ' list with no required approval. (See <i> member_posting_only </i> '
+             'above for whether or not list members posting is effected by adding '
              'addresses here.',
 
              "Adding any entries here will have one of 2 effects according to the "
-             "setting of <i>posters_includes_members </i>: <p> If <i>posters_includes_members</i> "
+             "setting of <i>member_posting_only </i>: <p> If <i>member_posting_only</i> "
              "is set to 'yes', then adding entries here will allow list members and anyone "
              "listed here to post without going through administrative approval. <p> "
-             "If <i>posters_includes_members</i> is set to 'no', then <em>only</em> the "
+             "If <i>member_posting_only</i> is set to 'no', then <em>only</em> the "
              "posters listed here will be able to post without administrative approval. "),
-
-            ('posters_includes_members', mm_cfg.Radio, ('No', 'Yes'), 0,
-             "If you have anyone listed under 'posters' above, should you "
-             "allow list members to post as well? ",
-             
-             "If you have listed addresses under <i>posters</i> "
-             "then setting this to 'yes' will allow list members <em>and</em> the addresses "
-             "listed in the <i> posters</i> setting to post without administrative approval. <br>"
-             "Correspondingly, setting this to 'no' will allow only the addresses "
-             " listed in <i> posters </i> to post to the list without approval, regardless "
-             " of whether or not they are a member of the list.<br>"
-             "Setting this when there are no addresses listed under the <i>posters</i> "
-             "setting has no effect whatsoever. "),
 
             "Spam-specific posting filters",
 
@@ -791,7 +776,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.Save()
         if ack:
             self.SendSubscribeAck(name, password, digest)
-
+            
 
     def ProcessConfirmation(self, cookie):
         from Pending import Pending
@@ -950,10 +935,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    self.AddRequest('post', Utils.SnarfMessage(msg),
 				    Errors.FORBIDDEN_SENDER_MSG,
 				    msg.getheader('subject'))
+            if self.moderated:
+		self.AddRequest('post', Utils.SnarfMessage(msg),
+				Errors.MODERATED_LIST_MSG,
+				msg.getheader('subject'))                
 	    if len(self.posters):
 		addrs = Utils.FindMatchingAddresses(sender, self.posters)
 		if not len(addrs):
-                    if self.posters_includes_members:
+                    if self.member_posting_only:
                         if not self.IsMember(sender):
                             self.AddRequest('post', Utils.SnarfMessage(msg),
                                             'Only approved posters may post without '
@@ -964,11 +953,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                                         'Only approved posters may post without '
                                         'moderator approval.',
                                         msg.getheader('subject'))
-	    elif self.moderated:
-		self.AddRequest('post', Utils.SnarfMessage(msg),
-				Errors.MODERATED_LIST_MSG,
-				msg.getheader('subject'))
-	    if self.member_posting_only and not self.IsMember(sender):
+
+	    elif self.member_posting_only and not self.IsMember(sender):
 		self.AddRequest('post', Utils.SnarfMessage(msg),
 				'Postings from member addresses only.',
 				msg.getheader('subject'))

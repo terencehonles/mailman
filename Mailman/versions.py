@@ -85,9 +85,22 @@ def UpdateOldVars(l, stored_state):
         setattr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
     if not hasattr(l, "admin_member_chunksize"):
         setattr(l, "admin_member_chunksize", mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE)
-    if not hasattr(l, "posters_includes_members"):
-        setattr(l, "posters_includes_members",
-                mm_cfg.DEFAULT_POSTERS_INCLUDES_MEMBERS)
+    #
+    # this attribute was added then deleted, so there are a number of
+    # cases to take care of
+    #
+    if hasattr(l, "posters_includes_members"): 
+        if l.posters_includes_members:
+            if l.posters:
+                l.member_posting_only = 1
+        else:
+            if l.posters:
+                l.member_posting_only = 0
+        delattr(l, "posters_includes_members")
+    else: # make sure everyone gets the behavior the list used to have
+        if l.posters:
+            l.member_posting_only = 0
+    
 
 def UpdateOldUsers(l):
     """Transform sense of changed user options."""
