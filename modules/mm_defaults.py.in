@@ -26,8 +26,6 @@ this file, to override the distributed defaults with site-specific ones.
 
 import os
 
-VERSION           = '1.0b4'
-
 # The URL for Mailman sources, etc. - you probably don't want to change this.
 MAILMAN_URL       = 'http://www.list.org/'
 
@@ -165,6 +163,16 @@ AcknowlegePosts     = 4
 DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
 
+#
+# how long the cookie authorizing administrative
+# changes via the admin cgi lasts
+#
+ADMIN_COOKIE_LIFE = 60 * 20 # 20 minutes
+
+# how many members to display at a time
+# on the admin cgi to unsubscribe them or change their options
+#
+ADMIN_MEMBER_CHUNKSIZE = 10
 
 # These directories are used to find various important files in the Mailman
 # installation.  PREFIX and EXEC_PREFIX are set by configure and should point
