@@ -843,10 +843,14 @@ def ChangeOptions(lst, category, cgi_info, document):
                 users.append(user[ui].value)
         else:
             users = [user.value]
+        unsubscribe_errors = []
         for user in users:
             if not cgi_info.has_key('%s_subscribed' % (user)):
-                lst.DeleteMember(user)
-                dirty = 1
+                try:
+                    lst.DeleteMember(user)
+                    dirty = 1
+                except Errors.MMNoSuchUserError:
+                    unsubscribe_errors.append((user, 'Not subscribed'))
                 continue
             if not cgi_info.has_key("%s_digest" % (user)):
                 if lst.digest_members.has_key(user):
@@ -871,7 +875,11 @@ def ChangeOptions(lst, category, cgi_info, document):
                 else:
                     lst.SetUserOption(user, okey, 0)
                     dirty = 1
-
+        if unsubscribe_errors:
+            document.AddItem(Header(5, "Error Unsubscribing:"))
+            items = map(lambda x: "%s -- %s" % (x[0], x[1]), unsubscribe_errors)
+            document.AddItem(apply(UnorderedList, tuple((items))))
+            document.AddItem("<p>")
 
     if dirty:
         lst.Save()
