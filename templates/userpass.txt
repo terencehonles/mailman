@@ -5,8 +5,8 @@ IS:
 
     %(password)s
 
-To make changes to your subscription, use the password on your options web
-page:
+To make changes to your subscription, use the password on your options
+World Wide Web page:
 
     %(options_url)s
 

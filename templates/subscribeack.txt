@@ -33,4 +33,4 @@ button on your options page that will email your current password to
 you.
 
 You may also have your password mailed to you automatically off of the
-web page noted above.
+Web page noted above.
