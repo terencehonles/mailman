@@ -39,16 +39,19 @@ def list_names():
 	got.append(fn)
     return got
 
-def SendTextToUser(subject, text, recipient, sender, errorsto=None):
+def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
     import mm_message
     msg = mm_message.OutgoingMessage()
     msg.SetSender(sender)
     msg.SetHeader('Subject', subject, 1)
     msg.SetBody(QuotePeriods(text))
-    DeliverToUser(msg, recipient, errorsto=errorsto)
+    DeliverToUser(msg, recipient, add_headers=add_headers)
 
-def DeliverToUser(msg, recipient, errorsto=None):
-    """Use sendmail to deliver message."""
+def DeliverToUser(msg, recipient, add_headers=[]):
+    """Use sendmail to deliver message.
+
+    Optional argument add_headers should be a list of headers to be added
+    to the message, e.g. for Errors-To and X-No-Archive."""
 
     # We fork to ensure no deadlock.  Otherwise, even if sendmail is
     # invoked in forking mode, if it eg detects a bad address before
@@ -67,8 +70,8 @@ def DeliverToUser(msg, recipient, errorsto=None):
             pass
         if not msg.getheader('to'):
             msg.headers.append('To: %s\n' % recipient)
-        if errorsto:
-            msg.headers.append('Errors-To: %s\n' % errorsto)
+        for i in add_headers:
+            msg.headers.append(i)
         file.write(string.join(msg.headers, '')+ '\n') 
         file.write(QuotePeriods(msg.body))
         file.close()
