@@ -155,7 +155,7 @@ def kill_watcher(sig):
 def get_lock_data():
     """Return the hostname, pid, and tempfile"""
     fp = open(LOCKFILE)
-    filename = fp.read().strip()
+    filename = os.path.split(fp.read().strip())[1]
     fp.close()
     parts = filename.split('.')
     hostname = DOT.join(parts[1:-1])
