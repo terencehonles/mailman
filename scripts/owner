@@ -37,16 +37,14 @@ try:
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
-# Only let one program run at once per list.
-
-# TODO: This *can* fail, and should send back an error message when it does.
-current_list = MailList.MailList(sys.argv[1])
+# Only let one program per list run at any one time.  TBD: This *can* fail,
+# and should send back an error message when it does.
+mlist = MailList.MailList(sys.argv[1])
 try:
     msg = Message.IncomingMessage()
-    if not current_list.bounce_processing or not current_list.ScanMessage(msg):
-        current_list.DeliverToOwner(msg, current_list.owner)
+    if not mlist.bounce_processing or not mlist.ScanMessage(msg):
+        mlist.DeliverToOwner(msg, mlist.owner)
 
 # Let another process run.
 finally:
-    current_list.Unlock()
-    
+    mlist.Unlock()
