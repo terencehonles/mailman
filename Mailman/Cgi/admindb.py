@@ -46,6 +46,48 @@ def handle_no_list(doc, extra=''):
 
 
 
+def authenticated(mlist, cgidata):
+    # Returns 1 if the user is properly authenticated, otherwise it does
+    # everything necessary to put up a login screen and returns 0.
+    isauthed = 0
+    adminpw = None
+    msg = ''
+    #
+    # If we get a password change request, we first authenticate by cookie
+    # here, and issue a new cookie later on iff the password change worked
+    # out.  The idea is to set only one cookie when the admin password
+    # changes.  The new cookie is necessary, because the checksum part of the
+    # cookie is based on (among other things) the list's admin password.
+    if cgidata.has_key('adminpw'):
+        adminpw = cgidata['adminpw'].value
+    # Attempt to authenticate
+    try:
+        isauthed = mlist.WebAuthenticate(password=adminpw, cookie='admin')
+    except Errors.MMExpiredCookieError:
+        msg = 'Stale cookie found'
+    except Errors.MMInvalidCookieError:
+        msg = 'Error decoding authorization cookie'
+    except (Errors.MMBadPasswordError, Errors.MMAuthenticationError):
+        msg = 'Authentication failed'
+    #
+    # Put up the login page if not authenticated
+    if not isauthed:
+        url = mlist.GetScriptURL('admindb', relative=1)
+        if msg:
+            msg = FontAttr(msg, color='#FF5060', size='+1').Format()
+        print 'Content-type: text/html\n'
+        print Utils.maketext(
+            # Should really be admlogin.html :/
+            'admlogin.txt',
+            {'listname': mlist.real_name,
+             'path'    : Utils.GetRequestURI(url),
+             'message' : msg,
+             })
+        return 0
+    return 1
+
+
+
 def main():
     doc = Document()
     # figure out which list we're going to process
@@ -73,53 +115,22 @@ def main():
     # handle both the printing of the current outstanding requests, and the
     # selected actions
     try:
-        form = cgi.FieldStorage()
-        # Authenticate.
-        is_auth = 0
-        adminpw = None
-        message = ''
-        # has the user already authenticated?
-        if form.has_key('adminpw'):
-            adminpw = form['adminpw'].value
-        try:
-            # admindb uses the same cookie as admin
-            is_auth = mlist.WebAuthenticate(password=adminpw, cookie='admin')
-        except Errors.MMBadPasswordError:
-            message = 'Sorry, wrong password.  Try again.'
-        except Errors.MMExpiredCookieError:
-            message = 'Your cookie has gone stale, ' \
-                      'enter password to get a new one.',
-        except Errors.MMInvalidCookieError:
-            message = 'Error decoding authorization cookie.'
-        except Errors.MMAuthenticationError:
-            message = 'Authentication error.'
-        #
-        # Not authorized, so give them a chance to head over to the login page
-        if not is_auth:
-            uri = '/mailman/admindb%s/%s' % (mm_cfg.CGIEXT, listname)
-            if message:
-                message = FontAttr(
-                    message, color='FF5060', size='+1').Format()
-            print 'Content-type: text/html\n\n'
-            text = Utils.maketext(
-                'admlogin.txt',
-                {'listname': listname,
-                 'path'    : Utils.GetRequestURI(uri),
-                 'message' : message,
-                 })
-            print text
+        cgidata = cgi.FieldStorage()
+
+        # If the user id not authenticated, we're done.
+        if not authenticated(mlist, cgidata):
             return
-        #
+
         # If this is a form submission, then we'll process the requests and
         # print the results.  otherwise (there are no keys in the form), we'll
         # print out the list of pending requests
         #
-        if len(form.keys()):
+        if len(cgidata.keys()):
             doc.SetTitle("%s Admindb Results" % mlist.real_name)
-            HandleRequests(mlist, doc, form)
+            HandleRequests(mlist, doc, cgidata)
         else:
             doc.SetTitle("%s Admindb" % mlist.real_name)
-        PrintRequests(mlist, doc, form)
+        PrintRequests(mlist, doc)
         text = doc.Format(bgcolor="#ffffff")
         print text
     finally:
@@ -128,7 +139,7 @@ def main():
 
 
 
-def PrintRequests(mlist, doc, form):
+def PrintRequests(mlist, doc):
     # The only types of requests we know about are add member and post.
     # Anything else that might have gotten in here somehow we'll just ignore
     # (This should never happen unless someone is hacking at the code).
@@ -267,10 +278,10 @@ def PrintPostRequest(mlist, id, info, total, count, form):
 
 
 
-def HandleRequests(mlist, doc, form):
+def HandleRequests(mlist, doc, cgidata):
     erroraddrs = []
-    for k in form.keys():
-        formv = form[k]
+    for k in cgidata.keys():
+        formv = cgidata[k]
         if type(formv) == types.ListType:
             continue
         try:
@@ -288,14 +299,14 @@ def HandleRequests(mlist, doc, form):
         preserve = 0
         forward = 0
         forwardaddr = ''
-        if form.has_key(commentkey):
-            comment = form[commentkey].value
-        if form.has_key(preservekey):
-            preserve = form[preservekey].value
-        if form.has_key(forwardkey):
-            forward = form[forwardkey].value
-        if form.has_key(forwardaddrkey):
-            forwardaddr = form[forwardaddrkey].value
+        if cgidata.has_key(commentkey):
+            comment = cgidata[commentkey].value
+        if cgidata.has_key(preservekey):
+            preserve = cgidata[preservekey].value
+        if cgidata.has_key(forwardkey):
+            forward = cgidata[forwardkey].value
+        if cgidata.has_key(forwardaddrkey):
+            forwardaddr = cgidata[forwardaddrkey].value
         #
         # handle the request id
         try:
