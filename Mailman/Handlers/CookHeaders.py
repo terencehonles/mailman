@@ -100,7 +100,7 @@ def process(mlist, msg, msgdata):
         listid = mlist.description + ' ' + listid
     requestaddr = mlist.GetRequestEmail()
     subfieldfmt = '<%s>, <mailto:%s?subject=%ssubscribe>'
-    listinfo = mlist.GetScriptURL('listinfo')
+    listinfo = mlist.GetScriptURL('listinfo', absolute=1)
     #
     # TBD: List-Id is not in the RFC, but it was in an earlier draft so we
     # leave it in for historical reasons.
