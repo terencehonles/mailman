@@ -18,7 +18,7 @@
 
 import unittest
 
-MODULES = ['bounces']
+MODULES = ('bounces', 'handlers', 'membership')
 
 
 

@@ -19,8 +19,7 @@
 import sys
 import os
 import unittest
-
-from mimelib.Parser import Parser
+import email
 
 
 
@@ -64,26 +63,29 @@ class BounceTest(unittest.TestCase):
         # Done
         )
 
-    def checkBounce(self):
+    def test_bounce(self):
         for modname, file, addrs in self.DATA:
             module = 'Mailman.Bouncers.' + modname
             __import__(module)
             fp = open(os.path.join('tests', 'bounces', file))
             try:
-                msg = Parser().parse(fp)
+                msg = email.message_from_file(fp)
             finally:
                 fp.close()
             foundaddrs = sys.modules[module].process(msg)
+            # Some modules return None instead of [] for failure
+            if foundaddrs is None:
+                foundaddrs = []
             addrs.sort()
             foundaddrs.sort()
             self.assertEqual(addrs, foundaddrs)
 
-    def checkSMTP32Failure(self):
+    def test_SMTP32_failure(self):
         from Mailman.Bouncers import SMTP32
         # This file has no X-Mailer: header
         fp = open(os.path.join('tests', 'bounces', 'postfix_01.txt'))
         try:
-            msg = Parser().parse(fp)
+            msg = email.message_from_file(fp)
         finally:
             fp.close()
         self.failIf(msg['x-mailer'] is not None)
@@ -93,11 +95,10 @@ class BounceTest(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(BounceTest, 'check'))
+    suite.addTest(unittest.makeSuite(BounceTest))
     return suite
 
 
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
-
