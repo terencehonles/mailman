@@ -98,7 +98,7 @@ def process(mlist, msg, msgdata):
         conn = smtplib.SMTP()
         for chunk in chunks:
             deliver(envsender, msgtext, chunk, refused, conn)
-        conn.close()
+        conn.quit()
     # Log the successful post
     t1 = time.time()
     d = MsgSafeDict(msg, {'time'    : t1-t0,
@@ -242,7 +242,7 @@ def threaded_deliver(envsender, msgtext, chunks, failures):
     for t, (threadfailures, conn) in threads.items():
         t.join()
         failures.update(threadfailures)
-        conn.close()
+        conn.quit()
     # All threads have exited
     threads.clear()
 
@@ -269,12 +269,8 @@ def deliver(envsender, msgtext, recips, failures, conn):
         # connected or not. :(
         if not getattr(conn, 'sock', 0):
             conn.connect(mm_cfg.SMTPHOST, mm_cfg.SMTPPORT)
-        try:
-            # make sure the connect happens, which won't be done by the
-            # constructor if SMTPHOST is false
-            refused = conn.sendmail(envsender, recips, msgtext)
-        finally:
-            conn.quit()
+        # Send the message
+        refused = conn.sendmail(envsender, recips, msgtext)
     except smtplib.SMTPRecipientsRefused, e:
         refused = e.recipients
     # MTA not responding, or other socket problems, or any other kind of
