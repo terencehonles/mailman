@@ -29,7 +29,7 @@ import mm_cfg
 # See templates/masthead.txt
 # XXX: this needs conversion
 DIGEST_MASTHEAD = """
-Send %(real_name)s maillist submissions to
+Send %(real_name)s mailing list submissions to
 	%(got_list_email)s
 
 To subscribe or unsubscribe via the web, visit
@@ -304,7 +304,7 @@ class Digester:
                                remove_to=1, tmpfile_prefix = "mime.")
 
 class Digest:
-    "Represent a maillist digest, presentable in either plain or mime format."
+    "Represent a list digest, presentable in either plain or mime format."
     def __init__(self, list, toc, body):
         self.list = list
         self.toc = toc

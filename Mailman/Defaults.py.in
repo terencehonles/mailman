@@ -119,11 +119,11 @@ DEFAULT_MAX_NUM_RECIPIENTS = 10
 DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
 
 # These format strings will be expanded w.r.t. the dictionary for the
-# maillist instance.
+# mailing list instance.
 DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
 DEFAULT_MSG_HEADER = ""
 DEFAULT_MSG_FOOTER = """_______________________________________________
-%(real_name)s maillist  -  %(real_name)s@%(host_name)s
+%(real_name)s mailing list  -  %(real_name)s@%(host_name)s
 %(web_page_url)slistinfo/%(_internal_name)s
 """
 
@@ -147,7 +147,7 @@ DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
 # Alternate names acceptable as explicit destinations for this list.
 DEFAULT_ACCEPTABLE_ALIASES ="""
 """
-# For maillists that have only other maillists for members:
+# For mailing lists that have only other mailing lists for members:
 DEFAULT_UMBRELLA_LIST = 0
 # For umbrella lists, the suffix for the account part of address for
 # administrative notices (subscription confirmations, password reminders):
