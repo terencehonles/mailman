@@ -1302,10 +1302,12 @@ def change_options(mlist, category, cgidata, doc):
         else:
             users = [urllib.unquote(user.value)]
         errors = []
+        removes = []
         for user in users:
             if cgidata.has_key('%s_unsub' % user):
                 try:
                     mlist.ApprovedDeleteMember(user)
+                    removes.append(user)
                 except Errors.MMNoSuchUserError:
                     errors.append((user, _('Not subscribed')))
                 continue
@@ -1333,6 +1335,10 @@ def change_options(mlist, category, cgidata, doc):
                     mlist.setMemberOption(user, opt_code, 1)
                 else:
                     mlist.setMemberOption(user, opt_code, 0)
+        # Give some feedback on who's been removed
+        doc.AddItem(Header(5, _('Successfully Removed:')))
+        doc.AddItem(UnorderedList(*removes))
+        doc.AddItem('<p>')
         if errors:
             doc.AddItem(Header(5, _("Error Unsubscribing:")))
             items = ['%s -- %s' % (x[0], x[1]) for x in errors]
