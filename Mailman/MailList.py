@@ -154,6 +154,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.acceptable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
 	self.reminders_to_admins = mm_cfg.DEFAULT_REMINDERS_TO_ADMINS
 	self.send_reminders = mm_cfg.DEFAULT_SEND_REMINDERS
+    	self.send_welcome_msg = mm_cfg.DEFAULT_SEND_WELCOME_MSG
 	self.bounce_matching_headers = \
 		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
         self.anonymous_list = mm_cfg.DEFAULT_ANONYMOUS_LIST
@@ -283,6 +284,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('send_reminders', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Send monthly password reminders or no? Overrides the previous '
 	     'option.'),
+
+	    ('send_welcome_msg', mm_cfg.Radio, ('No', 'Yes'), 0, 
+	     'Send welcome message when people subscribe?',
+	     "Turn this on only if you plan on subscribing people manually "
+	     "and don't want them to know that you did so.  This option "
+	     "is most useful for transparently migrating lists from "
+	     "some other mailing list manager to Mailman."),
+
 
 	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Should administrator get immediate notice of new requests, '

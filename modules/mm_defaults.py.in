@@ -79,6 +79,8 @@ DEFAULT_ACCEPTABLE_ALIASES ="""
 DEFAULT_REMINDERS_TO_ADMINS = 0
 # This variable controlls whether monthly password reminders are sent.
 DEFAULT_SEND_REMINDERS = 1
+# Send welcome messages to new users?  Probably should keep this set to 1.
+DEFAULT_SEND_WELCOME_MSG = 1
 # Wipe sender information, and make it look like the list-admin
 # address sends all messages
 DEFAULT_ANONYMOUS_LIST = 0
@@ -213,4 +215,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 2
+DATA_FILE_VERSION = 3

@@ -194,6 +194,8 @@ class Deliverer:
         return body
 
     def SendSubscribeAck(self, name, password, digest):
+        if not self.send_welcome_msg:
+	    return
 	if digest:
 	    digest_mode = '(Digest mode)'
 	else:
