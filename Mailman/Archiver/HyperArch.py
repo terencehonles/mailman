@@ -27,7 +27,6 @@
 
 import sys
 import re
-import cgi
 import urllib
 import time
 import os
@@ -222,14 +221,14 @@ class Article(pipermail.Article):
         # patch #594771.
         self.__dict__ = d
         if not d.has_key('_mlist'):
-            self._mlist = mlist = None
+            self._mlist = None
         if not d.has_key('_lang'):
-            if mlist is not None:
-                self._lang = lang = mlist.preferred_language
+            if self._mlist is None:
+                self._lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
             else:
-                self._lang = lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
+                self._lang = self._mlist.preferred_language
         if not d.has_key('charset'):
-            self.charset = Utils.GetCharSet(lang)
+            self.charset = Utils.GetCharSet(self._lang)
         if not d.has_key('cenc'):
             self.cenc = None
         if not d.has_key('decoded'):
@@ -892,7 +891,8 @@ class HyperArchive(pipermail.T):
             self.updateThreadedIndex()
 
     def write_index_footer(self):
-        for i in range(self.depth): print '</UL>'
+        for i in range(self.depth):
+            print '</UL>'
         print self.html_foot()
 
     def write_index_entry(self, article):
@@ -1058,7 +1058,6 @@ class HyperArchive(pipermail.T):
         # 3. make it faster
         source = lines[:]
         dest = lines
-        body2=[]
         last_line_was_quoted=0
         for i in xrange(0, len(source)):
             Lorig=L=source[i] ; prefix=suffix=""

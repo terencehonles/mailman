@@ -23,7 +23,6 @@ archival.
 """
 
 import os
-import time
 import errno
 import traceback
 from cStringIO import StringIO
