@@ -32,6 +32,7 @@ from email.Iterators import typed_subpart_iterator
 from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman.Logging.Syslog import syslog
+from Mailman.Version import VERSION
 
 
 
@@ -48,6 +49,7 @@ def process(mlist, msg, msgdata):
     filtertypes = mlist.filter_mime_types
     if ctype in filtertypes or mtype in filtertypes:
         raise Errors.DiscardMessage
+    numparts = len([subpart for subpart in msg.walk()])
     # If the message is a multipart, filter out matching subparts
     if msg.is_multipart():
         # Recursively filter out any subparts that match the filter list
@@ -82,9 +84,15 @@ def process(mlist, msg, msgdata):
         cdesc = firstalt.get('content-description')
         if cdesc:
             msg['Content-Description'] = cdesc
+    # We we removed some parts, make note of this
+    changedp = 0
+    if numparts <> len([subpart for subpart in msg.walk()]):
+        changedp = 1
     # Now perhaps convert all text/html to text/plain
     if mlist.convert_html_to_plaintext and mm_cfg.HTML_TO_PLAIN_TEXT_COMMAND:
-        to_plaintext(msg)
+        changedp += to_plaintext(msg)
+    if changedp:
+        msg['X-Content-Filtered-By'] = 'Mailman/MimeDel %s' % VERSION
 
 
 
@@ -133,6 +141,7 @@ def collapse_multipart_alternatives(msg):
 
 
 def to_plaintext(msg):
+    changedp = 0
     for subpart in typed_subpart_iterator(msg, 'text', 'html'):
         filename = tempfile.mktemp('.html')
         fp = open(filename, 'w')
@@ -153,3 +162,5 @@ def to_plaintext(msg):
         # Now replace the payload of the subpart and twiddle the Content-Type:
         subpart.set_payload(plaintext)
         subpart.set_type('text/plain')
+        changedp = 1
+    return changedp
