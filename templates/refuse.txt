@@ -1,4 +1,4 @@
-Your request to the %(listname)s mailing list:
+Your request to the %(listname)s mailing list
 
     %(request)s
 
