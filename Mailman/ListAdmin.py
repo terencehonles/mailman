@@ -28,8 +28,8 @@ import os
 import time
 import marshal
 import errno
-from mimelib import Generator
-from mimelib import Parser
+from mimelib.Generator import Generator
+from mimelib.Parser import Parser
 
 from Mailman import Message
 from Mailman import mm_cfg
@@ -149,7 +149,7 @@ class ListAdmin:
         id = self.__request_id()
         assert not self.__db.has_key(id)
         # get the message sender
-        sender = msg.GetSender()
+        sender = msg.get_sender()
         # calculate the file name for the message text and write it to disk
         filename = 'heldmsg-%s-%d.txt' % (self.internal_name(), id)
         omask = os.umask(002)
@@ -230,6 +230,7 @@ class ListAdmin:
         elif value == mm_cfg.REJECT:
             # Rejected
             rejection = 'Refused'
+            # FIXME
             os.environ['LANG'] = pluser = self.GetPreferredLanguage(sender)
             self.__refuse(_('Posting of your message titled "%(subject)s"'),
                           sender, comment or _('[No reason given]'),
@@ -318,11 +319,13 @@ class ListAdmin:
         # possibly notify the administrator in default list language
         if self.admin_immed_notify:
             # This message must be in list's preferred language
+            # FIXME
             os.environ['LANG'] = self.preferred_language
             realname = self.real_name
             subject = _(
                 'New subscription request to list %(realname)s from %(addr)s')
             # other messages to come, will be in user preferred language
+            # FIXME
             os.environ['LANG'] = lang
             text = Utils.maketext(
                 'subauth.txt',
@@ -337,6 +340,7 @@ class ListAdmin:
 
     def __handlesubscription(self, record, value, comment):
         stime, addr, password, digest, lang = record
+        # FIXME
         os.environ['LANG'] = lang
         if value == mm_cfg.REJECT:
             # refused
