@@ -112,7 +112,6 @@ def readfile(filename):
 
 
 def SendExplanation(mlist, users):
-    adminaddr = mlist.GetAdminEmail()
     listname = mlist.real_name
     listhost = mlist.host_name
     d = {'listname'    : listname,
@@ -120,7 +119,7 @@ def SendExplanation(mlist, users):
          'listaddr'    : mlist.GetListEmail(),
          'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
          'requestaddr' : mlist.GetRequestEmail(),
-         'adminaddr'   : adminaddr,
+         'adminaddr'   : mlist.GetOwnerEmail(),
          'version'     : mm_cfg.VERSION,
          }
     otrans = i18n.get_translation()
@@ -128,7 +127,8 @@ def SendExplanation(mlist, users):
     try:
         text = Utils.maketext('convert.txt', d)
         subject = _('Big change in %(listname)s@%(listhost)s mailing list')
-        msg = Message.UserNotification(users, adminaddr, subject, text,
+        msg = Message.UserNotification(users, mlist.GetBouncesEmail(),
+                                       subject, text,
                                        mlist.preferred_language)
     finally:
         i18n.set_translation(otrans)
