@@ -17,6 +17,7 @@
 """Posting moderation filter.
 """
 
+import re
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
@@ -47,19 +48,18 @@ def process(mlist, msg, msgdata):
         # this point?  No, because further pipeline handlers will need to do
         # their own thing.
         return
-    # From here on out, we're dealing with non-members
-    addrdict = Utils.List2Dict(mlist.accept_these_nonmembers, foldcase=1)
-    if addrdict.has_key(sender):
+    # From here on out, we're dealing with non-members.
+    if matches_p(sender, mlist.accept_these_nonmembers):
         return
-    addrdict = Utils.List2Dict(mlist.hold_these_nonmembers, foldcase=1)
-    if addrdict.has_key(sender):
+    if matches_p(sender, mlist.hold_these_nonmembers):
         Hold.hold_for_approval(mlist, msg, msgdata, Hold.ModeratedPost)
-    addrdict = Utils.List2Dict(mlist.reject_these_nonmembers, foldcase=1)
-    if addrdict.has_key(sender):
+        # No return
+    if matches_p(sender, mlist.reject_these_nonmembers):
         do_reject(mlist)
-    addrdict = Utils.List2Dict(mlist.discard_these_nonmembers, foldcase=1)
-    if addrdict.has_key(sender):
+        # No return
+    if matches_p(sender, mlist.discard_these_nonmembers):
         do_discard(mlist, msg)
+        # No return
     # Okay, so the sender wasn't specified explicitly by any of the non-member
     # moderation configuration variables.  Handle by way of generic non-member
     # action.
@@ -73,6 +73,25 @@ def process(mlist, msg, msgdata):
         do_reject(mlist)
     elif mlist.generic_nonmember_action == 3:
         do_discard(mlist, msg)
+
+
+
+def matches_p(sender, nonmembers):
+    # First strip out all the regular expressions
+    plainaddrs = [addr for addr in nonmembers if not addr.startswith('^')]
+    addrdict = Utils.List2Dict(plainaddrs, foldcase=1)
+    if addrdict.has_key(sender):
+        return 1
+    # Now do the regular expression matches
+    for are in nonmembers:
+        if are.startswith('^'):
+            try:
+                cre = re.compile(are, re.IGNORECASE)
+            except re.error:
+                continue
+            if cre.search(sender):
+                return 1
+    return 0
 
 
 
