@@ -10,7 +10,7 @@ import cPickle as pickle
 from cStringIO import StringIO
 from string import lowercase
 
-__version__ = '0.08 (Mailman edition)'
+__version__ = '0.09 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
@@ -523,8 +523,10 @@ class T:
     # and create a series of Article objects.  Each article
     # object will then be archived.
     
-    def processUnixMailbox(self, input, articleClass=Article,
-                           start=None, end=None):
+    def _makeArticle(self, msg, sequence):
+        return Article(msg, sequence)
+
+    def processUnixMailbox(self, input, start=None, end=None):
 	mbox = ArchiverMailbox(input, self.maillist)
         if start is None:
             start = 0
@@ -554,7 +556,7 @@ class T:
                 continue
             msgid = m.get('message-id', 'n/a')
             self.message(_('#%(counter)05d %(msgid)s'))
-	    a = articleClass(m, self.sequence)
+	    a = self._makeArticle(m, self.sequence)
 	    self.sequence += 1
 	    self.add_article(a)
             if end is not None and counter >= end:
