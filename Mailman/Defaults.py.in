@@ -369,9 +369,12 @@ LIKELY_BOUNCE_SENDERS = ('daemon', 'mailer-daemon', 'postmaster',
 # General time limits
 #####
 
-# How long should the cookie authorizing administrative changes via the admin
-# cgi last before it needs to be reauthenticated?
-ADMIN_COOKIE_LIFE = hours(3)
+# Authentication cookie control.  When set to 0, Mailman's admin cookie
+# expires at the end of your session.  This is preferred for security reasons,
+# and to avoid potential problems with incorrect clock and timezone settings.
+# Set this to a value > 0 to use persistent admin cookies with a lifetime of
+# that number of seconds.
+ADMIN_COOKIE_LIFE = 0
 
 # How long should subscriptions requests await confirmation before being
 # dropped?
