@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 5216 $)
+AC_REVISION($Revision: 5372 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -390,46 +390,57 @@ fi
 AC_MSG_RESULT($with_cgi_ext)
 
 
-# figure out the DEFAULT_HOST_NAME and DEFAULT_URL
-AC_SUBST(FQDN)
-AC_SUBST(URL)
+# figure out the default mail hostname and url host component
+AC_SUBST(MAILHOST)
+AC_MSG_CHECKING(for --with-mailhost)
+AC_ARG_WITH(mailhost, dnl
+[  --with-mailhost     specify the hostname part for outgoing email])
+if test -z "$with_mailhost"
+then
+	MAILHOST=''
+	with_mailhost='no'
+else
+	MAILHOST=$with_mailhost
+fi
+AC_MSG_RESULT($with_mailhost)
+
+AC_SUBST(URLHOST)
+AC_MSG_CHECKING(for --with-urlhost)
+AC_ARG_WITH(urlhost, dnl
+[  --with-urlhost     specify the hostname part of urls])
+if test -z "$with_urlhost"
+then
+	URLHOST=''
+	with_urlhost='no'
+else
+	URLHOST=$with_urlhost
+fi
+AC_MSG_RESULT($with_urlhost)
+
 changequote(,)
 cat > conftest.py <<EOF
-# attempt to figure out the default hostname and URL
+# python
 from socket import *
 fqdn = getfqdn()
-www = None
-host, aliases, ipaddrs = gethostbyaddr(fqdn)
-aliases.insert(0, host)
-for h in aliases:
-    parts = h.split('.')
-    if len(parts) > 1 and parts[0] == 'www':
-        www = h
-        break
 fp = open('conftest.out', 'w')
-if not www:
-    fp.write('%s\n%s\n' % (fqdn, fqdn))
-elif www:
-    dhn = '.'.join(www.split('.')[1:])
-    fp.write('%s\n%s\n' % (dhn, www))
-else:
-    fp.write('please.change.me\nwww.please.change.me\n')
+print >> fp, fqdn
+print >> fp, fqdn
 fp.close()
 EOF
 $PYTHON conftest.py
 changequote([, ])
-AC_MSG_CHECKING(for email host name)
-if test -z "$FQDN"
+AC_MSG_CHECKING(for default mail host name)
+if test -z "$MAILHOST"
 then
-    FQDN=`sed q conftest.out`
+    MAILHOST=`sed q conftest.out`
 fi
-AC_MSG_RESULT($FQDN)
-AC_MSG_CHECKING(for web host name)
-if test -z "$URL"
+AC_MSG_RESULT($MAILHOST)
+AC_MSG_CHECKING(for default URL host component)
+if test -z "$URLHOST"
 then
-    URL=`sed -n '$p' conftest.out`
+    URLHOST=`sed -n '$p' conftest.out`
 fi
-AC_MSG_RESULT($URL)
+AC_MSG_RESULT($URLHOST)
 rm -f conftest.out conftest.py
 
 # Checks for libraries.

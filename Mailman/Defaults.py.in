@@ -73,8 +73,8 @@ MAILMAN_URL = 'http://www.gnu.org/software/mailman/index.html'
 #     add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
 #
 # because otherwise the default mappings won't be correct.
-DEFAULT_EMAIL_HOST = '@FQDN@'
-DEFAULT_URL_HOST = '@URL@'
+DEFAULT_EMAIL_HOST = '@MAILHOST@'
+DEFAULT_URL_HOST = '@URLHOST@'
 DEFAULT_URL_PATTERN = 'http://%s/mailman/'
 
 # For backwards compatibility.  Note: DEFAULT_URL_PATTERN must end in a slash!
