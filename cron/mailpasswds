@@ -81,7 +81,7 @@ def mail_passwords(mlist, hosts):
             text = text + header + '\n' + string.join(table, '\n')
             msg = Message.UserNotification(addr, mailman_owner, subj, text)
             msg['X-No-Archive'] = 'yes'
-            HandlerAPI.DeliverToUser(mlist, msg)
+            HandlerAPI.DeliverToUser(mlist, msg, {'_nolist': 1})
 
 
 
@@ -145,7 +145,12 @@ def main():
             finally:
                 mlist.Unlock()
     if a_public_list:
-        mail_passwords(a_public_list, hosts)
+        a_public_list.Lock()
+        try:
+            mail_passwords(a_public_list, hosts)
+        finally:
+            a_public_list.Save()
+            a_public_list.Unlock()
 
 
 
