@@ -1,8 +1,16 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 Here is a history of user visible changes to Mailman.
+
+2.1 beta 1 (???)
+
+    - DEFAULT_DEFAULT_MEMBER_MODERATION set to 1
+
+    - admindb summary page gives the option of clearing the moderation
+      flag of members who are on probation.
+
 
 2.1 alpha 4 (31-Dec-2001)
 
