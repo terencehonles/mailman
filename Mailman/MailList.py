@@ -1102,7 +1102,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
-       _('%(realname)s -- confirmation of subscription -- confirm %(cookie)s'),
+                _('confirm %(cookie)s'),
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
             msg.send(self)
@@ -1150,7 +1150,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              }, lang=self.GetPreferredLanguage(oldaddr), mlist=self)
         msg = Message.UserNotification(
             newaddr, self.GetRequestEmail(),
-       _('%(realname)s -- confirmation of subscription -- confirm %(cookie)s'),
+            _('confirm %(cookie)s'),
             text)
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
@@ -1212,7 +1212,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              }, lang=lang, mlist=self)
         msg = Message.UserNotification(
             addr, self.GetRequestEmail(),
-            _('%(realname)s -- confirmation of removal -- confirm %(cookie)s'),
+            _('confirm %(cookie)s'),
             text)
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
