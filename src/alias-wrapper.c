@@ -60,7 +60,7 @@ void AddListAliases(char *list)
     }
 }
 
-void main(int argc, char **argv, char **env) 
+int main(int argc, char **argv, char **env) 
 {
   char  *command;
   int   i;

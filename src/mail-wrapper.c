@@ -107,7 +107,7 @@ int valid_command(char *command){
   return 0;
 }
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
   char  *command;
   int   i;
   
