@@ -27,7 +27,7 @@ import errno
 from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import flock
+from Mailman import LockFile
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -65,10 +65,10 @@ def main():
         # up the lock because we're setting a hung_time out of 4 minutes.
         # This means that if we crashed, the next time the cron job runs,
         # it'll just wax the lock and try again.
-        lock = flock.FileLock(LIST_LOCK_FILE + name, hung_timeout=240)
+        lock = LockFile.LockFile(LIST_LOCK_FILE + name, lifetime=240)
         try:
             lock.lock(timeout=0.001)
-        except flock.TimeOutError:
+        except LockFile.TimeOutError:
             # someone else is gating this list already
             continue
         # open up a connection to the gated newsgroup.  we want to get the
