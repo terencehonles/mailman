@@ -77,22 +77,13 @@ mm21_transport:
     
 ## Directors section [this deals with local addresses]
 ##
-## The first director rewrites the deprecated list-admin address to
-## list-bounces.  List existence checks are done by seeing if the file
+## List existence checks are done by seeing if the file
 ## MAILMAN21_HOME/lists/*/config.pck exists.
-
-mm21_director_admin:
-    driver = smartuser
-    require_files = MAILMAN21_HOME/lists/${lc:$local_part}/config.pck
-    suffix = -admin
-    new_address = "${lc:$local_part}-bounces@${domain}"
-
-## The second director handles all the Mailman 2.1 addresses.
 
 mm21_director:
     driver = smartuser
     require_files = MAILMAN21_HOME/lists/${lc:$local_part}/config.pck
-    suffix = "-bounces:-join:-leave:-owner:-request"
+    suffix = "-bounces:-join:-leave:-owner:-request:-admin"
     suffix_optional
     transport = mm21_transport
 
