@@ -4,6 +4,85 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.0 beta 6 (22-Sep-2000)
+
+    - Building
+        o Tested with Python 1.5.2, Python 1.6, and Python 2.0 beta 1.
+          Conducted on RH Linux 6.1 only, but should work
+          cross-platform.
+
+        o Configure now accepts --with-username, --with-groupname,
+          --with-var-prefix flags.  See `configure --help' or the
+          INSTALL file for details.
+
+        o Setting the CFLAGS environment variable before invoking
+          configure now works.
+
+        o The icons are now copied into $prefix/icons at install time.
+          Patch by David Champion.
+
+    - Standards
+        o Compliance with RFC 2369 (List-*: headers).  Patch by
+          Darrell Fuhriman.  List-ID: header is kept for historical
+          reasons.
+
+        o Fixes by Jeremy Hylton to Pipermail in support of non-ASCII
+          charsets, based on the Content-Type: and encoded-words in
+          the original message.  Mail headers are now decoded as per
+          RFC 2047.
+
+        o Many more bounce formats are detected: Microsoft's SMTPSVC,
+          Compuserve, GroupWise, SMTP32, and the more generic
+          SimpleMatch (which catches lots of similar but slightly
+          different formats).
+
+    - Defaults
+        o Email addresses can now be obscured in Pipermail archives by
+          setting mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS to 1 (obscuring
+          is turned off by default).  Patch provided by Chris Snell.
+
+        o The default NNTP host can now be set by editing
+          mm_cfg.DEFAULT_NNTP_HOST.  Patch by David Champion.
+
+        o The default archiving mode (public/private) can now be set
+          by editing mm_cfg.DEFAULT_ARCHIVE.  Patch by Ted Cabeen.
+
+    - Web UI
+        o The variable details pages in the administrators interface
+          is now `live', i.e. there's a submit button on the details
+          page.
+
+        o A link to the administrative interface is placed in the
+          footer of the general user pages (authentication still
+          required, of course!)
+
+        o The user options change results page has a link back to the
+          user's main page.
+
+        o In the admindb page (for dealing with held postings), the
+          default forward address is now listname-owner instead of
+          listname-admin.  This avoids bounce detection on the
+          forwarded message.
+
+    - Miscellaneous
+        o Fixed config.db corruption problem when disk-full errors are
+          encountered.
+
+        o Command line scripts accept list names case-insensitively.
+
+        o bin/remove_members takes a -a flag to remove all members of
+          a list in one fell swoop.
+
+        o List admin passwords must be non-empty.
+
+        o Mailman generated passwords are slightly more mnemonic, and
+          shouldn't have confusing character selections (i.e. `i'
+          only, but no `1' or `l').
+
+        o Crossposting to two gated mailing lists should be fixed.
+
+        o Many other bug fixes and minor web UI improvements.
+
 2.0 beta 5 (01-Aug-2000)
 
     - Bug fix release.  This includes a fix for a small security hole
