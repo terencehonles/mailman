@@ -424,13 +424,23 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 is <em>strongly</em> recommended for most mailing lists.''',
 
              # Details for reply_goes_to_list
-             """There are many reasons not to introduce headers like
-<tt>Reply-To:</tt> into other people's messages.  One is that some posters
-depend on their own <tt>Reply-To:</tt> settings to convey their valid return
-address.  See 
+             """This option controls what Mailman does to the
+<tt>Reply-To:</tt> header in messages flowing through this mailing list.  When
+set to <em>Poster</em>, no <tt>Reply-To:</tt> header is added by Mailman,
+although if one is present in the original message, it is not stripped.
+Setting this value to either <em>This list</em> or <em>Explicit address</em>
+causes Mailman to insert a specific <tt>Reply-To:</tt> header in all messages,
+overriding the header in the original message if necessary (<em>Explicit
+address</em> inserts the value of <a
+href="?VARHELP=general/reply_to_address">reply_to_address</a>).
+
+<p>There are many reasons not to introduce or override the <tt>Reply-To:</tt>
+header.  One is that some posters depend on their own <tt>Reply-To:</tt>
+settings to convey their valid return address.  Another is that modifying
+<tt>Reply-To:</tt> makes it much more difficult to send private replies.  See
 <a href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To' Munging
-Considered Harmful</a> for a general discussion of this issue.  See
-<a href="http://www.metasystema.org/essays/reply-to-useful.mhtml">Reply-To
+Considered Harmful</a> for a general discussion of this issue.  See <a
+href="http://www.metasystema.org/essays/reply-to-useful.mhtml">Reply-To
 Munging Considered Useful</a> for a dissenting opinion.
 
 <p>Some mailing lists have restricted posting privileges, with a parallel list
@@ -444,23 +454,25 @@ address below to point to the parallel list."""),
              '''Explicit <tt>Reply-To:</tt> header.''',
 
              # Details for reply_to_address
-             """There are many reasons not to introduce headers like
-<tt>Reply-To:</tt> into other people's messages.  One is that some posters
-depend on their own <tt>Reply-To:</tt> settings to convey their valid return
-address.  See 
+             """This is the address set in the <tt>Reply-To:</tt> header
+when the <a href="?VARHELP=general/reply_goes_to_list">reply_goes_to_list</a>
+option is set to <em>Explicit address</em>.
+
+<p>There are many reasons not to introduce or override the <tt>Reply-To:</tt>
+header.  One is that some posters depend on their own <tt>Reply-To:</tt>
+settings to convey their valid return address.  Another is that modifying
+<tt>Reply-To:</tt> makes it much more difficult to send private replies.  See
 <a href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To' Munging
-Considered Harmful</a> for a general discussion of this issue.
+Considered Harmful</a> for a general discussion of this issue.  See <a
+href="http://www.metasystema.org/essays/reply-to-useful.mhtml">Reply-To
+Munging Considered Useful</a> for a dissenting opinion.
 
 <p>Some mailing lists have restricted posting privileges, with a parallel list
 devoted to discussions.  Examples are `patches' or `checkin' lists, where
 software changes are posted by a revision control system, but discussion about
 the changes occurs on a developers mailing list.  To support these types of
-mailing lists, specify the explicit <tt>Reply-To:</tt> address here.  You must
-also specify <tt>Explicit address</tt> in the <tt>reply_goes_to_list</tt>
-variable.
-
-<p>Note that if the original message contains a <tt>Reply-To:</tt> header,
-it will not be changed."""),
+mailing lists, select <tt>Explicit address</tt> and set the <tt>Reply-To:</tt>
+address below to point to the parallel list."""),
 
             ('administrivia', mm_cfg.Radio, ('No', 'Yes'), 0,
              "(Administrivia filter) Check postings and intercept ones"
