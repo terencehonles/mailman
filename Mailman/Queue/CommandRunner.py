@@ -118,7 +118,7 @@ class Results:
             return self.lineno <> 0
         return handler.process(self, args)
 
-    def make_response(self):
+    def send_response(self):
         def indent(lines):
             return ['    ' + line for line in lines]
 
@@ -142,15 +142,26 @@ Attached is your original message.
         results = MIMEText(
             NL.join(resp),
             _charset=Utils.GetCharSet(self.mlist.preferred_language))
+        # Safety valve for mail loops with misconfigured email 'bots.  We
+        # don't respond to commands sent with "Precedence: bulk|junk|list"
+        # unless they explicitly "X-Ack: yes", but not all mail 'bots are
+        # correctly configured, so we max out the number of responses we'll
+        # give to an address in a single day.
+        #
+        # BAW: We wait until now to make this decision since our sender may
+        # not be self.msg.get_sender(), but I'm not sure this is right.
+        recip = self.returnaddr or self.msg.get_sender()
+        if not self.mlist.autorespondToSender(recip):
+            return
         msg = Message.UserNotification(
-            self.returnaddr or self.msg.get_sender(),
+            recip,
             self.mlist.GetBouncesEmail(),
             _('The results of your email commands'))
         msg.set_type('multipart/mixed')
         msg.attach(results)
         orig = MIMEMessage(self.msg)
         msg.attach(orig)
-        return msg
+        msg.send(self.mlist)
 
 
 
@@ -193,8 +204,7 @@ class CommandRunner(Runner):
                 mo = re.match(mm_cfg.VERP_CONFIRM_REGEXP, msg.get('to', ''))
                 if mo:
                     res.do_command('confirm', (mo.group('cookie'),))
-            msg = res.make_response()
-            msg.send(mlist)
+            res.send_response()
             mlist.Save()
         finally:
             mlist.Unlock()
