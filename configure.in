@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2709 $)
+AC_REVISION($Revision: 2712 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -145,11 +145,11 @@ AC_MSG_CHECKING(for --with-var-prefix)
 AC_ARG_WITH(var-prefix, dnl
 [  --with-var-prefix     directory for mutable data [/var/mailman]])
 case "$with_var_prefix" in
-	yes)	VAR_PREFIX="$default_var_prefix";;
-	""|no)	VAR_PREFIX="$prefix";;
-	*)	VAR_PREFIX="$with_var_prefix";;
+	yes)	VAR_PREFIX="$default_var_prefix"; ans=$VAR_PREFIX;;
+	""|no)	VAR_PREFIX="$prefix"; ans="no";;
+	*)	VAR_PREFIX="$with_var_prefix"; ans=$VAR_PREFIX;
 esac
-AC_MSG_RESULT($VAR_PREFIX)
+AC_MSG_RESULT($ans)
 
 # new macro for finding GIDs
 AC_DEFUN(MM_FIND_GROUP_ID, [
@@ -272,7 +272,12 @@ fi
 # Now make sure that $prefix is set up correctly.  It must be group
 # owned by `mailman', it must have the group sticky bit set, and it
 # must be a+rx
-prefixcheck=$VAR_PREFIX
+if test "$VAR_PREFIX" = "NONE"
+then
+    prefixcheck=$ac_default_prefix
+else
+    prefixcheck=$VAR_PREFIX
+fi
 
 AC_MSG_CHECKING(permissions on $prefixcheck)
 changequote(,)
