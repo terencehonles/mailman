@@ -74,8 +74,10 @@ from Mailman import Utils
 from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
+from Mailman.Handlers import HandlerAPI
 
 
+
 def usage(status, msg=''):
     if msg:
         print msg
@@ -83,6 +85,7 @@ def usage(status, msg=''):
     sys.exit(status)
 
 
+
 def ReadFile(filename):
     lines = []
     if filename == "-":
@@ -94,6 +97,7 @@ def ReadFile(filename):
     return lines
 
 
+
 def SendExplanation(mlist, users):
     adminaddr = mlist.GetAdminEmail()
     d = {'listname'    : mlist.real_name,
@@ -109,8 +113,7 @@ def SendExplanation(mlist, users):
     msg = Message.OutgoingMessage(text)
     msg['From'] = adminaddr
     msg['Subject'] = subject
-    msg.recips = users
-    HandlerAPI.DeliverToUser(mlist, msg)
+    HandlerAPI.DeliverToUser(mlist, msg, {'recips': users})
 
 
 
