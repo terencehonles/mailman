@@ -91,8 +91,17 @@ VIRTUAL_HOSTS = {}
 VIRTUAL_HOST_OVERVIEW = 1
 
 
-# Helper function; use this in your mm_cfg.py files
-def add_virtualhost(urlhost, emailhost):
+# Helper function; use this in your mm_cfg.py files.  If optional emailhost is
+# omitted it defaults to urlhost with the first name stripped off, e.g.
+#
+# add_virtualhost('www.dom.ain')
+# VIRTUAL_HOST['www.dom.ain']
+# ==> 'dom.ain'
+#
+def add_virtualhost(urlhost, emailhost=None):
+    DOT = '.'
+    if emailhost is None:
+        emailhost = DOT.join(urlhost.split(DOT)[1:])
     VIRTUAL_HOSTS[urlhost.lower()] = emailhost.lower()
 
 # And set the default
