@@ -37,6 +37,10 @@ import HyperDatabase
 import pipermail
 from Mailman import mm_cfg
 
+from Mailman.Utils import mkdir, open_ex
+# TBD: ugly, ugly, ugly -baw
+open = open_ex
+
 
 def html_quote(s):
     repls = ( ('&', '&amp;'),
@@ -385,8 +389,8 @@ arch_listing_end = '''\
 class HyperArchive(pipermail.T):
 
     # some defaults
-    DIRMODE=0775 
-    FILEMODE=0664
+    DIRMODE=02775
+    FILEMODE=0660
     
 
     VERBOSE=0
@@ -500,6 +504,8 @@ class HyperArchive(pipermail.T):
     def GetArchLock(self):
         if self._lock_file:
             return 1
+        # TBD: This needs to be rewritten to use the generalized locking
+        # mechanism (when that exists).  -baw
         ou = os.umask(0)
         try:
             self._lock_file = posixfile.open(
@@ -738,7 +744,7 @@ class HyperArchive(pipermail.T):
                 except os.error, errdata:
                     errno, errmsg=errdata
                     if errno==2: 
-                        os.mkdir(archivedir)
+                        mkdir(archivedir)
                     else: raise os.error, errdata
                 self.open_new_archive(i, archivedir)
 
