@@ -115,7 +115,7 @@ class MailCommandHandler:
 		match = re.search(conf_pat, subject)
 		if not match:
 		    match = re.search(conf_pat, mail.body)
-		else:
+		if match:
 		    lines = ["confirm %s" % (match.group(1))]
 		else:
 		    self.AddError("Subject line ignored: %s" % subject)
@@ -407,6 +407,7 @@ class MailCommandHandler:
 	    self.AddError("%s" % sys.exc_traceback)
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
+        """Parse subscription request and send confirmation request."""
 	digest = self.digest_is_default
         password = ""
         address = ""
@@ -447,13 +448,19 @@ class MailCommandHandler:
             return
         cookie = Pending.gencookie()
         Pending.add2pending(pending_addr, password, digest, cookie)
+        remote = mail.GetSender()
+        if remote == pending_addr:
+            remote = ""
+        else:
+            remote = " from " + remote
         text = Utils.maketext(
             'verify.txt',
             {'email'       : pending_addr,
              'listaddr'    : self.GetListEmail(),
              'listname'    : self.real_name,
+             'listadmin'   : self.GetAdminEmail(),
              'cookie'      : cookie,
-             'requestor'   : mail.GetSender(),
+             'remote'      : remote,
              'requestaddr' : self.GetRequestEmail(),
              })
         self.SendTextToUser(
@@ -466,36 +473,9 @@ class MailCommandHandler:
         return
 
 
-    def FinishSubscribe(self, addr, password, digest):
-	try:
-	    self.AddMember(addr, password, digest)
-	    self.AddToResponse("Succeeded.")
-	except Errors.MMBadEmailError:
-	    self.AddError("Email address '%s' not accepted by Mailman." % 
-			  addr)
-	except Errors.MMMustDigestError:
-	    self.AddError("List only accepts digest members.")
-	except Errors.MMCantDigestError:
-	    self.AddError("List doesn't accept digest members.")
-	except Errors.MMListNotReady:
-	    self.AddError("List is not functional.")
-	except Errors.MMNeedApproval:
-	    self.AddApprovalMsg(cmd)
-        except Errors.MMHostileAddress:
-	    self.AddError("Email address '%s' not accepted by Mailman "
-			  "(insecure address)" % addr)
-	except Errors.MMAlreadyAMember:
-	    self.AddError("%s is already a list member." % addr)
-	except:
-	    # TODO: Should log the error we got if we got here.
-	    self.AddError("An unknown Mailman error occured.")
-	    self.AddError("Please forward your request to %s" %
-			  self.GetAdminEmail())
-	    self.AddError("%s" % sys.exc_type)
-
-
 
     def ProcessConfirmCmd(self, args, cmd, mail):
+        """Validate confirmation and carry out the subscription."""
         if len(args) != 1:
             self.AddError("Usage: confirm <confirmation number>\n")
             return
@@ -507,21 +487,52 @@ class MailCommandHandler:
         pending = Pending.get_pending()
         if not pending.has_key(cookie):
             self.AddError("Invalid confirmation number!\n"
-                          "Please recheck the confirmation number and try again.")
+                          "Please recheck the confirmation number and"
+                          " try again.")
             return
         (email_addr, password, digest, ts) = pending[cookie]
         if self.open_subscribe:
-            self.ApprovedAddMember(email_addr, password, digest)
-            self.AddToResponse("Succeeded")
+            self.FinishSubscribe(email_addr, password, digest,
+                                 approved=1)
         else:
-            try:
-                self.AddRequest('add_member', digest, email_addr, password)
-            except Errors.MMNeedApproval:
-                self.AddApprovalMsg('add_member')
+            self.FinishSubscribe(email_addr, password, digest)
         del pending[cookie]
         Pending.set_pending(pending)
 
-
+    def FinishSubscribe(self, addr, password, digest, approved=0):
+	try:
+            if approved:
+                self.ApprovedAddMember(addr, password, digest)
+            else:
+                self.AddMember(addr, password, digest)
+	    self.AddToResponse("Succeeded.")
+	except Errors.MMBadEmailError:
+	    self.AddError("Email address '%s' not accepted by Mailman." % 
+			  addr)
+	except Errors.MMMustDigestError:
+	    self.AddError("List only accepts digest members.")
+	except Errors.MMCantDigestError:
+	    self.AddError("List doesn't accept digest members.")
+	except Errors.MMListNotReady:
+	    self.AddError("List is not functional.")
+	except Errors.MMNeedApproval:
+	    self.AddApprovalMsg("Subscription is pending list admin approval.")
+        except Errors.MMHostileAddress:
+	    self.AddError("Email address '%s' not accepted by Mailman "
+			  "(insecure address)" % addr)
+	except Errors.MMAlreadyAMember:
+	    self.AddError("%s is already a list member." % addr)
+	except:
+	    self.AddError("An unknown Mailman error occured.")
+	    self.AddError("Please forward your request to %s" %
+			  self.GetAdminEmail())
+	    self.AddError("%s" % sys.exc_type)
+            self.LogMsg("error", ("%s:\n\t%s.FinishSubscribe() encountered"
+                                  " unexpected exception:\n\t'%s', '%s'"
+                                  % (__name__,
+                                     self._internal_name,
+                                     str(sys.exc_info()[0]),
+                                     str(sys.exc_info()[1]))))
 		
     def AddApprovalMsg(self, cmd):
         text = Utils.maketext(
@@ -531,7 +542,6 @@ class MailCommandHandler:
              'adminaddr'  : self.GetAdminEmail(),
              })
         self.AddError(text)
-
 
     def ProcessHelpCmd(self, args, cmd, mail):
         text = Utils.maketext(
