@@ -385,6 +385,12 @@ def NewVars(l):
     add_only_if_missing('emergency', 0)
     add_only_if_missing('hold_and_cmd_autoresponses', {})
     add_only_if_missing('news_prefix_subject_too', 1)
+    # Should prefixes be encoded?
+    if Utils.GetCharSet(l.preferred_language) == 'us-ascii':
+        encode = 0
+    else:
+        encode = 2
+    add_only_if_missing('encode_ascii_prefixes', encode)
 
 
 
