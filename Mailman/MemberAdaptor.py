@@ -120,7 +120,8 @@ class MemberAdaptor:
         The language returned must be a key in mm_cfg.LC_DESCRIPTIONS and the
         mailing list must support that language.
 
-        If member does not refer to a valid member, raise NotAMemberError.
+        If member does not refer to a valid member, the list's default
+        language is returned instead of raising a NotAMemberError error.
         """
         raise NotImplemented
 
@@ -138,6 +139,13 @@ class MemberAdaptor:
 
         None is returned if the member has no registered RealName.
         NotAMemberError is raised if member does not refer to a valid member.
+        """
+        raise NotImplemented
+
+    def getMemberTopics(self, member):
+        """Return the list of topics this member is interested in.
+
+        The return value is a list of strings which name the topics.
         """
         raise NotImplemented
 
@@ -175,7 +183,7 @@ class MemberAdaptor:
         """
         raise NotImplemented
 
-    def changeMemberAddress(self, memberkey, newaddress):
+    def changeMemberAddress(self, memberkey, newaddress, nodelete=0):
         """Change the address for the member KEY.
 
         memberkey will be a KEY, not an LCE.  newaddress should be the
@@ -185,6 +193,8 @@ class MemberAdaptor:
         If memberkey does not refer to a valid member, raise NotAMemberError.
         No verification on the new address is done here (such assertions
         should be performed by the caller).
+
+        If nodelete flag is true, then the old membership is not removed.
         """
         raise NotImplemented
 
@@ -224,5 +234,14 @@ class MemberAdaptor:
 
         member is an LCE/KEY and realname is an arbitrary string.
         NotAMemberError is raised if member does not refer to a valid member.
+        """
+        raise NotImplemented
+
+    def setMemberTopics(self, member, topics):
+        """Add list of topics to member's interest.
+
+        member is an LCE/KEY and realname is an arbitrary string.
+        NotAMemberError is raised if member does not refer to a valid member.
+        topics must be a sequence of strings.
         """
         raise NotImplemented
