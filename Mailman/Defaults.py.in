@@ -507,10 +507,10 @@ VERP_FORMAT = '%(bounces)s+%(mailbox)s=%(host)s'
 # The second describes a regular expression to unambiguously decode such an
 # address, which will be placed in the To: header of the bounce message by the
 # bouncing MTA.  Getting this right is critical -- and tricky.  Learn your
-# Python regular expressions.  It must define exactly two named groups,
-# mailbox and host, with the same definition as above.  It will be compiled
-# case-insensitively.
-VERP_REGEXP = r'^[^+]+?\+(?P<mailbox>[^=]+)=(?P<host>[^@]+)@.*$'
+# Python regular expressions.  It must define exactly three named groups,
+# bounces, mailbox and host, with the same definition as above.  It will be
+# compiled case-insensitively.
+VERP_REGEXP = r'^(?P<bounces>[^+]+?)\+(?P<mailbox>[^=]+)=(?P<host>[^@]+)@.*$'
 
 # A perfect opportunity for doing VERP is the password reminders, which are
 # already addressed individually to each recipient.  This flag, if true,
