@@ -624,25 +624,32 @@ def reap(kids, func=None):
 
 # Useful conversion routines
 # unhexlify(hexlify(s)) == s
-def hexlify(s):
-    acc = []
-    def munge(byte, append=acc.append, a=ord('a'), z=ord('0')):
-        if byte > 9: append(byte+a-10)
-        else: append(byte+z)
-    for c in s:
-        hi, lo = divmod(ord(c), 16)
-        munge(hi)
-        munge(lo)
-    return string.join(map(chr, acc), '')
+#
+# Python 2.0 has these in the binascii module
+try:
+    from binascii import hexlify, unhexlify
+except ImportError:
+    # Not the most efficient of implementations, but good enough for older
+    # versions of Python.
+    def hexlify(s):
+        acc = []
+        def munge(byte, append=acc.append, a=ord('a'), z=ord('0')):
+            if byte > 9: append(byte+a-10)
+            else: append(byte+z)
+        for c in s:
+            hi, lo = divmod(ord(c), 16)
+            munge(hi)
+            munge(lo)
+        return string.join(map(chr, acc), '')
 
-def unhexlify(s):
-    acc = []
-    append = acc.append
-    # In Python 2.0, we can use the int() built-in
-    int16 = string.atoi
-    for i in range(0, len(s), 2):
-        append(chr(int16(s[i:i+2], 16)))
-    return string.join(acc, '')
+    def unhexlify(s):
+        acc = []
+        append = acc.append
+        # In Python 2.0, we can use the int() built-in
+        int16 = string.atoi
+        for i in range(0, len(s), 2):
+            append(chr(int16(s[i:i+2], 16)))
+        return string.join(acc, '')
 
 
 
