@@ -43,9 +43,14 @@ like to be included in this list, please
     <!-- Roger Pena -->
     <li><a href="http://www.redhat.com/">RedHat, Inc.</a>
     <li><a href="http://lists.samba.org/">Samba</a>
+    <!-- Chris Howells -->
+    <li><a href="http://mail.kde.org/mailman/listinfo">KDE Project</a>
+    <li><a href="http://www.pair.com/pair/pairlist/">Pair List</a>
 
     <!-- Barry Warsaw -->
     <li><a href="http://www.python.org/sigs/">Python.Org</a>
+    <li><a href="http://lists.zope.org/">Zope.org</a>
+    <li><a href="http://www.zope.com/">Zope.com</a> (<em>Yay!</em>)
     <!-- Owen Taylor -->
     <li><a href="http://mail.gnome.org/">GNOME.Org</a>
     <!-- Nigel Metheringham -->
@@ -62,6 +67,9 @@ like to be included in this list, please
     (private lists only, currently)
     <!-- Bill Bradford -->
     <li><a href="http://www.sunhelp.org/mailman/listinfo/">SunHelp.Org</a>
+    <li><a href="http://www.sunmanagers.org/mailman/listinfo">Sun Managers</a>
+    <li><a href="http://www.linuxmanagers.org/mailman/listinfo">Linux
+    Managers</a>
     <!-- Bill Hoffman -->
     <li><a href="http://public.kitware.com/">Visualization Tool Kit
     (VTK)</a>
@@ -82,6 +90,23 @@ like to be included in this list, please
     <!-- Jeff Berliner -->
     <li><a href="http://endeavor.med.nyu.edu/mailman/listinfo">New York
     University School of Medicine</a>
+    <!-- Marco Obaid -->
+    <li><a href="http://lists.MUW.Edu/">Mississippi University for Women</a>
+    <!-- Carel Braam -->
+    <li><a href="http://pegasus.tue.nl">Eindhoven University of Technology</a>
+    <!-- Prof. Marcelo Maia Sobral -->
+    <li>University of vale do Itajai, Sao Jose, Brasil
+    <!-- Conal Garrity -->
+    <li><a href="http://www.kvsc.org/">KVSC Radio, St. Cloud State
+    University, MN</a>
+    <!-- Babak Mostaghassi -->
+    <li><a href="http://ill.iut.ac.ir/">Linux Lab of Isfahan
+    University Of Technology</a>
+    <!-- Aly S.P Dharshi -->
+    <li>University of Lethbridge Organization of Residence Students
+    <!-- Courtney V. Bearse -->
+    <li><a href="http://linux.uky.edu/mailman/listinfo/">University of
+    Kentucky</a>
 
     <!-- Chuq von Rospach's alter ego -->
     <li><a href="http://www.hockeyfanz.com/">HockeyFanz.com</a>
@@ -165,14 +190,10 @@ like to be included in this list, please
     <!-- Krzysztof Wychowalek -->
     <li><a href="http://www.most.org.pl">MOST - Polish provider for 
     Environmental Movement</a>
-    <!-- Marco Obaid -->
-    <li><a href="http://lists.MUW.Edu/">Mississippi University for Women</a>
     <!-- Ken Kyler -->
     <li><a href="http://www.elists.org/">eLists.org</a>
     <!-- kellan -->
     <li><a href="http://lists.indymedia.org/">IndyMedia</a>
-    <!-- Carel Braam -->
-    <li><a href="http://pegasus.tue.nl">Eindhoven University of Technology</a>
     <!-- Yasha Harari -->
     <li><a href="http://mail.anywhereyougo.com/">mail.anywhereyougo.com</a>
     <!-- Gary Coulbourne -->
@@ -259,8 +280,6 @@ like to be included in this list, please
     Contestado-UnC Curitibanos/SC/Brasil</a>
     <!-- Quique -->
     <li><a href="http://sindominio.net">sindominio.net</a>
-    <!-- Prof. Marcelo Maia Sobral -->
-    <li>University of vale do Itajai, Sao Jose, Brasil
     <!-- Damir Horvat -->
     <li><a href="http://www.voljatel.si">VOLJATEL telekomunikacije d.d.</a>
     <!-- Rod (Gentle) Ellis -->
@@ -277,5 +296,63 @@ like to be included in this list, please
     <!-- Jim Reisert -->
     <li><a href="http://lists.contesting.com/mailman/listinfo"
     >Contesting.com</a>, Amateur ("Ham") Radio lists.
+    <!-- Stephen McKeown -->
+    <li><a href="http://www.jmbarrie.net">http://www.jmbarrie.net</a>
+    <!-- Dennis Du Bois -->
+    <li><a href="http://freelance-seattle.net/">Freelance-Seattle.net</a>
+    <!-- Charles Tucker -->
+    <li><a href="http://www.riverbend.com/">Riverbend Church</a>
+    <!-- Ben Dyer -->
+    <li><a href="http://lists.evolt.org/">Evolt.org</a>
+    <!-- munindo -->
+    <li><a href="http://mail2.factsoft.de/mailman/listinfo/national"
+        >http://mail2.factsoft.de/mailman/listinfo/national</a>
+    <!-- Ignacio Valdez -->
+    <li><a href="http://www.linuxmednews.com">Linux Medical News</a>
+    <!-- Dean Strik -->
+    <li><a href="http://lists.stack.nl/">stack.nl</a>
+    <!-- Jim Goltz -->
+    <li>NFR Security
+    <!-- Stephan Richter -->
+    <li><a href="http://iuveno-net.de/">iuveno-net.de</a>
+    <!-- Johnny Fuerst -->
+    <li><a href="http://mailman.cathat.net/">cathat.net</a>
+    <!-- gulli -->
+    <li><a href="http://www.heise.de/bin/newsletter/listinfo/newsticker"
+    >heise-newsletter</a>, the biggest news-website for
+    it-professionals in Germany.
+    <!-- Alden Gillespy -->
+    <li><a href="http://www.thetestpattern.com/">Test Pattern Radio</a>
+    <!-- Roberto Mogliotti -->
+    <li><a href="http://lists.atlink.it/">ATLink SRL</a>
+    <!-- Daniel Buchmann -->
+    <li><a href="http://www.bibsys.com/english.html">BIBSYS (Library
+    Automation System, Norway)</a>
+    <!-- Tim Lyons -->
+    <li><a href="http://www.digitalvoodoo.org">www.digitalvoodoo.org</a>
+    <!-- Michael Neil Felzien -->
+    <li><a href="http://www.pied.com/">Process Integrated Engineering
+    Design (PIED)</a>
+    <!-- mark roberts -->
+    <li>BBSRC (Bioscience and Biotechnical Scientific Research Council)
+    <!-- Joshua Erdman -->
+    <li><a href="http://www.ernestallen.com">Ernest & Allen</a>
+    <!-- Hank Roth -->
+    <li><a href="http://pnews.org/">pnews.org</a>
+    <!-- Rene Lange -->
+    <li><a href="http://www.tlug.de">Linux Users Group, Germany</a>
+    <!-- switzerland -->
+    <li><a href="http://lists.indymedia.org">indymedia</a>
+    <!-- Keith Patton -->
+    <li><a href="http://www.ethicalmedia.com">Ethical Media Ltd</a>
+    <!-- Leandro Rache Sanchez -->
+    <li><a href="http://www.hipertek.net">Hipertek Ltda</a>, Bogota,
+    Columbia</a>
+    <!-- Yann Forget -->
+    <li><a href="http://mail.ynternet.net/mailman/listinfo"
+    >ynternet.org</a>
+    <!-- Renn -->
+    <li><a href="http://csrfree.csrsr.ncu.edu.tw/mailman/listinfo/ncuce83/"
+    >National Central University, Dept. of Civil Engineering, the 83th</a>
 
 </ul>
