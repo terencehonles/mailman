@@ -28,7 +28,7 @@ ecre = re.compile(r'--- Original message follows')
 def process(msg):
     # yahoo bounces seem to have a known subject value and something called an
     # x-uidl header, the value of which seems unimportant
-    if string.lower(msg.get('from')) <> 'mailer-daemon@yahoo.com':
+    if string.lower(msg.get('from', '')) <> 'mailer-daemon@yahoo.com':
         return None
     msg.rewindbody()
     addrs = []
