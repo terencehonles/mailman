@@ -1123,7 +1123,12 @@ class HyperArchive(pipermail.T):
                     k = kr.start(0)
                 if j != -1 and (j < k or k == -1):
                     text = jr.group(1)
-                    URL = 'mailto:' + text
+                    if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
+                        text = re.sub('@', _(' at '), text)
+                        URL = self.maillist.GetScriptURL(
+                            'listinfo', absolute=1)
+                    else:
+                        URL = 'mailto:' + text
                     pos = j
                 elif k != -1 and (j > k or j == -1):
                     text = URL = kr.group(1)
