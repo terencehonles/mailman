@@ -79,6 +79,15 @@ def run_main():
         # special one.
         import Mailman.pythonlib.cgi
         sys.modules['cgi'] = Mailman.pythonlib.cgi
+        #
+        # TBD: Stick the i18n translation function into the builtins.  This is
+        # bogus because it's too magical, but it's also quite convenient
+        # during the i18n integration phase.  This will change before the
+        # release!
+        import __builtin__
+        from Mailman.i18n import _
+        __builtin__._ = _
+        #
         # The name of the module to run is passed in argv[1].  What we
         # actually do is import the module named by argv[1] that lives in the
         # Mailman.Cgi package.  That module must have a main() function, which
