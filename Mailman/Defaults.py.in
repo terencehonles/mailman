@@ -110,11 +110,11 @@ HTML_TO_PLAIN_TEXT_COMMAND = '/usr/bin/lynx -dump %(filename)s'
 # DEFAULT_HOST_NAME.
 VIRTUAL_HOSTS = {}
 
-# When set, the listinfo web page overview of lists on the machine will be
+# When set, the listinfo and admin overviews of lists on the machine will be
 # confined to only those lists whose web_page_url configuration option host is
 # included within the URL by which the page is visited - only those "on the
-# virtual host".  If unset, then all lists are included in the overview.  The
-# admin page overview always includes all the lists.
+# virtual host".  If unset, then all advertised (i.e. public) lists are
+# included in the overview.
 VIRTUAL_HOST_OVERVIEW = 1
 
 
