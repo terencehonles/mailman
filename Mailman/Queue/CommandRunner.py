@@ -59,6 +59,7 @@ class Results:
         self.results = []
         self.ignored = []
         self.lineno = 0
+        self.subjcmdretried = 0
         # Always process the Subject: header first
         self.commands.append(msg['subject'])
         # Find the first text/plain part
@@ -99,10 +100,17 @@ class Results:
             __import__(modname)
             handler = sys.modules[modname]
         except ImportError:
-            # If we're on line zero, it was the Subject: header that
-            # didn't contain a command.  This isn't enough to stop
-            # processing.  BAW: should we include a message that the
-            # Subject: was ignored?
+            # If we're on line zero, it was the Subject: header that didn't
+            # contain a command.  It's possible there's a Re: prefix (or
+            # localized version thereof) on the Subject: line that's messing
+            # things up.  Pop the prefix off and try again... once.
+            #
+            # If that still didn't work it isn't enough to stop processing.
+            # BAW: should we include a message that the Subject: was ignored?
+            if not self.subjcmdretried and args:
+                self.subjcmdretried += 1
+                cmd = args.pop(0)
+                return self.do_command(cmd, args)
             return self.lineno <> 0
         return handler.process(self, args)
 
