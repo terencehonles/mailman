@@ -5,59 +5,57 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 The following folks are the primary maintainers of Mailman (in reverse
 alphabetical order):
 
-	Barry Warsaw, Mailman's yappy guard dog
-	John Viega, Mailman's inventor
-	Harald Meland, Norse Mailman
-	Ken Manheimer, Mailman's savior
-	Scott Cotton, Cookie-Monster
+    Barry Warsaw, Mailman's yappy guard dog
+    John Viega, Mailman's inventor
+    Harald Meland, Norse Mailman
+    Ken Manheimer, Mailman's savior
+    Scott Cotton, Cookie-Monster
 
 They can be contacted directly via mailman-cabal@python.org.
 
 Here is the list of other contributors who have donated large bits of
 code, and have assigned copyright for this code to the FSF:
 
-	The Dragon De Monsyne
-        Juan Carlos Rey Anaya
-        Victoriano Giralt
-        Mads Kiilerich
+    The Dragon De Monsyne
+    Juan Carlos Rey Anaya
+    Victoriano Giralt
+    Mads Kiilerich
 
 Thanks also to Dragon for his winning Mailman logo contribution!
 
 Here is a list of authors of separate modules which are currently
 distributed with Mailman, but are not part of Mailman:
 
-	Timothy O'Malley, author of misc/Cookie.py.  This file is
-	distributed under the GNU LGPL, and is included in the Mailman
-	distribution for convenience only.  It is not part of Mailman.
+    Timothy O'Malley, author of misc/Cookie.py.  This file is
+    distributed under the GNU LGPL, and is included in the Mailman
+    distribution for convenience only.  It is not part of Mailman.
 
 Here is the list of other people who have contributed useful ideas,
 suggestions, bug fixes, testing, etc., or who have been very helpful
-in answering questions on mailman-users.  This list is in no
-particular order, but all are greatly appreciated!
+in answering questions on mailman-users.
 
-        Jeremy Hylton
-	Balazs Nagy
-	Michael Mclay
-	Greg Stein
-	Gergely Madarasz
-	Andrew Kuchling
-	Jeff Hahn
-        Paul Hebble
-        Christopher P. Lindsey
-        Chris Kolar
-        J C Lawrence
-        Nigel Metheringham
-        Dan Mick
-        Jim Tittsler
-        Ricardo Kustner
-        Bernhard Reiter
-        Thomas Wouters
-        Jeff Berliner
+    Jeff Berliner
+    Jeff Hahn
+    Paul Hebble
+    Jeremy Hylton
+    Chris Kolar
+    Andrew Kuchling
+    Ricardo Kustner
+    J C Lawrence
+    Christopher P. Lindsey
+    Gergely Madarasz
+    Michael Mclay
+    Nigel Metheringham
+    Dan Mick
+    Balazs Nagy
+    Bernhard Reiter
+    Greg Stein
+    Jim Tittsler
+    Thomas Wouters
+    Michael Yount
 
-	And everyone else on mailman-developers@python.org
-	    and mailman-users@python.org!
-
-Thank you, all!
+And everyone else on mailman-developers@python.org and
+mailman-users@python.org!  Thank you, all.
 
 
 Local Variables:
