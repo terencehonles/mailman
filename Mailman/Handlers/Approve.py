@@ -41,9 +41,7 @@ class LoopError(NotApproved, Errors.MMLoopingPost):
 
 def process(mlist, msg):
     # short circuits
-    if getattr(msg, 'approved', 0) or \
-       getattr(msg, 'isdigest', 0) or \
-       getattr(msg, 'fromusenet', 0):
+    if getattr(msg, 'approved', 0):
         # digests, Usenet postings, and some other messages come
         # pre-approved.  TBD: we may want to further filter Usenet messages,
         # so the test above may not be entirely correct.
