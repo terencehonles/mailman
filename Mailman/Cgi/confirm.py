@@ -235,17 +235,18 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
         result = _("""Your confirmation is required in order to continue with
         the subscription request to the mailing list <em>%(listname)s</em>.
         Your subscription settings are shown below; make any necessary changes
-        and hit <em>Subscribe</em> to complete the confirmation process.  Once
-        you've confirmed your subscription request, the moderator must approve
-        or reject your membership request.  You will receive notice of their
-        decision.
+        and hit <em>Subscribe to list ...</em> to complete the confirmation
+        process.  Once you've confirmed your subscription request, the
+        moderator must approve or reject your membership request.  You will
+        receive notice of their decision.
 
         <p>Note: your password will be emailed to you once your subscription
         is confirmed.  You can change it by visiting your personal options
         page.
 
-        <p>Or you can hit <em>Cancel and discard</em> now to cancel this
-        subscription request.""") + '<p><hr>'
+        <p>Or, if you've changed your mind and do not want to subscribe to
+        this mailing list, you can hit <em>Cancel my subscription
+        request</em>.""") + '<p><hr>'
     table.AddRow([result])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
 
@@ -272,8 +273,10 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
                   SelectOptions('language', langs, values, selected)])
     table.AddRow([Hidden('cookie', cookie)])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
-    table.AddRow([Label(SubmitButton('submit', _('Subscribe'))),
-                  SubmitButton('cancel', _('Cancel and discard'))])
+    table.AddRow([
+        Label(SubmitButton('cancel', _('Cancel my subscription request'))),
+        SubmitButton('submit', _('Subscribe to list %(listname)s'))
+        ])
     form.AddItem(table)
     doc.AddItem(form)
 
