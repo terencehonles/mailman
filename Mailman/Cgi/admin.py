@@ -47,6 +47,7 @@ _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 NL = '\n'
+OPTCOLUMNS = 11
 
 
 
@@ -843,7 +844,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         usertable.AddRow([Center(Italic(_('%(allcnt)s members total')))])
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
                           usertable.GetCurrentCellIndex(),
-                          colspan=10,
+                          colspan=OPTCOLUMNS,
                           bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     # Add the alphabetical links
     if bucket:
@@ -861,17 +862,18 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         usertable.AddRow([Center(joiner.join(cells))])
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
                           usertable.GetCurrentCellIndex(),
-                          colspan=10,
+                          colspan=OPTCOLUMNS,
                           bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     usertable.AddRow([Center(h) for h in (_('unsub'),
                                           _('member address<br>member name'),
                                           _('mod'), _('hide'),
                                           _('nomail<br>[reason]'),
                                           _('ack'), _('not metoo'),
+                                          _('nodupes'),
                                           _('digest'), _('plain'),
                                           _('language'))])
     rowindex = usertable.GetCurrentRowIndex()
-    for i in range(10):
+    for i in range(OPTCOLUMNS):
         usertable.AddCellInfo(rowindex, i, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     # Find the longest name in the list
     longest = 0
@@ -907,7 +909,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
             checked = 0
         box = CheckBox('%s_mod' % addr, value, checked)
         cells.append(Center(box).Format())
-        for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
+        for opt in ('hide', 'nomail', 'ack', 'notmetoo', 'nodupes'):
             extra = ''
             if opt == 'nomail':
                 status = mlist.getDeliveryStatus(addr)
@@ -981,8 +983,11 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         _('''<b>ack</b> -- Does the member get acknowledgements of their
         posts?'''))
     legend.AddItem(
-        _('''<b>not metoo</b> -- Does the member avoid copies of their own
-        posts?'''))
+        _('''<b>not metoo</b> -- Does the member want to avoid copies of their
+        own postings?'''))
+    legend.AddItem(
+        _('''<b>nodupes</b> -- Does the member want to avoid duplicates of the
+        same message?'''))
     legend.AddItem(
         _('''<b>digest</b> -- Does the member get messages in digests?
         (otherwise, individual messages)'''))
@@ -1328,7 +1333,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                     mlist.setDeliveryStatus(user, MemberAdaptor.BYADMIN)
             else:
                 mlist.setDeliveryStatus(user, MemberAdaptor.ENABLED)
-            for opt in ('hide', 'ack', 'notmetoo', 'plain'):
+            for opt in ('hide', 'ack', 'notmetoo', 'nodupes', 'plain'):
                 opt_code = option_info[opt]
                 if cgidata.has_key('%s_%s' % (user, opt)):
                     mlist.setMemberOption(user, opt_code, 1)
