@@ -1033,7 +1033,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 lang = userdesc.language
             except ValueError:
                 raise Errors.MMBadConfirmation, 'bad subscr data %s' % (data,)
-            if self.subscribe_policy == 3: # confirm + approve
+            # We check for both 2 (approval required) and 3 (confirm +
+            # approval) because the policy could have been changed in the
+            # middle of the confirmation dance.
+            if self.subscribe_policy in (2, 3):
                 self.HoldSubscription(addr, fullname, password, digest, lang)
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
