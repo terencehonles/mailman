@@ -1,0 +1,61 @@
+add.\"
+.\" GNU Mailman Manual
+.\"
+.\" remove_members 
+.\"
+.\" Documenter:   Terri Oda
+.\"               terri (at) zone12.com
+.\" Created:      September 13, 2004
+.\" Last Updated: September 13, 2004
+.\"
+.TH remove_members 1 "September 13, 2004" "Mailman 2.1" "GNU Mailman Manual"
+.\"=====================================================================
+.SH NAME
+remove_members \- Remove members from a Mailman mailing list.
+.\"=====================================================================
+.SH SYNOPSIS
+.B remove_members 
+[-f \fIfile\fP]
+[-a]
+[--fromall]
+[-n]
+[-N]
+[-h]
+[listname]
+[addr1 ...]
+.\"=====================================================================
+.SH DESCRIPTION
+Remove members from a Mailman mailing list from the command line.
+.\"=====================================================================
+.SH OPTIONS
+.IP "---file=\fIfile\fP, -f \fIfile\fP"
+Remove member addresses found in the given file.  If file is
+`-', read stdin.
+.IP "--all, -a"
+Remove all members of the mailing list.
+(mutually exclusive with --fromall)
+.IP "--fromall"
+Removes the given addresses from all the lists on this system
+regardless of virtual domains if you have any.  This option cannot be
+used -a/--all.  Also, you should not specify a listname when
+using this option.
+.IP "--nouserack, -n"
+Don't send the admin acknowledgements.  If not specified, the list
+default value is used.
+.IP "--help, -h"
+Print this help message and exit.
+.IP listname
+The name of the mailing list to use.
+.IP addr1 ...
+Additional addresses to remove.
+.\"=====================================================================
+.SH SEE ALSO
+.BR add_members (1),
+.BR find_member(1),
+.BR list_members (1)
+.PP
+The Mailman website: http://www.list.org
+.\"=====================================================================
+.SH AUTHOR
+This man page was created by Terri Oda <terri (at) zone12.com>.
+Use <mailman-developers@python.org> to contact the developers.

@@ -15,8 +15,8 @@ add_members \- Remove members from a Mailman mailing list.
 .\"=====================================================================
 .SH SYNOPSIS
 .B add_members 
--r \fIfile\fP
--d \fIfile\fP
+[-r \fIfile\fP]
+[-d \fIfile\fP]
 [-w <\fIy|n\fP>]
 [-a <\fIy|n\fP>]
 [-h]
@@ -47,9 +47,9 @@ list's `admin_notify_mchanges' setting is.
 The name of the list to which you wish to add members.
 .\"=====================================================================
 .SH SEE ALSO
-.BR remove_members (1),
-.BR list_members (1),
 .BR find_member(1),
+.BR list_members (1),
+.BR remove_members (1)
 .PP
 The Mailman website: http://www.list.org
 .\"=====================================================================

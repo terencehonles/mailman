@@ -1,0 +1,79 @@
+add.\"
+.\" GNU Mailman Manual
+.\"
+.\" remove_members 
+.\"
+.\" Documenter:   Terri Oda
+.\"               terri (at) zone12.com
+.\" Created:      September 13, 2004
+.\" Last Updated: September 13, 2004
+.\"
+.TH sync_members 1 "September 13, 2004" "Mailman 2.1" "GNU Mailman Manual"
+.\"=====================================================================
+.SH NAME
+sync_members \- Synchronize a Mailman mailing list's membership with a flat file.
+.\"=====================================================================
+.SH SYNOPSIS
+.B sync_members 
+[-n]
+[-w <\fIyes|no\fP>]
+[-g <\fIyes|no\fP>]
+[-d <\fIyes|no\fP>]
+[-a <\fIyes|no\fP>]
+[-h]
+-f \fIfilename\fP
+listname
+.\"=====================================================================
+.SH DESCRIPTION
+Synchronizes a Mailman mailing list's membership with a flat file.
+.PP
+This script is useful if you have a Mailman mailing list and a sendmail
+:include: style list of addresses (also as is used in Majordomo).  For every
+address in the file that does not appear in the mailing list, the address is
+added.  For every address in the mailing list that does not appear in the
+file, the address is removed.  Other options control what happens when an
+address is added or removed.
+.\"=====================================================================
+.SH OPTIONS
+.IP "--no-change -n"
+Don't actually make the changes.  Instead, print out what would be
+done to the list.
+.IP "-welcome-msg[=<\fIyes|no\fP>], -w[=<\fIyes|no\fP>]"
+Sets whether or not to send the newly added members a welcome
+message, overriding whatever the list's `send_welcome_msg' setting
+is.  With -w=yes or -w, the welcome message is sent.  With -w=no, no
+message is sent.
+.IP "--goodbye-msg[=<\fIyes|no\fP>], -g[=<\fIyes|no\fP>]"
+Sets whether or not to send the goodbye message to removed members,
+overriding whatever the list's `send_goodbye_msg' setting is.  With
+-g=yes or -g, the goodbye message is sent.  With -g=no, no message is
+sent.
+.IP "--digest[=<\fIyes|no\fP>], -d[=<\fIyes|no\fP>]"
+Selects whether to make newly added members receive messages in
+digests.  With -d=yes or -d, they become digest members.  With -d=no
+(or if no -d option given) they are added as regular members.
+.IP "--notifyadmin[=<\fIyes|no\fP>], -a[=<\fIyes|no\fP>]"
+Specifies whether the admin should be notified for each subscription
+or unsubscription.  If you're adding a lot of addresses, you
+definitely want to turn this off!  With -a=yes or -a, the admin is
+notified.  With -a=no, the admin is not notified.  With no -a option,
+the default for the list is used.
+.IP "--file <\fIfilename | -\fp>, -f <\fIfilename | -\fP>"
+This option is required.  It specifies the flat file to synchronize
+against.  Email addresses must appear one per line.  If filename is
+`-' then stdin is used.
+.IP "--help, -h"
+Print this message.
+.IP listname
+Required.  This specifies the list to synchronize.
+.\"=====================================================================
+.SH SEE ALSO
+.BR add_members (1),
+.BR list_members(1),
+.BR remove_members (1)
+.PP
+The Mailman website: http://www.list.org
+.\"=====================================================================
+.SH AUTHOR
+This man page was created by Terri Oda <terri (at) zone12.com>.
+Use <mailman-developers@python.org> to contact the developers.
