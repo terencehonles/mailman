@@ -140,8 +140,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 (self.description, self._internal_name, self.host_name))
 
     def GetRelativeScriptURL(self, script_name):
-	prefix = '../'*Utils.GetNestingLevel()
-        return '%s%s/%s' % (prefix,script_name, self._internal_name)
+	prefix = '../' * Utils.GetNestingLevel()
+        return '%s%s%s/%s' % (prefix, script_name, mm_cfg.CGIEXT,
+                              self._internal_name)
 
     def GetAbsoluteScriptURL(self, script_name):
         if self.web_page_url:
@@ -150,7 +151,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             prefix = mm_cfg.DEFAULT_URL
         while prefix[-1] == "/":
             prefix = prefix[:-1]
-        return "%s/%s/%s" % (prefix, script_name, self._internal_name)
+        return "%s/%s%s/%s" % (prefix, script_name, mm_cfg.CGIEXT,
+                               self._internal_name)
 
     def GetAbsoluteOptionsURL(self, addr, obscured=0,):
         # address could come in case-preserved
