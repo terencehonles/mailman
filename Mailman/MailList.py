@@ -884,39 +884,61 @@ it will not be changed."""),
             self.SaveRequestsDb()
         self.CheckHTMLArchiveDir()
 
+    def __load(self, dbfile):
+        # Attempt to load and unmarshal the specified database file, which
+        # could be config.db or config.db.last.  On success return a 2-tuple
+        # of (dictionary, None).  On error, return a 2-tuple of the form
+        # (None, errorobj).
+        try:
+            fp = open(dbfile)
+        except IOError, e:
+            if e.errno == errno.ENOENT:
+                return None, e
+            else:
+                raise
+        try:
+            try:
+                dict = marshal.load(fp)
+                if type(dict) <> DictType:
+                    return None, 'Unmarshal expected to return a dictionary'
+            except (EOFError, ValueError, TypeError, MemoryError), e:
+                return None, e
+        finally:
+            fp.close()
+        return dict, None
+
     def Load(self, check_version=1):
+        if not Utils.list_exists(self.internal_name()):
+            raise Errors.MMUnknownListError
         # We first try to load config.db, which contains the up-to-date
         # version of the database.  If that fails, perhaps because it is
         # corrupted or missing, then we load config.db.last as a fallback.
         dbfile = os.path.join(self._full_path, 'config.db')
         lastfile = dbfile + '.last'
-        try:
-            fp = open(dbfile)
-        except IOError, e:
-            if e.errno == errno.ENOENT:
-                # Attempt to open config.db.last
-                try:
-                    fp = open(lastfile)
-                except IOError, e:
-                    if e.errno == errno.ENOENT:
-                        raise Errors.MMUnknownListError, e
-                    else:
-                        raise
-                # We got config.db.last, so now copy that to config.db
+        dict, e = self.__load(dbfile)
+        if dict is None:
+            # Had problems with config.db.  Either it's missing or it's
+            # corrupted.  Try config.db.last as a fallback.
+            self.LogMsg('error', '%s db file was corrupt, using fallback: %s'
+                        % (self.internal_name(), lastfile))
+            dict, e = self.__load(lastfile)
+            if dict is None:
+                # config.db.last is busted too.  Nothing much we can do now.
+                self.LogMsg('error', '%s fallback was corrupt, giving up'
+                            % self.internal_name())
+                raise Errors.MMCorruptListDatabaseError, e
+            # We had to read config.db.last, so copy it back to config.db.
+            # This allows the logic in Save() to remain unchanged.  Ignore
+            # any OSError resulting from possibly illegal (but unnecessary)
+            # chmod.
+            try:
                 shutil.copy(lastfile, dbfile)
-            else:
-                raise
-	try:
-	    dict = marshal.load(fp)
-            if type(dict) <> DictType:
-                self.Unlock()
-                raise Errors.MMCorruptListDatabaseError(
-                    "List's config.db did not unmarshal into a dictionary")
-	except (EOFError, ValueError, TypeError), e:
-            raise Errors.MMCorruptListDatabaseError, e
-	for key, value in dict.items():
-	    setattr(self, key, value)
-	fp.close()
+            except OSError, e:
+                if e.errno <> errno.EPERM:
+                    raise
+        # Copy the unmarshaled dictionary into the attributes of the mailing
+        # list object.
+        self.__dict__.update(dict)
 	self._ready = 1
         if check_version:
             self.CheckValues()
