@@ -130,19 +130,29 @@ def main():
             print text
             return
         
-        if len(cgi_data.keys()):
-            if cgi_data.has_key('VARHELP'):
-                FormatOptionHelp(doc, cgi_data['VARHELP'].value, lst)
-                print doc.Format(bgcolor="#ffffff")
-                return
-	    if (cgi_data.has_key('bounce_matching_headers')):
-		try:
-		    pairs = lst.parse_matching_header_opt()
-		except Errors.MMBadConfigError, line:
-                    AddErrorMessage(doc,
-                                    'Warning: bad matching-header line'
-                                    ' (does it have the colon?)<ul> %s </ul>',
-                                    line)
+        # is the request for variable details?
+        varhelp = None
+        if cgi_data.has_key('VARHELP'):
+            varhelp = cgi_data['VARHELP'].value
+        elif cgi_data.has_key('request_login') and \
+             os.environ.has_key('QUERY_STRING'):
+            # POST methods, even if their actions have a query string, don't
+            # get put into FieldStorage's keys :-(
+            qs = cgi.parse_qs(os.environ['QUERY_STRING'])
+            varhelp = qs.get('VARHELP')[0]
+        if varhelp:
+            FormatOptionHelp(doc, varhelp, lst)
+            print doc.Format(bgcolor="#ffffff")
+            return
+
+        if cgi_data.has_key('bounce_matching_headers'):
+            try:
+                pairs = lst.parse_matching_header_opt()
+            except Errors.MMBadConfigError, line:
+                AddErrorMessage(doc,
+                                'Warning: bad matching-header line'
+                                ' (does it have the colon?)<ul> %s </ul>',
+                                line)
 
 	if not lst.digestable and len(lst.GetDigestMembers()):
 	    AddErrorMessage(doc,
