@@ -1,8 +1,12 @@
 #! /usr/local/bin/python 
-# 
-# This script gets called by the wrapper.
-# Stdin is the mail message, and argv[1] is the name of the mailing list
-# being posted to.
+
+"""Accept posts to a list and handle them properly.
+
+This script is invoked via the mail wrapper.
+
+Stdin is the mail message, and argv[1] is the name of the target mailing
+list."""
+
 # Todo: check size of To: list < 100
 # Send back why the post was rejected.
 
