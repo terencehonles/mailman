@@ -40,7 +40,7 @@ You can reach the person managing the list at
 	%(got_owner_email)s
 
 When replying, please edit your Subject line so it is more specific than
-"Re: Contents of %(real_name)s digest...")
+"Re: Contents of %(real_name)s digest..."
 """
 
 
@@ -402,11 +402,14 @@ class Digest:
                          % digestboundary)
             lines.append("")
             lines.append(self.body)
+            # End multipart digest text part
+            lines.append("")
+            lines.append("--" + digestboundary + "--")
         else:
             lines.append(
                 filterDigestHeaders(self.body,
                                     mm_cfg.DEFAULT_PLAIN_DIGEST_KEEP_HEADERS,
-                                    self.list._mime_separator))
+                                    digestboundary))
         # List-specific footer:
         if self.list.digest_footer:
             lines.append("")
@@ -418,8 +421,6 @@ class Digest:
             lines.append(self.SatisfyRefs(self.list.digest_footer))
 
         # Close:
-        lines.append("")
-        lines.append("--" + digestboundary + "--")
         if mime:
             # Close encompassing mime envelope.
             lines.append("")
