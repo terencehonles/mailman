@@ -139,6 +139,37 @@ def main():
 
     else:
         try:
+            if list.FindUser(email):
+                raise Errors.MMAlreadyAMember
+            if digest:
+                digesting = " digest"
+            else:
+                digesting = ""
+            cookie = Pending.gencookie()
+            Pending.add2pending(email, pw, digest, cookie)
+            frmremote = " from %s" % remote
+            text = Utils.maketext('verify.txt',
+                                  {"email"      : email,
+                                   "listaddr"   : list.GetListEmail(),
+                                   "listname"   : list.real_name,
+                                   "cookie"     : cookie,
+                                   "hostname"   : frmremote,
+                                   "requestaddr": list.GetRequestEmail(),
+                                   "remote"     : frmremote,
+                                   "listadmin"  : list.GetAdminEmail(),
+                                   })
+            list.SendTextToUser(
+                subject=("%s -- confirmation of subscription -- request %d" % 
+                         (list.real_name, cookie)),
+                recipient = email,
+                sender = list.GetRequestEmail(),
+                text = text,
+                add_headers = ["Reply-to: %s" % list.GetRequestEmail(),
+                               "Errors-To: %s" % list.GetAdminEmail()])
+            results = results + ("Confirmation from your email address is "
+                                 "required, to prevent anyone from covertly "
+                                 "subscribing you.  Instructions are being "
+                                 "sent to you at %s." % email)
             if remote:
                 by = " " + remote
             else:
@@ -148,47 +179,7 @@ def main():
                         "web",
                         email,
                         by)
-            results = results + ("Confirmation from your email address is "
-                                 "required, to prevent anyone from covertly "
-                                 "subscribing you.  Instructions are being "
-                                 "sent to you at %s." % email)
-                        
-            remote = " from %s" % remote
 
-            if list.FindUser(email):
-                raise Errors.MMAlreadyAMember
-            results = results + ("Confirmation from your email address is "
-                                 "required, to prevent anyone from covertly "
-                                 "subscribing you.  Instructions are being "
-                                 "sent to you at %s." % email)
-
-            if digest:
-                digesting = " digest"
-            else:
-                digesting = ""
-            cookie = Pending.gencookie()
-            Pending.add2pending(email, pw, digest, cookie)
-            text = Utils.maketext(
-                'verify.txt',
-                {"email"      : email,
-                 "listaddr"   : list.GetListEmail(),
-                 "listname"   : list.real_name,
-                 "cookie"     : cookie,
-                 "hostname"   : remote,
-                 "requestaddr": list.GetRequestEmail(),
-                 "remote"     : remote,
-                 "listadmin"  : list.GetAdminEmail(),
-                 })
-            list.SendTextToUser(
-                subject="%s -- confirmation of subscription -- request %d" % \
-                (list.real_name, cookie),
-                recipient = email,
-                sender = list.GetRequestEmail(),
-                text = text,
-                add_headers = ["Reply-to: %s"
-                               % list.GetRequestEmail(),
-                               "Errors-To: %s"
-                               % list.GetAdminEmail()])
         except Errors.MMBadEmailError:
             results = results + ("Mailman won't accept the given email "
                                  "address as a valid address. (Does it "
