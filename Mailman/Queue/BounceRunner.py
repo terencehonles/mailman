@@ -76,6 +76,8 @@ class BounceRunner(Runner):
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.
         if not addrs:
+            syslog('bounce', 'bounce message w/no discernable addresses: %s',
+                   msg.get('message-id'))
             maybe_forward(mlist, msg)
             return
         # BAW: It's possible that there are None's in the list of addresses,
@@ -87,7 +89,9 @@ class BounceRunner(Runner):
         # then we'll register the address on every list in the system, but
         # note: this could be VERY resource intensive!
         foundp = 0
-        if mlist.internal_name() == mm_cfg.MAILMAN_SITE_LIST:
+        listname = mlist.internal_name()
+        if listname == mm_cfg.MAILMAN_SITE_LIST:
+            foundp = 1
             for listname in Utils.list_names():
                 xlist = self._open_list(listname)
                 xlist.Load()
@@ -112,8 +116,9 @@ class BounceRunner(Runner):
             try:
                 mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
             except LockFile.TimeOutError:
-                # Oh well, forget about this bounce
-                pass
+                # Try again later
+                syslog('bounce', "%s: couldn't get list lock", listname)
+                return 1
             else:
                 try:
                     for addr in addrs:
@@ -127,8 +132,8 @@ class BounceRunner(Runner):
             # It means an address was recognized but it wasn't an address
             # that's on any mailing list at this site.  BAW: don't forward
             # these, but do log it.
-            syslog('bounce', 'bounce message with non-members: %s',
-                   COMMASPACE.join(addrs))
+            syslog('bounce', 'bounce message with non-members of %s: %s',
+                   listname, COMMASPACE.join(addrs))
             maybe_forward(mlist, msg)
 
 
