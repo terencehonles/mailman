@@ -30,12 +30,8 @@ import sys, os, string
 import errno
 import traceback
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-
 from Mailman.Utils import reraise, mkdir, SafeDict
+from Mailman.pythonlib.StringIO import StringIO
 
 #
 # package/project modules

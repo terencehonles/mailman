@@ -422,7 +422,7 @@ import os
 import urllib
 import mimetools
 import rfc822
-from StringIO import StringIO
+from Mailman.pythonlib.StringIO import StringIO
 
 
 # Logging support

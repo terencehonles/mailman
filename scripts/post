@@ -32,16 +32,12 @@ thus should not be re-posted to news if the list gates to a newsgroup.
 import sys
 import paths
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
 from Mailman import Utils
 from Mailman.Logging.Utils import LogStdErr
+from Mailman.pythonlib.StringIO import StringIO
 
 LogStdErr("error", "post")
 
