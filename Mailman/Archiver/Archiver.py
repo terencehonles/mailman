@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
@@ -62,12 +62,12 @@ class Archiver:
     # archive directory for the mailing list
     #
     def InitVars(self):
-	# Configurable
-	self.archive = mm_cfg.DEFAULT_ARCHIVE
-	# 0=public, 1=private:
-	self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
- 	self.archive_volume_frequency = \
- 		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
+        # Configurable
+        self.archive = mm_cfg.DEFAULT_ARCHIVE
+        # 0=public, 1=private:
+        self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
+        self.archive_volume_frequency = \
+                mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
         # The archive file structure by default is:
         #
         # archives/
@@ -81,8 +81,8 @@ class Archiver:
         #         listname@ -> ../private/listname
         #
         # IOW, the mbox and pipermail archives are always stored in the
-        # private archive for the list.  This is safe because archives/private 
-        # is always set to o-rx.  Public archives have a symlink to get around 
+        # private archive for the list.  This is safe because archives/private
+        # is always set to o-rx.  Public archives have a symlink to get around
         # the private directory, pointing directly to the private/listname
         # which has o+rx permissions.  Private archives do not have the
         # symbolic links.
@@ -124,7 +124,7 @@ class Archiver:
         return Site.get_archpath(self.internal_name())
 
     def ArchiveFileName(self):
-	"""The mbox name where messages are left for archive construction."""
+        """The mbox name where messages are left for archive construction."""
         return os.path.join(self.archive_dir() + '.mbox',
                             self.internal_name() + '.mbox')
 
@@ -144,7 +144,7 @@ class Archiver:
             return url
 
     def __archive_file(self, afn):
-	"""Open (creating, if necessary) the named archive file."""
+        """Open (creating, if necessary) the named archive file."""
         omask = os.umask(002)
         try:
             return Mailbox.Mailbox(open(afn, 'a+'))
@@ -181,7 +181,7 @@ class Archiver:
     #
     def ArchiveMail(self, msg):
         """Store postings in mbox and/or pipermail archive, depending."""
-	# Fork so archival errors won't disrupt normal list delivery
+        # Fork so archival errors won't disrupt normal list delivery
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
             return
         #
@@ -215,7 +215,7 @@ class Archiver:
                 f.close()
         except:
             traceback.print_exc()
-	
+
     #
     # called from MailList.MailList.Save()
     #
@@ -237,5 +237,5 @@ class Archiver:
         else:
             # BAW: privdir or privmbox could be nonexistant.  We'd get an
             # OSError, ENOENT which should be caught and reported properly.
-            makelink(privdir, pubdir)
+         makelink(privdir, pubdir)
             makelink(privmbox, pubmbox)
