@@ -45,7 +45,6 @@ the following key/value substitutions:
     <li><b>listname</b> - <em>gets the name of the mailing list</em>
     <li><b>listurl</b> - <em>gets the list's listinfo URL</em>
     <li><b>requestemail</b> - <em>gets the list's -request address</em>
-    <li><b>adminemail</b> - <em>gets the list's -admin address</em>
     <li><b>owneremail</b> - <em>gets the list's -owner address</em>
 </ul>
 
@@ -62,11 +61,11 @@ box, or you can specify a file on your local system to upload as the text."""),
 
             ('autorespond_admin', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
              _('''Should Mailman send an auto-response to emails sent to the
-             -admin and -owner addresses?''')),
+             -owner address?''')),
 
             ('autoresponse_admin_text', mm_cfg.FileUpload,
              (6, WIDTH), 0,
-             _('Auto-response text to send to -admin and -owner emails.')),
+             _('Auto-response text to send to -owner emails.')),
 
             ('autorespond_requests', mm_cfg.Radio,
              (_('No'), _('Yes, w/discard'), _('Yes, w/forward')), 0,
@@ -81,9 +80,9 @@ box, or you can specify a file on your local system to upload as the text."""),
 
             ('autoresponse_graceperiod', mm_cfg.Number, 3, 0,
              _('''Number of days between auto-responses to either the mailing
-             list or -admin/-owner address from the same poster.  Set to zero
-             (or negative) for no grace period (i.e. auto-respond to every
-             message).''')),
+             list or -request/-owner address from the same poster.  Set to
+             zero (or negative) for no grace period (i.e. auto-respond to
+             every message).''')),
             ]
 
     def _setValue(self, mlist, property, val, doc):
