@@ -175,13 +175,7 @@ def show_requests(mlist, doc):
                       Center(Bold(_('Reason for refusal')))
                       ])
         for id in subpendings:
-            info = mlist.GetRecord(id)
-            # For backwards compatibility with pre 2.1beta3
-            if len(info) == 5:
-                time, addr, passwd, digest, lang = info
-                fullname = ''
-            else:
-                time, addr, fullname, passwd, digest, lang = info
+            time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
             table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
                           RadioButtonArray(id, (_('Defer'),
                                                 _('Approve'),
