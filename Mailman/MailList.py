@@ -23,12 +23,12 @@ from mm_digest import Digester
 from mm_security import SecurityManager
 from mm_bouncer import Bouncer
 
-# Expression for generally matching the "Re: " prefix in message subject lines:
-SUBJ_REGARDS_PREFIX = "[rR][eE][: ]*[ ]*"
-
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
 # a variable that does not save when we marshal our state.
+
+# Expression for generally matching the "Re: " prefix in message subject lines:
+SUBJ_REGARDS_PREFIX = "[rR][eE][: ]*[ ]*"
 
 # Use mixins here just to avoid having any one chunk be too large.
 
@@ -125,7 +125,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.owner = [admin]
 	self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
 	self.posters = []
-	self.bad_posters = []
+	self.forbidden_posters = []
 	self.admin_immed_notify = mm_cfg.DEFAULT_ADMIN_IMMED_NOTIFY
 	self.moderated = mm_cfg.DEFAULT_MODERATED
 	self.require_explicit_destination = \
@@ -137,8 +137,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 				   self._internal_name[1:])
 	self.description = ''
 	self.info = ''
-	self.welcome_msg = None
-	self.goodbye_msg = None
+	self.welcome_msg = ''
+	self.goodbye_msg = ''
 	self.open_subscribe = mm_cfg.DEFAULT_OPEN_SUBSCRIBE
 	self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
 	self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
@@ -169,131 +169,204 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	config_info['archive'] = Archiver.GetConfigInfo(self)
 
 	config_info['general'] = [
+            "Fundamental list characteristics, including descriptive"
+            " info and basic behaviors.",
 	    ('real_name', mm_cfg.String, 50, 0,
 	     'The public name of this list'),
 
 	    ('owner', mm_cfg.EmailList, (3,30), 0,
-	     'The list admin\'s email address '
-	     '(or addresses if more than 1 admin)'),
+	     "The list admin's email address (or addresses).",
+
+             "Multiple list admins - ie, multiple addresses - are ok."),
 
 	    ('description', mm_cfg.String, 50, 0,
-	     'A one sentence description of this list'),
+	     'A one sentence description of this list.'),
 
-	    ('info', mm_cfg.Text, (7, 65), 0, 
-	     'An informational paragraph about the list'),
-	    # NOTES: The text will be treated as html *except* that
-	    # newlines will be translated to <br> - so you can use links,
-	    # preformatted text, etc, but don't put in carriage returns
-	    # except where you need them.  And review your changes - bad
-	    # html (like an unclosed quote) can mess up the entire page.
+	    ('info', mm_cfg.Text, (7, 50), 0, 
+	     'A descriptive paragraph about the list.',
+
+             "The text will be treated as html <em>except</em> that newlines"
+             " newlines will be translated to ;lt&br;gt& - so you can use"
+             " links, preformatted text, etc, but don't put in carriage"
+             " returns except where you mean to separate paragraphs.  And"
+             " review your changes - bad html (like an unclosed quote) can"
+             " mess up the entire listinfo page."),
 
 	    ('subject_prefix', mm_cfg.String, 10, 0,
-	     'Subject line prefix - to distinguish list messages in '
-	     'mailbox summaries.'),
+	     'Subject line prefix.',
+
+             "Text prefixed to posting subject lines to distinguish"
+             " maillist messages in mailbox summaries."),
+
+	    ('welcome_msg', mm_cfg.Text, (4, 50), 0,
+	     'List-specific text appended to new-subscriber welcome message'),
+
+	    ('goodbye_msg', mm_cfg.Text, (4, 50), 0,
+	     'Text sent to people leaving the list.',
+
+             "If empty, no special text will be added to the unsubscribe"
+             "message."),
+
+	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
+	     'Are replies to a post directed to poster or the list?',
+
+             "List postings include headers which designate where replies"
+             " to the posts are directed.  This option picks whether the"
+             " headers should be contrived to direct the replies to the"
+             " original poster or to the list as a whole."),
+
+	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     'Is administrator notified immediately of new admin requests, '
+	     'in addition to the daily notice about collected ones?',
+
+             "List admins are sent daily reminders of pending admin approval"
+             " requests, if any.  Setting this option causes notices to be" 
+             " sent immediately on the arrival of new requests, as well."),
+
+	    ('dont_respond_to_post_requests', mm_cfg.Radio, ('Yes', 'No'), 0,
+	     'Send mail to poster when their submission is held for approval?',
+
+             "Approval notices are normally sent when mail triggers any of"
+             " the limits <em>except</em> routine list moderation, when"
+             " notices are never sent.  This option overrides ever sending"
+             " these notices."),
+
+            # XXX UNSAFE!  Perhaps more selective capability could be
+            # offered, with some kind of super-admin option, but for now
+            # let's not even expose this.  (Apparently was never
+            # implemented, anyway.)
+## 	    ('filter_prog', mm_cfg.String, 40, 0,
+## 	     'Program for pre-processing text, if any? '
+## 	     '(Useful, eg, for signature auto-stripping, etc...)'),
+
+	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
+	     'Ceiling on acceptable number of recipients for a posting.',
+
+             "If a posting has this number, or more, recipients, it is"
+             " held for admin approval.  Use 0 for no ceiling."),
+
+	    ('max_message_size', mm_cfg.Number, 3, 0,
+	     'Maximum length in Kb of a message body.  Use 0 for no limit.'),
+
+	    ('num_spawns', mm_cfg.Number, 3, 0,
+	     'Number of outgoing connections to open at once '
+	     '(expert users only).',
+
+             "This determines the maximum number of batches into which"
+             " a mass posting will be divided."),
+
+	    ('host_name', mm_cfg.Host, 50, 0, 'Host name this list prefers',
+
+             "The host_name is the preferred name for email to mailman-related"
+             " addresses on this host, and generally should be the mail"
+             " host's exchanger address, if any."),
+
+	    ('web_page_url', mm_cfg.String, 50, 0,
+	     'Base URL for Mailman web interface',
+
+             "This is the common root of all mailman URLs concerning this"
+             " list."),
+	    ]
+        config_info['privacy'] = [
+            "List access policies, including anti-spam measures,"
+            " covering members and outsiders.",
 
 	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Advertise this list when people ask what lists are on '
 	     'this machine?'),
 
-	    ('welcome_msg', mm_cfg.Text, (4, 65), 0,
-	     'List specific portion of welcome sent to new subscribers'),
-
-	    ('goodbye_msg', mm_cfg.Text, (4, 65), 0,
-	     'Text sent to people leaving the list.  If empty, no special '
-	     'text will be added to the unsubscribe message.'),
-
-	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
-	     'Are replies to a post directed to poster or the list?'),
-
-	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Is administrator notified immediately of new admin requests, '
-	     'in addition to the daily notice about collected ones?'),
-
 	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Anti-spam: Must posts be approved by a moderator?'),
+	     'Must posts be approved by a moderator?',
 
- 	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
- 	     'Anti-spam: Must posts have list named in destination (to, cc) '
-	     ' field?'),
-
- 	    ('acceptable_aliases', mm_cfg.Text, ('4', '30'), 0,
- 	     'Anti-spam: alias names (regexps) which qualify as explicit'
-             ' to or cc destination names for this list.'),
-
-	    # Note that leading whitespace in the matchexp is trimmed - you can
-	    # defeat that by, eg, containing it in gratuitous square brackets.
- 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '60'), 0,
- 	     'Anti-spam: Hold posts with header matching specified regexp;'
-	     ' case-insensitive'),
+             "If the 'posters' option has any entries then it supercedes"
+             " this setting."),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
-	     'Anti-spam: Email addresses whose posts are auto-approved '
-	     '(adding anyone to this list will make this a moderated list)'),
+	     'Addresses blessed for posting to this list.  (Adding'
+             ' anyone to this list implies moderation of everyone else.)',
 
-	    ('bad_posters', mm_cfg.EmailList, (5, 30), 1,
-	     'Anti-spam: Email addresses whose posts should always be '
-	     'bounced until you approve them, no matter what other options '
-	     'you have set'),
+             "Adding any entries to this list supercedes the setting of"
+             " the list-moderation option."),
+
+	    ('forbidden_posters', mm_cfg.EmailList, (5, 30), 1,
+             'Addresses whose postings are always held for approval.',
+
+	     "Email addresses whose posts should always be held for"
+             " approval, no matter what other options you have set"),
+
+ 	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
+ 	     'Must posts have list named in destination (to, cc)  field?'),
+
+ 	    ('acceptable_aliases', mm_cfg.Text, ('4', '30'), 0,
+ 	     'Alias names (regexps) which qualify as explicit to or cc'
+             ' destination names for this list.'), 
+
+ 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '50'), 0,
+ 	     'Hold posts having specified header matching regexp.',
+
+             "Use this option to prohibit posts based on specific header"
+             " values.  The header name is taken literally as everything"
+             " before the colon.  The target value is taken as a"
+             " case-insensitive regexp for matching against the specified"
+             " header.  <p>Note that leading whitespace is trimmed from the"
+             " regexp.  This can be defeated in a number of ways, eg"
+             " by escaping or bracketing it."),
 
 	    ('private_roster', mm_cfg.Radio,
-	     ('Anyone', 'List members', 'No one'), 0,
-	     'Anti-spam: Who can view subscription list'),
+	     ('Anyone', 'List members', 'List admin only'), 0,
+	     'Who can view subscription list?',
+
+             "When set, the list of subscribers is protected by"
+             " member or admin password authentication."),
 
 	    ('obscure_addresses', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     "Anti-spam: Show member addrs so they're not directly "
-	     ' recognizable as email addrs?'),
+             "Show member addrs so they're not directly recognizable"
+             ' as email addrs?',
+
+             "Setting this option causes member email addresses to be"
+             " transformed when they are presented on list web pages (both"
+             " in text and as links), to interfere with automated web"
+             " scanners recognizing them and snarfing them up for"
+             " use by spammers."),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Anti-spam: Only list members can send mail to the list '
-	     'without approval'),
+	     'Restrict posting privilege to only list members?'),
 
 	    ('open_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Subscribes are done automatically w/o admins approval'),
+	     'Are subscribes done without admins approval?',
 
-	    # If open_subscribe is off, this is ignored, essentially.
+             "Setting this option makes the list a closed one, where"
+             " the members are admitted by choice of the administrator."),
+
 	    ('web_subscribe_requires_confirmation', mm_cfg.Radio,
 	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
-	     'Extra confirmation for off-the-web subscribes'),
+	     'What confirmation is required for off-the-web subscribes?',
 
-	    ('dont_respond_to_post_requests', mm_cfg.Radio, ('Yes', 'No'), 0,
-	     'Send mail to poster when their mail is held awaiting approval?'),
-
-	    ('filter_prog', mm_cfg.String, 40, 0,
-	     'Program to pass text through before processing, if any? '
-	     '(Useful, eg, for signature auto-stripping, etc...)'),
-
-	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
-	     'Anti-spam: Max number of TO and CC recipients before admin '
-	     'approval is required.  Use 0 for no limit.'),
-
-	    ('max_message_size', mm_cfg.Number, 3, 0,
-	     'Maximum length in Kb of a message body. '
-	     'Use 0 for no limit.'),
-
-	    ('num_spawns', mm_cfg.Number, 3, 0,
-	     'Number of outgoing connections to open at once '
-	     '(Expert users only)'),
-
-	    ('host_name', mm_cfg.Host, 50, 0, 'Host name this list prefers'),
-
-	    ('web_page_url', mm_cfg.String, 50, 0,
-	     'Base URL for Mailman web interface'),
-	    ]
+             "This options indicates whether web-initiated subscribes"
+             " require further confirmation, either come from subscribed"
+             " address or from the list administrator.  Lack of any"
+             " confirmation makes web-based confirms a target for"
+             " mischievous subscriptions by third parties."),
+            ]
 
 	config_info['nondigest'] = [
-	    ('nondigestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
-	     'Can subscribers choose to receive mail singly, '
-	     'rather than in digests?'),
+            "Policies concerning immediately delivered list traffic.",
 
-	    ('msg_header', mm_cfg.Text, (4, 65), 0,
-	     'Header added to mail sent to regular list members'),
-	    # Note: Can have "%(field)s" format entries which will be
-	    # resolved against list object __dict__ at message send time.
-	    # Need to list some of the useful fields for the long-help.
+	    ('nondigestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
+	     'Can subscribers choose to receive mail immediately,'
+	     ' rather than in batched digests?'),
+
+	    ('msg_header', mm_cfg.Text, (4, 55), 0,
+	     'Header added to mail sent to regular list members',
+
+             "Text prepended to the top of every immediately-delivery"
+             " message.  <p>" + mm_cfg.MESSAGE_DECORATION_NOTE),
 	    
-	    ('msg_footer', mm_cfg.Text, (4, 65), 0,
-	     'Footer added to mail sent to regular list members'),
-	    # See msg_header note.
+	    ('msg_footer', mm_cfg.Text, (4, 55), 0,
+	     'Footer added to mail sent to regular list members',
+
+             "Text appended to the bottom of every immediately-delivery"
+             " message.  <p>" + mm_cfg.MESSAGE_DECORATION_NOTE),
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
@@ -434,11 +507,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    raise mm_err.MMAlreadyAMember
 	if digest:
 	    self.digest_members.append(name)
-            kind = "digest"
+            kind = " (D)"
 	else:
 	    self.members.append(name)
-            kind = "regular"
-        self.LogMsg("subscribe", "%s: new %s member %s",
+            kind = ""
+        self.LogMsg("subscribe", "%s: new%s, %s",
                     self._internal_name, kind, name)
 	self.passwords[name] = password
 	self.Save()
@@ -472,10 +545,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.SendUnsubscribeAck(name)
 	self.ClearBounceInfo(name)
 	self.Save()
-        if whence: whence = "; %s"
+        if whence: whence = "; %s" % whence
         else: whence = ""
-        self.LogMsg("subscribe", "%s: deleted member %s%s",
-                    self._internal_name, kind, name, whence)
+        self.LogMsg("subscribe", "%s: deleted %s%s",
+                    self._internal_name, name, whence)
 
     def IsMember(self, address):
 	return len(mm_utils.FindMatchingAddresses(address, self.members +
@@ -568,12 +641,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
 	if not approved:
-	    if len(self.bad_posters):
+	    if len(self.forbidden_posters):
 		addrs = mm_utils.FindMatchingAddresses(sender,
-						       self.bad_posters)
+						       self.forbidden_posters)
 		if len(addrs):
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				    'Post from a questionable origin.',
+				    'Post from a forbidden address.',
 				    msg.getheader('subject'))
 	    if len(self.posters):
 		addrs = mm_utils.FindMatchingAddresses(sender, self.posters)
