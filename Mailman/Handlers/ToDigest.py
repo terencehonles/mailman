@@ -188,8 +188,9 @@ def inject_digest(mlist, digestfile, topicsfile):
 
 
 def quotemime(text):
+    # TBD: ug.
     if not text:
-        return text
+        return ''
     return string.join(string.split(text, MIME_SEPARATOR), MIME_NONSEPARATOR)
 
 
