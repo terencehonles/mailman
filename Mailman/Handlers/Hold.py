@@ -138,7 +138,7 @@ def process(mlist, msg, msgdata):
         # figure out how many recipients there are
         recips = email.Utils.getaddresses(msg.get_all('to', []) +
                                           msg.get_all('cc', []))
-        if len(recips) > mlist.max_num_recipients:
+        if len(recips) >= mlist.max_num_recipients:
             hold_for_approval(mlist, msg, msgdata, TooManyRecipients)
             # no return
     #
