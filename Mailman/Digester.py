@@ -38,6 +38,8 @@ class Digester:
 	self.next_digest_number = 1
 
     def GetConfigInfo(self):
+        WIDTH = mm_cfg.TEXTFIELDWIDTH
+
 	return [
             "Batched-delivery digest characteristics.",
 
@@ -61,13 +63,13 @@ class Digester:
 	     'Should a digest be dispatched daily when the size threshold '
 	     "isn't reached?"),
 
-            ('digest_header', mm_cfg.Text, (4, 55), 0,
+            ('digest_header', mm_cfg.Text, (4, WIDTH), 0,
 	     'Header added to every digest',
              "Text attached (as an initial message, before the table"
              " of contents) to the top of digests.<p>"
              + Errors.MESSAGE_DECORATION_NOTE),
 
-	    ('digest_footer', mm_cfg.Text, (4, 55), 0,
+	    ('digest_footer', mm_cfg.Text, (4, WIDTH), 0,
 	     'Footer added to every digest',
              "Text attached (as a final message) to the bottom of digests.<p>"
              + Errors.MESSAGE_DECORATION_NOTE),

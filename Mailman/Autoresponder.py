@@ -41,6 +41,8 @@ class Autoresponder:
         self.request_responses = {}
 
     def GetConfigInfo(self):
+        WIDTH = mm_cfg.TEXTFIELDWIDTH
+
         return [
             """Auto-responder characteristics.<p>
 
@@ -59,14 +61,16 @@ box, or you can specify a file on your local system to upload as the text.""",
             ('autorespond_postings', mm_cfg.Toggle, ('No', 'Yes'), 0,
              'Should Mailman send an auto-response to mailing list posters?'),
 
-            ('autoresponse_postings_text', mm_cfg.FileUpload, ('6', '30'), 0,
+            ('autoresponse_postings_text', mm_cfg.FileUpload,
+             (6, WIDTH), 0,
              'Auto-response text to send to mailing list posters.'),
 
             ('autorespond_admin', mm_cfg.Toggle, ('No', 'Yes'), 0,
              '''Should Mailman send an auto-response to emails sent to the
 -admin address?'''),
 
-            ('autoresponse_admin_text', mm_cfg.FileUpload, ('6', '30'), 0,
+            ('autoresponse_admin_text', mm_cfg.FileUpload,
+             (6, WIDTH), 0,
              'Auto-response text to send to -admin emails.'),
 
             ('autorespond_requests', mm_cfg.Radio,
@@ -76,7 +80,8 @@ box, or you can specify a file on your local system to upload as the text.""",
 discard the original email, or forward it on to the system as a normal mail
 command.'''),
 
-            ('autoresponse_request_text', mm_cfg.FileUpload, ('6', '30'), 0,
+            ('autoresponse_request_text', mm_cfg.FileUpload,
+             (6, WIDTH), 0,
              'Auto-response text to send to -request emails.'),
 
             ('autoresponse_graceperiod', mm_cfg.Number, 3, 0,
