@@ -327,6 +327,17 @@ upgrade.
       Follow the prompts, and see the README file for more
       information.
 
+      Now configure your site list.  There is a convenient template
+      for a generic site list in misc/sitelist.cfg to help you with
+      this.  The template can be applied to your site list by running:
+
+          % bin/config_list -i data/sitelist.cfg mailman
+
+      Before doing this, review the configuration options in the
+      template (note that many options are not changed by
+      sitelist.cfg).  After you do this, be sure you review the
+      configurations via the admin pages for this list.
+
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       for its basic functionality.  Note that if you're upgrading from
       a previous version of Mailman, you'll want to install the new
