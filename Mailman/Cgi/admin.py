@@ -1191,9 +1191,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
     subscribers += cgidata.getvalue('subscribees', '')
     subscribers += cgidata.getvalue('subscribees_upload', '')
     if subscribers:
-        entries = filter(
-            None,
-            [n.strip() for n in subscribers.replace('\r','').split(NL)])
+        entries = [n.strip() for n in subscribers.splitlines()]
         send_welcome_msg = mlist.send_welcome_msg
         if cgidata.has_key('send_welcome_msg_to_this_batch'):
             send_welcome_msg = int(
@@ -1247,8 +1245,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
            cgidata['unsubscribees_upload'].value:
         removals += cgidata['unsubscribees_upload'].value
     if removals:
-        removals.replace('\r', '')
-        names = filter(None, [unquote(n.strip()) for n in removals.split(NL)])
+        names = [n.strip() for n in removals.splitlines()]
         send_unsub_notifications = int(
             cgidata['send_unsub_notifications_to_list_owner'].value)
         userack = int(
