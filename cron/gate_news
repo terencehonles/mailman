@@ -36,6 +36,9 @@ import socket
 import nntplib
 
 import paths
+# mm_cfg must be imported before the other modules, due to the side-effect of
+# it hacking sys.paths to include site-packages.  Without this, running this
+# script from cron with python -S will fail.
 from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
@@ -60,11 +63,11 @@ LogStdErr('error', 'gate_news', manual_reprime=0, tee_to_stdout=1)
 LOCK_LIFETIME = mm_cfg.hours(2)
 NL = '\n'
 
-# We need this exception to work around the continue-inside-try deficiency
-# in Python versions before 2.1.
+# Continues inside try: block are not allowed in Python versions before 2.1.
+# This exception is used to work around that.
 class _ContinueLoop(Exception):
-    """Internal exception to continue loops from inside try blocks"""
     pass
+
 
 
 def usage(status, msg=''):

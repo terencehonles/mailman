@@ -43,15 +43,19 @@ import os
 import time
 from stat import *
 import getopt
-gzip = None
+
 try:
     import gzip
 except ImportError:
-    pass
+    gzip = None
+
 import paths
-from Mailman import MailList
-from Mailman import Utils
+# mm_cfg must be imported before the other modules, due to the side-effect of
+# it hacking sys.paths to include site-packages.  Without this, running this
+# script from cron with python -S will fail.
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
 
 
 
