@@ -29,16 +29,8 @@
 from socket import *
 import string, types
 
-## DEBUG ...
-## import sys
-## try:
-##     from Mailman.Logging.StampedLogger import StampedLogger
-##     sys.error = StampedLogger("debug", label = 'smtplib', manual_reprime=1)
-##     sys.error.write("smtplib got debug\n")
-##     sys.error.flush()
-## except:
-##     pass
-## ... DEBUG
+from Mailman.Logging.Utils import LogStdErr
+LogStdErr("error", "smtplib")
 
 SMTP_PORT = 25
 
