@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
 "POT-Creation-Date: Fri May  2 00:59:38 2003\n"
-"PO-Revision-Date: 2003-06-02 21:36+0200\n"
+"PO-Revision-Date: 2003-06-02 21:56+0200\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch <p.heinlein@jpberlin.de>\n"
 "MIME-Version: 1.0\n"
@@ -7337,7 +7337,7 @@ msgstr "e-Mailadresse:"
 # Mailman/HTMLFormatter.py:268
 #: Mailman/HTMLFormatter.py:299
 msgid "Admin address:"
-msgstr "Mailadresse des Administrators:"
+msgstr "e-Mailadresse des Administrators:"
 
 # Mailman/HTMLFormatter.py:270
 #: Mailman/HTMLFormatter.py:302
@@ -7352,7 +7352,7 @@ msgstr " <p>Geben Sie Ihre "
 # Mailman/HTMLFormatter.py:274
 #: Mailman/HTMLFormatter.py:306
 msgid " and password to visit  the subscribers list: <p><center> "
-msgstr " und Ihr Passwort ein, um die Liste der Abonnenten einzusehen: <p><center> "
+msgstr " und das Passwort ein, um die Liste der Abonnenten einzusehen: <p><center> "
 
 # Mailman/HTMLFormatter.py:279
 #: Mailman/HTMLFormatter.py:311
@@ -7367,7 +7367,7 @@ msgstr "Abonnentenliste anschauen"
 # Mailman/HTMLFormatter.py:313
 #: Mailman/HTMLFormatter.py:345
 msgid "Once a month, your password will be emailed to you as a reminder."
-msgstr "Zur Erinnerung wird Ihnen monatlich Ihr Passwort ge-Mailt."
+msgstr "Zur Erinnerung wird Ihnen monatlich Ihr Passwort gemailt."
 
 # Mailman/HTMLFormatter.py:358
 #: Mailman/HTMLFormatter.py:391
@@ -11706,7 +11706,7 @@ msgstr ""
 
 # Mailman/Cgi/create.py:170
 #~ msgid "Bad owner email address: %(owner_mail)s"
-#~ msgstr "Falsche Emailadresse des Eigentümers: %(owner_mail)s"
+#~ msgstr "Falsche e-Mailadresse des Eigentümers: %(owner_mail)s"
 
 #~ msgid ""
 #~ "Dispatch digests for lists w/pending messages and digest_send_periodic "
@@ -12206,7 +12206,7 @@ msgstr ""
 #~ "When turned on, your email address is concealed on the Web page\n"
 #~ "that lists the members of the mailing list."
 #~ msgstr ""
-#~ "Ist diese Option eingeschaltet, wird Ihre Emailadresse auf der Webseite\n"
+#~ "Ist diese Option eingeschaltet, wird Ihre e-Mailadresse auf der Webseite\n"
 #~ "verborgen, so dass diese nicht mehr im Mitgliederverzeichnis sichtbar ist."
 
 # Mailman/MailCommandHandler.py:60
@@ -12735,7 +12735,7 @@ msgstr ""
 #~ "    %(varhelp)s\n"
 #~ msgstr ""
 #~ "Die angehängte Nachricht wurde automatische verworfen, da die "
-#~ "Emailadresse\n"
+#~ "e-Mailadresse\n"
 #~ "des Absenders auf der 'discard_these_nonmembers'-Liste eingetragen ist. "
 #~ "Um\n"
 #~ "die Adressliste der automatisch verworfenen Mitglieder zu erhalten, "
@@ -12785,7 +12785,7 @@ msgstr ""
 #~ "            addresses."
 #~ msgstr ""
 #~ "Verhalten des Systems bei der Verarbeitung zurückkommender Nachrichten, "
-#~ "um nicht funktionierende Emailadressen leichter erkennen und verarbeiten "
+#~ "um nicht funktionierende e-Mailadressen leichter erkennen und verarbeiten "
 #~ "zu können."
 
 # Mailman/Gui/Bounce.py:33
