@@ -161,6 +161,8 @@ def AddressesMatch(addr1, addr2):
 	return 0
     if domain1 == domain2:
         return 1
+    elif not domain1 or not domain2:
+        return 0
     for i in range(-1 * min(len(domain1), len(domain2)), 0):
         # By going from most specific component of host part we're likely
         # to hit a difference sooner.
@@ -303,35 +305,47 @@ class Logger:
 class StampedLogger(Logger):
     """Record messages in log files, including date stamp and optional label.
 
-    If manual_reset is off (default on), then timestamp will only be
-    included in first .write() and in any writes that are preceeded by a
-    call to the .reprime() method.  This is useful for when StampedLogger
+    If manual_reset is off (default on), then timestamp prefix will
+    included only on first .write() and on any write immediately following
+    a call to the .reprime() method.  This is useful for when StampedLogger
     is substituting for sys.stderr, where you'd like to see the grouping of
-    multiple writes under a single timestamp (and there is often is one 
-    group, for uncaught exceptions where a script is bombing)."""
+    multiple writes under a single timestamp (and there is often is one
+    group, for uncaught exceptions where a script is bombing).
+
+    In any case, the identifying prefix will only follow writes that start
+    on a new line."""
 
     def __init__(self, category, label=None, manual_reprime=0):
 	"If specified, optional label is included after timestamp."
 	self.label = label
         self.manual_reprime = manual_reprime
         self.primed = 1
+        self.bol = 1
 	Logger.__init__(self, category)
     def reprime(self):
         """Reset so timestamp will be included with next write."""
         self.primed = 1
     def write(self, msg):
 	import time
-        if not self.manual_reprime or self.primed:
-            stamp = time.strftime("%b %d %H:%M:%S %Y ",
-                                  time.localtime(time.time()))
-            self.primed = 0
+        if not self.bol:
+            prefix = ""
         else:
-            stamp = ""
-	if self.label == None:
-	    label = ""
-	else:
-	    label = "%s:" % self.label
-	Logger.write(self, "%s%s %s" % (stamp, label, msg))
+            if not self.manual_reprime or self.primed:
+                stamp = time.strftime("%b %d %H:%M:%S %Y ",
+                                      time.localtime(time.time()))
+                self.primed = 0
+            else:
+                stamp = ""
+            if self.label == None:
+                label = ""
+            else:
+                label = "%s:" % self.label
+            prefix = stamp + label
+        Logger.write(self, "%s %s" % (prefix, msg))
+        if msg and msg[-1] == '\n':
+            self.bol = 1
+        else:
+            self.bol = 0
     def writelines(self, lines):
 	first = 1
 	for l in lines:
