@@ -35,7 +35,7 @@ for name in names:
         wm = 0
     # Save the current state to .last, in case we crash while writing out,
     # and corrupt the file.
-    list = maillist.MailList(name)
+    list = maillist.MailList(name, lock=0)
     file = open(os.path.join(mm_cfg.DATA_DIR, "gate_watermarks.last"), "w")
     marshal.dump(watermarks, file)
     file.close()
