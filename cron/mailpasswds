@@ -43,9 +43,11 @@ import paths
 # script from cron with python -S will fail.
 from Mailman import mm_cfg
 from Mailman import MailList
+from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
 from Mailman.i18n import _
+from Mailman.Logging.Syslog import syslog
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -79,7 +81,14 @@ def main():
 
     # This is the list that all the reminders will look like they come from,
     # but with the host name coerced to the virtual host we're processing.
-    sitelist = MailList.MailList(mm_cfg.MAILMAN_SITE_LIST, lock=0)
+    try:
+        sitelist = MailList.MailList(mm_cfg.MAILMAN_SITE_LIST, lock=0)
+    except Errors.MMUnknownListError:
+        # Do it this way for I18n's _()
+        sitelistname = mm_cfg.MAILMAN_SITE_LIST
+        print >> sys.stderr, _('Site list is missing: %(sitelistname)s')
+        syslog('error', 'Site list is missing: %s', mm_cfg.MAILMAN_SITE_LIST)
+        sys.exit(1)
 
     # Group lists by host_name if VIRTUAL_HOST_OVERVIEW is true, otherwise
     # there's only one key in this dictionary: mm_cfg.DEFAULT_HOST_NAME.  The
