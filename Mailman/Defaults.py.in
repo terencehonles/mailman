@@ -81,6 +81,8 @@ WEB_ERROR_COLOR = 'red'                           # Error message foreground
 WEB_LINK_COLOR = ''                               # If true, forces LINK=
 WEB_ALINK_COLOR = ''                              # If true, forces ALINK=
 WEB_VLINK_COLOR = ''                              # If true, forces VLINK=
+WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
+                                                  # in listinfo & admin display
 
 
 
