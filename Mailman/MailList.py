@@ -620,7 +620,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                    self.reply_to_address, self.internal_name())
             self.reply_to_address = ''
             self.reply_goes_to_list = 0
-
+        # Legacy topics may have bad regular expressions in their patterns
+        goodtopics = []
+        for name, pattern, desc, emptyflag in self.topics:
+            try:
+                re.compile(pattern)
+            except (re.error, TypeError):
+                syslog('error', 'Bad topic pattern "%s" for list: %s',
+                       pattern, self.internal_name())
+            else:
+                goodtopics.append((name, pattern, desc, emptyflag))
+        self.topics = goodtopics
 
 
     #
