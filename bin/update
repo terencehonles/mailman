@@ -37,8 +37,10 @@ def dolist(list):
         os.mkdir(mbox_dir, 02775)
         os.umask(ou)
     else:
-        if not os.path.isdir(mbox_dir): # this shouldn't happen, but hey, just in case
-            print "for some reason", mbox_dir, "exists as a file.  This won't work with b6"
+        # this shouldn't happen, but hey, just in case
+        if not os.path.isdir(mbox_dir):
+            print "for some reason", mbox_dir, \
+                  "exists as a file.  This won't work with b6"
             print "so I'm renaming it to %s.tmp and proceeding" % (mbox_dir)
             os.rename(mbox_dir, "%s.tmp" % (mbox_dir))
             ou = os.umask(0)
@@ -83,14 +85,15 @@ script.
         if os.path.isfile(o_pri_mbox_file):
             os.rename(o_pri_mbox_file, mbox_file)
         elif not os.path.isdir(o_pri_mbox_file):
-            newname = "%s.mm_install-dunno_what_this_was_but_it_was_in_the_way" % \
-                      o_pri_mbox_file
+            newname = "%s.mm_install-dunno_what_this_was_but_its_in_the_way" \
+                      % o_pri_mbox_file
             os.rename(o_pri_mbox_file, newname)
             print "    unknown file in the way, moving"
             print "        " + o_pri_mbox_file
             print "    to"
             print "        " + newname
-        else: # directory
+        else:
+            # directory
             print "    looks like you have a really recent CVS installation..."
             print "    you're either one brave soul, or you already ran me"
     
@@ -104,8 +107,8 @@ script.
         if os.path.isfile(o_pub_mbox_file):
             os.rename(o_pub_mbox_file, mbox_file)
         elif not os.path.isdir(o_pub_mbox_file):
-            newname = "%s.mm_install-dunno_what_this_was_but_it_was_in_the_way" % \
-                      o_pub_mbox_file
+            newname = "%s.mm_install-dunno_what_this_was_but_its_in_the_way" \
+                      % o_pub_mbox_file
             os.rename(o_pub_mbox_file, newname)
             print "    unknown file in the way, moving"
             print "        " + o_pub_mbox_file
@@ -141,7 +144,8 @@ script.
     b4_tmpl_dir = os.path.join(tmpl_dir, l._internal_name)
     new_tmpl_dir = os.path.join(list_dir, l._internal_name)
     if os.path.exists(b4_tmpl_dir):
-	print "- This list looks like it might have <= b4 list templates around"
+	print "- This list looks like it might have <= b4 " \
+              'list templates around'
         for f in os.listdir(b4_tmpl_dir):
             o_tmpl = os.path.join(b4_tmpl_dir, f)
             n_tmpl = os.path.join(new_tmpl_dir, f)
@@ -149,7 +153,8 @@ script.
                 os.rename(o_tmpl, n_tmpl)
                 print "- moved %s to %s" % (o_tmpl, n_tmpl)
             else:
-                print "- both %s and %s exist, leaving untouched" % (o_tmpl, n_tmpl)
+                print "- both %s and %s exist, leaving untouched" \
+                      % (o_tmpl, n_tmpl)
 
 #
 # this function is passed to os.path.walk
@@ -205,8 +210,3 @@ if __name__ == '__main__':
     for list in lists:
         print 'Updating mailing list: ', list
         dolist(list)
-
-
-
-
-
