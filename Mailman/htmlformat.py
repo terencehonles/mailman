@@ -270,8 +270,6 @@ class Document(Container):
     def Format(self, indent=0, **kws):
         tab = ' ' * indent
         output = ['Content-type: text/html',
-                  'Cache-control: no-cache',
-                  'Expires: 0',
                   '',
                   tab,
                   '<HTML>',
@@ -280,8 +278,6 @@ class Document(Container):
         if self.title:
             output.append('%s<TITLE>%s</TITLE>' % (tab, self.title))
         output.append('%s</HEAD>' % tab)
-
-
         output.append('%s<BODY' % tab)
 	quals = []
 	for k, v in kws.items():
@@ -296,11 +292,7 @@ class Document(Container):
 class HeadlessDocument(Document):
     """Document without head section, for templates that provide their own."""
     def Format(self, indent=0, **kws):
-        return '''Content-type: text/html
-        Cache-control: no-cache
-        Expires: 0
-
-        ''' + Container.Format(self, indent)
+        return 'Content-type: text/html\n' + Container.Format(self, indent)
     
 class StdContainer(Container):
     def Format(self, indent=0):
