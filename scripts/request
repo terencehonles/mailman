@@ -29,7 +29,6 @@ import sys
 import paths
 from Mailman import MailList
 from Mailman import Utils
-from Mailman.Logging.StampedLogger import StampedLogger
 
 from Mailman.Logging.Utils import LogStdErr
 LogStdErr("error", "mailcmd")
