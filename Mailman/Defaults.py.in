@@ -192,7 +192,7 @@ DEFAULT_ADMINISTRIVIA = 1
 # how long the cookie authorizing administrative
 # changes via the admin cgi lasts
 #
-ADMIN_COOKIE_LIFE = 60 * 20 # 20 minutes
+ADMIN_COOKIE_LIFE = 60 * 60 * 3 # 3 hours
 
 # how many members to display at a time
 # on the admin cgi to unsubscribe them or change their options
