@@ -17,7 +17,8 @@ Links: links.h install-links.h
       the command line script <code>bin/config_list</code>).
 
       <p>Specifically check to make sure the variables
-      <em>DEFAULT_HOST_NAME</em> and <em>DEFAULT_URL</em> are correct.
+      <em>DEFAULT_HOST_NAME</em> and <em>DEFAULT_URL</em> are
+      correct.  The latter <strong>must</strong> end in a slash.
 
       <p>The install process will not overwrite an existing
       <code>mm_cfg.py</code> file so you can freely make changes to
