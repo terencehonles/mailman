@@ -851,7 +851,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 				  "member": name}, 1)
 	    msg = Message.IncomingMessage(txt)
 	    self.DeliverToOwner(msg, self.owner)
-            
 
     def ProcessConfirmation(self, cookie):
         from Pending import Pending
@@ -864,8 +863,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.AddRequest('add_member', digest, email_addr, password)
             raise Errors.MMNeedApproval, self.GetAdminEmail()
         self.ApprovedAddMember(email_addr, password, digest)
-
-
+        self.Save()
 
     def DeleteMember(self, name, whence=None, admin_notif=None):
 	self.IsListInitialized()
@@ -966,7 +964,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 				"bad bounce_matching_header line %s"
 				% (self.real_name, `stripped`))
 	return all
-
 
     def HasMatchingHeader(self, msg):
 	"""True if named header field (case-insensitive) matches regexp.
