@@ -6,9 +6,9 @@ class Digester:
 	# Configurable
 	self.digest_header = None
 	self.digest_footer = None
-	self.digestable = 1
-	self.digest_is_default = 0
-	self.digest_size_threshhold = 30 # In K
+	self.digestable = mm_cfg.DEFAULT_DIGESTABLE
+	self.digest_is_default = mm_cfg.DEFAULT_DIGEST_IS_DEFAULT
+	self.digest_size_threshhold = mm_cfg.DEFAULT_DIGEST_SIZE_THRESHOLD
 	self.next_post_number = 1
 	
 	# Non-configurable.
