@@ -189,8 +189,8 @@ PRIVATE_EXTERNAL_ARCHIVER = 0
 # A filter module that converts from multipart messages to "flat" messages
 # (i.e. containing a single payload).  This is required for Pipermail, and you
 # may want to set it to 0 for external archivers.  You can also replace it
-# with your own module as long as it's importable, and contains a process()
-# function that takes a MailList object and a Message object.  It should raise
+# with your own module as long as it contains a process() function that takes
+# a MailList object and a Message object.  It should raise
 # Errors.DiscardMessage if it wants to throw the message away.  Otherwise it
 # should modify the Message object as necessary.
 ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
