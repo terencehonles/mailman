@@ -70,7 +70,7 @@ def mail_passwords(mlist, hosts):
                 else:
                     table.append("%-40s %-10s\n%s\n" % (l, p, u))
             header = ("%-40s %-10s\n%-40s %-10s"
-                      % ("List", "Password // URL", "----", "--------"))
+                      % (_('List'), _('Password // URL'), "----", "--------"))
             text = Utils.maketext(
                 'cronpass.txt',
                 {'hostname': host,
