@@ -363,10 +363,10 @@ if you want to keep your existing installation intact.
               main.cf config file under the variable "alias_maps". Put
               the file somewhere in mailman's home directory, or
               somewhere else where the user mailman has write access
-              to it; *as user mailman* call Postfix's "mkalias" on the
+              to it; *as user mailman* call Postfix's "postalias" on the
               alias file.  
 
-              % mkalias <the alias file>
+              % postalias <the alias file>
 
               Also as user mailman, run 
 
