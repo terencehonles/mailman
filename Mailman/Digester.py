@@ -19,6 +19,7 @@
 
 import os
 from stat import ST_SIZE
+import errno
 
 from Mailman import mm_cfg
 from Mailman import Utils
