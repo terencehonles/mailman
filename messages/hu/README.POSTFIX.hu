@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
@@ -10,22 +10,37 @@ Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
     Postfix 19991231 verziótól kezdve pl13 verzióig, és 200010228
     verziótól pl08 verzióig lettek tesztelve.
 
-    Ajánlatos megadni a main.cf konfigurációs állományban az 
-    "owner_request_specil = no" beállítást nehogy a Postfix az -owner
-    és -request címekre érkezõ leveleket külön kezelje (az ezekre
-    a címekre érkezõ leveleket is egyszerûen továbbítani kell a 
-    Mailman wrapper programjának). Az alapértelmezett beállítás
-    valószínûleg "yes".
-
+    A Postfix alapértelmezésként speciális módon kezeli az -owner
+    és -request címekre érkezõ leveleket. Ha azt szeretnénk, hogy
+    az ide érkezõ leveleket is a Mailmannek továbbítsa a program
+    kapcsoljuk ki ezt a funkciót a main.cf állomány módosításával:   
+ 
+	  owner_request_specil = no
+	
     Ahhoz hogy esetlegesen használni tudjuk a Mailman VERP küldési
     képességét ki kell kapcsolnunk az luser_relay (ez az alapértelmezett)
     beállítást és módosítanunk kell a recipient_delimeter értékén.
-    Javasoljuk hogy kommentezzük ki a main.cf állományban az luser_relay
-    sort és adjuk meg a "recipient_delimiter = +" beállítást. Ezzel
-    beállítottuk a programban, hogy a cím a bõvített címzésben a + jelig
-    kell értelmezni. Ezekkel a beállítások a Defaults.py állományban
-    megadott alapértelmezett VERP_FORMAT és VERP_REGEXP értékekkel
-    megfelelõen mûködnek.
+    Ehhez kommentezzük ki a main.cf állományban található összes
+    luser_relay sort, visszatérve ezzel az alpértelmezett opcióhoz.
+    Továbbá, helyezzük el main.cf fájlba a következõ sort:
+    
+          recipient_delimiter = +
+	  
+    A + jel használatával a a Defaults.py állományban megadott 
+    alapértelmezett VERP_FORMAT és VERP_REGEXP értékek megfelelõen 
+    fognak mûködni.
+
+    A Postfix 450-es hibaüzenettel válaszol, ha egy nem létezõ lokális
+    címre probálunk meg levelet továbbítani. Mivel ez nem jelent
+    végzetes hibát, ezért a Mailman a kézbesítést addig ismételgeti,
+    amíg le nem jár a DELIVERY_RETRY_PERIOD változóban megadott idõ
+    (alapesetben 5 nap). Ennek elkerülésére be lehet állítani a
+    Postfixet úgy, hogy a nem létezõ helyi felhasználóknak történõ
+    kézbesítéskor a nem végzetes hibaüzenet helyet egy végzetes
+    hiba üzenetet küldjön. Ehhez a beállításhoz a következõ sort kell
+    elhelyezni a main.cf állományba:
+
+          unknown_local_recipient_reject_code = 550
 
     Végül ha Postfix-stílusú virtuális tartományokat használunk, akkor
     olvassuk el az errõl szóló lejjebb található fejezetet.
@@ -60,7 +75,8 @@ POSTFIX ÉS MAILMAN ÖSSZEKAPCSOLÁSA
     - Keressük meg a Defaults.py állományban a POSTFIX_ALIAS_CMD és
       POSTFIX_MAP_CMD változókat. Gyõzõdjünk meg, hogy a változók a
       postalias és postmap programok helyes teljes elérési útvonalát
-      tartalmazzák.
+      tartalmazzák. Fontos, hogy ha ezeket megszeretnénk változtatni,
+      akkor ne itt tegyük hanem az mm_cfg.py állományban.
 
     - Futtassuk a genaliases programot az aliases állomány létrehozásához:
 

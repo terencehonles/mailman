@@ -1,12 +1,12 @@
 # Hungarian Catalog for Mailman
-# Copyright (C) 2001-2002
-# Szilard Vizi <vizisz@freemail.hu>, 2001-2002
+# Copyright (C) 2001-2003
+# Szilard Vizi <vizisz@freemail.hu>, 2001-2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
 "POT-Creation-Date: Fri May  2 00:59:38 2003\n"
-"PO-Revision-Date: 2002-12-12 15:24+0100\n"
+"PO-Revision-Date: 2003-05-22 16:26+0100\n"
 "Last-Translator: Szilard Vizi <vizisz@freemail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -524,7 +524,7 @@ msgstr "...ez után."
 
 #: Mailman/Cgi/admin.py:742
 msgid "<br>(Edit <b>%(varname)s</b>)"
-msgstr "<br>(<b>%(varname)s</b> módósítása)"
+msgstr "<br>(<b>%(varname)s</b> módosítása)"
 
 #: Mailman/Cgi/admin.py:744
 msgid "<br>(Details for <b>%(varname)s</b>)"
@@ -1105,7 +1105,7 @@ msgstr "A tag <em>moderált</em> jelzõjének törlése."
 
 #: Mailman/Cgi/admindb.py:425
 msgid "<em>The sender is now a member of this list</em>"
-msgstr ""
+msgstr "<em>A feladó mostmár tagja ennek a levelezõlistának</em>"
 
 #: Mailman/Cgi/admindb.py:434
 msgid "Add <b>%(esender)s</b> to a sender filter"
@@ -1448,6 +1448,9 @@ msgid ""
 "            been discarded, and both list administrators have been\n"
 "            alerted."
 msgstr ""
+"            Nem kértek fel, hogy csatlakozz ehhez a levelezõlistához.\n"
+"            A felkérési csatlakozás el lett utasítva és az érintett listák\n"
+"            adminisztrátorait értesítettük."
 
 #: Mailman/Cgi/confirm.py:362
 msgid "Subscription request confirmed"
@@ -2154,9 +2157,8 @@ msgid "No address given"
 msgstr "Nincs cím megadva"
 
 #: Mailman/Cgi/options.py:110
-#, fuzzy
 msgid "Illegal Email Address: %(safeuser)s"
-msgstr "Hibás/érvénytelen e-mail cím: %(member)s"
+msgstr "Érvénytelen e-mail cím: %(safeuser)s"
 
 #: Mailman/Cgi/options.py:117 Mailman/Cgi/options.py:166
 #: Mailman/Cgi/options.py:188
@@ -2177,9 +2179,8 @@ msgid "Authentication failed."
 msgstr "Sikertelen azonosítás"
 
 #: Mailman/Cgi/options.py:243
-#, fuzzy
 msgid "List subscriptions for %(safeuser)s on %(hostname)s"
-msgstr "%(user)s felhasználó listatagságai a(z) %(hostname)s gépen"
+msgstr "%(safeuser)s felhasználó listatagságai a(z) %(hostname)s gépen"
 
 #: Mailman/Cgi/options.py:246
 msgid ""
@@ -2198,7 +2199,6 @@ msgid "You are already using that email address"
 msgstr "Jelenleg is ezt az e-mail címet használod."
 
 #: Mailman/Cgi/options.py:312
-#, fuzzy
 msgid ""
 "The new address you requested %(newaddr)s is already a member of the\n"
 "%(listname)s mailing list, however you have also requested a global change "
@@ -2209,7 +2209,7 @@ msgstr ""
 "Az új megadott %(newaddr)s címmel már található tag a(z) %(listname)s\n"
 "levelezõlistán, mivel azonban kérted hogy minden olyan listán, amelynek\n"
 "tagja vagy és ezen a rendszeren mûködik változzon meg a feliratkozási\n"
-"címed ezért azokon a listákon, ahol %(user)s címmel vagy nyílvántartva\n"
+"címed ezért azokon a listákon, ahol %(safeuser)s címmel vagy nyílvántartva\n"
 "a változtatás a megerõsítési után sikeresen megtörténik majd."
 
 #: Mailman/Cgi/options.py:321
@@ -2387,9 +2387,8 @@ msgid "email address and "
 msgstr "e-mail címed és "
 
 #: Mailman/Cgi/options.py:765
-#, fuzzy
 msgid "%(realname)s list: member options for user %(safeuser)s"
-msgstr "%(realname)s lista: %(user)s tag beállításai"
+msgstr "%(realname)s lista: %(safeuser)s tag beállításai"
 
 #: Mailman/Cgi/options.py:790
 msgid ""
@@ -2732,7 +2731,6 @@ msgid "You have been successfully subscribed to the %(realname)s mailing list."
 msgstr "Feliratkozásod a(z) %(realname)s listára sikeresen megtörtént."
 
 #: Mailman/Commands/cmd_confirm.py:17
-#, fuzzy
 msgid ""
 "\n"
 "    confirm <confirmation-string>\n"
@@ -2742,7 +2740,7 @@ msgid ""
 msgstr ""
 "\n"
 "    confirm <megerõsítési-azonosító>\n"
-"        Valamilyen mûvelet megerõsítése. A megerõsítési-azonosítót mindig\n"
+"         Valamilyen mûvelet megerõsítése. A megerõsítési-azonosítót mindig\n"
 "        meg kell adni, értékét a kiküldõtt értesitõ üzenet tartalmazza.\n"
 
 #: Mailman/Commands/cmd_confirm.py:40 Mailman/Commands/cmd_lists.py:40
@@ -2769,7 +2767,6 @@ msgid "Your request has been forwarded to the list moderator for approval."
 msgstr "Kérésed a lista szerkesztõjéhez lett továbbítva jóváhagyásra."
 
 #: Mailman/Commands/cmd_confirm.py:63
-#, fuzzy
 msgid ""
 "You are not currently a member.  Have you already unsubscribed or changed\n"
 "your email address?"
@@ -2783,6 +2780,9 @@ msgid ""
 "discarded,\n"
 "and both list administrators have been alerted."
 msgstr ""
+"Nem kértek fel, hogy csatlakozz ehhez a levelezõlistához. A felkérési "
+"csatlakozás\n"
+"el lett utasítva és az érintett listák adminisztrátorait értesítettük."
 
 #: Mailman/Commands/cmd_confirm.py:77
 msgid "Confirmation succeeded"
@@ -3507,7 +3507,7 @@ msgstr "Koreai"
 
 #: Mailman/Defaults.py:1267
 msgid "Lithuanian"
-msgstr ""
+msgstr "Litván"
 
 #: Mailman/Defaults.py:1268
 msgid "Dutch"
@@ -3519,12 +3519,11 @@ msgstr "Norvég"
 
 #: Mailman/Defaults.py:1270
 msgid "Polish"
-msgstr ""
+msgstr "Lengyel"
 
 #: Mailman/Defaults.py:1271
-#, fuzzy
 msgid "Portuguese"
-msgstr "Portugál (Brazil)"
+msgstr "Portugál"
 
 #: Mailman/Defaults.py:1272
 msgid "Portuguese (Brazil)"
@@ -3566,7 +3565,7 @@ msgstr "%(listfullname)s levelezõlista emlékeztetõ"
 
 #: Mailman/Deliverer.py:157 Mailman/Deliverer.py:176
 msgid "Hostile subscription attempt detected"
-msgstr ""
+msgstr "Illetéktelen feliratkozási kísérlet."
 
 #: Mailman/Deliverer.py:158
 msgid ""
@@ -3575,6 +3574,10 @@ msgid ""
 "invitation to your list.  We just thought you'd like to know.  No further\n"
 "action by you is required."
 msgstr ""
+"A(z) %(address)s felkérést kapott, hogy csatlakozzon\n"
+"egy másik levelezõlistához, de valamilyen félreértés következtében\n"
+"a te listádhoz próbált meg csatlkaozni. Nem szükséges semmilyen\n"
+"további beavatkozást tenned, csak értesítettünk errõl a félreértésrõl."
 
 #: Mailman/Deliverer.py:177
 msgid ""
@@ -3584,6 +3587,10 @@ msgid ""
 "you\n"
 "is required."
 msgstr ""
+"A(z) %(address)s címet felkérted, hogy csatlakozzon a listádhoz,\n"
+"de valamilyen félreértés következtében egy másik listán próbálták meg\n"
+"a felkérést megerõsíteni. Nem szükséges semmilyen további\n"
+"beavatkozást tenned, csak értesítettünk errõl a félreértésrõl."
 
 #: Mailman/Errors.py:114
 msgid "For some unknown reason"
@@ -5121,7 +5128,7 @@ msgid ""
 "Maximum length in kilobytes (KB) of a message body.  Use 0\n"
 "             for no limit."
 msgstr ""
-"A levél törzsének maximális mérete kilóbájtban (KB). 0 esetén nincs méret "
+"A levél törzsének maximális mérete kilobájtban (KB). 0 esetén nincs méret "
 "korlátozás."
 
 #: Mailman/Gui/General.py:360
@@ -5293,9 +5300,9 @@ msgid ""
 "             <a href=\"?VARHELP=language/preferred_language\">default\n"
 "             language</a> must be included."
 msgstr ""
-"A listán beállított nyelvek sora. Fontos, hogy az\n"
-"<a href=\"?VARHELP=language/preferred_language\">alapértelmezett nyelv</a>\n"
-"a listában itt is megtalálható."
+"A listán beállított nyelvek sora. Fontos, hogy a lista\n"
+"<a href=\"?VARHELP=language/preferred_language\">alapértelmezett nyelve</a>\n"
+"itt is meg legyen adva."
 
 #: Mailman/Gui/Language.py:90
 msgid "Always"
@@ -5530,6 +5537,20 @@ msgid ""
 "        page.\n"
 "</ul>\n"
 msgstr ""
+"Ha a listán engedélyezték az <a href=\"?VARHELP=nondigest/personalize"
+"\">egyéni levelek\n"
+"küldését</a>, akkor még a további változók is használhatóak a levelek fej- "
+"és láblécében:\n"
+"\n"
+"<ul><li><b>user_address</b> - A listatag e-mail címe, csupa kis-\n"
+"        betûvel.\n"
+"    <li><b>user_delivered_to</b> - A listatag e-mail címe, abban a\n"
+"        formában, ahogy azt feliratkozáskor megadták.\n"
+"    <li><b>user_password</b> - A listatag jelszava.\n"
+"    <li><b>user_name</b> - A listatag teljes neve.\n"
+"    <li><b>user_optionsurl</b> - A listatag saját beállítási oldalának\n"
+"        web címe.\n"
+"</ul>\n"
 
 #: Mailman/Gui/NonDigest.py:128
 msgid "Header added to mail sent to regular list members"
@@ -6137,7 +6158,7 @@ msgid ""
 "             (or be among the acceptable alias names, specified below)?"
 msgstr ""
 "Az üzenet címzettek részében (to, cc) kell a lista nevének lennie\n"
-"(vagy bármely más mezõben, ahogy az lejjebb a <a\n"
+"(vagy bármely más mezõben, ahogy az lejjebb a\n"
 "helyettesítõ nevek részben be van állítva)?"
 
 #: Mailman/Gui/Privacy.py:313
@@ -7091,9 +7112,9 @@ msgid "The attached message has been automatically discarded."
 msgstr "A mellékletet automatikusan töröltem."
 
 #: Mailman/Handlers/Replybot.py:74
-#, fuzzy
 msgid "Auto-response for your message to the \"%(realname)s\" mailing list"
-msgstr "Automatikus válasz az üzenetedre a(z)"
+msgstr ""
+"Automatikus válasz a(z) \"%(realname)s\" levelezõlistára küldött üzenetedre"
 
 #: Mailman/Handlers/Replybot.py:107
 msgid "The Mailman Replybot"
@@ -7244,23 +7265,18 @@ msgstr ""
 "A következõ sorokat kell az /etc/aliases állományban elhelyezni:\n"
 
 #: Mailman/MTA/Manual.py:75
-#, fuzzy
 msgid ""
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
 "equivalent) file by adding the following lines, and possibly running the\n"
 "`newaliases' program:\n"
 msgstr ""
-"\n"
 "A levelezõlista létrehozásának utolsó lépéséhez az /etc/aliases (vagy \n"
 "hasonló) állományba a következõ sorokat kell elhelyezni, és valószínûleg\n"
-"a `newaliases' programot utána futtatni:\n"
-"\n"
-"## %(listname)s levelezõlista"
+"futtatni utána a `newaliases' programot:\n"
 
 #: Mailman/MTA/Manual.py:80
-#, fuzzy
 msgid "## %(listname)s mailing list"
-msgstr "\"%(realname)s\" levelezõlistáról"
+msgstr "## %(listname)s levelezõlista"
 
 #: Mailman/MTA/Manual.py:97
 msgid "Mailing list creation request for list %(listname)s"
@@ -7415,6 +7431,8 @@ msgid ""
 "No commands were found in this message.\n"
 "To obtain instructions, send a message containing just the word \"help\".\n"
 msgstr ""
+"Nem található parancs a küldött üzenetben.\n"
+"A használható parancsok bemutatásához küldjön egy \"help\" tárgyú üzenetet.\n"
 
 #: Mailman/Queue/CommandRunner.py:161
 msgid ""
@@ -7534,7 +7552,6 @@ msgstr ""
 "(tzname)s"
 
 #: bin/add_members:26
-#, fuzzy
 msgid ""
 "Add members to a list from the command line.\n"
 "\n"
@@ -7591,17 +7608,11 @@ msgstr ""
 "        adandó tagok címei találhatóak. A felsorolt tagok nem-digest\n"
 "        típusú tagok lesznek. Állománynévnek `-'-et megadva a \n"
 "        címeket az stdin-rõl várja a program. Fontos, hogy ezentúl \n"
-"        ezt és ne a -n/--non-digest-members-file kapcsolót használjuk,\n"
-"        habár még az a kapcsoló is használható.\n"
+"        ezt és ne a -n/--non-digest-members-file kapcsolót használjuk.\n"
 "\n"
 "    --digest-members-file=állomány\n"
 "    -d állomány\n"
 "        Mint az elõzõ, de digest típusú tag-hozzáadás.\n"
-"\n"
-"    --changes-msg=<y|n>\n"
-"    -c <y|n> \n"
-"        Elküldésre kerüljön a listatagoknak a `listán nagy változások\n"
-"        történtek' üzenet? Alapértelmezésben nem kerül elküldésre.\n"
 "\n"
 "    --welcome-msg=<y|n>\n"
 "    -w <y|n>\n"
@@ -8085,9 +8096,8 @@ msgid "checking mode for %(prefix)s"
 msgstr "jogok ellenõrzése a következõn: %(prefix)s"
 
 #: bin/check_perms:174
-#, fuzzy
 msgid "WARNING: directory does not exist: %(d)s"
-msgstr "a könyvtár jogosultságának 02775 -nek kell lennie: %(d)s"
+msgstr "FIGYELMEZTETÉS: az alábbi könyvtár nem létezik: %(d)s"
 
 #: bin/check_perms:178
 msgid "directory must be at least 02775: %(d)s"
@@ -8806,6 +8816,23 @@ msgid ""
 "    -h/--help\n"
 "        Print this message and exit.\n"
 msgstr ""
+"A program újra létrehozza Mailmanhoz kapcsolodó bejegyzéseket.\n"
+"\n"
+"A program tényleges kimenetét az mm_cfg.py állományban beállított `MTA' "
+"változó\n"
+"értéke határozza meg.\n"
+"\n"
+"Használat: genaliases [kapcsolók]\n"
+"\n"
+"Kapcsolók:\n"
+"\n"
+"    -q/--quiet\n"
+"        Egyes MTAk esetén a kimentben több megjegyzés/súgó található. A "
+"kapcsolóval\n"
+"        csökkenthetõ ezek mennyisége.\n"
+"\n"
+"    -h/--help\n"
+"        Megjeleníti ezt a súgót és kilép.\n"
 
 #: bin/inject:19
 msgid ""
@@ -9506,14 +9533,37 @@ msgid ""
 "    --version\n"
 "        Display version information and exit.\n"
 msgstr ""
+"Bináris katalógus létrehozása a szöveges fordítandó szöveg listából.\n"
+"\n"
+"A program az Uniforum-stílusú szöveges katalógus állományt (.po fájl)\n"
+"alakítja át bináris GNU katalógussá (.mo fájl). Valójában ugyanazt végzi\n"
+"mint a GNU msgfmt program, azonban annak egy egyszerûsített változata\n"
+"ez a program.\n"
+"\n"
+"Használat: msgfmt.py [kapcsolók] fájlnév.po\n"
+"\n"
+"Kapcsolók:\n"
+"    -o fájl\n"
+"    --output-file=fájl\n"
+"          A kimenetet a megadott fájlba menti. Ha nem került megadásra,\n"
+"          akkor (a bemeneti fájlnév alapján) fájlnév.mo -ba történik a "
+"mentés.\n"
+"\n"
+"    -h\n"
+"    --help\n"
+"        Megjeleníti ezt a súgót és kilép.\n"
+"\n"
+"    -V\n"
+"    --version\n"
+"        Kiírja a program verziószámát és kilép.\n"
 
 #: bin/msgfmt.py:49
 msgid "Add a non-fuzzy translation to the dictionary."
-msgstr ""
+msgstr "Végleges fordítás hozzáadása a szótárhoz."
 
 #: bin/msgfmt.py:57
 msgid "Return the generated output."
-msgstr ""
+msgstr "Lefordított kimenet elkészítése."
 
 #: bin/newlist:19
 msgid ""
@@ -9768,7 +9818,6 @@ msgid "No runner name given."
 msgstr "Nem lett runnernév megadva."
 
 #: bin/remove_members:19
-#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -9814,7 +9863,7 @@ msgid ""
 "\n"
 msgstr ""
 "Törli a tagokat a listáról.\n"
-"\n"
+" \n"
 "Használat:\n"
 "    remove_members [kapcsolók] [listanév] [cím1 ..]\n"
 "\n"
@@ -9913,9 +9962,8 @@ msgid "Removing %(msg)s"
 msgstr "Eltávolítva %(msg)s"
 
 #: bin/rmlist:80
-#, fuzzy
 msgid "%(listname)s %(msg)s not found as %(filename)s"
-msgstr "%(listname)s %(msg)s üzenetei nem találhatóak a %(dir)s könyvtárban"
+msgstr "%(listname)s %(msg)s nem található %(filename)s fájlnévvel"
 
 #: bin/rmlist:104
 msgid "No such list (or list already deleted): %(listname)s"
@@ -9936,7 +9984,7 @@ msgstr "lista információk"
 
 #: bin/rmlist:132
 msgid "stale lock file"
-msgstr ""
+msgstr "lejárt zárolási állomány"
 
 #: bin/rmlist:137 bin/rmlist:139
 msgid "private archives"
@@ -10060,7 +10108,7 @@ msgstr ""
 "    -a[=<yes|no>\n"
 "\t Beállítja, hogy az adminisztrátor értesítést kapjon mindenegyes\n"
 "\t feliratkozásról vagy leiratkozásról. Ha egyszerre sok címet\n"
-"\t módósítunk, akkor célszerû kikapcsolnunk az értesítést. Az\n"
+"\t módosítunk, akkor célszerû kikapcsolnunk az értesítést. Az\n"
 "\t adminisztrátor értesítést kap -a=yes vagy -a kapcsolónál. Ha\n"
 "\t nem adunk meg -a kapcsolót, akkor a listán megadott beállítást\n"
 "\t használja fel a program.\n"
@@ -10558,7 +10606,6 @@ msgid "Using Mailman version:"
 msgstr "Mailman verziószáma:"
 
 #: bin/withlist:19
-#, fuzzy
 msgid ""
 "General framework for interacting with a mailing list object.\n"
 "\n"
@@ -10689,6 +10736,7 @@ msgstr ""
 "fejlesztésekben is\n"
 "(lejjebb láthatjuk a péládkat).\n"
 "Ez esetben az általános használati szintaxis a következõ:\n"
+"\n"
 "%% bin/withlist [kapcsolók] listanév [paraméterek ...]\n"
 "\n"
 "Kapcsolók:\n"
@@ -10699,6 +10747,7 @@ msgstr ""
 "        (pl. read-only mûveletekhez). Bármikor zárolhatjuk az állományt az "
 "`m.Lock()'\n"
 "        paranccsal.\n"
+"\n"
 "        Ha használjuk ezt a kapcsolót, akkor jó ha tudjuk, hogy el ne "
 "felejtsük külön\n"
 "        meghívni kilépés elõtt az m.Save parancsot, mivel nem menti "
@@ -10882,7 +10931,6 @@ msgstr ""
 "megadva, akkor az összes listán elvégzi a változtatásokat.\n"
 
 #: cron/checkdbs:19
-#, fuzzy
 msgid ""
 "Check for pending admin requests and mail the list owners if necessary.\n"
 "\n"
@@ -10893,10 +10941,10 @@ msgid ""
 "    -h/--help\n"
 "        Print this message and exit.\n"
 msgstr ""
-"Újra létrehozza a Postfix data/aliases és data/aliases.db állományait.\n"
+"A program ellenõrzi, hogy van-e adminisztrátori teendõ és szükség esetén\n"
+"errõl e-mailben értesíti a lista tulajdonosokat.\n"
 "\n"
-"Használat:\n"
-"    genaliases [kapcsolók]\n"
+"Használat: %(PROGRAM)s [kapcsolók]\n"
 "\n"
 "Kapcsolók:\n"
 "\n"
@@ -11189,7 +11237,6 @@ msgstr ""
 " \t Csak a megadott lista digestjét küldi el. Ha nem lett lista\n"
 "\t megadva, akkor az összes lista digestjét elküldi.\n"
 
-#, fuzzy
 #~ msgid ""
 #~ "Fix the MM2.1b4 archives.\n"
 #~ "\n"
@@ -11199,10 +11246,9 @@ msgstr ""
 #~ "    -h / --help\n"
 #~ "        Print this help message and exit.\n"
 #~ msgstr ""
-#~ "Újra létrehozza a Postfix data/aliases és data/aliases.db állományait.\n"
+#~ "A program kijavítja a MM2.1b4 archívumok hibáit.\n"
 #~ "\n"
-#~ "Használat:\n"
-#~ "    genaliases [kapcsolók]\n"
+#~ "Használat: %(PROGRAM)s [kapcsolók]\n"
 #~ "\n"
 #~ "Kapcsolók:\n"
 #~ "\n"
@@ -11210,7 +11256,7 @@ msgstr ""
 #~ "\t Kiírja ezt a súgót és kilép.\n"
 
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
-#~ msgstr "%(listname)s@%(listhost)s levelezõlista nagyot változott"
+#~ msgstr "Nagy változások a(z) %(listname)sv%(listhost)s levelezõlistán"
 
 #~ msgid "Bad argument to -c/--changes-msg: %(arg)s"
 #~ msgstr "Hibás paraméter a -c/--changes-msg kapcsolónál: %(arg)s"
