@@ -111,13 +111,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             else:
                 dict['extend'](self)
 
-    def __del__(self):
-        try:
-            self.Unlock()
-        except AttributeError:
-            # List didn't get far enough to have __lock
-            pass
-
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute
         # access to a delegated member function gets passed to the
