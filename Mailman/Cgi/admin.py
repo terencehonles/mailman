@@ -794,7 +794,9 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     # If there are more members than allowed by chunksize, then we split the
     # membership up alphabetically.  Otherwise just display them all.
     chunksz = mlist.admin_member_chunksize
-    all = mlist.getMembers()
+    # The email addresses had /better/ be ASCII, but might be encoded in the
+    # database as Unicodes.
+    all = [_m.encode() for _m in mlist.getMembers()]
     all.sort(lambda x, y: cmp(x.lower(), y.lower()))
     # See if the query has a regular expression
     regexp = cgidata.getvalue('findmember', '').strip()
