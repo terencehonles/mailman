@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -81,7 +81,9 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman.pythonlib.StringIO import StringIO
-from Mailman.i18n import _
+from Mailman import i18n
+
+_ = i18n._
 
 
 
@@ -110,17 +112,25 @@ def readfile(filename):
 
 def SendExplanation(mlist, users):
     adminaddr = mlist.GetAdminEmail()
-    d = {'listname'    : mlist.real_name,
-         'listhost'    : mlist.host_name,
+    listname = mlist.real_name
+    listhost = mlist.host_name
+    d = {'listname'    : listname,
+         'listhost'    : listhost,
          'listaddr'    : mlist.GetListEmail(),
          'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
          'requestaddr' : mlist.GetRequestEmail(),
          'adminaddr'   : adminaddr,
          'version'     : mm_cfg.VERSION,
          }
-    text = Utils.maketext('convert.txt', d)
-    subject = _('Big change in %(listname)s@%(listhost)s mailing list') % d
-    msg = Message.UserNotification(users, adminaddr, subject, text)
+    otrans = i18n.get_translation()
+    i18n.set_language(mlist.preferred_language)
+    try:
+        text = Utils.maketext('convert.txt', d)
+        subject = _('Big change in %(listname)s@%(listhost)s mailing list')
+        msg = Message.UserNotification(users, adminaddr, subject, text,
+                                       mlist.preferred_language)
+    finally:
+        i18n.set_translation(otrans)
     msg.send(mlist)
 
 
@@ -230,6 +240,7 @@ def main():
     if admin_notif is None:
         admin_notif = mlist.admin_notify_mchanges
 
+    otrans = i18n.get_translation()
     # Read the regular and digest member files
     try:
         dmembers = []
@@ -244,7 +255,7 @@ def main():
             usage(0, _('Nothing to do.'))
 
         s = StringIO()
-
+        i18n.set_language(mlist.preferred_language)
         if nmembers:
             addall(mlist, nmembers, 0, send_welcome_msg, s)
 
@@ -256,7 +267,8 @@ def main():
             realname = mlist.real_name
             subject = _('%(realname)s subscription notification')
             msg = Message.UserNotification(
-                mlist.owner, Utils.get_site_email(), subject, s.getvalue())
+                mlist.owner, Utils.get_site_email(), subject, s.getvalue(),
+                mlist.preferred_language)
             msg.send(mlist)
 
         if send_changes_msg:
@@ -265,7 +277,7 @@ def main():
         mlist.Save()
     finally:
         mlist.Unlock()
-
+        i18n.set_translation(otrans)
 
 
 if __name__ == '__main__':
