@@ -9,22 +9,33 @@ sys.path.append('/home/mailman/mailman/modules')
 
 import maillist, mm_utils
 
-list_name = string.lower(raw_input("Enter the name of the list: "))
+def main(argv):
+    if len(argv) > 1:
+	list_name = argv[1]
+    else:
+	list_name = string.lower(raw_input("Enter the name of the list: "))
 
-if list_name in maillist.list_names():
-    sys.stderr.write("** List with name %s already exists\n" % `list_name`)
-    raise SystemExit, 1
+    if list_name in maillist.list_names():
+	sys.stderr.write("** List with name %s already exists\n" % `list_name`)
+	return 1
 
-owner_mail = raw_input("Enter the email of the person runing the list: ")
-list_pw = raw_input("Enter the initial list password:")
+    if len(argv) > 2:
+	owner_mail = argv[2]
+    else:
+	owner_mail = raw_input(
+	    "Enter the email of the person running the list: ")
+    if len(argv) > 3:
+	list_pw = argv[3]
+    else:
+	list_pw = raw_input("Enter the initial list password:")
 
-newlist = maillist.MailList()
-pw = crypt.crypt(list_pw , mm_utils.GetRandomSeed())
-newlist.Create(list_name, owner_mail, pw)
+    newlist = maillist.MailList()
+    pw = crypt.crypt(list_pw , mm_utils.GetRandomSeed())
+    newlist.Create(list_name, owner_mail, pw)
 
-###os.system('%s %s' % (ADDALIASES_CMD, list_name))
-print '''
-Entry needed in aliases file:
+    ###os.system('%s %s' % (ADDALIASES_CMD, list_name))
+    print '''
+Entry for aliases file:
 
 #-- %(listname)s -- mailing list aliases:
 %(list)s |"%(wrapper)s post %(listname)s"
@@ -33,24 +44,29 @@ Entry needed in aliases file:
 %(owner1)s %(listname)s-admin
 %(owner2)s %(listname)s-admin
 ''' % {'listname': list_name,
-       'list': "%-24s" % (list_name + ":"),
-       'wrapper': '/home/mailman/bin/wrapper',
-       'admin': "%-24s" % ("%s-admin:" % list_name),
-       'request': "%-24s" % ("%s-request:" % list_name),
-       'owner1': "%-24s" % ("owner-%s:" % list_name),
-       'owner2': "%-24s" % ("%s-owner:" % list_name)}
+	   'list': "%-24s" % (list_name + ":"),
+	   'wrapper': '/home/mailman/bin/wrapper',
+	   'admin': "%-24s" % ("%s-admin:" % list_name),
+	   'request': "%-24s" % ("%s-request:" % list_name),
+	   'owner1': "%-24s" % ("owner-%s:" % list_name),
+	   'owner2': "%-24s" % ("%s-owner:" % list_name)}
 
-print "Hit enter to continue with owner notification...",
-sys.stdin.readline()
+    if len(argv) < 5:
+	print ("Hit enter to continue with %s owner notification..."
+	       % list_name),
+	sys.stdin.readline()
+    sendnotice(newlist, list_name, owner_mail, list_pw)
 
-newlist.SendTextToUser(subject="Your new mailing list", recipient=owner_mail,
-	sender='mailman-owner@%s' % newlist.host_name, 
-	text='''
+def sendnotice(newlist, list_name, owner_mail, list_pw):
+    newlist.SendTextToUser(subject="Your new mailing list",
+			   recipient=owner_mail,
+			   sender='mailman-owner@%s' % newlist.host_name, 
+			   text='''
 The mailing list '%s' has just been created for you.  Here is some basic
-information on your mailing list:
+information about your mailing list:
 
 Your mailing list password is:
-	 %s
+	%s
 
 You need this password to configure your mailing list.  You also need it to
 handle administrative requests, such as approving mail if you choose to run
@@ -65,15 +81,16 @@ The web page for users of your mailing list is:
 You can even customize these web pages from the list configuration page.  
 However, you do need to know html to be able to do this.
 
-To unsubscribe a user, from the mailing list web page, click on their
-email address as if you were that user.  Where that user would put in
-his password to unsubscribe, put in your admin password.  You can also
-use your password to change peoples options to digestified /
-non-digestified.
+To unsubscribe a user: from the mailing list 'listinfo' web page, click on
+or enter the user's email address as if you were that user.  Where that
+user would put in their password to unsubscribe, put in your admin
+password.  You can also use your password to change member's options,
+including digestification, delivery disabling, etc.
 
-Soon There should be a Mailman web page that will have a reference on
-running a Mailman mailing list.  Until then, please address all
-questions to mailman-owner@%s. ''' % (list_name, list_pw, 
-	newlist.GetScriptURL('admin'), newlist.GetScriptURL('listinfo'),
-	newlist.host_name))
+Please address all questions to mailman-owner@%s.
+''' % (list_name, list_pw, 
+       newlist.GetScriptURL('admin'), newlist.GetScriptURL('listinfo'),
+       newlist.host_name))
 
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))
