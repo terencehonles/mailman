@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -71,8 +71,8 @@ def process(mlist, msg, msgdata):
     # Okay, we know we're going to auto-respond to this sender, craft the
     # message, send it, and update the database.
     realname = mlist.real_name
-    subject = _('Auto-response for your message to ') + \
-              msg.get('to',  _('the "%(realname)s" mailing list'))
+    subject = _(
+        'Auto-response for your message to the "%(realname)s" mailing list')
     # Do string interpolation
     d = SafeDict({'listname'    : realname,
                   'listurl'     : mlist.GetScriptURL('listinfo'),
