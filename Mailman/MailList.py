@@ -65,6 +65,19 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetAdminEmail(self):
         return '%s-admin@%s' % (self._internal_name, self.host_name)
+    def GetMemberAdminEmail(self, member):
+        """Usually the member addr, but modified for umbrella lists.
+
+        Umbrella lists have other maillists as members, and so admin stuff
+        like confirmation requests and passwords must not be sent to the
+        member addresses - the sublists - but rather to the administrators
+        of the sublists.  This routine picks the right address, considering 
+        regular member address to be their own administrative addresses."""
+        if not self.umbrella_list:
+            return member
+        else:
+            acct, host = tuple(string.split(member, '@'))
+            return "%s%s@%s" % (acct, self.umbrella_member_suffix, host)
 
     def GetRequestEmail(self):
 	return '%s-request@%s' % (self._internal_name, self.host_name)
@@ -770,6 +783,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             else:
                 by = ""
                 remote = ""
+            recipient = self.GetMemberAdminEmail(name)
             text = Utils.maketext('verify.txt',
                                   {"email"      : name,
                                    "listaddr"   : self.GetListEmail(),
@@ -780,12 +794,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                                    "remote"     : remote,
                                    "listadmin"  : self.GetAdminEmail(),
                                    })
-            if self.umbrella_list:
-                acct, host = tuple(string.split(name, '@'))
-                recipient = ("%s%s@%s" %
-                             (acct, self.umbrella_member_suffix, host))
-            else:
-                recipient = name
             self.SendTextToUser(
                 subject=("%s -- confirmation of subscription -- request %d" % 
                          (self.real_name, cookie)),
@@ -795,7 +803,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 add_headers = ["Reply-to: %s" % self.GetRequestEmail(),
                                "Errors-To: %s" % self.GetAdminEmail()])
             if recipient != name:
-                who = "%s (%s%s)" % (acct, acct, self.umbrella_member_suffix)
+                who = "%s (%s)" % (name, string.split(recipient, '@')[0])
             else: who = name
             self.LogMsg("subscribe", "%s: pending %s %s",
                         self._internal_name,

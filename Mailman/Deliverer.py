@@ -147,12 +147,21 @@ class Deliverer:
 	else:
 	    welcome = ''
 
+        if self.umbrella_list:
+            umbrella = Utils.wrap(
+                "\n(Since this is a list of mailing lists, administrative"
+                " notices like the password reminder will be sent to"
+                " your membership administrative address, %s.\n"
+                % self.GetMemberAdminEmail(name))
+        else:
+            umbrella_spiel = ''
         # get the text from the template
         body = Utils.maketext(
             'subscribeack.txt',
             {'real_name'   : self.real_name,
              'host_name'   : self.host_name,
              'welcome'     : welcome,
+             'umbrella'    : umbrella,
              'emailaddr'   : self.GetListEmail(),
              'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
              'optionsurl'  : self.GetAbsoluteOptionsURL(name),
@@ -169,40 +178,22 @@ class Deliverer:
 	else:
 	    digest_mode = ''
 
-	if self.umbrella_list:
-            acct, host = tuple(string.split(name, '@'))
-            recipient = ("%s%s@%s" %
-                         (acct, self.umbrella_member_suffix, host))
-	else:
-	    recipient = name
-
         self.SendTextToUser(subject = 'Welcome To "%s"! %s' % (self.real_name, 
 							       digest_mode),
-			    recipient = recipient,
+			    recipient = self.GetMemberAdminEmail(name),
 			    text = self.CreateSubscribeAck(name, password))
 
     def SendUnsubscribeAck(self, name):
-        if self.umbrella_list:
-            acct, host = tuple(string.split(name, '@'))
-            recipient = ("%s%s@%s" %
-                         (acct, self.umbrella_member_suffix, host))
-        else:
-            recipient = name
 	self.SendTextToUser(subject = 'Unsubscribed from "%s"\n' % 
 			               self.real_name,
-			    recipient = recipient, 
+			    recipient = self.GetMemberAdminEmail(name),
 			    text = Utils.wrap(self.goodbye_msg))
 
     def MailUserPassword(self, user):
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
         if self.passwords.has_key(user):
-	    if self.umbrella_list:
-                acct, host = tuple(string.split(user, '@'))
-                recipient = ("%s%s@%s" %
-                             (acct, self.umbrella_member_suffix, host))
-	    else:
-		recipient = user
+            recipient = self.GetMemberAdminEmail(user)
             subj = '%s maillist reminder\n' % listfullname
             # get the text from the template
             text = Utils.maketext(
