@@ -1,559 +1,626 @@
-#! /usr/bin/env python
+#!/usr/local/bin/python
+
+import os, sys, pickle, string, re
+
+__version__='0.05'
+VERSION=__version__
+CACHESIZE=100    # Number of slots in the cache
+
+msgid_pat=re.compile(r'(<.*>)')
+def strip_separators(s):
+    "Remove quotes or parenthesization from a Message-ID string"
+    if s==None or s=="": return ""
+    if s[0] in '"<([' and s[-1] in '">)]': s=s[1:-1]
+    return s
+
+smallNameParts = ['van', 'von', 'der', 'de']
+
+def fixAuthor(author):
+    "Canonicalize a name into Last, First format"
+    # If there's a comma, guess that it's already in "Last, First" format
+    if ',' in author: return author
+    L=string.split(author)
+    i=len(L)-1
+    if i==0: return author # The string's one word--forget it
+    if string.upper(author)==author or string.lower(author)==author:
+	# Damn, the name is all upper- or lower-case.  
+	while i>0 and string.lower(L[i-1]) in smallNameParts: i=i-1
+    else:
+	# Mixed case; assume that small parts of the last name will be
+        # in lowercase, and check them against the list.
+	while i>0 and (L[i-1][0] in string.lowercase or 
+		       string.lower(L[i-1]) in smallNameParts): 
+	    i=i-1
+    author=string.join(L[-1:]+L[i:-1], ' ')+', '+string.join(L[:i], ' ')
+    return author
+
+# Abstract class for databases
+
+class Database:    
+    def __init__(self): pass
+    def close(self): pass
+    def getArticle(self, archive, msgid): pass
+    def hasArticle(self, archive, msgid): pass
+    def addArticle(self, archive, article, subjectkey, authorkey): pass
+    def firstdate(self, archive): pass
+    def lastdate(self, archive): pass
+    def first(self, archive, index): pass
+    def next(self, archive, index): pass
+    def numArticles(self, archive): pass
+    def newArchive(self, archive): pass
+    def setThreadKey(self, archive, key, msgid): pass
+    def getOldestArticle(self, subject): pass
+
+# The Article class encapsulates a single posting.  The attributes 
+# are:
 #
-# Pipermail 0.0.2-mm
-#
-# **NOTE**
-#
-# This internal version of pipermail has been deprecated in favor of use of 
-# an external version of pipermail, available from:
-# http://starship.skyport.net/crew/amk/maintained/pipermail.html
-# The external version should be pointed at the created archive files.
-#
-#
-# Some minor mods have been made for use with the Mailman mailing list manager.
-# All changes will have JV by them.
-#
-# (C) Copyright 1996, A.M. Kuchling (amk@magnet.com)
-# Home page at http://amarok.magnet.com/python/pipermail.html
-#
-# HTML code for frames courtesy of Scott Hassan (hassan@cs.stanford.edu)
-#
-# TODO:
-#  * Prev. article, next. article pointers in each article
-#  * I suspect there may be problems with rfc822.py's getdate() method; 
-#    take a look at the threads "Greenaway and the net (fwd)" or
-#    "Pillow Book pictures".  To be looked into...
-#  * Anything else Hypermail can do that we can't?
-#  * General code cleanups
-#  * Profiling & optimization
-#  * Should there be an option to enable/disable frames?
-#  * Like any truly useful program, Pipermail should have an ILU interface.
-#  * There's now an option to keep from preserving line breaks, 
-#    so paragraphs in messages would be reflowed by the browser.
-#    Unfortunately, this mangles .sigs horribly, and pipermail doesn't yet
-#    put in paragraph breaks.  Putting in the breaks will only require a
-#    half hour or so; I have no clue as to how to preserve .sigs.
-#  * Outside URLs shouldn't appear in the display frame.  How to fix? 
-#
+#  sequence : Sequence number, unique for each article in a set of archives
+#  subject  : Subject
+#  datestr  : The posting date, in human-readable format
+#  date     : The posting date, in purely numeric format
+#  headers  : Any other headers of interest
+#  author   : The author's name (and possibly organization)
+#  email    : The author's e-mail address
+#  msgid    : A unique message ID
+#  in_reply_to : If !="", this is the msgid of the article being replied to
+#  references: A (possibly empty) list of msgid's of earlier articles in the thread
+#  body     : A list of strings making up the message body
 
-VERSION = "0.0.2.mm"
-
-import posixpath, time, os, string, sys, rfc822
-
-# JV -- to get HOME_PAGE
-import mm_cfg
-
-class ListDict:
-    def __init__(self): self.dict={}
-    def keys(self): return self.dict.keys()
-    def __setitem__(self, key, value):
-	"Add the value to a list for the key, creating the list if needed."
-	if not self.dict.has_key(key): self.dict[key]=[value]
-	else: self.dict[key].append(value)
-    def __getitem__(self, key):
-	"Return the list matching a key"
-	return self.dict[key]
-    
-def PrintUsage():
-    print """Pipermail %s
-usage: pipermail [options]
-options: -a URL    : URL to other archives
-         -b URL    : URL to archive information
-         -c file   : name of configuration file (default: ~/.pmrc)
-         -d dir    : directory where the output files will be placed 
-                     (default: archive/)
-         -l name   : name of the output archive
-         -m file   : name of input file
-         -s file   : name where the archive state is stored 
-                     (default: <input file>+'.pipermail'
-         -u        : Select 'update' mode
-         -v        : verbose mode of operation
-    """ % (VERSION,)
-    sys.exit(0)
-
-# Compile various important regexp patterns
-import regex, regsub
-# Starting <html> directive
-htmlpat=regex.compile('^[ \t]*<html>[ \t]*$')    
-# Ending </html> directive
-nohtmlpat=regex.compile('^[ \t]*</html>[ \t]*$') 
-# Match quoted text
-quotedpat=regex.compile('^[>|:]+')
-# Parenthesized human name 
-paren_name_pat=regex.compile('.*\([(].*[)]\).*') 
-# Subject lines preceded with 'Re:' 
-REpat=regex.compile('[ \t]*[Rr][Ee][ \t]*:[ \t]*')
-# Lines in the configuration file: set pm_XXX = <something>
-cfg_line_pat=regex.compile('^[ \t]*[sS][eE][tT][ \t]*[Pp][Mm]_\([a-zA-Z0-9]*\)'
-			   '[ \t]*=[ \t]*\(.*\)[ \t\n]*$')
-# E-mail addresses and URLs in text
-emailpat=regex.compile('\([-+,.a-zA-Z0-9]*@[-+.a-zA-Z0-9]*\)') 
-urlpat=regex.compile('\([a-zA-Z0-9]+://[^ \t\n]+\)') # URLs in text
-# Blank lines
-blankpat=regex.compile('^[ \t\n]*$')
-
-def ReadCfgFile(prefs):
-    import posixpath
-    try:
-	f=open(posixpath.expanduser(prefs['CONFIGFILE']), 'r')
-    except IOError, (num, msg):
-	if num==2: return
-	else: raise IOError, (num, msg)
-    line=0
-    while(1):
-	L=f.readline() ; line=line+1
-	if L=="": break
-	if string.strip(L)=="": continue   # Skip blank lines
-	match=cfg_line_pat.match(L)
-	if match==-1:
-	    print "Syntax error in line %i of %s" %(line, prefs['CONFIGFILE'])
-	    print L
-	else:
-	    varname, value=cfg_line_pat.group(1,2)
-	    varname=string.upper(varname)
-	    if not prefs.has_key(varname):
-		print ("Unknown variable name %s in line %i of %s"
-		       %(varname, line, prefs['CONFIGFILE']))
-		print L
-	    else:
-		prefs[varname]=eval(value)
-    f.close()
-
-def ReadEnvironment(prefs):
-    import sys, os
-    for key in prefs.keys():
-	envvar=string.upper('PM_'+key)
-	if os.environ.has_key(envvar):
-	    if type(prefs[key])==type(''): prefs[key]=os.environ[envvar]
-	    else: prefs[key]=string.atoi(os.environ[envvar])
-	    
-def UpdateMsgHeaders(prefs, filename, L):
-    """Update the next/previous message information in a message header.
-The message is scanned for <!--next--> and <!--endnext--> comments, and
-new pointers are written.  Otherwise, the text is simply copied without any processing."""
-    pass
-    
-def ProcessMsgBody(prefs, msg, filename, articles):
-    """Transform one mail message from plain text to HTML.
-This involves writing an HTML header, scanning through the text looking
-for <html></html> directives, e-mail addresses, and URLs, and
-finishing off with a footer."""
-    import cgi, posixpath
-    outputname=posixpath.join(prefs['DIR'], filename)
-    output=open(outputname, 'w')
-    os.chmod(outputname, prefs['FILEMODE'])
-    subject, email, poster, date, datestr, parent, id = articles[filename]
-    # JV
-    if not email:
-	email = ''
-    if not subject:
-	subject = '<No subject>'
-    if not poster:
-	poster = '*Unknown*'
-    if not datestr:
-	datestr = ''
-    output.write('<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">'
-                 "<html><head><title>%s Mailing List: %s</title></head>"
-                 "<body><h1>%s</h1>"
-                 "%s (<i>%s</i>)<br><i>%s</i><p>" %
-		 (prefs['LABEL'], cgi.escape(subject),cgi.escape(subject),
-		  cgi.escape(poster),cgi.escape(email),
-		  cgi.escape(datestr)))
-    output.write('<ul><li> <b>Messages sorted by:</b>'
-	    '<a target="toc" href="date.html#1">[ date ]</a>'
-	    '<a target="toc" href="thread.html#1">[ thread ]</a>'
-	    '<a target="toc" href="subject.html#1">[ subject ]</a>'
-	    '<a target="toc" href="author.html#1">[ author ]</a></ul>\n')
-	    
-    html_mode=0
-    if prefs['SHOWHR']: output.write('<hr>')
-    output.write('<p>')
-    if not prefs['SHOWHTML']: output.write('<pre>\n')
-    msg.rewindbody()			# Seek to start of message body
-    quoted=-1
-    while (1):
-	L=msg.fp.readline()
-	if L=="": break
-	if html_mode:
-	    # If in HTML mode, check for ending tag; otherwise, we
-	    # copy the line without any changes.
-	    if nohtmlpat.match(L)==-1:
-		output.write(L) ; continue
-	    else:
-		html_mode=0
-		if not prefs['SHOWHTML']: output.write('<pre>\n')
-		continue
-	# Check for opening <html> tag
-	elif htmlpat.match(L)!=-1:
-	    html_mode=1
-	    if not prefs['SHOWHTML']: output.write('</pre>\n')
-	    continue
-	if prefs['SHOWHTML'] and prefs['IQUOTES']:
-	    # Check for a line of quoted text and italicise it
-	    # (We have to do this before escaping HTML special
-	    # characters because '>' is commonly used.) 
-	    quoted=quotedpat.match(L)
-	    if quoted!=-1:
-		L=cgi.escape(L[:quoted]) + '<i>' + cgi.escape(L[quoted:]) + '</i>'
-		# If we're flowing the message text together, quoted lines
-		# need explicit breaks, no matter what mode we're in.
-		if prefs['SHOWHTML']: L=L+'<br>'
-	    else: L=cgi.escape(L)
-	else: L=cgi.escape(L)
-	
-	# Check for an e-mail address
-	L2="" ; i=emailpat.search(L)
-	while i!=-1:
-	    length=len(emailpat.group(1))
-	    mailcmd=prefs['MAILCOMMAND'] % {'TO':L[i:i+length]}
-	    L2=L2+'%s<A HREF="%s">%s</A>' % (L[:i],
-		 mailcmd, L[i:i+length])
-	    L=L[i+length:] 
-	    i=emailpat.search(L)
-	L=L2+L ; L2=""; i=urlpat.search(L)
-	while i!=-1:
-	    length=len(urlpat.group(1))
-	    L2=L2+'%s<A HREF="%s">%s</A>' % (L[:i],
-		 L[i:i+length], L[i:i+length])
-	    L=L[i+length:]
-	    i=urlpat.search(L)
-	L=L2+L
-	if prefs['SHOWHTML']:
-	    while (L!="" and L[-1] in '\015\012'): L=L[:-1]
-	    if prefs['SHOWBR']:
-		# We don't want to flow quoted passages
-		if quoted==-1: L=L+'<br>'
-	    else:
-		# If we're not adding <br> to each line, we'll need to
-		# insert <p> markup on blank lines to separate paragraphs.
-		if blankpat.match(L)!=-1: L=L+'<p>'
-	    L=L+'\n'
-	output.write(L)
-	
-    if not prefs['SHOWHTML'] and not html_mode: output.write('</pre>')
-    if prefs['SHOWHR']: output.write('<hr>')
-    output.write('<!--next-->\n<!--endnext-->\n</body></html>')
-    output.close()
-
-def WriteHTMLIndex(prefs, fp, L, articles, indexname):
-    """Process a list L into an HTML index, written to fp.
-L is processed from left to right, and contains a list of 2-tuples;
-an integer of 1 or more giving the depth of indentation, and
-a list of strings which are used to reference the 'articles'
-dictionary.  Most of the time the lists contain only 1 element."""
-    fp.write('<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">\n'
-            "<html><head><base target=display>"
-	    "<title>%s Mailing List Archive by %s</title></head><body>\n"
-	    % (prefs['LABEL'], indexname))
-    fp.write('<H1><A name="start">%s Mailing List Archive by %s</A></H1>'
-            '<ul><li> <b><a target="toc" href="#end">Most recent messages</a></b>'
-	    '<li> <b>Messages sorted by:</b>'
-	    % (prefs['LABEL'], indexname))
-    if indexname!='Date':
-	fp.write('<a target="toc" href="date.html#start">[ date ]</a>')
-    if indexname!='Subject':
-	fp.write('<a target="toc" href="subject.html#start">[ subject ]</a>')
-    if indexname!='Author':
-	fp.write('<a target="toc" href="author.html#start">[ author ]</a>')
-    if indexname!='Thread':
-	fp.write('<a target="toc" href="thread.html#start">[ thread ]</a>')
-    if prefs['ARCHIVES']!='NONE':
-	fp.write('<li> <b><a href="%s">Other mail archives</a></b>' %
-		(prefs['ARCHIVES'],))
-# This doesn't look professional.  -- JV
-#    mailcmd=prefs['MAILCOMMAND'] % {'TO':'amk@magnet.com'}
-#    fp.write('</ul><p>Please inform <A HREF="%s">amk@magnet.com</a> if any of the messages are formatted incorrectly.' % (mailcmd,) ) 
-    
-    fp.write("<p><b>Starting:</b> <i>%s</i><br>"
-	     "<b>Ending:</b> <i>%s</i><br><b>Messages:</b> %i<p>"
-	     % (prefs['firstDate'], prefs['endDate'], len(L)) )
-
-    # Write the index
-    level=1
-    fp.write('<ul>\n')
-    for indent, keys in L:
-	if indent>level and indent<=prefs['THRDLEVELS']:
-	    fp.write((indent-level)*'<ul>'+'\n')
-	if indent<level: fp.write((level-indent)*'</ul>'+'\n')
-	level=indent
-	for j in keys:
-	    subj, email, poster, date, datestr, parent, id=articles[j]
-	    # XXX Should we put a mailto URL in here?
-	    fp.write('<li> <A HREF="%s"><b>%s</b></a> <i>%s</i>\n' %
-		     (j, subj, poster) )
-    for i in range(0, indent): fp.write('</ul>')
-    fp.write('<p>')
-
-    # Write the footer
+class Article:
     import time
-    now=time.asctime(time.localtime(time.time()))
-    
-# JV -- Fixed a bug here.
-    if prefs['ARCHIVES'] <> 'NONE':
-	otherstr=('<li> <b><a href="%s">Other mail archives</a></b>' %
-		  (prefs['ARCHIVES'],) )
-    else: otherstr=""
-    fp.write('<a name="end"><b>Last message date:</b></a> <i>%s</i><br>'
-	    '<b>Archived on:</b> <i>%s</i><p><ul>'
-	    '<li> <b>Messages sorted by:</b>'
-	    '<a target="toc" href="date.html#start">[ date ]</a>'
-	    '<a target="toc" href="subject.html#start">[ subject ]</a>'
-	    '<a target="toc" href="author.html#start">[ author ]</a>'
-	    '<a target="toc" href="thread.html#start">[ thread ]</a>'
-	    '%s</ul><p>' % (prefs['endDate'], now, otherstr))
+    __last_article_time=time.time()
+    def __init__(self, message=None, sequence=0, keepHeaders=[]):
+	import time
+	if message==None: return
+	self.sequence=sequence
+
+	self.parentID = None ; self.threadKey = None
+	# otherwise the current sequence number is used.
+	id=strip_separators(message.getheader('Message-Id'))
+	if id=="": self.msgid=str(self.sequence)
+	else: self.msgid=id
+
+	if message.has_key('Subject'): self.subject=str(message['Subject'])
+	else: self.subject='No subject'
+	if self.subject=="": self.subject='No subject'
+
+	if message.has_key('Date'): 
+	    self.datestr=str(message['Date'])
+   	    date=message.getdate_tz('Date')
+	else: 
+	    self.datestr='None' 
+	    date=None
+	if date!=None:
+	    date, tzoffset=date[:9], date[-1] 
+	    date=time.mktime(date)-tzoffset
+	else:
+	    date=self.__last_article_time+1 ; print 'Article without date:', self.msgid
 	    
-    fp.write('<p><hr><i>This archive was generated by '
-# JV Updated the URL.
-	     '<A HREF="http://www.magnet.com/~amk/python/pipermail.html">'
-	     'Pipermail %s</A>.</i></body></html>' % (VERSION,))
+	self.__last_article_time=date 
+	self.date='%011i' % (date,)
 
-# Set the hard-wired preferences first
-# JV Changed the SHOWHTML pref default to 0 because 1 looks bad.
-prefs={'CONFIGFILE':'~/.pmrc', 'MBOX':'mbox',
-	     'ARCHIVES': 'NONE', 'ABOUT':'NONE', 'REVERSE':0,
-	     'SHOWHEADERS':0, 'SHOWHTML':0, 'LABEL':"",
-	     'DIR':'archive', 'DIRMODE':0755,
-	     'FILEMODE':0644, 'OVERWRITE':0, 'VERBOSE':0,
-	     'THRDLEVELS':3, 'SHOWBR':0, 'IQUOTES':1,
-	     'SHOWHR':1, 'MAILCOMMAND':'mailto:%(TO)s',
-	     'INDEXFILE':'NONE'
-}
+	# Figure out the e-mail address and poster's name
+	self.author, self.email=message.getaddr('From')
+	e=message.getheader('Reply-To')
+	if e!=None: self.email=e
+	self.email=strip_separators(self.email)
+	self.author=strip_separators(self.author)
 
-# Read the ~/.pmrc file
-ReadCfgFile(prefs)
-# Read environment variables
-ReadEnvironment(prefs)
+	if self.author=="": self.author=self.email
 
-# Parse command-line options
-import getopt
-options, params=getopt.getopt(sys.argv[1:], 'a:b:c:d:l:m:s:uipvxzh?')
-for option, value in options:
-    if option=='-a': prefs['ARCHIVES']=value
-    if option=='-b': prefs['ABOUT']=value
-    if option=='-c': prefs['CONFIGFILE']=value
-    if option=='-d': prefs['DIR']=value
-#    if option=='-f': prefs.frames=1 
-    if option=='-i': prefs['MBOX']='-'
-    if option=='-l': prefs['LABEL']=value
-    if option=='-m': prefs['MBOX']=value
-    if option=='-s': prefs['INDEXFILE']=value
-    if option=='-p' or option=='-v': prefs['VERBOSE']=1
-    if option=='-x': prefs['OVERWRITE']=1
-    if option=='-z' or option=='-h' or option=='-?': PrintUsage()
+	# Save the 'In-Reply-To:' and 'References:' lines
+	i_r_t=message.getheader('In-Reply-To')
+	if i_r_t==None: self.in_reply_to=''
+	else:
+	    match=msgid_pat.search(i_r_t)
+	    if match==None: self.in_reply_to=''
+	    else: self.in_reply_to=strip_separators(match.group(1))
+		
+	references=message.getheader('References')
+	if references==None: self.references=[]
+	else: self.references=map(strip_separators, string.split(references))
 
-# Set up various variables
-articles={} ; sequence=0
-for key in ['INDEXFILE', 'MBOX', 'CONFIGFILE', 'DIR']:
-    prefs[key]=posixpath.expanduser(prefs[key])
-      
-if prefs['INDEXFILE']=='NONE':
-    if prefs['MBOX']!='-':
-	prefs['INDEXFILE']=prefs['MBOX']+'.pipermail'
-    else: prefs['INDEXFILE']='mbox.pipermail'
+	# Save any other interesting headers
+	self.headers={}
+	for i in keepHeaders:
+	    if message.has_key(i): self.headers[i]=message[i]
 
-# Read an index file, if one can be found
-if not prefs['OVERWRITE']:
-    # Look for a file contained pickled state
-    import pickle
-    try:
-	if prefs['VERBOSE']:
-	    print 'Attempting to read index file', prefs['INDEXFILE']
-	f=open(prefs['INDEXFILE'], 'r')
-	articles, sequence =pickle.load(f)
+	# Read the message body
+	self.body=[]
+	message.rewindbody()
+	while (1):
+	    line=message.fp.readline()
+	    if line=="": break
+	    self.body.append(line)
+    def __repr__(self):
+	return '<Article ID='+repr(self.msgid)+'>'
+
+# Pipermail formatter class
+
+class T:
+    DIRMODE=0755      # Mode to give to created directories
+    FILEMODE=0644     # Mode to give to created files
+    INDEX_EXT = ".html" # Extension for indexes
+
+    def __init__(self, basedir=None, reload=1, database=None):
+	# If basedir isn't provided, assume the current directory
+	if basedir==None: self.basedir=os.getcwd()
+	else: 
+            basedir=os.path.expanduser(basedir)
+	    self.basedir=basedir
+	self.database=database
+
+	# If the directory doesn't exist, create it
+	try: os.stat(self.basedir)
+	except os.error, errdata:
+	    errno, errmsg = errdata
+	    if errno!=2: raise os.error, errdata
+	    else: 
+		self.message('Creating archive directory '+self.basedir)
+		os.mkdir(self.basedir, self.DIRMODE)
+
+	# Try to load previously pickled state
+	try:
+	    if not reload: raise IOError
+	    f=open(os.path.join(self.basedir, 'pipermail.pck'), 'r')
+	    self.message('Reloading pickled archive state')
+	    d=pickle.load(f)
+	    f.close()
+	    for key, value in d.items(): setattr(self, key, value)
+	except IOError: 
+	    # No pickled version, so initialize various attributes
+	    self.archives=[]        # Archives 
+	    self._dirty_archives=[]  # Archives that will have to be updated
+	    self.sequence=0         # Sequence variable used for numbering articles
+	    self.update_TOC=0       # Does the TOC need updating?
+
+    def close(self):
+	"Close an archive, saving its state and updating any changed archives."
+	self.update_dirty_archives()# Update all changed archives
+	# If required, update the table of contents
+	if self.update_TOC or 1:
+	    self.update_TOC=0
+	    self.write_TOC()
+	# Save the collective state 
+	self.message('Pickling archive state into '+os.path.join(self.basedir, 'pipermail.pck'))
+	self.database.close()
+	del self.database
+	f=open(os.path.join(self.basedir, 'pipermail.pck'), 'w')
+	pickle.dump(self.__dict__, f)
 	f.close()
-    except IOError:
-	if prefs['VERBOSE']: print 'No index file found.'	
-	pass		# Ignore errors
 
-# Open the input file 
-if prefs['MBOX']=='-': prefs['MBOX']=sys.stdin
-else:
-    if prefs['VERBOSE']: print 'Opening input file', prefs['MBOX']
-    prefs['MBOX']=open(prefs['MBOX'], 'r')
+    # 
+    # Private methods 
+    # 
+    # These will be neither overridden nor called by custom archivers.
+    #
 
-# Create the destination directory; if it already exists, we don't care
-try:
-    os.mkdir(prefs['DIR'], prefs['DIRMODE'])
-    if prefs['VERBOSE']: print 'Directory %s created'%(prefs['DIR'],)
-except os.error, (errno, errmsg): pass
-
-# Create various data structures:
-# msgids maps Message-IDs to filenames.
-# roots maps Subject lines to (date, filename) tuples, and is used to
-# identify the oldest article with a given subject line for threading.
-
-msgids={} ; roots={}
-for i in articles.keys():
-    subject, email, poster, date, datestr, parent, id =articles[i]
-    if id: msgids[id]=i
-    if not roots.has_key(subject) or roots[subject]<date:
-	roots[subject]=(date, i)
-
-# Start processing the index
-import mailbox
-mbox=mailbox.UnixMailbox(prefs['MBOX'])
-while (1):
-    m=mbox.next()
-    if not m: break
-
-    filename='%04i.html' % (sequence,)
-    if prefs['VERBOSE']: sys.stdout.write("Processing "+filename+"\n")
-    # The apparently redundant str() actually catches the case where
-    # m.getheader() returns None.
-    subj=str(m.getheader('Subject'))
-    # Remove any number of 'Re:' prefixes from the subject line
-    while (1):
-	i=REpat.match(subj)
-	if i!=-1: subj=subj[i:]
-	else: break
-    # Locate an e-mail address
-    L=m.getheader('From')
-    # JV: sometimes there is no From header, so use the one from unixfrom.
-    if not L:
-	try:
-	    L = string.split(m.unixfrom)[1]
-	except:
-	    L = "***Unknown***"
-    email=None
-    i=emailpat.search(L)
-    if i!=-1:
-	length=emailpat.match(L[i:])
-	email=L[i:i+length]
-    # Remove e-mail addresses inside angle brackets
-    poster=str(regsub.gsub('<.*>', '', L))
-    # Check if there's a name in parentheses
-    i=paren_name_pat.match(poster)
-    if i!=-1: poster=paren_name_pat.group(1)[1:-1]
-    datestr=m.getheader('Date')
-    # JV -- Hacks to make the getdate work.
-    # These hacks might skew the post time a bit.
-    # Crude, but so far, effective.
-    words = string.split(datestr)
-    if ((len(words[-1]) == 4) and (len(words) == 5) 
-	and (words[-1][:-1] == '199')):
-        try:
-	  date = time.mktime(rfc822.parsedate('%s, %s %s %s %s' %
-					    (words[0], words[2], words[1],
-					     words[4], words[3])))
-	except:
-	    date = time.mktime(m.getdate('Date')) # Odd
-    elif len(words) > 4 and words[4][-1] == ',':
-	try:
-	    date = time.mktime(rfc822.parsedate('%s, %s %s %s %s' %
-					    (words[0], words[1], words[2], 
-					     words[3], words[4][:-1])))
-	except:
-	    date = time.mktime(m.getdate('Date')) # Hmm
-    else:
-	try:
-	    date=time.mktime(m.getdate('Date'))
-	except:
-	    print 'Error getting date!'
-	    print 'Subject = ', m.getheader('subject')
-	    print 'Date = ', m.getheader('date')
-	    
-    id=m.getheader('Message-Id')
-    if id: id=id[1:-1] ; msgids[id]=filename
-    parent=None
-    in_reply_to=m.getheader('In-Reply-To')
-    if in_reply_to:
-	in_reply_to=in_reply_to[1:-1]
-    if msgids.has_key(in_reply_to): parent=msgids[in_reply_to]
-    elif roots.has_key(subj) and roots[subj][0]<date:
-	parent=roots[subj][1]
-    else: roots[subj]=(date,filename)
 	
-    articles[filename]=(subj, email, poster, date, datestr, parent, id)
-    ProcessMsgBody(prefs, m, filename, articles)
-    sequence=sequence+1
-prefs['MBOX'].close()
+    # Create a dictionary of various parameters that will be passed 
+    # to the write_index_{header,footer} functions
+    def __set_parameters(self, archive):
+	import time
+	# Determine the earliest and latest date in the archive
+	firstdate=self.database.firstdate(archive)
+	lastdate=self.database.lastdate(archive)
 
-if prefs['VERBOSE']: sys.stdout.write("Writing date index\n")
-import time
-indexname=posixpath.join(prefs['DIR'], 'date.html')
-f=open(indexname, 'w') ; os.chmod(indexname, prefs['FILEMODE'])
-dates=ListDict()
-for i in articles.keys():
-    subject, email, poster, date, datestr, parent, id=articles[i] 
-    dates[date]=i
-L=dates.keys() ; L.sort()
-if prefs['REVERSE']: L.reverse()
-prefs['firstDate']=time.asctime(time.localtime(L[0]))
-prefs['endDate']=time.asctime(time.localtime(L[-1]))
-L=map(lambda key, s=dates: (1,s[key]), L)
-WriteHTMLIndex(prefs, f, L, articles, 'Date')
-f.close() ; del dates, L
+	# Get the current time
+	now=time.asctime(time.localtime(time.time()))	
+	self.firstdate=firstdate ; self.lastdate=lastdate
+	self.archivedate=now ; self.size=self.database.numArticles(archive)
+	self.archive=archive ; self.version=__version__
 
-if prefs['VERBOSE']: sys.stdout.write("Writing thread index\n")
-indexname=posixpath.join(prefs['DIR'], 'thread.html')
-f=open(indexname, 'w') ; os.chmod(indexname, prefs['FILEMODE'])
-def DFS(p, N=None, depth=0, prefs=prefs):
-    set=filter(lambda x, N=N, p=p: p[x][1]==N, p.keys())
-    set=map(lambda x, a=articles: (articles[x][3],x), set)
-    set.sort()
-    if prefs['REVERSE']: set.reverse()
-    set=map(lambda x: x[1], set)
-    if len(set)==0: return [(depth, [N])]
-    else:
-	L=[]
-	for i in set:
-	    L=L+DFS(p, i, depth+1)
-	return [(depth,[N])]+L
-parents={}
-for i in articles.keys():
-    subject, email, poster, date, datestr, parent, id=articles[i]
-    parents[i]=(date, parent)
-L=DFS(parents)[1:]
-WriteHTMLIndex(prefs, f, L, articles, 'Thread')
-f.close() ; del L, parents
+    # Find the message ID of an article's parent, or return None
+    # if no parent can be found.
 
-if prefs['VERBOSE']: sys.stdout.write("Writing subject index\n")
-indexname=posixpath.join(prefs['DIR'], 'subject.html')
-f=open(indexname, 'w') ; os.chmod(indexname, prefs['FILEMODE'])
-subjects=ListDict()
-for i in articles.keys():
-    subject, email, poster, date, datestr, parent, id=articles[i] 
-    subjects[(subject, date)]=i
-L=subjects.keys() ; L.sort() ; L=map(lambda key, s=subjects: (1, s[key]), L)
-WriteHTMLIndex(prefs, f, L, articles, 'Subject')
-f.close() ; del subjects, L
+    def __findParent(self, article, children=[]):
+	    parentID=None
+	    if article.in_reply_to!='': parentID=article.in_reply_to
+	    elif article.references!=[]: 
+		# Remove article IDs that aren't in the archive
+		refs=filter(self.articleIndex.has_key, article.references)
+		if len(refs):
+		    refs=map(lambda x, s=self: s.database.getArticle(s.archive, x), refs)
+		    maxdate=refs[0]
+		    for i in refs[1:]: 
+			if i.date>maxdate.date: maxdate=i
+		    parentID=maxdate.msgid
+	    else:
+		# Look for the oldest matching subject
+		try: 
+		    key, tempid=self.subjectIndex.set_location(article.subject)
+		    print key, tempid
+		    self.subjectIndex.next()	
+		    [subject, date]= string.split(key, '\0')
+		    print article.subject, subject, date
+		    if (subject==article.subject and tempid not in children):
+			parentID=tempid
+		except KeyError: pass
+	    return parentID
 
-if prefs['VERBOSE']: sys.stdout.write("Writing author index\n")
-indexname=posixpath.join(prefs['DIR'], 'author.html')
-f=open(indexname, 'w') ; os.chmod(indexname, prefs['FILEMODE'])
-authors=ListDict()
-for i in articles.keys():
-    v=articles[i]
-    authors[(v[2],v[3])]=i
-L=authors.keys() ; L.sort() ; L=map(lambda key, s=authors: (1,s[key]), L)
-WriteHTMLIndex(prefs, f, L, articles, 'Author')
-f.close() ; del authors, L
+    # Update the threaded index completely
+    def updateThreadedIndex(self):
+	import pickle, sys
+	# Erase the threaded index
+	self.database.clearIndex(self.archive, 'thread')
+	
+	# Loop over all the articles 
+	msgid=self.database.first(self.archive, 'date')
+	while (msgid != None):
+  	    article=self.database.getArticle(self.archive, msgid)
+	    if article.parentID==None or not self.database.hasArticle(self.archive, article.parentID): 
+		key=article.date
+	    else: 
+		parent=self.database.getArticle(self.archive, article.parentID)
+		article.threadKey=parent.threadKey+article.date+'-' 
+   	    self.database.setThreadKey(self.archive, article.threadKey+'\000'+article.msgid, msgid)
+	    msgid=self.database.next(self.archive, 'date')
 
-if prefs['VERBOSE']: sys.stdout.write("Writing framed index\n")
-f=open(posixpath.join(prefs['DIR'], 'blank.html'), 'w')
-f.write("<html></html>") ; f.close()
-# JV changed...
-f=open(posixpath.join(prefs['DIR'], mm_cfg.HOME_PAGE), 'w')
-f.write("""<html><head><title>%s Pipermail Archive</title>
-<frameset cols="*, 60%%">
-<FRAME SRC="thread.html" NAME=toc>
-<FRAME SRC="blank.html" NAME=display>
-</frameset></head>
-<body><noframes>
-To access the %s Pipermail Archive, choose one of the following links:
-<p>
-Messages sorted by <a target="toc" href="date.html#start">[ date ] </a>
-<a target="toc" href="subject.html#start">[ subject ]</a>
-<a target="toc" href="author.html#start">[ author ]</a>
-<a target="toc" href="thread.html#start">[ thread ]</a>
-</ol>
-</noframes>
-</body></html>
-""" % (prefs['LABEL'],prefs['LABEL']) )
+## 	    L1=[] ; L2=[]
+## 	    while (1):
+## 		article=self.database.getArticle(self.archive, msgid)
+## 		L1.append('') ; L2.append(msgid) 
+## 		L1=map(lambda x, d=article.date: d+'-'+x, L1)
+## 		parentID=self.__findParent(article, L2)
+## 		if parentID==None or not self.database.hasArticle(parentID): 
+## 		    break
+## 		else: msgid=parentID
+## 	    for i in range(0, len(L1)):
+## 		self.database.setThreadKey(self.archive, L1[i], '\000'+L2[i])
+## 		self.database.setThreadKey(self.archive, '\000'+L2[i], L1[i])
+
+    #
+    # Public methods:
+    #
+    # These are part of the public interface of the T class, but will
+    # never be overridden (unless you're trying to do something very new).
+    
+    # Update a single archive's indices, whether the archive's been
+    # dirtied or not. 
+    def update_archive(self, archive):	
+	self.archive=archive
+	self.message("Updating index files for archive ["+archive+']')
+	arcdir=os.path.join(self.basedir, archive)
+	parameters=self.__set_parameters(archive)
+	# Handle the 3 simple indices first
+	for i in ['Date', 'Subject', 'Author']:
+	    self.message("  "+i)
+	    self.type=i
+	    # Get the right index
+	    i=string.lower(i)
+
+	    # Redirect sys.stdout
+	    import sys
+	    f=open(os.path.join(arcdir, i+self.INDEX_EXT), 'w')
+	    os.chmod(f.name, self.FILEMODE)
+	    temp_stdout, sys.stdout=sys.stdout, f
+	    self.write_index_header()
+	    count=0
+	    # Loop over the index entries
+	    finished=0
+	    msgid=self.database.first(archive, i)
+	    while (msgid != None):
+		article=self.database.getArticle(self.archive, msgid)
+		count=count+1
+		self.write_index_entry(article)
+		msgid = self.database.next(archive, i )
+	    # Finish up this index
+	    self.write_index_footer()
+	    sys.stdout=temp_stdout
+	    f.close()
+
+	# Print the threaded index
+	self.message("  Thread")
+ 	temp_stdout, sys.stdout=sys.stdout, open(os.path.join(arcdir, 'thread' + self.INDEX_EXT), 'w')
+	os.chmod(os.path.join(arcdir, 'thread' + self.INDEX_EXT), self.FILEMODE)
+ 	self.type='Thread'
+ 	self.write_index_header()
+
+	# To handle the prev./next in thread pointers, we need to
+	# track articles 5 at a time.  
+
+	# Get the first 5 articles	
+	L=[ None ]*5 ; i=2 ; finished=0
+	msgid=self.database.first(self.archive, 'thread')
+	while msgid!=None and i<5:
+	    L[i]=self.database.getArticle(self.archive, msgid) ; i=i+1
+	    msgid = self.database.next(self.archive, 'thread')
+
+	while L[2]!=None:
+ 	    article=L[2] ; artkey=None
+	    if article!=None: artkey=article.threadKey
+	    if artkey!=None: 
+		import sys
+		self.write_threadindex_entry(article, string.count(artkey, '-')-1)
+		if self.database.changed.has_key( (archive,article.msgid) ):
+		    a1=L[1] ; a3=L[3]
+		    self.update_article(arcdir, article, a1, a3) 
+		    if a3!=None: self.database.changed[ (archive,a3.msgid) ]=None
+		    if a1!=None:
+			if not self.database.changed.has_key( (archive,a1.msgid) ): 
+			    self.update_article(arcdir, a1, L[0], L[2])
+			else: del self.database.changed[ (archive,a1.msgid) ]
+	    L=L[1:]			# Rotate the list
+	    if msgid==None: L.append(msgid)
+	    else: L.append( self.database.getArticle(self.archive, msgid) )
+	    msgid = self.database.next(self.archive, 'thread')
+	    
+ 	self.write_index_footer()
+ 	sys.stdout=temp_stdout
+
+    # Update only archives that have been marked as "changed".
+    def update_dirty_archives(self):
+	for i in self._dirty_archives: self.update_archive(i)
+	self._dirty_archives=[]
+
+    # Read a Unix mailbox file from the file object <input>,
+    # and create a series of Article objects.  Each article
+    # object will then be archived.
+    
+    def processUnixMailbox(self, input, articleClass=Article):
+	import mailbox
+	mbox=mailbox.UnixMailbox(input)
+	while (1):
+	    m=mbox.next()
+	    if not m: break			# End of file reached
+	    a=articleClass(m, self.sequence) # Create an article object
+	    self.sequence=self.sequence+1  # Increment the archive's sequence number
+	    self.add_article(a)		# Add the article
+
+    # Archive an Article object.
+    def add_article(self, article):
+	# Determine into what archives the article should be placed
+	archives=self.get_archives(article)
+	if archives==None: archives=[]        # If no value was returned, ignore it
+	if type(archives)==type(''): archives=[archives] 	# If a string was returned, convert to a list
+	if archives==[]: return         # Ignore the article
+
+	# Add the article to each archive in turn
+	article.filename=filename=self.get_filename(article)
+	temp=self.format_article(article) # Reformat the article
+	self.message("Processing article #"+str(article.sequence)+' into archives '+str(archives))
+	for i in archives:
+	    self.archive=i
+	    archivedir=os.path.join(self.basedir, i)
+	    # If it's a new archive, create it
+	    if i not in self.archives: 
+		self.archives.append(i) ; self.update_TOC=1
+		self.database.newArchive(i)
+		# If the archive directory doesn't exist, create it
+		try: os.stat(archivedir)
+		except os.error, errdata:
+		    errno, errmsg=errdata
+		    if errno==2: 
+			os.mkdir(archivedir, self.DIRMODE)
+		    else: raise os.error, errdata
+		self.open_new_archive(i, archivedir)
+		
+	    # Write the HTML-ized article
+	    f=open(os.path.join(archivedir, filename), 'w')
+	    os.chmod(os.path.join(archivedir, filename), self.FILEMODE)
+	    temp_stdout, sys.stdout = sys.stdout, f
+	    self.write_article_header(temp)
+	    sys.stdout.writelines(temp.body)
+	    self.write_article_footer(temp)
+	    sys.stdout=temp_stdout
+	    f.close()
+
+	    authorkey=fixAuthor(article.author)+'\000'+article.date
+	    subjectkey=string.lower(article.subject)+'\000'+article.date
+
+	    # Update parenting info
+	    parentID=None
+	    if article.in_reply_to!='': parentID=article.in_reply_to
+	    elif article.references!=[]: 
+		# Remove article IDs that aren't in the archive
+		refs=filter(lambda x, self=self: self.database.hasArticle(self.archive, x), 
+			    article.references)
+		if len(refs):
+		    refs=map(lambda x, s=self: s.database.getArticle(s.archive, x), refs)
+		    maxdate=refs[0]
+		    for ref in refs[1:]: 
+			if ref.date>maxdate.date: maxdate=ref
+		    parentID=maxdate.msgid
+	    else:
+		# Get the oldest article with a matching subject, and assume this is 
+		# a follow-up to that article
+		parentID=self.database.getOldestArticle(self.archive, article.subject)
+
+	    if parentID!=None and not self.database.hasArticle(self.archive, parentID): 
+		parentID=None
+	    article.parentID=parentID 
+	    if parentID!=None:
+		parent=self.database.getArticle(self.archive, parentID)
+		article.threadKey=parent.threadKey+article.date+'-'
+	    else: article.threadKey=article.date+'-'
+   	    self.database.setThreadKey(self.archive, article.threadKey+'\000'+article.msgid, article.msgid)
+	    self.database.addArticle(i, temp, subjectkey, authorkey)
+	    
+	    if i not in self._dirty_archives: 
+		self._dirty_archives.append(i)
+	del temp
+
+    # Abstract methods: these will need to be overridden by subclasses
+    # before anything useful can be done.
+
+    def get_filename(self, article): 
+	pass
+    def get_archives(self, article):
+	"""Return a list of indexes where the article should be filed.
+	A string can be returned if the list only contains one entry, 
+	and the empty list is legal."""
+	pass
+    def format_article(self, article):
+	pass
+    def write_index_header(self):
+	pass
+    def write_index_footer(self):
+	pass
+    def write_index_entry(self, article):
+	pass
+    def write_threadindex_entry(self, article, depth):
+	pass
+    def write_article_header(self, article):
+	pass
+    def write_article_footer(self, article):
+	pass
+    def write_article_entry(self, article):
+	pass
+    def update_article(self, archivedir, article, prev, next):
+	pass
+    def write_TOC(self):
+	pass
+    def open_new_archive(self, archive, dir):
+	pass
+    def message(self, msg):
+	pass
 
 
-import pickle
-if prefs['VERBOSE']: print 'Writing index file', prefs['INDEXFILE']
-f=open(prefs['INDEXFILE'], 'w')
-pickle.dump( (articles, sequence), f )
-f.close()
+class BSDDBdatabase(Database):
+    def __init__(self, basedir):
+	self.__cachekeys=[] ; self.__cachedict={}
+	self.__currentOpenArchive=None   # The currently open indices
+	self.basedir=os.path.expanduser(basedir)
+	self.changed={}         # Recently added articles, indexed only by message ID
+    def firstdate(self, archive):
+	import time
+	self.__openIndices(archive)
+	date='None'
+	try:
+	    date, msgid = self.dateIndex.first()
+	    date=time.asctime(time.localtime(string.atof(date)))
+	except KeyError: pass
+	return date
+    def lastdate(self, archive):
+	import time
+	self.__openIndices(archive)
+	date='None'
+	try:
+	    date, msgid = self.dateIndex.last()
+	    date=time.asctime(time.localtime(string.atof(date)))
+	except KeyError: pass
+	return date
+    def numArticles(self, archive):
+	self.__openIndices(archive)
+	return len(self.dateIndex)    
+
+    # Add a single article to the internal indexes for an archive.
+
+    def addArticle(self, archive, article, subjectkey, authorkey):
+	import pickle
+	self.__openIndices(archive)
+
+	# Add the new article
+	self.dateIndex[article.date]=article.msgid
+	self.authorIndex[authorkey]=article.msgid
+	self.subjectIndex[subjectkey]=article.msgid
+	# Set the 'body' attribute to empty, to avoid storing the whole message
+	temp = article.body ; article.body=[]
+	self.articleIndex[article.msgid]=pickle.dumps(article)
+	article.body=temp
+	self.changed[archive,article.msgid]=None
+
+	parentID=article.parentID
+	if parentID!=None and self.articleIndex.has_key(parentID): 
+	    parent=self.getArticle(archive, parentID)
+	    myThreadKey=parent.threadKey+article.date+'-'
+	else: myThreadKey = article.date+'-'
+	article.threadKey=myThreadKey
+	self.setThreadKey(archive, myThreadKey+'\000'+article.msgid, article.msgid)
+
+    # Open the BSDDB files that are being used as indices
+    # (dateIndex, authorIndex, subjectIndex, articleIndex)
+    def __openIndices(self, archive):
+	if self.__currentOpenArchive==archive: return
+
+	import bsddb
+	self.__closeIndices()
+#	print 'opening indices for [%s]' % (repr(archive),)
+	arcdir=os.path.join(self.basedir, 'database')
+	try: os.mkdir(arcdir, 0700)
+	except os.error: pass
+	for i in ['date', 'author', 'subject', 'article', 'thread']:
+	    t=bsddb.btopen(os.path.join(arcdir, archive+'-'+i), 'c') 
+	    setattr(self, i+'Index', t)
+	self.__currentOpenArchive=archive
+
+    # Close the BSDDB files that are being used as indices (if they're
+    # open--this is safe to call if they're already closed)
+    def __closeIndices(self):
+	if self.__currentOpenArchive!=None: 
+	    pass
+#	    print 'closing indices for [%s]' % (repr(self.__currentOpenArchive),)
+	for i in ['date', 'author', 'subject', 'thread', 'article']:
+	    attr=i+'Index'
+	    if hasattr(self, attr): 
+		index=getattr(self, attr) 
+		if i=='article': 
+	            if not hasattr(self, 'archive_length'): self.archive_length={}
+		    self.archive_length[self.__currentOpenArchive]=len(index)
+		index.close() 
+		delattr(self,attr)
+	self.__currentOpenArchive=None
+    def close(self):
+	self.__closeIndices()
+    def hasArticle(self, archive, msgid): 
+	self.__openIndices(archive)
+	return self.articleIndex.has_key(msgid)
+    def setThreadKey(self, archive, key, msgid):
+	self.__openIndices(archive)
+	self.threadIndex[key]=msgid
+    def getArticle(self, archive, msgid):
+	self.__openIndices(archive)
+	if self.__cachedict.has_key(msgid): 
+	    self.__cachekeys.remove(msgid)
+	    self.__cachekeys.append(msgid)
+	    return self.__cachedict[msgid]
+	if len(self.__cachekeys)==CACHESIZE: 
+	    delkey, self.__cachekeys = self.__cachekeys[0], self.__cachekeys[1:]
+	    del self.__cachedict[delkey]
+	s=self.articleIndex[msgid]
+	article=pickle.loads(s)
+	self.__cachekeys.append(msgid) ; self.__cachedict[msgid]=article
+	return article
+
+    def first(self, archive, index): 
+	self.__openIndices(archive)
+	index=getattr(self, index+'Index')
+	try: 
+	    key, msgid = index.first()
+	    return msgid
+	except KeyError: return None
+    def next(self, archive, index): 
+	self.__openIndices(archive)
+	index=getattr(self, index+'Index')
+	try: 
+	    key, msgid = index.next()
+	    return msgid
+	except KeyError: return None
+	
+    def getOldestArticle(self, archive, subject):
+	self.__openIndices(archive)
+	subject=string.lower(subject)
+	try: 
+	    key, tempid=self.subjectIndex.set_location(subject)
+	    self.subjectIndex.next()	
+	    [subject2, date]= string.split(key, '\0')
+	    if subject!=subject2: return None
+	    return tempid
+	except KeyError: 
+	    return None
+
+    def newArchive(self, archive): pass
+    def clearIndex(self, archive, index):
+	self.__openIndices(archive)
+	index=getattr(self, index+'Index')
+	finished=0
+	try:
+	    key, msgid=self.threadIndex.first()	    		
+	except KeyError: finished=1
+	while not finished:
+	    del self.threadIndex[key]
+	    try:
+		key, msgid=self.threadIndex.next()	    		
+	    except KeyError: finished=1
+
+
