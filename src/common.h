@@ -26,15 +26,25 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-void fatal(const char*, const char*, ...);
-void check_caller(const char*, gid_t);
-int run_script(const char*, int, char**, char**);
+extern void fatal(const char*, int, const char*, ...);
+extern void check_caller(const char*, gid_t);
+extern int run_script(const char*, int, char**, char**);
 
 /* bogus global variable used as a flag */
 extern int running_as_cgi;
 
 /* extern to reference this global from one of the wrapper mains */
 extern const char* logident;
+
+
+/* exit codes, so it's easier to distinguish what caused fatal errors when
+ * looking at syslogs.
+ */
+#define GID_MISMATCH 2
+#define SETREGID_FAILURE 3
+#define EXECVE_FAILURE 4
+#define MAIL_USAGE_ERROR 5
+#define MAIL_ILLEGAL_COMMAND 6
 
 
 
