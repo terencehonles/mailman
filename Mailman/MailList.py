@@ -380,13 +380,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              "Use this option to prohibit posts according to specific header"
              " values.  The target value is a regular-expression for"
              " matching against the specified header.  The match is done"
-             " disregarding letter case."
-             " <p>For example:<pre>to: .*@public.com </pre> says"
-             " to hold all postings with a <em>TO</em> header containing"
-             " '@public.com' anywhere among the addresses."
-             " <p>Note that leading whitespace is trimmed from the"
+             " disregarding letter case.  Lines beginning with '#' are"
+	     " ignored as comments."
+             "<p>For example:<pre>to: .*@public.com </pre> says"
+             " to hold all postings with a <em>to</em> mail header"
+             " containing '@public.com' anywhere among the addresses."
+             "<p>Note that leading whitespace is trimmed from the"
              " regexp.  This can be circumvented in a number of ways, eg"
-             " by escaping or bracketing it."),
+             " by escaping or bracketing it."
+	     "<p> See also the <em>forbidden_posters</em> option for"
+	     " a related mechanism."),
             ]
 
 	config_info['nondigest'] = [
