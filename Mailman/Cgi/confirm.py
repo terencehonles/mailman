@@ -175,9 +175,12 @@ def ask_for_cookie(mlist, doc, extra=''):
 
 
 def subscription_prompt(mlist, doc, cookie,
-                         email, name, password, digest, lang):
+                        email, name, password, digest, lang):
     title = _('Confirm subscription request')
     doc.SetTitle(title)
+    i18n.set_language(lang)
+    doc.set_language(lang)
+
     form = Form(mlist.GetScriptURL('confirm', 1))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
@@ -185,7 +188,12 @@ def subscription_prompt(mlist, doc, cookie,
                       colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
     listname = mlist.real_name
-    table.AddRow([_("""Your confirmation is required in order to complete the
+    # This is the normal, no-confirmation required results text.
+    #
+    # We do things this way so we don't have to reformat this paragraph, which
+    # would mess up translations.  If you modify this text for other reasons,
+    # please refill the paragraph, and clean up the logic.
+    result = _("""Your confirmation is required in order to complete the
     subscription request to the mailing list <em>%(listname)s</em>.  Your
     subscription settings are shown below; make any necessary changes and hit
     <em>Subscribe</em> to complete the confirmation process.  Once you've
@@ -194,7 +202,20 @@ def subscription_prompt(mlist, doc, cookie,
     options.
 
     <p>Or hit <em>Cancel and discard</em> to cancel this subscription
-    request.""") + '<p><hr>'])
+    request.""") + '<p><hr>'
+    if mlist.subscribe_policy in (1, 3):
+        # Confirmation is required
+        result = _("""Your confirmation is required in order to continue with
+        the subscription request to the mailing list <em>%(listname)s</em>.
+        Your subscription settings are shown below; make any necessary changes
+        and hit <em>Subscribe</em> to complete the confirmation process.  Once
+        you've confirmed your subscription request, the moderator must approve
+        or reject your membership request.  You will receive notice of their
+        decision.
+
+        <p>Or you can hit <em>Cancel and discard</em> now to cancel this
+        subscription request.""") + '<p><hr>'
+    table.AddRow([result])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
 
     table.AddRow([Label(_('Your email address:')), email])
@@ -239,6 +260,7 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
         mlist.Unlock()
         sys.exit(0)
 
+    listname = mlist.real_name
     mlist.Lock()
     try:
         try:
@@ -359,6 +381,10 @@ def unsubscription_confirm(mlist, doc, cookie):
 def unsubscription_prompt(mlist, doc, cookie, addr):
     title = _('Confirm unsubscription request')
     doc.SetTitle(title)
+    lang = mlist.getMemberLanguage(addr)
+    i18n.set_language(lang)
+    doc.set_language(lang)
+
     form = Form(mlist.GetScriptURL('confirm', 1))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
@@ -442,6 +468,10 @@ def addrchange_confirm(mlist, doc, cookie):
 def addrchange_prompt(mlist, doc, cookie, oldaddr, newaddr, globally):
     title = _('Confirm change of address request')
     doc.SetTitle(title)
+    lang = mlist.getMemberLanguage(oldaddr)
+    i18n.set_language(lang)
+    doc.set_language(lang)
+
     form = Form(mlist.GetScriptURL('confirm', 1))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
@@ -565,6 +595,11 @@ def heldmsg_prompt(mlist, doc, cookie, id):
         ign, sender, msgsubject, givenreason, ign, ign = mlist.GetRecord(id)
     finally:
         mlist.Unlock()
+
+    lang = mlist.getMemberLanguage(sender)
+    i18n.set_language(lang)
+    doc.set_language(lang)
+
     subject = cgi.escape(msgsubject)
     reason = cgi.escape(givenreason)
     listname = mlist.real_name
