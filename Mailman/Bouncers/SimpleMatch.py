@@ -66,6 +66,10 @@ patterns = [
     (_c('Intended recipient:\s*(?P<addr>.*)$'),
      _c('--------RETURNED MAIL FOLLOWS--------'),
      _c('Intended recipient:\s*(?P<addr>.*)$')),
+    # hotpop.com
+    (_c('Undeliverable Address:\s*(?P<addr>.*)$'),
+     _c('Original message attached'),
+     _c('Undeliverable Address:\s*(?P<addr>.*)$')),
     # Next one goes here...
     ]
 
