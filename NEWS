@@ -4,18 +4,215 @@ Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.1 alpha 3 (XXX)
+2.1 alpha 3 (20-Oct-2001)
 
-    - topic filters
+    - Realname support
+        o Mailman now tracks a member's Real Name in addition to their
+          email address.
 
-    - separate gui components
+        o List members can now supply their Real Names when
+          subscribing via the web.  Their Real Names are parsed from
+          any thru-email subscriptions.
 
-    - membership adaptors
+        o Members can change their Real Names on their options page,
+          and admins can change members' Real Names on the membership
+          pages.  Mass subscribing accepts "email@dom.ain (Real Name)"
+          entries, for both in-text-box and file-upload mass
+          subscriptions.
 
-    - realname support
+    - Filtering and Privacy
+        o Reply-To: munging has been enhanced to allow a wider range
+          of list policies.  You can now pre-strip any Reply-To:
+          headers before adding list-specific ones (i.e. you can
+          override or extend existing Reply-To: headers).  If
+          stripping, the old headers are no longer saved on
+          X-Reply-To:
 
-    - list extensibility
+        o New sender moderation rules.  The old `posters',
+          `member_only_posting', `moderated' and `forbidden_posters'
+          options have been removed in favor of a new moderation
+          scheme.  Each member has a personal moderation bit, and
+          non-member postings can be automatically accepted, held for
+          approval, rejected (bounced) or discarded.
 
+        o When membership rosters are private, responses to
+          subscription (and other) requests are made more generic so
+          that these processes can't be covertly mined for hidden
+          addresses.  If a subscription request comes in for a user
+          who is already subscribed, the user is notified of potential
+          membership mining.
+
+        o When a held message is approved via the admindb page, an
+          X-Moderated: header is added to the message.
+
+    - Web U/I
+        o All web confirmations now require a two-click procedure,
+          where the first click gives them a page that allows them to
+          confirm or cancel their subscription.  It is bad form for an
+          email click (HTTP GET) to have side effects.
+
+        o Lots of improvements for clarity.
+
+        o The Privacy category has grown three subcategories.
+
+        o The General options page as a number of subsection headers.
+
+        o The Passwords and Languages categories are now on separate
+          admin pages.
+
+        o The admin subcategories are now formated as two columns in
+          the top and bottom legends.
+
+        o When creating a list through the web, you can now specify
+          the initial list of supported languages.
+
+        o The U/I for unsubscribing a member on the admin's membership
+          page should be more intuitive now.
+
+    - Performance
+        o misc/mailman is a Unix init script, appropriate for
+          /etc/init.d, and containing chkconfig hooks for systems that
+          support it.
+
+        o bin/mailmanctl has been rewritten; the `restart' command
+          actually works now.  It now also accepts -s, -q, and -u
+          options.
+
+        o bin/qrunner has been rewritten too; it can serve the role of
+          the old cron/qrunner script for those who want classic
+          cron-invoked mail delivery.
+
+        o Internally, messages are now stored in the qfiles directory
+          primarily as pickles.  List configuration databases are now
+          stored as pickles too (i.e. config.pck).  bin/dumpdb knows
+          how to display both pickles and marshals.
+
+    - Mail delivery
+        o If a user's message is held for approval, they are sent a
+          notification message containing a confirmation cookie.  They
+          can use this confirmation cookie to cancel their own
+          postings (if they haven't already been approved).
+
+        o When held messages are forwarded to an explicit address
+          using the admindb page, it is done so  in a message/rfc822
+          encapsulation.
+
+        o When a message is first held for approval, the notification
+          sent to the list admin is a 3-part multipart/mixed.  The
+          first part holds the notification message, the second part
+          hold the original message, and the third part hold a cookie
+          confirmation message, to which the admin can respond to
+          approve or discard the message via email.
+
+        o In the mail->news gateway, you can define mail headers that
+          must be modified or deleted before the message can be posted
+          to the nntp server.
+
+        o The list admin can send an immediate urgent message to the
+          entire list membership, bypassing digest delivery.  This is
+          done by adding an Urgent: header with the list password.
+          Urgent messages with an invalid password are rejected.
+
+        o Lists can now optionally personalize email messages, if the
+          site admin allows it.  Personalized messages mean that the
+          To: header includes the recipient's address instead of the
+          list's address, and header and footer messages can contain
+          user-specific information.  Note that only regular
+          deliveries can currently be personalized.
+
+        o Message that come from Usenet but that have broken MIME
+          boundaries are ignored.
+
+    - Building/testing/configuration
+        o mimelib is no longer required, but you must install the
+          email package (see the tarball in the misc directory).
+
+        o An (as yet) incomplete test suite has been added.  Don't try
+          running it in a production environment!
+
+        o Better virtual host support by adding a mapping from the
+          host name given in cgi's HTTP_HOST/SERVER_NAME variable to
+          the email host used in list addresses.  (E.g. www.python.org
+          maps to @python.org).
+
+        o Specifying urls to external public archivers is more
+          flexible.
+
+        o The filters/ subdirectory has been removed.
+
+        o There is now a `site list' which is a mailing list that must
+          be created first, and from which all password reminders
+          appear to come from.  It is recommended that this list be
+          called "mailman@your.site".
+
+        o bin/move_list is no longer necessary (see the FAQ for
+          detailed instructions on renaming a list).
+
+        o A new script bin/fix_url.py can be used with bin/withlist to
+          change a list's web_page_url configuration variable (since
+          it is no longer modifiable through the web).
+
+    - Internationalization
+        o Support for German, Hungarian, Italian, Japanese, and
+          Norwegian have been added.
+
+    - Miscellaneous
+        o Lots of new bounce detectors.  Bounce detectors can now
+          discard temporary bounce messages by returning a special
+          Stop value.
+
+        o bin/withlist now sports a -q/--quiet flag.
+
+        o bin/add_members has a new -a/--admin-notify flag which can
+          be used to inhibit list owner notification for each
+          subscription.
+
+    - Membership Adaptors
+        o Internally, mailing list memberships are accessed through a
+          MemberAdaptor interface.  This would allow for integrating
+          membership databases with external sources (e.g. Zope or
+          LDAP), although the only MemberAdaptor currently implemented
+          is a "classic" adaptor which stores the membership
+          information on the MailList object.
+
+        o There's a new pipeline handler module called FileRecips.py
+          which could be used to get all regular delivery mailing list
+          recipients from a Sendmail-style :include: file (see List
+          Extensibility bullet below).
+
+          This work was sponsored by Control.com
+
+    - List Extensibility
+        o A framework has been added which can be used to specialize
+          and extend specific mailing lists.  If there is a file
+          called lists/<yourlist>/extend.py, it is execfile()'d after
+          the MailList object is instantiated.  The file should
+          contain a function extend() which will be called with the
+          MailList instance.  This function can do all sorts of deep
+          things, like modify the handler pipeline just for this list,
+          or even strip out particular admin GUI elements (see below).
+
+        o All the admin page GUI elements are now separate
+          components.  This provides greater flexibility for list
+          customization.  Also, each GUI element will be given an
+          opportunity to handle admin CGI form data.
+
+          This work was sponsored by Control.com
+
+    - Topic Filters
+        o A new feature has been added called "Topic Filters".  A list
+          administrator can create topics, which are essentially
+          regular expression matches against Subject: and Keyword:
+          headers (including such pseudo-headers if they appear in the
+          first few lines of the body of a message).
+
+          List members can then `subscribe' to various topics, which
+          allows them to filter out any messages that don't match a
+          topic, or to filter out any message that does match a
+          topic.  This can be useful for high volume lists where not
+          everyone will be interested in every message.
+
+          This work was sponsored by Control.com
 
 2.1 alpha 2 (11-Jul-2001)
 
