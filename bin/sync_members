@@ -55,14 +55,15 @@ Where `options' are:
         notified.  With -a=no, the admin is not notified.  With no -a option,
         the default for the list is used.
 
-    --help
-    -h
-        Print this message.
-
     --file <filename | ->
     -f <filename | ->
         This option is required.  It specifies the flat file to synchronize
-        against.  If filename is `-' then stdin is used.
+        against.  Email addresses must appear one per line.  If filename is
+        `-' then stdin is used.
+
+    --help
+    -h
+        Print this message.
 
     listname
         Required.  This specifies the list to synchronize.
@@ -162,19 +163,16 @@ def main():
 
     # read the list of addresses to sync to from the file
     if filename == '-':
-        filemembers = sys.argv[i:]
-        # if there were no arguments on the command line, then it's probably
-        # a user error.  XXX this is questionable
-        if not filemembers:
-            usage(1, 'No addresses found on the command line')
+        filemembers = sys.stdin.readlines()
     else:
         try:
             fp = open(filename)
         except IOError, (code, msg):
-            print 'Cannot read address file:', filename, msg
-            sys.exit(1)
-        filemembers = fp.readlines()
-        fp.close()
+            usage(1, 'Cannot read address file: %s: %s' % (filename, msg))
+        try:
+            filemembers = fp.readlines()
+        finally:
+            fp.close()
 
     # strip out lines we don't care about, they are comments (# in first
     # non-whitespace) or are blank
