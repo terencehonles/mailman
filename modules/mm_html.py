@@ -152,32 +152,44 @@ class HTMLFormatter:
     def FormatEditingOption(self):
         "Present editing options, according to list privacy."
 
-        text = ("<b>%s subscribers</b>, to edit your subscription options:"
-                % self.real_name)
-        text = text + " %senter your email address: "
+        text = ('To change your subscription (set options like digest'
+                ' and delivery modes, get a reminder of your password,'
+                ' or unsubscribe from '
+                + self.real_name
+                + '), %senter your subscription email address:<p><center> ')
 
         if self.private_roster == 0:
-            text = text % "<p><b><i>Either</i></b> "
+            text = text % "<b><i>either</i></b> "
         else:
             text = text % ""
         text = (text
-                + htmlformat.TextBox('info', size=40).Format()
+                + htmlformat.TextBox('info', size=30).Format()
                 + "  "
                 + htmlformat.SubmitButton('UserOptions',
-                                          'Edit Options').Format())
+                                          'Edit Options').Format()
+                + "</center>")
         if self.private_roster == 0:
-            text = text + ("<p><b><i>Or</i></b> visit the subscribers list"
-                           " (above) and select your entry.")
+            text = text + ("<p>... <b><i>or</i></b> select your entry from the"
+                           " subscribers list (see above).")
         return text
         
     def FormatRosterOptionForAdmin(self):
-        return "Admin subscriber roster would require admin password."
+        return "Admin subscriber list would require admin password."
+    def RestrictedListMessage(self, which, restriction):
+        if not restriction:
+            return ""
+        elif restriction == 1:
+            return ("<i>The %s is only available to the list members.</i>"
+                    % which)
+        else:
+            return ("<i>The %s is only available to the list"
+                    " administrator.</i>" % which)
     def FormatRosterOptionForUser(self):
         "Provide avenue to subscribers roster, contingent to .private_roster."
         text = ""
         if not self.private_roster:
             text = (text +
-                    "Click here for the roster of "
+                    "Click here for the list of "
                     + self.real_name
                     + " subscribers: "
                     + htmlformat.SubmitButton('SubscriberRoster',
@@ -186,28 +198,28 @@ class HTMLFormatter:
         else:
             if self.private_roster == 1:
                 only = 'members'
-                whom = 'Member:'
+                whom = 'Address:'
             else:
                 only = 'the list administrator'
-                whom = 'Admin:'
+                whom = 'Admin address:'
             # Solicit the user and password.
-            text = (text +
-                    ("The subscriber roster is only available to %s.<br>Enter"
-                     % only)
-                    + (" your %s address and password to visit the"
-                       % string.lower(whom[:-1]))
-                    + " subscriber's roster:"
-                    " <br><ul> "
+            text = (text
+                    + self.RestrictedListMessage('subscriber list',
+                                                 self.private_roster)
+                    + " <p>Enter your "
+                    + string.lower(whom[:-1])
+                    + " address and password to visit"
+                      "  the subscriber's list: <p><center> "
                     + whom
                     + " "
                     + self.FormatBox('roster-email')
                     + " Password: "
                     + self.FormatSecureBox('roster-pw')
-                    + "<br>"
+                    + "&nbsp;&nbsp;"
                     + htmlformat.SubmitButton('SubscriberRoster',
                                               'Visit Subscriber List'
                                               ).Format()
-                    + "</ul>")
+                    + "</center>")
         return text
 
     def FormatFormStart(self, name, extra=''):
@@ -225,7 +237,7 @@ class HTMLFormatter:
 	return '<INPUT type="Text" name="%s" size="%d">' % (name, size)
 
     def FormatSecureBox(self, name):
-	return '<INPUT type="Password" name="%s">' % name
+	return '<INPUT type="Password" name="%s" size="15">' % name
 
     def FormatButton(self, name, text='Submit'):
 	return '<INPUT type="Submit" name="%s" value="%s">' % (name, text)
@@ -258,6 +270,9 @@ class HTMLFormatter:
 	    '</mm-archive>'  : '</a>',
 	    '<mm-regular-users>' : self.FormatUsers(0),
             '<mm-list-subscription-msg>' : self.FormatSubscriptionMsg(),
+            '<mm-restricted-list-message>' : \
+            	self.RestrictedListMessage('current archive',
+                                           self.archive_private),
 	    '<mm-digest-users>' : self.FormatUsers(1),
 	    '<mm-num-reg-users>' : `len(self.members)`,
 	    '<mm-num-digesters>' : `len(self.digest_members)`,
