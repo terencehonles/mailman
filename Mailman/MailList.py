@@ -340,6 +340,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.ban_list = []
         # BAW: This should really be set in SecurityManager.InitVars()
         self.password = crypted_password
+        # Max autoresponses per day.  A mapping between addresses and a
+        # 2-tuple of the date of the last autoresponse and the number of
+        # autoresponses sent on that date.
+        self.hold_and_cmd_autoresponses = {}
 
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
@@ -1248,6 +1252,48 @@ bad regexp in bounce_matching_header line: %s
                 if cre.search(value):
                     return line
         return 0
+
+    def autorespondToSender(self, sender):
+        """Return true if Mailman should auto-respond to this sender.
+
+        This is only consulted for messages sent to the -request address, or
+        for posting hold notifications, and serves only as a safety value for
+        mail loops with email 'bots.
+        """
+        today = time.localtime()[:3]
+        info = self.hold_and_cmd_autoresponses.get(sender)
+        if info is None or info[0] <> today:
+            # First time we've seen a -request/post-hold for this sender
+            self.hold_and_cmd_autoresponses[sender] = (today, 1)
+            # BAW: no check for MAX_AUTORESPONSES_PER_DAY <= 1
+            return 1
+        date, count = info
+        if count < 0:
+            # They've already hit the limit for today.
+            syslog('vette', '-request/hold autoresponse discarded for: %s',
+                   sender)
+            return 0
+        if count >= mm_cfg.MAX_AUTORESPONSES_PER_DAY:
+            syslog('vette', '-request/hold autoresponse limit hit for: %s',
+                   sender)
+            self.hold_and_cmd_autoresponses[sender] = (today, -1)
+            # Send this notification message instead
+            text = Utils.maketext(
+                'nomoretoday.txt',
+                {'sender' : sender,
+                 'listname': '%s@%s' % (self.real_name, self.host_name),
+                 'num' : count,
+                 'owneremail': self.GetOwnerEmail(),
+                 })
+            msg = Message.UserNotification(
+                sender, self.GetOwnerEmail(),
+                _('Last autoresponse notification for today'),
+                text)
+            msg.send(self)
+            return 0
+        self.hold_and_cmd_autoresponses[sender] = (today, count+1)
+        return 1
+
 
 
     #
