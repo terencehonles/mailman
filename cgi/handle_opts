@@ -1,9 +1,17 @@
 #!/usr/local/bin/python
 
-import sys, os, cgi, string
-sys.stderr = sys.stdout
+"""Process input to user options form."""
+
+import sys
 sys.path.append('/home/mailman/mailman/modules')
+import os, cgi, string
 import mm_utils, maillist, mm_err, mm_cfg, htmlformat
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'handle_opts',
+                                        manual_reprime=1)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 
 doc = htmlformat.Document()
@@ -12,7 +20,8 @@ path = os.environ['PATH_INFO']
 list_info = mm_utils.GetPathPieces(path)
 
 if len(list_info) < 2:
-    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
     print doc.Format()
     sys.exit(0)
 
@@ -20,19 +29,22 @@ list_name = string.lower(list_info[0])
 user = list_info[1]
 
 if len(list_info) < 2:
-    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
     print doc.Format()
     sys.exit(0)
 
 try:
     list = maillist.MailList(list_name)
 except:
-    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("%s: No such list." % list_name))
     print doc.Format()
     sys.exit(0)
 
 if not list._ready:
-    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("%s: No such list." % list_name))
     print doc.Format()
     sys.exit(0)
 
@@ -48,14 +60,12 @@ def PrintResults(results):
     list.Unlock()
     sys.exit(0)
 
-
 form = cgi.FieldStorage()
 
 error = 0
 operation = ""
 
-    
-if string.lower(user) not in list.members:
+if string.lower(user) not in list.members + list.digest_members:
     PrintResults("%s not a member!<p>" % user)
 
 if form.has_key("unsub"):
@@ -116,7 +126,9 @@ exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER, mm_cfg.MA
 
 	PrintResults("Your password has been changed.")
     else:
-	PrintResults("You must supply your old password, and your new password twice.")
+	PrintResults("You must supply your old password,"
+                     " and your new password twice.")
+
 else:
     # If keys don't exist, set them to whatever they were. (essentially a noop)
     if form.has_key("digest"):
