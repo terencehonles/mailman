@@ -35,7 +35,7 @@ class ContentFilter(GUIBase):
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         return [
-            _("""Policies concerning concerning the content of list traffic.
+            _("""Policies concerning the content of list traffic.
 
             <p>Content filtering works like this: when a message is
             received by the list and you have enabled content filtering, the
