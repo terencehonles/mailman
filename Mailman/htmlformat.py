@@ -185,6 +185,7 @@ class Link:
 
 
 class FontSize:
+    """FontSize is being deprecated - use FontAttr(..., size="...") instead."""
     def __init__(self, size, *items):
 	self.items = list(items)
 	self.size = size
@@ -195,6 +196,23 @@ class FontSize:
 	    output = output + HTMLFormatObject(item, indent)
 	output = output + '</font>'
 	return output
+
+class FontAttr:
+    """Present arbitrary font attributes."""
+    def __init__(self, *items, **kw):
+	self.items = list(items)
+	self.attrs = kw
+    
+    def Format(self, indent=0):
+	seq = []
+	for k, v in self.attrs.items():
+	    seq.append('%s="%s"' % (k, v))
+	output = '<font %s>' % string.join(seq, ' ')
+	for item in self.items:
+	    output = output + HTMLFormatObject(item, indent)
+	output = output + '</font>'
+	return output
+
 
 
 class Container:
