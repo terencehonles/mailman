@@ -119,7 +119,6 @@ class Topics(GUIBase):
 
             # Make sure the pattern was a legal regular expression
             try:
-                syslog('error', 'pattern: %s', pattern)
                 re.compile(pattern)
             except (re.error, TypeError):
                 doc.addError(_("""The topic pattern `%(pattern)s' is not a
