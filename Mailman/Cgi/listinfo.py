@@ -128,7 +128,8 @@ def FormatListinfoOverview(error=None):
                        % ((error and "right ") or ""))
                       +
                       '<p> List administrators, you can visit ',
-                      Link("%sadmin/" % ('../' * Utils.GetNestingLevel()),
+                      Link("%sadmin%s/" % ('../' * Utils.GetNestingLevel(),
+                                           mm_cfg.CGIEXT),
                            "the list admin overview page"),
                       " to find the management interface for your list."
                       "<p>(Send questions or comments to ",
