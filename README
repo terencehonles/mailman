@@ -1,3 +1,5 @@
+$Revision: 402 $, $Date: 1998-04-10 01:05:30 +0100 (Fri, 10 Apr 1998) $
+
 There's still much that I'd like to redo or add.  I'm not incredibly
 proud of the code, and it's a bit embarassing to be sharing it at this
 point. The weakest points in my mind are probably the cgi scripts and
