@@ -278,14 +278,14 @@ class General:
              list manager to Mailman.""")),
 
             ('admin_immed_notify', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Should administrator get immediate notice of new requests,
-             as well as daily notices about collected ones?'''),
+             _('''Should the list moderators get immediate notice of new
+             requests, as well as daily notices about collected ones?'''),
 
-             _('''List admins are sent daily reminders of pending admin
-             approval requests, like subscriptions to a moderated list or
-             postings that are being held for one reason or another.  Setting
-             this option causes notices to be sent immediately on the arrival
-             of new requests, as well.''')),
+             _('''List moderators (and list administrators) are sent daily
+             reminders of requests pending approval, like subscriptions to a
+             moderated list, or postings that are being held for one reason or
+             another.  Setting this option causes notices to be sent
+             immediately on the arrival of new requests as well.''')),
 
             ('admin_notify_mchanges', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('''Should administrator get notices of subscribes and
@@ -301,8 +301,8 @@ class General:
              ever sending the notice.""")),
 
             ('max_message_size', mm_cfg.Number, 7, 0,
-             _('''Maximum length in Kb of a message body.  Use 0 for no
-             limit.''')),
+             _('''Maximum length in kilobytes (KB) of a message body.  Use 0
+             for no limit.''')),
 
             ('host_name', mm_cfg.Host, WIDTH, 0,
              _('Host name this list prefers for email.'),
