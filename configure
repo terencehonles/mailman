@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.33 
+# From configure.in Revision: 2.34 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -2087,6 +2087,7 @@ build/bin/unshunt:bin/unshunt \
 build/bin/update:bin/update \
 build/bin/version:bin/version \
 build/bin/withlist:bin/withlist \
+build/bin/b4b5-archfix:bin/b4b5-archfix \
 build/contrib/check_perms_grsecurity.py:contrib/check_perms_grsecurity.py \
 build/contrib/qmail-to-mailman.py:contrib/qmail-to-mailman.py \
 build/contrib/rotatelogs.py:contrib/rotatelogs.py \
