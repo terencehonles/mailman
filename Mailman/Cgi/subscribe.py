@@ -146,10 +146,8 @@ def main():
     elif not list.nondigestable:
         digest = 1
 
-
     if error:
         PrintResults(list, results, doc)
-
     else:
         try:
             if list.FindUser(email):
@@ -178,10 +176,10 @@ def main():
 
         except Errors.MMNeedApproval, x:
             results = results + ("Subscription was <em>deferred</em> "
-                                 "because:<br> %s<p>Your request must "
-                                 "be approved by the list admin.  "
+                                 "because %s.  Your request has been "
+                                 "forwarded to the list administrator.  "
                                  "You will receive email informing you "
-                                 "of the moderator's descision when they "
+                                 "of the moderator's decision when they "
                                  "get to your request.<p>" % x)
         except Errors.MMHostileAddress:
             results = results + ("Your subscription is not allowed because "
@@ -193,13 +191,16 @@ def main():
         # they might -scott
         #
         except Errors.MMCantDigestError:
-            results = results + "No one can subscribe to the digest of this list!"
+            results = results + \
+                      "No one can subscribe to the digest of this list!"
         except Errors.MMMustDigestError:
-            results = results + "This list only supports digest subscriptions!"
+            results = results + \
+                      "This list only supports digest subscriptions!"
         else:
-            results = results + "You have been successfully subscribed to %s." % (list.real_name)
-            list.Save()
-
+            results = results + \
+                      "You have been successfully subscribed to %s." % \
+                      (list.real_name)
+    list.Save()
     PrintResults(list, results, doc)
     list.Unlock()
 
