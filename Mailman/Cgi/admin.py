@@ -31,12 +31,6 @@ from Mailman.htmlformat import *
 from Mailman.Crypt import crypt
 from Mailman import mm_cfg
 
-try:
-    sys.stderr = Utils.StampedLogger("error", label = 'admin',
-                                        manual_reprime=1, nofail=0)
-except IOError:
-    pass                        # Oh well - SOL on redirect, errors show thru.
-
 CATEGORIES = [('general', "General Options"),
               ('members', "Membership Management"),
               ('privacy', "Privacy Options"),
@@ -57,21 +51,6 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
         except Errors.MMBadPasswordError:
             AddErrorMessage(doc, 'Error: Incorrect admin password.')
             return 0
-        except:
-	  print "Content-type: text/html\n"
-
-	  print "<p><h3>We're sorry, we hit a bug!</h3>\n"
-	  print "If you would like to help us identify the problem, please "
-	  print "email a copy of this page to the webmaster for this site"
-	  print 'with a description of what happened.  Thanks!'
-	  print "\n<PRE>"
-	  try:
-	    import traceback
-	    sys.stderr = sys.stdout
-	    traceback.print_exc()
-	  except:
-	    print "[failed to get traceback]"
-	  print "\n\n</PRE>"
 
         token = md5.new(SECRET + list_name + SECRET).digest()
         token = base64.encodestring(token)
