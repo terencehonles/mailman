@@ -73,6 +73,12 @@ _ = i18n._
 
 EMPTYSTRING = ''
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 # Use mixins here just to avoid having any one chunk be too large.
@@ -681,8 +687,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # Hack alert!  Squirrel away a flag that only invitations have, so
         # that we can do something slightly different when an invitation
         # subscription is confirmed.  In those cases, we don't need further
-        # admin approval, even if the list is so configured
-        userdesc.invitation = 1
+        # admin approval, even if the list is so configured.  The flag is the
+        # list name to prevent invitees from cross-subscribing.
+        userdesc.invitation = self.internal_name()
         cookie = Pending.new(Pending.SUBSCRIPTION, userdesc)
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
@@ -1071,11 +1078,18 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             except ValueError:
                 raise Errors.MMBadConfirmation, 'bad subscr data %s' % (data,)
             # Hack alert!  Was this a confirmation of an invitation?
-            invitation = getattr(userdesc, 'invitation', 0)
+            invitation = getattr(userdesc, 'invitation', False)
             # We check for both 2 (approval required) and 3 (confirm +
             # approval) because the policy could have been changed in the
             # middle of the confirmation dance.
-            if not invitation and self.subscribe_policy in (2, 3):
+            if invitation:
+                if invitation <> self.internal_name():
+                    # Not cool.  The invitee was trying to subscribe to a
+                    # different list than they were invited to.  Alert both
+                    # list administrators.
+                    self.SendHostileSubscriptionNotice(invitation, addr)
+                    raise Errors.HostileSubscriptionError
+            elif self.subscribe_policy in (2, 3):
                 self.HoldSubscription(addr, fullname, password, digest, lang)
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
