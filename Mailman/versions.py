@@ -303,6 +303,10 @@ def NewVars(l):
         mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
     add_only_if_missing('ban_list', [])
     add_only_if_missing('delivery_status', {})
+    # This really ought to default to mm_cfg.HOLD, but that doesn't work with
+    # the current GUI description model.  So, 0==Hold, 1==Reject, 2==Discard
+    add_only_if_missing('member_moderation_action', 0)
+    add_only_if_missing('member_moderation_notice', '')
 
 
 
