@@ -334,8 +334,8 @@ def main():
         signal.signal(signal.SIGTERM, sigterm_handler)
         mlist.Lock()
         try:
-            mlist.ApprovedDeleteMember(user, _('via the member options page'),
-                                       admin_notif=1, userack=1)
+            mlist.ApprovedDeleteMember(
+                user, _('via the member options page'), userack=1)
             mlist.Save()
         finally:
             mlist.Unlock()
