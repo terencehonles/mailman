@@ -933,10 +933,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 {'member'  : name,
                  'listname': self.real_name,
                  }, mlist=self)
-            msg = Message.UserNotification(
-                self.GetOwnerEmail(),
+            msg = Message.OwnerNotification(
+                self,
                 Utils.get_site_email(self.host_name, 'owner'),
-                subject, text, self.preferred_language)
+                subject, text)
+            # Make it look like the 
             msg.send(self)
         if whence:
             whence = "; %s" % whence
