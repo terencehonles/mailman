@@ -425,7 +425,7 @@ QRUNNER_LOCK_LIFETIME = hours(10)
 # Exceeding either limit causes qrunner to exit, reclaiming system resources
 # and deleting the lock.  Other qrunners will then process the remaining
 # messages.  Set either to None to inhibit this resource check.
-QRUNNER_PROCESS_LIFETIME = hours(1)
+QRUNNER_PROCESS_LIFETIME = minutes(15)
 QRUNNER_MAX_MESSAGES = 300
 
 
