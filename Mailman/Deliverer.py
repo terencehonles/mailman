@@ -151,7 +151,7 @@ class Deliverer:
             umbrella = Utils.wrap(
                 "(Since this is a list of mailing lists, administrative"
                 " notices like the password reminder will be sent to"
-                " your membership administrative address, %s.\n"
+                " your membership administrative address, %s.)\n"
                 % self.GetMemberAdminEmail(name))
         else:
             umbrella = ''
