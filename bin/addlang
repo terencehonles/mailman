@@ -112,8 +112,9 @@ def main():
             os.umask(omask)
 
     # All done
-    okmsg = COMMASPACE.join(ok_langs)
-    print _('Language support for %(okmsg)s added')
+    if ok_langs:
+        okmsg = COMMASPACE.join(ok_langs)
+        print _('Language support for %(okmsg)s added')
 
 
 
