@@ -175,8 +175,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'The public name of this list'),
 
 	    ('owner', mm_cfg.EmailList, (3,30), 0,
-	     "The list admin's email address - multiple admins/addresses"
-             " is ok."),
+	     "The list admin's email address - having multiple"
+	     " admins/addresses is ok."),
 
 	    ('description', mm_cfg.String, 50, 0,
 	     'A one sentence description of this list.'),
@@ -185,11 +185,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'A descriptive paragraph about the list.',
 
              "The text will be treated as html <em>except</em> that newlines"
-             " newlines will be translated to ;lt&br;gt& - so you can use"
+             " newlines will be translated to &lt;br&gt; - so you can use"
              " links, preformatted text, etc, but don't put in carriage"
              " returns except where you mean to separate paragraphs.  And"
              " review your changes - bad html (like an unclosed quote) can"
-             " mess up the entire listinfo page."),
+             " disrupt display of the listinfo page."),
 
 	    ('subject_prefix', mm_cfg.String, 10, 0,
 	     'Prefix for subject line of list postings.',
@@ -201,13 +201,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'List-specific text appended to new-subscriber welcome message'),
 
 	    ('goodbye_msg', mm_cfg.Text, (4, 50), 0,
-	     'Text sent to people leaving the list.',
-
-             "If empty, no special text will be added to the unsubscribe"
-             "message."),
+	     'Text sent to people leaving the list.  If empty, no special'
+	     ' text will be added to the unsubscribe message.'),
 
 	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
-	     'Are replies to a post directed to poster or the list?',
+	     'Are replies to a the original post directed to poster'
+	     ' or to the list?',
 
              "List postings include headers which designate where replies"
              " to the posts are directed.  This option picks whether the"
@@ -215,20 +214,22 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " original poster or to the list as a whole."),
 
 	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Is administrator notified immediately of new admin requests, '
-	     'in addition to the daily notice about collected ones?',
+	     'Should administrator get immediate notifice of new requests, '
+	     'as well as daily notices about collected ones?',
 
              "List admins are sent daily reminders of pending admin approval"
-             " requests, if any.  Setting this option causes notices to be" 
-             " sent immediately on the arrival of new requests, as well."),
+             " requests, like subscriptions to a moderated list or postings"
+	     " that are being held for one reason or another.  Setting this"
+	     " option causes notices to be sent immediately on the arrival"
+	     " of new requests, as well."),
 
 	    ('dont_respond_to_post_requests', mm_cfg.Radio, ('Yes', 'No'), 0,
-	     'Send mail to poster when their submission is held for approval?',
+	     'Send mail to poster when their posting is held for approval?',
 
-             "Approval notices are normally sent when mail triggers any of"
-             " the limits <em>except</em> routine list moderation, when"
-             " notices are never sent.  This option overrides ever sending"
-             " these notices."),
+             "Approval notices are sent when mail triggers certain of the"
+             " limits <em>except</em> routine list moderation and spam"
+	     " filters, for which notices are <em>not</em> sent.  This"
+	     " option overrides ever sending the notice."),
 
             # XXX UNSAFE!  Perhaps more selective capability could be
             # offered, with some kind of super-admin option, but for now
@@ -237,12 +238,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 ## 	    ('filter_prog', mm_cfg.String, 40, 0,
 ## 	     'Program for pre-processing text, if any? '
 ## 	     '(Useful, eg, for signature auto-stripping, etc...)'),
-
-	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
-	     'Ceiling on acceptable number of recipients for a posting.',
-
-             "If a posting has this number, or more, recipients, it is"
-             " held for admin approval.  Use 0 for no ceiling."),
 
 	    ('max_message_size', mm_cfg.Number, 3, 0,
 	     'Maximum length in Kb of a message body.  Use 0 for no limit.'),
@@ -260,11 +255,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " addresses on this host, and generally should be the mail"
              " host's exchanger address, if any."),
 
-	    ('web_page_url', mm_cfg.String, 50, 0,
-	     'Base URL for Mailman web interface',
+# I suspect this should not be changeable by arbitrary list admins.
+## 	    ('web_page_url', mm_cfg.String, 50, 0,
+## 	     'Base URL for Mailman web interface',
 
-             "This is the common root of all mailman URLs concerning this"
-             " list."),
+##              "This is the common root of all mailman URLs concerning this"
+##              " list."),
 	    ]
         config_info['privacy'] = [
             "List access policies, including anti-spam measures,"
@@ -284,7 +280,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              ' an <em>open</em> list)?',
 
              "Disabling this option makes the list <em>closed</em>, where"
-             " members are admitted at the discretion of the administrator."),
+             " members are admitted only at the discretion of the list"
+	     " administrator."),
 
 	    ('web_subscribe_requires_confirmation', mm_cfg.Radio,
 	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
@@ -362,6 +359,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " option) is active.  This enables things like cascading"
              " maillists and relays while the constraint is still"
              " preventing random spams."), 
+
+	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
+	     'Ceiling on acceptable number of recipients for a posting.',
+
+             "If a posting has this number, or more, of recipients, it is"
+             " held for admin approval.  Use 0 for no ceiling."),
 
 	    ('forbidden_posters', mm_cfg.EmailList, (5, 30), 1,
              'Addresses whose postings are always held for approval.',
