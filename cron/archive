@@ -7,7 +7,7 @@
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
-import maillist, mm_cfg
+import maillist, mm_cfg, mm_utils
 
 def usage():
     sys.stderr.write("Usage: %s level\n" % sys.argv[0])
@@ -23,7 +23,7 @@ except ValueError:
     usage()
     raise SystemExit, 1
 
-for name in maillist.list_names():
+for name in mm_utils.list_names():
 
     list = maillist.MailList(name)
 
