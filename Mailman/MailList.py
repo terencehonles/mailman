@@ -183,6 +183,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetScriptURL(self, scriptname, relative=0):
         if relative:
             prefix = '../' * Utils.GetNestingLevel()
+            if not prefix:
+                prefix = './'
         elif self.web_page_url:
             prefix = self.web_page_url
         else:
