@@ -204,7 +204,6 @@ class Archiver:
         # anyway, and at the very least we've got the mbox to regenerate
         # from.
         t0 = time.time()
-##        syslog('error', 'starting to archive')
         try:
             txt = msg.unixfrom
             for h in msg.headers:
@@ -236,7 +235,6 @@ class Archiver:
                    self.internal_name())
         else:
             t1 = time.time()
-##            syslog('error', 'finished archiving in %.3f seconds' % (t1-t0))
 	
     #
     # called from MailList.MailList.Save()
