@@ -570,7 +570,7 @@ background and instructions for subscribing to and using it, visit:
             self.__NoMailCmdResponse = 1
         except Errors.MMNeedApproval:
             self.AddToResponse(
-                "Your subscription request has been forwarded the"
+                "Your subscription request has been forwarded to the"
                 " list administrator\n"
                 "at %s for review." % self.GetAdminEmail(), trunc=0)
         except Errors.MMBadEmailError:
