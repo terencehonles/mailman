@@ -1,3 +1,5 @@
+# -*- python -*-
+
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -14,7 +16,6 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-
 """Distributed default settings for significant mailman config variables.
 
 You should NOT edit the values here unless you're changing settings for
@@ -26,7 +27,6 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b3'
-__version__ = "$Revision: 547 $"
 
 # The URL for Mailman sources, etc. - you probably don't want to change this.
 MAILMAN_URL       = 'http://www.list.org/'
@@ -39,19 +39,7 @@ SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'     # yours may be different
 DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
 PUBLIC_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PUBLIC.ARCHIVE.URL/'
 PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
-# Once we know our home directory we can figure out the rest.
-# BUT, if you override these in mm_cfg.py, you have to override the dependants
-#      as well.
-HOME_DIR	  = '/home/mailman'
-MAILMAN_DIR       = '/home/mailman/mailman'
-LIST_DATA_DIR     = os.path.join(MAILMAN_DIR, 'lists')
-HTML_DIR	  = os.path.join(HOME_DIR, 'public_html')
-CGI_DIR           = os.path.join(HOME_DIR, 'cgi-bin')
-LOG_DIR           = os.path.join(HOME_DIR, 'logs')
-LOCK_DIR          = os.path.join(MAILMAN_DIR, 'locks')
-TEMPLATE_DIR      = os.path.join(MAILMAN_DIR, 'templates')
-PUBLIC_ARCHIVE_FILE_DIR    = os.path.join(HOME_DIR, 'archives/public')
-PRIVATE_ARCHIVE_FILE_DIR   = os.path.join(HOME_DIR, 'archives/private')
+
 DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
@@ -177,3 +165,32 @@ DontReceiveOwnPosts = 2 # Non-digesters only
 AcknowlegePosts     = 4
 DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
+
+
+# These directories are used to find various important files in the Mailman
+# installation.  PREFIX and EXEC_PREFIX are set by configure and should point
+# to the installation directory of the Mailman package.
+#
+# Do not override these in mm_cfg.py!
+
+PYTHON  	= '@PYTHON@'
+PREFIX  	= '@prefix@'
+EXEC_PREFIX	= '@exec_prefix@'
+
+# Work around a bogus autoconf 2.12 bug
+if EXEC_PREFIX == '${prefix}':
+    EXEC_PREFIX = PREFIX
+
+LIST_DATA_DIR	= os.path.join(PREFIX, 'lists')
+HTML_DIR	= os.path.join(PREFIX, 'public_html')
+CGI_DIR 	= os.path.join(EXEC_PREFIX, 'cgi-bin')
+LOG_DIR 	= os.path.join(PREFIX, 'logs')
+LOCK_DIR	= os.path.join(PREFIX, 'locks')
+WRAPPER_DIR	= os.path.join(EXEC_PREFIX, 'mail')
+SCRIPTS_DIR	= os.path.join(PREFIX, 'scripts')
+TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
+PUBLIC_ARCHIVE_FILE_DIR 	= os.path.join(PREFIX, 'archives/public')
+PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
+
+# The Mailman version, also set by configure
+VERSION           = '@VERSION@'
