@@ -2,7 +2,7 @@
 
 """Process listinfo form submission, ie subscriptions or roster requests."""
 
-__version__ = "$Revision: 388 $"
+__version__ = "$Revision: 481 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -24,7 +24,7 @@ mailing list has been received via the web%s
 This is a confirmation request, to prevent anyone from subscribing
 you against your wishes.  In order to complete this subscription you
 must send a confirming email, to %s, by 
-repling to this mail, and including just the line: 
+replying to this mail, and including just the line: 
 
 subscribe %s%s
 
@@ -169,7 +169,7 @@ else:
             digesting = ""
 	list.SendTextToUser(subject = 'Subscribing to %s' % list.real_name,
 			    recipient = email,
-			    sender = list.GetRequestEmail(),
+			    sender = list.GetAdminEmail(),
 			    text = (NEED_CONFIRM_NOTICE
                                     % (list.real_name,
                                        list.host_name,
