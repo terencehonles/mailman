@@ -80,12 +80,17 @@ if you have a non-MIME compliant mail reader.  When this option is turned off,
 you get digests in MIME format, which are much better if you have a mail
 reader that supports MIME.""")
 
-option_desc = {'hide'    : HIDE,
-               'nomail'  : NOMAIL,
-               'ack'     : ACK,
-               'notmetoo': NOTMETOO,
-               'digest'  : DIGEST,
-               'plain'   : PLAIN,
+NODUPES = _("""When turned on, you do *not* receive list copies of message
+which have you as an explicit recipient (i.e. if you're both a member of the
+list and in either the To: or Cc: headers).""")
+
+option_desc = {'hide'     : HIDE,
+               'nomail'   : NOMAIL,
+               'ack'      : ACK,
+               'notmetoo' : NOTMETOO,
+               'digest'   : DIGEST,
+               'plain'    : PLAIN,
+               'nodupes'  : NODUPES,
                }
 
 # jcrey: and then the real one
@@ -97,10 +102,11 @@ option_info = {'hide'    : mm_cfg.ConcealSubscription,
                'notmetoo': mm_cfg.DontReceiveOwnPosts,
                'digest'  : 0,
                'plain'   : mm_cfg.DisableMime,
+               'nodupes' : mm_cfg.DontReceiveDuplicates
                }
 
 # ordered list
-options = ('hide', 'nomail', 'ack', 'notmetoo', 'digest', 'plain')
+options = ('hide', 'nomail', 'ack', 'notmetoo', 'digest', 'plain', 'nodupes')
 
 # strip just the outer layer of quotes
 quotecre = re.compile(r'["\'`](?P<cmd>.*)["\'`]')
