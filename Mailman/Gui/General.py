@@ -21,6 +21,10 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
+# BAW: bogus!  This should be in a separate module (Utils?)
+from Mailman.MailCommandHandler import option_info
+
+OPTIONS = ('hide', 'ack', 'notmetoo', 'plain', 'nodupes')
 
 
 
@@ -32,6 +36,26 @@ class General(GUIBase):
         if category <> 'general':
             return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
+
+        # These are for the default_options checkboxes below.
+        bitfields = {'hide'     : mm_cfg.ConcealSubscription,
+                     'ack'      : mm_cfg.AcknowledgePosts,
+                     'notmetoo' : mm_cfg.DontReceiveOwnPosts,
+                     'plain'    : mm_cfg.DisableMime,
+                     'nodupes'  : mm_cfg.DontReceiveDuplicates
+                     }
+        bitdescrs = {
+            'hide'     : _("Conceal the member's address"),
+            'ack'      : _("Acknowledge the member's posting"),
+            'notmetoo' : _("Do not send a copy of a member's own post"),
+            'plain'    :
+            _('Get plain text digests (RFC 1153) rather than MIME digests'),
+            'nodupes'  :
+            _('Filter out duplicate messages to list members (if possible)'),
+            }
+
+        optvals = [mlist.new_member_options & bitfields[o] for o in OPTIONS]
+        opttext = [bitdescrs[o] for o in OPTIONS]
 
         rtn = [
             _('''Fundamental list characteristics, including descriptive
@@ -297,6 +321,13 @@ class General(GUIBase):
 
             _('Additional settings'),
 
+            ('new_member_options', mm_cfg.Checkbox,
+             (opttext, optvals, 0, OPTIONS),
+             0, _('''Default options for new members joining this list.'''),
+             
+             _("""When a new member is subscripted to this list, their initial
+             set of options is taken from the this variable's setting.""")),
+
             ('administrivia', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('''(Administrivia filter) Check postings and intercept ones
              that seem to be administrative requests?'''),
@@ -356,5 +387,12 @@ class General(GUIBase):
             changed!  It must differ from the list's name by case
             only.<p>"""),
                          tag=_('Error: '))
+        elif property == 'new_member_options':
+            newopts = 0
+            for opt in OPTIONS:
+                bitfield = option_info[opt]
+                if opt in val:
+                    newopts |= bitfield
+            mlist.new_member_options = newopts
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
