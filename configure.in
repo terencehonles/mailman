@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 5372 $)
+AC_REVISION($Revision: 5373 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -268,6 +268,14 @@ then
 fi
 
 
+AC_MSG_CHECKING(for --with-permcheck)
+AC_ARG_WITH(permcheck, dnl
+[  --without-permcheck    skip the check for target directory permissions])
+if test -z "$with_permcheck"
+then
+	with_permcheck="yes"
+fi
+AC_MSG_RESULT($with_permcheck)
 # Now make sure that $prefix is set up correctly.  It must be group
 # owned by the target group, it must have the group sticky bit set, and
 # it must be a+rx
@@ -314,14 +322,18 @@ changequote([, ])
 $PYTHON conftest.py
 status=`cat conftest.out`
 rm -f conftest.out conftest.py
-if test "$status" != "okay"
+if test "$with_permcheck" = "yes"
 then
-    AC_MSG_ERROR([
+    if test "$status" != "okay"
+    then
+        AC_MSG_ERROR([
 ***** Installation directory $prefixcheck is not configured properly!
 $status])
+    fi
+else
+    status="skipped"
 fi
-
-AC_MSG_RESULT(okay)
+AC_MSG_RESULT($status)
 
 
 # Now find the UIDs and GIDs
