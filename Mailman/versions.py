@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
@@ -33,7 +33,6 @@ run again until another version change is detected.
 """
 
 
-import re
 from types import ListType, StringType
 
 from Mailman import mm_cfg
@@ -239,7 +238,7 @@ def UpdateOldVars(l, stored_state):
     if hasattr(l, "open_subscribe"):
         if l.open_subscribe:
             if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-                l.subscribe_policy = 0 
+                l.subscribe_policy = 0
             else:
                 l.subscribe_policy = 1
         else:
@@ -254,7 +253,7 @@ def UpdateOldVars(l, stored_state):
     # this attribute was added then deleted, so there are a number of
     # cases to take care of
     #
-    if hasattr(l, "posters_includes_members"): 
+    if hasattr(l, "posters_includes_members"):
         if l.posters_includes_members:
             if l.posters:
                 l.member_posting_only = 1
@@ -289,7 +288,7 @@ def UpdateOldVars(l, stored_state):
                 mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES)
     #
     # Convert the members and digest_members addresses so that the keys of
-    # both these are always lowercased, but if there is a case difference, the 
+    # both these are always lowercased, but if there is a case difference, the
     # value contains the case preserved value
     #
     for k in l.members.keys():
@@ -371,6 +370,7 @@ def NewVars(l):
         mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
     add_only_if_missing('ban_list', [])
     add_only_if_missing('filter_mime_types', mm_cfg.DEFAULT_FILTER_MIME_TYPES)
+    add_only_if_missing('pass_mime_types', [])
     add_only_if_missing('filter_content', mm_cfg.DEFAULT_FILTER_CONTENT)
     add_only_if_missing('convert_html_to_plaintext',
                         mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
