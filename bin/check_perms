@@ -157,7 +157,7 @@ def checkarchivedbs():
         try:
             mode = statmode(dbdir)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno not in (errno.ENOENT, errno.ENOTDIR): raise
             continue
         if mode & S_IRWXO:
             STATE.ERRORS = STATE.ERRORS + 1
