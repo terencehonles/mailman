@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -344,6 +344,21 @@ def main():
                 mlist.Unlock()
         os.unlink(wmfile)
         print '- usenet watermarks updated and gate_watermarks removed'
+    #
+    # In Mailman 2.1, the pending database format and file name has changed.
+    #
+    oldpendingfile = os.path.join(mm_cfg.DATA_DIR, 'pending_subscriptions.db')
+    try:
+        fp = open(oldpendingfile)
+    except IOError, e:
+        if e.errno <> errno.ENOENT: raise
+    else:
+        print 'Updating old pending_subscriptions.db database'
+        from Mailman import Pending
+        db = marshal.load(fp)
+        Pending._update(db)
+        fp.close()
+        os.unlink(oldpendingfile)
     #
     # This warning was necessary for the upgrade from 1.0b9 to 1.0b10.
     # There's no good way of figuring this out for releases prior to 2.0beta2
