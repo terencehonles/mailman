@@ -39,6 +39,7 @@ except ImportError:
     from Mailman.pythonlib import getpass
 from Mailman import MailList
 from Mailman import Utils
+from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman.Crypt import crypt
 
@@ -88,9 +89,13 @@ def main(argv):
     # enforcing that all directories have the group sticky bit set
     oldmask = os.umask(002)
     try:
-        newlist.Create(list_name, owner_mail, pw)
-    finally:
-        os.umask(oldmask)
+        try:
+            newlist.Create(list_name, owner_mail, pw)
+        finally:
+            os.umask(oldmask)
+    except Errors.MMBadEmailError:
+        print 'Bad owner email address:', owner_mail
+        sys.exit(1)
 
     ###os.system('%s %s' % (ADDALIASES_CMD, list_name))
     print '''
