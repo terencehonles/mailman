@@ -116,6 +116,7 @@ class HTMLFormatter:
                 mm_cfg.ConcealSubscription      : 'conceal',
                 mm_cfg.SuppressPasswordReminder : 'remind',
                 mm_cfg.ReceiveNonmatchingTopics : 'rcvtopic',
+                mm_cfg.DontReceiveDuplicates    : 'nodupes',
                 }[option]
         return '<input type=radio name="%s" value="%d"%s>' % (
             name, value, checked)
@@ -340,7 +341,7 @@ class HTMLFormatter:
 
     def ParseTags(self, template, replacements, lang=None):
         text = Utils.maketext(template, raw=1, lang=lang, mlist=self)
-	parts = re.split('(</?[Mm][Mm]-[^>]*>)', text)
+        parts = re.split('(</?[Mm][Mm]-[^>]*>)', text)
         i = 1
         while i < len(parts):
             tag = parts[i].lower()
