@@ -1,8 +1,19 @@
 #!/usr/local/bin/python
-import sys, os, cgi, string
-from regsub import gsub
+
+"""Process listinfo form submission, ie subscriptions or roster requests."""
+
+import sys
 sys.path.append('/home/mailman/mailman/modules')
+
+import os, cgi, string
+from regsub import gsub
 import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'subscribe',
+                                        manual_reprime=1)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 NEED_CONFIRM_NOTICE = """
 A web request for your subscription to the %s mailing list
@@ -35,20 +46,23 @@ list_info = mm_utils.GetPathPieces(path)
 list_name = string.lower(list_info[0])
 
 if len(list_info) < 1:
-    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
     print doc.Format()
     sys.exit(0)
 
 try:
   list = maillist.MailList(list_name)
 except:
-  doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name ))
+  doc.AddItem(htmlformat.Header(2, "Error"))
+  doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
   print doc.Format()
   sys.exit(0)
 
 
 if not list._ready:
-    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name ))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
     print doc.Format()
     sys.exit(0)
 
@@ -57,28 +71,39 @@ form = cgi.FieldStorage()
 error = 0
 results = ''
 
-if form.has_key("submitinfo"):
-    if not form.has_key("info"):
-	doc.AddItem(htmlformat.Header(2,
-				      "You must supply your email address."))
-	doc.AddItem(list.GetMailmanFooter())
-	print doc.Format()
-	sys.exit(0)
-    addr = list.FindUser(form['info'].value)
-    if not addr:
-	doc.AddItem(htmlformat.Header
-		    (2, "You aren't subscribed to this mailing list under "
-		     "the address you gave."))
-	doc.AddItem(list.GetMailmanFooter())
-	print doc.Format()
-	sys.exit(0)
-    # A little bit of a hack to call the options script...
-    os.environ['PATH_INFO'] = '%s/%s' % (list_name,addr)
-    file = os.path.join(mm_cfg.MAILMAN_DIR, 'cgi/options')
+def call_script(which, pathinfo):
+    "A little bit of a hack to call one of the scripts..."
+    os.environ['PATH_INFO'] = string.join(pathinfo, '/')
+    file = os.path.join(mm_cfg.MAILMAN_DIR, 'cgi/%s' % which)
     list.Unlock()
     execfile(file)
     sys.exit(0)
 
+#######
+# Preliminaries done, actual processing of the form input below.
+
+if form.has_key("SubscriberRoster"):
+    # Get the roster of subscribers.
+    call_script('mmroster', [list._internal_name])
+    
+elif form.has_key("UserOptions"):
+    # Go to user options section.
+    if not form.has_key("info"):
+	doc.AddItem(htmlformat.Header(2, "Error"))
+        doc.AddItem(htmlformat.Bold("You must supply your email address."))
+	doc.AddItem(list.GetMailmanFooter())
+	print doc.Format()
+	sys.exit(0)
+    addr = form['info'].value
+    member = list.FindUser(addr)
+    if not list.FindUser(addr):
+	doc.AddItem(htmlformat.Header(2, "Error"))
+        doc.AddItem(htmlformat.Bold("%s has not subscribed addr <i>%s</i>."
+                                    % (list.real_name, addr)))
+	doc.AddItem(list.GetMailmanFooter())
+	print doc.Format()
+	sys.exit(0)
+    call_script('options', [list._internal_name, member])
 
 if not form.has_key("email"):
     error = 1
