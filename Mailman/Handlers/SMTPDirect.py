@@ -126,7 +126,15 @@ def process(mlist, msg, msgdata):
         while chunks:
             chunk = chunks.pop()
             msgdata['recips'] = chunk
-            deliveryfunc(mlist, msg, msgdata, envsender, refused, conn)
+            try:
+                deliveryfunc(mlist, msg, msgdata, envsender, refused, conn)
+            except Exception:
+                # If /anything/ goes wrong, push the last chunk back on the
+                # undelivered list and re-raise the exception.  We don't know
+                # how many of the last chunk might receive the message, so at
+                # worst, everyone in this chunk will get a duplicate.  Sigh.
+                chunks.append(chunk)
+                raise
         del msgdata['undelivered']
     finally:
         conn.quit()
