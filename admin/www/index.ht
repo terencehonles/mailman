@@ -44,13 +44,16 @@ sites.
 
 <h3>Acknowledgements</h3>
 
+<p>Mailman's lead developer is
+<a href="http://barry.warsaw.us">Barry Warsaw</a> who can be contacted
+at <a href="mailto:barry@python.org">barry@python.org</a>.
+
 <p>Thanks go to
 <a href="http://www.control.com/">Control.com</a> for their
 sponsorship of new Mailman 2.1 features such as the topic filters,
 external membership sources, and "virtual" mailing lists.  Also, a
-huge thanks goes out to <a href="http://www.zope.com">Zope
+huge thanks goes out to my employer <a href="http://www.zope.com">Zope
 Corporation</a> for their support, as well as the
 <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mailman/mailman/ACKNOWLEDGMENTS?rev=HEAD&content-type=text/vnd.viewcvs-markup"
 >list of contributors</a>, bug hunters, big idea people, and others
 who have helped immensely with Mailman's development.
-t.
