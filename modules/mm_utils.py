@@ -1,4 +1,4 @@
-import string, fcntl, os, random, regsub, re
+import sys, string, fcntl, os, random, regsub, re
 import mm_cfg
 
 # Valid toplevel domains for when we check the validity of an email address.
@@ -38,6 +38,33 @@ def list_names():
 	    continue
 	got.append(fn)
     return got
+
+def SendTextToUser(subject, text, recipient, sender, errorsto=None):
+    import mm_message
+    msg = mm_message.OutgoingMessage()
+    msg.SetSender(sender)
+    msg.SetHeader('Subject', subject, 1)
+    msg.SetBody(QuotePeriods(text))
+    DeliverToUser(msg, recipient, errorsto=errorsto)
+
+# This method assumes the sender is the one given by the message.
+def DeliverToUser(msg, recipient, errorsto=None):
+    file = os.popen(mm_cfg.SENDMAIL_CMD % (msg.GetSender(), recipient),
+		    'w')
+    try:
+	msg.headers.remove('\n')
+    except ValueError:
+	pass
+    if not msg.getheader('to'):
+	msg.headers.append('To: %s\n' % recipient)
+    if errorsto:
+	msg.headers.append('Errors-To: %s\n' % errorsto)
+    file.write(string.join(msg.headers, '')+ '\n') 
+    file.write(QuotePeriods(msg.body))
+    file.close()
+
+def QuotePeriods(text):
+    return string.join(string.split(text, '\n.\n'), '\n .\n')
 
 def ValidEmail(str):
     """Verify that the an email address isn't grossly invalid."""
@@ -121,6 +148,8 @@ def AddressesMatch(addr1, addr2):
 	return 0
     if domain1 == domain2:
 	return 1
+    if not (domain1 and domain2):
+	return 0
     l = max(len(domain1), len(domain2)) - 1
     if l < 2:
 	return 0
@@ -130,10 +159,11 @@ def AddressesMatch(addr1, addr2):
 	return 1
     return 0
 
-# Given an email address, and a list of email addresses,
-# returns the subset of the list that matches the given address.
-# Should sort based on exactness of match, just in case.
+
 def FindMatchingAddresses(name, array):
+    """Given an email address, and a list of email addresses, returns the
+    subset of the list that matches the given address.  Should sort based
+    on exactness of match, just in case."""
 
     def CallAddressesMatch (x, y=name):
 	return AddressesMatch(x,y)
@@ -214,3 +244,76 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
 	    l.Unlock()
 	del l
     return got
+
+class Logger:
+    def __init__(self, category):
+	self.__category=category
+	self.__f = None
+    def __get_f(self):
+	if self.__f:
+	    return self.__f
+	else:
+	    fname = os.path.join(mm_cfg.LOG_DIR, self.__category)
+	    try:
+		ou = os.umask(002)
+		try:
+		    f = self.__f = open(fname, 'a+')
+		finally:
+		    os.umask(ou)
+	    except IOError, msg:
+		f = self.__f = sys.stderr
+		f.write("logger open %s failed %s, using stderr\n"
+			% (fname, msg))
+	    return f
+    def flush(self):
+	f = self.__get_f()
+	if hasattr(f, 'flush'):
+	    f.flush()
+    def write(self, msg):
+	f = self.__get_f()
+	try:
+	    f.write(msg)
+	except IOError, msg:
+	    f = self.__f = sys.stderr
+	    f.write("logger write %s failed %s, using stderr\n"
+		    % (fname, msg))
+    def writelines(self, lines):
+	for l in lines:
+	    self.write(l)
+    def close(self):
+	if not self.__f:
+	    return
+	self.__get_f().close()
+    def __del__(self):
+	try:
+	    if self.__f and self.__f != sys.stderr:
+		self.close()
+	except:
+	    pass
+	    
+class StampedLogger(Logger):
+    "Record messages in log files, including date stamp and optional label."
+    def __init__(self, category, label=None):
+	"If specified, optional label is included after timestamp."
+	self.label = label
+	Logger.__init__(self, category)
+    def write(self, msg):
+	import time
+	stamp = time.strftime("%b %d %H:%M:%S %Y",
+			      time.localtime(time.time()))
+	if self.label == None:
+	    label = ""
+	else:
+	    label = " %s:" % self.label
+	Logger.write(self, "%s%s %s" % (stamp, label, msg))
+    def writelines(self, lines):
+	first = 1
+	for l in lines:
+	    if first:
+		self.write(l)
+		first = 0
+	    else:
+		if l and l[0] not in [' ', '\t', '\n']:
+		    Logger.write(self, ' ' + l)
+		else:
+		    Logger.write(self, l)
