@@ -249,7 +249,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
     if not fromusenet and not mlist.dont_respond_to_post_requests:
-        lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
+        lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
         subject = _('Your message to %(listname)s awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
