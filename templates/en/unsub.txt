@@ -14,7 +14,7 @@ message to %(requestaddr)s:
     confirm %(cookie)s
 
 Note that simply sending a `reply' to this message should work from
-most email interfaces, since that usually leaves the Subject: line in
+most mail readers, since that usually leaves the Subject: line in
 the right form (additional "Re:" text in the Subject: is okay).
 
 If you do not wish to be removed from this list, please simply
