@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 3685 $)
+AC_REVISION($Revision: 3729 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -165,11 +165,11 @@ gid = ''
 for group in string.split("$2"):
     try:
         try:
-	    gid = grp.getgrgid(int(group))[2]
-	    break
-	except ValueError:
-	    gid = grp.getgrnam(group)[2]
-	    break
+            gid = grp.getgrgid(int(group))[2]
+            break
+        except ValueError:
+            gid = grp.getgrnam(group)[2]
+            break
     except KeyError:
         gid = ''
 fp = open("conftest.out", "w")
@@ -198,11 +198,11 @@ uid = ''
 for user in string.split("$2"):
     try:
         try:
-	    uid = pwd.getpwuid(int(user))[2]
-	    break
+            uid = pwd.getpwuid(int(user))[2]
+            break
 	except ValueError:
-	    uid = pwd.getpwnam(user)[2]
-	    break
+            uid = pwd.getpwnam(user)[2]
+            break
     except KeyError:
         uid = ''
 fp = open("conftest.out", "w")
@@ -295,12 +295,12 @@ else:
     mode = statdata[ST_MODE]
     gid = statdata[ST_GID]
     if mailmangid <> gid:
-	problems.append("Directory must be owned by group mailman: " + prefix)
+        problems.append("Directory must be owned by group mailman: " + prefix)
     if (mode & S_ISGID) <> S_ISGID:
-	problems.append("Set-gid bit must be set for directory: " +prefix)
+        problems.append("Set-gid bit must be set for directory: " +prefix)
     perms = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
     if (mode & perms) <> perms:
-	problems.append("Permissions should be at least 02775: " + prefix)
+        problems.append("Permissions should be at least 02775: " + prefix)
 if not problems:
     msg = "okay\n"
 else:
