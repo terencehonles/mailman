@@ -701,8 +701,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
-                'confirm %s' % cookie,
-                text, lang)
+                text=text, lang=lang)
+            # BAW: See ChangeMemberAddress() for why we do it this way...
+            del msg['subject']
+            msg['Subject'] = 'confirm ' + cookie
             msg['Reply-To'] = self.GetRequestEmail()
             msg.send(self)
             if recipient <> email:
@@ -1043,8 +1045,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              }, lang=lang, mlist=self)
         msg = Message.UserNotification(
             addr, self.GetRequestEmail(),
-            'confirm %s' % cookie,
-            text, lang)
+            text=text, lang=lang)
+            # BAW: See ChangeMemberAddress() for why we do it this way...
+        del msg['subject']
+        msg['Subject'] = 'confirm ' + cookie
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
 
