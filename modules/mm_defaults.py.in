@@ -8,8 +8,8 @@ this file, to override the distributed defaults with site-specific ones.
 
 import os
 
-VERSION           = '1.0b1.1'
-__version__ = VERSION + "$Revision: 176 $"
+VERSION           = '1.0b1.2'
+__version__ = VERSION + "$Revision: 207 $"
 
 		   # Many site-specific settings #
 
@@ -92,6 +92,7 @@ DEFAULT_DIGEST_HEADER = ""
 DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
 
 DEFAULT_DIGEST_IS_DEFAULT = 0
+DEFAULT_MIME_IS_DEFAULT_DIGEST = 1
 DEFAULT_DIGEST_SIZE_THRESHHOLD = 30	# KB
 DEFAULT_DIGEST_SEND_PERIODIC = 1
 # We're only retaining the text file, an external pipermail (andrew's
@@ -140,5 +141,5 @@ Digests             = 0 # handled by other mechanism, doesn't need a flag.
 DisableDelivery     = 1
 DontReceiveOwnPosts = 2 # Non-digesters only
 AcknowlegePosts     = 4
-EnableMime          = 8 # Digesters only
+DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
