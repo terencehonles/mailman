@@ -24,7 +24,7 @@ get info out of LDAP, Zope, other, or any combination of the above.
 
 Members have three pieces of identifying information: a unique identifying
 opaque key (KEY), a lower-cased email address (LCE), and a case-preserved
-email (CPE) address.  Adpators must ensure that both member keys and lces can
+email (CPE) address.  Adaptors must ensure that both member keys and lces can
 uniquely identify a member, and that they can (usually) convert freely between
 keys and lces.  Most methods must accept either a key or an lce, unless
 specifically documented otherwise.
