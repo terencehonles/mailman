@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 456 $"
+__version__ = "$Revision: 457 $"
 
 
 import string, os, sys, tempfile
@@ -83,8 +83,6 @@ class Deliverer:
     def SendTextToUser(self, subject, text, recipient, sender=None,
                        add_headers=[]):
         # repr(recipient) necessary for addresses containing "'" quotes!
-        self.LogMsg("test", "(mmd) plain: %s, repr: %s" % (recipient,
-                                                           repr(recipient)))
         if not sender:
             sender = self.GetAdminEmail()
         mm_utils.SendTextToUser(subject, text, recipient, sender,
