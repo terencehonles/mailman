@@ -19,7 +19,7 @@
 import sys, os
 import paths
 
-# XXX: this really should be merged with Python's standard smtplib library
+# XXX: this REALLY should be merged with Python's standard smtplib library
 from Mailman import mm_cfg
 from Mailman import smtplib
 from Mailman import Utils
