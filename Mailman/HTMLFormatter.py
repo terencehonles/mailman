@@ -155,52 +155,42 @@ class HTMLFormatter:
             return ""
 
     def FormatSubscriptionMsg(self):
-        "Tailor to approval, roster privacy, and web vetting requirements."
-        msg = ""
-        also = ""
+        msg = ''
+        also = ''
         if self.subscribe_policy == 1:
-            msg = msg + _("You will be sent email requesting confirmation, "
-                          "to prevent others from gratuitously subscribing "
-                          "you.  ")
+            msg += _('''You will be sent email requesting confirmation, to
+            prevent others from gratuitously subscribing you.''')
         if self.subscribe_policy == 2:
-            msg = msg + _("This is a closed list, which means your "
-                          "subscription will be held for approval.  You will "
-                          "be notified of the administrator's decision by "
-                          "email.  ")
-            also = _("also ")
+            msg += _("""This is a closed list, which means your subscription
+            will be held for approval.  You will be notified of the list
+            moderator's decision by email.""")
+            also = _('also ')
         if self.subscribe_policy == 3:
-            msg = msg + _("You will be sent email requesting confirmation, "
-                          "to prevent others from gratuitously subscribing "
-                          "you.  Once confirmation is received, your "
-                          "request will be held for approval by the list "
-                          "administrator.  You will be notified of the "
-                          "administrator's decision by email.  ")
+            msg += _("""You will be sent email requesting confirmation, to
+            prevent others from gratuitously subscribing you.  Once
+            confirmation is received, your request will be held for approval
+            by the list moderator.  You will be notified of the moderator's
+            decision by email.""")
             also = _("also ")
         if self.private_roster == 1:
-            msg = msg + _("This is %(also)sa private list, which means that "
-                          "the members list is not available to non-"
-                          "members.  ")
+            msg += _('''This is %(also)sa private list, which means that the
+            list of members is not available to non-members.''')
         elif self.private_roster:
-            msg = msg + _("This is %(also)sa hidden list, which means that "
-                          "the members list is available only to the "
-                          "list administrator.  ")
+            msg += _('''This is %(also)sa hidden list, which means that the
+            list of members is available only to the list administrator.''')
         else:
-            msg = msg + _("This is %(also)sa public list, which means that the"
-                          " members list is openly available")
+            msg += _('''This is %(also)sa public list, which means that the
+            list of members list is available to everyone.''')
             if self.obscure_addresses:
-                msg = msg + _(" (but we obscure the addresses so they are "
-                              "not easily recognizable by spammers).  ")
-            else:
-                msg = msg + ".  "
+                msg += _(''' (but we obscure the addresses so they are not
+                easily recognizable by spammers).''')
 
         if self.umbrella_list:
             sfx = self.umbrella_member_suffix
-            msg = msg + _("<p>(Note that this is an umbrella list, intended to"
-                          " have only other mailing lists as members.  Among"
-                          " other things, this means that your confirmation"
-                          " request will be sent to the '%(sfx)s' account for"
-                          " your address.)")
-
+            msg += _("""<p>(Note that this is an umbrella list, intended to
+            have only other mailing lists as members.  Among other things,
+            this means that your confirmation request will be sent to the
+            `%(sfx)s' account for your address.)""")
         return msg
 
     def FormatUndigestButton(self):
@@ -262,7 +252,6 @@ class HTMLFormatter:
         return self.RosterOption(lang).Format()
 
     def RosterOption(self, lang):
-        "Provide avenue to subscribers roster, contingent to .private_roster."
         container = Container()
         if not self.private_roster:
             container.AddItem(_("Click here for the list of ")
