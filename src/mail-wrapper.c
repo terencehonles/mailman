@@ -36,6 +36,7 @@ const char *VALID_COMMANDS[] = {
 	"post", 
 	"mailcmd",
 	"mailowner",
+	"auto",
 	NULL				     /* Sentinel, don't remove */
 };
 
