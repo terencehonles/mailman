@@ -52,6 +52,7 @@ import time
 import sha
 import marshal
 import binascii
+import Cookie
 from types import StringType, TupleType
 from urlparse import urlparse
 
@@ -64,7 +65,6 @@ import md5
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
-from Mailman import Cookie
 from Mailman.Logging.Syslog import syslog
 
 
