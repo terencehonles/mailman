@@ -25,12 +25,12 @@ the mailing lists, and whatever else doesn't belong elsewhere.
 
 import sys
 import os
-import string
 import re
 import random
 import urlparse
 import sha
 import errno
+from string import whitespace as WHITESPACE
 
 from mimelib.MsgReader import MsgReader
 
@@ -40,6 +40,7 @@ from Mailman.SafeDict import SafeDict
 
 EMPTYSTRING = ''
 NL = '\n'
+DOT = '.'
 
 
 
@@ -81,18 +82,18 @@ def wrap(text, column=70, honor_leading_ws=1):
         # fill
         lines = []
         fillprev = 0
-        for line in string.split(para, '\n'):
+        for line in para.split(NL):
             if not line:
                 lines.append(line)
                 continue
-            if honor_leading_ws and line[0] in string.whitespace:
+            if honor_leading_ws and line[0] in WHITESPACE:
                 fillthis = 0
             else:
                 fillthis = 1
             if fillprev and fillthis:
                 # if the previous line should be filled, then just append a
                 # single space, and the rest of the current line
-                lines[-1] = string.rstrip(lines[-1]) + ' ' + line
+                lines[-1] = lines[-1].rstrip() + ' ' + line
             else:
                 # no fill, i.e. retain newline
                 lines.append(line)
@@ -106,28 +107,28 @@ def wrap(text, column=70, honor_leading_ws=1):
                 else:
                     bol = column
                     # find the last whitespace character
-                    while bol > 0 and text[bol] not in string.whitespace:
+                    while bol > 0 and text[bol] not in WHITESPACE:
                         bol = bol - 1
                     # now find the last non-whitespace character
                     eol = bol
-                    while eol > 0 and text[eol] in string.whitespace:
+                    while eol > 0 and text[eol] in WHITESPACE:
                         eol = eol - 1
                     # watch out for text that's longer than the column width
                     if eol == 0:
                         # break on whitespace after column
                         eol = column
                         while eol < len(text) and \
-                              text[eol] not in string.whitespace:
+                              text[eol] not in WHITESPACE:
                             eol = eol + 1
                         bol = eol
                         while bol < len(text) and \
-                              text[bol] in string.whitespace:
+                              text[bol] in WHITESPACE:
                             bol = bol + 1
                         bol = bol - 1
                     line = text[:eol+1] + '\n'
                     # find the next non-whitespace character
                     bol = bol + 1
-                    while bol < len(text) and text[bol] in string.whitespace:
+                    while bol < len(text) and text[bol] in WHITESPACE:
                         bol = bol + 1
                     text = text[bol:]
                 wrapped = wrapped + line
@@ -141,7 +142,9 @@ def wrap(text, column=70, honor_leading_ws=1):
 
 
 def QuotePeriods(text):
-    return string.join(string.split(text, '\n.\n'), '\n .\n')
+    JOINER = '\n .\n'
+    SEP = '\n.\n'
+    return JOINER.join(text.split(SEP))
 
 
 # TBD: what other characters should be disallowed?
@@ -154,7 +157,7 @@ def ValidateEmail(str):
         raise Errors.MMBadEmailError
     if _badchars.search(str) or str[0] == '-':
         raise Errors.MMHostileAddress
-    if string.find(str, '/') <> -1 and \
+    if str.find('/') <> -1 and \
        os.path.isdir(os.path.split(str)[0]):
         # then
         raise Errors.MMHostileAddress
@@ -204,15 +207,15 @@ def ParseAddrs(addresses):
             continue
         parsed.append(a)
     if single:
-        return string.strip(parsed[0])
-    return map(string.strip, parsed)
+        return parsed[0].strip()
+    return [s.strip() for s in parsed]
 
 
 
 def GetPathPieces(envar='PATH_INFO'):
     path = os.environ.get(envar)
     if path:
-        return filter(None, string.split(path, '/'))
+        return [p for p in path.split('/') if p]
     return None
 
 
@@ -234,11 +237,11 @@ def ScriptURL(target, web_page_url=None, absolute=0):
     if not absolute and fullpath[:len(baseurl)] == baseurl:
         # Use relative addressing
         fullpath = fullpath[len(baseurl):]
-        i = string.find(fullpath, '?')
+        i = fullpath.find('?')
         if i > 0:
-            count = string.count(fullpath, '/', 0, i)
+            count = fullpath.count('/', 0, i)
         else:
-            count = string.count(fullpath, '/')
+            count = fullpath.count('/')
         path = ('../' * count) + target
     else:
         path = web_page_url + target
@@ -250,22 +253,22 @@ def ScriptURL(target, web_page_url=None, absolute=0):
 def ParseEmail(email):
     user = None
     domain = None
-    email = string.lower(email)
-    at_sign = string.find(email, '@')
+    email = email.lower()
+    at_sign = email.find('@')
     if at_sign < 1:
 	return (email, None)
     user = email[:at_sign]
     rest = email[at_sign+1:]
-    domain = string.split(rest, '.')
-    return (user, domain)
+    domain = rest.split('.')
+    return user, domain
 
 
 def LCDomain(addr):
     "returns the address with the domain part lowercased"
-    atind = string.find(addr, '@')
+    atind = addr.find('@')
     if atind == -1: # no domain part
         return addr
-    return addr[:atind] + '@' + string.lower(addr[atind + 1:])
+    return addr[:atind] + '@' + addr[atind+1:].lower()
 
 
 
@@ -301,14 +304,14 @@ def GetPossibleMatchingAddrs(name):
     For Example, given scott@pobox.com, return ['scott@pobox.com'],
     given scott@blackbox.pobox.com return ['scott@blackbox.pobox.com',
                                            'scott@pobox.com']"""
-
-    name = string.lower(name)
+    
+    name = name.lower()
     user, domain = ParseEmail(name)
     res = [name]
     if domain:
         domain = domain[1:]
         while len(domain) >= 2:
-            res.append("%s@%s" % (user, string.join(domain, ".")))
+            res.append("%s@%s" % (user, DOT.join(domain)))
             domain = domain[1:]
     return res
 
@@ -332,7 +335,7 @@ def FindMatchingAddresses(name, dict, *dicts):
     dicts.insert(0, dict)
     if not mm_cfg.SMART_ADDRESS_MATCH:
         for d in dicts:
-            if d.has_key(string.lower(name)):
+            if d.has_key(name.lower()):
                 return [name]
         return []
     #
@@ -422,15 +425,15 @@ def ObscureEmail(addr, for_text=0):
     When for_text option is set (not default), make a sentence fragment
     instead of a token."""
     if for_text:
-	return string.replace(addr, "@", " at ")
+	return addr.replace('@', ' at ')
     else:
-	return string.replace(addr, "@", "--at--")
+	return addr.replace('@', '--at--')
 
 def UnobscureEmail(addr):
     """Invert ObscureEmail() conversion."""
     # Contrived to act as an identity operation on already-unobscured
     # emails, so routines expecting obscured ones will accept both.
-    return string.replace(addr, "--at--", "@")
+    return addr.replace('--at--', '@')
 
 
 
@@ -455,7 +458,6 @@ def maketext(templatefile, dict=None, raw=0, lang=None):
         fp = open(file)
     template = fp.read()
     fp.close()
-    from Mailman.Logging.Syslog import syslog
     try:
         text = template % SafeDict(dict)
     except TypeError:
