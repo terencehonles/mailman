@@ -32,10 +32,13 @@ MailmanOwner = "postmaster@localhost"; # Postmaster and abuse mail recepient.
 # To configure a virtual domain to connect to mailman, create these files:
 #
 # ~mailman/.qmail-default
-# |/usr/bin/python /home/mailman/mail-in.py
+# |preline /usr/bin/python /home/mailman/mail-in.py
 #
 # /var/qmail/control/virtualdomains:
 # DOMAIN.COM:mailman
+#
+# Note: "preline" is a QMail program which ensures a Unix "From " header is
+# on the message.  Archiving will break without this.
 #
 # Replace DOMAIN.COM above with the name of the domain to be connected to
 # Mailman. Note that _all_ mail to that domain will go to Mailman, so you
