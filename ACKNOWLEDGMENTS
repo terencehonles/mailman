@@ -1,10 +1,15 @@
-The following folks are the primary maintainers of Mailman:
+Mailman - The GNU Mailing List Management System
+Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-	John Viega, Mailman's inventor
-	Ken Manheimer, Mailman's savior
+The following folks are the primary maintainers of Mailman (in reverse
+alphabetical order):
+
 	Barry Warsaw, Mailman's yappy guard dog
-	Scott Cotton, Cookie-Monster
+	John Viega, Mailman's inventor
 	Harald Meland, Norse Mailman
+	Ken Manheimer, Mailman's savior
+	Scott Cotton, Cookie-Monster
 
 They can be contacted directly via mailman-cabal@python.org.
 
@@ -12,6 +17,9 @@ Here is the list of other contributors who have donated large bits of
 code, and have assigned copyright for this code to the FSF:
 
 	The Dragon De Monsyne
+        Juan Carlos Rey Anaya
+        Victoriano Giralt
+        Mads Kiilerich
 
 Thanks also to Dragon for his winning Mailman logo contribution!
 
@@ -22,8 +30,10 @@ distributed with Mailman, but are not part of Mailman:
 	distributed under the GNU LGPL, and is included in the Mailman
 	distribution for convenience only.  It is not part of Mailman.
 
-Here is the list of other people who have contributed useful
-ideas, suggestions, bug fixes, testing, etc.:
+Here is the list of other people who have contributed useful ideas,
+suggestions, bug fixes, testing, etc., or who have been very helpful
+in answering questions on mailman-users.  This list is in no
+particular order, but all are greatly appreciated!
 
         Jeremy Hylton
 	Balazs Nagy
@@ -34,7 +44,17 @@ ideas, suggestions, bug fixes, testing, etc.:
 	Jeff Hahn
         Paul Hebble
         Christopher P. Lindsey
-	Everyone else on mailman-developers@python.org
+        Chris Kolar
+        J C Lawrence
+        Nigel Metheringham
+        Dan Mick
+        Jim Tittsler
+        Ricardo Kustner
+        Bernhard Reiter
+        Thomas Wouters
+        Jeff Berliner
+
+	And everyone else on mailman-developers@python.org
 	    and mailman-users@python.org!
 
 Thank you, all!
