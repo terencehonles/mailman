@@ -79,8 +79,7 @@ def main():
         doc.AddItem(Header(2, 'Select page to edit:'))
         template_list = UnorderedList()
         for (template, info) in template_data:
-            l = Link(mlist.GetRelativeScriptURL('edithtml') + '/' + template,
-                     info)
+            l = Link(mlist.GetScriptURL('edithtml') + '/' + template, info)
             template_list.AddItem(l)
         doc.AddItem(FontSize("+2", template_list))
         doc.AddItem(mlist.GetMailmanFooter())
@@ -114,13 +113,13 @@ def FormatHTML(mlist, doc, template_name, template_info):
     doc.AddItem(Header(1, template_info))
     doc.AddItem('<hr>')
 
-    link = Link(mlist.GetRelativeScriptURL('admin'),
+    link = Link(mlist.GetScriptURL('admin'),
                 'View or edit the list configuration information.')
 
     doc.AddItem(FontSize("+1", link))
     doc.AddItem('<p>')
     doc.AddItem('<hr>')
-    form = Form(mlist.GetRelativeScriptURL('edithtml') + '/' + template_name)
+    form = Form(mlist.GetScriptURL('edithtml') + '/' + template_name)
     doc.AddItem(form)
 
     password_table = Table()
