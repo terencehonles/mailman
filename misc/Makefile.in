@@ -82,7 +82,7 @@ install-packages:
 	for p in $(PACKAGES); \
 	do \
 	    gunzip -c $$p.tar.gz | tar xf -; \
-	    (cd $$p ; $(PYTHON) $(SETUPCMD) $(PYTHONLIBDIR)); \
+	    (cd $$p ; PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(SETUPCMD) $(PYTHONLIBDIR)); \
 	done
 
 finish:
