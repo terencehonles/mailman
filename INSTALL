@@ -161,6 +161,10 @@ if you want to keep your existing installation intact.
 
       Consult your Web server's documentation for details.
 
+    - You want to be very sure that the user id under which your CGI
+      scripts run is *not* in the `mailman' group you created above,
+      otherwise private archives will be accessible to anyone.
+
     - Configure your Web server to point to the Pipermail public
       mailing list archives:
 
