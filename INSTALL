@@ -32,6 +32,16 @@ upgrade.
 
         http://www.gnu.org
 
+    If you are building the Mailman 2.1 alpha releases, either through
+    the official file releases, or by checking out via CVS, you must
+    download and install the mimelib package.
+
+    http://barry.wooz.org/software/Code/mimelib-0.2.tar.gz
+
+    You need mimelib 0.2 or better.  mimelib will eventually be
+    bundled with Mailman 2.1 and may even become part of the Python
+    2.2 distribution.
+
 1. System setup
 
     You will need to be root to perform the steps in this section.
