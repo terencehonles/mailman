@@ -10,7 +10,7 @@ this information has been contributed by the Mailman user community,
 especially Martin Preishuber and Christian Tismer, with notes by
 Balazs Nagy (BN).
 
-- You might need to set the mail-gid user to either "qmail" or
+- You might need to set the mail-gid user to either "qmail", "mailman", or
   "nofiles" by using the --with-mail-gid configure option.
 
   BN: it highly depends on your mail storing policy.  For example if
@@ -18,16 +18,22 @@ Balazs Nagy (BN).
   But if you use /var/qmail/users, the specified mail gid can be
   used.
 
+  If you are going to be directing virtual domains directly to the
+  "mailman" user (using "virtualdomains" on a list-only domain, for
+  example), you will have to use --with-mail-gid=<gid of mailman user's group>
+  This is incompatible with having list aliases in ~alias, unless that alias
+  simply forwards to "mailman-listname*".
+
 - If there is a user `mailman' on your system, the alias
   `mailman-owner' will work only in ~mailman.  You have to do a "touch
   .qmail-owner" in ~mailman directory to create this alias.
 
 - In a related issue, if you have any users with the same name as one
   of your mailing lists, you will have problems if list names contain
-  `-' in them.  Putting .qmail redirections into the user's homedir
-  doesn't work because the Mailman wrappers will not get spawned with
-  the proper GID.  The solution is to put the following lines in the
-  /var/qmail/users/assign file:
+  `-' in them.  Putting .qmail redirections into the user's home
+  directory doesn't work because the Mailman wrappers will not get
+  spawned with the proper GID.  The solution is to put the following
+  lines in the /var/qmail/users/assign file:
 
   +zope-:alias:112:11:/var/qmail/alias:-:zope-:
   .
@@ -44,42 +50,54 @@ Balazs Nagy (BN).
   By the way the best thing is to make a virtual mail server to handle
   all of the mail.  Eg. make a CNAME record for the virtual mailserver
   (like `lists.kva.hu', thus a `mail.kva.hu IN CNAME lists.kva.hu')
-  into the name service, put a `lists.kva.hu:mailman' line to
+  into the name service, add the line `lists.kva.hu:mailman' to
   /var/qmail/control/virtualdomains and a `lists.kva.hu' line to
-  /var/qmail/control/rcpthosts file.  Then every mail to lists.kva.hu
+  /var/qmail/control/rcpthosts file.  Don't forget to HUP the qmail-send
+  after modifying "virtualdomains".  Then every mail to lists.kva.hu
   will arrive to mail.kva.hu's mailman user.
 
   Then make your aliases:
       .qmail              => mailman@...'s letters
       .qmail-owner        => mailman-owner's letters
+
+
+  For list aliases, you can either create them manually:
       .qmail-list         => posts to the 'list' list
       .qmail-list-admin   => posts to the 'list's owner
       .qmail-list-request => requests to 'list'
       etc
 
-  This allows people to write to mailman-list and such but it will be
-  held by Mailman by default.
+  or for automatic list alias handling (when using the lists.kva.hu virtual
+  as above), see "contrib/qmail-to-mailman.py" in the Mailman distribution.
+  Modify the "~mailman/.qmail-default" to include:
+
+      |/path/to/python /path/to/qmail-to-mailman.py
+
+  and new lists will automatically be picked up.
 
 - You have to make sure that the localhost can relay.  If you start
   qmail via inetd and tcpenv, you need some line the following in your 
   /etc/hosts.allow file:
 
-  tcp-env: 127. 143.205.200 : setenv RELAYCLIENT
+  tcp-env: 127. 10.205.200 : setenv RELAYCLIENT
 
-  where 143.205.200. is your domain.  If you use tcpserver, then you
+  where 10.205.200. is your IP address block.  If you use tcpserver, then you
   need something like the following in your /etc/tcp.smtp file:
 
-  143.205.200.:allow,RELAYCLIENT=""
+  10.205.200.:allow,RELAYCLIENT=""
   127.:allow,RELAYCLIENT=""
 
 - BN: Bigger /var/qmail/control/concurrencyremote values work better
-  sending outbound messages.
+  sending outbound messages, within reason.  Unless you know your system
+  can handle it (many if not most cannot) this should not be set to a value
+  greater than 120.
 
 - More information about setting up qmail and relaying can be found in 
   the qmail documentation.
 
 BN: Last but not least, here's a little script to generate aliases to
-your lists:
+your lists (if for some reason you can/will not have them
+automatically picked up using "contrib/qmail-to-mailman.py"):
 
 #!/bin/sh
 if [ $# = 1 ]; then
