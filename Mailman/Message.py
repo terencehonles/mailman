@@ -22,6 +22,10 @@ which is more convenient for use inside Mailman.
 
 import email.Message
 import email.Utils
+
+from email.Charset import Charset
+from email.Header import Header
+
 from types import ListType
 
 from Mailman import mm_cfg
@@ -96,13 +100,16 @@ class Message(email.Message.Message):
 class UserNotification(Message):
     """Class for internally crafted messages."""
 
-    def __init__(self, recip, sender, subject=None, text=None):
+    def __init__(self, recip, sender, subject=None, text=None, lang=None):
         Message.__init__(self)
+        charset = None
+        if lang is not None:
+            charset = Charset(Utils.GetCharSet(lang))
         if text is not None:
-            self.set_payload(text)
+            self.set_payload(text, charset)
         if subject is None:
             subject = '(no subject)'
-        self['Subject'] = subject
+        self['Subject'] = Header(subject, charset, header_name='Subject')
         self['From'] = sender
         if isinstance(recip, ListType):
             self['To'] = COMMASPACE.join(recip)
