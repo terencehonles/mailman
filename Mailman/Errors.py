@@ -1,6 +1,6 @@
 """Shared mailman errors and messages."""
 
-__version__ = "$Revision: 466 $"
+__version__ = "$Revision: 477 $"
 
 
 MMUnknownListError   = "MMUnknownListError"
@@ -28,6 +28,7 @@ MODERATED_LIST_MSG    = "Moderated list"
 IMPLICIT_DEST_MSG     = "Implicit destination"
 SUSPICIOUS_HEADER_MSG = "Suspicious header"
 FORBIDDEN_SENDER_MSG  = "Forbidden sender"
+LOOPING_POST	      = "Post already went through this list!"
 
 MESSAGE_DECORATION_NOTE = """This text can include  <b>%(field)s</b> format
 strings which are resolved against the list's attribute dictionary (__dict__).
