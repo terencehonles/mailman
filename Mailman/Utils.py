@@ -634,6 +634,12 @@ def get_domain():
         return mm_cfg.DEFAULT_HOST_NAME
 
 
+def get_site_email(hostname=None, extra=''):
+    if hostname is None:
+        hostname = get_domain()
+    return '%s%s@%s' % (mm_cfg.MAILMAN_SITE_LIST, extra, hostname)
+
+
 
 # This algorithm crafts a guaranteed unique message-id.  The theory here is
 # that pid+listname+host will distinguish the message-id for every process on
