@@ -125,7 +125,7 @@ doinstall: $(SUBDIRS)
 	$(PYTHON) -c 'from compileall import *; compile_dir("$(prefix)/Mailman")'
 
 update:
-	@(cd $(prefix) ; bin/update) | tee ./update.log
+	@(cd $(prefix) ; bin/update)
 
 clean: $(SUBDIRS)
 	@for d in $(SUBDIRS); \
