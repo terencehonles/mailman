@@ -353,6 +353,9 @@ class ListAdmin:
             # to avoid any useless bounce processing.
             owneraddr = self.GetOwnerEmail()
             msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
+            msg['MIME-Version'] = '1.0'
+            msg.add_header('Content-Type', 'text/plain',
+                           charset=Utils.GetCharSet(self.preferred_language))
             msg.send(self, **{'tomoderators': 1})
 
     def __handlesubscription(self, record, value, comment):
@@ -403,6 +406,9 @@ class ListAdmin:
             # to avoid any useless bounce processing.
             owneraddr = self.GetOwnerEmail()
             msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
+            msg['MIME-Version'] = '1.0'
+            msg.add_header('Content-Type', 'text/plain',
+                           charset=Utils.GetCharSet(mlist.preferred_language))
             msg.send(self, **{'tomoderators': 1})
 
     def __handleunsubscription(self, record, value, comment):
