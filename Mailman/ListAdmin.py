@@ -135,6 +135,11 @@ class ListAdmin:
             del self.__db[id]
 
     def HoldMessage(self, msg, reason, msgdata={}):
+        # Make a copy of msgdata so that subsequent changes won't corrupt the
+        # request database.
+        newmsgdata = {}
+        newmsgdata.update(msgdata)
+        msgdata = newmsgdata
         # assure that the database is open for writing
         self.__opendb()
         # get the next unique id
