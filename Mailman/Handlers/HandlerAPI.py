@@ -173,6 +173,7 @@ def DeliverToUser(mlist, msg, newdata={}):
                 ]
     msgdata = {'pipeline' : pipeline,
                'fasttrack': 1,
+               'noack'    : 1,                    # default disable Replybot
                }
     recips = getattr(msg, 'recips', None)
     if recips is not None:
