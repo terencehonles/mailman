@@ -22,37 +22,13 @@ import sys
 import os, cgi, string
 from regsub import gsub
 import paths                                      # path hacking
-import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat
+import mm_utils, maillist, mm_err, mm_message, mm_cfg, mm_pending, htmlformat
 
 try:
     sys.stderr = mm_utils.StampedLogger("error", label = 'subscribe',
                                         manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
-
-NEED_CONFIRM_NOTICE = """
-A request for subscription of your address to the %s@%s
-mailing list has been received via the web%s
-
-This is a confirmation request, to prevent anyone from subscribing
-you against your wishes.  In order to complete this subscription you
-must send a confirming email, to %s, by 
-replying to this mail, and including just the line: 
-
-subscribe %s%s
-
-in the body or as the subject line.  If you do not actually wish to
-subscribe you need not do anything.  Upon subscribing you will receive 
-a message welcoming you to the list and describing how to tailor your
-account.
-
-Questions or comments?
-Send them to """ + mm_cfg.MAILMAN_OWNER
-
-UNKNOWN_ERROR = '''An unknown error occured.  <p>
-Please send mail to <a href=%s>%s</a> explaining
-exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER,
-	mm_cfg.MAILMAN_OWNER)
 
 doc = htmlformat.Document()
 
@@ -116,7 +92,6 @@ if (form.has_key("UserOptions")
 	print doc.Format()
 	sys.exit(0)
     call_script('options', [list._internal_name, member])
-
 if not form.has_key("email"):
     error = 1
     results = results + "You must supply a valid email address.<br>"
@@ -156,40 +131,34 @@ if error:
     PrintResults()
 
 else:
-
     try:
-	list.AddMember(email, pw, digest, web_subscribe=1)
-	results = results + ("You have successfully been added.  "
-			     "You should receive confirmation by "
-			     "e-mail within an hour.  If you do not "
-			     "receive confirmation, then the email "
-			     "address you gave probably bounced, "
-			     "in which case you should try again.<p>")
-    except mm_err.MMWebSubscribeRequiresConfirmation:
-	results = results + ("Confirmation from your email address is "
-			     "required, to prevent anyone from covertly "
-			     "subscribing you.  Instructions are being "
-			     "sent to you at %s." % email)
-	if os.environ.has_key('REMOTE_HOST'):
-	    remote = ", from\n%s. " % os.environ['REMOTE_HOST']
-	elif os.environ.has_key('REMOTE_ADDR'):
-	    remote = ", from\n%s." % os.environ['REMOTE_ADDR']
-	else:
-	    remote = "."
+        results = results + ("Confirmation from your email address is "
+                             "required, to prevent anyone from covertly "
+                             "subscribing you.  Instructions are being "
+                             "sent to you at %s." % email)
+        if os.environ.has_key('REMOTE_HOST'):
+            remote = os.environ['REMOTE_HOST']
+        elif os.environ.has_key('REMOTE_ADDR'):
+            remote = os.environ['REMOTE_ADDR']
+        else:
+            remote = "."
         if digest:
             digesting = " digest"
         else:
             digesting = ""
-	list.SendTextToUser(subject = 'Subscribing to %s' % list.real_name,
-			    recipient = email,
-			    sender = list.GetAdminEmail(),
-			    text = (NEED_CONFIRM_NOTICE
-                                    % (list.real_name,
-                                       list.host_name,
-                                       remote,
-                                       list.GetRequestEmail(),
-                                       pw,
-                                       digesting)),
+        cookie = mm_pending.gencookie()
+        mm_pending.add2pending(email, pw, digest, cookie)
+        list.SendTextToUser(subject = "%s -- confirmation of subscription -- request %d" % \
+                            (list.real_name, cookie),
+                            recipient = email,
+                            sender = list.GetRequestEmail(),
+                            text = mm_pending.VERIFY_FMT % ({"email": email,
+                                                             "listaddress": list.GetListEmail(),
+                                                             "listname": list.real_name,
+                                                             "cookie": cookie,
+                                                             "requestor": remote,
+                                                             "request_addr": list.GetRequestEmail()}),
+                            
                             add_headers = ["Reply-to: %s"
                                            % list.GetRequestEmail(),
                                            "Errors-To: %s"
@@ -201,19 +170,22 @@ else:
     except mm_err.MMListNotReady:
         results = results + ("The list is not fully functional, and "
 			     "can not accept subscription requests.<p>")
-    except mm_err.MMNeedApproval, x:
-        results = results + ("Subscription was <em>deferred</em> "
-			     "because:<br> %s<p>Your request must "
-			     "be approved by the list admin.  "
-			     "You will receive email informing you "
-			     "of the moderator's descision when they "
-			     "get to your request.<p>" % x)
+#
+# deprecating this, it might be useful if we decide to
+# allow approved based subscriptions without confirmation
+#
+##     except mm_err.MMNeedApproval, x:
+##         results = results + ("Subscription was <em>deferred</em> "
+## 			     "because:<br> %s<p>Your request must "
+## 			     "be approved by the list admin.  "
+## 			     "You will receive email informing you "
+## 			     "of the moderator's descision when they "
+##			     "get to your request.<p>" % x)
     except mm_err.MMHostileAddress:
         results = results + ("Your subscription is not allowed because "
 			     "the email address you gave is insecure.<p>")
     except mm_err.MMAlreadyAMember:
         results = results + "You are already subscribed!<p>"
-    except:
-        results = results + UNKNOWN_ERROR
+	
 
 PrintResults()
