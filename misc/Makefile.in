@@ -51,7 +51,7 @@ SETUPINSTOPTS=	--install-lib $(PYTHONLIBDIR) \
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
 EMAILPKG=	email-2.2
-JACODECSPKG=	JapaneseCodecs-1.4.7
+JACODECSPKG=	JapaneseCodecs-1.4.8
 KOCODECSPKG=	KoreanCodecs-2.0.5
 
 PACKAGES= $(EMAILPKG) $(JACODECSPKG) $(KOCODECSPKG)
