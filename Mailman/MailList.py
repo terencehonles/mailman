@@ -113,23 +113,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 if func:
                     func(self)
 
-    # Never pickle our lock object!  We need both of these because MailLists
-    # get pickled by the archiver and this can cause ArchRunner to unlock
-    # lists at the wrong time.  The real fix may be to not pickle MailList
-    # objects in the archiver, but that's too much work to verify at the
-    # moment.
-    LOCKATTR = '_MailList__lock'
-    
-    def __getstate__(self):
-        d = self.__dict__.copy()
-        del d[self.LOCKATTR]
-        return d
-
-    def __setstate__(self, d):
-        if d.has_key(self.LOCKATTR):
-            del d[self.LOCKATTR]
-        self.__dict__ = d
-
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute
         # access to a delegated member function gets passed to the
