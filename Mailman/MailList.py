@@ -1152,10 +1152,8 @@ it will not be changed."""),
                             {"listname" : self.real_name,
                              "member"   : name,
                              })
-                        msg = Message.OutgoingMessage(text)
-                        msg['From'] = mm_cfg.MAILMAN_OWNER
-                        msg['Subject'] = subject
-                        msg.recips = self.owner
+                        msg = Message.UserNotification(
+                            self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
                         HandlerAPI.DeliverToUser(self, msg)
         return result
 
@@ -1204,10 +1202,9 @@ it will not be changed."""),
                 {'member'  : name,
                  'listname': self.real_name,
                  })
-            msg = Message.OutgoingMessage(text)
-            msg['From'] = mm_cfg.MAILMAN_OWNER
-            msg['Subject'] = subject
-            msg.recips = self.owner
+            msg = Message.UserNotification(self.owner,
+                                           mm_cfg.MAILMAN_OWNER,
+                                           subject, text)
             HandlerAPI.DeliverToUser(self, msg)
         if whence:
             whence = "; %s" % whence
