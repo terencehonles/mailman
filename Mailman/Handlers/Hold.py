@@ -172,27 +172,32 @@ def hold_for_approval(mlist, msg, excclass):
     listname = mlist.real_name
     reason = excclass.__doc__
     sender = msg.GetSender()
+    adminaddr = mlist.GetAdminEmail()
     mlist.HoldMessage(msg, reason)
     # now we need to craft and send a message to the list admin so they can
     # deal with the held message
-    mlist.LogMsg('vette', '%s post from %s held: %s' %
-                 (listname, sender, reason))
+    d = {'listname'   : listname,
+         'hostname'   : mlist.host_name,
+         'reason'     : reason,
+         'sender'     : sender,
+         'subject'    : msg.get('subject', '(no subject)'),
+         'admindb_url': mlist.GetAbsoluteScriptURL('admindb'),
+         }
     if mlist.admin_immed_notify:
         # get the text from the template
         subject = '%s post from %s requires approval' % (listname, sender)
-        text = Utils.maketext(
-            'postauth.txt',
-            {'listname'   : listname,
-             'hostname'   : mlist.host_name,
-             'reason'     : reason,
-             'sender'     : sender,
-             'subject'    : msg.get('subject', '(no subject)'),
-             'admindb_url': mlist.GetAbsoluteScriptURL('admindb'),
-             }, raw=1)
+        text = Utils.maketext('postauth.txt', d, raw=1)
         # craft the admin notification message and deliver it
-        adminaddr = mlist.GetAdminEmail()
         msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
+    # We may want to send a notification to the original sender too
+    if not mlist.dont_respond_to_post_requests:
+        text = Utils.maketext('postheld.txt', d)
+        msg = Message.UserNotification(sender, adminaddr, subject, text)
+        HandlerAPI.DeliverToUser(mlist, msg)
+    # Log the held message
+    mlist.LogMsg('vette', '%s post from %s held: %s' %
+                 (listname, sender, reason))
     # raise the specific MessageHeld exception to exit out of the message
     # delivery pipeline
     raise excclass
