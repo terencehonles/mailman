@@ -311,7 +311,15 @@ class LockFile:
         helps avoid race conditions during the lock status test.
         """
         # Discourage breaking the lock for a while.
-        self.__touch()
+        try:
+            self.__touch()
+        except OSError, e:
+            if e.errno == errno.EPERM:
+                # We can't touch the file because we're not the owner.  I
+                # don't see how we can own the lock if we're not the owner.
+                return 0
+            else:
+                raise
         # TBD: can the link count ever be > 2?
         if self.__linkcount() <> 2:
             return 0
