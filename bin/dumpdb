@@ -107,8 +107,7 @@ def main():
         pp.pprint(d)
     else:
         m = cPickle.load(open(filename))
-        g = Generator(sys.stdout)
-        g.write(m)
+        print m
 
 
 
