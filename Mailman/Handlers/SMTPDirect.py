@@ -85,13 +85,13 @@ def process(mlist, msg, msgdata):
     # still worthwhile doing the interpolation in syslog() because it'll catch
     # any catastrophic exceptions due to bogus format strings.
     if mm_cfg.SMTP_LOG_EVERY_MESSAGE:
-        syslog(mm_cfg.SMTP_LOG_EVERY_MESSAGE[0],
-               mm_cfg.SMTP_LOG_EVERY_MESSAGE[1], **d.copy())
+        syslog.write_ex(mm_cfg.SMTP_LOG_EVERY_MESSAGE[0],
+                        mm_cfg.SMTP_LOG_EVERY_MESSAGE[1], kws=d)
 
     if refused:
         if mm_cfg.SMTP_LOG_REFUSED:
-            syslog(mm_cfg.SMTP_LOG_REFUSED[0],
-                   mm_cfg.SMTP_LOG_REFUSED[1], **d.copy())
+            syslog.write_ex(mm_cfg.SMTP_LOG_REFUSED[0],
+                            mm_cfg.SMTP_LOG_REFUSED[1], kws=d)
 
     elif msgdata.get('tolist'):
         # Log the successful post, but only if it really was a post to the
@@ -100,8 +100,8 @@ def process(mlist, msg, msgdata):
         # the other messages, but in that case, we should probably have a
         # separate configuration variable to control that.
         if mm_cfg.SMTP_LOG_SUCCESS:
-            syslog(mm_cfg.SMTP_LOG_SUCCESS[0],
-                   mm_cfg.SMTP_LOG_SUCCESS[1], **d.copy())
+            syslog.write_ex(mm_cfg.SMTP_LOG_SUCCESS[0],
+                            mm_cfg.SMTP_LOG_SUCCESS[1], kws=d)
 
     # Process any failed deliveries.
     tempfailures = []
@@ -127,8 +127,8 @@ def process(mlist, msg, msgdata):
             d.update({'recipient': recip,
                       'failcode' : code,
                       'failmsg'  : smtpmsg})
-            syslog(mm_cfg.SMTP_LOG_EACH_FAILURE[0],
-                   mm_cfg.SMTP_LOG_EACH_FAILURE[1], **d.copy())
+            syslog.write_ex(mm_cfg.SMTP_LOG_EACH_FAILURE[0],
+                            mm_cfg.SMTP_LOG_EACH_FAILURE[1], kws=d)
     # Return the results
     if tempfailures or permfailures:
         raise Errors.SomeRecipientsFailed(tempfailures, permfailures)
