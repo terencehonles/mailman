@@ -33,7 +33,8 @@ def parseaddr(val):
         return None
     # strip off <>
     if addr[0] == '<' and addr[-1] == '>':
-        return addr[1:-1]
+        addr = addr[1:-1]
+    return addr
 
 
 
@@ -67,10 +68,12 @@ def process(mlist, msg):
     #
     # we try to dig out the Original-Recipient (which is optional) and
     # Final-Recipient (which is mandatory, but may not exactly match an addr
-    # on our list).  Also grok out Action so we can do something with that
-    # too.
-    recips = []
-    orig = final = action = None
+    # on our list).  Some MTA's also use X-Actual-Recipeint as a synonym for
+    # Original-Recipeint, but some apparently use that for other purposes :(
+    #
+    # Also grok out Action so we can do something with that too.
+    blocks = []
+    headers = {}
     while 1:
         line = msg2.fp.readline()
         if not line:
@@ -78,32 +81,26 @@ def process(mlist, msg):
         line = string.strip(line)
         if not line:
             # a new recipient block
-            if final:
-                recips.append((final, orig, action))
-            orig = final = action = None
-            continue
+            blocks.append(headers)
+            headers = {}
         try:
             hdr, val = string.split(line, ':', 1)
         except ValueError:
             continue
-        hdr = string.lower(hdr)
-        val = string.strip(val)
-        if not orig and hdr == 'original-recipient':
-            orig = parseaddr(val)
-        elif not final and hdr == 'final-recipient':
-            final = parseaddr(val)
-        elif not action and hdr == 'action':
-            action = val
-        # ignore everything else
-    # now collapse recipients
-    finals = {}
-    for final, orig, action in recips:
-        o, a = finals.get(final, (None, None))
-        if not o:
-            finals[final] = orig, action
-        elif a <> 'failed' and action == 'failed':
-            finals[final] = orig, action
+        headers[string.lower(hdr)] = string.strip(val)
+    # now go through all the blocks, finding the recip address that is being
+    # reported.
     addrs = []
-    for final, (orig, action) in finals.items():
-        addrs.append(orig or final)
-    return addrs
+    for headers in blocks:
+        if string.lower(headers.get('action', '')) <> 'failed':
+            # ignore this block
+            continue
+        # preference order is original-recipient, final-recipient
+##        val = headers.get('original-recipient',
+##                          headers.get('x-actual-recipient',
+##                                      headers.get('final-recipient')))
+        val = headers.get('original-recipient',
+                          headers.get('final-recipient'))
+        if val:
+            addrs.append(parseaddr(val))
+    return addrs or None
