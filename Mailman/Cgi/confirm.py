@@ -256,9 +256,12 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
 ##                  PasswordBox('password', password)])
 ##    table.AddRow([Label(_('Password (confirm):')),
 ##                  PasswordBox('pwconfirm', password)])
-    table.AddRow([Label(_('Receive digests?')),
-                  RadioButtonArray('digests', (_('No'), _('Yes')),
-                                   checked=digest, values=(0, 1))])
+    # Only give them a choice to receive digests if they actually have a
+    # choice <wink>.
+    if mlist.nondigestable and mlist.digestable:
+        table.AddRow([Label(_('Receive digests?')),
+                      RadioButtonArray('digests', (_('No'), _('Yes')),
+                                       checked=digest, values=(0, 1))])
     langs = mlist.GetAvailableLanguages()
     values = [mm_cfg.LC_DESCRIPTIONS[l][0] for l in langs]
     try:
