@@ -4,7 +4,7 @@
 
 Takes listname in PATH_INFO."""
 
-__version__ = "$Revision: 405 $"
+__version__ = "$Revision: 407 $"
 
 # We don't need to lock in this script, because we're never going to change
 # data. 
@@ -99,6 +99,7 @@ def error_page_doc(errmsg, *args):
 
     Optional arg justreturn means just return the doc, don't print it."""
     doc = htmlformat.Document()
+    doc.SetTitle("Error")
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold(errmsg % args))
     return doc
