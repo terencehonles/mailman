@@ -500,7 +500,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
             table.AddRow([RadioButtonArray('allmodbit_val',
                                            (_('Off'), _('On')),
                                            mlist.default_member_moderation),
-                          SubmitButton('allmodbit_btn', 'Set')])
+                          SubmitButton('allmodbit_btn', _('Set'))])
             form.AddItem(table)
     elif category == 'passwords':
         form.AddItem(Center(password_inputs()))
@@ -776,7 +776,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         try:
             cre = re.compile(regexp, re.IGNORECASE)
         except re.error:
-            add_error_message(doc, 'Bad regular expression: ' + regexp)
+            add_error_message(doc, _('Bad regular expression: ') + regexp)
         else:
             all = [s for s in all if cre.search(s)]
     chunkindex = None
@@ -1050,10 +1050,9 @@ def password_inputs():
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
     table.AddRow([_("""\
-<a name="passwords">The</a> <em>list administrators</em> are the people who
-have ultimate control over all parameters of this mailing list.  They are able
-to change any list configuration variable available through these
-administration web pages.
+The <em>list administrators</em> are the people who have ultimate control over
+all parameters of this mailing list.  They are able to change any list
+configuration variable available through these administration web pages.
 
 <p>The <em>list moderators</em> have more limited permissions; they are not
 able to change any list configuration variable, but they are allowed to tend
