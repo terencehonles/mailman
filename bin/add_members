@@ -257,7 +257,7 @@ def main():
             realname = mlist.real_name
             subject = _('%(realname)s subscription notification')
             msg = Message.UserNotification(
-                mlist.owner, mm_cfg.MAILMAN_OWNER, subject, s.getvalue())
+                mlist.owner, Utils.get_site_email(), subject, s.getvalue())
             msg.send(mlist)
 
         if send_changes_msg:
