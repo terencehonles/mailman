@@ -813,7 +813,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             mlist = MailList(listname, lock=0)
             if mlist.host_name <> self.host_name:
                 continue
-            if not mlist.isMember(oldaddr):
+            if not mlist.isMember(addr):
                 continue
             mlist.Lock()
             try:
