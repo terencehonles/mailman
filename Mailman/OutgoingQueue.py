@@ -36,7 +36,7 @@
 # only one such process to happen at a time.
 #
 
-import os, stat, tempfile, marshal, mm_cfg
+import os, stat, tempfile, marshal, errno, mm_cfg
 
 TEMPLATE = "mm_q."
 #
@@ -77,7 +77,7 @@ def processQueue():
         full_fname = os.path.join(mm_cfg.DATA_DIR, file)
         #
         # we need to stat the file if it still exists (atomically, we
-        # can't use use os.path.exists then stat.
+        # can't just use use os.path.exists then stat it.
         # if it doesn't exist, it's been dequeued since we saw
         # it in the directory listing
         #
@@ -112,11 +112,17 @@ def processQueue():
 #
 # this function is used by any process that
 # attempts to deliver a message for the first time
-# so the entry is set with the SUID bit.
+# so the entry is set with the SUID bit.  With all these
+# concurrent processes calling this function, we can't quite
+# trust mktemp() to generate a unique filename, and with the
+# possibility of a q entry lasting longer than the pid generation
+# cycle on the system we can't quite trust os.getpid() to return
+# a unique filename either.  but if we use getpid() in the
+# template, then mktemp should always return a unique filename.
 #
 def enqueueMessage(the_sender, recip, text):
     tempfile.tempdir = mm_cfg.DATA_DIR
-    tempfile.template = TEMPLATE
+    tempfile.template = "%s%d." % (TEMPLATE, os.getpid())
     fname = tempfile.mktemp() 
     f = open(fname, "a+")
     os.chmod(fname, QF_MODE | stat.S_ISUID) # make sure this is set right off the bat
