@@ -113,9 +113,9 @@ class IncomingRunner(Runner):
             status = self._dopipeline(mlist, msg, msgdata, pipeline)
             if status:
                 msgdata['pipeline'] = pipeline
+            mlist.Save()
             return status
         finally:
-            mlist.Save()
             mlist.Unlock()
 
     # Overridable
