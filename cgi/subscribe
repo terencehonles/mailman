@@ -65,7 +65,7 @@ results = ''
 def call_script(which, pathinfo):
     "A little bit of a hack to call one of the scripts..."
     os.environ['PATH_INFO'] = string.join(pathinfo, '/')
-    file = os.path.join(paths.prefix, 'scripts/%s' % which)
+    file = os.path.join(mm_cfg.SCRIPTS_DIR, which)
     list.Unlock()
     execfile(file)
     sys.exit(0)
