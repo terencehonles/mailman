@@ -107,45 +107,48 @@ def main():
     if not args:
         usage(0)
 
-    try:
-        while 1:
+    while 1:
+        try:
             opt = args.pop(0)
-            if opt in ('-h', '--help'):
-                usage(0)
-            elif opt in ('-p', '--preserve'):
-                preserve = 1
-            elif opt in ('-r', '--regular'):
-                regular = 1
-            elif opt in ('-o', '--output'):
+        except IndexError:
+            usage(1)
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-p', '--preserve'):
+            preserve = 1
+        elif opt in ('-r', '--regular'):
+            regular = 1
+        elif opt in ('-o', '--output'):
+            try:
                 outfile = args.pop(0)
-            elif opt == '-n':
-                nomail = 1
-                if args and args[0] in WHYCHOICES.keys():
-                    why = args.pop(0)
-            elif opt.startswith('--nomail'):
-                nomail = 1
-                i = opt.find('=')
-                if i >= 0:
-                    why = opt[i+1:]
-                    if why not in WHYCHOICES.keys():
-                        usage(1, _('Bad --nomail option: %(why)s'))
-            elif opt == '-d':
-                digest = 1
-                if args and args[0] in ('mime', 'plain'):
-                    kind = args.pop(0)
-            elif opt.startswith('--digest'):
-                digest = 1
-                i = opt.find('=')
-                if i >= 0:
-                    kind = opt[i+1:]
-                    if kind not in ('mime', 'plain'):
-                        usage(1, _('Bad --digest option: %(kind)s'))
-            else:
-                # No more options left, push the last one back on the list
-                args.insert(0, opt)
-                break
-    except IndexError:
-        usage(1)
+            except IndexError:
+                usage(1)
+        elif opt == '-n':
+            nomail = 1
+            if args and args[0] in WHYCHOICES.keys():
+                why = args.pop(0)
+        elif opt.startswith('--nomail'):
+            nomail = 1
+            i = opt.find('=')
+            if i >= 0:
+                why = opt[i+1:]
+                if why not in WHYCHOICES.keys():
+                    usage(1, _('Bad --nomail option: %(why)s'))
+        elif opt == '-d':
+            digest = 1
+            if args and args[0] in ('mime', 'plain'):
+                kind = args.pop(0)
+        elif opt.startswith('--digest'):
+            digest = 1
+            i = opt.find('=')
+            if i >= 0:
+                kind = opt[i+1:]
+                if kind not in ('mime', 'plain'):
+                    usage(1, _('Bad --digest option: %(kind)s'))
+        else:
+            # No more options left, push the last one back on the list
+            args.insert(0, opt)
+            break
 
     if len(args) <> 1:
         usage(1)
