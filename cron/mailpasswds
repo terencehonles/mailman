@@ -90,6 +90,8 @@ def main():
 	list = maillist.MailList(name)
 	list_name = list.real_name
 	reminders_to_admins = list.reminders_to_admins
+	if not list.send_reminders:
+	    continue
 	for user, password in list.passwords.items():
 	    url = list.GetOptionsURL(user)
 	    if reminders_to_admins:
