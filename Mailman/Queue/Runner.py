@@ -56,7 +56,9 @@ class Runner:
                     # Once through the loop that processes all the files in
                     # the queue directory.
                     filecnt = self.__oneloop()
-                    # Do the periodic work for the subclass.
+                    # Do the periodic work for the subclass.  BAW: this
+                    # shouldn't be called here.  There should be one more
+                    # _doperiodic() call at the end of the __oneloop() loop.
                     self._doperiodic()
                     # If the stop flag is set, we're done.
                     if self._stop:
