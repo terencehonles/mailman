@@ -87,9 +87,9 @@ class SecurityManager:
         #
         # Return the authcontext's secret and cookie key.  If the authcontext
         # doesn't exist, return the tuple (None, None).  If authcontext is
-        # AuthUser, but the user isn't a member of this mailing list, raise a
-        # MMNotAMemberError error.  If the user's secret is None, raise a
-        # MMBadUserError.
+        # AuthUser, but the user isn't a member of this mailing list, a
+        # NotAMemberError will be raised.  If the user's secret is None, raise
+        # a MMBadUserError.
         key = self.internal_name() + '+'
         if authcontext == mm_cfg.AuthUser:
             if user is None:
