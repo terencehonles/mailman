@@ -64,10 +64,18 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
                Autoresponder):
     def __init__(self, name=None, lock=1):
+        # No timeout by default.  If you want to timeout, open the list
+        # unlocked, then lock explicitly.
 	MailCommandHandler.__init__(self)
-        self.InitTempVars(name, lock)
-	if name:
-	    self.Load()
+        self.InitTempVars(name)
+        if name:
+            if lock:
+                self.Lock()
+            try:
+                self.Load()
+            except Errors.MMListError:
+                self.Unlock()
+                raise
 
     def __del__(self):
         try:
@@ -273,14 +281,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    return None
 	return string.lower(matches[0])
 
-    def InitTempVars(self, name, lock):
+    def InitTempVars(self, name):
         """Set transient variables of this and inherited classes."""
-	self.__createlock_p = lock
 	self.__lock = LockFile.LockFile(
             os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
             # TBD: is this a good choice of lifetime?
             lifetime = mm_cfg.LIST_LOCK_LIFETIME,
-            withlogging=1)
+            withlogging = mm_cfg.LIST_LOCK_DEBUGGING)
 	self._internal_name = name
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
@@ -850,6 +857,11 @@ it will not be changed."""),
         os.rename(fname_tmp, fname)
 
     def Save(self):
+        # Refresh the lock, just to let other processes know we're still
+        # interested in it.  This will raise a NotLockedError if we don't have
+        # the lock (which is a serious problem!).  TBD: do we need to be more
+        # defensive?
+        self.__lock.refresh()
 	# If more than one client is manipulating the database at once, we're
 	# pretty hosed.  That's a good reason to make this a daemon not a
 	# program.
@@ -870,15 +882,9 @@ it will not be changed."""),
         self.CheckHTMLArchiveDir()
 
     def Load(self, check_version=1):
-        if self.__createlock_p:
-            try:
-                self.Lock()
-            except LockFile.AlreadyLockedError:
-                pass
 	try:
 	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
 	except IOError, e:
-            self.Unlock()
 	    raise Errors.MMUnknownListError, e
 	try:
 	    dict = marshal.load(file)
@@ -887,7 +893,6 @@ it will not be changed."""),
                 raise Errors.MMCorruptListDatabaseError(
                     "List's config.db did not unmarshal into a dictionary")
 	except (EOFError, ValueError, TypeError), e:
-            self.Unlock()
             raise Errors.MMCorruptListDatabaseError, e
 	for key, value in dict.items():
 	    setattr(self, key, value)
@@ -1326,19 +1331,11 @@ it will not be changed."""),
 		    return line
 	return 0
 
-    # msg should be an Message.Message object.
-    def Post(self, msg):
-	self.IsListInitialized()
-        # TBD: this is bogus and will later be configurable
-        import Mailman.Handlers.HandlerAPI
-        Mailman.Handlers.HandlerAPI.DeliverToList(self, msg)
-	self.Save()
-
     def Locked(self):
         return self.__lock.locked()
 
-    def Lock(self):
-        self.__lock.lock()
+    def Lock(self, timeout=0):
+        self.__lock.lock(timeout)
     
     def Unlock(self):
         try:
