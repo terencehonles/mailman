@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.1b5\n"
-"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
+"POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
 "PO-Revision-Date: 2003-05-20 15:51-0300\n"
 "Last-Translator: Gleydson Mazioli da Silva <gleydson@debian.org>\n"
 "Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
@@ -7812,8 +7812,8 @@ msgstr "Não é possível ler ambos os membros normais e digest da entrada parão."
 msgid "No such list: %(listname)s"
 msgstr "Lista inexistente: %(listname)s"
 
-#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
-#: cron/bumpdigests:78
+#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
+#: bin/sync_members:244 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "Nada a ser feito."
 
@@ -8713,6 +8713,46 @@ msgstr "Salvando lista"
 #: bin/convert.py:44 bin/fix_url.py:51
 msgid "%%%"
 msgstr "%%%"
+
+#: bin/discard:19
+#, fuzzy
+msgid ""
+"Discard held messages.\n"
+"\n"
+"Usage:\n"
+"    discard [options] file ...\n"
+"\n"
+"Options:\n"
+"    --help / -h\n"
+"        Print this help message and exit.\n"
+"\n"
+"    --quiet / -q\n"
+"        Don't print status messages.\n"
+msgstr ""
+"Regenera os arquivos data/aliases e data/aliases.db do nada.\n"
+"\n"
+"Uso:\n"
+"\n"
+"     genaliases [opções]\n"
+"\n"
+"Opções:\n"
+"\n"
+"   -h/--help\n"
+"        Mostra esta mensagem e sai.\n"
+
+#: bin/discard:94
+#, fuzzy
+msgid "Ignoring non-held message: %(f)s"
+msgstr "Ignorando modificações no membro apagado: %(user)s"
+
+#: bin/discard:100
+msgid "Ignoring held msg w/bad id: %(f)s"
+msgstr ""
+
+#: bin/discard:112
+#, fuzzy
+msgid "Discarded held msg #%(id)s for list %(listname)s"
+msgstr "Se inscrever na lista %(listname)s"
 
 #: bin/dumpdb:19
 msgid ""
@@ -10176,6 +10216,23 @@ msgstr "arquivos privados"
 msgid "public archives"
 msgstr "arquivos públicos"
 
+#: bin/show_qfiles:3
+msgid ""
+"Show the contents of one or more Mailman queue files.\n"
+"\n"
+"Usage: show_qfiles [options] qfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -q / --quiet\n"
+"        Don't print `helpful' message delimiters.\n"
+"\n"
+"    -h / --help\n"
+"        Print this text and exit.\n"
+"\n"
+"Example: show_qfiles qfiles/shunt/*.pck\n"
+msgstr ""
+
 #: bin/sync_members:19
 msgid ""
 "Synchronize a mailing list's membership with a flat file.\n"
@@ -11399,26 +11456,6 @@ msgstr ""
 "\n"
 "As listas especificadas na linha de comando são conferidas. Se nenhum nome \n"
 "de lista for especificado, todas as listas são conferidas.\n"
-
-#~ msgid ""
-#~ "Fix the MM2.1b4 archives.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] file ...\n"
-#~ "\n"
-#~ "Where options are:\n"
-#~ "    -h / --help\n"
-#~ "        Print this help message and exit.\n"
-#~ msgstr ""
-#~ "Regenera os arquivos data/aliases e data/aliases.db do nada.\n"
-#~ "\n"
-#~ "Uso:\n"
-#~ "\n"
-#~ "     genaliases [opções]\n"
-#~ "\n"
-#~ "Opções:\n"
-#~ "\n"
-#~ "   -h/--help\n"
-#~ "        Mostra esta mensagem e sai.\n"
 
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
 #~ msgstr ""

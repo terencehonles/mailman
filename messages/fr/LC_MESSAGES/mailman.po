@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b6\n"
-"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
+"POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
 "PO-Revision-Date: 2003-01-22 12:50-0500\n"
 "Last-Translator: Pascal George <george@lyon.inserm.fr>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
@@ -7827,8 +7827,8 @@ msgstr ""
 msgid "No such list: %(listname)s"
 msgstr "Liste introuvable : %(listname)s"
 
-#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
-#: cron/bumpdigests:78
+#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
+#: bin/sync_members:244 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "Rien à faire."
 
@@ -8723,6 +8723,48 @@ msgstr "Sauvegarde de la liste"
 #: bin/convert.py:44 bin/fix_url.py:51
 msgid "%%%"
 msgstr "%%%"
+
+#: bin/discard:19
+#, fuzzy
+msgid ""
+"Discard held messages.\n"
+"\n"
+"Usage:\n"
+"    discard [options] file ...\n"
+"\n"
+"Options:\n"
+"    --help / -h\n"
+"        Print this help message and exit.\n"
+"\n"
+"    --quiet / -q\n"
+"        Don't print status messages.\n"
+msgstr ""
+"Régénérer les fichiers Postfix data/aliases et data/aliases.db à\n"
+"partir de rien.\n"
+"\n"
+"Usage:\n"
+"\n"
+"    genaliases [options]\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h/--help\n"
+"        Afficher ce message et quitter.\n"
+
+#: bin/discard:94
+#, fuzzy
+msgid "Ignoring non-held message: %(f)s"
+msgstr ""
+"Les modifications apportées à l'abonné supprimé sont ignorées: %(user)s"
+
+#: bin/discard:100
+msgid "Ignoring held msg w/bad id: %(f)s"
+msgstr ""
+
+#: bin/discard:112
+#, fuzzy
+msgid "Discarded held msg #%(id)s for list %(listname)s"
+msgstr "Abonnement à la liste: %(listname)s"
 
 #: bin/dumpdb:19
 msgid ""
@@ -10168,6 +10210,23 @@ msgstr "archives privées"
 msgid "public archives"
 msgstr "archives publiques"
 
+#: bin/show_qfiles:3
+msgid ""
+"Show the contents of one or more Mailman queue files.\n"
+"\n"
+"Usage: show_qfiles [options] qfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -q / --quiet\n"
+"        Don't print `helpful' message delimiters.\n"
+"\n"
+"    -h / --help\n"
+"        Print this text and exit.\n"
+"\n"
+"Example: show_qfiles qfiles/shunt/*.pck\n"
+msgstr ""
+
 #: bin/sync_members:19
 msgid ""
 "Synchronize a mailing list's membership with a flat file.\n"
@@ -11423,28 +11482,6 @@ msgstr ""
 "\t Envoi le résumé à la liste spécifiée, sinon les résumés pour "
 "toutes\n"
 "\t les listes sont envoyés.\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "Fix the MM2.1b4 archives.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] file ...\n"
-#~ "\n"
-#~ "Where options are:\n"
-#~ "    -h / --help\n"
-#~ "        Print this help message and exit.\n"
-#~ msgstr ""
-#~ "Régénérer les fichiers Postfix data/aliases et data/aliases.db à\n"
-#~ "partir de rien.\n"
-#~ "\n"
-#~ "Usage:\n"
-#~ "\n"
-#~ "    genaliases [options]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Afficher ce message et quitter.\n"
 
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
 #~ msgstr ""

@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
-"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
+"POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
 "PO-Revision-Date: 2003-09-09 14:22+0200\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch <p.heinlein@jpberlin.de>\n"
@@ -8305,8 +8305,8 @@ msgstr ""
 msgid "No such list: %(listname)s"
 msgstr "Liste nicht vorhanden: %(listname)s"
 
-#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
-#: cron/bumpdigests:78
+#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
+#: bin/sync_members:244 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "Nichts zu tun."
 
@@ -9170,6 +9170,51 @@ msgstr "Speichere Liste"
 #: bin/convert.py:44 bin/fix_url.py:51
 msgid "%%%"
 msgstr "%%%"
+
+#: bin/discard:19
+#, fuzzy
+msgid ""
+"Discard held messages.\n"
+"\n"
+"Usage:\n"
+"    discard [options] file ...\n"
+"\n"
+"Options:\n"
+"    --help / -h\n"
+"        Print this help message and exit.\n"
+"\n"
+"    --quiet / -q\n"
+"        Don't print status messages.\n"
+msgstr ""
+"Regeneriere Postfix's data/aliases und data/aliases.db Dateien.\n"
+"\n"
+"Benutzung:\n"
+"\n"
+"    genaliases [optionen]\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h/--help\n"
+"        Ausgabe dieses Hilfetextes.\n"
+
+#: bin/discard:94
+#, fuzzy
+msgid "Ignoring non-held message: %(f)s"
+msgstr "Änderungen für gelöschtes Mitglied %(user)s ignoriert"
+
+#: bin/discard:100
+msgid "Ignoring held msg w/bad id: %(f)s"
+msgstr ""
+
+# Mailman/Cgi/admin.py:66 Mailman/Cgi/admindb.py:60 Mailman/Cgi/confirm.py:52
+# Mailman/Cgi/edithtml.py:65 Mailman/Cgi/listinfo.py:49
+# Mailman/Cgi/options.py:67 Mailman/Cgi/private.py:96
+# Mailman/Cgi/rmlist.py:60 Mailman/Cgi/roster.py:55
+# Mailman/Cgi/subscribe.py:57
+#: bin/discard:112
+#, fuzzy
+msgid "Discarded held msg #%(id)s for list %(listname)s"
+msgstr "Eintrag in Liste %(listname)s"
 
 #: bin/dumpdb:19
 msgid ""
@@ -10536,6 +10581,23 @@ msgstr "Private Archive"
 msgid "public archives"
 msgstr "Öffentliche Archive"
 
+#: bin/show_qfiles:3
+msgid ""
+"Show the contents of one or more Mailman queue files.\n"
+"\n"
+"Usage: show_qfiles [options] qfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -q / --quiet\n"
+"        Don't print `helpful' message delimiters.\n"
+"\n"
+"    -h / --help\n"
+"        Print this text and exit.\n"
+"\n"
+"Example: show_qfiles qfiles/shunt/*.pck\n"
+msgstr ""
+
 #: bin/sync_members:19
 msgid ""
 "Synchronize a mailing list's membership with a flat file.\n"
@@ -11715,27 +11777,6 @@ msgstr ""
 "    --listname=listname\n"
 "        Sendet den digest nur für die angegebene Liste aus. Fehlt diese\n"
 "        Option, werden die digests aller Listen rausgeschickt!\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "Fix the MM2.1b4 archives.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] file ...\n"
-#~ "\n"
-#~ "Where options are:\n"
-#~ "    -h / --help\n"
-#~ "        Print this help message and exit.\n"
-#~ msgstr ""
-#~ "Regeneriere Postfix's data/aliases und data/aliases.db Dateien.\n"
-#~ "\n"
-#~ "Benutzung:\n"
-#~ "\n"
-#~ "    genaliases [optionen]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Ausgabe dieses Hilfetextes.\n"
 
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
 #~ msgstr "Grosse Änderung in der Mailingliste %(listname)s@%(listhost)s"

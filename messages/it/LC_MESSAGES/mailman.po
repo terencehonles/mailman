@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman HEAD\n"
-"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
+"POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
 "PO-Revision-Date: 2003-04-22 21:21GMT\n"
 "Last-Translator: Simone Piunno <pioppo@ferrara.linux.it>\n"
 "Language-Team: Italian <mailman-it@ferrara.linux.it>\n"
@@ -8384,8 +8384,8 @@ msgstr ""
 msgid "No such list: %(listname)s"
 msgstr "Non esiste la lista: %(listname)s"
 
-#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
-#: cron/bumpdigests:78
+#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
+#: bin/sync_members:244 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "Non ho niente da fare."
 
@@ -9295,6 +9295,44 @@ msgstr "Salvo la lista"
 #: bin/convert.py:44 bin/fix_url.py:51
 msgid "%%%"
 msgstr "%%%"
+
+#: bin/discard:19
+#, fuzzy
+msgid ""
+"Discard held messages.\n"
+"\n"
+"Usage:\n"
+"    discard [options] file ...\n"
+"\n"
+"Options:\n"
+"    --help / -h\n"
+"        Print this help message and exit.\n"
+"\n"
+"    --quiet / -q\n"
+"        Don't print status messages.\n"
+msgstr ""
+"Corregge gli archivi generati da MM2.1b4\n"
+"\n"
+"Uso: %(PROGRAM)s [opzioni] file ...\n"
+"\n"
+"Dove le opzioni sono:\n"
+"\n"
+"    -h/--help\n"
+"        Scrive questo messaggio di aiuto ed esce.\n"
+
+#: bin/discard:94
+#, fuzzy
+msgid "Ignoring non-held message: %(f)s"
+msgstr "Ignoro i cambiamenti per l'ex-iscritto: %(user)s"
+
+#: bin/discard:100
+msgid "Ignoring held msg w/bad id: %(f)s"
+msgstr ""
+
+#: bin/discard:112
+#, fuzzy
+msgid "Discarded held msg #%(id)s for list %(listname)s"
+msgstr "Iscrivimi a %(listname)s"
 
 #: bin/dumpdb:19
 msgid ""
@@ -10741,6 +10779,23 @@ msgstr "archivi privati"
 msgid "public archives"
 msgstr "archivi pubblici"
 
+#: bin/show_qfiles:3
+msgid ""
+"Show the contents of one or more Mailman queue files.\n"
+"\n"
+"Usage: show_qfiles [options] qfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -q / --quiet\n"
+"        Don't print `helpful' message delimiters.\n"
+"\n"
+"    -h / --help\n"
+"        Print this text and exit.\n"
+"\n"
+"Example: show_qfiles qfiles/shunt/*.pck\n"
+msgstr ""
+
 #: bin/sync_members:19
 msgid ""
 "Synchronize a mailing list's membership with a flat file.\n"
@@ -11972,24 +12027,6 @@ msgstr ""
 "    --listname=nomelista\n"
 "        Invia il digest soltanto per la lista indicata, altrimenti viene\n"
 "        inviato per tutte.\n"
-
-#~ msgid ""
-#~ "Fix the MM2.1b4 archives.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] file ...\n"
-#~ "\n"
-#~ "Where options are:\n"
-#~ "    -h / --help\n"
-#~ "        Print this help message and exit.\n"
-#~ msgstr ""
-#~ "Corregge gli archivi generati da MM2.1b4\n"
-#~ "\n"
-#~ "Uso: %(PROGRAM)s [opzioni] file ...\n"
-#~ "\n"
-#~ "Dove le opzioni sono:\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Scrive questo messaggio di aiuto ed esce.\n"
 
 #~ msgid ""
 #~ "\n"

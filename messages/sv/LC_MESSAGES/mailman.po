@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
+"POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
 "PO-Revision-Date: 2002-12-24 14:35+0100\n"
 "Last-Translator: Eva Österlind <eva.osterlind@arvika.se>\n"
 "Language-Team: Swedish <information@arvika.se>\n"
@@ -10001,8 +10001,8 @@ msgstr "Listan finns inte: %(listname)s"
 # cron/bumpdigests:74
 # bin/add_members:269 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
 # cron/bumpdigests:78
-#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
-#: cron/bumpdigests:78
+#: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
+#: bin/sync_members:244 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "Ingenting att göra."
 
@@ -11029,6 +11029,54 @@ msgstr "Sparar listan"
 #: bin/convert.py:44 bin/fix_url.py:51
 msgid "%%%"
 msgstr ""
+
+# bin/genaliases:19
+# bin/genaliases:19
+#: bin/discard:19
+#, fuzzy
+msgid ""
+"Discard held messages.\n"
+"\n"
+"Usage:\n"
+"    discard [options] file ...\n"
+"\n"
+"Options:\n"
+"    --help / -h\n"
+"        Print this help message and exit.\n"
+"\n"
+"    --quiet / -q\n"
+"        Don't print status messages.\n"
+msgstr ""
+"Genererar Postfix filer data/aliases och data/aliases.db på nytt.\n"
+"\n"
+"Används så här:\n"
+"\n"
+"    genaliases [val]\n"
+"\n"
+"Val:\n"
+"\n"
+"    --help / -h\n"
+"        Visar denna hjälptext.\n"
+
+# Mailman/Cgi/admin.py:1339
+# Mailman/Cgi/admin.py:1359
+#: bin/discard:94
+#, fuzzy
+msgid "Ignoring non-held message: %(f)s"
+msgstr "Bortser från ändring av en medlem som är avanmäld: %(user)s"
+
+#: bin/discard:100
+msgid "Ignoring held msg w/bad id: %(f)s"
+msgstr ""
+
+# bin/add_members:245 bin/config_list:101 bin/find_member:93 bin/inject:86
+# bin/list_admins:85 bin/list_members:175 bin/sync_members:218
+# cron/bumpdigests:82
+# Mailman/Cgi/confirm.py:278
+#: bin/discard:112
+#, fuzzy
+msgid "Discarded held msg #%(id)s for list %(listname)s"
+msgstr "Anmälan till listan: %(listname)s"
 
 # bin/dumpdb:19
 # bin/dumpdb:19
@@ -12486,6 +12534,23 @@ msgstr "privat arkiv"
 msgid "public archives"
 msgstr "offentligt arkiv"
 
+#: bin/show_qfiles:3
+msgid ""
+"Show the contents of one or more Mailman queue files.\n"
+"\n"
+"Usage: show_qfiles [options] qfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -q / --quiet\n"
+"        Don't print `helpful' message delimiters.\n"
+"\n"
+"    -h / --help\n"
+"        Print this text and exit.\n"
+"\n"
+"Example: show_qfiles qfiles/shunt/*.pck\n"
+msgstr ""
+
 # bin/sync_members:19
 # bin/sync_members:19
 #: bin/sync_members:19
@@ -13691,29 +13756,6 @@ msgid ""
 "all\n"
 "        lists are sent out.\n"
 msgstr ""
-
-# bin/genaliases:19
-# bin/genaliases:19
-#, fuzzy
-#~ msgid ""
-#~ "Fix the MM2.1b4 archives.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] file ...\n"
-#~ "\n"
-#~ "Where options are:\n"
-#~ "    -h / --help\n"
-#~ "        Print this help message and exit.\n"
-#~ msgstr ""
-#~ "Genererar Postfix filer data/aliases och data/aliases.db på nytt.\n"
-#~ "\n"
-#~ "Används så här:\n"
-#~ "\n"
-#~ "    genaliases [val]\n"
-#~ "\n"
-#~ "Val:\n"
-#~ "\n"
-#~ "    --help / -h\n"
-#~ "        Visar denna hjälptext.\n"
 
 # bin/add_members:130
 # bin/add_members:134
