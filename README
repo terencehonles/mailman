@@ -11,8 +11,8 @@ Mailman development is a group effort, led by John Viega, Ken
 Manheimer, Barry Warsaw, and Scott Cotton.
 
 Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15
-1996.  Mailman 1.0b3, 2, and  1.1 developments by Ken Manheimer,  4/98
-and 5/98.  Autoconf support added 5/98 by Barry Warsaw.
+1996.  All of the developers have contributed significant refinements, 
+and the process continues...
 
 See the Mailman home site for current status, including new releases
 and known problems: http://www.list.org
