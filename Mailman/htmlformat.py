@@ -27,7 +27,9 @@ for python and, recursively, for nested HTML formatting objects.
 # shouldn't be adding their own newlines.  The next object should.
 
 
-import string, types
+import types
+import string
+import mm_cfg
 
 
 # Format an arbitrary object.
