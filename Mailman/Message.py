@@ -32,6 +32,10 @@ COMMASPACE = ', '
 
 
 class Message(email.Message.Message):
+    # BAW: For debugging w/ bin/dumpdb.  Apparently pprint uses repr.
+    def __repr__(self):
+        return self.__str__()
+
     def get_sender(self, use_envelope=None, preserve_case=0):
         """Return the address considered to be the author of the email.
 
