@@ -105,11 +105,12 @@ fatal(const char* ident, const char* format, ...)
 void
 check_caller(const char* ident, gid_t parentgid)
 {
-	if (parentgid != getgid()) {
+	gid_t mygid = getgid();
+	if (parentgid != mygid) {
 	    fatal(ident,
 		  "Failure to exec script. WANTED gid %d, GOT gid %d.  "
                   "(Reconfigure to take %d?)",
-		  parentgid, getgid(), getgid());
+		  parentgid, mygid, mygid);
 	}
 }
 
@@ -132,6 +133,18 @@ run_script(const char* script, int argc, char** argv, char** env)
 	char** newenv;
 	char** newargv;
     
+	/* We need to set the real gid to the effective gid because there are
+	 * some Linux systems which do not preserve the effective gid across
+	 * popen() calls.  This breaks mail delivery unless the ~mailman/data
+	 * directory is chown'd to the uid that runs mail programs, and that
+	 * isn't a viable alternative.
+	 */
+#ifdef HAVE_SETREGID
+	status = setregid(getegid(), -1);
+	if (status)
+		fatal(logident, "%s", strerror(errno));
+#endif /* HAVE_SETREGID */
+
 	/* We want to tightly control how the CGI scripts get executed.
          * For portability and security, the path to the Python executable
          * is hard-coded into this C wrapper, rather than encoded in the #!
