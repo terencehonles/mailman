@@ -31,6 +31,8 @@ class BounceTest(unittest.TestCase):
         ('Postfix', 'postfix_03.txt', ['ttttt@ggggg.com']),
         ('Postfix', 'postfix_04.txt', ['davidlowie@mail1.keftamail.com']),
         ('Postfix', 'postfix_05.txt', ['bjelf@detectit.net']),
+        # Exim bounces
+        ('Exim', 'exim_01.txt', ['delangen@its.tudelft.nl']),
         # SimpleMatch bounces
         ('SimpleMatch', 'sendmail_01.txt', ['zzzzz@nfg.nl']),
         ('SimpleMatch', 'simple_01.txt', ['bbbsss@turbosport.com']),
@@ -52,6 +54,7 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_05.txt', ['pkocmid@atlas.cz']),
         ('DSN', 'dsn_06.txt', ['hao-nghi.au@fr.thalesgroup.com']),
         ('DSN', 'dsn_07.txt', ['david.farrar@parliament.govt.nz']),
+        ('DSN', 'dsn_08.txt', ['news-list.zope@localhost.bln.innominate.de']),
         # SMTP32
         ('SMTP32', 'smtp32_01.txt', ['oliver@pcworld.com.ph']),
         ('SMTP32', 'smtp32_02.txt', ['lists@mail.spicynoodles.com']),
@@ -60,6 +63,11 @@ class BounceTest(unittest.TestCase):
         ('Qmail', 'qmail_01.txt', ['psadisc@wwwmail.n-h.de']),
         # LLNL's custom Sendmail
         ('LLNL', 'llnl_01.txt', ['trotts1@llnl.gov']),
+        # Netscape's server...
+        ('Netscape', 'netscape_01.txt', ['aaaaa@corel.com',
+                                         'bbbbb@corel.com']),
+        # Yahoo's proprietary format
+        ('Yahoo', 'yahoo_01.txt', ['subscribe.motorcycles@listsociety.com'])
         # No address can be detected in these...
         # dumbass_01.txt - We love Microsoft. :(
         # Done
@@ -92,6 +100,24 @@ class BounceTest(unittest.TestCase):
             fp.close()
         self.failIf(msg['x-mailer'] is not None)
         self.failIf(SMTP32.process(msg))
+
+    def test_caiwireless(self):
+        from Mailman.Bouncers import Caiwireless
+        # BAW: this is a mostly bogus test; I lost the samples. :(
+        msg = email.message_from_string("""\
+Content-Type: multipart/report
+
+""")
+        self.assertEqual(None, Caiwireless.process(msg))
+
+    def test_microsoft(self):
+        from Mailman.Bouncers import Microsoft
+        # BAW: similarly as above, I lost the samples. :(
+        msg = email.message_from_string("""\
+Content-Type: multipart/report
+
+""")
+        self.assertEqual(None, Microsoft.process(msg))
 
 
 
