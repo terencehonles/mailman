@@ -19,6 +19,8 @@
 import os
 import cgi
 import signal
+import urllib
+from types import ListType
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -76,7 +78,7 @@ def main():
     # Sanity check the user
     user = Utils.UnobscureEmail(SLASH.join(parts[1:]))
     user = Utils.LCDomain(user)
-    if not mlist.IsMember(user):
+    if not mlist.isMember(user):
         realname = mlist.real_name
         title = _('CGI script error')
         doc.SetTitle(title)
@@ -89,19 +91,35 @@ def main():
         return
 
     # Find the case preserved email address (the one the user subscribed with)
-    lcuser = mlist.FindUser(user)
-    cpuser = mlist.GetUserSubscribedAddress(lcuser)
+    lcuser = user.lower()
+    cpuser = mlist.getMemberCPAddress(lcuser)
     if lcuser == cpuser:
         cpuser = None
+
+    # The total contents of the user's response
+    cgidata = cgi.FieldStorage()
 
     # And now we know the user making the request, so set things up to for the
     # user's stored preferred language, overridden by any form settings for
     # their new language preference.
-    cgidata = cgi.FieldStorage()
-    userlang = cgidata.getvalue('language', mlist.GetPreferredLanguage(user))
+    userlang = cgidata.getvalue('language', mlist.getMemberLanguage(user))
     doc.set_language(userlang)
     i18n.set_language(userlang)
 
+    # See if this is VARHELP on topics.
+    varhelp = None
+    if cgidata.has_key('VARHELP'):
+        varhelp = cgidata['VARHELP'].value
+    elif cgidata.has_key('request_login') and os.environ.get('QUERY_STRING'):
+        # POST methods, even if their actions have a query string, don't get
+        # put into FieldStorage's keys :-(
+        qs = cgi.parse_qs(os.environ['QUERY_STRING']).get('VARHELP')
+        if qs and type(qs) == types.ListType:
+            varhelp = qs[0]
+    if varhelp:
+        topic_details(mlist, doc, user, cpuser, userlang, varhelp)
+        return
+    
     # Are we processing an unsubscription request from the login screen?
     if cgidata.has_key('login-unsub'):
         # Because they can't supply a password for unsubscribing, we'll need
@@ -183,16 +201,42 @@ def main():
         return
 
     if cgidata.has_key('change-of-address'):
+        # We could be changing the user's full name, email address, or both
+        membername = cgidata.getvalue('fullname')
         newaddr = cgidata.getvalue('new-address')
         confirmaddr = cgidata.getvalue('confirm-address')
-        if not newaddr or not confirmaddr:
+
+        oldname = mlist.getMemberName(user)
+        set_address = set_membername = 0
+        # We will change the member's name under the following conditions:
+        # - membername has a value
+        # - membername has no value, but they /used/ to have a membername
+        if membername and membername <> oldname:
+            # Setting it to a new value
+            set_membername = 1
+        if not membername and oldname:
+            # Unsetting it
+            set_membername = 1
+        # We will change the user's address if both newaddr and confirmaddr
+        # are non-blank, have the same value, and aren't the currently
+        # subscribed email address (when compared case-sensitively).  If both
+        # are blank, but membername is set, we ignore it, otherwise we print
+        # an error.
+        if newaddr and confirmaddr:
+            if newaddr <> confirmaddr:
+                options_page(mlist, doc, user, cpuser, userlang,
+                             _('Addresses did not match!'))
+                print doc.Format()
+                return
+            if newaddr == user:
+                options_page(mlist, doc, user, cpuser, userlang,
+                             _('You are already using that email address'))
+                print doc.Format()
+                return
+            set_address = 1
+        elif (newaddr or confirmaddr) and not set_membername:
             options_page(mlist, doc, user, cpuser, userlang,
                          _('Addresses may not be blank'))
-            print doc.Format()
-            return
-        if newaddr <> confirmaddr:
-            options_page(mlist, doc, user, cpuser, userlang,
-                         _('Addresses did not match!'))
             print doc.Format()
             return
 
@@ -204,22 +248,33 @@ def main():
             mlist.Unlock()
             sys.exit(0)
 
-        # Register the pending change after the list is locked
-        msg = _('A confirmation message has been sent to %(newaddr)s')
-        mlist.Lock()
-        try:
+        signal.signal(signal.SIGTERM, sigterm_handler)
+        msg = ''
+        if set_address:
+            # Register the pending change after the list is locked
+            msg = _('A confirmation message has been sent to %(newaddr)s')
+            mlist.Lock()
             try:
-                signal.signal(signal.SIGTERM, sigterm_handler)
-                mlist.ChangeMemberAddress(user, newaddr, globally)
+                try:
+                    mlist.ChangeMemberAddress(user, newaddr, globally)
+                    mlist.Save()
+                finally:
+                    mlist.Unlock()
+            except Errors.MMBadEmailError:
+                msg = _('Bad email address provided')
+            except Errors.MMHostileAddress:
+                msg = _('Illegal email address provided')
+            except Errors.MMAlreadyAMember:
+                msg = _('%(newaddr)s is already a member of the list.')
+
+        if set_membername:
+            mlist.Lock()
+            try:
+                mlist.ChangeMemberName(user, membername, globally)
                 mlist.Save()
             finally:
                 mlist.Unlock()
-        except Errors.MMBadEmailError:
-            msg = _('Bad email address provided')
-        except Errors.MMHostileAddress:
-            msg = _('Illegal email address provided')
-        except Errors.MMAlreadyAMember:
-            msg = _('%(newaddr)s is already a member of the list.')
+            msg += _('Member name successfully changed.')
 
         options_page(mlist, doc, user, cpuser, userlang, msg)
         print doc.Format()
@@ -274,11 +329,11 @@ def main():
         # Okay, zap them.  Leave them sitting at the list's listinfo page.  We
         # must own the list lock, and we want to make sure the user (BAW: and
         # list admin?) is informed of the removal.
+        signal.signal(signal.SIGTERM, sigterm_handler)
         mlist.Lock()
         try:
-            signal.signal(signal.SIGTERM, sigterm_handler)
-            mlist.DeleteMember(user, _('via the member options page'),
-                               admin_notif=1, userack=1)
+            mlist.ApprovedDeleteMember(user, _('via the member options page'),
+                                       admin_notif=1, userack=1)
             mlist.Save()
         finally:
             mlist.Unlock()
@@ -316,6 +371,7 @@ def main():
                            ('disablemail', mm_cfg.DisableDelivery),
                            ('conceal',     mm_cfg.ConcealSubscription),
                            ('remind',      mm_cfg.SuppressPasswordReminder),
+                           ('rcvtopic',    mm_cfg.ReceiveNonmatchingTopics),
                            ):
             try:
                 newval = int(cgidata.getvalue(item))
@@ -323,7 +379,7 @@ def main():
                 newval = None
 
             # Skip this option if there was a problem or it wasn't changed
-            if newval is None or newval == mlist.GetUserOption(user, flag):
+            if newval is None or newval == mlist.getMemberOption(user, flag):
                 continue
 
             newvals.append((flag, newval))
@@ -333,6 +389,20 @@ def main():
             newvals.append((SETLANGUAGE, mlist.preferred_language))
         else:
             newvals.append((SETLANGUAGE, userlang))
+
+        # Process user selected topics, but don't make the changes to the
+        # MailList object; we must do that down below when the list is
+        # locked.
+        topicnames = cgidata.getvalue('usertopic')
+        if topicnames:
+            # Some topics were selected.  topicnames can actually be a string
+            # or a list of strings depending on whether more than one topic
+            # was selected or not.
+            if not isinstance(topicnames, ListType):
+                # Assume it was a bare string, so listify it
+                topicnames = [topicnames]
+            # unquote the topic names
+            topicnames = [urllib.unquote_plus(n) for n in topicnames]
 
         # The standard sigterm handler (see above)
         def sigterm_handler(signum, frame, mlist=mlist):
@@ -350,22 +420,15 @@ def main():
                     mlist.SetPreferredLanguage(user, newval)
                     continue
 
-                mlist.SetUserOption(user, flag, newval, save_list=0)
+                mlist.setMemberOption(user, flag, newval)
 
-                # Digests also need another setting, which is a bit bogus, as
-                # SetUserOption() should be taught about this special step.
-                if flag == mm_cfg.Digests:
-                    try:
-                        mlist.SetUserDigest(user, newval)
-                        if newval == 0:
-                            digestwarn = 1
-                    except (Errors.MMAlreadyDigested,
-                            Errors.MMAlreadyUndigested):
-                        pass
-                    except Errors.MMCantDigestError:
-                        cantdigest = 1
-                    except Errors.MMMustDigestError:
-                        mustdigest = 1
+            # Set the topics information
+            # FIXME: should use MemberAdaptor API
+            if topicnames:
+                mlist.topics_userinterest[user] = topicnames
+            elif mlist.topics_userinterest.has_key(user):
+                del mlist.topics_userinterest[user]
+
             # All done
             mlist.Save()
         finally:
@@ -429,6 +492,10 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
             cpuser = Utils.ObscureEmail(cpuser, for_text=1)
     else:
         presentable_user = user
+
+    name = mlist.getMemberName(user)
+    if name:
+        presentable_user += ', %s' % name
 
     # Do replacements
     replacements = mlist.GetStandardReplacements(userlang)
@@ -503,9 +570,40 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
     replacements['<mm-confirm-address-box>'] = mlist.FormatBox(
         'confirm-address')
     replacements['<mm-change-address-button>'] = mlist.FormatButton(
-        'change-of-address', _('Change My Address'))
+        'change-of-address', _('Change My Address and Name'))
     replacements['<mm-global-change-of-address>'] = CheckBox(
         'changeaddr-globally', 1, checked=0).Format()
+
+    membername = mlist.getMemberName(user)
+    if membername is None:
+        membername = ''
+    replacements['<mm-fullname-box>'] = mlist.FormatBox('fullname',
+                                                        value=membername)
+
+    # Create the topics radios.  BAW: what if the list admin deletes a topic,
+    # but the user still wants to get that topic message?
+    usertopics = mlist.topics_userinterest.get(user, [])
+    if mlist.topics:
+        table = Table(border="0")
+        for name, pattern, description, emptyflag in mlist.topics:
+            quotedname = urllib.quote_plus(name)
+            details = Link(mlist.GetScriptURL('options') +
+                           '/%s/?VARHELP=%s' % (user, quotedname),
+                           ' (Details)')
+            if name in usertopics:
+                checked = 1
+            else:
+                checked = 0
+            table.AddRow([CheckBox('usertopic', quotedname, checked=checked),
+                          name + details.Format()])
+        topicsfield = table.Format()
+    else:
+        topicsfield = _('<em>No topics defined</em>')
+    replacements['<mm-topics>'] = topicsfield
+    replacements['<mm-suppress-nonmatching-topics>'] = (
+        mlist.FormatOptionButton(mm_cfg.ReceiveNonmatchingTopics, 0, user))
+    replacements['<mm-receive-nonmatching-topics>'] = (
+        mlist.FormatOptionButton(mm_cfg.ReceiveNonmatchingTopics, 1, user))
 
     if cpuser is not None:
         replacements['<mm-case-preserved-user>'] = _('''
@@ -602,7 +700,7 @@ def lists_of_member(hostname, user):
         mlist = MailList.MailList(listname, lock=0)
         if mlist.host_name <> hostname:
             continue
-        if not mlist.IsMember(user):
+        if not mlist.isMember(user):
             continue
         onlists.append(mlist)
     return onlists
@@ -626,8 +724,10 @@ def change_password(mlist, user, newpw, confirmpw):
     try:
         # Install the emergency shutdown signal handler
         signal.signal(signal.SIGTERM, sigterm_handler)
-        # change the user's password
-        mlist.ChangeUserPassword(user, newpw, confirmpw)
+        # change the user's password.  The password must already have been
+        # compared to the confirmpw and otherwise been vetted for
+        # acceptability.
+        mlist.setMemberPassword(user, newpw)
         mlist.Save()
     finally:
         mlist.Unlock()
@@ -650,12 +750,50 @@ def global_options(mlist, user, global_enable, global_remind):
         signal.signal(signal.SIGTERM, sigterm_handler)
 
         if global_enable is not None:
-            mlist.SetUserOption(user, mm_cfg.DisableDelivery, global_enable)
+            mlist.setMemberOption(user, mm_cfg.DisableDelivery, global_enable)
 
         if global_remind is not None:
-            mlist.SetUserOption(user, mm_cfg.SuppressPasswordReminder,
-                                global_remind)
+            mlist.setMemberOption(user, mm_cfg.SuppressPasswordReminder,
+                                  global_remind)
 
         mlist.Save()
     finally:
         mlist.Unlock()
+
+
+
+def topic_details(mlist, doc, user, cpuser, userlang, varhelp):
+    # Find out which topic the user wants to get details of
+    reflist = varhelp.split('/')
+    name = None
+    topicname = _('<missing>')
+    if len(reflist) == 1:
+        topicname = urllib.unquote_plus(reflist[0])
+        for name, pattern, description, emptyflag in mlist.topics:
+            if name == topicname:
+                break
+        else:
+            name = None
+
+    if not name:
+        options_page(mlist, doc, user, cpuser, userlang,
+                     _('Requested topic is not valid: %(topicname)s'))
+        print doc.Format()
+        return
+
+    table = Table(border=3, width='100%')
+    table.AddRow([Center(Bold(_('Topic filter details')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
+                      bgcolor=mm_cfg.WEB_SUBHEADER_COLOR)
+    table.AddRow([Bold(Label(_('Name:'))),
+                  Utils.QuoteHyperChars(name)])
+    table.AddRow([Bold(Label(_('Pattern (as regexp):'))),
+                  '<pre>' + Utils.QuoteHyperChars(pattern) + '</pre>'])
+    table.AddRow([Bold(Label(_('Description:'))),
+                  Utils.QuoteHyperChars(description)])
+    # Make colors look nice
+    for row in range(1, 4):
+        table.AddCellInfo(row, 0, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+
+    options_page(mlist, doc, user, cpuser, userlang, table.Format())
+    print doc.Format()
