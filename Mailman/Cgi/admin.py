@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Process and produce the list-administration options forms.
@@ -331,7 +331,7 @@ def option_help(mlist, varhelp):
     realname = mlist.real_name
     legend = _("""%(realname)s Mailing list Configuration Help
     <br><em>%(varname)s</em> Option""")
-    
+
     header = Table(width='100%')
     header.AddRow([Center(Header(3, legend))])
     header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
@@ -401,7 +401,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
                       Center(Bold(_("Other Administrative Activities")))])
     # The `other links' are stuff in the right column.
     otherlinks = UnorderedList()
-    otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
+    otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'),
                             _('Tend to pending moderator requests')))
     otherlinks.AddItem(Link(mlist.GetScriptURL('listinfo'),
                             _('Go to the general list information page')))
@@ -449,7 +449,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
                         text = Bold('[%s]' % text).Format()
                     subcat_items.append(Link(url + '/' + sub, text))
                 categorylinks.AddItem(
-                    Bold(label).Format() + 
+                    Bold(label).Format() +
                     UnorderedList(*subcat_items).Format())
             else:
                 categorylinks.AddItem(Link(url, Bold('[%s]' % label)))
@@ -575,13 +575,13 @@ def show_variables(mlist, category, subcat, cgidata, doc):
 
 def add_options_table_item(mlist, category, subcat, table, item, detailsp=1):
     # Add a row to an options table with the item description and value.
-    varname, kind, params, dependancies, descr, elaboration = \
+    varname, kind, params, extra, descr, elaboration = \
              get_item_characteristics(item)
     if elaboration is None:
         elaboration = descr
     descr = get_item_gui_description(mlist, category, subcat,
                                      varname, descr, detailsp)
-    val = get_item_gui_value(mlist, category, kind, varname, params)
+    val = get_item_gui_value(mlist, category, kind, varname, params, extra)
     table.AddRow([descr, val])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
                       bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
@@ -611,7 +611,7 @@ def get_item_characteristics(record):
 
 
 
-def get_item_gui_value(mlist, category, kind, varname, params):
+def get_item_gui_value(mlist, category, kind, varname, params, extra):
     """Return a representation of an item's settings."""
     # Give the category a chance to return the value for the variable
     value = None
@@ -637,7 +637,10 @@ def get_item_gui_value(mlist, category, kind, varname, params):
             checked = value
         if varname == 'subscribe_policy' and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             checked = checked - 1
-        return RadioButtonArray(varname, params, checked)
+        # For Radio buttons, we're going to interpret the extra stuff as a
+        # horizontal/vertical flag.  For backwards compatibility, the value 0
+        # means horizontal, so we use "not extra" to get the parity right.
+        return RadioButtonArray(varname, params, checked, not extra)
     elif (kind == mm_cfg.String or kind == mm_cfg.Email or
           kind == mm_cfg.Host or kind == mm_cfg.Number):
         return TextBox(varname, value, params)
@@ -912,7 +915,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         name = TextBox(addr + '_realname', fullname, size=longest).Format()
         cells = [Center(CheckBox(addr + '_unsub', 'off', 0).Format()),
                  link.Format() + '<br>' +
-                 name + 
+                 name +
                  Hidden('user', urllib.quote(addr)).Format(),
                  ]
         # Do the `mod' option
@@ -1374,7 +1377,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             oldlang = mlist.getMemberLanguage(user)
             if newlang and newlang <> oldlang:
                 mlist.setMemberLanguage(user, newlang)
-                  
+
             moderate = not not cgidata.getvalue(user+'_mod')
             mlist.setMemberOption(user, mm_cfg.Moderate, moderate)
 
