@@ -21,6 +21,7 @@ import time
 
 from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
 
@@ -122,10 +123,10 @@ def DeliverToList(mlist, msg, msgdata):
             # the pipeline list so that it can resume where it left off when
             # qrunner tries to redeliver it.
             pipeline.insert(0, modname)
-            mlist.LogMsg('error', 'Delivery exception: %s' % e)
+            syslog('error', 'Delivery exception: %s' % e)
             s = StringIO()
             traceback.print_exc(file=s)
-            mlist.LogMsg('error', s.getvalue())
+            syslog('error', s.getvalue())
             break
     msgdata['pipeline'] = pipeline
     if pipeline:
