@@ -26,8 +26,11 @@ this file, to override the distributed defaults with site-specific ones.
 
 import os
 
-# The URL for Mailman sources, etc. - you probably don't want to change this.
+# This is the Mailman homepage; you should not change it
 MAILMAN_URL       = 'http://www.list.org/'
+
+# The URL to the `Delivered by Mailman' image.
+DELIVERED_BY_URL = '/images/mailman.gif'
 
 		   # Many site-specific settings #
 
