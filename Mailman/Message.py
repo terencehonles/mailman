@@ -229,9 +229,6 @@ class OutgoingMessage:
 	if not self.getheader('from') and set_from:
 	    self.SetHeader('from', sender)
 
-    def SetDate(self, date=time.ctime(time.time())):
-	self.SetHeader('date', date)
-
     def GetSender(self):
 	return self.sender
 

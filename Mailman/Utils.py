@@ -157,8 +157,6 @@ def DeliverToUser(msg, recipient, add_headers=[]):
         pass
     if not msg.getheader('to'):
         msg.headers.append('To: %s\n' % recipient)
-    if not msg.getheader('date'):
-        msg.SetDate()
     for i in add_headers:
         if i and i[-1] != '\n':
             i = i + '\n'
