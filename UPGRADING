@@ -2,7 +2,7 @@ For the most part, mailing lists upgrade themselves with the new
 versions.  However, there are some changes in the filesystem that need
 to be taken care of separately.  Running "make update" takes care of
 this for you.  If you still have problems upgrading after running
-this, or want to integrate mbox archives into the pipermail archiving,
+this, or want to integrate mbox archives into the Pipermail archiving,
 read on.
 
 "make update" creates a file named "update.log" in the top level of
@@ -16,8 +16,11 @@ Hopefully, this will help resolve any problems you are having.
 We update this procedure for each Mailman release, so it can't hurt to 
 run "make update" each time you upgrade.
 
-- Archiving files are moved around as part of integrating pipermail
-  into mailman.  In particular, 
+- The upgrade to 1.0b7 included the removal of Mailman/smtplib.py{,c}
+  since Mailman now uses the default Python 1.5.2 version of smtplib.
+
+- Archiving files are moved around as part of integrating Pipermail
+  into Mailman, as of 1.0b6.  In particular,
 
   1) if a list has only a private mbox archive
   $prefix/archives/private/<listname> is moved to 
@@ -26,8 +29,8 @@ run "make update" each time you upgrade.
   2) if a list has only a public mbox archive
   $prefix/archives/public/<listname> is moved to
   $prefix/archives/private/<listname>.mbox/<listname>
-  and
-  a symlink is made that points
+
+  and a symlink is made that points
   $prefix/archives/public/<listname>.mbox to
   $prefix/archives/private/<listname>.mbox/<listname>
 
@@ -36,35 +39,35 @@ run "make update" each time you upgrade.
   or not the list currently is archived publicly.  It then renames the  
   other mbox to mbox.preb6.
 
-  4) if a list used recent cvs sources, where archives were placed in
+  4) if a list used recent CVS sources, where archives were placed in
   $prefix/public_html/archives, then these are moved to
   $prefix/archives/private/<listname> and a symlink is made from
   $prefix/archives/public/<listname> to that spot if the list's
-  archives are public.  Also, a permissions-related security  problem
-  is removed. 
+  archives are public.  Also, a permissions-related security problem
+  is removed.
 
-  To integrate mbox archives of old lists, log in as mailman and run 
-  $prefix/bin/arch <listname> <path-to-mbox-archive>.
+  To integrate mbox archives of old lists, log in as user `mailman'
+  and run $prefix/bin/arch <listname> <path-to-mbox-archive>.
 
-  Also, by default, beta6 does both mbox and html based archiving, you
-  can configure mailman to do one, both, or neither.  please see
+  Also, by default, beta6 does both mbox and html based archiving, but
+  you can configure Mailman to do one, both, or neither.  Please see
   $prefix/Mailman/Defaults.py for details.
 
   There was a short period of time when the CVS sources archiving code
   was not organized into its own package.  The pickled articles in the
   archives that were placed into archives during this period stored
   the path to the module HyperArch, but that module has moved.  You
-  can quick fix this by running 
+  can quick fix this by running
 
   ln -s $prefix/Mailman/Archiver/HyperArch.py \
           $prefix/Mailman/HyperArch.py  
   
 - If upgrading from version 1.0b4 or earlier, "make update" moves
-  list-specific templates.  For each list, move
-  $prefix/templates/<listname>/* to $prefix/lists/<listname>.  Please
-  reference the generic templates in $prefix/templates to see if any
-  variables have changed (There shouldn't be many, only options.html
-  was updated from b5 to b6).
+  list-specific templates.  For each list,
+  $prefix/templates/<listname>/* is moved to $prefix/lists/<listname>.
+  Please reference the generic templates in $prefix/templates to see
+  if any variables have changed (There shouldn't be many, only
+  options.html was updated from b5 to b6).
 
 - Some modules that existed in previous versions, but that have been
   replaced with newer (differently named) modules, are removed.
