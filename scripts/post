@@ -46,7 +46,7 @@ def get_message(mlist):
     prog = mlist.filter_prog
     if prog:
         import os, __main__
-        file = os.path.join(mm_cfg.PREFIX, 'filters', prog)
+        file = os.path.join(mm_cfg.VAR_PREFIX, 'filters', prog)
         try:
             execfile(file)
             msg = Message.Message(StringIO(__main__.mailman_text))
