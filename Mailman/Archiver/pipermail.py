@@ -162,9 +162,9 @@ class Article:
 	    self.datestr = 'None' 
 	    date = None
 	if date is not None:
-	    date, tzoffset = date[:9], date[-1]
+	    date, tzoffset = date[:9], date[-1] or 0
             try:
-                date = time.mktime(date)-tzoffset
+                date = time.mktime(date) - tzoffset
             except (ValueError, OverflowError):
                 date = self._last_article_time + 1
                 print 'Article with bad date:', self.msgid
@@ -215,7 +215,7 @@ class T:
 	    f.close()
 	    for key, value in d.items():
                 setattr(self, key, value)
-	except IOError: 
+	except (IOError, EOFError): 
 	    # No pickled version, so initialize various attributes
 	    self.archives = []        # Archives 
 	    self._dirty_archives = [] # Archives that will have to be updated
@@ -234,17 +234,21 @@ class T:
     def close(self):
 	"Close an archive, save its state, and update any changed archives."
 	self.update_dirty_archives()
-	if self.update_TOC:
-	    self.update_TOC = 0
-	    self.write_TOC()
+        self.update_TOC = 0
+        self.write_TOC()
 	# Save the collective state 
 	self.message('Pickling archive state into ' \
                      + os.path.join(self.basedir, 'pipermail.pck'))
 	self.database.close()
 	del self.database
+
 	f = open(os.path.join(self.basedir, 'pipermail.pck'), 'w')
-	pickle.dump(self.__dict__, f)
+	pickle.dump(self.getstate(), f)
 	f.close()
+
+    def getstate(self):
+        # can override this in subclass
+        return self.__dict__
 
     # 
     # Private methods 
@@ -479,20 +483,22 @@ class T:
                 self.update_TOC = 1
 		self.database.newArchive(i)
 		# If the archive directory doesn't exist, create it
-		try: os.stat(archivedir)
+		try:
+                    os.stat(archivedir)
 		except os.error, errdata:
 		    errno, errmsg = errdata
 		    if errno == 2: 
 			mkdir(archivedir, self.DIRMODE)
-		    else: raise os.error, errdata
+		    else:
+                        raise os.error, errdata
 		self.open_new_archive(i, archivedir)
 		
 	    # Write the HTML-ized article
             self.write_article(i, temp, os.path.join(archivedir,
                                                      filename))  
 
-	    authorkey = fixAuthor(article.author)+'\000'+article.date
-	    subjectkey = string.lower(article.subject)+'\000'+article.date
+	    authorkey = fixAuthor(article.author) + '\000' + article.date
+	    subjectkey = string.lower(article.subject ) +'\000' + article.date
 
 	    # Update parenting info
 	    parentID = None

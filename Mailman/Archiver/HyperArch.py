@@ -43,7 +43,7 @@ import posixfile
 import HyperDatabase
 import pipermail
 
-from Mailman import mm_cfg
+from Mailman import mm_cfg, EncWord
 from Mailman.Logging.Syslog import syslog
 
 from Mailman.Utils import mkdir, open_ex
@@ -83,17 +83,22 @@ article_template='''\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
  <HEAD>
-   <TITLE> %(subject_html)s</TITLE>
+   <TITLE> %(title)s
+   </TITLE>
    <LINK REL="Index" HREF="index.html" >
    <LINK REL="made" HREF="mailto:%(email_url)s">
+   %(encoding)s
    %(prev)s
    %(next)s
  </HEAD>
  <BODY BGCOLOR="#ffffff">
-   <H1>%(subject_html)s</H1>
-    <B>%(author_html)s</B> 
+   <H1>%(subject_html)s
+   </H1>
+    <B>%(author_html)s
+    </B> 
     <A HREF="mailto:%(email_url)s"
-       TITLE="%(subject_html)s">%(email_html)s</A><BR>
+       TITLE="%(subject_html)s">%(email_html)s
+       </A><BR>
     <I>%(datestr_html)s</I>
     <P><UL>
         %(prev_wsubj)s
@@ -124,32 +129,39 @@ article_template='''\
 </body></html>
 '''
 
-
+html_charset = '<META http-equiv="Content-Type" ' \
+               'content="text/html; charset=%s">'
 
 def CGIescape(arg): 
-    s=cgi.escape(str(arg))
-    s=re.sub('"', '&quot;', s)
+    s = cgi.escape(str(arg))
+    s = re.sub('"', '&quot;', s)
     return s
 
-# Parenthesized human name 
-paren_name_pat=re.compile(r'([(].*[)])') 
+# Parenthesized human name
+paren_name_pat = re.compile(r'([(].*[)])') 
+
 # Subject lines preceded with 'Re:' 
-REpat=re.compile( r"\s*RE\s*:\s*",
-		  re.IGNORECASE)
+REpat = re.compile( r"\s*RE\s*:\s*", re.IGNORECASE)
+
 # E-mail addresses and URLs in text
-emailpat=re.compile(r'([-+,.\w]+@[-+.\w]+)') 
+emailpat = re.compile(r'([-+,.\w]+@[-+.\w]+)') 
+
 #  Argh!  This pattern is buggy, and will choke on URLs with GET parameters.
-urlpat=re.compile(r'(\w+://[^>)\s]+)') # URLs in text
+urlpat = re.compile(r'(\w+://[^>)\s]+)') # URLs in text
+
 # Blank lines
-blankpat=re.compile(r'^\s*$')
+blankpat = re.compile(r'^\s*$')
+
+# content-type charset
+rx_charset = re.compile('charset="(\w+)"')
 
 # 
 # Starting <html> directive
-htmlpat=re.compile(r'^\s*<HTML>\s*$', re.IGNORECASE)    
+htmlpat = re.compile(r'^\s*<HTML>\s*$', re.IGNORECASE)    
 # Ending </html> directive
-nohtmlpat=re.compile(r'^\s*</HTML>\s*$', re.IGNORECASE) 
+nohtmlpat = re.compile(r'^\s*</HTML>\s*$', re.IGNORECASE) 
 # Match quoted text
-quotedpat=re.compile(r'^([>|:]|&gt;)+')
+quotedpat = re.compile(r'^([>|:]|&gt;)+')
 
 
 # Note: I'm overriding most, if not all of the pipermail Article class
@@ -179,6 +191,10 @@ class Article(pipermail.Article):
     html_tmpl = article_template
     text_tmpl = article_text_template
 
+    # for compatibility with old archives loaded via pickle
+    charset = None
+    decoded = {}
+
     def __init__(self, message=None, sequence=0, keepHeaders=[]):
         self.__super_init(message, sequence, keepHeaders)
 
@@ -197,6 +213,58 @@ class Article(pipermail.Article):
 
         if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
             self.email = re.sub('@', ' at ', self.email)
+
+        # snag the content-type
+        self.ctype = message.getheader('Content-Type') or "text/plain"
+        self.decoded = {}
+        mo = rx_charset.search(self.ctype)
+        if mo:
+            self.check_header_charsets(string.lower(mo.group(1)))
+        else:
+            self.check_header_charsets()
+        if self.charset:
+            assert self.charset == string.lower(self.charset), \
+                   self.charset
+
+    def check_header_charsets(self, msg_charset=None):
+        """Check From and Subject for encoded-words
+
+        If the email, subject, or author attributes contain non-ASCII
+        characters using the encoded-word syntax of RFC 2047, decoded
+        versions of those attributes are placed in the self.decoded (a
+        dictionary).
+
+        If the charsets used by these headers differ from each other
+        or from the charset specified by the message's Content-Type
+        header, then an arbitrary charset is chosen.  Only those
+        values that match the chosen charset are decoded.
+        """
+        author, a_charset = self.decode_charset(self.author)
+        subject, s_charset = self.decode_charset(self.subject)
+        if author is not None or subject is not None:
+            # Both charsets should be the same.  If they aren't, we
+            # can only handle one way.
+            if msg_charset is None:
+                self.charset = a_charset or s_charset
+            else:
+                self.charset = msg_charset
+
+            if author and self.charset == a_charset:
+                self.decoded['author'] = author
+                email, e_charset = self.decode_charset(self.email)
+                if email:
+                    self.decoded['email'] = email
+            if subject and self.charset == s_charset:
+                self.decoded['subject'] = subject
+
+    def decode_charset(self, field):
+        if field.find("=?") == -1:
+            return None, None
+        try:
+            s, c = EncWord.decode(field)
+        except ValueError:
+            return None, None
+        return s, string.lower(c)
 
     def as_html(self):
 	d = self.__dict__.copy()
@@ -220,14 +288,30 @@ class Article(pipermail.Article):
 	    d["next"] = d["next_wsubj"] = ""
 	
 	d["email_html"] = html_quote(self.email)
+	d["title"] = html_quote(self.subject)
 	d["subject_html"] = html_quote(self.subject)
 	d["author_html"] = html_quote(self.author)
 	d["email_url"] = url_quote(self.email)
 	d["datestr_html"] = html_quote(self.datestr)
 	d["body"] = string.join(self.body, "")
-        
+
+        if self.charset is not None:
+            d["encoding"] = html_charset % self.charset
+        else:
+            d["encoding"] = ""
+
+        self._add_decoded(d)
+            
         return self.html_tmpl % d
 
+    def _add_decoded(self, d):
+        """Add encoded-word keys to HTML output"""
+        for src, dst in (('author', 'author_html'),
+                         ('email', 'email_html'),
+                         ('subject', 'subject_html')):
+            if self.decoded.has_key(src):
+                d[dst] = self.decoded[src]
+    
     def as_text(self):
 	d = self.__dict__.copy()
 	d["body"] = string.join(self.body, "")
@@ -270,6 +354,7 @@ index_header_template='''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
   <HEAD>
      <title>The %(listname)s %(archive)s Archive by %(archtype)s</title>
+     %(encoding)s
   </HEAD>
   <BODY BGCOLOR="#ffffff">
       <a name="start"></A>
@@ -289,6 +374,12 @@ index_header_template='''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
          <b>Messages:</b> %(size)s<p>
      <ul>
 '''
+
+index_entry_template = \
+"""<LI><A HREF="%s">%s
+</A><A NAME="%i">&nbsp;</A>
+<I>%s
+</I>"""
 
 index_footer_template='''\
     </ul>
@@ -361,27 +452,56 @@ arch_listing_end = '''\
 
 class HyperArchive(pipermail.T):
     __super_init = pipermail.T.__init__
+    __super_update_archive = pipermail.T.update_archive
+    __super_update_dirty_archives = pipermail.T.update_dirty_archives
+    __super_add_article = pipermail.T.add_article
 
     # some defaults
-    DIRMODE=02775
-    FILEMODE=0660
-    
+    DIRMODE = 02775
+    FILEMODE = 0660
 
-    VERBOSE=1
-    DEFAULTINDEX='thread'
-    ARCHIVE_PERIOD='month'
+    VERBOSE = 1
+    DEFAULTINDEX = 'thread'
+    ARCHIVE_PERIOD = 'month'
  
-    THREADLAZY=0
-    THREADLEVELS=3
+    THREADLAZY = 0
+    THREADLEVELS = 3
 
-    ALLOWHTML=1                 # "Lines between <html></html>" handled as is.
-    SHOWHTML=0                  # Eg, nuke leading whitespace in html manner.
-    IQUOTES=1                   # Italicize quoted text.
-    SHOWBR=0                    # Add <br> onto every line
+    ALLOWHTML = 1             # "Lines between <html></html>" handled as is.
+    SHOWHTML = 0              # Eg, nuke leading whitespace in html manner.
+    IQUOTES = 1               # Italicize quoted text.
+    SHOWBR = 0                # Add <br> onto every line
 
-    html_hdr_tmpl=index_header_template
-    html_foot_tmpl=index_footer_template
-    html_TOC_tmpl=TOC_template
+    def __init__(self, maillist, unlock=1):
+        # can't init the database while other
+        # processes are writing to it!
+        # XXX TODO- implement native locking
+        # with mailman's LockFile module for HyperDatabase.HyperDatabase
+        #
+        dir = maillist.archive_dir()
+        db = HyperDatabase.HyperDatabase(dir)
+        self.__super_init(dir, reload=1, database=db)
+
+        self.maillist = maillist
+        self._unlocklist = unlock
+        self._lock_file = None
+        self._charsets = {}
+
+        if hasattr(self.maillist,'archive_volume_frequency'):
+            if self.maillist.archive_volume_frequency == 0:
+                self.ARCHIVE_PERIOD='year'
+            elif self.maillist.archive_volume_frequency == 2:
+                self.ARCHIVE_PERIOD='quarter'
+	    elif self.maillist.archive_volume_frequency == 3:
+		self.ARCHIVE_PERIOD='week'
+	    elif self.maillist.archive_volume_frequency == 4:
+		self.ARCHIVE_PERIOD='day'
+            else:
+                self.ARCHIVE_PERIOD='month'
+
+    html_hdr_tmpl = index_header_template
+    html_foot_tmpl = index_footer_template
+    html_TOC_tmpl = TOC_template
     TOC_entry_tmpl = TOC_entry_template    
     arch_listing_start = arch_listing_start
     arch_listing_end = arch_listing_end
@@ -417,15 +537,16 @@ class HyperArchive(pipermail.T):
 	    else:
 		d["%s_ref" % (t)] = ('<a href="%s.html#start">[ %s ]</a>'
                                      % (t, t))
+        if self.charset:
+            d["encoding"] = html_charset % self.charset
+        else:
+            d["encoding"] = ""
         return self.html_hdr_tmpl % d
-
-
 
     def html_TOC(self):
         d = {"listname": self.maillist.real_name,
              "listinfo": self.maillist.GetScriptURL('listinfo', absolute=1)
              }
-        listing = ""
         if not self.archives:
             d["noarchive_msg"] = '<P>Currently, there are no archives. </P>'
             d["archive_listing_start"] = ""
@@ -435,77 +556,56 @@ class HyperArchive(pipermail.T):
             d["noarchive_msg"] = ""
             d["archive_listing_start"] = self.arch_listing_start
             d["archive_listing_end"] = self.arch_listing_end
+            accum = []
             for a in self.archives:
-                # Check to see if the archive is gzip'd or not
-                txtfile = os.path.join(mm_cfg.PREFIX,
-                                       'archives/private',
-                                       self.maillist.internal_name(),
-                                       a + '.txt')
-                gzfile = txtfile + '.gz'
-                templ = '<td><A href="%(url)s">[ %(fmt)sText%(sz)s]</a></td>'
-                # which exists?  .txt.gz first, then .txt
-                if os.path.exists(gzfile):
-                    file = gzfile
-                    url = a + '.txt.gz'
-                    fmt = "Gzip'd "
-                elif os.path.exists(txtfile):
-                    file = txtfile
-                    url = a + '.txt'
-                    fmt = ''
-                else:
-                    # neither found?
-                    file = None
-                # in Python 1.5.2 we have an easy way to get the size
-                if file:
-                    try:
-                        size = os.path.getsize(file)
-                    except AttributeError:
-                        # getsize() probably does this anyway ;-)
-                        size = os.stat(file)[6]
-                    if size < 1000:
-                        sz = ' %d bytes ' % size
-                    elif size < 1000000:
-                        sz = ' %d KB ' % (size / 1000)
-                    else:
-                        sz = ' %d MB ' % (size / 1000000)
-                        # GB?? :-)
-                    textlink = templ % {'url': url,
-                                        'fmt': fmt,
-                                        'sz' : sz}
-                else:
-                    # there's no archive file at all... hmmm.
-                    textlink = ''
-                listing = listing + self.TOC_entry_tmpl % \
-                          {'archive' : a,
-                           'textlink': textlink}
-        d["archive_listing"] = listing
+                accum.append(self.html_TOC_entry(a))
+        d["archive_listing"] = "".join(accum)
+        if not d.has_key("encoding"):
+            d["encoding"] = ""
         return self.html_TOC_tmpl % d
 
-    def __init__(self, maillist, unlock=1):
-        # can't init the database while other
-        # processes are writing to it!
-        # XXX TODO- implement native locking
-        # with mailman's LockFile module for HyperDatabase.HyperDatabase
-        #
-        dir = maillist.archive_dir()
-        db = HyperDatabase.HyperDatabase(dir)
-        self.__super_init(dir, reload=1, database=db)
-
-        self.maillist = maillist
-        self._unlocklist = unlock
-        self._lock_file = None
-
-        if hasattr(self.maillist,'archive_volume_frequency'):
-            if self.maillist.archive_volume_frequency == 0:
-                self.ARCHIVE_PERIOD='year'
-            elif self.maillist.archive_volume_frequency == 2:
-                self.ARCHIVE_PERIOD='quarter'
-	    elif self.maillist.archive_volume_frequency == 3:
-		self.ARCHIVE_PERIOD='week'
-	    elif self.maillist.archive_volume_frequency == 4:
-		self.ARCHIVE_PERIOD='day'
+    def html_TOC_entry(self, arch):
+        # Check to see if the archive is gzip'd or not
+        txtfile = os.path.join(mm_cfg.PREFIX,
+                               'archives/private',
+                               self.maillist.internal_name(),
+                               arch + '.txt')
+        gzfile = txtfile + '.gz'
+        templ = '<td><A href="%(url)s">[ %(fmt)sText%(sz)s]</a></td>'
+        # which exists?  .txt.gz first, then .txt
+        if os.path.exists(gzfile):
+            file = gzfile
+            url = arch + '.txt.gz'
+            fmt = "Gzip'd "
+        elif os.path.exists(txtfile):
+            file = txtfile
+            url = arch + '.txt'
+            fmt = ''
+        else:
+            # neither found?
+            file = None
+        # in Python 1.5.2 we have an easy way to get the size
+        if file:
+            try:
+                size = os.path.getsize(file)
+            except AttributeError:
+                # getsize() probably does this anyway ;-)
+                size = os.stat(file)[6]
+            if size < 1000:
+                sz = ' %d bytes ' % size
+            elif size < 1000000:
+                sz = ' %d KB ' % (size / 1000)
             else:
-                self.ARCHIVE_PERIOD='month'
+                sz = ' %d MB ' % (size / 1000000)
+                # GB?? :-)
+            textlink = templ % {'url': url,
+                                'fmt': fmt,
+                                'sz' : sz}
+        else:
+            # there's no archive file at all... hmmm.
+            textlink = ''
+        return self.TOC_entry_tmpl % { 'archive': arch,
+                                       'textlink': textlink }
 
     def GetArchLock(self):
         if self._lock_file:
@@ -586,8 +686,6 @@ class HyperArchive(pipermail.T):
         self.message("figuring article archives\n")
         self.message(res + "\n")
         return res
-    
-
 
 # The following two methods should be inverses of each other. -ddm
 
@@ -674,49 +772,55 @@ class HyperArchive(pipermail.T):
             f.flush()
 
     def open_new_archive(self, archive, archivedir):
-	index_html=os.path.join(archivedir, 'index.html') 
+	index_html = os.path.join(archivedir, 'index.html') 
 	try:
             os.unlink(index_html)
 	except:
             pass
 	os.symlink(self.DEFAULTINDEX+'.html',index_html)
 
-
     def write_index_header(self):
 	self.depth=0
         print self.html_head()
-
         if not self.THREADLAZY and self.type=='Thread':
-	    # Update the threaded index
 	    self.message("Computing threaded index\n")
 	    self.updateThreadedIndex()
-
 
     def write_index_footer(self):
 	for i in range(self.depth): print '</UL>'
         print self.html_foot()
 
     def write_index_entry(self, article):
-	print ('<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>' %
-               (urllib.quote(article.filename), 
-                CGIescape(article.subject), article.sequence, 
-                CGIescape(article.author)))
+        if article.charset == self.charset:
+            d = article.decoded
+            subject = d.get("subject", article.subject)
+            author = d.get("author", article.author)
+        else:
+            subject = CGIescape(article.subject)
+            author = CGIescape(article.author)
+        print index_entry_template % (urllib.quote(article.filename),
+                                      subject, article.sequence, author)
 
     def write_threadindex_entry(self, article, depth):
-	if depth<0: 
+	if depth < 0: 
 	    self.message('depth<0')
-            depth=0
-	if depth>self.THREADLEVELS: depth=self.THREADLEVELS
-	if depth<self.depth: 
-	    for i in range(self.depth-depth): print '</UL>'
-	elif depth>self.depth: 
-	    for i in range(depth-self.depth): print '<UL>'
+            depth = 0
+	if depth > self.THREADLEVELS:
+            depth = self.THREADLEVELS
+	if depth < self.depth: 
+	    for i in range(self.depth-depth):
+                print '</UL>'
+	elif depth > self.depth: 
+	    for i in range(depth-self.depth):
+                print '<UL>'
 	print '<!--%i %s -->' % (depth, article.threadKey)
-	self.depth=depth
-	print ('<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>'
-               % (CGIescape(urllib.quote(article.filename)),
-                  CGIescape(article.subject), article.sequence+910, 
-                  CGIescape(article.author)))
+	self.depth = depth
+        self.write_index_entry(article)
+        # XXX why + 910 below ???
+##	print ('<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>'
+##               % (CGIescape(urllib.quote(article.filename)),
+##                  CGIescape(article.subject), article.sequence+910, 
+##                  CGIescape(article.author)))
 
     def write_TOC(self):
         self.sortarchives()
@@ -734,65 +838,78 @@ class HyperArchive(pipermail.T):
         f =open_ex(path, 'a+')
         f.write(article.as_text())
         f.close()
-        
-    # Update only archives that have been marked as "changed".
+
+    def add_article(self, article):
+        self.__super_add_article(article)
+        if article.charset:
+            cs = article.charset
+            self._charsets[cs] = self._charsets.get(cs, 0) + 1
+
+    def choose_charset(self):
+        """Pick a charset for the index files
+
+        This method choose the most frequently occuring charset in the
+        individual messages.
+
+        XXX There should be an option to set a default charset.
+        """
+        if not self._charsets:
+            return
+        l = map(lambda p:(p[1], p[0]), self._charsets.items())
+        l.sort() # largest last
+        self.charset = l[-1][1]
+
     def update_dirty_archives(self):
-        for i in self._dirty_archives:
-            self.update_archive(i)
-            # only do this if the gzip module was imported globally, and
-            # gzip'ing was enabled via mm_cfg.GZIP_ARCHIVE_TXT_FILES.  See
-            # above.
-            if gzip:
-                archz=None
-                archt=None
-                try:
-                    txtfile = os.path.join(self.basedir, '%s.txt' % i)
-                    gzipfile = os.path.join(self.basedir, '%s.txt.gz' % i)
-                    oldgzip = os.path.join(self.basedir, '%s.old.txt.gz' % i)
-                    # open the plain text file
-                    archt = open_ex(txtfile, 'r') 
-                    try:
-                        os.rename(gzipfile, oldgzip)
-                        archz = gzip.open(oldgzip)
-                    except (IOError, RuntimeError, os.error):
-                        pass
-                    try:
-                        ou = os.umask(002)
-                        newz = gzip.open(gzipfile, 'w')
-                    finally:
-                        os.umask(ou)
-		    if archz :
-                        newz.write(archz.read())
-                        archz.close()
-                        os.unlink(oldgzip)
-                    newz.write(archt.read())
-                    newz.close()
-                    archt.close()
-                    os.unlink(txtfile)
-                except IOError:
-                    pass
-        self._dirty_archives=[]
+        self.choose_charset()
+        self.__super_update_dirty_archives()
 
-    def close(self):
-        "Close an archive, saving its state and updating any changed archives."
-        self.update_dirty_archives()# Update all changed archives
-        # If required, update the table of contents
-        if self.update_TOC or 1:
-            self.update_TOC=0
-            self.write_TOC()
-        # Save the collective state 
-        self.message('Pickling archive state into '
-                     + os.path.join(self.basedir, 'pipermail.pck'))
-        self.database.close()
-        del self.database
-        f=open_ex(os.path.join(self.basedir, 'pipermail.pck'), 'w')
-        pickle.dump(self.getstate(), f)
-        f.close()
+    def update_archive(self, archive):
+        self.__super_update_archive(archive)
+        # only do this if the gzip module was imported globally, and
+        # gzip'ing was enabled via mm_cfg.GZIP_ARCHIVE_TXT_FILES.  See
+        # above.
+        if gzip:
+            archz = None
+            archt = None
+            txtfile = os.path.join(self.basedir, '%s.txt' % archive)
+            gzipfile = os.path.join(self.basedir, '%s.txt.gz' % archive)
+            oldgzip = os.path.join(self.basedir, '%s.old.txt.gz' % archive)
+            try:
+                # open the plain text file
+                archt = open_ex(txtfile, 'r')
+            except IOError:
+                return
+            try:
+                os.rename(gzipfile, oldgzip)
+                archz = gzip.open(oldgzip)
+            except (IOError, RuntimeError, os.error):
+                pass
+            try:
+                ou = os.umask(002)
+                newz = gzip.open(gzipfile, 'w')
+            finally:
+                # XXX why is this a finally?
+                os.umask(ou)
+            if archz:
+                newz.write(archz.read())
+                archz.close()
+                os.unlink(oldgzip)
+            # XXX do we really need all this in a try/except?
+            try:
+                newz.write(archt.read())
+                newz.close()
+                archt.close()
+            except IOError:
+                pass
+            os.unlink(txtfile)
 
+    _skip_attrs = ('maillist', '_lock_file', '_unlocklist',
+                   '_charsets', 'charset')
+    
     def getstate(self):
         d={}
         for each in self.__dict__.keys():
-            if not (each in ['maillist','_lock_file','_unlocklist']
+            if not (each in self._skip_attrs
                     or string.upper(each) == each):
                 d[each] = self.__dict__[each]
         return d
@@ -898,16 +1015,16 @@ class HyperArchive(pipermail.T):
 	return article
 
     def update_article(self, arcdir, article, prev, next):
-	self.message('Updating HTML for article '+str(article.sequence))
+	self.message('Updating HTML for article ' + str(article.sequence))
 	try:
-	    f=open_ex(os.path.join(arcdir, article.filename), 'r')
+	    f = open_ex(os.path.join(arcdir, article.filename), 'r')
             article.loadbody_fromHTML(f)
 	    f.close()
         except IOError:
             self.message("article file %s is missing!"
                          % os.path.join(arcdir, article.filename))
-        article.prev=prev
-        article.next=next
-	f=open_ex(os.path.join(arcdir, article.filename), 'w')
+        article.prev = prev
+        article.next = next
+	f = open_ex(os.path.join(arcdir, article.filename), 'w')
 	f.write(article.as_html())
 	f.close()
