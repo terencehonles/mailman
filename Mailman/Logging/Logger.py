@@ -18,9 +18,16 @@
 
 import sys
 import os
+import codecs
+from types import StringType
 
 from Mailman import mm_cfg
 from Mailman.Logging.Utils import _logexc
+
+# Set this to the encoding to be used for your log file output.  If set to
+# None, then it uses your system's default encoding.  Otherwise, it must be an
+# encoding string appropriate for codecs.open().
+LOG_ENCODING = 'iso-8859-1'
 
 
 
@@ -37,6 +44,7 @@ class Logger:
         self.__filename = os.path.join(mm_cfg.LOG_DIR, category)
         self.__fp = None
         self.__nofail = nofail
+        self.__encoding = LOG_ENCODING or sys.getdefaultencoding()
         if immediate:
             self.__get_f()
 
@@ -53,7 +61,13 @@ class Logger:
             try:
                 ou = os.umask(002)
                 try:
-                    f = self.__fp = open(self.__filename, 'a+', 1)
+                    try:
+                        f = codecs.open(
+                            self.__filename, 'a+', self.__encoding, 'replace',
+                            1)
+                    except codecs.LookupError:
+                        f = open(self.__filename, 'a+', 1)
+                    self.__fp = f
                 finally:
                     os.umask(ou)
             except IOError, e:
@@ -70,6 +84,8 @@ class Logger:
             f.flush()
 
     def write(self, msg):
+        if isinstance(msg, StringType):
+            msg = unicode(msg, self.__encoding)
         f = self.__get_f()
         try:
             f.write(msg)
