@@ -270,13 +270,20 @@ upgrade.
     - IMPERATIVE!  IMPORTANT!  DO THIS!  YOU'LL BE SORRY IF YOU DON'T!
 
       Set up the crontab entries.  Mailman runs a number of cron jobs
-      for its basic functionality.  You need to be user `mailman' (or
-      whatever you specified as --with-ownername) to perform this
-      step.  Add $prefix/cron/crontab.in as a crontab entry by
-      executing these commands:
+      for its basic functionality.  If your version of crontab
+      supports the -u option, you must be root to do this next step.
+      Add $prefix/cron/crontab.in as a crontab entry by executing
+      these commands:
 
-          % su - mailman
           % cd $prefix/cron
+          % crontab -u mailman crontab.in
+
+      If you used the --with-ownername option, use that user name
+      instead of mailman for the -u argument value.  If your crontab
+      does not support the -u option, try these commands:
+
+          % cd $prefix/cron
+          % su - mailman
           % crontab crontab.in
 
     - Look to see if there is special instructions about hooking your
