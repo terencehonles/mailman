@@ -9,7 +9,7 @@ Other-links:
     <li><a href="http://www.apache.org/">Apache web server</a>
     <li><a href="http://www.gnu.org/software/gcc/">GNU C compiler</a>
     <h3>Mailman downloads</h3>
-    <li><a href="ftp://ftp.gnu.org/gnu/mailman/">From GNU</a>
+    <li><a href="http://ftp.gnu.org/gnu/mailman/">From GNU</a>
     <li><a href="http://www.list.org/mailman.tar.gz">From List.Org</a>
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=103">From SourceForge</a>
 
@@ -72,7 +72,7 @@ stable 2.0.x release</a>.  Mailman is
 available from the following sources:
 
 <ul>
-    <li><a href="ftp://ftp.gnu.org/gnu/mailman/">From GNU</a>
+    <li><a href="http://ftp.gnu.org/gnu/mailman/">From GNU</a>
     <li><a href="http://www.list.org/mailman.tar.gz">From List.Org</a>
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=103">From SourceForge</a>
 </ul>
