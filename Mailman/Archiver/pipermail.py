@@ -224,7 +224,7 @@ class Article:
         if date is not None:
             date, tzoffset = date[:9], date[-1] or 0
             try:
-                date = time.mktime(date) - tzoffset
+                date = time.mktime(date)# - tzoffset
             except (ValueError, OverflowError):
                 date = self._last_article_time + 1
                 #print 'Article with bad date:', self.msgid
