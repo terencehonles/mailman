@@ -112,8 +112,6 @@ def main():
             if kids:
                 _kids.update(kids)
                 del msgdata['kids']
-            if keepqueued:
-                msg.Enqueue(mlist, msgdata)
             if not keepqueued:
                 # We're done with this message
                 os.unlink(root + '.db')
