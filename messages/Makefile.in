@@ -103,10 +103,10 @@ doinstall:
 finish:
 
 clean:
-	-rm message.files $(POTFILE)
+	-rm -f message.files $(POTFILE)
 
 distclean:
-	-rm Makefile */LC_MESSAGES/mailman.{mo,po.old} $(POTFILE)
+	-rm -f Makefile */LC_MESSAGES/mailman.mo */LC_MESSAGES/mailman.po.old $(POTFILE)
 
 
 message.files: FORCE

@@ -129,11 +129,11 @@ clean: $(SUBDIRS)
 	do \
 	    (cd $$d; $(MAKE) clean); \
 	done
-	-rm update.log
+	-rm -f update.log
 
 distclean: $(SUBDIRS)
 	@for d in $(SUBDIRS); \
 	do \
 	    (cd $$d; $(MAKE) distclean); \
 	done
-	-rm config.cache config.log config.status Makefile
+	-rm -f config.cache config.log config.status Makefile

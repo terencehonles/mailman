@@ -60,7 +60,7 @@ install:
 	for d in $(LANGUAGES); \
 	do \
 	    ../mkinstalldirs $(TEMPLATEDIR)/$$d; \
-	    for f in $$d/*.{html,txt}; \
+	    for f in $$d/*.html $$d/*.txt; \
 	    do \
 	    	$(INSTALL) -m $(FILEMODE) $$f $(TEMPLATEDIR)/$$d; \
 	    done; \
@@ -71,4 +71,4 @@ finish:
 clean:
 
 distclean:
-	-rm Makefile
+	-rm -f Makefile
