@@ -17,8 +17,10 @@
 """Yale's mail server is pretty dumb.
 
 Its reports include the end user's name, but not the full domain.  I think we
-can guess it anyways.  This is completely based on examination of the corpse,
-and is subject to failure whenever Yale even slightly changes their MTA. :(
+can usually guess it right anyway.  This is completely based on examination of
+the corpse, and is subject to failure whenever Yale even slightly changes
+their MTA. :(
+
 """
 
 import re
