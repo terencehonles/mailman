@@ -41,7 +41,7 @@ MAILMAN_UID=	@MAILMAN_UID@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 
-ARCH_INDEP_DIRS=	public_html public_html/archives logs archives bin \
+ARCH_INDEP_DIRS=	logs archives bin \
 archives/private archives/public lists locks templates scripts filters \
 cron data Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver
 ARCH_DEP_DIRS=	cgi-bin mail
@@ -82,6 +82,7 @@ install: $(SUBDIRS)
 	    else true; \
 	    fi; \
 	done
+	chmod o-r $(prefix)/archives/private
 	@echo "Creating architecture dependent directories..."
 	@for d in $(ARCH_DEP_DIRS); \
 	do \
@@ -98,17 +99,12 @@ install: $(SUBDIRS)
 	do \
 	    (cd $$d; $(MAKE) install); \
 	done
-	@echo "*****"
-	@echo "***** You must finish installing Mailman by becoming root"
-	@echo "***** and running \"make finish\".  See the INSTALL file"
-	@echo "***** for details."
-	@echo "*****"
 
-finish:
-	@for d in $(SUBDIRS); \
-	do \
-	    (cd $$d; $(MAKE) finish); \
-	done
+#finish:
+#	@for d in $(SUBDIRS); \
+#	do \
+#	    (cd $$d; $(MAKE) finish); \
+#	done
 
 clean: $(SUBDIRS)
 	@for d in $(SUBDIRS); \
