@@ -166,7 +166,7 @@ class Bouncer:
         subject = _('Bounce action notification')
         umsg = Message.UserNotification(self.GetOwnerEmail(),
                                         siteowner, subject,
-                                        self.preferred_language)
+                                        lang=self.preferred_language)
         umsg.attach(MIMEText(text))
         if isinstance(msg, StringType):
             umsg.attach(MIMEText(msg))
@@ -223,7 +223,8 @@ class Bouncer:
         # Currently we always craft bounces as MIME messages.
         bmsg = Message.UserNotification(msg.get_sender(),
                                         self.GetOwnerEmail(),
-                                        subject, self.preferred_language)
+                                        subject,
+                                        lang=self.preferred_language)
         bmsg['Content-Type'] = 'multipart/mixed'
         bmsg['MIME-Version'] = '1.0'
         txt = MIMEText(notice,
