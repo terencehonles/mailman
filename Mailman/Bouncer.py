@@ -32,6 +32,7 @@ from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
+from Mailman import MemberAdaptor
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
@@ -59,6 +60,8 @@ class Bouncer:
         self.automatic_bounce_action = mm_cfg.DEFAULT_AUTOMATIC_BOUNCE_ACTION
         self.max_posts_between_bounces = \
                 mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
+        # New style delivery status
+        self.delivery_status = {}
 
     def ClearBounceInfo(self, member):
         member = member.lower()
@@ -228,13 +231,13 @@ Bad admin recipient: %s''', self.internal_name(), addr)
                    self.real_name, addr, reason)
             return reason, 1
         try:
-            if self.getMemberOption(addr, mm_cfg.DisableDelivery):
+            if self.getDeliveryStatus(addr) <> MemberAdaptor.ENABLED:
                 # No need to send out notification if they're already disabled.
                 syslog('bounce', '%s: already disabled %s',
                        self.real_name, addr)
                 return 1, 0
             else:
-                self.setMemberOption(addr, mm_cfg.DisableDelivery, 1)
+                self.setDeliveryStatus(addr, MemberAdaptor.BYBOUNCE)
                 syslog('bounce', '%s: disabled %s', self.real_name, addr)
                 self.Save()
                 return 1, 1
