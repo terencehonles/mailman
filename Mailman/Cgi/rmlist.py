@@ -114,7 +114,9 @@ def process_request(doc, cgidata, mlist):
         delarchives = 0
 
     # Make sure the password matches
-    if not mlist.ValidAdminPassword(password):
+    if not mlist.ValidAdminPassword(password) and \
+           not Utils.check_global_password(password, siteadmin=0) and \
+           not Utils.check_global_password(password):
         request_deletion(
             doc, mlist,
             _('You are not authorized to delete this mailing list'))
