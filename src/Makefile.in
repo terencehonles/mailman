@@ -74,7 +74,7 @@ INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 # Fixed definitions
 
 CGI_PROGS= admin admindb archives edithtml options \
-listinfo subscribe roster handle_opts private confirm
+listinfo subscribe roster handle_opts private confirm create rmlist
 
 COMMONOBJS= common.o vsnprintf.o
 
