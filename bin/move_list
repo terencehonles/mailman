@@ -39,6 +39,7 @@ import sys
 import getopt
 
 import paths
+from Mailman import Errors
 from Mailman import MailList
 from Mailman import mm_cfg
 
