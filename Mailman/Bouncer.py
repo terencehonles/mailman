@@ -229,10 +229,11 @@ class Bouncer:
                                         self.GetOwnerEmail(),
                                         subject,
                                         lang=self.preferred_language)
-        bmsg['Content-Type'] = 'multipart/mixed'
-        bmsg['MIME-Version'] = '1.0'
+        # BAW: Be sure you set the type before trying to attach, or you'll get
+        # a MultipartConversionError.
+        bmsg.set_type('multipart/mixed')
         txt = MIMEText(notice,
                        _charset=Utils.GetCharSet(self.preferred_language))
-        bmsg.add_payload(txt)
-        bmsg.add_payload(MIMEMessage(msg))
+        bmsg.attach(txt)
+        bmsg.attach(MIMEMessage(msg))
         bmsg.send(self)
