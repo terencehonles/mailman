@@ -6,6 +6,7 @@ import re
 import sys
 import time
 import email.Utils
+import email.Errors
 import cPickle as pickle
 from cStringIO import StringIO
 from string import lowercase
@@ -531,6 +532,9 @@ class T:
                 m = mbox.next()
             except Errors.DiscardMessage:
                 continue
+            except email.Errors.MessageParseError:
+                # Probably a missing terminating boundary
+                continue
             if not m:
                 return
             counter += 1
@@ -538,6 +542,9 @@ class T:
             try:
                 m = mbox.next()
             except Errors.DiscardMessage:
+                continue
+            except email.Errors.MessageParseError:
+                # Probably a missing terminating boundary
                 continue
 	    if not m:
                 break
