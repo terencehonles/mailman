@@ -13,7 +13,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 0211-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Send a message to the maillist owner.
 
@@ -22,7 +22,7 @@ This script gets called by the wrapper.
 Stdin is the mail message, and argv[1] is the name of the mailing list
 whose owner(s) to send mail to."""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 547 $"
 
 
 import sys

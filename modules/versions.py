@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 0211-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
 """Routines which rectify an old maillist with current maillist structure.
@@ -32,7 +32,7 @@ updates the data_version number of the list, and then does a .Save(), so
 the transformations won't be run again until another version change is
 detected."""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 547 $"
 
 import re, string, types
 import mm_cfg

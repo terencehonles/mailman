@@ -13,7 +13,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 0211-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Produce user options form, from list options.html template.
 
@@ -21,7 +21,7 @@ Takes listname/userid in PATH_INFO, expecting an "obscured" userid.
 (Depending on the mm_utils.{O,Uno}bscureEmail utilities tolerance,
 will work fine with an unobscured ids as well.)"""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 547 $"
 
 # We don't need to lock in this script, because we're never going to change
 # data. 

@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 0211-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
 """Miscellaneous essential routines.
@@ -22,7 +22,7 @@ message and address munging, a handy-dandy routine to map a function on all
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 547 $"
 
 
 import sys, string, fcntl, os, random, regsub, re

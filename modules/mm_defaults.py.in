@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 0211-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
 """Distributed default settings for significant mailman config variables.
@@ -26,7 +26,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b3'
-__version__ = "$Revision: 545 $"
+__version__ = "$Revision: 547 $"
 
 # The URL for Mailman sources, etc. - you probably don't want to change this.
 MAILMAN_URL       = 'http://www.list.org/'

@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 0211-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
 """Library for program-based construction of an HTML documents.
@@ -20,7 +20,7 @@
 Encapsulate HTML formatting directives in classes that act as containers
 for python and, recursively, for nested HTML formatting objects."""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 547 $"
 
 # Eventually could abstract down to HtmlItem, which outputs an arbitrary html
 # object given start / end tags, valid options, and a value.

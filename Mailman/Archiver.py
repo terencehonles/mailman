@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 0211-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
 """Mixin class for putting new messages in the right place for archival.
@@ -21,7 +21,7 @@ Public archives are separated from private ones.  An external archival
 mechanism (eg, pipermail) should be pointed to the right places, to do the
 archival."""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 547 $"
 
 import sys, os, string
 import mm_utils, mm_mbox, mm_cfg, mm_message
