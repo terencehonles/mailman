@@ -86,6 +86,7 @@ Site Administrator's UI
       list.
     - Full creation, deletion, renaming, etc. of lists through the web
       (and email?), including fixing aliases file updates.
+    - add_members should have a switch to disable admin notifications
 
 Other Usability Improvments
     - Allow individuals to turn off password reminders
@@ -135,6 +136,10 @@ Portability & architecture
       not require it be literally "mailman").
     - Should be able to gather statistics, such as deliveries/day,
       performance, number of subscribers over time, etc.
+    - Implement something like Roundup's nosy lists, maybe even
+      integrate with Roundup.
+    - Split Mailman into libraries so, e.g. the delivery part could be
+      used by other projects.
 
 Bounce handling
     - Make a distinction between disabled addresses due to bouncing
