@@ -149,7 +149,7 @@ class Privacy:
             _("General sender filters"),
 
             ('default_member_moderation', mm_cfg.Radio, (_('No'), _('Yes')),
-             0, _('By default, should list member postings be moderated?'),
+             0, _('By default, should new list member postings be moderated?'),
 
              _("""Each list member has a <em>moderation flag</em> which says
              whether messages from the list member can be posted directly to
@@ -158,10 +158,13 @@ class Privacy:
              approved first.  You, the list administrator can decide whether a
              specific individual's postings will be moderated or not.
 
-             <p>This option specifies the default state of the member
-             moderation flag.  Turn this option off to accept member postings
-             by default.  Turn this option on to, by default, moderate member
-             postings first.""")),
+             <p>When a new member is subscribed, their initial moderation flag
+             takes its value from this option.  Turn this option off to accept
+             member postings by default.  Turn this option on to, by default,
+             moderate member postings first.  You can always manually set an
+             individual member's moderation bit by using the
+             <a href="%(adminurl)s/members">membership management
+             screens</a>.""")),
 
             ('accept_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings should be
