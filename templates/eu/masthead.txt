@@ -1,13 +1,15 @@
-%(real_name)s eposta zerrendara bidalketetarako helbidea:
-        %(got_list_email)s
+%(real_name)s zerrendako mezuak bidali %(got_list_email)s helbidera.
 
-Webaren bidez harpidetza egin edo ezabatzeko, jo:
-        %(got_listinfo_url)s
-edo, posta bidez egiteko bidali gaian edo gorputzena `help' hitza duen mezu bat:
-        %(got_request_email)s helbidera.
+WEB bidez zerrendan izena emateko, edo zerrenda uzteko,   
+joan helbide honetara:
+	%(got_listinfo_url)s
 
-Zerrenda administratzen duen pertsonakin arremanetan jartzeko idatzi:
-        %(got_owner_email)s helbidera
+Posta elektronikoz nahi bada, bidali mezu bat 'help' hitza idatzita (kakotsik gabe), bai Gaia lerroan 
+zein mezuan bertan, helbide honetara:
+	%(got_request_email)s
 
-erantzuten duzuenan "Re: Contents of %(real_name)s digest..." baino argiagoa den
-esaldi bategatik aldatu gaia.
+Zerrenda kudeatzen duenarekin harremanetan jartzeko:
+	%(got_owner_email)s
+
+Mezu honi erantzuten badiozu, mesedez, editatu Gaia (subject) lerroa. Horrelako mezuak 
+sahiestuko dituzu: "Re: Contents of %(real_name)s digest...".

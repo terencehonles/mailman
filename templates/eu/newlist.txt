@@ -1,36 +1,33 @@
-Zuk eskatu bezala`%(listname)s' eposta zerrenda sortua izan da. Honako hau 
-eposta zerrendaren argibide orokorrak dira .
+`%(listname)s' posta zerrenda sortu dugu zuretzat. 
+Hona hemen zerrendari buruzko oinarrizko informazioa.
 
-Zure zerrenda pasahitza:
+Zerrenda kudeatzeko zure pasahitza:
 
     %(password)s
 
-Zure Eposta zerrenda konfiguratu ahal izateko pasahitz hau behar
-duzu. Adiministrazio eskakizunak (adib. posta bidalketa onartu mederaturiko 
-zerrenda bat aukeratu baduzu) aurrera eramateko ere ezinbestekoa
-izango duzu pasahitza.
+Pasahitz hori beharko duzu posta zerrenda konfiguratzeko. Zerrenda kudeatzeko
+ere beharko duzu, esate baterako zerrenda moderatuetan mezuak onartzeko.
 
-Zure eposta zerrenda honako web orrialde honetan konfigura dezakezu:
+Webgune honetan konfigura dezakezu zure posta zerrenda:
 
     %(admin_url)s
 
-Zure eposta zerrendaren erabiltzaileen orrialdea:
+Zerrendakideen orria hauxe da: 
 
     %(listinfo_url)s
 
-orrialde hauek konfiguraketa orrialdean zure gustora alda ditzazkezu.
+Zerrenda kudeatzeko orrialdetik alda ditzakezu beste horiek ere.
+Dena dela, ez duzu HTML jakiterik behar aldaketak egiteko.
 
-Bada ere harpidedunentzat (administratzailea ez) posta bidez dabilen
-interfaze bat ere; funtzionamentuaz argibide gehiago jasotzeko bidali 
-mezu bat `help' hitza gaiean edo mezu gorputzean duela helbide honetara:
+Zerrendako harpideek e-mailez ere egin ditzakete zenbait aldaketa;
+horri buruzko informazioa lor dezakezu, Gaia lerroan (subject) 
+`help' hitza duen mezua bidaliz helbide honetara:
 
     %(requestaddr)s
 
-Erabiltzaile baten harpidetza ezabatzeko: zerrendaren argibideetako web
-orrialdeetan orrialdean erbiltzaile hori bazina sar ezazu eposta helbidea.
-Eta kontua ezabatzeko erabiltzaile pasahitza eskatzen dizunean, sar 
-iezaiozu administrazio pasahitza. Modu honetan erabiltzailearen hobespenak
-ere alda ditzazkezu.
+Harpidetza kentzeko: posta zerrendaren 'listinfo' orrialdean,
+erabiltzailearen helbide elektronikoa klikatu edo idatzi.
+Erabiltzailearen pasahitzaren lekuan zure administratzaile pasahitza idatzi.
+Harpidearen aukerak aldatzeko ere erabili dezakezu zure pasahitza.
 
-Galdera edo iradokizunik baduzu idatz iezaiozu zerrenda jaberari %(siteowner)s
-helbidera.
+Galdera guztiak %(siteowner)s helbidera bidali, mesedez.

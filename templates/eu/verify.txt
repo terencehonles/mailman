@@ -1,24 +1,20 @@
-%(listname)s eposta zerrendaren harpidetza egiaztapen mezua
+%(listname)s posta zerrendan zure harpidetza berresteko mezua da hau. 
 
-%(remote)s harpidetza eskakizun bat hartu dugu zure Eposta
-helbidea, "%(email)s",  %(listaddr)s Eposta zerrendaren harpidedun
-egiteko. Zuk zerrenda honen harpidedun izan nahi duzula egiaztatzeko
-itzuli ezazu mezu hau gaia ikutu gabe utziz. Edo web orrialde
-honetara joan zaitezke: 
+Mezu bat jaso dugu zure "%(email)s" helbidetik, %(listaddr)s zerrendan izena emateko %(remote)s.
+Zerrenda horretan parte hartu nahi duzula konfirmatzeko, 
+erantzun mezu honi, Gaia (subject) lerroa hutsik lagata.
+Bestela, sartu orrialde honetara:
 
     %(confirmurl)s
 
-Edo gehitu iezaziozu hurrelgo lerroa - lerro hori bakarrik --
-eta %(requestaddr)s-era mezu bat bidali.
+Edo bidali mezu bat %(requestaddr)s helbidera, honako lerro hau erantsi ondoren:
 
     confirm %(cookie)s
 
-Kontutan izan Eposta irakurle programa gehienekin mezuari erantzutearekin 
-aski izan beharko zuela, hauek normalean gaia asuntoa behar bezala usten 
-bait dute ("Re:" bat gehitzen badio gaiari ondo dago ere).
+Erabiltzaile gehienetzat, nahikoa izango da mezu honi "erantzun" egitea, 
+Gaia lerroa garbi lagako duelako, behar den bezala.
 
-Zuk ez baduzu Eposta zerrenda honetan harpidetza egin, mezu hau bertan behera
-uztearekin harpidetzak ez du aurrera jarraituko. Zure harpidetza era
-gaiztoan edo eragozpenak sortzeko asmoarekin egina izan dela uste baduzu 
-edo/eta galdera edo iradokizunik baduzu idatz itzazu %(listadmin)s eposta 
-helbidera.
+Ez baduzu zerrenda honetan izena ematerik nahi, 
+ahaztu mezu hau. Norbaitek zure kalterako harpidetu nahi zaituela uste baduzu, 
+edo beste edozein galdera baldin baduzu, bidali mezu bat helbide honetara: 
+%(listadmin)s.

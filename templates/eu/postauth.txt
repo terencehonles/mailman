@@ -1,14 +1,16 @@
-Zerrenda administratzaile gisa, Eposta zerrendara mezu honen bidalketaren
-onarpena behar dugu aurrera jarraitzeko:
+Kudeatzaile zaren aldetik, zure baimena behar da
+ondorengo posta zerrendara mezu bat bidaltzeko:
 
+    Zerrenda: %(listname)s@%(hostname)s
+    Nork: %(sender)s
+    Gaia: %(subject)s
+    Mezua geldiarazteko arrazoia: %(reason)s
 
-    Zerrenda:    %(listname)s@%(hostname)s
-    Nork:        %(sender)s
-    Gaia:	 %(subject)s
-    Arrazoia:	 %(reason)s
-
-Ahal duzunean jo:
+Nahi duzunean sartu helbide honetara:
 
     %(admindb_url)s
+        
+eskaera onartzeko edo ezezkoa emateko.
 
-Eskakizuna onartu edo ukatzeko.
+
+

@@ -1,22 +1,22 @@
- %(listname)s Eposta zerrenda zure harpidetza %(reason)s ezgaitua
-izan da. Zure harpidetza bergaitu harte ez duzu eposta zerrenda
-honetako mezurik jasoko. Harpidetza guztiz ezabatu harte %(noticesleft)s
-gogorarazle mezu gehiago jasoko dituzu.
+%(listname)s posta zerrendan parte hartzeko gaitasuna kendu egin dizugu honako
+arrazoiarengatik: %(reason)s. Zerrendan duzun egoera zuzendu arte ez dizugu
+mezu gehiago bidaliko. Hau bezalako beste 
+%(noticesleft)s mezu jasoko dituzu, eta ondoren zure izena ezabatu egingo dugu zerrendatik.
 
-Zure harpidetza bergaitzeko, mezu hau gaia ikutu gabe erantzutearekin
-aski izango duzu edo egiaztapen orrialdera joan zaitezke:
+Berriro zerrendan parte hartu ahal izateko, erantzun mezu honi 
+(Gaia lerroa hutsik lagata), edo joan konfirmazio orrira:
 
     %(confirmurl)s
 
-Zure harpidetza orrialdera ere joan zintezke:
+Zure bazkide orria ere bisita dezakezu:
 
     %(optionsurl)s
 
-Orrialde horretan zure harpidetzako, zure eposta helbidea, izena eta beste 
- aukera batzu alda ditzazkezu. Gogora zaitezen zure harpidetza pasahaitza
-honako hau da:
+Orrialde horretan mezuak jasotzeko baldintzak alda ditzakezu. Besteak beste, 
+zure posta helbidea, edo mezuak bildumetan jaso nahi dituzun ala ez.  
+Gogan izan zure pasahitza %(password)s dela.
 
-    %(password)s
 
-Galdera edo iradokizunik? Bidali iezazkiozu  eposta zerrendaren
-administratzaileari %(owneraddr)s helbidera
+Edozein galdera baduzu, idatzi zerrendaren kudeatzaileari:
+
+    %(owneraddr)s

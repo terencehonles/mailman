@@ -1,13 +1,11 @@
-%(listname)s eposta zerrednara eginiko eskakizuna
+Moderatzaileak ez du onartu %(listname)s posta zerrendara zuk egindako honako eskaera hau:
 
     %(request)s
 
-Moderatzailearengatik ukatua izan da. Moderatzaileak hurrengo
-arrazoai eman duzre eskakizuna ukatzerakoan:
+Moderatzaileak ondoko arrazoia eman du zure eskaera gaitzesteko:
 
 "%(reason)s"
 
-Edozein galdera edo iradokizunik baduzu bidali zuzenean zerrenda
-administratzaileari hurrengo helbidera:
+Edozein galdera edo komentario izanez gero, moderatzaileari bidali, mesedez:
 
     %(adminaddr)s

@@ -1,32 +1,31 @@
-%(listname)s eposta zerrendaren laguntza:
+%(listname)s posta zerrendako kideentzat laguntza:
 
-Mailman zerrenda kudeatzailearen %(version)s bertsioaren eposta
-komandoen laguntza mezua da. Ondorengoak eposta zerrendaren 
-harpidetza kontrolarentzat bidali ditzazkezun posta komandoen
-argibideak dira. Komandoak gaiean edo mezuaren gorputzean ipini
-daitezke.
+"Mailman" zerrenda-kudeatzailearen %(version)s bertsioarekin postaz 
+bidali daitezkeen aginduen laguntza da hau.
+Ondoren, Mailmanek kudeatzen dituen zerrenden harpidetza kontrolatzeko eta horien 
+inguruko informazioa jasotzeko bidali daitezkeen aginduak azalduko dira. 
+Komandoak "Gaia" lerroan (subject) edo mezuan igorri daitezke.
 
-Kontutan izan gauza gehienak web bidez egin daitezkela hurrengo
-helbide onetan:
+Kontuan izan informazio gehiena webgune honetan ere baduzula:
 
     %(listinfo_url)s
 
-Bereiziki zure pasahitza postaz zuri bidaltzeko esakizuna egin
-dezakezu web-aren bidez.
+Webgunea, besteak beste, pasahitza zure posta-helbidean jasotzeko
+erabili dezakezu.
 
-Zerrendaren komandoak (subscribe, who,...) zerrendaren 
-*-request helbidera bidali behar dituzu, adib. 'mailman'
-izeneko zerrendarako, bidali 'mailman-request@...' helbidera.
+Zerrenden agidu espezifikoak (subscribe, who, eta abar) zerrenda bakoitzeko
+*-request helbidera bidali behar dira. Esate baterako, 'mailman'
+zerrendarako, erabili 'mailman-request@...'.
 
-Argibidieetan "<>" harteko hitzak BEHARREZKOAK dira eta "[]"
-artekoak berriz aukerakoak. Ez "<>" eta ez "[]" erabili komandoak
-bidaltzeko garaian.
+Aginduetan, "<>" artean idatzitakoak DERRIGORREZKOAK dira; "[]" artean doazenak, ordea, HAUTAZKOAK.  
+Komandoekin ez erabili, ez bata eta ez bestea.
 
-Hurrengo komandoak erabili ditzazkezu:
+Ondorengo komandoak zuzenak dira:
 
     %(commands)s
 
-Komadoak %(requestaddr)s helbidera bidali behar dira.
+Aginduak %(requestaddr)s helbidera bidali behar dira.
 
-Norbaitek irakurtzea nahi duzun mezu bat bidaltzeko idatz
-ezazu  %(adminaddr)s helbidera 
+Arduradunari zuzendutako galderak eta mezuak hona bidali:
+
+    %(adminaddr)s

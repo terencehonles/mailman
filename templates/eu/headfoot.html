@@ -4,24 +4,25 @@ kateak</a> izan ditzake; zerrendako atributuen bidez ordezkatuko dira.
 Onartzen diren ordezkapenak hauexek dira:
 
 <ul>
-    <li><b>real_name</b> - Zerrendaren izen `polita'; gehienetan
+    <li><b><code>real_name</code></b> - Zerrendaren izen `polita'; gehienetan
     zerrendaren izen berbera, baina lehenengo letra larria duena.
 
-    <li><b>list_name</b> - URL-etan zerrenda identifikatzeko
-    erabiltzen den izena; letra larriek garrantzia dute.  
+    <li><b><code>list_name</code></b> - URL-etan zerrenda identifikatzeko
+    erabiltzen den izena; letra larriek garrantzia dute.  (Konpatibilitatea dela 
+	eta, <code>_internal_izena</code> kodearen baliokidea da).
 
-    <li><b>host_name</b> - Bere baitan zerrenda duen zerbitzariaren
+    <li><b><code>host_name</code></b> - Bere baitan zerrenda duen zerbitzariaren
     izen kanonikoa.
 
-    <li><b>web_page_url</b> - Mailmanen oinarrizko URLa.  
+    <li><b><code>web_page_url</code></b> - Mailmanen oinarrizko URLa.  
     Adibidez, zerrendaren informazio orria adierazteko, atzean
-    <em>listinfo/%(list_name)s</em> gehitzea
+    <em><code>listinfo/%(internal_name)s</code></em> gehitzea
 	bakarrik behar da.
 
-    <li><b>description</b> - Posta zerrendaren laburpen xumea.
+    <li><b><code>description</code></b> - Posta zerrendaren laburpen xumea.
 
-    <li><b>info</b> - Posta zerrendaren azalpen luze eta 
+    <li><b><code>info</code></b> - Posta zerrendaren azalpen luze eta 
 	sakonagoa.
 
-    <li><b>cgiext</b> - CGI script-ei gehitzen zaien luzapena.
+    <li><b><code>cgiext</code></b> - CGI script-ei gehitzen zaien luzapena.
 </ul>

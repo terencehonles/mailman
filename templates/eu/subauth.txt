@@ -1,11 +1,10 @@
-Zure baimena beharrezkoa da zerrenda harpidetza ezabatze 
-eskakizuna aurrera eramateko:
+Zure baimena behar dugu zerrenda batean harpidetza berri bat onartzeko:
 
-    Nork:   %(username)s
+    Nor:  %(username)s
     Zerrenda: %(listname)s@%(hostname)s
 
-Edo nahiago baduzu, jo:
+Nahi duzunean bisitatu orrialde hau
 
     %(admindb_url)s
-
-eskakizuna lantzeko.
+	
+egin zaizun eskaera onartzeko.

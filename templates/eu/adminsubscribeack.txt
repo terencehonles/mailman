@@ -1,1 +1,2 @@
-%(member)s arrakastatsuki %(listname)s posta zerrendara harpidetua izan da.
+%(member)s erabiltzailea %(listname)s zerrendako harpide da hemendik aurrera.
+

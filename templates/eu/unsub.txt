@@ -1,24 +1,20 @@
-%(listname)s eposta zerrendako harpidetza ezabatze berria
+%(listname)s posta zerrenda utzi nahi duzula berresteko mezua da hau. 
 
-%(remote)s-tik zure "%(email)s" eposta helbidearen %(listaddr)s
-eposta zerrendako harpidetza ezabatzeko eskakizuna jaso dugu. Zuk 
-zerrenda honen harpidetza ezabatu  izan nahi duzula egiaztatzeko
-itzuli ezazu mezu hau gaia ikutu gabe utziz. Edo web orrialde
-honetara joan zaitezke:
+Mezu bat jaso dugu zure "%(email)s" helbidetik, %(listaddr)s %(remote)s zerrenda utzi nahi duzula esanez.
+Zerrenda utzi nahi duzula konfirmatzeko, 
+erantzun mezu honi, Gaia (subject) lerroa hutsik lagata.
+Bestela, sartu orrialde honetara:
 
     %(confirmurl)s
 
-Edo gehitu iezaziozu hurrelgo lerroa - lerro hori bakarrik --
-eta %(requestaddr)s-era mezu bat bidali.
+Edo bidali mezu bat %(requestaddr)s helbidera, honako lerro hau erantsi ondoren:
 
     confirm %(cookie)s
 
-Kontutan izan Eposta irakurle progrma gehienekin mezuari erantzutearekin
-aski izan beharko zuela, hauek normalean gaia asuntoa behar bezala usten
-dute ("Re:" bat gehitzen badio gaiari ondo dago ere).
+Erabiltzaile gehienetzat, nahikoa izango da mezu honi "erantzun" egitea, 
+Gaia lerroa garbi lagako duelako, behar den bezala.
 
-Zuk ez baduzu Eposta zerrenda honetako harpidetza ezabatu nahi, mezu hau 
-bertan behera ustearekin harpidetzak aurrera jarraituko du. Zure harpidetza 
-ezabatzea era gaiztoan edo eragozpenak sortzeko asmoarekin egina izan dela 
-uste baduzu edo/eta galdera edo iradokizunik baduzu idatz itzazu %(listadmin)s 
-eposta helbidera.
+Zerrenda hau utzi nahi ez baduzu, 
+ahaztu mezu hau. Norbaitek zure kalterako zerrendatik kendu nahi zaituela uste baduzu, 
+edo beste edozein galdera baldin baduzu, bidali mezu bat helbide honetara: 
+%(listadmin)s.

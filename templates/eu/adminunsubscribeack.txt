@@ -1,1 +1,2 @@
-%(member)s -en %(listname)s zerrendako harpidetza ezabatua izan da.
+%(member)s harpideak %(listname)s zerrenda utzi egin du.
+

@@ -1,9 +1,9 @@
-`%(sender)s' zure helbidetik %(listname)s posta zerrendaren erantzun 
-automatiko bat behar duen eskakizun bat jaso dugu. Jada gaur %(num)s
-mezu bidali dituzu. Eposta erroboten artean ez arazorik sortzeko,
-gaur ez dizkizugu zuri eposta erantzunik bidaliko. Mesedez, saia
-zaitez bihar berriz.
+Zure `%(sender)s' helbidetik mezu bat jaso dugu 
+%(listname)s posta zerrendari erantzun automatikoa eskatuz. 
 
-Mezu hau akats bat dela pentsatzen baduzu edo eta galderarik edo 
-iradokizunik baduzu idatzi iezaiozu zerrenda jaberari %(owneremail)s
-eposta helbidera
+Horrelako %(num)s mezu jaso ditugu gaur. Email roboten bukleak eta antzeko arazoak 
+sahiesteko, gaur ez dizugu beste erantzun mezurik bidaliko. 
+Mesedez, ahalegindu zaitez bihar.
+
+Mezu hau akatsa dela uste baduzu, edo galderaren bat baduzu,
+idatzi zerrendaren jabeari helbide honetara: %(owneremail)s
