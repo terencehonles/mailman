@@ -600,25 +600,34 @@ def heldmsg_prompt(mlist, doc, cookie, id):
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
                       colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
-
     # Blarg.  The list must be locked in order to interact with the ListAdmin
-    # database, even for read-only.
-    # See the comment in admin.py about the need for the signal
-    # handler.
+    # database, even for read-only.  See the comment in admin.py about the
+    # need for the signal handler.
     def sigterm_handler(signum, frame, mlist=mlist):
         mlist.Unlock()
         sys.exit(0)
-
+    # Get the record, but watch for KeyErrors which mean the admin has already
+    # disposed of this message.
     mlist.Lock()
     try:
-        ign, sender, msgsubject, givenreason, ign, ign = mlist.GetRecord(id)
+        try:
+            data = mlist.GetRecord(id)
+        except KeyError:
+            data = None
     finally:
         mlist.Unlock()
 
+    if data is None:
+        bad_confirmation(doc, _("""The held message you were referred to has
+        already been handled by the list administrator."""))
+        return
+
+    # Now set the language to the sender's preferred.
     lang = mlist.getMemberLanguage(sender)
     i18n.set_language(lang)
     doc.set_language(lang)
-
+    # Unpack the data and present the confirmation message
+    ign, sender, msgsubject, givenreason, ign, ign = data
     subject = Utils.websafe(msgsubject)
     reason = Utils.websafe(givenreason)
     listname = mlist.real_name
