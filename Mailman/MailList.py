@@ -42,6 +42,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 from Mailman import LockFile
+from Mailman.UserDesc import UserDesc
 
 # base classes
 from Mailman.Archiver import Archiver
@@ -807,7 +808,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              'remote'     : '',
              'listadmin'  : self.GetAdminEmail(),
              'confirmurl' : confirmurl,
-             }, lang=self.GetPreferredLanguage(oldaddr), mlist=self)
+             }, lang=self.getMemberLanguage(oldaddr), mlist=self)
         msg = Message.UserNotification(
             newaddr, self.GetRequestEmail(),
             _('confirm %(cookie)s'),
@@ -830,7 +831,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             mlist = MailList(listname, lock=0)
             if mlist.host_name <> self.host_name:
                 continue
-            if not mlist.isMember(oldaddr):
+            if not mlist.isMember(oldaddr) or mlist.isMember(newaddr):
                 continue
             mlist.Lock()
             try:
@@ -843,7 +844,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     #
     # Confirmation processing
     #
-    def ProcessConfirmation(self, cookie):
+    def ProcessConfirmation(self, cookie, userdesc_overrides=None):
         data = Pending.confirm(cookie)
         if data is None:
             raise Errors.MMBadConfirmation, 'data is None'
@@ -862,13 +863,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
                     'subscriptions to %(name)s require administrator approval')
-            class UserDesc: pass
-            userdesc = UserDesc()
-            userdesc.address = addr
-            userdesc.fullname = fullname
-            userdesc.password = password
-            userdesc.digest = digest
-            userdesc.lang = lang
+            userdesc = UserDesc(addr, fullname, password, digest, lang)
+            if userdesc_overrides is not None:
+                userdesc += userdesc_overrides
             self.ApprovedAddMember(userdesc)
             return op, addr, password, digest, lang
         elif op == Pending.UNSUBSCRIPTION:
@@ -879,11 +876,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         elif op == Pending.CHANGE_OF_ADDRESS:
             oldaddr, newaddr, globally = data
             self.ApprovedChangeMemberAddress(oldaddr, newaddr, globally)
-            return op, newaddr
+            return op, oldaddr, newaddr
 
     def ConfirmUnsubscription(self, addr, lang=None, remote=None):
         if lang is None:
-            lang = self.GetPreferredLanguage(addr)
+            lang = self.getMemberLanguage(addr)
         cookie = Pending.new(Pending.UNSUBSCRIPTION, addr)
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
@@ -1024,21 +1021,6 @@ bad regexp in bounce_matching_header line: %s
     #
     # Multilingual (i18n) support
     #
-    def SetPreferredLanguage(self, name, lang):
-        assert lang in self.GetAvailableLanguages()
-        lcname = name.lower()
-        if lang <> self.preferred_language:
-            self.language[lcname] = lang
-        else:
-            if self.language.has_key(lcname):
-                del self.language[lcname]
-
-    def GetPreferredLanguage(self, name=None):
-        if name is None:
-            return self.preferred_language
-        lcname = name.lower()
-        return self.language.get(lcname, self.preferred_language)
-
     def GetAvailableLanguages(self):
         dirs = Utils.GetDirectories(self._full_path)
         # If we don't add this, and the site admin has never added any
