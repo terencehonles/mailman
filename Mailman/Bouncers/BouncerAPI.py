@@ -48,6 +48,9 @@ def ScanMessages(mlist, msg, testing=0):
                 'Netscape',
                 'Compuserve',
                 'Microsoft',
+                'GroupWise',
+                'SMTP32',
+                'SimpleMatch',
                 'Catchall',
                 ]
     for modname in pipeline:
