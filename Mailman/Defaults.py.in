@@ -451,6 +451,15 @@ GLOBAL_PIPELINE = [
     'ToOutgoing',
     ]
 
+# This is the pipeline which messages sent to the -owner address go through
+OWNER_PIPELINE = [
+    'SpamDetect',
+    'Replybot',
+    'OwnerRecips',
+    'ToOutgoing',
+    ]
+
+
 # This defines syslog() format strings for the SMTPDirect delivery module (see
 # DELIVERY_MODULE above).  Valid %()s string substitutions include:
 #
@@ -613,9 +622,8 @@ MAX_AUTORESPONSES_PER_DAY = 10
 # parallel processes to fork for each qrunner.  If more than one process is
 # used, each will take an equal subdivision of the hash space.
 
-# BAW: eventually we may support weighted hash spaces.
-#
-# BAW: although not enforced, the # of slices must be a power of 2
+# BAW: Eventually we may support weighted hash spaces.
+# BAW: Although not enforced, the # of slices must be a power of 2
 
 QRUNNERS = [
     ('ArchRunner',     1), # messages for the archiver
@@ -626,6 +634,17 @@ QRUNNERS = [
     ('OutgoingRunner', 1), # outgoing messages to the smtpd
     ('VirginRunner',   1), # internally crafted (virgin birth) messages
     ]
+
+# Set this to true to use the `Maildir' delivery option.  If you change this
+# you will need to re-run bin/genaliases for MTAs that don't use list
+# auto-detection.  Also, the line after USE_MAILDIR to your mm_cfg.py file.
+#
+# WARNING: If you want to use Maildir delivery, you /must/ start Mailman's
+# qrunner as root, or you will get permission problems.
+#
+# NOTE: Maildir delivery is experimental for Mailman 2.1.
+USE_MAILDIR = 0
+# QRUNNERS.append(('MaildirRunner', 1))
 
 # After processing every file in the qrunner's slice, how long should the
 # runner sleep for before checking the queue directory again for new files?
@@ -1141,6 +1160,7 @@ ARCHQUEUE_DIR   = os.path.join(QUEUE_DIR, 'archive')
 SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
 VIRGINQUEUE_DIR = os.path.join(QUEUE_DIR, 'virgin')
 BADQUEUE_DIR    = os.path.join(QUEUE_DIR, 'bad')
+MAILDIR_DIR     = os.path.join(QUEUE_DIR, 'maildir')
 
 # Other useful files
 PIDFILE = os.path.join(DATA_DIR, 'master-qrunner.pid')
