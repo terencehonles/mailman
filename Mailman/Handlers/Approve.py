@@ -54,6 +54,7 @@ def process(mlist, msg, msgdata):
             break
         if part is not None:
             lines = part.get_payload().splitlines()
+            line = ''
             for lineno, line in zip(range(len(lines)), lines):
                 if line.strip():
                     break
