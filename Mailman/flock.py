@@ -51,7 +51,8 @@ class FileLock:
         self.__kickstart()
 
     def __del__(self):
-        self.unlock()
+        if self.locked():
+            self.unlock()
 
     def __kickstart(self, force=0):
         # forcing means to remove the original lockfile, and create a new one.
