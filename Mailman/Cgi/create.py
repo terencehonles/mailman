@@ -367,8 +367,6 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     langs = []
     for name in langnames:
         langs.append(revmap[name])
-    syslog('debug', 'langs: %s, langnames: %s, revmap: %s',
-           langs, langnames, revmap)
     try:
         langi = langs.index(mm_cfg.DEFAULT_SERVER_LANGUAGE)
     except ValueError:
