@@ -137,7 +137,8 @@ def main():
             try:
                 list.ConfirmUserPassword(user, form['opw'].value)
                 list.ChangeUserPassword(user, 
-                                        form['newpw'].value, form['confpw'].value)
+                                        form['newpw'].value,
+                                        form['confpw'].value)
             except Errors.MMListNotReady:
                 PrintResults("The list is currently not funcitonal.")
             except Errors.MMNotAMemberError:
@@ -149,8 +150,8 @@ def main():
             except:
                 PrintResults('''An unknown error occured.  <p>
 Please send mail to <a href=%s>%s</a> explaining 
-exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER))
-
+exactly what happened to provoke this error.<p>'''
+                             % (mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER))
 
             PrintResults("Your password has been changed.")
         else:
@@ -158,7 +159,8 @@ exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER, mm_cfg.MA
                          " and your new password twice.")
 
     else:
-        # If keys don't exist, set them to whatever they were. (essentially a noop)
+        # If keys don't exist, set them to whatever they were. (essentially
+        # a noop)
         if form.has_key("digest"):
             digest_value = eval(form["digest"].value)
         else:
@@ -197,18 +199,20 @@ exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER, mm_cfg.MA
         except Errors.MMCantDigestError:
             PrintResults("List doesn't accept digest members.")
         except Errors.MMNotAMemberError:
-            PrintResults("%s isn't subscribed to this list." % mail.GetSender())
+            PrintResults("%s isn't subscribed to this list."
+                         % mail.GetSender())
         except Errors.MMListNotReady:
             PrintResults("List is not functional.")
         except Errors.MMNoSuchUserError:
-            PrintResults("%s is not subscribed to this list." %mail.GetSender())
+            PrintResults("%s is not subscribed to this list."
+                         % mail.GetSender())
         except Errors.MMBadPasswordError:
             PrintResults("You gave the wrong password.")
         except:
             PrintResults('''An unknown error occured.  <p>
     Please send mail to <a href=%s>%s</a> explaining
-    exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER))
-
+    exactly what happened to provoke this error.<p>'''
+                         % (mm_cfg.MAILMAN_OWNER))
 
         list.SetUserOption(user, mm_cfg.DisableDelivery, disable_mail)
         list.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
