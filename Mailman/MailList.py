@@ -1019,6 +1019,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             else:
                 kind = ""
             for name in result.keys():
+                Utils.Reap()
                 if result[name] is None:
                     self.LogMsg("subscribe", "%s: new%s %s",
                                 self._internal_name, kind, name)
