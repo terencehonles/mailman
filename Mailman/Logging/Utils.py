@@ -33,7 +33,7 @@ def LogStdErr(category, label, manual_reprime=1, tee_to_stdout=1):
     from StampedLogger import StampedLogger
     from MultiLogger import MultiLogger
     try:
-        sys.stderr = StampedLogger('error',
+        sys.stderr = StampedLogger(category,
                                    label=label,
                                    manual_reprime=1,
                                    nofail=0)
