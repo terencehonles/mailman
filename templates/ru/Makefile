@@ -16,7 +16,7 @@ diff-%: %
 	@-(cd ../en/ ; cvs -z6 diff $(diff_args) -r$(shell fgrep $< status | awk '{ print $$2; }') $<)
 
 check:
-	(cd ../en/ ; cvs -z6 status ) | ./s2s.py
+	@(cd ../en/ ; cvs -z6 -q status ) | ./s2s.py
 
 todo:
 	@cat status | while read name version status rest; do [ "$$status" == "done" ] || echo $$name; done | sort
