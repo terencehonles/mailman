@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 INTRODUCTION
@@ -31,12 +31,10 @@ INTRODUCTION
 
         http://www.list.org
 
-    Mailman requires Python 1.5.2 or greater, which can be downloaded
+    Mailman requires Python 2.0 or greater, which can be downloaded
     from
 
         http://www.python.org
-
-    It should work fine with Python 1.6 and 2.0 (final or beta).
 
     You will also need an ANSI C compiler; gcc (the GNU C compiler)
     works just fine.  Mailman currently works only on Unix-alike
