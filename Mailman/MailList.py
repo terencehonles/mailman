@@ -320,6 +320,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.discard_these_nonmembers = []
         self.forward_auto_discards = mm_cfg.DEFAULT_FORWARD_AUTO_DISCARDS
         self.generic_nonmember_action = mm_cfg.DEFAULT_GENERIC_NONMEMBER_ACTION
+        # Ban lists
+        self.ban_list = []
 	# BAW: This should really be set in SecurityManager.InitVars()
 	self.password = crypted_password
 
@@ -625,6 +627,28 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         if email.lower() == self.GetListEmail().lower():
             # Trying to subscribe the list to itself!
             raise Errors.MMBadEmailError
+
+        # Is the subscribing address banned from this list?
+        ban = 0
+        for pattern in self.ban_list:
+            if pattern.startswith('^'):
+                # This is a regular expression match
+                try:
+                    if re.search(pattern, email, re.IGNORECASE):
+                        ban = 1
+                        break
+                except re.error:
+                    # BAW: we should probably remove this pattern
+                    pass
+            else:
+                # Do the comparison case insensitively
+                if pattern.lower() == email.lower():
+                    ban = 1
+                    break
+        if ban:
+            syslog('vette', 'banned subscription: %s (matched: %s)',
+                   email, pattern)
+            raise Errors.MembershipIsBanned, pattern
 
         # Sanity check the digest flag
         if digest and not self.digestable:
