@@ -1,0 +1,3 @@
+Mù¾ete znovu povolit zasílání pøíspìvkù na jejich adresy, pokud na¹tívíte
+správcovskou stránku na %(admin_url)s/members a patøièným zpùsobem nastavíte 
+jejich konta.

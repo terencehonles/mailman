@@ -1,0 +1,117 @@
+Nápovìda pro konferenci %(listname)s:
+
+Tato konference je zaji¹»ována programem "Mailman" verze %(version)s.
+Pro její ovládání mù¾ete pou¾ít dále popsané pøíkazy. Pøíkaz mù¾e být
+zadán v tìle dopisu nebo v øádce subject: (v èeských programech
+pøekládáme jako vìc:). Je lep¹í, kdy¾ dopis nebude kromì pøíkazù
+obsahovat nic jiného (tøeba podpis) a  pøíkazy musíte zasílat z
+adresy, ze které jste se pøihlásili. Pokud je omezeno pøispívání do
+konference pouze pro její úèastníky, musíte se pøihlásit z adresy,
+kterou budete pou¾ívat pro pøispívání. Také se mù¾ete pøihlásit
+nìkolikrát, ze v¹ech adres, které budete pou¾ívat a u nìkterých
+nastavit, ¾e si nepøejete zasílat pøíspìvky.
+
+Vìt¹inu zde popsaných akcí mù¾ete mnohem pohodlnìji provést pomocí www
+prohlí¾eèe na adrese:
+
+    %(listinfo_url)s
+
+Pokud zapomenete heslo, mù¾ete si jej nechat na vý¹e uvedené adrese
+zaslat na svou e-mailovou adresu.
+
+Pøíkazy vztahující se na urèitou konferenci (subscribe, who atd.)
+zasílejte na tzv. request adresu, která má tvar 
+jméno_konference-request@..., tedy napøíklad pro konferenci, které se
+jmenuje mailman na adresu mailman-request@....
+
+Konvence zápisu: slova uvedná mezi ostrými závorkami "<>" oznaèují
+povinné parametry, které musí být u pøíkazu uvedeny, slova v hranatých
+závorkách "[]" jsou nepovinné parametry, které uvedete jen tehdy, kdy¾
+po¾adujete nìjakou zvlá¹tní konfiguraci. Závorky "<>" a "[]" nejsou
+souèástí pøíkazù a neuvádìjí se.
+
+Systém rozumí následujícím pøíkazùm:
+
+    subscribe [heslo] [nastavení digest] [address=<adresa>]
+        Pøihlásí Vás do konference. Heslo budete potøebovat pro odhlá¹ení
+	nebo zmìnu nastavení Va¹eho u¾ivatelského konta. Pokud si heslo
+	nezvolíte bude Vám nìjaké vygenerováno. Heslo je periodicky zasíláno
+	v¹em úèastníkùm, zpravidla na zaèátku mìsíce. Nastavení digestu mù¾e
+	být buï "nodigest" nebo "digest". (Bez tìch úvozovek.) Pokud je digest
+	zapnut jsou Vám pøíspìvky z konference zasílány jen jednou dennì (nebo 
+	dle nastavení správcem konference) v jednom mnohadílném dopise.
+	Pokud tuto volbu neuvedete, pou¾ije se volba nastavená správcem 
+	konference jako standardní. 
+	Pokud se chcete pøihlásit z jiné adresy, ne¾ z které odchází po¾adavek,
+	tak vyu¾ijete parametr adress=. Za nìj napí¹ete adresu, kterou chcete
+	pøihlásit, bez úvozovek a závorek, napø. takto: 
+	address=pepa@freemail.fr
+
+    unsubscribe <heslo> [adresa]
+        Odhlá¹ení z konference. Heslo je vy¾adováno, pokud jej neznáte nechte
+	si jej zaslat z webovského rozhranní konference. Pokud se odhla¹ujete
+	z jiné adresy, ne¾ kterou máte v konferenci, zadejte ji jako dal¹í
+	volbu za heslo, tentokrát bez address=.
+
+    who
+        Vrátí seznam úèatníkù, pokud to správce konference povolil.
+
+    info
+        Vrátí informace o konferenci (o èem konference je a podobnì).
+
+    lists
+        Vrátí seznam konferencí, které jsou provozovány na tomto serveru.
+
+    help
+        Vrátí tuto nápovìdu.
+
+    set <option> <on|off> <heslo> 
+        Mìní nastavení Va¹eho u¾ivatelského konta, 
+        jako option mù¾ete pou¾ít:
+
+        ack:
+            Pokud je on, budete dostávat oznámení o úspe¹né distribuci,
+	    Va¹eho pøíspìvku.
+
+        digest:
+	    Budete dostávat jen jeden dopis dennì (nebo dle nastavení správcem
+	    konference) a ten bude obsahovat v¹echny pøíspìvky.
+
+        plain:
+	   Pokud pou¾íváte digest, a zapnete tuto volbu, budete dostávat
+	   pøíspìvky jako èistý text. Jinak to budou MIME zprávy (pro
+	   dne¹ní po¹tovní programy standardní a bì¾nì pou¾itelné).            
+
+        nomail:
+	   Nebudete dostávat pøíspìvky, pou¾ijete buï pøi dlouhodobìj¹í
+	   nepøítomnosti v blízkosti mailu, nebo pøi pøihlá¹ení z více
+	   adres z konferencí s omezením pøispívání na èleny.
+
+        norcv:
+           Pokud bude tato volba aktivní, nebudete dostávat vlastní pøíspìvky
+	   do konference.
+
+        hide:
+           Skryje Vás v seznamu úèastníkù, tak¾e nebudete vidìt pøíkazem who
+	   a na webovském rozhranní.
+
+    options
+        Vrátí pøehled nastavení parametrù Va¹eho konta.
+
+    password <staré heslo> <nové heslo> 
+        Umo¾ní zmìnit heslo. Hesla se uvádìjí bez tìch závorek.
+    
+    end or --
+       Ukonèí zpracování pøíkazù. Pokud je nalezen tento pøíkaz, nebude dal¹í obsah
+       dopisu vùbec analyzován.
+
+Pøíkazy zasílejte na adresu %(requestaddr)s
+
+Questions and concerns for the attention of a person should be sent to
+
+Pøípadnì dotazy nebo námìty zasílejte na adresu
+
+    %(adminaddr)s
+
+
+
