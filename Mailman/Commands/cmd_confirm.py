@@ -59,10 +59,11 @@ Your request has been forwarded to the list moderator for approval."""))
         # already succeeded.
         res.results.append(_('You are already subscribed.'))
         return STOP
-    except Errors.MMNoSuchUserError:
+    except Errors.NotAMemberError:
         # They've already been unsubscribed
         res.results.append(_("""\
-You are not a member.  Have you already unsubscribed?"""))
+You are not current a member.  Have you already unsubscribed or changed
+your email address?"""))
         return STOP
     else:
         res.results.append(_('Confirmation succeeded'))
