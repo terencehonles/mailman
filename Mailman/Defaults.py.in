@@ -1032,6 +1032,9 @@ PENDING_REQUEST_LIFE = days(3)
 # will be dequeued and those recipients will never receive the message.
 DELIVERY_RETRY_PERIOD = days(5)
 
+# How long should we wait before we retry a temporary delivery failure?
+DELIVERY_RETRY_WAIT = hours(1)
+
 
 
 #####
