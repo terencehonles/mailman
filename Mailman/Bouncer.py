@@ -178,7 +178,7 @@ class Bouncer:
             if did == 'disabled' and succeeded == 1:
                 reenable = Utils.maketext(
                     'reenable.txt',
-                    {'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
+                    {'admin_url': self.GetAbsoluteScriptURL('admin'),
                      })
             else:
                 reenable = ''
