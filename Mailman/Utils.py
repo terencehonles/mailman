@@ -597,8 +597,10 @@ def GetRequestURI(fallback=None):
 
 
 # Wait on a dictionary of child pids
-def reap(kids):
+def reap(kids, func=None):
     while kids:
+        if func:
+            func()
         pid, status = os.waitpid(-1, os.WNOHANG)
         if pid <> 0:
             try:
