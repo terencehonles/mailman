@@ -1,6 +1,6 @@
 """Routines for presentation of list-specific HTML text."""
 
-__version__ = "$Revision: 415 $"
+__version__ = "$Revision: 422 $"
 
 
 import os
@@ -229,7 +229,7 @@ class HTMLFormatter:
 	return ('<FORM Method=POST ACTION="%s">' % full_url)
 
     def FormatArchiveAnchor(self):
-	return '<a href="%s">' % self._base_archive_url
+	return '<a href="%s">' % self.GetBaseArchiveURL()
 
     def FormatFormEnd(self):
 	return '</FORM>'
