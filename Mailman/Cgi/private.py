@@ -15,27 +15,28 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Provide a password-interface wrapper around private archives.
-
-Currently this is organized to obtain passwords for Mailman mailing list
-subscribers.
 """
 
 import sys
 import os
 import cgi
 
-from Mailman import Utils, MailList, Errors
-from Mailman.htmlformat import *
-from Mailman.Logging.Utils import LogStdErr
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import Errors
+from Mailman import i18n
+from Mailman import Cookie
+from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
-from Mailman.i18n import _
 
-LogStdErr("error", "private")
+# Set up i18n.  Until we know which list is being requested, we use the
+# server's default.
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
-login_attempted = 0
-_list = None
 
+
 def true_path(path):
     "Ensure that the path is safe by removing .."
     path = path.replace('../', '')
@@ -51,14 +52,17 @@ def content_type(path):
     return 'text/html'
 
 
+
 def main():
     doc = Document()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
     parts = Utils.GetPathPieces()
     if not parts:
         doc.SetTitle(_("Private Archive Error"))
         doc.AddItem(Header(3, _("You must specify a list.")))
         print doc.Format()
-        sys.exit(0)
+        return
 
     path = os.environ.get('PATH_INFO')
     true_filename = os.path.join(
@@ -71,7 +75,7 @@ def main():
         mboxfile = parts[1]
 
     # See if it's the list's mbox file is being requested
-    if listname[-5:] == '.mbox' and mboxfile[-5:] == '.mbox' and \
+    if listname.endswith('.mbox') and mboxfile.endswith('.mbox') and \
            listname[:-5] == mboxfile[:-5]:
         listname = listname[:-5]
     else:
@@ -83,53 +87,38 @@ def main():
     if os.path.isdir(true_filename):
         true_filename = true_filename + '/index.html'
     if not os.path.exists(true_filename) and \
-       os.path.exists(true_filename + '.gz'):
-        # then
+           os.path.exists(true_filename + '.gz'):
         true_filename = true_filename + '.gz'
 
     try:
         mlist = MailList.MailList(listname, lock=0)
-        mlist.IsListInitialized()
     except Errors.MMListError, e:
         msg = _('No such list <em>%(listname)s</em>')
         doc.SetTitle(_("Private Archive Error - %(msg)s"))
         doc.AddItem(Header(2, msg))
         print doc.Format()
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
-        sys.exit(0)
+        return
 
-    form = cgi.FieldStorage()
-    user = password = None
-    if form.has_key('username'):
-        user = form['username']
-        if type(user) == type([]): user = user[0]
-        user = user.value
-    if form.has_key('password'): 
-        password = form['password']
-        if type(password) == type([]): password = password[0]
-        password = password.value
+    i18n.set_language(mlist.preferred_language)
+    doc.set_language(mlist.preferred_language)
+
+    cgidata = cgi.FieldStorage()
+    username = cgidata.getvalue('username', '')
+    password = cgidata.getvalue('password', '')
 
     is_auth = 0
     realname = mlist.real_name
-    message = (_("Please enter your %(realname)s subscription email address "
-               "and password."))
-    try:
-        is_auth = mlist.WebAuthenticate(user=user,
-                                          password=password,
-                                          cookie='archive')
-    except (Errors.MMBadUserError, Errors.MMBadPasswordError,
-            Errors.MMNotAMemberError): 
-        message = (_('Your email address or password were incorrect. '
-                   'Please try again.'))
-    except Errors.MMExpiredCookieError:
-        message = _('Your cookie has gone stale, ' \
-                  'enter password to get a new one.'),
-    except Errors.MMInvalidCookieError:
-        message = _('Error decoding authorization cookie.')
-    except Errors.MMAuthenticationError:
-        message = _('Authentication error.')
-    
-    if not is_auth:
+    message = ''
+
+    if not mlist.WebAuthenticate((mm_cfg.AuthUser,
+                                  mm_cfg.AuthListModerator,
+                                  mm_cfg.AuthListAdmin,
+                                  mm_cfg.AuthSiteAdmin),
+                                 password, username):
+        if cgidata.has_key('submit'):
+            # This is a re-authorization attempt
+            message = Bold(FontSize('+1', _('Authorization failed.'))).Format()
         # Output the password form
         charset = Utils.GetCharSet(mlist.preferred_language)
         print 'Content-type: text/html; charset=' + charset + '\n\n'
@@ -142,6 +131,10 @@ def main():
              'message' : message,
              }, mlist=mlist)
         return
+
+    lang = mlist.GetPreferredLanguage(username)
+    i18n.set_language(lang)
+    doc.set_language(lang)
 
     # Authorization confirmed... output the desired file
     try:
@@ -156,7 +149,8 @@ def main():
         else:
             f = open(true_filename, 'r')
     except IOError:
-        print 'Content-type: text/html; charset=' + Utils.GetCharSet() + '\n\n'
+        charset = Utils.GetCharSet(lang)
+        print 'Content-type: text/html; charset=' + charset + '\n\n'
 
         print "<H3>" + _("Archive File Not Found") + "</H3>"
         print _("No file"), path, '(%s)' % true_filename
