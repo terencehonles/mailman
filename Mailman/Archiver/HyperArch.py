@@ -386,10 +386,10 @@ class Article(pipermail.Article):
                 mustunicode = 1
                 break
         if mustunicode:
-            # Use a large number for maxlinelen so it won't get wrapped
-            h = make_header(pairs, 99999)
             # Use __unicode__() until we can guarantee Python 2.2
             try:
+                # Use a large number for maxlinelen so it won't get wrapped
+                h = make_header(pairs, 99999)
                 return h.__unicode__(), None
             except (UnicodeError, LookupError):
                 # Unknown encoding
