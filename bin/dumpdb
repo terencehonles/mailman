@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -45,11 +45,13 @@ import getopt
 import pprint
 import cPickle
 
-from email.Generator import Generator
-
+# BAW: Import order dependency!  paths must be imported before anything from
+# the email package.
 import paths
 from Mailman.Queue.Switchboard import DumperSwitchboard
 from Mailman.i18n import _
+
+from email.Generator import Generator
 
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
