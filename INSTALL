@@ -338,6 +338,8 @@ upgrade.
       sitelist.cfg).  After you do this, be sure you review the
       configurations via the admin pages for this list.
 
+      Be sure to subscribe yourself to the site list!
+
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       for its basic functionality.  Note that if you're upgrading from
       a previous version of Mailman, you'll want to install the new
