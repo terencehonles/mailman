@@ -14,9 +14,9 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import Config
+import mm_cfg
 
-if Config.USE_CRYPT:
+if mm_cfg.USE_CRYPT:
     try:
         from crypt import crypt
     except ImportError:
@@ -24,7 +24,7 @@ if Config.USE_CRYPT:
 
 if not globals().has_key('crypt'):
     # couldn't import crypt.crypt
-    Config.USE_CRYPT = 0
+    mm_cfg.USE_CRYPT = 0
     # This is good enough.
     # XXX: should we always just use md5?
     def crypt(string, seed):
