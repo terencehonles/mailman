@@ -258,7 +258,7 @@ class Article(pipermail.Article):
                 self.decoded['subject'] = subject
 
     def decode_charset(self, field):
-        if field.find("=?") == -1:
+        if string.find(field, "=?") == -1:
             return None, None
         try:
             s, c = EncWord.decode(field)
@@ -486,6 +486,7 @@ class HyperArchive(pipermail.T):
         self._unlocklist = unlock
         self._lock_file = None
         self._charsets = {}
+        self.charset = None
 
         if hasattr(self.maillist,'archive_volume_frequency'):
             if self.maillist.archive_volume_frequency == 0:
@@ -559,7 +560,7 @@ class HyperArchive(pipermail.T):
             accum = []
             for a in self.archives:
                 accum.append(self.html_TOC_entry(a))
-        d["archive_listing"] = "".join(accum)
+        d["archive_listing"] = string.join(accum, '')
         if not d.has_key("encoding"):
             d["encoding"] = ""
         return self.html_TOC_tmpl % d
