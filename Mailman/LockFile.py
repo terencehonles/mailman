@@ -39,6 +39,9 @@ DEFAULT_LOCK_LIFETIME   = 15
 DEFAULT_SLEEP_INTERVAL = .25
 
 
+from Mailman.Logging.StampedLogger import StampedLogger
+
+
 
 # exceptions which can be raised
 class LockError(Exception):
@@ -69,7 +72,8 @@ class LockFile:
     """A portable way to lock resources by way of the file system."""
     def __init__(self, lockfile,
                  lifetime=DEFAULT_LOCK_LIFETIME,
-                 sleep_interval=DEFAULT_SLEEP_INTERVAL):
+                 sleep_interval=DEFAULT_SLEEP_INTERVAL,
+                 withlogging=0):
         """Creates a lock file using the specified file.
 
         lifetime is the maximum length of time expected to keep this lock.
@@ -86,6 +90,10 @@ class LockFile:
         self.__tmpfname = "%s.%s.%d" % (lockfile,
                                         socket.gethostname(),
                                         os.getpid())
+        if withlogging:
+            self.__log = StampedLogger('locks', self.__tmpfname)
+        else:
+            self.__log = None
         self.__kickstart()
 
     def set_lifetime(self, lifetime):
@@ -93,6 +101,12 @@ class LockFile:
         Takes affect the next time the file is locked.
         """
         self.__lifetime = lifetime
+
+    def __writelog(self, msg):
+        if self.__log:
+            self.__log.write(msg)
+            if msg and msg[-1] <> '\n':
+                self.__log.write('\n')
 
     def refresh(self, newlifetime=None):
         """Refresh the lock.
@@ -108,10 +122,14 @@ class LockFile:
         if newlifetime is not None:
             self.set_lifetime(newlifetime)
         self.__write()
+        self.__writelog('lock lifetime refreshed for %d seconds' %
+                        self.__lifetime)
 
     def __del__(self):
         if self.locked():
             self.unlock()
+        if self.__log:
+            self.__log.close()
 
     def __kickstart(self, force=0):
         # forcing means to remove the original lock file, and create a new
@@ -133,6 +151,7 @@ class LockFile:
                     os.umask(oldmask)
             except IOError:
                 pass
+        self.__writelog('kickstarted')
 
     def __write(self):
         # we expect to release our lock some time in the future.  we want to
@@ -184,6 +203,7 @@ class LockFile:
             timeout_time = time.time() + timeout
         last_pid = -1
         if self.locked():
+            self.__writelog('already locked')
             raise AlreadyLockedError
         stolen = 0
         while 1:
@@ -193,10 +213,12 @@ class LockFile:
                 # we have the lock (since there are no other links to the lock
                 # file), so we can piss on the hydrant
                 self.__write()
+                self.__writelog('got the lock')
                 break
             # we didn't get the lock this time.  let's see if we timed out
             if timeout and timeout_time < time.time():
                 os.unlink(self.__tmpfname)
+                self.__writelog('timed out')
                 raise TimeOutError
             # someone else must have gotten the lock.  let's find out who it
             # is.  if there is some bogosity in the lock file's data then we
@@ -241,6 +263,7 @@ class LockFile:
             # then we assume that the locker crashed
             elif lockrelease < time.time():
                 self.__write()                # steal
+                self.__writelog('stolen!')
                 stolen = 1
                 try:
                     os.unlink(winner)
@@ -261,6 +284,7 @@ class LockFile:
                     # stale hard link, so we raise an exception instead and
                     # let the human operator take care of the problem.
                     if code == errno.ENOENT:
+                        self.__log('stale lockfile found')
                         raise StaleLockFileError(
                             'Stale lock file found linked to file: '
                             +self.__lockfile+' (requires '+
@@ -273,6 +297,7 @@ class LockFile:
             # of the lock to give it up.  Unlink our claim to the lock and
             # sleep for a while, then try again
             os.unlink(self.__tmpfname)
+            self.__writelog('waiting for claim')
             time.sleep(self.__sleep_interval)
 
     # This could error if the lock is stolen.  You must catch it.
@@ -286,6 +311,7 @@ class LockFile:
         if not self.locked():
             raise NotLockedError
         os.unlink(self.__tmpfname)
+        self.__writelog('unlocked')
 
     def locked(self):
         """Returns 1 if we own the lock, 0 if we do not."""
@@ -304,3 +330,4 @@ class LockFile:
     def steal(self):
         """Explicitly steal the lock.  USE WITH CAUTION!"""
         self.__write()
+        self.__writelog('explicitly stolen')
