@@ -44,7 +44,7 @@ CFLAGS=		$(OPT) $(DEFS)
 PACKAGEDIR= 	$(prefix)/messages
 SHELL=		/bin/sh
 DIRSETGID=	chmod g+s
-MSGFMT= 	msgfmt
+MSGFMT= 	@PYTHON@ ../build/bin/msgfmt.py
 MSGMERGE=	msgmerge
 
 # CVS available languages
@@ -71,7 +71,7 @@ PROG=		@PYTHON@ build/bin/pygettext.py
 
 # Rules
 
-all:
+all: mofiles
 
 catalogs: $(TARGETS)
 
@@ -84,8 +84,7 @@ check:
 
 install: doinstall
 
-# we should depend on the .mo files instead of making them!
-doinstall: 
+doinstall: mofiles
 	@for d in $(LANGDIRS); \
 	do \
 	    dir=$(DESTDIR)$(prefix)/$$d; \
@@ -110,17 +109,19 @@ doinstall:
 	    $(INSTALL) -m $(FILEMODE) $$po $$mo $$dir; \
 	done
 
+mofiles: $(MOFILES)
+
 finish:
 
 clean:
+	-rm -f */LC_MESSAGES/mailman.mo
+
+potclean:
 	-rm -f marked.files docstring.files
+	-rm -f Makefile $(POTFILE)
 
-distclean: clean
+distclean: clean potclean
 	-rm -f Makefile
-
-catclean:
-	-rm -f Makefile */LC_MESSAGES/mailman.mo */LC_MESSAGES/mailman.po.old $(POTFILE)
-	-rm *.pot
 
 marked.files:
 	@echo "Calculating marked input files for pygettext"
