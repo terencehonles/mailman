@@ -144,27 +144,27 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     # that is doing the send - and holding a lock - then the delivery will
     # hang pending release of the lock - deadlock.
 
-    if os.fork():
-        return
-    sender = msg.GetSender()
-    try:
+    if not os.fork():
+        # child
+        sender = msg.GetSender()
         try:
-            msg.headers.remove('\n')
-        except ValueError:
-            pass
-        if not msg.getheader('to'):
-            msg.headers.append('To: %s\n' % recipient)
-        for i in add_headers:
-            if i and i[-1] != '\n':
-              i = i + '\n'
-            msg.headers.append(i)
+            try:
+                msg.headers.remove('\n')
+            except ValueError:
+                pass
+            if not msg.getheader('to'):
+                msg.headers.append('To: %s\n' % recipient)
+            for i in add_headers:
+                if i and i[-1] != '\n':
+                  i = i + '\n'
+                msg.headers.append(i)
 
-        text = string.join(msg.headers, '')+ '\n'+ QuotePeriods(msg.body)
-        import OutgoingQueue
-        queue_id = OutgoingQueue.enqueueMessage(sender, recipient, text)
-        TrySMTPDelivery(recipient,sender,text,queue_id)
-    finally:
-        os._exit(0)
+            text = string.join(msg.headers, '')+ '\n'+ QuotePeriods(msg.body)
+            import OutgoingQueue
+            queue_id = OutgoingQueue.enqueueMessage(sender, recipient, text)
+            TrySMTPDelivery(recipient,sender,text,queue_id)
+        finally:
+            os._exit(0)
 
 
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
