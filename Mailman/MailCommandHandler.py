@@ -661,13 +661,13 @@ the email address you gave is insecure."""))
             else:
                 self.AddToResponse(_("Succeeded"))
 
-    def ProcessConfirmCmd(self, args, cmd, mail):
+    def ProcessConfirmCmd(self, args, cmd, msg):
         """Validate confirmation and carry out the subscription."""
         if len(args) <> 1:
             self.AddError(_("Usage: confirm <confirmation string>\n"))
             return
         try:
-            results = self.ProcessConfirmation(args[0])
+            results = self.ProcessConfirmation(args[0], msg)
             op = results[0]
         except Errors.MMBadConfirmation, e:
             # Express in approximate days
