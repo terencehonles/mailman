@@ -19,10 +19,12 @@
 """
 
 import os
+import re
 import cgi
 import types
 import sha
 import urllib
+from string import lowercase, digits
 
 from mimelib.address import unquote
 
@@ -357,11 +359,23 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         # Translate
         v = _(v)
         if k == category:
-            # BAW: Is there a better UI for the category we're currently
-            # displaying?  I'd like a non-underlined, non-colored, italicized,
-            # but live link.
-            v = '<em><font size="+2">%s</font></em>' % v
-        categorylinks.AddItem(Link("%s/%s" % (adminurl, k), v))
+            # Membership management has some subcategories
+            if k == category == 'members':
+                subcat_items = []
+                subcat = Utils.GetPathPieces()[-1]
+                if subcat == 'members':
+                    subcat = 'list'
+                for sub, text in (('list',   _('Membership List')),
+                                  ('add',    _('Mass Subscription')),
+                                  ('remove', _('Mass Removal'))):
+                    if sub == subcat:
+                        text = Bold('[%s]' % text).Format()
+                    subcat_items.append(Link('%s/%s/%s' % (adminurl, k, sub),
+                                             text))
+                v += UnorderedList(*subcat_items).Format()
+            else:
+                v = Bold('[%s]' % v).Format()
+        categorylinks.AddItem(Link('%s/%s' % (adminurl, k), v))
     # Add all the links to the links table...
     linktable.AddRow([categorylinks, otherlinks])
     linktable.AddRowInfo(max(linktable.GetCurrentRowIndex(), 0),
@@ -371,10 +385,10 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     doc.AddItem('<hr>')
     # Now we need to craft the form that will be submitted, which will contain
     # all the variable settings, etc.  This is a bit of a kludge because we
-    # know that the `autoreply' category supports file uploads.
+    # know that the autoreply and members categories supports file uploads.
     if category_suffix:
         encoding = None
-        if category_suffix == 'autoreply':
+        if category_suffix in ('autoreply', 'members'):
             # These have file uploads
             encoding = 'multipart/form-data'
         form = Form('%s/%s' % (adminurl, category_suffix), encoding=encoding)
@@ -393,7 +407,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         andpassmsg +
         '<p>')
 
-    form.AddItem(show_variables(mlist, category, cgidata))
+    form.AddItem(show_variables(mlist, category, cgidata, doc, form))
 
     if category == 'general':
         form.AddItem(Center(password_inputs()))
@@ -405,11 +419,11 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
 
 
 
-def show_variables(mlist, category, cgidata):
+def show_variables(mlist, category, cgidata, doc, form):
     # Produce the category specific variable options table
     if category == 'members':
         # Special case for members section.
-        return membership_options(mlist, cgidata)
+        return membership_options(mlist, cgidata, doc, form)
 
     options = get_config_options(mlist, category)
 
@@ -584,103 +598,178 @@ def get_item_gui_description(mlist, category, varname, descr, detailsp):
 
 
 
-def membership_options(mlist, cgidata):
+def membership_options(mlist, cgidata, doc, form):
+    # Figure out which subcategory we should display
+    subcat = Utils.GetPathPieces()[-1]
+    if subcat not in ('list', 'add', 'remove'):
+        subcat = 'list'
+    # Show the main stuff
     container = Container()
     header = Table(width="100%")
-    header.AddRow([Center(Header(2, _("Membership Management")))])
+    # If we're in the list subcategory, show the membership list
+    if subcat == 'add':
+        header.AddRow([Center(Header(2, _('Mass Subscriptions')))])
+        header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
+                           colspan=2, bgcolor='#99ccff')
+        container.AddItem(header)
+        mass_subscribe(mlist, container)
+        return container
+    if subcat == 'remove':
+        header.AddRow([Center(Header(2, _('Mass Removals')))])
+        header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
+                           colspan=2, bgcolor='#99ccff')
+        container.AddItem(header)
+        mass_remove(mlist, container)
+        return container
+    # Otherwise...
+    header.AddRow([Center(Header(2, _('Membership List')))])
     header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
-                       colspan=2, bgcolor="#99ccff")
+                       colspan=2, bgcolor='#99ccff')
     container.AddItem(header)
-    user_table = Table(width="90%", border='2')
-    user_table.AddRow([Center(Header(4, _("Membership List")))])
-    user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
-                           user_table.GetCurrentCellIndex(),
-                           bgcolor="#cccccc", colspan=9)
-    membercnt = len(mlist.members) + len(mlist.digest_members)
+    usertable = Table(width="90%", border='2')
+    # If there are more members than allowed by chunksize, then we split the
+    # membership up alphabetically.  Otherwise just display them all.
     chunksz = mlist.admin_member_chunksize
-    user_table.AddRow(
-        [Center(Italic(_(
-        "(%(membercnt)s members total, max. %(chunksz)s at a time displayed)")
-                       ))])
-    user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
-                           user_table.GetCurrentCellIndex(),
-                           bgcolor="#cccccc", colspan=9)
-
-    user_table.AddRow(map(Center, [_('member address'), _('subscr'),
-                                   _('hide'), _('nomail'), _('ack'),
-                                   _('not metoo'),
-                                   _('digest'), _('plain'), _('language')]))
-    rowindex = user_table.GetCurrentRowIndex()
-    for i in range(9):
-        user_table.AddCellInfo(rowindex, i, bgcolor='#cccccc')
     all = mlist.GetMembers() + mlist.GetDigestMembers()
-    if len(all) > mlist.admin_member_chunksize:
-        chunks = Utils.chunkify(all, mlist.admin_member_chunksize)
-        if not cgidata.has_key("chunk"):
-            chunk = 0
+    all.sort(lambda x, y: cmp(x.lower(), y.lower()))
+    # See if the query has a regular expression
+    regexp = ''
+    if cgidata.has_key('findmember'):
+        regexp = cgidata['findmember'].value
+        try:
+            cre = re.compile(regexp, re.IGNORECASE)
+        except re.error:
+            add_error_message(doc, 'Bad regular expression: ' + regexp)
         else:
-            chunk = int(cgidata["chunk"].value)
-        all = chunks[chunk]
-
-        footer = _('''<p><em>To View other sections, click on the appropriate
-        range listed below</em>''')
-
-        chunk_indices = range(len(chunks))
-        chunk_indices.remove(chunk)
-        buttons = []
-        for ci in chunk_indices:
-            start, end = chunks[ci][0], chunks[ci][-1]
-            url = mlist.GetScriptURL('admin')
-            buttons.append("<a href=%(url)s/members?chunk=%(ci)d>" +
-            _("from %(start)s to %(end)s") + "</a>")
-        buttons = apply(UnorderedList, tuple(buttons))
-        footer = footer + buttons.Format() + "<p>"
+            all = [s for s in all if cre.search(s)]
+    chunkindex = None
+    bucket = None
+    actionurl = None
+    if len(all) < chunksz:
+        members = all
     else:
-        all.sort()
-        footer = "<p>"
-    for member in all:
-        mtext = '<a href="%s">%s</a>' % (
-            mlist.GetOptionsURL(member, obscure=1),
-            mlist.GetUserSubscribedAddress(member))
-        cells = [mtext +
-                 '<input type="hidden" name="user" value="%s">' %
-                 urllib.quote(member),
-                 Center(CheckBox(member + "_subscribed", "on", 1).Format())]
-        for opt in ("hide", "nomail", "ack", "notmetoo"):
-            if mlist.GetUserOption(member,MailCommandHandler.option_info[opt]):
-                value = "on"
-                checked = 1
-            else:
-                value = "off"
-                checked = 0
-            box = CheckBox("%s_%s" % (member, opt), value, checked)
-            cells.append(Center(box.Format()))
-        if mlist.members.has_key(member):
-            cells.append(Center(CheckBox(member + "_digest",
-                                         "off", 0).Format()))
+        # Split them up alphabetically, and then split the alphabetical
+        # listing by chunks
+        buckets = {}
+        for addr in all:
+            members = buckets.setdefault(addr[0].lower(), [])
+            members.append(addr)
+        # Now figure out which bucket we want
+        bucket = 'a'
+        # POST methods, even if their actions have a query string, don't get
+        # put into FieldStorage's keys :-(
+        qs = cgi.parse_qs(os.environ['QUERY_STRING'])
+        if qs.has_key('letter'):
+            bucket = qs['letter'][0].lower()
+            if bucket not in digits + lowercase:
+                bucket = None
+        if not bucket or not buckets.has_key(bucket):
+            keys = buckets.keys()
+            keys.sort()
+            bucket = keys[0]
+        members = buckets[bucket]
+        action = mlist.GetScriptURL('admin') + '/members?letter=%s' % bucket
+        if len(members) <= chunksz:
+            form.set_action(action)
         else:
-            cells.append(Center(CheckBox(member + "_digest",
-                                         "on", 1).Format()))
-        if mlist.GetUserOption(member,MailCommandHandler.option_info['plain']):
+            i, r = divmod(len(members), chunksz)
+            numchunks = i + (not not r * 1)
+            # Now chunk them up
+            chunkindex = 0
+            if qs.has_key('chunk'):
+                try:
+                    chunkindex = int(qs['chunk'][0])
+                except ValueError:
+                    chunkindex = 0
+                if chunkindex < 0 or chunkindex > numchunks:
+                    chunkindex = 0
+            members = members[chunkindex*chunksz:(chunkindex+1)*chunksz]
+            # And set the action URL
+            form.set_action(action + '&chunk=%s' % chunkindex)
+    # So now members holds all the addresses we're going to display
+    allcnt = len(all)
+    if bucket:
+        membercnt = len(members)
+        usertable.AddRow([Center(Italic(_(
+            '%(allcnt)s members total, %(membercnt)s shown')))])
+    else:
+        usertable.AddRow([Center(Italic(_('%(allcnt)s members total')))])
+    usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
+                           usertable.GetCurrentCellIndex(),
+                           bgcolor="#cccccc", colspan=9)
+    # Add the alphabetical links
+    if bucket:
+        cells = []
+        for letter in digits + lowercase:
+            if not buckets.get(letter):
+                continue
+            url = mlist.GetScriptURL('admin') + '/members?letter=%s' % letter
+            if letter == bucket:
+                show = Bold('[%s]' % letter.upper()).Format()
+            else:
+                show = letter.upper()
+            cells.append(Link(url, show).Format())
+        joiner = '&nbsp;'*2 + '\n'
+        usertable.AddRow([Center(joiner.join(cells))])
+    usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
+                           usertable.GetCurrentCellIndex(),
+                           bgcolor="#cccccc", colspan=9)
+    usertable.AddRow([Center(h) for h in (_('member address<br>member name'),
+                                          _('subscr'), _('hide'), _('nomail'),
+                                          _('ack'), _('not metoo'),
+                                          _('digest'), _('plain'),
+                                          _('language'))])
+    rowindex = usertable.GetCurrentRowIndex()
+    for i in range(9):
+        usertable.AddCellInfo(rowindex, i, bgcolor='#cccccc')
+    # Find the longest name in the list
+    if members:
+        longest = max([len(s) for s in members])
+    else:
+        longest = 0
+    # Now populate the rows
+    for addr in members:
+        link = Link(mlist.GetOptionsURL(addr, obscure=1),
+                    mlist.GetUserSubscribedAddress(addr))
+#        name = TextBox(addr + '_realname', 'NOT YET IMPLEMENTED', size=longest)
+        cells = [link.Format() + '<br>' +
+                 #name.Format() + '\n' +
+                 Hidden('user', urllib.quote(addr)).Format(),
+                 Center(CheckBox(addr + '_subscribed', 'on', 1).Format()),
+                 ]
+        for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
+            if mlist.GetUserOption(addr, MailCommandHandler.option_info[opt]):
+                value = 'on'
+                check = 1
+            else:
+                value = 'off'
+                checked = 0
+            box = CheckBox('%s_%s' % (addr, opt), value, checked)
+            cells.append(Center(box).Format())
+        if mlist.members.has_key(addr):
+            cells.append(Center(CheckBox(addr + '_digest', 'off', 0).Format()))
+        else:
+            cells.append(Center(CheckBox(addr + '_digest', 'on', 1).Format()))
+        if mlist.GetUserOption(addr, MailCommandHandler.option_info['plain']):
             value = 'on'
             checked = 1
         else:
             value = 'off'
             checked = 0
-        cells.append(Center(CheckBox('%s_plain' % member, value, checked)))
-        user_table.AddRow(cells)
-        
-        # format preferred user's language
-        pl = mlist.GetPreferredLanguage(member)
-        ListLangs = mlist.GetAvailableLanguages()
-        LangDescr = map(_, map(Utils.GetLanguageDescr, ListLangs))
+        cells.append(Center(CheckBox('%s_plain' % addr, value, checked)))
+        # User's preferred language
+        langpref = mlist.GetPreferredLanguage(addr)
+        langs = mlist.GetAvailableLanguages()
+        langdescs = [_(Utils.GetLanguageDescr(lang)) for lang in langs]
         try:
-            selected = ListLangs.index(pl)
-        except:
+            selected = langs.index(langpref)
+        except ValueError:
             selected = 0
-        cells.append(Center(SelectOptions(member + '_language' , ListLangs, 
-                                              LangDescr, selected).Format()))
-    container.AddItem(Center(user_table))
+        cells.append(Center(SelectOptions(addr + '_language', langs,
+                                          langdescs, selected)).Format())
+        usertable.AddRow(cells)
+    # Add the usertable and a legend
+    container.AddItem(Center(usertable))
     legend = UnorderedList()
     legend.AddItem(_('<b>subscr</b> -- Is the member subscribed?'))
     legend.AddItem(
@@ -701,30 +790,81 @@ def membership_options(mlist, cgidata):
         text digests?  (otherwise, MIME)'''))
     legend.AddItem(_("<b>language</b> -- Language preferred by the user"))
     container.AddItem(legend.Format())
-    container.AddItem(footer)
-    t = Table(width="90%")
-    t.AddRow([Center(Header(4, _("Mass Subscribe Members")))])
-    t.AddCellInfo(t.GetCurrentRowIndex(),
-                  t.GetCurrentCellIndex(),
-                  bgcolor="#cccccc", colspan=8)
-    if mlist.send_welcome_msg:
-        nochecked = 0
-        yeschecked = 1
-    else:
-        nochecked = 1
-        yeschecked = 0
-    t.AddRow([("<b>1.</b>" + _("Send Welcome message to this batch? ")
-               + RadioButton("send_welcome_msg_to_this_batch", 0,
-                             nochecked).Format()
-               + _(" no ")
-               + RadioButton("send_welcome_msg_to_this_batch", 1,
-                             yeschecked).Format()
-               + _(" yes "))])
-    t.AddRow(["<b>2.</b>" + _("Enter one address per line:") + "<p>"])
-    container.AddItem(Center(t))
-    container.AddItem(Center(TextArea(name='subscribees',
-                                      rows=10,cols=60,wrap=None)))
+
+    # There may be additional chunks
+    if chunkindex is not None:
+        buttons = []
+        url = mlist.GetScriptURL('admin') + '/members?letter=%s&' % bucket
+        footer = _('''<p><em>To view more members, click on the appropriate
+        range listed below:</em>''')
+        chunkmembers = buckets[bucket]
+        last = len(chunkmembers)
+        for i in range(numchunks):
+            if i == chunkindex:
+                continue
+            start = chunkmembers[i*chunksz]
+            end = chunkmembers[min((i+1)*chunksz, last)-1]
+            link = Link(url + 'chunk=%d' % i, _('from %(start)s to %(end)s'))
+            buttons.append(link)
+        buttons = UnorderedList(*buttons)
+        container.AddItem(footer + buttons.Format() + '<p>')
+    # Search for member
+    container.AddItem(
+        _('Find members by regular expression:') +
+        TextBox('findmember', value=regexp, size='50%').Format() +
+        SubmitButton('findmember_btn', 'Search...').Format())
     return container
+
+
+def mass_subscribe(mlist, container):
+    # MASS SUBSCRIBE
+    t = Table(width='90%')
+    # Ask whether to send a welcome message and/or to notify the admin
+    t.AddRow([_('Send welcome message to this batch? ')
+              + RadioButton('send_welcome_msg_to_this_batch', 0,
+                            not mlist.send_welcome_msg).Format()
+              + _(' no ')
+              + RadioButton('send_welcome_msg_to_this_batch', 1,
+                            mlist.send_welcome_msg).Format()
+              + _(' yes ')])
+    t.AddRow([_('Send notifications to the list owner? ')
+              + RadioButton('send_notifications_to_list_owner', 0,
+                            not mlist.admin_notify_mchanges).Format()
+              + _(' no ')
+              + RadioButton('send_notifications_to_list_owner', 1,
+                            mlist.admin_notify_mchanges).Format()
+              + _(' yes ')])
+    t.AddRow([Italic(_('Enter one address per line below...')).Format()
+              + '<br>'])
+    t.AddRow([Center(TextArea(name='subscribees',
+                              rows=10, cols='100%', wrap=None))])
+    t.AddRow([Italic(_('...or specify a file to upload:'))])
+    t.AddRow([FileUpload('subscribees_upload', cols='50').Format()])
+    container.AddItem(Center(t))
+
+
+def mass_remove(mlist, container):
+    # MASS UNSUBSCRIBE
+    t = Table(width='90%')
+    t.AddRow([_('Send unsubscription acknowledgement to the user? ')
+              + RadioButton('send_unsub_ack_to_this_batch', 0, 1).Format()
+              + _(' no ')
+              + RadioButton('send_unsub_ack_to_this_batch', 1, 0).Format()
+              +_(' yes ')])
+    t.AddRow([_('Send notifications to the list owner? ')
+              + RadioButton('send_unsub_notifications_to_list_owner', 0,
+                            not mlist.admin_notify_mchanges).Format()
+              + _(' no ')
+              + RadioButton('send_unsub_notifications_to_list_owner', 1,
+                            mlist.admin_notify_mchanges).Format()
+              + _(' yes ')])
+    t.AddRow([Italic(_('Enter one address per line below...')).Format()
+              + '<br>'])
+    t.AddRow([Center(TextArea(name='unsubscribees',
+                              rows=10, cols='100%', wrap=None))])
+    t.AddRow([Italic(_('...or specify a file to upload:'))])
+    t.AddRow([FileUpload('unsubscribees_upload', cols='50').Format()])
+    container.AddItem(Center(t))
 
 
 
@@ -818,36 +958,37 @@ def get_valid_value(mlist, prop, my_type, val, dependant):
 
 
 
-def change_options(mlist, category, cgi_info, document):
+def change_options(mlist, category, cgidata, doc):
     confirmed = 0
-    if cgi_info.has_key('newpw'):
-        if cgi_info.has_key('confirmpw'):
-            if cgi_info.has_key('adminpw') and cgi_info['adminpw'].value:
+    if cgidata.has_key('newpw'):
+        if cgidata.has_key('confirmpw'):
+            if cgidata.has_key('adminpw') and cgidata['adminpw'].value:
                 try:
-                    mlist.ConfirmAdminPassword(cgi_info['adminpw'].value)
+                    mlist.ConfirmAdminPassword(cgidata['adminpw'].value)
                     confirmed = 1
                 except Errors.MMBadPasswordError:
-                    add_error_message(document,
-                                    _('Incorrect administrator password'),
-                                    tag='Error: ')
+                    add_error_message(doc,
+                                      _('Incorrect administrator password'),
+                                      tag='Error: ')
             if confirmed:
-                new = cgi_info['newpw'].value.strip()
-                confirm = cgi_info['confirmpw'].value.strip()
+                new = cgidata['newpw'].value.strip()
+                confirm = cgidata['confirmpw'].value.strip()
                 if new == '' and confirm == '':
-                    add_error_message(document,
-                                    _('Empty admin passwords are not allowed'),
-                                    tag='Error: ')
+                    add_error_message(
+                        doc,
+                        _('Empty admin passwords are not allowed'),
+                        tag='Error: ')
                 elif new == confirm:
                     mlist.password = sha.new(new).hexdigest()
                     # Re-authenticate (to set new cookie)
                     mlist.WebAuthenticate(password=new, cookie='admin')
                 else:
-                    add_error_message(document, _('Passwords did not match'),
-                                    tag='Error: ')
+                    add_error_message(doc, _('Passwords did not match'),
+                                      tag='Error: ')
         else:
-            add_error_message(document,
-                            _('You must type in your new password twice'),
-                            tag='Error: ')
+            add_error_message(doc,
+                              _('You must type in your new password twice'),
+                              tag='Error: ')
     #
     # for some reason, the login page mangles important values for the list
     # such as .real_name so we only process these changes if the category
@@ -855,29 +996,29 @@ def change_options(mlist, category, cgi_info, document):
     # -scott 19980515
     #
     if category != 'members' and \
-            not cgi_info.has_key("request_login") and \
-            len(cgi_info.keys()) > 1:
+            not cgidata.has_key("request_login") and \
+            len(cgidata.keys()) > 1:
         # then
-        if cgi_info.has_key("subscribe_policy"):
+        if cgidata.has_key("subscribe_policy"):
             if not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
                 #
                 # we have to add one to the value because the
                 # page didn't present an open list as an option
                 #
-                page_setting = int(cgi_info["subscribe_policy"].value)
-                cgi_info["subscribe_policy"].value = str(page_setting + 1)
+                page_setting = int(cgidata["subscribe_policy"].value)
+                cgidata["subscribe_policy"].value = str(page_setting + 1)
         opt_list = get_config_options(mlist, category)
         for item in opt_list:
             if type(item) <> types.TupleType or len(item) < 5:
                 continue
             property, kind, args, deps, desc = item[0:5]
-            if cgi_info.has_key(property+'_upload') and \
-                   cgi_info[property+'_upload'].value:
-                val = cgi_info[property+'_upload'].value
-            elif not cgi_info.has_key(property):
+            if cgidata.has_key(property+'_upload') and \
+                   cgidata[property+'_upload'].value:
+                val = cgidata[property+'_upload'].value
+            elif not cgidata.has_key(property):
                 continue
             else:
-                val = cgi_info[property].value
+                val = cgidata[property].value
             value = get_valid_value(mlist, property, kind, val, deps)
             #
             # This is an ugly, ugly hack
@@ -897,7 +1038,7 @@ def change_options(mlist, category, cgi_info, document):
                 if property == 'real_name' and \
                        value.lower() <> mlist._internal_name.lower():
                     # then don't install this value.
-                    document.AddItem(_("""<p><b>real_name</b> attribute not
+                    doc.AddItem(_("""<p><b>real_name</b> attribute not
                     changed!  It must differ from the list's name by case
                     only.<p>"""))
                     continue
@@ -906,15 +1047,19 @@ def change_options(mlist, category, cgi_info, document):
                 if property == 'preferred_language':
                     i18n.set_language(value)
                 setattr(mlist, property, value)
-    #
-    # mass subscription processing for members category
-    #
-    if cgi_info.has_key('subscribees'):
-        name_text = cgi_info['subscribees'].value
-        name_text = name_text.replace('\r', '')
-        names = filter(None, [unquote(n.strip()) for n in name_text.split(NL)])
+    # mass subscription, removal processing for members category
+    subscriptions = ''
+    if cgidata.has_key('subscribees'):
+        subscriptions += cgidata['subscribees'].value
+    if cgidata.has_key('subscribees_upload') and \
+           cgidata['subscribees_upload'].value:
+        subscriptions += cgidata['subscribees_upload'].value
+    if subscriptions:
+        subscriptions.replace('\r', '')
+        names = filter(None,
+                       [unquote(n.strip()) for n in subscriptions.split(NL)])
         send_welcome_msg = int(
-            cgi_info["send_welcome_msg_to_this_batch"].value)
+            cgidata['send_welcome_msg_to_this_batch'].value)
         digest = 0
         if not mlist.digestable:
             digest = 0
@@ -923,7 +1068,7 @@ def change_options(mlist, category, cgi_info, document):
         subscribe_errors = []
         subscribe_success = []
         result = mlist.ApprovedAddMembers(names, None,
-                                        digest, None, send_welcome_msg)
+                                          digest, None, send_welcome_msg)
         for name in result.keys():
             if result[name] is None:
                 subscribe_success.append(name)
@@ -937,25 +1082,59 @@ def change_options(mlist, category, cgi_info, document):
                     if name == '':
                         name = '&lt;blank line&gt;'
                     subscribe_errors.append(
-                        (name, _("Bad/Invalid email address")))
+                        (name, _('Bad/Invalid email address')))
                 elif e is Errors.MMHostileAddress:
                     subscribe_errors.append(
-                        (name, _("Hostile Address (illegal characters)")))
+                        (name, _('Hostile Address (illegal characters)')))
         if subscribe_success:
-            document.AddItem(Header(5, _("Successfully Subscribed:")))
-            document.AddItem(apply(UnorderedList, tuple((subscribe_success))))
-            document.AddItem("<p>")
+            doc.AddItem(Header(5, _('Successfully Subscribed:')))
+            doc.AddItem(UnorderedList(*subscribe_success))
+            doc.AddItem('<p>')
             # ApprovedAddMembers will already have saved the list for us.
         if subscribe_errors:
-            document.AddItem(Header(5, _("Error Subscribing:")))
-            items = map(lambda x: "%s -- %s" % (x[0], x[1]), subscribe_errors)
-            document.AddItem(apply(UnorderedList, tuple((items))))
-            document.AddItem("<p>")
+            doc.AddItem(Header(5, _('Error Subscribing:')))
+            items = ['%s -- %s' % (x0, x1) for x0, x1 in subscribe_errors]
+            doc.AddItem(UnorderedList(*items))
+            doc.AddItem('<p>')
+    # Unsubscriptions
+    removals = ''
+    if cgidata.has_key('unsubscribees'):
+        removals += cgidata['unsubscribees'].value
+    if cgidata.has_key('unsubscribees_upload') and \
+           cgidata['unsubscribees_upload'].value:
+        removals += cgidata['unsubscribees_upload'].value
+    if removals:
+        removals.replace('\r', '')
+        names = filter(None, [unquote(n.strip()) for n in removals.split(NL)])
+        send_unsub_notifications = int(
+            cgidata['send_unsub_notifications_to_list_owner'].value)
+        userack = int(
+            cgidata['send_unsub_ack_to_this_batch'].value)
+        unsubscribe_errors = []
+        unsubscribe_success = []
+        for addr in names:
+            try:
+                mlist.DeleteMember(addr, whence='admin mass unsub',
+                                   admin_notif=send_unsub_notifications,
+                                   userack=userack)
+                unsubscribe_success.append(addr)
+            except Errors.MMNoSuchUserError:
+                unsubscribe_errors.append(addr)
+        if unsubscribe_success:
+            doc.AddItem(Header(5, _('Successfully Unsubscribed:')))
+            doc.AddItem(UnorderedList(*unsubscribe_success))
+            doc.AddItem('<p>')
+            # ApprovedAddMembers will already have saved the list for us.
+        if unsubscribe_errors:
+            doc.AddItem(Header(3, Bold(FontAttr(
+                _('Cannot unsubscribe non-members:'),
+                color='#ff0000', size='+2')).Format()))
+            doc.AddItem(UnorderedList(*unsubscribe_errors))
+            doc.AddItem('<p>')
     #
     # do the user options for members category
-    #
-    if cgi_info.has_key('user'):
-        user = cgi_info["user"]
+    if cgidata.has_key('user'):
+        user = cgidata["user"]
         if type(user) is types.ListType:
             users = []
             for ui in range(len(user)):
@@ -964,13 +1143,13 @@ def change_options(mlist, category, cgi_info, document):
             users = [urllib.unquote(user.value)]
         errors = []
         for user in users:
-            if not cgi_info.has_key('%s_subscribed' % (user)):
+            if not cgidata.has_key('%s_subscribed' % (user)):
                 try:
                     mlist.DeleteMember(user)
                 except Errors.MMNoSuchUserError:
                     errors.append((user, _('Not subscribed')))
                 continue
-            value = cgi_info.has_key('%s_digest' % user)
+            value = cgidata.has_key('%s_digest' % user)
             try:
                 mlist.SetUserDigest(user, value, force=1)
             except (Errors.MMNotAMemberError,
@@ -978,23 +1157,23 @@ def change_options(mlist, category, cgi_info, document):
                     Errors.MMAlreadyUndigested):
                 pass
 
-            if cgi_info.has_key(user+'_language'):
-                newlang = cgi_info[user+'_language'].value
+            if cgidata.has_key(user+'_language'):
+                newlang = cgidata[user+'_language'].value
                 oldlang = mlist.GetPreferredLanguage(user)
                 if newlang <> oldlang:
                     mlist.SetPreferredLanguage(user, newlang)
                   
             for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
                 opt_code = MailCommandHandler.option_info[opt]
-                if cgi_info.has_key("%s_%s" % (user, opt)):
+                if cgidata.has_key("%s_%s" % (user, opt)):
                     mlist.SetUserOption(user, opt_code, 1, save_list=0)
                 else:
                     mlist.SetUserOption(user, opt_code, 0, save_list=0)
         if errors:
-            document.AddItem(Header(5, _("Error Unsubscribing:")))
+            doc.AddItem(Header(5, _("Error Unsubscribing:")))
             items = ['%s -- %s' % (x[0], x[1]) for x in errors]
-            document.AddItem(apply(UnorderedList, tuple((items))))
-            document.AddItem("<p>")
+            doc.AddItem(apply(UnorderedList, tuple((items))))
+            doc.AddItem("<p>")
 
 
 
