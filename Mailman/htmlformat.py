@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,6 +31,7 @@ import types
 import string
 import mm_cfg
 import Utils
+from Mailman.i18n import _
 
 
 # Format an arbitrary object.
@@ -263,13 +264,24 @@ class Container:
 
 class Document(Container):
     title = None
+    language = None
+
+    def set_language(self, lang=None):
+        self.language = lang
+
+    def get_content_type(self):
+        ctype = 'Content-type: text/html'
+        if self.language:
+            ctype += '; charset=' + Utils.GetCharSet(self.language)
+        return ctype
 
     def SetTitle(self, title):
 	self.title = title
 
     def Format(self, indent=0, **kws):
         tab = ' ' * indent
-        output = ['Content-type: text/html',
+
+        output = [self.get_content_type(),
                   '',
                   tab,
                   '<HTML>',
@@ -292,8 +304,8 @@ class Document(Container):
 class HeadlessDocument(Document):
     """Document without head section, for templates that provide their own."""
     def Format(self, indent=0, **kws):
-        return 'Content-type: text/html; charset=' + Utils.GetCharSet() + \
-               '\n\n' + Container.Format(self, indent)
+        return self.get_content_type() + '\n\n' + \
+               Container.Format(self, indent)
     
 class StdContainer(Container):
     def Format(self, indent=0):
@@ -530,17 +542,18 @@ def MailmanLogo():
         gnulink = Link(GNU_URL,
                        '<img src="%s" alt="GNU\'s Not Unix" border=0>' %
                        logo(GNU_HEAD))
-        text = Container(Link(MAILMAN_URL, 'Mailman home page'),
+        text = Container(Link(MAILMAN_URL, _('Mailman home page')),
                          '<br>',
-                         Link(PYTHON_URL, 'Python home page'),
+                         Link(PYTHON_URL, _('Python home page')),
                          '<br>',
-                         Link(GNU_URL, 'GNU home page'),
+                         Link(GNU_URL, _('GNU home page')),
                          )
         t.AddRow([mmlink, pylink, gnulink, text])
     else:
         # use only textual links
+        version = mm_cfg.VERSION
         mmlink = Link(MAILMAN_URL,
-                      _('Delivered by Mailman<br>version %s') % mm_cfg.VERSION)
+                      _('Delivered by Mailman<br>version %(version)s'))
         pylink = Link(PYTHON_URL, _('Python Powered'))
         gnulink = Link(GNU_URL, _("Gnu's Not Unix"))
         t.AddRow([mmlink, pylink, gnulink])
@@ -549,7 +562,7 @@ def MailmanLogo():
 
 class SelectOptions:
    def __init__(self, varname, values, legend, 
-                      selected=0, size=1, multiple=None):
+                selected=0, size=1, multiple=None):
       self.varname  = varname
       self.values   = values
       self.legend   = legend
