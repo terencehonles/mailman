@@ -704,7 +704,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              to whether another option restricts posting to members.
 
              <ul>
-                 <li>If y<i>member_posting_only</i> is 'yes', then entries
+                 <li>If <i>member_posting_only</i> is 'yes', then entries
                  added here will have posting privilege in addition to list
                  members.
 
