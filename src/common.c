@@ -86,6 +86,9 @@ fatal(const char* ident, int exitcode, char* format, ...)
 	/* If we're running as a CGI script, we also want to write the log
 	 * file out as HTML, so the admin who is probably trying to debug his
 	 * installation will have a better clue as to what's going on.
+	 *
+	 * Otherwise, print to stderr a short message, hopefully returned to
+	 * the sender by the MTA.
 	 */
 	if (running_as_cgi) {
 		printf("Content-type: text/html\n\n");
@@ -104,6 +107,8 @@ fatal(const char* ident, int exitcode, char* format, ...)
 		printf(log_entry);
 		printf("</pre>\n");
 	}
+	else
+		fprintf(stderr, log_entry);
 #endif /* HELPFUL */
 	exit(exitcode);
 }
