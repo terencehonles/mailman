@@ -75,6 +75,14 @@ class CommandRunner(Runner):
             # appears to get a message from a "likely bounce sender" then it
             # simply discards the message.  BAW: should it save it some place?
             #
+            # Note that the <list>-owner alias actually can explode into two
+            # different groups of end-user addresses.  Normally, these
+            # addresses include only the mlist.owner addresses, a.k.a. the
+            # list administators.  If the message metadata contains the key
+            # 'tomoderators', then this message will also include the
+            # mlist.moderator addresses, a.k.a. the list moderators (who only
+            # have permission to tend to pending requests).
+            #
             # <list>-request -- this message is an emailed command, sent to
             # the command robot.  Pass it on to the command handler.
             #
@@ -119,9 +127,12 @@ class CommandRunner(Runner):
                 # Any messages to the owner address must have Errors-To: set
                 # back to the owners address so bounce loops can be broken, as
                 # per the code above.
+                recips = mlist.owner[:]
+                if msgdata.get('tomoderators'):
+                    recips.extend(mlist.moderator)
                 virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
                 virginq.enqueue(msg, msgdata,
-                                recips = mlist.owner,
+                                recips = recips,
                                 errorsto = mlist.GetOwnerEmail(),
                                 noack = 0         # enable Replybot
                                 )
