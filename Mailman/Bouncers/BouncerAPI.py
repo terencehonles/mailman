@@ -40,6 +40,7 @@ def ScanMessages(mlist, msg, testing=0):
                 'Yahoo',
                 'Caiwireless',
                 'Smail',
+                'XFailedRecip',
                 'Catchall',
                 ]
     for modname in pipeline:
