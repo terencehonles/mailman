@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.0 
+# From configure.in Revision: 2.1 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -615,7 +615,7 @@ fi
 PYTHON=$with_python
 echo "$ac_t""$PYTHON" 1>&6
 
-# See if Python is new enough.  1.5.2 or better is required.
+# See if Python is new enough.  2.0 final or better is required.
 echo $ac_n "checking Python version""... $ac_c" 1>&6
 echo "configure:621: checking Python version" >&5
 
@@ -626,8 +626,8 @@ try:
     v = sys.hexversion
 except AttributeError:
     v = 0
-# int of hexversion 0x01050200
-if v >= 17105408:
+# int of hexversion 0x20000f1
+if v >= 33554673:
     s = string.split(sys.version)[0]
 else:
     s = ""
@@ -644,7 +644,7 @@ then
     { echo "configure: error: 
 
 ***** $PYTHON is too old (or broken)
-***** Python 1.5.2 or newer is required" 1>&2; exit 1; }
+***** Python 2.0 or newer is required" 1>&2; exit 1; }
 fi
 echo "$ac_t""$version" 1>&6
 

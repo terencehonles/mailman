@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2895 $)
+AC_REVISION($Revision: 3198 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -52,7 +52,7 @@ AC_SUBST(PYTHON)
 PYTHON=$with_python
 AC_MSG_RESULT($PYTHON)
 
-# See if Python is new enough.  1.5.2 or better is required.
+# See if Python is new enough.  2.0 final or better is required.
 AC_MSG_CHECKING(Python version)
 changequote(,)
 cat > conftest.py <<EOF
@@ -62,8 +62,8 @@ try:
     v = sys.hexversion
 except AttributeError:
     v = 0
-# int of hexversion 0x01050200
-if v >= 17105408:
+# int of hexversion 0x20000f1
+if v >= 33554673:
     s = string.split(sys.version)[0]
 else:
     s = ""
@@ -80,7 +80,7 @@ then
     AC_MSG_ERROR([
 
 ***** $PYTHON is too old (or broken)
-***** Python 1.5.2 or newer is required])
+***** Python 2.0 or newer is required])
 fi
 AC_MSG_RESULT($version)
 
