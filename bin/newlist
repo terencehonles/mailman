@@ -207,7 +207,7 @@ def main():
                  'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
                  'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
                  'hostname'    : mlist.host_name,
-                 })
+                 }, mlist.preferred_language))
             msg = Message.UserNotification(
                 owner_mail,
                 'mailman-owner@' + mlist.host_name,

@@ -48,7 +48,7 @@ def main():
                      'host_name': mlist.host_name,
                      'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
                      'real_name': mlist.real_name,
-                     })
+                     }, mlist.preferred_language)
                 text = text + '\n' + pending_requests(mlist)
                 subject = '%d %s admin request(s) waiting' % (
                     count, mlist.real_name)
