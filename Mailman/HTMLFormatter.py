@@ -346,13 +346,20 @@ class HTMLFormatter:
         return ''
 
     def ParseTags(self, template, replacements, lang=None):
+        if lang is None:
+            charset = 'us-ascii'
+        else:
+            charset = Utils.GetCharSet(lang)
         text = Utils.maketext(template, raw=1, lang=lang, mlist=self)
         parts = re.split('(</?[Mm][Mm]-[^>]*>)', text)
         i = 1
         while i < len(parts):
             tag = parts[i].lower()
             if replacements.has_key(tag):
-                parts[i] = replacements[tag]
+                repl = replacements[tag]
+                if isinstance(repl, type(u'')):
+                    repl = repl.encode(charset, 'replace')
+                parts[i] = repl
             else:
                 parts[i] = ''
             i = i + 2
