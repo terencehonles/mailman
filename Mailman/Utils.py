@@ -331,10 +331,11 @@ def GetPossibleMatchingAddrs(name):
     name = LCDomain(name)
     user, domain = ParseEmail(name)
     res = [name]
-    domain = domain[1:]
-    while len(domain) >= 2:
-        res.append("%s@%s" % (user, string.join(domain, ".")))
+    if domain:
         domain = domain[1:]
+        while len(domain) >= 2:
+            res.append("%s@%s" % (user, string.join(domain, ".")))
+            domain = domain[1:]
     return res
 
 
