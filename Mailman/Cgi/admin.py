@@ -22,10 +22,10 @@ import sys
 import os
 import re
 import cgi
-import types
 import sha
 import urllib
 import signal
+from types import *
 from string import lowercase, digits
 
 from mimelib.address import unquote
@@ -110,7 +110,7 @@ def main():
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
         qs = cgi.parse_qs(os.environ['QUERY_STRING']).get('VARHELP')
-        if qs and type(qs) == types.ListType:
+        if qs and type(qs) == ListType:
             varhelp = qs[0]
     if varhelp:
         option_help(mlist, varhelp)
@@ -325,7 +325,7 @@ def option_help(mlist, varhelp):
     doc.AddItem("%s<p>" % elaboration)
 
     form = Form("%s/%s" % (mlist.GetScriptURL('admin'), category))
-    valtab = Table(cellspacing=3, cellpadding=4)
+    valtab = Table(cellspacing=3, cellpadding=4, width='100%')
     add_options_table_item(mlist, category, valtab, item, detailsp=0)
     form.AddItem(valtab)
     form.AddItem('<p>')
@@ -358,9 +358,10 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         '%(realname)s mailing list administration<br>%(label)s Section'))))
     doc.AddItem('<hr>')
     # This holds the two columns of links
-    linktable = Table(valign='top')
+    linktable = Table(valign='top', width='100%')
     linktable.AddRow([Center(Bold(_("Configuration Categories"))),
                       Center(Bold(_("Other Administrative Activities")))])
+    linktable.AddCellInfo(linktable.GetCurrentRowIndex(), 0, colspan=2)
     # The `other links' are stuff in the right column.
     otherlinks = UnorderedList()
     otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
@@ -368,7 +369,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     otherlinks.AddItem(Link(mlist.GetScriptURL('listinfo'),
                             _('Go to the general list information page')))
     otherlinks.AddItem(Link(mlist.GetScriptURL('edithtml'),
-                            _('Edit the HTML for the public list pages')))
+                            _('Edit the public HTML pages')))
     otherlinks.AddItem(Link(mlist.GetBaseArchiveURL(),
                             _('Go to list archives')).Format() +
                        '<br>&nbsp;<br>')
@@ -383,8 +384,12 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
                             '<FONT SIZE="+2"><b>%s</b></FONT>' %
                             _('Logout')))
     # These are links to other categories and live in the left column
-    categorylinks = UnorderedList()
-    for k in categories.keys():
+    categorylinks_1 = categorylinks = UnorderedList()
+    categorylinks_2 = ''
+    categorykeys = categories.keys()
+    half = len(categorykeys) / 2
+    counter = 0
+    for k in categorykeys:
         label = _(categories[k][0])
         url = '%s/%s' % (adminurl, k)
         if k == category:
@@ -410,10 +415,13 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
                 categorylinks.AddItem(Link(url, Bold('[%s]' % label)))
         else:
             categorylinks.AddItem(Link(url, label))
+        counter += 1
+        if counter > half:
+            categorylinks_2 = categorylinks = UnorderedList()
+            counter = -len(categorykeys)
     # Add all the links to the links table...
-    linktable.AddRow([categorylinks, otherlinks])
-    linktable.AddRowInfo(max(linktable.GetCurrentRowIndex(), 0),
-                         valign='top')
+    linktable.AddRow([categorylinks_1, categorylinks_2, otherlinks])
+    linktable.AddRowInfo(linktable.GetCurrentRowIndex(), valign='top')
     # ...and add the links table to the document.
     doc.AddItem(linktable)
     doc.AddItem('<hr>')
@@ -476,7 +484,7 @@ def show_variables(mlist, category, cgidata, doc):
     options = mlist.GetConfigInfo()[category]
 
     # The table containing the results
-    table = Table(cellspacing=3, cellpadding=4)
+    table = Table(cellspacing=3, cellpadding=4, width='100%')
 
     # Get and portray the text label for the category.
     categories = mlist.GetConfigCategories()
@@ -489,7 +497,7 @@ def show_variables(mlist, category, cgidata, doc):
     # The very first item in the config info will be treated as a general
     # description if it is a string
     description = options[0]
-    if isinstance(description, types.StringType):
+    if isinstance(description, StringType):
         table.AddRow([description])
         table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
         options = options[1:]
@@ -506,7 +514,7 @@ def show_variables(mlist, category, cgidata, doc):
                       width='85%')
 
     for item in options:
-        if type(item) == types.StringType:
+        if type(item) == StringType:
             # The very first banner option (string in an options list) is
             # treated as a general description, while any others are
             # treated as section headers - centered and italicized...
@@ -666,6 +674,9 @@ def get_item_gui_value(mlist, kind, varname, params):
         if i == 1:
             makebox(i, '', '', '', empty=1)
         return table
+    elif kind == mm_cfg.Checkbox:
+        return CheckBoxArray(varname, *params)
+
 
 
 def get_item_gui_description(mlist, category, varname, descr, detailsp):
@@ -1030,28 +1041,25 @@ def submit_button():
 
 
 # Options processing
-def get_valid_value(mlist, prop, my_type, val, dependant):
-    if my_type == mm_cfg.Radio or my_type == mm_cfg.Toggle:
-        if type(val) <> types.IntType:
+def get_valid_value(mlist, prop, wtype, val, dependant):
+    if wtype == mm_cfg.Radio or wtype == mm_cfg.Toggle:
+        if type(val) <> IntType:
             try:
                 val = int(val)
             except ValueError:
                 pass
                 # Don't know what to do here...
             return val
-    elif my_type == mm_cfg.String or my_type == mm_cfg.Text:
+    elif wtype == mm_cfg.String or wtype == mm_cfg.Text:
         return val
-    elif my_type == mm_cfg.Email:
-        try:
+    elif wtype == mm_cfg.Email:
+        # BAW: We must allow blank values otherwise reply_to_address can't be
+        # cleared.  This is currently the only mm_cfg.Email type widget in the
+        # interface, so watch out if we ever add any new ones.
+        if val:
             Utils.ValidateEmail(val)
-            return val
-        except Errors.EmailAddressError:
-            # TBD: should have a way of displaying the results of the
-            # operation.
-            pass
-        # Revert to the old value.
-        return getattr(mlist, prop)
-    elif my_type == mm_cfg.EmailList:
+        return val
+    elif wtype == mm_cfg.EmailList:
         def validp(addr):
             try:
                 Utils.ValidateEmail(addr)
@@ -1061,9 +1069,9 @@ def get_valid_value(mlist, prop, my_type, val, dependant):
         val = [addr for addr in [s.strip() for s in val.split(NL)]
                if validp(addr)]
         return val
-    elif my_type == mm_cfg.Host:
+    elif wtype == mm_cfg.Host:
         return val
-    elif my_type == mm_cfg.Number:
+    elif wtype == mm_cfg.Number:
         num = -1
         try:
             num = int(val)
@@ -1076,7 +1084,11 @@ def get_valid_value(mlist, prop, my_type, val, dependant):
         if num < 0:
             return getattr(mlist, prop)
         return num
-    elif my_type == mm_cfg.Select:
+    elif wtype == mm_cfg.Select:
+        return val
+    elif wtype == mm_cfg.Checkbox:
+        if type(val) is not ListType:
+            return [val]
         return val
     else:
         # Should never get here...
@@ -1138,7 +1150,7 @@ def change_options(mlist, category, cgidata, doc):
                 cgidata["subscribe_policy"].value = str(page_setting + 1)
         opt_list = mlist.GetConfigInfo()[category]
         for item in opt_list:
-            if type(item) <> types.TupleType or len(item) < 5:
+            if type(item) <> TupleType or len(item) < 5:
                 continue
             property, kind, args, deps, desc = item[0:5]
             if cgidata.has_key(property+'_upload') and \
@@ -1146,17 +1158,20 @@ def change_options(mlist, category, cgidata, doc):
                 val = cgidata[property+'_upload'].value
             elif not cgidata.has_key(property):
                 continue
+            elif type(cgidata[property]) == ListType:
+                val = [x.value for x in cgidata[property]]
             else:
                 val = cgidata[property].value
-            value = get_valid_value(mlist, property, kind, val, deps)
-            #
-            # This is an ugly, ugly hack
+            try:
+                value = get_valid_value(mlist, property, kind, val, deps)
+            except Errors.EmailAddressError:
+                add_error_message(
+                    doc,
+                    _('Bad email address for option %(property)s: %(val)s'),
+                    tag=_('Error: '))
+                continue
+            # BAW: Ugly, ugly hack for "do immediately" pseudo-options
             if property[0] == '_':
-                # TBD: When turning on usenet->mail gating we want to
-                # automatically catch up the newsgroup otherwise the mailing
-                # list will suddently get flooded.  There should be a much
-                # better way to do this (or for the admin to specify they want
-                # this).
                 if property == '_mass_catchup' and value:
                     mlist.usenet_watermark = None
                 elif property == '_new_volume' and value:
@@ -1272,7 +1287,7 @@ def change_options(mlist, category, cgidata, doc):
     # do the user options for members category
     if cgidata.has_key('user'):
         user = cgidata["user"]
-        if type(user) is types.ListType:
+        if type(user) is ListType:
             users = []
             for ui in range(len(user)):
                 users.append(urllib.unquote(user[ui].value))
@@ -1318,7 +1333,9 @@ def change_options(mlist, category, cgidata, doc):
 
 
 
-def add_error_message(doc, errmsg, tag='Warning: ', *args):
+def add_error_message(doc, errmsg, tag=None, *args):
+    if tag is None:
+        tag = _('Warning: ')
     doc.AddItem(Header(3, Bold(FontAttr(
         _(tag), color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
                        Italic(errmsg % args).Format()))
