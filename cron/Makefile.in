@@ -41,7 +41,7 @@ CRONDIR= 	$(prefix)/cron
 SHELL=		/bin/sh
 
 PROGRAMS=	checkdbs mailpasswds senddigests gate_news \
-		nightly_gzip bumpdigests
+		nightly_gzip bumpdigests disabled
 FILES=  	crontab.in
 
 BUILDDIR=	../build/cron

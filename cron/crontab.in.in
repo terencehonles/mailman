@@ -1,5 +1,11 @@
-# At 5PM every day, mail reminders to admins as to pending requests
-0 17 * * * @PYTHON@ -S @prefix@/cron/checkdbs
+# At 8AM every day, mail reminders to admins as to pending requests.
+# They are less likely to ignore these reminders if they're mailed
+# early in the morning, but of course, this is local time... ;)
+0 8 * * * @PYTHON@ -S @prefix@/cron/checkdbs
+#
+# At 9AM, send notifications to disabled members that are due to be
+# reminded to re-enable their accounts.
+0 9 * * * @PYTHON@ -S @prefix/cron/disabled
 #
 # Noon, mail digests for lists that do periodic as well as threshhold delivery.
 0 12 * * * @PYTHON@ -S @prefix@/cron/senddigests
