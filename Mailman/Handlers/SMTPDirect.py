@@ -31,6 +31,9 @@ from Mailman.pythonlib import smtplib
 
 
 def process(mlist, msg):
+    if msg.recips == 0:
+        # nothing to do!
+        return
     # I want to record how long the SMTP dialog takes because this will help
     # diagnose whether we need to rewrite this module to relinquish the list
     # lock or not.
@@ -50,11 +53,11 @@ def process(mlist, msg):
             conn.quit()
     except smtplib.SMTPRecipientsRefused, e:
         refused = e.recipients
-        mlist.LogMsg('smtp', 'All recipients refused')
     # MTA not responding, or other socket problems, or any other kind of
     # SMTPException.  In that case, nothing got delivered
     except (socket.error, smtplib.SMTPException), e:
         mlist.LogMsg('smtp', 'Some other exception occurred:\n' + `e`)
+        mlist.LogMsg('smtp', 'All recipients refused')
     #
     # Go through all refused recipients and deal with them if possible
     for recip, (code, smtpmsg) in refused.items():
@@ -67,3 +70,5 @@ def process(mlist, msg):
         # queue them up and try to resend them?  Should we log the smtp error
         # messages, or do any other processing of failures?  Lots of
         # questions...
+        else:
+            mlist.LogMsg('smtp-failure', '%d %s (%s)' % (code, recip, smtpmsg))
