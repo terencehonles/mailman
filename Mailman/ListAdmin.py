@@ -340,9 +340,11 @@ class ListAdmin:
 
     def __handlesubscription(self, record, value, comment):
         stime, addr, password, digest, lang = record
-        # FIXME
-        os.environ['LANG'] = lang
-        if value == mm_cfg.REJECT:
+        if value == mm_cfg.DEFER:
+            return DEFER
+        elif value == mm_cfg.DISCARD:
+            pass
+        elif value == mm_cfg.REJECT:
             # refused
             self.__refuse(_('Subscription request'), addr, comment, lang=lang)
         else:
