@@ -35,12 +35,12 @@ import HyperDatabase
 import pipermail
 import weakref
 
+from email.Header import decode_header, make_header
+
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import LockFile
 from Mailman import MailList
-from Mailman import EncWord
-from Mailman import Errors
 from Mailman import i18n
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
@@ -367,20 +367,27 @@ class Article(pipermail.Article):
     def decode_charset(self, field):
         if field.find("=?") == -1:
             return None, None
-        try:
-            s, c = EncWord.decode(field)
-        except ValueError:
-            return None, None
-        c = c.lower()
-        # If the charset of the header matches the article charset,
-        # leave it as encoded. Otherwise, try Unicode decoding
-        if c.lower() == self.charset:
-            return s, c
-        try:
-            return unicode(s, c), None
-        except (UnicodeError, LookupError):
-            # Unknown encoding
-            return None, None
+        # Get the decoded header as a list of (s, charset) tuples
+        pairs = decode_header(field)
+        mustunicode = 0
+        for s, c in pairs:
+            # If the charset of all the header parts match the article's
+            # charset, leave it as encoded, otherwise try converting to
+            # Unicode.
+            if c <> self.charset:
+                mustunicode = 1
+                break
+        if mustunicode:
+            # Use a large number for maxlinelen so it won't get wrapped
+            h = make_header(pairs, 99999)
+            # Use __unicode__() until we can guarantee Python 2.2
+            try:
+                return h.__unicode__(), None
+            except (UnicodeError, LookupError):
+                # Unknown encoding
+                return None, None
+        # The last value for c will have the proper charset in it
+        return EMPTYSTRING.join([s for s, c in pairs]), c
 
     def as_html(self):
         d = self.__dict__.copy()
