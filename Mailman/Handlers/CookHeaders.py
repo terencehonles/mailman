@@ -32,7 +32,7 @@ def process(mlist, msg):
     msg.original_sender = msg.GetSender()
     subject = msg.getheader('subject')
     adminaddr = mlist.GetAdminEmail()
-    if not getattr(msg, 'isdigest', 0) and not getattr(msg, 'fastrack', 0):
+    if not getattr(msg, 'isdigest', 0) and not getattr(msg, 'fasttrack', 0):
         # Add the subject prefix unless the message is a digest or is being
         # fast tracked (e.g. internally crafted, delivered to a single user
         # such as the list admin).  We assume all digests have an appropriate
@@ -68,10 +68,15 @@ def process(mlist, msg):
     if not msg.get('precedence'):
         msg['Precedence'] = 'bulk'
     #
-    # Set Reply-To: header to point back to list, if the list is so
-    # inclined.
-    if mlist.reply_goes_to_list and not getattr(msg, 'fastrack', 0):
-        msg['Reply-To'] = mlist.GetListEmail()
+    # Reply-To: munging.  Do not do this if the message is "fast tracked",
+    # meaning it is internally crafted and delivered to a specific user.
+    if not getattr(msg, 'fasttrack', 0):
+        # Set Reply-To: header to point back to this list
+        if mlist.reply_goes_to_list == 1:
+            msg['Reply-To'] = mlist.GetListEmail()
+        # Set Reply-To: an explicit address
+        elif mlist.reply_goes_to_list == 2:
+            msg['Reply-To'] = mlist.reply_to_address
     #
     # Other list related non-standard headers.  Defined in:
     #
