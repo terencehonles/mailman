@@ -70,9 +70,11 @@ Where `options' are:
 """
 
 import sys
-import email.Utils
 
 import paths
+# Import this /after/ paths so that the sys.path is properly hacked
+import email.Utils
+
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import Utils

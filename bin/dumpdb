@@ -36,7 +36,7 @@ Options:
 If the filename ends with `.db', then it is assumed that the file contains a
 Python marshal.  If the file ends with `.pck' then it is assumed to contain a
 Python pickle.  In either case, if you want to override the default assumption
-\(or if the file ends in neither suffix), use the -p or -m flags.
+-- or if the file ends in neither suffix -- use the -p or -m flags.
 """
 
 import sys
@@ -45,13 +45,12 @@ import getopt
 import pprint
 import cPickle
 
-# BAW: Import order dependency!  paths must be imported before anything from
-# the email package.
 import paths
+# Import this /after/ paths so that the sys.path is properly hacked
+from email.Generator import Generator
+
 from Mailman.Queue.Switchboard import DumperSwitchboard
 from Mailman.i18n import _
-
-from email.Generator import Generator
 
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '

@@ -71,16 +71,17 @@ files can be `-'.
 import sys
 import os
 import getopt
-
-from email.Utils import parseaddr
+from cStringIO import StringIO
 
 import paths
+# Import this /after/ paths so that the sys.path is properly hacked
+from email.Utils import parseaddr
+
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman import i18n
 
 _ = i18n._
