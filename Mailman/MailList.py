@@ -699,6 +699,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 'confirm %s' % cookie,
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
+            msg['MIME-Version'] = '1.0'
+            msg.add_header('Content-Type', 'text/plain',
+                           charset=Utils.GetCharSet(lang))
             msg.send(self)
             if recipient <> email:
                 who = "%s (%s)" % (email, recipient.split('@')[0])
