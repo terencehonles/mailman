@@ -75,7 +75,7 @@ class Digester:
              + Errors.MESSAGE_DECORATION_NOTE),
 	    ]
 
-    def SetUserDigest(self, sender, value):
+    def SetUserDigest(self, sender, value, force=0):
 	self.IsListInitialized()
 	addr = self.FindUser(sender)
 	if not addr:
@@ -85,7 +85,7 @@ class Digester:
 	    if value == 0:
 		raise Errors.MMAlreadyUndigested
 	    else:
-		if not self.digestable:
+		if not force and not self.digestable:
 		    raise Errors.MMCantDigestError
 		del self.members[addr]
 		self.digest_members[addr] = cpuser
@@ -93,7 +93,7 @@ class Digester:
 	    if value == 1:
 		raise Errors.MMAlreadyDigested
 	    else:
-		if not self.nondigestable:
+		if not force and not self.nondigestable:
 		    raise Errors.MMMustDigestError
                 try:
                     self.one_last_digest[addr] = self.digest_members[addr]
