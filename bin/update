@@ -129,7 +129,25 @@ script.
     l.archive_directory = makeabs('archives/private/%s' % (list))
     l.private_archive_file_dir = makeabs('archives/private/%s.mbox' % (list))
     l.Save()
-
+    #
+    # check to see if pre-b4 list-specific templates are around
+    # and move them to the new place if there's not already
+    # a new one there
+    #
+    tmpl_dir = os.path.join(Mailman.mm_cfg.PREFIX, "templates")
+    list_dir = os.path.join(Mailman.mm_cfg.PREFIX, "lists")
+    b4_tmpl_dir = os.path.join(tmpl_dir, l._internal_name)
+    new_tmpl_dir = os.path.join(list_dir, l._internal_name)
+    if os.path.exists(b4_tmpl_dir):
+	print "- This list looks like it might have <= b4 list templates around"
+        for f in os.listdir(b4_tmpl_dir):
+            o_tmpl = os.path.join(b4_tmpl_dir, f)
+            n_tmpl = os.path.join(new_tmpl_dir, f)
+            if not os.path.exists(n_tmpl):
+                os.rename(o_tmpl, n_tmpl)
+                print "- moved %s to %s" % (o_tmpl, n_tmpl)
+            else:
+                print "- both %s and %s exist, leaving untouched" % (o_tmpl, n_tmpl)
 
 #
 # this function is passed to os.path.walk
@@ -146,8 +164,26 @@ def archive_path_fixer(unused_arg, dir, files):
         elif os.path.isfile(abs):
             os.chmod(abs, 0664)
 
+def remove_old_sources(module):
+    src = "%s/Mailman/%s.py" % (Mailman.mm_cfg.PREFIX,
+                                module)
+    pyc = src + "c"
+    if os.path.exists(src):
+        print "removing", src
+        try:
+            os.unlink(src)
+        except os.error, rest:
+            print "Warning: couldn't remove", src, "--", str(rest)
+    if os.path.exists(pyc):
+        try:
+            os.unlink(pyc)
+        except os.error, rest:
+            print "couldn't remove old file", pyc, "--", str(rest)
+
 
 if __name__ == '__main__':
+    for mods in ("Archiver", "HyperArch", "HyperDatabase", "pipermail"):
+        remove_old_sources(module)
     lists = list_names()
     if not lists:
         print "no lists == nothing to do, exiting"
@@ -162,8 +198,11 @@ if __name__ == '__main__':
         os.path.walk("%s/public_html/archives" % Mailman.mm_cfg,
                      archive_path_fixer, "")
         print "done"
-        
-        
     for list in lists:
         print 'Updating mailing list: ', list
         dolist(list)
+
+
+
+
+

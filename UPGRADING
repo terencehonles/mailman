@@ -47,7 +47,16 @@ Hopefully, this will help resolve any problems you are having.
   can configure mailman to do one, both, or neither.  please see
   $prefix/Mailman/Defaults.py for details.
 
-- If upgrading from version 1.0b4 or earlier, you will have to move
+  There was a short period of time when the CVS sources archiving code
+  was not organized into its own package.  The pickled articles in the
+  archives that were placed into archives during this period stored
+  the path to the module HyperArch, but that module has moved.  You
+  can quick fix this by running 
+
+  ln -s $prefix/Mailman/Archiver/HyperArch.py \
+          $prefix/Mailman/HyperArch.py  
+  
+- If upgrading from version 1.0b4 or earlier, "make update" moves
   list-specific templates.  For each list, move
   $prefix/templates/<listname>/* to $prefix/lists/<listname>.  Please
   reference the generic templates in $prefix/templates to see if any
