@@ -52,9 +52,14 @@ import time
 import sha
 import marshal
 import binascii
-import Cookie
 from types import StringType, TupleType
 from urlparse import urlparse
+
+# Cookie module should treat our cookie data as simple strings.  We'll do
+# application level decoding as necessary.  By using SimpleCookie, we prevent
+# any kind of security breach due to untrusted cookie data being unpickled
+# (which is quite unsafe).
+from Cookie import SimpleCookie as Cookie
 
 try:
     import crypt
@@ -217,7 +222,7 @@ class SecurityManager:
         # Create the cookie object.  The way the cookie module converts
         # non-strings to pickles can cause problems if the resulting string
         # needs to be quoted.  So we'll do the conversion ourselves.
-        c = Cookie.Cookie()
+        c = Cookie()
         c[key] = binascii.hexlify(marshal.dumps((issued, mac)))
         # The path to all Mailman stuff, minus the scheme and host,
         # i.e. usually the string `/mailman'
@@ -234,7 +239,7 @@ class SecurityManager:
         # Logout of the session by zapping the cookie.  For safety both set
         # max-age=0 (as per RFC2109) and set the cookie data to the empty
         # string.
-        c = Cookie.Cookie()
+        c = Cookie()
         c[key] = ''
         # The path to all Mailman stuff, minus the scheme and host,
         # i.e. usually the string `/mailman'
@@ -256,7 +261,7 @@ class SecurityManager:
         cookiedata = os.environ.get('HTTP_COOKIE')
         if not cookiedata:
             return 0
-        c = Cookie.Cookie(cookiedata)
+        c = Cookie(cookiedata)
         # If the user was not supplied, but the authcontext is AuthUser, we
         # can try to glean the user address from the cookie key.  There may be
         # more than one matching key (if the user has multiple accounts
@@ -286,11 +291,19 @@ class SecurityManager:
         key, secret = self.AuthContextInfo(authcontext, user)
         if not c.has_key(key) or not isinstance(secret, StringType):
             return 0
-        # Undo the encoding we performed in MakeCookie() above
+        # Undo the encoding we performed in MakeCookie() above.  BAW: I
+        # believe this is safe from exploit because marshal can't be forced to
+        # load recursive data structures, and it can't be forced to execute
+        # any unexpected code.  The worst that can happen is that either the
+        # client will have provided us bogus data, in which case we'll get one
+        # of the caught exceptions, or marshal format will have changed, in
+        # which case, the cookie decoding will fail.  In either case, we'll
+        # simply request reauthorization, resulting in a new cookie being
+        # returned to the client.
         try:
             data = marshal.loads(binascii.unhexlify(c[key].value))
             issued, received_mac = data
-        except (EOFError, ValueError, TypeError):
+        except (EOFError, ValueError, TypeError, KeyError):
             return 0
         # Make sure the issued timestamp makes sense
         now = time.time()
