@@ -99,9 +99,6 @@ i.e. somewhere between the first and second "end" line:
     user = MAILMAN_USER
     group = MAILMAN_GROUP
 
-(XXX this is untested by me under Exim 3!  Can someone using Exim 3
-please let me know if it works?)
-
 
 Director for Exim 3
 ~~~~~~~~~~~~~~~~~~~
@@ -269,8 +266,6 @@ like this in your "DATA" ACL:
 
   deny   !condition = $header_X-WhitelistedRCPT-nohdrfromcallback:
 	 !verify = header_sender/callout=90s
-
-[XXX all this stuff is completely untested by me!  -Greg]
 
 
 Doing VERP with Exim and Mailman
