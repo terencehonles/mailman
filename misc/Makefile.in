@@ -72,7 +72,9 @@ ICONS=		*.jpg *.png
 
 all:
 
-install: install-packages
+install: install-other install-packages
+
+install-other:
 	$(INSTALL) -m $(FILEMODE) $(ICONS) $(ICONDIR)
 	for d in $(PATHSDIRS); \
 	do \
