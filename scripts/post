@@ -18,8 +18,11 @@
 
 """Accept posts to a list and handle them properly.
 
-This script is invoked via the mail wrapper.  stdin is the mail message, and
-argv[1] is the name of the target mailing list.
+The main advertised address for a list should be filtered to this program,
+through the mail wrapper.  E.g. for list `test@yourdomain.com', the `test'
+alias would deliver to this script.
+
+Stdin is the mail message, and argv[1] is the name of the target mailing list.
 
 """
 
@@ -27,13 +30,10 @@ import sys
 
 import paths
 from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
-from Mailman import LockFile
 from Mailman.Logging.Utils import LogStdErr
-from Mailman.Handlers import HandlerAPI
 from Mailman.pythonlib.StringIO import StringIO
 
 LogStdErr("error", "post")
@@ -79,20 +79,14 @@ def main():
     # object in a usable form.  From here on out, we should never lose
     # messages.
     msg = get_message(mlist)
-    # Try to obtain the mailing list lock.  If that fails, enqueue the message
-    # for delivery by the qrunner cron job.
-    try:
-        mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-    except LockFile.TimeOutError:
-        msg.Enqueue(mlist)
-        return
-    try:
-        msgdata = {}
-        # ignore return value
-        HandlerAPI.DeliverToList(mlist, msg, msgdata)
-    finally:
-        mlist.Save()
-        mlist.Unlock()
+    # Immediately queue the message for the qrunner to deliver, mostly likely
+    # about a minute from now.  The advantage to this approach is that
+    # messages should never get lost -- some MTAs have a hard limit to the
+    # time a filter prog can run.  Postfix is a good example; if the limit is
+    # hit, the proc is SIGKILL'd giving us no chance to save the message.  It
+    # could take a long time to acquire the lock.  This way we're fairly safe
+    # against catastrophe at the expense of more disk I/O.
+    msg.Enqueue(mlist)
 
 
 

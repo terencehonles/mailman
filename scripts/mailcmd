@@ -28,12 +28,9 @@ Errors are redirected to logs/errors.
 import sys
 
 import paths
-from Mailman import mm_cfg
 from Mailman import MailList
-from Mailman import Utils
 from Mailman import Message
 from Mailman import Errors
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman.Logging.Utils import LogStdErr
 
 LogStdErr("error", "mailcmd")
@@ -52,21 +49,19 @@ def main():
         sys.stderr.write('Mailman error: mailcmd got bad listname: %s\n%s' %
                          (listname, e))
         sys.exit(1)
-    # Try to obtain the mailing list lock.  If that fails, enqueue the message
-    # for delivery by the qrunner cron job.
-    try:
-        mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-    except LockFile.TimeOutError:
-        msg.Enqueue(mlist)
-        return
-    try:
-        s = StringIO(sys.stdin.read())
-        msg = Message.Message(s)
-        # Moved the setting of 'torequest' into MailCommandHandler
-        mlist.ParseMailCommands(msg)
-    finally:
-        mlist.Save()
-        mlist.Unlock()
+    # Create the message object
+    msg = Message.Message(sys.stdin)
+    # Immediately queue the message for disposition by qrunner, most likely in
+    # about a minute from now.  The advantage to this approach is that
+    # messages should never get lost -- some MTAs have a hard limit to the
+    # time a filter prog can run.  Postfix is a good example; if the limit is
+    # hit, the proc is SIGKILL'd giving us no chance to save the message.  It
+    # could take a long time to acquire the lock.  This way we're fairly safe
+    # against catastrophe at the expense of more disk I/O.
+    #
+    # The `torequest' flag is a message to qrunner that an alternative route
+    # should be taken for this message.
+    msg.Enqueue(mlist, torequest=1)
 
 
 

@@ -18,25 +18,22 @@
 
 """Send a message to the mailing list owner.
 
-This script gets called by the wrapper.
+The -owner address for alist should be filtered to this program, through the
+mail wrapper.  E.g. for list `test@yourdomain.com', the `test-owner' alias
+would deliver to this script.
 
-Stdin is the mail message, and argv[1] is the name of the mailing list
-whose owner(s) to send mail to.
+Stdin is the mail message, and argv[1] is the name of the target mailing list.
+
 """
-
 
 import sys
 import mimetools
 
 import paths
-from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
-from Mailman.Handlers import HandlerAPI
-from Mailman.Bouncers import BouncerAPI
 from Mailman.Logging.Utils import LogStdErr
-from Mailman.pythonlib.StringIO import StringIO
 
 LogStdErr('error', 'post')
 
@@ -54,34 +51,19 @@ def main():
         sys.stderr.write('Mailman error: mailowner got bad listname: %s\n%s' %
                          (listname, e))
         sys.exit(1)
-    # Try to obtain the mailing list lock.  If that fails, enqueue the message
-    # for delivery by the qrunner cron job.
-    try:
-        mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-    except LockFile.TimeOutError:
-        msg.Enqueue(mlist)
-        return
-    try:
-        s = StringIO(sys.stdin.read())
-        msg = mimetools.Message(s)
-        if mlist.bounce_processing:
-            if BouncerAPI.ScanMessages(mlist, msg):
-                return
-        # okay, no bounces were detected, but we have to convert this
-        # mimetools.Message thingie to one of our OutgoingMessages.
-        msg = Message.OutgoingMessage(s.getvalue())
-        recips = mlist.owner[:]
-        # debugging
-        #recips.append(mm_cfg.MAILMAN_OWNER)
-        msgdata = {'recips' : recips,
-                   'toadmin': 1,
-                   }
-        enqueue = HandlerAPI.DeliverToUser(mlist, msg, msgdata)
-        if enqueue:
-            msg.Enqueue(mlist, newdata=msgdata)
-    finally:
-        mlist.Save()
-        mlist.Unlock()
+    # Create the message object
+    msg = Message.Message(sys.stdin)
+    # Immediately queue the message for disposition by qrunner, most likely in
+    # about a minute from now.  The advantage to this approach is that
+    # messages should never get lost -- some MTAs have a hard limit to the
+    # time a filter prog can run.  Postfix is a good example; if the limit is
+    # hit, the proc is SIGKILL'd giving us no chance to save the message.  It
+    # could take a long time to acquire the lock.  This way we're fairly safe
+    # against catastrophe at the expense of more disk I/O.
+    #
+    # The `toadmin' flag is a message to qrunner that an alternative route
+    # should be taken for this message.
+    msg.Enqueue(mlist, toadmin=1)
 
 
 
