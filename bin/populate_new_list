@@ -81,6 +81,7 @@ def main(argv):
         except Errors.MMAlreadyAMember:
             sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
+    if non_digest_members: list.Save()
 
     for member in digest_members:
         pw = GetRandomPassword()
@@ -90,6 +91,7 @@ def main(argv):
         except Errors.MMAlreadyAMember:
             sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
+    if digest_members: list.Save()
 
 if __name__ == "__main__":
     main(sys.argv)
