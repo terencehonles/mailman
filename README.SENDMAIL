@@ -19,6 +19,14 @@ can just execute these commands (you might have to do these as root):
     % cd /etc/smrsh
     % ln -s /home/mailman/mail/wrapper wrapper
 
+One complication: if you're running Majordomo and Mailman
+simultaneously (i.e. in the process of migrating from MD to MM :),
+then you might have a small problem because Majordomo also uses a
+program called `wrapper'.  In this case, Paul Tomblin suggests calling
+the Mailman symlink `mailman_wrapper', and changing the alias entries
+to call this instead of `wrapper'.  You might want to hack bin/newlist
+to output this instead.
+
 
 Local Variables:
 mode: text
