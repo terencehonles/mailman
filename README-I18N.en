@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 2001 by the Free Software Foundation, Inc.
+Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
@@ -28,6 +28,12 @@ ADDING NEW TRANSLATIONS
     language.  In the example below, we're going to create a
     translation for the mythical language "Fredonia" which has the
     official language code of "xx".
+
+    You should also see
+
+        http://www.list.org/MM21/i18n.html
+
+    for more information on internationalizing Mailman.
 
     In general you need to do two things to add translations for a
     language in Mailman.  You need to translate the message catalog
@@ -78,7 +84,7 @@ RESYNCHRONIZING THE CATALOG
     The language packs will be made available on SourceForge under the
     i18n project, using the following URL
 
-    http://sourceforge.net/project/showfiles.php?group_id=103
+        http://sourceforge.net/project/showfiles.php?group_id=103
 
     The README-I18N.en file will be a copy of this one, although the
     version in CVS will always be the most up-to-date.  The "langpack"
@@ -109,8 +115,8 @@ DONATING YOUR TRANSLATION BACK TO MAILMAN
     Your tarball should contain two directories, where your donated
     language is `xx':
 
-    templates/xx
-    messages/xx
+        templates/xx
+        messages/xx
 
     In templates/xx there should be the translated templates, all the
     .txt and .html files, for your language, mirroring those in the
@@ -140,6 +146,7 @@ CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
     - Czech
     - Chinese (Simplified and Traditional)
     - English
+    - Finnish
     - French
     - German
     - Hungarian
@@ -147,11 +154,13 @@ CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
     - Japanese
     - Spanish
     - Norwegian
+    - Russian
 
     We've also had volunteers for these languages, although they
     aren't yet integrated into the code base:
 
     - Dutch
+    - Korean
     - Polish
     - Portuguese
     - Swedish
