@@ -43,13 +43,14 @@ import time
 import traceback
 import socket
 import getopt
-from errno import EEXIST
+import errno
 
 import paths
 from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Message
+from Mailman.Handlers import HandlerAPI
 from Mailman.Logging.Utils import LogStdErr
 
 # The version we have is from Python 1.5.2+ and fixes the "mode reader"
@@ -115,7 +116,7 @@ def poll_newsgroup(mlist, conn, first, last):
             if VERBOSE:
                 sys.stderr.write('posting msgid %d to list %s\n' %
                                  (num, mlist.internal_name()))
-            mlist.Post(msg)
+            HandlerAPI.DeliverToList(mlist, msg, {})
             # record the last gated article number
             mlist.usenet_watermark = num
             if VERBOSE:
@@ -223,7 +224,7 @@ def main():
         fd = os.open(blockfile, os.O_CREAT | os.O_EXCL)
         os.close(fd)
     except OSError, e:
-        if e.errno <> EEXIST:
+        if e.errno <> errno.EEXIST:
             raise
         # some other gate_news process is already running
         if VERBOSE:
