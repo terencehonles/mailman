@@ -52,11 +52,11 @@ STEALTH_MODE = 0
 
 
 def run_main():
+    # These will ensure that even if something between now and the
+    # creation of the real logger below fails, we can still get
+    # *something* meaningful.
+    logger = None
     try:
-        # These will ensure that even if something between now and the
-        # creation of the real logger below fails, we can still get
-        # *something* meaningful.
-        logger = None
         # Insert the relative path to the parent of the Mailman package
         # directory, so we can pick up the Utils module.
         import os
