@@ -302,9 +302,10 @@ def FormatConfiguration(doc, lst, category, category_suffix):
         andpassmsg = "  (You can change your password there, too.)"
     else:
         andpassmsg = ""
-    form.AddItem("Make your changes below, and then submit them using the"
-                 " bottom at the bottom.%s<p>"
+    form.AddItem("Make your changes below, and then submit them"
+                 " using the button at the bottom.%s<p>"
                  % andpassmsg)
+
     form.AddItem(FormatOptionsSection(category, lst))
 
     if category == 'general':
@@ -516,7 +517,7 @@ def FormatMembershipOptions(lst):
                            bgcolor="#cccccc", colspan=8)
 
     user_table.AddRow(map(Center, ['member address', 'subscr', 'digest',
-                                   'hide', 'nomail', 'ack', 'norcv',
+                                   'hide', 'nomail', 'ack', 'not metoo',
                                    'plain']))
     rowindex = user_table.GetCurrentRowIndex()
     for i in range(8):
@@ -546,11 +547,13 @@ def FormatMembershipOptions(lst):
         footer = "<p>"
     for member in all:
         cells = [member + "<input type=hidden name=user value=%s>" % (member),
-                 CheckBox(member + "_subscribed", "on", 1).Format()]
+                 Center(CheckBox(member + "_subscribed", "on", 1).Format())]
         if lst.members.has_key(member):
-            cells.append(CheckBox(member + "_digest", "off", 0).Format())
+            cells.append(Center(CheckBox(member + "_digest",
+                                         "off", 0).Format()))
         else:
-            cells.append(CheckBox(member + "_digest", "on", 1).Format())
+            cells.append(Center(CheckBox(member + "_digest",
+                                         "on", 1).Format()))
         for opt in ("hide", "nomail", "ack", "norcv", "plain"):
             if lst.GetUserOption(member, MailCommandHandler.option_info[opt]):
                 value = "on"
@@ -559,7 +562,7 @@ def FormatMembershipOptions(lst):
                 value = "off"
                 checked = 0
             box = CheckBox("%s_%s" % (member, opt), value, checked)
-            cells.append(box.Format())
+            cells.append(Center(box.Format()))
         user_table.AddRow(cells)
     container.AddItem(Center(user_table))
     legend = UnorderedList()
@@ -572,8 +575,8 @@ def FormatMembershipOptions(lst):
     legend.AddItem('<b>nomail</b> -- Is delivery to the member disabled?')
     legend.AddItem('<b>ack</b> -- '
                    'Does the member get acknowledgements of their posts?')
-    legend.AddItem('<b>norcv</b> -- '
-                   'Does the member get copies of their own posts?')
+    legend.AddItem('<b>not metoo</b> -- '
+                   'Does the member avoid copies of their own posts?')
     legend.AddItem(
         '<b>plain</b> -- '
         'If getting digests, does the member get plain text digests? '
