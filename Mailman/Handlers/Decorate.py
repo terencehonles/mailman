@@ -124,7 +124,9 @@ def process(mlist, msg, msgdata):
     inner.set_unixfrom(msg.get_unixfrom())
     inner.preamble = msg.preamble
     inner.epilogue = msg.epilogue
-    inner.set_charset(msg.get_charset())
+    # Don't copy get_charset, as this might be None, even if
+    # get_content_charset isn't.  However, do make sure there is a default
+    # content-type, even if the original message was not MIME.
     inner.set_default_type(msg.get_default_type())
     # BAW: HACK ALERT.
     if hasattr(msg, '__version__'):
