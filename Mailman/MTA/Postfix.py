@@ -95,14 +95,14 @@ def _addlist(mlist, fp):
     if mlist is None:
         return
     listname = mlist.internal_name()
-    fieldsz = len(listname) + len('-request')
+    fieldsz = len(listname) + len('-unsubscribe')
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(listname):
         # Format the text file nicely
-        print >> fp, k + ':', ((fieldsz - len(k) + 1) * ' '), v
+        print >> fp, k + ':', ((fieldsz - len(k)) * ' ') + v
     # Finish the text file stanza
     print >> fp, '# STANZA END:', listname
     print >> fp
