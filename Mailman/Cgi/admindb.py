@@ -35,6 +35,7 @@ from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
+EMPTYSTRING = ''
 NL = '\n'
 
 # Set up i18n.  Until we know which list is being requested, we use the
@@ -251,7 +252,7 @@ def show_post_requests(mlist, id, info, total, count, form):
         chars += len(line)
         if chars > mm_cfg.ADMINDB_PAGE_TEXT_LIMIT:
             break
-    body = NL.join(lines)[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
+    body = EMPTYSTRING.join(lines)[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
     hdrtxt = NL.join(['%s: %s' % (k, v) for k, v in msg.items()])
 
     # Okay, we've reconstituted the message just fine.  Now for the fun part!
