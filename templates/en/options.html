@@ -1,156 +1,242 @@
-<!-- $Revision: 3449 $ -->
+<!-- $Revision: 3490 $ -->
 <html>
 <head>
-<title><MM-Presentable-User> Configuration for <MM-List-Name></title>
-
+    <title><MM-Presentable-User> membership configuration for <MM-List-Name>
+    </title>
 </head>
 <BODY BGCOLOR="#ffffff">
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
-	<TR><TD WIDTH="100%" BGCOLOR="#99CCFF"><B>
-	<FONT COLOR="#000000" SIZE=+1>
-<MM-List-Name> Configuration for <MM-Presentable-User>
-	</FONT></B></TD></TR> </TABLE>
+    <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#99CCFF"><B>
+        <FONT COLOR="#000000" SIZE=+1>
+        <MM-List-Name> mailing list membership configuration for
+        <MM-Presentable-User>
+	</FONT></B></TD></TR>
+    </TABLE>
 <MM-Form-Start>
+<p>
+<table width="100%" border="0" cellspacing="5" cellpadding="5">
+    <tr><td>
+        <b><MM-Presentable-User></b>'s subscription status,
+        password, and options for the <MM-List-Name> mailing list.
+        <MM-Case-Preserved-User>
+
+        <MM-Disabled-Notice>
+
+        <p><mm-results>
+
+        </td>
+
+        <td><mm-logout-button></td>
+    </tr>
+</table>
 
 <p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
+        <FONT COLOR="#000000">
+        <B>Changing your <MM-List-Name> Membership address</B>
+	</FONT></TD></TR>
+    <tr><td width="50%">You can change the address that you are subscribed
+        to the mailing list with by entering the new address in the
+        fields below.  Note that a confirmation email will be sent to
+        the new address, and the change must be confirmed before it is
+        processed.
 
-<b><MM-Presentable-User></b>'s subscription status,
-password, and options for the <MM-List-Name> mailing list.
-<MM-Case-Preserved-User>
+        <p>Confirmations time out after about <mm-pending-days>.
 
-<MM-Disabled-Notice>
+        <p>If you want to change the membership address for all the
+        lists that you are subscribed to at <mm-host>, turn on the
+        <em>Change globally</em> check box.
+    </td><td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="70%" cols="2">
+        <tr><td bgcolor="#dddddd"><div align="right">New address:</div></td>
+            <td><mm-new-address-box></td>
+            </tr>
+        <tr><td bgcolor="#dddddd"><div align="right">Again to
+            confirm:</div></td> 
+            <td><mm-confirm-address-box></td>
+            </tr>
+        <tr><td colspan="2"><center><mm-change-address-button>
+            <p><mm-global-change-of-address>Change globally
+            </center></td>
+        </tr></table></center>
+    </td>
+</table>
 
 <p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="5">
+    <TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Unsubscribing from <MM-List-Name></B></td>
 
-<a name=unsub>
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING=5" CELLPADDING="5">
-	<TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<B>Unsubscribing from <MM-List-Name></B>
 	<TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<B>Your other <MM-Host> subscriptions</B>
+        <B>Your other <MM-Host> subscriptions</B>
 	</FONT></TD></TR>
 
-	<tr>
-	  <td>
+    <tr><td>
+        Turn on the confirmation checkbox and hit this button to
+        unsubscribe from this mailing list.  <strong>Warning:</strong>
+        This action will be taken immediately!
+        <p>
+        <center><MM-Unsubscribe-Button></center></td>
+    <td>
+        You can view a list of all the other mailing lists at
+        <mm-host> for which you are a member.  Use this if you want to
+        make the same membership option changes to this other
+        subscriptions.
 
-To unsubscribe, enter your password and hit the button.  (If you've
-lost your password, see just below to have it emailed to you.)
-
-<p>
-Password: <MM-Unsub-Pw-Box> &nbsp;
-<MM-Unsubscribe-Button>
-</a>
-	  <td>
-
-Enter your password to visit a list of links to option pages for
-all your subscriptions.
-
-<p>
-Password: <MM-Other-Subscriptions-Pw-Box>  <MM-Other-Subscriptions-Submit><p>
-
-	</TD></TR> </table>
-
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
-	<TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<B>Your <MM-List-Name> Password</B>
-	</FONT></TD>
-</TR>
-<tr valign="TOP">
-<td WIDTH="50%">
-<a name=reminder>
-<center>
-<h3>Forgotten Your Password?</h3>
-</center>
-Click this button to have your password emailed to your list delivery
-address. <p>
-<MM-Umbrella-Notice>
-<center>
-<MM-Email-My-Pw>
-</center>
-</td>
-<td WIDTH="50%">
-<a name=changepw>
-<center>
-<h3>Change Your Password</h3>
-      <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2" WIDTH="70%" COLS=2>
-      <TR>
-	<TD WIDTH="30%" BGCOLOR="#dddddd">Old password:</TD>
-	<TD WIDTH="70%"><MM-Old-Pw-Box></TD>
-      </TR>
-      <TR>
-	<TD BGCOLOR="#dddddd">New password:</TD>
-	<TD><MM-New-Pass-Box></TD>
-      </TR>
-      <TR> 
-	<TD BGCOLOR="#dddddd">Again to confirm:</TD>
-	<TD><MM-Confirm-Pass-Box></TD>
-      </TR>
+        <p>
+        <center><MM-Other-Subscriptions-Submit></center>
+	</TD></TR>
 </table>
-           <MM-Change-Pass-Button>
-    </TABLE>
+
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Your <MM-List-Name> Password</B>
+	</FONT></TD></TR>
+
+    <tr valign="TOP"><td WIDTH="50%">
+        <a name=reminder>
+        <center>
+        <h3>Forgotten Your Password?</h3>
+        </center>
+        Click this button to have your password emailed to your
+        membership address.
+        <p><MM-Umbrella-Notice>
+        <center>
+        <MM-Email-My-Pw>
+        </center>
+        </td>
+
+    <td WIDTH="50%">
+        <a name=changepw>
+        <center>
+        <h3>Change Your Password</h3>
+        <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2" WIDTH="70%" COLS=2>
+            <TR><TD BGCOLOR="#dddddd"><div align="right">New
+                password:</div></TD>
+                <TD><MM-New-Pass-Box></TD>
+                </TR>
+            <TR>
+                <TD BGCOLOR="#dddddd"><div align="right">Again to
+                confirm:</div></TD>
+                <TD><MM-Confirm-Pass-Box></TD>
+            </TR>
+        </table>
+
+        <MM-Change-Pass-Button>
+        <p><center><mm-global-pw-changes-button>Change my
+        membership password for every mailing list that I am
+        subscribed to at <mm-host>.
+        </center>
+</TABLE>
 
 <p>
-
-<a name=options>
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
-	<TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<B>Your <MM-List-Name> Subscription Options</B>
-	</FONT></TD></TR> </table>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Your <MM-List-Name> Subscription Options</B>
+	</FONT></TD></TR>
+</table>
 
 <p>
-<i><strong>Current values are checked.</strong></i><p>
+<i><strong>Current values are checked.</strong></i>
+
+<p>Note that some of the options have a <em>Set globally</em>
+checkbox.  Checking this field will cause the changes to be made to
+every mailing list that you are a member of on <mm-host>.  Click on
+<em>List my other subscriptions</em> above to see which other mailing
+lists you are subscribed to.
 <p>
-<TABLE BORDER="0" CELLSPACING="2" CELLPADDING="3" WIDTH="100%">
-<tr><TD BGCOLOR="#dcdcdc">
-<a name="disable">
-<strong> Disable mail delivery </strong> <br>
-Turn this on if you want mail to not be delivered to you for a little while.<br>
-<mm-delivery-enable-button> Off
-<mm-delivery-disable-button> On <p>
-</a>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> Set Digest Mode</strong> <br>
-If you turn digest mode on, you'll get posts bundled together once a
-day, instead singly when they're sent.  If digest mode is changed from 
-on to off, you will receive one last digest.<br>
-<MM-Undigest-Radio-Button> Off
-<MM-Digest-Radio-Button> On<br>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> Get MIME or Plain Text Digests?</strong> <br>
-If you have any problems with MIME digests, select plain text. <br>
-<MM-Mime-Digests-Button> MIME
-<MM-Plain-Digests-Button> Plain Text <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> Receive posts you send to the list? </strong><br>
-<mm-dont-receive-own-mail-button> No 
-<mm-receive-own-mail-button> Yes <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> Receive acknowledgement mail when you send mail to the list? </strong><br>
-<mm-dont-ack-posts-button> No
-<mm-ack-posts-button> Yes <p>
-</td></tr>
-<tr><td bgcolor="#dcdcdc">
-<strong> Get password reminder email for this list? </strong><br>
-<mm-dont-get-password-reminder-button> No
-<mm-get-password-reminder-button> Yes <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> Conceal yourself from subscriber list? </strong><br>
-<MM-Public-Subscription-Button> No
-<MM-Hide-Subscription-Button> Yes <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> What language do you prefer?</strong><MM-list-langs>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-Password: <MM-Digest-Pw-Box>  <MM-Digest-Submit><p>
-</td></tr></table>
+<TABLE BORDER="0" CELLSPACING="3" CELLPADDING="4" WIDTH="100%">
+    <tr><TD BGCOLOR="#cccccc">
+        <a name="disable">
+        <strong>Mail delivery</strong></a><p>
+        Set this option to <em>Enabled</em> to receive messages posted
+        to this mailing list.  Set it to <em>Disabled</em> if you
+        don't want mail delivered to you for a while (i.e. you're
+        going on vacation).  If you disable mail delivery, don't
+        forget to come back after your vacation to re-enable it!
+        </td><td bgcolor="#cccccc">
+        <mm-delivery-enable-button>Enabled<br>
+        <mm-delivery-disable-button>Disabled<p>
+        <mm-global-deliver-button><i>Set globally</i>
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Set Digest Mode</strong><p>
+        If you turn digest mode on, you'll get posts bundled together
+        once a day, instead of singly when they're sent.  If digest mode
+        is changed from on to off, you may receive one last
+        digest.
+        </td><td bgcolor="#cccccc">
+        <MM-Undigest-Radio-Button>Off<br>
+        <MM-Digest-Radio-Button>On
+        </td></tr>
+        
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Get MIME or Plain Text Digests?</strong><p>
+        Your mail reader may or may not support MIME digests.  In
+        general MIME digests are preferred, but if you have a problem
+        reading them, select plain text digests.
+        </td><td bgcolor="#cccccc">
+        <MM-Mime-Digests-Button>MIME<br>
+        <MM-Plain-Digests-Button>Plain Text
+        </td></tr>
+        
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Receive your own posts to the list?</strong><p>
+        Ordinarily, you will get a copy of every message you post to
+        the list.  If you don't want to receive this copy, set this
+        option to <em>No</em>.
+        </td><td bgcolor="#cccccc">
+        <mm-dont-receive-own-mail-button>No<br>
+        <mm-receive-own-mail-button>Yes
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Receive acknowledgement mail when you send mail to
+        the list?</strong><p>
+        </td><td bgcolor="#cccccc">
+        <mm-dont-ack-posts-button>No<br>
+        <mm-ack-posts-button>Yes
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Get password reminder email for this list?</strong><p>
+        Once a month, you will get an email containing a password
+        reminder for every list at this host to which you are
+        subscribed.  You can turn this off on a per-list basis by
+        selecting <em>No</em> for this option.  If you turn off
+        password reminders for all the lists you are subscribed to, no
+        reminder email will be sent to you.
+        </td><td bgcolor="#cccccc">
+        <mm-dont-get-password-reminder-button>No<br>
+        <mm-get-password-reminder-button>Yes<p>
+        <mm-global-remind-button><i>Set globally</i>
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Conceal yourself from subscriber list?</strong><p>
+        When someone views the list membership, your email address is
+        normally shown (in an obscured fashion to thwart spam
+        harvesters).  If you do not want your email address to show up
+        on this membership roster, select <em>No</em> for this option.
+        </td><td bgcolor="#cccccc">
+        <MM-Public-Subscription-Button>No<br>
+        <MM-Hide-Subscription-Button>Yes
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>What language do you prefer?</strong><p>
+        </td><td bgcolor="#cccccc">
+        <MM-list-langs>
+        </td></tr>
+
+    <tr><TD colspan="2">
+        <center><MM-options-Submit-button></center>
+        </td></tr>
+
+</table>
 </center>
-
 <p>
 <MM-Form-End>
 
