@@ -1,5 +1,6 @@
-# It's possible to get the mail-list senders address (list-admin) in the bounce list.  
-# You probably don't want to have list mail sent to that address anyway.
+# It's possible to get the mail-list senders address (list-admin) in the
+# bounce list.   You probably don't want to have list mail sent to that
+# address anyway.
 
 import sys
 import time
@@ -142,7 +143,7 @@ class Bouncer:
                     "\tReason:\t\tExcessive or fatal bounces.\n"
                     % (self.real_name, addr, negative, did))
             if succeeded != 1:
-                text = text + "\tFailure reason:\t%s\n\n" % succeeded
+                text = text + "\tBUT:\t\t%s\n\n" % succeeded
             else:
                 text = text + "\n"
             if did == "disabled" and succeeded == 1:
@@ -188,7 +189,7 @@ class Bouncer:
                         self.real_name, addr, reason)
             return reason
 	try:
-	    self.DeleteMember(addr)
+	    self.DeleteMember(addr, "bouncing addr")
 	    self.LogMsg("bounce", "%s: removed %s", self.real_name, addr) 
             self.Save()
             return 1
@@ -213,18 +214,24 @@ class Bouncer:
 	mime_info = msg.getheader('content-type')
 	boundry = None
 	if mime_info:
-	    mime_info_parts = regsub.splitx(mime_info, '[Bb][Oo][Uu][Nn][Dd][Aa][Rr][Yy]="[^"]+"')
+	    mime_info_parts = regsub.splitx(
+                mime_info, '[Bb][Oo][Uu][Nn][Dd][Aa][Rr][Yy]="[^"]+"')
 	    if len(mime_info_parts) > 1:
-		boundry = regsub.splitx(mime_info_parts[1], '"[^"]+"')[1][1:-1]
+		boundry = regsub.splitx(mime_info_parts[1],
+                                        '"[^"]+"')[1][1:-1]
 
 	if boundry:
 	    relevent_text = string.split(msg.body, '--%s' % boundry)[1]
 	else:
-	    # This looks strange, but at least 2 of these are going to be no-ops.
-	    relevent_text = regsub.split(msg.body, '^.*Message header follows.*$')[0]
-	    relevent_text = regsub.split(relevent_text, '^The text you sent follows:.*$')[0]
-	    relevent_text = regsub.split(relevent_text, '^Additional Message Information:.*$')[0]
-	    relevent_text = regsub.split(relevent_text, '^-+Your original message-+.*$')[0]
+	    # This looks strange, but at least 2 are going to be no-ops.
+	    relevent_text = regsub.split(msg.body,
+                                         '^.*Message header follows.*$')[0]
+	    relevent_text = regsub.split(relevent_text,
+                                         '^The text you sent follows:.*$')[0]
+	    relevent_text = regsub.split(
+                relevent_text, '^Additional Message Information:.*$')[0]
+	    relevent_text = regsub.split(relevent_text,
+                                         '^-+Your original message-+.*$')[0]
 	
 	BOUNCE = 1
 	REMOVE = 2
@@ -242,7 +249,7 @@ class Bouncer:
 	    (regex.compile('.*%s\.\.\. Deferred.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*User %s not known.*' % email_regexp), REMOVE),
 	    (regex.compile('.*%s: User unknown.*' % email_regexp), REMOVE))
-	# patterns that we can't directly extract the email (special case these)
+	# patterns we can't directly extract the email (special case these)
 	messy_pattern_1 = regex.compile('^Recipient .*$')
 	messy_pattern_2 = regex.compile('^Addressee: .*$')
 	messy_pattern_3 = regex.compile('^User .* not listed.*$')
@@ -278,12 +285,15 @@ class Bouncer:
 			continue
 
 	    # Now for the special case messages that are harder to parse...
-	    if messy_pattern_1.match(line) <> -1 or messy_pattern_2.match(line) <> -1:
+	    if (messy_pattern_1.match(line) <> -1
+                or messy_pattern_2.match(line) <> -1):
 		username = string.split(line)[1]
 		self.RegisterBounce('%s@%s' % (username, remote_host))
 		message_groked = 1
 		continue
-	    if messy_pattern_3.match(line) <> -1 or messy_pattern_4.match(line) <> -1 or messy_pattern_5.match(line) <> -1:
+	    if (messy_pattern_3.match(line) <> -1
+                or messy_pattern_4.match(line) <> -1
+                or messy_pattern_5.match(line) <> -1):
 		username = string.split(line)[1]
 		self.HandleBouncingAddress('%s@%s' % (username, remote_host))
 		message_groked = 1
