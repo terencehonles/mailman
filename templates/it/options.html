@@ -1,8 +1,8 @@
-<!-- $Revision: 5197 $ -->
+<!-- $Revision: 5274 $ -->
 <html>
 <head>
-<title>Configurazione utente <MM-Presentable-User> per la lista <MM-List-Name>
-    </title>
+	<link rel="SHORTCUT ICON" href="<mm-favicon>">
+	<title>Configurazione utente <MM-Presentable-User> per la lista <MM-List-Name></title>
 </head>
 <BODY BGCOLOR="#ffffff">
     <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
@@ -12,13 +12,12 @@
 	lista <MM-List-Name>			    
 	</FONT></B></TD></TR>
     </TABLE>
-<MM-Form-Start>
 <p>
 <table width="100%" border="0" cellspacing="5" cellpadding="5">
     <tr><td>
     	Stato di iscrizione dell'utente <b><MM-Presentable-User></b>,
 	password e opzioni per la lista <MM-List-Name>.
-        </td><td><mm-logout-button></td>
+        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -159,16 +158,18 @@
 avranno effetto su tutte le liste a cui sei iscritto su questo
 stesso server <mm-host>.  Clicca su <em>Elenca le altre mie iscrizioni</em>
 qui sopra per vedere a quali altre liste sei iscritto.
+<MM-Form-Start>
 <p>
 <TABLE BORDER="0" CELLSPACING="3" CELLPADDING="4" WIDTH="100%">
     <tr><TD BGCOLOR="#cccccc">
         <a name="disable">
 	<strong>Consegna della posta</strong></a><p>
-        Abilita questa opzione per ricevere i messaggi che sono inviati
-	a questa lista.  Disabilitala se non vuoi ricevere i
-	messaggi per qualche tempo (ad esempio se stai andando in
-	vacanza).  Se disabiliti l'invio, non dimenticare che dopo
-	le vacanze dovrai tornare qui e riabilitarlo!
+	<em>Abilita</em> questa opzione per ricevere i messaggi che 
+	sono inviati a questa lista.  <em>Disabilitala</em> se non vuoi 
+	ricevere i messaggi per qualche tempo (ad esempio se stai andando 
+	in vacanza).  Se disabiliti l'invio, non dimenticare che dopo
+	le vacanze dovrai tornare qui e riabilitarlo; non sar&agrave;
+	riabilitato automaticamente.
         </td><td bgcolor="#cccccc">
 	<mm-delivery-enable-button>Abilitato<br>
 	<mm-delivery-disable-button>Disabilitato<p>
@@ -195,7 +196,8 @@ qui sopra per vedere a quali altre liste sei iscritto.
 	preferibile ma se hai problemi scegli il formato testo.
         </td><td bgcolor="#cccccc">
         <MM-Mime-Digests-Button>MIME<br>
-	<MM-Plain-Digests-Button>Testo
+	<MM-Plain-Digests-Button>Testo<p>
+	<mm-global-mime-button><i>globalmente</i>
         </td></tr>
         
     <tr><TD BGCOLOR="#cccccc">

@@ -6,7 +6,8 @@ iscrizione (ad esempio se vuoi la modalità digest) e l'uso di questa
 password ti rende la vita più semplice se ti vuoi cancellare dalla
 lista.
 
-Sei iscritto alla lista con l'indirizzo: %(user)
+Sei iscritto alla lista con l'indirizzo: %(user)s
+
 La tua password per la lista %(listname)s è: %(password)s
 
 Per fare variazioni alla tua iscrizione, inserisci la password nella 
@@ -21,4 +22,5 @@ Puoi anche fare qualche variazione via email - invia un messaggio a:
 con la parola "help" nell'oggetto o nel testo, e riceverai una risposta
 contenente le istruzioni dettagliate.
 
-Domande o commenti?  Scrivi a %(adminaddr)s.
+Domande o commenti?  Scrivi all'amministratore della lista %(listname)s
+all'indirizzo %(owneraddr)s.

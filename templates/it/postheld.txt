@@ -1,4 +1,5 @@
-Il tuo messaggio alla lista '%(list_name)s' con oggetto
+
+Il tuo messaggio alla lista '%(listname)s' con oggetto
 
     %(subject)s
 
@@ -11,4 +12,7 @@ La ragione per la quale è stato trattenuto:
 
 A seconda della decisione del moderatore, il messaggio verrà 
 inviato alla lista oppure ti sarà inviata una notifica con la
-motivazione del rifiuto.
+motivazione del rifiuto.  Se vuoi cancellare questo messaggio,
+visita questo indirizzo:
+
+    %(confirmurl)s
