@@ -49,7 +49,7 @@ class HTMLFormatter:
 	    people = filter(NotHidden, self.members)
 	    num_concealed = len(self.members) - len(people)
  	if (num_concealed > 0):
-	    concealed = "<br><em>(%d private)</em><br>" % num_concealed
+	    concealed = "<em>(%d private members)</em>" % num_concealed
  	else:
  	    concealed = ""
 
@@ -65,8 +65,8 @@ class HTMLFormatter:
 	items = map(FormatOneUser, people) 
 	# Just return the .Format() so this works until I finish
 	# converting everything to htmlformat...
-	return (apply(htmlformat.UnorderedList, tuple(items)).Format()
-		+ concealed)
+	return (concealed +
+		apply(htmlformat.UnorderedList, tuple(items)).Format())
 
     def FormatOptionButton(self, type, value, user):
 	users_val = self.GetUserOption(user, type)
