@@ -1,0 +1,28 @@
+Mailman - The GNU Mailing List Management System
+Copyright (C) 1998 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
+Here is a list of changes between Mailman releases.  Note that this
+list was started for the 1.0beta9 release.
+
+==========
+Differences between 1.0b8 and 1.0b9
+
+- New bin scripts: clone_member, list_members, add_members (a
+  consolidation of convertlist and populate_new_list which have been
+  removed).
+
+- Two new readmes have been added: README.LINUX and README.QMAIL
+
+- New configure option --with-cgi-ext which can be used if your Web
+  server requires extensions on CGI scripts.  The extension must
+  include a dot (e.g. --with-cgi-ext=".cgi").
+
+- Many bug fixes, including the setgid problem that was causing mail
+  to be lost on some versions of Linux.
+
+
+Local Variables:
+mode: indented-text
+indent-tabs-mode: nil
+End:
