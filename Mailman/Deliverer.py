@@ -52,8 +52,8 @@ your membership administrative address, %s.
              'welcome'     : welcome,
              'umbrella'    : umbrella,
              'emailaddr'   : self.GetListEmail(),
-             'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
-             'optionsurl'  : self.GetAbsoluteOptionsURL(name),
+             'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
+             'optionsurl'  : self.GetOptionsURL(name, absolute=1),
              'password'    : password,
              })
 	if digest:
@@ -92,7 +92,7 @@ your membership administrative address, %s.
                 {'user'       : cpuser,
                  'listname'   : self.real_name,
                  'password'   : self.passwords[user],
-                 'options_url': self.GetAbsoluteOptionsURL(user),
+                 'options_url': self.GetOptionsURL(user, absolute=1),
                  'requestaddr': requestaddr,
                  'adminaddr'  : adminaddr,
                  })
