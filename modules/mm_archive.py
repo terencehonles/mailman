@@ -10,6 +10,7 @@ class Archiver:
 	# Not configurable
 	self._base_archive_url = os.path.join(mm_cfg.ARCHIVE_URL, 
 					      self._internal_name)
+	self.archive_update_frequency = 1  # 0 = never, 1 = daily, 2 = hourly
 	self.archive_volume_frequency = 0  # 0 = yearly, 1 = monthly
 	self.clobber_date = 0
 
@@ -17,6 +18,10 @@ class Archiver:
 	return [
 	    ('archive', mm_cfg.Toggle, ('No', 'Yes'), 0, 
 	     'Archive messages?'),
+
+	    ('archive_update_frequency', mm_cfg.Number, 3, 0,
+	     "How often should new messages be incorporated?  "
+	     "0 for no archival, typically 1 for daily, 2 for hourly"),
 
 	    ('archive_volume_frequency', mm_cfg.Radio, ('Yearly', 'Monthly'),
 	     0,
@@ -60,7 +65,9 @@ class Archiver:
 
 # Internal function, don't call this.
     def ArchiveMail(self, post):
-	archive_file = open(os.path.join(self._full_path, "archived.mail"), "a+")
+	archive_file = open(os.path.join(self._full_path,
+					 "archived.mail"),
+			    "a+")
 	archive_mbox = mm_mbox.Mailbox(archive_file)
 	if self.clobber_date:
 	    import time
