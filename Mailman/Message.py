@@ -96,6 +96,21 @@ class Message(rfc822.Message):
 
 
 class OutgoingMessage(Message):
-    def __init__(self):
+    def __init__(self, text=''):
         from Mailman.pythonlib.StringIO import StringIO
-        Message.__init__(self, StringIO())
+        # NOTE: text if supplied must begin with valid rfc822 headers.  It can
+        # also begin with the body of the message but in that case you better
+        # make sure that the first line does NOT contain a colon!
+        Message.__init__(self, StringIO(text))
+
+
+
+class UserNotification(OutgoingMessage):
+    def __init__(self, recip, sender, subject=None, text=''):
+        OutgoingMessage.__init__(self, text)
+        if subject is None:
+            subject = '(no subject)'
+        self['Subject'] = subject
+        self['From'] = sender
+        self['To'] = recip
+        self.recips = [recip]
