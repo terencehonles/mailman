@@ -7,8 +7,7 @@ This script is invoked via the mail wrapper.
 Stdin is the mail message, and argv[1] is the name of the target mailing
 list."""
 
-__version__ = "$Revision: 400 $"
-
+__version__ = "$Revision: 416 $"
 
 # Todo: check size of To: list < 100
 # Send back why the post was rejected.
@@ -17,7 +16,13 @@ import sys
 
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist, mm_message, mm_err, mm_cfg
+import maillist, mm_message, mm_err, mm_cfg, mm_utils
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'post',
+                                        manual_reprime=1, nofail=0)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 # Only let one program run at once per list.
 
