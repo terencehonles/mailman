@@ -65,22 +65,25 @@ MAX_ACTIVE = 7200 # 2 hours
 #    an active state for too long and attempt a delivery
 #
 def processQueue():
-    import flock, time, smtplib, Utils
-    lock_file = flock.FileLock(os.path.join(mm_cfg.LOCK_DIR, "mmqueue_run.lock"))
+    import flock
+    import time
+    import Utils
+
+    lock_file = flock.FileLock(
+        os.path.join(mm_cfg.LOCK_DIR, "mmqueue_run.lock"))
     lock_file.lock()
     files = os.listdir(mm_cfg.DATA_DIR)
     for file in files:
         #
-        # does it look like a q entry?
+        # does it look like a queue entry?
         #
         if TEMPLATE != file[:len(TEMPLATE)]:
             continue
         full_fname = os.path.join(mm_cfg.DATA_DIR, file)
         #
-        # we need to stat the file if it still exists (atomically, we
-        # can't just use use os.path.exists then stat it.
-        # if it doesn't exist, it's been dequeued since we saw
-        # it in the directory listing
+        # we need to stat the file if it still exists (atomically, we can't
+        # just use use os.path.exists then stat it.  if it doesn't exist, it's
+        # been dequeued since we saw it in the directory listing
         #
         try:
             st = os.stat(full_fname)
@@ -90,24 +93,26 @@ def processQueue():
             except ValueError:
                 code = ""
                 msg = str(rest)
-            if code == errno.ENOENT: # file does not exist, it's already been dequeued
+            if code == errno.ENOENT:
+                # file does not exist, it's already been dequeued
                 continue
             else:
                 raise os.error, rest
         #
-        # if the file is not a deferred q message, we check to
-        # see if the creation time was too long ago and process
-        # it anyway.  If the creation time was recent, leave it
-        # alone as it's probably being delivered by another process anyway
+        # if the file is not a deferred queue message, we check to see if the
+        # creation time was too long ago and process it anyway.  If the
+        # creation time was recent, leave it alone as it's probably being
+        # delivered by another process anyway
         #
-        if not isDeferred(full_fname, st) and st[stat.ST_CTIME] > (time.time() - MAX_ACTIVE): 
+        if (not isDeferred(full_fname, st) and
+            st[stat.ST_CTIME] > (time.time() - MAX_ACTIVE)):
+            # then
             continue
         f = open(full_fname,"r")
         recip,sender,text = marshal.load(f)
         f.close()
         Utils.TrySMTPDelivery(recip,sender,text,full_fname)
     lock_file.unlock()
-
 
 
 #
