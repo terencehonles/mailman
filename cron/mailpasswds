@@ -79,7 +79,7 @@ def mail_passwords(mlist, hosts):
                  })
             # add this to the end so it doesn't get wrapped/filled
             text = text + header + '\n' + string.join(table, '\n')
-            msg = Message.UserNotification(mailman_owner, addr, subj, text)
+            msg = Message.UserNotification(addr, mailman_owner, subj, text)
             msg['X-No-Archive'] = 'yes'
             HandlerAPI.DeliverToUser(mlist, msg)
 
