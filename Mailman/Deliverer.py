@@ -247,7 +247,7 @@ class Deliverer:
         ok = 1
         # find the case-preserved version of the user's address
         cpuser = self.members.get(self.FindUser(user))
-        if cpuser <> 0:
+        if type(cpuser) == type(''):
             user = cpuser
         if user and self.passwords.has_key(user):
             recipient = self.GetMemberAdminEmail(user)
