@@ -40,7 +40,7 @@ def main():
     if not parts:
         bad_confirmation(doc)
         doc.AddItem(MailmanLogo())
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         return
 
     listname = parts[0].lower()
@@ -49,7 +49,7 @@ def main():
     except Errors.MMListError, e:
         bad_confirmation(doc, _('No such list <em>%(listname)s</em>'))
         doc.AddItem(MailmanLogo())
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         syslog('error', 'No such list "%s": %s' % (listname, e))
         return
 
@@ -76,7 +76,7 @@ def main():
             initial subscription request.  If your confirmation has expired,
             please try to re-submit your subscription.'''))
         doc.AddItem(mlist.GetMailmanFooter())
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         mlist.Save()
     finally:
         mlist.Unlock()
@@ -96,10 +96,11 @@ def success(mlist, doc, op, addr, password=None, digest=None, lang=None):
     # Different title based on operation performed
     if op == Pending.SUBSCRIPTION:
         title = _('Subscription request confirmed')
-    # Current only one other operation
-    else:
+    elif op == Pending.UNSUBSCRIPTION:
         title = _('Removal request confirmed')
         lang = mlist.GetPreferredLanguage(addr)
+    elif op == Pending.CHANGE_OF_ADDRESS:
+        title = _('Change of address confirmed')
     # Use the user's preferred language
     i18n.set_language(lang)
     doc.set_language(lang)
@@ -112,7 +113,11 @@ def success(mlist, doc, op, addr, password=None, digest=None, lang=None):
         "%(addr)s" to the %(listname)s mailing list.  A separate confirmation
         message will be sent to your email address, along with your password,
         and other useful information and links.'''))
-    else:
+    elif op == Pending.UNSUBSCRIPTION:
         doc.AddItem(_('''\
         You have successfully confirmed your removal request for "%(addr)s" to
         the %(listname)s mailing list.'''))
+    elif op == Pending.CHANGE_OF_ADDRESS:
+        doc.AddItem(_('''\
+        You have successfully confirmed your change of address to "%(addr)s"
+        for the %(listname)s mailing list.'''))
