@@ -1,0 +1,96 @@
+#! /usr/bin/env python
+
+# Copyright (C) 2001 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""One-shot qrunner, er, runner.
+
+This script is primarily for debugging purposes, and is used to invoke a
+specific sub-qrunner.  The invoked qrunner will run once through its
+processing loop and then exit.  You can only call this script if there is no
+master qrunner daemon running.
+
+Usage: %(PROGRAM)s [options] runnername
+
+Options:
+
+    -l/--list
+        Shows the available qrunner names.
+
+    -h/--help
+        Print this message and exit.
+
+runnername is required unless -l or -h is given, and it must be one of the
+names displayed by the -l switch.
+"""
+
+import sys
+import getopt
+
+import paths
+from Mailman import mm_cfg
+from Mailman import LockFile
+from Mailman.Queue import Control
+from Mailman.i18n import _
+
+PROGRAM = sys.argv[0]
+COMMASPACE = ', '
+
+
+
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+
+
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'hl', ['help', 'list'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-l', '--list'):
+            for runnername, slices in mm_cfg.QRUNNERS:
+                if runnername.endswith('Runner'):
+                    name = runnername[:-len('Runner')]
+                else:
+                    name = runnername
+                print _('-r %(name)s runs the %(runnername)s qrunner')
+            sys.exit(0)
+
+    if len(args) < 1:
+        usage(1, _('No runner name given.'))
+    elif len(args) > 1:
+        command = COMMASPACE.join(args)
+        usage(1, _('Bad command: %(command)s'))
+
+    try:
+        Control.start(0, args[0])
+    except ImportError, e:
+        print >> sys.stderr, e
+    except LockFile.TimeOutError:
+        print >> sys.stderr, 'Another qrunner is already running, exiting.'
+
+
+
+if __name__ == '__main__':
+    main()
