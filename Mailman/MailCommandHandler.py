@@ -721,7 +721,7 @@ background and instructions for subscribing to and using it, visit:
             {'requestaddr': self.GetRequestEmail(),
              'cmd'        : cmd,
              'adminaddr'  : self.GetAdminEmail(),
-             }, lang=self.preferred_language)
+             }, mlist=self)
         self.AddError(text, trunc=0)
 
     def ProcessHelpCmd(self, args, cmd, mail):
@@ -732,6 +732,6 @@ background and instructions for subscribing to and using it, visit:
              'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'requestaddr' : self.GetRequestEmail(),
              'adminaddr'   : self.GetAdminEmail(),
-             }, lang=self.preferred_language)
+             }, mlist=self)
         self.AddToResponse(text, trunc=0)
 
