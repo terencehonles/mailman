@@ -14,13 +14,8 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-
-"Handle delivery bounce messages, doing filtering when list is set for it."
-
-
-# It's possible to get the mail-list senders address (list-admin) in the
-# bounce list.   You probably don't want to have list mail sent to that
-# address anyway.
+"""Handle delivery bounces.
+"""
 
 import sys
 import time
@@ -29,245 +24,170 @@ from email.MIMEText import MIMEText
 from email.MIMEMessage import MIMEMessage
 
 from Mailman import mm_cfg
-from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
 from Mailman import MemberAdaptor
+from Mailman import Pending
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
 EMPTYSTRING = ''
 
+class _BounceInfo:
+    def __init__(self, member, score, date, noticesleft, cookie):
+        self.member = member
+        self.score = score
+        self.date = date
+        self.noticesleft = noticesleft
+        self.lastnotice = None
+        self.cookie = cookie
+
+    def __repr__(self):
+        # For debugging
+        return """\
+<bounce info for member %(member)s
+        current score: %(score)s
+        last bounce date: %(date)s
+        email notices left: %(noticesleft)s
+        last notice date: %(lastnotice)s
+        confirmation cookie: %(cookie)s
+        >""" % self.__dict__
+
 
 
 class Bouncer:
     def InitVars(self):
-        # Not configurable...
-        #
-        # self.bounce_info registers observed bounce incidents.  It's a
-        # dict mapping members addrs to a list:
-        #  [
-        #    time.time() of last bounce,
-        #    post_id of first offending bounce in current sequence,
-        #    post_id of last offending bounce in current sequence
-        #  ]
-        self.bounce_info = {}
         # Configurable...
         self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
-        self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
-        self.minimum_post_count_before_bounce_action = \
-                mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION
-        self.automatic_bounce_action = mm_cfg.DEFAULT_AUTOMATIC_BOUNCE_ACTION
-        self.max_posts_between_bounces = \
-                mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
+        self.bounce_score_threshold = mm_cfg.DEFAULT_BOUNCE_SCORE_THRESHOLD
+        self.bounce_info_stale_after = mm_cfg.DEFAULT_BOUNCE_INFO_STALE_AFTER
+        self.bounce_you_are_disabled_warnings = \
+            mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS
+        self.bounce_you_are_disabled_warnings_interval = \
+            mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL
+        # Not configurable...
+        #
+        # This holds legacy member related information.  It's keyed by the
+        # member address, and the value is an object containing the bounce
+        # score, the date of the last received bounce, and a count of the
+        # notifications left to send.
+        self.bounce_info = {}
         # New style delivery status
         self.delivery_status = {}
 
-    def ClearBounceInfo(self, member):
-        member = member.lower()
-        if self.bounce_info.has_key(member):
-            del self.bounce_info[member]
-
-    def RegisterBounce(self, member, msg):
-        """Detect and handle repeat-offender bounce addresses.
-        
-        We use very sketchy bounce history profiles in self.bounce_info
-        (see comment above its initialization), together with list-
-        specific thresholds self.minimum_post_count_before_bounce_action
-        and self.max_posts_between_bounces.
-        """
-        report = "%s: %s - " % (self.real_name, member)
-        now = time.time()
-        days = mm_cfg.days
-        # Take the opportunity to cull expired entries.
-        pid = self.post_id
-        maxposts = self.max_posts_between_bounces
-        # BAW: This can't be right.  minimum_removal_date should only be
-        # multiplied by days(1) :(
-        stalesecs = self.minimum_removal_date * days(5)
-        for k, v in self.bounce_info.items():
-            if now - v[0] > stalesecs:
-                # It's been long enough to drop their bounce record:
-                del self.bounce_info[k]
-
-        # Is this the first bounce we're seeing from this address?
-        this_dude = Utils.FindMatchingAddresses(member, self.bounce_info)
-        if not this_dude:
-            # No (or expired) priors - new record.
-            self.bounce_info[member.lower()] = [now, self.post_id,
-                                               self.post_id]
-            syslog('bounce', '%sfirst', report)
+    def registerBounce(self, member, msg, weight=1.0):
+        if not self.isMember(member):
             return
-
-        # No, there are some priors.
-        addr = this_dude[0].lower()
-        hist = self.bounce_info[addr]
-        difference = now - hist[0]
-        # FIXME: Use MemberAdaptor interface
-        if len(Utils.FindMatchingAddresses(addr, self.members)):
-            if self.post_id - hist[2] > self.max_posts_between_bounces:
-                # There's been enough posts since last bounce that we're
-                # restarting.  (Might should keep track of who goes stale
-                # how often.)
-                syslog('bounce', '%sfirst fresh', report)
-                self.bounce_info[addr] = [now, self.post_id, self.post_id]
-                return
-            self.bounce_info[addr][2] = self.post_id
-            if ((self.post_id - hist[1] >
-                 self.minimum_post_count_before_bounce_action)
-                and
-                (difference > self.minimum_removal_date * days(1))):
-                syslog('bounce', '%sexceeded limits', report)
-                self.HandleBouncingAddress(addr, msg)
-                return
-            else:
-                post_count = (self.minimum_post_count_before_bounce_action
-                              - (self.post_id - hist[1]))
-                if post_count < 0:
-                    post_count = 0
-                remain = self.minimum_removal_date * days(1) - difference
-                syslog('bounce', '%s%d more allowed over %d secs',
-                       report, post_count, remain)
-                return
-
-        elif len(Utils.FindMatchingAddresses(addr, self.digest_members)):
-            if self.volume > hist[1]:
-                syslog('bounce', '%s: first fresh (D)', self._internal_name)
-                self.bounce_info[addr] = [now, self.volume, self.volume]
-                return
-            if difference > self.minimum_removal_date * days(1):
-                syslog('bounce', '%sexceeded limits (D)', report)
-                self.HandleBouncingAddress(addr, msg)
-                return 
-            syslog('bounce', '%sdigester lucked out', report)
+        info = self.getBounceInfo(member)
+        today = time.localtime()[:3]
+        if info is None:
+            # This is the first bounce we've seen from this member
+            cookie = Pending.new(Pending.RE_ENABLE, self.internal_name(),
+                                 member)
+            info = _BounceInfo(member, weight, today,
+                               self.bounce_you_are_disabled_warnings,
+                               cookie)
+            self.setBounceInfo(member, info)
+            syslog('bounce', '%s: %s bounce score: %s', self.internal_name(),
+                   member, info.score)
+        elif self.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
+            # The user is already disabled, so we can just ignore subsequent
+            # bounces.  These are likely due to residual messages that were
+            # sent before disabling the member, but took a while to bounce.
+            syslog('bounce', '%s: %s residual bounce received',
+                   self.internal_name(), member)
+        elif info.date == today:
+            # We've already scored any bounces for today, so ignore this one.
+            syslog('bounce', '%s: %s already scored a bounce for today',
+                   self.internal_name(), member)
         else:
-            syslog('bounce', '%s: address %s not a member.',
-                   self.internal_name(), addr)
+            # See if this member's bounce information is stale.
+            now = time.mktime(today + (0,) * 6)
+            lastbounce = time.mktime(info.date + (0,) * 6)
+            if lastbounce + self.bounce_info_stale_after < now:
+                # Information is stale, so simply reset it
+                info = _BounceInfo(member, weight, today, 0)
+                self.setBounceInfo(member, info)
+                syslog('bounce', '%s: %s has stale bounce info, resetting',
+                       self.internal_name(), member)
+            else:
+                # Nope, the information isn't stale, so add to the bounce
+                # score and take any necessary action.
+                info.score += weight
+                info.date = today
+                self.setBounceInfo(member, info)
+                syslog('bounce', '%s: %s current bounce score: %s',
+                       member, self.internal_name(), info.score)
+                if info.score >= self.bounce_score_threshold:
+                    # Disable them
+                    syslog('bounce',
+                           '%s: %s disabling due to bounce score %s >= %s',
+                           self.internal_name(), member,
+                           info.score, self.bounce_score_threshold)
+                    self.setDeliveryStatus(member, MemberAdaptor.BYBOUNCE)
+                    self.sendNextNotification(member)
+                    self.__sendAdminBounceNotice(member, msg)
 
-    def HandleBouncingAddress(self, addr, msg):
-        """Disable or remove addr according to bounce_action setting."""
-        disabled = 0
-        if self.automatic_bounce_action == 0:
+    def __sendAdminBounceNotice(self, member, msg):
+        # BAW: This is a bit kludgey, but we're not providing as much
+        # information in the new admin bounce notices as we used to (some of
+        # it was of dubious value).  However, we'll provide empty, strange, or
+        # meaningless strings for the unused %()s fields so that the language
+        # translators don't have to provide new templates.
+        siteowner = Utils.get_site_email(self.host_name)
+        text = Utils.maketext(
+            'bounce.txt',
+            {'listname' : self.real_name,
+             'addr'     : member,
+             'negative' : '',
+             'did'      : _('disabled'),
+             'but'      : '',
+             'reenable' : '',
+             'owneraddr': siteowner,
+             }, mlist=self)
+        subject = _('Bounce action notification')
+        umsg = Message.UserNotification(self.GetOwnerEmail(),
+                                        siteowner, subject)
+        umsg.attach(MIMEText(text))
+        umsg.attach(MIMEMessage(msg))
+        umsg['Content-Type'] = 'multipart/mixed'
+        umsg['MIME-Version'] = '1.0'
+        umsg.send(self)
+
+    def sendNextNotification(self, member):
+        info = self.getBounceInfo(member)
+        if info is None:
             return
-        elif self.automatic_bounce_action == 1:
-            # Only send if call works ok.
-            (succeeded, send) = self.DisableBouncingAddress(addr)
-            did = _('disabled')
-            disabled = 1
-        elif self.automatic_bounce_action == 2:
-            (succeeded, send) = self.DisableBouncingAddress(addr)
-            did = _('disabled')
-            disabled = 1
-            # Never send.
-            send = 0
-        elif self.automatic_bounce_action == 3:
-            succeeded, send = self.RemoveBouncingAddress(addr)
-            did = _('removed')
-            # Always send.
-            send = 1
-        if send:
-            if succeeded <> 1:
-                negative = _('not ')
-            else:
-                negative = ''
-            recipient = self.GetAdminEmail()
-            if addr in self.owner + [recipient]:
-                # Whoops!  This is a bounce of a bounce notice - do not
-                # perpetuate the bounce loop!  Log it prominently and be
-                # satisfied with that.
-                syslog('error', '''\
-%s: Bounce recipient loop encountered!
-(I.e., bounce notification address itself bounces.)
-Bad admin recipient: %s''', self.internal_name(), addr)
-                return
-            # report about success
-            but = ''
-            if succeeded <> 1:
-                but = _('BUT:        %(succeeded)s')
-            # disabled?
-            if disabled and succeeded == 1:
-                reenable = Utils.maketext(
-                    'reenable.txt',
-                    {'admin_url': self.GetScriptURL('admin', absolute=1),},
-                    mlist=self)
-            else:
-                reenable = ''
-            # the mail message text
-            text = Utils.maketext(
-                'bounce.txt',
-                {'listname' : self.real_name,
-                 'addr'     : addr,
-                 'negative' : negative,
-                 'did'      : did,
-                 'but'      : but,
-                 'reenable' : reenable,
-                 'owneraddr': Utils.get_site_email(self.host_name, 'admin'),
-                 }, mlist=self)
-            rname = self.real_name
-            msg0 = Message.UserNotification(
-                recipient, Utils.get_site_email(self.host_name, 'admin'),
-                _('%(rname)s member %(addr)s bouncing - %(negative)s%(did)s'))
-            msg0['MIME-Version'] = '1.0'
-            msg0['Content-Type'] = 'multipart/mixed'
-            msg1 = MIMEText(text,
-                _charset=Utils.GetCharSet(self.preferred_language))
-            msg2 = MIMEMessage(msg)
-            msg0.add_payload(msg1)
-            msg0.add_payload(msg2)
-            # add this here so it doesn't get wrapped/filled
-            if negative:
-                negative = negative.upper()
-            # send the bounce message
-            msg0.send(self)
-
-    def DisableBouncingAddress(self, addr):
-        """Disable delivery for bouncing user address.
-
-        Returning success and notification status.
-        """
-        if not self.isMember(addr):
-            reason = _('User not found.')
-            syslog('bounce', '%s: NOT disabled %s: %s',
-                   self.real_name, addr, reason)
-            return reason, 1
-        try:
-            if self.getDeliveryStatus(addr) <> MemberAdaptor.ENABLED:
-                # No need to send out notification if they're already disabled.
-                syslog('bounce', '%s: already disabled %s',
-                       self.real_name, addr)
-                return 1, 0
-            else:
-                self.setDeliveryStatus(addr, MemberAdaptor.BYBOUNCE)
-                syslog('bounce', '%s: disabled %s', self.real_name, addr)
-                self.Save()
-                return 1, 1
-        except Errors.MMNoSuchUserError:
-            syslog('bounce', '%s: NOT disabled %s: %s',
-                   self.real_name, addr, Errors.MMNoSuchUserError)
-            self.ClearBounceInfo(addr)
-            self.Save()
-            return Errors.MMNoSuchUserError, 1
-            
-    def RemoveBouncingAddress(self, addr):
-        """Unsubscribe user with bouncing address.
-
-        Returning success and notification status."""
-        if not self.isMember(addr):
-            reason = _('User not found.')
-            syslog('bounce', '%s: NOT removed %s: %s',
-                   self.real_name, addr, reason)
-            return reason, 1
-        try:
-            self.ApprovedDeleteMember(addr, "bouncing addr")
-            syslog('bounce', '%s: removed %s', self.real_name, addr)
-            self.Save()
-            return 1, 1
-        except Errors.MMNoSuchUserError:
-            syslog('bounce', '%s: NOT removed %s: %s',
-                   self.real_name, addr, Errors.MMNoSuchUserError)
-            self.ClearBounceInfo(addr)
-            self.Save()
-            return Errors.MMNoSuchUserError, 1
+        if info.noticesleft <= 0:
+            # BAW: Remove them now, with a notification message
+            self.ApprovedDeleteMember(member, 'bouncing address',
+                                      admin_notif=1, userack=1)
+            self.setBounceInfo(member, None)
+            # Expunge the pending cookie for the user.  We throw away the
+            # returned data.
+            Pending.confirm(info.cookie)
+            syslog('bounce', '%s: %s deleted after exhausting notices',
+                   self.internal_name(), member)
+            return
+        # Send the next notification
+        confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
+                                info.cookie)
+        optionsurl = self.GetOptionsURL(member, absolute=1)
+        subject = 'confirm ' + info.cookie
+        requestaddr = self.GetRequestEmail()
+        text = Utils.maketext(
+            'disabled.txt',
+            {'listname'   : self.real_name,
+             'noticesleft': info.noticesleft,
+             'confirmurl' : confirmurl,
+             'optionsurl' : optionsurl,
+             'password'   : self.getMemberPassword(member),
+             'owneraddr'  : self.GetOwnerEmail(),
+             }, lang=self.getMemberLanguage(member), mlist=self)
+        msg = Message.UserNotification(member, requestaddr, subject, text)
+        msg.send(self)
+        info.noticesleft -= 1
+        info.lastnotice = time.localtime()[:3]
 
     def BounceMessage(self, msg, msgdata, e=None):
         # Bounce a message back to the sender, with an error message if
