@@ -18,6 +18,7 @@
 
 import sys
 import os
+import time
 import string
 import re
 import socket
@@ -103,9 +104,8 @@ def do_child(mlist, msg):
     # Note: Need to be sure 2 messages aren't ever sent to the same
     # list in the same process, since message ID's need to be unique.
     # Could make the ID be mm.listname.postnum instead if that happens
-    if msg.getheader('Message-ID') is None:
-        msg.headers.append('Message-ID: <mm.%s.%s@%s>\n' %
-                           (time.time(), os.getpid(), mlist.host_name))
+    msg['Message-ID'] = '<mailman.%s.%s@%s>\n' % (
+        time.time(), os.getpid(), mlist.host_name)
     if msg.getheader('Lines') is None:
         msg.headers.append('Lines: %s\n' % 
                            len(string.split(msg.body,"\n")))
