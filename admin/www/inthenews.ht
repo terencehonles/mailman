@@ -18,16 +18,35 @@ a ZDNet article</a> on GNU/Linux.  This was picked up by
 <a href="http://www.msnbc.com/news/244979.asp">MSNBC</a> (I won't
 comment on the irony there).
 
+<p>Below are the lists of sites using Mailman or providing list hosting
+services using Mailman.  If you'd like to be included in this list,
+please <a href="mailto:mailman-cabal@python.org">let us know</a>.
+
+<p>The following sites provide mailing list hosting services using
+Mailman.  If you like Mailman but still don't want to install it on
+your own systems, you might consider having your list hosted at one of
+these sites.  Inclusion in this list does <em>not</em> construe an
+endorsement or recommendation by the Mailman development team, nor is
+there any relationship between them and us, beyond their use of our
+free software.  Some of these services may have restrictions or fees
+for use.
+
+<ul>
+    <li><a href="http://www.pair.com/pair/pairlist/">Pair List</a>
+    <!-- Sheryl Coe -->
+    <li><a href="http://www.reportica.net/">Reportica Service
+        Bureau</a>.  Reportica has put up a <a
+        href="http://www.reportica.net/services/lists/host/screen-index.html"
+        >demo of their service</a>.
+</ul>
+
+
 <p>The following sites (in no particular order) are known to use
-Mailman or Mailman technology to run their mailing lists.  If you'd
-like to be included in this list, please 
-<a href="mailto:mailman-cabal@python.org">let us know</a>.
+Mailman or Mailman technology to run their mailing lists.
 
 <ul>
     <!-- Chuq von Rospach -->
     <li><a href="http://lists.apple.com/">Apple Computer, Inc.</a>
-    <!-- Michael Olivier -->
-    <li><a href="http://www.home.net/">Exite@Home</a>
     <!-- Luke Tymowski -->
     <li><a href="http://lists.us.dell.com/mailman/listinfo">Dell Computers</a>
     <!-- Keith Packard -->
@@ -49,8 +68,6 @@ like to be included in this list, please
     <li><a href="http://lists.samba.org/">Samba</a>
     <!-- Chris Howells -->
     <li><a href="http://mail.kde.org/mailman/listinfo">KDE Project</a>
-    <li><a href="http://www.pair.com/pair/pairlist/">Pair List</a>
-
     <!-- Barry Warsaw -->
     <li><a href="http://www.python.org/sigs/">Python.Org</a>
     <li><a href="http://lists.zope.org/">Zope.org</a>
@@ -360,40 +377,83 @@ like to be included in this list, please
     <li><a href="http://csrfree.csrsr.ncu.edu.tw/mailman/listinfo/ncuce83/"
     >National Central University, Dept. of Civil Engineering, the 83th</a>
     <!-- Jesse Trucks -->
-    <A HREF="http://list.cyberius.net">Cyberius' Network lists</A>
+    <li><A HREF="http://list.cyberius.net">Cyberius' Network lists</A>
     <!-- Erik J. Heels -->
-    <a href="http://www.iserver.com">iServer</a> and
+    <li><a href="http://www.iserver.com">iServer</a> and
     <a href="http://www.lawlawlaw.com">www.lawlawlaw.com</a>
     <!-- Peter Verhas -->
-    <a href="http://Scriptbasic.com">Scriptbasic.com</a>
+    <li><a href="http://Scriptbasic.com">Scriptbasic.com</a>
     <!-- webmaster@itxzone.com -->
-    <a href="http://www.itxzone.com/">ITXZONE: The Indian IT Zone</a>
-    <!-- renn@cy1000.com.tw>
-    <a
+    <li><a href="http://www.itxzone.com/">ITXZONE: The Indian IT Zone</a>
+    <!-- renn@cy1000.com.tw -->
+    <li><a
     href="http://csrfree.csrsr.ncu.edu.tw/mailman/listinfo/ncuce83/"
     >National Central University, Dept. of Civil Engineering, the 83th</a>
     <!-- Jerry Feldman -->
-    <a href="http://www.blu.org/">Boston Linux and Unix user group</a>
+    <li><a href="http://www.blu.org/">Boston Linux and Unix user group</a>
     <!-- Leandro Rache Sanchez -->
-    <a href="http://www.hipertek.net/">Hipertek Ltda.</a>
+    <li><a href="http://www.hipertek.net/">Hipertek Ltda.</a>
     <!-- Jan Kampherbeek -->
-    <a href="http://spiderpro.com/">SpiderPro</a>
+    <li><a href="http://spiderpro.com/">SpiderPro</a>
     <!-- Porfirio Trincheiras -->
-    <a href="http://www.fmh.utl.pt">Faculdade de Motricidade Humana</a>
+    <li><a href="http://www.fmh.utl.pt">Faculdade de Motricidade
+    Humana</a> and
     <a href="http://www.fmv.utl.pt">Faculdade de Medicina Veterinária</a>
     <!-- info@compamerica.com -->
-    <a href="http://www.american-computer.com">American Computer</a>
+    <li><a href="http://www.american-computer.com">American Computer</a>
     <!-- Bob Radvanovsky -->
-    <a href="http://www.unixworks.net">Unixworks</a>
+    <li><a href="http://www.unixworks.net">Unixworks</a>
     <!-- Mats Brante -->
-    <a href="http://www.osthyvel.net">Osthyvel.net</a>
+    <li><a href="http://www.osthyvel.net">Osthyvel.net</a>
     <!-- Nemeth Tamas -->
-    <a href="http://lists.sek.nyme.hu">University of West Hungary</a>
+    <li><a href="http://lists.sek.nyme.hu">University of West Hungary</a>
     <!-- Marc MERLIN -->
-    <a href="http://lists.svlug.org/lists/listinfo/">Silicon Valley
+    <li><a href="http://lists.svlug.org/lists/listinfo/">Silicon Valley
     Linux Users' Group</a>
     <!-- Bernardo Bernal González -->
-    <a href="http://www.fundaciongsr.es">German Sanchez Ruiperez
+    <li><a href="http://www.fundaciongsr.es">German Sanchez Ruiperez
     Foundation, Spain</a>
+    <!-- Alejandro G. Sánchez Martínez -->
+    <li><a href="http://www.red-libre.com">www.red-libre.com</a>
+    <!-- Randy Stoeker -->
+    <li><a href="http://comm-org.utoledo.edu">COMM-ORG: The On-Line
+    Conference on Community Organizing</a>
+    <!-- Josenivaldo Benito Junior -->
+    <li>FAI - Faculdades Adamantinenses Integradas
+    <!-- Ravi Starzl -->
+    <li><a href="http://www.oddzz.com">Oddzz</a> and <a
+    href="http://www.casinozz.com">Casinozz</a>.
+    <!-- Don Sizemore -->
+    <li><a href="http://www.ibiblio.org">ibiblio</a>
+    <!-- Marc Bitner -->
+    <li><a href="http://shrplist.umsmed.edu/mailman/listinfo/him-l">University
+    of Mississippi Medical Center HIM Listserve</a>
+    <!-- Eli Caul -->
+    <li><a href="http://www.mirafiori.com">the Fiat Page</a>
+    (automotive), with mailing lists at
+    <a href="http://www.mirafiori.com/lists">this url</a>.
+    <!-- Art Jones -->
+    <li><a href="http://www.meteoritecentral.com/">Meteorite
+    Central</a> via the mailing lists at Pair Networks.
+    <!-- Alstair Hutchinson -->
+    <li><a href="http://www.deviantpc.com">DeviantPC</a>
+    <!-- George D. Holmes -->
+    <li><a href="http://mailman.csce.uark.edu">The Computer Science &
+    Computer Engineering</a> department at the University of Arkansas.
+    <!-- steven -->
+    <li><a href="http://www.shakespeare-monologues.org/">Shakespeare's
+    Monologues</a> with mailing lists at
+    <a
+    href="http://lists.shakespeare-monologues.org/mailman/listinfo/discussion">this url</a>.
+    <!-- Kenneth Irving -->
+    <li><a href="http://www.fq.edu.uy">Universidad de la República,
+    Facultad de Química, Uruguay</a>
+    <!-- Ian McCormack -->
+    <li><a href="http://www.ne4x4.org.uk/">North East 4x4 club</a>
+    <!-- Jörn Nettingsmeier -->
+    <li><a href="http://www.linuxdj.com/audio/lad/">Linux Audio
+    Mailing Lists</a>
+    <!-- Dirk H. Shulz -->
+    <li><a href="http://www.multibyte.de">MultiByte GmbH</a>
 
 </ul>
