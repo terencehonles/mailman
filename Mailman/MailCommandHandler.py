@@ -430,11 +430,11 @@ class MailCommandHandler:
         text = Utils.maketext(
             'verify.txt',
             {'email'       : pending_addr,
-             'listaddress' : self.GetListEmail(),
+             'listaddr'    : self.GetListEmail(),
              'listname'    : self.real_name,
              'cookie'      : cookie,
              'requestor'   : mail.GetSender(),
-             'request_addr': self.GetRequestEmail(),
+             'requestaddr' : self.GetRequestEmail(),
              })
         self.SendTextToUser(
             subject = "%s -- confirmation of subscription -- request %d" %
