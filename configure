@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.20 
+# From configure.in Revision: 1.21 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.12 
@@ -963,9 +963,55 @@ fi
 
 
 
+# new macro for finding UIDs
+
+
+# User `mailman' must exist
+echo $ac_n "checking for mailman UID""... $ac_c" 1>&6
+echo "configure:972: checking for mailman UID" >&5
+
+# MAILMAN_UID == variable name
+# mailman == user id to check for
+
+
+if test -z "$MAILMAN_UID"
+then
+    cat > conftest.py <<EOF
+import pwd, string
+uid = ''
+for user in string.split("mailman"):
+    try:
+        try:
+	    uid = pwd.getpwuid(int(user))[0]
+	    break
+	except ValueError:
+	    uid = pwd.getpwnam(user)[0]
+	    break
+    except KeyError:
+        uid = ''
+fp = open("conftest.out", "w")
+fp.write("%s\n" % uid)
+fp.close()
+EOF
+    $PYTHON conftest.py
+    MAILMAN_UID=`cat conftest.out`
+fi
+
+echo "$ac_t""$MAILMAN_UID" 1>&6
+rm -f conftest.out conftest.py
+if test -z "$MAILMAN_UID"
+then
+    { echo "configure: error: 
+***** No \"mailman\" user found!
+***** Your system must have a \"mailman\" user defined (usually
+***** in your /etc/passwd file).  Please see the INSTALL file
+***** file details." 1>&2; exit 1; }
+fi
+
+
 # Group `mailman' must exist
 echo $ac_n "checking for mailman GID""... $ac_c" 1>&6
-echo "configure:969: checking for mailman GID" >&5
+echo "configure:1015: checking for mailman GID" >&5
 
 # MAILMAN_GID == variable name
 # mailman == user id to check for
@@ -999,8 +1045,8 @@ rm -f conftest.out conftest.py
 if test -z "$MAILMAN_GID"
 then
     { echo "configure: error: 
-***** No `mailman' group found!
-***** Your system must have a `mailman' group defined (usually
+***** No \"mailman\" group found!
+***** Your system must have a \"mailman\" group defined (usually
 ***** in your /etc/group file).  Please see the INSTALL file
 ***** file details." 1>&2; exit 1; }
 fi
@@ -1017,7 +1063,7 @@ else
 fi
 
 echo $ac_n "checking permissions on $prefixcheck""... $ac_c" 1>&6
-echo "configure:1021: checking permissions on $prefixcheck" >&5
+echo "configure:1067: checking permissions on $prefixcheck" >&5
 
 cat > conftest.py <<EOF
 import os, grp, string
@@ -1063,7 +1109,7 @@ echo "$ac_t""okay" 1>&6
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
 echo $ac_n "checking for mail wrapper GID""... $ac_c" 1>&6
-echo "configure:1067: checking for mail wrapper GID" >&5
+echo "configure:1113: checking for mail wrapper GID" >&5
 # Check whether --with-mail-gid or --without-mail-gid was given.
 if test "${with_mail_gid+set}" = set; then
   withval="$with_mail_gid"
@@ -1124,7 +1170,7 @@ fi
 
 
 echo $ac_n "checking for CGI wrapper GID""... $ac_c" 1>&6
-echo "configure:1128: checking for CGI wrapper GID" >&5
+echo "configure:1174: checking for CGI wrapper GID" >&5
 # Check whether --with-cgi-gid or --without-cgi-gid was given.
 if test "${with_cgi_gid+set}" = set; then
   withval="$with_cgi_gid"
@@ -1219,14 +1265,14 @@ EOF
 $PYTHON conftest.py
 
 echo $ac_n "checking for default fully qualified host name""... $ac_c" 1>&6
-echo "configure:1223: checking for default fully qualified host name" >&5
+echo "configure:1269: checking for default fully qualified host name" >&5
 if test -z "$FQDN"
 then
     FQDN=`head -1 conftest.out`
 fi
 echo "$ac_t""$FQDN" 1>&6
 echo $ac_n "checking for default URL host component""... $ac_c" 1>&6
-echo "configure:1230: checking for default URL host component" >&5
+echo "configure:1276: checking for default URL host component" >&5
 if test -z "$URL"
 then
     URL=`tail -1 conftest.out`
@@ -1238,12 +1284,12 @@ rm -f conftest.out conftest.py
 for ac_func in strerror
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:1242: checking for $ac_func" >&5
+echo "configure:1288: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1247 "configure"
+#line 1293 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -1266,7 +1312,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1270: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1316: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -1293,7 +1339,7 @@ done
 
 # Checks for header files.
 echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
-echo "configure:1297: checking how to run the C preprocessor" >&5
+echo "configure:1343: checking how to run the C preprocessor" >&5
 # On Suns, sometimes $CPP names a directory.
 if test -n "$CPP" && test -d "$CPP"; then
   CPP=
@@ -1308,13 +1354,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 1312 "configure"
+#line 1358 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1318: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1364: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1325,13 +1371,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 1329 "configure"
+#line 1375 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1335: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1381: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1354,12 +1400,12 @@ fi
 echo "$ac_t""$CPP" 1>&6
 
 echo $ac_n "checking for ANSI C header files""... $ac_c" 1>&6
-echo "configure:1358: checking for ANSI C header files" >&5
+echo "configure:1404: checking for ANSI C header files" >&5
 if eval "test \"`echo '$''{'ac_cv_header_stdc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1363 "configure"
+#line 1409 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 #include <stdarg.h>
@@ -1367,7 +1413,7 @@ else
 #include <float.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1371: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1417: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1384,7 +1430,7 @@ rm -f conftest*
 if test $ac_cv_header_stdc = yes; then
   # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1388 "configure"
+#line 1434 "configure"
 #include "confdefs.h"
 #include <string.h>
 EOF
@@ -1402,7 +1448,7 @@ fi
 if test $ac_cv_header_stdc = yes; then
   # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1406 "configure"
+#line 1452 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 EOF
@@ -1423,7 +1469,7 @@ if test "$cross_compiling" = yes; then
   :
 else
   cat > conftest.$ac_ext <<EOF
-#line 1427 "configure"
+#line 1473 "configure"
 #include "confdefs.h"
 #include <ctype.h>
 #define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
@@ -1434,7 +1480,7 @@ if (XOR (islower (i), ISLOWER (i)) || toupper (i) != TOUPPER (i)) exit(2);
 exit (0); }
 
 EOF
-if { (eval echo configure:1438: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:1484: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
   :
 else
@@ -1461,17 +1507,17 @@ for ac_hdr in syslog.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:1465: checking for $ac_hdr" >&5
+echo "configure:1511: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1470 "configure"
+#line 1516 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1475: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1521: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1500,12 +1546,12 @@ done
 
 # Checks for typedefs, structures, and compiler characteristics.
 echo $ac_n "checking for uid_t in sys/types.h""... $ac_c" 1>&6
-echo "configure:1504: checking for uid_t in sys/types.h" >&5
+echo "configure:1550: checking for uid_t in sys/types.h" >&5
 if eval "test \"`echo '$''{'ac_cv_type_uid_t'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1509 "configure"
+#line 1555 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 EOF
@@ -1534,7 +1580,7 @@ EOF
 fi
 
 echo $ac_n "checking type of array argument to getgroups""... $ac_c" 1>&6
-echo "configure:1538: checking type of array argument to getgroups" >&5
+echo "configure:1584: checking type of array argument to getgroups" >&5
 if eval "test \"`echo '$''{'ac_cv_type_getgroups'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1542,7 +1588,7 @@ else
   ac_cv_type_getgroups=cross
 else
   cat > conftest.$ac_ext <<EOF
-#line 1546 "configure"
+#line 1592 "configure"
 #include "confdefs.h"
 
 /* Thanks to Mike Rendell for this test.  */
@@ -1567,7 +1613,7 @@ main()
 }
 
 EOF
-if { (eval echo configure:1571: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:1617: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
     ac_cv_type_getgroups=gid_t
 else
@@ -1581,7 +1627,7 @@ fi
 
 if test $ac_cv_type_getgroups = cross; then
         cat > conftest.$ac_ext <<EOF
-#line 1585 "configure"
+#line 1631 "configure"
 #include "confdefs.h"
 #include <unistd.h>
 EOF
@@ -1607,12 +1653,12 @@ EOF
 
 # Checks for library functions.
 echo $ac_n "checking for vprintf""... $ac_c" 1>&6
-echo "configure:1611: checking for vprintf" >&5
+echo "configure:1657: checking for vprintf" >&5
 if eval "test \"`echo '$''{'ac_cv_func_vprintf'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1616 "configure"
+#line 1662 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char vprintf(); below.  */
@@ -1635,7 +1681,7 @@ vprintf();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1639: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1685: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func_vprintf=yes"
 else
@@ -1659,12 +1705,12 @@ fi
 
 if test "$ac_cv_func_vprintf" != yes; then
 echo $ac_n "checking for _doprnt""... $ac_c" 1>&6
-echo "configure:1663: checking for _doprnt" >&5
+echo "configure:1709: checking for _doprnt" >&5
 if eval "test \"`echo '$''{'ac_cv_func__doprnt'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1668 "configure"
+#line 1714 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char _doprnt(); below.  */
@@ -1687,7 +1733,7 @@ _doprnt();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1691: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1737: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func__doprnt=yes"
 else
@@ -1868,6 +1914,7 @@ s%@INSTALL_DATA@%$INSTALL_DATA%g
 s%@SET_MAKE@%$SET_MAKE%g
 s%@CC@%$CC%g
 s%@OPT@%$OPT%g
+s%@MAILMAN_UID@%$MAILMAN_UID%g
 s%@MAILMAN_GID@%$MAILMAN_GID%g
 s%@MAIL_GID@%$MAIL_GID%g
 s%@CGI_GID@%$CGI_GID%g

@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 959 $)
+AC_REVISION($Revision: 1089 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -139,14 +139,59 @@ AC_MSG_RESULT($$1)
 rm -f conftest.out conftest.py])
 
 
+# new macro for finding UIDs
+AC_DEFUN(MM_FIND_USER_ID, [
+# $1 == variable name
+# $2 == user id to check for
+AC_SUBST($1)
+changequote(,)
+if test -z "$$1"
+then
+    cat > conftest.py <<EOF
+import pwd, string
+uid = ''
+for user in string.split("$2"):
+    try:
+        try:
+	    uid = pwd.getpwuid(int(user))[0]
+	    break
+	except ValueError:
+	    uid = pwd.getpwnam(user)[0]
+	    break
+    except KeyError:
+        uid = ''
+fp = open("conftest.out", "w")
+fp.write("%s\n" % uid)
+fp.close()
+EOF
+    $PYTHON conftest.py
+    $1=`cat conftest.out`
+fi
+changequote([, ])
+AC_MSG_RESULT($$1)
+rm -f conftest.out conftest.py])
+
+# User `mailman' must exist
+AC_MSG_CHECKING(for mailman UID)
+MM_FIND_USER_ID(MAILMAN_UID, mailman)
+if test -z "$MAILMAN_UID"
+then
+    AC_MSG_ERROR([
+***** No \"mailman\" user found!
+***** Your system must have a \"mailman\" user defined (usually
+***** in your /etc/passwd file).  Please see the INSTALL file
+***** file details.])
+fi
+
+
 # Group `mailman' must exist
 AC_MSG_CHECKING(for mailman GID)
 MM_FIND_GROUP_ID(MAILMAN_GID, mailman)
 if test -z "$MAILMAN_GID"
 then
     AC_MSG_ERROR([
-***** No `mailman' group found!
-***** Your system must have a `mailman' group defined (usually
+***** No \"mailman\" group found!
+***** Your system must have a \"mailman\" group defined (usually
 ***** in your /etc/group file).  Please see the INSTALL file
 ***** file details.])
 fi
