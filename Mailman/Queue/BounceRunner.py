@@ -17,15 +17,19 @@
 """Bounce queue runner."""
 
 import re
+from email.MIMEText import MIMEText
+from email.MIMEMessage import MIMEMessage
 from email.Utils import parseaddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import LockFile
+from Mailman.Message import UserNotification
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 COMMASPACE = ', '
 
@@ -72,22 +76,7 @@ class BounceRunner(Runner):
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.
         if not addrs:
-            # Does the list owner want to get non-matching bounce messages?
-            # If not, simply discard it.
-            if mlist.bounce_unrecognized_goes_to_list_owner:
-                syslog('bounce', 'forwarding unrecognized, message-id: %s',
-                       msg.get('message-id', 'n/a'))
-                # Be sure to point the envelope sender at the site owner for
-                # any bounces to list owners.
-                recips = mlist.owner[:]
-                recips.extend(mlist.moderator)
-                outq.enqueue(msg, msgdata,
-                             recips=recips,
-                             envsender=Utils.get_site_email(extra='admin'),
-                             )
-            else:
-                syslog('bounce', 'discarding unrecognized, message-id: %s',
-                       msg.get('message-id', 'n/a'))
+            maybe_forward(mlist, msg, msgdata, outq)
             return
         # BAW: It's possible that there are None's in the list of addresses,
         # although I'm unsure how that could happen.  Possibly ScanMessages()
@@ -140,6 +129,7 @@ class BounceRunner(Runner):
             # these, but do log it.
             syslog('bounce', 'bounce message with non-members: %s',
                    COMMASPACE.join(addrs))
+            maybe_forward(mlist, msg, msgdata, outq)
 
 
 
@@ -172,3 +162,33 @@ def verp_bounce(mlist, msg):
                    mm_cfg.VERP_REGEXP)
             return []
         return [addr]
+
+
+
+def maybe_forward(mlist, msg, msgdata, outq):
+    # Does the list owner want to get non-matching bounce messages?
+    # If not, simply discard it.
+    if mlist.bounce_unrecognized_goes_to_list_owner:
+        recips = mlist.owner[:]
+        recips.extend(mlist.moderator)
+        # Wrap the message as an attachment
+        text = MIMEText(Utils.wrap(_("""\
+The attached message was received as a bounce, but either the bounce format
+was not recognized, or no member addresses could be extracted from it.  You,
+as the list administrators have requested to receive all unrecognized bounce
+messages.
+
+""")),
+                        _charset=Utils.GetCharSet(mlist.preferred_language))
+        attachment = MIMEMessage(msg)
+        notice = UserNotification(recips, mlist.GetBouncesEmail(),
+                                  _('Uncaught bounce notification'))
+        notice.set_type('multipart/mixed')
+        notice.attach(text)
+        notice.attach(attachment)
+        notice.send(mlist)
+        syslog('bounce', 'forwarding unrecognized, message-id: %s',
+               msg.get('message-id', 'n/a'))
+    else:
+        syslog('bounce', 'discarding unrecognized, message-id: %s',
+               msg.get('message-id', 'n/a'))
