@@ -275,6 +275,8 @@ def process_form(mlist, user, doc):
         disable_mail = getval('disablemail',
                               useropt(user, mm_cfg.DisableDelivery))
         conceal = getval('conceal', useropt(user, mm_cfg.ConcealSubscription))
+        passwdremind = getval('passwdremind',
+                              useropt(user, mm_cfg.SuppressPasswordReminder))
 
         if not form.has_key("digpw"):
             PrintResults(mlist, operation, doc,
@@ -320,6 +322,8 @@ def process_form(mlist, user, doc):
         mlist.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
         mlist.SetUserOption(user, mm_cfg.AcknowledgePosts, ack_posts)
         mlist.SetUserOption(user, mm_cfg.DisableMime, mime)
+        mlist.SetUserOption(user, mm_cfg.SuppressPasswordReminder,
+                            passwdremind)
         msg = _('You have successfully set your options.')
         try:
             mlist.SetUserDigest(user, digest_value)
