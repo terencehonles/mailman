@@ -126,7 +126,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._log_files = {}		# 'class': log_file_obj
 	if name:
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
-	HTMLFormatter.InitTempVars(self)
 	Digester.InitTempVars(self)
 
     def InitVars(self, name=None, admin='', crypted_password=''):
@@ -190,6 +189,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	ListAdmin.InitVars(self)
 	Bouncer.InitVars(self)
 	GatewayManager.InitVars(self)
+	HTMLFormatter.InitVars(self)
 
 	# These need to come near the bottom because they're dependent on
 	# other settings.
