@@ -225,7 +225,7 @@ class Article:
             date = parsedate_tz(datestr)
             try:
                 return time.mktime(date[:9])
-            except (ValueError, OverflowError):
+            except (TypeError, ValueError, OverflowError):
                 return None
         date = floatdate('date')
         if date is None:
