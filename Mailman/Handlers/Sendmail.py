@@ -78,6 +78,7 @@ def process(mlist, msg, msgdata):
     # get all the lines of the message, since we're going to do this over and
     # over again
     msgtext = str(msg)
+    msglen = len(msgtext)
     # cycle through all chunks
     failedrecips = []
     for chunk in recipchunks:
@@ -89,13 +90,13 @@ def process(mlist, msg, msgdata):
             errcode = (status & 0xff00) >> 8
             syslog('post', 'post to %s from %s, size=%d, failure=%d',
                    mlist.internal_name(), msg.get_sender(),
-                   len(msg.body), errcode)
+                   msglen, errcode)
             # TBD: can we do better than this?  What if only one recipient out
             # of the entire chunk failed?
             failedrecips.append(chunk)
         # Log the successful post
         syslog('post', 'post to %s from %s, size=%d, success',
-               mlist.internal_name(), msg.get_sender(), len(msg.body))
+               mlist.internal_name(), msg.get_sender(), msglen)
     if failedrecips:
         msgdata['recips'] = failedrecips
         raise Errors.SomeRecipientsFailed
