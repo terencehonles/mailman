@@ -130,7 +130,7 @@ class Deliverer:
             if (len(subject) > len(sp)
                 and subject[0:len(sp)] == sp):
                 # Trim off subject prefix
-                subject = subject[len(sp) + 1:]
+                subject = subject[len(sp):]
         # get the text from the template
         body = Utils.maketext(
             'postack.txt',
