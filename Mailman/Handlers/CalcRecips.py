@@ -36,11 +36,8 @@ def process(mlist, msg):
     # Get the membership address of the sender, if a member.  Then get the
     # sender's receive-own-posts option
     sender = mlist.FindUser(msg.GetSender())
-    if sender:
-        if mlist.GetUserOption(sender, mm_cfg.DontReceiveOwnPosts):
-            dont_send_to_sender = 1
-        if mlist.GetUserOption(sender, mm_cfg.AcknowlegePosts):
-            ack_post = 1
+    if sender and mlist.GetUserOption(sender, mm_cfg.DontReceiveOwnPosts):
+        dont_send_to_sender = 1
     # calculate the regular recipients of the message
     members = mlist.GetDeliveryMembers()
     recips = []
