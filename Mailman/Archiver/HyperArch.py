@@ -100,7 +100,6 @@ article_template='''\
     <HR>  
 <!--beginarticle-->
 %(body)s
-
 <!--endarticle-->
     <HR>
     <P><UL>
@@ -418,10 +417,10 @@ class HyperArchive(pipermail.T):
     THREADLAZY=0
     THREADLEVELS=3
 
-    ALLOWHTML=1
-    SHOWHTML=1
-    IQUOTES=1
-    SHOWBR=1
+    ALLOWHTML=1                 # "Lines between <html></html>" handled as is.
+    SHOWHTML=0                  # Eg, nuke leading whitespace in html manner.
+    IQUOTES=1                   # Italicize quoted text.
+    SHOWBR=0                    # Add <br> onto every line
 
     html_hdr_tmpl=index_header_template
     html_foot_tmpl=index_footer_template
@@ -917,8 +916,8 @@ class HyperArchive(pipermail.T):
     def __getstate__(self):
         d={}
         for each in self.__dict__.keys():
-            if not (each in ['maillist','_lock_file','_unlocklist',
-                             'VERBOSE']):
+            if not (each in ['maillist','_lock_file','_unlocklist']
+                    or string.upper(each) == each):
                 d[each] = self.__dict__[each]
         return d
 
@@ -941,8 +940,10 @@ class HyperArchive(pipermail.T):
 		    quoted = quoted.end(0)
 		    prefix=CGIescape(L[:quoted]) + '<i>' 
 		    suffix='</I>'
-		    if self.SHOWHTML: suffix=suffix+'<BR>'
-		    if not last_line_was_quoted: prefix='<BR>'+prefix
+		    if self.SHOWHTML:
+                        suffix=suffix+'<BR>'
+                        if not last_line_was_quoted:
+                            prefix='<BR>'+prefix
 		    L= L[quoted:] 
 		    last_line_was_quoted=1
 	    # Check for an e-mail address
