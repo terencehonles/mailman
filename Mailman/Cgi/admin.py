@@ -21,7 +21,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 734 $"
+__version__ = "$Revision: 741 $"
 
 import sys
 import os, cgi, string, crypt, types, time
@@ -102,7 +102,7 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
 
         token = md5.new(SECRET + list_name + SECRET).digest()
         token = base64.encodestring(token)
-        token = string.strip(token)
+        token = string.replace(token, "\n", "@")
         c = Cookie.Cookie()
         cookie_key = list_name + "-admin"
         c[cookie_key] = token
@@ -113,11 +113,9 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
         c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
         if c.has_key(list_name + "-admin"):
 	    try:
-               inp = base64.decodestring(c[list_name + "-admin"].value)
+               inp = base64.decodestring(string.replace(
+	              c[list_name + "-admin"].value, "@", "\n"))
                check = md5.new(SECRET+list_name+SECRET).digest()
-            except Error:  # the decodestring may return incorrect padding?
-               raise 'Decode failed'
-               return 0
             if inp == check:
                 return 1
             else:

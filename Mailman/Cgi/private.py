@@ -110,7 +110,7 @@ def isAuthenticated(list_name):
 	if c.has_key(list_name):
 	    # The user has a token like 'c++-sig=AE23446AB...'; verify 
 	    # that it's correct.
-	    token = c[list_name].value
+	    token = string.replace(c[list_name].value,"@","\n")
 	    import base64, md5
 	    if base64.decodestring(token) != md5.new(SECRET
 						     + list_name
@@ -152,7 +152,7 @@ def isAuthenticated(list_name):
     import base64, md5
     token = md5.new(SECRET + list_name + SECRET).digest()
     token = base64.encodestring(token)
-    token = string.strip(token)
+    token = string.replace(token, "\n", "@")
     c = Cookie.Cookie()
     c[list_name] = token
     print c				# Output the cookie
