@@ -46,6 +46,7 @@ CATEGORIES = [('general',   _('General Options')),
               ('bounce',    _('Bounce Options')),
               ('archive',   _('Archival Options')),
               ('gateway',   _('Mail-News and News-Mail gateways')),
+              ('autoreply', _('Auto-responder')),
               ]
 
 
