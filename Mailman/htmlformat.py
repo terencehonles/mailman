@@ -253,10 +253,10 @@ class Container:
 	self.items.append(obj)
 
     def Format(self, indent=0):
-	output = ''
-	for item in self.items:
-	    output = output + HTMLFormatObject(item, indent)
-	return output
+        output = []
+        for item in self.items:
+            output.append(HTMLFormatObject(item, indent))
+        return string.join(output, '')
 
 # My own standard document template.  YMMV.
 # something more abstract would be more work to use...
@@ -496,10 +496,50 @@ class DefinitionList(Container):
         return output
 
 
+
+# Logo constants
+#
+# These are the URLs which the image logos link to.  The Mailman home page now
+# points at the gnu.org site instead of the www.list.org mirror.
+#
+from mm_cfg import MAILMAN_URL
+PYTHON_URL  = 'http://www.python.org/'
+GNU_URL     = 'http://www.gnu.org/'
+
+# The names of the image logo files.  These are concatentated onto
+# mm_cfg.IMAGE_LOGOS (not urljoined).
+DELIVERED_BY = 'mailman.jpg'
+PYTHON_POWERED = 'PythonPowered.png'
+GNU_HEAD = 'gnu-head-tiny.jpg'
+
+
 def MailmanLogo():
-    if mm_cfg.DELIVERED_BY_URL:
-        img = ('<img src="%s" alt="Delivered by Mailman" border=0> v %s' % 
-               (mm_cfg.DELIVERED_BY_URL, mm_cfg.VERSION))
+    t = Table(border=0, width='100%')
+    if mm_cfg.IMAGE_LOGOS:
+        def logo(file):
+            return mm_cfg.IMAGE_LOGOS + file
+        mmlink = Link(MAILMAN_URL,
+                      '<img src="%s" alt="Delivered by Mailman" border=0>'
+                      '<br>version %s'
+                      % (logo(DELIVERED_BY), mm_cfg.VERSION))
+        pylink = Link(PYTHON_URL,
+                      '<img src="%s" alt="Python Powered" border=0>' %
+                      logo(PYTHON_POWERED))
+        gnulink = Link(GNU_URL,
+                       '<img src="%s" alt="GNU\'s Not Unix" border=0>' %
+                       logo(GNU_HEAD))
+        text = Container(Link(MAILMAN_URL, 'Mailman home page'),
+                         '<br>',
+                         Link(PYTHON_URL, 'Python home page'),
+                         '<br>',
+                         Link(GNU_URL, 'GNU home page'),
+                         )
+        t.AddRow([mmlink, pylink, gnulink, text])
     else:
-        img = 'Delivered by Mailman v %s' % mm_cfg.VERSION
-    return Link(mm_cfg.MAILMAN_URL, img)
+        # use only textual links
+        mmlink = Link(MAILMAN_URL,
+                      'Delivered by Mailman<br>version %s' % mm_cfg.VERSION)
+        pylink = Link(PYTHON_URL, 'Python Powered')
+        gnulink = Link(GNU_URL, "Gnu's Not Unix")
+        t.AddRow([mmlink, pylink, gnulink])
+    return t
