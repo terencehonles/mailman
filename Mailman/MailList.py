@@ -38,6 +38,7 @@ from mm_archive import Archiver
 from mm_digest import Digester
 from mm_security import SecurityManager
 from mm_bouncer import Bouncer
+from mm_gateway import GatewayManager
 
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
@@ -46,7 +47,7 @@ from mm_bouncer import Bouncer
 # Use mixins here just to avoid having any one chunk be too large.
 
 class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
-	       Archiver, Digester, SecurityManager, Bouncer):
+	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager):
     def __init__(self, name=None):
 	MailCommandHandler.__init__(self)
 	self._internal_name = name
@@ -175,6 +176,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	Archiver.InitVars(self) # has configurable stuff
 	ListAdmin.InitVars(self)
 	Bouncer.InitVars(self)
+	GatewayManager.InitVars(self)
 
 	# These need to come near the bottom because they're dependent on
 	# other settings.
@@ -186,6 +188,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	config_info = {}
 	config_info['digest'] = Digester.GetConfigInfo(self)
 	config_info['archive'] = Archiver.GetConfigInfo(self)
+	config_info['gateway'] = GatewayManager.GetConfigInfo(self)
 
 	config_info['general'] = [
             "Fundamental list characteristics, including descriptive"
