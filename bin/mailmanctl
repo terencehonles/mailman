@@ -1,6 +1,6 @@
 #! @PYTHON@
 
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -190,6 +190,7 @@ def acquire_lock_1(force):
         if not force:
             raise
         # Force removal of lock first
+        lock._disown()
         hostname, pid, tempfile = get_lock_data()
         os.unlink(LOCKFILE)
         os.unlink(tempfile)
@@ -199,6 +200,7 @@ def acquire_lock_1(force):
 def acquire_lock(force):
     try:
         lock = acquire_lock_1(force)
+        return lock
     except LockFile.TimeOutError:
         status = qrunner_state()
         if status == 1:
@@ -225,8 +227,6 @@ Lock file: %(LOCKFILE)s
 Lock host: %(status)s
 
 Exiting.""")
-        return None
-    return lock
 
 
 
@@ -364,7 +364,6 @@ def main():
             lock._transfer_to(pid)
             return
         # child
-        #
         lock._take_possession()
         # First, save our pid in a file for "mailmanctl stop" rendezvous
         fp = open(mm_cfg.PIDFILE, 'w')
