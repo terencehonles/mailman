@@ -1,24 +1,32 @@
-	      Mailman - An Extensible MLM using Python
-	      =========================================
+[To keep this copy simple and self contained, we have not included the
+two screen-shot diagrams in this submission.  They just show that what
+we describe really works...  klm.]
 
-Ken Manheimer - CNRI - klm@cnri.reston.va.us
-Barry Warsaw - CNRI - bwarsaw@cnri.reston.va.us
-John Viega - Reliable Software Technologies - viega@rstcorp.com
+      Mailman - An Extensible Mailing List Manager using Python
+      =========================================================
+
+Ken Manheimer
+Corporation for National Research Initiatives
+
+Barry Warsaw
+Corporation for National Research Initiatives
+
+John Viega
+Reliable Software Technologies
 
 			       Abstract
 			       ========
 
 The explosive growth in the Internet community, and the core role that
-email plays in it, demands an adaptable Mailing List Management (MLM)
-system.  The extent to which MLMs are adaptable is the extent to which
-they can accommodate, and even foster, effective new forms of Internet
+email plays in it, calls for a Mailing List Management (MLM) system
+which can adapt to, and even foster, new effective forms of Internet
 community organization.  A new MLM, Mailman, is well suited to such
-evolution, and one of the contributing factors is its implementation
-in Python.
+evolution because it is designed to be extensible, and one factor
+contributing to this versatility is its implementation in Python.
 
-In this paper we will look at various ways that Mailman's versatility
-enables extension of it.  We will consider how the system's design,
-and features of its implementation language, Python, factor into that
+In this paper we will look at various aspects of Mailman's
+extensibility.  We will consider how the system's design, and features
+of its implementation language, Python, factor into that
 extensibility.
 
 			     Introduction
@@ -56,20 +64,20 @@ advent of improved and new strategies for organization of Internet
 communities demand continuing development of the mechanisms supporting
 them.  New and different approaches may take up some types of the
 traffic, as Usenet News has, but email, as a medium, has proven to be
-particularly versatile and lasting.  A good MLM will help foster the
+particularly versatile and enduring.  A good MLM will help foster the
 evolution of the Internet communities, by growing with them.
 
-Another reason for extensibility's importance in this context has to
-do with a core constituency of mailing list users - the mailing list
-administrators.  These administrators are typically near enough to the
-end-users to get clear impressions of their needs.  Also, they
-commonly are savvy enough, technically, to be able to implement
-improvements to accommodate those needs - provided the system doesn't
-present too high a threshold of comprehension.  Here is a prime
-opportunity for exploiting the Bazaar-style of open-software
-development ["The Cathedral and The Bazaar"], enabling the managers of
-the medium, themselves, to guide its development, enabling results
-more quickly and closely tailored to the needs of the user community.
+Another reason for extensibility's importance has to do with a core
+constituency of mailing list users - the mailing list administrators.
+These administrators are typically near enough to the end-users to get
+clear impressions of their needs.  Also, they commonly are savvy
+enough, technically, to be able to implement improvements to
+accommodate those needs - provided the system doesn't present too high
+a threshold of comprehension.  Here is a prime opportunity for
+exploiting the Bazaar-style of open-software development ["The
+Cathedral and The Bazaar"], enabling the managers of the medium,
+themselves, to guide its development, enabling results more quickly
+and closely tailored to the needs of the user community.
 
 Finally, most aspects of an MLM do not require the kind of speed
 optimizations which force change-impeding hardening of system.
