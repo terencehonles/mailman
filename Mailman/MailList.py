@@ -70,6 +70,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 					  self._internal_name)
 	self._lock_file = flock.FileLock(lock_file_name)
         HTMLFormatter.InitTempVars(self)
+	self._mime_separator = '__--__--' 
+
 
 
     def __del__(self):
@@ -132,11 +134,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def InitVars(self, name=None, admin='', crypted_password=''):
         """Assign default values - some will be overriden by stored state."""
-	# Non-configurable list info 
-	if name:
-	  self._internal_name = name
-	self._mime_separator = '__--__--' 
-
 	# Must save this state, even though it isn't configurable
 	self.volume = 1
 	self.members = [] # self.digest_members is initted in mm_digest
