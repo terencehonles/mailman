@@ -8,9 +8,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: mailman\n"
 "POT-Creation-Date: Fri May  2 00:59:38 2003\n"
-"PO-Revision-Date: 2003-04-18 15:26+0200\n"
+"PO-Revision-Date: 2003-05-09 18:30+0200\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch <p.heinlein@jpberlin.de>\n"
 "MIME-Version: 1.0\n"
@@ -5814,7 +5814,7 @@ msgstr "Mitgliederliste"
 # Mailman/Cgi/admin.py:707
 #: Mailman/Gui/Membership.py:31
 msgid "Mass&nbsp;Subscription"
-msgstr "Eintragen/Abbonieren"
+msgstr "Eintragen/Abonieren"
 
 # Mailman/Cgi/admin.py:714
 #: Mailman/Gui/Membership.py:32
@@ -8393,24 +8393,6 @@ msgid ""
 "\n"
 "You will need to run `bin/check_perms -f' after running this script.\n"
 msgstr ""
-
-#: bin/b4b5-archfix.~1~:19 bin/b4b5-archfix.~2~:19
-msgid ""
-"Fix the MM2.1b4 archives.\n"
-"\n"
-"Usage: %(PROGRAM)s [options] file ...\n"
-"\n"
-"Where options are:\n"
-"    -h / --help\n"
-"        Print this help message and exit.\n"
-msgstr ""
-"Repariert MM2.1b4 Archive.\n"
-"\n"
-"Usage: %(PROGRAM)s [options] file ...\n"
-"\n"
-"Mögliche Optionen:\n"
-"    -h / --help\n"
-"        Gibt diese Hilfe aus.\n"
 
 #: bin/change_pw:19
 msgid ""
