@@ -196,10 +196,10 @@ def ask_for_cookie(mlist, doc, extra=''):
 
 def subscription_prompt(mlist, doc, cookie, userdesc):
     email = userdesc.address
-    name = userdesc.fullname
     password = userdesc.password
     digest = userdesc.digest
     lang = userdesc.language
+    name = Utils.uncanonstr(userdesc.fullname, lang)
     title = _('Confirm subscription request')
     doc.SetTitle(title)
     i18n.set_language(lang)
@@ -311,8 +311,10 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             else:
                 digest = None
             userdesc = Pending.confirm(cookie, expunge=0)[1]
-            overrides = UserDesc(fullname=cgidata.getvalue('realname', None),
-                                 digest=digest, lang=lang)
+            fullname = cgidata.getvalue('realname', None)
+            if fullname is not None:
+                fullname = Utils.canonstr(fullname)
+            overrides = UserDesc(fullname=fullname, digest=digest, lang=lang)
             userdesc += overrides
             op, addr, pw, digest, lang = mlist.ProcessConfirmation(
                 cookie, userdesc)
