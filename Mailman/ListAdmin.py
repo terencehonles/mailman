@@ -222,8 +222,10 @@ class ListAdmin:
         elif value == mm_cfg.REJECT:
             # Rejected
             rejection = 'Refused'
+            os.environ['LANG'] = pluser = self.GetPreferredLanguage(sender)
             self.__refuse(_('Posting of your message titled "%s"') % subject,
-                          sender, comment or _('[No reason given]'))
+                          sender, comment or _('[No reason given]'),
+                          lang=pluser)
         else:
             assert value == mm_cfg.DISCARD
             # Discarded
@@ -280,7 +282,7 @@ class ListAdmin:
                 return LOST
         return status
             
-    def HoldSubscription(self, addr, password, digest):
+    def HoldSubscription(self, addr, password, digest, lang):
         # assure that the database is open for writing
         self.__opendb()
         # get the next unique id
@@ -295,52 +297,61 @@ class ListAdmin:
         # the subscriber's address
         # the subscriber's selected password (TBD: is this safe???)
         # the digest flag
+	# the user's preferred language
         #
-        data = time.time(), addr, password, digest
+        data = time.time(), addr, password, digest, lang
         self.__db[id] = (SUBSCRIPTION, data)
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
         syslog('vette', '%s: held subscription request from %s' %
                (self.real_name, addr))
-        # possibly notify the administrator
+        # possibly notify the administrator in default list language
         if self.admin_immed_notify:
+            # This message must be in list's preferred language
+            os.environ['LANG'] = self.preferred_language
             subject = _('New subscription request to list %s from %s') % (
                 self.real_name, addr)
+            # other messages to come, will be in user preferred language
+            os.environ['LANG'] = lang
             text = Utils.maketext(
                 'subauth.txt',
                 {'username'   : addr,
                  'listname'   : self.real_name,
                  'hostname'   : self.host_name,
                  'admindb_url': self.GetScriptURL('admindb', absolute=1),
-                 })
+                 }, self.preferred_language)
             adminaddr = self.GetAdminEmail()
             msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
             HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
 
     def __handlesubscription(self, record, value, comment):
-        stime, addr, password, digest = record
+        stime, addr, password, digest, lang = record
+        os.environ['LANG'] = lang
         if value == mm_cfg.REJECT:
             # refused
-            self.__refuse(_('Subscription request'), addr, comment)
+            self.__refuse(_('Subscription request'), addr, comment, lang=lang)
         else:
             # subscribe
             assert value == mm_cfg.SUBSCRIBE
-            self.ApprovedAddMember(addr, password, digest)
+            self.ApprovedAddMember(addr, password, digest, lang)
             # TBD: disgusting hack: ApprovedAddMember() can end up closing the
             # request database.
             self.__opendb()
         return REMOVE
 
-    def __refuse(self, request, recip, comment, origmsg=None):
+
+    def __refuse(self, request, recip, comment, origmsg=None, lang=None):
         adminaddr = self.GetAdminEmail()
+	if lang is None:
+            lang = self.preferred_language
         text = Utils.maketext(
             'refuse.txt',
             {'listname' : self.real_name,
              'request'  : request,
              'reason'   : comment,
              'adminaddr': adminaddr,
-             })
+            }, lang)
         # add in original message, but not wrap/filled
         if origmsg:
             text = string.join([text,
