@@ -51,7 +51,7 @@ SETUPINSTOPTS=	--install-lib $(DESTDIR)$(PYTHONLIBDIR) \
 		--install-data $(DESTDIR)$(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
-EMAILPKG=	email-2.5.2
+EMAILPKG=	email-2.5.4
 JACODECSPKG=	JapaneseCodecs-1.4.9
 KOCODECSPKG=	KoreanCodecs-2.0.5
 
