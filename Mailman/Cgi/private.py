@@ -26,7 +26,6 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
-from Mailman import Cookie
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
