@@ -122,32 +122,40 @@ def main():
     # The html page document
     doc = Document()
     doc.set_language(mlist.preferred_language)
-    # Now we're ready to do normal form processing.  For this though, we must
-    # lock the mailing list, and everything from here on out must be wrapped
-    # in a try/except.
+
+    # From this point on, the MailList object must be locked.  However, we
+    # must release the lock no matter how we exit.  try/finally isn't
+    # enough, because of this scenario: user hits the admin page which may
+    # take a long time to render; user gets bored and hits the browser's
+    # STOP button; browser shuts down socket; server tries to write to
+    # broken socket and gets a SIGPIPE.  Under Apache 1.3/mod_cgi, Apache
+    # catches this SIGPIPE (I presume it is buffering output from the cgi
+    # script), then turns around and SIGTERMs the cgi process.  Apache
+    # waits three seconds and then SIGKILLs the cgi process.  We /must/
+    # catch the SIGTERM and do the most reasonable thing we can in as
+    # short a time period as possible.  If we get the SIGKILL we're
+    # screwed (because its uncatchable and we'll have no opportunity to
+    # clean up after ourselves).
     #
-    # BAW: Currently we attempt to acquire the lock with no timeout, although
-    # this could get hit by a webserver or client timeout, if there's a long
-    # or stale lock on the list.  Maybe we should have a configurable timeout
-    # setting after which we'll just inform the user that the operation
-    # couldn't be performed?
+    # This signal handler catches the SIGTERM and unlocks the list.  The
+    # effect of this is that the changes made to the MailList object will
+    # be aborted, which seems like the only sensible semantics.
     #
-    # Set things up so that we can clean up the list lock even if the user
-    # hits the browser's stop button.  Note that Apache under mod_cgi
-    # apparently can catch the SIGPIPE that results, and calls SIGTERM on the
-    # CGI process.  Python doesn't install a signal handler for SIGTERM, so
-    # that would cause us to summarily exit, leaving list locks laying around
-    # (and this behavior has been confirmed).  We can't just ignore SIGTERM
-    # because three seconds later Apache will SIGKILL us, giving us no chance
-    # to exit cleanly.  By installing this signal handler, we can catch the
-    # SIGTERM and do the right thing.  This may not work under other web
-    # servers, or even other Apache/cgi modules (mod_python, etc.).
+    # BAW: This may not be portable to other web servers or cgi execution
+    # models.
     def sigterm_handler(signum, frame, mlist=mlist):
+        # Make sure the list gets unlocked...
         mlist.Unlock()
+        # ...and ensure we exit, otherwise race conditions could cause us to
+        # enter MailList.Save() while we're in the unlocked state, and that
+        # could be bad!
+        sys.exit(0)
 
     mlist.Lock()
     try:
+        # Install the emergency shutdown signal handler
         signal.signal(signal.SIGTERM, sigterm_handler)
+
         if cgidata.keys():
             # There are options to change
             change_options(mlist, category, cgidata, doc)
@@ -181,7 +189,7 @@ def main():
     finally:
         # Now be sure to unlock the list.  It's okay if we get a signal here
         # because essentially, the signal handler will do the same thing.  And
-        # unlocking is conditional, so it's not an error if we unlock while
+        # unlocking is unconditional, so it's not an error if we unlock while
         # we're already unlocked.
         mlist.Unlock()
 
