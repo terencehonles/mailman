@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@ MAXLINELEN = 78
 def _isunicode(s):
     return isinstance(s, UnicodeType)
 
-def uheader(mlist, s, header_name=None):
+def uheader(mlist, s, header_name=None, continuation_ws='\t'):
     # Get the charset to encode the string in.  If this is us-ascii, we'll use
     # iso-8859-1 instead, just to get a little extra coverage, and because the
     # Header class tries us-ascii first anyway.
@@ -54,7 +54,8 @@ def uheader(mlist, s, header_name=None):
         codec = charset.input_codec or 'ascii'
         s = unicode(s, codec, 'replace')
     # We purposefully leave no space b/w prefix and subject!
-    return Header(s, charset, header_name=header_name)    
+    return Header(s, charset, header_name=header_name,
+                  continuation_ws=continuation_ws)
 
 
 
@@ -219,6 +220,11 @@ def prefix_subject(mlist, msg, msgdata):
     # list admin).
     prefix = mlist.subject_prefix
     subject = msg['subject']
+    # Try to figure out what the continuation_ws is for the header
+    lines = subject.splitlines()
+    ws = '\t'
+    if len(lines) > 1 and lines[1] and lines[1][0] in ' \t':
+        ws = lines[1][0]
     msgdata['origsubj'] = subject
     # The header may be multilingual; decode it from base64/quopri and search
     # each chunk for the prefix.  BAW: Note that if the prefix contains spaces
@@ -235,7 +241,7 @@ def prefix_subject(mlist, msg, msgdata):
     if not subject:
         subject = _('(no subject)')
     # Get the header as a Header instance, with proper unicode conversion
-    h = uheader(mlist, prefix, 'Subject')
+    h = uheader(mlist, prefix, 'Subject', continuation_ws=ws)
     for s, c in headerbits:
         # Once again, convert the string to unicode.
         if c is None:
