@@ -361,7 +361,7 @@ class General(GUIBase):
                 ('include_rfc2369_headers', mm_cfg.Radio,
                  (_('No'), _('Yes')), 0,
                  _("""Should messages from this mailing list include the
-                 <a href="http://www.faqs.org/rfc/rfc2369.html">RFC 2369</a>
+                 <a href="http://www.faqs.org/rfcs/rfc2369.html">RFC 2369</a>
                  (i.e. <tt>List-*</tt>) headers?  <em>Yes</em> is highly
                  recommended."""),
 
@@ -386,7 +386,7 @@ class General(GUIBase):
              _('Should postings include the <tt>List-Post:</tt> header?'),
              _("""The <tt>List-Post:</tt> header is one of the headers
              recommended by
-             <a href="http://www.faqs.org/rfc/rfc2369.html">RFC 2369</a>.
+             <a href="http://www.faqs.org/rfcs/rfc2369.html">RFC 2369</a>.
              However for some <em>announce-only</em> mailing lists, only a
              very select group of people are allowed to post to the list; the
              general membership is usually not allowed to post.  For lists of
