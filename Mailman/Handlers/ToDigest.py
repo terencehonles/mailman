@@ -35,6 +35,7 @@ from email.Parser import Parser
 from email.Generator import Generator
 from email.MIMEBase import MIMEBase
 from email.MIMEText import MIMEText
+from email.MIMEMessage import MIMEMessage
 from email.Utils import getaddresses
 
 from Mailman import mm_cfg
@@ -268,12 +269,11 @@ def send_i18n_digests(mlist, mboxfp):
     print >> plainmsg
     # Now go through and add each message
     mimedigest = MIMEBase('multipart', 'digest')
-    mimedigest.set_payload([])
     mimemsg.attach(mimedigest)
     first = 1
     for msg in messages:
         # MIME
-        mimedigest.attach(msg)
+        mimedigest.attach(MIMEMessage(msg))
         # rfc1153
         if first:
             first = 0
@@ -334,9 +334,13 @@ def send_i18n_digests(mlist, mboxfp):
     # Zap this since we're now delivering the last digest to these folks.
     mlist.one_last_digest.clear()
     # MIME
-    virginq.enqueue(mimemsg, recips=mimerecips, listname=mlist.internal_name())
+    virginq.enqueue(mimemsg,
+                    recips=mimerecips,
+                    listname=mlist.internal_name(),
+                    isdigest=1)
     # rfc1153
     rfc1153msg.set_payload(plainmsg.getvalue())
     virginq.enqueue(rfc1153msg,
-                    recips = plainrecips,
-                    listname = mlist.internal_name())
+                    recips=plainrecips,
+                    listname=mlist.internal_name(),
+                    isdigest=1)
