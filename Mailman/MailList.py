@@ -358,14 +358,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     " filters, for which notices are <em>not</em> sent.  This"
 	     " option overrides ever sending the notice."),
 
-            # XXX UNSAFE!  Perhaps more selective capability could be
-            # offered, with some kind of super-admin option, but for now
-            # let's not even expose this.  (Apparently was never
-            # implemented, anyway.)
-## 	    ('filter_prog', mm_cfg.String, 40, 0,
-## 	     'Program for pre-processing text, if any? '
-## 	     '(Useful, eg, for signature auto-stripping, etc...)'),
-
 	    ('max_message_size', mm_cfg.Number, 3, 0,
 	     'Maximum length in Kb of a message body.  Use 0 for no limit.'),
 
@@ -388,8 +380,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	     'Base URL for Mailman web interface',
 
              "This is the common root for all mailman URLs concerning this"
-             " list.  It can be useful for selecting a particular URL"
-             " of a host that has multiple addresses."),
+             " list.  It is also used in the listinfo overview of maillists"
+             " to identify whether or not this list resides on the virtual"
+             " host identified by the overview URL - if this value is found"
+             " (anywhere) in the URL, then this list is considered to be"
+             " on that virtual host, and if not, then it is excluded from"
+             " the listing.  Note that you should use the \'advertised\'"
+             " privacy option to inhibit any listing of the host."),
           ]
         if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
