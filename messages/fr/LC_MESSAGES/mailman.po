@@ -279,7 +279,7 @@ msgid ""
 msgstr ""
 "Effectuez vos modifications dans la section suivante, ensuite\n"
 "soumettez-les en utilisant le bouton <em>Soumettre vos\n"
-"modifications<em> ci-dessous."
+"modifications</em> ci-dessous."
 
 #: Mailman/Cgi/admin.py:485
 msgid "Additional Member Tasks"
