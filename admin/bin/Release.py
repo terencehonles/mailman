@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -130,7 +130,7 @@ def do_bump(newvers):
     # hack some files
     for file in ('index.ht', 'download.ht'):
         print '%s...' % file, 
-        fp = open(os.path.join('admin', 'www', file, 'r+'))
+        fp = open(os.path.join('admin', 'www', file), 'r+')
         text = fp.read()
         parts = text.split(VERSIONMARK)
         parts[1] = newvers
