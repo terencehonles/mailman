@@ -26,6 +26,7 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman import LockFile
 from Mailman.Queue.Runner import Runner
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -47,7 +48,7 @@ class OutgoingRunner(Runner):
             func(mlist, msg, msgdata)
             # Failsafe -- a child may have leaked through.
             if pid <> os.getpid():
-                syslog('error', 'child process leaked through: %s' % modname)
+                syslog('error', 'child process leaked thru: %s', modname)
                 os._exit(1)
         except Errors.SomeRecipientsFailed, e:
             # The delivery module being used (SMTPDirect or Sendmail) failed
@@ -84,11 +85,6 @@ class OutgoingRunner(Runner):
             msgdata['last_recip_count'] = len(recips)
             msgdata['deliver_until'] = deliver_until
             # Requeue
-            return 1
-        except Exception, e:
-            # Some other exception occurred, which we definitely did not
-            # expect, so set this message up for requeuing.
-            self._log(e)
             return 1
         # We've successfully completed handling of this message
         return 0
