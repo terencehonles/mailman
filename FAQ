@@ -55,6 +55,7 @@ A. Mailman 2.1 will probably have this feature built-in, but for now
    information on these tools can be found at:
 
    (Stripmime) http://www.phred.org/~alex/stripmime.html.
+
    (Demime)    http://scifi.squawk.com/demime.html.
 
 Q. What if I get "document contains no data" from the web server, or
