@@ -763,8 +763,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         name = Utils.LCDomain(name)
 
 	# Validate the e-mail address to some degree.
-	if not Utils.ValidEmail(name):
-            raise Errors.MMBadEmailError
+	Utils.ValidateEmail(name)
 	if self.IsMember(name):
             raise Errors.MMAlreadyAMember
         if name == string.lower(self.GetListEmail()):
@@ -841,6 +840,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # etc
         #
         name = Utils.ParseAddrs(name)
+        Utils.ValidateEmail(name)
         name = Utils.LCDomain(name)
 	if self.IsMember(name):
 	    raise Errors.MMAlreadyAMember
