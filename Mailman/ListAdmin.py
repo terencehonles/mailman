@@ -38,6 +38,7 @@ from Mailman import Errors
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
+from Mailman.i18n import _
 
 # Request types requiring admin approval
 HELDMSG = 1
@@ -230,7 +231,7 @@ class ListAdmin:
             # Rejected
             rejection = 'Refused'
             os.environ['LANG'] = pluser = self.GetPreferredLanguage(sender)
-            self.__refuse(_('Posting of your message titled "%s"') % subject,
+            self.__refuse(_('Posting of your message titled "%(subject)s"'),
                           sender, comment or _('[No reason given]'),
                           lang=pluser)
         else:
@@ -318,8 +319,9 @@ class ListAdmin:
         if self.admin_immed_notify:
             # This message must be in list's preferred language
             os.environ['LANG'] = self.preferred_language
-            subject = _('New subscription request to list %s from %s') % (
-                self.real_name, addr)
+            realname = self.real_name
+            subject = _(
+                'New subscription request to list %(realname)s from %(addr)s')
             # other messages to come, will be in user preferred language
             os.environ['LANG'] = lang
             text = Utils.maketext(
@@ -328,7 +330,7 @@ class ListAdmin:
                  'listname'   : self.real_name,
                  'hostname'   : self.host_name,
                  'admindb_url': self.GetScriptURL('admindb', absolute=1),
-                 }, self.preferred_language)
+                 }, lang=self.preferred_language)
             adminaddr = self.GetAdminEmail()
             msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
             msg.send(self)
@@ -351,15 +353,16 @@ class ListAdmin:
 
     def __refuse(self, request, recip, comment, origmsg=None, lang=None):
         adminaddr = self.GetAdminEmail()
+        realname = self.real_name
 	if lang is None:
             lang = self.preferred_language
         text = Utils.maketext(
             'refuse.txt',
-            {'listname' : self.real_name,
+            {'listname' : realname,
              'request'  : request,
              'reason'   : comment,
              'adminaddr': adminaddr,
-            }, lang)
+            }, lang=lang)
         # add in original message, but not wrap/filled
         if origmsg:
             text = NL.join(
@@ -367,6 +370,6 @@ class ListAdmin:
                  '---------- ' + _('Original Message') + ' ----------',
                  str(origmsg)
                  ])
-        subject = _('Request to mailing list %s rejected') % self.real_name
+        subject = _('Request to mailing list %(realname)s rejected')
         msg = Message.UserNotification(recip, adminaddr, subject, text)
         msg.send(self)
