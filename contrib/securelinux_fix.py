@@ -21,9 +21,9 @@
 If you use Solar Designer's secure-linux patch, it prevents a process from
 linking (hard link) to a file it doesn't own.  As a result Mailman has to be
 changed so that the whole tree is owned by Mailman, and the CGIs and some of
-the programs in the bin tree (the ones that lock config.db files) are SUID
-Mailman.  The idea is that config.db files have to be owned by the mailman UID
-and only touched by programs that are UID mailman.
+the programs in the bin tree (the ones that lock config.pck files) are SUID
+Mailman.  The idea is that config.pck files have to be owned by the mailman
+UID and only touched by programs that are UID mailman.
  
 If you have to run check_perms -f, make sure to also run securelinux_fix.py
 -f, which applies the necessary permission fixes.
@@ -93,8 +93,8 @@ class CheckFixUid:
     os.chown(paths.prefix + '/mail/wrapper', MAILMAN_UID, MAILMAN_GID)
     os.chmod(paths.prefix + '/mail/wrapper', 06755)
 
-    print "\nEnsuring that all config.db files are owned by Mailman"
-    cdbs = glob.glob(paths.prefix + '/lists/*/config.db*')
+    print "\nEnsuring that all config.pck files are owned by Mailman"
+    cdbs = glob.glob(paths.prefix + '/lists/*/config.pck*')
 
     for file in cdbs:
 	stat = os.stat(file)
