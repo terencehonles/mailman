@@ -52,9 +52,8 @@ def list_names():
     """Return the names of all lists in default list directory."""
     got = []
     for fn in os.listdir(mm_cfg.LIST_DATA_DIR):
-        if not list_exists(fn):
-            continue
-        got.append(fn)
+        if list_exists(fn):
+            got.append(fn)
     return got
 
 
@@ -420,14 +419,14 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
     Optional arg verbose says to print list name as it's about to be
     instantiated, CR when instantiation is complete, and result of
     application as it shows."""
-    from Mailman.MailList import MailList
+    from Mailman import MailList
     if names == None:
         names = list_names()
     got = []
     for i in names:
 	if verbose:
             print i,
-	l = MailList(i)
+	l = MailList.MailList(i)
 	if verbose:
             print
 	if unlock and l.Locked():
