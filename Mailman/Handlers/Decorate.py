@@ -94,8 +94,8 @@ def decorate(mlist, template, what, extradict={}):
     # Interpolate into the template
     try:
         text = (template % d).replace('\r\n', '\n')
-    except ValueError, e:
+    except (ValueError, TypeError), e:
         syslog('error', 'Exception while calculating %s:\n%s', what, e)
         what = what.upper()
-        text = _('[INVALID %(what)s]')
+        text = template
     return text
