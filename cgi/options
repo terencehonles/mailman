@@ -1,17 +1,25 @@
 #!/usr/local/bin/python
 
-"""Faculty for editing user options.
+"""Produce user options form, from list options.html template.
 
-Takes listname/userid in PATH_INFO, expecting an "obscured" userid.  But
-depending on the tolerance of the mm_utils.{O,Uno}bscureEmail utilities may
-work fine with an unobscured ids as well."""
+Takes listname/userid in PATH_INFO, expecting an "obscured" userid.  
+(Depending on the mm_utils.{O,Uno}bscureEmail utilities tolerance,
+will work fine with an unobscured ids as well.)"""
 
 # We don't need to lock in this script, because we're never going to change
 # data. 
 
-import sys, os, string
+import sys
 sys.path.append('/home/mailman/mailman/modules')
+
+import os, string
 import mm_utils, maillist, htmlformat, mm_cfg
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'mmroster',
+                                        manual_reprime=1)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 doc = htmlformat.Document()
 
@@ -19,7 +27,8 @@ path = os.environ['PATH_INFO']
 list_info = mm_utils.GetPathPieces(path)
 
 if len(list_info) < 2:
-    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
     print doc.Format()
     sys.exit(0)
 
@@ -29,22 +38,26 @@ user = mm_utils.UnobscureEmail(list_info[1])
 try:
   list = maillist.MailList(list_name)
 except:
-  doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name ))
+  doc.AddItem(htmlformat.Header(2, "Error"))
+  doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
   print doc.Format()
   sys.exit(0)
 
 if not list._ready:
-    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name ))
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
     print doc.Format()
     sys.exit(0)
 
-if string.lower(user) not in list.members:
-    doc.AddItem(htmlformat.Header(2,
-                                  "%s: No such member %s."
-                                  % (list_name, `user`)))
+if string.lower(user) not in list.members + list.digest_members:
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold("%s: No such member %s."
+                                % (list_name, `user`)))
+    doc.AddItem(list.GetMailmanFooter())
     print doc.Format()
     sys.exit(0)
 
+# Re-obscure the user's address for the page banner if obscure_addresses set.
 if list.obscure_addresses:
     presentable_user = mm_utils.ObscureEmail(user, for_text=1)
 else:
@@ -77,7 +90,8 @@ replacements['<mm-public-subscription-button>'] = list.FormatOptionButton(
 replacements['<mm-hide-subscription-button>'] = list.FormatOptionButton(
 	mm_cfg.ConcealSubscription, 1, user)
 
-replacements['<mm-digest-submit>'] = list.FormatButton('setdigest', 'Submit')
+replacements['<mm-digest-submit>'] = list.FormatButton('setdigest',
+                                                       'Submit')
 replacements['<mm-unsubscribe-button>'] = list.FormatButton('unsub', 'Unsubscribe')
 replacements['<mm-digest-pw-box>'] = list.FormatSecureBox('digpw')
 replacements['<mm-unsub-pw-box>'] = list.FormatSecureBox('upw')
