@@ -123,8 +123,9 @@ DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
 DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
 DEFAULT_MSG_HEADER = ""
 DEFAULT_MSG_FOOTER = """_______________________________________________
-%(real_name)s mailing list  -  %(real_name)s@%(host_name)s
-%(web_page_url)slistinfo/%(_internal_name)s
+%(real_name)s mailing list
+%(real_name)s@%(host_name)s
+%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s
 """
 
 # Mail command processor will ignore mail command lines after designated max.
