@@ -233,7 +233,11 @@ DEFAULT_DIGEST_VOLUME_FREQUENCY = 1
 # attributes) the internal Pipermail archiver is used.  This is the default if
 # both of these variables are set to No.  When either is set, the value should
 # be a shell command string which will get passed to os.popen().  This string
-# can contain %(listname)s for dictionary interpolation.  The name of the list
+# can contain the following substitution strings:
+#
+#     %(listname)s -- gets the internal name of the list
+#     %(hostname)s -- gets the email hostname for the list
+#
 # being archived will be substituted for this.  Please note that os.popen() is
 # used.
 #
