@@ -1,10 +1,11 @@
 #! /usr/local/bin/python 
 
-"""Handle emailed request commands.
-
+"""Process emailed commands.
 
 Called by the wrapper, stdin is the mail message, and argv[1] is the name
-of the target mailing list."""
+of the target mailing list.
+
+Errors are redirected to logs/errors."""
 
 import sys
 
@@ -13,9 +14,10 @@ sys.path.append('/home/mailman/mailman/modules')
 import maillist, mm_utils
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error", label='scripts/mailcmd')
-except IOError, reason:
-    pass                                # SOL on redirecting.
+    sys.stderr = mm_utils.StampedLogger("error", label = 'mailcmd',
+                                        manual_reprime=1)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 
 # Only let one program run at once per list.
