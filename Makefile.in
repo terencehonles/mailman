@@ -39,13 +39,13 @@ DEFS=   	@DEFS@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 
-ARCH_INDEP_DIRS=	public_html logs Mailman archives bin \
+ARCH_INDEP_DIRS=	public_html logs archives bin \
 archives/private archives/public lists locks templates scripts filters \
-cron data
+cron data Mailman Mailman/Cgi
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
-SUBDIRS=	bin cgi cron filters mail misc modules scripts src templates
+SUBDIRS=	bin cron filters mail misc Mailman scripts src templates
 
 
 # Modes for directories and executables created by the install
@@ -76,6 +76,7 @@ install: $(SUBDIRS)
 	        echo "Creating directory hierarchy $$dir"; \
 		./mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
+		chmod g+s $$dir; \
 	    else true; \
 	    fi; \
 	done
