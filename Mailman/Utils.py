@@ -1,17 +1,17 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
@@ -160,7 +160,7 @@ def wrap(text, column=70, honor_leading_ws=1):
         # end for text in lines
     # the last two newlines are bogus
     return wrapped[:-2]
-    
+
 
 
 def QuotePeriods(text):
@@ -232,7 +232,7 @@ def ScriptURL(target, web_page_url=None, absolute=0):
         fullpath = os.environ.get('SCRIPT_NAME', '') + \
                    os.environ.get('PATH_INFO', '')
     baseurl = urlparse.urlparse(web_page_url)[2]
-    if not absolute and fullpath[:len(baseurl)] == baseurl:
+    if not absolute and fullpath.endswith(baseurl):
         # Use relative addressing
         fullpath = fullpath[len(baseurl):]
         i = fullpath.find('?')
@@ -254,7 +254,7 @@ def GetPossibleMatchingAddrs(name):
     For Example, given scott@pobox.com, return ['scott@pobox.com'],
     given scott@blackbox.pobox.com return ['scott@blackbox.pobox.com',
                                            'scott@pobox.com']"""
-    
+
     name = name.lower()
     user, domain = ParseEmail(name)
     res = [name]
@@ -322,7 +322,7 @@ def set_global_password(pw, siteadmin=1):
         fp.close()
     finally:
         os.umask(omask)
-    
+
 
 def get_global_password(siteadmin=1):
     if siteadmin:
@@ -533,7 +533,7 @@ def is_administrivia(msg):
             return 1
     return 0
 
-        
+
 
 def GetRequestURI(fallback=None, escape=1):
     """Return the full virtual path this CGI script was invoked with.
