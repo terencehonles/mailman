@@ -32,7 +32,8 @@ def process(mlist, msg, msgdata):
     ack = msg.get('x-ack', '').lower()
     if ack == 'no' or msgdata.get('noack'):
         return
-    # "Precedence: bulk" with no "X-Ack: yes" header inhibits replybot
+    # "Precedence: bulk|junk|list" with no "X-Ack: yes" header inhibits
+    # replybot
     precedence = msg.get('precedence', '').lower()
     if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
         syslog('vette', 'Precedence: bulk/junk/list message discarded by: %s',
