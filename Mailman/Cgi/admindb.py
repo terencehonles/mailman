@@ -22,6 +22,7 @@ import os
 import string
 import types
 import cgi
+from errno import ENOENT
 
 from Mailman import Utils, MailList, Errors
 from Mailman.htmlformat import *
@@ -186,12 +187,28 @@ def PrintAddMemberRequest(mlist, id, table):
                   ])
 
 def PrintPostRequest(mlist, id, info, total, count, form):
-    ptime, sender, subject, reason, text = info
+    ptime, sender, subject, reason, filename = info
     form.AddItem('<hr>')
     msg = 'Posting Held for Approval'
     if total <> 1:
         msg = msg + ' (%d of %d)' % (count, total)
     form.AddItem(Center(Header(2, msg)))
+    try:
+        fp = open(os.path.join(mm_cfg.DATA_DIR, filename))
+        text = fp.read(mm_cfg.ADMINDB_PAGE_TEXT_LIMIT)
+        fp.close()
+    except IOError, (code, msg):
+        if code == ENOENT:
+            form.AddItem('<em>Message with id #%d was lost.' % id)
+            form.AddItem('<p>')
+            # TBD: kludge to remove id from requests.db.  value==2 means
+            # discard the message.
+            try:
+                mlist.HandleRequest(id, 2, None)
+            except Errors.LostHeldMessage:
+                pass
+            return
+        raise
     t = Table(cellspacing=0, cellpadding=0)
     t.AddRow([Bold('From:'), sender])
     t.AddRow([Bold('Reason:'), reason])
@@ -212,7 +229,7 @@ def PrintPostRequest(mlist, id, info, total, count, form):
         ])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col, colspan=3)
-    t.AddRow([Bold('Full Text:'),
+    t.AddRow([Bold('Message Excerpt:'),
               TextArea('fulltext-%d' % id, text, rows=10, cols=60)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col, colspan=3)
@@ -241,7 +258,7 @@ def HandleRequests(mlist, doc, form):
         # handle the request id
         try:
             mlist.HandleRequest(request_id, v, comment)
-        except KeyError:
+        except (KeyError, Errors.LostHeldMessage):
             # that's okay, it just means someone else has already updated the
             # database, so just ignore this id
             continue
