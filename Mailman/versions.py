@@ -39,6 +39,7 @@ from types import ListType, StringType
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
+from Mailman.MemberAdaptor import UNKNOWN
 from Mailman.Logging.Syslog import syslog
 
 
@@ -300,7 +301,7 @@ def UpdateOldUsers(l):
 
 
 def CanonicalizeUserOptions(l):
-    """Keys in user_options must be lower case."""
+    """Fix up the user options."""
     # pre 1.0rc2 to 1.0rc3.  For all keys in l.user_options to be lowercase,
     # but merge options for both cases
     options = {}
@@ -314,6 +315,15 @@ def CanonicalizeUserOptions(l):
         flags = flags | v
         options[lcuser] = flags
     l.user_options = options
+    # 2.1alpha3 -> 2.1alpha4.  The DisableDelivery flag is now moved into
+    # get/setDeilveryStatus().  This must be done after the addresses are
+    # canonicalized.
+    l.delivery_status = {}
+    for k, v in l.user_options.items():
+        if l.getMemberOption(k, mm_cfg.DisableDelivery):
+            # Convert this flag into a legacy disable
+            l.setDeliveryStatus(k, UNKNOWN)
+            l.setMemberOption(k, mm_cfg.DisableDelivery, 0)
 
 
 
