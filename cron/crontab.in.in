@@ -16,6 +16,3 @@
 # turn this on if the internal archiver is used and
 # GZIP_ARCHIVE_TXT_FILES is false in mm_cfg.py
 27 3 * * * @PYTHON@ -S @prefix@/cron/nightly_gzip
-#
-# Retry failed deliveries once per minute.
-* * * * * @PYTHON@ -S @prefix@/cron/qrunner
