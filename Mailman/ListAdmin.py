@@ -127,7 +127,7 @@ class ListAdmin:
             assert rtype == SUBSCRIPTION
             self.__handlesubscription(data, value, comment)
 
-    def HoldMessage(self, msg, reason):
+    def HoldMessage(self, msg, reason, msgdata={}):
         # assure that the database is open for writing
         self.__opendb()
         # get the next unique id
@@ -153,13 +153,20 @@ class ListAdmin:
         # the message's subject
         # a string description of the problem
         # name of the file in $PREFIX/data containing the msg text
+        # an additional dictionary of message metadata
         #
         msgsubject = msg.get('subject', '(no subject)')
-        data = time.time(), sender, msgsubject, reason, filename
+        data = time.time(), sender, msgsubject, reason, filename, msgdata
         self.__db[id] = (HELDMSG, data)
 
     def __handlepost(self, record, value, comment):
-        ptime, sender, subject, reason, filename = record
+        # For backwards compatibility with pre 2.0beta3
+        if len(record) == 5:
+            ptime, sender, subject, reason, filename = record
+            msgdata = {}
+        else:
+            # New format of record
+            ptime, sender, subject, reason, filename, msgdata = record
         path = os.path.join(mm_cfg.DATA_DIR, filename)
         rejection = None
         if value == 0:
@@ -171,8 +178,10 @@ class ListAdmin:
                 # and raise an exception.
                 raise Errors.LostHeldMessage(path)
             msg = Message.Message(fp)
-            msg.approved = 1
-            self.Post(msg)
+            msgdata['approved'] = 1
+            enqueue = HandlerAPI.DeliverToList(self, msg, newdata=msgdata)
+            if enqueue:
+                msg.Enqueue(self, msgdata)
         elif value == 1:
             # Rejected
             rejection = 'Refused'
