@@ -18,25 +18,24 @@
 
 """Send password reminders for all lists to all users.
 
-Any arguments are taken as a list of addresses that become the focus - only
-the subscribers on the list are attended to, all other subscribers are
-ignored.  In addition, if any addresses are specified, a line is printed for
-each list where that address is found.  (Otherwise operation is silent.)
+This program scans all mailing lists and collects users and their passwords,
+grouped by the list's host_name if mm_cfg.VIRTUAL_HOST_OVERVIEW is true.  Then
+one email message is sent to each unique user (per-virtual host) containing
+the list passwords and options url for the user.  The password reminder comes
+from the mm_cfg.MAILMAN_SITE_LIST, which must exist.
 
-We accumulate users and their passwords, and use the last list to send a
-single message to each user with their complete collection of passwords,
-rather than sending a single message for each password.
+Usage: %(PROGRAM)s [options]
 
-If mm_cfg.VIRTUAL_HOST_OVERVIEW is true, we further group users by the virtual
-host the mailing lists are assigned to.  This is so that virtual domains are
-treated like real separate machines.
-
+Options:
+    -h/--help
+        Print this message and exit.
 """
 
 # This puppy should probably do lots of logging.
 import sys
 import os
 import errno
+import getopt
 
 import paths
 # mm_cfg must be imported before the other modules, due to the side-effect of
@@ -53,110 +52,120 @@ import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 NL = '\n'
+PROGRAM = sys.argv[0]
 
 
 
-def mail_passwords(mlist, hosts):
-    """Send each user their complete list of passwords.
-
-    The list can be any random one - it is only used for the message
-    delivery mechanism.  Users are grouped by virtual host.
-    """
-    mailman_owner = mm_cfg.MAILMAN_OWNER
-    for host, users in hosts.items():
-        subj = _(' %(host)s mailing list memberships reminder')
-        for addr, data in users.items():
-            table = []
-            for l, r, p, u in data:
-                if len(l) > 39:
-                    table.append("%s\n           %-10s\n%s\n" % (l, p, u))
-                else:
-                    table.append("%-40s %-10s\n%s\n" % (l, p, u))
-            header = ("%-40s %-10s\n%-40s %-10s"
-                      % (_('List'), _('Password // URL'), "----", "--------"))
-            text = Utils.maketext(
-                'cronpass.txt',
-                {'hostname': host,
-                 'useraddr': addr,
-                 'exreq'   : r,
-                 'owner'   : mailman_owner,
-                 }, mlist.preferred_language)
-            # add this to the end so it doesn't get wrapped/filled
-            text = text + header + '\n' + NL.join(table)
-            msg = Message.UserNotification(addr, mailman_owner, subj, text)
-            msg['X-No-Archive'] = 'yes'
-            msg.send(mlist, **{'_nolist': 1})
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
 
 
 
 def main():
-    """Consolidate all the list/url/password info for each user, so we send 
-    the user a single message with the info for all their lists on this
-    site.
-    """
-    # constrain to specified lists, if any
-    confined_to = sys.argv[1:]
-    # Use this list for message delivery only
-    a_public_list = None
-    # Group lists by the assigned virtual host, if
-    # mm_cfg.VIRTUAL_HOST_OVERVIEW is true.  Otherwise, there's only one key
-    # in this dictionary: mm_cfg.DEFAULT_HOST_NAME.  Each entry in this
-    # dictionary is a dictionary of user email addresses
-    hosts = {}
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if args:
+        usage(1)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+
+    # This is the list that all the reminders will look like they come from,
+    # but with the host name coerced to the virtual host we're processing.
+    sitelist = MailList.MailList(mm_cfg.MAILMAN_SITE_LIST, lock=0)
+
+    # Group lists by host_name if VIRTUAL_HOST_OVERVIEW is true, otherwise
+    # there's only one key in this dictionary: mm_cfg.DEFAULT_HOST_NAME.  The
+    # values are lists of the unlocked MailList instances.
+    byhost = {}
     for listname in Utils.list_names():
-        if confined_to and listname not in confined_to:
-            continue
-##        else:
-##            print 'Processing list:', listname
         mlist = MailList.MailList(listname, lock=0)
-        if not a_public_list and mlist.advertised:
-            a_public_list = mlist
         if not mlist.send_reminders:
             continue
-        listaddr = mlist.GetListEmail()
-        listreq = mlist.GetRequestEmail()
-        umbrella = mlist.umbrella_list
-        # get host information
         if mm_cfg.VIRTUAL_HOST_OVERVIEW:
             host = mlist.host_name
         else:
             host = mm_cfg.DEFAULT_HOST_NAME
-        #
-        # each entry in this dictionary is a list of tuples of the following
-        # form: (listaddr, listreq, password, url)
-        users = hosts.setdefault(host, {})
-        badaddrs = []
-        for addr, passwd in mlist.passwords.items():
-            # The user may have disabled password reminders for this list
-            if mlist.getMemberOption(addr, mm_cfg.SuppressPasswordReminder):
-                continue
-            url = mlist.GetOptionsURL(addr, absolute=1)
-            realaddr = mlist.getMemberCPAddress(addr)
-            if not realaddr:
-                badaddrs.append(addr)
-                continue
-            recip = mlist.GetMemberAdminEmail(realaddr)
-            userinfo = (listaddr, listreq, passwd, url)
-            infolist = users.get(recip, [])
-            infolist.append(userinfo)
-            users[recip] = infolist
-        # were there any addresses that are in the password dictionary but are
-        # not subscribed?
-        if badaddrs:
-            mlist.Lock()
-            try:
-                for addr in badaddrs:
-                    del mlist.passwords[addr]
-                mlist.Save()
-            finally:
-                mlist.Unlock()
-    if a_public_list:
-        a_public_list.Lock()
-        try:
-            mail_passwords(a_public_list, hosts)
-        finally:
-            a_public_list.Save()
-            a_public_list.Unlock()
+        byhost.setdefault(host, []).append(mlist)
+
+    # Now for each virtual host, collate the user information.  Each user
+    # entry has the form (listaddr, password, optionsurl)
+    for host in byhost.keys():
+        # Site owner is `mailman@dom.ain'
+        subj = _('%(host)s mailing list memberships reminder')
+        userinfo = {}
+        for mlist in byhost[host]:
+            listaddr = mlist.GetListEmail()
+            for member in mlist.getMembers():
+                # BAW: we group by cpaddress because although it's highly
+                # likely, there's no guarantee that person@list1 is the same
+                # as PERSON@list2.  Sigh.
+                cpaddress = mlist.getMemberCPAddress(member)
+                password = mlist.getMemberPassword(member)
+                optionsurl = mlist.GetOptionsURL(member)
+                lang = mlist.getMemberLanguage(member)
+                info = (listaddr, password, optionsurl, lang)
+                userinfo.setdefault(cpaddress, []).append(info)
+        # Now that we've collected user information for this host, send each
+        # user the password reminder.
+        for addr in userinfo.keys():
+            # If the person is on more than one list, it is possible that they
+            # have different preferred languages, and there's no good way to
+            # know which one they want their password reminder in.  Pick the
+            # most popular, and break the tie randomly.
+            #
+            # Also, we need an example -request address for cronpass.txt and
+            # again, there's no clear winner.  Just take the first one in this
+            # case.
+            table = []
+            langs = {}
+            for listaddr, password, optionsurl, lang in userinfo[addr]:
+                langs[lang] = langs.get(lang, 0) + 1
+                # If the list address is really long, break it across two
+                # lines.
+                if len(listaddr) > 39:
+                    fmt = '%s\n           %-10s\n%s\n'
+                else:
+                    fmt = '%-40s %-10s\n%s\n'
+                table.append(fmt % (listaddr, password, optionsurl))
+            # Figure out which language to use
+            langcnt = 0
+            poplang = None
+            for lang, cnt in langs.items():
+                if cnt > langcnt:
+                    poplang = lang
+                    langcnt = cnt
+            # Craft the table header
+            header = '%-40s %-10s\n%-40s %-10s' % (
+                _('List'), _('Password // URL'), '----', '--------')
+            # Now we're finally ready to send the email!
+            siteadmin = Utils.get_site_email(host, '-admin')
+            sitereq = Utils.get_site_email(host, '-request')
+            text = Utils.maketext(
+                'cronpass.txt',
+                {'hostname': host,
+                 'useraddr': addr,
+                 'exreq'   : sitereq,
+                 'owner'   : siteadmin,
+                 }, lang=poplang)
+            # Add the table to the end so it doesn't get wrapped/filled
+            text += (header + '\n' + NL.join(table))
+            msg = Message.UserNotification(addr, sitereq, subj, text)
+            msg['X-No-Archive'] = 'yes'
+            # We want to make this look like it's coming from the siteowner's
+            # list, but we also want to be sure that the apparent host name is
+            # the current virtual host.  Look in CookHeaders.py for why this
+            # trick works.  Blarg.
+            msg.send(sitelist, **{'errorsto': sitereq,
+                                  '_nolist' : 1,
+                                  })
 
 
 
