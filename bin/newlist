@@ -33,6 +33,7 @@ import sys
 import os
 import string
 import time
+import getpass
 
 import paths
 from Mailman import mm_cfg
@@ -42,7 +43,6 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman.Handlers import HandlerAPI
 from Mailman.Crypt import crypt
-from Mailman.pythonlib import getpass
 
 
 ALIASTEMPLATE = '''
