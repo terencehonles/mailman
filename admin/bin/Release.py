@@ -84,7 +84,8 @@ def tag2rel(tagname):
 def cvsdo(cvscmd):
     # I don't know why -d is suddenly required -- $CVSROOT used to work just
     # fine but now (RH7.3) doesn't at all.
-    os.system('cvs -d %s %s' % (os.environ['CVSROOT'], cvscmd))
+    cmd = 'cvs -d %s %s' % (os.environ['CVSROOT'], cvscmd)
+    os.system(cmd)
 
 def tag_release(tagname, retag):
     # Convert dots in tagname to underscores
@@ -105,9 +106,7 @@ def checkout(tagname, tail):
 
 def make_pkg(tagname):
     dir = releasedir(tagname)
-    print 'Creating release dir', dir, '...'
-    if not os.path.isdir(dir):
-        os.mkdir(dir)
+    print 'Exporting release dir', dir, '...'
     head, tail = os.path.split(dir)
     # this can't be done from a working directory
     curdir = os.getcwd()
