@@ -11,3 +11,5 @@ roster
 handle_opts
 private
 wrapper
+create
+rmlist
