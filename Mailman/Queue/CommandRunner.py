@@ -27,6 +27,7 @@ from Mailman.Bouncers import BouncerAPI
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
+from Mailman import LockFile
 
 
 
