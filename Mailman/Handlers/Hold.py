@@ -119,7 +119,7 @@ def process(mlist, msg):
     # to list members.  If not set, then only the members in posters are
     # allowed to post without approval.
     if mlist.member_posting_only:
-        posters = Utils.List2Dict(mlist.posters)
+        posters = Utils.List2Dict(map(string.lower, mlist.posters))
         if not mlist.IsMember(sender) and \
            not Utils.FindMatchingAddresses(sender, posters):
             # the sender is neither a member of the list, nor in the list of
@@ -127,7 +127,7 @@ def process(mlist, msg):
             hold_for_approval(mlist, msg, NonMemberPost)
             # no return
     elif mlist.posters:
-        posters = Utils.List2Dict(mlist.posters)
+        posters = Utils.List2Dict(map(string.lower, mlist.posters))
         if not Utils.FindMatchingAddresses(sender, posters):
             # the sender is not explicitly in the list of allowed posters
             # (which is non-empty), so hold the message
