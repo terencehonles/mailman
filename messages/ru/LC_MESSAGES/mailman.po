@@ -2,12 +2,19 @@
 # Copyright (C) Mikhail Sobolev <mss@mawhrin.net>
 # Mikhail Sobolev <mss@mawhrin.net>, 2002
 # Mikhail Zabaluev <mhz@alt-linux.org>, 2002
+# Dmitri I GOULIAEV <dmitri.gouliaev@telkel.net>, 2002
+#
+# Please note that the mailing list home page is
+#   http://only.mawhrin.net/mailman/listinfo/mailman-ru
+#
+# And archives are available at
+#   http://only.mawhrin.net/pipermail/mailman-ru
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman v2.1\n"
 "POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
-"PO-Revision-Date: $Date: 2002-12-20 20:17:37 +0000 (Fri, 20 Dec 2002) $\n"
+"PO-Revision-Date: $Date: 2002-12-24 16:43:32 +0000 (Tue, 24 Dec 2002) $\n"
 "Last-Translator: Mikhail Sobolev <mss@mawhrin.net>\n"
 "Language-Team: Russian <mailman-ru@only.mawhrin.net>\n"
 "MIME-Version: 1.0\n"
@@ -140,6 +147,7 @@ msgstr "%(ord)s квартал %(year)i"
 msgid "%(month)s %(year)i"
 msgstr "%(month)s %(year)i"
 
+# MSS: здесь месяц не склоняется...  Что есть плохо.  Варианты?
 #: Mailman/Archiver/HyperArch.py:901
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr "Неделя, начинающаяся с понедельника %(day)i %(month)s %(year)i"
@@ -355,6 +363,9 @@ msgstr "Описание"
 msgid "[no description available]"
 msgstr "[описание отсутствует]"
 
+# MSS: DIG предложил другой вариант, но он мне тоже не нравится. :(
+#   надо смотреть на эту функцию глобально
+#  +msgstr "Допустимое имя переменной не найдено."
 #: Mailman/Cgi/admin.py:322
 msgid "No valid variable name found."
 msgstr "Не найдено названия допустимой переменной."
@@ -431,16 +442,17 @@ msgstr " (требует подтверждения)<br>&nbsp;<br>"
 msgid "Logout"
 msgstr "Завершить работу"
 
+# MSS: или лучше экстренное?  Или еще как-нибудь?
 #: Mailman/Cgi/admin.py:468
 msgid "Emergency moderation of all list traffic is enabled"
-msgstr ""
+msgstr "Включено срочное модерирование всех списков рассылки"
 
 #: Mailman/Cgi/admin.py:479
 msgid ""
 "Make your changes in the following section, then submit them\n"
 "        using the <em>Submit Your Changes</em> button below."
 msgstr ""
-"Измененив параметры в разделе ниже, сохраните их\n"
+"Изменив параметры в разделе ниже, сохраните их\n"
 "        с помощью кнопки <em>Внести изменения</em> внизу."
 
 #: Mailman/Cgi/admin.py:497
@@ -474,6 +486,8 @@ msgid ""
 "Badly formed options entry:\n"
 " %(record)s"
 msgstr ""
+"Недопустимый формат для значения параметра:\n"
+" %(record)s"
 
 #: Mailman/Cgi/admin.py:662
 msgid "<em>Enter the text below, or...</em><br>"
@@ -649,8 +663,8 @@ msgid ""
 "<b>hide</b> -- Is the member's address concealed on\n"
 "        the list of subscribers?"
 msgstr ""
-"<b>hide</b> -- адрес этого подписчика невидим другим подписчикам\n"
-"   этого списка рассылки"
+"<b>hide</b> -- адрес этого подписчика не будет показан в\n"
+"   общем списке подписчиков"
 
 #: Mailman/Cgi/admin.py:987
 msgid ""
@@ -669,14 +683,14 @@ msgid ""
 "            </ul>"
 msgstr ""
 "<b>nomail</b> -- заблокирована ли доставка сообщений этому подписчику? Если да,\n"
-"        то рядом вы увидите одно из следующих сокращений, обясняющих причину:\n"
+"        то рядом вы увидите одно из следующих сокращений, объясняющих причину:\n"
 "            <ul><li><b>U</b> -- доставка была заблокирована самим пользователем\n"
 "                <li><b>A</b> -- доставка была заблокирована администратором списка рассылки\n"
 "                <li><b>B</b> -- доставка была заблокирована в следствие получения большого "
 "количества сообщений о ошибках доставки\n"
 "                <li><b>?</b> -- причина неизвестна.\n"
-"                    Эта причина будет указана для доставки, заблокированной в предыдущих\n"
-"                    версиях Mailman.\n"
+"                    Это также может означать, что доставка была заблокированна в предыдущей\n"
+"                    версии Mailman.\n"
 "            </ul>"
 
 #: Mailman/Cgi/admin.py:1002
@@ -803,7 +817,7 @@ msgstr "Оповещать владельца списка рассылки о новых подписчиках?"
 
 #: Mailman/Cgi/admin.py:1088 Mailman/Cgi/admin.py:1129
 msgid "Enter one address per line below..."
-msgstr "Введите адреса (по одному в строчке)..."
+msgstr "Введите адреса (по одному в строке)..."
 
 #: Mailman/Cgi/admin.py:1093 Mailman/Cgi/admin.py:1134
 msgid "...or specify a file to upload:"
@@ -919,15 +933,17 @@ msgstr "Не удалось удалить подписку у не-подписчиков:"
 
 #: Mailman/Cgi/admin.py:1336
 msgid "Bad moderation flag value"
-msgstr ""
+msgstr "Недопустимое значение флага модерирования"
 
+# MSS: хмм?
 #: Mailman/Cgi/admin.py:1357
 msgid "Not subscribed"
-msgstr ""
+msgstr "Не подписан"
 
+# MSS: ??
 #: Mailman/Cgi/admin.py:1360
 msgid "Ignoring changes to deleted member: %(user)s"
-msgstr ""
+msgstr "Игнорируются изменения для удалённого подписчика: %(user)s"
 
 #: Mailman/Cgi/admin.py:1400
 msgid "Successfully Removed:"
@@ -970,13 +986,15 @@ msgid "all of %(esender)s's held messages."
 msgstr "все отложенные сообщения от %(esender)s."
 
 # FIXME: MSS: необходимо более внимательно глянуть на текст..
+#   MSS: "отложенное сообщение"
+#   использовался вариант DIG
 #: Mailman/Cgi/admindb.py:209
 msgid "a single held message."
-msgstr "отложенное сообщение"
+msgstr "задержанное сообщение"
 
 #: Mailman/Cgi/admindb.py:214
 msgid "all held messages."
-msgstr "все отложенные сообщения"
+msgstr "все задержанные сообщения"
 
 #: Mailman/Cgi/admindb.py:249
 msgid "Mailman Administrative Database Error"
@@ -1045,7 +1063,7 @@ msgstr "От:"
 
 #: Mailman/Cgi/admindb.py:385
 msgid "Action to take on all these held messages:"
-msgstr "Действие, которое необходимо применить ко всем отложенным сообщениям:"
+msgstr "Действие, которое необходимо применить ко всем задержанным сообщениям:"
 
 #: Mailman/Cgi/admindb.py:389 Mailman/Gui/Privacy.py:281
 msgid "Accept"
@@ -1106,7 +1124,7 @@ msgstr "Тема:"
 # MSS: байтов??  байт(ов)??
 #: Mailman/Cgi/admindb.py:475
 msgid " bytes"
-msgstr " байт"
+msgstr " байт(ов)"
 
 #: Mailman/Cgi/admindb.py:475
 msgid "Size:"
@@ -1131,15 +1149,15 @@ msgstr "Сообщение отложено на рассмотрение"
 
 #: Mailman/Cgi/admindb.py:544
 msgid " (%(count)d of %(total)d)"
-msgstr ""
+msgstr " (%(count)d из %(total)d)"
 
 #: Mailman/Cgi/admindb.py:555
 msgid "<em>Message with id #%(id)d was lost."
-msgstr ""
+msgstr "<em>Сообщение с идентификатором #%(id)d утеряно."
 
 #: Mailman/Cgi/admindb.py:564
 msgid "<em>Message with id #%(id)d is corrupted."
-msgstr ""
+msgstr "<em>Сообщение с идентификатором #%(id)d повреждено."
 
 #: Mailman/Cgi/admindb.py:615
 msgid "Action:"
@@ -1159,7 +1177,7 @@ msgstr "[объяснение отсутствует]"
 
 #: Mailman/Cgi/admindb.py:629
 msgid "If you reject this post,<br>please explain (optional):"
-msgstr ""
+msgstr "Если вы не разрешаете публикацию этого сообщения,<br>пожалуйста, поясните почему (необязательно):"
 
 #: Mailman/Cgi/admindb.py:635
 msgid "Message Headers:"
@@ -1225,7 +1243,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:157
 msgid "System error, bad content: %(content)s"
-msgstr ""
+msgstr "Системная ошибка, недопустимое содержимое: %(content)s"
 
 #: Mailman/Cgi/confirm.py:167
 msgid "Bad confirmation string"
@@ -1244,7 +1262,7 @@ msgid ""
 msgstr ""
 "Пожалуйста, введите строку подтверждения\n"
 "    (т.е. <em>код</em> который вы должны были получить в электронном письме)\n"
-"    в предложенное поле. Затем нажимте кнопку <em>Подтвердить</em> для того, чтобы\n"
+"    в предложенное поле. Затем нажмите кнопку <em>Подтвердить</em> для того, чтобы\n"
 "    перейти к следующему шагу процедуры регистрации."
 
 #: Mailman/Cgi/confirm.py:193
@@ -1326,7 +1344,7 @@ msgstr "Вы отказались от подписки."
 
 #: Mailman/Cgi/confirm.py:329
 msgid "Awaiting moderator approval"
-msgstr "Ожидается решение модератора"
+msgstr "Ожидают решение модератора"
 
 #: Mailman/Cgi/confirm.py:332
 msgid ""
@@ -1359,7 +1377,7 @@ msgstr "Вы уже являетесь подписчиком этого списка рассылки!"
 
 #: Mailman/Cgi/confirm.py:350
 msgid "Subscription request confirmed"
-msgstr "Запрос на подписку был подтвержден"
+msgstr "Запрос на подписку подтвержден"
 
 #: Mailman/Cgi/confirm.py:354
 msgid ""
@@ -1379,7 +1397,7 @@ msgstr "Вы отозвали свой запрос на удаление подписки."
 
 #: Mailman/Cgi/confirm.py:400
 msgid "Unsubscription request confirmed"
-msgstr "Запрос на удаление подписки был подтвержден"
+msgstr "Запрос на удаление подписки подтвержден"
 
 #: Mailman/Cgi/confirm.py:404
 msgid ""
@@ -1428,7 +1446,7 @@ msgstr "Вы отказались от запроса на изменение адреса."
 
 #: Mailman/Cgi/confirm.py:488
 msgid "Change of address request confirmed"
-msgstr "Запрос на изменение адреса подписки был подтвержден"
+msgstr "Запрос на изменение адреса подписки подтвержден"
 
 #: Mailman/Cgi/confirm.py:492
 msgid ""
@@ -1442,6 +1460,8 @@ msgstr ""
 msgid "Confirm change of address request"
 msgstr "Подтвердите запрос на изменение адреса подписки"
 
+# dig: везде/повсюду
+# MSS: еще варианты?
 #: Mailman/Cgi/confirm.py:523
 msgid "globally"
 msgstr ""
@@ -1484,7 +1504,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:590
 msgid "Sender discarded message via web."
-msgstr ""
+msgstr "Отправитель удалил сообщение через веб-интерфейс."
 
 #: Mailman/Cgi/confirm.py:592
 msgid ""
@@ -1497,7 +1517,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:600
 msgid "Posted message canceled"
-msgstr ""
+msgstr "Сообщение отозвано"
 
 #: Mailman/Cgi/confirm.py:603
 msgid ""
@@ -1741,7 +1761,7 @@ msgstr "Адрес владельца списка рассылки:"
 
 #: Mailman/Cgi/create.py:326
 msgid "Auto-generate initial list password?"
-msgstr "Сгенерить начальный пароль списка рассылки?"
+msgstr "Создать начальный пароль списка рассылки?"
 
 #: Mailman/Cgi/create.py:333
 msgid "Initial list password:"
@@ -1895,6 +1915,8 @@ msgstr ""
 msgid "Edit Options"
 msgstr "Изменить параметры подписки"
 
+# MSS: важным является оставить английский текст для тех пользователей, которые не понимают
+# по-русски
 #: Mailman/Cgi/listinfo.py:194 Mailman/Cgi/options.py:767 Mailman/Cgi/roster.py:111
 msgid "View this page in"
 msgstr "Язык страницы (view this page in):"
@@ -2784,7 +2806,7 @@ msgstr ""
 "    subscribe [пароль] [тип-дайджеста] [address=<адрес>]\n"
 "        Подписаться на список рассылки.  Пароль вам понадобится для того,\n"
 "        чтобы менять параметры подписки или чтобы отписаться от списка рассылки.\n"
-"        Если вы не укажете пароль, он будет сгенерен для вас автоматически. Система\n"
+"        Если вы не укажете пароль, он будет создан для вас автоматически. Система\n"
 "        может регулярно сообщать вам ваш пароль.\n"
 "\n"
 "        Параметр 'тип-дайджеста' может принимать два значения: 'nodigest' или\n"
@@ -4091,7 +4113,7 @@ msgid ""
 "You cannot add a Reply-To: to an explicit\n"
 "            address if that address is blank.  Resetting these values."
 msgstr ""
-"Вы не можете указать пустой адрес в качестве адресеа\n"
+"Вы не можете указать пустую строку в качестве адреса\n"
 "            для Reply-To.  Будет использовано предыдущее значение."
 
 #: Mailman/Gui/Language.py:34
@@ -4999,29 +5021,31 @@ msgstr ""
 
 #: Mailman/HTMLFormatter.py:137
 msgid "; it was disabled by you"
-msgstr ""
+msgstr " (по вашему собственному запросу)"
 
 #: Mailman/HTMLFormatter.py:139
 msgid "; it was disabled by the list administrator"
-msgstr ""
+msgstr " (по решению администратора)"
 
 #: Mailman/HTMLFormatter.py:143
 msgid ""
 "; it was disabled due to excessive bounces.  The\n"
 "            last bounce was received on %(date)s"
 msgstr ""
+" (доставка заблокирована в следствие большого количества ошибок, возникших "
+"при доставке сообщений; последняя ошибка была получена %(date)s"
 
 #: Mailman/HTMLFormatter.py:146
 msgid "; it was disabled for unknown reasons"
-msgstr ""
+msgstr " (причина неизвестна)"
 
 #: Mailman/HTMLFormatter.py:148
 msgid "Note: your list delivery is currently disabled%(reason)s."
-msgstr ""
+msgstr "Внимание: доставка вам рассылки приостановлена%(reason)s."
 
 #: Mailman/HTMLFormatter.py:151
 msgid "Mail delivery"
-msgstr ""
+msgstr "Доставка почты"
 
 #: Mailman/HTMLFormatter.py:153 Mailman/HTMLFormatter.py:298
 msgid "the list administrator"
