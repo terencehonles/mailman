@@ -800,7 +800,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def Load(self, check_version = 1):
         if self.__createlock_p:
-           self.Lock()
+            try:
+                self.Lock()
+            except LockFile.AlreadyLockedError:
+                pass
 	try:
 	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
 	except IOError:
