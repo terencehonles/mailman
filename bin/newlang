@@ -1,0 +1,113 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 2000 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""Add language[s] support to a mailing list.
+
+Usage:
+
+    newlang [options] code1 code2 ...
+
+Options:
+
+    --help/-h
+        Print this message and exit.
+
+    --listname=listname
+    -l listname
+        The name of the mailing list to add the language support to.
+
+code is the corresponding language directory and must exist in
+mm_cfg.TEMPLATES.  code must not be already supported by the list.
+
+"""
+
+import sys
+import os
+import getopt
+
+import paths                                      # path hacking
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import Errors
+from Mailman import MailList
+from Mailman.HTMLFormatter import HTMLFormatter
+from Mailman.i18n import _
+
+
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+
+
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'l:h',
+                                   ['listname=', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    listname = None
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-l', '--listname'):
+            listname = arg
+
+    languages = args
+    if listname is None:
+        usage(1, _('--listname/-l is required'))
+    if not languages:
+        usage(1, _('no languages given'))
+
+    listname = listname.lower()
+    try:
+        mlist = MailList.MailList(listname)
+    except Errors.MMListError, e:
+        usage(1, _('Could not open mailing list: %(listname)s\n%(e)s'))
+
+    # BAW: this seems questionable
+    HTMLFormatter.InitVars(list)
+
+    ok_langs = []
+    for lang in languages:
+        dir = os.path.join(mm_cfg.TEMPLATE_DIR, lang)
+        if not os.path.exists(dir):
+            print >> sys.stderr, _('Language not supported: %(lang)s')
+            continue
+        if os.path.exists(os.path.join(mlist._template_dir, lang)):
+            print >> sys.stderr, _('List already supports language: %(lang)s')
+            continue
+        ok_langs.append(lang)
+
+    # VGG, moved this out of the loop, as list.InitTemplates walks a list
+    #
+    # BAW: I want to look at this in more detail.
+    os.umask(002)
+    mlist.InitTemplates(ok_langs)
+    print _('Language support for'),
+    for lang in ok_langs:
+        print '%s,' % lang,
+    print _('added')
+
+
+
+if __name__ == '__main__':
+    main()
