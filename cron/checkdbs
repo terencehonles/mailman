@@ -87,8 +87,9 @@ def pending_requests(mlist):
             fullname = ''
         else:
             when, addr, fullname, passwd, digest, lang = info
-            fullname = '<%s>' % fullname
-        pending.append('    %s %s %s' % (fullname, addr, time.ctime(when)))
+            if fullname:
+                fullname = ' (%s)' % fullname
+        pending.append('    %s%s %s' % (addr, fullname, time.ctime(when)))
     first = 1
     for id in mlist.GetHeldMessageIds():
         if first:
