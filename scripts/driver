@@ -17,6 +17,27 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
+# Useful for debugging.  When an error occurs, this attaches the file name to
+# the exception string and re-raises (using the bogus Python 1.5 semantics)
+# this may be unnecessary in Python 1.5.2
+
+## realopen = open
+## def open(filename, mode='r', bufsize=-1, realopen=realopen):
+##     try:
+##         return realopen(filename, mode, bufsize)
+##     except IOError, e:
+##         strerror = e.strerror + ': ' + filename
+##         e.strerror = strerror
+##         e.args = (e.args[0], strerror)
+##         # Python 1.5
+##         import sys
+##         raise e, None, sys.exc_info()[2]
+##         # Python 1.5.1
+##         #raise
+## import __builtin__
+## __builtin__.__dict__['open'] = open
+
+
 
 # This standard driver script is used to run CGI programs, wrapped in code
 # that catches errors, and displays them as HTML.  This guarantees that
