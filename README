@@ -33,8 +33,9 @@ Install:
 	handled by a config program)
   o As root, add a mailman user
   o As mailman, copy the mailman dir to /home/mailman.  Currently the
-    system requires the source be located there.
-  o As mailman, Make /home/mailman/public_html and /home/mailman/cgi-bin
+    system requires the source be located there.  [I've been making it 
+    a subdir of /home/mailman, ie, /home/mailman/mailman.  klm.]
+  o As mailman, make /home/mailman/public_html and /home/mailman/cgi-bin
   o As root, Configure your web server to give /home/mailman/cgi-bin
     perms to run cgi in the cgi-bin dir, and restart the web server.
     The line you should add should look something like:
@@ -42,7 +43,7 @@ Install:
 	or:
 	ScriptAlias /mailman/   /home/mailman/cgi-bin/
 
-    (Or whatever is equivolent for your web server)
+    (Or whatever is equivalent for your web server)
   o As root, edit /home/mailman/mailman/src/*.c and edit the UID and
     GID const lines as appropriate.
   o As root, cd to /home/mailman/mailman/src and type: make
@@ -51,7 +52,10 @@ Install:
   o As root, Restart sendmail.
   o As mailman, cd to /home/mailman/mailman/cron, and add crontab.in
     as your crontab.  (probably done w/: crontab crontab.in)
-  o Edit modules/mm_cfg and change the first 3 macros as appropriate.
+  o Edit modules/mm_cfg.py - if you don't already have one, make a
+    copy from modules/mm_cfg.py.dist.  Include settings in mm_cfg.py
+    for any of the defaults in mm_defaults.py that you want to tailor
+    for your site.
 
 Adding a new list:
   o Run the program bin/newlist
@@ -73,13 +77,18 @@ If mail isn't getting delivered:
 Some notes about the code (Developers notes):
 	How to add a new user option:
 
-	1) Add a flag to mm_cfg
-	2) Add an entry to mm_html name mapping.  
-	3) Add replacements lines to the cgi/options script.
-	4) cgi/handle_opts: make SetUserOption calls.
-	5) Add to 2 data structs at top of mm_mailcmd
-	6) Add to mm_mailcmd help
-	7) Update templates
+	1) Add a flag to mm_defaults.py, and mm_cfg.py.dist if it's
+	   likely to require a custom value for each site.
+	2) Add an entry to mm_html GetStandardReplacements name
+	 & mapping, to enable referring to the value from mailman html.
+	3) Add replacements lines to the cgi/options and cgi/listionfo
+	   scripts, to hook the mailman html up with the option.
+	4) For user-specific options, make SetUserOption calls in
+	 & cgi/handle_opts.
+	5) For user-specific options, add to 2 data structs at top of
+	 &  mm_mailcmd.
+	6) For user-specific options, add description to mm_mailcmd help
+	7) Update templates if the options have replacements
 	8) Use your option wherever appropriate...
 	
 
