@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.35 
+# From configure.in Revision: 2.36 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -2074,6 +2074,7 @@ build/bin/inject:bin/inject \
 build/bin/list_admins:bin/list_admins \
 build/bin/list_lists:bin/list_lists \
 build/bin/list_members:bin/list_members \
+build/bin/list_owners:bin/list_owners \
 build/bin/mailmanctl:bin/mailmanctl \
 build/bin/mmsitepass:bin/mmsitepass \
 build/bin/newlist:bin/newlist \

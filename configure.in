@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 5907 $)
+AC_REVISION($Revision: 5954 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -550,6 +550,7 @@ bin/inject \
 bin/list_admins \
 bin/list_lists \
 bin/list_members \
+bin/list_owners \
 bin/mailmanctl \
 bin/mmsitepass \
 bin/newlist \
