@@ -57,6 +57,10 @@ class GUIBase:
         # The EmailListEx allows each line to contain either an email address
         # or a regular expression
         if wtype in (mm_cfg.EmailList, mm_cfg.EmailListEx):
+            # BAW: value might already be a list, if this is coming from
+            # config_list input.  Sigh.
+            if isinstance(val, ListType):
+                return val
             addrs = []
             for addr in [s.strip() for s in val.split(NL)]:
                 # Discard empty lines
@@ -101,6 +105,8 @@ class GUIBase:
                 return val
             return [val]
         if wtype == mm_cfg.FileUpload:
+            return val
+        if wtype == mm_cfg.Topics:
             return val
         # Should never get here
         assert 0, 'Bad gui widget type: %s' % wtype
