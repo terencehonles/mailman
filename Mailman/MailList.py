@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 409 $"
+__version__ = "$Revision: 436 $"
 
 try:
     import mm_cfg
@@ -196,7 +196,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " maillist messages in mailbox summaries."),
 
 	    ('welcome_msg', mm_cfg.Text, (4, 50), 0,
-	     'List-specific text appended to new-subscriber welcome message'),
+	     'List-specific text prepended to new-subscriber welcome message'),
 
 	    ('goodbye_msg', mm_cfg.Text, (4, 50), 0,
 	     'Text sent to people leaving the list.  If empty, no special'
@@ -539,7 +539,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # Blanket admin approval requred...
             self.AddRequest('add_member', digest, name, password)
 
-    def ApprovedAddMember(self, name, password, digest):
+    def ApprovedAddMember(self, name, password, digest, noack=0):
         # XXX klm: It *might* be nice to leave the case of the name alone,
         #          but provide a common interface that always returns the
         #          lower case version for computations.
@@ -556,7 +556,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                     self._internal_name, kind, name)
 	self.passwords[name] = password
 	self.Save()
-	self.SendSubscribeAck(name, password, digest)
+        if not noack:
+            self.SendSubscribeAck(name, password, digest)
 
     def DeleteMember(self, name, whence=None):
 	self.IsListInitialized()
