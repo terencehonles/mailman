@@ -43,7 +43,7 @@ def process(mlist, msg, msgdata):
     # but we need it for the Acknowledge module later.
     msgdata['original_sender'] = msg.get_sender()
     subject = msg['subject']
-    adminaddr = mlist.GetAdminEmail()
+    bounceaddr = mlist.getListAddress('bounces')
     # VirginRunner sets _fasttrack for internally crafted messages.
     fasttrack = msgdata.get('_fasttrack')
     if not msgdata.get('isdigest') and not fasttrack:
@@ -62,8 +62,8 @@ def process(mlist, msg, msgdata):
     # get rid of duplicate headers
     del msg['sender']
     del msg['errors-to']
-    msg['Sender'] = msgdata.get('errorsto', adminaddr)
-    msg['Errors-To'] = msgdata.get('errorsto', adminaddr)
+    msg['Sender'] = msgdata.get('errorsto', bounceaddr)
+    msg['Errors-To'] = msgdata.get('errorsto', bounceaddr)
     # Mark message so we know we've been here, but leave any existing
     # X-BeenThere's intact.
     msg['X-BeenThere'] = mlist.GetListEmail()
