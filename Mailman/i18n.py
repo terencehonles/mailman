@@ -92,28 +92,33 @@ def ctime(date):
         _('Jul'), _('Aug'), _('Sep'), _('Oct'), _('Nov'), _('Dec')
         ]
 
+    tzname = _('Server Local Time')
     if isinstance(date, StringType):
         try:
-            wday, mon, day, hms, year = date.split()
-            hh, mm, ss = hms.split(':')
-            year = int(year)
-            day = int(day)
-            hh = int(hh)
-            mm = int(mm)
-            ss = int(ss)
+            year, mon, day, hh, mm, ss, wday, ydat, dst = time.strptime(date)
+            tzname = time.tzname[dst and 1 or 0]
         except ValueError:
-            return date
-
-        for i in range(0, 7):
-            wconst = (1999, 1, 1, 0, 0, 0, i, 1, 0)
-            if wday.lower() == time.strftime('%a', wconst).lower():
-                wday = i
-                break
-        for i in range(1, 13):
-            mconst = (1999, i, 1, 0, 0, 0, 0, 1, 0)
-            if mon.lower() == time.strftime('%b', mconst).lower():
-                mon = i
-                break
+            try:
+                wday, mon, day, hms, year = date.split()
+                hh, mm, ss = hms.split(':')
+                year = int(year)
+                day = int(day)
+                hh = int(hh)
+                mm = int(mm)
+                ss = int(ss)
+            except ValueError:
+                return date
+            else:
+                for i in range(0, 7):
+                    wconst = (1999, 1, 1, 0, 0, 0, i, 1, 0)
+                    if wday.lower() == time.strftime('%a', wconst).lower():
+                        wday = i
+                        break
+                for i in range(1, 13):
+                    mconst = (1999, i, 1, 0, 0, 0, 0, 1, 0)
+                    if mon.lower() == time.strftime('%b', mconst).lower():
+                        mon = i
+                        break
     else:
         year, mon, day, hh, mm, ss, wday, yday, dst = time.localtime(date)
         tzname = time.tzname[dst and 1 or 0]
