@@ -1,4 +1,4 @@
-Il tuo messaggio alla lista '%(list_name)s' con soggetto
+Il tuo messaggio alla lista '%(listname)s' con soggetto
 
     %(subject)s
 
