@@ -101,8 +101,8 @@ SMTP_MAX_RCPTS = 500
 # in that module, this handler is used for message delivery to the list, and
 # to an individual user.  This value must be a string naming a module in the
 # Mailman.Handlers package.
-DELIVERY_MODULE = 'Sendmail'
-#DELIVERY_MODULE = 'SMTPDirect'
+#DELIVERY_MODULE = 'Sendmail'
+DELIVERY_MODULE = 'SMTPDirect'
 
 # Command for direct command pipe delivery to sendmail compatible program,
 # when DELIVERY_MODULE is 'Sendmail'.
