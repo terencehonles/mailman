@@ -17,19 +17,37 @@
 """Something which claims
 X-Mailer: <SMTP32 vXXXXXX>
 
-What the heck is this thing?
+What the heck is this thing?  Here's a recent host:
+
+% telnet 207.51.255.218 smtp
+Trying 207.51.255.218...
+Connected to 207.51.255.218.
+Escape character is '^]'.
+220 X1 NT-ESMTP Server 208.24.118.205 (IMail 6.00 45595-15)
+
 """
 
 import re
-from mimelib import MsgReader
+from mimelib.MsgReader import MsgReader
 
 ecre = re.compile('original message follows', re.IGNORECASE)
-acre = re.compile(r'user mailbox[^:]*:\s*(?P<addr>.*)', re.IGNORECASE)
+acre = re.compile(r'''
+    (                                             # several different prefixes
+    user\ mailbox[^:]*:                           # have been spotted in the
+    |delivery\ failed[^:]*:                       # wild...
+    |undeliverable\ to
+    )
+    \s*                                           # space separator
+    (?P<addr>.*)                                  # and finally, the address
+    ''', re.IGNORECASE | re.VERBOSE)
 
 
 
 def process(msg):
-    mi = MsgReader.MsgReader(msg)
+    mailer = msg['x-mailer']
+    if not mailer.startswith('<SMTP32 v'):
+        return
+    mi = MsgReader(msg)
     addrs = {}
     while 1:
         line = mi.readline()
