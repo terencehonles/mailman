@@ -1,4 +1,5 @@
-#!/usr/local/bin/python -u
+#! /usr/bin/env python -u
+#
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -26,15 +27,9 @@ subscribers.
    executables are).
 """
 
-__version__ = "$Revision: 547 $"
-
 import sys, os, string, re
-
-sys.path.append( os.path.expanduser('~mailman/mailman/modules/') )
-
+import paths                                      # path hacking
 import maillist, mm_err, mm_utils
-
-sys.path.append('.')
 import Cookie
 
 sys.stderr = sys.stdout
@@ -42,7 +37,7 @@ sys.stderr = sys.stdout
 ROOT = "/local/pipermail/private/"
 SECRET = "secret"  # XXX used for hashing
 
-PAGE = """
+PAGE = '''
 <html>
 <head>
   <title>%(listname)s Private Archives Authentication</title>
@@ -74,11 +69,12 @@ PAGE = """
     </tr>
   </TABLE>
 </FORM>
-"""
+'''
 
 login_attempted = 0
 _list = None
 
+# XXX: This looks broken, should investigate
 name_pat = re.compile(r"""
 (?: / (?: \d{4} q \d\. )?   # Match "/", and, optionally, 1998q1."
     ( [^/]* ) /?      # The SIG name
@@ -91,6 +87,20 @@ name_pat = re.compile(r"""
     
 )
 """, re.VERBOSE)
+
+# " XXX: Emacs turd
+# the following is a potentially better rewrite
+
+## name_pat = re.compile(
+##     r'(?: / (?: \d{4} q \d\. )?'   # Match "/", and, optionally, 1998q1."
+##     r'( [^/]* ) /?'                # The SIG name
+##     r'/[^/]*$'                     # The trailing 12345.html portion
+##     r') | (?:'
+##     r'/ ( [^/.]* )'                # Match matrix-sig
+##     r'(?:\.html)?'                 # Optionally match .html
+##     r'/?'                          # Optionally match a trailing slash
+##     r'$)'                          # Must match to end of string
+##     , re.VERBOSE)
 
 def getListName(path):
     match = name_pat.search(path)
