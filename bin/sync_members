@@ -71,11 +71,14 @@ Where `options' are:
 
 import sys
 import string
-import paths
-import Mailman.MailList
-import Mailman.Errors
-import Mailman.Utils
 
+import paths
+from Mailman import MailList
+from Mailman import Errors
+from Mailman import Utils
+
+
+
 program = sys.argv[0]
 
 def usage(status, msg=''):
@@ -184,12 +187,12 @@ def main():
             print 'Ignore  :  %30s' % addr
 
     # first filter out any invalid addresses
-    filemembers = Mailman.Utils.ParseAddrs(filemembers)
+    filemembers = Utils.ParseAddrs(filemembers)
     invalid = 0
     for addr in filemembers:
         try:
-            Mailman.Utils.ValidateEmail(addr)
-        except Mailman.Errors.EmailAddressError:
+            Utils.ValidateEmail(addr)
+        except Errors.EmailAddressError:
             print 'Invalid :  %30s' % addr
             invalid = 1
     if invalid:
@@ -198,11 +201,10 @@ def main():
 
     # get the locked list object
     try:
-        mlist = Mailman.MailList.MailList(listname)
-    except Mailman.Errors.MMUnknownListError:
-        print 'No list:', listname
+        mlist = MailList.MailList(listname)
+    except Errors.MMListError, e:
+        print 'No such list "%s"\n%s' % (listname, e)
         sys.exit(1)
-
 
     try:
         # get the list of addresses currently subscribed
@@ -227,8 +229,7 @@ def main():
 
         # addrs contains now all the addresses that need removing
         for laddr, addr in needsadding.items():
-            pw = '%s%s' % (Mailman.Utils.GetRandomSeed(),
-                           Mailman.Utils.GetRandomSeed())
+            pw = '%s%s' % (Utils.GetRandomSeed(), Utils.GetRandomSeed())
             # should not already be subscribed, otherwise our test above is
             # broken.  Bogosity is if the address is listed in the file more
             # than once.  Second and subsequent ones trigger an
@@ -238,7 +239,7 @@ def main():
                     mlist.ApprovedAddMember(addr, pw, digest,
                                             welcome, notifyadmin)
                 print 'Added  : %30s (%30s)' % (laddr, addr)
-            except Mailman.Errors.MMAlreadyAMember:
+            except Errors.MMAlreadyAMember:
                 pass
 
         for laddr, addr in addrs.items():

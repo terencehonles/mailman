@@ -41,15 +41,19 @@ Where:
 import sys
 import string
 import getopt
+
 import paths
 from Mailman import MailList
 from Mailman import Errors
 
+
+
 def usage(status, msg=''):
     print __doc__ % globals()
     if msg:
         print msg
     sys.exit(status)
+
 
 def ReadFile(filename):
     lines = []
@@ -60,6 +64,7 @@ def ReadFile(filename):
     lines = filter(None, map(string.strip, fp.readlines()))
     fp.close()
     return lines
+
 
 
 def main():
@@ -94,18 +99,22 @@ def main():
     try:
         # open locked
         mlist = MailList.MailList(listname)
-    except Errors.MMUnknownListError:
-        print 'No list:', listname
+    except Errors.MMListError, e:
+        print 'No such list "%s"\n%s' % (listname, e)
         sys.exit(1)
 
-    for addr in addresses:
-        try:
-            mlist.DeleteMember(addr)
-        except Errors.MMNoSuchUserError:
-            print "User `%s' not found." % addr
+    try:
+        for addr in addresses:
+            try:
+                mlist.DeleteMember(addr)
+            except Errors.MMNoSuchUserError:
+                print "User `%s' not found." % addr
+    finally:
+        # Hmm, should it be all or nothing?
+        mlist.Save()
+        mlist.Unlock()
 
-    mlist.Save()
-    mlist.Unlock()
 
+
 if __name__ == '__main__':
     main()

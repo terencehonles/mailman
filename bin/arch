@@ -85,8 +85,8 @@ def main():
     try:
         try:
             mlist = MailList(listname)
-        except Errors.MMUnknownListError:
-            usage(2, 'no such list: ' + listname)
+        except Errors.MMListError, e:
+            usage(2, 'No such list "%s"\n%s' % (listname, e))
         if mbox is None:
             mbox = os.path.join(mlist.private_archive_file_dir,
                                 listname + '.mbox')

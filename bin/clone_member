@@ -46,12 +46,14 @@ Where:
 import sys
 import string
 import getopt
+
 import paths
+from Mailman import MailList
+from Mailman import Utils
+from Mailman import Errors
 
-import Mailman.MailList
-import Mailman.Utils
-import Mailman.Errors
 
+
 def usage(status, msg=''):
     print __doc__ % globals()
     if msg:
@@ -78,16 +80,14 @@ def main():
     toaddr = args[2]
 
     try:
-        # open locked
-        mlist = Mailman.MailList.MailList(listname)
-    except Mailman.Errors.MMUnknownListError:
-        print 'No list:', listname
-        sys.exit(1)
+        mlist = MailList.MailList(listname)
+    except Errors.MMListError, e:
+        usage(1, 'No such list "%s"\n%s' % (listname, e))
 
     # validate and normalize
     try:
-        Mailman.Utils.ValidateEmail(toaddr)
-    except Mailman.Errors.EmailAddressError:
+        Utils.ValidateEmail(toaddr)
+    except Errors.EmailAddressError:
         print 'Not a valid email address:', toaddr
     lfromaddr = string.lower(fromaddr)
 
@@ -105,16 +105,15 @@ def main():
     # Get the user's current options and password.  TBD: Ugly hack: if a
     # user's options would have been zero, then Mailman saves room by deleting
     # the entry for the user from the user_options dictionary.  Note that
-    # /really/ it would be better if Mailman.GetUserOption() and
-    # Mailman.SetUserOption() supported an interface to get the entire option
-    # value.
+    # /really/ it would be better if GetUserOption() and SetUserOption()
+    # supported an interface to get the entire option value.
     options = mlist.user_options.get(lfromaddr, 0)
     password = mlist.passwords[lfromaddr]
 
     # now add the new user
     try:
         mlist.ApprovedAddMember(toaddr, password, digest, 0)
-    except Mailman.Errors.MMAlreadyAMember:
+    except Errors.MMAlreadyAMember:
         print 'Already a member:', toaddr
 
     # and finally hack the options

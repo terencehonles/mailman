@@ -71,13 +71,12 @@ import paths
 from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
+from Mailman import Errors
 
 
 
 def usage(code, msg=''):
-    print __doc__
-    if msg:
-        print msg
+    print __doc__ % globals() + msg
     sys.exit(code)
 
 
@@ -95,8 +94,8 @@ def do_output(listname, outfile):
         # open the specified list unlocked, since we're only reading it
         try:
             mlist = MailList.MailList(listname, lock=0)
-        except Errors.MMUnknownListError:
-            usage(1, 'List not found: ' + listname)
+        except Errors.MMListError, e:
+            usage(1, 'No such list "%s"\n%s' % (listname, e))
         # get all the list config info.  all this stuff is accessible via the
         # web interface
         print '## "%s" mailing list configuration settings' % listname,
@@ -161,8 +160,8 @@ def do_input(listname, infile, checkonly, verbose):
     # open the specified list locked, unless checkonly is set
     try:
         mlist = MailList.MailList(listname, lock=not checkonly)
-    except Errors.MMUnknownListError:
-        usage(1, 'List not found: ' + listname)
+    except Errors.MMListError, e:
+        usage(1, 'No such list "%s"\n%s' % (listname, e))
     savelist = 0
     try:
         globals = {'mlist': mlist}
@@ -213,13 +212,13 @@ def main():
 
     # sanity check
     if infile is not None and outfile is not None:
-        usage(1, 'only one of -i or -o is allowed')
+        usage(1, 'Only one of -i or -o is allowed')
     if infile is None and outfile is None:
-        usage(1, 'one of -i or -o is required')
+        usage(1, 'One of -i or -o is required')
 
     # get the list name
     if len(args) <> 1:
-        usage(1, 'list name is required')
+        usage(1, 'List name is required')
     listname = args[0]
 
     if outfile:

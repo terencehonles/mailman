@@ -53,6 +53,7 @@ displayed.
 
 import sys
 import re
+
 import paths
 from Mailman import Utils
 from Mailman import MailList
@@ -71,10 +72,11 @@ def scanlists(listnames, cre):
     matches = {}
     for name in listnames:
         try:
-            m = MailList.MailList(name)
-        except Errors.MMUnknownListError:
-            # XXX: Warn?
-            pass
+            m = MailList.MailList(name, lock=0)
+        except Errors.MMListError:
+            print 'No such list "%s"' % name
+            continue
+##        print 'Scanning list "%s"' % name
         allmembers = m.GetMembers() + m.GetDigestMembers()
         for member in allmembers:
             if cre.search(member):

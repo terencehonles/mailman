@@ -73,8 +73,8 @@ def main():
 
     try:
         mlist = MailList.MailList(listname)
-    except Errors.MMUnknownListError:
-        usage(1, 'List not found: ' + listname)
+    except Errors.MMListError, e:
+        usage(1, 'No such list "%s"\n%s' % (listname, e))
 
     try:
 	mlist.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR

@@ -53,6 +53,7 @@ status.
 
 import sys
 import getopt
+
 import paths
 from Mailman import MailList
 from Mailman import Errors
@@ -111,8 +112,8 @@ def main():
 
     try:
         mlist = MailList.MailList(listname, lock=0)
-    except Errors.MMUnknownListError:
-        print 'No list:', listname
+    except Errors.MMListError, e:
+        print 'No such list "%s"\n%s' % (listname, e)
         sys.exit(1)
 
     if preserve:
