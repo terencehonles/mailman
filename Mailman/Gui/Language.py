@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,12 +19,15 @@
 
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
+from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
+from Mailman.Gui.GUIBase import GUIBase
+
+_ = i18n._
 
 
 
-class Language:
+class Language(GUIBase):
     def GetConfigCategory(self):
         return 'language', _('Language&nbsp;options')
 
@@ -71,3 +74,10 @@ class Language:
              language</a> must be included.''')),
 
             ]
+
+    def _setValue(self, mlist, property, val, doc):
+        # If we're changing the list's preferred language, change the I18N
+        # context as well
+        if property == 'preferred_language':
+            i18n.set_language(val)
+        GUIBase._setValue(self, mlist, property, val, doc)
