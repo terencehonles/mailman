@@ -6,7 +6,7 @@ Takes listname/userid in PATH_INFO, expecting an "obscured" userid.
 (Depending on the mm_utils.{O,Uno}bscureEmail utilities tolerance,
 will work fine with an unobscured ids as well.)"""
 
-__version__ = "$Revision: 405 $"
+__version__ = "$Revision: 526 $"
 
 # We don't need to lock in this script, because we're never going to change
 # data. 
@@ -25,7 +25,10 @@ except IOError:
 
 doc = htmlformat.HeadlessDocument()
 
-path = os.environ['PATH_INFO']
+try:
+    path = os.environ['PATH_INFO']
+except KeyError:
+    path = ""
 list_info = mm_utils.GetPathPieces(path)
 
 if len(list_info) < 2:
@@ -65,7 +68,6 @@ if list.obscure_addresses:
 else:
     presentable_user = user
 
-
 replacements = list.GetStandardReplacements()
 replacements['<mm-digest-radio-button>'] = list.FormatOptionButton(
 	mm_cfg.Digests, 1, user)
@@ -79,6 +81,7 @@ replacements['<mm-delivery-enable-button>'] = list.FormatOptionButton(
 	mm_cfg.DisableDelivery, 0, user)
 replacements['<mm-delivery-disable-button>'] = list.FormatOptionButton(
 	mm_cfg.DisableDelivery, 1, user)
+replacements['<mm-disabled-notice>'] = list.FormatDisabledNotice(user)
 replacements['<mm-dont-ack-posts-button>'] = list.FormatOptionButton(
 	mm_cfg.AcknowlegePosts, 0, user)
 replacements['<mm-ack-posts-button>'] = list.FormatOptionButton(
