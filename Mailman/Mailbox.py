@@ -28,18 +28,9 @@ from Mailman.Message import Message
 
 
 
-# Factory callable for UnixMailboxes.  This ensures that any object we get out
-# of the mailbox is an instance of our subclass.  (requires Python 2.1's
-# mailbox module)
-def _factory(fp):
-    p = Parser(Message)
-    return p.parse(fp)
-
-
-
 class Mailbox(mailbox.PortableUnixMailbox):
     def __init__(self, fp):
-        mailbox.PortableUnixMailbox.__init__(self, fp, _factory)
+        mailbox.PortableUnixMailbox.__init__(self, fp, email.message_from_file)
 
     # msg should be an rfc822 message or a subclass.
     def AppendMessage(self, msg):
