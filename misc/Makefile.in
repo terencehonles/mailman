@@ -71,7 +71,6 @@ install: install-email
 	    dir=$(prefix)/$$d; \
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
-	$(INSTALL) -m $(DATAMODE) pending_subscriptions.db $(DATADIR)
 	$(INSTALL) -m $(EXEMODE) mailman $(SCRIPTSDIR)
 
 install-email:
