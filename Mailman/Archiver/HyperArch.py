@@ -37,12 +37,12 @@ import cgi
 import urllib
 import time
 import os
-import posixfile
 import HyperDatabase
 import pipermail
 
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import LockFile
 from Mailman import EncWord
 from Mailman.Logging.Syslog import syslog
 
@@ -646,27 +646,18 @@ class HyperArchive(pipermail.T):
     def GetArchLock(self):
         if self._lock_file:
             return 1
-        # TBD: This needs to be rewritten to use the generalized locking
-        # mechanism (when that exists).  -baw
-        ou = os.umask(0)
+        self._lock_file = LockFile.LockFile(
+            os.path.join(mm_cfg.LOCK_DIR,
+                         self.maillist.internal_name() + '-arch.lock'))
         try:
-            self._lock_file = posixfile.open(
-                os.path.join(mm_cfg.LOCK_DIR, '%s@arch.lock'
-                             % self.maillist.internal_name()), 'a+')
-        finally:
-            os.umask(ou)
-        # minor race condition here, there is no way to atomicly 
-        # check & get a lock. That shouldn't matter here tho' -ddm
-        if not self._lock_file.lock('w?', 1):
-            self._lock_file.lock('w|', 1)
-        else:
+            self._lock_file.lock(timeout=0.5)
+        except LockFile.TimeOutError:
             return 0
         return 1
 
     def DropArchLock(self):
         if self._lock_file:
-            self._lock_file.lock('u')
-            self._lock_file.close()
+            self._lock_file.unlock(unconditionally=1)
             self._lock_file = None
 
     def processListArch(self):
