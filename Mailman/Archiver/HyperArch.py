@@ -767,7 +767,6 @@ class HyperArchive(pipermail.T):
 	"""Return a list of indexes where the article should be filed.
 	A string can be returned if the list only contains one entry, 
 	and the empty list is legal."""
-	if article.subject in ['subscribe', 'unsubscribe']: return None
         res = self.dateToVolName(string.atof(article.date))
         self.message("figuring article archives\n")
         self.message(res + "\n")
