@@ -6,9 +6,8 @@ Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 GENERAL SETUP INFORMATION
 
     Mailman should work pretty much out of the box with a standard
-    Postfix installation.  As of this writing (25-Nov-2001) I've
-    tested it with Postfix 19991231 up to pl13, and with 200010228 up
-    to pl08.
+    Postfix installation.  As of this writing I've tested it with
+    Postfix 19991231 up to pl13, and with 200010228 up to pl08.
 
     It is recommended that you set "owner_request_special = no" in
     your main.cf config file so that Postfix won't treat -owner and
@@ -18,7 +17,7 @@ GENERAL SETUP INFORMATION
 
     In order to support Mailman's optional VERP delivery, you will
     want to disable luser_relay (the default) and you will want to set
-    recipient_delimiter for extended address semantics.  Here my
+    recipient_delimiter for extended address semantics.  Here, my
     recommendations are to comment out any luser_relay value in your
     main.cf and just go with the defaults.  Also, set
     "recipient_delimiter = +" so that the symbol used to separate an
@@ -42,26 +41,21 @@ INTEGRATING POSTFIX AND MAILMAN
     the case, adjust the instructions according to your use of
     configure's --prefix and --with-var-prefix options.
 
-    A WORD OF CAUTION: The version of BerkeleyDB that Postfix was
-    linked against MUST match the version that Python's bsddb module
-    was linked against.  If they don't, you will get an exception from
-    genaliases (see below) that says "Invalid argument".  You can use
-    ldd to see which version each was linked against, and if they
-    don't match, you'll have to recompile either Python or Postfix so
-    that they do match.  You'll probably find the most luck with
-    libdb.so.3 and Python 2.1.1.
-
     - If you are using Postfix-style virtual domains and you want
       Mailman to honor your virtual domains, read the section below
       first!
 
-    - Add this to Mailman's mm_cfg.py file:
+    - Add this to the bottom of the $prefix/Mailman/mm_cfg.py file:
 
       MTA = 'Postfix'
 
       The MTA variable names a module in Mailman/MTA which contains the
       MTA-specific functions to be executed when a list is created or
       removed.
+
+    - Look at the Defaults.py file for the variables POSTFIX_ALIAS_CMD
+      and POSTFIX_MAP_CMD command.  Make sure these point to your
+      postalias and postmap programs respectively.
 
     - Run the genaliases script to initialize your aliases file.
 
@@ -85,25 +79,25 @@ INTEGRATING POSTFIX AND MAILMAN
       command to modify Mailman's aliases.db file, but you do want
       Postfix to consult aliases.db when looking for local addresses.
 
-      You want to be sure that that you're using the hash: style database
-      for this entry.  Here's an example:
+      You probably want to use a hash: style database for this entry.
+      Here's an example:
 
       alias_maps = hash:/etc/postfix/aliases,
           hash:/usr/local/mailman/data/aliases
 
     - When you configure Mailman, use the --with-mail-gid=mailman
-      switch.  Because the owner of the aliases.db file is `mailman',
-      Postfix will execute Mailman's wrapper program as uid and gid
-      mailman.  If you don't use the --with-mail-gid switch, the
-      wrapper will bounce messages, complaining of a gid mismatch.
+      switch (actually, this will be the default if you configured
+      Mailman after adding the `mailman' owner).  Because the owner of
+      the aliases.db file is `mailman', Postfix will execute Mailman's
+      wrapper program as uid and gid mailman.
 
     That's it!  One caveat: when you add or remove a list, the
-    aliases.db file will be modified by Mailman, but it will not
-    automatically run "postfix reload".  This is because you need to
-    be root to run this and suid-root scripts are not secure.  The
-    only effect of this is that it will take about a minute for
-    Postfix to notice the change to the aliases.db file and update its
-    tables.  I consider this a minor inconvenience.
+    aliases.db file will updated, but it will not automatically run
+    "postfix reload".  This is because you need to be root to run this
+    and suid-root scripts are not secure.  The only effect of this is
+    that it will take about a minute for Postfix to notice the change
+    to the aliases.db file and update its tables.  I consider this a
+    minor inconvenience.
   
 
 VIRTUAL DOMAINS
