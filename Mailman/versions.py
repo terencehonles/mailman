@@ -146,7 +146,7 @@ def UpdateOldVars(l, stored_state):
     # set admin_notify_mchanges
     #
     if not hasattr(l, "admin_notify_mchanges"):
-        setatrr(l, "admin_notify_mchanges",
+        setattr(l, "admin_notify_mchanges",
                 mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES)
     #
     # Convert the members and digest_members addresses so that the keys of
