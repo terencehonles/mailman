@@ -5,7 +5,7 @@
 #
 # At 9AM, send notifications to disabled members that are due to be
 # reminded to re-enable their accounts.
-0 9 * * * @PYTHON@ -S @prefix/cron/disabled
+0 9 * * * @PYTHON@ -S @prefix@/cron/disabled
 #
 # Noon, mail digests for lists that do periodic as well as threshhold delivery.
 0 12 * * * @PYTHON@ -S @prefix@/cron/senddigests
