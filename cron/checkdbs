@@ -22,6 +22,8 @@ list moderators if necessary.
 
 import sys
 import time
+from types import UnicodeType
+from email.Charset import Charset
 
 import paths
 # mm_cfg must be imported before the other modules, due to the side-effect of
@@ -41,6 +43,9 @@ NL = '\n'
 
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+def _isunicode(s):
+    return isinstance(s, UnicodeType)
 
 
 
@@ -87,6 +92,7 @@ def main():
 
 
 def pending_requests(mlist):
+    # Must return a byte string
     pending = []
     first = 1
     for id in mlist.GetSubscriptionIds():
@@ -108,7 +114,19 @@ def pending_requests(mlist):
         pending.append(_(
             '     From: %(sender)s on %(date)s\n    Cause: %(reason)s'))
         pending.append('')
-    return NL.join(pending)
+    # Make sure that the text we return from here can be encoded to a byte
+    # string in the charset of the list's language.  This could fail if for
+    # example, the request was pended while the list's language was French,
+    # but then it was changed to English before checkdbs ran.
+    text = NL.join(pending)
+    charset = Charset(Utils.GetCharSet(mlist.preferred_language))
+    incodec = charset.input_codec or 'ascii'
+    outcodec = charset.output_codec or 'ascii'
+    if _isunicode(text):
+        return text.encode(outcodec, 'replace')
+    # Be sure this is a byte string encodeable in the list's charset
+    utext = unicode(text, incodec, 'replace')
+    return utext.encode(outcodec, 'replace')
 
 
 
