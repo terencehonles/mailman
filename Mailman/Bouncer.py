@@ -241,9 +241,11 @@ class Bouncer:
 
             # we do this here so this text won't be wrapped.  note that
             # 'bounce.txt' has a trailing newline
+            msg.rewindbody()
+            body = msg.fp.read()
             text = text + \
                    string.join(msg.headers, '') + '\n' + \
-                   Utils.QuotePeriods(msg.body) + '\n' + \
+                   Utils.QuotePeriods(body) + '\n' + \
                    '--' + boundary + '--'
 
             if negative:
