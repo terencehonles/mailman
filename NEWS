@@ -167,6 +167,11 @@ Here is a history of user visible changes to Mailman.
 
         o bin/dumpdb has grown -m/--marshal and -p/--pickle options.
 
+        o bin/list_admins can be used to print the owners of a mailing list.
+
+        o bin/genaliases regenerates from scratch the aliases and
+          aliases.db file for the Postfix MTA.
+
     - Archiver
         o New archiver date clobbering option, which allows dates to
           only be clobber if they are outrageously out-of-date
