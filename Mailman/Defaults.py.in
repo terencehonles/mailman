@@ -38,6 +38,16 @@ PUBLIC_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PUBLIC.ARCHIVE.URL/'
 PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
 
 DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
+# 0 - yearly
+# 1 - month
+# 2 - quarter
+# 3 - week
+# 4 - day
+DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
+
+PUBLIC_ARCHIVE_URL_EXT = ''
+PRIVATE_ARCHIVE_URL_EXT = '/'
+
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 

@@ -533,11 +533,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# A "just-in-case" thing.  This shouldn't have to be here.
 	ou = os.umask(002)
 	try:
-## 	    import mm_archive
-## 	    open(os.path.join(self._full_path,
-## 			      mm_archive.ARCHIVE_PENDING), "a+").close()
-## 	    open(os.path.join(self._full_path,
-## 			      mm_archive.ARCHIVE_RETAIN), "a+").close()
 	    open(os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % 
 			      self._internal_name), 'a+').close()
 	    open(os.path.join(self._full_path, "next-digest"), "a+").close()
@@ -569,6 +564,38 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		dict[key] = value
 	marshal.dump(dict, file)
 	file.close()
+        #
+        # we need to make sure that the archive
+        # directory has the right perms for public vs
+        # private.  If it doesn't exist, or some weird
+        # permissions errors prevent us from stating
+        # the directory, it's pointless to try to
+        # fix the perms, so we just return  -scott
+        #
+        try:
+            st = os.stat(self.archive_directory)
+        except os.error, rest:
+            sys.stderr.write("MailList.Save(): error getting archive mode "
+                             "for %s!: %s\n" % (self.real_name, str(rest)))
+            return
+        import stat
+        mode = st[stat.ST_MODE]
+        if self.archive_private:
+            if mode != 0770:
+                try:
+                    ou = os.umask(0)
+                    os.chmod(self.archive_directory, 0770)
+                except os.error, rest:
+                    sys.stderr.write("MailList.Save(): error setting archive mode "
+                                     "to private for %s!: %s\n" % (self.real_name, str(rest)))
+        else:
+            if mode != 0775:
+                try:
+                    os.chmod(self.archive_directory, 0775)
+                except os.error, rest:
+                    sys.stderr.write("MailList.Save(): error setting archive mode "
+                                     "to public for %s!: %s\n" % (self.real_name, str(rest)))
+                    
 
     def Load(self, check_version = 1):
 	if self._tmp_lock:
@@ -942,3 +969,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return ("<%s.%s %s%s at %s>"
 		% (self.__module__, self.__class__.__name__,
 		   `self._internal_name`, status, hex(id(self))[2:]))
+
+
+
+
+
+
+

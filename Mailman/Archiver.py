@@ -27,12 +27,8 @@ import sys, os, string
 import Utils
 import Mailbox
 import mm_cfg
+import sys
 
-
-## ARCHIVE_PENDING = "to-archive.mail"
-## # ARCHIVE_RETAIN will be ignored, below, in our hook up with andrew's new
-## # pipermail.
-## ARCHIVE_RETAIN = "retained.mail"
 
 class Archiver:
     def InitVars(self):
@@ -40,12 +36,8 @@ class Archiver:
 	self.archive = 1
 	# 0=public, 1=private:
 	self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
-## 	self.archive_update_frequency = \
-## 		 mm_cfg.DEFAULT_ARCHIVE_UPDATE_FREQUENCY
-## 	self.archive_volume_frequency = \
-## 		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
-## 	self.archive_retain_text_copy = \
-## 		mm_cfg.DEFAULT_ARCHIVE_RETAIN_TEXT_COPY
+ 	self.archive_volume_frequency = \
+ 		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
 
 	# Not configurable
 	self.clobber_date = 0
@@ -62,10 +54,10 @@ class Archiver:
     def GetBaseArchiveURL(self):
         if self.archive_private:
             return os.path.join(mm_cfg.PRIVATE_ARCHIVE_URL,
-                                self._internal_name + ".html")
+                                self._internal_name + mm_cfg.PRIVATE_ARCHIVE_URL_EXT)
         else:
             return os.path.join(mm_cfg.PUBLIC_ARCHIVE_URL,
-                                self._internal_name + ".html")
+                                self._internal_name + mm_cfg.PRIVATE_ARCHIVE_URL_EXT)
 
     def GetConfigInfo(self):
 	return [
@@ -81,17 +73,10 @@ class Archiver:
 	     'Set date in archive to when the mail is claimed to have been '
              'sent, or to the time we resend it?'),
 
-## 	    ('archive_update_frequency', mm_cfg.Number, 3, 0,
-## 	     "How often should new messages be incorporated?  "
-## 	     "0 for no archival, 1 for daily, 2 for hourly"),
+ 	    ('archive_volume_frequency', mm_cfg.Radio, 
+               ('Yearly', 'Monthly','Quarterly', 'Weekly', 'Daily'), 0,
+ 	     'How often should a new archive volume be started?'),
 
-## 	    ('archive_volume_frequency', mm_cfg.Radio, ('Yearly', 'Monthly'),
-## 	     0,
-## 	     'How often should a new archive volume be started?'),
-
-## 	    ('archive_retain_text_copy', mm_cfg.Toggle, ('No', 'Yes'),
-## 	     0,
-## 	     'Retain plain text copy of archive?'),
 	    ]
 
     def UpdateArchive(self):
@@ -123,26 +108,35 @@ class Archiver:
 	f.truncate(0)
 	f.close()
 
-# Internal function, don't call this.
-    def ArchiveMail(self, post):
-	"""Retain a text copy of the message in an mbox file."""
-	if self.clobber_date:
-	    import time
-	    olddate = post.getheader('date')
-	    post.SetHeader('Date', time.ctime(time.time()))
+
+    #
+    # archiving in real time  this is called from list.post(msg)
+    #
+    def ArchiveMail(self, msg):
+	#
+	# first we fork so that errors here won't
+	# disrupt normal list delivery  -scott
+	#
+	if os.fork(): 
+	    return
 	try:
-	    afn = self.ArchiveFileName()
-	    mbox = self.ArchiveFile(afn)
-	    mbox.AppendMessage(post)
-	    mbox.fp.close()
-	except IOError, msg:
-	    self.LogMsg("error", ("Archive file access failure:\n"
-				   "\t%s %s"
-				   % (afn, `msg[1]`)))
-	if self.clobber_date:
-	    # Resurrect original date setting.
-	    post.SetHeader('Date', olddate)
-	self.Save ()
+	    from cStringIO import StringIO
+	except ImportError:
+	    from StringIO import StringIO
+	txt = msg.unixfrom
+	for h in msg.headers:
+	    txt = txt + h
+	if msg.body[0] != '\n':
+	    txt = txt + "\n"
+	txt = txt + msg.body
+	f = StringIO(txt)
+	import HyperArch
+	h = HyperArch.HyperArchive(self)
+	h.processUnixMailbox(f, HyperArch.Article)
+	h.close()
+	f.close()
+        os._exit(0)
+	
 
     def ArchiveFileName(self):
 	"""The mbox name where messages are left for archive construction."""
@@ -152,6 +146,7 @@ class Archiver:
 	else:
 	    return os.path.join(self.public_archive_file_dir,
 				self._internal_name)
+
     def ArchiveFile(self, afn):
 	"""Open (creating, if necessary) the named archive file."""
 	ou = os.umask(002)
@@ -162,3 +157,7 @@ class Archiver:
 		raise IOError, msg
 	finally:
 	    os.umask(ou)
+
+
+
+

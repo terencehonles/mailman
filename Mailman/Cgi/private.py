@@ -27,11 +27,16 @@ subscribers.
    executables are).
 """
 
-import sys, os, string, re
+import sys, os, string
 from Mailman import MailList, Errors
 from Mailman import Cookie
+from Mailman.Logging.Utils import LogStdErr
 
-ROOT = "/local/pipermail/private/"
+LogStdErr("error", "private")
+
+
+
+ROOT = "/home/mailman/public_html/archives"
 SECRET = "secret"  # XXX used for hashing
 
 PAGE = '''
@@ -39,11 +44,11 @@ PAGE = '''
 <head>
   <title>%(listname)s Private Archives Authentication</title>
 </head>
-<body>
-<FORM METHOD=POST ACTION="%(basepath)s/%(path)s">
-  <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+<body bgcolor="#ffffff">
+<FORM METHOD=POST ACTION="%(basepath)s/">
+  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
     <TR>
-      <TD COLSPAN="2" WIDTH="100%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
 	<B><FONT COLOR="#000000" SIZE="+1">%(listname)s Private Archives
 	    Authentication</FONT></B>
       </TD>
@@ -68,29 +73,12 @@ PAGE = '''
 </FORM>
 '''
 
+	
 login_attempted = 0
 _list = None
-name_pat = re.compile(
-    r'(?: '                             # Being first alternative...
-    r'/ (?: \d{4} q \d\. )?'            # Match "/", and, optionally, 1998q1.
-    r'( [^/]* ) /?'                     # The list name
-    r'/[^/]*$'                          # The trailing 12345.html portion
-    r')'                                # End first alternative
-    r' | '
-    r'(?:'                              # Begin second alternative...
-    r'/ ( [^/.]* )'                     # Match matrix-sig
-    r'(?:\.html)?'                      # Optionally match .html
-    r'/?'                               # Optionally match a trailing slash
-    r'$'                                # Must match to end of string
-    r')'                                # And close the second alternate.
-    , re.VERBOSE)
 
 def getListName(path):
-    match = name_pat.search(path)
-    if match is None: return
-    if match.group(1): return match.group(1)
-    if match.group(2): return match.group(2)
-    raise ValueError, "Can't identify SIG name"
+    return string.split(path, os.sep)[1]
 
 
 def GetListobj(list_name):
@@ -109,16 +97,8 @@ def isAuthenticated(list_name):
     if os.environ.has_key('HTTP_COOKIE'):
 	c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
 	if c.has_key(list_name):
-	    # The user has a token like 'c++-sig=AE23446AB...'; verify 
-	    # that it's correct.
-	    token = string.replace(c[list_name].value,"@","\n")
-	    import base64, md5
-	    if base64.decodestring(token) != md5.new(SECRET
-						     + list_name
-						     + SECRET).digest():
-		return 0
-	    return 1
-
+            if c[list_name].value == `hash(list_name)`:
+                return 1
     # No corresponding cookie.  OK, then check for username, password
     # CGI variables 
     import cgi
@@ -139,21 +119,16 @@ def isAuthenticated(list_name):
     # be displayed with an appropriate message.
     global login_attempted
     login_attempted=1
-
     listobj = GetListobj(list_name)
     if not listobj:
         print '\n<P>A list named,', repr(list_name), "was not found."
         return 0
-    
     try:
 	listobj.ConfirmUserPassword( username, password)
     except (Errors.MMBadUserError, Errors.MMBadPasswordError): 
 	return 0
 
-    import base64, md5
-    token = md5.new(SECRET + list_name + SECRET).digest()
-    token = base64.encodestring(token)
-    token = string.replace(token, "\n", "@")
+    token = `hash(list_name)`
     c = Cookie.Cookie()
     c[list_name] = token
     print c				# Output the cookie
@@ -162,66 +137,49 @@ def isAuthenticated(list_name):
 
 def true_path(path):
     "Ensure that the path is safe by removing .."
-    path = string.split(path, '/')
-    for i in range(len(path)):
-	if path[i] == ".": path[i] = ""  # ./ is just redundant
-	elif path[i] == "..":
-	    # Remove any .. components
-	    path[i] = ""
-	    j=i-1
-	    while j>0 and path[j] == "": j=j-1
-	    path[j] = ""
+    path = string.replace(path, "../", "")
+    path = string.replace(path, "./", "")
+    return path[1:]
 
-    path = filter(None, path)
-    return string.join(path, '/')
-
-def processPage(page):
-    """Change any URLs that start with ../ to work properly when output from
-    /cgi-bin/private"""
-    # Escape any % signs not followed by (
-    page = re.sub('%([^(])', r'%%\1', page)
-
-    # Convert references like HREF="../doc" to just /doc.
-    page = re.sub('([\'="])../', r'\1/', page)
-
-    return page
 
 def main():
+    path = os.environ.get('PATH_INFO', "/index.html")
+    true_filename = os.path.join(ROOT, true_path(path) )
+    list_name = getListName(path)
+    if os.path.isdir(true_filename):
+        true_filename = true_filename + '/index.html'
+
+    if not isAuthenticated(list_name):
+        # Output the password form
         print 'Content-type: text/html\n'
-        path = os.environ.get('PATH_INFO', "/index.html")
-	true_filename = os.path.join(ROOT, true_path(path) )
-        list_name = getListName(path)
-        
-	if os.path.isdir(true_filename):
-	    true_filename = true_filename + '/index.html'
-
-	if not isAuthenticated(list_name):
-	    # Output the password form
-            page = processPage( PAGE )
+        page = PAGE
             
-	    listobj = GetListobj(list_name)
-	    if login_attempted:
-		message = ("Your email address or password were incorrect."
-			   " Please try again.")
-	    else:
-		message = ("Please enter your %s subscription email address"
-			   " and password." % listobj.real_name)
-            while path and path[0] == '/': path=path[1:]  # Remove leading /'s
-	    basepath = os.path.split(listobj.GetBaseArchiveURL())[0]
-	    listname = listobj.real_name
-	    print '\n\n', page % vars()
-            sys.exit(0)
-
-	print '\n\n'
-	# Authorization confirmed... output the desired file
-	try:
-	    f = open(true_filename, 'r')
-	except IOError:
-	    print "<H3>Archive File Not Found</H3>"
-	    print "No file", path
+        listobj = GetListobj(list_name)
+        if login_attempted:
+            message = ("Your email address or password were incorrect."
+                       " Please try again.")
         else:
-            while (1):
-                data = f.read(16384)
-                if data == "": break
-                sys.stdout.write(data)
-            f.close()
+            message = ("Please enter your %s subscription email address"
+                       " and password." % listobj.real_name)
+        while path and path[0] == '/': path=path[1:]  # Remove leading /'s
+        basepath = os.path.split(listobj.GetBaseArchiveURL())[0]
+        listname = listobj.real_name
+        print '\n\n', page % vars()
+        sys.exit(0)
+    print 'Content-type: text/html\n'
+    
+    print '\n\n'
+    # Authorization confirmed... output the desired file
+    try:
+        f = open(true_filename, 'r')
+    except IOError:
+        print "<H3>Archive File Not Found</H3>"
+        print "No file", path
+    else:
+        while (1):
+            data = f.read(16384)
+            if data == "": break
+            sys.stdout.write(data)
+        f.close()
+
+

@@ -39,7 +39,7 @@ DEFS=   	@DEFS@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 
-ARCH_INDEP_DIRS=	public_html logs archives bin \
+ARCH_INDEP_DIRS=	public_html public_html/archives logs archives bin \
 archives/private archives/public lists locks templates scripts filters \
 cron data Mailman Mailman/Cgi Mailman/Logging
 ARCH_DEP_DIRS=	cgi-bin mail

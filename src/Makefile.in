@@ -101,12 +101,14 @@ install: all
 	do \
 	    exe=$(CGIDIR)/$$f$(CGIEXT); \
 	    $(INSTALL_PROGRAM) $$f $$exe; \
-	    chmod g+s $$exe; \
+	    chown mailman $$exe; \
+	    chmod ug+s $$exe; \
 	done
 	for f in $(MAIL_PROGS); \
 	do \
 	    $(INSTALL_PROGRAM) $$f $(MAILDIR); \
-	    chmod g+s $(MAILDIR)/$$f; \
+	    chown mailman $(MAILDIR)/$$f; \
+	    chmod ug+s $(MAILDIR)/$$f; \
 	done
 #	@for f in $(ALIAS_PROGS); \
 #	do \

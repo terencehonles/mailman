@@ -62,10 +62,9 @@ def UpdateOldVars(l, stored_state):
     PreferStored('bad_posters', 'forbidden_posters')
     PreferStored('automatically_remove', 'automatic_bounce_action')
     #  - dropped vars:
-    for a in ['archive_retain_text_copy',
-              'archive_update_frequency',
-              'archive_volume_frequency']:
-        if hasattr(l, a): delattr(l, a)
+#    for a in ['archive_retain_text_copy',
+#              'archive_update_frequency']:
+#        if hasattr(l, a): delattr(l, a)
 
 def UpdateOldUsers(l):
     """Transform sense of changed user options."""
