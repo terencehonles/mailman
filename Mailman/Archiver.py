@@ -1,21 +1,27 @@
 import sys, os, string
 import mm_utils, mm_mbox, mm_cfg, mm_message
 
-ARCHIVE_PENDING = "to-archive.mail"
-ARCHIVE_RETAIN = "retained.mail"
+## ARCHIVE_PENDING = "to-archive.mail"
+## # ARCHIVE_RETAIN will be ignored, below, in our hook up with andrew's new
+## # pipermail.
+## ARCHIVE_RETAIN = "retained.mail"
 
 class Archiver:
     def InitVars(self):
 	# Configurable
 	self.archive = 1
+	# 0=public, 1=private:
+	self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
+	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
+	self.private_archive_file_dir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
 	self.archive_directory = os.path.join(mm_cfg.HTML_DIR, "archives/%s" % 
 					      self._internal_name)
-	self.archive_update_frequency = \
-		 mm_cfg.DEFAULT_ARCHIVE_UPDATE_FREQUENCY
-	self.archive_volume_frequency = \
-		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
-	self.archive_retain_text_copy = \
-		mm_cfg.DEFAULT_ARCHIVE_RETAIN_TEXT_COPY
+## 	self.archive_update_frequency = \
+## 		 mm_cfg.DEFAULT_ARCHIVE_UPDATE_FREQUENCY
+## 	self.archive_volume_frequency = \
+## 		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
+## 	self.archive_retain_text_copy = \
+## 		mm_cfg.DEFAULT_ARCHIVE_RETAIN_TEXT_COPY
 
 	# Not configurable
 	self._base_archive_url = os.path.join(mm_cfg.ARCHIVE_URL, 
@@ -27,24 +33,24 @@ class Archiver:
 	    ('archive', mm_cfg.Toggle, ('No', 'Yes'), 0, 
 	     'Archive messages?'),
 
-	    ('archive_update_frequency', mm_cfg.Number, 3, 0,
-	     "How often should new messages be incorporated?  "
-	     "0 for no archival, 1 for daily, 2 for hourly"),
-
-	    ('archive_volume_frequency', mm_cfg.Radio, ('Yearly', 'Monthly'),
-	     0,
-	     'How often should a new archive volume be started?'),
-
-	    ('archive_retain_text_copy', mm_cfg.Toggle, ('No', 'Yes'),
-	     0,
-	     'Retain plain text copy of archive?'),
+	    ('archive_private', mm_cfg.Radio, ('public', 'private'), 0,
+             'Is archive file source for public or private archival?'),
 
 	    ('clobber_date', mm_cfg.Radio, ('When sent', 'When resent'), 0,
 	     'Set date in archive to when the mail is claimed to have been '
              'sent, or to the time we resend it?'),
 
-	    ('archive_directory', mm_cfg.String, 40, 0,
-	     'Where on the machine the list archives are kept')
+## 	    ('archive_update_frequency', mm_cfg.Number, 3, 0,
+## 	     "How often should new messages be incorporated?  "
+## 	     "0 for no archival, 1 for daily, 2 for hourly"),
+
+## 	    ('archive_volume_frequency', mm_cfg.Radio, ('Yearly', 'Monthly'),
+## 	     0,
+## 	     'How often should a new archive volume be started?'),
+
+## 	    ('archive_retain_text_copy', mm_cfg.Toggle, ('No', 'Yes'),
+## 	     0,
+## 	     'Retain plain text copy of archive?'),
 	    ]
 
     def UpdateArchive(self):
@@ -77,21 +83,39 @@ class Archiver:
 
 # Internal function, don't call this.
     def ArchiveMail(self, post):
+	"""Retain a text copy of the message in an mbox file."""
 	if self.clobber_date:
 	    import time
 	    olddate = post.getheader('date')
 	    post.SetHeader('Date', time.ctime(time.time()))
-	self.ArchiveMailFiler(post, ARCHIVE_PENDING)
-	if self.archive_retain_text_copy:
-	    self.ArchiveMailFiler(post, ARCHIVE_RETAIN)
+	try:
+	    afn = self.ArchiveFileName()
+	    mbox = self.ArchiveFile(afn)
+	    mbox.AppendMessage(post)
+	    mbox.fp.close()
+	except IOError, msg:
+	    self.LogMsg("system", ("Archive file access failure:\n"
+				   "\t%s %s"
+				   % (afn, `msg[1]`)))
 	if self.clobber_date:
 	    # Resurrect original date setting.
 	    post.SetHeader('Date', olddate)
 	self.Save ()
 
-    def ArchiveMailFiler(self, post, fn):
-	"""ArchiveMail helper - given file name, actually do the save."""
-	mbox = mm_mbox.Mailbox(open(os.path.join(self._full_path, fn),
-				    "a+"))
-	mbox.AppendMessage(post)
-	mbox.fp.close()
+    def ArchiveFileName(self):
+	if self.archive_private:
+	    return os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
+				self._internal_name)
+	else:
+	    return os.path.join(mm_cfg.PUBLIC_ARCHIVE_FILE_DIR,
+				self._internal_name)
+    def ArchiveFile(self, afn):
+	ou = os.umask(002)
+	try:
+	    try:
+		return mm_mbox.Mailbox(open(afn, "a+"))
+	    except IOError, msg:
+		raise IOError, msg
+	finally:
+	    os.umask(ou)
+	    
