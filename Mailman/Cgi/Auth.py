@@ -14,7 +14,8 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Common routines for logging in and logging out of the admin interface.
+"""Common routines for logging in and logging out of the list administrator
+and list moderator interface.
 """
 
 from Mailman import mm_cfg
