@@ -25,9 +25,10 @@ and install the Mailman software.
 
 1. System setup
 
+    You will need to be root to perform the steps in this section.
+
     Before installing the Mailman software, you need to prepare your
-    system by adding certain users and groups.  You will need root
-    access on your machine in order to do these things.
+    system by adding certain users and groups.
 
     - Add a new user called `mailman'.  Typically this is added to
       your /etc/passwd file.
@@ -53,9 +54,9 @@ and install the Mailman software.
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
-      installed under $prefix.  Make sure this directory is group
-      `mailman' and has the group sticky bit set.  For example, these
-      shell commands will accomplish this:
+      installed under $prefix.  Make sure this directory is set to
+      group `mailman' and has the group sticky bit set.  For example,
+      these shell commands will accomplish this:
 
           % cd $prefix
           % chgrp mailman .
@@ -65,10 +66,16 @@ and install the Mailman software.
 
 2. Running configure
 
-    - If you've installed other GNU software, you should be familar
-      with the configure script.  Usually you can just run configure
-      with no arguments:
+    You do not need to be root to perform the steps in the section.
+    Do them under your own login, or whatever account you typically
+    install software as.
 
+    - If you've installed other GNU software, you should be familar
+      with the configure script.  Usually you can just cd to the
+      directory you unpacked Mailman into, and run configure with no
+      arguments:
+
+          % cd <mailman-src-dir>
           % ./configure
 
       and then run `make install'.  The following options allow you to 
@@ -149,8 +156,11 @@ and install the Mailman software.
 
           Troot
 
-    - As user `mailman', add $prefix/cron/crontab.in as a crontab
-      entry.  This is usually done with the following:
+    - Set up the crontab entries.  Mailman runs a number of cron jobs
+      to do things such as send out password reminders, etc.  You need
+      to be user `mailman' to perform this step.  Add
+      $prefix/cron/crontab.in as a crontab entry by executing these
+      commands:
 
           % su - mailman
           % cd $prefix/cron
@@ -158,16 +168,23 @@ and install the Mailman software.
 
 4. Customize Mailman
 
-    - Edit the file $prefix/Mailman/mm_cfg.py.  If you don't yet have
-      such a file, make a copy of the mm_cfg.dist file:
+    You should do these steps using the account you installed Mailman
+    under in section 2 above.
 
-          % cd $prefix/Mailman
-          % cp mm_cfg.dist mm_cfg.py
+    - Check the file $prefix/Mailman/mm_cfg.py for accuracy.
+      Specifically check to make sure the variables DEFAULT_HOST_NAME
+      and DEFAULT_URL are correct, and make any necessary changes.
 
-      Consult $prefix/Mailman/mm_defaults.py for defaults, and add any 
-      settings in mm_cfg.py that you want to change for your site.
-      You will probably want to change at least DEFAULT_HOST_NAME and
-      DEFAULT_URL.
+      The variable settings in mm_cfg.py override those in
+      $prefix/Mailman/mm_defaults.py, so consult that file for
+      defaults.  Add any additonal settings that you want to change
+      for your site to mm_cfg.py (don't edit mm_defaults.py).
+
+      The install process will not overwrite an existing mm_cfg.py
+      file so you can freely make changes to this file.  Installing
+      will always copy the automatically generated mm_cfg.py file to
+      $prefix/Mailman/mm_cfg.py.dist so you can check that file any
+      useful differences or suggestions.
 
       Note: Do *not* change HOME_DIR or MAILMAN_DIR.  These are set
       automatically by the configure script.
