@@ -17,11 +17,17 @@
 
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 719 $"
+import os
+import string
+import time
+import re
+import Errors
+import Message
+import mm_cfg
 
-import mm_utils, mm_err, mm_message, mm_cfg
-import time, os, string, re
 
+# See templates/masthead.txt
+# XXX: this needs conversion
 DIGEST_MASTHEAD = """
 Send %(real_name)s maillist submissions to
 	%(got_list_email)s
@@ -83,33 +89,33 @@ class Digester:
 	     'Header added to every digest',
              "Text attached (as an initial message, before the table"
              " of contents) to the top of digests.<p>"
-             + mm_err.MESSAGE_DECORATION_NOTE),
+             + Errors.MESSAGE_DECORATION_NOTE),
 
 	    ('digest_footer', mm_cfg.Text, (4, 55), 0,
 	     'Footer added to every digest',
              "Text attached (as a final message) to the bottom of digests.<p>"
-             + mm_err.MESSAGE_DECORATION_NOTE),
+             + Errors.MESSAGE_DECORATION_NOTE),
 	    ]
 
     def SetUserDigest(self, sender, value):
 	self.IsListInitialized()
 	addr = self.FindUser(sender)
 	if not addr:
-	    raise mm_err.MMNotAMemberError
+	    raise Errors.MMNotAMemberError
 	if addr in self.members:
 	    if value == 0:
-		raise mm_err.MMAlreadyUndigested
+		raise Errors.MMAlreadyUndigested
 	    else:
 		if not self.digestable:
-		    raise mm_err.MMCantDigestError
+		    raise Errors.MMCantDigestError
 		self.members.remove(addr)
 		self.digest_members.append(addr)
 	else:
 	    if value == 1:
-		raise mm_err.MMAlreadyDigested
+		raise Errors.MMAlreadyDigested
 	    else:
 		if not self.nondigestable:
-		    raise mm_err.MMMustDigestError
+		    raise Errors.MMMustDigestError
 		self.digest_members.remove(addr)
 		self.members.append(addr)
 	self.Save()
@@ -331,7 +337,7 @@ class Digest:
 
     def Present(self, mime=0):
         """Produce a rendering of the digest, as an OutgoingMessage."""
-        msg = mm_message.OutgoingMessage()
+        msg = Message.OutgoingMessage()
         self.ComposeBaseHeaders(msg)
         digestboundary = self.list._mime_separator
         if mime:
