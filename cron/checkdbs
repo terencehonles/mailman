@@ -21,8 +21,8 @@
 import sys, os
 import paths
 from Mailman import MailList
-from Mailman mm_cfg
-from Mailman Utils
+from Mailman import mm_cfg
+from Mailman import Utils
 
 def main():
 
