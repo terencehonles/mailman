@@ -49,44 +49,44 @@ from Mailman.Logging.Syslog import syslog
 
 class ForbiddenPoster(HandlerAPI.MessageHeld):
     "Sender is explicitly forbidden"
-    rejection = 'You are forbidden from posting messages to this list.'
+    rejection = _('You are forbidden from posting messages to this list.')
 
 class ModeratedPost(HandlerAPI.MessageHeld):
     "Post to moderated list"
-    rejection = 'Your message has been deemed inappropriate by the moderator.'
+    rejection = _('Your message was deemed inappropriate by the moderator.')
 
 class NonMemberPost(HandlerAPI.MessageHeld):
     "Post by non-member to a members-only list"
-    rejection = 'Non-members are not allowed to post messages to this list.'
+    rejection = _('Non-members are not allowed to post messages to this list.')
 
 class NotExplicitlyAllowed(HandlerAPI.MessageHeld):
     "Posting to a restricted list by sender requires approval"
-    rejection = 'This list is restricted; your message was not approved.'
+    rejection = _('This list is restricted; your message was not approved.')
 
 class TooManyRecipients(HandlerAPI.MessageHeld):
     "Too many recipients to the message"
-    rejection = 'Please trim the recipient list; it is too long.'
+    rejection = _('Please trim the recipient list; it is too long.')
 
 class ImplicitDestination(HandlerAPI.MessageHeld):
     "Message has implicit destination"
-    rejection = '''Blind carbon copies or other implicit destinations are
+    rejection = _('''Blind carbon copies or other implicit destinations are
 not allowed.  Try reposting your message by explicitly including the list
-address in the To: or Cc: fields.'''
+address in the To: or Cc: fields.''')
 
 class Administrivia(HandlerAPI.MessageHeld):
     "Message may contain administrivia"
 
     def rejection_notice(self, mlist):
-        return """Please do *not* post administrative requests to the mailing
+        return _("""Please do *not* post administrative requests to the mailing
 list.  If you wish to subscribe, visit %(listurl)s or send a message with the
 word `help' in it to the request address, %(request)s, for further
-instructions.""" % {'listurl': mlist.GetScriptURL('listinfo', absolute=1),
-                    'request': mlist.GetRequestEmail(),
+instructions.""") % {'listurl': mlist.GetScriptURL('listinfo', absolute=1),
+                     'request': mlist.GetRequestEmail(),
                     }
 
 class SuspiciousHeaders(HandlerAPI.MessageHeld):
-    "Message has a suspicious header"
-    rejection = 'Your message had a suspicious header.'
+   "Message has a suspicious header"
+   rejection = _('Your message had a suspicious header.')
 
 class MessageTooBig(HandlerAPI.MessageHeld):
     "Message body is too big: %d bytes but there's a limit of %d KB"
@@ -99,8 +99,8 @@ class MessageTooBig(HandlerAPI.MessageHeld):
             self.__msgsize, self.__limit)
 
     def rejection_notice(self, mlist):
-        return """Your message was too big; please trim it to less than
-%(kb)s KB in size.""" % {'kb': mlist.max_message_size}
+        return _("""Your message was too big; please trim it to less than
+%(kb)s KB in size.""") % {'kb': mlist.max_message_size}
 
 
 
@@ -211,9 +211,11 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         # Go ahead and instantiate it now.
         exc = exc()
     listname = mlist.real_name
-    reason = str(exc)
     sender = msg.GetSender()
     adminaddr = mlist.GetAdminEmail()
+    # BAW: I don't like using $LANG :(
+    os.environ['LANG'] = mlist.preferred_language
+    reason = str(exc)
     msgdata['rejection-notice'] = exc.rejection_notice(mlist)
     mlist.HoldMessage(msg, reason, msgdata)
     # now we need to craft and send a message to the list admin so they can
@@ -222,9 +224,19 @@ def hold_for_approval(mlist, msg, msgdata, exc):
          'hostname'   : mlist.host_name,
          'reason'     : reason,
          'sender'     : sender,
-         'subject'    : msg.get('subject', '(no subject)'),
+         'subject'    : msg.get('subject', _('(no subject)')),
          'admindb_url': mlist.GetScriptURL('admindb', absolute=1),
          }
+    # We may want to send a notification to the original sender too
+    fromusenet = msgdata.get('fromusenet')
+    # jcrey: I need to translate subject in msg before it may be overriden by
+    # the notification to the admin, so I must to duplicate code :-(
+    #
+    # BAW: I don't like using $LANG :(
+    if not fromusenet and not mlist.dont_respond_to_post_requests:
+        os.environ['LANG'] = mlist.GetPreferredLanguage(sender)
+        usersubject = msg.get('subject', _('(no subject)'))
+        os.environ['LANG'] = mlist.preferred_language
     if mlist.admin_immed_notify:
         # get the text from the template
         subject = _('%(listname)s post from %(sender)s requires approval')
@@ -232,11 +244,14 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         # craft the admin notification message and deliver it
         msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
-    # We may want to send a notification to the original sender too
-    fromusenet = msgdata.get('fromusenet')
     if not fromusenet and not mlist.dont_respond_to_post_requests:
+        # jcrey: We need to translate certains parts to user's preferred
+        # language.
+        os.environ['LANG'] = pluser = mlist.GetPreferredLanguage(sender)
         subject = _('Your message to %(listname)s awaits moderator approval')
-        text = Utils.maketext('postheld.txt', d)
+        d['reason'] = str(exc)
+        d['subject'] = usersubject
+        text = Utils.maketext('postheld.txt', d, pluser)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
     # Log the held message
