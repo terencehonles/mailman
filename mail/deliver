@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import sys
+#import sys
 #sys.stderr = open("/home/mailman/mailman/logs/debug","a+")
 #sys.stdout = sys.stderr
 """Partition a mass delivery into a suitable set of subdeliveries."""
@@ -32,7 +32,7 @@ if not os.fork():
     import mm_cfg
     def ContactTransport(sender, recip, text):
         cmd = os.path.join(mm_cfg.SCRIPTS_DIR, "contact_transport")
-	file = os.popen(string.join([cmd,sender]+recip," "), 'w')
+	file = os.popen(string.join([mm_cfg.PYTHON,cmd,sender]+recip," "), 'w')
 	file.write(text)
 	file.close()
     domain_info = {}
@@ -74,7 +74,7 @@ if not os.fork():
 
     def ContactTransportForEachGroup(sender, groups, text):
 	if len(groups) == 1:
-            ContactTransport(sender,group,text)
+            ContactTransport(sender,groups[0],text)
             return
 	for group in groups:
 	    if not os.fork():
