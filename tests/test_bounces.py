@@ -55,6 +55,7 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_06.txt', ['hao-nghi.au@fr.thalesgroup.com']),
         ('DSN', 'dsn_07.txt', ['david.farrar@parliament.govt.nz']),
         ('DSN', 'dsn_08.txt', ['news-list.zope@localhost.bln.innominate.de']),
+        ('DSN', 'dsn_09.txt', ['pr@allen-heath.com']),
         # SMTP32
         ('SMTP32', 'smtp32_01.txt', ['oliver@pcworld.com.ph']),
         ('SMTP32', 'smtp32_02.txt', ['lists@mail.spicynoodles.com']),
