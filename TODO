@@ -1,10 +1,10 @@
 The Mailman TODO list
 
-*Bugs
-- "Stale" addresses don't update properly when new bounces come in 
-  (stale means we had some bounces, but delivery to that address started 
-  working again before we booted them from the list)
-- Treat corrupted queue files more gracefully.
+*Email Handling
+- Use VERP or DSN for address tracing.
+- Implement multiple subprocs for MTA handoff, or divorce MTA handoff
+  from the rest of Mailman explicitly.  Multi-threading doesn't seem
+  to help, possibly because of Python's global interpreter lock.
 
 *Documentation
 - A detailed feature list
@@ -46,7 +46,7 @@ The Mailman TODO list
 - Be able to edit ALL the web pages, as well as the mail messages.
 - Use templates from the templates dir until the list owner changes
   the page, so the site admin can change them...
-- All the list-admin to require approvals for unsubs
+- Allow the list-admin to require approvals for unsubs
 - Allow the admin to disable option settings by users
 - Allow the admin to easily "retire" a list, both through the Web or
   email commands.
@@ -76,13 +76,6 @@ The Mailman TODO list
 - Use a better storage mechanism for the site admin password
 - Improve list deletion by requiring a valid password (from the shell script)
 
-*Email Handling
-- Implement a more general (form-based, like the netscape email
-  filter) filtering/bouncing/etc. mechanism.  Or use VERP.
-- Allow for programs to run that perform filtering / reformatting.
-- Set aside messages IMMEDIATELY as a rescue mechanism... make sure no
-  mails are ever lost, even if there turned out to be a bad Mailman bug.
-
 *Mailcmd interface
 - Provide an email interface to administrative commands.
 - Allow email unsubs from matching address to unsubscribe, possibly
@@ -93,16 +86,16 @@ The Mailman TODO list
 - Replace cron stuff with our own scheduling mechanism
 
 *Bounce handling
-- Add more patterns for bounce handling
+- Add more patterns for bounce handling (never ending)
 - Occasionally remove stale bounce entries
 - Send mail to people who are being removed without their knowledge
   (even though they're likely not to get it).
-- Clean the code up, make it more robust and efficient (see also BUGS)
-- Or trash the current approach and use something better
 - Reminders to disabled addresses.  The idea is that if an addr is
   disabled due to bouncing, we should send out periodic reminders.  We
   may want to do this for explicitly disabled addrs too, but perhaps
   with a different schedule.
+- Handle MTA warnings by discarding the messages but not registering
+  them as bounces.
 
 *Pipermail + Archiving mechanism
 - Search engine for archives
