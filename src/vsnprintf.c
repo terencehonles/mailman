@@ -43,15 +43,12 @@
 #include <strings.h>
 #include <stdarg.h>
 
-int vsnprintf(char* s, int n, char* fmt, ...)
+int vsnprintf(char* s, int n, char* fmt, va_list stack)
 {
 	char *f, *sf = 0;
 	int i, on, argl = 0;
 	char myf[10], buf[20];
 	char *arg, *myfp;
-
-	va_list stack;
-	va_start(stack, fmt);
 
 	on = n;
 	f = fmt;

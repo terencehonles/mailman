@@ -62,7 +62,7 @@ fatal(const char* ident, int exitcode, char* format, ...)
 {
 #ifndef HAVE_VSNPRINTF
 	/* a replacement is provided in vsnprintf.c */
-	int vsnprintf(char* s, int n, char* fmt, ...);
+	int vsnprintf(char*, int, char*, va_list);
 #endif /* !HAVE_VSNPRINTF */
 
 	char log_entry[BUFSIZE];
