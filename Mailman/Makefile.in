@@ -46,7 +46,7 @@ MailList.py ListAdmin.py Archiver.py Bouncer.py Defaults.py \
 Deliverer.py Digester.py Errors.py HTMLFormatter.py \
 MailCommandHandler.py Mailbox.py Message.py SecurityManager.py \
 Utils.py Pending.py Crypt.py GatewayManager.py \
-pipermail.py smtplib.py versions.py flock.py
+pipermail.py smtplib.py versions.py flock.py OutgoingQueue.py
 
 SUBDIRS=	Cgi Logging
 
