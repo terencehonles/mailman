@@ -184,7 +184,15 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
 
     try:
         conn = smtplib.SMTP(mm_cfg.SMTPHOST)
-        conn.sendmail(sender, recipient, text)
+        # Do the EHLO/HELO manually so we can check for DSN support
+        if conn.ehlo() >= 400:
+            conn.helo()
+        # receipt opts, empty unless DSN is supported, in which case we only
+        # want notification on failures
+        ropts = []
+        if conn.has_extn('dsn'):
+            ropts.append('NOTIFY=failure')
+        conn.sendmail(sender, recipient, text, rcpt_options=ropts)
         conn.quit()
         defer = 0
         failure = None
