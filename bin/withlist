@@ -35,6 +35,10 @@ Options:
         (e.g. for read-only operations).  You can always lock the file after
         the fact by typing `m.Lock()'
 
+        Note that if you use this option, you should explicitly call
+        m.Unlock() before exiting, since the interpreter's clean up procedure
+        will not cause the lock to be deleted automatically.
+
     --run [module.]callable
     -r [module.]callable
         This can be used to run a script with the opened MailList object.
