@@ -18,6 +18,12 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
+# Copy this file to /etc/init.d/ (or /etc/rc.d/init.d/ depending on
+# your system) and activate it as such:
+#
+# On Debian, type "update-rc.d mailman defaults"
+# On RedHat, and derivatives, install with "chkconfig --add mailman"
+#
 # chkconfig: 2345 98 12
 # description: Mailman is the GNU Mailing List Manager, a program that \
 #              manages electronic mail discussion groups.  For more \
