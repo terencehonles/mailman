@@ -53,7 +53,7 @@ def main():
                      }, mlist.preferred_language)
                 text = text + '\n' + pending_requests(mlist)
                 subject = _('%d %s moderator request(s) waiting' % (
-                    count, mlist.real_name)
+                    count, mlist.real_name))
                 admin = mlist.GetAdminEmail()
                 msg = Message.UserNotification(admin, admin, subject, text)
                 msg.send(mlist, **{'tomoderators': 1})
