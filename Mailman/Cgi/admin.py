@@ -80,17 +80,23 @@ def main():
         syslog('error', 'Someone tried to access the admin interface for a '
                'non-existent list: %s' % listname)
         return
-    #
     # Now that we know what list has been requested, all subsequent admin
     # pages are shown in that list's preferred language.
     i18n.set_language(mlist.preferred_language)
     # If the user is not authenticated, we're done.
     cgidata = cgi.FieldStorage(keep_blank_values=1)
-    try:
-        Auth.authenticate(mlist, cgidata)
-    except Auth.NotLoggedInError, e:
-        Auth.loginpage(mlist, 'admin', e.message)
+
+    if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
+                                  mm_cfg.AuthSiteAdmin),
+                                 cgidata.getvalue('adminpw', '')):
+        if cgidata.has_key('admlogin'):
+            # This is a re-authorization attempt
+            msg = Bold(FontSize('+1', _('Authorization failed.'))).Format()
+        else:
+            msg = ''
+        Auth.loginpage(mlist, 'admin', msg=msg)
         return
+
     # Which subcategory was requested?  Default is `general'
     if len(parts) == 1:
         category = 'general'
@@ -100,7 +106,7 @@ def main():
         category_suffix = category
     # Is this a log-out request?
     if category == 'logout':
-        print mlist.ZapCookie('admin')
+        print mlist.ZapCookie(mm_cfg.AuthListAdmin)
         Auth.loginpage(mlist, 'admin', frontpage=1)
         return
     # Sanity check
@@ -184,7 +190,7 @@ def main():
                 problem.'''))
         # Glom up the results page and print it out
         show_results(mlist, doc, category, category_suffix, cgidata)
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         mlist.Save()
     finally:
         # Now be sure to unlock the list.  It's okay if we get a signal here
@@ -211,8 +217,8 @@ def admin_overview(msg=''):
     # The table that will hold everything
     table = Table(border=0, width="100%")
     table.AddRow([Center(Header(2, legend))])
-    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
-                      colspan=2, bgcolor="#99ccff")
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
+                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
     # Skip any mailing list that isn't advertised.
     advertised = []
     listnames = Utils.list_names()
@@ -276,7 +282,7 @@ def admin_overview(msg=''):
     doc.AddItem(table)
     doc.AddItem('<hr>')
     doc.AddItem(MailmanLogo())
-    print doc.Format(bgcolor="#ffffff")
+    print doc.Format()
 
 
 
@@ -299,7 +305,7 @@ def option_help(mlist, varhelp):
         path_info = os.environ.get('PATH_INFO')
         bad = _('No valid variable details request not found: %(path_info)s')
         add_error_message(doc, bad)
-        print doc.Format(bgcolor='#fffff')
+        print doc.Format()
         return
     # Get the details about the variable
     varname, kind, params, dependancies, description, elaboration = \
@@ -314,8 +320,8 @@ def option_help(mlist, varhelp):
     
     header = Table(width='100%')
     header.AddRow([Center(Header(3, legend))])
-    header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
-                       colspan=2, bgcolor="#99ccff")
+    header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
+                       bgcolor=mm_cfg.WEB_HEADERCOLOR)
     doc.SetTitle(_("Mailman %(varname)s List Option Help"))
     doc.AddItem(header)
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, description))
@@ -338,7 +344,7 @@ def option_help(mlist, varhelp):
                      _('return to the %(category)s options page.')))
     doc.AddItem('</em>')
     doc.AddItem(mlist.GetMailmanFooter())
-    print doc.Format(bgcolor="#ffffff")
+    print doc.Format()
 
 
 
@@ -367,7 +373,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     # The `other links' are stuff in the right column.
     otherlinks = UnorderedList()
     otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
-                            _('Tend to pending administrative requests')))
+                            _('Tend to pending moderator requests')))
     otherlinks.AddItem(Link(mlist.GetScriptURL('listinfo'),
                             _('Go to the general list information page')))
     otherlinks.AddItem(Link(mlist.GetScriptURL('edithtml'),
@@ -469,17 +475,15 @@ def show_variables(mlist, category, cgidata, doc, form):
             break
 
     table.AddRow([Center(Header(2, label))])
-    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
-                          colspan=2, bgcolor="#99ccff")
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
+                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
 
     # Convenience
     def column_header(table=table):
         table.AddRow([Center(Bold(_('Description'))),
                       Center(Bold(_('Value')))])
-        table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
-                          width='15%')
-        table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 1,
-                          width='85%')
+        table.AddCellInfo(table.GetCurrentRowIndex(), 0, width='15%')
+        table.AddCellInfo(table.GetCurrentRowIndex(), 1, width='85%')
 
     did_col_header = 0
     for item in options:
@@ -517,10 +521,10 @@ def add_options_table_item(mlist, category, table, item, detailsp=1):
     descr = get_item_gui_description(mlist, category, varname, descr, detailsp)
     val = get_item_gui_value(mlist, kind, varname, params)
     table.AddRow([descr, val])
-    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 1,
-                      bgcolor="#cccccc")
-    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
-                      bgcolor="#cccccc")
+    table.AddCellInfo(table.GetCurrentRowIndex(), 1,
+                      bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
 
 
 
@@ -642,22 +646,22 @@ def membership_options(mlist, cgidata, doc, form):
     # If we're in the list subcategory, show the membership list
     if subcat == 'add':
         header.AddRow([Center(Header(2, _('Mass Subscriptions')))])
-        header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
-                           colspan=2, bgcolor='#99ccff')
+        header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
+                           bgcolor=mm_cfg.WEB_HEADERCOLOR)
         container.AddItem(header)
         mass_subscribe(mlist, container)
         return container
     if subcat == 'remove':
         header.AddRow([Center(Header(2, _('Mass Removals')))])
-        header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
-                           colspan=2, bgcolor='#99ccff')
+        header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
+                           bgcolor=mm_cfg.WEB_HEADERCOLOR)
         container.AddItem(header)
         mass_remove(mlist, container)
         return container
     # Otherwise...
     header.AddRow([Center(Header(2, _('Membership List')))])
-    header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
-                       colspan=2, bgcolor='#99ccff')
+    header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
+                       bgcolor=mm_cfg.WEB_HEADERCOLOR)
     container.AddItem(header)
     usertable = Table(width="90%", border='2')
     # If there are more members than allowed by chunksize, then we split the
@@ -728,8 +732,9 @@ def membership_options(mlist, cgidata, doc, form):
     else:
         usertable.AddRow([Center(Italic(_('%(allcnt)s members total')))])
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
-                           usertable.GetCurrentCellIndex(),
-                           bgcolor="#cccccc", colspan=9)
+                          usertable.GetCurrentCellIndex(),
+                          colspan=9,
+                          bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     # Add the alphabetical links
     if bucket:
         cells = []
@@ -745,8 +750,9 @@ def membership_options(mlist, cgidata, doc, form):
         joiner = '&nbsp;'*2 + '\n'
         usertable.AddRow([Center(joiner.join(cells))])
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
-                           usertable.GetCurrentCellIndex(),
-                           bgcolor="#cccccc", colspan=9)
+                          usertable.GetCurrentCellIndex(),
+                          colspan=9,
+                          bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     usertable.AddRow([Center(h) for h in (_('member address<br>member name'),
                                           _('subscr'), _('hide'), _('nomail'),
                                           _('ack'), _('not metoo'),
@@ -754,7 +760,7 @@ def membership_options(mlist, cgidata, doc, form):
                                           _('language'))])
     rowindex = usertable.GetCurrentRowIndex()
     for i in range(9):
-        usertable.AddCellInfo(rowindex, i, bgcolor='#cccccc')
+        usertable.AddCellInfo(rowindex, i, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     # Find the longest name in the list
     if members:
         longest = max([len(s) for s in members])
@@ -902,32 +908,48 @@ def mass_remove(mlist, container):
 
 
 def password_inputs():
-    change_pw_table = Table(bgcolor="#99cccc", border=0,
-                            cellspacing=0, cellpadding=2,
-                            valign="top")
-    change_pw_table.AddRow(
-        [Bold(Center(_('To Change The Administrator Password')))])
-    change_pw_table.AddCellInfo(0, 0, align="left", colspan=2)
-    old = Table(bgcolor="#99cccc", border=1,
-                cellspacing=0, cellpadding=2, valign="top")
-    old.AddRow([Label(_(' Enter current password:')),
-                PasswordBox('adminpw', size=20)])
-    new = Table(bgcolor="#99cccc", border=1,
-                cellspacing=0, cellpadding=2, valign="top")
-    new.AddRow([Label(_(' Enter new password:')),
-                PasswordBox('newpw', size=20)])
-    new.AddRow([Label(_("Confirm new password:")),
-                PasswordBox('confirmpw', size=20)])
-    change_pw_table.AddRow([old, new])
-    change_pw_table.AddCellInfo(1, 0, align="left", valign="top")
-    #change_pw_table.AddCellInfo(1, 1, align="left", valign="top")
-    return change_pw_table
+    table = Table(cellspacing=3, cellpadding=4)
+    table.AddRow([Center(Header(2, _('Change list ownership passwords')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
+                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+    table.AddRow([_("""The <em>list administrators</em> are the people who have
+ultimate control over all parameters of this mailing list.  They are able to
+change any list configuration variable available through these administration
+web pages.
+
+<p>The <em>list moderators</em> have more limited permissions; they are not
+able to change any list configuration variable, but they are allowed to tend
+to pending administration requests, including approving or rejecting held
+subscription requests, and disposing of held postings.  Of course, the
+<em>list administrators</em> can also tend to pending requests.
+
+<p>In order to split the list ownership duties into administrators and
+moderators, you must set a separate moderator password in the fields below,
+and also provide the email addresses of the list moderators in the section
+above.""")])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    # Set up the admin password table on the left
+    atable = Table(border=0, cellspacing=3, cellpadding=4,
+                   bgcolor=mm_cfg.WEB_ADMINPW_COLOR)
+    atable.AddRow([Label(_('Enter new administrator password:')),
+                   PasswordBox('newpw', size=20)])
+    atable.AddRow([Label(_('Confirm administator password:')),
+                   PasswordBox('confirmpw', size=20)])
+    # Set up the moderator password table on the right
+    mtable = Table(border=0, cellspacing=3, cellpadding=4,
+                   bgcolor=mm_cfg.WEB_ADMINPW_COLOR)
+    mtable.AddRow([Label(_('Enter new moderator password:')),
+                   PasswordBox('newmodpw', size=20)])
+    mtable.AddRow([Label(_('Confirm moderator password:')),
+                   PasswordBox('confirmmodpw', size=20)])
+    # Add these tables to the overall password table
+    table.AddRow([atable, mtable])
+    return table
 
 
 
 def submit_button():
-    submit = Table(bgcolor="#99ccff",
-                   border=0, cellspacing=0, cellpadding=2)
+    submit = Table(border=0, cellspacing=0, cellpadding=2)
     submit.AddRow([Bold(SubmitButton('submit', _('Submit Your Changes')))])
     submit.AddCellInfo(submit.GetCurrentRowIndex(), 0, align="middle")
     return submit
@@ -991,36 +1013,31 @@ def get_valid_value(mlist, prop, my_type, val, dependant):
 
 def change_options(mlist, category, cgidata, doc):
     confirmed = 0
-    if cgidata.has_key('newpw'):
-        if cgidata.has_key('confirmpw'):
-            if cgidata.has_key('adminpw') and cgidata['adminpw'].value:
-                try:
-                    mlist.ConfirmAdminPassword(cgidata['adminpw'].value)
-                    confirmed = 1
-                except Errors.MMBadPasswordError:
-                    add_error_message(doc,
-                                      _('Incorrect administrator password'),
-                                      tag='Error: ')
-            if confirmed:
-                new = cgidata['newpw'].value.strip()
-                confirm = cgidata['confirmpw'].value.strip()
-                if new == '' and confirm == '':
-                    add_error_message(
-                        doc,
-                        _('Empty admin passwords are not allowed'),
-                        tag='Error: ')
-                elif new == confirm:
-                    mlist.password = sha.new(new).hexdigest()
-                    # Re-authenticate (to set new cookie)
-                    mlist.WebAuthenticate(password=new, cookie='admin')
-                else:
-                    add_error_message(doc, _('Passwords did not match'),
-                                      tag='Error: ')
+    # Handle changes to the list moderator password.  Do this before checking
+    # the new admin password, since the latter will force a reauthentication.
+    new = cgidata.getvalue('newmodpw', '').strip()
+    confirm = cgidata.getvalue('confirmmodpw', '').strip()
+    if new or confirm:
+        if new == confirm:
+            mlist.mod_password = sha.new(new).hexdigest()
+            # No re-authentication necessary because the moderator's
+            # password doesn't get you into these pages.
         else:
-            add_error_message(doc,
-                              _('You must type in your new password twice'),
-                              tag='Error: ')
-    #
+            add_error_message(
+                doc, _('Moderator passwords did not match'),
+                tag=_('Error: '))
+    # Handle changes to the list administator password
+    new = cgidata.getvalue('newpw', '').strip()
+    confirm = cgidata.getvalue('confirmpw', '').strip()
+    if new or confirm:
+        if new == confirm:
+            mlist.password = sha.new(new).hexdigest()
+            # Set new cookie
+            print mlist.MakeCookie(mm_cfg.AuthListAdmin)
+        else:
+            add_error_message(
+                doc, _('Administator passwords did not match'),
+                tag=_('Error: '))
     # for some reason, the login page mangles important values for the list
     # such as .real_name so we only process these changes if the category
     # is not "members" and the request is not from the login page
