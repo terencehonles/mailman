@@ -48,8 +48,8 @@ def process(mlist, msg, msgdata):
     # get rid of duplicate headers
     del msg['sender']
     del msg['errors-to']
-    msg['Sender'] = adminaddr
-    msg['Errors-To'] = adminaddr
+    msg['Sender'] = msgdata.get('errorsto', adminaddr)
+    msg['Errors-To'] = msgdata.get('errorsto', adminaddr)
     #
     # Mark message so we know we've been here
     msg.headers.append('X-BeenThere: %s\n' % mlist.GetListEmail())
