@@ -129,12 +129,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
 </ul>
 <h3> List Membership
@@ -178,12 +188,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -241,12 +261,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -310,12 +340,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -385,12 +425,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -470,12 +520,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -566,12 +626,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -665,12 +735,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -771,12 +851,22 @@ Title: The Mailman Wishlist
  very useful, but could be dangerous!)
 
     <li> New moderation choice: archive but don't send to list.
-    <li> New moderation choice: annotate and send to author for resubmittal.
+    <li> New moderation choice: annotate and send to author for resubmittal.  Or just be able to annotate the message for
+ multiple moderator scenarios.
+
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
 
     <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
  posted to the list is always returned unsent.
+
+    <li> Ability to `sideline' some messages in the moderation queue
+    <li> Hook moderation up to a whitelist a la TMDA.  A non-member message gets held in a non-admindb queue, and the sender gets a
+ confirmation message.  When they confirm, we moderate the
+ message as normal, but if they don't we assume it's spam (after
+ some period of time) and discard it.  The admin should be able
+ to see all these super-quarantined messages with the flip of a
+ button.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
