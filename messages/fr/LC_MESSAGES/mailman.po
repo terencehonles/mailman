@@ -15,7 +15,6 @@ msgstr ""
 "Generated-By: pygettext.py 1.3\n"
 
 #: Mailman/Archiver/HyperArch.py:112
-#, fuzzy
 msgid "size not available"
 msgstr "taille non disponible"
 
@@ -33,17 +32,14 @@ msgid "Previous message:"
 msgstr "Message précédent:"
 
 #: Mailman/Archiver/HyperArch.py:456
-#, fuzzy
 msgid "Next message:"
 msgstr "Message suivant:"
 
 #: Mailman/Archiver/HyperArch.py:609 Mailman/Archiver/HyperArch.py:645
-#, fuzzy
 msgid "thread"
 msgstr "\tThread"
 
 #: Mailman/Archiver/HyperArch.py:610 Mailman/Archiver/HyperArch.py:646
-#, fuzzy
 msgid "subject"
 msgstr "objet"
 
@@ -52,7 +48,6 @@ msgid "author"
 msgstr "auteur"
 
 #: Mailman/Archiver/HyperArch.py:612 Mailman/Archiver/HyperArch.py:648
-#, fuzzy
 msgid "date"
 msgstr "date"
 
@@ -69,9 +64,8 @@ msgid "Text%(sz)s"
 msgstr "Text%(sz)s"
 
 #: Mailman/Archiver/HyperArch.py:816
-#, fuzzy
 msgid "figuring article archives\n"
-msgstr "archives privées"
+msgstr "chiffrage des articles d'archives\n"
 
 #: Mailman/Archiver/HyperArch.py:826
 msgid "April"
@@ -102,17 +96,14 @@ msgid "June"
 msgstr "Juin"
 
 #: Mailman/Archiver/HyperArch.py:827 Mailman/i18n.py:91
-#, fuzzy
 msgid "May"
 msgstr "Mai"
 
 #: Mailman/Archiver/HyperArch.py:828
-#, fuzzy
 msgid "December"
 msgstr "Décembre"
 
 #: Mailman/Archiver/HyperArch.py:828
-#, fuzzy
 msgid "November"
 msgstr "Novembre"
 
@@ -121,12 +112,10 @@ msgid "October"
 msgstr "Octobre"
 
 #: Mailman/Archiver/HyperArch.py:828
-#, fuzzy
 msgid "September"
 msgstr "September"
 
 #: Mailman/Archiver/HyperArch.py:836
-#, fuzzy
 msgid "First"
 msgstr "Premier"
 
@@ -139,7 +128,6 @@ msgid "Second"
 msgstr "Second"
 
 #: Mailman/Archiver/HyperArch.py:836
-#, fuzzy
 msgid "Third"
 msgstr "Troisième"
 
@@ -164,7 +152,6 @@ msgid "Computing threaded index\n"
 msgstr ""
 
 #: Mailman/Archiver/HyperArch.py:1206
-#, fuzzy
 msgid "Updating HTML for article %(seq)s"
 msgstr "Mise à jour des fichiers HTML pour l'article %(seq)s"
 
@@ -407,9 +394,8 @@ msgstr ""
 "   "
 
 #: Mailman/Cgi/admin.py:368
-#, fuzzy
 msgid "return to the %(categoryname)s options page."
-msgstr "Retourner à la page des options de type %(category)s."
+msgstr "Retourner à la page des options de type %(categoryname)s."
 
 #: Mailman/Cgi/admin.py:383
 msgid "%(realname)s Administration (%(label)s)"
@@ -456,7 +442,6 @@ msgid "Logout"
 msgstr "Déconnecter"
 
 #: Mailman/Cgi/admin.py:468
-#, fuzzy
 msgid "Emergency moderation of all list traffic is enabled"
 msgstr "Modération d'urgence sur tout le trafic de la liste:"
 
@@ -546,7 +531,6 @@ msgid "...after this one."
 msgstr "...après celle-ci."
 
 #: Mailman/Cgi/admin.py:742
-#, fuzzy
 msgid "<br>(Edit <b>%(varname)s</b>)"
 msgstr "<br>(Détails de <b>%(varname)s</b>)"
 
@@ -769,7 +753,7 @@ msgid ""
 "<p><em>To view more members, click on the appropriate\n"
 "        range listed below:</em>"
 msgstr ""
-"<p><em>Pour voir d'avantage d'abonnés, cliquer sur l'un des intervalless ci-"
+"<p><em>Pour voir d'avantage d'abonnés, cliquer sur l'un des intervalles ci-"
 "dessous:<em>"
 
 #: Mailman/Cgi/admin.py:1050
@@ -921,7 +905,6 @@ msgid "Enter new administrator password:"
 msgstr "Entrer le nouveau mot de passe administrateur:"
 
 #: Mailman/Cgi/admin.py:1167
-#, fuzzy
 msgid "Confirm administrator password:"
 msgstr "Confirmer le mot de passe administrateur:"
 
@@ -942,7 +925,6 @@ msgid "Moderator passwords did not match"
 msgstr "Les mots de passe de modération ne correspondent pas"
 
 #: Mailman/Cgi/admin.py:1217
-#, fuzzy
 msgid "Administrator passwords did not match"
 msgstr "Les mots de passe administrateur ne correspondent pas"
 
@@ -1201,9 +1183,8 @@ msgid "Reason:"
 msgstr "Motif:"
 
 #: Mailman/Cgi/admindb.py:487 Mailman/Cgi/admindb.py:605
-#, fuzzy
 msgid "Received:"
-msgstr "Recevoir les messages groupés?"
+msgstr "Reçus:"
 
 #: Mailman/Cgi/admindb.py:545
 msgid "Posting Held for Approval"
@@ -1303,7 +1284,6 @@ msgstr ""
 "désinscrit, e.g par l'administrateur de liste ?"
 
 #: Mailman/Cgi/confirm.py:138
-#, fuzzy
 msgid ""
 "The address requesting to be changed has\n"
 "                    been subsequently unsubscribed.  This request has been\n"
@@ -1383,7 +1363,6 @@ msgstr ""
 "requête de confirmation."
 
 #: Mailman/Cgi/confirm.py:242
-#, fuzzy
 msgid ""
 "Your confirmation is required in order to continue with\n"
 "        the subscription request to the mailing list <em>%(listname)s</em>.\n"
@@ -1435,12 +1414,10 @@ msgid "Preferred language:"
 msgstr "Langue préférée:"
 
 #: Mailman/Cgi/confirm.py:284
-#, fuzzy
 msgid "Cancel my subscription request"
 msgstr "Confirmer la requête d'abonnement"
 
 #: Mailman/Cgi/confirm.py:285
-#, fuzzy
 msgid "Subscribe to list %(listname)s"
 msgstr "Abonnement à la liste: %(listname)s"
 
@@ -1481,9 +1458,8 @@ msgstr ""
 "\t\tdéjà désabonnée."
 
 #: Mailman/Cgi/confirm.py:343
-#, fuzzy
 msgid "You are already a member of this mailing list!"
-msgstr "Vous n'êtes pas abonné à la liste %(listname)s"
+msgstr "Vous déjà membre de cette liste !"
 
 #: Mailman/Cgi/confirm.py:350
 msgid "Subscription request confirmed"
@@ -1892,14 +1868,12 @@ msgid "You are not authorized to create new mailing lists"
 msgstr "Vous n'êtes pas autorisé à créer de nouvelles listes"
 
 #: Mailman/Cgi/create.py:181 bin/newlist:166
-#, fuzzy
 msgid "Bad owner email address: %(s)s"
-msgstr "Mauvaise adresse courriel du propriétaire: %(owner)s"
+msgstr "Mauvaise adresse courriel du propriétaire: %(s)s"
 
 #: Mailman/Cgi/create.py:189 bin/newlist:164
-#, fuzzy
 msgid "Illegal list name: %(s)s"
-msgstr "Option invalide: %(opt)s"
+msgstr "Option invalide: %(s)s"
 
 #: Mailman/Cgi/create.py:194
 msgid ""
@@ -2156,7 +2130,6 @@ msgid "right"
 msgstr "droite"
 
 #: Mailman/Cgi/listinfo.py:116
-#, fuzzy
 msgid ""
 " To visit the general information page for an unadvertised list,\n"
 "        open a URL similar to this one, but with a '/' and the %(adj)s\n"
@@ -2608,7 +2581,7 @@ msgstr ""
 "<p>Vous avez également la possibilité de supprimer les archives de cette\n"
 "liste en ce moment même. Il est presque toujours sage de <strong>ne pas\n"
 "</strong>supprimer les archives, puissent qu'elles servent de traces\n"
-"pour les envoiss sur votre liste.\n"
+"pour les envois sur votre liste.\n"
 "<p>Pour plus de sécurité, il vous sera demandé de reconfirmer le mot de\n"
 "passe de la liste.\n"
 "\t"
@@ -3190,17 +3163,14 @@ msgid "    ack %(onoff)s"
 msgstr "    ack (accusé de reception) %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:160
-#, fuzzy
 msgid "    digest plain"
 msgstr "remise groupée texte brut"
 
 #: Mailman/Commands/cmd_set.py:162
-#, fuzzy
 msgid "    digest mime"
 msgstr " remise groupée mime"
 
 #: Mailman/Commands/cmd_set.py:164
-#, fuzzy
 msgid "    digest off"
 msgstr "    remise groupée off"
 
@@ -4099,7 +4069,7 @@ msgstr ""
 "supprimée.\n"
 "\n"
 "<p>Ensuite, si il y a des\n"
-"href=\"?VARHELP=contentfilter/pass_mime_types\">types acceptés</a>\n"
+"<a href=\"?VARHELP=contentfilter/pass_mime_types\">types acceptés</a>\n"
 "définis, tout type de section qui ne correspond <em>pas</em>\n"
 "à un type accepté est aussi supprimé. Si il n'y a pas de types accepté\n"
 "définis, ce contrôle n'est pas effectué.\n"
@@ -4125,7 +4095,6 @@ msgstr ""
 "aux paramètres ci-dessous?"
 
 #: Mailman/Gui/ContentFilter.py:75
-#, fuzzy
 msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
@@ -4199,13 +4168,12 @@ msgstr ""
 "attachés MIME."
 
 #: Mailman/Gui/ContentFilter.py:110
-#, fuzzy
 msgid ""
 "Action to take when a message matches the content filtering\n"
 "             rules."
 msgstr ""
-"Mesure à prendre lorsqu'un message correspond à une règle de filtrage de "
-"contenu\n"
+"Mesure à prendre lorsqu'un message correspond à une règle de filtrage de\n"
+"contenu"
 
 #: Mailman/Gui/ContentFilter.py:113
 msgid ""
@@ -4266,7 +4234,7 @@ msgstr "Options de remise groupée"
 
 #: Mailman/Gui/Digest.py:44
 msgid "Batched-delivery digest characteristics."
-msgstr "Caractéristiques de la livraison par lot des envoiss groupées."
+msgstr "Caractéristiques de la livraison par lot des envois groupés."
 
 #: Mailman/Gui/Digest.py:47
 msgid "Can list members choose to receive list traffic bunched in digests?"
@@ -4481,7 +4449,6 @@ msgstr ""
 "d'avoir plusieurs adresses d'administrateurs, une par ligne."
 
 #: Mailman/Gui/General.py:76
-#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4518,7 +4485,7 @@ msgstr ""
 "peuvent pas modifier une variable de configuration de liste, mais\n"
 "peuvent néanmoins basculer vers les requêtes administratives, pour\n"
 "approuver ou rejeter les requêtes d'abonnement, se débarrasser des\n"
-"envoiss en attente. <em>Les administrateurs</em> de listes\n"
+"envois en attente. <em>Les administrateurs</em> de listes\n"
 "peuvent évidemment aussi basculer vers les requêtes en attente.\n"
 "\n"
 "<p>Pour séparer les tâches relatives à la gestion d'une liste en\n"
@@ -4655,7 +4622,6 @@ msgstr ""
 "\t\tlongs tant que le resultat demeure explicite."
 
 #: Mailman/Gui/General.py:149
-#, fuzzy
 msgid ""
 "Hide the sender of a message, replacing it with the list\n"
 "             address (Removes From, Sender and Reply-To fields)"
@@ -5043,7 +5009,7 @@ msgstr ""
 "Les modérateurs (et les administrateurs) de listes reçoivent\n"
 "quotidiennement le rappel des requêtes d'approbation en attente,\n"
 "telles que les abonnements aux listes modérées ou les\n"
-"envoiss mis en attente pour diverses raisons. Activer cette\n"
+"envois mis en attente pour diverses raisons. Activer cette\n"
 "option entraîne, en plus, l'envoi d'avis chaque fois qu'une nouvelle\n"
 "requête entre dans la file d'attente."
 
@@ -5081,9 +5047,8 @@ msgid "Additional settings"
 msgstr "Paramètres supplémentaires"
 
 #: Mailman/Gui/General.py:326
-#, fuzzy
 msgid "Emergency moderation of all list traffic."
-msgstr "Modération d'urgence sur tout le trafic de la liste:"
+msgstr "Modération d'urgence sur tout le trafic."
 
 #: Mailman/Gui/General.py:327
 msgid ""
@@ -5130,7 +5095,7 @@ msgid ""
 "request,\n"
 "             in the process."
 msgstr ""
-"Les test administratives vont vérifier les envoiss pour voir s'il s'agit\n"
+"Les test administratives vont vérifier les envois pour voir s'il s'agit\n"
 "de requêtes administratives (telles que les abonnements, les résiliations\n"
 ", etc) et les ajouter à la file d'attente des requêtes puis aviser\n"
 "l'administrateur de l'arrivée de nouvelles requêtes à traiter."
@@ -5165,7 +5130,6 @@ msgstr ""
 "utilisé pour choisir l'un des noms d'un hôte disposant de plusieurs adresses."
 
 #: Mailman/Gui/General.py:374
-#, fuzzy
 msgid ""
 "Should messages from this mailing list include the\n"
 "                 <a href=\"http://www.faqs.org/rfcs/rfc2369.html\">RFC 2369</"
@@ -5221,11 +5185,10 @@ msgstr ""
 #: Mailman/Gui/General.py:397
 msgid "Should postings include the <tt>List-Post:</tt> header?"
 msgstr ""
-"Les envoiss doivent-ils contenir les en-têtes\n"
+"Les envois doivent-ils contenir les en-têtes\n"
 "<tt>List-Post:</tt>?"
 
 #: Mailman/Gui/General.py:398
-#, fuzzy
 msgid ""
 "The <tt>List-Post:</tt> header is one of the headers\n"
 "             recommended by\n"
@@ -5434,7 +5397,6 @@ msgstr ""
 "aux problèmes de performances."
 
 #: Mailman/Gui/NonDigest.py:60
-#, fuzzy
 msgid ""
 "Normally, Mailman sends the regular delivery messages to\n"
 "                 the mail server in batches.  This is much more efficent\n"
@@ -5566,7 +5528,6 @@ msgid "Sender&nbsp;filters"
 msgstr "Filtres&nbsp;expéditeur"
 
 #: Mailman/Gui/Privacy.py:34
-#, fuzzy
 msgid "Recipient&nbsp;filters"
 msgstr "Filtres&nbsp;destinataire"
 
@@ -5772,7 +5733,6 @@ msgstr ""
 "\t\tou abonné."
 
 #: Mailman/Gui/Privacy.py:141
-#, fuzzy
 msgid ""
 "Show member addresses so they're not directly recognizable\n"
 "             as email addresses?"
@@ -5874,7 +5834,7 @@ msgstr "Filtres d'abonné"
 #: Mailman/Gui/Privacy.py:189
 msgid "By default, should new list member postings be moderated?"
 msgstr ""
-"Les envoiss des nouveaux abonnés doivent être modérés par\n"
+"Les envois des nouveaux abonnés doivent être modérés par\n"
 "défaut?"
 
 #: Mailman/Gui/Privacy.py:191
@@ -6138,7 +6098,6 @@ msgstr ""
 " sur le destinataire du message."
 
 #: Mailman/Gui/Privacy.py:306
-#, fuzzy
 msgid "Recipient filters"
 msgstr "Filtres destinataire"
 
@@ -6500,12 +6459,10 @@ msgstr ""
 "liste?"
 
 #: Mailman/Gui/Usenet.py:58
-#, fuzzy
 msgid "Forwarding options"
 msgstr "Options de \"forwarding\""
 
 #: Mailman/Gui/Usenet.py:61
-#, fuzzy
 msgid "Moderated"
 msgstr "Modérateur"
 
@@ -6606,7 +6563,6 @@ msgstr ""
 "va évidemment s'appliquer aux messages transmis."
 
 #: Mailman/Gui/Usenet.py:101
-#, fuzzy
 msgid "Mass catch up"
 msgstr "Capture en masse"
 
@@ -6697,7 +6653,6 @@ msgid "; it was disabled for unknown reasons"
 msgstr "; il a été désactivé pour des raisons inconnues"
 
 #: Mailman/HTMLFormatter.py:148
-#, fuzzy
 msgid "Note: your list delivery is currently disabled%(reason)s."
 msgstr ""
 "Note: les remises sur votre liste sont actuellement désactivées %(reason)s."
@@ -6873,14 +6828,12 @@ msgstr ""
 "votre adresse courriel"
 
 #: Mailman/HTMLFormatter.py:274
-#, fuzzy
 msgid ""
 "(<i>%(which)s is only available to the list\n"
 "                members.</i>)"
 msgstr "(<i>Le %(which)s n'est disponible que pour les abonnés.</i>)"
 
 #: Mailman/HTMLFormatter.py:278
-#, fuzzy
 msgid ""
 "(<i>%(which)s is only available to the list\n"
 "            administrator.</i>)"
@@ -6913,7 +6866,6 @@ msgid "Admin address:"
 msgstr "Adresse de l'admin:"
 
 #: Mailman/HTMLFormatter.py:302
-#, fuzzy
 msgid "The subscribers list"
 msgstr "liste des abonnés"
 
@@ -6938,7 +6890,6 @@ msgid "Once a month, your password will be emailed to you as a reminder."
 msgstr "Votre recevrez un rappel mensuel de votre mot de passe par courriel."
 
 #: Mailman/HTMLFormatter.py:391
-#, fuzzy
 msgid "The current archive"
 msgstr "archive en cours"
 
@@ -7060,7 +7011,6 @@ msgstr ""
 "au plus de %(kb)d kb."
 
 #: Mailman/Handlers/Hold.py:110
-#, fuzzy
 msgid "Posting to a moderated newsgroup"
 msgstr "Envoi sur une liste modérée"
 
@@ -7381,9 +7331,8 @@ msgid "checking ownership of %(dbfile)s"
 msgstr "Vérification de la propriété de %(dbfile)s"
 
 #: Mailman/MTA/Postfix.py:336
-#, fuzzy
 msgid "%(dbfile)s owned by %(owner)s (must be owned by %(user)s"
-msgstr "%(dbfile)s appartient à %(owner)s (doit appartenir à Mailman)"
+msgstr "%(dbfile)s appartient à %(owner)s (doit appartenir à %(user)s"
 
 #: Mailman/MailList.py:697
 msgid "You have been invited to join the %(listname)s mailing list"
@@ -7441,7 +7390,6 @@ msgstr ""
 "\n"
 
 #: Mailman/Queue/BounceRunner.py:189
-#, fuzzy
 msgid "Uncaught bounce notification"
 msgstr "Avis de mesure de rebond"
 
@@ -7504,7 +7452,6 @@ msgid "Gnu's Not Unix"
 msgstr "Gnus's Not Unix"
 
 #: Mailman/i18n.py:86
-#, fuzzy
 msgid "Mon"
 msgstr "Lun"
 
@@ -7525,7 +7472,6 @@ msgid "Fri"
 msgstr "Ven"
 
 #: Mailman/i18n.py:87
-#, fuzzy
 msgid "Sat"
 msgstr "Sam"
 
@@ -7534,7 +7480,6 @@ msgid "Sun"
 msgstr "Dim"
 
 #: Mailman/i18n.py:91
-#, fuzzy
 msgid "Apr"
 msgstr "Avr"
 
@@ -7567,7 +7512,6 @@ msgid "Jul"
 msgstr "Juil"
 
 #: Mailman/i18n.py:92
-#, fuzzy
 msgid "Nov"
 msgstr "Nov"
 
@@ -7576,7 +7520,6 @@ msgid "Oct"
 msgstr "Oct"
 
 #: Mailman/i18n.py:92
-#, fuzzy
 msgid "Sep"
 msgstr "Sep"
 
@@ -7591,7 +7534,6 @@ msgstr ""
 "%(wday)s %(day)2i %(mon)s  %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
 
 #: bin/add_members:26
-#, fuzzy
 msgid ""
 "Add members to a list from the command line.\n"
 "\n"
@@ -7743,7 +7685,6 @@ msgid "Nothing to do."
 msgstr "Rien à faire."
 
 #: bin/arch:19
-#, fuzzy
 msgid ""
 "Rebuild a list's archive.\n"
 "\n"
@@ -8135,11 +8076,9 @@ msgid "    checking gid and mode for %(path)s"
 msgstr " vérification du gid et du mode pour %(path)s"
 
 #: bin/check_perms:97
-#, fuzzy
 msgid "%(path)s bad group (has: %(groupname)s, expected %(MAILMAN_GROUP)s)"
 msgstr ""
-"Mauvais gid pour %(path)s (Obtenu: %(groupname)s, Attendu %(MAILMAN_GRPNAME)"
-"s)"
+"Mauvais gid pour %(path)s (Obtenu: %(groupname)s, Attendu %(MAILMAN_GROUP)s)"
 
 #: bin/check_perms:120
 msgid "directory permissions must be %(octperms)s: %(path)s"
@@ -8147,12 +8086,10 @@ msgstr ""
 "Les permissions sur les répertoires doivent être de %(octperms)s: %(path)s"
 
 #: bin/check_perms:129
-#, fuzzy
 msgid "source perms must be %(octperms)s: %(path)s"
 msgstr "Les permissions sur les sources doivent être de %(octperms)s: %(path)s"
 
 #: bin/check_perms:140
-#, fuzzy
 msgid "article db files must be %(octperms)s: %(path)s"
 msgstr ""
 "Les permissions sur les fichiers db doivent être de %(octperms)s: %(path)s"
@@ -8232,10 +8169,9 @@ msgid "Problems found:"
 msgstr "Problèmes trouvés:"
 
 #: bin/check_perms:362
-#, fuzzy
 msgid "Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix"
 msgstr ""
-"Ré-éxecuter en tant que %(MAILMAN_OWNER)s (ou root) avec l'option -f pour "
+"Ré-éxecuter en tant que %(MAILMAN_USER)s (ou root) avec l'option -f pour "
 "réparer"
 
 #: bin/cleanarch:19
@@ -8271,19 +8207,19 @@ msgid ""
 "    -h / --help\n"
 "        Print this message and exit\n"
 msgstr ""
-"Nettoie un fichier archive .mbox.\n"
+"Nettoie un fichier archive .mbox\n"
 "\n"
 "L'archiveur recherche des lignes Unix-From séparant les messages dans\n"
 "le fichier archive mbox. Pour la compatibilité, il recherche en\n"
-"particulier les lignes qui commençant par un \"From \" -- i.e. la lettre\n"
+"particulier les lignes qui commencent par un \"From \" -- i.e. la lettre\n"
 "F-Majuscule, r-minuscule, o, m, espace et rien d'autre.\n"
 "\n"
 "En principe chaque ligne commençant par un \"From \" dans le corps du\n"
-"message devrait être échappé de sorte que le caractère > soit le début\n"
+"message devrait être échappée de sorte que le caractère > soit le début\n"
 "de la ligne. Il est toutefois possible que le corps du message ne soit\n"
 "pas échappé, ce script essaie de corriger cela en effectuant un test\n"
 "plus strict de lignes de type Unix-From. Toute ligne commençant par\n"
-"\"From \" qui ne passe pas ce test sera échappé par le caractère >.\n"
+"\"From \" qui ne passe pas ce test sera échappée par le caractère >.\n"
 "\n"
 "Usage: cleanarch [options] < fichierentree > fichiersortie\n"
 "Options:\n"
@@ -8373,7 +8309,7 @@ msgstr ""
 "Cloner un abonné.\n"
 "\n"
 "Cloner l'adresse d'un abonné signifie que le nouvel abonné héritera de\n"
-"toute les options de l'abonné cloné ainsi que de son mot de\n"
+"toutes les options de l'abonné cloné ainsi que de son mot de\n"
 "passe. Noter que ce programme fait confiance à l'utilisateur qui\n"
 "l'exécute -- il ne vérifie pas la nouvelle adresse, il n'envoie pas de\n"
 "message de bienvenue, etc.\n"
@@ -8391,8 +8327,8 @@ msgstr ""
 "    --listname=nom_liste\n"
 "    -l nom_liste\n"
 "        Agir sur les seules listes nommées. Si -l n'est pas fournit,\n"
-"        alors toute les listes de diffusion sont scannées à la\n"
-"        recherche de l'adresse. Il est admit d'avoir plusieurs -l.\n"
+"        alors toutes les listes de diffusion sont scannées à la\n"
+"        recherche de l'adresse. Il est admis d'avoir plusieurs -l.\n"
 "\n"
 "    --remove\n"
 "    -r\n"
@@ -8517,7 +8453,7 @@ msgid ""
 "The options -o and -i are mutually exclusive.\n"
 "\n"
 msgstr ""
-"Configurer une liste a partir des descriptions contenues dans un\n"
+"Configurer une liste à partir des descriptions contenues dans un\n"
 "fichier texte.\n"
 "\n"
 "Usage: config_list [options] nom_liste\n"
@@ -8534,8 +8470,8 @@ msgstr ""
 "        l'option -c.\n"
 "\n"
 "        Une variable spéciale appelée `mlist' est insérée dans\n"
-"        l'espace globale durant l'appel execfile, cette variable est\n"
-"        actuellement attachée à l'objet MailList courante. Ceci vous\n"
+"        l'espace global durant l'appel execfile, cette variable est\n"
+"        actuellement attachée à l'objet MailList courant. Ceci vous\n"
 "        permet de faire toute sortes de choses bizarres à l'objet\n"
 "        liste, mais prenez garde, cela pourrait profondément et (même\n"
 "        irréversiblement) endommager votre liste! \n"
@@ -8547,7 +8483,7 @@ msgstr ""
 "        script. De cette façon, vous pourrez facilement recueillir la\n"
 "        configuration d'une liste et l'attacher à une autre liste.\n"
 "        nom_fichier est le fichier utilisé pour la sortie. Si `-' est\n"
-"        fournit comme nom_fichier, alors la sortie standard est\n"
+"        fourni comme nom_fichier, alors la sortie standard est\n"
 "        utilisée.\n"
 "\n"
 "    --checkonly\n"
@@ -8566,7 +8502,7 @@ msgid ""
 "## \"%(listname)s\" mailing list configuration settings -*- python -*-\n"
 "## captured on %(when)s\n"
 msgstr ""
-"## Paramètre de configuration de la liste \"%(listname)s\" -*- python -*-\n"
+"## Paramètres de configuration de la liste \"%(listname)s\" -*- python -*-\n"
 "## Capturé le %(when)s\n"
 
 #: bin/config_list:131
@@ -8591,7 +8527,7 @@ msgstr "Propriété non-standard réactivée: %(k)s"
 
 #: bin/config_list:272
 msgid "Invalid value for property: %(k)s"
-msgstr "Valeur inavalide pour la propriété: %(k)s"
+msgstr "Valeur invalide pour la propriété: %(k)s"
 
 #: bin/config_list:274
 msgid "Bad email address for option %(k)s: %(v)s"
@@ -8708,7 +8644,7 @@ msgstr "Mauvais argument: %(pargs)s"
 
 #: bin/dumpdb:114
 msgid "Please specify either -p or -m."
-msgstr "Veillez spécifier l'une des options -p ou -m."
+msgstr "Veuillez spécifier l'une des options -p ou -m."
 
 #: bin/find_member:19
 msgid ""
@@ -8761,7 +8697,7 @@ msgstr ""
 "Où:\n"
 "    --listname=nom_liste\n"
 "    -l nom_liste\n"
-"        Ne considérer que la liste fournit pour la recherche.\n"
+"        Ne considérer que la liste fournie pour la recherche.\n"
 "\n"
 "    --exclude=nom_liste\n"
 "    -x nom_liste\n"
@@ -8780,8 +8716,8 @@ msgstr ""
 "        Une expression régulière Python pour la comparaison.\n"
 "\n"
 "L'interaction entre les options -l et -x se passe comme suit: Si une\n"
-"option -l est fournit, alors cette liste sera une cible de\n"
-"recherche. Si une option -x est fournit sans option -l, alors toute\n"
+"option -l est fournie, alors cette liste sera une cible de\n"
+"recherche. Si une option -x est fournie sans option -l, alors toute\n"
 "les listes sauf celles spécifiées avec une options -x seront\n"
 "utilisées. La syntaxe des expressions régulières est celle de Perl5\n"
 "avec l'utilisation du module re de Python. Les spécifications\n"
@@ -8834,14 +8770,36 @@ msgid ""
 "\n"
 "If run standalone, it prints this help text and exits.\n"
 msgstr ""
+"Remet les valeurs par défaut de url_page_web d'une liste.\n"
+"\n"
+"Ce script est destiné à être exécuté en tant que bin/withlist, i.e\n"
+"\n"
+"% bin/withlist -l -r fix_url nomdeliste [options]\n"
+"\n"
+"Options :\n"
+"    -u url_hôte\n"
+"    --urlhost=url_hôte\n"
+"	Vérifie l'url_hôte dans la table des hôtes virtuels, renvoie les valeurs trouvées "
+"dans\n"
+"	l'url_web_page et nom_hôte de la liste. Ceci permet essentiellement de passer\n"
+"	d'un domaine virtuel à un autre.\n"
+"\n"
+"	Sans cette option, les valeurs par défaut de url_page_web et nom_hôte "
+"sont\n"
+"	utilisées.\n"
+"\n"
+"    -v / --verbose\n"
+"	Affiche ce que fait le script.\n"
+"\n"
+"Lancé sans option, le script affiche ce texte d'aide et quitte.\n"
 
 #: bin/fix_url.py:80
 msgid "Setting web_page_url to: %(web_page_url)s"
-msgstr ""
+msgstr "réglage de url_page_web à : %(web_page_url)s"
 
 #: bin/fix_url.py:83
 msgid "Setting host_name to: %(mailhost)s"
-msgstr ""
+msgstr "Réglage de nom_hôte à : %(mailhost)s"
 
 #: bin/genaliases:19
 msgid ""
@@ -8866,7 +8824,7 @@ msgstr ""
 "Options:\n"
 "\n"
 "    -h/--help\n"
-"        Afficher ce message et sortir.\n"
+"        Afficher ce message et quitter.\n"
 
 #: bin/inject:19
 msgid ""
@@ -8894,7 +8852,7 @@ msgid ""
 "filename is the name of the plaintext message file to inject.  If omitted,\n"
 "standard input is used.\n"
 msgstr ""
-"Injecter un message d'un fichier vers la file d'attente d'arrivé de\n"
+"Injecter un message d'un fichier vers la file d'attente d'arrivée de\n"
 "Mailman.\n"
 "\n"
 "Usage: inject [options] [nomfichier]\n"
@@ -8907,17 +8865,17 @@ msgstr ""
 "    -l nomliste\n"
 "    --listname=nomliste\n"
 "        Le nom de la liste dans laquelle le message sera\n"
-"        injectée. Obligatoire.\n"
+"        injecté. Obligatoire.\n"
 "\n"
 "    -q nomfileattente\n"
 "    --queue=nomfileattente\n"
 "        Le nom de la file d'attente réceptrice du\n"
 "        message. nomfileattente doit être un sous-répertoire du\n"
 "        répertoire qfiles. Si vous l'omettez, la file d'attente\n"
-"        d'arrivé sera utilisée.\n"
+"        d'arrivée sera utilisée.\n"
 "\n"
-"nomfichier est le nom du fichier message texte brut à\n"
-"injecter. L'entrée standard est utilisé si vous l'omettez.\n"
+"nomfichier est le nom du fichier contenant le message texte brut à\n"
+"injecter. L'entrée standard est utilisée si vous l'omettez.\n"
 
 #: bin/inject:83
 msgid "Bad queue directory: %(qdir)s"
@@ -8925,7 +8883,7 @@ msgstr "Nom de répertoire file d'attente erroné: %(qdir)s"
 
 #: bin/inject:88
 msgid "A list name is required"
-msgstr "Un nom de liste requit"
+msgstr "Un nom de liste est requis"
 
 #: bin/list_admins:19
 msgid ""
@@ -8975,7 +8933,6 @@ msgid "List: %(listname)s, \tOwners: %(owners)s"
 msgstr "Liste: %(listname)s, \tPropriétaire: %(owners)s"
 
 #: bin/list_lists:19
-#, fuzzy
 msgid ""
 "List all mailing lists.\n"
 "\n"
@@ -8999,7 +8956,7 @@ msgid ""
 "        Print this text and exit.\n"
 "\n"
 msgstr ""
-"Lister toute les listes de diffusion.\n"
+"Lister toutes les listes de diffusion.\n"
 "\n"
 "Usage: %(program)s [options]\n"
 "\n"
@@ -9012,7 +8969,7 @@ msgstr ""
 "    -V domaine\n"
 "        Afficher juste les listes de diffusion qui sont gérées sous le\n"
 "        domaine virtuel spécifié. Cela ne fonctionne que si la\n"
-"        variable VIRTUAL_HOST_OVERVIEW est définit.\n"
+"        variable VIRTUAL_HOST_OVERVIEW est définie.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -9028,7 +8985,6 @@ msgid "matching mailing lists found:"
 msgstr "listes correspondantes trouvées:"
 
 #: bin/list_members:19
-#, fuzzy
 msgid ""
 "List all the members of a mailing list.\n"
 "\n"
@@ -9093,22 +9049,22 @@ msgstr ""
 "        Afficher juste les abonnés normaux (remise non-groupées).\n"
 "\n"
 "    --digest[=genre] / -d [genre]\n"
-"        Afficher juste les abonnés digest. Un argument facultatif peut\n"
-"        être fournit et sera \"mime\" ou \"plain\" pour n'afficher que les\n"
+"        Afficher juste les abonnés \"remise groupée\" (digest). Un argument facultatif peut\n"
+"        être fourni et sera \"mime\" ou \"plain\" pour n'afficher que les\n"
 "        abonnés recevant ce genre de digest.\n"
 "\n"
 "    --nomail[=motif] /-n [motif]\n"
 "        Affiche les abonnés pour lesquels la remise est désactivée. Un\n"
-"        argument facultatif peut être fournit et sera \"byadmin\",\n"
+"        argument facultatif peut être fourni et sera \"byadmin\",\n"
 "        \"byuser\", \"bybounce\" ou \"unknown\" et qui aura comme effet de\n"
-"        n'afficher que les dont la remise est désactivée pour ce\n"
+"        n'afficher que les utilisateurs dont la remise est désactivée pour ce\n"
 "        motif. Cet argument peut aussi être \"enabled\" pour afficher\n"
 "        les abonnés pour lesquels la remise est active.\n"
 "\n"
 "    --preserve\n"
 "    -p\n"
 "        Afficher les adresses des abonnés en conservant la casse\n"
-"        initiale. Autrement, toute les adresses sont affichées en\n"
+"        initiale. Autrement, toutes les adresses sont affichées en\n"
 "        minuscule.\n"
 "\n"
 "    --help\n"
@@ -9119,7 +9075,7 @@ msgstr ""
 "\n"
 "Notez que si vous ne spécifiez ni l'option -r ni l'option -d, tous les\n"
 "abonnés sont affichés, les abonnés normaux l'étant en premier, par\n"
-"contre, aucune information sur le status de l'adresse ne sera donnée.\n"
+"contre, aucune information sur le statut de l'adresse ne sera donné.\n"
 "\n"
 
 #: bin/list_members:150
@@ -9159,9 +9115,26 @@ msgid ""
 "of\n"
 "        all the lists will be displayed.\n"
 msgstr ""
+"Afficher les propriétaires de listes, ou toutes les listes de diffusion\n"
+"Usage : %(PROGRAM)s [options] [nomdeliste ...]\n"
+"Options : \n"
+"\n"
+"    -w / --with-listname\n"
+"	Regrouper les propriétaires par nom de liste et inclure les noms de liste.\n"
+"	Sinon les propriétaires sont triés par adresses courriels.\n"
+"\n"
+"    -m / --moderators\n"
+"	Inclure les modérateurs de liste dans le résultats.\n"
+"\n"
+"    -h / --help\n"
+"	Afficher cette aide et quitter.\n"
+"\n"
+"    nomdeliste\n"
+"	Afficher les propriétaires de la liste désignée. Plus d'un nom peut\n"
+"	apparaître après les options. Sans nomdeliste spécifié, les propriétaires de\n"
+"	toutes les listes sont affichés.\n"
 
 #: bin/mailmanctl:19
-#, fuzzy
 msgid ""
 "Primary start-up and shutdown script for Mailman's qrunner daemon.\n"
 "\n"
@@ -9258,15 +9231,15 @@ msgstr ""
 "Script principal de démarrage et d'arrêt du démon qrunner de Mailman.\n"
 "\n"
 "Ce script démarre, arrête et re-démarre le gestionnaire de file\n"
-"d'attente principal de Mailman en prenant soins de la bonne marche des\n"
+"d'attente principal de Mailman en prenant soin de la bonne marche des processus\n"
 "qrunners fils qui tournent depuis un moment. Cette opération est\n"
-"assuré par un fork et un exec des qrunners fils avec l'attente de\n"
+"assurée par un fork et un exec des qrunners fils avec l'attente de\n"
 "leurs pids. Lorsque la sortie d'un sous processus est détecté, il peut\n"
 "être re-démarré.\n"
 "\n"
-"Les qrunners fils réagissent à SIGINT, SIGTERM et SIGHUP. Aussi bien\n"
-"SIGINT que SIGTERM causent un arrêt correcte des qrunners fils pendant\n"
-"que le père redémarre les fils qui ce sont arrêter suite à la\n"
+"Les processus fils réagissent à SIGINT, SIGTERM et SIGHUP. Aussi bien\n"
+"SIGINT que SIGTERM causent un arrêt correct des qrunners fils pendant\n"
+"que le processus père redémarre les fils qui ce sont arrêtés suite à la\n"
 "réception de SIGINT. SIGHUP est interprété par les qrunners père et\n"
 "fils comme un ordre de fermeture et réouverture des fichiers journaux.\n"
 "\n"
@@ -9285,8 +9258,8 @@ msgstr ""
 "\n"
 "    -n/--no-restart\n"
 "        Ne pas redémarrer les qrunners fils lors qu'ils se\n"
-"        terminent à la suite d'une erreur ou d'un SIGINT. Utiliser\n"
-"        cette option juste pour déboguer. Cette commande n'a de sens\n"
+"        terminent à la suite d'une erreur ou d'un SIGINT. Utilisez\n"
+"        cette option seulement pour déboguer. Cette commande n'a de sens\n"
 "        qu'avec la commande `start'.\n"
 "\n"
 "    -u/--run-as-user\n"
@@ -9298,9 +9271,9 @@ msgstr ""
 "        vérifications.\n"
 "\n"
 "        Cela peut être ennuyeux lors des tests et du déboguage, ainsi,\n"
-"        l'option -u signifie que la partie du programme censé faire la\n"
+"        l'option -u signifie que la partie du programme censée faire la\n"
 "        vérification uid/gid est ignorée et, il est exécuté sous les\n"
-"        ids de l'appelant. Cette option n'est pas recommandé sur un\n"
+"        ids de l'appelant. Cette option n'est pas recommandée sur un\n"
 "        système en production.\n"
 "\n"
 "    -s/--stale-lock-cleanup\n"
@@ -9370,7 +9343,7 @@ msgid ""
 "a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.\n"
 msgstr ""
 "Le verrou du qrunner principal ne peut être obtenu. Il semble qu'il y\n"
-"a un vieux fichier verrou du qrunner principal. Essayer de redémarrer\n"
+"ait un vieux fichier verrou du qrunner principal. Essayer de redémarrer\n"
 "mailmanctl avec l'option -s.\n"
 
 #: bin/mailmanctl:229
@@ -9402,12 +9375,12 @@ msgstr ""
 #: bin/mailmanctl:282
 msgid "Run this program as root or as the %(name)s user, or use -u."
 msgstr ""
-"Exécutez ce programme en tant que root ou en tant que l'utilisateur\n"
+"Exécutez ce programme en tant que root ou en tant qu'utilisateur\n"
 "%(name)s à moins d'utiliser l'option -u."
 
 #: bin/mailmanctl:313
 msgid "No command given."
-msgstr "Aucune commande fournit."
+msgstr "Aucune commande fournie."
 
 #: bin/mailmanctl:316
 msgid "Bad command: %(command)s"
@@ -9415,7 +9388,7 @@ msgstr "Mauvaise commande: %(command)s"
 
 #: bin/mailmanctl:321
 msgid "Warning!  You may encounter permission problems."
-msgstr ""
+msgstr "Attention! Vous pouvez rencontrer des problèmes de permissions."
 
 #: bin/mailmanctl:330
 msgid "Shutting down Mailman's master qrunner"
@@ -9460,8 +9433,8 @@ msgstr ""
 "Définit le mot de passe du site, en vous invitant à le saisir à partir\n"
 "du terminal.\n"
 "\n"
-"Le mot de passe du site peut être utilisé dans nombre des cas sinon\n"
-"tous les cas où le mot de passe de l'administrateur peut être utilisé,\n"
+"Le mot de passe du site peut être utilisé dans nombre des cas, sinon\n"
+"tous les cas, où le mot de passe de l'administrateur peut être utilisé,\n"
 "celui-ci, à son tour peut être utilisé dans nombre de cas où un mot de\n"
 "passe utilisateur peut être utilisé.\n"
 "\n"
@@ -9473,12 +9446,12 @@ msgstr ""
 "        Définit le mot de passe des créateurs de listes au lieu de\n"
 "        définir celui du site. Le créateur de listes est autorisé à\n"
 "        créer et supprimer des listes, mais ne dispose néanmoins pas\n"
-"        des pouvoirs de l'administrateur du site.<\n"
+"        des pouvoirs de l'administrateur du site.\n"
 "\n"
 "    -h/--help\n"
 "        Affiche ce message d'aide puis quitte.\n"
 "\n"
-"Si le mot de passe n'est pas fournit dans la ligne de commande, il\n"
+"Si le mot de passe n'est pas fourni dans la ligne de commande, il\n"
 "sera demandé.\n"
 
 #: bin/mmsitepass:73
@@ -9495,7 +9468,7 @@ msgstr "Nouveau mot de passe %(pwdesc)s:"
 
 #: bin/mmsitepass:87
 msgid "Again to confirm password: "
-msgstr "Encore pour confirmer le mot de passe:"
+msgstr "Confirmer le mot de passe:"
 
 #: bin/mmsitepass:89
 msgid "Passwords do not match; no changes made."
@@ -9514,7 +9487,6 @@ msgid "Password change failed."
 msgstr "Echec de modification du mot de passe."
 
 #: bin/newlist:19
-#, fuzzy
 msgid ""
 "Create a new, unpopulated mailing list.\n"
 "\n"
@@ -9580,7 +9552,7 @@ msgstr ""
 "\n"
 "    -l langue\n"
 "    --language langue\n"
-"        Faire de `langue' la langue préférée de cette liste, ceci doit\n"
+"        Faire de `langue' la langue préférée de cette liste, le paramètre\n"
 "        être composé des deux lettres du code de la langue.\n"
 "\n"
 "    -q/--quiet\n"
@@ -9722,17 +9694,17 @@ msgstr ""
 "    --runner=gestionnaire[:tranche:intervalle]\n"
 "        Exécute le gestionnaire nommé, qui doit être l'une des chaînes\n"
 "        renvoyée par l'option -l. Si un tranche:intervalle facultatif\n"
-"        est fournit il est utilisé pour allouer une file à plusieurs\n"
+"        est fourni, il est utilisé pour allouer une file à plusieurs\n"
 "        processus qrunners. Intervalle est le nombre de qrunners pour\n"
 "        cette file alors que la tranche est le numéros de ce qrunner\n"
 "        entre [0..intervalle].\n"
 "\n"
-"        Si la forme tranche:intervalle est utilisé, vous ferez mieux de\n"
+"        Si la forme tranche:intervalle est utilisée, vous ferez mieux de\n"
 "        vous assurez que chaque qrunner pour la file reçoit le même\n"
-"        intervalle. Si tranche:gestionnaire n'est pas fournit, alors 1:1\n"
+"        intervalle. Si tranche:gestionnaire n'est pas fourni, alors 1:1\n"
 "        est utilisé.\n"
 "\n"
-"        Plusieurs options -r peuvent être fournit. Le gestionnaire\n"
+"        Plusieurs options -r peuvent être fournies. Le gestionnaire\n"
 "        spécial All est un raccourci pour chaque qrunner listé par\n"
 "        l'option -l.\n"
 "\n"
@@ -9751,7 +9723,7 @@ msgstr ""
 "            fichier journal logs/qrunner.\n"
 "\n"
 "        -s/--subproc\n"
-"            Cette option ne doit être utilisé que lorsque le qrunner\n"
+"            Cette option ne doit être utilisée que lorsque le qrunner\n"
 "            est executé comme sous processus du script de démarrage\n"
 "            mailmanctl. Elle modifie le comportement de\n"
 "            sortie-quand-erreur pour mieux s'accommoder avec ce\n"
@@ -9761,7 +9733,7 @@ msgstr ""
 "            Affiche ce message puis quitte.\n"
 "\n"
 "Le paramètre `gestionnaire' est obligatoire à moins que -l ou -h n'ait\n"
-"été fournit, et il doit être l'un des noms fournit par l'option -l.\n"
+"été fourni, et il doit être l'un des noms fourni par l'option -l.\n"
 
 #: bin/qrunner:176
 msgid "%(name)s runs the %(runnername)s qrunner"
@@ -9773,10 +9745,9 @@ msgstr "All exécute tous les qrunners ci-dessus"
 
 #: bin/qrunner:213
 msgid "No runner name given."
-msgstr "Nom de runner non fournit."
+msgstr "Nom de runner non fourni."
 
 #: bin/remove_members:19
-#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -9827,8 +9798,8 @@ msgstr ""
 "\n"
 "    --file=fichier\n"
 "    -f fichier\n"
-"        Supprimer les abonnés correspondant aux adresses trouvées dans\n"
-"        le fichier fournit. Si le fichier est `-', le programme lit\n"
+"        Supprimer les abonnés correspondants aux adresses trouvées dans\n"
+"        le fichier fourni. Si le fichier est `-', le programme lit\n"
 "        stdin.\n"
 "\n"
 "    --all\n"
@@ -9836,7 +9807,7 @@ msgstr ""
 "        Supprimer tous les abonnés de la liste\n"
 "        (incompatible avec --fromall)\n"
 "    --fromall\n"
-"        Supprime l'adresse fournit de toutes les listes du système,\n"
+"        Supprime l'adresse fournie de toutes les listes du système,\n"
 "        sans tenir compte des domaines virtuels s'il en est. Cette\n"
 "        option ne peut être utilisée avec -a/--all. Vous ne devez pas\n"
 "        non plus spécifier le nom d'une liste lorsque vous utilisez\n"
@@ -9892,7 +9863,7 @@ msgstr ""
 "\n"
 "Ceci supprime (presque) toutes traces d'une liste de diffusion. Par\n"
 "défaut, les archives de la liste ne sont pas supprimées, ce qui est\n"
-"très utile pour une vieille liste qui part à la retraite.\n"
+"très utile lorsqu'on élimine une ancienne liste.\n"
 "\n"
 "Usage:\n"
 "    rmlist [-a] [-h] nomliste\n"
@@ -9923,12 +9894,12 @@ msgstr "Liste introuvable (ou liste déjà supprimée): %(listname)s"
 msgid "No such list: %(listname)s.  Removing its residual archives."
 msgstr ""
 "Liste introuvable: %(listname)s. Suppression de ses archives\n"
-"résiduels."
+"résiduelles."
 
 #: bin/rmlist:102
 msgid "Not removing archives.  Reinvoke with -a to remove them."
 msgstr ""
-"Archives non suppriméés. Réinvoquez avec l'option -a pour les supprimer."
+"Archives non supprimées. Réinvoquez avec l'option -a pour les supprimer."
 
 #: bin/rmlist:116
 msgid "list info"
@@ -9943,7 +9914,6 @@ msgid "public archives"
 msgstr "archives publiques"
 
 #: bin/sync_members:19
-#, fuzzy
 msgid ""
 "Synchronize a mailing list's membership with a flat file.\n"
 "\n"
@@ -10014,10 +9984,10 @@ msgstr ""
 "Synchronise les abonnés d'une liste avec un fichier brut.\n"
 "\n"
 "Ce script est utile pour ceux qui disposent d'une liste de diffusion\n"
-"Mailman et d'une liste d'adresses de type :include: de sendmail (aussi\n"
-"utilisé par Majordomo). Chaque adresse dans le fichier n'apparaissant\n"
+"Mailman et d'une liste d'adresses de type :include: de sendmail (\n"
+"utilisé aussi par Majordomo). Chaque adresse dans le fichier n'apparaissant\n"
 "pas dans la liste est ajoutée à la liste alors que les adresses ne\n"
-"figurant pas dans le fichier sont supprimées de la liste lors-qu'elles\n"
+"figurant pas dans le fichier sont supprimées de la liste lorsqu'elles\n"
 "y sont abonnées. Les autres options déterminent ce qui se passe à la\n"
 "suite de l'ajout ou de la suppression d'une adresse.\n"
 "\n"
@@ -10048,7 +10018,7 @@ msgstr ""
 "    --digest=[<yes|no>]\n"
 "    -d[=<yes|no>]\n"
 "        Détermine si les nouveaux abonnés ajoutés recoivent des\n"
-"        messages en mode groupés ou non. Avec -d=yes ou -d, ils\n"
+"        messages en mode groupé ou non. Avec -d=yes ou -d, ils\n"
 "        deviennent des abonnés en mode groupé. Avec -d=no (ou \n"
 "        sans -d), ils seront ajoutés avec une option de remise \n"
 "        normale.\n"
@@ -10082,7 +10052,7 @@ msgstr "Mauvais choix: %(yesno)s"
 
 #: bin/sync_members:138
 msgid "Dry run mode"
-msgstr "mode d'exécution brûte"
+msgstr "mode d'exécution brut"
 
 #: bin/sync_members:159
 msgid "Only one -f switch allowed"
@@ -10090,7 +10060,7 @@ msgstr "Une seule option -f est autorisée"
 
 #: bin/sync_members:163
 msgid "No argument to -f given"
-msgstr "aucun argument n'a été fournit à -f"
+msgstr "aucun argument n'a été fourni à -f"
 
 #: bin/sync_members:172
 msgid "Illegal option: %(opt)s"
@@ -10122,17 +10092,14 @@ msgstr ""
 "Vous devez d'abord régler le problème de l'adresse invalide précédente."
 
 #: bin/sync_members:259
-#, fuzzy
 msgid "Added  : %(s)s"
-msgstr "Ajouté : <%(addr)30s> %(name)s"
+msgstr "Ajouté : %(s)s"
 
 #: bin/sync_members:278
-#, fuzzy
 msgid "Removed: %(s)s"
-msgstr "Suppression de %(msg)s"
+msgstr "Suppression de %(s)s"
 
 #: bin/transcheck:18
-#, fuzzy
 msgid ""
 "\n"
 "Check a given Mailman translation, making sure that variables and\n"
@@ -10175,7 +10142,7 @@ msgstr "Scan une chaîne traduite"
 #: bin/transcheck:83
 msgid "check for differences between checked in and checked out"
 msgstr ""
-"Compare les différence entre les versions `checked in' et `checked out'"
+"Compare les différences entre les versions `checked in' et `checked out'"
 
 #: bin/transcheck:116
 msgid "parse a .po file extracting msgids and msgstrs"
@@ -10191,7 +10158,7 @@ msgid ""
 "            4  end\n"
 "        "
 msgstr ""
-"La table des états pour l'analyseur de l'ensemble finit des états\n"
+"La table des états pour l'analyseur de l'ensemble fini des états\n"
 "machines:\n"
 "        0  idle\n"
 "        1  filename-or-comment\n"
@@ -10226,7 +10193,7 @@ msgid ""
 "Optional `directory' specifies a directory to dequeue from other than\n"
 "qfiles/shunt.\n"
 msgstr ""
-"Déplacer un message de la file dérivé vers la file originale.\n"
+"Déplacer un message de la file de dérivation vers la file originale.\n"
 "\n"
 "Usage: %(PROGRAM)s [options] [répertoire]\n"
 "\n"
@@ -10235,14 +10202,16 @@ msgstr ""
 "    -h /--help\n"
 "        Affiche ce message d'aide et quitte.\n"
 "\n"
-"Le `répertoire' facultatif spécifie une un répertoire duquel\n"
-"l'extraction sera faîte autre que qfiles/shunt.\n"
+"Le `répertoire' facultatif spécifie un répertoire, autre que\n"
+"qfiles/shunt, à partir duquel l'extraction sera faite.\n"
 
 #: bin/unshunt:81
 msgid ""
 "Cannot unshunt message %(filebase)s, skipping:\n"
 "%(e)s"
 msgstr ""
+"Impossible de \"déshunter\" le message %(filebase)s, sauter:\n"
+"%(e)s"
 
 #: bin/update:19
 msgid ""
@@ -10263,7 +10232,7 @@ msgid ""
 "Use this script to help you update to the latest release of Mailman from\n"
 "some previous version.  It knows about versions back to 1.0b4 (?).\n"
 msgstr ""
-"Effectue toute les mises à jour nécessaires.\n"
+"Effectuer toutes les mises à jour nécessaires.\n"
 "\n"
 "Usage: %(PROGRAM)s [options]\n"
 "\n"
@@ -10278,7 +10247,7 @@ msgstr ""
 "        Affiche ce texte puis quitte.\n"
 "\n"
 "Utilisez ce script pour mettre à jour votre installation de\n"
-"Mailman. Elle connaît toutes les versions ultérieures à la version\n"
+"Mailman. Il reconnaît toutes les versions ultérieures à la version\n"
 "1.0b4 (?).\n"
 
 #: bin/update:102
@@ -10288,11 +10257,11 @@ msgstr "Réparation des templates de langue: %(listname)s"
 #: bin/update:191 bin/update:466
 msgid "WARNING: could not acquire lock for list: %(listname)s"
 msgstr ""
-"ATTENTION: impossible de disposer d'un vérrou sur la liste: %(listname)s"
+"ATTENTION: impossible de disposer d'un verrou sur la liste: %(listname)s"
 
 #: bin/update:210
 msgid "Resetting %(n)s BYBOUNCEs disabled addrs with no bounce info"
-msgstr ""
+msgstr "Réinitialiser les addrs désactivées %(n)s BYBOUNCEs sans infos de rebonds"
 
 #: bin/update:216
 msgid "Updating the held requests database."
@@ -10327,7 +10296,7 @@ msgstr ""
 "privées -- %(o_pri_mbox_file)s -- comme archive active et renommer\n"
 "%(o_pub_mbox_file)s en %(o_pub_mbox_file)s.preb6\n"
 "\n"
-"Vous pourrez, si vous le désirer, les intégrer aux archives en utilisant\n"
+"Vous pourrez, si vous le désirez, les intégrer aux archives en utilisant\n"
 "le script 'arch'.\n"
 
 #: bin/update:265
@@ -10345,17 +10314,17 @@ msgstr ""
 "%s dispose d'archives publiques et privées. puisquue cette liste utilise\n"
 "actuellement l'archivage publique, je vais installer les fichiers "
 "d'archives\n"
-"publique (%s) comme fichiers actifs et renommer\n"
+"publiques (%s) comme fichiers actifs et renommer\n"
 "\t%s\n"
 "\ten\n"
 "\t%s.preb6\n"
 "\n"
-"Vous pourrez, si vous le désirrer,  les intégrer dans les archives en\n"
+"Vous pourrez, si vous le désirez,  les intégrer dans les archives en\n"
 "utilisant le script arch.\n"
 
 #: bin/update:282
 msgid "- updating old private mbox file"
-msgstr "- mise à jour du vieux fichier mbox privé"
+msgstr "- mise à jour de l'ancien fichier mbox privé"
 
 #: bin/update:290
 msgid ""
@@ -10364,7 +10333,7 @@ msgid ""
 "    to\n"
 "        %(newname)s"
 msgstr ""
-"\tfichier inconnue au passage, renommage\n"
+"\tfichier inconnu rencontré, renommage\n"
 "\tde %(o_pri_mbox_file)s\n"
 "\ten\n"
 "\t%(newname)s"
@@ -10374,12 +10343,12 @@ msgid ""
 "    looks like you have a really recent CVS installation...\n"
 "    you're either one brave soul, or you already ran me"
 msgstr ""
-"On dirait que vous avez une installation CVS très rècente...\n"
+"On dirait que vous avez une installation CVS très récente...\n"
 "ou vous êtes une âme vaillante, ou vous m'avez déjà lancé"
 
 #: bin/update:306
 msgid "- updating old public mbox file"
-msgstr "- Mise à jour du vieux fichier mbox public"
+msgstr "- Mise à jour de l'ancien fichier mbox public"
 
 #: bin/update:314
 msgid ""
@@ -10388,7 +10357,7 @@ msgid ""
 "    to\n"
 "        %(newname)s"
 msgstr ""
-"Fichier inconnue rencontré, renommage de\n"
+"Fichier inconnu rencontré, renommage de\n"
 "%(o_pub_mbox_file)s\n"
 "en\n"
 "%(newname)s"
@@ -10416,7 +10385,7 @@ msgstr "Suppression de %(src)s"
 
 #: bin/update:391
 msgid "Warning: couldn't remove %(src)s -- %(rest)s"
-msgstr "Attention: incapable de supprimer %(src)s -- %(rest)s"
+msgstr "Attention: impossible de supprimer %(src)s -- %(rest)s"
 
 #: bin/update:396
 msgid "couldn't remove old file %(pyc)s -- %(rest)s"
@@ -10424,11 +10393,11 @@ msgstr "Impossible de supprimer l'ancien fichier %(pyc)s -- %(rest)s"
 
 #: bin/update:400
 msgid "updating old qfiles"
-msgstr "mise à jour des vieux fichiers qfiles"
+msgstr "mise à jour des anciens fichiers qfiles"
 
 #: bin/update:422
 msgid "getting rid of old source files"
-msgstr "suppression des anciens fichiers source"
+msgstr "suppression des anciens fichiers sources"
 
 #: bin/update:432
 msgid "no lists == nothing to do, exiting"
@@ -10439,9 +10408,9 @@ msgid ""
 "fixing all the perms on your old html archives to work with b6\n"
 "If your archives are big, this could take a minute or two..."
 msgstr ""
-"correction des perm sur vos vieux archives html pour qu'ils marchent avec "
+"correction des perm sur vos anciennes archives html pour qu'elles fonctionnent avec "
 "b6\n"
-"Si vos archives sont volumineux, ceci pourrait prendre une minute ou deux..."
+"Si vos archives sont volumineuses, ceci pourrait prendre une minute ou deux..."
 
 #: bin/update:444
 msgid "done"
@@ -10465,7 +10434,7 @@ msgstr "- filigranes usenet mises à jour et gate_filigrane supprimés"
 
 #: bin/update:487
 msgid "Updating old pending_subscriptions.db database"
-msgstr "Mise à jour de la vieille base de données pending_subscriptions.db"
+msgstr "Mise à jour de l'ancienne base de données pending_subscriptions.db"
 
 #: bin/update:504
 msgid ""
@@ -10497,10 +10466,10 @@ msgstr ""
 "mais je ne connais pas la version que vous utilisiez.\n"
 "Si vous partez d'une version 1.0b9 ou antérieure, vous aller devoir\n"
 "mettre manuellement vos listes à jour. Pour chaque liste de diffusion, vous\n"
-"devriez copier le fichier templates/options.html lists/<nomListe>/options."
+"devrez copier le fichier templates/options.html lists/<nomListe>/options."
 "html.\n"
 "\n"
-"Si vous avez toutefois modifier ce fichier à travers l'interface web, vous\n"
+"Si vous avez toutefois modifié ce fichier à travers l'interface web, vous\n"
 "allez devoir fusionner vos modifications dans ce fichier, faute de quoi vos "
 "modifications seront perdues.\n"
 "\n"
@@ -10519,7 +10488,7 @@ msgid ""
 msgstr ""
 "Dépréciation constatée, de la version %(hexlversion)s vers %(hextversion)s\n"
 "Ceci n'est certainement pas sûre.\n"
-"Je me barres."
+"Je me barre!"
 
 #: bin/update:569
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
@@ -10543,8 +10512,8 @@ msgstr ""
 "\n"
 "ERREUR:\n"
 "\n"
-"Impossible d'obtenir des verrous pour cette listes. De deux choses l'une:\n"
-"Ou Mailman était actif quand vous avez procéder à la mise à jour, ou qu'il\n"
+"Impossible d'obtenir des verrous pour cette liste. De deux choses l'une:\n"
+"Ou Mailman était actif quand vous avez procédé à la mise à jour, ou bien il\n"
 "subsiste des vieux verrous dans le répertoire %(lockdir)s.\n"
 "\n"
 "Vous devrez mettre Mailman en veilleuse et supprimer tout les vieux "
@@ -10678,14 +10647,14 @@ msgid ""
 msgstr ""
 "Cadre générique pour travailler avec les objets liste de diffusion.\n"
 "\n"
-"Il y a deux façons d'utiliser ce script: Inter-activement ou de façon\n"
-"programmatique. De façon interactive vous pourrez explorer, afficher et\n"
-"modifier un objet MailList en utilisant un interface Python\n"
-"interactif.  En mode interactif, un objet MailList nommé m sera est\n"
+"Il y a deux façons d'utiliser ce script: Inter-activement ou par le biais\n"
+"de la programmation. De façon interactive vous pourrez explorer, afficher et\n"
+"modifier un objet MailList en utilisant une interface Python\n"
+"interactive.  En mode interactif, un objet MailList nommé m  est\n"
 "disponible dans l'espace de nommage global. La classe MailList est\n"
-"aussi chargée dans l'espace de nommage global.  De façon\n"
-"programmatique, vous pouvez écrire une fonction qui opère sur un objet\n"
-"MailList, ce script prendra alors soins des détails (voir plus loin\n"
+"aussi chargée dans l'espace de nommage global. En mode\n"
+"programmation, vous pouvez écrire une fonction qui opère sur un objet\n"
+"MailList, ce script prendra alors soin des détails (voir plus loin\n"
 "pour des exemples).\n"
 "\n"
 "Dans ce cas, la syntaxe générique est:\n"
@@ -10701,15 +10670,15 @@ msgstr ""
 "        en appelant `m.Lock()'\n"
 "\n"
 "        Notez que si vous utilisez cette option, vous devrez faire\n"
-"        explicitement appelle à m.Save() avant de quitter puisque la\n"
+"        explicitement appel à m.Save() avant de quitter puisque la\n"
 "        procédure de nettoyage de l'interpréteur n'enregistre pas\n"
 "        automatiquement les modifications de l'objet MailList (il\n"
 "        déverrouillera par contre la liste).\n"
 "\n"
 "    -i / --interactive\n"
 "        Vous laisse devant un prompt interactif après que tous les\n"
-"        autres traitements aient étés effectués. Ceci est le comportement\n"
-"        par défaut à moins que l'option -r n'ait été fournit.\n"
+"        autres traitements aient été effectués. Ceci est le comportement\n"
+"        par défaut à moins que l'option -r n'ait été fournie.\n"
 "\n"
 "    --run [module.]callable\n"
 "    -r [module.]callable\n"
@@ -10718,7 +10687,7 @@ msgstr ""
 "        `module' (qui doit être déjà disponible dans sys.path) puis à\n"
 "        appeler `callable' à partir du module. callable peut être une\n"
 "        classe ou une fonction; il est appelé avec l'objet MailList\n"
-"        comme premier argument. Si d'autres arguments sont fournit sur\n"
+"        comme premier argument. Si d'autres arguments sont fournis sur\n"
 "        la ligne de commande, ils sont passés comme paramètres\n"
 "        additionnels  à callable.\n"
 "\n"
@@ -10731,9 +10700,9 @@ msgstr ""
 "    --all / -a\n"
 "        Cette option fonctionne uniquement avec l'option -r. Utilisez\n"
 "        la si vous voulez exécuter le script sur toutes les listes de\n"
-"        diffusion. Lorsque vous utiliser cette option, vous ne devrez\n"
+"        diffusion. Lorsque vous utilisez cette option, vous ne devrez\n"
 "        pas fournir un nom de liste en argument. La variable `r' sera\n"
-"        une `liste' (Ndt: Comme type de données) de tous les\n"
+"        une `liste' (Ndt: comme type de données) de tous les\n"
 "        résultats.\n"
 "\n"
 "    --quiet / -q\n"
@@ -10798,7 +10767,7 @@ msgid ""
 "though.\n"
 "    "
 msgstr ""
-"Dévérouille une liste vérouillée, sans appel ilmplicite à Save().\n"
+"Déverrouille une liste verrouillée, sans appel implicite à Save().\n"
 "Ceci n'est pas exécuté lorsque l'interpreteur se termine suite à la\n"
 "reception d'un signal ou suite à l'appel de os._exit(). Il sera par\n"
 "contre executé lorsqu'une exception se produit.\n"
@@ -10818,11 +10787,11 @@ msgstr "Chargement de la liste %(listname)s en cours"
 
 #: bin/withlist:177
 msgid "(locked)"
-msgstr "(vérouillé)"
+msgstr "(verrouillé)"
 
 #: bin/withlist:179
 msgid "(unlocked)"
-msgstr "(dévérouillé)"
+msgstr "(déverrouillé)"
 
 #: bin/withlist:184
 msgid "Unknown list: %(listname)s"
@@ -10873,8 +10842,8 @@ msgstr ""
 "    --help/-h\n"
 "        Affiche ce message et quitte.\n"
 "\n"
-"Les noms de liste fournit en ligne de commande sont traitées. Si\n"
-"aucune liste n'est fournit, toute les listes sont traitées.\n"
+"Les noms de liste fournis en ligne de commande sont traités. Si\n"
+"aucun nom de liste n'est fourni, toute les listes sont traitées.\n"
 
 #: cron/checkdbs:19
 msgid ""
@@ -10898,17 +10867,17 @@ msgid ""
 "Pending posts:"
 msgstr ""
 "\n"
-"Soumissions en attente:"
+"Envois en attente:"
 
 #: cron/checkdbs:114
-#, fuzzy
 msgid ""
 "From: %(sender)s on %(date)s\n"
-"Subject: %(subject)s\n"
+"Objet: %(subject)s\n"
 "Cause: %(reason)s"
 msgstr ""
-"    De: %(sender)s le %(date)s\n"
-" Cause: %(reason)s"
+"De: %(sender)s le %(date)s\n"
+"Objet: %(subject)s\n"    
+"Cause: %(reason)s"
 
 #: cron/disabled:19
 msgid ""
@@ -10959,13 +10928,13 @@ msgid ""
 "    --listname=listname\n"
 "        Process only the given list, otherwise do all lists.\n"
 msgstr ""
-"Traite les abonnements désactivés, recommandé au moins une fois par\n"
+"Traiter les abonnements désactivés, recommandé au moins une fois par\n"
 "jour.\n"
 "\n"
 "Ce script scrute toutes les listes de diffusion à la recherche d'abonnés\n"
-"pour lesquels la remise est désactivée. Si ces abonnements ont étés\n"
+"pour lesquels la remise est désactivée. Si ces abonnements ont été\n"
 "désactivés suite à des rebonds, ils recevront un autre avis ou seront\n"
-"supprimés s'ils ont déjà reçu le nombre maximal d'avis autorisés.\n"
+"supprimés s'ils ont déjà reçu le nombre maximal d'avis autorisé.\n"
 "\n"
 "Utilisez les paramètres --byadmin, --byuser, et --unknown pour envoyer\n"
 "un avis aux utilisateurs dont la remise a été désactivée pour ces\n"
@@ -10986,16 +10955,16 @@ msgstr ""
 "\n"
 "    -m / --byuser\n"
 "        Envoyer également un avis à tout utilisateur qui aurait\n"
-"        désactiver la remise de lui-même (les abonnés).\n"
+"        désactivé la remise de lui-même.\n"
 "\n"
 "    -u / --unknown \n"
 "        Envoyer également un avis à tout utilisateur pour lequel\n"
-"        remise est désactivée pour une raison inconnue (Généralement\n"
+"        remise est désactivée pour une raison inconnue (généralement\n"
 "        une adresse héritée désactivée)\n"
 "\n"
 "    -b / --notbybounce\n"
 "        Ne pas envoyer d'avis aux utilisateurs dont la remise est\n"
-"        désactivée suite à des rebonds (Par défaut les abonnés de ce\n"
+"        désactivée suite à des rebonds (par défaut les abonnés de ce\n"
 "        type reçoivent un avis).\n"
 "\n"
 "    -a / --all\n"
@@ -11008,7 +10977,7 @@ msgstr ""
 "\n"
 "    -l nomliste\n"
 "    --listname=nomliste\n"
-"        Traiter uniquement la liste fournit. Sinon traiter toute les\n"
+"        Traiter uniquement la liste nommée. Sinon traiter toute les\n"
 "        listes.\n"
 
 #: cron/disabled:143
@@ -11067,16 +11036,16 @@ msgid ""
 "    -h/--help\n"
 "        Print this message and exit.\n"
 msgstr ""
-"Envoie les rappels des mots de passe à tous les abonnés de toute les\n"
+"Envoyer les rappels des mots de passe à tous les abonnés de toutes les\n"
 "listes.\n"
 "\n"
-"Ce programme scanne toute les listes et récupère les utilisateurs\n"
-"ainsi que leurs mots de passe groupés par les paramètre host_name de\n"
-"la liste lorsque mm_cfg.VIRTUAL_HOST_OVERVIEW a la valeur vrai. Puis\n"
+"Ce programme scanne toutes les listes et récupère les utilisateurs\n"
+"ainsi que leurs mots de passe groupés par les paramètre nom_hôte de\n"
+"la liste lorsque mm_cfg.VIRTUAL_HOST_OVERVIEW a la valeur vraie. Puis\n"
 "un courriel est envoyé à chaque utilisateur individuel (pour chaque\n"
 "hôte virtuel) contenant les mots de passe des listes et l'url des\n"
 "options pour l'utilisateur. Le rappel de mot de passe provient de\n"
-"mm_cfg.MAILMAN_SITE_LIST qui doit être définit.\n"
+"mm_cfg.MAILMAN_SITE_LIST qui doit être défini.\n"
 "\n"
 "Usage: %(PROGRAM)s [options]\n"
 "\n"
@@ -11084,8 +11053,8 @@ msgstr ""
 "    -l nomliste\n"
 "    --listname=nomliste\n"
 "        Envoie un rappel uniquement pour la liste spécifiée. Si ce\n"
-"        paramètre est omit, les rappels sont envoyés pour toute les\n"
-"        listes. Plusieurs options -l/--listname peuvent être fournit.\n"
+"        paramètre est omis, les rappels sont envoyés pour toutes les\n"
+"        listes. Plusieurs options -l/--listname peuvent être fournies.\n"
 "\n"
 "    -h/--help\n"
 "        Affiche ce message et quitte.\n"
@@ -11127,9 +11096,9 @@ msgid ""
 "        this, all archivable lists are processed.\n"
 "\n"
 msgstr ""
-"Régénère les fichiers archives brutes gzipés de Pipermail.\n"
+"Régénérer les fichiers archives bruts gzipés de Pipermail.\n"
 "\n"
-"Ce script doit être exécuté nuitamment par cron. Lorsqu'il est exécuté\n"
+"Ce script doit être exécuté durant la nuit par cron. Lorsqu'il est exécuté\n"
 "en ligne de commande, l'utilisation suivante est admise:\n"
 "\n"
 "Usage: %(program)s [-v] [-h] [nomsliste]\n"
@@ -11145,12 +11114,11 @@ msgstr ""
 "\n"
 "    nomsliste\n"
 "        De façon optionnelle, compresser uniquement le fichier .txt\n"
-"        pour les listes fournit. Sans cette option, toute les listes\n"
-"        archivables sont traités.\n"
+"        pour les listes nommées. Sans cette option, toutes les listes\n"
+"        archivables sont traitées.\n"
 "\n"
 
 #: cron/senddigests:19
-#, fuzzy
 msgid ""
 "Dispatch digests for lists w/pending messages and digest_send_periodic set.\n"
 "\n"
@@ -11174,19 +11142,19 @@ msgstr ""
 "    --help/-h\n"
 "        Affiche ce message et quitte.\n"
 "\n"
-"Les noms de liste fournit en ligne de commande sont traitées. Si\n"
-"aucune liste n'est fournit, toute les listes sont traitées.\n"
+"Les noms de liste fournis en ligne de commande sont traités. Si\n"
+"aucune liste n'est nommée, toutes les listes sont traitées.\n"
 
 #~ msgid "Posts by member are currently quarantined for moderation"
 #~ msgstr ""
-#~ "Les soumissions par les abonnés sont actuellement mises en quarantaine\n"
-#~ "pour la modération."
+#~ "Les envois  des abonnés sont actuellement mis en quarantaine\n"
+#~ "pour modération."
 
 #~ msgid "A confirmation email has been sent separately."
 #~ msgstr "Un courriel de confirmation a été envoyé à part."
 
 #~ msgid "A removal confirmation message has been sent."
-#~ msgstr "Une demande de confirmation de suppression a été envoyé."
+#~ msgstr "Une demande de confirmation de suppression a été envoyée."
 
 #~ msgid "Removed: <%(addr)30s> %(name)s"
 #~ msgstr "Supprimé: <%(addr)30s> %(name)s"
@@ -11215,7 +11183,7 @@ msgstr ""
 #~ "\n"
 #~ "Vérifie la cohérence de Mailman en s'assurant que les variables et les\n"
 #~ "balises référencées dans la traduction sont les mêmes variables et\n"
-#~ "balises contenues dans les templates et le catalog originaux.\n"
+#~ "balises contenues dans les templates et le catalogue originaux.\n"
 #~ "\n"
 #~ "Usage:\n"
 #~ "\n"
@@ -11235,7 +11203,7 @@ msgstr ""
 #~ "\t\t\t4  end\n"
 #~ "\t\t"
 #~ msgstr ""
-#~ "La table des états pour l'analyseur de l'ensemble finit des états\n"
+#~ "La table des états pour l'analyseur de l'ensemble fini des états\n"
 #~ "machines:\n"
 #~ "        0  idle\n"
 #~ "        1  filename-or-comment\n"
@@ -11259,7 +11227,7 @@ msgstr ""
 #~ "\n"
 #~ "% bin/withlist -l -r fix_url <mylist>\n"
 #~ msgstr ""
-#~ "Re-initialise l'attribut web_page_url d'une liste à sa valeur par "
+#~ "Re-initialise l'attribut url_page_web d'une liste à sa valeur par "
 #~ "défaut.\n"
 #~ "\n"
 #~ "Ce script doit être exécuté comme un script bin/withlist, i.e.\n"
@@ -11275,7 +11243,7 @@ msgstr ""
 #~ "Typically it's invoked via cron.\n"
 #~ msgstr ""
 #~ "Envoyer les digests pour les listes avec des messages en attente pour\n"
-#~ "lesquelles la variable digest_send_periodic est définit.\n"
+#~ "lesquels la variable digest_send_periodic est définie.\n"
 #~ "\n"
 #~ "Il est généralement appelé par .\n"
 
@@ -11316,10 +11284,10 @@ msgstr ""
 #~ "<p>Après le nettoyage du message, tous les attachements\n"
 #~ "<tt>multipart</tt> vides seront entièrement supprimés.\n"
 #~ "Si le type MIME principal correspond à l'un des types à supprimés ou\n"
-#~ "si tous les sous-parties du message sont supprimées, le message est\n"
+#~ "si toutes les sous-parties du message sont supprimées, le message est\n"
 #~ "ignoré. Enfin, chaque section <tt>multipart/alternative</tt> sera\n"
-#~ "remplacée par la première alternative non vide après que les types\n"
-#~ "spécifiés aient étés supprimés."
+#~ "remplacée par la première partie alternative non vide après que les types\n"
+#~ "spécifiés aient été supprimés."
 
 #~ msgid ""
 #~ "To finish creating your mailing list, you must edit your\n"
@@ -11332,7 +11300,7 @@ msgstr ""
 #~ "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
 #~ "%(owner)s %(listname)s-admin\n"
 #~ msgstr ""
-#~ "Pour achever la création de votre liste de diffusion, vous devrez\n"
+#~ "Pour achever la création de votre liste de diffusion, vous devez\n"
 #~ "modifier votre fichier /etc/aliases (ou équivalent) en y ajoutant les\n"
 #~ "lignes suivantes:\n"
 #~ "\n"
@@ -11352,7 +11320,7 @@ msgstr ""
 #~ "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
 #~ "%(owner)s %(listname)s-admin\n"
 #~ msgstr ""
-#~ "Pour achever la suppression de votre liste de diffusion, vous devrez\n"
+#~ "Pour achever la suppression de votre liste de diffusion, vous devez\n"
 #~ "modifier votre fichier /etc/aliases (ou équivalent) en y supprimant les\n"
 #~ "lignes suivantes:\n"
 #~ "\n"
@@ -11379,7 +11347,7 @@ msgstr ""
 #~ "owner\n"
 #~ "chmod 644 ~alias/.qmail-owner-%(listname)s\n"
 #~ msgstr ""
-#~ "Pour achever la création de votre liste exécutez les commandes\n"
+#~ "Pour achever la création de votre liste, exécutez les commandes\n"
 #~ "suivantes avec les permissions appropriées:\n"
 #~ "\n"
 #~ "echo '|preline %(wrapper)s post %(listname)s'>ãlias/.qmail-%(listname)s\n"
