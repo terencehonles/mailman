@@ -383,20 +383,15 @@ class RadioButtonArray:
 	self.horizontal = horizontal
 
     def Format(self, indent=0):
-	t = Table()
+	t = Table(cellspacing=5)
 	items = []
 	l = len(self.button_names)
   	for i in range(l):
-	    if i == l:
-		pref = ""
-	    elif i == 0:
-		pref = "&nbsp;"
-	    else: pref = "&nbsp;&nbsp;&nbsp;&nbsp;"
   	    if self.checked == i:
-  		items.append(pref + self.button_names[i])
+  		items.append(self.button_names[i])
   		items.append(RadioButton(self.name, i, 1))
   	    else:
-  		items.append(pref + self.button_names[i])
+  		items.append(self.button_names[i])
   		items.append(RadioButton(self.name, i))
 	if self.horizontal:
 	    t.AddRow(items)
@@ -411,7 +406,8 @@ class UnorderedList(Container):
 	output = '\n%s<ul>\n' % spaces
 	for item in self.items:
 	    output = output + '%s<li>%s\n' % (spaces, 
-					      HTMLFormatObject(item, indent + 2))
+					      HTMLFormatObject(item,
+							       indent + 2))
 	output = output + '%s</ul>\n' % spaces
 	return output
 
