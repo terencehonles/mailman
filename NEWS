@@ -122,11 +122,11 @@ Here is a history of user visible changes to Mailman.
         o Passwords are no longer included in the confirmation pages.
 
     - Internationalization
-        o With the approval of Tamito KAJIYAMA, the Japanese codes for
-          Python are now included automatically, so you don't need to
-          download and install these separate.  It is installed in a
-          Mailman-specific place so it won't affect your larger Python
-          installation.
+        o With the approval of Tamito KAJIYAMA, the Japanese codecs
+          for Python are now included automatically, so you don't need
+          to download and install these separate.  It is installed in
+          a Mailman-specific place so it won't affect your larger
+          Python installation.
 
         o The configure script will produce a warning if the Chinese
           codes are not installed.  This is not a fatal error.
