@@ -841,6 +841,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.InitVars(name, admin, crypted_password)
         self._ready = 1
         self.InitTemplates()
+        self.CheckValues()
         self.Save()
         
     def __save(self, dict):
