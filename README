@@ -35,7 +35,7 @@ INTRODUCTION
 
     You will also need an ANSI C compiler; gcc (the GNU C compiler)
     works just fine.  Mailman currently works only on Unix-alike
-    operating systems (e.g. Solaris, Linux, etc.).
+    operating systems (e.g. Solaris, GNU/Linux, etc.).
 
     See the INSTALL file for installation instructions.  If you are
     upgrading from a previous version of Mailman, you need to read the
