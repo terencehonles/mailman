@@ -1,0 +1,9 @@
+Mailman 通知,由 .MailUserPassword() 提出:
+
+    使用者: %(username)s
+
+    列表: %(internal_name)s
+
+缺少密码 . 
+
+请通知本站的 Mailman 总管理员 !

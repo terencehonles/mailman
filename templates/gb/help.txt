@@ -1,0 +1,99 @@
+Help for %(listname)s mailing list:
+
+This is email command help for version %(version)s of the "Mailman"
+list manager.  The following describes commands you can send to get
+information about and control your subscription to Mailman lists at
+this site.  A command can be in the subject line or in the body of the
+message.
+
+Note that much of the following can also be accomplished via the World
+Wide Web, at:
+
+    %(listinfo_url)s
+
+In particular, you can use the Web site to have your password sent to
+your delivery address.
+
+List specific commands (subscribe, who, etc) should be sent to the
+*-request address for the particular list, e.g. for the 'mailman'
+list, use 'mailman-request@...'.
+
+About the descriptions - words in "<>"s signify REQUIRED items and
+words in "[]" denote OPTIONAL items.  Do not include the "<>"s or
+"[]"s when you use the commands.
+
+The following commands are valid:
+
+    subscribe [password] [digest-option] [address=<address>]
+        Subscribe to the mailing list.  Your password must be given to
+        unsubscribe or change your options.  When you subscribe to the
+        list, you'll be reminded of your password periodically.
+        'digest-option' may be either: 'nodigest' or 'digest' (no
+        quotes!)  If you wish to subscribe an address other than the
+        address you send this request from, you may specify
+        "address=<email address>" (no brackets around the email
+        address, no quotes!)
+
+    unsubscribe <password> [address]
+        Unsubscribe from the mailing list.  Your password must match
+        the one you gave when you subscribed.  If you are trying to
+        unsubscribe from a different address than the one you
+        subscribed from, you may specify it in the 'address' field.
+
+    who
+        See everyone who is on this mailing list.
+
+    info
+        View the introductory information for this list.
+
+    lists
+        See what mailing lists are run by this Mailman server.
+
+    help
+        This message.
+
+    set <option> <on|off> <password> 
+        Turn on or off list options.  Valid options are:
+
+        ack:
+            Turn this on to receive acknowledgement mail when you send
+            mail to the list.
+
+        digest:
+            Receive mail from the list bundled together instead of one
+            post at a time.
+
+        plain:
+            Get plain-text, not MIME-compliant, digests (only if
+            digest is set)
+
+        nomail:
+            Stop delivering mail.  Useful if you plan on taking a
+            short vacation.
+
+        norcv:
+            Turn this on to NOT receive posts you send to the list.
+            Does not work if digest is set.
+
+        hide:
+            Conceals your address when people look at who is on this
+            list.
+
+
+    options
+        Show the current values of your list options.
+
+    password <oldpassword> <newpassword> 
+        Change your list password.
+    
+    end or --
+       Stop processing commands (good to do if your mailer
+       automatically adds a signature file - it'll save you from a lot
+       of cruft).
+
+
+Commands should be sent to %(requestaddr)s
+
+Questions and concerns for the attention of a person should be sent to
+
+    %(adminaddr)s
