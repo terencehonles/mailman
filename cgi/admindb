@@ -116,7 +116,8 @@ def PrintPostRequest(val, form):
     t.AddRow([
 	htmlformat.FontSize("+1", 
 			    htmlformat.Bold('Action to take on this post:')),
-	htmlformat.RadioButtonArray(val[0], ("Reject", "Approve")),
+	htmlformat.RadioButtonArray(val[0], ("Approve", "Reject",
+                                             "Discard (eg, spam)")),
 	htmlformat.SubmitButton('submit', 'Submit All Data')
        ])
     t.AddRow([
