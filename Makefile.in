@@ -1,0 +1,92 @@
+# NOTE: Makefile.in is converted into Makefile by the configure script
+# in the parent directory.  Once configure has run, you can recreate
+# the Makefile by running just config.status.
+
+# Variables set by configure
+
+SHELL=		/bin/sh
+VERSION=	@VERSION@
+
+VPATH=		@srcdir@
+srcdir= 	@srcdir@
+bindir= 	@bindir@
+prefix=   	@prefix@
+exec_prefix=	@exec_prefix@
+
+CC=		@CC@
+INSTALL=	@INSTALL@
+
+DEFS=   	@DEFS@
+
+# Customizable but not set by configure
+
+OPT=		@OPT@
+CFLAGS=		$(OPT) $(DEFS)
+
+ARCH_INDEP_DIRS=	public_html logs Mailman archives bin \
+archives/private archives/public lists locks templates scripts filters cron
+ARCH_DEP_DIRS=	cgi-bin mail
+
+# Directories make should decend into
+SUBDIRS=	bin cgi cron filters mail misc modules scripts src templates
+
+
+# Modes for directories and executables created by the install
+# process.  Default to group-writable directories but
+# user-only-writable for executables.
+DIRMODE=	775
+EXEMODE=	755
+FILEMODE=	644
+INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
+
+
+# Rules
+
+all: subdirs
+
+subdirs: $(SUBDIRS)
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE)); \
+	done
+
+install: $(SUBDIRS)
+	@echo "Creating architecture independent directories..."
+	@for d in $(ARCH_INDEP_DIRS); \
+	do \
+	    dir=$(prefix)/$$d; \
+	    if test ! -d $$dir; then \
+	        echo "Creating directory hierarchy $$dir"; \
+		./mkinstalldirs $$dir; \
+		chmod $(DIRMODE) $$dir; \
+	    else true; \
+	    fi; \
+	done
+	@echo "Creating architecture dependent directories..."
+	@for d in $(ARCH_DEP_DIRS); \
+	do \
+	    dir=$(exec_prefix)/$$d; \
+	    if test ! -d $$dir; then \
+	        echo "Creating directory hierarchy $$dir"; \
+		./mkinstalldirs $$dir; \
+		chmod $(DIRMODE) $$dir; \
+	    else true; \
+	    fi; \
+	done
+	@for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) install); \
+	done
+
+clean: $(SUBDIRS)
+	@for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) clean); \
+	done
+
+distclean: $(SUBDIRS)
+	@for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) distclean); \
+	done
+	-rm config.cache config.log config.status Makefile
