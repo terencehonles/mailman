@@ -80,49 +80,6 @@ List managers, note that:
     - mailman/admindb/listname for pending requests
     - and generally, mailman/listinfo for the list of (public) lists
 
-Troubleshooting:
-
-  If from the web you get "document contains no data":
-  If mail isn't getting delivered:
-
-    The  cgi  wrappers are failing.   Either a  UID is  wrong, or your web
-    server / mailer has a non-standard name.
-
-    If you're unsure about  the proper settings,  the cgi and mail wrapper
-    programs  use syslog to   register mismatches, indicating  the correct
-    setting  in  the process.   You  need   to   have syslog  running  and
-    configured to log the mail.error log class somewhere - on sun systems,
-    the line
-
-      mail.debug		/var/log/syslog
-
-    causes  the messages to go  to  them in /var/log/syslog, for  example.
-    (The distributed syslog.conf forwards the message to the loghost, when
-    present.  See  the syslog man page for  more details.)  If your system
-    is  set   like this,  if   you get   a  failure  trying to   visit the
-    mailman/listinfo web page and it's due to  a UID or GID mismatch, then
-    you should get an entry at  the end of /var/log/syslog identifying the
-    expected and received values.
-
-  If the web pages hang:
-
-    CERN web servers might leave python's running, and in some cases might
-    hang the cgi completely.  In that case, switch to Apache.
-
-  Check ~mailman/logs/error periodically:
-
-    Many of the scripts have  their stderr logged to  ~mailman/logs/error,
-    and some of the modules  write caught errors  there,  as well, so  you
-    should check there at least occasionally to  look for bugs in the code
-    and problems in your setup.
-
-    One thing that   is  *not* caught  by  stderr hook  is syntax  errors!
-    However, most files can be run  from the command  line with no effect.
-    (The  ones that will   do stuff you  want  to avoid, like  sending out
-    spurious  password  reminders, are in the  cron  dir.)  So you can and
-    should use  the python interpreter to check  the of any changes before
-    trying them out.
-    
 How to add a new user option
 
     You'll need to do some of these things and not others.
