@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 498 $"
+__version__ = "$Revision: 536 $"
 
 
 import string, os, sys, tempfile
@@ -121,6 +121,7 @@ class Deliverer:
 	if self.reply_goes_to_list:
             del msg['reply-to']
             msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
+	msg.headers.append('Sender: %s\n' % self.GetAdminEmail())
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
 	msg.headers.append('X-BeenThere: %s\n' % self.GetListEmail())
 
