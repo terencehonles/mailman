@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,11 +27,12 @@ Usage:
 Where:
     --archives
     -a
-        remove the lists archives too
+        Remove the list's archives too, or if the list has already been
+        deleted, remove any residual archives.
 
     --help
     -h
-        print this help message and exit
+        Print this help message and exit.
 
 """
 
@@ -78,11 +79,6 @@ def main():
         usage(1)
     listname = args[0].lower().strip()
 
-    if not Utils.list_exists(listname):
-        usage(1, _('No such list: %(listname)s'))
-
-    mlist = MailList.MailList(listname, lock=0)
-
     removeArchives = 0
     for opt, arg in opts:
         if opt in ('-a', '--archives'):
@@ -90,28 +86,45 @@ def main():
         elif opt in ('-h', '--help'):
             usage(0)
 
+    if not Utils.list_exists(listname):
+	if not removeArchives:
+	    usage(1, _('No such list (or list already deleted): %(listname)s'))
+	else:
+	    print _(
+                'No such list: %(listname)s.  Removing its residual archives.')
+
     if not removeArchives:
         print _('Not removing archives.  Reinvoke with -a to remove them.')
 
-    # Do the MTA-specific list deletion tasks
-    if mm_cfg.MTA:
-        modname = 'Mailman.MTA.' + mm_cfg.MTA
-        __import__(modname)
-        sys.modules[modname].remove(mlist)
 
-    REMOVABLES = [('lists/%s', 'list info'),
-                  ]
+    REMOVABLES = []
+    if Utils.list_exists(listname):
+	mlist = MailList.MailList(listname, lock=0)
+
+	# Do the MTA-specific list deletion tasks
+	if mm_cfg.MTA:
+	    modname = 'Mailman.MTA.' + mm_cfg.MTA
+	    __import__(modname)
+	    sys.modules[modname].remove(mlist)
+
+	REMOVABLES = [
+	    (os.path.join('lists', listname), _('list info')),
+            ]
 
     if removeArchives:
-        REMOVABLES.extend(
-            [('archives/private/%s',      _('private archives')),
-             ('archives/private/%s.mbox', _('private archives')),
-             ('archives/public/%s',       _('public archives')),
-             ('archives/public/%s.mbox',  _('public archives')),
-             ])
+        REMOVABLES.extend([
+	    (os.path.join('archives', 'private', listname),
+             _('private archives')),
+	    (os.path.join('archives', 'private', listname + '.mbox'),
+             _('private archives')),
+	    (os.path.join('archives', 'public', listname),
+             _('public archives')),
+	    (os.path.join('archives', 'public', listname + '.mbox'),
+             _('public archives')),
+            ])
 
     for dirtmpl, msg in REMOVABLES:
-        dir = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl % listname)
+        dir = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl)
         remove_it(listname, dir, msg)
 
 
