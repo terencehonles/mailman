@@ -125,7 +125,7 @@ def main():
         doc.SetTitle("Private Archive Error - %s" % msg)
         doc.AddItem(Header(2, msg))
         print doc.Format(bgcolor="#FFFFFF")
-        syslog('No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n' % (listname, e))
         sys.exit(0)
 
     form = cgi.FieldStorage()

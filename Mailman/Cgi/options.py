@@ -62,7 +62,7 @@ def main():
         doc.AddItem(Header(2, "Error"))
         doc.AddItem(Bold('No such list <em>%s</em>' % listname))
         print doc.Format()
-        syslog('No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
     # Sanity check the user

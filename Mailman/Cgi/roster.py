@@ -100,7 +100,7 @@ def get_list():
         mlist.IsListInitialized()
     except Errors.MMListError, e:
         error_page('No such list <em>%s</em>' % listname)
-        syslog('No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n' % (listname, e))
         sys.exit(0)
     return mlist
 
