@@ -128,6 +128,7 @@ class Runner:
         if keepqueued:
             self._switchboard.enqueue(msg, msgdata)
         
+    # Mapping of listnames to MailList instances
     _listcache = {}
 
     def _open_list(self, listname, lockp=1):
