@@ -90,7 +90,7 @@ class Archiver:
         omask = os.umask(0)
         try:
             try:
-                os.mkdir(self.ArchiveFileName(), 02775)
+                os.mkdir(self.archive_dir()+'.mbox', 02775)
             except OSError, e:
                 if e.errno <> errno.EEXIST: raise
         finally:
