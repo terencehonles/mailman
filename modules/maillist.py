@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 436 $"
+__version__ = "$Revision: 440 $"
 
 try:
     import mm_cfg
@@ -98,6 +98,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return matches[0]
 
     def InitVars(self, name='', admin='', crypted_password=''):
+        """Assign default values - some will be overriden by stored state."""
 	# Non-configurable list info 
 	self._internal_name = name
 	self._lock_file = None
@@ -477,7 +478,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	file.close()
 	self._ready = 1
 	self.CheckValues()
-	self.CheckVersion()
+	self.CheckVersion(dict)
 
     def LogMsg(self, kind, msg, *args):
 	"""Append a message to the log file for messages of specified kind."""
@@ -490,11 +491,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	logf.write("%s\n" % (msg % args))
 	logf.flush()
 
-    def CheckVersion(self):
+    def CheckVersion(self, stored_state):
+        """Migrate prior version's state to new structure, if changed."""
 	if self.data_version == mm_cfg.VERSION:
 	    return
 	else:
-	    pass  # This function is just here to ease upgrades in the future.
+            from versions import Update
+            Update(self, stored_state)
 
 	self.data_version = mm_cfg.VERSION
 	self.Save()
