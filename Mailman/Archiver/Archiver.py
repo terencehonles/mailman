@@ -154,23 +154,15 @@ class Archiver:
     #
     def __archive_to_mbox(self, post):
         """Retain a text copy of the message in an mbox file."""
-        if self.clobber_date:
-            olddate = post.getheader('date')
-            post['Date'] = time.ctime(time.time())
         try:
-            try:
-                afn = self.ArchiveFileName()
-                mbox = self.__archive_file(afn)
-                mbox.AppendMessage(post)
-                mbox.fp.close()
-            except IOError, msg:
-                syslog('error', 'Archive file access failure:\n\t%s %s' %
-                       (afn, msg))
-                raise
-        finally:
-            if self.clobber_date:
-                # Resurrect original date setting.
-                post['Date'] = olddate
+            afn = self.ArchiveFileName()
+            mbox = self.__archive_file(afn)
+            mbox.AppendMessage(post)
+            mbox.fp.close()
+        except IOError, msg:
+            syslog('error', 'Archive file access failure:\n\t%s %s' %
+                   (afn, msg))
+            raise
 
     def ExternalArchive(self, ar, txt):
         d = Utils.SafeDict({'listname': self.internal_name()})
