@@ -1,6 +1,41 @@
-DONE for mailman 1.0b3 (DONE $Revision: 516 $, $Date: 1998-05-04 19:18:08 +0100 (Mon, 04 May 1998) $)
+DONE for mailman 1.0b4 (DONE $Revision: 691 $, $Date: 1998-06-03 14:01:11 +0100 (Wed, 03 Jun 1998) $)
 
-1.0b3 (05/03/1998) klm@python.org (ken manheimer)
+1.0b4
+ 
+ - A configure script for easy installation (Barry Warsaw)
+
+ - The ability to install Mailman to locations other than /home/mailman 
+   (Barry Warsaw)
+
+ - Use cookies on the admin pages (also hides admin pages from others)
+   (Scott Cotton)
+
+ - Subscription requests send a request for confirmation, which may be
+   done by simply replying to the message (Scott Cotton)
+
+ - Facilities for gating mail to a newsgroup, and for gating a newsgroup
+   to a mailing list (John Viega)
+
+ - Contact the SMTP port instead of calling sendmail (primarily for 
+   portability) (John Viega)
+
+ - Changed all links on web pages to relative links where appropriate.
+   (John Viega)
+
+ - Use MD5 if crypt is not available (John Viega)
+
+ - Lots of fixing up of bounce handling (Ken Manheimer)
+
+ - General UI polishing (Ken Manheimer)
+
+ - mm_html: Make it prominent when the user's delivery is disabled
+   on his option page. (Ken Manheimer)
+
+ - mallist:DeleteMember() Delete the option setings if any. (Ken Manheimer) 
+
+DONE for mailman 1.0b3 
+
+1.0b3 (05/03/1998) All changes by klm@python.org (ken manheimer)
 
  Items marked by an '*' asterisk have greater operational impact.
 
