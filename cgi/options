@@ -1,9 +1,15 @@
 #!/usr/local/bin/python
-# We don't need to lock in this script, because we're never going to change data.
+
+"""Faculty for editing user options.
+
+Takes listname/userid in PATH_INFO, expecting an "obscured" userid.  But
+depending on the tolerance of the mm_utils.{O,Uno}bscureEmail utilities may
+work fine with an unobscured ids as well."""
+
+# We don't need to lock in this script, because we're never going to change
+# data. 
 
 import sys, os, string
-f = open('/tmp/options.errs', 'a+')
-sys.stderr = f # sys.stdout
 sys.path.append('/home/mailman/mailman/modules')
 import mm_utils, maillist, htmlformat, mm_cfg
 
@@ -18,7 +24,7 @@ if len(list_info) < 2:
     sys.exit(0)
 
 list_name = string.lower(list_info[0])
-user = list_info[1]
+user = mm_utils.UnobscureEmail(list_info[1])
 
 try:
   list = maillist.MailList(list_name)
@@ -32,6 +38,10 @@ if not list._ready:
     print doc.Format()
     sys.exit(0)
 
+if list.obscure_addresses:
+    presentable_user = mm_utils.ObscureEmail(user, for_text=1)
+else:
+    presentable_user = user
 
 replacements = list.GetStandardReplacements()
 replacements['<mm-digest-radio-button>'] = list.FormatOptionButton(
@@ -69,6 +79,7 @@ replacements['<mm-confirm-pass-box>'] = list.FormatSecureBox('confpw')
 replacements['<mm-change-pass-button>'] = list.FormatButton('changepw')
 replacements['<mm-form-start>'] = list.FormatFormStart('handle_opts', user)
 replacements['<mm-user>'] = user
+replacements['<mm-presentable-user>'] = presentable_user
 replacements['<mm-email-my-pw>'] = list.FormatButton('emailpw', 'Email my password')
 
 doc.AddItem(list.ParseTags('options.html', replacements))
