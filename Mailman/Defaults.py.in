@@ -265,14 +265,14 @@ ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
 # dropped.
 PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
-# Request types requiring admin approval
-HELDMSG = 1
-SUBSCRIPTION = 2
-
-
 # how many members to display at a time on the admin cgi to unsubscribe
 # them or change their options.
 DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
+
+# how many bytes of a held message post should be displayed in the admindb web
+# page?  Use a negative number to indicate the entire message, regardless of
+# size (though this will slow down rendering those pages).
+ADMINDB_PAGE_TEXT_LIMIT = 4096
 
 
 # These directories are used to find various important files in the Mailman
