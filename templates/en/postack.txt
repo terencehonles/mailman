@@ -5,3 +5,4 @@ Your message entitled
 was successfully received by the %(listname)s mailing list.
 
 List info page: %(listinfo_url)s
+Your preferences: %(optionsurl)s
