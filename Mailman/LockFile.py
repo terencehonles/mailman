@@ -1,17 +1,17 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Portable, NFS-safe file locking with timeouts.
@@ -271,14 +271,15 @@ class LockFile:
                 elif e.errno <> errno.EEXIST:
                     # Something very bizarre happened.  Clean up our state and
                     # pass the error on up.
-                    self.__writelog('unexpected link error: %s' % e)
+                    self.__writelog('unexpected link error: %s' % e,
+                                    important=1)
                     os.unlink(self.__tmpfname)
                     raise
                 elif self.__linkcount() <> 2:
                     # Somebody's messin' with us!  Log this, and try again
                     # later.  TBD: should we raise an exception?
                     self.__writelog('unexpected linkcount: %d' %
-                                    self.__linkcount())
+                                    self.__linkcount(), important=1)
                 elif self.__read() == self.__tmpfname:
                     # It was us that already had the link.
                     self.__writelog('already locked')
@@ -296,7 +297,8 @@ class LockFile:
             if time.time() > self.__releasetime() + CLOCK_SLOP:
                 # Yes, so break the lock.
                 self.__break()
-                self.__writelog('lifetime has expired, breaking')
+                self.__writelog('lifetime has expired, breaking',
+                                important=1)
             # Okay, someone else has the lock, our claim hasn't timed out yet,
             # and the expected lock lifetime hasn't expired yet.  So let's
             # wait a while for the owner of the lock to give it up.
@@ -402,8 +404,8 @@ class LockFile:
     # Private interface
     #
 
-    def __writelog(self, msg):
-        if self.__withlogging:
+    def __writelog(self, msg, important=0):
+        if self.__withlogging or important:
             logf = _get_logfile()
             logf.write('%s %s\n' % (self.__logprefix, msg))
             traceback.print_stack(file=logf)
@@ -560,7 +562,7 @@ def _onetest():
             except KeyboardInterrupt:
                 pass
             os._exit(0)
-    
+
 
 def _reap(kids):
     if not kids:
