@@ -83,25 +83,27 @@ ADDING NEW TRANSLATIONS
 RESYNCHRONIZING THE CATALOG
 
     As Mailman development continues, new updated catalogs
-    (i.e. mailman.pot files) will be made available.  You should
-    occasionally resynchonize your translated catalog with this file.
-    You can do this with the `msgmerge' program, like so:
+    (i.e. mailman.pot files) will be made available.  As mailman.pot
+    changes, the individual language catalogs
+    (i.e. xx/LC_MESSAGES/mailman.po files) need to be updated as
+    well.
 
-    msgmerge -o new-messages.po messages.pot messages.po
-
-    Any new messages in the standard template message.pot will be
-    placed at the end of new-messages.po.  Move this file to
-    messages.po inside messages/ha/LC_MESSAGE and add the new
-    translations as above.
+    In general, I as the Mailman maintainer will merge the new
+    catalogs with the individual language catalogs, and upload the new
+    versions to SourceForge.  Translators should grab the new
+    mailman.po files from SF or CVS and update the translated
+    messages.  They should also update the template translations.
 
 
 CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
 
-    As of this writing (11-Jul-2001), Mailman 2.1alpha2 supports the
+    As of this writing (27-Jul-2001), Mailman 2.1alpha2 supports the
     following languages out of the box:
 
     - English
     - Spanish
+    - French
+    - Japanese
 
     Hopefully more translations will be donated as Mailman 2.1
     development moves along.
