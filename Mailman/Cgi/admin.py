@@ -39,7 +39,6 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import MemberAdaptor
 from Mailman import i18n
-from Mailman.MailCommandHandler import option_info
 from Mailman.UserDesc import UserDesc
 from Mailman.htmlformat import *
 from Mailman.Cgi import Auth
@@ -934,7 +933,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                     value = 'on'
                     checked = 1
                     extra = '[%s]' % ds_abbrevs[status]
-            elif mlist.getMemberOption(addr, option_info[opt]):
+            elif mlist.getMemberOption(addr, mm_cfg.OPTINFO[opt]):
                 value = 'on'
                 checked = 1
             else:
@@ -950,7 +949,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
             cells.append(Center(CheckBox(addr + '_digest', 'off', 0).Format()))
         else:
             cells.append(Center(CheckBox(addr + '_digest', 'on', 1).Format()))
-        if mlist.getMemberOption(addr, option_info['plain']):
+        if mlist.getMemberOption(addr, mm_cfg.OPTINFO['plain']):
             value = 'on'
             checked = 1
         else:
@@ -1369,7 +1368,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             else:
                 mlist.setDeliveryStatus(user, MemberAdaptor.ENABLED)
             for opt in ('hide', 'ack', 'notmetoo', 'nodupes', 'plain'):
-                opt_code = option_info[opt]
+                opt_code = mm_cfg.OPTINFO[opt]
                 if cgidata.has_key('%s_%s' % (user, opt)):
                     mlist.setMemberOption(user, opt_code, 1)
                 else:
