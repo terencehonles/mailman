@@ -125,6 +125,10 @@ The Mailman TODO list
 - Seperate edit-options from the subscribe script.
 - Remove dead code, etc.
 
+*News
+- Allow crossposting.  This means no errors on duplicate messages, and 
+  also avoiding the need to approve separately for each list.
+
 *Misc
 - Automatically update aliases again (fix alias wrapper)
 - Make the listinfo pages static, and have them regenerate when options are 
