@@ -1,4 +1,4 @@
-<!-- $Revision: 5791 $ -->
+<!-- $Revision: 5948 $ -->
 <HTML>
   <HEAD>
     <TITLE><MM-List-Name> 案内ページ</TITLE>
@@ -20,11 +20,11 @@
 	    </td>
 	  </tr>
 	  <tr>
-	    <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
+	    <TD COLSPAN="1" WIDTH="60%" BGCOLOR="#FFF0D0">
 	      <B><FONT COLOR="#000000"><MM-List-Name>について</FONT></B>
 	    </TD>
-            <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
-              <MM-lang-form-start><MM-displang-box> <MM-list-langs>
+            <TD COLSPAN="1" WIDTH="40%" BGCOLOR="#FFF0D0">
+              <MM-lang-form-start> <MM-displang-box> <MM-list-langs>
               <MM-form-end>
     <MM-Subscribe-Form-Start>
             </TD>
@@ -106,10 +106,10 @@
 	<TD><MM-Confirm-Password></TD>
 	<TD>&nbsp; </TD></TR>
       <tr>
-        <TD BGCOLOR="#dddddd">このリストではどの言語を使用したいですか?</TD>
+        <TD BGCOLOR="#dddddd">どの言語でメッセージを読みたいですか?</TD>
         <TD> <MM-list-langs></TD>
         <TD>&nbsp; </TD></TR>
-
+      <mm-digest-question-start>
       <tr>
 	<td>一日分ごとにメールをまとめ読みしますか?
 	  </td>
@@ -117,6 +117,7 @@
 	    <MM-Digest-Radio-Button>  はい
 	</TD>
       </tr>
+      <mm-digest-question-end>
       <tr>
 	<td colspan="3">
 	  <center><MM-Subscribe-Button></P></center>
