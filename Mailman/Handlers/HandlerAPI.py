@@ -63,12 +63,12 @@ LIST_PIPELINE = ['SpamDetect',
                  'CookHeaders',
                  'ToDigest',
                  'ToArchive',
-                 'ToUsenet',
                  'CalcRecips',
                  'Decorate',
-                 mm_cfg.DELIVERY_MODULE,
                  'AfterDelivery',
                  'Acknowledge',
+                 'ToUsenet',
+                 'ToOutgoing',
                  ]
 
 
@@ -156,21 +156,13 @@ def DeliverToList(mlist, msg, msgdata):
 
 
 
-# For messages that qrunner tries to re-deliver using the pre 2.0beta3 qfiles
-# data format.
-def RedeliverMessage(mlist, msg):
-    msgdata = {'pipeline': [mm_cfg.DELIVERY_MODULE]}
-    return DeliverToList(mlist, msg, msgdata)
-
-
-
 # for messages crafted internally by the Mailman system.  The msg object
 # should have already calculated and set msg.recips.  TBD: can the mlist be
 # None?
 def DeliverToUser(mlist, msg, newdata={}):
     pipeline = ['Replybot',
                 'CookHeaders',
-                mm_cfg.DELIVERY_MODULE,
+                'ToOutgoing',
                 ]
     msgdata = {'pipeline' : pipeline,
                'fasttrack': 1,
