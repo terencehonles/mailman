@@ -29,7 +29,7 @@
 #define LEGAL_PARENT_GID CGI_GID
 
 const char* logident = LOG_IDENT;
-const char* script = SCRIPTNAME;
+char* script = SCRIPTNAME;
 const int parentgid = LEGAL_PARENT_GID;
 
 
@@ -37,6 +37,7 @@ int
 main(int argc, char** argv, char** env) 
 {
 	int status;
+	char* fake_argv[3];
 
 	check_caller(logident, parentgid);
 
@@ -45,7 +46,17 @@ main(int argc, char** argv, char** env)
 	if (status)
 		fatal(logident, "%s", strerror(errno));
 
-	status = run_script(script, argc, argv, env);
+	/* for these CGI programs, we can ignore argc and argv since they
+	 * don't contain anything useful.  `script' will always be the driver
+	 * program and argv will always just contain the name of the real
+	 * script for the driver to import and execute (padded with two dummy
+	 * values in argv[0] and argv[1] that are ignored by run_script().
+	 */
+	fake_argv[0] = NULL;
+	fake_argv[1] = NULL;
+	fake_argv[2] = script;
+
+	status = run_script("driver", 3, fake_argv, env);
 	fatal(logident, "%s", strerror(errno));
 	return status;
 }
