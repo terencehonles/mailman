@@ -121,13 +121,17 @@ class BounceRunner(Runner):
                 for listname in Utils.list_names():
                     xlist = MailList.MailList(listname, lock=0)
                     if xlist.isMember(addr):
-                        xlist.Lock()
+                        unlockp = 0
+                        if not xlist.Locked():
+                            xlist.Lock()
+                            unlockp = 1
                         try:
                             xlist.registerBounce(addr, msg)
                             found = 1
                             xlist.Save()
                         finally:
-                            xlist.Unlock()
+                            if unlockp:
+                                xlist.Unlock()
                 return found
             elif mlist.isMember(addr):
                 mlist.registerBounce(addr, msg)
@@ -139,14 +143,18 @@ class BounceRunner(Runner):
             found = 0
             for listname in Utils.list_names():
                 xlist = MailList.MailList(listname, lock=0)
-                xlist.Lock()
+                unlockp = 0
+                if not xlist.Locked():
+                    xlist.Lock()
+                    unlockp = 1
                 try:
                     status = BouncerAPI.ScanMessages(xlist, msg)
                     if status:
                         found = 1
                     xlist.Save()
                 finally:
-                    xlist.Unlock()
+                    if unlockp:
+                        xlist.Unlock()
             return found
         else:
             return BouncerAPI.ScanMessages(mlist, msg)
