@@ -22,13 +22,14 @@ def process(mlist, msg, msgdata):
     # this after the information on the header is actually used, but before a
     # permanent record of the header is saved.
     del msg['approved']
+    # Also remove this header since it can contain a password
+    del msg['urgent']
     # We remove other headers from anonymous lists
     if mlist.anonymous_list:
         del msg['reply-to']
         del msg['sender']
         msg['From'] = mlist.GetAdminEmail()
         msg['Reply-To'] = mlist.GetListEmail()
-    #
     # Some headers can be used to fish for membership
     del msg['return-receipt-to']
     del msg['disposition-notification-to']
