@@ -836,9 +836,8 @@ Archive working file %s present.  Check %s for possibly unarchived msgs',
             d = article.decoded
             subject = d.get("subject", article.subject)
             author = d.get("author", article.author)
-        else:
-            subject = CGIescape(article.subject)
-            author = CGIescape(article.author)
+        subject = CGIescape(article.subject)
+        author = CGIescape(article.author)
         print index_entry_template % (urllib.quote(article.filename),
                                       subject, article.sequence, author)
 
