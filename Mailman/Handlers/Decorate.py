@@ -61,12 +61,18 @@ def process(mlist, msg, msgdata):
     # matches the charset of the list's preferred language.  This is a
     # suboptimal solution, and should be solved by allowing a list to have
     # multiple headers/footers, for each language the list supports.
-    mcset = msg.get_param('charset', 'us-ascii')
+    #
+    # Also, if the list's preferred charset is us-ascii, we can always
+    # safely add the header/footer to a plain text message since all
+    # charsets Mailman supports are strict supersets of us-ascii --
+    # no, UTF-16 emails are not supported yet.
+    mcset = msg.get_param('charset', 'us-ascii').lower()
     lcset = Utils.GetCharSet(mlist.preferred_language)
     msgtype = msg.get_type('text/plain')
     # BAW: If the charsets don't match, should we add the header and footer by
     # MIME multipart chroming the message?
-    if not msg.is_multipart() and msgtype == 'text/plain' and mcset == lcset:
+    if not msg.is_multipart() and msgtype == 'text/plain' and \
+           (lcset == 'us-ascii' or mcset == lcset):
         payload = header + msg.get_payload() + footer
         msg.set_payload(payload)
     elif msg.get_type() == 'multipart/mixed':
