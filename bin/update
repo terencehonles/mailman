@@ -32,23 +32,36 @@ def dolist(list):
         ou = os.umask(0)
         os.mkdir(mbox_dir, 02775)
         os.umask(ou)
+    else:
+        if not os.path.isdir(mbox_dir):
+            print "for some reason", mbox_dir, "exists as a file.  This won't work with b6"
+            print "so I'm renaming it to %s.tmp and proceeding" % (mbox_dir)
+            os.rename(mbox_dir, "%s.tmp" % (mbox_dir))
+            ou = os.umask(0)
+            os.mkdir(mbox_dir, 02775)
+            os.umask(ou)
 
     # Move any existing mboxes around, but watch out for both a public and a
     # private one existing
     if os.path.isfile(o_pri_mbox_file) and os.path.isfile(o_pub_mbox_file):
         print """\
 I found both a private and a public mbox archive file
-    private: %s
-    public : %s
+    private: %(o_priv_mbox_file)s
+    public : %(o_pub_mbox_file)s
 
-I won't move either file, but you should choose one and move it to
+In order to proceed and make this list functional in b6, I'm going to rename
+%(o_pri_mbox_file)s to %(o_pri_mbox_file)s.tmp.
 
-    %s
+You should choose one of
+    private archives: %(old_pri_mbox_file)s.tmp
+    public archives: %(old_pub_mbox_file)s
+
+and move it to
+    %(mbox_file)s
 
 You may want to merge them manually, but be careful about exposing private
-correspondences to the public.""" % (
-    o_pri_mbox_file, o_pub_mbox_file, mbox_file)
-
+correspondences to the public.""" % vars()
+        os.rename(o_pri_mbox_file, "%s.tmp" % (o_pri_mbox_file))
     #
     else:
         #
@@ -58,8 +71,6 @@ correspondences to the public.""" % (
             os.rename(o_pri_mbox_file, mbox_file)
         #
         # move public archive mbox there if it's around
-        #
-        # TBD: what happens if both the public and private archives exist???
         #
         if os.path.exists(o_pub_mbox_file):
             os.rename(o_pub_mbox_file, mbox_file)
@@ -78,13 +89,20 @@ correspondences to the public.""" % (
     #
     l.archive_directory = makeabs('archives/private/%s' % (list))
     l.private_archive_file_dir = makeabs('archives/private/%s.mbox' % (list))
-
     l.Save()
 
 
 
 if __name__ == '__main__':
-    os.system("chmod g+s `find %s -type d -print`" % Mailman.mm_cfg.PREFIX)
+    print "setting all directories to have setgid status"
+    os.system("chmod g+rwxs `find %s -type d -print`" % Mailman.mm_cfg.PREFIX)
     for list in list_names():
         print 'Updating mailing list: ', list
         dolist(list)
+
+
+
+
+
+
+
