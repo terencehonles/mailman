@@ -210,7 +210,7 @@ class Archiver:
                 f = StringIO(txt)
                 import HyperArch
                 h = HyperArch.HyperArchive(self)
-                h.processUnixMailbox(f, HyperArch.Article)
+                h.processUnixMailbox(f)
                 h.close()
                 f.close()
         except:
