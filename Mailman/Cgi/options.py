@@ -377,7 +377,7 @@ def main():
         try:
             try:
                 mlist.DeleteMember(
-                    user, _('via the member options page'), userack=1)
+                    user, 'via the member options page', userack=1)
             except Errors.MMNeedApproval:
                 needapproval = 1
             mlist.Save()
