@@ -27,6 +27,11 @@ Hopefully, this will help resolve any problems you are having.
 We update this procedure for each Mailman release, so it can't hurt to 
 run "make update" each time you upgrade.
 
+- To upgrade to 1.0b10, you will need to copy templates/options.html
+  to lists/<listname>/options.html for each mailing list you have.
+  However, if you have edited the options.html file, say from the Web
+  interface, you will have to merge these changes in manually.
+
 - The upgrade to 1.0b7 included the removal of Mailman/smtplib.py{,c}
   since Mailman now uses the default Python 1.5.2 version of smtplib.
 
