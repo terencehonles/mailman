@@ -49,31 +49,14 @@ used in production environments.  Instead, please use <a href=
 
 <h3>Acknowledgements</h3>
 
-<p>Mailman is brought to you by the <em>Mailman Cabal</em>, currently
-composed of the following core developers:
-<a href="http://barry.wooz.org/">Barry Warsaw</a>, Thomas Wouters, Harald
-Meland, Ken Manheimer, Scott Cotton, and John Viega.  Mailman was
-originally written by John Viega.
-
-<p>The Cabal would like to thank
+<p>The <em>Mailman Cabal</em> would like to thank
 <a href="http://www.control.com/">Control.com</a> for their
 sponsorship of new Mailman 2.1 features such as the topic filters,
 external membership sources, and "virtual" mailing lists.
 
-<p>The Cabal would also like to thank the following other developers for
-their important contributions (in no particular order): Juan Carlos
-Rey Anaya, Victoriano Giralt, Mads Kiilerich, The Dragon De Monsyne,
-Timothy O'Malley, Balazs Nagy, Michael Mclay, Greg Stein, Gergely
-Madarasz, Andrew Kuchling, Jeff Hahn, Paul Hebble, Christopher
-P. Lindsey, Chris Kolar, J C Lawrence, Jeremy Hylton, Nigel
-Metheringham, Dan Mick, Jim Tittsler, Ricardo Kustner, Bernhard
-Reiter, Guido van Rossum, Jeff Berliner, Ted Cabeen, Michael Yount, Ron
-Jarrell, Chris Snell, David Champion, Darrell Fuhriman, Owen Taylor,
-Fil, Noam Zeilberger, Mark MERLIN, John A. Martin, Erik Forsberg,
-Tanner Lovelace, Les Niles, Mike Noyes, Tokio Kikuchi, Vizi Szilard,
-Ousmane Wilane, Tollef Fog Heen, Mentor Cana, John Read, Dan Ohnesorg,
-Daniel Buchmann, J. D. Bronson, Ben Gertzfield, Luca Maranzano, Jens
-Vagelpohl, Simone Piunno, Bob Puff, Paul Cox, Greg Ward, John Carnes
+<p>Please also see the ACKNOWLEDGMENTS file for the list of
+contributors, bug hunters, big idea people, and others who have helped
+immensely with Mailman's development.
 
 <p><em>We have a extensive wish list and welcome anyone else who would
 like to contribute!</em>
