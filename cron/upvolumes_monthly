@@ -8,10 +8,10 @@ import sys, os
 
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist, mm_cfg
+import maillist, mm_cfg, mm_utils
 
 
-for name in maillist.list_names():
+for name in mm_utils.list_names():
     try:
 	list = maillist.MailList(name)
     except:

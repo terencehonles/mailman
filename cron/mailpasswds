@@ -12,7 +12,7 @@ import sys, os, string
 
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist, mm_cfg, mm_message
+import maillist, mm_cfg, mm_message, mm_utils
 
 
 users = {}				# user: (listname, password, url)
@@ -67,7 +67,7 @@ def MailAllPasswords(list, users):
 # the user a single message with the info for all their lists on this
 # site.
 list = None
-for name in maillist.list_names():
+for name in mm_utils.list_names():
     list = maillist.MailList(name)
     url = list.GetScriptURL('listinfo')
     list_name = list.real_name
