@@ -231,11 +231,21 @@ class Bouncer:
             text = text + '\n\n--' + boundary + \
                    '\nContent-type: text/plain; charset=us-ascii\n'
 
-            # we do this here so this text won't be wrapped.  note that
-            # 'bounce.txt' has a trailing newline
+            # We do this here so this text won't be wrapped.  note that
+            # 'bounce.txt' has a trailing newline.  Be robust about getting
+            # the body of the message.
+            body = '[original message unavailable]'
+            try:
+                body = msg.body
+            except AttributeError:
+                try:
+                    msg.rewindbody()
+                    body = msg.fp.read()
+                except IOError:
+                    pass
             text = text + \
                    string.join(msg.headers, '') + '\n' + \
-                   Utils.QuotePeriods(msg.body) + '\n' + \
+                   Utils.QuotePeriods(body) + '\n' + \
                    '--' + boundary + '--'
 
             if negative:
