@@ -120,7 +120,11 @@ def main():
     # and finally hack the options
     cftoaddr = string.lower(toaddr)
     if not options:
-        del mlist.user_options[cftoaddr]
+        try:
+            del mlist.user_options[cftoaddr]
+        except KeyError:
+            # the user's options were already zero
+            pass
     else:
         mlist.user_options[cftoaddr] = options
     mlist.Save()
