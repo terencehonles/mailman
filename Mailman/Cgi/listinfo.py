@@ -148,10 +148,7 @@ def FormatListinfoOverview(error=None):
 
     doc.AddItem(table)
     doc.AddItem('<hr>')
-    doc.AddItem(
-        Link(mm_cfg.MAILMAN_URL,
-             '<img src="%s" alt="Delivered by Mailman" border=0> v %s' %
-             (mm_cfg.DELIVERED_BY_URL, mm_cfg.VERSION)))
+    doc.AddItem(MailmanLogo())
     print doc.Format(bgcolor="#ffffff")
 
 def FormatListListinfo(list):
