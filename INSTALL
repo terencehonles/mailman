@@ -346,8 +346,11 @@ upgrade.
       instead of chkconfig.
 
       For Unixes that don't support chkconfig, simply copy
-      misc/mailman as above, then set up the following symbolic links,
-      again as root:
+      scripts/mailman as above:
+
+          % cp scripts/mailman /etc/init.d/mailman
+
+      then set up the following symbolic links, again as root:
 
           % cp misc/mailman /etc/init.d
           % cd /etc/rc.d/rc0.d
