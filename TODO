@@ -58,6 +58,8 @@ The Mailman TODO list
 - Allow users to specify a different address for password reminders
   (w/ confirmation), or come up w/ a better strategy for remailing lists
   (could be done as the default, given a generic filter mechanism).
+- Allow the user to get BOTH normal and digested delivery (but I still
+  don't understand why someone would want this)
 
 *Site Administrator's UI
 - Make a web based site admin UI for adding lists, deleting lists, etc.
