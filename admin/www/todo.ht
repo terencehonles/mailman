@@ -19,6 +19,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
 </ul>
 <h3> Documentation
 </h3>
@@ -30,6 +37,13 @@ Title: The Mailman Wishlist
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
+
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -50,6 +64,13 @@ Title: The Mailman Wishlist
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
+
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -78,6 +99,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -104,6 +132,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
 </ul>
 <h3> List Membership
@@ -117,6 +148,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -143,6 +181,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -170,6 +211,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -196,6 +244,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -229,6 +280,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -255,6 +313,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -294,6 +355,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -320,6 +388,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -369,6 +440,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -395,6 +473,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -455,6 +536,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -481,6 +569,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -544,6 +635,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -570,6 +668,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -640,6 +741,13 @@ Title: The Mailman Wishlist
 
     <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
+    <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
+ and exit if no new work arrived.
+
+    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
+ message.  There would have to be some locking between the MTA
+ and Mailman.
+
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -666,6 +774,9 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
+
+    <li> Allow a list to be marked `disabled' so things like the replybot still works, and the archives are still available, but mail
+ posted to the list is always returned unsent.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
