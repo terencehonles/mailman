@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -108,7 +108,7 @@ def do_discard(mlist, msg):
     sender = msg.get_sender()
     # Do we forward auto-discards to the list owners?
     if mlist.forward_auto_discards:
-        varhelp = '%s/privacy/sender/?VARHELP=discard_these_nonmembers' % \
+        varhelp = '%s/?VARHELP=privacy/sender/discard_these_nonmembers' % \
                   mlist.GetScriptURL('admin', absolute=1)
         nmsg = Message.UserNotification(mlist.GetOwnerEmail(),
                                         mlist.GetAdminEmail(),
