@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,14 +24,14 @@
 
 import sys
 import time
-import string
 
 from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
-from Mailman.Handlers import HandlerAPI
 from Mailman.Logging.Syslog import syslog
+
+EMPTYSTRING = ''
 
 
 
@@ -82,7 +82,7 @@ class Bouncer:
 	    ]
 
     def ClearBounceInfo(self, email):
-	email = string.lower(email)
+	email = email.lower()
 	if self.bounce_info.has_key(email):
 	    del self.bounce_info[email]
 
@@ -112,14 +112,14 @@ class Bouncer:
         this_dude = Utils.FindMatchingAddresses(email, self.bounce_info)
         if not this_dude:
             # No (or expired) priors - new record.
-            self.bounce_info[string.lower(email)] = [now, self.post_id,
-                                                     self.post_id]
+            self.bounce_info[email.lower()] = [now, self.post_id,
+                                               self.post_id]
             syslog("bounce", report + "first")
             dirty = 1
             return
 
         # There are some priors.
-        addr = string.lower(this_dude[0])
+        addr = this_dude[0].lower()
         hist = self.bounce_info[addr]
         difference = now - hist[0]
         if len(Utils.FindMatchingAddresses(addr, self.members)):
@@ -243,13 +243,13 @@ class Bouncer:
                     body = msg.fp.read()
                 except IOError:
                     pass
-            text = text + \
-                   string.join(msg.headers, '') + '\n' + \
-                   Utils.QuotePeriods(body) + '\n' + \
+            # FIXME
+            text += EMPTYSTRING.join(msg.headers) + '\n' + \
+                    Utils.QuotePeriods(body) + '\n' + \
                    '--' + boundary + '--'
 
             if negative:
-                negative = string.upper(negative)
+                negative = negative.upper()
 
             # send the bounce message
             msg = Message.UserNotification(
@@ -259,7 +259,7 @@ class Bouncer:
                 text)
             msg['MIME-Version'] = '1.0'
             msg['Content-Type'] = 'multipart/mixed; boundary="%s"' % boundary
-            HandlerAPI.DeliverToUser(self, msg)
+            msg.send(self)
 
     def DisableBouncingAddress(self, addr):
 	"""Disable delivery for bouncing user address.
