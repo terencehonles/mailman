@@ -528,6 +528,11 @@ class HyperArchive(pipermail.T):
             'day':     '^' + yre + mre + dre + '$'
             }
 
+    def _makeArticle(self, msg, sequence):
+        return Article(msg, sequence,
+                       lang=self.maillist.preferred_language,
+                       mlist=self.maillist)
+
     def html_foot(self):
         # avoid i18n side-effects
         mlist = self.maillist
@@ -735,7 +740,7 @@ class HyperArchive(pipermail.T):
         if self._unlocklist:
             self.maillist.Unlock()
         archfile = open(wname)
-        self.processUnixMailbox(archfile, Article)
+        self.processUnixMailbox(archfile)
         archfile.close()
         os.unlink(wname)
         self.DropArchLock()
