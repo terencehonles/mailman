@@ -39,7 +39,7 @@ def parseaddr(val):
 
 def check(msg):
     if msg.ismultipart():
-        # Better check the subparts
+        # Recursively check the subparts
         for subpart in msg.get_payload():
             addrs = check(subpart)
             if addrs:
@@ -80,12 +80,14 @@ def check(msg):
         except ValueError:
             continue
         headers[hdr.lower()] = val.strip()
+    # Make sure the last one is appended
+    blocks.append(headers)
     # Now go through all the recipient blocks, looking for addresses that
     # are reported as bounced.  Preference order is Original-Recipient:
     # Final-Recipient:
     addrs = []
     for headers in blocks:
-        if headers.get('action', '').lower() <> 'failed':
+        if headers.get('action', '').lower() not in ('failed', 'failure'):
             # Some non-permanent failure, so ignore this block
             continue
         val = headers.get('original-recipient',
@@ -100,6 +102,6 @@ def process(msg):
     # The report-type parameter should be "delivery-status", but it seems that
     # some DSN generating MTAs don't include this on the Content-Type: header,
     # so let's relax the test a bit.
-    if msg.gettype() <> 'multipart/report':
+    if not msg.ismultipart() or msg.getsubtype() <> 'report':
         return None
     return check(msg)
