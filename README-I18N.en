@@ -43,8 +43,8 @@ ADDING NEW TRANSLATIONS
     messages/mailman.pot and make a copy called mailman.po in the
     subdirectory messages/xx/LC_MESSAGES.  Then you edit the file and
     add the translations for each message identified in the catalog.
-    It will be very helpful to have a good tool, such as po-mode for
-    Emacs, for this part of the job.
+    It will be very helpful to have a good tool, such as KDE's KBabel
+    tool, or po-mode for Emacs, for this part of the job.
 
     Once you've added your translations, you can then run msgfmt over
     your .po file to generate messages/xx/LC_MESSAGE/mailman.mo.
