@@ -240,6 +240,10 @@ EXEC_PREFIX	= '@exec_prefix@'
 if EXEC_PREFIX == '${prefix}':
     EXEC_PREFIX = PREFIX
 
+# CGI extension, change using configure script
+CGIEXT = '@CGIEXT@'
+
+
 # Don't change anything from here down unless you know what you're doing...
 
 
