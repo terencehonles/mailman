@@ -14,10 +14,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Bounce and -request command queue runner."""
+"""-request robot command queue runner."""
 
 # See the delivery diagram in IncomingRunner.py.  This module handles all
-# email destined for mylist-owner, mylist-admin, and mylist-request.
+# email destined for mylist-request, -join, and -leave.  It no longer handles
+# bounce messages (i.e. -admin or -bounces), nor does it handle mail to
+# -owner.
 
 
 
@@ -38,18 +40,6 @@ class CommandRunner(Runner):
                         slice, numslices, cachelists)
 
     def _dispose(self, mlist, msg, msgdata):
-        # Try to figure out whether the message was destined for the -owner or
-        # -admin address.  This used to be calculated in the mailowner script,
-        # but now that's too expensive, so we do it here if the message
-        # metadata doesn't already tell us.
-        #
-        # Yes, the key really is `toauthoritah', Cartman.
-        if msgdata.get('toauthoritah'):
-            del msgdata['toauthoritah']
-            if msg['to'].lower() == mlist.GetOwnerEmail():
-                msgdata['toowner'] = 1
-            else:
-                msgdata['toadmin'] = 1
         # BAW: Not all the functions of this qrunner require the list to be
         # locked.  Still, it's more convenient to lock it here and now and
         # deal with lock failures in one place.
@@ -60,63 +50,13 @@ class CommandRunner(Runner):
             return 1
         #
         # runner specific code
+        #
+        # This message will have been delivered to one of mylist-request,
+        # mylist-join, or mylist-leave, and the message metadata will contain
+        # a key to which one was used.  BAW: The tojoin and toleave actions
+        # are hacks!
         try:
-            # The message may be destined to one of three list related
-            # recipients (note that posts to the list membership are handled
-            # by the IncomingRunner via the qfiles/in queue):
-            #
-            # <list>-admin -- all errors are directed to this address, which
-            # performs bounce processing.  If the bounce processor fails to
-            # detect a bounce, the message is forwarded on to the <list>-owner
-            # address.
-            #
-            # <list>-owner -- this message is directed to the human operators
-            # of the list.  No bounce processing is performed, and the message
-            # is forwarded to the list owners.  However, it is possible that
-            # there are bogus addresses in the list owners, so if <list>-owner
-            # appears to get a message from a "likely bounce sender" then it
-            # simply discards the message.  BAW: should it save it some place?
-            #
-            # Note that the <list>-owner alias actually can explode into two
-            # different groups of end-user addresses.  Normally, these
-            # addresses include only the mlist.owner addresses, a.k.a. the
-            # list administators.  If the message metadata contains the key
-            # 'tomoderators', then this message will also include the
-            # mlist.moderator addresses, a.k.a. the list moderators (who only
-            # have permission to tend to pending requests).
-            #
-            # <list>-request -- this message is an emailed command, sent to
-            # the command robot.  Pass it on to the command handler.
-            #
-            # Note that which of these subsystems the message is destined for
-            # is determined by message metadata, as assigned by the front-end
-            # mail filter scripts.  I've thought about adding additional
-            # subsystems such as <list>-subscribe and <list>-unsubscribe as
-            # shorthands for getting on and off the list.
-            #
-            # See the diagram in IncomingRunner.py for more information.
-            if msgdata.get('toadmin'):
-                if mlist.bounce_processing and \
-                       BouncerAPI.ScanMessages(mlist, msg):
-                    pass
-                else:
-                    self._toadmins(mlist, msg, msgdata)
-            elif msgdata.get('toowner'):
-                # The message could have been a bounce from a broken list
-                # owner address.  About the only other test we can do is to
-                # see if the message is appearing to come from a well-known
-                # MTA generated address.
-                sender = msg.get_sender()
-                i = sender.find('@')
-                if i >= 0:
-                    senderlhs = sender[:i].lower()
-                else:
-                    senderlhs = sender
-                if senderlhs in mm_cfg.LIKELY_BOUNCE_SENDERS:
-                    syslog('error', 'bounce loop detected from: %s', sender)
-                else:
-                    self._toadmins(mlist, msg, msgdata)
-            elif msgdata.get('torequest'):
+            if msgdata.get('torequest'):
                 # Just pass the message off the command handler
                 mlist.ParseMailCommands(msg, msgdata)
             elif msgdata.get('tojoin'):
@@ -132,35 +72,3 @@ class CommandRunner(Runner):
             mlist.Save()
         finally:
             mlist.Unlock()
-
-    def _toadmins(self, mlist, msg, msgdata):
-        sender = msg.get_sender()
-        # Send the message through the SpamDetect blocker, hopefully
-        # reducing the amount of spam our poor admins receive.
-        try:
-            SpamDetect.process(mlist, msg, msgdata)
-        except SpamDetect.SpamDetected:
-            syslog('spam',
-                   'Spam to %s-owner address detected from %s',
-                   mlist.internal_name(), sender)
-            return
-        # Any messages to the owner address must have Errors-To: set
-        # back to the owners address so bounce loops can be broken, as
-        # per the code above.
-        recips = mlist.owner[:]
-        # BAW: should we have a separate -moderators address or should all
-        # correspondences to -owner/-admin also go to the moderators.
-        # Definition time: owners have access to both the admin and admindb
-        # pages, while moderators only have access to the admindb pages.
-        #
-##        if msgdata.get('tomoderators'):
-##            recips.extend(mlist.moderator)
-        #
-        # For now, we'll always send such email to the moderators as well.
-        recips.extend(mlist.moderator)
-        virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
-        virginq.enqueue(msg, msgdata,
-                        recips=recips,
-                        errorsto=mlist.GetOwnerEmail(),
-                        noack=0                   # enable Replybot
-                        )
