@@ -17,6 +17,7 @@
 
 "Extend mailbox.UnixMailbox."
 
+import string
 import errno
 import mailbox
 
@@ -41,5 +42,9 @@ class Mailbox(mailbox.UnixMailbox):
 	for line in msg.headers:
 	    self.fp.write(line)
 	if not msg.body or msg.body[0] <> '\n':
-	    self.fp.write('\n') 
-	self.fp.write(msg.body)
+	    self.fp.write('\n')
+        # Quote unprotected From_ lines appearing in the body
+        for line in string.split(msg.body, '\n'):
+            if line[:5] == 'From ' and self._isrealfromline(line):
+                self.fp.write('>')
+            self.fp.write(line + '\n')
