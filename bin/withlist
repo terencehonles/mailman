@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,14 +20,9 @@
 
 There are two ways to use this script: interactively or programmatically.
 Using it interactively allows you to play with, examine and modify a MailList
-object from Python's interactive interpreter.  To do this, run the script as
-follows:
-
-%% python -i bin/withlist [options] listname [args ...]
-
-This will load the list object named by listname (required) into an object
-called `m' in the global namespace.  It also loads the class MailList into the
-global namespace.
+object from Python's interactive interpreter.  When running interactively, a
+MailList object called `m' will be available in the global namespace.  It also
+loads the class MailList into the global namespace.
 
 Programmatically, you can write a function to operate on a MailList object,
 and this script will take care of the housekeeping (see below for examples).
@@ -37,8 +32,7 @@ In that case, the general usage syntax is:
 
 Options:
 
-    -l
-    --lock
+    -l / --lock
         Lock the list when opening.  Normally the list is opened unlocked
         (e.g. for read-only operations).  You can always lock the file after
         the fact by typing `m.Lock()'
@@ -47,6 +41,10 @@ Options:
         before exiting, since the interpreter's clean up procedure will not
         automatically save changes to the MailList object (but it will unlock
         the list).
+
+    -i / --interactive
+        Leaves you at an interactive prompt after all other processing is
+        complete.
 
     --run [module.]callable
     -r [module.]callable
@@ -63,12 +61,10 @@ Options:
 
         The global variable `r' will be set to the results of this call.
 
-    --quiet
-    -q
+    --quiet / -q
         Suppress all status messages.
 
-    --help
-    -h
+    --help / -h
         Print this message and exit
 
 
@@ -118,11 +114,14 @@ and run this from the command line:
 
 import sys
 import getopt
+import code
 
 import paths
 from Mailman import MailList
+from Mailman import Errors
 from Mailman.i18n import _
 
+# `m' will be the MailList object and `r' will be the results of the callable
 m = None
 r = None
 VERBOSE = 1
@@ -162,13 +161,15 @@ def main():
     global r
     global VERBOSE
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hlr:q',
-                                   ['help', 'lock', 'run=', 'quiet'])
+        opts, args = getopt.getopt(
+            sys.argv[1:], 'hlr:qi',
+            ['help', 'lock', 'run=', 'quiet', 'interactive'])
     except getopt.error, msg:
         usage(1, msg)
 
     lock = 0
     run = None
+    interact = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -178,6 +179,8 @@ def main():
             run = arg
         elif opt in ('-q', '--quiet'):
             VERBOSE = 0
+        elif opt in ('-i', '--interactive'):
+            interact = 1
 
     if len(args) < 1:
         usage(1, _('No list name supplied.'))
@@ -192,7 +195,11 @@ def main():
         else:
             print >> sys.stderr, _('(unlocked)')
 
-    m = MailList.MailList(listname, lock=lock)
+    try:
+        m = MailList.MailList(listname, lock=lock)
+    except Errors.MMUnknownListError:
+        print >> sys.stderr, _('Unknown list: %(listname)s')
+        m = None
 
     # try to import the module and run the callable
     if run:
@@ -209,6 +216,20 @@ def main():
         if VERBOSE:
             print >> sys.stderr, _('Running %(module)s.%(callable)s()...')
         r = getattr(mod, callable)(m, *args)
+
+    # Now go to interactive mode, perhaps
+    if interact:
+        # Attempt to import the readline module, so we emulate the interactive
+        # console as closely as possible.  Don't worry if it doesn't import.
+        # readline works by side-effect.
+        try:
+            import readline
+        except ImportError:
+            pass
+        namespace = globals().copy()
+        namespace.update(locals())
+        code.InteractiveConsole(namespace).interact(
+            _("The variable `m' is the %(listname)s MailList instance"))
 
 
 
