@@ -1244,7 +1244,7 @@ msgstr ""
 "        votre mot de passe et d'autres informations et liens utiles.\n"
 "\n"
 "        <p>Vous pouvez maintenant \n"
-"        <a href=\"%(optionurl)s\">vous rendre à votre page de login\n"
+"        <a href=\"%(optionsurl)s\">vous rendre à votre page de login\n"
 "        d'abonné</a>."
 
 #: Mailman/Cgi/confirm.py:342
