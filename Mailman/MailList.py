@@ -595,7 +595,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Validate the e-mail address to some degree.
         Utils.ValidateEmail(email)
         if self.isMember(email):
-            raise Errors.MMAlreadyAMember
+            raise Errors.MMAlreadyAMember, email
         if email.lower() == self.GetListEmail().lower():
             # Trying to subscribe the list to itself!
             raise Errors.MMBadEmailError
