@@ -93,7 +93,7 @@ USE_CRYPT         = 1
 # held for approval even if they appear to come from a list member.  If you
 # are having this problem, set this variable to 0, but understand that some
 # spoofed messages may get through.
-USE_ENVELOPE_SENDER = 1
+USE_ENVELOPE_SENDER = 0
 
 # When true, mailman will consider user@host.domain to be the same address
 # as user@domain.  If set to 0, mailman will consider user@host.domain to 
