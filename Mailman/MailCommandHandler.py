@@ -625,7 +625,9 @@ background and instructions for subscribing to and using it, visit:
         remote = mail.get_sender()
         try:
             # FIXME: extract fullname
-            userdesc = UserDesc(subscribe_address, password, digest)
+            userdesc = UserDesc(address=subscribe_address,
+                                password=password,
+                                digest=digest)
             self.AddMember(userdesc, remote)
             self.Save()
         except Errors.MMSubscribeNeedsConfirmation:
