@@ -253,7 +253,8 @@ class HyperDatabase(pipermail.Database):
 	    if hasattr(self, attr): 
 		index=getattr(self, attr) 
 		if i=='article': 
-	            if not hasattr(self, 'archive_length'): self.archive_length={}
+	            if not hasattr(self, 'archive_length'):
+                        self.archive_length={}
 		    self.archive_length[self.__currentOpenArchive]=len(index)
 		index.close() 
 		delattr(self,attr)
