@@ -128,8 +128,8 @@ def process_form(mlist, doc, cgidata, lang):
             return
 
         addr = cgidata['info'].value
-        member = mlist.FindUser(addr)
-        if not member:
+        member = addr.lower()
+        if not mlist.isMember(member):
             realname = mlist.real_name
             doc.AddItem(Header(2, _("Error")))
             doc.AddItem(Bold(
@@ -198,7 +198,7 @@ def process_form(mlist, doc, cgidata, lang):
 
     if not error:
         try:
-            if mlist.FindUser(email):
+            if mlist.isMember(email):
                 raise Errors.MMAlreadyAMember, email
 
             mlist.AddMember(email, password, digest, remote, lang)
