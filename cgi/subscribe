@@ -1,0 +1,133 @@
+#!/usr/local/bin/python
+f = open('/tmp/fart', 'a+')
+f.write("Test")
+f.flush()
+import sys, os, cgi
+sys.stderr = f
+f.write('hello world')
+from regsub import gsub
+sys.path.append('/home/mailman/mailman/modules')
+import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat
+
+doc = htmlformat.Document()
+
+path = os.environ['PATH_INFO']
+list_info = mm_utils.GetPathPieces(path)
+list_name = list_info[0]
+
+if len(list_info) < 1:
+    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    print doc.Format()
+    sys.exit(0)
+
+try:
+  list = maillist.MailList(list_name)
+except:
+  doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name ))
+  print doc.Format()
+  sys.exit(0)
+
+
+if not list._ready:
+    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name ))
+    print doc.Format()
+    sys.exit(0)
+
+form = cgi.FieldStorage()
+
+error = 0
+results = ''
+
+if form.has_key("submitinfo"):
+    if not form.has_key("info"):
+	doc.AddItem(htmlformat.Header(2, "You must supply your email address."))
+	doc.AddItem(list.GetMailmanFooter())
+	print doc.Format()
+	sys.exit(0)
+    addr = list.FindUser(form['info'].value)
+    if not addr:
+	doc.AddItem(htmlformat.Header
+		    (2, "You aren't subscribed to this mailing list under "
+		     "the address you gave."))
+	doc.AddItem(list.GetMailmanFooter())
+	print doc.Format()
+	sys.exit(0)
+    # A little bit of a hack to call the options script...
+    os.environ['PATH_INFO'] = '%s/%s' % (list_name,addr)
+    file = os.path.join(mm_cfg.MAILMAN_DIR, 'cgi/options')
+    list.Unlock()
+    execfile(file)
+    sys.exit(0)
+
+
+if not form.has_key("email"):
+    error = 1
+    results = results + "You must supply a valid email address.<br>"
+else:
+    email = form["email"].value
+if not form.has_key("pw") or not form.has_key("pw-conf"):
+    error = 1
+    results = results + "You must supply a valid password, and confirm it.<br>"
+else:
+    pw  = form["pw"].value
+    pwc = form["pw-conf"].value
+
+if not error and (pw <> pwc):
+    error = 1
+    results = results + "Your passwords did not match.<br>"
+
+if form.has_key("digest"):
+    digest = eval(form["digest"].value)
+
+if not list.digestable:
+    digest = 0
+elif not list.nondigestable:
+    digest = 1
+
+
+def PrintResults():
+    replacements = list.GetStandardReplacements()
+    replacements['<mm-results>'] = results
+    output = list.ParseTags('subscribe.html', replacements)
+
+    doc.AddItem(output)
+    print doc.Format()
+    list.Unlock()
+    sys.exit(0)
+
+if error:
+    PrintResults()
+
+else:
+
+    try:
+	list.AddMember(email, pw, digest, web_subscribe=1)
+	results = results + "You have successfully been added.  You should receive confirmation by e-mail within an hour.  If you do not receive confirmation, then the email address you gave probably bounced, in which case you should try again.<p>"
+    except mm_err.MMWebSubscribeRequiresConfirmation:
+	results = results + "You must send confirmation email in order to subscribe.  Further directions will be sent to you at %s." % email
+	list.SendTextToUser(subject = 'Subscribing to %s' % list.real_name,
+			    recipient = email,
+			    sender = list.GetRequestEmail(),
+			    text = '''
+In order to subscribe to this mailing list, you need to send a
+confirming email.  This is to prevent people from subscribing you to a
+email list to which you don't want to be subscribed.  To send
+confirmation, reply to this mail, and put in the body: 	subscribe %s
+''' % pw)
+    except mm_err.MMBadEmailError:
+	results = results + "Mailman won't accept the given email address as a valid address. (Does it have an @ in it???)<p>"
+    except mm_err.MMListNotReady:
+        results = results + "The list is not fully functional, and can not accept subscription requests.<p>"
+    except mm_err.MMNeedApproval, x:
+        results = results + "Subscription was <em>refused</em> because:<br> %s<p>Your request must be approved by the list admin.  You will receive email informing you of the moderator's descision when he or she gets to your request.<p>" % x
+    except mm_err.MMHostileAddress:
+        results = results + "Your subscription is not allowed because the email address you gave is insecure.<p>"
+    except mm_err.MMAlreadyAMember:
+        results = results + "You are already subscribed!<p>"
+    except:
+        results = results + '''An unknown error occured.  <p>
+Please send mail to <a href=%s>%s</a> explaining
+exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER,
+	mm_cfg.MAILMAN_OWNER)
+
+PrintResults()
