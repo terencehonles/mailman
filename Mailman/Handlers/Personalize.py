@@ -31,10 +31,9 @@ def process(mlist, msg, msgdata):
     # everything else.
     newpipeline = ['Decorate', 'ToOutgoing']
     inq = get_switchboard(mm_cfg.INQUEUE_DIR)
-
     # Save the original To: line
     originalto = msg['To']
-    
+    # Create a separate message for each recipient
     for member in msgdata.get('recips', []):
         metadatacopy = msgdata.copy()
         metadatacopy['pipeline'] = newpipeline
@@ -47,11 +46,9 @@ def process(mlist, msg, msgdata):
         else:
             msg['To'] = member
         inq.enqueue(msg, metadatacopy, listname=mlist.internal_name())
-
     # Restore the original To: line
     del msg['To']
     msg['To'] = originalto
-
     # Don't let the normal ToOutgoing processing actually send the original
     # copy.
     del msgdata['recips']

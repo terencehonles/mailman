@@ -56,17 +56,14 @@ def process(mlist, msg, msgdata):
         elif prefix and not re.search(re.escape(prefix), subject, re.I):
             del msg['subject']
             msg['Subject'] = prefix + subject
-    #
     # get rid of duplicate headers
     del msg['sender']
     del msg['errors-to']
     msg['Sender'] = msgdata.get('errorsto', adminaddr)
     msg['Errors-To'] = msgdata.get('errorsto', adminaddr)
-    #
     # Mark message so we know we've been here, but leave any existing
     # X-BeenThere's intact.
     msg['X-BeenThere'] = mlist.GetListEmail()
-    #
     # Add Precedence: and other useful headers.  None of these are standard
     # and finding information on some of them are fairly difficult.  Some are
     # just common practice, and we'll add more here as they become necessary.
@@ -86,7 +83,6 @@ def process(mlist, msg, msgdata):
     # want the value to be `list'.
     if not msg.get('precedence'):
         msg['Precedence'] = 'bulk'
-    #
     # Reply-To: munging.  Do not do this if the message is "fast tracked",
     # meaning it is internally crafted and delivered to a specific user.  BAW:
     # Yuck, I really hate this feature but I've caved under the sheer pressure
@@ -113,7 +109,6 @@ def process(mlist, msg, msgdata):
         if xreplyto:
             del msg['x-reply-to']
             msg['X-Reply-To'] = xreplyto
-    #
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
     # if the message is being crafted for a specific list (e.g. not for the
     # password reminders).
@@ -123,9 +118,8 @@ def process(mlist, msg, msgdata):
     # headers by default, pissing off their users.  Too bad.  Fix the MUAs.
     if msgdata.get('_nolist'):
         return
-    #
     # Pre-calculate
-    listid = '<%s.%s>' % (mlist._internal_name, mlist.host_name)
+    listid = '<%s.%s>' % (mlist.internal_name(), mlist.host_name)
     if mlist.description:
         listid = mlist.description + ' ' + listid
     requestaddr = mlist.GetRequestEmail()
@@ -138,7 +132,6 @@ def process(mlist, msg, msgdata):
         'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
         'List-Post'       : '<mailto:%s>' % mlist.GetListEmail(),
         }
-    #
     # First we delete any pre-existing headers because the RFC permits only
     # one copy of each, and we want to be sure it's ours.
     for h, v in headers.items():
@@ -149,7 +142,6 @@ def process(mlist, msg, msgdata):
         if len(h) + 2 + len(v) > 78:
             v = CONTINUATION.join(v.split(', '))
         msg[h] = v
-    #
     # Always delete List-Archive header, but only add it back if the list is
     # actually archiving
     del msg['list-archive']
