@@ -53,7 +53,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    f.close()
 
     def GetAdminEmail(self):
-	return '%s-admin@%s' % (self._internal_name, self.host_name)
+        return '%s-admin@%s' % (self._internal_name, self.host_name)
 
     def GetRequestEmail(self):
 	return '%s-request@%s' % (self._internal_name, self.host_name)
@@ -269,48 +269,32 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ]
         config_info['privacy'] = [
             "List access policies, including anti-spam measures,"
-            " covering members and outsiders.",
+            " covering members and outsiders."
+            '  (See also the <a href="%s">Archival Options section</a> for'
+            ' separate archive-privacy settings.)'
+            % os.path.join(self.GetScriptURL('admin'), 'archive'),
 
 	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Advertise this list when people ask what lists are on '
 	     'this machine?'),
 
-	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Must posts be approved by a moderator?',
+	    ('open_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     'Are subscribes done without admins approval (<em>open</em>)?',
 
-             "If the 'posters' option has any entries then it supercedes"
-             " this setting."),
+             "Disabling this option makes the list <em>closed</em>, where"
+             " members are admitted at the discretion of the administrator."),
 
-	    ('posters', mm_cfg.EmailList, (5, 30), 1,
-	     'Addresses blessed for posting to this list.  (Adding'
-             ' anyone to this list implies moderation of everyone else.)',
+	    ('web_subscribe_requires_confirmation', mm_cfg.Radio,
+	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
+	     'What confirmation is required for on-the-web subscribes?',
 
-             "Adding any entries to this list supercedes the setting of"
-             " the list-moderation option."),
+             "This option determines whether web-initiated subscribes"
+             " require further confirmation, either from the subscribed"
+             " address or from the list administrator.  Lack of any"
+             " confirmation makes web-based confirms a target for"
+             " mischievous subscriptions by third parties."),
 
-	    ('forbidden_posters', mm_cfg.EmailList, (5, 30), 1,
-             'Addresses whose postings are always held for approval.',
-
-	     "Email addresses whose posts should always be held for"
-             " approval, no matter what other options you have set"),
-
- 	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
- 	     'Must posts have list named in destination (to, cc)  field?'),
-
- 	    ('acceptable_aliases', mm_cfg.Text, ('4', '30'), 0,
- 	     'Alias names (regexps) which qualify as explicit to or cc'
-             ' destination names for this list.'), 
-
- 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '50'), 0,
- 	     'Hold posts having specified header matching regexp.',
-
-             "Use this option to prohibit posts based on specific header"
-             " values.  The header name is taken literally as everything"
-             " before the colon.  The target value is taken as a"
-             " case-insensitive regexp for matching against the specified"
-             " header.  <p>Note that leading whitespace is trimmed from the"
-             " regexp.  This can be defeated in a number of ways, eg"
-             " by escaping or bracketing it."),
+            "Membership exposure",
 
 	    ('private_roster', mm_cfg.Radio,
 	     ('Anyone', 'List members', 'List admin only'), 0,
@@ -329,24 +313,69 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " scanners recognizing them and snarfing them up for"
              " use by spammers."),
 
+            "General posting filters",
+
+	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     'Must posts be approved by a moderator?',
+
+             "If the 'posters' option has any entries then it supercedes"
+             " this setting."),
+
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Restrict posting privilege to only list members?'),
 
-	    ('open_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Are subscribes done without admins approval?',
+	    ('posters', mm_cfg.EmailList, (5, 30), 1,
+	     'Addresses blessed for posting to this list.  (Adding'
+             ' anyone to this list implies moderation of everyone else.)',
 
-             "Setting this option makes the list a closed one, where"
-             " the members are admitted by choice of the administrator."),
+             "Adding any entries to this list supercedes the setting of"
+             " the list-moderation option."),
 
-	    ('web_subscribe_requires_confirmation', mm_cfg.Radio,
-	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
-	     'What confirmation is required for off-the-web subscribes?',
+            "Spam-specific posting filters",
 
-             "This options indicates whether web-initiated subscribes"
-             " require further confirmation, either come from subscribed"
-             " address or from the list administrator.  Lack of any"
-             " confirmation makes web-based confirms a target for"
-             " mischievous subscriptions by third parties."),
+ 	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
+ 	     'Must posts have list named in destination (to, cc) field'
+             ' (or be among the acceptable alias names, specified below)?',
+
+             "Many (in fact, most) spams do not explicitly name their myriad"
+             " destinations in the explicit destination addresses - in fact,"
+             " often the to field has a totally bogus address for"
+             " obfuscation.  The constraint applies only to the stuff in"
+             " the address before the '@' sign, but still catches all such"
+             "  spams."
+             "<p>The cost is that the list will not accept unhindered any"
+             " postings relayed from other addresses, unless <ol>"
+             " <li>The relaying address has the same name, or"
+             " <li>The relaying address name is included on the options that"
+             " specifies acceptable aliases for the list. </ol>."),
+
+ 	    ('acceptable_aliases', mm_cfg.Text, ('4', '30'), 0,
+ 	     'Alias names (regexps) which qualify as explicit to or cc'
+             ' destination names for this list.',
+
+             "Alternate list names (the stuff before the '@') that are to be"
+             " accepted when the explicit-destination constraint (a prior"
+             " option) is active.  This enables things like cascading"
+             " maillists and relays while the constraint is still"
+             " preventing random spams."), 
+
+	    ('forbidden_posters', mm_cfg.EmailList, (5, 30), 1,
+             'Addresses whose postings are always held for approval.',
+
+	     "Email addresses whose posts should always be held for"
+             " approval, no matter what other options you have set."
+             " See also the subsequent option which applies to arbitrary"
+             " content of arbitrary headers."),
+
+ 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '50'), 0,
+ 	     'Hold posts with header value matching a specified regexp.',
+
+             "Use this option to prohibit posts according to specific header"
+             " values.  The target value is taken as a case-insensitive"
+             " regexp for matching against the specified header."
+             " <p>Note that leading whitespace is trimmed from the"
+             " regexp.  This can be circumvented in a number of ways, eg"
+             " by escaping or bracketing it."),
             ]
 
 	config_info['nondigest'] = [
