@@ -23,23 +23,17 @@ archival.
 """
 
 
-#
-# system modules
-#
-import sys, os, string
+import sys
+import os
+import string
 import errno
 import traceback
 
-from Mailman.Utils import reraise, mkdir, SafeDict
-from Mailman.pythonlib.StringIO import StringIO
-
-#
-# package/project modules
-#
+from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Mailbox
-from Mailman import mm_cfg
 from Mailman import LockFile
+from Mailman.pythonlib.StringIO import StringIO
 
 
 
@@ -49,7 +43,7 @@ def makelink(old, new):
     except os.error, e:
         code, msg = e
         if code <> errno.EEXIST:
-            reraise()
+            raise
 
 def breaklink(link):
     try:
@@ -57,7 +51,7 @@ def breaklink(link):
     except os.error, e:
         code, msg = e
         if code <> errno.ENOENT:
-            reraise()
+            raise
 
 
 
@@ -111,11 +105,11 @@ class Archiver:
             mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
             self._internal_name)
         try:
-            mkdir(self.private_archive_file_dir)
+            Utils.mkdir(self.private_archive_file_dir)
         except os.error, e:
             code, msg = e
             if code <> errno.EEXIST:
-                reraise()
+                raise
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
@@ -173,13 +167,13 @@ class Archiver:
             self.LogMsg("error", ("Archive file access failure:\n"
                                   "\t%s %s"
                                   % (afn, `msg`)))
-            reraise()
+            raise
         if self.clobber_date:
             # Resurrect original date setting.
             post.SetHeader('Date', olddate)
 
     def ExternalArchive(self, ar, txt):
-        d = SafeDict({'listname': self.internal_name()})
+        d = Utils.SafeDict({'listname': self.internal_name()})
         cmd = ar % d
         extarch = os.popen(cmd, 'w')
         extarch.write(txt)
