@@ -46,6 +46,8 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import MemberAdaptor
+from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -82,19 +84,44 @@ def main():
     if not listnames:
         listnames = Utils.list_names()
 
+    msg = _('[disabled by periodic sweep and cull, no message available]')
     today = time.mktime(time.localtime()[:3] + (0,) * 6)
     for listname in listnames:
         # List of members to notify
         notify = []
         mlist = MailList.MailList(listname, lock=0)
         interval = mlist.bounce_you_are_disabled_warnings_interval
+        # Find all the members who are currently bouncing and see if they've
+        # reached the disable threshold but haven't yet been disabled.  This
+        # is a sweep through the membership catching situations where they've
+        # bounced a bunch, then the list admin lowered the threshold, but we
+        # haven't (yet) seen more bounces from the member.  Note: we won't
+        # worry about stale information or anything else since the normal
+        # bounce processing code will handle that.
+        disables = []
+        for member in mlist.getBouncingMembers():
+            if mlist.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
+                continue
+            info = mlist.getBounceInfo(member)
+            if info.score >= mlist.bounce_score_threshold:
+                disables.append((member, info))
+        if disables:
+            mlist.Lock()
+            try:
+                for member, info in disables:
+                    mlist.disableBouncingMember(member, info, msg)
+                mlist.Save()
+            finally:
+                mlist.Unlock()
         # Go through all the members who have delivery disabled due to
         # bouncing, and find those that are due to have another notification.
         members = mlist.getDeliveryStatusMembers((MemberAdaptor.BYBOUNCE,))
         for member in members:
             info = mlist.getBounceInfo(member)
             if not info:
-                # Hmm...
+                syslog('error',
+                       '%s disabled BYBOUNCE but lacks bounce info, list: %s',
+                       member, mlist.internal_name())
                 continue
             lastnotice = time.mktime(info.lastnotice + (0,) * 6)
             if today >= lastnotice + interval:
@@ -105,6 +132,8 @@ def main():
         mlist.Lock()
         try:
             for member in notify:
+                syslog('bounce', 'Notifying disabled member %s for list: %s',
+                       member, mlist.internal_name())
                 mlist.sendNextNotification(member)
             mlist.Save()
         finally:
