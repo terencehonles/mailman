@@ -22,6 +22,8 @@ import sys
 import os, cgi, string, types
 from Mailman import Utils, MailList
 from Mailman import htmlformat
+from Mailman.HTMLFormatter import HTMLFormatter
+from Mailman import Errors
 
 
 #Editable templates.  We should also be able to edit the archive index, which 
@@ -65,7 +67,10 @@ def main():
         doc.AddItem(htmlformat.Header(2, "%s : No such list" % list_name))
         print doc.Format()
         sys.exit(0)
-
+    #
+    # get the list._template_dir attribute
+    #
+    HTMLFormatter.InitVars(list)
 
     if len(list_info) > 1:
         template_name = list_info[1]
@@ -110,7 +115,7 @@ def main():
                 try:
                     list.ConfirmAdminPassword(cgi_data['adminpw'].value)
                     ChangeHTML(list, cgi_data, template_name, doc)
-                except:
+                except Errors.MMBadPassword:
                     m = 'Error: Incorrect admin password.'
                     doc.AddItem(htmlformat.Header(3, 
                                                   htmlformat.Italic(
