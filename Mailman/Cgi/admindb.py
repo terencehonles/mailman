@@ -22,10 +22,7 @@ import types
 import cgi
 import errno
 import signal
-
-from mimelib.Parser import Parser
-from mimelib.MsgReader import MsgReader
-import mimelib.Errors
+import email
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -33,6 +30,7 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import Message
 from Mailman import i18n
+from Mailman.ListAdmin import readMessage
 from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
@@ -218,14 +216,11 @@ def show_post_requests(mlist, id, info, total, count, form):
         msg += _(' (%(count)d of %(total)d)')
     form.AddItem(Center(Header(2, msg)))
     # We need to get the headers and part of the textual body of the message
-    # being held.  The best way to do this is to use the mimelib Parser to get
+    # being held.  The best way to do this is to use the email Parser to get
     # an actual object, which will be easier to deal with.  We probably could
     # just do raw reads on the file.
-    p = Parser(Message.Message)
     try:
-        fp = open(os.path.join(mm_cfg.DATA_DIR, filename))
-        msg = p.parse(fp)
-        fp.close()
+        msg = readMessage(os.path.join(mm_cfg.DATA_DIR, filename))
     except IOError, e:
         if e.errno <> errno.ENOENT:
             raise
@@ -237,7 +232,7 @@ def show_post_requests(mlist, id, info, total, count, form):
         except Errors.LostHeldMessage:
             pass
         return
-    except mimelib.Errors.MessageParseError:
+    except email.Errors.MessageParseError:
         form.AddItem(_('<em>Message with id #%(id)d is corrupted.'))
         # BAW: Should we really delete this, or shuttle it off for site admin
         # to look more closely at?
@@ -251,11 +246,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     # Get the header text and the message body excerpt
     lines = []
     chars = 0
-    reader = MsgReader(msg)
-    while 1:
-        line = reader.readline()
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         lines.append(line)
         chars += len(line)
         if chars > mm_cfg.ADMINDB_PAGE_TEXT_LIMIT:

@@ -28,9 +28,7 @@ import signal
 from types import *
 from string import lowercase, digits
 
-from mimelib.address import unquote
-# WIBNI I could just import this from mimelib.address?
-from Mailman.pythonlib.rfc822 import parseaddr
+from email.Utils import unquote, parseaddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
