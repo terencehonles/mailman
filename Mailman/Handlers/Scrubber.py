@@ -64,12 +64,12 @@ def process(mlist, msg, msgdata=None):
     for part in msg.walk():
         # If the part is text/plain, we leave it alone
         if part.get_type('text/plain') == 'text/plain':
-            continue
+            pass
         # I think it's generally a good idea to scrub out HTML.  You never
         # know what's in there -- web bugs, JavaScript nasties, etc.  If the
         # whole message is HTML, just discard the entire thing.  Otherwise,
         # just add an indication that the HTML part was removed.
-        if part.get_type() == 'text/html':
+        elif part.get_type() == 'text/html':
             if outer:
                 raise DiscardMessage
             part.set_payload(_("An HTML attachment was scrubbed and removed"))
@@ -89,6 +89,7 @@ Size: %(size)d bytes
 Desc: %(desc)s
 Url : %(url)s
 """))
+        outer = 0
     # We still have to sanitize the message to flat text because Pipermail
     # can't handle messages with list payloads.  This is a kludge (def (n)
     # clever hack ;).
@@ -151,7 +152,11 @@ def save_attachment(mlist, msg):
         # We don't know what it is, so assume it's just a shapeless
         # application/octet-stream
         ext = '.bin'
-    fp = open(os.path.join(dir, file + ext), 'w')
+    omask = os.umask(002)
+    try:
+        fp = open(os.path.join(dir, file + ext), 'w')
+    finally:
+        os.umask(omask)
     fp.write(decodedpayload)
     fp.close()
     # Now calculate the url
