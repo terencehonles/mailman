@@ -70,7 +70,16 @@ def process(mlist, msg):
     # Go through all refused recipients and deal with them if possible
     tempfailures = []
     for recip, (code, smtpmsg) in refused.items():
-        if code >= 500:
+        # DRUMS is an internet draft, but it says:
+        #
+        #    [RFC-821] incorrectly listed the error where an SMTP server
+        #    exhausts its implementation limit on the number of RCPT commands
+        #    ("too many recipients") as having reply code 552.  The correct
+        #    reply code for this condition is 452. Clients SHOULD treat a 552
+        #    code in this case as a temporary, rather than permanent failure
+        #    so the logic below works.
+        #
+        if code >= 500 and code <> 552:
             # It's a permanent failure for this recipient so register it.  We
             # don't save the list between each registration because we assume
             # it happens around the whole message delivery sequence
