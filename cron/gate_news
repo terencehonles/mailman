@@ -260,8 +260,9 @@ def poll_newsgroup(mlist, conn, first, last):
             lines.append('')
             msg = Message.OutgoingMessage(string.join(lines, '\n'))
             msg.fromusenet = 1
-            if not found_to:
-                msg['To'] = mlist.GetListEmail()
+            if found_to:
+                msg['X-Originally-To'] = msg['To']
+            msg['To'] = mlist.GetListEmail()
             # the list must be locked during posting
             lockflag = mlist.Locked()
             try:
