@@ -97,6 +97,8 @@ The Mailman TODO list
 - sort by date should go most-recent to oldest
 - allow list owner to edit archive messages
 - support for alternative archiving systems, e.g. MHonArc, Hypermail
+- archive link should do *something* reasonable before the first
+  message has been posted to the list.
 
 *Code cleanup
 - Use the re module where regexp and regsub are used.
