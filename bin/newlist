@@ -10,6 +10,11 @@ sys.path.append('/home/mailman/mailman/modules')
 import maillist, mm_utils
 
 list_name = raw_input("Enter the name of the list: ")
+
+if list_name in maillist.list_names():
+    sys.stderr.write("** List with name %s already exists\n" % `list_name`)
+    raise SystemExit, 1
+
 owner_mail = raw_input("Enter the email of the person runing the list: ")
 list_pw = raw_input("Enter the initial list password:")
 
