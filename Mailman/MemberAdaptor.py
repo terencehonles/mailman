@@ -1,4 +1,4 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,8 +42,8 @@ email interfaces.  Updating membership information in that case is the
 backend's responsibility.  Adaptors are allowed to support parts of the
 writeable interface.
 
-For any writeable method not supported, a NotImplemented exception should be
-raised.
+For any writeable method not supported, a NotImplementedError exception should
+be raised.
 """
 
 # Delivery statuses
@@ -61,15 +61,15 @@ class MemberAdaptor:
     #
     def getMembers(self):
         """Get the LCE for all the members of the mailing list."""
-        raise NotImplemented
+        raise NotImplementedError
 
     def getRegularMemberKeys(self):
         """Get the LCE for all regular delivery members (i.e. non-digest)."""
-        raise NotImplemented
+        raise NotImplementedError
 
     def getDigestMemberKeys(self):
         """Get the LCE for all digest delivery members."""
-        raise NotImplemented
+        raise NotImplementedError
 
     def isMember(self, member):
         """Return 1 if member KEY/LCE is a valid member, otherwise 0."""
@@ -79,14 +79,14 @@ class MemberAdaptor:
 
         If member does not refer to a valid member, raise NotAMemberError.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getMemberCPAddress(self, member):
         """Return the CPE for the member KEY/LCE.
 
         If member does not refer to a valid member, raise NotAMemberError.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getMemberCPAddresses(self, members):
         """Return a sequence of CPEs for the given sequence of members.
@@ -96,7 +96,7 @@ class MemberAdaptor:
         in the returned sequence will be None (i.e. NotAMemberError is never
         raised).
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def authenticateMember(self, member, response):
         """Authenticate the member KEY/LCE with the given response.
@@ -106,14 +106,14 @@ class MemberAdaptor:
         password, but it will be used to craft a session cookie, so it should
         be persistent for the life of the session.
 
-        If the authentication failed return 0.  If member did not refer to a
-        valid member, raise NotAMemberError.
+        If the authentication failed return False.  If member did not refer to
+        a valid member, raise NotAMemberError.
 
         Normally, the response will be the password typed into a web form or
         given in an email command, but it needn't be.  It is up to the adaptor
         to compare the typed response to the user's authentication token.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getMemberPassword(self, member):
         """Return the member's password.
@@ -121,7 +121,7 @@ class MemberAdaptor:
         If the member KEY/LCE is not a member of the list, raise
         NotAMemberError.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getMemberLanguage(self, member):
         """Return the preferred language for the member KEY/LCE.
@@ -132,7 +132,7 @@ class MemberAdaptor:
         If member does not refer to a valid member, the list's default
         language is returned instead of raising a NotAMemberError error.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getMemberOption(self, member, flag):
         """Return the boolean state of the member option for member KEY/LCE.
@@ -141,7 +141,7 @@ class MemberAdaptor:
 
         If member does not refer to a valid member, raise NotAMemberError.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getMemberName(self, member):
         """Return the full name of the member KEY/LCE.
@@ -151,14 +151,14 @@ class MemberAdaptor:
         characters in the name.  NotAMemberError is raised if member does not
         refer to a valid member.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getMemberTopics(self, member):
         """Return the list of topics this member is interested in.
 
         The return value is a list of strings which name the topics.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getDeliveryStatus(self, member):
         """Return the delivery status of this member.
@@ -176,7 +176,7 @@ class MemberAdaptor:
 
         If member is not a member of the list, raise NotAMemberError.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getDeliveryStatusChangeTime(self, member):
         """Return the time of the last disabled delivery status change.
@@ -185,7 +185,7 @@ class MemberAdaptor:
         be zero.  If member is not a member of the list, raise
         NotAMemberError.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getDeliveryStatusMembers(self,
                                  status=(UNKNOWN, BYUSER, BYADMIN, BYBOUNCE)):
@@ -195,7 +195,7 @@ class MemberAdaptor:
         of ENABLED, UNKNOWN, BYUSER, BYADMIN, or BYBOUNCE.  The members whose
         delivery status is in this sequence are returned.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getBouncingMembers(self):
         """Return the list of members who have outstanding bounce information.
@@ -204,7 +204,7 @@ class MemberAdaptor:
         getDeliveryStatusMembers() since getBouncingMembers() will return
         member who have bounced but not yet reached the disable threshold.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def getBounceInfo(self, member):
         """Return the member's bounce information.
@@ -217,7 +217,7 @@ class MemberAdaptor:
 
         If member is not a member of the list, raise NotAMemberError.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
 
     #
@@ -245,14 +245,14 @@ class MemberAdaptor:
         Raise AlreadyAMemberError it the member is already subscribed to the
         list.  Raises ValueError if **kws contains an invalid option.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def removeMember(self, memberkey):
         """Unsubscribes the member from the mailing list.
 
         Raise NotAMemberError if member is not subscribed to the list.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def changeMemberAddress(self, memberkey, newaddress, nodelete=0):
         """Change the address for the member KEY.
@@ -267,7 +267,7 @@ class MemberAdaptor:
 
         If nodelete flag is true, then the old membership is not removed.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def setMemberPassword(self, member, password):
         """Set the password for member LCE/KEY.
@@ -275,9 +275,8 @@ class MemberAdaptor:
         If member does not refer to a valid member, raise NotAMemberError.
         Also raise BadPasswordError if the password is illegal (e.g. too
         short or easily guessed via a dictionary attack).
-
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def setMemberLanguage(self, member, language):
         """Set the language for the member LCE/KEY.
@@ -286,7 +285,7 @@ class MemberAdaptor:
         Also raise BadLanguageError if the language is invalid (e.g. the list
         is not configured to support the given language).
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def setMemberOption(self, member, flag, value):
         """Set the option for the given member to value.
@@ -298,7 +297,7 @@ class MemberAdaptor:
         Also raise BadOptionError if the flag does not refer to a valid
         option.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def setMemberName(self, member, realname):
         """Set the member's full name.
@@ -307,7 +306,7 @@ class MemberAdaptor:
         be a Unicode string if there are non-ASCII characters in the name.
         NotAMemberError is raised if member does not refer to a valid member.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def setMemberTopics(self, member, topics):
         """Add list of topics to member's interest.
@@ -316,7 +315,7 @@ class MemberAdaptor:
         NotAMemberError is raised if member does not refer to a valid member.
         topics must be a sequence of strings.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def setDeliveryStatus(self, member, status):
         """Set the delivery status of the member's address.
@@ -337,7 +336,7 @@ class MemberAdaptor:
         ENABLED, then the change time information will be deleted.  This value
         is retrievable via getDeliveryStatusChangeTime().
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def setBounceInfo(self, member, info):
         """Set the member's bounce information.
@@ -347,4 +346,4 @@ class MemberAdaptor:
         Bounce info is opaque to the MemberAdaptor.  It is set by this method
         and returned by getBounceInfo() without modification.
         """
-        raise NotImplemented
+        raise NotImplementedError
