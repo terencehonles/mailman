@@ -1,5 +1,8 @@
 #!/usr/local/bin/python
 # 
+# NOTE: This is being deprecated since mailman has been shifted over to an
+#       external archiver (ie, andrew kuchling's latest version of pipermail.)
+#
 # This program shouldn't be attempted by people who don't understand Python.
 # I wrote it to build archives for a few lists I'd been running for a long
 # time under majordomo.
