@@ -896,7 +896,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 "adminsubscribeack.txt",
                 {"listname" : self.real_name,
                  "member"   : formataddr((name, email)),
-                 }, lang=lang, mlist=self)
+                 }, mlist=self)
             msg = Message.OwnerNotification(self, subject, text)
             msg.send(self)
 
