@@ -49,4 +49,5 @@ def process(mlist, msg, msgdata):
         mlist.ArchiveMail(msg, msgdata)
     finally:
         # Restore the original date
-        msg['Date'] = date
+        if date is not None:
+            msg['Date'] = date
