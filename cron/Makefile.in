@@ -67,4 +67,4 @@ install:
 clean:
 
 distclean:
-	-rm Makefile
+	-rm Makefile crontab.in
