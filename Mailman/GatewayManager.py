@@ -32,3 +32,4 @@ class GatewayManager:
         self.linked_newsgroup = ''
         self.gateway_to_news = 0
         self.gateway_to_mail = 0
+        self.news_prefix_subject_too = 1
