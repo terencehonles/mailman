@@ -110,6 +110,10 @@ class GUIBase:
         if not property.startswith('_') and getattr(mlist, property) <> val:
             setattr(mlist, property, val)
 
+    def _postValidate(self, mlist, doc):
+        # Validate all the attributes for this category
+        pass
+
     def handleForm(self, mlist, category, subcat, cgidata, doc):
         for item in self.GetConfigInfo(mlist, category, subcat):
             # Skip descriptions and legacy non-attributes
@@ -136,17 +140,17 @@ class GUIBase:
             try:
                 val = self._getValidValue(mlist, property, wtype, val)
             except ValueError:
-                doc.addError(_('Invalid value for variable: %(property)s'),
-                             tag=_('Error: '))
-                return
+                doc.addError(_('Invalid value for variable: %(property)s'))
             # This is the parent of MMBadEmailError and MMHostileAddress
             except Errors.EmailAddressError:
                 doc.addError(
-                    _('Bad email address for option %(property)s: %(val)s'),
-                    tag=_('Error: '))
-                return
-            # Set the attribute, which will normally delegate to the mlist
-            self._setValue(mlist, property, val, doc)
+                    _('Bad email address for option %(property)s: %(val)s'))
+            else:
+                # Set the attribute, which will normally delegate to the mlist
+                self._setValue(mlist, property, val, doc)
+        # Do a final sweep once all the attributes have been set.  This is how
+        # we can do cross-attribute assertions
+        self._postValidate(mlist, doc)
 
     # Convenience method for handling $-string attributes
     def _convertString(self, mlist, property, alloweds, val, doc):
