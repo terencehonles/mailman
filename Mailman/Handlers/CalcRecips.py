@@ -24,6 +24,32 @@ SendmailDeliver and BulkDeliver modules.
 """
 
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import Message
+from Mailman.i18n import _
+from Mailman.Errors import RejectMessage
+from Mailman.Logging.Syslog import syslog
+
+
+
+class RejectUrgentMessage(RejectMessage):
+    def __init__(self, mlist, msg):
+        self._realname = mlist.real_name
+        self._subject = msg['subject'] or _('(no subject)')
+
+    def subject(self):
+        return _('Your urgent message was rejected')
+
+    def details(self):
+        # Do it this way for i18n.
+        realname = self._realname
+        subject = self._subject
+        txt = _("""\
+Your urgent message to the %(realname)s mailing list was not authorized for
+delivery.  The original message as received by Mailman is attached.
+
+""")
+        return Utils.wrap(txt)
 
 
 
@@ -32,6 +58,27 @@ def process(mlist, msg, msgdata):
     # regardless of whether the list is empty or not.
     if msgdata.has_key('recips'):
         return
+    # Support for urgent messages, which bypasses digests and disabled
+    # delivery and forces an immediate delivery to all members Right Now.  We
+    # are specifically /not/ allowing the site admins password to work here
+    # because we want to discourage the practice of sending the site admin
+    # password through email in the clear. (see also Approve.py)
+    missing = []
+    password = msg.get('urgent', missing)
+    if password is not missing:
+        if mlist.Authenticate((mm_cfg.AuthListModerator,
+                               mm_cfg.AuthListAdmin),
+                              password):
+            recips = mlist.GetDeliveryMembers() + \
+                     mlist.GetDigestDeliveryMembers()
+            msgdata['recips'] = recips
+            return
+        else:
+            # Bad Urgent: password, so hold it instead of passing it on.  I
+            # think it's better that the sender know they screwed up than to
+            # deliver it normally.
+            raise RejectUrgentMessage(mlist, msg)
+    # Normal delivery to the regular members.
     dont_send_to_sender = 0
     # Get the membership address of the sender, if a member.  Then get the
     # sender's receive-own-posts option
