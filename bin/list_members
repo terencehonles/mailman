@@ -84,7 +84,9 @@ def usage(code, msg=''):
 
 
 def whymatches(mlist, addr, why):
-    # Filter out nomails
+    # Return true if the `why' matches the reason the address is enabled, or
+    # in the case of why is None, that they are disabled for any reason
+    # (i.e. not enabled).
     status = mlist.getDeliveryStatus(addr)
     if why is None:
         return status <> MemberAdaptor.ENABLED
