@@ -282,7 +282,7 @@ class LockFile:
                     # stale hard link, so we raise an exception instead and
                     # let the human operator take care of the problem.
                     if code == errno.ENOENT:
-                        self.__log('stale lockfile found')
+                        self.__writelog('stale lockfile found')
                         raise StaleLockFileError(
                             'Stale lock file found linked to file: '
                             +self.__lockfile+' (requires '+
