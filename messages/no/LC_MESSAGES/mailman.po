@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Mailman 2.1b1\n"
+"Project-Id-Version: Mailman 2.1b2\n"
 "POT-Creation-Date: Sat Jul 13 10:45:33 2002\n"
-"PO-Revision-Date: 2002-05-22 23:58+0200\n"
+"PO-Revision-Date: 2002-07-26 02:38+0200\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -43,19 +43,16 @@ msgid "#%(counter)05d %(msgid)s"
 msgstr ""
 
 #: Mailman/Bouncer.py:44
-#, fuzzy
 msgid "due to excessive bounces"
-msgstr "på grunn av returmeldinger"
+msgstr "på grunn av for mange returmeldinger"
 
 #: Mailman/Bouncer.py:45
-#, fuzzy
 msgid "by yourself"
 msgstr "av deg"
 
 #: Mailman/Bouncer.py:46
-#, fuzzy
 msgid "by the list administrator"
-msgstr "listeadministratoren"
+msgstr "av listeadministratoren"
 
 #: Mailman/Bouncer.py:47 Mailman/Bouncer.py:230
 #: Mailman/Commands/cmd_set.py:182
@@ -700,6 +697,9 @@ msgid ""
 "least\n"
 "    one blank line at the end..."
 msgstr ""
+"Her kan du legge inn ekstra tekst som skal legges til i toppen av invitasjonen\n"
+"eller påmeldingsbekreftelsen, i tekstboksen nedenfor. Husk å ha minst én blank\n"
+"linje nederst..."
 
 #: Mailman/Cgi/admin.py:1106
 msgid "Send unsubscription acknowledgement to the user?"
@@ -2026,11 +2026,13 @@ msgid ""
 "address.  Upon confirmation, any other mailing list containing the address\n"
 "%(user)s will be changed. "
 msgstr ""
+"Den nye adressen %(newaddr)s er allerede påmeldt epostlisten %(listname)s,\n"
+"men du har også bedt om endring på alle lister. Etter ditt samtykke vil\n"
+"alle andre epostlister som inneholder %(user)s bli endret. "
 
 #: Mailman/Cgi/options.py:306
-#, fuzzy
 msgid "The new address is already a member: %(newaddr)s"
-msgstr "    den kopierte adressene er allerede medlem:"
+msgstr "Den nye adressen er allerede påmeldt: %(newaddr)s"
 
 #: Mailman/Cgi/options.py:312
 msgid "Addresses may not be blank"
@@ -3302,7 +3304,7 @@ msgstr "Koreansk"
 
 #: Mailman/Defaults.py:1173
 msgid "Dutch"
-msgstr ""
+msgstr "Nederlansk"
 
 #: Mailman/Defaults.py:1174
 msgid "Norwegian"
@@ -3400,7 +3402,6 @@ msgid "Auto-responder"
 msgstr "Automatiske svar"
 
 #: Mailman/Gui/Autoresponse.py:39
-#, fuzzy
 msgid ""
 "Auto-responder characteristics.<p>\n"
 "\n"
@@ -3419,19 +3420,16 @@ msgid ""
 msgstr ""
 "Innstillinger for automatiske svar.<p>\n"
 "\n"
-"I tekstboksene nedenfor kan du bruke følgende variabler (skriv dem slik: "
-"%(&lt;variabelnavn&gt;)s ) for å sette inn ønsket informasjon:\n"
+"I tekstboksene nedenfor kan du bruke følgende variabler (skriv dem slik: %(&lt;variabelnavn&gt;)s ) for å sette inn ønsket informasjon:\n"
 "<p><ul>\n"
 "        <li><b>listname</b> - <em>navnet p&aring; listen</em>\n"
 "        <li><b>listurl</b> - <em>URL til listens webside</em>\n"
 "        <li><b>requestemail</b> - <em>listens -request epostadresse</em>\n"
-"        <li><b>adminemail</b> - <em>listens -admin epostadresse</em>\n"
 "        <li><b>owneremail</b> - <em>listens -owner epostadresse</em>\n"
 "</ul>\n"
 "\n"
 "<p>Du kan enten skrive teksten direkte inn i tekstboksene, eller du kan\n"
-"angi navnet p&aring; en fil som inneholder teksten. Denne filen vil s&aring; "
-"lastes inn\n"
+"angi navnet p&aring; en fil som inneholder teksten. Denne filen vil s&aring; lastes inn\n"
 "i tekstboksen, fra ditt lokale filsystem."
 
 #: Mailman/Gui/Autoresponse.py:55
@@ -3447,18 +3445,16 @@ msgid "Auto-response text to send to mailing list posters."
 msgstr "Automatisk svar som skal sendes."
 
 #: Mailman/Gui/Autoresponse.py:63
-#, fuzzy
 msgid ""
 "Should Mailman send an auto-response to emails sent to the\n"
 "             -owner address?"
 msgstr ""
 "Skal Mailman sende et automatisk svar p&aring; epost som sendes til\n"
-"             -admin og -owner adressene?"
+"             -owner adressen?"
 
 #: Mailman/Gui/Autoresponse.py:68
-#, fuzzy
 msgid "Auto-response text to send to -owner emails."
-msgstr "Automatisk svar p&aring; epost til -request adressen."
+msgstr "Automatisk svar p&aring; epost til -owner adressen."
 
 #: Mailman/Gui/Autoresponse.py:71
 msgid "Yes, w/discard"
@@ -3488,17 +3484,14 @@ msgid "Auto-response text to send to -request emails."
 msgstr "Automatisk svar p&aring; epost til -request adressen."
 
 #: Mailman/Gui/Autoresponse.py:82
-#, fuzzy
 msgid ""
 "Number of days between auto-responses to either the mailing\n"
 "             list or -request/-owner address from the same poster.  Set to\n"
 "             zero (or negative) for no grace period (i.e. auto-respond to\n"
 "             every message)."
 msgstr ""
-"Antall dager mellom automatisk svar p&aring; epost, fra samme avsender, til "
-"listen eller til\n"
-"            -admin/-owner adressene. Sett denne verdien til 0 (eller et "
-"negativt tall)\n"
+"Antall dager mellom automatisk svar p&aring; epost, fra samme avsender, til listen eller til\n"
+"            -request/-owner adressene. Sett denne verdien til 0 (eller et negativt tall)\n"
 "            for &aring; sende automatisk svar hver gang."
 
 #: Mailman/Gui/Bounce.py:26
@@ -6505,7 +6498,7 @@ msgstr ""
 
 #: Mailman/Handlers/Moderate.py:35
 msgid "Posts by member are currently quarantined for moderation"
-msgstr ""
+msgstr "Epost fra medlemmet settes i karantene for godkjenning av moderator"
 
 #: Mailman/Handlers/Moderate.py:130
 msgid ""
@@ -6869,7 +6862,7 @@ msgstr "påmelding på %(name)s krever godkjenning av administrator"
 
 #: Mailman/MailList.py:1306
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "Siste automatiske svar idag"
 
 #: Mailman/Queue/CommandRunner.py:73
 msgid "Ignoring non-text/plain MIME parts"
@@ -7870,17 +7863,15 @@ msgstr "endret på attributten \"%(k)s\""
 
 #: bin/config_list:255
 msgid "Non-standard property restored: %(k)s"
-msgstr ""
+msgstr "Ikke-standard egenskap gjenopprettet: %(k)s"
 
 #: bin/config_list:263
-#, fuzzy
 msgid "Invalid value for property: %(k)s"
-msgstr "Ugyldig verdi for: %(property)s"
+msgstr "Ugyldig verdi for egenskap: %(k)s"
 
 #: bin/config_list:265
-#, fuzzy
 msgid "Bad email address for option %(k)s: %(v)s"
-msgstr "Ugyldig epostadresse for innstillingen %(property)s: %(val)s"
+msgstr "Ugyldig epostadresse for innstillingen %(k)s: %(v)s"
 
 #: bin/config_list:304
 msgid "Only one of -i or -o is allowed"
@@ -9943,7 +9934,6 @@ msgstr ""
 "\n"
 
 #: cron/mailpasswds:19
-#, fuzzy
 msgid ""
 "Send password reminders for all lists to all users.\n"
 "\n"
@@ -9981,6 +9971,13 @@ msgstr ""
 "Brukes slik: %(PROGRAM)s [valg]\n"
 "\n"
 "Valg:\n"
+"\n"
+"    -l listenavn\n"
+"    --listname=listenavn\n"
+"        Sender påminnelse om passord kun for den angitte listen. Dersom ikke\n"
+"        dette valget benyttes, sendes det påminnelse for alle lister.\n"
+"        Flere -l/--listname valg kan benyttes.\n"
+"\n"
 "    --help\n"
 "    -h\n"
 "        Viser denne hjelpeteksten.\n"
