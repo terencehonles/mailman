@@ -21,7 +21,6 @@ Public archives are separated from private ones.  An external archival
 mechanism (eg, pipermail) should be pointed to the right places, to do the
 archival."""
 
-__version__ = "$Revision: 547 $"
 
 import sys, os, string
 import mm_utils, mm_mbox, mm_cfg, mm_message
@@ -52,8 +51,9 @@ class Archiver:
 	# hand, from the python interpreter!
 	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
 	self.private_archive_file_dir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
-	self.archive_directory = os.path.join(mm_cfg.HTML_DIR, "archives/%s" % 
-					      self._internal_name)
+	self.archive_directory = os.path.join(mm_cfg.HTML_DIR,
+                                              'archives'
+                                              self._internal_name)
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
