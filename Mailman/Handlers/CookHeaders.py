@@ -20,11 +20,15 @@ Use Cleanse.py module to actually remove various headers.
 """
 
 import re
+import urlparse
 from Mailman import mm_cfg
 
 
 
 def process(mlist, msg, msgdata):
+    # Mark the message as dirty so that its text will be forced to disk next
+    # time it's queued.
+    msgdata['_dirty'] = 1
     # Because we're going to modify various important headers in the email
     # message, we want to save some of the information in the msgdata
     # dictionary for later.  Specifically, the sender header will get waxed,
@@ -70,8 +74,11 @@ def process(mlist, msg, msgdata):
         msg['Precedence'] = 'bulk'
     #
     # Reply-To: munging.  Do not do this if the message is "fast tracked",
-    # meaning it is internally crafted and delivered to a specific user.
-    if not fasttrack:
+    # meaning it is internally crafted and delivered to a specific user,
+    # or if there is already a reply-to set.  If the user has set
+    # one we assume they have a good reason for it, and we don't
+    # second guess them.
+    if not fasttrack or msg.get('reply-to'):
         # Set Reply-To: header to point back to this list
         if mlist.reply_goes_to_list == 1:
             msg['Reply-To'] = mlist.GetListEmail()
@@ -79,31 +86,39 @@ def process(mlist, msg, msgdata):
         elif mlist.reply_goes_to_list == 2:
             msg['Reply-To'] = mlist.reply_to_address
     #
-    # Other list related non-standard headers.  Defined in:
+    # Add list-specific headers as defined in RFC 2369, but only if the
+    # message is being crafted for a specific list (e.g. not for the password
+    # reminders).
+    if msgdata.get('_nolist'):
+        return
     #
-    # Grant Neufeld and Joshua D. Baer: The Use of URLs as Meta-Syntax for
-    # Core Mail List Commands and their Transport through Message Header
-    # fields, draft-baer-listspec-01.txt, September 1997.
+    # Pre-calculate
+    listid = '<%s.%s>' % (mlist._internal_name, mlist.host_name)
+    if mlist.description:
+        listid = mlist.description + ' ' + listid
+    requestaddr = mlist.GetRequestEmail()
+    subfieldfmt = '<%s>, <mailto:%s?subject=%ssubscribe>'
+    listinfo = mlist.GetScriptURL('listinfo')
     #
-    # Referenced in
+    # TBD: List-Id is not in the RFC, but it was in an earlier draft so we
+    # leave it in for historical reasons.
+    headers = {
+        'List-Id'         : listid,
+        'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
+        'List-Unsubscribe': subfieldfmt % (listinfo, requestaddr, 'un'),
+        'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
+        'List-Post'       : '<mailto:%s>' % mlist.GetListEmail(),
+        }
     #
-    # http://www.dsv.su.se/~jpalme/ietf/mail-attributes.html
+    # First we delete any pre-existing headers because the RFC permist only
+    # one copy of each, and we want to be sure it's ours.
+    for h, v in headers.items():
+        del msg[h]
+        msg[h] = v
     #
-    if not msg.get('list-id') and not msgdata.get('_nolist'):
-        msg['List-Id'] = mlist.GetListIdentifier()
-    #
-    # These currently seem like overkill.  Maybe add them in later when
-    # the draft gets closer to a standard
-    #
-    # List-Subscribe
-    # List-Unsubscribe
-    # List-Owner
-    # List-Help
-    # List-Post
-    # List-Archive
-    # List-Software
-    # X-Listserver
-    #
-    # Mark the message as dirty so that its text will be forced to disk next
-    # time it's queued.
-    msgdata['_dirty'] = 1
+    # Always delete List-Archive header, but only add it back if the list is
+    # actually archiving
+    del msg['List-Archive']
+    if mlist.archive:
+        msg['List-Archive'] = urlparse.urljoin(mlist.web_page_url,
+                                               mlist.GetBaseArchiveURL())
