@@ -1,4 +1,4 @@
-# Deutsche Uebersetzung der MailMan messages
+# Deutsche Uebersetzung der Mailman messages
 # Jens Vagelpohl <jens@zope.com>, 2001.
 #
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 
 #: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
 msgid "No subject"
-msgstr "Kein Bezug"
+msgstr "Kein Betreff"
 
 #: Mailman/Archiver/pipermail.py:264
 msgid "Creating archive directory "
@@ -95,19 +95,19 @@ msgid ""
 "                non-digest delivery or your mailing list will basically be\n"
 "                unusable."
 msgstr ""
-"Sie haben die Sendung sowohl der Nachrichten als auch\n"
-"               der Zusammenfassungen abgestellt. Damit ist diese Liste\n"
-"               unbrauchbnar fuer Sie. Bitte waehlen Sie den Versand der\n"
-"               Zusammenfassungen oder der individuellen Nachrichten."
+"Sie haben die Sendung sowohl der Einzelnachrichten als auch\n"
+"               der Nachrichtensammlungen abgestellt. Damit ist diese Liste\n"
+"               unbrauchbnar fuer Sie. Bitte waehlen Sie entweder Versand von\n"
+"               Nachrichtensammlungen oder der einzelnen Nachrichten."
 
 #: Mailman/Cgi/admin.py:174
 msgid ""
 "You have digest members, but digests are turned\n"
 "                off. Those people will not receive mail."
 msgstr ""
-"Sie haben Mitglieder, die den Zusammenfassungs-Modus gewaehlt haben, aber\n"
-"               der Zusammenfassungs-Modus ist nicht freigegeben. Diese\n"
-"               Mitglieder bekommen somit keine Nachrichten."
+"Sie haben Mitglieder die Nachrichtensammlungen bekommen wollen, aber\n"
+"               der Sammlungs-Modus ist nicht freigegeben. Diese\n"
+"               Mitglieder bekommen deswegen keine Nachrichten."
 
 #: Mailman/Cgi/admin.py:179
 msgid ""
@@ -115,10 +115,10 @@ msgid ""
 "                turned off.  They will receive mail until you fix this\n"
 "                problem."
 msgstr ""
-"Sie haben Mitglieder, die den individuellen Nachrichten-Modus gewaehlt\n"
-"                haben, aber dieser Modus ist nicht freigegeben. Diese\n"
+"Sie haben Mitglieder, die einzelne Nachrichten bekommen wollen,\n"
+"                aber dieser Modus ist nicht freigegeben. Diese\n"
 "                Mitglieder bekommen erst dann Nachrichten, wenn Sie den\n"
-"                individuellen Nachrichten-Modus freigegeben haben."
+"                Modus fuer einzelne Nachrichten freigegeben haben."
 
 #: Mailman/Cgi/admin.py:203
 msgid "%(hostname)s mailing lists - Admin Links"
@@ -138,7 +138,7 @@ msgid ""
 "            mailing lists on %(hostname)s."
 msgstr ""
 "<p>Momentan sind keine oeffentlich zugaenglichen %(mailmanlink)s\n"
-"            Email-Listen auf %(hostname)s."
+"            Mailinglisten auf %(hostname)s."
 
 #: Mailman/Cgi/admin.py:238
 msgid ""
@@ -147,7 +147,7 @@ msgid ""
 "            name to visit the configuration pages for that list."
 msgstr ""
 "<p>Dies ist eine Auflistung aller oeffentlich verfuegbaren\n"
-"            %(mailmanlink)s Email-Listen auf %(hostname)s. Waehlen Sie einen\n"
+"            %(mailmanlink)s Mailinglisten auf %(hostname)s. Waehlen Sie einen\n"
 "            Listen-Namen, um die Konfigurationsseiten fuer diese Liste zu sehen."
 
 #: Mailman/Cgi/admin.py:245
@@ -307,7 +307,7 @@ msgstr "<em>Setzen Sie den Text unten ein, oder...</em><br>"
 
 #: Mailman/Cgi/admin.py:616
 msgid "<br><em>...specify a file to upload</em><br>"
-msgstr "<br><em>...waehlen Sie eine Datei</em><br>"
+msgstr "<br><em>...waehlen Sie eine Datei zum hochladen</em><br>"
 
 #: Mailman/Cgi/admin.py:642 Mailman/Cgi/admin.py:645
 msgid "Topic %(i)d"
@@ -353,7 +353,7 @@ msgid ""
 msgstr ""
 "<br><em><strong>Hinweis:</strong>\n"
 "        Aenderungen dieses Wertes werden sofort vorgenommen aber modifizieren\n"
-"        nicht dem permanenten Zustand.</em>"
+"        nicht den permanenten Zustand.</em>"
 
 #: Mailman/Cgi/admin.py:707
 msgid "Mass Subscriptions"
@@ -369,7 +369,7 @@ msgstr "Mitgliederliste"
 
 #: Mailman/Cgi/admin.py:788
 msgid "%(allcnt)s members total, %(membercnt)s shown"
-msgstr "%(allcnt)s Mitglieder insgesamt, %(membercnt)s werden gezeigt"
+msgstr "%(allcnt)s Mitglieder insgesamt, %(membercnt)s werden angezeigt"
 
 #: Mailman/Cgi/admin.py:791
 msgid "%(allcnt)s members total"
@@ -377,7 +377,7 @@ msgstr "%(allcnt)s Mitglieder insgesamt"
 
 #: Mailman/Cgi/admin.py:814
 msgid "unsub"
-msgstr "Entfernen"
+msgstr "Austragen"
 
 #: Mailman/Cgi/admin.py:815
 msgid "member address<br>member name"
@@ -389,7 +389,7 @@ msgstr "Verstecken"
 
 #: Mailman/Cgi/admin.py:816
 msgid "nomail"
-msgstr "Abgestellt"
+msgstr "Keine Mail"
 
 #: Mailman/Cgi/admin.py:817
 msgid "ack"
@@ -401,11 +401,11 @@ msgstr "Keine eigenen"
 
 #: Mailman/Cgi/admin.py:818
 msgid "digest"
-msgstr "Zusammenfassung"
+msgstr "Sammlung"
 
 #: Mailman/Cgi/admin.py:818
 msgid "plain"
-msgstr "Einfach"
+msgstr "Einzeln"
 
 #: Mailman/Cgi/admin.py:819
 msgid "language"
@@ -413,7 +413,7 @@ msgstr "Sprache"
 
 #: Mailman/Cgi/admin.py:880
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
-msgstr "<b>Entfernen</b> -- Abonnement beenden"
+msgstr "<b>Austragen</b> -- Abonnement beenden"
 
 #: Mailman/Cgi/admin.py:882
 msgid ""
@@ -448,7 +448,7 @@ msgid ""
 "<b>digest</b> -- Does the member get messages in digests?\n"
 "        (otherwise, individual messages)"
 msgstr ""
-"<b>Zusammenfassung</b> -- Bekommt dieses Mitglied Zusammenfassungen\n"
+"<b>Sammlung</b> -- Bekommt dieses Mitglied Sammlungen\n"
 "        anstatt einzelner Mitteilungen?"
 
 #: Mailman/Cgi/admin.py:895
@@ -456,7 +456,7 @@ msgid ""
 "<b>plain</b> -- If getting digests, does the member get plain\n"
 "        text digests?  (otherwise, MIME)"
 msgstr ""
-"<b>Einfach</b> -- Falls Zusammenfassung gewaehlt wurde, bekommt\n"
+"<b>Einfach</b> -- Falls Sammlungen gewaehlt wurde, bekommt\n"
 "        dieses Mitglied Mitteilungen in einfachem Text oder MIME-Format?"
 
 #: Mailman/Cgi/admin.py:897
@@ -499,7 +499,7 @@ msgstr "Fuegen Sie eine Adresse pro Zeile ein..."
 
 #: Mailman/Cgi/admin.py:952 Mailman/Cgi/admin.py:986
 msgid "...or specify a file to upload:"
-msgstr "...oder waehlen Sie ine Datei:"
+msgstr "...oder waehlen Sie eine Datei:"
 
 #: Mailman/Cgi/admin.py:963
 msgid "Send unsubscription acknowledgement to the user?"
@@ -507,7 +507,7 @@ msgstr "Bestaetigung des beendeten Abonnements an den Benutzer senden?"
 
 #: Mailman/Cgi/admin.py:972
 msgid "Send notifications to the list owner?"
-msgstr "Notizen an den Listen-Besitzer senden?"
+msgstr "Benachrichtigungen an den Listen-Besitzer senden?"
 
 #: Mailman/Cgi/admin.py:994
 msgid "Change list ownership passwords"
@@ -723,7 +723,7 @@ msgstr "Absender:"
 
 #: Mailman/Cgi/admindb.py:271
 msgid "Subject:"
-msgstr "Thema:"
+msgstr "Betreff:"
 
 #: Mailman/Cgi/admindb.py:273
 msgid "Reason:"
@@ -739,15 +739,15 @@ msgstr "Mitteilung fuer Administrator erhalten"
 
 #: Mailman/Cgi/admindb.py:294
 msgid "Additionally, forward this message to: "
-msgstr "Zusaetzliche Adressaten: "
+msgstr "Zusaetzlich weiterleiten an Adressaten: "
 
 #: Mailman/Cgi/admindb.py:299
 msgid "If you reject this post,<br>please explain (optional):"
-msgstr "Falls Sie diese Mitteilung zurueckweisen,<br>geben Sie den Grund (optional):"
+msgstr "Falls Sie diese Mitteilung zurueckweisen,<br>geben Sie den Grund an (optional):"
 
 #: Mailman/Cgi/admindb.py:302
 msgid "[No explanation given]"
-msgstr "[Keine Erklaerung angegeben]"
+msgstr "[Keine Begruendung angegeben]"
 
 #: Mailman/Cgi/admindb.py:307
 msgid "Message Headers:"
@@ -798,7 +798,7 @@ msgstr "Fehlerhafte Bestaetigung"
 
 #: Mailman/Cgi/confirm.py:148
 msgid "Enter confirmation cookie"
-msgstr "Bitte geben Sie den Bestaetigungs-Cookie an"
+msgstr "Bitte geben Sie den Bestaetigungs-Code an"
 
 #: Mailman/Cgi/confirm.py:161
 msgid ""
@@ -807,18 +807,22 @@ msgid ""
 "    below.  Then hit the <em>Submit</em> button to proceed to the next\n"
 "    confirmation step."
 msgstr ""
+"Bitte geben Sie den Bestaetigungscode\n"
+"    (i.e. <em>cookie</em>) den Sie in der Email erhalten haben, unten ein.\n"
+"    Dann klicken Sie auf den <em>Abschicken</em> Knopf um den naechsten\n"
+"    Bestaetigungschritt aufzurufen."
 
 #: Mailman/Cgi/confirm.py:166
 msgid "Confirmation string:"
-msgstr ""
+msgstr "Bestaetigungscode:"
 
 #: Mailman/Cgi/confirm.py:168
 msgid "Submit"
-msgstr ""
+msgstr "Abschicken"
 
 #: Mailman/Cgi/confirm.py:179
 msgid "Confirm subscription request"
-msgstr ""
+msgstr "Mitgliedsantrag bestaetigen"
 
 #: Mailman/Cgi/confirm.py:188
 msgid ""
@@ -833,26 +837,36 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this subscription\n"
 "    request."
 msgstr ""
+"Ihre Bestaetigung ist erforderlich um Ihren Antrag auf Abonnement\n"
+"    der Mailingliste <em>%(listname)s</em> abzuschliessen. Ihre\n"
+"    Einstellungen zum Antrag werden unten angezeigt, passen Sie diese an und\n"
+"    klicken Sie auf <em>Abonnieren</em> um die Bestaetigung abzuschliessen.\n"
+"    Sobald die Bestaetigung erfolgt ist, wird Ihnen eine Seite mit den Optionen\n"
+"    Ihres Abonnements angezeigt, wo Sie weitere Einstellungen für Ihre\n"
+"    Mitgliedschaft treffen koennen.\n"
+"\n"
+"    <p>Oder klicken Sie auf<em>Abbrechen und verwerfen</em> um die\n"
+"    Mailingliste nicht zu abonnieren."
 
 #: Mailman/Cgi/confirm.py:200
 msgid "Your email address:"
-msgstr ""
+msgstr "Ihre Emailadresse:"
 
 #: Mailman/Cgi/confirm.py:201
 msgid "Your real name:"
-msgstr ""
+msgstr "Ihr Name:"
 
 #: Mailman/Cgi/confirm.py:203 Mailman/Cgi/options.py:658
 msgid "Password:"
-msgstr ""
+msgstr "Passwort:"
 
 #: Mailman/Cgi/confirm.py:205
 msgid "Password (confirm):"
-msgstr ""
+msgstr "Passwort (nochmal)"
 
 #: Mailman/Cgi/confirm.py:207
 msgid "Receive digests?"
-msgstr ""
+msgstr "Nachrichtensammlungen abonnieren ?"
 
 #: Mailman/Cgi/confirm.py:208 Mailman/Cgi/create.py:301
 #: Mailman/Cgi/create.py:347 Mailman/Gui/Archive.py:30
@@ -869,7 +883,7 @@ msgstr ""
 #: Mailman/Gui/Privacy.py:147 Mailman/Gui/Privacy.py:221
 #: Mailman/Gui/Usenet.py:43 Mailman/Gui/Usenet.py:47 Mailman/Gui/Usenet.py:51
 msgid "No"
-msgstr ""
+msgstr "Nein"
 
 #: Mailman/Cgi/confirm.py:208 Mailman/Cgi/create.py:301
 #: Mailman/Cgi/create.py:347 Mailman/Gui/Archive.py:30
@@ -886,28 +900,28 @@ msgstr ""
 #: Mailman/Gui/Privacy.py:221 Mailman/Gui/Usenet.py:43
 #: Mailman/Gui/Usenet.py:47 Mailman/Gui/Usenet.py:51
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: Mailman/Cgi/confirm.py:216
 msgid "Preferred language:"
-msgstr ""
+msgstr "Bevorzugte Sprache:"
 
 #: Mailman/Cgi/confirm.py:220 Mailman/Cgi/listinfo.py:171
 msgid "Subscribe"
-msgstr ""
+msgstr "Abonnieren"
 
 #: Mailman/Cgi/confirm.py:221 Mailman/Cgi/confirm.py:389
 #: Mailman/Cgi/confirm.py:481
 msgid "Cancel and discard"
-msgstr ""
+msgstr "Abbrechen und verwerfen"
 
 #: Mailman/Cgi/confirm.py:231
 msgid "You have canceled your subscription request."
-msgstr ""
+msgstr "Sie haben Ihren Abo-Antrag abgebrochen "
 
 #: Mailman/Cgi/confirm.py:268
 msgid "Awaiting moderator approval"
-msgstr ""
+msgstr "Warten auf Bestaetigung des Moderators"
 
 #: Mailman/Cgi/confirm.py:271
 msgid ""
@@ -917,6 +931,11 @@ msgid ""
 "            has been forwarded to the list moderator, and you will be notified\n"
 "            of the moderator's decision."
 msgstr ""
+"            Sie haben Ihren Antrag auf Abonnement der Mailingliste %(listname)s\n"
+"            erfolgreich bestaetigt. Eine abschliessende Erlaubnis des Moderators\n"
+"            ist erforderlich bevor das Abonnement wirksam wird. Ihre Anfrage\n"
+"            wurde an den Moderator weitergeleitet, und Sie werden ueber dessen \n"
+"            Entscheidung informiert."
 
 #: Mailman/Cgi/confirm.py:278 Mailman/Cgi/confirm.py:339
 #: Mailman/Cgi/confirm.py:421
@@ -925,10 +944,13 @@ msgid ""
 "            possible that you are attempting to confirm a request for an\n"
 "            address that has already been unsubscribed."
 msgstr ""
+"Ungueltiger Bestaetigungscode. Es ist moeglich das\n"
+"            Sie versuchen einen Abo-Antrag fuer eine Emailadresse zu bestaetigen,\n"
+"            die bereits das Abonnement gekuendigt hat."
 
 #: Mailman/Cgi/confirm.py:287
 msgid "Subscription request confirmed"
-msgstr ""
+msgstr "Antrag auf Abo bestaetigt"
 
 #: Mailman/Cgi/confirm.py:292
 msgid ""
@@ -939,6 +961,11 @@ msgid ""
 "                membership password will be sent to you in a separate\n"
 "                acknowledgement email.<p>"
 msgstr ""
+"                Die von Ihnen eingegebenen Passwoerter zur Bestaetigung\n"
+"                waren nicht gleich, daher wird das urspruengliche Passwort\n"
+"                benutzt. Wenn Sie kein Passwort angegeben haben wird eines\n"
+"                automatisch erzeugt.  Auf jeden Fall geht Ihnen das Passwort\n"
+"                der Mitgliedschaft in einer getrennt verschickten Email zu.<p>\n"
 
 #: Mailman/Cgi/confirm.py:299
 msgid ""
@@ -951,14 +978,22 @@ msgid ""
 "            <a href=\"%(optionsurl)s\">proceed to your membership login\n"
 "            page</a>."
 msgstr ""
+"            Sie haben Ihren Abo-Antrag fuer \"%(addr)s\" bei der\n"
+"            Mailingliste %(listname)s bestaetigt.  Eine Email mit\n"
+"            der Bestaetigung und Ihrem Passwort wird an Sie geschickt,\n"
+"            sowie weiteren nuetzlichen Informationen und Links.\n"
+"\n"
+"            <p>Sie koennen nun zu Ihrer\n"
+"            <a href=\"%(optionsurl)s\">Mitgliedschaftsseite\n"
+"            gehen</a>."
 
 #: Mailman/Cgi/confirm.py:317
 msgid "You have canceled your unsubscription request."
-msgstr ""
+msgstr "Sie haben Ihre Abo-Kuendigung abgebrochen."
 
 #: Mailman/Cgi/confirm.py:345
 msgid "Unsubscription request confirmed"
-msgstr ""
+msgstr "Abo-Kuendigung bestaetigt"
 
 #: Mailman/Cgi/confirm.py:349
 msgid ""
@@ -966,14 +1001,17 @@ msgid ""
 "            list.  You can now <a href=\"%(listinfourl)s\">visit the list's main\n"
 "            information page</a>."
 msgstr ""
+"            Sie haben erfolgreich das Abonnement der Mailingliste %(listname)s\n"
+"            gekuendigt.  Sie koennen nun die allgemeine <a href=\"%(listinfourl)s\">\n"
+"            Informationsseite der Mailingliste besuchen</a>."
 
 #: Mailman/Cgi/confirm.py:360
 msgid "Confirm unsubscription request"
-msgstr ""
+msgstr "Antrag auf Abo-Kuendigung bestaetigen"
 
 #: Mailman/Cgi/confirm.py:371 Mailman/Cgi/confirm.py:454
 msgid "<em>Not available</em>"
-msgstr ""
+msgstr "<em>Nicht verfuegbar</em>"
 
 #: Mailman/Cgi/confirm.py:372
 msgid ""
@@ -991,19 +1029,32 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this unsubscription\n"
 "    request."
 msgstr ""
+"Ihre Bestaetigung ist erforderlich um die Kuendigung des \n"
+"    Abonnements der Mailingliste <em>%(listname)s</em> abzuschliessen.  Sie\n"
+"    sind im Moment mit folgenden Daten Mitglied:\n"
+"\n"
+"    <ul><li><b>Name:</b> %(fullname)s\n"
+"        <li><b>Emailadresse:</b> %(addr)s\n"
+"    </ul>\n"
+"\n"
+"    Klicken Sie auf <em>Abo-Kuendigung</em> um die Kuendigung zu\n"
+"    bestaetigen.\n"
+"\n"
+"    <p>Oder klicken Sie auf <em>Abbrechen und verwerfen</em> um das Abo nicht\n"
+"    zu kuendigen."
 
 #: Mailman/Cgi/confirm.py:388 Mailman/Cgi/options.py:530
 #: Mailman/Cgi/options.py:665 Mailman/Cgi/options.py:675
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Abo-Kuendigung"
 
 #: Mailman/Cgi/confirm.py:399
 msgid "You have canceled your change of address request."
-msgstr ""
+msgstr "Sie haben die Aenderung Ihrer Adresse abgebrochen."
 
 #: Mailman/Cgi/confirm.py:427
 msgid "Change of address request confirmed"
-msgstr ""
+msgstr "Aenderung Ihrer Adresse bestaetigt"
 
 #: Mailman/Cgi/confirm.py:431
 msgid ""
@@ -1012,14 +1063,18 @@ msgid ""
 "            can now <a href=\"%(optionsurl)s\">proceed to your membership\n"
 "            login page</a>."
 msgstr ""
+"            Sie haben erfolgreich Ihre Adresse fuer die Mailingliste\n"
+"            %(listname)s von <b>%(oldaddr)s</b> nach <b>%(newaddr)s</b> geaendert.\n"
+"            Sie koennen nun zu Ihrer <a href=\"%(optionsurl)s\">Mitgliedsseite\n"
+"            wechseln</a>."
 
 #: Mailman/Cgi/confirm.py:443
 msgid "Confirm change of address request"
-msgstr ""
+msgstr "Bestaetigen Sie die Aenderung Ihrer Adresse"
 
 #: Mailman/Cgi/confirm.py:456
 msgid "globally"
-msgstr ""
+msgstr "generell"
 
 #: Mailman/Cgi/confirm.py:459
 msgid ""
@@ -1042,24 +1097,44 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this change of address\n"
 "    request."
 msgstr ""
+"Ihre Bestaetigung ist erforderlich um die Aenderung Ihrer Adresse fuer die\n"
+"    Mailingliste <em>%(listname)s</em> abzuschliessen.  Sie haben im Moment\n"
+"    mit folgender Emailadresse abonniert:\n"
+"\n"
+"    <ul><li><b>Name:</b> %(fullname)s\n"
+"        <li><b>Alte Emailadresse:</b> %(oldaddr)s\n"
+"    </ul>\n"
+"\n"
+"    und wollen Ihre Emailadresse %(globallys)s aendern auf die\n"
+"\n"
+"    <ul><li><b>Neue Emailadresse:</b> %(newaddr)s\n"
+"    </ul>\n"
+"\n"
+"    Klicken Sie auf <em>Adresse aendern</em> um die Aenderung zu\n"
+"    bestaetigen.\n"
+"\n"
+"    <p>Oder klicken Sie auf <em>Abbrechen und verwerfen</em> um die Aenderung\n"
+"    nicht zu bestaetigen."
 
 #: Mailman/Cgi/confirm.py:480
 msgid "Change address"
-msgstr ""
+msgstr "Adresse aendern"
 
 #: Mailman/Cgi/confirm.py:490 Mailman/Cgi/confirm.py:588
 msgid "Continue awaiting approval"
-msgstr ""
+msgstr "Weitermachen und Erlaubnis abwarten"
 
 #: Mailman/Cgi/confirm.py:497
 msgid ""
 "Okay, the list moderator will still have the\n"
 "    opportunity to approve or reject this message."
 msgstr ""
+"Der Listenmoderator hat noch die Gelegenheit die Nachricht zu genehmigen\n"
+"    oder abzulehnen."
 
 #: Mailman/Cgi/confirm.py:523
 msgid "Sender discarded message via web."
-msgstr ""
+msgstr "Absender hat die Nachricht via WWW verworfen."
 
 #: Mailman/Cgi/confirm.py:525
 msgid ""
@@ -1069,10 +1144,15 @@ msgid ""
 "            rejected the message.  You were not able to cancel it in\n"
 "            time."
 msgstr ""
+"Die zurueckgehaltene Nachricht mit dem Betreff:\n"
+"            header <em>%(subject)s</em> wurde nicht gefunden. Der wahrscheinlichste\n"
+"            Grund dafuer ist das der Moderator diese Nachricht bereits genehmigt\n"
+"            oder abgelehnt hat. Sie waren nicht mehr rechtzeitig in der Lage die\n"
+"            Nachricht zu verwerfen."
 
 #: Mailman/Cgi/confirm.py:533
 msgid "Posted message canceled"
-msgstr ""
+msgstr "Veroeffentlichte Nachricht verworfen"
 
 #: Mailman/Cgi/confirm.py:536
 msgid ""
@@ -1080,10 +1160,13 @@ msgid ""
 "            the Subject: header <em>%(subject)s</em> to the mailing list\n"
 "            %(listname)s."
 msgstr ""
+"            Sie haben die bereits veroeffentlichte Nachricht mit dem Betreff\n"
+"            header <em>%(subject)s</em> an die Mailingliste\n"
+"            %(listname)s erfolgreich verworfen."
 
 #: Mailman/Cgi/confirm.py:547
 msgid "Cancel held message posting"
-msgstr ""
+msgstr "Zurueckgehaltene Nachricht verwerfen"
 
 #: Mailman/Cgi/confirm.py:571
 msgid ""
@@ -1100,47 +1183,59 @@ msgid ""
 "    <p>Or hit the <em>Continue awaiting approval</em> button to continue to\n"
 "    allow the list moderator to approve or reject the message."
 msgstr ""
+"Ihre Bestaetigung ist erforderlich um Ihre Nachricht an die Mailingliste\n"
+"    <em>%(listname)s</em> zu verwerfen:\n"
+"\n"
+"    <ul><li><b>Absender:</b> %(sender)s\n"
+"        <li><b>Betreff:</b> %(subject)s\n"
+"        <li><b>Begruendung:</b> %(reason)s\n"
+"    </ul>\n"
+"\n"
+"    Klicken Sie auf <em>Nachricht verwerfen</em> zum verwerfen der Nachricht.\n"
+"\n"
+"    <p>Klicken Sie auf <em>Weitermachen und Erlaubnis abwarten</em> um dem Moderator\n"
+"    der Mailingliste Ablehnung oder Genehmigung der Nachricht zu ermoeglichen."
 
 #: Mailman/Cgi/confirm.py:587
 msgid "Cancel posting"
-msgstr ""
+msgstr "Nachricht verwerfen"
 
 #: Mailman/Cgi/create.py:48 Mailman/Cgi/rmlist.py:46 Mailman/Cgi/rmlist.py:77
 msgid "Bad URL specification"
-msgstr ""
+msgstr "Falsche URL Angabe"
 
 #: Mailman/Cgi/create.py:63 Mailman/Cgi/rmlist.py:160
 msgid "Return to the "
-msgstr ""
+msgstr "Rueckkehr zu der "
 
 #: Mailman/Cgi/create.py:65 Mailman/Cgi/rmlist.py:162
 msgid "general list overview"
-msgstr ""
+msgstr "Allgemeinen Listenuebersicht"
 
 #: Mailman/Cgi/create.py:66 Mailman/Cgi/rmlist.py:163
 msgid "<br>Return to the "
-msgstr ""
+msgstr "<br> Rueckkehr zu der "
 
 #: Mailman/Cgi/create.py:68 Mailman/Cgi/rmlist.py:165
 msgid "administrative list overview"
-msgstr ""
+msgstr "Administrativen Listenuebersicht"
 
 #: Mailman/Cgi/create.py:95
 msgid "List name must not include \"@\": %(listname)s"
-msgstr ""
+msgstr "Der Listenname darf \"@\" nicht enthalten: %(listname)s"
 
 #: Mailman/Cgi/create.py:101 Mailman/Cgi/create.py:174 bin/newlist:122
 #: bin/newlist:154
 msgid "List already exists: %(listname)s"
-msgstr ""
+msgstr "Liste existiert bereits: %(listname)s"
 
 #: Mailman/Cgi/create.py:105
 msgid "You forgot to enter the list name"
-msgstr ""
+msgstr "Sie haben den Namen der Liste nicht angegeben"
 
 #: Mailman/Cgi/create.py:109
 msgid "You forgot to specify the list owner"
-msgstr ""
+msgstr "Sie haben den Eigentuemer der Liste nicht angegeben"
 
 #: Mailman/Cgi/create.py:116
 msgid ""
@@ -1148,36 +1243,41 @@ msgid ""
 "                blank if you want Mailman to autogenerate the list\n"
 "                passwords."
 msgstr ""
+"Sie  koennen die Felder Passwort und die Bestaetigung frei lassen,\n"
+"                wenn Sie wollen das Mailman das Passwort fuer die Liste\n"
+"                automatisch generiert."
 
 #: Mailman/Cgi/create.py:124
 msgid "Initial list passwords do not match"
-msgstr ""
+msgstr "Die anfaenglichen Passwoerter sind verschieden"
 
 #: Mailman/Cgi/create.py:128 bin/newlist:137
 msgid "The list password cannot be empty"
-msgstr ""
+msgstr "Das Passwort fuer die Liste kann nicht leer sein"
 
 #: Mailman/Cgi/create.py:140
 msgid "You are not authorized to create new mailing lists"
-msgstr ""
+msgstr "Sie duerfen keine neuen Mailinglisten erstellen"
 
 #: Mailman/Cgi/create.py:170
 msgid "Bad owner email address: %(owner)s"
-msgstr ""
+msgstr "Falsche Emailadresse des Eigentuemers: %(owner)s"
 
 #: Mailman/Cgi/create.py:179
 msgid ""
 "Some unknown error occurred while creating the list.\n"
 "                Please contact the site administrator for assistance."
 msgstr ""
+"Ein unbekannter Fehler hat sich beim anlegen der Liste ereignet.\n"
+"                Kontaktieren Sie den Server-Administrator fuer Hilfe."
 
 #: Mailman/Cgi/create.py:203 bin/newlist:184
 msgid "Your new mailing list: %(listname)s"
-msgstr ""
+msgstr "Ihre neue Mailingliste: %(listname)s"
 
 #: Mailman/Cgi/create.py:212
 msgid "Mailing list creation results"
-msgstr ""
+msgstr "Ergebnis fuer des Anlegen einer neuen Mailingliste"
 
 #: Mailman/Cgi/create.py:218
 msgid ""
