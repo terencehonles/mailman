@@ -19,6 +19,8 @@
 import os
 import cgi
 import sys
+import errno
+import shutil
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -132,13 +134,28 @@ def process_request(doc, cgidata, mlist):
                            'archives/public/%s.mbox',
                            ])
 
+    problems = 0
     listname = mlist.internal_name()
     for dirtmpl in REMOVABLES:
         dir = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl % listname)
         if os.path.islink(dir):
-            os.unlink(dir)
+            try:
+                os.unlink(dir)
+            except OSError, e:
+                if e.errno not in (errno.EACCES, errno.EPERM): raise
+                problems += 1
+                syslog('error',
+                       'link %s not deleted due to permission problems',
+                       dir)
         elif os.path.isdir(dir):
-            Utils.rmdirhier(dir)
+            try:
+                shutil.rmtree(dir)
+            except OSError, e:
+                if e.errno not in (errno.EACCES, errno.EPERM): raise
+                problems += 1
+                syslog('error',
+                       'directory %s not deleted due to permission problems',
+                       dir)
 
     title = _('Mailing list deletion results')
     doc.SetTitle(title)
@@ -146,8 +163,14 @@ def process_request(doc, cgidata, mlist):
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
-    table.AddRow([_('''You have successfully deleted the mailing list
+    if not problems:
+        table.AddRow([_('''You have successfully deleted the mailing list
     <b>%(listname)s</b>.''')])
+    else:
+        sitelist = Utils.get_site_email(mlist.host_name)
+        table.AddRow([_('''There were some problems deleting the mailing list
+        <b>%(listname)s</b>.  Contact your site administrator at %(sitelist)s
+        for details.''')])
     doc.AddItem(table)
     doc.AddItem('<hr>')
     doc.AddItem(_('Return to the ') +
