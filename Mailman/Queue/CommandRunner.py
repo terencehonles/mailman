@@ -140,6 +140,12 @@ Attached is your original message.
         if unprocessed:
             resp.append(_('\n- Unprocessed:'))
             resp.extend(indent(unprocessed))
+        if not unprocessed and not self.results:
+            # The user sent an empty message; return a helpful one.
+            resp.append(Utils.wrap(_("""\
+No commands were found in this message.
+To obtain instructions, send a message containing just the word "help".
+""")))
         if self.ignored:
             resp.append(_('\n- Ignored:'))
             resp.extend(indent(self.ignored))
