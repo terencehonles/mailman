@@ -1,8 +1,6 @@
 #! /usr/bin/env python
 
 """Convert the plain text FAQ file to its .ht template.
-
-Requires Python 2.0
 """
 
 import sys
@@ -38,6 +36,9 @@ def main():
     # first print out standard .ht boilerplate
     print >> out, '''\
 Title: Mailman Frequently Asked Questions
+
+See also the <a href="http://www.python.org/cgi-bin/faqw-mm.py">Mailman
+FAQ Wizard</a> for more information.
 
  <h3>Mailman Frequently Asked Questions</h3>
 '''
