@@ -101,10 +101,11 @@ DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
 # Alternate names acceptable as explicit destinations for this list.
 DEFAULT_ACCEPTABLE_ALIASES ="""
 """
-# This provisional measure is for maillists that have only other maillists
-# for members.  Ultimately we will probably use surrogate administrative
-# message delivery addresses, instead.
-DEFAULT_REMINDERS_TO_ADMINS = 0
+# For maillists that have only other maillists for members:
+DEFAULT_UMBRELLA_LIST = 0
+# For umbrella lists, the suffix for the account part of address for
+# administrative notices (subscription confirmations, password reminders):
+DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX = "-owner"
 # This variable controlls whether monthly password reminders are sent.
 DEFAULT_SEND_REMINDERS = 1
 # Send welcome messages to new users?  Probably should keep this set to 1.
@@ -255,4 +256,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 7
+DATA_FILE_VERSION = 8
