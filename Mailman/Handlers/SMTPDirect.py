@@ -77,6 +77,8 @@ class Connection:
         return results
 
     def quit(self):
+        if self.__conn is None:
+            return
         try:
             self.__conn.quit()
         except smtplib.SMTPException:
