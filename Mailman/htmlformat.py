@@ -367,13 +367,19 @@ class RadioButtonArray:
     def Format(self, indent=0):
 	t = Table()
 	items = []
-	for i in range(len(self.button_names)):
-	    if self.checked == i:
-		items.append(self.button_names[i])
-		items.append(RadioButton(self.name, i, 1))
-	    else:
-		items.append(self.button_names[i])
-		items.append(RadioButton(self.name, i))
+	l = len(self.button_names)
+  	for i in range(l):
+	    if i == l:
+		pref = ""
+	    elif i == 0:
+		pref = "&nbsp;"
+	    else: pref = "&nbsp;&nbsp;&nbsp;&nbsp;"
+  	    if self.checked == i:
+  		items.append(pref + self.button_names[i])
+  		items.append(RadioButton(self.name, i, 1))
+  	    else:
+  		items.append(pref + self.button_names[i])
+  		items.append(RadioButton(self.name, i))
 	if self.horizontal:
 	    t.AddRow(items)
 	else:
