@@ -12,21 +12,16 @@ class Bouncer:
 	# Not configurable...
 	self.bounce_info = {}
 
-	# Whether we should do any bounced mail checking at all...
-	self.bounce_processing = 0 
+	
+	self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
 	# Configurable...
-	# Minimum number of days that your address has been undeliverable before we consider
-	# nuking you.
-	self.minimum_removal_date = 5
-	# Minimum number of posts that should be made to the list before we consider nuking you.
-	self.minimum_post_count_before_removal = 3
-	# 0 means no, 1 means yes, but send me a report, 2 means nuke 'em all and don't tell me
-	self.automatically_remove = 0
-	# Maximum number of posts that can go by w/o a bounce before we figure your problem must
-	# have gotten resolved...  usually this could be 1, but we need to account for lag time
-	# in getting the error messages.  I'd set this to the maximum number of messages you'd 
-	# expect your list to reasonably get in 1 hour.
-	self.max_posts_between_bounces = 5
+	self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
+	self.minimum_post_count_before_removal = \
+		mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_REMOVAL
+	self.automatically_remove = mm_cfg.DEFAULT_AUTOMATICALLY_REMOVE
+	self.max_posts_between_bounces = \
+		mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
+
     def GetConfigInfo(self):
 	return [
 	    ('bounce_processing', mm_cfg.Toggle, ('No', 'Yes'), 0,
