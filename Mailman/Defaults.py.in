@@ -679,6 +679,12 @@ QRUNNER_SLEEP_TIME = seconds(1)
 # them in qfiles/bad subdirectory.
 QRUNNER_SAVE_BAD_MESSAGES = Yes
 
+# This flag causes Mailman to fsync() its data files after writing and
+# flushing its contents.  While this ensures the data is written to disk,
+# avoiding data loss, it may be a performance killer.  Note that this flag
+# affects both message pickles and MailList config.pck files.
+SYNC_AFTER_WRITE = No
+
 
 
 #####
