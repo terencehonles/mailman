@@ -212,58 +212,60 @@ msgid ""
 "    pages that are displaying this option for this mailing list.  You can also\n"
 "    "
 msgstr ""
+"<em><strong>Achtung:</strong> Wenn diese Konfiguration veraendert wird,\n"
+"    muessen alle anderen geoeffneten Seiten neu geladen werden. Sie koennen auch\n"
 
 #: Mailman/Cgi/admin.py:340
 msgid "return to the %(category)s options page."
-msgstr ""
+msgstr "zur Konfigurationsseite fuer %(category)s zurueckkehren."
 
 #: Mailman/Cgi/admin.py:355
 msgid "%(realname)s Administration (%(label)s)"
-msgstr ""
+msgstr "%(realname)s Administration (%(label)s)"
 
 #: Mailman/Cgi/admin.py:356
 msgid "%(realname)s mailing list administration<br>%(label)s Section"
-msgstr ""
+msgstr "%(realname)s Listen-Administration<br>Sektion %(label)s"
 
 #: Mailman/Cgi/admin.py:361
 msgid "Configuration Categories"
-msgstr ""
+msgstr "Konfigurationskategorien"
 
 #: Mailman/Cgi/admin.py:362
 msgid "Other Administrative Activities"
-msgstr ""
+msgstr "Andere Administrative Taetigkeiten"
 
 #: Mailman/Cgi/admin.py:367
 msgid "Tend to pending moderator requests"
-msgstr ""
+msgstr "Unbearbeitete Moderationsantraege bearbeiten"
 
 #: Mailman/Cgi/admin.py:369
 msgid "Go to the general list information page"
-msgstr ""
+msgstr "Zur allgemeinen Listen-informationsseite gehen"
 
 #: Mailman/Cgi/admin.py:371
 msgid "Edit the public HTML pages"
-msgstr ""
+msgstr "Oeffentliche HTML-Seiten anpassen"
 
 #: Mailman/Cgi/admin.py:373
 msgid "Go to list archives"
-msgstr ""
+msgstr "Zum Listen-Archiv gehen"
 
 #: Mailman/Cgi/admin.py:377
 msgid "Delete this mailing list"
-msgstr ""
+msgstr "Liste loeschen"
 
 #: Mailman/Cgi/admin.py:378
 msgid " (requires confirmation)<br>&nbsp;<br>"
-msgstr ""
+msgstr " (erfordert Bestaetigung)<br>&nbsp;<br>"
 
 #: Mailman/Cgi/admin.py:384
 msgid "Logout"
-msgstr ""
+msgstr "Ausloggen"
 
 #: Mailman/Cgi/admin.py:440
 msgid "  (You can change your password there, too.)"
-msgstr ""
+msgstr " (Dort kann das Passwort ebenfalls geaendert werden)"
 
 #: Mailman/Cgi/admin.py:444
 msgid ""
