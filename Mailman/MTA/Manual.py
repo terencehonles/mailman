@@ -1,4 +1,4 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,6 +26,12 @@ from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
 from Mailman.MTA.Utils import makealiases
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 # no-ops for interface compliance
@@ -33,7 +39,7 @@ def makelock():
     class Dummy:
         def lock(self):
             pass
-        def unlock(self, unconditionally=0):
+        def unlock(self, unconditionally=False):
             pass
     return Dummy()
 
@@ -44,7 +50,7 @@ def clear():
 
 
 # nolock argument is ignored, but exists for interface compliance
-def create(mlist, cgi=0, nolock=0):
+def create(mlist, cgi=False, nolock=False, quiet=False):
     if mlist is None:
         return
     listname = mlist.internal_name()
@@ -54,7 +60,8 @@ def create(mlist, cgi=0, nolock=0):
         # an email message to mailman-owner requesting that the proper aliases
         # be installed.
         sfp = StringIO()
-        print >> sfp, _("""\
+        if not quiet:
+            print >> sfp, _("""\
 The mailing list `%(listname)s' has been created via the through-the-web
 interface.  In order to complete the activation of this mailing list, the
 proper /etc/aliases (or equivalent) file must be updated.  The program
@@ -64,11 +71,13 @@ Here are the entries for the /etc/aliases file:
 """)
         outfp = sfp
     else:
-        print _("""
+        if not quiet:
+            print _("""\
 To finish creating your mailing list, you must edit your /etc/aliases (or
 equivalent) file by adding the following lines, and possibly running the
 `newaliases' program:
-
+""")
+        print _("""\
 ## %(listname)s mailing list""")
         outfp = sys.stdout
     # Common path
@@ -92,7 +101,7 @@ equivalent) file by adding the following lines, and possibly running the
 
 
 
-def remove(mlist, cgi=0):
+def remove(mlist, cgi=False):
     listname = mlist.internal_name()
     fieldsz = len(listname) + len('-unsubscribe')
     if cgi:
