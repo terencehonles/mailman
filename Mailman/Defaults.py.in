@@ -325,6 +325,13 @@ MTA = 'Manual'
 # of the mailing lists.  See README.POSTFIX for details.
 POSTFIX_STYLE_VIRTUAL_DOMAINS = []
 
+# These variables describe the program to use for regenerating the aliases.db
+# and virtual-mailman.db files, respectively, from the associated plain text
+# files.  The file being updated will be appended to this string (with a
+# separating space), so it must be appropriate for os.system().
+POSTFIX_ALIAS_CMD = '/usr/sbin/postalias'
+POSTFIX_MAP_CMD = '/usr/sbin/postmap'
+
 # Ceiling on the number of recipients that can be specified in a single SMTP
 # transaction.  Set to 0 to submit the entire recipient list in one
 # transaction.  Only used with the SMTPDirect DELIVERY_MODULE.
