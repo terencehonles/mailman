@@ -741,6 +741,8 @@ def loginpage(mlist, doc, user, cgidata):
         langform.AddItem(SubmitButton('displang-button',
                                       _('View this page in')))
         langform.AddItem(mlist.GetLangSelectBox(lang))
+        if user:
+            langform.AddItem(Hidden('email', user))
         table.AddRow([Center(langform)])
     doc.AddItem(table)
     # Preamble
