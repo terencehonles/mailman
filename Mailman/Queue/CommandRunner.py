@@ -23,6 +23,7 @@
 
 from Mailman import mm_cfg
 from Mailman.Bouncers import BouncerAPI
+from Mailman.Handlers import SpamDetect
 
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
@@ -98,18 +99,7 @@ class CommandRunner(Runner):
                 if mlist.bounce_processing:
                     if BouncerAPI.ScanMessages(mlist, msg):
                         return
-                # Either bounce processing isn't turned on or the bounce
-                # detector found no recognizable bounce format in the message.
-                # In either case, forward the dang thing off to the list
-                # owners.  Be sure to munge the headers so that any bounces
-                # from the list owners goes to the -owner address instead of
-                # the -admin address.  This will avoid bounce loops.
-                virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
-                virginq.enqueue(msg, msgdata,
-                                recips = mlist.owner[:],
-                                errorsto = mlist.GetOwnerEmail(),
-                                noack = 0         # enable Replybot
-                                )
+                self._toadmins(mlist, msg, msgdata)
                 return
             elif msgdata.get('toowner'):
                 # The message could have been a bounce from a broken list
@@ -125,18 +115,7 @@ class CommandRunner(Runner):
                 if senderlhs in mm_cfg.LIKELY_BOUNCE_SENDERS:
                     syslog('error', 'bounce loop detected from: %s', sender)
                     return
-                # Any messages to the owner address must have Errors-To: set
-                # back to the owners address so bounce loops can be broken, as
-                # per the code above.
-                recips = mlist.owner[:]
-                if msgdata.get('tomoderators'):
-                    recips.extend(mlist.moderator)
-                virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
-                virginq.enqueue(msg, msgdata,
-                                recips = recips,
-                                errorsto = mlist.GetOwnerEmail(),
-                                noack = 0         # enable Replybot
-                                )
+                self._toadmins(mlist, msg, msgdata)
                 return
             elif msgdata.get('torequest'):
                 # Just pass the message off the command handler
@@ -152,6 +131,38 @@ class CommandRunner(Runner):
                 msg['Subject'] = 'leave'
                 msg.set_payload('')
                 mlist.ParseMailCommands(msg, msgdata)
-        finally:
             mlist.Save()
+        finally:
             mlist.Unlock()
+
+    def _toadmins(self, mlist, msg, msgdata):
+        sender = msg.get_sender()
+        # Send the message through the SpamDetect blocker, hopefully
+        # reducing the amount of spam our poor admins receive.
+        try:
+            SpamDetect.process(mlist, msg, msgdata)
+        except SpamDetect.SpamDetected:
+            syslog('spam',
+                   'Spam to %s-owner address detected from %s',
+                   mlist.internal_name(), sender)
+            return
+        # Any messages to the owner address must have Errors-To: set
+        # back to the owners address so bounce loops can be broken, as
+        # per the code above.
+        recips = mlist.owner[:]
+        # BAW: should we have a separate -moderators address or should all
+        # correspondences to -owner/-admin also go to the moderators.
+        # Definition time: owners have access to both the admin and admindb
+        # pages, while moderators only have access to the admindb pages.
+        #
+##        if msgdata.get('tomoderators'):
+##            recips.extend(mlist.moderator)
+        #
+        # For now, we'll always send such email to the moderators as well.
+        recips.extend(mlist.moderator)
+        virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        virginq.enqueue(msg, msgdata,
+                        recips=recips,
+                        errorsto=mlist.GetOwnerEmail(),
+                        noack=0                   # enable Replybot
+                        )
