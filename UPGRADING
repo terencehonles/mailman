@@ -1,0 +1,38 @@
+Mailman is beta software.  Because it's development tree is always
+immediately available via anonymous CVS, it is sometimes in a less
+stable state.  Contained below are some instructions that should make
+it easier for you to upgrade between beta releases.  We intend to
+improve the upgradeability of Mailman in the future.
+
+- If upgrading from version 1.0b4 or earlier, templates need to be
+  moved.  For each list, move $prefix/templates/<listname>/* to
+  $prefix/lists/<listname>.  Be careful about stomping template
+  changes that your list managers have changed!  (Only the
+  options.html template changed from 1.0b5 to 1.0b6.)
+
+- If you are upgrading to 1.0b6 from an earlier version, and you have
+  archiving turned on, you will need to move and or merge your mbox
+  archives.  1.0b6 has a different layout for its archiving mbox and
+  Pipermail indexes, which are now integrated in Mailman.
+
+  Previous versions of Mailman stored public mboxes in
+  $prefix/archives/public/<listname> and private mboxes in
+  $prefix/archives/private/<listname>.  No provision was made to
+  merge private and public archives when their permissions changed.
+
+  Mailman now stores a consolidated mbox archive in
+  $prefix/archives/private/<listname>.mbox/<listname>.mbox and uses
+  symbolic links to provide public access to the mbox when permitted.
+
+  If you want to retain your archive across the upgrade, move your old 
+  mbox to the new locations.
+
+  TBD: We need to deal with batch creation of Pipermail archive from
+  an old existing mbox.
+
+
+
+Local Variables:
+mode: indented-text
+indent-tabs-mode: nil
+End:
