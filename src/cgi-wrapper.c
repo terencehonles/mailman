@@ -53,17 +53,17 @@ void check_caller() {
     /* compare to our parent's uid */
     if(LEGAL_PARENT_UID != getuid()) 
       {
-	err("Attempt to exec cgi %s made by uid %d", LEGAL_PARENT_UID,
+	err("Attempt to exec cgi %d made by uid %d", LEGAL_PARENT_UID,
 	    getuid());
       }
     if(LEGAL_PARENT_GID != getgid())
       {
-	err("Attempt to exec cgi %s made by gid %d", LEGAL_PARENT_GID,
+	err("Attempt to exec cgi %d made by gid %d", LEGAL_PARENT_GID,
 	    getgid());
       }
 }
 
-void main(int argc, char **argv, char **env) 
+int main(int argc, char **argv, char **env) 
 {
   int   i;
 
