@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ equivalent) file by adding the following lines, and possibly running the
     msg = Message.UserNotification(
         siteowner, siteowner,
         _('Mailing list creation request for list %(listname)s'),
-        sfp.getvalue())
+        sfp.getvalue(), mlist.preferred_language)
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
     outq.enqueue(msg, recips=[siteowner])
 
