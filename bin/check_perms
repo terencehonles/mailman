@@ -1,0 +1,156 @@
+#! /usr/bin/env python
+
+"""Check the permissions for the Mailman installation.
+
+Usage: %(PROGRAM)s [-f] [-v] [-h]
+
+With no arguments, just check and report all the files that have bogus
+permissions or group ownership.  With -f (and run as root), fix all the
+permission problems found.  With -v be verbose.
+
+"""
+
+import sys
+import os
+import errno
+import getopt
+import grp
+from stat import *
+
+MAILMAN_GID = @MAILMAN_GID@
+PREFIX = '@prefix@'
+MAILMAN_GRPNAME = grp.getgrgid(MAILMAN_GID)[0]
+
+PROGRAM = sys.argv[0]
+
+
+class State:
+    FIX = 0
+    VERBOSE = 0
+    ERRORS = 0
+
+STATE = State()
+
+
+
+def statmode(path):
+    return os.stat(path)[0]
+
+def statgidmode(path):
+    stat = os.stat(path)
+    return stat[0], stat[5]
+
+def checkwalk(arg, dirname, names):
+    for name in names:
+        path = os.path.join(dirname, name)
+        if arg.VERBOSE:
+            print 'checking gid and modes for', path
+        try:
+            mode, gid = statgidmode(path)
+        except OSError, (code, msg):
+            if code == errno.ENOENT:
+                continue
+            raise
+        if gid <> MAILMAN_GID:
+            arg.ERRORS = arg.ERRORS + 1
+            print path, 'bad gid (has: %s, expected %s)' % (
+                grp.getgrgid(gid)[0], MAILMAN_GRPNAME),
+            if STATE.FIX:
+                print '(fixing)'
+                os.chown(path, -1, MAILMAN_GID)
+            else:
+                print
+        # all directories must be setgid
+        if S_ISDIR(mode) and not mode & S_ISGID:
+            arg.ERRORS = arg.ERRORS + 1
+            print path, 'directory is not setgid',
+            if STATE.FIX:
+                print '(fixing)'
+                os.chmod(path, mode | S_ISGID)
+            else:
+                print
+
+def checkall():
+    os.path.walk(PREFIX, checkwalk, STATE)
+
+
+def checkarchives():
+    archives = os.path.join(PREFIX, 'archives')
+    private = os.path.join(archives, 'private')
+    if STATE.VERBOSE:
+        print 'checking perms on', private
+    # private archives must not be other readable
+    mode = statmode(private)
+    if mode & S_IROTH:
+        STATE.ERRORS = STATE.ERRORS + 1
+        print private, 'must not be other-readable',
+        if STATE.FIX:
+            print '(fixing)'
+            os.chmod(private, mode & ~S_IROTH)
+        else:
+            print
+
+
+def checkcgi():
+    cgibin = os.path.join(PREFIX, 'cgi-bin')
+    exes = os.listdir(cgibin)
+    for f in exes:
+        path = os.path.join(cgibin, f)
+        if STATE.VERBOSE:
+            print 'checking set-gid for', path
+        mode = statmode(path)
+        if mode & S_IXGRP and not mode & S_ISGID:
+            STATE.ERRORS = STATE.ERRORS + 1
+            print path, 'must be set-gid',
+            if STATE.FIX:
+                print '(fixing)'
+                os.chmod(path, mode | S_ISGID)
+            else:
+                print
+
+def checkmail():
+    wrapper = os.path.join(PREFIX, 'mail', 'wrapper')
+    if STATE.VERBOSE:
+        print 'checking set-gid for', wrapper
+    mode = statmode(wrapper)
+    if not mode & S_ISGID:
+        STATE.ERRORS = STATE.ERRORS + 1
+        print wrapper, 'must be set-gid',
+        if STATE.FIX:
+            print '(fixing)'
+            os.chmod(wrapper, mode | S_ISGID)
+
+
+def usage(code=0, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+
+if __name__ == '__main__':
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+                                   'fvh',
+                                   ['fix', 'verbose', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage()
+        elif opt in ('-f', '--fix'):
+            STATE.FIX = 1
+        elif opt in ('-v', '--verbose'):
+            STATE.VERBOSE = 1
+
+    checkall()
+    checkarchives()
+    checkcgi()
+    checkmail()
+
+    if not STATE.ERRORS:
+        print 'No problems found'
+    else:
+        print 'Problems found:', STATE.ERRORS
+        print 'Re-run as root with -f flag until no errors are found'
