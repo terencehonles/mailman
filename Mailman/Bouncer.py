@@ -19,6 +19,7 @@
 
 import sys
 import time
+from types import StringType
 
 from email.MIMEText import MIMEText
 from email.MIMEMessage import MIMEMessage
@@ -33,14 +34,24 @@ from Mailman.i18n import _
 
 EMPTYSTRING = ''
 
+# This constant is supposed to represent the day containing the first midnight
+# after the epoch.  We'll add (0,)*6 to this tuple to get a value appropriate
+# for time.mktime().
+ZEROHOUR_PLUSONEDAY = time.localtime(mm_cfg.days(1))[:3]
+
+
+
 class _BounceInfo:
     def __init__(self, member, score, date, noticesleft, cookie):
         self.member = member
-        self.score = score
-        self.date = date
-        self.noticesleft = noticesleft
-        self.lastnotice = None
         self.cookie = cookie
+        self.reset(score, date, noticesleft)
+
+    def reset(self, score, date, noticesleft):
+        info.score = score
+        info.date = date
+        info.noticesleft = noticesleft
+        info.lastnotice = ZEROHOUR_PLUSONEDAY
 
     def __repr__(self):
         # For debugging
@@ -90,28 +101,26 @@ class Bouncer:
             self.setBounceInfo(member, info)
             syslog('bounce', '%s: %s bounce score: %s', self.internal_name(),
                    member, info.score)
+            # Continue to the check phase below
         elif self.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
             # The user is already disabled, so we can just ignore subsequent
             # bounces.  These are likely due to residual messages that were
             # sent before disabling the member, but took a while to bounce.
             syslog('bounce', '%s: %s residual bounce received',
                    self.internal_name(), member)
+            return
         elif info.date == today:
             # We've already scored any bounces for today, so ignore this one.
             syslog('bounce', '%s: %s already scored a bounce for today',
                    self.internal_name(), member)
+            # Continue to check phase below
         else:
             # See if this member's bounce information is stale.
             now = time.mktime(today + (0,) * 6)
             lastbounce = time.mktime(info.date + (0,) * 6)
             if lastbounce + self.bounce_info_stale_after < now:
                 # Information is stale, so simply reset it
-                info.score = weight
-                info.date = today
-                info.noticesleft = 0
-                info.lastnotice = None
-                # BAW: The following isn't strictly necessary
-                self.setBounceInfo(member, info)
+                info.reset(weight, today, 0)
                 syslog('bounce', '%s: %s has stale bounce info, resetting',
                        self.internal_name(), member)
             else:
@@ -119,20 +128,24 @@ class Bouncer:
                 # score and take any necessary action.
                 info.score += weight
                 info.date = today
-                # BAW: The following isn't strictly necessary
-                self.setBounceInfo(member, info)
                 syslog('bounce', '%s: %s current bounce score: %s',
                        member, self.internal_name(), info.score)
-                if info.score >= self.bounce_score_threshold:
-                    # Disable them
-                    syslog('bounce',
-                           '%s: %s disabling due to bounce score %s >= %s',
-                           self.internal_name(), member,
-                           info.score, self.bounce_score_threshold)
-                    self.setDeliveryStatus(member, MemberAdaptor.BYBOUNCE)
-                    self.sendNextNotification(member)
-                    self.__sendAdminBounceNotice(member, msg)
+            # Continue to the check phase below
+        #
+        # Now that we've adjusted the bounce score for this bounce, let's
+        # check to see if the disable-by-bounce threshold has been reached.
+        if info.score >= self.bounce_score_threshold:
+            self.disableBouncingMember(member, info, msg)
 
+    def disableBouncingMember(self, member, info, msg):
+        # Disable them
+        syslog('bounce', '%s: %s disabling due to bounce score %s >= %s',
+               self.internal_name(), member,
+               info.score, self.bounce_score_threshold)
+        self.setDeliveryStatus(member, MemberAdaptor.BYBOUNCE)
+        self.sendNextNotification(member)
+        self.__sendAdminBounceNotice(member, msg)
+        
     def __sendAdminBounceNotice(self, member, msg):
         # BAW: This is a bit kludgey, but we're not providing as much
         # information in the new admin bounce notices as we used to (some of
@@ -154,7 +167,10 @@ class Bouncer:
         umsg = Message.UserNotification(self.GetOwnerEmail(),
                                         siteowner, subject)
         umsg.attach(MIMEText(text))
-        umsg.attach(MIMEMessage(msg))
+        if isinstance(msg, StringType):
+            umsg.attach(MIMEText(msg))
+        else:
+            umsg.attach(MIMEMessage(msg))
         umsg['Content-Type'] = 'multipart/mixed'
         umsg['MIME-Version'] = '1.0'
         umsg.send(self)
