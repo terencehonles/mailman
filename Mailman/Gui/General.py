@@ -322,6 +322,13 @@ class General(GUIBase):
 
             _('Additional settings'),
 
+            ('emergency', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+             _('Emergency moderation of all list traffic.'),
+             _("""When this option is enabled, all list traffic is emergency
+             moderated, i.e. held for moderation.  Turn this option on when
+             your list is experiencing a flamewar and you want a cooling off
+             period.""")),
+
             ('new_member_options', mm_cfg.Checkbox,
              (opttext, optvals, 0, OPTIONS),
              # The description for new_member_options includes a kludge where
