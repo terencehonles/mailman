@@ -4303,6 +4303,11 @@ msgid ""
 "             the list once their bounce score exceeds the threshold.  This\n"
 "             value must be an integer."
 msgstr ""
+"Wieviele <em>Your Membership Is Disabled</em>-Warnungen soll ein\n"
+"Mitglied bekommen, bevor seine Adresse von der Liste dauerhaft\n"
+"entfernt wird?\n"
+"Setzen Sie den Wert 0 um diese Adressen sofort zu entfernen,\n "
+"sobald die maximale Anzahl der Bounces überschritten wird."
 
 #: Mailman/Gui/Bounce.py:102
 msgid ""
@@ -4323,6 +4328,8 @@ msgid ""
 "em>\n"
 "             is recommended."
 msgstr ""
+"Soll Mailman an den Listenbesitzer nicht erkannte Bounce-Nachrichten\n"
+"zur Ansicht weiterleiten?"
 
 #: Mailman/Gui/Bounce.py:112
 msgid ""
@@ -4354,12 +4361,34 @@ msgid ""
 "\">autoresponse\n"
 "             message</a> for email to the -owner and -admin address."
 msgstr ""
+"Obwohl die Bounce-Erkennung von Mailman sehr stabil arbeitet, ist\n"
+"es natürlich unmöglich jedes Bounce-Format der Welt zu erkennen.\n"
+"Aus zwei Gründen kann es Sinn machen, diese Variable auf <em>Yes</em>\n"
+"zu setzen: \n"
+"1)\n"
+"             Wenn es sich wirklich um einen permanenten Bounce dieser Adresse handelt,\n"
+"             sollten Sie diese Adresse manuell entfernen.\n "
+"2)\n"
+"             Helfen Sie mit und senden Sie unerkannte Bounce-Formate an die Entwickler\n"
+"             von Mailman, damit wir sie in die Bounce-Erkennung integrieren können!\n"
+"\n"
+"             <p>Wenn Sie die Variable auf <em>No</em> setzen, werden alle nicht "
+"             erkannten Bounces ohne weitere Bearbeitung verworfen."
+"\n"
+"             <p><b>Achtung:</b> Diese Einstellung gilt auch für alle e-mails,\n"
+"             die an Ihre List-Admin-Adresse geschickt werden. Diese Adressen sind\n"
+"             veraltet und sollten nicht weiter benutzt werden.  Ist diese Einstellung auf <em>No</em>\n"
+"             gesetzt, werden diese e-Mails ebenfalls verworfen! Sie können einen\n"
+"             <a href=\"?VARHELP=autoreply/autoresponse_admin_text"
+"\">Autoresponder</a> einsetzen, um diese e-mails beantworten zu lassen!"
 
 #: Mailman/Gui/Bounce.py:135
 msgid ""
 "Should Mailman notify you, the list owner, when bounces\n"
 "             cause a member's subscription to be disabled?"
 msgstr ""
+"Soll Mailman den Listeninhaber benachrichtigen, wenn ein\n"
+"Nutzer wegen permanenter Bounces deaktiviert wird?"
 
 #: Mailman/Gui/Bounce.py:137
 msgid ""
@@ -4375,6 +4404,8 @@ msgid ""
 "Should Mailman notify you, the list owner, when bounces\n"
 "             cause a member to be unsubscribed?"
 msgstr ""
+"Soll Mailman den Listeninhaber benachrichtigen, wenn ein\n"
+"Nutzer wegen permanenter Bounces ausgetragen wird?"
 
 #: Mailman/Gui/Bounce.py:146
 msgid ""
@@ -4390,6 +4421,8 @@ msgid ""
 "Bad value for <a href=\"?VARHELP=bounce/%(property)s\"\n"
 "                >%(property)s</a>: %(val)s"
 msgstr ""
+"Ungültiger Wert <a href=\"?VARHELP=bounce/%(property)s\"\n"
+"                >%(property)s</a>: %(val)s"
 
 #: Mailman/Gui/ContentFilter.py:30
 msgid "Content&nbsp;filtering"
@@ -4397,7 +4430,7 @@ msgstr "Absender&nbsp;Adressfilter"
 
 #: Mailman/Gui/ContentFilter.py:37
 msgid "Forward to List Owner"
-msgstr ""
+msgstr "Weitergeleitet an den Listen-Inhaber"
 
 #: Mailman/Gui/ContentFilter.py:39
 msgid "Preserve"
@@ -4451,6 +4484,8 @@ msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
 msgstr ""
+"Entfernt Mail-Attachements, die einen entsprechenden MIME-\n"
+"Content-Type haben."
 
 #: Mailman/Gui/ContentFilter.py:78
 msgid ""
