@@ -1179,7 +1179,6 @@ def change_options(mlist, category, subcat, cgidata, doc):
             add_error_message(
                 doc, _('Administator passwords did not match'),
                 tag=_('Error: '))
-
     # Give the individual gui item a chance to process the form data
     categories = mlist.GetConfigCategories()
     label, gui = categories[category]
@@ -1204,8 +1203,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 #
                 page_setting = int(cgidata["subscribe_policy"].value)
                 cgidata["subscribe_policy"].value = str(page_setting + 1)
-        opt_list = mlist.GetConfigInfo(category, subcat)
-        for item in opt_list:
+        for item in mlist.GetConfigInfo(category, subcat):
             if type(item) <> TupleType or len(item) < 5:
                 continue
             property, kind, args, deps, desc = item[0:5]
