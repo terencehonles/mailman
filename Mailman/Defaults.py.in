@@ -563,6 +563,13 @@ QRUNNERS = [
 # (essentially busy-loop as fast as possible).
 QRUNNER_SLEEP_TIME = seconds(1)
 
+# When a message that is unparsable (by the email package) is received, what
+# should we do with it?  The most common cause of unparsable messages is
+# broken MIME encapsulation, and the most common cause of that is viruses like
+# Nimda.  Set this variable to 0 to discard such messages, or to 1 to store
+# them in qfiles/bad subdirectory.
+QRUNNER_SAVE_BAD_MESSAGES = 0
+
 
 
 #####
@@ -1020,6 +1027,7 @@ NEWSQUEUE_DIR   = os.path.join(QUEUE_DIR, 'news')
 ARCHQUEUE_DIR   = os.path.join(QUEUE_DIR, 'archive')
 SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
 VIRGINQUEUE_DIR = os.path.join(QUEUE_DIR, 'virgin')
+BADQUEUE_DIR    = os.path.join(QUEUE_DIR, 'bad')
 
 # Other useful files
 PIDFILE = os.path.join(DATA_DIR, 'master-qrunner.pid')
