@@ -65,7 +65,7 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 WATERMARK_FILE = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
 LIST_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_lock.')
 
-LogStdErr('fromusenet', 'gate_news')
+LogStdErr('fromusenet', 'gate_news', tee_to_stdout=0)
 
 
 
