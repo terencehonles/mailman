@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b3'
-__version__ = "$Revision: 510 $"
+__version__ = "$Revision: 519 $"
 
 # The URL for Mailman sources, etc. - you probably don't want to change this.
 MAILMAN_URL       = 'http://www.list.org/'
@@ -55,7 +55,7 @@ DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
 # maillist instance.
 DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
 DEFAULT_MSG_HEADER = ""
-DEFAULT_MSG_FOOTER = """------------------------------------------------------
+DEFAULT_MSG_FOOTER = """_______________________________________________
 %(real_name)s maillist  -  %(real_name)s@%(host_name)s
 %(web_page_url)slistinfo/%(_internal_name)s
 """
