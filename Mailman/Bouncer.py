@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 533 $"
+__version__ = "$Revision: 537 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -8,7 +8,7 @@ __version__ = "$Revision: 533 $"
 
 import sys
 import time
-import regsub, string, regex
+import regsub, string, regex, re
 import mm_utils, mm_cfg, mm_err
 
 class Bouncer:
@@ -298,7 +298,7 @@ class Bouncer:
 	REMOVE = 2
 
 	# Bounce patterns where it's simple to figure out the email addr.
-	email_regexp = '<?[^ \t@<>]+@[^ \t@<>]+\.[^ \t<>.]+>?'
+	email_regexp = '<?\([^ \t@s|<>]+@[^ \t@<>]+\.[^ \t<>.]+\)>?'
 	simple_bounce_pats = (
 	    (regex.compile('.*451 %s.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*554 %s.*' % email_regexp), BOUNCE),
@@ -319,7 +319,14 @@ class Bouncer:
 	messy_pattern_6 = regex.compile('^[ \t]*[^ ]+: User unknown.*$')
 	messy_pattern_7 = regex.compile('^[^ ]+ - User currently disabled.*$')
 
+        # Patterns that don't have the email
+	separate_cue_1 = re.compile(
+            '^554 [^ ]+\.\.\. unknown mailer error.*$', re.I)
+        separate_addr_1 = regex.compile('expanded from: %s' % email_regexp)
+
 	message_grokked = 0
+        use_prospects = 0
+        prospects = []                  # If bad but no candidates found.
 
 	for line in string.split(relevant_text, '\n'):
 	    for pattern, action in simple_bounce_pats:
@@ -363,6 +370,19 @@ class Bouncer:
                 candidates.append('%s@%s' % (username, remote_host))
 		message_grokked = 1
 		continue
+
+            if separate_cue_1.match(line):
+                # Here's an error message that doesn't contain the addr.
+                # Set a flag to use prospects found on separate lines.
+                use_prospects = 1
+            if separate_addr_1.search(line) != -1:
+                # Found an addr that *might* be part of an error message.
+                # Register it on prospects, where it will only be used if a 
+                # separate check identifies this message as an error message.
+                prospects.append(separate_addr_1.group(1))
+
+        if use_prospects and prospects:
+            candidates = prospects
 
         did = []
         for i in candidates:
