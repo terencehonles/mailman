@@ -1,32 +1,31 @@
 <!-- updated to en 2.1 -->
 Dieser Text kann sogenannte
 <a href="http://www.python.org/doc/current/lib/typesseq-strings.html">Python
-format strings</a> nach dem Muster <b><code>%(attribut)s</code></b>
+format strings</a> nach dem Muster <b>%(attribut)s</b>
 enthalten, die durch listenspezifische Werte ersetzt werden.
 
 Mögliche derartige "Attribute" sind:
 
 <ul>
-    <li><b><code>real_name</code></b> - Der "hübsche" Name der Liste;
+    <li><b>real_name</b> - Der "hübsche" Name der Liste;
 üblicherweise der Listenname in Groß-/Kleinschreibung.
 
-    <li><b><code>list_name</code></b> - Der Name der Liste für diverse URLs,
-wo die Groß-/Kleinschreibung wichtig ist (aus Gründen der
-Abwärtskompatibilität funktioniert auch <code>_internal_name</code>).
+    <li><b>list_name</b> - Der Name der Liste für diverse URLs,
+wo die Groß-/Kleinschreibung wichtig ist.
 
-    <li><b><code>host_name</code></b> - Der FQDN (fully qualified domain
+    <li><b>host_name</b> - Der FQDN (fully qualified domain
 name) des Listservers.
 
-    <li><b><code>web_page_url</code></b> - Die Basis-URL für Mailman. Daran
-wird zB <em><code>listinfo/%(internal_name)s</code></em> angehängt, um die
+    <li><b>web_page_url</b> - Die Basis-URL für Mailman. Daran
+wird zB <em>listinfo/%(list_name)s</em> angehängt, um die
 URL der Infoseite der Liste zu erhalten.
 
-    <li><b><code>description</code></b> - Eine kurze Beschreibung der
+    <li><b>description</b> - Eine kurze Beschreibung der
 Mailingsliste.
 
-    <li><b><code>info</code></b> - Die ausführliche Beschreibung der
+    <li><b>info</b> - Die ausführliche Beschreibung der
 Mailingliste.
 
-    <li><b><code>cgiext</code></b> - Die Dateinamenerweiterung für CGI
+    <li><b>cgiext</b> - Die Dateinamenerweiterung für CGI
 scripts.
 </ul>

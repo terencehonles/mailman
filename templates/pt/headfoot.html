@@ -5,26 +5,24 @@ atributos ??????? atributos da lista.
 As substituições permitidas são:
 
 <ul>
-    <li><b><code>real_name</code></b> - O nome `bonito' da lista; normalmente
+    <li><b>real_name</b> - O nome `bonito' da lista; normalmente
     é o nome da lista com alguma capitalização.
 
-    <li><b><code>list_name</code></b> - O nome pelo qual a lista é
+    <li><b>list_name</b> - O nome pelo qual a lista é
     identificada em URLs, as quais são sensíveis à capitalização.
-    (para garantir compatibilidade  <code>_internal_name</code> é
-    equivalente.)
 
-    <li><b><code>host_name</code></b> - O nome completo do servidor onde 
+    <li><b>host_name</b> - O nome completo do servidor onde 
     corre o servidor da lista.
 
-    <li><b><code>web_page_url</code></b> - A URL base do Mailman. A ela
+    <li><b>web_page_url</b> - A URL base do Mailman. A ela
     pode-se acrescentar, por exemplo,
-    <em><code>listinfo/%(internal_name)s</code></em> para obter a página de
-    informações da lista. ????? internal_name ou list_name?????
+    <em>listinfo/%(list_name)s</em> para obter a página de
+    informações da lista.
 
-    <li><b><code>description</code></b> - Uma breve descrição da lista
+    <li><b>description</b> - Uma breve descrição da lista
     de discussão.
 
-    <li><b><code>info</code></b> - A descrilção completa.
+    <li><b>info</b> - A descrilção completa.
 
-    <li><b><code>cgiext</code></b> - A extensão utilizada em scripts CGI.
+    <li><b>cgiext</b> - A extensão utilizada em scripts CGI.
 </ul>

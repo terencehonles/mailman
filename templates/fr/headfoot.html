@@ -3,29 +3,28 @@ href="http://www.python.org/doc/current/lib/typesseq-strings.html">des formats
 de cha&icirc;nes Python </a>qui sont remplac&eacute;es par les attributs 
 de la liste.  La liste des substitutions valides est:     
 <ul>
-     	<li><b><code>real_name</code></b> - Le nom usuel de la liste; 
+     	<li><b>real_name</b> - Le nom usuel de la liste; 
 	habituellement le nom en capitales.      </li>
      
-	<li><b><code>list_name</code></b> - Le nom par lequel la liste 
+	<li><b>list_name</b> - Le nom par lequel la liste 
 	est identifi&eacute;e dans les URLs, o&ugrave; la casse est important. 
-	(pour assurer la compatibilit&eacute;, <code>_internal_name</code> est &eacute;quivalent).
       	</li>
 
-	<li><b><code>host_name</code></b> - Le "nom d'h&ocirc;te pleinement
+	<li><b>host_name</b> - Le "nom d'h&ocirc;te pleinement
     	qualifi&eacute;" (FQDN) du serveur sur lequel est install&eacute; le serveur de
 	listes.      </li>
 
-     	<li><b><code>web_page_url</code></b> - L'URL de base pour Mailman. 
+     	<li><b>web_page_url</b> - L'URL de base pour Mailman. 
    	Elle peut &ecirc;tre concat&eacute;n&eacute;e avec, par exemple
-	<em><code>listinfo/%(internal_name)s</code></em> pour donner la     
+	<em>listinfo/%(list_name)s</em> pour donner la     
 	page d'infos de la liste.      </li>
 
-	<li><b><code>description</code></b> - La description courte de la  
+	<li><b>description</b> - La description courte de la  
   	liste de diffusion.      </li>
 
-	<li><b><code>info</code></b> - La description compl&egrave;te de la
+	<li><b>info</b> - La description compl&egrave;te de la
     	liste de diffusion.</li>
 
-     	<li><b><code>cgiext</code></b> - L'extension ajout&eacute;e aux scripts
+     	<li><b>cgiext</b> - L'extension ajout&eacute;e aux scripts
 	cgi.    </li>
 </ul>     

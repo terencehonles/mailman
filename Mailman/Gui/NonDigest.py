@@ -104,17 +104,35 @@ class NonDigest(GUIBase):
         # get a bogus warning if the header/footer contains a personalization
         # substitution variable, and we're transitioning from no
         # personalization to personalization enabled.
+        headfoot = Utils.maketext('headfoot.html', mlist=mlist, raw=1)
+        if mm_cfg.OWNERS_CAN_ENABLE_PERSONALIZATION:
+            extra = _("""\
+When <a href="?VARHELP=nondigest/personalize">personalization</a> is enabled
+for this list, additional substitution variables are allowed in your headers
+and footers:
+
+<ul><li><b>user_address</b> - The address of the user,
+        coerced to lower case.
+    <li><b>user_delivered_to</b> - The case-preserved address
+        that the user is subscribed with.
+    <li><b>user_password</b> - The user's password.
+    <li><b>user_name</b> - The user's full name.
+    <li><b>user_optionsurl</b> - The url to the user's option
+        page.
+</ul>
+""")
+        else:
+            extra = ''
+
         info.extend([('msg_header', mm_cfg.Text, (10, WIDTH), 0,
              _('Header added to mail sent to regular list members'),
              _('''Text prepended to the top of every immediately-delivery
-             message. ''') + Utils.maketext('headfoot.html',
-                                            mlist=mlist, raw=1)),
+             message. ''') + headfoot + extra),
             
             ('msg_footer', mm_cfg.Text, (10, WIDTH), 0,
              _('Footer added to mail sent to regular list members'),
              _('''Text appended to the bottom of every immediately-delivery
-             message. ''') + Utils.maketext('headfoot.html',
-                                            mlist=mlist, raw=1)),
+             message. ''') + headfoot + extra),
             ])
         return info
 

@@ -4,28 +4,27 @@ di formato Python</a> che saranno sostituite automaticamente dai
 valori degli attributi della lista.  L'elenco degli attributi permessi
 &egrave;:
 <ul>
-	<li><b><code>real_name</code></b> - Il nome `di facciata' della 
+	<li><b>real_name</b> - Il nome `di facciata' della 
 	lista; di solito &egrave; il nome della lista con lettere maiuscole.
 	
-	<li><b><code>list_name</code></b> - Il nome con cui la lista 
+	<li><b>list_name</b> - Il nome con cui la lista 
 	&egrave; identificata negli URL, dove maiuscole e minuscole sono 
-	importanti.  (Per compatibilit&agrave; all'indietro,
-	<code>_internal_name</code> è equivalente.)
+	importanti.
 
-	<li><b><code>host_name</code></b> - Il nome FQDN dell'host sul 
+	<li><b>host_name</b> - Il nome FQDN dell'host sul 
 	quale viene eseguito il list server.
 	                                                  
-	<li><b><code>web_page_url</code></b> - L'URL di base per Mailman.
+	<li><b>web_page_url</b> - L'URL di base per Mailman.
 	A questo valore viene appeso ad esempio 
-        <em><code>listinfo/%(internal_name)s</code></em> per ottenere
+        <em>listinfo/%(list_name)s</em> per ottenere
 	l'indirizzo della pagina listinfo per la lista.
 
-	<li><b><code>description</code></b> - La descrizione sommaria 
+	<li><b>description</b> - La descrizione sommaria 
 	della lista.
 
-	<li><b><code>info</code></b> - La descrizione completa della 
+	<li><b>info</b> - La descrizione completa della 
 	lista.
 	
-	<li><b><code>cgiext</code></b> - Estensione aggiunta ai nomi
+	<li><b>cgiext</b> - Estensione aggiunta ai nomi
 	degli script CGI
 </ul>

@@ -4,23 +4,22 @@ som byttes ut med verdier fra listens oppsett. For detaljer, se
 formateringsregler (engelsk)</a>. Gyldige koder er:
 
 <ul>
-    <li><b><code>real_name</code></b> - Listens formaterte navn; vanligvis
+    <li><b>real_name</b> - Listens formaterte navn; vanligvis
     listenavnet med stor forbokstav eller store bokstaver enkelte steder.
 
-    <li><b><code>list_name</code></b> - Listens navn som brukt i URLer,
+    <li><b>list_name</b> - Listens navn som brukt i URLer,
     der det har betydning om den staves med store eller sm&aring; bokstaver.
-    (For bakoverkompatibilitet, er <code>_internal_name</code> det samme.)
 
-    <li><b><code>host_name</code></b> - Internettadressen (fully qulified
+    <li><b>host_name</b> - Internettadressen (fully qulified
     domain name) til maskinen som listeserveren g&aring;r p&aring;.
 
-    <li><b><code>web_page_url</code></b> - Basis URL for Mailman. Denne kan
-    legges til sammen med, f.eks. <em><code>listinfo/%(internal_name)s</code></em>
+    <li><b>web_page_url</b> - Basis URL for Mailman. Denne kan
+    legges til sammen med, f.eks. <em>listinfo/%(list_name)s</em>
     for &aring; danne URLen til en listes infoside.
 
-    <li><b><code>description</code></b> - En kort beskrivelse av listen.
+    <li><b>description</b> - En kort beskrivelse av listen.
 
-    <li><b><code>info</code></b> - Full beskrivelse av listen.
+    <li><b>info</b> - Full beskrivelse av listen.
 
-    <li><b><code>cgiext</code></b> - Tillegg som legges til CGI scripts.
+    <li><b>cgiext</b> - Tillegg som legges til CGI scripts.
 </ul>

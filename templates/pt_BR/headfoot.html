@@ -4,28 +4,27 @@ do pythons</a> que são resolvidos contra atributos da lista. a lista
 de substituições permitidas são:
 
 <ul>
-    <li><b><code>real_name</code></b> - O nome 'bonito' da lista; normalmente
+    <li><b>real_name</b> - O nome 'bonito' da lista; normalmente
     o nome da lista com capitalização. 
 
-    <li><b><code>list_name</code></b> - O nome no qual a lista é 
+    <li><b>list_name</b> - O nome no qual a lista é 
     identificada nas URLs, onde maiúsculas/minúsculas são 
-    significantes. (Por compatibilidade anterior, 
-    <code>_internal_name</code> é equivalente.)
+    significantes.
 
-    <li><b><code>host_name</code></b> - O nome completo do 
+    <li><b>host_name</b> - O nome completo do 
     servidor (FQDN) onde a lista é executada. 
 
-    <li><b><code>web_page_url</code></b> - A URL base do Mailman. Isto
+    <li><b>web_page_url</b> - A URL base do Mailman. Isto
     pode ser adicionado com,
-    e.g. <em><code>listinfo/%(internal_name)s</code></em> para chegar até 
+    e.g. <em>listinfo/%(list_name)s</em> para chegar até 
     a página de detalhes sobre a lista de discussão. 
 
-    <li><b><code>description</code></b> - uma breve descrição da lista
+    <li><b>description</b> - uma breve descrição da lista
     de discussão. 
 
-    <li><b><code>info</code></b> - A descrição completa da lista de 
+    <li><b>info</b> - A descrição completa da lista de 
     discussão. 
 
-    <li><b><code>cgiext</code></b> - A extensão adicionada a 
+    <li><b>cgiext</b> - A extensão adicionada a 
     scripts CGI. 
 </ul>
