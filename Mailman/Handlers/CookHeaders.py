@@ -106,7 +106,7 @@ def process(mlist, msg, msgdata):
         if d:
             # Don't add one back if there's nothing to add!
             msg['Reply-To'] = COMMASPACE.join(
-                [email.Utils.dump_address_pair(pair) for pair in d.values()])
+                [email.Utils.formataddr(pair) for pair in d.values()])
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
     # if the message is being crafted for a specific list (e.g. not for the
     # password reminders).
