@@ -4,6 +4,29 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.0 release candidate 2 (10-Nov-2000)
+
+    - Documentation updates: start at admin/www/index.html
+
+    - bin/withlist accepts additional command line arguments when used
+      with the --run flag; bin/mmsitepass and bin/newlist accept
+      -h/--help flags
+
+    - bin/newlist has a -o/--output flag to append /etc/aliases
+      suggestions to a specified file
+
+    - SourceForge bugs fixed:
+        116615 (README.BSD update), 117015 (duplicate messages on
+        moderated posts), 117548 (exception in HyperArch.py), 117682
+        (typos), 121185 (vsnprintf signature), 121591 and 122017
+        (bogus link after web unsubscribe), 121811 (`subscribe' in
+        Subject: doesn't get archived)
+
+    - SourceForge patches applied:
+        101812 (securelinux_fix.py contrib), 102097 (fix for bug
+        117548), 102211 (additional args for withlist), 102268 (case
+        insensitive Content-Transfer-Encoding:)
+
 2.0 release candidate 1 (23-Oct-2000)
 
     - Bug fixes and security patches.
