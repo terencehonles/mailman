@@ -30,6 +30,7 @@ from Mailman.Handlers import HandlerAPI
 
 class Deliverer:
     def SendSubscribeAck(self, name, password, digest):
+        os.environ['LANG'] = pluser = self.GetPreferredLanguage(name)
         if not self.send_welcome_msg:
 	    return
 	if self.welcome_msg:
@@ -55,20 +56,21 @@ your membership administrative address, %s.
              'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'optionsurl'  : self.GetOptionsURL(name, absolute=1),
              'password'    : password,
-             })
+             }, pluser) 
 	if digest:
-	    digmode = ' (Digest mode)'
+	    digmode = _(" (Digest mode)")
 	else:
 	    digmode = ''
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetRequestEmail(),
-            _('Welcome to the "%s" mailing list%s') % (self.real_name, digmode),
+            _('Welcome to the "%s" mailing list%s') %(self.real_name, digmode),
             text)
         msg['X-No-Archive'] = 'yes'
         HandlerAPI.DeliverToUser(self, msg)
 
 
     def SendUnsubscribeAck(self, name):
+        os.environ['LANG'] = self.GetPreferredLanguage(name)
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetAdminEmail(),
             _('Unsubscribed from "%s" mailing list') % self.real_name,
@@ -77,6 +79,7 @@ your membership administrative address, %s.
 
 
     def MailUserPassword(self, user):
+        os.environ['LANG'] = self.GetPreferredLanguage(user)
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
         # find the lowercased version of the user's address
@@ -96,7 +99,7 @@ your membership administrative address, %s.
                  'options_url': self.GetOptionsURL(user, absolute=1),
                  'requestaddr': requestaddr,
                  'adminaddr'  : adminaddr,
-                 })
+                }, self.GetPreferredLanguage(user))
         else:
             ok = 0
             recipient = self.GetAdminEmail()
@@ -105,7 +108,7 @@ your membership administrative address, %s.
                 'nopass.txt',
                 {'username'     : `user`,
                  'internal_name': self.internal_name(),
-                 })
+                 }, self.GetPreferredLanguage(user))
         msg = Message.UserNotification(recipient, requestaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
         HandlerAPI.DeliverToUser(self, msg)
