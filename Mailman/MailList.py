@@ -40,7 +40,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
 	if name:
-	    if name not in list_names():
+	    if name not in mm_utils.list_names():
 		raise mm_err.MMUnknownListError, 'list not found'
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	    # Load in the default values so that old data files aren't
@@ -115,6 +115,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
 	self.posters = []
 	self.bad_posters = []
+	self.admin_immed_notify = mm_cfg.DEFAULT_ADMIN_IMMED_NOTIFY
 	self.moderated = mm_cfg.DEFAULT_MODERATED
 	self.require_explicit_destination = \
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
@@ -181,11 +182,15 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'List specific portion of welcome sent to new subscribers'),
 
 	    ('goodbye_msg', mm_cfg.Text, (4, 65), 0,
-	     'Text sent to people leaving the list.'
-	     'If empty, no unsubscribe message will be sent.'),
+	     'Text sent to people leaving the list.  If empty, no special '
+	     'text will be added to the unsubscribe message.'),
 
 	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
 	     'Are replies to a post directed to poster or the list?'),
+
+	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     'Is administrator notified immediately of new admin requests, '
+	     'in addition to the daily notice about collected ones?'),
 
 	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Anti-spam: Must posts be approved by a moderator?'),
@@ -197,12 +202,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    # Note that leading whitespace in the matchexp is trimmed - you can
 	    # defeat that by, eg, containing it in gratuitous square brackets.
  	    ('bounce_matching_headers', mm_cfg.Text, ('6', '60'), 0,
- 	     'Anti-spam: Bounce posts with header containing regexp match;'
-	     ' divide header name and (case-insensitive) match regexp'
-	     ' with colon'),
+ 	     'Anti-spam: Hold posts with header matching specified regexp;'
+	     ' case-insensitive'),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
-	     'Email addresses whose posts are auto-approved '
+	     'Anti-spam: Email addresses whose posts are auto-approved '
 	     '(adding anyone to this list will make this a moderated list)'),
 
 	    ('bad_posters', mm_cfg.EmailList, (5, 30), 1,
@@ -251,7 +255,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('host_name', mm_cfg.Host, 50, 0, 'Host name this list prefers'),
 
 	    ('web_page_url', mm_cfg.String, 50, 0,
-	     'Base URL for Mailman web interface')
+	     'Base URL for Mailman web interface'),
 	    ]
 
 	config_info['nondigest'] = [
@@ -274,7 +278,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return config_info
 
     def Create(self, name, admin, crypted_password):
-	if name in list_names():
+	if name in mm_utils.list_names():
 	    raise ValueError, 'List %s already exists.' % name
 	else:
 	    mm_utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
@@ -293,10 +297,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	ou = os.umask(002)
 	try:
 	    import mm_archive
-	    open(os.path.join(self._full_path,
-			      mm_archive.ARCHIVE_PENDING), "a+").close()
-	    open(os.path.join(self._full_path,
-			      mm_archive.ARCHIVE_RETAIN), "a+").close()
+## 	    open(os.path.join(self._full_path,
+## 			      mm_archive.ARCHIVE_PENDING), "a+").close()
+## 	    open(os.path.join(self._full_path,
+## 			      mm_archive.ARCHIVE_RETAIN), "a+").close()
 	    open(os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % 
 			      self._internal_name), 'a+').close()
 	    open(os.path.join(self._full_path, "next-digest"), "a+").close()
@@ -466,20 +470,25 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return 0
 
     def parse_matching_header_opt(self):
-	"""Return a list of triples [(field name, regex, and line), ...]."""
-	# Note that leading whitespace in the matchexp is trimmed - you can
-	# defeat that by, eg, containing it in gratuitous square brackets.
-	mho = self.bounce_matching_headers
+	"""Return a list of triples [(field name, regex, line), ...]."""
+	# - Blank lines and lines with '#' as first char are skipped.
+	# - Leading whitespace in the matchexp is trimmed - you can defeat
+	#   that by, eg, containing it in gratuitous square brackets.
 	all = []
-	for line in string.split(mho, '\n'):
-	    if not string.strip(line):
-		# Skip blank lines.
+	for line in string.split(self.bounce_matching_headers, '\n'):
+	    stripped = string.strip(line)
+	    if not stripped or (stripped[0] == "#"):
+		# Skip blank lines and lines *starting* with a '#'.
 		continue
-	    try:
-		h, e = re.split(":[ 	]*", line)
-		all.append((h, e, line))
-	    except ValueError:
-		raise mm_err.MMBadConfigError, line
+	    else:
+		try:
+		    h, e = re.split(":[ 	]*", line)
+		    all.append((h, e, line))
+		except ValueError:
+		    # Whoops - some bad data got by:
+		    self.LogMsg("config", "%s - "
+				"bad bounce_matching_header line %s"
+				% (self.real_name, `line`))
 	return all
 
 
@@ -491,13 +500,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	Returns constraint line which matches or empty string for no
 	matches."""
 	
-	try:
-	    pairs = self.parse_matching_header_opt()
-	except mm_err.MMBadConfigError, line:
-	    # Whoops - some bad data got by:
-	    self.LogMsg("config", "%s - "
-			"bad bounce_matching_header line %s"
-			% (self.real_name, `line`))
+	pairs = self.parse_matching_header_opt()
 
 	for field, matchexp, line in pairs:
 	    fragments = msg.getallmatchingheaders(field)
@@ -565,7 +568,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	    if (self.require_explicit_destination and
  		  not self.HasExplicitDest(msg)):
  		self.AddRequest('post', mm_utils.SnarfMessage(msg),
- 				'Missing explicit list destination.')
+ 				'List name not among explicit destinations.')
  	    if self.bounce_matching_headers:
 		triggered = self.HasMatchingHeader(msg)
 		if triggered:
@@ -578,10 +581,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
 				    'Message body too long (>%dk)' % 
 				    self.max_message_size)
-	if self.digestable:
-	    self.SaveForDigest(msg)
-	if self.archive:
-	    self.ArchiveMail(msg)
 	# Prepend the subject_prefix to the subject line.
 	subj = msg.getheader('subject')
 	prefix = self.subject_prefix
@@ -592,6 +591,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	elif not re.match("(re:? *)?" + re.escape(self.subject_prefix),
 			  subj, re.I):
 	    msg.SetHeader('Subject', '%s%s' % (prefix, subj))
+
+	if self.digestable:
+	    self.SaveForDigest(msg)
+	if self.archive:
+	    self.ArchiveMail(msg)
 
 	dont_send_to_sender = 0
 	ack_post = 0
@@ -642,20 +646,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._lock_file = None
 
     def __repr__(self):
-	if self._lock_file: un = ""
-	else: un = "un"
-	return ("<%s.%s %slocked instance at %s>"
+	if self._lock_file: status = " (locked)"
+	else: status = ""
+	return ("<%s.%s %s%s at %s>"
 		% (self.__module__, self.__class__.__name__,
-		   un, hex(id(self))[2:]))
-
-def list_names():
-    """Return the names of all lists in default list directory."""
-    got = []
-    for fn in os.listdir(mm_cfg.LIST_DATA_DIR):
-	if not (
-	    os.path.exists(
-		os.path.join(os.path.join(mm_cfg.LIST_DATA_DIR, fn),
-			     'config.db'))):
-	    continue
-	got.append(fn)
-    return got
+		   `self._internal_name`, status, hex(id(self))[2:]))
