@@ -376,9 +376,9 @@ DEFAULT_MINIMUM_REMOVAL_DATE = 5
 DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION = 3
 
 # 0 means do nothing
-# 1 means disable and send admin a report,
-# 2 means nuke'em (remove) and send admin a report,
-# 3 means nuke 'em and don't report (whee:)
+# 1 means disable and notify the list admin
+# 2 means disable and don't notify the list admin
+# 3 means remove and notify
 DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
 
 # Maximum number of posts that can go by w/o a bounce before we figure 
