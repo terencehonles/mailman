@@ -32,8 +32,9 @@ from types import StringType
 # XXX: obsolete, should use re module
 import regsub
 import random
-import mm_cfg
-import Errors
+
+from Mailman import mm_cfg
+from Mailman import Errors
 ##try:
 ##    import md5
 ##except ImportError:
@@ -41,16 +42,19 @@ import Errors
 
 
 
+def list_exists(listname):
+    """Return true iff list `listname' exists."""
+    return os.path.exists(
+        os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db'))
+
+
 def list_names():
     """Return the names of all lists in default list directory."""
     got = []
     for fn in os.listdir(mm_cfg.LIST_DATA_DIR):
-	if not (
-	    os.path.exists(
-		os.path.join(os.path.join(mm_cfg.LIST_DATA_DIR, fn),
-			     'config.db'))):
-	    continue
-	got.append(fn)
+        if not list_exists(fn):
+            continue
+        got.append(fn)
     return got
 
 
@@ -219,7 +223,7 @@ def GetNestingLevel():
             path = os.environ['PATH_INFO']
             if path[0] <> '/': 
                 path= '/' + path
-            _nesting_level = len(string.split(path, '/')) - 1
+            _nesting_level = string.count(path, '/')
         except KeyError:
             _nesting_level = 0
     return _nesting_level
@@ -416,7 +420,7 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
     Optional arg verbose says to print list name as it's about to be
     instantiated, CR when instantiation is complete, and result of
     application as it shows."""
-    from MailList import MailList
+    from Mailman.MailList import MailList
     if names == None:
         names = list_names()
     got = []
