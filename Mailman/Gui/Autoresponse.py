@@ -53,7 +53,7 @@ box, or you can specify a file on your local system to upload as the text."""),
              (6, WIDTH), 0,
              _('Auto-response text to send to mailing list posters.')),
 
-            ('autorespond_admin', mm_cfg.Toggle, ('No', 'Yes'), 0,
+            ('autorespond_admin', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
              _('''Should Mailman send an auto-response to emails sent to the
              -admin and -owner addresses?''')),
 
