@@ -34,6 +34,7 @@ import string
 import time
 import getopt
 import traceback
+import socket
 
 import paths
 from Mailman import mm_cfg
@@ -144,8 +145,11 @@ def process_lists(glock):
         # from news to mail.  `None' means that this list has never polled its
         # newsgroup and that we should do a catch up.
         watermark = getattr(mlist, 'usenet_watermark', None)
-        # Open the newsgroup, but let exceptions percolate up.
-        conn, first, last = open_newsgroup(mlist)
+        # Open the newsgroup, but let most exceptions percolate up.
+        try:
+            conn, first, last = open_newsgroup(mlist)
+        except socket.error:
+            break
         syslog('fromusenet', '%s: [%d..%d]' % (listname, first, last))
         try:
             try:
