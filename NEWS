@@ -4,6 +4,21 @@ Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.1 alpha 2 (XXX)
+
+    - Subscription confirmations can now be performed via email or via
+      URL.  When a subscription is received, a unique (sha) confirm
+      URL is generated in the confirmation message.  Simply visiting
+      this URL completes the subscription process.
+
+    - Fixes in 2.0.3 ported forward:
+
+        Bug fix release.  There was a small typo in 2.0.2 in
+        ListAdmin.py for approving an already subscribed member
+        (thanks Thomas!).  Also, an update to the OpenWall security
+        workaround (contrib/securelinux_fix.py) was included.  Thanks
+        to Marc Merlin.
+
 2.1 alpha 1 (04-Mar-2001)
 
     - Python 2.0 or newer required.  Also required is `mimelib' a new
