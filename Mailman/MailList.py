@@ -815,7 +815,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  "member"   : dump_address_pair((name, email)),
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
-                self.owner, Utils.get_site_email(self.host_name, 'admin'),
+                self.GetOwnerEmail(),
+                Utils.get_site_email(self.host_name, 'owner'),
                 subject, text, lang)
             msg.send(self)
 
@@ -853,7 +854,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  'listname': self.real_name,
                  }, mlist=self)
             msg = Message.UserNotification(
-                self.owner, Utils.get_site_email(self.host_name, 'admin'),
+                self.GetOwnerEmail(), 
+                Utils.get_site_email(self.host_name, 'owner'),
                 subject, text, self.preferred_language)
             msg.send(self)
         if whence:
