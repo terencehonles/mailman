@@ -37,6 +37,7 @@
 #
 
 import os, stat, tempfile, marshal, errno, mm_cfg
+import Utils
 
 TEMPLATE = "mm_q."
 #
@@ -124,13 +125,13 @@ def enqueueMessage(the_sender, recip, text):
     tempfile.tempdir = mm_cfg.DATA_DIR
     tempfile.template = "%s%d." % (TEMPLATE, os.getpid())
     fname = tempfile.mktemp() 
-    f = open(fname, "a+")
-    os.chmod(fname, QF_MODE | stat.S_ISUID) # make sure this is set right off the bat
+    #
+    # open the file so that it is setuid upon creation
+    #
+    f = Utils.open_ex(fname, "a+", -1, QF_MODE | stat.S_ISUID)
     marshal.dump((recip,the_sender,text),f)
     f.close()
-    os.chmod(fname, QF_MODE | stat.S_ISUID) # just in case .close() changes the perms
     return fname
-
 
 
 #
@@ -139,21 +140,19 @@ def enqueueMessage(the_sender, recip, text):
 def isDeferred(q_entry, st=None):
     if st is None:
         st = os.stat(q_entry)
-    size = st[stat.ST_SIZE]
-    mode = st[stat.ST_MODE]
-    if mode & stat.S_ISUID: 
-        return 0
-    elif not size: # the file was just opened, but not yet chmod'd
+    if st[stat.ST_MODE] & stat.S_ISUID: 
         return 0
     else:
         return 1
-    
+
 
 #
 # given the full path to a q_entry, set the
 # status to deferred if it is not
 # already in that state.  this function must work
 # on entries already in a deferred state.
+# this function may only be called by the process
+# that called enqueueMessage(), since it uses chmod
 #
 def deferMessage(q_entry):
     if not isDeferred(q_entry):
