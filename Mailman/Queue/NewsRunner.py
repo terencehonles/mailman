@@ -100,7 +100,6 @@ def prepare_message(mlist, msg, msgdata):
     else:
         # Newsgroups: isn't in the message
         msg['Newsgroups'] = mlist.linked_newsgroup
-    #
     # Note: We need to be sure two messages aren't ever sent to the same list
     # in the same process, since message ids need to be unique.  Further, if
     # messages are crossposted to two Usenet-gated mailing lists, they each
@@ -121,16 +120,17 @@ def prepare_message(mlist, msg, msgdata):
     if hackmsgid:
         del msg['message-id']
         msg['Message-ID'] = Utils.unique_message_id(mlist)
-    #
     # Lines: is useful
     if msg['Lines'] is None:
         # BAW: is there a better way?
         count = len(email.Iterators.body_line_iterator(msg))
         msg['Lines'] = str(count)
-    #
-    # Get rid of these lines
+    # BAW: It appears that some news servers have problems if the message
+    # contains X-Trace:, NNTP-Posting-Host: or duplicate Cc: headers.  Should
+    # we retain X-Trace or NNTP-Posting-Host as backup X-* headers?
     del msg['received']
-    #
+    del msg['x-trace']
+    del msg['nntp-posting-host']
     # BAW: Gross hack to ensure that we have only one
     # content-transfer-encoding header.  More than one barfs NNTP.  I don't
     # know why we sometimes have more than one such header, and it probably
