@@ -106,6 +106,15 @@ LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'master-qrunner')
 LOCK_LIFETIME = mm_cfg.days(10)
 SNOOZE = mm_cfg.days(1)
 
+# We want a SIGHUP to re-open all the log files.  By closing syslog, it will
+# cause a new StampedLogger to be opened the next time a message is logged.
+def sighup_handler(signum, frame):
+    syslog.close()
+    # And just to tweak things...
+    syslog('qrunner', 'qrunner caught SIGHUP.  Re-opening log files.')
+
+signal.signal(signal.SIGHUP, sighup_handler)
+
 
 
 def usage(code, msg=''):
@@ -174,7 +183,12 @@ def master(restart, lock):
     try:
         try:
             while 1:
-                pid, status = os.wait()
+                try:
+                    pid, status = os.wait()
+                except OSError, e:
+                    if e.errno <> errno.EINTR: raise
+                    # Just restart the wait()
+                    continue
                 killsig = status & 0xff
                 exitstatus = (status >> 8) & 0xff
                 # What should we do with this information other than log it?
