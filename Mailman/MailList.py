@@ -1000,7 +1000,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if len(self.posters):
 		addrs = Utils.FindMatchingAddresses(sender, self.posters)
 		if not len(addrs):
-                    if self.include_members_in_posters:
+                    if self.posters_includes_members:
                         if not self.IsMember(sender):
                             self.AddRequest('post', Utils.SnarfMessage(msg),
                                             'Only approved posters may post without '
