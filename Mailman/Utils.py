@@ -135,11 +135,18 @@ def wrap(text, column=70):
                             bol = bol + 1
                         bol = bol - 1
                     line = text[:eol+1] + '\n'
-                    text = text[bol+1:]
+                    # find the next non-whitespace character
+                    bol = bol + 1
+                    while bol < len(text) and text[bol] in string.whitespace:
+                        bol = bol + 1
+                    text = text[bol:]
                 wrapped = wrapped + line
             wrapped = wrapped + '\n'
+            # end while text
         wrapped = wrapped + '\n'
-    return wrapped
+        # end for text in lines
+    # the last two newlines are bogus
+    return wrapped[:-2]
     
 
 def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
