@@ -21,6 +21,7 @@ import time
 
 from Mailman import Utils
 from Mailman import Message
+from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
 
 NL = '\n'
@@ -62,10 +63,11 @@ def process(mlist, msg, msgdata):
     #
     # Okay, we know we're going to auto-respond to this sender, craft the
     # message, send it, and update the database.
-    subject = 'Auto-response for your message to ' + \
-              msg.get('to',  'the "%s" mailing list' % mlist.real_name)
+    realname = mlist.real_name
+    subject = _('Auto-response for your message to ') + \
+              msg.get('to',  _('the "%(realname)s" mailing list'))
     # Do string interpolation
-    d = SafeDict({'listname'    : mlist.real_name,
+    d = SafeDict({'listname'    : realname,
                   'listurl'     : mlist.GetScriptURL('listinfo'),
                   'requestemail': mlist.GetRequestEmail(),
                   'adminemail'  : mlist.GetAdminEmail(),
@@ -88,7 +90,7 @@ def process(mlist, msg, msgdata):
     text = NL.join(lines)
     outmsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
                                       subject, text)
-    outmsg['X-Mailer'] = 'The Mailman Replybot '
+    outmsg['X-Mailer'] = _('The Mailman Replybot')
     # prevent recursions and mail loops!
     outmsg['X-Ack'] = 'No'
     outmsg.send(mlist)
