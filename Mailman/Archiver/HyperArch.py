@@ -143,7 +143,7 @@ def CGIescape(arg):
 paren_name_pat = re.compile(r'([(].*[)])') 
 
 # Subject lines preceded with 'Re:' 
-REpat = re.compile( r"\s*RE\s*:\s*", re.IGNORECASE)
+REpat = re.compile( r"\s*RE\s*(\[\d+\]\s*)?:\s*", re.IGNORECASE)
 
 # E-mail addresses and URLs in text
 emailpat = re.compile(r'([-+,.\w]+@[-+.\w]+)') 
