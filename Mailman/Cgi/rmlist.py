@@ -159,8 +159,6 @@ def process_request(doc, cgidata, mlist):
                 Link(Utils.ScriptURL('admin'),
                      _('administrative list overview')).Format())
     doc.AddItem(MailmanLogo())
-    
-    
 
 
 
