@@ -142,6 +142,9 @@ class Deliverer:
 	if self.reply_goes_to_list:
             del msg['reply-to']
             msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
+        # these can be used to surreptitiously gather membership info
+        del msg['return-receipt-to']
+        del msg['disposition-notification-to']
         # get rid of duplicate fields
         del msg['sender']
         del msg['errors-to']
