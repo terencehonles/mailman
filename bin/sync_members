@@ -70,11 +70,13 @@ Where `options' are:
 """
 
 import sys
+import email.Utils
 
 import paths
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import Utils
+from Mailman.UserDesc import UserDesc
 from Mailman.i18n import _
 
 
@@ -181,9 +183,9 @@ def main():
             print _('Ignore  :  %30(addr)s')
 
     # first filter out any invalid addresses
-    filemembers = Utils.ParseAddrs(filemembers)
+    filemembers = email.Utils.getaddresses(filemembers)
     invalid = 0
-    for addr in filemembers:
+    for name, addr in filemembers:
         try:
             Utils.ValidateEmail(addr)
         except Errors.EmailAddressError:
@@ -201,45 +203,46 @@ def main():
         sys.exit(1)
 
     try:
-        # get the list of addresses currently subscribed
+        # Get the list of addresses currently subscribed
         addrs = {}
         needsadding = {}
         for addr in mlist.getMemberCPAddresses(mlist.getMembers()):
             addrs[addr.lower()] = addr
 
-        for addr in filemembers:
-            # any address found in the file that is also in the list can be
-            # ignored.  if not found in the list, it must be added later
+        for name, addr in filemembers:
+            # Any address found in the file that is also in the list can be
+            # ignored.  If not found in the list, it must be added later.
             laddr = addr.lower()
             if addrs.has_key(laddr):
                 del addrs[laddr]
             else:
-                needsadding[laddr] = addr
+                needsadding[laddr] = (name, addr)
 
         if not needsadding and not addrs:
             print _('Nothing to do.')
             sys.exit(0)
 
         # addrs contains now all the addresses that need removing
-        for laddr, addr in needsadding.items():
+        for laddr, (name, addr) in needsadding.items():
             pw = Utils.MakeRandomPassword()
             # should not already be subscribed, otherwise our test above is
             # broken.  Bogosity is if the address is listed in the file more
             # than once.  Second and subsequent ones trigger an
             # MMAlreadyAMember error.  Just catch it and go on.
+            userdesc = UserDesc(addr, name, pw, digest)
             try:
                 if not dryrun:
-                    mlist.ApprovedAddMember(addr, pw, digest,
-                                            welcome, notifyadmin)
-                print _('Added  : %30(laddr)s (%30(addr)s)')
+                    mlist.ApprovedAddMember(userdesc, welcome, notifyadmin)
+                print _('Added  : <%(addr)30s> %(name)s')
             except Errors.MMAlreadyAMember:
                 pass
 
         for laddr, addr in addrs.items():
+            name = mlist.getMemberName(addr)
             # should be a member, otherwise our test above is broken
             if not dryrun:
                 mlist.DeleteMember(addr, admin_notif=notifyadmin)
-            print _('Removed: %30(laddr)s (%30(addr)s)')
+            print _('Removed: <%(addr)30s> %(name)s')
 
         mlist.Save()
     finally:
