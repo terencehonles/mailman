@@ -170,7 +170,7 @@ def addall(mlist, members, digest, ack, outfp):
                 print >> tee, _('Bad/Invalid email address: blank line')
             else:
                 print >> tee, _('Bad/Invalid email address: %(member)s')
-        except MMHostileAddress:
+        except Errors.MMHostileAddress:
             print >> tee, _('Hostile address (illegal characters): %(member)s')
         else:
             print >> tee, _('Subscribed: %(member)s')
