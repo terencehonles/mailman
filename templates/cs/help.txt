@@ -39,6 +39,3 @@ Pøíkazy zasílejte na adresu %(requestaddr)s
 Pøípadnì dotazy nebo námìty zasílejte na adresu
 
     %(adminaddr)s
-
-
-

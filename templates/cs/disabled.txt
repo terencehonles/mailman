@@ -1,6 +1,6 @@
 Va¹e èlenství v konferenci %(listname)s
-bylo pozastaveno, proto¾e se nám pøíspìvky pro Vás vracejí jako
-nedoruèitelné. Toto varování bude zasláno je¹tì %(noticesleft)s
+bylo pozastaveno, z dùvodu: %(reason)s
+Toto varování bude zasláno je¹tì %(noticesleft)s
 a pokud nebudete reagovat, budete z konference odhlá¹en.
 
 Pokud máte zájem být i nadále èlenem, odpovìzte na tuto zprávu,

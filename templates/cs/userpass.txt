@@ -14,4 +14,5 @@ Nebo za¹lete dopis obsahující slovo help na adresu:
 
 Budou Vám zaslány podrobnìj¹í instrukce.
 
-Máte nìjaký dotaz nebo pøipomínku? Pi¹te na %(owneraddr)s.
+Máte nìjaký dotaz nebo pøipomínku? Pi¹te správci konference
+%(listname)s na adresu %(owneraddr)s.
