@@ -251,15 +251,6 @@ class LockFile:
                     self.__writelog('unexpected link error: %s' % e)
                     os.unlink(self.__tmpfname)
                     raise
-                elif self.__linkcount() == 1:
-                    # We've hit a race window.  Proc1 is in the middle of
-                    # unlocking and has removed their tmpfname, leaving
-                    # lockfile with a link count of one.  Proc2's os.link()
-                    # above fails w/EEXIST but the linkcount will be 1.  Even
-                    # if multiple ProcN's attempt to claim the lock while
-                    # Proc1 is unlocking, linkcount can never be > 2.  We'll
-                    # just try again later.
-                    self.__writelog('hit proc1 unlock race condition')
                 elif self.__linkcount() <> 2:
                     # Somebody's messin' with us!  Log this, and try again
                     # later.  TBD: should we raise an exception?
@@ -300,17 +291,17 @@ class LockFile:
         islocked = self.locked()
         if not islocked and not unconditionally:
             raise NotLockedError
-        # Remove our tempfile
-        try:
-            os.unlink(self.__tmpfname)
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
         # If we owned the lock, remove the global file, relinquishing it.
         if islocked:
             try:
                 os.unlink(self.__lockfile)
             except OSError, e:
                 if e.errno <> errno.ENOENT: raise
+        # Remove our tempfile
+        try:
+            os.unlink(self.__tmpfname)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
         self.__writelog('unlocked')
 
     def locked(self):
@@ -399,19 +390,20 @@ class LockFile:
             self.__touch(self.__lockfile)
         except OSError, e:
             if e.errno <> errno.EPERM: raise
+        # Get the name of the old winner's temp file.
+        winner = self.__read()
+        # Remove the global lockfile, which actually breaks the lock.
+        try:
+            os.unlink(self.__lockfile)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
         # Try to remove the old winner's temp file, since we're assuming the
         # winner process has hung or died.  Don't worry too much if we can't
         # unlink their temp file -- this doesn't wreck the locking algorithm,
         # but will leave temp file turds laying around, a minor inconvenience.
-        winner = self.__read()
         try:
             if winner:
                 os.unlink(winner)
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
-        # Now remove the global lockfile, which actually breaks the lock.
-        try:
-            os.unlink(self.__lockfile)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
 
