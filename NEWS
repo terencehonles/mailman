@@ -6,12 +6,26 @@ Here is a history of user visible changes to Mailman.
 
 2.1 beta 1 (???)
 
+    - ALLOW_SITE_ADMIN_COOKIES is a new configuration variable which
+      says whether to allow AuthSiteAdmin cookies or not.  Normally,
+      when a list administrator logs into a list with the site
+      password, they are issued a cookie that only allows them to do
+      administration for this one list.  By setting
+      ALLOW_SITE_ADMIN_COOKIES to 1, the user only needs to
+      authenticate to one list with the site password, and they can
+      administer any mailing list.
+
+      I'm not sure this feature is wise, so the default value for
+      ALLOW_SITE_ADMIN_COOKIES is 0.
+
     - New feature: banned subscription addresses.  Privacy
       options/subscription rules now has an additional list box, which
       can contain addresses or regular expressions.  Subscription
       requests from any matching address is automatically rejected.
 
-    - DEFAULT_DEFAULT_MEMBER_MODERATION set to 1
+    - The configuration variable DEFAULT_DEFAULT_MEMBER_MODERATION is
+      now set to 1 by default.  This means that by default, new
+      members will have their moderation flag turned on.
 
     - admindb summary page gives the option of clearing the moderation
       flag of members who are on probation.
