@@ -113,6 +113,8 @@ class Runner:
                     self.__onefile(msg, msgdata)
                 except Exception, e:
                     self._log(e)
+                    # Put a marker in the metadata for unshunting
+                    msgdata['whichq'] = self._switchboard.whichq()
                     self._shunt.enqueue(msg, msgdata)
             # Other work we want to do each time through the loop
             Utils.reap(self._kids, once=1)
