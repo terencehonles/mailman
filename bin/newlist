@@ -18,9 +18,15 @@
 
 """Create a new, unpopulated mailing list.
 
-Usage: %(PROGRAM)s <listname> <listadmin's-addr> <admin-password> <immediate>
+Usage: %(PROGRAM)s [options] listname listadmin-addr admin-password
 
 Options:
+
+    -q
+    --quiet
+        Normally the administrator is notified by email (after a prompt) that
+        their list has been created.  This option suppresses that
+        notification.
 
     -o file
     --output=file
@@ -110,22 +116,25 @@ def usage(code, msg=''):
 
 
 
-def main(argv):
+def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'ho:',
-                                   ['help', 'output='])
+        opts, args = getopt.getopt(sys.argv[1:], 'ho:q',
+                                   ['help', 'output=', 'quiet'])
     except getopt.error, msg:
         usage(1, msg)
 
     appendfile = None
+    quiet = 0
     for opt, arg in opts:
         if opt in ('-o', '--output'):
             appendfile = arg
         if opt in ('-h', '--help'):
             usage(0)
+        if opt in ('-q', '--quiet'):
+            quiet = 1
 
     if len(args) > 0:
-	listname = argv[0]
+	listname = args[0]
     else:
 	listname = raw_input("Enter the name of the list: ")
     listname = string.lower(listname)
@@ -137,13 +146,13 @@ def main(argv):
         usage(1, 'List already exists: ' + listname)
 
     if len(args) > 1:
-	owner_mail = argv[1]
+	owner_mail = args[1]
     else:
 	owner_mail = raw_input(
 	    "Enter the email of the person running the list: ")
 
     if len(args) > 2:
-	list_pw = argv[2]
+	list_pw = args[2]
     else:
         list_pw = getpass.getpass("Initial %s password: " % listname)
     # List passwords cannot be empty
@@ -186,28 +195,29 @@ def main(argv):
             fp.write('\n')
             fp.close()
 
-        if len(argv) < 5:
+        if not quiet:
             print ("Hit enter to continue with %s owner notification..."
                    % listname),
             sys.stdin.readline()
-        # send the notice to the list owner
-        text = Utils.maketext(
-            'newlist.txt',
-            {'listname'    : listname,
-             'password'    : list_pw, 
-             'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
-             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-             'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
-             'hostname'    : mlist.host_name,
-             })
-        msg = Message.UserNotification(owner_mail,
-                                       'mailman-owner@' + mlist.host_name,
-                                       'Your new mailing list: ' + listname,
-                                       text)
-        HandlerAPI.DeliverToUser(mlist, msg)
+            # send the notice to the list owner
+            text = Utils.maketext(
+                'newlist.txt',
+                {'listname'    : listname,
+                 'password'    : list_pw, 
+                 'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
+                 'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
+                 'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
+                 'hostname'    : mlist.host_name,
+                 })
+            msg = Message.UserNotification(
+                owner_mail,
+                'mailman-owner@' + mlist.host_name,
+                'Your new mailing list: ' + listname,
+                text)
+            HandlerAPI.DeliverToUser(mlist, msg)
     finally:
         mlist.Unlock()
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
