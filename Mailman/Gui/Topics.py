@@ -14,6 +14,8 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import re
+
 from Mailman import mm_cfg
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
@@ -113,6 +115,15 @@ class Topics(GUIBase):
                 # This new entry is incomplete.
                 doc.addError(_("""Topic specifications require both a name and
                 a pattern.  Incomplete topics will be ignored."""))
+                continue
+
+            # Make sure the pattern was a legal regular expression
+            try:
+                syslog('error', 'pattern: %s', pattern)
+                re.compile(pattern)
+            except (re.error, TypeError):
+                doc.addError(_("""The topic pattern `%(pattern)s' is not a
+                legal regular expression.  It will be discarded."""))
                 continue
 
             # Was this an add item?
