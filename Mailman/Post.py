@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,15 +23,17 @@ from Mailman.Queue.sbcache import get_switchboard
 
 
 
-def inject(listname, msg, recips=None):
-    inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+def inject(listname, msg, recips=None, qdir=None):
+    if qdir is None:
+        qdir = mm_cfg.INQUEUE_DIR
+    queue = get_switchboard(qdir)
     kws = {'listname'  : listname,
            'tolist'    : 1,
            '_plaintext': 1,
            }
     if recips:
         kws['recips'] = recips
-    inq.enqueue(msg, **kws)
+    queue.enqueue(msg, **kws)
 
 
 
