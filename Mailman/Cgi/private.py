@@ -57,7 +57,7 @@ def main():
     if not parts:
         doc.SetTitle(_("Private Archive Error"))
         doc.AddItem(Header(3, _("You must specify a list.")))
-        print doc.Format(bgcolor="#FFFFFF")
+        print doc.Format()
         sys.exit(0)
 
     path = os.environ.get('PATH_INFO')
@@ -94,7 +94,7 @@ def main():
         msg = _('No such list <em>%(listname)s</em>')
         doc.SetTitle(_("Private Archive Error - %(msg)s"))
         doc.AddItem(Header(2, msg))
-        print doc.Format(bgcolor="#FFFFFF")
+        print doc.Format()
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         sys.exit(0)
 
