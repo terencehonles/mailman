@@ -448,12 +448,20 @@ class MailCommandHandler:
             pending_addr = mail.GetSender()
         else:
             pending_addr = address
+        remote = mail.GetSender()
+        if pending_addr == self.GetListEmail():
+            badremote = "\n\tfrom " 
+            if remote: badremote = badremote + remote
+            else:      badremote = badremote + "unidentified sender"
+            self.LogMsg("mischief", ("Attempt to self subscribe %s:%s"
+                                     % (pending_addr, badremote)))
+            self.AddApprovalMsg("Attempt to subscribe a list to itself!")
+            return
         if self.FindUser(pending_addr):
             self.AddError("%s is already a list member." % pending_addr)
             return
         cookie = Pending.gencookie()
         Pending.add2pending(pending_addr, password, digest, cookie)
-        remote = mail.GetSender()
         if remote == pending_addr:
             remote = ""
         else:
