@@ -22,6 +22,7 @@ the filename containing the bounce message.
 
 """
 
+import sys
 import traceback
 from types import ListType
 
@@ -50,10 +51,10 @@ def ScanMessages(mlist, msg, testing=0):
                 'SimpleMatch',
                 'Yale',
                 ]
-    for modname in pipeline:
-        mod = __import__('Mailman.Bouncers.'+modname)
-        func = getattr(getattr(getattr(mod, 'Bouncers'), modname), 'process')
-        addrs = func(msg)
+    for module in pipeline:
+        modname = 'Mailman.Bouncers.' + module
+        __import__(modname)
+        addrs = sys.modules[modname].process(msg)
         if addrs:
             for addr in addrs:
                 # we found a bounce or a list of bounce addrs
