@@ -38,13 +38,18 @@ LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'pending.lock')
 # Types of pending records
 SUBSCRIPTION = 'S'
 UNSUBSCRIPTION = 'U'
+CHANGE_OF_ADDRESS = 'C'
 
 
 
 def new(*content):
     """Create a new entry in the pending database, returning cookie for it."""
-    # It's a programming error if this assertion fails!
-    assert content[:1] in ((SUBSCRIPTION,), (UNSUBSCRIPTION,))
+    # It's a programming error if this assertion fails!  We do it this way so
+    # the assert test won't fail if the sequence is empty.
+    assert content[:1] in ((SUBSCRIPTION,),
+                           (UNSUBSCRIPTION,),
+                           (CHANGE_OF_ADDRESS,),
+                           )
     # Acquire the pending database lock, letting TimeOutError percolate up.
     lock = LockFile.LockFile(LOCKFILE)
     lock.lock(timeout=30)
