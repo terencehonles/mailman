@@ -439,7 +439,9 @@ class VerticalSpacer:
 	return output 
 
 class RadioButtonArray:
-    def __init__(self, name, button_names, checked = None, horizontal=1):
+    def __init__(self, name, button_names, checked=None, horizontal=1):
+        # XXX: horizontal doesn't really work, and besides there's no good way
+        # to ask for this in the GetConfigOptions(). -baw
 	self.button_names = button_names
 	self.horizontal = horizontal
 	self.name = name
