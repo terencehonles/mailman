@@ -63,8 +63,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
                Autoresponder):
     def __init__(self, name=None, lock=1):
-        if name and name not in Utils.list_names():
-		raise Errors.MMUnknownListError, 'list not found: %s' % name
 	MailCommandHandler.__init__(self)
         self.InitTempVars(name, lock)
 	if name:
@@ -854,7 +852,7 @@ it will not be changed."""),
         self.CheckHTMLArchiveDir()
         self.SaveRequestsDb()
 
-    def Load(self, check_version = 1):
+    def Load(self, check_version=1):
         if self.__createlock_p:
             try:
                 self.Lock()
@@ -862,16 +860,18 @@ it will not be changed."""),
                 pass
 	try:
 	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
-	except IOError:
-	    raise Errors.MMBadListError, 'Failed to access config info'
+	except IOError, e:
+            self.Unlock()
+	    raise Errors.MMUnknownListError, e
 	try:
 	    dict = marshal.load(file)
             if type(dict) <> DictType:
-                raise Errors.MMBadListError, \
-                      'Unmarshaled config info is not a dictionary'
+                self.Unlock()
+                raise Errors.MMCorruptListDatabaseError(
+                    "List's config.db did not unmarshal into a dictionary")
 	except (EOFError, ValueError, TypeError), e:
-	    raise Errors.MMBadListError, ('Failed to unmarshal config info: '
-                                          + e)
+            self.Unlock()
+            raise Errors.MMCorruptListDatabaseError, e
 	for key, value in dict.items():
 	    setattr(self, key, value)
 	file.close()
@@ -920,7 +920,7 @@ it will not be changed."""),
 
     def IsListInitialized(self):
 	if not self._ready:
-	    raise Errors.MMListNotReady
+	    raise Errors.MMListNotReadyError
 
     def AddMember(self, name, password, digest=0, remote=None):
 	self.IsListInitialized()
