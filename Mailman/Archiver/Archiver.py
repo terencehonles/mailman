@@ -24,6 +24,7 @@ archival.
 
 import os
 import string
+import time
 import errno
 import traceback
 
@@ -154,7 +155,6 @@ class Archiver:
     def __archive_to_mbox(self, post):
         """Retain a text copy of the message in an mbox file."""
         if self.clobber_date:
-            import time
             olddate = post.getheader('date')
             post['Date'] = time.ctime(time.time())
         try:
@@ -190,64 +190,53 @@ class Archiver:
 	# Fork so archival errors won't disrupt normal list delivery
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
             return
-        pid = os.fork()
-        if pid:
-            # in the parent
-            kids = msgdata.get('_kids', {})
-            kids[pid] = pid
-            msgdata['_kids'] = kids
-            return
-        # in the child
         #
-        # archive to builtin html archiver.  first grab the archiver lock
+        # We don't need an extra archiver lock here because we know the list
+        # itself must be locked.
+        if mm_cfg.ARCHIVE_TO_MBOX in (1, 2):
+            self.__archive_to_mbox(msg)
+            if mm_cfg.ARCHIVE_TO_MBOX == 1:
+                # Archive to mbox only.
+                return
+        # From this point on, we're doing all the expensive archiving work.
+        # If anything goes wrong here, we will simply log this and let the
+        # normal delivery mechanism continue.  The archiver is too f*cked up
+        # anyway, and at the very least we've got the mbox to regenerate
+        # from.
+        t0 = time.time()
+        syslog('error', 'starting to archive')
         try:
-            try:
-                lockfile = os.path.join(mm_cfg.LOCK_DIR,
-                                        self.internal_name()+'.archiver.lock')
-                lock = LockFile.LockFile(lockfile, lifetime=mm_cfg.hours(1))
-                lock.lock()
-                if mm_cfg.ARCHIVE_TO_MBOX in [1, 2]:
-                    self.__archive_to_mbox(msg)
-                    if mm_cfg.ARCHIVE_TO_MBOX == 1:
-                        # Archive to mbox only.
-                        os._exit(0)
-                # from this point on, we're doing all the expensive archiving
-                # work.
-                syslog('error', 'starting to archive')
-                txt = msg.unixfrom
-                for h in msg.headers:
-                    txt = txt + h
-                if not msg.body or msg.body[0] <> '\n':
-                    txt = txt + "\n"
-                for line in string.split(msg.body, '\n'):
-                    # Quote unprotected From_ lines appearing in body
-                    if line and line[:5] == 'From ':
-                        line = '>' + line
-                    txt = txt + "%s\n" % line
-                # should we use the internal or external archiver?
-                private_p = self.archive_private
-                if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
-                    self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
-                elif mm_cfg.PRIVATE_EXTERNAL_ARCHIVER and private_p:
-                    self.ExternalArchive(mm_cfg.PRIVATE_EXTERNAL_ARCHIVER, txt)
-                else:
-                    # use the internal archiver
-                    f = StringIO(txt)
-                    import HyperArch
-                    h = HyperArch.HyperArchive(self)
-                    h.processUnixMailbox(f, HyperArch.Article)
-                    h.close()
-                    f.close()
-            finally:
-                # It's still possible to take a long time to run the archiver
-                lock.unlock(unconditionally=1)
-                syslog('error', 'finished archiving')
-            os._exit(0)
+            txt = msg.unixfrom
+            for h in msg.headers:
+                txt = txt + h
+            if not msg.body or msg.body[0] <> '\n':
+                txt = txt + "\n"
+            for line in string.split(msg.body, '\n'):
+                # Quote unprotected From_ lines appearing in body
+                if line and line[:5] == 'From ':
+                    line = '>' + line
+                txt = txt + "%s\n" % line
+            # should we use the internal or external archiver?
+            private_p = self.archive_private
+            if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
+                self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
+            elif mm_cfg.PRIVATE_EXTERNAL_ARCHIVER and private_p:
+                self.ExternalArchive(mm_cfg.PRIVATE_EXTERNAL_ARCHIVER, txt)
+            else:
+                # use the internal archiver
+                f = StringIO(txt)
+                import HyperArch
+                h = HyperArch.HyperArchive(self)
+                h.processUnixMailbox(f, HyperArch.Article)
+                h.close()
+                f.close()
         except:
             traceback.print_exc()
             syslog('error', 'CORRUPT ARCHIVE FOR LIST: %s' %
                    self.internal_name())
-            os._exit(1)
+        else:
+            t1 = time.time()
+            syslog('error', 'finished archiving in %.3f seconds' % (t1-t0))
 	
     #
     # called from MailList.MailList.Save()
