@@ -34,7 +34,7 @@ def process(mlist, msg, msgdata):
         # Digests already have their own header and footer
         return
     d = {}
-    if msgdata.get('personalized'):
+    if msgdata.get('personalize'):
         # Calculate the extra personalization dictionary.  Note that the
         # length of the recips list better be exactly 1.
         recips = msgdata.get('recips')
