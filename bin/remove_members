@@ -25,7 +25,8 @@ Where:
 
     --file file
     -f file
-        Remove member addresses found in the given file.
+        Remove member addresses found in the given file.  If file is
+        `-', read stdin.
 
     --help
     -h
@@ -50,6 +51,15 @@ def usage(status, msg=''):
         print msg
     sys.exit(status)
 
+def ReadFile(filename):
+    lines = []
+    if filename == "-":
+        fp = sys.stdin
+    else:
+        fp = open(filename)
+    lines = filter(None, map(string.strip, fp.readlines()))
+    fp.close()
+    return lines
 
 
 def main():
@@ -76,13 +86,10 @@ def main():
                 
     if filename:
         try:
-            fp = open(filename)
-            addresses = addresses + \
-                        filter(None, map(string.strip, fp.readlines()))
-            fp.close()
+            addresses = addresses + ReadFile(filename)
         except IOError:
             print 'Could not open file for reading: %s.  Ignoring...' % \
-                  filename
+                  `filename`
 
     try:
         # open locked
