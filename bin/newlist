@@ -42,21 +42,18 @@ the list you are creating.
 You can specify the domain to create your new list in by spelling the listname
 like so:
 
-    mylist@mydomain.com
+    mylist@www.mydom.ain
 
-In this case, mydomain.com will be used both for the email domain and for the
-base URL.  If those differ (e.g. because mail should be sent to
-mylist@mydomain.com, but the URL should be http://www.mydomain.com), then
-spell the list name like so
+where `www.mydom.ain' should be the base hostname for the URL to this virtual
+hosts's lists.  E.g. with is setting people will view the general list
+overviews at http://www.mydom.ain/mailman/listinfo.  Also, www.mydom.ain
+should be a key in the VIRTUAL_HOSTS mapping in mm_cfg.py/Defaults.py.  It
+will be looked up to give the email hostname.  If this can't be found, then
+www.mydom.ain will be used for both the web interface and the email
+interface.
 
-    mylist@mydomain.com:www.mydomain.com
-
-Specifically, the list's "host_name" attribute will be set to mydomain.com and
-the list's "web_page_url" attribute will be set to
-http://www.mydomain.com/mailman.
-
-If you spell the list name as just `mylist', "host_name" will be taken from
-DEFAULT_HOST_NAME and "web_page_url" will be taken from DEFAULT_URL (as
+If you spell the list name as just `mylist', then the email hostname will be
+taken from DEFAULT_HOST_NAME and the url will be taken from DEFAULT_URL (as
 defined in your Defaults.py file or overridden by settings in mm_cfg.py).
 
 Note that listnames are forced to lowercase.
@@ -112,11 +109,8 @@ def main():
     web_page_url = None
     if '@' in listname:
         listname, domain = listname.split('@', 1)
-        if ':' in domain:
-            host_name, urlhost = domain.split(':', 1)
-        else:
-            host_name = urlhost = domain
-        web_page_url = 'http://%s/mailman/' % urlhost
+        host_name = mm_cfg.VIRTUAL_HOSTS.get(domain, domain)
+        web_page_url = mm_cfg.DEFAULT_URL_PATTERN % domain
 
     if Utils.list_exists(listname):
         usage(1, _('List already exists: %(listname)s'))
@@ -157,35 +151,37 @@ def main():
         if host_name:
             mlist.host_name = host_name
             mlist.web_page_url = web_page_url
-            mlist.Save()
 
-        # Now do the MTA-specific list creation tasks
-        if mm_cfg.MTA:
-            modname = 'Mailman.MTA.' + mm_cfg.MTA
-            __import__(modname)
-            sys.modules[modname].create(mlist)
-
-        # And send the notice to the list owner
-        if not quiet:
-            print _('Hit enter to notify %(listname)s owner...'),
-            sys.stdin.readline()
-            siteadmin = Utils.get_site_email(mlist.host_name, '-admin')
-            text = Utils.maketext(
-                'newlist.txt',
-                {'listname'    : listname,
-                 'password'    : listpasswd, 
-                 'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
-                 'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-                 'requestaddr' : mlist.GetRequestEmail(),
-                 'siteowner'   : siteadmin,
-                 }, mlist.preferred_language)
-            msg = Message.UserNotification(
-                owner_mail, siteadmin,
-                _('Your new mailing list: %(listname)s'),
-                text)
-            msg.send(mlist)
+        mlist.Save()
     finally:
         mlist.Unlock()
+
+    # Now do the MTA-specific list creation tasks
+    if mm_cfg.MTA:
+        modname = 'Mailman.MTA.' + mm_cfg.MTA
+        __import__(modname)
+        sys.modules[modname].create(mlist)
+
+    # And send the notice to the list owner
+    if not quiet:
+        print _('Hit enter to notify %(listname)s owner...'),
+        sys.stdin.readline()
+        siteadmin = Utils.get_site_email(mlist.host_name, '-admin')
+        text = Utils.maketext(
+            'newlist.txt',
+            {'listname'    : listname,
+             'password'    : listpasswd, 
+             'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
+             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
+             'requestaddr' : mlist.GetRequestEmail(),
+             'siteowner'   : siteadmin,
+             }, mlist.preferred_language)
+        msg = Message.UserNotification(
+            owner_mail, siteadmin,
+            _('Your new mailing list: %(listname)s'),
+            text)
+        msg.send(mlist)
+
 
 
 if __name__ == '__main__':
