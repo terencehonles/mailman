@@ -129,7 +129,8 @@ def main():
             text = Utils.maketext(
                 'admlogin.txt',
                 {"listname": list_name,
-                 "path"    : os.environ.get("REQUEST_URI", "/mailman/admin"),
+                 "path"    : os.environ.get("REQUEST_URI",
+                                            "/mailman/admin/" + list_name),
                  "message" : message,
                  })
             print text
