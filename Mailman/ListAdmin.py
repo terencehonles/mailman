@@ -30,11 +30,12 @@ import time
 import marshal
 from errno import ENOENT
 
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
+from Mailman.pythonlib.StringIO import StringIO
+from Mailman.Handlers import HandlerAPI
 
 # Request types requiring admin approval
 HELDMSG = 1
@@ -242,9 +243,9 @@ class ListAdmin:
                  'hostname'   : self.host_name,
                  'admindb_url': self.GetAbsoluteScriptURL('admindb'),
                  })
-            self.SendTextToUser(subject=subject,
-                                recipient=self.GetAdminEmail(),
-                                text=text)
+            adminaddr = self.GetAdminEmail()
+            msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
+            HandlerAPI.DeliverToUser(self, msg)
 
 
     def __handlesubscription(self, record, value, comment):
@@ -258,20 +259,20 @@ class ListAdmin:
             self.ApprovedAddMember(addr, password, digest)
 
 
-    def __refuse(self, request, recip, comment, msg=None):
+    def __refuse(self, request, recip, comment, origmsg=None):
+        adminaddr = self.GetAdminEmail()
         text = Utils.maketext(
             'refuse.txt',
             {'listname' : self.real_name,
              'request'  : request,
              'reason'   : comment,
-             'adminaddr': self.GetAdminEmail(),
+             'adminaddr': adminaddr,
              })
         # add in original message, but not wrap/filled
-        if msg:
-            text = text + \
-                   '\n---------- Original Message ----------\n' + \
-                   Utils.SnarfMessage(msg)[1]
+        if origmsg:
+            text = string.join([text,
+                                '---------- Original Message ----------',
+                                str(origmsg)], '\n')
         subject = 'Request to mailing list %s rejected' % self.real_name
-        self.SendTextToUser(subject=subject,
-                            recipient=recip,
-			    text=text)
+        msg = Message.UserNotification(recip, adminaddr, subject, text)
+        HandlerAPI.DeliverToUser(self, msg)
