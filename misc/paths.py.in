@@ -38,11 +38,12 @@ if exec_prefix == '${prefix}':
 # directory.
 sys.path.insert(0, prefix)
 
-# Include Python's site-packages directory.  We need this even for Python 2.2
-# since the email package has some patches not included in 2.2 final (though
-# likely included in a 2.2 patch release, not available as of this writing
-# 29-Jan-2002).  That's why we prepend sitedir to sys.path, not append it.
-import sys
+# We also need the pythonlib directory on the path to pick up any overrides of
+# standard modules and packages.  Note that these must go at the front of the
+# path for this reason.
+sys.path.insert(0, os.path.join(prefix, 'pythonlib'))
+
+# Include Python's site-packages directory.
 sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
                        'site-packages')
-sys.path.insert(0, sitedir)
+sys.path.append(sitedir)
