@@ -1,9 +1,0 @@
-Mailman 通知,由 .MailUserPassword() 提出:
-
-    使用者: %(username)s
-
-    論壇: %(internal_name)s
-
-缺少密碼 . 
-
-請通知本站的 Mailman 總壇主 !

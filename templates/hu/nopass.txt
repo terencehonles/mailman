@@ -1,7 +1,0 @@
-Mailman szerint a(z) .MailUserPassword() -ben:
-
-    Felhasznalo: %(username)s
-    Lista: %(internal_name)s
-
-nincs beallitott jelszava. A Mailman rendszer uzemeltetojet
-minel hamarabb ertesiteni kell!

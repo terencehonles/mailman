@@ -1,7 +1,0 @@
-Mailman a remarqué dans le .MailUserPassword() que: 
-
-    Utilisateur: %(username)s
-    Liste: %(internal_name)s 
-
-n'a pas de mot de passe. Veuillez en informer la personne
-responable de Mailman sur ce serveur! 

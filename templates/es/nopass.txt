@@ -1,6 +1,0 @@
-Mailman ha detectado con .MailUserPassword() que:
-
-    Usuario: %(username)s
-    Lista  : %(internal_name)s
-
-no tiene clave.  Por favor, notifíquelo al administrador de Mailman.

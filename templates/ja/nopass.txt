@@ -1,7 +1,0 @@
-Mailman の .MailUserPassword() での報告では:
-
-    会員:   %(username)s
-    リスト: %(internal_name)s
-
-にはパスワードがありません．このサイトの Mailman 管理者に
-伝えてください．

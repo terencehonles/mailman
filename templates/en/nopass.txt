@@ -1,7 +1,0 @@
-Mailman noticed in .MailUserPassword() that:
-
-    User: %(username)s
-    List: %(internal_name)s
-
-lacks a password.  Please notify the Mailman system manager at this
-site!
