@@ -23,6 +23,8 @@ the mailing lists, and whatever else doesn't belong elsewhere.
 
 """
 
+from __future__ import nested_scopes
+
 import os
 import re
 import random
@@ -33,6 +35,7 @@ import time
 import cgi
 import htmlentitydefs
 import email.Iterators
+from types import UnicodeType
 from string import whitespace, digits
 try:
     # Python 2.2
@@ -703,20 +706,27 @@ def percent_identifiers(s):
 def canonstr(s, lang=None):
     newparts = []
     parts = re.split(r'&(?P<ref>[^;]+);', s)
+    def appchr(i):
+        if i < 256:
+            newparts.append(chr(i))
+        else:
+            newparts.append(unichr(i))
     while 1:
         newparts.append(parts.pop(0))
         if not parts:
             break
         ref = parts.pop(0)
         if ref.startswith('#'):
-            newparts.append(chr(int(ref[1:])))
+            appchr(int(ref[1:]))
         else:
             c = htmlentitydefs.entitydefs.get(ref, '?')
             if c.startswith('#') and c.endswith(';'):
-                newparts.append(chr(ref[1:-1]))
+                appchr(int(ref[1:-1]))
             else:
                 newparts.append(c)
     newstr = EMPTYSTRING.join(newparts)
+    if isinstance(newstr, UnicodeType):
+        return newstr
     # We want the default fallback to be iso-8859-1 even if the language is
     # English (us-ascii).  This seems like a practical compromise so that
     # non-ASCII characters in names can be used in English lists w/o having to
@@ -736,7 +746,7 @@ def canonstr(s, lang=None):
 # characters with their html references.
 def uncanonstr(s, lang=None):
     if s is None:
-        s = ''
+        s = u''
     if lang is None:
         charset = 'us-ascii'
     else:
