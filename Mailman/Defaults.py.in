@@ -94,6 +94,23 @@ add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
 
 
 #####
+# Spam avoidance defaults
+#####
+
+# This variable contains a list of 2-tuple of the format (header, regex) which
+# the Mailman/Handlers/SpamDetect.py module uses to match against the current
+# message.  If the regex matches the given header in the current message, then
+# it is flagged as spam.  header is case-insensitive and should not include
+# the trailing colon.  regex is always matched with re.IGNORECASE.
+#
+# Note that the more searching done, the slower the whole process gets.  Spam
+# detection is run against all messages coming to either the list, or the
+# -owners address, unless the message is explicitly approved.
+KNOWN_SPAMMERS = []
+
+
+
+#####
 # Web UI defaults
 #####
 
