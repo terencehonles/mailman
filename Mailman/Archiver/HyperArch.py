@@ -37,6 +37,7 @@ import types
 import HyperDatabase
 import pipermail
 import weakref
+import binascii
 
 from email.Header import decode_header, make_header
 
@@ -183,7 +184,7 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
             except UnicodeError:
                 # Try again after coercing the template to unicode
                 utemplate = unicode(template,
-                                    charset or Utils.GetCharSet(lang),
+                                    Utils.GetCharSet(lang),
                                     'replace')
                 text = sdict.interpolate(utemplate)
         except (TypeError, ValueError):
@@ -218,9 +219,6 @@ class Article(pipermail.Article):
     __super_set_date = pipermail.Article._set_date
 
     _last_article_time = time.time()
-
-    # Default
-    charset = Utils.GetCharSet(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
     def __init__(self, message=None, sequence=0, keepHeaders=[],
                        lang=mm_cfg.DEFAULT_SERVER_LANGUAGE, mlist=None):
@@ -266,13 +264,20 @@ class Article(pipermail.Article):
                 charset = charset[1:-1]
             if charset[0]=="'" and charset[-1]=="'":
                 charset = charset[1:-1]
-        # check_header_charsets() sets self.charset
-        self.check_header_charsets(charset)
-        if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
-            self.quote = Utils.uquote
-            # Only one 'uquote' is left here. I wonder if this is of
-            # any use because 'quoting' conflicts 'verbatim'. There should
-            # not be any verbatim charset IMHO. (TK)
+            try:
+                body = message.get_payload(decode=1)
+            except binascii.Error:
+                body = None
+            if body and charset != Utils.GetCharSet(self._lang):
+                # decode body
+                try:
+                    body = unicode(body, charset)
+                except (UnicodeError, LookupError):
+                    body = None
+            if body:
+                self.body = [l + "\n" for l in body.splitlines()]
+
+        self.decode_headers()
 
     # Mapping of listnames to MailList instances as a weak value dictionary.
     # This code is copied from Runner.py but there's one important operational
@@ -332,8 +337,6 @@ class Article(pipermail.Article):
                 self._lang = self._mlist.preferred_language
             else:
                 self._lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
-        if not d.has_key('charset'):
-            self.charset = Utils.GetCharSet(self._lang)
         if not d.has_key('cenc'):
             self.cenc = None
         if not d.has_key('decoded'):
@@ -346,32 +349,22 @@ class Article(pipermail.Article):
     def quote(self, buf):
         return html_quote(buf, self._lang)
 
-    def check_header_charsets(self, msg_charset=None):
-        """Check From and Subject for encoded-words
+    def decode_headers(self):
+        """MIME-decode headers.
 
         If the email, subject, or author attributes contain non-ASCII
-        characters using the encoded-word syntax of RFC 2047, decoded
-        versions of those attributes are placed in the self.decoded (a
-        dictionary).
+        characters using the encoded-word syntax of RFC 2047, decoded versions
+        of those attributes are placed in the self.decoded (a dictionary).
 
-        If the charsets used by these headers differ from each other
-        or from the charset specified by the message's Content-Type
-        header, then an arbitrary charset is chosen. If the decoded
-        fields match that charset, they are preserved
-        literally. Otherwise, an attempt is made to decode them as
-        Unicode. If that fails, they are left undecoded.
+        If the list's charset differs from the header charset, an attempt is
+        made to decode the headers as Unicode.  If that fails, they are left
+        undecoded.
         """
-
-        self.charset = msg_charset
-        author, a_charset = self.decode_charset(self.author)
-        if self.charset is None and a_charset:
-            self.charset = a_charset
-        subject, s_charset = self.decode_charset(self.subject)
-        if self.charset is None and s_charset:
-            self.charset = s_charset
+        author = self.decode_charset(self.author)
+        subject = self.decode_charset(self.subject)
         if author:
             self.decoded['author'] = author
-            email, e_charset = self.decode_charset(self.email)
+            email = self.decode_charset(self.email)
             if email:
                 self.decoded['email'] = email
         if subject:
@@ -379,28 +372,19 @@ class Article(pipermail.Article):
 
     def decode_charset(self, field):
         if field.find("=?") == -1:
-            return None, None
+            return None
         # Get the decoded header as a list of (s, charset) tuples
         pairs = decode_header(field)
-        mustunicode = 0
-        for s, c in pairs:
-            # If the charset of all the header parts match the article's
-            # charset, leave it as encoded, otherwise try converting to
-            # Unicode.
-            if c and c <> 'us-ascii' and c <> self.charset:
-                mustunicode = 1
-                break
-        if mustunicode:
-            # Use __unicode__() until we can guarantee Python 2.2
-            try:
-                # Use a large number for maxlinelen so it won't get wrapped
-                h = make_header(pairs, 99999)
-                return h.__unicode__(), None
-            except (UnicodeError, LookupError):
-                # Unknown encoding
-                return None, None
+        # Use __unicode__() until we can guarantee Python 2.2
+        try:
+            # Use a large number for maxlinelen so it won't get wrapped
+            h = make_header(pairs, 99999)
+            return h.__unicode__()
+        except (UnicodeError, LookupError):
+            # Unknown encoding
+            return None
         # The last value for c will have the proper charset in it
-        return EMPTYSTRING.join([s for s, c in pairs]), c
+        return EMPTYSTRING.join([s for s, c in pairs])
 
     def as_html(self):
         d = self.__dict__.copy()
@@ -461,17 +445,7 @@ class Article(pipermail.Article):
         If the charset of the current message and art match and the
         article's subject is encoded, decode it.
         """
-        subj = art.decoded.get('subject')
-        if not subj:
-            return art.subject
-        if isinstance(subj, types.UnicodeType):
-            return subj
-        if self.charset and self.charset == art.charset:
-                return subj
-        try:
-            return unicode(subj, art.charset)
-        except (UnicodeError, LookupError):
-            return art.subject
+        return art.decoded.get('subject', art.subject)
 
     def _get_next(self):
         """Return the href and subject for the previous message"""
@@ -496,33 +470,7 @@ class Article(pipermail.Article):
             body = self.html_body
         except AttributeError:
             body = self.body
-        if self.charset is None or self.cenc != "quoted-printable":
-            return null_to_space(EMPTYSTRING.join(body))
-        # the charset is specified and the body is quoted-printable
-        # first get rid of soft line breaks, then decode literals
-        lines = []
-        rx = self._rx_softline
-        for line in body:
-            mo = rx.search(line)
-            if mo:
-                i = line.rfind("=")
-                line = line[:i]
-            lines.append(line)
-        buf = EMPTYSTRING.join(lines)
-
-        chunks = []
-        offset = 0
-        rx = self._rx_quote
-        while 1:
-            mo = rx.search(buf, offset)
-            if not mo:
-                chunks.append(buf[offset:])
-                break
-            i = mo.start()
-            chunks.append(buf[offset:i])
-            offset = i + 3
-            chunks.append(chr(int(mo.group(1), 16)))
-        return null_to_space(EMPTYSTRING.join(chunks))
+        return null_to_space(EMPTYSTRING.join(body))
 
     def _add_decoded(self, d):
         """Add encoded-word keys to HTML output"""
@@ -554,9 +502,10 @@ class Article(pipermail.Article):
             headers.append('References: %(_references)s')
         if d['_message_id']:
             headers.append('Message-ID: %(_message_id)s')
-        return NL.join(headers) % d + \
-               '\n\n' + \
-               EMPTYSTRING.join(self.body)
+        body = EMPTYSTRING.join(self.body)
+        if isinstance(body, types.UnicodeType):
+            body = body.encode(Utils.GetCharSet(self._lang), 'replace')
+        return NL.join(headers) % d + '\n\n' + body
 
     def _set_date(self, message):
         self.__super_set_date(message)
@@ -1030,16 +979,8 @@ class HyperArchive(pipermail.T):
         result = article.decoded.get(field)
         if result is None:
             return getattr(article, field)
-        # if the encodings match, use the result
-        if self.charset == article.charset:
-            return result
-        # otherwise, try to return a Unicode result
-        if isinstance(result, types.UnicodeType):
-            return result
-        try:
-            return unicode(result, article.charset)
-        except (UnicodeError, LookupError):
-            return getattr(article, field)
+        # otherwise, the decoded one will be Unicode
+        return result
 
     def write_threadindex_entry(self, article, depth):
         if depth < 0:
@@ -1193,17 +1134,16 @@ class HyperArchive(pipermail.T):
                 #self.message("URL: %s %s %s \n"
                 #             % (CGIescape(L[:pos]), URL, CGIescape(text)))
                 L2 += '%s<A HREF="%s">%s</A>' % (
-                    CGIescape(L[:pos], self.lang), 
-                    URL, CGIescape(text, self.lang))
+                    CGIescape(L[:pos], self.lang),
+                    html_quote(URL), CGIescape(text, self.lang))
                 L = L[pos+length:]
                 jr = emailpat.search(L)
                 kr = urlpat.search(L)
             if jr is None and kr is None:
                 L = CGIescape(L, self.lang)
             L = prefix + L2 + L + suffix
-            if L != Lorig:
-                source[i] = None
-                dest[i] = L
+            source[i] = None
+            dest[i] = L
 
     # Perform Hypermail-style processing of <HTML></HTML> directives
     # in message bodies.  Lines between <HTML> and </HTML> will be written
