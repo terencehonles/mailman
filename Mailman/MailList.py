@@ -782,7 +782,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             except os.error, (code, msg):
                 if code <> errno.ENOENT:
                     Utils.reraise()
-            os.link(fname, fname_last)
+            try:
+                # might not exist yet
+                os.link(fname, fname_last)
+            except os.error, (code, msg):
+                if code <> errno.ENOENT:
+                    Utils.reraise()
             os.rename(fname_tmp, fname)
         finally:
             os.umask(omask)
