@@ -244,13 +244,14 @@ class HTMLFormatter:
         
     def RestrictedListMessage(self, which, restriction):
         if not restriction:
-            return ""
+            return ''
         elif restriction == 1:
             return _(
-                "<i>The %(which)s is only available to the list members.</i>)")
+                '''(<i>The %(which)s is only available to the list
+                members.</i>)''')
         else:
-            return _("<i>The %(which)s is only available to the list"
-                      " administrator.</i>")
+            return _('''(<i>The %(which)s is only available to the list
+            administrator.</i>)''')
 
     def FormatRosterOptionForUser(self, lang):
         return self.RosterOption(lang).Format()
