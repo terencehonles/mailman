@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 # No lock needed in this script, because we don't change data.
 
 import os
-import string
 import cgi
 
 from Mailman import mm_cfg
@@ -38,7 +37,7 @@ def main():
         FormatListinfoOverview()
         return
 
-    listname = string.lower(parts[0])
+    listname = parts[0].lower()
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
@@ -68,9 +67,9 @@ def FormatListinfoOverview(error=None):
     if port and http_host[-len(port)-1:] == ':'+port:
         http_host = http_host[:-len(port)-1]
     if mm_cfg.VIRTUAL_HOST_OVERVIEW and http_host:
-	host_name = http_host
+	hostname = http_host
     else:
-	host_name = mm_cfg.DEFAULT_HOST_NAME
+	hostname = mm_cfg.DEFAULT_HOST_NAME
 
     doc = Document()
     legend = _("%(hostname)s Mailing Lists")
@@ -90,8 +89,8 @@ def FormatListinfoOverview(error=None):
 	if mlist.advertised:
 	    if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
                     http_host and \
-                    string.find(http_host, mlist.web_page_url) == -1 and \
-                    string.find(mlist.web_page_url, http_host) == -1:
+                    http_host.find(mlist.web_page_url) == -1 and \
+                    mlist.web_page_url.find(http_host) == -1:
 		# List is for different identity of this host - skip it.
 		continue
 	    else:
@@ -112,11 +111,11 @@ def FormatListinfoOverview(error=None):
             ("<p>" + 
              _(" There currently are no publicly-advertised "),
              Link(mm_cfg.MAILMAN_URL, "mailman"),
-             _(" mailing lists on %(host_name)s.")))
+             _(" mailing lists on %(hostname)s.")))
     else:
         welcomeitems.append(
             _('''<p>Below is a listing of all the public mailing lists on
-            %(host_name)s.  Click on a list name to get more information about
+            %(hostname)s.  Click on a list name to get more information about
             the list, or to subscribe, unsubscribe, and change the preferences
             on your subscription.'''))
 
