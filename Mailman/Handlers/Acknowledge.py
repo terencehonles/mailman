@@ -40,13 +40,16 @@ def process(mlist, msg, msgdata):
             if subject.startswith(prefix):
                 subject = subject[len(prefix):]
         # get the text from the template
+        pluser = mlist.GetPreferredLanguage(sender)
+        # BAW: I don't like using $LANG
+        os.environ['LANG'] = pluser
         realname = mlist.real_name
         text = Utils.maketext(
             'postack.txt',
             {'subject'     : subject,
              'listname'    : realname,
              'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-             })
+             }, pluser)
         # craft the outgoing message, with all headers and attributes
         # necessary for general delivery
         subject = _('%(realname)s post acknowledgement')
