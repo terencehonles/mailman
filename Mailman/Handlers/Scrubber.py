@@ -303,13 +303,14 @@ def save_attachment(mlist, msg, dir, filter_html=1):
     # BAW: mimetypes ought to handle non-standard, but commonly found types,
     # e.g. image/jpg (should be image/jpeg).  For now we just store such
     # things as application/octet-streams since that seems the safest.
-    ext = mimetypes.guess_extension(msg.get_type())
+    ctype = msg.get_content_type()
+    ext = mimetypes.guess_extension(ctype)
     if not ext:
         # We don't know what it is, so assume it's just a shapeless
         # application/octet-stream, unless the Content-Type: is
         # message/rfc822, in which case we know we'll coerce the type to
         # text/plain below.
-        if msg.get_type() == 'message/rfc822':
+        if ctype == 'message/rfc822':
             ext = '.txt'
         else:
             ext = '.bin'
@@ -361,7 +362,7 @@ def save_attachment(mlist, msg, dir, filter_html=1):
     # ARCHIVE_HTML_SANITIZER is a string (which it must be or we wouldn't be
     # here), then send the attachment through the filter program for
     # sanitization
-    if filter_html and msg.get_type() == 'text/html':
+    if filter_html and ctype == 'text/html':
         base, ext = os.path.splitext(path)
         tmppath = base + '-tmp' + ext
         fp = open(tmppath, 'w')
@@ -384,7 +385,7 @@ def save_attachment(mlist, msg, dir, filter_html=1):
         ext = '.txt'
         path = base + '.txt'
     # Is it a message/rfc822 attachment?
-    elif msg.get_type() == 'message/rfc822':
+    elif ctype == 'message/rfc822':
         submsg = msg.get_payload()
         # BAW: I'm sure we can eventually do better than this. :(
         decodedpayload = Utils.websafe(str(submsg))
