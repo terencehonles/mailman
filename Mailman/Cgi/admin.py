@@ -1086,6 +1086,15 @@ def mass_subscribe(mlist, container):
     table.AddRow([Italic(Label(_('...or specify a file to upload:'))),
                   FileUpload('subscribees_upload', cols='50')])
     container.AddItem(Center(table))
+    # Invitation text
+    table.AddRow(['&nbsp;', '&nbsp;'])
+    table.AddRow([Italic(_("""Below, enter additional text to be added to the
+    top of your invitation or the subscription notification.  Include at least
+    one blank line at the end..."""))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Center(TextArea(name='invitation',
+                                  rows=10, cols='70%', wrap=None))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
 
 
 
@@ -1221,6 +1230,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                                    mlist.admin_notify_mchanges)
         # Default is to subscribe
         subscribe_or_invite = safeint('subscribe_or_invite', 0)
+        invitation = cgidata.getvalue('invitation', '')
         digest = 0
         if not mlist.digestable:
             digest = 0
@@ -1236,10 +1246,10 @@ def change_options(mlist, category, subcat, cgidata, doc):
                                 digest, mlist.preferred_language)
             try:
                 if subscribe_or_invite:
-                    mlist.InviteNewMember(userdesc)
+                    mlist.InviteNewMember(userdesc, invitation)
                 else:
                     mlist.ApprovedAddMember(userdesc, send_welcome_msg,
-                                            send_admin_notif)
+                                            send_admin_notif, invitation)
             except Errors.MMAlreadyAMember:
                 subscribe_errors.append((entry, _('Already a member')))
             except Errors.MMBadEmailError:
