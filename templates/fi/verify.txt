@@ -4,8 +4,8 @@ Olemme saaneet liittymispyynnön osoitteesta %(remote)s
 liittää sinun sähköpostiosoitteesi, "%(email)s", 
 postituslistalle %(listaddr)s 
 
-Vahvistaaksesi liittymisesi postituslistalle vastaa tähän viestiin.
-Älä muuta viestin otsikossa olevia tietoja.
+Vahvistaaksesi liittymisesi postituslistalle vastaa tähän 
+viestiin. Älä muuta viestin otsikossa olevia tietoja.
 
 Tai vahvista liittymisesi www-sivulla:
 

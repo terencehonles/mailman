@@ -1,7 +1,6 @@
-<!-- $Revision: 5015 $ -->
+<!-- $Revision: 5063 $ -->
 <html>
 <head>
-    <link rel="SHORTCUT ICON" href="<mm-favicon>">
     <title><MM-Presentable-User> membership configuration for <MM-List-Name>
     </title>
 </head>
@@ -13,12 +12,13 @@
         <MM-Presentable-User>
 	</FONT></B></TD></TR>
     </TABLE>
+<MM-Form-Start>
 <p>
 <table width="100%" border="0" cellspacing="5" cellpadding="5">
     <tr><td>
         <b><MM-Presentable-User></b>'s liittymistilanne,
         salasana, ja postituslistan <MM-List-Name> asetukset.
-        </td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
+        </td><td><mm-logout-button></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -30,7 +30,6 @@
     </tr>
 </table>
 
-<MM-Form-Start>
 <p>
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
@@ -43,11 +42,11 @@
 
         <p>Confirmations time out after about <mm-pending-days>.
 
-        <p>Voit myös vapaavalintaisesti asettaa tai vaihtaa nimesi.
-        (esim. <em>John Smith</em>).
+        <p>Voit myös halutessasi asettaa tai vaihtaa nimesi.
+        (esim. <em>Ville Virtanen</em>).
 
         <p>Jos haluat tehdä jäsenyystietojesi muutoksen kaikille listoille, joille olet liittynyt
-	  <mm-host>, laita ruksi
+	  <mm-host>, laita rasti
         <em>Muuta kaikkiin</em> ruutuun.
 
         </td></tr>
@@ -56,7 +55,7 @@
         <tr><td bgcolor="#dddddd"><div align="right">Uusi osoite:</div></td>
             <td><mm-new-address-box></td>
             </tr>
-        <tr><td bgcolor="#dddddd"><div align="right">Vahvistus:
+        <tr><td bgcolor="#dddddd"><div align="right">Uusi osoite uudestaan:
             </div></td> 
             <td><mm-confirm-address-box></td>
             </tr>
@@ -72,14 +71,14 @@
         </td>
         </tr>
     <tr><td colspan="2"><center><mm-change-address-button>
-        <p><mm-global-change-of-address>Muuta kaikkiin</center></td>
+        <p><mm-global-change-of-address>Muuta kaikkiin listoihin</center></td>
     </tr>
 </table>
 
 <p>
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="5">
     <TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-        <B>Irtisanoutuminen <MM-List-Name></B></td>
+        <B>Eroaminen <MM-List-Name></B></td>
 
 	<TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Näytä muut  <MM-Host> liittymätiedot</B>
@@ -87,7 +86,7 @@
 
     <tr><td>
         Aseta liittymistarkistusnappi??? aktiiviseksi ja paina tätä nappia
-	  irtisanoutuaksesi tältä postituslistalta.  <strong>Varoitus:</strong>
+	  erotaksesi tältä postituslistalta.  <strong>Varoitus:</strong>
         Tämä toimenpide suoritetaan välittömästi!
         <p>
         <center><MM-Unsubscribe-Button></center></td>
@@ -112,7 +111,7 @@
         <h3>Oletko unohtanut salasanasi?</h3>
         </center>
         Paina tätä valintaa, niin salasanasi lähetetään siihen osoitteeseen,
-        jolla olet listalle liittynyt.
+        jonka olet ilmoittanut listalle liittyessäsi.
         <p><MM-Umbrella-Notice>
         <center>
         <MM-Email-My-Pw>
@@ -129,7 +128,8 @@
                 <TD><MM-New-Pass-Box></TD>
                 </TR>
             <TR>
-                <TD BGCOLOR="#dddddd"><div align="right">Vahvistus:
+                <TD BGCOLOR="#dddddd"><div align="right">Uusi 
+                salasana uudestaan:
                 </div></TD>
                 <TD><MM-Confirm-Pass-Box></TD>
             </TR>
@@ -151,7 +151,7 @@
 <i><strong>Nykyiset arvot on tarkistettu.</strong></i>
 
 <p>Huomioi, että joissakin valinnoissa on <em>Muuta kaikkiin</em>
-määritysmahdollisuus. Tämän kentän ruksaaminen aiheuttaa sen, että muutokset tehdään
+määritysmahdollisuus. Tämän kentän rastittaminen aiheuttaa sen, että muutokset tehdään
 kaikille <mm-host> postituslistoille, joihin olet liittynyt.  Klikkaa ylläolevaa
 <em>Näytä muut liittymätiedot</em> -valintaa nähdäksesi, mille muille postituslistoille
 olet liittynyt.
@@ -173,29 +173,29 @@ olet liittynyt.
 
     <tr><TD BGCOLOR="#cccccc">
         <strong>Koontitilan asetus</strong><p>
-        Jos asetat koontitilan päälle, saat postisi koostettuna yhdeksi postiksi
+        Jos asetat koontitilan päälle,
+        saat postisi koostettuna yhdeksi kokoelmaviestiksi
         kerran päivässä, etkä erikseen jokaista lähetettyä postia. Jos koontitila
-        muutetaan pois päältä, saat yhden viimeisen koontilähetyksen???????.
+        muutetaan pois päältä, saat viimeisen koontilähetyksen heti.
         </td><td bgcolor="#cccccc">
         <MM-Undigest-Radio-Button>Pois<br>
         <MM-Digest-Radio-Button>Päällä
         </td></tr>
         
     <tr><TD BGCOLOR="#cccccc">
-        <strong>MIME- tai tavalliset tekstikoonnit</strong><p>
-        Sähköpostiohjelmistosi joko tukee tai ei tue MIMEkoonteja. Yleensä
-        MIMEkoonnit ovat parempia, mutta jos esiintyy ongelmia niiden 
+        <strong>MIME-tyyliset tai tavalliset tekstikoonnit</strong><p>
+        Sähköpostiohjelmistosi joko tukee tai ei tue MIME-tyylisiä koonteja. Yleensä
+        MIME-tyyliset koonnit ovat parempia, mutta jos esiintyy ongelmia niiden 
         lukemisessa, valitse pelkät tekstikoonnit.
         </td><td bgcolor="#cccccc">
         <MM-Mime-Digests-Button>MIME<br>
-        <MM-Plain-Digests-Button>Teksti<p>
-        <mm-global-mime-button><i>Muuta kaikkiin</i>
+        <MM-Plain-Digests-Button>Teksti
         </td></tr>
         
     <tr><TD BGCOLOR="#cccccc">
         <strong>Haluatko saada listalle lähettämäsi postit itse?</strong><p>
         Tavallisesti saat kopion jokaisesta tälle listalle lähettämästäsi viestistä.
-        Jos et halua saada kopiota, aseta
+        Jos et halua saada kopiota omista viesteistäsi, aseta
         arvoksi <em>Ei</em>.
         </td><td bgcolor="#cccccc">
         <mm-dont-receive-own-mail-button>Ei<br>
@@ -203,7 +203,7 @@ olet liittynyt.
         </td></tr>
 
     <tr><TD BGCOLOR="#cccccc">
-        <strong>Haluatko saada kuittauksen kun lähetät viestiä listalle?</strong><p>
+        <strong>Haluatko saada kuittauksen listalle lähettämästäsi viestistä?</strong><p>
         </td><td bgcolor="#cccccc">
         <mm-dont-ack-posts-button>Ei<br>
         <mm-ack-posts-button>Kyllä
@@ -212,7 +212,7 @@ olet liittynyt.
     <tr><td bgcolor="#cccccc">
         <strong>Lähetetäänkö tämän listan salasanasta muistutus?</strong><p>
         Kerran kuukaudessa saat viestin, joka sisältää kaikkien niiden postituslistojen 
-	  salasanat, joille olet tällä palvelimella liittynyt.
+	  salasanat, joille olet tällä postituslistapalvelimella liittynyt.
         Voit asettaa tämän muistutuspyynnön pois päältä tietylle listalle, valitsemalla
         <em>Ei</em>.  Jos asetat salasanamuistuksen pois päältä kaikista listoista, 
 	  joille olet liittynyt, et saa ollenkaan salasanamuistusviestiä.
@@ -234,7 +234,7 @@ olet liittynyt.
         </td></tr>
 
     <tr><TD BGCOLOR="#cccccc">
-        <strong>Mitä kieltä suosit?</strong><p>
+        <strong>Oletuskieli?</strong><p>
         </td><td bgcolor="#cccccc">
         <MM-list-langs>
         </td></tr>

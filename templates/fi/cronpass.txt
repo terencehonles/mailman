@@ -4,7 +4,7 @@ sekä ohjeet siitä,  miten voit muuttaa niitä tai irtisanoutua listalta.
 
 Voit käydä URL-osoitteessa muuttamassa jäsenyysasetuksiasi. Esim. voit 
 irtisanoutua listalta, muuttaa koostelähetyksen asetusta 
-tai kieltää kaikkien postien vastaanoton (esim. loman ajaksi), ja niin edelleen. 
+tai kieltää kaikkien postien vastaanoton (esim. loman ajaksi) jne. 
 
 URL-osoitteessa sijaitsevien toimintojen sijasta voit käyttää myös
 sähköpostiasi yllälueteltujen toimintojen suorittamiseen. Lisätietoja 
