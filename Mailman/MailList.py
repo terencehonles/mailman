@@ -1038,6 +1038,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
 	recipients = filter(DeliveryEnabled, recipients)
+        self.LogMsg("post", "post to %s from %s size=%d",
+                    self._internal_name, msg.GetSender(), len(msg.body))
+        
 	self.DeliverToList(msg, recipients, 
 			   header = self.msg_header % self.__dict__,
 			   footer = self.msg_footer % self.__dict__)
