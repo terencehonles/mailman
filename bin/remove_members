@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@
 """Remove members from a list.
 
 Usage:
-    remove_members [options] listname [addr1 ...]
+    remove_members [options] [listname] [addr1 ...]
 
 Options:
 
@@ -31,6 +31,13 @@ Options:
     --all
     -a
         Remove all members of the mailing list.
+       (mutually exclusive with --fromall)
+
+    --fromall
+       Removes the given addresses from all the lists on this system
+       regardless of virtual domains if you have any.  This option cannot be
+       used -a/--all.  Also, you should not specify a listname when using this
+       option.
 
     --help
     -h
@@ -47,6 +54,7 @@ import getopt
 
 import paths
 from Mailman import MailList
+from Mailman import Utils
 from Mailman import Errors
 from Mailman.i18n import _
 
@@ -77,17 +85,16 @@ def ReadFile(filename):
 def main():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'af:h', ['all', 'file=', 'help'])
+           sys.argv[1:], 'af:h', ['all', 'fromall', 'file=', 'help'])
     except getopt.error, msg:
         usage(1, msg)
 
     if len(args) < 1:
         usage(1)
 
-    listname = args[0].lower().strip()
-    addresses = args[1:]
     filename = None
     all = 0
+    alllists = 0
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -96,33 +103,53 @@ def main():
             filename = arg
         elif opt in ('-a', '--all'):
             all = 1
-                
+        elif opt == '--fromall':
+            alllists = 1
+
+    # You probably don't want to delete all the users of all the lists -- Marc
+    if all == 1 and alllists == 1:
+       usage(1)
+
+    if alllists:
+       addresses = args
+    else:
+       listname = args[0].lower().strip()
+       addresses = args[1:]
+
+    if alllists:
+        listnames = Utils.list_names()
+    else:
+        listnames = [listname]
+
     if filename:
         try:
             addresses = addresses + ReadFile(filename)
         except IOError:
             print _('Could not open file for reading: %(filename)s.')
 
-    try:
-        # open locked
-        mlist = MailList.MailList(listname)
-    except Errors.MMListError, e:
-        print _('No such list: %(listname)s')
-        sys.exit(1)
+    for listname in listnames:
+       try:
+           # open locked
+           mlist = MailList.MailList(listname)
+       except Errors.MMListError:
+           print _('Error opening list %(listname)s... skipping.')
+           continue
 
-    if all:
-        addresses = mlist.getMembers()
+       if all:
+           addresses = mlist.getMembers()
 
-    try:
-        for addr in addresses:
-            try:
-                mlist.ApprovedDeleteMember(addr)
-            except Errors.MMNoSuchUserError:
-                print _("User `%(addr)s' not found.")
-    finally:
-        # Hmm, should it be all or nothing?
-        mlist.Save()
-        mlist.Unlock()
+       try:
+           for addr in addresses:
+               if not mlist.isMember(addr):
+                   if not alllists:
+                       print _('No such member: %(addr)s')
+                   continue
+               mlist.ApprovedDeleteMember(addr)
+               if alllists:
+                   print _("User `%(addr)s' removed from list: %(listname)s.")
+           mlist.Save()
+       finally:
+           mlist.Unlock()
 
 
 
