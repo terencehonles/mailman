@@ -29,12 +29,6 @@ class ArchRunner(Runner):
     QDIR = mm_cfg.ARCHQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
-        # Now try to get the list lock
-        try:
-            mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-        except LockFile.TimeOutError:
-            # oh well, try again later
-            return 1
         # Support clobber_date, i.e. setting the date in the archive to the
         # received date, not the (potentially bogus) Date: header of the
         # original message.
@@ -49,10 +43,17 @@ class ArchRunner(Runner):
             # what's the timestamp on the original message?
             tup = parsedate_tz(originaldate)
             now = time.time()
-            if not tup:
-                clobber = 1
-            elif abs(now - mktime_tz(tup)) > \
-                     mm_cfg.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW:
+            try:
+                if not tup:
+                    clobber = 1
+                elif abs(now - mktime_tz(tup)) > \
+                         mm_cfg.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW:
+                    clobber = 1
+            except ValueError:
+                # The likely cause of this is that the year in the Date: field
+                # is horribly incorrect, e.g. (from SF bug # 571634):
+                # Date: Tue, 18 Jun 0102 05:12:09 +0500
+                # Obviously clobber such dates.
                 clobber = 1
         if clobber:
             del msg['date']
@@ -62,11 +63,14 @@ class ArchRunner(Runner):
                 msg['X-Original-Date'] = originaldate
         # Always put an indication of when we received the message.
         msg['X-List-Received-Date'] = receivedtime
-        #
-        # runner specific code
+        # Now try to get the list lock
+        try:
+            mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+        except LockFile.TimeOutError:
+            # oh well, try again later
+            return 1
         try:
             mlist.ArchiveMail(msg)
             mlist.Save()
         finally:
             mlist.Unlock()
-        return 0
