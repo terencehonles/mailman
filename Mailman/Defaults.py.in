@@ -77,9 +77,11 @@ DEFAULT_EMAIL_HOST = '@MAILHOST@'
 DEFAULT_URL_HOST = '@URLHOST@'
 DEFAULT_URL_PATTERN = 'http://%s/mailman/'
 
-# For backwards compatibility.  Note: DEFAULT_URL_PATTERN must end in a slash!
-DEFAULT_HOST_NAME = DEFAULT_EMAIL_HOST
-DEFAULT_URL       = DEFAULT_URL_PATTERN % DEFAULT_URL_HOST
+# DEFAULT_HOST_NAME has been replaced with DEFAULT_EMAIL_HOST, however some
+# sites may have the former in their mm_cfg.py files.  If so, we'll believe
+# that, otherwise we'll believe DEFAULT_EMAIL_HOST.  Same for DEFAULT_URL.
+DEFAULT_HOST_NAME = None
+DEFAULT_URL = None
 
 HOME_PAGE         = 'index.html'
 MAILMAN_SITE_LIST = 'mailman'
@@ -289,10 +291,10 @@ ARCHIVER_CLOBBER_DATE_POLICY = 2
 ARCHIVER_ALLOWABLE_SANE_DATE_SKEW = days(15)
 
 # Pipermail archives contain the raw email addresses of the posting authors.
-# Some view this as a goldmine for spam harvesters.  Set this to false to
+# Some view this as a goldmine for spam harvesters.  Set this to true to
 # moderately obscure email addresses, but note that this breaks mailto: URLs
 # in the archives too.
-ARCHIVER_OBSCURES_EMAILADDRS = 0
+ARCHIVER_OBSCURES_EMAILADDRS = 1
 
 # Pipermail assumes that messages bodies contain US-ASCII text.
 # Change this option to define a different character set to be used as
