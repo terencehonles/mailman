@@ -29,7 +29,6 @@ message handling should stop.
 """
 
 import os
-import string
 import time
 from types import ClassType
 
@@ -43,6 +42,7 @@ import HandlerAPI
 from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
 
 
@@ -139,7 +139,7 @@ def process(mlist, msg, msgdata):
     # to list members.  If not set, then only the members in posters are
     # allowed to post without approval.
     if mlist.member_posting_only:
-        posters = Utils.List2Dict(map(string.lower, mlist.posters))
+        posters = Utils.List2Dict([s.lower() for s in mlist.posters])
         if not mlist.IsMember(sender) and \
            not Utils.FindMatchingAddresses(sender, posters):
             # the sender is neither a member of the list, nor in the list of
@@ -147,7 +147,7 @@ def process(mlist, msg, msgdata):
             hold_for_approval(mlist, msg, msgdata, NonMemberPost)
             # no return
     elif mlist.posters:
-        posters = Utils.List2Dict(map(string.lower, mlist.posters))
+        posters = Utils.List2Dict([s.lower() for s in mlist.posters])
         if not Utils.FindMatchingAddresses(sender, posters):
             # the sender is not explicitly in the list of allowed posters
             # (which is non-empty), so hold the message
@@ -160,10 +160,10 @@ def process(mlist, msg, msgdata):
         recips = []
         toheader = msg.getheader('to')
         if toheader:
-            recips = recips + map(string.strip, string.split(toheader, ','))
+            recips.extend([s.strip() for s in toheader.split(',')])
         ccheader = msg.getheader('cc')
         if ccheader:
-            recips = recips + map(string.strip, string.split(ccheader, ','))
+            recips.extend([s.strip() for s in ccheader.split(',')])
         if len(recips) > mlist.max_num_recipients:
             hold_for_approval(mlist, msg, msgdata, TooManyRecipients)
             # no return
@@ -227,7 +227,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
          }
     if mlist.admin_immed_notify:
         # get the text from the template
-        subject = '%s post from %s requires approval' % (listname, sender)
+        subject = _('%(listname)s post from %(sender)s requires approval')
         text = Utils.maketext('postauth.txt', d, raw=1)
         # craft the admin notification message and deliver it
         msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
@@ -235,7 +235,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # We may want to send a notification to the original sender too
     fromusenet = msgdata.get('fromusenet')
     if not fromusenet and not mlist.dont_respond_to_post_requests:
-        subject = 'Your message to %s awaits moderator approval' % listname
+        subject = _('Your message to %(listname)s awaits moderator approval')
         text = Utils.maketext('postheld.txt', d)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
