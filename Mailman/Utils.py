@@ -31,6 +31,7 @@ import sha
 import errno
 import time
 import cgi
+import htmlentitydefs
 import email.Iterators
 from string import whitespace, digits
 try:
@@ -694,3 +695,60 @@ def percent_identifiers(s):
     for name in cre.findall(s):
         d[name] = 1
     return d
+
+
+
+# Utilities to canonicalize a string, which means un-HTML-ifying the string to
+# produce a Unicode string or an 8-bit string if all the characters are ASCII.
+def canonstr(s, lang=None):
+    newparts = []
+    parts = re.split(r'&(?P<ref>[^;]+);', s)
+    while 1:
+        newparts.append(parts.pop(0))
+        if not parts:
+            break
+        ref = parts.pop(0)
+        if ref.startswith('#'):
+            newparts.append(chr(int(ref[1:])))
+        else:
+            c = htmlentitydefs.entitydefs.get(ref, '?')
+            if c.startswith('#') and c.endswith(';'):
+                newparts.append(chr(ref[1:-1]))
+            else:
+                newparts.append(c)
+    newstr = EMPTYSTRING.join(newparts)
+    # We want the default fallback to be iso-8859-1 even if the language is
+    # English (us-ascii).  This seems like a practical compromise so that
+    # non-ASCII characters in names can be used in English lists w/o having to
+    # change the global charset for English from us-ascii (which I
+    # superstitiously think my have unintended consequences).
+    if lang is None:
+        charset = 'iso-8859-1'
+    else:
+        charset = GetCharSet(lang)
+        if charset == 'us-ascii':
+            charset = 'iso-8859-1'
+    return unicode(newstr, charset, 'replace')
+
+
+# The opposite of canonstr() -- sorta.  I.e. it attempts to encode s in the
+# charset of the given language, and failing that, replaces non-ASCII
+# characters with their html references.
+def uncanonstr(s, lang=None):
+    if s is None:
+        s = ''
+    if lang is None:
+        charset = 'us-ascii'
+    else:
+        charset = GetCharSet(lang)
+    try:
+        return s.encode(charset, 'strict')
+    except UnicodeError:
+        a = []
+        for c in s:
+            o = ord(c)
+            if o > 127:
+                a.append('&#%3d;' % o)
+            else:
+                a.append(c)
+        return EMPTYSTRING.join(a)
