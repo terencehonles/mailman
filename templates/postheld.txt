@@ -9,4 +9,4 @@ The reason it is being held:
     %(reason)s
 
 Either the message will get posted to the list, or you will receive 
-notification of the moderator's decison.
+notification of the moderator's decision.
