@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
-"PO-Revision-Date: 2002-12-09 10:47+0100\n"
+"PO-Revision-Date: 2002-12-11 23:56+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -908,7 +908,6 @@ msgid "Enter new administrator password:"
 msgstr "Nytt administrator passord:"
 
 #: Mailman/Cgi/admin.py:1167
-#, fuzzy
 msgid "Confirm administrator password:"
 msgstr "Administratorpassordet en gang til:"
 
@@ -929,7 +928,6 @@ msgid "Moderator passwords did not match"
 msgstr "Moderatorpassordene er ikke like"
 
 #: Mailman/Cgi/admin.py:1217
-#, fuzzy
 msgid "Administrator passwords did not match"
 msgstr "Administratorpassordene er ikke like"
 
@@ -4453,7 +4451,6 @@ msgstr ""
 "men da kun en adresse per linje."
 
 #: Mailman/Gui/General.py:76
-#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -9175,8 +9172,7 @@ msgstr ""
 "\n"
 "    listenavn\n"
 "        Vis eieren(e) av de angitte lister. Mer en enn liste kan altså\n"
-"        spesifiseres. Dersom ingen liste er angitt, vil eiere av alle "
-"lister\n"
+"        spesifiseres. Dersom ingen liste er angitt, vil eiere av alle lister\n"
 "        vises.\n"
 
 #: bin/mailmanctl:19
@@ -9736,7 +9732,6 @@ msgid "No runner name given."
 msgstr "Ingen runner navn ble angitt."
 
 #: bin/remove_members:19
-#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -9801,6 +9796,14 @@ msgstr ""
 "        domene hvis flere domener. Dette valget kan ikke benyttes sammen\n"
 "        med -a/--all. Du bør også ikke angi noe listenavn dersom du\n"
 "        benytter dette valget.\n"
+"\n"
+"    --nouserack\n"
+"    -n\n"
+"        Ikke send beskjed til medlemmet/medlemmene som fjernes.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Ikke send beskjed om utmelding til administratoren(e).\n"
 "\n"
 "    --help\n"
 "    -h\n"
