@@ -161,6 +161,13 @@ transparently.  However, please note the following exceptions:
 
       Consult your Web server's documentation for details.
 
+    - Configure your web server to point to public mailling list
+      archives:
+
+      In apache:
+         Alias /public /home/mailman/public_html/archives
+
+
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       to do things such as send out password reminders, etc.  You need
       to be user `mailman' to perform this step.  Add
