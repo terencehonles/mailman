@@ -66,6 +66,7 @@ from Mailman import MemberAdaptor
 from Mailman.OldStyleMemberships import OldStyleMemberships
 from Mailman import Message
 from Mailman import Pending
+from Mailman import Site
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
 
@@ -102,7 +103,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # This extension mechanism allows list-specific overrides of any
             # method (well, except __init__(), InitTempVars(), and InitVars()
             # I think).
-            filename = os.path.join(self._full_path, 'extend.py')
+            filename = os.path.join(self.fullpath(), 'extend.py')
             dict = {}
             try:
                 execfile(filename, dict)
@@ -223,7 +224,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             withlogging = mm_cfg.LIST_LOCK_DEBUGGING)
         self._internal_name = name
         if name:
-            self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
+            self._full_path = Site.get_listpath(name)
         else:
             self._full_path = None
         # Only one level of mixin inheritance allowed
@@ -388,13 +389,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         if Utils.list_exists(name):
             raise Errors.MMListAlreadyExistsError, name
         Utils.ValidateEmail(admin)
-        omask = os.umask(0)
-        try:
-            os.makedirs(os.path.join(mm_cfg.LIST_DATA_DIR, name), 02775)
-        finally:
-            os.umask(omask)
-        self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
         self._internal_name = name
+        self._full_path = Site.get_listpath(name, create=1)
         # Don't use Lock() since that tries to load the non-existant config.pck
         self.__lock.lock()
         self.InitVars(name, admin, crypted_password)
@@ -415,7 +411,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # we never rotate unless the we've successfully written the temp file.
         # We use pickle now because marshal is not guaranteed to be compatible
         # between Python versions.
-        fname = os.path.join(self._full_path, 'config.pck')
+        fname = os.path.join(self.fullpath(), 'config.pck')
         fname_tmp = fname + '.tmp.%s.%d' % (socket.gethostname(), os.getpid())
         fname_last = fname + '.last'
         fp = None
