@@ -68,6 +68,9 @@ DEFAULT_MSG_FOOTER = """_______________________________________________
 %(web_page_url)slistinfo/%(_internal_name)s
 """
 
+# Mail command processor will ignore mail command lines after designated max.
+DEFAULT_MAIL_COMMANDS_MAX_LINES = 25
+
 		     # List Accessibility Defaults #
 
 # Is admin notified of admin requests immediately by mail, as well as by
