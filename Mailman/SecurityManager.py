@@ -215,7 +215,7 @@ class SecurityManager:
         # Two results can occur: we return 1 meaning the cookie authentication
         # succeeded for the authorization context, we return 0 meaning the
         # authentication failed.
-        key, secret = self.AuthContextInfo(authcontext, user)
+        #
         # Dig out the cookie data, which better be passed on this cgi
         # environment variable.  If there's no cookie data, we reject the
         # authentication.
@@ -223,6 +223,32 @@ class SecurityManager:
         if not cookiedata:
             return 0
         c = Cookie.Cookie(cookiedata)
+        # If the user was not supplied, but the authcontext is AuthUser, we
+        # can try to glean the user address from the cookie key.  There may be
+        # more than one matching key (if the user has multiple accounts
+        # subscribed to this list), but any are okay.
+        if authcontext == mm_cfg.AuthUser:
+            if user:
+                usernames = [user]
+            else:
+                usernames = []
+                prefix = self.internal_name() + ':user:'
+                for k in c.keys():
+                    if k.startswith(prefix):
+                        usernames.append(k[len(prefix):])
+            # If any check out, we're golden
+            for user in usernames:
+                ok = self.__checkone(c, authcontext, user)
+                if ok:
+                    return 1
+            return 0
+        else:
+            return self.__checkone(c, authcontext, user)
+
+    def __checkone(self, c, authcontext, user):
+        # Do the guts of the cookie check, for one authcontext/user
+        # combination.
+        key, secret = self.AuthContextInfo(authcontext, user)
         if not c.has_key(key):
             return 0
         # Undo the encoding we performed in MakeCookie() above
