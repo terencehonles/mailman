@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -971,8 +971,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         Utils.ValidateEmail(newaddr)
         # Raise an exception if this email address is already a member of the
         # list, but only if the new address is the same case-wise as the old
-        # address.
-        if newaddr == oldaddr and self.isMember(newaddr):
+        # address and we're not doing a global change.
+        if not globally and newaddr == oldaddr and self.isMember(newaddr):
             raise Errors.MMAlreadyAMember
         if newaddr == self.GetListEmail().lower():
             raise Errors.MMBadEmailError
@@ -1010,14 +1010,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         msg.send(self)
 
     def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
-        # Change the membership for the current list first.  We don't lock and
-        # save ourself since we assume that the list is already locked.
-        if self.isMember(newaddr):
-            # Just delete the old address
-            if self.isMember(oldaddr):
-                self.ApprovedDeleteMember(oldaddr, admin_notif=1, userack=1)
-        else:
-            self.changeMemberAddress(oldaddr, newaddr)
+        self.changeMemberAddress(oldaddr, newaddr)
         # If globally is true, then we also include every list for which
         # oldaddr is a member.
         if not globally:
@@ -1028,8 +1021,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 continue
             mlist = MailList(listname, lock=0)
             if mlist.host_name <> self.host_name:
-                continue
-            if not mlist.isMember(oldaddr) or mlist.isMember(newaddr):
                 continue
             mlist.Lock()
             try:
