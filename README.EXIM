@@ -269,13 +269,13 @@ in your "RCPT TO" ACL:
                 {yes}{no}}
 
   # Now, check sender address with SMTP callback.
-  deny   !verify = sender/callout=90s/check_postmaster
+  deny   !verify = sender/callout=90s
 
 If you also do SMTP callbacks on header addresses, you'll want something
 like this in your "DATA" ACL:
 
   deny   !condition = $header_X-WhitelistedRCPT-nohdrfromcallback:
-	 !verify = header_sender/callout=90s/check_postmaster
+	 !verify = header_sender/callout=90s
 
 [XXX all this stuff is completely untested by me!  -Greg]
 
