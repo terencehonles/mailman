@@ -67,8 +67,16 @@ def process(mlist, msg, msgdata):
                   subject, re.IGNORECASE)
     if mo:
         subject = subject[:mo.start(2)] + subject[mo.end(2):]
-    topicsfp.write('  %d. %s (%s)\n' % (mlist.next_post_number,
-                                        subject, sender))
+    # Watch for multiline subjects
+    slines = []
+    for sline in string.split(subject, '\n'):
+        if not slines:
+            slines.append(sline)
+        else:
+            slines.append('      ' + sline)
+    topicsfp.write('  %2d. %s (%s)\n' % (mlist.next_post_number,
+                                         string.join(slines, '\n'),
+                                         sender))
     # We exclude specified headers and all X-* headers
     kept_headers = []
     keeping = 0
@@ -287,10 +295,10 @@ class Digest:
             lines.append('')
             lines.append("--" + digestboundary + "--")
         else:
-            lines.append(
-                filterDigestHeaders(self.__body,
-                                    mm_cfg.DEFAULT_PLAIN_DIGEST_KEEP_HEADERS,
-                                    digestboundary))
+            lines.extend(filter_headers(
+                self.__body,
+                mm_cfg.DEFAULT_PLAIN_DIGEST_KEEP_HEADERS,
+                digestboundary))
         # List-specific footer:
         if self.__mlist.digest_footer:
             lines.append(dashbound)
@@ -311,49 +319,52 @@ class Digest:
 
 
 
-def filterDigestHeaders(body, keep_headers, mimesep):
+def filter_headers(body, keep_headers, mimesep):
     """Return copy of body that omits non-crucial headers."""
-    state = "sep"               # "sep", "head", or "body"
-    lines = string.split(body, "\n")
-    at = 1
+    SEPARATOR = 0
+    HEADER = 1
+    BODY = 2
+    # simple state machine
+    state = SEPARATOR
+    lines = string.split(body, '\n')
+    lineno = 1
     text = [lines[0]]
-    kept_last = 0
-    while at < len(lines):
-        l, at = lines[at], at + 1
-        if state == "body":
-            # Snarf the body up to, and including, the next separator:
-            text.append(l)
-            if string.strip(l) == '--' + mimesep:
-                state = "sep"
+    keptlast = 0
+    for lineno in range(1, len(lines)):
+        line = lines[lineno]
+        if state == BODY:
+            # Snarf the body up to, and including, the next separator
+            text.append(line)
+            if string.strip(line) == '--' + mimesep:
+                state = SEPARATOR
             continue
-        elif state == "sep":
-            state = "head"
-            # Keep the one (blank) line between separator and headers.
-            text.append(l)
-            kept_last = 0
+        elif state == SEPARATOR:
+            state = HEADER
+            # Keep the one (blank) line between separator and headers
+            text.append(line)
+            keptlast = 0
             continue
-        elif state == "head":
-            l = string.strip(l)
-            if l == '':
-                state = "body"
-                text.append(l)
+        elif state == HEADER:
+            if not string.strip(line):
+                state = BODY
+                text.append(line)
                 continue
-            elif l[0] in [' ', '\t']:
-                # Continuation line - keep if the prior line was kept.
-                if kept_last:
-                    text.append(l)
+            elif line[0] in (' ', '\t'):
+                # Continuation line, keep if the prior line was kept
+                if keptlast:
+                    text.append(line)
                 continue
             else:
-                where = string.find(l, ':')
-                if where == -1:
-                    # Malformed header line - interesting, keep it.
-                    text.append(l)
-                    kept_last = 1
+                i = string.find(line, ':')
+                if i < 0:
+                    # Malformed header line.  Interesting, keep it.
+                    text.append(line)
+                    keptlast = 1
                 else:
-                    field = l[:where]
+                    field = line[:i]
                     if string.lower(field) in keep_headers:
-                        text.append(l)
-                        kept_last = 1
+                        text.append(line)
+                        keptlast = 1
                     else:
-                        kept_last = 0
-    return string.join(text, '\n')
+                        keptlast = 0
+    return text
