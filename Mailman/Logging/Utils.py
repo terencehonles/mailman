@@ -22,3 +22,24 @@ def __logexc(logger=None, msg=''):
     sys.__stderr__.write('Logging error: %s\n' % logger)
     traceback.print_exc(file=sys.__stderr__)
     sys.__stderr__.write('Original log message:\n%s\n' % msg)
+
+def LogStdErr(category, label, manual_reprime=1, tee_to_stdout=1):
+    """Establish a StampedLogger on sys.stderr if possible.  sys.stdout
+    also gets stderr output, using a MultiLogger.
+
+    Returns the MultiLogger if successful, None otherwise."""
+    import sys
+    from StampedLogger import StampedLogger
+    from MultiLogger import MultiLogger
+    try:
+        sys.stderr = StampedLogger('error',
+                                   label=label,
+                                   manual_reprime=1,
+                                   nofail=0)
+        if tee_to_stdout:
+            multi = MultiLogger(sys.__stdout__, sys.stderr)
+            sys.stderr = multi
+        return sys.stderr
+    except IOError:
+        return None
+    
