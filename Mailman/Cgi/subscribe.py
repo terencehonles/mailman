@@ -73,6 +73,8 @@ def call_script(mlist, member, which):
     mlist.Save()
     mlist.Unlock()
     mod.main()
+    sys.stdout.flush()
+    sys.stderr.flush()
     # skip finally clause above since we've already saved and unlocked the list
     os._exit(0)
 
