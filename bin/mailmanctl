@@ -103,6 +103,7 @@ from Mailman import Utils
 from Mailman import LockFile
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
+from Mailman.Logging.Utils import LogStdErr
 
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
@@ -114,6 +115,8 @@ LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'master-qrunner')
 # needn't be (much) longer than SNOOZE.  We pad it 6 hours just to be safe.
 LOCK_LIFETIME = mm_cfg.days(1) + mm_cfg.hours(6)
 SNOOZE = mm_cfg.days(1)
+
+LogStdErr('error', 'mailmanctl', manual_reprime=0, tee_to_stdout=0)
 
 
 

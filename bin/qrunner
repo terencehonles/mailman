@@ -71,9 +71,12 @@ import paths
 from Mailman import mm_cfg
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
+from Mailman.Logging.Utils import LogStdErr
 
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
+
+LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
 
 
 
