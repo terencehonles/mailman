@@ -18,24 +18,40 @@
 
 """Dispatch digests for lists w/pending messages and digest_send_periodic set.
 
-Typically it's invoked via cron."""
+Typically it's invoked via cron.
+"""
 
-import sys, os
+import sys
+import os
+from stat import ST_SIZE
+from errno import ENOENT
 import paths
 from Mailman import MailList
 from Mailman import Utils
+from Mailman.Handlers import ToDigest
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
+
 def main():
+    for listname in Utils.list_names():
+        mlist = MailList.MailList(name, lock=0)
+        if mlist.digest_send_periodic:
+            # send the digest if there are any partially built
+            digestfile = os.path.join(mlist.fullpath(), 'next-digest')
+            topicsfile = os.path.join(mlist.fullpath(), 'next-digest-topics')
+            try:
+                if os.stat(digestfile)[ST_SIZE] > 0:
+                    ToDigest.inject_digest(mlist, digestfile, topicsfile)
+            except os.error, (code, msg):
+                if code == ENOENT:
+                    mlist.LogMsg('error', '%s: lost digest file: %s (%s)' %
+                                 (listname, digestfile, msg))
+                else:
+                    raise
 
-    for name in Utils.list_names():
-	list = MailList.MailList(name, lock=0)
-	if list.digest_send_periodic:
-	    # Send if there are any messages pending.
-	    list.SendDigestIfAny()
-
+
 if __name__ == "__main__":
     main()
