@@ -17,7 +17,7 @@
 
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 542 $"
+__version__ = "$Revision: 543 $"
 
 try:
     import mm_cfg
@@ -261,13 +261,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " discussion of this issue."),
 
 	    ('reminders_to_admins', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Send password reminders to "-owner" address instead of'
+	     'Send password reminders to "-admin" address instead of'
 	     ' directly to user.',
 
 	     "Set this to yes when this list is intended only to cascade to"
 	     " other maillists.  When set, the password reminders will be"
 	     " directed to an address derived from the member's address"
-	     ' - it will have "-owner" appended to the member\'s account'
+	     ' - it will have "-admin" appended to the member\'s account'
 	     " name."),
 
 	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
