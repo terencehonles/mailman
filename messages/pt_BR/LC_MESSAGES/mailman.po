@@ -7032,7 +7032,7 @@ msgstr ""
 
 #: Mailman/Handlers/ToDigest.py:141
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
-msgstr "Digest %(realname), volume %(volume)d, assunto %(issue)d"
+msgstr "Digest %(realname)s, volume %(volume)d, assunto %(issue)d"
 
 #: Mailman/Handlers/ToDigest.py:181
 msgid "digest header"
