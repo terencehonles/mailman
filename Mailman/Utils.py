@@ -699,7 +699,7 @@ def to_dollar(s):
 
 def to_percent(s):
     """Convert from $-strings to %-strings."""
-    s = s.replace('%', '%%').replace('$$', '$')
+    s = s.replace('%', '%%')
     parts = dre.split(s)
     for i in range(1, len(parts), 4):
         if parts[i] is not None:
