@@ -137,7 +137,7 @@ class _Switchboard:
         # format.  When done, unlink the metadata file.
         try:
             data = self._ext_read(dbfile)
-        except (IOError, OSError), e:
+        except EnvironmentError, e:
             if e.errno <> errno.ENOENT: raise
         else:
             os.unlink(dbfile)
