@@ -44,7 +44,7 @@ usually <code>/home/mailman</code></em>.
 
 <dt><b>check_db</b>
 <dd>Use this script to check the integrity of a list's
-    <code>config.db</code> and <code>config.db.last</code> database
+    <code>config.pck</code> and <code>config.pck.last</code> database
     files.
 
 <dt><b>check_perms</b>
