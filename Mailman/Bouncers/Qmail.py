@@ -26,7 +26,7 @@ This module should be conformant.
 """
 
 import re
-import email
+import email.Iterators
 
 introtag = 'Hi. This is the'
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
@@ -34,17 +34,13 @@ acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
 
 def process(msg):
-    mi = email.Iterators.body_line_iterator(msg)
     addrs = []
     # simple state machine
     #    0 = nothing seen yet
     #    1 = intro paragraph seen
     #    2 = recip paragraphs seen
     state = 0
-    while 1:
-        line = mi.readline()
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         line = line.strip()
         if state == 0 and line.startswith(introtag):
             state = 1
