@@ -34,14 +34,17 @@ class Deliverer:
                        add_headers=[]):
         if not sender:
             sender = self.GetAdminEmail()
+        alladd = add_headers + ['X-MailmanVersion: %s\n' % mm_cfg.VERSION]
         Utils.SendTextToUser(subject, text, recipient, sender,
-                                add_headers=add_headers)
+                             add_headers=alladd)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
         Utils.DeliverToUser(msg, recipient,
                                add_headers=['Errors-To: %s\n'
-                                            % Self.GetAdminEmail()])
+                                            % Self.GetAdminEmail(),
+                                            'X-MailmanVersion: %s\n'
+                                            % mm_cfg.VERSION])
 
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
@@ -96,6 +99,7 @@ class Deliverer:
 	msg.headers.append('Sender: %s\n' % self.GetAdminEmail())
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
 	msg.headers.append('X-BeenThere: %s\n' % self.GetListEmail())
+	msg.headers.append('X-MailmanVersion: %s\n' % mm_cfg.VERSION)
 
         cmd = "%s %s" % (mm_cfg.PYTHON,
                          os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"))
