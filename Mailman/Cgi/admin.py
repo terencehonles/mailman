@@ -464,18 +464,13 @@ def show_results(mlist, doc, category, subcat, cgidata):
     # Add all the links to the links table...
     etable.AddRow([categorylinks_1, categorylinks_2])
     etable.AddRowInfo(etable.GetCurrentRowIndex(), valign='top')
-    label = _('Emergency moderation of all list traffic:')
     if mlist.emergency:
-        label = Bold(label).Format()
-    etable.AddRow(['&nbsp;', '&nbsp;'])
-    etable.AddRow([Center(label + CheckBox('emergency', 1,
-                                           mlist.emergency).Format())])
-    if mlist.emergency:
+        label = _('Emergency moderation of all list traffic is enabled')
+        etable.AddRow([Center(
+            Link('?VARHELP=general/emergency', Bold(label)))])
         color = mm_cfg.WEB_ERROR_COLOR
-    else:
-        color = mm_cfg.WEB_BG_COLOR
-    etable.AddCellInfo(etable.GetCurrentRowIndex(), 0,
-                       colspan=2, bgcolor=color)
+        etable.AddCellInfo(etable.GetCurrentRowIndex(), 0,
+                           colspan=2, bgcolor=color)
     linktable.AddRow([etable, otherlinks])
     # ...and add the links table to the document.
     form.AddItem(linktable)
