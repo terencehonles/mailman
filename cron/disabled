@@ -23,14 +23,36 @@ delivery is disabled.  If they have been disabled due to bounces, they will
 receive another notification, or they may be removed if they've received the
 maximum number of notifications.
 
+Use the --byadmin, --byuser, and --unknown flags to also send notifications
+to users whose accounts have been disabled for those reasons.  Use --all to
+send the notification to all disabled users.
+
 Usage: %(PROGRAM)s [options]
 
 Options:
     -h / --help
         Print this message and exit.
 
+    -o / --byadmin
+        Also send notifications to any user disabled by the list
+        owner/administrator.
+
+    -m / --byuser
+        Also send notifications to any user disabled by themselves (member).
+
+    -u / --unknown
+        Also send notifications to any user disabled for unknown reasons
+        (usually a legacy disabled address).
+
+    -b / --notbybounce
+        Don't send notifications to users disabled because of bounces (the
+        default is to notify bounce disabled members).
+
+    -a / --all
+        Send notifications to all disabled users.
+
     -l listname
-    --list listname
+    --listname=listname
         Process only the given list, otherwise do all lists.
 """
 
@@ -45,7 +67,9 @@ import paths
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
+from Mailman import Pending
 from Mailman import MemberAdaptor
+from Mailman.Bouncer import _BounceInfo
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
@@ -67,7 +91,10 @@ def usage(code, msg=''):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+        opts, args = getopt.getopt(
+            sys.argv[1:], 'hl:omuba',
+            ['byadmin', 'byuser', 'unknown', 'notbybounce', 'all',
+             'listname=', 'help'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -75,11 +102,29 @@ def main():
         usage(1)
 
     listnames = []
+    who = [MemberAdaptor.BYBOUNCE]
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
-        if opt in ('-l', '--list'):
+        elif opt in ('-l', '--list'):
             listnames.append(arg)
+        elif opt in ('-o', '--byadmin'):
+            who.append(MemberAdaptor.BYADMIN)
+        elif opt in ('-m', '--byuser'):
+            who.append(MemberAdaptor.BYUSER)
+        elif opt in ('-u', '--unknown'):
+            who.append(MemberAdaptor.UNKNOWN)
+        elif opt in ('-b', '--notbybounce'):
+            try:
+                who.remove(MemberAdaptor.BYBOUNCE)
+            except ValueError:
+                # Already removed
+                pass
+        elif opt in ('-a', '--all'):
+            who = [MemberAdaptor.BYBOUNCE, MemberAdaptor.BYADMIN,
+                   MemberAdaptor.BYUSER, MemberAdaptor.UNKNOWN]
+
+    who = tuple(who)
 
     if not listnames:
         listnames = Utils.list_names()
@@ -89,48 +134,56 @@ def main():
     for listname in listnames:
         # List of members to notify
         notify = []
-        mlist = MailList.MailList(listname, lock=0)
-        interval = mlist.bounce_you_are_disabled_warnings_interval
-        # Find all the members who are currently bouncing and see if they've
-        # reached the disable threshold but haven't yet been disabled.  This
-        # is a sweep through the membership catching situations where they've
-        # bounced a bunch, then the list admin lowered the threshold, but we
-        # haven't (yet) seen more bounces from the member.  Note: we won't
-        # worry about stale information or anything else since the normal
-        # bounce processing code will handle that.
-        disables = []
-        for member in mlist.getBouncingMembers():
-            if mlist.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
-                continue
-            info = mlist.getBounceInfo(member)
-            if info.score >= mlist.bounce_score_threshold:
-                disables.append((member, info))
-        if disables:
-            mlist.Lock()
-            try:
+        mlist = MailList.MailList(listname)
+        try:
+            interval = mlist.bounce_you_are_disabled_warnings_interval
+            # Find all the members who are currently bouncing and see if
+            # they've reached the disable threshold but haven't yet been
+            # disabled.  This is a sweep through the membership catching
+            # situations where they've bounced a bunch, then the list admin
+            # lowered the threshold, but we haven't (yet) seen more bounces
+            # from the member.  Note: we won't worry about stale information
+            # or anything else since the normal bounce processing code will
+            # handle that.
+            disables = []
+            for member in mlist.getBouncingMembers():
+                if mlist.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
+                    continue
+                info = mlist.getBounceInfo(member)
+                if info.score >= mlist.bounce_score_threshold:
+                    disables.append((member, info))
+            if disables:
                 for member, info in disables:
                     mlist.disableBouncingMember(member, info, msg)
-                mlist.Save()
-            finally:
-                mlist.Unlock()
-        # Go through all the members who have delivery disabled due to
-        # bouncing, and find those that are due to have another notification.
-        members = mlist.getDeliveryStatusMembers((MemberAdaptor.BYBOUNCE,))
-        for member in members:
-            info = mlist.getBounceInfo(member)
-            if not info:
-                syslog('error',
-                       '%s disabled BYBOUNCE but lacks bounce info, list: %s',
-                       member, mlist.internal_name())
-                continue
-            lastnotice = time.mktime(info.lastnotice + (0,) * 6)
-            if today >= lastnotice + interval:
-                notify.append(member)
-        # Now, send notifications to anyone who is due
-        if not notify:
-            continue
-        mlist.Lock()
-        try:
+            # Go through all the members who have delivery disabled, and find
+            # those that are due to have another notification.  If they are
+            # disabled for another reason than bouncing, and we're processing
+            # them (because of the command line switch) then they won't have a
+            # bounce info record.  We can piggyback on that for all disable
+            # purposes.
+            members = mlist.getDeliveryStatusMembers(who)
+            for member in members:
+                info = mlist.getBounceInfo(member)
+                if not info:
+                    # See if they are bounce disabled, or disabled for some
+                    # other reason.
+                    status = mlist.getDeliveryStatus(member)
+                    if status == MemberAdaptor.BYBOUNCE:
+                        syslog(
+                            'error',
+                            '%s disabled BYBOUNCE lacks bounce info, list: %s',
+                            member, mlist.internal_name())
+                        continue
+                    info = _BounceInfo(
+                        member, 0, today,
+                        mlist.bounce_you_are_disabled_warnings,
+                        Pending.new(Pending.RE_ENABLE, mlist.internal_name(),
+                                    member))
+                    mlist.setBounceInfo(member, info)
+                lastnotice = time.mktime(info.lastnotice + (0,) * 6)
+                if today >= lastnotice + interval:
+                    notify.append(member)
+            # Now, send notifications to anyone who is due
             for member in notify:
                 syslog('bounce', 'Notifying disabled member %s for list: %s',
                        member, mlist.internal_name())
