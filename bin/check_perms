@@ -49,7 +49,7 @@ def checkwalk(arg, dirname, names):
             print 'checking gid and modes for', path
         try:
             mode, gid = statgidmode(path)
-        except OSError, (code, msg):
+        except os.error, (code, msg):
             if code == errno.ENOENT:
                 continue
             raise
@@ -125,7 +125,13 @@ def checkadminpw():
     targetmode = S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP
     if STATE.VERBOSE:
         print 'checking perms on', adminpw
-    mode = statmode(adminpw)
+    try:
+        mode = statmode(adminpw)
+    except os.error, (code, msg):
+        # adm.pw may not exist
+        if code == errno.ENOENT:
+            return
+        raise
     if mode <> targetmode:
         STATE.ERRORS = STATE.ERRORS + 1
         print adminpw, 'permissions must be exactly 0640 (got %s)' % oct(mode)
