@@ -21,7 +21,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 694 $"
+__version__ = "$Revision: 696 $"
 
 import sys
 import os, cgi, string, crypt, types, time
@@ -504,10 +504,7 @@ def GetItemGuiDescr(lst, category, varname, descr, elaboration, nodetails):
     elaboration if any."""
     descr = '<div ALIGN="right">' + descr
     if not nodetails and elaboration:
-	if mm_utils.GetNestingLevel() == 1:
-	    ref = "../" + list_name + "/"
-	else:
-	    ref = "../"
+        ref = "../" * (mm_utils.GetNestingLevel()-1) + list_name + "/"
         ref = ref + '?VARHELP=' + category + "/" + varname
         descr = Container(descr,
 			  Link(ref, " (Details)", target="MMHelp"),
