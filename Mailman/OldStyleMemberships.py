@@ -215,10 +215,9 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         # Remember that not all of them will have an entry (only those with
         # values different than the default).
         memberkey = member.lower()
-        # Clear any bounce information associated with this member
-        self.__mlist.setBounceInfo(memberkey, None)
         for attr in ('passwords', 'user_options', 'members', 'digest_members',
                      'language',  'topics_userinterest',     'usernames',
+                     'bounce_info', 'delivery_status',
                      ):
             dict = getattr(self.__mlist, attr)
             if dict.has_key(memberkey):
