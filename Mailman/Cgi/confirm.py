@@ -111,12 +111,19 @@ def main():
             else:
                 subscription_prompt(mlist, doc, cookie, content[1])
         elif content[0] == Pending.UNSUBSCRIPTION:
-            if cgidata.getvalue('cancel'):
-                unsubscription_cancel(mlist, doc, cookie)
-            elif cgidata.getvalue('submit'):
-                unsubscription_confirm(mlist, doc, cookie)
-            else:
-                unsubscription_prompt(mlist, doc, cookie, *content[1:])
+            try:
+                if cgidata.getvalue('cancel'):
+                    unsubscription_cancel(mlist, doc, cookie)
+                elif cgidata.getvalue('submit'):
+                    unsubscription_confirm(mlist, doc, cookie)
+                else:
+                    unsubscription_prompt(mlist, doc, cookie, *content[1:])
+            except Errors.NotAMemberError:
+                doc.addError(_("""The address requesting unsubscription is not
+                a member of the mailing list.  Perhaps you have already been
+                unsubscribed, e.g. by the list administrator?"""))
+                # And get rid of this confirmation cookie
+                Pending.confirm(cookie)
         elif content[0] == Pending.CHANGE_OF_ADDRESS:
             if cgidata.getvalue('cancel'):
                 addrchange_cancel(mlist, doc, cookie)
@@ -130,7 +137,7 @@ def main():
                 except Errors.NotAMemberError:
                     doc.addError(_("""The address requesting to be changed has
                     been subsequently unsubscribed.  This request has been
-                    cancelled"""))
+                    cancelled."""))
                     Pending.confirm(cookie, expunge=1)
         elif content[0] == Pending.HELD_MESSAGE:
             if cgidata.getvalue('cancel'):
