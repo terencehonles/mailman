@@ -197,6 +197,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         exc = exc()
     listname = mlist.real_name
     sender = msgdata.get('sender', msg.get_sender())
+    message_id = msg.get('message-id', 'n/a')
     owneraddr = mlist.GetOwnerEmail()
     adminaddr = mlist.GetBouncesEmail()
     requestaddr = mlist.GetRequestEmail()
@@ -274,7 +275,8 @@ also appear in the first line of the body of the reply.""")),
         finally:
             i18n.set_translation(otranslation)
     # Log the held message
-    syslog('vette', '%s post from %s held: %s', listname, sender, reason)
+    syslog('vette', '%s post from %s held, message-id=%s: %s', 
+	   listname, sender, message_id, reason)
     # raise the specific MessageHeld exception to exit out of the message
     # delivery pipeline
     raise exc

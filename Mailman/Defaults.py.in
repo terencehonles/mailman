@@ -507,13 +507,13 @@ SMTP_LOG_EVERY_MESSAGE = (
 # Mutually exclusive with SMTP_LOG_REFUSED.
 SMTP_LOG_SUCCESS = (
     'post',
-    'post to %(listname)s from %(sender)s, size=%(size)d, success')
+    'post to %(listname)s from %(sender)s, size=%(size)d, message-id=%(msg_message-id)s, success')
 
 # This will only be printed if there were any addresses which encountered an
 # immediate smtp failure.  Mutually exclusive with SMTP_LOG_SUCCESS.
 SMTP_LOG_REFUSED = (
     'post',
-    'post to %(listname)s from %(sender)s, size=%(size)d, %(#refused)d failures')
+    'post to %(listname)s from %(sender)s, size=%(size)d, message-id=%(msg_message-id)s, %(#refused)d failures')
 
 # This will be logged for each specific recipient failure.  Additional %()s
 # keys are:
