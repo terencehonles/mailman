@@ -122,12 +122,17 @@ def main():
         rmembers = mlist.GetMembers()
         dmembers = mlist.GetDigestMembers()
 
-    if regular:
-        for addr in rmembers:
-            print addr
-    if digest:
-        for addr in dmembers:
-            print addr
+    try:
+        sys.stdout = fp
+        if regular:
+            for addr in rmembers:
+                print addr
+        if digest:
+            for addr in dmembers:
+                print addr
+    finally:
+        sys.stdout = sys.__stdout__
+
 
 if __name__ == '__main__':
     main()
