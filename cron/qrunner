@@ -84,11 +84,13 @@ import sys
 import os
 import getopt
 import errno
+import time
 from signal import SIGINT
 
 import paths
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import LockFile
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
 from Mailman.Logging.Utils import LogStdErr
@@ -96,6 +98,10 @@ from Mailman.Logging.Utils import LogStdErr
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
+LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'master-qrunner')
+LOCK_LIFETIME = mm_cfg.days(10)
+SNOOZE = mm_cfg.days(1)
 
 
 
@@ -121,7 +127,26 @@ def start_runner(qrclass, slice, count):
 
 
 
-def master(restart):
+def start_lock_refresher(lock):
+    # This runs in its own subprocess, and it owns the global qrunner lock.
+    pid = os.fork()
+    if pid:
+        # parent
+        return pid
+    # In the child, we simply wake up once per day and refresh the lock
+    try:
+        while 1:
+            lock.refresh()
+            time.sleep(SNOOZE)
+    except KeyboardInterrupt:
+        pass
+    os._exit(0)
+
+
+
+def master(restart, lock):
+    # Start up the lock refresher process
+    watchdog_pid = start_lock_refresher(lock)
     kids = {}
     # Start up all the qrunners
     for classname, count in mm_cfg.QRUNNERS:
@@ -134,6 +159,10 @@ def master(restart):
             kids[pid] = info
     #
     # Now just wait for children to end, but also catch KeyboardInterrupts
+    if restart:
+        restarting = '[restarting]'
+    else:
+        restarting = ''
     try:
         while 1:
             try:
@@ -141,16 +170,25 @@ def master(restart):
                 killsig = status & 0xff
                 exitstatus = (status >> 8) & 0xff
                 # What should we do with this information other than log it?
-                qrclass, slice, count = kids[pid]
-                syslog('qrunner', '''\
+                if pid == watchdog_pid:
+                    syslog('qrunner', '''\
+qrunner watchdog detected lock refresher exit
+    (pid: %d, sig: %d, sts: %d) %s'''
+                           % (pid, killsig, exitstatus, restarting))
+                    if restart:
+                        watchdog_pid = start_lock_refresher(lock)
+                else:
+                    qrclass, slice, count = kids[pid]
+                    syslog('qrunner', '''\
 qrunner watchdog detected subprocess exit
-    (pid: %d, sig: %d, sts: %d, class: %s, slice %d of %d)
-    restarting''' % (pid, killsig, exitstatus, qrclass, slice, count))
-                # Now perhaps restart the process
-                del kids[pid]
-                if restart:
-                    newpid = start_runner(qrclass, slice, count)
-                    kids[newpid] = (qrclass, slice, count)
+    (pid: %d, sig: %d, sts: %d, class: %s, slice %d of %d) %s'''
+                           % (pid, killsig, exitstatus, qrclass, slice, count,
+                              restarting))
+                    del kids[pid]
+                    # Now perhaps restart the process
+                    if restart:
+                        newpid = start_runner(qrclass, slice, count)
+                        kids[newpid] = (qrclass, slice, count)
             except KeyboardInterrupt:
                 break
     finally:
@@ -194,14 +232,23 @@ def main():
         usage(1, _('Bad arguments: %s' % COMMASPACE.join(args)))
 
     if runner is None:
-        # If we're running as a long-running process, stderr should go to the
-        # error log file.  Otherwise it should continue to go to stderr.
-        LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
+        # If we're running as a long-running process in the background, stderr
+        # should go to the error log file.  Otherwise it should continue to go
+        # to stderr.
+        LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=(not bg))
+        # Be sure we can acquire the master qrunner lock.  If not, it means
+        # some other long running qrunner is already going.
+        lock = LockFile.LockFile(LOCKFILE, LOCK_LIFETIME)
+        try:
+            lock.lock(0.5)
+        except LockFile.TimeOutError:
+            print >> sys.stderr, 'Another qrunner is already running, exiting.'
+            sys.exit(0)
         if bg and not os.fork():
             # child
-            master(restart)
+            master(restart, lock)
             os._exit(0)
-        master(restart)
+        master(restart, lock)
     else:
         classname = runner + 'Runner'
         modulename = 'Mailman.Queue.%s' % classname
