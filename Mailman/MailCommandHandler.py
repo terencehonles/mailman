@@ -474,6 +474,8 @@ to get info for all the lists."""))
             self.AddError(_("Private list: only members may see info."))
             return
 
+        listname = self.real_name
+        url = self.GetScriptURL('listinfo', absolute=1)
         msg = Utils.wrap(_('''
 For more complete info about the %(listname)s mailing list, including
 background and instructions for subscribing to and using it, visit:
@@ -688,7 +690,8 @@ the email address you gave is insecure."""))
                 _('''\
 Invalid confirmation string.  Note that confirmation strings expire
 approximately %(days)s days after the initial subscription request.  If your
-confirmation has expired, please try to re-submit your subscription.'''),
+confirmation has expired, please try to re-submit your original request or
+message.'''),
                 honor_leading_ws=0),
                           trunc=0)
         except Errors.MMNeedApproval, admin_addr:
