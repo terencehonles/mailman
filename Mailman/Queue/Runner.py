@@ -116,17 +116,15 @@ class Runner:
         # Find out which mailing list this message is destined for.
         listname = msgdata.get('listname')
         if not listname:
-            syslog('error', 'qfile metadata specifies no list: %s' %
-                   filebase)
-            self._shunt.enqueue(msg, metadata)
-            return
-        mlist = self._open_list(listname)
-        if not mlist:
-            syslog('error',
-                   'Dequeuing message destined for missing list: %s' %
-                   filebase)
-            self._shunt.enqueue(msg, metadata)
-            return
+            mlist = None
+        else:
+            mlist = self._open_list(listname)
+            if not mlist:
+                syslog('error',
+                       'Dequeuing message destined for missing list: %s' %
+                       listname)
+                self._shunt.enqueue(msg, msgdata)
+                return
         # Now process this message, keeping track of any subprocesses that may
         # have been spawned.  We'll reap those later.
         #
@@ -138,7 +136,10 @@ class Runner:
         # approach, but I can't think of anything better right now.
         otranslation = i18n.get_translation()
         sender = msg.get_sender()
-        lang = mlist.GetPreferredLanguage(sender)
+        if mlist:
+            lang = mlist.GetPreferredLanguage(sender)
+        else:
+            lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
         i18n.set_language(lang)
         msgdata['lang'] = lang
         try:
