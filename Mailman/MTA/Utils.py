@@ -48,8 +48,8 @@ def makealiases(listname):
     # Seed this with the special cases.
     aliases = [(listname,          '"|%s post %s"' % (wrapper, listname)),
                ]
-    for ext in ('admin', 'bounces', 'join', 'leave', 'owner', 'request',
-                'subscribe', 'unsubscribe'):
+    for ext in ('admin', 'bounces', 'confirm', 'join', 'leave', 'owner',
+                'request', 'subscribe', 'unsubscribe'):
         aliases.append(('%s-%s' % (listname, ext),
                         '"|%s %s %s"' % (wrapper, ext, listname)))
     return aliases
