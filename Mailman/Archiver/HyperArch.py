@@ -216,9 +216,12 @@ class Article(pipermail.Article):
         if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
             self.email = re.sub('@', ' at ', self.email)
 
-        # snag the content-type
-        self.ctype = message.getheader('Content-Type') or "text/plain"
-        self.cenc = message.getheader('Content-Transfer-Encoding')
+        # Snag the content-* headers.  RFC 1521 states that their values are
+        # case insensitive.
+        ctype = message.getheader('Content-Type') or "text/plain"
+        cenc = message.getheader('Content-Transfer-Encoding')
+        self.ctype = string.lower(ctype)
+        self.cenc = string.lower(cenc)
         self.decoded = {}
         mo = rx_charset.search(self.ctype)
         if mo:
