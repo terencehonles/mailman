@@ -466,7 +466,6 @@ background and instructions for subscribing to and using it, visit:
                           "send your request\nto the '-request' address"
                           "for that list.")
 	    return
-
 	if len(args) == 2:
 	    addr = args[1]
 	else:
@@ -477,7 +476,7 @@ background and instructions for subscribing to and using it, visit:
 	    self.AddToResponse("Succeeded.")
 	except Errors.MMListNotReady:
 	    self.AddError("List is not functional.")
-	except Errors.MMNoSuchUserError:
+	except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError):
 	    self.AddError("%s is not subscribed to this list."
                           % mail.GetSender())
 	except Errors.MMBadPasswordError:
