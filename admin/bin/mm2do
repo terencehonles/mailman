@@ -16,58 +16,53 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import sys, string
-f = open('TODO', 'r')
-sys.stdout = open('admin/www/todo.html', 'w')
-lines = f.readlines()
-f.close()
-for l in range(len(lines)):
-  if lines[l][0] == '\f':
-    l = l - 1
-    break
-i = 0
-print "<HTML><HEAD><TITLE>The Mailman TODO list</TITLE></HEAD><BODY>"
-while lines[i][0] <> '*':
-  if string.strip(lines[i]) <>  '':
-    print "<H1>",lines[i][:-1], "</H1>"
-  i = i + 1
-  if i == l: break
+"""Generate the todo.html file from the plain-text TODO file."""
 
-info = []
+# Requires Python 2.0.
+
+infp = open('TODO')
+outfp = open('admin/www/todo.html', 'w')
+
+SPACE = ' '
+
+print >> outfp, '<html><head><title>The Mailman TODO list</title></head>'
+print >> outfp, '<body bgcolor="#ffffff">'
+
+def dumpsection(header, items, hasitems):
+    # We're looking at a header
+    print header, items, hasitems
+    if header:
+        # output the previous section
+        print >> outfp, '<h1>', header, '</h1>'
+        if hasitems:
+            print >> outfp, '<ul>'
+            for item in items:
+                print >> outfp, '    <li>', SPACE.join(item)
+            print >> outfp, '</ul>'
+        else:
+            for item in items:
+                print >> outfp, SPACE.join(item), '<p>'
+        del items[:]
+
+
+header = ''
+items = [['']]
+hasitems = 0
 while 1:
-  if lines[i][0] <> '*': break
-  category = lines[i][1:-1]
-  i = i + 1
-  points = []
-  while i<>l and lines[i][0] <> '*':
-    if string.strip(lines[i]) == '': 
-      i = i + 1
-      continue
-    if lines[i][0] == '-':
-      points.append(lines[i][1:-1])
-    elif len(points):
-      if points[-1][-1] <> ' ' and lines[i][0] <> ' ':
-        points[-1] = points[-1] + ' '
-      points[-1] = points[-1] + lines[i][:-1]
+    line = infp.readline()
+    if not line or line[0] == '\f':
+        break
+    if not line[0].isspace():
+        dumpsection(header, items, hasitems)
+        header = line
+        continue
+    # find out what the first non-ws character on the line is
+    line = line.lstrip()
+    if line and line[0] == '-':
+        items.append([line[2:-1]])
+        hasitems += 1
     else:
-      points.append(lines[i][:-1])
-    i = i + 1
-  info.append((category,points))
-  if i == l: break
-print '<H2>Categories:</H2>'
-print '<UL>'
-x = 1
-for category, stuff in info:
-  print '<LI><FONT SIZE=+1><A href=#c%d>%s</A></FONT></LI>' % (x,category)
-  x = x + 1
-print '</UL>'
-print '<HR>'
-x = 1
-for category, stuff in info:
-  print '<A NAME=c%d><H3>%s</H3>' % (x, category)
-  x = x + 1
-  print '<UL>'
-  for item in stuff:
-    print '<LI>%s</LI>' % item
-  print '</UL>'
-print '</BODY></HTML>'
+        items[-1].append(line[:-1])
+
+dumpsection(header, items, hasitems)
+print >> outfp, '</body></html>'
