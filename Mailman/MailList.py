@@ -320,6 +320,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.filter_content = mm_cfg.DEFAULT_FILTER_CONTENT
         self.convert_html_to_plaintext = \
             mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT
+        self.filter_action = mm_cfg.DEFAULT_FILTER_ACTION
         # Analogs to these are initted in Digester.InitVars
         self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
         self.personalize = 0
