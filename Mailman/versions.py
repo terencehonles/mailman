@@ -40,6 +40,7 @@ from types import ListType, StringType
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -252,6 +253,6 @@ def NewRequestsDatabase(l):
                 l.HoldSubscription(addr, password, digest)
             del r[k]
         else:
-            l.LogMsg('error',
-                     "VERY BAD NEWS.  Unknown pending request type `%s' found"
-                     ' for list: %s' % (k, l._internal_name))
+            syslog('error',
+                   "VERY BAD NEWS.  Unknown pending request type `%s' found"
+                   ' for list: %s' % (k, l.internal_name()))
