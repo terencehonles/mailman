@@ -17,7 +17,7 @@
 
 """Miscellaneous essential routines.
 
-This inncludes actual message transmission routines, address checking and
+This includes actual message transmission routines, address checking and
 message and address munging, a handy-dandy routine to map a function on all 
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
@@ -145,11 +145,10 @@ def SendTextToUser(subject, text, recipient, sender, add_headers=[], raw=0):
     DeliverToUser(msg, recipient, add_headers=add_headers)
 
 def DeliverToUser(msg, recipient, add_headers=[]):
-    """Use sendmail to deliver message.
+    """Use smtplib to deliver message.
 
     Optional argument add_headers should be a list of headers to be added
     to the message, e.g. for Errors-To and X-No-Archive."""
-
     # We fork to ensure no deadlock.  Otherwise, even if sendmail is
     # invoked in forking mode, if it eg detects a bad address before
     # forking, then it will try deliver to the errorsto addr *in the
@@ -158,10 +157,10 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     # hang pending release of the lock - deadlock.
     if os.fork():
         return
+    import smtplib
+    sender = msg.GetSender()
+
     try:
-        file = os.popen(mm_cfg.SENDMAIL_CMD % (msg.GetSender(),
-                                               repr(recipient)),
-                        'w')
         try:
             msg.headers.remove('\n')
         except ValueError:
@@ -170,11 +169,14 @@ def DeliverToUser(msg, recipient, add_headers=[]):
             msg.headers.append('To: %s\n' % recipient)
         for i in add_headers:
             if i and i[-1] != '\n':
-                i = i + '\n'
+              i = i + '\n'
             msg.headers.append(i)
-        file.write(string.join(msg.headers, '')+ '\n') 
-        file.write(QuotePeriods(msg.body))
-        file.close()
+
+        text = string.join(msg.headers, '')+ '\n'+ QuotePeriods(msg.body)
+        con = smtplib.SmtpConnection(mm_cfg.SMTPHOST)
+        con.helo(mm_cfg.DEFAULT_HOST_NAME)
+        con.send(to=recipient,frm=sender,text=text)
+        con.quit()
     finally:
         os._exit(0)
 
