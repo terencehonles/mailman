@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4\n"
 "POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
-"PO-Revision-Date: 2002-12-02 21:05GMT\n"
+"PO-Revision-Date: 2002-12-09 21:16GMT\n"
 "Last-Translator: Simone Piunno <pioppo@ferrara.linux.it>\n"
 "Language-Team: Italian <mailman-it@ferrara.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -13,9 +13,8 @@ msgstr ""
 
 # /home/mailman/Mailman/MailCommandHandler.py:405
 #: Mailman/Archiver/HyperArch.py:111
-#, fuzzy
 msgid "size not available"
-msgstr "non disponibile"
+msgstr "dimensione non disponibile"
 
 #: Mailman/Archiver/HyperArch.py:117
 msgid " %(size)i bytes "
@@ -163,14 +162,12 @@ msgid "Computing threaded index\n"
 msgstr "Calcolo l'indice per thread\n"
 
 #: Mailman/Archiver/HyperArch.py:1261
-#, fuzzy
 msgid "Updating HTML for article %(seq)s"
-msgstr "Aggiorno l'HTML per l'articolo "
+msgstr "Aggiorno l'HTML per l'articolo %(seq)s"
 
 #: Mailman/Archiver/HyperArch.py:1268
-#, fuzzy
 msgid "article file %(filename)s is missing!"
-msgstr "manca il file dell'articolo %s!"
+msgstr "manca il file dell'articolo %(filename)s!"
 
 # /home/mailman/Mailman/Archiver/pipermail.py:95
 # /home/mailman/Mailman/Archiver/pipermail.py:96
@@ -765,8 +762,7 @@ msgstr ""
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
-msgstr ""
-"<b>conferma</b> -- L'iscritto deve ricevere conferma dei messaggi che manda?"
+msgstr "<b>conferma</b> -- L'iscritto deve ricevere conferma dei messaggi che manda?"
 
 # /home/mailman/Mailman/Cgi/admin.py:619
 #: Mailman/Cgi/admin.py:1005
@@ -3080,8 +3076,7 @@ msgstr ""
 msgid ""
 "You are not current a member.  Have you already unsubscribed or changed\n"
 "your email address?"
-msgstr ""
-"Non sei un iscritto.  Ti sei già cancellato o hai cambiato il tuo indirizzo?"
+msgstr "Non sei un iscritto.  Ti sei già cancellato o hai cambiato il tuo indirizzo?"
 
 #: Mailman/Commands/cmd_confirm.py:73
 msgid "Confirmation succeeded"
@@ -4157,8 +4152,7 @@ msgstr "Soglie nella gestione degli errori di invio"
 
 #: Mailman/Gui/Bounce.py:78
 msgid "Should Mailman perform automatic bounce processing?"
-msgstr ""
-"Le notifiche di errore sugli invii devono essere elaborate automaticamente?"
+msgstr "Le notifiche di errore sugli invii devono essere elaborate automaticamente?"
 
 #: Mailman/Gui/Bounce.py:79
 msgid ""
@@ -4622,8 +4616,7 @@ msgstr "Normale"
 # /home/mailman/Mailman/Digester.py:64
 #: Mailman/Gui/Digest.py:52
 msgid "Which delivery mode is the default for new users?"
-msgstr ""
-"Qual &egrave; la modalit&agrave; di invio predefinita per i nuovi iscritti?"
+msgstr "Qual &egrave; la modalit&agrave; di invio predefinita per i nuovi iscritti?"
 
 #: Mailman/Gui/Digest.py:55
 msgid "MIME"
@@ -4645,8 +4638,7 @@ msgid "How big in Kb should a digest be before it gets sent out?"
 msgstr "Quanti Kb dovrebbe essere grande un digest prima di essere inviato?"
 
 #: Mailman/Gui/Digest.py:63
-msgid ""
-"Should a digest be dispatched daily when the size threshold isn't reached?"
+msgid "Should a digest be dispatched daily when the size threshold isn't reached?"
 msgstr ""
 "I digest devono essere inviati giornalmente anche se non raggiungono la "
 "dimensione minima?"
@@ -4660,8 +4652,7 @@ msgstr "Intestazione aggiunta ad ogni digest"
 msgid ""
 "Text attached (as an initial message, before the table of contents) to the "
 "top of digests. "
-msgstr ""
-"Testo inserito (come introduzione, prima del sommario) in cima ai digest."
+msgstr "Testo inserito (come introduzione, prima del sommario) in cima ai digest."
 
 # /home/mailman/Mailman/Digester.py:85
 #: Mailman/Gui/Digest.py:73
@@ -5387,8 +5378,7 @@ msgstr ""
 # /home/mailman/Mailman/MailList.py:480
 #: Mailman/Gui/General.py:298
 msgid "Send goodbye message to members when they are unsubscribed?"
-msgstr ""
-"Devo inviare un messaggio di saluto agli iscritti quando si cancellano?"
+msgstr "Devo inviare un messaggio di saluto agli iscritti quando si cancellano?"
 
 #: Mailman/Gui/General.py:301
 msgid ""
@@ -6324,8 +6314,7 @@ msgstr "Filtri per iscritti"
 
 #: Mailman/Gui/Privacy.py:189
 msgid "By default, should new list member postings be moderated?"
-msgstr ""
-"I messaggi inviati dai nuovi iscritti devono essere moderati per default?"
+msgstr "I messaggi inviati dai nuovi iscritti devono essere moderati per default?"
 
 #: Mailman/Gui/Privacy.py:191
 msgid ""
@@ -6973,22 +6962,19 @@ msgstr ""
 # /home/mailman/Mailman/GatewayManager.py:55
 #: Mailman/Gui/Usenet.py:48
 msgid "The name of the Usenet group to gateway to and/or from."
-msgstr ""
-"Il nome del gruppo Usenet verso il quale eseguire la conversione da e per."
+msgstr "Il nome del gruppo Usenet verso il quale eseguire la conversione da e per."
 
 #: Mailman/Gui/Usenet.py:51
 msgid ""
 "Should new posts to the mailing list be sent to the\n"
 "             newsgroup?"
-msgstr ""
-"I nuovi messaggi mandati alla lista dovrebbero essere inoltrati al newsgroup?"
+msgstr "I nuovi messaggi mandati alla lista dovrebbero essere inoltrati al newsgroup?"
 
 #: Mailman/Gui/Usenet.py:55
 msgid ""
 "Should new posts to the newsgroup be sent to the mailing\n"
 "             list?"
-msgstr ""
-"I nuovi messaggi inviati al newsgroup dovrebbero essere inoltrati alla lista?"
+msgstr "I nuovi messaggi inviati al newsgroup dovrebbero essere inoltrati alla lista?"
 
 # /home/mailman/Mailman/Cgi/admin.py:44
 #: Mailman/Gui/Usenet.py:58
@@ -7073,8 +7059,7 @@ msgstr ""
 
 #: Mailman/Gui/Usenet.py:92
 msgid "Prefix <tt>Subject:</tt> headers on postings gated to news?"
-msgstr ""
-"Metto il prefisso nel <tt>Subject:</tt> dei messaggi inoltrati ai newsgroup?"
+msgstr "Metto il prefisso nel <tt>Subject:</tt> dei messaggi inoltrati ai newsgroup?"
 
 #: Mailman/Gui/Usenet.py:93
 msgid ""
@@ -7196,16 +7181,15 @@ msgstr "; &egrave; stato disabilitato per qualche ragione ignota"
 
 # /home/mailman/Mailman/HTMLFormatter.py:145
 #: Mailman/HTMLFormatter.py:148
-#, fuzzy
 msgid "Note: your list delivery is currently disabled%(reason)s."
 msgstr ""
 "Nota: l'invio dei messaggi della lista al tuo indirizzo &egrave; attualmente "
-"disabilitato %(reason)s."
+"disabilitato%(reason)s."
 
 # /home/mailman/Mailman/HTMLFormatter.py:153
 #: Mailman/HTMLFormatter.py:151
 msgid "Mail delivery"
-msgstr "Invio messaggi"
+msgstr "Consegna della posta"
 
 # /home/mailman/Mailman/HTMLFormatter.py:156
 #: Mailman/HTMLFormatter.py:153 Mailman/HTMLFormatter.py:298
@@ -7459,8 +7443,7 @@ msgstr "Visita la Lista degli Iscritti"
 # /home/mailman/Mailman/HTMLFormatter.py:334
 #: Mailman/HTMLFormatter.py:345
 msgid "Once a month, your password will be emailed to you as a reminder."
-msgstr ""
-"Una volta al mese, la tua password ti verr&agrave; spedita come promemoria."
+msgstr "Una volta al mese, la tua password ti verr&agrave; spedita come promemoria."
 
 # /home/mailman/Mailman/HTMLFormatter.py:373
 #: Mailman/HTMLFormatter.py:391
@@ -7486,8 +7469,7 @@ msgstr "Sospensione di emergenza per tutti i messaggi attivata"
 
 #: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:58
 msgid "Your message was deemed inappropriate by the moderator."
-msgstr ""
-"Il tuo messaggio &egrave; stato giudicato inappropriato dal moderatore."
+msgstr "Il tuo messaggio &egrave; stato giudicato inappropriato dal moderatore."
 
 #: Mailman/Handlers/Hold.py:53
 msgid "Sender is explicitly forbidden"
@@ -8123,13 +8105,11 @@ msgstr "Set"
 
 #: Mailman/i18n.py:95
 msgid "Server Local Time"
-msgstr ""
+msgstr "Ora locale del server"
 
 #: Mailman/i18n.py:128
-#, fuzzy
-msgid ""
-"%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
-msgstr "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
+msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
+msgstr "%(wday)s %(day)2i %(mon)s %(year)04i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s"
 
 #: bin/add_members:26
 msgid ""
@@ -8690,8 +8670,7 @@ msgstr "    controllo di gid e modo per %(path)s"
 
 #: bin/check_perms:97
 msgid "%(path)s bad group (has: %(groupname)s, expected %(MAILMAN_GROUP)s)"
-msgstr ""
-"gruppo errato per %(path)s (ha %(groupname)s invece di %(MAILMAN_GROUP)s)"
+msgstr "gruppo errato per %(path)s (ha %(groupname)s invece di %(MAILMAN_GROUP)s)"
 
 #: bin/check_perms:120
 msgid "directory permissions must be %(octperms)s: %(path)s"
@@ -9755,6 +9734,26 @@ msgid ""
 "of\n"
 "        all the lists will be displayed.\n"
 msgstr ""
+"Elenca i gestori di una lista, o di tutte le liste.\n"
+"\n"
+"Uso: %(PROGRAM)s [opzioni] [nomelista ...]\n"
+"Opzioni:\n"
+"\n"
+"    -w / --with-listnames\n"
+"        Raggruppa i gestori per lista ed include i nomi delle liste nell'output.\n"
+"        In caso contrario i gestori vengono ordinati alfabeticamente per indirizzo\n"
+"        e mostrati una sola volta\n"
+"\n"
+"    -m / --moderators\n"
+"        Include anche i moderatori nell'output.\n"
+"\n"
+"    -h / --help\n"
+"        Scrive questo messaggio d'aiuto ed esce.\n"
+"\n"
+"    nomelista\n"
+"        Visualizza i gestori per le liste specificatet.  E' possibile indicare più\n"
+"        di una lista dopo le opzioni.  Se non viene indicata alcuna lista, allora\n"
+"        saranno mostrate tutte.\n"
 
 #: bin/mailmanctl:19
 msgid ""
@@ -9994,8 +9993,7 @@ msgstr ""
 
 #: bin/mailmanctl:282
 msgid "Run this program as root or as the %(name)s user, or use -u."
-msgstr ""
-"Esegui questo programma come root o come l'utente %(name)s, oppure usa -u."
+msgstr "Esegui questo programma come root o come l'utente %(name)s, oppure usa -u."
 
 # /home/mailman/Mailman/ListAdmin.py:210
 #: bin/mailmanctl:313
@@ -11431,8 +11429,7 @@ msgstr "Eseguo %(module)s.%(callable)s()..."
 
 #: bin/withlist:270
 msgid "The variable `m' is the %(listname)s MailList instance"
-msgstr ""
-"La variabile `m' è l'istanza dell'oggetto MailList per la lista %(listname)s"
+msgstr "La variabile `m' è l'istanza dell'oggetto MailList per la lista %(listname)s"
 
 #: cron/bumpdigests:19
 msgid ""
@@ -11759,7 +11756,3 @@ msgstr ""
 "        Invia il digest soltanto per la lista indicata, altrimenti viene\n"
 "        inviato per tutte.\n"
 
-#~ msgid "Posts by member are currently quarantined for moderation"
-#~ msgstr ""
-#~ "I messaggi di questo iscritto sono attualmente messi in quarantena in "
-#~ "attesa della decisione del moderatore"
