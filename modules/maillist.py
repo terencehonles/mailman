@@ -28,7 +28,7 @@ except ImportError:
 
 import sys, os, marshal, string, posixfile, time
 import re
-import mm_utils, mm_err
+import mm_utils, mm_err, flock
 
 from mm_admin import ListAdmin
 from mm_deliver import Deliverer
@@ -48,18 +48,29 @@ from mm_gateway import GatewayManager
 
 class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
 	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager):
+    def __del__(self):
+	self.Unlock()
     def __init__(self, name=None, lock=1):
 	MailCommandHandler.__init__(self)
+        self.InitTempVars(name, lock)
+        if name:
+	    self.Load()
+
+    def InitTempVars(self, name, lock):
+	if name:
+	    if name not in mm_utils.list_names():
+		raise mm_err.MMUnknownListError, 'list not found: %s' % name
+	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	self._tmp_lock = lock
 	self._lock_file = None
 	self._internal_name = name
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
-	if name:
-	    if name not in mm_utils.list_names():
-		raise mm_err.MMUnknownListError, 'list not found: %s' % name
-	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
-	    self.Load()
+        lock_file_name = os.path.join(mm_cfg.LOCK_DIR, '%s.lock' %
+					  self._internal_name)
+	self._lock_file = flock.FileLock(lock_file_name)
+        HTMLFormatter.InitTempVars(self)
+
 
     def __del__(self):
 	for f in self._log_files.values():
@@ -894,30 +905,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.Save()
 
     def Locked(self):
-        try:
-            return self._lock_file and 1
-        except AttributeError:
-            return 0
+	if not self._lock_file:
+	    return 0
+        return self._lock_file.locked()
 
     def Lock(self):
-	try:
-	    if self._lock_file:
-		return
-	except AttributeError:
+	if self._lock_file.locked():
 	    return
-	ou = os.umask(0)
-	try:
-	    self._lock_file = posixfile.open(
-		os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % self._internal_name),
-		'a+')
-	finally:
-	    os.umask(ou)
-	self._lock_file.lock('w|', 1)
+	self._lock_file.lock()
     
     def Unlock(self):
-	self._lock_file.lock('u')
-	self._lock_file.close()
-	self._lock_file = None
+	self._lock_file.unlock()
 
     def __repr__(self):
 	if self.Locked(): status = " (locked)"
