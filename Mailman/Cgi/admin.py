@@ -245,12 +245,14 @@ def admin_overview(msg=''):
             that list.'''),
             ])
 
+    creatorurl = Utils.ScriptURL('create')
     mailman_owner = mm_cfg.MAILMAN_OWNER
     extra = msg and _('right ') or ''
     welcome.extend([
         _('''To visit the administrators configuration page for an
         unadvertised list, open a URL similar to this one, but with a '/' and
-        the %(extra)slist name appended.
+        the %(extra)slist name appended.  If you have the proper authority,
+        you can also <a href="%(creatorurl)s">create a new mailing list</a>.
 
         <p>General list information can be found at '''),
         Link(Utils.ScriptURL('listinfo'),
@@ -373,7 +375,12 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     otherlinks.AddItem(Link(mlist.GetScriptURL('edithtml'),
                             _('Edit the HTML for the public list pages')))
     otherlinks.AddItem(Link(mlist.GetBaseArchiveURL(),
-                            _('Go to list archives')))
+                            _('Go to list archives')).Format() +
+                       '<br>&nbsp;<br>')
+    if mm_cfg.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:
+        otherlinks.AddItem(Link(mlist.GetScriptURL('rmlist'),
+                                _('Delete this mailing list')).Format() +
+                           ' (requires confirmation)<br>&nbsp;<br>')
     otherlinks.AddItem(Link('%s/logout' % adminurl,
                             # BAW: What I really want is a blank line, but
                             # adding an &nbsp; won't do it because of the
@@ -611,17 +618,17 @@ def get_item_gui_description(mlist, category, varname, descr, detailsp):
     # Details are not included if this is a VARHELP page, because that /is/
     # the details page!
     if detailsp:
-        text = Container('<div ALIGN="right">' + descr + ' ',
-                     Link(mlist.GetScriptURL('admin')
-                              + '/?VARHELP=' + category + '/' + varname,
-                          _('(Details)')),
-                     '</div>').Format()
+        text = Label(descr + ' ',
+                     Link(mlist.GetScriptURL('admin') +
+                          '/?VARHELP=' + category + '/' + varname,
+                          _('(Details)')))
+
     else:
-        text = '<div ALIGN="right">' + descr + '</div>'
+        text = Label(descr)
     if varname[0] == '_':
-        text = text + _('''<div ALIGN="right"><br><em><strong>Note:</strong>
+        text += Label(_('''<br><em><strong>Note:</strong>
         setting this value performs an immediate action but does not modify
-        permanent state.</em></div>''')
+        permanent state.</em>'''))
     return text
 
 
@@ -905,16 +912,14 @@ def password_inputs():
     change_pw_table.AddCellInfo(0, 0, align="left", colspan=2)
     old = Table(bgcolor="#99cccc", border=1,
                 cellspacing=0, cellpadding=2, valign="top")
-    old.AddRow(['<div ALIGN="right">' +
-                _(" Enter current password:") +
-                '</div>',
-                PasswordBox('adminpw')])
+    old.AddRow([Label(_(' Enter current password:')),
+                PasswordBox('adminpw', size=20)])
     new = Table(bgcolor="#99cccc", border=1,
                 cellspacing=0, cellpadding=2, valign="top")
-    new.AddRow(['<div ALIGN="right">' + _(" Enter new password:") + '</div>',
-                PasswordBox('newpw')])
-    new.AddRow(['<div ALIGN="right">' + _("Confirm new password:") + '</div>',
-                PasswordBox('confirmpw')])
+    new.AddRow([Label(_(' Enter new password:')),
+                PasswordBox('newpw', size=20)])
+    new.AddRow([Label(_("Confirm new password:")),
+                PasswordBox('confirmpw', size=20)])
     change_pw_table.AddRow([old, new])
     change_pw_table.AddCellInfo(1, 0, align="left", valign="top")
     #change_pw_table.AddCellInfo(1, 1, align="left", valign="top")
