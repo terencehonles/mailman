@@ -1,6 +1,6 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 500 $"
+__version__ = "$Revision: 505 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string, re
@@ -210,7 +210,7 @@ class Digester:
                     len(self.digest_members) - len(recipients))
 
         if mime_recipients or text_recipients:
-            d = Digest(self, topics_text, digest_text)
+            d = Digest(self, topics_text, digest_file.read())
         else:
             d = None
 
