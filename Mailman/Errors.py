@@ -18,11 +18,16 @@
 """Shared mailman errors and messages."""
 
 
+# exceptions for problems related to opening a list
+class MMListError(Exception): pass
+class MMUnknownListError(MMListError): pass
+class MMCorruptListDatabaseError(MMListError): pass
+class MMListNotReadyError(MMListError): pass
+
+
 # XXX: These should be converted to new style class exceptions
-MMUnknownListError   = "MMUnknownListError"
-MMBadListError       = "MMBadListError"
 MMBadUserError       = "MMBadUserError"
-MMBadConfigError     = "MMBadConfigError"
+
 
 # Exception hierarchy for various authentication failures, can be
 # raised from functions in SecurityManager.py
@@ -36,7 +41,6 @@ class MMInvalidCookieError(MMCookieError): pass
 MMMustDigestError    = "MMMustDigestError"
 MMCantDigestError    = "MMCantDigestError"
 MMNotAMemberError    = "MMNotAMemberError"
-MMListNotReady       = "MMListNotReady"
 MMNoSuchUserError    = "MMNoSuchUserError"
 MMNeedApproval       = "MMNeedApproval"
 MMSubscribeNeedsConfirmation = "MMSubscribeNeedsConfirmation"
