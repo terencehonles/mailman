@@ -43,7 +43,7 @@ PACKAGEDIR= 	$(prefix)/Mailman
 SHELL=		/bin/sh
 
 MODULES=	__init__.py aliases.py htmlformat.py maillist.py \
-mm_admin.py mm_archive.py mm_bouncer.py mm_cfg.py.dist mm_defaults.py \
+mm_admin.py mm_archive.py mm_bouncer.py mm_defaults.py \
 mm_deliver.py mm_digest.py mm_err.py mm_html.py mm_mailcmd.py \
 mm_mbox.py mm_message.py mm_security.py mm_utils.py \
 pipermail.py smtplib.py versions.py
@@ -66,6 +66,11 @@ install:
 	do \
 	    $(INSTALL) -m $(FILEMODE) $$f $(PACKAGEDIR); \
 	done
+	$(INSTALL) -m $(FILEMODE) mm_cfg.py $(PACKAGEDIR)/mm_cfg.py.dist
+	if test ! -f $(PACKAGEDIR)/mm_cfg.py; \
+	then \
+	    $(INSTALL) -m $(FILEMODE) mm_cfg.py $(PACKAGEDIR); \
+	fi
 
 clean:
 
