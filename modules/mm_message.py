@@ -1,6 +1,6 @@
 """Embody incoming and outgoing messages as objects."""
 
-__version__ = "$Revision: 419 $"
+__version__ = "$Revision: 443 $"
 
 
 import sys
@@ -91,20 +91,29 @@ class IncomingMessage(rfc822.Message):
 		string.lower(name) + ':'):
 		self.headers[i] = '%s: %s' % (name, value)
 		
-    # XXX delitem should be removed when rfc822.Message() has its own,
-    # possibly in Python 1.5.1.  klm 04/98.
-    def delitem(self, name):
-        """Remove all headers with the specified name.
-
-        None is returned if the named header is not present."""
-        lname = string.lower(name)
+    # XXX Eventually (1.5.1?) Python rfc822.Message() will have it's own
+    # __delitem__. 
+    def __delitem__(self, name):
+        """Delete all occurrences of a specific header, if it is present."""
+        name = string.lower(name)
         if not self.dict.has_key(name):
-            return None
+            return
         del self.dict[name]
-        for i in range(1, len(self.headers)):
-            h = self.headers[-1 * i]
-            if len(h) > len(name) and string.lower(h[0:len(name)]) == name:
-                del self.headers[-1 * i]
+        name = name + ':'
+        n = len(name)
+        list = []
+        hit = 0
+        for i in range(len(self.headers)):
+            line = self.headers[i]
+            if string.lower(line[:n]) == name:
+                hit = 1
+            elif line[:1] not in string.whitespace:
+                hit = 0
+            if hit:
+                list.append(i)
+        list.reverse()
+        for i in list:
+            del self.headers[i]
 
 # This is a simplistic class.  It could do multi-line headers etc...
 # But it doesn't because I don't need that for this app.
