@@ -30,13 +30,22 @@ import sys
 import os
 import errno
 import getopt
+import pwd
 import grp
 from stat import *
+
 import paths
 from Mailman import mm_cfg
+from Mailman.mm_cfg import MAILMAN_UID, MAILMAN_GID
 
-MAILMAN_GRPNAME = 'mailman'
-MAILMAN_GID = grp.getgrnam(MAILMAN_GRPNAME)[2]
+try:
+    MAILMAN_GRPNAME = grp.getgrgid(MAILMAN_GID)[0]
+except KeyError:
+    MAILMAN_GRPNAME = '<anon gid %d>' % MAILMAN_GID
+try:
+    MAILMAN_OWNER = pwd.getpwuid(MAILMAN_UID)[0]
+except KeyError:
+    MAILMAN_OWNER = 'uid %d' % MAILMAN_UID
 
 PROGRAM = sys.argv[0]
 
@@ -103,17 +112,21 @@ def checkall():
     # first check PREFIX
     if STATE.VERBOSE:
         print 'checking mode for', mm_cfg.PREFIX,
-    mode = statmode(mm_cfg.PREFIX)
-    if (mode & DIRPERMS) <> DIRPERMS:
-        STATE.ERRORS = STATE.ERRORS + 1
-        print 'directory must be at least 02775:', mm_cfg.PREFIX,
-        if STATE.FIX:
-            print '(fixing)'
-            os.chmod(mm_cfg.PREFIX, mode | DIRPERMS)
-        else:
-            print
-    # check all subdirs
-    os.path.walk(mm_cfg.PREFIX, checkwalk, STATE)
+    dirs = {}
+    for d in (mm_cfg.PREFIX, mm_cfg.EXEC_PREFIX, mm_cfg.VAR_PREFIX):
+        dirs[d] = 1
+    for d in dirs.keys():
+        mode = statmode(d)
+        if (mode & DIRPERMS) <> DIRPERMS:
+            STATE.ERRORS = STATE.ERRORS + 1
+            print 'directory must be at least 02775:', d,
+            if STATE.FIX:
+                print '(fixing)'
+                os.chmod(d, mode | DIRPERMS)
+            else:
+                print
+        # check all subdirs
+        os.path.walk(d, checkwalk, STATE)
 
 
 def checkarchives():
@@ -265,5 +278,4 @@ if __name__ == '__main__':
         print 'No problems found'
     else:
         print 'Problems found:', STATE.ERRORS
-        print 'Re-run as owner (or root) with -f flag until no errors ' \
-              'are found'
+        print 'Re-run as', MAILMAN_OWNER, '(or root) with -f flag to fix'
