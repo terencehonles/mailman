@@ -16,14 +16,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+# NOTE: This script should really be removed from the cron/ subdirectory
+# because it is no longer started from cron.  However, now that the CVS
+# repository is at SF, that's too much of a pain, so hence the bogus location
+# in the source tree.
+
 """Master queue runner watchdog.
 
 This script should be started from an init script.  It simply makes sure that
 the various long-running qrunners are still alive and kicking.  It does this
 by forking the individual qrunners and waiting on their pids.  When it detects
-a subprocess has exited, it will restart it.  Sending a SIGINT to the qrunner
-process raises a KeyboardInterrupt, which is caught and propagated to each
-subprocess.
+a subprocess has exited, it will restart it.
+
+The master qrunner will leave its process id in the file data/qrunner.pid
+which can be used to shutdown or HUP the qrunner daemon.  Sending a SIGINT to
+the master qrunner causes it and all sub-qrunners to exit.  Sending a SIGHUP
+causes the master to re-open all of its log files, and to SIGINT kill and
+restart all sub-qrunners processes.
 
 You can substitute your own queue management system for qrunner, or you can
 edit this file to tailor which Mailman qrunners actually get started.  This
@@ -32,25 +41,7 @@ qrunner, or define entirely new qrunner paths through the system.  The only
 one that's required is the IncomingRunner, which handles passing a message
 through the Mailman system.
 
-The current set of queues are:
-
-    - incoming queue for messages from the MTA, Usenet, or other injection
-      processes.
-
-    - outgoing queue for messages processed by Mailman and intended to go out
-      through the MTA to final destination recipients
-
-    - news queue for messages processed by Mailman and destined for posting
-      via NNTP.
-
-    - archive queue for messages processed by Mailman and destined for the
-      internal or external archiver.
-
-    - bounce queue for bounce messages to be processed by the detector
-
-This subsystem is in a bit of flux and should be considered experimental.
-Specifically, we'd like to support non-Mailman queue processors and a more
-flexible queuing subsystem (e.g. for authentication queues, etc.)
+The set of queues are defined in Defaults.py.
 
 When run as a script, the follow usage is allowed:
 
@@ -66,15 +57,13 @@ Options:
 
             qrunner -r Virgin
 
-        runs the Mailman.Queue.VirginRunner qrunner once.  With no --runner
-        flag, this starts the qrunner watchdog master script.
-
-    -b/--background
-        Run the qrunner process in the background.  Only effective if --runner
-        option is not used.
+        runs the Mailman.Queue.VirginRunner qrunner once.  With no -r flag,
+        this starts the qrunner watchdog master script.  You should not use
+        the -r if there is already a master qrunner running.
 
     -n/--no-restart
-        Don't restart queue runners when they exit because of an error.
+        Don't restart queue runners when they exit because of an error.  Use
+        this only for debugging.
 
     -h/--help
         Print this help message and exit.
@@ -85,7 +74,7 @@ import os
 import getopt
 import errno
 import time
-from signal import SIGINT
+import signal
 
 import paths
 from Mailman import mm_cfg
@@ -98,26 +87,26 @@ from Mailman.Logging.Utils import LogStdErr
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
-# Work around known problems with some RedHat cron daemons
-import signal
-signal.signal(signal.SIGCHLD, signal.SIG_DFL)
-
 LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'master-qrunner')
+PIDFILE = os.path.join(mm_cfg.DATA_DIR, 'qrunner.pid')
 LOCK_LIFETIME = mm_cfg.days(10)
 SNOOZE = mm_cfg.days(1)
+
+COMMASPACE = ', '
 
 # We want a SIGHUP to re-open all the log files.  By closing syslog, it will
 # cause a new StampedLogger to be opened the next time a message is logged.
 def sighup_handler(signum, frame):
     syslog.close()
-    # We also need to HUP all the child processes
+    # SIGINT all the children so that they'll restart automatically.
     for pid in KIDS.keys():
-        os.kill(pid, signal.SIGHUP)
+        os.kill(pid, signal.SIGINT)
     # And just to tweak things...
     syslog('qrunner', 'qrunner caught SIGHUP.  Re-opening log files.')
 
 signal.signal(signal.SIGHUP, sighup_handler)
 
+# Global dictionary mapping child pids to (qrclass, slice, count)
 KIDS = {}
 
 
@@ -134,13 +123,13 @@ def start_runner(qrclass, slice, count):
     pid = os.fork()
     if pid:
         # parent
-        syslog('qrunner', '%s qrunner started with pid: %d' % (qrclass, pid))
+        syslog('qrunner', '%s qrunner started with pid: %d', qrclass, pid)
         return pid
     else:
         # child
         try:
             qrunner = qrclass(slice, count).run()
-            syslog('qrunner', '%s qrunner exiting' % qrclass)
+            syslog('qrunner', '%s qrunner exiting', qrclass)
         except KeyboardInterrupt:
             # Due to race conditions, the subproc could get the SIGINT inside
             # the syslog call.  It's of no consequence.
@@ -176,9 +165,8 @@ def master(restart, lock):
         qrclass = getattr(sys.modules[modulename], classname)
         for slice in range(count):
             info = (qrclass, slice, count)
-            pid = start_runner(*info)
+            pid = start_runner(qrclass, slice, count)
             KIDS[pid] = info
-    #
     # Now just wait for children to end, but also catch KeyboardInterrupts
     if restart:
         restarting = '[restarting]'
@@ -199,17 +187,17 @@ def master(restart, lock):
                 if pid == watchdog_pid:
                     syslog('qrunner', '''\
 qrunner watchdog detected lock refresher exit
-    (pid: %d, sig: %d, sts: %d) %s'''
-                           % (pid, killsig, exitstatus, restarting))
+    (pid: %d, sig: %d, sts: %d) %s''', 
+                           pid, killsig, exitstatus, restarting)
                     if restart:
                         watchdog_pid = start_lock_refresher(lock)
                 else:
                     qrclass, slice, count = KIDS[pid]
                     syslog('qrunner', '''\
 qrunner watchdog detected subprocess exit
-    (pid: %d, sig: %d, sts: %d, class: %s, slice %d of %d) %s'''
-                           % (pid, killsig, exitstatus, qrclass, slice, count,
-                              restarting))
+    (pid: %d, sig: %d, sts: %d, class: %s, slice %d of %d) %s''',
+                           pid, killsig, exitstatus, qrclass, slice, count,
+                           restarting)
                     del KIDS[pid]
                     # Now perhaps restart the process
                     if restart:
@@ -220,27 +208,27 @@ qrunner watchdog detected subprocess exit
     finally:
         # Should we leave the main loop for any reason, we want to be sure all
         # of our children are exited cleanly.  Send SIGINTs to all the child
-        # processes and wait for them all to exit.
+        # processes and wait for them all to exit.  Include the watchdog!
+        KIDS[watchdog_pid] = watchdog_pid
         for pid in KIDS.keys():
             try:
-                os.kill(pid, SIGINT)
+                os.kill(pid, signal.SIGINT)
             except OSError, e:
                 if e.errno == errno.ESRCH:
                     # The child has already exited
                     del KIDS[pid]
-        # Wait for all the childred to go away
+        # Wait for all the children to go away
         Utils.reap(KIDS)
 
 
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'r:nh',
-                                   ['runner=', 'no-restart', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hr:n',
+                                   ['help', 'runner=', 'no-restart'])
     except getopt.error, msg:
         usage(1, msg)
 
-    bg = None
     runner = None
     restart = 1
     for opt, arg in opts:
@@ -248,12 +236,9 @@ def main():
             usage(0)
         elif opt in ('-r', '--runner'):
             runner = arg
-        elif opt in ('-b', '--background'):
-            bg = 1
         elif opt in ('-n', '--no-restart'):
             restart = 0
 
-    COMMASPACE = ', '
     if args:
         usage(1, _('Bad arguments: %s' % COMMASPACE.join(args)))
 
@@ -261,21 +246,28 @@ def main():
         # If we're running as a long-running process in the background, stderr
         # should go to the error log file.  Otherwise it should continue to go
         # to stderr.
-        LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=(not bg))
-        # Be sure we can acquire the master qrunner lock.  If not, it means
-        # some other long running qrunner is already going.
-        lock = LockFile.LockFile(LOCKFILE, LOCK_LIFETIME)
-        try:
-            lock.lock(0.5)
-        except LockFile.TimeOutError:
-            print >> sys.stderr, 'Another qrunner is already running, exiting.'
-            sys.exit(0)
-        if bg and not os.fork():
-            # child
-            master(restart, lock)
-            os._exit(0)
+        LogStdErr('error', 'qrunner', manual_reprime=0)
+
+    # Be sure we can acquire the master qrunner lock.  If not, it means some
+    # other master qrunner daemon is already going.  This isn't allowed even
+    # if we're doing a one-shot runner via -r.
+    lock = LockFile.LockFile(LOCKFILE, LOCK_LIFETIME)
+    try:
+        lock.lock(0.5)
+    except LockFile.TimeOutError:
+        print >> sys.stderr, 'Another qrunner is already running, exiting.'
+        sys.exit(0)
+
+    if runner is None:
+        # Run master in the foreground, storing our own pid in the pid file
+        fp = open(PIDFILE, 'w')
+        print >> fp, os.getpid()
+        fp.close()
         master(restart, lock)
+        os.unlink(PIDFILE)
+        return
     else:
+        # One-shot
         classname = runner + 'Runner'
         modulename = 'Mailman.Queue.%s' % classname
         try:
