@@ -104,6 +104,17 @@ def kill_subrunners(sig):
         os.unlink(mm_cfg.PIDFILE)
 
 
+def check_privs():
+    # Should we check for the availability of these functions ?
+    if os.getuid() == 0:
+        os.setgid(mm_cfg.MAILMAN_GID)
+        os.setuid(mm_cfg.MAILMAN_UID)
+    if os.getuid() <> mm_cfg.MAILMAN_UID:
+        print >> sys.stderr, _("This program should only be run as root "
+                               "or as the Mailman user.")
+        sys.exit(1)
+
+
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hn',
@@ -128,6 +139,7 @@ def main():
     if command not in ('start', 'stop', 'restart'):
         usage(1, _('Bad command: %(command)s'))
 
+    check_privs()
     # Handle the commands
     if command == 'stop':
         # Sent the master qrunner process a SIGINT, which is equivalent to
