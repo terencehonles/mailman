@@ -39,7 +39,7 @@ MAILMAN_UID=	@MAILMAN_UID@
 # Customizable but not set by configure
 
 OPT=		@OPT@
-CFLAGS=		$(OPT) $(DEFS)
+CFLAGS=		@CFLAGS@ $(OPT) $(DEFS)
 
 ARCH_INDEP_DIRS= \
 	logs archives bin lists locks templates scripts \
