@@ -66,7 +66,11 @@ MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 # Archive defaults
 #####
 
-DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
+# Are archives on or off by default?
+DEFAULT_ARCHIVE = 1                               # 0=Off, 1=On
+
+# Are archives public or private by default?
+DEFAULT_ARCHIVE_PRIVATE    = 0                    # 0=public, 1=private
 
 # ARCHIVE_TO_MBOX
 #-1 - do not do any archiving
