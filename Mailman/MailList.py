@@ -606,6 +606,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.web_page_url = mm_cfg.DEFAULT_URL
         if self.web_page_url and self.web_page_url[-1] <> '/':
             self.web_page_url = self.web_page_url + '/'
+        # Legacy reply_to_address could be an illegal value.  We now verify
+        # upon setting and don't check it at the point of use.
+        try:
+            if self.reply_to_address.strip() and self.reply_goes_to_list:
+                Utils.ValidateEmail(self.reply_to_address)
+        except Errors.EmailAddressError:
+            syslog('error', 'Bad reply_to_address "%s" cleared for list: %s',
+                   self.reply_to_address, self.internal_name())
+            self.reply_to_address = ''
+            self.reply_goes_to_list = 0
+
 
 
     #
