@@ -17,6 +17,7 @@
 """Parse RFC 1894 (i.e. DSN) bounce formats."""
 
 from email.Iterators import typed_subpart_iterator
+from email.Utils import parseaddr
 from cStringIO import StringIO
 
 
@@ -59,7 +60,13 @@ def check(msg):
                     # Note that params should already be unquoted.
                     addrs.extend(params)
                     break
-    return filter(None, addrs)
+    # Uniquify
+    rtnaddrs = {}
+    for a in addrs:
+        if a is not None:
+            realname, a = parseaddr(a)
+            rtnaddrs[a] = 1
+    return rtnaddrs.keys()
 
 
 
