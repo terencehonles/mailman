@@ -65,21 +65,22 @@ MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 # Web UI defaults
 #####
 
-# The various colors for the cgi scripts
+# Almost all the colors used in Mailman's web interface are parameterized via
+# the following variables.  This lets you easily change the color schemes for
+# your preferences without having to do major surgery on the source code.
+# Note that in general, the template colors are not included here since it is
+# easy enough to override the default template colors via site-wide,
+# vdomain-wide, or list-wide specializations.
 
-# This is the background color for all the scripts
-WEB_BGCOLOR = '#ffffff'
-
-# This is the color for the section headers in the admin script
-WEB_HEADERCOLOR = '#99ccff'
-
-# This is the background color of the cells in the admin script option
-# settings
-WEB_ADMINITEM_COLOR = '#dddddd'
-
-# This is the background color of the cells in the "change the admin password"
-# boxes
-WEB_ADMINPW_COLOR = '#99cccc'
+WEB_BG_COLOR = 'white'                            # Page background
+WEB_HEADER_COLOR = '#99ccff'                      # Major section headers
+WEB_SUBHEADER_COLOR = '#fff0d0'                   # Minor section headers
+WEB_ADMINITEM_COLOR = '#dddddd'                   # Option field background
+WEB_ADMINPW_COLOR = '#99cccc'                     # Password box color
+WEB_ERROR_COLOR = 'red'                           # Error message foreground
+WEB_LINK_COLOR = ''                               # If true, forces LINK=
+WEB_ALINK_COLOR = ''                              # If true, forces ALINK=
+WEB_VLINK_COLOR = ''                              # If true, forces VLINK=
 
 
 
