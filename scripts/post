@@ -91,8 +91,7 @@ notification of the moderator's decison.
 	current_list.SendTextToUser( subject = 'Mail sent to %s' % 
 	                                         current_list.real_name,
 				     recipient = the_sender,
-	     			     text = body,
-                                     raw = 1)
+	     			     text = body)
 # Let another process run.
 finally:
     current_list.Unlock()
