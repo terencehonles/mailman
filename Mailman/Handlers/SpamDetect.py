@@ -35,11 +35,7 @@ import Hold
 # can be None to indicate regex search of the body of the message.  Note that
 # the more searching done, the slower this whole process gets.
 
-KNOWN_SPAMMERS = [('from',     r'spambot@mmtester\.org'),
-                  ('sender',   r'spambot@mmtester\.org'),
-                  ('reply-to', r'spambot@mmtester\.org'),
-                  (None,       r'I\s +YAM\s + SPAM'),
-                  ]
+KNOWN_SPAMMERS = []
 
 
 class SpamDetected(HandlerAPI.MessageHeld):
