@@ -426,6 +426,7 @@ class HTMLFormatter:
                 os.makedirs(dstdir, 02775)
             finally:
                 os.umask(omask)
-            # Now copy all the .html files over
-            for file in [f for f in os.listdir(srcdir) if f.endswith('.html')]:
+            # Now copy all the .html and .txt files over
+            for file in [f for f in os.listdir(srcdir)
+                         if f.endswith('.html') or f.endswith('.txt')]:
                 shutil.copy(os.path.join(srcdir, file), dstdir)
