@@ -40,7 +40,6 @@ CGI_GID=	@CGI_GID@
 #ALIAS_UID=	@ALIAS_UID@
 #ALIAS_GID=	@ALIAS_GID@
 MAILMAN_UID=	@MAILMAN_UID@
-MAILMAN_GID=	@MAILMAN_GID@
 
 # Customizable but not set by configure
 OPT=		@OPT@
@@ -55,8 +54,7 @@ MAIL_FLAGS=	-DMAIL_GID=$(MAIL_GID)
 
 CGI_FLAGS=	-DCGI_GID=$(CGI_GID)
 
-ALIAS_FLAGS=	-DMAILMAN_GID=$(MAILMAN_GID)
-#	-DALIAS_UID=$(ALIAS_UID) \
+#ALIAS_FLAGS=	-DALIAS_UID=$(ALIAS_UID) \
 #		-DALIAS_GID=$(ALIAS_GID)
 
 HELPFUL=	-DHELPFUL
@@ -80,7 +78,7 @@ listinfo subscribe roster handle_opts private
 
 MAIL_PROGS= wrapper
 
-ALIAS_PROGS= addaliases
+#ALIAS_PROGS= addaliases
 
 SUID_CGI_PROGS= private
 
@@ -96,8 +94,8 @@ all: $(PROGRAMS)
 wrapper: $(srcdir)/mail-wrapper.c common.o
 	$(CC) -I. $(MAIL_FLAGS) $(CFLAGS) common.o -o $@ $(srcdir)/mail-wrapper.c
 
-addaliases: $(srcdir)/alias-wrapper.c common.o
-	$(CC) -I. $(ALIAS_FLAGS) $(CFLAGS) common.o -o $@ $(srcdir)/alias-wrapper.c
+#addaliases: $(srcdir)/alias-wrapper.c common.o
+#	$(CC) -I. $(ALIAS_FLAGS) $(CFLAGS) -o $@ $(srcdir)/alias-wrapper.c
 
 $(CGI_PROGS): $(srcdir)/cgi-wrapper.c common.o
 	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) common.o -o $@ $(srcdir)/cgi-wrapper.c
@@ -117,11 +115,10 @@ install: all
 	    $(INSTALL_PROGRAM) $$f $(MAILDIR); \
 	    chmod g+s $(MAILDIR)/$$f; \
 	done
-	@for f in $(ALIAS_PROGS); \
-	do \
-	    $(INSTALL_PROGRAM) $$f $(bindir) ; \
-	    chmod g+s $(bindir)/$$f; \
-	done
+#	@for f in $(ALIAS_PROGS); \
+#	do \
+#	    $(INSTALL_PROGRAM) $$f $(bindir) ; \
+#	done
 
 finish:
 	-for f in $(SUID_CGI_PROGS); \
