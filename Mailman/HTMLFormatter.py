@@ -221,7 +221,7 @@ class HTMLFormatter:
         or change your subscription options %(either)senter your subscription
         email address:
         <p><center> ''')
-                + TextBox('info', size=30).Format()
+                + TextBox('email', size=30).Format()
                 + '  '
                 + SubmitButton('UserOptions',
                                _('Unsubscribe or edit options')).Format()
