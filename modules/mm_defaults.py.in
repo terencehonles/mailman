@@ -77,6 +77,11 @@ DEFAULT_ACCEPTABLE_ALIASES ="""
 # for members.  Ultimately we will probably use surrogate administrative
 # message delivery addresses, instead.
 DEFAULT_REMINDERS_TO_ADMINS = 0
+# This variable controlls whether monthly password reminders are sent.
+DEFAULT_SEND_REMINDERS = 1
+# Wipe sender information, and make it look like the list-admin
+# address sends all messages
+DEFAULT_ANONYMOUS_LIST = 0
 # {header-name: regexp} spam filtering - we include some for example sake.
 DEFAULT_BOUNCE_MATCHING_HEADERS = """
 # Lines that *start* with a '#' are comments.
@@ -208,4 +213,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 1
+DATA_FILE_VERSION = 2
