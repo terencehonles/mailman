@@ -1057,8 +1057,8 @@ if EXEC_PREFIX == '${prefix}':
 CGIEXT = '@CGIEXT@'
 
 # Group id that group-owns the Mailman installation
-MAILMAN_UID = @MAILMAN_UID@
-MAILMAN_GID = @MAILMAN_GID@
+MAILMAN_USER = '@MAILMAN_USER@'
+MAILMAN_GROUP = '@MAILMAN_GROUP@'
 
 # Enumeration for Mailman cgi widget types
 Toggle      = 1
