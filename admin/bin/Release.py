@@ -2,16 +2,16 @@
 
 """Manage releases of Mailman.
 
-Usage: %(program)s [-b newvers] [-t|-T tagname] [-p] [-d] [-h]
+Usage: %(program)s [-b] [-t|-T] [-p] [-d] [-h] tagname
 
 Where:
 
-    --tag tagname
-    -t tagname
+    --tag
+    -t
         Tag all release files with tagname.
 
-    --TAG tagname
-    -T tagname
+    --TAG
+    -T
         Like --tag, but relocates any existing tag.  See `cvs tag -F'.  Only
         one of --tag or --TAG can be given on the command line.
 
@@ -19,14 +19,17 @@ Where:
     -p
         create the distribution package
 
-    --bump newvers
-    -b newvers
-        Bump the revision number in key files to the specified newvers.  This
-        is done by textual substitution.
+    --bump
+    -b
+        Bump the revision number in key files to tagname.  This is done by
+        textual substitution.
 
     --help
     -h
         Print this help message.
+
+    tagname is used in the various commands above.  It should essentially be
+    the version number for the release, and is required.
 
 """
 
@@ -58,13 +61,8 @@ def releasedir(tagname=None):
 
 # CVS related commands
 
-CVSREPOS = ':pserver:mailmancvs@cvs.python.org:/projects/cvsroot'
-
-def cvsdo(cvscmd, remrepos=0):
-    repos = ''
-    if remrepos:
-        repos = '-d %s' % CVSREPOS
-    os.system('cvs %s %s' % (repos, cvscmd))
+def cvsdo(cvscmd):
+    os.system('cvs %s' % cvscmd)
 
 def tag_release(tagname, retag):
     # watch out for dots in the name
@@ -78,14 +76,29 @@ def tag_release(tagname, retag):
     cvsdo('tag %s %s' % (option, relname))
 
 def checkout(tagname):
-    os.chdir(tmpdir)
-    # must have already logged in
-    cvsdo('export -k kv -r %s -d %s mailman' % (tagname, releasedir()), 1)
+    print 'checking out...',
+    # watch out for dots in the name
+    table = string.maketrans('.', '_')
+    # To be done from writeable repository
+    relname = '"Release_' + string.translate(tagname, table) + '"'
+    cvsdo('export -k kv -r %s -d %s mailman' % (relname, releasedir()))
+
 
 
 def make_pkg(tagname):
-    tarball = releasedir() + '.tgz'
-    os.system('tar cvf - %s | gzip -c > %s' % (releasedir(), tarball))
+    print 'Creating release dir', releasedir(tagname), '...'
+    # this can't be done from a working directory
+    curdir = os.getcwd()
+    try:
+        os.chdir(tempfile.gettempdir())
+        checkout(tagname)
+        print 'making tarball...'
+        tarball = releasedir() + '.tgz'
+        os.system('tar cvf - %s | gzip -c > %s' %
+                  ('mailman-' + tagname, tarball))
+    finally:
+        os.chdir(curdir)
+
 
 def do_bump(newvers):
     print 'doing bump...',
@@ -130,15 +143,16 @@ def main():
     try:
 	opts, args = getopt.getopt(
 	    sys.argv[1:],
-	    'b:t:T:ph',
-	    ['bump=', 'tag=', 'TAG=', 'package', 'help'])
+	    'btTph',
+	    ['bump', 'tag', 'TAG', 'package', 'help'])
     except getopt.error, msg:
-	print msg
-	usage(1)
+	usage(1, msg)
 
     # required minor rev number
-    if args:
-	usage(1)
+    if len(args) <> 1:
+	usage(1, 'tagname argument is required')
+
+    tagname = args[0]
 
     # default options
     tag = 0
@@ -151,16 +165,13 @@ def main():
 	    usage(0)
 	elif opt in ('-t', '--tag'):
 	    tag = 1
-            tagname = arg
 	elif opt in ('-T', '--TAG'):
 	    tag = 1
-            tagname = arg
 	    retag = 1
 	elif opt in ('-p', '--package'):
 	    package = 1
         elif opt in ('-b', '--bump'):
             bump = 1
-            newvers = arg
 
     # very important!!!
     omask = os.umask(0)
@@ -169,10 +180,10 @@ def main():
             tag_release(tagname, retag)
 
         if package:
-            pkg_release(revnum)
+            make_pkg(tagname)
 
         if bump:
-            do_bump(newvers)
+            do_bump(tagname)
     finally:
         os.umask(omask)
 
