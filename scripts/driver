@@ -1,5 +1,6 @@
 # -*- python -*-
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -79,20 +80,10 @@ def run_main():
         # special one.
         import Mailman.pythonlib.cgi
         sys.modules['cgi'] = Mailman.pythonlib.cgi
-        #
-        # TBD: Stick the i18n translation function into the builtins.  This is
-        # bogus because it's too magical, but it's also quite convenient
-        # during the i18n integration phase.  This will change before the
-        # release!
-        import __builtin__
-        from Mailman.i18n import _
-        __builtin__._ = _
-        #
         # The name of the module to run is passed in argv[1].  What we
         # actually do is import the module named by argv[1] that lives in the
         # Mailman.Cgi package.  That module must have a main() function, which
         # we dig out and call.
-        #
         scriptname = sys.argv[1]
         # See the reference manual for why we have to do things this way.
         # Note that importing should have no side-effects!
