@@ -4,21 +4,20 @@ import mailbox
 import os
 import re
 import sys
-import string
 import time
+import email.Utils
+import cPickle as pickle
+from cStringIO import StringIO
+from string import lowercase
 
-try:
-    import cPickle
-    pickle = cPickle
-except ImportError:
-    import pickle
-
-__version__ = '0.06 (Mailman edition)'
+__version__ = '0.07 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
 from Mailman.Mailbox import Mailbox
 from Mailman.i18n import _
+
+SPACE = ' '
 
 
 
@@ -38,22 +37,21 @@ def fixAuthor(author):
     # If there's a comma, guess that it's already in "Last, First" format
     if ',' in author:
         return author
-    L = string.split(author)
+    L = author.split()
     i = len(L) - 1
     if i == 0:
         return author # The string's one word--forget it
-    if string.upper(author) == author or string.lower(author) == author:
+    if author.upper() == author or author.lower() == author:
 	# Damn, the name is all upper- or lower-case.  
-	while i > 0 and string.lower(L[i-1]) in smallNameParts:
+	while i > 0 and L[i-1].lower() in smallNameParts:
             i = i - 1
     else:
 	# Mixed case; assume that small parts of the last name will be
         # in lowercase, and check them against the list.
-	while i>0 and (L[i-1][0] in string.lowercase or 
-		       string.lower(L[i-1]) in smallNameParts): 
+	while i>0 and (L[i-1][0] in lowercase or 
+		       L[i-1].lower() in smallNameParts): 
 	    i = i - 1
-    author = string.join(L[-1:] + L[i:-1], ' ') \
-             + ', ' + string.join(L[:i], ' ')
+    author = SPACE.join(L[-1:] + L[i:-1]) + ', ' + SPACE.join(L[:i])
     return author
 
 # Abstract class for databases
@@ -155,7 +153,7 @@ class Article:
 	self.parentID = None
         self.threadKey = None
 	# otherwise the current sequence number is used.
-	id = strip_separators(message.getheader('Message-Id'))
+	id = strip_separators(message['Message-Id'])
 	if id == "":
             self.msgid = str(self.sequence)
 	else: self.msgid = id
@@ -169,8 +167,8 @@ class Article:
         self._set_date(message)
 
 	# Figure out the e-mail address and poster's name
-	self.author, self.email = message.getaddr('From')
-	e = message.getheader('Reply-To')
+	self.author, self.email = email.Utils.parseaddr(message['From'])
+	e = message['Reply-To']
 	if e is not None:
             self.email = e
 	self.email = strip_separators(self.email)
@@ -184,11 +182,11 @@ class Article:
         # shouldn't be necessary, but changing this may break code.  For
         # safety, I save the original headers on different attributes for use
         # in writing the plain text periodic flat files.
-        self._in_reply_to = message.getheader('in-reply-to')
-        self._references = message.getheader('references')
-        self._message_id = message.getheader('message-id')
+        self._in_reply_to = message['in-reply-to']
+        self._references = message['references']
+        self._message_id = message['message-id']
 
-	i_r_t = message.getheader('In-Reply-To')
+	i_r_t = message['In-Reply-To']
 	if i_r_t is None:
             self.in_reply_to = ''
 	else:
@@ -196,12 +194,11 @@ class Article:
 	    if match is None: self.in_reply_to = ''
 	    else: self.in_reply_to = strip_separators(match.group(1))
 		
-	references = message.getheader('References')
+	references = message['References']
 	if references is None:
             self.references = []
 	else:
-            self.references = map(strip_separators,
-                                  string.split(references))  
+            self.references = map(strip_separators, references.split())  
 
 	# Save any other interesting headers
 	self.headers = {}
@@ -210,13 +207,13 @@ class Article:
                 self.headers[i] = message[i]
 
 	# Read the message body
-	message.rewindbody()
-        self.body = message.fp.readlines()
+        s = StringIO(message.get_payload())
+        self.body = s.readlines()
 
     def _set_date(self, message):
 	if message.has_key('Date'): 
 	    self.datestr = str(message['Date'])
-   	    date = message.getdate_tz('Date')
+   	    date = email.Utils.parsedate_tz(message['Date'])
 	else: 
 	    self.datestr = ''
 	    date = None
@@ -366,7 +363,7 @@ class T:
                          self.subjectIndex.set_location(article.subject)
 		    print key, tempid
 		    self.subjectIndex.next()	
-		    [subject, date] = string.split(key, '\0')
+		    [subject, date] = key.split('\0')
 		    print article.subject, subject, date
 		    if subject == article.subject and tempid not in children:
 			parentID = tempid
@@ -423,7 +420,7 @@ class T:
     def _update_simple_index(self, hdr, archive, arcdir):
         self.message("  " + hdr)
         self.type = hdr
-        hdr = string.lower(hdr)
+        hdr = hdr.lower()
 
         self._open_index_file_as_stdout(arcdir, hdr)
         self.write_index_header()
@@ -470,8 +467,7 @@ class T:
 	    if article is not None:
                 artkey = article.threadKey
 	    if artkey is not None: 
-		self.write_threadindex_entry(article,
-                                     string.count(artkey, '-') - 1)
+		self.write_threadindex_entry(article, artkey.count('-') - 1)
 		if self.database.changed.has_key((archive,article.msgid)):
 		    a1 = L[1]
                     a3 = L[3]
@@ -569,7 +565,7 @@ class T:
                                                         filename))  
 
             author = fixAuthor(article.author)
-            subject = string.lower(article.subject)
+            subject = article.subject.lower()
 
             article.parentID = parentID = self.get_parent_info(arch, article)
             if parentID:
@@ -683,7 +679,7 @@ class BSDDBdatabase(Database):
 	date = 'None'
 	try:
 	    date, msgid = self.dateIndex.first()
-	    date = time.asctime(time.localtime(string.atof(date)))
+	    date = time.asctime(time.localtime(float(date)))
 	except KeyError:
             pass
 	return date
@@ -693,7 +689,7 @@ class BSDDBdatabase(Database):
 	date = 'None'
 	try:
 	    date, msgid = self.dateIndex.last()
-	    date = time.asctime(time.localtime(string.atof(date)))
+	    date = time.asctime(time.localtime(float(date)))
 	except KeyError:
             pass
 	return date
@@ -793,11 +789,11 @@ class BSDDBdatabase(Database):
 	
     def getOldestArticle(self, archive, subject):
 	self.__openIndices(archive)
-	subject = string.lower(subject)
+	subject = subject.lower()
 	try: 
 	    key, tempid = self.subjectIndex.set_location(subject)
 	    self.subjectIndex.next()	
-	    [subject2, date] = string.split(key, '\0')
+	    [subject2, date] = key.split('\0')
 	    if subject != subject2:
                 return None
 	    return tempid
