@@ -1,5 +1,5 @@
-Your membership in the mailing list %(listname)s has been disabled due
-to excessive bounces.  You will not get any more messages from this
+Your membership in the mailing list %(listname)s has been disabled
+%(reason)s.  You will not get any more messages from this
 list until you re-enable your membership.  You will receive
 %(noticesleft)s more reminders like this before your membership in the
 list is deleted.
