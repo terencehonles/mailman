@@ -24,7 +24,6 @@ of the target mailing list.
 Errors are redirected to logs/errors.
 """
 
-
 import sys
 
 import paths
@@ -34,7 +33,7 @@ from Mailman.i18n import _
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 
-LogStdErr("error", "mailcmd")
+LogStdErr('error', 'mailcmd')
 
 
 
