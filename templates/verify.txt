@@ -1,12 +1,13 @@
 %(listname)s -- confirmation of subscription -- request %(cookie)s
 
-You or someone (%(requestor)s) has requested that your email address
-<%(email)s> be subscribed to the %(listname)s mailing list at
-%(listaddr)s.  If you wish to fulfill this request, please simply
-reply to this message, or mail %(requestaddr)s with the following
-line, and only the following line in the message body:
+We have received a request%(remote)s for subscription of your email
+address, <%(email)s>, to the %(listname)s mailing list at %(listaddr)s.
+To have this request carried out, please simply reply to this message
+(maintaining the subject line), or mail %(requestaddr)s with the
+following line - and only the following line - in the message body:
 
 confirm %(cookie)s
 
-If you do not wish to subscribe to this list, please simply ignore  
-or delete this message.
+If you do not wish to subscribe to this list, please simply disregard
+this message.  If you have questions about this message, contact
+%(listadmin)s.
