@@ -41,7 +41,7 @@ Where `options' are:
         is.  With -w=yes or -w, the welcome message is sent.  With -w=no, no
         message is sent.
 
-    --goodby-msg[=<yes|no>]
+    --goodbye-msg[=<yes|no>]
     -g[=<yes|no>]
         Sets whether or not to send the goodbye message to removed members,
         overriding whatever the list's `send_goodbye_msg' setting is.  With
