@@ -27,9 +27,10 @@ import string
 import marshal
 
 import paths
-from Mailman import MailList
-from Mailman import Utils
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
+from Mailman.LockFile import TimeOutError
 
 FRESH = 0
 NOTFRESH = -1
@@ -73,17 +74,23 @@ def makeabs(relpath):
 
 
 
-def dolist(list):
-    l = MailList.MailList(list)
+def dolist(listname):
+    errors = 0
+    mlist = MailList.MailList(listname, lock=0)
+    try:
+        mlist.Lock(0.5)
+    except TimeOutError:
+        print 'WARNING: could not acquire lock for list:', listname
+        return 1
 
-    mbox_dir = makeabs('archives/private/%s.mbox' % (list))
-    mbox_file = makeabs('archives/private/%s.mbox/%s' % (list, list))
+    mbox_dir = makeabs('archives/private/%s.mbox' % (listname))
+    mbox_file = makeabs('archives/private/%s.mbox/%s' % (listname, listname))
 
-    o_pub_mbox_file = makeabs('archives/public/%s' % (list))
-    o_pri_mbox_file = makeabs('archives/private/%s' % (list))
+    o_pub_mbox_file = makeabs('archives/public/%s' % (listname))
+    o_pri_mbox_file = makeabs('archives/private/%s' % (listname))
 
     html_dir = o_pri_mbox_file
-    o_html_dir = makeabs('public_html/archives/%s' % (list))
+    o_html_dir = makeabs('public_html/archives/%s' % (listname))
     #
     # make the mbox directory if it's not there.
     #
@@ -105,7 +112,7 @@ def dolist(list):
     # Move any existing mboxes around, but watch out for both a public and a
     # private one existing
     if os.path.isfile(o_pri_mbox_file) and os.path.isfile(o_pub_mbox_file):
-        if l.archive_private:
+        if mlist.archive_private:
             print """\
 %s has both public and private mbox archives, since this list
 currently uses private archiving, I'm installing the private mbox
@@ -116,7 +123,7 @@ to
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
-""" % (l._internal_name, o_pri_mbox_file, o_pub_mbox_file, o_pub_mbox_file)
+""" % (mlist._internal_name, o_pri_mbox_file, o_pub_mbox_file, o_pub_mbox_file)
             os.rename(o_pub_mbox_file, "%s.preb6" % (o_pub_mbox_file))
         else:
             print """\
@@ -129,7 +136,7 @@ archive file (%s) as the active one, and renaming
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
-""" % (l._internal_name, o_pub_mbox_file, o_pri_mbox_file, o_pri_mbox_file)
+""" % (mlist._internal_name, o_pub_mbox_file, o_pri_mbox_file, o_pri_mbox_file)
             os.rename(o_pri_mbox_file, "%s.preb6" % (o_pri_mbox_file))
     #
     # move private archive mbox there if it's around
@@ -186,9 +193,10 @@ script.
     # save the new variables and
     # let it create public symlinks if necessary
     #
-    l.archive_directory = makeabs('archives/private/%s' % (list))
-    l.private_archive_file_dir = makeabs('archives/private/%s.mbox' % (list))
-    l.Save()
+    mlist.archive_directory = makeabs('archives/private/%s' % (listname))
+    mlist.private_archive_file_dir = makeabs('archives/private/%s.mbox' %
+                                             listname)
+    mlist.Save()
     #
     # check to see if pre-b4 list-specific templates are around
     # and move them to the new place if there's not already
@@ -196,8 +204,8 @@ script.
     #
     tmpl_dir = os.path.join(mm_cfg.PREFIX, "templates")
     list_dir = os.path.join(mm_cfg.PREFIX, "lists")
-    b4_tmpl_dir = os.path.join(tmpl_dir, l._internal_name)
-    new_tmpl_dir = os.path.join(list_dir, l._internal_name)
+    b4_tmpl_dir = os.path.join(tmpl_dir, mlist._internal_name)
+    new_tmpl_dir = os.path.join(list_dir, mlist._internal_name)
     if os.path.exists(b4_tmpl_dir):
 	print "- This list looks like it might have <= b4 " \
               'list templates around'
@@ -211,9 +219,11 @@ script.
                 print "- both %s and %s exist, leaving untouched" \
                       % (o_tmpl, n_tmpl)
     # Avoid eating filehandles with the list lockfiles
-    l.Unlock()
+    mlist.Unlock()
+    return 0
 
-#
+
+
 # this function is passed to os.path.walk
 # to fix the perms on old html archives.
 #
@@ -245,14 +255,15 @@ def remove_old_sources(module):
 
 
 def main():
+    errors = 0
     # get rid of old stuff
     for mod in ('Mailman/Archiver.py', 'Mailman/HyperArch.py',
                 'Mailman/HyperDatabase.py', 'Mailman/pipermail.py',
                 'Mailman/smtplib.py',
                 'bin/update_to_10b6'):
         remove_old_sources(mod)
-    lists = Utils.list_names()
-    if not lists:
+    listnames = Utils.list_names()
+    if not listnames:
         print "no lists == nothing to do, exiting"
         return
     #
@@ -265,9 +276,9 @@ def main():
         os.path.walk("%s/public_html/archives" % mm_cfg.PREFIX,
                      archive_path_fixer, "")
         print "done"
-    for list in lists:
-        print 'Updating mailing list: ', list
-        dolist(list)
+    for listname in listnames:
+        print 'Updating mailing list: ', listname
+        errors = errors + dolist(listname)
     print 'Updating Usenet watermarks'
     wmfile = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
     try:
@@ -278,16 +289,22 @@ def main():
         d = marshal.load(fp)
         fp.close()
         for listname in d.keys():
-            if listname not in lists:
+            if listname not in listnames:
                 # this list no longer exists
                 continue
-            mlist = MailList.MailList(listname)
-            # Pre 1.0b7 stored 0 in the gate_watermarks file to indicate that
-            # no gating had been done yet.  Without coercing this to None, the
-            # list could now suddenly get flooded.
-            mlist.usenet_watermark = d[listname] or None
-            mlist.Save()
-            mlist.Unlock()
+            mlist = MailList.MailList(listname, lock=0)
+            try:
+                mlist.Lock(0.5)
+            except TimeOutError:
+                print 'WARNING: could not acquire lock for list:', listname
+                errors = errors + 1
+            else:
+                # Pre 1.0b7 stored 0 in the gate_watermarks file to indicate
+                # that no gating had been done yet.  Without coercing this to
+                # None, the list could now suddenly get flooded.
+                mlist.usenet_watermark = d[listname] or None
+                mlist.Save()
+                mlist.Unlock()
         os.unlink(wmfile)
         print '- usenet watermarks updated and gate_watermarks removed'
     #
@@ -314,6 +331,7 @@ NOTE NOTE NOTE NOTE NOTE
 NOTE NOTE NOTE NOTE NOTE
 
 """
+    return errors
 
 
 
@@ -329,8 +347,21 @@ if __name__ == '__main__':
         print 'This is probably not safe.  Exiting.'
         sys.exit(1)
     print 'Upgrading from version', hex(lastversion), 'to', hex(thisversion)
-    main()
-    # Record the version we just upgraded to
-    fp = open(LMVFILE, 'w')
-    fp.write(hex(mm_cfg.HEX_VERSION) + '\n')
-    fp.close()
+    errors = main()
+    if not errors:
+        # Record the version we just upgraded to
+        fp = open(LMVFILE, 'w')
+        fp.write(hex(mm_cfg.HEX_VERSION) + '\n')
+        fp.close()
+    else:
+        print '''\
+
+ERROR:
+
+The locks for some lists could not be acquired.  This means that either
+Mailman was still active when you upgraded, or there were stale locks in the
+%(lockdir)s directory.
+
+You must put Mailman into a quiescent state and remove all stale locks, then
+re-run "make update" manually.  See the INSTALL and UPGRADE files for details.
+''' % {'lockdir': mm_cfg.LOCK_DIR}
