@@ -639,13 +639,8 @@ LC_DESCRIPTIONS = {'es': (_("Spanish (Spain)"),      'iso-8859-1'),
                    }
 del _                                   
 
-# Set some things up for internationalization.  Individual modules still need
-# to do a "from Mailman.i18n import _"
-import gettext
-
-os.environ['LANG'] = DEFAULT_SERVER_LANGUAGE
-gettext.bindtextdomain('mailman', MESSAGES_DIR)
-gettext.textdomain('mailman')
+def add_language(code, description, charset):
+    LC_DESCRIPTIONS[code] = (description, charset)
 
 
 # BAW: Another hack to get Python's site-packages directory on the path.  This
