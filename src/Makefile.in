@@ -98,7 +98,7 @@ wrapper: $(srcdir)/mail-wrapper.c common.o
 $(CGI_PROGS): $(srcdir)/cgi-wrapper.c common.o
 	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) common.o -o $@ $<
 
-common.o: $(srcdir)/common.c $(srcdir)/common.h
+common.o: $(srcdir)/common.c $(srcdir)/common.h $(srcdir)/Makefile
 	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $<
 
 install: all
