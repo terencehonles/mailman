@@ -363,8 +363,8 @@ has been forwarded to the person running the list.
 
 This is probably because you are trying to subscribe to a 'closed' list.
 
-If the list owner decides what to do with your request, you will receive
-e-mail notification.
+You will receive email notification of the list owner's decision about
+your subscription request.
 
 Any questions about the list owner's policy should be directed to:
 
