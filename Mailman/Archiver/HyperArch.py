@@ -250,7 +250,7 @@ class Article(pipermail.Article):
                 tzoffset = 0
             try:
                 date=time.mktime(date)-tzoffset
-            except ValueError:
+            except (ValueError, OverflowError):
                 # bogus year most likely
                 date=time.time()
 	else:
