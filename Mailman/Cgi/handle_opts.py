@@ -89,11 +89,8 @@ def main():
     error = 0
     operation = ""
     user = Utils.LCDomain(user)
-    #
-    # XXX shouldn't this check use Utils.FindMatchingAddresses?
-    #                                               -scott
-    if not list.members.has_key(user) \
-       and not list.digest_members.has_key(user):
+    if not Utils.FindMatchingAddresses(user, list.members,
+                                       list.digest_members):
         PrintResults("%s not a member!<p>" % user)
 
     if form.has_key("unsub"):
@@ -124,13 +121,13 @@ def main():
 
 
     elif form.has_key("emailpw"):
-            try:
-                list.MailUserPassword(user)
-                PrintResults("A reminder of your password "
-                             "has been emailed to you.<p>")
-            except Errors.MMBadUserError:
-                PrintResults("Your password entry has not been found.  The"
-                             "  list administrator is being notified.<p>")
+        try:
+            list.MailUserPassword(user)
+            PrintResults("A reminder of your password "
+                         "has been emailed to you.<p>")
+        except Errors.MMBadUserError:
+            PrintResults("Your password entry has not been found.  The"
+                         "  list administrator is being notified.<p>")
 
 
     elif form.has_key("othersubs"):
