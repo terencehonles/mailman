@@ -274,4 +274,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 12
+DATA_FILE_VERSION = 13

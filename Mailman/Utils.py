@@ -231,7 +231,6 @@ def ValidEmail(str):
     return 1
 
 
-
 def GetPathPieces(path):
     l = string.split(path, '/')
     try:
@@ -328,7 +327,7 @@ def GetPossibleMatchingAddrs(name):
     given scott@blackbox.pobox.com return ['scott@blackbox.pobox.com',
                                            'scott@pobox.com']"""
 
-    name = LCDomain(name)
+    name = string.lower(name)
     user, domain = ParseEmail(name)
     res = [name]
     if domain:
@@ -357,11 +356,11 @@ def FindMatchingAddresses(name, dict, *dicts):
     dicts.insert(0, dict)
     if not mm_cfg.SMART_ADDRESS_MATCH:
         for d in dicts:
-            if d.has_key(LCDomain(name)):
+            if d.has_key(string.lower(name)):
                 return [name]
         return []
     #
-    # GetPossibleMatchingAddrs return LCDomain'd values
+    # GetPossibleMatchingAddrs return string.lower'd values
     #
     p_matches = GetPossibleMatchingAddrs(name) 
     res = []

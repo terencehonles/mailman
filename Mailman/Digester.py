@@ -228,7 +228,7 @@ class Digester:
 	def HatesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return s.GetUserOption(x, v)
 
-        digestmembers = self.GetDigestMembers()
+        digestmembers = self.GetDigestDeliveryMembers()
 	recipients = filter(DeliveryEnabled, digestmembers)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)

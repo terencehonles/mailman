@@ -68,12 +68,49 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             pass
 
     def GetMembers(self):
-        """returns a list of the members."""
+        """returns a list of the members. (all lowercase)"""
         return self.members.keys()
-
+    
     def GetDigestMembers(self):
-        """returns a list of digest members."""
+        """returns a list of digest members. (all lowercase)"""
         return self.digest_members.keys()
+
+    def GetDeliveryMembers(self):
+        """returns a list of the members with username case preserved."""
+        res = []
+        for k,v in self.members.items():
+            if type(v) is type(""):
+                res.append(v)
+            else:
+                res.append(k)
+        return res
+
+    def GetDigestDeliveryMembers(self):
+        """returns a list of the members with username case preserved."""
+        res = []
+        for k,v in self.digest_members.items():
+            if type(v) is type(""):
+                res.append(v)
+            else:
+                res.append(k)
+        return res
+
+    def __AddMember(self, addr, digest):
+        """adds the appropriate data to the internal members dict.
+
+        If the username has upercase letters in it, then the value
+        in the members dict is the case preserved address, otherwise,
+        the value is 0."""
+        if Utils.LCDomain(addr) == string.lower(addr):
+            if digest:
+                self.digest_members[addr] = 0
+            else:
+                self.members[addr] = 0
+        else:
+            if digest:
+                self.digest_members[string.lower(addr)] = addr
+            else:
+                self.members[string.lower(addr)] = addr
 
     def GetAdminEmail(self):
         return '%s-admin@%s' % (self._internal_name, self.host_name)
@@ -793,11 +830,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         name = Utils.LCDomain(name)
 	if self.IsMember(name):
 	    raise Errors.MMAlreadyAMember
+        self.__AddMember(name, digest)
 	if digest:
-	    self.digest_members[name] = 1
             kind = " (D)"
 	else:
-	    self.members[name] = 1
             kind = ""
         self.SetUserOption(name, mm_cfg.DisableMime,
                            1 - self.mime_is_default_digest)
@@ -1089,10 +1125,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if self.GetUserOption(sender, mm_cfg.AcknowlegePosts):
 		ack_post = 1
 	# Deliver the mail.
-	recipients = self.GetMembers()
+	members = self.GetDeliveryMembers()
 	if dont_send_to_sender:
             try:
-                recipients.remove(sender)
+                recipients.remove(members)
             #
             # sender not in list (case sensitive username problem?)
             #
@@ -1100,10 +1136,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 self.LogMsg("error",
                             "couldn't remove %s from recipient list: %s",
                             sender,
-                            str(recipients))
-	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
-	    return not s.GetUserOption(x, v)
-	recipients = filter(DeliveryEnabled, recipients)
+                            str(members))
+        recipients = []
+        for m in members:
+            if not self.GetUserOption(m, mm_cfg.DisableDelivery):
+                recipients.append(m)
         self.LogMsg("post", "post to %s from %s size=%d",
                     self._internal_name, msg.GetSender(), len(msg.body))
         

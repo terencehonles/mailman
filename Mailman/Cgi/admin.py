@@ -518,7 +518,7 @@ def FormatMembershipOptions(lst):
         cells = [member + "<input type=hidden name=user value=%s>" % (member),
                  "subscribed "
                  + CheckBox(member + "_subscribed", "on", 1).Format()]
-        if lst.members.get(member):
+        if lst.members.has_key(member):
             cells.append("digest "
                          + CheckBox(member + "_digest", "off", 0).Format())
         else:
@@ -790,11 +790,11 @@ def ChangeOptions(lst, category, cgi_info, document):
                     del lst.digest_members[user]
                     dirty = 1
                 if not lst.members.has_key(user):
-                    lst.members[user] = 1
+                    lst.members[user] = 0
                     dirty = 1
             else:
                 if not lst.digest_members.has_key(user):
-                    lst.digest_members[user] = 1
+                    lst.digest_members[user] = 0
                     dirty = 1
                 if lst.members.has_key(user):
                     del lst.members[user]

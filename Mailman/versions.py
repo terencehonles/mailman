@@ -35,6 +35,7 @@ detected."""
 
 import re, string, types
 import mm_cfg
+import Utils
 
 def Update(l, stored_state):
     "Dispose of old vars and user options, mapping to new ones when suitable."
@@ -121,6 +122,18 @@ def UpdateOldVars(l, stored_state):
     if not hasattr(l, "admin_notify_mchanges"):
         setatrr(l, "admin_notify_mchanges",
                 mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES)
+    for k in l.members.keys():
+        if string.lower(k) != k:
+            l.members[string.lower(k)] = Utils.LCDomain(k)
+            del l.members[k]
+        else:
+            l.members[k] = 0
+    for k in l.digest_members.keys():
+        if string.lower(k) != k:
+            l.digest_members[string.lower(k)] = Utils.LCDomain(k)
+            del l.digest_members[k]
+        else:
+            l.digest_members[k] = 0
 
 
 def UpdateOldUsers(l):
