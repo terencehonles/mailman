@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Check the permissions for the Mailman installation.
@@ -44,17 +44,12 @@ directory.  You must run this from the installation directory instead.
 '''
     raise
 from Mailman import mm_cfg
-from Mailman.mm_cfg import MAILMAN_UID, MAILMAN_GID
+from Mailman.mm_cfg import MAILMAN_USER, MAILMAN_GROUP
 from Mailman.i18n import _
 
-try:
-    MAILMAN_GRPNAME = grp.getgrgid(MAILMAN_GID)[0]
-except KeyError:
-    MAILMAN_GRPNAME = '<anon gid %d>' % MAILMAN_GID
-try:
-    MAILMAN_OWNER = pwd.getpwuid(MAILMAN_UID)[0]
-except KeyError:
-    MAILMAN_OWNER = 'uid %d' % MAILMAN_UID
+# Let KeyErrors percolate
+MAILMAN_GID = grp.getgrnam(MAILMAN_GROUP)[2]
+MAILMAN_UID = pwd.getpwnam(MAILMAN_USER)[2]
 
 PROGRAM = sys.argv[0]
 
@@ -95,8 +90,8 @@ def checkwalk(arg, dirname, names):
             except KeyError:
                 groupname = '<anon gid %d>' % gid
             arg.ERRORS += 1
-            print _('%(path)s bad gid (has: %(groupname)s, '
-                    'expected %(MAILMAN_GRPNAME)s)'),
+            print _('%(path)s bad group (has: %(groupname)s, '
+                    'expected %(MAILMAN_GROUP)s)'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chown(path, -1, MAILMAN_GID)
@@ -334,4 +329,4 @@ if __name__ == '__main__':
         print _('No problems found')
     else:
         print _('Problems found:'), STATE.ERRORS
-        print _('Re-run as %(MAILMAN_OWNER)s (or root) with -f flag to fix')
+        print _('Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix')
