@@ -1,4 +1,4 @@
-import string, fcntl, os, random, regsub
+import string, fcntl, os, random, regsub, re
 import mm_cfg
 
 # Valid toplevel domains for when we check the validity of an email address.
@@ -157,3 +157,22 @@ def QuoteHyperChars(str):
 	    arr[i] = '&amp;'
 	i = i + 2
     return string.join(arr, '')
+
+# Just changing these two functions should be enough to control the way
+# that email address obscuring is handled.
+
+def ObscureEmail(addr, for_text=0):
+    """Make email address unrecognizable to web spiders, but invertable.
+
+    When for_text option is set (not default), make a sentence fragment
+    instead of a token."""
+    if for_text:
+	return re.sub("@", " at ", addr)
+    else:
+	return re.sub("@", "__at__", addr)
+
+def UnobscureEmail(addr):
+    """Invert ObscureEmail() conversion."""
+    # Contrived to act as an identity operation on already-unobscured
+    # emails, so routines expecting obscured ones will accept both.
+    return re.sub("__at__", "@", addr)
