@@ -54,8 +54,17 @@ class Message(rfc822.Message):
             self.rewindbody()
         self.body = self.fp.read()
 
-    def __str__(self):
+    def __repr__(self):
+        """Return the entire reproducible message.
+        This includes the headers, body, and `unixfrom' line.
+        """
         return self.unixfrom + string.join(self.headers, '') + '\n' + self.body
+
+    def __str__(self):
+        """Return the string representation of the message.
+        This includes just the standard RFC822 headers and body text.
+        """
+        return string.join(self.headers, '') + '\n' + self.body
 
     def GetSender(self, use_envelope=None):
         """Return the address considered to be the author of the email.
@@ -131,7 +140,7 @@ class Message(rfc822.Message):
 
         """
         # Calculate a unique name for the queue file
-        text = str(self)
+        text = repr(self)
         filebase = sha.new(text).hexdigest()
         msgfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.msg')
         dbfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.db')
