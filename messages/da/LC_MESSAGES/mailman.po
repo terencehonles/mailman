@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman CVS-HEAD\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-09-26 22:17+0200\n"
+"PO-Revision-Date: 2003-09-27 10:43+0200\n"
 "Last-Translator: Søren Bondrup <soren@ka-net.dk>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1467,6 +1467,8 @@ msgid ""
 "            been discarded, and both list administrators have been\n"
 "            alerted."
 msgstr ""
+"Du er ikke inviteret til denne mailliste. Invitationen er\n"
+"blevet slettet. Begge listeadministratore er blevet informeret."
 
 #: Mailman/Cgi/confirm.py:362
 msgid "Subscription request confirmed"
@@ -2844,6 +2846,8 @@ msgid ""
 "discarded,\n"
 "and both list administrators have been alerted."
 msgstr ""
+"Du er ikke inviteret til denne mailliste. Invitationen er blevet slettet,\n"
+"og begge listeadministratore er blevet adviseret."
 
 #: Mailman/Commands/cmd_confirm.py:77
 msgid "Confirmation succeeded"
@@ -3573,7 +3577,7 @@ msgstr "Norsk"
 
 #: Mailman/Defaults.py:1273
 msgid "Polish"
-msgstr ""
+msgstr "Polsk"
 
 #: Mailman/Defaults.py:1274
 msgid "Portuguese"
@@ -3597,7 +3601,7 @@ msgstr "Svensk"
 
 #: Mailman/Defaults.py:1279
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainsk"
 
 #: Mailman/Deliverer.py:51
 msgid ""
@@ -3628,7 +3632,7 @@ msgstr "Påmindelse fra maillisten %(listfullname)s"
 
 #: Mailman/Deliverer.py:157 Mailman/Deliverer.py:176
 msgid "Hostile subscription attempt detected"
-msgstr ""
+msgstr "Ikke venlig tilmelding forsøgt"
 
 #: Mailman/Deliverer.py:158
 msgid ""
@@ -3637,6 +3641,10 @@ msgid ""
 "invitation to your list.  We just thought you'd like to know.  No further\n"
 "action by you is required."
 msgstr ""
+"%(address)s blev inviteret til en anden mailliste\n"
+"men i et velovervejet og ondskabsfuldt forsøg er der forsøgt\n"
+"tilmelding til din liste. Vi tænkte at du måske gerne vil\n"
+"vide dette. Du skal ikke foretage dig yderligere."
 
 #: Mailman/Deliverer.py:177
 msgid ""
@@ -3646,6 +3654,10 @@ msgid ""
 "you\n"
 "is required."
 msgstr ""
+"Du inviterede %(address)s til din liste, men i et velovervejet og \n"
+"ondskabsfuldt forsøg er der forsøgt\n"
+"tilmelding til en anden liste. Vi tænkte at du måske gerne vil\n"
+"vide dette. Du skal ikke foretage dig yderligere."
 
 #: Mailman/Errors.py:114
 msgid "For some unknown reason"
@@ -5664,6 +5676,21 @@ msgid ""
 "        page.\n"
 "</ul>\n"
 msgstr ""
+"N&aring;r <a href=\"?VARHELP=nondigest/personalize\">personalization</a> er "
+"enabled\n"
+"for denne liste, er det tilladt at tilf&oslash;je yderligere ubstitution\n"
+" variabler\n"
+"i dine headere og footers:\n"
+"\n"
+"<ul><li><b>bruger_addresse</b> - Adressen p&aring; brugeren,\n"
+"        tvunget til sm&aring; bogstaver.\n"
+"    <li><b>bruger_delivered_til</b> - Store/små bogstav addresse\n"
+"        som brugeren er tilmeldt med.\n"
+"    <li><b>bruger_password</b> - Brugerens password.\n"
+"    <li><b>bruger_name</b> - Brugerens fulde navn.\n"
+"    <li><b>bruger_optionsurl</b> - Url til brugerens options\n"
+"        side.\n"
+"</ul>\n"
 
 #: Mailman/Gui/NonDigest.py:128
 msgid "Header added to mail sent to regular list members"
@@ -5760,7 +5787,7 @@ msgstr ""
 "<br>\n"
 "Bekr&aelig;ftigelse(*) - bekr&aelig;ftigelse af e-mail er n&oslash;"
 "dvendig<br>\n"
-"Godkendelse - ans&oslash;gning om medlemskab m&aring; godkendes af "
+"Godkendelse - ans&oslash;gning om medlemskab skal godkendes af "
 "listeadministrator (eller evt. listemoderator)<br>\n"
 "Bekr&aelig;ftigelse+Godkendelse - b&aring;de bekreftelse p&aring; e-mail og "
 "godkendelse af listeadministrator (evt. listemoderator) er n&oslash;"
@@ -5891,7 +5918,7 @@ msgstr ""
 "ikke\n"
 "tilmelde sig. Indtast e-mailadresser, en per linie, start linien med tegnet "
 "^\n"
-"for at angive et regexp-uttryk der skal passe med afsenderadressen."
+"for at angive et regexp-udtryk der skal passe med afsenderadressen."
 
 #: Mailman/Gui/Privacy.py:132
 msgid "Membership exposure"
@@ -7611,6 +7638,9 @@ msgid ""
 "No commands were found in this message.\n"
 "To obtain instructions, send a message containing just the word \"help\".\n"
 msgstr ""
+"Ingen kommandoer blev fundet i denne mail.\n"
+"For at modtage yderligere instruktioner så skal du sende en \n"
+"mail kun indeholdende ordet \"help\".\n"
 
 #: Mailman/Queue/CommandRunner.py:161
 msgid ""
@@ -8047,7 +8077,7 @@ msgstr ""
 "\n"
 "I Mailman 2.1 lagre password i SHA1 hexdigest format. Dette er ikke\n"
 "bagudkompatibelt med ældre versioner af Mailman, og da password ikke på\n"
-"nogen som helst måde gemmes i klartekst, kan de ikke opdateres. \n"
+"nogen som helst måde gemmes i klar tekst, kan de ikke opdateres. \n"
 "\n"
 "Dette script genererer nye password for en liste, og kan sende det til\n"
 "alle ejere af listen hvis det ønskes.\n"
@@ -11188,6 +11218,9 @@ msgstr ""
 
 #~ msgid "Danish"
 #~ msgstr "Dansk"
+
+#~ msgid "Euskara"
+#~ msgstr "Baskisk"
 
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
 #~ msgstr "Stor ændring af maillisten %(listname)s@%(listhost)s"
