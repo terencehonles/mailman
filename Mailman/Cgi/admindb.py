@@ -31,6 +31,7 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import Message
 from Mailman import i18n
+from Mailman.Handlers.Moderate import ModeratedMemberPost
 from Mailman.ListAdmin import readMessage
 from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
@@ -156,8 +157,8 @@ def main():
             # This is a form submission
             doc.SetTitle(_('%(realname)s Administrative Database Results'))
             process_form(mlist, doc, cgidata)
-        # Now print the results and we're done
-        # Short circuit for when there are no pending requests
+        # Now print the results and we're done.  Short circuit for when there
+        # are no pending requests, but be sure to save the results!
         if not mlist.NumRequestsPending():
             title = _('%(realname)s Administrative Database')
             doc.SetTitle(title)
@@ -165,6 +166,7 @@ def main():
             doc.AddItem(_('There are no pending requests.'))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format()
+            mlist.Save()
             return
 
         admindburl = mlist.GetScriptURL('admindb', absolute=1)
@@ -355,12 +357,23 @@ def show_helds_overview(mlist, form):
                     value=mlist.GetOwnerEmail())
             ])
         left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
-        # Ask if this address should be added to one of the sender filters,
-        # but only if it isn't already in one of the filters.
-        if sender not in (mlist.accept_these_nonmembers +
-                          mlist.hold_these_nonmembers +
-                          mlist.reject_these_nonmembers +
-                          mlist.discard_these_nonmembers):
+        # If the sender is a member and the message is being held due to a
+        # moderation bit, give the admin a chance to clear the member's mod
+        # bit.  If this sender is not a member and is not already on one of
+        # the sender filters, then give the admin a chance to add this sender
+        # to one of the filters.
+        if mlist.isMember(sender):
+            if mlist.getMemberOption(sender, mm_cfg.Moderate):
+                left.AddRow([
+                    CheckBox('senderclearmodp-' + qsender, 1).Format() +
+                    '&nbsp;' +
+                    _("Clear this member's <em>moderate</em> flag")
+                    ])
+                left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
+        elif sender not in (mlist.accept_these_nonmembers +
+                            mlist.hold_these_nonmembers +
+                            mlist.reject_these_nonmembers +
+                            mlist.discard_these_nonmembers):
             left.AddRow([
                 CheckBox('senderfilterp-' + qsender, 1).Format() +
                 '&nbsp;' +
@@ -572,7 +585,8 @@ def process_form(mlist, doc, cgidata):
     # Sender-centric actions
     for k in cgidata.keys():
         for prefix in ('senderaction-', 'senderpreserve-', 'senderforward-',
-                       'senderforwardto-', 'senderfilterp-', 'senderfilter-'):
+                       'senderforwardto-', 'senderfilterp-', 'senderfilter-',
+                       'senderclearmodp-'):
             if k.startswith(prefix):
                 action = k[:len(prefix)-1]
                 sender = unquote_plus(k[len(prefix):])
@@ -618,6 +632,13 @@ def process_form(mlist, doc, cgidata):
             elif which == mm_cfg.DISCARD:
                 mlist.discard_these_nonmembers.append(sender)
             # Otherwise, it's a bogus form, so ignore it
+        # And now see if we're to clear the member's moderation flag.
+        if actions.get('senderclearmodp', 0):
+            try:
+                mlist.setMemberOption(sender, mm_cfg.Moderate, 0)
+            except Errors.NotAMemberError:
+                # This person's not a member any more.  Oh well.
+                pass
     # Now, do message specific actions
     erroraddrs = []
     for k in cgidata.keys():
