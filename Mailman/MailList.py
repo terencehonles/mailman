@@ -632,6 +632,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMBadEmailError
 	if self.IsMember(name):
             raise Errors.MMAlreadyAMember
+        if name == string.lower(self.GetListEmail()):
+            # Trying to subscribe the list to itself!
+            raise mm_err.MMBadEmailError
 
 	if digest and not self.digestable:
             raise Errors.MMCantDigestError
@@ -803,8 +806,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
 	if not approved:
-            from_lists = msg.getallmatchingheaders('x-beenthere')
-            if self.GetListEmail() in from_lists:
+            beentheres = map(lambda x: string.split(x, ": ")[1][:-1],
+                             msg.getallmatchingheaders('x-beenthere'))
+            if self.GetListEmail() in beentheres:
                 self.AddRequest('post', Utils.SnarfMessage(msg),
                                 Errors.LOOPING_POST,
                                 msg.getheader('subject'))
