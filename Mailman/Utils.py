@@ -628,7 +628,7 @@ def unhexlify(s):
     acc = []
     append = acc.append
     # In Python 2.0, we can use the int() built-in
-    int16 = string.atol
+    int16 = string.atoi
     for i in range(0, len(s), 2):
-        append(chr(int16(s[i], 16)*16 + int16(s[i+1], 16)))
+        append(chr(int16(s[i:i+2], 16)))
     return string.join(acc, '')
