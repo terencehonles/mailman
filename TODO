@@ -1,204 +1,124 @@
-TODO for mailman 1.0b3 (TODO $Revision: 516 $, $Date: 1998-05-04 19:18:08 +0100 (Mon, 04 May 1998) $)
+The Mailman TODO list
 
-(See further down for past todo lists.)
+*Bugs
+- Turning off bounce processing doesn't seem to work.
+- Turning on non-member post exclusion doesn't seem to work.
+- "Stale" addresses don't update properly when new bounces come in 
+(stale means we had some bounces, but delivery to that address started 
+working again before we booted them from the list)
 
-------------
-Pending bugs
-------------
- - Bounce processing
-   - Turning off bounce processing doesn't?
-   - Turning on non-member-post exclusion doesn't
-   - More generally mm_utils.AddressesMatch() needs to be really
-     thought out.  For instance, klm@python.org vs klm@acm.org should
-     be seen as different, but klm@parrot.python.org and
-     klm@larch.python.org and klm@python.org should probably be seen
-     as the same.  There may be more criteria...
- - Extremely little documentation.  (Aside from the README, some online
-   admin help, the code, and the developers community,
-   mailman-developers@python.org...)
--------------------------------
-Pending Developments and Issues
--------------------------------
+*Documentation
+- A FAQ (esp. for the web page)
+- A detailed feature list
+- A high level feature list
+- A user's guide
+- A site-admin's guide
+- A list-admin's guide
+- More in-place documentation
+- A developer's guide w/ Architecture and API info, etc.
 
-Some moderate Pending Refinements:
+*General Web UI
+- Add a navigation sidebar to all web pages - central links, and
+list-specific links for list-specific pages.
+- Implement cookies for edithtml and admindb
+- Make sure when settings are changed, there is always some sort of 
+confirmation!
 
- - Use re module everywhere instead of regexp and regsub.
- - Add navigation sidebar to all web pages - central links, and
-   list-specific links for list-specific web pages.
- - Provide user option by which list members are excluded from
-   postings which they're already getting via inclusion on message to:
-   or cc: headers.
- - Improve recognition of "fuzzy same" addresses (necessary for to: and cc:
-   recognition in previous item)
- - Implement a reasonable administrivia filter for lists (but less
-   likely to misfire than majordomo's) (administrivia is, eg,
-   unsubscribe request mistakenly sent to list posting addr)
- - Refine any remaining unqualified exception guards to specify target
-   exceptions, when appropriate.
- - Turn standard mailman exceptions into class exceptions.
- - Implement cookies (with moderate lifetimes) for user and admin passwords.
- - Unravel edit-options functionality from cgi/subscribe script - give 
-   edit-options a script of its own.  (Not imperative, maybe when the
-   bigger project of implementing member profiles is done.)
- - Relax constraint that everything be installed in /home/mailman.
-   (I'll probably do this for the next release.  We can probably use
-   relative paths for most things, particularly the routine sys.path
-   setting in all the python code, and possibly for the wrappers.)
- - Foolproof list deletion (bin/rmlist) a bit by asking for password
-   (and have list admin or site password work).
- - Should member deletion be confirmed with email?
- - Submission of edited user options should return to edit-options
-   page, like admin options pages do.
- - People mass subscribed on admin form should not require approval,
-   even for closed-subscribe lists.
- - Implement a 'which' mailcmd.  (Probably not hard!  May be good intro
-   project for someone wading into mailman development.)
- - Cascaded lists (lists that subscribe to other lists) should not
-   have password notifications posted!
- - Include a recent verion of pipermail in the distribution (if warranted).
- - Consolidate the TODO lists (john's going to do that on www.list.org).
+*List Admin UI
+- The list admin should be able to turn off the security mechanisms such as 
+confirmation and passwords if he deems it necessary.
+- Make it so mass-subscribe doesn't hang waiting for the mail transport to 
+do all delivery.
+- Allow the admin to remove posts from the database w/o email notification.
+- Time out admin requests, and have them auto-fail after that period.
+- Allow the admin to edit posts in the database (put a header in the post 
+noting that it was edited by a moderator, however!)
+- Have the option for moderator passwords, so that moderators don't have 
+access to the general list options.
+- An -urgent address for each list that may only be posted to by the list 
+admin.  It will seem to be sent to the whole list, but will deliver to 
+everyone ASAP, and not wait for digests.
+- Better options for the policy on bundling digests (periodic w/ arbitrary 
+periods, size based, a combo of the two, etc).
+- A button that will bundle a digest right now (tm).
+- A generic error template page.
+- An option for setting the precedence header.
+- Make the MM-tags accept useful options where appropriate.
+- Revamp the admindb user interface, it's fairly clunky (include a decent 
+cataloging mechanism based on the file system).
 
-Some bigger Pending Projects:
+*List Member UI
+- Editing your user options should put you back to the edit-options page. 
+- Allow the user to be excluded from postings if they're getting them
+in the to: or cc: headers.
+- An option to change your email address.
+- Allow users to specify a different address for password reminders
+(w/ confirmation), or come up w/ a better strategy for remailing lists
+(could be done as the default, given a generic filter mechanism).
 
- - Documentation:
-   - Install (good start in README)
-   - HOWTO setup a list
-   - User and Admin Guides
-     - Overview: features and finding your way around
-     - Tasks
-   - Developers guide
-     - Architecture and API
-     - Direct interaction (via interpreter) and script recipes
- - Encapsulate all modules within a python package, and use relative
-   paths for everything else.
- - Email interface to admin commands.
- - Put the admin interface and other things like private subscriber rosters
-   *behind* passwords, like the private archives are.  Eg, instead of
-   putting the password box on the listinfo form, have it always be just
-   a regular link to the roster, but then the roster page would be a
-   password page if the roster is private and there's no cookie for it.
- - Catalogue mechanism - generalize and refine admindb so that pending bounces,
-   subscriptions, etc are stored in the filesystem, nicely catalogued,
-   and the interfaces for handling them (eg, admindb) shows succinct
-   summaries, with links to see the entire things.  (I may work on
-   this.)
- - (Scott Cotton doing/did this) Develop subscription mechanisms so real
-   confirmation happens, and use that as basis for option to change
-   existing subscription delivery address.  (Scott cotton is working
-   on this.)
- - (Dragon doing/did this) Deliver by connect to SMTP 25 instead of
-   sendmail.  (I'm checking in modules/smtplib.py module john's played
-   with some.)
- - Robustify aliases handling to not just append entries if they
-   already exist, and ideally, edit existing ones if they need to change.
- - (Scott doing/did this) Implement a real admin/membership-management
-   section, that includes includes hidden subscribers, provides easy
-   perusal and changing of all members (including concealed members)
-   status, including disabling or removal from list.
- - Implement some automated validation of installation - check for
-   obvious problems with options settings, file access permissions,
-   sendmail hookup, etc.
- ? Have an implicit list-managers list for every site, which includes
-   all the list managers?
- - Make listinfo page static, regenerated every time admin options are 
-   changed.  This will speed up and reduce load for listinfo page
-   loading.
+*Site Administrator's UI
+- Make a web based site admin UI for adding lists, deleting lists, etc.
+- Use a better storage mechanism for the site admin password
+- Improve list deletion by requiring a valid password (from the shell script)
 
-More Fundamental, or just more bigger:), Pending Projects
+*Email Handling
+- Implement a reasonable administrivia filter (but less likely to misfire than
+majordomo's).
+- Implement a more general (form-based, like the netscape email
+filter) filtering/bouncing/etc. mechanism.
+- Allow for programs to run that perform filtering / reformatting.
+- Improve confirmation code so that the user only need respond to a message.
+- Make confirmation messages NOT process the message body as commands.
+- Set asside messages IMMEDIATELY as a rescue mechanism... make sure no
+  mails are ever lost, even if there turned out to be a bad Mailman bug.
 
- - Refine locking to only necessary sections, so there's less room for 
-   unnecessary contention.
- - Implement the system as a persistent server.  (John's planning to
-   do this.)
- - (Dragon's doing this) Implement member profiles, using a class.
-   For name, organization, description, etc, and defaults options
-   settings.  The lists, themselves, could still have copies of the
-   specific passwords and the compact bitmaps (for the sake of
-   efficiency) for list-specific options like digest/nondigest, but
-   the user could set their default choices - delivery address,
-   password, delivery mode - in their profile.
+*Mailcmd interface
+- Provide an email interface to administrative commands.
 
-===================================================================
-For v .96:
-o Add more bounce patterns....
-o Confirmation when you change anything...
-o Fix what new list mail has to say.
-o Link from subscribe to options
-o Edit posts from admindb page
-o Make who, info, etc... take list as an optional argument.
-o subject in caps
-o headers on approve should die
-o link to other lists, have a global page of lists on this server...
-o ordering of post requests
-o first time bounce on stale addr problem.
-o link from subscribe page to options page
-For the near future:
-o Make these filter functions live together in self.
-o Lower case all cmds in mailcmd
-o Does admin password work for mail cmds?
-o Occasionally remove stale bounce entries
-o lower case all names?
-o Remove the bounce log.
-o Implement the option to mail admin instead of auto-removing...
-o Send mail to the guy when you forcefully unsubscribe him... (IE, through bounce management)
-o Automatically insert a crontab entry to update the archives of a new list.
-o mkdigest command for cron, plus over the web button.
-o Search engine for archives
-o Month annotations?
-o Logging -- remove all tmp logs.  
-o Generic error template
-o Go over code looking for dead functions / code (esp mm_html funcs)
-o Mailman web pages / documentation
-o The config program
-o remove/fix valid_parent check in wrappers
-o Catch common commands in mail...
-o md5 checksums to prevent mail loops (how will this work?)
-o For archives, perhaps switch to every n months?
-o Receive Non-Mail Files
-o If you don't crush by default, you get 2 subject lines...
-o Clean up the code.
+*Portability concerns
+- Use portable file locking
+- Replace cron stuff with our own scheduling mechanism
 
-For the Mailman home page:
-o What are digests?
-o What does option XXX mean?
-o How about removing a list?
-o Document what tags you can use on each web page when editing html.
-	-- Add links to the right pages.
+*Bounce handling
+- Add more patterns for bounce handling
+- Occasionally remove stale bounce entries
+- Send mail to people that are being removed w/o their knowlege (even though
+they're likely not to get it).
+- Clean the code up, make it more robust and efficent (see also bugs)
 
-The Config program:
-o Remember to:
-	-- trusted user the mailman (how about smail users?)
-	-- Mail to mailman should go to server owner
-	-- add Cw entries (smail users?)
-o chmod o+x all these scripts in install.
-o Hook up cron scripts as part of install. 
-o Need to make sure that all paths used in code and the #! lines get updated
-	  by the config process.
-o Add mailman and mailman-owner users.
-o Notification on subscribes / unsubscribes
+*Pipermail + Archiving mechanism
+- Hook it back up in the default distribution
+- Search engine for archives
+- Format the list of archives nicely by default, perhaps in a table:
+<table border=3>
+<tr><td>Archive</td> <td>Date</td><td>View by:</td></tr>     
+<tr><td>Vol. 1</td> <td>Q4, 1998</td><td>DATE THREAD AUTHOR </td></tr> 
+</table>
+(Date thread and author would all be links)
+- Provide downloadable tar.gz's of the archives
+- When a list switches on archiving, automatically do the archiving 
+  regularly (right now you have to install a cron script).
 
+*Code cleanup
+- Use the re module where regexp and regsub are used.
+- Refine any remaining unqualified exception guards to specify target 
+  exceptions, when appropriate.
+- Turn standard mailman exceptions into class exceptions.
+- Seperate edit-options from the subscribe script.
+- Encapsulate all modules into a python package.
+- Remove dead code, etc.
 
-####################################
-
-Potential stuff for future versions:
-o Configurable logging?
-o Make it be a client-server thing, instead of reloading list info every time 
-	some program wants to perform an operation on a list.
-o Make the web page / list man stuff machine independant (Will require the
-  client/server deal).
-o Make the tag stuff accept arguments.
-o New list -- prevent posting option
-o precidence header
-o Administrivia a la majordomo?
-o Approval not over the web. (A by-mail interface to the admin stuff)
-o Newsgroups gateway
-o Global mailing list services:
-	-- bit saying whether we've notified the main server.
-	-- support for periodic confirmations.
-	-- pass on stats.
-
-
-
-
-
-
+*Misc
+- Automatically update aliases again?
+- Make the listinfo pages static, and have them regenerate when options are 
+changed, or html is edited.
+- Make it so Mailman can run as a threaded server (this feature should be 
+optional).
+- The threaded server should be able to off its workload to friendly machines 
+if it is overworked (distributed support).
+- Refine locking to lock only necessary sections to get rid of superfluous
+contention.
+- Implement member profiles, using a class to store name,
+organization, description, etc, and default option settings.  The
+lists still can have their own data, but the user can set defaults in
+their profile...
