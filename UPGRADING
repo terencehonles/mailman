@@ -10,7 +10,7 @@ the source distribution.  If the script that updates the mailman
 filesystem encounters something that is not resolvable, it will log
 info about this to "update.log".  This might be worth checking.
 
-Below is an annotated listing of the things that "make upgrade" does.
+Below is an annotated listing of the things that "make update" does.
 Hopefully, this will help resolve any problems you are having.
 
 - Archiving files are moved around as part of integrating pipermail
