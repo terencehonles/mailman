@@ -651,41 +651,28 @@ background and instructions for subscribing to and using it, visit:
             else:
                 self.AddToResponse(_("Succeeded"))
 
-
-
     def ProcessConfirmCmd(self, args, cmd, mail):
         """Validate confirmation and carry out the subscription."""
-        if len(args) != 1:
-            self.AddError(_("Usage: confirm <confirmation number>\n"))
+        if len(args) <> 1:
+            self.AddError(_("Usage: confirm <confirmation string>\n"))
             return
         try:
-            cookie = int(args[0])
-        except:
-            self.AddError(_("Usage: confirm <confirmation number>\n"))
-            return
-        try:
-            self.ProcessConfirmation(cookie)
+            self.ProcessConfirmation(args[0])
         except Errors.MMBadConfirmation:
-            from math import floor
-            # Express in days, rounded to three places:
-            expiredays = floor((mm_cfg.PENDING_REQUEST_LIFE / (60 * 60 * 24.0))
-                               * 1000) / 1000
-            if floor(expiredays) == expiredays:
-                expiredays = int(expiredays)
-            self.AddError(_("Invalid confirmation number!\n"
-                            "Note that confirmation numbers expire "
-                            "%(expiredays)s days"
-                            " after initial request.\n"
-                            "Please check date and number and try again,"
-                            " from the start if necessary."),
+            # Express in approximate days
+            days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
+            self.AddError(_('''Invalid confirmation string.  Note that
+            confirmation strings expire approximately %(days)s days after the
+            initial subscription request.  If your confirmation has expired,
+            please try to re-submit your subscription.'''),
                           trunc=0)
         except Errors.MMNeedApproval, admin_addr:
-            self.AddToResponse(_("Your request has been forwarded to the list "
-                               "administrator for approval"))
+            self.AddToResponse(_('''Your request has been forwarded to the
+            list administrator for approval.'''))
         except Errors.MMAlreadyAMember:
             # Some other subscription request for this address has
             # already succeeded.
-            self.AddError(_("You are already subscribed!"))
+            self.AddError(_("You are already subscribed."))
         else:
             #
             # if the list sends a welcome message, we don't need a response
@@ -695,7 +682,6 @@ background and instructions for subscribing to and using it, visit:
                 self.__NoMailCmdResponse = 1
             else:
                 self.AddToResponse(_("Succeeded"))
-
 
     def AddApprovalMsg(self, cmd):
         text = Utils.maketext(
