@@ -140,7 +140,7 @@ def main():
             {'action'  : mlist.GetScriptURL('private', absolute=1),
              'realname': mlist.real_name,
              'message' : message,
-             }, lang=mlist.preferred_language)
+             }, mlist=mlist)
         return
 
     # Authorization confirmed... output the desired file
