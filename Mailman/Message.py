@@ -20,22 +20,29 @@ This is a subclass of mimeo.Message but provides a slightly extended interface
 which is more convenient for use inside Mailman.
 """
 
+import email
 import email.Message
 import email.Utils
-
 from email.Charset import Charset
 from email.Header import Header
 
-from types import ListType
+from types import ListType, StringType
 
 from Mailman import mm_cfg
 from Mailman import Utils
 
 COMMASPACE = ', '
 
+VERSION = tuple([int(s) for s in email.__version__.split('.')])
+
 
 
 class Message(email.Message.Message):
+    def __init__(self):
+        # We need a version number so that we can optimize __setstate__()
+        self.__version__ = VERSION
+        email.Message.Message.__init__(self)
+
     # BAW: For debugging w/ bin/dumpdb.  Apparently pprint uses repr.
     def __repr__(self):
         return self.__str__()
@@ -46,6 +53,11 @@ class Message(email.Message.Message):
         # upgrading the email package.  We shouldn't burden email with this,
         # so we handle schema updates here.
         self.__dict__ = d
+        # We know that email 2.4.3 is up-to-date
+        version = d.get('__version__', (0, 0, 0))
+        d['__version__'] = VERSION
+        if version >= VERSION:
+            return
         # Messages grew a _charset attribute between email version 0.97 and 1.1
         if not d.has_key('_charset'):
             self._charset = None
@@ -55,6 +67,25 @@ class Message(email.Message.Message):
             # inside a multipart/digest or not, so I think this is the best we
             # can do.
             self._default_type = 'text/plain'
+        # Header instances used to allow both strings and Charsets in their
+        # _chunks, but by email 2.4.3 now it's just Charsets.
+        headers = []
+        hchanged = 0
+        for k, v in self._headers:
+            if isinstance(v, Header):
+                chunks = []
+                cchanged = 0
+                for s, charset in v._chunks:
+                    if isinstance(charset, StringType):
+                        charset = Charset(charset)
+                        cchanged = 1
+                    chunks.append((s, charset))
+                if cchanged:
+                    v._chunks = chunks
+                    hchanged = 1
+            headers.append((k, v))
+        if hchanged:
+            self._headers = headers
 
     # I think this method ought to eventually be deprecated
     def get_sender(self, use_envelope=None, preserve_case=0):
