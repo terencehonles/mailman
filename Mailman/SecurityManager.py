@@ -59,11 +59,13 @@ try:
     import crypt
 except ImportError:
     crypt = None
+import md5
 
-from Mailman import Errors
-from Mailman import Utils
-from Mailman import Cookie
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import Errors
+from Mailman import Cookie
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -76,7 +78,7 @@ class SecurityManager:
 	# Non configurable
 	self.passwords = {}
 
-    def AuthContextInfo(self, authcontext, user):
+    def AuthContextInfo(self, authcontext, user=None):
         # authcontext may be one of AuthUser, AuthListModerator,
         # AuthListAdmin, AuthSiteAdmin.  Not supported is the AuthCreator
         # context.
@@ -135,19 +137,55 @@ class SecurityManager:
                 ok = Utils.check_global_password(response)
                 if ok:
                     return mm_cfg.AuthSiteAdmin
-            else:
+            elif ac == mm_cfg.AuthListAdmin:
                 # The password for the list admin and list moderator are not
                 # kept as plain text, but instead as an sha hexdigest.  The
                 # response being passed in is plain text, so we need to
-                # digestify it first.
-                if ac in (mm_cfg.AuthListAdmin, mm_cfg.AuthListModerator):
-                    chkresponse = sha.new(response).hexdigest()
-                else:
-                    chkresponse = response
-
-                key, secret = self.AuthContextInfo(ac, user)
-                if secret is not None and chkresponse == secret:
+                # digestify it first.  Note however, that for backwards
+                # compatibility reasons, we'll also check the admin response
+                # against the crypted and md5'd passwords, and if they match,
+                # we'll auto-migrate the passwords to sha.
+                key, secret = self.AuthContextInfo(ac)
+                if secret is None:
+                    continue
+                sharesponse = sha.new(response).hexdigest()
+                upgrade = ok = 0
+                if sharesponse == secret:
+                    ok = 1
+                elif md5.new(response).digest() == secret:
+                    ok = 1
+                    upgrade = 1
+                elif crypt and crypt.crypt(response, secret[:2]) == secret:
+                    ok = 1
+                    upgrade = 1
+                if upgrade:
+                    save_and_unlock = 0
+                    if not self.Locked():
+                        self.Lock()
+                        save_and_unlock = 1
+                    try:
+                        self.password = sharesponse
+                        if save_and_unlock:
+                            self.Save()
+                    finally:
+                        if save_and_unlock:
+                            self.Unlock()
+                if ok:
                     return ac
+            elif ac == mm_cfg.AuthListModerator:
+                # The list moderator password must be sha'd
+                key, secret = self.AuthContextInfo(ac)
+                if secret and sha.new(response).hexdigest() == secret:
+                    return ac
+            elif ac == mm_cfg.AuthUser:
+                # The user's passwords are kept in plain text
+                key, secret = self.AuthContextInfo(ac, user)
+                if secret and response == secret:
+                    return ac
+            else:
+                # What is this context???
+                syslog('error', 'Bad authcontext: %s', ac)
+                raise ValueError, 'Bad authcontext: %s' % ac
         return mm_cfg.UnAuthorized
 
     def WebAuthenticate(self, authcontexts, response, user=None):
@@ -267,22 +305,6 @@ class SecurityManager:
         if mac <> received_mac:
             return 0
         # Authenticated!
-        return 1
-
-    def ConfirmUserPassword(self, user, pw):
-        """True if password is valid for site, list admin, or specific user."""
-        if self.ValidAdminPassword(pw):
-            return 1
-        if user is None:
-            raise Errors.MMBadUserError
-        addr = self.FindUser(user)
-        if addr is None:
-            raise Errors.MMNotAMemberError
-        storedpw = self.passwords.get(addr)
-        if storedpw is None:
-            raise Errors.MMBadUserError
-        if storedpw <> pw:
-            raise Errors.MMBadPasswordError
         return 1
 
     def ChangeUserPassword(self, user, newpw, confirm):
