@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Recognizes simple heuristically delimited bounces."""
@@ -33,7 +33,7 @@ def _c(pattern):
 # block, and address cre is the regexp that will recognize the addresses.  It
 # must have a group called `addr' which will contain exactly and only the
 # address that bounced.
-patterns = [
+PATTERNS = [
     # sdm.de
     (_c('here is your list of failed recipients'),
      _c('here is your returned mail'),
@@ -75,7 +75,9 @@ patterns = [
 
 
 
-def process(msg, patterns=patterns):
+def process(msg, patterns=None):
+    if patterns is None:
+        patterns = PATTERNS
     # simple state machine
     #     0 = nothing seen yet
     #     1 = intro seen
