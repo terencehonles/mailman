@@ -4,6 +4,153 @@ Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.1 alpha 4 (31-Dec-2001)
+
+    - The administrative requests database page (admindb) has been
+      redesigned for better usability when there are lots of held
+      postings.  Changes include:
+        o A summary page which groups held messages by sender email
+          address.  On this page you can dispose of all the sender's
+          messages in one action.  You can also view the details of
+          all the sender's messages, or the details of a single
+          message.  You can also add the sender to one of the list's
+          sender filters.
+
+        o A details page where you can view all messages, just those
+          for a particular sender, or just a single held message.
+          This details page is laid out the same as the old admindb
+          page.
+
+        o The instructions have been shorted on the summary and
+          details page, with links to more detailed explanations.
+
+    - Bounce processing
+        o Mailman now keeps track of the reason a member's delivery
+          has been disabled: explicitly by the administrator,
+          explicitly by the user, by the system due to excessive
+          bounces, or for (legacy) unknown reasons.
+
+        o A new bounce processing algorithm has been implemented (we
+          might actually understand this one ;).  When an address
+          starts bouncing, the member gets a "bounce score".  Hard
+          (fatal) bounces score 1.0, while soft (transient) bounces
+          score 0.5.
+
+          List administrators can specify a bounce threshold above
+          which a member gets disabled.  They can also specify a time
+          interval after which, if no bounces are received from the
+          member, the member's bounce score is considered stale and is
+          thrown away.
+
+        o A new cron script, cron/disabled, periodically sends
+          notifications to members who are bounce disabled.  After a
+          certain number of warnings the member is deleted from the
+          list.  List administrators can control both the number of
+          notifications and the amount of time between notifications.
+
+          Notifications include a confirmation cookie that the member
+          can use to re-enable their subscription, via email or web.
+
+        o New configuration variables to support the bounce processing
+          are DEFAULT_BOUNCE_SCORE_THRESHOLD,
+          DEFAULT_BOUNCE_INFO_STALE_AFTER,
+          DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS,
+          DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL.
+
+    - Privacy and security
+        o Sender filters can now be regular expressions.  If a line
+          starts with ^ it is taken as a (raw string) regular
+          expression, otherwise it is a literal email address.
+
+        o Fixes in 2.0.8 ported forward: prevent cross-site scripting
+          exploits.
+
+    - Mail delivery
+        o Aliases have all been changed so that there's more
+          consistency between the alias a message gets delivered to,
+          and the script & queue runner that handles the message.
+
+          I've also renamed the mail wrapper script to `mailman' from
+          `wrapper' to avoid collisions with other MLM's.  You /will/
+          need to regenerate your alias files with bin/genaliases, and
+          you may need to update your smrsh (Sendmail) configs.a
+
+          Bounces always go to listname-bounces now, since
+          administration has been separated from bounce processing.
+          listname-admin is obsolete.
+
+        o VERP support!  This greatly improves the accuracy of bounce
+          detection.  Configuration variables which control this feature
+          include VERP_DELIVERY_INTERVAL, VERP_PERSONALIZED_DELIVERIES,
+          VERP_PASSWORD_REMINDERS, VERP_REGEXP, and VERP_FORMAT.  The
+          latter two must be tuned to your MTA.
+
+        o A new alias mailman-loop@dom.ain is added which directs all
+          output to the file $prefix/data/owner-bounces.mbox.  This is
+          used when sending messages to the site list owners, as the
+          final fallback for bouncing messages.
+
+        o New configuration variable POSTFIX_STYLE_VIRTUAL_DOMAINS
+          which should be set if you are using the Postfix MTA and
+          want Mailman to play nice with Postfix-style virtual
+          domains.
+
+    - Miscellaneous
+        o Better interoperability with Python 2.2.
+
+        o MailList objects now record the date (in seconds since
+          epoch) that they were created.  This is in a hidden
+          attribute `created_at'.
+
+        o bin/qrunner grows a -s/--subproc switch which is usually
+          used only when it's started from mailmanctl.
+
+        o bin/newlist grows a -l/--language option so that the list's
+          preferred language can be set from the command line.
+
+        o cron changes: admin reminders go out at 8am local time instead
+          of 10pm local time.
+
+    - Pipermail archiver
+        o MIME attachments are scrubbed out into separate files which
+          can be viewed by following a link in the original article.
+          Article contains an indication of the size of the
+          attachment, its type, and other useful information.
+
+        o New script bin/cleanarch which can be used to `clean' an
+          .mbox archive file by fixing unescaped embedded Unix From_
+          lines.
+
+        o New configuration variable ARCHIVE_SCRUBBER in
+          Defaults.py.in which names the module that Pipermail should
+          use to scrub articles of MIME attachments.
+
+        o New configuration variable ARCHIVE_HTML_SANITIZER which
+          describes how the scrubber should handle text/html
+          attachments.
+
+        o PUBLIC_ARCHIVE_URL has change its semantics.  It is now an
+          absolute url, with the hostname and listname parts
+          interpolated into it on a per-list basis.
+
+        o Pipermail should now provide the proper character set in the
+          Content-Type: header for archived articles.
+
+    - Internationalization
+        o Czech translations by Dan Ohnesorg.
+
+        o The Hungarian charset has be fixed to be iso-8859-2.
+
+        o The member options login page now has a language selection
+          widget.
+
+    - Building, configuration
+        o email-0.96 package is required (see the misc directory).
+
+        o New recipes for integrating Mailman and Sendmail,
+          contributed by David Champion.
+
+
 2.1 alpha 3 (22-Oct-2001)
 
     - Realname support
