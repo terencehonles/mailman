@@ -277,14 +277,17 @@ Bad admin recipient: %s''', self.internal_name(), addr)
         sender = msg.get_sender()
         subject = msg.get('subject', _('(no subject)'))
         if e is None:
-            e = _('[No bounce details are available]')
+            notice = _('[No bounce details are available]')
+        else:
+            notice = _(e.notice())
         # Currently we always craft bounces as MIME messages.
         bmsg = Message.UserNotification(msg.get_sender(),
                                         self.GetOwnerEmail(),
                                         subject)
         bmsg['Content-Type'] = 'multipart/mixed'
         bmsg['MIME-Version'] = '1.0'
-        txt = MIMEText(e, _charset=Utils.GetCharSet(self.preferred_language))
+        txt = MIMEText(notice,
+                       _charset=Utils.GetCharSet(self.preferred_language))
         bmsg.add_payload(txt)
         bmsg.add_payload(MIMEMessage(msg))
         bmsg.send(self)
