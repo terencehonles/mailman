@@ -4,7 +4,7 @@ Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.1 alpha 3 (20-Oct-2001)
+2.1 alpha 3 (XX-Oct-2001)
 
     - Realname support
         o Mailman now tracks a member's Real Name in addition to their
@@ -45,6 +45,9 @@ Here is a history of user visible changes to Mailman.
         o When a held message is approved via the admindb page, an
           X-Moderated: header is added to the message.
 
+        o List admins can now set an unsubscribe policy which requires
+          them to approve of member unsubscriptions.
+
     - Web U/I
         o All web confirmations now require a two-click procedure,
           where the first click gives them a page that allows them to
@@ -68,6 +71,9 @@ Here is a history of user visible changes to Mailman.
 
         o The U/I for unsubscribing a member on the admin's membership
           page should be more intuitive now.
+
+        o There is now a separate configuration option for whether the
+          goodbye_msg is sent when a member is unsubscribed.
 
     - Performance
         o misc/mailman is a Unix init script, appropriate for
@@ -122,6 +128,9 @@ Here is a history of user visible changes to Mailman.
 
         o Message that come from Usenet but that have broken MIME
           boundaries are ignored.
+
+        o If the site administrator agrees, list owners have the
+          ability to disable RFC 2369 List-* headers.
 
     - Building/testing/configuration
         o mimelib is no longer required, but you must install the
