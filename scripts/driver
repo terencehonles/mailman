@@ -16,26 +16,32 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+# This better succeed.  If this fails, Python is royally screwed so we might
+# as well let the Web server give us a fatal and obtrusive error.
+import sys
 
+# from here on, we try to be as bullet proof as possible
+
+
+
 # Useful for debugging.  When an error occurs, this attaches the file name to
 # the exception string and re-raises (using the bogus Python 1.5 semantics)
 # this may be unnecessary in Python 1.5.2
 
-## realopen = open
-## def open(filename, mode='r', bufsize=-1, realopen=realopen):
-##     try:
-##         return realopen(filename, mode, bufsize)
-##     except IOError, e:
-##         strerror = e.strerror + ': ' + filename
-##         e.strerror = strerror
-##         e.args = (e.args[0], strerror)
-##         # Python 1.5
-##         import sys
-##         raise e, None, sys.exc_info()[2]
-##         # Python 1.5.1
-##         #raise
-## import __builtin__
-## __builtin__.__dict__['open'] = open
+realopen = open
+def open(filename, mode='r', bufsize=-1, realopen=realopen):
+    try:
+        return realopen(filename, mode, bufsize)
+    except IOError, e:
+        strerror = e.strerror + ': ' + filename
+        e.strerror = strerror
+        e.args = (e.args[0], strerror)
+        # Python 1.5
+        raise e, None, sys.exc_info()[2]
+        # Python 1.5.1
+        #raise
+import __builtin__
+__builtin__.__dict__['open'] = open
 
 
 
@@ -53,17 +59,12 @@
 #   get a Web server error since this file wouldn't even compile, and there's
 #   no way to catch that.
 #
-# - The sys module could be royally screwed.  Either we couldn't import it, or 
-#   it didn't have a sys.stderr attribute.  Both those would indicate serious
-#   problems in the Python installation.  These won't generate Web server
-#   errors, but neither will they give meaningful tracebacks.
+# - The sys module could be royally screwed, probably we couldn't import it.
+#   Both those would indicate serious problems in the Python installation.
+#   These won't generate Web server errors, but neither will they give
+#   meaningful tracebacks.
 #
-# - We couldn't import the traceback module, or traceback.print_exc()
-#   failed.  Same diagnosis and effect as with sys being broken.
-#
-# I consider all these pretty unlikely.  Note that it is also possible that
-# the environment variables wouldn't be printed, perhaps because os couldn't
-# be imported or there was some problem with os.environ.  Again, not likely.
+# I consider these pretty unlikely.
 
 
 
@@ -72,8 +73,7 @@ def run_main():
         # These will ensure that even if something between now and the
         # creation of the real logger below fails, we can still get
         # *something* meaningful
-        logger = sys.stderr
-        multi = sys.stderr
+        logger = None
         # insert the relative path to the parent of the Mailman package
         # directory, so we can pick up the Utils module
         import os
@@ -81,12 +81,11 @@ def run_main():
         sys.path.insert(0, os.pardir)
         # map stderr to a logger, if possible
         from Mailman.Logging.StampedLogger import StampedLogger
-        from Mailman.Logging.MultiLogger import MultiLogger
         logger = StampedLogger('error',
                                label='admin',
                                manual_reprime=1,
-                               nofail=0)
-        multi = MultiLogger(sys.__stdout__, logger)
+                               nofail=0,
+                               immediate=1)
         # The name of the module to run is passed in argv[1].  What we
         # actually do is import the module named by argv[1] that lives in the
         # Mailman.Cgi package.  That module must have a main() function, which
@@ -104,12 +103,33 @@ def run_main():
             # this is a valid way for the function to exit
             pass
     except:
-        print_traceback(logger, multi)
+        print_traceback(logger)
         print_environment(logger)
 
 
 
-def print_traceback(logger, multi):
+# We are printing error reporting to two places.  One will always be stdout
+# and the other will always be the log file.  It is assumed that stdout is an
+# HTML sink and the log file is a plain text sink.
+
+def print_traceback(logfp=None):
+    if logfp is None:
+        logfp = sys.__stderr__
+
+    try:
+        import traceback
+    except ImportError:
+        traceback = None
+
+    # write to the log file first
+    logfp.write('[----- Traceback ------]\n')
+    if traceback:
+        traceback.print_exc(file=logfp)
+    else:
+        logfp.write('[failed to import module traceback]\n')
+        logfp.write('[exc: %s, var: %s]\n' % sys.exc_info()[0:2])
+
+    # print to the HTML sink
     print """\
 Content-type: text/html
 
@@ -122,22 +142,34 @@ a description of what happened.  Thanks!
 <h4>Traceback:</h4>
 <p><pre>
 """
-    logger.write('[----- Traceback ------]\n')
-    try:
-        import traceback
-        # in normal situation, this will get logged to the MultiLogger created
-        # above, which will write the data to both the real live stdout, and
-        # the StampedLogger
-        traceback.print_exc(file=multi)
-    except:
-        multi.write('[failed to get a traceback]\n')
+    if traceback:
+        traceback.print_exc(file=sys.stdout)
+    else:
+        print '[failed to import module traceback]'
+        print '[exc: %s, var: %s]' % sys.exc_info()[0:2]
     print '\n\n</pre>'
 
 
 
-def print_environment(logger):
+def print_environment(logfp=None):
+    if logfp is None:
+        logfp = sys.__stderr__
+
     try:
         import os
+    except ImportError:
+        os = None
+
+    # write to the log file first
+    logfp.write('[----- Environment Variables -----]\n')
+    if os:
+        for k, v in os.environ.items():
+            logfp.write('\t%s: %s\n' % (k, v))
+    else:
+        logfp.write('[failed to import module os]\n')
+
+    # write to the HTML sink
+    if os:
         print '''\
 <p><hr><h4>Environment variables:</h4>
 
@@ -145,32 +177,40 @@ def print_environment(logger):
 <tr><td><strong>Variable</strong></td>
 <td><strong>Value</strong></td></tr>
 '''
-        logger.write('[----- Environment Variables -----]\n')
-        for varname, value in os.environ.items():
-            print '<tr><td>', varname, '</td><td>', value, '</td></tr>'
-            logger.write('\t%s: %s\n' % (varname, value))
+        for k, v in os.environ.items():
+            print '<tr><td>', k, '</td><td>', v, '</td></tr>'
         print '</table>'
-    except:
-        print '<p><hr>[environment variables are not available]'
+    else:
+        print '<p><hr>[failed to import module os]'
+
 
 
 try:
-    import sys
-    try:
-        run_main()
-    finally:
-        # this is probably not strictly necessary since the script is exiting
-        # soon anyway
-        sys.stderr = sys.__stderr__
+    # Python 1.5 doesn't have these by default.  Let's make our lives easy
+    if not hasattr(sys, '__stderr__'):
+        sys.__stderr__ = sys.stderr
+    if not hasattr(sys, '__stdout__'):
+        sys.__stdout__ = sys.stdout
+
+    run_main()
 except:
-    # Jeez, we couldn't even import sys, or sys didn't have a stderr
-    # attribute!
-    print """\
+    # Some exception percolated all the way back up to the top.  This
+    # generally shouldn't happen because the run_main() call is similarly
+    # wrapped, but just in case, we'll give it one last ditch effort to report 
+    # problems to *somebody*.  Most likely this will end up in the Web server
+    # log file.
+    try:
+        print_traceback()
+        print_environment()
+    except:
+        # Nope, we're quite screwed
+        print """\
 Content-type: text/html
 
 <p><h3>We're sorry, we hit a bug!</h3>
 
-Mailman experienced a very low level failure and could not even generate
-a useful traceback.  Please report this to the Mailman administrator at
+Mailman experienced a very low level failure and could not even generate a
+useful traceback for you.  Please report this to the Mailman administrator at
 this site.
 """
+        sys.__stderr__.write('[Mailman: low level unrecoverable exception]\n')
