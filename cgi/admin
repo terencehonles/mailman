@@ -2,7 +2,7 @@
 
 """Produce the list-administration web page on stdout.
 
-We need the environment var PATH_INFO to name the list."""
+To run stand-alone for debugging, set env var PATH_INFO to name of list."""
 
 import sys, os, cgi, string, crypt, types
 #f = open('/tmp/quick', 'a+')
@@ -90,6 +90,21 @@ def main():
 				  'but non-digestified mail is turned '
 				  'off.  They will receive mail until '
 				  'you fix this problem.'))
+
+	if len(cgi_data.keys()):
+	    if (cgi_data.has_key('bounce_matching_headers')):
+		try:
+		    pairs = list.parse_matching_header_opt()
+		except mm_err.MMBadConfigError, line:
+		    doc.AddItem('<hr>')
+		    m = ('Warning: bad matching-header line'
+			 '(does it have the colon?)<ul> %s </ul>'
+			 % line)
+		    doc.AddItem(
+			htmlformat.Header(3,
+					  htmlformat.Italic(
+					      htmlformat.FontAttr(
+						  m, color="ff5060"))))
 
 	FormatConfiguration(doc, list)
 
