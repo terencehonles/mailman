@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,7 +29,6 @@ import errno
 #
 import pipermail
 from Mailman import LockFile
-from Mailman.Utils import mkdir
 
 CACHESIZE = pipermail.CACHESIZE
 
@@ -241,10 +240,14 @@ class HyperDatabase(pipermail.Database):
             return
 	self.__closeIndices()
 	arcdir = os.path.join(self.basedir, 'database')
-	try:
-            mkdir(arcdir, mode=02770)
-        except os.error:
-            pass
+        omask = os.umask(0)
+        try:
+            try:
+                os.mkdir(arcdir, mode=02770)
+            except OSError, e:
+                if e.errno <> errno.EEXIST: raise
+        finally:
+            os.umask(omask)
 	for i in ('date', 'author', 'subject', 'article', 'thread'):
 	    t = DumbBTree(os.path.join(arcdir, archive + '-' + i)) 
 	    setattr(self, i + 'Index', t)
