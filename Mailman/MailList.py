@@ -27,6 +27,7 @@ import string
 import errno
 import re
 import shutil
+import socket
 from types import StringType, IntType, DictType, ListType
 from urlparse import urlparse
 
@@ -785,44 +786,37 @@ it will not be changed."""),
 	    os.umask(ou)
 	
     def __save(self, dict):
-        # We want to write this dict in a marshal, but be especially paranoid
-        # about how we write the config.db, so we'll be as robust as possible
-        # in the face of, e.g. disk full errors.  The idea is that we want to
-        # guarantee that config.db is always valid.  The old way had the bad
-        # habit of writing an incomplete file, which happened to be a valid
-        # (but bogus) marshal.
+        # Marshal this dictionary to file, and rotate the old version to a
+        # backup file.  The dictionary must contain only builtin objects.  We
+        # must guarantee that config.db is always valid so we never rotate
+        # unless the we've successfully written the temp file.
         fname = os.path.join(self._full_path, 'config.db')
-        fname_tmp = fname + '.tmp.%d' % os.getpid()
+        fname_tmp = fname + '.tmp.%s.%d' % (socket.gethostname(), os.getpid())
         fname_last = fname + '.last'
         fp = None
         try:
-            try:
-                fp = open(fname_tmp, 'w')
-                marshal.dump(dict, fp)
-            except (ValueError, IOError), e:
-                syslog('error',
-                       'Failed config.db file write, retaining old state.\n%s'
-                       % e)
-                if fp:
-                    os.unlink(fname_tmp)
-                raise
-        finally:
-            if fp:
-                fp.close()
+            fp = open(fname_tmp, 'w')
+            # marshal doesn't check for write() errors so this is safer.
+            fp.write(marshal.dumps(dict))
+            fp.close()
+        except IOError, e:
+            syslog('error',
+                   'Failed config.db write, retaining old state.\n%s' % e)
+            if fp is not None:
+                os.unlink(fname_tmp)
+            raise
         # Now do config.db.tmp.xxx -> config.db -> config.db.last rotation
         # as safely as possible.
         try:
             # might not exist yet
             os.unlink(fname_last)
         except OSError, e:
-            if e.errno <> errno.ENOENT:
-                raise
+            if e.errno <> errno.ENOENT: raise
         try:
             # might not exist yet
             os.link(fname, fname_last)
         except OSError, e:
-            if e.errno <> errno.ENOENT:
-                raise
+            if e.errno <> errno.ENOENT: raise
         os.rename(fname_tmp, fname)
 
     def Save(self):
