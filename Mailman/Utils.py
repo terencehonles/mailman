@@ -142,13 +142,11 @@ def wrap(text, column=70):
     return wrapped
     
 
-def SendTextToUser(subject, text, recipient, sender, add_headers=[], raw=0):
+def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
     import Message
     msg = Message.OutgoingMessage()
     msg.SetSender(sender)
     msg.SetHeader('Subject', subject, 1)
-    if not raw:
-        text = wrap(text)
     msg.SetBody(QuotePeriods(text))
     DeliverToUser(msg, recipient, add_headers=add_headers)
 
@@ -398,11 +396,17 @@ def chunkify(members, chunksize=mm_cfg.ADMIN_MEMBER_CHUNKSIZE):
      return res
 
 
-def maketext(templatefile, dict):
-    # Read a template file, do string substituion based on the dictionary and
-    # return the results
+def maketext(templatefile, dict, raw=0):
+    """Make some text from a template file.
+
+    Reads the `templatefile', relative to mm_cfg.TEMPLATE_DIR, does string
+    substitution by interpolating in the `dict', and if `raw' is false,
+    wraps/fills the resulting text by calling wrap().
+    """
     file = os.path.join(mm_cfg.TEMPLATE_DIR, templatefile)
     fp = open(file)
     template = fp.read()
     fp.close()
-    return template % dict
+    if raw:
+        return template % dict
+    return wrap(template % dict)
