@@ -50,6 +50,8 @@ class NewsRunner(Runner):
     QDIR = mm_cfg.NEWSQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
+        # Make sure we have the most up-to-date state
+        mlist.Load()
         if not msgdata.get('prepped'):
             prepare_message(mlist, msg, msgdata)
         try:

@@ -49,9 +49,8 @@ class OutgoingRunner(Runner):
         self._func = getattr(sys.modules[modname], 'process')
 
     def _dispose(self, mlist, msg, msgdata):
-        # Fortunately, we do not need the list lock to do deliveries.  However
-        # this does mean that we aren't as responsive to changes in list
-        # configuration, since we never reload the list configuration.
+        # Make sure we have the most up-to-date state
+        mlist.Load()
         try:
             pid = os.getpid()
             self._func(mlist, msg, msgdata)
