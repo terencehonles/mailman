@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Sun Oct 20 11:44:44 2002\n"
+"POT-Creation-Date: Fri Oct 25 18:34:14 2002\n"
 "PO-Revision-Date: 2002-08-14 01:18:58+00:00\n"
 "Last-Translator: Ousmane Wilane <wilane@cyg.sn>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
@@ -241,7 +241,7 @@ msgstr "Modérateur"
 msgid "Administrator"
 msgstr "Administrateur"
 
-#: Mailman/Cgi/admin.py:70 Mailman/Cgi/admindb.py:85 Mailman/Cgi/confirm.py:55
+#: Mailman/Cgi/admin.py:70 Mailman/Cgi/admindb.py:89 Mailman/Cgi/confirm.py:55
 #: Mailman/Cgi/edithtml.py:67 Mailman/Cgi/listinfo.py:51
 #: Mailman/Cgi/options.py:70 Mailman/Cgi/private.py:98
 #: Mailman/Cgi/rmlist.py:62 Mailman/Cgi/roster.py:57
@@ -249,7 +249,7 @@ msgstr "Administrateur"
 msgid "No such list <em>%(safelistname)s</em>"
 msgstr "Liste inexistante <em>%(safelistname)s</em>"
 
-#: Mailman/Cgi/admin.py:85 Mailman/Cgi/admindb.py:101
+#: Mailman/Cgi/admin.py:85 Mailman/Cgi/admindb.py:105
 #: Mailman/Cgi/edithtml.py:85 Mailman/Cgi/private.py:123
 msgid "Authorization failed."
 msgstr "Echec de l'autorisation."
@@ -352,7 +352,7 @@ msgstr "Panorama de la liste de diffusion"
 msgid "<p>(Send questions and comments to "
 msgstr "<p>Envoyez questions et commentaires à "
 
-#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:173
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:177
 msgid "List"
 msgstr "Liste"
 
@@ -361,7 +361,7 @@ msgstr "Liste"
 msgid "Description"
 msgstr "Description"
 
-#: Mailman/Cgi/admin.py:289 Mailman/Cgi/listinfo.py:139 bin/list_lists:103
+#: Mailman/Cgi/admin.py:289 Mailman/Cgi/listinfo.py:139 bin/list_lists:107
 msgid "[no description available]"
 msgstr "[pas de description disponible]"
 
@@ -786,8 +786,8 @@ msgstr "Envoyer un message de bienvenue aux nouveaux abonnés?"
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:108 Mailman/Gui/Bounce.py:134
-#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:69
-#: Mailman/Gui/ContentFilter.py:102 Mailman/Gui/Digest.py:46
+#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:70
+#: Mailman/Gui/ContentFilter.py:103 Mailman/Gui/Digest.py:46
 #: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
 #: Mailman/Gui/General.py:148 Mailman/Gui/General.py:154
 #: Mailman/Gui/General.py:232 Mailman/Gui/General.py:259
@@ -812,7 +812,7 @@ msgstr "Non"
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:108
 #: Mailman/Gui/Bounce.py:134 Mailman/Gui/Bounce.py:143
-#: Mailman/Gui/ContentFilter.py:69 Mailman/Gui/ContentFilter.py:102
+#: Mailman/Gui/ContentFilter.py:70 Mailman/Gui/ContentFilter.py:103
 #: Mailman/Gui/Digest.py:46 Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84
 #: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:148
 #: Mailman/Gui/General.py:154 Mailman/Gui/General.py:232
@@ -989,155 +989,155 @@ msgstr "Abonnement résilié avec succès:"
 msgid "Error Unsubscribing:"
 msgstr "Erreur lors de la résiliation:"
 
-#: Mailman/Cgi/admindb.py:155 Mailman/Cgi/admindb.py:163
+#: Mailman/Cgi/admindb.py:159 Mailman/Cgi/admindb.py:167
 msgid "%(realname)s Administrative Database"
 msgstr "Base de données administrative de %(realname)s"
 
-#: Mailman/Cgi/admindb.py:158
+#: Mailman/Cgi/admindb.py:162
 msgid "%(realname)s Administrative Database Results"
 msgstr "Résultats de la base de données administrative de %(realname)s"
 
-#: Mailman/Cgi/admindb.py:166
+#: Mailman/Cgi/admindb.py:170
 msgid "There are no pending requests."
 msgstr "Pas de requêtes en instance."
 
-#: Mailman/Cgi/admindb.py:169
+#: Mailman/Cgi/admindb.py:173
 msgid "Click here to reload this page."
 msgstr "Cliquez ici pour recharger cette page."
 
-#: Mailman/Cgi/admindb.py:180
+#: Mailman/Cgi/admindb.py:184
 msgid "Detailed instructions for the administrative database"
 msgstr "Instructions détaillées pour la Base de données administrative"
 
-#: Mailman/Cgi/admindb.py:184
+#: Mailman/Cgi/admindb.py:188
 msgid "Administrative requests for mailing list:"
 msgstr "Requêtes administratives pour la liste de diffusion:"
 
-#: Mailman/Cgi/admindb.py:187 Mailman/Cgi/admindb.py:229
+#: Mailman/Cgi/admindb.py:191 Mailman/Cgi/admindb.py:233
 msgid "Submit All Data"
 msgstr "Soumettre toutes les données"
 
-#: Mailman/Cgi/admindb.py:200
+#: Mailman/Cgi/admindb.py:204
 msgid "all of %(esender)s's held messages."
 msgstr "tous les messages de %(esender)s en attente."
 
-#: Mailman/Cgi/admindb.py:205
+#: Mailman/Cgi/admindb.py:209
 msgid "a single held message."
 msgstr "un seul message en attente"
 
-#: Mailman/Cgi/admindb.py:210
+#: Mailman/Cgi/admindb.py:214
 msgid "all held messages."
 msgstr "tous les messages en attente."
 
-#: Mailman/Cgi/admindb.py:244
+#: Mailman/Cgi/admindb.py:248
 msgid "Mailman Administrative Database Error"
 msgstr "Erreur sur la base de données administrative de Mailman"
 
-#: Mailman/Cgi/admindb.py:249
+#: Mailman/Cgi/admindb.py:253
 msgid "list of available mailing lists."
 msgstr "liste des listes de diffusion disponibles"
 
-#: Mailman/Cgi/admindb.py:250
+#: Mailman/Cgi/admindb.py:254
 msgid "You must specify a list name.  Here is the %(link)s"
 msgstr "Vous devez donner le nom d'une liste. Voici les %(link)s"
 
-#: Mailman/Cgi/admindb.py:263
+#: Mailman/Cgi/admindb.py:267
 msgid "Subscription Requests"
 msgstr "Requêtes d'abonnement"
 
-#: Mailman/Cgi/admindb.py:265
+#: Mailman/Cgi/admindb.py:269
 msgid "Address/name"
 msgstr "Adresse/nom"
 
-#: Mailman/Cgi/admindb.py:266 Mailman/Cgi/admindb.py:312
+#: Mailman/Cgi/admindb.py:270 Mailman/Cgi/admindb.py:316
 msgid "Your decision"
 msgstr "Votre Décision"
 
-#: Mailman/Cgi/admindb.py:267 Mailman/Cgi/admindb.py:313
+#: Mailman/Cgi/admindb.py:271 Mailman/Cgi/admindb.py:317
 msgid "Reason for refusal"
 msgstr "Motifs du refus"
 
-#: Mailman/Cgi/admindb.py:282 Mailman/Cgi/admindb.py:330
-#: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:286 Mailman/Cgi/admindb.py:334
+#: Mailman/Cgi/admindb.py:373 Mailman/Cgi/admindb.py:589
 msgid "Defer"
 msgstr "Repousser"
 
-#: Mailman/Cgi/admindb.py:283 Mailman/Cgi/admindb.py:331
-#: Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:287 Mailman/Cgi/admindb.py:335
+#: Mailman/Cgi/admindb.py:589
 msgid "Approve"
 msgstr "Approuver"
 
-#: Mailman/Cgi/admindb.py:284 Mailman/Cgi/admindb.py:332
-#: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:288 Mailman/Cgi/admindb.py:336
+#: Mailman/Cgi/admindb.py:373 Mailman/Cgi/admindb.py:589
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "Rejeter"
 
-#: Mailman/Cgi/admindb.py:285 Mailman/Cgi/admindb.py:333
-#: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:337
+#: Mailman/Cgi/admindb.py:373 Mailman/Cgi/admindb.py:589
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
 msgstr "Ignorer"
 
-#: Mailman/Cgi/admindb.py:293
+#: Mailman/Cgi/admindb.py:297
 msgid "Permanently ban from this list"
 msgstr "Définitivement banni de cette liste"
 
-#: Mailman/Cgi/admindb.py:309
+#: Mailman/Cgi/admindb.py:313
 msgid "Unsubscription Requests"
 msgstr "Requêtes de résiliation d'abonnement"
 
-#: Mailman/Cgi/admindb.py:311
+#: Mailman/Cgi/admindb.py:315
 msgid "User address/name"
 msgstr "Adresse/nom de l'abonné"
 
-#: Mailman/Cgi/admindb.py:362 Mailman/Cgi/admindb.py:564
+#: Mailman/Cgi/admindb.py:366 Mailman/Cgi/admindb.py:573
 msgid "From:"
 msgstr "De:"
 
-#: Mailman/Cgi/admindb.py:365
+#: Mailman/Cgi/admindb.py:369
 msgid "Action to take on all these held messages:"
 msgstr "Mesure à prendre pour tous ces messages en attente:"
 
-#: Mailman/Cgi/admindb.py:369 Mailman/Gui/Privacy.py:281
+#: Mailman/Cgi/admindb.py:373 Mailman/Gui/Privacy.py:281
 msgid "Accept"
 msgstr "Accepter"
 
-#: Mailman/Cgi/admindb.py:377
+#: Mailman/Cgi/admindb.py:381
 msgid "Preserve messages for the site administrator"
 msgstr "Concerver une copie de ce message pour l'administrateur du site"
 
-#: Mailman/Cgi/admindb.py:383
+#: Mailman/Cgi/admindb.py:387
 msgid "Forward messages (individually) to:"
 msgstr "Faire suivre les messages (individuellement) à:"
 
-#: Mailman/Cgi/admindb.py:401
+#: Mailman/Cgi/admindb.py:405
 msgid "Clear this member's <em>moderate</em> flag"
 msgstr "Annuler le bit de <em>modération</em> de cet abonné"
 
-#: Mailman/Cgi/admindb.py:411
+#: Mailman/Cgi/admindb.py:415
 msgid "Add <b>%(esender)s</b> to a sender filter"
 msgstr "Ajouter <b>%(esender)s</b> à un filtre expéditeur"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Accepts"
 msgstr "Approbations"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Discards"
 msgstr "Ignorances"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Holds"
 msgstr "Attentes"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Rejects"
 msgstr "Rejets"
 
-#: Mailman/Cgi/admindb.py:425
+#: Mailman/Cgi/admindb.py:429
 msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
@@ -1145,7 +1145,7 @@ msgstr ""
 "Ajouter <b>%(esender)s</b> aux utilisateurs qui ne pourront jamais\n"
 "s'abonner à cette liste. "
 
-#: Mailman/Cgi/admindb.py:430
+#: Mailman/Cgi/admindb.py:434
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
@@ -1153,90 +1153,95 @@ msgstr ""
 "Cliquez sur le numéros du message pour voir le message\n"
 "            individuel, à moins que"
 
-#: Mailman/Cgi/admindb.py:432
+#: Mailman/Cgi/admindb.py:436
 msgid "view all messages from %(esender)s"
 msgstr "visualisez tous les messages de %(esender)s"
 
-#: Mailman/Cgi/admindb.py:452 Mailman/Cgi/admindb.py:567
+#: Mailman/Cgi/admindb.py:456 Mailman/Cgi/admindb.py:576
 msgid "Subject:"
 msgstr "Objet:"
 
-#: Mailman/Cgi/admindb.py:455
+#: Mailman/Cgi/admindb.py:459
 msgid " bytes"
 msgstr " octets"
 
-#: Mailman/Cgi/admindb.py:455
+#: Mailman/Cgi/admindb.py:459
 msgid "Size:"
 msgstr "Taille:"
 
-#: Mailman/Cgi/admindb.py:456 Mailman/Cgi/admindb.py:569
+#: Mailman/Cgi/admindb.py:460 Mailman/Cgi/admindb.py:578
 msgid "Reason:"
 msgstr "Motif:"
 
-#: Mailman/Cgi/admindb.py:457 Mailman/Handlers/Decorate.py:49
+#: Mailman/Cgi/admindb.py:461 Mailman/Handlers/Decorate.py:49
 #: Mailman/Handlers/Scrubber.py:194 Mailman/Handlers/Scrubber.py:195
 msgid "not available"
 msgstr "non disponible"
 
-#: Mailman/Cgi/admindb.py:513
+#: Mailman/Cgi/admindb.py:465 Mailman/Cgi/admindb.py:582
+#, fuzzy
+msgid "Received:"
+msgstr "Recevoir les messages groupés?"
+
+#: Mailman/Cgi/admindb.py:522
 msgid "Posting Held for Approval"
 msgstr "Soumission mise en attente d'approbation"
 
-#: Mailman/Cgi/admindb.py:515
+#: Mailman/Cgi/admindb.py:524
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(count)d de %(total)d)"
 
-#: Mailman/Cgi/admindb.py:526
+#: Mailman/Cgi/admindb.py:535
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>Message avec l'id #%(id)d perdu."
 
-#: Mailman/Cgi/admindb.py:535
+#: Mailman/Cgi/admindb.py:544
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>Le message avec comme id #%(id)d est altéré."
 
-#: Mailman/Cgi/admindb.py:582
+#: Mailman/Cgi/admindb.py:595
 msgid "Action:"
 msgstr "Action:"
 
-#: Mailman/Cgi/admindb.py:586
+#: Mailman/Cgi/admindb.py:599
 msgid "Preserve message for site administrator"
 msgstr "Concerver les messages pour l'administrateur du site"
 
-#: Mailman/Cgi/admindb.py:590
+#: Mailman/Cgi/admindb.py:603
 msgid "Additionally, forward this message to: "
 msgstr "De plus, faire suivre ce message à:"
 
-#: Mailman/Cgi/admindb.py:594
+#: Mailman/Cgi/admindb.py:607
 msgid "[No explanation given]"
 msgstr "[Aucun motif fournit]"
 
-#: Mailman/Cgi/admindb.py:596
+#: Mailman/Cgi/admindb.py:609
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr ""
 "Si vous rejettez cette soumissions, <b>veillez vous expliquer (facultatif):"
 
-#: Mailman/Cgi/admindb.py:602
+#: Mailman/Cgi/admindb.py:615
 msgid "Message Headers:"
 msgstr "En-tête de message:"
 
-#: Mailman/Cgi/admindb.py:607
+#: Mailman/Cgi/admindb.py:620
 msgid "Message Excerpt:"
 msgstr "Extrait du message:"
 
-#: Mailman/Cgi/admindb.py:640 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:653 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "Sans motif"
 
-#: Mailman/Cgi/admindb.py:701 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:714 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[aucun motif fourni]"
 
-#: Mailman/Cgi/admindb.py:730
+#: Mailman/Cgi/admindb.py:743
 msgid "Database Updated..."
 msgstr "Base de données mise à jour..."
 
-#: Mailman/Cgi/admindb.py:733
+#: Mailman/Cgi/admindb.py:746
 msgid " is already a member"
 msgstr " est déjà abonné"
 
@@ -1817,8 +1822,8 @@ msgstr "Panorama administrative de la liste"
 msgid "List name must not include \"@\": %(listname)s"
 msgstr "Le nom d'une liste ne peut contenir le caractère \"@\": %(listname)s"
 
-#: Mailman/Cgi/create.py:107 Mailman/Cgi/create.py:185 bin/newlist:130
-#: bin/newlist:164
+#: Mailman/Cgi/create.py:107 Mailman/Cgi/create.py:185 bin/newlist:134
+#: bin/newlist:168
 msgid "List already exists: %(listname)s"
 msgstr "La liste existe: %(listname)s"
 
@@ -1852,12 +1857,12 @@ msgstr "Le mot de passe de la liste ne peut être vide<!-- ignore -->"
 msgid "You are not authorized to create new mailing lists"
 msgstr "Vous n'êtes pas autorisé à créer de nouvelles listes"
 
-#: Mailman/Cgi/create.py:181 bin/newlist:162
+#: Mailman/Cgi/create.py:181 bin/newlist:166
 #, fuzzy
 msgid "Bad owner email address: %(s)s"
 msgstr "Mauvaise adresse courriel du propriétaire: %(owner)s"
 
-#: Mailman/Cgi/create.py:189 bin/newlist:160
+#: Mailman/Cgi/create.py:189 bin/newlist:164
 #, fuzzy
 msgid "Illegal list name: %(s)s"
 msgstr "Option invalide: %(opt)s"
@@ -1871,7 +1876,7 @@ msgstr ""
 "liste\n"
 "\tPour assistance veillez contactez l'administrateur du site."
 
-#: Mailman/Cgi/create.py:233 bin/newlist:206
+#: Mailman/Cgi/create.py:233 bin/newlist:210
 msgid "Your new mailing list: %(listname)s"
 msgstr "Votre nouvelle liste de diffusion: %(listname)s"
 
@@ -4039,12 +4044,12 @@ msgid ""
 "\n"
 "            <p>Finally, any <tt>text/html</tt> parts that are left in the\n"
 "            message may be converted to <tt>text/plain</tt> if\n"
-"            <a href=\"?VARHELP=contentfilter/convert_html_to_plaintext\"</a> "
-"is\n"
-"            enabled and the site is configured to allow these conversions."
+"            <a href=\"?VARHELP=contentfilter/convert_html_to_plaintext\"\n"
+"            >convert_html_to_plaintext</a> is enabled and the site is\n"
+"            configured to allow these conversions."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:70
+#: Mailman/Gui/ContentFilter.py:71
 msgid ""
 "Should Mailman filter the content of list traffic according\n"
 "             to the settings below?"
@@ -4052,14 +4057,14 @@ msgstr ""
 "Mailman doit-il filtrer le contenu du trafic de la liste conformément\n"
 "aux paramètres ci-dessous?"
 
-#: Mailman/Gui/ContentFilter.py:74
+#: Mailman/Gui/ContentFilter.py:75
 #, fuzzy
 msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
 msgstr "Supprimer les sections des messages ayant un type MIME correspondant."
 
-#: Mailman/Gui/ContentFilter.py:77
+#: Mailman/Gui/ContentFilter.py:78
 msgid ""
 "Use this option to remove each message attachment that\n"
 "             matches one of these content types.  Each line should contain "
@@ -4074,14 +4079,14 @@ msgid ""
 "             >pass_mime_types</a> for a content type whitelist."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:89
+#: Mailman/Gui/ContentFilter.py:90
 msgid ""
 "Remove message attachments that don't have a matching\n"
 "             content type.  Leave this field blank to skip this filter\n"
 "             test."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:93
+#: Mailman/Gui/ContentFilter.py:94
 msgid ""
 "Use this option to remove each message attachment that does\n"
 "             not have a matching content type.  Requirements and formats "
@@ -4095,7 +4100,7 @@ msgid ""
 "             will be rejected by the pass filter."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:103
+#: Mailman/Gui/ContentFilter.py:104
 msgid ""
 "Should Mailman convert <tt>text/html</tt> parts to plain\n"
 "             text?  This conversion happens after MIME attachments have "
@@ -4106,7 +4111,7 @@ msgstr ""
 "brut? Cette conversion survient après la suppression des fichiers\n"
 "attachés MIME."
 
-#: Mailman/Gui/ContentFilter.py:109
+#: Mailman/Gui/ContentFilter.py:110
 #, fuzzy
 msgid ""
 "Action to take when a message matches the content filtering\n"
@@ -4115,7 +4120,7 @@ msgstr ""
 "Mesure à prendre lorsqu'un abonné sous modération soumet un message à\n"
 "liste."
 
-#: Mailman/Gui/ContentFilter.py:112
+#: Mailman/Gui/ContentFilter.py:113
 msgid ""
 "One of these actions is take when the message matches one of\n"
 "             the content filtering rules, meaning, the top-level\n"
@@ -4146,7 +4151,7 @@ msgid ""
 "             administrator."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:153
+#: Mailman/Gui/ContentFilter.py:154
 msgid "Bad MIME type ignored: %(spectype)s"
 msgstr "Mauvais type MIME ignoré: %(spectype)s"
 
@@ -7116,7 +7121,7 @@ msgstr "Message d'origine"
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "Requête à l'endroit de la liste %(realname)s rejetée"
 
-#: Mailman/MTA/Manual.py:55
+#: Mailman/MTA/Manual.py:57
 msgid ""
 "The mailing list `%(listname)s' has been created via the through-the-web\n"
 "interface.  In order to complete the activation of this mailing list, the\n"
@@ -7133,7 +7138,7 @@ msgstr ""
 "\n"
 "Voici la liste des entrées à inclure dans le fichier /etc/aliases:\n"
 
-#: Mailman/MTA/Manual.py:65
+#: Mailman/MTA/Manual.py:67
 msgid ""
 "\n"
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
@@ -7149,11 +7154,11 @@ msgstr ""
 "\n"
 "## Liste de diffusion %(listname)s"
 
-#: Mailman/MTA/Manual.py:86
+#: Mailman/MTA/Manual.py:88
 msgid "Mailing list creation request for list %(listname)s"
 msgstr "Requête de création de la liste %(listname)s"
 
-#: Mailman/MTA/Manual.py:101
+#: Mailman/MTA/Manual.py:103
 msgid ""
 "The mailing list `%(listname)s' has been removed via the through-the-web\n"
 "interface.  In order to complete the de-activation of this mailing list, "
@@ -7171,7 +7176,7 @@ msgstr ""
 "\n"
 "Voici la liste des entrées à supprimer du fichier /etc/aliases:\n"
 
-#: Mailman/MTA/Manual.py:111
+#: Mailman/MTA/Manual.py:113
 msgid ""
 "\n"
 "To finish removing your mailing list, you must edit your /etc/aliases (or\n"
@@ -7187,7 +7192,7 @@ msgstr ""
 "\n"
 "##Liste de diffusion %(listname)s"
 
-#: Mailman/MTA/Manual.py:130
+#: Mailman/MTA/Manual.py:132
 msgid "Mailing list removal request for list %(listname)s"
 msgstr "Requête de suppression de la liste de diffusion %(listname)s"
 
@@ -7219,7 +7224,7 @@ msgstr "%(dbfile)s appartient à %(owner)s (doit appartenir à Mailman)"
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr "Vous êtes invité à vous abonner à la liste %(listname)s"
 
-#: Mailman/MailList.py:813 Mailman/MailList.py:1175
+#: Mailman/MailList.py:813 Mailman/MailList.py:1174
 msgid " from %(remote)s"
 msgstr " A partir de %(remote)s"
 
@@ -7227,39 +7232,42 @@ msgstr " A partir de %(remote)s"
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "les abonnements a %(realname)s nécessitent l'approbation du modérateur"
 
-#: Mailman/MailList.py:909 bin/add_members:277
+#: Mailman/MailList.py:909 bin/add_members:281
 msgid "%(realname)s subscription notification"
 msgstr "notification d'abonnement de %(realname)s"
 
-#: Mailman/MailList.py:927
+#: Mailman/MailList.py:924
 msgid "unsubscriptions require moderator approval"
 msgstr "Les résiliations d'abonnements nécessitent l'approbation du modérateur"
 
-#: Mailman/MailList.py:948
+#: Mailman/MailList.py:945
 msgid "%(realname)s unsubscribe notification"
 msgstr "notification de résiliation de %(realname)s"
 
-#: Mailman/MailList.py:1095
+#: Mailman/MailList.py:1089
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr ""
 "L'abonnement à la liste %(name)s requiert une approbation de l'administrateur"
 
-#: Mailman/MailList.py:1344
+#: Mailman/MailList.py:1343
 msgid "Last autoresponse notification for today"
 msgstr "Dernier avis d'envoi de réponse automatique pour la journée"
 
-#: Mailman/Queue/BounceRunner.py:173
+#: Mailman/Queue/BounceRunner.py:174
 msgid ""
 "The attached message was received as a bounce, but either the bounce format\n"
 "was not recognized, or no member addresses could be extracted from it.  "
-"You,\n"
-"as the list administrators have requested to receive all unrecognized "
-"bounce\n"
-"messages.\n"
+"This\n"
+"mailing list has been configured to send all unrecognized bounce messages "
+"to\n"
+"the list administrator(s).\n"
+"\n"
+"For more information see:\n"
+"%(adminurl)s\n"
 "\n"
 msgstr ""
 
-#: Mailman/Queue/BounceRunner.py:180
+#: Mailman/Queue/BounceRunner.py:184
 #, fuzzy
 msgid "Uncaught bounce notification"
 msgstr "Avis de mesure de rebond"
@@ -7500,58 +7508,58 @@ msgstr ""
 "Vous devez référencer au moins l'une des options -n ou -d. Un seul des\n"
 "fichiers peut être `-'.\n"
 
-#: bin/add_members:130
+#: bin/add_members:134
 msgid "Big change in %(listname)s@%(listhost)s mailing list"
 msgstr ""
 "De grands changements survenus sur la liste de diffusion %(listname)s@%"
 "(listhost)s"
 
-#: bin/add_members:163
+#: bin/add_members:167
 msgid "Already a member: %(member)s"
 msgstr "Déjà abonné: %(member)s"
 
-#: bin/add_members:166
+#: bin/add_members:170
 msgid "Bad/Invalid email address: blank line"
 msgstr "Adresse courriel Mauvaise/Invalide: ligne vide"
 
-#: bin/add_members:168
+#: bin/add_members:172
 msgid "Bad/Invalid email address: %(member)s"
 msgstr "Adresse courriel Mauvaise/Invalide: %(member)s"
 
-#: bin/add_members:170
+#: bin/add_members:174
 msgid "Hostile address (illegal characters): %(member)s"
 msgstr "Adresse hostile (caractères illégaux): %(member)s"
 
-#: bin/add_members:172
+#: bin/add_members:176
 msgid "Subscribed: %(member)s"
 msgstr "Abonné: %(member)s"
 
-#: bin/add_members:219
+#: bin/add_members:223
 msgid "Bad argument to -c/--changes-msg: %(arg)s"
 msgstr "Mauvais argument fourni à -c/--changes-msg: %(arg)s"
 
-#: bin/add_members:226
+#: bin/add_members:230
 msgid "Bad argument to -w/--welcome-msg: %(arg)s"
 msgstr "Mauvais argument fourni à -w/--welcome-msg: %(arg)s"
 
-#: bin/add_members:233
+#: bin/add_members:237
 msgid "Bad argument to -a/--admin-notify: %(arg)s"
 msgstr "Mauvais argument fourni à -a/--admin-notify: %(arg)s"
 
-#: bin/add_members:239
+#: bin/add_members:243
 msgid "Cannot read both digest and normal members from standard input."
 msgstr ""
 "Ne peut à la fois lire, à partir de l'entrée standard, les abonnés\n"
 "normaux et les abonnés de type digest."
 
-#: bin/add_members:245 bin/config_list:101 bin/find_member:93 bin/inject:86
-#: bin/list_admins:85 bin/list_members:183 bin/sync_members:218
-#: cron/bumpdigests:82
+#: bin/add_members:249 bin/config_list:105 bin/find_member:97 bin/inject:90
+#: bin/list_admins:89 bin/list_members:187 bin/sync_members:222
+#: cron/bumpdigests:86
 msgid "No such list: %(listname)s"
 msgstr "Liste introuvable: %(listname)s"
 
-#: bin/add_members:265 bin/change_pw:154 bin/check_db:110 bin/sync_members:240
-#: cron/bumpdigests:74
+#: bin/add_members:269 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
+#: cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "Rien à faire."
 
@@ -7627,11 +7635,11 @@ msgstr ""
 "\n"
 "<mbox> est facultatif. S'il est omit, il sera calculé.\n"
 
-#: bin/arch:105
+#: bin/arch:109
 msgid "listname is required"
 msgstr "Nom de liste requis"
 
-#: bin/arch:123 bin/change_pw:102 bin/config_list:235
+#: bin/arch:127 bin/change_pw:106 bin/config_list:239
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -7639,7 +7647,7 @@ msgstr ""
 "Liste \"%(listname)s\" introuvable\n"
 "%(e)s"
 
-#: bin/arch:146
+#: bin/arch:150
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr "Impossible d'ouvrir le fichier mbox %(mbox)s: %(msg)s"
 
@@ -7749,23 +7757,23 @@ msgstr ""
 "    --help / -h\n"
 "        Afficher ce message d'aide puis quitter.\n"
 
-#: bin/change_pw:140
+#: bin/change_pw:144
 msgid "Bad arguments: %(strargs)s"
 msgstr "Mauvais arguments: %(strargs)s"
 
-#: bin/change_pw:144
+#: bin/change_pw:148
 msgid "Empty list passwords are not allowed"
 msgstr "Les mot de passe vide pour la liste ne sont pas admis"
 
-#: bin/change_pw:175
+#: bin/change_pw:179
 msgid "New %(listname)s password: %(notifypassword)s"
 msgstr "Nouveau mot de passe de %(listname)s: %(notifypassword)s"
 
-#: bin/change_pw:184
+#: bin/change_pw:188
 msgid "Your new %(listname)s list password"
 msgstr "Votre nouveau mot de passe pour %(listname)s"
 
-#: bin/change_pw:185
+#: bin/change_pw:189
 msgid ""
 "The site administrator at %(hostname)s has changed the password for your\n"
 "mailing list %(listname)s.  It is now\n"
@@ -7860,15 +7868,15 @@ msgstr ""
 "    --help / -h\n"
 "        Afficher ce texte et sortir.\n"
 
-#: bin/check_db:115
+#: bin/check_db:119
 msgid "No list named:"
 msgstr "Aucune liste nommée:"
 
-#: bin/check_db:124
+#: bin/check_db:128
 msgid "List:"
 msgstr "Liste:"
 
-#: bin/check_db:144
+#: bin/check_db:148
 msgid "   %(file)s: okay"
 msgstr "    %(file)s: Ok"
 
@@ -7975,15 +7983,15 @@ msgstr "\tVérification des permission sur: %(path)s"
 msgid "file permissions must be at least 660: %(path)s"
 msgstr "Les permissions sur les fichiers doivent au moins être 660: %(path)s"
 
-#: bin/check_perms:330
+#: bin/check_perms:334
 msgid "No problems found"
 msgstr "Aucun problème trouvé"
 
-#: bin/check_perms:332
+#: bin/check_perms:336
 msgid "Problems found:"
 msgstr "Problèmes trouvés:"
 
-#: bin/check_perms:333
+#: bin/check_perms:337
 #, fuzzy
 msgid "Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix"
 msgstr ""
@@ -8053,15 +8061,15 @@ msgstr ""
 "    -h / --help\n"
 "        Affiche ce message et quitter\n"
 
-#: bin/cleanarch:78
+#: bin/cleanarch:82
 msgid "Unix-From line changed: %(lineno)d"
 msgstr "Ligne Unix-From modifiée: %(lineno)d"
 
-#: bin/cleanarch:106
+#: bin/cleanarch:110
 msgid "Bad status number: %(arg)s"
 msgstr "Mauvais numéros de statut: %(arg)s"
 
-#: bin/cleanarch:156
+#: bin/cleanarch:160
 msgid "%(messages)d messages found"
 msgstr "%(messages)d messages trouvés"
 
@@ -8172,43 +8180,43 @@ msgstr ""
 "utilisateur. versnouvelleaddr (`vers nouvelle adresse') est la nouvelle\n"
 "adresse de l'utilisateur.\n"
 
-#: bin/clone_member:90
+#: bin/clone_member:94
 msgid "processing mailing list:"
 msgstr "Traitement de la liste:"
 
-#: bin/clone_member:97
+#: bin/clone_member:101
 msgid "    scanning list owners:"
 msgstr "\tBalayage des propriétaires de liste:"
 
-#: bin/clone_member:115
+#: bin/clone_member:119
 msgid "    new list owners:"
 msgstr "\tnouveaux propriétaires de liste:"
 
-#: bin/clone_member:117
+#: bin/clone_member:121
 msgid "(no change)"
 msgstr "(pas de modifications)"
 
-#: bin/clone_member:126
+#: bin/clone_member:130
 msgid "    address not found:"
 msgstr "\tadresse non trouvée"
 
-#: bin/clone_member:135
+#: bin/clone_member:139
 msgid "    clone address added:"
 msgstr "\tadresse clone ajoutée:"
 
-#: bin/clone_member:138
+#: bin/clone_member:142
 msgid "    clone address is already a member:"
 msgstr "\tune adresse semblable est déjà abonnée:"
 
-#: bin/clone_member:141
+#: bin/clone_member:145
 msgid "    original address removed:"
 msgstr " Adresse d'origine supprimée:"
 
-#: bin/clone_member:192
+#: bin/clone_member:196
 msgid "Not a valid email address: %(toaddr)s"
 msgstr "Adresse courriel invalide: %(toaddr)s"
 
-#: bin/clone_member:205
+#: bin/clone_member:209
 msgid ""
 "Error opening list \"%(listname)s\", skipping.\n"
 "%(e)s"
@@ -8313,7 +8321,7 @@ msgstr ""
 "\n"
 "Les options -o et -i s'excluent mutuellement\n"
 
-#: bin/config_list:105
+#: bin/config_list:109
 msgid ""
 "## \"%(listname)s\" mailing list configuration settings -*- python -*-\n"
 "## captured on %(when)s\n"
@@ -8321,43 +8329,43 @@ msgstr ""
 "## Paramètre de configuration de la liste \"%(listname)s\" -*- python -*-\n"
 "## Capturé le %(when)s\n"
 
-#: bin/config_list:127
+#: bin/config_list:131
 msgid "options"
 msgstr "options"
 
-#: bin/config_list:184
+#: bin/config_list:188
 msgid "legal values are:"
 msgstr "Les valeurs admises sont:"
 
-#: bin/config_list:248
+#: bin/config_list:252
 msgid "attribute \"%(k)s\" ignored"
 msgstr "propriété \"%(k)s\" ignorée"
 
-#: bin/config_list:251
+#: bin/config_list:255
 msgid "attribute \"%(k)s\" changed"
 msgstr "propriété \"%(k)s\" modifiée"
 
-#: bin/config_list:257
+#: bin/config_list:261
 msgid "Non-standard property restored: %(k)s"
 msgstr "Propriété non-standard réactivée: %(k)s"
 
-#: bin/config_list:265
+#: bin/config_list:269
 msgid "Invalid value for property: %(k)s"
 msgstr "Valeur inavalide pour la propriété: %(k)s"
 
-#: bin/config_list:267
+#: bin/config_list:271
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr "Adresse courriel invalide pour l'option %(k)s: %(v)s"
 
-#: bin/config_list:306
+#: bin/config_list:310
 msgid "Only one of -i or -o is allowed"
 msgstr "Une seule des options -i ou -o est autorisée"
 
-#: bin/config_list:308
+#: bin/config_list:312
 msgid "One of -i or -o is required"
 msgstr "Une des options -i ou -o est requise"
 
-#: bin/config_list:312
+#: bin/config_list:316
 msgid "List name is required"
 msgstr "Le nom de la liste est requis"
 
@@ -8450,15 +8458,15 @@ msgstr ""
 "annuler la détection automatique -- ou si le fichier n'a pas l'un de\n"
 "ces suffixes -- utilisez l'une des options -p ou -m.\n"
 
-#: bin/dumpdb:97
+#: bin/dumpdb:101
 msgid "No filename given."
 msgstr "Aucun nom de fichier fourni."
 
-#: bin/dumpdb:100
+#: bin/dumpdb:104
 msgid "Bad arguments: %(pargs)s"
 msgstr "Mauvais argument: %(pargs)s"
 
-#: bin/dumpdb:110
+#: bin/dumpdb:114
 msgid "Please specify either -p or -m."
 msgstr "Veillez spécifier l'une des options -p ou -m."
 
@@ -8545,19 +8553,19 @@ msgstr ""
 "originales.\n"
 "\n"
 
-#: bin/find_member:155
+#: bin/find_member:159
 msgid "Search regular expression required"
 msgstr "Recherche d'expression regulière requise"
 
-#: bin/find_member:160
+#: bin/find_member:164
 msgid "No lists to search"
 msgstr "Pas de liste disponible pour effectuer la recherche"
 
-#: bin/find_member:169
+#: bin/find_member:173
 msgid "found in:"
 msgstr "trouvé dans:"
 
-#: bin/find_member:175
+#: bin/find_member:179
 msgid "(as owner)"
 msgstr "(comme propriétaire)"
 
@@ -8671,11 +8679,11 @@ msgstr ""
 "nomfichier est le nom du fichier message texte brut à\n"
 "injecter. L'entrée standard est utilisé si vous l'omettez.\n"
 
-#: bin/inject:79
+#: bin/inject:83
 msgid "Bad queue directory: %(qdir)s"
 msgstr "Nom de répertoire file d'attente erroné: %(qdir)s"
 
-#: bin/inject:84
+#: bin/inject:88
 msgid "A list name is required"
 msgstr "Un nom de liste requit"
 
@@ -8722,7 +8730,7 @@ msgstr ""
 "des propriétaires doivent être affichés. Vous pouvez spécifier plus\n"
 "d'une liste sur la ligne de commande.\n"
 
-#: bin/list_admins:92
+#: bin/list_admins:96
 msgid "List: %(listname)s, \tOwners: %(owners)s"
 msgstr "Liste: %(listname)s, \tPropriétaire: %(owners)s"
 
@@ -8769,11 +8777,11 @@ msgstr ""
 "        Afficher ce message puis quitter.\n"
 "\n"
 
-#: bin/list_lists:97
+#: bin/list_lists:101
 msgid "No matching mailing lists found"
 msgstr "Pas de liste correspondante"
 
-#: bin/list_lists:100
+#: bin/list_lists:104
 msgid "matching mailing lists found:"
 msgstr "listes correspondantes trouvées:"
 
@@ -8872,15 +8880,15 @@ msgstr ""
 "contre, aucune information sur le status de l'adresse ne sera donnée.\n"
 "\n"
 
-#: bin/list_members:146
+#: bin/list_members:150
 msgid "Bad --nomail option: %(why)s"
 msgstr "Mauvaise option --noncourriel: %(why)s"
 
-#: bin/list_members:157
+#: bin/list_members:161
 msgid "Bad --digest option: %(kind)s"
 msgstr "Mauvaise option --digest: %(kind)s"
 
-#: bin/list_members:175
+#: bin/list_members:179
 msgid "Could not open file for writing:"
 msgstr "Impossible d'ouvrir le fichier en écriture:"
 
@@ -9056,23 +9064,23 @@ msgstr ""
 "              tous les fichiers journaux.\n"
 "\n"
 
-#: bin/mailmanctl:141
+#: bin/mailmanctl:145
 msgid "PID unreadable in: %(pidfile)s"
 msgstr "PID illisible dans: %(pidfile)s"
 
-#: bin/mailmanctl:143
+#: bin/mailmanctl:147
 msgid "Is qrunner even running?"
 msgstr "qrunner tourne-t-il?"
 
-#: bin/mailmanctl:149
+#: bin/mailmanctl:153
 msgid "No child with pid: %(pid)s"
 msgstr "Pas de fils avec un pid: %(pid)s"
 
-#: bin/mailmanctl:151
+#: bin/mailmanctl:155
 msgid "Stale pid file removed."
 msgstr "vieux fichier pid supprimé."
 
-#: bin/mailmanctl:209
+#: bin/mailmanctl:213
 msgid ""
 "The master qrunner lock could not be acquired because it appears as if "
 "another\n"
@@ -9082,7 +9090,7 @@ msgstr ""
 "semble qu'un autre processus qrunner principal est en cours\n"
 "d'exécution.\n"
 
-#: bin/mailmanctl:215
+#: bin/mailmanctl:219
 msgid ""
 "The master qrunner lock could not be acquired.  It appears as though there "
 "is\n"
@@ -9092,7 +9100,7 @@ msgstr ""
 "a un vieux fichier verrou du qrunner principal. Essayer de redémarrer\n"
 "mailmanctl avec l'option -s.\n"
 
-#: bin/mailmanctl:221
+#: bin/mailmanctl:225
 msgid ""
 "The master qrunner lock could not be acquired, because it appears as if "
 "some\n"
@@ -9118,33 +9126,33 @@ msgstr ""
 "\n"
 "Sortie."
 
-#: bin/mailmanctl:274
+#: bin/mailmanctl:278
 msgid "Run this program as root or as the %(name)s user, or use -u."
 msgstr ""
 "Exécutez ce programme en tant que root ou en tant que l'utilisateur\n"
 "%(name)s à moins d'utiliser l'option -u."
 
-#: bin/mailmanctl:305
+#: bin/mailmanctl:309
 msgid "No command given."
 msgstr "Aucune commande fournit."
 
-#: bin/mailmanctl:308
+#: bin/mailmanctl:312
 msgid "Bad command: %(command)s"
 msgstr "Mauvaise commande: %(command)s"
 
-#: bin/mailmanctl:320
+#: bin/mailmanctl:324
 msgid "Shutting down Mailman's master qrunner"
 msgstr "Arrêt du qrunner principal de Mailman"
 
-#: bin/mailmanctl:327
+#: bin/mailmanctl:331
 msgid "Restarting Mailman's master qrunner"
 msgstr "Redémarrage du qrunner principal de Mailman"
 
-#: bin/mailmanctl:331
+#: bin/mailmanctl:335
 msgid "Re-opening all log files"
 msgstr "Réouverture de tous les fichiers journaux"
 
-#: bin/mailmanctl:365
+#: bin/mailmanctl:369
 msgid "Starting Mailman's master qrunner."
 msgstr "Démarrage du qrunner principal de Mailman."
 
@@ -9196,35 +9204,35 @@ msgstr ""
 "Si le mot de passe n'est pas fournit dans la ligne de commande, il\n"
 "sera demandé.\n"
 
-#: bin/mmsitepass:69
+#: bin/mmsitepass:73
 msgid "site"
 msgstr "site"
 
-#: bin/mmsitepass:76
+#: bin/mmsitepass:80
 msgid "list creator"
 msgstr "créateur de la liste"
 
-#: bin/mmsitepass:82
+#: bin/mmsitepass:86
 msgid "New %(pwdesc)s password: "
 msgstr "Nouveau mot de passe %(pwdesc)s:"
 
-#: bin/mmsitepass:83
+#: bin/mmsitepass:87
 msgid "Again to confirm password: "
 msgstr "Encore pour confirmer le mot de passe:"
 
-#: bin/mmsitepass:85
+#: bin/mmsitepass:89
 msgid "Passwords do not match; no changes made."
 msgstr "Les mots de passe ne correspondent pas; aucune modification effectuée."
 
-#: bin/mmsitepass:88
+#: bin/mmsitepass:92
 msgid "Interrupted..."
 msgstr "Interrompu..."
 
-#: bin/mmsitepass:94
+#: bin/mmsitepass:98
 msgid "Password changed."
 msgstr "Mot de passe modifié."
 
-#: bin/mmsitepass:96
+#: bin/mmsitepass:100
 msgid "Password change failed."
 msgstr "Echec de modification du mot de passe."
 
@@ -9333,27 +9341,27 @@ msgstr ""
 "\n"
 "Notez que les noms de liste sont ramenés en minuscule.\n"
 
-#: bin/newlist:114
+#: bin/newlist:118
 msgid "Unknown language: %(lang)s"
 msgstr "Langue inconnue: %(lang)s"
 
-#: bin/newlist:119
+#: bin/newlist:123
 msgid "Enter the name of the list: "
 msgstr "Donner le nom de la liste: "
 
-#: bin/newlist:136
+#: bin/newlist:140
 msgid "Enter the email of the person running the list: "
 msgstr "Entrez l'adresse courriel du gestionnaire de la liste: "
 
-#: bin/newlist:141
+#: bin/newlist:145
 msgid "Initial %(listname)s password: "
 msgstr "Mot de passe initial de la liste %(listname)s:"
 
-#: bin/newlist:145
+#: bin/newlist:149
 msgid "The list password cannot be empty"
 msgstr "Le mot de passe de la liste ne peut être vide"
 
-#: bin/newlist:186
+#: bin/newlist:190
 msgid "Hit enter to notify %(listname)s owner..."
 msgstr "Tapez sur Entrée pour aviser le propriétaire de %(listname)s..."
 
@@ -9476,15 +9484,15 @@ msgstr ""
 "Le paramètre `gestionnaire' est obligatoire à moins que -l ou -h n'ait\n"
 "été fournit, et il doit être l'un des noms fournit par l'option -l.\n"
 
-#: bin/qrunner:172
+#: bin/qrunner:176
 msgid "%(name)s runs the %(runnername)s qrunner"
 msgstr "-r %(name)s exécute le qrunner %(runnername)s"
 
-#: bin/qrunner:173
+#: bin/qrunner:177
 msgid "All runs all the above qrunners"
 msgstr "All exécute tous les qrunners ci-dessus"
 
-#: bin/qrunner:209
+#: bin/qrunner:213
 msgid "No runner name given."
 msgstr "Nom de runner non fournit."
 
@@ -9554,19 +9562,19 @@ msgstr ""
 "\n"
 "    addr1 ... sont les adresses additionnelles à supprimer.\n"
 
-#: bin/remove_members:128
+#: bin/remove_members:132
 msgid "Could not open file for reading: %(filename)s."
 msgstr "Impossible d'ouvrir le fichier en lecture: %(filename)s"
 
-#: bin/remove_members:135
+#: bin/remove_members:139
 msgid "Error opening list %(listname)s... skipping."
 msgstr "Erreur lors de l'ouverture de la liste \"%(listname)s\"... au suivant."
 
-#: bin/remove_members:145
+#: bin/remove_members:149
 msgid "No such member: %(addr)s"
 msgstr "Abonné inconnu: %(addr)s."
 
-#: bin/remove_members:149
+#: bin/remove_members:153
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr "Abonné `%(addr)s' supprimé de la liste: %(listname)s."
 
@@ -9611,38 +9619,38 @@ msgstr ""
 "    -h\n"
 "        Affiche ce message d'aide puis quitte.\n"
 
-#: bin/rmlist:61 bin/rmlist:64
+#: bin/rmlist:65 bin/rmlist:68
 msgid "Removing %(msg)s"
 msgstr "Suppression de %(msg)s"
 
-#: bin/rmlist:67
+#: bin/rmlist:71
 msgid "%(listname)s %(msg)s not found as %(dir)s"
 msgstr "%(msg)s %(listname)s non trouvé en tant que %(dir)s"
 
-#: bin/rmlist:91
+#: bin/rmlist:95
 msgid "No such list (or list already deleted): %(listname)s"
 msgstr "Liste introuvable (ou liste déjà supprimée): %(listname)s"
 
-#: bin/rmlist:93
+#: bin/rmlist:97
 msgid "No such list: %(listname)s.  Removing its residual archives."
 msgstr ""
 "Liste introuvable: %(listname)s. Suppression de ses archives\n"
 "résiduels."
 
-#: bin/rmlist:97
+#: bin/rmlist:101
 msgid "Not removing archives.  Reinvoke with -a to remove them."
 msgstr ""
 "Archives non suppriméés. Réinvoquez avec l'option -a pour les supprimer."
 
-#: bin/rmlist:111
+#: bin/rmlist:115
 msgid "list info"
 msgstr "info liste"
 
-#: bin/rmlist:117 bin/rmlist:119
+#: bin/rmlist:121 bin/rmlist:123
 msgid "private archives"
 msgstr "archives privées"
 
-#: bin/rmlist:121 bin/rmlist:123
+#: bin/rmlist:125 bin/rmlist:127
 msgid "public archives"
 msgstr "archives publiques"
 
@@ -9780,56 +9788,56 @@ msgstr ""
 "    nomliste\n"
 "        Requit. Il définit la liste à synchroniser.\n"
 
-#: bin/sync_members:111
+#: bin/sync_members:115
 msgid "Bad choice: %(yesno)s"
 msgstr "Mauvais choix: %(yesno)s"
 
-#: bin/sync_members:134
+#: bin/sync_members:138
 msgid "Dry run mode"
 msgstr "mode d'exécution brûte"
 
-#: bin/sync_members:155
+#: bin/sync_members:159
 msgid "Only one -f switch allowed"
 msgstr "Une seule option -f est autorisée"
 
-#: bin/sync_members:159
+#: bin/sync_members:163
 msgid "No argument to -f given"
 msgstr "aucun argument n'a été fournit à -f"
 
-#: bin/sync_members:168
+#: bin/sync_members:172
 msgid "Illegal option: %(opt)s"
 msgstr "Option invalide: %(opt)s"
 
-#: bin/sync_members:174
+#: bin/sync_members:178
 msgid "No listname given"
 msgstr "Le nom de la liste n'a pas été fourni"
 
-#: bin/sync_members:178
+#: bin/sync_members:182
 msgid "Must have a listname and a filename"
 msgstr "Nom de liste et nom de fichier nécessaires"
 
-#: bin/sync_members:187
+#: bin/sync_members:191
 msgid "Cannot read address file: %(filename)s: %(msg)s"
 msgstr "Impossible de lire le fichier des adresses: %(filename)s: %(msg)s"
 
-#: bin/sync_members:199
+#: bin/sync_members:203
 msgid "Ignore  :  %(addr)30s"
 msgstr "Ignorer  :  %(addr)30s"
 
-#: bin/sync_members:208
+#: bin/sync_members:212
 msgid "Invalid :  %(addr)30s"
 msgstr "Invalide : %(addr)30s"
 
-#: bin/sync_members:211
+#: bin/sync_members:215
 msgid "You must fix the preceding invalid addresses first."
 msgstr ""
 "Vous devez d'abord régler le problème de l'adresse invalide précédente."
 
-#: bin/sync_members:254
+#: bin/sync_members:258
 msgid "Added  : <%(addr)30s> %(name)s"
 msgstr "Ajouté : <%(addr)30s> %(name)s"
 
-#: bin/sync_members:271
+#: bin/sync_members:275
 msgid "Removed: <%(addr)30s> %(name)s"
 msgstr "Supprimé: <%(addr)30s> %(name)s"
 
@@ -9862,28 +9870,28 @@ msgstr ""
 "Où <lang> est le code du pays (e.g. 'it' pour Italie) et le -q demande\n"
 "une résumé concis.\n"
 
-#: bin/transcheck:51
+#: bin/transcheck:55
 msgid "check a translation comparing with the original string"
 msgstr "Vérifie une traduction en la comparant avec la chaîne originale"
 
-#: bin/transcheck:58
+#: bin/transcheck:62
 msgid "scan a string from the original file"
 msgstr "Scan une chaîne à partir du fichier original"
 
-#: bin/transcheck:66
+#: bin/transcheck:70
 msgid "scan a translated string"
 msgstr "Scan une chaîne traduite"
 
-#: bin/transcheck:77
+#: bin/transcheck:81
 msgid "check for differences between checked in and checked out"
 msgstr ""
 "Compare les différence entre les versions `checked in' et `checked out'"
 
-#: bin/transcheck:110
+#: bin/transcheck:114
 msgid "parse a .po file extracting msgids and msgstrs"
 msgstr "Analyse un fichier .po et extrait les msgids et les msgstrs"
 
-#: bin/transcheck:129
+#: bin/transcheck:133
 msgid ""
 "States table for the finite-states-machine parser:\n"
 "            0  idle\n"
@@ -9902,7 +9910,7 @@ msgstr ""
 "        4  end\n"
 "     "
 
-#: bin/transcheck:266
+#: bin/transcheck:270
 msgid ""
 "check a translated template against the original one\n"
 "       search also <MM-*> tags if html is not zero"
@@ -9910,7 +9918,7 @@ msgstr ""
 "Compare une template traduite avec l'original et recherche les balises\n"
 "<MM-*> si html est non nul"
 
-#: bin/transcheck:313
+#: bin/transcheck:317
 msgid "scan the po file comparing msgids with msgstrs"
 msgstr "Scan le fichier po en comparant msgids et msgstrs"
 
@@ -9939,6 +9947,12 @@ msgstr ""
 "\n"
 "Le `répertoire' facultatif spécifie une un répertoire duquel\n"
 "l'extraction sera faîte autre que qfiles/shunt.\n"
+
+#: bin/unshunt:81
+msgid ""
+"Cannot unshunt message %(filebase)s, skipping:\n"
+"%(e)s"
+msgstr ""
 
 #: bin/update:19
 msgid ""
@@ -10203,11 +10217,11 @@ msgstr ""
 "NOTE NOTE NOTE NOTE NOTE\n"
 "\n"
 
-#: bin/update:556
+#: bin/update:560
 msgid "No updates are necessary."
 msgstr "Pas de mise à jour nécessaire."
 
-#: bin/update:559
+#: bin/update:563
 msgid ""
 "Downgrade detected, from version %(hexlversion)s to version %(hextversion)s\n"
 "This is probably not safe.\n"
@@ -10217,11 +10231,11 @@ msgstr ""
 "Ceci n'est certainement pas sûre.\n"
 "Je me barres."
 
-#: bin/update:564
+#: bin/update:568
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
 msgstr "Mise à jour de la version %(hexlversion)s vers %(hextversion)s"
 
-#: bin/update:573
+#: bin/update:577
 msgid ""
 "\n"
 "ERROR:\n"
@@ -10484,7 +10498,7 @@ msgstr ""
 "puis exécuter ce qui suit sur la ligne de commande:\n"
 "%% bin/withlist -l -r changepasse maliste toto@qqpart.org foobar\n"
 
-#: bin/withlist:147
+#: bin/withlist:151
 msgid ""
 "Unlock a locked list, but do not implicitly Save() it.\n"
 "\n"
@@ -10500,47 +10514,47 @@ msgstr ""
 "contre executé lorsqu'une exception se produit.\n"
 "\t"
 
-#: bin/withlist:158
+#: bin/withlist:162
 msgid "Unlocking (but not saving) list: %(listname)s"
 msgstr "Déverrouillage (sans sauvegarde) de la liste: %(listname)s"
 
-#: bin/withlist:162
+#: bin/withlist:166
 msgid "Finalizing"
 msgstr "Finalisation"
 
-#: bin/withlist:171
+#: bin/withlist:175
 msgid "Loading list %(listname)s"
 msgstr "Chargement de la liste %(listname)s en cours"
 
-#: bin/withlist:173
+#: bin/withlist:177
 msgid "(locked)"
 msgstr "(vérouillé)"
 
-#: bin/withlist:175
+#: bin/withlist:179
 msgid "(unlocked)"
 msgstr "(dévérouillé)"
 
-#: bin/withlist:180
+#: bin/withlist:184
 msgid "Unknown list: %(listname)s"
 msgstr "Liste inconnue: %(listname)s"
 
-#: bin/withlist:219
+#: bin/withlist:223
 msgid "No list name supplied."
 msgstr "Nom de liste non fourni."
 
-#: bin/withlist:222
+#: bin/withlist:226
 msgid "--all requires --run"
 msgstr "--all va avec --run"
 
-#: bin/withlist:242
+#: bin/withlist:246
 msgid "Importing %(module)s..."
 msgstr "Importation de %(module)s..."
 
-#: bin/withlist:245
+#: bin/withlist:249
 msgid "Running %(module)s.%(callable)s()..."
 msgstr "Exécution de %(module)s.%(callable)s()..."
 
-#: bin/withlist:266
+#: bin/withlist:270
 msgid "The variable `m' is the %(listname)s MailList instance"
 msgstr ""
 "La variable `m' est une instance de la classe MailList de\n"
@@ -10580,15 +10594,15 @@ msgstr ""
 "Invoqué par cron, ceci vérifie les requêtes de modération en attente\n"
 "et envoie au besoin un courriel au modérateur.\n"
 
-#: cron/checkdbs:76
+#: cron/checkdbs:81
 msgid "%(count)d %(realname)s moderator request(s) waiting"
 msgstr "%(count)d requête(s) pour le modérateur de %(realname)s en attente"
 
-#: cron/checkdbs:94
+#: cron/checkdbs:100
 msgid "Pending subscriptions:"
 msgstr "Abonnements en attente"
 
-#: cron/checkdbs:103
+#: cron/checkdbs:109
 msgid ""
 "\n"
 "Pending posts:"
@@ -10596,7 +10610,7 @@ msgstr ""
 "\n"
 "Soumissions en attente:"
 
-#: cron/checkdbs:108
+#: cron/checkdbs:114
 msgid ""
 "     From: %(sender)s on %(date)s\n"
 "    Cause: %(reason)s"
@@ -10705,7 +10719,7 @@ msgstr ""
 "        Traiter uniquement la liste fournit. Sinon traiter toute les\n"
 "        listes.\n"
 
-#: cron/disabled:139
+#: cron/disabled:143
 msgid "[disabled by periodic sweep and cull, no message available]"
 msgstr ""
 "[désactivé pour raison d'entretien périodique, aucun message\n"
@@ -10784,15 +10798,15 @@ msgstr ""
 "    -h/--help\n"
 "        Affiche ce message et quitte.\n"
 
-#: cron/mailpasswds:107
+#: cron/mailpasswds:111
 msgid "Site list is missing: %(sitelistname)s"
 msgstr "La liste du site est introuvable: %(sitelistname)s"
 
-#: cron/mailpasswds:173
+#: cron/mailpasswds:177
 msgid "Password // URL"
 msgstr "Mot de passe // URL"
 
-#: cron/mailpasswds:193
+#: cron/mailpasswds:197
 msgid "%(host)s mailing list memberships reminder"
 msgstr "Rappel pour les abonnements aux listes sur %(host)s"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0rc3\n"
-"POT-Creation-Date: Sun Oct 20 11:44:44 2002\n"
+"POT-Creation-Date: Fri Oct 25 18:34:14 2002\n"
 "PO-Revision-Date: 2002-10-21 22:33+0200\n"
 "Last-Translator: Dan Ohnesorg <dan@ohnesorg.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -232,7 +232,7 @@ msgstr "Moderátor"
 msgid "Administrator"
 msgstr "Administrátor"
 
-#: Mailman/Cgi/admin.py:70 Mailman/Cgi/admindb.py:85 Mailman/Cgi/confirm.py:55
+#: Mailman/Cgi/admin.py:70 Mailman/Cgi/admindb.py:89 Mailman/Cgi/confirm.py:55
 #: Mailman/Cgi/edithtml.py:67 Mailman/Cgi/listinfo.py:51
 #: Mailman/Cgi/options.py:70 Mailman/Cgi/private.py:98
 #: Mailman/Cgi/rmlist.py:62 Mailman/Cgi/roster.py:57
@@ -240,7 +240,7 @@ msgstr "Administrátor"
 msgid "No such list <em>%(safelistname)s</em>"
 msgstr "Nenalezl jsem konferenci <em>%(safelistname)s</em>."
 
-#: Mailman/Cgi/admin.py:85 Mailman/Cgi/admindb.py:101
+#: Mailman/Cgi/admin.py:85 Mailman/Cgi/admindb.py:105
 #: Mailman/Cgi/edithtml.py:85 Mailman/Cgi/private.py:123
 msgid "Authorization failed."
 msgstr "Selhání autorizace."
@@ -340,7 +340,7 @@ msgstr "informaèní stránce konference"
 msgid "<p>(Send questions and comments to "
 msgstr "<p>(Zasílejte dotazy a pøipomínky na "
 
-#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:173
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:177
 msgid "List"
 msgstr "Do konference"
 
@@ -349,7 +349,7 @@ msgstr "Do konference"
 msgid "Description"
 msgstr "Popis"
 
-#: Mailman/Cgi/admin.py:289 Mailman/Cgi/listinfo.py:139 bin/list_lists:103
+#: Mailman/Cgi/admin.py:289 Mailman/Cgi/listinfo.py:139 bin/list_lists:107
 msgid "[no description available]"
 msgstr "[¾ádný popis není k dispozici]"
 
@@ -689,7 +689,8 @@ msgstr "<b>potvrzení</b> -- Dostává pøispìvatel potvrzení o pøijetí pøíspìvku?"
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
 "        own postings?"
-msgstr "<b>not metoo</b> -- Úèasník si nepøeje dostávat kopie vlastních pøíspìvkù."
+msgstr ""
+"<b>not metoo</b> -- Úèasník si nepøeje dostávat kopie vlastních pøíspìvkù."
 
 #: Mailman/Cgi/admin.py:1007
 msgid ""
@@ -741,7 +742,8 @@ msgstr "od %(start)s do %(end)s"
 
 #: Mailman/Cgi/admin.py:1062
 msgid "Subscribe these users now or invite them?"
-msgstr "Mají být tito úèastníci pøihlá¹eni a nebo pozváni k úèasti v konferenci?"
+msgstr ""
+"Mají být tito úèastníci pøihlá¹eni a nebo pozváni k úèasti v konferenci?"
 
 #: Mailman/Cgi/admin.py:1064
 msgid "Invite"
@@ -763,8 +765,8 @@ msgstr "Poslat novì pøihlá¹eným uvítací zprávu?"
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:108 Mailman/Gui/Bounce.py:134
-#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:69
-#: Mailman/Gui/ContentFilter.py:102 Mailman/Gui/Digest.py:46
+#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:70
+#: Mailman/Gui/ContentFilter.py:103 Mailman/Gui/Digest.py:46
 #: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
 #: Mailman/Gui/General.py:148 Mailman/Gui/General.py:154
 #: Mailman/Gui/General.py:232 Mailman/Gui/General.py:259
@@ -789,7 +791,7 @@ msgstr "Ne"
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:108
 #: Mailman/Gui/Bounce.py:134 Mailman/Gui/Bounce.py:143
-#: Mailman/Gui/ContentFilter.py:69 Mailman/Gui/ContentFilter.py:102
+#: Mailman/Gui/ContentFilter.py:70 Mailman/Gui/ContentFilter.py:103
 #: Mailman/Gui/Digest.py:46 Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84
 #: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:148
 #: Mailman/Gui/General.py:154 Mailman/Gui/General.py:232
@@ -963,155 +965,155 @@ msgstr "Úspì¹nì odstranìni:"
 msgid "Error Unsubscribing:"
 msgstr "Chyba pøi odhla¹ování"
 
-#: Mailman/Cgi/admindb.py:155 Mailman/Cgi/admindb.py:163
+#: Mailman/Cgi/admindb.py:159 Mailman/Cgi/admindb.py:167
 msgid "%(realname)s Administrative Database"
 msgstr "Konference %(realname)s -- administrace"
 
-#: Mailman/Cgi/admindb.py:158
+#: Mailman/Cgi/admindb.py:162
 msgid "%(realname)s Administrative Database Results"
 msgstr "Konference %(realname)s -- výsledky editace databáze po¾adavkù"
 
-#: Mailman/Cgi/admindb.py:166
+#: Mailman/Cgi/admindb.py:170
 msgid "There are no pending requests."
 msgstr "®ádné po¾adavky neèekají na vyøízení."
 
-#: Mailman/Cgi/admindb.py:169
+#: Mailman/Cgi/admindb.py:173
 msgid "Click here to reload this page."
 msgstr "Kliknutím sem obnovíte obsah této stránky."
 
-#: Mailman/Cgi/admindb.py:180
+#: Mailman/Cgi/admindb.py:184
 msgid "Detailed instructions for the administrative database"
 msgstr "Podrobnìj¹í instrukce pro práci s databází po¾adavkù"
 
-#: Mailman/Cgi/admindb.py:184
+#: Mailman/Cgi/admindb.py:188
 msgid "Administrative requests for mailing list:"
 msgstr "Administrativní po¾adavky pro konference"
 
-#: Mailman/Cgi/admindb.py:187 Mailman/Cgi/admindb.py:229
+#: Mailman/Cgi/admindb.py:191 Mailman/Cgi/admindb.py:233
 msgid "Submit All Data"
 msgstr "Potvrï v¹echny akce"
 
-#: Mailman/Cgi/admindb.py:200
+#: Mailman/Cgi/admindb.py:204
 msgid "all of %(esender)s's held messages."
 msgstr "v¹echny pozdr¾ené zprávy od úèastníka %(esender)s."
 
-#: Mailman/Cgi/admindb.py:205
+#: Mailman/Cgi/admindb.py:209
 msgid "a single held message."
 msgstr "jedna pozdr¾ená zpráva."
 
-#: Mailman/Cgi/admindb.py:210
+#: Mailman/Cgi/admindb.py:214
 msgid "all held messages."
 msgstr "v¹echny pozdr¾ené pøíspìvky."
 
-#: Mailman/Cgi/admindb.py:244
+#: Mailman/Cgi/admindb.py:248
 msgid "Mailman Administrative Database Error"
 msgstr "Pøi zpracování databáze po¾adavkù (Admindb) do¹lo k chybì."
 
-#: Mailman/Cgi/admindb.py:249
+#: Mailman/Cgi/admindb.py:253
 msgid "list of available mailing lists."
 msgstr "seznam konferencí"
 
-#: Mailman/Cgi/admindb.py:250
+#: Mailman/Cgi/admindb.py:254
 msgid "You must specify a list name.  Here is the %(link)s"
 msgstr "Musíte zadat název konference, zde je odkaz %(link)s"
 
-#: Mailman/Cgi/admindb.py:263
+#: Mailman/Cgi/admindb.py:267
 msgid "Subscription Requests"
 msgstr "Po¾adavky na pøihlá¹ení"
 
-#: Mailman/Cgi/admindb.py:265
+#: Mailman/Cgi/admindb.py:269
 msgid "Address/name"
 msgstr "Adresa/jméno"
 
-#: Mailman/Cgi/admindb.py:266 Mailman/Cgi/admindb.py:312
+#: Mailman/Cgi/admindb.py:270 Mailman/Cgi/admindb.py:316
 msgid "Your decision"
 msgstr "Va¹e rozhodnutí"
 
-#: Mailman/Cgi/admindb.py:267 Mailman/Cgi/admindb.py:313
+#: Mailman/Cgi/admindb.py:271 Mailman/Cgi/admindb.py:317
 msgid "Reason for refusal"
 msgstr "Dùvod pro zamítnutí"
 
-#: Mailman/Cgi/admindb.py:282 Mailman/Cgi/admindb.py:330
-#: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:286 Mailman/Cgi/admindb.py:334
+#: Mailman/Cgi/admindb.py:373 Mailman/Cgi/admindb.py:589
 msgid "Defer"
 msgstr "Odlo¾"
 
-#: Mailman/Cgi/admindb.py:283 Mailman/Cgi/admindb.py:331
-#: Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:287 Mailman/Cgi/admindb.py:335
+#: Mailman/Cgi/admindb.py:589
 msgid "Approve"
 msgstr "Odsouhlas"
 
-#: Mailman/Cgi/admindb.py:284 Mailman/Cgi/admindb.py:332
-#: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:288 Mailman/Cgi/admindb.py:336
+#: Mailman/Cgi/admindb.py:373 Mailman/Cgi/admindb.py:589
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "Odmítni"
 
-#: Mailman/Cgi/admindb.py:285 Mailman/Cgi/admindb.py:333
-#: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
+#: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:337
+#: Mailman/Cgi/admindb.py:373 Mailman/Cgi/admindb.py:589
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
 msgstr "Zahoï"
 
-#: Mailman/Cgi/admindb.py:293
+#: Mailman/Cgi/admindb.py:297
 msgid "Permanently ban from this list"
 msgstr "Trvale zakázat pøístup do konference"
 
-#: Mailman/Cgi/admindb.py:309
+#: Mailman/Cgi/admindb.py:313
 msgid "Unsubscription Requests"
 msgstr "Po¾adavky na odhlá¹ení"
 
-#: Mailman/Cgi/admindb.py:311
+#: Mailman/Cgi/admindb.py:315
 msgid "User address/name"
 msgstr "adresa úèastníka/jméno úèastníka"
 
-#: Mailman/Cgi/admindb.py:362 Mailman/Cgi/admindb.py:564
+#: Mailman/Cgi/admindb.py:366 Mailman/Cgi/admindb.py:573
 msgid "From:"
 msgstr "Od:"
 
-#: Mailman/Cgi/admindb.py:365
+#: Mailman/Cgi/admindb.py:369
 msgid "Action to take on all these held messages:"
 msgstr "Co se má udìlat se v¹emi pozdr¾enými zprávami:"
 
-#: Mailman/Cgi/admindb.py:369 Mailman/Gui/Privacy.py:281
+#: Mailman/Cgi/admindb.py:373 Mailman/Gui/Privacy.py:281
 msgid "Accept"
 msgstr "Akceptovat"
 
-#: Mailman/Cgi/admindb.py:377
+#: Mailman/Cgi/admindb.py:381
 msgid "Preserve messages for the site administrator"
 msgstr "Uschovej tuto zprávu pro administrátora serveru"
 
-#: Mailman/Cgi/admindb.py:383
+#: Mailman/Cgi/admindb.py:387
 msgid "Forward messages (individually) to:"
 msgstr "Pøepo¹li zprávy (jednotlivì) na:"
 
-#: Mailman/Cgi/admindb.py:401
+#: Mailman/Cgi/admindb.py:405
 msgid "Clear this member's <em>moderate</em> flag"
 msgstr "Zru¹it tomuto úèastníkovi pøíznak <em>moderovat</em>."
 
-#: Mailman/Cgi/admindb.py:411
+#: Mailman/Cgi/admindb.py:415
 msgid "Add <b>%(esender)s</b> to a sender filter"
 msgstr "Pøídej <b>%(esender)s</b> se filtru odesílatelù"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Accepts"
 msgstr "Akceptovat"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Discards"
 msgstr "Zahoï"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Holds"
 msgstr "Pozdr¾et"
 
-#: Mailman/Cgi/admindb.py:416
+#: Mailman/Cgi/admindb.py:420
 msgid "Rejects"
 msgstr "Odmítni"
 
-#: Mailman/Cgi/admindb.py:425
+#: Mailman/Cgi/admindb.py:429
 msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
@@ -1119,7 +1121,7 @@ msgstr ""
 "Zaka¾ úèastníkovi <b>%(esender)s</b> nav¾dy pøihlá¹ení do \n"
 "této konference."
 
-#: Mailman/Cgi/admindb.py:430
+#: Mailman/Cgi/admindb.py:434
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
@@ -1127,89 +1129,94 @@ msgstr ""
 "Buï mù¾ete kliknout na èíslo zprávy, abyste si ji zobrazili, \n"
 "nebo mù¾ete"
 
-#: Mailman/Cgi/admindb.py:432
+#: Mailman/Cgi/admindb.py:436
 msgid "view all messages from %(esender)s"
 msgstr "zobrazit v¹echny zprávy od %(esender)s"
 
-#: Mailman/Cgi/admindb.py:452 Mailman/Cgi/admindb.py:567
+#: Mailman/Cgi/admindb.py:456 Mailman/Cgi/admindb.py:576
 msgid "Subject:"
 msgstr "Subject:"
 
-#: Mailman/Cgi/admindb.py:455
+#: Mailman/Cgi/admindb.py:459
 msgid " bytes"
 msgstr " bytù"
 
-#: Mailman/Cgi/admindb.py:455
+#: Mailman/Cgi/admindb.py:459
 msgid "Size:"
 msgstr "Velikost:"
 
-#: Mailman/Cgi/admindb.py:456 Mailman/Cgi/admindb.py:569
+#: Mailman/Cgi/admindb.py:460 Mailman/Cgi/admindb.py:578
 msgid "Reason:"
 msgstr "Dùvod:"
 
-#: Mailman/Cgi/admindb.py:457 Mailman/Handlers/Decorate.py:49
+#: Mailman/Cgi/admindb.py:461 Mailman/Handlers/Decorate.py:49
 #: Mailman/Handlers/Scrubber.py:194 Mailman/Handlers/Scrubber.py:195
 msgid "not available"
 msgstr "[¾ádný popis není k dispozici]"
 
-#: Mailman/Cgi/admindb.py:513
+#: Mailman/Cgi/admindb.py:465 Mailman/Cgi/admindb.py:582
+#, fuzzy
+msgid "Received:"
+msgstr "Dostávat pøíspìvky jako digest?"
+
+#: Mailman/Cgi/admindb.py:522
 msgid "Posting Held for Approval"
 msgstr "Pøíspìvek byl pozastaven do souhlasu moderátora"
 
-#: Mailman/Cgi/admindb.py:515
+#: Mailman/Cgi/admindb.py:524
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(count)d z %(total)d)"
 
-#: Mailman/Cgi/admindb.py:526
+#: Mailman/Cgi/admindb.py:535
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>Pøíspìvek s ID #%(id)d byl ztracen."
 
-#: Mailman/Cgi/admindb.py:535
+#: Mailman/Cgi/admindb.py:544
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>Pøíspìvek s ID #%(id)d byl po¹kozen."
 
-#: Mailman/Cgi/admindb.py:582
+#: Mailman/Cgi/admindb.py:595
 msgid "Action:"
 msgstr "Akce:"
 
-#: Mailman/Cgi/admindb.py:586
+#: Mailman/Cgi/admindb.py:599
 msgid "Preserve message for site administrator"
 msgstr "Uschovej tuto zprávu pro administrátora serveru"
 
-#: Mailman/Cgi/admindb.py:590
+#: Mailman/Cgi/admindb.py:603
 msgid "Additionally, forward this message to: "
 msgstr "Kromì toho za¹lete tuto zprávu na adresu:"
 
-#: Mailman/Cgi/admindb.py:594
+#: Mailman/Cgi/admindb.py:607
 msgid "[No explanation given]"
 msgstr "[Bez udání dùvodu]"
 
-#: Mailman/Cgi/admindb.py:596
+#: Mailman/Cgi/admindb.py:609
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr "Pokud zamítnete tento pøíspìvek, <br>prosím napi¹te proè:"
 
-#: Mailman/Cgi/admindb.py:602
+#: Mailman/Cgi/admindb.py:615
 msgid "Message Headers:"
 msgstr "Hlavièky pøíspìvku:"
 
-#: Mailman/Cgi/admindb.py:607
+#: Mailman/Cgi/admindb.py:620
 msgid "Message Excerpt:"
 msgstr "Èást zprávy"
 
-#: Mailman/Cgi/admindb.py:640 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:653 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "Bez udání dùvodu"
 
-#: Mailman/Cgi/admindb.py:701 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:714 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[Bez udání dùvodu]"
 
-#: Mailman/Cgi/admindb.py:730
+#: Mailman/Cgi/admindb.py:743
 msgid "Database Updated..."
 msgstr "Databáze byla aktualizována"
 
-#: Mailman/Cgi/admindb.py:733
+#: Mailman/Cgi/admindb.py:746
 msgid " is already a member"
 msgstr "je úèastníkem konference"
 
@@ -1780,8 +1787,8 @@ msgstr "administrative list overview"
 msgid "List name must not include \"@\": %(listname)s"
 msgstr "Jméno konference nesmí obsahovat \"@\": %(listname)s"
 
-#: Mailman/Cgi/create.py:107 Mailman/Cgi/create.py:185 bin/newlist:130
-#: bin/newlist:164
+#: Mailman/Cgi/create.py:107 Mailman/Cgi/create.py:185 bin/newlist:134
+#: bin/newlist:168
 msgid "List already exists: %(listname)s"
 msgstr "Konference ji¾ existuje : %(listname)s"
 
@@ -1814,11 +1821,11 @@ msgstr "Heslo pro konferenci nesmí být prázdné.<!-- ignore -->"
 msgid "You are not authorized to create new mailing lists"
 msgstr "Nemáte právo zalo¾it novou konferenci."
 
-#: Mailman/Cgi/create.py:181 bin/newlist:162
+#: Mailman/Cgi/create.py:181 bin/newlist:166
 msgid "Bad owner email address: %(s)s"
 msgstr "Neplatná adresa vlastníka: %(s)s"
 
-#: Mailman/Cgi/create.py:189 bin/newlist:160
+#: Mailman/Cgi/create.py:189 bin/newlist:164
 msgid "Illegal list name: %(s)s"
 msgstr "Nepøípustný název konference %(s)s"
 
@@ -1830,7 +1837,7 @@ msgstr ""
 "V prùbìhu zakládání konference do¹lo k neznámé chybì\n"
 "  Prosíme, kontaktuje správce serveru."
 
-#: Mailman/Cgi/create.py:233 bin/newlist:206
+#: Mailman/Cgi/create.py:233 bin/newlist:210
 msgid "Your new mailing list: %(listname)s"
 msgstr "Va¹e nová konference : %(listname)s"
 
@@ -2410,7 +2417,8 @@ msgstr "Pøipomínka hesla"
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
-msgstr "Kliknutím na tlaèítko <em>Po¹li heslo</em> Vám bude zaslána Va¹e heslo."
+msgstr ""
+"Kliknutím na tlaèítko <em>Po¹li heslo</em> Vám bude zaslána Va¹e heslo."
 
 #: Mailman/Cgi/options.py:819
 msgid "Remind"
@@ -3962,12 +3970,12 @@ msgid ""
 "\n"
 "            <p>Finally, any <tt>text/html</tt> parts that are left in the\n"
 "            message may be converted to <tt>text/plain</tt> if\n"
-"            <a href=\"?VARHELP=contentfilter/convert_html_to_plaintext\"</a> "
-"is\n"
-"            enabled and the site is configured to allow these conversions."
+"            <a href=\"?VARHELP=contentfilter/convert_html_to_plaintext\"\n"
+"            >convert_html_to_plaintext</a> is enabled and the site is\n"
+"            configured to allow these conversions."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:70
+#: Mailman/Gui/ContentFilter.py:71
 msgid ""
 "Should Mailman filter the content of list traffic according\n"
 "             to the settings below?"
@@ -3975,13 +3983,13 @@ msgstr ""
 "Má Mailman filtrovat obsah pøíspìvkù do konference podle ní¾e\n"
 "nastavených pravidel?"
 
-#: Mailman/Gui/ContentFilter.py:74
+#: Mailman/Gui/ContentFilter.py:75
 msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
 msgstr "Odstraò pøílohy zpráv, které mají tento MIME typ."
 
-#: Mailman/Gui/ContentFilter.py:77
+#: Mailman/Gui/ContentFilter.py:78
 msgid ""
 "Use this option to remove each message attachment that\n"
 "             matches one of these content types.  Each line should contain "
@@ -3996,7 +4004,7 @@ msgid ""
 "             >pass_mime_types</a> for a content type whitelist."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:89
+#: Mailman/Gui/ContentFilter.py:90
 msgid ""
 "Remove message attachments that don't have a matching\n"
 "             content type.  Leave this field blank to skip this filter\n"
@@ -4005,7 +4013,7 @@ msgstr ""
 "Odstraò pøílohy zpráv, pokud pøíloha není tohoto typu. Nechte pole prázdné,\n"
 "pokud nechcete pøílohy filtrovat."
 
-#: Mailman/Gui/ContentFilter.py:93
+#: Mailman/Gui/ContentFilter.py:94
 msgid ""
 "Use this option to remove each message attachment that does\n"
 "             not have a matching content type.  Requirements and formats "
@@ -4019,7 +4027,7 @@ msgid ""
 "             will be rejected by the pass filter."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:103
+#: Mailman/Gui/ContentFilter.py:104
 msgid ""
 "Should Mailman convert <tt>text/html</tt> parts to plain\n"
 "             text?  This conversion happens after MIME attachments have "
@@ -4029,13 +4037,13 @@ msgstr ""
 "Má Mailman konvertovat  <tt>text/html</tt> na èistý text?\n"
 "Tato konverze je provádìna a¾ po odstranìní pøípadných MIME pøíloh. "
 
-#: Mailman/Gui/ContentFilter.py:109
+#: Mailman/Gui/ContentFilter.py:110
 msgid ""
 "Action to take when a message matches the content filtering\n"
 "             rules."
 msgstr "Akce, která probìhne kdy¾ pøíspìvek vyhoví testu na filtrování obsahu."
 
-#: Mailman/Gui/ContentFilter.py:112
+#: Mailman/Gui/ContentFilter.py:113
 msgid ""
 "One of these actions is take when the message matches one of\n"
 "             the content filtering rules, meaning, the top-level\n"
@@ -4066,7 +4074,7 @@ msgid ""
 "             administrator."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:153
+#: Mailman/Gui/ContentFilter.py:154
 msgid "Bad MIME type ignored: %(spectype)s"
 msgstr "Chybný MIME typ byl ignorován: %(spectype)s"
 
@@ -4111,8 +4119,10 @@ msgid "How big in Kb should a digest be before it gets sent out?"
 msgstr "Jaká je maximální velikost digestu?"
 
 #: Mailman/Gui/Digest.py:63
-msgid "Should a digest be dispatched daily when the size threshold isn't reached?"
-msgstr "Má být digest odeslán ka¾dý den i pøi nepøekroèení maximální velikosti?"
+msgid ""
+"Should a digest be dispatched daily when the size threshold isn't reached?"
+msgstr ""
+"Má být digest odeslán ka¾dý den i pøi nepøekroèení maximální velikosti?"
 
 #: Mailman/Gui/Digest.py:67
 msgid "Header added to every digest"
@@ -4243,7 +4253,8 @@ msgstr "Filtruj duplicitní pøíspìvky, pokud je to mo¾né"
 msgid ""
 "Fundamental list characteristics, including descriptive\n"
 "            info and basic behaviors."
-msgstr "Základní charakteristika konference, vèetnì popisu a základních informací."
+msgstr ""
+"Základní charakteristika konference, vèetnì popisu a základních informací."
 
 #: Mailman/Gui/General.py:60
 msgid "General list personality"
@@ -4251,7 +4262,8 @@ msgstr "Informaèní stránka konference"
 
 #: Mailman/Gui/General.py:63
 msgid "The public name of this list (make case-changes only)."
-msgstr "Jméno konference. Je v nìm mo¾né provádìt pouze zmìny velikosti písmen."
+msgstr ""
+"Jméno konference. Je v nìm mo¾né provádìt pouze zmìny velikosti písmen."
 
 #: Mailman/Gui/General.py:64
 msgid ""
@@ -4786,7 +4798,8 @@ msgstr ""
 msgid ""
 "Should administrator get notices of subscribes and\n"
 "             unsubscribes?"
-msgstr "Má být administrátor informován o pøihla¹ování a odhla¹ování úèastníkù?"
+msgstr ""
+"Má být administrátor informován o pøihla¹ování a odhla¹ování úèastníkù?"
 
 #: Mailman/Gui/General.py:316
 msgid "Send mail to poster when their posting is held for approval?"
@@ -5798,7 +5811,9 @@ msgstr ""
 msgid ""
 "This section allows you to configure various filters based on\n"
 "            the recipient of the message."
-msgstr "Tato sekce vám umo¾ní nastavovat rùzné volby z závislosti na tom, komu je pøíspìvek adresován."
+msgstr ""
+"Tato sekce vám umo¾ní nastavovat rùzné volby z závislosti na tom, komu je "
+"pøíspìvek adresován."
 
 #: Mailman/Gui/Privacy.py:306
 msgid "Recipient filters"
@@ -5880,7 +5895,8 @@ msgstr ""
 
 #: Mailman/Gui/Privacy.py:352
 msgid "Ceiling on acceptable number of recipients for a posting."
-msgstr "Maximální poèet adresátù, pokud bude pøekroèen pøíspìvek nebude rozeslán."
+msgstr ""
+"Maximální poèet adresátù, pokud bude pøekroèen pøíspìvek nebude rozeslán."
 
 #: Mailman/Gui/Privacy.py:354
 msgid ""
@@ -5908,7 +5924,8 @@ msgstr "Anti spam filtry"
 
 #: Mailman/Gui/Privacy.py:367
 msgid "Hold posts with header value matching a specified regexp."
-msgstr "Pozastav distribuci pøíspìvkù, které obsahují v hlavièce takovéto øetìzce."
+msgstr ""
+"Pozastav distribuci pøíspìvkù, které obsahují v hlavièce takovéto øetìzce."
 
 #: Mailman/Gui/Privacy.py:368
 msgid ""
@@ -6009,7 +6026,8 @@ msgstr ""
 
 #: Mailman/Gui/Topics.py:62
 msgid "How many body lines should the topic matcher scan?"
-msgstr "Kolik øádek z tìla pøíspìvku má být prohlédnuto pøi hledání klíèových slov?"
+msgstr ""
+"Kolik øádek z tìla pøíspìvku má být prohlédnuto pøi hledání klíèových slov?"
 
 #: Mailman/Gui/Topics.py:64
 msgid ""
@@ -6574,7 +6592,8 @@ msgstr "Do konference není mo¾né pøispívat bez souhlasu moderátora"
 
 #: Mailman/Handlers/Hold.py:66
 msgid "This list is restricted; your message was not approved."
-msgstr "Tato konference není veøejnì pøístupná, Vás pøíspìvek nebyl akceptován."
+msgstr ""
+"Tato konference není veøejnì pøístupná, Vás pøíspìvek nebyl akceptován."
 
 #: Mailman/Handlers/Hold.py:69
 msgid "Too many recipients to the message"
@@ -6631,7 +6650,8 @@ msgstr "Vá¹ pøíspìvek má neplatnou hlavièku."
 msgid ""
 "Message body is too big: %(size)d bytes with a limit of\n"
 "%(limit)d KB"
-msgstr "Tìlo zprávy je pøíli¹ veliké: %(size)d bytù, kde¾to limit je %(limit)d KB."
+msgstr ""
+"Tìlo zprávy je pøíli¹ veliké: %(size)d bytù, kde¾to limit je %(limit)d KB."
 
 #: Mailman/Handlers/Hold.py:106
 msgid ""
@@ -6854,7 +6874,7 @@ msgstr "Pùvodní zpráva"
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "Po¾adavek do konference %(realname)s byl zamítnut."
 
-#: Mailman/MTA/Manual.py:55
+#: Mailman/MTA/Manual.py:57
 msgid ""
 "The mailing list `%(listname)s' has been created via the through-the-web\n"
 "interface.  In order to complete the activation of this mailing list, the\n"
@@ -6869,7 +6889,7 @@ msgstr ""
 "do souboru /etc/aliases tyto øádky: (Asi bude nutné následnì spustit\n"
 "pøíkaz newaliases).\n"
 
-#: Mailman/MTA/Manual.py:65
+#: Mailman/MTA/Manual.py:67
 msgid ""
 "\n"
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
@@ -6884,11 +6904,11 @@ msgstr ""
 "pøíkaz newaliases).\n"
 "## %(listname)s mailing list"
 
-#: Mailman/MTA/Manual.py:86
+#: Mailman/MTA/Manual.py:88
 msgid "Mailing list creation request for list %(listname)s"
 msgstr "Administrativní po¾adavky pro konferenci '%(listname)s' "
 
-#: Mailman/MTA/Manual.py:101
+#: Mailman/MTA/Manual.py:103
 msgid ""
 "The mailing list `%(listname)s' has been removed via the through-the-web\n"
 "interface.  In order to complete the de-activation of this mailing list, "
@@ -6903,7 +6923,7 @@ msgstr ""
 "(Asi bude nutné potom spustit pøíkaz newaliases.)\n"
 "\n"
 
-#: Mailman/MTA/Manual.py:111
+#: Mailman/MTA/Manual.py:113
 msgid ""
 "\n"
 "To finish removing your mailing list, you must edit your /etc/aliases (or\n"
@@ -6918,7 +6938,7 @@ msgstr ""
 "\n"
 "## %(listname)s mailing list"
 
-#: Mailman/MTA/Manual.py:130
+#: Mailman/MTA/Manual.py:132
 msgid "Mailing list removal request for list %(listname)s"
 msgstr "Po¾adavek na zru¹ení konference %(listname)s"
 
@@ -6943,13 +6963,14 @@ msgstr "Ovìøuji práva souboru %(dbfile)s"
 
 #: Mailman/MTA/Postfix.py:336
 msgid "%(dbfile)s owned by %(owner)s (must be owned by %(user)s"
-msgstr "Soubor %(dbfile)s patøí u¾ivateli %(owner)s (musí být vlastnìn %(user)s)"
+msgstr ""
+"Soubor %(dbfile)s patøí u¾ivateli %(owner)s (musí být vlastnìn %(user)s)"
 
 #: Mailman/MailList.py:709
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr "Byl jste pozván, abyste se pøihlásil do konference %(listname)s."
 
-#: Mailman/MailList.py:813 Mailman/MailList.py:1175
+#: Mailman/MailList.py:813 Mailman/MailList.py:1174
 msgid " from %(remote)s"
 msgstr "od %(remote)s"
 
@@ -6957,38 +6978,41 @@ msgstr "od %(remote)s"
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "pøihlá¹ky do konference %(realname)s vy¾adují souhlas moderátora"
 
-#: Mailman/MailList.py:909 bin/add_members:277
+#: Mailman/MailList.py:909 bin/add_members:281
 msgid "%(realname)s subscription notification"
 msgstr "%(realname)s zpráva o pøihlá¹ení."
 
-#: Mailman/MailList.py:927
+#: Mailman/MailList.py:924
 msgid "unsubscriptions require moderator approval"
 msgstr "odhlá¹ení z konference vy¾aduje souhlas moderátora"
 
-#: Mailman/MailList.py:948
+#: Mailman/MailList.py:945
 msgid "%(realname)s unsubscribe notification"
 msgstr "%(realname)s zpráva o odhlá¹ení"
 
-#: Mailman/MailList.py:1095
+#: Mailman/MailList.py:1089
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr "pøihlá¹ky do konference %(name)s vy¾adují souhlas moderátora"
 
-#: Mailman/MailList.py:1344
+#: Mailman/MailList.py:1343
 msgid "Last autoresponse notification for today"
 msgstr "Poslední dne¹ní automatická odpovìï"
 
-#: Mailman/Queue/BounceRunner.py:173
+#: Mailman/Queue/BounceRunner.py:174
 msgid ""
 "The attached message was received as a bounce, but either the bounce format\n"
 "was not recognized, or no member addresses could be extracted from it.  "
-"You,\n"
-"as the list administrators have requested to receive all unrecognized "
-"bounce\n"
-"messages.\n"
+"This\n"
+"mailing list has been configured to send all unrecognized bounce messages "
+"to\n"
+"the list administrator(s).\n"
+"\n"
+"For more information see:\n"
+"%(adminurl)s\n"
 "\n"
 msgstr ""
 
-#: Mailman/Queue/BounceRunner.py:180
+#: Mailman/Queue/BounceRunner.py:184
 msgid "Uncaught bounce notification"
 msgstr "Nesrozumitelné oznámení o nedoruèitelnosti"
 
@@ -7221,56 +7245,56 @@ msgstr ""
 "You must supply at least one of -n and -d options.  At most one of the\n"
 "files can be `-'.\n"
 
-#: bin/add_members:130
+#: bin/add_members:134
 msgid "Big change in %(listname)s@%(listhost)s mailing list"
 msgstr "Velká zmìna v konferenci %(listname)s@%(listhost)s."
 
-#: bin/add_members:163
+#: bin/add_members:167
 msgid "Already a member: %(member)s"
 msgstr "Je ji¾ úèastníkem %(member)s"
 
-#: bin/add_members:166
+#: bin/add_members:170
 msgid "Bad/Invalid email address: blank line"
 msgstr "Neplatná emailová adresa: prázdný øádek"
 
-#: bin/add_members:168
+#: bin/add_members:172
 msgid "Bad/Invalid email address: %(member)s"
 msgstr "Neplatná emailová adresa: %(member)s"
 
-#: bin/add_members:170
+#: bin/add_members:174
 msgid "Hostile address (illegal characters): %(member)s"
 msgstr "Neplatná adresa (obsahuje nepovolené znaky): %(member)s"
 
-#: bin/add_members:172
+#: bin/add_members:176
 msgid "Subscribed: %(member)s"
 msgstr "Pøihlá¹en: %(member)s"
 
-#: bin/add_members:219
+#: bin/add_members:223
 msgid "Bad argument to -c/--changes-msg: %(arg)s"
 msgstr "Chybný parametr u -c/--changes-msg: %(arg)s"
 
-#: bin/add_members:226
+#: bin/add_members:230
 msgid "Bad argument to -w/--welcome-msg: %(arg)s"
 msgstr "Chybný parametr u -w/--welcome-msg: %(arg)s"
 
-#: bin/add_members:233
+#: bin/add_members:237
 msgid "Bad argument to -a/--admin-notify: %(arg)s"
 msgstr "Chybný parametr u -a/--admin-notify: %(arg)s"
 
-#: bin/add_members:239
+#: bin/add_members:243
 msgid "Cannot read both digest and normal members from standard input."
 msgstr ""
 "Nemohu èíst ze standardního vstupu jak bì¾né úèastníky, tak úèastníky "
 "vyu¾ívající digest."
 
-#: bin/add_members:245 bin/config_list:101 bin/find_member:93 bin/inject:86
-#: bin/list_admins:85 bin/list_members:183 bin/sync_members:218
-#: cron/bumpdigests:82
+#: bin/add_members:249 bin/config_list:105 bin/find_member:97 bin/inject:90
+#: bin/list_admins:89 bin/list_members:187 bin/sync_members:222
+#: cron/bumpdigests:86
 msgid "No such list: %(listname)s"
 msgstr "Nenalezl jsem konferenci %(listname)s"
 
-#: bin/add_members:265 bin/change_pw:154 bin/check_db:110 bin/sync_members:240
-#: cron/bumpdigests:74
+#: bin/add_members:269 bin/change_pw:158 bin/check_db:114 bin/sync_members:244
+#: cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "®ádný pøíkaz."
 
@@ -7313,11 +7337,11 @@ msgid ""
 "<mbox> is optional.  If it is missing, it is calculated.\n"
 msgstr ""
 
-#: bin/arch:105
+#: bin/arch:109
 msgid "listname is required"
 msgstr "Jméno konference je vy¾adováno."
 
-#: bin/arch:123 bin/change_pw:102 bin/config_list:235
+#: bin/arch:127 bin/change_pw:106 bin/config_list:239
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -7325,7 +7349,7 @@ msgstr ""
 "Nenalezl jsem konferenci %(listname)s: \n"
 "%(e)s"
 
-#: bin/arch:146
+#: bin/arch:150
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr "Nemohu otevøít mbox %(mbox)s: %(msg)s"
 
@@ -7385,23 +7409,23 @@ msgid ""
 "        Print this help message and exit.\n"
 msgstr ""
 
-#: bin/change_pw:140
+#: bin/change_pw:144
 msgid "Bad arguments: %(strargs)s"
 msgstr "Chybné argumenty: %(strargs)s"
 
-#: bin/change_pw:144
+#: bin/change_pw:148
 msgid "Empty list passwords are not allowed"
 msgstr "Není dovoleno, aby správce konference mìl prázdné heslo."
 
-#: bin/change_pw:175
+#: bin/change_pw:179
 msgid "New %(listname)s password: %(notifypassword)s"
 msgstr "Nové heslo pro konferenci %(listname)s: %(notifypassword)s"
 
-#: bin/change_pw:184
+#: bin/change_pw:188
 msgid "Your new %(listname)s list password"
 msgstr "Va¹e nové heslo pro %(listname)s"
 
-#: bin/change_pw:185
+#: bin/change_pw:189
 msgid ""
 "The site administrator at %(hostname)s has changed the password for your\n"
 "mailing list %(listname)s.  It is now\n"
@@ -7453,15 +7477,15 @@ msgid ""
 "        Print this text and exit.\n"
 msgstr ""
 
-#: bin/check_db:115
+#: bin/check_db:119
 msgid "No list named:"
 msgstr ""
 
-#: bin/check_db:124
+#: bin/check_db:128
 msgid "List:"
 msgstr "Konference: "
 
-#: bin/check_db:144
+#: bin/check_db:148
 msgid "   %(file)s: okay"
 msgstr ""
 
@@ -7553,15 +7577,15 @@ msgstr ""
 msgid "file permissions must be at least 660: %(path)s"
 msgstr ""
 
-#: bin/check_perms:330
+#: bin/check_perms:334
 msgid "No problems found"
 msgstr ""
 
-#: bin/check_perms:332
+#: bin/check_perms:336
 msgid "Problems found:"
 msgstr ""
 
-#: bin/check_perms:333
+#: bin/check_perms:337
 msgid "Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix"
 msgstr ""
 
@@ -7599,15 +7623,15 @@ msgid ""
 "        Print this message and exit\n"
 msgstr ""
 
-#: bin/cleanarch:78
+#: bin/cleanarch:82
 msgid "Unix-From line changed: %(lineno)d"
 msgstr ""
 
-#: bin/cleanarch:106
+#: bin/cleanarch:110
 msgid "Bad status number: %(arg)s"
 msgstr "Chybný stavový kód: %(arg)s"
 
-#: bin/cleanarch:156
+#: bin/cleanarch:160
 msgid "%(messages)d messages found"
 msgstr ""
 
@@ -7669,43 +7693,43 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/clone_member:90
+#: bin/clone_member:94
 msgid "processing mailing list:"
 msgstr "zpracovávám konferenci:"
 
-#: bin/clone_member:97
+#: bin/clone_member:101
 msgid "    scanning list owners:"
 msgstr "hledám vlastníka konference:"
 
-#: bin/clone_member:115
+#: bin/clone_member:119
 msgid "    new list owners:"
 msgstr ""
 
-#: bin/clone_member:117
+#: bin/clone_member:121
 msgid "(no change)"
 msgstr ""
 
-#: bin/clone_member:126
+#: bin/clone_member:130
 msgid "    address not found:"
 msgstr ""
 
-#: bin/clone_member:135
+#: bin/clone_member:139
 msgid "    clone address added:"
 msgstr ""
 
-#: bin/clone_member:138
+#: bin/clone_member:142
 msgid "    clone address is already a member:"
 msgstr "cílová adresa, na kterou klonujete je ji¾ úèastníkem:"
 
-#: bin/clone_member:141
+#: bin/clone_member:145
 msgid "    original address removed:"
 msgstr ""
 
-#: bin/clone_member:192
+#: bin/clone_member:196
 msgid "Not a valid email address: %(toaddr)s"
 msgstr "Neplatná emailová adresa %(toaddr)s"
 
-#: bin/clone_member:205
+#: bin/clone_member:209
 msgid ""
 "Error opening list \"%(listname)s\", skipping.\n"
 "%(e)s"
@@ -7765,49 +7789,49 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/config_list:105
+#: bin/config_list:109
 msgid ""
 "## \"%(listname)s\" mailing list configuration settings -*- python -*-\n"
 "## captured on %(when)s\n"
 msgstr ""
 
-#: bin/config_list:127
+#: bin/config_list:131
 msgid "options"
 msgstr "Vlastnosti"
 
-#: bin/config_list:184
+#: bin/config_list:188
 msgid "legal values are:"
 msgstr ""
 
-#: bin/config_list:248
+#: bin/config_list:252
 msgid "attribute \"%(k)s\" ignored"
 msgstr ""
 
-#: bin/config_list:251
+#: bin/config_list:255
 msgid "attribute \"%(k)s\" changed"
 msgstr ""
 
-#: bin/config_list:257
+#: bin/config_list:261
 msgid "Non-standard property restored: %(k)s"
 msgstr ""
 
-#: bin/config_list:265
+#: bin/config_list:269
 msgid "Invalid value for property: %(k)s"
 msgstr "Chybná hodnota parametru: %(k)s"
 
-#: bin/config_list:267
+#: bin/config_list:271
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr "Chybná emailová adresa pro parametr %(k)s: %(v)s"
 
-#: bin/config_list:306
+#: bin/config_list:310
 msgid "Only one of -i or -o is allowed"
 msgstr ""
 
-#: bin/config_list:308
+#: bin/config_list:312
 msgid "One of -i or -o is required"
 msgstr ""
 
-#: bin/config_list:312
+#: bin/config_list:316
 msgid "List name is required"
 msgstr "Jméno konference je vy¾adováno."
 
@@ -7865,15 +7889,15 @@ msgid ""
 "-- or if the file ends in neither suffix -- use the -p or -m flags.\n"
 msgstr ""
 
-#: bin/dumpdb:97
+#: bin/dumpdb:101
 msgid "No filename given."
 msgstr "Nebyl zadán název souboru."
 
-#: bin/dumpdb:100
+#: bin/dumpdb:104
 msgid "Bad arguments: %(pargs)s"
 msgstr ""
 
-#: bin/dumpdb:110
+#: bin/dumpdb:114
 msgid "Please specify either -p or -m."
 msgstr ""
 
@@ -7921,19 +7945,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/find_member:155
+#: bin/find_member:159
 msgid "Search regular expression required"
 msgstr ""
 
-#: bin/find_member:160
+#: bin/find_member:164
 msgid "No lists to search"
 msgstr ""
 
-#: bin/find_member:169
+#: bin/find_member:173
 msgid "found in:"
 msgstr ""
 
-#: bin/find_member:175
+#: bin/find_member:179
 msgid "(as owner)"
 msgstr ""
 
@@ -8012,11 +8036,11 @@ msgid ""
 "standard input is used.\n"
 msgstr ""
 
-#: bin/inject:79
+#: bin/inject:83
 msgid "Bad queue directory: %(qdir)s"
 msgstr ""
 
-#: bin/inject:84
+#: bin/inject:88
 msgid "A list name is required"
 msgstr "Jméno konference je vy¾adováno."
 
@@ -8045,7 +8069,7 @@ msgid ""
 "have more than one named list on the command line.\n"
 msgstr ""
 
-#: bin/list_admins:92
+#: bin/list_admins:96
 msgid "List: %(listname)s, \tOwners: %(owners)s"
 msgstr ""
 
@@ -8073,11 +8097,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/list_lists:97
+#: bin/list_lists:101
 msgid "No matching mailing lists found"
 msgstr "Nenalezena ¾ádná konference, která by vyhovovala podmínce"
 
-#: bin/list_lists:100
+#: bin/list_lists:104
 msgid "matching mailing lists found:"
 msgstr "nalezeny následující konference:"
 
@@ -8132,15 +8156,15 @@ msgid ""
 "status.\n"
 msgstr ""
 
-#: bin/list_members:146
+#: bin/list_members:150
 msgid "Bad --nomail option: %(why)s"
 msgstr ""
 
-#: bin/list_members:157
+#: bin/list_members:161
 msgid "Bad --digest option: %(kind)s"
 msgstr ""
 
-#: bin/list_members:175
+#: bin/list_members:179
 msgid "Could not open file for writing:"
 msgstr ""
 
@@ -8234,37 +8258,37 @@ msgid ""
 "              next time a message is written to them\n"
 msgstr ""
 
-#: bin/mailmanctl:141
+#: bin/mailmanctl:145
 msgid "PID unreadable in: %(pidfile)s"
 msgstr ""
 
-#: bin/mailmanctl:143
+#: bin/mailmanctl:147
 msgid "Is qrunner even running?"
 msgstr ""
 
-#: bin/mailmanctl:149
+#: bin/mailmanctl:153
 msgid "No child with pid: %(pid)s"
 msgstr ""
 
-#: bin/mailmanctl:151
+#: bin/mailmanctl:155
 msgid "Stale pid file removed."
 msgstr ""
 
-#: bin/mailmanctl:209
+#: bin/mailmanctl:213
 msgid ""
 "The master qrunner lock could not be acquired because it appears as if "
 "another\n"
 "master qrunner is already running.\n"
 msgstr ""
 
-#: bin/mailmanctl:215
+#: bin/mailmanctl:219
 msgid ""
 "The master qrunner lock could not be acquired.  It appears as though there "
 "is\n"
 "a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.\n"
 msgstr ""
 
-#: bin/mailmanctl:221
+#: bin/mailmanctl:225
 msgid ""
 "The master qrunner lock could not be acquired, because it appears as if "
 "some\n"
@@ -8279,31 +8303,31 @@ msgid ""
 "Exiting."
 msgstr ""
 
-#: bin/mailmanctl:274
+#: bin/mailmanctl:278
 msgid "Run this program as root or as the %(name)s user, or use -u."
 msgstr ""
 
-#: bin/mailmanctl:305
+#: bin/mailmanctl:309
 msgid "No command given."
 msgstr "Nebyl zadán ¾ádný pøíkaz."
 
-#: bin/mailmanctl:308
+#: bin/mailmanctl:312
 msgid "Bad command: %(command)s"
 msgstr ""
 
-#: bin/mailmanctl:320
+#: bin/mailmanctl:324
 msgid "Shutting down Mailman's master qrunner"
 msgstr ""
 
-#: bin/mailmanctl:327
+#: bin/mailmanctl:331
 msgid "Restarting Mailman's master qrunner"
 msgstr ""
 
-#: bin/mailmanctl:331
+#: bin/mailmanctl:335
 msgid "Re-opening all log files"
 msgstr ""
 
-#: bin/mailmanctl:365
+#: bin/mailmanctl:369
 msgid "Starting Mailman's master qrunner."
 msgstr ""
 
@@ -8332,35 +8356,35 @@ msgid ""
 "If password is not given on the command line, it will be prompted for.\n"
 msgstr ""
 
-#: bin/mmsitepass:69
+#: bin/mmsitepass:73
 msgid "site"
 msgstr ""
 
-#: bin/mmsitepass:76
+#: bin/mmsitepass:80
 msgid "list creator"
 msgstr ""
 
-#: bin/mmsitepass:82
+#: bin/mmsitepass:86
 msgid "New %(pwdesc)s password: "
 msgstr ""
 
-#: bin/mmsitepass:83
+#: bin/mmsitepass:87
 msgid "Again to confirm password: "
 msgstr ""
 
-#: bin/mmsitepass:85
+#: bin/mmsitepass:89
 msgid "Passwords do not match; no changes made."
 msgstr ""
 
-#: bin/mmsitepass:88
+#: bin/mmsitepass:92
 msgid "Interrupted..."
 msgstr ""
 
-#: bin/mmsitepass:94
+#: bin/mmsitepass:98
 msgid "Password changed."
 msgstr ""
 
-#: bin/mmsitepass:96
+#: bin/mmsitepass:100
 msgid "Password change failed."
 msgstr ""
 
@@ -8421,27 +8445,27 @@ msgid ""
 "Note that listnames are forced to lowercase.\n"
 msgstr ""
 
-#: bin/newlist:114
+#: bin/newlist:118
 msgid "Unknown language: %(lang)s"
 msgstr "Neznámý jazyk: %(lang)s"
 
-#: bin/newlist:119
+#: bin/newlist:123
 msgid "Enter the name of the list: "
 msgstr "Zadejte název konference:"
 
-#: bin/newlist:136
+#: bin/newlist:140
 msgid "Enter the email of the person running the list: "
 msgstr "Zadejte emailovou adresu správce konference:"
 
-#: bin/newlist:141
+#: bin/newlist:145
 msgid "Initial %(listname)s password: "
 msgstr "Poèáteèní heslo pro konferenci %(listname)s: "
 
-#: bin/newlist:145
+#: bin/newlist:149
 msgid "The list password cannot be empty"
 msgstr "Heslo pro konferenci nesmí být prázdné."
 
-#: bin/newlist:186
+#: bin/newlist:190
 msgid "Hit enter to notify %(listname)s owner..."
 msgstr ""
 "Stisknìte ENTER pro zaslání informace o zalo¾ení konference na adresu %"
@@ -8511,15 +8535,15 @@ msgid ""
 "displayed by the -l switch.\n"
 msgstr ""
 
-#: bin/qrunner:172
+#: bin/qrunner:176
 msgid "%(name)s runs the %(runnername)s qrunner"
 msgstr ""
 
-#: bin/qrunner:173
+#: bin/qrunner:177
 msgid "All runs all the above qrunners"
 msgstr ""
 
-#: bin/qrunner:209
+#: bin/qrunner:213
 msgid "No runner name given."
 msgstr "Nebylo zadáno jméno pro runner."
 
@@ -8560,19 +8584,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/remove_members:128
+#: bin/remove_members:132
 msgid "Could not open file for reading: %(filename)s."
 msgstr ""
 
-#: bin/remove_members:135
+#: bin/remove_members:139
 msgid "Error opening list %(listname)s... skipping."
 msgstr "Chyba pøi otevírání konfigurace konference %(listname)s... pøeskakuji."
 
-#: bin/remove_members:145
+#: bin/remove_members:149
 msgid "No such member: %(addr)s"
 msgstr "Nenalezl jsem úèastníka: %(addr)s."
 
-#: bin/remove_members:149
+#: bin/remove_members:153
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr "Úèastníka `%(addr)s' byl odhlá¹en z konference: %(listname)s."
 
@@ -8598,35 +8622,35 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/rmlist:61 bin/rmlist:64
+#: bin/rmlist:65 bin/rmlist:68
 msgid "Removing %(msg)s"
 msgstr ""
 
-#: bin/rmlist:67
+#: bin/rmlist:71
 msgid "%(listname)s %(msg)s not found as %(dir)s"
 msgstr ""
 
-#: bin/rmlist:91
+#: bin/rmlist:95
 msgid "No such list (or list already deleted): %(listname)s"
 msgstr "Nenalezl jsem konferenci (tøeba byla smazána) - %(listname)s"
 
-#: bin/rmlist:93
+#: bin/rmlist:97
 msgid "No such list: %(listname)s.  Removing its residual archives."
 msgstr "Nenalezl jsem konferenci %(listname)s - odstraòuji zbytky archivù."
 
-#: bin/rmlist:97
+#: bin/rmlist:101
 msgid "Not removing archives.  Reinvoke with -a to remove them."
 msgstr ""
 
-#: bin/rmlist:111
+#: bin/rmlist:115
 msgid "list info"
 msgstr ""
 
-#: bin/rmlist:117 bin/rmlist:119
+#: bin/rmlist:121 bin/rmlist:123
 msgid "private archives"
 msgstr "soukromé archivy"
 
-#: bin/rmlist:121 bin/rmlist:123
+#: bin/rmlist:125 bin/rmlist:127
 msgid "public archives"
 msgstr "veøejné archivy"
 
@@ -8699,55 +8723,55 @@ msgid ""
 "        Required.  This specifies the list to synchronize.\n"
 msgstr ""
 
-#: bin/sync_members:111
+#: bin/sync_members:115
 msgid "Bad choice: %(yesno)s"
 msgstr ""
 
-#: bin/sync_members:134
+#: bin/sync_members:138
 msgid "Dry run mode"
 msgstr ""
 
-#: bin/sync_members:155
+#: bin/sync_members:159
 msgid "Only one -f switch allowed"
 msgstr ""
 
-#: bin/sync_members:159
+#: bin/sync_members:163
 msgid "No argument to -f given"
 msgstr "Nebyl zadán parametr k -f"
 
-#: bin/sync_members:168
+#: bin/sync_members:172
 msgid "Illegal option: %(opt)s"
 msgstr ""
 
-#: bin/sync_members:174
+#: bin/sync_members:178
 msgid "No listname given"
 msgstr "Nebyl zadán název konference"
 
-#: bin/sync_members:178
+#: bin/sync_members:182
 msgid "Must have a listname and a filename"
 msgstr ""
 
-#: bin/sync_members:187
+#: bin/sync_members:191
 msgid "Cannot read address file: %(filename)s: %(msg)s"
 msgstr ""
 
-#: bin/sync_members:199
+#: bin/sync_members:203
 msgid "Ignore  :  %(addr)30s"
 msgstr "Ignoruji :  %(addr)30s"
 
-#: bin/sync_members:208
+#: bin/sync_members:212
 msgid "Invalid :  %(addr)30s"
 msgstr "Neplatná adresa :  %(addr)30s"
 
-#: bin/sync_members:211
+#: bin/sync_members:215
 msgid "You must fix the preceding invalid addresses first."
 msgstr ""
 
-#: bin/sync_members:254
+#: bin/sync_members:258
 msgid "Added  : <%(addr)30s> %(name)s"
 msgstr ""
 
-#: bin/sync_members:271
+#: bin/sync_members:275
 msgid "Removed: <%(addr)30s> %(name)s"
 msgstr ""
 
@@ -8767,27 +8791,27 @@ msgid ""
 "to ask for a brief summary.\n"
 msgstr ""
 
-#: bin/transcheck:51
+#: bin/transcheck:55
 msgid "check a translation comparing with the original string"
 msgstr ""
 
-#: bin/transcheck:58
+#: bin/transcheck:62
 msgid "scan a string from the original file"
 msgstr ""
 
-#: bin/transcheck:66
+#: bin/transcheck:70
 msgid "scan a translated string"
 msgstr ""
 
-#: bin/transcheck:77
+#: bin/transcheck:81
 msgid "check for differences between checked in and checked out"
 msgstr ""
 
-#: bin/transcheck:110
+#: bin/transcheck:114
 msgid "parse a .po file extracting msgids and msgstrs"
 msgstr ""
 
-#: bin/transcheck:129
+#: bin/transcheck:133
 msgid ""
 "States table for the finite-states-machine parser:\n"
 "            0  idle\n"
@@ -8798,13 +8822,13 @@ msgid ""
 "        "
 msgstr ""
 
-#: bin/transcheck:266
+#: bin/transcheck:270
 msgid ""
 "check a translated template against the original one\n"
 "       search also <MM-*> tags if html is not zero"
 msgstr ""
 
-#: bin/transcheck:313
+#: bin/transcheck:317
 msgid "scan the po file comparing msgids with msgstrs"
 msgstr ""
 
@@ -8821,6 +8845,12 @@ msgid ""
 "\n"
 "Optional `directory' specifies a directory to dequeue from other than\n"
 "qfiles/shunt.\n"
+msgstr ""
+
+#: bin/unshunt:81
+msgid ""
+"Cannot unshunt message %(filebase)s, skipping:\n"
+"%(e)s"
 msgstr ""
 
 #: bin/update:19
@@ -9015,22 +9045,22 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/update:556
+#: bin/update:560
 msgid "No updates are necessary."
 msgstr ""
 
-#: bin/update:559
+#: bin/update:563
 msgid ""
 "Downgrade detected, from version %(hexlversion)s to version %(hextversion)s\n"
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
 
-#: bin/update:564
+#: bin/update:568
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
 msgstr ""
 
-#: bin/update:573
+#: bin/update:577
 msgid ""
 "\n"
 "ERROR:\n"
@@ -9171,7 +9201,7 @@ msgid ""
 "%% bin/withlist -l -r changepw mylist somebody@somewhere.org foobar\n"
 msgstr ""
 
-#: bin/withlist:147
+#: bin/withlist:151
 msgid ""
 "Unlock a locked list, but do not implicitly Save() it.\n"
 "\n"
@@ -9182,47 +9212,47 @@ msgid ""
 "    "
 msgstr ""
 
-#: bin/withlist:158
+#: bin/withlist:162
 msgid "Unlocking (but not saving) list: %(listname)s"
 msgstr "Odemkni, ale neulo¾, konferenci : %(listname)s"
 
-#: bin/withlist:162
+#: bin/withlist:166
 msgid "Finalizing"
 msgstr ""
 
-#: bin/withlist:171
+#: bin/withlist:175
 msgid "Loading list %(listname)s"
 msgstr ""
 
-#: bin/withlist:173
+#: bin/withlist:177
 msgid "(locked)"
 msgstr ""
 
-#: bin/withlist:175
+#: bin/withlist:179
 msgid "(unlocked)"
 msgstr ""
 
-#: bin/withlist:180
+#: bin/withlist:184
 msgid "Unknown list: %(listname)s"
 msgstr "Neznámá konference: %(listname)s"
 
-#: bin/withlist:219
+#: bin/withlist:223
 msgid "No list name supplied."
 msgstr "Jméno konference je vy¾adováno."
 
-#: bin/withlist:222
+#: bin/withlist:226
 msgid "--all requires --run"
 msgstr ""
 
-#: bin/withlist:242
+#: bin/withlist:246
 msgid "Importing %(module)s..."
 msgstr ""
 
-#: bin/withlist:245
+#: bin/withlist:249
 msgid "Running %(module)s.%(callable)s()..."
 msgstr ""
 
-#: bin/withlist:266
+#: bin/withlist:270
 msgid "The variable `m' is the %(listname)s MailList instance"
 msgstr ""
 
@@ -9248,15 +9278,15 @@ msgid ""
 "list moderators if necessary.\n"
 msgstr ""
 
-#: cron/checkdbs:76
+#: cron/checkdbs:81
 msgid "%(count)d %(realname)s moderator request(s) waiting"
 msgstr "%(realname)s - Na rozhodnutí moderátora èeká %(count)d pøíspìvkù."
 
-#: cron/checkdbs:94
+#: cron/checkdbs:100
 msgid "Pending subscriptions:"
 msgstr "Èekají na pøihlá¹ení: "
 
-#: cron/checkdbs:103
+#: cron/checkdbs:109
 msgid ""
 "\n"
 "Pending posts:"
@@ -9264,7 +9294,7 @@ msgstr ""
 "\n"
 "Èekající pøíspìvky:"
 
-#: cron/checkdbs:108
+#: cron/checkdbs:114
 msgid ""
 "     From: %(sender)s on %(date)s\n"
 "    Cause: %(reason)s"
@@ -9322,7 +9352,7 @@ msgid ""
 "        Process only the given list, otherwise do all lists.\n"
 msgstr ""
 
-#: cron/disabled:139
+#: cron/disabled:143
 msgid "[disabled by periodic sweep and cull, no message available]"
 msgstr ""
 
@@ -9367,15 +9397,15 @@ msgid ""
 "        Print this message and exit.\n"
 msgstr ""
 
-#: cron/mailpasswds:107
+#: cron/mailpasswds:111
 msgid "Site list is missing: %(sitelistname)s"
 msgstr ""
 
-#: cron/mailpasswds:173
+#: cron/mailpasswds:177
 msgid "Password // URL"
 msgstr "Heslo // URL"
 
-#: cron/mailpasswds:193
+#: cron/mailpasswds:197
 msgid "%(host)s mailing list memberships reminder"
 msgstr "Server %(host)s: Upozornìní na úèast v konferencích"
 
@@ -9892,4 +9922,3 @@ msgstr ""
 #~ "Pokud potøebujete dal¹í informace a nebo seznam neplatných adres,\n"
 #~ "nahlédnìte do: \n"
 #~ "    %(varhelp)s\n"
-
