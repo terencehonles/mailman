@@ -18,15 +18,20 @@
 
 """Send password reminders for all lists to all users.
 
-Any arguments are taken as a list of addresses that become the focus - only 
+Any arguments are taken as a list of addresses that become the focus - only
 the subscribers on the list are attended to, all other subscribers are
-ignored.  In addition, if any addresses are specified, a line is printed
-for each list where that address is found.  (Otherwise operation is
-silent.)
+ignored.  In addition, if any addresses are specified, a line is printed for
+each list where that address is found.  (Otherwise operation is silent.)
 
 We accumulate users and their passwords, and use the last list to send a
 single message to each user with their complete collection of passwords,
-rather than sending a single message for each password."""
+rather than sending a single message for each password.
+
+If mm_cfg.VIRTUAL_HOST_OVERVIEW is true, we further group users by the virtual
+host the mailing lists are assigned to.  This is so that virtual domains are
+treated like real separate machines.
+
+"""
 
 # This puppy should probably do lots of logging.
 
@@ -41,91 +46,113 @@ import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 
-# Give time for the delivery process-forks to clear every so often, to
-# avoid saturation of the process table.  Set zero or negative for no
-# pauses.
-PAUSE_FREQUENCY = 10
-
-def MailAllPasswords(list, users):
-    """Send each user their complete list of passwords.
-
-    The list can be any random one - it is only used for the message
-    delivery mechanism."""
-    subj = '%s maillist memberships reminder\n' % list.host_name
-    count = PAUSE_FREQUENCY
-    for user, data in users.items():
-	table = []
-	for l, p, u in data:
-	    if len(l) > 9:
-		table.append("%s\n           %-10s\n%s\n" % (l, p, u))
-	    else:
-		table.append("%-10s %-10s\n%s\n" % (l, p, u))
-	header = ("%-10s %-10s\n%-10s %-10s"
-		  % ("List", "Password // URL", "----", "--------"))
-        text = Utils.maketext(
-            'cronpass.txt',
-            {'hostname': list.host_name,
-             'user'    : user,
-             'one_list': l,
-             })
-        # add this to the end so it doesn't get wrapped/filled
-        text = text + header + '\n' + string.join(table, '\n')
-   	list.SendTextToUser(subject = subj,
-   			    recipient = user,
-   			    text = text,
- 			    sender = mm_cfg.MAILMAN_OWNER,
-                            add_headers = ["X-No-Archive: yes",
-                                           "Precedence: bulk"])
-        count = count - 1
-        if count == 0:
-            # The pause that refreshes.
-            waitall()
-            count = PAUSE_FREQUENCY
-
-def main(args):
-    """Consolidate all the list/url/password info for each user, so we send 
-    the user a single message with the info for all their lists on this
-    site."""
-    list = None
-    users = {}				# user: (listname, password, url)
-    # Constrain to specified users, if any.
-    confined_to = args[1:]
-    a_public_list = None
-    for name in Utils.list_names():
-	list = MailList.MailList(name, lock = 0)
-        if not a_public_list and list.advertised:
-            a_public_list = list
-	list_name = list.real_name
-	umbrella_list = list.umbrella_list
-	if not list.send_reminders:
-	    continue
-	for user, password in list.passwords.items():
-            if confined_to:
-                if user not in confined_to:
-                    continue
-                else:
-                    # We're a bit verbose when operating "confined_to":
-                    print "%s in %s" % (user, list.real_name)
-	    url = list.GetAbsoluteOptionsURL(user)
-            recipient = list.GetMemberAdminEmail(user)
-	    if users.has_key(recipient):
-		users[recipient].append(list_name, password, url)
-	    else:
-		users[recipient] = [(list_name, password, url)]
-    if list:
-	MailAllPasswords(a_public_list or list, users)
-
+
 def waitall():
     """Return only when there are no forked subprocesses running."""
     try:
         while 1:
             os.wait()
-    except os.error, val:
-        if val[0] == errno.ECHILD:
+    except os.error, (code, msg):
+        if code == errno.ECHILD:
             # errno.ECHILD: "No child processes"
             return
         else:
-            raise val, None, sys.exc_info()[2]
+            Utils.reraise()
 
-if __name__ == "__main__":
-    main(sys.argv)
+
+# Give time for the delivery process-forks to clear every so often, to
+# avoid saturation of the process table.  Set zero or negative for no
+# pauses.
+PAUSE_FREQUENCY = 10
+
+def MailAllPasswords(mlist, hosts):
+    """Send each user their complete list of passwords.
+
+    The list can be any random one - it is only used for the message
+    delivery mechanism.  Users are grouped by virtual host.
+    """
+    count = PAUSE_FREQUENCY
+    mailman_owner = mm_cfg.MAILMAN_OWNER
+    for host, users in hosts.items():
+        subj = host + ' mailing list memberships reminder'
+        for addr, data in users.items():
+            table = []
+            for l, r, p, u in data:
+                if len(l) > 39:
+                    table.append("%s\n           %-10s\n%s\n" % (l, p, u))
+                else:
+                    table.append("%-40s %-10s\n%s\n" % (l, p, u))
+            header = ("%-40s %-10s\n%-40s %-10s"
+                      % ("List", "Password // URL", "----", "--------"))
+            text = Utils.maketext(
+                'cronpass.txt',
+                {'hostname': host,
+                 'useraddr': addr,
+                 'exreq'   : r,
+                 'owner'   : mailman_owner,
+                 })
+            # add this to the end so it doesn't get wrapped/filled
+            text = text + header + '\n' + string.join(table, '\n')
+##            mlist.SendTextToUser(subject = subj,
+##                                 recipient = addr,
+##                                 text = text,
+##                                 sender = mailman_owner,
+##                                 add_headers = ["X-No-Archive: yes",
+##                                                "Precedence: bulk"])
+            count = count - 1
+            if count == 0:
+                # The pause that refreshes.
+                waitall()
+                count = PAUSE_FREQUENCY
+
+
+def main():
+    """Consolidate all the list/url/password info for each user, so we send 
+    the user a single message with the info for all their lists on this
+    site.
+    """
+    # constrain to specified lists, if any
+    confined_to = sys.argv[1:]
+    # Use this list for message delivery only
+    a_public_list = None
+    # Group lists by the assigned virtual host, if
+    # mm_cfg.VIRTUAL_HOST_OVERVIEW is true.  Otherwise, there's only one key
+    # in this dictionary: mm_cfg.DEFAULT_HOST_NAME.  Each entry in this
+    # dictionary is a dictionary of user email addresses
+    hosts = {}
+    for listname in Utils.list_names():
+        if confined_to and listname not in confined_to:
+            continue
+        else:
+            print 'Processing list:', listname
+        mlist = MailList.MailList(listname, lock=0)
+        if not a_public_list and mlist.advertised:
+            a_public_list = mlist
+        if not mlist.send_reminders:
+            continue
+        listaddr = mlist.GetListEmail()
+        listreq = mlist.GetRequestEmail()
+        umbrella = mlist.umbrella_list
+        # get host information
+        if mm_cfg.VIRTUAL_HOST_OVERVIEW:
+            host = mlist.host_name
+        else:
+            host = mm_cfg.DEFAULT_HOST_NAME
+        #
+        # each entry in this dictionary is a list of tuples of the following
+        # form: (listaddr, listreq, password, url)
+        users = hosts.get(host, {})
+        for addr, passwd in mlist.passwords.items():
+            url = mlist.GetAbsoluteOptionsURL(addr)
+            recip = mlist.GetMemberAdminEmail(addr)
+            userinfo = (listaddr, listreq, passwd, url)
+            infolist = users.get(recip, [])
+            infolist.append(userinfo)
+            users[recip] = infolist
+        hosts[host] = users
+    if a_public_list:
+        MailAllPasswords(a_public_list, hosts)
+
+
+if __name__ == '__main__':
+    main()
