@@ -20,20 +20,21 @@ import gettext
 from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
 
+_translation = None
+
 
 
-_translation = gettext.NullTranslations()
-
-def set_language(language):
+def set_language(language=None):
     global _translation
+    if language is not None:
+        language = [language]
     try:
         _translation = gettext.translation('mailman', mm_cfg.MESSAGES_DIR,
-                                           [language])
+                                           language)
     except IOError:
         # The selected language was not installed in messages, so fall back to
         # untranslated English.
         _translation = gettext.NullTranslations()
-
 
 def get_translation():
     return _translation
@@ -41,6 +42,12 @@ def get_translation():
 def set_translation(translation):
     global _translation
     _translation = translation
+
+
+# Set up the global translation based on environment variables.  Mostly used
+# for command line scripts.
+if _translation is None:
+    set_language()
 
 
 
