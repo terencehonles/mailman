@@ -85,6 +85,13 @@ run "make update" each time you upgrade.
   if any variables have changed (There shouldn't be many, only
   options.html was updated from b5 to b6).
 
+  For really old versions of Mailman, you may not even have <listname> 
+  subdirectories in $prefix/templates!  In this case you will need to
+  manually copy some files into your new list directories.  Here's an
+  example shell command that will do the trick:
+
+  cp templates/{archives,handle_opts,listinfo,roster,subscribe}.html lists/<listname>
+
 - Some modules that existed in previous versions, but that have been
   replaced with newer (differently named) modules, are removed.
 
