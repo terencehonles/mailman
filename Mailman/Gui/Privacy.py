@@ -136,6 +136,7 @@ class Privacy:
              spammers.""")),
             ]
 
+        adminurl = mlist.GetScriptURL('admin', absolute=1)
         sender_rtn = [
             _("""When a message is posted to the list, a series of
             moderation steps are take to decide whether the a moderator must
@@ -206,7 +207,7 @@ class Privacy:
              the sender with a notification of automatic rejection.  This
              option is not appropriate for known spam senders; their messages
              should be
-             <a href="?VARHELP=privacy/sender/discard_these_non_members"
+             <a href="?VARHELP=privacy/sender/discard_these_nonmembers"
              >automatically discarded</a>.""")),
 
             ('discard_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
