@@ -290,7 +290,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold(_('Subject:')), cgi.escape(subject)])
     t.AddCellInfo(row+1, col-1, align='right')
-    t.AddRow([Bold(_('Reason:')), reason])
+    t.AddRow([Bold(_('Reason:')), _(reason)])
     t.AddCellInfo(row+2, col-1, align='right')
     # We can't use a RadioButtonArray here because horizontal placement can be
     # confusing to the user and vertical placement takes up too much
