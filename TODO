@@ -95,9 +95,9 @@ The Mailman TODO list
 *Bounce handling
 - Add more patterns for bounce handling
 - Occasionally remove stale bounce entries
-- Send mail to people that are being removed w/o their knowlege (even though
-  they're likely not to get it).
-- Clean the code up, make it more robust and efficent (see also bugs)
+- Send mail to people who are being removed without their knowledge
+  (even though they're likely not to get it).
+- Clean the code up, make it more robust and efficient (see also BUGS)
 - Or trash the current approach and use something better
 - Reminders to disabled addresses.  The idea is that if an addr is
   disabled due to bouncing, we should send out periodic reminders.  We
@@ -122,7 +122,7 @@ The Mailman TODO list
   exceptions.)
 - Make error messages indicate the file, mailing list, etc at fault,
   when possible.
-- Seperate edit-options from the subscribe script.
+- Separate edit-options from the subscribe script.
 - Remove dead code, etc.
 
 *News

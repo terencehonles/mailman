@@ -34,14 +34,14 @@ Balazs Nagy (BN).
 
   where in this case the listname is e.g. zope-users.
 
-- BN: If inbound messages are deivered by another user than mailman,
-  it's neccessary to allow it to access ~mailman.  Be sure that
+- BN: If inbound messages are delivered by another user than mailman,
+  it's necessary to allow it to access ~mailman.  Be sure that
   ~mailman has group writing access and setgid bit is set.  Then put
   the delivering user to mailman group, and you can deny access to
   ~mailman to others.  Be sure that you can do the same with the WWW
   service.
 
-  By the way the best thing is to make a virtual mailserver to handle
+  By the way the best thing is to make a virtual mail server to handle
   all of the mail.  Eg. make a CNAME record for the virtual mailserver
   (like `lists.kva.hu', thus a `mail.kva.hu IN CNAME lists.kva.hu')
   into the name service, put a `lists.kva.hu:mailman' line to

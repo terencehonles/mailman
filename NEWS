@@ -8,7 +8,7 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
   the reason why.
 
 - Improvements to the Pipermail archiver which make things faster.
-  Primary change is that the .txt files are not gzip'd on every posted
+  Primary change is that the .txt files are not gzipped on every posted
   message.  Instead, use the new cron script `nightly_gzip' to gzip
   the .txt file in batches (this means that the .txt file will lag
   behind the on-line archives a little).
@@ -28,7 +28,7 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
   member by regular expression.
 
 - More child processes are reaped, which should eliminate most
-  occurances of zombie processes.
+  occurrences of zombie processes.
 
 - A few small miscellaneous bug fixes (including PR#99, PR#107) and
   improvements to the file locking algorithms.
@@ -176,7 +176,7 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
    bin/add_members.
 
  - Admins can now get notification on subscriptions and
-   unsubscriptions.  Post are now logged.
+   unsubscriptions.  Posts are now logged.
 
  - The username portion of email addresses are now case-preserved for
    delivery purposes.  All other address comparisions are
