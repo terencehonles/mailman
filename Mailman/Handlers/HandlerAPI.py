@@ -27,7 +27,9 @@ class MessageHeld(HandlerError):
 
 
 
-def process(mlist, msg):
+# for messages that arrive from the outside, to be delivered to all mailing
+# list subscribers
+def DeliverToList(mlist, msg):
     pipeline = ['SpamDetect',
                 'Approve',
                 'Hold',
@@ -49,3 +51,19 @@ def process(mlist, msg):
             func(mlist, msg)
         except MessageHeld:
             break
+
+
+
+# for messages crafted internally by the Mailman system.  The msg object
+# should have already calculated and set msg.recips.  TBD: can the mlist be
+# None?
+def DeliverToUser(mlist, msg):
+    pipeline = ['CookHeaders',
+                'Sendmail',
+                ]
+    msg.fastrack = 1
+    for modname in pipeline:
+        mod = __import__('Mailman.Handlers.'+modname)
+        func = getattr(getattr(getattr(mod, 'Handlers'), modname), 'process')
+        # None of these modules should ever generate a MessageHeld exception
+        func(mlist, msg)
