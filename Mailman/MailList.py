@@ -157,6 +157,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.reminders_to_admins = mm_cfg.DEFAULT_REMINDERS_TO_ADMINS
 	self.bounce_matching_headers = \
 		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
+        self.anonymous_list = 0
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
 				   self._internal_name[1:])
 	self.description = ''
@@ -460,6 +461,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " by escaping or bracketing it."
 	     "<p> See also the <em>forbidden_posters</em> option for"
 	     " a related mechanism."),
+	    ('anonymous_list', mm_cfg.Radio, ('No', 'Yes'), 0,
+	      'Hide the sender of a message, replacing it with the list '
+	      'address (Removes From, Sender and Reply-To fields)'),
+	         
             ]
 
 	config_info['nondigest'] = [
@@ -837,7 +842,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	elif not re.match("(re:? *)?" + re.escape(self.subject_prefix),
 			  subj, re.I):
 	    msg.SetHeader('Subject', '%s%s' % (prefix, subj))
-
+        if self.anonymous_list:
+	  del msg['reply-to']
+	  del msg['sender']
+	  msg.SetHeader('From', self.GetAdminEmail())
 	if self.digestable:
 	    self.SaveForDigest(msg)
 	if self.archive:
