@@ -26,6 +26,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
+from Mailman import MemberAdaptor
 from Mailman import i18n
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
@@ -418,8 +419,23 @@ def main():
             except (TypeError, ValueError):
                 newval = None
 
-            # Skip this option if there was a problem or it wasn't changed
-            if newval is None or newval == mlist.getMemberOption(user, flag):
+            # Skip this option if there was a problem or it wasn't changed.
+            # Note that delivery status is handled separate from the options
+            # flags.
+            if newval is None:
+                continue
+            
+            elif flag == mm_cfg.DisableDelivery:
+                status = mlist.getDeliveryStatus(user)
+                # Here, newval == 0 means enable, newval == 1 means disable
+                if not newval and status <> MemberAdaptor.ENABLED:
+                    newval = MemberAdaptor.ENABLED
+                elif newval and status == MemberAdaptor.ENABLED:
+                    newval = MemberAdaptor.BYUSER
+                else:
+                    continue
+    
+            elif newval == mlist.getMemberOption(user, flag):
                 continue
 
             newvals.append((flag, newval))
@@ -458,10 +474,11 @@ def main():
                 # Handle language settings differently
                 if flag == SETLANGUAGE:
                     mlist.setMemberLanguage(user, newval)
-                    continue
-
-                mlist.setMemberOption(user, flag, newval)
-
+                # Handle delivery status separately
+                elif flag == mm_cfg.DisableDelivery:
+                    mlist.setDeliveryStatus(user, newval)
+                else:
+                    mlist.setMemberOption(user, flag, newval)
             # Set the topics information.
             mlist.setMemberTopics(user, topicnames)
             mlist.Save()
@@ -799,8 +816,12 @@ def global_options(mlist, user, global_enable, global_remind):
         # Install the emergency shutdown signal handler
         signal.signal(signal.SIGTERM, sigterm_handler)
 
-        if global_enable is not None:
-            mlist.setMemberOption(user, mm_cfg.DisableDelivery, global_enable)
+        if global_enable is None:
+            pass
+        elif global_enable:
+            mlist.setDeliveryStatus(user, ENABLED)
+        else:
+            mlist.setDeliveryStatus(user, BYCHOICE)
 
         if global_remind is not None:
             mlist.setMemberOption(user, mm_cfg.SuppressPasswordReminder,
