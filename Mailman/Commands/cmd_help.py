@@ -48,6 +48,7 @@ def process(res, args):
                 'You can access your personal options via the following url:')
             res.results.append(urlhelp)
             res.results.append(memberurl)
+            # Get a blank line in the output.
             res.results.append('')
             break
     # build the specific command helps from the module docstrings
