@@ -285,6 +285,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	
 	self.post_id = 1.  # A float so it never has a chance to overflow.
 	self.user_options = {}
+	self.language = {}
 
 	# This stuff is configurable
 	self.filter_prog = mm_cfg.DEFAULT_FILTER_PROG
@@ -326,7 +327,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.host_name = mm_cfg.DEFAULT_HOST_NAME
         self.admin_member_chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
         self.administrivia = mm_cfg.DEFAULT_ADMINISTRIVIA
-
+        self.preferred_language = mm_cfg.DEFAULT_SERVER_LANGUAGE
 	# Analogs to these are initted in Digester.InitVars
 	self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
 
@@ -346,6 +347,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER
 
     def GetConfigInfo(self):
+        langs = self.GetAvailableLanguages()
 	config_info = {}
 	config_info['digest'] = Digester.GetConfigInfo(self)
 	config_info['archive'] = Archiver.GetConfigInfo(self)
@@ -372,6 +374,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('owner', mm_cfg.EmailList, (3, WIDTH), 0,
 	     _("The list admin's email address - having multiple"
 	       " admins/addresses (on separate lines) is ok.")),
+
+            ('preferred_language', mm_cfg.Select,
+	     (langs, map(_, map(Utils.GetLanguageDescr, langs)),
+	      langs.index(self.preferred_language)), 0,
+             _("Default language for this list."),
+             _("All messages not related to an specific user will be displayed in this language.")),
 
 	    ('description', mm_cfg.String, WIDTH, 0,
 	     _('A terse phrase identifying this list.'),
@@ -477,18 +485,17 @@ variable.
 <p>Note that if the original message contains a <tt>Reply-To:</tt> header,
 it will not be changed.""")),
 
-            ('administrivia', mm_cfg.Radio, ('No', 'Yes'), 0,
+            ('administrivia', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _("(Administrivia filter) Check postings and intercept ones"
-             " that seem to be administrative requests?"),
+               " that seem to be administrative requests?"),
 
-           _("Administrivia tests will check postings to see whether"
-             " it's really meant as an administrative request (like"
-             " subscribe, unsubscribe, etc), and will add it to the"
-             " the administrative requests queue, notifying the "
-             " administrator of the new request, in the process. ")),
+             _("Administrivia tests will check postings to see whether"
+               " it's really meant as an administrative request (like"
+               " subscribe, unsubscribe, etc), and will add it to the"
+               " the administrative requests queue, notifying the "
+               " administrator of the new request, in the process. ")),
 
-
-	    ('umbrella_list', mm_cfg.Radio, ('No', 'Yes'), 0,_(
+	    ('umbrella_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,_(
 	     'Send password reminders to, eg, "-owner" address instead of'
 	     ' directly to user.'),
 
@@ -537,7 +544,8 @@ it will not be changed.""")),
             ('admin_notify_mchanges', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('Should administrator get notices of subscribes/unsubscribes?')),
             
-	    ('dont_respond_to_post_requests', mm_cfg.Radio, (_('Yes'), _('No')), 0,
+	    ('dont_respond_to_post_requests', mm_cfg.Radio,
+             (_('Yes'), _('No')), 0,
 	     _('Send mail to poster when their posting is held for approval?'),
 
            _("Approval notices are sent when mail triggers certain of the"
@@ -625,7 +633,7 @@ it will not be changed.""")),
 
 	    _("Subscribing"),
 
-	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
+	    ('advertised', mm_cfg.Radio, (_('No'), _('Yes')), 0,
 	     _("""Advertise this list when people ask what lists are on this
 	     machine?""")),
 
@@ -780,14 +788,18 @@ it will not be changed.""")),
 	    ('msg_header', mm_cfg.Text, (4, WIDTH), 0,
 	     _('Header added to mail sent to regular list members'),
 
-             _("""Text prepended to the top of every immediately-delivery
-             message. """) + Utils.maketext('headfoot.html', raw=1)),
-
+           _("""Text prepended to the top of every immediately-delivery
+            message. """) + Utils.maketext('headfoot.html',
+                                           lang=self.preferred_language,
+                                           raw=1)),
+	    
 	    ('msg_footer', mm_cfg.Text, (4, WIDTH), 0,
 	     _('Footer added to mail sent to regular list members'),
 
-             _("""Text appended to the bottom of every immediately-delivery
-             message. """) + Utils.maketext('headfoot.html', raw=1)),
+           _("""Text appended to the bottom of every immediately-delivery
+              message. """) + Utils.maketext('headfoot.html',
+                                             lang=self.preferred_language,
+                                             raw=1)),
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
@@ -963,7 +975,7 @@ it will not be changed.""")),
 	if not self._ready:
 	    raise Errors.MMListNotReadyError
 
-    def AddMember(self, name, password, digest=0, remote=None):
+    def AddMember(self, name, password, digest=0, remote=None, lang=None):
 	self.IsListInitialized()
         # normalize the name, it could be of the form
         #
@@ -990,13 +1002,16 @@ it will not be changed.""")),
 	elif not digest and not self.nondigestable:
             raise Errors.MMMustDigestError
 
+        if lang is None:
+            lang = self.preferred_language
+
         if self.subscribe_policy == 0:
             # no confirmation or approval necessary:
-            self.ApprovedAddMember(name, password, digest)
+            self.ApprovedAddMember(name, password, digest, lang)
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
             # confirmation:
             from Pending import Pending
-            cookie = Pending().new(name, password, digest)
+            cookie = Pending().new(name, password, digest, lang)
             if remote is not None:
                 by = " " + remote
                 remote = _(" from %s") % remote
@@ -1013,7 +1028,7 @@ it will not be changed.""")),
                                    "requestaddr": self.GetRequestEmail(),
                                    "remote"     : remote,
                                    "listadmin"  : self.GetAdminEmail(),
-                                   })
+                                  }, lang)
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
                 _('%s -- confirmation of subscription -- request %d') %
@@ -1030,7 +1045,7 @@ it will not be changed.""")),
         else:
             # subscription approval is required.  add this entry to the admin
             # requests database.
-            self.HoldSubscription(name, password, digest)
+            self.HoldSubscription(name, password, digest, lang)
             raise Errors.MMNeedApproval, \
                   _('subscriptions to %s require administrator approval') % \
                   self.real_name
@@ -1041,21 +1056,21 @@ it will not be changed.""")),
         if not got:
             raise Errors.MMBadConfirmation
         else:
-            (email_addr, password, digest) = got
+            (email_addr, password, digest, lang) = got
         try:
             if self.subscribe_policy == 3: # confirm + approve
-                self.HoldSubscription(email_addr, password, digest)
+                self.HoldSubscription(email_addr, password, digest, lang)
                 raise Errors.MMNeedApproval, \
                       _('subscriptions to %s require administrator approval') % \
                       self.real_name
-            self.ApprovedAddMember(email_addr, password, digest)
+            self.ApprovedAddMember(email_addr, password, digest, lang)
         finally:
             self.Save()
 
     def ApprovedAddMember(self, name, password, digest,
-                          ack=None, admin_notif=None):
+                          lang=None, ack=None, admin_notif=None):
         res = self.ApprovedAddMembers([name], [password],
-                                      digest, ack, admin_notif)
+                                      digest, lang, ack, admin_notif)
         # There should be exactly one (key, value) pair in the returned dict,
         # extract the possible exception value
         res = res.values()[0]
@@ -1067,7 +1082,7 @@ it will not be changed.""")),
             e, v = res
             raise e, v
 
-    def ApprovedAddMembers(self, names, passwords, digest,
+    def ApprovedAddMembers(self, names, passwords, digest, lang=None,
                           ack=None, admin_notif=None):
         """Subscribe members in list `names'.
 
@@ -1123,6 +1138,9 @@ it will not be changed.""")),
                 result[name] = [Errors.MMAlreadyAMember, name]
                 continue
             self.__AddMember(name, digest)
+            if lang is None:
+                lang = self.preferred_language
+            self.SetPreferredLanguage(name, lang)
             self.SetUserOption(name, mm_cfg.DisableMime,
                                1 - self.mime_is_default_digest,
                                save_list=0)
@@ -1159,7 +1177,7 @@ it will not be changed.""")),
                             "adminsubscribeack.txt",
                             {"listname" : self.real_name,
                              "member"   : name,
-                             })
+                             }, lang)
                         msg = Message.UserNotification(
                             self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
                         HandlerAPI.DeliverToUser(self, msg)
@@ -1192,6 +1210,8 @@ it will not be changed.""")),
 		kind = "digest"
 	    except KeyError:
 		pass
+	    if me.language.has_key(alias):
+	        del me.language[alias]
 
 	map(DoActualRemoval, aliases)
 	if userack and self.goodbye_msg and len(self.goodbye_msg):
@@ -1209,7 +1229,7 @@ it will not be changed.""")),
                 'adminunsubscribeack.txt',
                 {'member'  : name,
                  'listname': self.real_name,
-                 })
+                 }, self.preferred_language)
             msg = Message.UserNotification(self.owner,
                                            mm_cfg.MAILMAN_OWNER,
                                            subject, text)
@@ -1377,3 +1397,21 @@ it will not be changed.""")),
 
     def fullpath(self):
         return self._full_path
+
+    def SetPreferredLanguage(self, name, lang):
+        lcname = string.lower(name)
+        if lang <> self.preferred_language:
+            self.language[lcname] = lang
+        else:
+            if self.language.has_key(lcname):
+                del self.language[lcname]
+
+    def GetPreferredLanguage(self, name):
+        lcname = string.lower(name)
+        if self.language.has_key(lcname):
+            return self.language[lcname]
+        else:
+            return self.preferred_language
+
+    def GetAvailableLanguages(self):
+        return Utils.GetDirectories(self._full_path)
