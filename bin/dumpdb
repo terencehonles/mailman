@@ -100,15 +100,15 @@ def main():
             usage(1, _('Please specify either -p or -m.'))
 
     # Handle dbs
+    pp = pprint.PrettyPrinter(indent=4)
     if filetype == 1:
         # BAW: this probably doesn't work if there are mixed types of .db
         # files (i.e. some marshals, some bdbs).
         d = DumperSwitchboard().read(filename)
-        pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(d)
     else:
         m = cPickle.load(open(filename))
-        print m
+        pp.pprint(m)
 
 
 
