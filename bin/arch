@@ -57,7 +57,7 @@ from Mailman import mm_cfg
 from Mailman import Errors
 
 from Mailman.MailList import MailList
-from Mailman.Archiver.HyperArch import HyperArchive, Article
+from Mailman.Archiver.HyperArch import HyperArchive
 from Mailman.LockFile import LockFile
 from Mailman import i18n
 
@@ -148,7 +148,7 @@ def main():
         archiver = HyperArchive(mlist)
         archiver.VERBOSE = 1
         try:
-            archiver.processUnixMailbox(fp, Article, start, end)
+            archiver.processUnixMailbox(fp, start, end)
         finally:
             archiver.close()
         fp.close()
