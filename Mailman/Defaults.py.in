@@ -926,7 +926,7 @@ TEXTFIELDWIDTH = 40
 
 # Bitfield for user options
 Digests             = 0 # handled by other mechanism, doesn't need a flag.
-DisableDelivery     = 1
+DisableDelivery     = 1 # Obsolete; use set/getDeliveryStatus()
 DontReceiveOwnPosts = 2 # Non-digesters only
 AcknowledgePosts    = 4
 DisableMime         = 8 # Digesters only
