@@ -218,6 +218,9 @@ class MarshalSwitchboard(_Switchboard):
     def _ext_read(self, filename):
         fp = open(filename)
         dict = marshal.load(fp)
+        # Update from version 2 files
+        if dict.get('version', 0) == 2:
+            del dict['filebase']
         # Do the reverse conversion (repr -> float)
         for attr in self.FLOAT_ATTRIBUTES:
             try:
