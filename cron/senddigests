@@ -22,9 +22,6 @@ Typically it's invoked via cron.
 """
 
 import paths
-# Import mm_cfg so that sys.path can get munged correctly to include Python's
-# site-packages directory.  Without this runing this script from cron with
-# python -S will fail to import mimelib.
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
