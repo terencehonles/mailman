@@ -136,7 +136,7 @@ class MailCommandHandler:
 	    args = string.split(line)
 	    cmd = string.lower(args[0])
 	    args = args[1:]
-	    if cmd == 'end':
+	    if cmd in ['end', '--']:
 		self.AddError("End of commands.")
 		break
 	    if not self._cmd_dispatch.has_key(cmd):

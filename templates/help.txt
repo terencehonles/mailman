@@ -86,7 +86,7 @@ The following commands are valid:
     password <oldpassword> <newpassword> 
         Change your list password.
     
-    end
+    end or --
        Stop processing commands (good to do if your mailer automatically
        adds a signature file - it'll save you from a lot of cruft).
 
