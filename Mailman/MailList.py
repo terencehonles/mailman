@@ -1041,6 +1041,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             mlist = MailList(listname, lock=0)
             if mlist.host_name <> self.host_name:
                 continue
+            if not mlist.isMember(oldaddr):
+                continue
             mlist.Lock()
             try:
                 mlist.changeMemberAddress(oldaddr, newaddr)
