@@ -27,6 +27,9 @@ const char* scriptdir = SCRIPTDIR;
 const char* moduledir = MODULEDIR;
 char* python = PYTHON;
 
+/* bogus global variable used as a flag */
+int running_as_cgi = 0;
+
 
 
 /* Some older systems don't define strerror().  Provide a replacement that is
@@ -68,6 +71,30 @@ fatal(const char* ident, const char* format, ...)
 	openlog(ident, LOG_CONS, LOG_MAIL);
 	syslog(LOG_ERR, "%s", log_entry);
 	closelog();
+
+#ifdef HELPFUL
+	/* If we're running as a CGI script, we also want to write the log
+	 * file out as HTML, so the admin who is probably trying to debug his
+	 * installation will have a better clue as to what's going on.
+	 */
+	if (running_as_cgi) {
+		printf("Content-type: text/html\n\n");
+		printf("<head>\n");
+		printf("<title>Mailman CGI error!!!</title>\n");
+		printf("</head><body>\n");
+		printf("<h1>Mailman CGI error!!!</h1>\n");
+		printf("The expected gid of the Mailman CGI wrapper did ");
+		printf("not match the gid as set by the Web server.");
+		printf("<p>The most likely cause is that Mailman was ");
+		printf("configured and installed incorrectly.  Please ");
+		printf("read the INSTALL instructions again, paying close ");
+		printf("attention to the <tt>--with-cgi-gid</tt> configure ");
+		printf("option.  This entry is being stored in your syslog:");
+		printf("\n<pre>\n");
+		printf(log_entry);
+		printf("</pre>\n");
+	}
+#endif /* HELPFUL */
 	exit(1);
 }
 

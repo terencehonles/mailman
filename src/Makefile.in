@@ -58,8 +58,11 @@ CGI_FLAGS=	-DCGI_GID=$(CGI_GID)
 #ALIAS_FLAGS=	-DALIAS_UID=$(ALIAS_UID) \
 #		-DALIAS_GID=$(ALIAS_GID)
 
+HELPFUL=	-DHELPFUL
+
 COMMON_FLAGS=	-DPREFIX="\"$(prefix)\"" \
-		-DPYTHON="\"$(PYTHON)\""
+		-DPYTHON="\"$(PYTHON)\"" \
+		$(HELPFUL)
 
 
 # Modes for directories and executables created by the install

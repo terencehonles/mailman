@@ -39,6 +39,7 @@ main(int argc, char** argv, char** env)
 	int status;
 	char* fake_argv[3];
 
+	running_as_cgi = 1;
 	check_caller(logident, parentgid);
 
 	/* if we get here, the caller is OK */
