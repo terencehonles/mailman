@@ -23,7 +23,7 @@ from Mailman import mm_cfg
 
 def process(mlist, msg):
     # short circuits
-    if getattr(msg, 'isdigest', 0):
+    if getattr(msg, 'isdigest', 0) or not mlist.archive:
         return
     archivep = msg.getheader('x-archive')
     if archivep and string.lower(archivep) == 'no':
