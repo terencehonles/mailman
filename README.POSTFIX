@@ -10,7 +10,7 @@ GENERAL SETUP INFORMATION
     Postfix 19991231 up to pl13, and with 200010228 up to pl08.
 
     By default, Postfix treats -owner and -request addresses
-    specially.  Since we want Postfix to delivery such messages to
+    specially.  Since we want Postfix to deliver such messages to
     Mailman, you should turn off this option by adding this to your
     main.cf file:
 
