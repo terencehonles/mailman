@@ -1,4 +1,4 @@
-La lista de distribución %(host_name)s@%(host_name)s tiene
+La lista de distribución %(real_name)s@%(host_name)s tiene
 %(count)d peticione(s) pendientes para que usted las revise en la
 siguiente página:
 

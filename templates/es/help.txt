@@ -17,7 +17,7 @@ su clave a su dirección de correo electrónico.
 
 Las ordenes especificas a las listas (subscribe, who, etc) se deben 
 enviar a la dirección *-request para la lista concreta. Por ejemplo,
-para la lista %(listname)s se usaria %(requestaddr)s.
+para la lista 'mailman' se usaria mailman-request@...
 
 En la descripción de las ordenes se utilizan las siguientes convenciones:
 Las palabras indicadas entre ángulos '<>' son elementos IMPRESCINDIBLES,
@@ -35,4 +35,3 @@ Las preguntas y comentarios para el responsable de la lista se deben
 enviar a 
 
     %(adminaddr)s
-

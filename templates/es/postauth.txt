@@ -2,9 +2,9 @@ Como administrador de listas, se  requiere su autorización para enviar un mensaj
 a la siguiente lista de distribución:
 
     Lista:                 %(listname)s@%(hostname)s
-    Razón para retenerlo:  %(reason)s
     Remitente:             %(sender)s
     Asunto:                %(subject)s
+    Razón para retenerlo:  %(reason)s
 
 Cuando pueda, acceda a la página:
 

@@ -21,8 +21,8 @@ enviando un mensaje a:
 
   %(real_name)s-request@%(host_name)s
 
-indicando la palabra "help" en el asunto (subject) o en el cuerpo del
-mensaje. Se le devolverá un mensaje con instrucciones.
+indicando la palabra "help" en el asunto (no ponga las comillas) o en
+el cuerpo del mensaje. Se le devolverá un mensaje con instrucciones.
 
 Tiene que saber su clave para poder cambiar sus opciones (incluido el
 cambio de la propia clave) o para anular su subscripción. Su clave es:

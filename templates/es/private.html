@@ -4,6 +4,7 @@
 </head>
 <body bgcolor="#ffffff">
 <FORM METHOD=POST ACTION="%(action)s/">
+%(message)s
   <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
     <TR>
       <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
@@ -11,15 +12,16 @@
 	        privados de %(realname)s </FONT></B>
       </TD>
     </TR>
-      <TD> <div ALIGN="Right">Direcci&oacute;n:  </div></TD>
-      <TD> <INPUT TYPE="TEXT" NAME="username" SIZE="30"> </TD>
     <tr>
+      <TD> <div ALIGN="Right">Direcci&oacute;n:  </div></TD>
+      <TD> <INPUT TYPE="text" NAME="username" SIZE="30"> </TD>
     </tr>
+    <tr>
       <TD> <div ALIGN="Right"> Clave: </div> </TD>
       <TD> <INPUT TYPE="password" NAME="password" SIZE="30"></TD>
-    <tr>
     </tr>
-     <td colspan=2 align="middle"><INPUT type="SUBMIT"
+    <tr>
+      <td colspan=2 align="middle"><INPUT type="SUBMIT"
                                           name="submit"
 					  value="Con permiso...">
       </td>
@@ -33,4 +35,3 @@ satisfactoriamente).
 </FORM>
 </body>
 </html>
-

@@ -6,6 +6,6 @@ lista de distribución:
 
 Cuando le sea posible, por favor, consulte:
 
-	%(admindb_url)s
+    %(admindb_url)s
 	
 para procesar la petición

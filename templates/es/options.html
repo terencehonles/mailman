@@ -1,4 +1,4 @@
-<!-- $Revision: 5015 $ -->
+<!-- $Revision: 5354 $ -->
 <html>
 <head>
     <link rel="SHORTCUT ICON" href="<mm-favicon>">
@@ -18,7 +18,7 @@
     <tr><td>
         Opciones de subscripci&oacute;n  de <b><MM-Presentable-User></b>
         en la lista de distribuci&oacute;n <MM-List-Name>.
-        </td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
+        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -89,10 +89,10 @@
 	</FONT></TD></TR>
 
     <tr><td>
-        Selecciones la casilla de confirmaci&oacute;n y pulse este bot&oacute;n
-        para anular la subscripci&oacute;n de esta lista de distribuci&oacute;n.
+        Seleccione la casilla de confirmaci&oacute;n y pulse este bot&oacute;n
+        para anular su subscripci&oacute;n de esta lista de distribuci&oacute;n.
         <strong>Advertencia:</strong>
-        Esta acci&oacute;n tendr&aacute; efecto inmediato!
+        ¡Esta acci&oacute;n tendr&aacute; efecto inmediato!
         <p>
         <center><MM-Unsubscribe-Button></center></td>
     <td>
@@ -160,7 +160,7 @@
 Activando este campo, causar&aacute; que los cambios se apliquen a cada una
 de las listas de distribuci&oacute;n de <mm-host> en las que est&aacute;
 subscrito. Dele con el rat&oacute;n a <em>Listar el resto de mis subscripciones</em>
- m&aacute;s arriba para ver en que otras listas est&aacute; subscrito.
+ m&aacute;s arriba para ver cuales son.
 
 <p>
 <TABLE BORDER="0" CELLSPACING="3" CELLPADDING="4" WIDTH="100%">
@@ -290,6 +290,26 @@ subscrito. Dele con el rat&oacute;n a <em>Listar el resto de mis subscripciones<
          </td><td bgcolor="#cccccc">
          <mm-suppress-nonmatching-topics>No<br>
          <mm-receive-nonmatching-topics>Si
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>&iquest;Desea evitar copias duplicadas de sus propios mensajes?</strong><p>
+		Cuando esté incluido explícitamente en las cabeceras
+		<tt>To:</tt> o <tt>Cc:</tt> de un mensaje dirijido a
+		la lista, puede optar por no recibir otra copia de la
+		lista de distribución. Seleccione <em>Si</em> para
+		evitar recibir coias de la lista de distribución,
+		seleccione <em>No</em> para recibirlas.
+
+		<p>Si la lista tiene subscriptores con los mensajes
+		personalizados, y elijes que si	deseas recibir copias,
+		cada copia tendrá una cabecera <tt>X-Mailman-Copy:
+		yes</tt> incluida en él.
+
+        </td><td bgcolor="#cccccc">
+        <mm-receive-duplicates-button>No<br>
+        <mm-dont-receive-duplicates-button>Si<p>
+        <mm-global-nodupes-button><i>Aplicar globalmente</i>
         </td></tr>
 
     <tr><TD colspan="2">

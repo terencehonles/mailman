@@ -4,10 +4,9 @@ Su petición a la lista de distribución %(listname)s:
 
 ha sido rechazada por el moderador dando la siguiente razón:
 
-    %(reason)s
+"%(reason)s"
 
 Cualquier pregunta o sugerencia se deberá dirigir al administrador de la
 lista en la siguiente dirección de correo:
 
     %(adminaddr)s
-

@@ -20,4 +20,4 @@ por favor, a la dirección %(owner)s.
 
 Gracias
 
-Claves para la dirección %(useraddr)s:
+Claves correspondientes a la dirección %(useraddr)s:

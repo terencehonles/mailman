@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Verificacion del administrador para %(listname)s </title>
+  <title>Autentificación del %(who)s de %(listname)s </title>
 </head>
 <body bgcolor="#ffffff">
 <FORM METHOD=POST ACTION="%(path)s">
@@ -9,16 +9,17 @@
     <TR>
       <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
 	<B><FONT COLOR="#000000" SIZE="+1">
-	    Verificacion del administrador para %(listname)s</FONT></B>
+	    Autentificación del %(who)s de %(listname)s</FONT></B>
       </TD>
     </TR>
     <tr>
-      <TD> <div ALIGN="Right"> Clave del administrador de la lista: </div> </TD>
-      <TD> <INPUT TYPE=password NAME=adminpw SIZE=30></TD>
+      <TD><div ALIGN="Right"></Clave del %(who) de la lista:div></TD>
+      <TD><INPUT TYPE="password" NAME="adminpw" SIZE="30"></TD>
     </tr>
     <tr>
-      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="request_login"
-						     value="Con permiso...">
+      <td colspan=2 align=middle><INPUT type="SUBMIT"
+                                        name="admlogin"
+					value="Con permiso...">
       </td>
     </tr>
   </TABLE>
@@ -32,3 +33,5 @@ realice. La cookie caducar&aacute; autom&aacute;ticamente cuando salga del naveg
  <em> Otras Actividades Administrativas</em> (que ver&aacute; una vez que consiga entrar 
 satisfactoriamente).
 </FORM>
+</body>
+</html>

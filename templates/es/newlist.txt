@@ -29,7 +29,7 @@ información sobre su uso, se debe enviar un mensaje con la palabra
     %(requestaddr)s
 
 Para anular la subscripción de un usuario: consulte la página 
-%(listinfo_url)s y siga el enlace de la dirección del usuario o
+'listinfo' y siga el enlace de la dirección del usuario o
 introduzca la misma, como si usted fuera él. Utilice la clave de
 adminstración en lugar de la clave del usuario. Tambien puede usar la
 clave de administración para cambiar las opciones de los usuarios.

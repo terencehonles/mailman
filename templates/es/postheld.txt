@@ -1,4 +1,3 @@
-
 El mensaje que ha enviado a la lista '%(listname)s' y que versa sobre:
 
     %(subject)s
@@ -11,4 +10,7 @@ Ha sido retenido por:
     %(reason)s
 
 O se mandará el  mensaje a la lista o se le enviará una notificación
-con la decisión del moderador.
+con la decisión del moderador. Si desea cancelar este envío, puede
+hacerlo a través de la siguiente URL:
+
+    %(confirmurl)s

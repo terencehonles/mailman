@@ -4,7 +4,7 @@ distribución llamado "Mailman". Esperamos que esto mejore el
 servicio y la administración de la lista.
 
 
-Como le afecta esto:
+¿Como le afecta esto?
 
 1) Los mensajes de correo dirigidos a la lista deben enviarse a:
 
