@@ -112,11 +112,11 @@ else:
 	digest_value = eval(form["digest"].value)
     else:
 	digest_value = list.GetUserOption(user, mm_cfg.Digests)
-    if form.has_key("plaintext"):
-	plaintext = eval(form["plaintext"].value)
-	f.write("plaintext = %d\n" % plaintext)
+    if form.has_key("mime"):
+	mime = eval(form["mime"].value)
+	f.write("mime = %d\n" % mime)
     else:
-	plaintext = list.GetUserOption(user, mm_cfg.EnableMime)
+	mime = list.GetUserOption(user, mm_cfg.DisableMime)
     if form.has_key("dontreceive"):
 	dont_receive = eval(form["dontreceive"].value)
 	f.write("dont_receive = %d\n" % dont_receive)
@@ -167,7 +167,7 @@ exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER))
     list.SetUserOption(user, mm_cfg.DisableDelivery, disable_mail)
     list.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
     list.SetUserOption(user, mm_cfg.AcknowlegePosts, ack_posts)
-    list.SetUserOption(user, mm_cfg.EnableMime, plaintext)
+    list.SetUserOption(user, mm_cfg.DisableMime, mime)
     try:
         list.SetUserDigest(user, digest_value)
     except:
