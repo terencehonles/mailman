@@ -121,5 +121,6 @@ def process(mlist, msg, msgdata):
     # actually archiving
     del msg['List-Archive']
     if mlist.archive:
-        msg['List-Archive'] = urlparse.urljoin(mlist.web_page_url,
-                                               mlist.GetBaseArchiveURL())
+        value = '<%s>' % urlparse.urljoin(mlist.web_page_url,
+                                          mlist.GetBaseArchiveURL())
+        msg['List-Archive'] = value
