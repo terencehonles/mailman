@@ -23,6 +23,7 @@ class MMListError(Exception): pass
 class MMUnknownListError(MMListError): pass
 class MMCorruptListDatabaseError(MMListError): pass
 class MMListNotReadyError(MMListError): pass
+class MMListAlreadyExistsError(MMListError): pass
 
 
 # XXX: These should be converted to new style class exceptions
