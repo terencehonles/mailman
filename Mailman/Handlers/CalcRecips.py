@@ -40,10 +40,8 @@ def process(mlist, msg, msgdata):
         dont_send_to_sender = 1
     # calculate the regular recipients of the message
     members = mlist.GetDeliveryMembers()
-    recips = []
-    for m in members:
-        if not mlist.GetUserOption(m, mm_cfg.DisableDelivery):
-            recips.append(m)
+    recips = [m for m in members
+              if not mlist.GetUserOption(m, mm_cfg.DisableDelivery)]
     # remove the sender if they don't want to receive
     if dont_send_to_sender:
         try:
