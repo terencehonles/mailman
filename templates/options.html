@@ -1,4 +1,4 @@
-<!-- $Revision: 1064 $ -->
+<!-- $Revision: 1281 $ -->
 <html>
 <head>
 <title><MM-Presentable-User> Configuration for <MM-List-Name></title>
@@ -22,11 +22,16 @@ password, and options for the <MM-List-Name> mailing list.
 <p>
 
 <a name=unsub>
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
-	<TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="3" CELLPADDING="5">
+	<TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
 <B>Unsubscribing from <MM-List-Name></B>
-	</FONT></TD></TR> </table>
-<p>
+	<TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+<B>Your other <MM-Host> subscriptions</B>
+	</FONT></TD></TR>
+
+	<tr>
+	  <td>
+
 To unsubscribe, enter your password and then hit the button.  If
 you've lost your password, see just below to have it emailed to your delivery
 address.
@@ -35,7 +40,15 @@ address.
 Password: <MM-Unsub-Pw-Box> &nbsp;
 <MM-Unsubscribe-Button>
 </a>
+	  <td>
+
+Enter your password to visit a list of links to the option setting
+pages for your other subscriptions on this host.
+
 <p>
+Password: <MM-Other-Subscriptions-Pw-Box>  <MM-Other-Subscriptions-Submit><p>
+
+	</TD></TR> </table>
 
 	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
 	<TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
@@ -83,6 +96,7 @@ address. <p>
 	<TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
 <B>Your <MM-List-Name> Subscription Options</B>
 	</FONT></TD></TR> </table>
+
 <p>
 <i><strong>Current values are checked.</strong></i><p>
 <p>
@@ -127,6 +141,8 @@ If you have any problems with MIME digests, select plain text. <br>
 Password: <MM-Digest-Pw-Box>  <MM-Digest-Submit><p>
 </td></tr></table>
 </center>
+
+<p>
 <MM-Form-End>
 
 <MM-Mailman-Footer>
