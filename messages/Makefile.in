@@ -43,7 +43,7 @@ MSGFMT= 	msgfmt
 MSGMERGE=	msgmerge
 
 # CVS available languages
-LANGUAGES=	es rot
+LANGUAGES=	es
 LANGDIRS=	$(LANGUAGES:%=messages/%/LC_MESSAGES)
 # Global pygettext extracted po template file
 POTFILE=	mailman.pot
@@ -112,8 +112,8 @@ distclean:
 message.files: FORCE
 	@echo "Calculating input files for pygettext"
 	touch $@
-	(cd ..; find -path '*pythonlib' -prune -o -name '*.py' -print >> messages/$@)
-	(cd ..; grep -r -l '^#! /usr/bin/env python' `find bin` >> messages/$@)
+	(cd ..; find Mailman -path '*pythonlib' -prune -o -name '*.py' -print >> messages/$@)
+	(cd ..; grep -d skip -l '^#! /usr/bin/env python' `find bin -name ".#*" -prune -o -print` >> messages/$@)
 
 $(POTFILE): message.files
 	@echo "Running pygettext; this might take a while"
