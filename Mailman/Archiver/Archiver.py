@@ -65,7 +65,7 @@ class Archiver:
 
     def InitVars(self):
 	# Configurable
-	self.archive = 1
+	self.archive = mm_cfg.DEFAULT_ARCHIVE
 	# 0=public, 1=private:
 	self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
  	self.archive_volume_frequency = \
