@@ -330,11 +330,12 @@ def send_i18n_digests(mlist, mboxfp):
     mimerecips = []
     drecips = mlist.getDigestMemberKeys() + mlist.one_last_digest.keys()
     for user in mlist.getMemberCPAddresses(drecips):
-        if user is None:
-            # It means that someone who toggled off digest delivery
-            # subsequently unsubscribed from the mailing list.  Just ignore
-            # them.
+        # user might be None if someone who toggled off digest delivery
+        # subsequently unsubscribed from the mailing list.  Also, filter out
+        # folks who have disabled delivery.
+        if user is None or mlist.getMemberOption(user, mm_cfg.DisableDelivery):
             continue
+        # Otherwise, decide whether they get MIME or RFC 1153 digests
         if mlist.getMemberOption(user, mm_cfg.DisableMime):
             plainrecips.append(user)
         else:
