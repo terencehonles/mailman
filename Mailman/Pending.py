@@ -53,10 +53,14 @@ def gencookie(p=None):
 def set_pending(p):
     lock_file = flock.FileLock(LOCK_PATH)
     lock_file.lock()
-    fp = open(DB_PATH, "w") 
-    marshal.dump(p, fp) 
-    fp.close() 
-    lock_file.unlock()
+    try:
+        fp = open(DB_PATH, "w") 
+        marshal.dump(p, fp) 
+        fp.close() 
+    finally:
+        # be sure the lock file is released
+        lock_file.unlock()
+
 
 def add2pending(email_addr, password, digest, cookie): 
     ts = int(time.time())
