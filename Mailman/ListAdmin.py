@@ -27,8 +27,8 @@ elsewhere (currently).
 import os
 import string
 import time
-import anydbm
 import marshal
+from errno import ENOENT
 
 from Mailman.pythonlib.StringIO import StringIO
 from Mailman import Message
@@ -41,53 +41,36 @@ from Mailman import Errors
 class ListAdmin:
     def InitVars(self):
         # non-configurable data
-        self.requests = {}
         self.next_request_id = 1
 
     def InitTempVars(self):
         self.__db = None
-        self.__dbflags = None
+        self.__filename = os.path.join(self.fullpath(), 'request.db')
 
-    def __opendb(self, flags='r'):
-        if self.__db is not None:
-            # if we want the database writeable, but it currently is not, then
-            # close it and re-open it with the given flags.  we don't need to
-            # re-open it if it's already open writeable and we just want to
-            # read it.
-            if 'w' in self.__dbflags or 'w' not in flags:
-                return
-            self.__closedb()
-        dbfilename = os.path.join(self.fullpath(), 'request.db')
-        # For all writes we need to make sure the database is locked.  We
-        # assert this by using the list's lock as the database lock.
-        if 'w' in flags:
+    def __opendb(self):
+        if self.__db is None:
             assert self.Locked()
-        try:
-            omask = os.umask(002)
             try:
-                self.__db = anydbm.open(dbfilename, flags)
-            finally:
-                os.umask(omask)
-        except anydbm.error:
-            # perhaps the db file exists but is zero sized?
-            from stat import ST_SIZE
-            if os.stat(dbfilename)[ST_SIZE] == 0:
-                os.unlink(dbfilename)
-                omask = os.umask(002)
-                try:
-                    self.__db = anydbm.open(dbfilename, flags)
-                finally:
-                    os.umask(omask)
-            else:
-                raise
-        self.__dbflags = flags
-        # sanity check, but this is faster than checking all the keys
-        assert len(self.requests.keys()) == len(self.__db.keys())
+                fp = open(self.__filename)
+                self.__db = marshal.load(fp)
+                fp.close()
+            except IOError, (code, msg):
+                if code == ENOENT:
+                    self.__db = {}
+                else:
+                    raise
 
     def __closedb(self):
         if self.__db is not None:
-            self.__db.close()
-            self.__db = None
+            assert self.Locked()
+            omask = os.umask(002)
+            try:
+                fp = open(self.__filename, 'w')
+                marshal.dump(self.__db, fp)
+                fp.close()
+                self.__db = None
+            finally:
+                os.umask(omask)
 
     def __request_id(self):
 	id = self.next_request_id
@@ -95,16 +78,17 @@ class ListAdmin:
 	return id
 
     def SaveRequestsDb(self):
-        if self.__db and 'w' in self.__dbflags:
-            self.__closedb()
+        self.__closedb()
 
     def NumRequestsPending(self):
-        return len(self.requests)
+        self.__opendb()
+        return len(self.__db)
 
     def __getmsgids(self, rtype):
+        self.__opendb()
         ids = []
-        for k, v in self.requests.items():
-            if v == rtype:
+        for k, (type, data) in self.__db.items():
+            if type == rtype:
                 ids.append(k)
         return ids
 
@@ -116,31 +100,30 @@ class ListAdmin:
 
     def GetRecord(self, id):
         self.__opendb()
-        data = self.__db[`id`]
-        return marshal.loads(data)
+        type, data = self.__db[id]
+        return data
 
     def GetRecordType(self, id):
-        return self.requests[id]
+        self.__opendb()
+        type, data = self.__db[id]
+        return type
 
     def HandleRequest(self, id, value, comment):
-        self.__opendb('w')
-        record = self.GetRecord(id)
-        rtype = self.GetRecordType(id)
-        del self.__db[`id`]
-        del self.requests[id]
+        self.__opendb()
+        rtype, data = self.__db[id]
+        del self.__db[id]
         if rtype == mm_cfg.HELDMSG:
-            self.__handlepost(record, value, comment)
+            self.__handlepost(data, value, comment)
         else:
             assert rtype == mm_cfg.SUBSCRIPTION
-            self.__handlesubscription(record, value, comment)
+            self.__handlesubscription(data, value, comment)
 
     def HoldMessage(self, msg, reason):
         # assure that the database is open for writing
-        self.__opendb('cw')
+        self.__opendb()
         # get the next unique id
         id = self.__request_id()
-        dbid = `id`
-        assert not self.__db.has_key(dbid)
+        assert not self.__db.has_key(id)
         # flatten the message and suck out the sender address
         sender, text = Utils.SnarfMessage(msg)
         # save the information to the request database.  for held message
@@ -154,11 +137,8 @@ class ListAdmin:
         # the full text of the message
         #
         msgsubject = msg.get('subject', '(no subject)')
-        data = marshal.dumps((time.time(), sender, msgsubject, reason, text))
-        self.__db[dbid] = data
-        #
-        # remember the request type for later
-        self.requests[id] = mm_cfg.HELDMSG
+        data = time.time(), sender, msgsubject, reason, text
+        self.__db[id] = (mm_cfg.HELDMSG, data)
 
     def __handlepost(self, record, value, comment):
         ptime, sender, subject, reason, text = record
@@ -197,11 +177,10 @@ class ListAdmin:
 
     def HoldSubscription(self, addr, password, digest):
         # assure that the database is open for writing
-        self.__opendb('cw')
+        self.__opendb()
         # get the next unique id
         id = self.__request_id()
-        dbid = `id`
-        assert not self.__db.has_key(dbid)
+        assert not self.__db.has_key(id)
         #
         # save the information to the request database. for held subscription
         # entries, each record in the database will be one of the following
@@ -212,11 +191,8 @@ class ListAdmin:
         # the subscriber's selected password (TBD: is this safe???)
         # the digest flag
         #
-        data = marshal.dumps((time.time(), addr, password, digest))
-        self.__db[dbid] = data
-        #
-        # remember the request type for later
-        self.requests[id] = mm_cfg.SUBSCRIPTION
+        data = time.time(), addr, password, digest
+        self.__db[id] = (mm_cfg.SUBSCRIPTION, data)
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
