@@ -25,75 +25,7 @@ a "<>" és "[]" jeleket.
 
 A következõ parancsok állnak rendelkezésre:
 
-    subscribe [jelszó] [digest-opciók] [address=<cim>]
-	  A listára történõ feliratkozást végzi el. A listáról történõ
-	  leiratkozáshoz, vagy a beállítások megváltoztatásához mindig
-	  meg kell adni a jelszót, amelyet adott idõközönként újra el-
-	  küldünk a feliratkozási címre.
-	  'digest-opciók' a következõk lehetnek: 'nodigest' vagy 'digest'
-	  (természetesen aposztrófok nélkül megadva!)
-	  Ha egy másik címrõl szeretnél feliratkozni, mint ahonnan a
-	  feliratkozási kérelem jött, akkor az "address=<másik emilcím>"
-          részt is meg kell adni (természetesen zárójelek, idézõjelek 
-	  nélkül.
-
-    unsubscribe <jelszó> [cím]
-	  A listáról történõ leiratkozást végzi el. A megadott jelszónak
-	  egyeznie kell a listán beállított jelszavaddal. Ha egy másik
-	  címrõl próbálnál meg leiratkozni, mint amivel a feliratkozás
-	  történt, akkor a 'cím' mezõben add meg a helyes címet.
-
-    who
-          A lista tagjainak névsorát adja meg.
-
-    info
-	  A listáról rövid leírást ad.
-
-    lists
-	  Felsorolja a Mailman rendszeren üzemeltetett listákat.
-
-    help
-	  Ezt az üzenetet küldi el.        
-
-    set <opciók> <on|off> <jelszó> 
-	  Megváltoztatja a beállításaidat a listán. Az opciók lehetnek:
-
-        ack:
-	  	on-ra állításával értesítést kapsz minden egyes elküldött
-		leveled megérkezésérõl a listára.
-
-        digest:
-                A leveleket nem egyesével, hanem egyben, összefûzve
-		kapod meg.
-
-        plain:
-		A digest formájú levelet nem MIME-kódolással, hanem sima
-		szövegként kapod meg.
-
-        nomail:
-		Levelek elküldésének szüneteltetése. Hasznos parancs ha
-		távolétedben (pl. üdülés) nem akarsz leveleket fogadni.
-
-        norcv:
-		on-ra állításával az általad küldött leveleket NEM kapod
-		meg. Digest típusú leveleknél nem használható.
-
-        hide:
-		Elrejti a címedet a 'who' által készített listából.	
-
-    options
-	 Az aktuális beállításaidat mutatja meg.        
-
-    password <régi jelszó> <új jelszó> 
-         A jelszavadat változtatja meg.  
-   
-    end vagy --
-	 Leállítja a parancsok értelmezését (hasznos ha a levelezésedkor
-	 automatikusan más információ is kerül a levélbe, amelynek a 
-	 tartalma nem kapcsolódna úgysem a 'Mailman'-hoz, az itt elõforduló 
-	 a 'Mailman' számára esetleg értelmes parancsokat ekkor nem veszi
-	 figyelembe a program).
-
+    %(commands)s
 
 A parancsokat az alábbi címre kell küldeni %(requestaddr)s
 

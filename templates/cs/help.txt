@@ -32,78 +32,7 @@ souèástí pøíkazù a neuvádìjí se.
 
 Systém rozumí následujícím pøíkazùm:
 
-    subscribe [heslo] [nastavení digest] [address=<adresa>]
-        Pøihlásí Vás do konference. Heslo budete potøebovat pro odhlá¹ení
-	nebo zmìnu nastavení Va¹eho u¾ivatelského konta. Pokud si heslo
-	nezvolíte bude Vám nìjaké vygenerováno. Heslo je periodicky zasíláno
-	v¹em úèastníkùm, zpravidla na zaèátku mìsíce. Nastavení digestu mù¾e
-	být buï "nodigest" nebo "digest". (Bez tìch uvozovek.) Pokud je digest
-	zapnut jsou Vám pøíspìvky z konference zasílány jen jednou dennì (nebo 
-	dle nastavení správcem konference) v jednom mnohadílném dopise.
-	Pokud tuto volbu neuvedete, pou¾ije se volba nastavená správcem 
-	konference jako standardní. 
-	Pokud se chcete pøihlásit z jiné adresy, ne¾ z které odchází po¾adavek,
-	tak vyu¾ijete parametr adress=. Za nìj napí¹ete adresu, kterou chcete
-	pøihlásit, bez uvozovek a závorek, napø. takto: 
-	address=pepa@freemail.fr
-
-    unsubscribe <heslo> [adresa]
-        Odhlá¹ení z konference. Heslo je vy¾adováno, pokud jej neznáte nechte
-	si jej zaslat z webovského rozhraní konference. Pokud se odhla¹ujete
-	z jiné adresy, ne¾ kterou máte v konferenci, zadejte ji jako dal¹í
-	volbu za heslo, tentokrát bez address=.
-
-    who
-        Vrátí seznam úèastníkù, pokud to správce konference povolil.
-
-    info
-        Vrátí informace o konferenci (o èem konference je a podobnì).
-
-    lists
-        Vrátí seznam konferencí, které jsou provozovány na tomto serveru.
-
-    help
-        Vrátí tuto nápovìdu.
-
-    set <option> <on|off> <heslo> 
-        Mìní nastavení Va¹eho u¾ivatelského konta, 
-        jako option mù¾ete pou¾ít:
-
-        ack:
-            Pokud je on, budete dostávat oznámení o úspì¹né distribuci,
-	    Va¹eho pøíspìvku.
-
-        digest:
-	    Budete dostávat jen jeden dopis dennì (nebo dle nastavení správcem
-	    konference) a ten bude obsahovat v¹echny pøíspìvky.
-
-        plain:
-	   Pokud pou¾íváte digest, a zapnete tuto volbu, budete dostávat
-	   pøíspìvky jako èistý text. Jinak to budou MIME zprávy (pro
-	   dne¹ní po¹tovní programy standardní a bì¾nì pou¾itelné).            
-
-        nomail:
-	   Nebudete dostávat pøíspìvky, pou¾ijete buï pøi dlouhodobìj¹í
-	   nepøítomnosti v blízkosti mailu, nebo pøi pøihlá¹ení z více
-	   adres z konferencí s omezením pøispívání na èleny.
-
-        norcv:
-           Pokud bude tato volba aktivní, nebudete dostávat vlastní pøíspìvky
-	   do konference.
-
-        hide:
-           Skryje Vás v seznamu úèastníkù, tak¾e nebudete vidìt pøíkazem who
-	   a na webovském rozhraní.
-
-    options
-        Vrátí pøehled nastavení parametrù Va¹eho konta.
-
-    password <staré heslo> <nové heslo> 
-        Umo¾ní zmìnit heslo. Hesla se uvádìjí bez tìch závorek.
-    
-    end or --
-       Ukonèí zpracování pøíkazù. Pokud je nalezen tento pøíkaz, nebude dal¹í obsah
-       dopisu vùbec analyzován.
+    %(commands)s
 
 Pøíkazy zasílejte na adresu %(requestaddr)s
 

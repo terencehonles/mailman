@@ -24,77 +24,7 @@ Angaben. Die Klammern "<>" oder "[]" gehören NICHT zu den Befehlen.
 
 Die folgenden Befehle sind gültig:
 
-    subscribe [Passwort] [Digest-Option] [address=<name@host>]
-	Die Mailingliste abonnieren. Ein Passwort muss angegeben werden,
-	dass zum Kündigen oder Ändern Ihrer Einstellungen benötigt wird.
-	Wenn sie die Liste einmal abonniert haben, werden sie regelmäßig an
-	Ihr Passwort erinnert werden. Die 'Digest-Option' kann entweder
-	'digest' oder 'nodigest' (ohne Anführungszeichen) lauten. Wenn Sie die
-	Liste für eine andere Adresse als jene, von der sie diesen Befehl
-	senden, abonnieren wollen, geben sie "address=<andere Adresse>" an
-	(wieder: ohne Anführungszeichen und spitze Klammern!).
-
-    unsubscribe <Passwort> [Adresse]
-	Das Abonnement kündigen. Das Passwort muss jenem entprechen, dass
-	Sie beim Abonnieren angegeben haben. Wenn sie eine andere Adresse
-	kündigen möchten als jene, von der Sie diesen Befehl senden, können
-	Sie diese im 'Adresse'-Feld angeben.
-
-    who
-        Alle Abonnenten dieser Liste anzeigen.
-
-    info
-        Den Einführungstext für diese Liste anzeigen.
-
-    lists
-        Alle Listen anzeigen, die auf diesem Mailman-Server verwaltet
-	werden.
-
-    help
-        Diese Nachricht.
-
-    set <option> <on|off> <Passwort>
-        Optionen der Liste Ein- bzw. Ausschalten. Gültige Optionen sind:
-
-        ack:
-	    Einschalten, um eine Bestätigung zu erhalten, wenn Sie eine
-	    Nachricht an die Liste senden.
-
-        digest:
-	    Die Nachrichten gebündelt anstatt jede einzeln erhalten.
-
-        plain:
-	    Nachrichten als reinen Text, nicht MIME-kompatibel, erhalten
-	    (nur wenn 'digest' aktiviert ist).
-
-        nomail:
-	    Versand von Nachrichten einstellen. Nützlich, wenn einmal
-	    ein kleiner Urlaub anstehen sollte.
-
-        norcv:
-	    Einschalten, um Nachrichten, die Sie selbst an die Liste senden,
-	    NICHT zu erhalten. Funktioniert nicht, wenn 'digest' aktiviert ist.
-
-        hide:
-	    Versteckt ihre Adresse, wenn jemand die Liste der Abonnenten
-	    einsehen möchte.
-
-    	nodupes:
-	    Einschalten, um Nachrichten nicht doppelt zu erhalten, falls
-	    Ihre Adresse explizit im To: oder CC: Feld der Nachricht steht,
-	    oder in mehreren Listen eingetragen ist, die ein und dieselbe
-	    Nachricht erhalten.
-
-    options
-	Den gegenwärtigen Stand Ihrer Optionen anzeigen.
-
-    password <altes Passwort> <neues Passwort>
-	Ändert ihr Passwort für diese Liste.
-
-    end oder --
-	Die Abarbeitung von Befehlen an dieser Stelle abbrechen (wenn Ihr
-	Email Programm automatisch eine Signatur in dieser Form anhängt, dann
-	kann das unter Umständen einiges an Fehlermeldungen ersparen).
+    %(commands)s
 
 Alle Befehle sollten an
 
