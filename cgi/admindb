@@ -174,12 +174,11 @@ def PrintRequests(doc):
 	t.AddRow([
 	    htmlformat.Bold('Email'),
 	    htmlformat.Bold('Descision'),
-	    htmlformat.Bold('Reasoning if you refuse subscription (optional)')])
+	    htmlformat.Bold('Reasoning for subscription refusal (optional)')])
 	for request in list.requests['add_member']:
 	    PrintAddMemberRequest(request, t)
 
 	form.AddItem(t)
-	form.AddItem('<hr>')
 	t = htmlformat.Table(cellspacing=10)
 	t.AddRow([
 	    htmlformat.SubmitButton('submit', 'Submit All Data'),
