@@ -9,6 +9,7 @@ import marshal
 import time
 import whrandom
 import mm_cfg
+import flock
 
 DB_PATH = os.path.join(mm_cfg.DATA_DIR,"pending_subscriptions.db")
 LOCK_PATH = os.path.join(mm_cfg.LOCK_DIR, "pending_subscriptions.lock")
@@ -53,18 +54,12 @@ def gencookie(p=None):
         return newcookie
 
 def set_pending(p):
-    ou = os.umask(0)  
-    try: 
-        lock_file = posixfile.open(LOCK_PATH,'a+') 
-    finally: 
-        os.umask(ou) 
-    lock_file.lock('w|', 1) 
+    lock_file = flock.FileLock(LOCK_PATH)
+    lock_file.lock()
     fp = open(DB_PATH, "w") 
     marshal.dump(p, fp) 
     fp.close() 
-    lock_file.lock("u") 
-    lock_file.close() 
-
+    lock_file.unlock()
 
 def add2pending(email_addr, password, digest, cookie): 
     ts = int(time.time())
