@@ -135,7 +135,11 @@ def main():
         results = results + "Your passwords did not match.<br>"
 
     if form.has_key("digest"):
-        digest = eval(form["digest"].value)
+        try:
+            digest = int(form['digest'].value)
+        except ValueError:
+            # TBD: Hmm, this shouldn't happen
+            digest = 0
 
     if not list.digestable:
         digest = 0

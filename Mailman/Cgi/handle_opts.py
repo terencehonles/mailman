@@ -203,32 +203,25 @@ exactly what happened to provoke this error.<p>'''
                          " and your new password twice.")
 
     else:
-        # If keys don't exist, set them to whatever they were. (essentially
-        # a noop)
-        if form.has_key("digest"):
-            digest_value = eval(form["digest"].value)
-        else:
-            digest_value = list.GetUserOption(user, mm_cfg.Digests)
-        if form.has_key("mime"):
-            mime = eval(form["mime"].value)
-        else:
-            mime = list.GetUserOption(user, mm_cfg.DisableMime)
-        if form.has_key("dontreceive"):
-            dont_receive = eval(form["dontreceive"].value)
-        else:
-            dont_receive = list.GetUserOption(user, mm_cfg.DontReceiveOwnPosts)
-        if form.has_key("ackposts"):
-            ack_posts    = eval(form["ackposts"].value)
-        else:
-            ack_posts    = list.GetUserOption(user, mm_cfg.AcknowlegePosts)
-        if form.has_key("disablemail"):
-            disable_mail = eval(form["disablemail"].value)
-        else:
-            disable_mail = list.GetUserOption(user, mm_cfg.DisableDelivery)
-        if form.has_key("conceal"):
-            conceal = eval(form["conceal"].value)
-        else:
-            conceal = list.GetUserOption(user, mm_cfg.ConcealSubscription)
+        # if key doesn't exist, or its value can't be int()'ified, return the
+        # current value (essentially a noop)
+        def getval(key, default, form=form):
+            if form.has_key(key):
+                try:
+                    return int(form[key].value)
+                except ValueError:
+                    return default
+            return default
+
+        useropt = list.GetUserOption
+        digest_value = getval('digest', useropt(user, mm_cfg.Digests))
+        mime = getval('mime', useropt(user, mm_cfg.DisableMime))
+        dont_receive = getval('dontreceive',
+                              useropt(user, mm_cfg.DontReceiveOwnPosts))
+        ack_posts = getval('ackposts', useropt(user, mm_cfg.AcknowlegePosts))
+        disable_mail = getval('disablemail',
+                              useropt(user, mm_cfg.DisableDelivery))
+        conceal = getval('conceal', useropt(user, mm_cfg.ConcealSubscription))
 
         if not form.has_key("digpw"):
             PrintResults("You must supply a password to change options.")
