@@ -637,10 +637,12 @@ def get_domain():
         return mm_cfg.DEFAULT_HOST_NAME.lower()
 
 
-def get_site_email(hostname=None, extra=''):
+def get_site_email(hostname=None, extra=None):
     if hostname is None:
         hostname = mm_cfg.VIRTUAL_HOSTS.get(get_domain(), get_domain())
-    return '%s%s@%s' % (mm_cfg.MAILMAN_SITE_LIST, extra, hostname)
+    if extra is None:
+        return '%s@%s' % (mm_cfg.MAILMAN_SITE_LIST, hostname)
+    return '%s-%s@%s' % (mm_cfg.MAILMAN_SITE_LIST, extra, hostname)
 
 
 
