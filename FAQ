@@ -108,6 +108,28 @@ FREQUENTLY ASKED QUESTIONS
      . run $prefix/bin/arch <listname> 
 	   $prefix/archives/private/<listname>.mbox/<listname>.mbox
 
+9. I set member_posting_only to yes because I want to limit posts to
+   members only, however it seems like all messages coming from
+   members are held for approval.
+
+   There appears to be a problem on some systems where the envelope
+   sender (e.g. the Unix "From " line) is set incorrectly.  This will
+   cause a negative match when checking to see if the sender is a
+   member of the list.  Mailman defaults to using the envelope sender
+   before the sender (i.e. "From:" header) because the former is set
+   by the SMTP agent while the latter is easily spoofable by the end
+   user.
+
+   However, if you are having this problem, you may opt to favor the
+   From: header over the envelope sender.  Do this by adding the
+   following line to your mm_cfg.py file:
+
+   USE_ENVELOPE_SENDER=0
+
+   However, read the comments about this variable in the Defaults.py
+   file first.
+
+
 
 Local Variables:
 mode: text

@@ -81,6 +81,20 @@ USE_CRYPT         = 1
 
 			 # General Defaults #
 
+# When allowing only members to post to a mailing list, how is the sender of
+# the message determined?  If this variable is set to 1, then first the
+# message's envelope sender is used, with a fallback to the sender if there is 
+# no envelope sender.  Set this variable to 0 to always use the sender.
+#
+# The envelope sender is set by the SMTP delivery and is thus less easily
+# spoofed than the sender, which is typically just taken from the From: header 
+# and thus easily spoofed by the end-user.  However, sometimes the envelope
+# sender isn't set correctly and this will manifest itself by postings being
+# held for approval even if they appear to come from a list member.  If you
+# are having this problem, set this variable to 0, but understand that some
+# spoofed messages may get through.
+USE_ENVELOPE_SENDER = 1
+
 # When true, mailman will consider user@host.domain to be the same address
 # as user@domain.  If set to 0, mailman will consider user@host.domain to 
 # be the same address as user@Host.DoMain, but different than user@domain.

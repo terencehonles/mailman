@@ -1041,9 +1041,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         msgapproved = self.ExtractApproval(msg)
         if not approved:
             approved = msgapproved
-        sender = msg.GetEnvelopeSender()
+        sender = None
+        if mm_cfg.USE_ENVELOPE_SENDER:
+            sender = msg.GetEnvelopeSender()
         if not sender:
             sender = msg.GetSender()
+##        sys.stderr.write('envsend: %s, sender: %s\n' %
+##                         (msg.GetEnvelopeSender(), msg.GetSender()))
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
 	if not approved:
@@ -1139,9 +1143,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 			  subj, re.I):
 	    msg.SetHeader('Subject', '%s%s' % (prefix, subj))
         if self.anonymous_list:
-	  del msg['reply-to']
-	  del msg['sender']
-	  msg.SetHeader('From', self.GetAdminEmail())
+            del msg['reply-to']
+            del msg['sender']
+            msg.SetHeader('From', self.GetAdminEmail())
 	if self.digestable:
 	    self.SaveForDigest(msg)
 	if self.archive:
