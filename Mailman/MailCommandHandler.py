@@ -27,10 +27,11 @@ import traceback
 
 from mimelib.MsgReader import MsgReader
 
-from Mailman import Message
-from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Errors
+from Mailman import Message
+from Mailman import Pending
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 import Mailman.i18n
@@ -124,9 +125,9 @@ class MailCommandHandler:
             'options'     : self.ProcessOptionsCmd,
             'password'    : self.ProcessPasswordCmd,
             }
-        self.__NoMailCmdResponse = 0
+        self.__noresponse = 0
 
-    def AddToResponse(self, text, trunc=MAXCOLUMN, prefix=""):
+    def AddToResponse(self, text, trunc=MAXCOLUMN, prefix=''):
         # Strip final newline
         if text and text[-1] == '\n':
             text = text[:-1]
@@ -134,13 +135,14 @@ class MailCommandHandler:
             line = prefix + line
             if trunc and len(line) > trunc:
                 line = line[:trunc-3] + '...'
-            self.__respbuf = self.__respbuf + line + "\n"
+            self.__respbuf += line + '\n'
 
     def AddError(self, text, prefix='>>>>> ', trunc=MAXCOLUMN):
         self.__errors += 1
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
         
     def ParseMailCommands(self, msg, msgdata):
+        self.__noresponse = 0
         # Break any infloops.  If this has come from a Mailman server then
         # it'll have this header.  It's still possible to infloop between two
         # servers because there's no guaranteed way to know it came from a
@@ -291,7 +293,7 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
                         responsemsg.send(self)
                         break
         # send the response
-        if not self.__NoMailCmdResponse:
+        if not self.__noresponse:
             adminaddr = self.GetAdminEmail()
             requestaddr = self.GetRequestEmail()
             if self.__errors > 0:
@@ -325,7 +327,6 @@ The following is a detailed description of the problems.
             responsemsg.send(self)
             self.__respbuf = ''
             self.__errors = 0
-            self.__NoMailCmdResponse = 0
 
     def ProcessPasswordCmd(self, args, cmd, mail):
         if len(args) not in [0,2]:
@@ -645,7 +646,7 @@ background and instructions for subscribing to and using it, visit:
             # the confirmation message that's been sent takes place 
             # of the results of the mail command message
             #
-            self.__NoMailCmdResponse = 1
+            self.__noresponse = 1
         except Errors.MMNeedApproval:
             adminemail = self.GetAdminEmail()
             self.AddToResponse(_(
@@ -676,7 +677,7 @@ background and instructions for subscribing to and using it, visit:
             # from the mailcommand handler.
             #
             if self.send_welcome_msg:
-                self.__NoMailCmdResponse = 1
+                self.__noresponse = 1
             else:
                 self.AddToResponse(_("Succeeded"))
 
@@ -686,7 +687,8 @@ background and instructions for subscribing to and using it, visit:
             self.AddError(_("Usage: confirm <confirmation string>\n"))
             return
         try:
-            self.ProcessConfirmation(args[0])
+            results = self.ProcessConfirmation(args[0])
+            op = results[0]
         except Errors.MMBadConfirmation, e:
             # Express in approximate days
             days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
@@ -695,22 +697,29 @@ background and instructions for subscribing to and using it, visit:
                 strings expire approximately %(days)s days after the initial
                 subscription request.  If your confirmation has expired,
                 please try to re-submit your subscription.'''),
-                honor_leading_ws = 0),
+                honor_leading_ws=0),
                           trunc=0)
         except Errors.MMNeedApproval, admin_addr:
-            self.AddToResponse(_('''Your request has been forwarded to the
-            list administrator for approval.'''))
+            self.AddToResponse(Utils.wrap(
+                _('''Your request has been forwarded to the
+                list administrator for approval.'''),
+                honor_leading_ws=0),
+                               trunc=0)
         except Errors.MMAlreadyAMember:
             # Some other subscription request for this address has
             # already succeeded.
-            self.AddError(_("You are already subscribed."))
+            self.AddError(_('You are already subscribed.'))
+        except Errors.MMNoSuchUserError:
+            # They've already been unsubscribed
+            self.AddError(Utils.wrap(
+                _('''You are not a member.  Have you already unsubscribed?'''),
+                honor_leading_ws=0),
+                          trunc=0)
         else:
-            #
-            # if the list sends a welcome message, we don't need a response
-            # from the mailcommand handler.
-            #
-            if self.send_welcome_msg:
-                self.__NoMailCmdResponse = 1
+            # Send the response unless this was a subscription confirmation,
+            # and the list sends a welcome message.
+            if op == Pending.SUBSCRIPTION and self.send_welcome_msg:
+                self.__noresponse = 1
             else:
                 self.AddToResponse(_("Succeeded"))
 
