@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 3392 $)
+AC_REVISION($Revision: 3547 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -325,7 +325,7 @@ AC_MSG_RESULT(okay)
 
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
-AC_MSG_CHECKING(for mail wrapper GID)
+AC_MSG_CHECKING(for mail wrapper GID; i.e. --with-mail-gid)
 AC_ARG_WITH(mail-gid, dnl
 [  --with-mail-gid  	specify GID mail programs run as])
 if test -z "$with_mail_gid"
@@ -348,7 +348,7 @@ then
 fi
 
 
-AC_MSG_CHECKING(for CGI wrapper GID)
+AC_MSG_CHECKING(for CGI wrapper GID; i.e. --with-cgi-gid)
 AC_ARG_WITH(cgi-gid, dnl
 [  --with-cgi-gid  	specify GID CGI programs run as])
 if test -z "$with_cgi_gid"

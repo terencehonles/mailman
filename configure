@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.3 
+# From configure.in Revision: 2.4 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -1301,8 +1301,8 @@ echo "$ac_t""okay" 1>&6
 
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
-echo $ac_n "checking for mail wrapper GID""... $ac_c" 1>&6
-echo "configure:1306: checking for mail wrapper GID" >&5
+echo $ac_n "checking for mail wrapper GID; i.e. --with-mail-gid""... $ac_c" 1>&6
+echo "configure:1306: checking for mail wrapper GID; i.e. --with-mail-gid" >&5
 # Check whether --with-mail-gid or --without-mail-gid was given.
 if test "${with_mail_gid+set}" = set; then
   withval="$with_mail_gid"
@@ -1362,8 +1362,8 @@ then
 fi
 
 
-echo $ac_n "checking for CGI wrapper GID""... $ac_c" 1>&6
-echo "configure:1367: checking for CGI wrapper GID" >&5
+echo $ac_n "checking for CGI wrapper GID; i.e. --with-cgi-gid""... $ac_c" 1>&6
+echo "configure:1367: checking for CGI wrapper GID; i.e. --with-cgi-gid" >&5
 # Check whether --with-cgi-gid or --without-cgi-gid was given.
 if test "${with_cgi_gid+set}" = set; then
   withval="$with_cgi_gid"
