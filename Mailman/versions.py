@@ -301,6 +301,9 @@ def NewVars(l):
     add_only_if_missing(
         'bounce_you_are_disabled_warnings_interval',
         mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
+    add_only_if_missing(
+        'bounce_unrecognized_goes_to_list_owner',
+        mm_cfg.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER)
     add_only_if_missing('ban_list', [])
     add_only_if_missing('delivery_status', {})
     # This really ought to default to mm_cfg.HOLD, but that doesn't work with
