@@ -44,9 +44,11 @@ ICONDIR=        $(prefix)/icons
 SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
-EMAILPKG=	email-1.1
 PYTHONLIBDIR=	$(prefix)/pythonlib
 SETUPCMD=	setup.py --quiet install --install-lib
+
+EMAILPKG=	email-1.1
+JACODECSPKG=	JapaneseCodecs-1.4.3
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -64,7 +66,7 @@ ICONS=		*.jpg *.png
 
 all:
 
-install: install-email
+install: install-packages
 	$(INSTALL) -m $(FILEMODE) $(ICONS) $(ICONDIR)
 	for d in $(PATHSDIRS); \
 	do \
@@ -73,9 +75,11 @@ install: install-email
 	done
 	$(INSTALL) -m $(EXEMODE) mailman $(SCRIPTSDIR)
 
-install-email:
+install-packages:
 	gunzip -c $(EMAILPKG).tar.gz | tar xf -
 	(cd $(EMAILPKG) ; $(PYTHON) $(SETUPCMD) $(PYTHONLIBDIR))
+	gunzip -c $(JACODECSPKG).tar.gz | tar xf -
+	(cd $(JACODECSPKG) ; $(PYTHON) $(SETUPCMD) $(PYTHONLIBDIR))
 
 finish:
 
@@ -83,4 +87,4 @@ clean:
 
 distclean:
 	-rm Makefile paths.py mailman
-
+	-rm -rf $(EMAILPKG) $(JACODECSPKG)
