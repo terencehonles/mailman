@@ -67,7 +67,7 @@ class General:
 
              <p>In order to split the list ownership duties into
              administrators and moderators, you must
-             <a href="general#passwords">set a separate moderator password</a>,
+             <a href="passwords">set a separate moderator password</a>,
              and also provide the <a href="?VARHELP=general/moderator">email
              addresses of the list moderators</a>.  Note that the field you
              are changing here specifies the list administators.''')),
@@ -91,7 +91,7 @@ class General:
 
              <p>In order to split the list ownership duties into
              administrators and moderators, you must
-             <a href="general#passwords">set a separate moderator password</a>,
+             <a href="passwords">set a separate moderator password</a>,
              and also provide the email addresses of the list moderators in
              this section.  Note that the field you are changing here
              specifies the list moderators.''')),
