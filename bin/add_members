@@ -210,6 +210,10 @@ def main():
         if send_changes_msg:
             SendExplanation(ml, nmembers + dmembers)
     finally:
+        while 1:
+            children = Mailman.Utils.Reap()
+            if not children:
+                break
         ml.Unlock()
 
 main()
