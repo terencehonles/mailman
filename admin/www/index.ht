@@ -12,7 +12,7 @@ Other-links:
 <h3>Mailman, the GNU Mailing List Manager</h3>
 
 Mailman is software to help manage electronic mail discussion lists,
-much like Majordomo or Smartmail.  Mailman gives each mailing list a
+much like Majordomo or SmartList.  Mailman gives each mailing list a
 unique web page and allows users to subscribe, unsubscribe, and change
 their account options over the web.  Even the list manager can
 administer his or her list entirely via the web.  Mailman has most of
