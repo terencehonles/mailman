@@ -1,6 +1,6 @@
 """Routines for presentation of list-specific HTML text."""
 
-__version__ = "$Revision: 399 $"
+__version__ = "$Revision: 415 $"
 
 
 import os
@@ -206,12 +206,12 @@ class HTMLFormatter:
                 only = 'the list administrator'
                 whom = 'Admin address:'
             # Solicit the user and password.
-            container.AddItem(self.RestrictedListMessage('subscriber list',
+            container.AddItem(self.RestrictedListMessage('subscribers list',
                                                          self.private_roster)
                               + " <p>Enter your "
                               + string.lower(whom[:-1])
                               + " address and password to visit"
-                              "  the subscriber's list: <p><center> "
+                              "  the subscribers list: <p><center> "
                               + whom
                               + " ")
             container.AddItem(self.FormatBox('roster-email'))
