@@ -263,6 +263,8 @@ class Article(pipermail.Article):
 	# Figure out the e-mail address and poster's name
 	self.author, self.email=message.getaddr('From')
 	self.email=pipermail.strip_separators(self.email)
+        if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
+            self.email = re.sub('@', ' at ', self.email)
 	self.author=pipermail.strip_separators(self.author)
 
 	if self.author=="": self.author=self.email
