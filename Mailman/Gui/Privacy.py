@@ -73,6 +73,9 @@ class Privacy:
                            mischievous (or malicious) people from creating
                            subscriptions for others without their consent.'''))
 
+        # some helpful values
+        admin = mlist.GetScriptURL('admin')
+
         return [
             _("""List access policies, including anti-spam measures, covering
             members and outsiders.  See also the <a
