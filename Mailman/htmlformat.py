@@ -175,14 +175,18 @@ class Table:
 	
 
 class Link:
-    def __init__(self, target, text):
-	self.target = target
+    def __init__(self, href, text, target=None):
+	self.href = href
 	self.text = text
+	self.target = target
     
     def Format(self, indent=0):
-	return '<a href="%s">%s</a>' % (HTMLFormatObject(self.target, indent),
-					HTMLFormatObject(self.text, indent))
-
+        texpr = ""
+        if self.target != None:
+	    texpr = ' target="%s"' % self.target
+	return '<a href="%s"%s>%s</a>' % (HTMLFormatObject(self.href, indent),
+					  texpr,
+					  HTMLFormatObject(self.text, indent))
 
 class FontSize:
     """FontSize is being deprecated - use FontAttr(..., size="...") instead."""
@@ -214,7 +218,6 @@ class FontAttr:
 	return output
 
 
-
 class Container:
     def __init__(self, *items):
 	if not items:
@@ -244,11 +247,11 @@ class Document(Container):
 	output = 'Content-type: text/html\n\n'
 	spaces = ' ' * indent
 	output = output + spaces
-	output = output + '<html>\n'
+	output = output + '<html>\n<head>\n'
 	if self.title:
 	    output = '%s%s<TITLE>%s</TITLE>\n'  % (output, spaces,
 						   self.title)
-	output = '%s%s</html>\n%s<body' % (output, spaces, spaces)
+	output = '%s%s</head>\n%s<body' % (output, spaces, spaces)
 	quals = []
 	for k, v in kw.items():
 	    quals.append('%s="%s"' % (k, v))
