@@ -53,18 +53,17 @@ class SecurityManager:
 	# Configurable, however, we don't pass this back in GetConfigInfo
 	# because it's a special case as it requires confirmation to change.
 	self.password = crypted_password      
-
 	# Non configurable
 	self.passwords = {}
 
     def ValidAdminPassword(self, pw):
 	if self.CheckSiteAdminPassword(pw):
             return 1
-	return ((type(pw) == types.StringType) and 
-		(Crypt.crypt(pw, self.password) == self.password))
+	return type(pw) == types.StringType and \
+               Crypt.crypt(pw, self.password) == self.password
 
     def ConfirmAdminPassword(self, pw):
-	if(not self.ValidAdminPassword(pw)):
+        if not self.ValidAdminPassword(pw):
 	    raise Errors.MMBadPasswordError
 	return 1
 
@@ -109,10 +108,9 @@ class SecurityManager:
         # TBD: At least some versions of MS Internet Explorer stores cookies
         # without the double quotes.  This has been verified for MSIE 4.01,
         # although MSIE 5 is fixed.  The bug (see PR#80) is that if these
-        # double quotes are missing, the cookie data does not unpickle
-        # into the list that we expect.  The kludge given here (slightly
-        # modified) was initially provided by Evaldas Auryla
-        # <evaldas.auryla@pheur.org>
+        # double quotes are missing, the cookie data does not unpickle into
+        # the list that we expect.  The kludge given here (slightly modified)
+        # was initially provided by Evaldas Auryla <evaldas.auryla@pheur.org>
         #
 ##        self.LogMsg('debug', 'Browser Cookie: ' + cookiedata)
         keylen = len(key)
@@ -168,10 +166,10 @@ class SecurityManager:
     def ExtractApproval(self, msg):
         """True if message has valid administrator approval.
 
-        Approval line is always stripped from message as a side effect."""
-
+        Approval line is always stripped from message as a side effect.
+        """
         p = msg.getheader('approved')
-        if p == None:
+        if p is None:
             return 0
         del msg['approved']         # Mustn't deliver this line!!
         return self.ValidAdminPassword(p)
