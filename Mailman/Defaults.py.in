@@ -280,6 +280,11 @@ ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
 # dropped.
 PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
+# How long should messages which have delivery failures continue to be
+# retried?  After this period of time, a message that has failed recipients
+# will be dequeued and those recipients will never receive the message.
+DELIVERY_RETRY_PERIOD = 60 * 60 * 24 * 5 # 5 days
+
 
 # These variables control certain aspects of MailList lock acquisition and
 # retention.  They should be tuned as appropriate for your environment.  All
