@@ -21,6 +21,7 @@ from Digest import Digest
 from General import General
 from Membership import Membership
 from NonDigest import NonDigest
+from Passwords import Passwords
 from Privacy import Privacy
 from Topics import Topics
 from Usenet import Usenet
