@@ -45,6 +45,7 @@ def main():
     try:
         s = StringIO(sys.stdin.read())
         msg = Message.Message(s)
+        msg.torequest = 1
         mlist.ParseMailCommands(msg)
     finally:
         mlist.Save()
