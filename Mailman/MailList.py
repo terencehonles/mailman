@@ -575,9 +575,29 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         try:
             st = os.stat(self.archive_directory)
         except os.error, rest:
-            sys.stderr.write("MailList.Save(): error getting archive mode "
-                             "for %s!: %s\n" % (self.real_name, str(rest)))
-            return
+	    import errno
+	    try:
+		val, msg = rest
+	    except ValueError:
+		sys.stderr.write("MailList.Save(): error getting archive mode "
+				 "for %s!: %s\n" % (self.real_name, str(rest)))
+		return
+	    if val == errno.ENOENT: # no such file
+		ou = os.umask(0)
+		if self.archive_private:
+		    mode = 0770
+		else:
+		    mode = 0775
+		try:
+		    os.mkdir(self.archive_directory)
+		    os.chmod(self.archive_directory, mode)
+		finally:
+		    os.umask(ou)
+		    return
+	    else:
+		sys.stderr.write("MailList.Save(): error getting archive mode "
+				 "for %s!: %s\n" % (self.real_name, str(rest)))
+		return
         import stat
         mode = st[stat.ST_MODE]
         if self.archive_private:
