@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = VERSION + "$Revision: 207 $"
+__version__ = VERSION + "$Revision: 225 $"
 
 		   # Many site-specific settings #
 
@@ -67,13 +67,14 @@ DEFAULT_BOUNCE_MATCHING_HEADERS = """
 # Lines that *start* with a '#' are comments.
 to: friend@public.com
 message-id: relay.comanche.denmark.eu
+from: list@listme.com
 """
 # Replies to posts inherently directed to list or original sender?
 DEFAULT_REPLY_GOES_TO_LIST = 0
 # Admin approval unnecessary for subscribes?
-DEFAULT_AUTO_SUBSCRIBE = 1
+DEFAULT_OPEN_SUBSCRIBE = 1
 # Is view of subscription list restricted to list members?
-DEFAULT_CLOSED = 0
+DEFAULT_PRIVATE_ROSTER = 0
 # When exposing members, make them unrecognizable as email addrs.  To
 # web-spiders from picking up addrs for spamming.
 DEFAULT_OBSCURE_ADDRESSES = 1
