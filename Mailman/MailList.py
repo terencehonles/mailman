@@ -32,7 +32,7 @@ from UserDict import UserDict
 from urlparse import urlparse
 from types import *
 
-from mimelib.address import getaddresses
+from mimelib.address import getaddresses, dump_address_pair
 # We use this explicitly instead of going through mimelib so that we can pick
 # up the RFC 2822-conformant version of rfc822.py that will be included in
 # Python 2.2.
@@ -544,48 +544,86 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     #
     # Membership management front-ends and assertion checks
     #
-    def AddMember(self, name, password, digest=0, remote=None, lang=None):
-        # Add a new member, after sanity checking the address, and based on
-        # the mailing list's policies.
-        fullname, emailaddr = parseaddr(name)
-        # Lowercase the domain part
-        emailaddr = Utils.LCDomain(emailaddr)
+    def AddMember(self, userdesc, remote=None):
+        """Front end to member subscription.
+
+        This method enforces subscription policy, validates values, sends
+        notifications, and any other grunt work involved in subscribing a
+        user.  It eventually calls ApprovedAddMember() to do the actual work
+        of subscribing the user.
+
+        userdesc is an instance with the following public attributes:
+
+            address  -- the unvalidated email address of the member
+            fullname -- the member's full name (i.e. John Smith)
+            digest   -- a flag indicating whether the user wants digests or not
+            language -- the requested default language for the user
+            password -- the user's password
+
+        Other attributes may be defined later.  Only address is required; the
+        others all have defaults (fullname='', digests=0, language=list's
+        preferred language, password=generated).
+
+        remote is a string which describes where this add request came from.
+        """
+        assert self.Locked()
+        # Suck values out of userdesc, apply defaults, and reset the userdesc
+        # attributes (for passing on to ApprovedAddMember()).  Lowercase the
+        # addr's domain part.
+        email = Utils.LCDomain(userdesc.address)
+        name = getattr(userdesc, 'fullname', '')
+        lang = getattr(userdesc, 'language', mlist.preferred_language)
+        digest = getattr(userdesc, 'digest', None)
+        password = getattr(userdesc, 'password', Utils.MakeRandomPassword())
+        if digest is None:
+            if self.nondigestable:
+                digest = 0
+            else:
+                digest = 1
         # Validate the e-mail address to some degree.
-        Utils.ValidateEmail(name)
-        if self.isMember(name):
+        Utils.ValidateEmail(email)
+        if self.isMember(email):
             raise Errors.MMAlreadyAMember
-        if name == self.GetListEmail().lower():
+        if email.lower() == self.GetListEmail().lower():
             # Trying to subscribe the list to itself!
             raise Errors.MMBadEmailError
 
+        # Sanity check the digest flag
         if digest and not self.digestable:
             raise Errors.MMCantDigestError
         elif not digest and not self.nondigestable:
             raise Errors.MMMustDigestError
 
-        if lang is None:
-            lang = self.preferred_language
+        userdesc.address = email
+        userdesc.fullname = name
+        userdesc.digest = digest
+        userdesc.language = lang
+        userdesc.password = password
 
+        # Apply the list's subscription policy.  0 means open subscriptions; 1
+        # means the user must confirm; 2 means the admin must approve; 3 means
+        # the user must confirm and then the admin must approve
         if self.subscribe_policy == 0:
-            # No confirmation or approval is necessary
-            self.ApprovedAddMember(emailaddr, password, digest, lang)
+            self.ApprovedAddMember(userdesc)
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
-            # User confirmation required
+            # User confirmation required.  BAW: this should probably just
+            # accept a userdesc instance.
             cookie = Pending.new(Pending.SUBSCRIPTION,
-                                 emailaddr, fullname, password, digest, lang)
-            if remote is not None:
+                                 email, fullname, password, digest, lang)
+            # Send the user the confirmation mailback
+            if remote is None:
+                by = remote = ''
+            else:
                 by = ' ' + remote
                 remote = _(' from %(remote)s')
-            else:
-                by = ''
-                remote = ''
-            recipient = self.GetMemberAdminEmail(emailaddr)
+
+            recipient = self.GetMemberAdminEmail(email)
             realname = self.real_name
             confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                     cookie)
             text = Utils.maketext(
                 'verify.txt',
-                {'email'       : emailaddr,
+                {'email'       : email,
                  'listaddr'    : self.GetListEmail(),
                  'listname'    : realname,
                  'cookie'      : cookie,
@@ -600,8 +638,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
             msg.send(self)
-            if recipient <> emailaddr:
-                who = "%s (%s)" % (emailaddr, recipient.split('@')[0])
+            if recipient <> email:
+                who = "%s (%s)" % (email, recipient.split('@')[0])
             else:
                 who = name
             syslog('subscribe', '%s: pending %s %s',
@@ -609,116 +647,80 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMSubscribeNeedsConfirmation
         else:
             # Subscription approval is required.  Add this entry to the admin
-            # requests database.
-            self.HoldSubscription(emailaddr, fullname, password, digest, lang)
+            # requests database.  BAW: this should probably take a userdesc
+            # just like above.
+            self.HoldSubscription(email, fullname, password, digest, lang)
             raise Errors.MMNeedApproval, _(
                 'subscriptions to %(realname)s require administrator approval')
 
-    def ApprovedAddMember(self, name, password, digest,
-                          ack=None, admin_notif=None, lang=None):
-        # A convenience interface on ApprovedAddMembers (plural)
-        res = self.ApprovedAddMembers([name], [password],
-                                      digest, ack, admin_notif, lang)
-        # There should be exactly one (key, value) pair in the returned dict,
-        # extract the possible exception value
-        assert len(res) == 1
-        res = res.values()[0]
-        if res is None:
-            # User was added successfully
-            return
-        else:
-            # Split up the exception list and reraise it here
-            e, v = res
-            raise e, v
+    def ApprovedAddMember(self, userdesc, ack=None, admin_notif=None):
+        """Add a member right now.
 
-    def ApprovedAddMembers(self, names, passwords, digest,
-                           ack=None, admin_notif=None, lang=None):
-        """Subscribe members in list `names'.
+        The member's subscription must be approved by what ever policy the
+        list enforces.
 
-        Passwords can be supplied in the passwords list.  If an empty
-        password is encountered, a random one is generated and used.
+        userdesc is as above in AddMember().
 
-        Returns a dict where the keys are addresses that were tried
-        subscribed, and the corresponding values are either two-element
-        tuple containing the first exception type and value that was
-        raised when trying to add that address, or `None' to indicate
-        that no exception was raised.
+        ack is a flag that specifies whether the user should get an
+        acknowledgement of their being subscribed.  Default is to use the
+        list's default flag value.
 
+        admin_notif is a flag that specifies whether the list owner should get
+        an acknowledgement of this subscription.  Default is to use the list's
+        default flag value.
         """
+        assert self.Locked()
+        # Set up default flag values
         if ack is None:
             ack = self.send_welcome_msg
         if admin_notif is None:
             admin_notif = self.admin_notify_mchanges
-        if lang is None:
-            lang = self.preferred_language
 
-        # Make sure our passwords vector is the same size as our names vector
-        if type(passwords) is not ListType:
-            # TypeError? -- For now, ignore whatever value(s) we were given
-            passwords = [None] * len(names)
-        lenpws = len(passwords)
-        lennames = len(names)
-        if lenpws < lennames:
-            passwords.extend([None] * (lennames - lenpws))
+        # Suck values out of userdesc, and apply defaults.
+        email = Utils.LCDomain(userdesc.address)
+        name = getattr(userdesc, 'fullname', '')
+        lang = getattr(userdesc, 'language', self.preferred_language)
+        digest = getattr(userdesc, 'digest', None)
+        password = getattr(userdesc, 'password', Utils.MakeRandomPassword())
+        if digest is None:
+            if self.nondigestable:
+                digest = 0
+            else:
+                digest = 1
 
-        result = {}
-        fullnames = {}
-        for name, pw in zip(names, passwords):
-            # Dig out the full name and the email address, lowercase the
-            # domain part, and validate
-            fullname, emailaddr = parseaddr(name)
-            emailaddr = Utils.LCDomain(emailaddr)
-            fullnames[name] = fullname, emailaddr
-            try:
-                Utils.ValidateEmail(emailaddr)
-            except (Errors.MMBadEmailError, Errors.MMHostileAddress), e:
-                # We don't really need the traceback object for the exception.
-                result[name] = e
-            # WIBNI we could `continue' within `try' constructs...
-            if result.has_key(name):
-                continue
-            if self.isMember(emailaddr):
-                result[name] = [Errors.MMAlreadyAMember, name]
-                continue
-            # Make sure we set a moderately "good" password
-            if not pw:
-                pw = Utils.MakeRandomPassword()
-            self.addNewMember(emailaddr, realname=fullname, digest=digest,
-                              password=pw, language=lang)
-            self.setMemberOption(name, mm_cfg.DisableMime,
-                                 1 - self.mime_is_default_digest)
-            result[name] = None
+        # Let's be extra cautious
+        Utils.ValidateEmail(email)
+        if self.isMember(email):
+            raise Errors.MMAlreadyAMember, email
+
+        self.addNewMember(email, realname=name, digest=digest,
+                          password=password, language=lang)
+        self.setMemberOption(email, mm_cfg.DisableMime,
+                             1 - self.mime_is_default_digest)
 
         # Now send and log results
-        if not result:
-            return
-
         if digest:
             kind = ' (digest)'
         else:
             kind = ''
 
-        for name in result.keys():
-            if result[name] is None:
-                fullname, emailaddr = fullnames[name]
-                syslog('subscribe', '%s: new%s %s (%s)',
-                       self.internal_name(), kind, emailaddr, fullname)
-                if ack:
-                    self.SendSubscribeAck(
-                        emailaddr, self.getMemberPassword(emailaddr), digest)
-                if admin_notif:
-                    adminaddr = self.GetAdminEmail()
-                    realname = self.real_name
-                    subject = _('%(realname)s subscription notification')
-                    text = Utils.maketext(
-                        "adminsubscribeack.txt",
-                        {"listname" : self.real_name,
-                         "member"   : name,
-                         }, lang=lang, mlist=self)
-                    msg = Message.UserNotification(
-                        self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
-                    msg.send(self)
-        return result
+        syslog('subscribe', '%s: new%s %s (%s)', self.internal_name(),
+               kind, email, name)
+
+        if ack:
+            self.SendSubscribeAck(email, self.getMemberPassword(email), digest)
+        if admin_notif:
+            adminaddr = self.GetAdminEmail()
+            realname = self.real_name
+            subject = _('%(realname)s subscription notification')
+            text = Utils.maketext(
+                "adminsubscribeack.txt",
+                {"listname" : self.real_name,
+                 "member"   : dump_address_pair((name, email)),
+                 }, lang=lang, mlist=self)
+            msg = Message.UserNotification(
+                self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
+            msg.send(self)
 
     def ApprovedDeleteMember(self, name, whence=None,
                              admin_notif=None, userack=1):
