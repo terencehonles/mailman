@@ -35,6 +35,8 @@ class BounceRunner(Runner):
     SLEEPTIME = 60
 
     def _dispose(self, mlist, msg, msgdata):
+        # Make sure we have the most up-to-date state
+        mlist.Load()
         outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
         # There are a few possibilities here:
         #
