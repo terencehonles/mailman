@@ -36,6 +36,10 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 
+# Request types requiring admin approval
+HELDMSG = 1
+SUBSCRIPTION = 2
+
 
 
 class ListAdmin:
@@ -96,10 +100,10 @@ class ListAdmin:
         return ids
 
     def GetHeldMessageIds(self):
-        return self.__getmsgids(mm_cfg.HELDMSG)
+        return self.__getmsgids(HELDMSG)
 
     def GetSubscriptionIds(self):
-        return self.__getmsgids(mm_cfg.SUBSCRIPTION)
+        return self.__getmsgids(SUBSCRIPTION)
 
     def GetRecord(self, id):
         self.__opendb()
@@ -115,10 +119,10 @@ class ListAdmin:
         self.__opendb()
         rtype, data = self.__db[id]
         del self.__db[id]
-        if rtype == mm_cfg.HELDMSG:
+        if rtype == HELDMSG:
             self.__handlepost(data, value, comment)
         else:
-            assert rtype == mm_cfg.SUBSCRIPTION
+            assert rtype == SUBSCRIPTION
             self.__handlesubscription(data, value, comment)
 
     def HoldMessage(self, msg, reason):
@@ -127,8 +131,17 @@ class ListAdmin:
         # get the next unique id
         id = self.__request_id()
         assert not self.__db.has_key(id)
-        # flatten the message and suck out the sender address
-        sender, text = Utils.SnarfMessage(msg)
+        # get the message sender
+        sender = msg.GetSender()
+        # calculate the file name for the message text and write it to disk
+        filename = 'heldmsg-%s-%d.txt' % (self.internal_name(), id)
+        omask = os.umask(002)
+        try:
+            fp = open(os.path.join(mm_cfg.DATA_DIR, filename), 'w')
+            fp.write(str(msg))
+            fp.close()
+        finally:
+            os.umask(omask)
         # save the information to the request database.  for held message
         # entries, each record in the database will be of the following
         # format:
@@ -137,18 +150,25 @@ class ListAdmin:
         # the sender of the message
         # the message's subject
         # a string description of the problem
-        # the full text of the message
+        # name of the file in $PREFIX/data containing the msg text
         #
         msgsubject = msg.get('subject', '(no subject)')
-        data = time.time(), sender, msgsubject, reason, text
-        self.__db[id] = (mm_cfg.HELDMSG, data)
+        data = time.time(), sender, msgsubject, reason, filename
+        self.__db[id] = (HELDMSG, data)
 
     def __handlepost(self, record, value, comment):
-        ptime, sender, subject, reason, text = record
+        ptime, sender, subject, reason, filename = record
+        path = os.path.join(mm_cfg.DATA_DIR, filename)
         rejection = None
         if value == 0:
             # Approved
-            msg = Message.Message(StringIO(text))
+            try:
+                fp = open(path)
+            except IOError:
+                # we lost the message text file.  clean up our housekeeping
+                # and raise an exception.
+                raise Errors.LostHeldMessage(path)
+            msg = Message.Message(fp)
             msg.approved = 1
             self.Post(msg)
         elif value == 1:
@@ -177,7 +197,17 @@ class ListAdmin:
             if comment:
                 note = note + '\n\tReason: ' + strquote(comment)
             self.LogMsg('vette', note)
-
+        # always unlink the file containing the message text.  It's not
+        # necessary anymore, regardless of the disposition of the message.
+        try:
+            os.unlink(path)
+        except os.error, (code, msg):
+            if code == ENOENT:
+                # we lost the message text file.  clean up our housekeeping
+                # and raise an exception.
+                raise Errors.LostHeldMessage(path)
+            raise
+            
     def HoldSubscription(self, addr, password, digest):
         # assure that the database is open for writing
         self.__opendb()
@@ -195,7 +225,7 @@ class ListAdmin:
         # the digest flag
         #
         data = time.time(), addr, password, digest
-        self.__db[id] = (mm_cfg.SUBSCRIPTION, data)
+        self.__db[id] = (SUBSCRIPTION, data)
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
