@@ -75,12 +75,11 @@ def main():
         sys.exit(0)
     # find the case preserved email address (the one the user subscribed with)
     cpuser = mlist.members.get(mlist.FindUser(user))
-    if cpuser <> 0:
-        user = user + ' (' + cpuser + ')'
     # Re-obscure the user's address for the page banner if obscure_addresses
     # set.
     if mlist.obscure_addresses:
         presentable_user = Utils.ObscureEmail(user, for_text=1)
+        cpuser = Utils.ObscureEmail(cpuser, for_text=1)
     else:
         presentable_user = user
     # Do replacements
@@ -135,5 +134,11 @@ def main():
                                                            ' To Me'))
     replacements['<mm-umbrella-notice>'] = (
         mlist.FormatUmbrellaNotice(user, "password"))
+    if type(cpuser) == type(''):
+        replacements['<mm-case-preserved-user>'] = '''
+You are subscribed to this list with the case-preserved address
+<em>%s</em>.''' % cpuser
+    else:
+        replacements['<mm-case-preserved-user>'] = ''
     doc.AddItem(mlist.ParseTags('options.html', replacements))
     print doc.Format()
