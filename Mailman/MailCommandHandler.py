@@ -448,13 +448,13 @@ background and instructions for subscribing to and using it, visit:
 	    self.AddToResponse(string.join(map(AddTab,
                                                filter(NotHidden,
                                                       digestmembers)),
-                                           "\n"))
+                                           "\n"), trunc=0)
 	if len(members):
 	    self.AddToResponse("Non-Digest Members:")
             members.sort()
 	    self.AddToResponse(string.join(map(AddTab,
                                                filter(NotHidden, members)),
-                                           "\n"))
+                                           "\n"), trunc=0)
 
     def ProcessUnsubscribeCmd(self, args, cmd, mail):
 	if not len(args):
