@@ -70,10 +70,11 @@ from Mailman.Logging.Syslog import syslog
 
 
 class SecurityManager:
-    def InitVars(self, crypted_password):
-	# Configurable, however we don't pass these back in GetConfigInfo
-	# because it's a special case as it requires confirmation to change.
-	self.password = crypted_password
+    def InitVars(self):
+        # We used to set self.password here, from a crypted_password argument,
+        # but that's been removed when we generalized the mixin architecture.
+        # self.password is really a SecurityManager attribute, but it's set in
+        # MailList.InitVars().
         self.mod_password = None
 	# Non configurable
 	self.passwords = {}
@@ -95,13 +96,8 @@ class SecurityManager:
             if user is None:
                 # A bad system error
                 raise TypeError, 'No user supplied for AuthUser context'
-            addr = self.FindUser(user)
-            if addr is None:
-                raise Errors.MMNotAMemberError
-            secret = self.passwords.get(addr)
-            if secret is None:
-                raise Errors.MMBadUserError
-            key += 'user:%s' % addr
+            secret = self.getMemberPassword(user)
+            key += 'user:%s' % user
         elif authcontext == mm_cfg.AuthListModerator:
             secret = self.mod_password
             key += 'moderator'
@@ -306,11 +302,3 @@ class SecurityManager:
             return 0
         # Authenticated!
         return 1
-
-    def ChangeUserPassword(self, user, newpw, confirm):
-	addr = self.FindUser(user)
-	if not addr:
-	    raise Errors.MMNotAMemberError
-	if newpw <> confirm:
-	    raise Errors.MMPasswordsMustMatch
-	self.passwords[addr] = newpw
