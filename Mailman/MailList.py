@@ -683,6 +683,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         crafting a message to the member informing them of the invitation.
         """
         invitee = userdesc.address
+        Utils.ValidateEmail(invitee)
         requestaddr = self.GetRequestEmail()
         # Hack alert!  Squirrel away a flag that only invitations have, so
         # that we can do something slightly different when an invitation
