@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-12-31 16:11+0100\n"
+"PO-Revision-Date: 2003-12-31 16:16+0100\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: deutsch\n"
 "MIME-Version: 1.0\n"
@@ -521,11 +521,11 @@ msgid ""
 "        using the <em>Submit Your Changes</em> button below."
 msgstr ""
 "Tragen Sie bitte die gewünschten Kennwörter ein und speichern Sie die "
-"Eintragungen über den Knopf  <em>\"Änderungen vornehmen\"</em>."
+"Eintragungen über den Knopf  <em>\"Änderungen speichern\"</em>."
 
 #: Mailman/Cgi/admin.py:497
 msgid "Additional Member Tasks"
-msgstr "Zusätzliche Mitgliederaufträge"
+msgstr "Besondere Aktionen"
 
 #: Mailman/Cgi/admin.py:503
 msgid ""
@@ -1070,7 +1070,7 @@ msgstr "Moderatoren-Passwort bestätigen:"
 # Mailman/Cgi/admin.py:1036
 #: Mailman/Cgi/admin.py:1186
 msgid "Submit Your Changes"
-msgstr "Änderungen vornehmen"
+msgstr "Änderungen speichern"
 
 # Mailman/Cgi/admin.py:1111
 #: Mailman/Cgi/admin.py:1209
