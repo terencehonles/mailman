@@ -139,7 +139,7 @@ mailman.pot: marked.files docstring.files
 # .pot file
 %/LC_MESSAGES/mailman.po: mailman.pot
 	@echo "Merging new template file with existing translations"
-	-mv $@ $@.old && $(MSGMERGE) -o $@ $@.old mailman.pot
+	$(MSGMERGE) -U $@ mailman.pot
 
 
 FORCE:
