@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -116,6 +116,16 @@ class Privacy:
              approval before an unsubscription request is processed.  Examples
              of such lists include a corporate mailing list that all employees
              are required to be members of.""")),
+
+            _('Ban list'),
+            ('ban_list', mm_cfg.EmailListEx, (10, WIDTH), 1,
+             _("""List of addresses which are banned from membership in this
+             mailing list."""),
+
+             _("""Addresses in this list are banned outright from subscribing
+             to this mailing list, with no further moderation required.  Add
+             addresses one per line; start the line with a ^ character to
+             designate a regular expression match.""")),
 
             _("Membership exposure"),
             ('private_roster', mm_cfg.Radio,
