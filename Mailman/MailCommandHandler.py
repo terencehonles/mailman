@@ -111,11 +111,11 @@ class MailCommandHandler:
 		#
 		conf_pat = (r"%s -- confirmation of subscription"
                             r" -- request (\d\d\d\d\d\d)"
-                            % self.real_name)
+                            % re.escape(self.real_name))
 		match = re.search(conf_pat, subject)
 		if not match:
 		    match = re.search(conf_pat, mail.body)
-		if match:
+		else:
 		    lines = ["confirm %s" % (match.group(1))]
 		else:
 		    self.AddError("Subject line ignored: %s" % subject)
