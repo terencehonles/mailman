@@ -321,9 +321,6 @@ def option_help(mlist, varhelp):
     # Get the details about the variable
     varname, kind, params, dependancies, description, elaboration = \
              get_item_characteristics(item)
-    if elaboration is None:
-        elaboration = description
-    #
     # Set up the document
     realname = mlist.real_name
     legend = _("""%(realname)s Mailing list Configuration Help
@@ -336,7 +333,8 @@ def option_help(mlist, varhelp):
     doc.SetTitle(_("Mailman %(varname)s List Option Help"))
     doc.AddItem(header)
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, description))
-    doc.AddItem("%s<p>" % elaboration)
+    if elaboration:
+        doc.AddItem("%s<p>" % elaboration)
 
     if subcat:
         url = '%s/%s/%s' % (mlist.GetScriptURL('admin'), category, subcat)
