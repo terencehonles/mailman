@@ -62,7 +62,7 @@ class Results:
         self.lineno = 0
         self.subjcmdretried = 0
         # Always process the Subject: header first
-        self.commands.append(msg['subject'])
+        self.commands.append(msg.get('subject', ''))
         # Find the first text/plain part
         part = None
         for part in typed_subpart_iterator(msg, 'text', 'plain'):
