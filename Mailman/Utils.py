@@ -163,7 +163,6 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     # hang pending release of the lock - deadlock.
     if os.fork():
         return
-    import smtplib
     sender = msg.GetSender()
 
     try:
@@ -179,13 +178,26 @@ def DeliverToUser(msg, recipient, add_headers=[]):
             msg.headers.append(i)
 
         text = string.join(msg.headers, '')+ '\n'+ QuotePeriods(msg.body)
+        import OutgoingQueue
+        OutgoingQueue.enqueueMessage(sender, recipient, text)
+        TrySMTPDelivery(recipient,sender,text,queue_id)
+        # Just in case there's still something waiting to be sent...
+        OutgoingQueue.processQueue()
+    finally:
+        os._exit(0)
+
+def TrySMTPDelivery(recipient, sender, text, queue_entry):
+    import smtplib
+    try:
         con = smtplib.SmtpConnection(mm_cfg.SMTPHOST)
         con.helo(mm_cfg.DEFAULT_HOST_NAME)
         con.send(to=recipient,frm=sender,text=text)
         con.quit()
+        import OutgoingQueue
+        OutgoingQueue.dequeueMessage(queue_entry)
     finally:
-        os._exit(0)
-
+#    except: # Todo: This might want to handle special cases.    
+        pass # Just try again later.
 def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
 

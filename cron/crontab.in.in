@@ -11,3 +11,6 @@
 # if you don't want to allow gating, or don't have any going on right now,
 # or want to exclusively use a callback strategy instead of polling.
 0,5,10,15,20,25,30,35,40,45,50,55 * * * * @PYTHON@ @prefix@/cron/gate_news
+
+# Every 1/2 hour flush the outgoing mail queue.
+12,42 * * * * @PYTHON@ @prefix@/cron/run_queue
