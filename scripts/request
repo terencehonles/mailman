@@ -61,7 +61,7 @@ def main():
     #
     # The `torequest' flag is a message to qrunner that an alternative route
     # should be taken for this message.
-    msg.Enqueue(mlist, torequest=1)
+    msg.Enqueue(mlist, torequest=1, _whichq=mm_cfg.INQUEUE_DIR)
 
 
 

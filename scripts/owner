@@ -69,9 +69,9 @@ def main():
     #
     # See cron/qrunner for the paths these to flagged messages take.
     if msg.get('to') == mlist.GetOwnerEmail():
-        msg.Enqueue(mlist, toowner=1)
+        msg.Enqueue(mlist, toowner=1, _whichq=mm_cfg.INQUEUE_DIR)
     else:
-        msg.Enqueue(mlist, toadmin=1)
+        msg.Enqueue(mlist, toadmin=1, _whichq=mm_cfg.INQUEUE_DIR)
 
 
 
