@@ -26,12 +26,12 @@ permission problems found.  With -v be verbose.
 
 """
 
-import sys
 import os
-import errno
-import getopt
+import sys
 import pwd
 import grp
+import errno
+import getopt
 from stat import *
 
 try:
@@ -55,11 +55,17 @@ PROGRAM = sys.argv[0]
 
 # Gotta check the archives/private/*/database/* files
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 class State:
-    FIX = 0
-    VERBOSE = 0
+    FIX = False
+    VERBOSE = False
     ERRORS = 0
 
 STATE = State()
@@ -78,7 +84,13 @@ def statgidmode(path):
     stat = os.stat(path)
     return stat[ST_MODE], stat[ST_GID]
 
+seen = {}
+
 def checkwalk(arg, dirname, names):
+    # Short-circuit duplicates
+    if seen.has_key(dirname):
+        return
+    seen[dirname] = True
     for name in names:
         path = os.path.join(dirname, name)
         if arg.VERBOSE:
@@ -151,10 +163,16 @@ def checkall():
         prefix = mm_cfg.PREFIX
         print _('checking mode for %(prefix)s')
     dirs = {}
-    for d in (mm_cfg.PREFIX, mm_cfg.EXEC_PREFIX, mm_cfg.VAR_PREFIX):
-        dirs[d] = 1
+    for d in (mm_cfg.PREFIX, mm_cfg.EXEC_PREFIX, mm_cfg.VAR_PREFIX,
+              mm_cfg.LOG_DIR):
+        dirs[d] = True
     for d in dirs.keys():
-        mode = statmode(d)
+        try:
+            mode = statmode(d)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+            print _('WARNING: directory does not exist: %(d)s')
+            continue
         if (mode & DIRPERMS) <> DIRPERMS:
             STATE.ERRORS += 1
             print _('directory must be at least 02775: %(d)s'),
@@ -165,7 +183,6 @@ def checkall():
                 print
         # check all subdirs
         os.path.walk(d, checkwalk, STATE)
-
 
 def checkarchives():
     private = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
@@ -185,7 +202,6 @@ def checkarchives():
 
 MBOXPERMS = S_IRGRP | S_IWGRP | S_IRUSR | S_IWUSR
 
-
 def checkmboxfile(mboxdir):
     absdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, mboxdir)
     for f in os.listdir(absdir):
@@ -201,7 +217,6 @@ def checkmboxfile(mboxdir):
                 os.chmod(mboxfile, mode | MBOXPERMS)
             else:
                 print
-
 
 def checkarchivedbs():
     # The archives/private/listname/database file must not be other readable
@@ -225,7 +240,6 @@ def checkarchivedbs():
                 os.chmod(dbdir, mode & ~S_IRWXO)
             else:
                 print
-
 
 def checkcgi():
     cgidir = os.path.join(mm_cfg.EXEC_PREFIX, 'cgi-bin')
@@ -332,8 +346,7 @@ def usage(code, msg=''):
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:],
-                                   'fvh',
+        opts, args = getopt.getopt(sys.argv[1:], 'fvh',
                                    ['fix', 'verbose', 'help'])
     except getopt.error, msg:
         usage(1, msg)
@@ -342,9 +355,9 @@ if __name__ == '__main__':
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-f', '--fix'):
-            STATE.FIX = 1
+            STATE.FIX = True
         elif opt in ('-v', '--verbose'):
-            STATE.VERBOSE = 1
+            STATE.VERBOSE = True
 
     checkall()
     checkarchives()
