@@ -552,7 +552,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     else:
         body = EMPTYSTRING.join(lines)
     hdrtxt = NL.join(['%s: %s' % (k, v) for k, v in msg.items()])
-
+    hdrtxt = cgi.escape(hdrtxt)
     # Okay, we've reconstituted the message just fine.  Now for the fun part!
     t = Table(cellspacing=0, cellpadding=0, width='100%')
     t.AddRow([Bold(_('From:')), sender])
@@ -596,12 +596,12 @@ def show_post_requests(mlist, id, info, total, count, form):
     t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold(_('Message Headers:')),
               TextArea('headers-%d' % id, hdrtxt,
-                       rows=10, cols=80)])
+                       rows=10, cols=80, readonly=1)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold(_('Message Excerpt:')),
               TextArea('fulltext-%d' % id, cgi.escape(body),
-                       rows=10, cols=80)])
+                       rows=10, cols=80, readonly=1)])
     t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)
     form.AddItem('<p>')
