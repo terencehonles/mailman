@@ -24,28 +24,31 @@ Takes listname in PATH_INFO.
 # data. 
 
 import sys
-import os, string
+import os
 import cgi
+import urllib
 
+from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
-from Mailman import htmlformat
 from Mailman import Errors
-from Mailman import mm_cfg
+from Mailman import i18n
+from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
-from Mailman.i18n import _
+
+# Set up i18n
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
 def main():
-    doc = htmlformat.HeadlessDocument()
-
     parts = Utils.GetPathPieces()
     if not parts:
         error_page(_('Invalid options to CGI script'))
         return
 
-    listname = string.lower(parts[0])
+    listname = parts[0].lower()
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
@@ -53,44 +56,42 @@ def main():
         syslog('error', 'roster: no such list "%s": %s' % (listname, e))
         return
 
-    form = cgi.FieldStorage()
+    cgidata = cgi.FieldStorage()
 
     # messages in form should go in selected language (if any...)
-    if form.has_key('language'):
-       os.environ['LANG'] = lang = form['language'].value
+    if cgidata.has_key('language'):
+        lang = cgidata['language'].value
     else:
-       os.environ['LANG'] = lang = mlist.preferred_language
+        lang = mlist.preferred_language
 
-    bad = ""
+    i18n.set_language(lang)
+    bad = ''
     # These nested conditionals constituted a cascading authentication
     # check, yielding a 
     # jcrey:
     # Already in roster page, an user may desire to see roster page 
     # in a different language in a list with privacy access
 
-    try:
-       FromURL = os.environ['HTTP_REFERER']
-    except KeyError:
-       FromURL = ''
+    fromurl = os.environ.get('HTTP_REFERER', '')
     
     if not mlist.private_roster or \
-           mlist.GetScriptURL('roster', absolute=1) == FromURL:
+           mlist.GetScriptURL('roster', absolute=1) == fromurl:
         # No privacy.
-        bad = ""
+        bad = ''
     else:
         realname = mlist.real_name
         auth_req = _("%(realname)s subscriber list requires authentication.")
-        if not form.has_key("roster-pw"):
+        if not cgidata.has_key("roster-pw"):
             bad = auth_req
         else:
-            pw = form['roster-pw'].value
+            pw = cgidata['roster-pw'].value
             # Just the admin password is sufficient - check it early.
             if not mlist.ValidAdminPassword(pw):
-                if not form.has_key('roster-email'):
+                if not cgidata.has_key('roster-email'):
                     # No admin password and no user id, nogo.
                     bad = auth_req
                 else:
-                    id = form['roster-email'].value
+                    id = cgidata['roster-email'].value
                     if mlist.private_roster == 1:
                         # Private list - members visible.
                         try:
@@ -105,10 +106,16 @@ def main():
                         # - and we already tried admin password, above.
                         bad = _("%(realname)s admin authentication failed.")
     if bad:
-        doc = error_page_doc(bad)
+        doc = Document()
+        doc.set_language(lang)
+        error_page_doc(doc, bad)
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
-        sys.exit(0)
+        return
+
+    # The document and its language
+    doc = HeadlessDocument()
+    doc.set_language(lang)
 
     replacements = mlist.GetAllReplacements(lang)
     replacements['<mm-displang-box>'] = mlist.FormatButton(
@@ -120,23 +127,15 @@ def main():
 
 
 
-def error_page(errmsg, *args):
-    print apply(error_page_doc, (errmsg,) + args).Format()
+def error_page(errmsg):
+    doc = Document()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    error_page_doc(doc, errmsg)
+    print doc.Format()
 
 
-def error_page_doc(errmsg, *args):
-    """Produce a simple error-message page on stdout and exit.
-
-    Optional arg justreturn means just return the doc, don't print it."""
-    doc = htmlformat.Document()
+def error_page_doc(doc, errmsg, *args):
+    # Produce a simple error-message page on stdout and exit.
     doc.SetTitle(_("Error"))
-    doc.AddItem(htmlformat.Header(2, _("Error")))
-    doc.AddItem(htmlformat.Bold(errmsg % args))
-    return doc
-
-
-
-
-
-
-
+    doc.AddItem(Header(2, _("Error")))
+    doc.AddItem(Bold(errmsg % args))
