@@ -944,13 +944,15 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMBadConfirmation
         else:
             (email_addr, password, digest) = got
-        if self.subscribe_policy == 3: # confirm + approve
-            self.HoldSubscription(email_addr, password, digest)
-            raise Errors.MMNeedApproval, \
-                  'subscriptions to %s require administrator approval' % \
-                  self.real_name
-        self.ApprovedAddMember(email_addr, password, digest)
-        self.Save()
+        try:
+            if self.subscribe_policy == 3: # confirm + approve
+                self.HoldSubscription(email_addr, password, digest)
+                raise Errors.MMNeedApproval, \
+                      'subscriptions to %s require administrator approval' % \
+                      self.real_name
+            self.ApprovedAddMember(email_addr, password, digest)
+        finally:
+            self.Save()
 
     def ApprovedAddMember(self, name, password, digest,
                           ack=None, admin_notif=None):
