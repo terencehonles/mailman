@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -219,7 +219,7 @@ def process_request(doc, cgidata):
         msg = Message.UserNotification(
             owner, siteadmin,
             _('Your new mailing list: %(listname)s'),
-            text)
+            text, mlist.preferred_language)
         msg.send(mlist)
 
     # Success!
