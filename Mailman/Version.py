@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 # Mailman version
-VERSION = "2.1a3"
+VERSION = "2.1a3+"
 
 # And as a hex number in the manner of PY_VERSION_HEX
 ALPHA = 0xa
