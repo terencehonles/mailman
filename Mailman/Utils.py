@@ -444,9 +444,7 @@ def maketext(templatefile, dict, raw=0):
 # get sent to the list admin instead of the entire list.
 #
 def IsAdministrivia(msg):
-    lines = map(string.lower, msg.readlines())
-    if len(lines) > 30:
-        return 0
+    lines = map(string.lower, string.split(msg.body, "\n"))
     #
     # check to see how many lines that actually have text in them there are
     # 
@@ -464,9 +462,14 @@ def IsAdministrivia(msg):
     for line in lines:
         if string.strip(line):
             lines_with_text = lines_with_text + 1
-        if lines_with_text > 10: # we might want to change this to mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES.
+        if lines_with_text > 30: # we might want to change this to mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES.
             return 0
-    if admin_data.has_key(string.lower(string.strip(msg.body))):
+    sig_ind =  string.find(msg.body, "\n-- ")
+    if sig_ind != -1:
+        body = msg.body[:sig_ind]
+    else:
+        body = msg.body
+    if admin_data.has_key(string.lower(string.strip(body))):
         return 1
     try:
         if admin_data.has_key(string.lower(string.strip(msg["subject"]))):
@@ -475,7 +478,7 @@ def IsAdministrivia(msg):
         pass
     for line in lines[:5]:
         if not string.strip(line):
-            return
+            continue
         words = string.split(line)
         if admin_data.has_key(words[0]):
             min_args, max_args = admin_data[words[0]]
