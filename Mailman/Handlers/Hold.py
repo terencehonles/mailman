@@ -49,43 +49,58 @@ from Mailman.Logging.Syslog import syslog
 
 class ForbiddenPoster(HandlerAPI.MessageHeld):
     "Sender is explicitly forbidden"
-    pass
+    rejection = 'You are forbidden from posting messages to this list.'
 
 class ModeratedPost(HandlerAPI.MessageHeld):
     "Post to moderated list"
-    pass
+    rejection = 'Your message has been deemed inappropriate by the moderator.'
 
 class NonMemberPost(HandlerAPI.MessageHeld):
     "Post by non-member to a members-only list"
-    pass
+    rejection = 'Non-members are not allowed to post messages to this list.'
 
 class NotExplicitlyAllowed(HandlerAPI.MessageHeld):
     "Posting to a restricted list by sender requires approval"
-    pass
+    rejection = 'This list is restricted; your message was not approved.'
 
 class TooManyRecipients(HandlerAPI.MessageHeld):
     "Too many recipients to the message"
-    pass
+    rejection = 'Please trim the recipient list; it is too long.'
 
 class ImplicitDestination(HandlerAPI.MessageHeld):
     "Message has implicit destination"
-    pass
+    rejection = '''Blind carbon copies or other implicit destinations are
+not allowed.  Try reposting your message by explicitly including the list
+address in the To: or Cc: fields.'''
 
 class Administrivia(HandlerAPI.MessageHeld):
     "Message may contain adbministrivia"
-    pass
+
+    def rejection_notice(self, mlist):
+        return """Please do *not* post administrative requests to the mailing
+list.  If you wish to subscribe, visit %(listurl)s or send a message with the
+word `help' in it to the request address, %(request)s, for further
+instructions.""" % {'listurl': mlist.GetAbsoluteScriptURL('listinfo'),
+                    'request': mlist.GetRequestEmail(),
+                    }
 
 class SuspiciousHeaders(HandlerAPI.MessageHeld):
     "Message has a suspicious header"
-    pass
+    rejection = 'Your message had a suspicious header.'
 
 class MessageTooBig(HandlerAPI.MessageHeld):
-    "Message body is too big: %d KB"
-    def __init__(self, msgsize):
+    "Message body is too big: %d bytes but there's a limit of %d KB"
+    def __init__(self, msgsize, limit):
         self.__msgsize = msgsize
+        self.__limit = limit
 
     def __str__(self):
-        return HandlerAPI.Message.__str__(self) % self.__msgsize
+        return HandlerAPI.MessageHeld.__str__(self) % (
+            self.__msgsize, self.__limit)
+
+    def rejection_notice(self, mlist):
+        return """Your message was too big; please trim it to less than
+%(kb)s KB in size.""" % {'kb': mlist.max_message_size}
 
 
 
@@ -178,9 +193,10 @@ def process(mlist, msg, msgdata):
     #
     # message too big?
     if mlist.max_message_size > 0:
-        bodylen = len(msg.body)/1024.0
-        if bodylen > mlist.max_message_size:
-            hold_for_approval(mlist, msg, msgdata, MessageTooBig(bodylen))
+        bodylen = len(msg.body)
+        if bodylen/1024.0 > mlist.max_message_size:
+            hold_for_approval(mlist, msg, msgdata,
+                              MessageTooBig(bodylen, mlist.max_message_size))
             # no return
 
 
@@ -198,6 +214,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     reason = str(exc)
     sender = msg.GetSender()
     adminaddr = mlist.GetAdminEmail()
+    msgdata['rejection-notice'] = exc.rejection_notice(mlist)
     mlist.HoldMessage(msg, reason, msgdata)
     # now we need to craft and send a message to the list admin so they can
     # deal with the held message
