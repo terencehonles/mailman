@@ -1,0 +1,12 @@
+%(listname)s -- confirmation of subscription -- request %(cookie)s
+
+You or someone at %(hostname)s has requested that your email address
+<%(email)s> be subscribed to the %(listname)s mailing list at
+%(listaddr)s.  If you wish to fulfill this request, please simply
+reply to this message, or mail %(requestaddr)s with the following
+line, and only the following line in the message body:
+
+confirm %(cookie)s
+
+If you do not wish to subscribe to this list, please simply ignore  
+or delete this message.

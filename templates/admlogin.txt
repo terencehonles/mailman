@@ -1,0 +1,24 @@
+<html>
+<head>
+  <title>%(listname)s Administrative Authentication</title>
+</head>
+<body bgcolor="#ffffff">
+<FORM METHOD=POST ACTION="%(path)s">
+%(message)s
+  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+    <TR>
+      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+	<B><FONT COLOR="#000000" SIZE="+1">%(listname)s Administrative
+	    Authentication</FONT></B>
+      </TD>
+    </TR>
+    <tr>
+      <TD> <div ALIGN="Right"> List Administrative Password: </div> </TD>
+      <TD> <INPUT TYPE=password NAME=adminpw SIZE=30></TD>
+    </tr>
+    <tr>
+      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="request_login">
+      </td>
+    </tr>
+  </TABLE>
+</FORM>

@@ -1,0 +1,13 @@
+Your authorization is required for a mailing list posting request
+approval:
+
+    List:         %(listname)s@%(hostname)s
+    Reason held:  %(reason)s
+    From:         %(sender)s
+    Subject:      %(subject)s
+
+At your convenience, visit:
+
+    %(admindb_url)s
+        
+to approve or deny the request.
