@@ -1,4 +1,4 @@
-Sie oder jemand, der sich auch Sie ausgibt, hat die Zusendung einer
+Sie oder jemand, der sich für Sie ausgibt, hat die Zusendung einer
 Passwort-Erinnerungsmail fuer Ihre Mitgliedschaft auf der Liste
 %(fqdn_lname)s angefordert. Sie benoetigen dieses Passwort, um Ihre
 persoenlichen Einstellungen zu aendern, bzw. um das Abonnement zu beenden.
