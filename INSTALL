@@ -17,9 +17,9 @@ if you want to keep your existing installation intact.
 0. Installation requirements
 
     You must have the Python interpreter installed somewhere on your
-    system.  Currently Python 1.5 or later is required.  For
-    information about obtaining Python source code, or pre-compiled
-    binaries please see the Python Web site at
+    system.  Currently Python 1.5 or later is required, but 1.5.1 is
+    recommended.  For information about obtaining Python source code,
+    or pre-compiled binaries please see the Python Web site at
 
         <http://www.python.org/>
 
@@ -70,12 +70,14 @@ if you want to keep your existing installation intact.
     TAKE SPECIAL NOTE OF THE --with-mail-gid AND --with-cgi-gid
     OPTIONS BELOW.  YOU WILL PROBABLY NEED TO USE THESE!
 
-    You do not need to be root to perform the steps in the section.
+    You should not be root while performing the steps in the section.
     Do them under your own login, or whatever account you typically
-    install software as.  However, make sure that you have write
-    permissions to the target installation directory, and permission
-    to create a setgid file in the file system where it resides (NFS
-    and other mounts can be configured to inhibit setgid settings).
+    install software as.
+
+    However, make sure that you have write permissions to the target
+    installation directory, and permission to create a setgid file in
+    the file system where it resides (NFS and other mounts can be
+    configured to inhibit setgid settings).
 
     - If you've installed other GNU software, you should be familar
       with the configure script.  Usually you can just cd to the
@@ -116,8 +118,8 @@ if you want to keep your existing installation intact.
             This is highly system dependent and you must get this
             right, because the group id is compiled into the mail
             wrapper program for added security.  On systems using
-            sendmail, its sendmail.cf configuration file may designate
-            the groupid of sendmail processes using the "DefaultUser"
+            sendmail, the sendmail.cf configuration file designates
+            the group id of sendmail processes using the "DefaultUser"
             option.  (If commented out, it still may be indicating the
             default...)
 
@@ -277,7 +279,8 @@ if you want to keep your existing installation intact.
   
     If you encounter problems with running Mailman, first check the
     "Common Problems" section, below.  If your problem is not covered
-    there, then check for a log entry from Mailman in your syslog.
+    there, check the file FAQ and FAQ.LINUX.  Then check for a log
+    entry from Mailman in your syslog.
     
     Where syslog lives on your particular machine may vary.  It may be
     in /var/log/maillog.  It may also be in /var/log/syslog.  On many
