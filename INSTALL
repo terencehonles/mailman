@@ -152,7 +152,28 @@ if you want to keep your existing installation intact.
 
     - Run `make install'
 
-3. Final system set-up
+3. Check your installation
+
+    To check that your installation has all the correct permissions
+    and group ownerships, you should run the check_perms script:
+
+    - cd to $prefix
+
+    - Run bin/check_perms
+
+    If this reports no problems, then it's very likely that your
+    installation is set up correctly :)  If it reports problems, then
+    you can either fix them manually, re-run the installation, or use 
+    check_perms to fix the problems (probably the easiest solution):
+
+    - You need to become the user that did the installation (and that
+      owns all the files in $prefix), or root.
+
+    - Run bin/check_perms -f
+
+    - Repeat previous step until no more errors are reported!
+
+4. Final system set-up
 
     Congratulations!  You've installed the Mailman software.  To get
     everything running you need to hook Mailman up to both your Web
@@ -228,7 +249,7 @@ if you want to keep your existing installation intact.
       If you don't run sendmail, consult the documentation of your
       mail transport program for information on adding these aliases.
 
-4. Customize Mailman
+5. Customize Mailman
 
     You should do these steps using the account you installed Mailman
     under in section 2 above.
@@ -261,7 +282,7 @@ if you want to keep your existing installation intact.
       mailman site administrator the ability to adjust these things
       when necessary.
 
-5. Getting started
+6. Getting started
 
     - Create a list named `test'.  To do so, run the program
       $prefix/bin/newlist.  You will be prompted for the name of the
@@ -286,7 +307,7 @@ if you want to keep your existing installation intact.
       and set up your first list!
 
 
-6. Troubleshooting
+7. Troubleshooting
   
     If you encounter problems with running Mailman, first check the
     "Common Problems" section, below.  If your problem is not covered
@@ -303,7 +324,7 @@ if you want to keep your existing installation intact.
     syslog.  Also include information on your operating system and
     version of Python.
 
-7. Common Problems
+8. Common Problems
 
     Problem:  All Mailman web pages give a 404 File not found error.
 
