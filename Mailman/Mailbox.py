@@ -17,26 +17,16 @@
 
 "Extend mailbox.UnixMailbox."
 
-import string
-import re
-import errno
-import mailbox
+from mimelib.Generator import Generator
+from Mailman.pythonlib import mailbox
 
 
 
-class Mailbox(mailbox.UnixMailbox):
-    # a better regexp than the Python 1.5.2 default
-    _fromlinepattern = r'From \s*\S+\s+\w\w\w\s+\w\w\w\s+\d\d?\s+' \
-                       r'\d\d?:\d\d(:\d\d)?(\s+\S+)?\s+\d\d\d\d\s*$'
-    _regexp = re.compile(_fromlinepattern)
-
-    def _isrealfromline(self, line):
-        return self._regexp.match(line)
-
+class Mailbox(mailbox.PortableUnixMailbox):
     # msg should be an rfc822 message or a subclass.
     def AppendMessage(self, msg):
 	# Check the last character of the file and write a newline if it isn't
-	# a newline (but not at the beginning of an empty file.
+	# a newline (but not at the beginning of an empty file).
         try:
             self.fp.seek(-1, 2)
         except IOError, e:
@@ -46,15 +36,8 @@ class Mailbox(mailbox.UnixMailbox):
         else:
             if self.fp.read(1) <> '\n':
                 self.fp.write('\n')
-        # seek to the last char of the mailbox
+        # Seek to the last char of the mailbox
         self.fp.seek(1, 2)
-	self.fp.write(msg.unixfrom)
-	for line in msg.headers:
-	    self.fp.write(line)
-	if not msg.body or msg.body[0] <> '\n':
-	    self.fp.write('\n')
-        # Quote unprotected From_ lines appearing in the body
-        for line in string.split(msg.body, '\n'):
-            if line[:5] == 'From ' and self._isrealfromline(line):
-                self.fp.write('>')
-            self.fp.write(line + '\n')
+        # Create a Generator instance to write the message to the file
+        g = Generator(self.fp)
+        g.write(msg)
