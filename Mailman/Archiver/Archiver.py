@@ -28,6 +28,8 @@ archival.
 # system modules
 #
 import sys, os, string
+import errno
+from Mailman.Utils import reraise, mkdir
 
 #
 # package/project modules
@@ -37,7 +39,33 @@ from Mailman import Mailbox
 from Mailman import mm_cfg
 
 
+
+def makelink(old, new):
+    try:
+        os.symlink(old, new)
+    except os.error, e:
+        code, msg = e
+        if code <> errno.EEXIST:
+            reraise(e)
+
+def breaklink(link):
+    try:
+        os.unlink(link)
+    except os.error, e:
+        code, msg = e
+        if code <> errno.ENOENT:
+            reraise(e)
+
+
+
 class Archiver:
+    #
+    # Interface to Pipermail.  HyperArch.py uses this method to get the
+    # archive directory for the mailing list
+    #
+    def archive_dir(self):
+        return self.archive_directory
+
     def InitVars(self):
 	# Configurable
 	self.archive = 1
@@ -51,20 +79,50 @@ class Archiver:
 	# Though the archive file dirs are list-specific, they are not
 	# settable from the web interface.  If you REALLY want to redirect
 	# something to a different dir, you can set the member vars by
-	# hand, from the python interpreter!
+	# hand, from the Python interpreter!
+        #
+        # The archive file structure by default is:
+        #
+        # archives/
+        #     private/
+        #         listname.mbox/
+        #             listname
+        #         listname/
+        #             lots-of-pipermail-stuff
+        #     public/
+        #         listname.mbox@ -> ../private/listname.mbox
+        #         listname@ -> ../private/listname
+        #
+        # IOW, the mbox and pipermail archives are always stored in the
+        # private archive for the list.  This is safe because archives/private 
+        # is always set to o-rx.  Public archives have a symlink to get around 
+        # the private directory, pointing directly to the private/listname
+        # which has o+rx permissions.  Private archives do not have the
+        # symbolic links.
+
 	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
-	self.private_archive_file_dir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
-	self.archive_directory = os.path.join(mm_cfg.HTML_DIR,
-                                              'archives',
-                                              self._internal_name)
+	self.private_archive_file_dir = os.path.join(
+            mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
+            self._internal_name + '.mbox')
+	self.archive_directory = os.path.join(
+            mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
+            self._internal_name)
+        try:
+            mkdir(self.private_archive_file_dir, mode=02775)
+        except os.error, e:
+            code, msg = e
+            if code <> errno.EEXIST:
+                reraise(e)
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
-            return os.path.join(mm_cfg.PRIVATE_ARCHIVE_URL,
-                                self._internal_name + mm_cfg.PRIVATE_ARCHIVE_URL_EXT)
+            return os.path.join(
+                mm_cfg.PRIVATE_ARCHIVE_URL,
+                self._internal_name + '/')
         else:
-            return os.path.join(mm_cfg.PUBLIC_ARCHIVE_URL,
-                                self._internal_name + mm_cfg.PRIVATE_ARCHIVE_URL_EXT)
+            return os.path.join(
+                mm_cfg.PUBLIC_ARCHIVE_URL,
+                self._internal_name)
 
     def GetConfigInfo(self):
 	return [
@@ -83,43 +141,26 @@ class Archiver:
  	    ('archive_volume_frequency', mm_cfg.Radio, 
                ('Yearly', 'Monthly','Quarterly', 'Weekly', 'Daily'), 0,
  	     'How often should a new archive volume be started?'),
-
 	    ]
 
-    def UpdateArchive(self):
-	# This method is not being used, in favor of external archiver!
-	if not self.archive:
-	    return
-	archive_file_name = os.path.join(self._full_path, ARCHIVE_PENDING)
-	archive_dir = os.path.join(self.archive_directory, 'volume_%d' 
-				   % self.volume)
+    def ArchiveFileName(self):
+	"""The mbox name where messages are left for archive construction."""
+        return os.path.join(self.private_archive_file_dir,
+                            self._internal_name + '.mbox')
 
-	# Test to make sure there are posts to archive
-	archive_file = open(archive_file_name, 'r')
-	text = string.strip(archive_file.read())
-	archive_file.close()
-	if not text:
-	    return
-	Utils.MakeDirTree(archive_dir, 0755)
-	# Pipermail 0.0.2 always looks at sys.argv, and I wasn't into hacking
-	# it more than I had to, so here's a small hack to get around that,
-	# calling pipermail w/ the correct options.
-	real_argv = sys.argv
-	sys.argv = ['pipermail', '-d%s' % archive_dir, '-l%s' % 
-		    self._internal_name, '-m%s' % archive_file_name, 
-		    '-s%s' % os.path.join(archive_dir, "INDEX")]
-
-	import pipermail
-	sys.argv = real_argv
-	f = open(archive_file_name, 'w+')
-	f.truncate(0)
-	f.close()
+    def __archive_file(self, afn):
+	"""Open (creating, if necessary) the named archive file."""
+	ou = os.umask(002)
+	try:
+            return Mailbox.Mailbox(open(afn, "a+"))
+	finally:
+	    os.umask(ou)
 
     #
     # old ArchiveMail function, retained under a new name
     # for optional archiving to an mbox
     #
-    def ArchiveToMbox(self, post):
+    def __archive_to_mbox(self, post):
         """Retain a text copy of the message in an mbox file."""
         if self.clobber_date:
             import time
@@ -127,7 +168,7 @@ class Archiver:
             post.SetHeader('Date', time.ctime(time.time()))
         try:
             afn = self.ArchiveFileName()
-            mbox = self.ArchiveFile(afn)
+            mbox = self.__archive_file(afn)
             mbox.AppendMessage(post)
             mbox.fp.close()
         except IOError, msg:
@@ -148,7 +189,7 @@ class Archiver:
 	    return
         # archive to builtin html archiver
         if mm_cfg.ARCHIVE_TO_MBOX in [1, 2]:
-            self.ArchiveToMbox(msg)
+            self.__archive_to_mbox(msg)
             if mm_cfg.ARCHIVE_TO_MBOX == 1:
                 # Archive to mbox only.
                 os._exit(0)
@@ -170,27 +211,6 @@ class Archiver:
         f.close()
         os._exit(0)
 	
-
-    def ArchiveFileName(self):
-	"""The mbox name where messages are left for archive construction."""
-	if self.archive_private:
-	    return os.path.join(self.private_archive_file_dir,
-				self._internal_name)
-	else:
-	    return os.path.join(self.public_archive_file_dir,
-				self._internal_name)
-
-    def ArchiveFile(self, afn):
-	"""Open (creating, if necessary) the named archive file."""
-	ou = os.umask(002)
-	try:
-	    try:
-		return Mailbox.Mailbox(open(afn, "a+"))
-	    except IOError, msg:
-		raise IOError, msg
-	finally:
-	    os.umask(ou)
-
     #
     # called from MailList.MailList.Save()
     #
@@ -203,57 +223,16 @@ class Archiver:
         # the directory, it's pointless to try to
         # fix the perms, so we just return  -scott
         #
-        try:
-            st = os.stat(self.archive_directory)
-        except os.error, rest:
-	    import errno
-	    try:
-		val, msg = rest
-	    except ValueError:
-		self.LogMsg("error",
-                            "MailList.Save(): error getting archive"
-                            " mode for %s!: %s\n",
-                            self.real_name, str(rest))
-		return
-	    if val == errno.ENOENT: # no such file
-		ou = os.umask(0)
-		if self.archive_private:
-		    mode = 02770
-		else:
-		    mode = 02775
-		try:
-		    os.mkdir(self.archive_directory)
-		    os.chmod(self.archive_directory, mode)
-		finally:
-		    os.umask(ou)
-		    return
-	    else:
-		self.LogMsg("error",
-                            "CheckHTMLArchiveDir: error getting archive"
-                            " mode for %s!: %s\n",
-                            self.real_name, str(rest))
-		return
-        import stat
-        mode = st[stat.ST_MODE]
+        #
+        pubdir  = os.path.join(self.public_archive_file_dir,
+                               self._internal_name)
+        privdir = self.archive_directory
+        pubmbox = os.path.join(self.public_archive_file_dir,
+                               self._internal_name + '.mbox')
+        privmbox = self.archive_directory + '.mbox'
         if self.archive_private:
-            if mode != 02770:
-                try:
-                    ou = os.umask(0)
-                    os.chmod(self.archive_directory, 02770)
-                except os.error, rest:
-                    self.LogMsg("error",
-                                "CheckHTMLArchiveDir: error getting archive"
-                                " mode for %s!: %s\n",
-                                self.real_name, str(rest))                    
+            breaklink(pubdir)
+            breaklink(pubmbox)
         else:
-            if mode != 02775:
-                try:
-                    os.chmod(self.archive_directory, 02775)
-                except os.error, rest:
-                    self.LogMsg("error",
-                                "CheckHTMLArchiveDir: error getting archive"
-                                " mode for %s!: %s\n",
-                                self.real_name, str(rest))
-                    
-        
-
+            makelink(privdir, pubdir)
+            makelink(privmbox, pubmbox)
