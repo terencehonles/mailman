@@ -506,9 +506,18 @@ class MailCommandHandler:
         try:
             self.ProcessConfirmation(cookie)
         except Errors.MMBadConfirmation:
+            from math import floor
+            # Express in days, rounded to three places:
+            expiredays = floor((mm_cfg.PENDING_REQUEST_LIFE / (60 * 60 * 24.0))
+                               * 1000) / 1000
+            if floor(expiredays) == expiredays:
+                expiredays = int(expiredays)
             self.AddError("Invalid confirmation number!\n"
-                          "Please recheck the confirmation number and"
-                          " try again.")
+                          "Note that confirmation numbers expire %s days"
+                          " after initial request."
+                          "\nPlease check date and number and try again,"
+                          " from the start if necessary."
+                          % expiredays)
         except Errors.MMNeedApproval, admin_addr:
             self.AddToResponse("your request has been forwarded to the list "
                                "administrator for approval")
