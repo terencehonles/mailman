@@ -81,7 +81,11 @@ def main():
 def get_list():
     "Return list or bail out with error page."
 
-    list_info = Utils.GetPathPieces(os.environ['PATH_INFO'])
+    list_info = []
+    try:
+        list_info = Utils.GetPathPieces(os.environ['PATH_INFO'])
+    except KeyError:
+        pass
     if len(list_info) != 1:
         error_page("Invalid options to CGI script.")
         sys.exit(0)
