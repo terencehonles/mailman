@@ -158,6 +158,10 @@ class ListAdmin:
             assert rtype == SUBSCRIPTION
             status = self.__handlesubscription(data, value, comment)
         if status:
+            # BAW: Held message ids are linked to Pending cookies, allowing
+            # the user to cancel their post before the moderator has approved
+            # it.  We should probably remove the cookie associated with this
+            # id, but we have no way currently of correlating them. :(
             del self.__db[id]
 
     def HoldMessage(self, msg, reason, msgdata={}):
@@ -198,6 +202,7 @@ class ListAdmin:
         msgsubject = msg.get('subject', _('(no subject)'))
         data = time.time(), sender, msgsubject, reason, filename, msgdata
         self.__db[id] = (HELDMSG, data)
+        return id
 
     def __handlepost(self, record, value, comment, preserve, forward, addr):
         # For backwards compatibility with pre 2.0beta3
