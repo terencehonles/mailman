@@ -55,7 +55,6 @@ DEFAULT_HOST_NAME   = '@FQDN@'
 # DEFAULT_URL must end in a slash!
 DEFAULT_URL         = 'http://@URL@/mailman/'
 PUBLIC_ARCHIVE_URL  = '/pipermail'
-PRIVATE_ARCHIVE_URL = '/mailman/private'
 
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
