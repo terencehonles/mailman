@@ -77,4 +77,11 @@ internationalized versions of Mailman.
     <dd>Vizi Szilard heads up the Hungarian translation effort, with
     some help from Szabolcs Szigeti.
 
+    <p><dt><b>Chinese</b> Simplified (GB), and Big5</dt>
+    <dd><a href="mailto:max.yu@turbolinux.com.cn">Max Yu</a> heads up
+    the Simplified Chinese translation effort.  Michael Fang
+    contributed a Big5 mailman.po file, but I've had some trouble
+    converting it to a .mo file with msgfmt.  Assistance would be
+    greatly appreciated!
+
 </dl>
