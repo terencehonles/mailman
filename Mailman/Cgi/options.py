@@ -44,7 +44,7 @@ i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 def main():
-    doc = HeadlessDocument()
+    doc = Document()
     doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
@@ -80,7 +80,7 @@ def main():
         doc.AddItem(Header(2, _("Error")))
         doc.AddItem(Bold(_('%(listname)s: No such member %(user)s.')))
         doc.AddItem(mlist.GetMailmanFooter())
-        print doc.Format()
+        print doc.Format(bgcolor='#ffffff')
         return
 
     # Find the case preserved email address (the one the user subscribed with)
