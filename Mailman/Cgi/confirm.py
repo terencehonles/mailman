@@ -79,6 +79,16 @@ def main():
             bad_confirmation(doc, _('''Invalid confirmation string.  It is
             possible that you are attempting to confirm a request for an
             address that has already been unsubscribed.'''))
+        except Errors.MMNeedApproval:
+            title = _('Awaiting moderator approval')
+            doc.SetTitle(title)
+            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
+            doc.AddItem(_("""\
+            You have successfully confirmed your subscription request to the
+            mailing list %(listname)s, however final approval is required from
+            the list moderator before you will be subscribed.  Your request
+            has been forwarded to the list moderator, and you will be notified
+            of the moderator's decision."""))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         mlist.Save()
