@@ -21,6 +21,8 @@ import re
 import urlparse
 
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import Errors
 from Mailman.i18n import _
 
 CONTINUATION = ',\n\t'
@@ -96,19 +98,25 @@ def process(mlist, msg, msgdata):
             xreplyto = msg.get('reply-to')
             del msg['reply-to']
             msg['Reply-To'] = mlist.GetListEmail()
-        # Set Reply-To: an explicit address
+        # Set Reply-To: an explicit address, but only if reply_to_address is a
+        # valid email address.  BAW: this really should be validated on input.
         elif mlist.reply_goes_to_list == 2:
-            xreplyto = msg.get('reply-to')
-            del msg['reply-to']
-            msg['Reply-To'] = mlist.reply_to_address
+            try:
+                Utils.ValidateEmail(mlist.reply_to_address)
+            except Errors.EmailAddressError:
+                pass
+            else:
+                xreplyto = msg.get('reply-to')
+                del msg['reply-to']
+                msg['Reply-To'] = mlist.reply_to_address
         # Give the recipient some ability to un-munge things.
         if xreplyto:
             del msg['x-reply-to']
             msg['X-Reply-To'] = xreplyto
     #
-    # Add list-specific headers as defined in RFC 2369, but only if the
-    # message is being crafted for a specific list (e.g. not for the password
-    # reminders).
+    # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
+    # if the message is being crafted for a specific list (e.g. not for the
+    # password reminders).
     #
     # BAW: Some people really hate the List-* headers.  It seems that the free
     # version of Eudora (possibly on for some platforms) does not hide these
@@ -123,9 +131,6 @@ def process(mlist, msg, msgdata):
     requestaddr = mlist.GetRequestEmail()
     subfieldfmt = '<%s>, <mailto:%s?subject=%ssubscribe>'
     listinfo = mlist.GetScriptURL('listinfo', absolute=1)
-    #
-    # BAW: List-Id is not in the RFC, but it was in an earlier draft so we
-    # leave it in for historical reasons.
     headers = {
         'List-Id'         : listid,
         'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
