@@ -1,4 +1,4 @@
-<!-- $Revision: 1287 $ -->
+<!-- $Revision: 1499 $ -->
 <html>
 <head>
 <title><MM-Presentable-User> Configuration for <MM-List-Name></title>
@@ -16,6 +16,7 @@
 
 <b><MM-Presentable-User></b>'s subscription status,
 password, and options for the <MM-List-Name> mailing list.
+<MM-Case-Preserved-User>
 
 <MM-Disabled-Notice>
 
@@ -111,9 +112,10 @@ Turn this on if you want mail to not be delivered to you for a little while.<br>
 <tr><TD BGCOLOR="#dcdcdc">
 <strong> Set Digest Mode</strong> <br>
 If you turn digest mode on, you'll get posts bundled together once a
-day, instead singly when they're sent.<br>
+day, instead singly when they're sent.  If digest mode is changed from 
+on to off, the current digest will be sent to you.<br>
 <MM-Undigest-Radio-Button> Off
-<MM-Digest-Radio-Button> On <p>
+<MM-Digest-Radio-Button> On<br>
 </td></tr>
 <tr><TD BGCOLOR="#dcdcdc">
 <strong> Get MIME or Plain Text Digests?</strong> <br>
