@@ -23,13 +23,13 @@
 
 import sys
 import os, types, posix, string
-import mm_utils, maillist, htmlformat
+from Mailman import Utils, MailList, htmlformat
 
 print "Content-type: text/html"
 print
 
 path = os.environ['PATH_INFO']
-list_info = mm_utils.GetPathPieces(path)
+list_info = Utils.GetPathPieces(path)
 
 if len(list_info) < 1:
     print "<h2>Invalid options to CGI script.</h2>"
@@ -38,7 +38,7 @@ if len(list_info) < 1:
 list_name = string.lower(list_info[0])
 
 try:
-  list = maillist.MailList(list_name)
+  list = MailList.MailList(list_name)
 except:
   print "<h2>%s: No such list.</h2>" % list_name
   sys.exit(0)
