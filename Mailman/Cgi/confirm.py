@@ -16,6 +16,8 @@
 
 """Confirm a pending action via URL."""
 
+import signal
+
 from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import i18n
@@ -55,9 +57,14 @@ def main():
     i18n.set_language(mlist.preferred_language)
     doc.set_language(mlist.preferred_language)
 
+    # See the comment in admin.py about the need for the signal handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+
     # Now dig out the cookie
     mlist.Lock()
     try:
+        signal.signal(signal.SIGTERM, sigterm_handler)
         try:
             cookie = parts[1]
             data = mlist.ProcessConfirmation(cookie)
@@ -70,8 +77,8 @@ def main():
             please try to re-submit your subscription.'''))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format(bgcolor='#ffffff')
-    finally:
         mlist.Save()
+    finally:
         mlist.Unlock()
 
 

@@ -20,6 +20,7 @@ import os
 import types
 import cgi
 import errno
+import signal
 
 from mimelib.Parser import Parser
 from mimelib.MsgReader import MsgReader
@@ -78,8 +79,14 @@ def main():
     # should not need to be locked just to read the request database.  However
     # the request database asserts that the list is locked in order to load
     # it and it's not worth complicating that logic.
+    #
+    # Also, see the comment in admin.py about the need for the signal handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+
     mlist.Lock()
     try:
+        signal.signal(signal.SIGTERM, sigterm_handler)
         realname = mlist.real_name
         if not cgidata.keys():
             # If this is not a form submission (i.e. there are no keys in the
@@ -91,8 +98,8 @@ def main():
             process_form(mlist, doc, cgidata)
         # Now print the results and we're done
         show_requests(mlist, doc)
-    finally:
         mlist.Save()
+    finally:
         mlist.Unlock()
 
     print doc.Format(bgcolor='#ffffff')

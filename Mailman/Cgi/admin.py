@@ -24,6 +24,7 @@ import cgi
 import types
 import sha
 import urllib
+import signal
 from string import lowercase, digits
 
 from mimelib.address import unquote
@@ -121,7 +122,7 @@ def main():
     # The html page document
     doc = Document()
     doc.set_language(mlist.preferred_language)
-    # Now we're ready to do normal form processing.  For this, though we must
+    # Now we're ready to do normal form processing.  For this though, we must
     # lock the mailing list, and everything from here on out must be wrapped
     # in a try/except.
     #
@@ -130,8 +131,23 @@ def main():
     # or stale lock on the list.  Maybe we should have a configurable timeout
     # setting after which we'll just inform the user that the operation
     # couldn't be performed?
+    #
+    # Set things up so that we can clean up the list lock even if the user
+    # hits the browser's stop button.  Note that Apache under mod_cgi
+    # apparently can catch the SIGPIPE that results, and calls SIGTERM on the
+    # CGI process.  Python doesn't install a signal handler for SIGTERM, so
+    # that would cause us to summarily exit, leaving list locks laying around
+    # (and this behavior has been confirmed).  We can't just ignore SIGTERM
+    # because three seconds later Apache will SIGKILL us, giving us no chance
+    # to exit cleanly.  By installing this signal handler, we can catch the
+    # SIGTERM and do the right thing.  This may not work under other web
+    # servers, or even other Apache/cgi modules (mod_python, etc.).
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+
     mlist.Lock()
     try:
+        signal.signal(signal.SIGTERM, sigterm_handler)
         if cgidata.keys():
             # There are options to change
             change_options(mlist, category, cgidata, doc)
@@ -161,8 +177,12 @@ def main():
         # Glom up the results page and print it out
         show_results(mlist, doc, category, category_suffix, cgidata)
         print doc.Format(bgcolor='#ffffff')
-    finally:
         mlist.Save()
+    finally:
+        # Now be sure to unlock the list.  It's okay if we get a signal here
+        # because essentially, the signal handler will do the same thing.  And
+        # unlocking is conditional, so it's not an error if we unlock while
+        # we're already unlocked.
         mlist.Unlock()
 
 
