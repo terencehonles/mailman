@@ -938,6 +938,8 @@ REJECT = 2
 DISCARD = 3
 SUBSCRIBE = 4
 UNSUBSCRIBE = 5
+ACCEPT = 6
+HOLD = 7
 
 # Standard text field width
 TEXTFIELDWIDTH = 40
