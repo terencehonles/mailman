@@ -173,17 +173,18 @@ def main():
                 non-digest messages.  This is an incompatible state of
                 affairs.  You must turn on either digest delivery or
                 non-digest delivery or your mailing list will basically be
-                unusable.'''))
+                unusable.'''), tag=_('Warning: '))
 
         if not mlist.digestable and mlist.getDigestMemberKeys():
             doc.addError(
                 _('''You have digest members, but digests are turned
-                off. Those people will not receive mail.'''))
+                off. Those people will not receive mail.'''),
+                tag=_('Warning: '))
         if not mlist.nondigestable and mlist.getRegularMemberKeys():
             doc.addError(
                 _('''You have regular list members but non-digestified mail is
                 turned off.  They will receive mail until you fix this
-                problem.'''))
+                problem.'''), tag=_('Warning: '))
         # Glom up the results page and print it out
         show_results(mlist, doc, category, subcat, cgidata)
         print doc.Format()
@@ -1163,9 +1164,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             # No re-authentication necessary because the moderator's
             # password doesn't get you into these pages.
         else:
-            doc.addError(
-                _('Moderator passwords did not match'),
-                tag=_('Error: '))
+            doc.addError(_('Moderator passwords did not match'))
     # Handle changes to the list administator password
     new = cgidata.getvalue('newpw', '').strip()
     confirm = cgidata.getvalue('confirmpw', '').strip()
@@ -1175,9 +1174,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             # Set new cookie
             print mlist.MakeCookie(mm_cfg.AuthListAdmin)
         else:
-            doc.addError(
-                _('Administator passwords did not match'),
-                tag=_('Error: '))
+            doc.addError(_('Administator passwords did not match'))
     # Give the individual gui item a chance to process the form data
     categories = mlist.GetConfigCategories()
     label, gui = categories[category]
@@ -1280,7 +1277,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
         except VallueError:
             val = None
         if val not in (0, 1):
-            doc.addError(_('Bad moderation flag value'), tag=_('Error: '))
+            doc.addError(_('Bad moderation flag value'))
         else:
             for member in mlist.getMembers():
                 mlist.setMemberOption(member, mm_cfg.Moderate, val)
