@@ -88,14 +88,17 @@ class Archiver:
         # which has o+rx permissions.  Private archives do not have the
         # symbolic links.
         omask = os.umask(0)
+        listname = self.internal_name();
         try:
             try:
-		listname = self.internal_name();
                 os.mkdir(self.archive_dir()+'.mbox', 02775)
-                # We also create an empty pipermail archive directory
-                # (pipermail would create it, but in the meantime lists with
-                # no archives return errors when you browse the non existant
-                # archive dir).  -- Marc
+            except OSError, e:
+                if e.errno <> errno.EEXIST: raise
+                # We also create an empty pipermail archive directory into
+                # which we'll drop an empty index.html file into.  This is so
+                # that lists that have not yet received a posting have
+                # /something/ as their index.html, and don't just get a 404.
+            try:
                 os.mkdir(self.archive_dir(), 02775)
             except OSError, e:
                 if e.errno <> errno.EEXIST: raise
