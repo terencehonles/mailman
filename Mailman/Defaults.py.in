@@ -1277,6 +1277,7 @@ add_language('pt',   _('Portuguese'),          'iso-8859-1')
 add_language('pt_BR', _('Portuguese (Brazil)'), 'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
 add_language('sr',   _('Serbian'),             'utf-8')
+add_language('sl',   _('Slovenian'),           'iso-8859-2')
 add_language('sv',   _('Swedish'),             'iso-8859-1')
 add_language('uk',   _('Ukrainian'),           'utf-8')
 
