@@ -520,9 +520,20 @@ class T:
     # and create a series of Article objects.  Each article
     # object will then be archived.
     
-    def processUnixMailbox(self, input, articleClass = Article):
+    def processUnixMailbox(self, input, articleClass=Article,
+                           start=None, end=None):
 	mbox = ArchiverMailbox(input, self.maillist)
+        if start is None:
+            start = 0
         counter = 0
+        while counter < start:
+            try:
+                m = mbox.next()
+            except Errors.DiscardMessage:
+                continue
+            if not m:
+                return
+            counter += 1
 	while 1:
             try:
                 m = mbox.next()
@@ -530,12 +541,14 @@ class T:
                 continue
 	    if not m:
                 break
-            counter += 1
             msgid = m.get('message-id', 'n/a')
             self.message(_('#%(counter)05d %(msgid)s'))
 	    a = articleClass(m, self.sequence)
-	    self.sequence = self.sequence + 1
+	    self.sequence += 1
 	    self.add_article(a)
+            if end is not None and counter >= end:
+               break
+            counter += 1
 
     def new_archive(self, archive, archivedir):
         self.archives.append(archive)
