@@ -35,27 +35,30 @@ class _Stop:
 Stop = _Stop()
 
 
+BOUNCE_PIPELINE = [
+    'DSN',
+    'Qmail',
+    'Postfix',
+    'Yahoo',
+    'Caiwireless',
+    'Exchange',
+    'Exim',
+    'Netscape',
+    'Compuserve',
+    'Microsoft',
+    'GroupWise',
+    'SMTP32',
+    'SimpleMatch',
+    'SimpleWarning',
+    'Yale',
+    'LLNL',
+    ]
+
+
 
 # msg must be a mimetools.Message
 def ScanMessages(mlist, msg):
-    pipeline = ['DSN',
-                'Qmail',
-                'Postfix',
-                'Yahoo',
-                'Caiwireless',
-                'Exchange',
-                'Exim',
-                'Netscape',
-                'Compuserve',
-                'Microsoft',
-                'GroupWise',
-                'SMTP32',
-                'SimpleMatch',
-                'SimpleWarning',
-                'Yale',
-                'LLNL',
-                ]
-    for module in pipeline:
+    for module in BOUNCE_PIPELINE:
         modname = 'Mailman.Bouncers.' + module
         __import__(modname)
         addrs = sys.modules[modname].process(msg)
