@@ -1120,3 +1120,18 @@ add_language('no',   _('Norwegian'),           'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
 
 del _                                   
+
+
+# Because the Japanese codecs are currently provided by a 3rd party package,
+# Pythons previous to 2.3 don't know about Japanese codec aliases.  Martin von
+# Loewis says these need to be added before any of the codecs are accessed.
+import encodings.aliases
+
+ja_aliases = {'euc_jp':'japanese.euc_jp',
+              'shift_jis':'japanese.shift_jis',
+              'windows-932':'japanese.ms932',
+              'cp932':'japanese.ms932',
+              'ms932':'japanese.ms932',
+              'iso_2022_jp':'japanese.iso_2022_jp',
+              }
+encodings.aliases.aliases.update(ja_aliases)
