@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -84,11 +84,24 @@ def process(mlist, msg, msgdata):
 
 def decorate(mlist, template, what, extradict={}):
     # `what' is just a descriptive phrase
-    d = SafeDict(mlist.__dict__)
-    # Certain attributes are sensitive
-    del d['password']
-    del d['passwords']
-    d['cgiext'] = mm_cfg.CGIEXT
+    #
+    # BAW: We've found too many situations where Python can be fooled into
+    # interpolating too much revealing data into a format string.  For
+    # example, a footer of "% silly %(real_name)s" would give a header
+    # containing all list attributes.  While we've previously removed such
+    # really bad ones like `password' and `passwords', it's much better to
+    # provide a whitelist of known good attributes, then to try to remove a
+    # blacklist of known bad ones.
+    d = SafeDict({'real_name'     : mlist.real_name,
+                  'list_name'     : mlist.internal_name(),
+                  # For backwards compatibility
+                  '_internal_name': mlist.internal_name(),
+                  'host_name'     : mlist.host_name,
+                  'web_page_url'  : mlist.web_page_url,
+                  'description'   : mlist.description,
+                  'info'          : mlist.info,
+                  'cgiext'        : mm_cfg.CGIEXT,
+                  })
     d.update(extradict)
     # Interpolate into the template
     try:
