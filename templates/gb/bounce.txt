@@ -1,9 +1,3 @@
-此 MIME 格式的信息可以纯文本格式读取
-
---%(boundary)s
-
-Content-type: text/plain; 
-
 这是一封 Mailman 电子邮件列表退信通知 :
 
     List(列表):       %(listname)s

@@ -1,9 +1,3 @@
-此 MIME 格式的訊息可以純文字格式讀取
-
---%(boundary)s
-
-Content-type: text/plain; 
-
 這是一封 Mailman 電子論壇退信通知 :
 
     List(論壇):       %(listname)s

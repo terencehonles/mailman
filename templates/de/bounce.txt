@@ -1,9 +1,3 @@
-Diese MIME Nachricht sollte als normaler Text lesbar sein.
-
---%(boundary)s
-
-Content-type: text/plain; charset=us-ascii
-
 This is a Mailman mailing list bounce action notice:
 
     Liste:      %(listname)s
