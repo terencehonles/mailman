@@ -21,7 +21,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 741 $"
+__version__ = "$Revision: 742 $"
 
 import sys
 import os, cgi, string, crypt, types, time
@@ -112,10 +112,9 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
     if os.environ.has_key('HTTP_COOKIE'):
         c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
         if c.has_key(list_name + "-admin"):
-	    try:
-               inp = base64.decodestring(string.replace(
+            inp = base64.decodestring(string.replace(
 	              c[list_name + "-admin"].value, "@", "\n"))
-               check = md5.new(SECRET+list_name+SECRET).digest()
+            check = md5.new(SECRET+list_name+SECRET).digest()
             if inp == check:
                 return 1
             else:
