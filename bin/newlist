@@ -137,8 +137,8 @@ def main(argv):
             'newlist.txt',
             {'listname'    : listname,
              'password'    : list_pw, 
-             'admin_url'   : mlist.GetAbsoluteScriptURL('admin'), 
-             'listinfo_url': mlist.GetAbsoluteScriptURL('listinfo'),
+             'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
+             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
              'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
              'hostname'    : mlist.host_name,
              })

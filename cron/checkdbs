@@ -46,7 +46,7 @@ def main():
                     'checkdbs.txt',
                     {'count'    : count,
                      'host_name': mlist.host_name,
-                     'adminDB'  : mlist.GetAbsoluteScriptURL('admindb'),
+                     'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
                      'real_name': mlist.real_name,
                      })
                 text = text + '\n' + pending_requests(mlist)
