@@ -148,7 +148,7 @@ def isAuthenticated(list_name):
     try:
 	listobj.ConfirmUserPassword( username, password)
     except (Errors.MMBadUserError, Errors.MMBadPasswordError): 
-	return 1
+	return 0
 
     import base64, md5
     token = md5.new(SECRET + list_name + SECRET).digest()
