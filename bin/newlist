@@ -18,15 +18,15 @@
 
 """Create a new, unpopulated mailing list.
 
-Usage: %(PROGRAM)s [options] listname listadmin-addr admin-password
+Usage: %(PROGRAM)s [options] [listname [listadmin-addr [admin-password]]]
 
 Options:
 
     -q
     --quiet
         Normally the administrator is notified by email (after a prompt) that
-        their list has been created.  This option suppresses that
-        notification and the prompting.
+        their list has been created.  This option suppresses the prompt and
+        notification.
 
     -h/--help
         Print this help text and exit.
@@ -34,7 +34,34 @@ Options:
 You can specify as many of the arguments as you want on the command line:
 you will be prompted for the missing ones.
 
-Note that listnames are forced to lowercase."""
+Every Mailman list has two parameters which define the default host name for
+outgoing email, and the default URL for all web interfaces.  When you
+configured Mailman, certain defaults were calculated, but if you are running
+multiple virtual Mailman sites, then the defaults may not be appropriate for
+the list you are creating.
+
+You can specify the domain to create your new list in by spelling the listname
+like so:
+
+    mylist@mydomain.com
+
+In this case, mydomain.com will be used both for the email domain and for the
+base URL.  If those differ (e.g. because mail should be sent to
+mylist@mydomain.com, but the URL should be http://www.mydomain.com), then
+spell the list name like so
+
+    mylist@mydomain.com:www.mydomain.com
+
+Specifically, the list's "host_name" attribute will be set to mydomain.com and
+the list's "web_page_url" attribute will be set to
+http://www.mydomain.com/mailman.
+
+If you spell the list name as just `mylist', "host_name" will be taken from
+DEFAULT_HOST_NAME and "web_page_url" will be taken from DEFAULT_URL (as
+defined in your Defaults.py file or overridden by settings in mm_cfg.py).
+
+Note that listnames are forced to lowercase.
+"""
 
 import sys
 import os
@@ -82,8 +109,15 @@ def main():
 	listname = raw_input(_('Enter the name of the list: '))
     listname = listname.lower()
 
+    host_name = None
+    web_page_url = None
     if '@' in listname:
-        usage(1, _('List name must not include "@": %(listname)s'))
+        listname, domain = listname.split('@', 1)
+        if ':' in domain:
+            host_name, urlhost = domain.split(':', 1)
+        else:
+            host_name = urlhost = domain
+        web_page_url = 'http://%s/mailman/' % urlhost
 
     if Utils.list_exists(listname):
         usage(1, _('List already exists: %(listname)s'))
@@ -120,6 +154,12 @@ def main():
         except Errors.MMListAlreadyExistsError:
             usage(1, _('List already exists: %(listname)s'))
 
+        # Assign domain-specific attributes
+        if host_name:
+            mlist.host_name = host_name
+            mlist.web_page_url = web_page_url
+            mlist.Save()
+
         # Now do the MTA-specific list creation tasks
         if mm_cfg.MTA:
             modname = 'Mailman.MTA.' + mm_cfg.MTA
@@ -128,7 +168,8 @@ def main():
 
         # And send the notice to the list owner
         if not quiet:
-            print _('Notifying %(listname)s owner...')
+            print _('Hit enter to notify %(listname)s owner...'),
+            sys.stdin.readline()
             text = Utils.maketext(
                 'newlist.txt',
                 {'listname'    : listname,
