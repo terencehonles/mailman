@@ -203,6 +203,9 @@ def process_form(mlist, doc, cgidata, lang):
                            "confirm your subscription."))
 
         except Errors.MMNeedApproval, x:
+            # We need to interpolate into x
+            realname = mlist.real_name
+            x = _(x)
             results += (_("Subscription was <em>deferred</em> "
                           "because %(x)s.  Your request has been "
                           "forwarded to the list administrator.  "
