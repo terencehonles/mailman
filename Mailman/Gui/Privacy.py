@@ -73,9 +73,6 @@ class Privacy:
                            mischievous (or malicious) people from creating
                            subscriptions for others without their consent.'''))
 
-        # some helpful values
-        adminurl = self.GetScriptURL('admin')
-        
         return [
             _("""List access policies, including anti-spam measures, covering
             members and outsiders.  See also the <a
