@@ -92,6 +92,8 @@ class BounceTest(unittest.TestCase):
                                    'yuli_kolesnikov@yahoo.com']),
         ('Yahoo', 'yahoo_09.txt', ['hankel_o_fung@yahoo.com',
                                    'ultravirus2001@yahoo.com']),
+        # sina.com appears to use their own weird SINAEMAIL MTA
+        ('Sina', 'sina_01.txt', ['boboman76@sina.com', 'alan_t18@sina.com']),
         # No address can be detected in these...
         # dumbass_01.txt - We love Microsoft. :(
         # Done
