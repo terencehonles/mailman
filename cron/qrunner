@@ -138,8 +138,8 @@ def start_runner(qrclass, slice, count):
         return pid
     else:
         # child
-        qrunner = qrclass(slice, count).run()
         try:
+            qrunner = qrclass(slice, count).run()
             syslog('qrunner', '%s qrunner exiting' % qrclass)
         except KeyboardInterrupt:
             # Due to race conditions, the subproc could get the SIGINT inside
