@@ -1,4 +1,4 @@
-For the most part, mailling lists upgrade themselves with the new
+For the most part, mailing lists upgrade themselves with the new
 versions.  However, there are some changes in the filesystem that need
 to be taken care of separately.  running "make update" takes care of
 this for you.  If you still have problems upgrading after running
