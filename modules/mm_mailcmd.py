@@ -99,7 +99,7 @@ class MailCommandHandler:
 	try:
 	    self.ChangeUserPassword(mail.GetSender(),
 				    args[0], args[1], args[1])
-	    self.AddToResponse('Succeded.')
+	    self.AddToResponse('Succeeded.')
 	except mm_err.MMListNotReady:
 	    self.AddError("List is not functional.")
 	except mm_err.MMNotAMemberError:
@@ -309,8 +309,8 @@ class MailCommandHandler:
 	    addr = mail.GetSender()
 	try:
 	    self.ConfirmUserPassword(addr, args[0])
-	    self.DeleteMember(addr)
-	    self.AddToResponse("Succeded.")
+	    self.DeleteMember(addr, "mailcmd")
+	    self.AddToResponse("Succeeded.")
 	except mm_err.MMListNotReady:
 	    self.AddError("List is not functional.")
 	except mm_err.MMNoSuchUserError:
@@ -365,7 +365,7 @@ class MailCommandHandler:
 
 	try:
 	    self.AddMember(mail.GetSender(), password, digest)
-	    self.AddToResponse("Succeded.")
+	    self.AddToResponse("Succeeded.")
 	except mm_err.MMBadEmailError:
 	    self.AddError("Email address '%s' not accepted by Mailman." % 
 			  mail.GetSender())
