@@ -1,0 +1,43 @@
+Deze commando's kunnen gebruikt worden in je tekst:<br>
+&nbsp;<table border="0" cellspacing="1" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1">
+  <tr>
+    <td width="17%"><b><code>real_name</code></b></td>
+    <td width="83%">De lijstnaam met hoofdletters er in. </td>
+  </tr>
+  <tr>
+    <td width="17%"><b><code>list_name</code></b></td>
+    <td width="83%">De lijstnaam zonder hoofdletters er in, gepresenteerd als 
+    URL. </td>
+  </tr>
+  <tr>
+    <td width="17%"><b><code>host_name</code></b></td>
+    <td width="83%">De hostnaam van de server waar deze mailing lijst op draait..
+    </td>
+  </tr>
+  <tr>
+    <td width="17%"><b><code>web_page_url</code></b></td>
+    <td width="83%">Basis URL van Mailman. Hier kan aan toegevoegd worden: <em><code>listinfo/%(internal_name)s</code></em> 
+    om naar de lijst informatie pagina te gaan.. </td>
+  </tr>
+  <tr>
+    <td width="17%"><b><code>description</code></b></td>
+    <td width="83%">Dit laat de korte omschrijving zien van de mailing lijst..
+    </td>
+  </tr>
+  <tr>
+    <td width="17%"><b><code>info</code></b></td>
+    <td width="83%">De volledige omschrijving van de mailing lijst.. </td>
+  </tr>
+  <tr>
+    <td width="17%"><b><code>cgiext</code></b></td>
+    <td width="83%">Geeft weer de extentie die is toegevoegd aan CGI scripts..
+    </td>
+  </tr>
+</table>
+&nbsp;<p>Om het commando te laten werken voeg je er voor : <b>%(</b> en er na <b>
+)s</b> .</p>
+<p>Een voorbeeld van een voetnoot:</p>
+<p><b>---------------------------<br>
+Mailing lijst: %(real_name)s<br>
+Lijst informatie: %(web_page_url)slistinfo/%(internal_name)s</b></p>
+<p>&nbsp;</p>
