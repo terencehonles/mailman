@@ -1,4 +1,4 @@
-Your message entitled:
+Your message entitled
 
     %(subject)s
 
