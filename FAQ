@@ -83,6 +83,18 @@ FREQUENTLY ASKED QUESTIONS
       buglet; the archive link doesn't work until at least one message 
       has been posted.
 
+6. Okay, the archive link works, but I can't access the public
+   archives.
+
+      If you are using Apache, you must make sure that FollowSymLinks
+      is enabled for the path to the public archives.  Note that the
+      actual archives always reside in the private tree, and only when 
+      archives are public, is the symlink followed. See this archive
+      message for more details:
+
+      http://www.python.org/pipermail/mailman-users/1998-November/000173.html
+
+
 
 Local Variables:
 mode: text
