@@ -129,14 +129,14 @@ class Message(email.Message.Message):
                 # get_unixfrom() returns None if there's no envelope
                 fieldval = self.get_unixfrom() or ''
                 try:
-                    pairs.append(fieldval.split()[1])
+                    pairs.append(('', fieldval.split()[1]))
                 except IndexError:
                     # Ignore badly formatted unixfroms
                     pass
             else:
-                fieldval = self[h]
-                if fieldval:
-                    pairs.extend(email.Utils.getaddresses([fieldval]))
+                fieldvals = self.get_all(h)
+                if fieldvals:
+                    pairs.extend(email.Utils.getaddresses(fieldvals))
         authors = []
         for pair in pairs:
             address = pair[1]
