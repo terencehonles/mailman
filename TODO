@@ -53,8 +53,7 @@ The Mailman TODO list
   removing, or overriding those in the original message (sometimes
   very useful, but could be dangerous!)
 - member management page should display case-preserved email addresses 
-  (but still sort case-insensitively).  Also, addresses should be
-  links to member options page.
+  (but still sort case-insensitively).
   
 
 *List Member UI
