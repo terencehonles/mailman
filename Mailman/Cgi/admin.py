@@ -1305,14 +1305,18 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 except Errors.MMNoSuchUserError:
                     errors.append((user, _('Not subscribed')))
                 continue
+            if not mlist.isMember(user):
+                doc.addError(_('Ignoring changes to deleted member: %(user)s'),
+                             tag=_('Warning: '))
+                continue
             value = cgidata.has_key('%s_digest' % user)
             try:
                 mlist.setMemberOption(user, mm_cfg.Digests, value)
-            except (Errors.NotAMemberError,
-                    Errors.AlreadyReceivingDigests,
+            except (Errors.AlreadyReceivingDigests,
                     Errors.AlreadyReceivingRegularDeliveries,
                     Errors.CantDigestError,
                     Errors.MustDigestError):
+                # BAW: Hmm...
                 pass
 
             newname = cgidata.getvalue(user+'_realname', '')
