@@ -35,7 +35,8 @@ import re, cgi, urllib, string
 import time, pickle, os, posixfile
 import HyperDatabase
 import pipermail
-import mm_cfg
+import Mailman.mm_cfg
+mm_cfg = Mailman.mm_cfg
 
 
 def html_quote(s):

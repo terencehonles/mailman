@@ -24,12 +24,24 @@ archival.
 """
 
 
+#
+# system modules
+#
 import sys, os, string
-import Utils
-import Mailbox
-import mm_cfg
-import sys
 
+#
+# package/project modules
+#
+import Mailman.Utils
+import Mailman.Mailbox
+import Mailman.mm_cfg
+
+#
+# assignments to make them local
+#
+Utils = Mailman.Utils
+Mailbox = Mailman.Mailbox
+mm_cfg = Mailman.mm_cfg
 
 class Archiver:
     def InitVars(self):
