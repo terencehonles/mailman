@@ -121,14 +121,50 @@ def main():
     #                                                 mm_cfg.MAILMAN_OWNER))
 
         PrintResults("You have been unsubscribed.<p>")
+
+
     elif form.has_key("emailpw"):
             try:
                 list.MailUserPassword(user)
                 PrintResults("A reminder of your password "
                              "has been emailed to you.<p>")
             except Errors.MMBadUserError:
-                PrintResults("Your password entry has not been found.  The list "
-                             "manager is being notified.<p>")
+                PrintResults("Your password entry has not been found.  The"
+                             "  list administrator is being notified.<p>")
+
+
+    elif form.has_key("othersubs"):
+        if not form.has_key('othersubspw'):
+            PrintResults("You must specify your password.")
+        else:
+            try:
+                list.ConfirmUserPassword(user, form['othersubspw'].value)
+            except Errors.MMListNotReady:
+                PrintResults("The list is currently not functional.")
+            except Errors.MMNotAMemberError:
+                PrintResults("You seem to no longer be a list member.")
+            except Errors.MMBadPasswordError:
+                PrintResults("Incorrect password.")
+            except:
+                PrintResults('''An unknown error occured.  <p>
+Please send mail to <a href=%s>%s</a> explaining 
+exactly what happened to provoke this error.<p>'''
+                             % (mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER))
+
+            doc.AddItem(htmlformat.Header(2,
+                                          "List Subscriptions for %s on %s"
+                                          % (user, list.host_name)))
+            def optionslinks(l, user=user):
+                if l.IsMember(user):
+                    link = htmlformat.Link(l.GetAbsoluteOptionsURL(user),
+                                           l.real_name)
+                    return link
+            all_links = filter(None, Utils.map_maillists(optionslinks))
+            items = htmlformat.UnorderedList()
+            for i in all_links:
+                items.AddItem(i)
+            doc.AddItem(items)
+            print doc.Format(bgcolor="#ffffff")
 
     elif form.has_key("changepw"):
         if (form.has_key('opw')
@@ -140,7 +176,7 @@ def main():
                                         form['newpw'].value,
                                         form['confpw'].value)
             except Errors.MMListNotReady:
-                PrintResults("The list is currently not funcitonal.")
+                PrintResults("The list is currently not functional.")
             except Errors.MMNotAMemberError:
                 PrintResults("You seem to no longer be a list member.")
             except Errors.MMBadPasswordError:
@@ -155,7 +191,7 @@ exactly what happened to provoke this error.<p>'''
 
             PrintResults("Your password has been changed.")
         else:
-            PrintResults("You must supply your old password,"
+            PrintResults("You must specify your old password,"
                          " and your new password twice.")
 
     else:
