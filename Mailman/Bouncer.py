@@ -216,7 +216,7 @@ class Bouncer:
                    {MemberAdaptor.BYBOUNCE: 'BYBOUNCE',
                     MemberAdaptor.BYUSER: 'BYUSER',
                     MemberAdaptor.BYADMIN: 'BYADMIN',
-                    MemberAdaptor.BYUNKNOWN: 'BYUNKNOWN'}.get(
+                    MemberAdaptor.UNKNOWN: 'UNKNOWN'}.get(
                 reason, 'invalid value'))
             return
         # Send the next notification
