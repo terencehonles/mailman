@@ -476,7 +476,12 @@ def maketext(templatefile, dict=None, raw=0, lang=None):
         fp = open(file)
     template = fp.read()
     fp.close()
-    text = template % SafeDict(dict)
+    from Mailman.Logging.Syslog import syslog
+    try:
+        text = template % SafeDict(dict)
+    except TypeError:
+        # The template is really screwed up
+        text = template
     if raw:
         return text
     return wrap(text)
@@ -603,7 +608,5 @@ def GetLanguageDescr(lang):
     return mm_cfg.LC_DESCRIPTIONS[lang][0]
 
 
-def GetCharSet():
-    # BAW: Hmm...
-    lang = os.environ['LANG']
+def GetCharSet(lang):
     return mm_cfg.LC_DESCRIPTIONS[lang][1]
