@@ -116,7 +116,7 @@ def checkarchivedbs():
         mode = statmode(dbdir)
         if mode & S_IRWXO:
             STATE.ERRORS = STATE.ERRORS + 1
-            print dbdir, 'must be other 000'
+            print dbdir, 'must be other 000',
             if STATE.FIX:
                 print '(fixing)'
                 os.chmod(dbdir, mode & ~S_IRWXO)
