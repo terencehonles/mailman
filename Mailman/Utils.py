@@ -590,11 +590,6 @@ def reap(kids, func=None, once=0):
             break
 
 
-def GetDirectories(path):
-    return [f for f in os.listdir(path)
-            if os.path.isdir(os.path.join(path, f))]
-
-
 def GetLanguageDescr(lang):
     return mm_cfg.LC_DESCRIPTIONS[lang][0]
 
