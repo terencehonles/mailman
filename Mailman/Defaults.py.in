@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -658,7 +658,7 @@ DEFAULT_ADMIN_IMMED_NOTIFY = 1
 DEFAULT_ADMIN_NOTIFY_MCHANGES = 0
 
 # Should list members, by default, have their posts be moderated?
-DEFAULT_DEFAULT_MEMBER_MODERATION = 0
+DEFAULT_DEFAULT_MEMBER_MODERATION = 1
 
 # Should non-member posts which are auto-discarded also be forwarded to the
 # moderators?
