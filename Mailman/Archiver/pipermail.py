@@ -21,12 +21,9 @@ __version__ = '0.05 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
-
-class FastUnixMailbox(mailbox.UnixMailbox):
-    _rx_fromline = re.compile(mailbox.UnixMailbox._fromlinepattern)
+# Use our optimized version, which will probably be included in Python 2.0
+from Mailman.Mailbox import Mailbox
 
-    def _isrealfromline(self, line):
-        return FastUnixMailbox._rx_fromline.match(line)
 
 
 msgid_pat = re.compile(r'(<.*>)')
@@ -507,7 +504,7 @@ class T:
     # object will then be archived.
     
     def processUnixMailbox(self, input, articleClass = Article):
-	mbox = FastUnixMailbox(input)
+	mbox = Mailbox(input)
 	while 1:
 	    m = mbox.next()
 	    if not m:
