@@ -459,6 +459,7 @@ QRUNNER_MAX_MESSAGES = 300
 PYTHON  	= '@PYTHON@'
 PREFIX  	= '@prefix@'
 EXEC_PREFIX	= '@exec_prefix@'
+VAR_PREFIX	= '@VAR_PREFIX@'
 
 # Work around a bogus autoconf 2.12 bug
 if EXEC_PREFIX == '${prefix}':
@@ -466,6 +467,10 @@ if EXEC_PREFIX == '${prefix}':
 
 # CGI extension, change using configure script
 CGIEXT = '@CGIEXT@'
+
+# Group id that group-owns the Mailman installation
+MAILMAN_UID = @MAILMAN_UID@
+MAILMAN_GID = @MAILMAN_GID@
 
 # Enumeration for types of configurable variables in Mailman.
 Toggle     = 1
@@ -498,19 +503,19 @@ DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
 
 # Useful directories
-LIST_DATA_DIR	= os.path.join(PREFIX, 'lists')
+LIST_DATA_DIR	= os.path.join(VAR_PREFIX, 'lists')
 HTML_DIR	= os.path.join(PREFIX, 'public_html')
 CGI_DIR 	= os.path.join(EXEC_PREFIX, 'cgi-bin')
-LOG_DIR 	= os.path.join(PREFIX, 'logs')
-LOCK_DIR	= os.path.join(PREFIX, 'locks')
-DATA_DIR	= os.path.join(PREFIX, 'data')
-QUEUE_DIR       = os.path.join(PREFIX, 'qfiles')
-SPAM_DIR        = os.path.join(PREFIX, 'spam')
+LOG_DIR 	= os.path.join(VAR_PREFIX, 'logs')
+LOCK_DIR	= os.path.join(VAR_PREFIX, 'locks')
+DATA_DIR	= os.path.join(VAR_PREFIX, 'data')
+QUEUE_DIR       = os.path.join(VAR_PREFIX, 'qfiles')
+SPAM_DIR        = os.path.join(VAR_PREFIX, 'spam')
 WRAPPER_DIR	= os.path.join(EXEC_PREFIX, 'mail')
 SCRIPTS_DIR	= os.path.join(PREFIX, 'scripts')
 TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
-PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(PREFIX, 'archives/public')
-PRIVATE_ARCHIVE_FILE_DIR = os.path.join(PREFIX, 'archives/private')
+PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(VAR_PREFIX, 'archives/public')
+PRIVATE_ARCHIVE_FILE_DIR = os.path.join(VAR_PREFIX, 'archives/private')
 
 # Import a bunch of version numbers
 from Version import *
