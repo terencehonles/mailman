@@ -1,3 +1,0 @@
-You can reenable their subscription by visiting the membership
-management page at %(admin_url)s/members and setting their options    
-accordingly
