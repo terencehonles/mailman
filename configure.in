@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1114 $)
+AC_REVISION($Revision: 1182 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -224,7 +224,7 @@ else:
     if mailmangid <> gid:
 	problems.append("Directory must be owned by group mailman: " + prefix)
     if (mode & S_ISGID) <> S_ISGID:
-	problems.append("Group set-id bit must be set for directory: " +prefix)
+	problems.append("Set-gid bit must be set for directory: " +prefix)
     perms = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
     if (mode & perms) <> perms:
 	problems.append("Permissions should be at least 0775: " + prefix)
