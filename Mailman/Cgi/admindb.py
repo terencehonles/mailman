@@ -26,6 +26,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
+from Mailman import Message
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
@@ -161,7 +162,7 @@ def PrintRequests(mlist, doc, form):
 	t.AddRow([
 	    Bold('Address'),
 	    Bold('Your Decision'),
-	    Bold('Reason for subscription refusal (optional)')
+	    Bold('If you refuse this subscription, please explain (optional)')
             ])
         for id in subpendings:
 	    PrintAddMemberRequest(mlist, id, t)
@@ -185,13 +186,14 @@ def PrintAddMemberRequest(mlist, id, table):
     time, addr, passwd, digest = mlist.GetRecord(id)
     table.AddRow([addr,
                   RadioButtonArray(id, ('Subscribe', 'Refuse')),
-                  TextBox('comment-%d' % id, size=30)
+                  TextBox('comment-%d' % id, size=60)
                   ])
 
 def PrintPostRequest(mlist, id, info, total, count, form):
     # For backwards compatibility with pre 2.0beta3
     if len(info) == 5:
         ptime, sender, subject, reason, filename = info
+        msgdata = {}
     else:
         ptime, sender, subject, reason, filename, msgdata = info
     form.AddItem('<hr>')
@@ -201,8 +203,9 @@ def PrintPostRequest(mlist, id, info, total, count, form):
     form.AddItem(Center(Header(2, msg)))
     try:
         fp = open(os.path.join(mm_cfg.DATA_DIR, filename))
-        text = fp.read(mm_cfg.ADMINDB_PAGE_TEXT_LIMIT)
+        msg = Message.Message(fp)
         fp.close()
+        text = msg.body[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
     except IOError, (code, msg):
         if code == ENOENT:
             form.AddItem('<em>Message with id #%d was lost.' % id)
@@ -215,30 +218,47 @@ def PrintPostRequest(mlist, id, info, total, count, form):
                 pass
             return
         raise
-    t = Table(cellspacing=0, cellpadding=0)
+    t = Table(cellspacing=0, cellpadding=0, width='100%')
     t.AddRow([Bold('From:'), sender])
-    t.AddRow([Bold('Reason:'), reason])
+    row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
+    t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold('Subject:'), subject])
+    t.AddCellInfo(row+1, col-1, align='right')
+    t.AddRow([Bold('Reason:'), reason])
+    t.AddCellInfo(row+2, col-1, align='right')
     t.AddRow([
         Bold('Action:'),
-        RadioButtonArray(id, ("Approve", "Reject", "Discard (eg, spam)"))
+        RadioButtonArray(id, ('Defer', 'Approve', 'Reject', 'Discard'),
+                         checked=0)
         ])
+    t.AddCellInfo(row+3, col-1, align='right')
+    t.AddRow(['&nbsp;',
+              CheckBox('preserve-%d' % id, 'on', 0).Format() +
+              '&nbsp;Preserve message for site administrator'
+              ])
+    t.AddRow(['&nbsp;',
+              CheckBox('forward-%d' % id, 'on', 0).Format() +
+              '&nbsp;Additionally, forward this message to: ' +
+              TextBox('forward-addr-%d' % id, size=47,
+                      value=mlist.GetAdminEmail()).Format()
+              ])
     t.AddRow([
-	Bold('If you reject this post, explain (optional):'),
-	TextArea('comment-%d' % id, rows=4, cols=60,
-                 text=("Please do *not* post administrative requests"
-                       " to the mailing list!  If you wish to subscribe,"
-                       " visit %s or send a 'help' message to the"
-                       " the request address, %s , for instructions"
-                       % (mlist.GetAbsoluteScriptURL('listinfo'),
-                          mlist.GetRequestEmail())))
+	Bold('If you reject this post,<br>please explain (optional):'),
+	TextArea('comment-%d' % id, rows=4, cols=80,
+                 text = Utils.wrap(msgdata.get('rejection-notice',
+                                               '[No explanation given]'),
+                                   column=80))
         ])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
-    t.AddCellInfo(row, col, colspan=3)
-    t.AddRow([Bold('Message Excerpt:'),
-              TextArea('fulltext-%d' % id, text, rows=10, cols=60)])
+    t.AddCellInfo(row, col-1, align='right')
+    t.AddRow([Bold('Message Headers:'),
+              TextArea('headers-%d' % id, string.join(msg.headers, ''),
+                       rows=10, cols=80)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
-    t.AddCellInfo(row, col, colspan=3)
+    t.AddCellInfo(row, col-1, align='right')
+    t.AddRow([Bold('Message Excerpt:'),
+              TextArea('fulltext-%d' % id, text, rows=10, cols=80)])
+    t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)
     form.AddItem('<p>')
 
@@ -255,15 +275,29 @@ def HandleRequests(mlist, doc, form):
             request_id = int(k)
         except ValueError:
             continue
-        # get the action comment/reason if present
+        # get the action comment and reasons if present
         commentkey = 'comment-%d' % request_id
+        preservekey = 'preserve-%d' % request_id
+        forwardkey = 'forward-%d' % request_id
+        forwardaddrkey = 'forward-addr-%d' % request_id
+        # defaults
         comment = '[No reason given]'
+        preserve = 0
+        forward = 0
+        forwardaddr = ''
         if form.has_key(commentkey):
             comment = form[commentkey].value
+        if form.has_key(preservekey):
+            preserve = form[preservekey].value
+        if form.has_key(forwardkey):
+            forward = form[forwardkey].value
+        if form.has_key(forwardaddrkey):
+            forwardaddr = form[forwardaddrkey].value
         #
         # handle the request id
         try:
-            mlist.HandleRequest(request_id, v, comment)
+            mlist.HandleRequest(request_id, v, comment,
+                                preserve, forward, forwardaddr)
         except (KeyError, Errors.LostHeldMessage):
             # that's okay, it just means someone else has already updated the
             # database, so just ignore this id
