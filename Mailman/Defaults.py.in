@@ -38,12 +38,25 @@ PUBLIC_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PUBLIC.ARCHIVE.URL/'
 PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
 
 DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
+
+# ARCHIVE_TO_MBOX
+# 0 - do not archive to mbox, use builtin mailman html archiving only
+# 1 - archive to mbox to use an external archiving mechanism only
+# 2 - archive to both mbox and builtin mailman html archiving -
+#     use this to make both external archiving mechanism work and
+#     mailman's builtin html archiving.  this could be useful if you
+#     have lists that use an external archiving mechanism, but want to
+#     integrate those archives with mailman's.
+#
+ARCHIVE_TO_MBOX = 2
+
 # 0 - yearly
 # 1 - month
 # 2 - quarter
 # 3 - week
 # 4 - day
 DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
+
 
 PUBLIC_ARCHIVE_URL_EXT = ''
 PRIVATE_ARCHIVE_URL_EXT = '/'

@@ -1,3 +1,4 @@
+
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -108,6 +109,30 @@ class Archiver:
 	f.truncate(0)
 	f.close()
 
+    #
+    # old ArchiveMail function, retained under a new name
+    # for those
+    # who still want to use an external archiver
+    #
+    def ArchiveToMbox(self, post):
+        """Retain a text copy of the message in an mbox file."""
+        if self.clobber_date:
+            import time
+            olddate = post.getheader('date')
+            post.SetHeader('Date', time.ctime(time.time()))
+        try:
+            afn = self.ArchiveFileName()
+            mbox = self.ArchiveFile(afn)
+            mbox.AppendMessage(post)
+            mbox.fp.close()
+        except IOError, msg:
+            self.LogMsg("error", ("Archive file access failure:\n"
+                                  "\t%s %s"
+                                  % (afn, `msg[1]`)))
+        if self.clobber_date:
+            # Resurrect original date setting.
+            post.SetHeader('Date', olddate)
+        self.Save ()
 
     #
     # archiving in real time  this is called from list.post(msg)
@@ -119,6 +144,17 @@ class Archiver:
 	#
 	if os.fork(): 
 	    return
+        #
+        # archive to mbox only
+        #
+        if mm_cfg.ARCHIVE_TO_MBOX == 1:
+            self.ArchiveToMbox(msg)
+            return
+        #
+        # archive to both mbox and built in html archiver
+        #
+        elif mm_cfg.ARCHIVE_TO_MBOX == 2:
+            self.ArchiveToMbox(msg)
         try:
             from cStringIO import StringIO
         except ImportError:
