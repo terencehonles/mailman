@@ -17,6 +17,7 @@
 """Cook a message's Subject header.
 """
 
+from __future__ import nested_scopes
 import re
 
 from email.Charset import Charset
@@ -25,7 +26,6 @@ import email.Utils
 
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import Errors
 from Mailman.i18n import _
 
 CONTINUATION = ',\n\t'
@@ -47,7 +47,7 @@ def process(mlist, msg, msgdata):
     # VirginRunner sets _fasttrack for internally crafted messages.
     fasttrack = msgdata.get('_fasttrack')
     if not msgdata.get('isdigest') and not fasttrack:
-        prefix_subject(mlist, msg, msgdata)
+        prefix_subject(mlist, msg)
     # Mark message so we know we've been here, but leave any existing
     # X-BeenThere's intact.
     msg['X-BeenThere'] = mlist.GetListEmail()
@@ -79,34 +79,36 @@ def process(mlist, msg, msgdata):
     # if we're adding a value, otherwise don't touch it.  (Should we collapse
     # in all cases?)
     if not fasttrack:
-        # Set Reply-To: header to point back to this list
         replyto = []
-        if mlist.reply_goes_to_list == 1:
-            replyto.append(('', mlist.GetListEmail()))
-        # Set Reply-To: an explicit address, but only if reply_to_address is a
-        # valid email address.  BAW: this really should be validated on input.
-        elif mlist.reply_goes_to_list == 2:
-            replyto.append(('', mlist.reply_to_address))
+        d = {}
+        def add((name, addr)):
+            lcaddr = addr.lower()
+            if d.has_key(lcaddr):
+                return
+            d[lcaddr] = (name, addr)
+            replyto.append((name, addr))
+        # List admin wants an explicit Reply-To: added
+        if mlist.reply_goes_to_list == 2:
+            add(email.Utils.parseaddr(mlist.reply_to_address))
         # If we're not first stripping existing Reply-To: then we need to add
         # the original Reply-To:'s to the list we're building up.  In both
         # cases we'll zap the existing field because RFC 2822 says max one is
         # allowed.
         if not mlist.first_strip_reply_to:
             orig = msg.get_all('reply-to', [])
-            replyto.extend(email.Utils.getaddresses(orig))
+            for pair in email.Utils.getaddresses(orig):
+                add(pair)
+        # Set Reply-To: header to point back to this list.  Add this last
+        # because some folks think that some MUAs make it easier to delete
+        # addresses from the right than from the left.
+        if mlist.reply_goes_to_list == 1:
+            add((mlist.description, mlist.GetListEmail()))
         del msg['reply-to']
-        # Get rid of duplicates.  BAW: does order matter?  It might, because
-        # not all MUAs respect Reply-To: as a list of addresses.  Also, note
-        # duplicates are based on case folded email address, which means in
-        # the case of dupes, the last one wins (will mostly affect the real
-        # name clobbering).
-        d = {}
-        for name, addr in replyto:
-            d[addr.lower()] = (name, addr)
-        if d:
-            # Don't add one back if there's nothing to add!
+        # Don't put Reply-To: back if there's nothing to add!
+        if replyto:
+            # Preserve order
             msg['Reply-To'] = COMMASPACE.join(
-                [email.Utils.formataddr(pair) for pair in d.values()])
+                [email.Utils.formataddr(pair) for pair in replyto])
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
     # if the message is being crafted for a specific list (e.g. not for the
     # password reminders).
@@ -160,7 +162,7 @@ def process(mlist, msg, msgdata):
 
 
 
-def prefix_subject(mlist, msg, msgdata):
+def prefix_subject(mlist, msg):
     # Add the subject prefix unless the message is a digest or is being fast
     # tracked (e.g. internally crafted, delivered to a single user such as the
     # list admin).
