@@ -30,6 +30,9 @@ char* python = PYTHON;
 /* bogus global variable used as a flag */
 int running_as_cgi = 0;
 
+/* extern to reference this global from one of the wrapper mains */
+extern const char* logident;
+
 
 
 /* Some older systems don't define strerror().  Provide a replacement that is
