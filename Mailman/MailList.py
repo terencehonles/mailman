@@ -314,6 +314,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # New sender-centric moderation (privacy) options
         self.default_member_moderation = \
                                        mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+        # This really ought to default to mm_cfg.HOLD, but that doesn't work
+        # with the current GUI description model.  So, 0==Hold, 1==Reject,
+        # 2==Discard
+        self.member_moderation_action = 0
+        self.member_moderation_notice = ''
         self.accept_these_nonmembers = []
         self.hold_these_nonmembers = []
         self.reject_these_nonmembers = []
