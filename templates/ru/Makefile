@@ -46,5 +46,5 @@ $(WEB)/status.html: status s2h.py
 	./s2h.py > $@
 
 install:
-	sudo install -d $(TARGET)
-	sudo install $(FILES) $(TARGET)
+	sudo -u mailman install -d $(TARGET)
+	sudo -u mailman install $(FILES) $(TARGET)
