@@ -237,5 +237,5 @@ class Archiver:
         else:
             # BAW: privdir or privmbox could be nonexistant.  We'd get an
             # OSError, ENOENT which should be caught and reported properly.
-         makelink(privdir, pubdir)
+            makelink(privdir, pubdir)
             makelink(privmbox, pubmbox)
