@@ -1,19 +1,19 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Remove the components of a mailing list with impunity - beware!
@@ -47,6 +47,12 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman.i18n import _
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 def usage(code, msg=''):
@@ -61,15 +67,17 @@ def usage(code, msg=''):
 
 
 
-def remove_it(listname, dir, msg):
-    if os.path.islink(dir):
+def remove_it(listname, filename, msg):
+    if os.path.islink(filename):
         print _('Removing %(msg)s')
-        os.unlink(dir)
-    elif os.path.isdir(dir):
+        os.unlink(filename)
+    elif os.path.isdir(filename):
         print _('Removing %(msg)s')
-        shutil.rmtree(dir)
+        shutil.rmtree(filename)
+    elif os.path.isfile(filename):
+        os.unlink(filename)
     else:
-        print _('%(listname)s %(msg)s not found as %(dir)s')
+        print _('%(listname)s %(msg)s not found as %(filename)s')
 
 
 
@@ -84,18 +92,18 @@ def main():
         usage(1)
     listname = args[0].lower().strip()
 
-    removeArchives = 0
+    removeArchives = False
     for opt, arg in opts:
         if opt in ('-a', '--archives'):
-            removeArchives = 1
+            removeArchives = True
         elif opt in ('-h', '--help'):
             usage(0)
 
     if not Utils.list_exists(listname):
-	if not removeArchives:
-	    usage(1, _('No such list (or list already deleted): %(listname)s'))
-	else:
-	    print _(
+        if not removeArchives:
+            usage(1, _('No such list (or list already deleted): %(listname)s'))
+        else:
+            print _(
                 'No such list: %(listname)s.  Removing its residual archives.')
 
     if not removeArchives:
@@ -104,27 +112,34 @@ def main():
 
     REMOVABLES = []
     if Utils.list_exists(listname):
-	mlist = MailList.MailList(listname, lock=0)
+        mlist = MailList.MailList(listname, lock=0)
 
-	# Do the MTA-specific list deletion tasks
-	if mm_cfg.MTA:
-	    modname = 'Mailman.MTA.' + mm_cfg.MTA
-	    __import__(modname)
-	    sys.modules[modname].remove(mlist)
+        # Do the MTA-specific list deletion tasks
+        if mm_cfg.MTA:
+            modname = 'Mailman.MTA.' + mm_cfg.MTA
+            __import__(modname)
+            sys.modules[modname].remove(mlist)
 
-	REMOVABLES = [
-	    (os.path.join('lists', listname), _('list info')),
+        REMOVABLES = [
+            (os.path.join('lists', listname), _('list info')),
             ]
+
+    # Remove any stale locks associated with the list
+    for filename in os.listdir(mm_cfg.LOCK_DIR):
+        fn_listname = filename.split('.')[0]
+        if fn_listname == listname:
+            REMOVABLES.append((os.path.join(mm_cfg.LOCK_DIR, filename),
+                               _('stale lock file')))
 
     if removeArchives:
         REMOVABLES.extend([
-	    (os.path.join('archives', 'private', listname),
+            (os.path.join('archives', 'private', listname),
              _('private archives')),
-	    (os.path.join('archives', 'private', listname + '.mbox'),
+            (os.path.join('archives', 'private', listname + '.mbox'),
              _('private archives')),
-	    (os.path.join('archives', 'public', listname),
+            (os.path.join('archives', 'public', listname),
              _('public archives')),
-	    (os.path.join('archives', 'public', listname + '.mbox'),
+            (os.path.join('archives', 'public', listname + '.mbox'),
              _('public archives')),
             ])
 
