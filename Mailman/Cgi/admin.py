@@ -190,9 +190,8 @@ def FormatAdminOverview(error=None):
                        % ((error and "right ") or ""))
                       +
                       " General list information can be found at ",
-                      Link("%slistinfo%s" % ('../' * Utils.GetNestingLevel(),
-                                             mm_cfg.CGIEXT),
-                           "the mailing list overview page"),
+                      Link(Utils.ScriptURL('listinfo'),
+                           'the mailing list overview page'),
                       "."
                       "<p>(Send questions and comments to ",
                      Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
@@ -209,9 +208,9 @@ def FormatAdminOverview(error=None):
         table.AddRow([Bold("List"), Bold("Description")])
         for l in advertised:
             table.AddRow(
-                [Link(l.GetRelativeScriptURL('admin'), 
-                      Bold(l.real_name)),
-                 l.description or Italic('[no description available]')])
+                [Link(l.GetScriptURL('admin'), Bold(l.real_name)),
+                 l.description or Italic('[no description available]'),
+                 ])
 
     doc.AddItem(table)
     doc.AddItem('<hr>')
@@ -235,14 +234,14 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
     linktable.AddRow([Center(Bold("Configuration Categories")),
                       Center(Bold("Other Administrative Activities"))])
 
-    adminurl = mlist.GetRelativeScriptURL('admin')
+    adminurl = mlist.GetScriptURL('admin')
 
     otherlinks = UnorderedList()
-    otherlinks.AddItem(Link(mlist.GetRelativeScriptURL('admindb'), 
+    otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
                             'Tend to pending administrative requests.'))
-    otherlinks.AddItem(Link(mlist.GetRelativeScriptURL('listinfo'),
+    otherlinks.AddItem(Link(mlist.GetScriptURL('listinfo'),
                             'Go to the general list information page.'))
-    otherlinks.AddItem(Link(mlist.GetRelativeScriptURL('edithtml'),
+    otherlinks.AddItem(Link(mlist.GetScriptURL('edithtml'),
                             'Edit the HTML for the public list pages.'))
     otherlinks.AddItem(Link('%s/logout' % adminurl,
                             # TBD: What I really want is a blank line :/
@@ -394,7 +393,7 @@ def FormatOptionHelp(doc, varref, mlist):
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, descr))
     doc.AddItem("%s<p>" % elaboration)
 
-    form = Form("%s/%s" % (mlist.GetRelativeScriptURL('admin'), category))
+    form = Form("%s/%s" % (mlist.GetScriptURL('admin'), category))
     valtab = Table(cellspacing=3, cellpadding=4)
     AddOptionsTableItem(valtab, item, category, mlist, detailsp=0)
     form.AddItem(valtab)
@@ -404,8 +403,7 @@ def FormatOptionHelp(doc, varref, mlist):
     doc.AddItem(Center(form))
     doc.AddItem("(<em><strong>Don't change the option here.</strong> "
                 'Use the ')
-    doc.AddItem(Link('%s/%s' % (mlist.GetRelativeScriptURL('admin'),
-                                category),
+    doc.AddItem(Link('%s/%s' % (mlist.GetScriptURL('admin'), category),
                      category + ' options page'))
     doc.AddItem(' instead.</em>)')
 
@@ -495,9 +493,8 @@ def GetItemGuiDescr(mlist, category, varname, descr, detailsp):
     if not detailsp:
         return '<div ALIGN="right">' + descr + '</div>'
     return Container('<div ALIGN="right">' + descr + ' ',
-                     Link(('../' * (Utils.GetNestingLevel()-1) +
-                           mlist.internal_name() +
-                           '/?VARHELP=' + category + '/' + varname),
+                     Link(mlist.GetScriptURL('admin')
+                              + '/?VARHELP=' + category + '/' + varname,
                           '(Details)'),
                      '</div>')
 
@@ -555,7 +552,7 @@ def FormatMembershipOptions(mlist, cgi_data):
         footer = "<p>"
     for member in all:
         mtext = '<a href="%s">%s</a>' % (
-            mlist.GetOptionsURL(member, obscure=1, relative=1),
+            mlist.GetOptionsURL(member, obscure=1),
             mlist.GetUserSubscribedAddress(member))
         cells = [mtext + "<input type=hidden name=user value=%s>" % (member),
                  Center(CheckBox(member + "_subscribed", "on", 1).Format())]
