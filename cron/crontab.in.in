@@ -14,3 +14,8 @@
 #
 # Every 1/2 hour flush the outgoing mail queue.
 12,42 * * * * @PYTHON@ @prefix@/cron/run_queue
+#
+# At 3:27am every night, regenerate the gzip'd archive file.  Only
+# turn this on if the internal archiver is used and
+# GZIP_ARCHIVE_TXT_FILES is false in mm_cfg.py
+27 3 * * * @PYTHON@ @prefix@/cron/nightly_gzip
