@@ -8,23 +8,53 @@ import sys, os
 
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist, mm_cfg, mm_message
+import maillist, mm_cfg, mm_message, mm_utils
 
-for name in maillist.list_names():
-    try:
+def main():
+
+    for name in mm_utils.list_names():
 	list = maillist.MailList(name)
-    except:
-	continue
-    count = list.RequestsPending()
-    if count:
-	list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 
-			              (count, list.real_name),
-			    recipient = list.GetAdminEmail(),
-			    text = '''
-	The %s mailing list has %d request(s) waiting 
-	for your consideration at:
+	list.Unlock()
+	count = list.RequestsPending()
+	if count:
+	    list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 
+				(count, list.real_name),
+				recipient = list.GetAdminEmail(),
+				text = '''
+The %s mailing list has %d request(s) waiting 
+for your consideration at:
+
 	%s
 	
-	Please attend to this at your earliest convenience.''' % 
-			 (list.real_name, count, list.GetScriptURL('admindb')))
-    list.Unlock()
+Please attend to this at your earliest convenience.  A reminder like this
+of the pending requests, if any, will be sent out daily.
+
+%s
+	''' % (list.real_name, count, list.GetScriptURL('admindb'),
+		 pending_requests(list)))
+
+def pending_requests(list):
+    import time, string
+    pending = []
+    requests = list.requests
+    # First the pending subscriptions:
+    if requests.has_key('add_member'):
+	pending.append("Pending subscriptions:")
+	for req in requests['add_member']:
+	    id, when, digested, who, pwd = req
+	    pending.append("\t%s %s" %
+			   (string.strip(who),
+			    time.ctime(when)))
+    if requests.has_key('post'):
+	if pending:
+	    pending.append("")
+	pending.append("Pending posts:")
+	for req in requests['post']:
+	    id, when, (who, msg), objection = req
+	    pending.append("\t%s %s:\n\t\t%s" % (string.strip(who),
+						 time.ctime(when),
+						 `string.strip(objection)`))
+    return string.join(pending, '\n')
+
+if __name__ == "__main__":
+    main()
