@@ -77,7 +77,8 @@ def process(mlist, msg, msgdata):
     # us exactly how big the MIME, rfc1153, or any other generated digest
     # message will be, but it's the most easily available metric to decide
     # whether the size threshold has been reached.
-    size = mboxfp.tell()
+    mboxfp.flush()
+    size = os.path.getsize(mboxfile)
     if size / 1024.0 >= mlist.digest_size_threshhold:
         # This is a bit of a kludge to get the mbox file moved to the digest
         # queue directory.
@@ -246,7 +247,7 @@ def send_i18n_digests(mlist, mboxfp):
         # headers according to rfc1153.
         keeper = {}
         for keep in KEEP:
-            keeper[keep] = msg.getall(keep)
+            keeper[keep] = msg.get_all(keep)
         # Now remove all unkempt headers :)
         for header in msg.keys():
             del msg[header]
