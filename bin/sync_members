@@ -41,6 +41,13 @@ Where `options' are:
         is.  With -w=yes or -w, the welcome message is sent.  With -w=no, no
         message is sent.
 
+    --goodby-msg[=<yes|no>]
+    -g[=<yes|no>]
+        Sets whether or not to send the goodbye message to removed members,
+        overriding whatever the list's `send_goodbye_msg' setting is.  With
+        -g=yes or -g, the goodbye message is sent.  With -g=no, no message is
+        sent.
+
     --digest[=<yes|no>]
     -d[=<yes|no>]
         Selects whether to make newly added members receive messages in
@@ -109,6 +116,7 @@ def main():
     dryrun = 0
     digest = 0
     welcome = None
+    goodbye = None
     filename = None
     listname = None
     notifyadmin = None
@@ -135,6 +143,12 @@ def main():
             i += 1
         elif opt.startswith('-w=') or opt.startswith('--welcome-msg='):
             welcome = yesno(opt)
+            i += 1
+        elif opt in ('-g', '--goodbye-msg'):
+            goodbye = 1
+            i += 1
+        elif opt.startswith('-g=') or opt.startswith('--goodbye-msg='):
+            goodbye = yesno(opt)
             i += 1
         elif opt in ('-f', '--file'):
             if filename is not None:
@@ -247,7 +261,7 @@ def main():
             if not dryrun:
                 try:
                     mlist.ApprovedDeleteMember(addr, admin_notif=notifyadmin,
-                                               userack=0)
+                                               userack=goodbye)
                 except Errors.MMNoSuchUserError:
                     # This can happen if the address is illegal (i.e. can't be
                     # parsed by email.Utils.parseaddr()) but for legacy
