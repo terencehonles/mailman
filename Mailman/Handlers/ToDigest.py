@@ -41,6 +41,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
 from Mailman import i18n
+from Mailman.MemberAdaptor import ENABLED
 from Mailman.Handlers.Decorate import decorate
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Mailbox import Mailbox
@@ -323,7 +324,7 @@ def send_i18n_digests(mlist, mboxfp):
         # user might be None if someone who toggled off digest delivery
         # subsequently unsubscribed from the mailing list.  Also, filter out
         # folks who have disabled delivery.
-        if user is None or mlist.getMemberOption(user, mm_cfg.DisableDelivery):
+        if user is None or mlist.getDeliveryStatus(user) <> ENABLED:
             continue
         # Otherwise, decide whether they get MIME or RFC 1153 digests
         if mlist.getMemberOption(user, mm_cfg.DisableMime):
