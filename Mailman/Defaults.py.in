@@ -45,19 +45,51 @@ def days(d): return d * 60 * 60 * 24
 # and image names.
 IMAGE_LOGOS = '/icons/'
 
-# Don't change MAILMAN_URL, unless you want to point it at the list.org
-# mirror.
+# Don't change MAILMAN_URL, unless you want to point it at one of the mirrors.
 MAILMAN_URL = 'http://www.gnu.org/software/mailman/index.html'
 #MAILMAN_URL = 'http://www.list.org/'
+#MAILMAN_URL = 'http://mailman.sf.net/'
 
 # Site-specific settings
-DEFAULT_HOST_NAME   = '@FQDN@'
-# DEFAULT_URL must end in a slash!
-DEFAULT_URL         = 'http://@URL@/mailman/'
-PUBLIC_ARCHIVE_URL  = '/pipermail'
+DEFAULT_EMAIL_HOST = '@FQDN@'
+DEFAULT_URL_HOST = '@URL@'
+DEFAULT_URL_PATTERN = 'http://%s/mailman/'
 
+# For backwards compatibility.  Note: DEFAULT_URL_PATTERN must end in a slash!
+DEFAULT_HOST_NAME = DEFAULT_EMAIL_HOST
+DEFAULT_URL       = DEFAULT_URL_PATTERN % DEFAULT_URL_HOST
+
+PUBLIC_ARCHIVE_URL  = '/pipermail'
 HOME_PAGE         = 'index.html'
 MAILMAN_SITE_LIST = 'mailman'
+
+
+
+#####
+# Virtual domains
+#####
+
+# Set up your virtual host mappings here.  This is primarily used for the
+# thru-the-web list creation, so its effects are currently fairly limited.
+# Use add_virtualhost() call to add new mappings.  The keys are strings as
+# determined by Utils.get_domain(), the values are as appropriate for
+# DEFAULT_HOST_NAME.
+VIRTUAL_HOSTS = {}
+
+# When set, the listinfo web page overview of lists on the machine will be
+# confined to only those lists whose web_page_url configuration option host is
+# included within the URL by which the page is visited - only those "on the
+# virtual host".  If unset, then all lists are included in the overview.  The
+# admin page overview always includes all the lists.
+VIRTUAL_HOST_OVERVIEW = 1
+
+
+# Helper function; use this in your mm_cfg.py files
+def add_virtualhost(urlhost, emailhost):
+    VIRTUAL_HOSTS[urlhost.lower()] = emailhost.lower()
+
+# And set the default
+add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
 
 
 
@@ -375,13 +407,6 @@ USE_ENVELOPE_SENDER = 0
 # lowercased.
 # FIXME: NOT ALWAYS THE RIGHT THING TO DO FOR COUNTRY CODE TLDS
 SMART_ADDRESS_MATCH = 1
-
-# When set, the listinfo web page overview of lists on the machine will be
-# confined to only those lists whose web_page_url configuration option host is
-# included within the URL by which the page is visited - only those "on the
-# virtual host".  If unset, then all lists are included in the overview.  The
-# admin page overview always includes all the lists.
-VIRTUAL_HOST_OVERVIEW = 1
 
 # How many members to display at a time on the admin cgi to unsubscribe them
 # or change their options?
