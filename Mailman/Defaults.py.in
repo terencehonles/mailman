@@ -230,7 +230,7 @@ QRUNNERS = [
     ('OutgoingRunner', 1), # outgoing messages to the smtpd
     ('NewsRunner',     1), # outgoing messages to the nntpd
     ('ArchRunner',     1), # messages for the archiver
-#    ('BounceRunner',   1), # bounces from the outside world
+    ('CommandRunner',  1), # commands and bounces from the outside world
     ('VirginRunner',   1), # internally crafted (virgin birth) messages
     ]
 
@@ -592,7 +592,7 @@ DEFAULT_SERVER_LANGUAGE = "en"
 QUEUE_DIR       = os.path.join(VAR_PREFIX, 'qfiles')
 INQUEUE_DIR     = os.path.join(QUEUE_DIR, 'in')
 OUTQUEUE_DIR    = os.path.join(QUEUE_DIR, 'out')
-BOUNCEQUEUE_DIR = os.path.join(QUEUE_DIR, 'bounce')
+CMDQUEUE_DIR    = os.path.join(QUEUE_DIR, 'commands')
 NEWSQUEUE_DIR   = os.path.join(QUEUE_DIR, 'news')
 ARCHQUEUE_DIR   = os.path.join(QUEUE_DIR, 'archive')
 SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
@@ -612,9 +612,9 @@ from Version import *
 def _(string):
     return string
 
-LC_DESCRIPTIONS = {'es': [_("Spanish (Spain)"),      'iso-8859-1'],
-		   'it': [_("Italian"),              'iso-8859-1'],
-                   'en': [_("English (USA)"),        'us-ascii'],
+LC_DESCRIPTIONS = {'es': (_("Spanish (Spain)"),      'iso-8859-1'),
+                   'it': (_("Italian"),              'iso-8859-1'),
+                   'en': (_("English (USA)"),        'us-ascii'),
                    }
 del _				        
 
