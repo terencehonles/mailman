@@ -162,7 +162,7 @@ def process_form(mlist, user, doc):
                     addr = Utils.ObscureEmail(addrs[0])
                     if mlist.obscure_addresses:
                         addr = Utils.ObscureEmail(addr)
-                    url = mlist.GetOptionsURL(addr, relative=1)
+                    url = mlist.GetOptionsURL(addr)
                     link = Link(url, mlist.real_name)
                     return mlist.internal_name(), link
 
