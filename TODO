@@ -13,6 +13,7 @@ The Mailman TODO list
 - A list-admin's guide
 - More in-place documentation
 - A developer's guide w/ Architecture and API info, etc.
+- manpages for the scripts in bin
 
 *General Web UI
 - Add a navigation sidebar to all web pages - central links, and
@@ -143,6 +144,8 @@ The Mailman TODO list
   breaking Mailman functionality.
 - Add a limit on the number of posts from any one individual within a
   period of time (1 post per day, 10 per week, etc).
+- Footers and headers should be MIME aware.
+- Allow lists of the same name in two different virtual domains
 
 
 Local Variables:
