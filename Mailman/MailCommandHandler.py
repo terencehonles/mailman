@@ -280,8 +280,8 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
                         responsemsg['X-No-Archive'] = 'yes'
                         lang = msgdata.get('lang',
                                            self.getMemberLanguage(admin))
-                        responsemsg.addheader('Content-Type', 'text/plain',
-                                              charset=Utils.GetCharSet(lang))
+                        responsemsg.add_header('Content-Type', 'text/plain',
+                                               charset=Utils.GetCharSet(lang))
                         responsemsg.send(self)
                         break
         # send the response
@@ -314,8 +314,8 @@ The following is a detailed description of the problems.
                                                    self.GetRequestEmail(),
                                                    subject,
                                                    self.__respbuf)
-            responsemsg.addheader('Content-Type', 'text/plain',
-                                  charset=Utils.GetCharSet(lang))
+            responsemsg.add_header('Content-Type', 'text/plain',
+                                   charset=Utils.GetCharSet(lang))
             responsemsg.send(self)
             self.__respbuf = ''
             self.__errors = 0
