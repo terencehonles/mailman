@@ -1,3 +1,6 @@
+MMUnknownListError   = "MMUnknownListError"
+MMBadListError       = "MMBadListError"
+
 MMBadEmailError      = "MMBadEmailError"
 MMMustDigestError    = "MMMustDigestError"
 MMCantDigestError    = "MMCantDigestError"
