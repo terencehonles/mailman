@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.37 
+# From configure.in Revision: 2.38 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -657,8 +657,8 @@ echo "$ac_t""$version" 1>&6
 
 # Make sure distutils is available.  Some Linux Python packages split
 # distutils into the "-devel" package, so they need both.
-echo $ac_n "checking that Python has distutils""... $ac_c" 1>&6
-echo "configure:662: checking that Python has distutils" >&5
+echo $ac_n "checking that Python has a working distutils""... $ac_c" 1>&6
+echo "configure:662: checking that Python has a working distutils" >&5
 
 cat > conftest.py <<EOF
 try:

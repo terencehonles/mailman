@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 6093 $)
+AC_REVISION($Revision: 6094 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -87,7 +87,7 @@ AC_MSG_RESULT($version)
 
 # Make sure distutils is available.  Some Linux Python packages split
 # distutils into the "-devel" package, so they need both.
-AC_MSG_CHECKING(that Python has distutils)
+AC_MSG_CHECKING(that Python has a working distutils)
 changequote(,)
 cat > conftest.py <<EOF
 try:
