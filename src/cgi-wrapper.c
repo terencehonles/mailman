@@ -24,12 +24,12 @@
 /* passed in by configure */
 #define SCRIPTNAME  SCRIPT
 #define LOG_IDENT   "Mailman cgi-wrapper (" ## SCRIPT ## ")"
-#define LEGAL_PARENT_UID CGI_UID	     /* nobody's UID */
-#define LEGAL_PARENT_GID CGI_GID	     /* nobody's GID */
+
+/* GID that CGI scripts run as.  See your Web server's documentation. */
+#define LEGAL_PARENT_GID CGI_GID
 
 const char* logident = LOG_IDENT;
 const char* script = SCRIPTNAME;
-const int parentuid = LEGAL_PARENT_UID;
 const int parentgid = LEGAL_PARENT_GID;
 
 
@@ -38,7 +38,7 @@ main(int argc, char** argv, char** env)
 {
 	int status;
 
-	check_caller(logident, parentuid, parentgid);
+	check_caller(logident, parentgid);
 
 	/* if we get here, the caller is OK */
 	status = setuid(geteuid());

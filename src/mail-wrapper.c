@@ -20,11 +20,13 @@
 
 #include "common.h"
 
-/* TBD: Should make these arrays too?... */
-#define LEGAL_PARENT_UID MAIL_UID	     /* mail's UID */
-#define LEGAL_PARENT_GID MAIL_GID	     /* mail's GID */
+/* TBD: Should make this an array too?... */
 
-const int parentuid = LEGAL_PARENT_UID;
+/* GID that your sendmail runs filter programs as.  See you sendmail.cf
+ * documentation for details
+ */
+#define LEGAL_PARENT_GID MAIL_GID
+
 const int parentgid = LEGAL_PARENT_GID;
 const char* logident = "Mailman mail-wrapper";
 
@@ -90,7 +92,7 @@ main(int argc, char** argv, char** env)
 	if (!check_command(argv[1]))
 		fatal(logident, "Illegal command: %s", argv[1]);
 
-	check_caller(logident, parentuid, parentgid);
+	check_caller(logident, parentgid);
 
 	/* If we got here, everything must be OK */
 	status = setuid(geteuid());

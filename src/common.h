@@ -27,5 +27,5 @@
 #include <unistd.h>
 
 void fatal(const char*, const char*, ...);
-void check_caller(const char*, uid_t, gid_t);
+void check_caller(const char*, gid_t);
 int run_script(const char*, int, char**, char**);

@@ -56,15 +56,8 @@ fatal(const char* ident, const char* format, ...)
 /* Is the parent process allowed to call us?
  */
 void
-check_caller(const char* ident, uidt parentuid, gid_t parentgid)
+check_caller(const char* ident, gid_t parentgid)
 {
-	/* compare to our parent's uid */
-	if (parentuid != getuid()) {
-	    fatal(ident,
-		  "Failure to exec script. WANTED uid %d, GOT uid %d.  "
-                  "(Reconfigure to take %d?)",
-		  parentuid, getuid(), getuid());
-	}
 	if (parentgid != getgid()) {
 	    fatal(ident,
 		  "Failure to exec script. WANTED gid %d, GOT gid %d.  "
