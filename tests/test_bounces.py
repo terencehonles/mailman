@@ -76,12 +76,18 @@ class BounceTest(unittest.TestCase):
             foundaddrs = sys.modules[module].process(msg)
             addrs.sort()
             foundaddrs.sort()
-            try:
-                assert addrs == foundaddrs
-            except AssertionError:
-                print >> sys.stderr, 'File: %s\nWanted: %s\nGot: %s' % (
-                    fp.name, addrs, foundaddrs)
-                raise
+            self.assertEqual(addrs, foundaddrs)
+
+    def checkSMTP32Failure(self):
+        from Mailman.Bouncers import SMTP32
+        # This file has no X-Mailer: header
+        fp = open(os.path.join('tests', 'bounces', 'postfix_01.txt'))
+        try:
+            msg = Parser().parse(fp)
+        finally:
+            fp.close()
+        self.failIf(msg['x-mailer'] is not None)
+        self.failIf(SMTP32.process(msg))
 
 
 
