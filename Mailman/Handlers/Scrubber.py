@@ -275,6 +275,8 @@ Url : %(url)s
         sep = _('-------------- next part --------------\n')
         msg.set_payload(sep.join(text), charset)
         msg.set_type('text/plain')
+        del msg['content-transfer-encoding']
+        msg.add_header('Content-Transfer-Encoding', '8bit')
     return msg
 
 
