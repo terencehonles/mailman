@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Creation/deletion hooks for the Postfix MTA.
@@ -21,6 +21,7 @@ import os
 import time
 import errno
 import pwd
+import grp
 from stat import *
 
 from Mailman import mm_cfg
@@ -209,7 +210,7 @@ def _do_create(mlist, textfile, func):
     # Now double check the virtual plain text file
     if func is _addvirtual:
         _check_for_virtual_loopaddr(mlist, textfile)
-    
+
 
 def create(mlist, cgi=0, nolock=0):
     # Acquire the global list database lock
@@ -275,7 +276,7 @@ def _do_remove(mlist, textfile, virtualp):
         infp.close()
         outfp.close()
     os.rename(textfile+'.tmp', textfile)
-    
+
 
 def remove(mlist, cgi=0):
     # Acquire the global list database lock
@@ -325,16 +326,19 @@ def checkperms(state):
             continue
         if state.VERBOSE:
             print _('checking ownership of %(dbfile)s')
-        ownerok = stat[ST_UID] == mm_cfg.MAILMAN_UID
+        user = mm_cfg.MAILMAN_USER
+        ownerok = stat[ST_UID] == pwd.getpwnam(user)[2]
         if not ownerok:
             try:
                 owner = pwd.getpwuid(stat[ST_UID])[0]
             except KeyError:
                 owner = 'uid %d' % stat[ST_UID]
-            print _('%(dbfile)s owned by %(owner)s (must be owned by Mailman)')
+            print _('%(dbfile)s owned by %(owner)s (must be owned by %(user)s')
             state.ERRORS += 1
             if state.FIX:
                 print _('(fixing)')
-                os.chown(dbfile, mm_cfg.MAILMAN_UID, mm_cfg.MAILMAN_GID)
+                uid = pwd.getpwnam(user)[2]
+                gid = grp.getgrnam(mm_cfg.MAILMAN_GROUP)[2]
+                os.chown(dbfile, uid, gid)
             else:
                 print
