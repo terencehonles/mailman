@@ -25,7 +25,6 @@ import cgi
 import string
 import types
 
-import paths
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
