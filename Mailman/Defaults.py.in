@@ -337,6 +337,13 @@ POSTFIX_MAP_CMD = '/usr/sbin/postmap'
 # transaction.  Only used with the SMTPDirect DELIVERY_MODULE.
 SMTP_MAX_RCPTS = 500
 
+# Ceiling on the number of SMTP sessions to perform on a single socket
+# connection.  Some MTAs have limits.  Set this to 0 to do as many as we like
+# (i.e. your MTA has no limits).  Set this to some number great than 0 and
+# Mailman will close the SMTP connection and re-open it after this number of
+# consecutive sessions.
+SMTP_MAX_SESSIONS_PER_CONNECTION = 0
+
 # Maximum number of simulatenous subthreads that will be used for SMTP
 # delivery.  After the recipients list is chunked according to SMTP_MAX_RCPTS,
 # each chunk is handed off to the smptd by a separate such thread.  If your
@@ -410,8 +417,6 @@ GLOBAL_PIPELINE = [
     'ToUsenet',
     # Now we'll do a few extra things specific to the member delivery
     # (outgoing) path, finally leaving the message in the outgoing queue.
-    'Personalize',
-    'Decorate',
     'AfterDelivery',
     'Acknowledge',
     'ToOutgoing',
