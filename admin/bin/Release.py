@@ -128,7 +128,7 @@ def do_bump(newvers):
     print 'doing bump...',
     # hack the index.html file
     print 'index.html...',
-    fp = open('admin/www/index.html', 'r+')
+    fp = open('admin/www/download.ht', 'r+')
     text = fp.read()
     parts = string.split(text, '<!-VERSION--->')
     parts[1] = newvers
@@ -161,9 +161,7 @@ def do_bump(newvers):
     fp_in.close()
     fp_out.close()
     os.rename('Mailman/Version.py.new', 'Mailman/Version.py')
-    # update the TODO file
-    print 'TODO...'
-    os.system('admin/bin/mm2do')
+
 
 
 def main():
