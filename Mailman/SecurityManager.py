@@ -75,15 +75,15 @@ class SecurityManager:
         if cookie:
             key = key + ':' + cookie
         # password will be None for explicit login
-        if password is not None:
+        if password is None:
+            return self.CheckCookie(key)
+        else:
             if user:
                 self.ConfirmUserPassword(user, password)
             else:
                 self.ConfirmAdminPassword(password)
             print self.MakeCookie(key)
             return 1
-        else:
-            return self.CheckCookie(key)
 
     def MakeCookie(self, key):
         # Ingredients for our cookie: our `secret' which is the list's admin
