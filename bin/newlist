@@ -3,13 +3,13 @@
 
 ADDALIASES_CMD = '/home/mailman/mailman/bin/addaliases'
 
-import sys, crypt, os
+import sys, crypt, os, string
 
 sys.path.append('/home/mailman/mailman/modules')
 
 import maillist, mm_utils
 
-list_name = raw_input("Enter the name of the list: ")
+list_name = string.lower(raw_input("Enter the name of the list: "))
 
 if list_name in maillist.list_names():
     sys.stderr.write("** List with name %s already exists\n" % `list_name`)
