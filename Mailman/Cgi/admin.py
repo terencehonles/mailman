@@ -1273,7 +1273,8 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 subscribe_errors.append(
                     (entry, _('Hostile address (illegal characters)')))
             else:
-                subscribe_success.append(entry)
+                member = Utils.uncanonstr(formataddr((fullname, address)))
+                subscribe_success.append(Utils.websafe(member))
         if subscribe_success:
             if subscribe_or_invite:
                 doc.AddItem(Header(5, _('Successfully invited:')))
