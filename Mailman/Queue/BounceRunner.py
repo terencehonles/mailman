@@ -99,7 +99,7 @@ class BounceRunner(Runner):
         # Store the bounce score events so we can register them periodically
         today = time.localtime()[:3]
         events = [(addr, today, msg) for addr in addrs]
-        self._bounces.setdefault(listname, []).extend(events)
+        self._bounces.setdefault(mlist.internal_name(), []).extend(events)
         self._bouncecnt += len(addrs)
 
     def _doperiodic(self):
@@ -115,7 +115,7 @@ class BounceRunner(Runner):
         # First, get the list of bounces register against the site list.  For
         # these addresses, we want to register a bounce on every list the
         # address is a member of -- which we don't know yet.
-        sitebounces = self._bounces.get(mm_cfg.MAILMAN_SITE_LIST)
+        sitebounces = self._bounces.get(mm_cfg.MAILMAN_SITE_LIST, [])
         if sitebounces:
             listnames = Utils.list_names()
         else:
@@ -135,7 +135,8 @@ class BounceRunner(Runner):
         self._bouncecnt = 0
 
     def _cleanup(self):
-        self._register_bounces()
+        if self._bounces:
+            self._register_bounces()
         Runner._cleanup(self)
 
 
