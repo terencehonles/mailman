@@ -102,16 +102,18 @@ class Bouncer:
         # New style delivery status
         self.delivery_status = {}
 
-    def registerBounce(self, member, msg, weight=1.0):
+    def registerBounce(self, member, msg, weight=1.0, day=None):
         if not self.isMember(member):
             return
         info = self.getBounceInfo(member)
-        today = time.localtime()[:3]
+        if day is None:
+            # Use today's date
+            day = time.localtime()[:3]
         if not isinstance(info, _BounceInfo):
             # This is the first bounce we've seen from this member
             cookie = Pending.new(Pending.RE_ENABLE, self.internal_name(),
                                  member)
-            info = _BounceInfo(member, weight, today,
+            info = _BounceInfo(member, weight, day,
                                self.bounce_you_are_disabled_warnings,
                                cookie)
             self.setBounceInfo(member, info)
@@ -125,26 +127,26 @@ class Bouncer:
             syslog('bounce', '%s: %s residual bounce received',
                    self.internal_name(), member)
             return
-        elif info.date == today:
-            # We've already scored any bounces for today, so ignore this one.
-            syslog('bounce', '%s: %s already scored a bounce for today',
-                   self.internal_name(), member)
+        elif info.date == day:
+            # We've already scored any bounces for this day, so ignore it.
+            syslog('bounce', '%s: %s already scored a bounce for date %s',
+                   self.internal_name(), member,
+                   time.strftime('%d-%b-%Y', day + (0,)*6))
             # Continue to check phase below
         else:
             # See if this member's bounce information is stale.
-            now = Utils.midnight(today)
+            now = Utils.midnight(day)
             lastbounce = Utils.midnight(info.date)
             if lastbounce + self.bounce_info_stale_after < now:
                 # Information is stale, so simply reset it
-                info.reset(weight, today,
-                           self.bounce_you_are_disabled_warnings)
+                info.reset(weight, day, self.bounce_you_are_disabled_warnings)
                 syslog('bounce', '%s: %s has stale bounce info, resetting',
                        self.internal_name(), member)
             else:
                 # Nope, the information isn't stale, so add to the bounce
                 # score and take any necessary action.
                 info.score += weight
-                info.date = today
+                info.date = day
                 syslog('bounce', '%s: %s current bounce score: %s',
                        member, self.internal_name(), info.score)
             # Continue to the check phase below
