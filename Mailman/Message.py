@@ -94,7 +94,7 @@ class UserNotification(Message):
             subject = '(no subject)'
         self['Subject'] = subject
         self['From'] = sender
-        if type(recip) == ListType:
+        if isinstance(recip, ListType):
             self['To'] = COMMASPACE.join(recip)
             self.recips = recip
         else:
