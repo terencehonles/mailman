@@ -49,7 +49,7 @@ def loginpage(mlist, scriptname, msg='', frontpage=None):
         {'listname': mlist.real_name,
          'path'    : actionurl,
          'message' : msg,
-         }, lang=mlist.preferred_language)
+         }, mlist=mlist)
 
     
 
