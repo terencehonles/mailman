@@ -43,6 +43,7 @@ from Mailman.Digester import Digester
 from Mailman.SecurityManager import SecurityManager
 from Mailman.Bouncer import Bouncer
 from Mailman.GatewayManager import GatewayManager
+from Mailman.Autoresponder import Autoresponder
 from Mailman.Logging.StampedLogger import StampedLogger
 
 # other useful classes
@@ -59,7 +60,8 @@ from Mailman.Handlers import HandlerAPI
 # Use mixins here just to avoid having any one chunk be too large.
 
 class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
-	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager):
+	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
+               Autoresponder):
     def __init__(self, name=None, lock=1):
         if name and name not in Utils.list_names():
 		raise Errors.MMUnknownListError, 'list not found: %s' % name
@@ -354,6 +356,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	Bouncer.InitVars(self)
 	GatewayManager.InitVars(self)
 	HTMLFormatter.InitVars(self)
+        Autoresponder.InitVars(self)
 
 	# These need to come near the bottom because they're dependent on
 	# other settings.
@@ -366,6 +369,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	config_info['digest'] = Digester.GetConfigInfo(self)
 	config_info['archive'] = Archiver.GetConfigInfo(self)
 	config_info['gateway'] = GatewayManager.GetConfigInfo(self)
+        config_info['autoreply'] = Autoresponder.GetConfigInfo(self)
 
         # XXX: Should this text be migrated into the templates dir?
 	config_info['general'] = [
