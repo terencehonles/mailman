@@ -100,6 +100,7 @@ def main():
         digest = 0
     else:
         print 'No user:', fromaddr
+        return
 
     # get the user's current options and password
     options = mlist.user_options[lfromaddr]
