@@ -945,7 +945,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	lowname = string.lower(self.real_name)
         recips = []
         # First check all dests against simple name:
-	for recip in msg.getaddrlist('to') + msg.getaddrlist('cc'):
+        for recip in msg.getallrecipients():
             curr = string.lower(string.split(recip[1], '@')[0])
 	    if lowname == curr:
 		return 1
