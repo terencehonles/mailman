@@ -409,20 +409,23 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             "General posting filters",
 
 	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Must posts be approved by a moderator?',
-
-             "If the 'posters' option has any entries then it supercedes"
-             " this setting."),
+	     'Must posts be approved by an administrator?'
+             "If the 'posters' option has any entries then it forces the"
+             ' list to be moderated, regadless of this setting.'),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Restrict posting privilege to only list members?'),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
-	     'Addresses blessed for posting to this list.  (Adding'
-             ' anyone to this list implies moderation of everyone else.)',
+             'Addresses of members accepted for posting to this'
+             ' list with no required approval. (But then moderation'
+             ' is activated for all other members.)',
 
-             "Adding any entries to this list supercedes the setting of"
-             " the list-moderation option."),
+             "Adding any entries here causes the list to moderated,"
+             " regardless of the separate setting of the"
+             " <i>moderated</i> option."),
+##??              % os.path.join(self.GetRelativeScriptURL('admin'),
+##??                             'privacy#moderated'
 
             "Spam-specific posting filters",
 
