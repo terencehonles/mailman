@@ -26,7 +26,8 @@ import marshal
 import string
 import errno
 import re
-from types import StringType, IntType, DictType
+from types import StringType, IntType, DictType, ListType
+from urlparse import urlparse
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -456,7 +457,7 @@ the changes occurs on a developers mailing list.  To support these types of
 mailing lists, select <tt>Explicit address</tt> and set the <tt>Reply-To:</tt>
 address below to point to the parallel list."""),
 
-            ('reply_to_address', mm_cfg.String, WIDTH, 0,
+            ('reply_to_address', mm_cfg.Email, WIDTH, 0,
              '''Explicit <tt>Reply-To:</tt> header.''',
 
              # Details for reply_to_address
@@ -773,7 +774,7 @@ it will not be changed."""),
 	return config_info
 
     def Create(self, name, admin, crypted_password):
-	if name in Utils.list_names():
+	if Utils.list_exists(name):
 	    raise ValueError, 'List %s already exists.' % name
         Utils.ValidateEmail(admin)
         Utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
@@ -827,7 +828,8 @@ it will not be changed."""),
                 marshal.dump(dict, fp)
                 fp.close()
             except IOError, status:
-                os.unlink(fname_tmp)
+                if os.path.exists(fname_tmp):
+                    os.unlink(fname_tmp)
                 self.LogMsg('error',
                             'Failed config.db file write, retaining old state'
                             '\n %s' % `status.args`)
@@ -915,7 +917,12 @@ it will not be changed."""),
 
     def CheckValues(self):
 	"""Normalize selected values to known formats."""
-	if self.web_page_url and  self.web_page_url[-1] != '/':
+        if "" in urlparse(self.web_page_url)[:2]:
+            # Either the "scheme" or the "network location" part of the
+            # parsed URL is empty -- substitute faulty value with
+            # (hopefully sane) default.
+            self.web_page_url = mm_cfg.DEFAULT_URL
+        if self.web_page_url and self.web_page_url[-1] != '/':
 	    self.web_page_url = self.web_page_url + '/'
 
     def IsListInitialized(self):
@@ -1052,13 +1059,11 @@ it will not be changed."""),
                 admin_notif = 1
             else:
                 admin_notif = 0
-        if type(passwords) is type([]):
-            pass
-        else:
-            # Type error -- ignore the original value
+        if type(passwords) is not ListType:
+            # Type error -- ignore whatever value(s) we were given
             passwords = [None] * len(names)
-        while len(passwords) < len(names):
-            passwords.append(None)
+        if len(passwords) < len(names):
+            passwords.extend([None] * (len(names) - len(passwords)))
         result = {}
         dirty = 0
         for i in range(len(names)):
@@ -1210,12 +1215,12 @@ it will not be changed."""),
                 try:
                     # The list alias in `stripped` is a user supplied regexp,
                     # which could be malformed.
-                    if stripped and re.match(recip, stripped):
+                    if stripped and re.match(stripped, recip):
                         return 1
                 except re.error:
                     # `stripped' is a malformed regexp -- try matching
                     # safely, with all non-alphanumerics backslashed:
-                    if stripped and re.match(recip, re.escape(stripped)):
+                    if stripped and re.match(re.escape(stripped), recip):
                         return 1
 	return 0
 
