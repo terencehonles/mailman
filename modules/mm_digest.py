@@ -1,6 +1,6 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 445 $"
+__version__ = "$Revision: 455 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string
@@ -172,53 +172,58 @@ class Digester:
         digest_file = open(os.path.join(self._full_path, 'next-digest'), 'r+')
 	msg.SetBody(digest_file.read())
 
-	# Create the header and footer... this is a mess!
+	# Create the header and footer... a bit messy.
 	topics_file = open(os.path.join(self._full_path,
 					'next-digest-topics'), 
 			   'r+')
 	topics_text = topics_file.read()
         topics_number = string.count(topics_text, '\n')
 
-	digest_header = '''--%s
+        subst = {}
+        for k, v in self.__dict__.items():
+            subst[k] = v
+        subst['_mime_separator'] = self._mime_separator
+        subst.update({'got_sender': msg.GetSender(),
+                      'got_listinfo_url': self.GetScriptURL('listinfo'),
+                      'got_request_email': self.GetRequestEmail(),
+                      'got_date':         time.ctime(time.time()),
+                      'got_list_email': self.GetListEmail(),
+                      'got_topics_text': topics_text})
 
-From: %s
-Subject: Contents of %s digest, Volume %d #%d
-Date: %s
+	digest_header = '''--%(_mime_separator)s
 
-When replying, please edit your Subject line so it is more specific than
-"Re: Contents of %s digest..."
+From: %(got_sender)s
+Subject: Contents of %(real_name)s digest, Volume %(volume)d #%(next_digest_number)d
+Date: %(got_date)s
 
-Send %s maillist submissions to
-	%s
+Send %(real_name)s maillist submissions to
+	%(got_list_email)s
+
 To subscribe or unsubscribe via the web, visit
-	%s
-or send email to %s
+	%(got_listinfo_url)s
+or send email to %(got_request_email)s
+
+(When replying, please edit your Subject line so it is more specific than
+"Re: Contents of %(real_name)s digest...")
 
 Topics for this digest:
-%s
-''' %  (self._mime_separator,
-        msg.GetSender(),
-        self.real_name, self.volume, self.next_digest_number,
-        time.ctime(time.time()),
-        self.real_name, self.GetListEmail(),
-        self.real_name,
-        self.GetScriptURL('listinfo'),
-        self.GetRequestEmail(),
-        topics_text)
+%(got_topics_text)s
+''' %   subst
 
         if self.digest_header:
 	    digest_header = digest_header + (self.digest_header
 					     % self.__dict__)
 	if self.digest_footer:
-	    digest_footer = '''--%s
+            subst['got_footer'] = self.digest_footer % self.__dict__
 
-From: %s
-Subject: Digest Footer
-Date: %s
+	    digest_footer = '''--%(_mime_separator)s
 
-%s
---%s--''' % (self._mime_separator, msg.GetSender(), time.ctime(time.time()), 
-	     (self.digest_footer % self.__dict__), self._mime_separator)
+From: %(got_sender)s
+Subject: %(real_name)s V%(volume)s#%(next_digest_number)s Digest Footer
+Date: %(got_date)s
+
+%(got_footer)s
+--%(_mime_separator)s--''' % subst
         else:
 	    digest_footer = '''
 --%s--''' % self._mime_separator
