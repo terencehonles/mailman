@@ -31,6 +31,16 @@ def minutes(m): return m * 60
 def hours(h): return h * 60 * 60
 def days(d): return d * 60 * 60 * 24
 
+# Some convenient constants
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
+Yes = yes = On = on = True
+No = no = Off = off = False
+
 
 
 #####
@@ -91,8 +101,8 @@ MAILMAN_SITE_LIST = 'mailman'
 # makes me nervous to hand out site auth cookies because if this cookie is
 # cracked or intercepted, the intruder will have access to every list on the
 # site.  OTOH, it's dang handy to not have to re-authenticate to every list on
-# the site.  Set this value to 1 to allow site admin cookies.
-ALLOW_SITE_ADMIN_COOKIES = 0
+# the site.  Set this value to Yes to allow site admin cookies.
+ALLOW_SITE_ADMIN_COOKIES = No
 
 # Command that is used to convert text/html parts into plain text.  This
 # should output results to standard output.  %(filename)s will contain the
@@ -112,12 +122,12 @@ HTML_TO_PLAIN_TEXT_COMMAND = '/usr/bin/lynx -dump %(filename)s'
 # DEFAULT_HOST_NAME.
 VIRTUAL_HOSTS = {}
 
-# When set, the listinfo and admin overviews of lists on the machine will be
-# confined to only those lists whose web_page_url configuration option host is
-# included within the URL by which the page is visited - only those "on the
-# virtual host".  If unset, then all advertised (i.e. public) lists are
-# included in the overview.
-VIRTUAL_HOST_OVERVIEW = 1
+# When set to Yes, the listinfo and admin overviews of lists on the machine
+# will be confined to only those lists whose web_page_url configuration option
+# host is included within the URL by which the page is visited - only those
+# "on the virtual host".  When set to No, all advertised (i.e. public) lists
+# are included in the overview.
+VIRTUAL_HOST_OVERVIEW = On
 
 
 # Helper function; use this in your mm_cfg.py files.  If optional emailhost is
@@ -194,10 +204,11 @@ WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
 PUBLIC_ARCHIVE_URL = 'http://%(hostname)s/pipermail/%(listname)s'
 
 # Are archives on or off by default?
-DEFAULT_ARCHIVE = 1                               # 0=Off, 1=On
+DEFAULT_ARCHIVE = On
 
 # Are archives public or private by default?
-DEFAULT_ARCHIVE_PRIVATE    = 0                    # 0=public, 1=private
+# 0=public, 1=private
+DEFAULT_ARCHIVE_PRIVATE = 0
 
 # ARCHIVE_TO_MBOX
 #-1 - do not do any archiving
@@ -207,7 +218,6 @@ DEFAULT_ARCHIVE_PRIVATE    = 0                    # 0=public, 1=private
 #     use this to make both external archiving mechanism work and
 #     mailman's builtin html archiving.  the flat mail file can be
 #     useful for searching, external archivers, etc.
-#
 ARCHIVE_TO_MBOX = 2
 
 # 0 - yearly
@@ -221,16 +231,17 @@ DEFAULT_DIGEST_VOLUME_FREQUENCY = 1
 # These variables control the use of an external archiver.  Normally if
 # archiving is turned on (see ARCHIVE_TO_MBOX above and the list's archive*
 # attributes) the internal Pipermail archiver is used.  This is the default if
-# both of these variables are set to false.  When either is set, the value
-# should be a shell command string which will get passed to os.popen().  This
-# string can contain %(listname)s for dictionary interpolation.  The name of
-# the list being archived will be substituted for this.
+# both of these variables are set to No.  When either is set, the value should
+# be a shell command string which will get passed to os.popen().  This string
+# can contain %(listname)s for dictionary interpolation.  The name of the list
+# being archived will be substituted for this.  Please note that os.popen() is
+# used.
 #
 # Note that if you set one of these variables, you should set both of them
 # (they can be the same string).  This will mean your external archiver will
 # be used regardless of whether public or private archives are selected.
-PUBLIC_EXTERNAL_ARCHIVER = 0
-PRIVATE_EXTERNAL_ARCHIVER = 0
+PUBLIC_EXTERNAL_ARCHIVER = No
+PRIVATE_EXTERNAL_ARCHIVER = No
 
 # A filter module that converts from multipart messages to "flat" messages
 # (i.e. containing a single payload).  This is required for Pipermail, and you
@@ -272,11 +283,11 @@ ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 # program.
 ARCHIVE_HTML_SANITIZER = 1
 
-# Set this to 1 to enable gzipping of the downloadable archive .txt file.
+# Set this to Yes to enable gzipping of the downloadable archive .txt file.
 # Note that this is /extremely/ inefficient, so an alternative is to just
 # collect the messages in the associated .txt file and run a cron job every
 # night to generate the txt.gz file.  See cron/nightly_gzip for details.
-GZIP_ARCHIVE_TXT_FILES = 0
+GZIP_ARCHIVE_TXT_FILES = No
 
 # This sets the default `clobber date' policy for the archiver.  When a
 # message is to be archived either by Pipermail or an external archiver,
@@ -291,10 +302,10 @@ ARCHIVER_CLOBBER_DATE_POLICY = 2
 ARCHIVER_ALLOWABLE_SANE_DATE_SKEW = days(15)
 
 # Pipermail archives contain the raw email addresses of the posting authors.
-# Some view this as a goldmine for spam harvesters.  Set this to true to
+# Some view this as a goldmine for spam harvesters.  Set this to Yes to
 # moderately obscure email addresses, but note that this breaks mailto: URLs
 # in the archives too.
-ARCHIVER_OBSCURES_EMAILADDRS = 1
+ARCHIVER_OBSCURES_EMAILADDRS = Yes
 
 # Pipermail assumes that messages bodies contain US-ASCII text.
 # Change this option to define a different character set to be used as
@@ -569,15 +580,15 @@ VERP_FORMAT = '%(bounces)s+%(mailbox)s=%(host)s'
 VERP_REGEXP = r'^(?P<bounces>[^+]+?)\+(?P<mailbox>[^=]+)=(?P<host>[^@]+)@.*$'
 
 # A perfect opportunity for doing VERP is the password reminders, which are
-# already addressed individually to each recipient.  This flag, if true,
-# enables VERPs on all password reminders.
-VERP_PASSWORD_REMINDERS = 0
+# already addressed individually to each recipient.  Set this to Yes to enable
+# VERPs on all password reminders.
+VERP_PASSWORD_REMINDERS = No
 
 # Another good opportunity is when regular delivery is personalized.  Here
 # again, we're already incurring the performance hit for addressing each
-# individual recipient.  Set this to true to enable VERPs on all personalized
+# individual recipient.  Set this to Yes to enable VERPs on all personalized
 # regular deliveries (personalized digests aren't supported yet).
-VERP_PERSONALIZED_DELIVERIES = 0
+VERP_PERSONALIZED_DELIVERIES = No
 
 # And finally, we can VERP normal, non-personalized deliveries.  However,
 # because it can be a significant performance hit, we allow you to decide how
@@ -600,8 +611,8 @@ VERP_CONFIRM_FORMAT = '%(addr)s+%(cookie)s'
 # VERP_CONFIRM_FORMAT.
 VERP_CONFIRM_REGEXP = r'^(?P<addr>[^+]+?)\+(?P<cookie>[^@]+)@.*$'
 
-# Set this to true to enable VERP-like (more user friendly) confirmations
-VERP_CONFIRMATIONS = 0
+# Set this to Yes to enable VERP-like (more user friendly) confirmations
+VERP_CONFIRMATIONS = No
 
 # This is the maximum number of automatic responses sent to an address because
 # of -request messages or posting hold messages.  This limit prevents response
@@ -637,15 +648,17 @@ QRUNNERS = [
     ('VirginRunner',   1), # internally crafted (virgin birth) messages
     ]
 
-# Set this to true to use the `Maildir' delivery option.  If you change this
+# Set this to Yes to use the `Maildir' delivery option.  If you change this
 # you will need to re-run bin/genaliases for MTAs that don't use list
-# auto-detection.  Also, the line after USE_MAILDIR to your mm_cfg.py file.
+# auto-detection.
 #
 # WARNING: If you want to use Maildir delivery, you /must/ start Mailman's
 # qrunner as root, or you will get permission problems.
 #
 # NOTE: Maildir delivery is experimental for Mailman 2.1.
-USE_MAILDIR = 0
+USE_MAILDIR = No
+# NOTE: If you set USE_MAILDIR = Yes, add the following line to your mm_cfg.py
+# file (uncommented of course!)
 # QRUNNERS.append(('MaildirRunner', 1))
 
 # After processing every file in the qrunner's slice, how long should the
@@ -657,9 +670,9 @@ QRUNNER_SLEEP_TIME = seconds(1)
 # When a message that is unparsable (by the email package) is received, what
 # should we do with it?  The most common cause of unparsable messages is
 # broken MIME encapsulation, and the most common cause of that is viruses like
-# Nimda.  Set this variable to 0 to discard such messages, or to 1 to store
+# Nimda.  Set this variable to No to discard such messages, or to Yes to store
 # them in qfiles/bad subdirectory.
-QRUNNER_SAVE_BAD_MESSAGES = 1
+QRUNNER_SAVE_BAD_MESSAGES = Yes
 
 
 
@@ -673,18 +686,18 @@ QRUNNER_SAVE_BAD_MESSAGES = 1
 DEFAULT_SERVER_LANGUAGE = 'en'
 
 # When allowing only members to post to a mailing list, how is the sender of
-# the message determined?  If this variable is set to 1, then first the
+# the message determined?  If this variable is set to Yes, then first the
 # message's envelope sender is used, with a fallback to the sender if there is
-# no envelope sender.  Set this variable to 0 to always use the sender.
+# no envelope sender.  Set this variable to No to always use the sender.
 #
 # The envelope sender is set by the SMTP delivery and is thus less easily
 # spoofed than the sender, which is typically just taken from the From: header
 # and thus easily spoofed by the end-user.  However, sometimes the envelope
 # sender isn't set correctly and this will manifest itself by postings being
 # held for approval even if they appear to come from a list member.  If you
-# are having this problem, set this variable to 0, but understand that some
+# are having this problem, set this variable to No, but understand that some
 # spoofed messages may get through.
-USE_ENVELOPE_SENDER = 0
+USE_ENVELOPE_SENDER = No
 
 # Membership tests for posting purposes are usually performed by looking at a
 # set of headers, passing the test if any of their values match a member of
@@ -702,24 +715,24 @@ DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
 # size (though this will slow down rendering those pages).
 ADMINDB_PAGE_TEXT_LIMIT = 4096
 
-# Set this variable to 1 to allow list owners to delete their own mailing
+# Set this variable to Yes to allow list owners to delete their own mailing
 # lists.  You may not want to give them this power, in which case, setting
-# this variable to 0 instead requires list removal to be done by the site
+# this variable to No instead requires list removal to be done by the site
 # administrator, via the command line script bin/rmlist.
-OWNERS_CAN_DELETE_THEIR_OWN_LISTS = 0
+OWNERS_CAN_DELETE_THEIR_OWN_LISTS = No
 
-# Set this variable to 1 to allow list owners to set the "personalized" flags
-# on their mailing lists.  Turning these on tells Mailman to send separate
-# email messages to each user instead of batching them together for delivery
-# to the MTA.  This gives each member a more personalized message, but can
-# have a heavy impact on the performance of your system.
-OWNERS_CAN_ENABLE_PERSONALIZATION = 0
+# Set this variable to Yes to allow list owners to set the "personalized"
+# flags on their mailing lists.  Turning these on tells Mailman to send
+# separate email messages to each user instead of batching them together for
+# delivery to the MTA.  This gives each member a more personalized message,
+# but can have a heavy impact on the performance of your system.
+OWNERS_CAN_ENABLE_PERSONALIZATION = No
 
 # Should held messages be saved on disk as Python pickles or as plain text?
 # The former is more efficient since we don't need to go through the
 # parse/generate roundtrip each time, but the latter might be preferred if you
 # want to edit the held message on disk.
-HOLD_MESSAGES_AS_PICKLES = 1
+HOLD_MESSAGES_AS_PICKLES = Yes
 
 # These define the available types of external message metadata formats, and
 # the one to use by default.  MARSHAL format uses Python's built-in marshal
@@ -757,13 +770,15 @@ DEFAULT_NEW_MEMBER_OPTIONS = 256
 
 
 #####
-# List defaults
+# List defaults.  NOTE: Changing these values does NOT change the
+# configuration of an existing list.  It only defines the default for new
+# lists you subsequently create.
 #####
 
 # Should a list, by default be advertised?  What is the default maximum number
 # of explicit recipients allowed?  What is the default maximum message size
 # allowed?
-DEFAULT_LIST_ADVERTISED = 1
+DEFAULT_LIST_ADVERTISED = Yes
 DEFAULT_MAX_NUM_RECIPIENTS = 10
 DEFAULT_MAX_MESSAGE_SIZE = 40           # KB
 
@@ -782,17 +797,17 @@ DEFAULT_MAIL_COMMANDS_MAX_LINES = 25
 
 # Is the list owner notified of admin requests immediately by mail, as well as
 # by daily pending-request reminder?
-DEFAULT_ADMIN_IMMED_NOTIFY = 1
+DEFAULT_ADMIN_IMMED_NOTIFY = Yes
 
 # Is the list owner notified of subscribes/unsubscribes?
-DEFAULT_ADMIN_NOTIFY_MCHANGES = 0
+DEFAULT_ADMIN_NOTIFY_MCHANGES = No
 
 # Should list members, by default, have their posts be moderated?
-DEFAULT_DEFAULT_MEMBER_MODERATION = 0
+DEFAULT_DEFAULT_MEMBER_MODERATION = No
 
 # Should non-member posts which are auto-discarded also be forwarded to the
 # moderators?
-DEFAULT_FORWARD_AUTO_DISCARDS = 1
+DEFAULT_FORWARD_AUTO_DISCARDS = Yes
 
 # What shold happen to non-member posts which are do not match explicit
 # non-member actions?
@@ -804,31 +819,30 @@ DEFAULT_GENERIC_NONMEMBER_ACTION = 1
 
 # Bounce if 'To:', 'Cc:', or 'Resent-To:' fields don't explicitly name list?
 # This is an anti-spam measure
-DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
+DEFAULT_REQUIRE_EXPLICIT_DESTINATION = Yes
 
 # Alternate names acceptable as explicit destinations for this list.
 DEFAULT_ACCEPTABLE_ALIASES ="""
 """
 # For mailing lists that have only other mailing lists for members:
-DEFAULT_UMBRELLA_LIST = 0
+DEFAULT_UMBRELLA_LIST = No
 
 # For umbrella lists, the suffix for the account part of address for
 # administrative notices (subscription confirmations, password reminders):
 DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX = "-owner"
 
 # This variable controls whether monthly password reminders are sent.
-DEFAULT_SEND_REMINDERS = 1
+DEFAULT_SEND_REMINDERS = Yes
 
-# Send welcome messages to new users?  Probably should keep this set to 1.
-DEFAULT_SEND_WELCOME_MSG = 1
+# Send welcome messages to new users?
+DEFAULT_SEND_WELCOME_MSG = Yes
 
-# Send goodbye messages to unsubscribed members?  Probably should keep this
-# set to 1.
-DEFAULT_SEND_GOODBYE_MSG = 1
+# Send goodbye messages to unsubscribed members?
+DEFAULT_SEND_GOODBYE_MSG = Yes
 
 # Wipe sender information, and make it look like the list-admin
 # address sends all messages
-DEFAULT_ANONYMOUS_LIST = 0
+DEFAULT_ANONYMOUS_LIST = No
 
 # {header-name: regexp} spam filtering - we include some for example sake.
 DEFAULT_BOUNCE_MATCHING_HEADERS = """
@@ -850,9 +864,8 @@ from: .*@uplinkpro.com
 DEFAULT_REPLY_GOES_TO_LIST = 0
 
 # Mailman can be configured to strip any existing Reply-To: header, or simply
-# extend any existing Reply-To: with one based on the above setting.  This is
-# a boolean variable.
-DEFAULT_FIRST_STRIP_REPLY_TO = 0
+# extend any existing Reply-To: with one based on the above setting.
+DEFAULT_FIRST_STRIP_REPLY_TO = No
 
 # SUBSCRIBE POLICY
 # 0 - open list (only when ALLOW_OPEN_SUBSCRIBE is set to 1) **
@@ -864,8 +877,8 @@ DEFAULT_FIRST_STRIP_REPLY_TO = 0
 # subscribes (next variable)
 DEFAULT_SUBSCRIBE_POLICY = 1
 
-# does this site allow completely unchecked subscriptions?
-ALLOW_OPEN_SUBSCRIBE = 0
+# Does this site allow completely unchecked subscriptions?
+ALLOW_OPEN_SUBSCRIBE = No
 
 # The default policy for unsubscriptions.  0 (unmoderated unsubscribes) is
 # highly recommended!
@@ -878,22 +891,22 @@ DEFAULT_PRIVATE_ROSTER = 1
 
 # When exposing members, make them unrecognizable as email addrs, so
 # web-spiders can't pick up addrs for spam purposes.
-DEFAULT_OBSCURE_ADDRESSES = 1
+DEFAULT_OBSCURE_ADDRESSES = Yes
 
 # RFC 2369 defines List-* headers which are added to every message sent
 # through to the mailing list membership.  These are a very useful aid to end
 # users and should always be added.  However, not all MUAs are compliant and
 # if a list's membership has many such users, they may clamor for these
-# headers to be suppressed.  By setting this variable to 1, list owners will
-# be given the option to suppress these headers.  By setting it to 0, list
+# headers to be suppressed.  By setting this variable to Yes, list owners will
+# be given the option to suppress these headers.  By setting it to No, list
 # owners will not be given the option to suppress these headers (although some
 # header suppression may still take place, i.e. for announce-only lists, or
 # lists with no archives).
-ALLOW_RFC2369_OVERRIDES = 1
+ALLOW_RFC2369_OVERRIDES = Yes
 
 # Defaults for content filtering on mailing lists.  DEFAULT_FILTER_CONTENT is
 # a flag which if set to true, turns on content filtering.
-DEFAULT_FILTER_CONTENT = 0
+DEFAULT_FILTER_CONTENT = No
 
 # DEFAULT_FILTER_MIME_TYPES is a list of MIME types to be removed.  This is a
 # list of strings of the format "maintype/subtype" or simply "maintype".
@@ -908,7 +921,7 @@ DEFAULT_PASS_MIME_TYPES = ['multipart/mixed',
 
 # Whether text/html should be converted to text/plain after content filtering
 # is performed.  Conversion is done according to HTML_TO_PLAIN_TEXT_COMMAND
-DEFAULT_CONVERT_HTML_TO_PLAINTEXT = 1
+DEFAULT_CONVERT_HTML_TO_PLAINTEXT = Yes
 
 # Default action to take on filtered messages.
 # 0 = Discard, 1 = Reject, 2 = Forward, 3 = Preserve
@@ -916,29 +929,29 @@ DEFAULT_FILTER_ACTION = 0
 
 # Whether to allow list owners to preserve content filtered messages to a
 # special queue on the disk.
-OWNERS_CAN_PRESERVE_FILTERED_MESSAGES = 1
+OWNERS_CAN_PRESERVE_FILTERED_MESSAGES = Yes
 
 # Check for administrivia in messages sent to the main list?
-DEFAULT_ADMINISTRIVIA = 1
+DEFAULT_ADMINISTRIVIA = Yes
 
 
 
 #####
-# Digestification defaults
+# Digestification defaults.  Same caveat applies here as with list defaults.
 #####
 
 # Will list be available in non-digested form?
-DEFAULT_NONDIGESTABLE = 1
+DEFAULT_NONDIGESTABLE = Yes
 
 # Will list be available in digested form?
-DEFAULT_DIGESTABLE = 1
+DEFAULT_DIGESTABLE = Yes
 DEFAULT_DIGEST_HEADER = ""
 DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
 
-DEFAULT_DIGEST_IS_DEFAULT = 0
-DEFAULT_MIME_IS_DEFAULT_DIGEST = 0
+DEFAULT_DIGEST_IS_DEFAULT = No
+DEFAULT_MIME_IS_DEFAULT_DIGEST = No
 DEFAULT_DIGEST_SIZE_THRESHHOLD = 30     # KB
-DEFAULT_DIGEST_SEND_PERIODIC = 1
+DEFAULT_DIGEST_SEND_PERIODIC = Yes
 
 # Headers which should be kept in both RFC 1153 (plain) and MIME digests.  RFC
 # 1153 also specifies these headers in this exact order, so order matters.
@@ -961,11 +974,11 @@ PLAIN_DIGEST_KEEP_HEADERS = [
 
 
 #####
-# Bounce processing defaults
+# Bounce processing defaults.  Same caveat applies here as with list defaults.
 #####
 
 # Should we do any bounced mail response at all?
-DEFAULT_BOUNCE_PROCESSING = 1
+DEFAULT_BOUNCE_PROCESSING = Yes
 
 # Bounce processing works like this: when a bounce from a member is received,
 # we look up the `bounce info' for this member. If there is no bounce info,
@@ -1008,14 +1021,14 @@ DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL = days(7)
 
 # Does the list owner get messages to the -bounces (and -admin) address that
 # failed to match by the bounce detector?
-DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER = 1
+DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER = Yes
 
 # Notifications on bounce actions.  The first specifies whether the list owner
 # should get a notification when a member is disabled due to bouncing, while
 # the second specifies whether the owner should get one when the member is
 # removed due to bouncing.
-DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE = 1
-DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL = 1
+DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE = Yes
+DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL = Yes
 
 
 
@@ -1047,10 +1060,10 @@ DELIVERY_RETRY_WAIT = hours(1)
 # VARIABLES DEPENDING ON THE SIZE OF YOUR LISTS, THE PERFORMANCE OF YOUR
 # HARDWARE, NETWORK AND GENERAL MAIL HANDLING CAPABILITIES, ETC.
 
-# Set this to true to turn on MailList object lock debugging messages, which
+# Set this to On to turn on MailList object lock debugging messages, which
 # will be written to logs/locks.  If you think you're having lock problems, or
 # just want to tune the locks for your system, turn on lock debugging.
-LIST_LOCK_DEBUGGING = 0
+LIST_LOCK_DEBUGGING = Off
 
 # This variable specifies how long the lock will be retained for a specific
 # operation on a mailing list.  Watch your logs/lock file and if you see a lot
@@ -1065,11 +1078,11 @@ LIST_LOCK_LIFETIME = hours(5)
 # the message will be re-queued for later delivery.
 LIST_LOCK_TIMEOUT = seconds(10)
 
-# Set this to true to turn on lock debugging messages for the pending requests
+# Set this to On to turn on lock debugging messages for the pending requests
 # database, which will be written to logs/locks.  If you think you're having
 # lock problems, or just want to tune the locks for your system, turn on lock
 # debugging.
-PENDINGDB_LOCK_DEBUGGING = 0
+PENDINGDB_LOCK_DEBUGGING = Off
 
 # This variable specifies how long an attempt will be made to acquire a
 # pendingdb lock by the incoming qrunner process.  If the lock acquisition
@@ -1088,8 +1101,8 @@ PENDINGDB_LOCK_ATTEMPTS = 10
 
 #####
 # Nothing below here is user configurable.  Most of these values are in this
-# file for convenience.  Don't change any of them or override any of them in
-# your mm_cfg.py file!
+# file for internal system convenience.  Don't change any of them or override
+# any of them in your mm_cfg.py file!
 #####
 
 # These directories are used to find various important files in the Mailman
