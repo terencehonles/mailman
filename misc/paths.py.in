@@ -32,14 +32,6 @@ if exec_prefix == '${prefix}':
     exec_prefix = prefix
 
 # Hack the path to include the parent directory of the $prefix/Mailman package
-# directory.  Also include Python's site-packages directory if it isn't
-# already part of the search path.  We need this until we require Python 2.2,
-# which includes the email package in its standard library.  Until then, we
-# distribute the email package as a distutils install.
+# directory.
 import sys
-import os
-
 sys.path.insert(0, prefix)
-sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
-                       'site-packages')
-sys.path.append(sitedir)
