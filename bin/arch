@@ -21,12 +21,14 @@ Use this command to rebuild the archives for a mailing list.  You may want to
 do this if you edit some messages in an archive, or remove some messages from
 an archive.
 
-Usage: %(program)s <listname> <mbox> [-h]
+Usage: %(program)s <listname> [<mbox>] [-h]
 
 Where <mbox> is the path to a list's complete mbox archive.  Usually this will 
 be some path in the archives/private directory.  For example:
 
 %% bin/arch mylist archives/private/mylist.mbox/mylist.mbox
+
+<mbox> is optional.  If it is missing, it is calculated.
 """
 
 import sys
@@ -64,18 +66,29 @@ def main():
             usage(0)
 
     # grok arguments
-    if len(args) <> 2:
-        usage(1, 'listname and/or mbox file is missing')
+    if len(args) < 1:
+        usage(1, 'listname is required')
+    listname = args[0]
+
+    if len(args) < 2:
+        mbox = None
+    else:
+        mbox = args[1]
+
+    if len(args) > 2:
+        usage(1)
 
     # open the mailing list object
     mlist = None
     lock = None
     try:
-        listname, mbox = sys.argv[1:]
         try:
             mlist = MailList(listname)
         except MMUnknownListError:
             usage(2, 'no such list: ' + listname)
+        if mbox is None:
+            mbox = os.path.join(mlist.private_archive_file_dir,
+                                listname + '.mbox')
 
         # lay claim to the archive's lock file.  this is so no other post can
         # mess up the archive while we're glomming it.  we pick a suitably
