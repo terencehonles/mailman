@@ -239,14 +239,14 @@ def checkperms(state):
     # group ownership of the file, since check_perms checks this itself.
     if state.VERBOSE:
         print _('checking ownership of %(DBFILE)s')
-    rootuid = pwd.getpwnam('root')[2]
+    rootuid = pwd.getpwnam('mailman')[2]
     ownerok = stat[ST_UID] == rootuid
     if not ownerok:
         try:
             owner = pwd.getpwuid(stat[ST_UID])[0]
         except KeyError:
             owner = 'uid %d' % stat[ST_UID]
-        print _('%(DBFILE)s owned by %(owner)s (must be owned by root)')
+        print _('%(DBFILE)s owned by %(owner)s (must be owned by mailman)')
         state.ERRORS += 1
         if state.FIX:
             print _('(fixing)')
