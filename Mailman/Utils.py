@@ -519,16 +519,17 @@ def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
 
 ADMINDATA = {
     # admin keyword: (minimum #args, maximum #args)
+    'confirm':     (1, 1),
+    'help':        (0, 0),
+    'info':        (0, 0),
+    'lists':       (0, 0),
+    'options':     (0, 0),
+    'password':    (2, 2),
+    'remove':      (0, 0),
+    'set':         (3, 3),
     'subscribe':   (0, 3),
     'unsubscribe': (0, 1),
     'who':         (0, 0),
-    'info':        (0, 0),
-    'lists':       (0, 0),
-    'set':         (3, 3),
-    'help':        (0, 0),
-    'password':    (2, 2),
-    'options':     (0, 0),
-    'remove':      (0, 0),
     }
 
 # Given a Message.Message object, test for administrivia (eg subscribe,
@@ -550,12 +551,9 @@ def is_administrivia(msg):
     # See if the body text has only one word, and that word is administrivia
     if ADMINDATA.has_key(bodytext.strip().lower()):
         return 1
-    # See if the subect has only one word, and that word is administrivia
-    if ADMINDATA.has_key(msg.get('subject', '').strip().lower()):
-        return 1
     # Look at the first N lines and see if there is any administrivia on the
     # line.  BAW: N is currently hardcoded to 5.
-    for line in lines[:5]:
+    for line in lines[:5] + [msg.get('subject', '')]:
         if not line.strip():
             continue
         words = [word.lower() for word in line.split()]
