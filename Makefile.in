@@ -7,7 +7,7 @@
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
@@ -24,15 +24,15 @@ SHELL=		/bin/sh
 VERSION=	@VERSION@
 
 VPATH=		@srcdir@
-srcdir= 	@srcdir@
-bindir= 	@bindir@
-prefix=   	@prefix@
+srcdir=		@srcdir@
+bindir=		@bindir@
+prefix=		@prefix@
 exec_prefix=	@exec_prefix@
 
 CC=		@CC@
 INSTALL=	@INSTALL@
 
-DEFS=   	@DEFS@
+DEFS=		@DEFS@
 
 MAILMAN_UID=	@MAILMAN_UID@
 
@@ -75,7 +75,7 @@ install: $(SUBDIRS)
 	do \
 	    dir=$(prefix)/$$d; \
 	    if test ! -d $$dir; then \
-	        echo "Creating directory hierarchy $$dir"; \
+		echo "Creating directory hierarchy $$dir"; \
 		./mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
 		chmod g+s $$dir; \
@@ -88,7 +88,7 @@ install: $(SUBDIRS)
 	do \
 	    dir=$(exec_prefix)/$$d; \
 	    if test ! -d $$dir; then \
-	        echo "Creating directory hierarchy $$dir"; \
+		echo "Creating directory hierarchy $$dir"; \
 		./mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
 		chmod g+s $$dir; \
@@ -99,10 +99,10 @@ install: $(SUBDIRS)
 	do \
 	    (cd $$d; $(MAKE) install); \
 	done
-        @echo "====>"
-        @echo "====> If you are installing over an old installation, please"
-        @echo "====> run \"make update\".  See the UPGRADING file for details."
-        @echo "====>"
+	@echo "*****"
+	@echo "***** If you are installing over an old installation, please"
+	@echo "***** run \"make update\".  See the UPGRADING file for details."
+	@echo "*****"
 
 #finish:
 #	@for d in $(SUBDIRS); \
@@ -126,3 +126,7 @@ distclean: $(SUBDIRS)
 	    (cd $$d; $(MAKE) distclean); \
 	done
 	-rm config.cache config.log config.status Makefile
+
+# Local Variables:
+# indent-tabs-mode: t
+# End:
