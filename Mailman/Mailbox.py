@@ -23,15 +23,24 @@ import mailbox
 import email
 from email.Generator import Generator
 from email.Parser import Parser
+from email.Errors import MessageParseError
 
 from Mailman import mm_cfg
 from Mailman.Message import Message
+
+
+def _safeparser(fp):
+    try:
+        return email.message_from_file(fp, Message)
+    except MessageParseError:
+        # Don't return None since that will stop a mailbox iterator
+        return ''
 
 
 
 class Mailbox(mailbox.PortableUnixMailbox):
     def __init__(self, fp):
-        mailbox.PortableUnixMailbox.__init__(self, fp, email.message_from_file)
+        mailbox.PortableUnixMailbox.__init__(self, fp, _safeparser)
 
     # msg should be an rfc822 message or a subclass.
     def AppendMessage(self, msg):
@@ -64,8 +73,9 @@ def _archfactory(mailbox):
     # a reference to the mailing list.  Nested scopes would help here, BTW,
     # but we can't rely on them being around (e.g. Python 2.0).
     def scrubber(fp, mailbox=mailbox):
-        p = Parser(Message)
-        msg = p.parse(fp)
+        msg = _safeparser(fp)
+        if msg == '':
+            return msg
         return mailbox.scrub(msg)
     return scrubber
 
