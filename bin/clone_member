@@ -70,12 +70,12 @@ def main():
         if opt in ('-h', '--help'):
             usage(0)
 
-    try:
-        listname = args[0]
-        fromaddr = args[1]
-        toaddr = args[2]
-    except IndexError:
+    if len(args) <> 3:
         usage(1)
+
+    listname = args[0]
+    fromaddr = args[1]
+    toaddr = args[2]
 
     try:
         # open locked
