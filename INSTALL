@@ -84,7 +84,7 @@ if you want to keep your existing installation intact.
       directory you unpacked Mailman into, and run configure with no
       arguments:
 
-          % cd <mailman-src-dir>
+          % cd mailman-<version>
           % ./configure
 
       and then run `make install'.  The following options allow you to
@@ -383,10 +383,13 @@ if you want to keep your existing installation intact.
               "sh: wrapper not available for sendmail programs"
 
     Solution: Your system uses sendmail restricted shell.  You need to
-              configure smrsh by creating a symbolic link from the mail
-              wrapper ($prefix/mail/wrapper) to either /var/admin/sm.bin 
-              or /usr/admin/sm.bin.  Note that on Debian linux, the system
-              makes /usr/lib/sm.bin, which is wrong, you will need to create
+              configure smrsh by creating a symbolic link from the
+              mail wrapper ($prefix/mail/wrapper) to the directory
+              identifying executables allowed to run under smrsh.
+              Some common names for this directory are
+              /var/admin/sm.bin, /usr/admin/sm.bin or /etc/smrsh.
+              Note that on Debian linux, the system makes
+              /usr/lib/sm.bin, which is wrong, you will need to create
               the directory /usr/admin/sm.bin and add the link there.
               NOTE: any aliases newaliases spits out will need to be
               adjusted to point to the secure link to the wrapper.
