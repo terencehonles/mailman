@@ -109,7 +109,10 @@ class IncomingRunner(Runner):
         # used.  Final fallback is the global pipeline.
         try:
             pipeline = self._get_pipeline(mlist, msg, msgdata)
-            return self._dopipeline(mlist, msg, msgdata, pipeline)
+            status = self._dopipeline(mlist, msg, msgdata, pipeline)
+            if status:
+                msgdata['pipeline'] = pipeline
+            return status
         finally:
             mlist.Save()
             mlist.Unlock()
