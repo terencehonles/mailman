@@ -30,13 +30,21 @@ from Mailman.pythonlib.StringIO import StringIO
 class HandlerError(Errors.MailmanError):
     """Base class for all handler errors."""
 
+
 class MessageHeld(HandlerError):
     """Base class for all message-being-held short circuits."""
     def __str__(self):
         return self.__class__.__doc__
 
+    rejection = 'Your message was rejected'
+
+    def rejection_notice(self, mlist):
+        return self.__class__.rejection
+
+
 class DiscardMessage(HandlerError):
     """The message can be discarded with no further action"""
+
 
 class SomeRecipientsFailed(HandlerError):
     """Delivery to some or all recipients failed"""
