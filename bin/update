@@ -24,6 +24,7 @@ some previous version.  It knows about versions back to 1.0b4 (?).
 import sys
 import os
 import marshal
+import errno
 
 import paths
 from Mailman import mm_cfg
@@ -72,6 +73,30 @@ def calcversions():
 def makeabs(relpath):
     return os.path.join(mm_cfg.PREFIX, relpath)
 
+
+
+def move_language_templates(mlist):
+    print >> sys.stderr, 'Fixing language templates:', mlist.internal_name()
+    # In Mailman 2.1, each language gets its own templates under
+    # lists/<listname>.  Since English is the default language for the
+    # templates, we want to move all the existing templates under
+    # lists/<listname> to lists/<listname>/en
+    listpath = mlist._full_path
+    en_path = os.path.join(listpath, 'en')
+    omask = os.umask(0)
+    try:
+        try:
+            os.mkdir(en_path, 02770)
+        except OSError, e:
+            if e.errno <> errno.EEXIST: raise
+    finally:
+        os.umask(omask)
+    # Now, move all the old template files to the new `en' directory
+    for file in [f for f in os.listdir(listpath)
+                 if f.endswith('.txt') or f.endswith('.html')]:
+        os.rename(os.path.join(listpath, file),
+                  os.path.join(listpath, 'en', file))
+        
 
 
 def dolist(listname):
@@ -222,6 +247,11 @@ script.
             else:
                 print "- both %s and %s exist, leaving untouched" \
                       % (o_tmpl, n_tmpl)
+    #
+    # Move all the templates to the en language subdirectory as required for
+    # Mailman 2.1
+    #
+    move_language_templates(mlist)
     # Avoid eating filehandles with the list lockfiles
     mlist.Unlock()
     return 0
