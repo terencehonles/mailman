@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@ import os
 import time
 import sha
 import marshal
+import cPickle
 import random
 import errno
 
@@ -33,6 +34,7 @@ from Mailman import mm_cfg
 from Mailman import LockFile
 
 DBFILE = os.path.join(mm_cfg.DATA_DIR, 'pending.db')
+PCKFILE = os.path.join(mm_cfg.DATA_DIR, 'pending.pck')
 LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'pending.lock')
 
 # Types of pending records
@@ -109,14 +111,27 @@ def confirm(cookie, expunge=1):
 
 
 def _load():
-    # Lock must be acquired.
+    # The list's lock must be acquired.
+    #
+    # First try to load the pickle file
+    fp = None
     try:
-        fp = open(DBFILE)
-        return marshal.load(fp)
-    except IOError, e:
-        if e.errno <> errno.ENOENT: raise
-        # No database yet, so initialize a fresh one
-        return {'evictions': {}}
+        try:
+            fp = open(PCKFILE)
+            return cPickle.load(fp)
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+            try:
+                # Try to load the old DBFILE
+                fp = open(DBFILE)
+                return marshal.load(fp)
+            except IOError, e:
+                if e.errno <> errno.ENOENT: raise
+                # Fresh pendings database
+                return {'evictions': {}}
+    finally:
+        if fp:
+            fp.close()
 
 
 def _save(db):
@@ -137,11 +152,21 @@ def _save(db):
             del evictions[cookie]
     db['version'] = mm_cfg.PENDING_FILE_SCHEMA_VERSION
     omask = os.umask(007)
+    # Always save this as a pickle (safely), and after that succeeds, blow
+    # away any old marshal file.
+    tmpfile = PCKFILE + '.tmp'
+    fp = None
     try:
-        fp = open(DBFILE, 'w')
-        marshal.dump(db, fp)
+        fp = open(tmpfile, 'w')
+        cPickle.dump(db, fp)
         fp.close()
+        fp = None
+        os.rename(tmpfile, PCKFILE)
+        if os.path.exists(DBFILE):
+            os.remove(DBFILE)
     finally:
+        if fp:
+            fp.close()
         os.umask(omask)
 
 
