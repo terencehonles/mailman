@@ -241,7 +241,7 @@ def start_runner(qrname, slice, count):
     rswitch = '--runner=%s:%d:%d' % (qrname, slice, count)
     # BAW: should argv[0] be `python'?
     exe = os.path.join(mm_cfg.BIN_DIR, 'qrunner')
-    os.execl(mm_cfg.PYTHON, 'qrunner', exe, rswitch)
+    os.execl(mm_cfg.PYTHON, 'qrunner', exe, rswitch, '-s')
     # Should never get here
     raise RuntimeError, 'os.execl() failed'
 
