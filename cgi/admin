@@ -25,7 +25,7 @@ def main():
 	print doc.Format()
 	sys.exit(0)
 
-    list_name = list_info[0]
+    list_name = string.lower(list_info[0])
 
     list = maillist.MailList(list_name)
 

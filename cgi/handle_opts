@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 
-import sys, os, cgi
+import sys, os, cgi, string
 f = open('/tmp/cbgb', 'a+')
 sys.stderr = f
 #sys.stderr = sys.stdout
@@ -18,7 +18,7 @@ if len(list_info) < 2:
     print doc.Format()
     sys.exit(0)
 
-list_name = list_info[0]
+list_name = string.lower(list_info[0])
 user = list_info[1]
 
 if len(list_info) < 2:

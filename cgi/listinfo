@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 # We don't need to lock in this script, because we're never going to change data.
 
-import sys, os
+import sys, os, string
 f = open('/tmp/listinfo.err', 'a+')
 sys.stderr = f #sys.stdout
 from regsub import gsub
@@ -19,7 +19,7 @@ if len(list_info) < 1:
     print doc.Format()
     sys.exit(0)
 
-list_name = list_info[0]
+list_name = string.lower(list_info[0])
 
 try:
   list = maillist.MailList(list_name)
