@@ -310,6 +310,22 @@ class Message:
         a = AddrlistClass(data)
         return a.getaddrlist()
     
+    def getallrecipients(self):
+        """Returns a list of the all the recipient addresses.
+
+        This list is of 2-tuple elements as returned by getaddr(), but is a
+        collation of all the To: and Cc: headers found in the message.
+        """
+        rawrecips = []
+        for h in (self.getallmatchingheaders('to') +
+                  self.getallmatchingheaders('cc')):
+            i = string.find(h, ':')
+            if i > 0:
+                rawrecips.append(string.strip(h[i+1:]))
+        alladdrs = string.join(rawrecips, ', ')
+        a = AddressList(alladdrs)
+        return a.addresslist
+
     def getdate(self, name):
         """Retrieve a date field from a header.
         
