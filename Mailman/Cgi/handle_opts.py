@@ -255,6 +255,10 @@ exactly what happened to provoke this error.<p>'''
         msg = 'You have successfully set your options.'
         try:
             list.SetUserDigest(user, digest_value)
+            # digest mode changed from on to off, so send the current digest
+            # to the user.
+            if digest_value == 0:
+                PrintResults('You may get one last digest.')
         except (Errors.MMAlreadyDigested, Errors.MMAlreadyUndigested):
             pass
         except Errors.MMCantDigestError:
@@ -263,6 +267,4 @@ exactly what happened to provoke this error.<p>'''
                   'successfully set.'
         list.SetUserOption(user, mm_cfg.ConcealSubscription, conceal)
         PrintResults(msg)
-
-
     list.Unlock()
