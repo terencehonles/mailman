@@ -2,6 +2,36 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+1.0b10
+
+- New script bin/sync_members which can be used to synchronize a
+  list's membership against a flat (e.g. sendmail :include: style)
+  file.
+
+- bin/add_members and bin/remove_members now accept addresses on the
+  command line with `-' as the value for the -d and -n options.
+
+- Added variable USE_ENVELOPE_SENDER to Defaults.py for site-wide
+  configuration of address matching scheme.  With this variable set to 
+  true, the envelope sender (e.g. Unix "From_" header) is used to
+  match addresses, otherwise the From: header is used.  Envelope
+  sender matching seems not to work on many systems.  This variable is 
+  currently defaulted to 1, but may change to 0 for the final release.
+
+- Reorganization of the membership management admin page.  Also member
+  addresses are linked to their options page.  Only the `General'
+  category has the admin password change form.
+
+- Major reorganization of email command handling and responses.
+  `notmetoo' is the preferred email command instead of `norcv',
+  although the latter is still accepted as an argument.  If more than
+  5 errors are found in the message, command processing is halted.
+
+- User options page now shows the user their case-preserved subscribed 
+  address as well.
+
+- The usual assortment of bug fixes.
+
 1.0b9
 
 - New bin scripts: clone_member, list_members, add_members (a
