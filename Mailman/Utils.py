@@ -228,6 +228,7 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
 def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
 
+
 def ValidEmail(str):
     """Verify that the an email address isn't grossly invalid."""
     # Pretty minimal, cheesy check.  We could do better...
@@ -246,6 +247,47 @@ def ValidEmail(str):
     if len(domain_parts) < 2:
 	return 0
     return 1
+
+
+# User J. Person <person@allusers.com>
+_addrcre1 = re.compile('<(.*)>')
+# person@allusers.com (User J. Person)
+_addrcre2 = re.compile('([^(]*)\s(.*)')
+
+def ParseAddrs(addresses):
+    """Parse common types of email addresses:
+
+    User J. Person <person@allusers.com>
+    person@allusers.com (User J. Person)
+
+    TBD: I wish we could use rfc822.parseaddr() but 1) the interface is not
+    convenient, and 2) it doesn't work for the second type of address.
+
+    Argument is a list of addresses, return value is a list of the parsed
+    email addresses.  The argument can also be a single string, in which case
+    the return value is a single string.
+
+    """
+    single = 0
+    if type(addresses) == type(''):
+        single = 1
+        addrs = [addresses]
+    else:
+        addrs = addresses
+    parsed = []
+    for a in addrs:
+        mo = _addrcre1.search(a)
+        if mo:
+            parsed.append(mo.group(1))
+            continue
+        mo = _addrcre2.search(a)
+        if mo:
+            parsed.append(mo.group(1))
+            continue
+        parsed.append(a)
+    if single:
+        return parsed[0]
+    return parsed
 
 
 def GetPathPieces(path):
