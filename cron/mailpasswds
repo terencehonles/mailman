@@ -27,6 +27,12 @@ from the mm_cfg.MAILMAN_SITE_LIST, which must exist.
 Usage: %(PROGRAM)s [options]
 
 Options:
+    -l listname
+    --listname=listname
+        Send password reminders for the named list only.  If omitted,
+        reminders are sent for all lists.  Multiple -l/--listname options are
+        allowed.
+
     -h/--help
         Print this message and exit.
 """
@@ -70,16 +76,26 @@ def usage(code, msg=''):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'l:h',
+                                   ['listname=', 'help'])
     except getopt.error, msg:
         usage(1, msg)
 
     if args:
         usage(1)
 
+    listnames = None
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
+        if opt in ('-l', '--listname'):
+            if listnames is None:
+                listnames = [arg]
+            else:
+                listnames.append(arg)
+
+    if listnames is None:
+        listnames = Utils.list_names()
 
     # This is the list that all the reminders will look like they come from,
     # but with the host name coerced to the virtual host we're processing.
@@ -96,7 +112,7 @@ def main():
     # there's only one key in this dictionary: mm_cfg.DEFAULT_HOST_NAME.  The
     # values are lists of the unlocked MailList instances.
     byhost = {}
-    for listname in Utils.list_names():
+    for listname in listnames:
         mlist = MailList.MailList(listname, lock=0)
         if not mlist.send_reminders:
             continue
