@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2479 $)
+AC_REVISION($Revision: 2684 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -181,10 +181,10 @@ uid = ''
 for user in string.split("$2"):
     try:
         try:
-	    uid = pwd.getpwuid(int(user))[0]
+	    uid = pwd.getpwuid(int(user))[2]
 	    break
 	except ValueError:
-	    uid = pwd.getpwnam(user)[0]
+	    uid = pwd.getpwnam(user)[2]
 	    break
     except KeyError:
         uid = ''
@@ -199,29 +199,54 @@ changequote([, ])
 AC_MSG_RESULT($$1)
 rm -f conftest.out conftest.py])
 
+# Check for some other uid to use than `mailman'
+AC_MSG_CHECKING(for --with-ownername)
+AC_ARG_WITH(ownername, dnl
+[  --with-ownername	specify a user name other than \"mailman\"])
+
+if test -z "$with_ownername"
+then
+	with_ownername="mailman"
+fi
+OWNERNAME=$with_ownername
+AC_MSG_RESULT($OWNERNAME)
+
 # User `mailman' must exist
-AC_MSG_CHECKING(for mailman UID)
-MM_FIND_USER_ID(MAILMAN_UID, mailman)
+AC_MSG_CHECKING(for $OWNERNAME UID)
+MM_FIND_USER_ID(MAILMAN_UID, $OWNERNAME)
 if test -z "$MAILMAN_UID"
 then
     AC_MSG_ERROR([
-***** No \"mailman\" user found!
-***** Your system must have a \"mailman\" user defined (usually
-***** in your /etc/passwd file).  Please see the INSTALL file
-***** file details.])
+***** No \"$OWNERNAME\" user found!
+***** Your system must have a \"$OWNERNAME\" user defined
+***** (usually in your /etc/passwd file).  Please see the INSTALL
+***** file for details.])
 fi
 
 
+# Check for some other gid to use than `mailman'
+AC_MSG_CHECKING(for --with-ownergroup)
+AC_ARG_WITH(ownergroup, dnl
+[  --with-ownergroup	specify a group name other than \"mailman\"])
+
+if test -z "$with_ownergroup"
+then
+	with_ownergroup="mailman"
+fi
+OWNERGROUP=$with_ownergroup
+AC_MSG_RESULT($OWNERGROUP)
+
+
 # Group `mailman' must exist
-AC_MSG_CHECKING(for mailman GID)
-MM_FIND_GROUP_ID(MAILMAN_GID, mailman)
+AC_MSG_CHECKING(for $OWNERGROUP GID)
+MM_FIND_GROUP_ID(MAILMAN_GID, $OWNERGROUP)
 if test -z "$MAILMAN_GID"
 then
     AC_MSG_ERROR([
-***** No \"mailman\" group found!
-***** Your system must have a \"mailman\" group defined (usually
-***** in your /etc/group file).  Please see the INSTALL file
-***** file details.])
+***** No \"$OWNERGROUP\" group found!
+***** Your system must have a \"$OWNERGROUP\" group defined
+***** (usually in your /etc/group file).  Please see the INSTALL
+***** file for details.])
 fi
 
 
