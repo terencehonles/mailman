@@ -219,11 +219,15 @@ def GetPathPieces(envar='PATH_INFO'):
 
 
 
-def ScriptURL(target, web_page_url=mm_cfg.DEFAULT_URL, absolute=0):
+def ScriptURL(target, web_page_url=None, absolute=0):
     """target - scriptname only, nothing extra
     web_page_url - the list's configvar of the same name
     absolute - a flag which if set, generates an absolute url
     """
+    if web_page_url is None:
+        web_page_url = mm_cfg.DEFAULT_URL
+        if web_page_url[-1] <> '/':
+            web_page_url = web_page_url + '/'
     fullpath = os.environ.get('REQUEST_URI')
     if fullpath is None:
         fullpath = os.environ.get('SCRIPT_NAME', '') + \
