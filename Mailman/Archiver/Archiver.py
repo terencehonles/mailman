@@ -191,29 +191,21 @@ class Archiver:
             if mm_cfg.ARCHIVE_TO_MBOX == 1:
                 # Archive to mbox only.
                 return
-        # From this point on, we're doing all the expensive archiving work.
-        # If anything goes wrong here, we will simply log this and let the
-        # normal delivery mechanism continue.  The archiver is too f*cked up
-        # anyway, and at the very least we've got the mbox to regenerate
-        # from.
-        try:
-            txt = str(msg)
-            # should we use the internal or external archiver?
-            private_p = self.archive_private
-            if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
-                self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
-            elif mm_cfg.PRIVATE_EXTERNAL_ARCHIVER and private_p:
-                self.ExternalArchive(mm_cfg.PRIVATE_EXTERNAL_ARCHIVER, txt)
-            else:
-                # use the internal archiver
-                f = StringIO(txt)
-                import HyperArch
-                h = HyperArch.HyperArchive(self)
-                h.processUnixMailbox(f)
-                h.close()
-                f.close()
-        except:
-            traceback.print_exc()
+        txt = str(msg)
+        # should we use the internal or external archiver?
+        private_p = self.archive_private
+        if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
+            self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
+        elif mm_cfg.PRIVATE_EXTERNAL_ARCHIVER and private_p:
+            self.ExternalArchive(mm_cfg.PRIVATE_EXTERNAL_ARCHIVER, txt)
+        else:
+            # use the internal archiver
+            f = StringIO(txt)
+            import HyperArch
+            h = HyperArch.HyperArchive(self)
+            h.processUnixMailbox(f)
+            h.close()
+            f.close()
 
     #
     # called from MailList.MailList.Save()
