@@ -1,0 +1,23 @@
+本文可包含 <b><code>%(attribute)s</code></b> 格式字串，其可替換為通信論壇
+相應的屬性。詳情請參照
+<a href="http://www.python.org/doc/current/lib/typesseq-strings.html">Python
+格式化字串規則</a>.  預設屬性如下：
+
+<ul>
+    <li><b><code>real_name</code></b> - 本論壇 "較佳" 的名稱；
+    通常都用大寫。
+
+    <li><b><code>_internal_name</code></b> - 此論壇名稱用於 URL 識別
+    ，其大小寫不可有誤。 
+
+    <li><b><code>host_name</code></b> - 執行論壇的伺服器詳盡的主機名稱（FQDN）。
+
+    <li><b><code>web_page_url</code></b> - Mailman 的 URL base. 其後可添加
+    一些參數以產生有用的網址。
+    例如： 加上 <em><code>listinfo/%(_internal_name)s</code></em> 
+    可產生通信論壇的 listinfo 網址。
+
+    <li><b><code>description</code></b> - 該通信論壇的摘要說明。
+
+    <li><b><code>info</code></b> - 該通信論壇的詳細說明。
+</ul>
