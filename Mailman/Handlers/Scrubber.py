@@ -133,7 +133,7 @@ URL: %(url)s
             else:
                 # HTML-escape it and store it as an attachment, but make it
                 # look a /little/ bit prettier. :(
-                payload = Utils.websafe(part.get_payload())
+                payload = Utils.websafe(part.get_payload(decode=1))
                 # For whitespace in the margin, change spaces into
                 # non-breaking spaces, and tabs into 8 of those.  Then use a
                 # mono-space font.  Still looks hideous to me, but then I'd
@@ -143,6 +143,9 @@ URL: %(url)s
                 lines = [doreplace(s) for s in payload.split('\n')]
                 payload = '<tt>\n' + BR.join(lines) + '\n</tt>\n'
                 part.set_payload(payload)
+                # We're replacing the payload with the decoded payload so this
+                # will just get in the way.
+                del part['content-transfer-encoding']
                 omask = os.umask(002)
                 try:
                     url = save_attachment(mlist, part, dir, filter_html=0)
