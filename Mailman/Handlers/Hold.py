@@ -195,7 +195,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # deal with the held message.
     d = {'listname'   : listname,
          'hostname'   : mlist.host_name,
-         'reason'     : reason,
+         'reason'     : _(reason),
          'sender'     : sender,
          'subject'    : msg.get('subject', _('(no subject)')),
          'admindb_url': mlist.GetScriptURL('admindb', absolute=1),
