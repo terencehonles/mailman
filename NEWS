@@ -23,6 +23,8 @@ Here is a history of user visible changes to Mailman.
       could appear, such as when trying to delete a list through the
       web that has some archives in it.
 
+    - bin/remove_members grew --nouserack/-n and -noadminack/-N options.
+
     - A new script bin/list_owners has been added for printing out
       list owners and moderators.
 
