@@ -188,8 +188,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " newlines will be translated to &lt;br&gt; - so you can use"
              " links, preformatted text, etc, but don't put in carriage"
              " returns except where you mean to separate paragraphs.  And"
-             " review your changes - bad html (like an unclosed quote) can"
-             " disrupt display of the listinfo page."),
+             " review your changes - bad html (like some unterminated HTML"
+             " constructs) can prevent display of the entire listinfo page."),
 
 	    ('subject_prefix', mm_cfg.String, 10, 0,
 	     'Prefix for subject line of list postings.',
