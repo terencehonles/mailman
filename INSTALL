@@ -1,5 +1,5 @@
 Mailman - a mailing list management system
-Copyright (C) 1998 by the Free Software Foundation, Inc.
+Copyright (C) 1998 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 This file contains installation instructions.  Mailman is now
@@ -54,9 +54,15 @@ and install the Mailman software.
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
-      installed under $prefix.  Make sure this directory is set to
-      group `mailman' and has the group sticky bit set.  For example,
-      these shell commands will accomplish this:
+      installed under $prefix.  
+
+      Note that if you've added a mailman user, and plan to install to
+      the default location (/home/mailman), that directory may have
+      already been made for you.
+
+      Make sure this directory is set to group `mailman' and has the
+      group sticky bit set.  For example, these shell commands will
+      accomplish this:
 
           % cd $prefix
           % chgrp mailman .
@@ -68,7 +74,8 @@ and install the Mailman software.
 
     You do not need to be root to perform the steps in the section.
     Do them under your own login, or whatever account you typically
-    install software as.
+    install software as.  However, make sure that you have write
+    permissions to the directory you'll be installing into.
 
     - If you've installed other GNU software, you should be familar
       with the configure script.  Usually you can just cd to the
@@ -120,6 +127,15 @@ and install the Mailman software.
       $MAIL_GID   The gid to use in the CGI wrapper (default is
                   the gid for the group `mail')
 
+       For example, to set $MAIL_GID to 20 instead of the default,
+      users of csh or tcsh should type:
+
+            % setenv MAIL_GID 20
+
+      Users of bash, ksh and similar shells should type:
+
+            % export MAIL_GID=20
+
       For $CGI_UID and $CGI_GID, consult your Web server's
       documentation.  This uid and gid should match the user and group 
       that the Web server will execute CGI scripts as.
@@ -166,6 +182,23 @@ and install the Mailman software.
           % cd $prefix/cron
           % crontab crontab.in
 
+    - Add aliases for mailman and owner-mailman to the system's mail 
+      alias database.  These aliases should point to whoever is ultimately 
+      responsible for the Mailman installation.  Here are instructions 
+       for those running sendmail:
+
+          1. su to root.
+          2. Assuming your email is fred@flintstone.com, add the following
+             lines to the file /etc/aliases:
+ 
+             mailman: fred@flintstone.com
+             mailman-owner: mailman
+
+          3. Run the program 'newaliases'.
+
+      If you don't run sendmail, consult the documentation of your mail 
+      transport program for information on adding these aliases.
+
 4. Customize Mailman
 
     You should do these steps using the account you installed Mailman
@@ -198,5 +231,75 @@ and install the Mailman software.
 
           <http://starship.skyport.net/crew/amk/maintained/pipermail.html>
 
-      Future release of Mailman will probably come bundled with
+      Future releases of Mailman will probably come bundled with
       Pipermail.
+
+5. Getting started
+
+    - Create a list named test.  To do so, run the program 
+      $prefix/bin/newlist.  You will be prompted for the name of the list,
+      as well as the email address of the person running the list.  Put
+      your own email address as the list administrator's address.
+       
+    - Running newlist will generate a list of aliases that must be added
+      to the system.  If you are running Sendmail, you may add the lines
+      output directly to the file /etc/aliases.  You must then run the
+      command 'newaliases' (all as root).  Now the mailing address for 
+      your list as well as its administrative addresses will be set up.
+      If you are not running Sendmail, consult your MUA's documentation
+      for information on adding aliases.
+
+    - You will receive email instructions on how to visit the list you 
+      just created.  Using these instructions, subscribe to the mailing
+      list.  Once you have subscribed (which requires a confirmation step!),
+      send a message to the list, and see if you get it.  If so, then you
+      have successfully installed Mailman, and set up your first list!
+
+
+6. Troubleshooting
+  
+    If you encounter problems with running Mailman, first check the 
+    "Common Problems" section, below.  If your problem is not covered there,
+    then check for a log entry from Mailman in your syslog.  Where syslog lives
+    on your particular machine may vary.  It may be in /var/log/maillog.
+    It may also be in /var/log/syslog.  On many machines, syslog files live
+    in /adm/log/ instead of /var/log. Then, send an error report to 
+    mailman-users@python.org.  Include a description of what you're doing 
+    to cause the problem, and the relevant lines from your syslog.  
+    Also include information on your operating system and version of Python.
+
+7. Common Problems
+
+    Problem:  All Mailman web pages give a 404 File not found error.
+
+    Solution: Your web server has not been set up properly for handling
+              Mailman's cgi commands.  Make sure you've:
+
+              1) Configured the web server to give permissions to
+                 $prefix/cgi-bin
+              2) Restarted the web server properly.
+
+              Consult your web server's documentation for instructions
+              on how to do these things.
+
+
+    Problem:  All Mailman web pages give an "Internal Server Error".
+
+    Solution: The likely problem is that you are using the wrong GID or 
+              UID for CGI scripts.  Check your syslog.  If you see, for
+              example, a line like: 
+
+                  Attempt to exec script with invalid gid 51, expected 99
+
+              You need to reinstall Mailman, and specify $CGI_GID to be 51,
+              as described in the installation instructions.
+
+
+    Problem:  I send mail to the list, and get back mail saying the
+               list is not found!
+
+    Solution: You probably didn't add the necessary aliases to the system
+              alias database, given to you when you ran the newlist command.
+              If you did add them, you likely did not update the alias
+              database.  Refer to section 5 above for more information.
+
