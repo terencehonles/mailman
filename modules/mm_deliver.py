@@ -69,13 +69,16 @@ Questions or comments?  Send mail to Mailman-owner@%s
 # We could abstract these two better...
 class Deliverer:
     # This method assumes the sender is list-admin if you don't give one.
-    def SendTextToUser(self, subject, text, recipient, sender=None):
+    def SendTextToUser(self, subject, text, recipient,
+		       sender=None, errors=None):
 	if not sender:
 	    sender = self.GetAdminEmail()
 
 	msg = mm_message.OutgoingMessage()
 	msg.SetSender(sender)
 	msg.SetHeader('Subject', subject, 1)
+	if errors:
+	    msg.SetHeader('Errors-to', errors, 1)
 	msg.SetBody(self.QuotePeriods(text))
 	self.DeliverToUser(msg, recipient)
 
@@ -126,10 +129,10 @@ class Deliverer:
 	if self.reply_goes_to_list:
 	    tmp_file.write('Reply-To: %s\n\n' % self.GetListEmail())
 	if header:
-	    tmp_file.write(header + '\n\n')
+	    tmp_file.write(header + '\n')
 	tmp_file.write(self.QuotePeriods(msg.body))
 	if footer:
-	    tmp_file.write('\n\n' + footer)
+	    tmp_file.write(footer)
 	tmp_file.close()
         file = os.popen("%s %s %s %s %s" %
 			(os.path.join(mm_cfg.MAILMAN_DIR, "mail/deliver"),
