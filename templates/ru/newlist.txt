@@ -28,15 +28,13 @@
 
     %(requestaddr)s
 
-Для того, чтобы удалить пользователя из подписчиков списка рассылки,
-откройте страницу с общей информацией о списке рассылки, укажите адрес
-пользовател в поле 
-
-To unsubscribe a user: from the mailing list 'listinfo' web page,
-click on or enter the user's email address as if you were that user.
-Where that user would put in their password to unsubscribe, put in
-your admin password.  You can also use your password to change
-member's options, including digestification, delivery disabling, etc.
+Для того, чтобы удалить подписку пользователя, откройте страницу с
+общей информацией о списке рассылки, укажите адрес пользователя, как
+если бы вы были этим пользователем и укажите пароль администратора
+списка, в поле, в которое бы пользователь должен был указать свой
+пароль, чтобы отписаться от списка рассылки. Вы также можете
+использовать свой пароль для изменения параметров подписки этого
+пользователя.
 
 Все вопросы о системе Вы можете задать, отправив письмо по адресу
 mailman-owner@%(hostname)s.
