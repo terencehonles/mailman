@@ -12,11 +12,12 @@ INTEGRATING POSTFIX AND MAILMAN
     when looking for local delivery addresses.  The following are the
     steps you need to take to make this work.
 
-    In the description below, $mailman is the directory into which you've
-    installed Mailman.  I.e. it is /home/mailman if you did not use the
-    --prefix switch when you configured Mailman, otherwise it is the
-    directory you specified with --prefix.  Note that if you used
-    --with-var-prefix then $mailman is this directory.
+    In the description below, $mailman is the directory into which
+    you've installed Mailman.  I.e. it is /usr/local/mailman if you
+    did not use the --prefix switch when you configured Mailman,
+    otherwise it is the directory you specified with --prefix.  Note
+    that if you used --with-var-prefix then $mailman is this
+    directory.
 
     - touch the file $mailman/data/aliases.db and make sure that both
       the owner and group-owner of the file is `mailman'.  Make sure
@@ -31,7 +32,8 @@ INTEGRATING POSTFIX AND MAILMAN
       You want to be sure that that you're using the hash: style database
       for this entry.  Here's an example:
 
-      alias_maps = hash:/etc/postfix/aliases, hash:/home/mailman/data/aliases
+      alias_maps = hash:/etc/postfix/aliases,
+          hash:/usr/local/mailman/data/aliases
 
     - When you configure Mailman, use the --with-mail-gid=mailman
       switch.  Because the owner of the aliases.db file is `mailman',
@@ -47,13 +49,13 @@ INTEGRATING POSTFIX AND MAILMAN
       MTA-specific functions to be executed when a list is created or
       removed.
 
-    That's it!  One caveat: when you add or remove a list, the aliases.db
-    file will be modified by Mailman, but it will not automatically run
-    "postfix reload".  This is because you need to be root to run this and
-    suid-root scripts are not secure.  The only effect of this is that it
-    will take one minute for Postfix to notice the change to the
-    aliases.db file and update its tables.  I consider this a minor
-    inconvenience.
+    That's it!  One caveat: when you add or remove a list, the
+    aliases.db file will be modified by Mailman, but it will not
+    automatically run "postfix reload".  This is because you need to
+    be root to run this and suid-root scripts are not secure.  The
+    only effect of this is that it will take about a minute for
+    Postfix to notice the change to the aliases.db file and update its
+    tables.  I consider this a minor inconvenience.
   
 
 AN ALTERNATIVE APPROACH
