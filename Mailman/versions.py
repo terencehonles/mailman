@@ -84,7 +84,8 @@ def UpdateOldVars(l, stored_state):
     if not hasattr(l, "administrivia"):
         setattr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
     if not hasattr(l, "admin_member_chunksize"):
-        setattr(l, "admin_member_chunksize", mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE)
+        setattr(l, "admin_member_chunksize",
+                mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE)
     #
     # this attribute was added then deleted, so there are a number of
     # cases to take care of
@@ -115,16 +116,11 @@ def UpdateOldVars(l, stored_state):
             dmembers[dm] = 1
         l.digest_members = dmembers
 
-        
-    
 
 def UpdateOldUsers(l):
     """Transform sense of changed user options."""
-    if older(l.data_version, "1.0b1.2"):
-        # Mime-digest bitfield changed from Enable to Disable after 1.0b1.1.
-        for m in l.GetMembers() + l.GetDigestMembers():
-            was = l.GetUserOption(m, mm_cfg.DisableMime)
-            l.SetUserOption(m, mm_cfg.DisableMime, not was)
+    # Currently nothing to do.
+    pass
 
 def older(version, reference):
     """True if version is older than current.
@@ -136,53 +132,3 @@ def older(version, reference):
       return 0  
     else:
       return 1
-    # Iterate over the repective contiguous sections of letters and digits
-    # until a section from the reference is found to be different than the
-    # corresponding version section, and return the sense of the
-    # difference.  If no differences are found, then 0 is returned.
-    #for v, r in map(None, section(version), section(reference)):
-     #   if r == None:
-            # Reference is a full release and version is an interim - eg,
-            # alpha or beta - which precede full, are older:
-      #      return 1
-       # if type(v) != type(r):
-        #    # Numbering system changed.
-         #   return 1
-       # if v < r:
-        #    return 1
-       # if v > r:
-        #    return 0
-    # return 0
-    
-#def section(s):
-#    """Split string into contiguous sequences of letters and digits."""
-#    section = ""
-#    got = []
-#    wasat = ""
-#    for c in s:
-#        if c in string.letters:
-#            at = string.letters; add = c
-#        elif c in string.digits:
-#            at = string.digits; add = c
-#        else:
-#            at = ""; add = ""
-#
-#        if at == wasat:                 # In continuous sequence.
-#            section = section + add
-#        else:                           # Switching.
-#            if section:
-#                if wasat == string.digits:
-#                    section = int(section)
-#                got.append(section)
-#            section = add
-#            wasat = at
-#    if section:                         # Get trailing stuff.
-#        if wasat == string.digits:
-#            section = int(section)
-#        got.append(section)
-#    return got
-
-
-
-
-
