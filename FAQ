@@ -51,6 +51,14 @@ FREQUENTLY ASKED QUESTIONS
       some cases might hang the CGI completely.  In that case, switch
       to Apache.
 
+      It is also possible that you have stale locks.  Mailman tries to
+      be very careful about the lock files it creates to ensure the
+      integrity of it's databases, but sometimes system faults can
+      cause stale locks to persist.  Look in $prefix/locks for any
+      stale list locks and remove them (you can determine if they're
+      stale by getting the pid from the file contents and using ps to
+      see if those processes are still running or not).
+
 4. Check ~mailman/logs/error periodically:
 
       Many of the scripts have their stderr logged to
