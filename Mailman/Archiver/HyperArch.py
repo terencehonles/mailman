@@ -46,7 +46,6 @@ import pipermail
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import EncWord
-from Mailman.Logging.Syslog import syslog
 
 gzip = None
 if mm_cfg.GZIP_ARCHIVE_TXT_FILES:
@@ -687,9 +686,10 @@ class HyperArchive(pipermail.T):
         # crashed during archiving. Save it, log an error, and move on. 
 	try:
             wf = open(wname)
-            syslog("error","Archive working file %s present. "
-                   "Check %s for possibly unarchived msgs"
-                   % (wname,ename))
+            syslog('error',
+                   '\
+Archive working file %s present.  Check %s for possibly unarchived msgs',
+                   wname, ename)
             omask = os.umask(007)
             try:
                 ef = open(ename, 'a+')
