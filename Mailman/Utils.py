@@ -43,6 +43,7 @@ except ImportError:
 
 from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman import Site
 from Mailman.SafeDict import SafeDict
 
 EMPTYSTRING = ''
@@ -65,8 +66,9 @@ def list_exists(listname):
     #
     # The former two are for 2.1alpha3 and beyond, while the latter two are
     # for all earlier versions.
+    basepath = Site.get_listpath(listname)
     for ext in ('.pck', '.pck.last', '.db', '.db.last'):
-        dbfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config' + ext)
+        dbfile = os.path.join(basepath, 'config' + ext)
         if os.path.exists(dbfile):
             return 1
     return 0
@@ -74,11 +76,8 @@ def list_exists(listname):
 
 def list_names():
     """Return the names of all lists in default list directory."""
-    got = []
-    for fn in os.listdir(mm_cfg.LIST_DATA_DIR):
-        if list_exists(fn):
-            got.append(fn)
-    return got
+    # We don't currently support separate listings of virtual domains
+    return Site.get_listnames()
 
 
 
