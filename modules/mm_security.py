@@ -29,7 +29,7 @@ class SecurityManager:
 
     def ValidAdminPassword(self, pw):
 	if self.CheckSiteAdminPassword(pw):
-	  return 1
+            return 1
 	return ((type(pw) == types.StringType) and 
 		(crypt.crypt(pw, self.password) == self.password))
 
@@ -60,3 +60,13 @@ class SecurityManager:
 	self.passwords[addr] = newpw
 	self.Save()
 
+    def ExtractApproval(self, msg):
+        """True if message has valid administrator approval.
+
+        Approval line is always stripped from message as a side effect."""
+
+        p = msg.getheader('approved')
+        if p == None:
+            return 0
+        msg.delitem('approved')         # Mustn't deliver this line!!
+        return self.ValidAdminPassword(p)
