@@ -208,11 +208,12 @@ def checkarchivedbs():
 
 
 def checkcgi():
+    cgidir = os.path.join(mm_cfg.EXEC_PREFIX, 'cgi-bin')
     if STATE.VERBOSE:
         print _('checking cgi-bin permissions')
-    exes = os.listdir(mm_cfg.CGI_DIR)
+    exes = os.listdir(cgidir)
     for f in exes:
-        path = os.path.join(mm_cfg.CGI_DIR, f)
+        path = os.path.join(cgidir, f)
         if STATE.VERBOSE:
             print _('    checking set-gid for %(path)s')
         mode = statmode(path)
