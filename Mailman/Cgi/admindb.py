@@ -192,8 +192,11 @@ def HandleRequests(doc):
 	ignore_subscribes = 1
 	SubscribeNone()
     for k in form.keys():
+        formv = form[k]
+        if type(formv) == types.ListType:
+            continue
         try:
-            v = int(form[k].value)
+            v = int(formv.value)
             request_id = int(k)
         except ValueError:
             continue
