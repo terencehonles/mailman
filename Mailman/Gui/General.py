@@ -391,9 +391,9 @@ class General(GUIBase):
         if property == 'real_name' and \
                val.lower() <> mlist.internal_name().lower():
             # These values can't differ by other than case
-            doc.addError(_("""<p><b>real_name</b> attribute not
+            doc.addError(_("""<b>real_name</b> attribute not
             changed!  It must differ from the list's name by case
-            only.<p>"""))
+            only."""))
         elif property == 'new_member_options':
             newopts = 0
             for opt in OPTIONS:
@@ -403,3 +403,12 @@ class General(GUIBase):
             mlist.new_member_options = newopts
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
+
+    def _postValidate(self, mlist, doc):
+        if not mlist.reply_to_address.strip() and \
+               mlist.reply_goes_to_list == 2:
+            # You can't go to an explicit address that is blank
+            doc.addError(_("""You cannot add a Reply-To: to an explicit
+            address if that address is blank.  Resetting these values."""))
+            mlist.reply_to_address = ''
+            mlist.reply_goes_to_list = 0
