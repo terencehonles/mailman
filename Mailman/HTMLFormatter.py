@@ -51,7 +51,11 @@ class HTMLFormatter:
 		Container( 
                     Link(self.GetScriptURL('listinfo'), self.real_name),
 		    ' list run by ', owners_html,
-		    '<p>', MailmanLogo()))).Format()
+		    '<br>',
+                    Link(self.GetScriptURL('admin'),
+                         '%s administrative interface' % self.real_name),
+                    ' (requires authorization)',
+                    '<p>', MailmanLogo()))).Format()
 
     def SnarfHTMLTemplate(self, file):
         # XXX: hack, blech, yuk
