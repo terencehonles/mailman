@@ -299,8 +299,7 @@ def option_help(mlist, varhelp):
                 break
     # Print an error message if we couldn't find a valid one
     if not item:
-        path_info = os.environ.get('PATH_INFO')
-        bad = _('No valid variable details request not found: %(path_info)s')
+        bad = _('No valid variable name found.')
         add_error_message(doc, bad)
         print doc.Format()
         return
@@ -568,13 +567,12 @@ def get_item_characteristics(record):
 def get_item_gui_value(mlist, kind, varname, params):
     """Return a representation of an item's settings."""
     if kind == mm_cfg.Radio or kind == mm_cfg.Toggle:
-        #
-        # if we are sending returning the option for subscribe
-        # policy and this site doesn't allow open subscribes,
-        # then we have to alter the value of mlist.subscribe_policy
-        # as passed to RadioButtonArray in order to compensate
-        # for the fact that there is one fewer option. correspondingly,
-        # we alter the value back in the change options function -scott
+        # If we are returning the option for subscribe policy and this site
+        # doesn't allow open subscribes, then we have to alter the value of
+        # mlist.subscribe_policy as passed to RadioButtonArray in order to
+        # compensate for the fact that there is one fewer option.
+        # Correspondingly, we alter the value back in the change options
+        # function -scott
         #
         # TBD: this is an ugly ugly hack.
         if varname[0] == '_':
@@ -996,10 +994,11 @@ def password_inputs():
     table.AddRow([Center(Header(2, _('Change list ownership passwords')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
-    table.AddRow([_("""The <em>list administrators</em> are the people who have
-ultimate control over all parameters of this mailing list.  They are able to
-change any list configuration variable available through these administration
-web pages.
+    table.AddRow([_("""\
+<a name="passwords">The</a> <em>list administrators</em> are the people who
+have ultimate control over all parameters of this mailing list.  They are able
+to change any list configuration variable available through these
+administration web pages.
 
 <p>The <em>list moderators</em> have more limited permissions; they are not
 able to change any list configuration variable, but they are allowed to tend
