@@ -1,0 +1,63 @@
+Mailman - The GNU Mailing List Management System
+Copyright (C) 1998 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
+If from the web you get "document contains no data":
+If mail isn't getting delivered:
+
+    The cgi wrappers are failing.  Either a UID is wrong, or your web
+    server / mailer has a non-standard name.
+
+    If you're unsure about the proper settings, the cgi and mail
+    wrapper programs use syslog to register mismatches, indicating the
+    correct setting in the process.  You need to have syslog running
+    and configured to log the mail.error log class somewhere - on Sun
+    systems, the line
+
+      mail.debug                /var/log/syslog
+
+    causes the messages to go to them in /var/log/syslog, for example.
+    (The distributed syslog.conf forwards the message to the loghost,
+    when present.  See the syslog man page for more details.)  If your
+    system is set like this, if you get a failure trying to visit the
+    mailman/listinfo web page and it's due to a UID or GID mismatch,
+    then you should get an entry at the end of /var/log/syslog
+    identifying the expected and received values.
+
+If the web pages hang:
+
+    CERN web servers might leave Python processes running, and in some
+    cases might hang the cgi completely.  In that case, switch to
+    Apache.
+
+Check ~mailman/logs/error periodically:
+
+    Many of the scripts have their stderr logged to
+    ~mailman/logs/error, and some of the modules write caught errors
+    there, as well, so you should check there at least occasionally to
+    look for bugs in the code and problems in your setup.
+
+    One thing that is *not* caught by stderr hook is syntax errors!
+    However, most files can be run from the command line with no
+    effect.  (The ones that will do stuff you want to avoid, like
+    sending out spurious password reminders, are in the cron dir.)  So
+    you can and should use the Python interpreter to check the of any
+    changes before trying them out.
+    
+Other debugging aids
+
+    If you get exceptions in the log and/or Web pages, and these are
+    complaining that files could not be opened, you might like to see
+    which files Mailman is trying to open!  In Python 1.5.2, this will 
+    be a standard part of the exception message.  In Python 1.5.1 the
+    best you can do is to comment out the code in
+    $prefix/scripts/driver where it is redefining the built-in open
+    function.  This simulates what Python 1.5.2 will do when it raises 
+    an IOError exception, however this only works for open().  While
+    this is the most common case, Python 1.5.2 will handle many other
+    cases where files are unsuccessfully referenced.
+
+
+Local Variables:
+indent-tabs-mode: nil
+End:
