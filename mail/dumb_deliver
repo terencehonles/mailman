@@ -21,9 +21,9 @@ import os
 if not os.fork():
     import string, sys
     def ContactTransport(sender, recip, filename):
-	os.execv(os.path.join(os.path.join(paths.prefix,"mail"),
-	                                     "contact_transport")
-                                         [sender,tmp_file]+to_addrs)
+        cmd = os.path.join(mm_cfg.SCRIPTS_DIR, "contact_transport")
+	os.execv(cmd, [cmd,sender,filename]+recip)
+
 
     sender = sys.argv[2]
     to_list = sys.argv[3:]
