@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 6094 $)
+AC_REVISION($Revision: 6330 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -339,7 +339,10 @@ from stat import *
 prefix = "$prefixcheck"
 groupname = "$GROUPNAME"
 mailmangroup = "$MAILMAN_GROUP"
-mailmangid = grp.getgrnam(mailmangroup)[2]
+try:
+    mailmangid = grp.getgrnam(mailmangroup)[2]
+except KeyError:
+    mailmangid = -1
 problems = []
 try: statdata = os.stat(prefix)
 except OSError:
