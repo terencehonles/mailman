@@ -247,7 +247,6 @@ def process_form(mlist, user, doc):
             PrintResults(mlist, operation, doc,
                          _("You must supply a password to change options."),
                          user, pluser)
-        origsender = mail.get_sender()
         try:
             mlist.ConfirmUserPassword(user, form['digpw'].value)
         except Errors.MMAlreadyDigested:
@@ -263,14 +262,14 @@ def process_form(mlist, user, doc):
                          user, pluser)
         except Errors.MMNotAMemberError:
             PrintResults(mlist, operation, doc,
-                         _("%(origsender)s isn't subscribed to this list."),
+                         _("%(user)s isn't subscribed to this list."),
                          user, pluser)
         except Errors.MMListNotReadyError:
             PrintResults(mlist, operation, doc, _("List is not functional."),
                          user, pluser)
         except Errors.MMNoSuchUserError:
             PrintResults(mlist, operation, doc,
-                         _("%(origsender)s is not subscribed to this list."),
+                         _("%(user)s is not subscribed to this list."),
                          user, pluser)
         except Errors.MMBadPasswordError:
             PrintResults(mlist, operation, doc,
