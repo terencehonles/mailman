@@ -1,0 +1,25 @@
+#!/usr/local/bin/python
+# This is another script that's really just for my use, but
+# feel free to use it if you know how...
+
+import sys
+
+f = open('/tmp/md.err', 'a+')
+sys.stderr = f
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import mm_message, mm_deliver
+
+msg = mm_message.IncomingMessage()
+
+text = open('/home/mailman/mailman/misc/majordomo.answer.txt', 'r').read()
+
+class MyDeliverer(mm_deliver.Deliverer):
+    def GetAdminEmail(self):
+	return "mailman-owner"
+
+d = MyDeliverer()
+	
+d.SendTextToUser('Your mail to Majordomo...', text, msg.GetSender(), 
+	'mailman-owner')

@@ -1,0 +1,130 @@
+#!/usr/local/bin/python
+# 
+# This program shouldn't be attempted by people who don't understand Python.
+# I wrote it to build archives for a few lists I'd been running for a long
+# time under majordomo.
+#
+# Convert majordomo digests all stored in one directory into mailbox
+# format.  Note that the digests correct order in the dir should be
+# alphabetical order.
+#
+# The output file is ARCHIVE.ME in the same directory the digests are in.  
+# Run this program before you transfer the majordomo list.  
+#
+# To get the output file archived, create the list under mailman, 
+# run this script, and then do the following:
+#
+# cat ARCHIVE.ME >> ~mailman/mailman/lists/mylist/archived.mail
+#
+# You also need to adjust the variable: 
+# NUM_LINES_TO_STRIP_FROM_TOP
+
+import string, sys, os
+
+NUM_LINES_TO_STRIP_FROM_TOP = 11
+
+
+def setfromaddr(txt):
+    global From
+    words = string.split(txt)[1:]
+    if len(words) == 1:
+	From = words[0]
+	return
+# This next line might be the source of an error if a digest has a
+# null message in it.  If it does, remove that null message.
+    if words[-1][0] == '<':
+	From = words[-1][1:-1]
+	return
+    else:
+	From = words[0]
+	return
+
+days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+last_day = 'Sun' # See comment below ;-)
+last_dow = 0
+
+def setdateinfo(s):
+    global dateinfo
+    global last_day
+    global last_dow
+    words = string.split(s)
+    if words[1][-1] <> ',':
+	day, mon, year, time = words[1], words[2], words[3], words[4]
+
+# This is a quick hack that assumes someone posted every day.  I
+# didn't make it more robust, because that's a lot more effort for
+# something few people will ever notice anyway.
+
+	if day == last_day:
+	    dow = days_of_week[last_dow]
+	else:
+	    dow = days_of_week[(last_dow + 1) % 7] 
+    else:
+	dow, day, mon, year, time = words[1][:3], words[2], words[3], words[4], words[5]
+    if len(day) == 1:
+	day = '0' + day
+
+    last_day = day
+    last_dow = days_of_week.index(dow)
+
+    if len(year) == 2:
+	year = '19' + year
+    outfile.write("From %s %s %s %s %s %s\n" % (From, dow, mon, day, time, year))
+#    print "From %s %s %s %s %s %s" % (From, dow, mon, day, time, year)
+
+def header():
+    global lines, curline, msgtextstart
+    msgtextstart = curline + 2
+    setfromaddr(lines[curline + 2])
+    setdateinfo(lines[curline + 3])
+    curline = curline + 4
+
+def text():
+    global lines, curline, msgtextend
+    while lines[curline] <> "------------------------------\n":
+	curline = curline + 1
+    msgtextend = curline - 1
+
+def output():
+    for i in range(msgtextstart, msgtextend):
+	if lines[i][:5] == 'From ':
+	    outfile.write('>')
+	outfile.write(lines[i])
+
+def msg():
+    global curline
+    header()
+    curline = curline + 2 #skip subject and blank line
+    text()
+    output()
+
+digest_dir = sys.argv[1]
+
+infiles = os.listdir(digest_dir)
+infiles.sort()
+try:
+    infiles.remove('ARCHIVE_ME')
+except:
+    pass
+outfile = open(os.path.join(digest_dir, 'ARCHIVE_ME'), 'w')
+
+for filename in infiles:
+    infilename = os.path.join(digest_dir, filename)
+    infile = open(infilename, 'r')
+    print infilename
+    lines = infile.readlines()
+    curline = NUM_LINES_TO_STRIP_FROM_TOP
+    numlines = len(lines)
+    msgtextstart = None
+    msgtextend = None
+    From = None
+    dateinfo = None
+    subject = None
+    while 1:
+         # could check lines[curline] == '------------------------------\n' 
+	 # but that should always be true.
+	if (lines[curline+1] == '\n' and lines[curline+2][:6] == 'End of'
+	    and lines[curline+3][:6] == '******'):
+	    break
+	msg()
+    infile.close()

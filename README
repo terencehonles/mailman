@@ -1,0 +1,86 @@
+There's still much that I'd like to redo or add.  I'm not incredibly
+proud of the code, and it's a bit embarassing to be sharing it at this
+point. The weakest points in my mind are probably the cgi scripts and
+html formatting.  Unfortunately, I won't soon have the time to devote
+to doing it better.
+
+Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15 1996
+See file DONE for info on changes since v. 0.9
+
+Features:
+  o Most standard mailing list features, including:
+	moderation, mail based commands, digests, etc...
+  o An extensive web interface customizable on a per-list basis.
+  o Web based list administration interface for *all* admin-type tasks.
+  o Automatic web based hypermail-style archives (using pipermail)
+  o Smart bounce detection and correction
+  o Fast bulk mailing
+  o Multiple list owners and moderators
+  o Optional MIME-Compliant digests
+  o Nice about which machine you subscribed from if you're from the
+	right domain.
+
+Requirements:
+  You must be root on a machine running a mail transport program that
+	uses an /etc/aliases file, and has a sendmail executable (smail
+	should be OK).  Eventually I'd really like to support qmail,
+	but currently don't.
+  The machine really needs to have a web server in order to configure lists.
+
+Install:
+  o Make sure Python is installed as /usr/local/bin/python (currently
+	hardcoded -- this obviously needs to change, and should be
+	handled by a config program)
+  o As root, add a mailman user
+  o As mailman, copy the mailman dir to /home/mailman.  Currently the
+    system requires the source be located there.
+  o As mailman, Make /home/mailman/public_html and /home/mailman/cgi-bin
+  o As root, Configure your web server to give /home/mailman/cgi-bin
+    perms to run cgi in the cgi-bin dir, and restart the web server.
+    The line you should add should look something like:
+	Exec    /mailman/*      /home/mailman/cgi-bin/*
+	or:
+	ScriptAlias /mailman/   /home/mailman/cgi-bin/
+
+    (Or whatever is equivolent for your web server)
+  o As root, edit /home/mailman/mailman/src/*.c and edit the UID and
+    GID const lines as appropriate.
+  o As root, cd to /home/mailman/mailman/src and type: make
+  o As root, Add mailman as a trusted mail user.  This is usually done
+    by adding: Tmailman to /etc/sendmail.cf under the line: Troot
+  o As root, Restart sendmail.
+  o As mailman, cd to /home/mailman/mailman/cron, and add crontab.in
+    as your crontab.  (probably done w/: crontab crontab.in)
+  o Edit modules/mm_cfg and change the first 3 macros as appropriate.
+
+Adding a new list:
+  o Run the program bin/newlist
+
+
+Troubleshooting:
+
+If the web pages hang:
+
+	CERN web servers might leave python's running, and in some
+	cases might hang the cgi completely.  In that case, switch to
+	Apache.
+
+If from the web you get "document contains no data":
+If mail isn't getting delivered:
+	The cgi wrappers are failing.  Either a UID is wrong, or your
+	web server / mailer has a non-standard name.
+
+Some notes about the code (Developers notes):
+	How to add a new user option:
+
+	1) Add a flag to mm_cfg
+	2) Add an entry to mm_html name mapping.  
+	3) Add replacements lines to the cgi/options script.
+	4) cgi/handle_opts: make SetUserOption calls.
+	5) Add to 2 data structs at top of mm_mailcmd
+	6) Add to mm_mailcmd help
+	7) Update templates
+	8) Use your option wherever appropriate...
+	
+
+

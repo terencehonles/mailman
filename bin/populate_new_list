@@ -1,0 +1,62 @@
+#!/usr/local/bin/python 
+#
+# argv[1] should be the name of the list.
+# argv[2] should be the list of non-digested users.
+# argv[3] should be the list of digested users.
+
+# Make sure that the list of email addresses doesn't contain any comments,
+# like majordomo may throw in.  For now, you just have to remove them manually.
+
+import sys, os, crypt, string
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import maillist, mm_utils, mm_message, mm_cfg
+
+
+
+def GetRandomPassword():
+    return "%s%s" % (mm_utils.GetRandomSeed(), mm_utils.GetRandomSeed())
+
+
+if len(sys.argv) <> 4:
+    print 'Usage: populate_new_list <list name> <non-digest-members-file> <digest-members-file>'
+    sys.exit(0)
+
+try:
+    list = maillist.MailList(sys.argv[1])
+except:
+    print 'run newlist first...'
+    sys.exit(0)
+
+
+try:
+    non_digest_members = string.split(open(sys.argv[2]).read(), '\n')
+except:
+    non_digest_members = []
+    print 'file for non-digest members could not be opened.  Ignoring.'
+try:
+    digest_members     = string.split(open(sys.argv[3]).read(), '\n')
+except:
+    digest_members = []
+    print 'file for digest members could not be opened.  Ignoring.'
+
+def FormatMembers(mbrs):
+    def NotNull(str):
+	return str
+    return filter(NotNull, map(string.strip, mbrs))
+
+non_digest_members = FormatMembers(non_digest_members)
+digest_members     = FormatMembers(digest_members)
+
+
+for member in non_digest_members:
+    pw = GetRandomPassword()
+    list.ApprovedAddMember(member, pw, 0)
+
+for member in digest_members:
+    pw = GetRandomPassword()
+    list.ApprovedAddMember(member, pw, 1)
+    
+
+

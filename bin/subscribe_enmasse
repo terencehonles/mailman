@@ -1,0 +1,13 @@
+#!/usr/local/bin/python
+# This program gets called when the list admin posts a list of names
+# to be subscribed on the admin page.  This is here because mailman
+# needs to fork this off and make it do the work for the following
+# reasons:
+#
+# 1) We need to fork so the web browser can return in a reasonable time
+# 2) We need to run a ton of mailman processes to avoid holding the
+# lock for an unreasonable amount of time.
+
+import sys
+names = sys.stdin.read()
+print names

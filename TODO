@@ -1,0 +1,83 @@
+For v .96:
+o Add more bounce patterns....
+o Confirmation when you change anything...
+o Fix what new list mail has to say.
+o Link from subscribe to options
+o Edit posts from admindb page
+o Make who, info, etc... take list as an optional argument.
+o subject in caps
+o headers on approve should die
+o link to other lists, have a global page of lists on this server...
+o ordering of post requests
+o first time bounce on stale addr problem.
+o link from subscribe page to options page
+For the near future:
+o Make these filter functions live together in self.
+o Lower case all cmds in mailcmd
+o Does admin password work for mail cmds?
+o Occasionally remove stale bounce entries
+o lower case all names?
+o Remove the bounce log.
+o Implement the option to mail admin instead of auto-removing...
+o Send mail to the guy when you forcefully unsubscribe him... (IE, through bounce management)
+o Automatically insert a crontab entry to update the archives of a new list.
+o mkdigest command for cron, plus over the web button.
+o Search engine for archives
+o Month annotations?
+o Logging -- remove all tmp logs.  
+o Generic error template
+o Go over code looking for dead functions / code (esp mm_html funcs)
+o Mailman web pages / documentation
+o The config program
+o remove/fix valid_parent check in wrappers
+o Catch common commands in mail...
+o md5 checksums to prevent mail loops (how will this work?)
+o For archives, perhaps switch to every n months?
+o Receive Non-Mail Files
+o If you don't crush by default, you get 2 subject lines...
+o Clean up the code.
+
+For the Mailman home page:
+o What are digests?
+o What does option XXX mean?
+o How about removing a list?
+o Document what tags you can use on each web page when editing html.
+	-- Add links to the right pages.
+
+The Config program:
+o Remember to:
+	-- trusted user the mailman (how about smail users?)
+	-- Mail to mailman should go to server owner
+	-- add Cw entries (smail users?)
+o chmod o+x all these scripts in install.
+o Hook up cron scripts as part of install. 
+o Need to make sure that all paths used in code and the #! lines get updated
+	  by the config process.
+o Add mailman and mailman-owner users.
+o Notification on subscribes / unsubscribes
+
+
+####################################
+
+Potential stuff for future versions:
+o Configurable logging?
+o Make it be a client-server thing, instead of reloading list info every time 
+	some program wants to perform an operation on a list.
+o Make the web page / list man stuff machine independant (Will require the
+  client/server deal).
+o Make the tag stuff accept arguments.
+o New list -- prevent posting option
+o precidence header
+o Administrivia a la majordomo?
+o Approval not over the web. (A by-mail interface to the admin stuff)
+o Newsgroups gateway
+o Global mailing list services:
+	-- bit saying whether we've notified the main server.
+	-- support for periodic confirmations.
+	-- pass on stats.
+
+
+
+
+
+

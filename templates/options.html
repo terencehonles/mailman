@@ -1,0 +1,73 @@
+<html>
+<body>
+<h1><MM-List-Name> Configuration for <MM-User></h1>
+<hr>
+<ul>
+  <li> <a href=#reminder>Receive Password Reminder</a>
+  <li> <a href=#options>Change Options (turn digest on/off, etc...)</a>
+  <li> <a href=#unsub>Unsubscribe</a>
+  <li> <a href=#changepw>Change your password</a>
+</ul>
+<hr>
+<MM-Form-Start>
+<a name=reminder>
+<h3> Send Password reminder</h3>
+If you've forgotten your password, click this button, and it will be 
+emailed to the address you're subscribed from.<p>
+<MM-Email-My-Pw><p>
+
+<a name=options>
+<h3> User Options </h3>
+<strong>Current values are checked.</strong><p>
+<table border=1><tr><td>
+<strong> Set Digest Mode</strong> <br>
+If you turn digest mode on, you'll get posts bundled together instead of one post at a time.<br>
+<MM-Digest-Radio-Button> On 
+<MM-Undigest-Radio-Button> Off<p>
+</td></tr>
+<tr><td>
+<strong> Disable mail delivery </strong> <br>
+Turn this on if you want mail not to be delivered to you for a little while.<br>
+<mm-delivery-enable-button> Off
+<mm-delivery-disable-button> On <p>
+</td></tr>
+<tr><td>
+<strong> Get Fancy Digests or Text Digests?</strong> <br>
+If you have any problems with digests, select plain text. <br>
+<MM-Plain-Digests-Button> Plain Text
+<MM-Fancy-Digests-Button> Fancy (MIME) <p>
+</td></tr>
+<tr><td>
+<strong> Receive posts you send to the list? </strong><br>
+<mm-receive-own-mail-button> Yes
+<mm-dont-receive-own-mail-button> No <p>
+</td></tr>
+<tr><td>
+<strong> Receive acknowlegement mail when you send mail to the list? </strong><br>
+<mm-ack-posts-button> Yes
+<mm-dont-ack-posts-button> No <p>
+</td></tr>
+<tr><td>
+<strong> Conceal yourself from subscriber list? </strong><br>
+<MM-Hide-Subscription-Button> Yes
+<MM-Public-Subscription-Button> No <p>
+</td></tr>
+<tr><td>
+Password: <MM-Digest-Pw-Box>  <MM-Digest-Submit><p>
+</td></tr></table>
+<a name=unsub>
+<h3>Unsubscribe</h3>
+<MM-Unsubscribe-Button>
+<font size=+1>Your Privacy password:</font> <MM-Unsub-Pw-Box><p>
+<hr>
+<a name=changepw>
+<h3>Change Your Password</h3>
+<font size=+1>Old password: </font> <MM-Old-Pw-Box><p>
+<font size=+1>New password: </font> <MM-New-Pass-Box><p>
+<font size=+1>Again to confirm:</font> <MM-Confirm-Pass-Box><p>
+<MM-Change-Pass-Button><p>
+<MM-Form-End>
+
+<MM-Mailman-Footer>
+</body>
+</html>

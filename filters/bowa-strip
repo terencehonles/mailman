@@ -1,0 +1,17 @@
+#!/usr/local/bin/python
+
+import sys, __main__, string
+
+input = sys.stdin.readlines()
+
+if input[-4] == '*********************Reminder**********************\n':
+	input[-5] = ''
+	input[-4] = ''
+	input[-3] = ''
+	input[-2] = ''
+	input[-1] = ''
+
+__main__.mailman_text = string.join(input,'')
+
+
+

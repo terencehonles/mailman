@@ -1,0 +1,26 @@
+#! /usr/local/bin/python 
+# 
+# This script gets called by the wrapper.
+# Stdin is the mail message, and argv[1] is the name of the mailing list
+# whose owner(s) to send mail to.
+
+import sys
+f = open('/tmp/owner.errs', 'a+')
+sys.stderr = f
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import maillist, mm_message
+
+# Only let one program run at once per list.
+
+# TODO: This *can* fail, and should send back an error message when it does.
+current_list = maillist.MailList(sys.argv[1])
+try:
+    msg = mm_message.IncomingMessage()
+    if not current_list.bounce_processing or not current_list.ScanMessage(msg):
+	current_list.DeliverToList(msg, current_list.owner, '', '')
+# Let another process run.
+finally:
+    current_list.Unlock()
+    
