@@ -369,7 +369,7 @@ SMTP_MAX_RCPTS = 500
 # consecutive sessions.
 SMTP_MAX_SESSIONS_PER_CONNECTION = 0
 
-# Maximum number of simulatenous subthreads that will be used for SMTP
+# Maximum number of simultaneous subthreads that will be used for SMTP
 # delivery.  After the recipients list is chunked according to SMTP_MAX_RCPTS,
 # each chunk is handed off to the smptd by a separate such thread.  If your
 # Python interpreter was not built for threads, this feature is disabled.  You
