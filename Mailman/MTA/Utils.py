@@ -35,7 +35,7 @@ def getusername():
 
 
 def makealiases(listname):
-    wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'wrapper')
+    wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'mailman')
     # Most of the list alias extensions are quite regular.  I.e. if the
     # message is delivered to listname-foobar, it will be filtered to a
     # program called foobar.  There are two exceptions:
