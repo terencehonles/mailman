@@ -14,14 +14,18 @@ The following folks are or have been the primary maintainers of Mailman:
 They can be contacted directly via mailman-cabal@python.org.
 
 Here is the list of other contributors who have donated large bits of
-code, and have assigned copyright for this code to the FSF:
+code, and have assigned copyright for contributions to the FSF:
 
-    The Dragon De Monsyne
     Juan Carlos Rey Anaya
+    Ben Gertzfield
     Victoriano Giralt
     Mads Kiilerich
+    The Dragon De Monsyne
+    Les Niles
+    Terri Oda
 
-Thanks also to Dragon for his winning Mailman logo contribution!
+Thanks also to Dragon for his winning Mailman logo contribution, and
+to Terri Oda for the neat shortcut icon.
 
 Control.com sponsored development of several Mailman 2.1 features,
 including topics filters, external membership sources, and initial
@@ -45,12 +49,12 @@ in answering questions on mailman-users.
     Fil
     Erik Forsberg
     Darrell Fuhriman
-    Ben Gertzfield
     Jeff Hahn
     Paul Hebble
     Tollef Fog Heen
     Jeremy Hylton
     Ron Jarrell
+    Tamito KAJIYAMA
     Tokio Kikuchi
     Ashley M. Kirchner
     Chris Kolar
@@ -74,11 +78,13 @@ in answering questions on mailman-users.
     Jason R. Mastaler
     Dan Ohnesorg
     Gerald Oskoboiny
+    Jon Parise
     Simone Piunno
     Bob Puff
     John Read
     Sean Reifschneider
     Bernhard Reiter
+    Heiko Rommel
     Guido van Rossum
     Chris Ryan
     Chris Snell
