@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
-"POT-Creation-Date: Mon Apr 21 10:33:56 2003\n"
+"POT-Creation-Date: Mon Apr 21 11:13:43 2003\n"
 "PO-Revision-Date: 2002-12-29 23:16+0200\n"
 "Last-Translator: Anti Veeranna <duke@linux.ee>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -3096,79 +3096,88 @@ msgstr "Üksikkirjade tellijad:"
 msgid "Digest members:"
 msgstr "Referaatide tellijad:"
 
-#: Mailman/Defaults.py:1222
+#: Mailman/Defaults.py:1254
 msgid "Traditional Chinese"
 msgstr "Tradititsionaalne hiina"
 
-#: Mailman/Defaults.py:1223
+#: Mailman/Defaults.py:1255
 msgid "Czech"
 msgstr "T&scaron;ehhi"
 
-#: Mailman/Defaults.py:1224
+#: Mailman/Defaults.py:1256
 msgid "German"
 msgstr "Saksa"
 
-#: Mailman/Defaults.py:1225
+#: Mailman/Defaults.py:1257
 msgid "English (USA)"
 msgstr "Inglise (USA)"
 
-#: Mailman/Defaults.py:1226
+#: Mailman/Defaults.py:1258
 msgid "Spanish (Spain)"
 msgstr "Hispaania"
 
-#: Mailman/Defaults.py:1227
+#: Mailman/Defaults.py:1259
 msgid "Estonian"
 msgstr "Eesti"
 
-#: Mailman/Defaults.py:1228
+#: Mailman/Defaults.py:1260
 msgid "Finnish"
 msgstr "Soome"
 
-#: Mailman/Defaults.py:1229
+#: Mailman/Defaults.py:1261
 msgid "French"
 msgstr "Prantsuse"
 
-#: Mailman/Defaults.py:1230
+#: Mailman/Defaults.py:1262
 msgid "Simplified Chinese"
 msgstr "Lihtsustatud hiina"
 
-#: Mailman/Defaults.py:1231
+#: Mailman/Defaults.py:1263
 msgid "Hungarian"
 msgstr "Ungari"
 
-#: Mailman/Defaults.py:1232
+#: Mailman/Defaults.py:1264
 msgid "Italian"
 msgstr "Itaalia"
 
-#: Mailman/Defaults.py:1233
+#: Mailman/Defaults.py:1265
 msgid "Japanese"
 msgstr "Jaapani"
 
-#: Mailman/Defaults.py:1234
+#: Mailman/Defaults.py:1266
 msgid "Korean"
 msgstr "Korea"
 
-#: Mailman/Defaults.py:1235
+#: Mailman/Defaults.py:1267
 msgid "Lithuanian"
 msgstr "Leedu"
 
-#: Mailman/Defaults.py:1236
+#: Mailman/Defaults.py:1268
 msgid "Dutch"
 msgstr "Taani"
 
-#: Mailman/Defaults.py:1237
+#: Mailman/Defaults.py:1269
 msgid "Norwegian"
 msgstr "Norra"
 
-#: Mailman/Defaults.py:1238
+#: Mailman/Defaults.py:1270
+msgid "Polish"
+msgstr ""
+
+#: Mailman/Defaults.py:1271
+#, fuzzy
+msgid "Portuguese"
+msgstr "Portugali (Brasiilia)"
+
+#: Mailman/Defaults.py:1272
 msgid "Portuguese (Brazil)"
 msgstr "Portugali (Brasiilia)"
 
-#: Mailman/Defaults.py:1239
+#: Mailman/Defaults.py:1273
 msgid "Russian"
 msgstr "Vene"
 
-#: Mailman/Defaults.py:1240
+#: Mailman/Defaults.py:1274
 msgid "Swedish"
 msgstr "Rootsi"
 
