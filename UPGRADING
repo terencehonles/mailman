@@ -40,12 +40,13 @@ UPGRADING FROM 2.0 beta to 2.0 final
 UPGRADING FROM 1.x to 2.x
 
     In addition to the instructions above, I highly recommend that you
-    make sure your Mailman queue is cleared.  Mailman version 1.x had
-    a cron script called run_queue which was part of it's bulk
-    mailer.  With Mailman 2.x there is no default bulk mailer (it lets
-    the MTA handle this), and it is currently unknown what the effects
-    of upgrading are on the run_queue script, but I'll bet it's not
-    good. :)
+    make sure your Mailman queue is cleared /before/ upgrading.
+
+    Mailman version 1.x had a cron script called run_queue which was
+    part of it's bulk mailer.  With Mailman 2.x there is no default
+    bulk mailer (it lets the MTA handle this), and it is currently
+    unknown what the effects of upgrading are on the run_queue script,
+    but I'll bet it's not good. :)
 
     The way to make sure that your Mailman queue is empty is to look
     in your $prefix/data directory.  If you see any files that start
