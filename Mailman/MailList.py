@@ -1398,10 +1398,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetPreferredLanguage(self, name):
         lcname = name.lower()
-        if self.language.has_key(lcname):
-            return self.language[lcname]
-        else:
-            return self.preferred_language
+        return self.language.get(lcname, self.preferred_language)
 
     def GetAvailableLanguages(self):
         return Utils.GetDirectories(self._full_path)
