@@ -26,8 +26,8 @@
 # BAW: get rid of this when we Python 2.2 is a minimum requirement.
 from __future__ import nested_scopes
 
-import sys
 import re
+import sys
 from types import StringType, UnicodeType
 
 from Mailman import mm_cfg
@@ -39,11 +39,18 @@ from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
 from Mailman import LockFile
 
+from email.Header import decode_header, make_header, Header
 from email.MIMEText import MIMEText
 from email.MIMEMessage import MIMEMessage
 from email.Iterators import typed_subpart_iterator
 
 NL = '\n'
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
 
 
 
@@ -61,9 +68,13 @@ class Results:
         self.ignored = []
         self.lineno = 0
         self.subjcmdretried = 0
-        self.respond = 1
+        self.respond = True
+        # Extract the subject header and do RFC 2047 decoding.  Note that
+        # Python 2.1's unicode() builtin doesn't call obj.__unicode__().
+        subj = msg.get('subject', '')
+        subj = make_header(decode_header(subj)).__unicode__()
         # Always process the Subject: header first
-        self.commands.append(msg.get('subject', ''))
+        self.commands.append(subj)
         # Find the first text/plain part
         part = None
         for part in typed_subpart_iterator(msg, 'text', 'plain'):
@@ -86,7 +97,7 @@ class Results:
     def process(self):
         # Now, process each line until we find an error.  The first
         # non-command line found stops processing.
-        stop = 0
+        stop = False
         for line in self.commands:
             if line and line.strip():
                 args = line.split()
@@ -195,14 +206,14 @@ class CommandRunner(Runner):
         if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
             syslog('vette', 'Precedence: %s message discarded by: %s',
                    precedence, mlist.GetRequestEmail())
-            return 0
+            return False
         # Do replybot for commands
         mlist.Load()
         Replybot.process(mlist, msg, msgdata)
         if mlist.autorespond_requests == 1:
             syslog('vette', 'replied and discard')
             # w/discard
-            return 0
+            return False
         # Now craft the response
         res = Results(mlist, msg, msgdata)
         # BAW: Not all the functions of this qrunner require the list to be
@@ -212,7 +223,7 @@ class CommandRunner(Runner):
             mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
         except LockFile.TimeOutError:
             # Oh well, try again later
-            return 1
+            return True
         # This message will have been delivered to one of mylist-request,
         # mylist-join, or mylist-leave, and the message metadata will contain
         # a key to which one was used.
