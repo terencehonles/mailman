@@ -721,7 +721,7 @@ DEFAULT_ADMIN_IMMED_NOTIFY = 1
 DEFAULT_ADMIN_NOTIFY_MCHANGES = 0
 
 # Should list members, by default, have their posts be moderated?
-DEFAULT_DEFAULT_MEMBER_MODERATION = 1
+DEFAULT_DEFAULT_MEMBER_MODERATION = 0
 
 # Should non-member posts which are auto-discarded also be forwarded to the
 # moderators?
