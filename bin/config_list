@@ -219,9 +219,11 @@ def getPropertyMap(mlist):
 
 
 class FakeDoc:
-    # Supports the interface required by gui._setValue()
-    def addError(self, s):
-        print >> sys.stderr, s
+    # Fake the error reporting API for the htmlformat.Document class
+    def addError(self, s, tag=None, *args):
+        if tag:
+            print >> sys.stderr, tag
+        print >> sys.stderr, s % args
 
 
 def do_input(listname, infile, checkonly, verbose):
