@@ -101,11 +101,32 @@ def do_child(mlist, msg):
     else:
         # Newsgroups: isn't in the message
         msg.headers.append('Newsgroups: %s\n' % mlist.linked_newsgroup)
-    # Note: Need to be sure 2 messages aren't ever sent to the same
-    # list in the same process, since message ID's need to be unique.
-    # Could make the ID be mm.listname.postnum instead if that happens
-    msg['Message-ID'] = '<mailman.%s.%s@%s>\n' % (
-        time.time(), os.getpid(), mlist.host_name)
+    #
+    # Note: We need to be sure two messages aren't ever sent to the same list
+    # in the same process, since message ids need to be unique.  Further, if
+    # messages are crossposted to two Usenet-gated mailing lists, they each
+    # need to have unique message ids or the nntpd will only accept one of
+    # them.  The solution here is to substitute any existing message-id that
+    # isn't ours with one of ours, so we need to parse it to be sure we're not
+    # looping.
+    #
+    # Our Message-ID format is <mailman.secs.pid.listname@hostname>
+    msgid = msg.get('message-id')
+    hackmsgid = 1
+    if msgid:
+        mo = re.search(
+            msgid,
+            r'<mailman.\d+.\d+.(?P<listname>[^@]+)@(?P<hostname>[^>]+)>')
+        if mo:
+            lname, hname = mo.group('listname', 'hostname')
+            if lname == mlist.internal_name() and hname == mlist.host_name:
+                hackmsgid = 0
+    if hackmsgid:
+        del msg['message-id']
+        msg['Message-ID'] = '<mailman.%d.%d.%s@%s>' % (
+            time.time(), os.getpid(), mlist.internal_name(), mlist.host_name)
+    #
+    # Lines: is useful
     if msg.getheader('Lines') is None:
         msg.headers.append('Lines: %s\n' % 
                            len(string.split(msg.body,"\n")))
