@@ -437,9 +437,15 @@ def FindMatchingAddresses(name, dict, *dicts):
 
   
 def GetRandomSeed():
-    chr1 = int(random.random() * 57) + 65
-    chr2 = int(random.random() * 57) + 65
-    return "%c%c" % (chr1, chr2)
+    chr1 = int(random.random() * 52)
+    chr2 = int(random.random() * 52)
+    def mkletter(c):
+        if 0 <= c < 26:
+            c = c + 65
+        if 26 <= c < 52:
+            c = c - 26 + 97
+        return c
+    return "%c%c" % tuple(map(mkletter, (chr1, chr2)))
 
 
 def SnarfMessage(msg):
