@@ -1,11 +1,16 @@
-#!/usr/local/bin/python
+#! /usr/bin/env python
 
 import os, sys, pickle, string, re
+from Mailman.Utils import mkdir, open_ex
+# TBD: ugly, ugly, ugly -baw
+open = open_ex
 
-__version__='0.05'
+__version__='0.05 (Mailman edition)'
 VERSION=__version__
 CACHESIZE=100    # Number of slots in the cache
 
+
+
 msgid_pat=re.compile(r'(<.*>)')
 def strip_separators(s):
     "Remove quotes or parenthesization from a Message-ID string"
@@ -157,7 +162,7 @@ class T:
 	    if errno!=2: raise os.error, errdata
 	    else: 
 		self.message('Creating archive directory '+self.basedir)
-		os.mkdir(self.basedir, self.DIRMODE)
+		mkdir(self.basedir, self.DIRMODE)
 
 	# Try to load previously pickled state
 	try:
@@ -292,7 +297,7 @@ class T:
 	    # Redirect sys.stdout
 	    import sys
 	    f=open(os.path.join(arcdir, i+self.INDEX_EXT), 'w')
-	    os.chmod(f.name, self.FILEMODE)
+##	    os.chmod(f.name, self.FILEMODE)
 	    temp_stdout, sys.stdout=sys.stdout, f
 	    self.write_index_header()
 	    count=0
@@ -312,7 +317,7 @@ class T:
 	# Print the threaded index
 	self.message("  Thread")
  	temp_stdout, sys.stdout=sys.stdout, open(os.path.join(arcdir, 'thread' + self.INDEX_EXT), 'w')
-	os.chmod(os.path.join(arcdir, 'thread' + self.INDEX_EXT), self.FILEMODE)
+##	os.chmod(os.path.join(arcdir, 'thread' + self.INDEX_EXT), self.FILEMODE)
  	self.type='Thread'
  	self.write_index_header()
 
@@ -391,13 +396,13 @@ class T:
 		except os.error, errdata:
 		    errno, errmsg=errdata
 		    if errno==2: 
-			os.mkdir(archivedir, self.DIRMODE)
+			mkdir(archivedir, self.DIRMODE)
 		    else: raise os.error, errdata
 		self.open_new_archive(i, archivedir)
 		
 	    # Write the HTML-ized article
 	    f=open(os.path.join(archivedir, filename), 'w')
-	    os.chmod(os.path.join(archivedir, filename), self.FILEMODE)
+##	    os.chmod(os.path.join(archivedir, filename), self.FILEMODE)
 	    temp_stdout, sys.stdout = sys.stdout, f
 	    self.write_article_header(temp)
 	    sys.stdout.writelines(temp.body)
@@ -537,14 +542,8 @@ class BSDDBdatabase(Database):
 	self.__closeIndices()
 #	print 'opening indices for [%s]' % (repr(archive),)
 	arcdir=os.path.join(self.basedir, 'database')
-##	try: os.mkdir(arcdir, 0700)
-##	except os.error: pass
-        uo = os.umask(0)
-        try:
-            try: os.mkdir(arcdir)
-            except os.error: pass
-        finally:
-            os.umask(ou)
+	try: mkdir(arcdir)
+	except os.error: pass
 	for i in ['date', 'author', 'subject', 'article', 'thread']:
 	    t=bsddb.btopen(os.path.join(arcdir, archive+'-'+i), 'c') 
 	    setattr(self, i+'Index', t)
