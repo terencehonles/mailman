@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: Mon Aug 18 20:43:54 2003\n"
+"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
 "PO-Revision-Date: 2003-04-15\n"
 "Last-Translator: Bartosz Sawicki <bartek@kajak.org.pl>\n"
 "Language-Team: Polish <wanted@linux.gda.pl>\n"
@@ -6587,7 +6587,7 @@ msgstr ""
 msgid "Skipped content of type %(partctype)s"
 msgstr ""
 
-#: Mailman/Handlers/Scrubber.py:316
+#: Mailman/Handlers/Scrubber.py:319
 msgid "-------------- next part --------------\n"
 msgstr ""
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1\n"
-"POT-Creation-Date: Mon Aug 18 20:43:54 2003\n"
+"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
 "PO-Revision-Date: 2002-12-26 09:07+0200\n"
 "Last-Translator: Mantas Kriauciunas <mantas@akl.lt>\n"
 "Language-Team: Lithuanian <info@akl.lt>\n"
@@ -6048,7 +6048,7 @@ msgstr ""
 msgid "Skipped content of type %(partctype)s"
 msgstr ""
 
-#: Mailman/Handlers/Scrubber.py:316
+#: Mailman/Handlers/Scrubber.py:319
 msgid "-------------- next part --------------\n"
 msgstr ""
 

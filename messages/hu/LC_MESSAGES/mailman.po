@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
-"POT-Creation-Date: Mon Aug 18 20:43:54 2003\n"
+"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
 "PO-Revision-Date: 2003-05-22 16:26+0100\n"
 "Last-Translator: Szilard Vizi <vizisz@freemail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -7197,7 +7197,7 @@ msgstr ""
 msgid "Skipped content of type %(partctype)s"
 msgstr "%(partctype)s típusú részek figyelmen kívül hagyva"
 
-#: Mailman/Handlers/Scrubber.py:316
+#: Mailman/Handlers/Scrubber.py:319
 msgid "-------------- next part --------------\n"
 msgstr "--------- következõ rész ---------\n"
 

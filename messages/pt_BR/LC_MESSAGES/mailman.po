@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.1b5\n"
-"POT-Creation-Date: Mon Aug 18 20:43:54 2003\n"
+"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
 "PO-Revision-Date: 2003-05-20 15:51-0300\n"
 "Last-Translator: Gleydson Mazioli da Silva <gleydson@debian.org>\n"
 "Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
@@ -7321,7 +7321,7 @@ msgstr ""
 msgid "Skipped content of type %(partctype)s"
 msgstr "Conteúdo pulado do tipo %(partctype)s"
 
-#: Mailman/Handlers/Scrubber.py:316
+#: Mailman/Handlers/Scrubber.py:319
 msgid "-------------- next part --------------\n"
 msgstr "-------------- Próxima Parte ----------\n"
 

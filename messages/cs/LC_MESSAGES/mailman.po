@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0rc3\n"
-"POT-Creation-Date: Mon Aug 18 20:43:54 2003\n"
+"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
 "PO-Revision-Date: 2002-12-15 00:39+0100\n"
 "Last-Translator: Dan Ohnesorg <dan@ohnesorg.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -7154,7 +7154,7 @@ msgstr ""
 msgid "Skipped content of type %(partctype)s"
 msgstr "Zde byl umístìn nepøijatelný obsah typu: %(partctype)s"
 
-#: Mailman/Handlers/Scrubber.py:316
+#: Mailman/Handlers/Scrubber.py:319
 msgid "-------------- next part --------------\n"
 msgstr "------------- dal¹í èást ---------------\n"
 

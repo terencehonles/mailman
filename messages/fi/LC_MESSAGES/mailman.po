@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.15\n"
-"POT-Creation-Date: Mon Aug 18 20:43:54 2003\n"
+"POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
 "PO-Revision-Date: 2003-04-02 13:00+0300\n"
 "Last-Translator: Pekka Haavisto <pekka.haavisto@mtt.fi>\n"
 "Language-Team: \n"
@@ -7448,7 +7448,7 @@ msgstr ""
 msgid "Skipped content of type %(partctype)s"
 msgstr "Ohitettu tiedostotyyppi %(partctype)s"
 
-#: Mailman/Handlers/Scrubber.py:316
+#: Mailman/Handlers/Scrubber.py:319
 msgid "-------------- next part --------------\n"
 msgstr "-------------- seuraava osa --------------\n"
 
