@@ -443,11 +443,11 @@ SMTP_LOG_EACH_FAILURE = (
 #
 # http://cr.yp.to/proto/verp.txt
 #
-# Basically, this invovles encoding the address of the recipient as we
-# (Mailman) know it into the envelope sender address (i.e. the SMTP `MAIL TO:'
-# address).  Thus, no matter what kind of forwarding the recipient has in
-# place, should it eventually bounce, we will receive an unambiguous notice of
-# the bouncing address.
+# This involves encoding the address of the recipient as we (Mailman) know it
+# into the envelope sender address (i.e. the SMTP `MAIL FROM:' address).
+# Thus, no matter what kind of forwarding the recipient has in place, should
+# it eventually bounce, we will receive an unambiguous notice of the bouncing
+# address.
 #
 # However, we're technically only "VERP-like" because we're doing the envelope
 # sender encoding in Mailman, not in the MTA.  We do require cooperation from
@@ -473,10 +473,11 @@ SMTP_LOG_EACH_FAILURE = (
 VERP_FORMAT = '%(bounces)s+%(mailbox)s=%(host)s'
 
 # The second describes a regular expression to unambiguously decode such an
-# address, which will be placed in the From: header by the bouncing MTA.
-# Getting this right is critical -- and tricky.  Learn your Python regular
-# expressions.  It must define exactly two named groups, mailbox and host,
-# with the same definition as above.  It will be compiled case-insensitively.
+# address, which will be placed in the To: header of the bounce message by the
+# bouncing MTA.  Getting this right is critical -- and tricky.  Learn your
+# Python regular expressions.  It must define exactly two named groups,
+# mailbox and host, with the same definition as above.  It will be compiled
+# case-insensitively.
 VERP_REGEXP = r'^[^+]+?\+(?P<mailbox>[^=]+)=(?P<host>[^@]+)@.*$'
 
 # A perfect opportunity for doing VERP is the password reminders, which are
