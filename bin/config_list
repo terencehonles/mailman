@@ -107,80 +107,88 @@ def do_output(listname, outfile):
 ## captured on %(when)s
 ''')
 
-        config = mlist.GetConfigInfo()
-        categories = ('general', 'privacy', 'nondigest', 'digest',
-                      'bounce', 'archive', 'gateway', 'autoreply')
-        for k in categories:
-            info = config[k]
-            print >> outfp, '##', k.capitalize(), _('options')
-            print >> outfp, '#'
-            # First, massage the descripton text, which could have obnoxious
-            # leading whitespace on second and subsequent lines due to
-            # triple-quoted string nonsense in the source code.
-            desc = NL.join([s.lstrip() for s in info[0].split('\n')])
-            # Print out the category description
-            desc = Utils.wrap(desc)
-            for line in desc.split('\n'):
-                print >> outfp, '#', line
-            print >> outfp
-            for data in info[1:]:
-                if type(data) <> TupleType:
-                    continue
-                varname = data[0]
-                # Variable could be volatile
-                if varname[0] == '_':
-                    continue
-                vtype = data[1]
-                # First, massage the descripton text, which could have
-                # obnoxious leading whitespace on second and subsequent lines
-                # due to triple-quoted string nonsense in the source code.
-                desc = NL.join([s.lstrip() for s in data[-1].split('\n')])
-                # Now strip out all HTML tags
-                desc = re.sub('<.*?>', '', desc)
-                # And convert &lt;/&gt; to <>
-                desc = re.sub('&lt;', '<', desc)
-                desc = re.sub('&gt;', '>', desc)
-                # Print out the variable description.
-                desc = Utils.wrap(desc)
-                for line in desc.split('\n'):
-                    print >> outfp, '#', line
-                # munge the value based on its type
-                value = getattr(mlist, varname)
-                if vtype in (mm_cfg.Text, mm_cfg.FileUpload):
-                    print >> outfp, varname, '=',
-                    lines = value.replace('\r', '').split('\n')
-                    if len(lines) == 1:
-                        print >> outfp, repr(value)
-                    else:
-                        first = 1
-                        outfp.write('"""')
-                        for line in lines:
-                            if first:
-                                first = 0
-                            else:
-                                print >> outfp
-                            outfp.write(line.replace('"', '\\"'))
-                        print >> outfp, '"""'
-                elif vtype in (mm_cfg.Radio, mm_cfg.Toggle):
-                    print >> outfp, '#'
-                    print >> outfp, '#', _('legal values are:')
-                    # TBD: This is disgusting, but it's special cased
-                    # everywhere else anyway...
-                    if varname == 'subscribe_policy' and \
-                           not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-                        i = 1
-                    else:
-                        i = 0
-                    for choice in data[2]:
-                        print >> outfp, '#   ', i, '= "%s"' % choice
-                        i += 1
-                    print >> outfp, varname, '=', repr(value)
-                else:
-                    print >> outfp, varname, '=', repr(value)
-                print >> outfp
+        for k in mm_cfg.ADMIN_CATEGORIES:
+            subcats = mlist.GetConfigSubCategories(k)
+            if subcats is None:
+                do_list_categories(mlist, k, None, outfp)
+            else:
+                for subcat in subcats:
+                    do_list_categories(mlist, k, subcat, outfp)
     finally:
         if closep:
             outfp.close()
+                
+
+def do_list_categories(mlist, k, subcat, outfp):
+    info = mlist.GetConfigInfo(k, subcat)
+    if info is None:
+        return
+    print >> outfp, '##', k.capitalize(), _('options')
+    print >> outfp, '#'
+    # First, massage the descripton text, which could have obnoxious
+    # leading whitespace on second and subsequent lines due to
+    # triple-quoted string nonsense in the source code.
+    desc = NL.join([s.lstrip() for s in info[0].split('\n')])
+    # Print out the category description
+    desc = Utils.wrap(desc)
+    for line in desc.split('\n'):
+        print >> outfp, '#', line
+    print >> outfp
+    for data in info[1:]:
+        if type(data) <> TupleType:
+            continue
+        varname = data[0]
+        # Variable could be volatile
+        if varname[0] == '_':
+            continue
+        vtype = data[1]
+        # First, massage the descripton text, which could have
+        # obnoxious leading whitespace on second and subsequent lines
+        # due to triple-quoted string nonsense in the source code.
+        desc = NL.join([s.lstrip() for s in data[-1].split('\n')])
+        # Now strip out all HTML tags
+        desc = re.sub('<.*?>', '', desc)
+        # And convert &lt;/&gt; to <>
+        desc = re.sub('&lt;', '<', desc)
+        desc = re.sub('&gt;', '>', desc)
+        # Print out the variable description.
+        desc = Utils.wrap(desc)
+        for line in desc.split('\n'):
+            print >> outfp, '#', line
+        # munge the value based on its type
+        value = getattr(mlist, varname)
+        if vtype in (mm_cfg.Text, mm_cfg.FileUpload):
+            print >> outfp, varname, '=',
+            lines = value.replace('\r', '').split('\n')
+            if len(lines) == 1:
+                print >> outfp, repr(value)
+            else:
+                first = 1
+                outfp.write('"""')
+                for line in lines:
+                    if first:
+                        first = 0
+                    else:
+                        print >> outfp
+                    outfp.write(line.replace('"', '\\"'))
+                print >> outfp, '"""'
+        elif vtype in (mm_cfg.Radio, mm_cfg.Toggle):
+            print >> outfp, '#'
+            print >> outfp, '#', _('legal values are:')
+            # TBD: This is disgusting, but it's special cased
+            # everywhere else anyway...
+            if varname == 'subscribe_policy' and \
+                   not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+                i = 1
+            else:
+                i = 0
+            for choice in data[2]:
+                print >> outfp, '#   ', i, '= "%s"' % choice
+                i += 1
+            print >> outfp, varname, '=', repr(value)
+        else:
+            print >> outfp, varname, '=', repr(value)
+        print >> outfp
 
 
 
