@@ -65,7 +65,8 @@ def main():
         cgi_data = cgi.FieldStorage()
 	if len(cgi_data.keys()):
 	    if cgi_data.has_key('VARHELP'):
-                print FormatOptionHelp(cgi_data['VARHELP'].value, list)
+		FormatOptionHelp(doc, cgi_data['VARHELP'].value, list)
+		print doc.Format(bgcolor="#ffffff")
                 return
 	    if not cgi_data.has_key('adminpw'):
                 AddErrorMessage(doc,
@@ -185,7 +186,7 @@ def FormatOptionsSection(category, list):
                           colspan=2, bgcolor="#99ccff")
 
     def ColHeader(big_table = big_table):
-        big_table.AddRow([Center(Bold('Option')), Bold('Value')])
+        big_table.AddRow([Center(Bold('Description')), Center(Bold('Value'))])
         big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
                               width="15%")
         big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 1,
@@ -220,9 +221,8 @@ def FormatOptionsSection(category, list):
     big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
     return big_table
 
-def FormatOptionHelp(varref, list):
-    print "Content-type: text/html\n\n"
-    item = None
+def FormatOptionHelp(doc, varref, list):
+    item = bad = None
     reflist = string.split(varref, '/')
     if len(reflist) == 2:
         category, varname = reflist
@@ -232,11 +232,24 @@ def FormatOptionHelp(varref, list):
                 item = i
                 break
     if not item:
-        return "Option %s/%s not found. %s" % (category, varname,
-                                               os.environ['PATH_INFO'])
+	bad = ("Option %s/%s not found. %s"
+	       % (category, varname, os.environ['PATH_INFO']))
     if len(item) < 6:
-        return "Option %s has no extended help." % varname
-    return item[5]
+        bad = "Option %s has no extended help." % varname
+    if bad:
+	AddErrorMessage(doc, bad)
+    header = Table(width="100%")
+    legend = ('%s Maillist Configuration Help - <em>%s</em> Option'
+	      % (list.real_name, varname))
+    header.AddRow([Center(Header(3, legend))])
+    header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
+                       colspan=2, bgcolor="#99ccff")
+    doc.SetTitle("Mailman %s List Option Help" % varname)
+    doc.AddItem(header)
+    doc.AddItem("<b>%s</b>: %s<br>" % (varname, item[4]))
+    doc.AddItem("Category: %s<p>" % category)
+    doc.AddItem("%s<p>" % item[5])
+    doc.AddItem("Current value:<hr><pre>%s</pre><hr>" % getattr(list, varname))
 
 def GetGuiItem(table_entry, category, list):
     """Return the contents for a table row representing an options item.
