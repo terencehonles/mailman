@@ -116,7 +116,7 @@ class Deliverer:
 
     def CreateSubscribeAck(self, name, password):
 	if self.welcome_msg:
-	    welcome = self.welcome_msg + '\n'
+	    welcome = Utils.wrap(self.welcome_msg) + '\n'
 	else:
 	    welcome = ''
 
@@ -156,7 +156,8 @@ class Deliverer:
 	self.SendTextToUser(subject = 'Unsubscribed from "%s"\n' % 
 			               self.real_name,
 			    recipient = name, 
-			    text = self.goodbye_msg)
+			    text = Utils.wrap(self.goodbye_msg))
+
     def MailUserPassword(self, user):
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
