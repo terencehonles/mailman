@@ -1,11 +1,9 @@
-Your authorization is required for a mailing list subscription request
-approval:
+Требуется ваша санкция на добавление нового подписчика
 
-    For:  %(username)s
-    List: %(listname)s@%(hostname)s
+    Кто:    %(username)s
+    Список: %(listname)s@%(hostname)s
 
-At your convenience, visit:
+Для того, чтобы Вы могли перейти прямо к обработке административных
+запросов, воспользуйтесь этой ссылкой:
 
     %(admindb_url)s
-	
-to process the request.
