@@ -125,7 +125,16 @@ def main():
             sys.stderr.write('connect to nntp_host failed\n')
             sys.stderr.write(`e`)
             break
-        r,c,f,l,n = conn.group(mlist.linked_newsgroup)
+        try:
+            r,c,f,l,n = conn.group(mlist.linked_newsgroup)
+        except nntplib.error_perm:
+            # We got an error 500, probably meaning that the 'group' command
+            # is not implemented.  A likely scenario causing this is when
+            # running the Mailman gateway on the same machine as the news
+            # server; the server defaults to news feed mode.  We need to set
+            # the connection to reader mode first.
+            conn.shortcmd('mode reader')
+            r,c,f,l,n = conn.group(mlist.linked_newsgroup)
         if not updatewatermarks:
             # just post the specified messages and be done with it
             poll_newsgroup(mlist, conn, first, last+1)
