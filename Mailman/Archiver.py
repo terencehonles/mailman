@@ -120,24 +120,22 @@ class Archiver:
 	if os.fork(): 
 	    return
         try:
-            try:
-                from cStringIO import StringIO
-            except ImportError:
-                from StringIO import StringIO
-            txt = msg.unixfrom
-            for h in msg.headers:
-                txt = txt + h
-            if msg.body[0] != '\n':
-                txt = txt + "\n"
-            txt = txt + msg.body
-            f = StringIO(txt)
-            import HyperArch
-            h = HyperArch.HyperArchive(self)
-            h.processUnixMailbox(f, HyperArch.Article)
-            h.close()
-            f.close()
-        finally:
-            os._exit(0)
+            from cStringIO import StringIO
+        except ImportError:
+            from StringIO import StringIO
+        txt = msg.unixfrom
+        for h in msg.headers:
+            txt = txt + h
+        if msg.body[0] != '\n':
+            txt = txt + "\n"
+        txt = txt + msg.body
+        f = StringIO(txt)
+        import HyperArch
+        h = HyperArch.HyperArchive(self)
+        h.processUnixMailbox(f, HyperArch.Article)
+        h.close()
+        f.close()
+        os._exit(0)
 	
 
     def ArchiveFileName(self):
