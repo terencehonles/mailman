@@ -20,11 +20,19 @@
 This includes actual message transmission routines, address checking and
 message and address munging, a handy-dandy routine to map a function on all 
 the maillists, the Logging routines, and whatever else doesn't belong
-elsewhere."""
+elsewhere.
+"""
 
-
-import sys, string, fcntl, os, random, regsub, re
+import sys
+import os
+import string
+import re
+# XXX: obsolete, should use re module
+import regsub
+import fcntl
+import random
 import mm_cfg
+
 
 # Valid toplevel domains for when we check the validity of an email address.
 
@@ -135,8 +143,8 @@ def wrap(text, column=70):
     
 
 def SendTextToUser(subject, text, recipient, sender, add_headers=[], raw=0):
-    import mm_message
-    msg = mm_message.OutgoingMessage()
+    import Message
+    msg = Message.OutgoingMessage()
     msg.SetSender(sender)
     msg.SetHeader('Subject', subject, 1)
     if not raw:
@@ -358,7 +366,7 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
     Optional arg verbose says to print list name as it's about to be
     instantiated, CR when instantiation is complete, and result of
     application as it shows."""
-    from maillist import MailList
+    from MailList import MailList
     if names == None: names = list_names()
     got = []
     for i in names:
@@ -504,3 +512,13 @@ def chunkify(members, chunksize=mm_cfg.ADMIN_MEMBER_CHUNKSIZE):
          res.append(chunk)
          members = members[chunksize:]
      return res
+
+
+def maketext(templatefile, dict):
+    # Read a template file, do string substituion based on the dictionary and
+    # return the results
+    file = os.path.join(mm_cfg.TEMPLATE_DIR, templatefile)
+    fp = open(file)
+    template = fp.read()
+    fp.close()
+    return template % dict
