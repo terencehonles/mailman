@@ -60,7 +60,8 @@ def main():
                         try:
                             list.ConfirmUserPassword(id, pw)
                         except (Errors.MMBadUserError, 
-                                Errors.MMBadPasswordError):
+                                Errors.MMBadPasswordError,
+                                Errors.MMNotAMemberError):
                             bad = ("%s subscriber authentication failed."
                                    % list.real_name)
                     else:
