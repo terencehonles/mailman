@@ -39,7 +39,7 @@ or, via email, send a message with subject or body 'help' to
 You can reach the person managing the list at
 	%(got_owner_email)s
 
-(When replying, please edit your Subject line so it is more specific than
+When replying, please edit your Subject line so it is more specific than
 "Re: Contents of %(real_name)s digest...")
 """
 
@@ -118,6 +118,10 @@ class Digester:
 	    else:
 		if not self.nondigestable:
 		    raise Errors.MMMustDigestError
+                try:
+                    self.one_last_digest[addr] = self.digest_members[addr]
+                except AttributeError:
+                    self.one_last_digest = {addr: self.digest_members[addr]}
 		del self.digest_members[addr]
 		self.members[addr] = 1
 	self.Save()
@@ -256,11 +260,15 @@ class Digester:
 	    return not s.GetUserOption(x, v)
 	def HatesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return s.GetUserOption(x, v)
-        digestmembers = self.GetDigestMembers()
+        try:
+            final_digesters = self.one_last_digest.keys()
+        except AttributeError:
+            final_digesters = []
+        digestmembers = self.GetDigestMembers() + final_digesters
 	recipients = filter(DeliveryEnabled, digestmembers)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
-
+        
         self.LogMsg("digest",
                     ('%s v %d - '
                      '%d msgs %d dgstrs: %d m %d non %d dis'),
@@ -271,12 +279,10 @@ class Digester:
                     len(mime_recipients),
                     len(text_recipients),
                     len(digestmembers) - len(recipients))
-
         if mime_recipients or text_recipients:
             d = Digest(self, topics_text, digest_file.read())
         else:
             d = None
-
         # Zero the digest files only just before the messages go out.
         topics_file.truncate(0)
         topics_file.close()
@@ -284,6 +290,8 @@ class Digester:
         digest_file.close()
 	self.next_digest_number = self.next_digest_number + 1
 	self.next_post_number = 1
+        # these folks already got their last digest
+        self.one_last_digest = {}
 	self.Save()
 
         if text_recipients:
