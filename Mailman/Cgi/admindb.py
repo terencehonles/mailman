@@ -592,12 +592,11 @@ def show_post_requests(mlist, id, info, total, count, form):
               TextBox('forward-addr-%d' % id, size=47,
                       value=mlist.GetOwnerEmail()).Format()
               ])
+    notice = msgdata.get('rejection-notice', _('[No explanation given]'))
     t.AddRow([
         Bold(_('If you reject this post,<br>please explain (optional):')),
         TextArea('comment-%d' % id, rows=4, cols=80,
-                 text = Utils.wrap(msgdata.get('rejection-notice',
-                                               _('[No explanation given]')),
-                                   column=80))
+                 text = Utils.wrap(_(notice), column=80))
         ])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
