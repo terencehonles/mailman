@@ -4,7 +4,7 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 
 The Mailman Wishlist
-(Last Update: $Date: 2002-10-25 22:14:09 +0100 (Fri, 25 Oct 2002) $)
+(Last Update: $Date: 2002-11-06 04:44:36 +0000 (Wed, 06 Nov 2002) $)
 
     Here's the wish list for future versions of Mailman.  Many new
     features have been added to Mailman 2.1, so what's left will
@@ -82,6 +82,9 @@ List Administration
       when the approved resend is received.
     - Have an option to sort the list of members by real name or email
       address.
+    - Test a message for all hold criteria, record them all instead of
+      just the first match, and do a SpamAssassin like scoring to
+      decide whether the message should get held or not.
 
 List Membership
     - Have one account per user per site, with multiple email
