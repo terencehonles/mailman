@@ -118,7 +118,7 @@ class Pending:
         Raises TimeOutError if unable to get lock within timeout."""
         try:
             self.__lock.lock(timeout)
-        except LockFile.AlreadyCalledLockError:
+        except LockFile.AlreadyLockedError:
             pass
     def __release_lock(self):
         self.__lock.unlock()
