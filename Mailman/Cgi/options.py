@@ -50,7 +50,7 @@ def main():
         title = _('CGI script error')
         doc.SetTitle(title)
         doc.AddItem(Header(2, title))
-        add_error_message(doc, _('Invalid options to CGI script.'))
+        doc.addError(_('Invalid options to CGI script.'))
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
@@ -67,7 +67,7 @@ def main():
         title = _('CGI script error')
         doc.SetTitle(title)
         doc.AddItem(Header(2, title))
-        add_error_message(doc, _('No such list <em>%(safelistname)s</em>'))
+        doc.addError(_('No such list <em>%(safelistname)s</em>'))
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
@@ -88,18 +88,19 @@ def main():
     if lenparts < 2:
         user = cgidata.getvalue('email')
         if not user:
+            doc.addError(_('No address given'))
             loginpage(mlist, doc, None, cgidata)
             print doc.Format()
             return
     else:
         user = Utils.LCDomain(Utils.UnobscureEmail(SLASH.join(parts[1:])))
 
+    # Avoid cross-site scripting attacks
+    safeuser = cgi.escape(user)
     # Sanity check the user, but be careful about leaking membership
     # information when we're using private rosters.
     if not mlist.isMember(user) and mlist.private_roster == 0:
-        # Avoid cross-site scripting attacks
-        safeuser = cgi.escape(user)
-        add_error_message(doc, _('No such member: %(safeuser)s.'))
+        doc.addError(_('No such member: %(safeuser)s.'))
         loginpage(mlist, doc, None, cgidata)
         print doc.Format()
         return
@@ -141,14 +142,18 @@ def main():
         # to do the confirmation dance.
         if mlist.isMember(user):
             mlist.ConfirmUnsubscription(user, userlang)
+            doc.addError(_('The confirmation email has been sent.'), tag='')
         else:
-            syslog('mischief',
-                   'Unsubscribe attempt of non-member w/ private rosters: %s',
-                   user)
-        add_error_message(
-            doc,
-            _('The confirmation email has been sent.'),
-            tag='')
+            # Not a member
+            if mlist.private_roster == 0:
+                # Public rosters
+                doc.addError(_('No such member: %(safeuser)s.'))
+            else:
+                syslog('mischief',
+                       'Unsub attempt of non-member w/ private rosters: %s',
+                       user)
+                doc.addError(_('The confirmation email has been sent.'),
+                             tag='')
         loginpage(mlist, doc, user, cgidata)
         print doc.Format()
         return
@@ -157,14 +162,21 @@ def main():
     if cgidata.has_key('login-remind'):
         if mlist.isMember(user):
             mlist.MailUserPassword(user)
+            doc.addError(
+                _('A reminder of your password has been emailed to you.'),
+                tag='')
         else:
-            syslog('mischief',
-                   'Reminder attempt of non-member w/ private rosters: %s',
-                   user)
-        add_error_message(
-            doc,
-            _('A reminder of your password has been emailed to you.'),
-            tag='')
+            # Not a member
+            if mlist.private_roster == 0:
+                # Public rosters
+                doc.addError(_('No such member: %(safeuser)s.'))
+            else:
+                syslog('mischief',
+                       'Reminder attempt of non-member w/ private rosters: %s',
+                       user)
+                doc.addError(
+                    _('A reminder of your password has been emailed to you.'),
+                    tag='')
         loginpage(mlist, doc, user, cgidata)
         print doc.Format()
         return
@@ -180,7 +192,7 @@ def main():
         # to authenticate via cgi (instead of cookie), then print an error
         # message.
         if cgidata.has_key('password'):
-            add_error_message(doc, _('Authentication failed.'))
+            doc.addError(_('Authentication failed.'))
             # So as not to allow membership leakage, prompt for the email
             # address and the password here.
             if mlist.private_roster <> 0:
@@ -747,16 +759,6 @@ def loginpage(mlist, doc, user, cgidata):
     form.AddItem(table)
     doc.AddItem(form)
     doc.AddItem(mlist.GetMailmanFooter())
-
-
-
-def add_error_message(doc, errmsg, tag='Error: ', *args):
-    # Don't translate the tag if it's the empty string
-    if tag:
-        tag = _(tag)
-    doc.AddItem(Header(3, Bold(FontAttr(
-        tag, color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
-                       Italic(errmsg % args).Format()))
 
 
 
