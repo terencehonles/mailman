@@ -551,11 +551,11 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:765
 msgid "Mass Subscriptions"
-msgstr "Abonnement en masse"
+msgstr "Abonnements"
 
 #: Mailman/Cgi/admin.py:772
 msgid "Mass Removals"
-msgstr "Suppression en masse"
+msgstr "Suppressions"
 
 #: Mailman/Cgi/admin.py:779
 msgid "Membership List"
@@ -3544,7 +3544,7 @@ msgstr "Coréen"
 
 #: Mailman/Defaults.py:1270
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lituanien"
 
 #: Mailman/Defaults.py:1271
 msgid "Dutch"
@@ -3556,7 +3556,7 @@ msgstr "Norvégien"
 
 #: Mailman/Defaults.py:1273
 msgid "Polish"
-msgstr ""
+msgstr "Polonais"
 
 #: Mailman/Defaults.py:1274
 #, fuzzy
@@ -3574,7 +3574,7 @@ msgstr "Russe"
 #: Mailman/Defaults.py:1277
 #, fuzzy
 msgid "Serbian"
-msgstr "Allemand"
+msgstr "Serbe"
 
 #: Mailman/Defaults.py:1278
 msgid "Swedish"
@@ -3582,7 +3582,7 @@ msgstr "Suédois"
 
 #: Mailman/Defaults.py:1279
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainien"
 
 #: Mailman/Deliverer.py:51
 msgid ""
@@ -5444,7 +5444,6 @@ msgstr ""
 "espaces entre le préfixe et l'en-tête original."
 
 #: Mailman/Gui/Membership.py:26
-#, fuzzy
 msgid "Membership&nbsp;Management..."
 msgstr "Gestion&nbsp;des&nbsp;abonnements"
 
@@ -5454,11 +5453,11 @@ msgstr "Liste&nbsp;des&nbsp;abonnements"
 
 #: Mailman/Gui/Membership.py:31
 msgid "Mass&nbsp;Subscription"
-msgstr "Abonnement&nbsp;en&nbsp;bloc"
+msgstr "Abonnements"
 
 #: Mailman/Gui/Membership.py:32
 msgid "Mass&nbsp;Removal"
-msgstr "Suppression&nbsp;en&nbsp;bloc"
+msgstr "Suppressions"
 
 #: Mailman/Gui/NonDigest.py:34
 msgid "Non-digest&nbsp;options"
@@ -5647,7 +5646,6 @@ msgid "Passwords"
 msgstr "Mots de passe"
 
 #: Mailman/Gui/Privacy.py:28
-#, fuzzy
 msgid "Privacy options..."
 msgstr "Options de confidentialité"
 
