@@ -91,9 +91,9 @@ Entry for aliases file:
 
 ## %(listname)s mailing list
 ## created: %(date)s %(user)s
-%(list)s |"%(wrapper)s post %(listname)s"
-%(admin)s |"%(wrapper)s mailowner %(listname)s"
-%(request)s |"%(wrapper)s mailcmd %(listname)s"
+%(list)s "|%(wrapper)s post %(listname)s"
+%(admin)s "|%(wrapper)s mailowner %(listname)s"
+%(request)s "|%(wrapper)s mailcmd %(listname)s"
 %(owner1)s %(listname)s-admin
 %(owner2)s %(listname)s-admin
 ''' % {'listname': list_name,
