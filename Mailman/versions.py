@@ -46,11 +46,18 @@ from Mailman.Logging.Syslog import syslog
 
 def Update(l, stored_state):
     "Dispose of old vars and user options, mapping to new ones when suitable."
+    ZapOldVars(l)
     NewVars(l)
     UpdateOldVars(l, stored_state)
     UpdateOldUsers(l)
     CanonicalizeUserOptions(l)
     NewRequestsDatabase(l)
+
+
+
+def ZapOldVars(l):
+    if hasattr(l, 'num_spawns'):
+        del l.num_spawns
 
 
 
