@@ -38,6 +38,7 @@ import time
 import sha
 import marshal
 import errno
+import cPickle
 
 from mimelib.Parser import Parser
 
@@ -48,6 +49,8 @@ from Mailman.Logging.Syslog import syslog
 
 # 20 bytes of all bits set, maximum sha.digest() value
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL
+
+SAVE_MSGS_AS_PICKLES = 1
 
 
 
@@ -81,8 +84,13 @@ class _Switchboard:
         listname = data.get('listname', '--nolist--')
         # Get some data for the input to the sha hash
         now = time.time()
-        msgtext = str(_msg)
-        hashfood = msgtext + listname + `now`
+        if SAVE_MSGS_AS_PICKLES and not data.get('_plaintext'):
+            msgsave = cPickle.dumps(_msg, 1)
+            ext = '.pck'
+        else:
+            msgsave = str(_msg)
+            ext = '.msg'
+        hashfood = msgsave + listname + `now`
         # Encode the current time into the file name for FIFO sorting in
         # files().  The file name consists of two parts separated by a `+':
         # the received time for this message (i.e. when it first showed up on
@@ -91,7 +99,7 @@ class _Switchboard:
         rcvtime = data.setdefault('received_time', now)
         filebase = `rcvtime` + '+' + sha.new(hashfood).hexdigest()
         # Figure out which queue files the message is to be written to.
-        msgfile = os.path.join(self.__whichq, filebase + '.msg')
+        msgfile = os.path.join(self.__whichq, filebase + ext)
         dbfile = os.path.join(self.__whichq, filebase + '.db')
         # Always add the metadata schema version number
         data['version'] = mm_cfg.QFILE_SCHEMA_VERSION
@@ -108,7 +116,7 @@ class _Switchboard:
             msgfp = open(msgfile, 'w')
         finally:
             os.umask(omask)
-        msgfp.write(msgtext)
+        msgfp.write(msgsave)
         msgfp.close()
         # Now write the metadata using the appropriate external metadata
         # format.  We play rename-switcheroo here to further plug the race
@@ -120,27 +128,36 @@ class _Switchboard:
     def dequeue(self, filebase):
         # Calculate the .db and .msg filenames from the given filebase.
         msgfile = os.path.join(self.__whichq, filebase + '.msg')
+        pckfile = os.path.join(self.__whichq, filebase + '.pck')
         dbfile = os.path.join(self.__whichq, filebase + '.db')
-        # Read the message text and parse it into a message object tree.  When
-        # done, unlink the msg file.
+        # Now we are going to read the message and metadata for the given
+        # filebase.  We want to read things in this order: first, the metadata
+        # file to find out whether the message is stored as a pickle or as
+        # plain text.  Second, the actual message file.  However, we want to
+        # first unlink the message file and then the .db file, because the
+        # qrunner only cues off of the .db file
         msg = data = None
         try:
-            msgfp = open(msgfile)
-        except IOError, e:
-            if e.errno <> errno.ENOENT: raise
-        else:
-            p = Parser(_class=Message.Message)
-            msg = p.parse(msgfp)
-            msgfp.close()
-            os.unlink(msgfile)
-        # Now, read the metadata using the appropriate external metadata
-        # format.  When done, unlink the metadata file.
-        try:
             data = self._ext_read(dbfile)
+            os.unlink(dbfile)
         except EnvironmentError, e:
             if e.errno <> errno.ENOENT: raise
-        else:
-            os.unlink(dbfile)
+        # Using a pickle file will be the more common operation, so try to
+        # open that first, and only open the plain text file if that fails.
+        try:
+            msgfp = open(pckfile)
+            msg = cPickle.load(msgfp)
+            msgfp.close()
+            os.unlink(pckfile)
+        except EnvironmentError, e:
+            if e.errno <> errno.ENOENT: raise
+            try:
+                msgfp = open(msgfile)
+                msg = Parser(_class=Message.Message).parse(msgfp)
+                msgfp.close()
+                os.unlink(msgfile)
+            except EnvironmentError, e:
+                if e.errno <> errno.ENOENT: raise
         return msg, data
 
     def files(self):
