@@ -778,7 +778,7 @@ ALLOW_OPEN_SUBSCRIBE = 0
 DEFAULT_UNSUBSCRIBE_POLICY = 0
 
 # Private_roster == 0: anyone can see, 1: members only, 2: admin only.
-DEFAULT_PRIVATE_ROSTER = 0
+DEFAULT_PRIVATE_ROSTER = 1
 
 # When exposing members, make them unrecognizable as email addrs, so
 # web-spiders can't pick up addrs for spam purposes.
