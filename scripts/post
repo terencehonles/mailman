@@ -27,10 +27,11 @@ import sys
 
 import paths
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
-from Mailman import Utils
+from Mailman import LockFile
 from Mailman.Logging.Utils import LogStdErr
 from Mailman.Handlers import HandlerAPI
 from Mailman.pythonlib.StringIO import StringIO
@@ -39,42 +40,59 @@ LogStdErr("error", "post")
 
 
 
-def main():
-    mlist = MailList.MailList(sys.argv[1])
-    try:
-        # get the message text, which might flow through a filter module
-        prog = mlist.filter_prog
-        msg = None
-        if prog:
-            import os, __main__
-            file = os.path.join(mm_cfg.PREFIX, 'filters', prog)
-            try:
-                execfile(file)
-                msg = Message.Message(StringIO(__main__.mailman_text))
-            except:
-                pass
-        if msg is None:
-            s = StringIO(sys.stdin.read())
-            msg = Message.Message(s)
-        # go ahead and post the message
-        adminaddr = mlist.GetAdminEmail()
+def get_message(mlist):
+    msg = None
+    # Perhaps flow the message text through a filter program
+    prog = mlist.filter_prog
+    if prog:
+        import os, __main__
+        file = os.path.join(mm_cfg.PREFIX, 'filters', prog)
         try:
-            mlist.Post(msg)
-        # TBD: change this to use LoopError and/or move this to the message
-        # pipeline where it probably ought to be.
-        except Errors.MMLoopingPost:
-            # let the list admin know this happened, but don't otherwise hold
-            # the message for approval.
-            sys.stderr.write('Message already came through this list\n')
-            map(sys.stderr.write, msg.headers)
-            sys.stderr.write('[body of message suppressed]\n')
-            noticemsg = Message.UserNotification(
-                adminaddr, adminaddr,
-                'Message loop detected [message discarded]',
-                '\n---------- Original Message ----------\n' +
-                str(msg))
-            HandlerAPI.DeliverToUser(mlist, noticemsg)
-    # Let another process run.
+            execfile(file)
+            msg = Message.Message(StringIO(__main__.mailman_text))
+        except:
+            pass
+    if msg is None:
+        s = StringIO(sys.stdin.read())
+        msg = Message.Message(s)
+    return msg
+
+
+
+def main():
+    # TBD: If you've configured your list or aliases so poorly as to get
+    # either of these first two errors, there's little that can be done to
+    # save your messages.  They will be lost.  Minimal testing of new lists
+    # should avoid either of these problems.
+    try:
+        listname = sys.argv[1]
+    except IndexError:
+        sys.stderr.write('Mailman error: post got no listname.\n')
+        sys.exit(1)
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMListError, e:
+        sys.stderr.write('Mailman error: post got bad listname: %s\n%s' %
+                         (listname, e))
+        sys.exit(1)
+    # We have a valid, unlocked list.  This is enough to extract the message
+    # object in a usable form.  From here on out, we should never lose
+    # messages.
+    msg = get_message(mlist)
+    # Try to obtain the mailing list lock.  If that fails, enqueue the message
+    # for delivery by the qrunner cron job.
+    try:
+        mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+    except LockFile.TimeOutError:
+        msg.Enqueue(mlist)
+        return
+    try:
+        msgdata = {}
+        enqueue = HandlerAPI.DeliverToList(mlist, msg, msgdata)
+        if enqueue:
+            # The delivery failed for some reason.  Queue the message up for
+            # another attempt later.
+            msg.Enqueue(mlist, newdata=msgdata)
     finally:
         mlist.Save()
         mlist.Unlock()
@@ -82,7 +100,4 @@ def main():
 
 
 if __name__ == '__main__':
-##    sys.stderr.write('starting\n')
     main()
-##    sys.stderr.reprime()
-##    sys.stderr.write('ending\n')
