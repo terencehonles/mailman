@@ -1,6 +1,6 @@
 """Shared mailman errors and messages."""
 
-__version__ = "$Revision: 397 $"
+__version__ = "$Revision: 466 $"
 
 
 MMUnknownListError   = "MMUnknownListError"
@@ -48,4 +48,5 @@ Some useful fields are:
   <dd>The brief description of the list.
   <dt>info
   <dd>The less brief list description.
+</dl>
 """
