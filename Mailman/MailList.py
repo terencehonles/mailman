@@ -52,9 +52,10 @@ from Mailman.Autoresponder import Autoresponder
 from Mailman.Logging.Syslog import syslog
 
 # other useful classes
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman import Message
+from Mailman import Pending
 from Mailman.i18n import _
+from Mailman.pythonlib.StringIO import StringIO
 
 EMPTYSTRING = ''
 
@@ -1019,8 +1020,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.ApprovedAddMember(name, password, digest, lang)
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
             # User confirmation required
-            import Pending
-            cookie = Pending.new(name, password, digest, lang)
+            cookie = Pending.new(Pending.SUBSCRIPTION,
+                                 name, password, digest, lang)
             if remote is not None:
                 by = " " + remote
                 remote = _(" from %(remote)s")
@@ -1062,21 +1063,61 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 'subscriptions to %(realname)s require administrator approval')
 
     def ProcessConfirmation(self, cookie):
-        import Pending
         data = Pending.confirm(cookie)
         if data is None:
-            raise Errors.MMBadConfirmation
+            raise Errors.MMBadConfirmation, 'data is None'
         try:
-            addr, password, digest, lang = data
+            op, data = data
         except ValueError:
-            raise Errors.MMBadConfirmation
-        if self.subscribe_policy == 3: # confirm + approve
-            self.HoldSubscription(addr, password, digest, lang)
-            name = self.real_name
-            raise Errors.MMNeedApproval, _(
-                'subscriptions to %(name)s require administrator approval')
-        self.ApprovedAddMember(addr, password, digest, lang)
-        return addr, password, digest, lang
+            raise Errors.MMBadConfirmation, 'op-less data %s' % data
+        if op == Pending.SUBSCRIPTION:
+            try:
+                addr, password, digest, lang = data
+            except ValueError:
+                raise Errors.MMBadConfirmation, 'bad subscr data %s' % data
+            if self.subscribe_policy == 3: # confirm + approve
+                self.HoldSubscription(addr, password, digest, lang)
+                name = self.real_name
+                raise Errors.MMNeedApproval, _(
+                    'subscriptions to %(name)s require administrator approval')
+            self.ApprovedAddMember(addr, password, digest, lang)
+            return op, addr, password, digest, lang
+        elif op == Pending.UNSUBSCRIPTION:
+            addr = data
+            # Can raise MMNoSuchUserError if they unsub'd via other means
+            self.DeleteMember(addr, whence='web confirmation')
+            return op, addr
+
+    def ConfirmUnsubscription(self, addr, lang=None, remote=None):
+        if lang is None:
+            lang = self.GetPreferredLanguage(addr)
+        cookie = Pending.new(Pending.UNSUBSCRIPTION, addr)
+        confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
+                                cookie)
+        realname = self.real_name
+        if remote is not None:
+            by = " " + remote
+            remote = _(" from %(remote)s")
+        else:
+            by = ""
+            remote = ""
+        text = Utils.maketext(
+            'unsub.txt',
+            {'email'       : addr,
+             'listaddr'    : self.GetListEmail(),
+             'listname'    : realname,
+             'cookie'      : cookie,
+             'requestaddr' : self.GetRequestEmail(),
+             'remote'      : remote,
+             'listadmin'   : self.GetAdminEmail(),
+             'confirmurl'  : confirmurl,
+             }, lang=lang)
+        msg = Message.UserNotification(
+            addr, self.GetRequestEmail(),
+            _('%(realname)s -- confirmation of removal -- confirm %(cookie)s'),
+            text)
+        msg['Reply-To'] = self.GetRequestEmail()
+        msg.send(self)
 
     def ApprovedAddMember(self, name, password, digest,
                           ack=None, admin_notif=None, lang=None):
