@@ -53,7 +53,7 @@ def process(mlist, msg, msgdata):
     if mlist:
         admin = mlist.GetAdminEmail()
     else:
-        admin = mm_cfg.MAILMAN_OWNER
+        admin = Utils.get_site_email()
     msgtext = msg.get_text()
     #
     # Split the recipient list into SMTP_MAX_RCPTS chunks.  Most MTAs have a
