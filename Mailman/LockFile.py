@@ -158,6 +158,13 @@ class LockFile:
         this refreshes the lock (on set locks).
 
     """
+    # BAW: We need to watch out for two lock objects in the same process
+    # pointing to the same lock file.  Without this, if you lock lf1 and do
+    # not lock lf2, lf2.locked() will still return true.  NOTE: this gimmick
+    # probably does /not/ work in a multithreaded world, but we don't have to
+    # worry about that, do we? <1 wink>.
+    COUNTER = 0
+
     def __init__(self, lockfile,
                  lifetime=DEFAULT_LOCK_LIFETIME,
                  withlogging=0):
@@ -172,18 +179,21 @@ class LockFile:
         """
         self.__lockfile = lockfile
         self.__lifetime = lifetime
-        self.__tmpfname = '%s.%s.%d' % (
-            lockfile, socket.gethostname(), os.getpid())
+        # This works because we know we're single threaded
+        self.__counter = LockFile.COUNTER
+        LockFile.COUNTER += 1
+        self.__tmpfname = '%s.%s.%d.%d' % (
+            lockfile, socket.gethostname(), os.getpid(), self.__counter)
         self.__withlogging = withlogging
         self.__logprefix = os.path.split(self.__lockfile)[1]
         # For transferring ownership across a fork.
         self.__owned = 1
 	
     def __repr__(self):
-        return '<LockFile %s: %s [%s: %ssec]>' % (
+        return '<LockFile %s: %s [%s: %ssec] pid=%s>' % (
             id(self), self.__lockfile,
             self.locked() and 'locked' or 'unlocked',
-            self.__lifetime)
+            self.__lifetime, os.getpid())
 
     def set_lifetime(self, lifetime):
         """Set a new lock lifetime.
@@ -209,7 +219,7 @@ class LockFile:
             self.set_lifetime(newlifetime)
         # Do we have the lock?  As a side effect, this refreshes the lock!
         if not self.locked() and not unconditionally:
-            raise NotLockedError
+            raise NotLockedError, '%s: %s' % (repr(self), self.__read())
 
     def lock(self, timeout=0):
         """Acquire the lock.
