@@ -87,9 +87,10 @@ class Message(mimelib.Message.Message, StringableMixin):
 class UserNotification(Message):
     """Class for internally crafted messages."""
 
-    def __init__(self, recip, sender, subject=None, text=''):
+    def __init__(self, recip, sender, subject=None, text=None):
         Message.__init__(self)
-        self.set_payload(text)
+        if text is not None:
+            self.set_payload(text)
         if subject is None:
             subject = '(no subject)'
         self['Subject'] = subject
