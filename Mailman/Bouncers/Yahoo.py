@@ -18,8 +18,9 @@
 
 import re
 import email
+from email.Utils import parseaddr
 
-tcre = re.compile(r'message\s+from\s+yahoo.com', re.IGNORECASE)
+tcre = re.compile(r'message\s+from\s+yahoo\.\S+', re.IGNORECASE)
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 ecre = re.compile(r'--- Original message follows')
 
@@ -28,7 +29,8 @@ ecre = re.compile(r'--- Original message follows')
 def process(msg):
     # Yahoo! bounces seem to have a known subject value and something called
     # an x-uidl: header, the value of which seems unimportant.
-    if msg.get('from', '').lower() <> 'mailer-daemon@yahoo.com':
+    sender = parseaddr(msg.get('from', '').lower())[1] or ''
+    if not sender.startswith('mailer-daemon@yahoo'):
         return None
     addrs = []
     # simple state machine
