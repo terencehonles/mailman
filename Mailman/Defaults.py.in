@@ -73,6 +73,11 @@ MAILMAN_SITE_LIST = 'mailman'
 # the site.  Set this value to 1 to allow site admin cookies.
 ALLOW_SITE_ADMIN_COOKIES = 0
 
+# Command that is used to convert text/html parts into plain text.  This
+# should output results to standard output.  %(filename)s will contain the
+# name of the temporary file that the program should operate on.
+HTML_TO_PLAIN_TEXT_COMMAND = '/usr/bin/lynx -dump %(filename)s'
+
 
 
 #####
@@ -241,8 +246,9 @@ ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 # or as the entirety of the message when the outer part is text/html.  The
 # format of the string must include a "%(filename)s" which will contain the
 # name of the temporary file that the program should operate on.  It should
-# write the processed message to stdout.
-#ARCHIVE_HTML_SANITIZER = '/usr/bin/lynx -dump %(filename)s'
+# write the processed message to stdout.  Set this to
+# HTML_TO_PLAIN_TEXT_COMMAND to specify an HTML to plain text conversion
+# program.
 ARCHIVE_HTML_SANITIZER = 1
 
 # Set this to 1 to enable gzipping of the downloadable archive .txt file.
@@ -403,6 +409,7 @@ GLOBAL_PIPELINE = [
     'Approve',
     'Replybot',
     'Moderate',
+    'MimeDel',
     'Hold',
     'Emergency',
     'Tagger',
@@ -678,7 +685,8 @@ ADMIN_CATEGORIES = [
     # First column
     'general', 'passwords', 'language', 'members', 'nondigest', 'digest',
     # Second column
-    'privacy', 'bounce',    'archive',  'gateway', 'autoreply', 'topics',
+    'privacy', 'bounce', 'archive', 'gateway', 'autoreply', 
+    'contentfilter', 'topics',
     ]
 
 # See "Bitfield for user options" below; make this a sum of those options, to
@@ -823,6 +831,20 @@ DEFAULT_OBSCURE_ADDRESSES = 1
 # setting this variable to 1, list owners will be given the option to suppress
 # these headers.
 ALLOW_RFC2369_OVERRIDES = 0
+
+# Defaults for content filtering on mailing lists.  DEFAULT_FILTER_CONTENT is
+# a flag which if set to true, turns on content filtering.
+DEFAULT_FILTER_CONTENT = 0
+
+# DEFAULT_FILTER_MIME_TYPES is a list of MIME types to be removed.  This is a
+# list of strings of the format "maintype/subtype" or simply "maintype".
+# E.g. "text/html" strips all html attachments while "image" strips all image
+# types regardless of subtype (jpeg, gif, etc.).
+DEFAULT_FILTER_MIME_TYPES = []
+
+# Whether text/html should be converted to text/plain after content filtering
+# is performed.  Conversion is done according to HTML_TO_PLAIN_TEXT_COMMAND
+DEFAULT_CONVERT_HTML_TO_PLAINTEXT = 1
 
 # Check for administrivia in messages sent to the main list?
 DEFAULT_ADMINISTRIVIA = 1
