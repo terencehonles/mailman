@@ -49,6 +49,7 @@ sre = re.compile(r'[^-\w.]')
 dre = re.compile(r'^\.*')
 
 BR = '<br>\n'
+SPACE = ' '
 
 
 
@@ -70,19 +71,44 @@ class ScrubberGenerator(Generator):
         if not self.__skipheaders:
             Generator._write_headers(self, msg)
 
-
 
+def safe_strftime(fmt, floatsecs):
+    try:
+        return time.strftime(fmt, floatsecs)
+    except ValueError:
+        return None
+
+
 def calculate_attachments_dir(mlist, msg, msgdata):
     # Calculate the directory that attachments for this message will go
     # under.  To avoid inode limitations, the scheme will be:
     # archives/private/<listname>/attachments/YYYYMMDD/<msgid-hash>/<files>
     # Start by calculating the date-based and msgid-hash components.
-    msgdate = msg.get('Date')
-    if msgdate is None:
-        now = time.gmtime(msgdata.get('received_time', time.time()))
+    fmt = '%Y%m%d'
+    datestr = msg.get('Date')
+    if datestr:
+        now = parsedate(datestr)
     else:
-        now = parsedate(msgdate)
-    datedir = time.strftime('%Y%m%d', now)
+        now = time.gmtime(msgdata.get('received_time', time.time()))
+    datedir = safe_strftime(fmt, now)
+    if not datedir:
+        datestr = msgdata.get('X-List-Received-Date')
+        if datestr:
+            datedir = safe_strftime(fmt, datestr)
+    if not datedir:
+        # What next?  Unixfrom, I guess.
+        parts = msg.get_unixfrom().split()
+        try:
+            month = {'Jan':1, 'Feb':2, 'Mar':3, 'Apr':4, 'May':5, 'Jun':6,
+                     'Jul':7, 'Aug':8, 'Sep':9, 'Oct':10, 'Nov':11, 'Dec':12,
+                     }.get(parts[3], 0)
+            day = int(parts[4])
+            year = int(parts[6])
+        except (IndexError, ValueError):
+            # Best we can do I think
+            month = day = year = 0
+        datedir = '%04d%02d%02d' % (year, month, day)
+    assert datedir
     # As for the msgid hash, we'll base this part on the Message-ID: so that
     # all attachments for the same message end up in the same directory (we'll
     # uniquify the filenames in that directory as needed).  We use the first 2
