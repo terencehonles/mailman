@@ -17,6 +17,13 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
 - Many bug fixes, including the setgid problem that was causing mail
   to be lost on some versions of Linux.
 
+1.0b8
+
+ - Bug fixes and workarounds for certain Linuxes.
+
+ - Illegal addresses are no longer allowed to be subscribed, from any
+   interface.
+
 1.0b7
 
  - Many, many bug fixes.  Some performance improvements for large
