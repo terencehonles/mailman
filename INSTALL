@@ -235,6 +235,11 @@ if you want to keep your existing installation intact.
 
         % $prefix/bin/mmsitepass <your-site-password>
 
+      This password can be used anywhere that individual user or
+      maillist administrator passwords are required, giving the
+      mailman site administrator the ability to adjust these things
+      when necessary.
+
 5. Getting started
 
     - Create a list named `test'.  To do so, run the program
