@@ -121,21 +121,21 @@ class Archiver:
 
     def GetConfigInfo(self):
 	return [
-            "List traffic archival policies.",
+            _("List traffic archival policies."),
 
-	    ('archive', mm_cfg.Toggle, ('No', 'Yes'), 0, 
-	     'Archive messages?'),
+	    ('archive', mm_cfg.Toggle, (_('No'), _('Yes')), 0, 
+	     _('Archive messages?')),
 
-	    ('archive_private', mm_cfg.Radio, ('public', 'private'), 0,
-             'Is archive file source for public or private archival?'),
+	    ('archive_private', mm_cfg.Radio, (_('public'), _('private')), 0,
+             _('Is archive file source for public or private archival?')),
 
-	    ('clobber_date', mm_cfg.Radio, ('When sent', 'When resent'), 0,
-	     'Set date in archive to when the mail is claimed to have been '
-             'sent, or to the time we resend it?'),
+	    ('clobber_date', mm_cfg.Radio, (_('When sent'), _('When resent')), 0,
+	     _('Set date in archive to when the mail is claimed to have been '
+               'sent, or to the time we resend it?')),
 
  	    ('archive_volume_frequency', mm_cfg.Radio, 
-               ('Yearly', 'Monthly','Quarterly', 'Weekly', 'Daily'), 0,
- 	     'How often should a new archive volume be started?'),
+               (_('Yearly'), _('Monthly'),_('Quarterly'), _('Weekly'), _('Daily')), 0,
+ 	     _('How often should a new archive volume be started?')),
 	    ]
 
     def ArchiveFileName(self):

@@ -167,8 +167,8 @@ class Article:
 	if message.has_key('Subject'):
             self.subject = str(message['Subject'])
 	else:
-            self.subject = 'No subject'
-	if self.subject == "": self.subject = 'No subject'
+            self.subject = _('No subject')
+	if self.subject == "": self.subject = _('No subject')
 
         self._set_date(message)
 
@@ -265,7 +265,7 @@ class T:
 	    if errno != 2:
                 raise os.error, errdata
 	    else: 
-		self.message('Creating archive directory ' + self.basedir)
+		self.message(_('Creating archive directory ') + self.basedir)
 		mkdir(self.basedir, self.DIRMODE)
 
 	# Try to load previously pickled state
@@ -273,7 +273,7 @@ class T:
 	    if not reload:
                 raise IOError
 	    f = open(os.path.join(self.basedir, 'pipermail.pck'), 'r')
-	    self.message('Reloading pickled archive state')
+	    self.message(_('Reloading pickled archive state'))
 	    d = pickle.load(f)
 	    f.close()
 	    for key, value in d.items():
@@ -300,7 +300,7 @@ class T:
         self.update_TOC = 0
         self.write_TOC()
 	# Save the collective state 
-	self.message('Pickling archive state into ' \
+	self.message(_('Pickling archive state into ') \
                      + os.path.join(self.basedir, 'pipermail.pck'))
 	self.database.close()
 	del self.database
@@ -407,7 +407,7 @@ class T:
     # dirtied or not. 
     def update_archive(self, archive):	
 	self.archive = archive
-	self.message("Updating index files for archive [%s]" % archive)
+	self.message(_("Updating index files for archive [%(archive)s]"))
 	arcdir = os.path.join(self.basedir, archive)
 	self.__set_parameters(archive)
 
@@ -441,7 +441,7 @@ class T:
         self._restore_stdout()
 
     def _update_thread_index(self, archive, arcdir):
-	self.message("  Thread")
+	self.message(_("  Thread"))
         self._open_index_file_as_stdout(arcdir, "thread")
  	self.type = 'Thread'
  	self.write_index_header()
