@@ -38,11 +38,11 @@ DEFS=   	@DEFS@
 
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
-MAILDIR= 	$(prefix)/scripts
+SCRIPTSDIR= 	$(prefix)/scripts
 
 SHELL=		/bin/sh
 
-SCRIPTS=	answer_majordomo_mail mailcmd mailowner post
+SCRIPTS=	answer_majordomo_mail mailcmd mailowner post driver
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -60,7 +60,7 @@ all:
 install:
 	for f in $(SCRIPTS); \
 	do \
-	    $(INSTALL) -m $(FILEMODE) $$f $(MAILDIR); \
+	    $(INSTALL) -m $(FILEMODE) $$f $(SCRIPTSDIR); \
 	done
 
 clean:
