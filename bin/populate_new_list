@@ -19,25 +19,33 @@ def GetRandomPassword():
     return "%s%s" % (mm_utils.GetRandomSeed(), mm_utils.GetRandomSeed())
 
 def main(argv):
-    if len(argv) != 4:
+    if len(argv) not in [3, 4]:
         print ('Usage: populate_new_list <list name> '
-               '<non-digest-members-file> <digest-members-file>')
+               '<non-digest-members-file> [ <digest-members-file> ]')
         sys.exit(0)
 
-    list = maillist.MailList(sys.argv[1])
+    try:
+        list = maillist.MailList(sys.argv[1])
+    except mm_err.MMUnknownListError, msg:
+        sys.stderr.write("list %s not found\n" % `argv[1]`)
+        sys.exit(1)
 
     try:
         non_digest_members = string.split(open(sys.argv[2]).read(), '\n')
     except IOError:
         non_digest_members = []
         sys.stderr.write(
-            'Failed opening of non-digest members file, ignoring.')
-    try:
-        digest_members = string.split(open(sys.argv[3]).read(), '\n')
-    except IOError:
+            'Failed open of non-digest members file, ignoring.')
+
+    if len(argv) == 4:
+        try:
+            digest_members = string.split(open(sys.argv[3]).read(), '\n')
+        except IOError:
+            digest_members = []
+            sys.stderr.write(
+                'Failed open of digest members file, ignoring.')
+    else:
         digest_members = []
-        sys.stderr.write(
-            'Failed opening of digest members file, ignoring.')
 
     def FormatMembers(mbrs):
         def NotNull(str):
@@ -52,7 +60,7 @@ def main(argv):
         try:
             list.ApprovedAddMember(member, pw, 0)
         except mm_err.MMAlreadyAMember:
-            sys.stderr.write("%s: %s already a member" %
+            sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
 
     for member in digest_members:
@@ -60,8 +68,8 @@ def main(argv):
         try:
             list.ApprovedAddMember(member, pw, 1)
         except mm_err.MMAlreadyAMember:
-            sys.stderr.write("%s: %s already a member" %
+            sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
 
-
-
+if __name__ == "__main__":
+    main(sys.argv)
