@@ -17,8 +17,6 @@
 
 "Extend mailbox.UnixMailbox."
 
-__version__ = "$Revision: 547 $"
-
 
 import mailbox
 

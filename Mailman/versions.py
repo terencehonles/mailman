@@ -32,7 +32,6 @@ updates the data_version number of the list, and then does a .Save(), so
 the transformations won't be run again until another version change is
 detected."""
 
-__version__ = "$Revision: 721 $"
 
 import re, string, types
 import mm_cfg
