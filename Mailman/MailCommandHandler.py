@@ -1,15 +1,10 @@
-# Process mail commands.
+"""Process commands arriving via email."""
+
 # Try to stay close to majordomo commands, but accept common mistakes.
-# Not implemented: get / index / which
-
-
-
+# Not implemented: get / index / which.
 
 import string, os, sys
 import mm_message, mm_err, mm_cfg, mm_utils
-
-
-
 
 option_descs = { 'digest' :
 		     'receive mail from the list bundled together instead of '
@@ -133,7 +128,8 @@ class MailCommandHandler:
 		value = 'off'
 	    self.AddToResponse("%s: %s" % (option, value))
 	self.AddToResponse("")
-	self.AddToResponse("To change an option, do: set <option> <on|off> <password>")
+	self.AddToResponse("To change an option, do: "
+                           "set <option> <on|off> <password>")
 	self.AddToResponse("")
 	self.AddToResponse("Option explanations:")
 	self.AddToResponse("--------------------")
@@ -192,11 +188,13 @@ class MailCommandHandler:
 	    except mm_err.MMCantDigestError:
 		self.AddError("List doesn't accept digest members.")
 	    except mm_err.MMNotAMemberError:
-		self.AddError("%s isn't subscribed to this list." % mail.GetSender())
+		self.AddError("%s isn't subscribed to this list."
+                              % mail.GetSender())
 	    except mm_err.MMListNotReady:
 		self.AddError("List is not functional.")
 	    except mm_err.MMNoSuchUserError:
-		self.AddError("%s is not subscribed to this list." %mail.GetSender())
+		self.AddError("%s is not subscribed to this list."
+                              % mail.GetSender())
 	    except mm_err.MMBadPasswordError:
 		self.AddError("You gave the wrong password.")
 	    except mm_err.MMNeedApproval:
@@ -212,9 +210,12 @@ class MailCommandHandler:
 	    return
 	    
     def ProcessListsCmd(self, args, cmd, mail):
+	if len(args) != 0:
+	    self.AddError("Usage: lists")
+	    return
 	lists = os.listdir(mm_cfg.LIST_DATA_DIR)
 	lists.sort()
-	self.AddToResponse("Public mailing lists run by Mailman@%s:"
+	self.AddToResponse("** Public mailing lists run by Mailman@%s:"
 			   % self.host_name)
 	for list in lists:
 	    if list == self._internal_name:
@@ -233,6 +234,14 @@ class MailCommandHandler:
 				listob.description))
 	
     def ProcessInfoCmd(self, args, cmd, mail):
+	if len(args) != 0:
+	    self.AddError("Usage: info\n"
+                          "To get info for a particular list, "
+                          "send your request to\n"
+                          "the '-request' address for that list, or "
+                          "use the 'lists' command\n"
+                          "to get info for all the lists.")
+	    return
 	if self.private_roster and not self.IsMember(mail.GetSender()):
 	    self.AddError("Private list: only members may see info.")
 	    return
@@ -245,6 +254,11 @@ class MailCommandHandler:
 	    self.AddToResponse(self.info)
 	
     def ProcessWhoCmd(self, args, cmd, mail):
+	if len(args) != 0:
+	    self.AddError("To get subscribership for a particular list, "
+                          "send your request\n"
+                          "to the '-request' address for that list.")
+	    return
 	def AddTab(str):
 	    return '\t' + str
 
@@ -284,8 +298,10 @@ class MailCommandHandler:
 	    self.AddError("Must supply a password.")
 	    return
 	if len(args) > 2:
-		self.AddError("Extra text '%s' not understood.  IGNORED." % 
-			      string.join(args[1:]))
+	    self.AddError("To get unsubscribe from a particular list, "
+                          "send your request\nto the '-request' address"
+                          "for that list.")
+	    return
 
 	if len(args) == 2:
 	    addr = args[1]
@@ -298,14 +314,15 @@ class MailCommandHandler:
 	except mm_err.MMListNotReady:
 	    self.AddError("List is not functional.")
 	except mm_err.MMNoSuchUserError:
-	    self.AddError("%s is not subscribed to this list." %mail.GetSender())
+	    self.AddError("%s is not subscribed to this list."
+                          % mail.GetSender())
 	except mm_err.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
 	except:
 	    # TODO: Should log the error we got if we got here.
 	    self.AddError("An unknown Mailman error occured.")
-	    self.AddError("Please forward on your request to %s" %
-			  self.GetAdminEmail())
+	    self.AddError("Please forward on your request to %s"
+                          % self.GetAdminEmail())
 	    self.AddError("%s %s" % (sys.exc_type, sys.exc_value))
 	    self.AddError("%s" % sys.exc_traceback)
 
@@ -396,10 +413,16 @@ Any questions about the list owner's policy should be directed to:
 	self.AddToResponse("""
 This is email command help for version %s of the "Mailman" list manager.
 The following describes commands you can send to get information about and
-control your subscription to mailman lists at this site.  About the
-descriptions - words in "<>"s signify REQUIRED items and words in "[]"
-denote OPTIONAL items.  Do not include the "<>"s or "[]"s when you use the
-commands.
+control your subscription to mailman lists at this site.  A command can
+be in the subject line and many can be in the body of the message.
+
+List specific commands (subscribe, who, etc) should be sent to the
+*-request address for the particular list, e.g. for the 'mailman' list,
+use 'mailman-request@...'.
+
+About the descriptions - words in "<>"s signify REQUIRED items and words in
+"[]" denote OPTIONAL items.  Do not include the "<>"s or "[]"s when you use
+the commands.
 
 The following commands are valid:
 
@@ -424,7 +447,7 @@ The following commands are valid:
         View the introductory information for this list.
 
     lists
-        See what other mailing lists are run by this Mailman server.
+        See what mailing lists are run by this Mailman server.
 
     help
         This message.
