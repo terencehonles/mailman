@@ -78,7 +78,7 @@ def new(*content):
         _save(db)
         return cookie
     finally:
-        lock.unlock()
+        lock.unlock(unconditionally=1)
 
 
 
@@ -106,7 +106,7 @@ def confirm(cookie, expunge=1):
             _save(db)
         return content
     finally:
-        lock.unlock()
+        lock.unlock(unconditionally=1)
 
 
 
@@ -201,4 +201,4 @@ def _update(olddb):
             evictions[cookie] = data[-1] + mm_cfg.PENDING_REQUEST_LIFE
         _save(db)
     finally:
-        lock.unlock()
+        lock.unlock(unconditionally=1)
