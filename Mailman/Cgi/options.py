@@ -54,7 +54,7 @@ def main():
 
     # get the list and user's name
     listname = string.lower(parts[0])
-    user = Utils.UnobscureEmail(parts[1])
+    user = Utils.UnobscureEmail(string.join(parts[1:], '/'))
     # open list
     try:
         mlist = MailList.MailList(listname, lock=0)
