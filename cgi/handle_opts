@@ -23,7 +23,7 @@ list_info = mm_utils.GetPathPieces(path)
 if len(list_info) < 2:
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
-    print doc.Format()
+    print doc.Format(bgcolor="#ffffff")
     sys.exit(0)
 
 list_name = string.lower(list_info[0])
@@ -32,7 +32,7 @@ user = list_info[1]
 if len(list_info) < 2:
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
-    print doc.Format()
+    print doc.Format(bgcolor="#ffffff")
     sys.exit(0)
 
 try:
@@ -40,13 +40,13 @@ try:
 except:
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold("%s: No such list." % list_name))
-    print doc.Format()
+    print doc.Format(bgcolor="#ffffff")
     sys.exit(0)
 
 if not list._ready:
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold("%s: No such list." % list_name))
-    print doc.Format()
+    print doc.Format(bgcolor="#ffffff")
     sys.exit(0)
 
 
@@ -57,7 +57,7 @@ def PrintResults(results):
     output = list.ParseTags('handle_opts.html', replacements)
 
     doc.AddItem(output)
-    print doc.Format()
+    print doc.Format(bgcolor="#ffffff")
     list.Unlock()
     sys.exit(0)
 
