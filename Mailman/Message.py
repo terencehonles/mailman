@@ -112,11 +112,15 @@ class IncomingMessage(rfc822.Message):
 	    try:
 		realname, mail_address = self.getaddr('from')
 	    except:
-		# The unix from line is all we have left...
-		if self.unixfrom:
-		    return string.lower(string.split(self.unixfrom)[1])
+                real_name = mail_address = None
 
-	return string.lower(mail_address)
+        # We can't trust that any of the headers really contained an address
+        if mail_address and type(mail_address) == type(""):
+            return string.lower(mail_address)
+        else:
+            # The unix from line is all we have left...
+            if self.unixfrom:
+                return string.lower(string.split(self.unixfrom)[1])
 
     def GetEnvelopeSender(self):
         #
