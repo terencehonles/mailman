@@ -440,10 +440,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # part doesn't really matter, since that better already be valid.
         # However, most scripts already catch MMBadEmailError as exceptions on
         # the admin's email address, so transform the exception.
+        postingaddr = '%s@%s' % (name, mm_cfg.DEFAULT_EMAIL_HOST)
         try:
-            Utils.ValidateEmail('%s@%s' % (name, mm_cfg.DEFAULT_EMAIL_HOST))
+            Utils.ValidateEmail(postingaddr)
         except Errors.MMBadEmailError:
-            raise Errors.BadListNameError, name
+            raise Errors.BadListNameError, postingaddr
         # Validate the admin's email address
         Utils.ValidateEmail(admin)
         self._internal_name = name
