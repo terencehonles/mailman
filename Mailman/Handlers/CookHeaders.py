@@ -71,7 +71,7 @@ def process(mlist, msg):
     # Set Reply-To: header to point back to list, if the list is so
     # inclined.
     if mlist.reply_goes_to_list and not getattr(msg, 'fastrack', 0):
-        msg['reply-to'] = 'Reply-To: %s\n' % mlist.GetListEmail()
+        msg['Reply-To'] = mlist.GetListEmail()
     #
     # Other list related non-standard headers.  Defined in:
     #
