@@ -1,4 +1,7 @@
 #!/usr/local/bin/python
+
+# This script is being deprecated, in favor hookups for an external archiver.
+
 # We don't need to lock in this script, because we're never going to change data.
 
 import sys
