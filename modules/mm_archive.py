@@ -24,8 +24,9 @@ class Archiver:
 ## 		mm_cfg.DEFAULT_ARCHIVE_RETAIN_TEXT_COPY
 
 	# Not configurable
+	# XXX klm - reconcile with .ArchiveFileName()
 	self._base_archive_url = os.path.join(mm_cfg.ARCHIVE_URL, 
-					      self._internal_name)
+					      self._internal_name + ".html")
 	self.clobber_date = 0
 
     def GetConfigInfo(self):
@@ -103,6 +104,7 @@ class Archiver:
 	self.Save ()
 
     def ArchiveFileName(self):
+	"""The mbox name where messages are left for archive construction."""
 	if self.archive_private:
 	    return os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
 				self._internal_name)
@@ -110,6 +112,7 @@ class Archiver:
 	    return os.path.join(mm_cfg.PUBLIC_ARCHIVE_FILE_DIR,
 				self._internal_name)
     def ArchiveFile(self, afn):
+	"""Open (creating, if necessary) the named archive file."""
 	ou = os.umask(002)
 	try:
 	    try:
