@@ -758,7 +758,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 
     def HasMatchingHeader(self, msg):
-	"""True if named header field (case-insensitive matches regexp.
+	"""True if named header field (case-insensitive) matches regexp.
 
 	Case insensitive.
 
