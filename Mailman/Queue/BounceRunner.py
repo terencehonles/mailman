@@ -75,16 +75,22 @@ class BounceRunner(Runner):
             elif self.__scanbounce(mlist, msg):
                 mlist.Save()
                 return
-            # Otherwise, we should just forward this message to the list
-            # owner, because there's nothing we can do with it.  Be sure to
-            # point the envelope sender at the site owner for any bounces to
-            # list owners.
-            recips = mlist.owner[:]
-            recips.extend(mlist.moderator)
-            outq.enqueue(msg, msgdata,
-                         recips=recips,
-                         envsender=Utils.get_site_email(extra='admin'),
-                         )
+            # Does the list owner want to get non-matching bounce messages?
+            # If not, simply discard it.
+            if mlist.bounce_unrecognized_goes_to_list_owner:
+                syslog('bounce', 'forwarding unrecognized, message-id: %s',
+                       msg.get('message-id', 'n/a'))
+                # Be sure to point the envelope sender at the site owner for
+                # any bounces to list owners.
+                recips = mlist.owner[:]
+                recips.extend(mlist.moderator)
+                outq.enqueue(msg, msgdata,
+                             recips=recips,
+                             envsender=Utils.get_site_email(extra='admin'),
+                             )
+            else:
+                syslog('bounce', 'discarding unrecognized, message-id: %s',
+                       msg.get('message-id', 'n/a'))
         finally:
             mlist.Unlock()
 
