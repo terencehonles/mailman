@@ -643,6 +643,15 @@ def unique_message_id(mlist):
     return msgid
 
 
+# Figure out epoch seconds of midnight at the start of today (or the given
+# 3-tuple date of (year, month, day).
+def midnight(date=None):
+    if date is None:
+        date = time.localtime()[:3]
+    # -1 for dst flag tells the library to figure it out
+    return time.mktime(date + (0,)*5 + (-1,))
+
+
 
 # Utilities to convert from simplified $identifier substitutions to/from
 # standard Python $(identifier)s substititions.  The "Guido rules" for the
