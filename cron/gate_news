@@ -44,11 +44,11 @@ import os
 import string
 import time
 import marshal
-import paths
 import errno
 import traceback
 import socket
 
+import paths
 from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
