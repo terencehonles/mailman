@@ -40,7 +40,7 @@ LogStdErr("error", "mailcmd")
 
 
 
-def main(mlist):
+def main():
     try:
         listname = sys.argv[1]
     except IndexError:
