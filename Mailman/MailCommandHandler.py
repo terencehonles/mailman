@@ -24,72 +24,98 @@ import os
 import sys
 import string
 import re
+import traceback
 import Message
 import Errors
 import mm_cfg
 import Utils
-import traceback
+import MailList
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 
-option_descs = { 'digest' :
-		     'receive mail from the list bundled together instead of '
-		     'one post at a time',
-		 'nomail' :
-		     'Stop delivering mail.  Useful if you plan on taking a '
-		     'short vacation.',
-		 'norcv'  :
-		     'Turn this on to NOT receive posts you send to the list. '
-		     'does not work if digest is set',
-		 'ack'    :
-		     'Turn this on to receive acknowlegement mail when you '
-		     'send mail to the list',
-		 'plain'  :
-		    'Get plain, not MIME-compliant, '
-		    'digests (only if digest is set)',
-		 'hide'   :
-		    'Conceals your email from the list of subscribers'
-	       }
-option_info = { 'digest' : 0,
-		'nomail' : mm_cfg.DisableDelivery,
-		'norcv'  : mm_cfg.DontReceiveOwnPosts,
-		'ack'    : mm_cfg.AcknowlegePosts,
-		'plain'  : mm_cfg.DisableMime,
-		'hide'   : mm_cfg.ConcealSubscription
-		}
+MAXERRORS = 5
+MAXCOLUMN = 70
 
+option_descs = {
+    'hide'   :  '''When turned on, your email address is concealed
+on the Web page that lists the members of the mailing list.''',
+    'nomail' : '''When turned on, delivery to your email address is disabled,
+but your address is still subscribed.  This is useful if you plan on 
+taking a short vacation.''',
+    'ack'    : '''When turned on, you get a separate acknowledgement email
+when you post messages to the list.''',
+    'notmetoo': '''When turned on, you do *not* get copies of your own
+posts to the list.  Otherwise, you do get copies of your own posts
+ (yes, this seems a little backwards).  This does not affect the contents
+of digests, so if you receive postings in digests, you will always get
+copies of your messages in the digest.''',
+    'digest' : '''When turned on, you get postings from the list bundled
+into digests.  Otherwise, you get each individual message immediately as
+it is posted to the list.''',
+    'plain'  : """When turned on, you get `plain' digests, which are actually
+formatted using the older RFC934 digest format.  This format can be easier
+to read if you have a non-MIME compliant mail reader.  When this option is
+turned off, you get digests in MIME format, which are much better if you
+have a mail reader that supports MIME.""",
+    }
+
+option_info = {'digest'  : 0,
+               'nomail'  : mm_cfg.DisableDelivery,
+               'notmetoo': mm_cfg.DontReceiveOwnPosts,
+               'ack'     : mm_cfg.AcknowlegePosts,
+               'plain'   : mm_cfg.DisableMime,
+               'hide'    : mm_cfg.ConcealSubscription
+               }
+
+# ordered list
+options = ('hide', 'nomail', 'ack', 'notmetoo', 'digest', 'plain')
+
+
+
 class MailCommandHandler:
     def __init__(self):
-	self._response_buffer = ''
-	self._cmd_dispatch = {
-	    'subscribe' : self.ProcessSubscribeCmd,
-            'confirm': self.ProcessConfirmCmd,
+        self.__errors = 0
+	self.__respbuf = ''
+	self.__dispatch = {
+	    'subscribe'   : self.ProcessSubscribeCmd,
+            'confirm'     : self.ProcessConfirmCmd,
 	    'unsubscribe' : self.ProcessUnsubscribeCmd,
-	    'who' : self.ProcessWhoCmd,
-	    'info' : self.ProcessInfoCmd,
-	    'lists' : self.ProcessListsCmd,
-	    'help' : self.ProcessHelpCmd,
-	    'set' : self.ProcessSetCmd,
-	    'options' : self.ProcessOptionsCmd,
-	    'password' : self.ProcessPasswordCmd,
+	    'who'         : self.ProcessWhoCmd,
+	    'info'        : self.ProcessInfoCmd,
+	    'lists'       : self.ProcessListsCmd,
+	    'help'        : self.ProcessHelpCmd,
+	    'set'         : self.ProcessSetCmd,
+	    'options'     : self.ProcessOptionsCmd,
+	    'password'    : self.ProcessPasswordCmd,
 	    }
         self.__NoMailCmdResponse = 0
 
-    def AddToResponse(self, text):
-	self._response_buffer = self._response_buffer + text + "\n"
+    def AddToResponse(self, text, trunc=MAXCOLUMN):
+        # only need one newline
+        if text and text[-1] == '\n':
+            text = text[:-1]
+        if trunc and len(text) > trunc:
+            text = text[:trunc-3] + '...'
+	self.__respbuf = self.__respbuf + text + "\n"
 
-    def AddError(self, text):
-	self._response_buffer = self._response_buffer + "**** " + text + "\n"
+    def AddError(self, text, prefix='>>>>> ', trunc=MAXCOLUMN):
+        self.__errors = self.__errors + 1
+        self.AddToResponse(prefix + text, trunc)
 	
     def ParseMailCommands(self):
-	mail = Message.IncomingMessage()
-	subject = mail.getheader("subject")
-        sender = string.lower(mail.GetSender())
+	msg = Message.IncomingMessage()
+	subject = msg.getheader("subject")
+        sender = string.lower(msg.GetSender())
         #
-        # shouldn't this be checking the username only part?
+        # XXX: shouldn't this be checking the username only part?
         # why 'orphanage'?
-        #
         if sender in ['daemon', 'nobody', 'mailer-daemon', 'postmaster',
                       'orphanage', 'postoffice']:
+            #
             # This is for what are probably delivery-failure notices of
             # subscription confirmations that are, of necessity, bounced
             # back to the -request address.
@@ -100,27 +126,26 @@ class MailCommandHandler:
                          "\n\tSubject: %s"
                          ),
                         self._internal_name,
-                        mail.getheader('from'),
+                        msg.getheader('from'),
                         subject)
             return
 	if subject:
 	    subject = string.strip(subject)
-	if (subject and self._cmd_dispatch.has_key(string.split(subject)[0])):
-	    lines = [subject] + string.split(mail.body, '\n')
+	if (subject and self.__dispatch.has_key(string.split(subject)[0])):
+	    lines = [subject] + string.split(msg.body, '\n')
         else:
-	    lines = string.split(mail.body, '\n')
+	    lines = string.split(msg.body, '\n')
 	    if subject:
 		#
 		# check to see if confirmation request -- special handling
-		#
-		conf_pat = (r"%s -- confirmation of subscription"
-                            r" -- request (\d\d\d\d\d\d)"
+		conf_pat = (r'%s -- confirmation of subscription'
+                            r' -- request (\d{6})'
                             % re.escape(self.real_name))
-		match = re.search(conf_pat, subject)
-		if not match:
-		    match = re.search(conf_pat, mail.body)
-		if match:
-		    lines = ["confirm %s" % (match.group(1))]
+		mo = re.search(conf_pat, subject)
+		if not mo:
+		    mo = re.search(conf_pat, msg.body)
+		if mo:
+		    lines = ["confirm %s" % (mo.group(1))]
 		else:
 		    self.AddError("Subject line ignored: %s" % subject)
         processed = {}                      # For avoiding redundancies.
@@ -130,21 +155,31 @@ class MailCommandHandler:
 	    if not line:
 		continue
             if linecount > maxlines:
-                self.AddToResponse("\n")
                 self.AddError("Maximum command lines (%d) encountered,"
                               " ignoring the rest..." % maxlines)
                 self.AddToResponse("<<< " + string.join(lines[linecount:],
-                                                      "\n<<< "))
+                                                        "\n<<< "))
                 break
-	    self.AddToResponse("\n>>>> %s" % line)
+##	    self.AddToResponse("\n>>>> %s" % line)
 	    args = string.split(line)
 	    cmd = string.lower(args[0])
 	    args = args[1:]
 	    if cmd in ['end', '--']:
-		self.AddError("End of commands.")
+		self.AddToResponse('\n***** End: ' + line)
+                self.AddToResponse('\nThe rest of the message is ignored:')
+                for line in lines[linecount+1:]:
+                    self.AddToResponse('> ' + line, 0)
 		break
-	    if not self._cmd_dispatch.has_key(cmd):
-		self.AddError("%s: Command UNKNOWN." % cmd)
+	    if not self.__dispatch.has_key(cmd):
+                self.AddError(line, prefix='Command? ')
+                if self.__errors >= MAXERRORS:
+                    self.AddToResponse('')
+                    self.AddError('''\
+Too many errors encountered; the rest of the message is ignored:''')
+                    for line in lines[linecount+1:]:
+                        self.AddToResponse('> ' + line, 0)
+                    break
+##		self.AddError("%s: Command UNKNOWN." % cmd)
 	    else:
                 # We do not repeat identical commands.  (Eg, it's common
                 # with other mlm's for people to put a command in the
@@ -159,17 +194,71 @@ class MailCommandHandler:
                             break
                 if not isdup:
                     processed[cmd].append(args)
-                    self._cmd_dispatch[cmd](args, line, mail)
+                    self.AddToResponse('\n***** ' + line)
+                    try:
+                        # note that all expected exceptions must be handled by 
+                        # the dispatch function.  We'll globally collect any
+                        # unexpected (e.g. uncaught) exceptions here.  Such an 
+                        # exception stops parsing of email commands
+                        # immediately
+                        self.__dispatch[cmd](args, line, msg)
+                    except:
+                        admin = self.GetAdminEmail()
+                        sfp = StringIO()
+                        traceback.print_exc(file=sfp)
+                        tbmsg = sfp.getvalue()
+                        errmsg = Utils.wrap(
+                            '''An unexpected Mailman error has occurred.
+
+Please forward your request to the human list administrator in charge of this
+list at %s.  The traceback is attached below and will be forwarded to the list
+administrator automatically.''' % admin)
+                        for line in string.split(errmsg, '\n'):
+                            self.AddError(line, trunc=0)
+                        self.AddError('')
+                        self.AddToResponse(tbmsg, trunc=0)
+                        # log it to the error file
+                        self.LogMsg('error',
+                                    'Unexpected Mailman error:\n%s'
+                                    % tbmsg)
+                        # and send the traceback to the user
+                        self.SendTextToUser(subject='Unexpected Mailman error',
+                                            recipient=admin,
+                                            text='''\
+An unexpected Mailman error has occurred in
+MailCommandHandler.ParseMailCommands().  Here is the traceback:
+
+''' + tbmsg,
+                                            add_headers=['Errors-To: %s' %
+                                                         admin,
+                                                         'X-No-Archive: yes',
+                                                         'Precedence: bulk'])
+                        break
+        # send the response
         if not self.__NoMailCmdResponse:
-            self.SendMailCmdResponse(mail)
+            if self.__errors > 0:
+                header = Utils.wrap('''This is an automated response.
+
+There were problems with the email commands you sent to Mailman via the
+administrative address %(sender)s.  If you want to reach the human being that
+manages this mailing list, please send your message to %(admin)s.  The
+following is a detailed description of the problems.
+
+''' % {'sender': self.GetRequestEmail(),
+       'admin' : self.GetAdminEmail(),
+       })
+                self.__respbuf = header + self.__respbuf
+            self.SendMailCmdResponse(msg)
 
     def SendMailCmdResponse(self, mail):
-	self.SendTextToUser(subject = 'Mailman results for %s' % 
-			              self.real_name,
+        subject = 'Mailman results for %s' % self.real_name
+	self.SendTextToUser(subject   = subject,
 			    recipient = mail.GetSender(),
-			    sender = self.GetRequestEmail(),
-			    text = self._response_buffer)
-	self._response_buffer = ''
+			    sender    = self.GetRequestEmail(),
+			    text      = self.__respbuf)
+	self.__respbuf = ''
+        self.__errors = 0
+        self.__NoMailCmdResponse = 0
 
     def ProcessPasswordCmd(self, args, cmd, mail):
 	if len(args) <> 2:
@@ -188,30 +277,19 @@ class MailCommandHandler:
 	    self.AddError("You gave the wrong password.")
 	except Errors.MMBadUserError:
             self.AddError("Bad user - %s." % sender)
-	except:
-            exc = sys.exc_info()
-	    self.AddError("An unknown Mailman error occured.")
-	    self.AddError("Please forward on your request to %s" %
-			  self.GetAdminEmail())
-            self.LogMsg("error",
-                        "MailCommandHandler.ProcessPasswordCmd():\n%s%s, %s",
-                        string.join(traceback.format_tb(exc[2])),
-                        exc[0], exc[1])
 
     def ProcessOptionsCmd(self, args, cmd, mail):
 	sender = self.FindUser(mail.GetSender())
 	if not sender:
-	    self.AddError("%s is not a member of the list." % mail.GetSender())
+	    self.AddError("%s is not a member of the list." %
+                          mail.GetSender())
 	    return
-	options = option_info.keys()
-	options.sort()
-	value = ''
-	for option in options:
-	    if self.GetUserOption(sender, option_info[option]):
-		value = 'on'
-	    else:
-		value = 'off'
-	    self.AddToResponse("%s: %s" % (option, value))
+        for option in options:
+            if self.GetUserOption(sender, option_info[option]):
+                value = 'on'
+            else:
+                value = 'off'
+            self.AddToResponse('%8s: %s' % (option, value))
 	self.AddToResponse("")
 	self.AddToResponse("To change an option, do: "
                            "set <option> <on|off> <password>")
@@ -219,8 +297,8 @@ class MailCommandHandler:
 	self.AddToResponse("Option explanations:")
 	self.AddToResponse("--------------------")
 	for option in options:
-	    self.AddToResponse("%s:" % option)
-	    self.AddToResponse(option_descs[option])
+	    self.AddToResponse(option + ':')
+	    self.AddToResponse(Utils.wrap(option_descs[option]), trunc=0)
 	    self.AddToResponse("")
 	    
     def ProcessSetCmd(self, args, cmd, mail):
@@ -230,7 +308,7 @@ class MailCommandHandler:
 	    s.AddError("Usage: set <option> <on|off> <password>")
 	    s.AddError("Valid options are:")
 	    for option in options:
-		s.AddError("%s:  %s" % (option, od[option]))
+		s.AddError("    %8s:  %s" % (option, od[option]))
 	if len(args) <> 3:
 	    ShowSetUsage()
 	    return
@@ -273,24 +351,14 @@ class MailCommandHandler:
                               % mail.GetSender())
 	    except Errors.MMNeedApproval:
 		self.AddApprovalMsg(cmd)
-	    except:
-		# TODO: Should log the error we got if we got here.
-		self.AddError("An unknown Mailman error occured.")
-		self.AddError("Please forward on your request to %s" %
-			      self.GetAdminEmail())
-		self.AddError("%s" % sys.exc_type)
-	elif option_info.has_key(args[0]):
-	    try:
-		self.SetUserOption(sender, option_info[args[0]], value)
-		self.AddToResponse("Succeeded.")
-	    except:
-		self.AddError("An unknown Mailman error occured.")
-		self.AddError("Please forward on your request to %s" %
-			      self.GetAdminEmail())
-		self.AddError("%s" % sys.exc_type)
-	else:
-	    ShowSetUsage()
-	    return
+	elif not option_info.has_key(args[0]):
+            ShowSetUsage()
+            return
+        # for backwards compatibility
+        if args[0] == 'norcv':
+            args[0] = 'notmetoo'
+        self.SetUserOption(sender, option_info[args[0]], value)
+        self.AddToResponse("Succeeded.")
 	    
     def ProcessListsCmd(self, args, cmd, mail):
 	if len(args) != 0:
@@ -298,23 +366,24 @@ class MailCommandHandler:
 	    return
 	lists = os.listdir(mm_cfg.LIST_DATA_DIR)
 	lists.sort()
-	self.AddToResponse("** Public mailing lists run by Mailman@%s:"
-			   % self.host_name)
-	for list in lists:
-	    if list == self._internal_name:
+	self.AddToResponse("\nPublic mailing lists run by mailman@%s"
+			   % self.host_name, trunc=0)
+	for listname in lists:
+	    if listname == self._internal_name:
 		listob = self
 	    else:
-		try:
-		    import MailList
-		    listob = MailList.MailList(list)
-		except:
-		    continue
+                try:
+                    listob = MailList.MailList(listname, lock=0)
+                except Errors.MMUnknownListError:
+                    continue
 	    # We can mention this list if you already know about it.
 	    if not listob.advertised and listob <> self: 
 		continue
-	    self.AddToResponse("%s (requests to %s):\n\t%s" % 
-			       (listob.real_name, listob.GetRequestEmail(),
-				listob.description))
+            self.AddToResponse(listob.real_name + ':')
+            self.AddToResponse('\trequests to: ' + listob.GetRequestEmail())
+            if listob.description:
+                self.AddToResponse('\tdescription: ' + listob.description,
+                                   trunc=0)
 	
     def ProcessInfoCmd(self, args, cmd, mail):
 	if len(args) != 0:
@@ -330,21 +399,21 @@ class MailCommandHandler:
 	    self.AddError("Private list: only members may see info.")
 	    return
 
-        self.AddToResponse("\nFor more complete info about %s, including"
-                           " background" % self.real_name)
-        self.AddToResponse("and instructions for subscribing to and"
-                           " using it, visit:\n\n\t%s\n"
-                           % self.GetAbsoluteScriptURL('listinfo'))
+        msg = Utils.wrap('''
+For more complete info about the %(listname)s mailing list, including
+background and instructions for subscribing to and using it, visit:
+
+    %(url)s
+
+''' % {'listname': self.real_name,
+       'url'     : self.GetAbsoluteScriptURL('listinfo'),
+       })
+        self.AddToResponse(msg, trunc=0)
 
 	if not self.info:
-	    self.AddToResponse("No other details about %s are available." %
-			       self.real_name)
+	    self.AddToResponse("No other details are available.")
 	else:
-            self.AddToResponse("Here is the specific description of %s:\n"
-                               % self.real_name)
-            # Put a blank line between the paragraphs, as indicated by CRs.
-	    self.AddToResponse(string.join(string.split(self.info, "\n"),
-					   "\n\n"))
+            self.AddToResponse(Utils.wrap(self.info), trunc=0)
 	
     def ProcessWhoCmd(self, args, cmd, mail):
 	if len(args) != 0:
@@ -412,13 +481,6 @@ class MailCommandHandler:
                           % mail.GetSender())
 	except Errors.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
-	except:
-	    # TODO: Should log the error we got if we got here.
-	    self.AddError("An unknown Mailman error occured.")
-	    self.AddError("Please forward on your request to %s"
-                          % self.GetAdminEmail())
-	    self.AddError("%s %s" % (sys.exc_type, sys.exc_value))
-	    self.AddError("%s" % sys.exc_traceback)
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
         """Parse subscription request and send confirmation request."""
@@ -468,8 +530,9 @@ class MailCommandHandler:
             #
             self.__NoMailCmdResponse = 1
         except Errors.MMNeedApproval, admin_email:
-            self.AddToResponse("your subscription request has been forwarded the list "
-                               "administrator\nat %s for review.\n" % admin_email)
+            self.AddToResponse(
+                "your subscription request has been forwarded the list "
+                "administrator\nat %s for review.\n" % admin_email)
         except Errors.MMBadEmailError:
             self.AddError("Mailman won't accept the given email "
                           "address as a valid address. \n(Does it "
@@ -556,4 +619,4 @@ class MailCommandHandler:
              'requestaddr' : self.GetRequestEmail(),
              'adminaddr'   : self.GetAdminEmail(),
              })
-        self.AddToResponse(text)
+        self.AddToResponse(text, trunc=0)
