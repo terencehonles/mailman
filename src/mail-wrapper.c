@@ -40,6 +40,8 @@ const char *VALID_COMMANDS[] = {
 	"post", 
 	"owner",
 	"request",
+	"subscribe",
+	"unsubscribe",
 	NULL				     /* Sentinel, don't remove */
 };
 
