@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
-"PO-Revision-Date: 2002-12-23 23:01+0100\n"
+"PO-Revision-Date: 2002-12-24 00:24+0100\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch\n"
 "MIME-Version: 1.0\n"
@@ -3850,11 +3850,16 @@ msgid ""
 "        list administrators and moderators only; you must supply the list\n"
 "        admin or moderator password to retrieve the roster.\n"
 msgstr ""
+"\n"
+"    who password\n"
+"        Erzeugt eine Übersicht über die Mitglieder der Liste. Da dies nur\n"
+"        dem Listenadministrator oder -moderator erlaubt ist, müssen Sie\n "
+"        ein Admin- oder Moderationskennwort der Liste mit angeben.\n"
 
 # Mailman/Cgi/create.py:140
 #: Mailman/Commands/cmd_who.py:110
 msgid "You are not allowed to retrieve the list membership."
-msgstr "Sie sind nicht berechtigt die Mitglieds anzusehen."
+msgstr "Sie sind nicht berechtigt die Liste der Mitglieder anzusehen."
 
 #: Mailman/Commands/cmd_who.py:116
 msgid "This list has no members."
@@ -4867,6 +4872,10 @@ msgid ""
 "             page.  Carriage returns will end a paragraph - see the details\n"
 "             for more info."
 msgstr ""
+"Eine kleine einführende Beschreibung in die Liste. Sie wird\n"
+"im Kopf der Listinfo-Webseite eingeblendet. Mit einem\n"
+"Return können Sie Absätze trennen, HTML-Tags sind möglich.\n"
+"Lesen Sie die Detail-Seite für nähere Infos."
 
 # Mailman/Gui/General.py:108
 #: Mailman/Gui/General.py:133
@@ -4932,6 +4941,10 @@ msgid ""
 "             regardless of whether an explict <tt>Reply-To:</tt> header is\n"
 "             added by Mailman or not."
 msgstr ""
+"Sollen vorhandene <tt>Reply-To:</tt>-Header der Orginal-Nachricht\n"
+"verworfen werden? Falls diese Option aktiviert ist, wird der Header auch \n"
+"dann entfernt, wenn kein explizierter <tt>Reply-To:</tt>-Header der "
+"Liste gesetzt ist."
 
 # Mailman/Gui/General.py:148
 #: Mailman/Gui/General.py:161
@@ -5443,7 +5456,7 @@ msgstr ""
 
 #: Mailman/Gui/General.py:397
 msgid "Should postings include the <tt>List-Post:</tt> header?"
-msgstr ""
+msgstr "Sollen e-mails einen <tt>List-Post:</tt>-Header bekommen?"
 
 #: Mailman/Gui/General.py:398
 msgid ""
@@ -5793,11 +5806,11 @@ msgstr "Nein"
 
 #: Mailman/Gui/Privacy.py:50 Mailman/Gui/Privacy.py:73
 msgid "Confirm"
-msgstr "Bestätige"
+msgstr "Rückbestätigung durch den User"
 
 #: Mailman/Gui/Privacy.py:51 Mailman/Gui/Privacy.py:74
 msgid "Require approval"
-msgstr "Erfordert Genehmigung"
+msgstr "Genehmigung durch den Listenadministrator"
 
 # Mailman/Cgi/confirm.py:490 Mailman/Cgi/confirm.py:588
 #: Mailman/Gui/Privacy.py:52 Mailman/Gui/Privacy.py:75
@@ -5937,6 +5950,8 @@ msgid ""
 "List of addresses which are banned from membership in this\n"
 "             mailing list."
 msgstr ""
+"Liste der Adressen, die vom Bezug der\n"
+"Mailingliste ausgeschlossen sind ('verbannt')."
 
 #: Mailman/Gui/Privacy.py:127
 msgid ""
@@ -5960,7 +5975,7 @@ msgstr "Jeder"
 # Mailman/Gui/Privacy.py:94
 #: Mailman/Gui/Privacy.py:134
 msgid "List admin only"
-msgstr "Nur für die Augen des Listenadministrators"
+msgstr "Nur der Listenadministrator"
 
 # Mailman/Gui/Privacy.py:94
 #: Mailman/Gui/Privacy.py:134
