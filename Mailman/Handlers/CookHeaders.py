@@ -18,7 +18,6 @@
 """
 
 import re
-import urlparse
 
 import email.Utils
 
@@ -165,6 +164,4 @@ def process(mlist, msg, msgdata):
     # actually archiving
     del msg['list-archive']
     if mlist.archive:
-        value = '<%s>' % urlparse.urljoin(mlist.web_page_url,
-                                          mlist.GetBaseArchiveURL())
-        msg['List-Archive'] = value
+        msg['List-Archive'] = mlist.GetBaseArchiveURL()
