@@ -857,7 +857,7 @@ def ChangeOptions(mlist, category, cgi_info, document):
     if cgi_info.has_key('subscribees'):
 	name_text = cgi_info['subscribees'].value
         name_text = string.replace(name_text, '\r', '')
-	names = map(string.strip, string.split(name_text, '\n'))
+	names = filter(None, map(string.strip, string.split(name_text, '\n')))
         send_welcome_msg = string.atoi(
             cgi_info["send_welcome_msg_to_this_batch"].value)
         digest = 0
