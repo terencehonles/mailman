@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: Fri Oct 25 18:34:14 2002\n"
-"PO-Revision-Date: 2002-10-07 20:00+GMT1\n"
+"PO-Revision-Date: 2002-10-27 02:54+GMT1\n"
 "Last-Translator: Danny Terweij <danny@terweij.nl>\n"
 "Language-Team: Dutch <danny@terweij.nl>\n"
 "MIME-Version: 1.0\n"
@@ -17,126 +17,115 @@ msgstr ""
 
 #: Mailman/Archiver/HyperArch.py:117
 msgid " %(size)i bytes "
-msgstr ""
+msgstr " %(size)i bytes "
 
 #: Mailman/Archiver/HyperArch.py:215
 msgid " at "
-msgstr ""
+msgstr " op "
 
 #: Mailman/Archiver/HyperArch.py:346
 msgid "Previous message:"
-msgstr ""
+msgstr "Vorig bericht:"
 
 #: Mailman/Archiver/HyperArch.py:378
-#, fuzzy
 msgid "Next message:"
-msgstr "Archiveer berichten?"
+msgstr "Volgend Bericht:"
 
 #: Mailman/Archiver/HyperArch.py:564 Mailman/Archiver/HyperArch.py:598
-#, fuzzy
 msgid "thread"
-msgstr " Draad"
+msgstr "Draad"
 
 #: Mailman/Archiver/HyperArch.py:565 Mailman/Archiver/HyperArch.py:599
-#, fuzzy
 msgid "subject"
-msgstr "Geen onderwerp"
+msgstr "onderwerp"
 
 #: Mailman/Archiver/HyperArch.py:566 Mailman/Archiver/HyperArch.py:600
 msgid "author"
-msgstr ""
+msgstr "auteur"
 
 #: Mailman/Archiver/HyperArch.py:567 Mailman/Archiver/HyperArch.py:601
-#, fuzzy
 msgid "date"
-msgstr "Geen datum"
+msgstr "datum"
 
 #: Mailman/Archiver/HyperArch.py:637
 msgid "<P>Currently, there are no archives. </P>"
-msgstr ""
+msgstr "<p>Er is momenteel geen archief aanwezig. </P>"
 
 #: Mailman/Archiver/HyperArch.py:676
 msgid "Gzip'd Text%(sz)s"
-msgstr ""
+msgstr "Ingepakt in ZIP %(sz)s"
 
 #: Mailman/Archiver/HyperArch.py:681
 msgid "Text%(sz)s"
-msgstr ""
+msgstr "Tekst %(sz)s"
 
 #: Mailman/Archiver/HyperArch.py:771
-#, fuzzy
 msgid "figuring article archives\n"
-msgstr "Configuratie Catogorieen"
+msgstr "onderzoeken van artikel archief\n"
 
 #: Mailman/Archiver/HyperArch.py:781
 msgid "April"
-msgstr ""
+msgstr "April"
 
 #: Mailman/Archiver/HyperArch.py:781
 msgid "February"
-msgstr ""
+msgstr "Februari"
 
 #: Mailman/Archiver/HyperArch.py:781
 msgid "January"
-msgstr ""
+msgstr "Januari"
 
 #: Mailman/Archiver/HyperArch.py:781
 msgid "March"
-msgstr ""
+msgstr "Maart"
 
 #: Mailman/Archiver/HyperArch.py:782
 msgid "August"
-msgstr ""
+msgstr "Augustus"
 
 #: Mailman/Archiver/HyperArch.py:782
 msgid "July"
-msgstr ""
+msgstr "Juli"
 
 #: Mailman/Archiver/HyperArch.py:782
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 #: Mailman/Archiver/HyperArch.py:782 Mailman/i18n.py:91
-#, fuzzy
 msgid "May"
-msgstr "dag"
+msgstr "Mei"
 
 #: Mailman/Archiver/HyperArch.py:783
-#, fuzzy
 msgid "December"
-msgstr "leden"
+msgstr "December"
 
 #: Mailman/Archiver/HyperArch.py:783
-#, fuzzy
 msgid "November"
-msgstr "leden"
+msgstr "November"
 
 #: Mailman/Archiver/HyperArch.py:783
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 #: Mailman/Archiver/HyperArch.py:783
-#, fuzzy
 msgid "September"
-msgstr "leden"
+msgstr "September"
 
 #: Mailman/Archiver/HyperArch.py:791
-#, fuzzy
 msgid "First"
-msgstr "Lijst"
+msgstr "Eerste"
 
 #: Mailman/Archiver/HyperArch.py:791
 msgid "Fourth"
-msgstr ""
+msgstr "Vierde"
 
 #: Mailman/Archiver/HyperArch.py:791
 msgid "Second"
-msgstr ""
+msgstr "Tweede"
 
 #: Mailman/Archiver/HyperArch.py:791
-#, fuzzy
 msgid "Third"
-msgstr "hide"
+msgstr "Derde"
 
 #: Mailman/Archiver/HyperArch.py:793
 msgid "%(ord)s quarter %(year)i"
@@ -144,27 +133,27 @@ msgstr ""
 
 #: Mailman/Archiver/HyperArch.py:800
 msgid "%(month)s %(year)i"
-msgstr ""
+msgstr "%(month)s %(year)i"
 
 #: Mailman/Archiver/HyperArch.py:805
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
-msgstr ""
+msgstr "De week van Maandag %(day)i %(month)s %(year)i"
 
 #: Mailman/Archiver/HyperArch.py:809
 msgid "%(day)i %(month)s %(year)i"
-msgstr ""
+msgstr "%(day)i %(month)s %(year)i"
 
 #: Mailman/Archiver/HyperArch.py:906
 msgid "Computing threaded index\n"
-msgstr ""
+msgstr "Berekenen van draad index\n"
 
 #: Mailman/Archiver/HyperArch.py:1168
 msgid "Updating HTML for article "
-msgstr ""
+msgstr "Updaten van HTML artikel "
 
 #: Mailman/Archiver/HyperArch.py:1174
 msgid "article file %s is missing!"
-msgstr ""
+msgstr "artikel bestand %s is niet gevonden!"
 
 #: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
 msgid "No subject"
@@ -221,7 +210,7 @@ msgstr "Bounce melding"
 
 #: Mailman/Bouncer.py:239
 msgid " The last bounce received from you was dated %(date)s"
-msgstr ""
+msgstr " De laatste bounce van jouw is ontvangen op $(date)s"
 
 #: Mailman/Bouncer.py:264 Mailman/Deliverer.py:126
 #: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:211
@@ -397,9 +386,8 @@ msgstr ""
 "    "
 
 #: Mailman/Cgi/admin.py:368
-#, fuzzy
 msgid "return to the %(categoryname)s options page."
-msgstr "terug naar de %(category)s optie pagina."
+msgstr "terug naar de %(categoryname)s optie pagina."
 
 #: Mailman/Cgi/admin.py:383
 msgid "%(realname)s Administration (%(label)s)"
@@ -986,9 +974,8 @@ msgid "There are no pending requests."
 msgstr "Er zijn geen wachtende verzoeken."
 
 #: Mailman/Cgi/admindb.py:173
-#, fuzzy
 msgid "Click here to reload this page."
-msgstr "Klik hier om de legenda te verbergen."
+msgstr "Klik hier om deze pagina te verversen."
 
 #: Mailman/Cgi/admindb.py:184
 msgid "Detailed instructions for the administrative database"
@@ -1164,9 +1151,8 @@ msgid "not available"
 msgstr "niet beschikbaar"
 
 #: Mailman/Cgi/admindb.py:465 Mailman/Cgi/admindb.py:582
-#, fuzzy
 msgid "Received:"
-msgstr "Wil je digests ontvangen?"
+msgstr "Ontvangen:"
 
 #: Mailman/Cgi/admindb.py:522
 msgid "Posting Held for Approval"
@@ -1357,14 +1343,12 @@ msgid "Preferred language:"
 msgstr "Taal voorkeur:"
 
 #: Mailman/Cgi/confirm.py:277
-#, fuzzy
 msgid "Cancel my subscription request"
-msgstr "Bevestig het aanmeldings verzoek"
+msgstr "Verwijder mijn aanmeldings verzoek"
 
 #: Mailman/Cgi/confirm.py:278
-#, fuzzy
 msgid "Subscribe to list %(listname)s"
-msgstr "Je nieuwe mailing lijst : %(listname)s"
+msgstr "Meld je aan op deze mailing lijst %(listname)s"
 
 #: Mailman/Cgi/confirm.py:288
 msgid "You have canceled your subscription request."
@@ -1404,9 +1388,8 @@ msgstr ""
 "            "
 
 #: Mailman/Cgi/confirm.py:336
-#, fuzzy
 msgid "You are already a member of this mailing list!"
-msgstr "Je bent niet gemachtigd om deze lijst te verwijderen"
+msgstr "Je bent al lid van deze mailinglijst!"
 
 #: Mailman/Cgi/confirm.py:343
 msgid "Subscription request confirmed"
@@ -1595,7 +1578,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:662
 msgid "Cancel posting"
-msgstr "Anbnuleer het bericht"
+msgstr "Annuleer het bericht"
 
 #: Mailman/Cgi/confirm.py:674
 msgid ""
@@ -1733,14 +1716,12 @@ msgid "You are not authorized to create new mailing lists"
 msgstr "Je bent niet geauthoriseerd om nieuwe lijsten aan te maken"
 
 #: Mailman/Cgi/create.py:181 bin/newlist:166
-#, fuzzy
 msgid "Bad owner email address: %(s)s"
-msgstr "Foutieve lijst eigenaar mail adres: %(owner)s"
+msgstr "Foutieve lijst eigenaar email adres: %(s)s"
 
 #: Mailman/Cgi/create.py:189 bin/newlist:164
-#, fuzzy
 msgid "Illegal list name: %(s)s"
-msgstr "Lijst naam:    %(listname)s"
+msgstr "Illegale lijst naam: %(s)s"
 
 #: Mailman/Cgi/create.py:194
 msgid ""
@@ -1963,13 +1944,16 @@ msgid "right"
 msgstr "rechts"
 
 #: Mailman/Cgi/listinfo.py:116
-#, fuzzy
 msgid ""
 " To visit the general information page for an unadvertised list,\n"
 "        open a URL similar to this one, but with a '/' and the %(adj)s\n"
 "        list name appended.\n"
 "        <p>List administrators, you can visit "
-msgstr "        <p>Lijst beheerders, bezoek "
+msgstr ""
+" Om de informatie pagina te openen voor een lijst die niet zichtbaar is,\n"
+"        open een URL zoals deze, maar dan met een '/' en de %(adj)s\n"
+"        lijst naam er achter.\n"
+"        <p>Lijst beheerders, vinden "
 
 #: Mailman/Cgi/listinfo.py:121
 msgid "the list admin overview page"
@@ -2052,7 +2036,6 @@ msgid ""
 msgstr ""
 
 #: Mailman/Cgi/options.py:309
-#, fuzzy
 msgid "The new address is already a member: %(newaddr)s"
 msgstr "%(newaddr)s is al lid van de mailing lijst."
 
@@ -2230,6 +2213,20 @@ msgid ""
 "    effect.\n"
 "    "
 msgstr ""
+"Om je opties te wijzigen moet je inloggen met je email adres en je wachtwoord.\n"
+"    \n"
+"    Als je je wachtwoord niet meer weet, klik dan op <em>Herinnering</em>.\n"
+"    Het wachtwoord wordt je dan toegezonden per email.\n"
+"    Om je af te melden van deze lijst klik je op <em>Afmelden</em> "
+"er\n"
+"    zal dan een bevestigings email naar je toegezonden worden.\n"
+"\n"
+"    <p><strong><em>Belangrijk!:</em></strong> vanaf hier werkt het met "
+"Cookies.\n"
+"    Cookies moeten aan staan in je browser. Anders kan je niet inloggen en je "
+"opties\n"
+"    veranderen.\n"
+"    "
 
 #: Mailman/Cgi/options.py:790
 msgid "Email address:"
@@ -2251,6 +2248,11 @@ msgid ""
 "    also confirm by email; see the instructions in the confirmation\n"
 "    message)."
 msgstr ""
+"Door op de knop <em>Afmelden</em> te drukken, zal\n"
+"    er een bevestigings email gestuurd worden. In dit bericht staat een link \n"
+"    die je moet bezoeken om je afmelding te voltooien. (Je kan ook gewoon dat bericht\n"
+"    terug sturen (reply/antwoord) om de afmelding te\n"
+"    voltooien.)"
 
 #: Mailman/Cgi/options.py:812
 msgid "Password reminder"
@@ -2290,7 +2292,7 @@ msgstr "Patroon:"
 
 #: Mailman/Cgi/private.py:61
 msgid "Private Archive Error"
-msgstr "Prive Archief fout"
+msgstr "privé Archief fout"
 
 #: Mailman/Cgi/private.py:62
 msgid "You must specify a list."
@@ -2298,11 +2300,11 @@ msgstr "Je moet een lijst opgeven."
 
 #: Mailman/Cgi/private.py:99
 msgid "Private Archive Error - %(msg)s"
-msgstr "Prive Archief fout - %(msg)s"
+msgstr "privé Archief fout - %(msg)s"
 
 #: Mailman/Cgi/private.py:154
 msgid "Private archive file not found"
-msgstr "Prive archief bestand niet gevonden"
+msgstr "privé archief bestand niet gevonden"
 
 #: Mailman/Cgi/rmlist.py:79
 msgid "You're being a sneaky list owner!"
@@ -2769,19 +2771,16 @@ msgid "    ack %(onoff)s"
 msgstr "    Bevestigingen %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:160
-#, fuzzy
 msgid "    digest plain"
-msgstr "digest optie instelling"
+msgstr "    digest plat"
 
 #: Mailman/Commands/cmd_set.py:162
-#, fuzzy
 msgid "    digest mime"
-msgstr "Digest leden"
+msgstr "    digest html"
 
 #: Mailman/Commands/cmd_set.py:164
-#, fuzzy
 msgid "    digest off"
-msgstr "    dubbele berichten %(onoff)s"
+msgstr "    digest uit"
 
 #: Mailman/Commands/cmd_set.py:169
 msgid "delivery on"
@@ -3026,7 +3025,7 @@ msgstr "Traditioneel Chinees"
 
 #: Mailman/Defaults.py:1199
 msgid "Czech"
-msgstr ""
+msgstr "Tsjechisch"
 
 #: Mailman/Defaults.py:1200
 msgid "German"
@@ -3042,11 +3041,11 @@ msgstr "Spaans (spanje)"
 
 #: Mailman/Defaults.py:1203
 msgid "Estonian"
-msgstr ""
+msgstr "Estlands"
 
 #: Mailman/Defaults.py:1204
 msgid "Finnish"
-msgstr ""
+msgstr "Fins"
 
 #: Mailman/Defaults.py:1205
 msgid "French"
@@ -3074,7 +3073,7 @@ msgstr "Koreaans"
 
 #: Mailman/Defaults.py:1211
 msgid "Dutch"
-msgstr ""
+msgstr "Nederlands"
 
 #: Mailman/Defaults.py:1212
 msgid "Norwegian"
@@ -3082,7 +3081,7 @@ msgstr "Noors"
 
 #: Mailman/Defaults.py:1213
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugees (braziliaans)"
 
 #: Mailman/Defaults.py:1214
 msgid "Russian"
@@ -3090,7 +3089,7 @@ msgstr "Russies"
 
 #: Mailman/Defaults.py:1215
 msgid "Swedish"
-msgstr ""
+msgstr "Zweeds"
 
 #: Mailman/Deliverer.py:43
 msgid ""
@@ -4311,18 +4310,16 @@ msgid ""
 msgstr ""
 
 #: Mailman/Gui/Language.py:77
-#, fuzzy
 msgid "Always"
-msgstr "dagen"
+msgstr "Altijd"
 
 #: Mailman/Gui/Language.py:77
 msgid "As needed"
-msgstr ""
+msgstr "Benodigd"
 
 #: Mailman/Gui/Language.py:77
-#, fuzzy
 msgid "Never"
-msgstr "Uitstellen"
+msgstr "Nooit"
 
 #: Mailman/Gui/Language.py:78
 msgid ""
@@ -4480,7 +4477,7 @@ msgstr "Wachtwoorden"
 
 #: Mailman/Gui/Privacy.py:28
 msgid "Privacy options"
-msgstr "Prive opties"
+msgstr "privé opties"
 
 #: Mailman/Gui/Privacy.py:32
 msgid "Subscription&nbsp;rules"
@@ -4491,9 +4488,8 @@ msgid "Sender&nbsp;filters"
 msgstr "Verstuurders filters"
 
 #: Mailman/Gui/Privacy.py:34
-#, fuzzy
 msgid "Recipient&nbsp;filters"
-msgstr "Verstuurders filters"
+msgstr "Ontvanger filters"
 
 #: Mailman/Gui/Privacy.py:35
 msgid "Spam&nbsp;filters"
@@ -5103,7 +5099,7 @@ msgstr "EMail-naar-Nieuws en Nieuws-naar-EMail gateway services."
 
 #: Mailman/Gui/Usenet.py:37
 msgid "News server settings"
-msgstr ""
+msgstr "Nieuws server instellingen"
 
 #: Mailman/Gui/Usenet.py:40
 msgid ""
@@ -5137,18 +5133,16 @@ msgid ""
 msgstr ""
 
 #: Mailman/Gui/Usenet.py:58
-#, fuzzy
 msgid "Forwarding options"
-msgstr "Archief opties"
+msgstr "Doorstuur opties"
 
 #: Mailman/Gui/Usenet.py:61
-#, fuzzy
 msgid "Moderated"
-msgstr "Moderator"
+msgstr "Ge-modereerd"
 
 #: Mailman/Gui/Usenet.py:61
 msgid "Open list, moderated group"
-msgstr ""
+msgstr "Open lijst, gemodereerde groep"
 
 #: Mailman/Gui/Usenet.py:64
 msgid "The moderation policy of the newsgroup."
@@ -5259,11 +5253,11 @@ msgstr "Overzicht van alle %(hostname)s mailing lijsten"
 
 #: Mailman/HTMLFormatter.py:80
 msgid "<em>(1 private member not shown)</em>"
-msgstr "<em>(1 prive lid niet getoond)</em>"
+msgstr "<em>(1 privé lid niet getoond)</em>"
 
 #: Mailman/HTMLFormatter.py:82
 msgid "<em>(%(num_concealed)d private members not shown)</em>"
-msgstr "<em>(%(num_concealed)d prive leden niet getoond)</em>"
+msgstr "<em>(%(num_concealed)d privé leden niet getoond)</em>"
 
 #: Mailman/HTMLFormatter.py:137
 msgid "; it was disabled by you"
@@ -5278,7 +5272,9 @@ msgstr "; het is uitgezet door de lijst beheerder"
 msgid ""
 "; it was disabled due to excessive bounces.  The\n"
 "            last bounce was received on %(date)s"
-msgstr "; het is uigezet door vele mail bounces"
+msgstr ""
+"; het is uigezet door vele mail bounces. De\n"
+"            laatste bounce was ontvangen op %(date)s"
 
 #: Mailman/HTMLFormatter.py:146
 msgid "; it was disabled for unknown reasons"
@@ -5340,7 +5336,7 @@ msgstr ""
 
 #: Mailman/HTMLFormatter.py:194 Mailman/HTMLFormatter.py:201
 msgid "also "
-msgstr "ook door "
+msgstr "ook "
 
 #: Mailman/HTMLFormatter.py:196
 msgid ""
@@ -5351,24 +5347,36 @@ msgid ""
 "            by the list moderator.  You will be notified of the moderator's\n"
 "            decision by email."
 msgstr ""
+"Er zal een email worden verzonden ter bevestiging, zodat\n"
+"            niemand anders per ongeluk jouw zal aanmelden.  Als\n"
+"            de bevestiging is ontvangen, wordt je verzoek vastgehouden "
+"voor goedkeuring\n"
+"            door de lijst eigenaar.  Er wordt een email naar je gestuurd als de moderator of\n"
+"            lijst beheerder als je bent toegelaten of niet."
 
 #: Mailman/HTMLFormatter.py:205
 msgid ""
 "This is %(also)sa private list, which means that the\n"
 "            list of members is not available to non-members."
 msgstr ""
+"Dit is %(also)seen privé lijst, dat betekend\n"
+"            dat de leden lijst niet zichtbaar is voor niet-leden."
 
 #: Mailman/HTMLFormatter.py:208
 msgid ""
 "This is %(also)sa hidden list, which means that the\n"
 "            list of members is available only to the list administrator."
 msgstr ""
+"Dit is %(also)seen verborgen lijst, dat betekend\n"
+"            dat de leden lijst alleen zichtbaar is voor de lijst eigenaar."
 
 #: Mailman/HTMLFormatter.py:211
 msgid ""
 "This is %(also)sa public list, which means that the\n"
 "            list of members list is available to everyone."
 msgstr ""
+"Dit is %(also)seen publieke lijst, dat betekend\n"
+"            dat de leden lijst ook zichtbaar is voor niet-leden."
 
 #: Mailman/HTMLFormatter.py:214
 msgid ""
@@ -5396,6 +5404,12 @@ msgid ""
 "        email address:\n"
 "        <p><center> "
 msgstr ""
+"<hr>Om je af te melden van %(realname)s of om je wachtwoord toegestuurd te krijgen\n"
+"        of om je opties te wijzigen %(either)s,"
+"Vul in je\n"
+"        email adres:\n"
+"        <p><center> "
+
 
 #: Mailman/HTMLFormatter.py:260
 msgid "Unsubscribe or edit options"
@@ -5923,9 +5937,8 @@ msgid ""
 msgstr ""
 
 #: Mailman/Queue/BounceRunner.py:184
-#, fuzzy
 msgid "Uncaught bounce notification"
-msgstr "Bounce melding"
+msgstr "Niet gevangen Bounce melding"
 
 #: Mailman/Queue/CommandRunner.py:73
 msgid "Ignoring non-text/plain MIME parts"
@@ -5977,81 +5990,76 @@ msgid "Gnu's Not Unix"
 msgstr "Gnu's Not Unix"
 
 #: Mailman/i18n.py:86
-#, fuzzy
 msgid "Mon"
-msgstr "Aan"
+msgstr "Ma"
 
 #: Mailman/i18n.py:86
 msgid "Thu"
-msgstr ""
+msgstr "Do"
 
 #: Mailman/i18n.py:86
 msgid "Tue"
-msgstr ""
+msgstr "Di"
 
 #: Mailman/i18n.py:86
 msgid "Wed"
-msgstr ""
+msgstr "Wo"
 
 #: Mailman/i18n.py:87
 msgid "Fri"
-msgstr ""
+msgstr "Vr"
 
 #: Mailman/i18n.py:87
-#, fuzzy
 msgid "Sat"
-msgstr "Stel in"
+msgstr "Za"
 
 #: Mailman/i18n.py:87
 msgid "Sun"
-msgstr ""
+msgstr "Zo"
 
 #: Mailman/i18n.py:91
-#, fuzzy
 msgid "Apr"
-msgstr "Toelaten"
+msgstr "Apr"
 
 #: Mailman/i18n.py:91
 msgid "Feb"
-msgstr ""
+msgstr "Feb"
 
 #: Mailman/i18n.py:91
 msgid "Jan"
-msgstr ""
+msgstr "Jan"
 
 #: Mailman/i18n.py:91
 msgid "Jun"
-msgstr ""
+msgstr "Jun"
 
 #: Mailman/i18n.py:91
 msgid "Mar"
-msgstr ""
+msgstr "Mrt"
 
 #: Mailman/i18n.py:92
 msgid "Aug"
-msgstr ""
+msgstr "Aug"
 
 #: Mailman/i18n.py:92
 msgid "Dec"
-msgstr ""
+msgstr "Dec"
 
 #: Mailman/i18n.py:92
 msgid "Jul"
-msgstr ""
+msgstr "Jul"
 
 #: Mailman/i18n.py:92
-#, fuzzy
 msgid "Nov"
-msgstr "Nee"
+msgstr "Nov"
 
 #: Mailman/i18n.py:92
 msgid "Oct"
-msgstr ""
+msgstr "Okt"
 
 #: Mailman/i18n.py:92
-#, fuzzy
 msgid "Sep"
-msgstr "Stel in"
+msgstr "Sep"
 
 #: Mailman/i18n.py:122
 msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
@@ -8255,7 +8263,7 @@ msgstr ""
 
 #: cron/mailpasswds:177
 msgid "Password // URL"
-msgstr ""
+msgstr "Wachtwoord - webpagina"
 
 #: cron/mailpasswds:197
 msgid "%(host)s mailing list memberships reminder"
