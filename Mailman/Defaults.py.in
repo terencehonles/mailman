@@ -163,6 +163,9 @@ SENDMAIL_CMD = '/usr/lib/sendmail'
 NNTP_USERNAME = None
 NNTP_PASSWORD = None
 
+# Set this if you have an NNTP server you prefer gatewayed lists to use.
+DEFAULT_NNTP_HOST = ''
+
 
 
 #####
