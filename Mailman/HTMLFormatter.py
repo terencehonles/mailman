@@ -181,10 +181,14 @@ class HTMLFormatter:
                          "administrator.  You will be notified of the "
                          "administrator's decision by email.  ")
             also = "also "
-        if self.private_roster:
+        if self.private_roster == 1:
             msg = msg + ("This is %sa private list, which means that "
                          "the members list is not available to non-"
                          "members.  " % also)
+        elif self.private_roster:
+            msg = msg + ("This is %sa hidden list, which means that "
+                         "the members list is available only to the "
+                         "list administrator.  " % also)
         else:
             msg = msg + ("This is %sa public list, which means that the "
                          "members list is openly available" % also)
@@ -314,6 +318,11 @@ class HTMLFormatter:
     def FormatButton(self, name, text='Submit'):
 	return '<INPUT type="Submit" name="%s" value="%s">' % (name, text)
 
+    def FormatReminder(self):
+	if self.send_reminders:
+	    return 'Once a month, your password will be emailed to you as a reminder.'
+	return ''
+
     def ParseTags(self, template, replacements):
 	text = self.SnarfHTMLTemplate(template)
 	parts = regsub.splitx(text, '</?[Mm][Mm]-[^>]*>')
@@ -352,7 +361,8 @@ class HTMLFormatter:
 				  + `len(self.digest_members)`),
 	    '<mm-posting-addr>' : '%s' % self.GetListEmail(),
 	    '<mm-request-addr>' : '%s' % self.GetRequestEmail(),
-	    '<mm-owner>' : self.GetAdminEmail()
+	    '<mm-owner>' : self.GetAdminEmail(),
+	    '<mm-reminder>' : self.FormatReminder(),
 	    }
     
     def InitTemplates(self):
