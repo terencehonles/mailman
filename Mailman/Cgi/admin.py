@@ -38,6 +38,7 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import MailCommandHandler
 from Mailman import i18n
+from Mailman.UserDesc import UserDesc
 from Mailman.htmlformat import *
 from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
@@ -805,17 +806,16 @@ def membership_options(mlist, cgidata, doc, form):
     longest = 0
     if members:
         names = filter(None, [mlist.getMemberName(s) for s in members])
-        if names:
-            longest = max([len(s) for s in names])
+        # Make the name field at least as long as the longest email address
+        longest = max([len(s) for s in names + members])
     # Now populate the rows
     for addr in members:
         link = Link(mlist.GetOptionsURL(addr, obscure=1),
                     mlist.getMemberCPAddress(addr))
         fullname = mlist.getMemberName(addr)
-        if fullname:
-            name = TextBox(addr + '_realname', fullname, size=longest).Format()
-        else:
-            name = ''
+        if fullname is None:
+            fullname = ''
+        name = TextBox(addr + '_realname', fullname, size=longest).Format()
         cells = [link.Format() + '<br>' +
                  name + 
                  Hidden('user', urllib.quote(addr)).Format(),
@@ -831,6 +831,7 @@ def membership_options(mlist, cgidata, doc, form):
                 checked = 0
             box = CheckBox('%s_%s' % (addr, opt), value, checked)
             cells.append(Center(box).Format())
+        # FIXME: use MemberAdaptor interface
         if mlist.members.has_key(addr):
             cells.append(Center(CheckBox(addr + '_digest', 'off', 0).Format()))
         else:
@@ -844,7 +845,7 @@ def membership_options(mlist, cgidata, doc, form):
             checked = 0
         cells.append(Center(CheckBox('%s_plain' % addr, value, checked)))
         # User's preferred language
-        langpref = mlist.GetPreferredLanguage(addr)
+        langpref = mlist.getMemberLanguage(addr)
         langs = mlist.GetAvailableLanguages()
         langdescs = [_(Utils.GetLanguageDescr(lang)) for lang in langs]
         try:
@@ -1178,13 +1179,9 @@ def change_options(mlist, category, cgidata, doc):
         subscribe_errors = []
         subscribe_success = []
 
-        # for satisfying the ApprovedAddMember() interface
-        class UserDesc: pass
-
         for entry in entries:
-            userdesc = UserDesc()
-            userdesc.fullname, userdesc.address = parseaddr(entry)
-            userdesc.digest = digest
+            fullname, address = parseaddr(entry)
+            userdesc = UserDesc(address, fullname, digest=digest)
             try:
                 mlist.ApprovedAddMember(userdesc, send_welcome_msg,
                                        send_admin_notif)
@@ -1279,7 +1276,7 @@ def change_options(mlist, category, cgidata, doc):
                 mlist.setMemberName(user, newname)
 
             newlang = cgidata.getvalue(user+'_language')
-            oldlang = mlist.GetPreferredLanguage(user)
+            oldlang = mlist.getMemberLanguage(user)
             if newlang and newlang <> oldlang:
                 mlist.setMemberLanguage(user, newlang)
                   
