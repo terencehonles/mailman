@@ -29,6 +29,18 @@ PYTHON PACKAGES
 
     If you install Python from source, you should be fine.
 
+    One symptom of this problem, although for unknown reasons, is that
+    you might get an error such as this during your install:
+
+        Traceback (most recent call last):
+          File "bin/update", line 44, in ?
+            import paths
+        ImportError: No module named paths
+        make: *** [update] Error 1
+    
+    If this happens, install the Python development package and try
+    "configure ; make install" again.
+
 
 
 Local Variables:
