@@ -41,10 +41,20 @@ class Message(email.Message.Message):
         return self.__str__()
 
     def __setstate__(self, d):
-        # The pickle format has changed between email version 0.97 and 1.1
+        # The base class attributes have changed over time.  Which could
+        # affect Mailman if messages are sitting in the queue at the time of
+        # upgrading the email package.  We shouldn't burden email with this,
+        # so we handle schema updates here.
         self.__dict__ = d
+        # Messages grew a _charset attribute between email version 0.97 and 1.1
         if not d.has_key('_charset'):
             self._charset = None
+        # Messages grew a _default_type attribute between v2.1 and v2.2
+        if not d.has_key('_default_type'):
+            # We really have no idea whether this message object is contained
+            # inside a multipart/digest or not, so I think this is the best we
+            # can do.
+            self._default_type = 'text/plain'
 
     # I think this method ought to eventually be deprecated
     def get_sender(self, use_envelope=None, preserve_case=0):
