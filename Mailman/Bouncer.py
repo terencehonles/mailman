@@ -17,7 +17,7 @@
 
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 544 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -118,16 +118,14 @@ class Bouncer:
 	elif len(mm_utils.FindMatchingAddresses(addr, self.digest_members)):
 	    if self.volume > inf[1]:
 		self.LogMsg("bounce",
-			    "%s: first fresh (D)",
-			    self._internal_name)
+			    "%s: first fresh (D)", self._internal_name)
 		self.bounce_info[addr] = [now, self.volume, self.volume]
 		return
 	    if difference > self.minimum_removal_date * 24 * 60 * 60:
-		self.LogMsg("bounce", "exceeded limits (D)")
+		self.LogMsg("bounce", report + "exceeded limits (D)")
 		self.HandleBouncingAddress(addr, msg)
 		return 
-	    self.LogMsg("bounce",
-			"digester lucked out")
+	    self.LogMsg("bounce", report + "digester lucked out")
 	else:
 	    self.LogMsg("bounce",
 			"%s: address %s not a member.",
@@ -335,7 +333,7 @@ class Bouncer:
 	messy_pattern_6 = regex.compile('^[ \t]*[^ ]+: User unknown.*$')
 	messy_pattern_7 = regex.compile('^[^ ]+ - User currently disabled.*$')
 
-        # Patterns that don't have the email
+        # Patterns for cases where email addr is separate from error cue.
 	separate_cue_1 = re.compile(
             '^554 [^ ]+\.\.\. unknown mailer error.*$', re.I)
         separate_addr_1 = regex.compile('expanded from: %s' % email_regexp)
@@ -348,42 +346,35 @@ class Bouncer:
 	    for pattern, action in simple_bounce_pats:
 		if pattern.match(line) <> -1:
 		    email = self.ExtractBouncingAddr(line)
-		    if action == REMOVE:
-			candidates = candidates + string.split(email,',')
-			message_grokked = 1
-			continue
-		    elif action == BOUNCE:
-			emails = string.split(email,',')
-			for email_addr in emails:
-			    self.RegisterBounce(email_addr, msg)
-			message_grokked = 1
-			continue
-		    else:
-			message_grokked = 1
-			continue
+		    candidates.append((string.split(email,',')[0], action))
+		    message_grokked = 1
 
 	    # Now for the special case messages that are harder to parse...
 	    if (messy_pattern_1.match(line) <> -1
                 or messy_pattern_2.match(line) <> -1):
 		username = string.split(line)[1]
-		self.RegisterBounce('%s@%s' % (username, remote_host), msg)
+		candidates.append(('%s@%s' % (username, remote_host),
+				   BOUNCE))
 		message_grokked = 1
 		continue
 	    if (messy_pattern_3.match(line) <> -1
                 or messy_pattern_4.match(line) <> -1
                 or messy_pattern_5.match(line) <> -1):
 		username = string.split(line)[1]
-                candidates.append('%s@%s' % (username, remote_host))
+		candidates.append(('%s@%s' % (username, remote_host),
+				   REMOVE))
 		message_grokked = 1
 		continue
 	    if messy_pattern_6.match(line) <> -1:
 		username = string.split(string.strip(line))[0][:-1]
-                candidates.append('%s@%s' % (username, remote_host))
+		candidates.append(('%s@%s' % (username, remote_host),
+				   REMOVE))
 		message_grokked = 1
 		continue
 	    if messy_pattern_7.match(line) <> -1:
 		username = string.split(string.strip(line))[0]
-                candidates.append('%s@%s' % (username, remote_host))
+		candidates.append(('%s@%s' % (username, remote_host),
+				   REMOVE))
 		message_grokked = 1
 		continue
 
@@ -395,22 +386,26 @@ class Bouncer:
                 # Found an addr that *might* be part of an error message.
                 # Register it on prospects, where it will only be used if a 
                 # separate check identifies this message as an error message.
-                prospects.append(separate_addr_1.group(1))
+                prospects.append((separate_addr_1.group(1), BOUNCE))
 
         if use_prospects and prospects:
-            candidates = prospects
+            candidates = candidates + prospects
 
         did = []
-        for i in candidates:
-	    el = string.find(i, "...")
+        for who, action in candidates:
+	    # First clean up some cruft around the addrs.
+	    el = string.find(who, "...")
 	    if el != -1:
-		i = i[:el]
-	    if len(i) > 1 and i[0] == '<':
+		who = who[:el]
+	    if len(who) > 1 and who[0] == '<':
 		# Use stuff after open angle and before (optional) close:
-		i = regsub.splitx(i[1:], ">")[0]
-            if i not in did:
-                self.HandleBouncingAddress(i, msg)
-                did.append(i)
+		who = regsub.splitx(who[1:], ">")[0]
+            if who not in did:
+		if action == REMOVE:
+		    self.HandleBouncingAddress(who, msg)
+		else:
+		    self.RegisterBounce(who, msg)
+                did.append(who)
 	return message_grokked
 
     def ExtractBouncingAddr(self, line):
