@@ -728,6 +728,7 @@ SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
 VIRGINQUEUE_DIR = os.path.join(QUEUE_DIR, 'virgin')
 
 # Other useful files
+PIDFILE = os.path.join(DATA_DIR, 'qrunner.pid')
 SITE_PW_FILE = os.path.join(DATA_DIR, 'adm.pw')
 LISTCREATOR_PW_FILE = os.path.join(DATA_DIR, 'creator.pw')
 
