@@ -34,7 +34,7 @@ acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
 
 
-def process(mlist, msg):
+def process(msg):
     msg.rewindbody()
     # simple state machine
     #    0 = nothing seen yet

@@ -25,7 +25,7 @@ acre = re.compile(r'<(?P<addr>[^>]*)>')
 
 
 
-def process(mlist, msg):
+def process(msg):
     if msg.gettype() <> 'multipart/mixed':
         return None
     # this format thinks it's a MIME but it really isn't

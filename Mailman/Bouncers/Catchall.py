@@ -25,10 +25,12 @@ import regsub
 import regex
 from types import StringType
 
+from Mailman import mm_cfg
+
 
 
 # Return 0 if we couldn't make any sense of it, 1 if we handled it.
-def process(mlist, msg):
+def process(msg):
     candidates = []
     # See Mailman.Message.GetSender :(
     sender = msg.get('sender')
@@ -48,7 +50,7 @@ def process(mlist, msg):
         remote_host = who_info[at_index+1:]
     else:
         who_from = who_info
-        remote_host = mlist.host_name
+        remote_host = mm_cfg.DEFAULT_HOST_NAME
     if not who_from in ['mailer-daemon', 'postmaster', 'orphanage',
                         'postoffice', 'ucx_smtp', 'a2']:
         return 0
@@ -176,10 +178,6 @@ def process(mlist, msg):
             # Use stuff after open angle and before (optional) close:
             who = regsub.splitx(who[1:], ">")[0]
         if who not in did:
-##            if action == REMOVE:
-##                mlist.HandleBouncingAddress(who, msg)
-##            else:
-##                mlist.RegisterBounce(who, msg)
             did.append(who)
 ##    return message_grokked
     return did

@@ -41,22 +41,24 @@ def ScanMessages(mlist, msg, testing=0):
                 'Caiwireless',
                 'Smail',
                 'Exim',
+                'Netscape',
                 'Catchall',
                 ]
     for modname in pipeline:
         mod = __import__('Mailman.Bouncers.'+modname)
         func = getattr(getattr(getattr(mod, 'Bouncers'), modname), 'process')
-        addrs = func(mlist, msg)
+        addrs = func(msg)
         if addrs:
             for addr in addrs:
                 # we found a bounce or a list of bounce addrs
                 if not testing:
                     mlist.RegisterBounce(addr, msg)
                 else:
-                    print '    Bounce of %s detected by module %s' % (
-                        addr, modname)
+                    print '%16s: detected address <%s>' % (modname, addr)
             # we saw some bounces
             return 1
+        elif testing:
+            print '%16s: no bounces detected' % modname
     # no bounces detected
     return 0
 
@@ -73,15 +75,12 @@ if __name__ == '__main__':
             print msg
         sys.exit(code)
 
-    if len(sys.argv) < 3:
-        usage(1, 'required arguments: <list> <file> [, <file> ...]')
+    if len(sys.argv) < 2:
+        usage(1, 'required arguments: <file> [, <file> ...]')
 
-    listname = sys.argv[1]
-    mlist = MailList.MailList(listname, lock=0)
-
-    for filename in sys.argv[2:]:
+    for filename in sys.argv[1:]:
         print 'scanning file', filename
         fp = open(filename)
         msg = mimetools.Message(fp)
-        ScanMessages(mlist, msg, testing=1)
+        ScanMessages(None, msg, testing=1)
         fp.close()

@@ -22,7 +22,7 @@ an `addresslist' of failed addresses.
 """
 
 
-def process(mlist, msg):
+def process(msg):
     addrs = []
     for fullname, addr in msg.getaddrlist('x-failed-recipients'):
         addrs.append(addr)

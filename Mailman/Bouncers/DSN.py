@@ -38,7 +38,7 @@ def parseaddr(val):
 
 
 
-def process(mlist, msg):
+def process(msg):
     if msg.gettype() <> 'multipart/report' or \
        msg.getparam('report-type') <> 'delivery-status':
         # then

@@ -27,7 +27,7 @@ endtag   = '|------------------------- ' \
 acre = re.compile(r'\s*address:\s*<(?P<addr>[^>]*)>')
 
 
-def process(mlist, msg):
+def process(msg):
     msg.rewindbody()
     # simple state machine
     #    0 = nothing seen yet
