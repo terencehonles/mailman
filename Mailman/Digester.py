@@ -83,12 +83,11 @@ class Digester:
 	     'How big in Kb should a digest be before it gets sent out?'),
             # Should offer a 'set to 0' for no size threshhold.
 
-#	    ('digest_send_periodic', mm_cfg.Number, 3, 0,
  	    ('digest_send_periodic', mm_cfg.Radio, ('No', 'Yes'), 1,
 	     'Should a digest be dispatched daily when the size threshold '
 	     "isn't reached?"),
 
-	    ('digest_header', mm_cfg.Text, (4, 55), 0,
+            ('digest_header', mm_cfg.Text, (4, 55), 0,
 	     'Header added to every digest',
              "Text attached (as an initial message, before the table"
              " of contents) to the top of digests.<p>"
@@ -391,8 +390,12 @@ class Digest:
             lines.append('Content-type: multipart/digest; boundary="%s"'
                          % digestboundary)
             lines.append("")
-        lines.append(self.body)
-
+            lines.append(self.body)
+        else:
+            lines.append(
+                filterDigestHeaders(self.body,
+                                    mm_cfg.DEFAULT_PLAIN_DIGEST_KEEP_HEADERS,
+                                    self.list._mime_separator))
         # List-specific footer:
         if self.list.digest_footer:
             lines.append("")
@@ -415,3 +418,50 @@ class Digest:
 
         msg.SetBody(string.join(lines, "\n"))
         return msg
+
+def filterDigestHeaders(body, keep_headers, mimesep):
+    """Return copy of body that omits non-crucial headers."""
+    state = "sep"               # "sep", "head", or "body"
+    lines = string.split(body, "\n")
+    at = 1
+    text = [lines[0]]
+    kept_last = 0
+    while at < len(lines):
+        l, at = lines[at], at + 1
+        if state == "body":
+            # Snarf the body up to, and including, the next separator:
+            text.append(l)
+            if string.strip(l) == '--' + mimesep:
+                state = "sep"
+            continue
+        elif state == "sep":
+            state = "head"
+            # Keep the one (blank) line between separator and headers.
+            text.append(l)
+            kept_last = 0
+            continue
+        elif state == "head":
+            l = string.strip(l)
+            if l == '':
+                state = "body"
+                text.append(l)
+                continue
+            elif l[0] in [' ', '\t']:
+                # Continuation line - keep if the prior line was kept.
+                if kept_last:
+                    text.append(l)
+                continue
+            else:
+                where = string.find(l, ':')
+                if where == -1:
+                    # Malformed header line - interesting, keep it.
+                    text.append(l)
+                    kept_last = 1
+                else:
+                    field = l[:where]
+                    if string.lower(field) in keep_headers:
+                        text.append(l)
+                        kept_last = 1
+                    else:
+                        kept_last = 0
+    return string.join(text, '\n')
