@@ -499,7 +499,15 @@ def FormatMembershipOptions(lst):
                        colspan=2, bgcolor="#99ccff")
     container.AddItem(header)
     user_table = Table(width="90%", border='2')
-    user_table.AddRow([Center(Header(4, "Membership  List"))])
+    user_table.AddRow([Center(Header(4, "Membership List"))])
+    user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
+                           user_table.GetCurrentCellIndex(),
+                           bgcolor="#cccccc", colspan=8)
+    user_table.AddRow(
+        [Center(Italic("(%s members total, max. %s at a time displayed)" %
+                       (len(lst.members)
+                        + len(lst.digest_members),
+                        lst.admin_member_chunksize)))])
     user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
                            user_table.GetCurrentCellIndex(),
                            bgcolor="#cccccc", colspan=8)
