@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1441 $)
+AC_REVISION($Revision: 1467 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -26,8 +26,8 @@ AC_PREFIX_DEFAULT(/home/mailman)
 
 # Check for Python!  Better be found on $PATH
 AC_MSG_CHECKING(for --with-python)
-AC_ARG_WITH(python, [
-	--with-python         specify path to Python interpreter])
+AC_ARG_WITH(python, dnl
+[  --with-python		specify path to Python interpreter])
 AC_MSG_RESULT($with_python)
 
 if test -z "$with_python"
@@ -54,7 +54,7 @@ AC_PROG_MAKE_SET
 
 # Find compiler, allow alternatives to gcc
 AC_MSG_CHECKING(for --without-gcc)
-AC_ARG_WITH(gcc, [--without-gcc             never use gcc], [
+AC_ARG_WITH(gcc, [  --without-gcc		never use gcc], [
 	case $withval in
 	no)	CC=cc
 		without_gcc=yes;;
@@ -248,8 +248,8 @@ AC_MSG_RESULT(okay)
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
 AC_MSG_CHECKING(for mail wrapper GID)
-AC_ARG_WITH(mail-gid, [
-	--with-mail-gid  	specify GID mail programs run as])
+AC_ARG_WITH(mail-gid, dnl
+[  --with-mail-gid  	specify GID mail programs run as])
 if test -z "$with_mail_gid"
 then
     AC_CACHE_VAL(ac_cv_group_mail, [dnl
@@ -271,8 +271,8 @@ fi
 
 
 AC_MSG_CHECKING(for CGI wrapper GID)
-AC_ARG_WITH(cgi-gid, [
-	--with-cgi-gid  	specify GID CGI programs run as])
+AC_ARG_WITH(cgi-gid, dnl
+[  --with-cgi-gid  	specify GID CGI programs run as])
 if test -z "$with_cgi_gid"
 then
     AC_CACHE_VAL(ac_cv_group_cgi, [dnl
@@ -295,6 +295,21 @@ fi
 
 #MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
 #MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
+
+# Check for CGI extensions, required by some Web servers
+AC_SUBST(CGIEXT)
+AC_MSG_CHECKING(for CGI extensions)
+AC_ARG_WITH(cgi-ext, dnl
+[  --with-cgi-ext	specify extension for CGI programs (include dot)])
+if test -z "$with_cgi_ext"
+then
+	CGIEXT=''
+	with_cgi_ext='no'
+else
+	CGIEXT=$with_cgi_ext
+fi
+AC_MSG_RESULT($with_cgi_ext)
+
 
 # figure out the DEFAULT_HOST_NAME and DEFAULT_URL
 AC_SUBST(FQDN)
