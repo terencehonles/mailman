@@ -1,20 +1,26 @@
-#!/opt/bin/perl
+#!/usr/local/bin/perl
 ##
 ## Sendmail mailer for Mailman
 ##
-
 ## Simulates these aliases:
-## testlist:                "|/opt/pkgs/mailman/mail/wrapper post testlist"
-## testlist-admin:          "|/opt/pkgs/mailman/mail/wrapper mailowner testlist"
-## testlist-request:        "|/opt/pkgs/mailman/mail/wrapper mailcmd testlist"
-## owner-testlist:          testlist-admin
-## testlist-owner:          testlist-admin
+##
+##testlist:              "|/home/mailman/mail/mailman post testlist"
+##testlist-admin:        "|/home/mailman/mail/mailman admin testlist"
+##testlist-bounces:      "|/home/mailman/mail/mailman bounces testlist"
+##testlist-confirm:      "|/home/mailman/mail/mailman confirm testlist"
+##testlist-join:         "|/home/mailman/mail/mailman join testlist"
+##testlist-leave:        "|/home/mailman/mail/mailman leave testlist"
+##testlist-owner:        "|/home/mailman/mail/mailman owner testlist"
+##testlist-request:      "|/home/mailman/mail/mailman request testlist"
+##testlist-subscribe:    "|/home/mailman/mail/mailman subscribe testlist"
+##testlist-unsubscribe:  "|/home/mailman/mail/mailman unsubscribe testlist"
+##owner-testlist:        testlist-owner
 
 ## Some assembly required.
-$MMWRAPPER = "/opt/pkgs/mailman/mail/wrapper";
-$MMLISTDIR = "/var/mailman/lists";
+$MMWRAPPER = "/home/mailman/mail/mailman";
+$MMLISTDIR = "/home/mailman/lists";
 $SENDMAIL = "/usr/lib/sendmail -oem -oi";
-$VERSION = '$Id: mm-handler 4287 2001-10-27 02:30:51Z bwarsaw $';
+$VERSION = '$Id: mm-handler 5100 2002-04-05 19:41:09Z bwarsaw $';
 
 ## Comment this if you offer local user addresses.
 $NOUSERS = "\nPersonal e-mail addresses are not offered by this server.";
@@ -120,15 +126,22 @@ sub get_ip_addr {
 sub split_addr {
 	my ($addr) = @_;
 	my ($list, $cmd);
+	my @validfields = qw(admin bounces confirm join leave owner request
+				subscribe unsubscribe);
 
-	if ($addr =~ /(.*)-admin$/
-	    || $addr =~ /(.*)-owner$/
-	    || $addr =~ /^owner-(.*)$/) {
+	if ($addr =~ /(.*)-(.*)\+.*$/) {
 		$list = $1;
-		$cmd = "mailowner";
-	} elsif ($addr =~ /(.*)-request$/) {
+		$cmd = "$2";
+	} else {
+		$addr =~ /(.*)-(.*)$/;
 		$list = $1;
-		$cmd = "mailcmd";
+		$cmd = $2;
+	}
+	if (grep /^$cmd$/, @validfields) {
+		if ($list eq "owner") {
+			$list = $cmd;
+			$cmd = "owner";
+		}
 	} else {
 		$list = $addr;
 		$cmd = "post";
@@ -187,9 +200,9 @@ ADDR:	for $addr (@to) {
 		$list = $addr;
 
 		$cmd= "post";
-		if (! -f "$MMLISTDIR/$list/config.db") {
+		if (! -f "$MMLISTDIR/$list/config.pck") {
 			($list, $cmd) = &split_addr($list);
-			if (! -f "$MMLISTDIR/$list/config.db") {
+			if (! -f "$MMLISTDIR/$list/config.pck") {
 				$was_to = $addr;
 				$was_to .= "\@$server" if ("$server" ne "");
 				mail_error(\*STDIN, $sender, $was_to, $server,
