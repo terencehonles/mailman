@@ -1,9 +1,3 @@
-From %(mmowner)s
-From: %(mmowner)s
-To: %(admin_email)s
-Subject: %(listname)s Subscribe Notification
-
-
 %(member)s has been successfully subscribed to %(listname)s.
 
 
