@@ -137,8 +137,10 @@ def process(mlist, msg, msgdata):
             'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
             'List-Unsubscribe': subfieldfmt % (listinfo, requestaddr, 'un'),
             'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
-            'List-Post'       : '<mailto:%s>' % mlist.GetListEmail(),
             })
+        # List-Post: is controlled by a separate attribute
+        if mlist.include_list_post_header:
+            headers['List-Post'] = '<mailto:%s>' % mlist.GetListEmail()
         # Add this header if we're archiving
         if mlist.archive:
             archiveurl = mlist.GetBaseArchiveURL()
