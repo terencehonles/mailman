@@ -34,12 +34,12 @@ import paths
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
-from Mailman import Utils
+from Mailman.Logging.StampedLogger import StampedLogger
 
 
 try:
-    sys.stderr = Utils.StampedLogger("error", label = 'post',
-                                        manual_reprime=1, nofail=0)
+    sys.stderr = StampedLogger("error", label = 'post',
+                               manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
