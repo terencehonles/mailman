@@ -23,23 +23,45 @@ same options and passwords as the original member address.  Note that this
 operation is fairly trusting of the user who runs it -- it does no
 verification to the new address, it does not send out a welcome message, etc.
 
-The existing member's subscription is not modified in any way.  If you want to
-remove it, you need to run the `remove_members' script explicitly.
+The existing member's subscription is usually not modified in any way.  If you
+want to remove the old address, use the -r flag.  If you also want to change
+any list admin addresses, use the -a flag.
 
 Usage:
-    clone_member [-h] listname fromaddr toaddr
+    clone_member [options] fromoldaddr tonewaddr
 
 Where:
+
+    --listname=listname
+    -l listname
+        Check and modify only the named mailing lists.  If -l is not given,
+        then all mailing lists are scanned from the address.  Multiple -l
+        options can be supplied.
+
+    --remove
+    -r
+        Remove the old address from the mailing list after it's been cloned.
+
+    --admin
+    -a
+        Scan the list admin addresses for the old address, and clone or change
+        them too.
+
+    --quite
+    -q
+        Do the modifications quietly.
+
+    --nomodify
+    -n
+        Print what would be done, but don't actually do it.  Inhibits the
+        --quiet flag.
 
     --help
     -h
         Print this help message and exit.
 
-    listname is the name of the mailing list to find the address on.
-
-    fromaddr is the address of the user to clone from
-
-    toaddr is the address of the user to clone to
+ fromoldaddr (`from old address') is the old address of the user.  tonewaddr
+ (`to new address') is the new address of the user.
 
 """
 
@@ -62,44 +84,33 @@ def usage(status, msg=''):
 
 
 
-def main():
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
-    except getopt.error, msg:
-        usage(1, msg)
+def dolist(mlist, options):
+    if not options.quiet:
+        print 'processing mailing list:', mlist.internal_name()
 
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-
-    if len(args) <> 3:
-        usage(1)
-
-    listname = args[0]
-    fromaddr = args[1]
-    toaddr = args[2]
-
-    try:
-        mlist = MailList.MailList(listname)
-    except Errors.MMListError, e:
-        usage(1, 'No such list "%s"\n%s' % (listname, e))
-
-    # validate and normalize
-    try:
-        Utils.ValidateEmail(toaddr)
-    except Errors.EmailAddressError:
-        print 'Not a valid email address:', toaddr
-    lfromaddr = string.lower(fromaddr)
+    # scan the list owners.  TBD: mlist.owner keys should be lowercase?
+    if options.admintoo:
+        if not options.quiet:
+            print '    scanning list owners:', string.join(mlist.owner, ' ')
+        newowners = {}
+        for owner in mlist.owner:
+            if options.remove and options.lfromaddr == string.lower(owner):
+                continue
+            newowners[owner] = 1 
+        newowners[options.toaddr] = 1 
+        if options.modify:
+            mlist.owner = newowners.keys()
+        if not options.quiet:
+            print '    new list owners:', string.join(newowners.keys(), ' ')
 
     # see if the fromaddr is a digest member or regular member
-    dmembers = mlist.GetDigestMembers()
-    rmembers = mlist.GetMembers()
-    if lfromaddr in dmembers:
+    if options.lfromaddr in mlist.GetDigestMembers():
         digest = 1
-    elif lfromaddr in rmembers:
+    elif options.lfromaddr in mlist.GetMembers():
         digest = 0
     else:
-        print 'No user:', fromaddr
+        if not options.quiet:
+            print '    address "%s" not found' % options.fromaddr
         return
 
     # Get the user's current options and password.  TBD: Ugly hack: if a
@@ -107,27 +118,106 @@ def main():
     # the entry for the user from the user_options dictionary.  Note that
     # /really/ it would be better if GetUserOption() and SetUserOption()
     # supported an interface to get the entire option value.
-    options = mlist.user_options.get(lfromaddr, 0)
-    password = mlist.passwords[lfromaddr]
+    flags = mlist.user_options.get(options.lfromaddr, 0)
+    password = mlist.passwords[options.lfromaddr]
 
     # now add the new user
     try:
-        mlist.ApprovedAddMember(toaddr, password, digest, 0)
+        if options.modify:
+            mlist.ApprovedAddMember(options.toaddr, password, digest, 0)
+        if not options.quiet:
+            print '    clone address added:', options.toaddr
     except Errors.MMAlreadyAMember:
-        print 'Already a member:', toaddr
+        if not options.quiet:
+            print '    clone address is already a member:', options.toaddr
 
-    # and finally hack the options
-    cftoaddr = string.lower(toaddr)
-    if not options:
+    # hack the account flags
+    ltoaddr = string.lower(options.toaddr)
+    if not flags:
         try:
-            del mlist.user_options[cftoaddr]
+            del mlist.user_options[ltoaddr]
         except KeyError:
             # the user's options were already zero
             pass
     else:
-        mlist.user_options[cftoaddr] = options
-    mlist.Save()
+        mlist.user_options[ltoaddr] = flags
+
+    # perhaps remove the original address
+    if options.remove:
+        if options.modify:
+            mlist.DeleteMember(options.fromaddr, userack=0)
+        print '    original address removed:', options.fromaddr
 
 
+
+def main():
+    # default options
+    class Options:
+        listnames = None
+        remove = 0
+        admintoo = 0
+        quiet = 0
+        modify = 1
+
+    # scan sysargs
+    try:
+        opts, args = getopt.getopt(
+            sys.argv[1:], 'arl:qnh',
+            ['admin', 'remove', 'listname=', 'quiet', 'nomodify', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    options = Options()
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-q', '--quiet'):
+            options.quiet = 1
+        elif opt in ('-n', '--nomodify'):
+            options.modify = 0
+        elif opt in ('-a', '--admin'):
+            options.admintoo = 1
+        elif opt in ('-r', '--remove'):
+            options.remove = 1
+        elif opt in ('-l', '--listname'):
+            if options.listnames is None:
+                options.listnames = []
+            options.listnames.append(arg)
+
+    # further options and argument processing
+    if not options.modify:
+        options.quiet = 0
+
+    if len(args) <> 2:
+        usage(1)
+    fromaddr = args[0]
+    toaddr = args[1]
+        
+    # validate and normalize the target address
+    try:
+        Utils.ValidateEmail(toaddr)
+    except Errors.EmailAddressError:
+        usage(1, 'Not a valid email address: %s' % toaddr)
+    lfromaddr = string.lower(fromaddr)
+    options.toaddr = toaddr
+    options.fromaddr = fromaddr
+    options.lfromaddr = lfromaddr
+
+    if options.listnames is None:
+        options.listnames = Utils.list_names()
+
+    for listname in options.listnames:
+        try:
+            mlist = MailList.MailList(listname)
+        except Errors.MMListError, e:
+            print 'Error opening list "%s": %s... skipping.' % (listname, e)
+            continue
+        try:
+            dolist(mlist, options)
+        finally:
+            mlist.Save()
+            mlist.Unlock()
+
+
 if __name__ == '__main__':
     main()
