@@ -83,6 +83,7 @@ def checkout(tagname):
     # To be done from writeable repository
     relname = '"Release_' + string.translate(tagname, table) + '"'
     cvsdo('export -k kv -r %s -d %s mailman' % (relname, releasedir()))
+    os.rename('%s/doc' % releasedir(), 'mailman-doc')
 
 
 
@@ -97,6 +98,7 @@ def make_pkg(tagname):
         tarball = releasedir() + '.tgz'
         os.system('tar cvf - %s | gzip -c > %s' %
                   ('mailman-' + tagname, tarball))
+        os.system('tar cvf - mailman-doc | gzip -c > mailman-doc.gz')
     finally:
         os.chdir(curdir)
 
