@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-admin.css" type='text/css'>
+<link rel="first" href="mailman-admin.html" title='GNU Mailman - List Administration Manual'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="next" HREF="node8.html">
+<LINK REL="prev" HREF="node6.html">
+<LINK REL="parent" HREF="node4.html">
+<LINK REL="next" HREF="node8.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="A List's Web Pages">
+<META NAME="keywords" CONTENT="mailman-admin">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>2.3 A List's Web Pages</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="2.2 Administrative Roles" 
+  HREF="node6.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="2 Introduction to GNU" 
+  HREF="node4.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="2.4 Basic Architectural Overview" 
+  HREF="node8.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node6.html">2.2 Administrative Roles</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node4.html">2 Introduction to GNU</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node8.html">2.4 Basic Architectural Overview</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION002230000000000000000">
+2.3 A List's Web Pages</A>
+</H2>
+
+<P>
+Every mailing list is also accessible by a number of web pages.  Note
+that the exact urls is configurable by the site administrator, so they
+may be different than what's described below.  We'll describe the most
+common default configuration, but check with your site administrator
+or hosting service for details.
+
+<P>
+Mailman provides a set of web pages that list members use to get
+information about the list, or manage their membership options.  There
+are also list archive pages, for browsing an online web-based archive
+of the list traffic.  These are described in more detail in the GNU
+Mailman user's manual.
+
+<P>
+Mailman also provides a set of pages for configuring an individual
+list, as well as a set of pages for disposing of posting and
+subscription requests.
+
+<P>
+For a mailing list called <var>mylist</var> hosted at the domain
+<var>lists.example.com</var>, you would typically access the administrative
+pages by going to <code>http://lists.example.com/mailman/admin/mylist</code>.
+The first time you visit this page, you will be presented with a login
+page, asking for the list owner's password.  When you enter the
+password, Mailman will store a session cookie in your browser, so you
+don't have to re-authenticate for every action you want to take.  This
+cookie is stored only until you exit your browser.
+
+<P>
+To access the administrative requests page, you'd visit
+<code>http://lists.example.com/mailman/admindb/mylist</code> (note the
+<i>admindb</i> url as opposed to the <i>admin</i> url).  Again, the
+first time you visit this page, you'll be presented with a login page,
+on which you can enter either the list moderator password or the list
+owner password.  Again, a session cookie is dropped in your browser.
+Note also that if you've previously logged in as the list owner, you
+do not need to re-login to access the administrative requests page.
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="2.2 Administrative Roles" 
+  rel="prev" title="2.2 Administrative Roles" 
+  HREF="node6.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="2 Introduction to GNU" 
+  rel="parent" title="2 Introduction to GNU" 
+  HREF="node4.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="2.4 Basic Architectural Overview" 
+  rel="next" title="2.4 Basic Architectural Overview" 
+  HREF="node8.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node6.html">2.2 Administrative Roles</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node4.html">2 Introduction to GNU</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node8.html">2.4 Basic Architectural Overview</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on September 12, 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

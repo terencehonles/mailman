@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-member-es.css" type='text/css'>
+<link rel="first" href="mailman-member-es.html" title='GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="next" HREF="node25.html">
+<LINK REL="prev" HREF="node23.html">
+<LINK REL="parent" HREF="node19.html">
+<LINK REL="next" HREF="node25.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="¿Cómo puedo hacer para que Mailman me informe cuando la lista
+ha recibido un envío mío? (opción ack)">
+<META NAME="keywords" CONTENT="mailman-member-es">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>7.5 ¿Cómo puedo hacer para que Mailman me informe cuando la lista
+ha recibido un envío mío? (opción ack)</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="7.4 ¿Cómo hago para" 
+  HREF="node23.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="7.6 Parece que no" 
+  HREF="node25.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node23.html">7.4 ¿Cómo hago para</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node25.html">7.6 Parece que no</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION002750000000000000000">&nbsp;</A>
+<BR>
+7.5 &#191;C&#243;mo puedo hacer para que Mailman me informe cuando la lista
+ha recibido un env&#237;o m&#237;o? (opci&#243;n ack)
+</H2>
+
+<P>
+Como con la mayor&#237;a de las listas, usted simplemente recibir&#225; una copia de sus
+correos enviados cuando el software de listas los distribuye, no obstante, la
+opci&#243;n ack le puede ser &#250;til, ya sea si tiene desactivada la opci&#243;n de recibir
+copia de sus propios mensajes (ver Section&nbsp;<A HREF="node23.html#sec:getown">7.4</A>), si tiene
+desactivada la recepci&#243;n del correo procedente de la lista (ver 
+Section&nbsp;<A HREF="node20.html#sec:nomail">7.1</A>), si no est&#225; suscrito a un cierto tema (ver
+Section&nbsp;<A HREF="node31.html#sec:sometopic">9.2</A>) o simplemente, si desea una confirmaci&#243;n de
+mensaje recibido de parte del sistema.
+
+<P>
+<B>Nota: </B>Si no est&#225; suscrito a la lista no se puede usar esta opci&#243;n, pero a&#250;n
+as&#237; puede revisar los archivos por su cuenta (si la lista tiene archivos p&#250;blicos), 
+o preguntar por los mensajes que env&#237;e a alguien que est&#233; suscrito a la lista.
+
+<P>
+Para utilizar esta opci&#243;n usando el interfaz web:
+
+<OL>
+<LI>Acceda a su p&#225;gina de opciones de suscriptor (mire en la
+	Secci&#243;n&nbsp;<A HREF="node9.html#sec:web">3.1</A> los detalles de c&#243;mo hacer esto).
+</LI>
+<LI>Localice la secci&#243;n identificada como ``&#191;Recibir acuse
+	de recibo al enviar correo a la lista?''  Seleccione ``Si''
+	si desea recibir un correo de confirmaci&#243;n de cada mensaje enviado 
+	y ``No'' para evitar recibir tales mensajes.
+</LI>
+</OL>
+
+<P>
+Para utilizar esta opci&#243;n usando el interfaz de correo electr&#243;nico:
+
+<OL>
+<LI>Env&#237;e un mensaje a <span class="email">NOMBRELISTA-request@DOMINIO</span> con la orden
+   <var>set&nbsp;ack&nbsp;on</var> o <var>set&nbsp;ack&nbsp;off</var>.
+
+<P>
+Las &#243;rdenes pueden aparecer tanto en el cuerpo como en el asunto del
+   mensaje.  Mire en la Secci&#243;n&nbsp;<A HREF="node10.html#sec:email">3.2</A> m&#225;s informaci&#243;n sobre el env&#237;o
+   de &#243;rdenes por correo.
+</LI>
+<LI>Seleccione ``on'' si desea recibir correo haci&#233;ndole saber que se han
+   recibido sus env&#237;os y ``off'' para evitar recibir tal correo.
+</LI>
+</OL>
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="7.4 ¿Cómo hago para" 
+  rel="prev" title="7.4 ¿Cómo hago para" 
+  HREF="node23.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="7 Cambiando la entrega" 
+  rel="parent" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="7.6 Parece que no" 
+  rel="next" title="7.6 Parece que no" 
+  HREF="node25.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node23.html">7.4 ¿Cómo hago para</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node25.html">7.6 Parece que no</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on 12 de septiembre 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

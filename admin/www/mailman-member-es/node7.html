@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-member-es.css" type='text/css'>
+<link rel="first" href="mailman-member-es.html" title='GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="next" HREF="node8.html">
+<LINK REL="prev" HREF="node3.html">
+<LINK REL="parent" href="contents.html">
+<LINK REL="next" HREF="node8.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="Pasando de nuestros ejemplos a las listas reales">
+<META NAME="keywords" CONTENT="mailman-member-es">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>2 Pasando de nuestros ejemplos a las listas reales</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="1.3 GNU Mailman" 
+  HREF="node6.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="&#205;ndice General" 
+  href="contents.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="3 Interfaces de Mailman" 
+  HREF="node8.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node6.html">1.3 GNU Mailman</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" href="contents.html">&#205;ndice General</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node8.html">3 Interfaces de Mailman</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION002200000000000000000">
+2 Pasando de nuestros ejemplos a las listas reales</A>
+</H1>
+
+<P>
+A menudo es m&#225;s f&#225;cil, dar un ejemplo que explicar exactamente
+como encontrar la direcci&#243;n de una lista espec&#237;fica.  Por ello en este manual
+se incluir&#225;n ejemplos para una lista ficticia llamada
+<span class="email">NOMBRELISTA@DOMINIO</span> cuya p&#225;gina de informaci&#243;n se encontrar&#237;a en
+<a class="url" href="http://SERVIDORWEB/mailman/listinfo/NOMBRELISTA">http://SERVIDORWEB/mailman/listinfo/NOMBRELISTA</a>.
+
+<P>
+Ninguna de estas direcciones es real, pero muestran la forma t&#237;pica que toman
+las direcciones de las listas.  Las palabras en m&#225;yusculas representan la
+parte que se deber&#237;a cambiar para adecuar los ejemplos a casos reales.  Aunque
+las configuraciones espec&#237;ficas para las listas pueden ser diferentes, usted
+podr&#225; reemplazar las palabras dadas en letras may&#250;sculas con los valores
+concretos de una lista real:
+
+<P>
+<DL>
+<DT><STRONG>NOMBRELISTA</STRONG></DT>
+<DD>El nombre de su lista.
+	
+</DD>
+<DT><STRONG>DOMINIO</STRONG></DT>
+<DD>El nombre del servidor de correo que gestiona la lista. 
+	
+</DD>
+<DT><STRONG>SERVIDORWEB</STRONG></DT>
+<DD>El nombre del servidor web que gestiona el interfaz web de la lista.  Este puede ser el mismo utilizado como DOMINIO, y a menudo se refiere a la misma m&#225;quina, pero no tiene por qu&#233; ser id&#233;ntico. 
+</DD>
+</DL>
+
+<P>
+Por ejemplo, si usted estuviera interesado en la lista de usuarios mailman
+(mailman-users), tendr&#237;a que realizar las siguientes sustituciones:
+NOMBRELISTA=mailman-users, DOMINIO=python.org, SERVIDORWEB=mail.python.org.
+De esta forma, para la lista de correo <span class="email">mailman-users@python.org</span>,
+la p&#225;gina de informaci&#243;n de esa lista se encontrar&#237;a en la direcci&#243;n URL
+<a class="url" href="http://mail.python.org/mailman/listinfo/mailman-users">http://mail.python.org/mailman/listinfo/mailman-users</a>.  Estas, a
+diferencia de la mayor&#237;a de ejemplos dados en este documento, son direcciones
+reales.
+
+<P>
+La mayor&#237;a de las listas tendr&#225;n esta informaci&#243;n almacenada en las cabeceras
+<span class="mailheader">List-*:</span>.  Muchos programas de correo ocultan estas cabeceras en
+forma predeterminada, as&#237; que si desea darles un vistazo debe hacer que su
+programa de correo le muestre todas las cabeceras del mensaje.
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="1.3 GNU Mailman" 
+  rel="prev" title="1.3 GNU Mailman" 
+  HREF="node6.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="&#205;ndice General" 
+  rel="parent" title="&#205;ndice General" 
+  href="contents.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="3 Interfaces de Mailman" 
+  rel="next" title="3 Interfaces de Mailman" 
+  HREF="node8.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node6.html">1.3 GNU Mailman</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" href="contents.html">&#205;ndice General</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node8.html">3 Interfaces de Mailman</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on 12 de septiembre 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

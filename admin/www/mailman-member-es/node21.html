@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-member-es.css" type='text/css'>
+<link rel="first" href="mailman-member-es.html" title='GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="next" HREF="node22.html">
+<LINK REL="prev" HREF="node20.html">
+<LINK REL="parent" HREF="node19.html">
+<LINK REL="next" HREF="node22.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="¿Cómo puedo evitar recibir mensajes duplicados? (opción
+duplicates) ">
+<META NAME="keywords" CONTENT="mailman-member-es">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>7.2 ¿Cómo puedo evitar recibir mensajes duplicados? (opción
+duplicates) </title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="7.1 ¿Cómo activo o" 
+  HREF="node20.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="7.3 ¿Cómo cambio mi" 
+  HREF="node22.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node20.html">7.1 ¿Cómo activo o</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node22.html">7.3 ¿Cómo cambio mi</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION002720000000000000000">&nbsp;</A>
+<BR>
+7.2 &#191;C&#243;mo puedo evitar recibir mensajes duplicados? (opci&#243;n
+duplicates) 
+</H2>
+
+<P>
+Mailman no puede impedir que usted reciba mensajes duplicados, pero puede
+ayudar.  Una situaci&#243;n habitual que hace que la gente reciba m&#250;ltiples copias
+de un correo se produce cuando un remitente usa la opci&#243;n ``responder a
+todos'' para enviar un mensaje de respuesta a la lista con copia a determinados
+destinatarios.  Si no desea recibir estos mensajes adicionales, se puede
+configurar Mailman para que revise y mire si su direcci&#243;n est&#225; en las l&#237;neas
+<span class="mailheader">To:</span> o <span class="mailheader">Cc:</span> del mensaje, de manera que s&#243;lo reciba la
+copia enviada por el remitente, y no una copia que haya sido alterada por
+Mailman (para incluir cabeceras y pi&#233;s, borrar archivos adjuntos, etc.).
+
+<P>
+Para activar/desactivar esta opci&#243;n usando el interfaz web:
+
+<OL>
+<LI>Ingrese a su p&#225;gina de opciones de suscriptor (mire en la
+	Secci&#243;n&nbsp;<A HREF="node9.html#sec:web">3.1</A> los detalles de c&#243;mo hacer esto).
+</LI>
+<LI>Ubique en la parte inferior de la p&#225;gina la secci&#243;n identificada
+	como ``&#191;Evitar copias de mensajes duplicados?'' y cambie el valor
+	seg&#250;n corresponda.
+</LI>
+</OL>
+
+<P>
+Esto tambi&#233;n se puede hacer con varias listas a la vez si usted est&#225; suscrito
+a m&#225;s de una lista en el mismo dominio.  Mire en la Secci&#243;n&nbsp;<A HREF="node34.html#sec:global">10.1</A>
+la informaci&#243;n sobre cambios globales de configuraci&#243;n. 
+
+<P>
+Para activar/desactivar esto usando el interfaz de correo electr&#243;nico:
+
+<OL>
+<LI>Env&#237;e un mensaje a <span class="email">NOMBRELISTA-request@DOMINIO</span> con la orden
+   <var>set&nbsp;duplicates&nbsp;on</var> o <var>set&nbsp;duplicates&nbsp;off</var>.
+
+<P>
+Las &#243;rdenes pueden aparecer tanto en el cuerpo como en el asunto
+   del mensaje (mire en la Secci&#243;n&nbsp;<A HREF="node10.html#sec:email">3.2</A> m&#225;s informaci&#243;n sobre
+   env&#237;o de &#243;rdenes por correo). 
+</LI>
+<LI>Seleccione ``on'' para recibir copias de los mensajes que ya le
+   hayan enviado, seleccione ``off'' para evitar recibir esos duplicados.
+</LI>
+</OL>
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="7.1 ¿Cómo activo o" 
+  rel="prev" title="7.1 ¿Cómo activo o" 
+  HREF="node20.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="7 Cambiando la entrega" 
+  rel="parent" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="7.3 ¿Cómo cambio mi" 
+  rel="next" title="7.3 ¿Cómo cambio mi" 
+  HREF="node22.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node20.html">7.1 ¿Cómo activo o</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node22.html">7.3 ¿Cómo cambio mi</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on 12 de septiembre 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

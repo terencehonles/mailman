@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-admin.css" type='text/css'>
+<link rel="first" href="mailman-admin.html" title='GNU Mailman - List Administration Manual'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="next" HREF="node6.html">
+<LINK REL="prev" HREF="node4.html">
+<LINK REL="parent" HREF="node4.html">
+<LINK REL="next" HREF="node6.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="A List's Email Addresses">
+<META NAME="keywords" CONTENT="mailman-admin">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>2.1 A List's Email Addresses</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="2 Introduction to GNU" 
+  HREF="node4.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="2 Introduction to GNU" 
+  HREF="node4.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="2.2 Administrative Roles" 
+  HREF="node6.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node4.html">2 Introduction to GNU</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node4.html">2 Introduction to GNU</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node6.html">2.2 Administrative Roles</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION002210000000000000000">
+2.1 A List's Email Addresses</A>
+</H2>
+
+<P>
+Every mailing list has a set of email addresses that messages can be
+sent to.  There's always one address for posting messages to the list,
+one address that bounces will be sent to, and addresses for processing
+email commands.  For example, for a mailing list called
+<var>mylist@example.com</var>, you'd find these addresses:
+
+<P>
+
+<UL>
+<LI>mylist@example.com - this is the email address people should
+      use for new postings to the list.
+
+<P>
+</LI>
+<LI>mylist-join@example.com - by sending a message to this address,
+      a new member can request subscription to the list.  Both the
+      <span class="mailheader">Subject:</span> header and body of such a message are
+      ignored.  Note that mylist-subscribe@example.com is an alias for
+      the -join address.
+
+<P>
+</LI>
+<LI>mylist-leave@example.com - by sending a message to this address,
+      a member can request unsubscription from the list.  As with the
+      -join address, the <span class="mailheader">Subject:</span> header and body of the
+      message is ignored.  Note that mylist-unsubscribe@example.com is
+      an alias for the -leave address.
+
+<P>
+</LI>
+<LI>mylist-owner@example.com - This address reaches the list owner
+      and list moderators directly.
+
+<P>
+</LI>
+<LI>mylist-request@example.com - This address reaches a mail robot
+      which processes email commands that can be used to set member
+      subscription options, as well as process other commands.
+
+<P>
+</LI>
+<LI>mylist-bounces@example.com - This address receives bounces from
+      members who's addresses have become either temporarily or
+      permanently inactive.  The -bounces address is also a mail robot
+      that processes bounces and automatically disables or removes
+      members as configured in the bounce processing settings.  Any
+      bounce messages that are either unrecognized, or do not seem to
+      contain member addresses, are forwarded to the list
+      administrators.
+
+<P>
+</LI>
+<LI>mylist-confirm@example.com - This address is another email
+      robot, which processes confirmation messages for subscription
+      and unsubscription requests.
+</LI>
+</UL>
+
+<P>
+There's also an -admin address which also reaches the list
+administrators, but this address only exists for compatibility with
+older versions of Mailman.
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="2 Introduction to GNU" 
+  rel="prev" title="2 Introduction to GNU" 
+  HREF="node4.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="2 Introduction to GNU" 
+  rel="parent" title="2 Introduction to GNU" 
+  HREF="node4.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="2.2 Administrative Roles" 
+  rel="next" title="2.2 Administrative Roles" 
+  HREF="node6.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node4.html">2 Introduction to GNU</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node4.html">2 Introduction to GNU</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node6.html">2.2 Administrative Roles</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on September 12, 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-member-es.css" type='text/css'>
+<link rel="first" href="mailman-member-es.html" title='GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="next" HREF="node21.html">
+<LINK REL="prev" HREF="node19.html">
+<LINK REL="parent" HREF="node19.html">
+<LINK REL="next" HREF="node21.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="¿Cómo activo o desactivo la recepción de correo procedente de la
+lista? (opción delivery)">
+<META NAME="keywords" CONTENT="mailman-member-es">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>7.1 ¿Cómo activo o desactivo la recepción de correo procedente de la
+lista? (opción delivery)</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="7.2 ¿Cómo puedo evitar" 
+  HREF="node21.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node21.html">7.2 ¿Cómo puedo evitar</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION002710000000000000000">&nbsp;</A>
+<BR>
+7.1 &#191;C&#243;mo activo o desactivo la recepci&#243;n de correo procedente de la
+lista? (opci&#243;n delivery)
+</H2>
+
+<P>
+Usted puede dejar de recibir temporalmente los mensajes de la lista sin
+necesidad de darse de baja.  Si desactiva la recepci&#243;n de correo ya no
+podr&#225; recibir mensajes, pero seguir&#225; siendo un suscriptor y como tal
+conservar&#225; su contrase&#241;a y su configuraci&#243;n.
+
+<P>
+Esto puede ser pr&#225;ctico en diversos casos.  Por ejemplo, si sale de vacaciones
+o cuando est&#225; demasiado ocupado para leer cualquier correo extra.
+
+<P>
+Adem&#225;s, dado que muchas listas de correo solo aceptan mensajes de los
+suscriptores, si eventualmente llega a necesitar enviar correo desde m&#225;s de
+una direcci&#243;n (por ejemplo, una direcci&#243;n para la casa y otra para cuando est&#233;
+viajando), podr&#237;a tener m&#225;s de una cuenta suscrita y hacer que solamente
+una de ellas reciba los mensajes.
+
+<P>
+Usted tambi&#233;n puede usar su suscripci&#243;n como un medio para leer archivos 
+privados, por ejemplo en el caso de listas con tr&#225;fico alto, donde por lo
+general resulta preferible suspender la recepci&#243;n de los mensajes en el buz&#243;n
+del usuario y limitarse a su lectura mediante consulta v&#237;a interfaz web. Todo
+lo que necesita hacer es suscribirse, desactivar la recepci&#243;n del correo, y
+usar su contrase&#241;a y direcci&#243;n de correo electr&#243;nico para acceder a los
+archivos.
+
+<P>
+Para desactivar/activar la entrega de correo usando el interfaz web:
+
+<OL>
+<LI>Ingrese a su p&#225;gina de opciones (mire las instrucciones en la
+	Secci&#243;n&nbsp;<A HREF="node9.html#sec:web">3.1</A>).
+</LI>
+<LI>Localice la secci&#243;n identificada como ``Entrega de correo'' y
+	seleccione ``Desactivar'' para detener la recepci&#243;n de correo, y
+	``Activar'' para empezar a recibir el correo.
+</LI>
+</OL>
+
+<P>
+Esto tambi&#233;n se puede hacer con varias listas a la vez, siempre que est&#233;
+suscrito a m&#225;s de una lista en el mismo dominio.  Mire en la
+Secci&#243;n&nbsp;<A HREF="node34.html#sec:global">10.1</A> la informaci&#243;n acerca de los cambios globales de
+configuraci&#243;n.
+
+<P>
+Para activar/desactivar la entrega de correo usando el interfaz de correo
+electr&#243;nico:
+
+<OL>
+<LI>Env&#237;e un mensaje a <span class="email">NOMBRELISTA-request@DOMINIO</span> con la orden
+   <var>set&nbsp;delivery&nbsp;off</var> o <var>set&nbsp;delivery&nbsp;on</var>.
+
+<P>
+Las &#243;rdenes pueden aparecer tanto en el cuerpo como en el asunto
+   del mensaje (mire en la Secci&#243;n&nbsp;<A HREF="node10.html#sec:email">3.2</A> m&#225;s informaci&#243;n sobre
+   env&#237;o de &#243;rdenes por correo).
+</LI>
+<LI>Seleccione ``off'' para parar la recepci&#243;n de los env&#237;os, y ``on''
+   para empezar a recibirlos otra vez.
+</LI>
+</OL>
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="7 Cambiando la entrega" 
+  rel="prev" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="7 Cambiando la entrega" 
+  rel="parent" title="7 Cambiando la entrega" 
+  HREF="node19.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="7.2 ¿Cómo puedo evitar" 
+  rel="next" title="7.2 ¿Cómo puedo evitar" 
+  HREF="node21.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node19.html">7 Cambiando la entrega</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node21.html">7.2 ¿Cómo puedo evitar</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on 12 de septiembre 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

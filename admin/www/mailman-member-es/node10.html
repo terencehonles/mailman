@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-member-es.css" type='text/css'>
+<link rel="first" href="mailman-member-es.html" title='GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="prev" HREF="node9.html">
+<LINK REL="parent" HREF="node8.html">
+<LINK REL="next" HREF="node11.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="El interfaz de correo electrónico">
+<META NAME="keywords" CONTENT="mailman-member-es">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>3.2 El interfaz de correo electrónico</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="3.1 El interfaz web" 
+  HREF="node9.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="3 Interfaces de Mailman" 
+  HREF="node8.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="4 ¡Necesito hablar con" 
+  HREF="node11.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node9.html">3.1 El interfaz web</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node8.html">3 Interfaces de Mailman</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node11.html">4 ¡Necesito hablar con</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION002320000000000000000">&nbsp;</A>
+<BR>
+3.2 El interfaz de correo electr&#243;nico
+</H2>
+
+<P>
+Toda lista de correo tiene un conjunto de direcciones de correo electr&#243;nico
+a las cuales se pueden enviar los mensajes, incluyendo, una direcci&#243;n
+para enviar los mensajes a la lista, una direcci&#243;n destinada a recibir 
+mensajes devueltos y direcciones para procesar &#243;rdenes de correo.
+Para una lista de correo ficticia llamada
+<span class="email">milista@ejemplo.com</span>, usted encontrar&#237;a estas direcciones:
+
+<P>
+
+<UL>
+<LI><span class="email">milista@ejemplo.com</span> - esta es la direcci&#243;n de correo que la gente
+      deber&#237;a usar para enviar mensajes a la lista.
+
+<P>
+</LI>
+<LI><span class="email">milista-join@ejemplo.com</span> - enviando un mensaje a esta direcci&#243;n,
+      un nuevo miembro puede solicitar suscripci&#243;n a la lista, pero si se hace,
+      Mailman ignora tanto la cabecera de <span class="mailheader">Asunto:</span> como el cuerpo de 
+      tal mensaje.  Note que milista-subscribe@ejemplo.com es un alias para la 
+      direcci&#243;n -join.
+
+<P>
+</LI>
+<LI><span class="email">milista-leave@ejemplo.com</span> - enviando un mensaje a esta direcci&#243;n
+      un miembro puede solicitar que se le d&#233; de baja de la lista.  Igual que con
+      la direcci&#243;n -join, se ignora la cabecera <span class="mailheader">Asunto:</span> y el cuerpo
+      del mensaje.  Note que milista-unsubscribe@ejemplo.com es un alias para
+      la direcci&#243;n -leave.
+
+<P>
+</LI>
+<LI><span class="email">milista-owner@ejemplo.com</span> - Esta direcci&#243;n permite contactar al
+      al propietario o moderador de la lista.  Esta es la direcci&#243;n que deber&#225;
+      utilizar cuando necesite contactar a la persona o personas encargadas de
+      la lista.
+
+<P>
+</LI>
+<LI><span class="email">milista-request@ejemplo.com</span> - Esta direcci&#243;n est&#225; asociada a un
+      robot de correo que procesa &#243;rdenes de correo electr&#243;nico que se pueden usar
+      para definir las distintas opciones de los suscriptores, as&#237; 
+      como tambi&#233;n para procesar otras &#243;rdenes.  En el Ap&#233;ndice&nbsp;<A HREF="node41.html#a:commands">A</A> se
+      proporciona una lista de las &#243;rdenes de correo electr&#243;nico que reconoce el
+      robot.
+
+<P>
+</LI>
+<LI><span class="email">milista-bounces@ejemplo.com</span> - Esta direcci&#243;n se usa para el
+      procesamiento autom&#225;tico de los mensajes devueltos de Mailman.
+
+<P>
+</LI>
+<LI><span class="email">milista-confirm@ejemplo.com</span> - Esta direcci&#243;n se usa para
+      procesar mensajes de confirmaci&#243;n de las solicitudes de suscripci&#243;n y
+      desuscripci&#243;n.
+</LI>
+</UL>
+
+<P>
+Tambi&#233;n hay una direcci&#243;n -admin que permite contactar a los
+administradores de las listas.  Esta direcci&#243;n solo existe por
+compatibilidad con las versiones m&#225;s antig&#252;as de Mailman.
+
+<P>
+Para cambiar las opciones, se usa la direcci&#243;n <span class="email">NOMBRELISTA-request</span>
+(por ejemplo, <span class="email">milista-request@ejemplo.com</span>).
+
+<P>
+Las &#243;rdenes pueden aparecer tanto en el asunto como en el cuerpo del mensaje.
+Cada orden deber&#237;a ir en una l&#237;nea distinta. Si su programa de correo
+agrega autom&#225;ticamente una firma a sus mensajes, usted podr&#237;a desear colocar
+la palabra ``<var>end</var>'' (sin comillas) en una l&#237;nea separada despu&#233;s de sus
+otras &#243;rdenes.  La orden <var>end</var> hace que Mailman no siga procesando el
+mensaje.
+
+<P>
+La &#243;rden m&#225;s importante es probablemente la orden ``<var>help</var>'', ya que
+&#233;sta hace que Mailman devuelva un mensaje completo de informaci&#243;n &#250;til sobre
+las &#243;rdenes de correo y direcciones para uso del interfaz web.
+
+<P>
+En los Ap&#233;ndices <A HREF="node41.html#a:commands">A</A> y <A HREF="node42.html#a:options">B</A> se proporcionan referencias
+r&#225;pidas a las &#243;rdenes de suscriptor (&#233;stas se han adaptado ligeramente de la
+salida de la orden <var>help</var>.)
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="3.1 El interfaz web" 
+  rel="prev" title="3.1 El interfaz web" 
+  HREF="node9.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="3 Interfaces de Mailman" 
+  rel="parent" title="3 Interfaces de Mailman" 
+  HREF="node8.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="4 ¡Necesito hablar con" 
+  rel="next" title="4 ¡Necesito hablar con" 
+  HREF="node11.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU&nbsp;Mailman Manual&nbsp;del&nbsp;Suscriptor&nbsp;de&nbsp;Listas</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node9.html">3.1 El interfaz web</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node8.html">3 Interfaces de Mailman</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node11.html">4 ¡Necesito hablar con</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on 12 de septiembre 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-admin.css" type='text/css'>
+<link rel="first" href="mailman-admin.html" title='GNU Mailman - List Administration Manual'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="prev" HREF="node24.html">
+<LINK REL="parent" HREF="node21.html">
+<LINK REL="next" HREF="node26.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="Spam Filters">
+<META NAME="keywords" CONTENT="mailman-admin">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>3.7.4 Spam Filters</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="3.7.3 Recipient Filters" 
+  HREF="node24.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="3.7 The Privacy Options" 
+  HREF="node21.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="3.8 The Bounce Processing" 
+  HREF="node26.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node24.html">3.7.3 Recipient Filters</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node21.html">3.7 The Privacy Options</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node26.html">3.8 The Bounce Processing</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION002374000000000000000">
+3.7.4 Spam Filters</A>
+</H3>
+
+<P>
+This section provides some adjuncts to spam fighting tools; it
+doesn't replace dedicated anti-spam tools such as SpamAssassin or
+Spambayes.
+
+<P>
+<DL>
+<DT><STRONG>bounce_matching_headers</STRONG></DT>
+<DD>This variable contains header regular expressions, one per line,
+    and if any of a message's headers matches one of these patterns,
+    it will be held for moderation.  The format is a colon separated
+    header and value, where the header is case insensitive and the
+    value is any valid Python regular expression.  Lines that start
+    with # are ignored.
+
+<P>
+This variable can be used to catch known spammers by writing
+    regexps that match against <span class="mailheader">To:</span> or <span class="mailheader">Cc:</span>
+    lines, or known-bad <span class="mailheader">Message-ID:</span>s.  Perhaps more useful
+    though are patterns that match headers added by spam detection
+    tools higher up in the tool chain.  For example, you might
+    configure SpamAssassin to add an <span class="mailheader">X-Spam-Score:</span> header
+    with between zero and 5 stars depending on the spam score.  Then
+    you can add a line to this variable like:
+
+<P>
+<div class="verbatim"><pre>
+    X-Spam-Score: [*]{3,5}
+</pre></div>
+
+<P>
+This line will match from 3 to 5 stars in the value of this
+    field.
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="3.7.3 Recipient Filters" 
+  rel="prev" title="3.7.3 Recipient Filters" 
+  HREF="node24.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="3.7 The Privacy Options" 
+  rel="parent" title="3.7 The Privacy Options" 
+  HREF="node21.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="3.8 The Bounce Processing" 
+  rel="next" title="3.8 The Bounce Processing" 
+  HREF="node26.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node24.html">3.7.3 Recipient Filters</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node21.html">3.7 The Privacy Options</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node26.html">3.8 The Bounce Processing</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on September 12, 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

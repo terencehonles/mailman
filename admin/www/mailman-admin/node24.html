@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="mailman-admin.css" type='text/css'>
+<link rel="first" href="mailman-admin.html" title='GNU Mailman - List Administration Manual'>
+<link rel='contents' href='contents.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<LINK REL="next" HREF="node25.html">
+<LINK REL="prev" HREF="node23.html">
+<LINK REL="parent" HREF="node21.html">
+<LINK REL="next" HREF="node25.html">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="Recipient Filters">
+<META NAME="keywords" CONTENT="mailman-admin">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>3.7.3 Recipient Filters</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="3.7.2 Sender filters" 
+  HREF="node23.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="3.7 The Privacy Options" 
+  HREF="node21.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="3.7.4 Spam Filters" 
+  HREF="node25.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node23.html">3.7.2 Sender filters</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node21.html">3.7 The Privacy Options</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node25.html">3.7.4 Spam Filters</A>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION002373000000000000000">
+3.7.3 Recipient Filters</A>
+</H3>
+
+<P>
+The variables in this section control various filters based on the
+recipient of the message.
+
+<P>
+<DL>
+<DT><STRONG>require_explicit_destination</STRONG></DT>
+<DD>This controls whether the mailing list posting address must be
+    explicitly named in the <span class="mailheader">To:</span> or <span class="mailheader">Cc:</span>
+    recipient lists.  The main reason why it wouldn't is if the
+    message was blind-carbon-copied (i.e. <span class="mailheader">Bcc:</span>'d) to the
+    list.  Spammers like to do this, but sometimes legitimate messages
+    are forwarded to the list this way.
+
+<P>
+If the list is not explicitly addressed and this setting is turned
+    on, the message will be held for moderator approval.
+
+<P>
+</DD>
+<DT><STRONG>acceptable_aliases</STRONG></DT>
+<DD>This is the list of alternative addresses that are acceptable as a
+    list posting address when <code>require_explicit_destination</code> is
+    enabled.  This is useful for when there aliases for the main
+    posting address (e.g. <code>help@example.com</code> may be an alias for
+    <code>help-list@example.com</code>).
+
+<P>
+</DD>
+<DT><STRONG>max_num_recipients</STRONG></DT>
+<DD>This is the maximum number of explicit recipients that are allowed
+    on the posted message.  Spammers sometimes send messages with lots
+    of explicit recipients, so setting this number to a reasonable
+    value may cut down on spam.
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><a rel="prev" title="3.7.2 Sender filters" 
+  rel="prev" title="3.7.2 Sender filters" 
+  HREF="node23.html"><img src='previous.gif'
+  border='0' height='32'  alt='Previous Page' width='32'></A></td>
+<td><a rel="parent" title="3.7 The Privacy Options" 
+  rel="parent" title="3.7 The Privacy Options" 
+  HREF="node21.html"><img src='up.gif'
+  border='0' height='32'  alt='Up One Level' width='32'></A></td>
+<td><a rel="next" title="3.7.4 Spam Filters" 
+  rel="next" title="3.7.4 Spam Filters" 
+  HREF="node25.html"><img src='next.gif'
+  border='0' height='32'  alt='Next Page' width='32'></A></td>
+<td align="center" width="100%">GNU Mailman - List Administration Manual</td>
+<td><a rel="contents" title="Table of Contents" 
+  rel="contents" title="Table of Contents" 
+  href="contents.html"><img src='contents.gif'
+  border='0' height='32'  alt='Contents' width='32'></A></td>
+<td><img src='blank.gif'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" HREF="node23.html">3.7.2 Sender filters</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" HREF="node21.html">3.7 The Privacy Options</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" HREF="node25.html">3.7.4 Spam Filters</A>
+<hr>
+<span class="release-info">Release 2.1, documentation updated on September 12, 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>
