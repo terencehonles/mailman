@@ -66,6 +66,10 @@ def run_main():
                                manual_reprime=1,
                                nofail=0,
                                immediate=1)
+        # Collect stdout in a cStringIO so that if /any/ errors occur during
+        # printing it won't mess up our diagnostics page.
+        from cStringIO import StringIO
+        tempstdout = StringIO()
         # The name of the module to run is passed in argv[1].  What we
         # actually do is import the module named by argv[1] that lives in the
         # Mailman.Cgi package.  That module must have a main() function, which
@@ -79,9 +83,12 @@ def run_main():
         try:
             try:
                 sys.stderr = logger
+                sys.stdout = tempstdout
                 main()
+                sys.__stdout__.write(tempstdout.getvalue())
             finally:
                 sys.stderr = sys.__stderr__
+                sys.stdout = sys.__stdout__
         except SystemExit:
             # This is a valid way for the function to exit.
             pass
