@@ -45,10 +45,13 @@ def process(mlist, msg, msgdata):
             msg['To'] = '%s (%s)' % (member, name)
         else:
             msg['To'] = member
+        # See if we're taking the opportunity to VERP for more reliable bounce
+        # processing.
+        metadatacopy['verp'] = mm_cfg.VERP_PERSONALIZED_DELIVERIES
         inq.enqueue(msg, metadatacopy, listname=mlist.internal_name())
     # Restore the original To: line
     del msg['To']
     msg['To'] = originalto
     # Don't let the normal ToOutgoing processing actually send the original
-    # copy.
+    # copy, otherwise we'll get duplicates.
     del msgdata['recips']
