@@ -29,7 +29,7 @@ from Mailman.Logging.Syslog import syslog
 
 
 class Deliverer:
-    def SendSubscribeAck(self, name, password, digest):
+    def SendSubscribeAck(self, name, password, digest, text=''):
         pluser = self.getMemberLanguage(name)
         if not self.send_welcome_msg:
 	    return
@@ -46,7 +46,7 @@ your membership administrative address, %(addr)s.'''))
         else:
             umbrella = ''
         # get the text from the template
-        text = Utils.maketext(
+        text += Utils.maketext(
             'subscribeack.txt',
             {'real_name'   : self.real_name,
              'host_name'   : self.host_name,
