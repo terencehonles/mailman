@@ -62,7 +62,7 @@ class HTMLFormatter:
 		    '<br>',
                     Link(self.GetScriptURL('admin'),
                          _('%(realname)s administrative interface')),
-                    ' (requires authorization)',
+                    _(' (requires authorization)'),
                     '<p>', MailmanLogo()))).Format()
 
     def SnarfHTMLTemplate(self, file, lang=None):
@@ -95,9 +95,9 @@ class HTMLFormatter:
 	    num_concealed = len(members) - len(people)
         people.sort()
 	if (num_concealed > 0):
-	    plurality = (((num_concealed > 1) and "s") or "")
-	    concealed = (_("<em>(%d private member%s not shown)</em>")
-			 % (num_concealed, plurality))
+	    plu = (((num_concealed > 1) and "s") or "")
+	    concealed = _(
+                "<em>(%(num_concealed)d private member%(plu)s not shown)</em>")
  	else:
  	    concealed = ""
         ObscureEmail = Utils.ObscureEmail
@@ -165,11 +165,11 @@ class HTMLFormatter:
 	    return ""
 
     def FormatUmbrellaNotice(self, user, type):
+        addr = self.GetMemberAdminEmail(user)
         if self.umbrella_list:
-	    return _("(Note - you are subscribing to a list of mailing lists,"
-                     " so the %s notice will be sent to the admin address"
-                     " for your membership, %s.)<p>") % (
-                type, self.GetMemberAdminEmail(user))
+	    return _("(Note - you are subscribing to a list of mailing lists, "
+                     "so the %(type)s notice will be sent to the admin address"
+                     " for your membership, %(addr)s.)<p>")
 	else:
 	    return ""
 
@@ -196,13 +196,13 @@ class HTMLFormatter:
                           "administrator's decision by email.  ")
             also = _("also ")
         if self.private_roster == 1:
-            msg = msg + _("This is %sa private list, which means that "
+            msg = msg + _("This is %(also)sa private list, which means that "
                           "the members list is not available to non-"
-                          "members.  ") % also
+                          "members.  ")
         elif self.private_roster:
-            msg = msg + _("This is %sa hidden list, which means that "
+            msg = msg + _("This is %(also)sa hidden list, which means that "
                           "the members list is available only to the "
-                          "list administrator.  ") % also
+                          "list administrator.  ")
         else:
             msg = msg + _("This is %(also)sa public list, which means that the"
                           " members list is openly available")
@@ -213,11 +213,12 @@ class HTMLFormatter:
                 msg = msg + ".  "
 
         if self.umbrella_list:
+            sfx = self.umbrella_member_suffix
             msg = msg + _("<p>(Note that this is an umbrella list, intended to"
                           " have only other mailing lists as members.  Among"
                           " other things, this means that your confirmation"
-                          " request will be sent to the '%s' account for"
-                          " your address.)") % self.umbrella_member_suffix
+                          " request will be sent to the '%(sfx)s' account for"
+                          " your address.)")
 
         return msg
 
@@ -269,11 +270,11 @@ class HTMLFormatter:
         if not restriction:
             return ""
         elif restriction == 1:
-            return (_("<i>The %s is only available to the list members.</i>)")
-                    % which)
+            return _(
+                "<i>The %(which)s is only available to the list members.</i>)")
         else:
-            return (_("<i>The %s is only available to the list"
-                      " administrator.</i>") % which)
+            return _("<i>The %(which)s is only available to the list"
+                      " administrator.</i>")
 
     def FormatRosterOptionForUser(self, lang):
         return self.RosterOption(lang).Format()
