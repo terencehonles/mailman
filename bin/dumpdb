@@ -30,6 +30,12 @@ Options:
         Assume the file contains a Python pickle, overridding any automatic
         guessing.
 
+    --noprint/-n
+        Don't attempt to pretty print the object.  This is useful if there's
+        some problem with the object and you just want to get an unpickled
+        representation.  Useful with `python -i bin/dumpdb <file>'.  In that
+        case, the root of the tree will be left in a global called "msg".
+
     --help/-h
         Print this help message and exit
 
@@ -67,14 +73,15 @@ def usage(code, msg=''):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'mph',
-                                   ['marshal', 'pickle', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'mphn',
+                                   ['marshal', 'pickle', 'help', 'noprint'])
     except getopt.error, msg:
         usage(1, msg)
 
     # Options.
     # None == guess, 0 == pickle, 1 == marshal
     filetype = None
+    doprint = 1
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -83,6 +90,8 @@ def main():
             filetype = 0
         elif opt in ('-m', '--marshal'):
             filetype = 1
+        elif opt in ('-n', '--noprint'):
+            doprint = 0
 
     if len(args) < 1:
         usage(1, _('No filename given.'))
@@ -106,12 +115,16 @@ def main():
         # BAW: this probably doesn't work if there are mixed types of .db
         # files (i.e. some marshals, some bdbs).
         d = DumperSwitchboard().read(filename)
-        pp.pprint(d)
+        if doprint:
+            pp.pprint(d)
+        return d
     else:
         m = cPickle.load(open(filename))
-        pp.pprint(m)
+        if doprint:
+            pp.pprint(m)
+        return m
 
 
 
 if __name__ == '__main__':
-    main()
+    msg = main()
