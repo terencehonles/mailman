@@ -17,7 +17,6 @@
 
 """Mixin class which handles of administrative requests."""
 
-__version__ = "$Revision: 547 $"
 
 # When an operation can't be completed, and is sent to the list admin for
 # Handling, we consider that an error condition, and raise MMNeedApproval
@@ -28,8 +27,8 @@ import os, marshal, time, string
 SUBSCRIPTION_AUTH_TEXT = """
 Your authorization is required for a maillist subscription request approval:
 
-For:		%s
-List:		%s@%s
+    For:	%s
+    List:	%s@%s
 
 At your convenience, visit:
 
@@ -40,10 +39,10 @@ to process the request."""
 POSTING_AUTH_TEXT = """
 Your authorization is required for a maillist posting request approval:
 
-List:		%s@%s
-Reason held:	%s
-From:		%s
-Subject:	%s
+    List:		%s@%s
+    Reason held:	%s
+    From:		%s
+    Subject:    	%s
 
 At your convenience, visit:
 
@@ -228,5 +227,8 @@ Your original message follows:
 	
         self.SendTextToUser(subject = '%s request rejected' % self.real_name,
                             recipient = destination_email,
-			    text = text)
+			    text = text,
+                            # XXX: some of this text should probably be
+                            # wrapped by calling mm_utils.wrap() separately
+                            raw = 1)
 
