@@ -43,7 +43,11 @@ def process(msg):
         if not more:
             # we didn't find it
             return None
-        s = StringIO(mfile.read())
+        try:
+            s = StringIO(mfile.read())
+        except multifile.Error:
+            # It is a mis-formated or incomplete message
+            return None
         msg2 = mimetools.Message(s)
         if msg2.gettype() == 'text/plain':
             desc = msg2.get('content-description')

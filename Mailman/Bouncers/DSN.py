@@ -51,13 +51,17 @@ def process(msg):
     while 1:
         try:
             more = mfile.next()
-        except multifile.Error, e:
+        except multifile.Error:
             # the message *looked* like a DSN, but it really wasn't :(
             return None
         if not more:
             # we didn't find it
             return None
-        s = StringIO(mfile.read())
+        try:
+            s = StringIO(mfile.read())
+        except multifile.Error:
+            # It is a mis-formated or incomplete message
+            return None
         msg2 = mimetools.Message(s)
         if msg2.gettype() == 'message/delivery-status':
             # hmm, could there be more than one DSN per message?

@@ -48,13 +48,17 @@ def process(msg):
     while 1:
         try:
             more = mfile.next()
-        except multifile.Error, e:
-            # the message *looked* like a DSN, but it really wasn't :(
+        except multifile.Error:
+            # Not properly formatted MIME
             return None
         if not more:
             # we didn't find it
             return None
-        s = StringIO(mfile.read())
+        try:
+            s = StringIO(mfile.read())
+        except multifile.Error:
+            # Not properly formatted MIME
+            return None
         msg = mimetools.Message(s)
         if msg.gettype() == 'message/delivery-status':
             break
