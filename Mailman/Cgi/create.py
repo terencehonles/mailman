@@ -355,7 +355,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     # Create the table of initially supported languages
-    langs = Utils.GetDirectories(mm_cfg.TEMPLATE_DIR)
+    langs = mm_cfg.LC_DESCRIPTIONS.keys()
     langs.sort()
     try:
         langi = langs.index(mm_cfg.DEFAULT_SERVER_LANGUAGE)
