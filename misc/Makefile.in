@@ -44,7 +44,7 @@ ICONDIR=        $(prefix)/icons
 SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
-EMAILPKG=	email-0.97
+EMAILPKG=	email-1.1
 PYTHONLIBDIR=	$(prefix)/pythonlib
 SETUPCMD=	setup.py --quiet install --install-lib
 
