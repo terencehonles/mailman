@@ -44,7 +44,8 @@ SCRIPTSDIR= 	$(prefix)/bin
 SHELL=		/bin/sh
 
 SCRIPTS=	convert_list digest_arch mmsitepass newlist \
-populate_new_list rmlist subscribe_enmasse update_to_10b6.py
+populate_new_list rmlist subscribe_enmasse update_to_10b6.py \
+arch
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
