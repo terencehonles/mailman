@@ -264,7 +264,6 @@ Title: The Mailman Wishlist
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
 
-    <li> add_members should have a switch to disable admin notifications
 </ul>
 <h3> Other Usability Improvments
 </h3>
@@ -333,7 +332,6 @@ Title: The Mailman Wishlist
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
 
-    <li> add_members should have a switch to disable admin notifications
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
  reported to have some good features in this regard.
@@ -410,7 +408,6 @@ Title: The Mailman Wishlist
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
 
-    <li> add_members should have a switch to disable admin notifications
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
  reported to have some good features in this regard.
@@ -497,7 +494,6 @@ Title: The Mailman Wishlist
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
 
-    <li> add_members should have a switch to disable admin notifications
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
  reported to have some good features in this regard.
@@ -519,7 +515,6 @@ Title: The Mailman Wishlist
     <li> Use a real transactional database for all information, and allow various bits of information to come from different sources (a
  relational database, ZODB, LDAP, etc)
 
-    <li> Keep a members Real Name with their email address
     <li> Member profiles
     <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
@@ -601,7 +596,6 @@ Title: The Mailman Wishlist
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
 
-    <li> add_members should have a switch to disable admin notifications
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
  reported to have some good features in this regard.
@@ -623,7 +617,6 @@ Title: The Mailman Wishlist
     <li> Use a real transactional database for all information, and allow various bits of information to come from different sources (a
  relational database, ZODB, LDAP, etc)
 
-    <li> Keep a members Real Name with their email address
     <li> Member profiles
     <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
@@ -716,7 +709,6 @@ Title: The Mailman Wishlist
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
 
-    <li> add_members should have a switch to disable admin notifications
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
  reported to have some good features in this regard.
@@ -738,7 +730,6 @@ Title: The Mailman Wishlist
     <li> Use a real transactional database for all information, and allow various bits of information to come from different sources (a
  relational database, ZODB, LDAP, etc)
 
-    <li> Keep a members Real Name with their email address
     <li> Member profiles
     <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
@@ -840,7 +831,6 @@ Title: The Mailman Wishlist
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their
  list.
 
-    <li> add_members should have a switch to disable admin notifications
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
  authorization to modify the sub & superlists.  Majordomo2 is
  reported to have some good features in this regard.
@@ -862,7 +852,6 @@ Title: The Mailman Wishlist
     <li> Use a real transactional database for all information, and allow various bits of information to come from different sources (a
  relational database, ZODB, LDAP, etc)
 
-    <li> Keep a members Real Name with their email address
     <li> Member profiles
     <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
