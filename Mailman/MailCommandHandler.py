@@ -111,6 +111,10 @@ class MailCommandHandler:
     def __init__(self):
         self.__errors = 0
         self.__respbuf = ''
+        self.__dispatch = None
+        self.__noresponse = 0
+
+    def __makedispatch(self):
         self.__dispatch = {
             'subscribe'   : self.ProcessSubscribeCmd,
             'join'        : self.ProcessSubscribeCmd,
@@ -126,7 +130,6 @@ class MailCommandHandler:
             'options'     : self.ProcessOptionsCmd,
             'password'    : self.ProcessPasswordCmd,
             }
-        self.__noresponse = 0
 
     def AddToResponse(self, text, trunc=MAXCOLUMN, prefix=''):
         # Strip final newline
@@ -143,6 +146,8 @@ class MailCommandHandler:
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
         
     def ParseMailCommands(self, msg, msgdata):
+        if self.__dispatch is None:
+            self.__makedispatch()
         self.__noresponse = 0
         # Break any infloops.  If this has come from a Mailman server then
         # it'll have this header.  It's still possible to infloop between two
