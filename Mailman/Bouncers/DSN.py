@@ -25,7 +25,11 @@ from Mailman.pythonlib.StringIO import StringIO
 
 
 def parseaddr(val):
-    atype, addr = string.split(val, ';')
+    try:
+        atype, addr = string.split(val, ';')
+    except ValueError:
+        # Bogus format for Original-Recipient: or Final-Recipient: fields
+        return None
     if string.lower(string.strip(atype)) <> 'rfc822':
         return None
     addr = string.strip(addr)
