@@ -168,15 +168,17 @@ class Article:
 
         self._set_date(message)
 
-	# Figure out the e-mail address and poster's name
+	# Figure out the e-mail address and poster's name.  Use the From:
+	# field first, followed by Reply-To:
 	self.author, self.email = email.Utils.parseaddr(message['From'])
 	e = message['Reply-To']
-	if e is not None:
-            self.email = e
+	if not self.email and e is not None:
+            ignoreauthor, self.email = email.Utils.parseaddr(e)
 	self.email = strip_separators(self.email)
 	self.author = strip_separators(self.author)
 
-	if self.author == "": self.author = self.email
+	if self.author == "":
+            self.author = self.email
 
 	# Save the In-Reply-To:, References:, and Message-ID: lines
         #
