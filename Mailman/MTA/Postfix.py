@@ -1,4 +1,4 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -259,14 +259,14 @@ def _do_remove(mlist, textfile, virtualp):
             # filtering out a stanza, we're just looking for the proper begin
             # marker.
             if filteroutp:
-                if line.startswith(end):
+                if line.strip() == end:
                     filteroutp = 0
                     # Discard the trailing blank line, but don't worry if
                     # we're at the end of the file.
                     infp.readline()
                 # Otherwise, ignore the line
             else:
-                if line.startswith(start):
+                if line.strip() == start:
                     # Filter out this stanza
                     filteroutp = 1
                 else:
