@@ -38,6 +38,7 @@ WATERMARK_FILE = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
 LIST_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_lock.')
 
 
+
 def main():
     names = Utils.list_names()
     try:
