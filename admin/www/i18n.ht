@@ -66,6 +66,10 @@ Project</a> for future language support.
         support may be incomplete.  Assistance would be greatly
         appreciated!</td>
 </tr>
+<tr><td>Croatian</td><td>hr</td>
+    <td><a href="mailto:nkatic@public.srce.hr">Nino Katic</a></td>
+    <td>Not yet submitted</td>
+</tr>
 <tr><td>Czech</td><td>cs</td>
     <td><a href="mailto:dan@ohnesorg.cz">Dan Ohnesorg</a> with
     assistance from <a href="mailto:stan@krnovsko.cz">V. Stanovsky</a>.</td>
@@ -80,7 +84,7 @@ Project</a> for future language support.
     <a href="mailto:sander@steffann.nl">Sander Steffann</a></td>
     <td>Supported</td>
 </tr>
-<tr><td>Esperanto</td><td>??</td>
+<tr><td>Esperanto</td><td>eo</td>
     <td><a href="mailto:malacarne@cce.ufes.br">Marcio Malacarne</a> and
         <a href="mailto:interdist@myrealbox.com">Sergey Tyrin</a></td>
     <td>Not yet submitted</td>
