@@ -48,11 +48,12 @@ class Message(rfc822.Message):
     information out of the message.
 
     """
-    def __init__(self, fp):
+    def __init__(self, fp, filebase=None):
         rfc822.Message.__init__(self, fp)
         if self.seekable:
             self.rewindbody()
         self.body = self.fp.read()
+        self.__filebase = filebase
 
     def __repr__(self):
         """Return the entire reproducible message.
@@ -142,10 +143,11 @@ class Message(rfc822.Message):
         """
         # Calculate a unique name for the queue file
         text = repr(self)
-        hashfood = text + mlist.internal_name()
-        filebase = sha.new(hashfood).hexdigest()
-        msgfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.msg')
-        dbfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.db')
+        if self.__filebase is None:
+            hashfood = text + mlist.internal_name() + `time.time()`
+            self.__filebase = sha.new(hashfood).hexdigest()
+        msgfile = os.path.join(mm_cfg.QUEUE_DIR, self.__filebase + '.msg')
+        dbfile = os.path.join(mm_cfg.QUEUE_DIR, self.__filebase + '.db')
         # Initialize the information about this message delivery.  It's
         # possible a delivery attempt has been previously tried on this
         # message, in which case, we'll just update the data.
@@ -157,6 +159,7 @@ class Message(rfc822.Message):
         except (EOFError, ValueError, TypeError, IOError):
             msgdata = {'listname' : mlist.internal_name(),
                        'version'  : mm_cfg.QFILE_SCHEMA_VERSION,
+                       'filebase' : self.__filebase,
                        }
             existsp = 0
         # Merge in the additional msgdata
