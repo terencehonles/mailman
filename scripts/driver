@@ -20,7 +20,7 @@
 # as well let the Web server give us a fatal and obtrusive error.
 import sys
 
-# From here on we are as bulletproof as possible.
+# From here on we are as bulletproof as possible!
 
 
 
