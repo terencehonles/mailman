@@ -37,6 +37,8 @@ import getopt
 import paths
 from Mailman.i18n import _
 
+program = sys.argv[0]
+
 
 
 def usage(code, msg=''):
