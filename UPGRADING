@@ -3,6 +3,23 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
+A NOTE ABOUT MODERATION
+
+    When you upgrade from Mailman 2.0.x to Mailman 2.1, you should
+    double check that your moderation and privacy options are still
+    set the way you want them.  The Mailman options dealing with
+    moderation and privacy have changed significantly, to make them
+    easier to understand and control.  Ever effort was taken to
+    translate the old configuration variables to the new configuration
+    variables, but because the old semantics were so complex, it is
+    possible your settings may not have been correctly translated.
+
+    Check especially the values for (in Privacy -> Sender Filters)
+    default_member_moderation, generic_nonmember_action, and
+    accept_these_nonmembers.  Check also the moderation flag on member
+    accounts in the Membership Management screen.
+
+
 UPGRADING FROM PREVIOUS VERSIONS
 
     For the most part, upgrading Mailman is as easy as just installing
