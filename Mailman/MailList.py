@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -270,7 +270,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.advertised = mm_cfg.DEFAULT_LIST_ADVERTISED
         self.max_num_recipients = mm_cfg.DEFAULT_MAX_NUM_RECIPIENTS
         self.max_message_size = mm_cfg.DEFAULT_MAX_MESSAGE_SIZE
-        self.web_page_url = mm_cfg.DEFAULT_URL   
+        self.host_name = mm_cfg.DEFAULT_HOST_NAME
+        self.web_page_url = mm_cfg.DEFAULT_URL_PATTERN \
+                            % mm_cfg.DEFAULT_URL_HOST
         self.owner = [admin]
         self.moderator = []
         self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
@@ -301,7 +303,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.unsubscribe_policy = mm_cfg.DEFAULT_UNSUBSCRIBE_POLICY
         self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
         self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
-        self.host_name = mm_cfg.DEFAULT_HOST_NAME
         self.admin_member_chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
         self.administrivia = mm_cfg.DEFAULT_ADMINISTRIVIA
         self.preferred_language = mm_cfg.DEFAULT_SERVER_LANGUAGE
