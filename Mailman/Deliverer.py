@@ -10,16 +10,23 @@ Your message entitled:
 was successfully received by %s.
 '''
 
-SUBSCRIBEACKTEXT = '''Welcome to %s! 
+SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list! 
 
 If you ever want to unsubscribe or change your options (eg, switch to  
 or from digest mode), visit the web page:
 
-      %s  
+      %s
 
-You must know your password to change your options or unsubscribe.
+You can also make these adjustments via email - send a message to
 
-Your password is "%s" (no quotes around it).
+      %s-request@%s
+
+with the text "help" in the subject or body, and you will get back a
+message with instructions.
+
+You must know your password to change your options or unsubscribe.  It is:
+
+      %s
 
 If you forget your password, don't worry, you will receive a monthly 
 reminder telling you what your password is, and how to unsubscribe or 
@@ -27,7 +34,6 @@ change your options.
 
 You may also have your password mailed to you automatically off of 
 the web page noted above.
-
 
 To post to this list, send your email to:
 
@@ -143,8 +149,9 @@ class Deliverer:
 	    header = ''
 	    welcome = ''
 
-	body = SUBSCRIBEACKTEXT % (self.real_name,
+	body = SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
 				   self.GetScriptURL('listinfo'),
+				   self.real_name, self.host_name,
 				   password,
 				   self.GetListEmail(),
 				   header,
