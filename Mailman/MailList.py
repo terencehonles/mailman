@@ -193,6 +193,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetUserOption(self, user, option):
         """Return user's setting for option, defaulting to 0 if no settings."""
+        user = self.GetUserCanonicalAddress(user)
 	if option == mm_cfg.Digests:
 	    return self.digest_members.has_key(user)
 	if not self.user_options.has_key(user):
@@ -200,6 +201,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return not not self.user_options[user] & option
 
     def SetUserOption(self, user, option, value, save_list=1):
+        user = self.GetUserCanonicalAddress(user)
 	if not self.user_options.has_key(user):
 	    self.user_options[user] = 0
 	if value:
