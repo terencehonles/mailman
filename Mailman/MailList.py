@@ -51,6 +51,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def __init__(self, name=None, lock=1):
 	MailCommandHandler.__init__(self)
 	self._tmp_lock = lock
+	self._lock_file = None
 	self._internal_name = name
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
@@ -58,9 +59,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if name not in mm_utils.list_names():
 		raise mm_err.MMUnknownListError, 'list not found: %s' % name
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
-	    # Load in the default values so that old data files aren't
-	    # hosed by new versions of the program.
-	    self.InitVars(name)
 	    self.Load()
 
     def __del__(self):
@@ -121,11 +119,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    return None
 	return matches[0]
 
-    def InitVars(self, name='', admin='', crypted_password=''):
+    def InitVars(self, name=None, admin='', crypted_password=''):
         """Assign default values - some will be overriden by stored state."""
 	# Non-configurable list info 
-	self._internal_name = name
-	self._lock_file = None
+	if name:
+	  self._internal_name = name
 	self._mime_separator = '__--__--' 
 
 	# Must save this state, even though it isn't configurable
@@ -546,7 +544,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	marshal.dump(dict, file)
 	file.close()
 
-    def Load(self):
+    def Load(self, check_version = 1):
 	if self._tmp_lock:
 	   self.Lock()
 	try:
@@ -561,8 +559,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    setattr(self, key, value)
 	file.close()
 	self._ready = 1
-	self.CheckValues()
-	self.CheckVersion(dict)
+        if check_version:
+		self.CheckValues()
+		self.CheckVersion(dict)
 
     def LogMsg(self, kind, msg, *args):
 	"""Append a message to the log file for messages of specified kind."""
@@ -577,13 +576,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def CheckVersion(self, stored_state):
         """Migrate prior version's state to new structure, if changed."""
-	if self.data_version == mm_cfg.VERSION:
+	if (self.data_version >= mm_cfg.DATA_FILE_VERSION and 
+		type(self.data_version) == type(mm_cfg.DATA_FILE_VERSION)):
 	    return
 	else:
+	    print "updating..."
+	    self.InitVars() # Init any new variables, 
+	    self.Load(check_version = 0) # then reload the file
             from versions import Update
             Update(self, stored_state)
 
-	self.data_version = mm_cfg.VERSION
+	self.data_version = mm_cfg.DATA_FILE_VERSION
 	self.Save()
 
     def CheckValues(self):
