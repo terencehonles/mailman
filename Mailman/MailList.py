@@ -429,7 +429,9 @@ is <em>strongly</em> recommended for most mailing lists.''',
 depend on their own <tt>Reply-To:</tt> settings to convey their valid return
 address.  See 
 <a href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To' Munging
-Considered Harmful</a> for a general discussion of this issue.
+Considered Harmful</a> for a general discussion of this issue.  See
+<a href="http://www.metasystema.org/essays/reply-to-useful.mhtml">Reply-To
+Munging Considered Useful</a> for a dissenting opinion.
 
 <p>Some mailing lists have restricted posting privileges, with a parallel list
 devoted to discussions.  Examples are `patches' or `checkin' lists, where
