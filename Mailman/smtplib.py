@@ -64,14 +64,14 @@ class SmtpConnection:
 	if headers:
 	    hlines = string.split(headers, '\n')
 	lines  = string.split(text, '\n')
-	self._sock.send('MAIL FROM: %s\r\n' % frm)
+	self._sock.send('MAIL FROM: <%s>\r\n' % frm)
 	self.getresp()
         if type(to) == types.StringType:
-         self._sock.send('RCPT TO: %s\r\n' % to)
+         self._sock.send('RCPT TO: <%s>\r\n' % to)
          self.getresp()
         else:
          for item in to:
-           self._sock.send('RCPT TO: %s\r\n' % item)
+           self._sock.send('RCPT TO: <%s>\r\n' % item)
            self.getresp()
 	self._sock.send('DATA\r\n')
 	self.getresp()
