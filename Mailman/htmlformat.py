@@ -437,7 +437,8 @@ class VerticalSpacer:
 	return output 
 
 class RadioButtonArray:
-    def __init__(self, name, button_names, checked=None, horizontal=1):
+    def __init__(self, name, button_names, checked=None, horizontal=1,
+                 values=None):
         # XXX: horizontal doesn't really work, and besides there's no good way
         # to ask for this in the GetConfigOptions(). -baw
 	self.button_names = button_names
@@ -445,18 +446,22 @@ class RadioButtonArray:
 	self.name = name
 	self.checked = checked
 	self.horizontal = horizontal
+        if values is not None:
+            assert len(values) == len(button_names)
+            self.values = values
+        else:
+            self.values = range(len(button_names))
 
     def Format(self, indent=0):
 	t = Table(cellspacing=5)
 	items = []
 	l = len(self.button_names)
-  	for i in range(l):
-  	    if self.checked == i:
-  		items.append(RadioButton(self.name, i, 1))
-  		items.append(self.button_names[i])
-  	    else:
-  		items.append(RadioButton(self.name, i))
-  		items.append(self.button_names[i])
+        for i, name, value in map(None,
+                                 range(len(self.button_names)),
+                                 self.button_names, self.values):
+            checked = (self.checked == i)
+            items.append(RadioButton(self.name, value, checked))
+            items.append(name)
 	if self.horizontal:
 	    t.AddRow(items)
 	else:
