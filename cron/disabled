@@ -1,0 +1,116 @@
+#! @PYTHON@
+#
+# Copyright (C) 2001 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""Process disabled members, recommended once per day.
+
+This script cruises through every mailing list looking for members whose
+delivery is disabled.  If they have been disabled due to bounces, they will
+receive another notification, or they may be removed if they've received the
+maximum number of notifications.
+
+Usage: %(PROGRAM)s [options]
+
+Options:
+    -h / --help
+        Print this message and exit.
+
+    -l listname
+    --list listname
+        Process only the given list, otherwise do all lists.
+"""
+
+import sys
+import time
+import getopt
+
+import paths
+# mm_cfg must be imported before the other modules, due to the side-effect of
+# it hacking sys.paths to include site-packages.  Without this, running this
+# script from cron with python -S will fail.
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import MemberAdaptor
+
+# Work around known problems with some RedHat cron daemons
+import signal
+signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
+PROGRAM = sys.argv[0]
+
+
+
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+
+
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if args:
+        usage(1)
+
+    listnames = []
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        if opt in ('-l', '--list'):
+            listnames.append(arg)
+
+    if not listnames:
+        listnames = Utils.list_names()
+
+    today = time.mktime(time.localtime()[:3] + (0,) * 6)
+    for listname in listnames:
+        # List of members to notify
+        notify = []
+        mlist = MailList.MailList(listname, lock=0)
+        interval = mlist.bounce_you_are_disabled_warnings_interval
+        # Go through all the members who have delivery disabled due to
+        # bouncing, and find those that are due to have another notification.
+        members = mlist.getDeliveryStatusMembers((MemberAdaptor.BYBOUNCE,))
+        for member in members:
+            info = mlist.getBounceInfo(member)
+            if not info:
+                # Hmm...
+                continue
+            lastnotice = time.mktime(info.lastnotice + (0,) * 6)
+            if today >= lastnotice + interval:
+                notify.append(member)
+        # Now, send notifications to anyone who is due
+        if not notify:
+            continue
+        mlist.Lock()
+        try:
+            for member in notify:
+                mlist.sendNextNotification(member)
+            mlist.Save()
+        finally:
+            mlist.Unlock()
+
+
+
+if __name__ == '__main__':
+    main()
