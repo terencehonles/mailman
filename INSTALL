@@ -316,7 +316,7 @@ upgrade.
       interface or through the command line script bin/config_list).
 
       Specifically check to make sure the variables DEFAULT_HOST_NAME
-      and DEFAULT_URL are correct.
+      and DEFAULT_URL are correct.  The latter MUST end in a slash.
 
       The install process will not overwrite an existing mm_cfg.py
       file so you can freely make changes to this file.
