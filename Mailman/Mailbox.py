@@ -18,12 +18,18 @@
 "Extend mailbox.UnixMailbox."
 
 import string
+import re
 import errno
 import mailbox
 
 
 
 class Mailbox(mailbox.UnixMailbox):
+    _regexp = re.compile(mailbox.UnixMailbox._fromlinepattern)
+
+    def _isrealfromline(self, line):
+        return self._regexp.match(line)
+
     # msg should be an rfc822 message or a subclass.
     def AppendMessage(self, msg):
 	# Check the last character of the file and write a newline if it isn't
