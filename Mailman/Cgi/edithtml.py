@@ -32,16 +32,16 @@ from Mailman.Logging.Syslog import syslog
 
 def main():
     template_data = (
-        ('listinfo.html',    'General list information page'),
-        ('subscribe.html',   'Subscribe results page'),
-        ('options.html',     'User specific options page'),
-        ('handle_opts.html', 'Changing user options results page'),
+        ('listinfo.html',    _('General list information page')),
+        ('subscribe.html',   _('Subscribe results page')),
+        ('options.html',     _('User specific options page')),
+        ('handle_opts.html', _('Changing user options results page')),
         )
 
     doc = Document()
     parts = Utils.GetPathPieces()
     if not parts:
-        doc.AddItem(Header(2, "List name is required."))
+        doc.AddItem(Header(2, _("List name is required.")))
         print doc.Format(bgcolor='#ffffff')
         return
 
@@ -49,9 +49,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        doc.AddItem(Header(2, 'No such list <em>%s</em>' % listname))
+        doc.AddItem(Header(2, _('No such list <em>%s</em>') % listname))
         print doc.Format(bgcolor='#ffffff')
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        syslog('error', _('No such list "%s": %s\n') % (listname, e))
         return
 
     # Must be authenticated to get any farther
@@ -65,27 +65,28 @@ def main():
     # get the list._template_dir attribute
     HTMLFormatter.InitVars(mlist)
 
+    realname = mlist.real_name
     if len(parts) > 1:
         template_name = parts[1]
         for (template, info) in template_data:
             if template == template_name:
-                template_info = info
-                doc.SetTitle('%s -- Edit html for %s' % 
-                             (mlist.real_name, template_info)) 
+                template_info = _(info)
+                doc.SetTitle(_(
+                    '%(realname)s -- Edit html for %(template_info)s'))
                 break
         else:
-            doc.SetTitle('Edit HTML : Error')
-            doc.AddItem(Header(2, "%s: Invalid template" % template_name))
+            doc.SetTitle(_('Edit HTML : Error'))
+            doc.AddItem(Header(2, _("%s: Invalid template") % template_name))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor='#ffffff')
             return
     else:
-        doc.SetTitle('%s -- HTML Page Editing' % mlist.real_name)
-        doc.AddItem(Header(1, '%s -- HTML Page Editing' % mlist.real_name))
-        doc.AddItem(Header(2, 'Select page to edit:'))
+        doc.SetTitle(_('%(realname)s -- HTML Page Editing'))
+        doc.AddItem(Header(1, _('%(realname)s -- HTML Page Editing')))
+        doc.AddItem(Header(2, _('Select page to edit:')))
         template_list = UnorderedList()
         for (template, info) in template_data:
-            l = Link(mlist.GetScriptURL('edithtml') + '/' + template, info)
+            l = Link(mlist.GetScriptURL('edithtml') + '/' + template, _(info))
             template_list.AddItem(l)
         doc.AddItem(FontSize("+2", template_list))
         doc.AddItem(mlist.GetMailmanFooter())
@@ -108,7 +109,7 @@ def FormatHTML(mlist, doc, template_name, template_info):
     doc.AddItem('<hr>')
 
     link = Link(mlist.GetScriptURL('admin'),
-                'View or edit the list configuration information.')
+                _('View or edit the list configuration information.'))
 
     doc.AddItem(FontSize("+1", link))
     doc.AddItem('<p>')
@@ -116,21 +117,21 @@ def FormatHTML(mlist, doc, template_name, template_info):
     form = Form(mlist.GetScriptURL('edithtml') + '/' + template_name)
     text = Utils.QuoteHyperChars(mlist.SnarfHTMLTemplate(template_name))
     form.AddItem(TextArea('html_code', text, rows=40, cols=75))
-    form.AddItem('<p>When you are done making changes...')
-    form.AddItem(SubmitButton('submit', 'Submit Changes'))
+    form.AddItem('<p>' + _('When you are done making changes...'))
+    form.AddItem(SubmitButton('submit', _('Submit Changes')))
     doc.AddItem(form)
 
 
 
 def ChangeHTML(mlist, cgi_info, template_name, doc):
     if not cgi_info.has_key('html_code'):
-	doc.AddItem(Header(3,"Can't have empty html page."))
-	doc.AddItem(Header(3,"HTML Unchanged."))
+	doc.AddItem(Header(3,_("Can't have empty html page.")))
+	doc.AddItem(Header(3,_("HTML Unchanged.")))
 	doc.AddItem('<hr>')
 	return
     code = cgi_info['html_code'].value
     f = open(os.path.join(mlist._template_dir, template_name), 'w')
     f.write(code)
     f.close()
-    doc.AddItem(Header(3, 'HTML successfully updated.'))
+    doc.AddItem(Header(3, _('HTML successfully updated.')))
     doc.AddItem('<hr>')

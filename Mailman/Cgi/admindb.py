@@ -32,21 +32,21 @@ from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
 
-
+
 def handle_no_list(doc, extra=''):
-    doc.SetTitle('Mailman Admindb Error')
-    doc.AddItem(Header(2, 'Mailman Admindb Error'))
+    doc.SetTitle(_('Mailman Admindb Error'))
+    doc.AddItem(Header(2, _('Mailman Admindb Error')))
     doc.AddItem(extra)
-    doc.AddItem('You must specify a list name.  Here is the ')
+    doc.AddItem(_('You must specify a list name.  Here is the '))
     link = mm_cfg.DEFAULT_URL
     if link[-1] <> '/':
         link = link + '/'
     link = link + 'admin'
-    doc.AddItem(Link(link, 'list of available mailing lists.'))
+    doc.AddItem(Link(link, _('list of available mailing lists.')))
     print doc.Format(bgcolor="#ffffff")
 
 
-
+
 def main():
     doc = Document()
     # figure out which list we're going to process
@@ -64,7 +64,7 @@ def main():
     try:
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
-        handle_no_list(doc, 'No such list <em>%s</em><p>' % listname)
+        handle_no_list(doc, _('No such list <em>%s</em><p>') % listname)
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
     #
@@ -83,11 +83,12 @@ def main():
         # print the results.  otherwise (there are no keys in the form), we'll
         # print out the list of pending requests
         #
+        realname = mlist.real_name
         if len(cgidata.keys()):
-            doc.SetTitle("%s Admindb Results" % mlist.real_name)
+            doc.SetTitle(_("%(realname)s Admindb Results"))
             HandleRequests(mlist, doc, cgidata)
         else:
-            doc.SetTitle("%s Admindb" % mlist.real_name)
+            doc.SetTitle(_("%(realname)s Admindb"))
         PrintRequests(mlist, doc)
         text = doc.Format(bgcolor="#ffffff")
         print text
@@ -96,16 +97,16 @@ def main():
         mlist.Unlock()
 
 
-
+
 def PrintRequests(mlist, doc):
     # The only types of requests we know about are add member and post.
     # Anything else that might have gotten in here somehow we'll just ignore
     # (This should never happen unless someone is hacking at the code).
-    doc.AddItem(Header(2, 'Administrative requests for mailing list: <em>' +
+    doc.AddItem(Header(2, _('Administrative requests for mailing list:') + ' <em>' +
                        mlist.real_name + '</em>'))
     # short circuit for when there are no pending requests
     if not mlist.NumRequestsPending():
-	doc.AddItem('There are no pending requests.')
+	doc.AddItem(_('There are no pending requests.'))
 	doc.AddItem(mlist.GetMailmanFooter())
 	return
 
@@ -114,18 +115,18 @@ def PrintRequests(mlist, doc):
     doc.AddItem('.<p>')
     form = Form(mlist.GetScriptURL('admindb'))
     doc.AddItem(form)
-    form.AddItem(SubmitButton('submit', 'Submit All Data'))
+    form.AddItem(SubmitButton('submit', _('Submit All Data')))
     #
     # Add the subscription request section
     subpendings = mlist.GetSubscriptionIds()
     if subpendings:
         form.AddItem('<hr>')
-	form.AddItem(Center(Header(2, 'Subscription Requests')))
+	form.AddItem(Center(Header(2, _('Subscription Requests'))))
 	t = Table(border=2)
 	t.AddRow([
-	    Bold('Address'),
-	    Bold('Your Decision'),
-	    Bold('If you refuse this subscription, please explain (optional)')
+	    Bold(_('Address')),
+	    Bold(_('Your Decision')),
+	    Bold(_('If you refuse this subscription, please explain (optional)'))
             ])
         for id in subpendings:
 	    PrintAddMemberRequest(mlist, id, t)
@@ -140,15 +141,15 @@ def PrintRequests(mlist, doc):
             PrintPostRequest(mlist, id, info, total, count, form)
             count = count + 1
     form.AddItem('<hr>')
-    form.AddItem(SubmitButton('submit', 'Submit All Data'))
+    form.AddItem(SubmitButton('submit', _('Submit All Data')))
     doc.AddItem(mlist.GetMailmanFooter())
 
 
-
+
 def PrintAddMemberRequest(mlist, id, table):
     time, addr, passwd, digest = mlist.GetRecord(id)
     table.AddRow([addr,
-                  RadioButtonArray(id, ('Subscribe', 'Refuse'),
+                  RadioButtonArray(id, (_('Subscribe'), _('Refuse')),
                                    values=(mm_cfg.SUBSCRIBE, mm_cfg.REJECT)),
                   TextBox('comment-%d' % id, size=60)
                   ])
@@ -161,9 +162,9 @@ def PrintPostRequest(mlist, id, info, total, count, form):
     else:
         ptime, sender, subject, reason, filename, msgdata = info
     form.AddItem('<hr>')
-    msg = 'Posting Held for Approval'
+    msg = _('Posting Held for Approval')
     if total <> 1:
-        msg = msg + ' (%d of %d)' % (count, total)
+        msg = msg + _(' (%d of %d)') % (count, total)
     form.AddItem(Center(Header(2, msg)))
     try:
         fp = open(os.path.join(mm_cfg.DATA_DIR, filename))
@@ -172,7 +173,7 @@ def PrintPostRequest(mlist, id, info, total, count, form):
         text = msg.body[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
     except IOError, (code, msg):
         if code == ENOENT:
-            form.AddItem('<em>Message with id #%d was lost.' % id)
+            form.AddItem(_('<em>Message with id #%d was lost.') % id)
             form.AddItem('<p>')
             # TBD: kludge to remove id from requests.db.  value==2 means
             # discard the message.
@@ -183,58 +184,58 @@ def PrintPostRequest(mlist, id, info, total, count, form):
             return
         raise
     t = Table(cellspacing=0, cellpadding=0, width='100%')
-    t.AddRow([Bold('From:'), sender])
+    t.AddRow([Bold(_('From:')), sender])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    t.AddRow([Bold('Subject:'), subject])
+    t.AddRow([Bold(_('Subject:')), subject])
     t.AddCellInfo(row+1, col-1, align='right')
-    t.AddRow([Bold('Reason:'), reason])
+    t.AddRow([Bold(_('Reason:')), reason])
     t.AddCellInfo(row+2, col-1, align='right')
     # We can't use a RadioButtonArray here because horizontal placement can be
     # confusing to the user and vertical placement takes up too much
     # real-estate.  This is a hack!
     buttons = Table(cellspacing="5", cellpadding="0")
     buttons.AddRow(map(lambda x, s='&nbsp;'*5: s+x+s,
-                       ('Defer', 'Approve', 'Reject', 'Discard')))
+                       (_('Defer'), _('Approve'), _('Reject'), _('Discard'))))
     buttons.AddRow([Center(RadioButton(id, mm_cfg.DEFER, 1)),
                     Center(RadioButton(id, mm_cfg.APPROVE, 0)),
                     Center(RadioButton(id, mm_cfg.REJECT, 0)),
                     Center(RadioButton(id, mm_cfg.DISCARD, 0)),
                     ])
-    t.AddRow([Bold('Action:'), buttons])
+    t.AddRow([Bold(_('Action:')), buttons])
     t.AddCellInfo(row+3, col-1, align='right')
     t.AddRow(['&nbsp;',
               CheckBox('preserve-%d' % id, 'on', 0).Format() +
-              '&nbsp;Preserve message for site administrator'
+              '&nbsp;' + _('Preserve message for site administrator')
               ])
     t.AddRow(['&nbsp;',
               CheckBox('forward-%d' % id, 'on', 0).Format() +
-              '&nbsp;Additionally, forward this message to: ' +
+              '&nbsp;' + _('Additionally, forward this message to: ') +
               TextBox('forward-addr-%d' % id, size=47,
                       value=mlist.GetOwnerEmail()).Format()
               ])
     t.AddRow([
-	Bold('If you reject this post,<br>please explain (optional):'),
+	Bold(_('If you reject this post,<br>please explain (optional):')),
 	TextArea('comment-%d' % id, rows=4, cols=80,
                  text = Utils.wrap(msgdata.get('rejection-notice',
-                                               '[No explanation given]'),
+                                               _('[No explanation given]')),
                                    column=80))
         ])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    t.AddRow([Bold('Message Headers:'),
+    t.AddRow([Bold(_('Message Headers:')),
               TextArea('headers-%d' % id, string.join(msg.headers, ''),
                        rows=10, cols=80)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    t.AddRow([Bold('Message Excerpt:'),
+    t.AddRow	([Bold(_('Message Excerpt:')),
               TextArea('fulltext-%d' % id, text, rows=10, cols=80)])
     t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)
     form.AddItem('<p>')
 
 
-
+
 def HandleRequests(mlist, doc, cgidata):
     erroraddrs = []
     for k in cgidata.keys():
@@ -252,7 +253,7 @@ def HandleRequests(mlist, doc, cgidata):
         forwardkey = 'forward-%d' % request_id
         forwardaddrkey = 'forward-addr-%d' % request_id
         # defaults
-        comment = '[No reason given]'
+        comment = _('[No reason given]')
         preserve = 0
         forward = 0
         forwardaddr = ''
@@ -277,7 +278,7 @@ def HandleRequests(mlist, doc, cgidata):
             erroraddrs.append(v)
     # save the list and print the results
     mlist.Save()
-    doc.AddItem(Header(2, 'Database Updated...'))
+    doc.AddItem(Header(2, _('Database Updated...')))
     if erroraddrs:
         for addr in erroraddrs:
-            doc.AddItem(`addr` + ' is already a member<br>')
+            doc.AddItem(`addr` + _(' is already a member') + '<br>')

@@ -40,14 +40,14 @@ def main():
 
     parts = Utils.GetPathPieces()
     if not parts:
-        error_page('Invalid options to CGI script')
+        error_page(_('Invalid options to CGI script'))
         return
 
     listname = string.lower(parts[0])
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        error_page('No such list <em>%s</em>' % listname)
+        error_page(_('No such list <em>%s</em>') % listname)
         syslog('error', 'roster: no such list "%s": %s' % (listname, e))
         return
 
@@ -60,7 +60,7 @@ def main():
         # No privacy.
         bad = ""
     else:
-        auth_req = ("%s subscriber list requires authentication."
+        auth_req = (_("%s subscriber list requires authentication.")
                     % mlist.real_name)
         if not form.has_key("roster-pw"):
             bad = auth_req
@@ -80,12 +80,12 @@ def main():
                         except (Errors.MMBadUserError, 
                                 Errors.MMBadPasswordError,
                                 Errors.MMNotAMemberError):
-                            bad = ("%s subscriber authentication failed."
+                            bad = (_("%s subscriber authentication failed.")
                                    % mlist.real_name)
                     else:
                         # Anonymous list - admin-only visible
                         # - and we already tried admin password, above.
-                        bad = ("%s admin authentication failed."
+                        bad = (_("%s admin authentication failed.")
                                % mlist.real_name)
     if bad:
         doc = error_page_doc(bad)
@@ -108,8 +108,8 @@ def error_page_doc(errmsg, *args):
 
     Optional arg justreturn means just return the doc, don't print it."""
     doc = htmlformat.Document()
-    doc.SetTitle("Error")
-    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.SetTitle(_("Error"))
+    doc.AddItem(htmlformat.Header(2, _("Error")))
     doc.AddItem(htmlformat.Bold(errmsg % args))
     return doc
 

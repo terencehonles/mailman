@@ -41,8 +41,8 @@ def main():
     doc = HeadlessDocument()
     parts = Utils.GetPathPieces()
     if not parts or len(parts) < 2:
-        doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold("Invalid options to CGI script."))
+        doc.AddItem(Header(2, _("Error")))
+        doc.AddItem(Bold(_("Invalid options to CGI script.")))
         print doc.Format()
         return
 
@@ -53,8 +53,8 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold('No such list <em>%s</em>' % listname))
+        doc.AddItem(Header(2, _("Error")))
+        doc.AddItem(Bold(_('No such list <em>%s</em>') % listname))
         print doc.Format()
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
@@ -64,8 +64,8 @@ def main():
     if not mlist.members.has_key(user) and \
             not mlist.digest_members.has_key(user):
         # then
-        doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold("%s: No such member %s." % (listname, `user`)))
+        doc.AddItem(Header(2, _("Error")))
+        doc.AddItem(Bold(_("%s: No such member %s.") % (listname, `user`)))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
@@ -110,9 +110,9 @@ def main():
     replacements['<mm-hide-subscription-button>'] = mlist.FormatOptionButton(
         mm_cfg.ConcealSubscription, 1, user)
     replacements['<mm-digest-submit>'] = mlist.FormatButton(
-        'setdigest', 'Submit My Changes')
+        'setdigest', _('Submit My Changes'))
     replacements['<mm-unsubscribe-button>'] = (
-        mlist.FormatButton('unsub', 'Unsubscribe'))
+        mlist.FormatButton('unsub', _('Unsubscribe')))
     replacements['<mm-digest-pw-box>'] = mlist.FormatSecureBox('digpw')
     replacements['<mm-unsub-pw-box>'] = mlist.FormatSecureBox('upw')
     replacements['<mm-old-pw-box>'] = mlist.FormatSecureBox('opw')
@@ -122,23 +122,23 @@ def main():
         mlist.FormatSecureBox('othersubspw'))
     replacements['<mm-other-subscriptions-submit>'] = (
         mlist.FormatButton('othersubs',
-                           'List my other subscriptions'))
+                           _('List my other subscriptions')))
     replacements['<mm-change-pass-button>'] = (
-        mlist.FormatButton('changepw', "Change My Password"))
+        mlist.FormatButton('changepw', _("Change My Password")))
     replacements['<mm-form-start>'] = (
         mlist.FormatFormStart('handle_opts', user))
     replacements['<mm-user>'] = user
     replacements['<mm-presentable-user>'] = presentable_user
     replacements['<mm-email-my-pw>'] = mlist.FormatButton('emailpw',
-                                                          ('Email My Password'
-                                                           ' To Me'))
+                                                          (_('Email My Password'
+                                                           ' To Me')))
     replacements['<mm-umbrella-notice>'] = (
-        mlist.FormatUmbrellaNotice(user, "password"))
+        mlist.FormatUmbrellaNotice(user, _("password")))
 
     if cpuser is not None:
-        replacements['<mm-case-preserved-user>'] = '''
+        replacements['<mm-case-preserved-user>'] = _('''
 You are subscribed to this list with the case-preserved address
-<em>%s</em>.''' % cpuser
+<em>%s</em>.''') % cpuser
     else:
         replacements['<mm-case-preserved-user>'] = ''
 

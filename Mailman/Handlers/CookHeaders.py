@@ -47,7 +47,7 @@ def process(mlist, msg, msgdata):
         prefix = mlist.subject_prefix
         # we purposefully leave no space b/w prefix and subject!
         if not subject:
-            msg['Subject'] = prefix + '(no subject)'
+            msg['Subject'] = prefix + _('(no subject)')
         elif prefix and not re.search(re.escape(prefix), subject, re.I):
             msg['Subject'] = prefix + subject
     #

@@ -34,8 +34,8 @@ def main():
     doc = Document()
     parts = Utils.GetPathPieces()
     if not parts:
-        doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold('Invalid options to CGI script'))
+        doc.AddItem(Header(2, _("Error")))
+        doc.AddItem(Bold(_('Invalid options to CGI script')))
         print doc.Format(bgcolor="#ffffff")
         return
         
@@ -44,8 +44,8 @@ def main():
         mlist = MailList.MailList(listname)
         mlist.IsListInitialized()
     except Errors.MMListError, e:
-        doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold('No such list <em>%s</em>' % listname))
+        doc.AddItem(Header(2, _("Error")))
+        doc.AddItem(Bold(_('No such list <em>%s</em>') % listname))
         print doc.Format(bgcolor="#ffffff")
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
@@ -84,8 +84,8 @@ def process_form(mlist, doc):
         # then
         # Go to user options section.
         if not form.has_key("info"):
-            doc.AddItem(Header(2, "Error"))
-            doc.AddItem(Bold("You must supply your email address."))
+            doc.AddItem(Header(2, _("Error")))
+            doc.AddItem(Bold(_("You must supply your email address.")))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor="#ffffff")
             return
@@ -93,8 +93,8 @@ def process_form(mlist, doc):
         addr = form['info'].value
         member = mlist.FindUser(addr)
         if not member:
-            doc.AddItem(Header(2, "Error"))
-            doc.AddItem(Bold("%s has no subscribed addr <i>%s</i>."
+            doc.AddItem(Header(2, _("Error")))
+            doc.AddItem(Bold(_("%s has no subscribed addr <i>%s</i>.")
                              % (mlist.real_name, addr)))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor="#ffffff")
@@ -106,7 +106,7 @@ def process_form(mlist, doc):
 
     if not form.has_key("email"):
         error = 1
-        results = results + "You must supply a valid email address.<br>"
+        results = results + _("You must supply a valid email address.<br>")
         #
         # define email so we don't get a NameError below
         # with if email == mlist.GetListEmail() -scott
@@ -119,25 +119,25 @@ def process_form(mlist, doc):
     if email == mlist.GetListEmail():
         error = 1
         if remote:
-            remote = "Web site " + remote
+            remote = _("Web site ") + remote
         else:
-            remote = "unidentified origin"
+            remote = _("unidentified origin")
         badremote = "\n\tfrom " + remote
         syslog("mischief", "Attempt to self subscribe %s:%s"
                % (email, badremote))
-        results = results + "You must not subscribe a list to itself!<br>"
+        results = results + _("You must not subscribe a list to itself!<br>")
 
     if not form.has_key("pw") or not form.has_key("pw-conf"):
         error = 1
         results = (results +
-                   "You must supply a valid password, and confirm it.<br>")
+                   _("You must supply a valid password, and confirm it.<br>"))
     else:
         pw  = form["pw"].value
         pwc = form["pw-conf"].value
 
     if not error and pw <> pwc:
         error = 1
-        results = results + "Your passwords did not match.<br>"
+        results = results + _("Your passwords did not match.<br>")
 
     if form.has_key("digest"):
         try:
@@ -167,46 +167,46 @@ def process_form(mlist, doc):
         # options  on the web page for this cgi
         #
         except Errors.MMBadEmailError:
-            results = results + ("Mailman won't accept the given email "
+            results = results + (_("Mailman won't accept the given email "
                                  "address as a valid address. (Does it "
-                                 "have an @ in it???)<p>")
+                                 "have an @ in it???)<p>"))
         except Errors.MMListError:
-            results = results + ("The list is not fully functional, and "
-                                 "can not accept subscription requests.<p>")
+            results = results + (_("The list is not fully functional, and "
+                                 "can not accept subscription requests.<p>"))
         except Errors.MMSubscribeNeedsConfirmation:
-             results = results + ("Confirmation from your email address is "
+             results = results + (_("Confirmation from your email address is "
                                   "required, to prevent anyone from "
                                   "subscribing you without permission. "
                                   "Instructions are being "
                                   "sent to you at %s. Please note your "
                                   "subscription will not start until you "
-                                  "confirm your subscription." % email)
+                                  "confirm your subscription.") % email)
 
         except Errors.MMNeedApproval, x:
-            results = results + ("Subscription was <em>deferred</em> "
+            results = results + (_("Subscription was <em>deferred</em> "
                                  "because %s.  Your request has been "
                                  "forwarded to the list administrator.  "
                                  "You will receive email informing you "
                                  "of the moderator's decision when they "
-                                 "get to your request.<p>" % x)
+                                 "get to your request.<p>") % x)
         except Errors.MMHostileAddress:
-            results = results + ("Your subscription is not allowed because "
-                                 "the email address you gave is insecure.<p>")
+            results = results + (_("Your subscription is not allowed because "
+                                 "the email address you gave is insecure.<p>"))
         except Errors.MMAlreadyAMember:
-            results = results + "You are already subscribed!<p>"
+            results = results + _("You are already subscribed!<p>")
         #
         # these shouldn't happen, but if someone's futzing with the cgi
         # they might -scott
         #
         except Errors.MMCantDigestError:
             results = results + \
-                      "No one can subscribe to the digest of this list!"
+                      _("No one can subscribe to the digest of this list!")
         except Errors.MMMustDigestError:
             results = results + \
-                      "This list only supports digest subscriptions!"
+                      _("This list only supports digest subscriptions!")
         else:
             results = results + \
-                      "You have been successfully subscribed to %s." % \
+                      _("You have been successfully subscribed to %s.") % \
                       (mlist.real_name)
     PrintResults(mlist, results, doc)
 

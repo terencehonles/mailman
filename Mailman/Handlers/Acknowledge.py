@@ -41,15 +41,16 @@ def process(mlist, msg, msgdata):
             if len(subject) > plen and subject[0:plen] == prefix:
                    subject = subject[plen:]
         # get the text from the template
+        realname = mlist.real_name
         text = Utils.maketext(
             'postack.txt',
             {'subject'     : subject,
-             'listname'    : mlist.real_name,
+             'listname'    : realname,
              'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
              })
         # craft the outgoing message, with all headers and attributes
         # necessary for general delivery
-        subject = '%s post acknowledgement' % mlist.real_name
+        subject = _('%(realname)s post acknowledgement')
         msg = Message.UserNotification(sender, mlist.GetAdminEmail(),
                                        subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)

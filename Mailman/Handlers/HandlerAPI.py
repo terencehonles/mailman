@@ -24,6 +24,7 @@ from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
+from Mailman.i18n import _
 
 
 
@@ -37,7 +38,7 @@ class MessageHeld(HandlerError):
     def __str__(self):
         return self.__class__.__doc__
 
-    rejection = 'Your message was rejected'
+    rejection = _('Your message was rejected')
 
     def rejection_notice(self, mlist):
         return self.__class__.rejection

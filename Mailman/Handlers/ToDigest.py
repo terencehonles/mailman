@@ -206,11 +206,12 @@ class Digest:
 
     def ComposeBaseHeaders(self, msg):
         """Populate the message with the presentation-independent headers."""
-        mlist = self.__mlist
-	msg['From'] = mlist.GetRequestEmail()
-	msg['Subject'] = ('%s digest, %s - %s' % 
-                          (mlist.real_name, self.__volume, self.__numinfo))
-	msg['Reply-to'] = mlist.GetListEmail()
+        realname = self.__mlist.real_name
+        volume = self.__volume
+        numinfo = self.__numinfo
+	msg['From'] = self.__mlist.GetRequestEmail()
+	msg['Subject'] = _('%(realname)s digest, %(volume)s - %(numinfo)s')
+	msg['Reply-to'] = self.__mlist.GetListEmail()
         msg['X-Mailer'] = "Mailman v%s" % mm_cfg.VERSION
         msg['MIME-version'] = '1.0'
 
@@ -261,10 +262,12 @@ class Digest:
         lines = []
         # Masthead:
         if mime:
+            realname = self.__mlist.real_name
+            volume = self.__volume
             lines.append(dashbound)
             lines.append("Content-type: text/plain; charset=us-ascii")
-            lines.append("Content-description: Masthead (%s digest, %s)"
-                         % (self.__mlist.real_name, self.__volume))
+            lines.append("Content-description:" +
+                         _(" Masthead (%(realname)s digest, %(volume)s)"))
             lines.append('')
         masthead = Utils.maketext('masthead.txt', self.TemplateRefs())
         lines = lines + string.split(masthead, '\n')
@@ -274,18 +277,19 @@ class Digest:
             if mime:
                 lines.append(dashbound)
                 lines.append("Content-type: text/plain; charset=us-ascii")
-                lines.append("Content-description: Digest Header")
+                lines.append("Content-description: " + _("Digest Header"))
                 lines.append('')
             lines.append(self.__mlist.digest_header % self.TemplateRefs())
         # Table of contents:
         lines.append('')
         if mime:
+            numinfo = self.__numinfo
             lines.append(dashbound)
             lines.append("Content-type: text/plain; charset=us-ascii")
-            lines.append("Content-description: Today's Topics (%s)" %
-                         self.__numinfo)
+            lines.append("Content-description: " +
+                         _("Today's Topics (%(numinfo)s)"))
             lines.append('')
-        lines.append("Today's Topics:")
+        lines.append(_("Today's Topics:"))
         lines.append('')
         lines.append(self.__toc)
         # Digest text:
@@ -308,7 +312,7 @@ class Digest:
             lines.append(dashbound)
             if mime:
                 lines.append("Content-type: text/plain; charset=us-ascii")
-                lines.append("Content-description: Digest Footer")
+                lines.append("Content-description: " + _("Digest Footer"))
             lines.append('')
             lines.append(self.__mlist.digest_footer % self.TemplateRefs())
         # Close:
@@ -317,7 +321,8 @@ class Digest:
             lines.append('')
             lines.append(dashbound + "--")
         lines.append('')
-        lines.append("End of %s Digest" % self.__mlist.real_name)
+        realname = self.__mlist.real_name
+        lines.append(_("End of %(realname)s Digest"))
         msg.body = string.join(lines, '\n')
         return msg
 

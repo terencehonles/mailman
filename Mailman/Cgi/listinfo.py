@@ -41,7 +41,7 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        FormatListinfoOverview('No such list <em>%s</em>' % listname)
+        FormatListinfoOverview(_('No such list <em>%(listname)s</em>'))
         syslog('error', 'listinfo: no such list "%s": %s' % (listname, e))
         return
 
@@ -65,7 +65,7 @@ def FormatListinfoOverview(error=None):
 	host_name = mm_cfg.DEFAULT_HOST_NAME
 
     doc = Document()
-    legend = "%s Mailing Lists" % host_name
+    legend = _("%(hostname)s Mailing Lists")
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -92,52 +92,49 @@ def FormatListinfoOverview(error=None):
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
     else:
-	greeting = FontAttr('Welcome!', size='+2')
+	greeting = FontAttr(_('Welcome!'), size='+2')
 
+    welcomeitems = [greeting]
     if not advertised:
-        welcome_items = (greeting,
-			 "<p>"
-			 " There currently are no publicly-advertised ",
-			 Link(mm_cfg.MAILMAN_URL, "mailman"),
-			 " mailing lists on %s." % host_name,
-			 )
+        welcomeitems.extend(
+            ("<p>" + 
+             _(" There currently are no publicly-advertised "),
+             Link(mm_cfg.MAILMAN_URL, "mailman"),
+             _(" mailing lists on %(host_name)s.")))
     else:
-        welcome_items = (
-	    greeting,
-            '''<p>Below is a listing of all the public mailing lists on
-            %(hostname)s.  Click on a list name to get more information about
+        welcomeitems.append(
+            _('''<p>Below is a listing of all the public mailing lists on
+            %(host_name)s.  Click on a list name to get more information about
             the list, or to subscribe, unsubscribe, and change the preferences
-            on your subscription.''' % {'hostname': host_name},
-            )
+            on your subscription.'''))
 
-    welcome_items = (welcome_items +
-                     (" To visit the info page for an unadvertised list,"
-                      " open a URL similar to this one, but with a '/' and"
-                      +
-                      (" the %slist name appended."
-                       % ((error and "right ") or ""))
-                      +
-                      '<p> List administrators, you can visit ',
-                      Link(Utils.ScriptURL('admin'),
-                           'the list admin overview page'),
-                      " to find the management interface for your list."
-                      "<p>(Send questions or comments to ",
-                      Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
-                           mm_cfg.MAILMAN_OWNER),
-                      ".)<p>"))
+    # set up some local variables
+    adj = error and _('right') or ''
+    welcomeitems.extend(
+        (_(''' To visit the info page for an unadvertised list,
+        a URL similar to this one, but with a "/" and the %(adj)s
+        list name appended.
+        <p>List administrators, you can visit '''),
+         Link(Utils.ScriptURL('admin'),
+              _('the list admin overview page')),
+         _(''' to find the management interface for your list.
+         <p>Send questions or comments to '''),
+         Link('mailto:' + mm_cfg.MAILMAN_OWNER,
+              mm_cfg.MAILMAN_OWNER),
+         '.<p>'))
 
-    table.AddRow([apply(Container, welcome_items)])
+    table.AddRow([apply(Container, welcomeitems)])
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0, colspan=2)
 
     if advertised:
         table.AddRow(['&nbsp;', '&nbsp;'])
-        table.AddRow([Bold(FontAttr('List', size='+2')),
-                      Bold(FontAttr('Description', size='+2'))
+        table.AddRow([Bold(FontAttr(_('List'), size='+2')),
+                      Bold(FontAttr(_('Description'), size='+2'))
                       ])
     for mlist in advertised:
         table.AddRow(
             [Link(mlist.GetScriptURL('listinfo'), Bold(mlist.real_name)),
-             mlist.description or Italic('[no description available]')])
+             mlist.description or Italic(_('[no description available]'))])
 
     doc.AddItem(table)
     doc.AddItem('<hr>')
@@ -165,7 +162,7 @@ def FormatListListinfo(mlist):
     replacements['<mm-mime-digests-button>'] = mlist.FormatMimeDigestsButton()
     replacements['<mm-subscribe-box>'] = mlist.FormatBox('email', size=30)
     replacements['<mm-subscribe-button>'] = mlist.FormatButton(
-        'email-button', text='Subscribe')
+        'email-button', text=_('Subscribe'))
     replacements['<mm-new-password-box>'] = mlist.FormatSecureBox('pw')
     replacements['<mm-confirm-password>'] = mlist.FormatSecureBox('pw-conf')
     replacements['<mm-subscribe-form-start>'] = mlist.FormatFormStart(
@@ -173,7 +170,7 @@ def FormatListListinfo(mlist):
     replacements['<mm-roster-form-start>'] = mlist.FormatFormStart('roster')
     replacements['<mm-editing-options>'] = mlist.FormatEditingOption()
     replacements['<mm-info-button>'] = SubmitButton('UserOptions',
-                                                    'Edit Options').Format()
+                                                    _('Edit Options')).Format()
     replacements['<mm-roster-option>'] = mlist.FormatRosterOptionForUser()
 
     # Do the expansion.

@@ -64,7 +64,7 @@ def main():
     try: 
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
-        FormatAdminOverview('No such list <em>%s</em>' % listname)
+        FormatAdminOverview(_('No such list <em>%s</em>') % listname)
         syslog('error', 'Someone tried to access the admin interface for a '
                'non-existent list: %s' % listname)
         return
@@ -89,6 +89,15 @@ def main():
             print mlist.ZapCookie('admin')
             Auth.loginpage(mlist, 'admin', frontpage=1)
             return
+
+        CATEGORIES = [('general', _("General Options")),
+              ('members', _("Membership Management")),
+              ('privacy', _("Privacy Options")),
+              ('nondigest', _("Regular-member (non-digest) Options")),
+              ('digest', _("Digest-member Options")),
+              ('bounce', _("Bounce Options")),
+              ('archive', _("Archival Options")),
+              ('gateway', _("Mail-News and News-Mail gateways"))]
 
         if category not in map(lambda x: x[0], CATEGORIES):
             category = 'general'
@@ -118,19 +127,19 @@ def main():
 
         # Sanity checks
         if not mlist.digestable and not mlist.nondigestable:
-            AddErrorMessage(doc, '''You have turned off delivery of
+            AddErrorMessage(doc, _('''You have turned off delivery of
             both digest and non-digest messages.  This is an incompatible
             state of affairs.  You must turn on either digest delivery or
             non-digest delivery or your mailing list will basically be
-            unusable.''')
+            unusable.'''))
 	if not mlist.digestable and len(mlist.GetDigestMembers()):
-	    AddErrorMessage(doc, '''You have digest members,
+	    AddErrorMessage(doc, _('''You have digest members,
             but digests are turned off. Those people will not receive
-            mail.''')
+            mail.'''))
 	if not mlist.nondigestable and len(mlist.GetMembers()):
-	    AddErrorMessage(doc, '''You have regular list members
+	    AddErrorMessage(doc, _('''You have regular list members
             but non-digestified mail is turned off.  They will receive mail
-            until you fix this problem.''')
+            until you fix this problem.'''))
 
 	FormatConfiguration(doc, mlist, category, category_suffix, cgidata)
 	print doc.Format(bgcolor="#ffffff")
@@ -144,7 +153,7 @@ def main():
 def FormatAdminOverview(error=None):
     "Present a general welcome and itemize the (public) lists."
     doc = Document()
-    legend = "%s mailing lists - Admin Links" % mm_cfg.DEFAULT_HOST_NAME
+    legend = _("%s mailing lists - Admin Links") % mm_cfg.DEFAULT_HOST_NAME
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -163,39 +172,39 @@ def FormatAdminOverview(error=None):
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
     else:
-	greeting = "Welcome!"
+	greeting = _("Welcome!")
 
     if not advertised:
         welcome_items = (greeting,
-			 "<p>"
-			 " There currently are no publicly-advertised ",
+			 _("<p>"
+	 		   " There currently are no publicly-advertised "),
 			 Link(mm_cfg.MAILMAN_URL, "mailman"),
-			 " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+			 _(" mailing lists on %s.") % mm_cfg.DEFAULT_HOST_NAME,
 			 )
     else:
         welcome_items = (
 	    greeting,
-            "<p>"
-            " Below is the collection of publicly-advertised ",
+            _("<p>"
+              " Below is the collection of publicly-advertised "),
             Link(mm_cfg.MAILMAN_URL, "mailman"),
-            " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
-            (' Click on a list name to visit the configuration pages'
-             ' for that list.'
+            _(" mailing lists on %s.") % mm_cfg.DEFAULT_HOST_NAME,
+            (_(' Click on a list name to visit the configuration pages'
+               ' for that list.')
              )
             )
 
     welcome_items = (welcome_items +
-                     (" To visit the administrators configuration page for"
-                      " an unadvertised list, open a URL similar to this"
+                     (_(" To visit the administrators configuration page for"
+                        " an unadvertised list, open a URL similar to this")
                       +
-                      (" one, but with a '/' and the %slist name appended.<p>"
-                       % ((error and "right ") or ""))
+                      (_(" one, but with a '/' and the %slist name appended.<p>")
+                       % ((error and _("right ")) or ""))
                       +
-                      " General list information can be found at ",
+                      _(" General list information can be found at "),
                       Link(Utils.ScriptURL('listinfo'),
-                           'the mailing list overview page'),
-                      "."
-                      "<p>(Send questions and comments to ",
+                           _('the mailing list overview page')),
+                      "." +
+                      _("<p>(Send questions and comments to "),
                      Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
                           mm_cfg.MAILMAN_OWNER),
                      ".)<p>"
@@ -207,11 +216,11 @@ def FormatAdminOverview(error=None):
 
     if advertised:
         table.AddRow(['&nbsp;', '&nbsp;'])
-        table.AddRow([Bold("List"), Bold("Description")])
+        table.AddRow([Bold(_("List")), Bold(_("Description"))])
         for l in advertised:
             table.AddRow(
                 [Link(l.GetScriptURL('admin'), Bold(l.real_name)),
-                 l.description or Italic('[no description available]'),
+                 l.description or Italic(_('[no description available]')),
                  ])
 
     doc.AddItem(table)
@@ -227,24 +236,25 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
         if k == category:
             label = v
 
-    doc.SetTitle('%s Administration (%s)' % (mlist.real_name, label))
-    doc.AddItem(Center(Header(2, '%s mailing list administration<br>%s'
-                              % (mlist.real_name, label + ' Section'))))
+    realname = mlist.real_name
+    doc.SetTitle(_('%(realname)s Administration (%(label)s)'))
+    doc.AddItem(Center(Header(2, _(
+        '%(realname)s mailing list administration<br>%(label)s Section'))))
     doc.AddItem('<hr>')
 
     linktable = Table(valign="top")
-    linktable.AddRow([Center(Bold("Configuration Categories")),
-                      Center(Bold("Other Administrative Activities"))])
+    linktable.AddRow([Center(Bold(_("Configuration Categories"))),
+                      Center(Bold(_("Other Administrative Activities")))])
 
     adminurl = mlist.GetScriptURL('admin')
 
     otherlinks = UnorderedList()
     otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
-                            'Tend to pending administrative requests'))
+                            _('Tend to pending administrative requests')))
     otherlinks.AddItem(Link(mlist.GetScriptURL('listinfo'),
-                            'Go to the general list information page'))
+                            _('Go to the general list information page')))
     otherlinks.AddItem(Link(mlist.GetScriptURL('edithtml'),
-                            'Edit the HTML for the public list pages'))
+                            _('Edit the HTML for the public list pages')))
     otherlinks.AddItem(Link(mlist.GetBaseArchiveURL(), 'Go to list archives'))
     otherlinks.AddItem(Link('%s/logout' % adminurl,
                             # TBD: What I really want is a blank line :/
@@ -274,12 +284,12 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
     doc.AddItem(form)
 
     if category == 'general':
-        andpassmsg = "  (You can change your password there, too.)"
+        andpassmsg = _("  (You can change your password there, too.)")
     else:
         andpassmsg = ""
-    form.AddItem("Make your changes below, and then submit them"
-                 " using the button at the bottom.%s<p>"
-                 % andpassmsg)
+    form.AddItem(_("Make your changes below, and then submit them"
+                   " using the button at the bottom.") +
+                 andpassmsg + '<p>')
 
     form.AddItem(FormatOptionsSection(category, mlist, cgi_data))
 
@@ -311,7 +321,7 @@ def FormatOptionsSection(category, mlist, cgi_data):
                           colspan=2, bgcolor="#99ccff")
 
     def ColHeader(big_table = big_table):
-        big_table.AddRow([Center(Bold('Description')), Center(Bold('Value'))])
+        big_table.AddRow([Center(Bold(_('Description'))), Center(Bold(_('Value')))])
         big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
                               width="15%")
         big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 1,
@@ -351,7 +361,7 @@ def AddOptionsTableItem(table, item, category, mlist, detailsp=1):
 	varname, kind, params, dependancies, descr, elaboration = got
     except ValueError, msg:
         syslog('error', 'admin: %s' % msg)
-        return Italic("<malformed option>")
+        return Italic(_("<malformed option>"))
     descr = GetItemGuiDescr(mlist, category, varname, descr, detailsp)
     val = GetItemGuiValue(mlist, kind, varname, params)
     table.AddRow([descr, val])
@@ -373,7 +383,7 @@ def FormatOptionHelp(doc, varref, mlist):
                 item = i
                 break
     if not item:
-        bad = 'Option %s/%s not found: %s' % (
+        bad = _('Option %s/%s not found: %s') % (
             category, varname, os.environ.get('PATH_INFO'))
         AddErrorMessage(doc, bad)
         return
@@ -386,12 +396,13 @@ def FormatOptionHelp(doc, varref, mlist):
         varname, kind, params, dependancies, descr = got
         elaboration = descr
     header = Table(width="100%")
-    legend = ('%s Mailing list Configuration Help<br><em>%s</em> Option'
-	      % (mlist.real_name, varname))
+    realname = mlist.real_name
+    legend = (_("""%(realname)s Mailing list Configuration Help
+    <br><em>%(varname)s</em> Option"""))
     header.AddRow([Center(Header(3, legend))])
     header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
                        colspan=2, bgcolor="#99ccff")
-    doc.SetTitle("Mailman %s List Option Help" % varname)
+    doc.SetTitle(_("Mailman %(varname)s List Option Help"))
     doc.AddItem(header)
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, descr))
     doc.AddItem("%s<p>" % elaboration)
@@ -403,12 +414,12 @@ def FormatOptionHelp(doc, varref, mlist):
     form.AddItem('<p>')
     form.AddItem(Center(FormatSubmit()))
     doc.AddItem(Center(form))
-    doc.AddItem("""<em><strong>Warning:</strong> changing this option here
+    doc.AddItem(_("""<em><strong>Warning:</strong> changing this option here
     could cause other screens to be out-of-sync.  Be sure to reload any other
     pages that are displaying this option for this mailing list.  You can
-    also """)
+    also """))
     doc.AddItem(Link('%s/%s' % (mlist.GetScriptURL('admin'), category),
-                     'return to the ' + category + ' options page.'))
+                     _('return to the %(category)s options page.')))
     doc.AddItem('</em>')
     doc.AddItem(mlist.GetMailmanFooter())
 
@@ -428,7 +439,7 @@ def GetItemCharacteristics(table_entry):
     elif len(table_entry) == 6:
         varname, kind, params, dependancies, descr, elaboration = table_entry
     else:
-	raise ValueError, ("Badly formed options entry:\n  %s"
+	raise ValueError, (_("Badly formed options entry:\n  %s")
 			   % table_entry)
     return (varname, kind, params, dependancies, descr, elaboration)
 
@@ -482,9 +493,9 @@ def GetItemGuiValue(mlist, kind, varname, params):
         if not val:
             val = ''
         container = Container()
-        container.AddItem('<em>Enter the text below, or...</em><br>')
+        container.AddItem(_('<em>Enter the text below, or...</em><br>'))
         container.AddItem(TextArea(varname, val, r, c))
-        container.AddItem('<br><em>...specify a file to upload</em><br>')
+        container.AddItem(_('<br><em>...specify a file to upload</em><br>'))
         container.AddItem(FileUpload(varname+'_upload', r, c))
         return container
 
@@ -504,9 +515,9 @@ def GetItemGuiDescr(mlist, category, varname, descr, detailsp):
     else:
         text = '<div ALIGN="right">' + descr + '</div>'
     if varname[0] == '_':
-        text = text + '''<div ALIGN="right"><br><em><strong>Note:</strong>
+        text = text + _('''<div ALIGN="right"><br><em><strong>Note:</strong>
         setting this value performs an immediate action but does not modify
-        permanent state.</em></div>'''
+        permanent state.</em></div>''')
     return text
 
 
@@ -514,27 +525,28 @@ def GetItemGuiDescr(mlist, category, varname, descr, detailsp):
 def FormatMembershipOptions(mlist, cgi_data):
     container = Container()
     header = Table(width="100%")
-    header.AddRow([Center(Header(2, "Membership Management"))])
+    header.AddRow([Center(Header(2, _("Membership Management")))])
     header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
                        colspan=2, bgcolor="#99ccff")
     container.AddItem(header)
     user_table = Table(width="90%", border='2')
-    user_table.AddRow([Center(Header(4, "Membership List"))])
+    user_table.AddRow([Center(Header(4, _("Membership List")))])
     user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
                            user_table.GetCurrentCellIndex(),
                            bgcolor="#cccccc", colspan=8)
+    membercnt = len(mlist.members) + len(mlist.digest_members)
+    chunksz = mlist.admin_member_chunksize
     user_table.AddRow(
-        [Center(Italic("(%s members total, max. %s at a time displayed)" %
-                       (len(mlist.members)
-                        + len(mlist.digest_members),
-                        mlist.admin_member_chunksize)))])
+        [Center(Italic(_(
+        "(%(membercnt)s members total, max. %(chunksz)s at a time displayed)")
+                       ))])
     user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
                            user_table.GetCurrentCellIndex(),
                            bgcolor="#cccccc", colspan=8)
 
-    user_table.AddRow(map(Center, ['member address', 'subscr',
-                                   'hide', 'nomail', 'ack', 'not metoo',
-                                   'digest', 'plain']))
+    user_table.AddRow(map(Center, [_('member address'), _('subscr'),
+                                   _('hide'), _('nomail'), _('ack'), _('not metoo'),
+                                   _('digest'), _('plain')]))
     rowindex = user_table.GetCurrentRowIndex()
     for i in range(8):
         user_table.AddCellInfo(rowindex, i, bgcolor='#cccccc')
@@ -546,15 +558,15 @@ def FormatMembershipOptions(mlist, cgi_data):
         else:
             chunk = string.atoi(cgi_data["chunk"].value)
         all = chunks[chunk]
-        footer = ("<p><em>To View other sections, "
-                  "click on the appropriate range listed below</em>")
+        footer = (_("<p><em>To View other sections, "
+                    "click on the appropriate range listed below</em>"))
         chunk_indices = range(len(chunks))
         chunk_indices.remove(chunk)
         buttons = []
         for ci in chunk_indices:
             start, end = chunks[ci][0], chunks[ci][-1]
 	    url = mlist.GetScriptURL('admin')
-            buttons.append("<a href=%s/members?chunk=%d> from %s to %s </a>"
+            buttons.append("<a href=%s/members?chunk=%d>" + _("from %s to %s") + "</a>"
                            % (url, ci, start, end))
         buttons = apply(UnorderedList, tuple(buttons))
         footer = footer + buttons.Format() + "<p>"
@@ -592,25 +604,25 @@ def FormatMembershipOptions(mlist, cgi_data):
         user_table.AddRow(cells)
     container.AddItem(Center(user_table))
     legend = UnorderedList()
-    legend.AddItem('<b>subscr</b> -- Is the member subscribed?')
-    legend.AddItem("<b>hide</b> -- Is the member's address "
-                   "concealed on the list of subscribers?")
-    legend.AddItem('<b>nomail</b> -- Is delivery to the member disabled?')
-    legend.AddItem('<b>ack</b> -- '
-                   'Does the member get acknowledgements of their posts?')
-    legend.AddItem('<b>not metoo</b> -- '
-                   'Does the member avoid copies of their own posts?')
-    legend.AddItem('<b>digest</b> -- '
-                   'Does the member get messages in digests? '
-                   '(otherwise, individual messages)')
+    legend.AddItem(_('<b>subscr</b> -- Is the member subscribed?'))
+    legend.AddItem(_("<b>hide</b> -- Is the member's address "
+                     "concealed on the list of subscribers?"))
+    legend.AddItem(_('<b>nomail</b> -- Is delivery to the member disabled?'))
+    legend.AddItem(_('<b>ack</b> -- '
+                     'Does the member get acknowledgements of their posts?'))
+    legend.AddItem(_('<b>not metoo</b> -- '
+                     'Does the member avoid copies of their own posts?'))
+    legend.AddItem(_('<b>digest</b> -- '
+                     'Does the member get messages in digests? '
+                     '(otherwise, individual messages)'))
     legend.AddItem(
-        '<b>plain</b> -- '
-        'If getting digests, does the member get plain text digests? '
-        '(otherwise, MIME)')
+        _('<b>plain</b> -- '
+          'If getting digests, does the member get plain text digests? '
+          '(otherwise, MIME)'))
     container.AddItem(legend.Format())
     container.AddItem(footer)
     t = Table(width="90%")
-    t.AddRow([Center(Header(4, "Mass Subscribe Members"))])
+    t.AddRow([Center(Header(4, _("Mass Subscribe Members")))])
     t.AddCellInfo(t.GetCurrentRowIndex(),
                   t.GetCurrentCellIndex(),
                   bgcolor="#cccccc", colspan=8)
@@ -620,14 +632,14 @@ def FormatMembershipOptions(mlist, cgi_data):
     else:
         nochecked = 1
         yeschecked = 0
-    t.AddRow([("<b>1.</b> Send Welcome message to this batch? "
+    t.AddRow([("<b>1.</b>" + _("Send Welcome message to this batch? ")
                + RadioButton("send_welcome_msg_to_this_batch", 0,
                              nochecked).Format()
-               + " no "
+               + _(" no ")
                + RadioButton("send_welcome_msg_to_this_batch", 1,
                              yeschecked).Format()
-               + " yes ")])
-    t.AddRow(["<b>2.</b> Enter one address per line: <p>"])
+               + _(" yes "))])
+    t.AddRow(["<b>2.</b>" + _("Enter one address per line:") + "<p>"])
     container.AddItem(Center(t))
     container.AddItem(Center(TextArea(name='subscribees',
                                       rows=10,cols=60,wrap=None)))
@@ -640,17 +652,17 @@ def FormatPasswordStuff():
                             cellspacing=0, cellpadding=2,
                             valign="top")
     change_pw_table.AddRow(
-        [Bold(Center('To Change The Administrator Password'))])
+        [Bold(Center(_('To Change The Administrator Password')))])
     change_pw_table.AddCellInfo(0, 0, align="left", colspan=2)
     old = Table(bgcolor="#99cccc", border=1,
                 cellspacing=0, cellpadding=2, valign="top")
-    old.AddRow(['<div ALIGN="right"> Enter current password:</div>',
+    old.AddRow(['<div ALIGN="right">' + _(" Enter current password:") + '</div>',
                 PasswordBox('adminpw')])
     new = Table(bgcolor="#99cccc", border=1,
                 cellspacing=0, cellpadding=2, valign="top")
-    new.AddRow(['<div ALIGN="right"> Enter new password: </div>',
+    new.AddRow(['<div ALIGN="right">' + _(" Enter new password:") + '</div>',
                 PasswordBox('newpw')])
-    new.AddRow(['<div ALIGN="right">Confirm new password:</div>',
+    new.AddRow(['<div ALIGN="right">' + _("Confirm new password:") + '</div>',
                 PasswordBox('confirmpw')])
     change_pw_table.AddRow([old, new])
     change_pw_table.AddCellInfo(1, 0, align="left", valign="top")
@@ -662,7 +674,7 @@ def FormatPasswordStuff():
 def FormatSubmit():
     submit = Table(bgcolor="#99ccff",
                    border=0, cellspacing=0, cellpadding=2)
-    submit.AddRow([Bold(SubmitButton('submit', 'Submit Your Changes'))])
+    submit.AddRow([Bold(SubmitButton('submit', _('Submit Your Changes')))])
     submit.AddCellInfo(submit.GetCurrentRowIndex(), 0, align="middle")
     return submit
 
@@ -758,25 +770,25 @@ def ChangeOptions(mlist, category, cgi_info, document):
                     confirmed = 1
                 except Errors.MMBadPasswordError:
                     AddErrorMessage(document,
-                                    'Incorrect administrator password',
+                                    _('Incorrect administrator password'),
                                     tag='Error: ')
             if confirmed:
                 new = string.strip(cgi_info['newpw'].value)
                 confirm = string.strip(cgi_info['confirmpw'].value)
                 if new == '' and confirm == '':
                     AddErrorMessage(document,
-                                    'Empty admin passwords are not allowed',
+                                    _('Empty admin passwords are not allowed'),
                                     tag='Error: ')
                 elif new == confirm:
                     mlist.password = crypt(new, Utils.GetRandomSeed())
                     # Re-authenticate (to set new cookie)
                     mlist.WebAuthenticate(password=new, cookie='admin')
                 else:
-                    AddErrorMessage(document, 'Passwords did not match',
+                    AddErrorMessage(document, _('Passwords did not match'),
                                     tag='Error: ')
 	else:
             AddErrorMessage(document,
-                            'You must type in your new password twice',
+                            _('You must type in your new password twice'),
                             tag='Error: ')
     #
     # for some reason, the login page mangles important values for the list
@@ -827,9 +839,9 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 if property == 'real_name' and \
                    string.lower(value) <> string.lower(mlist._internal_name):
                     # then don't install this value.
-                    document.AddItem("""<p><b>real_name</b> attribute not
+                    document.AddItem(_("""<p><b>real_name</b> attribute not
                     changed!  It must differ from the list's name by case
-                    only.<p>""")
+                    only.<p>"""))
                     continue
                 setattr(mlist, property, value)
     #
@@ -858,22 +870,22 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 # result[name] is set from sys.exc_info()[:2]
                 e, v = result[name]
                 if e is Errors.MMAlreadyAMember:
-                    subscribe_errors.append((name, 'Already a member'))
+                    subscribe_errors.append((name, _('Already a member')))
                 elif e is Errors.MMBadEmailError:
                     if name == '':
                         name = '&lt;blank line&gt;'
                     subscribe_errors.append(
-                        (name, "Bad/Invalid email address"))
+                        (name, _("Bad/Invalid email address")))
                 elif e is Errors.MMHostileAddress:
                     subscribe_errors.append(
-                        (name, "Hostile Address (illegal characters)"))
+                        (name, _("Hostile Address (illegal characters)")))
         if subscribe_success:
-            document.AddItem(Header(5, "Successfully Subscribed:"))
+            document.AddItem(Header(5, _("Successfully Subscribed:")))
             document.AddItem(apply(UnorderedList, tuple((subscribe_success))))
             document.AddItem("<p>")
             # ApprovedAddMembers will already have saved the list for us.
         if subscribe_errors:
-            document.AddItem(Header(5, "Error Subscribing:"))
+            document.AddItem(Header(5, _("Error Subscribing:")))
             items = map(lambda x: "%s -- %s" % (x[0], x[1]), subscribe_errors)
             document.AddItem(apply(UnorderedList, tuple((items))))
             document.AddItem("<p>")
@@ -894,7 +906,7 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 try:
                     mlist.DeleteMember(user)
                 except Errors.MMNoSuchUserError:
-                    errors.append((user, 'Not subscribed'))
+                    errors.append((user, _('Not subscribed')))
                 continue
             value = cgi_info.has_key('%s_digest' % user)
             try:
@@ -910,7 +922,7 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 else:
                     mlist.SetUserOption(user, opt_code, 0, save_list=0)
         if errors:
-            document.AddItem(Header(5, "Error Unsubscribing:"))
+            document.AddItem(Header(5, _("Error Unsubscribing:")))
             items = map(lambda x: "%s -- %s" % (x[0], x[1]), errors)
             document.AddItem(apply(UnorderedList, tuple((items))))
             document.AddItem("<p>")

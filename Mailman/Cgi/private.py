@@ -94,8 +94,8 @@ def main():
     doc = Document()
     parts = Utils.GetPathPieces()
     if not parts:
-        doc.SetTitle("Private Archive Error")
-        doc.AddItem(Header(3, "You must specify a list."))
+        doc.SetTitle(_("Private Archive Error"))
+        doc.AddItem(Header(3, _("You must specify a list.")))
         print doc.Format(bgcolor="#FFFFFF")
         sys.exit(0)
 
@@ -130,8 +130,8 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
         mlist.IsListInitialized()
     except Errors.MMListError, e:
-        msg = 'No such list <em>%s</em>' % listname
-        doc.SetTitle("Private Archive Error - %s" % msg)
+        msg = _('No such list <em>%s</em>') % listname
+        doc.SetTitle(_("Private Archive Error - %s") % msg)
         doc.AddItem(Header(2, msg))
         print doc.Format(bgcolor="#FFFFFF")
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
@@ -149,23 +149,23 @@ def main():
 	password = password.value
 
     is_auth = 0
-    message = ("Please enter your %s subscription email address "
-               "and password." % mlist.real_name)
+    message = (_("Please enter your %s subscription email address "
+               "and password.") % mlist.real_name)
     try:
         is_auth = mlist.WebAuthenticate(user=user,
                                           password=password,
                                           cookie='archive')
     except (Errors.MMBadUserError, Errors.MMBadPasswordError,
             Errors.MMNotAMemberError): 
-        message = ('Your email address or password were incorrect. '
-                   'Please try again.')
+        message = (_('Your email address or password were incorrect. '
+                   'Please try again.'))
     except Errors.MMExpiredCookieError:
-        message = 'Your cookie has gone stale, ' \
-                  'enter password to get a new one.',
+        message = _('Your cookie has gone stale, ' \
+                  'enter password to get a new one.'),
     except Errors.MMInvalidCookieError:
-        message = 'Error decoding authorization cookie.'
+        message = _('Error decoding authorization cookie.')
     except Errors.MMAuthenticationError:
-        message = 'Authentication error.'
+        message = _('Authentication error.')
     
     if not is_auth:
         # Output the password form
@@ -192,8 +192,8 @@ def main():
     except IOError:
         print 'Content-type: text/html\n'
 
-        print "<H3>Archive File Not Found</H3>"
-        print "No file", path, '(%s)' % true_filename
+        print "<H3>" + _("Archive File Not Found") + "</H3>"
+        print _("No file"), path, '(%s)' % true_filename
     else:
         print 'Content-type: %s\n' % ctype
         sys.stdout.write(f.read())
