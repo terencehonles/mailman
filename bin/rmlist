@@ -46,7 +46,6 @@ def remove_it(dir, msg):
         print listname, msg, 'not found as', dir
 
 REMOVABLES = [('lists/%s',     'list info'),
-              ('templates/%s', 'web pages')
               ]
 
 if removeArchives:
