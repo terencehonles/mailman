@@ -22,13 +22,10 @@ import sys
 import string
 import time
 
-# get our hacked copy of Python 1.5.2's rfc822.py
-import rfc822
-try:
-    rfc822.Message.getallrecipients
-except AttributeError:
-    # the standard module doesn't have our enhancement
-    from Mailman.pythonlib import rfc822
+# Python 1.5's version of rfc822.py is buggy and lacks features we
+# depend on -- so we always use the up-to-date version distributed
+# with Mailman.
+from Mailman.pythonlib import rfc822
 
 
 # Utility functions 2 of these classes use:
@@ -153,47 +150,11 @@ class IncomingMessage(rfc822.Message):
 	return real_name
 
     def SetHeader(self, name, value, crush_duplicates=1):
-	# Well, we crush dups in the dict no matter what...
-        # XXX Note that as of Python 1.5.2, rfc822 message objects support
-        #     a .__setattr__() that does what we want, so eventually we'll
-        #     want to switch to that instead of mucking w/the internal rep.
-        newheader = not self.dict.has_key(string.lower(name))
-	self.dict[string.lower(name)] = value
-	if value[-1] <> '\n':
-	    value = value + '\n'
-
-	if not crush_duplicates or newheader:
-	    self.headers.append('%s: %s' % (name, value))
-	    return
+        if crush_duplicates:
+            self[name] = value
         else:
-            for i in range(len(self.headers)):
-                if (string.lower(self.headers[i][:len(name)+1]) == 
-                    string.lower(name) + ':'):
-                    self.headers[i] = '%s: %s' % (name, value)
-		
-    # XXX Eventually (1.5.1?) Python rfc822.Message() will have its own
-    # __delitem__. 
-    def __delitem__(self, name):
-        """Delete all occurrences of a specific header, if it is present."""
-        name = string.lower(name)
-        if not self.dict.has_key(name):
-            return
-        del self.dict[name]
-        name = name + ':'
-        n = len(name)
-        list = []
-        hit = 0
-        for i in range(len(self.headers)):
-            line = self.headers[i]
-            if string.lower(line[:n]) == name:
-                hit = 1
-            elif line[:1] not in string.whitespace:
-                hit = 0
-            if hit:
-                list.append(i)
-        list.reverse()
-        for i in list:
-            del self.headers[i]
+            # Only bother with the dict
+            self.dict[string.lower(name)] = value
 
 # This is a simplistic class.  It could do multi-line headers etc...
 # But it doesn't because I don't need that for this app.
