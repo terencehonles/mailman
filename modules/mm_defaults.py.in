@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = VERSION + "$Revision: 374 $"
+__version__ = "$Revision: 393 $"
 
 		   # Many site-specific settings #
 
