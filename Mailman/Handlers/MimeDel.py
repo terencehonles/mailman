@@ -72,7 +72,7 @@ def process(mlist, msg, msgdata):
     # and then copy over its Content-Type: and Content-Transfer-Encoding:
     # headers (any others?).
     collapse_multipart_alternatives(msg)
-    if mtype == 'multipart/alternative':
+    if ctype == 'multipart/alternative':
         firstalt = msg.get_payload(0)
         reset_payload(msg, firstalt)
     # If we removed some parts, make note of this
