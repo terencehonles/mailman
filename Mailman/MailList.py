@@ -243,13 +243,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return config_info
 
     def Create(self, name, admin, crypted_password):
-	self._internal_name = name
-	self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
-	if os.path.isdir(self._full_path):
-	    if os.path.exists(os.path.join(self._full_path, 'config.db')):
-		raise ValueError, 'List %s already exists.' % name
+	if name in list_names():
+	    raise ValueError, 'List %s already exists.' % name
 	else:
 	    mm_utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
+	self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
+	self._internal_name = name
 	self.Lock()
 	self.InitVars(name, admin, crypted_password)
 	self._ready = 1
