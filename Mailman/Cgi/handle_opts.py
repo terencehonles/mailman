@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 
 
@@ -66,7 +67,7 @@ def main():
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
         doc.AddItem(Header(2, _("Error")))
-        doc.AddItem(Bold(_('No such list <em>%s</em>') % listname))
+        doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
         print doc.Format(bgcolor="#ffffff")
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
@@ -90,7 +91,8 @@ def process_form(mlist, user, doc):
     if not Utils.FindMatchingAddresses(user, mlist.members,
                                        mlist.digest_members):
         PrintResults(mlist, operation, doc,
-                     _("%s not a member!<p>") % user, pluser)
+                     _("%(user)s not a member!<p>"),
+                     pluser)
 
     if form.has_key("unsub"):
         operation = _("Unsubscribe")
@@ -131,9 +133,9 @@ def process_form(mlist, user, doc):
                            "has been emailed to you.") + "<p>", user, pluser)
         except Errors.MMBadUserError:
             PrintResults(mlist, operation, doc,
-                         _("The password entry for `%s' has not "
+                         _("The password entry for `%(user)s' has not "
                          'been found.  The list administrator is being '
-                         'notified.<p>') % user, user, pluser)
+                         'notified.<p>'), user, pluser)
 
     elif form.has_key("othersubs"):
         if not form.has_key('othersubspw'):
@@ -159,8 +161,11 @@ def process_form(mlist, user, doc):
                     _("You have no password. Contact the list administrator."),
                     user, pluser)
 
-            doc.AddItem(Header(2, _("List Subscriptions for %s on %s")
-                               % (user, mlist.host_name)))
+            hostname = mlist.host_name
+            doc.AddItem(
+                Header(2,
+                       _("List Subscriptions for %(user)s on %(hostname)s")
+                       ))
             doc.AddItem(_("Click a link to visit your options page for"
                           " that mailing list:"))
 
@@ -242,6 +247,7 @@ def process_form(mlist, user, doc):
             PrintResults(mlist, operation, doc,
                          _("You must supply a password to change options."),
                          user, pluser)
+        origsender = mail.get_sender()
         try:
             mlist.ConfirmUserPassword(user, form['digpw'].value)
         except Errors.MMAlreadyDigested:
@@ -253,18 +259,19 @@ def process_form(mlist, user, doc):
                          _("List only accepts digest members."), user, pluser)
         except Errors.MMCantDigestError:
             PrintResults(mlist, operation, doc,
-                         _("List doesn't accept digest members."), user, pluser)
+                         _("List doesn't accept digest members."),
+                         user, pluser)
         except Errors.MMNotAMemberError:
             PrintResults(mlist, operation, doc,
-                         _("%s isn't subscribed to this list.")
-                         % mail.GetSender(), user, pluser)
+                         _("%(origsender)s isn't subscribed to this list."),
+                         user, pluser)
         except Errors.MMListNotReadyError:
             PrintResults(mlist, operation, doc, _("List is not functional."),
                          user, pluser)
         except Errors.MMNoSuchUserError:
             PrintResults(mlist, operation, doc,
-                         _("%s is not subscribed to this list.")
-                         % mail.GetSender(), user, pluser)
+                         _("%(origsender)s is not subscribed to this list."),
+                         user, pluser)
         except Errors.MMBadPasswordError:
             PrintResults(mlist, operation, doc,
                          _("You gave the wrong password."), user, pluser)
