@@ -140,7 +140,7 @@ class ListAdmin:
         omask = os.umask(002)
         try:
             fp = open(os.path.join(mm_cfg.DATA_DIR, filename), 'w')
-            fp.write(str(msg))
+            fp.write(repr(msg))
             fp.close()
         finally:
             os.umask(omask)
