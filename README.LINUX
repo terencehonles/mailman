@@ -11,8 +11,8 @@ getting Mailman to run on Linux:
 If you are running secure_linux, you probably have restricted
 hardlinks turned on.  Gergely Madarasz says that this not only
 restricts hardlinks in /tmp, but also in any non +t directory.  This
-can cause "Operation not permitted" errors in aside_new() -- you will
-see a traceback.  You must turn restricted hardlinks off.
+can cause "Operation not permitted" errors in MailList.Save() -- you
+will see a traceback.  You must turn restricted hardlinks off.
 
 
 
