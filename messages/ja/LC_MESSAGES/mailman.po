@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Mon Oct  7 14:59:52 2002\n"
+"POT-Creation-Date: Wed Oct  9 00:23:46 2002\n"
 "PO-Revision-Date: 2002-10-02 12:00+0900\n"
 "Last-Translator: Tokio Kikuchi <tkikuchi@is.kochi-u.ac.jp>\n"
 "Language-Team: Japanese <mmjp-users@mm.tkikuchi.net>\n"
@@ -13,6 +13,146 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.3\n"
+
+#: Mailman/Archiver/HyperArch.py:98
+msgid " %(size)i bytes "
+msgstr " %(size)i バイト "
+
+#: Mailman/Archiver/HyperArch.py:196
+msgid " at "
+msgstr " ＠ "
+
+#: Mailman/Archiver/HyperArch.py:327
+msgid "Previous message:"
+msgstr "前の記事"
+
+#: Mailman/Archiver/HyperArch.py:359
+msgid "Next message:"
+msgstr "次の記事"
+
+#: Mailman/Archiver/HyperArch.py:546 Mailman/Archiver/HyperArch.py:580
+msgid "thread"
+msgstr "スレッド"
+
+#: Mailman/Archiver/HyperArch.py:547 Mailman/Archiver/HyperArch.py:581
+msgid "subject"
+msgstr "件名"
+
+#: Mailman/Archiver/HyperArch.py:548 Mailman/Archiver/HyperArch.py:582
+msgid "author"
+msgstr "発信者"
+
+#: Mailman/Archiver/HyperArch.py:549 Mailman/Archiver/HyperArch.py:583
+msgid "date"
+msgstr "日付"
+
+#: Mailman/Archiver/HyperArch.py:619
+msgid "<P>Currently, there are no archives. </P>"
+msgstr "<p>今のところ保存記事はありません."
+
+#: Mailman/Archiver/HyperArch.py:658
+msgid "Gzip'd Text%(sz)s"
+msgstr "Gzip圧縮テキスト %(sz)s"
+
+#: Mailman/Archiver/HyperArch.py:663
+msgid "Text%(sz)s"
+msgstr "テキスト %(sz)s"
+
+#: Mailman/Archiver/HyperArch.py:755
+msgid "figuring article archives\n"
+msgstr "保存書庫作成準備中\n"
+
+#: Mailman/Archiver/HyperArch.py:765
+msgid "April"
+msgstr "4月"
+
+#: Mailman/Archiver/HyperArch.py:765
+msgid "February"
+msgstr "2月"
+
+#: Mailman/Archiver/HyperArch.py:765
+msgid "January"
+msgstr "1月"
+
+#: Mailman/Archiver/HyperArch.py:765
+msgid "March"
+msgstr "3月"
+
+#: Mailman/Archiver/HyperArch.py:766
+msgid "August"
+msgstr "8月"
+
+#: Mailman/Archiver/HyperArch.py:766
+msgid "July"
+msgstr "7月"
+
+#: Mailman/Archiver/HyperArch.py:766
+msgid "June"
+msgstr "6月"
+
+#: Mailman/Archiver/HyperArch.py:766 Mailman/i18n.py:91
+msgid "May"
+msgstr "5月"
+
+#: Mailman/Archiver/HyperArch.py:767
+msgid "December"
+msgstr "12月"
+
+#: Mailman/Archiver/HyperArch.py:767
+msgid "November"
+msgstr "11月"
+
+#: Mailman/Archiver/HyperArch.py:767
+msgid "October"
+msgstr "10月"
+
+#: Mailman/Archiver/HyperArch.py:767
+msgid "September"
+msgstr "9月"
+
+#: Mailman/Archiver/HyperArch.py:775
+msgid "First"
+msgstr "第1"
+
+#: Mailman/Archiver/HyperArch.py:775
+msgid "Fourth"
+msgstr "第4"
+
+#: Mailman/Archiver/HyperArch.py:775
+msgid "Second"
+msgstr "第2"
+
+#: Mailman/Archiver/HyperArch.py:775
+msgid "Third"
+msgstr "第3"
+
+#: Mailman/Archiver/HyperArch.py:777
+msgid "%(ord)s quarter %(year)i"
+msgstr "%(year)i年%(ord)s四半期"
+
+#: Mailman/Archiver/HyperArch.py:784
+msgid "%(month)s %(year)i"
+msgstr "%(year)i年%(month)s"
+
+#: Mailman/Archiver/HyperArch.py:789
+msgid "The Week Of Monday %(day)i %(month)s %(year)i"
+msgstr "%(year)i年%(month)s%(day)i日(月曜日)の週"
+
+#: Mailman/Archiver/HyperArch.py:793
+msgid "%(day)i %(month)s %(year)i"
+msgstr "%(year)i年%(month)s%(day)i日"
+
+#: Mailman/Archiver/HyperArch.py:890
+msgid "Computing threaded index\n"
+msgstr "スレッド目次作成中\n"
+
+#: Mailman/Archiver/HyperArch.py:1153
+msgid "Updating HTML for article "
+msgstr "記事のHTMLを更新中"
+
+#: Mailman/Archiver/HyperArch.py:1159
+msgid "article file %s is missing!"
+msgstr "記事ファイル %s が行方不明!"
 
 #: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
 msgid "No subject"
@@ -34,7 +174,7 @@ msgstr "保存書庫の情報を書き込み中: "
 msgid "Updating index files for archive [%(archive)s]"
 msgstr "保存書庫 [%(archive)s] の目次ファイルを更新しています"
 
-#: Mailman/Archiver/pipermail.py:452
+#: Mailman/Archiver/pipermail.py:451
 msgid "  Thread"
 msgstr "  スレッド"
 
@@ -71,10 +211,10 @@ msgstr "配送エラ−処理通知"
 msgid " The last bounce received from you was dated %(date)s"
 msgstr "最後のエラーメール受信日付は %(date)s です"
 
-#: Mailman/Bouncer.py:264 Mailman/Handlers/Acknowledge.py:44
-#: Mailman/Handlers/CookHeaders.py:192 Mailman/Handlers/Hold.py:207
-#: Mailman/Handlers/Hold.py:242 Mailman/Handlers/ToDigest.py:209
-#: Mailman/ListAdmin.py:235
+#: Mailman/Bouncer.py:264 Mailman/Deliverer.py:130
+#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:192
+#: Mailman/Handlers/Hold.py:207 Mailman/Handlers/Hold.py:242
+#: Mailman/Handlers/ToDigest.py:211 Mailman/ListAdmin.py:235
 msgid "(no subject)"
 msgstr "(無題)"
 
@@ -621,8 +761,8 @@ msgstr "新入会員に歓迎メールを出しますか?"
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:108 Mailman/Gui/Bounce.py:134
-#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:65
-#: Mailman/Gui/ContentFilter.py:96 Mailman/Gui/Digest.py:46
+#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:69
+#: Mailman/Gui/ContentFilter.py:102 Mailman/Gui/Digest.py:46
 #: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
 #: Mailman/Gui/General.py:148 Mailman/Gui/General.py:154
 #: Mailman/Gui/General.py:232 Mailman/Gui/General.py:259
@@ -647,7 +787,7 @@ msgstr "いいえ"
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:108
 #: Mailman/Gui/Bounce.py:134 Mailman/Gui/Bounce.py:143
-#: Mailman/Gui/ContentFilter.py:65 Mailman/Gui/ContentFilter.py:96
+#: Mailman/Gui/ContentFilter.py:69 Mailman/Gui/ContentFilter.py:102
 #: Mailman/Gui/Digest.py:46 Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84
 #: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:148
 #: Mailman/Gui/General.py:154 Mailman/Gui/General.py:232
@@ -901,13 +1041,15 @@ msgstr "承認"
 
 #: Mailman/Cgi/admindb.py:284 Mailman/Cgi/admindb.py:332
 #: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
-#: Mailman/Gui/Privacy.py:207 Mailman/Gui/Privacy.py:281
+#: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
+#: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "拒否"
 
 #: Mailman/Cgi/admindb.py:285 Mailman/Cgi/admindb.py:333
 #: Mailman/Cgi/admindb.py:369 Mailman/Cgi/admindb.py:576
-#: Mailman/Gui/Privacy.py:207 Mailman/Gui/Privacy.py:281
+#: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
+#: Mailman/Gui/Privacy.py:281
 msgid "Discard"
 msgstr "破棄"
 
@@ -1050,7 +1192,7 @@ msgstr "メッセージヘッダ:"
 msgid "Message Excerpt:"
 msgstr "メッセージの抜書き:"
 
-#: Mailman/Cgi/admindb.py:640
+#: Mailman/Cgi/admindb.py:640 Mailman/Deliverer.py:128
 msgid "No reason given"
 msgstr "理由は示されていません"
 
@@ -3179,80 +3321,80 @@ msgstr "普通配送会員:"
 msgid "Digest members:"
 msgstr "まとめ読み会員:"
 
-#: Mailman/Defaults.py:1190
+#: Mailman/Defaults.py:1198
 msgid "Traditional Chinese"
 msgstr "中国語(伝統的)"
 
-#: Mailman/Defaults.py:1191
+#: Mailman/Defaults.py:1199
 msgid "Czech"
 msgstr "チェコ語"
 
-#: Mailman/Defaults.py:1192
+#: Mailman/Defaults.py:1200
 msgid "German"
 msgstr "ドイツ語"
 
 # mm_cfg.py
-#: Mailman/Defaults.py:1193
+#: Mailman/Defaults.py:1201
 msgid "English (USA)"
 msgstr "英語 (米国)"
 
-#: Mailman/Defaults.py:1194
+#: Mailman/Defaults.py:1202
 msgid "Spanish (Spain)"
 msgstr "スペイン語 (スペイン)"
 
-#: Mailman/Defaults.py:1195
+#: Mailman/Defaults.py:1203
 msgid "Estonian"
 msgstr "エストニア語"
 
-#: Mailman/Defaults.py:1196
+#: Mailman/Defaults.py:1204
 msgid "Finnish"
 msgstr "フィンランド語"
 
-#: Mailman/Defaults.py:1197
+#: Mailman/Defaults.py:1205
 msgid "French"
 msgstr "フランス語"
 
-#: Mailman/Defaults.py:1198
+#: Mailman/Defaults.py:1206
 msgid "Simplified Chinese"
 msgstr "中国語(簡体字)"
 
-#: Mailman/Defaults.py:1199
+#: Mailman/Defaults.py:1207
 msgid "Hungarian"
 msgstr "ハンガリー語"
 
-#: Mailman/Defaults.py:1200
+#: Mailman/Defaults.py:1208
 msgid "Italian"
 msgstr "イタリア語"
 
-#: Mailman/Defaults.py:1201
+#: Mailman/Defaults.py:1209
 msgid "Japanese"
 msgstr "日本語"
 
-#: Mailman/Defaults.py:1202
+#: Mailman/Defaults.py:1210
 msgid "Korean"
 msgstr "韓国語"
 
-#: Mailman/Defaults.py:1203
+#: Mailman/Defaults.py:1211
 msgid "Dutch"
 msgstr "オランダ語"
 
-#: Mailman/Defaults.py:1204
+#: Mailman/Defaults.py:1212
 msgid "Norwegian"
 msgstr "ノルウェー語"
 
-#: Mailman/Defaults.py:1205
+#: Mailman/Defaults.py:1213
 msgid "Portuguese (Brazil)"
 msgstr "ポルトガル語(ブラジル)"
 
-#: Mailman/Defaults.py:1206
+#: Mailman/Defaults.py:1214
 msgid "Russian"
 msgstr "ロシア語"
 
-#: Mailman/Defaults.py:1207
+#: Mailman/Defaults.py:1215
 msgid "Swedish"
 msgstr "スウェーデン語"
 
-#: Mailman/Deliverer.py:42
+#: Mailman/Deliverer.py:44
 msgid ""
 "Note: Since this is a list of mailing lists, administrative\n"
 "notices like the password reminder will be sent to\n"
@@ -3261,19 +3403,19 @@ msgstr ""
 "注意: これはメーリングリストのリストです. パスワード通知などの\n"
 "管理メールは会員の管理アドレス %(addr)s へ送られます."
 
-#: Mailman/Deliverer.py:61
+#: Mailman/Deliverer.py:63
 msgid " (Digest mode)"
 msgstr " (まとめ読みモード)"
 
-#: Mailman/Deliverer.py:67
+#: Mailman/Deliverer.py:69
 msgid "Welcome to the \"%(realname)s\" mailing list%(digmode)s"
 msgstr "\"%(realname)s\" メーリングリスト %(digmode)s へようこそ"
 
-#: Mailman/Deliverer.py:76
+#: Mailman/Deliverer.py:78
 msgid "You have been unsubscribed from the %(realname)s mailing list"
 msgstr "%(realname)s からの退会手続きが完了しました."
 
-#: Mailman/Deliverer.py:103
+#: Mailman/Deliverer.py:105
 msgid "%(listfullname)s mailing list reminder"
 msgstr "%(listfullname)s メーリングリスト通知"
 
@@ -3698,7 +3840,15 @@ msgstr ""
 msgid "Content&nbsp;filtering"
 msgstr "内容フィルター"
 
-#: Mailman/Gui/ContentFilter.py:38
+#: Mailman/Gui/ContentFilter.py:37
+msgid "Forward to List Owner"
+msgstr ""
+
+#: Mailman/Gui/ContentFilter.py:39
+msgid "Preserve"
+msgstr ""
+
+#: Mailman/Gui/ContentFilter.py:42
 msgid ""
 "Policies concerning the content of list traffic.\n"
 "\n"
@@ -3757,19 +3907,20 @@ msgstr ""
 "が設定されていて, サイト全体で変換ができるようになっていれば,\n"
 "残っている<tt>text/html</tt>の部分は<tt>text/plain</tt>に変換されます."
 
-#: Mailman/Gui/ContentFilter.py:66
+#: Mailman/Gui/ContentFilter.py:70
 msgid ""
 "Should Mailman filter the content of list traffic according\n"
 "             to the settings below?"
 msgstr "以下の設定にしたがってメールの内容によるフィルターをおこないますか?"
 
-#: Mailman/Gui/ContentFilter.py:70
+#: Mailman/Gui/ContentFilter.py:74
 msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
 msgstr "以下の MIME タイプに合うメールの添付ファイルを削除する"
 
-#: Mailman/Gui/ContentFilter.py:73
+#: Mailman/Gui/ContentFilter.py:77
+#, fuzzy
 msgid ""
 "Use this option to remove each message attachment that\n"
 "             matches one of these content types.  Each line should contain "
@@ -3778,7 +3929,10 @@ msgid ""
 "             e.g. <tt>image/gif</tt>.  Leave off the subtype to remove all\n"
 "             parts with a matching major content type, e.g. <tt>image</tt>.\n"
 "\n"
-"             <p>Blank lines are ignored."
+"             <p>Blank lines are ignored.\n"
+"\n"
+"             <p>See also <a href=\"?VARHELP=contentfilter/pass_mime_types\"\n"
+"             >pass_mime_types</a> for a content type whitelist."
 msgstr ""
 "このオプションを使って, これらのMIMEタイプに合う添付ファイルを削除\n"
 "します. 各行には MIME の<tt>type/subtype</tt> (例: <tt>image/gif</tt>)\n"
@@ -3787,7 +3941,7 @@ msgstr ""
 "\n"
 "<p>空白行は無視されます."
 
-#: Mailman/Gui/ContentFilter.py:82
+#: Mailman/Gui/ContentFilter.py:89
 msgid ""
 "Remove message attachments that don't have a matching\n"
 "             content type.  Leave this field blank to skip this filter\n"
@@ -3796,7 +3950,7 @@ msgstr ""
 "この内容(Content-Type)に合わない添付ファイルは取り除きます.\n"
 "このチェックを行わないようにするには, ここを空白にしておいてください."
 
-#: Mailman/Gui/ContentFilter.py:86
+#: Mailman/Gui/ContentFilter.py:93
 msgid ""
 "Use this option to remove each message attachment that does\n"
 "             not have a matching content type.  Requirements and formats "
@@ -3816,7 +3970,7 @@ msgstr ""
 "<p><b>注意:</b>もしこのリストに何かを入れて, <tt>multipart</tt>を入れるのを\n"
 "忘れると, 添付のあるメールはこのフィルターで全部拒否されてしまいます."
 
-#: Mailman/Gui/ContentFilter.py:97
+#: Mailman/Gui/ContentFilter.py:103
 msgid ""
 "Should Mailman convert <tt>text/html</tt> parts to plain\n"
 "             text?  This conversion happens after MIME attachments have "
@@ -3826,7 +3980,45 @@ msgstr ""
 "<tt>text/html</tt>の部分を平文(テキスト形式)に変換しますか?\n"
 "この変換は MIMEの添付ファイルが取り除かれた後に実行されます."
 
-#: Mailman/Gui/ContentFilter.py:107
+#: Mailman/Gui/ContentFilter.py:109
+#, fuzzy
+msgid ""
+"Action to take when a message matches the content filtering\n"
+"             rules."
+msgstr "制限付き会員から投稿があったときの動作."
+
+#: Mailman/Gui/ContentFilter.py:112
+msgid ""
+"One of these actions is take when the message matches one of\n"
+"             the content filtering rules, meaning, the top-level\n"
+"             content type matches one of the <a\n"
+"             href=\"?VARHELP=contentfilter/filter_mime_types\"\n"
+"             >filter_mime_types</a>, or the top-level content type does\n"
+"             <strong>not</strong> match one of the\n"
+"             <a href=\"?VARHELP=contentfilter/pass_mime_types\"\n"
+"             >pass_mime_types</a>, or if after filtering the subparts of "
+"the\n"
+"             message, the message ends up empty.\n"
+"\n"
+"             <p>Note this action is not taken if after filtering the "
+"message\n"
+"             still contains content.  In that case the message is always\n"
+"             forwarded on to the list membership.\n"
+"\n"
+"             <p>When messages are discarded, a log entry is written\n"
+"             containing the Message-ID of the discarded message.  When\n"
+"             messages are rejected or forwarded to the list owner, a reason\n"
+"             for the rejection is included in the bounce message to the\n"
+"             original author.  When messages are preserved, they are saved "
+"in\n"
+"             a special queue directory on disk for the site administrator "
+"to\n"
+"             view (and possibly rescue) but otherwise discarded.  This last\n"
+"             option is only available if enabled by the site\n"
+"             administrator."
+msgstr ""
+
+#: Mailman/Gui/ContentFilter.py:153
 msgid "Bad MIME type ignored: %(spectype)s"
 msgstr "MIMEタイプが不正です. 無視します: %(spectype)s"
 
@@ -6361,6 +6553,32 @@ msgstr ""
 "承認されます. Approved: ヘッダは返信メールの\n"
 "本文の最初に入っていてもかまいません."
 
+#: Mailman/Handlers/MimeDel.py:56
+msgid "The message's content type was explicitly disallowed"
+msgstr ""
+
+#: Mailman/Handlers/MimeDel.py:61
+msgid "The message's content type was not explicitly allowed"
+msgstr ""
+
+#: Mailman/Handlers/MimeDel.py:73
+msgid "After content filtering, the message was empty"
+msgstr ""
+
+#: Mailman/Handlers/MimeDel.py:208
+msgid ""
+"The attached message matched the %(listname)s mailing list's content "
+"filtering\n"
+"rules and was prevented from being forwarded on to the list membership.  "
+"You\n"
+"are receiving the only remaining copy of the discarded message.\n"
+"\n"
+msgstr ""
+
+#: Mailman/Handlers/MimeDel.py:214
+msgid "Content filtered message notification"
+msgstr ""
+
 #: Mailman/Handlers/Moderate.py:35
 msgid "Posts by member are currently quarantined for moderation"
 msgstr "会員からの投稿は司会者の処理を受けるために隔離されています"
@@ -6457,31 +6675,31 @@ msgstr ""
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr "%(realname)s まとめ読み, %(volume)d 巻, %(issue)d 号"
 
-#: Mailman/Handlers/ToDigest.py:179
+#: Mailman/Handlers/ToDigest.py:181
 msgid "digest header"
 msgstr "まとめ読みヘッダ"
 
-#: Mailman/Handlers/ToDigest.py:182
+#: Mailman/Handlers/ToDigest.py:184
 msgid "Digest Header"
 msgstr "まとめ読み前書き"
 
-#: Mailman/Handlers/ToDigest.py:195
+#: Mailman/Handlers/ToDigest.py:197
 msgid "Today's Topics:\n"
 msgstr "本日の話題:\n"
 
-#: Mailman/Handlers/ToDigest.py:265
+#: Mailman/Handlers/ToDigest.py:267
 msgid "Today's Topics (%(msgcount)d messages)"
 msgstr "本日の話題 (%(msgcount)d 通)"
 
-#: Mailman/Handlers/ToDigest.py:290
+#: Mailman/Handlers/ToDigest.py:292
 msgid "digest footer"
 msgstr "まとめ読みフッタ"
 
-#: Mailman/Handlers/ToDigest.py:293
+#: Mailman/Handlers/ToDigest.py:295
 msgid "Digest Footer"
 msgstr "まとめ読み後書き"
 
-#: Mailman/Handlers/ToDigest.py:307
+#: Mailman/Handlers/ToDigest.py:309
 msgid "End of "
 msgstr "以上: "
 
@@ -6615,39 +6833,39 @@ msgstr "%(dbfile)s の所有者をチェック中"
 msgid "%(dbfile)s owned by %(owner)s (must be owned by %(user)s"
 msgstr "%(dbfile)s の所有者は %(owner)s です. (%(user)s でなければいけません)"
 
-#: Mailman/MailList.py:690
+#: Mailman/MailList.py:691
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr "あなたは%(listname)s メーリングリストへ入会を招待されています."
 
-#: Mailman/MailList.py:794 Mailman/MailList.py:1156
+#: Mailman/MailList.py:795 Mailman/MailList.py:1157
 msgid " from %(remote)s"
 msgstr " %(remote)s から"
 
-#: Mailman/MailList.py:831
+#: Mailman/MailList.py:832
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "%(realname)s への入会には管理者の承認が必要です"
 
-#: Mailman/MailList.py:890 bin/add_members:277
+#: Mailman/MailList.py:891 bin/add_members:277
 msgid "%(realname)s subscription notification"
 msgstr "%(realname)s 入会通知"
 
-#: Mailman/MailList.py:908
+#: Mailman/MailList.py:909
 msgid "unsubscriptions require moderator approval"
 msgstr "退会には管理者の承認が必要です"
 
-#: Mailman/MailList.py:929
+#: Mailman/MailList.py:930
 msgid "%(realname)s unsubscribe notification"
 msgstr "%(realname)s 退会通知"
 
-#: Mailman/MailList.py:1076
+#: Mailman/MailList.py:1077
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr "%(name)s への入会には管理者の承認が必要です"
 
-#: Mailman/MailList.py:1325
+#: Mailman/MailList.py:1326
 msgid "Last autoresponse notification for today"
 msgstr "本日の最新自動応答"
 
-#: Mailman/Queue/BounceRunner.py:175
+#: Mailman/Queue/BounceRunner.py:176
 msgid ""
 "The attached message was received as a bounce, but either the bounce format\n"
 "was not recognized, or no member addresses could be extracted from it.  "
@@ -6658,7 +6876,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: Mailman/Queue/BounceRunner.py:185
+#: Mailman/Queue/BounceRunner.py:183
 #, fuzzy
 msgid "Uncaught bounce notification"
 msgstr "配送エラ−処理通知"
@@ -6719,6 +6937,82 @@ msgstr "Python で元気"
 #: Mailman/htmlformat.py:629
 msgid "Gnu's Not Unix"
 msgstr "ヌーは Unix やあらへん"
+
+#: Mailman/i18n.py:86
+msgid "Mon"
+msgstr "月"
+
+#: Mailman/i18n.py:86
+msgid "Thu"
+msgstr "木"
+
+#: Mailman/i18n.py:86
+msgid "Tue"
+msgstr "火"
+
+#: Mailman/i18n.py:86
+msgid "Wed"
+msgstr "水"
+
+#: Mailman/i18n.py:87
+msgid "Fri"
+msgstr "金"
+
+#: Mailman/i18n.py:87
+msgid "Sat"
+msgstr "土"
+
+#: Mailman/i18n.py:87
+msgid "Sun"
+msgstr "日"
+
+#: Mailman/i18n.py:91
+msgid "Apr"
+msgstr "4月"
+
+#: Mailman/i18n.py:91
+msgid "Feb"
+msgstr "2月"
+
+#: Mailman/i18n.py:91
+msgid "Jan"
+msgstr "1月"
+
+#: Mailman/i18n.py:91
+msgid "Jun"
+msgstr "6月"
+
+#: Mailman/i18n.py:91
+msgid "Mar"
+msgstr "3月"
+
+#: Mailman/i18n.py:92
+msgid "Aug"
+msgstr "8月"
+
+#: Mailman/i18n.py:92
+msgid "Dec"
+msgstr "12月"
+
+#: Mailman/i18n.py:92
+msgid "Jul"
+msgstr "7月"
+
+#: Mailman/i18n.py:92
+msgid "Nov"
+msgstr "11月"
+
+#: Mailman/i18n.py:92
+msgid "Oct"
+msgstr "10月"
+
+#: Mailman/i18n.py:92
+msgid "Sep"
+msgstr "9月"
+
+#: Mailman/i18n.py:122
+msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
+msgstr "%(year)04i年 %(mon)s %(day)2i日 (%(wday)s) %(hh)02i:%(mm)02i:%(ss)02i"
 
 #: bin/add_members:26
 msgid ""
@@ -6896,7 +7190,7 @@ msgid ""
 "        the start and end article numbers.\n"
 "\n"
 "Where <mbox> is the path to a list's complete mbox archive.  Usually this "
-"will \n"
+"will\n"
 "be some path in the archives/private directory.  For example:\n"
 "\n"
 "%% bin/arch mylist archives/private/mylist.mbox/mylist.mbox\n"
@@ -6904,17 +7198,17 @@ msgid ""
 "<mbox> is optional.  If it is missing, it is calculated.\n"
 msgstr ""
 
-#: bin/arch:102
+#: bin/arch:105
 msgid "listname is required"
 msgstr "リスト名が必要です."
 
-#: bin/arch:120 bin/change_pw:102 bin/config_list:233
+#: bin/arch:123 bin/change_pw:102 bin/config_list:233
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
 msgstr "%(listname)s というリストはありません: %(e)s"
 
-#: bin/arch:143
+#: bin/arch:146
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr "mboxファイル %(mbox)s を開けません: %(msg)s"
 
@@ -8263,7 +8557,7 @@ msgid ""
 "        (or if no -d option given) they are added as regular members.\n"
 "\n"
 "    --notifyadmin[=<yes|no>]\n"
-"    --a[=<yes|no>]\n"
+"    -a[=<yes|no>]\n"
 "        Specifies whether the admin should be notified for each "
 "subscription\n"
 "        or unsubscription.  If you're adding a lot of addresses, you\n"
@@ -9000,169 +9294,6 @@ msgid ""
 "all\n"
 "        lists are sent out.\n"
 msgstr ""
-
-#~ msgid " %(size)i bytes "
-#~ msgstr " %(size)i バイト "
-
-#~ msgid "Mon"
-#~ msgstr "月"
-
-#~ msgid "Thu"
-#~ msgstr "木"
-
-#~ msgid "Tue"
-#~ msgstr "火"
-
-#~ msgid "Wed"
-#~ msgstr "水"
-
-#~ msgid "Fri"
-#~ msgstr "金"
-
-#~ msgid "Sat"
-#~ msgstr "土"
-
-#~ msgid "Sun"
-#~ msgstr "日"
-
-#~ msgid "Apr"
-#~ msgstr "4月"
-
-#~ msgid "Feb"
-#~ msgstr "2月"
-
-#~ msgid "Jan"
-#~ msgstr "1月"
-
-#~ msgid "Jun"
-#~ msgstr "6月"
-
-#~ msgid "Mar"
-#~ msgstr "3月"
-
-#~ msgid "May"
-#~ msgstr "5月"
-
-#~ msgid "Aug"
-#~ msgstr "8月"
-
-#~ msgid "Dec"
-#~ msgstr "12月"
-
-#~ msgid "Jul"
-#~ msgstr "7月"
-
-#~ msgid "Nov"
-#~ msgstr "11月"
-
-#~ msgid "Oct"
-#~ msgstr "10月"
-
-#~ msgid "Sep"
-#~ msgstr "9月"
-
-#~ msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
-#~ msgstr ""
-#~ "%(year)04i年 %(mon)s %(day)2i日 (%(wday)s) %(hh)02i:%(mm)02i:%(ss)02i"
-
-#~ msgid " at "
-#~ msgstr " ＠ "
-
-#~ msgid "Previous message:"
-#~ msgstr "前の記事"
-
-#~ msgid "Next message:"
-#~ msgstr "次の記事"
-
-#~ msgid "thread"
-#~ msgstr "スレッド"
-
-#~ msgid "subject"
-#~ msgstr "件名"
-
-#~ msgid "author"
-#~ msgstr "発信者"
-
-#~ msgid "date"
-#~ msgstr "日付"
-
-#~ msgid "<P>Currently, there are no archives. </P>"
-#~ msgstr "<p>今のところ保存記事はありません."
-
-#~ msgid "Gzip'd Text%(sz)s"
-#~ msgstr "Gzip圧縮テキスト %(sz)s"
-
-#~ msgid "Text%(sz)s"
-#~ msgstr "テキスト %(sz)s"
-
-#~ msgid "figuring article archives\n"
-#~ msgstr "保存書庫作成準備中\n"
-
-#~ msgid "April"
-#~ msgstr "4月"
-
-#~ msgid "February"
-#~ msgstr "2月"
-
-#~ msgid "January"
-#~ msgstr "1月"
-
-#~ msgid "March"
-#~ msgstr "3月"
-
-#~ msgid "August"
-#~ msgstr "8月"
-
-#~ msgid "July"
-#~ msgstr "7月"
-
-#~ msgid "June"
-#~ msgstr "6月"
-
-#~ msgid "December"
-#~ msgstr "12月"
-
-#~ msgid "November"
-#~ msgstr "11月"
-
-#~ msgid "October"
-#~ msgstr "10月"
-
-#~ msgid "September"
-#~ msgstr "9月"
-
-#~ msgid "First"
-#~ msgstr "第1"
-
-#~ msgid "Fourth"
-#~ msgstr "第4"
-
-#~ msgid "Second"
-#~ msgstr "第2"
-
-#~ msgid "Third"
-#~ msgstr "第3"
-
-#~ msgid "%(ord)s quarter %(year)i"
-#~ msgstr "%(year)i年%(ord)s四半期"
-
-#~ msgid "%(month)s %(year)i"
-#~ msgstr "%(year)i年%(month)s"
-
-#~ msgid "The Week Of Monday %(day)i %(month)s %(year)i"
-#~ msgstr "%(year)i年%(month)s%(day)i日(月曜日)の週"
-
-#~ msgid "%(day)i %(month)s %(year)i"
-#~ msgstr "%(year)i年%(month)s%(day)i日"
-
-#~ msgid "Computing threaded index\n"
-#~ msgstr "スレッド目次作成中\n"
-
-#~ msgid "Updating HTML for article "
-#~ msgstr "記事のHTMLを更新中"
-
-#~ msgid "article file %s is missing!"
-#~ msgstr "記事ファイル %s が行方不明!"
 
 #~ msgid "Chinese (China)"
 #~ msgstr "中国語 (中国)"
