@@ -283,6 +283,26 @@ NNTP_PASSWORD = None
 # Set this if you have an NNTP server you prefer gatewayed lists to use.
 DEFAULT_NNTP_HOST = ''
 
+# These variables controls how headers must be cleansed in order to be
+# accepted by your NNTP server.  Some servers like INN reject messages
+# containing prohibited headers, or duplicate headers.  The NNTP server may
+# reject the message for other reasons, but there's little that can be
+# programmatically done about that.  See Mailman/Queue/NewsRunner.py
+#
+# First, these headers (case ignored) are removed from the original message.
+NNTP_REMOVE_HEADERS = ['nntp-posting-host', 'nntp-posting-date', 'x-trace',
+                       'x-complaints-to', 'xref', 'date-received', 'posted',
+                       'posting-version', 'relay-version', 'received']
+
+# Next, these headers are left alone, unless there are duplicates in the
+# original message.  Any second and subsequent headers are rewritten to the
+# second named header (case preserved).
+NNTP_REWRITE_DUPLICATE_HEADERS = [
+    ('to', 'X-Original-To'),
+    ('cc', 'X-Original-Cc'),
+    ('content-transfer-encoding', 'X-Original-Content-Transfer-Encoding'),
+    ]
+
 # All `normal' messages which are delivered to the entire list membership go
 # through this pipeline of handler modules.  Lists themselves can override the
 # global pipeline by defining a `pipeline' attribute.
