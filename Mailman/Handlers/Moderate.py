@@ -40,8 +40,12 @@ def process(mlist, msg, msgdata):
     if msgdata.get('approved'):
         return
     # First of all, is the poster a member or not?
-    sender = msg.get_sender()
-    if mlist.isMember(sender):
+    for sender in msg.get_senders():
+        if mlist.isMember(sender):
+            break
+    else:
+        sender = None    
+    if sender:
         # If the member's moderation flag is on, then perform the moderation
         # action.
         if mlist.getMemberOption(sender, mm_cfg.Moderate):
@@ -71,6 +75,8 @@ def process(mlist, msg, msgdata):
         # this point?  No, because further pipeline handlers will need to do
         # their own thing.
         return
+    else:
+        sender = msg.get_sender()
     # From here on out, we're dealing with non-members.
     if matches_p(sender, mlist.accept_these_nonmembers):
         return
@@ -138,13 +144,8 @@ def do_discard(mlist, msg):
                                         _('Auto-discard notification'),
                                         lang=mlist.preferred_language)
         nmsg.set_type('multipart/mixed')
-        text = MIMEText(Utils.wrap(_("""\
-The attached message has been automatically discarded because the sender's
-address, %(sender)s, was on the discard_these_nonmembers list.  For the list
-of auto-discard addresses, see
-
-    %(varhelp)s
-""")))
+        text = MIMEText(Utils.wrap(_(
+            'The attached message has been automatically discarded.')))
         nmsg.attach(text)
         nmsg.attach(MIMEMessage(msg))
         nmsg.send(mlist)
