@@ -1,5 +1,8 @@
 #!/usr/local/bin/python 
 
+# NOTE: This is being deprecated since mailman has been shifted over to an
+#       external archiver (ie, andrew kuchling's latest version of pipermail.)
+#
 # This script gets called by cron at 12:00 am the first of each month
 # It bumps the volume number up by one on each list, and resets
 # The digest number.
