@@ -17,7 +17,7 @@
 
 """Process maillist user commands arriving via email."""
 
-__version__ = "$Revision: 621 $"
+__version__ = "$Revision: 632 $"
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
@@ -105,7 +105,9 @@ class MailCommandHandler:
 		#
 		conf_pat = r"%s -- confirmation of subscription -- request (\d\d\d\d\d\d)" % \
 			   self.real_name
-		match = re.search(conf_pat, mail.body)
+		match = re.search(conf_pat, subject)
+		if not match:
+		    match = re.search(conf_pat, mail.body)
 		if match:
 		    lines = ["confirm %s" % (match.group(1))]
 		else:
