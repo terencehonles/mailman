@@ -39,11 +39,7 @@ def loginpage(mlist, scriptname, msg='', frontpage=None):
         actionurl = Utils.GetRequestURI(url)
     if msg:
         msg = FontAttr(msg, color='#FF5060', size='+1').Format()
-    print '''Content-type: text/html
-    Cache-control: no-cache
-    Expires: 0
-
-    '''
+    print 'Content-type: text/html\n'
     print Utils.maketext(
         # Should really be admlogin.html :/
         'admlogin.txt',
