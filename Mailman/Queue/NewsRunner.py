@@ -23,8 +23,6 @@ import nntplib
 from mimelib.MsgReader import MsgReader
 from mimelib.address import getaddresses
 
-COMMASPACE = ', '
-
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Queue.Runner import Runner
