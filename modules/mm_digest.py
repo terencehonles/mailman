@@ -1,6 +1,6 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 455 $"
+__version__ = "$Revision: 458 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string
@@ -160,10 +160,18 @@ class Digester:
 		    len(mime_recipients), len(text_recipients))
 
     def SendDigest(self):
+	topics_file = open(os.path.join(self._full_path, 'next-digest-topics'),
+			   'r+')
+	topics_text = topics_file.read()
+        topics_number = string.count(topics_text, '\n')
+        topics_plural = ((topics_number != 1) and "s") or ""
+
 	msg = mm_message.OutgoingMessage()
 	msg.SetSender(self.GetAdminEmail())
-	msg.SetHeader('Subject', '%s digest, Volume %d #%d' % 
-		       (self.real_name, self.volume, self.next_digest_number))
+	msg.SetHeader('Subject', '%s digest, Vol %d #%d - %d msg%s' % 
+		       (self.real_name, self.volume,
+                        self.next_digest_number,
+                        topics_number, topics_plural))
 	msg.SetHeader('mime-version', '1.0')
 	msg.SetHeader('content-type', 'multipart/digest; boundary="%s"' % 
 		       self._mime_separator)
@@ -173,12 +181,6 @@ class Digester:
 	msg.SetBody(digest_file.read())
 
 	# Create the header and footer... a bit messy.
-	topics_file = open(os.path.join(self._full_path,
-					'next-digest-topics'), 
-			   'r+')
-	topics_text = topics_file.read()
-        topics_number = string.count(topics_text, '\n')
-
         subst = {}
         for k, v in self.__dict__.items():
             subst[k] = v
@@ -188,12 +190,16 @@ class Digester:
                       'got_request_email': self.GetRequestEmail(),
                       'got_date':         time.ctime(time.time()),
                       'got_list_email': self.GetListEmail(),
-                      'got_topics_text': topics_text})
+                      'got_owner_email': self.GetAdminEmail(),
+                      'got_topics_text': topics_text,
+                      'got_topics_number': topics_number,
+                      'topics_plural': topics_plural,
+                      })
 
 	digest_header = '''--%(_mime_separator)s
 
 From: %(got_sender)s
-Subject: Contents of %(real_name)s digest, Volume %(volume)d #%(next_digest_number)d
+Subject: Contents of %(real_name)s digest, Vol %(volume)d #%(next_digest_number)d - %(got_topics_number)d msg%(topics_plural)s
 Date: %(got_date)s
 
 Send %(real_name)s maillist submissions to
@@ -201,7 +207,10 @@ Send %(real_name)s maillist submissions to
 
 To subscribe or unsubscribe via the web, visit
 	%(got_listinfo_url)s
-or send email to %(got_request_email)s
+or, via email, send a message with subject or body 'help' to
+	%(got_request_email)s
+You can reach the person managing the list at
+	%(got_owner_email)s
 
 (When replying, please edit your Subject line so it is more specific than
 "Re: Contents of %(real_name)s digest...")
