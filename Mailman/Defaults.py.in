@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Distributed default settings for significant mailman config variables.
+"""Distributed default settings for significant Mailman config variables.
 
 You should NOT edit the values here unless you're changing settings for
 distribution.  For site-specific settings, put your definitions in
