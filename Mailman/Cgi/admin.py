@@ -304,7 +304,8 @@ def FormatConfiguration(doc, lst, category, category_suffix):
 
     form.AddItem(FormatOptionsSection(category, lst))
 
-    form.AddItem(Center(FormatPasswordStuff()))
+    if category == 'general':
+        form.AddItem(Center(FormatPasswordStuff()))
 
     form.AddItem("<p>")
 
