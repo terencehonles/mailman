@@ -59,7 +59,6 @@ DEFAULT_URL_PATTERN = 'http://%s/mailman/'
 DEFAULT_HOST_NAME = DEFAULT_EMAIL_HOST
 DEFAULT_URL       = DEFAULT_URL_PATTERN % DEFAULT_URL_HOST
 
-PUBLIC_ARCHIVE_URL  = '/pipermail'
 HOME_PAGE         = 'index.html'
 MAILMAN_SITE_LIST = 'mailman'
 
@@ -137,6 +136,14 @@ WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
 #####
 # Archive defaults
 #####
+
+# The url template for the public archives.  This will be used in several
+# places, including the List-Archive: header, links to the archive on the
+# list's listinfo page, and on the list's admin page.
+#
+# This should be a string with "%(listname)s" somewhere in it.  Mailman will
+# interpolate the name of the list into this.
+PUBLIC_ARCHIVE_URL  = '/pipermail/%(listname)s'
 
 # Are archives on or off by default?
 DEFAULT_ARCHIVE = 1                               # 0=Off, 1=On
