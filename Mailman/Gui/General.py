@@ -22,8 +22,6 @@ from Mailman import Utils
 from Mailman import Errors
 from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
-# BAW: bogus!  This should be in a separate module (Utils?)
-from Mailman.MailCommandHandler import option_info
 
 OPTIONS = ('hide', 'ack', 'notmetoo', 'nodupes')
 
@@ -410,7 +408,7 @@ class General(GUIBase):
         elif property == 'new_member_options':
             newopts = 0
             for opt in OPTIONS:
-                bitfield = option_info[opt]
+                bitfield = mm_cfg.OPTINFO[opt]
                 if opt in val:
                     newopts |= bitfield
             mlist.new_member_options = newopts
