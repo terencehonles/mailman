@@ -199,7 +199,7 @@ class Digest:
     def ComposeBaseHeaders(self, msg):
         """Populate the message with the presentation-independent headers."""
         mlist = self.__mlist
-	msg['From'] = mlist.GetAdminEmail()
+	msg['From'] = mlist.GetRequestEmail()
 	msg['Subject'] = ('%s digest, %s - %s' % 
                           (mlist.real_name, self.__volume, self.__numinfo))
 	msg['Reply-to'] = mlist.GetListEmail()
