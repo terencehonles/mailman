@@ -4,7 +4,6 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
 
 			      Background
 			      ==========
-
 This is Mailman, a mailing list management system written mostly in
 Python.  Mailman was originally developed by John Viega.  Subsequent
 development (through version 1.1) was by Ken Manheimer.  Currently,
