@@ -1,8 +1,6 @@
 The Mailman TODO list
 
 *Bugs
-- Turning off bounce processing doesn't seem to work (still?).
-- Turning on non-member post exclusion doesn't seem to work (Still?).
 - "Stale" addresses don't update properly when new bounces come in 
   (stale means we had some bounces, but delivery to that address started 
   working again before we booted them from the list)
@@ -71,7 +69,6 @@ The Mailman TODO list
 - Provide an email interface to administrative commands.
 
 *Portability concerns
-- Use portable file locking
 - Replace cron stuff with our own scheduling mechanism
 
 *Bounce handling
@@ -94,7 +91,7 @@ The Mailman TODO list
 - Remove dead code, etc.
 
 *Misc
-- Automatically update aliases again?
+- Automatically update aliases again
 - Make the listinfo pages static, and have them regenerate when options are 
   changed, or html is edited.
 - Make it so Mailman can run as a threaded server (this feature should be 
