@@ -166,13 +166,16 @@ def inject_digest(mlist, digestfile, topicsfile):
         digest = Digest(mlist, topicsdata, fp.read())
         # Generate the MIME digest, but only queue it for delivery so we don't
         # hold the lock too long.
-        msg = digest.asMIME()
-        msg['To'] = mlist.GetListEmail()
-        msg.Enqueue(mlist, recips=mime_recips, isdigest=1, approved=1)
-        # Generate the RFC934 "plain text" digest, and again, just queue it
-        msg = digest.asText()
-        msg['To'] = mlist.GetListEmail()
-        msg.Enqueue(mlist, recips=text_recips, isdigest=1, approved=1)
+        if mime_recips:
+            msg = digest.asMIME()
+            msg['To'] = mlist.GetListEmail()
+            msg.Enqueue(mlist, recips=mime_recips, isdigest=1, approved=1)
+        if text_recips:
+            # Generate the RFC934 "plain text" digest, and again, just queue
+            # it
+            msg = digest.asText()
+            msg['To'] = mlist.GetListEmail()
+            msg.Enqueue(mlist, recips=text_recips, isdigest=1, approved=1)
     # zap accumulated digest information for the next round
     os.unlink(digestfile)
     os.unlink(topicsfile)
