@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import time
-import email.Utils
+from email.Utils import parseaddr, parsedate_tz
 import cPickle as pickle
 from cStringIO import StringIO
 from string import lowercase
@@ -170,10 +170,10 @@ class Article:
 
         # Figure out the e-mail address and poster's name.  Use the From:
         # field first, followed by Reply-To:
-        self.author, self.email = email.Utils.parseaddr(message['From'])
+        self.author, self.email = parseaddr(message.get('From', ''))
         e = message['Reply-To']
         if not self.email and e is not None:
-            ignoreauthor, self.email = email.Utils.parseaddr(e)
+            ignoreauthor, self.email = parseaddr(e)
         self.email = strip_separators(self.email)
         self.author = strip_separators(self.author)
 
@@ -217,7 +217,7 @@ class Article:
     def _set_date(self, message):
         if message.has_key('Date'):
             self.datestr = str(message['Date'])
-            date = email.Utils.parsedate_tz(message['Date'])
+            date = parsedate_tz(message['Date'])
         else:
             self.datestr = ''
             date = None
