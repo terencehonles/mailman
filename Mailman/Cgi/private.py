@@ -37,7 +37,6 @@ LogStdErr("error", "private")
 
 
 
-ROOT = os.path.join(Mailman.mm_cfg.PREFIX, "public_html/archives")
 SECRET = "secret"  # XXX used for hashing
 
 PAGE = '''
@@ -79,19 +78,16 @@ login_attempted = 0
 _list = None
 
 def getListName(path):
-    return string.split(path, os.sep)[1]
-
+    component = string.split(path, os.sep)[1]
+    root, ext = os.path.splitext(component)
+    return root
 
 def GetListobj(list_name):
     """Return an unlocked instance of the named maillist, if found."""
     global _list
     if _list:
 	return _list
-    try:
-        _list = MailList.MailList(list_name, lock=0)
-    except Errors.MMUnknownListError:
-	_list = None
-	return None
+    _list = MailList.MailList(list_name, lock=0)
     return _list
 
 def isAuthenticated(list_name):
@@ -145,7 +141,9 @@ def true_path(path):
 
 def main():
     path = os.environ.get('PATH_INFO', "/index.html")
-    true_filename = os.path.join(ROOT, true_path(path) )
+    true_filename = os.path.join(
+        Mailman.mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
+        true_path(path))
     list_name = getListName(path)
     if os.path.isdir(true_filename):
         true_filename = true_filename + '/index.html'
@@ -175,7 +173,7 @@ def main():
         f = open(true_filename, 'r')
     except IOError:
         print "<H3>Archive File Not Found</H3>"
-        print "No file", path
+        print "No file", path, '(%s)' % true_filename
     else:
         while (1):
             data = f.read(16384)
