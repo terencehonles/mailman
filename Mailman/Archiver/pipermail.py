@@ -537,8 +537,14 @@ class BSDDBdatabase(Database):
 	self.__closeIndices()
 #	print 'opening indices for [%s]' % (repr(archive),)
 	arcdir=os.path.join(self.basedir, 'database')
-	try: os.mkdir(arcdir, 0700)
-	except os.error: pass
+##	try: os.mkdir(arcdir, 0700)
+##	except os.error: pass
+        uo = os.umask(0)
+        try:
+            try: os.mkdir(arcdir)
+            except os.error: pass
+        finally:
+            os.umask(ou)
 	for i in ['date', 'author', 'subject', 'article', 'thread']:
 	    t=bsddb.btopen(os.path.join(arcdir, archive+'-'+i), 'c') 
 	    setattr(self, i+'Index', t)
