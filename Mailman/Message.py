@@ -44,9 +44,9 @@ class Message(rfc822.Message):
     """
     def __init__(self, fp):
         rfc822.Message.__init__(self, fp)
-        self.body = self.fp.read()
         if self.seekable:
             self.rewindbody()
+        self.body = self.fp.read()
 
     def GetSender(self):
 	# Look for a Sender field.
@@ -82,12 +82,6 @@ class Message(rfc822.Message):
                     continue
                 return part
         return None
-
-    def GetSenderName(self):
-	real_name, mail_addr = self.getaddr('from')
-	if not real_name:
-	    return self.GetSender()
-	return real_name
 
     def __str__(self):
         # TBD: should this include the unixfrom?
