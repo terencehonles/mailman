@@ -666,7 +666,9 @@ ADMIN_CATEGORIES = [
 
 # See "Bitfield for user options" below; make this a sum of those options, to
 # make all new members of lists start with those options flagged.  We assume
-# by default that people don't want to receive two copies of posts
+# by default that people don't want to receive two copies of posts.  Note
+# however that the member moderation flag's initial value is controlled by the
+# list's config variable default_member_moderation.
 DEFAULT_NEW_MEMBER_OPTIONS = 256
 
 
