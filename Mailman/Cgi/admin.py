@@ -109,11 +109,12 @@ def main():
     # Is the request for variable details?
     varhelp = None
     qsenviron = os.environ.get('QUERY_STRING')
+    parsedqs = None
     if qsenviron:
         parsedqs = cgi.parse_qs(qsenviron)
     if cgidata.has_key('VARHELP'):
-        varhelp = cgidata['VARHELP'].value
-    elif cgidata.has_key('request_login') and parsedqs:
+        varhelp = cgidata.getvalue('VARHELP')
+    elif parsedqs:
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
         qs = parsedqs.get('VARHELP')
@@ -1246,21 +1247,11 @@ def change_options(mlist, category, subcat, cgidata, doc):
         gui.HandleForm(mlist, cgidata, doc)
         return
 
-    # for some reason, the login page mangles important values for the list
-    # such as .real_name so we only process these changes if the category
-    # is not "members" and the request is not from the login page
-    # -scott 19980515
-    #
-    if category <> 'members' and \
-            not cgidata.has_key("request_login") and \
-            len(cgidata.keys()) > 1:
-        # then
+    if category <> 'members':
         if cgidata.has_key("subscribe_policy"):
             if not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-                #
                 # we have to add one to the value because the
                 # page didn't present an open list as an option
-                #
                 page_setting = int(cgidata["subscribe_policy"].value)
                 cgidata["subscribe_policy"].value = str(page_setting + 1)
         for item in mlist.GetConfigInfo(category, subcat):
