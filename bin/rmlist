@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# If you don't want to rm archives when you rm a list, you probably
+# want to comment out that line, or set the archives aside before you
+# nuke the list.
+
+MAILMAN_DIR='/home/mailman/mailman'
+HTML_DIR='/home/mailman/public_html'  
+
+echo "Removing list info."
+rm -rf ${MAILMAN_DIR}/lists/$1
+echo "Removing web pages."
+rm -rf ${MAILMAN_DIR}/templates/$1
+echo "Removing archives."
+rm -rf ${HTML_DIR}/archives/$1
+echo "Removing lock file."
+rm -rf ${MAILMAN_DIR}/locks/$1.lock
+
