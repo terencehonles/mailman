@@ -95,6 +95,17 @@ UPGRADING FROM 2.0.x to 2.1
     duplicates of the defaults, but you'll want to double check this
     manually.
 
+    If you are running a MM2.0.x system with non-standard patches
+    applied, you might have some other problems with your upgrade.
+    Here are some instances we know about:
+
+    - If you've applied patch #413752 (coerce to plaintext), then your
+      upgraded will not go smoothly.  Take a look at patch #651406 for
+      an unofficial solution.
+
+      http://sf.net/tracker/?group_id=103&atid=300103&func=detail&aid=413752
+      http://sf.net/tracker/?group_id=103&atid=300103&func=detail&aid=651406
+
 
 UPGRADING INDIVIDUAL LISTS
 
