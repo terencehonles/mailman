@@ -214,6 +214,8 @@ class Archiver:
             except:
                 traceback.print_exc(file=sys.stderr)
         finally:
+            # need this or we'll never see the error messages!
+            sys.stderr.flush()
             os._exit(0)
 	
     #
