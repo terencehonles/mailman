@@ -120,9 +120,9 @@ def do_bump(newvers):
     fp.write(text)
     fp.close()
     # hack the configure.in file
-    print 'Defaults.py.in...',
-    fp_in = open('Mailman/Defaults.py.in')
-    fp_out = open('Mailman/Defaults.py.in.new', 'w')
+    print 'Version.py...',
+    fp_in = open('Mailman/Version.py')
+    fp_out = open('Mailman/Version.py.new', 'w')
     matched = 0
     cre = re.compile(r'^VERSION(?P<ws>[ \t]*)=')
     while 1:
@@ -139,7 +139,7 @@ def do_bump(newvers):
             matched = 1
     fp_in.close()
     fp_out.close()
-    os.rename('Mailman/Defaults.py.in.new', 'Mailman/Defaults.py.in')
+    os.rename('Mailman/Version.py.new', 'Mailman/Version.py')
     # update the TODO file
     print 'TODO...'
     os.system('admin/bin/mm2do')
