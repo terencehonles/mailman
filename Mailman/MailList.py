@@ -263,6 +263,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.moderator = []
         self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
         self.reply_to_address = ''
+        self.first_strip_reply_to = mm_cfg.DEFAULT_FIRST_STRIP_REPLY_TO
         self.admin_immed_notify = mm_cfg.DEFAULT_ADMIN_IMMED_NOTIFY
         self.admin_notify_mchanges = \
                 mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES
