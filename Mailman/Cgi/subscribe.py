@@ -219,11 +219,16 @@ moderator's decision when they get to your request.""")
             # This could be a membership probe.  For safety, let the user know
             # a probe occurred.  BAW: should we inform the list moderator?
             listaddr = mlist.GetListEmail()
-            msg = Message.UserNotification(
-                mlist.getMemberCPAddress(email),
-                mlist.GetAdminEmail(),
-                _('Mailman privacy alert'),
-                _("""\
+            # Set the language for this email message to the member's language.
+            mlang = mlist.getMemberLanguage(email)
+            otrans = i18n.get_translation()
+            i18n.set_language(mlang)
+            try:
+                msg = Message.UserNotification(
+                    mlist.getMemberCPAddress(email),
+                    mlist.GetAdminEmail(),
+                    _('Mailman privacy alert'),
+                    _("""\
 An attempt was made to subscribe your address to the mailing list
 %(listaddr)s.  You are already subscribed to this mailing list.
 
@@ -236,7 +241,9 @@ subscribed to the list, then you can ignore this message.  If you suspect that
 an attempt is being made to covertly discover whether you are a member of this
 list, and you are worried about your privacy, then feel free to send a message
 to the list administrator at %(listowner)s.
-"""))
+"""), lang=mlang)
+            finally:
+                i18n.set_translation(otrans)
             msg.send(mlist)
     # These shouldn't happen unless someone's tampering with the form
     except Errors.MMCantDigestError:
