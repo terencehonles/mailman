@@ -1,0 +1,32 @@
+#!/usr/local/bin/python 
+
+"""Set the site password, using the argument passed in the command line.
+
+The site password can be used in most if not all places that the list
+administrator's password can be used, which in turn can be used in most
+places that a list users password can be used."""
+
+__version__ = "$Revision: 446 $"
+# $Source$
+
+import sys
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import maillist
+
+def main(argv):
+    if len(sys.argv) != 2:
+        print "Usage: mmsitepass password"
+        raise SystemExit, 1
+    l = maillist.MailList()
+    l.SetSiteAdminPassword(sys.argv[1])
+    if l.CheckSiteAdminPassword(sys.argv[1]):
+        print "Password changed."
+        raise SystemExit, 0
+    else:
+        print "Password change failed."
+        raise SystemExit, 1
+
+if __name__ == "__main__":
+    main(sys.argv)
