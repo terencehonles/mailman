@@ -400,7 +400,8 @@ class MailCommandHandler:
 	    password = "%s%s" % (Utils.GetRandomSeed(), 
 				 Utils.GetRandomSeed())
         elif len(args) > 3:
-            self.AddError("Usage: subscribe [password] [digest|nodigest] [address=<email-address>]")
+            self.AddError("Usage: subscribe [password] "
+                          "[digest|nodigest] [address=<email-address>]")
             return
         else:
             for arg in args:
@@ -416,7 +417,8 @@ class MailCommandHandler:
                     password = arg
                 else:
                     self.AddError("Usage: subscribe [password] "
-                                  "[digest|nodigest] [address=<email-address>]")
+                                  "[digest|nodigest] "
+                                  "[address=<email-address>]")
                     return
         if not password:
             password = "%s%s" % (Utils.GetRandomSeed(), 
@@ -425,6 +427,9 @@ class MailCommandHandler:
             pending_addr = mail.GetSender()
         else:
             pending_addr = address
+        if self.FindUser(pending_addr):
+            self.AddError("%s is already a list member." % pending_addr)
+            return
         cookie = Pending.gencookie()
         Pending.add2pending(pending_addr, password, digest, cookie)
         text = Utils.maketext(
@@ -469,7 +474,7 @@ class MailCommandHandler:
 	except:
 	    # TODO: Should log the error we got if we got here.
 	    self.AddError("An unknown Mailman error occured.")
-	    self.AddError("Please forward on your request to %s" %
+	    self.AddError("Please forward your request to %s" %
 			  self.GetAdminEmail())
 	    self.AddError("%s" % sys.exc_type)
 
