@@ -251,7 +251,7 @@ class Deliverer:
             user = cpuser
         if user and self.passwords.has_key(user):
             recipient = self.GetMemberAdminEmail(user)
-            subj = '%s maillist reminder\n' % listfullname
+            subj = '%s mailing list reminder\n' % listfullname
             # get the text from the template
             text = Utils.maketext(
                 'userpass.txt',
