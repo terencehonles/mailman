@@ -1,21 +1,24 @@
-Ce message est un rappel de la marche à suivre pour vous désabonner
-ou changer vos options pour l'adresse "%(user)s"
-sur la liste de diffusion %(listname)s.  Votre mot de passe est
-nécessaire pour toutes ces modifications.  VOTRE MOT DE PASSE
-POUR %(listname)s EST:
+Vous, ou quelqu'un qui se fait passer pour vous, a demandé un
+rappel de votre mot de passe d'abonné à la liste %(fqdn_lname)s.
+Vous aurez besoin de ce mot de passe pour modifier vos options
+d'abonnement (le choix entre les modes digest et normal par exemple),
+ce mot de passe vous facilite la tâche si vous voulez vous désabonner.
 
-    %(password)s
+Vous êtes abonné avec l'adresse: %(user)s
 
-Pour modifier votre abonnement, utilisez ce mot de passe dans votre
-page web d'abonnement:
+Votre mot de passe pour la liste %(listname)s est: %(password)s
+
+Pour modifier vos options d'abonnement, loggez-vous et visitez
+votre page d'options:
 
     %(options_url)s
 
-Vous pouvez également procéder par mail - envoyez un message à:
+Vous pouvez également procéder par mail en envoyant un message à:
 
     %(requestaddr)s
 
-avec le mot "help" dans le sujet ou le corps du message, et vous
-recevrez les inscructions.
+avec le mot "help" dans le sujet ou le corps du message, la réponse
+automatique contiendra plus d'instructions.
 
-Questions ou commentaires? Envoyez-les à %(adminaddr)s. 
+Questions ou commentaires? Veillez les envoyer à l'administrateur
+de la liste %(listname)s à %(owneraddr)s. 

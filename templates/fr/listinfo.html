@@ -1,12 +1,11 @@
-<!-- $Revision: 3406 $ -->
+<!-- $Revision: 3798 $ -->
 <HTML>
   <HEAD>
-    <TITLE><MM-List-Name> Page d'infos</TITLE>
+    <TITLE>Page d'infos de <MM-List-Name></TITLE>
   
   </HEAD>
   <BODY BGCOLOR="#ffffff">
 
-    <MM-Subscribe-Form-Start>
     <P>
       <TABLE COLS="1" BORDER="0" CELLSPACING="4" CELLPADDING="5">
 	<TR>
@@ -24,20 +23,25 @@
 	    <TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
 	      <B><FONT COLOR="#000000">A propos de <MM-List-Name></FONT></B>
 	    </TD>
+            <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
+              <MM-lang-form-start><MM-displang-box> <MM-list-langs>
+              <MM-form-end>
+    <MM-Subscribe-Form-Start>
+            </TD>
 	  </TR>
 	    <tr>
 	      <td colspan="2">
 		<P><MM-List-Info></P>
 	  <p> Pour voir tous les messages pass&eacute;s de la liste,
 	      visitez les <MM-Archive>Archives de <MM-List-Name>
-	      Archives</MM-Archive>.
+	      </MM-Archive>.
 	      <MM-Restricted-List-Message>
 	  </p>
 	</TD>
       </TR>
       <TR>
 	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
-	  <B><FONT COLOR="#000000">Using <MM-List-Name></FONT></B>
+	  <B><FONT COLOR="#000000">Utilisation de <MM-List-Name></FONT></B>
 	</TD>
       </TR>
       <tr>
@@ -71,22 +75,32 @@
 	<TD WIDTH="12%">&nbsp;</TD></TR>
       <TR>
 	<TD COLSPAN="3"><FONT SIZE=-1>Vous devez entrer un mot de passe
-	    de confidentialit&eacute;. Ceci ne procure qu'une faible,
+	    de confidentialit&eacute;. Ceci ne procure qu'une faible
 	    s&eacute;curit&eacute; mais devrait n&eacute;anmoins
 	    enp&ecirc;cher n'importe qui de modifier vos abonnements.
 	    <b>N'utilisez pas un mot de passe important</b> car il
 	    arrivera qu'il vous soit renvoy&eacute; par email en clair.
+
+	    <p>Si vous choisissez de ne pas en fournir, un mot de passe
+	    vous sera g&eacute;n&eacute;r&eacute; automatiquement, et il vous sera envoy&eacute; une
+	    fois que votre requ&ecirc;te d'abonnement aura &eacute;t&eacute; confirm&eacute;e. Il vous
+	    sera toujours possible de vous faire envoyer votre mot de passe
+	    par courriel lorsque vous visualisez vos options personelles.
 	    <MM-Reminder>
 	</TD>
       </TR>  
       <TR>
-	<TD BGCOLOR="#dddddd">Mot de passe:</TD>
+	<TD BGCOLOR="#dddddd">Choisissez un mot de passe:</TD>
 	<TD><MM-New-Password-Box></TD>
 	<TD>&nbsp;</TD></TR>
       <TR> 
-	<TD BGCOLOR="#dddddd">Confirmation:</TD>
+	<TD BGCOLOR="#dddddd">Confirmer le mot de passe:</TD>
 	<TD><MM-Confirm-Password></TD>
 	<TD>&nbsp; </TD></TR>
+      <tr>
+        <TD BGCOLOR="#dddddd">Dans quelle langue voulez-vous que vos messages soient affich&eacute;s?</TD> 
+        <TD> <MM-list-langs></TD>
+        <TD>&nbsp; </TD></TR>
       <tr>
 	<td>Souhaitez-vous recevoir les messages de la liste dans
 	    un unique courrier quotidien?

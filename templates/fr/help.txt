@@ -25,7 +25,7 @@ FACULTATIFS. N'incluez pas les "<>" ou "[]" dans les commandes.
 
 Les commandes suivantes sont disponibles: 
 
-    subscribe [mot-de-passe] [envoi-groupé] [adresse=<adresse>]
+    subscribe [mot-de-passe] [envoi-groupé] [address=<adresse>]
         S'abonner à la liste.  Votre mot de passe est nécessaire
         pour vous désabonner ou changer vos options.  Une fois
 	abonné à la liste, votre mot de passe vous sera rappelé

@@ -1,19 +1,21 @@
-%(listname)s -- confirmation d'abonnement -- demande de %(cookie)s 
+Avis de confirmation de demande d'abonnement pour la liste %(listname)s
 
-Nous avons reçu une demande%(remote)s d'abonnement de votre adresse
-électronique, <%(email)s>, à la liste de diffusion %(listaddr)s.
-Pour confirmer la demande, veullez envoyer un message à
-%(requestaddr)s et soit : 
+Nous avons reçu une demande %(remote)s d'abonnement de votre adresse
+électronique, "%(email)s", à la liste de diffusion %(listaddr)s.
+Pour confirmer la demande, répondez à ce message en gardant l'objet
+intact, ou visitez la page:
 
-- gardez le même sujet (un simple "Re: " supplémentaire passe),
+	%(confirmurl)s 
 
-- ou mettez la ligne suivante - et seulement la ligne suivante -
-dans le corps du message: 
+ou mettez la ligne suivante - et seulement la ligne suivante -
+dans le corps d'un message à l'attention de %(requestaddr)s: 
 
-confirm %(cookie)s
+     confirm %(cookie)s
 
-(Avec la plupart des logiciels de messagerie, la fonction "réponse"
-devrait suffire, puisqu'elle ne modifie pas le sujet)
+Notez qu'un simple `répondre' devrait marcher pour la plupart des
+lecteurs de courriel, puisque ceux-ci laissent en genéral l'objet au
+format correct (un "Re:" devant l'objet passe).
 
-Si vous ne souhaitez pas vous abonner à cette liste, ignorez
-ce message.  Envoyez toute question à %(listadmin)s.
+Si vous ne souhaitez pas vous abonner à cette liste, ignorez simplement
+ce message.  Si vous pensez être abonné à la liste contre votre
+gré ou si avez d'autres questions, envoyez un message à %(listadmin)s.

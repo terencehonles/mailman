@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Authentification pour l'administration de %(listname)s</title>
+  <title>Authentification %(who)s pour %(listname)s</title>
 </head>
 <body bgcolor="#ffffff">
 <FORM METHOD=POST ACTION="%(path)s">
@@ -8,16 +8,16 @@
   <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
     <TR>
       <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
-	<B><FONT COLOR="#000000" SIZE="+1">Authentification pour
-            l'administration de %(listname)s</FONT></B>
+	<B><FONT COLOR="#000000" SIZE="+1">Authentification  
+	%(who)s sur %(listname)s</FONT></B>
       </TD>
     </TR>
     <tr>
-      <TD> <div ALIGN="Right"> Mot de passe d'administration de la liste: </div> </TD>
-      <TD> <INPUT TYPE=password NAME=adminpw SIZE=30></TD>
+      <TD> <div ALIGN="Right">Mot de passe %(who)s de la liste: </div> </TD>
+      <TD> <INPUT TYPE="password" NAME="adminpw" SIZE="30"></TD>
     </tr>
     <tr>
-      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="request_login"
+      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="admlogin"
 						     value="Je veux entrer...">
       </td>
     </tr>
@@ -35,3 +35,5 @@
       administratives</em> (que vous verrez apr&egrave;s vous &ecirc;tre
       authentifi&eacute; avec succ&egrave;s).
 </FORM>
+</body>
+</html>
