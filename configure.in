@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 654 $)
+AC_REVISION($Revision: 661 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -35,7 +35,7 @@ AC_ARG_WITH(python, [
 	--with-python         specify path to Python interpreter])
 AC_MSG_RESULT($with_python)
 
-if test "$with_python" = ""
+if test -z "$with_python"
 then
 	AC_PATH_PROG(with_python, python, /usr/local/bin/python)
 fi
@@ -106,42 +106,6 @@ then
 fi
 
 
-# new macros for finding UIDs
-AC_DEFUN(MM_FIND_USER_ID, [
-# $1 == variable name
-# $2 == user id to check for
-# $3 == purpose
-AC_MSG_CHECKING(for $3 UID)
-AC_SUBST($1)
-changequote(,)
-if test -z "$$1"
-then
-    cat > conftest.py <<EOF
-import pwd
-try:
-    uid = pwd.getpwnam("$2")[2]
-except KeyError:
-    uid = ''
-fp = open("conftest.out", "w")
-fp.write("%s\n" % uid)
-fp.close()
-EOF
-    python conftest.py
-    $1=`cat conftest.out`
-fi
-changequote([, ])
-if test -z "$$1"
-then
-    AC_MSG_ERROR([
-
-***** User $2 not found!  You must first
-***** set up the $2 entry in /etc/passwd
-***** or set the $1 shell variable on the
-***** configure command line])
-fi
-AC_MSG_RESULT($$1)
-rm -f conftest.out conftest.py])
-
 # new macro for finding GIDs
 AC_DEFUN(MM_FIND_GROUP_ID, [
 # $1 == variable name
@@ -180,12 +144,23 @@ rm -f conftest.out conftest.py])
 
 
 # Now find the UIDs and GIDs
-MM_FIND_USER_ID(CGI_UID, nobody, cgi_wrapper)
+# Support --with-mail-gid and --with-cgi-gid
+AC_MSG_CHECKING(for --with-mail-gid)
+AC_ARG_WITH(mail-gid, [
+	--with-mail-gid  	specify GID mail programs run as])
+AC_MSG_RESULT($with_mail_gid)
+MAIL_GID=$with_mail_gid
+MM_FIND_GROUP_ID(MAIL_GID, other, mail_wrapper)
+
+AC_MSG_CHECKING(for --with-cgi-gid)
+AC_ARG_WITH(cgi-gid, [
+	--with-cgi-gid  	specify GID CGI programs run as])
+AC_MSG_RESULT($with_cgi_gid)
+CGI_GID=$with_cgi_gid
 MM_FIND_GROUP_ID(CGI_GID, nobody, cgi_wrapper)
-MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
-MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
-MM_FIND_USER_ID(MAIL_UID, daemon, mail_wrapper)
-MM_FIND_GROUP_ID(MAIL_GID, mail, mail_wrapper)
+
+#MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
+#MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
 
 
 # figure out the DEFAULT_HOST_NAME and DEFAULT_URL
