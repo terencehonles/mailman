@@ -92,9 +92,8 @@ def main():
         doc.AddItem(htmlformat.Header(2, 'Select page to edit:'))
         template_list = htmlformat.UnorderedList()
         for (template, info) in template_data:
-            l = htmlformat.Link(os.path.join(list.GetRelativeScriptURL('edithtml'),
-                                             template), info)
-
+            l = htmlformat.Link("%s/%s" % (list.GetRelativeScriptURL('edithtml'),template),
+                                info)
             template_list.AddItem(l)
         doc.AddItem(htmlformat.FontSize("+2", template_list))
         doc.AddItem(list.GetMailmanFooter())
@@ -158,8 +157,8 @@ def FormatHTML(doc):
 
     doc.AddItem('<hr>')
 
-    form = htmlformat.Form(os.path.join(list.GetRelativeScriptURL('edithtml'),
-					template_name))
+    form = htmlformat.Form("%s/%s" % (list.GetRelativeScriptURL('edithtml'),
+                                      template_name))
     doc.AddItem(form)
 
     password_table = htmlformat.Table()
