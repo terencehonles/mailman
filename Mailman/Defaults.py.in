@@ -313,7 +313,7 @@ Number    = 8
 Digests             = 0 # handled by other mechanism, doesn't need a flag.
 DisableDelivery     = 1
 DontReceiveOwnPosts = 2 # Non-digesters only
-AcknowlegePosts     = 4
+AcknowledgePosts    = 4
 DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
 
