@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from __future__ import nested_scopes
+
 import mailbox
 import os
 import re
@@ -215,23 +217,22 @@ class Article:
         self.body = s.readlines()
 
     def _set_date(self, message):
-        if message.has_key('Date'):
-            self.datestr = str(message['Date'])
-            date = parsedate_tz(message['Date'])
-        else:
-            self.datestr = ''
-            date = None
-        if date is not None:
-            date, tzoffset = date[:9], date[-1] or 0
+        def floatdate(header):
+            missing = []
+            datestr = message.get(header, missing)
+            if datestr is missing:
+                return None
+            date = parsedate_tz(datestr)
             try:
-                date = time.mktime(date)# - tzoffset
+                return time.mktime(date[:9])
             except (ValueError, OverflowError):
-                date = self._last_article_time + 1
-                #print 'Article with bad date:', self.msgid
-        else:
+                return None
+        date = floatdate('date')
+        if date is None:
+            date = floatdate('x-list-received-date')
+        if date is None:
+            # What's left to try?
             date = self._last_article_time + 1
-            #print 'Article without date:', self.msgid
-
         self._last_article_time = date
         self.date = '%011i' % date
 
