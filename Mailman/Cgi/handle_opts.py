@@ -154,15 +154,18 @@ exactly what happened to provoke this error.<p>'''
             doc.AddItem(htmlformat.Header(2,
                                           "List Subscriptions for %s on %s"
                                           % (user, list.host_name)))
+            doc.AddItem("Click a link to visit your options page for"
+                        " that mailing list.")
             def optionslinks(l, user=user):
                 if l.IsMember(user):
                     link = htmlformat.Link(l.GetAbsoluteOptionsURL(user),
                                            l.real_name)
-                    return link
+                    return l._internal_name, link
             all_links = filter(None, Utils.map_maillists(optionslinks))
+            all_links.sort()
             items = htmlformat.OrderedList()
-            for i in all_links:
-                items.AddItem(i)
+            for name, link in all_links:
+                items.AddItem(link)
             doc.AddItem(items)
             print doc.Format(bgcolor="#ffffff")
 
