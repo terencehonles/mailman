@@ -122,6 +122,7 @@ def main():
         rmembers = mlist.GetMembers()
         dmembers = mlist.GetDigestMembers()
 
+    stdout = sys.stdout
     try:
         sys.stdout = fp
         if regular:
@@ -131,7 +132,7 @@ def main():
             for addr in dmembers:
                 print addr
     finally:
-        sys.stdout = sys.__stdout__
+        sys.stdout = stdout
 
 
 if __name__ == '__main__':
