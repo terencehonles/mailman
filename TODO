@@ -4,7 +4,7 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 
 The Mailman Wishlist
-(Last Update: $Date: 2002-10-07 23:12:10 +0100 (Mon, 07 Oct 2002) $)
+(Last Update: $Date: 2002-10-23 14:40:22 +0100 (Wed, 23 Oct 2002) $)
 
     Here's the wish list for future versions of Mailman.  Many new
     features have been added to Mailman 2.1, so what's left will
@@ -22,6 +22,9 @@ Email Handling
       and exit if no new work arrived.
     - Strip any addresses of members who have nodupe turned on, from
       the Cc headers of the list copy of a message.
+    - Separate processing for MIME and plaintext digests.  E.g. you
+      might want to filter images out of plaintext but not MIME
+      digests.
 
 Documentation
     - A detailed feature list
@@ -77,6 +80,9 @@ List Administration
     - When a held message is forwarded (for admin editing and approved
       resend) there should be a way to auto-discard the held message
       when the approved resend is received.
+    - Have an option to sort the list of members by real name or email
+      address, /if/ you could figure out how to sort a list with real
+      names in multiple languages.
 
 List Membership
     - Have one account per user per site, with multiple email
