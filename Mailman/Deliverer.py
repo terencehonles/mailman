@@ -72,7 +72,7 @@ your membership administrative address, %(addr)s.'''))
     def SendUnsubscribeAck(self, addr):
         realname = self.real_name
         msg = Message.UserNotification(
-            self.GetMemberAdminEmail(addr), self.GetAdminEmail(),
+            self.GetMemberAdminEmail(addr), self.GetBouncesEmail(),
             _('You have been unsubscribed from the %(realname)s mailing list'),
             Utils.wrap(self.goodbye_msg), self.getMemberLanguage(addr))
         msg.send(self)
@@ -81,7 +81,7 @@ your membership administrative address, %(addr)s.'''))
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         requestaddr = self.GetRequestEmail()
         # find the lowercased version of the user's address
-        adminaddr = self.GetAdminEmail()
+        adminaddr = self.GetBouncesEmail()
         assert self.isMember(user)
         if not self.getMemberPassword(user):
             # The user's password somehow got corrupted.  Generate a new one
