@@ -81,8 +81,13 @@ class GatewayManager:
                 body = conn.body(`num`)[3]
                 # Create the pipe to the Mail posting script.  Note that it is
                 # not installed executable, so we'll tack on the path to
-                # Python we discovered when we configured Mailman
-                cmd = '%s %s %s nonews' % (
+                # Python we discovered when we configured Mailman.  The extra
+                # argument to `post' informs the system that the message is
+                # originating from Usenet and so should not get posted back to 
+                # Usenet.  I think this is mostly redundent with the
+                # X-BeenThere header, but I'm a little afraid to muck with
+                # that.
+                cmd = '%s %s %s fromusenet' % (
                     mm_cfg.PYTHON,
                     os.path.join(mm_cfg.SCRIPTS_DIR, 'post'),
                     self._internal_name)
@@ -112,11 +117,9 @@ class GatewayManager:
                   string.join(error, ', ')
             self.LogMsg('error', msg)
             return
-        try:
-            if self.tmp_prevent_gate:
-                return
-        except AttributeError:
-            pass # Wasn't remailed by the news gater then.  Let it through.
+        if hasattr(mail_msg, 'fromusenet') and mail_msg.fromusenet:
+            # This message originated on Usenet; don't re-post it.
+            return
         # Fork in case the nntp connection hangs.
         if not os.fork():
             # child
