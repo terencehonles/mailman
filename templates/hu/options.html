@@ -1,7 +1,6 @@
-<!-- $Revision: 5015 $ -->
+<!-- $Revision: 6010 $ -->
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html"; charset="iso-8859-2">
     <link rel="SHORTCUT ICON" href="<mm-favicon>">
     <title><MM-Presentable-User> beállításai a(z) <MM-List-Name> listán
     </title>
@@ -18,7 +17,7 @@
     <tr><td>
         <b><MM-Presentable-User></b> tag feliratkozási státusza,
 	jelszava és beállításai a(z) <MM-List-Name> levelezési listán.
-	</td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
+	</td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>
     </tr><tr>
         <td colspan="2">
 	<MM-Case-Preserved-User>
@@ -26,7 +25,6 @@
         <MM-Disabled-Notice>
 
         <p><mm-results>
-
         </td>
     </tr>
 </table>
@@ -36,7 +34,7 @@
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
         <FONT COLOR="#000000">
-        <B><MM-List-Name> levelezőlistán lévő címed módosítása</B>
+        <B><MM-List-Name> levelezőlistán használt címed módosítása</B>
 	</FONT></TD></TR>
     <tr><td colspan="2">A listán található feliratkozási címedet tudod
     itt megváltoztatni egy új megadásával. A változtatás csak akkor
@@ -49,7 +47,8 @@
 	
 	<p>Ha a(z) <mm-host> gépen található összes listatagságod feliratkozási
 	címét az itt megadottra akarod változtatni, akkor jelöld be a 
-	<em>Mindet változtasd</em> kapcsolót.
+	<em>Állítsd mindenhol</em> kapcsolót.
+	
     </td></tr>
     <tr><td><center>
         <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
@@ -71,10 +70,8 @@
             </td>
             </tr>
         <tr><td colspan="2"><center><mm-change-address-button>
-            <p><mm-global-change-of-address>Mindet változtasd
-            </center></td>
-        </tr></table></center>
-    </td>
+            <p><mm-global-change-of-address>Állítsd mindenhol</center></td>
+	</tr>
 </table>
 
 <p>
@@ -134,9 +131,7 @@
         </table>
 
         <MM-Change-Pass-Button>
-	<p><center><mm-global-pw-changes-button>
-	A(z) <mm-host> gépen lévő levelezőlistákon található feliratkozási 
-	jelszavamat változtasd meg az itt megadottra.
+	<p><center><mm-global-pw-changes-button>Állítsd mindenhol
         </center>
 </TABLE>
 
@@ -257,8 +252,8 @@ megtekintheted, mely levelezőlistáknak vagy tagja ezen a gépen.
 		   kézbesítve lesz.
 	    </td><td bgcolor="#cccccc">
              <mm-topics>
-             </td></tr>
-	  
+	     </td></tr>
+	     
     <tr><td bgcolor="#cccccc">
     <strong>Szeretnéd azokat a leveleket is megkapni, amelyek nem feleltek
     	    meg a beállított témák egyikének sem?</strong><p>
@@ -278,6 +273,25 @@ megtekintheted, mely levelezőlistáknak vagy tagja ezen a gépen.
 	  <mm-receive-nonmatching-topics>Igen
             </td></tr>
 
+    <tr><td bgcolor="#cccccc">
+        <strong>Szeretnéd, hogy a leveleket csak egy példányban kapd meg?</strong><p>
+
+ 	     Ha a listára küldött levél <tt>To:</tt> vagy <tt>Cc:</tt> mezőjében 
+	     külön meg van adva a címed, akkor beállíthatod, hogy a lista
+	     ne kézbesítse neked az ilyen leveleket. <em>Igen</em>-t választva a 
+	     lista nem fogja neked kézbesíteni az ilyen leveleket; míg
+	     <em>Nem</em>-et választva a listáról is meg fogod kapni a levelet.
+
+   	     <p>Ha a listán személyre szabott levélküldés van beállítva és
+ 	     kéred a levelek további példányának küldését, akkor minden
+	     egyes példányban megtalálható lesz a <tt>X-Mailman-Copy: yes</tt>
+	     fejléc.
+     </td><td bgcolor="#cccccc"> 
+          <mm-receive-duplicates-button>Nem<br> 
+          <mm-dont-receive-duplicates-button>Igen<p> 
+          <mm-global-nodupes-button><i>Állítsd mindenhol</i>
+     </td></tr>
+     
       <tr><TD colspan="2">
         <center><MM-options-Submit-button></center>
       </td></tr>

@@ -1,4 +1,4 @@
-Mailman levelezõlista visszadobási (bounce) értesítés:
+Mailman levelezõlista visszapattanási (bounce) értesítés:
 
     Lista:      %(listname)s
     Tag:        %(addr)s

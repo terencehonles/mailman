@@ -1,12 +1,12 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
 NETSCAPE PROBLÉMA
 
-    Azon felhasználóknál, akik member-only listára próbálnak levelet
-    küldeni Netscape Communicatorral problémák merülhetnek fel. Meg-
+    Azon felhasználóknál, akik member-only listára Netscape Communicatorral
+    próbálnak meg levelet küldeni, problémák merülhetnek fel. Meg-
     figyelhetõ, hogy Linuxon a Communicator 4.x hibás Sender: fejlécet
     szúr a küldendõ levelekbe -- pl. Sender: fejlécbe mindössze a 
     feladó e-mail címének felhasználói név része kerül. A Netscape 

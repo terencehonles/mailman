@@ -6,7 +6,7 @@ a Mailman által üzemeltetett listákról és azok beállításáról
 lehet olvasni. A parancsokat mind a levél törzsében, vagy tárgyában
 meg lehet adni.
 
-Érdemes tudni, hogy az itt említett módosításokat Web-en keresztül is
+Érdemes tudni, hogy az itt említett módosításokat weben keresztül is
 végre lehet hajtani a következõ címen:
 
     %(listinfo_url)s

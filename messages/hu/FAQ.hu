@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 Megjegyzés: A Mailman GYIK (angolul a FAQ) már on-line is elérhetõ a 
@@ -23,7 +23,7 @@ V. Valóban az MTA DNS kérést végez a címzetteknél, amikor a leveleket
    Ez bizony hiba. Ki kell kapcsolnunk a gép folyamatos DNS kérését.
 
    Exim esetén, ez a receiver_verify_hosts megfelelõ beállításával
-   történhet. Bõvebb információt a README.EXIM-ben találhatunk.
+   történhet. Bõvebb információt a README.EXIM.hu-ban találhatunk.
    Más MTA-k esetében (természetesen) más beállítást kell végrehajtani.
    Elõször olvassuk el az MTA-hoz tartozó megfelelõ README állományt,
    majd végsõ esetben az MTA dokumentációját.
@@ -31,38 +31,53 @@ V. Valóban az MTA DNS kérést végez a címzetteknél, amikor a leveleket
 K. A lista tagok a Mailman List-* fejléceirõl kérdezgetnek. Mik 
    ezek valójában?
 
-V. Ezeket a fejlécek a Mailman adja hozzá minden egyes kimenõ levélhez,
+V. Ezeket a fejlécek a Mailman minden egyes kimenõ levélhez hozzáadja,
    a felhasználók kényelmében. A Mailman az RFC 2369-ben foglaltaknak
    megfelelõen hozza létre ezeket a fejléceket. Az RFC 2369 ezeket
    a fejléceket definiálja. Ha még mindig kíváncsiak a felhasználók,
-   akkor olvassuk el jó tanácsokért a README.USERAGENT állományt.
+   akkor olvassuk el jó tanácsokért a README.USERAGENT.hu állományt.
+
+   Végsõ esetben a lista adminisztrációs oldalán az Általános 
+   beállítások részben le lehet tiltani ezen fejlécek hozzáadását a 
+   kimenõ levelekhez.
 
 K. Hogyan tudom a felhasználó címét megjeleníteni a minden levél
    alján megtalálható láblécben?
 
-V. Sehogy. Az oka ennek a hatékonyság. A Mailman a leveleket nem
-   egyesével hanem kötegekben továbbítja, így egyszerre nem egy,
-   hanem több embernek küldi el azokat. A láblécben a felhasználó 
-   címének megjelenítéséhez minden egyes címzettnek egyedi levél 
-   kerülne továbbításra, amely elfogadhatatlanul nagy terhelést 
-   jelentene a rendszernek.
+V. A Mailman 2.1-es verziótól támogatja a személyre szabott levél-
+   küldést, azonban alapesetben nincs engedélyezve, mivel túlzott
+   terhelést okozhat a rendszeren. Ha szeretnénk támogatni az
+   egyedi levelek küldését, akkor a ~mailman/Mailman/mm_cfg.py
+   állományban adjuk meg a következõ beállításokat:
 
-   Néhány MTA képes ilyen trükkre az ún. VERP (variable envelope
-   return path = változtatható válaszcímû levél) technikával. Hogy a
-   saját MTA-d képes-e erre arról a beállításainál tudsz meggyõzõdni.
+     VERP_PASSWORD_REMINDERS = 1
+     VERP_PERSONALIZED_DELIVERIES = 1
+     VERP_DELIVERY_INTERVAL = 1
+     VERP_CONFIRMATIONS = 1   
+
+   A VERP (variable envelope return path = változtatható válaszcímû
+   levél) engedélyezése után a lista adminisztrációs oldalán a
+   Nem-Digest küldési beállítások részben ismertetett változók
+   segítségével a felhasználó feliratkozási címét, nevét, beállítási
+   oldalát és jelszavát is el lehet helyezni.
 
 K. A felhasználóim kerülni szeretnék a HTML formátumú leveleket és én
    biztonsági okok miatt szeretném a MIME csatolt állományokat is a 
    levelekbõl eltávolítani. Hogyan tehetem ezt meg?
 
-V. A Mailman 2.1 valószínû már támogatni fogja ezt a lehetõséget, de 
-   addig külsõ programokat, mint pl. a demime vagy stripmime kell
-   használni. Ezekrõl bõvebb információt a következõ oldalakon lehet
-   találni:
+V. A Mailman 2.1-ben lehetõség van a tartalomszûrésre, amellyel 
+   korlátozni, vagy tiltani lehet hogy milyen típusú mellékletek,
+   levelek jelenhetnek  meg a listán. Ehhez szükséges beállításokat a
+   lista adminisztrációs oldalán keresztül a Tartalom szûrés részben
+   lehet módosítani. 
 
-   (Stripmime) http://www.phred.org/~alex/stripmime.html.
+   A 2.1 elõtti Mailman verziókhoz külsõ programokat, minnt pl. a 
+   demime vagy stripmime kell használni. Ezekrõl bõvebb információt 
+   a következõ oldalakon lehet találni:
 
-   (Demime)    http://scifi.squawk.com/demime.html.
+   (Stripmime) http://www.phred.org/~alex/stripmime.html
+
+   (Demime)    http://scifi.squawk.com/demime.html
 
 K. Mi van akkor, ha "document contains no data" (üres dokumentum) 
    üzenetet kapok a webkiszolgálótól, vagy a levelek nem kerülnek fel-
@@ -74,9 +89,9 @@ V. A leggyakoribb hibát az okozza, hogy a C wrapper program nem a web-
    hibát okoz az is, ha a levelezõrendszer más GID-del hívná meg a
    lefordított C levél wrappert.
 
-   A hiba elhárításához újra kell fordítani a Mailman-t a --with-cgi
-   -gid és --with-mail-gid kapcsolókkal. Az INSTALL állományban errõl
-   bõvebben lehet olvasni.
+   A hiba elhárításához újra kell fordítani a Mailman-t a 
+   --with-cgi-gid és --with-mail-gid kapcsolókkal. Az INSTALL állományban
+   errõl bõvebben lehet olvasni.
 
    Ezek a hibaüzenetek nem a Mailman naplóállományaiban, hanem a
    rendszerszintû naplóállományokban jelennek meg. A CGI wrappernél
@@ -102,17 +117,17 @@ V. A leggyakoribb hibát az okozza, hogy a C wrapper program nem a web-
 K. Miért 'fagynak' le a weboldalak?
 
 V. Az ok, hogy a CERN típusú webszerverek a Python folyamatokat futási
-   állapotban hagyhatják, ezzel lefagyaszthatják a CGI-ket. Ezen esetben
-   nincs más, mint használjunk inkább Apache-ot.
-
-   Elõfordulhat, hogy lejárt zárolások vannak jelen. Mailman az adat-
+   állapotban hagyhatják, ezzel lefagyaszthatják a CGI-ket. A
+   probléma kiküszöbölhetõ Apache használatával.
+   
+   Elõfordulhat, hogy lejárt zárolások vannak jelen. A Mailman az adat-
    bázisának biztonsága érdekében szigorúan veszi a zárolást, de
-   néha rendszerhibák következtében lejárt zárolások lehetnek jelen.
-   A $prefix/locks könyvtárban találhatóak a zároló állományok (hogy
-   lejárt-e valamilyek zárolás, az könnyen megállapítható, ha egy
-   ps paranccsal megnézzük, hogy az állományban található folyamat-
-   azonosítóhoz (PID) tartozik-e futó folyamat, ha nem akkor nyugodtan
-   lehet törölni a zároló állományt.) 
+   néha rendszerhibák következtében lejárt zárolások maradhatnak.
+   A $prefix/locks könyvtárban találhatóak a zároló állományok.
+   (Könnyen megállapítható. hogy lejárt-e valamelyik zárolás, ha a ps
+   paranccsal megnézzük, hogy az állományban található folyamatazonosítóhoz
+   (PID) tartozik-e futó folyamat. Amennyibben nem tartozik, akkor az az
+   állomány nyugodtan törölhetõ.) 
 
 K. Mit kell idõnként megnéznem?
 
@@ -120,11 +135,11 @@ V. A szkriptek többsége a ~mailman/logs/error állományba jegyzi be
    hibaüzeneteit, így alkalmanként ebben kell keresnünk hibára utaló 
    üzenetet.
 
-   Az állományban *nem* találhatóak meg a szintaxis hibára vonatkozó
+   Az állományban *nem* találhatóak meg a szintaktikai hibára vonatkozó
    üzenetek, mivel ezek az installálás során, a .py állományok 
-   fordításánál azonnal kibuknak. Szintaxis hibák a forrás nem megfelelõ 
-   módosításánál, vagy olyan szkriptekben, amelyek nem modulok
-   fordulhatnak elõ.
+   fordításánál azonnal megjelennek. Szintaktikai hibák elõfordulhatnak
+   a forrás nem megfelelõ módosításakor, vagy 'nem modul' típusú szkriptek
+   használatakor.
 
    A `compile' vagy `compileall' Python modulokkal bármikor le lehet
    bájtonként fordítani egy állományt, vagy egyszerûen a Python
@@ -146,12 +161,12 @@ V. Apache esetén gyõzõdjünk meg, hogy a FollowSymlinks a nyilvános
 
    http://mail.python.org/pipermail/mailman-users/1998-November/000150.html
 
-K. Még mindig nem megy? QMail-t használok!
+K. Még mindig nem megy? QMail-t használ?
 
-V. Gyõzõdjünk meg róla, hogy a "wrapper" program meghívásánál a
+V. Gyõzõdjünk meg róla, hogy a "mailman" wrapper program meghívásánál a
    "preline" meg van adva:
 
-       |preline /home/mailman/mail/wrapper post listname
+       |preline /home/mailman/mail/mailman post listname
 
    A "preline" használatával egy Unix-típusú "From " fejléc jön létre a
    levelekben, amelyek az archiváláshoz szükségesek. Az archívum mbox
@@ -163,7 +178,7 @@ V. Gyõzõdjünk meg róla, hogy a "wrapper" program meghívásánál a
    Az archívumnak most már létre kell jönnie. További információt a
    README.QMAIL állományban lehet olvasni.
 
-K. Még mindig nem megy? GNU/Linux-ot használok!
+K. Még mindig nem megy? GNU/Linux-ot használ?
 
 V. Olvassuk el a README.LINUX állományt.
 
@@ -270,9 +285,9 @@ V. A listák átnevezése jelenleg még elég bonyolult mûvelet, fõleg ha
    majd változtatni fogunk. :(
 
    A legnagyobb problémát az okozhatja, hogy a lista átnevezése közbeni
-   levélforgalmat, hogyan lehet biztonságosan szüneteltetni. Teljesen
-   biztonságos módszer nincsen, de a következõkben leírtakkal nagyban
-   lehet csökkenteni a hibalehetõséget:
+   levélforgalmat hogyan lehet biztonságosan szüneteltetni. Teljesen
+   biztonságos módszer nincsen, de a következõkben leírtak betartásával
+   a hibalehetõséget nagy mértékben lehet csökkenteni:
 
 
    - Átmenetileg állítsuk le a qrunnert. Ehhez a mailman crontab 
@@ -360,7 +375,7 @@ V. A listák átnevezése jelenleg még elég bonyolult mûvelet, fõleg ha
      o Adjuk az acceptable_aliases részhez a régi lista címét. 
        Pl. "elavult@dom.ain" Ezzel (ha a késõbb leírt /etc/aliases 
        módosítást is elvégezzük) a régi listára küldött levelek nem
-       fognak szerkesztõi jóváhagyásra várni "implicit destination"
+       fognak szerkesztõi jóváhagyásra várni "a címzett nem egyértelmû"
        hibával.
 
      o Mentsük el a változtatásokat.

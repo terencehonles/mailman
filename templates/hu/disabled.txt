@@ -1,5 +1,5 @@
-A(z) %(listaname)s levelezõlista tagságod szüneteltetve lett a
-megengedettnél több visszapattanás miatt. A listáról addig nem kapsz
+A(z) %(listname)s levelezõlista tagságod szüneteltetve lett 
+%(reason)s. A listáról addig nem kapsz
 újabb leveleket, amíg a listatagságodat vissza nem állítod. Még %(noticesleft)s
 ilyen emlékeztetõ üzenetet kapsz, utána a listáról törölni fogunk.
 

@@ -1,10 +1,10 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 Ebben az állományban a GNU Mailman telepítéséhez találunk útmutatót,
-amely a GNU hagyományos autoconf programjával történik. Legelõször
-a rendszeren kell bizonyos beállításokat (ezekrõl alább lehet olvasni)
+amely a GNU szabványos autoconf programjával történik. Legelõször a
+rendszeren kell bizonyos beállításokat (ezekrõl alább lehet olvasni)
 elvégezni, s csak ezek után kell a Mailman programot konfigurálni és
 telepíteni.
 
@@ -13,56 +13,45 @@ a lentebb le van írva, különben a Mailman nem fog megfelelõen mûködni.
 
 FRISSÍTÉS: A frissítés legtöbbször nem jelent mást, mint a régi 
 verzióra egy új verzió másolását. Azonban frissítés elõtt ajánljuk el-
-olvasásra az UPGRADING  állományban található fontos információkat.
+olvasásra az UPGRADING állományban található fontos információkat.
 
 
 0. Telepítési igények
 
-    A Python feldolgozó nyelvnek telepítve kell lennie a rendszeren. 
-    Jelenleg Python 2.0 vagy újabb szükséges a programhoz. Bõvebb
-    információt a Python forráskódjának, vagy RPM csomagjának és 
-    lefordított bináris változatának beszerzésérõl a következõ
-    oldalon olvashatunk:
-
-        http://www.python.org
+    Rendelkeznünk kell egy levelezõszerverrel (MTA), ahová a leveleket
+    lehet küldeni, és egy webszerverrel, amely támogatja a CGI/1.1 API-t.
+    Webszervernek az Apache megfelelõ választás, míg MTA-nak a Postfix,
+    az Exim, a Sendmail és qmail közül bármelyik megfelel.
 
     Ezenfelül egy ANSI C fordítóval is rendelkeznünk kell, amelynek 
     segítségével lehet a biztonsági követelményeknek megfelelõ wrapper
     programokat elõállítani. GNU C fordítója, a gcc 2.8.1 vagy ennél
     frissebb megfelel a célnak. A gcc beszerzésérõl bõvebben a 
     következõ oldalon olvashatunk:
-    
+
         http://www.gnu.org
+    
+    A Python feldolgozó nyelvnek is telepítve kell lennie a rendszeren. 
+    A megfelelõ mûködéshez jelenleg a Python 2.1.3-as vagy 2.2.1-es
+    verziója ajánlott. Bõvebb információt a Python forráskódjának, vagy
+    RPM csomagjának és lefordított bináris változatának beszerzésérõl a
+    következõ oldalon olvashatunk:
 
-    Mailman 2.1 mûködéséhez szükség van az "email" csomagra, amely a 
-    Python 2.2 része. Ha régebbi verziójú Pythont használunk, akkor 
-    telepítenünk kell ezt a különálló csomagot a következõ módon:
+        http://www.python.org
 
-    % cd misc
-    % tar zxf email-0.96.tar.gz
-    % cd email-0.96
-    % python setup.py install
-
-    Az email programcsomag sikeres telepítését a következõképpen
-    ellenõrizhetjük:
-
-    % python
-    Python 2.1.1 (#1, Aug 31 2001, 17:07:00) 
-    [GCC egcs-2.91.66 19990314/Linux (egcs-1.1.2 release)] on linux2
-    Type "copyright", "credits" or "license" for more information.
-    >>> import email
-    >>> email.__version__
-    '0.93'
-
-    (Megjegyzés: a megjelenõ verziószám Python 2.2 esetén "1.0" lesz; 
-    bármelyik verzió megfelelõ.)
-
-    Ha találunk a levélszerverünkhöz (MTA) README.<MTAnk> állományt,
-    akkor olvassuk el azt. Néhány MTA jobban együtt tud mûködni a
-    Mailmannal, ezeknél webfelületrõl automatikusan tudunk listákat
-    létrehozni vagy megszüntetni. Ilyen levélszerver az Exim vagy a
-    Postfix. A levélszerverhez szükséges beállításokról a megfelelõ
-    README állományokban lehet olvasni.
+    Ha a Python-t forráskódjából szeretnénk telepíteni, akkor az Unix-
+    típusú operációs rendszereknél elegendõ a hagyományos parancsokat,
+    "./configure; make install" kiadni. A "make test" futtatásánál jópár
+    tesztelési lépést át lesz ugorva -- de ne aggódjunk, ezekre a 
+    funkciókra valószínûleg nem is lesz szükségünk. A Mailman csak azokat
+    az alapvetõ funkciókat használja, amelyek minden gépen megtalálhatóak.
+    
+    Ha találunk a levelezõszerverünkhöz (MTA) README.<MTA-nk> állományt,
+    akkor olvassuk el azt. A Mailman egyes MTA-kkal képes fejlettebb
+    együttmûködésre (pl. listák automatikus létrehozása, megszüntetése
+    webfelületrõl). Ilyen levelezõszerver az Exim vagy a Postfix. A 
+    levelezõszerverhez szükséges beállításokról a megfelelõ README
+    állományokban lehet olvasni.
 
 
 1. A rendszer beállítása
@@ -79,9 +68,9 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       található megjegyzést.
      
     - Hozzunk létre egy `mailman' nevû csoportot. Ez legtöbbször az
-      /etc/group állományba kerül bejegyzésre. A Mailman állományai
-      `mailman' csoport tulajdonában kerülnek telepítésre, set-group-id
-      bit jogokkal. Ezzel mind a webes és levelezõprogramok együtt 
+      /etc/group állományba kerül bejegyzésre. A Mailman állományai a
+      `mailman' csoport tulajdonában kerülnek telepítésnél, set-group-id
+      bit jogokkal. Ezzel mind a webes, mind a levelezõprogramok együtt 
       tudnak mûködni. Ha a `mailman' csoportnév már foglalt, akkor 
       bármilyen más egyedi nevet megadhatunk. Ekkor olvassuk el alább
       a --with-groupname kapcsolónál található megjegyzést.
@@ -96,15 +85,16 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       /usr/local/mailman. Mailman 2.1alpha2-nél régebbi verzióknál ez
       a /home/mailman könyvtár volt. Az alapértelmezett beállítást
       a configure parancs --prefix kapcsolójával lehet megváltoztatni.
-      Ha Mailman 2.1alpha2-nél régebbi verziót szeretnénk frissíteni,
-      akkor külön meg kell adnunk a --prefix kapcsolót, hacsak nem
-      akarjuk a listákat magunktól áthelyezni.
+      Ha Mailman 2.1-nél régebbi verziót szeretnénk frissíteni, akkor
+      külön meg kell adnunk a --prefix kapcsolót, hacsak nem akarjuk a
+      listákat magunktól áthelyezni (ez elõnyõs lehet, ha saját magunk
+      szeretnénk a frissítést elvégezni).
       
       Néhány rendszeren az /usr/local könyvtárat tartalmazó partíción 
       tiltva van a SUID programok futtatása. A Mailman rendes mûködéséhez
-      'set-gid'-es programokat használ, ezért ilyen partíciókra nem 
-      célszerû telepíteni.
-      Ha a rendszer ilyen partícióval rendelkezik, akkor a Mailmant
+      'set-gid'-es programokat használ, ezért az ilyet nem támogató
+      partíciókra nem célszerû telepíteni a programot.
+      Ha a rendszer ilyen partícióval rendelkezik, akkor a Mailman-t
       olyan könyvtárba kell telepíteni, ahol engedélyezett a setgid
       programok futása.
       
@@ -119,7 +109,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
           % chgrp mailman .
           % chmod a+rx,g+ws .
 
-      Ezek után lehet a Mailmant telepítésre felkészíteni, majd
+      Ezek után lehet a Mailman-t telepítésre felkészíteni, majd
       telepíteni.
 
 
@@ -132,7 +122,10 @@ olvasásra az UPGRADING  állományban található fontos információkat.
     rendelkeznünk. A saját bejelentkezési nevünk alatt, vagy azon névvel,
     amellyel általában telepítjük a programokat is végrehajthatjuk a
     következõ parancsokat. Nem szükséges mailman felhasználóként sem
-    a lépéseket követni, de akár mailman-ként is dolgozhatunk.
+    a lépéseket követni, de akár mailman-ként is dolgozhatunk. Azonban
+    gyõzõdjünk meg róla, hogy az alkalmazott felhasználóinév tagja-e a
+    mailman csoportnak, mivel az elõzõ lépésben létrehozott könyvtárhoz
+    írási joggal rendelkezik a mailman csoport.
 
     Fontos, hogy a telepítés könyvtárához legyen írási jogunk, valamint
     setgid beállítási lehetõség (NFS és más köteteket be lehet
@@ -195,7 +188,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 	    csoportazonosító számot vagy csoport nevet is meg lehet
 	    adni. A felsoroltak közül a legelsõ, amelyik létezõ
 	    csoportot ad meg kerül felhasználásra. Alapesetben a lista
-	    értéke `other daemon'.
+	    értéke `mailman other mail daemon'.
 
 	    Ez beállítás rendszerenként változik, így minden 
 	    rendszeren ellenõrizni kell, mivel a csoport azonosítója
@@ -205,8 +198,8 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 	    (Ha nincs megadva, csak megjegyzésként feltüntetve 
 	    /commented out/, akkor is valószínû a jó értéket mutatja...)
 
-	    Ez itt megadandó értékhez olvassuk el a saját MTAnk 
-	    dokumentációjaát vagy konfigurációs állományát.
+	    Az itt megadandó értékhez olvassuk el a saját MTA-nk 
+	    dokumentációját vagy konfigurációs állományát.
 
       --with-cgi-gid=<csoport-vagy-csoportok>
 	    Egyéni csoportot lehet megadni a szkriptek futtatásához
@@ -233,9 +226,9 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 	    A <kiterjesztés>-ben a pontot is meg kell adni.
 
       --with-gcc=no
-	    A fordításhoz ne gcc-t, még ha az a rendszeren meg is
-	    található, használjon. Ilyenkor a $PATH-ból elérhetõnek
-	    kell lennie a `cc' fordítóprogramnak.
+	    A fordításhoz ne gcc-t használjon, még ha az meg is található
+	    a rendszeren. Ilyenkor a $PATH-ból elérhetõnek kell lennie
+	    a `cc' fordítóprogramnak.
 
 
 3. Telepítés utáni ellenõrzés
@@ -258,7 +251,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 
     - Be kell lépni azon felhasználóként, akivel a telepítés történt
       (és aki tulajdonosa a $prefix-ben található állományoknak), vagy
-      rootként kell a következõket végrehajtani:
+      rootként; és a következõket kell végrehajtani:
 
     - bin/check_perms -f    parancs kiadása
 
@@ -268,7 +261,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 4. Végsõ beállítások
 
     Gratulálunk! Sikeresen telepítettük a Mailman programot. A mûködéséhez
-    már csak a web részt és levelezõrészt kell a Mailmannal egybehangolni. 
+    már csak a web részt és levelezõrészt kell a Mailman-nel egybehangolni. 
 
     - Ha a levelezõrendszert és web kiszolgálót eltérõ gépeken szeretnénk
       futtatni, a Mailman programot NFS-en megosztani, akkor fontos,
@@ -294,9 +287,10 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 
     - A Mailman, Python és GNU logókat másoljuk a web kiszolgáló által
       is elérhetõ könyvtárba. Pl. Apache-nál van egy `icons' könyvtár,
-      ahova érdemes a megosztott képeket másolni. A $prefix/icons/mailman.jpg, 
-      $prefix/icons/PythonPowered.png, és $prefix/icons/gnu-head-tiny.jpg
-      állományokat másoljuk át ide.
+      ahova érdemes a megosztott képeket másolni. A képeket a következõ
+      paranccsal tudjuk a megfelelõ könyvtárba másolni:
+
+       % cp $prefix/icons/*.{jpg,png} /apache/eleresi/utvonala/icons
 
       Ezek után a $prefix/Mailman/mm_cfg.py állományban lehet megadni
       a logók elérést. Valahogy így:
@@ -320,20 +314,22 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       A kiszolgálót be kell állítani a szimbolikus kötések követésére
       is különben a Pipermail archívumot nem lehet elérni. Apache
       felhasználóknak a FollowSymLinks opciót kell megadniuk.
-      
+
+      Ha a levelezõlistáink nyilvános archívumait különbözõ nemzeti 
+      nyelveken is helyesen szeretnénk megjeleníteni, akkor fontos, hogy
+      kapcsoljuk ki a webszerverünk alapértelmezett karakterkódolását.
+      Apache esetén ehhez az "AddDefaultCharset off" sort kell elhelyezni
+      a konfigurációs állományában.
+
       Ezek után indítsuk újra a web kiszolgálót.
 
     - A crontab beállítása. A Mailman mûködéséhez számos folyamatot
-      kell a cron-nak futtatnia. 2.1alpha2-nél régebbi verziójú
-      Mailmannál a program helyes mûkõdéséhez elengedhetetlen volt a
-      crontab megfelelõ beállítása. MM2.1alpha2-tõl fogva a qrunner-t
-      a bin/mailmanctl szkript futtatja a cron helyett. Ezek ellenére
-      azonban a helyes mûködéshez célszerû ezeket a beállításokat is
-      elvégezni. Régebbi verziójú Mailman frissítésekor el ne felejtsük
-      az új crontab beállításokat elvégezni. Ha egyidejûleg több 
-      Mailman-t szeretnénk a rendszerünkön futtatni, akkor ügyeljünk
-      a crontab helyes beállítására, mivel a hibás crontab beállítások
-      a párhuzamosan mûködõ Mailman-oknál hibához vezethet.
+      kell a cron-nak futtatnia. Régebbi verziójú Mailman frissítésekor
+      ne felejtsük el az új crontab beállításokat elvégezni. Ha
+      egyidejûleg több Mailman-t szeretnénk a rendszerünkön futtatni,
+      akkor ügyeljünk a crontab helyes beállítására, mivel a hibás
+      crontab beállítások a párhuzamosan mûködõ Mailman-eknél hibához
+      vezethet.
 
       Ha a crontab támogatja az -u kapcsolót, akkor a következõ lépéseket
       root-ként hajtsuk végre. A $prefix/cron/crontab.in felvételéhez
@@ -361,18 +357,27 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       parancsot (pl. RedHat és Mandrake Linux), akkor rootként elég
       a következõ parancsokat kiadni:
       
-          % cp misc/mailman /etc/init.d/mailman
+          % cp scripts/mailman /etc/init.d/mailman
           % chkconfig --add mailman
 
       (Néhány rendszernél az /etc/init.d helyett /etc/rc.d/init.d -t
       kell használni.)
 
-      Azon Unix rendszereknél, amelyek nem támogatják a chkconfig
-      programot másoljuk át a misc/mailman állományt az init könyvtárba,
-      ahogy azt feljebb mutattuk és hozzuk létre a szimbolikus kötéseket
-      rootként a következõ parancsokkal:
+      Debian-t használók a chkconfig helyett a
 
+         % update-rc.d mailman defaults
+
+      parancsot használják.
+
+      Azon Unix rendszereknél, amelyek nem támogatják a chkconfig
+      programot másoljuk át a scripts/mailman állományt az init 
+      könyvtárba:
+      
           % cp misc/mailman /etc/init.d
+
+      és hozzuk létre a szimbolikus kötéseket rootként a következõ 
+      parancsokkal:
+
           % cd /etc/rc.d/rc0.d
           % ln -s ../init.d/mailman K12mailman
           % cd ../rc1.d
@@ -391,7 +396,11 @@ olvasásra az UPGRADING  állományban található fontos információkat.
    - Ellenõrízzük, hogy a Defaults.py állományban a DEFAULT_EMAIL_HOST
      és DEFAULT_URL_HOST változók helyes értéket mutatnak. Ha nem, 
      akkor a helyes értékkel ezeket a változókat az mm_cfg.py állományba
-     helyezzük el.
+     helyezzük el. Megjegyezzük, hogyha ezen két változó valamelyikét
+     modósítjuk, akkor lehet hogy szükséges az mm_cfg.py állományba ezen
+     változók után még megadni a következõ parancsot is:
+
+      add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
 
    - Hozzuk létre a "központi" levelezõlistát. A jelszó emlékeztetõk
      ennek a listának a címérõl fognak érkezni. A lista neve általában
@@ -399,36 +408,38 @@ olvasásra az UPGRADING  állományban található fontos információkat.
      változó segítségével, amelyet az mm_cfg.py (lásd késõbb) állományban
      kell megadni.
 
-     % bin/newlist mailman
+      % bin/newlist mailman
 
+     Kövessük az utasításokat és bõvebb információkért olvassuk el a
+     README.hu állományt.
+    
    - Ezek után iratkozzunk fel erre a mailman levelezõlistára.   
     
     
 5. Mailman finomhangolása
 
-    A következõ beállításokat a 2-es fejezetben tárgyalt felhasználóként
+    A következõ beállításokat a 2. fejezetben tárgyalt felhasználóként
     hajtsuk végre.
 
     - A $prefix/Mailman/Defaults.py számos beállítást tartalmaz. Ha 
       ezek valamelyikét meg akarjuk változtatni, akkor azt a 
       $prefix/Mailman/mm_cfg.py állományban kell megadni és SOHA SEM
-      a Defaults.py állományban. A Defaults.py-ben minderrõl bõvebben
-      lehet olvasni. A listák létrehozása után, ha ezeket a beállításokat
-      megváltoztatjuk, akkor többnyire nem okoznak változást. A listákat
-      az adminisztrációs oldalon keresztül, vagy parancssorban a 
-      bin/config_list parancs segítségével lehet beállítani.
-
-      Ellenõrizzük le, hogy a DEFAULT_HOST_NAME és DEFAULT_URL
-      helyesen van-e kitöltve. Az utóbbinak perjellel KELL végzõdnie.
+      a Defaults.py állományban. A Defaults.py-ben minden beállításról
+      bõvebb információ található. Egyes beállítások megváltoztatásának
+      nincs hatása már létrehozott listáknál, ha szeretnénk a már létezõ
+      listákra is alkalmazni a módosított beállításokat, akkor újra létre
+      kell hozni az adott listát. A listákat az adminisztrációs oldalon
+      keresztül, vagy parancssorban a bin/withlist vagy bin/config_list
+      parancs segítségével lehet beállítani.
 
       A telepítés nem írja felül a létezõ mm_cfg.py állományt, így
-      abban nyugodtan el lehet helyezni a szükséges beállításokat.
+      abban nyugodtan el lehet helyezni a szükséges személyes beállításokat.
 
       Fontos: Soha *ne* változtassuk meg a HOME_DIR vagy MAILMAN_DIR
       változók értékét. Ezeket automatikusan a telepítõ állítja be.
 
       Magyar nyelv ékezetes betûinek helyes megjelenítéséhez az alábbi
-      sorokat kell elhelyeznünk az mm_cfg.py állományban:
+      sorokat helyezzük el az mm_cfg.py állományban:
 
         DEFAULT_CHARSET='iso-8859-2'
         VERBATIM_ENCODING=['iso-8859-2']
@@ -462,8 +473,9 @@ olvasásra az UPGRADING  állományban található fontos információkat.
   
     Ha hibát észlelünk a Mailman mûködése során, akkor elõször olvassuk
     el a "Gyakori hibák" részt. Ha ott nem találunk megoldást, akkor 
-    nézzük meg a FAQ.hu és FAQ.LINUX állományokat. Ezek után ellenõrizzük
-    a naplóállományokban a Mailman bejegyzéseket.
+    nézzük meg a FAQ.hu állományt és az Interneten az online FAQ Wizard-ot.
+    Ezek után ellenõrizzük a $prefix/logs/error állományban a Mailman
+    bejegyzéseket.
 
     A naplóállományok helye rendszerenként változik. Lehet az a
     /var/log/maillog, vagy a /var/log/syslog. Számos gépen a napló-
@@ -473,14 +485,14 @@ olvasásra az UPGRADING  állományban található fontos információkat.
     Hiba esetén küldjük el a hiba leírását a mailman-users@python.org 
     címre. Mondjuk el, hogy mit csináltunk a hiba elõtt és hogy mit
     tartalmaznak ezzel kapcsolatban a naplóállományok. Ezen túl adjuk
-    meg a gépünk paramétereit és a Python verziószámát.
+    meg a gépünk paramétereit és a használt Python, Mailman verziószámát.
 
 8. Gyakori hibák
 
     Hiba: Az összes Mailman oldalra a "404 File not found" üzenetet kapom.
 
     Megoldás: Nincs megfelelõen beállítva a web kiszolgálója a Mailman
-   	      cgi parancsok futtatására. Gyõzõdjünk meg a következõkrõl:
+   	      CGI parancsok futtatására. Gyõzõdjünk meg a következõkrõl:
               
 	      1) A web kiszolgáló be van állítva a $prefix/cgi-bin
 	         futtatására
@@ -499,7 +511,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
                   Attempt to exec script with invalid gid 51, expected 99
 
               akkor újra kell telepíteni a Mailmant és a $CGI-GID-nek 51-et
-              adjunk meg (lásd a telepítés részt feljebb).
+              adjunk meg a telepítés részben ismertetettek szerint.
 
 
     Hiba:     A listára küldött levelem visszajön azzal az üzenettel, hogy 
@@ -509,7 +521,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
               alias adatbázisához adva a newlist parancs futtatása után. Ha
               mégis hozzá lettek adva, akkor valószínû nem lett frissítve az
               adatbázis, vagy nem lett futtatva a newaliases parancs. Ekkor 
-              az 5-ös fejezetben tárgyaltak szerint járjunk el.
+              az 5. fejezetben tárgyaltak szerint járjunk el.
 
 
     Hiba:     A listára küldött levelem visszajön a következõ üzenettel:
@@ -537,7 +549,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 	      *mailman felhasználóként* futtassuk a Postfix "postalias"
               parancsát ezen az állományon.
 
-              % postalias <the alias file>
+              % postalias <alias_fájl_neve>
 
               Még mindig mailman felhasználóként adjuk ki a következõt:
 
@@ -555,11 +567,11 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 
 
     Hiba:     A listára küldött levelem visszajön a következõ üzenettel:
-              "sh: wrapper not available for sendmail programs"
+              "sh: mailman not available for sendmail programs"
 
     Megoldás: A rendszer sendmail korlátozott shell-t használ (smrsh). Be
               kell állítani az smrsh-t úgy, hogy egy szimbolikus hivatkozást
-              hozunk létre a mail wrapperrõl (%prefix/mail/mailman) abba
+              hozunk létre a mail wrapper-rõl (%prefix/mail/mailman) abba
               a könyvtárba, amelyben az engedélyezett smrsh-k futhatnak.
 
               Ezt a könyvtárat általában a /var/admin/sm.bin, 
