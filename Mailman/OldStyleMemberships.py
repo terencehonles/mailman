@@ -155,6 +155,9 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         return [member for member in self.getMembers()
                 if self.getDeliveryStatus(member) in status]
 
+    def getBouncingMembers(self):
+        return [member.lower() for member in self.__mlist.bounce_info.keys()]
+
     def getBounceInfo(self, member):
         self.__assertIsMember(member)
         return self.__mlist.bounce_info.get(member.lower())

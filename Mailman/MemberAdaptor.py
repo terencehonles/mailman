@@ -196,6 +196,15 @@ class MemberAdaptor:
         """
         raise NotImplemented
 
+    def getBouncingMembers(self):
+        """Return the list of members who have outstanding bounce information.
+
+        This list of members doesn't necessarily overlap with
+        getDeliveryStatusMembers() since getBouncingMembers() will return
+        member who have bounced but not yet reached the disable threshold.
+        """
+        raise NotImplemented
+
     def getBounceInfo(self, member):
         """Return the member's bounce information.
 
