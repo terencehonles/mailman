@@ -4,6 +4,7 @@ The Mailman TODO list
 - "Stale" addresses don't update properly when new bounces come in 
   (stale means we had some bounces, but delivery to that address started 
   working again before we booted them from the list)
+- Treat corrupted queue files more gracefully.
 
 *Documentation
 - A detailed feature list
@@ -49,12 +50,13 @@ The Mailman TODO list
 - Allow the admin to disable option settings by users
 - Allow the admin to easily "retire" a list, both through the Web or
   email commands.
+- Ability to set defaults for the various user settings from the
+  "Membership Management" page. 
 - Allow admins to control and set individual headers, adding,
   removing, or overriding those in the original message (sometimes
   very useful, but could be dangerous!)
 - member management page should display case-preserved email addresses 
   (but still sort case-insensitively).
-  
 
 *List Member UI
 - Editing your user options should put you back to the edit-options page. 
@@ -138,7 +140,8 @@ The Mailman TODO list
   lists still can have their own data, but the user can set defaults in
   their profile...
 - Need to go through and verify there are no obvious security problems.
-
+- Restrict file and directory permissions as much as possible without
+  breaking Mailman functionality.
 
 
 Local Variables:
