@@ -59,8 +59,9 @@ def process(mlist, msg, msgdata):
         return
     # Should the original sender should be included in the recipients list?
     include_sender = 1
+    sender = msg.get_sender()
     try:
-        if mlist.getMemberOption(msg.get_sender(), mm_cfg.DontReceiveOwnPosts):
+        if mlist.getMemberOption(sender, mm_cfg.DontReceiveOwnPosts):
             include_sender = 0
     except Errors.NotAMemberError:
         pass
@@ -75,8 +76,8 @@ def process(mlist, msg, msgdata):
         if mlist.Authenticate((mm_cfg.AuthListModerator,
                                mm_cfg.AuthListAdmin),
                               password):
-            recips = mlist.GetDeliveryMembers() + \
-                     mlist.GetDigestDeliveryMembers()
+            recips = mlist.getMemberCPAddresses(mlist.getRegularMemberKeys() +
+                                                mlist.getDigestMemberKeys())
             msgdata['recips'] = recips
             return
         else:
