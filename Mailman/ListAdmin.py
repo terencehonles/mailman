@@ -284,8 +284,9 @@ class ListAdmin:
             fmsg = Message.UserNotification(addr,
                                             self.GetAdminEmail(),
                                             _('Forward of moderated  message'))
-            fmsg.add_header('Content-Type', 'message/rfc822')
-            fmsg.add_payload(copy)
+            fmsg['Content-Type'] = 'message/rfc822'
+            fmsg['MIME-Version'] = '1.0'
+            fmsg.set_payload(copy)
             fmsg.send(self)
         # Log the rejection
 	if rejection:
