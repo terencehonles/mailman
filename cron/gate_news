@@ -100,7 +100,7 @@ def poll_newsgroup(mlist, conn, first, last):
             # (i.e. "From " header).  This breaks Pipermail archiving, so we
             # will synthesize one.  Be sure to use the format searched for by
             # mailbox.UnixMailbox._isrealfromline()
-            timehdr = time.asctime(time.localtime(time.time()))
+            timehdr = time.ctime(time.time())
             lines = ['From ' + mlist.GetAdminEmail() + '  ' + timehdr]
             lines.extend(headers)
             lines.append('')
