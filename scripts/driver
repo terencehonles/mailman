@@ -27,7 +27,7 @@ import sys
 # comfortable with.  By setting STEALTH_MODE to 1, you disable the printing of
 # this information to the web pages.  This information is still, and always,
 # printed in the error logs.
-STEALTH_MODE = 0
+STEALTH_MODE = 1
 
 
 
