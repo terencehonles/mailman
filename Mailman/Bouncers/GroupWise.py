@@ -18,6 +18,7 @@
 
 X-Mailer: Novell GroupWise Internet Agent 5.5.3.1
 X-Mailer: NTMail v4.30.0012
+X-Mailer: Internet Mail Service (5.5.2653.19)
 """
 
 import re
@@ -57,6 +58,8 @@ def process(msg):
             addrs[mo.group('addr')] = 1
         elif '@' in line:
             i = line.find(' ')
+            if i == 0:
+                continue
             if i < 0:
                 addrs[line] = 1
             else:
