@@ -28,6 +28,7 @@
 """
 
 from email.Utils import parseaddr
+from email.Header import decode_header, make_header
 
 from Mailman import Utils
 from Mailman import Errors
@@ -82,6 +83,15 @@ def process(res, args):
         if not address:
             res.results.append(_('No valid address found to subscribe'))
             return STOP
+        # Watch for encoded names
+        h = make_header(decode_header(realname))
+        # BAW: in Python 2.2, use just unicode(h)
+        realname = h.__unicode__()
+        # Coerce to byte string if uh contains only ascii
+        try:
+            realname = realname.encode('us-ascii')
+        except UnicodeError:
+            pass
     # Create the UserDesc record and do a non-approved subscription
     listowner = mlist.GetOwnerEmail()
     userdesc = UserDesc(address, realname, password, digest)
