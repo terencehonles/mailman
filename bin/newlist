@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -196,16 +196,16 @@ def main():
         # Set the I18N language to the list's preferred language so the header
         # will match the template language.  Stashing and restoring the old
         # translation context is just (healthy? :) paranoia.
-        otranslation = i18n.get_translation()
+        otrans = i18n.get_translation()
         i18n.set_language(mlist.preferred_language)
         try:
             msg = Message.UserNotification(
                 owner_mail, siteadmin,
                 _('Your new mailing list: %(listname)s'),
-                text)
+                text, mlist.preferred_language)
             msg.send(mlist)
         finally:
-            i18n.set_translation(otranslation)
+            i18n.set_translation(otrans)
 
 
 

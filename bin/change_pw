@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -74,7 +74,9 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import Message
-from Mailman.i18n import _
+from Mailman import i18n
+
+_ = i18n._
 
 SPACE = ' '
 
@@ -172,12 +174,15 @@ def main():
         # Notification
         print _('New %(listname)s password: %(notifypassword)s')
         if not quiet:
-            hostname = mlist.host_name
-            adminurl = mlist.GetScriptURL('admin', absolute=1)
-            msg = Message.UserNotification(
-                mlist.owner[:], Utils.get_site_email(),
-                _('Your new %(listname)s list password'),
-                _('''\
+            otrans = i18n.get_translation()
+            i18n.set_language(mlist.preferred_language)
+            try:
+                hostname = mlist.host_name
+                adminurl = mlist.GetScriptURL('admin', absolute=1)
+                msg = Message.UserNotification(
+                    mlist.owner[:], Utils.get_site_email(),
+                    _('Your new %(listname)s list password'),
+                    _('''\
 The site administrator at %(hostname)s has changed the password for your
 mailing list %(listname)s.  It is now
 
@@ -188,7 +193,10 @@ to log in now to your list and change the password to something more to your
 liking.  Visit your list admin page at
 
     %(adminurl)s
-'''))
+'''),
+                    mlist.preferred_language)
+            finally:
+                i18n.set_translation(otrans)
             msg.send(mlist)
 
 
