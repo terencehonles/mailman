@@ -29,7 +29,7 @@ def process(mlist, msg, msgdata):
         del msg['from']
         del msg['reply-to']
         del msg['sender']
-        msg['From'] = mlist.GetAdminEmail()
+        msg['From'] = mlist.GetListEmail()
         msg['Reply-To'] = mlist.GetListEmail()
     # Some headers can be used to fish for membership
     del msg['return-receipt-to']

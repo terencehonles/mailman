@@ -62,6 +62,6 @@ def process(mlist, msg, msgdata):
     # necessary for general delivery.  Then enqueue it to the outgoing
     # queue.
     subject = _('%(realname)s post acknowledgement')
-    usermsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
+    usermsg = Message.UserNotification(sender, mlist.GetBouncesEmail(),
                                        subject, text, lang)
     usermsg.send(mlist)

@@ -184,7 +184,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     listname = mlist.real_name
     sender = msg.get_sender()
     owneraddr = mlist.GetOwnerEmail()
-    adminaddr = mlist.GetAdminEmail()
+    adminaddr = mlist.GetBouncesEmail()
     requestaddr = mlist.GetRequestEmail()
     # We need to send both the reason and the rejection notice through the
     # translator again, because of the games we play above

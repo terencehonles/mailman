@@ -140,7 +140,7 @@ def do_discard(mlist, msg):
         varhelp = '%s/?VARHELP=privacy/sender/discard_these_nonmembers' % \
                   mlist.GetScriptURL('admin', absolute=1)
         nmsg = Message.UserNotification(mlist.GetOwnerEmail(),
-                                        mlist.GetAdminEmail(),
+                                        mlist.GetBouncesEmail(),
                                         _('Auto-discard notification'),
                                         lang=mlist.preferred_language)
         nmsg.set_type('multipart/mixed')

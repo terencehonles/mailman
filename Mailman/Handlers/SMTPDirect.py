@@ -83,7 +83,7 @@ def process(mlist, msg, msgdata):
         return
     # Calculate the non-VERP envelope sender.
     if mlist:
-        envsender = mlist.getListAddress('bounces')
+        envsender = mlist.GetBouncesEmail()
     else:
         envsender = Utils.get_site_email(extra='bounces')
     # Time to split up the recipient list.  If we're personalizing or VERPing

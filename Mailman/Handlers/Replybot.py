@@ -69,7 +69,7 @@ def process(mlist, msg, msgdata):
     d = SafeDict({'listname'    : realname,
                   'listurl'     : mlist.GetScriptURL('listinfo'),
                   'requestemail': mlist.GetRequestEmail(),
-                  'adminemail'  : mlist.GetAdminEmail(),
+                  'adminemail'  : mlist.GetBouncesEmail(),
                   'owneremail'  : mlist.GetOwnerEmail(),
                   })
     # Just because we're using a SafeDict doesn't mean we can't get all sorts

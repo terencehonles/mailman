@@ -60,7 +60,7 @@ def process(mlist, msg, msgdata):
         # Nobody to deliver to!
         return
     # Use -f to set the envelope sender
-    cmd = mm_cfg.SENDMAIL_CMD + ' -f ' + mlist.GetAdminEmail() + ' '
+    cmd = mm_cfg.SENDMAIL_CMD + ' -f ' + mlist.GetBouncesEmail() + ' '
     # make sure the command line is of a manageable size
     recipchunks = []
     currentchunk = []
