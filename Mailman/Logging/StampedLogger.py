@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 import time
-from Mailman.Logging.Logger import Logger
+from Logger import Logger
 
 class StampedLogger(Logger):
     """Record messages in log files, including date stamp and optional label.
