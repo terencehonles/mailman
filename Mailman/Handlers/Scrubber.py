@@ -64,7 +64,8 @@ except ImportError:
                 if t == ctype:
                     all.append(e)
         check(mimetypes.types_map)
-        if not strict:
+        # Python 2.1 doesn't have common_types.  Sigh, sigh.
+        if not strict and hasattr(mimetypes, 'common_types'):
             check(mimetypes.common_types)
         return all
 
@@ -78,7 +79,7 @@ def guess_extension(ctype, ext):
     all = guess_all_extensions(ctype, strict=0)
     if ext in all:
         return ext
-    return all[0]
+    return all and all[0]
 
 
 
@@ -299,13 +300,16 @@ Url : %(url)s
             if partcharset and partcharset <> charset:
                 try:
                     t = unicode(t, partcharset, 'replace')
-                    # Should use HTML-Escape, or try generalizing to UTF-8
-                    t = t.encode(charset, 'replace')
-                except UnicodeError:
+                except (UnicodeError, LookupError):
                     # Replace funny characters
                     t = unicode(t, 'ascii', 'replace').encode('ascii')
+                try:
+                    # Should use HTML-Escape, or try generalizing to UTF-8
+                    t = t.encode(charset, 'replace')
+                except (UnicodeError, LookupError):
+                    t = t.encode(lcset, 'replace')
             # Separation is useful
-            if t[-1] <> '\n':
+            if not t.endswith('\n'):
                 t += '\n'
             text.append(t)
         # Now join the text and set the payload
