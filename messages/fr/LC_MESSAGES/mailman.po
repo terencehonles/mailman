@@ -28,7 +28,7 @@ msgstr "Chargement de l'etat pickle des archives"
 
 #: Mailman/Archiver/pipermail.py:305
 msgid "Pickling archive state into "
-msgstr "Pickle de l'etat des archives vers"
+msgstr "Pickle de l'etat des archives vers "
 
 #: Mailman/Archiver/pipermail.py:416
 msgid "Updating index files for archive [%(archive)s]"
@@ -80,7 +80,7 @@ msgstr "Liste inexistante <em>%(safelistname)s</em>"
 #: Mailman/Cgi/admin.py:86 Mailman/Cgi/admindb.py:101
 #: Mailman/Cgi/edithtml.py:85 Mailman/Cgi/private.py:123
 msgid "Authorization failed."
-msgstr "Echec de l'authentification."
+msgstr "Echec de l'autorisation."
 
 #: Mailman/Cgi/admin.py:176
 msgid ""
@@ -90,8 +90,8 @@ msgid ""
 "                non-digest delivery or your mailing list will basically be\n"
 "                unusable."
 msgstr ""
-"Vous avez désactivé aussi bien les modes de remise groupé qu'indivuduels.\n"
-"C'est un paramètrage incompatible. Vous devez en activer un faute de quoi,\n"
+"Vous avez désactivé la remise groupé et la remise indivuduel.  C'est\n"
+"un paramètrage incompatible. Vous devez en activer un faute de quoi,\n"
 "votre liste de diffusion sera inutilisable."
 
 #: Mailman/Cgi/admin.py:180 Mailman/Cgi/admin.py:186 Mailman/Cgi/admin.py:191
@@ -2620,8 +2620,7 @@ msgstr "Hebdomadaire"
 
 #: Mailman/Gui/Archive.py:43
 msgid "How often should a new archive volume be started?"
-msgstr ""
-"Avec quelle périodicité de nouveaux volumes d'archives doivent-ils être crées"
+msgstr "Avec quelle périodicité de nouveaux volumes d'archives doivent-ils être créés"
 
 #: Mailman/Gui/Autoresponse.py:31
 msgid "Auto-responder"
@@ -2828,7 +2827,7 @@ msgstr ""
 "certaine période -- durant laquelle aucun rebond provenant de l'abonné\n"
 "n'est reçu -- les informations de rebond sont <a\n"
 "href=\"?VARHELP=bounce/bounce_info_stale_after\">considérées comme\n"
-"caduques</a> et ignorées. Ainsi, si vous ajuster ce paramètre et la\n"
+"caduques</a> et ignorées. Ainsi, si vous ajustez ce paramètre et la\n"
 "limite du score, vous pourrez contrôler la rapidité avec laquelle les\n"
 "abonnés à rebond sont désactivés. Ces deux paramètres doivent être\n"
 "adaptés à la taille et au volume du trafic de votre liste."
@@ -5446,7 +5445,7 @@ msgstr "La soumission de message sur cette liste vous est interdit."
 
 #: Mailman/Handlers/Hold.py:59
 msgid "Post to moderated list"
-msgstr "Soumettre vers une liste modérée"
+msgstr "Soumission sur une liste modérée"
 
 #: Mailman/Handlers/Hold.py:63
 msgid "Post by non-member to a members-only list"
