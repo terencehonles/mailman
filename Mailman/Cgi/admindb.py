@@ -27,6 +27,7 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import Message
+from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
@@ -43,48 +44,6 @@ def handle_no_list(doc, extra=''):
     link = link + 'admin'
     doc.AddItem(Link(link, 'list of available mailing lists.'))
     print doc.Format(bgcolor="#ffffff")
-
-
-
-def authenticated(mlist, cgidata):
-    # Returns 1 if the user is properly authenticated, otherwise it does
-    # everything necessary to put up a login screen and returns 0.
-    isauthed = 0
-    adminpw = None
-    msg = ''
-    #
-    # If we get a password change request, we first authenticate by cookie
-    # here, and issue a new cookie later on iff the password change worked
-    # out.  The idea is to set only one cookie when the admin password
-    # changes.  The new cookie is necessary, because the checksum part of the
-    # cookie is based on (among other things) the list's admin password.
-    if cgidata.has_key('adminpw'):
-        adminpw = cgidata['adminpw'].value
-    # Attempt to authenticate
-    try:
-        isauthed = mlist.WebAuthenticate(password=adminpw, cookie='admin')
-    except Errors.MMExpiredCookieError:
-        msg = 'Stale cookie found'
-    except Errors.MMInvalidCookieError:
-        msg = 'Error decoding authorization cookie'
-    except (Errors.MMBadPasswordError, Errors.MMAuthenticationError):
-        msg = 'Authentication failed'
-    #
-    # Put up the login page if not authenticated
-    if not isauthed:
-        url = mlist.GetScriptURL('admindb', relative=1)
-        if msg:
-            msg = FontAttr(msg, color='#FF5060', size='+1').Format()
-        print 'Content-type: text/html\n'
-        print Utils.maketext(
-            # Should really be admlogin.html :/
-            'admlogin.txt',
-            {'listname': mlist.real_name,
-             'path'    : Utils.GetRequestURI(url),
-             'message' : msg,
-             })
-        return 0
-    return 1
 
 
 
@@ -116,9 +75,10 @@ def main():
     # selected actions
     try:
         cgidata = cgi.FieldStorage()
-
-        # If the user id not authenticated, we're done.
-        if not authenticated(mlist, cgidata):
+        try:
+            Auth.authenticate(mlist, cgidata)
+        except Auth.NotLoggedInError, e:
+            Auth.loginpage(mlist, 'admindb', e.message)
             return
 
         # If this is a form submission, then we'll process the requests and
