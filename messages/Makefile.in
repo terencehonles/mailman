@@ -47,7 +47,7 @@ MSGFMT= 	msgfmt
 MSGMERGE=	msgmerge
 
 # CVS available languages
-LANGUAGES=	es
+LANGUAGES=	es ja
 LANGDIRS=	$(LANGUAGES:%=messages/%/LC_MESSAGES)
 # Global pygettext extracted po template file
 POTFILE=	mailman.pot
