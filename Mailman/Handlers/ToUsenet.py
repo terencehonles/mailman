@@ -58,8 +58,8 @@ def do_child(mlist, msg):
     from Mailman.pythonlib import nntplib
     # Ok, munge headers, etc.
     subj = msg.getheader('subject')
+    subjpref = mlist.subject_prefix
     if subj:
-        subjpref = mlist.subject_prefix
         if not re.match('(re:? *)?' + re.escape(subjpref), subj, re.I):
             msg['Subject'] = subjpref + subj
     else:
