@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
 "POT-Creation-Date: Fri May  2 00:59:38 2003\n"
-"PO-Revision-Date: 2003-06-17 21:57+0200\n"
+"PO-Revision-Date: 2003-08-18 21:11+0200\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch <p.heinlein@jpberlin.de>\n"
 "MIME-Version: 1.0\n"
@@ -444,7 +444,7 @@ msgid ""
 "    "
 msgstr ""
 "<em><strong>Achtung:</strong> Wenn diese Konfiguration verändert wird, "
-"müssen anderen geöffneten Seiten ggf. neu geladen werden, damit sie diese "
+"müssen die anderen geöffneten Seiten ggf. neu geladen werden, damit sie diese "
 "Änderung übernehmen. Sie können auch "
 
 # Mailman/Cgi/admin.py:340
@@ -534,8 +534,8 @@ msgstr ""
 "<li>Setze jeden eingetragenen Nutzer der Liste auf \"moderiert\".\n"
 "Achtung: Das verändert nur einmalig alle bereits eingetragenen Nutzer! Um "
 "neue Nutzer\n"
-"automatisch auf un/moderiert zu schalten, gehen Sie bitte auf \"Abo-Regeln -> Absender-Filter\"\n"
-"und beachten dort den Parameter <em>default_member_moderation</em>."
+"automatisch auf un/moderiert zu schalten, gehen Sie bitte auf \"Abo-Regeln und Adreßfilter -> Absenderfilter\"\n"
+"und beachten dort den Parameter <em>default_member_moderation</em>. "
 
 #: Mailman/Cgi/admin.py:507
 msgid "Off"
@@ -717,7 +717,7 @@ msgstr "Sammlung"
 # Mailman/Cgi/admin.py:818
 #: Mailman/Cgi/admin.py:893
 msgid "plain"
-msgstr "Einzeln"
+msgstr "Einfacher Text"
 
 # Mailman/Cgi/admin.py:819
 #: Mailman/Cgi/admin.py:894
@@ -838,8 +838,8 @@ msgid ""
 "<b>plain</b> -- If getting digests, does the member get plain\n"
 "        text digests?  (otherwise, MIME)"
 msgstr ""
-"<b>Einfach</b> -- Falls Sammlungen gewählt wurde, bekommt\n"
-"        dieses Mitglied Mitteilungen in einfachem Text oder MIME-Format?"
+"<b>Einfacher Text</b> -- Falls Sammlungen gewählt wurde, bekommt\n"
+"        dieses Mitglied Mitteilungen als einfachen Text oder im MIME-Format?"
 
 # Mailman/Cgi/admin.py:897
 #: Mailman/Cgi/admin.py:1016
@@ -2145,7 +2145,7 @@ msgstr "Das Passwort für die Liste darf nicht leer sein"
 msgid "You are not authorized to create new mailing lists"
 msgstr ""
 "Sie dürfen keine neuen Mailinglisten erstellen. Haben Sie das richtige "
-"Kennwort?"
+"Authorisierungs-Passwort?"
 
 # Mailman/Cgi/create.py:170
 #: Mailman/Cgi/create.py:181 bin/newlist:166
@@ -2907,7 +2907,7 @@ msgstr "Archivdatei nicht gefunden"
 # Mailman/Cgi/rmlist.py:88
 #: Mailman/Cgi/rmlist.py:81
 msgid "You're being a sneaky list owner!"
-msgstr "Sie sind ein gemeiner Listenverwalter !"
+msgstr "Sie sind ein gemeiner Listenverwalter!"
 
 # Mailman/Cgi/rmlist.py:124
 #: Mailman/Cgi/rmlist.py:119
