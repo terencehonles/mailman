@@ -71,7 +71,8 @@ def main():
 
 
 def process_request(doc, cgidata):
-    listname = cgidata.getvalue('listname', '').strip()
+    # Lowercase the listname since this is treated as the "internal" name.
+    listname = cgidata.getvalue('listname', '').strip().lower()
     owner    = cgidata.getvalue('owner', '').strip()
     try:
         autogen  = int(cgidata.getvalue('autogen', '0'))
