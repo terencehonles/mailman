@@ -65,7 +65,20 @@ def dispose_message(mlist, msg, msgdata):
         mimemsg = mimetools.Message(s)
         if mlist.bounce_processing:
             if BouncerAPI.ScanMessages(mlist, mimemsg):
-                return
+                return 0
+        # The message could have been a bounce from a broken list admin
+        # address.  About the only other test we can do is to see if the
+        # message is appearing to come from a well-known MTA generated
+        # address.
+        sender = msg.GetSender()
+        i = string.find(sender, '@')
+        if i >= 0:
+            senderlhs = string.lower(sender[:i])
+        else:
+            senderlhs = sender
+        if senderlhs in mm_cfg.LIKELY_BOUNCE_SENDERS:
+            syslog('error', 'bounce loop detected from: %s' % sender)
+            return 0
         # Either bounce processing isn't turned on or the bounce detector
         # found no recognized bounce format in the message.  In either case,
         # forward the dang thing off to the list owner.
