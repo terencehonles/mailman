@@ -44,7 +44,9 @@ The Mailman TODO list
   cataloging mechanism based on the file system).
 - Be able to edit ALL the web pages, as well as the mail messages.
 - Use templates from the templates dir until the list owner changes
-    the page, so the site admin can change them...
+  the page, so the site admin can change them...
+- All the list-admin to require approvals for unsubs
+- Allow the admin to disable option settings by users
 
 *List Member UI
 - Editing your user options should put you back to the edit-options page. 
