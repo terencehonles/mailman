@@ -130,7 +130,7 @@ def main():
                 'admlogin.txt',
                 {"listname": list_name,
                  "path"    : os.environ.get("REQUEST_URI",
-                                            "/mailman/admin/" + list_name),
+                                            '/mailman/admin/' + list_name),
                  "message" : message,
                  })
             print text
@@ -501,11 +501,11 @@ def FormatMembershipOptions(lst):
         chunk_indices = range(len(chunks))
         chunk_indices.remove(chunk)
         buttons = []
-        pi = os.environ["PATH_INFO"]
         for ci in chunk_indices:
             start, end = chunks[ci][0], chunks[ci][-1]
-            buttons.append("<a href=/mailman/admin%s?chunk=%d> from %s to %s </a>" % \
-                           ( pi, ci, start, end))
+	    url = lst.GetAbsoluteScriptURL('admin')
+            buttons.append("<a href=%s/members?chunk=%d> from %s to %s </a>" % \
+                           ( url,  ci, start, end))
         buttons = apply(UnorderedList, tuple(buttons))
         footer = footer + buttons.Format() + "<p>" 
     else:
