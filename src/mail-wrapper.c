@@ -38,6 +38,7 @@ const char *VALID_COMMANDS[] = {
 	"mailowner",
 	"join",
 	"leave",
+	"bounces",
 	NULL				     /* Sentinel, don't remove */
 };
 
