@@ -1,17 +1,17 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Produce subscriber roster, using listinfo form data, roster.html template.
@@ -21,7 +21,7 @@ Takes listname in PATH_INFO.
 
 
 # We don't need to lock in this script, because we're never going to change
-# data. 
+# data.
 
 import sys
 import os
@@ -61,11 +61,9 @@ def main():
     cgidata = cgi.FieldStorage()
 
     # messages in form should go in selected language (if any...)
-    if cgidata.has_key('language'):
-        lang = cgidata['language'].value
-    else:
+    lang = cgidata.getvalue('language')
+    if not Utils.IsLanguage(lang):
         lang = mlist.preferred_language
-
     i18n.set_language(lang)
 
     # Perform authentication for protected rosters.  If the roster isn't

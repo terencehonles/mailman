@@ -83,7 +83,7 @@ def main():
     # preference to view the page in, so we should honor that here.  If that's
     # not available, use the list's default language.
     language = cgidata.getvalue('language')
-    if not mm_cfg.LC_DESCRIPTIONS.has_key(language):
+    if not Utils.IsLanguage(language):
         language = mlist.preferred_language
     i18n.set_language(language)
     doc.set_language(language)
@@ -132,7 +132,9 @@ def main():
     # And now we know the user making the request, so set things up to for the
     # user's stored preferred language, overridden by any form settings for
     # their new language preference.
-    userlang = cgidata.getvalue('language', mlist.getMemberLanguage(user))
+    userlang = cgidata.getvalue('language')
+    if not Utils.IsLanguage(userlang):
+        userlang = mlist.getMemberLanguage(user)
     doc.set_language(userlang)
     i18n.set_language(userlang)
 
