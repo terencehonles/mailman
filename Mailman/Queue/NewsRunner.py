@@ -85,6 +85,13 @@ class NewsRunner(Runner):
 
 
 def prepare_message(mlist, msg, msgdata):
+    # If the newsgroup is moderated, we need to add this header for the Usenet
+    # software to accept the posting, and not forward it on to the n.g.'s
+    # moderation address.  The posting would not have gotten here if it hadn't
+    # already been approved.  1 == open list, mod n.g., 2 == moderated
+    if mlist.news_moderation in (1, 2):
+        del msg['approved']
+        msg['Approved'] = mlist.GetListEmail()
     # Should we restore the original, non-prefixed subject for gatewayed
     # messages?
     origsubj = msgdata.get('origsubj')
@@ -129,7 +136,6 @@ def prepare_message(mlist, msg, msgdata):
     # Lines: is useful
     if msg['Lines'] is None:
         # BAW: is there a better way?
-        it = email.Iterators.body_line_iterator(msg)
         count = len(list(email.Iterators.body_line_iterator(msg)))
         msg['Lines'] = str(count)
     # Massage the message headers by remove some and rewriting others.  This
