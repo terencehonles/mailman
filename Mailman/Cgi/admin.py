@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,20 +20,23 @@
 
 import os
 import cgi
-import string
 import types
+import sha
 
+from mimelib.address import unquote
+
+from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import MailCommandHandler
 from Mailman.htmlformat import *
-from Mailman.Crypt import crypt
-from Mailman import mm_cfg
 from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
 
 CATEGORIES = []
+
+NL = '\n'
 
 
 
@@ -51,7 +54,7 @@ def main():
         FormatAdminOverview()
         return
     # get the list object
-    listname = string.lower(parts[0])
+    listname = parts[0].lower()
     try: 
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
@@ -112,6 +115,9 @@ def main():
             print doc.Format(bgcolor="#ffffff")
             return
 
+        # BAW: This doesn't appear to do anything.  The pairs variable isn't
+        # used anywhere.  Perhaps this was meant as some incomplete error
+        # checking on the value?
         if cgidata.has_key('bounce_matching_headers'):
             pairs = mlist.parse_matching_header_opt()
 
@@ -147,7 +153,8 @@ def main():
 def FormatAdminOverview(error=None):
     "Present a general welcome and itemize the (public) lists."
     doc = Document()
-    legend = _("%s mailing lists - Admin Links") % mm_cfg.DEFAULT_HOST_NAME
+    default_hostname = mm_cfg.DEFAULT_HOST_NAME
+    legend = _('%(default_hostname)s mailing lists - Admin Links')
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -183,26 +190,27 @@ def FormatAdminOverview(error=None):
             _("<p>"
               " Below is the collection of publicly-advertised "),
             Link(mm_cfg.MAILMAN_URL, "mailman"),
-            _(" mailing lists on %s.") % mm_cfg.DEFAULT_HOST_NAME,
+            _(" mailing lists on %(default_hostname)s."),
             (_(' Click on a list name to visit the configuration pages'
                ' for that list.')
              )
             )
 
+    mailman_owner = mm_cfg.MAILMAN_OWNER
+    extra = error and _('right ') or ''
     welcome_items = (welcome_items +
                      (_(" To visit the administrators configuration page for"
                         " an unadvertised list, open a URL similar to this")
                       +
-                      (_(" one, but with a '/' and the %slist name appended.<p>")
-                       % ((error and _("right ")) or ""))
+                      (_(" one, but with a '/' and the %(extra)slist name "
+                         'appended.<p>'))
                       +
                       _(" General list information can be found at "),
                       Link(Utils.ScriptURL('listinfo'),
                            _('the mailing list overview page')),
                       "." +
                       _("<p>(Send questions and comments to "),
-                     Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
-                          mm_cfg.MAILMAN_OWNER),
+                     Link('mailto:%(mailman_owner)s', mailman_owner),
                      ".)<p>"
                       )
                      )
@@ -370,7 +378,7 @@ def AddOptionsTableItem(table, item, category, mlist, detailsp=1):
 
 def FormatOptionHelp(doc, varref, mlist):
     item = None
-    reflist = string.split(varref, '/')
+    reflist = varref.split('/')
     if len(reflist) == 2:
         category, varname = reflist
         options = GetConfigOptions(mlist, category)
@@ -477,7 +485,7 @@ def GetItemGuiValue(mlist, kind, varname, params):
 	    r, c = params
 	else:
 	    r, c = None, None
-	res = string.join(getattr(mlist, varname), '\n')
+	res = NL.join(getattr(mlist, varname))
 	return TextArea(varname, res, r, c, wrap='off')
     elif kind == mm_cfg.FileUpload:
         # like a text area, but also with uploading
@@ -563,7 +571,7 @@ def FormatMembershipOptions(mlist, cgi_data):
         if not cgi_data.has_key("chunk"):
             chunk = 0
         else:
-            chunk = string.atoi(cgi_data["chunk"].value)
+            chunk = int(cgi_data["chunk"].value)
         all = chunks[chunk]
         footer = (_("<p><em>To View other sections, "
                     "click on the appropriate range listed below</em>"))
@@ -726,41 +734,17 @@ def GetValidValue(mlist, prop, my_type, val, dependant):
 	# Revert to the old value.
 	return getattr(mlist, prop)
     elif my_type == mm_cfg.EmailList:
-	def SafeValidAddr(addr):
+        def validp(addr):
 	    try:
                 Utils.ValidateEmail(addr)
                 return 1
             except Errors.EmailAddressError:
                 return 0
-
-	val = filter(SafeValidAddr,
-		     map(string.strip, string.split(val, '\n')))
-##	if dependant and len(val):
-##	    # Wait till we've set everything to turn it on,
-##	    # as we don't want to clobber our special case.
-##	    # XXX klm - looks like turn_on_moderation is orphaned?
-##	    turn_on_moderation = 1
+        val = [addr for addr in [s.strip() for s in val.split(NL)]
+               if validp(addr)]
 	return val
     elif my_type == mm_cfg.Host:
 	return val
-##
-##      This code is sendmail dependant, so we'll just live w/o 
-##      the error checking for now.
-##
-## 	# Shouldn't have to read in the whole file.
-## 	file = open('/etc/sendmail.cf', 'r')
-## 	lines = string.split(file.read(), '\n')
-## 	file.close()
-## 	def ConfirmCWEntry(item):
-## 	    return item[0:2] == 'Cw'
-## 	lines = filter(ConfirmCWEntry, lines)
-## 	if not len(lines):
-## 	    # Revert to the old value.
-## 	    return getattr(list, prop)
-## 	for line in lines:
-## 	    if string.lower(string.strip(line[2:])) == string.lower(val):
-## 		return val
-## 	return getattr(list, prop)
     elif my_type == mm_cfg.Number:
         num = -1
         try:
@@ -795,14 +779,14 @@ def ChangeOptions(mlist, category, cgi_info, document):
                                     _('Incorrect administrator password'),
                                     tag='Error: ')
             if confirmed:
-                new = string.strip(cgi_info['newpw'].value)
-                confirm = string.strip(cgi_info['confirmpw'].value)
+                new = cgi_info['newpw'].value.strip()
+                confirm = cgi_info['confirmpw'].value.strip()
                 if new == '' and confirm == '':
                     AddErrorMessage(document,
                                     _('Empty admin passwords are not allowed'),
                                     tag='Error: ')
                 elif new == confirm:
-                    mlist.password = crypt(new, Utils.GetRandomSeed())
+                    mlist.password = sha.new(new).hexdigest()
                     # Re-authenticate (to set new cookie)
                     mlist.WebAuthenticate(password=new, cookie='admin')
                 else:
@@ -828,7 +812,7 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 # we have to add one to the value because the
                 # page didn't present an open list as an option
                 #
-                page_setting = string.atoi(cgi_info["subscribe_policy"].value)
+                page_setting = int(cgi_info["subscribe_policy"].value)
                 cgi_info["subscribe_policy"].value = str(page_setting + 1)
         opt_list = GetConfigOptions(mlist, category)
         for item in opt_list:
@@ -859,7 +843,7 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 # when using an external archiver.  This seems ad-hoc and
                 # could use a more general security policy.
                 if property == 'real_name' and \
-                   string.lower(value) <> string.lower(mlist._internal_name):
+                       value.lower() <> mlist._internal_name.lower():
                     # then don't install this value.
                     document.AddItem(_("""<p><b>real_name</b> attribute not
                     changed!  It must differ from the list's name by case
@@ -871,9 +855,9 @@ def ChangeOptions(mlist, category, cgi_info, document):
     #
     if cgi_info.has_key('subscribees'):
 	name_text = cgi_info['subscribees'].value
-        name_text = string.replace(name_text, '\r', '')
-	names = filter(None, map(string.strip, string.split(name_text, '\n')))
-        send_welcome_msg = string.atoi(
+        name_text = name_text.replace('\r', '')
+        names = filter(None, [unquote(n.strip()) for n in name_text.split(NL)])
+        send_welcome_msg = int(
             cgi_info["send_welcome_msg_to_this_batch"].value)
         digest = 0
         if not mlist.digestable:
