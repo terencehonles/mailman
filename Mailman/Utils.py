@@ -271,7 +271,7 @@ def ParseAddrs(addresses):
 
     Argument is a list of addresses, return value is a list of the parsed
     email addresses.  The argument can also be a single string, in which case
-    the return value is a single string.
+    the return value is a single string.  All addresses are string.strip()'d.
 
     """
     single = 0
@@ -292,8 +292,8 @@ def ParseAddrs(addresses):
             continue
         parsed.append(a)
     if single:
-        return parsed[0]
-    return parsed
+        return string.strip(parsed[0])
+    return map(string.strip, parsed)
 
 
 def GetPathPieces(path):
