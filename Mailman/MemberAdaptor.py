@@ -168,7 +168,8 @@ class MemberAdaptor:
                        primary reason for this to happen is that we've copied
                        their delivery status from a legacy version which didn't
                        keep track of disable reasons
-            BYCHOICE - The user explicitly disable deliveries
+            BYUSER   - The user explicitly disable deliveries
+            BYADMIN  - The list administrator explicitly disabled deliveries
             BYBOUNCE - The system disabled deliveries due to bouncing
 
         If member is not a member of the list, raise NotAMemberError.
@@ -181,6 +182,16 @@ class MemberAdaptor:
         If the current delivery status is ENABLED, the status change time will
         be zero.  If member is not a member of the list, raise
         NotAMemberError.
+        """
+        raise NotImplemented
+
+    def getDeliveryStatusMembers(self,
+                                 status=(UNKNOWN, BYUSER, BYADMIN, BYBOUNCE)):
+        """Return the list of members with a matching delivery status.
+
+        Optional `status' if given, must be a sequence containing one or more
+        of ENABLED, UNKNOWN, BYCHOICE, or BYBOUNCE.  The members whose
+        delivery status is in this sequence are returned.
         """
         raise NotImplemented
 
@@ -304,7 +315,8 @@ class MemberAdaptor:
                        primary reason for this to happen is that we've copied
                        their delivery status from a legacy version which didn't
                        keep track of disable reasons
-            BYCHOICE - The user explicitly disable deliveries
+            BYUSER   - The user explicitly disable deliveries
+            BYADMIN  - The list administrator explicitly disabled deliveries
             BYBOUNCE - The system disabled deliveries due to bouncing
 
         This method also records the time (in seconds since epoch) at which

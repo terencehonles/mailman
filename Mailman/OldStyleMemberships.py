@@ -148,6 +148,13 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
             # second item will be ignored.
             (MemberAdaptor.ENABLED, 0))[1]
 
+    def getDeliveryStatusMembers(self, status=(MemberAdaptor.UNKNOWN,
+                                               MemberAdaptor.BYUSER,
+                                               MemberAdaptor.BYADMIN,
+                                               MemberAdaptor.BYBOUNCE)):
+        return [member for member in self.getMembers()
+                if self.getDeliveryStatus(member) in status]
+
     def getBounceInfo(self, member):
         self.__assertIsMember(member)
         return self.__mlist.bounce_info.get(member.lower())
@@ -211,9 +218,8 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
             dict = getattr(self.__mlist, attr)
             if dict.has_key(memberkey):
                 del dict[memberkey]
-        # A few other structures held elsewhere.  BAW: these should be
-        # integrated with membership management
-        self.__mlist.ClearBounceInfo(memberkey)
+        # Clear any bounce information associated with this member
+        self.__mlist.setBounceInfo(memberkey, None)
 
     def changeMemberAddress(self, member, newaddress, nodelete=0):
         assert self.__mlist.Locked()
@@ -323,8 +329,7 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         self.__assertIsMember(member)
         member = member.lower()
         if status == MemberAdaptor.ENABLED:
-            if self.__mlist.delivery_status.has_key(member):
-                del self.__mlist.delivery_status[member]
+            self.setBounceInfo(member, None)
             # Otherwise, nothing to do
         else:
             self.__mlist.delivery_status[member] = (status, time.time())
@@ -332,9 +337,10 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
     def setBounceInfo(self, member, info):
         assert self.__mlist.Locked()
         self.__assertIsMember(member)
-        if status is None:
+        if info is None:
             if self.__mlist.bounce_info.has_key(member):
                 del self.__mlist.bounce_info[member]
-            # Otherwise, nothing to do
+            if self.__mlist.delivery_status.has_key(member):
+                del self.__mlist.delivery_status[member]
         else:
             self.__mlist.bounce_info[member] = info
