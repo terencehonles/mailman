@@ -1367,6 +1367,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 pass
 
             newname = cgidata.getvalue(user+'_realname', '')
+            newname = Utils.canonstr(newname, mlist.preferred_language)
             mlist.setMemberName(user, newname)
 
             newlang = cgidata.getvalue(user+'_language')
