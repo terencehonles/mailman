@@ -580,7 +580,7 @@ def add_options_table_item(mlist, category, subcat, table, item, detailsp=1):
     if elaboration is None:
         elaboration = descr
     descr = get_item_gui_description(mlist, category, subcat,
-                                     varname, descr, detailsp)
+                                     varname, descr, elaboration, detailsp)
     val = get_item_gui_value(mlist, category, kind, varname, params, extra)
     table.AddRow([descr, val])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
@@ -733,7 +733,7 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
 
 
 def get_item_gui_description(mlist, category, subcat,
-                             varname, descr, detailsp):
+                             varname, descr, elaboration, detailsp):
     # Return the item's description, with link to details.
     #
     # Details are not included if this is a VARHELP page, because that /is/
@@ -743,8 +743,12 @@ def get_item_gui_description(mlist, category, subcat,
             varhelp = '/?VARHELP=%s/%s/%s' % (category, subcat, varname)
         else:
             varhelp = '/?VARHELP=%s/%s' % (category, varname)
+        if descr == elaboration:
+            linktext = _('<br>(Edit <b>%(varname)s</b>)')
+        else:
+            linktext = _('<br>(Details for <b>%(varname)s</b>)')
         link = Link(mlist.GetScriptURL('admin') + varhelp,
-                    _('<br>(Details for <b>%(varname)s</b>)')).Format()
+                    linktext).Format()
         text = Label('%s %s' % (descr, link)).Format()
     else:
         text = Label(descr).Format()
