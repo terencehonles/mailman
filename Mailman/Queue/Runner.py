@@ -105,6 +105,7 @@ class Runner:
                     self._onefile(msg, msgdata)
                 except Exception, e:
                     self._log(e)
+                    syslog('error', 'SHUNTING: %s', filebase)
                     # Put a marker in the metadata for unshunting
                     msgdata['whichq'] = self._switchboard.whichq()
                     self._shunt.enqueue(msg, msgdata)
