@@ -651,4 +651,4 @@ def write(*args, **kws):
         del kws['sep']
     if kws:
         raise TypeError('unexpected keywords')
-    file.write(sep.join(map(str, args)) + end)
+    file.write(string.join(map(str, args), sep) + end)
