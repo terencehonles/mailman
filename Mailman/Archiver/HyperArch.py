@@ -89,6 +89,7 @@ article_template='''\
    </TITLE>
    <LINK REL="Index" HREF="index.html" >
    <LINK REL="made" HREF="mailto:%(email_url)s">
+   <META NAME="robots" CONTENT="index,nofollow">
    %(encoding)s
    %(prev)s
    %(next)s
@@ -391,6 +392,7 @@ index_header_template='''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
   <HEAD>
      <title>The %(listname)s %(archive)s Archive by %(archtype)s</title>
+     <META NAME="robots" CONTENT="noindex,follow">
      %(encoding)s
   </HEAD>
   <BODY BGCOLOR="#ffffff">
@@ -447,6 +449,7 @@ TOC_template='''\
 <HTML>
   <HEAD>
      <title>The %(listname)s Archives</title>
+     <META NAME="robots" CONTENT="noindex,follow">
   </HEAD>
   <BODY BGCOLOR="#ffffff">
      <h1>The %(listname)s Archives </h1>
