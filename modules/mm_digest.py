@@ -17,7 +17,7 @@
 
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 547 $"
+__version__ = "$Revision: 645 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string, re
@@ -276,12 +276,12 @@ class Digester:
 	self.Save()
 
         if text_recipients:
-            self.DeliverToList(d.Present(mime=0),
-                               text_recipients, remove_to=1)
+            self.DeliverToList(d.Present(mime=0), 
+                               text_recipients, news=0, remove_to=1)
         if mime_recipients:
-            self.DeliverToList(d.Present(mime=1),
+            self.DeliverToList(d.Present(mime=1), 
                                mime_recipients,
-                               remove_to=1, tmpfile_prefix = "mime.")
+                               remove_to=1, news=0, tmpfile_prefix = "mime.")
 
 class Digest:
     "Represent a maillist digest, presentable in either plain or mime format."
