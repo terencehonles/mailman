@@ -537,7 +537,7 @@ address.  Upon confirmation, any other mailing list containing the address
             nodupes = None
             mime = None
             def __nonzero__(self):
-                 len(self.__dict__.keys()) > 0
+                 return len(self.__dict__.keys()) > 0
 
         globalopts = Global()
 
