@@ -821,39 +821,39 @@ def membership_options(mlist, subcat, cgidata, doc, form):
             members = buckets.setdefault(addr[0].lower(), [])
             members.append(addr)
         # Now figure out which bucket we want
-        bucket = 'a'
+        bucket = None
+        qs = {}
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
         qsenviron = os.environ.get('QUERY_STRING')
         if qsenviron:
             qs = cgi.parse_qs(qsenviron)
-            if qs.has_key('letter'):
-                bucket = qs['letter'][0].lower()
-                if bucket not in digits + lowercase:
-                    bucket = None
-            if not bucket or not buckets.has_key(bucket):
-                keys = buckets.keys()
-                keys.sort()
-                bucket = keys[0]
-            members = buckets[bucket]
-            action = adminurl + '/members?letter=%s' % bucket
-            if len(members) <= chunksz:
-                form.set_action(action)
-            else:
-                i, r = divmod(len(members), chunksz)
-                numchunks = i + (not not r * 1)
-                # Now chunk them up
-                chunkindex = 0
-                if qs.has_key('chunk'):
-                    try:
-                        chunkindex = int(qs['chunk'][0])
-                    except ValueError:
-                        chunkindex = 0
-                    if chunkindex < 0 or chunkindex > numchunks:
-                        chunkindex = 0
-                members = members[chunkindex*chunksz:(chunkindex+1)*chunksz]
-                # And set the action URL
-                form.set_action(action + '&chunk=%s' % chunkindex)
+            bucket = qs.get('letter', 'a')[0].lower()
+            if bucket not in digits + lowercase:
+                bucket = None
+        if not bucket or not buckets.has_key(bucket):
+            keys = buckets.keys()
+            keys.sort()
+            bucket = keys[0]
+        members = buckets[bucket]
+        action = adminurl + '/members?letter=%s' % bucket
+        if len(members) <= chunksz:
+            form.set_action(action)
+        else:
+            i, r = divmod(len(members), chunksz)
+            numchunks = i + (not not r * 1)
+            # Now chunk them up
+            chunkindex = 0
+            if qs.has_key('chunk'):
+                try:
+                    chunkindex = int(qs['chunk'][0])
+                except ValueError:
+                    chunkindex = 0
+                if chunkindex < 0 or chunkindex > numchunks:
+                    chunkindex = 0
+            members = members[chunkindex*chunksz:(chunkindex+1)*chunksz]
+            # And set the action URL
+            form.set_action(action + '&chunk=%s' % chunkindex)
     # So now members holds all the addresses we're going to display
     allcnt = len(all)
     if bucket:
@@ -1241,7 +1241,10 @@ def change_options(mlist, category, subcat, cgidata, doc):
             digest = 1
         subscribe_errors = []
         subscribe_success = []
-        # Now cruise through all the subscribees and do the deed
+        # Now cruise through all the subscribees and do the deed.  BAW: we
+        # should limit the number of "Successfully subscribed" status messages
+        # we display.  Try uploading a file with 10k names -- it takes a while
+        # to render the status page.
         for entry in entries:
             fullname, address = parseaddr(entry)
             # Canonicalize the full name
