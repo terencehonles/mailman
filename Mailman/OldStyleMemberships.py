@@ -107,28 +107,39 @@ class OldStyleMemberships(MemberAdaptor):
             return secret
         return 0
 
+    def __assertIsMember(self, member):
+        if not self.isMember(member):
+            raise Errors.NotAMemberError, member
+
     def getMemberLanguage(self, member):
         return self.__mlist.language.get(member.lower(),
                                          self.__mlist.preferred_language)
 
     def getMemberOption(self, member, flag):
+        self.__assertIsMember(member)
         option = self.__mlist.user_options.get(member.lower(), 0)
         return not not (option & flag)
 
     def getMemberName(self, member):
-        if not self.isMember(member):
-            raise Errors.NotAMemberError, member
+        self.__assertIsMember(member)
         return self.__mlist.usernames.get(member.lower())
+
+    def getMemberTopics(self, member):
+        self.__assertIsMember(member)
+        return self.__mlist.topics_userinterest.get(member.lower(), [])
 
     #
     # Write interface
     #
     def addNewMember(self, member, **kws):
         assert self.__mlist.Locked()
+        # Make sure this address isn't already a member
+        if self.__mlist.isMember(member):
+            raise Errors.MMAlreadyAMember, member
         # Parse the keywords
         digest = 0
         password = Utils.MakeRandomPassword()
-        language = self.__mlist.GetPreferredLanguage()
+        language = self.__mlist.preferred_language
         realname = None
         if kws.has_key('digest'):
             digest = kws['digest']
@@ -156,17 +167,18 @@ class OldStyleMemberships(MemberAdaptor):
             member = member.lower()
         if digest:
             self.__mlist.digest_members[member] = value
-            self.setMemberOption(member, mm_cfg.Digests, 1)
+            # Don't use setMemberOption() here because it does too much
+            self.__mlist.user_options[member] = mm_cfg.Digests
         else:
             self.__mlist.members[member] = value
         self.setMemberPassword(member, password)
         self.setMemberLanguage(member, language)
-        from Mailman.Logging.Syslog import syslog
         if realname:
             self.setMemberName(member, realname)
     
     def removeMember(self, member):
         assert self.__mlist.Locked()
+        self.__assertIsMember(member)
         # Delete the appropriate entries from the various MailList attributes.
         # Remember that not all of them will have an entry (only those with
         # values different than the default).
@@ -181,34 +193,42 @@ class OldStyleMemberships(MemberAdaptor):
         # integrated with membership management
         self.__mlist.ClearBounceInfo(memberkey)
 
-    def changeMemberAddress(self, member, newaddress):
+    def changeMemberAddress(self, member, newaddress, nodelete=0):
         assert self.__mlist.Locked()
+        # Make sure the old address is a member.  Assertions that the new
+        # address is not already a member is done by addNewMember() below.
+        self.__assertIsMember(member)
         # Get the old values
         memberkey = member.lower()
+        fullname = self.getMemberName(memberkey)
         flags = self.__mlist.user_options.get(memberkey, 0)
         digestsp = self.getMemberOption(memberkey, mm_cfg.Digests)
         password = self.__mlist.passwords.get(memberkey,
                                               Utils.MakeRandomPassword())
         lang = self.getMemberLanguage(memberkey)
         # Add the new member
-        self.addNewMember(newaddress, digest=digestsp, password=password,
-                          language=lang)
+        self.addNewMember(newaddress, realname=fullname, digest=digestsp,
+                          password=password, language=lang)
         # Set the entire options bitfield
         if flags:
             self.__mlist.user_options[memberkey] = flags
         # Delete the old memberkey
-        self.removeMember(memberkey)
+        if not nodelete:
+            self.removeMember(memberkey)
 
     def setMemberPassword(self, memberkey, password):
         assert self.__mlist.Locked()
+        self.__assertIsMember(memberkey)
         self.__mlist.passwords[memberkey.lower()] = password
 
     def setMemberLanguage(self, memberkey, language):
         assert self.__mlist.Locked()
+        self.__assertIsMember(memberkey)
         self.__mlist.language[memberkey.lower()] = language
 
     def setMemberOption(self, member, flag, value):
         assert self.__mlist.Locked()
+        self.__assertIsMember(member)
         memberkey = member.lower()
         # There's one extra gotcha we have to deal with.  If the user is
         # toggling the Digests flag, then we need to move their entry from
@@ -257,6 +277,15 @@ class OldStyleMemberships(MemberAdaptor):
 
     def setMemberName(self, member, realname):
         assert self.__mlist.Locked()
-        if not self.isMember(member):
-            raise Errors.NotAMemberError, member
+        self.__assertIsMember(member)
         self.__mlist.usernames[member.lower()] = realname
+
+    def setMemberTopics(self, member, topics):
+        assert self.__mlist.Locked()
+        self.__assertIsMember(member)
+        memberkey = member.lower()
+        if topics:
+            self.__mlist.topics_userinterest[memberkey] = topics
+        # if topics is empty, then delete the entry in this dictionary
+        elif self.__mlist.topics_userinterest.has_key(memberkey):
+            del self.__mlist.topics_userinterest[memberkey]
