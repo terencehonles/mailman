@@ -83,6 +83,13 @@ if sys.platform == 'darwin':
         resource.setrlimit(resource.RLIMIT_STACK, (newsoft, hard))
 
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
+
 
 def html_quote(s, lang=None):
     repls = ( ('&', '&amp;'),
@@ -159,21 +166,44 @@ quotedpat = re.compile(r'^([>|:]|&gt;)+')
 
 
 
-# This doesn't need to be a weakref instance because it's just storing
-# strings.  Keys are (templatefile, lang) tuples.
+# Like Utils.maketext() but with caching to improve performance.
+#
+# _templatefilepathcache is used to associate a (templatefile, lang, listname)
+# key with the file system path to a template file.  This path is the one that
+# the Utils.findtext() function has computed is the one to match the values in
+# the key tuple.
+#
+# _templatecache associate a file system path as key with the text
+# returned after processing the contents of that file by Utils.findtext()
+#
+# We keep two caches to reduce the amount of template text kept in memory,
+# since the _templatefilepathcache is a many->one mapping and _templatecache
+# is a one->one mapping.  Imagine 1000 lists all using the same default
+# English template.
+
+_templatefilepathcache = {}
 _templatecache = {}
 
 def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
+    if mlist is None:
+        listname = ''
+    else:
+        listname = mlist._internal_name
     if lang is None:
         if mlist is None:
             lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
         else:
             lang = mlist.preferred_language
-    template = _templatecache.get((templatefile, lang))
-    if template is None:
+    cachekey = (templatefile, lang, listname)
+    filepath =  _templatefilepathcache.get(cachekey)
+    if filepath:
+        template = _templatecache.get(filepath)
+    if filepath is None or template is None:
         # Use the basic maketext, with defaults to get the raw template
-        template = Utils.maketext(templatefile, lang=lang, raw=1)
-        _templatecache[(templatefile, lang)] = template
+        template, filepath = Utils.findtext(templatefile, lang=lang,
+                                            raw=True, mlist=mlist)
+        _templatefilepathcache[cachekey] = filepath
+        _templatecache[filepath] = template
     # Copied from Utils.maketext()
     text = template
     if dict is not None:
