@@ -1315,10 +1315,60 @@ to the frequency and traffic volume of your list.
     perfect, although personalization can make it much more accurate.
     The list owner may want to receive unrecognized bounces so that
     they can manually disable or remove such members.
+
+\item[bounce_notify_owner_on_disable]
+    This option controls whether or not the list owner is notified
+    when a member's subscription is automatically disabled due to
+    their bounce threshold being reached.
+
+\item[bounce_notify_owner_on_removal]
+    This option controls whether or not the list owner is notified
+    when a member is removed from the list after their disabled
+    notifications have been exhausted.
 \end{description}
 
 \subsection{The Archiving Options Category}
+
+Mailman comes with a built-in web-based archiver called
+\emph{Pipermail}, although it can be configured to use external,
+third party archivers.
+
+\begin{description}
+
+\item[archive]
+    This option tells Mailman whether to archive messages it receives
+    or not, regardless of whether Pipermail or a third party archiver
+    is used.  Turn this off if you don't want to archive messages.
+
+    Note that senders can control whether their own posts are
+    archived, on an individual per-message basis.  If the posted
+    message has a \mailheader{X-No-Archive} header (regardless of
+    value), or a \mailheader{X-Archive} header with a value of
+    \code{No} (case insensitive), then the message will not be
+    archived, although it will be treated as normal in all other
+    ways.
+
+\item[archive_private]
+    Controls whether Pipermail archives are private or public.
+    Private archives require a valid member address and password, or a
+    list administrator password in order to access them.  This
+    option has no effect when a third party archiver is used.
+
+\item[archive_volume_frequency]
+    Controls how Pipermail splits messages in the archive.  The most
+    common option is \emph{Monthly} meaning a new archive volume is
+    started every month.  Very high volume lists may want a shorter
+    frequency (e.g. \emph{Weekly} or \emph{Daily}) where as lower
+    volume lists may want a longer frequency (e.g. \emph{Yearly}).
+    This option has no effect when a third party archiver is used.
+\end{description}
+
 \subsection{The Mail/News Gateway Category}
+
+Mailman has a sophisticated mail-to-news gateway feature.  It can
+independently gate messages from news to mail and vice versa, and can
+even be used to manage moderated newsgroups.
+
 \subsection{The Auto-responder Category}
 \subsection{The Content Filtering Category}
 \subsection{The Topics Category}
