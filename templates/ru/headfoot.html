@@ -4,20 +4,18 @@ href="http://www.python.org/doc/current/lib/typesseq-strings.html">форматные
 атрибутов.  Списко атрибутов перечислен ниже.
 
 <ul>
-    <li><b><code>real_name</code></b> - The `pretty' name of the list; usually
-    the list name with capitalization.
+    <li><b><code>real_name</code></b> -- "красивое" имя списка рассылки;
+    обычно имя списка рассыкли с заглавной первой буквой.
 
-    <li><b><code>list_name</code></b> - The name by which the list is
-    identified in URLs, where case is significant.  (For backwards
-    compability, <code>_internal_name</code> is equivalent.)
+    <li><b><code>list_name</code></b> -- имя, которое используется в адресах
+    страниц. (<code>_internal_name</code> является эквивалентной, для
+    совместимости с предыдущими версиями.)
 
-    <li><b><code>host_name</code></b> - The fully qualified domain name
-    that the list server runs on.
+    <li><b><code>host_name</code></b> -- полное название домена для списка рассылки.
 
-    <li><b><code>web_page_url</code></b> - The base URL for Mailman.  This
-    can be appended with,
-    e.g. <em><code>listinfo/%(internal_name)s</code></em> to yield the
-    listinfo page for the mailing list.
+    <li><b><code>web_page_url</code></b> -- базовый адрес для Mailman. Именно к этому
+    адресу нужно добавлять, например, <em><code>listinfo/%(internal_name)s</code></em>
+    чтобы получиться адрес информационной страницы для списка рассылки.
 
     <li><b><code>description</code></b> - краткое описание списка рассылки.
     <li><b><code>info</code></b> - полное описание списка рассылки.
