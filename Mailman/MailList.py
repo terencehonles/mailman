@@ -15,9 +15,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
-"The class representing a mailman maillist.  Mixes in many feature classes."
+"""The class representing a Mailman mailing list.
 
-__version__ = "$Revision: 547 $"
+Mixes in many feature classes.
+"""
 
 try:
     import mm_cfg
@@ -53,7 +54,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._log_files = {}		# 'class': log_file_obj
 	if name:
 	    if name not in mm_utils.list_names():
-		raise mm_err.MMUnknownListError, 'list not found'
+		raise mm_err.MMUnknownListError, 'list not found: %s' % name
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	    # Load in the default values so that old data files aren't
 	    # hosed by new versions of the program.
