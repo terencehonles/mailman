@@ -447,7 +447,7 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
     replacements['<mm-unsubscribe-button>'] = (
         mlist.FormatButton('unsub', _('Unsubscribe')) + '<br>' +
         CheckBox('unsubconfirm', 1, checked=0).Format() +
-        '<em>Yes, I really want to unsubscribe</em>')
+        _('<em>Yes, I really want to unsubscribe</em>'))
     replacements['<mm-new-pass-box>'] = mlist.FormatSecureBox('newpw')
     replacements['<mm-confirm-pass-box>'] = mlist.FormatSecureBox('confpw')
     replacements['<mm-change-pass-button>'] = (
