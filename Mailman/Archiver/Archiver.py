@@ -159,18 +159,20 @@ class Archiver:
             olddate = post.getheader('date')
             post['Date'] = time.ctime(time.time())
         try:
-            afn = self.ArchiveFileName()
-            mbox = self.__archive_file(afn)
-            mbox.AppendMessage(post)
-            mbox.fp.close()
-        except IOError, msg:
-            self.LogMsg("error", ("Archive file access failure:\n"
-                                  "\t%s %s"
-                                  % (afn, `msg`)))
-            raise
-        if self.clobber_date:
-            # Resurrect original date setting.
-            post['Date'] = olddate
+            try:
+                afn = self.ArchiveFileName()
+                mbox = self.__archive_file(afn)
+                mbox.AppendMessage(post)
+                mbox.fp.close()
+            except IOError, msg:
+                self.LogMsg('error',
+                            'Archive file access failure:\n\t%s %s' %
+                            (afn, msg))
+                raise
+        finally:
+            if self.clobber_date:
+                # Resurrect original date setting.
+                post['Date'] = olddate
 
     def ExternalArchive(self, ar, txt):
         d = Utils.SafeDict({'listname': self.internal_name()})
@@ -189,7 +191,7 @@ class Archiver:
     def ArchiveMail(self, msg):
         """Store postings in mbox and/or pipermail archive, depending."""
 	# Fork so archival errors won't disrupt normal list delivery
-        if mm_cfg.ARCHIVE_TO_MBOX == -1 or not self.archive:
+        if mm_cfg.ARCHIVE_TO_MBOX == -1:
             return
 	if os.fork(): 
 	    return
