@@ -201,7 +201,7 @@ upgrade.
 
       --with-gcc=no
             Don't use gcc, even if it is found.  `cc' must be found on
-            your $PATH
+            your $PATH.
 
 
 3. Check your installation
@@ -327,6 +327,14 @@ upgrade.
           % cd $prefix/cron
           % su - mailman
           % crontab crontab.in
+
+    - Start the Mailman qrunner daemon, by executing the following
+      from the $prefix directory:
+
+          % bin/mailmanctl start
+
+      You can use the mailmanctl script as a typical Unix init
+      script.  [BAW: add more here.]
 
     - Add aliases for `mailman' and `mailman-owner' to the system's
       mail alias database.  These aliases should point to whoever is
