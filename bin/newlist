@@ -28,11 +28,6 @@ Options:
         their list has been created.  This option suppresses that
         notification and the prompting.
 
-    -o file
-    --output=file
-        Append the alias setting recommendations to file, in addition to
-        printing them to standard output.
-
     -h/--help
         Print this help text and exit.
 
@@ -43,7 +38,6 @@ Note that listnames are forced to lowercase."""
 
 import sys
 import os
-import time
 import getpass
 import getopt
 import sha
@@ -58,50 +52,6 @@ from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
 
-SENDMAIL_ALIAS_TEMPLATE = '''
-## %(listname)s mailing list
-## created: %(date)s %(user)s
-%(list)s "|%(wrapper)s post %(listname)s"
-%(admin)s "|%(wrapper)s mailowner %(listname)s"
-%(request)s "|%(wrapper)s mailcmd %(listname)s"
-%(owner2)s %(listname)s-admin
-'''
-
-QMAIL_ALIAS_TEMPLATE = """
-To create system aliases:
-
-echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s
-echo '|preline %(wrapper)s mailowner %(listname)s' >~alias/.qmail-%(listname)s-admin
-echo '|preline %(wrapper)s mailcmd %(listname)s' >~alias/.qmail-%(listname)s-request
-echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s
-echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner
-chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin
-chmod 644 ~alias/.qmail-%(listname)s-request ~alias/.qmail-%(listname)s-owner
-chmod 644 ~alias/.qmail-owner-%(listname)s
-"""
-
-# defaults
-STDOUTMSG = 'Entry for aliases file:'
-ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
-
-style = mm_cfg.MTA_ALIASES_STYLE.lower()
-if style  == 'qmail':
-    ALIASTEMPLATE = QMAIL_ALIAS_TEMPLATE
-elif style <> 'sendmail':
-    print >> sys.stderr, _("Warning, unknown alias style: %(style)s")
-    print >> sys.stderr, _('(Using sendmail style instead...)')
-
-
-
-def getusername():
-    username = os.environ.get('USER') or os.environ.get('LOGNAME')
-    if not username:
-        import pwd
-        username = pwd.getpwuid(os.getuid())[0]
-    if not username:
-        username = '<unknown>'
-    return username
-
 
 
 def usage(code, msg=''):
@@ -114,16 +64,13 @@ def usage(code, msg=''):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'ho:q',
-                                   ['help', 'output=', 'quiet'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hq',
+                                   ['help', 'quiet'])
     except getopt.error, msg:
         usage(1, msg)
 
-    appendfile = None
     quiet = 0
     for opt, arg in opts:
-        if opt in ('-o', '--output'):
-            appendfile = arg
         if opt in ('-h', '--help'):
             usage(0)
         if opt in ('-q', '--quiet'):
@@ -159,7 +106,7 @@ def main():
     mlist = MailList.MailList()
     try:
         pw = sha.new(listpasswd).hexdigest()
-        # guarantee that all newly created files have the proper permission.
+        # Guarantee that all newly created files have the proper permission.
         # proper group ownership should be assured by the autoconf script
         # enforcing that all directories have the group sticky bit set
         oldmask = os.umask(002)
@@ -173,27 +120,15 @@ def main():
         except Errors.MMListAlreadyExistsError:
             usage(1, _('List already exists: %(listname)s'))
 
-        output = ALIASTEMPLATE % {
-            'listname': listname,
-            'list'    : "%-24s" % (listname + ":"),
-            'wrapper' : '%s/wrapper' % mm_cfg.WRAPPER_DIR,
-            'admin'   : "%-24s" % ("%s-admin:" % listname),
-            'request' : "%-24s" % ("%s-request:" % listname),
-            'owner2'  : "%-24s" % ("%s-owner:" % listname),
-            'date'    : time.strftime('%d-%b-%Y', time.localtime(time.time())),
-            'user'    : getusername(),
-            }
-        print STDOUTMSG
-        print output
-        if appendfile:
-            fp = open(appendfile, 'a')
-            print >> fp, output
-            fp.close()
+        # Now do the MTA-specific list creation tasks
+        if mm_cfg.MTA:
+            modname = 'Mailman.MTA.' + mm_cfg.MTA
+            __import__(modname)
+            sys.modules[modname].create(mlist)
 
+        # And send the notice to the list owner
         if not quiet:
-            print _('Hit enter to notify %(listname)s owner')
-            sys.stdin.readline()
-            # send the notice to the list owner
+            print _('Notifying %(listname)s owner...')
             text = Utils.maketext(
                 'newlist.txt',
                 {'listname'    : listname,
