@@ -8,17 +8,12 @@ GNU/LINUX ISSUES
     GNU/Linux seems to be the most popular platform on which to run
     Mailman.  Here are some hints on getting Mailman to run on Linux:
 
-    If you are running secure_linux, you probably have restricted
-    hardlinks turned on.  Gergely Madarasz says that this not only
-    restricts hardlinks in /tmp, but also in any non +t directory.  This
-    can cause "Operation not permitted" errors in MailList.Save() -- you
-    will see a traceback.  You must turn restricted hardlinks off.  This
-    is also known under the name of Openwall Security Patches.
+    If you are getting errors with hard link creations and/or you are using
+    a special secure kernel (securelinux/openwall/grsecurity), see
+    contrib/README.check_perms_grsecurity.
 
-    There is a workaround for this problem, you can use securelinux_fix.py
-    in the contrib directory (see the README.securelinux_fix.py). Note
-    that the script will not work until you move it in your installed
-    Mailman tree in the bin directory.
+    Note that if you are using Linux Mandrake in secure mode, you are probably
+    concerned by this.
 
 
 
