@@ -379,12 +379,12 @@ The following is a detailed description of the problems.
                            "--------------------"))
         for option in options:
             self.AddToResponse(option + ':')
-            self.AddToResponse(Utils.wrap(_(option_descs[option])) + '\n',
+            self.AddToResponse(Utils.wrap(_(option_desc[option])) + '\n',
                                trunc=0, prefix="  ")
             
     def ProcessSetCmd(self, args, cmd, mail):
         origsender = mail.get_sender()
-        def ShowSetUsage(s=self, od = option_descs):
+        def ShowSetUsage(s=self, od = option_desc):
             options = od.keys()
             options.sort()
             desc_text = ""
