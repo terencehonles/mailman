@@ -120,7 +120,9 @@ class ListAdmin:
     def NumRequestsPending(self):
         self.__opendb()
         # Subtrace one for the version pseudo-entry
-        return len(self.__db) - 1
+        if self.__db.has_key('version'):
+            return len(self.__db) - 1
+        return len(self.__db)
 
     def __getmsgids(self, rtype):
         self.__opendb()
