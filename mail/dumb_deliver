@@ -1,0 +1,22 @@
+#!/usr/local/bin/python
+#
+SENDMAIL_CMD = '/usr/sbin/sendmail -f %s %s'
+import os
+
+if not os.fork():
+    import string, sys
+    def CallSendmail(cmd, stdin):
+	file = os.popen(cmd, 'w')
+	file.write(stdin)
+	file.close()
+
+    sender = sys.argv[2]
+    to_list = sys.argv[3:]
+    file = open(sys.argv[1], 'r')
+    text = file.read()
+    file.close()
+    os.unlink(sys.argv[1])
+    CallSendmail(SENDMAIL_CMD % (sender, string.join(to_list)), text)
+
+
+
