@@ -88,8 +88,10 @@ class DumbBTree:
 	else:
 	    self.current_index = self.current_index + 1
 
-	
-
+    def clear(self):
+        # bulk clearing much faster than deleting each item, esp. with the
+        # implementation of __delitem__() above :(
+        self.dict = {}
 
     def first(self):
         if not self.sorted:
@@ -296,7 +298,10 @@ class HyperDatabase(pipermail.Database):
     def newArchive(self, archive): pass
     def clearIndex(self, archive, index):
 	self.__openIndices(archive)
-	index=getattr(self, index+'Index')
+##	index=getattr(self, index+'Index')
+        if hasattr(self.threadIndex, 'clear'):
+            self.threadIndex.clear()
+            return
 	finished=0
 	try:
 	    key, msgid=self.threadIndex.first()	    		
