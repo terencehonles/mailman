@@ -45,11 +45,14 @@ class ListAdmin:
 
     def InitTempVars(self):
         self.__db = None
-        self.__filename = os.path.join(self.fullpath(), 'request.db')
+        self.__filename = None
+        fullpath = self.fullpath()
+        if fullpath:
+            self.__filename = os.path.join(fullpath, 'request.db')
 
     def __opendb(self):
         if self.__db is None:
-            assert self.Locked()
+            assert self.Locked() and self.__filename
             try:
                 fp = open(self.__filename)
                 self.__db = marshal.load(fp)
