@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -163,7 +163,7 @@ class ListAdmin:
         else:
             assert rtype == SUBSCRIPTION
             status = self.__handlesubscription(data, value, comment)
-        if status:
+        if status <> DEFER:
             # BAW: Held message ids are linked to Pending cookies, allowing
             # the user to cancel their post before the moderator has approved
             # it.  We should probably remove the cookie associated with this
