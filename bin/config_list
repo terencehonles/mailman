@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Configure a list from a text file description.
@@ -121,7 +121,7 @@ def do_output(listname, outfile):
     finally:
         if closep:
             outfp.close()
-                
+
 
 def do_list_categories(mlist, k, subcat, outfp):
     info = mlist.GetConfigInfo(k, subcat)
@@ -271,6 +271,15 @@ def do_input(listname, infile, checkonly, verbose):
                     print >> sys.stderr, _(
                         'Bad email address for option %(k)s: %(v)s')
                 else:
+                    # BAW: Horrible hack, but then this is special cased
+                    # everywhere anyway. :(  Privacy._setValue() knows that
+                    # when ALLOW_OPEN_SUBSCRIBE is false, the web values are
+                    # 0, 1, 2 but these really should be 1, 2, 3, so it adds
+                    # one.  But we really do provide [0..3] so we need to undo
+                    # the hack that _setValue adds. :( :(
+                    if k == 'subscribe_policy' and \
+                           not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+                        validval -= 1
                     gui._setValue(mlist, k, validval, fakedoc)
             # BAW: when to do gui._postValidate()???
     finally:
