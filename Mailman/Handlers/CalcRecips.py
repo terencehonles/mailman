@@ -63,6 +63,7 @@ def process(mlist, msg, msgdata):
             # Bad Urgent: password, so reject it instead of passing it on.  I
             # think it's better that the sender know they screwed up than to
             # deliver it normally.
+            realname = mlist.real_name
             text = _("""\
 Your urgent message to the %(realname)s mailing list was not authorized for
 delivery.  The original message as received by Mailman is attached.
