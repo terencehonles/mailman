@@ -37,7 +37,7 @@ from urlparse import urlparse
 from types import *
 
 import email.Iterators
-from email.Utils import getaddresses, dump_address_pair, parseaddr
+from email.Utils import getaddresses, formataddr, parseaddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -837,7 +837,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             text = Utils.maketext(
                 "adminsubscribeack.txt",
                 {"listname" : self.real_name,
-                 "member"   : dump_address_pair((name, email)),
+                 "member"   : formataddr((name, email)),
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
                 self.GetOwnerEmail(),
