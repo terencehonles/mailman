@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ def scanbody(msg, numlines=None):
     # the first numlines of body text.
     lines = []
     lineno = 0
-    reader = email.Iterators.body_line_iterator(msg)
+    reader = list(email.Iterators.body_line_iterator(msg))
     while numlines is None or lineno < numlines:
         try:
             line = reader.pop(0)
