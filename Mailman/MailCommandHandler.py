@@ -109,6 +109,13 @@ class MailCommandHandler:
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
 	
     def ParseMailCommands(self, msg):
+        # check the autoresponse stuff
+        if self.autorespond_requests:
+            from Mailman.Handlers import Replybot
+            Replybot.process(self, msg)
+            if self.autorespond_requests == 1:
+                # Yes, auto-respond and discard
+                return
 	subject = msg.getheader("subject")
         sender = string.lower(msg.GetSender())
         sender = string.split(sender, "@")[0]
