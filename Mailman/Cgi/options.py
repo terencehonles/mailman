@@ -504,36 +504,45 @@ def main():
         finally:
             mlist.Unlock()
         
+        # A bag of attributes for the global options
+        class Global:
+            enable = None
+            remind = None
+            nodupes = None
+            mime = None
+
+        globalopts = Global()
+
         # The enable/disable option and the password remind option may have
         # their global flags sets.
-        global_enable = None
         if cgidata.getvalue('deliver-globally'):
             # Yes, this is inefficient, but the list is so small it shouldn't
             # make much of a difference.
             for flag, newval in newvals:
                 if flag == mm_cfg.DisableDelivery:
-                    global_enable = newval
+                    globalopts.enable = newval
                     break
 
-        global_remind = None
         if cgidata.getvalue('remind-globally'):
             for flag, newval in newvals:
                 if flag == mm_cfg.SuppressPasswordReminder:
-                    global_remind = newval
+                    globalopts.remind = newval
                     break
 
-        global_nodupes = None
         if cgidata.getvalue('nodupes-globally'):
             for flag, newval in newvals:
                 if flag == mm_cfg.DontReceiveDuplicates:
-                    global_nodupes = newval
+                    globalopts.nodupes = newval
                     break
 
-        if global_enable is not None or global_remind is not None \
-               or global_nodupes is not None:
-            for gmlist in lists_of_member(mlist, user):
-                global_options(gmlist, user,
-                               global_enable, global_remind, global_nodupes)
+        if cgidata.getvalue('mime-globally'):
+            for flag, newval in newvals:
+                if flag == mm_cfg.DisableMime:
+                    globalopts.mime = newval
+                    break
+
+        for gmlist in lists_of_member(mlist, user):
+            global_options(gmlist, user, globalopts)
 
         # Now print the results
         if cantdigest:
@@ -587,6 +596,8 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
         mm_cfg.DisableMime, 1, user)
     replacements['<mm-mime-digests-button>'] = mlist.FormatOptionButton(
         mm_cfg.DisableMime, 0, user)
+    replacements['<mm-global-mime-button>'] = (
+        CheckBox('mime-globally', 1, checked=0).Format())
     replacements['<mm-delivery-enable-button>'] = mlist.FormatOptionButton(
         mm_cfg.DisableDelivery, 0, user)
     replacements['<mm-delivery-disable-button>'] = mlist.FormatOptionButton(
@@ -829,7 +840,16 @@ def change_password(mlist, user, newpw, confirmpw):
 
 
 
-def global_options(mlist, user, global_enable, global_remind, global_nodupes):
+def global_options(mlist, user, globalopts):
+    # Is there anything to do?
+    for attr in dir(globalopts):
+        if attr.startswith('_'):
+            continue
+        if getattr(globalopts, attr) is not None:
+            break
+    else:
+        return
+
     def sigterm_handler(signum, frame, mlist=mlist):
         # Make sure the list gets unlocked...
         mlist.Unlock()
@@ -844,16 +864,19 @@ def global_options(mlist, user, global_enable, global_remind, global_nodupes):
         # Install the emergency shutdown signal handler
         signal.signal(signal.SIGTERM, sigterm_handler)
 
-        if global_enable is not None:
-            mlist.setDeliveryStatus(user, global_enable)
+        if globalopts.enable is not None:
+            mlist.setDeliveryStatus(user, globalopts.enable)
 
-        if global_remind is not None:
+        if globalopts.remind is not None:
             mlist.setMemberOption(user, mm_cfg.SuppressPasswordReminder,
-                                  global_remind)
+                                  globalopts.remind)
 
-        if global_nodupes is not None:
+        if globalopts.nodupes is not None:
             mlist.setMemberOption(user, mm_cfg.DontReceiveDuplicates,
-                                  global_nodupes)
+                                  globalopts.nodupes)
+
+        if globalopts.mime is not None:
+            mlist.setMemberOption(user, mm_cfg.DisableMime, globalopts.mime)
 
         mlist.Save()
     finally:
