@@ -1,6 +1,6 @@
 """Handle passwords and sanitize approved messages."""
 
-__version__ = "$Revision: 399 $"
+__version__ = "$Revision: 444 $"
 
 
 import crypt, types, string, os
@@ -73,5 +73,5 @@ class SecurityManager:
         p = msg.getheader('approved')
         if p == None:
             return 0
-        msg.delitem('approved')         # Mustn't deliver this line!!
+        del msg['approved']         # Mustn't deliver this line!!
         return self.ValidAdminPassword(p)
