@@ -542,7 +542,7 @@ def FormatMembershipOptions(mlist, cgi_data):
         buttons = []
         for ci in chunk_indices:
             start, end = chunks[ci][0], chunks[ci][-1]
-	    url = mlist.GetScriptURL('admin', relative=1)
+	    url = mlist.GetScriptURL('admin')
             buttons.append("<a href=%s/members?chunk=%d> from %s to %s </a>"
                            % (url, ci, start, end))
         buttons = apply(UnorderedList, tuple(buttons))
