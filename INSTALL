@@ -300,6 +300,12 @@ upgrade.
       accessible.  For Apache users, consult the FollowSymLinks
       option.
 
+      Also, if you're going to be supporting internationalized public
+      archives, you will probably want to turn off any default charset
+      directive, otherwise your multilingual archive pages won't show
+      up correct.  Be sure you have "AddDefaultCharset off" in your
+      Apache config file for example.
+
       Now restart your web server.
 
     - Set up the crontab entries.  Mailman runs a number of cron jobs
@@ -431,13 +437,13 @@ upgrade.
 
 
 7. Troubleshooting
-  
+
     If you encounter problems with running Mailman, first check the
     "Common Problems" section, below.  If your problem is not covered
     there, check both the FAQ file and the online FAQ Wizard.  Also
     check for errors your syslog files and in the $prefix/logs/error
     file.
-    
+
     Where syslog lives on your particular machine may vary.  It may be
     in /var/log/maillog.  It may also be in /var/log/syslog.  On many
     machines, syslog files live in /adm/log/ instead of /var/log.
@@ -467,9 +473,9 @@ upgrade.
 
     Problem:  All Mailman web pages give an "Internal Server Error".
 
-    Solution: The likely problem is that you are using the wrong GID or 
+    Solution: The likely problem is that you are using the wrong GID or
               UID for CGI scripts.  Check your syslog.  If you see, for
-              example, a line like: 
+              example, a line like:
 
                   Attempt to exec script with invalid gid 51, expected 99
 
@@ -491,7 +497,7 @@ upgrade.
     Problem:  I send mail to the list, and get back mail saying,
               "unknown mailer error".
 
-    Solution: The likely problem is that you are using the wrong GID or 
+    Solution: The likely problem is that you are using the wrong GID or
               UID for mail.  Check your syslog.  If you see, for
               example, a line like:
 
@@ -511,14 +517,14 @@ upgrade.
               the file somewhere in Mailman's home directory, or
               somewhere else where the user mailman has write access
               to it; *as user mailman* call Postfix's "postalias" on the
-              alias file.  
+              alias file.
 
               % postalias <the alias file>
 
-              Also as user mailman, run 
+              Also as user mailman, run
 
-              % python -c'import os; print os.getgid()' 
-              
+              % python -c'import os; print os.getgid()'
+
               This should print out the group id that Mailman should
               be configured to expect when the mail wrapper programs
               are run.  Call it "thegid".  Rebuild Mailman with
