@@ -55,10 +55,10 @@ def MailAllPasswords(list, users):
             'cronpass.txt',
             {'hostname': list.host_name,
              'user'    : user,
-             'header'  : header,
-             'table'   : string.join(table, '\n'),
              'one_list': l,
-             }, raw=1)
+             })
+        # add this to the end so it doesn't get wrapped/filled
+        text = text + header + '\n' + string.join(table, '\n')
    	list.SendTextToUser(subject = subj,
    			    recipient = user,
    			    text = text,
