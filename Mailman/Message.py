@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ which is more convenient for use inside Mailman.
 from types import ListType
 
 import mimelib.Message
-import mimelib.ReprMixin
+from mimelib.StringableMixin import StringableMixin
 from mimelib.address import getaddresses
 
 from Mailman import mm_cfg
@@ -32,7 +32,7 @@ COMMASPACE = ', '
 
 
 
-class Message(mimelib.Message.Message, mimelib.ReprMixin.ReprMixin):
+class Message(mimelib.Message.Message, StringableMixin):
     def get_sender(self, use_envelope=None, preserve_case=0):
         """Return the address considered to be the author of the email.
 
