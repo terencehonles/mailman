@@ -9,5 +9,8 @@ La raison de cette mise en attente:
 
     %(reason)s
 
-Soit le message sera envoyé à la liste, soit vous receverez une
-indication de la décision du modérateur.
+Soit le message sera envoyé à la liste, soit vous recevrez une
+indication de la décision du modérateur. Si vous souhaitez annuler ce
+message, veillez visiter l'URL suivante:
+
+	 %(confirmurl)s
