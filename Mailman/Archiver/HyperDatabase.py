@@ -30,8 +30,6 @@ import errno
 import pipermail
 from Mailman import LockFile
 from Mailman.Utils import mkdir, open_ex
-# TBD: ugly, ugly, ugly -baw
-open = open_ex
 
 CACHESIZE = pipermail.CACHESIZE
 
@@ -67,20 +65,8 @@ class DumbBTree:
         self.__dirty = 0
         self.dict = {}
         self.sorted = []
-        try:
-            fp = open(path)
-            try:
-                self.dict = marshal.load(fp)
-            finally:
-                fp.close()
-        except IOError, e:
-            if e.errno <> errno.ENOENT: raise
-            pass
-        except EOFError:
-            pass
-        else:
-            self.__sort(dirty=1)
-
+        self.load()
+        
     def __repr__(self):
         return "DumbBTree(%s)" % self.path
 
@@ -180,8 +166,23 @@ class DumbBTree:
     def __len__(self):
         return len(self.sorted)
 
+    def load(self):
+        try:
+            fp = open_ex(self.path)
+            try:
+                self.dict = marshal.load(fp)
+            finally:
+                fp.close()
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+            pass
+        except EOFError:
+            pass
+        else:
+            self.__sort(dirty=1)
+
     def close(self):
-        fp = open(self.path, "w")
+        fp = open_ex(self.path, "w")
         fp.write(marshal.dumps(self.dict))
         fp.close()
         self.unlock()
@@ -315,7 +316,6 @@ class HyperDatabase(pipermail.Database):
     
     def clearIndex(self, archive, index):
 	self.__openIndices(archive)
-##	index=getattr(self, index+'Index')
         if hasattr(self.threadIndex, 'clear'):
             self.threadIndex.clear()
             return
@@ -328,14 +328,3 @@ class HyperDatabase(pipermail.Database):
 	    try:
 		key, msgid=self.threadIndex.next()	    		
 	    except KeyError: finished=1
-
-
-
-
-
-
-
-
-
-
-
