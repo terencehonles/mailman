@@ -113,13 +113,13 @@ fatal(const char* ident, int exitcode, char* format, ...)
 /* Is the parent process allowed to call us?
  */
 void
-check_caller(const char* ident, gid_t parentgid)
+check_caller(const char* ident, GID_T parentgid)
 {
-	gid_t mygid = getgid();
+	GID_T mygid = getgid();
 	if (parentgid != mygid) {
 		fatal(ident, GID_MISMATCH,
-		      "Failure to exec script. WANTED gid %d, GOT gid %d.  "
-		      "(Reconfigure to take %d?)",
+		      "Failure to exec script. WANTED gid %ld, GOT gid %ld.  "
+		      "(Reconfigure to take %ld?)",
 		      parentgid, mygid, mygid);
 	}
 }
