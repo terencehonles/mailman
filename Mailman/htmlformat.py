@@ -289,12 +289,6 @@ class Document(Container):
     def set_language(self, lang=None):
         self.language = lang
 
-    def get_content_type(self):
-        ctype = 'Content-type: text/html'
-        if self.language:
-            ctype += '; charset=' + Utils.GetCharSet(self.language)
-        return ctype + '\n'
-
     def set_bgcolor(self, color):
         self.bgcolor = color
 
@@ -302,7 +296,10 @@ class Document(Container):
         self.title = title
 
     def Format(self, indent=0, **kws):
-        output = [self.get_content_type()]
+        charset = 'us-ascii'
+        if self.language:
+            charset = Utils.GetCharSet(self.language)
+        output = ['Content-Type: text/html; charset=%s\n' % charset]
         if not self.suppress_head:
             kws.setdefault('bgcolor', self.bgcolor)
             tab = ' ' * indent
@@ -313,6 +310,9 @@ class Document(Container):
             if mm_cfg.IMAGE_LOGOS:
                 output.append('<LINK REL="SHORTCUT ICON" HREF="%s">' %
                               (mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON))
+            # Hit all the bases
+            output.append('<META http-equiv="Content-Type" '
+                          'content="text/html; charset=%s">' % charset)
             if self.title:
                 output.append('%s<TITLE>%s</TITLE>' % (tab, self.title))
             output.append('%s</HEAD>' % tab)
