@@ -17,7 +17,7 @@ dictionary.  For example, currently in maillist.py there's a line like:
 import os
 
 VERSION           = '1.0b1.1'
-__version__ = VERSION + "$Revision: 88 $"
+__version__ = VERSION + "$Revision: 104 $"
 
 			  # Site Specific #
 
@@ -46,7 +46,7 @@ MAIL_LOG          = '/var/log/maillog'
 DEFAULT_FILTER_PROG = ''
 DEFAULT_NUM_SPAWNS = 5
 DEFAULT_LIST_ADVERTISED = 1
-DEFAULT_MAX_NUM_RECIPIENTS = 5
+DEFAULT_MAX_NUM_RECIPIENTS = 10
 DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
 
 # These format strings will be expanded w.r.t. the dictionary for the
@@ -54,7 +54,8 @@ DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
 DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
 DEFAULT_MSG_HEADER = ""
 DEFAULT_MSG_FOOTER = """----------------------------
-%(real_name)s maillist - %(web_page_url)slistinfo/%(_internal_name)s
+%(real_name)s maillist
+%(web_page_url)slistinfo/%(_internal_name)s
 """
 
 		     # List Accessibility Defaults #
