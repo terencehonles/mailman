@@ -46,6 +46,48 @@ CATEGORIES = [('general', "General Options"),
 
 
 
+def authenticated(mlist, cgidata):
+    # Returns 1 if the user is properly authenticated, otherwise it does
+    # everything necessary to put up a login screen and returns 0.
+    isauthed = 0
+    adminpw = None
+    msg = ''
+    #
+    # If we get a password change request, we first authenticate by cookie
+    # here, and issue a new cookie later on iff the password change worked
+    # out.  The idea is to set only one cookie when the admin password
+    # changes.  The new cookie is necessary, because the checksum part of the
+    # cookie is based on (among other things) the list's admin password.
+    if cgidata.has_key('adminpw') and not cgidata.has_key('newpw'):
+        adminpw = cgidata['adminpw'].value
+    # Attempt to authenticate
+    try:
+        isauthed = mlist.WebAuthenticate(password=adminpw, cookie='admin')
+    except Errors.MMExpiredCookieError:
+        msg = 'Stale cookie found'
+    except Errors.MMInvalidCookieError:
+        msg = 'Error decoding authorization cookie'
+    except (Errors.MMBadPasswordError, Errors.MMAuthenticationError):
+        msg = 'Authentication failed'
+    #
+    # Put up the login page if not authenticated
+    if not isauthed:
+        url = mlist.GetScriptURL('admin', relative=1)
+        if msg:
+            msg = FontAttr(msg, color='#FF5060', size='+1').Format()
+        print 'Content-type: text/html\n'
+        print Utils.maketext(
+            # Should really be admlogin.html :/
+            'admlogin.txt',
+            {'listname': mlist.real_name,
+             'path'    : Utils.GetRequestURI(url),
+             'message' : msg,
+             })
+        return 0
+    return 1
+
+
+
 def main():
     """Process and produce list options form.
 
@@ -83,56 +125,17 @@ def main():
         if category not in map(lambda x: x[0], CATEGORIES):
             category = 'general'
 
-        cgi_data = cgi.FieldStorage()
+        cgidata = cgi.FieldStorage()
 
-        # Authenticate.
-        is_auth = 0
-        adminpw = None
-        message = ""
-
-        # If we get a password change request, we first authenticate
-        # by cookie here, and issue a new cookie later on iff the
-        # password change worked out.
-        #
-        # The idea is to set only _one_ cookie when the admin password
-        # changes.  The new cookie is needed, because the checksum part
-        # of the cookie is based on (among other things) the list's
-        # admin password.
-        if cgi_data.has_key('adminpw') and not cgi_data.has_key('newpw'):
-            adminpw = cgi_data['adminpw'].value
-        try:
-            # admin uses cookies with -admin name suffix
-            is_auth = mlist.WebAuthenticate(password=adminpw, cookie='admin')
-        except Errors.MMBadPasswordError:
-            message = 'Sorry, wrong password.  Try again.'
-        except Errors.MMExpiredCookieError:
-            message = 'Your cookie has gone stale, ' \
-                      'enter password to get a new one.',
-        except Errors.MMInvalidCookieError:
-            message = 'Error decoding authorization cookie.'
-        except Errors.MMAuthenticationError:
-            message = 'Authentication error.'
-
-        if not is_auth:
-            defaulturi = '/mailman/admin%s/%s' % (mm_cfg.CGIEXT, listname)
-            if message:
-                message = FontAttr(
-                    message, color='FF5060', size='+1').Format()
-            print 'Content-type: text/html\n\n'
-            text = Utils.maketext(
-                'admlogin.txt',
-                {'listname': listname,
-                 'path'    : Utils.GetRequestURI(defaulturi),
-                 'message' : message,
-                 })
-            print text
+        # If the user is not authenticated, we're done.
+        if not authenticated(mlist, cgidata):
             return
 
         # is the request for variable details?
         varhelp = None
-        if cgi_data.has_key('VARHELP'):
-            varhelp = cgi_data['VARHELP'].value
-        elif cgi_data.has_key('request_login') and \
+        if cgidata.has_key('VARHELP'):
+            varhelp = cgidata['VARHELP'].value
+        elif cgidata.has_key('request_login') and \
              os.environ.get('QUERY_STRING'):
             # POST methods, even if their actions have a query string, don't
             # get put into FieldStorage's keys :-(
@@ -144,7 +147,7 @@ def main():
             print doc.Format(bgcolor="#ffffff")
             return
 
-        if cgi_data.has_key('bounce_matching_headers'):
+        if cgidata.has_key('bounce_matching_headers'):
             pairs = mlist.parse_matching_header_opt()
 
 	if not mlist.digestable and len(mlist.GetDigestMembers()):
@@ -158,9 +161,9 @@ def main():
                             ' but non-digestified mail is turned'
                             ' off.  They will receive mail until'
                             ' you fix this problem.')
-        if len(cgi_data.keys()):
-            ChangeOptions(mlist, category, cgi_data, doc)
-	FormatConfiguration(doc, mlist, category, category_suffix, cgi_data)
+        if len(cgidata.keys()):
+            ChangeOptions(mlist, category, cgidata, doc)
+	FormatConfiguration(doc, mlist, category, category_suffix, cgidata)
 	print doc.Format(bgcolor="#ffffff")
     finally:
         mlist.Save()
@@ -575,9 +578,9 @@ def FormatMembershipOptions(mlist, cgi_data):
         buttons = []
         for ci in chunk_indices:
             start, end = chunks[ci][0], chunks[ci][-1]
-	    url = mlist.GetAbsoluteScriptURL('admin')
+	    url = mlist.GetScriptURL('admin', relative=1)
             buttons.append("<a href=%s/members?chunk=%d> from %s to %s </a>"
-                           % ( url,  ci, start, end))
+                           % (url, ci, start, end))
         buttons = apply(UnorderedList, tuple(buttons))
         footer = footer + buttons.Format() + "<p>"
     else:
@@ -585,12 +588,12 @@ def FormatMembershipOptions(mlist, cgi_data):
         footer = "<p>"
     for member in all:
         mtext = '<a href="%s">%s</a>' % (
-            mlist.GetAbsoluteOptionsURL(member, obscure=1),
+            mlist.GetOptionsURL(member, obscure=1, relative=1),
             mlist.GetUserSubscribedAddress(member))
         cells = [mtext + "<input type=hidden name=user value=%s>" % (member),
                  Center(CheckBox(member + "_subscribed", "on", 1).Format())]
         for opt in ("hide", "nomail", "ack", "notmetoo"):
-            if mlist.GetUserOption(member, MailCommandHandler.option_info[opt]):
+            if mlist.GetUserOption(member,MailCommandHandler.option_info[opt]):
                 value = "on"
                 checked = 1
             else:
@@ -604,7 +607,7 @@ def FormatMembershipOptions(mlist, cgi_data):
         else:
             cells.append(Center(CheckBox(member + "_digest",
                                          "on", 1).Format()))
-        if mlist.GetUserOption(member, MailCommandHandler.option_info['plain']):
+        if mlist.GetUserOption(member,MailCommandHandler.option_info['plain']):
             value = 'on'
             checked = 1
         else:
