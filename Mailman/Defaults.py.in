@@ -317,6 +317,9 @@ Host      = 7
 Number    = 8
 FileUpload =9
 
+# Standard text field width
+TEXTFIELDWIDTH = 50
+
 # could add Directory and URL
 
 
