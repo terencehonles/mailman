@@ -42,6 +42,7 @@ import getopt
 
 import paths
 from Mailman import mm_cfg
+from Mailman import Utils
 
 
 
@@ -75,6 +76,9 @@ def main():
     if len(args) <> 1:
         usage(1)
     listname = string.lower(args[0])
+
+    if not Utils.list_exists(listname):
+        usage(1, 'List does not exist: "%s"' % listname)
 
     removeArchives = 0
     for opt, arg in opts:
