@@ -120,7 +120,7 @@ def main():
     replacements = mlist.GetAllReplacements(lang)
     replacements['<mm-displang-box>'] = mlist.FormatButton(
         'displang-button',
-        text = _('See this page in'))
+        text = _('View this page in'))
     replacements['<mm-lang-form-start>'] = mlist.FormatFormStart('roster')
     doc.AddItem(mlist.ParseTags('roster.html', replacements, lang))
     print doc.Format()
