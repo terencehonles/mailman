@@ -44,7 +44,7 @@ INTEGRATING SENDMAIL AND MAILMAN
 
     David Champion has contributed a recipe for more closely
     integrating Sendmail and Mailman, such that Sendmail will
-    automatically recognize and delivery to new mailing lists as they
+    automatically recognize and deliver to new mailing lists as they
     are created, without having to manually edit alias tables.
 
     In the contrib directory, you will find four files
