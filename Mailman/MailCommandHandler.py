@@ -147,7 +147,8 @@ class MailCommandHandler:
 		if mo:
 		    lines = ["confirm %s" % (mo.group(1))]
 		else:
-		    self.AddError("Subject line ignored: %s" % subject)
+		    self.AddError("Subject line ignored: %s" % subject,
+                                  trunc=0)
         processed = {}                      # For avoiding redundancies.
         maxlines = mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES
 	for linecount in range(len(lines)):
