@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 4060 $)
+AC_REVISION($Revision: 4418 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -467,40 +467,42 @@ AC_CHECK_FUNCS(vsnprintf)
 dnl Expand PYTHON path in the scripts, output into build/scriptname
 
 AC_DEFUN(MM_SCRIPTS, [dnl
-contrib/rotatelogs.py \
-contrib/qmail-to-mailman.py \
-contrib/securelinux_fix.py \
-cron/senddigests \
-cron/bumpdigests \
-cron/nightly_gzip \
-cron/mailpasswds \
-cron/gate_news \
-cron/checkdbs \
-bin/update \
-bin/newlist \
-bin/check_perms \
-bin/find_member \
-bin/withlist \
-bin/mailmanctl \
+bin/add_members \
+bin/arch \
 bin/change_pw \
-bin/list_admins \
 bin/check_db \
+bin/check_perms \
+bin/cleanarch \
+bin/clone_member \
+bin/config_list \
+bin/digest_arch \
+bin/dumpdb \
+bin/find_member \
+bin/genaliases \
+bin/list_admins \
 bin/list_lists \
+bin/list_members \
+bin/mailmanctl \
+bin/mmsitepass \
+bin/newlist \
 bin/pygettext.py \
 bin/qrunner \
-bin/clone_member \
-bin/genaliases \
-bin/digest_arch \
-bin/arch \
-bin/rmlist \
-bin/mmsitepass \
-bin/version \
 bin/remove_members \
-bin/config_list \
-bin/list_members \
+bin/rmlist \
 bin/sync_members \
-bin/add_members \
-bin/dumpdb ])
+bin/update \
+bin/version \
+bin/withlist \
+contrib/qmail-to-mailman.py \
+contrib/rotatelogs.py \
+contrib/securelinux_fix.py \
+cron/bumpdigests \
+cron/checkdbs \
+cron/gate_news \
+cron/mailpasswds \
+cron/nightly_gzip \
+cron/senddigests \
+])
 
 dnl Please make sure to leave a space at the end of the last entry.
 dnl (This is so we don't have to use [a-z/] style character classes

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.14 
+# From configure.in Revision: 2.15 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -1979,40 +1979,42 @@ done
 
 
 
-SCRIPTS="build/contrib/rotatelogs.py:contrib/rotatelogs.py \
-build/contrib/qmail-to-mailman.py:contrib/qmail-to-mailman.py \
-build/contrib/securelinux_fix.py:contrib/securelinux_fix.py \
-build/cron/senddigests:cron/senddigests \
-build/cron/bumpdigests:cron/bumpdigests \
-build/cron/nightly_gzip:cron/nightly_gzip \
-build/cron/mailpasswds:cron/mailpasswds \
-build/cron/gate_news:cron/gate_news \
-build/cron/checkdbs:cron/checkdbs \
-build/bin/update:bin/update \
-build/bin/newlist:bin/newlist \
-build/bin/check_perms:bin/check_perms \
-build/bin/find_member:bin/find_member \
-build/bin/withlist:bin/withlist \
-build/bin/mailmanctl:bin/mailmanctl \
+SCRIPTS="build/bin/add_members:bin/add_members \
+build/bin/arch:bin/arch \
 build/bin/change_pw:bin/change_pw \
-build/bin/list_admins:bin/list_admins \
 build/bin/check_db:bin/check_db \
+build/bin/check_perms:bin/check_perms \
+build/bin/cleanarch:bin/cleanarch \
+build/bin/clone_member:bin/clone_member \
+build/bin/config_list:bin/config_list \
+build/bin/digest_arch:bin/digest_arch \
+build/bin/dumpdb:bin/dumpdb \
+build/bin/find_member:bin/find_member \
+build/bin/genaliases:bin/genaliases \
+build/bin/list_admins:bin/list_admins \
 build/bin/list_lists:bin/list_lists \
+build/bin/list_members:bin/list_members \
+build/bin/mailmanctl:bin/mailmanctl \
+build/bin/mmsitepass:bin/mmsitepass \
+build/bin/newlist:bin/newlist \
 build/bin/pygettext.py:bin/pygettext.py \
 build/bin/qrunner:bin/qrunner \
-build/bin/clone_member:bin/clone_member \
-build/bin/genaliases:bin/genaliases \
-build/bin/digest_arch:bin/digest_arch \
-build/bin/arch:bin/arch \
-build/bin/rmlist:bin/rmlist \
-build/bin/mmsitepass:bin/mmsitepass \
-build/bin/version:bin/version \
 build/bin/remove_members:bin/remove_members \
-build/bin/config_list:bin/config_list \
-build/bin/list_members:bin/list_members \
+build/bin/rmlist:bin/rmlist \
 build/bin/sync_members:bin/sync_members \
-build/bin/add_members:bin/add_members \
-build/bin/dumpdb:bin/dumpdb "
+build/bin/update:bin/update \
+build/bin/version:bin/version \
+build/bin/withlist:bin/withlist \
+build/contrib/qmail-to-mailman.py:contrib/qmail-to-mailman.py \
+build/contrib/rotatelogs.py:contrib/rotatelogs.py \
+build/contrib/securelinux_fix.py:contrib/securelinux_fix.py \
+build/cron/bumpdigests:cron/bumpdigests \
+build/cron/checkdbs:cron/checkdbs \
+build/cron/gate_news:cron/gate_news \
+build/cron/mailpasswds:cron/mailpasswds \
+build/cron/nightly_gzip:cron/nightly_gzip \
+build/cron/senddigests:cron/senddigests \
+"
 
 
 
