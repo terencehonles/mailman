@@ -1,4 +1,4 @@
-<!-- $Revision: 5015 $ -->
+<!-- $Revision: 5035 $ -->
 <html>
 <head>
     <link rel="SHORTCUT ICON" href="<mm-favicon>">
@@ -17,7 +17,7 @@
     <tr><td>
         <b><MM-List-Name> メーリングリストでの<MM-Presentable-User></b> さんの
         会員設定状況，パスワード，オプションの設定状況．
-        </td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
+        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -170,12 +170,12 @@
 
     <tr><TD BGCOLOR="#cccccc">
         <strong> まとめ読みモードに設定</strong> <br>
-        もしまとめ読みモードを On にしておくと，１日毎に１通だけまとめて
+        もしまとめ読みモードを 有効 にしておくと，１日毎に１通だけまとめて
         メールが届き，投稿がある度には送られません．もしまとめ読みモード
-        を On から Off にすると，最後のまとめメールが届けられます．
+        を 有効 から 無効 にすると，最後のまとめメールが届けられます．
         </td><td bgcolor="#cccccc">
-        <MM-Undigest-Radio-Button> Off<br>
-        <MM-Digest-Radio-Button> On
+        <MM-Undigest-Radio-Button> 無効<br>
+        <MM-Digest-Radio-Button> 有効
         </td></tr>
 
     <tr><TD BGCOLOR="#cccccc">
@@ -267,6 +267,25 @@
         </td><td bgcolor="#cccccc">
         <mm-suppress-nonmatching-topics>いいえ<br>
         <mm-receive-nonmatching-topics>はい
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>重複したメールを受け取らないようにしますか?</strong><p>
+
+            もし, あなたが<tt>To:</tt>または<tt>Cc:</tt>ヘッダに
+            入っていたら, メーリングリストからのメールを受け取らない
+            ようにすることができます. リストから重複したメールを
+            受け取らないようにするには<em>はい</em>を選んでください.
+            <em>いいえ</em>を選ぶとメールを受け取ります.
+
+            <p>もし, リストが個人別配送モードになっている場合,
+            「いいえ」を選ぶと <tt>X-Mailman-Copy: yes</tt> という
+            ヘッダが付くようになります.
+
+        </td><td bgcolor="#cccccc">
+        <mm-receive-duplicates-button>いいえ<br>
+        <mm-dont-receive-duplicates-button>はい<br>
+        <mm-global-nodupes-button><i>全部設定</i>
         </td></tr>
 
     <tr><TD colspan="2">
