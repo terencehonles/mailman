@@ -76,20 +76,10 @@ RESYNCHRONIZING THE CATALOG
     (i.e. xx/LC_MESSAGES/mailman.po files) need to be updated as well.
 
     In general, I as the Mailman maintainer will merge the new
-    catalogs with the individual language catalogs, and upload the new
-    versions to SourceForge.  Translators should grab the new
-    mailman.po files from SF or CVS and update the translated
-    messages.  They should also update the template translations.
-
-    The language packs will be made available on SourceForge under the
-    i18n project, using the following URL
-
-        http://sourceforge.net/project/showfiles.php?group_id=103
-
-    The README-I18N.en file will be a copy of this one, although the
-    version in CVS will always be the most up-to-date.  The "langpack"
-    tarball will contain all the templates and message catalogs you'd
-    need, although again, CVS is the most current.
+    catalogs with the individual language catalogs, and commit the
+    updates to CVS.  Translators should grab the new mailman.po files
+    from CVS and update the translated messages.  They should also
+    update the template translations.
 
     For best results, you will probably want to keep current on
     changes to Mailman 2.1 in the CVS.  As Mailman 2.1 moves towards
@@ -107,7 +97,7 @@ DONATING YOUR TRANSLATION BACK TO MAILMAN
     are the steps to donate your translations, either the first time
     or subsequent updates.
 
-    The best thing to do is to send me <barry@zope.com> a "tarball",
+    The best thing to do is to send me <barry@python.org> a "tarball",
     i.e. a gzip'd tarfile, that can be unpacked in the top level
     directory of the Mailman CVS tree.  This would be the directory
     containing this README-I18N.en file.
@@ -140,33 +130,32 @@ DONATING YOUR TRANSLATION BACK TO MAILMAN
 
 CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
 
-    As of this writing (31-Dec-2001), Mailman 2.1alpha4 supports the
+    As of this writing (23-Dec-2002), Mailman 2.1 supports the
     following languages out of the box:
 
     - Czech
     - Chinese (Simplified and Traditional)
+    - Dutch
     - English
+    - Estonian
     - Finnish
     - French
     - German
     - Hungarian
     - Italian
     - Japanese
+    - Korean
     - Spanish
+    - Swedish
     - Norwegian
+    - Portuguese (Brazil)
     - Russian
 
     We've also had volunteers for these languages, although they
     aren't yet integrated into the code base:
 
-    - Dutch
-    - Korean
+    - Catalan
     - Polish
-    - Portuguese
-    - Swedish
-
-    Hopefully more translations will be donated as Mailman 2.1
-    development moves along.
 
 
 
