@@ -61,7 +61,6 @@ ICONS=		*.jpg *.png
 all:
 
 install:
-	$(INSTALL) -m $(FILEMODE) Cookie.py $(PACKAGEDIR)
 	$(INSTALL) -m $(FILEMODE) $(ICONS) $(ICONDIR)
 	for d in $(PATHSDIRS); \
 	do \
