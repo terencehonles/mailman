@@ -1,2 +1,4 @@
 .cvsignore
 mm_cfg.py
+Makefile
+mm_defaults.py
