@@ -60,6 +60,8 @@ def ZapOldVars(l):
         del l.num_spawns
     if hasattr(l, 'filter_prog'):
         del l.filter_prog
+    if hasattr(l, 'clobber_date'):
+        del l.clobber_date
 
 
 
@@ -192,6 +194,9 @@ def NewVars(l):
     add_only_if_missing('admin_responses', {})
     add_only_if_missing('reply_goes_to_list', '')
     add_only_if_missing('preferred_language', mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    add_only_if_missing('digest_volume_frequency',
+                        mm_cfg.DEFAULT_DIGEST_VOLUME_FREQUENCY)
+    add_only_if_missing('digest_last_sent_at', 0)
 
 
 
