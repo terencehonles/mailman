@@ -98,5 +98,3 @@ Note also that some versions of <code>tar</code> don't accept the
 % gunzip -c mailman.tar.gz | tar xf -
 </pre>
 </blockquote>
-e>
->
