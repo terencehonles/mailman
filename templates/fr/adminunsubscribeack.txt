@@ -1,0 +1,2 @@
+%(member)s a été désabonné de %(listname)s.
+

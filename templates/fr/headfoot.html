@@ -1,0 +1,27 @@
+Ce texte peut inclure des chaines <b><code>%(attribute)s</code></b>
+qui sont remplac&eacute;es par les attibuts de la liste.  Pour plus de
+d&eacute;tails, allez voir
+<a href="http://www.python.org/doc/current/lib/typesseq-strings.html">Python's
+string formatting rules</a>.  Voici quelques attributs utiles:
+
+<ul>
+    <li><b><code>real_name</code></b> - Le `joli' nom le la liste;
+    habituellement le nom avec la bonne casse.
+
+    <li><b><code>_internal_name</code></b> - Le nom par lequel la liste
+    est reconnue dans les URLs, o&ugrave; la casse est importante.
+
+    <li><b><code>host_name</code></b> - Le nom d'h&ocirc;te complet du
+    serveur sur lequel est install&eacute; le serveur de listes.
+
+    <li><b><code>web_page_url</code></b> - L'URL de base pour Mailman.
+    Elle peut &ecirc;tre concat&eacute;n&eacute;e avec, par exemple
+    <em><code>listinfo/%(_internal_name)s</code></em> pour donner la
+    page d'infos de la liste.
+
+    <li><b><code>description</code></b> - La courte description de la
+    liste de diffusion.
+
+    <li><b><code>info</code></b> - La description compl&egrave;te de la
+    liste de diffusion.
+</ul>

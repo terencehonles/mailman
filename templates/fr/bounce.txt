@@ -1,0 +1,19 @@
+Ce message MIME devrait être lisible en tant que texte simple. 
+
+--%(boundary)s 
+
+Content-type: text/plain; charset=us-ascii
+
+Ceci est une notification de rebond sur une liste: 
+
+    Liste:      %(listname)s
+    Abonné:     %(addr)s
+    Action:     Abonnement %(negative)s%(did)s.
+    Raison:     Rebonds excessifs ou fatals.
+    %(but)s
+
+%(reenable)s
+L'avis de déclenchement de rebond est joint ci-dessous.
+
+Des questions? Contactez l'administrateur du site Mailman
+à l'adresse %(owneraddr)s.

@@ -1,0 +1,13 @@
+Votre courrier à '%(list_name)s' dont le sujet est
+
+    %(subject)s
+
+est en attente jusqu'à ce que le modérateur de la liste puisse
+le consulter pour approbation.
+
+La raison de cette mise en attente:
+
+    %(reason)s
+
+Soit le message sera envoyé à la liste, soit vous receverez une
+indication de la décision du modérateur.

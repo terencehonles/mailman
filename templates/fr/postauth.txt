@@ -1,0 +1,13 @@
+En tant qu'administrateur de liste, votre autorisation est nécessaire
+pour l'envoi du message suivant vers la liste:
+
+    Liste:  %(listname)s@%(hostname)s
+    De:     %(sender)s
+    Sujet:  %(subject)s
+    Raison: %(reason)s
+
+Quand vous le souhaitez, consultez: 
+
+    %(admindb_url)s 
+
+pour approuver ou rejeter la demande. 

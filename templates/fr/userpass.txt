@@ -1,0 +1,21 @@
+Ce message est un rappel de la marche à suivre pour vous désabonner
+ou changer vos options pour l'adresse "%(user)s"
+sur la liste de diffusion %(listname)s.  Votre mot de passe est
+nécessaire pour toutes ces modifications.  VOTRE MOT DE PASSE
+POUR %(listname)s EST:
+
+    %(password)s
+
+Pour modifier votre abonnement, utilisez ce mot de passe dans votre
+page web d'abonnement:
+
+    %(options_url)s
+
+Vous pouvez également procéder par mail - envoyez un message à:
+
+    %(requestaddr)s
+
+avec le mot "help" dans le sujet ou le corps du message, et vous
+recevrez les inscructions.
+
+Questions ou commentaires? Envoyez-les à %(adminaddr)s. 

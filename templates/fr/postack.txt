@@ -1,0 +1,7 @@
+Votre message intitulé
+
+    %(subject)s 
+
+est bien parvenu à la liste de diffusion %(listname)s. 
+
+Page d'information de la liste : %(listinfo_url)s 
