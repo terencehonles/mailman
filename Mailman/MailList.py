@@ -444,7 +444,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.Save()
 	self.SendSubscribeAck(name, password, digest)
 
-    def DeleteMember(self, name):
+    def DeleteMember(self, name, whence=None):
 	self.IsListInitialized()
 # FindMatchingAddresses *should* never return more than 1 address.
 # However, should log this, just to make sure.
@@ -472,6 +472,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.SendUnsubscribeAck(name)
 	self.ClearBounceInfo(name)
 	self.Save()
+        if whence: whence = "; %s"
+        else: whence = ""
+        self.LogMsg("subscribe", "%s: deleted member %s%s",
+                    self._internal_name, kind, name, whence)
 
     def IsMember(self, address):
 	return len(mm_utils.FindMatchingAddresses(address, self.members +
