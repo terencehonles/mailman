@@ -129,7 +129,6 @@ your membership administrative address, %(addr)s.'''))
         attachment = MIMEMessage(msg)
         notice = Message.OwnerNotification(
             self, self.GetBouncesEmail(), subject,
-            lang=self.preferred_language,
             tomoderators=tomoderators)
         # Make it look like the message is going to the -owner address
         notice.set_type('multipart/mixed')
