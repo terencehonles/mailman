@@ -148,68 +148,44 @@ def QuotePeriods(text):
     return JOINER.join(text.split(SEP))
 
 
-# TBD: what other characters should be disallowed?
-_badchars = re.compile('[][()<>|;^,]')
+# This takes an email address, and returns a tuple containing (user,host)
+def ParseEmail(email):
+    user = None
+    domain = None
+    email = email.lower()
+    at_sign = email.find('@')
+    if at_sign < 1:
+	return email, None
+    user = email[:at_sign]
+    rest = email[at_sign+1:]
+    domain = rest.split('.')
+    return user, domain
 
-def ValidateEmail(str):
-    """Verify that the an email address isn't grossly invalid."""
+
+def LCDomain(addr):
+    "returns the address with the domain part lowercased"
+    atind = addr.find('@')
+    if atind == -1: # no domain part
+        return addr
+    return addr[:atind] + '@' + addr[atind+1:].lower()
+
+
+# TBD: what other characters should be disallowed?
+_badchars = re.compile('[][()<>|;^,]/')
+
+def ValidateEmail(s):
+    """Verify that the an email address isn't grossly evil."""
     # Pretty minimal, cheesy check.  We could do better...
-    if not str:
+    if not s:
         raise Errors.MMBadEmailError
-    if _badchars.search(str) or str[0] == '-':
+    if _badchars.search(s) or s[0] == '-':
         raise Errors.MMHostileAddress
-    if str.find('/') <> -1 and \
-       os.path.isdir(os.path.split(str)[0]):
-        # then
-        raise Errors.MMHostileAddress
-    user, domain_parts = ParseEmail(str)
-    # this means local, unqualified addresses, are no allowed
+    user, domain_parts = ParseEmail(s)
+    # This means local, unqualified addresses, are no allowed
     if not domain_parts:
         raise Errors.MMBadEmailError
     if len(domain_parts) < 2:
 	raise Errors.MMBadEmailError
-
-
-
-# User J. Person <person@allusers.com>
-_addrcre1 = re.compile('<(.*)>')
-# person@allusers.com (User J. Person)
-_addrcre2 = re.compile('([^(]*)\s(.*)')
-
-def ParseAddrs(addresses):
-    """Parse common types of email addresses:
-
-    User J. Person <person@allusers.com>
-    person@allusers.com (User J. Person)
-
-    TBD: I wish we could use rfc822.parseaddr() but 1) the interface is not
-    convenient, and 2) it doesn't work for the second type of address.
-
-    Argument is a list of addresses, return value is a list of the parsed
-    email addresses.  The argument can also be a single string, in which case
-    the return value is a single string.  All addresses are string.strip()'d.
-
-    """
-    single = 0
-    if type(addresses) == type(''):
-        single = 1
-        addrs = [addresses]
-    else:
-        addrs = addresses
-    parsed = []
-    for a in addrs:
-        mo = _addrcre1.search(a)
-        if mo:
-            parsed.append(mo.group(1))
-            continue
-        mo = _addrcre2.search(a)
-        if mo:
-            parsed.append(mo.group(1))
-            continue
-        parsed.append(a)
-    if single:
-        return parsed[0].strip()
-    return [s.strip() for s in parsed]
 
 
 
@@ -247,29 +223,6 @@ def ScriptURL(target, web_page_url=None, absolute=0):
     else:
         path = web_page_url + target
     return path + mm_cfg.CGIEXT
-
-
-
-# This takes an email address, and returns a tuple containing (user,host)
-def ParseEmail(email):
-    user = None
-    domain = None
-    email = email.lower()
-    at_sign = email.find('@')
-    if at_sign < 1:
-	return (email, None)
-    user = email[:at_sign]
-    rest = email[at_sign+1:]
-    domain = rest.split('.')
-    return user, domain
-
-
-def LCDomain(addr):
-    "returns the address with the domain part lowercased"
-    atind = addr.find('@')
-    if atind == -1: # no domain part
-        return addr
-    return addr[:atind] + '@' + addr[atind+1:].lower()
 
 
 
