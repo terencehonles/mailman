@@ -168,7 +168,15 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
     text = template
     if dict is not None:
         try:
-            text = template % SafeDict(dict)
+            sdict = SafeDict(dict)
+            try:
+                text = sdict.interpolate(template)
+            except UnicodeError:
+                # Try again after coercing the template to unicode
+                utemplate = unicode(template,
+                                    charset or Utils.GetCharSet(lang),
+                                    'replace')
+                text = sdict.interpolate(utemplate)
         except (TypeError, ValueError):
             # The template is really screwed up
             pass
@@ -210,7 +218,6 @@ class Article(pipermail.Article):
         self.__super_init(message, sequence, keepHeaders)
         self.prev = None
         self.next = None
-
         # Trim Re: from the subject line
         i = 0
         while i != -1:
@@ -220,7 +227,7 @@ class Article(pipermail.Article):
                 self.subject = self.subject[i:]
             else:
                 i = -1
-
+        # Useful to keep around
         self._lang = lang
         self._mlist = mlist
 
@@ -250,6 +257,7 @@ class Article(pipermail.Article):
                 charset = charset[1:-1]
             if charset[0]=="'" and charset[-1]=="'":
                 charset = charset[1:-1]
+        # check_header_charsets() sets self.charset
         self.check_header_charsets(charset)
         if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
             self.quote = Utils.uquote
@@ -380,7 +388,6 @@ class Article(pipermail.Article):
 
     def as_html(self):
         d = self.__dict__.copy()
-
         # avoid i18n side-effects
         otrans = i18n.get_translation()
         i18n.set_language(self._lang)
@@ -399,13 +406,12 @@ class Article(pipermail.Article):
             d["body"] = self._get_body()
             d['listurl'] = self._mlist.GetScriptURL('listinfo', absolute=1)
             d['listname'] = self._mlist.real_name
+            d['encoding'] = ''
         finally:
             i18n.set_translation(otrans)
 
-        if self.charset is not None:
-            d["encoding"] = html_charset % self.charset
-        else:
-            d["encoding"] = ""
+        charset = Utils.GetCharSet(self._lang)
+        d["encoding"] = html_charset % charset
 
         self._add_decoded(d)
         return quick_maketext(
