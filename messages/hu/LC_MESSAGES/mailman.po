@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
-"POT-Creation-Date: Sun May 19 12:46:02 2002\n"
+"POT-Creation-Date: Thu Jun 27 19:40:04 2002\n"
 "PO-Revision-Date: 2002-01-06 14:39+0100\n"
 "Last-Translator: Szilard Vizi <vizisz@freemail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -41,22 +41,42 @@ msgstr "  Téma"
 msgid "#%(counter)05d %(msgid)s"
 msgstr "#%(counter)05d %(msgid)s"
 
-#: Mailman/Bouncer.py:168
+#: Mailman/Bouncer.py:44
+#, fuzzy
+msgid "due to excessive bounces"
+msgstr "visszapattanás miatt"
+
+#: Mailman/Bouncer.py:45
+#, fuzzy
+msgid "by yourself"
+msgstr "visszapattanás miatt"
+
+#: Mailman/Bouncer.py:46
+#, fuzzy
+msgid "by the list administrator"
+msgstr "a lista adminisztrátora"
+
+#: Mailman/Bouncer.py:47 Mailman/Bouncer.py:230
+#: Mailman/Commands/cmd_set.py:182
+msgid "for unknown reasons"
+msgstr "ismeretlen indok miatt"
+
+#: Mailman/Bouncer.py:178
 msgid "disabled"
 msgstr "kikapcsolva"
 
-#: Mailman/Bouncer.py:173
+#: Mailman/Bouncer.py:183
 msgid "Bounce action notification"
 msgstr "Értesítés a visszapattanási beavatkozásról"
 
-#: Mailman/Bouncer.py:231 Mailman/Handlers/Acknowledge.py:50
-#: Mailman/Handlers/CookHeaders.py:181 Mailman/Handlers/Hold.py:198
-#: Mailman/Handlers/Hold.py:232 Mailman/Handlers/ToDigest.py:205
+#: Mailman/Bouncer.py:256 Mailman/Handlers/Acknowledge.py:50
+#: Mailman/Handlers/CookHeaders.py:181 Mailman/Handlers/Hold.py:207
+#: Mailman/Handlers/Hold.py:242 Mailman/Handlers/ToDigest.py:205
 #: Mailman/ListAdmin.py:234
 msgid "(no subject)"
 msgstr "(nincs tárgy)"
 
-#: Mailman/Bouncer.py:233
+#: Mailman/Bouncer.py:258
 msgid "[No bounce details are available]"
 msgstr "[Nem található visszapattanási megjegyzés]"
 
@@ -95,7 +115,7 @@ msgstr ""
 "\t    kell."
 
 #: Mailman/Cgi/admin.py:179 Mailman/Cgi/admin.py:185 Mailman/Cgi/admin.py:190
-#: Mailman/Cgi/admin.py:1340 Mailman/Gui/GUIBase.py:178
+#: Mailman/Cgi/admin.py:1349 Mailman/Gui/GUIBase.py:184
 msgid "Warning: "
 msgstr "Figyelmeztetés: "
 
@@ -136,8 +156,8 @@ msgid ""
 "<p>There currently are no publicly-advertised %(mailmanlink)s\n"
 "            mailing lists on %(hostname)s."
 msgstr ""
-"<p> Nem futnak nyilvános %(mailmanlink)s levelezõlisták a(z) %(hostname)s \t "
-"    gépen."
+"<p> Nem futnak nyilvános %(mailmanlink)s levelezõlisták a(z) %(hostname)s "
+"\t     gépen."
 
 #: Mailman/Cgi/admin.py:254
 msgid ""
@@ -159,15 +179,14 @@ msgid ""
 "        unadvertised list, open a URL similar to this one, but with a '/' "
 "and\n"
 "        the %(extra)slist name appended.  If you have the proper authority,\n"
-"        you can also <a href=\"%(creatorurl)s\">create a new mailing "
-"list</a>.\n"
+"        you can also <a href=\"%(creatorurl)s\">create a new mailing list</"
+"a>.\n"
 "\n"
 "        <p>General list information can be found at "
 msgstr ""
 " Rejtett listák adminisztrációs oldalának megtekintéséhez\n"
-"\ta fentihez hasonló címet kell megadni. A címet egy '/' jellel és a "
-"%(extra)slistanévvel egészítsd ki. Ha rendelkezel a megfelelõ "
-"jogosultsággal\n"
+"\ta fentihez hasonló címet kell megadni. A címet egy '/' jellel és a %(extra)"
+"slistanévvel egészítsd ki. Ha rendelkezel a megfelelõ jogosultsággal\n"
 "\t, akkor <a href=\"%(creatorurl)s\">új listát</a> is létrehozhatsz.\n"
 "\n"
 "<p>A levelezõlistákról részletes leírás található a "
@@ -180,7 +199,7 @@ msgstr "levelezõlisták információs oldalán"
 msgid "<p>(Send questions and comments to "
 msgstr "<p>(Kérdéseidet, észrevételeidet címezd ide "
 
-#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:157
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:173
 msgid "List"
 msgstr "Lista"
 
@@ -317,51 +336,51 @@ msgstr ""
 "Rosszul megadott beállítások:\n"
 "  %(record)s"
 
-#: Mailman/Cgi/admin.py:664
+#: Mailman/Cgi/admin.py:663
 msgid "<em>Enter the text below, or...</em><br>"
 msgstr "<em>Add meg a szöveget lejjebb, vagy...</em><br>"
 
-#: Mailman/Cgi/admin.py:666
+#: Mailman/Cgi/admin.py:665
 msgid "<br><em>...specify a file to upload</em><br>"
 msgstr "<br><em>...a feltöltendõ állományt</em><br>"
 
-#: Mailman/Cgi/admin.py:692 Mailman/Cgi/admin.py:695
+#: Mailman/Cgi/admin.py:691 Mailman/Cgi/admin.py:694
 msgid "Topic %(i)d"
 msgstr "Téma %(i)d"
 
-#: Mailman/Cgi/admin.py:696
+#: Mailman/Cgi/admin.py:695
 msgid "Delete"
 msgstr "Törlés"
 
-#: Mailman/Cgi/admin.py:697
+#: Mailman/Cgi/admin.py:696
 msgid "Topic name:"
 msgstr "Téma neve:"
 
-#: Mailman/Cgi/admin.py:699
+#: Mailman/Cgi/admin.py:698
 msgid "Regexp:"
 msgstr "Keresési feltétel:"
 
-#: Mailman/Cgi/admin.py:702 Mailman/Cgi/options.py:918
+#: Mailman/Cgi/admin.py:701 Mailman/Cgi/options.py:918
 msgid "Description:"
 msgstr "Leírás"
 
-#: Mailman/Cgi/admin.py:706
+#: Mailman/Cgi/admin.py:705
 msgid "Add new item..."
 msgstr "Új téma hozzáadása..."
 
-#: Mailman/Cgi/admin.py:708
+#: Mailman/Cgi/admin.py:707
 msgid "...before this one."
 msgstr "...ez elé."
 
-#: Mailman/Cgi/admin.py:709
+#: Mailman/Cgi/admin.py:708
 msgid "...after this one."
 msgstr "...ez után."
 
-#: Mailman/Cgi/admin.py:744
+#: Mailman/Cgi/admin.py:743
 msgid "<br>(Details for <b>%(varname)s</b>)"
 msgstr "<br>(Bõvebben a(z) <b>%(varname)s</b> témáról)"
 
-#: Mailman/Cgi/admin.py:749
+#: Mailman/Cgi/admin.py:748
 msgid ""
 "<br><em><strong>Note:</strong>\n"
 "        setting this value performs an immediate action but does not modify\n"
@@ -372,107 +391,107 @@ msgstr ""
 "az állandó\n"
 "        beállítások nem változnak meg.</em></div>"
 
-#: Mailman/Cgi/admin.py:763
+#: Mailman/Cgi/admin.py:762
 msgid "Mass Subscriptions"
 msgstr "Több tag felvétele"
 
-#: Mailman/Cgi/admin.py:770
+#: Mailman/Cgi/admin.py:769
 msgid "Mass Removals"
 msgstr "Több tag törlése"
 
-#: Mailman/Cgi/admin.py:777
+#: Mailman/Cgi/admin.py:776
 msgid "Membership List"
 msgstr "Tagok Listája"
 
-#: Mailman/Cgi/admin.py:784
+#: Mailman/Cgi/admin.py:783
 msgid "(help)"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:785
+#: Mailman/Cgi/admin.py:784
 msgid "Find member %(link)s:"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:788
+#: Mailman/Cgi/admin.py:787
 msgid "Search..."
 msgstr "Keresés..."
 
-#: Mailman/Cgi/admin.py:803
+#: Mailman/Cgi/admin.py:802
 msgid "Bad regular expression: "
 msgstr "Hibás keresési kifejezés: "
 
-#: Mailman/Cgi/admin.py:854
+#: Mailman/Cgi/admin.py:853
 msgid "%(allcnt)s members total, %(membercnt)s shown"
 msgstr "Összesen %(allcnt)s tag, %(membercnt)s kiírva"
 
-#: Mailman/Cgi/admin.py:857
+#: Mailman/Cgi/admin.py:856
 msgid "%(allcnt)s members total"
 msgstr "Összesen %(allcnt)s tag"
 
-#: Mailman/Cgi/admin.py:880
+#: Mailman/Cgi/admin.py:879
 msgid "unsub"
 msgstr "töröl"
 
-#: Mailman/Cgi/admin.py:881
+#: Mailman/Cgi/admin.py:880
 msgid "member address<br>member name"
 msgstr "listatag címe<br>listatag neve"
 
-#: Mailman/Cgi/admin.py:882
+#: Mailman/Cgi/admin.py:881
 msgid "hide"
 msgstr "elrejt"
 
-#: Mailman/Cgi/admin.py:882
+#: Mailman/Cgi/admin.py:881
 msgid "mod"
 msgstr "moderált"
 
-#: Mailman/Cgi/admin.py:883
+#: Mailman/Cgi/admin.py:882
 msgid "nomail<br>[reason]"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:884
+#: Mailman/Cgi/admin.py:883
 msgid "ack"
 msgstr "nyugta"
 
-#: Mailman/Cgi/admin.py:884
+#: Mailman/Cgi/admin.py:883
 msgid "not metoo"
 msgstr "saját nem"
 
-#: Mailman/Cgi/admin.py:885
+#: Mailman/Cgi/admin.py:884
 msgid "nodupes"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:886
+#: Mailman/Cgi/admin.py:885
 msgid "digest"
 msgstr "digest"
 
-#: Mailman/Cgi/admin.py:886
+#: Mailman/Cgi/admin.py:885
 msgid "plain"
 msgstr "sima"
 
-#: Mailman/Cgi/admin.py:887
+#: Mailman/Cgi/admin.py:886
 msgid "language"
 msgstr "nyelv"
 
-#: Mailman/Cgi/admin.py:898
+#: Mailman/Cgi/admin.py:897
 msgid "?"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:899
+#: Mailman/Cgi/admin.py:898
 msgid "U"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:900
+#: Mailman/Cgi/admin.py:899
 msgid "A"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:901
+#: Mailman/Cgi/admin.py:900
 msgid "B"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:973
+#: Mailman/Cgi/admin.py:972
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
 msgstr "<b>töröl</b> -- Beállításával törölni lehet a tagot a listáról."
 
-#: Mailman/Cgi/admin.py:975
+#: Mailman/Cgi/admin.py:974
 msgid ""
 "<b>mod</b> -- The user's personal moderation flag.  If this is\n"
 "        set, postings from them will be moderated, otherwise they will be\n"
@@ -482,13 +501,13 @@ msgstr ""
 "\takkor a tag minden beküldött üzenetét jóvá kell hagynia a szerkesztõnek,\n"
 "\tkülönben azonnal megjelenhet a listán."
 
-#: Mailman/Cgi/admin.py:979
+#: Mailman/Cgi/admin.py:978
 msgid ""
 "<b>hide</b> -- Is the member's address concealed on\n"
 "        the list of subscribers?"
 msgstr "<b>elrejt</b> -- A felhasználó címe a tagok listáján ne jelenjen meg?"
 
-#: Mailman/Cgi/admin.py:981
+#: Mailman/Cgi/admin.py:980
 msgid ""
 "<b>nomail</b> -- Is delivery to the member disabled?  If so, an\n"
 "        abbreviation will be given describing the reason for the disabled\n"
@@ -507,34 +526,34 @@ msgid ""
 "            </ul>"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:996
+#: Mailman/Cgi/admin.py:995
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
 msgstr "<b>nyugta</b> -- A listatag üzenetei megérkezésérõl értesítést kap?"
 
-#: Mailman/Cgi/admin.py:999
+#: Mailman/Cgi/admin.py:998
 #, fuzzy
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
 "        own postings?"
 msgstr "<b>saját nem</b> -- A tag ne kapja meg saját elküldött leveleit?"
 
-#: Mailman/Cgi/admin.py:1002
+#: Mailman/Cgi/admin.py:1001
 #, fuzzy
 msgid ""
 "<b>nodupes</b> -- Does the member want to avoid duplicates of the\n"
 "        same message?"
 msgstr "<b>saját nem</b> -- A tag ne kapja meg saját elküldött leveleit?"
 
-#: Mailman/Cgi/admin.py:1005
+#: Mailman/Cgi/admin.py:1004
 msgid ""
 "<b>digest</b> -- Does the member get messages in digests?\n"
 "        (otherwise, individual messages)"
 msgstr ""
 "<b>digest</b> -- A tag a leveleket digestként kapja? (különben, egyesével)"
 
-#: Mailman/Cgi/admin.py:1008
+#: Mailman/Cgi/admin.py:1007
 msgid ""
 "<b>plain</b> -- If getting digests, does the member get plain\n"
 "        text digests?  (otherwise, MIME)"
@@ -542,54 +561,54 @@ msgstr ""
 "<b>sima</b> -- Digest leveleknél a listatag milyen formában kapja a "
 "leveleket, sima? (különben, MIME)"
 
-#: Mailman/Cgi/admin.py:1010
+#: Mailman/Cgi/admin.py:1009
 msgid "<b>language</b> -- Language preferred by the user"
 msgstr "<b>nyelv</b> -- Felhasználó által beállított nyelv"
 
-#: Mailman/Cgi/admin.py:1024
+#: Mailman/Cgi/admin.py:1023
 msgid "Click here to hide the legend for this table."
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1028
+#: Mailman/Cgi/admin.py:1027
 msgid "Click here to include the legend for this table."
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1035
+#: Mailman/Cgi/admin.py:1034
 msgid ""
 "<p><em>To view more members, click on the appropriate\n"
 "        range listed below:</em>"
 msgstr "<p><em>Többi tag megtekintéséhez kattints a megfelelõ részre lent</em>"
 
-#: Mailman/Cgi/admin.py:1044
+#: Mailman/Cgi/admin.py:1043
 msgid "from %(start)s to %(end)s"
 msgstr "%(start)s-tõl a %(end)s-ig"
 
-#: Mailman/Cgi/admin.py:1057
+#: Mailman/Cgi/admin.py:1056
 msgid "Subscribe these users now or invite them?"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1059
+#: Mailman/Cgi/admin.py:1058
 #, fuzzy
 msgid "Invite"
 msgstr "webhely"
 
-#: Mailman/Cgi/admin.py:1059 Mailman/Cgi/confirm.py:272
+#: Mailman/Cgi/admin.py:1058 Mailman/Cgi/confirm.py:272
 #: Mailman/Cgi/listinfo.py:171
 msgid "Subscribe"
 msgstr "Feliratkozás"
 
-#: Mailman/Cgi/admin.py:1065
+#: Mailman/Cgi/admin.py:1064
 #, fuzzy
 msgid "Send welcome messages to new subscribees?"
 msgstr "Feliratkozáskor elküldésre kerüljön az üdvözlõ szöveg?"
 
-#: Mailman/Cgi/admin.py:1067 Mailman/Cgi/admin.py:1076
-#: Mailman/Cgi/admin.py:1100 Mailman/Cgi/admin.py:1108
+#: Mailman/Cgi/admin.py:1066 Mailman/Cgi/admin.py:1075
+#: Mailman/Cgi/admin.py:1108 Mailman/Cgi/admin.py:1116
 #: Mailman/Cgi/confirm.py:260 Mailman/Cgi/create.py:323
 #: Mailman/Cgi/create.py:351 Mailman/Cgi/create.py:383
 #: Mailman/Cgi/rmlist.py:205 Mailman/Gui/Archive.py:33
-#: Mailman/Gui/Autoresponse.py:55 Mailman/Gui/Autoresponse.py:63
-#: Mailman/Gui/Autoresponse.py:72 Mailman/Gui/Bounce.py:77
+#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
+#: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:108 Mailman/Gui/Bounce.py:134
 #: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:40
 #: Mailman/Gui/ContentFilter.py:64 Mailman/Gui/Digest.py:46
@@ -608,12 +627,12 @@ msgstr "Feliratkozáskor elküldésre kerüljön az üdvözlõ szöveg?"
 msgid "No"
 msgstr "Nem"
 
-#: Mailman/Cgi/admin.py:1067 Mailman/Cgi/admin.py:1076
-#: Mailman/Cgi/admin.py:1100 Mailman/Cgi/admin.py:1108
+#: Mailman/Cgi/admin.py:1066 Mailman/Cgi/admin.py:1075
+#: Mailman/Cgi/admin.py:1108 Mailman/Cgi/admin.py:1116
 #: Mailman/Cgi/confirm.py:260 Mailman/Cgi/create.py:323
 #: Mailman/Cgi/create.py:351 Mailman/Cgi/create.py:383
 #: Mailman/Cgi/rmlist.py:205 Mailman/Gui/Archive.py:33
-#: Mailman/Gui/Autoresponse.py:55 Mailman/Gui/Autoresponse.py:63
+#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:108
 #: Mailman/Gui/Bounce.py:134 Mailman/Gui/Bounce.py:143
 #: Mailman/Gui/ContentFilter.py:40 Mailman/Gui/ContentFilter.py:64
@@ -633,32 +652,40 @@ msgstr "Nem"
 msgid "Yes"
 msgstr "Igen"
 
-#: Mailman/Cgi/admin.py:1074
+#: Mailman/Cgi/admin.py:1073
 #, fuzzy
 msgid "Send notifications of new subscriptions to the list owner?"
 msgstr "Az értesítéseket elküldjem a lista tulajdonosnak?"
 
-#: Mailman/Cgi/admin.py:1082 Mailman/Cgi/admin.py:1114
+#: Mailman/Cgi/admin.py:1081 Mailman/Cgi/admin.py:1122
 msgid "Enter one address per line below..."
 msgstr "Soronként egy címet adj meg..."
 
-#: Mailman/Cgi/admin.py:1087 Mailman/Cgi/admin.py:1119
+#: Mailman/Cgi/admin.py:1086 Mailman/Cgi/admin.py:1127
 msgid "...or specify a file to upload:"
 msgstr "...vagy a feltöltendõ állományt:"
 
-#: Mailman/Cgi/admin.py:1098
+#: Mailman/Cgi/admin.py:1091
+msgid ""
+"Below, enter additional text to be added to the\n"
+"    top of your invitation or the subscription notification.  Include at "
+"least\n"
+"    one blank line at the end..."
+msgstr ""
+
+#: Mailman/Cgi/admin.py:1106
 msgid "Send unsubscription acknowledgement to the user?"
 msgstr "Értesítve legyenek a felhasználók a listáról való törlésükrõl?"
 
-#: Mailman/Cgi/admin.py:1106
+#: Mailman/Cgi/admin.py:1114
 msgid "Send notifications to the list owner?"
 msgstr "Az értesítéseket elküldjem a lista tulajdonosnak?"
 
-#: Mailman/Cgi/admin.py:1128
+#: Mailman/Cgi/admin.py:1136
 msgid "Change list ownership passwords"
 msgstr "Lista tulajdonosi jelszavak módosítása "
 
-#: Mailman/Cgi/admin.py:1131
+#: Mailman/Cgi/admin.py:1139
 msgid ""
 "The <em>list administrators</em> are the people who have ultimate control "
 "over\n"
@@ -693,95 +720,95 @@ msgstr ""
 " az <a href=\"%(adminurl)s/general\">általános beállítások oldalon</a> lehet "
 "megadni."
 
-#: Mailman/Cgi/admin.py:1150
+#: Mailman/Cgi/admin.py:1158
 msgid "Enter new administrator password:"
 msgstr "Új adminisztrátori jelszó"
 
-#: Mailman/Cgi/admin.py:1152
+#: Mailman/Cgi/admin.py:1160
 msgid "Confirm administator password:"
 msgstr "Adminisztrátori jelszó még egyszer:"
 
-#: Mailman/Cgi/admin.py:1157
+#: Mailman/Cgi/admin.py:1165
 msgid "Enter new moderator password:"
 msgstr "Új szerkesztõi jelszó:"
 
-#: Mailman/Cgi/admin.py:1159
+#: Mailman/Cgi/admin.py:1167
 msgid "Confirm moderator password:"
 msgstr "Szerkesztõi jelszó még egyszer:"
 
-#: Mailman/Cgi/admin.py:1169
+#: Mailman/Cgi/admin.py:1177
 msgid "Submit Your Changes"
 msgstr "Változtatások mentése"
 
-#: Mailman/Cgi/admin.py:1192
+#: Mailman/Cgi/admin.py:1200
 msgid "Moderator passwords did not match"
 msgstr "A szerkesztõi jelszavak nem egyeznek."
 
-#: Mailman/Cgi/admin.py:1202
+#: Mailman/Cgi/admin.py:1210
 msgid "Administator passwords did not match"
 msgstr "Az adminisztrátori jelszavak nem egyeznek."
 
-#: Mailman/Cgi/admin.py:1245
+#: Mailman/Cgi/admin.py:1254
 msgid "Already a member"
 msgstr "Már tag"
 
-#: Mailman/Cgi/admin.py:1248
+#: Mailman/Cgi/admin.py:1257
 msgid "&lt;blank line&gt;"
 msgstr "&lt;üres sor&gt;"
 
-#: Mailman/Cgi/admin.py:1249 Mailman/Cgi/admin.py:1252
+#: Mailman/Cgi/admin.py:1258 Mailman/Cgi/admin.py:1261
 msgid "Bad/Invalid email address"
 msgstr "Hibás/érvénytelen e-mail cím"
 
-#: Mailman/Cgi/admin.py:1255
+#: Mailman/Cgi/admin.py:1264
 msgid "Hostile address (illegal characters)"
 msgstr "Tiltott cím (illegális karakterek)"
 
-#: Mailman/Cgi/admin.py:1260
+#: Mailman/Cgi/admin.py:1269
 #, fuzzy
 msgid "Successfully invited:"
 msgstr "Sikeresen törölve:"
 
-#: Mailman/Cgi/admin.py:1262
+#: Mailman/Cgi/admin.py:1271
 #, fuzzy
 msgid "Successfully subscribed:"
 msgstr "Sikeresen törölve:"
 
-#: Mailman/Cgi/admin.py:1267
+#: Mailman/Cgi/admin.py:1276
 #, fuzzy
 msgid "Error inviting:"
 msgstr "Hiba a törlésnél:"
 
-#: Mailman/Cgi/admin.py:1269
+#: Mailman/Cgi/admin.py:1278
 #, fuzzy
 msgid "Error subscribing:"
 msgstr "Hiba a törlésnél:"
 
-#: Mailman/Cgi/admin.py:1298
+#: Mailman/Cgi/admin.py:1307
 msgid "Successfully Unsubscribed:"
 msgstr "Sikeresen törölve:"
 
-#: Mailman/Cgi/admin.py:1303
+#: Mailman/Cgi/admin.py:1312
 msgid "Cannot unsubscribe non-members:"
 msgstr "Nem lehet törölni azokat, akik nem listatagok:"
 
-#: Mailman/Cgi/admin.py:1315
+#: Mailman/Cgi/admin.py:1324
 msgid "Bad moderation flag value"
 msgstr "Hibásan megadott moderálási beállítás"
 
-#: Mailman/Cgi/admin.py:1336
+#: Mailman/Cgi/admin.py:1345
 msgid "Not subscribed"
 msgstr "Nincs feliratkozva"
 
-#: Mailman/Cgi/admin.py:1339
+#: Mailman/Cgi/admin.py:1348
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1378
+#: Mailman/Cgi/admin.py:1387
 msgid "Successfully Removed:"
 msgstr "Sikeresen törölve:"
 
-#: Mailman/Cgi/admin.py:1382
+#: Mailman/Cgi/admin.py:1391
 msgid "Error Unsubscribing:"
 msgstr "Hiba a törlésnél:"
 
@@ -963,7 +990,7 @@ msgid "Reason:"
 msgstr "Indok:"
 
 #: Mailman/Cgi/admindb.py:455 Mailman/Handlers/Decorate.py:49
-#: Mailman/Handlers/Scrubber.py:157 Mailman/Handlers/Scrubber.py:158
+#: Mailman/Handlers/Scrubber.py:156 Mailman/Handlers/Scrubber.py:157
 msgid "not available"
 msgstr "nem elérhetõ"
 
@@ -1317,8 +1344,8 @@ msgid ""
 msgstr ""
 "     Sikeresen megváltoztattad a(z) %(listname)s levelezõlistán\n"
 "     nyilvántartott régi <b>%(oldaddr)s</b> e-mail címedet\n"
-"     <b>%(newaddr)s</b> címre. Tovább a <a "
-"href=\"%(optionsurl)s\">listatagsági\n"
+"     <b>%(newaddr)s</b> címre. Tovább a <a href=\"%(optionsurl)s"
+"\">listatagsági\n"
 "     beállítások oldalra</a>."
 
 #: Mailman/Cgi/confirm.py:486
@@ -1805,23 +1832,23 @@ msgstr "Válaszd ki a szerkesztendõ lapot:"
 msgid "View or edit the list configuration information."
 msgstr "A lista beállítások kimenetének megtekintése vagy szerkesztése."
 
-#: Mailman/Cgi/edithtml.py:146
+#: Mailman/Cgi/edithtml.py:145
 msgid "When you are done making changes..."
 msgstr "Változtatások befejezése után kattints ide..."
 
-#: Mailman/Cgi/edithtml.py:147
+#: Mailman/Cgi/edithtml.py:146
 msgid "Submit Changes"
 msgstr "Változtatások mentése"
 
-#: Mailman/Cgi/edithtml.py:154
+#: Mailman/Cgi/edithtml.py:153
 msgid "Can't have empty html page."
 msgstr "Nem lehet üres html oldalt megadni."
 
-#: Mailman/Cgi/edithtml.py:155
+#: Mailman/Cgi/edithtml.py:154
 msgid "HTML Unchanged."
 msgstr "Nincs változtatás."
 
-#: Mailman/Cgi/edithtml.py:170
+#: Mailman/Cgi/edithtml.py:169
 msgid "HTML successfully updated."
 msgstr "HTML sikeresen frissítve."
 
@@ -2776,10 +2803,6 @@ msgstr "a lista admin által"
 msgid "due to bounces"
 msgstr "visszapattanás miatt"
 
-#: Mailman/Commands/cmd_set.py:182
-msgid "for unknown reasons"
-msgstr "ismeretlen indok miatt"
-
 #: Mailman/Commands/cmd_set.py:186
 msgid "    %(status)s (%(how)s on %(date)s)"
 msgstr ""
@@ -2893,8 +2916,8 @@ msgid ""
 "Mailman won't accept the given email address as a valid address.\n"
 "(E.g. it must have an @ in it.)"
 msgstr ""
-"A Mailman szerint a megadott cím nem érvényes e-mail cím. (Van benne @ "
-"???)<p>"
+"A Mailman szerint a megadott cím nem érvényes e-mail cím. (Van benne @ ???)"
+"<p>"
 
 #: Mailman/Commands/cmd_subscribe.py:103
 msgid ""
@@ -3023,64 +3046,64 @@ msgstr "Nem-Digest listatagok:\n"
 msgid "Digest members:"
 msgstr "Digest listatagok:\n"
 
-#: Mailman/Defaults.py:1151
+#: Mailman/Defaults.py:1159
 msgid "Traditional Chinese"
 msgstr "Hagyományos kínai"
 
-#: Mailman/Defaults.py:1152
+#: Mailman/Defaults.py:1160
 msgid "Czech"
 msgstr "Cseh"
 
-#: Mailman/Defaults.py:1153
+#: Mailman/Defaults.py:1161
 msgid "German"
 msgstr "Német"
 
-#: Mailman/Defaults.py:1154
+#: Mailman/Defaults.py:1162
 msgid "English (USA)"
 msgstr "Angol (USA)"
 
-#: Mailman/Defaults.py:1155
+#: Mailman/Defaults.py:1163
 msgid "Spanish (Spain)"
 msgstr "Spanyol"
 
-#: Mailman/Defaults.py:1156
+#: Mailman/Defaults.py:1164
 msgid "Estonian"
 msgstr ""
 
-#: Mailman/Defaults.py:1157
+#: Mailman/Defaults.py:1165
 msgid "Finnish"
 msgstr ""
 
-#: Mailman/Defaults.py:1158
+#: Mailman/Defaults.py:1166
 msgid "French"
 msgstr "Francia"
 
-#: Mailman/Defaults.py:1159
+#: Mailman/Defaults.py:1167
 msgid "Simplified Chinese"
 msgstr "Egyszerûsített kínai"
 
-#: Mailman/Defaults.py:1160
+#: Mailman/Defaults.py:1168
 msgid "Hungarian"
 msgstr "Magyar"
 
-#: Mailman/Defaults.py:1161
+#: Mailman/Defaults.py:1169
 msgid "Italian"
 msgstr "Olasz"
 
-#: Mailman/Defaults.py:1162
+#: Mailman/Defaults.py:1170
 msgid "Japanese"
 msgstr "Japán"
 
-#: Mailman/Defaults.py:1163
+#: Mailman/Defaults.py:1171
 #, fuzzy
 msgid "Korean"
 msgstr "Norvég"
 
-#: Mailman/Defaults.py:1164
+#: Mailman/Defaults.py:1172
 msgid "Norwegian"
 msgstr "Norvég"
 
-#: Mailman/Defaults.py:1165
+#: Mailman/Defaults.py:1173
 msgid "Russian"
 msgstr "Orosz"
 
@@ -3181,7 +3204,6 @@ msgid ""
 "    <li><b>listname</b> - <em>gets the name of the mailing list</em>\n"
 "    <li><b>listurl</b> - <em>gets the list's listinfo URL</em>\n"
 "    <li><b>requestemail</b> - <em>gets the list's -request address</em>\n"
-"    <li><b>adminemail</b> - <em>gets the list's -admin address</em>\n"
 "    <li><b>owneremail</b> - <em>gets the list's -owner address</em>\n"
 "</ul>\n"
 "\n"
@@ -3195,21 +3217,21 @@ msgstr ""
 "alapján hajtja végre a beállításokat:\n"
 "<p><ul>\n"
 "    <li><b>%(listname)s</b> - <em>a levelezõlista nevét adja meg</em>\n"
-"    <li><b>%(listurl)s</b> - <em>a levelezõlista információs lapjának "
-"URL-jét adja meg</em>\n"
+"    <li><b>%(listurl)s</b> - <em>a levelezõlista információs lapjának URL-"
+"jét adja meg</em>\n"
 "    <li><b>%(requestemail)s</b> - <em>a levelezõlista -request címét adja "
 "meg</em>\n"
-"    <li><b>%(adminemail)s</b> - <em>a levelezõlista -admin címét adja "
-"meg</em>\n"
-"    <li><b>%(owneremail)s</b> - <em>a levelezõlista -owner címét adja "
-"meg</em>\n"
+"    <li><b>%(adminemail)s</b> - <em>a levelezõlista -admin címét adja meg</"
+"em>\n"
+"    <li><b>%(owneremail)s</b> - <em>a levelezõlista -owner címét adja meg</"
+"em>\n"
 "</ul>\n"
 "\n"
 "<p>Mindegyik szövegdobozban megadhatod a kívánt szöveget, vagy akár az "
 "elõre\n"
 "elkészített szöveget létezõ állományból beolvastathatod."
 
-#: Mailman/Gui/Autoresponse.py:56
+#: Mailman/Gui/Autoresponse.py:55
 msgid ""
 "Should Mailman send an auto-response to mailing list\n"
 "             posters?"
@@ -3217,32 +3239,33 @@ msgstr ""
 "Küldjön a Mailman automatikus választ a \n"
 "             listára küldõknek?"
 
-#: Mailman/Gui/Autoresponse.py:61
+#: Mailman/Gui/Autoresponse.py:60
 msgid "Auto-response text to send to mailing list posters."
 msgstr "Automatikus válasz szövege a listára küldõknek."
 
-#: Mailman/Gui/Autoresponse.py:64
+#: Mailman/Gui/Autoresponse.py:63
+#, fuzzy
 msgid ""
 "Should Mailman send an auto-response to emails sent to the\n"
-"             -admin and -owner addresses?"
+"             -owner address?"
 msgstr ""
 "Küldjön a Mailman automatikus választ az -admin és -owner címre érkezõ "
 "levelekre?"
 
-#: Mailman/Gui/Autoresponse.py:69
-msgid "Auto-response text to send to -admin and -owner emails."
-msgstr ""
-"Automatikus válasz szövege az -admin és -owner címekre érkezõ levelekre."
+#: Mailman/Gui/Autoresponse.py:68
+#, fuzzy
+msgid "Auto-response text to send to -owner emails."
+msgstr "Automatikus válasz szövege a -request címre érkezõ levelekre."
 
-#: Mailman/Gui/Autoresponse.py:72
+#: Mailman/Gui/Autoresponse.py:71
 msgid "Yes, w/discard"
 msgstr "Igen, és elvet"
 
-#: Mailman/Gui/Autoresponse.py:72
+#: Mailman/Gui/Autoresponse.py:71
 msgid "Yes, w/forward"
 msgstr "Igen, és továbbít"
 
-#: Mailman/Gui/Autoresponse.py:73
+#: Mailman/Gui/Autoresponse.py:72
 msgid ""
 "Should Mailman send an auto-response to emails sent to the\n"
 "             -request address?  If you choose yes, decide whether you want\n"
@@ -3254,21 +3277,21 @@ msgstr ""
 "feldolgozásra továbbítsa, mint ahogy azt az e-mail parancsokat tartalmazó "
 "levéllel alapesetben teszi."
 
-#: Mailman/Gui/Autoresponse.py:80
+#: Mailman/Gui/Autoresponse.py:79
 msgid "Auto-response text to send to -request emails."
 msgstr "Automatikus válasz szövege a -request címre érkezõ levelekre."
 
-#: Mailman/Gui/Autoresponse.py:83
+#: Mailman/Gui/Autoresponse.py:82
+#, fuzzy
 msgid ""
 "Number of days between auto-responses to either the mailing\n"
-"             list or -admin/-owner address from the same poster.  Set to "
-"zero\n"
-"             (or negative) for no grace period (i.e. auto-respond to every\n"
-"             message)."
+"             list or -request/-owner address from the same poster.  Set to\n"
+"             zero (or negative) for no grace period (i.e. auto-respond to\n"
+"             every message)."
 msgstr ""
 "Napok száma az automatikus válaszok ideje között annak a beküldõnek,\n"
-"aki a levelezõlistára vagy az -admin/-owner címre küldött leveleket. Nullát "
-"\n"
+"aki a levelezõlistára vagy az -admin/-owner címre küldött leveleket. "
+"Nullát \n"
 "(vagy negatív) értéket megadva nem vár (azonnal automatikusan válaszol "
 "minden elküldött levélre)."
 
@@ -3319,11 +3342,11 @@ msgid ""
 "            membership.\n"
 "\n"
 "            <p>You can control both the\n"
-"            <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings\">number\n"
+"            <a href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings"
+"\">number\n"
 "            of reminders</a> the member will receive and the\n"
-"            <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\"\n"
+"            <a href=\"?VARHELP=bounce/"
+"bounce_you_are_disabled_warnings_interval\"\n"
 "            >frequency</a> with which these reminders are sent.\n"
 "\n"
 "            <p>There is one other important configuration variable; after a\n"
@@ -3369,10 +3392,10 @@ msgstr ""
 "kapcsolva\n"
 "és hogy hogyan tudja azt visszaállítani.\n"
 "\n"
-"<p>Mind az <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings\">értesítõk\n"
-"számát</a>, mind azok kiküldésének <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\"\n"
+"<p>Mind az <a href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings"
+"\">értesítõk\n"
+"számát</a>, mind azok kiküldésének <a href=\"?VARHELP=bounce/"
+"bounce_you_are_disabled_warnings_interval\"\n"
 ">gyakoriságát</a> be lehet állítani.\n"
 "<p>Egy másik fontos változóval be lehet állítani azon napok számát -- amely "
 "alatt újabb\n"
@@ -3456,8 +3479,8 @@ msgstr "Értesítések"
 #: Mailman/Gui/Bounce.py:109
 msgid ""
 "Should Mailman send you, the list owner, any bounce messages\n"
-"             that failed to be detected by the bounce processor?  "
-"<em>Yes</em>\n"
+"             that failed to be detected by the bounce processor?  <em>Yes</"
+"em>\n"
 "             is recommended."
 msgstr ""
 
@@ -3487,8 +3510,8 @@ msgid ""
 "             <em>No</em> those messages too will get discarded.  You may "
 "want\n"
 "             to set up an\n"
-"             <a "
-"href=\"?VARHELP=autoreply/autoresponse_admin_text\">autoresponse\n"
+"             <a href=\"?VARHELP=autoreply/autoresponse_admin_text"
+"\">autoresponse\n"
 "             message</a> for email to the -owner and -admin address."
 msgstr ""
 
@@ -3709,16 +3732,16 @@ msgstr "A megerõsítésre felszólító levél el lett küldve."
 msgid "There was no digest to send."
 msgstr "Nincsen beavatkozásra váró teendõ."
 
-#: Mailman/Gui/GUIBase.py:143
+#: Mailman/Gui/GUIBase.py:149
 #, fuzzy
 msgid "Invalid value for variable: %(property)s"
 msgstr "Érvénytelen érték --style kapcsolónál: %s"
 
-#: Mailman/Gui/GUIBase.py:147
+#: Mailman/Gui/GUIBase.py:153
 msgid "Bad email address for option %(property)s: %(val)s"
 msgstr "Rossz e-mail cím lett a %(porperty)s részben megadva: %(val)s"
 
-#: Mailman/Gui/GUIBase.py:173
+#: Mailman/Gui/GUIBase.py:179
 msgid ""
 "The following illegal substitution variables were\n"
 "                found in the <code>%(property)s</code> string:\n"
@@ -3728,7 +3751,7 @@ msgid ""
 "                problem."
 msgstr ""
 
-#: Mailman/Gui/GUIBase.py:187
+#: Mailman/Gui/GUIBase.py:193
 msgid ""
 "Your <code>%(property)s</code> string appeared to\n"
 "                    have some correctable problems in its new value.\n"
@@ -3820,8 +3843,8 @@ msgid ""
 "             <p>In order to split the list ownership duties into\n"
 "             administrators and moderators, you must\n"
 "             <a href=\"passwords\">set a separate moderator password</a>,\n"
-"             and also provide the <a "
-"href=\"?VARHELP=general/moderator\">email\n"
+"             and also provide the <a href=\"?VARHELP=general/moderator"
+"\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
 "             are changing here specifies the list administators."
 msgstr ""
@@ -4006,29 +4029,29 @@ msgstr ""
 msgid ""
 "This option controls what Mailman does to the\n"
 "             <tt>Reply-To:</tt> header in messages flowing through this\n"
-"             mailing list.  When set to <em>Poster</em>, no "
-"<tt>Reply-To:</tt>\n"
+"             mailing list.  When set to <em>Poster</em>, no <tt>Reply-To:</"
+"tt>\n"
 "             header is added by Mailman, although if one is present in the\n"
 "             original message, it is not stripped.  Setting this value to\n"
 "             either <em>This list</em> or <em>Explicit address</em> causes\n"
 "             Mailman to insert a specific <tt>Reply-To:</tt> header in all\n"
 "             messages, overriding the header in the original message if\n"
 "             necessary (<em>Explicit address</em> inserts the value of <a\n"
-"             "
-"href=\"?VARHELP=general/reply_to_address\">reply_to_address</a>).\n"
+"             href=\"?VARHELP=general/reply_to_address\">reply_to_address</"
+"a>).\n"
 " \n"
 "             <p>There are many reasons not to introduce or override the\n"
 "             <tt>Reply-To:</tt> header.  One is that some posters depend on\n"
 "             their own <tt>Reply-To:</tt> settings to convey their valid\n"
 "             return address.  Another is that modifying <tt>Reply-To:</tt>\n"
 "             makes it much more difficult to send private replies.  See <a\n"
-"             "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To'\n"
+"             href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-"
+"To'\n"
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        "
-"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
+"\">Reply-To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4044,8 +4067,8 @@ msgid ""
 "             list."
 msgstr ""
 "A beállítással a levelezõlistákra érkezõ levelek\n"
-"<tt>Reply-To:</tt> mezõjének tartalmát lehet megváltoztatni. "
-"<em>Beküldõ</em>-re\n"
+"<tt>Reply-To:</tt> mezõjének tartalmát lehet megváltoztatni. <em>Beküldõ</"
+"em>-re\n"
 "való állítással a Mailman a levél fejlécébe nem szúr be <tt>Reply-To</tt>\n"
 "mezõt, ha az eredeti levél tartalmaz már ilyet, akkor azt nem változtatja "
 "meg.\n"
@@ -4063,8 +4086,8 @@ msgstr ""
 "alapján küldi el a válaszokat. Másik indok lehet, hogy a <tt>Reply-To:</tt>\n"
 " megváltoztatásával nehezebb lesz magánba válaszolni a levélre. Errõl "
 "bõvebben\n"
-" lehet olvasni a <a "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">\n"
+" lehet olvasni a <a href=\"http://www.unicom.com/pw/reply-to-harmful.html"
+"\">\n"
 "`Reply-To' Munging Considered Harmful</a> oldalon.  Lásd még a <a\n"
 "href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
 "Munging Considered Useful</a> oldalt, hogy esetleg miért lehet mégis "
@@ -4090,8 +4113,8 @@ msgstr "Külön megadott <tt>Reply-To:</tt> fejléc."
 msgid ""
 "This is the address set in the <tt>Reply-To:</tt> header\n"
 "             when the <a\n"
-"             "
-"href=\"?VARHELP=general/reply_goes_to_list\">reply_goes_to_list</a>\n"
+"             href=\"?VARHELP=general/reply_goes_to_list"
+"\">reply_goes_to_list</a>\n"
 "             option is set to <em>Explicit address</em>.\n"
 "\n"
 "             <p>There are many reasons not to introduce or override the\n"
@@ -4099,13 +4122,13 @@ msgid ""
 "             their own <tt>Reply-To:</tt> settings to convey their valid\n"
 "             return address.  Another is that modifying <tt>Reply-To:</tt>\n"
 "             makes it much more difficult to send private replies.  See <a\n"
-"             "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To'\n"
+"             href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-"
+"To'\n"
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        "
-"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
+"\">Reply-To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4132,12 +4155,12 @@ msgstr ""
 "<p>Sok dolog indokolja, hogy a <tt>Reply-To:</tt> mezõt ne változtassuk "
 "meg.\n"
 " Magyarázat lehet erre az, hogy számos levelezõkliens a <tt>Reply-To:</tt>\n"
-"alapján küldi el a válaszokat el. Másik indok lehet, hogy a "
-"<tt>Reply-To:</tt>\n"
+"alapján küldi el a válaszokat el. Másik indok lehet, hogy a <tt>Reply-To:</"
+"tt>\n"
 " megváltoztatásával nehezebb lesz magánba válaszolni a levélre. Errõl "
 "bõvebben\n"
-" lehet olvasni a <a "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">\n"
+" lehet olvasni a <a href=\"http://www.unicom.com/pw/reply-to-harmful.html"
+"\">\n"
 "`Reply-To' Munging Considered Harmful</a> oldalon.ion of this issue.  Lásd "
 "még a <a\n"
 "href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
@@ -4167,8 +4190,8 @@ msgid ""
 "Send password reminders to, eg, \"-owner\" address instead of\n"
 "             directly to user."
 msgstr ""
-"A jelszó emlékeztetõk nem közvetlenül a felhasználókhoz, hanem pl. az "
-"\"-owner\" címre legyenek elküldve."
+"A jelszó emlékeztetõk nem közvetlenül a felhasználókhoz, hanem pl. az \"-"
+"owner\" címre legyenek elküldve."
 
 #: Mailman/Gui/General.py:232
 msgid ""
@@ -4203,8 +4226,8 @@ msgid ""
 "             member list addresses, but rather to the owner of those member\n"
 "             lists.  In that case, the value of this setting is appended to\n"
 "             the member's account name for such notices.  `-owner' is the\n"
-"             typical choice.  This setting has no effect when "
-"\"umbrella_list\"\n"
+"             typical choice.  This setting has no effect when \"umbrella_list"
+"\"\n"
 "             is \"No\"."
 msgstr ""
 "\"Gyûjtõlista\" esetén, amikor csak más levelezõlisták a tagok, az "
@@ -4419,14 +4442,14 @@ msgstr ""
 #: Mailman/Gui/General.py:363
 msgid ""
 "Should messages from this mailing list include the\n"
-"                 <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC "
-"2369</a>\n"
+"                 <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC 2369</"
+"a>\n"
 "                 (i.e. <tt>List-*</tt>) headers?  <em>Yes</em> is highly\n"
 "                 recommended."
 msgstr ""
 "A levelezõlistáról érkezõ üzenetekben szerepeljenek-e az\n"
-" \t\t <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC 2369</a>-ben      "
-"           meghatározott fejlécek (pl. <tt>List-*</tt>)? A\n"
+" \t\t <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC 2369</a>-"
+"ben                 meghatározott fejlécek (pl. <tt>List-*</tt>)? A\n"
 "megfelelõ mûködéshez <em>Igen</em> az ajánlott."
 
 #: Mailman/Gui/General.py:368
@@ -4588,8 +4611,8 @@ msgstr ""
 msgid ""
 "Should Mailman personalize each non-digest delivery?\n"
 "                 This is often useful for announce-only lists, but <a\n"
-"                 href=\"?VARHELP=nondigest/personalize\">read the "
-"details</a>\n"
+"                 href=\"?VARHELP=nondigest/personalize\">read the details</"
+"a>\n"
 "                 section for a discussion of important performance\n"
 "                 issues."
 msgstr ""
@@ -4632,8 +4655,8 @@ msgid ""
 "included\n"
 "                 in the <a href=\"?VARHELP=nondigest/msg_header\">message\n"
 "                 header</a> and\n"
-"                 <a href=\"?VARHELP=nondigest/msg_footer\">message "
-"footer</a>.\n"
+"                 <a href=\"?VARHELP=nondigest/msg_footer\">message footer</"
+"a>.\n"
 "\n"
 "                 <p>These additional substitution variables will be "
 "available\n"
@@ -4960,8 +4983,8 @@ msgid ""
 "            either individually or as a group.  Any\n"
 "            posting from a non-member who is not explicitly accepted,\n"
 "            rejected, or discarded, will have their posting filtered by the\n"
-"            <a "
-"href=\"?VARHELP=privacy/sender/generic_nonmember_action\">general\n"
+"            <a href=\"?VARHELP=privacy/sender/generic_nonmember_action"
+"\">general\n"
 "            non-member rules</a>.\n"
 "\n"
 "            <p>In the text boxes below, add one address per line; start the\n"
@@ -4987,16 +5010,15 @@ msgstr ""
 "levelei alapesetben moderálással vagy anélkül jelenjenek meg.\n"
 "\n"
 "<p>Külsõ beküldõk leveleit automatikusan, egyenként vagy\n"
-"csoportba foglalva <a "
-"href=\"?VARHELP=privacy/sender/accept_these_nonmembers\"\n"
+"csoportba foglalva <a href=\"?VARHELP=privacy/sender/accept_these_nonmembers"
+"\"\n"
 ">engedélyezheted</a>,\n"
 "<a href=\"?VARHELP=privacy/sender/hold_these_nonmembers\">jóváhagyásra\n"
 "küldheted</a>,\n"
-"<a "
-"href=\"?VARHELP=privacy/sender/reject_these_nonmembers\">visszautasíthatod</a"
-">\n"
-"(értesítéssel), vagy <a "
-"href=\"?VARHELP=privacy/sender/discard_these_nonmembers\"\n"
+"<a href=\"?VARHELP=privacy/sender/reject_these_nonmembers"
+"\">visszautasíthatod</a>\n"
+"(értesítéssel), vagy <a href=\"?VARHELP=privacy/sender/"
+"discard_these_nonmembers\"\n"
 ">elvetheted</a>. Azokra a külsõ beküldõkre, akikre nincsen érvényes "
 "beállítás az\n"
 "engedélyezett, jóváhagyásra váró, visszautasított vagy elvetett részben, az "
@@ -5060,8 +5082,8 @@ msgstr ""
 "a\n"
 "levelek alapesetben elõször szerkesztõi jóváhagyásra kerülnek. "
 "Listatagoknál\n"
-"egyenként lehet állítani a moderálási jelzõt a <a "
-"href=\"%(adminurl)s/members\">\n"
+"egyenként lehet állítani a moderálási jelzõt a <a href=\"%(adminurl)s/members"
+"\">\n"
 "listatagok kezelése</a> oldalon."
 
 #: Mailman/Gui/Privacy.py:206 Mailman/Gui/Privacy.py:280
@@ -5197,8 +5219,8 @@ msgid ""
 "             further processing or notification.  The sender will not "
 "receive\n"
 "             a notification or a bounce, however the list moderators can\n"
-"             optionally <a "
-"href=\"?VARHELP=privacy/sender/forward_auto_discards\"\n"
+"             optionally <a href=\"?VARHELP=privacy/sender/"
+"forward_auto_discards\"\n"
 "             >receive copies of auto-discarded messages.</a>.\n"
 "\n"
 "             <p>Add member addresses one per line; start the line with a ^\n"
@@ -5207,8 +5229,8 @@ msgstr ""
 "Az itt felsorolt külsõ beküldõk üzenetei automatikusan törlõdnek.\n"
 "Ezeket a leveleket a Mailman egybõl eldobja, bármilyen további feldolgozás\n"
 "nélkül. A feladót nem értesíti a levele elfogadásáról, elutasításáról, \n"
-"de a lista szerkesztõje a <a "
-"href=\"?VARHELP=privacy/sender/forward_auto_discards\"\n"
+"de a lista szerkesztõje a <a href=\"?VARHELP=privacy/sender/"
+"forward_auto_discards\"\n"
 ">másolat az automatikusan törölt levelekrõl</a> opcióval kérhet egy\n"
 "példányt ezekrõl a levelekrõl.\n"
 "<p>Soronként egy címet adjunk meg; a reguláris keresési kifejezések "
@@ -5228,8 +5250,8 @@ msgid ""
 "             sender is matched against the list of explicitly\n"
 "             <a href=\"?VARHELP=privacy/sender/accept_these_nonmembers\"\n"
 "             >accepted</a>,\n"
-"             <a "
-"href=\"?VARHELP=privacy/sender/hold_these_nonmembers\">held</a>,\n"
+"             <a href=\"?VARHELP=privacy/sender/hold_these_nonmembers\">held</"
+"a>,\n"
 "             <a href=\"?VARHELP=privacy/sender/reject_these_nonmembers\"\n"
 "             >rejected</a> (bounced), and\n"
 "             <a href=\"?VARHELP=privacy/sender/discard_these_nonmembers\"\n"
@@ -5241,11 +5263,10 @@ msgstr ""
 "<a href=\"?VARHELP=privacy/sender/accept_these_nonmembers\"\n"
 ">engedélyezni</a>,\n"
 "<a href=\"?VARHELP=privacy/sender/hold_these_nonmembers\">tartani</a>,\n"
-"<a "
-"href=\"?VARHELP=privacy/sender/reject_these_nonmembers\">visszautasítani</a>"
-"\n"
-"(értesítéssel) és <a "
-"href=\"?VARHELP=privacy/sender/discard_these_nonmembers\"\n"
+"<a href=\"?VARHELP=privacy/sender/reject_these_nonmembers\">visszautasítani</"
+"a>\n"
+"(értesítéssel) és <a href=\"?VARHELP=privacy/sender/discard_these_nonmembers"
+"\"\n"
 ">elvetni</a> lehet. Ha a fentiek közül egyik helyen sincs a feladó\n"
 "felsorolva, akkor az itt megadott beállítás kerül érvényre."
 
@@ -5380,8 +5401,8 @@ msgid ""
 "             as comments.\n"
 "\n"
 "             <p>For example:<pre>to: .*@public.com </pre> says to hold all\n"
-"             postings with a <em>To:</em> mail header containing "
-"'@public.com'\n"
+"             postings with a <em>To:</em> mail header containing '@public."
+"com'\n"
 "             anywhere among the addresses.\n"
 "\n"
 "             <p>Note that leading whitespace is trimmed from the regexp.  "
@@ -5392,8 +5413,8 @@ msgstr ""
 "A beállítással a levelek bizonyos tartalmú fejlécei alapján lehet a levelek "
 "fogadását korlátozni. A fejléc bármely részére illeszkedõ keresési "
 "kifejezéseket meg lehet adni. A keresés nem tesz különbséget kis- és "
-"nagybetûk között. '#' jellel kezdõdõ sorok megjegyzések.<p>Például:<pre>to: "
-".*@public.com </pre> kifejezés az összes levelet, amelynek <em>to</em> "
+"nagybetûk között. '#' jellel kezdõdõ sorok megjegyzések.<p>Például:<pre>to: ."
+"*@public.com </pre> kifejezés az összes levelet, amelynek <em>to</em> "
 "mezõjében bárhol megtalálható a '@public.com' visszatartja.<p>Sorkezdõ "
 "szóközök nem számítanak. Ha mégis szükséges szóközöket védõkarakterek (pl. "
 "zárójelek) között lehet megadni.<p> Lásd még az <em>tiltott_beküldõk</em> "
@@ -5432,8 +5453,8 @@ msgstr "A témák szûrése be- vagy kikapcsolt állapotban legyen?"
 msgid ""
 "The topic filter categorizes each incoming email message\n"
 "             according to <a\n"
-"            "
-"href=\"http://www.python.org/doc/current/lib/module-re.html\">regular\n"
+"            href=\"http://www.python.org/doc/current/lib/module-re.html"
+"\">regular\n"
 "             expression filters</a> you specify below.  If the message's\n"
 "             <code>Subject:</code> or <code>Keywords:</code> header contains "
 "a\n"
@@ -5451,8 +5472,8 @@ msgid ""
 "             <p>The body of the message can also be optionally scanned for\n"
 "             <code>Subject:</code> and <code>Keywords:</code> headers, as\n"
 "             specified by the <a\n"
-"       "
-"href=\"?VARHELP=topics/topics_bodylines_limit\">topics_bodylines_limit</a>\n"
+"       href=\"?VARHELP=topics/topics_bodylines_limit"
+"\">topics_bodylines_limit</a>\n"
 "             configuration variable."
 msgstr ""
 "A témaszûrõ minden egyes bejövõ levelet megvizsgál a késõbbiekben  megadott "
@@ -5469,8 +5490,8 @@ msgstr ""
 "\n"
 "\t<p>A levél törzsében is lehet keresni a <code>Subject:</code> és\n"
 "\t<code>Keyword:</code> mezõkre, ahogy az a <a\n"
-"\thref=\"?VARHELP=topics/topics_bodylines_limit\">témák_levéltörzs_sorában</a"
-">\n"
+"\thref=\"?VARHELP=topics/topics_bodylines_limit\">témák_levéltörzs_sorában</"
+"a>\n"
 "\tbe van állítva."
 
 #: Mailman/Gui/Topics.py:62
@@ -5482,8 +5503,8 @@ msgid ""
 "The topic matcher will scan this many lines of the message\n"
 "             body looking for topic keyword matches.  Body scanning stops "
 "when\n"
-"             either this many lines have been looked at, or a "
-"non-header-like\n"
+"             either this many lines have been looked at, or a non-header-"
+"like\n"
 "             body line is encountered.  By setting this value to zero, no "
 "body\n"
 "             lines will be scanned (i.e. only the <code>Keywords:</code> "
@@ -5600,8 +5621,8 @@ msgstr ""
 "A Mailman a hírcsoportról való frissítéskor a levelezõlistára\n"
 "\t      csak az újabb üzeneteket tölti le. Minden régebbi levelet a \n"
 "             hírcsoporton figyelmen kívül hagy. Ez nagyjából ugyanaz, mint\n"
-"\t      amikor a hírcsoport olvasásakor az összes üzenetet "
-"<em>olvasottnak</em>\n"
+"\t      amikor a hírcsoport olvasásakor az összes üzenetet <em>olvasottnak</"
+"em>\n"
 "\t      jelölünk meg. Frissítésnél a listatagok a régebbi leveleket nem\n"
 "\t      fogják látni."
 
@@ -5657,7 +5678,7 @@ msgstr "Megjegyzés: %(reason)s a listáról jelenleg nem fogsz levelet kapni."
 msgid "Mail delivery"
 msgstr "Levélküldés"
 
-#: Mailman/HTMLFormatter.py:149 Mailman/HTMLFormatter.py:292
+#: Mailman/HTMLFormatter.py:149 Mailman/HTMLFormatter.py:294
 msgid "the list administrator"
 msgstr "a lista adminisztrátora"
 
@@ -5739,16 +5760,16 @@ msgid ""
 msgstr ""
 "Feliratkozási kérelmedrõl értesítést kapsz, nehogy mások tudtod nélkül "
 "felírhassanak. Megerõsítésed után feliratkozásod azonban csak a lista "
-"szerkesztõjének jóváhagyásával válik teljessé. A szerkesztõ döntésérõl "
-"e-mailben értesítünk.  "
+"szerkesztõjének jóváhagyásával válik teljessé. A szerkesztõ döntésérõl e-"
+"mailben értesítünk.  "
 
-#: Mailman/HTMLFormatter.py:199
+#: Mailman/HTMLFormatter.py:201
 msgid ""
 "This is %(also)sa private list, which means that the\n"
 "            list of members is not available to non-members."
 msgstr "A lista %(also)s zártkörû, a tagok listája külsõsöknek nem elérhetõ.  "
 
-#: Mailman/HTMLFormatter.py:202
+#: Mailman/HTMLFormatter.py:204
 msgid ""
 "This is %(also)sa hidden list, which means that the\n"
 "            list of members is available only to the list administrator."
@@ -5756,7 +5777,7 @@ msgstr ""
 "A lista %(also)segy rejtett lista, a tagok listája csakis a lista "
 "adminisztrátora számára érhetõ el.  "
 
-#: Mailman/HTMLFormatter.py:205
+#: Mailman/HTMLFormatter.py:207
 msgid ""
 "This is %(also)sa public list, which means that the\n"
 "            list of members list is available to everyone."
@@ -5764,7 +5785,7 @@ msgstr ""
 "A lista %(also)segy nyilvános levelezõlista, amely azt jelenti, hogy a tagok "
 "listája bárki számára elérhetõ."
 
-#: Mailman/HTMLFormatter.py:208
+#: Mailman/HTMLFormatter.py:210
 msgid ""
 " (but we obscure the addresses so they are not\n"
 "                easily recognizable by spammers)."
@@ -5772,7 +5793,7 @@ msgstr ""
 " (de a címek módosítva lettek úgy, hogy ne legyenek könnyû célpontok a "
 "spammereknek). "
 
-#: Mailman/HTMLFormatter.py:213
+#: Mailman/HTMLFormatter.py:215
 msgid ""
 "<p>(Note that this is an umbrella list, intended to\n"
 "            have only other mailing lists as members.  Among other things,\n"
@@ -5783,11 +5804,11 @@ msgstr ""
 "lehetnek. Ezek függvényében feliratkozási kérelmed a '%(sfx)s' címre kerül "
 "elküldésre.)"
 
-#: Mailman/HTMLFormatter.py:242
+#: Mailman/HTMLFormatter.py:244
 msgid "<b><i>either</i></b> "
 msgstr "<b><i>vagy</i></b> "
 
-#: Mailman/HTMLFormatter.py:247
+#: Mailman/HTMLFormatter.py:249
 msgid ""
 "To unsubscribe from %(realname)s, get a password reminder,\n"
 "        or change your subscription options %(either)senter your "
@@ -5800,11 +5821,11 @@ msgstr ""
 "\tadd meg itt %(either)sa feliratkozási e-mail címedet:\n"
 "\t<p><center> "
 
-#: Mailman/HTMLFormatter.py:254
+#: Mailman/HTMLFormatter.py:256
 msgid "Unsubscribe or edit options"
 msgstr "Leiratkozás vagy beállítások módosítása"
 
-#: Mailman/HTMLFormatter.py:258
+#: Mailman/HTMLFormatter.py:260
 msgid ""
 "<p>... <b><i>or</i></b> select your entry from\n"
 "                      the subscribers list (see above)."
@@ -5812,7 +5833,7 @@ msgstr ""
 "<p>... <b><i>vagy</i></b> válaszd ki a címedet a tagok listájából (lásd "
 "feljebb)."
 
-#: Mailman/HTMLFormatter.py:260
+#: Mailman/HTMLFormatter.py:262
 msgid ""
 " If you leave the field blank, you will be prompted for\n"
 "        your email address"
@@ -5820,69 +5841,69 @@ msgstr ""
 " Ha üres a mezõ, akkor a program kérni fogja az e-mail\n"
 "\tcímedet"
 
-#: Mailman/HTMLFormatter.py:268
+#: Mailman/HTMLFormatter.py:270
 msgid ""
 "(<i>The %(which)s is only available to the list\n"
 "                members.</i>)"
 msgstr "(<i>A %(which)s csak a lista tagjai számára érhetõ el.</i>)"
 
-#: Mailman/HTMLFormatter.py:272
+#: Mailman/HTMLFormatter.py:274
 msgid ""
 "(<i>The %(which)s is only available to the list\n"
 "            administrator.</i>)"
 msgstr "<i>A %(which)s csak a lista adminisztrátora számára érhetõ el.</i>"
 
-#: Mailman/HTMLFormatter.py:282
+#: Mailman/HTMLFormatter.py:284
 msgid "Click here for the list of "
 msgstr " "
 
-#: Mailman/HTMLFormatter.py:284
+#: Mailman/HTMLFormatter.py:286
 msgid " subscribers: "
 msgstr " levelezõlista tagjainak megtekintéséhez kattints ide: "
 
-#: Mailman/HTMLFormatter.py:286
+#: Mailman/HTMLFormatter.py:288
 msgid "Visit Subscriber list"
 msgstr "Mutasd a tagok listáját"
 
-#: Mailman/HTMLFormatter.py:289
+#: Mailman/HTMLFormatter.py:291
 msgid "members"
 msgstr "listatag"
 
 # In this entry insert a space at the end of string, it will be stripped.
-#: Mailman/HTMLFormatter.py:290
+#: Mailman/HTMLFormatter.py:292
 msgid "Address:"
 msgstr "Cím "
 
 # In this entry insert a space at the end of string, it will be stripped.
-#: Mailman/HTMLFormatter.py:293
+#: Mailman/HTMLFormatter.py:295
 msgid "Admin address:"
 msgstr "Admin cím:"
 
-#: Mailman/HTMLFormatter.py:295
+#: Mailman/HTMLFormatter.py:297
 msgid "subscribers list"
 msgstr "tagok listája"
 
-#: Mailman/HTMLFormatter.py:297
+#: Mailman/HTMLFormatter.py:299
 msgid " <p>Enter your "
 msgstr " <p>A tagok listájának megtekintéséhez írd be a "
 
-#: Mailman/HTMLFormatter.py:299
+#: Mailman/HTMLFormatter.py:301
 msgid " and password to visit  the subscribers list: <p><center> "
 msgstr "edet és a jelszavadat: <p><center> "
 
-#: Mailman/HTMLFormatter.py:304
+#: Mailman/HTMLFormatter.py:306
 msgid "Password: "
 msgstr " Jelszó "
 
-#: Mailman/HTMLFormatter.py:308
+#: Mailman/HTMLFormatter.py:310
 msgid "Visit Subscriber List"
 msgstr "Mutasd a tagok listáját"
 
-#: Mailman/HTMLFormatter.py:338
+#: Mailman/HTMLFormatter.py:340
 msgid "Once a month, your password will be emailed to you as a reminder."
 msgstr "Havonta egyszer a jelszavad emlékeztetõül e-mailben elküldésre kerül."
 
-#: Mailman/HTMLFormatter.py:377
+#: Mailman/HTMLFormatter.py:379
 msgid "current archive"
 msgstr "aktuális archívum"
 
@@ -6006,16 +6027,16 @@ msgstr ""
 "A leveled túl nagy; minimum %(kb)s KB méretûre kell csökkenteni\n"
 "a listán való megjelenéshez."
 
-#: Mailman/Handlers/Hold.py:216
+#: Mailman/Handlers/Hold.py:226
 msgid "Your message to %(listname)s awaits moderator approval"
 msgstr "A(z) %(listname)s listára küldött leveled szerkesztõi engedélyére vár"
 
-#: Mailman/Handlers/Hold.py:236
+#: Mailman/Handlers/Hold.py:246
 msgid "%(listname)s post from %(sender)s requires approval"
 msgstr ""
 "A(z) %(listname)s listára %(sender)s feladótól jövõ levél engedélyezésre vár"
 
-#: Mailman/Handlers/Hold.py:243
+#: Mailman/Handlers/Hold.py:253
 msgid ""
 "If you reply to this message, keeping the Subject: header intact, Mailman "
 "will\n"
@@ -6065,15 +6086,15 @@ msgstr "Automatikus válasz az üzenetedre a(z)"
 msgid "the \"%(realname)s\" mailing list"
 msgstr "\"%(realname)s\" levelezõlistáról"
 
-#: Mailman/Handlers/Replybot.py:102
+#: Mailman/Handlers/Replybot.py:104
 msgid "The Mailman Replybot"
 msgstr "A Mailman automatikus feladója"
 
-#: Mailman/Handlers/Scrubber.py:82
+#: Mailman/Handlers/Scrubber.py:81
 msgid "HTML attachment scrubbed and removed"
 msgstr "A csatolt HTML állomány át lett konvertálva és törölve."
 
-#: Mailman/Handlers/Scrubber.py:95 Mailman/Handlers/Scrubber.py:117
+#: Mailman/Handlers/Scrubber.py:94 Mailman/Handlers/Scrubber.py:116
 msgid ""
 "An HTML attachment was scrubbed...\n"
 "URL: %(url)s\n"
@@ -6081,19 +6102,19 @@ msgstr ""
 "Egy csatolt HTML állomány át lett konvertálva...\n"
 "URL: %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:129
+#: Mailman/Handlers/Scrubber.py:128
 msgid "no subject"
 msgstr "nincs tárgy"
 
-#: Mailman/Handlers/Scrubber.py:130
+#: Mailman/Handlers/Scrubber.py:129
 msgid "no date"
 msgstr "nincs dátum"
 
-#: Mailman/Handlers/Scrubber.py:131
+#: Mailman/Handlers/Scrubber.py:130
 msgid "unknown sender"
 msgstr "ismeretlen beküldõ"
 
-#: Mailman/Handlers/Scrubber.py:133
+#: Mailman/Handlers/Scrubber.py:132
 msgid ""
 "An embedded message was scrubbed...\n"
 "From: %(who)s\n"
@@ -6109,7 +6130,7 @@ msgstr ""
 "Méret: %(size)s\n"
 "Url : %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:159
+#: Mailman/Handlers/Scrubber.py:158
 msgid ""
 "A non-text attachment was scrubbed...\n"
 "Name: %(filename)s\n"
@@ -6190,46 +6211,6 @@ msgstr "Eredeti üzenet"
 msgid "Request to mailing list %(realname)s rejected"
 msgstr ""
 "A(z) %(realname)s levelezõlistára való feliratkozásod vissza lett utasítva"
-
-#: Mailman/MTA/Aliases.py:40
-msgid ""
-"To finish creating your mailing list, you must edit your\n"
-"/etc/aliases (or equivalent) file by adding the following lines:\n"
-"\n"
-"## %(listname)s mailing list\n"
-"## created: %(date)s %(user)s\n"
-"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
-"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
-"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
-"%(owner)s %(listname)s-admin\n"
-msgstr ""
-"A levelezõlista létrehozásának utolsó lépéséhez az /etc/aliases (vagy \n"
-"hasonló) állományba a következõ sorokat kell elhelyezni:\n"
-"\n"
-"## %(listname)s levelezõlista\n"
-"## létrehozva: %(date)s %(user)s\n"
-"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
-"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
-"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
-"%(owner)s %(listname)s-admin\n"
-
-#: Mailman/MTA/Aliases.py:63
-msgid ""
-"To finish removing your mailing list, you must edit your\n"
-"/etc/aliases (or equivalent) file by removing the following lines:\n"
-"\n"
-"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
-"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
-"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
-"%(owner)s %(listname)s-admin\n"
-msgstr ""
-"A levelezõlista törlésének utolsó lépéseként az /etc/aliases (vagy \n"
-"hasonló) állományból kell a következõ sorokat törölni:\n"
-"\n"
-"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
-"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
-"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
-"%(owner)s %(listname)s-admin\n"
 
 #: Mailman/MTA/Manual.py:55
 msgid ""
@@ -6329,113 +6310,75 @@ msgstr "tulajdonos ellenõrzése a %(DBFILE)s -on"
 msgid "%(dbfile)s owned by %(owner)s (must be owned by Mailman)"
 msgstr "A(z) %(DBFILE)S tulajdonosa %(owner)s (mailman-nak kéne lennie)"
 
-#: Mailman/MTA/Qmail.py:31
-msgid ""
-"To finish creating your mailing list, execute the following\n"
-"commands with the proper permission:\n"
-"\n"
-"echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s\n"
-"echo '|preline %(wrapper)s mailowner %(listname)s' "
-">~alias/.qmail-%(listname)s-admin\n"
-"echo '|preline %(wrapper)s mailcmd %(listname)s' "
-">~alias/.qmail-%(listname)s-request\n"
-"echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s\n"
-"echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner\n"
-"\n"
-"chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin\n"
-"chmod 644 ~alias/.qmail-%(listname)s-request "
-"~alias/.qmail-%(listname)s-owner\n"
-"chmod 644 ~alias/.qmail-owner-%(listname)s\n"
-msgstr ""
-"A levelezõlista létrehozásának utolsó lépééhez a következõ\n"
-"parancsokat kell kiadnod megfelelõ felhasználóként:\n"
-"\n"
-"echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s\n"
-"echo '|preline %(wrapper)s mailowner %(listname)s' "
-">~alias/.qmail-%(listname)s-admin\n"
-"echo '|preline %(wrapper)s mailcmd %(listname)s' "
-">~alias/.qmail-%(listname)s-request\n"
-"echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s\n"
-"echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner\n"
-"\n"
-"chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin\n"
-"chmod 644 ~alias/.qmail-%(listname)s-request "
-"~alias/.qmail-%(listname)s-owner\n"
-"chmod 644 ~alias/.qmail-owner-%(listname)s\n"
-
-#: Mailman/MTA/Qmail.py:48
-msgid ""
-"To finish removing your mailing list, you must remove the\n"
-"all the entires for the %(listname)s aliases."
-msgstr ""
-"A levelezõlista törlésének utolsó lépéseként a %(listname)s\n"
-"listához tartozó összes bejegyzést (aliases) törölnöd kell."
-
-#: Mailman/MailList.py:662
+#: Mailman/MailList.py:671
 #, fuzzy
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr "Sikeresen leiratkoztál a(z) %(realname)s levelezõlistáról"
 
-#: Mailman/MailList.py:766 Mailman/MailList.py:1120
+#: Mailman/MailList.py:775 Mailman/MailList.py:1132
 msgid " from %(remote)s"
 msgstr " %(remote)s"
 
-#: Mailman/MailList.py:803
+#: Mailman/MailList.py:812
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr ""
 "feliratkozáshoz a(z) %(realname)s listára szerkesztõi jóváhagyás szükséges"
 
-#: Mailman/MailList.py:861 bin/add_members:277
+#: Mailman/MailList.py:871 bin/add_members:277
 msgid "%(realname)s subscription notification"
 msgstr "Értesítés %(realname)s listára feliratkozásáról"
 
-#: Mailman/MailList.py:879
+#: Mailman/MailList.py:889
 msgid "unsubscriptions require moderator approval"
 msgstr "leiratkozáshoz szerkesztõi jóváhagyás szükséges"
 
-#: Mailman/MailList.py:900
+#: Mailman/MailList.py:910
 msgid "%(realname)s unsubscribe notification"
 msgstr "Értesítés %(realname)s listáról leiratkozásáról"
 
-#: Mailman/MailList.py:1040
+#: Mailman/MailList.py:1052
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr ""
 "feliratkozáshoz a(z) %(name)s listára adminisztrátori jóváhagyás szükséges"
 
-#: Mailman/Queue/CommandRunner.py:72
+#: Mailman/MailList.py:1298
+msgid "Last autoresponse notification for today"
+msgstr ""
+
+#: Mailman/Queue/CommandRunner.py:73
 msgid "Ignoring non-text/plain MIME parts"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:124
+#: Mailman/Queue/CommandRunner.py:125
 msgid ""
 "The results of your email command are provided below.\n"
 "Attached is your original message.\n"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:129
+#: Mailman/Queue/CommandRunner.py:130
 msgid "- Results:"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:135
+#: Mailman/Queue/CommandRunner.py:136
 msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:138
+#: Mailman/Queue/CommandRunner.py:139
 msgid ""
 "\n"
 "- Ignored:"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:140
+#: Mailman/Queue/CommandRunner.py:141
 msgid ""
 "\n"
 "- Done.\n"
 "\n"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:147
+#: Mailman/Queue/CommandRunner.py:159
 msgid "The results of your email commands"
 msgstr ""
 
@@ -6657,7 +6600,7 @@ msgstr ""
 msgid "listname is required"
 msgstr "listanevet is meg kell adni"
 
-#: bin/arch:120 bin/change_pw:102 bin/config_list:200
+#: bin/arch:120 bin/change_pw:102 bin/config_list:233
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -6829,8 +6772,8 @@ msgid ""
 "    config.safety\n"
 "\n"
 "It's okay if any of these are missing.  config.pck and config.pck.last are\n"
-"pickled versions of the config database file for 2.1a3 and beyond.  "
-"config.db\n"
+"pickled versions of the config database file for 2.1a3 and beyond.  config."
+"db\n"
 "and config.db.last are used in all earlier versions, and these are Python\n"
 "marshals.  config.safety is a pickle written by 2.1a3 and beyond when the\n"
 "primary config.pck file could not be read.\n"
@@ -7339,31 +7282,45 @@ msgstr ""
 "## \"%(listname)s\" levelezõlista konfigurációs beállításai\n"
 "## -*- python -*- elmentve %(when)s-n\n"
 
-#: bin/config_list:126
+#: bin/config_list:127
 msgid "options"
 msgstr "beállítások"
 
-#: bin/config_list:177
+#: bin/config_list:184
 msgid "legal values are:"
 msgstr "megadható értékek:"
 
-#: bin/config_list:212
+#: bin/config_list:246
 msgid "attribute \"%(k)s\" ignored"
 msgstr "\"%(k)s\" attribútum figyelmen kívül hagyva"
 
-#: bin/config_list:215
+#: bin/config_list:249
 msgid "attribute \"%(k)s\" changed"
 msgstr "\"%(k)s\" attribútum beállítva"
 
-#: bin/config_list:251
+#: bin/config_list:255
+msgid "Non-standard property restored: %(k)s"
+msgstr ""
+
+#: bin/config_list:263
+#, fuzzy
+msgid "Invalid value for property: %(k)s"
+msgstr "Érvénytelen érték --style kapcsolónál: %s"
+
+#: bin/config_list:265
+#, fuzzy
+msgid "Bad email address for option %(k)s: %(v)s"
+msgstr "Rossz e-mail cím lett a %(porperty)s részben megadva: %(val)s"
+
+#: bin/config_list:304
 msgid "Only one of -i or -o is allowed"
 msgstr "Egyszerre csak az egyike használható -i vagy -o kapcsolóknak"
 
-#: bin/config_list:253
+#: bin/config_list:306
 msgid "One of -i or -o is required"
 msgstr "Az -i vagy -o kapcsolók egyikét meg kell adnod"
 
-#: bin/config_list:257
+#: bin/config_list:310
 msgid "List name is required"
 msgstr "Meg kell adni a lista nevét"
 
@@ -7652,7 +7609,7 @@ msgstr ""
 "    -h\n"
 "        Kiírja ezt a súgót és kilép.\n"
 
-#: bin/list_admins:91
+#: bin/list_admins:92
 msgid "List: %(listname)s, \tOwners: %(owners)s"
 msgstr "Lista: %(listname)s, \tTulajdonosok: %(owners)s"
 
@@ -7850,8 +7807,8 @@ msgid ""
 "this\n"
 "        user and group before the check is made.\n"
 "\n"
-"        This can be inconvenient for testing and debugging purposes, so the "
-"-u\n"
+"        This can be inconvenient for testing and debugging purposes, so the -"
+"u\n"
 "        flag means that the step that sets and checks the uid/gid is "
 "skipped,\n"
 "        and the program is run as the current user and group.  This flag is\n"
@@ -8590,8 +8547,8 @@ msgid ""
 "    --digest[=<yes|no>]\n"
 "    -d[=<yes|no>]\n"
 "        Selects whether to make newly added members receive messages in\n"
-"        digests.  With -d=yes or -d, they become digest members.  With "
-"-d=no\n"
+"        digests.  With -d=yes or -d, they become digest members.  With -"
+"d=no\n"
 "        (or if no -d option given) they are added as regular members.\n"
 "\n"
 "    --notifyadmin[=<yes|no>]\n"
@@ -8808,8 +8765,8 @@ msgstr ""
 "%(listname)s rendelkezik mind nyilvános, mind privát mbox archívummal. A "
 "lista\n"
 "jelenleg privát archiválásra van beállítva, ezért a privát mbox archívumot\n"
-"-- %(o_pri_mbox_file)s -- állítom be aktuális archívumnak és átnevezem "
-"a(z)\t%(o_pub_mbox_file)s\n"
+"-- %(o_pri_mbox_file)s -- állítom be aktuális archívumnak és átnevezem a(z)\t"
+"%(o_pub_mbox_file)s\n"
 "archívumot\n"
 "\t%(o_pub_mbox_file)s.preb6\n"
 "archívummá. Az 'arch' programmal bármikor össze lehet fésülni ezt az "
@@ -9001,8 +8958,8 @@ msgid ""
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
-"Régebbi verzióra %(hextversion)s akarja a frissebbet lecserélni "
-"%(hexlversion)s.\n"
+"Régebbi verzióra %(hextversion)s akarja a frissebbet lecserélni %"
+"(hexlversion)s.\n"
 "Ez valószínûleg hibás mûködéshez vezetne.\n"
 "Kilépek."
 
@@ -9029,8 +8986,8 @@ msgstr ""
 "HIBA:\n"
 "\n"
 "Valamelyik listánál nem lehetett a zárolást megszüntetni. Ez azt jelenti,\n"
-"hogy a Mailman a frissítés idõpontjában futott, vagy lejárt zárolás volt "
-"a(z)\n"
+"hogy a Mailman a frissítés idõpontjában futott, vagy lejárt zárolás volt a"
+"(z)\n"
 "%(lockdir)s könyvtáron.\n"
 "\n"
 "Szüneteltesse a Mailman futását és távolítsa el az összes lejárt zárolást, "
@@ -9073,8 +9030,8 @@ msgid ""
 "after\n"
 "        the fact by typing `m.Lock()'\n"
 "\n"
-"        Note that if you use this option, you should explicitly call "
-"m.Save()\n"
+"        Note that if you use this option, you should explicitly call m.Save"
+"()\n"
 "        before exiting, since the interpreter's clean up procedure will not\n"
 "        automatically save changes to the MailList object (but it will "
 "unlock\n"
@@ -9259,16 +9216,16 @@ msgstr ""
 "A cron futtatja ezt a programot, amely a szerkesztõi beavatkozásra váró \n"
 "levelek figyelését és a szerkesztõk értesítését végzi.\n"
 
-#: cron/checkdbs:68
+#: cron/checkdbs:76
 msgid "%(count)d %(realname)s moderator request(s) waiting"
 msgstr ""
 "%(count)d kérelem vár szerkesztõi jóváhagyásra a(z) %(realname)s listán"
 
-#: cron/checkdbs:82
+#: cron/checkdbs:94
 msgid "Pending subscriptions:"
 msgstr "Jóváhagyásra váró feliratkozások:"
 
-#: cron/checkdbs:91
+#: cron/checkdbs:103
 msgid ""
 "\n"
 "Pending posts:"
@@ -9276,7 +9233,7 @@ msgstr ""
 "\n"
 "Jóváhagyásra váró levelek:"
 
-#: cron/checkdbs:96
+#: cron/checkdbs:108
 msgid ""
 "     From: %(sender)s on %(date)s\n"
 "    Cause: %(reason)s"
@@ -9294,35 +9251,41 @@ msgid ""
 "the\n"
 "maximum number of notifications.\n"
 "\n"
+"Use the --byadmin, --byuser, and --unknown flags to also send notifications\n"
+"to users whose accounts have been disabled for those reasons.  Use --all to\n"
+"send the notification to all disabled users.\n"
+"\n"
 "Usage: %(PROGRAM)s [options]\n"
 "\n"
 "Options:\n"
 "    -h / --help\n"
 "        Print this message and exit.\n"
 "\n"
+"    -o / --byadmin\n"
+"        Also send notifications to any user disabled by the list\n"
+"        owner/administrator.\n"
+"\n"
+"    -m / --byuser\n"
+"        Also send notifications to any user disabled by themselves "
+"(member).\n"
+"\n"
+"    -u / --unknown\n"
+"        Also send notifications to any user disabled for unknown reasons\n"
+"        (usually a legacy disabled address).\n"
+"\n"
+"    -b / --notbybounce\n"
+"        Don't send notifications to users disabled because of bounces (the\n"
+"        default is to notify bounce disabled members).\n"
+"\n"
+"    -a / --all\n"
+"        Send notifications to all disabled users.\n"
+"\n"
 "    -l listname\n"
-"    --list listname\n"
+"    --listname=listname\n"
 "        Process only the given list, otherwise do all lists.\n"
 msgstr ""
-"Kikapcsolt listatagok kezelése, naponta egyszer futtassuk.\n"
-"\n"
-"A program az összes levelezõ listán megkeresi azon tagokat akiknél\n"
-"ki van kapcsolva a levélkézbesítés. Ha túl sok visszapattanás miatt \n"
-"történt a levélkézbesítés leállítása, akkor újabb értesítést küld el a \n"
-"program a felhasználónak, vagy ha már a beállított értesítések számát\n"
-"elérte, akkor törli a listáról a felhasználót.\n"
-"\n"
-"Használat: %(PROGRAM)s [kapcsolók]\n"
-"\n"
-"Kapcsolók:\n"
-"    -h / --help\n"
-"        Megjeleníti ezt a súgót és kilép.\n"
-"\n"
-"    -l listanév\n"
-"    --list listanév\n"
-"        Csak a megadott listán, különben minden listán keres.\n"
 
-#: cron/disabled:87
+#: cron/disabled:132
 msgid "[disabled by periodic sweep and cull, no message available]"
 msgstr ""
 
@@ -9351,6 +9314,7 @@ msgstr ""
 "\n"
 
 #: cron/mailpasswds:19
+#, fuzzy
 msgid ""
 "Send password reminders for all lists to all users.\n"
 "\n"
@@ -9366,6 +9330,13 @@ msgid ""
 "Usage: %(PROGRAM)s [options]\n"
 "\n"
 "Options:\n"
+"    -l listname\n"
+"    --listname=listname\n"
+"        Send password reminders for the named list only.  If omitted,\n"
+"        reminders are sent for all lists.  Multiple -l/--listname options "
+"are\n"
+"        allowed.\n"
+"\n"
 "    -h/--help\n"
 "        Print this message and exit.\n"
 msgstr ""
@@ -9382,15 +9353,15 @@ msgstr ""
 "    -h/--help\n"
 "\tKiírja ezt a súgót és kilép.\n"
 
-#: cron/mailpasswds:91
+#: cron/mailpasswds:107
 msgid "Site list is missing: %(sitelistname)s"
 msgstr "Hiányzik a rendszerszintû lista: %(sitelistname)s"
 
-#: cron/mailpasswds:157
+#: cron/mailpasswds:173
 msgid "Password // URL"
 msgstr "Jelszó // URL"
 
-#: cron/mailpasswds:177
+#: cron/mailpasswds:193
 msgid "%(host)s mailing list memberships reminder"
 msgstr "%(host)s levelezõlista emlékeztetõ"
 
@@ -9452,14 +9423,133 @@ msgstr ""
 "\n"
 "A programot alapesetben a cron futtatja.\n"
 
+#~ msgid "Auto-response text to send to -admin and -owner emails."
+#~ msgstr ""
+#~ "Automatikus válasz szövege az -admin és -owner címekre érkezõ levelekre."
+
+#~ msgid ""
+#~ "To finish creating your mailing list, you must edit your\n"
+#~ "/etc/aliases (or equivalent) file by adding the following lines:\n"
+#~ "\n"
+#~ "## %(listname)s mailing list\n"
+#~ "## created: %(date)s %(user)s\n"
+#~ "%(list)s \"|%(wrapper)s post %(listname)s\"\n"
+#~ "%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
+#~ "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
+#~ "%(owner)s %(listname)s-admin\n"
+#~ msgstr ""
+#~ "A levelezõlista létrehozásának utolsó lépéséhez az /etc/aliases (vagy \n"
+#~ "hasonló) állományba a következõ sorokat kell elhelyezni:\n"
+#~ "\n"
+#~ "## %(listname)s levelezõlista\n"
+#~ "## létrehozva: %(date)s %(user)s\n"
+#~ "%(list)s \"|%(wrapper)s post %(listname)s\"\n"
+#~ "%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
+#~ "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
+#~ "%(owner)s %(listname)s-admin\n"
+
+#~ msgid ""
+#~ "To finish removing your mailing list, you must edit your\n"
+#~ "/etc/aliases (or equivalent) file by removing the following lines:\n"
+#~ "\n"
+#~ "%(list)s \"|%(wrapper)s post %(listname)s\"\n"
+#~ "%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
+#~ "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
+#~ "%(owner)s %(listname)s-admin\n"
+#~ msgstr ""
+#~ "A levelezõlista törlésének utolsó lépéseként az /etc/aliases (vagy \n"
+#~ "hasonló) állományból kell a következõ sorokat törölni:\n"
+#~ "\n"
+#~ "%(list)s \"|%(wrapper)s post %(listname)s\"\n"
+#~ "%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
+#~ "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
+#~ "%(owner)s %(listname)s-admin\n"
+
+#~ msgid ""
+#~ "To finish creating your mailing list, execute the following\n"
+#~ "commands with the proper permission:\n"
+#~ "\n"
+#~ "echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)"
+#~ "s\n"
+#~ "echo '|preline %(wrapper)s mailowner %(listname)s' >~alias/.qmail-%"
+#~ "(listname)s-admin\n"
+#~ "echo '|preline %(wrapper)s mailcmd %(listname)s' >~alias/.qmail-%"
+#~ "(listname)s-request\n"
+#~ "echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s\n"
+#~ "echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner\n"
+#~ "\n"
+#~ "chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin\n"
+#~ "chmod 644 ~alias/.qmail-%(listname)s-request ~alias/.qmail-%(listname)s-"
+#~ "owner\n"
+#~ "chmod 644 ~alias/.qmail-owner-%(listname)s\n"
+#~ msgstr ""
+#~ "A levelezõlista létrehozásának utolsó lépééhez a következõ\n"
+#~ "parancsokat kell kiadnod megfelelõ felhasználóként:\n"
+#~ "\n"
+#~ "echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)"
+#~ "s\n"
+#~ "echo '|preline %(wrapper)s mailowner %(listname)s' >~alias/.qmail-%"
+#~ "(listname)s-admin\n"
+#~ "echo '|preline %(wrapper)s mailcmd %(listname)s' >~alias/.qmail-%"
+#~ "(listname)s-request\n"
+#~ "echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s\n"
+#~ "echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner\n"
+#~ "\n"
+#~ "chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin\n"
+#~ "chmod 644 ~alias/.qmail-%(listname)s-request ~alias/.qmail-%(listname)s-"
+#~ "owner\n"
+#~ "chmod 644 ~alias/.qmail-owner-%(listname)s\n"
+
+#~ msgid ""
+#~ "To finish removing your mailing list, you must remove the\n"
+#~ "all the entires for the %(listname)s aliases."
+#~ msgstr ""
+#~ "A levelezõlista törlésének utolsó lépéseként a %(listname)s\n"
+#~ "listához tartozó összes bejegyzést (aliases) törölnöd kell."
+
+#~ msgid ""
+#~ "Process disabled members, recommended once per day.\n"
+#~ "\n"
+#~ "This script cruises through every mailing list looking for members whose\n"
+#~ "delivery is disabled.  If they have been disabled due to bounces, they "
+#~ "will\n"
+#~ "receive another notification, or they may be removed if they've received "
+#~ "the\n"
+#~ "maximum number of notifications.\n"
+#~ "\n"
+#~ "Usage: %(PROGRAM)s [options]\n"
+#~ "\n"
+#~ "Options:\n"
+#~ "    -h / --help\n"
+#~ "        Print this message and exit.\n"
+#~ "\n"
+#~ "    -l listname\n"
+#~ "    --list listname\n"
+#~ "        Process only the given list, otherwise do all lists.\n"
+#~ msgstr ""
+#~ "Kikapcsolt listatagok kezelése, naponta egyszer futtassuk.\n"
+#~ "\n"
+#~ "A program az összes levelezõ listán megkeresi azon tagokat akiknél\n"
+#~ "ki van kapcsolva a levélkézbesítés. Ha túl sok visszapattanás miatt \n"
+#~ "történt a levélkézbesítés leállítása, akkor újabb értesítést küld el a \n"
+#~ "program a felhasználónak, vagy ha már a beállított értesítések számát\n"
+#~ "elérte, akkor törli a listáról a felhasználót.\n"
+#~ "\n"
+#~ "Használat: %(PROGRAM)s [kapcsolók]\n"
+#~ "\n"
+#~ "Kapcsolók:\n"
+#~ "    -h / --help\n"
+#~ "        Megjeleníti ezt a súgót és kilép.\n"
+#~ "\n"
+#~ "    -l listanév\n"
+#~ "    --list listanév\n"
+#~ "        Csak a megadott listán, különben minden listán keres.\n"
+
 #~ msgid "# File: %(filename)s, line: %(lineno)d"
 #~ msgstr "# Állomány: %(filename)s sor: %(lineno)d"
 
 #~ msgid " %(filename)s:%(lineno)d"
 #~ msgstr " %(filename)s:%(lineno)d"
-
-#~ msgid "Invalid value for --style: %s"
-#~ msgstr "Érvénytelen érték --style kapcsolónál: %s"
 
 #~ msgid "pygettext.py (xgettext for Python) %s"
 #~ msgstr "pygettext.py (Pythonra alkalmazható xgettext) %s"
@@ -9488,7 +9578,8 @@ msgstr ""
 
 #~ msgid ""
 #~ "When turned on, delivery to your email address is disabled, but\n"
-#~ "your address is still subscribed.  This is useful if you plan on taking a\n"
+#~ "your address is still subscribed.  This is useful if you plan on taking "
+#~ "a\n"
 #~ "short vacation."
 #~ msgstr ""
 #~ "Bekapcsolásával a listáról nem fogsz levelet kapni, de feliratkozásod\n"
@@ -9504,10 +9595,12 @@ msgstr ""
 
 #~ msgid ""
 #~ "When turned on, you do *not* get copies of your own posts to\n"
-#~ "the list.  Otherwise, you do get copies of your own posts (yes, this seems "
-#~ "a\n"
-#~ "little backwards).  This does not affect the contents of digests, so if you\n"
-#~ "receive postings in digests, you will always get copies of your messages in\n"
+#~ "the list.  Otherwise, you do get copies of your own posts (yes, this "
+#~ "seems a\n"
+#~ "little backwards).  This does not affect the contents of digests, so if "
+#~ "you\n"
+#~ "receive postings in digests, you will always get copies of your messages "
+#~ "in\n"
 #~ "the digest."
 #~ msgstr ""
 #~ "Bekapcsolásával a listára küldött leveleidet nem kapod meg.\n"
@@ -9518,11 +9611,13 @@ msgstr ""
 
 #~ msgid ""
 #~ "When turned on, you get postings from the list bundled into\n"
-#~ "digests.  Otherwise, you get each individual message immediately as it is\n"
+#~ "digests.  Otherwise, you get each individual message immediately as it "
+#~ "is\n"
 #~ "posted to the list."
 #~ msgstr ""
 #~ "Bekapcsolásával a listára érkezõ leveleket egyben, digest\n"
-#~ "formában kapod meg. Különben a leveleket feladásuk után azonnal, egyenként\n"
+#~ "formában kapod meg. Különben a leveleket feladásuk után azonnal, "
+#~ "egyenként\n"
 #~ "kapod meg."
 
 #~ msgid ""
@@ -9553,8 +9648,8 @@ msgstr ""
 #~ msgid ""
 #~ "Maximum command lines (%(maxlines)d) encountered, ignoring the rest..."
 #~ msgstr ""
-#~ "Maximális parancssorok száma (%(maxlines)d), a többi parancs figyelmen kívül "
-#~ "lett hagyva..."
+#~ "Maximális parancssorok száma (%(maxlines)d), a többi parancs figyelmen "
+#~ "kívül lett hagyva..."
 
 #~ msgid "End: "
 #~ msgstr "Vége: "
@@ -9577,8 +9672,8 @@ msgstr ""
 #~ "\n"
 #~ "Please forward your request to the human list administrator in charge of "
 #~ "this\n"
-#~ "list at <%(admin)s>.  The traceback is attached below and will be forwarded "
-#~ "to\n"
+#~ "list at <%(admin)s>.  The traceback is attached below and will be "
+#~ "forwarded to\n"
 #~ "the list administrator automatically."
 #~ msgstr ""
 #~ "Váratlan Mailman hiba merült fel.\n"
@@ -9606,11 +9701,12 @@ msgstr ""
 #~ "administrative address %(requestaddr)s.\n"
 #~ "\n"
 #~ "To obtain instructions on valid Mailman email commands, send email to\n"
-#~ "%(requestaddr)s with the word \"help\" in the subject line or in the body of "
-#~ "the\n"
+#~ "%(requestaddr)s with the word \"help\" in the subject line or in the body "
+#~ "of the\n"
 #~ "message.\n"
 #~ "\n"
-#~ "If you want to reach the human being that manages this mailing list, please\n"
+#~ "If you want to reach the human being that manages this mailing list, "
+#~ "please\n"
 #~ "send your message to %(adminaddr)s.\n"
 #~ "\n"
 #~ "The following is a detailed description of the problems.\n"
@@ -9755,7 +9851,8 @@ msgstr ""
 #~ "Használat: subscribe [jelszó] [digest|nodigest] [address=<e-mail cím>]"
 
 #~ msgid ""
-#~ "The list is not fully functional, and can not accept subscription requests."
+#~ "The list is not fully functional, and can not accept subscription "
+#~ "requests."
 #~ msgstr ""
 #~ "A lista nem teljesen mûködõképes, ezért feliratkozási kérelmeket nem "
 #~ "fogad.<p>"
@@ -9824,13 +9921,13 @@ msgstr ""
 
 #~ msgid ""
 #~ "<li>Find members by\n"
-#~ "                <a "
-#~ "href=\"http://www.python.org/doc/current/lib/re-syntax.html\"\n"
+#~ "                <a href=\"http://www.python.org/doc/current/lib/re-syntax."
+#~ "html\"\n"
 #~ "                >Python regular expression</a> (<em>regexp</em>)<br>"
 #~ msgstr ""
 #~ "<li>Tagok keresése \n"
-#~ "\t   <a "
-#~ "href=\"http://www.python.org/doc/current/lib/re-syntax.html\">Python\n"
+#~ "\t   <a href=\"http://www.python.org/doc/current/lib/re-syntax.html"
+#~ "\">Python\n"
 #~ "\t   reguláris kifejezéssel</a> (<em>regexp</em>)<br>"
 
 #~ msgid "Send welcome message to this batch?"
@@ -9864,7 +9961,8 @@ msgstr ""
 #~ "      external archiver (ie, andrew kuchling's latest version of "
 #~ "pipermail.)\n"
 #~ "\n"
-#~ "This program shouldn't be attempted by people who don't understand Python.\n"
+#~ "This program shouldn't be attempted by people who don't understand "
+#~ "Python.\n"
 #~ "I wrote it to build archives for a few lists I'd been running for a long\n"
 #~ "time under majordomo.\n"
 #~ "\n"
@@ -9872,7 +9970,8 @@ msgstr ""
 #~ "format.  Note that the digests correct order in the dir should be\n"
 #~ "alphabetical order.\n"
 #~ "\n"
-#~ "The output file is ARCHIVE.ME in the same directory the digests are in.  \n"
+#~ "The output file is ARCHIVE.ME in the same directory the digests are "
+#~ "in.  \n"
 #~ "Run this program before you transfer the majordomo list.  \n"
 #~ "\n"
 #~ "To get the output file archived, create the list under mailman, \n"
@@ -9898,7 +9997,8 @@ msgstr ""
 #~ "Az átkonvertált levelek az ARCHIVE.ME állományban a digesteket\n"
 #~ "tartalmazó könyvtárba kerülnek.\n"
 #~ "\n"
-#~ "Hozzuk létre a levelezõlistát Mailman-nal, majd futtassuk ezt a programot.\n"
+#~ "Hozzuk létre a levelezõlistát Mailman-nal, majd futtassuk ezt a "
+#~ "programot.\n"
 #~ "Végül adjuk ki a következõ parancsot:\n"
 #~ "\n"
 #~ "cat ARCHIVE.ME >> ~mailman/mailman/lists/mylist/archived.mail\n"
@@ -9912,9 +10012,10 @@ msgstr ""
 #~ msgid ""
 #~ "                The passwords you entered in the confirmation screen did "
 #~ "not\n"
-#~ "                match, so your original subscription password will be used\n"
-#~ "                instead.  Your password will have been generated by Mailman "
-#~ "if\n"
+#~ "                match, so your original subscription password will be "
+#~ "used\n"
+#~ "                instead.  Your password will have been generated by "
+#~ "Mailman if\n"
 #~ "                you left the password fields blank.  In any event, your\n"
 #~ "                membership password will be sent to you in a separate\n"
 #~ "                acknowledgement email.<p>"
@@ -9928,23 +10029,28 @@ msgstr ""
 
 #~ msgid ""
 #~ "Before adding a list-specific <tt>Reply-To:</tt> header,\n"
-#~ "             should any existing <tt>Reply-To:</tt> field be stripped from\n"
+#~ "             should any existing <tt>Reply-To:</tt> field be stripped "
+#~ "from\n"
 #~ "             the message?"
 #~ msgstr ""
 #~ "A listára jellemzõ <tt>Reply-To:</tt> fejléc hozzáadása elõtt\n"
 #~ "\t      a már létezp <tt>Reply-To:</tt> mezõt törölje az üzenetbõl?"
 
 #~ msgid ""
-#~ "The attached message has been automatically discarded because the sender's\n"
+#~ "The attached message has been automatically discarded because the "
+#~ "sender's\n"
 #~ "address, %(sender)s, was on the discard_these_nonmembers list.  For the "
 #~ "list\n"
 #~ "of auto-discard addresses, see\n"
 #~ "\n"
 #~ "    %(varhelp)s\n"
 #~ msgstr ""
-#~ "A csatolt üzenet automatikusan törölve lett, mert a feladója, %(sender)s,\n"
-#~ "azon külsõ beküldõk között megtalálható, akiknek a leveleit azonnal törölni\n"
-#~ "kell. Az automatikusan törlendõk címeit a következõ oldalon tekintheted meg\n"
+#~ "A csatolt üzenet automatikusan törölve lett, mert a feladója, %(sender)"
+#~ "s,\n"
+#~ "azon külsõ beküldõk között megtalálható, akiknek a leveleit azonnal "
+#~ "törölni\n"
+#~ "kell. Az automatikusan törlendõk címeit a következõ oldalon tekintheted "
+#~ "meg\n"
 #~ "\n"
 #~ "    %(varhelp)s\n"
 
