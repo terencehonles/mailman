@@ -376,7 +376,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     if mm_cfg.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:
         otherlinks.AddItem(Link(mlist.GetScriptURL('rmlist'),
                                 _('Delete this mailing list')).Format() +
-                           ' (requires confirmation)<br>&nbsp;<br>')
+                           _(' (requires confirmation)<br>&nbsp;<br>'))
     otherlinks.AddItem(Link('%s/logout' % adminurl,
                             # BAW: What I really want is a blank line, but
                             # adding an &nbsp; won't do it because of the
@@ -447,8 +447,10 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     if category == 'general':
         form.AddItem(Center(password_inputs()))
 
-    form.AddItem("<p>")
+    form.AddItem('<p>')
     form.AddItem(Center(submit_button()))
+    form.AddItem('<hr>')
+    form.AddItem(linktable)
     form.AddItem(mlist.GetMailmanFooter())
     # main() formats and prints the document
 
