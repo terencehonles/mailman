@@ -1,0 +1,21 @@
+Title: Mailman Logos and Papers
+
+<h3>Logos</h3>
+
+The Dragon De Monsyne created and donated two logos for Mailman which
+you can use to link back to the Mailman website.
+
+<table>
+<tr><td><img src="images/logo-sm.jpg"></td>
+    <td><img src="images/logo-lg.jpg"></td>
+</tr><tr><td><center>Small Logo (110x35)</center></td>
+	 <td><center>Large Logo (247x93)</center></td>
+</tr>
+</table>
+
+<h3>Papers</h3>
+
+<p>A number of papers and other material presented at
+<a href="http://www.foretec.com/python/workshops/1998-11/proceedings.html">
+the 7th International Python Conference</a> and the 12th Usenix LISA
+conference are available <a href="mailman-docs.tar.gz">here</a>.

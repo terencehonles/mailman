@@ -6,56 +6,47 @@ We have several mailing lists devoted to Mailman, which also provide a
 nice demonstration of Mailman!
 
 <ul>
-<p><li><a href="http://www.python.org/mailman/listinfo/mailman-users">
+<p><li><a href="http://mail.python.org/mailman/listinfo/mailman-users">
     Mailman Users</a> is the mailing list to subscribe to if you are
     using Mailman at your site, and may have problems or questions
     relating to installation, use, etc.  We'll try to keep the deep
     technical discussions off this list.
-    (<a href="http://www.python.org/pipermail/mailman-users/"><em>archives</em></a>)
+    (<a href="http://mail.python.org/pipermail/mailman-users/"><em>archives</em></a>)
 
-<li><a href="http://listowner.org/">Listowners</a>
+<p><li><a href="http://listowner.org/">Listowners</a>
     is a mailing list with a non-technical focus, specifically for
     discussions from the perspective of listowners and moderators
     who do not have "shell access" to the mailing list server
-    where the Mailman software runs.
+    where the Mailman software runs. (<a href="http://listowner.org/pipermail/lo/"><em>archives</em></a>)
 
-<li><a href="http://www.python.org/mailman/listinfo/mailman-announce">
+<p><li><a href="http://mail.python.org/mailman/listinfo/mailman-announce">
     Mailman Announce</a> is a read-only list that you can subscribe to 
     if you are only interested in release notices and other important
     news.  Only the core Mailman developers can post messages to this
     list.
-    (<a href="http://www.python.org/pipermail/mailman-announce/"><em>archives</em></a>)
+    (<a href="http://mail.python.org/pipermail/mailman-announce/"><em>archives</em></a>)
 
-<p><li><a href="http://www.python.org/mailman/listinfo/mailman-developers">
+<p><li><a href="http://mail.python.org/mailman/listinfo/mailman-developers">
     Mailman Developers</a> is the mailing list to use if you are
     interested in helping us develop Mailman, discuss future
     directions, etc.  This is the list for more in-depth technical
     issues.
-    (<a href="http://www.python.org/pipermail/mailman-developers/"><em>archives</em></a>)
+    (<a href="http://mail.python.org/pipermail/mailman-developers/"><em>archives</em></a>)
 
-    <p>You may also want to find a project on our Mailman
-    <a href="todo.html">TODO list</a> or on the
-    <a href="http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage">Mailman
-    design notes wiki</a>.
+    <p>More information about developer resources is available
+    <a href="devs.html">here</a>.
 
-<p><li><a href="http://www.python.org/mailman/listinfo/mailman-i18n">
+<p><li><a href="http://mail.python.org/mailman/listinfo/mailman-i18n">
     Mailman Internationalization</a> is the list for discussing the
-    multi-lingual extensions to Mailman, which will likely be folded
-    into the standard distribution after the 2.0 release.  Once
-    integrated, this list will be a way for language translators to
-    submit new translation files.
-    (<a href="http://www.python.org/pipermail/mailman-i18n/"><em>archives</em></a>)
+    multi-lingual support in Mailman 2.1.  Everyone who is working on
+    translations of Mailman should subscribe to this mailing list.
+    (<a href="http://mail.python.org/pipermail/mailman-i18n/"><em>archives</em></a>)
 
-<p><li><a href="http://www.python.org/mailman/listinfo/mailman-checkins">
+<p><li><a href="http://mail.python.org/mailman/listinfo/mailman-checkins">
     Mailman Checkins</a> is an adjunct list to the publically
     accessible read-only CVS repository.  This list is for the
     hardcore developers, or anybody else submitting patches, since we
     really prefer such patches to be generated against the latest
     snapshot.  This is a read-only list; only the core Mailman
     developers can post messages to this list.  There is no archive.
-    (<a href="http://www.python.org/pipermail/mailman-checkins/"><em>archives</em></a>)
-
 </ul>
-
-Some of the Mailman developers also occasionally hang out on the
-<em>mailman</em> IRC channel at openprojects.net.
