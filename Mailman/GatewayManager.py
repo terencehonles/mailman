@@ -140,7 +140,7 @@ class GatewayManager:
                 if not re.match('(re:? *)?' + re.escape(subjpref), subj, re.I):
                     msg.SetHeader('Subject', '%s%s' % (subjpref, subj))
             else:
-                msg.SetHeader('Subject', '%s(no subject)' % prefix)
+                msg.SetHeader('Subject', '%s(no subject)' % subjpref)
             if self.reply_goes_to_list:
                 del msg['reply-to']
                 msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
