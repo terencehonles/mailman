@@ -2,11 +2,6 @@ This is a reminder, sent out once a month, about your %(hostname)s
 mailing list memberships.  It includes your subscription info and
 how to use it to change it or unsubscribe from a list.
 
-Passwords for %(user)s:
-
-%(header)s
-%(table)s
-
 You can visit the URLs to change your membership status or configuration,
 including unsubscribing, setting digest-style delivery or disabling
 delivery altogether (e.g., for a vacation), and so on.
@@ -19,3 +14,5 @@ sent to you with instructions.
 
 If you have questions, problems, comments, etc, send them to
 mailman-owner@%(hostname)s.  Thanks!
+
+Passwords for %(user)s:
