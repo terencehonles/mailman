@@ -58,9 +58,9 @@ A. Mailman 2.1 will probably have this feature built-in, but for now
    you can use add-on tools such as demime or stripmime.  More
    information on these tools can be found at:
 
-   (Stripmime) http://www.phred.org/~alex/stripmime.html.
+   (Stripmime) http://www.phred.org/~alex/stripmime.html
 
-   (Demime)    http://scifi.squawk.com/demime.html.
+   (Demime)    http://scifi.squawk.com/demime.html
 
 Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
@@ -158,9 +158,10 @@ A. If you are using Apache, you must make sure that FollowSymLinks is
 
 Q. Still having problems?  Running QMail?
 
-A. Make sure that you are using "preline" before calling "wrapper":
+A. Make sure that you are using "preline" before calling the "mailman"
+   wrapper:
 
-       |preline /home/mailman/mail/wrapper post listname
+       |preline /home/mailman/mail/mailman post listname
 
    "preline" adds a Unix-style "From " header which the archiver requires.
    You can fix the archive mbox files by adding:
@@ -394,15 +395,17 @@ A. Renaming a list is currently a bit of a pain to do completely
        the new aliases.  When you're done, you will end up with
        /etc/aliases entries like the following (YMMV):
 
+       XXX This needs updating for MM2.1!
+
        # Forward the oldname list to the newname list
        oldname:         newname@dom.ain
        oldname-request: newname-request@dom.ain
        oldname-admin:   newname-admin@dom.ain
        oldname-owner:   newname-owner@dom.ain
 
-       newname:         "|/usr/local/mailman/mail/wrapper post newname"
-       newname-admin:   "|/usr/local/mailman/mail/wrapper mailowner newname"
-       newname-request: "|/usr/local/mailman/mail/wrapper mailcmd newname"
+       newname:         "|/usr/local/mailman/mail/mailman post newname"
+       newname-admin:   "|/usr/local/mailman/mail/mailman mailowner newname"
+       newname-request: "|/usr/local/mailman/mail/mailman mailcmd newname"
        newname-owner:   newname-admin
 
      o Run newaliases
