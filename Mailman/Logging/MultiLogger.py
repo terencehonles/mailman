@@ -67,3 +67,10 @@ class MultiLogger:
                     logger.close()
             except:
                 _logexc(logger)
+
+    def reprime(self):
+        for logger in self.__loggers:
+            try:
+                logger.reprime()
+            except AttributeError:
+                pass
