@@ -60,8 +60,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.Load()
 
     def __del__(self):
-	for f in self._log_files.values():
-	    f.close()
+        try:
+            for f in self._log_files.values():
+                f.close()
+        except AttributeError:
+            # List may not have gotten far enough to have proper _log_files!
+            pass
 
     def GetMembers(self):
         """returns a list of the members."""
@@ -122,6 +126,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return "%s/%s" % (options, treated)
 
     def GetUserOption(self, user, option):
+        """Return user's setting for option, defaulting to 0 if no settings."""
 	if option == mm_cfg.Digests:
 	    return self.digest_members.has_key(user)
 	if not self.user_options.has_key(user):
@@ -449,8 +454,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         config_info['privacy'] = [
             "List access policies, including anti-spam measures,"
             " covering members and outsiders."
-            '  (See also the <a href="%s/archive">Archival Options section</a> for'
-            ' separate archive-privacy settings.)' % (self.GetRelativeScriptURL('admin')),
+            '  (See also the <a href="%s/archive">Archival Options'
+            ' section</a> for separate archive-privacy settings.)'
+            % (self.GetRelativeScriptURL('admin')),
 
 	    "Subscribing",
 
@@ -489,23 +495,25 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Restrict posting privilege to list members?',
 
 
-             "Use this option if you want to restrict posting to list members. "
-             "If you want list members to be able to "
-             "post, plus a handful of other posters, see the <i> posters </i> "
-             "setting below"),
+             "Use this option if you want to restrict posting to list members."
+             " If you want list members to be able to"
+             " post, plus a handful of other posters, see the <i> posters </i>"
+             " setting below"),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
              'Addresses of members accepted for posting to this'
-             ' list with no required approval. (See <i> member_posting_only </i> '
-             'above for whether or not list members posting is effected by adding '
-             'addresses here.',
+             ' list with no required approval. (See'
+             ' <i> member_posting_only </i>, above, for whether or not'
+             ' list member posting is affected by adding addresses here.',
 
-             "Adding any entries here will have one of 2 effects according to the "
-             "setting of <i>member_posting_only </i>: <p> If <i>member_posting_only</i> "
-             "is set to 'yes', then adding entries here will allow list members and anyone "
-             "listed here to post without going through administrative approval. <p> "
-             "If <i>member_posting_only</i> is set to 'no', then <em>only</em> the "
-             "posters listed here will be able to post without administrative approval. "),
+             "Adding any entries here will have one of two effects,"
+             " according to the setting of <i>member_posting_only</i>:"
+             " <p> If <i>member_posting_only</i> is 'yes', then"
+             " adding entries here will allow list members and anyone"
+             " listed here to post without going through admin approval."
+             " <p> If <i>member_posting_only</i> is 'no', then <em>only</em>"
+             " the posters listed here will be able to post without admin"
+             " approval. "),
 
             "Spam-specific posting filters",
 
@@ -518,7 +526,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " often the to field has a totally bogus address for"
              " obfuscation.  The constraint applies only to the stuff in"
              " the address before the '@' sign, but still catches all such"
-             "  spams."
+             " spams."
              "<p>The cost is that the list will not accept unhindered any"
              " postings relayed from other addresses, unless <ol>"
              " <li>The relaying address has the same name, or"
@@ -960,7 +968,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 if not len(addrs):
                     self.AddRequest('post', Utils.SnarfMessage(msg),
                                     Errors.MODERATED_LIST_MSG,
-                                    msg.getheader('subject'))                    
+                                    msg.getheader('subject'))
             #
             # not moderated
             #
@@ -971,13 +979,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                     if self.member_posting_only:
                         if not self.IsMember(sender):
                             self.AddRequest('post', Utils.SnarfMessage(msg),
-                                            'Only approved posters may post without '
-                                            'moderator approval.',
+                                            'Only approved posters may post'
+                                            ' without moderator approval.',
                                             msg.getheader('subject'))
                     else:
                         self.AddRequest('post', Utils.SnarfMessage(msg),
-                                        'Only approved posters may post without '
-                                        'moderator approval.',
+                                        'Only approved posters may post'
+                                        ' without moderator approval.',
                                         msg.getheader('subject'))
 
 	    elif self.member_posting_only and not self.IsMember(sender):
