@@ -20,8 +20,7 @@ Two types of admin requests are currently supported: adding members to a
 closed or semi-closed list, and moderated posts.
 
 Pending subscriptions which are requiring a user's confirmation are handled
-elsewhere (currently).
-
+elsewhere.
 """
 
 import os
