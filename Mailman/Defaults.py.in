@@ -184,6 +184,15 @@ DEFAULT_DIGEST_VOLUME_FREQUENCY = 1
 PUBLIC_EXTERNAL_ARCHIVER = 0
 PRIVATE_EXTERNAL_ARCHIVER = 0
 
+# A filter module that converts from multipart messages to "flat" messages
+# (i.e. containing a single payload).  This is required for Pipermail, and you
+# may want to set it to 0 for external archivers.  You can also replace it
+# with your own module as long as it's importable, and contains a process()
+# function that takes a MailList object and a Message object.  It should raise
+# Errors.DiscardMessage if it wants to throw the message away.  Otherwise it
+# should modify the Message object as necessary.
+ARCHIVE_CLEANSER = 'Mailman.Handlers.Scrubber'
+
 # Set this to 1 to enable gzipping of the downloadable archive .txt file.
 # Note that this is /extremely/ inefficient, so an alternative is to just
 # collect the messages in the associated .txt file and run a cron job every
@@ -301,6 +310,7 @@ NNTP_REWRITE_DUPLICATE_HEADERS = [
     ('to', 'X-Original-To'),
     ('cc', 'X-Original-Cc'),
     ('content-transfer-encoding', 'X-Original-Content-Transfer-Encoding'),
+    ('mime-version', 'X-MIME-Version'),
     ]
 
 # All `normal' messages which are delivered to the entire list membership go
