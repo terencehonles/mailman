@@ -28,6 +28,8 @@ import string
 import time
 from types import StringType
 
+from Mailman import mm_cfg
+
 # Python 1.5's version of rfc822.py is buggy and lacks features we
 # depend on -- so we always use the up-to-date version distributed
 # with Mailman.
@@ -48,40 +50,53 @@ class Message(rfc822.Message):
             self.rewindbody()
         self.body = self.fp.read()
 
-    def GetSender(self):
-	# Look for a Sender field.
-	sender = self.getheader('sender')
-	if sender:
-	    realname, mail_address = self.getaddr('sender')
-	else:
-            realname, mail_address = self.getaddr('from')
-        # We can't trust that any of the headers really contained an address
-        if mail_address and type(mail_address) == StringType:
-            return string.lower(mail_address)
-        else:
-            # The unix from line is all we have left...
-            if self.unixfrom:
-                return string.lower(string.split(self.unixfrom)[1])
+    def GetSender(self, use_envelope=None):
+        """Return the address considered to be the author of the email.
 
-    def GetEnvelopeSender(self):
-        # look for unix from line and attain address from it.  return None if
-        # there is no unix from line.  this function is used to get the
-        # envelope sender when mail is sent to a <listname>-admin address
-        if not self.unixfrom:
+        This can return either the From: header, the Sender: header or the
+        envelope header (a.k.a. the unixfrom header).  The first non-empty
+        header value found is returned.  However the search order is
+        determined by the following:
+
+        - If mm_cfg.USE_ENVELOPE_SENDER is true, then the search order is
+          Sender:, From:, unixfrom
+
+        - Otherwise, the search order is From:, Sender:, unixfrom
+
+        The optional argument use_envelope, if given overrides the
+        mm_cfg.USE_ENVELOPE_SENDER setting.  It should be set to either 0 or 1
+        (don't use None since that indicates no-override).
+
+        unixfrom should never be empty.
+
+        """
+        senderfirst = mm_cfg.USE_ENVELOPE_SENDER
+        if use_envelope is not None:
+            senderfirst = use_envelope
+        if senderfirst:
+            headers = ('sender', 'from')
+        else:
+            headers = ('from', 'sender')
+        for h in headers:
+            realname, address = self.getaddr(h)
+            # TBD: previous code said: "We can't trust that any of the headers
+            # really contained an address".  I don't know if that's still true
+            # or not, but we still test this
+            if address and type(address) == StringType:
+                return string.lower(address)
+        # Didn't find a non-empty header, so let's fall back to the unixfrom
+        # address.  This should never be empty, but if it ever is, it's
+        # probably a Really Bad Thing.
+        #
+        # We also don't do all the elaboration that the old
+        # GetEnvelopeSender() did.  We just assume that if the unixfrom
+        # exists, the second field is the address.  This is what GetSender()
+        # always did.
+        if self.unixfrom:
+            return string.lower(string.split(self.unixfrom)[1])
+        else:
+            # TBD: now what?!
             return None
-        # XXX assumes no whitespace in address
-        parts = string.split(self.unixfrom)
-        for part in parts:
-            # perform minimal check for the address
-            if string.find(part, '@') > -1:
-                user, host = string.split(part, '@', 1)
-                if not user: 
-                    continue
-                if string.count(host, ".") < 1:
-                    # doesn't look qualified
-                    continue
-                return part
-        return None
 
     def __str__(self):
         # TBD: should this include the unixfrom?
