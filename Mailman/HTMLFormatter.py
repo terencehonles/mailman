@@ -353,12 +353,10 @@ class HTMLFormatter:
 	    '<mm-form-end>'  : self.FormatFormEnd(),
 	    '<mm-archive>'   : self.FormatArchiveAnchor(),
 	    '</mm-archive>'  : '</a>',
-	    '<mm-regular-users>' : self.FormatUsers(0),
             '<mm-list-subscription-msg>' : self.FormatSubscriptionMsg(),
             '<mm-restricted-list-message>' : \
             	self.RestrictedListMessage('current archive',
                                            self.archive_private),
-	    '<mm-digest-users>' : self.FormatUsers(1),
 	    '<mm-num-reg-users>' : `member_len`,
 	    '<mm-num-digesters>' : `dmember_len`,
 	    '<mm-num-members>' : (`member_len + dmember_len`),
@@ -367,7 +365,17 @@ class HTMLFormatter:
 	    '<mm-owner>' : self.GetAdminEmail(),
 	    '<mm-reminder>' : self.FormatReminder(),
 	    }
-    
+
+    def GetAllReplacements(self):
+        """
+        returns standard replaces plus formatted user lists in
+        a dict just like GetStandardReplacements.
+        """
+        d = self.GetStandardReplacements()
+        d.update({"<mm-regular-users>": self.FormatUsers(0),
+                  "<mm-digest-users>": self.FormatUsers(1)})
+        return d
+                  
     def InitTemplates(self):
 	def ExtensionFilter(item):
 	    return item[-5:] == '.html'

@@ -74,8 +74,7 @@ def main():
         print doc.Format()
         sys.exit(0)
 
-    replacements = list.GetStandardReplacements()
-
+    replacements = list.GetAllReplacements()
     doc.AddItem(list.ParseTags('roster.html', replacements))
     print doc.Format()
 
@@ -109,3 +108,10 @@ def error_page_doc(errmsg, *args):
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold(errmsg % args))
     return doc
+
+
+
+
+
+
+
