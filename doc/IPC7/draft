@@ -1,6 +1,10 @@
 	      Mailman - An Extensible MLM using Python
 	      =========================================
 
+Ken Manheimer - CNRI - klm@cnri.reston.va.us
+Barry Warsaw - CNRI - bwarsaw@cnri.reston.va.us
+John Viega - Reliable Software Technologies - viega@rstcorp.com
+
 			       Abstract
 			       ========
 
@@ -186,20 +190,31 @@ GatewayManager:
 
 	  Programming and Interacting With MailList Objects
 
-[[XXX: what???!! Perhaps the most factor contributing to Mailman's
-versatility is from designing the MailList class for instantiation by
-external programs, or interactively within the interpreters.]]
+Mailman's central structure is the MailList instance objects, which
+represent individual mailing lists.  They are designed to be easily
+instantiated by external programs, providing a single, easy to handle
+package for access to almost all mailing list functionality.  They
+constitute a tidy, self-contained API for articulation of mailing
+lists from programs, and also for interaction, using the interactive
+Python interpreter shell.
 
-Almost all aspects of
-Mailman mailing list operation are articulated via the MailList instance.
-Thus, interaction with mailing lists can be conducted programmatically,
-and also incrementally, using the interactive Python shell.
+Managing their own locks of their lists, the objects can be used
+simultaneously from many processes without conflict.  Programs
+manipulating MailList instances run under CGI for Web interfaces, or
+via command-pipe email aliases for email interfaces.  Cron scripts
+instantiate the appropriate MailList instance and use it to do the
+cron job.  MailList object based scripts also are used to automate any
+routine procedures, such as conversion of subscriber lists from
+established Majordomo mailing lists.
 
-Programmatic interaction enables us to extend access to any aspect of
-MailList operation, anywhere we can write a script.  From this we
-build Web, Email, and cron access.  We can also build scripts to
-automate any routine procedures, such as conversion of subscriber
-lists from established Majordomo mailing lists.
+Interactive sessions with MailList instances provides an eminently
+useful development and debugging tool.  They are easy to instantiate
+interactively - all that's necessary is inclusion of the Mailman
+package dir on the PYTHONPATH, and knowledge of the right module to
+import.  With interactive instantiation, we are able to exercise and
+test isolated subsystems, as well as the behavior of the MailList as a
+whole, and we can employ exploratory tools, like the Python debugger,
+along the way.
 
 Interactive sessions with MailList instances provides an eminently
 useful development and debugging tool.  With it, we are able to
@@ -208,7 +223,7 @@ as a whole, engaging tools like the Python debugger and profiler along
 the way.
 
 We can also use interactive sessions to do mailing list "surgery" - to
-make changes to list state not provided for in already created
+operate the MailList in ways not provided for in existing 
 scripts.  Using a utility function, Utils.map_maillists(), we can
 apply arbitrary functions to all or to selected Mailman mailing lists
 at the site.  This enables us to do wholesale conversions of the
@@ -361,12 +376,13 @@ subscriptions and postings being held for approval, and subscriber
 control of their subscription status, customization options, and
 password, among other things.
 
-The elaborateness of Web applications, and the typical lack of a local
-operator and error console, can complicate development and debugging
-of them.  The use of Mailman's logging utilities, as described above,
-provides reporting of unexpected errors, and also provides convenient
-means for debugging flag "printouts" when exercising Mailman's Web
-interfaces via the Web.
+The elaborateness inherent in applications that programmatically
+generate Web documents, and the typical lack of a local operator and
+error console, can complicate development and debugging of them.  The
+use of Mailman's logging utilities, as described above, provides
+reporting of unexpected errors, and also provides convenient means for
+debugging flag "printouts" when exercising Mailman's Web interfaces
+via the Web.
 
 [Figure: "Mailing List Home Page".
 
@@ -468,20 +484,17 @@ this role w.r.t. the CGI scripts.)  In general, except clauses should
 be as completely qualified as possible, and should be moved as close
 to the exception they're meant to catch as can be handled.
 
-[[XXX is this a better way to say the following?]]
-
-One fundamental question involves the friction between rapid
-prototyping and system hardening, which is particularly related to the
-use of dynamically typed Python.  Dynamic typing is a wonderful tool
-for prototyping and rapid changing of the system.  However, as parts
-of the system evolve and stabilize, it might be more useful to employ
-static typing so that the interfaces between system components, and
-the components themselves, can be hardened.  There have been some
-discussions on the Python newsgroup about adding optional static
-typing to the language, and this would be a very interesting feature
-to experiment with.  The questions are how useful would optional
-static typing be, and would it be flexible enough to allow migration
-of code from dynamic typing to static typing?
+One fundamental question concerns the pitfalls of dynamic typing in a
+large system.  In statically typed systems, the requirement for
+explicit variable declaration exposes most typos and many types of
+interface misuse at compile time.  Python's handling of dynamic types
+exposes such errors only at runtime, and only when the faulty code is
+executed.  This can mean that errors in obscure branches can stay
+hidden for a long time - and pop up when least expected.  As systems
+get larger it becomes harder to exercise all the code paths,
+increasing the difficulty of exposing such errors.  At what point do
+the benefits of static typing outweigh the versatility of dynamic
+typing?  Are the respective benefits even directly comparable?
 
 			      Conclusion
 			      ==========
