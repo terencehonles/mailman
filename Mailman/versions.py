@@ -370,7 +370,7 @@ def NewVars(l):
         mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
     add_only_if_missing('ban_list', [])
     add_only_if_missing('filter_mime_types', mm_cfg.DEFAULT_FILTER_MIME_TYPES)
-    add_only_if_missing('pass_mime_types', [])
+    add_only_if_missing('pass_mime_types', mm_cfg.DEFAULT_PASS_MIME_TYPES)
     add_only_if_missing('filter_content', mm_cfg.DEFAULT_FILTER_CONTENT)
     add_only_if_missing('convert_html_to_plaintext',
                         mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
