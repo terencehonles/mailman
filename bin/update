@@ -47,6 +47,7 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman.LockFile import TimeOutError
 from Mailman.i18n import _
+from Mailman.Queue.Switchboard import Switchboard
 
 FRESH = 0
 NOTFRESH = -1
@@ -371,8 +372,11 @@ def remove_old_sources(module):
 def update_qfiles():
     print _('updating old qfiles')
     prefix = `time.time()` + '+'
+    # Be sure the qfiles/in directory exists (we don't really need the
+    # switchboard object, but it's convenient for creating the directory).
+    sb = Switchboard(mm_cfg.INQUEUE_DIR)
     for file in os.listdir(mm_cfg.QUEUE_DIR):
-        # Updating means just moving the .db and .msg files to qfiles/in where
+        # Updating means just mokving the .db and .msg files to qfiles/in where
         # it should be dequeued, converted, and processed normally.
         if file.endswith('.msg'):
             oldmsgfile = os.path.join(mm_cfg.QUEUE_DIR, file)
