@@ -694,6 +694,164 @@ More details on membership management are described in the Membership
 Management section.
 
 \subsection{The Non-digest Options Category}
+
+Mailman delivers messages to users via two modes.  List members can
+elect to receive postings in bundles call \emph{digests} one or a few
+times a day, or they can receive messages immediately whenever the
+message is posted to the list.  This latter delivery mode is also
+called \emph{non-digest delivery}.  There are two administrative
+categories available for separately controlling digest and non-digest
+delivery.  You can even disable one or the other forms of delivery
+(but not both).
+
+Both kinds of delivery can have list-specific headers and footers
+added to them which can contain other useful information you want your
+list members to see.  For example, you can include instructions for
+unsubscribing, or a url to the lists digest, or any other information.
+
+Non-digest deliveries can also be \emph{personalized} which means
+certain parts of the message can contain information tailored to the
+member receiving the message.  For example, the \mailheader{To} header
+will contain the address of the member when deliveries are
+personalized.  Footers and headers can contain personalized
+information as well, such as a link to the individual user's options
+page.
+
+In addition, personalized messages will contain extra information that
+Mailman can use to unambiguously track bounces from members.
+Ordinarily, Mailman does some pattern recognition on bounce messages
+to determine list members whose addresses are no longer valid, but
+because of the vagaries of mail systems, and the countless forwards
+people can put in place, it's often the case that bounce messages
+don't contain any useful information in them.  Personalized messages
+avoid this problem by encoding information in certain headers that
+unambiguously identify the recipient of a message.  If that message
+bounces, Mailman will know exactly which member it was intended for.
+
+Note that because personalization requires extra system resources, it
+must be enabled by the site administrator before you can choose it.
+
+Here are the variables which control non-digest delivery:
+
+\begin{description}
+\item[nondigestable] --
+    This option controls whether members can receive immediate
+    delivery or not.  If not, they will be forced to receive messages
+    in digests.  You can't disable non-digest delivery if digests are
+    already disabled.
+
+\item[personalize]
+    This option turns on message personalization.
+
+\item[msg_header]
+    This text box lets you enter information that will be included in
+    the header of every non-digest message sent through the
+    list\footnote{Well, \emph{almost} every message.  If the header
+    can't be added in a safe way, it won't be added.  For example, if
+    the message were an image, adding the header would corrupt the
+    image data.}.
+
+    See below for more information on what can go in the headers and
+    footers.  If you leave this text box empty, no header will be
+    added.
+
+\item[msg_footer]
+    Just like with the header, you can add a footer to every message.
+    The same rules apply to footers as apply to headers.
+\end{description}
+
+Headers and footers can contain any text you want.  For non-English
+lists, the headers and footers can contain any character in the
+character set of the list's preferred language.  The headers and
+footers can also contain \emph{substitution variables} which Mailman
+will fill in with information taken from the mailing list.  These
+substitutions are in Python string interpolation format, where
+something like \code{\%(list_name)s} is substituted with he name of
+the mailing list.  Note that the trailing \samp{s} is
+required\footnote{The site administrator can configure lists to use a
+simpler interpolation format, where \code{\$list_name} or
+\code{\$\{list_name\}} would be substituted with the mailing list's
+name.  Ask your site administrator if the've configured your list this
+way.}.
+
+For example, a footer containing the following text:
+
+\begin{verbatim}
+This is the \%(list_name)s mailing list
+Description: \%(description)s
+\end{verbatim}
+
+might get attached to postings like so:
+
+\begin{verbatim}
+This is the Example mailing list
+Description: An example of Mailman mailing lists
+\end{verbatim}
+
+Here is the list of substitution variables available for your headers
+and footers:
+
+\begin{description}
+\item[real_name] --
+    This is the value of the \code{real_name} configuration variable
+    in the General options category.
+
+\item[list_name] --
+    This is the canonical name of the mailing list.  In other words
+    it's the posting address of the list\footnote{For backward
+    compatibility, the variable \code{_internal_name} is
+    equivalent.}.
+
+\item[host_name] --
+    This is the domain name part of the email address for this list.
+
+\item[web_page_url] --
+    This is the base url for contacting the list via the web.  It can
+    be appended with \code{listinfo/\%(list_name)s} to yield the
+    general list information page for the mailing list.
+
+\item[description] --
+    The brief description of the mailing list.
+
+\item[info] --
+    This is the full description of the mailing list.
+
+\item[cgiext]
+    This is the extension added to CGI scripts.  It might be the empty
+    string, \code{.cgi}, or something else depending on how your site
+    is configured.
+\end{description}
+
+Note that \code{real_name}, \code{host_name}, \code{description}, and
+\code{info} substitution variables take their values from the list
+configuration variables of the same name.
+
+When personalization is enabled, the following substitution variables
+are also available:
+
+\begin{description}
+\item[user_address] --
+    The address of the recipient of the message, coerced to lower case.
+
+\item[user_delivered_to] --
+    The case-preserved address that the user subscribed to the mailing
+    list with\footnote{Usually it makes no difference which of
+    \code{user_address} and \code{user_delivered_to} is used, but it's
+    important to remember that they can be different.  When they're
+    different, Mailman always uses the lower case address as the key
+    to the member's subscription information, but it always delivers
+    messages to the case-preserved version.}.
+
+\item[user_password] --
+    The user's password, in clear text.
+
+\item[user_name] --
+    The user's full name.
+
+\item[user_optionsurl] --
+    The url to the user's personaloptions page.
+\end{description}
+
 \subsection{The Digest Options Category}
 \subsection{The Privacy Options Category}
 \subsection{The Bounce Processing Category}
