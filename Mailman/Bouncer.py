@@ -183,7 +183,6 @@ class Bouncer:
             # BAW: Remove them now, with a notification message
             self.ApprovedDeleteMember(member, 'bouncing address',
                                       admin_notif=1, userack=1)
-            self.setBounceInfo(member, None)
             # Expunge the pending cookie for the user.  We throw away the
             # returned data.
             Pending.confirm(info.cookie)
