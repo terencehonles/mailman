@@ -70,6 +70,9 @@ def ScanMessages(mlist, msg, testing=0):
                     print '\t%s: detected address <%s>' % (modname, addr)
             # we saw some bounces
             return 1
+##        else:
+##            if testing:
+##                print '\t%11s: no bounces detected' % modname
     # no bounces detected
     return 0
 
