@@ -66,7 +66,7 @@ PROG=		bin/pygettext.py
 
 .SUFFIXES:	.po .mo
 .po.mo:
-	$(MSGFMT) -o $@ $<
+	-$(MSGFMT) -o $@ $<
 
 # Rules
 
