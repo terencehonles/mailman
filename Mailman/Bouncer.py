@@ -165,7 +165,8 @@ class Bouncer:
              }, mlist=self)
         subject = _('Bounce action notification')
         umsg = Message.UserNotification(self.GetOwnerEmail(),
-                                        siteowner, subject)
+                                        siteowner, subject,
+                                        self.preferred_language)
         umsg.attach(MIMEText(text))
         if isinstance(msg, StringType):
             umsg.attach(MIMEText(msg))
@@ -194,7 +195,8 @@ class Bouncer:
                                 info.cookie)
         optionsurl = self.GetOptionsURL(member, absolute=1)
         subject = 'confirm ' + info.cookie
-        requestaddr = self.GetRequestEmail()
+        reqaddr = self.GetRequestEmail()
+        lang = self.getMemberLanguage(member)
         text = Utils.maketext(
             'disabled.txt',
             {'listname'   : self.real_name,
@@ -203,8 +205,8 @@ class Bouncer:
              'optionsurl' : optionsurl,
              'password'   : self.getMemberPassword(member),
              'owneraddr'  : self.GetOwnerEmail(),
-             }, lang=self.getMemberLanguage(member), mlist=self)
-        msg = Message.UserNotification(member, requestaddr, subject, text)
+             }, lang=lang, mlist=self)
+        msg = Message.UserNotification(member, reqaddr, subject, text, lang)
         msg.send(self)
         info.noticesleft -= 1
         info.lastnotice = time.localtime()[:3]
@@ -221,7 +223,7 @@ class Bouncer:
         # Currently we always craft bounces as MIME messages.
         bmsg = Message.UserNotification(msg.get_sender(),
                                         self.GetOwnerEmail(),
-                                        subject)
+                                        subject, self.preferred_language)
         bmsg['Content-Type'] = 'multipart/mixed'
         bmsg['MIME-Version'] = '1.0'
         txt = MIMEText(notice,
