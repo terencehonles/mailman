@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 3982 $)
+AC_REVISION($Revision: 4033 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -470,6 +470,63 @@ AC_TYPE_GETGROUPS
 # Checks for library functions.
 AC_CHECK_FUNCS(vsnprintf)
 
+dnl Expand PYTHON path in the scripts, output into build/scriptname
+
+AC_DEFUN(MM_SCRIPTS, [dnl
+contrib/rotatelogs.py \
+contrib/qmail-to-mailman.py \
+contrib/securelinux_fix.py \
+cron/senddigests \
+cron/bumpdigests \
+cron/nightly_gzip \
+cron/mailpasswds \
+cron/gate_news \
+cron/checkdbs \
+bin/update \
+bin/newlist \
+bin/check_perms \
+bin/find_member \
+bin/withlist \
+bin/mailmanctl \
+bin/change_pw \
+bin/list_admins \
+bin/check_db \
+bin/list_lists \
+bin/pygettext.py \
+bin/qrunner \
+bin/clone_member \
+bin/genaliases \
+bin/digest_arch \
+bin/arch \
+bin/rmlist \
+bin/mmsitepass \
+bin/version \
+bin/remove_members \
+bin/config_list \
+bin/list_members \
+bin/sync_members \
+bin/add_members \
+bin/dumpdb ])
+
+dnl Please make sure to leave a space at the end of the last entry.
+dnl (This is so we don't have to use [a-z/] style character classes
+dnl in the regexp below and mess with m4 quoting, which is not fun.)
+
+dnl This regexp munges each line in MM_SCRIPTS, replacing:
+dnl   path/script \
+dnl with:
+dnl   build/path/script:path/script \
+dnl so that we can macro-expand variables in scripts without using
+dnl script.in filenames, outputting the new files in build/ .
+
+SCRIPTS="patsubst(MM_SCRIPTS, \(.+\) \(\\?\), build/\1:\1 \2)"
+
+AC_SUBST(SCRIPTS)
+
+# These directories are temporary directories to store macro-expanded
+# scripts.  They're removed on a make distclean, so we make them here.
+mkdir -p build/bin build/contrib build/cron
+
 dnl Output everything
 AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
            src/Makefile misc/Makefile bin/Makefile
@@ -477,6 +534,9 @@ AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
 	   Mailman/Archiver/Makefile Mailman/pythonlib/Makefile
 	   Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
 	   Mailman/Queue/Makefile Mailman/MTA/Makefile Mailman/Gui/Makefile
-	   templates/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile messages/Makefile
-	   cron/crontab.in misc/mailman Makefile])
+	   templates/Makefile cron/Makefile scripts/Makefile messages/Makefile
+	   cron/crontab.in misc/mailman Makefile 
+	   $SCRIPTS])
+
+# Make sure all the build scripts are executable.
+chmod -R +x build

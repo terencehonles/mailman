@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.11 
+# From configure.in Revision: 2.12 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -1980,6 +1980,52 @@ fi
 done
 
 
+
+
+
+
+
+SCRIPTS="build/contrib/rotatelogs.py:contrib/rotatelogs.py \
+build/contrib/qmail-to-mailman.py:contrib/qmail-to-mailman.py \
+build/contrib/securelinux_fix.py:contrib/securelinux_fix.py \
+build/cron/senddigests:cron/senddigests \
+build/cron/bumpdigests:cron/bumpdigests \
+build/cron/nightly_gzip:cron/nightly_gzip \
+build/cron/mailpasswds:cron/mailpasswds \
+build/cron/gate_news:cron/gate_news \
+build/cron/checkdbs:cron/checkdbs \
+build/bin/update:bin/update \
+build/bin/newlist:bin/newlist \
+build/bin/check_perms:bin/check_perms \
+build/bin/find_member:bin/find_member \
+build/bin/withlist:bin/withlist \
+build/bin/mailmanctl:bin/mailmanctl \
+build/bin/change_pw:bin/change_pw \
+build/bin/list_admins:bin/list_admins \
+build/bin/check_db:bin/check_db \
+build/bin/list_lists:bin/list_lists \
+build/bin/pygettext.py:bin/pygettext.py \
+build/bin/qrunner:bin/qrunner \
+build/bin/clone_member:bin/clone_member \
+build/bin/genaliases:bin/genaliases \
+build/bin/digest_arch:bin/digest_arch \
+build/bin/arch:bin/arch \
+build/bin/rmlist:bin/rmlist \
+build/bin/mmsitepass:bin/mmsitepass \
+build/bin/version:bin/version \
+build/bin/remove_members:bin/remove_members \
+build/bin/config_list:bin/config_list \
+build/bin/list_members:bin/list_members \
+build/bin/sync_members:bin/sync_members \
+build/bin/add_members:bin/add_members \
+build/bin/dumpdb:bin/dumpdb "
+
+
+
+# These directories are temporary directories to store macro-expanded
+# scripts.  They're removed on a make distclean, so we make them here.
+mkdir -p build/bin build/contrib build/cron
+
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure
@@ -2099,9 +2145,9 @@ trap 'rm -fr `echo "misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
 	   Mailman/Archiver/Makefile Mailman/pythonlib/Makefile
 	   Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
 	   Mailman/Queue/Makefile Mailman/MTA/Makefile Mailman/Gui/Makefile
-	   templates/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile messages/Makefile
-	   cron/crontab.in misc/mailman Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+	   templates/Makefile cron/Makefile scripts/Makefile messages/Makefile
+	   cron/crontab.in misc/mailman Makefile 
+	   $SCRIPTS" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -2151,6 +2197,7 @@ s%@CGIEXT@%$CGIEXT%g
 s%@FQDN@%$FQDN%g
 s%@URL@%$URL%g
 s%@CPP@%$CPP%g
+s%@SCRIPTS@%$SCRIPTS%g
 
 CEOF
 EOF
@@ -2198,9 +2245,9 @@ CONFIG_FILES=\${CONFIG_FILES-"misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.p
 	   Mailman/Archiver/Makefile Mailman/pythonlib/Makefile
 	   Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
 	   Mailman/Queue/Makefile Mailman/MTA/Makefile Mailman/Gui/Makefile
-	   templates/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile messages/Makefile
-	   cron/crontab.in misc/mailman Makefile"}
+	   templates/Makefile cron/Makefile scripts/Makefile messages/Makefile
+	   cron/crontab.in misc/mailman Makefile 
+	   $SCRIPTS"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
@@ -2271,3 +2318,6 @@ chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
 
+
+# Make sure all the build scripts are executable.
+chmod -R +x build
