@@ -103,6 +103,7 @@ class Bouncer:
         addr = this_dude[0].lower()
         hist = self.bounce_info[addr]
         difference = now - hist[0]
+        # FIXME: Use MemberAdaptor interface
         if len(Utils.FindMatchingAddresses(addr, self.members)):
             if self.post_id - hist[2] > self.max_posts_between_bounces:
                 # There's been enough posts since last bounce that we're
@@ -206,7 +207,7 @@ Bad admin recipient: %s''', self.internal_name(), addr)
                  'did'      : did,
                  'but'      : but,
                  'reenable' : reenable,
-                 'owneraddr': mm_cfg.MAILMAN_OWNER,
+                 'owneraddr': Utils.get_site_email(self.host_name, '-admin'),
                  }, mlist=self)
             # add this here so it doesn't get wrapped/filled
             # FIXME
@@ -236,7 +237,7 @@ Bad admin recipient: %s''', self.internal_name(), addr)
             # send the bounce message
             rname = self.real_name
             msg = Message.UserNotification(
-                recipient, mm_cfg.MAILMAN_OWNER,
+                recipient, Utils.get_site_email(self.host_name, '-admin'),
                 _('%(rname)s member %(addr)s bouncing - %(negative)s%(did)s'),
                 text)
             msg['MIME-Version'] = '1.0'
