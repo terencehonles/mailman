@@ -24,12 +24,16 @@ Usage: %(program)s listname
 
 import sys
 import os
+import string
 import marshal
+
 import paths
-import Mailman.mm_cfg
+from Mailman import mm_cfg
 
 program = sys.argv[0]
 
+
+
 def testfile(filename):
     try:
         fp = open(filename)
@@ -47,14 +51,15 @@ def testfile(filename):
             return 0
 
 
+
 def main():
     if len(sys.argv) == 2:
-        listname = sys.argv[1]
+        listname = string.lower(sys.argv[1])
     else:
         print __doc__ % globals()
         sys.exit(1)
 
-    listpath = os.path.join(Mailman.mm_cfg.LIST_DATA_DIR, listname)
+    listpath = os.path.join(mm_cfg.LIST_DATA_DIR, listname)
     configdb = os.path.join(listpath, 'config.db')
     lastdb = os.path.join(listpath, 'config.db.last')
 
@@ -82,5 +87,6 @@ from a system backup, or remove the list `%(listname)s' and
 re-create it from scratch.""" % locals()
         
 
+
 if __name__ == '__main__':
     main()

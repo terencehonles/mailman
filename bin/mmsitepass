@@ -31,6 +31,8 @@ except ImportError:
     from Mailman.pythonlib import getpass
 from Mailman import MailList
 
+
+
 def main(argv):
     if len(sys.argv) > 2:
         print "Usage: mmsitepass [ password ]"
@@ -56,5 +58,7 @@ def main(argv):
         print "Password change failed."
         raise SystemExit, 1
 
-if __name__ == "__main__":
+
+
+if __name__ == '__main__':
     main(sys.argv)

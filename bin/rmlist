@@ -46,6 +46,7 @@ def usage(status, msg=''):
         print msg
     sys.exit(status)
 
+
 
 def remove_it(listname, dir, msg):
     if os.path.islink(dir):
@@ -58,6 +59,7 @@ def remove_it(listname, dir, msg):
         print listname, msg, 'not found as', dir
 
 
+
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'ah',
@@ -67,7 +69,7 @@ def main():
 
     if len(args) <> 1:
         usage(1)
-    listname = args[0]
+    listname = string.lower(args[0])
 
     removeArchives = 0
     for opt, arg in opts:
@@ -93,6 +95,7 @@ def main():
     for dirtmpl, msg in REMOVABLES:
         dir = os.path.join(paths.prefix, dirtmpl % listname)
         remove_it(listname, dir, msg)
+
 
 
 if __name__ == '__main__':

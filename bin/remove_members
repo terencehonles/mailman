@@ -79,7 +79,7 @@ def main():
     if not len(args) >= 1:
         usage(1)
 
-    listname = args[0]
+    listname = string.lower(args[0])
     addresses = args[1:]
     filename = None
 

@@ -228,7 +228,7 @@ def main():
     # get the list name
     if len(args) <> 1:
         usage(1, 'List name is required')
-    listname = args[0]
+    listname = string.lower(args[0])
 
     if outfile:
         do_output(listname, outfile)

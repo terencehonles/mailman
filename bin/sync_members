@@ -156,7 +156,7 @@ def main():
             usage(1, 'Illegal option: ' + opt)
         else:
             try:
-                listname = sys.argv[i]
+                listname = string.lower(sys.argv[i])
                 i = i + 1
             except IndexError:
                 usage(1, 'No listname given')

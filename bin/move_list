@@ -36,6 +36,7 @@ listname must be a valid mailing list name and is required.
 
 import os
 import sys
+import string
 import getopt
 
 import paths
@@ -67,7 +68,7 @@ def main():
         usage(1)
 
     try:
-        listname = args[0]
+        listname = string.lower(args[0])
     except IndexError:
         usage(1, 'You must supply a list name.')
 

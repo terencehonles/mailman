@@ -194,7 +194,7 @@ def main():
         elif opt in ('-l', '--listname'):
             if options.listnames is None:
                 options.listnames = []
-            options.listnames.append(arg)
+            options.listnames.append(string.lower(arg))
 
     # further options and argument processing
     if not options.modify:

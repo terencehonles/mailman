@@ -26,7 +26,7 @@ Where:
     -l listname
         Include only the named list in the search.
 
-    --excluded=listname
+    --exclude=listname
     -x listname
         Exclude the named list from the search.
 
@@ -59,6 +59,7 @@ displayed.
 import sys
 import re
 import getopt
+import string
 
 import paths
 from Mailman import Utils
@@ -119,10 +120,11 @@ class Options:
     listnames = Utils.list_names()
     owners = None
 
+
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'l:x:wh',
-                                   ['listname=', 'excluded=', 'owners',
+                                   ['listname=', 'exclude=', 'owners',
                                     'help'])
     except getopt.error, e:
         usage(1, e)
@@ -137,9 +139,9 @@ def main():
             if not loptseen:
                 options.listnames = []
                 loptseen = 1
-            options.listnames.append(arg)
+            options.listnames.append(string.lower(arg))
         elif opt in ('-x', '--exclude'):
-            excludes.append(arg)
+            excludes.append(string.lower(arg))
         elif opt in ('-w', '--owners'):
             options.owners = 1
 
