@@ -32,16 +32,14 @@ INTRODUCTION
         http://www.list.org
         http://mailman.sf.net
 
-    Mailman 2.1 requires Python 2.1 or greater, which can be
+    Mailman 2.1 requires Python 2.1.3 or greater, which can be
     downloaded from
 
         http://www.python.org
 
-    It is recommended that you use Python 2.1.2 or Python 2.2, the
-    latest releases as of this writing.  Mailman will work with any
-    Python 2.1.x or Python 2.2.x version, although most testing has
-    been done with Python 2.1.2 and Python 2.2.  Mailman 2.1 is not
-    compatible with Python 2.0.x or any earlier version.
+    It is recommended that you use Python 2.1.3 or Python 2.2.1, the
+    latest releases as of this writing.  Mailman 2.1 is not compatible
+    with Python 2.0 or any earlier version.
 
     You will also need an ANSI C compiler to build both Python and
     Mailman; gcc (the GNU C compiler) works just fine.  Mailman
@@ -71,7 +69,8 @@ FEATURES
       "home page" for each mailing list.
 
     - Privacy features such as moderation, open and closed list
-      subscription policies, and private membership rosters.
+      subscription policies, private membership rosters, and
+      sender-based filters.
 
     - Automatic web based archiving built-in with support for private
       and public archives, and hooks for external archivers.
@@ -87,7 +86,7 @@ FEATURES
 
     - Integrated bounce detection within an extensible framework.
 
-    - Integrated spam detection.
+    - Integrated spam detection, and MIME-based content filtering.
 
     - An extensible mail delivery pipeline.
 
@@ -100,17 +99,14 @@ REQUIREMENTS
     to whatever mail transport agent you have running on port 25.  You
     can thus use Mailman with any such MTA, however with certain MTAs
     (e.g. Exim and Postfix), Mailman will support thru-the-web
-    creation and removal of mailing lists.  You can also configure
-    Mailman to submit messages to your MTA via command line
-    invocation, although there are security considerations in going
-    that route.
+    creation and removal of mailing lists.
 
     Mailman works with any web server that supports CGI/1.1.  The HTML
     it generates is quite pedestrian and stingy on the graphics so it
     should be friendly to most web browsers and network connections.
-    It is regularly tested with IE 5.5, Netscape 4.7x, and Mozilla
-    0.9.x on Windows and Netscape 4.7x and Mozilla 0.9.x on Linux (and
-    occasionally Lynx on Linux and Netscape on MacOS too!).
+    It is regularly tested with IE 5.5, Netscape 4.7x, and Mozilla on
+    Windows and Netscape 4.7x and Mozilla on Linux (and occasionally
+    Lynx on Linux and Netscape and Mozilla on MacOS too!).
 
     You will need root access on the machine hosting your Mailman
     installation in order to complete some of the configuration
@@ -152,7 +148,7 @@ CREATE YOUR FIRST LIST
       your new mailing list was created.
 
     - NOTE: If you are using an MTA other than Exim or Postfix
-      (e.g. Sendmail or Qmail), then you'll need to do the extra step
+      (e.g. Sendmail or qmail), then you'll need to do the extra step
       of installing the mailing list aliases manually.  Follow the
       instructions in an email message that you should have received
       (you'll need to know how to do this for your particular MTA, see
@@ -196,18 +192,26 @@ FOR MORE INFORMATION
     There are also several mailing lists that can be used as resources
     to help you get going with Mailman.
 
-    Mailman-Announce
-        A read-only list for release announcements an other important
-        news.
-
-        http://mail.python.org/mailman/listinfo/mailman-announce
-
     Mailman-Users
         An list for users of Mailman, for posting questions or
         problems related to installation, use, etc.  We'll try to keep
         the deep technical discussions off this list.
 
         http://mail.python.org/mailman/listinfo/mailman-users
+
+    Listowners
+        This mailing list with a non-technical focus, specifically for
+        discussions from the perspective of listowners and moderators
+        who do not have "shell access" to the mailing list server
+        where the Mailman software runs.
+
+        http://listowner.org
+
+    Mailman-Announce
+        A read-only list for release announcements an other important
+        news.
+
+        http://mail.python.org/mailman/listinfo/mailman-announce
 
     Mailman-Developers
         A list for those of you interested in helping develop
