@@ -109,8 +109,9 @@ class MailCommandHandler:
 		#
 		# check to see if confirmation request -- special handling
 		#
-		conf_pat = r"%s -- confirmation of subscription -- request (\d\d\d\d\d\d)" % \
-			   self.real_name
+		conf_pat = (r"%s -- confirmation of subscription"
+                            r" -- request (\d\d\d\d\d\d)"
+                            % self.real_name)
 		match = re.search(conf_pat, subject)
 		if not match:
 		    match = re.search(conf_pat, mail.body)
@@ -118,6 +119,7 @@ class MailCommandHandler:
 		    lines = ["confirm %s" % (match.group(1))]
 		else:
 		    self.AddError("Subject line ignored: %s" % subject)
+        processed = {}                      # For avoiding redundancies.
 	for line in lines:
 	    line = string.strip(line)
 	    if not line:
@@ -135,7 +137,20 @@ class MailCommandHandler:
 	    if not self._cmd_dispatch.has_key(cmd):
 		self.AddError("%s: Command UNKNOWN." % cmd)
 	    else:
-		self._cmd_dispatch[cmd](args, line, mail)
+                # We do not repeat identical commands.  (Eg, it's common
+                # with other mlm's for people to put a command in the
+                # subject and the body, uncertain which one has effect...)
+                isdup = 0
+                if not processed.has_key(cmd):
+                    processed[cmd] = []
+                else:
+                    for did in processed[cmd]:
+                        if args == did:
+                            isdup = 1
+                            break
+                if not isdup:
+                    processed[cmd].append(args)
+                    self._cmd_dispatch[cmd](args, line, mail)
         if not self.__NoMailCmdResponse:
             self.SendMailCmdResponse(mail)
 
