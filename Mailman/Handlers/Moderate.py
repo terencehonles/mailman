@@ -136,9 +136,8 @@ def do_discard(mlist, msg):
         nmsg = Message.UserNotification(mlist.GetOwnerEmail(),
                                         mlist.GetAdminEmail(),
                                         _('Auto-discard notification'),
-                                        mlist.preferred_language)
-        nmsg['Content-Type'] = 'multipart/mixed'
-        nmsg['MIME-Version'] = '1.0'
+                                        lang=mlist.preferred_language)
+        nmsg.set_type('multipart/mixed')
         text = MIMEText(Utils.wrap(_("""\
 The attached message has been automatically discarded because the sender's
 address, %(sender)s, was on the discard_these_nonmembers list.  For the list
@@ -146,8 +145,8 @@ of auto-discard addresses, see
 
     %(varhelp)s
 """)))
-        nmsg.add_payload(text)
-        nmsg.add_payload(MIMEMessage(msg))
+        nmsg.attach(text)
+        nmsg.attach(MIMEMessage(msg))
         nmsg.send(mlist)
     # Discard this sucker
     raise Errors.DiscardMessage
