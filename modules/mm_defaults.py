@@ -8,8 +8,8 @@ this file, to override the distributed defaults with site-specific ones.
 
 import os
 
-VERSION           = '1.0b1.2'
-__version__ = "$Revision: 445 $"
+VERSION           = '1.0b2'
+__version__ = "$Revision: 488 $"
 
 		   # Many site-specific settings #
 
