@@ -173,8 +173,6 @@ class HTMLFormatter:
                            " subscribers list (see above).")
         return text
         
-    def FormatRosterOptionForAdmin(self):
-        return "Admin subscriber list would require admin password."
     def RestrictedListMessage(self, which, restriction):
         if not restriction:
             return ""
@@ -185,16 +183,16 @@ class HTMLFormatter:
             return ("<i>The %s is only available to the list"
                     " administrator.</i>" % which)
     def FormatRosterOptionForUser(self):
+        return self.RosterOption().Format()
+    def RosterOption(self):
         "Provide avenue to subscribers roster, contingent to .private_roster."
-        text = ""
+        container = htmlformat.Container()
         if not self.private_roster:
-            text = (text +
-                    "Click here for the list of "
-                    + self.real_name
-                    + " subscribers: "
-                    + htmlformat.SubmitButton('SubscriberRoster',
-                                              'Visit Subscriber list'
-                                              ).Format())
+            container.AddItem("Click here for the list of "
+                              + self.real_name
+                              + " subscribers: ")
+            container.AddItem(htmlformat.SubmitButton('SubscriberRoster',
+                                                      'Visit Subscriber list'))
         else:
             if self.private_roster == 1:
                 only = 'members'
@@ -203,24 +201,22 @@ class HTMLFormatter:
                 only = 'the list administrator'
                 whom = 'Admin address:'
             # Solicit the user and password.
-            text = (text
-                    + self.RestrictedListMessage('subscriber list',
-                                                 self.private_roster)
-                    + " <p>Enter your "
-                    + string.lower(whom[:-1])
-                    + " address and password to visit"
-                      "  the subscriber's list: <p><center> "
-                    + whom
-                    + " "
-                    + self.FormatBox('roster-email')
-                    + " Password: "
-                    + self.FormatSecureBox('roster-pw')
-                    + "&nbsp;&nbsp;"
-                    + htmlformat.SubmitButton('SubscriberRoster',
-                                              'Visit Subscriber List'
-                                              ).Format()
-                    + "</center>")
-        return text
+            container.AddItem(self.RestrictedListMessage('subscriber list',
+                                                         self.private_roster)
+                              + " <p>Enter your "
+                              + string.lower(whom[:-1])
+                              + " address and password to visit"
+                              "  the subscriber's list: <p><center> "
+                              + whom
+                              + " ")
+            container.AddItem(self.FormatBox('roster-email'))
+            container.AddItem(" Password: "
+                              + self.FormatSecureBox('roster-pw')
+                              + "&nbsp;&nbsp;")
+            container.AddItem(htmlformat.SubmitButton('SubscriberRoster',
+                                                      'Visit Subscriber List'))
+            container.AddItem("</center>")
+        return container
 
     def FormatFormStart(self, name, extra=''):
 	base_url = self.GetScriptURL(name)
