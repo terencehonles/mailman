@@ -33,6 +33,23 @@ UPGRADING FROM PREVIOUS VERSIONS
 
     http://mail.python.org/pipermail/mailman-users/2000-September/006826.html
 
+UPGRADING FROM 2.0.1 to 2.1
+
+    Mailman 2.1 introduces multilingual (a.k.a. internationalization
+    or i18n) support.  Previously only one language per list was
+    supported, and it was assumed that this language would be English.
+    The upgrade script for Mailman 2.1 creates a subdirectory `en'
+    inside each lists/<listname> directory.  It then copies all the
+    .txt and .html files from lists/<listname> into
+    lists/<listname>/en.
+
+    If you have modified those templates to contain non-English text,
+    you will have to manually rename the en subdirectories to the
+    language code for the language of your templates.
+
+    BAW: We may need to elaborate on this quite a bit, or provide
+    scripts to make it much simplier.
+
 UPGRADING FROM 2.0 to 2.0.1
 
     Nothing much more than running "make install" (after upgrading)
