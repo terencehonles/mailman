@@ -227,7 +227,7 @@ def show_post_requests(mlist, id, info, total, count, form):
         msg = p.parse(fp)
         fp.close()
     except IOError, e:
-        if e.code <> errno.ENOENT:
+        if e.errno <> errno.ENOENT:
             raise
         form.AddItem(_('<em>Message with id #%(id)d was lost.'))
         form.AddItem('<p>')
