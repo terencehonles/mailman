@@ -280,7 +280,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
             del msgcopy['to']
             if mlist.isMember(recip):
                 name = mlist.getMemberName(recip)
-                msgcopy['To'] = email.Utils.dump_address_pair((name, recip))
+                msgcopy['To'] = email.Utils.formataddr((name, recip))
             else:
                 msgcopy['To'] = recip
         # We can flag the mail as a duplicate for each member, if they've
