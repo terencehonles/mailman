@@ -98,12 +98,7 @@ def main(args):
                 else:
                     print "%s in %s" % (user, list.real_name)
 	    url = list.GetAbsoluteOptionsURL(user)
-	    if umbrella_list:
-                acct, host = tuple(string.split(user, '@'))
-                recipient = ("%s%s@%s" %
-                             (acct, list.umbrella_member_suffix, host))
-	    else:
-		recipient = user
+            recipient = list.GetMemberAdminEmail(user)
 	    if users.has_key(recipient):
 		users[recipient].append(list_name, password, url)
 	    else:
