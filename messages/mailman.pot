@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Fri Jul 12 12:17:18 2002\n"
+"POT-Creation-Date: Sat Jul 13 10:45:33 2002\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6069,76 +6069,65 @@ msgid "PID unreadable in: %(pidfile)s"
 msgstr ""
 
 #: bin/mailmanctl:148
+msgid "No child with pid: %(pid)s"
+msgstr ""
+
+#: bin/mailmanctl:156
+#, docstring
+msgid "Return the hostname, pid, and tempfile"
+msgstr ""
+
+#: bin/mailmanctl:208
 msgid ""
-"You don't have permission to stop the master qrunner.  Perhaps\n"
-"        if e.errno <> errno.ESRCH: raise\n"
-"        print >> sys.stderr, _('No child with pid: %(pid)s')\n"
-"        print >> sys.stderr, e\n"
-"        print >> sys.stderr, 'Stale pid file removed.'\n"
-"        os.unlink(mm_cfg.PIDFILE)\n"
+"The master qrunner lock could not be acquired because it appears as if another\n"
+"master qrunner is already running.\n"
+msgstr ""
+
+#: bin/mailmanctl:214
+msgid ""
+"The master qrunner lock could not be acquired.  It appears as though there is\n"
+"a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.\n"
+msgstr ""
+
+#: bin/mailmanctl:220
+msgid ""
+"The master qrunner lock could not be acquired, because it appears as if some\n"
+"process on some other host may have acquired it.  We can't test for stale\n"
+"locks across host boundaries, so you'll have to do this manually.  Or, if you\n"
+"know the lock is stale, re-run mailmanctl with the -s flag.\n"
 "\n"
+"Lock file: %(LOCKFILE)s\n"
+"Lock host: %(status)s\n"
 "\n"
-"\014\n"
-"def get_lock_data():\n"
-"    \n"
-"    fp = open(LOCKFILE)\n"
-"    filename = os.path.split(fp.read().strip())[1]\n"
-"    fp.close()\n"
-"    parts = filename.split('.')\n"
-"    hostname = DOT.join(parts[1:-1])\n"
-"    pid = int(parts[-1])\n"
-"    return hostname, int(pid), filename\n"
-"\n"
-"\n"
-"def qrunner_state():\n"
-"    # 1 if proc exists on host (but is it qrunner? ;)\n"
-"    # 0 if host matches but no proc\n"
-"    # hostname if hostname doesn't match\n"
-"    hostname, pid, tempfile = get_lock_data()\n"
-"    if hostname <> socket.gethostname():\n"
-"        return hostname\n"
-"    # Find out if the process exists by calling kill with a signal 0.\n"
-"    try:\n"
-"        os.kill(pid, 0)\n"
-"    except OSError, e:\n"
-"        if e.errno <> errno.ESRCH: raise\n"
-"        return 0\n"
-"    return 1\n"
-"\n"
-"\n"
-"def acquire_lock_1(force):\n"
-"    # Be sure we can acquire the master qrunner lock.  If not, it means some\n"
-"    # other master qrunner daemon is already going.\n"
-"    lock = LockFile.LockFile(LOCKFILE, LOCK_LIFETIME)\n"
-"    try:\n"
-"        lock.lock(0.1)\n"
-"        return lock\n"
-"    except LockFile.TimeOutError:\n"
-"        if not force:\n"
-"            raise\n"
-"        # Force removal of lock first\n"
-"        lock._disown()\n"
-"        hostname, pid, tempfile = get_lock_data()\n"
-"        os.unlink(LOCKFILE)\n"
-"        os.unlink(tempfile)\n"
-"        return acquire_lock_1(force=0)\n"
-"\n"
-"\n"
-"def acquire_lock(force):\n"
-"    try:\n"
-"        lock = acquire_lock_1(force)\n"
-"        return lock\n"
-"    except LockFile.TimeOutError:\n"
-"        status = qrunner_state()\n"
-"        if status == 1:\n"
-"            # host matches and proc exists\n"
-"            print >> sys.stderr, _()\n"
-"        elif status == 0:\n"
-"            # host matches but no proc\n"
-"            print >> sys.stderr, _()\n"
-"        else:\n"
-"            # host doesn't even match\n"
-"            print >> sys.stderr, _("
+"Exiting."
+msgstr ""
+
+#: bin/mailmanctl:269
+msgid "Run this program as root or as the %(name)s user, or use -u."
+msgstr ""
+
+#: bin/mailmanctl:300
+msgid "No command given."
+msgstr ""
+
+#: bin/mailmanctl:303
+msgid "Bad command: %(command)s"
+msgstr ""
+
+#: bin/mailmanctl:315
+msgid "Shutting down Mailman's master qrunner"
+msgstr ""
+
+#: bin/mailmanctl:322
+msgid "Restarting Mailman's master qrunner"
+msgstr ""
+
+#: bin/mailmanctl:326
+msgid "Re-opening all log files"
+msgstr ""
+
+#: bin/mailmanctl:360
+msgid "Starting Mailman's master qrunner."
 msgstr ""
 
 #: bin/mmsitepass:19
