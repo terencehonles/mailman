@@ -39,7 +39,7 @@ def main():
 
     if len(list_info) < 1:
 	doc.AddItem(Header(2, "Invalid options to CGI script."))
-	print doc.Format()
+	print doc.Format(bgcolor="#ffffff")
 	sys.exit(0)
 
     list_name = string.lower(list_info[0])
@@ -49,7 +49,7 @@ def main():
     try:
 	if not (list and list._ready):
 	    doc.AddItem(Header(3, "%s: No such list" % list_name))
-	    print doc.Format()
+	    print doc.Format(bgcolor="#ffffff")
 	    sys.exit(0)
 
         if len(list_info) == 1:
