@@ -775,7 +775,7 @@ it will not be changed."""),
 
     def Create(self, name, admin, crypted_password):
 	if Utils.list_exists(name):
-	    raise ValueError, 'List %s already exists.' % name
+	    raise Errors.MMListAlreadyExistsError, name
         Utils.ValidateEmail(admin)
         Utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
 	self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
@@ -828,8 +828,11 @@ it will not be changed."""),
                 marshal.dump(dict, fp)
                 fp.close()
             except IOError, status:
-                if os.path.exists(fname_tmp):
+                try:
                     os.unlink(fname_tmp)
+                except OSError, e:
+                    if e.errno <> errno.ENOENT:
+                        raise
                 self.LogMsg('error',
                             'Failed config.db file write, retaining old state'
                             '\n %s' % `status.args`)
@@ -917,12 +920,12 @@ it will not be changed."""),
 
     def CheckValues(self):
 	"""Normalize selected values to known formats."""
-        if "" in urlparse(self.web_page_url)[:2]:
-            # Either the "scheme" or the "network location" part of the
-            # parsed URL is empty -- substitute faulty value with
-            # (hopefully sane) default.
+        if '' in urlparse(self.web_page_url)[:2]:
+            # Either the "scheme" or the "network location" part of the parsed
+            # URL is empty; substitute faulty value with (hopefully sane)
+            # default.
             self.web_page_url = mm_cfg.DEFAULT_URL
-        if self.web_page_url and self.web_page_url[-1] != '/':
+        if self.web_page_url and self.web_page_url[-1] <> '/':
 	    self.web_page_url = self.web_page_url + '/'
 
     def IsListInitialized(self):
@@ -1062,11 +1065,13 @@ it will not be changed."""),
         if type(passwords) is not ListType:
             # Type error -- ignore whatever value(s) we were given
             passwords = [None] * len(names)
-        if len(passwords) < len(names):
-            passwords.extend([None] * (len(names) - len(passwords)))
+        lenpws = len(passwords)
+        lennames = len(names)
+        if lenpws < lennames:
+            passwords.extend([None] * (lennames - lenpws))
         result = {}
         dirty = 0
-        for i in range(len(names)):
+        for i in range(lennames):
             try:
                 # normalize the name, it could be of the form
                 #
@@ -1215,12 +1220,12 @@ it will not be changed."""),
                 try:
                     # The list alias in `stripped` is a user supplied regexp,
                     # which could be malformed.
-                    if stripped and re.match(stripped, recip):
+                    if stripped and re.search(stripped, recip):
                         return 1
                 except re.error:
                     # `stripped' is a malformed regexp -- try matching
                     # safely, with all non-alphanumerics backslashed:
-                    if stripped and re.match(re.escape(stripped), recip):
+                    if stripped and re.search(re.escape(stripped), recip):
                         return 1
 	return 0
 
