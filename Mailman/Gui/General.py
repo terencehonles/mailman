@@ -32,7 +32,7 @@ class General:
             return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
-        return [
+        rtn = [
             _('''Fundamental list characteristics, including descriptive
             info and basic behaviors.'''),
 
@@ -123,30 +123,6 @@ class General:
              mailbox summaries.  Brevity is premium here, it's ok to shorten
              long mailing list names to something more concise, as long as it
              still identifies the mailing list.""")),
-
-            ('welcome_msg', mm_cfg.Text, (4, WIDTH), 0,
-             _('''List-specific text prepended to new-subscriber welcome
-             message'''),
-
-             _("""This value, if any, will be added to the front of the
-             new-subscriber welcome message.  The rest of the welcome message
-             already describes the important addresses and URLs for the
-             mailing list, so you don't need to include any of that kind of
-             stuff here.  This should just contain mission-specific kinds of
-             things, like etiquette policies or team orientation, or that kind
-             of thing.
-
-             <p>Note that this text will be wrapped, according to the
-             following rules:
-             <ul><li>Each paragraph is filled so that no line is longer than
-                     70 characters.
-                 <li>Any line that begins with whitespace is not filled.
-                 <li>A blank line separates paragraphs.
-             </ul>""")),
-
-            ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
-             _('''Text sent to people leaving the list.  If empty, no special
-             text will be added to the unsubscribe message.''')),
 
             _('''<tt>Reply-To:</tt> header munging'''),
 
@@ -255,15 +231,45 @@ class General:
             _('Notifications'),
 
             ('send_reminders', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Send monthly password reminders or no? Overrides the
-             previous option.''')),
+             _('''Send monthly password reminders?'''),
+
+             _('''Turn this on if you want password reminders to be sent once
+             per month to your members.  Note that members may disable their
+             own individual password reminders.''')),
+
+            ('welcome_msg', mm_cfg.Text, (4, WIDTH), 0,
+             _('''List-specific text prepended to new-subscriber welcome
+             message'''),
+
+             _("""This value, if any, will be added to the front of the
+             new-subscriber welcome message.  The rest of the welcome message
+             already describes the important addresses and URLs for the
+             mailing list, so you don't need to include any of that kind of
+             stuff here.  This should just contain mission-specific kinds of
+             things, like etiquette policies or team orientation, or that kind
+             of thing.
+
+             <p>Note that this text will be wrapped, according to the
+             following rules:
+             <ul><li>Each paragraph is filled so that no line is longer than
+                     70 characters.
+                 <li>Any line that begins with whitespace is not filled.
+                 <li>A blank line separates paragraphs.
+             </ul>""")),
 
             ('send_welcome_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0, 
-             _('Send welcome message when people subscribe?'),
-             _("""Turn this on only if you plan on subscribing people manually
+             _('Send welcome message to newly subscribed members?'),
+             _("""Turn this off only if you plan on subscribing people manually
              and don't want them to know that you did so.  This option is most
              useful for transparently migrating lists from some other mailing
              list manager to Mailman.""")),
+
+            ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
+             _('''Text sent to people leaving the list.  If empty, no special
+             text will be added to the unsubscribe message.''')),
+
+            ('send_goodbye_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _('Send goodbye message to members when they are unsubscribed?')),
 
             ('admin_immed_notify', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('''Should the list moderators get immediate notice of new
@@ -314,3 +320,29 @@ class General:
              multiple addresses.""")),
 
           ]
+
+        if mm_cfg.ALLOW_RFC2369_OVERRIDES:
+            rtn.append(
+                ('include_rfc2369_headers', mm_cfg.Radio,
+                 (_('No'), _('Yes')), 0,
+                 _("""Should messages from this mailing list include the
+                 <a href="http://www.faqs.org/rfc/rfc2369.html">RFC 2369</a>
+                 (i.e. <tt>List-*</tt>) headers?  <em>Yes</em> is highly
+                 recommended."""),
+
+                 _("""RFC 2369 defines a set of List-* headers that are
+                 normally added to every message sent to the list membership.
+                 These greatly aid end-users who are using standards compliant
+                 mail readers.  They should normally always be enabled.
+
+                 <p>However, not all mail readers are standards compliant yet,
+                 and if you have a large number of members who are using
+                 non-compliant mail readers, they may be annoyed at these
+                 headers.  You should first try to educate your members as to
+                 why these headers exist, and how to hide them in their mail
+                 clients.  As a last resort you can disable these headers, but
+                 this is not recommended (and in fact, your ability to disable
+                 these headers may eventually go away)."""))
+                )
+
+        return rtn
