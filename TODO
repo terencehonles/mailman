@@ -1,4 +1,4 @@
-TODO for mailman 1.0b2 (TODO $Revision: 509 $, $Date: 1998-05-04 17:57:58 +0100 (Mon, 04 May 1998) $)
+TODO for mailman 1.0b2 (TODO $Revision: 514 $, $Date: 1998-05-04 18:10:02 +0100 (Mon, 04 May 1998) $)
 
 This document is by no means up to date, sorry.
 
@@ -56,6 +56,7 @@ Some moderate Pending Refinements:
    project for someone wading into mailman development.)
  - Cascaded lists (lists that subscribe to other lists) should not
    have password notifications posted!
+ - Include a recent verion of pipermail in the distribution (if warranted).
 
 Some bigger Pending Projects:
 
