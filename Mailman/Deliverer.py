@@ -13,31 +13,21 @@ was successfully received by the %s maillist.
 (List info page: %s )
 '''
 
-USE_SPECIAL_PREFIX_FOR_LISTS = []
+SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list!
 
-SPECIAL_PREFIX = '''[%(real_name)s maillist member: Your mailing list
-is being migrated to a new maillist mechanism, one which offers more
-control both to the list members and to the administrator.  (It also,
-surprise surprise, happens to be written in python.)  See more details
-below - in particular note the instructions for changing your options and
-subscription.  We will be switching over immediately after the
-subscriptions are transferred.  Actual communication on the list works
-pretty much the same.
+General information about the maillist is at:
 
-Ken Manheimer, klm@python.org.]
-
-'''
-
-SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list! 
+  %s
 
 If you ever want to unsubscribe or change your options (eg, switch to  
-or from digest mode, change your password, etc.), visit the web page:
+or from digest mode, change your password, etc.), visit your subscription
+page at:
 
-      %s
+  %s
 
 You can also make such adjustments via email - send a message to:
 
-      %s-request@%s
+  %s-request@%s
 
 with the text "help" in the subject or body, and you will get back a
 message with instructions.
@@ -45,18 +35,19 @@ message with instructions.
 You must know your password to change your options (including changing the
 password, itself) or to unsubscribe.  It is:
 
-      %s
+  %s
 
 If you forget your password, don't worry, you will receive a monthly 
 reminder telling you what all your %s maillist passwords are,
-and how to unsubscribe or change your options.
+and how to unsubscribe or change your options.  There is also a button on
+your options page that will email your current password to you.
 
 You may also have your password mailed to you automatically off of 
 the web page noted above.
 
 To post to this list, send your email to:
 
-      %s
+   %s
 
 %s
 
@@ -68,17 +59,16 @@ This is a reminder of how to unsubscribe or change your configuration
 for the mailing list "%s".  You need to have your password for
 these things.  YOUR PASSWORD IS:
 
-      %s
+  %s
 
-To make changes to your subscription, visit the web page:
+To make changes to your subscription, use the password on your options web
+page:
 
-      %s
+  %s
 
-... and use the password to authorize changes to your account.
+You can also make such changes via email - send a message to:
 
-You can also make such adjustments via email - send a message to:
-
-      %s
+  %s
 
 with the text "help" in the subject or body, and you will be emailed
 instructions.
@@ -163,12 +153,7 @@ class Deliverer:
 	self.SendTextToUser('%s post acknowlegement' % self.real_name,
                             body, sender)
 
-    def SendSubscribeAck(self, name, password, digest):
-	if digest:
-	    digest_mode = '(Digest mode)'
-	else:
-	    digest_mode = ''
-
+    def CreateSubscribeAck(self, name, password):
 	if self.welcome_msg:
 	    header = 'Here is the list-specific information:'
 	    welcome = self.welcome_msg
@@ -177,21 +162,26 @@ class Deliverer:
 	    welcome = ''
 
         body = (SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
-				   self.GetScriptURL('listinfo'),
-				   self.real_name, self.host_name,
-				   password,
-                                   self.host_name,
-				   self.GetListEmail(),
-				   header,
-				   welcome))
+                                    self.GetScriptURL('listinfo'),
+                                    self.GetOptionsURL(name),
+                                    self.real_name, self.host_name,
+                                    password,
+                                    self.host_name,
+                                    self.GetListEmail(),
+                                    header,
+                                    welcome))
+        return body
 
-        if self._internal_name in USE_SPECIAL_PREFIX_FOR_LISTS:
-            body = (SPECIAL_PREFIX % self.__dict__) + body
+    def SendSubscribeAck(self, name, password, digest):
+	if digest:
+	    digest_mode = '(Digest mode)'
+	else:
+	    digest_mode = ''
 
         self.SendTextToUser(subject = 'Welcome To "%s"! %s' % (self.real_name, 
 							       digest_mode),
 			    recipient = name, 
-			    text = body)
+			    text = self.CreateSubscribeAck(name, password))
 
     def SendUnsubscribeAck(self, name):
 	self.SendTextToUser(subject = 'Unsubscribed from "%s"\n' % 
@@ -206,7 +196,7 @@ class Deliverer:
             subj = '%s maillist reminder\n' % subjpref
             text = USERPASSWORDTEXT % (self.real_name,
                                        self.passwords[user],
-                                       self.GetScriptURL('listinfo'),
+                                       self.GetOptionsURL(user),
                                        self.GetRequestEmail(),
                                        self.GetAdminEmail())
         else:
