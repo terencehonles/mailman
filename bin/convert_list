@@ -57,7 +57,7 @@ def SendExplanation(users):
     ma('   to check back issues of the list (which will be available after\n')
     ma('   the list has been getting posts for a day or so).\n')
     ma('   The Web address for these resources is:\n')
-    ma('\t\t%s\n\n' % list.GetScriptURL('listinfo'))
+    ma('\t\t%s\n\n' % list.GetAbsoluteScriptURL('listinfo'))
     ma('4) If you do not have WWW access, you can do these same things via\n')
     ma('   email.  Send mail to:\n')
     ma('\t\t%s\n\n' % list.GetRequestEmail())

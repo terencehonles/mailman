@@ -42,7 +42,7 @@ Please attend to this at your earliest convenience.  A reminder like this
 of the pending requests, if any, will be sent out daily.
 
 %s
-	''' % (list.real_name, count, list.GetScriptURL('admindb'),
+	''' % (list.real_name, count, list.GetAbsoluteScriptURL('admindb'),
 		 pending_requests(list)))
 
 def pending_requests(list):

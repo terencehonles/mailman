@@ -90,7 +90,7 @@ else:
     doc.AddItem(htmlformat.Header(2, 'Select page to edit:'))
     template_list = htmlformat.UnorderedList()
     for (template, info) in template_data:
-	l = htmlformat.Link(os.path.join(list.GetScriptURL('edithtml'), 
+	l = htmlformat.Link(os.path.join(list.GetRelativeScriptURL('edithtml'),
 					 template), info)
 			    
 	template_list.AddItem(l)
@@ -106,14 +106,14 @@ def FormatHTML(doc):
 
     doc.AddItem('<hr>')
 
-    link = htmlformat.Link(list.GetScriptURL('admin'), 
+    link = htmlformat.Link(list.GetRelativeScriptURL('admin'),
 			   'View or edit the list configuration information.')
     doc.AddItem(htmlformat.FontSize("+1", link))
     doc.AddItem('<p>')
 
     doc.AddItem('<hr>')
 
-    form = htmlformat.Form(os.path.join(list.GetScriptURL('edithtml'), 
+    form = htmlformat.Form(os.path.join(list.GetRelativeScriptURL('edithtml'),
 					template_name))
     doc.AddItem(form)
 

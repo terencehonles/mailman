@@ -21,7 +21,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 687 $"
+__version__ = "$Revision: 690 $"
 
 import sys
 import os, cgi, string, crypt, types, time
@@ -91,10 +91,6 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
         cookie_key = list_name + "-admin"
         c[cookie_key] = token
         c[cookie_key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
-        path = list.GetScriptURL("admin")                           
-        path = path[string.find(path, "://") + 3:]
-        path = path[string.find(path, "/"):]
-        c[cookie_key]["path"] = path
         print c                         # Output the cookie
         return 1
     if os.environ.has_key('HTTP_COOKIE'):
@@ -102,9 +98,10 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
         if c.has_key(list_name + "-admin"):
 	    try:
                inp = base64.decodestring(c[list_name + "-admin"].value)
+               check = md5.new(SECRET+list_name+SECRET).digest()
             except Error:  # the decodestring may return incorrect padding?
+               raise 'Decode failed'
                return 0
-            check = md5.new(SECRET+list_name+SECRET).digest()
             if inp == check:
                 return 1
             else:
@@ -125,6 +122,7 @@ def main():
     except KeyError:
         path = ""
     list_info = mm_utils.GetPathPieces(path)
+    # How many ../'s we need to get back to http://host/mailman
 
     if len(list_info) == 0:
         FormatAdminOverview()
@@ -253,8 +251,8 @@ def FormatAdminOverview(error=None):
                        % ((error and "the right ") or ""))
                       +
                       " General list information can be found at ",
-                      Link(os.path.join(mm_cfg.DEFAULT_URL, "listinfo/"),
-                           "the maillist overview page"),
+                      Link(os.path.join('../'* mm_utils.GetNestingLevel(), 
+                          "listinfo/"), "the maillist overview page"),
                       "."
                       "<p>(Send questions and comments to ",
                      Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
@@ -269,8 +267,8 @@ def FormatAdminOverview(error=None):
     if advertised:
         table.AddRow([Italic("List"), Italic("Description")])
         for l in advertised:
-            table.AddRow([Link(l.GetScriptURL('admin'), Bold(l.real_name)),
-                          l.description])
+            table.AddRow([Link(l.GetRelativeScriptURL('admin'), 
+	                  Bold(l.real_name)),l.description])
 
     doc.AddItem(table)
 
@@ -291,13 +289,13 @@ def FormatConfiguration(doc, lst, category, category_suffix):
     links_table.AddRow([Center(Bold("Configuration Categories")),
                         Center(Bold("Other Administrative Activities"))])
     other_links = UnorderedList()
-    link = Link(lst.GetScriptURL('admindb'), 
+    link = Link(lst.GetRelativeScriptURL('admindb'), 
                 'Tend to pending administrative requests.')
     other_links.AddItem(link)
-    link = Link(lst.GetScriptURL('listinfo'),
+    link = Link(lst.GetRelativeScriptURL('listinfo'),
                 'Go to the general list information page.')
     other_links.AddItem(link)
-    link = Link(lst.GetScriptURL('edithtml'),
+    link = Link(lst.GetRelativeScriptURL('edithtml'),
                 'Edit the HTML for the public list pages.')
     other_links.AddItem(link)
 
@@ -306,8 +304,8 @@ def FormatConfiguration(doc, lst, category, category_suffix):
         if k == category:
             these_links.AddItem("<b> =&gt; " + v + " &lt;= </b>")
         else:
-            these_links.AddItem(Link("%s/%s" % (lst.GetScriptURL('admin'),k),
-                                     v))
+            these_links.AddItem(Link("%s/%s" % 
+	                 (lst.GetRelativeScriptURL('admin'),k),v))
 
     links_table.AddRow([these_links, other_links])
     links_table.AddRowInfo(max(links_table.GetCurrentRowIndex(), 0),
@@ -316,10 +314,10 @@ def FormatConfiguration(doc, lst, category, category_suffix):
     doc.AddItem(links_table)
     doc.AddItem('<hr>')
     if category_suffix:
-        form = Form("%s/%s" % (lst.GetScriptURL('admin'),
+        form = Form("%s/%s" % (lst.GetRelativeScriptURL('admin'),
                                   category_suffix))
     else:
-        form = Form(lst.GetScriptURL('admin'))
+        form = Form(lst.GetRelativeScriptURL('admin'))
     doc.AddItem(form)
 
     form.AddItem("Make your changes, below, and then submit it all at the"
@@ -434,7 +432,7 @@ def FormatOptionHelp(doc, varref, lst):
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, item[4]))
     doc.AddItem("%s<p>" % item[5])
 
-    form = Form(os.path.join(lst.GetScriptURL('admin'), category))
+    form = Form(os.path.join(lst.GetRelativeScriptURL('admin'), category))
     valtab = Table(cellspacing=3, cellpadding=4)
     AddOptionsTableItem(valtab, item, category, lst, nodetails=1)
     form.AddItem(valtab)
@@ -490,10 +488,10 @@ def GetItemGuiDescr(lst, category, varname, descr, elaboration, nodetails):
     elaboration if any."""
     descr = '<div ALIGN="right">' + descr
     if not nodetails and elaboration:
-	if len(list_info) == 1:
-	    ref = list_name + "/"
+	if mm_utils.GetNestingLevel() == 1:
+	    ref = "../" + list_name + "/"
 	else:
-	    ref = ""
+	    ref = "../"
         ref = ref + '?VARHELP=' + category + "/" + varname
         descr = Container(descr,
 			  Link(ref, " (Details)", target="MMHelp"),

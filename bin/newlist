@@ -142,7 +142,8 @@ including digestification, delivery disabling, etc.
 
 Please address all questions to mailman-owner@%s.
 """ % (list_name, list_pw, 
-       newlist.GetScriptURL('admin'), newlist.GetScriptURL('listinfo'),
+       newlist.GetAbsoluteScriptURL('admin'), 
+       newlist.GetAbsoluteScriptURL('listinfo'),
        "%s-request@%s" % (list_name, newlist.host_name),
        newlist.host_name))
 
