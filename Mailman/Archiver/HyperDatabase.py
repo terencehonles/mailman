@@ -25,7 +25,7 @@ import string
 # package/project modules
 #
 import pipermail
-from Mailman import flock
+from Mailman import LockFile
 from Mailman.Utils import mkdir, open_ex
 # TBD: ugly, ugly, ugly -baw
 open = open_ex
@@ -46,31 +46,46 @@ except ImportError:
 # only one thing can access this at a time.
 #
 class DumbBTree:
-
+    # XXX This dictionary-like object stores pickles of all the
+    # Article objects.  The object itself is stored using marshal.  It 
+    # would be much simpler, and probably faster, to store the actual
+    # objects in the DumbBTree and pickle it.
+    # XXX Also needs a more sensible name, like IteratableDictionary
+    # or SortedDictionary.
     def __init__(self, path):
         self.current_index = 0
         self.path = path
-        self.lockfile = flock.FileLock(self.path + ".lock")
+        self.lockfile = LockFile.LockFile(self.path + ".lock")
         self.lock()
+        self.__dirty = 0
         if os.path.exists(path):
             self.dict = marshal.load(open(path))
+            self.__sort(dirty=1)
         else:
             self.dict = {}
-        self.sorted = self.dict.keys()
-        self.sorted.sort()
+            self.sorted = []
+
+    def __sort(self, dirty=None):
+        if self.__dirty == 1 or dirty:
+            self.sorted = self.dict.keys()
+            self.sorted.sort()
+            self.__dirty = 0
         
     def lock(self):
         self.lockfile.lock()
 
-
     def unlock(self):
         try:
             self.lockfile.unlock()
-        except flock.NotLockedError:
+        except LockFile.NotLockedError:
             pass
         
-
     def __delitem__(self, item):
+        # if first hasn't been called, we can skip the sort
+        if self.current_index == 0:
+            del self.dict[item]
+            self.__dirty = 1
+            return
 	try:
 	    ci = self.sorted[self.current_index]
 	except IndexError:
@@ -81,8 +96,7 @@ class DumbBTree:
 	    except IndexError:
 		ci = None
 	del self.dict[item]
-	self.sorted = self.dict.keys()
-	self.sorted.sort()
+        self.__sort(dirty=1)
 	if ci is not None:
 	    self.current_index = self.sorted.index(ci)
 	else:
@@ -94,11 +108,12 @@ class DumbBTree:
         self.dict = {}
 
     def first(self):
+        self.__sort() # guarantee that the list is sorted
         if not self.sorted:
             raise KeyError
         else:
-	    sorted = self.sorted
-            res =  sorted[0], self.dict[sorted[0]]
+            key = self.sorted[0]
+            res = key, self.dict[key]
             self.current_index = 1
 	    return res
 
@@ -106,11 +121,10 @@ class DumbBTree:
         if not self.sorted:
             raise KeyError
         else:
-	    sorted = self.sorted
+            key = self.sorted[-1]
 	    self.current_index = len(self.sorted) - 1
-            return sorted[-1], self.dict[sorted[-1]]
+            return key, self.dict[key]
 	
-
     def next(self):
         try:
             key = self.sorted[self.current_index]
@@ -122,30 +136,31 @@ class DumbBTree:
     def has_key(self, key):
         return self.dict.has_key(key)
 
-
     def set_location(self, loc):
         if not self.dict.has_key(loc):
             raise KeyError
         self.current_index = self.sorted.index(loc)
 
-
     def __getitem__(self, item):
         return self.dict[item]
 
-
     def __setitem__(self, item, val):
+        # if first hasn't been called, then we don't need to worry
+        # about sorting again
+        if self.current_index == 0:
+            self.dict[item] = val
+            self.__dirty = 1
+            return
 	try:
 	    current_item = self.sorted[self.current_index]
 	except IndexError:
 	    current_item = item
         self.dict[item] = val
-        self.sorted = self.dict.keys()
-        self.sorted.sort()
+        self.__sort(dirty=1)
         self.current_index = self.sorted.index(current_item)
 
     def __len__(self):
         return len(self.sorted)
-
 
     def close(self):
         fp = open(self.path, "w")
@@ -154,11 +169,7 @@ class DumbBTree:
         self.unlock()
 
 
-    
-
-
-
-#
+
 # this is lifted straight out of pipermail with
 # the bsddb.btree replaced with above class.
 # didn't use inheritance because of all the
@@ -166,10 +177,11 @@ class DumbBTree:
 #
 class HyperDatabase(pipermail.Database):
     def __init__(self, basedir):
-	self.__cachekeys=[] ; self.__cachedict={}
-	self.__currentOpenArchive=None   # The currently open indices
-	self.basedir=os.path.expanduser(basedir)
-	self.changed={}         # Recently added articles, indexed only by message ID
+        self.__cache = {}
+	self.__currentOpenArchive = None   # The currently open indices
+	self.basedir = os.path.expanduser(basedir)
+        # Recently added articles, indexed only by message ID
+        self.changed={}
 
     def firstdate(self, archive):
 	import time
@@ -256,17 +268,13 @@ class HyperDatabase(pipermail.Database):
 	self.threadIndex[key]=msgid
     def getArticle(self, archive, msgid):
 	self.__openIndices(archive)
-	if self.__cachedict.has_key(msgid): 
-	    self.__cachekeys.remove(msgid)
-	    self.__cachekeys.append(msgid)
-	    return self.__cachedict[msgid]
-	if len(self.__cachekeys)==CACHESIZE: 
-	    delkey, self.__cachekeys = self.__cachekeys[0], self.__cachekeys[1:]
-	    del self.__cachedict[delkey]
-	s=self.articleIndex[msgid]
-	article=pickle.loads(s)
-	self.__cachekeys.append(msgid) ; self.__cachedict[msgid]=article
-	return article
+        if not self.__cache.has_key(msgid):
+            # get the pickled object out of the DumbBTree
+            buf = self.articleIndex[msgid]
+            article = self.__cache[msgid] = pickle.loads(buf)
+        else:
+            article = self.__cache[msgid]
+        return article
 
     def first(self, archive, index): 
 	self.__openIndices(archive)
