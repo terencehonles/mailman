@@ -93,12 +93,12 @@ def MailAllPasswords(mlist, hosts):
                  })
             # add this to the end so it doesn't get wrapped/filled
             text = text + header + '\n' + string.join(table, '\n')
-##            mlist.SendTextToUser(subject = subj,
-##                                 recipient = addr,
-##                                 text = text,
-##                                 sender = mailman_owner,
-##                                 add_headers = ["X-No-Archive: yes",
-##                                                "Precedence: bulk"])
+            mlist.SendTextToUser(subject = subj,
+                                 recipient = addr,
+                                 text = text,
+                                 sender = mailman_owner,
+                                 add_headers = ["X-No-Archive: yes",
+                                                "Precedence: bulk"])
             count = count - 1
             if count == 0:
                 # The pause that refreshes.
@@ -123,8 +123,8 @@ def main():
     for listname in Utils.list_names():
         if confined_to and listname not in confined_to:
             continue
-        else:
-            print 'Processing list:', listname
+##        else:
+##            print 'Processing list:', listname
         mlist = MailList.MailList(listname, lock=0)
         if not a_public_list and mlist.advertised:
             a_public_list = mlist
