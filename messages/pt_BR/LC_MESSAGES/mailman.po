@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.1b5\n"
 "POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
-"PO-Revision-Date: 2002-12-23 09:46+0000\n"
+"PO-Revision-Date: 2003-01-30 09:46+0000\n"
 "Last-Translator: Gleydson Mazioli da Silva <gleydson@debian.org>\n"
 "Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -214,7 +214,7 @@ msgstr "Notificação retorno de mensagem"
 
 #: Mailman/Bouncer.py:239
 msgid " The last bounce received from you was dated %(date)s"
-msgstr "O último bounce recebido de voce foi verificado em %(date)s"
+msgstr " O último bounce recebido de voce foi verificado em %(date)s"
 
 #: Mailman/Bouncer.py:264 Mailman/Deliverer.py:126
 #: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:236
@@ -302,7 +302,7 @@ msgid ""
 "            mailing lists on %(hostname)s."
 msgstr ""
 "<p>Não existem atualmente nenhuma lista de discussão pública do\n"
-"             %(mailmanlink)s em %(hostname)s"
+"             %(mailmanlink)s em %(hostname)s. "
 
 #: Mailman/Cgi/admin.py:254
 msgid ""
@@ -2153,8 +2153,8 @@ msgid ""
 " to find the management interface for your list.\n"
 "         <p>Send questions or comments to "
 msgstr ""
-"para encontrar a interface de gerenciamento de sua lista.\n"
-"         <p>Envie questões ou comentários para"
+" para encontrar a interface de gerenciamento de sua lista.\n"
+"         <p>Envie questões ou comentários para "
 
 #: Mailman/Cgi/listinfo.py:187
 msgid "Edit Options"
