@@ -93,12 +93,26 @@ def main():
             print doc.Format()
             list.Unlock()
             sys.exit(0)
+        list.Unlock()
         call_script('options', [list._internal_name, member], list)
+        return                          # Should not get here!
+
     if not form.has_key("email"):
         error = 1
         results = results + "You must supply a valid email address.<br>"
     else:
         email = form["email"].value
+
+    if email == list.GetListEmail():
+        error = 1
+        remote = remote_addr()
+        if remote: remote = "Web site " + remote
+        else:      remote = "unidentified origin"
+        badremote = "\n\tfrom " + remote
+        list.LogMsg("mischief", ("Attempt to self subscribe %s:%s"
+                                 % (email, badremote)))
+        results = results + "You must not subscribe a list to itself!<br>"
+
     if not form.has_key("pw") or not form.has_key("pw-conf"):
         error = 1
         results = (results
@@ -132,13 +146,8 @@ def main():
                                  "subscribing you.  Instructions are being "
                                  "sent to you at %s." % email)
 
-            remote = ""
-            if os.environ.has_key('REMOTE_HOST'):
-                remote = os.environ['REMOTE_HOST']
-            elif os.environ.has_key('REMOTE_ADDR'):
-                remote = os.environ['REMOTE_ADDR']
-            if remote:
-                remote = " from %s" % remote
+            remote = remote_addr()
+            if remote: remote = " from %s" % remote
 
             if digest:
                 digesting = " digest"
@@ -207,3 +216,12 @@ def PrintResults(list, results, doc):
     list.Unlock()
     sys.exit(0)
 
+def remote_addr():
+    "Try to return the remote addr, or if unavailable, None."
+    if os.environ.has_key('REMOTE_HOST'):
+        return os.environ['REMOTE_HOST']
+    elif os.environ.has_key('REMOTE_ADDR'):
+        return os.environ['REMOTE_ADDR']
+    else:
+        return None
+                                
