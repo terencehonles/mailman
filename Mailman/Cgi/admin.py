@@ -617,7 +617,8 @@ def get_item_gui_value(mlist, category, kind, varname, params):
     if hasattr(gui, 'GetValue'):
         missing = []
         value = gui.GetValue(mlist, kind, varname, params)
-    if value is None:
+    # Filter out None, and volatile attributes
+    if value is None and not varname.startswith('_'):
         value = getattr(mlist, varname)
     # Now create the widget for this value
     if kind == mm_cfg.Radio or kind == mm_cfg.Toggle:
@@ -629,7 +630,7 @@ def get_item_gui_value(mlist, category, kind, varname, params):
         # function -scott
         #
         # TBD: this is an ugly ugly hack.
-        if varname[0] == '_':
+        if varname.startswith('_'):
             checked = 0
         else:
             checked = value
