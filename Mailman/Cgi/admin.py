@@ -218,7 +218,7 @@ def admin_overview(msg=''):
     table = Table(border=0, width="100%")
     table.AddRow([Center(Header(2, legend))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
     # Skip any mailing list that isn't advertised.
     advertised = []
     listnames = Utils.list_names()
@@ -321,7 +321,7 @@ def option_help(mlist, varhelp):
     header = Table(width='100%')
     header.AddRow([Center(Header(3, legend))])
     header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                       bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
     doc.SetTitle(_("Mailman %(varname)s List Option Help"))
     doc.AddItem(header)
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, description))
@@ -476,7 +476,7 @@ def show_variables(mlist, category, cgidata, doc, form):
 
     table.AddRow([Center(Header(2, label))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
     # Convenience
     def column_header(table=table):
@@ -647,21 +647,21 @@ def membership_options(mlist, cgidata, doc, form):
     if subcat == 'add':
         header.AddRow([Center(Header(2, _('Mass Subscriptions')))])
         header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                           bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                           bgcolor=mm_cfg.WEB_HEADER_COLOR)
         container.AddItem(header)
         mass_subscribe(mlist, container)
         return container
     if subcat == 'remove':
         header.AddRow([Center(Header(2, _('Mass Removals')))])
         header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                           bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                           bgcolor=mm_cfg.WEB_HEADER_COLOR)
         container.AddItem(header)
         mass_remove(mlist, container)
         return container
     # Otherwise...
     header.AddRow([Center(Header(2, _('Membership List')))])
     header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                       bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
     container.AddItem(header)
     usertable = Table(width="90%", border='2')
     # If there are more members than allowed by chunksize, then we split the
@@ -779,7 +779,7 @@ def membership_options(mlist, cgidata, doc, form):
         for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
             if mlist.GetUserOption(addr, MailCommandHandler.option_info[opt]):
                 value = 'on'
-                check = 1
+                checked = 1
             else:
                 value = 'off'
                 checked = 0
@@ -911,7 +911,7 @@ def password_inputs():
     table = Table(cellspacing=3, cellpadding=4)
     table.AddRow([Center(Header(2, _('Change list ownership passwords')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
     table.AddRow([_("""The <em>list administrators</em> are the people who have
 ultimate control over all parameters of this mailing list.  They are able to
 change any list configuration variable available through these administration
@@ -1231,7 +1231,7 @@ def change_options(mlist, category, cgidata, doc):
 
 def add_error_message(doc, errmsg, tag='Warning: ', *args):
     doc.AddItem(Header(3, Bold(FontAttr(
-        _(tag), color="#ff0000", size="+2")).Format() +
+        _(tag), color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
                        Italic(errmsg % args).Format()))
 
 
