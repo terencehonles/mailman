@@ -884,7 +884,11 @@ class HyperArchive(pipermail.T):
                         archz = gzip.open(oldgzip)
                     except (IOError, RuntimeError, os.error):
                         pass
-                    newz = gzip.open(gzipfile, 'w') 
+                    try:
+                        ou = os.umask(002)
+                        newz = gzip.open(gzipfile, 'w')
+                    finally:
+                        os.umask(ou)
 		    if archz :
                         newz.write(archz.read())
                         archz.close()
