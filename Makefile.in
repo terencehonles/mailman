@@ -49,11 +49,11 @@ ARCH_INDEP_DIRS= \
 	bin templates scripts cron \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Bouncers Mailman/pythonlib \
-	Mailman/MTA icons
+	Mailman/MTA messages icons
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
-SUBDIRS=	bin cron filters misc Mailman scripts src templates
+SUBDIRS=	bin cron filters misc Mailman scripts src templates messages
 
 
 # Modes for directories and executables created by the install
@@ -137,7 +137,3 @@ distclean: $(SUBDIRS)
 	    (cd $$d; $(MAKE) distclean); \
 	done
 	-rm config.cache config.log config.status Makefile
-
-# Local Variables:
-# indent-tabs-mode: t
-# End:
