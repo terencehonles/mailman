@@ -27,10 +27,9 @@ import os
 import time
 import marshal
 import errno
-
-from mimelib.Generator import Generator
-from mimelib.Parser import Parser
-from mimelib.date import formatdate
+import cPickle
+import email
+from cStringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -39,7 +38,6 @@ from Mailman import Errors
 from Mailman.UserDesc import UserDesc
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman.i18n import _
 
 # Request types requiring admin approval
@@ -64,16 +62,16 @@ class ListAdmin:
 
     def InitTempVars(self):
         self.__db = None
-        self.__filename = None
-        fullpath = self.fullpath()
-        if fullpath:
-            self.__filename = os.path.join(fullpath, 'request.db')
+
+    def __filename(self):
+        return os.path.join(self.fullpath(), 'request.db')
 
     def __opendb(self):
+        filename = self.__filename()
         if self.__db is None:
-            assert self.Locked() and self.__filename
+            assert self.Locked()
             try:
-                fp = open(self.__filename)
+                fp = open(filename)
                 self.__db = marshal.load(fp)
                 fp.close()
             except IOError, e:
@@ -104,7 +102,7 @@ class ListAdmin:
             try:
                 # Save the version number
                 self.__db['version'] = IGN, mm_cfg.REQUESTS_FILE_SCHEMA_VERSION
-                fp = open(self.__filename, 'w')
+                fp = open(self.__filename(), 'w')
                 marshal.dump(self.__db, fp)
                 fp.close()
                 self.__db = None
@@ -180,14 +178,15 @@ class ListAdmin:
         # get the message sender
         sender = msg.get_sender()
         # calculate the file name for the message text and write it to disk
-        filename = 'heldmsg-%s-%d.txt' % (self.internal_name(), id)
+        filename = 'heldmsg-%s-%d.pck' % (self.internal_name(), id)
         omask = os.umask(002)
+        fp = None
         try:
             fp = open(os.path.join(mm_cfg.DATA_DIR, filename), 'w')
-            g = Generator(fp)
-            g.write(msg)
-            fp.close()
+            cPickle.dump(msg, fp, 1)
         finally:
+            if fp:
+                fp.close()
             os.umask(omask)
         # save the information to the request database.  for held message
         # entries, each record in the database will be of the following
@@ -229,14 +228,13 @@ class ListAdmin:
             # Defer
             status = DEFER
         elif value == mm_cfg.APPROVE:
-            # Approved
+            # Approved.
             try:
-                fp = open(path)
+                msg = readMessage(path)
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 return LOST
-            p = Parser(Message.Message)
-            msg = p.parse(fp)
+            msg = readMessage(path)
             msgdata['approved'] = 1
             # Calculate a new filebase for the approved message, otherwise
             # delivery errors will cause duplicates.
@@ -248,7 +246,7 @@ class ListAdmin:
             # message directly here can lead to a huge delay in web
             # turnaround.  Log the moderation and add a header.
             msg['X-Moderated'] = '<%s> %s' % (self.GetOwnerEmail(),
-                                              formatdate())
+                                              email.Utils.formatdate())
             syslog('vette', 'held message approved, message-id: %s',
                    msg.get('message-id', 'n/a'))
             # Stick the message back in the incoming queue for further
@@ -272,25 +270,18 @@ class ListAdmin:
             # completely unique second message for the forwarding operation,
             # since we don't want to share any state or information with the
             # normal delivery.
-            p = Parser(Message.Message)
-            if msg:
-                fp.seek(0)
-            else:
-                try:
-                    fp = open(path)
-                except IOError, e:
-                    if e.errno <> errno.ENOENT: raise
-                    raise Errors.LostHeldMessage(path)
-            msg = p.parse(fp)
-            if fp:
-                fp.close()
+            try:
+                copy = readMessage(path)
+            except IOError, e:
+                if e.errno <> errno.ENOENT: raise
+                raise Errors.LostHeldMessage(path)
             # We don't want this message getting delivered to the list twice.
             # This should also uniquify the message enough for the hash-based
             # file naming (not foolproof though).
-            del msg['resent-to']
-            msg['Resent-To'] = addr
+            del copy['resent-to']
+            copy['Resent-To'] = addr
             virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
-            virginq.enqueue(msg, listname=self.internal_name(),
+            virginq.enqueue(copy, listname=self.internal_name(),
                             recips=[addr])
         #
         # Log the rejection
@@ -314,7 +305,7 @@ class ListAdmin:
             except OSError, e:
                 if e.errno <> errno.ENOENT: raise
                 # We lost the message text file.  Clean up our housekeeping
-                # and raise an exception.
+                # and inform of this status.
                 return LOST
         return status
             
@@ -406,3 +397,20 @@ class ListAdmin:
         subject = _('Request to mailing list %(realname)s rejected')
         msg = Message.UserNotification(recip, adminaddr, subject, text)
         msg.send(self)
+
+
+
+def readMessage(path):
+    # For backwards compatibility, we must be able to read either a flat text
+    # file or a pickle.
+    ext = os.path.splitext(path)[1]
+    fp = open(path)
+    try:
+        if ext == '.txt':
+            msg = email.message_from_file(fp, Message.Message)
+        else:
+            assert ext == '.pck'
+            msg = cPickle.load(fp)
+    finally:
+        fp.close()
+    return msg
