@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
 "POT-Creation-Date: Fri Jul 12 12:17:18 2002\n"
-"PO-Revision-Date: 2002-06-28 02:18:37+00:00\n"
+"PO-Revision-Date: 2002-07-13 02:45:55+00:00\n"
 "Last-Translator: Ousmane Wilane <wilane@cyg.sn>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -2020,11 +2020,15 @@ msgid ""
 "address.  Upon confirmation, any other mailing list containing the address\n"
 "%(user)s will be changed. "
 msgstr ""
+"La nouvelle adresse %(newaddr)s que vous avez demandé est déjà abonnée\n"
+"à la liste de diffusion %(listname)s, vous avez toutefois, demander\n"
+"une modification globale de votre adresse. Lorsque la confirmation\n"
+"sera reçu, toutes les listes de diffusion contenant l'adresse %(user)s\n"
+"seront modifiées."
 
 #: Mailman/Cgi/options.py:306
-#, fuzzy
 msgid "The new address is already a member: %(newaddr)s"
-msgstr "\tune adresse semblable est déjà abonnée:"
+msgstr "La nouvelle adresse est déjà abonnée: %(newaddr)s"
 
 #: Mailman/Cgi/options.py:312
 msgid "Addresses may not be blank"
@@ -3291,7 +3295,7 @@ msgstr "Coréen"
 
 #: Mailman/Defaults.py:1173
 msgid "Dutch"
-msgstr ""
+msgstr "Hollandais"
 
 #: Mailman/Defaults.py:1174
 msgid "Norwegian"
@@ -6440,6 +6444,8 @@ msgstr ""
 #: Mailman/Handlers/Moderate.py:35
 msgid "Posts by member are currently quarantined for moderation"
 msgstr ""
+"Les soumissions par les abonnés sont actuellement mises en quarantaine\n"
+"pour la modération."
 
 #: Mailman/Handlers/Moderate.py:130
 msgid ""
@@ -6596,7 +6602,6 @@ msgid "Request to mailing list %(realname)s rejected"
 msgstr "Requête à l'endroit de la liste %(realname)s rejetée"
 
 #: Mailman/MTA/Aliases.py:40
-#, fuzzy
 msgid ""
 "To finish creating your mailing list, you must edit your\n"
 "/etc/aliases (or equivalent) file by adding the following lines:\n"
@@ -6608,15 +6613,18 @@ msgid ""
 "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
 "%(owner)s %(listname)s-admin\n"
 msgstr ""
-"\n"
 "Pour achever la création de votre liste de diffusion, vous devrez\n"
 "modifier votre fichier /etc/aliases (ou équivalent) en y ajoutant les\n"
-"lignes suivantes et peut être exécuter le programme `newaliases':\n"
+"lignes suivantes:\n"
 "\n"
-"## Liste de diffusion %(listname)s"
+"## Liste de diffusion %(listname)s<\n"
+"## crée: %(date)s %(user)s\n"
+"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
+"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
+"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
+"%(owner)s %(listname)s-admin\n"
 
 #: Mailman/MTA/Aliases.py:63
-#, fuzzy
 msgid ""
 "To finish removing your mailing list, you must edit your\n"
 "/etc/aliases (or equivalent) file by removing the following lines:\n"
@@ -6626,12 +6634,14 @@ msgid ""
 "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
 "%(owner)s %(listname)s-admin\n"
 msgstr ""
-"\n"
 "Pour achever la suppression de votre liste de diffusion, vous devrez\n"
 "modifier votre fichier /etc/aliases (ou équivalent) en y supprimant les\n"
-"lignes suivantes et peut être exécuter le programme `newaliases':\n"
+"lignes suivantes:\n"
 "\n"
-"##Liste de diffusion %(listname)s"
+"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
+"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
+"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
+"%(owner)s %(listname)s-admin\n"
 
 #: Mailman/MTA/Manual.py:55
 msgid ""
@@ -6749,12 +6759,29 @@ msgid ""
 "~alias/.qmail-%(listname)s-owner\n"
 "chmod 644 ~alias/.qmail-owner-%(listname)s\n"
 msgstr ""
+"Pour achever la création de votre liste exécutez les commandes\n"
+"suivantes avec les permissions appropriées:\n"
+"\n"
+"echo '|preline %(wrapper)s post %(listname)s'>ãlias/.qmail-%(listname)s\n"
+"echo '|preline %(wrapper)s mailowner %(listname)s'\n"
+">ãlias/.qmail-%(listname)s-admin\n"
+"echo '|preline %(wrapper)s mailcmd %(listname)s'\n"
+">ãlias/.qmail-%(listname)s-request\n"
+"echo '&%(listname)s-admin'>ãlias/.qmail-owner-%(listname)s\n"
+"echo '&%(listname)s-admin'>ãlias/.qmail-%(listname)s-owner\n"
+"\n"
+"chmod 644 ãlias/.qmail-%(listname)s ãlias/.qmail-%(listname)s-admin\n"
+"chmod 644 ãlias/.qmail-%(listname)s-request \n"
+"ãlias/.qmail-%(listname)s-owner\n"
+"chmod 644 ãlias/.qmail-owner-%(listname)s\n"
 
 #: Mailman/MTA/Qmail.py:48
 msgid ""
 "To finish removing your mailing list, you must remove the\n"
 "all the entires for the %(listname)s aliases."
 msgstr ""
+"Pour achever la suppression de votre liste, vous devez supprimer\n"
+"toutes les entrées des aliases de %(listname)s."
 
 #: Mailman/MailList.py:671
 msgid "You have been invited to join the %(listname)s mailing list"
@@ -9234,26 +9261,38 @@ msgid ""
 "Where <lang> is your country code (e.g. 'it' for Italy) and -q is \n"
 "to ask for a brief summary.\n"
 msgstr ""
+"\n"
+"Vérifie la cohérence de Mailman en s'assurant que les variables et les\n"
+"balises référencées dans la traduction sont les mêmes variables et\n"
+"balises contenues dans les templates et le catalog originaux.\n"
+"\n"
+"Usage:\n"
+"\n"
+"cd $MAILMAN_DIR\n"
+"%(program)s [-q] <lang>\n"
+"\n"
+"Où <lang> est le code du pays (e.g. 'it' pour Italie) et le -q demande\n"
+"une résumé concis.\n"
 
 #: bin/transcheck:39
 msgid "check a translation comparing with the original string"
-msgstr ""
+msgstr "Vérifie une traduction en la comparant avec la chaîne originale"
 
 #: bin/transcheck:46
 msgid "scan a string from the original file"
-msgstr ""
+msgstr "Scan une chaîne à partir du fichier original"
 
 #: bin/transcheck:54
 msgid "scan a translated string"
-msgstr ""
+msgstr "Scan une chaîne traduite"
 
 #: bin/transcheck:65
 msgid "check for differences between checked in and checked out"
-msgstr ""
+msgstr "Compare les différence entre les versions `checked in' et `checked out'"
 
 #: bin/transcheck:98
 msgid "parse a .po file extracting msgids and msgstrs"
-msgstr ""
+msgstr "Analyse un fichier .po et extrait les msgids et les msgstrs"
 
 #: bin/transcheck:117
 msgid ""
@@ -9265,16 +9304,26 @@ msgid ""
 "            4  end\n"
 "        "
 msgstr ""
+"La table des états pour l'analyseur de l'ensemble finit des états\n"
+"machines:\n"
+"        0  idle\n"
+"        1  filename-or-comment\n"
+"        2  msgid\n"
+"        3  msgstr\n"
+"        4  end\n"
+"     "
 
 #: bin/transcheck:254
 msgid ""
 "check a translated template against the original one\n"
 "       search also <MM-*> tags if html is not zero"
 msgstr ""
+"Compare une template traduite avec l'original et recherche les balises\n"
+"<MM-*> si html est non nul"
 
 #: bin/transcheck:301
 msgid "scan the po file comparing msgids with msgstrs"
-msgstr ""
+msgstr "Scan le fichier po en comparant msgids et msgstrs"
 
 #: bin/unshunt:19
 msgid ""
@@ -10201,78 +10250,3 @@ msgstr ""
 "lesquelles la variable digest_send_periodic est définit.\n"
 "\n"
 "Il est généralement appelé par cron.\n"
-
-#~ msgid "Post by a moderated member"
-#~ msgstr "Soumit par un abonné modérée"
-
-#~ msgid "No child with pid: %(pid)s"
-#~ msgstr "Pas de fils avec un pid: %(pid)s"
-
-#~ msgid "Return the hostname, pid, and tempfile"
-#~ msgstr "Renvoie le nom d'hôte, le pid et le fichier temporaire"
-
-#~ msgid ""
-#~ "The master qrunner lock could not be acquired because it appears as if "
-#~ "another\n"
-#~ "master qrunner is already running.\n"
-#~ msgstr ""
-#~ "Impossible de disposer d'un verrou pour le qrunner principal. il\n"
-#~ "semble qu'un autre processus qrunner principal est en cours\n"
-#~ "d'exécution.\n"
-
-#~ msgid ""
-#~ "The master qrunner lock could not be acquired.  It appears as though there "
-#~ "is\n"
-#~ "a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.\n"
-#~ msgstr ""
-#~ "Le verrou du qrunner principal ne peut être obtenu. Il semble qu'il y\n"
-#~ "a un vieux fichier verrou du qrunner principal. Essayer de redémarrer\n"
-#~ "mailmanctl avec l'option -s.\n"
-
-#~ msgid ""
-#~ "The master qrunner lock could not be acquired, because it appears as if "
-#~ "some\n"
-#~ "process on some other host may have acquired it.  We can't test for stale\n"
-#~ "locks across host boundaries, so you'll have to do this manually.  Or, if "
-#~ "you\n"
-#~ "know the lock is stale, re-run mailmanctl with the -s flag.\n"
-#~ "\n"
-#~ "Lock file: %(LOCKFILE)s\n"
-#~ "Lock host: %(status)s\n"
-#~ "\n"
-#~ "Exiting."
-#~ msgstr ""
-#~ "Le qrunner principal ne peut obtenir de verrou parce que le système se\n"
-#~ "comporte comme si d'autres processus sur d'autres hôtes s'en étaient\n"
-#~ "emparés. Nous ne pouvons pas vérifier l'existence de vieux verrous à\n"
-#~ "travers le réseau, vous devrez le faire manuellement. Ou bien, si vous\n"
-#~ "êtes sûr que le verrou est obsolète alors, ré-exécutez mailmanctl avec\n"
-#~ "l'option -s.\n"
-#~ "\n"
-#~ "Fichier verrou: %(LOCKFILE)s\n"
-#~ "Hôte du verrou: %(status)s\n"
-#~ "\n"
-#~ "Sortie."
-
-#~ msgid "Run this program as root or as the %(name)s user, or use -u."
-#~ msgstr ""
-#~ "Exécutez ce programme en tant que root ou en tant que l'utilisateur\n"
-#~ "%(name)s à moins d'utiliser l'option -u."
-
-#~ msgid "No command given."
-#~ msgstr "Aucune commande fournit."
-
-#~ msgid "Bad command: %(command)s"
-#~ msgstr "Mauvaise commande: %(command)s"
-
-#~ msgid "Shutting down Mailman's master qrunner"
-#~ msgstr "Arrêt du qrunner principal de Mailman"
-
-#~ msgid "Restarting Mailman's master qrunner"
-#~ msgstr "Redémarrage du qrunner principal de Mailman"
-
-#~ msgid "Re-opening all log files"
-#~ msgstr "Réouverture de tous les fichiers journaux"
-
-#~ msgid "Starting Mailman's master qrunner."
-#~ msgstr "Démarrage du qrunner principal de Mailman."
