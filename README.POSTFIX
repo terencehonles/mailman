@@ -7,7 +7,8 @@ GENERAL SETUP INFORMATION
 
     Mailman should work pretty much out of the box with a standard
     Postfix installation.  As of this writing I've tested it with
-    Postfix 19991231 up to pl13, and with 200010228 up to pl08.
+    Postfix 19991231 up to pl13, 200010228 up to pl08, and up to
+    Postfix 2.0.15.
 
     By default, Postfix treats -owner and -request addresses
     specially.  Since we want Postfix to deliver such messages to
