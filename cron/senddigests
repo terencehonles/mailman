@@ -37,7 +37,7 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 def main():
     for listname in Utils.list_names():
-        mlist = MailList.MailList(name, lock=0)
+        mlist = MailList.MailList(listname, lock=0)
         if mlist.digest_send_periodic:
             # send the digest if there are any partially built
             digestfile = os.path.join(mlist.fullpath(), 'next-digest')
