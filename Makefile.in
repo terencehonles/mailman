@@ -43,7 +43,7 @@ OPT=		@OPT@
 CFLAGS=		@CFLAGS@ $(OPT) $(DEFS)
 
 VAR_DIRS= \
-	logs archives lists locks data spam filters \
+	logs archives lists locks data spam filters qfiles \
 	archives/private archives/public
 ARCH_INDEP_DIRS= \
 	bin templates scripts cron \
