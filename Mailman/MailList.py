@@ -70,8 +70,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def __del__(self):
         try:
-            for f in self._log_files.values():
-                f.close()
+            self.CloseLogs()
         except AttributeError:
             # List didn't get far enough to have _log_files
             pass
@@ -854,6 +853,15 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    logf = self._log_files[kind] = StampedLogger(kind)
         logf.write(msg % args + '\n')
 	logf.flush()
+
+    def CloseLogs(self):
+        """Close all of this list's open log files.
+
+        Useful to avoid 'Too many open files' errors when iterating over
+        lots of lists."""
+        for kind, logger in self._log_files.items():
+            del self._log_files[kind]
+            logger.close()
 
     def CheckVersion(self, stored_state):
         """Migrate prior version's state to new structure, if changed."""
