@@ -68,7 +68,6 @@ class Archiver:
 	self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
  	self.archive_volume_frequency = \
  		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
-
         # The archive file structure by default is:
         #
         # archives/
@@ -101,13 +100,23 @@ class Archiver:
                 os.mkdir(self.archive_dir(), 02775)
             except OSError, e:
                 if e.errno <> errno.EEXIST: raise
-            fp = open(os.path.join(self.archive_dir(), 'index.html'), 'w')
-            fp.write(Utils.maketext(
-                'emptyarchive.html',
-                {'listname': self.real_name,
-                 'listinfo': self.GetScriptURL('listinfo', absolute=1),
-                 }, mlist=self))
-            fp.close()
+            # See if there's an index.html file there already and if not,
+            # write in the empty archive notice.
+            indexfile = os.path.join(self.archive_dir(), 'index.html')
+            fp = None
+            try:
+                fp = open(indexfile)
+            except IOError, e:
+                if e.errno <> errno.ENOENT: raise
+                else:
+                    fp = open(indexfile, 'w')
+                    fp.write(Utils.maketext(
+                        'emptyarchive.html',
+                        {'listname': self.real_name,
+                         'listinfo': self.GetScriptURL('listinfo', absolute=1),
+                         }, mlist=self))
+            if fp:
+                fp.close()
         finally:
             os.umask(omask)
 
