@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -65,7 +65,7 @@ your membership administrative address, %(addr)s.'''))
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetRequestEmail(),
             _('Welcome to the "%(realname)s" mailing list%(digmode)s'),
-            text)
+            text, pluser)
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
 
@@ -74,7 +74,7 @@ your membership administrative address, %(addr)s.'''))
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(addr), self.GetAdminEmail(),
             _('You have been unsubscribed from the %(realname)s mailing list'),
-            Utils.wrap(self.goodbye_msg))
+            Utils.wrap(self.goodbye_msg), self.getMemberLanguage(addr))
         msg.send(self)
 
     def MailUserPassword(self, user):
@@ -112,6 +112,7 @@ your membership administrative address, %(addr)s.'''))
              'requestaddr': requestaddr,
              'owneraddr'  : self.GetOwnerEmail(),
             }, lang=self.getMemberLanguage(user), mlist=self)
-        msg = Message.UserNotification(recipient, adminaddr, subject, text)
+        msg = Message.UserNotification(recipient, adminaddr, subject, text,
+                                       self.getMemberLanguage(user))
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
