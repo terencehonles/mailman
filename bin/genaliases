@@ -67,6 +67,8 @@ def main():
     lock = Postfix.makelock()
     lock.lock()
     try:
+        # Overwrite the current file contents, since we're going to be adding
+        # all new entries.
         db = dbhash.open(Postfix.DBFILE, 'n')
         fp = open(Postfix.TEXTFILE, 'w')
         for listname in Utils.list_names():
