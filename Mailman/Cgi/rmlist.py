@@ -211,7 +211,7 @@ def request_deletion(doc, mlist, errmsg=None):
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow([Label(_('Also delete archives?')),
-                   RadioButtonArray('delarchives', ('No', 'Yes'),
+                   RadioButtonArray('delarchives', (_('No'), _('Yes')),
                                     checked=0, values=(0, 1))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
