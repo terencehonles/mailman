@@ -26,7 +26,7 @@
 """Convert a list.
 
 Usage:
-    convert_list [-n <file>] [-d <file>] [-h] listname
+    convert_list [-n <file>] [-d <file>] [-c <y|n>] [-w <y|n>] [-h] listname
 
 Where:
 
@@ -43,7 +43,7 @@ Where:
     --changes-msg=<y|n>
     -c <y|n> 
 	set whether or not to send the list members the `there's going to be 
-	big changes to your list' message. defaults to yes.
+	big changes to your list' message. defaults to no.
 
     --welcome-msg=<y|n>
     -w <y|n>
@@ -135,7 +135,7 @@ def main():
     listname = args[0]
     nfile = None
     dfile = None
-    send_changes_msg = 1
+    send_changes_msg = 0
     send_welcome_msg = -1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -190,7 +190,6 @@ def main():
 
         if not dmembers and not nmembers:
             usage(1)
-
 
         for member in nmembers:
              AddMember(ml, member, 0, send_welcome_msg)
