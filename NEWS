@@ -10,7 +10,6 @@ Here is a history of user visible changes to Mailman.
     GUI changes, here are the highlights:
 
     - MIME and other message handling
-
         o More robustness against badly MIME encapsulated messages: if
           a MessageParseError is raised during the initial parse, the
           message can either be discarded or saved in qfiles/bad,
