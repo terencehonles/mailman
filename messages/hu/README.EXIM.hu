@@ -48,7 +48,7 @@ tartományoktól, akkor a következõket kell tenni:
 [Megjegyzés: a leírásban található beállítások mind 3-as, mind 4-es Eximhez
 egyaránt használhatóak. 3-as Eximnél 'local_domains' beállításra van
 szükségünk, míg a 4-es verzióban többnyire a 'local_domains'-ben megadott
-tartománylistára. Ha nem így használjuk az Eximet, akkor valószínüleg 
+tartománylistára. Ha nem így használjuk az Eximet, akkor valószínûleg 
 alapos Exim beállítási ismeretekkel rendelkezünk, így nem lesz nehéz
 módosítani a késõbb ismertetett beállításokat. 4-es Eximben az átirányítók
 (directors) rész megszûnt, szerepét a routers rész vette át, így ha 4-es
@@ -62,7 +62,7 @@ egy új átirányító, míg a 4-es verzióban egy új router tölti be majd
 ugyanazt a szerepet.
 
 Végül pedig érdemes tudni, hogy ezekkel a beállításokkal ugyanazon a
-gépen egymás mellett mûködõhet a Mailman 2.0-ás és 2.1-es verziója is.
+gépen egymás mellett mûködhet a Mailman 2.0-ás és 2.1-es verziója is.
 Ekkor "mailman" helyett hivatkozhatunk "mm21" névvel a másik, újabb
 verzióra, pl. MM21_HOME, mm21_transport, stb.
 
@@ -112,7 +112,7 @@ dokumentáció készítõje szívesen várja azok jelentkezését, észrevételét akik
 Átirányító rész Exim 3-hoz
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ha 3-as Eximet használunk, akkor a konfigurációs álomány átirányító 
+Ha 3-as Eximet használunk, akkor a konfigurációs állomány átirányító 
 részéhez a következõket kell adni (az átirányítók a második és harmadik
 "end" tartalmú sor között találhatóak). Fontos, hogy itt számít a sorrend
 -- pl. ha ezt az irányítót az aliasállomány átirányítójára való hivatkozás
@@ -139,7 +139,7 @@ Router rész Exim 4-hez
 konfigurációs állomány felépítése is megváltozott -- ABC sorrendet használ,
 így itt a router rész a transport rész elé kerül. Tegyük a router beállítást
 a router részbe, amely a "begin routers" sor után kezdõdik. El ne felejtsük,
-hogy a megadott sorrend itt méginkább számít.
+hogy a megadott sorrend itt még inkább számít.
 
   mailman_router:
     driver = accept
@@ -175,7 +175,7 @@ kapni, amikor a címzett gép nem érhetõ el.
 Problémák
 ~~~~~~~~~
 
-  * A Mailman annyi MAIL FROM/RCPT TO hivást használ, amennyi szükséges.
+  * A Mailman annyi MAIL FROM/RCPT TO hívást használ, amennyi szükséges.
     Ennek következtében 10 vagy 100 üzenetnél is többet próbál meg egy 
     kapcsolat alatt elküldeni, amely több mint az Exim alapesetben
     beállított engedélyezett küldése (smtp_accept_queue_per_connection).
@@ -185,7 +185,7 @@ Problémák
     változónak (a ~mailman/Mailman/mm_cfg.py állományban) az Exim
     smtp_accept_queue_per_connection értékénél kisebb értéket
 
-  * A Mailman-nak figyelmen kívûl kellene hagynia az Exim kézbesítés 
+  * A Mailman-nak figyelmen kívül kellene hagynia az Exim kézbesítés 
     idõtúllépésébõl (delay) eredõ üzeneteit, annak ellenére, hogy az
     Exim ezeket sohasem küldi el a listákra. A Mailman 2.1-ben a
     visszapattanások kezelése és a VERP támogatása nagyban segítheti
@@ -197,7 +197,7 @@ Problémák
 
   * Ha hibás felhasználói azonosítóra hivatkozva nem történik kézbesítés, 
     akkor ellenõrizzük, hogy a MAILMAN_UID és MAILMAN_GID váltózóknak
-    helyesen adtuk-e meg a mailman ezen értékeit. Figyeljünk arra
+    helyesen adtuk-e meg a Mailman ezen értékeit. Figyeljünk arra
     is, hogy a rendszerszintû aliases fájlban nem található a listához
     közvetlenül kapcsolódó bejegyzés.
        
@@ -207,18 +207,18 @@ Címzett azonosítása
 
 Az Exim címzett azonosítás funkciója nagyon hasznos, mivel segítségével
 az SMTP kapcsolat ideje alatt el lehet vetni a nem ismert címzettû
-leveleket. Ez a funkció a saját tartományukba külsõ címekrõ érkezõ
+leveleket. Ez a funkció a saját tartományukba külsõ címekrõl érkezõ
 levelek esetén hasznos. A Mailman listák forgalmánál a levelek a saját
 szerverünkrõl indulnak és különbözõ külsõ, tõlünk független tartományokba
-kerülnek elküldésre. Minden egyes levél több címzetnek kerülhet továbbításra
+kerülnek elküldésre. Minden egyes levél több címzettnek kerülhet továbbításra
 -- akár egyszerre 500-nak is, ha a Mailman alapértelmezett értékét használjuk
 és nem módosítottuk az SMTP_MAX_RCPTS értékét.
 
-A Mailman listák forgalmán cimzett azonosítást végezve problémák
+A Mailman listák forgalmán címzett azonosítást végezve problémák
 merülhetnek fel. Általában az Exim a Mailman listákról érkezõ üzenetek
-minden címzettjét megpróbálja elérni. Ehhez mindösszes pár keresést
+minden címzettjét megpróbálja elérni. Ehhez mindössze pár keresést
 végez a DNSben minden egyes címzettnél, azonban ez a keresés a kézbesítést
-nagyon lelassíthatja. Ezért célszerû kikpacsolni a címzett azonosítást
+nagyon lelassíthatja. Ezért célszerû kikapcsolni a címzett azonosítást
 a Mailman forgalomra.
 
 3-as Exim alatt a következõt kell elhelyezni az általános beállítások
@@ -249,9 +249,9 @@ nagyon sok szerver a visszapattanási üzenet fejlécében hibás feladót
 tüntet fel (annak ellenére, hogy csak egy üres feladó címet kéne
 használniuk ilyen esetekben).
 
-Azért, hogy a Mailman a visszapattanó cimeket kezelni tudja szükséges
+Azért, hogy a Mailman a visszapattanó címeket kezelni tudja szükséges
 a Mailman listákon fogadni az ilyen leveleket, még akkor is ha ezek
-nem alkalmassak visszapattanások azonosítására. Ezért többnyire 
+nem alkalmasak visszapattanások azonosítására. Ezért többnyire 
 célszerû kikapcsolni az SMTP callback ellenõrzést a visszapattanó 
 levelekre.
 
@@ -285,7 +285,7 @@ végrehajtani, akkor a "DATA" ACL-t a következõképpen kell megadni:
 [Fontos, hogy a leírtakat nem tesztelték még teljesen a dokumentáció
 készítõi!]
 
-VERP használata Exim-mel és Mailman-nel
+VERP használata Eximmel és Mailmannel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 VERP esetén a listatagoknak a leveleket külön-külön küldjük el, a VERP
@@ -329,7 +329,7 @@ a transports részeket pedig így:
 Lista ellenõrzése
 ~~~~~~~~~~~~~~~~~
 
-A következõkben bemutatjuk, hogy hogyan lehet ellenõrízni egy mûködõ
+A következõkben bemutatjuk, hogy hogyan lehet ellenõrizni egy mûködõ
 rendszeren, hogy az Eximnek megadott listák címei megfelelõen mûködnek.
 A példában az mems-exchange.org levelezõszerveren mûködõ 
 quixote-users@mems-exchange.org listán mutatjuk be a szükséges parancsokat

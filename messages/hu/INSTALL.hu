@@ -41,8 +41,8 @@ olvasásra az UPGRADING állományban található fontos információkat.
 
     Ha a Python-t forráskódjából szeretnénk telepíteni, akkor az Unix-
     típusú operációs rendszereknél elegendõ a hagyományos parancsokat,
-    "./configure; make install" kiadni. A "make test" futtatásánál jópár
-    tesztelési lépést át lesz ugorva -- de ne aggódjunk, ezekre a 
+    "./configure; make install" kiadni. A "make test" futtatásánál jó 
+    pár tesztelési lépést át lesz ugorva -- de ne aggódjunk, ezekre a 
     funkciókra valószínûleg nem is lesz szükségünk. A Mailman csak azokat
     az alapvetõ funkciókat használja, amelyek minden gépen megtalálhatóak.
     
@@ -393,7 +393,7 @@ olvasásra az UPGRADING állományban található fontos információkat.
           % cd ../rc6.d
           % ln -s ../init.d/mailman K12mailman
       
-   - Ellenõrízzük, hogy a Defaults.py állományban a DEFAULT_EMAIL_HOST
+   - Ellenõrizzük, hogy a Defaults.py állományban a DEFAULT_EMAIL_HOST
      és DEFAULT_URL_HOST változók helyes értéket mutatnak. Ha nem, 
      akkor a helyes értékkel ezeket a változókat az mm_cfg.py állományba
      helyezzük el. Megjegyezzük, hogyha ezen két változó valamelyikét
