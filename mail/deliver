@@ -34,8 +34,9 @@ together recipients in the same major domain as much as possible.
 
 import os, sys
 
-TRIES = 5
+# Settings for pauses during process-depletion (error.EAGAIN) condition.
 REFRACT = 15                            # Seconds between fork retries.
+TRIES = 5                               # Number of times to retry
 
 ## # Debugging - os.fork can run out or resources, double check the provisions.
 ## import paths
