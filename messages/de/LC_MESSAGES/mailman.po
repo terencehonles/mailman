@@ -51,11 +51,11 @@ msgstr ""
 
 #: Mailman/Bouncer.py:44
 msgid "due to excessive bounces"
-msgstr ""
+msgstr "wegen unzustellbarkeit"
 
 #: Mailman/Bouncer.py:45
 msgid "by yourself"
-msgstr ""
+msgstr "selber"
 
 # Mailman/HTMLFormatter.py:137 Mailman/HTMLFormatter.py:267
 #: Mailman/Bouncer.py:46
@@ -82,7 +82,7 @@ msgstr "%(realname)s Abonnierungsbenachrichtigung"
 
 #: Mailman/Bouncer.py:237
 msgid " The last bounce received from you was dated %(date)s"
-msgstr ""
+msgstr " Die letzte Unzustellbarkeitsmeldung vin Ihnen kam am %(date)s"
 
 # Mailman/Handlers/CalcRecips.py:37 Mailman/Handlers/CookHeaders.py:55
 # Mailman/Handlers/Hold.py:240 Mailman/Handlers/Hold.py:274
@@ -350,7 +350,7 @@ msgstr "Abmelden"
 
 #: Mailman/Cgi/admin.py:467
 msgid "Emergency moderation of all list traffic:"
-msgstr ""
+msgstr "Notmoderation aller eingehenden Nachrichten"
 
 # Mailman/Cgi/admin.py:444
 #: Mailman/Cgi/admin.py:484
@@ -478,11 +478,11 @@ msgstr "Mitgliederliste"
 
 #: Mailman/Cgi/admin.py:784
 msgid "(help)"
-msgstr ""
+msgstr "(Hilfe)"
 
 #: Mailman/Cgi/admin.py:785
 msgid "Find member %(link)s:"
-msgstr ""
+msgstr "Mitglied %(link)s finden:"
 
 # Mailman/Cgi/admin.py:466
 #: Mailman/Cgi/admin.py:788
@@ -521,11 +521,11 @@ msgstr "Verstecken"
 # Mailman/Bouncer.py:168
 #: Mailman/Cgi/admin.py:885
 msgid "mod"
-msgstr "modifiziert"
+msgstr "moderiert"
 
 #: Mailman/Cgi/admin.py:886
 msgid "nomail<br>[reason]"
-msgstr ""
+msgstr "keine Nachricht<br>[Grund]"
 
 # Mailman/Cgi/admin.py:817
 #: Mailman/Cgi/admin.py:887
@@ -539,7 +539,7 @@ msgstr "Keine eigenen"
 
 #: Mailman/Cgi/admin.py:888
 msgid "nodupes"
-msgstr ""
+msgstr "Keine Duplikate"
 
 # Mailman/Cgi/admin.py:818
 #: Mailman/Cgi/admin.py:889
@@ -583,6 +583,9 @@ msgid ""
 "        set, postings from them will be moderated, otherwise they will be\n"
 "        approved."
 msgstr ""
+"<b>mod</b> -- Die Moderationeinstellung für dieses Mitglied. Wenn diese\n"
+"        Einstellung gesetzt ist, werden alle Nachrichten von diesem Benutzer\n"
+"        moderiert, ansonsten werden sie sofort durchgelassen."
 
 # Mailman/Cgi/admin.py:882
 #: Mailman/Cgi/admin.py:982
@@ -666,11 +669,11 @@ msgstr "<b>Sprache</b> -- Die bevorzugte Sprache des Mitglieds"
 
 #: Mailman/Cgi/admin.py:1027
 msgid "Click here to hide the legend for this table."
-msgstr ""
+msgstr "Hier klicken, um die Erklärungen für diese Tabelle nicht anzuzeigen."
 
 #: Mailman/Cgi/admin.py:1031
 msgid "Click here to include the legend for this table."
-msgstr ""
+msgstr "Hier klicken, um die Erklärungen für diese Tabelle anzuzeigen."
 
 # Mailman/Cgi/admin.py:904
 #: Mailman/Cgi/admin.py:1038
@@ -687,7 +690,7 @@ msgstr "von %(start)s bis %(end)s"
 
 #: Mailman/Cgi/admin.py:1060
 msgid "Subscribe these users now or invite them?"
-msgstr ""
+msgstr "Diese Benutzer jetzt anmelden oder einladen?"
 
 # Mailman/Cgi/subscribe.py:116
 #: Mailman/Cgi/admin.py:1062
@@ -956,7 +959,7 @@ msgstr "Nicht-Mitglieder k�nnen nicht aus dem Abonnement genommen werden:"
 
 #: Mailman/Cgi/admin.py:1328
 msgid "Bad moderation flag value"
-msgstr ""
+msgstr "Ungültiger Wert der Moderationseinstellung"
 
 # Mailman/Cgi/admin.py:1301
 #: Mailman/Cgi/admin.py:1349
@@ -965,7 +968,7 @@ msgstr "Nicht abonniert:"
 
 #: Mailman/Cgi/admin.py:1352
 msgid "Ignoring changes to deleted member: %(user)s"
-msgstr ""
+msgstr "Änderungen f¨r gelöschtes Mitglied %(user)s ignoriert"
 
 # Mailman/Cgi/admin.py:1242
 #: Mailman/Cgi/admin.py:1391
@@ -1016,7 +1019,7 @@ msgstr "Alle Daten senden"
 
 #: Mailman/Cgi/admindb.py:200
 msgid "all of %(esender)s's held messages."
-msgstr ""
+msgstr "alle festgehaltenen Nachrichten vom %(sender)s."
 
 # Mailman/Cgi/confirm.py:547
 #: Mailman/Cgi/admindb.py:205
@@ -1115,7 +1118,7 @@ msgstr "Absender:"
 
 #: Mailman/Cgi/admindb.py:366
 msgid "Action to take on all these held messages:"
-msgstr ""
+msgstr "Was soll mit diesen Nachrichten geschehen?"
 
 #: Mailman/Cgi/admindb.py:370 Mailman/Gui/Privacy.py:280
 msgid "Accept"
@@ -1129,11 +1132,11 @@ msgstr "Mitteilung f�r Administrator erhalten"
 
 #: Mailman/Cgi/admindb.py:384
 msgid "Forward messages (individually) to:"
-msgstr ""
+msgstr "Nachrichten (einzeln) weiterleiten an:"
 
 #: Mailman/Cgi/admindb.py:402
 msgid "Clear this member's <em>moderate</em> flag"
-msgstr ""
+msgstr "<em>Moderationseinstellung</em> für dieses mitglied löschen"
 
 #: Mailman/Cgi/admindb.py:412
 #, fuzzy
@@ -1167,16 +1170,20 @@ msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
 msgstr ""
+"Diesen Absender (<b>%(esender)s</b>) jegliches Abonnement\n"
+"                    dieser Liste verweigern"
 
 #: Mailman/Cgi/admindb.py:431
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
 msgstr ""
+"Klicken Sie auf die Nachrichtennummer, um die betreffende\n"
+"            Nachricht zu lesen, oder "
 
 #: Mailman/Cgi/admindb.py:433
 msgid "view all messages from %(esender)s"
-msgstr ""
+msgstr "alle Nachrichten von Absender %(esender)s ansehen"
 
 # Mailman/Cgi/admindb.py:271
 #: Mailman/Cgi/admindb.py:453 Mailman/Cgi/admindb.py:568
@@ -1192,7 +1199,7 @@ msgstr " Ja "
 
 #: Mailman/Cgi/admindb.py:456
 msgid "Size:"
-msgstr ""
+msgstr "Grösse:"
 
 # Mailman/Cgi/admindb.py:273
 #: Mailman/Cgi/admindb.py:457 Mailman/Cgi/admindb.py:570
@@ -1319,7 +1326,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:150
 msgid "System error, bad content: %(content)s"
-msgstr ""
+msgstr "Systemfehler, ungültiger Inhalt: %(content)"
 
 # Mailman/Cgi/confirm.py:140
 #: Mailman/Cgi/confirm.py:160
@@ -2002,7 +2009,7 @@ msgstr ""
 
 #: Mailman/Cgi/create.py:305
 msgid "List Identity"
-msgstr ""
+msgstr "Listen-Identität"
 
 # Mailman/Cgi/create.py:286
 #: Mailman/Cgi/create.py:308
@@ -5191,8 +5198,7 @@ msgid ""
 "Can subscribers choose to receive mail immediately, rather\n"
 "             than in batched digests?"
 msgstr ""
-"Haben Abonnementen die Wahl, ob sie Emails sofort oder stapelweise als "
-"Zusammenfassungen erhalten?"
+"Haben Abonnementen die Wahl, ob sie Emails sofort statt stapelweise erhalten?"
 
 # Mailman/Gui/NonDigest.py:57
 #: Mailman/Gui/NonDigest.py:53
