@@ -31,10 +31,11 @@ import errno
 from mimelib.Generator import Generator
 from mimelib.Parser import Parser
 
-from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Message
 from Mailman import Errors
+from Mailman.UserDesc import UserDesc
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
@@ -248,11 +249,9 @@ class ListAdmin:
         elif value == mm_cfg.REJECT:
             # Rejected
             rejection = 'Refused'
-            # FIXME
-            os.environ['LANG'] = pluser = self.GetPreferredLanguage(sender)
             self.__refuse(_('Posting of your message titled "%(subject)s"'),
                           sender, comment or _('[No reason given]'),
-                          lang=pluser)
+                          lang=self.getMemberLanguage(sender))
         else:
             assert value == mm_cfg.DISCARD
             # Discarded
@@ -365,13 +364,7 @@ class ListAdmin:
             # subscribe
             assert value == mm_cfg.SUBSCRIBE
             try:
-                class UserDesc: pass
-                userdesc = UserDesc()
-                userdesc.address = addr
-                userdesc.fullname = fullname
-                userdesc.password = password
-                userdesc.digest = digest
-                userdesc.lang = lang
+                userdesc = UserDesc(addr, fullname, password, digest, lang)
                 self.ApprovedAddMember(userdesc)
             except Errors.MMAlreadyAMember:
                 # User has already been subscribed, after sending the request
