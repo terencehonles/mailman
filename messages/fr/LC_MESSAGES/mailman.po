@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: <>\n"
-"POT-Creation-Date: Mon Dec 31 16:47:34 2001\n"
+"POT-Creation-Date: Sun Feb  3 18:15:46 2002\n"
 "PO-Revision-Date: 2001-01-08 04:14:32+00:00\n"
 "Last-Translator: Ousmane Wilane <wilane@yahoo.com>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
@@ -17,46 +17,46 @@ msgstr ""
 msgid "No subject"
 msgstr "Sans objet"
 
-#: Mailman/Archiver/pipermail.py:262
+#: Mailman/Archiver/pipermail.py:265
 msgid "Creating archive directory "
 msgstr "Création du répertoire des archives "
 
-#: Mailman/Archiver/pipermail.py:274
+#: Mailman/Archiver/pipermail.py:277
 msgid "Reloading pickled archive state"
 msgstr "Chargement de l'etat pickle des archives"
 
-#: Mailman/Archiver/pipermail.py:301
+#: Mailman/Archiver/pipermail.py:304
 msgid "Pickling archive state into "
 msgstr "Pickle de l'etat des archives vers"
 
-#: Mailman/Archiver/pipermail.py:412
+#: Mailman/Archiver/pipermail.py:415
 msgid "Updating index files for archive [%(archive)s]"
 msgstr "Mise à jour des fichiers d'index pour les archives [%(archive)s]"
 
-#: Mailman/Archiver/pipermail.py:446
+#: Mailman/Archiver/pipermail.py:449
 msgid "  Thread"
 msgstr "\tThread"
 
-#: Mailman/Archiver/pipermail.py:532
+#: Mailman/Archiver/pipermail.py:535
 msgid "#%(counter)05d %(msgid)s"
 msgstr "#%(counter)05d %(msgid)s"
 
-#: Mailman/Bouncer.py:143
+#: Mailman/Bouncer.py:161
 msgid "disabled"
 msgstr "désactivé"
 
-#: Mailman/Bouncer.py:148
+#: Mailman/Bouncer.py:166
 msgid "Bounce action notification"
 msgstr "Avis de mesure de rebond"
 
-#: Mailman/Bouncer.py:196 Mailman/Handlers/Acknowledge.py:50
+#: Mailman/Bouncer.py:217 Mailman/Handlers/Acknowledge.py:50
 #: Mailman/Handlers/CookHeaders.py:57 Mailman/Handlers/Hold.py:200
-#: Mailman/Handlers/Hold.py:235 Mailman/Handlers/ToDigest.py:205
-#: Mailman/ListAdmin.py:209
+#: Mailman/Handlers/Hold.py:236 Mailman/Handlers/ToDigest.py:205
+#: Mailman/ListAdmin.py:222
 msgid "(no subject)"
 msgstr "(sans objet)"
 
-#: Mailman/Bouncer.py:198
+#: Mailman/Bouncer.py:219
 msgid "[No bounce details are available]"
 msgstr "[Aucune information de rebond]."
 
@@ -68,7 +68,7 @@ msgstr "Modérateur"
 msgid "Administrator"
 msgstr "Administrateur"
 
-#: Mailman/Cgi/admin.py:67 Mailman/Cgi/admindb.py:84 Mailman/Cgi/confirm.py:55
+#: Mailman/Cgi/admin.py:67 Mailman/Cgi/admindb.py:85 Mailman/Cgi/confirm.py:55
 #: Mailman/Cgi/edithtml.py:67 Mailman/Cgi/listinfo.py:51
 #: Mailman/Cgi/options.py:70 Mailman/Cgi/private.py:97
 #: Mailman/Cgi/rmlist.py:62 Mailman/Cgi/roster.py:57
@@ -76,12 +76,12 @@ msgstr "Administrateur"
 msgid "No such list <em>%(safelistname)s</em>"
 msgstr "Liste inexistante <em>%(safelistname)s</em>"
 
-#: Mailman/Cgi/admin.py:82 Mailman/Cgi/admindb.py:100
+#: Mailman/Cgi/admin.py:82 Mailman/Cgi/admindb.py:101
 #: Mailman/Cgi/edithtml.py:85 Mailman/Cgi/private.py:122
 msgid "Authorization failed."
 msgstr "Echec de l'authentification."
 
-#: Mailman/Cgi/admin.py:169
+#: Mailman/Cgi/admin.py:173
 msgid ""
 "You have turned off delivery of both digest and\n"
 "                non-digest messages.  This is an incompatible state of\n"
@@ -93,7 +93,7 @@ msgstr ""
 "C'est un paramètrage incompatible. Vous devez en activer un faute de quoi,\n"
 "votre liste de diffusion sera inutilisable."
 
-#: Mailman/Cgi/admin.py:178
+#: Mailman/Cgi/admin.py:182
 msgid ""
 "You have digest members, but digests are turned\n"
 "                off. Those people will not receive mail."
@@ -101,7 +101,7 @@ msgstr ""
 "Vous avez des abonnés en mode de rmise groupé alors que cette option est "
 "désactivée. Ces abonnés ne recevront pas de courriels."
 
-#: Mailman/Cgi/admin.py:183
+#: Mailman/Cgi/admin.py:187
 msgid ""
 "You have regular list members but non-digestified mail is\n"
 "                turned off.  They will receive mail until you fix this\n"
@@ -111,19 +111,19 @@ msgstr ""
 "désactivées. Ils recevront les courriels jusqu'à ce ce que vous resolviez le "
 "problème."
 
-#: Mailman/Cgi/admin.py:207
+#: Mailman/Cgi/admin.py:211
 msgid "%(hostname)s mailing lists - Admin Links"
 msgstr "Listes de diffusion de %(hostname)s - Liens de l'Admin"
 
-#: Mailman/Cgi/admin.py:236 Mailman/Cgi/listinfo.py:97
+#: Mailman/Cgi/admin.py:240 Mailman/Cgi/listinfo.py:97
 msgid "Welcome!"
 msgstr "Bienvenue!"
 
-#: Mailman/Cgi/admin.py:239 Mailman/Cgi/listinfo.py:100
+#: Mailman/Cgi/admin.py:243 Mailman/Cgi/listinfo.py:100
 msgid "Mailman"
 msgstr "Mailman"
 
-#: Mailman/Cgi/admin.py:243
+#: Mailman/Cgi/admin.py:247
 msgid ""
 "<p>There currently are no publicly-advertised %(mailmanlink)s\n"
 "            mailing lists on %(hostname)s."
@@ -131,7 +131,7 @@ msgstr ""
 "<p>Il n'y a actuellement pas de liste de diffusion %(mailmanlink)s\n"
 "\tpubliquement annoncées sur %(hostname)s"
 
-#: Mailman/Cgi/admin.py:249
+#: Mailman/Cgi/admin.py:253
 msgid ""
 "<p>Below is the collection of publicly-advertised\n"
 "            %(mailmanlink)s mailing lists on %(hostname)s.  Click on a list\n"
@@ -142,11 +142,11 @@ msgstr ""
 "\tle nom d'une liste pour afficher la page de configuration\n"
 "\tde la liste en question."
 
-#: Mailman/Cgi/admin.py:256
+#: Mailman/Cgi/admin.py:260
 msgid "right "
 msgstr "droite "
 
-#: Mailman/Cgi/admin.py:258
+#: Mailman/Cgi/admin.py:262
 msgid ""
 "To visit the administrators configuration page for an\n"
 "        unadvertised list, open a URL similar to this one, but with a '/' "
@@ -166,32 +166,32 @@ msgstr ""
 "\n"
 "\t<p>Les informations générales sur les listes sont disponible à "
 
-#: Mailman/Cgi/admin.py:265
+#: Mailman/Cgi/admin.py:269
 msgid "the mailing list overview page"
 msgstr "Panorama de la liste de diffusion"
 
-#: Mailman/Cgi/admin.py:267
+#: Mailman/Cgi/admin.py:271
 msgid "<p>(Send questions and comments to "
 msgstr "<p>Envoyez questions et commentaires à "
 
-#: Mailman/Cgi/admin.py:277 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:156
+#: Mailman/Cgi/admin.py:281 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:156
 msgid "List"
 msgstr "Liste"
 
-#: Mailman/Cgi/admin.py:278 Mailman/Cgi/admin.py:547
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/admin.py:553
 #: Mailman/Cgi/listinfo.py:133
 msgid "Description"
 msgstr "Description"
 
-#: Mailman/Cgi/admin.py:284 Mailman/Cgi/listinfo.py:139 bin/list_lists:103
+#: Mailman/Cgi/admin.py:288 Mailman/Cgi/listinfo.py:139 bin/list_lists:103
 msgid "[no description available]"
 msgstr "[pas de description disponible]"
 
-#: Mailman/Cgi/admin.py:317
+#: Mailman/Cgi/admin.py:321
 msgid "No valid variable name found."
 msgstr "Aucun nom de variable valide trouvé."
 
-#: Mailman/Cgi/admin.py:327
+#: Mailman/Cgi/admin.py:331
 msgid ""
 "%(realname)s Mailing list Configuration Help\n"
 "    <br><em>%(varname)s</em> Option"
@@ -199,11 +199,11 @@ msgstr ""
 "Aide à la configuration de la liste %(realname)s\n"
 "\t<br>Option <em>%(varname)s</em>"
 
-#: Mailman/Cgi/admin.py:334
+#: Mailman/Cgi/admin.py:338
 msgid "Mailman %(varname)s List Option Help"
 msgstr "Aide Mailman sur l'option de liste %(varname)s"
 
-#: Mailman/Cgi/admin.py:352
+#: Mailman/Cgi/admin.py:356
 msgid ""
 "<em><strong>Warning:</strong> changing this option here\n"
 "    could cause other screens to be out-of-sync.  Be sure to reload any "
@@ -219,55 +219,55 @@ msgstr ""
 "\n"
 "   "
 
-#: Mailman/Cgi/admin.py:362
+#: Mailman/Cgi/admin.py:366
 msgid "return to the %(category)s options page."
 msgstr "Retourne à la page des options de type %(category)s."
 
-#: Mailman/Cgi/admin.py:377
+#: Mailman/Cgi/admin.py:381
 msgid "%(realname)s Administration (%(label)s)"
 msgstr "Administration %(realname)s (%(label)s)"
 
-#: Mailman/Cgi/admin.py:378
+#: Mailman/Cgi/admin.py:382
 msgid "%(realname)s mailing list administration<br>%(label)s Section"
 msgstr "Administration de la liste %(realname)s<br>Section %(label)s"
 
-#: Mailman/Cgi/admin.py:383
+#: Mailman/Cgi/admin.py:387
 msgid "Configuration Categories"
 msgstr "Catégories de configuration"
 
-#: Mailman/Cgi/admin.py:384
+#: Mailman/Cgi/admin.py:388
 msgid "Other Administrative Activities"
 msgstr "Les autres activités administratives"
 
-#: Mailman/Cgi/admin.py:389
+#: Mailman/Cgi/admin.py:393
 msgid "Tend to pending moderator requests"
 msgstr "Basculer vers les requêtes en attente du modérateur"
 
-#: Mailman/Cgi/admin.py:391
+#: Mailman/Cgi/admin.py:395
 msgid "Go to the general list information page"
 msgstr "Allez à la page des informations générales de la liste"
 
-#: Mailman/Cgi/admin.py:393
+#: Mailman/Cgi/admin.py:397
 msgid "Edit the public HTML pages"
 msgstr "Modifier les pages HTML publiques"
 
-#: Mailman/Cgi/admin.py:395
+#: Mailman/Cgi/admin.py:399
 msgid "Go to list archives"
 msgstr "Visitez les archives de la liste"
 
-#: Mailman/Cgi/admin.py:399
+#: Mailman/Cgi/admin.py:405
 msgid "Delete this mailing list"
 msgstr "Supprimer cette liste de diffusion"
 
-#: Mailman/Cgi/admin.py:400
+#: Mailman/Cgi/admin.py:406
 msgid " (requires confirmation)<br>&nbsp;<br>"
 msgstr " (confirmation requise)<br>&nbsp;<br>"
 
-#: Mailman/Cgi/admin.py:406
+#: Mailman/Cgi/admin.py:412
 msgid "Logout"
 msgstr "Déconnecter"
 
-#: Mailman/Cgi/admin.py:462
+#: Mailman/Cgi/admin.py:468
 msgid ""
 "Make your changes in the following section, then submit them\n"
 "        using the <em>Submit Your Changes</em> button below."
@@ -276,11 +276,11 @@ msgstr ""
 "soumettez-les en utilisant le bouton <em>Soumettre vos\n"
 "modifications<em> ci-dessous."
 
-#: Mailman/Cgi/admin.py:480
+#: Mailman/Cgi/admin.py:486
 msgid "Additional Member Tasks"
 msgstr "Tâches supplémentaires d'abonné"
 
-#: Mailman/Cgi/admin.py:483
+#: Mailman/Cgi/admin.py:489
 msgid ""
 "<li>Find members by\n"
 "                <a "
@@ -291,15 +291,15 @@ msgstr ""
 "href=\"http://www.python.org/doc/current/lib/re-syntax.html\">Expression\n"
 "régulières Python</a> (<em>regexp</em><br>"
 
-#: Mailman/Cgi/admin.py:488 Mailman/Cgi/admin.py:692
+#: Mailman/Cgi/admin.py:494 Mailman/Cgi/admin.py:699
 msgid "Regexp:"
 msgstr "Expression regulière:"
 
-#: Mailman/Cgi/admin.py:493
+#: Mailman/Cgi/admin.py:499
 msgid "Search..."
 msgstr "Recherche..."
 
-#: Mailman/Cgi/admin.py:498
+#: Mailman/Cgi/admin.py:504
 msgid ""
 "<li>Set everyone's moderation bit, including\n"
 "            those members not currently visible"
@@ -307,23 +307,23 @@ msgstr ""
 "<li>Activer le bit de modération pour tous, y compris ceux\n"
 "                qui ne sont actuellement pas visibles"
 
-#: Mailman/Cgi/admin.py:502
+#: Mailman/Cgi/admin.py:508
 msgid "Off"
 msgstr "Off"
 
-#: Mailman/Cgi/admin.py:502
+#: Mailman/Cgi/admin.py:508
 msgid "On"
 msgstr "On"
 
-#: Mailman/Cgi/admin.py:504
+#: Mailman/Cgi/admin.py:510
 msgid "Set"
 msgstr "Activer"
 
-#: Mailman/Cgi/admin.py:548
+#: Mailman/Cgi/admin.py:554
 msgid "Value"
 msgstr "Valeur"
 
-#: Mailman/Cgi/admin.py:602
+#: Mailman/Cgi/admin.py:608
 msgid ""
 "Badly formed options entry:\n"
 " %(record)s"
@@ -331,47 +331,47 @@ msgstr ""
 "Options malformés:\n"
 "%(record)s"
 
-#: Mailman/Cgi/admin.py:657
+#: Mailman/Cgi/admin.py:664
 msgid "<em>Enter the text below, or...</em><br>"
 msgstr "<em>Entrer le texte ci-dessous, ou ...</em><br>"
 
-#: Mailman/Cgi/admin.py:659
+#: Mailman/Cgi/admin.py:666
 msgid "<br><em>...specify a file to upload</em><br>"
 msgstr "<br><em>...spécifiez une fichier à télédécharger</em><br>"
 
-#: Mailman/Cgi/admin.py:685 Mailman/Cgi/admin.py:688
+#: Mailman/Cgi/admin.py:692 Mailman/Cgi/admin.py:695
 msgid "Topic %(i)d"
 msgstr "Thème %(i)d"
 
-#: Mailman/Cgi/admin.py:689
+#: Mailman/Cgi/admin.py:696
 msgid "Delete"
 msgstr "Supprimer"
 
-#: Mailman/Cgi/admin.py:690
+#: Mailman/Cgi/admin.py:697
 msgid "Topic name:"
 msgstr "Nom du thème:"
 
-#: Mailman/Cgi/admin.py:695 Mailman/Cgi/options.py:863
+#: Mailman/Cgi/admin.py:702 Mailman/Cgi/options.py:862
 msgid "Description:"
 msgstr "Description"
 
-#: Mailman/Cgi/admin.py:699
+#: Mailman/Cgi/admin.py:706
 msgid "Add new item..."
 msgstr "Ajouter une nouvelle entrée..."
 
-#: Mailman/Cgi/admin.py:701
+#: Mailman/Cgi/admin.py:708
 msgid "...before this one."
 msgstr "...avant celle-ci."
 
-#: Mailman/Cgi/admin.py:702
+#: Mailman/Cgi/admin.py:709
 msgid "...after this one."
 msgstr "...après celle-ci."
 
-#: Mailman/Cgi/admin.py:735
+#: Mailman/Cgi/admin.py:742
 msgid "<br>(Details for <b>%(varname)s</b>)"
 msgstr "<br>(Détails de <b>%(varname)s</b>)"
 
-#: Mailman/Cgi/admin.py:740
+#: Mailman/Cgi/admin.py:747
 msgid ""
 "<br><em><strong>Note:</strong>\n"
 "        setting this value performs an immediate action but does not modify\n"
@@ -381,75 +381,91 @@ msgstr ""
 "\tl'activation de cette valeur prend effet immédiatement sans\n"
 "\tmodifier les états permanents.</em>"
 
-#: Mailman/Cgi/admin.py:753
+#: Mailman/Cgi/admin.py:761
 msgid "Mass Subscriptions"
 msgstr "Abonnement en masse"
 
-#: Mailman/Cgi/admin.py:760
+#: Mailman/Cgi/admin.py:768
 msgid "Mass Removals"
 msgstr "Suppression en masse"
 
-#: Mailman/Cgi/admin.py:767
+#: Mailman/Cgi/admin.py:775
 msgid "Membership List"
 msgstr "Liste des abonnements"
 
-#: Mailman/Cgi/admin.py:783
+#: Mailman/Cgi/admin.py:791
 msgid "Bad regular expression: "
 msgstr "Expression régulière invalide: "
 
-#: Mailman/Cgi/admin.py:834
+#: Mailman/Cgi/admin.py:842
 msgid "%(allcnt)s members total, %(membercnt)s shown"
 msgstr "Total des abonnés %(allcnt)s, %(membercnt)s affichés"
 
-#: Mailman/Cgi/admin.py:837
+#: Mailman/Cgi/admin.py:845
 msgid "%(allcnt)s members total"
 msgstr "total des abonnés %(allcnt)s"
 
-#: Mailman/Cgi/admin.py:860
+#: Mailman/Cgi/admin.py:868
 msgid "unsub"
 msgstr "résil"
 
-#: Mailman/Cgi/admin.py:861
+#: Mailman/Cgi/admin.py:869
 msgid "member address<br>member name"
 msgstr "Adresse de l'abonné<br>Nom de l'abonné"
 
-#: Mailman/Cgi/admin.py:862
+#: Mailman/Cgi/admin.py:870
 msgid "hide"
 msgstr "cacher"
 
-#: Mailman/Cgi/admin.py:862
+#: Mailman/Cgi/admin.py:870
 msgid "mod"
 msgstr "mod"
 
-#: Mailman/Cgi/admin.py:862
-msgid "nomail"
-msgstr "arrêt"
+#: Mailman/Cgi/admin.py:871
+msgid "nomail<br>[reason]"
+msgstr ""
 
-#: Mailman/Cgi/admin.py:863
+#: Mailman/Cgi/admin.py:872
 msgid "ack"
 msgstr "acc"
 
-#: Mailman/Cgi/admin.py:863
+#: Mailman/Cgi/admin.py:872
 msgid "not metoo"
 msgstr "pasmoi"
 
-#: Mailman/Cgi/admin.py:864
+#: Mailman/Cgi/admin.py:873
 msgid "digest"
 msgstr "groupé"
 
-#: Mailman/Cgi/admin.py:864
+#: Mailman/Cgi/admin.py:873
 msgid "plain"
 msgstr "brute"
 
-#: Mailman/Cgi/admin.py:865
+#: Mailman/Cgi/admin.py:874
 msgid "language"
 msgstr "langue"
 
-#: Mailman/Cgi/admin.py:942
+#: Mailman/Cgi/admin.py:885
+msgid "?"
+msgstr ""
+
+#: Mailman/Cgi/admin.py:886
+msgid "U"
+msgstr ""
+
+#: Mailman/Cgi/admin.py:887
+msgid "A"
+msgstr ""
+
+#: Mailman/Cgi/admin.py:888
+msgid "B"
+msgstr ""
+
+#: Mailman/Cgi/admin.py:960
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
 msgstr "<b>résil</b> -- Cliquez pour résilier son abonnement."
 
-#: Mailman/Cgi/admin.py:944
+#: Mailman/Cgi/admin.py:962
 msgid ""
 "<b>mod</b> -- The user's personal moderation flag.  If this is\n"
 "        set, postings from them will be moderated, otherwise they will be\n"
@@ -459,7 +475,7 @@ msgstr ""
 "    Si celui-ci est actif, les soumissions de l'utilisateur \n"
 "    seront modérées, sinon, elles seront approuvées."
 
-#: Mailman/Cgi/admin.py:948
+#: Mailman/Cgi/admin.py:966
 msgid ""
 "<b>hide</b> -- Is the member's address concealed on\n"
 "        the list of subscribers?"
@@ -467,11 +483,26 @@ msgstr ""
 "<b>cacher</b> -- L'adresse de l'abonné est-elle supprimée\n"
 "\tde la liste des abonnés?"
 
-#: Mailman/Cgi/admin.py:950
-msgid "<b>nomail</b> -- Is delivery to the member disabled?"
-msgstr "<b>arrêt</b> -- Les remises à l'abonné sont-elle désactivées?"
+#: Mailman/Cgi/admin.py:968
+msgid ""
+"<b>nomail</b> -- Is delivery to the member disabled?  If so, an\n"
+"        abbreviation will be given describing the reason for the disabled\n"
+"        delivery:\n"
+"            <ul><li><b>U</b> -- Delivery was disabled by the user via their\n"
+"                    personal options page.\n"
+"                <li><b>A</b> -- Delivery was disabled by the list\n"
+"                    administrators.\n"
+"                <li><b>B</b> -- Delivery was disabled by the system due to\n"
+"                    excessive bouncing from the member's address.\n"
+"                <li><b>?</b> -- The reason for disabled delivery isn't "
+"known.\n"
+"                    This is the case for all memberships which were "
+"disabled\n"
+"                    in older versions of Mailman.\n"
+"            </ul>"
+msgstr ""
 
-#: Mailman/Cgi/admin.py:952
+#: Mailman/Cgi/admin.py:983
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
@@ -479,13 +510,13 @@ msgstr ""
 "<b>acc</b> -- Les abonnés recoivent-ils un accusé de récéption de leurs "
 "soumissions?"
 
-#: Mailman/Cgi/admin.py:955
+#: Mailman/Cgi/admin.py:986
 msgid ""
 "<b>not metoo</b> -- Does the member avoid copies of their own\n"
 "        posts?"
 msgstr "<b>pasmoi</b> -- Les abonnés éludent-ils leurs propres soumissions?"
 
-#: Mailman/Cgi/admin.py:958
+#: Mailman/Cgi/admin.py:989
 msgid ""
 "<b>digest</b> -- Does the member get messages in digests?\n"
 "        (otherwise, individual messages)"
@@ -494,7 +525,7 @@ msgstr ""
 "sous forme groupée?\n"
 "\t(soumissions individuelles sinon)"
 
-#: Mailman/Cgi/admin.py:961
+#: Mailman/Cgi/admin.py:992
 msgid ""
 "<b>plain</b> -- If getting digests, does the member get plain\n"
 "        text digests?  (otherwise, MIME)"
@@ -502,11 +533,19 @@ msgstr ""
 "<b>brute</b> -- Est ce que lors de l'envoi des lots, l'abonné\n"
 "doit-il recevoir du texte brute? (MIME sinon)"
 
-#: Mailman/Cgi/admin.py:963
+#: Mailman/Cgi/admin.py:994
 msgid "<b>language</b> -- Language preferred by the user"
 msgstr "<b>Langue</b> -- Langue préféré par l'utilisateur"
 
-#: Mailman/Cgi/admin.py:971
+#: Mailman/Cgi/admin.py:1008
+msgid "Click here to hide the legend for this table."
+msgstr ""
+
+#: Mailman/Cgi/admin.py:1012
+msgid "Click here to include the legend for this table."
+msgstr ""
+
+#: Mailman/Cgi/admin.py:1019
 msgid ""
 "<p><em>To view more members, click on the appropriate\n"
 "        range listed below:</em>"
@@ -514,49 +553,49 @@ msgstr ""
 "<p><em>Pour voir d'avantage d'abonnés, clicker sur l'un des intervals "
 "ci-dessous:<em>"
 
-#: Mailman/Cgi/admin.py:980
+#: Mailman/Cgi/admin.py:1028
 msgid "from %(start)s to %(end)s"
 msgstr "De %(start)s à %(end)s"
 
-#: Mailman/Cgi/admin.py:994
+#: Mailman/Cgi/admin.py:1042
 msgid "Send welcome message to this batch?"
 msgstr "Envoyer un message de bienvenue à ce batch?"
 
-#: Mailman/Cgi/admin.py:998 Mailman/Cgi/admin.py:1009
-#: Mailman/Cgi/admin.py:1033 Mailman/Cgi/admin.py:1043
+#: Mailman/Cgi/admin.py:1046 Mailman/Cgi/admin.py:1057
+#: Mailman/Cgi/admin.py:1081 Mailman/Cgi/admin.py:1091
 msgid " no "
 msgstr " Non "
 
-#: Mailman/Cgi/admin.py:1001 Mailman/Cgi/admin.py:1012
-#: Mailman/Cgi/admin.py:1035 Mailman/Cgi/admin.py:1046
+#: Mailman/Cgi/admin.py:1049 Mailman/Cgi/admin.py:1060
+#: Mailman/Cgi/admin.py:1083 Mailman/Cgi/admin.py:1094
 msgid " yes "
 msgstr " oui "
 
-#: Mailman/Cgi/admin.py:1005
+#: Mailman/Cgi/admin.py:1053
 msgid "Send notifications to the list owner? "
 msgstr "Envoyer une notification au propriétaire de la liste? "
 
-#: Mailman/Cgi/admin.py:1014 Mailman/Cgi/admin.py:1048
+#: Mailman/Cgi/admin.py:1062 Mailman/Cgi/admin.py:1096
 msgid "Enter one address per line below..."
 msgstr "Entrer une adresse par ligne ci-dessous..."
 
-#: Mailman/Cgi/admin.py:1019 Mailman/Cgi/admin.py:1053
+#: Mailman/Cgi/admin.py:1067 Mailman/Cgi/admin.py:1101
 msgid "...or specify a file to upload:"
 msgstr "...ou spécifier un fichier à télédécharger"
 
-#: Mailman/Cgi/admin.py:1030
+#: Mailman/Cgi/admin.py:1078
 msgid "Send unsubscription acknowledgement to the user?"
 msgstr "Envoyer un accusé de récéption de résiliation à l'utilisateur?"
 
-#: Mailman/Cgi/admin.py:1039
+#: Mailman/Cgi/admin.py:1087
 msgid "Send notifications to the list owner?"
 msgstr "Envoyer les avis au propriétaire de la liste?"
 
-#: Mailman/Cgi/admin.py:1062
+#: Mailman/Cgi/admin.py:1110
 msgid "Change list ownership passwords"
 msgstr "Modifier le mot de passe des propriétaires de la liste"
 
-#: Mailman/Cgi/admin.py:1065
+#: Mailman/Cgi/admin.py:1113
 msgid ""
 "The <em>list administrators</em> are the people who have ultimate control "
 "over\n"
@@ -593,46 +632,46 @@ msgstr ""
 "fournir la liste des adresses courriels des modérateurs dans la\n"
 "<a href=\"%(adminurl)s/general\">section options générales</a>."
 
-#: Mailman/Cgi/admin.py:1084
+#: Mailman/Cgi/admin.py:1132
 msgid "Enter new administrator password:"
 msgstr "Entrez le nouveau mot de passe administrateur:"
 
-#: Mailman/Cgi/admin.py:1086
+#: Mailman/Cgi/admin.py:1134
 msgid "Confirm administator password:"
 msgstr "Confirmez le mot de passe administrateur:"
 
-#: Mailman/Cgi/admin.py:1091
+#: Mailman/Cgi/admin.py:1139
 msgid "Enter new moderator password:"
 msgstr "Entrer le nouveau mot de passe de modération:"
 
-#: Mailman/Cgi/admin.py:1093
+#: Mailman/Cgi/admin.py:1141
 msgid "Confirm moderator password:"
 msgstr "Confirmer le nouveau mot de passe de modération:"
 
-#: Mailman/Cgi/admin.py:1103
+#: Mailman/Cgi/admin.py:1151
 msgid "Submit Your Changes"
 msgstr "Soumettre vos modifications"
 
-#: Mailman/Cgi/admin.py:1181
+#: Mailman/Cgi/admin.py:1229
 msgid "Moderator passwords did not match"
 msgstr "Les mots de passe de modération ne correspondent pas.<br>"
 
-#: Mailman/Cgi/admin.py:1182 Mailman/Cgi/admin.py:1194
-#: Mailman/Cgi/admin.py:1238 Mailman/Cgi/admin.py:1362
+#: Mailman/Cgi/admin.py:1230 Mailman/Cgi/admin.py:1242
+#: Mailman/Cgi/admin.py:1276 Mailman/Cgi/admin.py:1400
 #: Mailman/Cgi/create.py:269 Mailman/Cgi/rmlist.py:176
 #: Mailman/Gui/Bounce.py:109
 msgid "Error: "
 msgstr "Erreur: "
 
-#: Mailman/Cgi/admin.py:1193
+#: Mailman/Cgi/admin.py:1241
 msgid "Administator passwords did not match"
 msgstr "Les mots de passe administrateur ne correspindent pas"
 
-#: Mailman/Cgi/admin.py:1237
+#: Mailman/Cgi/admin.py:1275
 msgid "Bad email address for option %(property)s: %(val)s"
 msgstr "Adresse courriel invalide pour l'option %(property)s: %(val)s"
 
-#: Mailman/Cgi/admin.py:1256
+#: Mailman/Cgi/admin.py:1294
 msgid ""
 "<p><b>real_name</b> attribute not\n"
 "                    changed!  It must differ from the list's name by case\n"
@@ -641,189 +680,210 @@ msgstr ""
 "<p><b>nom_réel</b> attribut non modifé\n"
 "\tIl ne doit différer du nom de la liste que par la casse.<p>"
 
-#: Mailman/Cgi/admin.py:1296
+#: Mailman/Cgi/admin.py:1334
 msgid "Already a member"
 msgstr "Déjà abonné"
 
-#: Mailman/Cgi/admin.py:1299
+#: Mailman/Cgi/admin.py:1337
 msgid "&lt;blank line&gt;"
 msgstr "&lt;ligne vide&gt;"
 
-#: Mailman/Cgi/admin.py:1300 Mailman/Cgi/admin.py:1303
+#: Mailman/Cgi/admin.py:1338 Mailman/Cgi/admin.py:1341
 msgid "Bad/Invalid email address"
 msgstr "Adresse courriel Mauvais/Invalide"
 
-#: Mailman/Cgi/admin.py:1306
+#: Mailman/Cgi/admin.py:1344
 msgid "Hostile address (illegal characters)"
 msgstr "Adresse hostile (caractères illégaux)"
 
-#: Mailman/Cgi/admin.py:1310
+#: Mailman/Cgi/admin.py:1348
 msgid "Successfully Subscribed:"
 msgstr "Abonné(e) avec succés:"
 
-#: Mailman/Cgi/admin.py:1314
+#: Mailman/Cgi/admin.py:1352
 msgid "Error Subscribing:"
 msgstr "Erreur lors de l'abonnement:"
 
-#: Mailman/Cgi/admin.py:1344
+#: Mailman/Cgi/admin.py:1382
 msgid "Successfully Unsubscribed:"
 msgstr "Résiliation réussit"
 
-#: Mailman/Cgi/admin.py:1349
+#: Mailman/Cgi/admin.py:1387
 msgid "Cannot unsubscribe non-members:"
 msgstr "Ne peut résilier l'abonnement de non-abonnés"
 
-#: Mailman/Cgi/admin.py:1361
+#: Mailman/Cgi/admin.py:1399
 msgid "Bad moderation flag value"
 msgstr "Valeur du bit de modération incorrecte"
 
-#: Mailman/Cgi/admin.py:1383
+#: Mailman/Cgi/admin.py:1421
 msgid "Not subscribed"
 msgstr "Pas abonné"
 
-#: Mailman/Cgi/admin.py:1421
+#: Mailman/Cgi/admin.py:1459
 msgid "Successfully Removed:"
 msgstr "Abonnement résilié avec succès:"
 
-#: Mailman/Cgi/admin.py:1425
+#: Mailman/Cgi/admin.py:1463
 msgid "Error Unsubscribing:"
 msgstr "Erreur lors de la résiliation:"
 
-#: Mailman/Cgi/admin.py:1434
+#: Mailman/Cgi/admin.py:1472
 msgid "Warning: "
 msgstr "Attention: "
 
-#: Mailman/Cgi/admindb.py:154 Mailman/Cgi/admindb.py:162
+#: Mailman/Cgi/admindb.py:155 Mailman/Cgi/admindb.py:163
 msgid "%(realname)s Administrative Database"
 msgstr "Base de données administrative de %(realname)s"
 
-#: Mailman/Cgi/admindb.py:157
+#: Mailman/Cgi/admindb.py:158
 msgid "%(realname)s Administrative Database Results"
 msgstr "Résultats de la base de données administrative de %(realname)s"
 
-#: Mailman/Cgi/admindb.py:165
+#: Mailman/Cgi/admindb.py:166
 msgid "There are no pending requests."
 msgstr "Pas de rquêtes en instance."
 
-#: Mailman/Cgi/admindb.py:175
+#: Mailman/Cgi/admindb.py:177
 msgid "Detailed instructions for the administrative database"
 msgstr "Instructions détaillées pour la Base de données administrative"
 
-#: Mailman/Cgi/admindb.py:179
+#: Mailman/Cgi/admindb.py:181
 msgid "Administrative requests for mailing list:"
 msgstr "Requêtes administratives pour la liste de diffusion:"
 
-#: Mailman/Cgi/admindb.py:182 Mailman/Cgi/admindb.py:221
+#: Mailman/Cgi/admindb.py:184 Mailman/Cgi/admindb.py:226
 msgid "Submit All Data"
 msgstr "Soumettre toutes les données"
 
-#: Mailman/Cgi/admindb.py:193
-msgid "all the %(esender)s's held messages."
+#: Mailman/Cgi/admindb.py:197
+#, fuzzy
+msgid "all of %(esender)s's held messages."
 msgstr "tous les messages en attente de %(esender)s."
 
-#: Mailman/Cgi/admindb.py:198
+#: Mailman/Cgi/admindb.py:202
 msgid "a single held message."
 msgstr "un seul message en attente"
 
-#: Mailman/Cgi/admindb.py:203
+#: Mailman/Cgi/admindb.py:207
 msgid "all held messages."
 msgstr "tous les messages en attente."
 
-#: Mailman/Cgi/admindb.py:236
+#: Mailman/Cgi/admindb.py:241
 msgid "Mailman Administrative Database Error"
 msgstr "Erreur sur la base de données administrative de Mailman"
 
-#: Mailman/Cgi/admindb.py:241
+#: Mailman/Cgi/admindb.py:246
 msgid "list of available mailing lists."
 msgstr "liste des listes de diffusion disponibles"
 
-#: Mailman/Cgi/admindb.py:242
+#: Mailman/Cgi/admindb.py:247
 msgid "You must specify a list name.  Here is the %(link)s"
 msgstr "Vous devez donner le nom d'une liste. Voici les %(link)s"
 
-#: Mailman/Cgi/admindb.py:255
+#: Mailman/Cgi/admindb.py:260
 msgid "Subscription Requests"
 msgstr "Requêtes d'abonnement"
 
-#: Mailman/Cgi/admindb.py:257 Mailman/Cgi/admindb.py:287
-msgid "User address/name"
+#: Mailman/Cgi/admindb.py:262
+#, fuzzy
+msgid "Address/name"
 msgstr "Adresse/nom de l'abonné"
 
-#: Mailman/Cgi/admindb.py:258 Mailman/Cgi/admindb.py:288
+#: Mailman/Cgi/admindb.py:263 Mailman/Cgi/admindb.py:304
 msgid "Your decision"
 msgstr "Votre Décision"
 
-#: Mailman/Cgi/admindb.py:259 Mailman/Cgi/admindb.py:289
+#: Mailman/Cgi/admindb.py:264 Mailman/Cgi/admindb.py:305
 msgid "Reason for refusal"
 msgstr "Motifs du refus"
 
-#: Mailman/Cgi/admindb.py:264 Mailman/Cgi/admindb.py:297
-#: Mailman/Cgi/admindb.py:336 Mailman/Cgi/admindb.py:529
+#: Mailman/Cgi/admindb.py:275 Mailman/Cgi/admindb.py:320
+#: Mailman/Cgi/admindb.py:359 Mailman/Cgi/admindb.py:570
 msgid "Defer"
 msgstr "Différer"
 
-#: Mailman/Cgi/admindb.py:265 Mailman/Cgi/admindb.py:298
-#: Mailman/Cgi/admindb.py:529
+#: Mailman/Cgi/admindb.py:276 Mailman/Cgi/admindb.py:321
+#: Mailman/Cgi/admindb.py:570
 msgid "Approve"
 msgstr "Approuver"
 
-#: Mailman/Cgi/admindb.py:266 Mailman/Cgi/admindb.py:299
-#: Mailman/Cgi/admindb.py:336 Mailman/Cgi/admindb.py:529
-#: Mailman/Gui/Privacy.py:244
+#: Mailman/Cgi/admindb.py:277 Mailman/Cgi/admindb.py:322
+#: Mailman/Cgi/admindb.py:359 Mailman/Cgi/admindb.py:570
+#: Mailman/Gui/Privacy.py:205 Mailman/Gui/Privacy.py:279
 msgid "Reject"
 msgstr "Rejet"
 
-#: Mailman/Cgi/admindb.py:267 Mailman/Cgi/admindb.py:300
-#: Mailman/Cgi/admindb.py:336 Mailman/Cgi/admindb.py:529
-#: Mailman/Gui/Privacy.py:244
+#: Mailman/Cgi/admindb.py:278 Mailman/Cgi/admindb.py:323
+#: Mailman/Cgi/admindb.py:359 Mailman/Cgi/admindb.py:570
+#: Mailman/Gui/Privacy.py:205 Mailman/Gui/Privacy.py:279
 msgid "Discard"
 msgstr "Ignorer"
 
-#: Mailman/Cgi/admindb.py:285
+#: Mailman/Cgi/admindb.py:286
+#, fuzzy
+msgid "Permanently ban from this list"
+msgstr "Langue par défaut pour cette liste."
+
+#: Mailman/Cgi/admindb.py:301
 msgid "Unsubscription Requests"
 msgstr "Requêtes de résiliation d'abonnement"
 
-#: Mailman/Cgi/admindb.py:329 Mailman/Cgi/admindb.py:517
+#: Mailman/Cgi/admindb.py:303
+msgid "User address/name"
+msgstr "Adresse/nom de l'abonné"
+
+#: Mailman/Cgi/admindb.py:352 Mailman/Cgi/admindb.py:558
 msgid "From:"
 msgstr "De:"
 
-#: Mailman/Cgi/admindb.py:332
+#: Mailman/Cgi/admindb.py:355
 msgid "Action to take on all these held messages:"
 msgstr "Mesure à prendre pour tous ces messages en attente:"
 
-#: Mailman/Cgi/admindb.py:336 Mailman/Gui/Privacy.py:244
+#: Mailman/Cgi/admindb.py:359 Mailman/Gui/Privacy.py:279
 msgid "Accept"
 msgstr "Accepter"
 
-#: Mailman/Cgi/admindb.py:344
+#: Mailman/Cgi/admindb.py:367
 msgid "Preserve messages for the site administrator"
 msgstr "Concerver les messages pour l'administrateur du site"
 
-#: Mailman/Cgi/admindb.py:350
+#: Mailman/Cgi/admindb.py:373
 msgid "Forward messages (individually) to:"
 msgstr "Faire suivre les messages (individuellement) à:"
 
-#: Mailman/Cgi/admindb.py:367
+#: Mailman/Cgi/admindb.py:391
+msgid "Clear this member's <em>moderate</em> flag"
+msgstr ""
+
+#: Mailman/Cgi/admindb.py:401
 msgid "Add <b>%(esender)s</b> to a sender filter"
 msgstr "Ajouter <b>%(esender)s</b> à un filtre expéditeur"
 
-#: Mailman/Cgi/admindb.py:372
+#: Mailman/Cgi/admindb.py:406
 msgid "Accepts"
 msgstr "Approbations"
 
-#: Mailman/Cgi/admindb.py:372
+#: Mailman/Cgi/admindb.py:406
 msgid "Discards"
 msgstr "Ignorances"
 
-#: Mailman/Cgi/admindb.py:372
+#: Mailman/Cgi/admindb.py:406
 msgid "Holds"
 msgstr "Attentes"
 
-#: Mailman/Cgi/admindb.py:372
+#: Mailman/Cgi/admindb.py:406
 msgid "Rejects"
 msgstr "Rejets"
 
-#: Mailman/Cgi/admindb.py:379
+#: Mailman/Cgi/admindb.py:415
+msgid ""
+"Ban <b>%(esender)s</b> from ever subscribing to this\n"
+"                    mailing list"
+msgstr ""
+
+#: Mailman/Cgi/admindb.py:420
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
@@ -831,89 +891,90 @@ msgstr ""
 "Cliquez sur le numéros du message pour voir le message\n"
 "            individuel, à moins que"
 
-#: Mailman/Cgi/admindb.py:381
+#: Mailman/Cgi/admindb.py:422
 msgid "view all messages from %(esender)s"
 msgstr "visualisez tous les messages de %(esender)s"
 
-#: Mailman/Cgi/admindb.py:405 Mailman/Cgi/admindb.py:520
+#: Mailman/Cgi/admindb.py:446 Mailman/Cgi/admindb.py:561
 msgid "Subject:"
 msgstr "Objet:"
 
-#: Mailman/Cgi/admindb.py:408
+#: Mailman/Cgi/admindb.py:449
 msgid " bytes"
 msgstr " octets"
 
-#: Mailman/Cgi/admindb.py:408
+#: Mailman/Cgi/admindb.py:449
 msgid "Size:"
 msgstr "Taille:"
 
-#: Mailman/Cgi/admindb.py:409 Mailman/Cgi/admindb.py:522
+#: Mailman/Cgi/admindb.py:450 Mailman/Cgi/admindb.py:563
 msgid "Reason:"
 msgstr "Motif:"
 
-#: Mailman/Cgi/admindb.py:410 Mailman/Handlers/Decorate.py:48
+#: Mailman/Cgi/admindb.py:451 Mailman/Handlers/Decorate.py:48
 #: Mailman/Handlers/Scrubber.py:157 Mailman/Handlers/Scrubber.py:158
 msgid "not available"
 msgstr "non disponible"
 
-#: Mailman/Cgi/admindb.py:466
+#: Mailman/Cgi/admindb.py:507
 msgid "Posting Held for Approval"
 msgstr "Soumission mise en attente d'approbation"
 
-#: Mailman/Cgi/admindb.py:468
+#: Mailman/Cgi/admindb.py:509
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(count)d de %(total)d)"
 
-#: Mailman/Cgi/admindb.py:479
+#: Mailman/Cgi/admindb.py:520
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>Message avec l'id #%(id)d perdu."
 
-#: Mailman/Cgi/admindb.py:488
+#: Mailman/Cgi/admindb.py:529
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>Le message avec comme id #%(id)d est altéré."
 
-#: Mailman/Cgi/admindb.py:535
+#: Mailman/Cgi/admindb.py:576
 msgid "Action:"
 msgstr "Action:"
 
-#: Mailman/Cgi/admindb.py:539
+#: Mailman/Cgi/admindb.py:580
 msgid "Preserve message for site administrator"
 msgstr "Concerver les messages pour l'administrateur du site"
 
-#: Mailman/Cgi/admindb.py:543
+#: Mailman/Cgi/admindb.py:584
 msgid "Additionally, forward this message to: "
 msgstr "De plus, faîtes suivre ce message à:"
 
-#: Mailman/Cgi/admindb.py:548
+#: Mailman/Cgi/admindb.py:589
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr ""
 "Si vous rejettez cette soumissions, <b>veillez vous expliquer (facultatif):"
 
-#: Mailman/Cgi/admindb.py:551
+#: Mailman/Cgi/admindb.py:592
 msgid "[No explanation given]"
 msgstr "[Aucun motif fournit]"
 
-#: Mailman/Cgi/admindb.py:556
+#: Mailman/Cgi/admindb.py:597
 msgid "Message Headers:"
 msgstr "En-tête de message:"
 
-#: Mailman/Cgi/admindb.py:561
+#: Mailman/Cgi/admindb.py:602
 msgid "Message Excerpt:"
 msgstr "Extrait du message:"
 
-#: Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:635
 msgid "No reason given"
 msgstr "Sans motif"
 
-#: Mailman/Cgi/admindb.py:641 Mailman/ListAdmin.py:267
+#: Mailman/Cgi/admindb.py:696 Mailman/ListAdmin.py:280
+#: Mailman/ListAdmin.py:382
 msgid "[No reason given]"
 msgstr "[aucun motif fourni]"
 
-#: Mailman/Cgi/admindb.py:664
+#: Mailman/Cgi/admindb.py:725
 msgid "Database Updated..."
 msgstr "Base de données mise à jour..."
 
-#: Mailman/Cgi/admindb.py:667
+#: Mailman/Cgi/admindb.py:728
 msgid " is already a member"
 msgstr " est déjà abonné"
 
@@ -1042,7 +1103,7 @@ msgstr "Votre adresse courriel:"
 msgid "Your real name:"
 msgstr "Votre nom complet:"
 
-#: Mailman/Cgi/confirm.py:236 Mailman/Cgi/options.py:721
+#: Mailman/Cgi/confirm.py:236 Mailman/Cgi/options.py:720
 msgid "Password:"
 msgstr "Mot de passe:"
 
@@ -1067,9 +1128,9 @@ msgstr "Recevoir les messages groupés?"
 #: Mailman/Gui/General.py:299 Mailman/Gui/General.py:327
 #: Mailman/Gui/NonDigest.py:38 Mailman/Gui/NonDigest.py:57
 #: Mailman/Gui/Privacy.py:99 Mailman/Gui/Privacy.py:105
-#: Mailman/Gui/Privacy.py:128 Mailman/Gui/Privacy.py:176
-#: Mailman/Gui/Privacy.py:259 Mailman/Gui/Privacy.py:274
-#: Mailman/Gui/Privacy.py:341 Mailman/Gui/Usenet.py:45
+#: Mailman/Gui/Privacy.py:138 Mailman/Gui/Privacy.py:186
+#: Mailman/Gui/Privacy.py:294 Mailman/Gui/Privacy.py:309
+#: Mailman/Gui/Privacy.py:376 Mailman/Gui/Usenet.py:45
 #: Mailman/Gui/Usenet.py:49 Mailman/Gui/Usenet.py:53
 msgid "No"
 msgstr "Non"
@@ -1086,9 +1147,9 @@ msgstr "Non"
 #: Mailman/Gui/General.py:289 Mailman/Gui/General.py:299
 #: Mailman/Gui/General.py:327 Mailman/Gui/NonDigest.py:38
 #: Mailman/Gui/NonDigest.py:57 Mailman/Gui/Privacy.py:99
-#: Mailman/Gui/Privacy.py:105 Mailman/Gui/Privacy.py:128
-#: Mailman/Gui/Privacy.py:176 Mailman/Gui/Privacy.py:259
-#: Mailman/Gui/Privacy.py:274 Mailman/Gui/Privacy.py:341
+#: Mailman/Gui/Privacy.py:105 Mailman/Gui/Privacy.py:138
+#: Mailman/Gui/Privacy.py:186 Mailman/Gui/Privacy.py:294
+#: Mailman/Gui/Privacy.py:309 Mailman/Gui/Privacy.py:376
 #: Mailman/Gui/Usenet.py:45 Mailman/Gui/Usenet.py:49 Mailman/Gui/Usenet.py:53
 msgid "Yes"
 msgstr "Oui"
@@ -1242,8 +1303,8 @@ msgstr ""
 "<p>Ou cliquez sur <em>Annuler et ignorer</em> pour annuler cette\n"
 "requête de résiliation."
 
-#: Mailman/Cgi/confirm.py:426 Mailman/Cgi/options.py:584
-#: Mailman/Cgi/options.py:727 Mailman/Cgi/options.py:737
+#: Mailman/Cgi/confirm.py:426 Mailman/Cgi/options.py:583
+#: Mailman/Cgi/options.py:726 Mailman/Cgi/options.py:736
 msgid "Unsubscribe"
 msgstr "Résilier"
 
@@ -1814,7 +1875,7 @@ msgstr ""
 msgid "Edit Options"
 msgstr "Modifier les Options"
 
-#: Mailman/Cgi/listinfo.py:185 Mailman/Cgi/options.py:686
+#: Mailman/Cgi/listinfo.py:185 Mailman/Cgi/options.py:685
 #: Mailman/Cgi/roster.py:111
 msgid "View this page in"
 msgstr "Visualisez cette page en"
@@ -1895,11 +1956,11 @@ msgstr "Les mots de passe ne peuvent pas être vides"
 msgid "Passwords did not match!"
 msgstr "Les mots de passe ne correspondent pas!"
 
-#: Mailman/Cgi/options.py:340
+#: Mailman/Cgi/options.py:339
 msgid "Password successfully changed."
 msgstr "Mot de passe modifié avec succès."
 
-#: Mailman/Cgi/options.py:349
+#: Mailman/Cgi/options.py:348
 msgid ""
 "You must confirm your unsubscription request by turning\n"
 "                on the checkbox below the <em>Unsubscribe</em> button.  You\n"
@@ -1909,15 +1970,15 @@ msgstr ""
 "à cocher sous le bouton <em>Résilier</em>. Votre abonnement n'a pas\n"
 "été résilié!"
 
-#: Mailman/Cgi/options.py:369
+#: Mailman/Cgi/options.py:368
 msgid "via the member options page"
 msgstr "Par la page des options des abonnés"
 
-#: Mailman/Cgi/options.py:381
+#: Mailman/Cgi/options.py:380
 msgid "Unsubscription results"
 msgstr "Résultats de la résiliation"
 
-#: Mailman/Cgi/options.py:385
+#: Mailman/Cgi/options.py:384
 msgid ""
 "Your unsubscription request has been received and\n"
 "            forwarded on to the list moderators for approval.  You will\n"
@@ -1928,7 +1989,7 @@ msgstr ""
 "de la liste pour approbation. Vous recevrez un avis dés que les\n"
 "modérateurs de la liste auront pris une décision."
 
-#: Mailman/Cgi/options.py:390
+#: Mailman/Cgi/options.py:389
 msgid ""
 "You have been successfully unsubscribed from the\n"
 "            mailing list %(fqdn_listname)s.  If you were receiving digest\n"
@@ -1942,7 +2003,7 @@ msgstr ""
 "Si vous avez des question concernant cette résiliation, veillez contacter\n"
 "le gestionnaire de la liste à l'adresse %(owneraddr)s."
 
-#: Mailman/Cgi/options.py:512
+#: Mailman/Cgi/options.py:511
 msgid ""
 "The list administrator has disabled digest delivery for\n"
 "            this list, so your delivery option has not been set.  However "
@@ -1953,7 +2014,7 @@ msgstr ""
 "vos options de livraisons ne seront donc pas modifiées contrairement aux "
 "autres."
 
-#: Mailman/Cgi/options.py:516
+#: Mailman/Cgi/options.py:515
 msgid ""
 "The list administrator has disabled non-digest delivery\n"
 "            for this list, so your delivery option has not been set.  "
@@ -1964,63 +2025,63 @@ msgstr ""
 "pour cette liste, par suite toutes les options autre que celle-ci ont étés\n"
 "sauvegardées avec succès."
 
-#: Mailman/Cgi/options.py:520
+#: Mailman/Cgi/options.py:519
 msgid "You have successfully set your options."
 msgstr "Vos options ont étés paramètrées avec succès."
 
-#: Mailman/Cgi/options.py:523
+#: Mailman/Cgi/options.py:522
 msgid "You may get one last digest."
 msgstr "Vous recevrez un dernier lot."
 
-#: Mailman/Cgi/options.py:586
+#: Mailman/Cgi/options.py:585
 msgid "<em>Yes, I really want to unsubscribe</em>"
 msgstr "<em>Oui, je veut vraiment résilier mon abonnement</em>"
 
-#: Mailman/Cgi/options.py:590
+#: Mailman/Cgi/options.py:589
 msgid "Change My Password"
 msgstr "Modifier mon mot de passe"
 
-#: Mailman/Cgi/options.py:593
+#: Mailman/Cgi/options.py:592
 msgid "List my other subscriptions"
 msgstr "Afficher mes autres abonnements"
 
-#: Mailman/Cgi/options.py:599
+#: Mailman/Cgi/options.py:598
 msgid "Email My Password To Me"
 msgstr "Envoyez-moi mon mot de passe par courriel"
 
-#: Mailman/Cgi/options.py:601
+#: Mailman/Cgi/options.py:600
 msgid "password"
 msgstr "mot de passe"
 
-#: Mailman/Cgi/options.py:603
+#: Mailman/Cgi/options.py:602
 msgid "Log out"
 msgstr "Déconnecter"
 
-#: Mailman/Cgi/options.py:605
+#: Mailman/Cgi/options.py:604
 msgid "Submit My Changes"
 msgstr "Valider mes modifications"
 
-#: Mailman/Cgi/options.py:615
+#: Mailman/Cgi/options.py:614
 msgid "days"
 msgstr "jours"
 
-#: Mailman/Cgi/options.py:617
+#: Mailman/Cgi/options.py:616
 msgid "day"
 msgstr "jour"
 
-#: Mailman/Cgi/options.py:618
+#: Mailman/Cgi/options.py:617
 msgid "%(days)d %(units)s"
 msgstr "%(units)s %(days)d"
 
-#: Mailman/Cgi/options.py:624
+#: Mailman/Cgi/options.py:623
 msgid "Change My Address and Name"
 msgstr "Modifier mon adresse et mon nom"
 
-#: Mailman/Cgi/options.py:652
+#: Mailman/Cgi/options.py:651
 msgid "<em>No topics defined</em>"
 msgstr "<em>Aucun thème défini</em>"
 
-#: Mailman/Cgi/options.py:660
+#: Mailman/Cgi/options.py:659
 msgid ""
 "\n"
 "You are subscribed to this list with the case-preserved address\n"
@@ -2030,19 +2091,19 @@ msgstr ""
 "Vous êtes abonné à cette liste avec une adresse de type préservation de la\n"
 "casse <em>%(cpuser)s</em>."
 
-#: Mailman/Cgi/options.py:674
+#: Mailman/Cgi/options.py:673
 msgid "%(realname)s list: member options login page"
 msgstr "Liste %(realname)s: Page de login d'abonné"
 
-#: Mailman/Cgi/options.py:675
+#: Mailman/Cgi/options.py:674
 msgid "email address and "
 msgstr "adresse courriel et "
 
-#: Mailman/Cgi/options.py:677
+#: Mailman/Cgi/options.py:676
 msgid "%(realname)s list: member options for user %(user)s"
 msgstr "Liste %(realname)s: options d'abonnées de l'utilisateur %(user)s"
 
-#: Mailman/Cgi/options.py:697
+#: Mailman/Cgi/options.py:696
 msgid ""
 "In order to change your membership option, you must\n"
 "    first log in by giving your %(extra)smembership password in the section\n"
@@ -2087,15 +2148,15 @@ msgstr ""
 "<em>Déconnecter</em> (visible dés que votre connexion aura été validée).\n"
 "\t"
 
-#: Mailman/Cgi/options.py:717
+#: Mailman/Cgi/options.py:716
 msgid "Email address:"
 msgstr "Adresse courriel:"
 
-#: Mailman/Cgi/options.py:723
+#: Mailman/Cgi/options.py:722
 msgid "Log in"
 msgstr "Connecter"
 
-#: Mailman/Cgi/options.py:731
+#: Mailman/Cgi/options.py:730
 msgid ""
 "By clicking on the <em>Unsubscribe</em> button, a\n"
 "    confirmation message will be emailed to you.  This message will have a\n"
@@ -2108,11 +2169,11 @@ msgstr ""
 "cliquer pour achever le processus de résiliation (vous pourrez également\n"
 "le faire par courriel; lisez les instructions dans ledit message)."
 
-#: Mailman/Cgi/options.py:739
+#: Mailman/Cgi/options.py:738
 msgid "Password reminder"
 msgstr "Rappel de mot de passe"
 
-#: Mailman/Cgi/options.py:743
+#: Mailman/Cgi/options.py:742
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
@@ -2120,27 +2181,27 @@ msgstr ""
 "En cliquant sur le bouton <em>Rappel</em>, votre mot de passe vous sera\n"
 "envoyé par courriel."
 
-#: Mailman/Cgi/options.py:746
+#: Mailman/Cgi/options.py:745
 msgid "Remind"
 msgstr "Rappel"
 
-#: Mailman/Cgi/options.py:840
+#: Mailman/Cgi/options.py:839
 msgid "<missing>"
 msgstr "<absent>"
 
-#: Mailman/Cgi/options.py:851
+#: Mailman/Cgi/options.py:850
 msgid "Requested topic is not valid: %(topicname)s"
 msgstr "Le thème demandé n'est pas valide: %(topicname)s"
 
-#: Mailman/Cgi/options.py:856
+#: Mailman/Cgi/options.py:855
 msgid "Topic filter details"
 msgstr "Détails du filtre de thème"
 
-#: Mailman/Cgi/options.py:859
+#: Mailman/Cgi/options.py:858
 msgid "Name:"
 msgstr "Nom:"
 
-#: Mailman/Cgi/options.py:861
+#: Mailman/Cgi/options.py:860
 msgid "Pattern (as regexp):"
 msgstr "modèle (sous forme d'expression regulière):"
 
@@ -2252,23 +2313,23 @@ msgstr "Echec d'authentification du roster de %(realname)s."
 msgid "Error"
 msgstr "Erreur"
 
-#: Mailman/Cgi/subscribe.py:108
+#: Mailman/Cgi/subscribe.py:109
 msgid "You must supply a valid email address."
 msgstr "Vous devez fournir une adresse courriel valide."
 
-#: Mailman/Cgi/subscribe.py:121
+#: Mailman/Cgi/subscribe.py:122
 msgid "You may not subscribe a list to itself!"
 msgstr "Vous ne pouvez pas abonner la liste à elle-même!"
 
-#: Mailman/Cgi/subscribe.py:130
+#: Mailman/Cgi/subscribe.py:131
 msgid "If you supply a password, you must confirm it."
 msgstr "Si vous avez fourni un mot de passe, vous devez le confirmer."
 
-#: Mailman/Cgi/subscribe.py:132
+#: Mailman/Cgi/subscribe.py:133
 msgid "Your passwords did not match."
 msgstr "Vos mots de passe ne correspondent pas."
 
-#: Mailman/Cgi/subscribe.py:166
+#: Mailman/Cgi/subscribe.py:167
 msgid ""
 "Your subscription request has been received, and will soon be acted upon.\n"
 "Depending on the configuration of this mailing list, your subscription "
@@ -2284,7 +2345,14 @@ msgstr ""
 "recevrez sous peu un courriel de confirmation contenant des\n"
 "instructions supplémentaires."
 
-#: Mailman/Cgi/subscribe.py:180
+#: Mailman/Cgi/subscribe.py:181
+msgid ""
+"The email address you supplied is banned from this\n"
+"        mailing list.  If you think this restriction is erroneous, please\n"
+"        contact the list owners at %(listowner)s."
+msgstr ""
+
+#: Mailman/Cgi/subscribe.py:185
 msgid ""
 "The email address you supplied is not valid.  (E.g. it must contain an\n"
 "`@'.)"
@@ -2292,7 +2360,7 @@ msgstr ""
 "L'adresse courriel fournit n'est pas valide. (E.g. elle doit contenir\n"
 "un signe `@'.)"
 
-#: Mailman/Cgi/subscribe.py:184
+#: Mailman/Cgi/subscribe.py:189
 msgid ""
 "Your subscription is not allowed because the email address you gave is\n"
 "insecure."
@@ -2300,7 +2368,7 @@ msgstr ""
 "Votre abonnement est impossible parceque l'adresse courriel fournit\n"
 "n'est pas sûre."
 
-#: Mailman/Cgi/subscribe.py:192
+#: Mailman/Cgi/subscribe.py:197
 msgid ""
 "Confirmation from your email address is required, to prevent anyone from\n"
 "subscribing you without permission.  Instructions are being sent to you at\n"
@@ -2312,7 +2380,7 @@ msgstr ""
 "instructions vous sont envoyées à l'adresse %(email)s. Notez que votre\n"
 "abonnement ne débutera que si vous confirmez votre requête."
 
-#: Mailman/Cgi/subscribe.py:204
+#: Mailman/Cgi/subscribe.py:209
 msgid ""
 "Your subscription request was deferred because %(x)s.  Your request has "
 "been\n"
@@ -2325,15 +2393,15 @@ msgstr ""
 "faisant part de la décision du modérateur lorsque votre requête sera\n"
 "traitée."
 
-#: Mailman/Cgi/subscribe.py:211 Mailman/MailCommandHandler.py:729
+#: Mailman/Cgi/subscribe.py:216 Mailman/MailCommandHandler.py:737
 msgid "You are already subscribed."
 msgstr "Vous êtes déjà abonné."
 
-#: Mailman/Cgi/subscribe.py:221
+#: Mailman/Cgi/subscribe.py:225
 msgid "Mailman privacy alert"
 msgstr "Alerte de confidentialité Mailman"
 
-#: Mailman/Cgi/subscribe.py:222
+#: Mailman/Cgi/subscribe.py:226
 msgid ""
 "An attempt was made to subscribe your address to the mailing list\n"
 "%(listaddr)s.  You are already subscribed to this mailing list.\n"
@@ -2366,63 +2434,63 @@ msgstr ""
 "pas à envoyer un courriel à l'administrateur de la liste à l'adresse\n"
 "%(listowner)s.\n"
 
-#: Mailman/Cgi/subscribe.py:239
+#: Mailman/Cgi/subscribe.py:243
 msgid "This list does not support digest delivery."
 msgstr "Cette liste ne supporte que les abonnements de type remise groupée."
 
-#: Mailman/Cgi/subscribe.py:241
+#: Mailman/Cgi/subscribe.py:245
 msgid "This list only supports digest delivery."
 msgstr "Cette liste ne supporte que les abonnements de type remise groupée"
 
-#: Mailman/Cgi/subscribe.py:248
+#: Mailman/Cgi/subscribe.py:252
 msgid "You have been successfully subscribed to the %(realname)s mailing list."
 msgstr "Vous avez été abonné avec succès à la liste %(realname)s."
 
-#: Mailman/Defaults.py:1029
+#: Mailman/Defaults.py:1057
 msgid "Traditional Chinese"
 msgstr "Chinois Traditionnel"
 
-#: Mailman/Defaults.py:1030
+#: Mailman/Defaults.py:1058
 msgid "Czech"
 msgstr "Tchèque"
 
-#: Mailman/Defaults.py:1031
+#: Mailman/Defaults.py:1059
 msgid "German"
 msgstr "Allemand"
 
-#: Mailman/Defaults.py:1032
+#: Mailman/Defaults.py:1060
 msgid "English (USA)"
 msgstr "Anglais (USA)"
 
-#: Mailman/Defaults.py:1033
+#: Mailman/Defaults.py:1061
 msgid "Spanish (Spain)"
 msgstr "Espagnole (Espagne)"
 
-#: Mailman/Defaults.py:1034
+#: Mailman/Defaults.py:1062
 msgid "French"
 msgstr "Français"
 
-#: Mailman/Defaults.py:1035
+#: Mailman/Defaults.py:1063
 msgid "Simplified Chinese"
 msgstr "Chinois Simplifié"
 
-#: Mailman/Defaults.py:1036
+#: Mailman/Defaults.py:1064
 msgid "Hungarian"
 msgstr "Hongrois"
 
-#: Mailman/Defaults.py:1037
+#: Mailman/Defaults.py:1065
 msgid "Italian"
 msgstr "Italien"
 
-#: Mailman/Defaults.py:1038
+#: Mailman/Defaults.py:1066
 msgid "Japanese"
 msgstr "Japonais"
 
-#: Mailman/Defaults.py:1039
+#: Mailman/Defaults.py:1067
 msgid "Norwegian"
 msgstr "Norvégien"
 
-#: Mailman/Defaults.py:1040
+#: Mailman/Defaults.py:1068
 msgid "Russian"
 msgstr "Russe"
 
@@ -2452,11 +2520,11 @@ msgstr "Votre abonnement à la liste %(realname)s a été résilié"
 msgid "%(listfullname)s mailing list reminder"
 msgstr "Rappel de la liste de diffusion %(listfullname)s"
 
-#: Mailman/Errors.py:114
+#: Mailman/Errors.py:115
 msgid "For some unknown reason"
 msgstr "Pour des raisons inconnues"
 
-#: Mailman/Errors.py:120 Mailman/Errors.py:143
+#: Mailman/Errors.py:121 Mailman/Errors.py:144
 msgid "Your message was rejected"
 msgstr "Votre message a été rejeté"
 
@@ -2710,7 +2778,8 @@ msgstr ""
 "<p>Vous avez un contrôle totale sur <a\n"
 "href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings\">le nombre de\n"
 "rappels</a> reçu par l'abonné et sur <a\n"
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\">périodicité</a>\n"
+"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\">périodicit"
+"é</a>\n"
 "avec laquelle ces rappels sont envoyés.\n"
 "\n"
 "<p>Il y a une autre variable de configuration importante; après une\n"
@@ -4004,26 +4073,51 @@ msgstr ""
 "lesquelles tous les employés doivent être abonnés."
 
 #: Mailman/Gui/Privacy.py:120
+#, fuzzy
+msgid "Ban list"
+msgstr "Usage: listes"
+
+#: Mailman/Gui/Privacy.py:122
+msgid ""
+"List of addresses which are banned from membership in this\n"
+"             mailing list."
+msgstr ""
+
+#: Mailman/Gui/Privacy.py:125
+#, fuzzy
+msgid ""
+"Addresses in this list are banned outright from subscribing\n"
+"             to this mailing list, with no further moderation required.  "
+"Add\n"
+"             addresses one per line; start the line with a ^ character to\n"
+"             designate a regular expression match."
+msgstr ""
+"Toutes soumissions provenant de ces non-abonnés sera automatiquement\n"
+"accepté sans autre forme de procès. Ajouter les adresses des abonnés,\n"
+"une par ligne; commencez la ligne avec le caractère ^ pour désigner\n"
+"une expression régulière."
+
+#: Mailman/Gui/Privacy.py:130
 msgid "Membership exposure"
 msgstr "Exposition de l'abonnement"
 
-#: Mailman/Gui/Privacy.py:122
+#: Mailman/Gui/Privacy.py:132
 msgid "Anyone"
 msgstr "Quiconque"
 
-#: Mailman/Gui/Privacy.py:122
+#: Mailman/Gui/Privacy.py:132
 msgid "List admin only"
 msgstr "Uniquement pour l'admin de la liste"
 
-#: Mailman/Gui/Privacy.py:122
+#: Mailman/Gui/Privacy.py:132
 msgid "List members"
 msgstr "Abonnés de la liste"
 
-#: Mailman/Gui/Privacy.py:123
+#: Mailman/Gui/Privacy.py:133
 msgid "Who can view subscription list?"
 msgstr "Qui peut voir la liste des abonnés?"
 
-#: Mailman/Gui/Privacy.py:125
+#: Mailman/Gui/Privacy.py:135
 msgid ""
 "When set, the list of subscribers is protected by member or\n"
 "             admin password authentication."
@@ -4032,7 +4126,7 @@ msgstr ""
 "\t\trequiert la fourniture du mot de passe administrateur\n"
 "\t\tou le status d'abonné."
 
-#: Mailman/Gui/Privacy.py:129
+#: Mailman/Gui/Privacy.py:139
 msgid ""
 "Show member addrs so they're not directly recognizable as\n"
 "             email addrs?"
@@ -4040,7 +4134,7 @@ msgstr ""
 "Afficher les adresses des abonnés de façcon à ce qu'elles n'apparaissent pas "
 "comme des adresses courriels?"
 
-#: Mailman/Gui/Privacy.py:131
+#: Mailman/Gui/Privacy.py:141
 msgid ""
 "Setting this option causes member email addresses to be\n"
 "             transformed when they are presented on list web pages (both in\n"
@@ -4057,7 +4151,7 @@ msgstr ""
 "\td'empêcher que les scanners web automatiques s'en emparent\n"
 "        pour l'usage des spammers."
 
-#: Mailman/Gui/Privacy.py:141
+#: Mailman/Gui/Privacy.py:151
 msgid ""
 "When a message is posted to the list, a series of\n"
 "            moderation steps are take to decide whether the a moderator "
@@ -4127,17 +4221,18 @@ msgstr ""
 "\n"
 "<p>Notez que les comparaison non-regexp sont prioritaires."
 
-#: Mailman/Gui/Privacy.py:174
-msgid "General sender filters"
-msgstr "Filtres pour soumissions générales"
+#: Mailman/Gui/Privacy.py:184
+#, fuzzy
+msgid "Member filters"
+msgstr "Liste des abonnements"
 
-#: Mailman/Gui/Privacy.py:177
+#: Mailman/Gui/Privacy.py:187
 msgid "By default, should new list member postings be moderated?"
 msgstr ""
 "Les soumissions des nouveaux abonnés doivent elles être modérées par\n"
 "défaut?"
 
-#: Mailman/Gui/Privacy.py:179
+#: Mailman/Gui/Privacy.py:189
 msgid ""
 "Each list member has a <em>moderation flag</em> which says\n"
 "             whether messages from the list member can be posted directly "
@@ -4176,7 +4271,48 @@ msgstr ""
 "la fenêtre de <a href=\"%(adminurl)s/members\">gestion des\n"
 "abonnements</a>."
 
-#: Mailman/Gui/Privacy.py:195
+#: Mailman/Gui/Privacy.py:205 Mailman/Gui/Privacy.py:279
+msgid "Hold"
+msgstr "En attente"
+
+#: Mailman/Gui/Privacy.py:206
+msgid ""
+"Action to take when a moderated member posts to the\n"
+"             list."
+msgstr ""
+
+#: Mailman/Gui/Privacy.py:208
+msgid ""
+"<ul><li><b>Hold</b> -- this holds the message for approval\n"
+"             by the list moderators.\n"
+"\n"
+"             <p><li><b>Reject</b> -- this automatically rejects the message "
+"by\n"
+"             sending a bounce notice to the post's author.  The text of the\n"
+"             bounce notice can be <a\n"
+"             href=\"?VARHELP=privacy/sender/member_moderation_notice\"\n"
+"             >configured by you</a>.\n"
+"\n"
+"             <p><li><b>Discard</b> -- this simply discards the message, "
+"with\n"
+"             no notice sent to the post's author.\n"
+"             </ul>"
+msgstr ""
+
+#: Mailman/Gui/Privacy.py:222
+msgid ""
+"Text to include in any\n"
+"             <a href=\"?VARHELP/privacy/sender/member_moderation_action\"\n"
+"             >rejection notice</a> to\n"
+"             be sent to moderated members who post to this list."
+msgstr ""
+
+#: Mailman/Gui/Privacy.py:227
+#, fuzzy
+msgid "Non-member filters"
+msgstr "Filtres Anti-spam"
+
+#: Mailman/Gui/Privacy.py:230
 msgid ""
 "List of non-member addresses whose postings should be\n"
 "             automatically accepted."
@@ -4184,7 +4320,7 @@ msgstr ""
 "Liste des adresses des non-abonnés dont les soumissions doivent\n"
 "automatiquement être acceptées."
 
-#: Mailman/Gui/Privacy.py:198
+#: Mailman/Gui/Privacy.py:233
 msgid ""
 "Postings from any of these non-members will be automatically\n"
 "             accepted with no further moderation applied.  Add member\n"
@@ -4196,7 +4332,7 @@ msgstr ""
 "une par ligne; commencez la ligne avec le caractère ^ pour désigner\n"
 "une expression régulière."
 
-#: Mailman/Gui/Privacy.py:204
+#: Mailman/Gui/Privacy.py:239
 msgid ""
 "List of non-member addresses whose postings will be\n"
 "             immediately held for moderation."
@@ -4204,7 +4340,7 @@ msgstr ""
 "Liste des adresses des non-abonnés dont les soumissions doit\n"
 "automatiquement mise en attente de modération."
 
-#: Mailman/Gui/Privacy.py:207
+#: Mailman/Gui/Privacy.py:242
 msgid ""
 "Postings from any of these non-members will be immediately\n"
 "             and automatically held for moderation by the list moderators.\n"
@@ -4222,7 +4358,7 @@ msgstr ""
 "commencez la ligne avec le caractère ^ pour désigner une expression\n"
 "régulière."
 
-#: Mailman/Gui/Privacy.py:215
+#: Mailman/Gui/Privacy.py:250
 msgid ""
 "List of non-member addresses whose postings will be\n"
 "             automatically rejected."
@@ -4230,7 +4366,7 @@ msgstr ""
 "Liste des adresses des non-abonnés dont les soumissions seront\n"
 "automatiquement rejetées."
 
-#: Mailman/Gui/Privacy.py:218
+#: Mailman/Gui/Privacy.py:253
 msgid ""
 "Postings from any of these non-members will be automatically\n"
 "             rejected.  In other words, their messages will be bounced back "
@@ -4256,7 +4392,7 @@ msgstr ""
 "commencez la ligne avec le caractère ^ pour désigner une expression\n"
 "régulière."
 
-#: Mailman/Gui/Privacy.py:230
+#: Mailman/Gui/Privacy.py:265
 msgid ""
 "List of non-member addresses whose postings will be\n"
 "             automatically discarded."
@@ -4264,7 +4400,7 @@ msgstr ""
 "Liste des adresses des non-abonnés dont les messages doivent être\n"
 "automatiquement ignorés."
 
-#: Mailman/Gui/Privacy.py:233
+#: Mailman/Gui/Privacy.py:268
 msgid ""
 "Postings from any of these non-members will be automatically\n"
 "             discarded.  That is, the message will be thrown away with no\n"
@@ -4288,11 +4424,7 @@ msgstr ""
 "<p>Ajouter les adresses des abonnés, une par ligne; commencez la ligne\n"
 "avec le caractère ^ pour désigner une expression régulière."
 
-#: Mailman/Gui/Privacy.py:244
-msgid "Hold"
-msgstr "En attente"
-
-#: Mailman/Gui/Privacy.py:245
+#: Mailman/Gui/Privacy.py:280
 msgid ""
 "Action to take for postings from non-members for which no\n"
 "             explicit action is defined."
@@ -4300,7 +4432,7 @@ msgstr ""
 "Action à entreprendre pour les soumissions des non-abonnés pour\n"
 "lesquels aucune règle ne s'applique."
 
-#: Mailman/Gui/Privacy.py:248
+#: Mailman/Gui/Privacy.py:283
 msgid ""
 "When a post from a non-member is received, the message's\n"
 "             sender is matched against the list of explicitly\n"
@@ -4326,7 +4458,7 @@ msgstr ""
 ">ignorées</a>. Si aucune adresse ne correspond, cette mesure est\n"
 "prise."
 
-#: Mailman/Gui/Privacy.py:260
+#: Mailman/Gui/Privacy.py:295
 msgid ""
 "Should messages from non-members, which are automatically\n"
 "             discarded, be forwarded to the list moderator?"
@@ -4334,7 +4466,7 @@ msgstr ""
 "Les messages des non-abonnés automatiquement ignorés doivent ils être\n"
 "transmit au modérateur de la liste?"
 
-#: Mailman/Gui/Privacy.py:266
+#: Mailman/Gui/Privacy.py:301
 msgid ""
 "This section allows you to configure various anti-spam\n"
 "            filters posting filters, which can help reduce the amount of "
@@ -4345,11 +4477,11 @@ msgstr ""
 "Cette section vous permet de configurer les divers filtres anti-spam,\n"
 "ce qui permet de réduire les spams que vos abonnés reçoivent."
 
-#: Mailman/Gui/Privacy.py:271
+#: Mailman/Gui/Privacy.py:306
 msgid "Anti-Spam filters"
 msgstr "Filtres Anti-spam"
 
-#: Mailman/Gui/Privacy.py:275
+#: Mailman/Gui/Privacy.py:310
 msgid ""
 "Must posts have list named in destination (to, cc) field\n"
 "             (or be among the acceptable alias names, specified below)?"
@@ -4357,7 +4489,7 @@ msgstr ""
 "Les soumissions doivent-elle porter le nom de la liste dans le champ\n"
 "destination (ou l'un des alias acceptables spécifiés ci-dessous)?"
 
-#: Mailman/Gui/Privacy.py:278
+#: Mailman/Gui/Privacy.py:313
 msgid ""
 "Many (in fact, most) spams do not explicitly name their\n"
 "             myriad destinations in the explicit destination addresses - in\n"
@@ -4395,7 +4527,7 @@ msgstr ""
 "\n"
 "\t\t</ol>"
 
-#: Mailman/Gui/Privacy.py:296
+#: Mailman/Gui/Privacy.py:331
 msgid ""
 "Alias names (regexps) which qualify as explicit to or cc\n"
 "             destination names for this list."
@@ -4403,7 +4535,7 @@ msgstr ""
 "Les alias (expressions regulières) qui correspondent à des destinataires\n"
 "\texplicites de type A ou CC pour la liste."
 
-#: Mailman/Gui/Privacy.py:299
+#: Mailman/Gui/Privacy.py:334
 msgid ""
 "Alternate addresses that are acceptable when\n"
 "             `require_explicit_destination' is enabled.  This option takes "
@@ -4444,12 +4576,12 @@ msgstr ""
 "à venir, le motif sera toujours comparé à la totalité de l'adresse\n"
 "du destinataire."
 
-#: Mailman/Gui/Privacy.py:317
+#: Mailman/Gui/Privacy.py:352
 msgid "Ceiling on acceptable number of recipients for a posting."
 msgstr ""
 "Reduction à un nombre acceptable de destinataires pour une soumissions."
 
-#: Mailman/Gui/Privacy.py:319
+#: Mailman/Gui/Privacy.py:354
 msgid ""
 "If a posting has this number, or more, of recipients, it is\n"
 "             held for admin approval.  Use 0 for no ceiling."
@@ -4458,13 +4590,13 @@ msgstr ""
 "elle passe en attente d'approbation de l'administrateur.\n"
 "Utilisez 0 pour sans limite."
 
-#: Mailman/Gui/Privacy.py:323
+#: Mailman/Gui/Privacy.py:358
 msgid "Hold posts with header value matching a specified regexp."
 msgstr ""
 "Retenez les soumissions ayant un en-tête comparable à une expression "
 "regulière dterminée"
 
-#: Mailman/Gui/Privacy.py:324
+#: Mailman/Gui/Privacy.py:359
 msgid ""
 "Use this option to prohibit posts according to specific\n"
 "             header values.  The target value is a regular-expression for\n"
@@ -4503,7 +4635,7 @@ msgstr ""
 "<p>Voyez également l'option <em>forbidden_posters</em> pour de tels\n"
 " méchanismes."
 
-#: Mailman/Gui/Privacy.py:342
+#: Mailman/Gui/Privacy.py:377
 msgid ""
 "Hide the sender of a message, replacing it with the list\n"
 "           address (Removes From, Sender and Reply-To fields)"
@@ -4751,7 +4883,8 @@ msgstr "; il a été désactivé pour des raisons inconnues"
 
 #: Mailman/HTMLFormatter.py:143
 msgid "Note: your list delivery is currently disabled %(reason)s."
-msgstr "Note: les remises sur votre liste sont actuellement désactivées %(reason)s."
+msgstr ""
+"Note: les remises sur votre liste sont actuellement désactivées %(reason)s."
 
 #: Mailman/HTMLFormatter.py:146
 msgid "Mail delivery"
@@ -5115,13 +5248,13 @@ msgstr ""
 msgid "Your message to %(listname)s awaits moderator approval"
 msgstr "Votre message à la liste %(listname)s est en attente d'approbation"
 
-#: Mailman/Handlers/Hold.py:239
+#: Mailman/Handlers/Hold.py:240
 msgid "%(listname)s post from %(sender)s requires approval"
 msgstr ""
 "Une soumission sur la liste %(listname)s à partir de %(sender)s requiert une "
 "approbation"
 
-#: Mailman/Handlers/Hold.py:246
+#: Mailman/Handlers/Hold.py:248
 msgid ""
 "If you reply to this message, keeping the Subject: header intact, Mailman "
 "will\n"
@@ -5139,11 +5272,11 @@ msgstr ""
 "également apparaître à la première ligne du corps du message de\n"
 "réponse"
 
-#: Mailman/Handlers/Moderate.py:34
+#: Mailman/Handlers/Moderate.py:35
 msgid "Post by a moderated member"
 msgstr "Soumit par un abonné modérée"
 
-#: Mailman/Handlers/Moderate.py:100
+#: Mailman/Handlers/Moderate.py:123
 msgid ""
 "You are not allowed to post to this mailing list, and have been "
 "automatically\n"
@@ -5155,11 +5288,11 @@ msgstr ""
 "message a été rejeté par erreur, veillez contacter le gestionnaire de\n"
 "la liste à l'adresse %(listowner)s."
 
-#: Mailman/Handlers/Moderate.py:115
+#: Mailman/Handlers/Moderate.py:138
 msgid "Auto-discard notification"
 msgstr "Avis de rejet automatique"
 
-#: Mailman/Handlers/Moderate.py:118
+#: Mailman/Handlers/Moderate.py:141
 msgid ""
 "The attached message has been automatically discarded because the sender's\n"
 "address, %(sender)s, was on the discard_these_nonmembers list.  For the "
@@ -5275,37 +5408,37 @@ msgstr "Pied de page des lots"
 msgid "End of "
 msgstr "Fin de "
 
-#: Mailman/ListAdmin.py:266
+#: Mailman/ListAdmin.py:279
 msgid "Posting of your message titled \"%(subject)s\""
 msgstr "Soumission de votre message avec comme objet \"%(subject)s\""
 
-#: Mailman/ListAdmin.py:286
+#: Mailman/ListAdmin.py:299
 msgid "Forward of moderated  message"
 msgstr "Renvoie d'un message modéré"
 
-#: Mailman/ListAdmin.py:343
+#: Mailman/ListAdmin.py:356
 msgid "New subscription request to list %(realname)s from %(addr)s"
 msgstr "Nouvelle demande d'abonnement à la liste %(listname)s de %(addr)s"
 
-#: Mailman/ListAdmin.py:365
+#: Mailman/ListAdmin.py:381
 msgid "Subscription request"
 msgstr "Requête d'abonnement"
 
-#: Mailman/ListAdmin.py:393
+#: Mailman/ListAdmin.py:411
 msgid "New unsubscription request from %(realname)s by %(addr)s"
 msgstr ""
 "Nouvelle demande de résiliation de de l'abonnement à la liste\n"
 "%(realname)s par %(addr)s"
 
-#: Mailman/ListAdmin.py:415
+#: Mailman/ListAdmin.py:436
 msgid "Unsubscription request"
 msgstr "Demande de résiliation d'abonnement"
 
-#: Mailman/ListAdmin.py:441
+#: Mailman/ListAdmin.py:462
 msgid "Original Message"
 msgstr "Message d'origine"
 
-#: Mailman/ListAdmin.py:444
+#: Mailman/ListAdmin.py:465
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "Requête à l'endroit de la liste %(realname)s rejetée"
 
@@ -5626,7 +5759,7 @@ msgstr ""
 "MailCommandHandler.ParseMailCommand(). En voici les raisons:\n"
 "\n"
 
-#: Mailman/MailCommandHandler.py:298
+#: Mailman/MailCommandHandler.py:299
 msgid ""
 "This is an automated response.\n"
 "\n"
@@ -5660,63 +5793,63 @@ msgstr ""
 "Voici une description detaillée du problème.\n"
 "\n"
 
-#: Mailman/MailCommandHandler.py:316
+#: Mailman/MailCommandHandler.py:317
 msgid "Mailman results for %(realname)s"
 msgstr "Resulats Mailman pour %(realname)s"
 
-#: Mailman/MailCommandHandler.py:331
+#: Mailman/MailCommandHandler.py:333
 msgid "Usage: password [<oldpw> <newpw>]"
 msgstr "Usage: password [<ancien_mot_de_passe> <nouveau_mot_de_passe>]"
 
-#: Mailman/MailCommandHandler.py:342
+#: Mailman/MailCommandHandler.py:344
 msgid "You are subscribed as %(user)s, with password: %(password)s"
 msgstr ""
 "vous êtes abonnés comme %(user)s, avec comme mot de passe: %(password)s"
 
-#: Mailman/MailCommandHandler.py:346
+#: Mailman/MailCommandHandler.py:348
 msgid "Found no password for %(sender)s"
 msgstr "Mot de passe non trouvé pour %(sender)s"
 
-#: Mailman/MailCommandHandler.py:352 Mailman/MailCommandHandler.py:435
-#: Mailman/MailCommandHandler.py:607
+#: Mailman/MailCommandHandler.py:354 Mailman/MailCommandHandler.py:437
+#: Mailman/MailCommandHandler.py:609
 msgid "You gave the wrong password."
 msgstr "Le mot de passe fournit n'est pas correcte."
 
-#: Mailman/MailCommandHandler.py:355 Mailman/MailCommandHandler.py:445
-#: Mailman/MailCommandHandler.py:610
+#: Mailman/MailCommandHandler.py:357 Mailman/MailCommandHandler.py:447
+#: Mailman/MailCommandHandler.py:612
 msgid "Succeeded."
 msgstr "Réussit."
 
-#: Mailman/MailCommandHandler.py:357 Mailman/MailCommandHandler.py:363
-#: Mailman/MailCommandHandler.py:431 Mailman/MailCommandHandler.py:616
+#: Mailman/MailCommandHandler.py:359 Mailman/MailCommandHandler.py:365
+#: Mailman/MailCommandHandler.py:433 Mailman/MailCommandHandler.py:618
 msgid "%(sender)s is not a member of this list."
 msgstr "%(sender)s n'est pas abonné à cette liste."
 
-#: Mailman/MailCommandHandler.py:371
+#: Mailman/MailCommandHandler.py:373
 msgid "off"
 msgstr "off"
 
-#: Mailman/MailCommandHandler.py:374
+#: Mailman/MailCommandHandler.py:376
 msgid "by your configuration"
 msgstr "par votre configuration"
 
-#: Mailman/MailCommandHandler.py:375
+#: Mailman/MailCommandHandler.py:377
 msgid "by list admin"
 msgstr "par l'admin de la liste"
 
-#: Mailman/MailCommandHandler.py:376
+#: Mailman/MailCommandHandler.py:378
 msgid "by bounce"
 msgstr "suite à des rebonds"
 
-#: Mailman/MailCommandHandler.py:377
+#: Mailman/MailCommandHandler.py:379
 msgid "for unknown reasons"
 msgstr "pour des raisons inconnues"
 
-#: Mailman/MailCommandHandler.py:379
+#: Mailman/MailCommandHandler.py:381
 msgid "on (%(reason)s"
 msgstr "sur (%(reason)s"
 
-#: Mailman/MailCommandHandler.py:385
+#: Mailman/MailCommandHandler.py:387
 msgid ""
 "To change an option, do: set <option> <on|off> <password>\n"
 "\n"
@@ -5728,7 +5861,7 @@ msgstr ""
 "Définitions de l'option:\n"
 "------------------------\n"
 
-#: Mailman/MailCommandHandler.py:402
+#: Mailman/MailCommandHandler.py:404
 msgid ""
 "Usage: set <option> <on|off> <password>\n"
 "Valid options are:\n"
@@ -5736,27 +5869,27 @@ msgstr ""
 "Usage: set <option> <on|off> <mot_de_passe>\n"
 "Les options valides sont:\n"
 
-#: Mailman/MailCommandHandler.py:447
+#: Mailman/MailCommandHandler.py:449
 msgid "You are already receiving digests."
 msgstr "Vous recevez déjà les soumissions en mode digest."
 
-#: Mailman/MailCommandHandler.py:449
+#: Mailman/MailCommandHandler.py:451
 msgid "You already have digests off."
 msgstr "Vous avez déjà désactivé le mode groupé."
 
-#: Mailman/MailCommandHandler.py:451
+#: Mailman/MailCommandHandler.py:453
 msgid "List only accepts digest members."
 msgstr "La liste n'accepte que des abonnés en mode groupé."
 
-#: Mailman/MailCommandHandler.py:453
+#: Mailman/MailCommandHandler.py:455
 msgid "List doesn't accept digest members."
 msgstr "Cette liste n'admet pas d'abonnés en mode groupé."
 
-#: Mailman/MailCommandHandler.py:459
+#: Mailman/MailCommandHandler.py:461
 msgid "Usage: lists"
 msgstr "Usage: listes"
 
-#: Mailman/MailCommandHandler.py:464
+#: Mailman/MailCommandHandler.py:466
 msgid ""
 "\n"
 "Public mailing lists run by mailman@%(hostname)s"
@@ -5764,15 +5897,15 @@ msgstr ""
 "\n"
 "Liste de diffusion publique gérée par mailman@%(hostname)s"
 
-#: Mailman/MailCommandHandler.py:481
+#: Mailman/MailCommandHandler.py:483
 msgid "\trequests to: "
 msgstr "\trequête à: "
 
-#: Mailman/MailCommandHandler.py:484
+#: Mailman/MailCommandHandler.py:486
 msgid "\tdescription: "
 msgstr "\tdescription:"
 
-#: Mailman/MailCommandHandler.py:489
+#: Mailman/MailCommandHandler.py:491
 msgid ""
 "\n"
 "Usage: info\n"
@@ -5786,11 +5919,11 @@ msgstr ""
 "votre requête à l'adresse `-request' de cette liste, ou utilisez la\n"
 "commande `lists' pour avoir des informations sur toutes les listes."
 
-#: Mailman/MailCommandHandler.py:497
+#: Mailman/MailCommandHandler.py:499
 msgid "Private list: only members may see info."
 msgstr "Liste privée: seul les membres peuvent avoir des informations."
 
-#: Mailman/MailCommandHandler.py:502
+#: Mailman/MailCommandHandler.py:504
 msgid ""
 "\n"
 "For more complete info about the %(listname)s mailing list, including\n"
@@ -5808,11 +5941,11 @@ msgstr ""
 "\t%(url)s\n"
 "\n"
 
-#: Mailman/MailCommandHandler.py:512
+#: Mailman/MailCommandHandler.py:514
 msgid "No other details are available."
 msgstr "Plus de détails."
 
-#: Mailman/MailCommandHandler.py:518
+#: Mailman/MailCommandHandler.py:520
 msgid ""
 "Usage: who\n"
 "To get subscribership for a particular list, send your request\n"
@@ -5822,27 +5955,27 @@ msgstr ""
 "Pour vous abonner à une liste particulière, envoyez votre\n"
 "requête à l'adresse `-request' de la liste en question."
 
-#: Mailman/MailCommandHandler.py:524
+#: Mailman/MailCommandHandler.py:526
 msgid "Private list: No one may see subscription list."
 msgstr "Liste privée: Personne ne doir voir la liste des abonnements."
 
-#: Mailman/MailCommandHandler.py:527
+#: Mailman/MailCommandHandler.py:529
 msgid "Private list: only members may see list of subscribers."
 msgstr "Liste privée : seul les membres peuvent voir la liste des abonnés"
 
-#: Mailman/MailCommandHandler.py:533
+#: Mailman/MailCommandHandler.py:535
 msgid "NO MEMBERS."
 msgstr "PAS D'ABONNES."
 
-#: Mailman/MailCommandHandler.py:543
+#: Mailman/MailCommandHandler.py:545
 msgid "Digest Members:\n"
 msgstr "Abonnés avec option de remise groupée:\n"
 
-#: Mailman/MailCommandHandler.py:549
+#: Mailman/MailCommandHandler.py:551
 msgid "Non-Digest Members:\n"
 msgstr "Abonnés en mode non-groupé:\n"
 
-#: Mailman/MailCommandHandler.py:577
+#: Mailman/MailCommandHandler.py:579
 msgid ""
 "Usage: unsubscribe [password] [email-address]\n"
 "To unsubscribe from a particular list, send your request to\n"
@@ -5852,7 +5985,7 @@ msgstr ""
 "Pour résilier votre abonnement à une liste particulière, envoyez une\n"
 "requête à l'adresse `-request' de cette liste."
 
-#: Mailman/MailCommandHandler.py:592
+#: Mailman/MailCommandHandler.py:594
 msgid ""
 "Your unsubscription request has been forwarded to the list administrator "
 "for\n"
@@ -5861,17 +5994,24 @@ msgstr ""
 "Votre requête de résiliation d'abonnement à été envoyé à\n"
 "l'administrateur de la liste pour approbation."
 
-#: Mailman/MailCommandHandler.py:601
+#: Mailman/MailCommandHandler.py:603
 msgid "A removal confirmation message has been sent."
 msgstr "Une demande de confirmation de suppression a été envoyé."
 
-#: Mailman/MailCommandHandler.py:628 Mailman/MailCommandHandler.py:645
+#: Mailman/MailCommandHandler.py:630 Mailman/MailCommandHandler.py:647
 msgid "Usage: subscribe [password] [digest|nodigest] [address=<email-address>]"
 msgstr ""
 "Usage: subscribe [mot_de_passe] [digest|nodigest] "
 "[adresse=<adresse-courriel<]"
 
-#: Mailman/MailCommandHandler.py:670
+#: Mailman/MailCommandHandler.py:666
+msgid ""
+"The email address you supplied is banned from this mailing list.\n"
+"If you think this restriction is erroneous, please contact the list\n"
+"owners at %(listowner)s."
+msgstr ""
+
+#: Mailman/MailCommandHandler.py:678
 msgid ""
 "Your subscription request has been forwarded to the  list administrator\n"
 "at %(adminemail)s for review."
@@ -5879,7 +6019,7 @@ msgstr ""
 "Votre requête d'abonnement à été envoyé à l'administrateur de la liste\n"
 "à l'adresse %(adminemail)s pour examen."
 
-#: Mailman/MailCommandHandler.py:674
+#: Mailman/MailCommandHandler.py:682
 msgid ""
 "Mailman won't accept the given email address as a valid address.\n"
 "(E.g. it must have an @ in it.)"
@@ -5887,14 +6027,14 @@ msgstr ""
 "Mailman n'acceptera pas l'adresse fournit comme étant valide.\n"
 "(e.g. elle doit contenir un @.)"
 
-#: Mailman/MailCommandHandler.py:678
+#: Mailman/MailCommandHandler.py:686
 msgid ""
 "The list is not fully functional, and can not accept subscription requests."
 msgstr ""
 "La liste n'est pas tout à fait fonctionnelle, elle ne permet pas les\n"
 "abonnements."
 
-#: Mailman/MailCommandHandler.py:681
+#: Mailman/MailCommandHandler.py:689
 msgid ""
 "Your subscription is not allowed because\n"
 "the email address you gave is insecure."
@@ -5902,27 +6042,27 @@ msgstr ""
 "Votre abonnement n'est pas autorisé du au fait que votre adresse courriel "
 "n'est pas sûre."
 
-#: Mailman/MailCommandHandler.py:685
+#: Mailman/MailCommandHandler.py:693
 msgid "You are already subscribed!"
 msgstr "Vous êtes déjà abonné!"
 
-#: Mailman/MailCommandHandler.py:688
+#: Mailman/MailCommandHandler.py:696
 msgid "No one can subscribe to the digest of this list!"
 msgstr "Personne ne peut s'abonner au mode groupé de cette liste!"
 
-#: Mailman/MailCommandHandler.py:690
+#: Mailman/MailCommandHandler.py:698
 msgid "This list only supports digest subscriptions!"
 msgstr "Cette liste ne supporte que les abonnements de type remise groupée!"
 
-#: Mailman/MailCommandHandler.py:699 Mailman/MailCommandHandler.py:742
+#: Mailman/MailCommandHandler.py:707 Mailman/MailCommandHandler.py:750
 msgid "Succeeded"
 msgstr "Réussit"
 
-#: Mailman/MailCommandHandler.py:704
+#: Mailman/MailCommandHandler.py:712
 msgid "Usage: confirm <confirmation string>\n"
 msgstr "Usage: confirm <chaîne de confirmation>\n"
 
-#: Mailman/MailCommandHandler.py:713
+#: Mailman/MailCommandHandler.py:721
 msgid ""
 "Invalid confirmation string.  Note that confirmation strings expire\n"
 "approximately %(days)s days after the initial subscription request.  If "
@@ -5935,50 +6075,50 @@ msgstr ""
 "d'abonnement.  Si votre requête d'abonnement a expirée, essayer de\n"
 "soumettre votre requête ou votre message initial de nouveau."
 
-#: Mailman/MailCommandHandler.py:722
+#: Mailman/MailCommandHandler.py:730
 msgid "Your request has been forwarded to the list moderator for approval."
 msgstr ""
 "Votre requête a été envoyée au modérateur de la liste pour\n"
 "approbation."
 
-#: Mailman/MailCommandHandler.py:733
+#: Mailman/MailCommandHandler.py:741
 msgid "You are not a member.  Have you already unsubscribed?"
 msgstr "Vous n'êtes pas abonné. Etes-vous déjà désabonné?"
 
-#: Mailman/MailList.py:655 Mailman/MailList.py:989
+#: Mailman/MailList.py:685 Mailman/MailList.py:1022
 msgid " from %(remote)s"
 msgstr " A partir de %(remote)s"
 
-#: Mailman/MailList.py:690
+#: Mailman/MailList.py:723
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "les abonnements a %(realname)s nécessitent l'approbation du modérateur"
 
-#: Mailman/MailList.py:749 bin/add_members:257
+#: Mailman/MailList.py:782 bin/add_members:257
 msgid "%(realname)s subscription notification"
 msgstr "notification d'abonnement de %(realname)s"
 
-#: Mailman/MailList.py:766
+#: Mailman/MailList.py:799
 msgid "unsubscriptions require moderator approval"
 msgstr "Les résiliations d'abonnements nécessitent l'approbation du modérateur"
 
-#: Mailman/MailList.py:787
+#: Mailman/MailList.py:820
 msgid "%(realname)s unsubscribe notification"
 msgstr "notification de résiliation de %(realname)s"
 
-#: Mailman/MailList.py:908
+#: Mailman/MailList.py:941
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr ""
 "L'abonnement à la liste %(name)s requiert une approbation de l'administrateur"
 
-#: Mailman/htmlformat.py:611
+#: Mailman/htmlformat.py:614
 msgid "Delivered by Mailman<br>version %(version)s"
 msgstr "Servi par Mailman <br>version %(version)s"
 
-#: Mailman/htmlformat.py:612
+#: Mailman/htmlformat.py:615
 msgid "Python Powered"
 msgstr "Python Powered"
 
-#: Mailman/htmlformat.py:613
+#: Mailman/htmlformat.py:616
 msgid "Gnu's Not Unix"
 msgstr "Gnus's Not Unix"
 
@@ -6120,13 +6260,13 @@ msgstr ""
 "Ne peut à la fois lire, à partir de l'entrée standard, les abonnés\n"
 "normaux et les abonnés de type digest."
 
-#: bin/add_members:225 bin/find_member:93 bin/list_admins:85
-#: bin/list_members:117 bin/remove_members:110 bin/rmlist:82
+#: bin/add_members:225 bin/config_list:101 bin/find_member:93 bin/inject:86
+#: bin/list_admins:85 bin/list_members:117 bin/remove_members:110
 #: bin/sync_members:202 cron/bumpdigests:82
 msgid "No such list: %(listname)s"
 msgstr "Liste introuvable: %(listname)s"
 
-#: bin/add_members:244 bin/change_pw:152 bin/check_db:109 bin/sync_members:222
+#: bin/add_members:244 bin/change_pw:152 bin/check_db:109 bin/sync_members:224
 #: cron/bumpdigests:74
 msgid "Nothing to do."
 msgstr "Rien à faire."
@@ -6170,7 +6310,7 @@ msgstr ""
 msgid "listname is required"
 msgstr "Nom de liste requis"
 
-#: bin/arch:91 bin/change_pw:100 bin/config_list:101 bin/config_list:200
+#: bin/arch:91 bin/change_pw:100 bin/config_list:200
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -7123,6 +7263,42 @@ msgstr ""
 "    -h/--help\n"
 "        Afficher ce message et sortir.\n"
 
+#: bin/inject:19
+msgid ""
+"Inject a message from a file into Mailman's incoming queue.\n"
+"\n"
+"Usage: inject [options] [filename]\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h / --help\n"
+"        Print this text and exit.\n"
+"\n"
+"    -l listname\n"
+"    --listname=listname\n"
+"        The name of the list to inject this message to.  Required.\n"
+"\n"
+"    -q queuename\n"
+"    --queue=queuename\n"
+"        The name of the queue to inject the message to.  The queuename must "
+"be\n"
+"        one of the directories inside the qfiles directory.  If omitted, "
+"the\n"
+"        incoming queue is used.\n"
+"\n"
+"filename is the name of the plaintext message file to inject.  If omitted,\n"
+"standard input is used.\n"
+msgstr ""
+
+#: bin/inject:79
+msgid "Bad queue directory: %(qdir)s"
+msgstr ""
+
+#: bin/inject:84
+#, fuzzy
+msgid "A list name is required"
+msgstr "Nom de liste requis"
+
 #: bin/list_admins:19
 msgid ""
 "List all the owners of a mailing list.\n"
@@ -7481,7 +7657,7 @@ msgstr "Pas de fils avec un pid: %(pid)s"
 msgid "Return the hostname, pid, and tempfile"
 msgstr "Renvoie le nom d'hôte, le pid et le fichier temporaire"
 
-#: bin/mailmanctl:206
+#: bin/mailmanctl:208
 msgid ""
 "The master qrunner lock could not be acquired because it appears as if "
 "another\n"
@@ -7491,7 +7667,7 @@ msgstr ""
 "semble qu'un autre processus qrunner principal est en cours\n"
 "d'exécution.\n"
 
-#: bin/mailmanctl:212
+#: bin/mailmanctl:214
 msgid ""
 "The master qrunner lock could not be acquired.  It appears as though there "
 "is\n"
@@ -7501,7 +7677,7 @@ msgstr ""
 "a un vieux fichier verrou du qrunner principal. Essayer de redémarrer\n"
 "mailmanctl avec l'option -s.\n"
 
-#: bin/mailmanctl:218
+#: bin/mailmanctl:220
 msgid ""
 "The master qrunner lock could not be acquired, because it appears as if "
 "some\n"
@@ -8163,6 +8339,7 @@ msgid "User `%(addr)s' not found."
 msgstr "Adresse d'utilisateur '%(addr)s' non trouvée"
 
 #: bin/rmlist:19
+#, fuzzy
 msgid ""
 "Remove the components of a mailing list with impunity - beware!\n"
 "\n"
@@ -8175,11 +8352,12 @@ msgid ""
 "Where:\n"
 "    --archives\n"
 "    -a\n"
-"        remove the lists archives too\n"
+"        Remove the list's archives too, or if the list has already been\n"
+"        deleted, remove any residual archives.\n"
 "\n"
 "    --help\n"
 "    -h\n"
-"        print this help message and exit\n"
+"        Print this help message and exit.\n"
 "\n"
 msgstr ""
 "Supprimer les composantes d'une liste de diffusion impunément - Prenez\n"
@@ -8201,24 +8379,39 @@ msgstr ""
 "    -h\n"
 "        Affiche ce message d'aide puis quitte.\n"
 
-#: bin/rmlist:60 bin/rmlist:63
+#: bin/rmlist:61 bin/rmlist:64
 msgid "Removing %(msg)s"
 msgstr "Suppression de %(msg)s"
 
-#: bin/rmlist:66
+#: bin/rmlist:67
 msgid "%(listname)s %(msg)s not found as %(dir)s"
 msgstr "%(msg)s %(listname)s non trouvé en tant que %(dir)s"
 
-#: bin/rmlist:94
+#: bin/rmlist:91
+#, fuzzy
+msgid "No such list (or list already deleted): %(listname)s"
+msgstr "Liste introuvable: %(listname)s"
+
+#: bin/rmlist:93
+#, fuzzy
+msgid "No such list: %(listname)s.  Removing its residual archives."
+msgstr "Liste introuvable: %(listname)s"
+
+#: bin/rmlist:97
 msgid "Not removing archives.  Reinvoke with -a to remove them."
 msgstr ""
 "Archives non suppriméés. Réinvoquez avec l'option -a pour les supprimer."
 
-#: bin/rmlist:107 bin/rmlist:108
+#: bin/rmlist:111
+#, fuzzy
+msgid "list info"
+msgstr "par l'admin de la liste"
+
+#: bin/rmlist:117 bin/rmlist:119
 msgid "private archives"
 msgstr "archives privées"
 
-#: bin/rmlist:109 bin/rmlist:110
+#: bin/rmlist:121 bin/rmlist:123
 msgid "public archives"
 msgstr "archives publiques"
 
@@ -8375,7 +8568,8 @@ msgid "Ignore  :  %30(addr)s"
 msgstr "Ignorer  :  %30(addr)s"
 
 #: bin/sync_members:192
-msgid "Invalid :  %30(addr)s"
+#, fuzzy
+msgid "Invalid :  %(addr)30s"
 msgstr "Invalide : %30(addr)s"
 
 #: bin/sync_members:195
@@ -8383,11 +8577,11 @@ msgid "You must fix the preceding invalid addresses first."
 msgstr ""
 "Vous devez d'abord régler le problème de l'adresse invalide précédente."
 
-#: bin/sync_members:236
+#: bin/sync_members:238
 msgid "Added  : <%(addr)30s> %(name)s"
 msgstr "Ajouté : <%(addr)30s> %(name)s"
 
-#: bin/sync_members:245
+#: bin/sync_members:255
 msgid "Removed: <%(addr)30s> %(name)s"
 msgstr "Supprimé: <%(addr)30s> %(name)s"
 
@@ -8696,22 +8890,18 @@ msgid "Using Mailman version:"
 msgstr "Utilisation de la version de Mailman:"
 
 #: bin/withlist:19
+#, fuzzy
 msgid ""
 "General framework for interacting with a mailing list object.\n"
 "\n"
 "There are two ways to use this script: interactively or programmatically.\n"
 "Using it interactively allows you to play with, examine and modify a "
 "MailList\n"
-"object from Python's interactive interpreter.  To do this, run the script "
-"as\n"
-"follows:\n"
-"\n"
-"%% python -i bin/withlist [options] listname [args ...]\n"
-"\n"
-"This will load the list object named by listname (required) into an object\n"
-"called `m' in the global namespace.  It also loads the class MailList into "
-"the\n"
-"global namespace.\n"
+"object from Python's interactive interpreter.  When running interactively, "
+"a\n"
+"MailList object called `m' will be available in the global namespace.  It "
+"also\n"
+"loads the class MailList into the global namespace.\n"
 "\n"
 "Programmatically, you can write a function to operate on a MailList object,\n"
 "and this script will take care of the housekeeping (see below for "
@@ -8722,8 +8912,7 @@ msgid ""
 "\n"
 "Options:\n"
 "\n"
-"    -l\n"
-"    --lock\n"
+"    -l / --lock\n"
 "        Lock the list when opening.  Normally the list is opened unlocked\n"
 "        (e.g. for read-only operations).  You can always lock the file "
 "after\n"
@@ -8735,6 +8924,10 @@ msgid ""
 "        automatically save changes to the MailList object (but it will "
 "unlock\n"
 "        the list).\n"
+"\n"
+"    -i / --interactive\n"
+"        Leaves you at an interactive prompt after all other processing is\n"
+"        complete.\n"
 "\n"
 "    --run [module.]callable\n"
 "    -r [module.]callable\n"
@@ -8754,12 +8947,18 @@ msgid ""
 "\n"
 "        The global variable `r' will be set to the results of this call.\n"
 "\n"
-"    --quiet\n"
-"    -q\n"
+"    --all / -a\n"
+"        This option only works with the -r option.  Use this if you want to\n"
+"        execute the script on all mailing lists.  When you use -a you "
+"should\n"
+"        not include a listname argument on the command line.  The variable "
+"`r'\n"
+"        will be a list of all the results.\n"
+"\n"
+"    --quiet / -q\n"
 "        Suppress all status messages.\n"
 "\n"
-"    --help\n"
-"    -h\n"
+"    --help / -h\n"
 "        Print this message and exit\n"
 "\n"
 "\n"
@@ -8913,7 +9112,7 @@ msgstr ""
 "puis exécuter ce qui suit sur la ligne de commande:\n"
 "%% bin/withlist -l -r changepasse maliste toto@qqpart.org foobar\n"
 
-#: bin/withlist:140
+#: bin/withlist:147
 msgid ""
 "Unlock a locked list, but do not implicitly Save() it.\n"
 "\n"
@@ -8929,37 +9128,50 @@ msgstr ""
 "contre executé lorsqu'une exception se produit.\n"
 "\t"
 
-#: bin/withlist:151
+#: bin/withlist:158
 msgid "Unlocking (but not saving) list: %(listname)s"
 msgstr "Déverrouillage (sans sauvegarde) de la liste: %(listname)s"
 
-#: bin/withlist:155
+#: bin/withlist:162
 msgid "Finalizing"
 msgstr "Finalisation"
 
-#: bin/withlist:183
-msgid "No list name supplied."
-msgstr "Nom de liste non fourni."
-
-#: bin/withlist:189
+#: bin/withlist:171
 msgid "Loading list %(listname)s"
 msgstr "Chargement de la liste %(listname)s en cours"
 
-#: bin/withlist:191
+#: bin/withlist:173
 msgid "(locked)"
 msgstr "(vérouillé)"
 
-#: bin/withlist:193
+#: bin/withlist:175
 msgid "(unlocked)"
 msgstr "(dévérouillé)"
 
-#: bin/withlist:207
+#: bin/withlist:180
+#, fuzzy
+msgid "Unknown list: %(listname)s"
+msgstr "Chargement de la liste %(listname)s en cours"
+
+#: bin/withlist:219
+msgid "No list name supplied."
+msgstr "Nom de liste non fourni."
+
+#: bin/withlist:222
+msgid "--all requires --run"
+msgstr ""
+
+#: bin/withlist:235
 msgid "Importing %(module)s..."
 msgstr "Importation de %(module)s..."
 
-#: bin/withlist:210
+#: bin/withlist:238
 msgid "Running %(module)s.%(callable)s()..."
 msgstr "Exécution de %(module)s.%(callable)s()..."
+
+#: bin/withlist:259
+msgid "The variable `m' is the %(listname)s MailList instance"
+msgstr ""
 
 #: cron/bumpdigests:19
 msgid ""
@@ -9056,6 +9268,10 @@ msgstr ""
 "    --list nomliste\n"
 "        Traiter seulement la liste spécifiée. Lorsqu'omis, toutes les\n"
 "listes sont traitées.\n"
+
+#: cron/disabled:87
+msgid "[disabled by periodic sweep and cull, no message available]"
+msgstr ""
 
 #: cron/gate_news:19
 msgid ""
@@ -9186,3 +9402,12 @@ msgstr ""
 "lesquelles la variable digest_send_periodic est définit.\n"
 "\n"
 "Il est généralement appelé par cron.\n"
+
+#~ msgid "nomail"
+#~ msgstr "arrêt"
+
+#~ msgid "<b>nomail</b> -- Is delivery to the member disabled?"
+#~ msgstr "<b>arrêt</b> -- Les remises à l'abonné sont-elle désactivées?"
+
+#~ msgid "General sender filters"
+#~ msgstr "Filtres pour soumissions générales"
