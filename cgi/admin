@@ -5,7 +5,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 461 $"
+__version__ = "$Revision: 528 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -127,13 +127,27 @@ def FormatAdminOverview(error=None):
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
                       colspan=2, bgcolor="#99ccff")
 
+    # XXX We need a portable way to determine the host by which we are being 
+    #     visited!  An absolute URL would do...
+    if os.environ.has_key('HTTP_HOST'):
+	http_host = os.environ['HTTP_HOST']
+    else:
+	http_host = None
+
     advertised = []
     names = mm_utils.list_names()
     names.sort()
     for n in names:
 	l = maillist.MailList(n)
 	l.Unlock()
-        if l.advertised: advertised.append(l)
+        if l.advertised:
+	    if (http_host
+		and (string.find(http_host, l.host_name) == -1
+		     and string.find(l.host_name, http_host) == -1)):
+		# List is for different identity for this host - skip it.
+		continue
+	    else:
+		advertised.append(l)
 
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")

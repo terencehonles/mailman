@@ -4,7 +4,7 @@
 
 Errors are redirected to logs/errors."""
 
-__version__ = "$Revision: 413 $"
+__version__ = "$Revision: 528 $"
 
 # No lock needed in this script, because we don't change data.
 
@@ -27,6 +27,7 @@ def main():
         path = os.environ['PATH_INFO']
     except KeyError:
         path = ""
+
     list_info = mm_utils.GetPathPieces(path)
 
     if len(list_info) == 0:
@@ -47,7 +48,7 @@ def main():
     FormatListListinfo(list)
 
 def FormatListinfoOverview(error=None):
-    "Present a general welcome and itemize the (public) lists."
+    "Present a general welcome and itemize the (public) lists for this host."
     doc = Document()
     legend = "%s maillists" % mm_cfg.DEFAULT_HOST_NAME
     doc.SetTitle(legend)
@@ -60,10 +61,25 @@ def FormatListinfoOverview(error=None):
     advertised = []
     names = mm_utils.list_names()
     names.sort()
+
+    # XXX We need a portable way to determine the host by which we are being 
+    #     visited!  An absolute URL would do...
+    if os.environ.has_key('HTTP_HOST'):
+	http_host = os.environ['HTTP_HOST']
+    else:
+	http_host = None
+
     for n in names:
 	l = maillist.MailList(n)
 	l.Unlock()
-        if l.advertised: advertised.append(l)
+	if l.advertised:
+	    if (http_host
+		and (string.find(http_host, l.host_name) == -1
+		     and string.find(l.host_name, http_host) == -1)):
+		# List is for different identity for this host - skip it.
+		continue
+	    else:
+		advertised.append(l)
 
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
