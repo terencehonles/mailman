@@ -62,7 +62,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	MailCommandHandler.__init__(self)
         self.InitTempVars(name, lock)
 	if name:
-	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	    self.Load()
 
     def __del__(self):
@@ -277,6 +276,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._log_files = {}		# 'class': log_file_obj
 	if name:
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
+        else:
+            self._full_path = None
         ListAdmin.InitTempVars(self)
 
     def InitVars(self, name=None, admin='', crypted_password=''):
