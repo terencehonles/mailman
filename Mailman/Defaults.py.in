@@ -463,10 +463,12 @@ METADATA_FORMAT = METAFMT_MARSHAL
 
 # This variable controls the order in which list-specific category options are
 # presented in the admin cgi page.
-ADMIN_CATEGORIES = ['general', 'language', 'members', 'privacy', 'nondigest',
-                    'digest', 'bounce', 'archive', 'gateway',
-                    'autoreply', 'topics',
-                    ]
+ADMIN_CATEGORIES = [
+    # First column
+    'general', 'passwords', 'language', 'members', 'nondigest', 'digest',
+    # Second column
+    'privacy', 'bounce',    'archive',  'gateway', 'autoreply', 'topics',
+    ]
 
 
 
