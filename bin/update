@@ -21,21 +21,25 @@ some previous version.  It knows about versions back to 1.0b4 (?).
 
 """
 
-import sys, os, string
+import sys
+import os
+import string
+import marshal
+
 import paths
-from Mailman.MailList import MailList
-from Mailman.Utils import list_names
-import Mailman.mm_cfg
+from Mailman import MailList
+from Mailman import Utils
+from Mailman import mm_cfg
 
 
 
 def makeabs(relpath):
-    return os.path.join(Mailman.mm_cfg.PREFIX, relpath)
+    return os.path.join(mm_cfg.PREFIX, relpath)
 
 
 
 def dolist(list):
-    l = MailList(list)
+    l = MailList.MailList(list)
 
     mbox_dir = makeabs('archives/private/%s.mbox' % (list))
     mbox_file = makeabs('archives/private/%s.mbox/%s' % (list, list))
@@ -155,8 +159,8 @@ script.
     # and move them to the new place if there's not already
     # a new one there
     #
-    tmpl_dir = os.path.join(Mailman.mm_cfg.PREFIX, "templates")
-    list_dir = os.path.join(Mailman.mm_cfg.PREFIX, "lists")
+    tmpl_dir = os.path.join(mm_cfg.PREFIX, "templates")
+    list_dir = os.path.join(mm_cfg.PREFIX, "lists")
     b4_tmpl_dir = os.path.join(tmpl_dir, l._internal_name)
     new_tmpl_dir = os.path.join(list_dir, l._internal_name)
     if os.path.exists(b4_tmpl_dir):
@@ -190,7 +194,7 @@ def archive_path_fixer(unused_arg, dir, files):
             os.chmod(abs, 0664)
 
 def remove_old_sources(module):
-    src = "%s/%s" % (Mailman.mm_cfg.PREFIX, module)
+    src = "%s/%s" % (mm_cfg.PREFIX, module)
     pyc = src + "c"
     if os.path.exists(src):
         print "removing", src
@@ -211,7 +215,7 @@ if __name__ == '__main__':
                 'Mailman/smtplib.py',
                 'bin/update_to_10b6'):
         remove_old_sources(mod)
-    lists = list_names()
+    lists = Utils.list_names()
     if not lists:
         print "no lists == nothing to do, exiting"
         sys.exit(0)
@@ -219,21 +223,82 @@ if __name__ == '__main__':
     # for people with web archiving, make sure the directories
     # in the archiving are set with proper perms for b6.
     #
-    if os.path.isdir("%s/public_html/archives" % Mailman.mm_cfg):
+    if os.path.isdir("%s/public_html/archives" % mm_cfg.PREFIX):
         print "fixing all the perms on your old html archives to work with b6"
         print "If your archives are big, this could take a minute or two..."
-        os.path.walk("%s/public_html/archives" % Mailman.mm_cfg,
+        os.path.walk("%s/public_html/archives" % mm_cfg.PREFIX,
                      archive_path_fixer, "")
         print "done"
     for list in lists:
         print 'Updating mailing list: ', list
         dolist(list)
-    print '\nNOTE NOTE NOTE NOTE NOTE'
-    print """You will need to manually update your mailing lists.
-For each mailing list you need to copy the file templates/options.html
-lists/<listname>/options.html.
+    print 'Updating Usenet watermarks'
+    wmfile = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
+    try:
+        fp = open(wmfile)
+    except IOError:
+        print '- nothing to update here'
+    else:
+        d = marshal.load(fp)
+        fp.close()
+        for listname in d.keys():
+            mlist = MailList.MailList(listname)
+            # Pre 1.0b7 stored 0 in the gate_watermarks file to indicate that
+            # no gating had been done yet.  Without coercing this to None, the
+            # list could now suddenly get flooded.
+            mlist.usenet_watermark = d[listname] or None
+            mlist.Save()
+            mlist.Unlock()
+        os.unlink(wmfile)
+        print '- usenet watermarks updated and gate_watermarks removed'
+    #
+    # See if we stored the last updated version
+    #
+    try:
+        lvfile = os.path.join(mm_cfg.DATA_DIR, 'last_mailman_version')
+        fp = open(lvfile)
+        data = fp.read()
+        fp.close()
+        lastversion = string.atoi(data, 16)
+    except (IOError, ValueError):
+        lastversion = 0
+    #
+    # try to figure out if this is a fresh install
+    #
+    if lastversion == 0:
+        fresh = 0
+        try:
+            logfiles = os.listdir(mm_cfg.LOG_DIR)
+            fresh = not len(logfiles)
+        except OSError:
+            pass
+    #
+    # This warning was necessary for the upgrade from 1.0b9 to 1.0b10.
+    # There's no good way of figuring this out for releases prior to 2.0beta2
+    # :(
+    #
+    if lastversion == 0 and not fresh:
+        print """
 
-However, if you have edited this file via the Web interface, you will have to
-merge your changes into this file, otherwise you will lose your changes.
+NOTE NOTE NOTE NOTE NOTE
+
+    You are upgrading an existing Mailman installation, but I can't tell what
+    version you were previously running.
+
+    If you are upgrading from Mailman 1.0b9 or earlier you will need to
+    manually update your mailing lists.  For each mailing list you need to
+    copy the file templates/options.html lists/<listname>/options.html.
+
+    However, if you have edited this file via the Web interface, you will have
+    to merge your changes into this file, otherwise you will lose your
+    changes.
+
+NOTE NOTE NOTE NOTE NOTE
+
 """
-    
+    #
+    # Now record the version we just upgraded to
+    #
+    fp = open(lvfile, 'w')
+    fp.write(hex(mm_cfg.HEX_VERSION) + '\n')
+    fp.close()
