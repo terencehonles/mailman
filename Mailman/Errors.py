@@ -99,7 +99,7 @@ class LostHeldMessage(MailmanError):
 class HandlerError(MailmanError):
     """Base class for all handler errors."""
 
-class MessageHeld(HandlerError):
+class HoldMessage(HandlerError):
     """Base class for all message-being-held short circuits."""
     def __str__(self):
         return self.__class__.__doc__
@@ -112,6 +112,9 @@ class MessageHeld(HandlerError):
 
 class DiscardMessage(HandlerError):
     """The message can be discarded with no further action"""
+
+class RejectMessage(HandlerError):
+    """The message will be bounced back to the sender"""
 
 class SomeRecipientsFailed(HandlerError):
     """Delivery to some or all recipients failed"""
