@@ -782,23 +782,21 @@ it will not be changed."""),
         Utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
 	self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	self._internal_name = name
-	self.Lock()
-	self.InitVars(name, admin, crypted_password)
-	self._ready = 1
-	self.InitTemplates()
-	self.Save()
-	self.CreateFiles()
-
-    def CreateFiles(self):
+        # Don't use Lock() since that tries to load the non-existant config.db
+        self.__lock.lock()
+        self.InitVars(name, admin, crypted_password)
+        self._ready = 1
+        self.InitTemplates()
+        self.Save()
 	# Touch these files so they have the right dir perms no matter what.
 	# A "just-in-case" thing.  This shouldn't have to be here.
 	ou = os.umask(002)
 	try:
-	    open(os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % 
-			      self._internal_name), 'a+').close()
-	    open(os.path.join(self._full_path, "next-digest"), "a+").close()
-	    open(os.path.join(self._full_path, "next-digest-topics"),
-		 "a+").close()
+            path = os.path.join(self._full_path, 'next-digest')
+            fp = open(path, "a+")
+            fp.close()
+	    fp = open(path+'-topics', "a+")
+            fp.close()
 	finally:
 	    os.umask(ou)
 	
