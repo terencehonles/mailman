@@ -82,7 +82,7 @@ Commands:
               stopping, no more messages will be processed.
 
     restart - Restarts the sub-qrunners, but not the master qrunner.  This is
-              really handy for development because the without restarting, the
+              really handy for development because without restarting, the
               sub-qrunners won't reload any changed modules.
 
     reopen  - This will simply cause all log files to be re-opened.
