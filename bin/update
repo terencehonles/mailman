@@ -386,10 +386,12 @@ def update_qfiles():
 def main():
     errors = 0
     # get rid of old stuff
+    print _('getting rid of old source files')
     for mod in ('Mailman/Archiver.py', 'Mailman/HyperArch.py',
                 'Mailman/HyperDatabase.py', 'Mailman/pipermail.py',
                 'Mailman/smtplib.py', 'Mailman/Cookie.py',
-                'bin/update_to_10b6'):
+                'bin/update_to_10b6', 'scripts/mailcmd',
+                'scripts/mailowner'):
         remove_old_sources(mod)
     listnames = Utils.list_names()
     if not listnames:

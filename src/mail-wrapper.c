@@ -33,12 +33,12 @@ const char* logident = "Mailman mail-wrapper";
 
 
 const char *VALID_COMMANDS[] = {
-	"post", 
-	"mailcmd",
-	"mailowner",
+	"bounces",
 	"join",
 	"leave",
-	"bounces",
+	"post", 
+	"owner",
+	"request",
 	NULL				     /* Sentinel, don't remove */
 };
 
