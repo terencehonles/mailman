@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,12 +25,12 @@ the programs in the bin tree (the ones that lock config.db files) are SUID
 Mailman.  The idea is that config.db files have to be owned by the mailman UID
 and only touched by programs that are UID mailman.
  
-If you have to run check_perms -f, make sure to also run %(PROGRAM) -f, which
-applies the necessary permission fixes
+If you have to run check_perms -f, make sure to also run securelinux_fix.py
+-f, which applies the necessary permission fixes.
  
-As a result, to prevent anyone from running priviledged Mailman commands
-\(since the scripts are suid), binary commands that are changed to be SUID are
-also unreadable and unrunable by people who aren't in the mailman group.  This
+As a result, to prevent anyone from running privileged Mailman commands (since
+the scripts are suid), binary commands that are changed to be SUID are also
+unreadable and unrunnable by people who aren't in the mailman group.  This
 shouldn't affect much since most of those commands would fail work if you
 weren't part of the mailman group anyway.
 
@@ -45,8 +45,6 @@ import glob
 from Mailman import mm_cfg
 from Mailman.mm_cfg import MAILMAN_UID, MAILMAN_GID
 from stat import *
-
-PROGRAM = sys.argv[0]
 
 # Those are the programs that we patch so that they insist being run under the
 # mailman uid or as root.
