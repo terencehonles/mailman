@@ -104,18 +104,18 @@ list_admin_transport:
 ## First 2 directors rewrite list-owner or owner-list to list-admin
 ## This is only done if the list exists.
 ## List existence checks are done by seeing if the file
-## MAILMAN_HOME/lists//config.db
+## MAILMAN_HOME/lists//config.pck
 ## exists.
 
 list_owner_director:
    driver = smartuser
-   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
    suffix = "-owner"
    new_address = "${lc:$local_part}-admin@${domain}"
 
 owner_list_director:
    driver = smartuser
-   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
    prefix = "owner-"
    new_address = "${lc:$local_part}-admin@${domain}"
 
@@ -126,18 +126,18 @@ owner_list_director:
 list_admin_director:
    driver = smartuser
    suffix = -admin
-   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
    transport = list_admin_transport
 
 list_request_director:
    driver = smartuser
    suffix = -request
-   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
    transport = list_request_transport
 
 list_director:
    driver = smartuser
-   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
    transport = list_transport
 
 ## End of directors fragment
@@ -159,7 +159,7 @@ list_director:
        warning messages. Mailman 2.0beta does handle exim bounces
        correctly, but still passes delay warnings to the list
        administrator
-     * List existence is checked on whether there is a config.db file for
+     * List existence is checked on whether there is a config.pck file for
        a list. If you delete lists by foul means, be aware of this.
      * If you are getting exim or mailman complaining about user ids when
        you send mail to a list, check that the MAILMAN_UID and
@@ -180,7 +180,7 @@ home_directory = /virtual/${domain}/mailman
 
 ## and in the director part:
 
-require_files = /virtual/${domain}/mailman/lists/${lc:$local_part}/config.db
+require_files = /virtual/${domain}/mailman/lists/${lc:$local_part}/config.pck
 
 Exim List Efficiency Tweaks
 
@@ -255,7 +255,7 @@ exim-users-admin@www.exim.org
 
     [2]Nigel Metheringham
     
-    $Id: README.EXIM 2858 2000-12-07 16:53:23Z bwarsaw $
+    $Id: README.EXIM 4272 2001-10-25 04:58:24Z bwarsaw $
 
 References
 
