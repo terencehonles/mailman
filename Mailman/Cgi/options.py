@@ -295,7 +295,7 @@ def main():
         msg = ''
         if set_address:
             # Register the pending change after the list is locked
-            msg = _('A confirmation message has been sent to %(newaddr)s')
+            msg = _('A confirmation message has been sent to %(newaddr)s. ')
             mlist.Lock()
             try:
                 try:
@@ -317,7 +317,7 @@ def main():
                 mlist.Save()
             finally:
                 mlist.Unlock()
-            msg += _('Member name successfully changed.')
+            msg += _('Member name successfully changed. ')
 
         options_page(mlist, doc, user, cpuser, userlang, msg)
         print doc.Format()
