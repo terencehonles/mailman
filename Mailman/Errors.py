@@ -24,7 +24,15 @@ MMBadListError       = "MMBadListError"
 MMBadUserError       = "MMBadUserError"
 MMBadConfigError     = "MMBadConfigError"
 
-MMBadEmailError      = "MMBadEmailError"
+# Exception hierarchy for bad email address errors that can be raised from
+# Utils.ValidateEmail()
+class EmailAddressError(Exception):
+    pass
+class MMBadEmailError(EmailAddressError):
+    pass
+class MMHostileAddress(EmailAddressError):
+    pass
+
 MMMustDigestError    = "MMMustDigestError"
 MMCantDigestError    = "MMCantDigestError"
 MMNotAMemberError    = "MMNotAMemberError"
@@ -34,7 +42,6 @@ MMBadPasswordError   = "MMBadPasswordError"
 MMNeedApproval       = "MMNeedApproval"
 MMSubscribeNeedsConfirmation = "MMSubscribeNeedsConfirmation"
 MMBadConfirmation    = "MMBadConfirmation"
-MMHostileAddress     = "MMHostileAddress"
 MMAlreadyAMember     = "MMAlreadyAMember"
 MMPasswordsMustMatch = "MMPasswordsMustMatch"
 MMAlreadyDigested    = "MMAlreadyDigested"
