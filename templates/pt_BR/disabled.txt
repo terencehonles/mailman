@@ -1,6 +1,6 @@
-O membro de sua lista de discussão %(listname)s foi desativado por 
-motivo de excessivos retornos. Você não receberá mais mensagens 
-desta lista até que re-ative seu membro. 
+O membro de sua lista de discussão %(listname)s foi desativado 
+por %(reason)s. Você não receberá mais 
+mensagens desta lista até que re-ative seu membro. 
 Você receberá mais %(noticesleft)s lembretes antes que o membro da lista
 seja removidod.
 
