@@ -365,16 +365,16 @@ class InputObj:
     def __init__(self, name, ty, value, checked, **kws):
 	self.name = name
 	self.type = ty
-	self.value = `value`
+	self.value = value
 	self.checked = checked
 	self.kws = kws
 
     def Format(self, indent=0):
-	output = '<INPUT name=%s type=%s value=%s' % (self.name, self.type,
-						      self.value)
+	output = '<INPUT name="%s" type="%s" value="%s"' % (
+            self.name, self.type, self.value)
 	
 	for (key, val) in self.kws.items():
-	    output = '%s %s=%s' % (output, key, val)
+	    output = '%s "%s"="%s"' % (output, key, val)
 
 	if self.checked:
 	    output = output + ' CHECKED'
