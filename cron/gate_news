@@ -215,12 +215,8 @@ if __name__ == '__main__':
     if args:
         usage(1, 'No args are expected')
 
-    tee_to_stdout = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
 
-    # Set up stderr
-    syslog('fromusenet', 'begin gating')
     main()
-    syslog('fromusenet', 'end gating')
