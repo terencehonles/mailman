@@ -1,7 +1,90 @@
-$Revision: 401 $
+$Revision: 447 $
 
-1.0b1.2: (04/09/1998, klm)
-  - Pre-release packaging, haven't put together the change description yet.
+1.0b2 (04/13/1998) and 1.0b1.1 (04/09/1998): klm (ken manheimer)
+
+Web pages much more polished 
+ - Better organized, text more finely crafted
+ - Easier, more refined layout
+ - List info and admin interface overviews, enumerate all public lists
+   (via, e.g., http://www.python.org/mailman/listinfo - sans the
+   specific list)
+ - Admin interface broken into sections, with help elaboration for
+   complicated configuration options
+Maillist Archives
+ - Integrated with a newer, *much* improved, external pipermail - to be
+   found at http://starship.skyport.net/crew/amk/maintained/pipermail.html
+ - Private archives protected with maillist members passwords, cookie-fied.
+Spam prevention
+ - New spam prevention measures catch most if not all spam without
+   operator intervention or general constraints on who can post to
+   list:
+     require_explicit_destination option imposes hold of any postings
+     that do not have the list name in any of the to or cc header
+     destination addresses.  This catches the vast majority of random
+     spam.
+   Other options (forbidden_posters, bounce_matching_headers) provide
+   for filtering of known transgressors.
+ - Option obscure_addresses (default on) causes maillist subscriber
+   lists on the web to be slightly mangled so they're not directly
+   recognizable as email address by web spiders, which might be
+   seeking targets for spammers.
+Site configuration arrangement organized - in mailman/mailman/modules:
+ - When installing, create a mailman/modules/mm_cfg.py (if there's not 
+   one already there), using mm_cfg.py.dist as a template.
+   mm_default.py contains the distributed defaults, including
+   descriptions of the values.  mm_cfg.py does a 'from mm_defaults.py
+   import *' to get the distributed defaults.  Include settings in
+   mm_cfg.py for any values in mm_defaults.py that need to be
+   customized for your site, after the 'from .. import *'.
+ See mm_cfg.py.dist for more details.
+Logging
+ - Major operations (subscription, admin approval, bounce,
+   digestification, cgi script failure tracebacks) logged in files
+   using a reliable mechanism
+ - Wrapper executables log authentication complaints via syslog
+Wrappers
+ - All cgi-script wrapper executables combined in a single source,
+   easier to configure.  (Mail and aliases wrappers separate.)
+List structure version migration
+ - Provision for automatic update of list structures when moving to a
+   new version of the system.  See modules/versions.py.
+Code cleaning
+ - Many more module docstrings, __version__ settings, more function
+   docstrings.
+ - Most unqualified exception catches have been replaced with more
+   finely targeted catches, to avoid concealing bugs.
+ - Lotsa long lines wrapped (pet peeve:).
+Random details (not complete, sorry):
+ - make archival frequency a list option
+ - Option for daily digest dispatch, in addition to size threshhold
+ - make sure users only get one periodic password notifcation message for
+   all the lists they're on (repaired 1.0b1.1 varying-case mistake)
+ - Fix rmlist sans-argument bug causing deletion of all lists!
+ - doubled generated random passwords to four letters
+ - Cleaned lots and lots of notices
+ - Lots and lots of html page cleanup, including table-of-contents, etc
+ - Admin options sections - don't do the "if so" if the ensuing list is empty 
+ - Prevent list subject-prefix cascade
+ - Sources under CVS
+ - Various spam filters - implicit-destination, header-field
+ - Adjusted permissions for group access
+ - Prevent redundant subscription from redundant vetted requests
+ - Instituted centralize, robustish logging
+ - Wrapper sources use syslog for logging (john viega)
+ - Sorting of users done on presentation, not in list.
+ - Edit options - give an error for non-existent users, not an options page.
+ - Bounce handling - offer 'disable' option, instead of remove, and
+   never remove without notifying admin
+ - Moved subscribers off of listinfo (and made private lists visible
+   modulo authentication) 
+ - Parameterize default digest headers and footers and create some
+ - Put titles on cgi result pages that do not get titles (all?)
+ - Option for immediate admin notifcation via email of pending
+   requests, as well as periodic 
+ - Admin options web-page help
+ - Enabled grouped and cascading lists despite implicit-name constraint
+ - Changed subscribers list so it has its own script (roster)
+ - Welcome pages: http://www.python.org/mailman/{admin,listinfo}/
 
 0.95: (Jan 25, 1997)
   - Fixed a bug in sending out digests added when adding disable mime option.
