@@ -50,6 +50,12 @@ from Mailman import Errors
 from Mailman import Site
 from Mailman.SafeDict import SafeDict
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 EMPTYSTRING = ''
 NL = '\n'
 DOT = '.'
@@ -74,8 +80,8 @@ def list_exists(listname):
     for ext in ('.pck', '.pck.last', '.db', '.db.last'):
         dbfile = os.path.join(basepath, 'config' + ext)
         if os.path.exists(dbfile):
-            return 1
-    return 0
+            return True
+    return False
 
 
 def list_names():
@@ -86,7 +92,7 @@ def list_names():
 
 
 # a much more naive implementation than say, Emacs's fill-paragraph!
-def wrap(text, column=70, honor_leading_ws=1):
+def wrap(text, column=70, honor_leading_ws=True):
     """Wrap and fill the text to the specified column.
 
     Wrapping is always in effect, although if it is not possible to wrap a
@@ -103,15 +109,15 @@ def wrap(text, column=70, honor_leading_ws=1):
     for para in paras:
         # fill
         lines = []
-        fillprev = 0
+        fillprev = False
         for line in para.split(NL):
             if not line:
                 lines.append(line)
                 continue
             if honor_leading_ws and line[0] in whitespace:
-                fillthis = 0
+                fillthis = False
             else:
-                fillthis = 1
+                fillthis = True
             if fillprev and fillthis:
                 # if the previous line should be filled, then just append a
                 # single space, and the rest of the current line
@@ -130,33 +136,33 @@ def wrap(text, column=70, honor_leading_ws=1):
                     bol = column
                     # find the last whitespace character
                     while bol > 0 and text[bol] not in whitespace:
-                        bol = bol - 1
+                        bol -= 1
                     # now find the last non-whitespace character
                     eol = bol
                     while eol > 0 and text[eol] in whitespace:
-                        eol = eol - 1
+                        eol -= 1
                     # watch out for text that's longer than the column width
                     if eol == 0:
                         # break on whitespace after column
                         eol = column
                         while eol < len(text) and \
                               text[eol] not in whitespace:
-                            eol = eol + 1
+                            eol += 1
                         bol = eol
                         while bol < len(text) and \
                               text[bol] in whitespace:
-                            bol = bol + 1
-                        bol = bol - 1
+                            bol += 1
+                        bol -= 1
                     line = text[:eol+1] + '\n'
                     # find the next non-whitespace character
-                    bol = bol + 1
+                    bol += 1
                     while bol < len(text) and text[bol] in whitespace:
-                        bol = bol + 1
+                        bol += 1
                     text = text[bol:]
-                wrapped = wrapped + line
-            wrapped = wrapped + '\n'
+                wrapped += line
+            wrapped += '\n'
             # end while text
-        wrapped = wrapped + '\n'
+        wrapped += '\n'
         # end for text in lines
     # the last two newlines are bogus
     return wrapped[:-2]
@@ -218,7 +224,7 @@ def GetPathPieces(envar='PATH_INFO'):
 
 
 
-def ScriptURL(target, web_page_url=None, absolute=0):
+def ScriptURL(target, web_page_url=None, absolute=False):
     """target - scriptname only, nothing extra
     web_page_url - the list's configvar of the same name
     absolute - a flag which if set, generates an absolute url
@@ -267,15 +273,15 @@ def GetPossibleMatchingAddrs(name):
 
 
 
-def List2Dict(list, foldcase=0):
+def List2Dict(L, foldcase=False):
     """Return a dict keyed by the entries in the list passed to it."""
     d = {}
     if foldcase:
-        for i in list:
-            d[i.lower()] = 1
+        for i in L:
+            d[i.lower()] = True
     else:
         for i in list:
-            d[i] = 1
+            d[i] = True
     return d
 
 
@@ -293,7 +299,7 @@ del c, v
 
 def MakeRandomPassword(length=6):
     syls = []
-    while len(syls)*2 < length:
+    while len(syls) * 2 < length:
         syls.append(random.choice(_syllables))
     return EMPTYSTRING.join(syls)[:length]
 
@@ -302,20 +308,22 @@ def GetRandomSeed():
     chr2 = int(random.random() * 52)
     def mkletter(c):
         if 0 <= c < 26:
-            c = c + 65
+            c += 65
         if 26 <= c < 52:
-            c = c - 26 + 97
+            #c = c - 26 + 97
+            c += 71
         return c
     return "%c%c" % tuple(map(mkletter, (chr1, chr2)))
 
 
 
-def set_global_password(pw, siteadmin=1):
+def set_global_password(pw, siteadmin=True):
     if siteadmin:
         filename = mm_cfg.SITE_PW_FILE
     else:
         filename = mm_cfg.LISTCREATOR_PW_FILE
-    omask = os.umask(026)                         # rw-r-----
+    # rw-r-----
+    omask = os.umask(026)
     try:
         fp = open(filename, 'w')
         fp.write(sha.new(pw).hexdigest() + '\n')
@@ -324,7 +332,7 @@ def set_global_password(pw, siteadmin=1):
         os.umask(omask)
 
 
-def get_global_password(siteadmin=1):
+def get_global_password(siteadmin=True):
     if siteadmin:
         filename = mm_cfg.SITE_PW_FILE
     else:
@@ -340,7 +348,7 @@ def get_global_password(siteadmin=1):
     return challenge
 
 
-def check_global_password(response, siteadmin=1):
+def check_global_password(response, siteadmin=True):
     challenge = get_global_password(siteadmin)
     if challenge is None:
         return None
@@ -355,7 +363,7 @@ def websafe(s):
 
 # Just changing these two functions should be enough to control the way
 # that email address obscuring is handled.
-def ObscureEmail(addr, for_text=0):
+def ObscureEmail(addr, for_text=False):
     """Make email address unrecognizable to web spiders, but invertable.
 
     When for_text option is set (not default), make a sentence fragment
@@ -373,7 +381,7 @@ def UnobscureEmail(addr):
 
 
 
-def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
+def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     # Make some text from a template file.  The order of searches depends on
     # whether mlist and lang are provided.  Once the templatefile is found,
     # string substitution is performed by interpolation in `dict'.  If `raw'
@@ -508,12 +516,12 @@ def is_administrivia(msg):
         if line.strip():
             linecnt += 1
         if linecnt > mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES:
-            return 0
+            return False
         lines.append(line)
     bodytext = NL.join(lines)
     # See if the body text has only one word, and that word is administrivia
     if ADMINDATA.has_key(bodytext.strip().lower()):
-        return 1
+        return True
     # Look at the first N lines and see if there is any administrivia on the
     # line.  BAW: N is currently hardcoded to 5.  str-ify the Subject: header
     # because it may be an email.Header.Header instance rather than a string.
@@ -532,12 +540,12 @@ def is_administrivia(msg):
             # here.
             if words[0] == 'set' and words[2] not in ('on', 'off'):
                 continue
-            return 1
-    return 0
+            return True
+    return False
 
 
 
-def GetRequestURI(fallback=None, escape=1):
+def GetRequestURI(fallback=None, escape=True):
     """Return the full virtual path this CGI script was invoked with.
 
     Newer web servers seems to supply this info in the REQUEST_URI
@@ -563,7 +571,7 @@ def GetRequestURI(fallback=None, escape=1):
 
 
 # Wait on a dictionary of child pids
-def reap(kids, func=None, once=0):
+def reap(kids, func=None, once=False):
     while kids:
         if func:
             func()
@@ -685,7 +693,7 @@ def dollar_identifiers(s):
     """Return the set (dictionary) of identifiers found in a $-string."""
     d = {}
     for name in filter(None, [b or c or None for a, b, c in dre.findall(s)]):
-        d[name] = 1
+        d[name] = True
     return d
 
 
@@ -693,7 +701,7 @@ def percent_identifiers(s):
     """Return the set (dictionary) of identifiers found in a %-string."""
     d = {}
     for name in cre.findall(s):
-        d[name] = 1
+        d[name] = True
     return d
 
 
@@ -708,7 +716,7 @@ def canonstr(s, lang=None):
             newparts.append(chr(i))
         else:
             newparts.append(unichr(i))
-    while 1:
+    while True:
         newparts.append(parts.pop(0))
         if not parts:
             break
@@ -732,7 +740,7 @@ def canonstr(s, lang=None):
     # English (us-ascii).  This seems like a practical compromise so that
     # non-ASCII characters in names can be used in English lists w/o having to
     # change the global charset for English from us-ascii (which I
-    # superstitiously think my have unintended consequences).
+    # superstitiously think may have unintended consequences).
     if lang is None:
         charset = 'iso-8859-1'
     else:
