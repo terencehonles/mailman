@@ -41,7 +41,7 @@ class HTMLFormatter:
 	def NotHidden(x, s=self, v=mm_cfg.ConcealSubscription):
 	    return not s.GetUserOption(x, v)
 
-	if self.closed:
+	if self.private_roster:
 	    return 'Sorry, not available over the web.'
 	if digest:
 	    people = filter(NotHidden, self.digest_members)
@@ -94,6 +94,35 @@ class HTMLFormatter:
 	else:
 	    checked = ''
 	return '<input type=radio name="digest" value="1"%s>' % checked
+
+    def FormatSubscriptionMsg(self):
+        "Tailor to approval, roster privacy, and web vetting requirements."
+        msg = ""
+        also = ""
+        if self.web_subscribe_requires_confirmation:
+            msg = msg + ("You will be sent email requesting confirmation, "
+                         "to prevent others from gratuitously subscribing "
+                         "you.  ")
+        if not self.open_subscribe:
+            msg = msg + ("This is a closed list, which means your "
+                         "subscription will be held for approval.  You will "
+                         "be notified of the administrators decision by "
+                         "email.  ")
+            also = "also "
+        if self.private_roster:
+            msg = msg + ("This is %sa private list, which means that "
+                         "the members list is not available to non-"
+                         "members.  " % also)
+        else:
+            msg = msg + ("This is %sa public list, which means that the "
+                         "members list is openly available" % also)
+            if self.obscure_addresses:
+                msg = msg + (" (but we obscure the addresses so they are "
+                             "not easily recognizable by spammers).  ")
+            else:
+                msg = msg + ".  "
+
+        return msg
 
     def FormatUndigestButton(self):
 	if self.digest_is_default:
@@ -162,6 +191,7 @@ class HTMLFormatter:
 	    '<mm-archive>'   : self.FormatArchiveAnchor(),
 	    '</mm-archive>'  : '</a>',
 	    '<mm-regular-users>' : self.FormatUsers(0),
+            '<mm-list-subscription-msg>' : self.FormatSubscriptionMsg(),
 	    '<mm-digest-users>' : self.FormatUsers(1),
 	    '<mm-num-reg-users>' : `len(self.members)`,
 	    '<mm-num-digesters>' : `len(self.digest_members)`,
