@@ -22,6 +22,11 @@ expected that sendmail handles final delivery, message queueing, etc.  The
 recipient list is only trivially split so that the command line is less than
 about 3k in size.
 
+SECURITY WARNING: Because this module uses os.popen(), it goes through the
+shell.  This module does not scan the arguments for potential exploits and so
+it should be considered unsafe for production use.  For performance reasons,
+it's not recommended either -- use the SMTPDirect delivery module instead.
+
 """
 
 import string
