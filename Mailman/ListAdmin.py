@@ -187,35 +187,19 @@ class ListAdmin:
 	return id
 
     def RefuseRequest(self, request, destination_email, comment, msg=None):
-        # XXX: convert to Utils.maketext() style
-	text = '''Your request to the '%s' mailing-list:
-
-	%s
-
-Has been rejected by the list moderator.
-''' % (self.real_name, request)
-        if comment:
-	    text = text + '''
-The moderator gave the following reason for rejecting your request:
-
-        %s
-
-''' % comment
-        text = text + 'Any questions or comments should be directed to %s.\n' \
-	       % self.GetAdminEmail()
+        text = Utils.maketext(
+            'refuse.txt',
+            {'listname' : self.real_name,
+             'request'  : request,
+             'reason'   : comment or '[No reason given]',
+             'adminaddr': self.GetAdminEmail(),
+             })
+        # add in original message, but not wrap/filled
         if msg:
-	    text = text  + '''
-Your original message follows:
-
-%s
-
-%s
-''' % (string.join(msg.headers, ''), msg.body)
-	
+            text = text + string.join(msg.headers, '') + '\n\n' + msg.body
+        else:
+            text = text + '[Original message unavailable]'
+        # send it
         self.SendTextToUser(subject = '%s request rejected' % self.real_name,
                             recipient = destination_email,
-			    text = text,
-                            # XXX: some of this text should probably be
-                            # wrapped by calling mm_utils.wrap() separately
-                            raw = 1)
-
+			    text = text)
