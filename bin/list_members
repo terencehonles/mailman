@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -61,6 +61,7 @@ status.
 """
 
 import sys
+from types import UnicodeType
 
 import paths
 from Mailman import mm_cfg
@@ -72,6 +73,8 @@ from Mailman.i18n import _
 from email.Utils import formataddr
 
 PROGRAM = sys.argv[0]
+ENC = sys.getdefaultencoding()
+
 WHYCHOICES = {'enabled' : MemberAdaptor.ENABLED,
               'unknown' : MemberAdaptor.UNKNOWN,
               'byuser'  : MemberAdaptor.BYUSER,
@@ -89,6 +92,15 @@ def usage(code, msg=''):
     if msg:
         print >> fd, msg
     sys.exit(code)
+
+
+
+def safe(addr):
+    if addr is None:
+        return ''
+    if isinstance(addr, UnicodeType):
+        return addr.encode(ENC, 'replace')
+    return unicode(addr, ENC, 'replace').encode(ENC, 'replace')
 
 
 
@@ -203,9 +215,7 @@ def main():
             # Filter out nomails
             if nomail and not whymatches(mlist, addr, why):
                 continue
-            enc = sys.getdefaultencoding()
-            s = formataddr((name, addr)).encode(enc, 'replace')
-            print >> fp, s
+            print >> fp, formataddr((safe(name), addr))
     if digest:
         dmembers.sort()
         for addr in dmembers:
@@ -222,9 +232,7 @@ def main():
                 # They're getting MIME digests
                 if kind == 'plain':
                     continue
-            enc = sys.getdefaultencoding()
-            s = formataddr((name, addr)).encode(enc, 'replace')
-            print >> fp, s
+            print >> fp, formataddr((safe(name), addr))
 
 
 
