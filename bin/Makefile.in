@@ -63,6 +63,7 @@ install:
 	for f in $(SCRIPTS); \
 	do \
 	    $(INSTALL) -m $(EXEMODE) $$f $(SCRIPTSDIR); \
+	    chmod g+s $(SCRIPTSDIR)/$$f; \
 	done
 
 clean:
