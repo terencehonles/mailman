@@ -62,11 +62,25 @@ ARCHIVE_TO_MBOX = 2
 #
 DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
 
+# These variables control the use of an external archiver.  Normally if
+# archiving is turned on (see ARCHIVE_TO_MBOX about and the list's archive*
+# attributes) the internal Pipermail archiver is used.  This is the default if 
+# both of these variables are set to false.  When either is set, the value
+# should be a shell command string which will get passed to os.popen().  This
+# string can contain ${listname}s for dictionary interpolation.  The name of
+# the list being archived will be substituted for this.
+#
+# Note that if you set one of these variables, you should set both of them
+# (they can be the same string).  This will mean your external archiver will
+# be used regardless of whether public or private archives are selected.
+PUBLIC_EXTERNAL_ARCHIVER = 0
+PRIVATE_EXTERNAL_ARCHIVER = 0
+
+
 # Set this to 1 to enable gzipping of the downloadable archive .txt file.
 # Note that this is /extremely/ inefficient, so an alternative is to just
 # collect the messages in the associated .txt file and run a cron job every
-# night to generate the txt.gz file.  There isn't any built-in Mailman support 
-# for this yet though.
+# night to generate the txt.gz file.  See cron/nightly_gzip for details.
 GZIP_ARCHIVE_TXT_FILES = 0
 
 
