@@ -99,6 +99,10 @@ def main(argv):
 	list_pw = argv[3]
     else:
         list_pw = getpass.getpass("Initial %s password: " % listname)
+    # List passwords cannot be empty
+    list_pw = string.strip(list_pw)
+    if not list_pw:
+        usage(1, 'The list password cannot be empty')
 
     mlist = MailList.MailList()
     try:
