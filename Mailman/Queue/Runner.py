@@ -35,6 +35,8 @@ from Mailman.Logging.Syslog import syslog
 
 
 class Runner:
+    SLEEPTIME = mm_cfg.QRUNNER_SLEEP_TIME
+
     def __init__(self, slice=None, numslices=1):
         self._kids = {}
         # Create our own switchboard.  Don't use the switchboard cache because
@@ -228,9 +230,9 @@ class Runner:
         processing loop had no work to do (i.e. there were no messages in it's
         little slice of hash space).
         """
-        if mm_cfg.QRUNNER_SLEEP_TIME <= 0:
+        if self.SLEEPTIME <= 0:
             return
-        time.sleep(mm_cfg.QRUNNER_SLEEP_TIME)
+        time.sleep(self.SLEEPTIME)
 
     def _shortcircuit(self):
         """Return a true value if the individual file processing loop should
