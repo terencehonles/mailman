@@ -1,0 +1,106 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""List all mailing lists.
+
+Usage: %(program)s [options]
+
+Where:
+
+    --advertised
+    -a
+        List only those mailing lists that are publically advertised
+
+    --virtual-host-overview=domain
+    -V domain
+        List only those mailing lists that are homed to the given virtual
+        domain.  This only works if the VIRTUAL_HOST_OVERVIEW variable is
+        set.
+
+    --help
+    -h
+        Print this text and exit.
+
+"""
+
+import sys
+import getopt
+import paths
+
+from Mailman import mm_cfg
+from Mailman import MailList
+from Mailman import Utils
+from Mailman import Errors
+
+program = sys.argv[0]
+
+def usage(status, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(status)
+
+
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'aV:h',
+                                   ['advertised', 'virtual-host-overview=',
+                                    'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    advertised = 0
+    vhost = None
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-a', '--advertised'):
+            advertised = 1
+        elif opt in ('-V', '--virtual-host-overview'):
+            vhost = arg
+
+    names = Utils.list_names()
+    names.sort()
+
+    mlists = []
+    longest = 0
+    for n in names:
+        mlist = MailList.MailList(n, lock=0)
+        if advertised and not mlist.advertised:
+            continue
+        if vhost and mm_cfg.VIRTUAL_HOST_OVERVIEW and \
+               string.find(vhost, mlist.web_page_url) == -1 and \
+               string.find(mlist.web_page_url, vhost) == -1:
+            continue
+        mlists.append(mlist)
+        longest = max(len(mlist.real_name), longest)
+
+    if not mlists:
+        print 'No matching mailing lists found'
+        return
+
+    format = '%%%ds - %%.%ds' % (longest, 77 - longest)
+    for mlist in mlists:
+        description = mlist.description or '[no description available]'
+        print format % (mlist.real_name, description)
+            
+
+if __name__ == '__main__':
+    main()
