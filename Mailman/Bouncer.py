@@ -25,8 +25,8 @@
 import sys
 import time
 
-from mimelib.Text import Text
-from mimelib.RFC822 import RFC822
+from email.MIMEText import MIMEText
+from email.MIMEMessage import MIMEMessage
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -303,8 +303,8 @@ Bad admin recipient: %s''', self.internal_name(), addr)
                                         e.subject())
         bmsg.addheader('Content-Type', 'multipart/mixed')
         bmsg['MIME-Version'] = '1.0'
-        txt = Text(e.details(),
-                   _charset=Utils.GetCharSet(self.preferred_language))
+        txt = MIMEText(e.details(),
+                       _charset=Utils.GetCharSet(self.preferred_language))
         bmsg.add_payload(txt)
-        bmsg.add_payload(RFC822(msg))
+        bmsg.add_payload(MIMEMessage(msg))
         bmsg.send(self)
