@@ -27,7 +27,7 @@ import sys
 # comfortable with.  By setting STEALTH_MODE to 1, you disable the printing of
 # this information to the web pages.  This information is still, and always,
 # printed in the error logs.
-STEALTH_MODE = 1
+STEALTH_MODE = 0
 
 
 
@@ -123,14 +123,14 @@ def print_traceback(logfp=None):
         VERSION = '&lt;undetermined&gt;'
 
     # Write to the log file first.
-    logfp.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
-    logfp.write('[----- Mailman Version: %s -----]\n' % VERSION)
-    logfp.write('[----- Traceback ------]\n')
+    print >> logfp, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+    print >> logfp, '[----- Mailman Version: %s -----]' % VERSION
+    print >> logfp, '[----- Traceback ------]'
     if traceback:
         traceback.print_exc(file=logfp)
     else:
-        logfp.write('[failed to import module traceback]\n')
-        logfp.write('[exc: %s, var: %s]\n' % sys.exc_info()[0:2])
+        print >> logfp, '[failed to import module traceback]'
+        print >> logfp, '[exc: %s, var: %s]' % sys.exc_info()[0:2]
 
     # Write to the HTML sink.
     print """\
@@ -170,13 +170,13 @@ def print_environment(logfp=None):
         os = None
 
     # Write some information about our Python executable to the log file.
-    logfp.write('[----- Python Information -----]\n')
-    logfp.write('sys.version    = %s\n' % sys.version)
-    logfp.write('sys.executable = %s\n' % sys.executable)
-    logfp.write('sys.prefix     = %s\n' % sys.prefix)
-    logfp.write('sys.exec_prefix= %s\n' % sys.exec_prefix)
-    logfp.write('sys.path       = %s\n' % sys.exec_prefix)
-    logfp.write('sys.platform   = %s\n' % sys.platform)
+    print >> logfp, '[----- Python Information -----]'
+    print >> logfp, 'sys.version     =', sys.version
+    print >> logfp, 'sys.executable  =', sys.executable
+    print >> logfp, 'sys.prefix      =', sys.prefix
+    print >> logfp, 'sys.exec_prefix =', sys.exec_prefix
+    print >> logfp, 'sys.path        =', sys.exec_prefix
+    print >> logfp, 'sys.platform    =', sys.platform
 
     # Write the same information to the HTML sink.
     if not STEALTH_MODE:
@@ -201,12 +201,12 @@ def print_environment(logfp=None):
         print '</table>'
 
     # Write environment variables to the log file.
-    logfp.write('[----- Environment Variables -----]\n')
+    print >> logfp, '[----- Environment Variables -----]'
     if os:
         for k, v in os.environ.items():
-            logfp.write('\t%s: %s\n' % (k, v))
+            print >> logfp, '\t%s: %s' % (k, v)
     else:
-        logfp.write('[failed to import module os]')
+        print >> logfp, '[failed to import module os]'
 
     # Write environment variables to the HTML sink.
     if not STEALTH_MODE:
@@ -247,4 +247,4 @@ Mailman experienced a very low level failure and could not even generate a
 useful traceback for you.  Please report this to the Mailman administrator at
 this site.
 """
-        sys.__stderr__.write('[Mailman: low level unrecoverable exception]\n')
+        print >> sys.__stderr__, '[Mailman: low level unrecoverable exception]'
