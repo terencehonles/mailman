@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -33,6 +33,7 @@ from Mailman import htmlformat
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 
 
@@ -48,7 +49,7 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        error_page(_('No such list <em>%s</em>') % listname)
+        error_page(_('No such list <em>%(listname)s</em>'))
         syslog('error', 'roster: no such list "%s": %s' % (listname, e))
         return
 
@@ -77,8 +78,8 @@ def main():
         # No privacy.
         bad = ""
     else:
-        auth_req = (_("%s subscriber list requires authentication.")
-                    % mlist.real_name)
+        realname = mlist.real_name
+        auth_req = _("%(realname)s subscriber list requires authentication.")
         if not form.has_key("roster-pw"):
             bad = auth_req
         else:
@@ -97,13 +98,12 @@ def main():
                         except (Errors.MMBadUserError, 
                                 Errors.MMBadPasswordError,
                                 Errors.MMNotAMemberError):
-                            bad = (_("%s subscriber authentication failed.")
-                                   % mlist.real_name)
+                            bad = _(
+                              "%(realname)s subscriber authentication failed.")
                     else:
                         # Anonymous list - admin-only visible
                         # - and we already tried admin password, above.
-                        bad = (_("%s admin authentication failed.")
-                               % mlist.real_name)
+                        bad = _("%(realname)s admin authentication failed.")
     if bad:
         doc = error_page_doc(bad)
         doc.AddItem(mlist.GetMailmanFooter())
