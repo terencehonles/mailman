@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -377,7 +377,7 @@ class HTMLFormatter:
             '<mm-owner>' : self.GetAdminEmail(),
             '<mm-reminder>' : self.FormatReminder(self.preferred_language),
             '<mm-host>' : self.host_name,
-            '<mm-list-langs>' : self.GetLangSelectBox().Format(),
+            '<mm-list-langs>' : self.GetLangSelectBox(lang).Format(),
             }
 
     def GetAllReplacements(self, lang=None):
