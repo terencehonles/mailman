@@ -42,8 +42,8 @@ def calcversions():
     # Returns a tuple of (lastversion, thisversion).  If the last version
     # could not be determined, lastversion will be FRESH or NOTFRESH,
     # depending on whether this installation appears to be fresh or not.  The
-    # determining factor is whether there are files in the $prefix/logs subdir
-    # or not.  The version numbers are HEX_VERSIONs.
+    # determining factor is whether there are files in the $var_prefix/logs
+    # subdir or not.  The version numbers are HEX_VERSIONs.
     #
     # See if we stored the last updated version
     lastversion = None
