@@ -418,6 +418,11 @@ def main():
 
 
 def options_page(mlist, doc, user, cpuser, userlang, message=''):
+    # The bulk of the document will come from the options.html template, which
+    # includes it's own html armor (head tags, etc.).  Suppress the head that
+    # Document() derived pages get automatically.
+    doc.suppress_head = 1
+
     if mlist.obscure_addresses:
         presentable_user = Utils.ObscureEmail(user, for_text=1)
         if cpuser is not None:
