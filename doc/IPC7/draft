@@ -1,7 +1,3 @@
-[To keep this copy simple and self contained, we have not included the
-two screen-shot diagrams in this submission.  They just show that what
-we describe really works...  klm.]
-
       Mailman - An Extensible Mailing List Manager using Python
       =========================================================
 
@@ -17,12 +13,13 @@ Reliable Software Technologies
 			       Abstract
 			       ========
 
-The explosive growth in the Internet community, and the core role that
+The explosive growth of Internet communities, and the core role that
 email plays in it, calls for a Mailing List Management (MLM) system
-which can adapt to, and even foster, new forms of organization of the
-community.  A new MLM, Mailman, is well suited to such evolution
-because it is designed to be versatile and extensible.  One factor
-contributing to these strengths is its implementation in Python.
+which can adapt to, and even foster, new forms of community
+organization as they emerge.  A new MLM, Mailman, is well suited to
+such evolution because it is designed to be versatile and extensible.
+One factor contributing to these strengths is its implementation in
+Python.
 
 In this paper we will look at various aspects of Mailman's
 extensibility.  We will consider how the system's design and how
@@ -140,6 +137,8 @@ HTMLFormatter:
     library also included in Mailman.  Together this class and library
     serves a purpose very similar to that of Robin Friedrich's HTMLgen
     [RF "HTMLgen"] and Digital Creations, L.C. [DC "DocumentFormatter"].
+    (These alternatives were not real candidates during the early
+    stages of mailman's development.)
 
 Deliverer:
     This class conducts delivery of any of the email associated with a
@@ -216,19 +215,13 @@ routine procedures, such as conversion of subscriber lists from
 established Majordomo mailing lists.
 
 Interactive sessions with MailList instances provides an eminently
-useful development and debugging tool.  They are easy to instantiate
-interactively - all that's necessary is inclusion of the Mailman
-package dir on the PYTHONPATH, and knowledge of the right module to
-import.  With interactive instantiation, we are able to exercise and
-test isolated subsystems, as well as the behavior of the MailList as a
+useful development and debugging tool.  Maillist objects are easy to
+instantiate - all that's necessary is inclusion of the Mailman package
+dir on the PYTHONPATH, and knowledge of the right module to import.
+With interactive instantiation, we are able to exercise and test
+isolated subsystems, as well as the behavior of the MailList as a
 whole, and we can employ exploratory tools, like the Python debugger,
 along the way.
-
-Interactive sessions with MailList instances provides an eminently
-useful development and debugging tool.  With it, we are able to
-exercise and test isolated subsystems and the behavior of the MailList
-as a whole, engaging tools like the Python debugger and profiler along
-the way.
 
 We can also use interactive sessions to do mailing list "surgery" - to
 operate the MailList in ways not provided for in existing 
@@ -256,14 +249,15 @@ sharing, along with organization of the system into distinct,
 conceptually motivated modules, easing debugging and development.
 
 New major modules are still being added as task-specific mixin
-classes, and the process is exceptionally simple.  For instance, as of
-this writing one of the primary authors added bidirectional mail/news
-gateway capability to Mailman.  This module required knowledge of some
-boilerplate structure, and only minor changes to existing modules,
-providing a major functionality with almost plugin-style ease.
+classes, and the process is exceptionally uncomplicated.  For
+instance, as of this writing one of the primary authors added
+bidirectional mail/news gatewaying capability to Mailman.  This module
+required knowledge of some boilerplate structure, and only minor
+changes to existing modules, providing a major functionality with
+almost plugin-style ease.
 
 		  MailList Object State Persistence
-	      Exploits Introspection And Simple Sharing
+	   Exploits Introspection And Uncomplicated Sharing
 
 This direct sharing also simplifies the MailList object's persistence
 mechanism.  By identifying its own data members via self.__dict__, the
@@ -297,11 +291,15 @@ useful to be able to use "flag-printing" debugging, even when stdout
 does not go anywhere useful - e.g., when running under CGI, or in
 disconnected forked processes, or via email.
 
-The crux of the Mailman logging scheme is a Logger class, whose job is
-to reliably direct messages to log files.  Logger instances obey the
+The crux of the Mailman logging scheme is a Logger class which job is
+to direct messages to log files while minimizing the disruption when
+the log files are inaccessible.  Logger instances obey the
 conventional Python file-like object interface protocol.  Thus, they
-can be explicitly used by the programmer like standard file object to
-write messages.
+can be used to write messages like standard file objects would be.  In
+addition, logger objects themselves are defensive about access to
+their log files, attempting to open them "lazily", and avoiding
+interrupting operations if they are unable to access the log files,
+trying alternative reporting avenues, instead.
 
 Logger objects can also be substituted for standard output streams
 like sys.stderr and sys.stdout, enabling, for instance, blanket
@@ -315,20 +313,23 @@ useful refinement.  All Web CGI scripts are launched via a driver
 script.  The driver script launches the intended, job-specific scripts
 within the context of an unqualified try-except statement.  If any
 exception escapes the job-specific script - including ones that simply
-cannot be caught within a script, for instance, syntax errors - then
+cannot be caught within a script, for instance syntax errors - then
 the driver catches the exception and handles them in a useful way.
 The driver produces the traceback and a listing of all the HTTP
 environment variable settings both to stdout (HTML formatted, for
 rendition on the Web), and to the error log file.  This way, the Web
-visitor is provided with informative feedback (including instructions
-about contacting the site administrator, if they are inclined), and
-the site has a detailed record of the error.  (See [Figure, "Excerpt
-from CGI Driver Script Code"], showing the use of error loggers and
-the comprehensive exception guard.)
+visitor is provided with informative feedback, including
+e.g. instructions about contacting the site administrator, if they are
+inclined, and also the site has a detailed record of the error.  (See
+[Figure, "Excerpt from CGI Driver Script Code"], showing the use of
+error loggers and the comprehensive exception guard.)
 
-(The driver script, itself, is small and carefully hardened, in order
-to minimize the chance that it will introduce errors where they won't
-be caught.)
+The CGI driver script, itself, is small and carefully hardened, in
+order to minimize the chance that it will introduce errors where they
+won't be caught.  The same driver is used for all the the underlying
+CGI scripts, increasing the complexity of the driver a bit, but
+ultimately reducing the overall complexity, and increasing the
+exercise, and ultimately the hardening, of the driver script overall.
 
 [Figure: Excerpt from CGI Driver Script Code.
 
@@ -474,11 +475,12 @@ problem, except...
 The Mailman configuration options compound this danger by directly
 populating the list object with numerous data members representing the
 options values.  We should reduce this load by encapsulating the
-options within a class object tailored to getting and setting the the
+options within a class object tailored to getting and setting the
 options as attributes.  This would also afford additional
-functionality on options, such as better defaulting relationships - so
-that changes to the central defaults are propagated back to MailLists
-even after their creation time.
+functionality on options, such as better defaulting relationships.  In
+this approach, maillists that do not customize an option would track
+changes to the central setting, while currently the maillists lock in
+make separate copies of the settings when they are created.
 
 Early versions of Mailman used broad, unqualified except clauses,
 masking unintended exceptions and making it extremely difficult to
@@ -486,11 +488,12 @@ track down the origin of faults contained therein.  In practice,
 unqualified except clauses should never be used unless the intention
 is to catch and actually handle any contained failures.  (Code that
 does general failure handling can be seen as an executive of the code
-being handled.  For instance, the CGI driver script, which directs the
-traceback and debugging info to the appropriate destinations, plays
-this role w.r.t. the CGI scripts.)  In general, except clauses should
-be as completely qualified as possible, and should be moved as close
-to the exception they're meant to catch as can be handled.
+being handled.  For instance, the single CGI driver script, which
+directs the traceback and debugging info to the appropriate
+destinations, plays this role w.r.t. the CGI scripts.)  In general,
+except clauses should be as completely qualified as possible, and
+should be moved as close to the exception they're meant to catch as
+can be handled.
 
 One fundamental question concerns the pitfalls of dynamic typing in a
 large system.  In statically typed systems, the requirement for
