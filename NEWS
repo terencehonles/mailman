@@ -164,7 +164,8 @@ Here is a history of user visible changes to Mailman.
         o On SIGHUP, qrunner will re-open all its log files.
 
     - Patches and bug fixes
-        o SF patches and bug fixes applied: 420396, 424389, 227694, 426002
+        o SF patches and bug fixes applied: 420396, 424389, 227694,
+          426002, 401372 (partial)
 
         o Fixes in 2.0.5 ported forward:
             Fix a lock stagnation problem that can result when the
