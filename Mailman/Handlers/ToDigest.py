@@ -99,7 +99,8 @@ def send_digests(mlist, mboxfp):
         now = time.localtime(time.time())
         freq = mlist.digest_volume_frequency
         if freq == 0 and timetup[0] < now[0]:
-            bump = 1                              # Yearly
+            # Yearly
+            bump = 1
         elif freq == 1 and timetup[1] <> now[1]:
             # Monthly, but we take a cheap way to calculate this.  We assume
             # that the clock isn't going to be reset backwards.
@@ -113,12 +114,11 @@ def send_digests(mlist, mboxfp):
             weeknum_now = int(time.strftime('%W', now))
             if weeknum_now > weeknum_last or timetup[0] > now[0]:
                 bump = 1
-        elif timetup[7] <> now[7]:
-            # assume daily
+        elif freq == 4 and timetup[7] <> now[7]:
+            # Daily
             bump = 1
         if bump:
-            mlist.volume += 1
-            mlist.next_digest_number = 1
+            mlist.bump_digest_volume()
     mlist.digest_last_sent_at = time.time()
     # Wrapper around actually digest crafter to set up the language context
     # properly.  All digests are translated to the list's preferred language.
