@@ -57,7 +57,7 @@ DEFAULT_URL         = 'http://@URL@/mailman/'
 PUBLIC_ARCHIVE_URL  = '/pipermail'
 
 HOME_PAGE         = 'index.html'
-MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
+MAILMAN_SITE_LIST = 'mailman'
 
 
 
