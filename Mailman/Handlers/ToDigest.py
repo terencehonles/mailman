@@ -327,11 +327,19 @@ def send_i18n_digests(mlist, mboxfp):
     # Calculate the recipients lists
     plainrecips = []
     mimerecips = []
-    for user in mlist.GetDigestDeliveryMembers():
-        if mlist.GetUserOption(user, mm_cfg.DisableMime):
+    drecips = mlist.getDigestMemberKeys() + self.one_last_digest.keys()
+    for user in mlist.getMemberCPAddresses(drecips):
+        if user is None:
+            # It means that someone who toggled off digest delivery
+            # subsequently unsubscribed from the mailing list.  Just ignore
+            # them.
+            continue
+        if mlist.getMemberOption(user, mm_cfg.DisableMime):
             plainrecips.append(user)
         else:
             mimerecips.append(user)
+    # Zap this since we're now delivering the last digest to these folks.
+    self.one_last_digest.clear()
     # MIME
     virginq.enqueue(mimemsg, recips=mimerecips, listname=mlist.internal_name())
     # rfc1153

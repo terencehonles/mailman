@@ -25,6 +25,7 @@ to send acks only after successful delivery.
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
+from Mailman import Errors
 from Mailman.i18n import _
 
 
@@ -32,31 +33,35 @@ from Mailman.i18n import _
 def process(mlist, msg, msgdata):
     # Extract the sender's address and find them in the user database
     sender = msgdata.get('original_sender', msg.get_sender())
-    sender = mlist.FindUser(sender)
-    if sender and mlist.GetUserOption(sender, mm_cfg.AcknowledgePosts):
-        # Okay, they want acknowledgement of their post
-        subject = msg['subject']
-        # Trim off the subject prefix
-        if subject:
-            prefix = mlist.subject_prefix
-            if subject.startswith(prefix):
-                subject = subject[len(prefix):]
-        # Get the user's preferred language
-        lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
-        # Now get the acknowledgement template
-        realname = mlist.real_name
-        text = Utils.maketext(
-            'postack.txt',
-            {'subject'     : subject,
-             'listname'    : realname,
-             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-             }, lang=lang, mlist=mlist)
-        # Craft the outgoing message, with all headers and attributes
-        # necessary for general delivery.  Then enqueue it to the outgoing
-        # queue.
-        subject = _('%(realname)s post acknowledgement')
-        usermsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
-                                           subject, text)
-        usermsg.addheader('Content-Type', 'text/plain',
-                          charset=Utils.GetCharSet(lang))
-        usermsg.send(mlist)
+    try:
+        ack = mlist.getMemberOption(sender, mm_cfg.AcknowledgePosts)
+        if not ack:
+            return
+    except Errors.NotAMember:
+        return
+    # Okay, they want acknowledgement of their post
+    subject = msg['subject']
+    # Trim off the subject prefix
+    if subject:
+        prefix = mlist.subject_prefix
+        if subject.startswith(prefix):
+            subject = subject[len(prefix):]
+    # Get the user's preferred language
+    lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
+    # Now get the acknowledgement template
+    realname = mlist.real_name
+    text = Utils.maketext(
+        'postack.txt',
+        {'subject'     : subject,
+         'listname'    : realname,
+         'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
+         }, lang=lang, mlist=mlist)
+    # Craft the outgoing message, with all headers and attributes
+    # necessary for general delivery.  Then enqueue it to the outgoing
+    # queue.
+    subject = _('%(realname)s post acknowledgement')
+    usermsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
+                                       subject, text)
+    usermsg.addheader('Content-Type', 'text/plain',
+                      charset=Utils.GetCharSet(lang))
+    usermsg.send(mlist)

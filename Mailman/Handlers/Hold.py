@@ -150,7 +150,7 @@ def process(mlist, msg, msgdata):
     # are allowed to post without approval.
     if mlist.member_posting_only:
         posters = Utils.List2Dict([s.lower() for s in mlist.posters])
-        if not mlist.IsMember(sender) and \
+        if not mlist.isMember(sender) and \
            not Utils.FindMatchingAddresses(sender, posters):
             # the sender is neither a member of the list, nor in the list of
             # explicitly approved posters
