@@ -8,16 +8,13 @@ import string, types
 
 # Format an arbitrary object.
 def HTMLFormatObject(item, indent):
-##    try:
-        if type(item) == type(''):
-           return item
-        if type(item) == type(2):
-	    return `item`
-
+    "Return a presentation of an object, invoking their Format method if any."
+    if type(item) == type(''):
+	return item
+    elif not hasattr(item, "Format"):
+	return `item`
+    else:
 	return item.Format(indent)
-##     except:
-## 	return `item`
-	
 
 def CaseInsensitiveKeyedDict(d):
     result = {}
@@ -320,9 +317,9 @@ class Form(Container):
 
 
 class InputObj:
-    def __init__(self, name, type, value, checked, **kws):
+    def __init__(self, name, ty, value, checked, **kws):
 	self.name = name
-	self.type = type
+	self.type = ty
 	self.value = `value`
 	self.checked = checked
 	self.kws = kws
