@@ -122,7 +122,7 @@ def listinfo_overview(msg=''):
          Link(Utils.ScriptURL('admin'),
               _('the list admin overview page')),
          _(''' to find the management interface for your list.
-         <p>Send questions or comments to '''),
+         <p>If you are having trouble using the lists, please contact '''),
          Link('mailto:' + siteowner, siteowner),
          '.<p>'))
 
