@@ -347,15 +347,19 @@ class Center(StdContainer):
     tag = 'center'
 
 class Form(Container):
-    def __init__(self, action='', method='POST', *items):
+    def __init__(self, action='', method='POST', encoding=None, *items):
 	apply(Container.__init__, (self,) +  items)
 	self.action = action
 	self.method = method
+        self.encoding = encoding
 
     def Format(self, indent=0):
 	spaces = ' ' * indent
-	output = '\n%s<FORM action="%s" method="%s">\n' % (spaces, self.action,
-							 self.method)
+        encoding = ''
+        if self.encoding:
+            encoding = 'enctype="%s"' % self.encoding
+	output = '\n%s<FORM action="%s" method="%s" %s>\n' % (
+            spaces, self.action, self.method, encoding)
 	output = output + Container.Format(self, indent+2)
 	output = '%s\n%s</FORM>\n' % (output, spaces)
 	return output
@@ -413,6 +417,9 @@ class TextArea:
 	output = output + '>%s</TEXTAREA>' % self.text
 	return output
 
+class FileUpload(InputObj):
+    def __init__(self, name, rows=None, cols=None, **kws):
+        apply(InputObj.__init__, (self, name, 'FILE', '', 0), kws)
 
 class RadioButton(InputObj):
     def __init__(self, name, value, checked=0, **kws):
