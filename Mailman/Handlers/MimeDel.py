@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """MIME-stripping filter for Mailman.
@@ -38,24 +38,29 @@ from Mailman.Version import VERSION
 
 def process(mlist, msg, msgdata):
     # Short-circuits
-    if not mlist.filter_content or not mlist.filter_mime_types:
+    if not mlist.filter_content:
+        return
+    if msgdata.get('isdigest'):
         return
     # We also don't care about our own digests or plaintext
-    ctype = msg.get_type('text/plain')
-    mtype = msg.get_main_type('text')
-    if msgdata.get('isdigest') or ctype == 'text/plain':
-        return
+    ctype = msg.get_content_type()
+    mtype = msg.get_content_maintype()
     # Check to see if the outer type matches one of the filter types
     filtertypes = mlist.filter_mime_types
+    passtypes = mlist.pass_mime_types
     if ctype in filtertypes or mtype in filtertypes:
+        raise Errors.DiscardMessage
+    # Check to see if there is a pass types and the outer type doesn't match
+    # one of these types
+    if passtypes and not (ctype in passtypes or mtype in passtypes):
         raise Errors.DiscardMessage
     numparts = len([subpart for subpart in msg.walk()])
     # If the message is a multipart, filter out matching subparts
     if msg.is_multipart():
         # Recursively filter out any subparts that match the filter list
         prelen = len(msg.get_payload())
-        filter_parts(msg, filtertypes)
-        # If the outer message is now an emtpy multipart (and it wasn't
+        filter_parts(msg, filtertypes, passtypes)
+        # If the outer message is now an empty multipart (and it wasn't
         # before!) then, again it gets discarded.
         postlen = len(msg.get_payload())
         if postlen == 0 and prelen > 0:
@@ -67,36 +72,54 @@ def process(mlist, msg, msgdata):
     # and then copy over its Content-Type: and Content-Transfer-Encoding:
     # headers (any others?).
     collapse_multipart_alternatives(msg)
-    if msg.get_type() == 'multipart/alternative':
+    if mtype == 'multipart':
         firstalt = msg.get_payload(0)
-        msg.set_payload(firstalt.get_payload())
-        del msg['content-type']
-        del msg['content-transfer-encoding']
-        del msg['content-disposition']
-        del msg['content-description']
-        msg['Content-Type'] = firstalt.get('content-type', 'text/plain')
-        cte = firstalt.get('content-transfer-encoding')
-        if cte:
-            msg['Content-Transfer-Encoding'] = cte
-        cdisp = firstalt.get('content-disposition')
-        if cdisp:
-            msg['Content-Disposition'] = cdisp
-        cdesc = firstalt.get('content-description')
-        if cdesc:
-            msg['Content-Description'] = cdesc
-    # We we removed some parts, make note of this
+        reset_payload(msg, firstalt)
+    # If we removed some parts, make note of this
     changedp = 0
     if numparts <> len([subpart for subpart in msg.walk()]):
         changedp = 1
     # Now perhaps convert all text/html to text/plain
     if mlist.convert_html_to_plaintext and mm_cfg.HTML_TO_PLAIN_TEXT_COMMAND:
         changedp += to_plaintext(msg)
+    # If we're left with only two parts, an empty body and one attachment,
+    # recast the message to one of just that part
+    if msg.is_multipart() and len(msg.get_payload()) == 2:
+        if msg.get_payload(0).get_payload() == '':
+            useful = msg.get_payload(1)
+            reset_payload(msg, useful)
+            changedp = 1
     if changedp:
         msg['X-Content-Filtered-By'] = 'Mailman/MimeDel %s' % VERSION
 
 
 
-def filter_parts(msg, filtertypes):
+def reset_payload(msg, subpart):
+    # Reset payload of msg to contents of subpart, and fix up content headers
+    payload = subpart.get_payload()
+    # Add a trailing newline to a text/plain, if it's missing one.  BAW: do we
+    # need to look for CRLF line endings?
+    if subpart.get_content_type() == 'text/plain' and payload[-1] <> '\n':
+        payload += '\n'
+    msg.set_payload(payload)
+    del msg['content-type']
+    del msg['content-transfer-encoding']
+    del msg['content-disposition']
+    del msg['content-description']
+    msg['Content-Type'] = subpart.get('content-type', 'text/plain')
+    cte = subpart.get('content-transfer-encoding')
+    if cte:
+        msg['Content-Transfer-Encoding'] = cte
+    cdisp = subpart.get('content-disposition')
+    if cdisp:
+        msg['Content-Disposition'] = cdisp
+    cdesc = subpart.get('content-description')
+    if cdesc:
+        msg['Content-Description'] = cdesc
+
+
+
+def filter_parts(msg, filtertypes, passtypes):
     # Look at all the message's subparts, and recursively filter
     if not msg.is_multipart():
         return 1
@@ -104,12 +127,15 @@ def filter_parts(msg, filtertypes):
     prelen = len(payload)
     newpayload = []
     for subpart in payload:
-        keep = filter_parts(subpart, filtertypes)
+        keep = filter_parts(subpart, filtertypes, passtypes)
         if not keep:
             continue
-        ctype = subpart.get_type('text/plain')
-        mtype = subpart.get_main_type('text')
+        ctype = subpart.get_content_type()
+        mtype = subpart.get_content_maintype()
         if ctype in filtertypes or mtype in filtertypes:
+            # Throw this subpart away
+            continue
+        if passtypes and not (ctype in passtypes or mtype in passtypes):
             # Throw this subpart away
             continue
         newpayload.append(subpart)
@@ -128,7 +154,7 @@ def collapse_multipart_alternatives(msg):
         return
     newpayload = []
     for subpart in msg.get_payload():
-        if subpart.get_type() == 'multipart/alternative':
+        if subpart.get_content_type() == 'multipart/alternative':
             try:
                 firstalt = subpart.get_payload(0)
                 newpayload.append(firstalt)
