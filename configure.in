@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 661 $)
+AC_REVISION($Revision: 681 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -117,11 +117,18 @@ changequote(,)
 if test -z "$$1"
 then
     cat > conftest.py <<EOF
-import grp
-try:
-    gid = grp.getgrnam("$2")[2]
-except KeyError:
-    gid = ''
+import grp, string
+gid = ''
+for group in string.split("$2"):
+    try:
+        try:
+	    gid = grp.getgrgid(int(group))
+	    break
+	except ValueError:
+	    gid = grp.getgrnam(group)[2]
+	    break
+    except KeyError:
+        gid = ''
 fp = open("conftest.out", "w")
 fp.write("%s\n" % gid)
 fp.close()
@@ -142,22 +149,27 @@ fi
 AC_MSG_RESULT($$1)
 rm -f conftest.out conftest.py])
 
-
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
 AC_MSG_CHECKING(for --with-mail-gid)
 AC_ARG_WITH(mail-gid, [
 	--with-mail-gid  	specify GID mail programs run as])
+if test -z "$with_mail_gid"
+then
+    with_mail_gid=other
+fi
 AC_MSG_RESULT($with_mail_gid)
-MAIL_GID=$with_mail_gid
-MM_FIND_GROUP_ID(MAIL_GID, other, mail_wrapper)
+MM_FIND_GROUP_ID(MAIL_GID, $with_mail_gid, mail_wrapper)
 
 AC_MSG_CHECKING(for --with-cgi-gid)
 AC_ARG_WITH(cgi-gid, [
 	--with-cgi-gid  	specify GID CGI programs run as])
+if test -z "$with_cgi_gid"
+then
+    with_cgi_gid="www www-data nobody"
+fi
 AC_MSG_RESULT($with_cgi_gid)
-CGI_GID=$with_cgi_gid
-MM_FIND_GROUP_ID(CGI_GID, nobody, cgi_wrapper)
+MM_FIND_GROUP_ID(CGI_GID, $with_cgi_gid, cgi_wrapper)
 
 #MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
 #MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
