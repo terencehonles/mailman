@@ -32,7 +32,7 @@ class NotLoggedInError(Exception):
 
 
 def loginpage(mlist, scriptname, msg='', frontpage=None):
-    url = mlist.GetRelativeScriptURL(scriptname)
+    url = mlist.GetScriptURL(scriptname)
     if frontpage:
         actionurl = url
     else:
