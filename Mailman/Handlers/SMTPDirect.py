@@ -49,7 +49,10 @@ def process(mlist, msg, msgdata):
     if not recips:
         # Nobody to deliver to!
         return
-    admin = mlist.GetAdminEmail()
+    if mlist:
+        admin = mlist.GetAdminEmail()
+    else:
+        admin = mm_cfg.MAILMAN_OWNER
     msgtext = msg.get_text()
     #
     # Split the recipient list into SMTP_MAX_RCPTS chunks.  Most MTAs have a
