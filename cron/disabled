@@ -46,7 +46,6 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import MemberAdaptor
-from Mailman.Bouncer import _BounceInfo
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
@@ -104,19 +103,13 @@ def main():
             if mlist.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
                 continue
             info = mlist.getBounceInfo(member)
-            if not isinstance(info, _BounceInfo):
-                # It's old bounce data, which is useless to us.  Reset.
-                disables.append((member, None))
-            elif info.score >= mlist.bounce_score_threshold:
+            if info.score >= mlist.bounce_score_threshold:
                 disables.append((member, info))
         if disables:
             mlist.Lock()
             try:
                 for member, info in disables:
-                    if info is None:
-                        mlist.setBounceInfo(member, None)
-                    else:
-                        mlist.disableBouncingMember(member, info, msg)
+                    mlist.disableBouncingMember(member, info, msg)
                 mlist.Save()
             finally:
                 mlist.Unlock()
