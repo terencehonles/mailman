@@ -310,6 +310,7 @@ GLOBAL_PIPELINE = [
     'SpamDetect',
     'Approve',
     'Replybot',
+    'Moderate',
     'Hold',
     'Tagger',
     'CalcRecips',
@@ -530,8 +531,20 @@ DEFAULT_ADMIN_IMMED_NOTIFY = 1
 # Is the list owner notified of subscribes/unsubscribes?
 DEFAULT_ADMIN_NOTIFY_MCHANGES = 0
 
-# Are lists, by default, moderated?
-DEFAULT_MODERATED = 0
+# Should list members, by default, have their posts be moderated?
+DEFAULT_DEFAULT_MEMBER_MODERATION = 0
+
+# Should non-member posts which are auto-discarded also be forwarded to the
+# moderators?
+DEFAULT_FORWARD_AUTO_DISCARDS = 1
+
+# What shold happen to non-member posts which are do not match explicit
+# non-member actions?
+# 0 = Accept
+# 1 = Hold
+# 2 = Reject
+# 3 = Discard
+DEFAULT_GENERIC_NONMEMBER_ACTION = 1
 
 # Bounce if 'To:', 'Cc:', or 'Resent-To:' fields don't explicitly name list?
 # This is an anti-spam measure
@@ -595,9 +608,6 @@ DEFAULT_PRIVATE_ROSTER = 0
 # When exposing members, make them unrecognizable as email addrs, so
 # web-spiders can't pick up addrs for spam purposes.
 DEFAULT_OBSCURE_ADDRESSES = 1
-
-# Make it 1 when it works.
-DEFAULT_MEMBER_POSTING_ONLY = 0
 
 
 
@@ -768,6 +778,7 @@ DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
 SuppressPasswordReminder = 32
 ReceiveNonmatchingTopics = 64
+Moderate = 128
 
 # Authentication contexts.
 #
