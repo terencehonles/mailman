@@ -102,15 +102,15 @@ class GatewayManager:
                                 
     def SendMailToNewsGroup(self, mail_msg):
         import Message
-        #if self.gateway_to_news == 0:
-        #  return
+        error = []
         if not self.linked_newsgroup:
-            self.LogMsg('error',
-                        'NNTP gateway improperly configured: no newsgroup')
-            return
+            error.append('no newsgroup')
         if not self.nntp_host:
-            self.LogMsg('error',
-                        'NNTP gateway improperly configured: no NNTP host')
+            error.append('no NNTP host')
+        if error:
+            msg = 'NNTP gateway improperly configured: ' + \
+                  string.join(error, ', ')
+            self.LogMsg('error', msg)
             return
         try:
             if self.tmp_prevent_gate:
