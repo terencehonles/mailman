@@ -124,6 +124,7 @@ class SecurityManager:
         path = urlparse(self.web_page_url)[2]
         c[key]['path'] = path
         c[key]['max-age'] = 0
+        # Don't set expires=0 here otherwise it'll force a persistent cookie
         c[key]['version'] = 1
         return c
 
