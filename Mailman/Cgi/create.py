@@ -49,9 +49,11 @@ def main():
         doc.AddItem(
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
         syslog('error', 'Bad URL specification: %s' % parts)
-    elif cgidata.has_key('listname'):
+    elif cgidata.has_key('doit'):
         # We must be processing the list creation request
         process_request(doc, cgidata)
+    elif cgidata.has_key('clear'):
+        request_creation(doc)
     else:
         # Put up the list creation request form
         request_creation(doc)
@@ -285,7 +287,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     except ValueError:
         autogen = 0
     ftable.AddRow([Label(_('Auto-generate initial list password?')),
-                   RadioButtonArray('autogen', ('No', 'Yes'),
+                   RadioButtonArray('autogen', (_('No'), _('Yes')),
                                     checked=autogen,
                                     values=(0, 1))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
@@ -306,7 +308,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     except ValueError:
         notify = 1
     ftable.AddRow([Label(_('Send "list created" email to list owner?')),
-                   RadioButtonArray('notify', ('No', 'Yes'),
+                   RadioButtonArray('notify', (_('No'), _('Yes')),
                                     checked=notify,
                                     values=(0, 1))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
@@ -319,8 +321,8 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
 
-    ftable.AddRow([Center(SubmitButton('doit', _('Create List')))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
+    ftable.AddRow([Center(SubmitButton('doit', _('Create List'))),
+                   Center(SubmitButton('clear', _('Clear Form')))])
     form.AddItem(ftable)
     table.AddRow([form])
     doc.AddItem(table)
