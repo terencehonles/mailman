@@ -189,4 +189,5 @@ class UserNotification(Message):
                         listname = mlist.internal_name(),
                         recips = self.recips,
                         nodecorate = 1,
+                        reduced_list_headers = 1,
                         **_kws)
