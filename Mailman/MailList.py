@@ -1057,7 +1057,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 # If confirmation comes from the web, context should be a
                 # UserDesc instance which contains overrides of the original
                 # subscription information.  If it comes from email, then
-                # context is a Message and isn't relevant.
+                # context is a Message and isn't relevant, so ignore it.
                 if isinstance(context, UserDesc):
                     userdesc += context
                 addr = userdesc.address
