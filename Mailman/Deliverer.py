@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 475 $"
+__version__ = "$Revision: 498 $"
 
 
 import string, os, sys, tempfile
@@ -96,8 +96,8 @@ class Deliverer:
 
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
-    def DeliverToList(self, msg, recipients, header, footer, remove_to=0,
-                      tmpfile_prefix = ""):
+    def DeliverToList(self, msg, recipients,
+                      header="", footer="", remove_to=0, tmpfile_prefix = ""):
 	if not(len(recipients)):
 	    return
         # repr(recipient) necessary for addresses containing "'" quotes!
