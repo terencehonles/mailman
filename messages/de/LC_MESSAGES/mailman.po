@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
-"PO-Revision-Date: 2003-01-20 17:37+0100\n"
+"PO-Revision-Date: 2003-01-27 14:41+0100\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch\n"
 "MIME-Version: 1.0\n"
@@ -517,8 +517,8 @@ msgid ""
 "Make your changes in the following section, then submit them\n"
 "        using the <em>Submit Your Changes</em> button below."
 msgstr ""
-"Änderungen können im folgenden Abschnitt eingestellt und dann mit dem "
-"<em>Änderungen vornehmen</em>-Schalter vorgenommen werden."
+"Tragen Sie bitte die gewünschten Kennwörter ein und speichern Sie die Eintragungen "
+"über den Knopf  <em>\"Änderungen vornehmen\"</em>."
 
 #: Mailman/Cgi/admin.py:497
 msgid "Additional Member Tasks"
@@ -997,7 +997,7 @@ msgstr "Benachrichtigungen an den Listen-Besitzer senden?"
 # Mailman/Cgi/admin.py:994
 #: Mailman/Cgi/admin.py:1143
 msgid "Change list ownership passwords"
-msgstr "Passworte für Listen-Besitzer andern"
+msgstr "Passworte der Listenadministration ändern"
 
 # Mailman/Cgi/admin.py:997
 #: Mailman/Cgi/admin.py:1146
