@@ -207,7 +207,10 @@ def save_attachment(mlist, msg, filter_html=1):
     digest = sha.new(msgid).hexdigest()
     msgdir = digest[:4] + digest[-4:]
     try:
-        os.mkdir(os.path.join(dir, msgdir), 02775)
+        path = os.path.join(dir, msgdir)
+        os.mkdir(path, 02775)
+        # For FreeBSD, which is broken wrt the mode arg of mkdir()
+        os.chmod(path, 02775)
     except OSError, e:
         if e.errno <> errno.EEXIST: raise
     # Figure out the attachment type and get the decoded data
