@@ -196,17 +196,20 @@ run_script(const char* script, int argc, char** argv, char** env)
 	newenv[j] = NULL;
 
 	/* Now put together argv.  This will contain first the absolute path
-	 * to the python executable, then the absolute path to the script,
-	 * then any additional args passed in argv above.
+	 * to the Python executable, then the -S option (to speed executable
+	 * start times), then the absolute path to the script, then any
+	 * additional args passed in argv above.
 	 */
-	newargv = (char**)malloc(sizeof(char*) * (argc + 2));
-	newargv[0] = python;
-	newargv[1] = (char*)malloc(sizeof(char) * (
+	newargv = (char**)malloc(sizeof(char*) * (argc + 3));
+	j = 0;
+	newargv[j++] = python;
+	newargv[j++] = "-S";
+	newargv[j] = (char*)malloc(sizeof(char) * (
 		strlen(scriptdir) +
 		strlen(script) +
 		1));
-	strcpy(newargv[1], scriptdir);
-	strcat(newargv[1], script);
+	strcpy(newargv[j], scriptdir);
+	strcat(newargv[j], script);
 
 	/* now tack on all the rest of the arguments.  we can skip argv's
 	 * first two arguments because, for cgi-wrapper there is only argv[0].
@@ -218,10 +221,10 @@ run_script(const char* script, int argc, char** argv, char** env)
 	 *
 	 * TBD: have to make sure this works with alias-wrapper.
 	 */
-	for (i = 2; i < argc; i++)
-		newargv[i] = argv[i];
+	for (i=2, j++; i < argc; i++)
+		newargv[j++] = argv[i];
 
-	newargv[i] = NULL;
+	newargv[j] = NULL;
 
 	/* return always means failure */
 	(void)execve(python, &newargv[0], &newenv[0]);
