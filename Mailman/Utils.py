@@ -168,7 +168,7 @@ def DeliverToUser(msg, recipient, add_headers=[]):
 
 
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
-    import sys, socket
+    import socket
     import OutgoingQueue
 
     # We need to get a modern smtplib.  The Python 1.5.1 version does not
@@ -546,13 +546,16 @@ def IsAdministrivia(msg):
 
         
 
-def reraise(exc):
+def reraise(exc=None):
     """Use this function to re-raise an exception.
     This implementation hides the differences between Python versions.
     """
     # Python 1.5.2
     # raise
     # Earlier Python versions
+    if exc is None:
+        t, v, tb = sys.exc_info()
+        raise t, v, tb
     raise exc, None, sys.exc_info()[2]
 
 
