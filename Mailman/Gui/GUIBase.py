@@ -136,7 +136,7 @@ class GUIBase:
             if cgidata.has_key(uploadprop) and cgidata[uploadprop].value:
                 val = cgidata[uploadprop].value
             elif not cgidata.has_key(property):
-                return
+                continue
             elif isinstance(cgidata[property], ListType):
                 val = [x.value for x in cgidata[property]]
             else:
