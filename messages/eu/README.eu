@@ -1,0 +1,99 @@
+Mailamn Euskeraz proeiktuari buruz
+----------------------------------
+
+Mailman Euskaraz proiektua aurretik zeuden bi proiektu en batueratik sortu da, 
+alde batetatik Euskal Herriako Unibertsitateak (ehu.es) Gipuzkoa foru alduniaren 
+(gipuzkoa.net) diru laguntzarekin eginikoa eta bestetik librezale Software 
+euskaratze taldeak (librezale.org) eginikoak.
+
+
+Mailman beste hizkuntza batetara itzultzeko argibideak:
+------------------------------------------------------
+
+Mailmanek portuges (pt) hizkuntza erabiltzea (itzuligabea) nahi dugula pentsa dezagun:
+
+-  $prefix/templates/en/* -n dauden txantilloiak itzuli behar badituzu, Beste hizkuntza batetatik hitzultzea errazago egiten bazaizu itzulitako txantilloi guztiak $prefix/templates/* karpetan daude.
+
+- Itzultzeko kateak dituzten fitxategiak aukeratu, hau da, jatorrian _"..." dutenak.
+   $ find $prefix -exec grep -l "_(" {} \; > $prefix/messages/pygettext.files
+
+- pygettext.files fitxategiko, *pyc edo *py fitxategiak kendu.
+   $ cd $prefix/messages
+   $ $prefix/bin/pygettext.py -v `cat pygettext.files`
+   $ mkdir -p pt/LC_MESSAGES
+   #
+   # Ez zen ideia txarra izango (kasu honetan) README.en  README.pt-ra itzultzea :-)
+   #
+   $ mv messages.pot pt/LC_MESSAGES/catalog.pt
+
+- catalog.pt itzuli.
+- mailman.mo sortu:
+   $ cd $prefix/messages/pt/LC_MESSAGES
+   $ msgfmt -o mailman.mo catalog.pt
+- Defaults.py fitxategian LC_DESCRIPTIONS aldagaiean lerro bat geitu:
+LC_DESCRIPTIONS = { 'es':     [_("Spanish (Spain)"),  'iso-8859-1'],
+                    'pt':     [_("Portuguese"),       'iso-8859-1'], <----
+                    'en':     [_("English (USA)"),    'us-ascii']                                                                              }
+- $prefix/templates/pt/* karpetan gorde itzulitako txantilloiak
+- Jada hizkuntz berria ezarri dezakegu maimanen:
+   $ mv tmp catalog.pt; rm messages.pot
+   $ msgfmt -o mailman.mo catalog.pt
+
+#############################################################################
+#
+#	Itzultzailearen oharra. Jadanik ez da azken pausu hau eman behar
+#	Hiuzkuntza berria mailmaen erabili ahal izateko.
+#
+#############################################################################
+
+Katalogoa eguneratzeko eginbeharrak:
+-----------------------------------
+-Leno argitu degun bezala katalogo berria sortu eta originalarekin parekatu. Parekatzeko:
+   $ cd $prefix/messages
+   $ $prefix/bin/pygettext.py -v `cat pygettext.files`
+   $ mv messages.pot pt/LC_MESSAGES
+   $ cd pt/LC_MESSAGES
+   $ berdina egiten duen beste aplikazio bat ere badago: 'msmerge'
+   $ tupdate messages.pot catalog.pt > tmpygettext.files 
+# mezu zaharrak tmp fitxategiaren  azkenaldean komentaturik agertuko dira
+# mezu berriak itzultzeke geratzen dira
+   $ vi tmpygettext.files
+# mezu berria itzuli
+   $ mv tmp catalog.pt; rm messages.pot
+   $ msgfmt -o mailman.mo catalog.pt
+
+
+Itzulketa berri bat bidaltzako argibideak:
+-----------------------------------------
+
+	Mailman proiektuaren edozein hizkuntzako itzulpenak bidaltzea eskeratzen dugu,
+	horrela edozein zuk egindako lanaz baliatu daiteke. Noski eginiko edozein lan,
+	Mailmaen dokumentazioaren barnean publikoki ezagutarazia izango da. Hauek dira
+	itzulketa berri bat bidaltzeko egin beharrekoak.
+
+	Oberena tar fitxategi batetan  <barry@zope.com>-ri bidali. Pakete hau  CVS erroan 
+	ireki ahal izateko prestatua egon behar da.
+
+	Zure 'tar' fitxeroak bi karpeta izan beharko lituzke, barnean itzulitako 
+	hizkuntzaren (xx) fitxategi guztiak egon behar direlarik:
+
+
+        templates/xx
+        messages/xx
+
+	templates/xx karpetan kokaturik egon behar dira txantilloiak, ingeleseko bertsiotik 
+	(hau izango da beti eredutzat artu beharrekoa) itzulitako txt eta html fitxategi 
+	guztiak.
+
+	messages/xx karpetan LC_MESSAGES deituriko karpeta bat egon beharko 
+	litzateke eta honen barnean mailman.po fitxategia, hau da zure hizkuntzaren 
+	katalogoa. Ez bidali mailman.mo fitxategia hori sortzeaz gu arduratuko bait gera.
+	
+	Hori da dena funtsean, README fitxategi bat gehitu nahi badiozu hitzulketari, 
+	README.xx bezala izendatu eta messages/xx/LC_MESSAGES karpeta barnean kokatu
+	behar duzu.
+
+	'tar' fitxategia eposta bidez bidal diezakiguzu. Itzulketa lehenengo aldiz 
+	bidaltzen baduzu Defaults.py fitxategiko add_language() aldagaiean zer jarri 
+	behar dugun zure hizkuntzarako.
+

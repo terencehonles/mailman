@@ -1,0 +1,309 @@
+<!-- $Revision: 6550 $ -->
+<html>
+<head>
+    <link rel="SHORTCUT ICON" href="<mm-favicon>">
+    <title><MM-Presentable-User> <MM-List-Name> eposta zerrendako harpidetza konfiguraketak
+    </title>
+</head>
+<BODY BGCOLOR="#ffffff">
+    <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#99CCFF"><B>
+        <FONT COLOR="#000000" SIZE=+1>
+        <MM-List-Name> eposta zerrendako <MM-Presentable-User>-ren
+	harpidetza konfiguraketak.
+        </FONT></B></TD></TR>
+    </TABLE>
+<p>
+<table width="100%" border="0" cellspacing="5" cellpadding="5">
+    <tr><td>
+        <b><MM-Presentable-User></b>-en harpidetza egoera, pasahitza 
+	edo <MM-List-Name> eposta zerrendako aukerak.
+        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>
+    </tr><tr>
+        <td colspan="2">
+        <MM-Case-Preserved-User>
+
+        <MM-Disabled-Notice>
+
+        <p><mm-results>
+        </td>
+    </tr>
+</table>
+
+<MM-Form-Start>
+<p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
+        <FONT COLOR="#000000">
+        <B> <MM-List-Name> Harpidetza datuak aldatzen</B>
+        </FONT></TD></TR>
+    <tr><td colspan="2">Zure harpidedun eposta helbide alda dezakezu 
+    behean dagoen aukeran eposta helbide berria sartuaz. Kontutan 
+    eduki egiaztaapen mezu bat bidaliko dizugula helbide berrira, eta 
+    
+        <p><pending-days> egun pasa ondoren egiaztapena denboraz kanpo egongo da.
+
+        <p>Zure partaide izena ere alda dezakezu nahi bazenu
+        (Adib. <em>John Smith</em>).
+
+        <p>Harpidetza aldaketa gune honetako harpidedun zaren zerrenda 
+	guztietan egitea nahi baduzu ezarri <em>Orokorrean aldatu</em> 
+	aukera.
+ </td></tr>
+    <tr><td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
+        <tr><td bgcolor="#dddddd"><div align="right">Helbide berria:</div></td>
+            <td><mm-new-address-box></td>
+            </tr>
+        <tr><td bgcolor="#dddddd"><div align="right">Egiaztapenerako berriz
+            idatzi:</div></td> 
+            <td><mm-confirm-address-box></td>
+            </tr>
+        </tr></table></center>
+        </td>
+        <td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
+            <tr><td bgcolor="#dddddd"><div align="right">Zure izena:
+            (aukeran):</div></td>
+            <td><mm-fullname-box></td>
+            </tr>
+        </table></center>
+        </td>
+        </tr>
+    <tr><td colspan="2"><center><mm-change-address-button>
+        <p><mm-global-change-of-address>Orokorrean aldatu</center></td>
+    </tr>
+</table>
+
+<p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="5">
+    <TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B> <MM-List-Name> eposta zerrendako harpidetza ezabatu</B></td>
+
+        <TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Zure beste <MM-Host> harpidetzak</B>
+        </FONT></TD></TR>
+
+    <tr><td>
+        Ezarri ezazu egiaztapen aukera eta jo ezazu botoi honetan 
+	harpidetza ezabatzeko.<strong> Kontuz: </strong> ekintza 
+	hau momentuan aurrera eramaten da.
+        
+        <p>
+        <center><MM-Unsubscribe-Button></center></td>
+    <td>
+        Klik egizu "nire beste harpidetzak erakutsi" botoiari <mm-host> 
+	guneko  beste zein zerrendatara harpidetza egina duzun jakiteko.
+   
+        <p>
+        <center><MM-Other-Subscriptions-Submit></center>
+        </TD></TR>
+</table>
+
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Zure <MM-List-Name> Pasahitza</B>
+        </FONT></TD></TR>
+
+    <tr valign="TOP"><td WIDTH="50%">
+        <a name=reminder>
+        <center>
+        <h3>Zure pasahitza ahaztu duzu?</h3>
+        </center>
+	Klik egiozu botoi honi zure pasahiytza postaz zure harpide 
+	helbidera bidalia izan dadin.
+        <p><MM-Umbrella-Notice>
+        <center>
+        <MM-Email-My-Pw>
+        </center>
+        </td>
+
+    <td WIDTH="50%">
+        <a name=changepw>
+        <center>
+        <h3>Pasahitza aldatu</h3>
+        <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2" WIDTH="70%" COLS=2>
+            <TR><TD BGCOLOR="#dddddd"><div align="right">Pasahitz
+                berria:</div></TD>
+                <TD><MM-New-Pass-Box></TD>
+                </TR>
+            <TR>
+                <TD BGCOLOR="#dddddd"><div align="right">Egiaztapenerako
+                berriz idatzi:</div></TD>
+                <TD><MM-Confirm-Pass-Box></TD>
+            </TR>
+        </table>
+
+        <MM-Change-Pass-Button>
+        <p><center><mm-global-pw-changes-button>Orokorrean aldatu
+.
+        </center>
+</TABLE>
+
+<p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Zure <MM-List-Name> harpidetza aukerak </B>
+        </FONT></TD></TR>
+</table>
+
+<p>
+<i><strong>Une honetan aukeratutako balioak ezarririk daude.</strong></i>
+
+<p> Kontutan eduki <em>Orokorrean aldatu</em> aukera duten aukerek, 
+aldaketak gune honetan harpidedun zaren eposta zerrenda guztietan egingo 
+direla. klik egizu <erakutsi nire beste harpidetzak <em>"nire beste 
+harpidetzak erakutsi"</em> botoiari bestezein zerrendatara harpidetza egina 
+duzun jakiteko.
+
+<p>
+<TABLE BORDER="0" CELLSPACING="3" CELLPADDING="4" WIDTH="100%">
+    <tr><TD BGCOLOR="#cccccc">
+        <a name="disable">
+        <strong>Posta bidalketa</strong></a><p>
+	Ezarri ezazu aukera hau <em>Gaitua</em> bezala eposta zerrendako 
+	mezuak jaso nahi badituzu.<em>Ezgaitua</em> bezala ezarri ez 
+	badituzu eposta zerrendako mezuak jaso baina harpidedun izaten 
+	jarraitu nahi baduzu (Adib. oporretan zoazelako). Posta bidalketa 
+	ezgaitzen baduzu, gogoratu gero zuk gaitu beharko duzula ez bait 
+	da automatikoki gaituko.
+        </td><td bgcolor="#cccccc">
+        <mm-delivery-enable-button>Gaitu<br>
+        <mm-delivery-disable-button>Ezgaitu<p>
+        <mm-global-deliver-button><i>Orokorrean aldatu</i>
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Bilduma modua ezarri</strong><p>
+	Zuk "bilduam modua" piztu egiten baduzu mezuak egunero mezu bakar 
+	batetan (lan handiko zerrendetan bat baino gehiago izan liteke) 
+	jasoko dituzu, orain arte mezu bakoitza aske jasotzen duzunbitartean. 
+	Bilduma modua piztuatik itxalira pasatzen bada azken bilduma bat jaso 
+	ahal izango duzu.
+        </td><td bgcolor="#cccccc">
+        <MM-Undigest-Radio-Button>Itxali<br>
+        <MM-Digest-Radio-Button>Piztu
+        </td></tr>
+        
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>MIME edo textu laueko bildumak?</strong><p>
+	Zure eposta irakurleak MIME motako fitxategiak onar ditzazke edo ez. 
+	Normalean MIME moeta nahiago du jendeak baina irakurtzeko arazorik 
+	bazenu ezarri textu-laua moetan bilduma bidalketa.
+        </td><td bgcolor="#cccccc">
+        <MM-Mime-Digests-Button>MIME<br>
+        <MM-Plain-Digests-Button>textu-laua<p>
+        <mm-global-mime-button><i>Orokorrean aldatu</i>
+        </td></tr>
+        
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Zerrendara bidalitako mezuen kopia jaso?</strong><p>
+	Orkorrean, zerrendara bidaltzen dituzun mezuen kopia bat jasoko 
+	duz. Ez baduzu kopia hori jaso nahi ezarri aukera hau <em>EZ</em>
+	bezala.
+        </td><td bgcolor="#cccccc">
+        <mm-dont-receive-own-mail-button>Ez<br>
+        <mm-receive-own-mail-button>Bai
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Zerrendara mezu bat bidaltzean bidalketaren berri emten mezu bat jaso nahi al duzu?</strong><p>
+        </td><td bgcolor="#cccccc">
+        <mm-dont-ack-posts-button>Ez<br>
+        <mm-ack-posts-button>Bai
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Zerrenda honetako pasahitz gogorarazle mezuak jaso?</strong><p>
+	Hilean behin harpidedun zaren gune honetako zerrenda guztien pasahitzen
+	gogorarazle 
+	bat bidaliko zaizu. Mezu hau ez bidaltzeko ezarri ezazu <em>Ez</em> 
+	bezala aukera hau. <em>Orokorrean aldatu</em> aukeratzen baduzu ez duzu 
+	gune honetako posta zerrenden pasahitz gogorarazle gehiago jasoko.
+        </td><td bgcolor="#cccccc">
+        <mm-dont-get-password-reminder-button>Ez<br>
+        <mm-get-password-reminder-button>Bai<p>
+        <mm-global-remind-button><i>Orokorrean aldatu</i>
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Harpidedun zerrenda zure burua ezkutatu?</strong><p>
+	Noraitek harpidedunen zerrenda ikustean zure eposta helbidea 
+	(aldaturik zabor posta igorleak zapusteko) agerian geratzen da. 
+	Ez baduzu zure eposta helbidea ikusterik ezarri ezazu aukera
+	hau <em>Bai</em> bezala.
+        </td><td bgcolor="#cccccc">
+        <MM-Public-Subscription-Button>Ez<br>
+        <MM-Hide-Subscription-Button>Bai
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Zein hizkuntza nahiago duzu?</strong><p>
+        </td><td bgcolor="#cccccc">
+        <MM-list-langs>
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Zein gai kategorietara egin nahi duzu harpidetza??</strong><p>
+	        Gai bat edo gehiago aukeratuz, eposta zerrendatik jasoko 
+		dituzun mezuak filtra ditzazkezu. Mezuak zuk aukeratutako 
+		gaietako batenbat badu, zuri bidaliko zaizu baina ez badu 
+		ez zaizu mezua bidaliko.
+                
+               <p>Mezuak ez badu gai ezagunik bidalketa behekaldean dauden 
+	       aukeren ezarpenen ondorioz erabakiko da. Zuk ez baduzu gairik 
+	       aukeratzen eposta zerrendako mezu guztiak bidaliko zaizkizu.
+        </td><td bgcolor="#cccccc">
+        <mm-topics>
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Gai filtroak ezagutzen ez duen gaia duten mezuak jaso nahi 
+	        al dituzu?</strong><p>
+		Aukera honek goikaldeko gaietakobatenbat aukeratu baduzu 
+		bakarrik funtzionatzen du eta ga ezagunik ez duten mezuen
+		bidalketa arauak ezartzen ditu. <em>Ez</em> aukeratuaz ez 
+		dituzu mezu horiek jasoko eta <em>Bai</em> gai filtroak 
+		ezagutzen ez duen gaia duten mezuak jasoko dituzu.
+                
+                <p>Zuk ez baduzu gairik aukeratu aurreko aukeran eposta 
+		zerrendako mezu guztiak bidaliko zaizkizu.
+ 
+        </td><td bgcolor="#cccccc">
+        <mm-suppress-nonmatching-topics>Ez<br>
+        <mm-receive-nonmatching-topics>Bai
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Bikoiztutako mezuak saiestu ?</strong><p>
+
+                Zu mezuaren <tt>To:</tt> edo <tt>Cc:</tt> burukoan 
+		agertzen bazara, eposta zerrendatik mezu berdinaren 
+		beste kopia bat ez jasotzea erabaki dezakezu
+		<em>Bai</em> ezarri mezuen zerrendako kopia jasotzen 
+		ez jarraitzeko;<em>Ez</em> ezarri zerrendak zuri kopiak 
+		bidaltzen jarraitzekoko.
+
+                <p>If the list has member personalized messages
+                enabled, and you elect to receive copies, every copy
+                will have a <tt>X-Mailman-Copy: yes</tt> header added
+                to it.
+
+        </td><td bgcolor="#cccccc">
+        <mm-receive-duplicates-button>Ez<br>
+        <mm-dont-receive-duplicates-button>Bai<p>
+        <mm-global-nodupes-button><i>Orokorrean aldatu</i>
+        </td></tr>
+
+    <tr><TD colspan="2">
+        <center><MM-options-Submit-button></center>
+        </td></tr>
+
+</table>
+</center>
+<p>
+<MM-Form-End>
+
+<MM-Mailman-Footer>
+</body>
+</html>

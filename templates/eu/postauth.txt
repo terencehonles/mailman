@@ -1,0 +1,14 @@
+Zerrenda administratzaile gisa, Eposta zerrendara mezu honen bidalketaren
+onarpena behar dugu aurrera jarraitzeko:
+
+
+    Zerrenda:    %(listname)s@%(hostname)s
+    Nork:        %(sender)s
+    Gaia:	 %(subject)s
+    Arrazoia:	 %(reason)s
+
+Ahal duzunean jo:
+
+    %(admindb_url)s
+
+Eskakizuna onartu edo ukatzeko.

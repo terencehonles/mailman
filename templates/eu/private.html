@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>%(realname)s Fitxategi pribatuen autentifikazioa </title>
+</head>
+<body bgcolor="#ffffff">
+<FORM METHOD=POST ACTION="%(action)s/">
+%(message)s
+  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+    <TR>
+      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+	<B><FONT COLOR="#000000" SIZE="+1">%(realname)s Fitxategi autentifikazioa</FONT></B>
+      </TD>
+    </TR>
+    <tr>
+        <TD><div ALIGN="Right">Eposta helbidea:</div></TD>
+        <TD><INPUT TYPE="text" NAME="erabiltzaile izena" SIZE="30"></TD>
+    </tr>
+    <tr>
+      <TD><div ALIGN="Right">Pasahitza:</div></TD>
+      <TD><INPUT TYPE="password" NAME="password" SIZE="30"></TD>
+    </tr>
+    <tr>
+      <td colspan=2 align="middle"><INPUT type="SUBMIT"
+                                          name="submit"
+					  value="Utzi sartzen...">
+      </td>
+    </tr>
+  </TABLE>
+      <p><strong><em>Garrantzitsua:</em></strong> Aurrera jarraitu ahal
+      izateko zure web kudeatzailean cookiak gaiturik izan behar 
+      dituzu, bestela administrazio aldaketak ez dira burutuko.
+
+      <p>Mailmanek sesio cookie-ak erabiltzan ditu, administrazio
+      jarduera bakoitzean ez zaitezen autntifikatu behar. Cookie hau 
+      zure web kudeatzailea ixten duzunean bere kabuz ezabatuko da, 
+      bestela Beste administrazio lanetan dagoen <em>Logout</em> 
+      laster markan klik eginez ezaba dezakezu (behin arrakastatsuki
+      saioa hasi duzula)
+</FORM>
+</body>
+</html>

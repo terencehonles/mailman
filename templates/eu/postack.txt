@@ -1,0 +1,8 @@
+
+    %(subject)s
+
+Gaidun mezua %(listname)s eposta zerrendak arrakastatsuki
+jaso du.
+
+Zerrendaren argibide orrialdea: %(listinfo_url)s
+Zure hobespenak: %(optionsurl)s

@@ -1,0 +1,34 @@
+%(host_name)s serbitzariko %(real_name)s Eposta zerrendara Ongi etorria!!!
+%(welcome)s
+
+Zerrendara postak bidaltzeko helbidea:
+
+  %(emailaddr)s
+
+Eposta zerrendaren buruz argibide nagusien helbidea:
+
+  %(listinfo_url)s
+
+Zure harpidetza ezabatu edo zure hobespenak aldatu (adib, mezuak banaka edo
+bildurik jasotzeko) nahi badituzu, jo zure harpidetza orrialdera:
+
+  %(optionsurl)s
+%(umbrella)s
+
+Aldaketa hauek eposta bidez ere egin ditzazkezu hurrengo helbidera idatziz:
+
+  %(real_name)s-request@%(host_name)s
+
+"help" hitza gaia edo mezuaren gorputzean duela. Erantzun automatikoak aldaketak
+eposta bidez egiteko argibide gehiago bidaliko dizkizu.
+
+Zure aukera pertsonalak aldatzeko (pasahitza bera ere) aldatzeko edo harpidetza
+ezabatzeko zure pasahitza jakin behar duzu. Hau da:
+
+  %(password)s
+
+Gehienetan, mailmanek zure %(host_name)s espota zerrendatako pasahitza 
+gogoraraziko dizu hilean bein, nahiago baduzu aukera hau alda dezakezu.
+Gogorarazle honek zure kontuaren aukerak edo ezabatzea nola egin 
+argibideak ere izango ditu. Zure aukera pertsonaletako orrialdean ere
+pasahitz gogorarazle bat bidaltzeko botoi bat ere aurkituko duzu.

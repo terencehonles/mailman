@@ -1,0 +1,1 @@
+%(member)s -en %(listname)s zerrendako harpidetza ezabatua izan da.

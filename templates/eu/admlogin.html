@@ -1,0 +1,38 @@
+<html>
+<head>
+  <title>%(listname)s %(who)s Autentifikazioa</title>
+</head>
+<body bgcolor="#ffffff">
+<FORM METHOD=POST ACTION="%(path)s">
+%(message)s
+  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+    <TR>
+      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+	<B><FONT COLOR="#000000" SIZE="+1">%(listname)s %(who)s
+	    Authentication</FONT></B>
+      </TD>
+    </TR>
+    <tr>
+      <TD><div ALIGN="Right">%(who)s Zerrenda pasahitza:</div></TD>
+      <TD><INPUT TYPE="password" NAME="adminpw" SIZE="30"></TD>
+    </tr>
+    <tr>
+      <td colspan=2 align=middle><INPUT type="SUBMIT"
+                                        name="admlogin"
+					value="saioa hasi">
+      </td>
+    </tr>
+  </TABLE>
+      <p><strong><em>Ohar garrantzitsua:</em></strong> Hemendik aurrera
+      zuk web kudeatzailean cookieak onartu behar dituzu, bestela
+      ezingo duzu administrazio aldaketarik egin.
+   <p>Mailmanek sesio cookie-ak erabiltzan ditu, administrazio
+      jarduera bakoitzean ez zaitezen autntifikatu behar. Cookie hau
+      zure web kudeatzailea ixten duzunean bere kabuz ezabatuko da,
+      bestela <em>Beste administrazio lan</em>etan dagoen <em>Irten</em>
+      laster markan klik eginez ezaba dezakezu (behin arrakastatsuki
+      saioa hasi duzula)
+
+</FORM>
+</body>
+</html>

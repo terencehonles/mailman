@@ -1,0 +1,13 @@
+%(listname)s eposta zerrednara eginiko eskakizuna
+
+    %(request)s
+
+Moderatzailearengatik ukatua izan da. Moderatzaileak hurrengo
+arrazoai eman duzre eskakizuna ukatzerakoan:
+
+"%(reason)s"
+
+Edozein galdera edo iradokizunik baduzu bidali zuzenean zerrenda
+administratzaileari hurrengo helbidera:
+
+    %(adminaddr)s

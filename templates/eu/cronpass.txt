@@ -1,0 +1,18 @@
+HAu %(hostname)s sebitzariko eposta zerrenden harpidetza gogorarazle
+bat da. Harpidetza informazioa, nola egin datu horiek aldatzeko 
+edo harpidetza nola ezabaturi buruz argibideak ditu.
+
+Webgunera joan zaitezke eta, harpidetza egoera edo konfiguraketat
+aldatzeko, harpidetza ezabatu, bilduma moduan jaso edo harpidetza 
+ezgaitzeko (adib. oporretan) eta gero berriz gaitzeko barne.
+
+Webgunearen gehigarri gisa eposta bidez ere egin ditzazkezu aldaketa 
+hauek. Argibide gehiagorako bidali mezu bat zerrendako '-request' 
+helbidera (adib.  %(exreq)s) gaiean edo mezuren gorputzean `help' hitza 
+duena eta eposta mezu bat bidaliko dizugu aldaketa horiek eposta bidez 
+nola egiteko argibideekin.
+
+Galdera, arazo edo iradokizunik baduzu, bidali iezazkiozu %(owner)s. 
+Mila esker.
+
+%(useraddr)s -ren pasahitzak:

@@ -1,0 +1,24 @@
+%(listname)s eposta zerrendako harpidetza ezabatze berria
+
+%(remote)s-tik zure "%(email)s" eposta helbidearen %(listaddr)s
+eposta zerrendako harpidetza ezabatzeko eskakizuna jaso dugu. Zuk 
+zerrenda honen harpidetza ezabatu  izan nahi duzula egiaztatzeko
+itzuli ezazu mezu hau gaia ikutu gabe utziz. Edo web orrialde
+honetara joan zaitezke:
+
+    %(confirmurl)s
+
+Edo gehitu iezaziozu hurrelgo lerroa - lerro hori bakarrik --
+eta %(requestaddr)s-era mezu bat bidali.
+
+    confirm %(cookie)s
+
+Kontutan izan Eposta irakurle progrma gehienekin mezuari erantzutearekin
+aski izan beharko zuela, hauek normalean gaia asuntoa behar bezala usten
+dute ("Re:" bat gehitzen badio gaiari ondo dago ere).
+
+Zuk ez baduzu Eposta zerrenda honetako harpidetza ezabatu nahi, mezu hau 
+bertan behera ustearekin harpidetzak aurrera jarraituko du. Zure harpidetza 
+ezabatzea era gaiztoan edo eragozpenak sortzeko asmoarekin egina izan dela 
+uste baduzu edo/eta galdera edo iradokizunik baduzu idatz itzazu %(listadmin)s 
+eposta helbidera.

@@ -1,0 +1,25 @@
+Zuk, edo zu balitz egin duen beste batek, %(fqdn_lname)s eposta 
+zerrendako zure pasahitzaren gogorarazle bat eskatu du. Zure harpidetza
+aukerak (adib. mezuak banaka edo bilduak jasotzea) aldatu ahal izateko
+beharrezkoa duzu pasahitz hau ezagutzea, pasahitz hau ezagutzearekin
+harpidetza ezabatzea ere erraz egiten da.
+
+Honako helbide honekin duzu egina harpidetza: %(user)s
+
+%(listname)s zerrendako zure pasahitza :  %(password)s
+
+Zure hapidetza aukerak aldatu nahi izanez gero, jo zure aukera pertsonalen 
+orrialdera:
+
+    %(options_url)s
+
+Aldaketa hauek eposta bidez ere egin ditzazkezu, horretarako mezuak helbide
+honetara bidali:
+
+    %(requestaddr)s
+
+"help" hitza gaia edo mezuaren gorputzean duela. Erantzun automatikoak aldaketak
+eposta bidez egiteko argibide gehiago bidaliko dizkizu.
+
+Galdera edo iradokizunik? Bidali iezazkiozu %(listname)s eposta zerrendaren 
+administratzaileari %(owneraddr)s helbidera

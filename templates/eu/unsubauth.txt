@@ -1,0 +1,12 @@
+Zure baimena beharrezkoa da zerrenda harpidetza eskakizuna
+aurrera eramateko:
+
+    Nork:   %(username)s
+    Nondik: %(listname)s@%(hostname)s
+
+Edo nahiago baduzu, jo:
+
+    %(admindb_url)s
+
+eskakizuna lantzeko.
+

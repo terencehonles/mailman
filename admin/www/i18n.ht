@@ -84,6 +84,13 @@ Project</a> for future language support.
     <td><a href="mailto:duke@linux.ee">Anti Veeranna</a></td>
     <td>Supported</td>
 </tr>
+<tr><td>Euskara (Basque)</td>
+    <td><a href="http://www.librezale.org/mailman-eu/">Mailman Basque
+    translation project web page</a>, and
+    <a href="mailto:mailman@librezale.org">translation team email
+    address</a></td>
+    <td>Supported</td>
+</tr>
 <tr><td>Finnish</td><td>fi</td>
     <td><a href="mailto:pekka.haavisto@mtt.fi">Pekka Haavisto</a></td>
     <td>Supported</td>

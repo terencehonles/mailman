@@ -1,0 +1,13 @@
+%(real_name)s eposta zerrendara bidalketetarako helbidea:
+        %(got_list_email)s
+
+Webaren bidez harpidetza egin edo ezabatzeko, jo:
+        %(got_listinfo_url)s
+edo, posta bidez egiteko bidali gaian edo gorputzena `help' hitza duen mezu bat:
+        %(got_request_email)s helbidera.
+
+Zerrenda administratzen duen pertsonakin arremanetan jartzeko idatzi:
+        %(got_owner_email)s helbidera
+
+erantzuten duzuenan "Re: Contents of %(real_name)s digest..." baino argiagoa den
+esaldi bategatik aldatu gaia.

@@ -1,0 +1,20 @@
+%(hostname)s %(listname)s eposta zerrendaren jabeak, zure "%(email)s" 
+eposta helbidea %(listname)s eposta zerrendan parte hartzera gonbidatu
+zaitu. Gonbidapen hau onartu nahi baduzu, mezu honi gaia aldatu gabe
+erantzutearekin aski duzu.
+
+Web orrialde honetara ere jo dezakezu:
+
+    %(confirmurl)s
+
+Edo gehitu iezaziozu hurrelgo lerroa - lerro hori bakarrik --
+eta %(requestaddr)s-era mezu bat bidali.
+
+    confirm %(cookie)s
+
+Kontutan izan Eposta irakurle programa gehienekin mezuari erantzutearekin
+aski izan beharko zela.
+
+Ez baduzu gonbidapen hau onartu nahi, mezu hau bertan behera uztearekin zure
+harpidetza prozesuak ez du aurrera egingo. Galderarik baduzu, idatz ezazu
+%(listowner)s helbidera.

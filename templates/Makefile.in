@@ -42,7 +42,7 @@ TEMPLATEDIR= 	$(prefix)/templates
 
 SHELL=		/bin/sh
 
-LANGUAGES=	big5 cs de en es et fi fr gb hu it ja ko lt nl \
+LANGUAGES=	big5 cs de en es et eu fi fr gb hu it ja ko lt nl \
 		no pl pt pt_BR ru sr sv uk
 
 # Modes for directories and executables created by the install

@@ -1,0 +1,15 @@
+'%(listname)s' zerrendara bidaloitako hurrengo gaidun mezua:
+
+    %(subject)s
+
+Zerrenda moderatzaileak oanrpena emateko hizoztua izan da.
+
+Izozketaren arrazoia:
+
+    %(reason)s
+
+Bai mezua zerrendara bidaltzen bada edo ukatua bada, moderatzailearen 
+erabkiaren berri ematen duen mezu bat jasoko duzu. Mezu honen bidalketa 
+ezeztatu nahi baduzu jo hurrengo helbidera:
+
+    %(confirmurl)s

@@ -1,0 +1,32 @@
+%(listname)s eposta zerrendaren laguntza:
+
+Mailman zerrenda kudeatzailearen %(version)s bertsioaren eposta
+komandoen laguntza mezua da. Ondorengoak eposta zerrendaren 
+harpidetza kontrolarentzat bidali ditzazkezun posta komandoen
+argibideak dira. Komandoak gaiean edo mezuaren gorputzean ipini
+daitezke.
+
+Kontutan izan gauza gehienak web bidez egin daitezkela hurrengo
+helbide onetan:
+
+    %(listinfo_url)s
+
+Bereiziki zure pasahitza postaz zuri bidaltzeko esakizuna egin
+dezakezu web-aren bidez.
+
+Zerrendaren komandoak (subscribe, who,...) zerrendaren 
+*-request helbidera bidali behar dituzu, adib. 'mailman'
+izeneko zerrendarako, bidali 'mailman-request@...' helbidera.
+
+Argibidieetan "<>" harteko hitzak BEHARREZKOAK dira eta "[]"
+artekoak berriz aukerakoak. Ez "<>" eta ez "[]" erabili komandoak
+bidaltzeko garaian.
+
+Hurrengo komandoak erabili ditzazkezu:
+
+    %(commands)s
+
+Komadoak %(requestaddr)s helbidera bidali behar dira.
+
+Norbaitek irakurtzea nahi duzun mezu bat bidaltzeko idatz
+ezazu  %(adminaddr)s helbidera 

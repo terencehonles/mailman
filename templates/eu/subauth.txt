@@ -1,0 +1,11 @@
+Zure baimena beharrezkoa da zerrenda harpidetza ezabatze 
+eskakizuna aurrera eramateko:
+
+    Nork:   %(username)s
+    Zerrenda: %(listname)s@%(hostname)s
+
+Edo nahiago baduzu, jo:
+
+    %(admindb_url)s
+
+eskakizuna lantzeko.

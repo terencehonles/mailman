@@ -1,0 +1,36 @@
+Zuk eskatu bezala`%(listname)s' eposta zerrenda sortua izan da. Honako hau 
+eposta zerrendaren argibide orokorrak dira .
+
+Zure zerrenda pasahitza:
+
+    %(password)s
+
+Zure Eposta zerrenda konfiguratu ahal izateko pasahitz hau behar
+duzu. Adiministrazio eskakizunak (adib. posta bidalketa onartu mederaturiko 
+zerrenda bat aukeratu baduzu) aurrera eramateko ere ezinbestekoa
+izango duzu pasahitza.
+
+Zure eposta zerrenda honako web orrialde honetan konfigura dezakezu:
+
+    %(admin_url)s
+
+Zure eposta zerrendaren erabiltzaileen orrialdea:
+
+    %(listinfo_url)s
+
+orrialde hauek konfiguraketa orrialdean zure gustora alda ditzazkezu.
+
+Bada ere harpidedunentzat (administratzailea ez) posta bidez dabilen
+interfaze bat ere; funtzionamentuaz argibide gehiago jasotzeko bidali 
+mezu bat `help' hitza gaiean edo mezu gorputzean duela helbide honetara:
+
+    %(requestaddr)s
+
+Erabiltzaile baten harpidetza ezabatzeko: zerrendaren argibideetako web
+orrialdeetan orrialdean erbiltzaile hori bazina sar ezazu eposta helbidea.
+Eta kontua ezabatzeko erabiltzaile pasahitza eskatzen dizunean, sar 
+iezaiozu administrazio pasahitza. Modu honetan erabiltzailearen hobespenak
+ere alda ditzazkezu.
+
+Galdera edo iradokizunik baduzu idatz iezaiozu zerrenda jaberari %(siteowner)s
+helbidera.
