@@ -16,15 +16,29 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Use this script to help you update to the latest release of Mailman from
-some previous version.  It knows about versions back to 1.0b4 (?).
+"""Perform all necessary upgrades.
 
+Usage: %(PROGRAM)s [options]
+
+Options:
+    -f/--force
+        Force running the upgrade procedures.  Normally, if the version number
+        of the installed Mailman matches the current version number (or a
+        `downgrade' is detected), nothing will be done.
+
+    -h/--help
+        Print this text and exit.
+
+Use this script to help you update to the latest release of Mailman from
+some previous version.  It knows about versions back to 1.0b4 (?).
 """
 
 import sys
 import os
 import marshal
 import errno
+import md5
+import getopt
 
 import paths
 from Mailman import mm_cfg
@@ -37,6 +51,7 @@ FRESH = 0
 NOTFRESH = -1
 
 LMVFILE = os.path.join(mm_cfg.DATA_DIR, 'last_mailman_version')
+PROGRAM = sys.argv[0]
 
 
 
@@ -78,26 +93,79 @@ def make_varabs(relpath):
 
 
 def move_language_templates(mlist):
-    print >> sys.stderr, 'Fixing language templates:', mlist.internal_name()
-    # In Mailman 2.1, each language gets its own templates under
-    # lists/<listname>.  Since English is the default language for the
-    # templates, we want to move all the existing templates under
-    # lists/<listname> to lists/<listname>/en
-    listpath = mlist._full_path
-    en_path = os.path.join(listpath, 'en')
-    omask = os.umask(0)
-    try:
+    listname = mlist.internal_name()
+    print _('Fixing language templates: %(listname)s')
+    # Mailman 2.1 has a new cascading search for its templates, defined and
+    # described in Utils.py:maketext().  Putting templates in the top level
+    # templates/ subdir or the lists/<listname> subdir is deprecated and no
+    # longer searched..
+    #
+    # What this means is that most templates can live in the global templates/
+    # subdirectory, and only needs to be copied into the list-, vhost-, or
+    # site-specific language directories when needed.
+    #
+    # Also, by default all standard (i.e. English) templates must now live in
+    # the templates/en directory.  This update cleans up all the templates,
+    # deleting more-specific duplicates (as calculated by md5 checksums) in
+    # favor of more-global locations.
+    #
+    # First, get rid of any lists/<list> template or lists/<list>/en template
+    # that is identical to the global templates/* default.
+    for gtemplate in os.listdir(os.path.join(mm_cfg.TEMPLATE_DIR, 'en')):
+        fp = open(os.path.join(mm_cfg.TEMPLATE_DIR, gtemplate))
+        gcksum = md5.new(fp.read()).digest()
+        fp.close()
+        # Match against the lists/<list>/* template
         try:
-            os.mkdir(en_path, 02770)
-        except OSError, e:
-            if e.errno <> errno.EEXIST: raise
-    finally:
-        os.umask(omask)
-    # Now, move all the old template files to the new `en' directory
-    for file in [f for f in os.listdir(listpath)
-                 if f.endswith('.txt') or f.endswith('.html')]:
-        os.rename(os.path.join(listpath, file),
-                  os.path.join(listpath, 'en', file))
+            fp = open(os.path.join(mlist.fullpath(), gtemplate))
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+        else:
+            tcksum = md5.new(fp.read()).digest()
+            fp.close()
+            if gcksum == tcksum:
+                os.unlink(os.path.join(mlist.fullpath(), gtemplate))
+        # Match against the lists/<list>/*.prev template
+        try:
+            fp = open(os.path.join(mlist.fullpath(), gtemplate + '.prev'))
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+        else:
+            tcksum = md5.new(fp.read()).digest()
+            fp.close()
+            if gcksum == tcksum:
+                os.unlink(os.path.join(mlist.fullpath(), gtemplate + '.prev'))
+        # Match against the lists/<list>/en/* templates
+        try:
+            fp = open(os.path.join(mlist.fullpath(), 'en', gtemplate))
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+        else:
+            tcksum = md5.new(fp.read()).digest()
+            fp.close()
+            if gcksum == tcksum:
+                os.unlink(os.path.join(mlist.fullpath(), 'en', gtemplate))
+        # Match against the templates/* template
+        try:
+            fp = open(os.path.join(mm_cfg.TEMPLATE_DIR, gtemplate))
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+        else:
+            tcksum = md5.new(fp.read()).digest()
+            fp.close()
+            if gcksum == tcksum:
+                os.unlink(os.path.join(mm_cfg.TEMPLATE_DIR, gtemplate))
+        # Match against the templates/*.prev template
+        try:
+            fp = open(os.path.join(mm_cfg.TEMPLATE_DIR, gtemplate + '.prev'))
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+        else:
+            tcksum = md5.new(fp.read()).digest()
+            fp.close()
+            if gcksum == tcksum:
+                os.unlink(os.path.join(mm_cfg.TEMPLATE_DIR,
+                                       gtemplate + '.prev'))
         
 
 
@@ -174,7 +242,7 @@ script.
     # move private archive mbox there if it's around
     # and take into account all sorts of absurdities
     #
-    print '- updating old private mbox file'
+    print _('- updating old private mbox file')
     if os.path.exists(o_pri_mbox_file):
         if os.path.isfile(o_pri_mbox_file):
             os.rename(o_pri_mbox_file, mbox_file)
@@ -182,21 +250,23 @@ script.
             newname = "%s.mm_install-dunno_what_this_was_but_its_in_the_way" \
                       % o_pri_mbox_file
             os.rename(o_pri_mbox_file, newname)
-            print "    unknown file in the way, moving"
-            print "        " + o_pri_mbox_file
-            print "    to"
-            print "        " + newname
+            print _("""\
+    unknown file in the way, moving
+        %(o_pri_mbox_file)s
+    to
+        %(newname)s""")
         else:
             # directory
-            print "    looks like you have a really recent CVS installation..."
-            print "    you're either one brave soul, or you already ran me"
+            print _("""\
+    looks like you have a really recent CVS installation...
+    you're either one brave soul, or you already ran me""")
     
 
     #
     # move public archive mbox there if it's around
     # and take into account all sorts of absurdities.
     #
-    print '- updating old public mbox file'
+    print _('- updating old public mbox file')
     if os.path.exists(o_pub_mbox_file):
         if os.path.isfile(o_pub_mbox_file):
             os.rename(o_pub_mbox_file, mbox_file)
@@ -204,13 +274,15 @@ script.
             newname = "%s.mm_install-dunno_what_this_was_but_its_in_the_way" \
                       % o_pub_mbox_file
             os.rename(o_pub_mbox_file, newname)
-            print "    unknown file in the way, moving"
-            print "        " + o_pub_mbox_file
-            print "    to"
-            print "        " + newname
+            print _("""\
+    unknown file in the way, moving
+        %(o_pub_mbox_file)s
+    to
+        %(newname)s""")
         else: # directory
-            print "    looks like you have a really recent CVS installation..."
-            print "    you're either one brave soul, or you already ran me"
+            print _("""\
+    looks like you have a really recent CVS installation...
+    you're either one brave soul, or you already ran me""")
 
     #
     # move the html archives there
@@ -239,17 +311,17 @@ script.
     b4_tmpl_dir = os.path.join(tmpl_dir, mlist._internal_name)
     new_tmpl_dir = os.path.join(list_dir, mlist._internal_name)
     if os.path.exists(b4_tmpl_dir):
-        print "- This list looks like it might have <= b4 " \
-              'list templates around'
+        print _("""\
+- This list looks like it might have <= b4 list templates around""")
         for f in os.listdir(b4_tmpl_dir):
             o_tmpl = os.path.join(b4_tmpl_dir, f)
             n_tmpl = os.path.join(new_tmpl_dir, f)
             if not os.path.exists(n_tmpl):
                 os.rename(o_tmpl, n_tmpl)
-                print "- moved %s to %s" % (o_tmpl, n_tmpl)
+                print _('- moved %(o_tmpl)s to %(n_tmpl)s')
             else:
-                print "- both %s and %s exist, leaving untouched" \
-                      % (o_tmpl, n_tmpl)
+                print _("""\
+- both %(o_tmpl)s and %(n_tmpl)s exist, leaving untouched""")
     #
     # Move all the templates to the en language subdirectory as required for
     # Mailman 2.1
@@ -279,16 +351,16 @@ def remove_old_sources(module):
     src = "%s/%s" % (mm_cfg.PREFIX, module)
     pyc = src + "c"
     if os.path.exists(src):
-        print "removing", src
+        print _('removing %(src)s')
         try:
             os.unlink(src)
         except os.error, rest:
-            print "Warning: couldn't remove", src, "--", str(rest)
+            print _("Warning: couldn't remove %(src)s -- %(rest)s")
     if module[-3:] == '.py' and os.path.exists(pyc):
         try:
             os.unlink(pyc)
         except os.error, rest:
-            print "couldn't remove old file", pyc, "--", str(rest)
+            print _("couldn't remove old file %(pyc)s -- %(rest)s")
 
 
 def main():
@@ -301,27 +373,28 @@ def main():
         remove_old_sources(mod)
     listnames = Utils.list_names()
     if not listnames:
-        print "no lists == nothing to do, exiting"
+        print _('no lists == nothing to do, exiting')
         return
     #
     # for people with web archiving, make sure the directories
     # in the archiving are set with proper perms for b6.
     #
     if os.path.isdir("%s/public_html/archives" % mm_cfg.PREFIX):
-        print "fixing all the perms on your old html archives to work with b6"
-        print "If your archives are big, this could take a minute or two..."
+        print _("""\
+fixing all the perms on your old html archives to work with b6
+If your archives are big, this could take a minute or two...""")
         os.path.walk("%s/public_html/archives" % mm_cfg.PREFIX,
                      archive_path_fixer, "")
-        print "done"
+        print _('done')
     for listname in listnames:
-        print 'Updating mailing list: ', listname
+        print _('Updating mailing list: %(listname)s')
         errors = errors + dolist(listname)
-    print 'Updating Usenet watermarks'
+    print _('Updating Usenet watermarks')
     wmfile = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
     try:
         fp = open(wmfile)
     except IOError:
-        print '- nothing to update here'
+        print _('- nothing to update here')
     else:
         d = marshal.load(fp)
         fp.close()
@@ -333,7 +406,8 @@ def main():
             try:
                 mlist.Lock(0.5)
             except TimeOutError:
-                print 'WARNING: could not acquire lock for list:', listname
+                print >> sys.stderr, _(
+                    'WARNING: could not acquire lock for list: %(listname)s')
                 errors = errors + 1
             else:
                 # Pre 1.0b7 stored 0 in the gate_watermarks file to indicate
@@ -343,7 +417,7 @@ def main():
                 mlist.Save()
                 mlist.Unlock()
         os.unlink(wmfile)
-        print '- usenet watermarks updated and gate_watermarks removed'
+        print _('- usenet watermarks updated and gate_watermarks removed')
     #
     # In Mailman 2.1, the pending database format and file name has changed.
     #
@@ -353,7 +427,7 @@ def main():
     except IOError, e:
         if e.errno <> errno.ENOENT: raise
     else:
-        print 'Updating old pending_subscriptions.db database'
+        print _('Updating old pending_subscriptions.db database')
         from Mailman import Pending
         db = marshal.load(fp)
         Pending._update(db)
@@ -365,7 +439,7 @@ def main():
     # :(
     #
     if lastversion == NOTFRESH:
-        print """
+        print _("""
 
 NOTE NOTE NOTE NOTE NOTE
 
@@ -382,23 +456,51 @@ NOTE NOTE NOTE NOTE NOTE
 
 NOTE NOTE NOTE NOTE NOTE
 
-"""
+""")
     return errors
 
 
 
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__) % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+
+
 if __name__ == '__main__':
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'hf',
+                                   ['help', 'force'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if args:
+        usage(1, 'Unexpected arguments: %s' % args)
+
+    force = 0
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-f', '--force'):
+            force = 1
+
     # calculate the versions
     lastversion, thisversion = calcversions()
-    if lastversion == thisversion:
+    hexlversion = hex(lastversion)
+    hextversion = hex(thisversion)
+    if lastversion == thisversion and not force:
         # nothing to do
+        print _('No updates are necessary.')
         sys.exit(0)
-    if lastversion > thisversion:
-        print 'Downgrade detected, from version', hex(lastversion), \
-              'to version', hex(thisversion)
-        print 'This is probably not safe.  Exiting.'
+    if lastversion > thisversion and not force:
+        print _("""\
+Downgrade detected, from version %(hexlversion)s to version %(hextversion)s
+This is probably not safe.
+Exiting.""")
         sys.exit(1)
-    print 'Upgrading from version', hex(lastversion), 'to', hex(thisversion)
+    print _('Upgrading from version %(hexlversion)s to %(hextversion)s')
     errors = main()
     if not errors:
         # Record the version we just upgraded to
@@ -406,7 +508,8 @@ if __name__ == '__main__':
         fp.write(hex(mm_cfg.HEX_VERSION) + '\n')
         fp.close()
     else:
-        print '''\
+        lockdir = mm_cfg.LOCK_DIR
+        print _('''\
 
 ERROR:
 
@@ -416,4 +519,4 @@ Mailman was still active when you upgraded, or there were stale locks in the
 
 You must put Mailman into a quiescent state and remove all stale locks, then
 re-run "make update" manually.  See the INSTALL and UPGRADE files for details.
-''' % {'lockdir': mm_cfg.LOCK_DIR}
+''')
