@@ -7365,7 +7365,7 @@ msgstr ""
 "             favore controlla che l'indirizzo con il quale sei iscritto "
 "alla\n"
 "             lista sia corretto e funzionante.  Il tuo punteggio errori \n"
-"             sar&agrave; automaticamente azzerato se ii problemi saranno\n"
+"             sar&agrave; automaticamente azzerato se i problemi saranno\n"
 "             corretti velocemente."
 
 #: Mailman/HTMLFormatter.py:178
