@@ -355,8 +355,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " discussion of this issue."),
 
             ('administrivia', mm_cfg.Radio, ('No', 'Yes'), 0,
-             "check messages that are destined for the list for"
-             " adminsitrative request content?",
+             "(Administrivia filter) Check postings and intercept ones"
+             " that seem to be administrative requests?",
 
              "Administrivia tests will check postings to see whether"
              " it's really meant as an administrative request (like"
@@ -533,8 +533,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Must posts be approved by an administrator?'),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Restrict posting privilege to list members?',
-
+	     'Restrict posting privilege to list members?'
+             ' (<i>member_posting_only</i>)',
 
              "Use this option if you want to restrict posting to list members."
              " If you want list members to be able to"
@@ -543,18 +543,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
              'Addresses of members accepted for posting to this'
-             ' list with no required approval. (See'
-             ' <i> member_posting_only </i>, above, for whether or not'
-             ' list member posting is affected by adding addresses here.',
+             ' list without implicit approval requirement. (See'
+             ' "Restrict ... to list members"'
+             ' for whether or not this is in addition to allowing posting'
+             ' by list members',
 
-             "Adding any entries here will have one of two effects,"
-             " according to the setting of <i>member_posting_only</i>:"
-             " <p> If <i>member_posting_only</i> is 'yes', then"
-             " adding entries here will allow list members and anyone"
-             " listed here to post without going through admin approval."
-             " <p> If <i>member_posting_only</i> is 'no', then <em>only</em>"
+             "Adding entries here will have one of two effects,"
+             " according to whether another option restricts posting to"
+             " members. <ul>"
+             " <li> If <i>member_posting_only</i> is 'yes', then entries"
+             " added here will have posting privilege in addition to"
+             " list members."
+             " <li> If <i>member_posting_only</i> is 'no', then <em>only</em>"
              " the posters listed here will be able to post without admin"
-             " approval. "),
+             " approval. </ul>"),
 
             "Spam-specific posting filters",
 
