@@ -24,6 +24,7 @@ class MMUnknownListError(MMListError): pass
 class MMCorruptListDatabaseError(MMListError): pass
 class MMListNotReadyError(MMListError): pass
 class MMListAlreadyExistsError(MMListError): pass
+class BadListNameError(MMListError): pass
 
 # Membership exceptions
 class MMMemberError(Exception): pass
