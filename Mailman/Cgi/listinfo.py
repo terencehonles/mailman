@@ -174,6 +174,7 @@ def list_listinfo(mlist, lang):
     replacements['<mm-subscribe-form-start>'] = mlist.FormatFormStart(
         'subscribe')
     replacements['<mm-roster-form-start>'] = mlist.FormatFormStart('roster')
+    replacements['<mm-options-form-start>'] = mlist.FormatFormStart('options')
     replacements['<mm-editing-options>'] = mlist.FormatEditingOption(lang)
     replacements['<mm-info-button>'] = SubmitButton('UserOptions',
                                                     _('Edit Options')).Format()
