@@ -67,7 +67,12 @@ class CommandRunner(Runner):
                 del msg['subject']
                 msg['Subject'] = 'leave'
                 msg.set_payload('')
-                mlist.ParseMailCommands(msg, msgdata)
+                try:
+                    mlist.ParseMailCommands(msg, msgdata)
+                except LockFile.TimeOutError:
+                    # We probably could not get the lock on the pending
+                    # database.  That's okay, we'll just try again later.
+                    return 1
             elif msgdata.get('toconfirm'):
                 mo = re.match(mm_cfg.VERP_CONFIRM_REGEXP, msg.get('to', ''))
                 if mo:
