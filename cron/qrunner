@@ -22,6 +22,7 @@
 import sys
 import os
 import string
+import time
 import marshal
 import mimetools
 
@@ -118,8 +119,18 @@ def dequeue(root):
 
 
 def main(lock):
+    t0 = time.time()
+    msgcount = 0
     allkids = {}
     for file in os.listdir(mm_cfg.QUEUE_DIR):
+        # Have we exceeded either resource limit?
+        if mm_cfg.QRUNNER_PROCESS_LIFETIME is not None and \
+               (time.time() - t0) > mm_cfg.QRUNNER_PROCESS_LIFETIME:
+            break
+        if mm_cfg.QRUNNER_MAX_MESSAGES is not None and \
+               msgcount > mm_cfg.QRUNNER_MAX_MESSAGES:
+            break
+        msgcount = msgcount + 1
         # Keep the qrunner lock alive for a while longer
         lock.refresh()
         root, ext = os.path.splitext(os.path.join(mm_cfg.QUEUE_DIR, file))
