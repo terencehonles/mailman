@@ -18,7 +18,7 @@
 """Handle passwords and sanitize approved messages."""
 
 
-import crypt, types, string, os
+import mm_crypt, types, string, os
 import mm_err, mm_utils, mm_cfg
 
 # TBD: is this the best location for the site password?
@@ -29,7 +29,7 @@ class SecurityManager:
     def SetSiteAdminPassword(self, pw):
     	old = os.umask(0022)
 	f = open(SITE_PW_FILE, "w+")
-	f.write(crypt.crypt(pw, mm_utils.GetRandomSeed()))
+	f.write(mm_crypt.crypt(pw, mm_utils.GetRandomSeed()))
 	f.close()
         os.umask(old)
 
@@ -38,7 +38,7 @@ class SecurityManager:
 	    f = open(SITE_PW_FILE, "r+")
 	    pw = f.read()
 	    f.close()
-	    return crypt.crypt(str, pw) == pw
+	    return mm_crypt.crypt(str, pw) == pw
 	# There probably is no site admin password if there was an exception
 	except: 
 	    return 0
@@ -55,7 +55,7 @@ class SecurityManager:
 	if self.CheckSiteAdminPassword(pw):
             return 1
 	return ((type(pw) == types.StringType) and 
-		(crypt.crypt(pw, self.password) == self.password))
+		(mm_crypt.crypt(pw, self.password) == self.password))
 
     def ConfirmAdminPassword(self, pw):
 	if(not self.ValidAdminPassword(pw)):
