@@ -36,13 +36,16 @@ class StampedLogger(Logger):
     instead.
 
     """
-    def __init__(self, category, label=None, manual_reprime=0, nofail=1):
-	"If specified, optional label is included after timestamp."
+    def __init__(self, category, label=None, manual_reprime=0, nofail=1,
+                 immediate=1):
+	"""If specified, optional label is included after timestamp.
+        Other options are passed to the Logger class initializer.
+        """
 	self.__label = label
         self.__manual_reprime = manual_reprime
         self.__primed = 1
         self.__bol = 1
-	Logger.__init__(self, category, nofail=nofail)
+	Logger.__init__(self, category, nofail, immediate)
 
     def reprime(self):
         """Reset so timestamp will be included with next write."""
