@@ -38,10 +38,11 @@ INTRODUCTION
         http://www.python.org
 
     Note that in order to comply with the GPL, it is recommended that
-    you use Python 2.0.1.  Python 2.1.1 and Python 2.2 will also be
-    GPL-compatible, but they have not yet been released as of this
-    writing (09-Jul-2001).  Mailman will work with any Python 2.x
-    version.
+    you use Python 2.0.1 or Python 2.1.1.  Python 2.2 will also be
+    GPL-compatible, but it has not yet been released as of this
+    writing (21-Oct-2001).  Mailman will work with any Python 2.x
+    version, although only very limited testing has been done with
+    Python 2.2.
 
     You will also need an ANSI C compiler; gcc (the GNU C compiler)
     works just fine.  Mailman currently works only on GNU/Linux and

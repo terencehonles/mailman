@@ -35,8 +35,8 @@ upgrade.
     following steps:
 
     % cd misc
-    % tar zxf email-0.90.tar.gz
-    % cd email-0.90
+    % tar zxf email-0.93.tar.gz
+    % cd email-0.93
     % python setup.py install
 
     Check to make sure the email package is properly installed by
@@ -48,7 +48,7 @@ upgrade.
     Type "copyright", "credits" or "license" for more information.
     >>> import email
     >>> email.__version__
-    '0.90'
+    '0.93'
 
     (Note that if you are using Python 2.2, email.__version__ will be
     "1.0"; either version is fine.)
@@ -318,8 +318,8 @@ upgrade.
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       for its basic functionality.  In version of Mailman prior to
       2.1alpha2, setting up your crontab was imperative to getting
-      Mailman to work.  With MM2.1alpha2 though, the qrunner is
-      started from the bin/mailmanctl script (see below) instead of
+      Mailman to work.  With MM2.1alpha2 and later though, the qrunner
+      is started from the bin/mailmanctl script (see below) instead of
       cron.  You still want to set up crontab to run the ancillary
       scripts, but it isn't as crucial to getting Mailman working as
       it once was.  Note that if you're upgrading from a previous
@@ -378,23 +378,15 @@ upgrade.
           % cd ../rc6.d
           % ln -s ../init.d/mailman K12mailman
 
-    - Add aliases for `mailman' and `mailman-owner' to the system's
-      mail alias database.  These aliases should point to whoever is
-      ultimately responsible for the Mailman installation.  Here are
-      instructions for those running sendmail:
+    - Create a "site-wide" mailing list.  This is the one that
+      password reminders will appear to come from.  Usually this
+      should be the "mailman" mailing list, but if you need to change
+      this, be sure to change the MAILMAN_SITE_LIST variable in
+      mm_cfg.py (see below).
 
-          1. su to root.
-          2. Assuming your email is fred@flintstone.com, add the following
-             lines to the file /etc/aliases:
- 
-             mailman: fred@flintstone.com
-             mailman-owner: mailman
+      % bin/newlist mailman
 
-          3. Some versions of sendmail require you to run the program
-             'newaliases' explicitly.
-
-      If you don't run sendmail, consult the documentation of your
-      mail transport program for information on adding these aliases.
+    - You should then subscribe yourself to the mailman list.
 
 
 5. Customize Mailman
