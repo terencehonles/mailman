@@ -20,14 +20,17 @@
 
 These are always marshaled dictionaries.
 
-Usage: %(program)s filename
+Usage: %(PROGRAM)s filename
 """
 
 import sys
 import marshal
 import pprint
 
-program = sys.argv[0]
+import paths
+from Mailman.i18n import _
+
+PROGRAM = sys.argv[0]
 
 
 
@@ -35,7 +38,7 @@ def main():
     try:
         filename = sys.argv[1]
     except IndexError:
-        print __doc__ % globals()
+        print >> sys.stderr, _(__doc__)
         sys.exit(1)
     fp = open(filename)
     d = marshal.load(fp)

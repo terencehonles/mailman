@@ -66,38 +66,39 @@ Where:
 """
 
 import sys
-import string
 import getopt
 
 import paths
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
+from Mailman.i18n import _
 
 
 
-def usage(status, msg=''):
-    print __doc__ % globals()
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
-    sys.exit(status)
+        print >> sys.stderr, msg
+    sys.exit(code)
 
 
 
 def dolist(mlist, options):
+    SPACE = ' '
     if not options.quiet:
-        print 'processing mailing list:', mlist.internal_name()
+        print _('processing mailing list:'), mlist.internal_name()
 
     # scan the list owners.  TBD: mlist.owner keys should be lowercase?
     oldowners = mlist.owner[:]
     oldowners.sort()
     if options.admintoo:
         if not options.quiet:
-            print '    scanning list owners:', string.join(oldowners, ' '),
+            print _('    scanning list owners:'), SPACE.join(oldowners)
         newowners = {}
         foundp = 0
         for owner in mlist.owner:
-            if options.lfromaddr == string.lower(owner):
+            if options.lfromaddr == owner.lower()
                 foundp = 1
                 if options.remove:
                     continue
@@ -111,9 +112,9 @@ def dolist(mlist, options):
         if not options.quiet:
             if newowners <> oldowners:
                 print
-                print '    new list owners:', string.join(newowners, ' ')
+                print _('    new list owners:'), SPACE.join(newowners)
             else:
-                print '(no change)'
+                print _('(no change)')
 
     # see if the fromaddr is a digest member or regular member
     if options.lfromaddr in mlist.GetDigestMembers():
@@ -122,7 +123,7 @@ def dolist(mlist, options):
         digest = 0
     else:
         if not options.quiet:
-            print '    address "%s" not found' % options.fromaddr
+            print _('    address not found:'), options.fromaddr
         return
 
     # Get the user's current options and password.  TBD: Ugly hack: if a
@@ -138,13 +139,13 @@ def dolist(mlist, options):
         if options.modify:
             mlist.ApprovedAddMember(options.toaddr, password, digest, 0)
         if not options.quiet:
-            print '    clone address added:', options.toaddr
+            print _('    clone address added:'), options.toaddr
     except Errors.MMAlreadyAMember:
         if not options.quiet:
-            print '    clone address is already a member:', options.toaddr
+            print _('    clone address is already a member:'), options.toaddr
 
     # hack the account flags
-    ltoaddr = string.lower(options.toaddr)
+    ltoaddr = options.toaddr.lower()
     if not flags:
         try:
             del mlist.user_options[ltoaddr]
@@ -158,7 +159,7 @@ def dolist(mlist, options):
     if options.remove:
         if options.modify:
             mlist.DeleteMember(options.fromaddr, userack=0)
-        print '    original address removed:', options.fromaddr
+        print _('    original address removed:'), options.fromaddr
 
 
 
@@ -194,7 +195,7 @@ def main():
         elif opt in ('-l', '--listname'):
             if options.listnames is None:
                 options.listnames = []
-            options.listnames.append(string.lower(arg))
+            options.listnames.append(arg.lower())
 
     # further options and argument processing
     if not options.modify:
@@ -209,8 +210,8 @@ def main():
     try:
         Utils.ValidateEmail(toaddr)
     except Errors.EmailAddressError:
-        usage(1, 'Not a valid email address: %s' % toaddr)
-    lfromaddr = string.lower(fromaddr)
+        usage(1, _('Not a valid email address: %(toaddr)s')
+    lfromaddr = fromaddr.lower()
     options.toaddr = toaddr
     options.fromaddr = fromaddr
     options.lfromaddr = lfromaddr
@@ -222,7 +223,7 @@ def main():
         try:
             mlist = MailList.MailList(listname)
         except Errors.MMListError, e:
-            print 'Error opening list "%s": %s... skipping.' % (listname, e)
+            print _('Error opening list "%(listname)s", skipping.\n%(e)s')
             continue
         try:
             dolist(mlist, options)

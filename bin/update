@@ -23,7 +23,6 @@ some previous version.  It knows about versions back to 1.0b4 (?).
 
 import sys
 import os
-import string
 import marshal
 
 import paths
@@ -31,6 +30,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman.LockFile import TimeOutError
+from Mailman.i18n import _
 
 FRESH = 0
 NOTFRESH = -1
@@ -53,7 +53,7 @@ def calcversions():
         fp = open(LMVFILE)
         data = fp.read()
         fp.close()
-        lastversion = string.atoi(data, 16)
+        lastversion = int(data, 16)
     except (IOError, ValueError):
         pass
     #
@@ -80,7 +80,8 @@ def dolist(listname):
     try:
         mlist.Lock(0.5)
     except TimeOutError:
-        print 'WARNING: could not acquire lock for list:', listname
+        print >> sys.stderr, _('WARNING: could not acquire lock for list: '
+                               '%(listname)s')
         return 1
 
     mbox_dir = makeabs('archives/private/%s.mbox' % (listname))
@@ -101,9 +102,9 @@ def dolist(listname):
     else:
         # this shouldn't happen, but hey, just in case
         if not os.path.isdir(mbox_dir):
-            print "for some reason", mbox_dir, \
-                  "exists as a file.  This won't work with b6"
-            print "so I'm renaming it to %s.tmp and proceeding" % (mbox_dir)
+            print _("""\
+For some reason, %(mbox_dir)s exists as a file.  This won't work with
+b6, so I'm renaming it to %(mbox_dir)s.tmp and proceeding.""")
             os.rename(mbox_dir, "%s.tmp" % (mbox_dir))
             ou = os.umask(0)
             os.mkdir(mbox_dir, 02775)
@@ -113,20 +114,22 @@ def dolist(listname):
     # private one existing
     if os.path.isfile(o_pri_mbox_file) and os.path.isfile(o_pub_mbox_file):
         if mlist.archive_private:
-            print """\
-%s has both public and private mbox archives, since this list
-currently uses private archiving, I'm installing the private mbox
-archive (%s) as the active archive, and renaming
-	%s
+            print _("""\
+
+%(listname)s has both public and private mbox archives.  Since this list
+currently uses private archiving, I'm installing the private mbox archive
+-- %(o_pri_mbox_file)s -- as the active archive, and renaming
+	%(o_pub_mbox_file)s
 to
-	%s.preb6
+	%(o_pub_mbox_file)s.preb6
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
-""" % (mlist._internal_name, o_pri_mbox_file, o_pub_mbox_file, o_pub_mbox_file)
+""") % (mlist._internal_name, o_pri_mbox_file, o_pub_mbox_file,
+        o_pub_mbox_file)
             os.rename(o_pub_mbox_file, "%s.preb6" % (o_pub_mbox_file))
         else:
-            print """\
+            print _("""\
 %s has both public and private mbox archives.  Since this list
 currently uses public archiving, I'm installing the public mbox file
 archive file (%s) as the active one, and renaming
@@ -136,7 +139,8 @@ archive file (%s) as the active one, and renaming
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
-""" % (mlist._internal_name, o_pub_mbox_file, o_pri_mbox_file, o_pri_mbox_file)
+""") % (mlist._internal_name, o_pub_mbox_file, o_pri_mbox_file,
+        o_pri_mbox_file)
             os.rename(o_pri_mbox_file, "%s.preb6" % (o_pri_mbox_file))
     #
     # move private archive mbox there if it's around

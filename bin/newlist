@@ -47,7 +47,6 @@ Note that listnames are forced to lowercase.
 
 import sys
 import os
-import string
 import time
 import getpass
 import getopt
@@ -60,6 +59,7 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman.Handlers import HandlerAPI
 from Mailman.Crypt import crypt
+from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
 
@@ -73,14 +73,16 @@ SENDMAIL_ALIAS_TEMPLATE = '''
 '''
 
 QMAIL_ALIAS_TEMPLATE = """
-   echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s
-   echo '|preline %(wrapper)s mailowner %(listname)s' >~alias/.qmail-%(listname)s-admin
-   echo '|preline %(wrapper)s mailcmd %(listname)s' >~alias/.qmail-%(listname)s-request
-   echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s
-   echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner
-   chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin
-   chmod 644 ~alias/.qmail-%(listname)s-request ~alias/.qmail-%(listname)s-owner
-   chmod 644 ~alias/.qmail-owner-%(listname)s
+To create system aliases:
+
+echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s
+echo '|preline %(wrapper)s mailowner %(listname)s' >~alias/.qmail-%(listname)s-admin
+echo '|preline %(wrapper)s mailcmd %(listname)s' >~alias/.qmail-%(listname)s-request
+echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s
+echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner
+chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin
+chmod 644 ~alias/.qmail-%(listname)s-request ~alias/.qmail-%(listname)s-owner
+chmod 644 ~alias/.qmail-owner-%(listname)s
 """
 
 # defaults
@@ -90,10 +92,9 @@ ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
 style = string.lower(mm_cfg.MTA_ALIASES_STYLE)
 if style  == 'qmail':
     ALIASTEMPLATE = QMAIL_ALIAS_TEMPLATE
-    STDOUTMSG = 'To create system aliases:'
 elif style <> 'sendmail':
-    print "Warning! I don't understand alias style:", mm_cfg.MTA_ALIASES_STYLE
-    print '(this will print sendmail style...)'
+    print >> sys.stderr, _("Warning, unknown alias style: %(style)s")
+    print >> sys.stderr, _('(Using sendmail style instead...)')
 
 
 
@@ -109,9 +110,9 @@ def getusername():
 
 
 def usage(code, msg=''):
-    print __doc__
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
+        print >> sys.stderr, msg
     sys.exit(code)
 
 
@@ -136,29 +137,29 @@ def main():
     if len(args) > 0:
 	listname = args[0]
     else:
-	listname = raw_input("Enter the name of the list: ")
-    listname = string.lower(listname)
+	listname = raw_input(_('Enter the name of the list: '))
+    listname = listname.lower()
 
     if '@' in listname:
-        usage(1, 'List name must not include "@": ' + listname)
+        usage(1, _('List name must not include "@": %(listname)s'))
 
     if Utils.list_exists(listname):
-        usage(1, 'List already exists: ' + listname)
+        usage(1, _('List already exists: %(listname)s'))
 
     if len(args) > 1:
 	owner_mail = args[1]
     else:
 	owner_mail = raw_input(
-	    "Enter the email of the person running the list: ")
+	    _('Enter the email of the person running the list: '))
 
     if len(args) > 2:
 	list_pw = args[2]
     else:
-        list_pw = getpass.getpass("Initial %s password: " % listname)
+        list_pw = getpass.getpass(_('Initial %(listname)s password: '))
     # List passwords cannot be empty
-    list_pw = string.strip(list_pw)
+    list_pw = list_pw.strip()
     if not list_pw:
-        usage(1, 'The list password cannot be empty')
+        usage(1, _('The list password cannot be empty'))
 
     mlist = MailList.MailList()
     try:
@@ -173,9 +174,9 @@ def main():
             finally:
                 os.umask(oldmask)
         except Errors.MMBadEmailError:
-            usage(1, 'Bad owner email address: ' + owner_mail)
+            usage(1, _('Bad owner email address: %(owner_mail)s'))
         except Errors.MMListAlreadyExistsError:
-            usage(1, 'List already exists: ' + listname)
+            usage(1, _('List already exists: %(listname)s'))
 
         output = ALIASTEMPLATE % {
             'listname': listname,
@@ -191,13 +192,11 @@ def main():
         print output
         if appendfile:
             fp = open(appendfile, 'a')
-            fp.write(output)
-            fp.write('\n')
+            print >> fp, output
             fp.close()
 
         if not quiet:
-            print ("Hit enter to continue with %s owner notification..."
-                   % listname),
+            print _('Hit enter to notify %(listname)s owner')
             sys.stdin.readline()
             # send the notice to the list owner
             text = Utils.maketext(
@@ -212,7 +211,7 @@ def main():
             msg = Message.UserNotification(
                 owner_mail,
                 'mailman-owner@' + mlist.host_name,
-                'Your new mailing list: ' + listname,
+                _('Your new mailing list: %(listname)s'),
                 text)
             HandlerAPI.DeliverToUser(mlist, msg)
     finally:

@@ -59,12 +59,12 @@ displayed.
 import sys
 import re
 import getopt
-import string
 
 import paths
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
+from Mailman.i18n import _
 
 AS_MEMBER = 0x01
 AS_OWNER = 0x02
@@ -72,9 +72,9 @@ AS_OWNER = 0x02
 
 
 def usage(code, msg=''):
-    print __doc__ % globals()
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
+        print >> sys.stderr, msg
     sys.exit(code)
 
 
@@ -90,7 +90,7 @@ def scanlists(options):
         try:
             mlist = MailList.MailList(listname, lock=0)
         except Errors.MMListError:
-            print 'No such list "%s"' % name
+            print _('No such list: %(listname)s')
             continue
         if options.owners:
             owners = mlist.owner
@@ -102,14 +102,14 @@ def scanlists(options):
                     addr = mlist.GetUserSubscribedAddress(member)
                     entries = matches.get(addr, {})
                     aswhat = entries.get(listname, 0)
-                    aswhat = aswhat | AS_MEMBER
+                    aswhat |=  AS_MEMBER
                     entries[listname] = aswhat
                     matches[addr] = entries
             for owner in owners:
                 if cre.search(owner):
                     entries = matches.get(addr, {})
                     aswhat = entries.get(listname, 0)
-                    aswhat = aswhat | AS_OWNER
+                    aswhat |= AS_OWNER
                     entries[listname] = aswhat
                     matches[addr] = entries
     return matches
@@ -126,8 +126,8 @@ def main():
         opts, args = getopt.getopt(sys.argv[1:], 'l:x:wh',
                                    ['listname=', 'exclude=', 'owners',
                                     'help'])
-    except getopt.error, e:
-        usage(1, e)
+    except getopt.error, msg:
+        usage(1, msg)
 
     options = Options()
     loptseen = 0
@@ -139,9 +139,9 @@ def main():
             if not loptseen:
                 options.listnames = []
                 loptseen = 1
-            options.listnames.append(string.lower(arg))
+            options.listnames.append(arg.lower())
         elif opt in ('-x', '--exclude'):
-            excludes.append(string.lower(arg))
+            excludes.append(arg.lower())
         elif opt in ('-w', '--owners'):
             options.owners = 1
 
@@ -152,12 +152,12 @@ def main():
             pass
 
     if not args:
-        usage(1, 'search regular expression required')
+        usage(1, _('Search regular expression required'))
 
     options.regexps = args
 
     if not options.listnames:
-        print 'No lists to search'
+        print _('No lists to search')
         return
 
     matches = scanlists(options)
@@ -166,13 +166,13 @@ def main():
     for k in addrs:
         hits = matches[k]
         lists = hits.keys()
-        print k, 'found in:'
+        print k, _('found in:')
         for name in lists:
             aswhat = hits[name]
             if aswhat & AS_MEMBER:
                 print '    ', name
             if aswhat & AS_OWNER:
-                print '    ', name, '(as owner)'
+                print '    ', name, _('(as owner)')
 
 
 

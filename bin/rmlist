@@ -37,32 +37,32 @@ Where:
 
 import os
 import sys
-import string
 import getopt
 
 import paths
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.i18n import _
 
 
 
-def usage(status, msg=''):
-    print __doc__ % globals()
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
-    sys.exit(status)
+        print >> sys.stderr, msg
+    sys.exit(code)
 
 
 
 def remove_it(listname, dir, msg):
     if os.path.islink(dir):
-        print 'Removing', msg
+        print _('Removing %(msg)s')
         os.unlink(dir)
     elif os.path.exists(dir):
-        print 'Removing', msg
+        print _('Removing %(msg)s')
         os.system('rm -rf ' + dir)
     else:
-        print listname, msg, 'not found as', dir
+        print _('%(listname)s %(msg)s not found as %(dir)s')
 
 
 
@@ -75,10 +75,10 @@ def main():
 
     if len(args) <> 1:
         usage(1)
-    listname = string.lower(args[0])
+    listname = args[0].lower().strip()
 
     if not Utils.list_exists(listname):
-        usage(1, 'List does not exist: "%s"' % listname)
+        usage(1, _('No such list: %(listname)s'))
 
     removeArchives = 0
     for opt, arg in opts:
@@ -88,17 +88,17 @@ def main():
             usage(0)
 
     if not removeArchives:
-        print 'Not removing archives.  Reinvoke with -a to remove them.'
+        print _('Not removing archives.  Reinvoke with -a to remove them.')
 
     REMOVABLES = [('lists/%s', 'list info'),
                   ]
 
     if removeArchives:
         REMOVABLES = REMOVABLES + \
-                     [('archives/private/%s',      'private archives'),
-                      ('archives/private/%s.mbox', 'private archives'),
-                      ('archives/public/%s',       'public archives'),
-                      ('archives/public/%s.mbox',  'public archives'),
+                     [('archives/private/%s',      _('private archives')),
+                      ('archives/private/%s.mbox', _('private archives')),
+                      ('archives/public/%s',       _('public archives')),
+                      ('archives/public/%s.mbox',  _('public archives')),
                       ]
 
     for dirtmpl, msg in REMOVABLES:

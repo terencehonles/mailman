@@ -43,30 +43,33 @@ Options:
 """
 
 import sys
-import string
 import getopt
 
 import paths
 from Mailman import MailList
 from Mailman import Errors
+from Mailman.i18n import _
 
 
 
-def usage(status, msg=''):
-    print __doc__ % globals()
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
-    sys.exit(status)
+        print >> sys.stderr, msg
+    sys.exit(code)
 
 
 def ReadFile(filename):
     lines = []
     if filename == "-":
         fp = sys.stdin
+        closep = 0
     else:
         fp = open(filename)
-    lines = filter(None, map(string.strip, fp.readlines()))
-    fp.close()
+        closep = 1
+    lines = filter(None, [line.strip() for line in fp.readlines()])
+    if closep:
+        fp.close()
     return lines
 
 
@@ -78,10 +81,10 @@ def main():
     except getopt.error, msg:
         usage(1, msg)
 
-    if not len(args) >= 1:
+    if len(args) < 1:
         usage(1)
 
-    listname = string.lower(args[0])
+    listname = args[0].lower().strip()
     addresses = args[1:]
     filename = None
     all = 0
@@ -98,14 +101,13 @@ def main():
         try:
             addresses = addresses + ReadFile(filename)
         except IOError:
-            print 'Could not open file for reading: %s.  Ignoring...' % \
-                  `filename`
+            print _('Could not open file for reading: %(filename)s.')
 
     try:
         # open locked
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
-        print 'No such list "%s"\n%s' % (listname, e)
+        print _('No such list: %(listname)s')
         sys.exit(1)
 
     if all:
@@ -116,7 +118,7 @@ def main():
             try:
                 mlist.DeleteMember(addr)
             except Errors.MMNoSuchUserError:
-                print "User `%s' not found." % addr
+                print _("User `%(addr)s' not found.")
     finally:
         # Hmm, should it be all or nothing?
         mlist.Save()

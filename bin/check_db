@@ -16,21 +16,47 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Check the raw config.db for a mailing list.
-Also check the config.db.last if the live file is corrupted.
+"""Check the databases for mailing lists.
 
-Usage: %(program)s listname
+Both the config.db and config.db.last files are checked for corruption.
+
+Usage: %(PROGRAM)s [options] [listname [listname ...]]
+
+Options:
+
+    --all
+    -a
+        Check all databases.  Otherwise only the lists named on the command
+        line are checked.
+
+    --verbose
+    -v
+        Verbose output.
+
+    --help
+    -h
+        Print this text and exit.
 """
 
 import sys
 import os
-import string
+import getopt
 import marshal
 
 import paths
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman.i18n import _
 
-program = sys.argv[0]
+PROGRAM = sys.argv[0]
+
+
+
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
 
 
 
@@ -38,54 +64,76 @@ def testfile(filename):
     try:
         fp = open(filename)
     except IOError, (code, msg):
-        print filename, 'cannot be opened:\n\t', msg
+        print _('%(filename)s cannot be opened for reading:\n\t'), msg
         return 1
     else:
         try:
-            d = marshal.load(fp)
-        except (EOFError, ValueError, TypeError), msg:
-            print filename, 'is corrupted:\n\t', msg
-            return 1
-        else:
-            print filename, 'is fine'
-            return 0
-
+            try:
+                d = marshal.load(fp)
+            except (EOFError, ValueError, TypeError), msg:
+                print _('%(filename)s contains a corrupt marshal:\n\t'), msg
+                return 1
+            else:
+                return 0
+        finally:
+            fp.close()
 
 
 def main():
-    if len(sys.argv) == 2:
-        listname = string.lower(sys.argv[1])
-    else:
-        print __doc__ % globals()
-        sys.exit(1)
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'ahv',
+                                   ['all', 'verbose', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
 
-    listpath = os.path.join(mm_cfg.LIST_DATA_DIR, listname)
-    configdb = os.path.join(listpath, 'config.db')
-    lastdb = os.path.join(listpath, 'config.db.last')
+    verbose = 0
+    listnames = args
 
-    origbad = testfile(configdb)
-    backupbad = testfile(lastdb)
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-v', '--verbose'):
+            verbose = 1
+        elif opt in ('-a', '--all'):
+            listnames = Utils.list_names()
 
-    if origbad and not backupbad:
-        print """
+    listnames = [n.lower().strip() for n in listnames]
+    if not listnames:
+        print _('Nothing to do.')
+        sys.exit(0)
+
+    for listname in listnames:
+        if not Utils.list_exists(listname):
+            print _('No list named:'), listname
+            continue
+        configdb = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db')
+        lastdb = configdb + '.last'
+
+        origbad = testfile(configdb)
+        lastbad = testfile(lastdb)
+
+        if origbad and not lastbad:
+            print _("""\
 ***** ALERT *****
-The original database file is corrupt, but the backup seems fine.
-Consider copying
+The original database file for the list `%(listname)s' is corrupt, but the
+backup seems fine.  Consider copying
     %(lastdb)s
 to
     %(configdb)s
-however, you may lose some data.""" % locals()
-    elif origbad and backupbad:
-        print """
+however, you may lose some data.""")
+        elif origbad and backupbad:
+            print _("""
 ***** ALERT *****
-Both the original database file and the backup seem
+Both the original database file and the backup for list `%(listname)s' seem
 corrupted.  You will probably need to recover both
     %(configdb)s
 and
     %(lastdb)s
 from a system backup, or remove the list `%(listname)s' and
-re-create it from scratch.""" % locals()
-        
+re-create it from scratch.""")
+        elif verbose:
+            print _("The list `%(listname)s' databases seem fine.")
+
 
 
 if __name__ == '__main__':

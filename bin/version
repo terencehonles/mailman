@@ -21,4 +21,6 @@
 
 import paths
 import Mailman.mm_cfg
-print 'Using Mailman version', Mailman.mm_cfg.VERSION
+from Mailman.i18n import _
+
+print _('Using Mailman version:'), Mailman.mm_cfg.VERSION

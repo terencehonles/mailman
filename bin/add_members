@@ -65,7 +65,6 @@ files can be `-'.
 
 import sys
 import os
-import string
 import getopt
 import paths
 
@@ -75,25 +74,29 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman.Handlers import HandlerAPI
+from Mailman.i18n import _
 
 
 
 def usage(status, msg=''):
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
-    print __doc__ % globals()
+        print >> sys.stderr, msg
     sys.exit(status)
 
 
 
-def ReadFile(filename):
-    lines = []
-    if filename == "-":
+def readfile(filename):
+    if filename == '-':
         fp = sys.stdin
+        closep = 0
     else:
         fp = open(filename)
-    lines = filter(None, map(string.strip, fp.readlines()))
-    fp.close()
+        closep = 1
+    # strip all the lines of whitespace and discard blank lines
+    lines = filter(None, [line.strip() for line in fp.readlines()])
+    if closep:
+        fp.close()
     return lines
 
 
@@ -109,7 +112,7 @@ def SendExplanation(mlist, users):
          'version'     : mm_cfg.VERSION,
          }
     text = Utils.maketext('convert.txt', d)
-    subject = 'Big change in %(listname)s@%(listhost)s mailing list' % d
+    subject = _('Big change in %(listname)s@%(listhost)s mailing list') % d
     msg = Message.OutgoingMessage(text)
     msg['From'] = adminaddr
     msg['Subject'] = subject
@@ -129,10 +132,10 @@ def main():
     except getopt.error, msg:
         usage(1, msg)
 
-    if not len(args) == 1:
+    if len(args) <> 1:
         usage(1)
 
-    listname = string.lower(args[0])
+    listname = args[0].lower().strip()
     nfile = None
     dfile = None
     send_changes_msg = 0
@@ -163,28 +166,28 @@ def main():
         usage(1)
 
     if dfile == "-" and nfile == "-":
-        print "Sorry, can't read both digest *and* normal members from stdin."
-        sys.exit(1)
+        usage(1, _('Cannot read both digest and normal members '
+                   'from standard input.'))
 
     try:
         ml = MailList.MailList(listname)
     except Errors.MMUnknownListError:
-        usage(1, 'You must first create the list by running: newlist %s' %
-              listname)
+        usage(1, _('You must first create the list by running: '
+                   'newlist %(listname)s'))
     if send_welcome_msg == -1:
         send_welcome_msg = ml.send_welcome_msg
     try:
         dmembers = []
         if dfile:
             try:
-                dmembers = ReadFile(dfile)
+                dmembers = readfile(dfile)
             except IOError:
                 pass
 
         nmembers = []
         if nfile:
             try:
-                nmembers = ReadFile(nfile)
+                nmembers = readfile(nfile)
             except IOError:
                 pass
 
@@ -193,11 +196,13 @@ def main():
 
         if nmembers:
             nres = ml.ApprovedAddMembers(nmembers, None, 0, send_welcome_msg)
-        else: nres = {}
+        else:
+            nres = {}
 
         if dmembers:
             dres = ml.ApprovedAddMembers(dmembers, None, 1, send_welcome_msg)
-        else: dres = {}
+        else:
+            dres = {}
 
         for result in (nres, dres):
             for name in result.keys():
@@ -208,10 +213,13 @@ def main():
                     # result[name] is set from sys.exc_info()[:2]
                     e, v = result[name]
                     if e is Errors.MMAlreadyAMember:
-                        print 'Already subscribed (skipping):', name
+                        print >> sys.stderr, \
+                              _('Already subscribed (skipping):'), name
                     elif issubclass(e, Errors.EmailAddressError):
-                        if name == '': name = '( blank line )'
-                        print "Not a valid email address:", name
+                        if not name:
+                            name = _('( blank line )')
+                        print >> sys.stderr, \
+                              _('Not a valid email address:'), name
 
         if send_changes_msg:
             SendExplanation(ml, nmembers + dmembers)

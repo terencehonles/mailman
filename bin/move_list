@@ -36,20 +36,20 @@ listname must be a valid mailing list name and is required.
 
 import os
 import sys
-import string
 import getopt
 
 import paths
 from Mailman import Errors
 from Mailman import MailList
 from Mailman import mm_cfg
+from Mailman.i18n import _
 
 
 
 def usage(code, msg=''):
-    print __doc__
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
+        print >> sys.stderr, msg
     sys.exit(code)
 
 
@@ -68,14 +68,14 @@ def main():
         usage(1)
 
     try:
-        listname = string.lower(args[0])
+        listname = args[0].lower().strip()
     except IndexError:
-        usage(1, 'You must supply a list name.')
+        usage(1, _('You must supply a list name'))
 
     try:
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
-        usage(1, 'No such list "%s"\n%s' % (listname, e))
+        usage(1, _('No such list: %(listname)s'))
 
     try:
 	mlist.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR

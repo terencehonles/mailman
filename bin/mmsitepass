@@ -38,15 +38,16 @@ import getopt
 
 import paths
 from Mailman import Utils
+from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
 
 
 
 def usage(code, msg=''):
-    print __doc__ % globals()
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
+        print >> sys.stderr, msg
     sys.exit(code)
 
 
@@ -65,21 +66,21 @@ def main():
         pw1 = args[0]
     else:
         try:
-            pw1 = getpass.getpass("New Password: ")
-            pw2 = getpass.getpass("Again to confirm password: ")
+            pw1 = getpass.getpass(_('New Password: '))
+            pw2 = getpass.getpass(_('Again to confirm password: '))
             if pw1 <> pw2:
-                print 'Passwords do not match; no changes made.'
+                print _('Passwords do not match; no changes made.')
                 sys.exit(1)
         except KeyboardInterrupt:
-            print "Interrupted..."
+            print _('Interrupted...')
             sys.exit(0)
     # Set the site password by writing it to a local file.  Make sure the
     # permissions don't allow other+read.
     Utils.SetSiteAdminPassword(pw1)
     if Utils.CheckSiteAdminPassword(pw1):
-        print 'Password changed.'
+        print _('Password changed.')
     else:
-        print 'Password change failed.'
+        print _('Password change failed.')
 
 
 

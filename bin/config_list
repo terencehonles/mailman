@@ -63,7 +63,6 @@ The options -o and -i are mutually exclusive.
 
 import sys
 import time
-import string
 import getopt
 from types import TupleType
 
@@ -72,47 +71,50 @@ from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
+from Mailman.i18n import _
 
 
 
 def usage(code, msg=''):
-    print __doc__ % globals() + msg
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
     sys.exit(code)
 
 
 
 def do_output(listname, outfile):
-    closep = 0
-    stdout = sys.stdout
     try:
         if outfile == '-':
             outfp = sys.stdout
+            closep = 0
         else:
             outfp = open(outfile, 'w')
             closep = 1
-        sys.stdout = outfp
-        # open the specified list unlocked, since we're only reading it
+        # Open the specified list unlocked, since we're only reading it.
         try:
             mlist = MailList.MailList(listname, lock=0)
         except Errors.MMListError, e:
-            usage(1, 'No such list "%s"\n%s' % (listname, e))
+            usage(1, _('No such list "%(listname)s"\n%(e)s'))
         # get all the list config info.  all this stuff is accessible via the
         # web interface
-        print '## "%s" mailing list configuration settings' % listname,
-        print '-*- python -*-'
-        print '## captured on', time.ctime(time.time())
-        print
+        when = time.ctime(time.time())
+        print >> outfp, _('''\
+## "%(listname)s" mailing list configuration settings -*- python -*-
+## captured on %(when)s
+''')
+
         config = mlist.GetConfigInfo()
-        categories = ('general', 'privacy', 'nondigest', 'digest',
-                      'bounce', 'archive', 'gateway', 'autoreply')
+        categories = (_('general'), _('privacy'), _('nondigest'), _('digest'),
+                      _('bounce'), _('archive'), _('gateway'), _('autoreply'))
         for k in categories:
             info = config[k]
-            print '##', string.capitalize(k), 'options'
-            print '#'
+            print >> outfp, '##', k.capitalize(), _('options')
+            print >> outfp, '#'
             desc = Utils.wrap(info[0])
-            for line in string.split(desc, '\n'):
-                print '#', line
-            print
+            for line in desc.split('\n'):
+                print >> outfp, '#', line
+            print >> outfp
             for data in info[1:]:
                 if type(data) <> TupleType:
                     continue
@@ -122,28 +124,28 @@ def do_output(listname, outfile):
                     continue
                 vtype = data[1]
                 desc = Utils.wrap(data[-1])
-                for line in string.split(desc, '\n'):
-                    print '#', line
+                for line in desc.split('\n'):
+                    print >> outfp, '#', line
                 # munge the value based on its type
                 value = getattr(mlist, varname)
                 if vtype in (mm_cfg.Text, mm_cfg.FileUpload):
-                    print varname, '=',
-                    lines = string.split(string.replace(value, '\r', ''), '\n')
+                    print >> outfp, varname, '=',
+                    lines = value.replace('\r', '').split('\n')
                     if len(lines) == 1:
-                        print repr(value)
+                        print >> outfp, repr(value)
                     else:
                         first = 1
-                        sys.stdout.write('"""')
+                        outfp.write('"""')
                         for line in lines:
                             if first:
                                 first = 0
                             else:
-                                print
-                            sys.stdout.write(string.replace(line, '"', '\\"'))
-                        print '"""'
+                                print >> outfp
+                            outfp.write(line.replace('"', '\\"'))
+                        print >> outfp, '"""'
                 elif vtype in (mm_cfg.Radio, mm_cfg.Toggle):
-                    print '#'
-                    print '# legal values are:'
+                    print >> outfp, '#'
+                    print >> outfp, '#', _('legal values are:')
                     # TBD: This is disgusting, but it's special cased
                     # everywhere else anyway...
                     if varname == 'subscribe_policy' and \
@@ -152,16 +154,15 @@ def do_output(listname, outfile):
                     else:
                         i = 0
                     for choice in data[2]:
-                        print '#   ', i, '= "%s"' % choice
-                        i = i + 1
-                    print varname, '=', repr(value)
+                        print >> outfp, '#   ', i, '= "%s"' % choice
+                        i += 1
+                    print >> outfp, varname, '=', repr(value)
                 else:
-                    print varname, '=', repr(value)
-                print
+                    print >> outfp, varname, '=', repr(value)
+                print >> outfp
     finally:
         if closep:
             outfp.close()
-        sys.stdout = stdout
 
 
 
@@ -170,22 +171,22 @@ def do_input(listname, infile, checkonly, verbose):
     try:
         mlist = MailList.MailList(listname, lock=not checkonly)
     except Errors.MMListError, e:
-        usage(1, 'No such list "%s"\n%s' % (listname, e))
+        usage(1, _('No such list "%(listname)s"\n%(e)s'))
     savelist = 0
     try:
         globals = {'mlist': mlist}
-        # any exception that occurs in execfile() will cause the list to not
-        # be saved, but any other problems are not save-fatal
+        # Any exception that occurs in execfile() will cause the list to not
+        # be saved, but any other problems are not save-fatal.
         execfile(infile, globals)
         savelist = 1
         for k, v in globals.items():
             if k in ('mlist', '__builtins__'):
                 continue
             if not hasattr(mlist, k):
-                print 'attribute "%s" ignored' % k
+                print >> sys.stderr, _('attribute "%(k)s" ignored')
                 continue
             if verbose:
-                print 'attribute "%s" changed' % k
+                print >> sys.stderr, _('attribute "%(k)s" changed')
             setattr(mlist, k, v)
     finally:
         if savelist and not checkonly:
@@ -221,14 +222,14 @@ def main():
 
     # sanity check
     if infile is not None and outfile is not None:
-        usage(1, 'Only one of -i or -o is allowed')
+        usage(1, _('Only one of -i or -o is allowed'))
     if infile is None and outfile is None:
-        usage(1, 'One of -i or -o is required')
+        usage(1, _('One of -i or -o is required'))
 
     # get the list name
     if len(args) <> 1:
-        usage(1, 'List name is required')
-    listname = string.lower(args[0])
+        usage(1, _('List name is required'))
+    listname = args[0].lower().strip()
 
     if outfile:
         do_output(listname, outfile)

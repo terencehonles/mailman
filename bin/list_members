@@ -18,7 +18,7 @@
 
 """List all the members of a mailing list.
 
-Usage: %(program)s [-o file] [-r] [-d] [-p] [-h] listname
+Usage: %(PROGRAM)s [-o file] [-r] [-d] [-p] [-h] listname
 
 Where:
 
@@ -52,20 +52,20 @@ status.
 """
 
 import sys
-import string
 import getopt
 
 import paths
 from Mailman import MailList
 from Mailman import Errors
+from Mailman.i18n import _
 
-program = sys.argv[0]
+PROGRAM = sys.argv[0]
 
-def usage(status, msg=''):
-    print __doc__ % globals()
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
-    sys.exit(status)
+        print >> sys.stderr, msg
+    sys.exit(code)
 
 
 
@@ -81,7 +81,7 @@ def main():
     if len(args) <> 1:
         usage(1)
 
-    listname = string.lower(args[0])
+    listname = args[0].lower().strip()
     outfile = None
     regular = None
     digest = None
@@ -106,7 +106,7 @@ def main():
         try:
             fp = open(outfile, 'w')
         except IOError:
-            print 'Could not open file for writing:', outfile
+            print _('Could not open file for writing:'), outfile
             sys.exit(1)
     else:
         fp = sys.stdout
@@ -114,7 +114,7 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        print 'No such list "%s"\n%s' % (listname, e)
+        print _('No such list: %(listname)s')
         sys.exit(1)
 
     if preserve:
@@ -124,17 +124,12 @@ def main():
         rmembers = mlist.GetMembers()
         dmembers = mlist.GetDigestMembers()
 
-    stdout = sys.stdout
-    try:
-        sys.stdout = fp
-        if regular:
-            for addr in rmembers:
-                print addr
-        if digest:
-            for addr in dmembers:
-                print addr
-    finally:
-        sys.stdout = stdout
+    if regular:
+        for addr in rmembers:
+            print >> fp, addr
+    if digest:
+        for addr in dmembers:
+            print >> fp, addr
 
 
 if __name__ == '__main__':
