@@ -128,6 +128,7 @@ def dispose_message(mlist, msg, msgdata):
         # loops.
         msgdata.update({'recips'  : mlist.owner[:],
                         'errorsto': mlist.GetOwnerEmail(),
+                        'noack'   : 0,            # enable Replybot
                         })
         return HandlerAPI.DeliverToUser(mlist, msg, msgdata)
     elif msgdata.get('toowner', 0):
@@ -147,8 +148,9 @@ def dispose_message(mlist, msg, msgdata):
         # Any messages to the owner address must have Errors-To: set back to
         # the owners address so bounce loops can be broken, as per the code
         # above.
-        msgdata.update({'recips': mlist.owner[:],
+        msgdata.update({'recips'  : mlist.owner[:],
                         'errorsto': mlist.GetOwnerEmail(),
+                        'noack'   : 0,            # enable Replybot
                         })
         return HandlerAPI.DeliverToUser(mlist, msg, msgdata)
     elif msgdata.get('torequest', 0):
