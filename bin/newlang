@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 2000 by the Free Software Foundation, Inc.
+# Copyright (C) 2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -44,6 +44,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 from Mailman import MailList
+from Mailman import LockFile
 from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.i18n import _
 
@@ -78,33 +79,45 @@ def main():
 
     listname = listname.lower()
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        usage(1, _('Could not open mailing list: %(listname)s\n%(e)s'))
+        usage(1, _('No such list "%(listname)s"\n%(e)s'))
 
-    # BAW: this seems questionable
-    HTMLFormatter.InitVars(list)
+    try:
+        mlist.Lock(timeout=0.5)
+    except LockFile.TimeOutError:
+        usage(1, _("Could't acquire list lock, try again later: %(listname)s"))
 
-    ok_langs = []
-    for lang in languages:
-        dir = os.path.join(mm_cfg.TEMPLATE_DIR, lang)
-        if not os.path.exists(dir):
-            print >> sys.stderr, _('Language not supported: %(lang)s')
-            continue
-        if os.path.exists(os.path.join(mlist._template_dir, lang)):
-            print >> sys.stderr, _('List already supports language: %(lang)s')
-            continue
-        ok_langs.append(lang)
+    try:
+        HTMLFormatter.InitVars(mlist)
+        ok_langs = []
+        for lang in languages:
+            dir = os.path.join(mm_cfg.TEMPLATE_DIR, lang)
+            if not os.path.exists(dir):
+                print >> sys.stderr, _(
+                    'No template directory for language: %(dir)s')
+                continue
+            if os.path.exists(os.path.join(mlist._template_dir, lang)):
+                print >> sys.stderr, _(
+                    'List already supports language: %(lang)s')
+                continue
+            ok_langs.append(lang)
 
-    # VGG, moved this out of the loop, as list.InitTemplates walks a list
-    #
-    # BAW: I want to look at this in more detail.
-    os.umask(002)
-    mlist.InitTemplates(ok_langs)
-    print _('Language support for'),
-    for lang in ok_langs:
-        print '%s,' % lang,
-    print _('added')
+        # VGG, moved this out of the loop, as list.InitTemplates walks a list
+        if not ok_langs:
+            print _('No languages added to list: %(listname)s')
+            return
+
+        # Copy all the templates from the generic language template directory
+        # to a directory living under lists/<mylist>.
+        mlist.InitTemplates(ok_langs)
+        print _('Language support for'),
+        for lang in ok_langs:
+            print '%s,' % lang,
+        print _('added')
+    finally:
+        mlist.Save()
+        mlist.Unlock()
 
 
 

@@ -90,24 +90,34 @@ def main():
 
     listname = listname.lower()
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        usage(1, _('Could not open mailing list: %(listname)s\n%(e)s'))
+        usage(1, _('No such list "%(listname)s"\n%(e)s'))
 
-    # BAW: hmm...  same question as with newlist
-    HTMLFormatter.InitVars(list)
+    try:
+        mlist.Lock(timeout=0.5)
+    except LockFile.TimeOutError:
+        usage(1, _("Could't acquire list lock, try again later: %(listname)s"))
 
-    for lang in languages:
-        dir = os.path.join(list._template_dir, lang)
-        if lang == mm_cfg.DEFAULT_SERVER_LANGUAGE:
-            print >> sys.stderr, _('%(lang)s is the server default language '
-                                   'and cannot be removed')
-            continue
-        if not os.path.exists(dir):
-            print >> sys.stderr, _('Language %(lang)s not supported by list')
-            continue
+    try:
+        # BAW: hmm...  same question as with newlist
+        HTMLFormatter.InitVars(mlist)
 
-        remove_it(listname, directory, _('language support for %(lang)s'))
+        for lang in languages:
+            dir = os.path.join(mlist._template_dir, lang)
+            if lang == mm_cfg.DEFAULT_SERVER_LANGUAGE:
+                print >> sys.stderr, _('''\
+%(lang)s is the server default language and cannot be removed''')
+                continue
+            if not os.path.exists(dir):
+                print >> sys.stderr, _(
+                    'Language %(lang)s not supported by list: %(listname)s')
+                continue
+
+            remove_it(listname, dir, _('language support for %(lang)s'))
+    finally:
+        mlist.Save()
+        mlist.Unlock()
 
 
 
