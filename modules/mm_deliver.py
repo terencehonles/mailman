@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 434 $"
+__version__ = "$Revision: 435 $"
 
 
 import string, os, sys, tempfile
@@ -175,7 +175,7 @@ class Deliverer:
                                     self.real_name, self.host_name,
                                     password,
                                     self.host_name,
-                                    self.GetListEmail())
+                                    self.GetListEmail()))
         return body
 
     def SendSubscribeAck(self, name, password, digest):
