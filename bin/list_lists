@@ -96,10 +96,11 @@ def main():
         print 'No matching mailing lists found'
         return
 
+    print len(mlists), 'matching mailing lists found:'
     format = '%%%ds - %%.%ds' % (longest, 77 - longest)
     for mlist in mlists:
         description = mlist.description or '[no description available]'
-        print format % (mlist.real_name, description)
+        print '   ', format % (mlist.real_name, description)
             
 
 if __name__ == '__main__':
