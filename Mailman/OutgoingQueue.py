@@ -38,6 +38,7 @@
 
 import sys
 import os
+import time
 import stat
 import marshal
 import errno
@@ -69,24 +70,12 @@ QF_MODE = 0660
 MAX_ACTIVE = 7200 # 2 hours
 
 
-
+# processQueue is called from cron/run_queue, which manages the lockfile
 #
-# 1) get global lock so only of these
-#    procedures can run at a time
-# 2) find all the files that are deferred queue
-#    entries and all the files that have been in
-#    an active state for too long and attempt a delivery
+# find all the files that are deferred queue entries and all the files that
+# have been in an active state for too long and attempt a delivery
 #
 def processQueue():
-    import flock
-    import time
-    import Utils
-
-    lock_file = flock.FileLock(
-        os.path.join(mm_cfg.LOCK_DIR, "mmqueue_run.lock"),
-        # running the queue can take a long time.
-        hung_timeout=14400)
-    lock_file.lock()
     files = os.listdir(mm_cfg.DATA_DIR)
     for file in files:
         #
@@ -143,7 +132,6 @@ def processQueue():
                 l.write(' / %s' % v)
             l.write('\n')
             l.flush()
-    lock_file.unlock()
 
 
 #
