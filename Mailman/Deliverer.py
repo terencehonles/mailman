@@ -64,6 +64,7 @@ your membership administrative address, %s.
             self.GetMemberAdminEmail(name), self.GetRequestEmail(),
             'Welcome to the "%s" mailing list%s' % (self.real_name, digmode),
             text)
+        msg['X-No-Archive'] = 'yes'
         HandlerAPI.DeliverToUser(self, msg)
 
 
