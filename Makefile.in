@@ -73,7 +73,9 @@ subdirs: $(SUBDIRS)
 	    (cd $$d; $(MAKE)); \
 	done
 
-install: $(SUBDIRS)
+install: doinstall update
+
+doinstall: $(SUBDIRS)
 	@echo "Creating architecture independent directories..."
 	@for d in $(ARCH_INDEP_DIRS); \
 	do \
@@ -104,16 +106,6 @@ install: $(SUBDIRS)
 	    (cd $$d; $(MAKE) install); \
 	done
 	$(PYTHON) -c 'from compileall import *; compile_dir("$(prefix)/Mailman")'
-	@echo "*****"
-	@echo "***** If you are installing over an old installation, please"
-	@echo "***** run \"make update\".  See the UPGRADING file for details."
-	@echo "*****"
-
-#finish:
-#	@for d in $(SUBDIRS); \
-#	do \
-#	    (cd $$d; $(MAKE) finish); \
-#	done
 
 update:
 	@(cd $(prefix) ; bin/update) | tee ./update.log
