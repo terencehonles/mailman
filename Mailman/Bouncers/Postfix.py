@@ -47,7 +47,7 @@ def process(mlist, msg):
         msg2 = mimetools.Message(s)
         if msg2.gettype() == 'text/plain':
             desc = msg2.get('content-description')
-            if string.lower(desc) == 'notification':
+            if desc and string.lower(desc) == 'notification':
                 return findaddr(msg2.fp)
             # probably not a Postfix bounce
             return None
