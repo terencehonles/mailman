@@ -63,7 +63,7 @@ class Runner:
                         break
                     # If there were no files to process, then we'll simply
                     # sleep for a little while and expect some to show up.
-                    if filecnt == 0:
+                    if not filecnt:
                         self._snooze()
             except KeyboardInterrupt:
                 pass
@@ -75,7 +75,9 @@ class Runner:
     def __oneloop(self):
         # First, list all the files in our queue directory.
         # Switchboard.files() is guaranteed to hand us the files in FIFO
-        # order.
+        # order.  Return an integer count of the number of files that were
+        # available for this qrunner to process.  A non-zero value tells run()
+        # not to snooze for a while.
         files = self._switchboard.files()
         for filebase in files:
             # Ask the switchboard for the message and metadata objects
@@ -104,6 +106,8 @@ class Runner:
             # Other work we want to do each time through the loop
             Utils.reap(self._kids, once=1)
             self._doperiodic()
+            if self._shortcircuit():
+                break
         return len(files)
 
     def __onefile(self, msg, msgdata):
@@ -182,19 +186,60 @@ class Runner:
         syslog('error', s.getvalue())
 
     #
-    # Subclasses can override _cleanup(), _dispose(), and _doperiodic()
+    # Subclasses can override these methods.
     #
     def _cleanup(self):
+        """Clean up upon exit from the main processing loop.
+
+        Called when the Runner's main loop is stopped, this should perform
+        any necessary resource deallocation.  Its return value is irrelevant.
+        """
         Utils.reap(self._kids)
         self._listcache.clear()
 
     def _dispose(self, mlist, msg, msgdata):
+        """Dispose of a single message destined for a mailing list.
+
+        Called for each message that the Runner is responsible for, this is
+        the primary overridable method for processing each message.
+        Subclasses, must provide implementation for this method.
+
+        mlist is the MailList instance this message is destined for.
+
+        msg is the Message object representing the message.
+
+        msgdata is a dictionary of message metadata.
+        """
         raise UnimplementedError
 
     def _doperiodic(self):
+        """Do some processing `every once in a while'.
+
+        Called every once in a while both from the Runner's main loop, and
+        from the Runner's hash slice processing loop.  You can do whatever
+        special periodic processing you want here, and the return value is
+        irrelevant.
+
+        """
         pass
 
     def _snooze(self):
+        """Sleep for a little while, because there was nothing to do.
+
+        This is called from the Runner's main loop, but only when the last
+        processing loop had no work to do (i.e. there were no messages in it's
+        little slice of hash space).
+        """
         if mm_cfg.QRUNNER_SLEEP_TIME <= 0:
             return
         time.sleep(mm_cfg.QRUNNER_SLEEP_TIME)
+
+    def _shortcircuit(self):
+        """Return a true value if the individual file processing loop should
+        exit before it's finished processing each message in the current slice
+        of hash space.  A false value tells __oneloop() to continue processing
+        until the current snapshot of hash space is exhausted.
+
+        You could, for example, implement a throttling algorithm here.
+        """
+        return 0
