@@ -1,0 +1,173 @@
+#!/usr/local/bin/python -u
+
+"""Provide a password interface wrapper around a hierarchy of web pages.
+
+Cookies are supported.
+
+Currently this is organized to obtain passwords only for mailman
+subscribers.
+
+Set the ROOT variable, below to the root directory of your hierachy."""
+
+import sys, os, string, re
+sys.path.append('.')
+import Cookie
+sys.stderr = sys.stdout
+
+print 'Content-type: text/html'
+
+ROOT = "/local/pipermail/private/"
+SECRET = "secret"  # XXX used for hashing
+
+login_attempted = 0
+
+name_pat = re.compile(r"""
+(?: / (?: \d{4} q \d\. )?   # Match "/", and, optionally, 1998q1."
+    ( [^/]* ) /?      # The SIG name
+    /[^/]*$           # The trailing 12345.html portion                      
+) | (?:
+    / ( [^/.]* )  # Match matrix-sig
+    (?:\.html)?   # Optionally match .html
+    /?            # Optionally match a trailing slash
+    $             # Must match to end of string
+    
+)
+""", re.VERBOSE)
+
+def getListName(path):
+    match = name_pat.search(path)
+    if match is None: return
+    if match.group(1): return match.group(1)
+    if match.group(2): return match.group(2)
+    raise ValueError, "Can't identify SIG name"
+
+#for i in ['/matrix-sig.html', '/1998q1.c++-sig/index.html',
+#           '/1998q1.string-sig/foobar.html',
+#          '/psa-members.html']:
+#     print i, `getListName(i)`
+#sys.exit(0)
+
+## sys.exit(0)
+
+def isAuthenticated():
+    if os.environ.has_key('HTTP_COOKIE'):
+	c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
+	if c.has_key(list_name):
+	    # The user has a token like 'c++-sig=AE23446AB...'; verify 
+	    # that it's correct.
+	    token = c[list_name].value
+	    import base64, md5
+	    if base64.decodestring(token) != md5.new(SECRET+ list_name + SECRET).digest():
+		return 0
+	    return 1
+
+    # No corresponding cookie.  OK, then check for username, password
+    # CGI variables 
+    import cgi
+    v = cgi.FieldStorage()
+    username = password = None
+    if v.has_key('username'): 
+	username = v['username']
+	if type(username) == type([]): username = username[0]
+	username = username.value
+    if v.has_key('password'): 
+	password = v['password']
+	if type(password) == type([]): password = password[0]
+	password = password.value
+	
+    if username is None or password is None: return 0
+
+    # Record that this is a login attempt, so if it fails the form can
+    # be displayed with an appropriate message.
+    global login_attempted
+    login_attempted=1
+
+    import sys
+    sys.path.append( os.path.expanduser('~mailman/mailman/modules/') )
+
+    import maillist, mm_err
+    try:
+        list = maillist.MailList(list_name)
+    except mm_err.MMUnknownListError:
+        print '\n<P>The list name seems to be ', repr(list_name)
+        print "and could not be found."
+        return 0
+    
+    list.Unlock()
+    try:
+	list.ConfirmUserPassword( username, password)
+    except (mm_err.MMBadUserError, mm_err.MMBadPasswordError): 
+	return 1
+
+    import base64, md5
+    token = md5.new(SECRET + list_name + SECRET).digest()
+    token = base64.encodestring(token)
+    token = string.strip(token)
+    c = Cookie.Cookie()
+    c[list_name] = token
+    print c				# Output the cookie
+    return 1
+
+
+def true_path(path):
+    "Ensure that the path is safe by removing .."
+    path = string.split(path, '/')
+    for i in range(len(path)):
+	if path[i] == ".": path[i] = ""  # ./ is just redundant
+	elif path[i] == "..":
+	    # Remove any .. components
+	    path[i] = ""
+	    j=i-1
+	    while j>0 and path[j] == "": j=j-1
+	    path[j] = ""
+
+    path = filter(None, path)
+    return string.join(path, '/')
+
+def processPage(page):
+    """Change any URLs that start with ../ to work properly when output from
+    /cgi-bin/private"""
+    # Escape any % signs not followed by (
+    page = re.sub('%([^(])', r'%%\1', page)
+
+    # Convert references like HREF="../doc" to just /doc.
+    page = re.sub('([\'="])../', r'\1/', page)
+
+    return page
+
+
+if __name__ == '__main__':
+        path = os.environ.get('PATH_INFO', "/index.html")
+	true_filename = os.path.join(ROOT, true_path(path) )
+        list_name = getListName(path)
+        
+	if os.path.isdir(true_filename):
+	    true_filename = true_filename + '/index.html'
+
+	if not isAuthenticated():
+	    # Output the password form
+	    form_name = os.path.join( os.environ['DOCUMENT_ROOT'], "misc/password-form.html")
+	    page = open(form_name, 'r').read()
+            page = processPage( page )
+            
+	    if login_attempted:
+		message = "Your e-mail address or password were incorrect.  Please try again"
+	    else:
+		message = ("Please enter your Mailman e-mail address "
+			   "and password for the " + list_name + " list.")
+            while path and path[0] == '/': path=path[1:]  # Remove leading /'s
+	    print '\n', page % vars()
+            sys.exit(0)
+
+	print '\n'
+	# Authorization confirmed... output the desired file
+	try:
+	    f = open(true_filename, 'r')
+	except IOError:
+	    print "<H1>No file named", path, "exists.</H1>"
+        else:
+            while (1):
+                data = f.read(16384)
+                if data == "": break
+                sys.stdout.write(data)
+            f.close()
