@@ -126,42 +126,18 @@ def dolist(mlist, options):
             print _('    address not found:'), options.fromaddr
         return
 
-    # XXX change this stuff to use changeMemberAddress()
-    # FIXME
-
-    # Get the user's current options and password.  Ugly hack: if a user's
-    # options would have been zero, then Mailman saves room by deleting the
-    # entry for the user from the user_options dictionary.  Note that /really/
-    # it would be better if GetUserOption() and SetUserOption() supported an
-    # interface to get the entire option value.
-    flags = mlist.user_options.get(options.lfromaddr, 0)
-    password = mlist.passwords[options.lfromaddr]
-
-    # now add the new user
+    # Now change the membership address
     try:
         if options.modify:
-            mlist.ApprovedAddMember(options.toaddr, password, digest, 0)
+            mlist.changeMemberAddress(options.fromaddr, options.toaddr,
+                                      not options.remove)
         if not options.quiet:
             print _('    clone address added:'), options.toaddr
     except Errors.MMAlreadyAMember:
         if not options.quiet:
             print _('    clone address is already a member:'), options.toaddr
 
-    # hack the account flags
-    ltoaddr = options.toaddr.lower()
-    if not flags:
-        try:
-            del mlist.user_options[ltoaddr]
-        except KeyError:
-            # the user's options were already zero
-            pass
-    else:
-        mlist.user_options[ltoaddr] = flags
-
-    # perhaps remove the original address
     if options.remove:
-        if options.modify:
-            mlist.DeleteMember(options.fromaddr, userack=0)
         print _('    original address removed:'), options.fromaddr
 
 
