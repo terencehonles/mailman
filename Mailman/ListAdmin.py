@@ -324,10 +324,11 @@ class ListAdmin:
                 fmsg = Message.UserNotification(
                     addr, self.GetBouncesEmail(),
                     _('Forward of moderated message'),
-                    copy, lang)
+                    lang=lang)
             finally:
                 i18n.set_translation(otrans)
             fmsg.set_type('message/rfc822')
+            fmsg.set_payload(copy)
             fmsg.send(self)
         # Log the rejection
 	if rejection:
