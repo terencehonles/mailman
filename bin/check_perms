@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -68,6 +68,7 @@ class State:
 STATE = State()
 
 DIRPERMS = S_ISGID | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+QFILEPERMS = S_ISGID | S_IRWXU | S_IRWXG
 
 
 
@@ -108,12 +109,19 @@ def checkwalk(arg, dirname, names):
         if path == private or (os.path.commonprefix((path, private)) == private
                                and os.path.split(path)[1] == 'database'):
             continue
-        if S_ISDIR(mode) and (mode & DIRPERMS) <> DIRPERMS:
+        # The directories under qfiles should have a more limited permission
+        if os.path.commonprefix((path, mm_cfg.QUEUE_DIR)) == mm_cfg.QUEUE_DIR:
+            targetperms = QFILEPERMS
+            octperms = oct(targetperms)
+        else:
+            targetperms = DIRPERMS
+            octperms = oct(targetperms)
+        if S_ISDIR(mode) and (mode & targetperms) <> targetperms:
             arg.ERRORS += 1
-            print _('directory permissions must be at least 02775: %(path)s'),
+            print _('directory permissions must be %(octperms)s: %(path)s'),
             if STATE.FIX:
                 print _('(fixing)')
-                os.chmod(path, mode | DIRPERMS)
+                os.chmod(path, mode | targetperms)
             else:
                 print
 
@@ -230,23 +238,35 @@ def checkmail():
             os.chmod(wrapper, mode | S_ISGID)
 
 def checkadminpw():
-    adminpw = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
-    targetmode = S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP
-    if STATE.VERBOSE:
-        print _('checking permissions on %(adminpw)s')
-    try:
-        mode = statmode(adminpw)
-    except OSError, e:
-        if e.errno <> errno.ENOENT: raise
-        return
-    if mode <> targetmode:
-        STATE.ERRORS += 1
-        octmode = oct(mode)
-        print _('%(adminpw)s permissions must be exactly 0640 '
-                '(got %(octmode)s)'),
-        if STATE.FIX:
-            print _('(fixing)')
-            os.chmod(adminpw, targetmode)
+    for pwfile in (os.path.join(mm_cfg.DATA_DIR, 'adm.pw'),
+                   os.path.join(mm_cfg.DATA_DIR, 'creator.pw')):
+        targetmode = S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP
+        if STATE.VERBOSE:
+            print _('checking permissions on %(pwfile)s')
+        try:
+            mode = statmode(pwfile)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+            return
+        if mode <> targetmode:
+            STATE.ERRORS += 1
+            octmode = oct(mode)
+            print _('%(pwfile)s permissions must be exactly 0640 '
+                    '(got %(octmode)s)'),
+            if STATE.FIX:
+                print _('(fixing)')
+                os.chmod(pwfile, targetmode)
+            else:
+                print
+
+def checkmta():
+    if mm_cfg.MTA:
+        modname = 'Mailman.MTA.' + mm_cfg.MTA
+        __import__(modname)
+        try:
+            sys.modules[modname].checkperms(STATE)
+        except AttributeError:
+            pass
 
 def checkdata():
     targetmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
@@ -305,6 +325,7 @@ if __name__ == '__main__':
     checkmail()
     checkdata()
     checkadminpw()
+    checkmta()
 
     if not STATE.ERRORS:
         print _('No problems found')
