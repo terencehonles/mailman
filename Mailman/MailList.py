@@ -922,7 +922,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         msgapproved = self.ExtractApproval(msg)
         if not approved:
             approved = msgapproved
-	sender = msg.GetSender()
+        sender = msg.GetEnvelopeSender()
+        if not sender:
+            sender = msg.GetSender()
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
 	if not approved:
