@@ -158,8 +158,8 @@ class MailCommandHandler:
             if linecount > maxlines:
                 self.AddError("Maximum command lines (%d) encountered,"
                               " ignoring the rest..." % maxlines)
-                self.AddToResponse("<<< " + string.join(lines[linecount:],
-                                                        "\n<<< "))
+                for line in lines[linecount:]:
+                    self.AddToResponse("> " + line, trunc=0)
                 break
 ##	    self.AddToResponse("\n>>>> %s" % line)
 	    args = string.split(line)
