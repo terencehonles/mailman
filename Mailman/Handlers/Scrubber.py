@@ -20,12 +20,14 @@
 import os
 import re
 import sha
+import time
 import errno
 import mimetypes
 import tempfile
 from cStringIO import StringIO
 from types import IntType
 
+from email.Utils import parsedate
 from email.Parser import HeaderParser
 from email.Generator import Generator
 
@@ -67,9 +69,39 @@ class ScrubberGenerator(Generator):
 
 
 
+def calculate_attachments_dir(mlist, msg, msgdata):
+    # Calculate the directory that attachments for this message will go
+    # under.  To avoid inode limitations, the scheme will be:
+    # archives/private/<listname>/attachments/YYYYMMDD/<msgid-hash>/<files>
+    # Start by calculating the date-based and msgid-hash components.
+    msgdate = msg.get('Date')
+    if msgdate is None:
+        now = time.gmtime(msgdata.get('received_time', time.time()))
+    else:
+        now = parsedate(msgdate)
+    datedir = time.strftime('%Y%m%d', now)
+    # As for the msgid hash, we'll base this part on the Message-ID: so that
+    # all attachments for the same message end up in the same directory (we'll
+    # uniquify the filenames in that directory as needed).  We use the first 2
+    # and last 2 bytes of the SHA1 hash of the message id as the basis of the
+    # directory name.  Clashes here don't really matter too much, and that
+    # still gives us a 32-bit space to work with.
+    msgid = msg['message-id']
+    if msgid is None:
+        msgid = msg['Message-ID'] = Utils.unique_message_id(mlist)
+    # We assume that the message id actually /is/ unique!
+    digest = sha.new(msgid).hexdigest()
+    return os.path.join('attachments', datedir, digest[:4] + digest[-4:])
+
+
+
 def process(mlist, msg, msgdata=None):
     sanitize = mm_cfg.ARCHIVE_HTML_SANITIZER
     outer = 1
+    if msgdata is None:
+        msgdata = {}
+    dir = calculate_attachments_dir(mlist, msg, msgdata)
+    # Now walk over all subparts of this message and scrub out various types
     for part in msg.walk():
         ctype = part.get_type(part.get_default_type())
         # If the part is text/plain, we leave it alone
@@ -89,7 +121,7 @@ def process(mlist, msg, msgdata=None):
                 # lists.
                 omask = os.umask(002)
                 try:
-                    url = save_attachment(mlist, part, filter_html=0)
+                    url = save_attachment(mlist, part, dir, filter_html=0)
                 finally:
                     os.umask(omask)
                 part.set_payload(_("""\
@@ -111,7 +143,7 @@ URL: %(url)s
                 part.set_payload(payload)
                 omask = os.umask(002)
                 try:
-                    url = save_attachment(mlist, part, filter_html=0)
+                    url = save_attachment(mlist, part, dir, filter_html=0)
                 finally:
                     os.umask(omask)
                 part.set_payload(_("""\
@@ -123,7 +155,7 @@ URL: %(url)s
             submsg = part.get_payload(0)
             omask = os.umask(002)
             try:
-                url = save_attachment(mlist, part)
+                url = save_attachment(mlist, part, dir)
             finally:
                 os.umask(omask)
             subject = submsg.get('subject', _('no subject'))
@@ -151,7 +183,7 @@ Url: %(url)s
             size = len(payload)
             omask = os.umask(002)
             try:
-                url = save_attachment(mlist, part)
+                url = save_attachment(mlist, part, dir)
             finally:
                 os.umask(omask)
             desc = part.get('content-description', _('not available'))
@@ -186,33 +218,23 @@ Url : %(url)s
 
 
 
-def save_attachment(mlist, msg, filter_html=1):
-    # The directory to store the attachment in
-    dir = os.path.join(mlist.archive_dir(), 'attachments')
+def makedirs(dir):
+    # Create all the directories to store this attachment in
     try:
-        os.mkdir(dir, 02775)
+        os.makedirs(dir, 02775)
     except OSError, e:
         if e.errno <> errno.EEXIST: raise
-    # We need a directory to contain this message's attachments.  Base it
-    # on the Message-ID: so that all attachments for the same message end
-    # up in the same directory (we'll uniquify the filenames in that
-    # directory as needed).  We use the first 2 and last 2 bytes of the
-    # SHA1 has of the message id as the basis of the directory name.
-    # Clashes here don't really matter too much, and that still gives us a
-    # 32-bit space to work with.
-    msgid = msg['message-id']
-    if msgid is None:
-        msgid = msg['Message-ID'] = Utils.unique_message_id(mlist)
-    # We assume that the message id actually /is/ unique!
-    digest = sha.new(msgid).hexdigest()
-    msgdir = digest[:4] + digest[-4:]
-    try:
-        path = os.path.join(dir, msgdir)
-        os.mkdir(path, 02775)
-        # For FreeBSD, which is broken wrt the mode arg of mkdir()
-        os.chmod(path, 02775)
-    except OSError, e:
-        if e.errno <> errno.EEXIST: raise
+    # Unfortunately, FreeBSD seems to be broken in that it doesn't honor the
+    # mode arg of mkdir().
+    def twiddle(arg, dirname, names):
+        os.chmod(dirname, 02775)
+    os.path.walk(dir, twiddle, None)
+
+
+
+def save_attachment(mlist, msg, dir, filter_html=1):
+    fsdir = os.path.join(mlist.archive_dir(), dir)
+    makedirs(fsdir)
     # Figure out the attachment type and get the decoded data
     decodedpayload = msg.get_payload(decode=1)
     # BAW: mimetypes ought to handle non-standard, but commonly found types,
@@ -230,7 +252,7 @@ def save_attachment(mlist, msg, filter_html=1):
             ext = '.bin'
     path = None
     # We need a lock to calculate the next attachment number
-    lockfile = os.path.join(dir, msgdir, 'attachments.lock')
+    lockfile = os.path.join(fsdir, 'attachments.lock')
     lock = LockFile.LockFile(lockfile)
     lock.lock()
     try:
@@ -238,7 +260,7 @@ def save_attachment(mlist, msg, filter_html=1):
         # necessary.
         filename = msg.get_filename()
         if not filename:
-            filename = 'attachment' + ext
+            filebase = 'attachment'
         else:
             # Sanitize the filename given in the message headers
             parts = pre.split(filename)
@@ -246,16 +268,17 @@ def save_attachment(mlist, msg, filter_html=1):
             # Allow only alphanumerics, dash, underscore, and dot
             filename = sre.sub('', filename)
             # If the filename's extension doesn't match the type we guessed,
-            # which one should we go with?  Not sure.  Let's do this at least:
-            # if the filename /has/ no extension, then tack on the one we
-            # guessed.
-            if not os.path.splitext(filename)[1]:
-                filename += ext
-            # BAW: Anything else we need to be worried about?
+            # which one should we go with?  For now, let's go with the one we
+            # guessed so attachments can't lie about their type.  Also, if the
+            # filename /has/ no extension, then tack on the one we guessed.
+            filebase, ignore = os.path.splitext(filename)
+        # Now we're looking for a unique name for this file on the file
+        # system.  If msgdir/filebase.ext isn't unique, we'll add a counter
+        # after filebase, e.g. msgdir/filebase-cnt.ext
         counter = 0
         extra = ''
         while 1:
-            path = os.path.join(dir, msgdir, filename + extra)
+            path = os.path.join(fsdir, filebase + extra + ext)
             # Generally it is not a good idea to test for file existance
             # before just trying to create it, but the alternatives aren't
             # wonderful (i.e. os.open(..., O_CREAT | O_EXCL) isn't
@@ -263,7 +286,7 @@ def save_attachment(mlist, msg, filter_html=1):
             # guaranteed that no other process will be racing with us.
             if os.path.exists(path):
                 counter += 1
-                extra = '-%04d%s' % (counter, ext)
+                extra = '-%04d' % counter
             else:
                 break
     finally:
@@ -293,8 +316,8 @@ def save_attachment(mlist, msg, filter_html=1):
         # BAW: Since we've now sanitized the document, it should be plain
         # text.  Blarg, we really want the sanitizer to tell us what the type
         # if the return data is. :(
+        ext = '.txt'
         path = base + '.txt'
-        filename = os.path.splitext(filename)[0] + '.txt'
     # Is it a message/rfc822 attachment?
     elif msg.get_type() == 'message/rfc822':
         submsg = msg.get_payload()
@@ -308,5 +331,5 @@ def save_attachment(mlist, msg, filter_html=1):
     # Private archives will likely have a trailing slash.  Normalize.
     if baseurl[-1] <> '/':
         baseurl += '/'
-    url = baseurl + 'attachments/%s/%s' % (msgdir, filename)
+    url = baseurl + '%s/%s%s%s' % (dir, filebase, extra, ext)
     return url
