@@ -1,4 +1,4 @@
-# Copyright (C) 1998 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 # Mailman version
-VERSION = '1.2 (beta 1)'
+VERSION = "2.0beta1"
 
 # Data file version number, for changes to the schema
 DATA_FILE_VERSION = 19
