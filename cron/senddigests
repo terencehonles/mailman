@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,8 +23,9 @@ Typically it's invoked via cron.
 
 import sys
 import os
+import errno
 from stat import ST_SIZE
-from errno import ENOENT
+
 import paths
 from Mailman import MailList
 from Mailman import Utils
@@ -34,32 +35,34 @@ from Mailman.Handlers import ToDigest
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
+
 
-def main():
-    for listname in Utils.list_names():
-        mlist = MailList.MailList(listname, lock=0)
-        if mlist.digest_send_periodic:
-            send_list_digest(mlist)
-
-
-def send_list_digest(mlist):
+def send_digests(mlist):
     mlist.Lock()
     try:
-        # send the digest if there are any partially built
-        digestfile = os.path.join(mlist.fullpath(), 'next-digest')
-        topicsfile = os.path.join(mlist.fullpath(), 'next-digest-topics')
+        # See if there's a digest pending for this mailing list
+        digestmbox = os.path.join(mlist.fullpath(), 'digest.mbox')
         try:
-            if os.stat(digestfile)[ST_SIZE] > 0:
-                ToDigest.inject_digest(mlist, digestfile, topicsfile)
-        except os.error, (code, msg):
-            if code <> ENOENT:
-                raise
-            # otherwise, this list doesn't have any outstanding digests
+            if os.stat(digestmbox)[ST_SIZE] > 0:
+                mboxfp = open(digestmbox)
+                ToDigest.send_digests(mlist, mboxfp)
+                os.unlink(digestmbox)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+            # List has no outstanding digests
     finally:
         mlist.Save()
         mlist.Unlock()
 
 
 
-if __name__ == "__main__":
+def main():
+    for listname in Utils.list_names():
+        mlist = MailList.MailList(listname, lock=0)
+        if mlist.digest_send_periodic:
+            send_digests(mlist)
+
+
+
+if __name__ == '__main__':
     main()
