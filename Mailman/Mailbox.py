@@ -25,7 +25,10 @@ import mailbox
 
 
 class Mailbox(mailbox.UnixMailbox):
-    _regexp = re.compile(mailbox.UnixMailbox._fromlinepattern)
+    # a better regexp than the Python 1.5.2 default
+    _fromlinepattern = r'From \s*\S+\s+\w\w\w\s+\w\w\w\s+\d\d?\s+' \
+                       r'\d\d?:\d\d(:\d\d)?(\s+\S+)?\s+\d\d\d\d\s*$'
+    _regexp = re.compile(_fromlinepattern)
 
     def _isrealfromline(self, line):
         return self._regexp.match(line)
