@@ -71,6 +71,10 @@ def main():
 def process_request(doc, cgidata):
     listname = cgidata.getvalue('listname', '').strip()
     owner    = cgidata.getvalue('owner', '').strip()
+    try:
+        autogen  = int(cgidata.getvalue('autogen', '0'))
+    except ValueError:
+        autogen = 0
     password = cgidata.getvalue('password', '').strip()
     confirm  = cgidata.getvalue('confirm', '').strip()
     auth     = cgidata.getvalue('auth', '').strip()
@@ -89,13 +93,25 @@ def process_request(doc, cgidata):
         request_creation(doc, cgidata,
                          _('You forgot to specify the list owner'))
         return
-    if password <> confirm:
-        request_creation(doc, cgidata,
-                         _('Initial list passwords do not match'))
-        return
-    if not password:
-        request_creation(doc, cgidata, _('The list password cannot be empty'))
-        return
+
+    if autogen:
+        if password or confirm:
+            request_creation(
+                doc, cgidata,
+                _('''Leave the initial password (and confirmation) fields
+                blank if you want Mailman to autogenerate the list
+                passwords.'''))
+            return
+        password = confirm = Utils.MakeRandomPassword(length=8)
+    else:
+        if password <> confirm:
+            request_creation(doc, cgidata,
+                             _('Initial list passwords do not match'))
+            return
+        if not password:
+            request_creation(doc, cgidata,
+                             _('The list password cannot be empty'))
+            return
     # The authorization password must be non-empty, and it must match either
     # the list creation password or the site admin password
     ok = 0
@@ -234,6 +250,10 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     with the initial list password.  The list owner will then be able to
     modify the password and add or remove additional list owners.
 
+    <p>If you want Mailman to automatically generate the initial list admin
+    password, click on `Yes' in the autogenerate field below, and leave the
+    initial list password fields empty.
+
     <p>You must have the proper authorization to create new mailing lists.
     Each site should have a <em>list creator's</em> password, which you can
     enter in the field at the bottom.  Note that the site administrator's
@@ -251,6 +271,17 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
 
     ftable.AddRow([Label(_('Initial list owner address:')),
                    TextBox('owner', cgidata.getvalue('owner', ''))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+
+    try:
+        autogen = int(cgidata.getvalue('autogen', '0'))
+    except ValueError:
+        autogen = 0
+    ftable.AddRow([Label(_('Auto-generate initial list password?')),
+                   RadioButtonArray('autogen', ('No', 'Yes'),
+                                    checked=autogen,
+                                    values=(0, 1))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
 
