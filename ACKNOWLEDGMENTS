@@ -13,6 +13,8 @@ code, and have assigned copyright for this code to the FSF:
 
 	The Dragon De Monsyne
 
+Thanks also to Dragon for his winning Mailman logo contribution!
+
 Here is a list of authors of separate modules which are currently
 distributed with Mailman, but are not part of Mailman:
 
@@ -28,6 +30,7 @@ ideas, suggestions, bug fixes, testing, etc.:
 	Greg Stein
 	Gergely Madarasz
 	Andrew Kuchling
+	Jeff Hahn
 	Everyone else on mailman-developers@python.org
 	    and mailman-users@python.org!
 
