@@ -126,7 +126,8 @@ class HTMLFormatter:
 	    '<mm-list-name>' : self.real_name,
 	    '<mm-email-user>' : self._internal_name,
 	    '<mm-list-description>' : self.description,
-	    '<mm-list-info>' : string.join(string.split(self.info, '\n'),'<br>'),
+	    '<mm-list-info>' : string.join(string.split(self.info, '\n'),
+					   '<br>'),
 	    '<mm-form-end>'  : self.FormatFormEnd(),
 	    '<mm-archive>'   : self.FormatArchiveAnchor(),
 	    '</mm-archive>'  : '</a>',
@@ -134,8 +135,10 @@ class HTMLFormatter:
 	    '<mm-digest-users>' : self.FormatUsers(1),
 	    '<mm-num-reg-users>' : `len(self.members)`,
 	    '<mm-num-digesters>' : `len(self.digest_members)`,
-	    '<mm-num-members>' : `len(self.members) + len(self.digest_members)`,
+	    '<mm-num-members>' : (`len(self.members)`
+				  + `len(self.digest_members)`),
 	    '<mm-posting-addr>' : '%s' % self.GetListEmail(),
+	    '<mm-request-addr>' : '%s' % self.GetRequestEmail(),
 	    '<mm-owner>' : self.GetAdminEmail()
 	    }
     
