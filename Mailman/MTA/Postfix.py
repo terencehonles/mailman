@@ -46,13 +46,13 @@ VDBFILE = VTEXTFILE + '.db'
 
 # Here's the deal with locking.  In order to assure that Postfix doesn't read
 # the file while we're writing updates, we should drop an exclusive advisory
-# lock on the file.  Ideally, we'd specify the `l' flag to dbhash.open() which
-# translates to passing the O_EXLOCK flag to the underlying bsddb open call --
-# on systems that support O_EXLOCK.
+# lock on the file.  Ideally, we'd specify the `l' flag to bsddb.hashopen()
+# which translates to passing the O_EXLOCK flag to the underlying open call,
+# for systems that support O_EXLOCK.
 #
 # Unfortunately, Linux is one of those systems that don't support O_EXLOCK.
 # To make matters worse, the default bsddb module in Python gives us no access
-# to the file descriptor of the database file, so we cannot dbhash.open(), dig
+# to the file descriptor of the database file, so we cannot hashopen(), dig
 # out the fd, then use fcntl.flock() to acquire the lock.  Bummer. :(
 #
 # Another approach would be to do a file dance to assure exclusivity.
@@ -69,25 +69,30 @@ VDBFILE = VTEXTFILE + '.db'
 # of the aliases.db file.
 #
 # The best solution I can come up with involves opening the aliases.db file
-# with built-in open(), do the fd digout and flock(), then use dbhash.open()
-# to re-open the file through bsddb.  Blech.  If anybody has a better,
-# portable, solution, I'm all ears.
+# with bsddb.hashopen() first, then do a built-in open(), digout the fd from
+# the file object and flock() it.  We have to open with bsddb.hashopen() first
+# in case the file doesn't exist yet, but we can't write to it until we get
+# the lock.  Blech.  If anybody has a better, portable, solution, I'm all
+# ears.
 
 def makelock():
     return LockFile.LockFile(LOCKFILE)
 
 
 def _zapfile(filename):
-    # Truncate the file w/o messing with the file permissions
-    fp = open(filename, 'w')
-    fp.close()
+    # Truncate the file w/o messing with the file permissions, but only if it
+    # already exists.
+    if os.path.exists(filename):
+        fp = open(filename, 'w')
+        fp.close()
 
 
 def _zapdb(filename):
-    db = bsddb.hashopen(filename, 'c')
-    for k in db.keys():
-        del db[k]
-    db.close()
+    if os.path.exists(filename):
+        db = bsddb.hashopen(filename, 'c')
+        for k in db.keys():
+            del db[k]
+        db.close()
 
 
 def clear():
@@ -99,8 +104,6 @@ def clear():
 
 
 def addlist(mlist, db, fp):
-    listname = mlist.internal_name()
-    fieldsz = len(listname) + len('-request')
     # Set up the mailman-loop address
     loopaddr = Utils.ParseEmail(Utils.get_site_email(extra='loop'))[0]
     loopmbox = os.path.join(mm_cfg.DATA_DIR, 'owner-bounces.mbox')
@@ -117,6 +120,18 @@ def addlist(mlist, db, fp):
         print >> fp, '# The ultimate loop stopper address'
         print >> fp, '%s: %s' % (loopaddr, loopmbox)
         print >> fp
+    # Always update YP_LAST_MODIFIED
+    db['YP_LAST_MODIFIED'] = '%010d' % time.time()
+    # Add a YP_MASTER_NAME only if there isn't one already
+    if not db.has_key('YP_MASTER_NAME'):
+        db['YP_MASTER_NAME'] = socket.getfqdn()
+    # Bootstrapping.  bin/genaliases must be run before any lists are created,
+    # but if no lists exist yet then mlist is None.  The whole point of the
+    # exercise is to get the minimal aliases.db file into existance.
+    if mlist is None:
+        return
+    listname = mlist.internal_name()
+    fieldsz = len(listname) + len('-request')
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
@@ -130,11 +145,6 @@ def addlist(mlist, db, fp):
         db[k + '\0'] = v + '\0'
         # Format the text file nicely
         print >> fp, k + ':', ((fieldsz - len(k) + 1) * ' '), v
-    # Always update YP_LAST_MODIFIED
-    db['YP_LAST_MODIFIED'] = '%010d' % time.time()
-    # Add a YP_MASTER_NAME only if there isn't one already
-    if not db.has_key('YP_MASTER_NAME'):
-        db['YP_MASTER_NAME'] = socket.getfqdn()
     # Finish the text file stanza
     print >> fp, '# STANZA END:', listname
     print >> fp
@@ -224,9 +234,9 @@ def do_create(mlist, dbfile, textfile, func):
         # First, open the dbhash file using built-in open so we can acquire an
         # exclusive lock on it.  See the discussion above for why we do it
         # this way instead of specifying the `l' option to dbhash.open()
+        db = bsddb.hashopen(dbfile, 'c')
         lockfp = open(dbfile)
         fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
-        db = bsddb.hashopen(dbfile, 'c')
         # Crack open the plain text file
         try:
             fp = open(textfile, 'r+')
@@ -260,7 +270,7 @@ def create(mlist, cgi=0, nolock=0):
     # Do the aliases file, which need to be done in any case
     try:
         do_create(mlist, DBFILE, TEXTFILE, addlist)
-        if mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+        if mlist and mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
             do_create(mlist, VDBFILE, VTEXTFILE, addvirtual)
     finally:
         if lock:
