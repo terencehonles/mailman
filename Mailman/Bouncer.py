@@ -257,7 +257,7 @@ Bad admin recipient: %s''', self.internal_name(), addr)
         try:
             if self.getMemberOption(addr, mm_cfg.DisableDelivery):
                 # No need to send out notification if they're already disabled.
-                syslog('bounce', '%s: already disabled %s' %
+                syslog('bounce', '%s: already disabled %s',
                        self.real_name, addr)
                 return 1, 0
             else:
