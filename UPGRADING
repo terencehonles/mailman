@@ -1,99 +1,158 @@
+Mailman - The GNU Mailing List Management System
+Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
 UPGRADING FROM PREVIOUS VERSIONS
 
-For the most part, mailing lists upgrade themselves with the new
-versions.  However, there are some changes in the filesystem that need
-to be taken care of separately.  Upgrading takes care of this for you.
-If you still have problems upgrading after running this, or want to
-integrate mbox archives into the Pipermail archiving, read on.
+    For the most part, upgrading Mailman is as easy as just installing
+    the latest versio over the existing version.  However, there are
+    some changes that need to be taken care of manually.
 
-There are two ways to do the upgrade.  First, from the source
-directory, you can run "make update".  This assumes that you have
-configured and installed Mailman, as the first thing it does is change
-to the installed directory (i.e. $prefix).  "make update" creates a
-file named "update.log" in the top level of the source distribution.
-If the script that updates the Mailman filesystem encounters something
-that is not resolvable, it will log info about this to "update.log".
-This might be worth checking.
+    What you need to do depends on the version you are using and the
+    version you are upgrading to.  In all cases, you should first turn
+    off your mail and web access to your Mailman installation.  You're
+    essentially upgrading a database, and it's usually a good idea to
+    make sure the database cannot be modified in the middle of the
+    upgrade.
 
-You can also just change to the installation directory (i.e. $prefix)
-and run bin/update.  This is the same as above except that the
-update.log file is not generated.
+    My recommendations are
 
-WHAT UPGRADING DOES
+    - Turn off your incoming mail daemon.  Most remote smtp servers
+      will simply queue up messages destined for your domain if port
+      25 is shut off.
 
-Below is an annotated listing of the things that "make update" does.
-Hopefully, this will help resolve any problems you are having.
+    - Temporarily disable web access to Mailman.  You can do this by
+      either turning off your web server temporarily, or by setting up
+      a temporary redirect to a "service unavailable" page for the
+      Mailman URLs.  Refer to your web server documentation for
+      details.
 
-We update this procedure for each Mailman release, so it can't hurt to 
-run "make update" each time you upgrade.
+UPGRADING FROM 1.x to 2.x
 
-- To upgrade to 1.0b10, you will need to copy templates/options.html
-  to lists/<listname>/options.html for each mailing list you have.
-  However, if you have edited the options.html file, say from the Web
-  interface, you will have to merge these changes in manually.
+    In addition to the instructions above, I highly recommend that you
+    make sure your Mailman queue is cleared.  Mailman version 1.x had
+    a cron script called run_queue which was part of it's bulk
+    mailer.  With Mailman 2.x there is no default bulk mailer (it lets
+    the MTA handle this), and it is currently unknown what the effects
+    of upgrading are on the run_queue script, but I'll bet it's not
+    good. :)
 
-- The upgrade to 1.0b7 included the removal of Mailman/smtplib.py{,c}
-  since Mailman now uses the default Python 1.5.2 version of smtplib.
+    The way to make sure that your Mailman queue is empty is to look
+    in your $prefix/data directory.  If you see any files that start
+    with "mm_q." you've still got messages waiting on the queue.  You
+    can run $prefix/cron/run_queue by hand until the queue is cleared.
+    Multiple invocations of this script won't help though; they lock
+    each other out.  Also, be warned that clearing the queue can take
+    a while and may cause a large load on your system (two reasons why
+    all this stuff has been redesigned in 2.x :).
 
-- Archiving files are moved around as part of integrating Pipermail
-  into Mailman, as of 1.0b6.  In particular,
+    You do not need to run "make update" if you are upgrading from
+    version 1.0 or 1.1 to version 2.0.  However you should modify your
+    crontab entry to not execute cron/run_queue.  You can also safely
+    remove the file $prefix/cron/run_queue.
 
-  1) if a list has only a private mbox archive
-  $prefix/archives/private/<listname> is moved to 
-  $prefix/archives/private/<listname>.mbox/<listname> 
+    If you are upgrading from a pre-1.0 beta, you need to follow the
+    instructions below.
 
-  2) if a list has only a public mbox archive
-  $prefix/archives/public/<listname> is moved to
-  $prefix/archives/private/<listname>.mbox/<listname>
+UPGRADING FROM PRE-1.0 to 2.x
 
-  and a symlink is made that points
-  $prefix/archives/public/<listname>.mbox to
-  $prefix/archives/private/<listname>.mbox/<listname>
+    You need to do a few extra things to make sure that the file
+    system layout for the early 1.0 betas is upgraded to the 1.x
+    configuration.  There are two ways to do this.
 
-  3) if a list has both private and public mbox archives, 
-  make update picks one of the above 2 configurations based on whether
-  or not the list currently is archived publicly.  It then renames the  
-  other mbox to mbox.preb6.
+    First, from the source directory, after you've done a "make
+    install" you can run "make update".  "make update" creates a file
+    named "update.log" in the top level of the source distribution.
+    If the script that updates the Mailman filesystem encounters
+    something that is not resolvable, it will log info about this to
+    "update.log".  This is worth checking after the upgrade completes.
 
-  4) if a list used recent CVS sources, where archives were placed in
-  $prefix/public_html/archives, then these are moved to
-  $prefix/archives/private/<listname> and a symlink is made from
-  $prefix/archives/public/<listname> to that spot if the list's
-  archives are public.  Also, a permissions-related security problem
-  is removed.
+    You can also just change to the installation directory (i.e. $prefix)
+    and run bin/update.  This is the same as above except that the
+    update.log file is not generated.
 
-  To integrate mbox archives of old lists, log in as user `mailman'
-  and run $prefix/bin/arch <listname> <path-to-mbox-archive>.
+WHAT "MAKE UPDATE" DOES
 
-  Also, by default, beta6 does both mbox and html based archiving, but
-  you can configure Mailman to do one, both, or neither.  Please see
-  $prefix/Mailman/Defaults.py for details.
+    Below is an annotated listing of the things that "make update"
+    does.  Hopefully, this will help resolve any problems you are
+    having.
 
-  There was a short period of time when the CVS sources archiving code
-  was not organized into its own package.  The pickled articles in the
-  archives that were placed into archives during this period stored
-  the path to the module HyperArch, but that module has moved.  You
-  can quick fix this by running
+    Note that it can't hurt to run "make update" each time you
+    upgrade, but if you're running version 1.0 or newer, it won't help
+    much either!
 
-  ln -s $prefix/Mailman/Archiver/HyperArch.py \
-          $prefix/Mailman/HyperArch.py  
-  
-- If upgrading from version 1.0b4 or earlier, "make update" moves
-  list-specific templates.  For each list,
-  $prefix/templates/<listname>/* is moved to $prefix/lists/<listname>.
-  Please reference the generic templates in $prefix/templates to see
-  if any variables have changed (There shouldn't be many, only
-  options.html was updated from b5 to b6).
+    - To upgrade to 1.0b10, you will need to copy
+      templates/options.html to lists/<listname>/options.html for each
+      mailing list you have.  However, if you have edited the
+      options.html file, say from the Web interface, you will have to
+      merge these changes in manually.
 
-  For really old versions of Mailman, you may not even have <listname> 
-  subdirectories in $prefix/templates!  In this case you will need to
-  manually copy some files into your new list directories.  Here's an
-  example shell command that will do the trick:
+    - The upgrade to 1.0b7 included the removal of
+      Mailman/smtplib.py{,c} since Mailman now uses the default Python
+      1.5.2 version of smtplib.  [NOTE HOWEVER THAT MAILMAN 2.0 ADDS
+      THIS FILE BACK IN Mailman/pythonlib].
 
-  cp templates/{archives,handle_opts,listinfo,roster,subscribe}.html lists/<listname>
+    - Archiving files are moved around as part of integrating
+      Pipermail into Mailman, as of 1.0b6.  In particular,
 
-- Some modules that existed in previous versions, but that have been
-  replaced with newer (differently named) modules, are removed.
+      1) if a list has only a private mbox archive
+      $prefix/archives/private/<listname> is moved to 
+      $prefix/archives/private/<listname>.mbox/<listname> 
+
+      2) if a list has only a public mbox archive
+      $prefix/archives/public/<listname> is moved to
+      $prefix/archives/private/<listname>.mbox/<listname>
+
+      and a symlink is made that points
+      $prefix/archives/public/<listname>.mbox to
+      $prefix/archives/private/<listname>.mbox/<listname>
+
+      3) if a list has both private and public mbox archives, 
+      make update picks one of the above 2 configurations based on
+      whether or not the list currently is archived publicly.  It then
+      renames the other mbox to mbox.preb6.
+
+      4) if a list used recent CVS sources, where archives were placed in
+      $prefix/public_html/archives, then these are moved to
+      $prefix/archives/private/<listname> and a symlink is made from
+      $prefix/archives/public/<listname> to that spot if the list's
+      archives are public.  Also, a permissions-related security
+      problem is removed.
+
+      To integrate mbox archives of old lists, log in as user `mailman'
+      and run $prefix/bin/arch <listname> <path-to-mbox-archive>.
+
+      Also, by default, beta6 does both mbox and html based archiving,
+      but you can configure Mailman to do one, both, or neither.
+      Please see $prefix/Mailman/Defaults.py for details.
+
+      There was a short period of time when the CVS sources archiving
+      code was not organized into its own package.  The pickled
+      articles in the archives that were placed into archives during
+      this period stored the path to the module HyperArch, but that
+      module has moved.  You can quick fix this by running
+
+      ln -s $prefix/Mailman/Archiver/HyperArch.py \
+              $prefix/Mailman/HyperArch.py  
+
+    - If upgrading from version 1.0b4 or earlier, "make update" moves
+      list-specific templates.  For each list,
+      $prefix/templates/<listname>/* is moved to $prefix/lists/<listname>.
+      Please reference the generic templates in $prefix/templates to see
+      if any variables have changed (There shouldn't be many, only
+      options.html was updated from b5 to b6).
+
+      For really old versions of Mailman, you may not even have
+      <listname> subdirectories in $prefix/templates!  In this case
+      you will need to manually copy some files into your new list
+      directories.  Here's an example shell command that will do the
+      trick:
+
+      cp templates/{archives,handle_opts,listinfo,roster,subscribe}.html lists/<listname>
+
+    - Some modules that existed in previous versions, but that have
+      been replaced with newer (differently named) modules, are
+      removed.
 
 
 Local Variables:
