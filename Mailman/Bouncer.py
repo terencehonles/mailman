@@ -212,7 +212,7 @@ class Bouncer:
                 reenable = Utils.maketext(
                     'reenable.txt',
                     {'admin_url': self.GetScriptURL('admin', absolute=1),
-                     })
+                     }, self.preferred_language)
             else:
                 reenable = ''
             # the mail message text
@@ -226,10 +226,10 @@ class Bouncer:
                  'but'      : but,
                  'reenable' : reenable,
                  'owneraddr': mm_cfg.MAILMAN_OWNER,
-                 })
+                 }, self.preferred_language)
             # add this here so it doesn't get wrapped/filled
             text = text + '\n\n--' + boundary + \
-                   '\nContent-type: text/plain; charset=us-ascii\n'
+                   '\nContent-type: text/plain; charset=' + Utils.GetCharSet()
 
             # We do this here so this text won't be wrapped.  note that
             # 'bounce.txt' has a trailing newline.  Be robust about getting
