@@ -55,6 +55,25 @@ if mm_cfg.GZIP_ARCHIVE_TXT_FILES:
 EMPTYSTRING = ''
 NL = '\n'
 
+# MacOSX has a default stack size that is too small for deeply recursive
+# regular expressions.  We see this as crashes in the Python test suite when
+# running test_re.py and test_sre.py.  The fix is to set the stack limit to
+# 2048; the general recommendation is to do in the shell before running the
+# test suite.  But that's inconvenient for a daemon like the qrunner.
+#
+# AFAIK, this problem only affects the archiver, so we're adding this work
+# around to this file (it'll get imported by the bundled pipermail or by the
+# bin/arch script.  We also only do this on darwin, a.k.a. MacOSX.
+if sys.platform == 'darwin':
+    try:
+        import resource
+    except ImportError:
+        pass
+    else:
+        soft, hard = resource.getrlimit(resource.RLIMIT_STACK)
+        newsoft = min(hard, max(soft, 1024*2048))
+        resource.setrlimit(resource.RLIMIT_STACK, (newsoft, hard))
+
 
 
 def unicode_quote(arg):
