@@ -51,7 +51,6 @@ DEFAULT_HOST_NAME = '@FQDN@'
 DEFAULT_URL       = 'http://@URL@/mailman'
 
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
-SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'
 
 PUBLIC_ARCHIVE_URL = '/pipermail'
 PRIVATE_ARCHIVE_URL = '/mailman/private'

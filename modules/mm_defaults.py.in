@@ -35,7 +35,6 @@ MAILMAN_URL       = 'http://www.list.org/'
 
 DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.OR.HOST.NAME'
 SMTPHOST	  = 'localhost'
-SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'     # yours may be different
 DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
 PUBLIC_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PUBLIC.ARCHIVE.URL/'
 PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
