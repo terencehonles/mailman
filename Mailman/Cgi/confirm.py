@@ -213,6 +213,9 @@ def subscription_prompt(mlist, doc, cookie,
     options page which you can use to further customize your membership
     options.
 
+    <p>Note: your password will be emailed to you once your subscription is
+    confirmed.  You can change it by visiting your personal options page.
+
     <p>Or hit <em>Cancel and discard</em> to cancel this subscription
     request.""") + '<p><hr>'
     if mlist.subscribe_policy in (1, 3):
@@ -225,6 +228,10 @@ def subscription_prompt(mlist, doc, cookie,
         or reject your membership request.  You will receive notice of their
         decision.
 
+        <p>Note: your password will be emailed to you once your subscription
+        is confirmed.  You can change it by visiting your personal options
+        page.
+
         <p>Or you can hit <em>Cancel and discard</em> now to cancel this
         subscription request.""") + '<p><hr>'
     table.AddRow([result])
@@ -233,10 +240,10 @@ def subscription_prompt(mlist, doc, cookie,
     table.AddRow([Label(_('Your email address:')), email])
     table.AddRow([Label(_('Your real name:')),
                   TextBox('realname', name)])
-    table.AddRow([Label(_('Password:')),
-                  PasswordBox('password', password)])
-    table.AddRow([Label(_('Password (confirm):')),
-                  PasswordBox('pwconfirm', password)])
+##    table.AddRow([Label(_('Password:')),
+##                  PasswordBox('password', password)])
+##    table.AddRow([Label(_('Password (confirm):')),
+##                  PasswordBox('pwconfirm', password)])
     table.AddRow([Label(_('Receive digests?')),
                   RadioButtonArray('digests', (_('No'), _('Yes')),
                                    checked=digest, values=(0, 1))])
@@ -278,14 +285,14 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
         try:
             # Some pending values may be overridden in the form.  email of
             # course is hardcoded. ;)
-            cgipasswd = cgidata.getvalue('password')
-            cgiconfirm = cgidata.getvalue('pwconfirm')
-            if cgipasswd <> cgiconfirm:
-                setformpasswd = 0
-                pw = None
-            else:
-                setformpasswd = 1
-                pw = cgipasswd
+##            cgipasswd = cgidata.getvalue('password')
+##            cgiconfirm = cgidata.getvalue('pwconfirm')
+##            if cgipasswd <> cgiconfirm:
+##                setformpasswd = 0
+##                pw = None
+##            else:
+##                setformpasswd = 1
+##                pw = cgipasswd
             lang = cgidata.getvalue('language')
             if cgidata.has_key('digests'):
                 try:
