@@ -186,9 +186,11 @@ class MailCommandHandler:
 	    self.AddError("%s isn't subscribed to this list." % sender)
 	except Errors.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
+	except Errors.MMBadUserError:
+            self.AddError("Bad user - %s." % sender)
 	except:
             exc = sys.exc_info()
-	    self.AddError("An unknown Mailman error occured."
+	    self.AddError("An unknown Mailman error occured.")
 	    self.AddError("Please forward on your request to %s" %
 			  self.GetAdminEmail())
             self.LogMsg("error",
@@ -239,25 +241,11 @@ class MailCommandHandler:
 	else:
 	    ShowSetUsage()
 	    return
-	if option_info.has_key(args[0]):
+	if args[0] == 'digest':
 	    try:
 		sender = self.FindUser(mail.GetSender())
-		if not sender:
-		    self.AddError("You aren't subscribed.")
-		    return
 		self.ConfirmUserPassword(sender, args[2])
-		self.SetUserOption(sender, option_info[args[0]], value)
-		self.AddToResponse("Succeeded.")
-	    except Errors.MMBadPasswordError:
-		self.AddError("You gave the wrong password.")
-	    except:
-		self.AddError("An unknown Mailman error occured.")
-		self.AddError("Please forward on your request to %s" %
-			      self.GetAdminEmail())
-		self.AddError("%s" % sys.exc_type)
-	elif args[0] == 'digest':
-	    try:
-		self.SetUserDigest(mail.GetSender(), args[2], value)
+		self.SetUserDigest(mail.GetSender(), value)
 		self.AddToResponse("Succeeded.")
 	    except Errors.MMAlreadyDigested:
 		self.AddError("You are already receiving digests.")
@@ -284,6 +272,22 @@ class MailCommandHandler:
 		self.AddApprovalMsg(cmd)
 	    except:
 		# TODO: Should log the error we got if we got here.
+		self.AddError("An unknown Mailman error occured.")
+		self.AddError("Please forward on your request to %s" %
+			      self.GetAdminEmail())
+		self.AddError("%s" % sys.exc_type)
+	elif option_info.has_key(args[0]):
+	    try:
+		sender = self.FindUser(mail.GetSender())
+		if not sender:
+		    self.AddError("You aren't subscribed.")
+		    return
+		self.ConfirmUserPassword(sender, args[2])
+		self.SetUserOption(sender, option_info[args[0]], value)
+		self.AddToResponse("Succeeded.")
+	    except Errors.MMBadPasswordError:
+		self.AddError("You gave the wrong password.")
+	    except:
 		self.AddError("An unknown Mailman error occured.")
 		self.AddError("Please forward on your request to %s" %
 			      self.GetAdminEmail())
