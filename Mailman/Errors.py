@@ -17,9 +17,8 @@
 
 """Shared mailman errors and messages."""
 
-__version__ = "$Revision: 547 $"
 
-
+# XXX: These should be converted to new style class exceptions
 MMUnknownListError   = "MMUnknownListError"
 MMBadListError       = "MMBadListError"
 MMBadUserError       = "MMBadUserError"
@@ -47,6 +46,7 @@ SUSPICIOUS_HEADER_MSG = "Suspicious header"
 FORBIDDEN_SENDER_MSG  = "Forbidden sender"
 LOOPING_POST	      = "Post already went through this list!"
 
+# XXX: This should be converted to templates/*.txt style
 MESSAGE_DECORATION_NOTE = """This text can include  <b>%(field)s</b> format
 strings which are resolved against the list's attribute dictionary (__dict__).
 Some useful fields are:
