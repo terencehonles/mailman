@@ -20,6 +20,8 @@ import sys, os
 import paths
 import smtplib,mm_cfg
 
+#sys.stderr = open("/home/mailman/mailman/logs/debug","a+")
+#sys.stdout = sys.stderr
 
 from_addr = sys.argv[1]
 tmp_file  = sys.argv[2]
