@@ -384,11 +384,21 @@ def show_results(mlist, doc, category, subcat, cgidata):
     doc.AddItem(Center(Header(2, _(
         '%(realname)s mailing list administration<br>%(label)s Section'))))
     doc.AddItem('<hr>')
+    # Now we need to craft the form that will be submitted, which will contain
+    # all the variable settings, etc.  This is a bit of a kludge because we
+    # know that the autoreply and members categories supports file uploads.
+    encoding = None
+    if category in ('autoreply', 'members'):
+        encoding = 'multipart/form-data'
+    if subcat:
+        form = Form('%s/%s/%s' % (adminurl, category, subcat),
+                    encoding=encoding)
+    else:
+        form = Form('%s/%s' % (adminurl, category), encoding=encoding)
     # This holds the two columns of links
     linktable = Table(valign='top', width='100%')
     linktable.AddRow([Center(Bold(_("Configuration Categories"))),
                       Center(Bold(_("Other Administrative Activities")))])
-    linktable.AddCellInfo(linktable.GetCurrentRowIndex(), 0, colspan=2)
     # The `other links' are stuff in the right column.
     otherlinks = UnorderedList()
     otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
@@ -449,23 +459,27 @@ def show_results(mlist, doc, category, subcat, cgidata):
         if counter >= half:
             categorylinks_2 = categorylinks = UnorderedList()
             counter = -len(categorykeys)
+    # Make the emergency stop switch a rude solo light
+    etable = Table()
     # Add all the links to the links table...
-    linktable.AddRow([categorylinks_1, categorylinks_2, otherlinks])
-    linktable.AddRowInfo(linktable.GetCurrentRowIndex(), valign='top')
-    # ...and add the links table to the document.
-    doc.AddItem(linktable)
-    doc.AddItem('<hr>')
-    # Now we need to craft the form that will be submitted, which will contain
-    # all the variable settings, etc.  This is a bit of a kludge because we
-    # know that the autoreply and members categories supports file uploads.
-    encoding = None
-    if category in ('autoreply', 'members'):
-        encoding = 'multipart/form-data'
-    if subcat:
-        form = Form('%s/%s/%s' % (adminurl, category, subcat),
-                    encoding=encoding)
+    etable.AddRow([categorylinks_1, categorylinks_2])
+    etable.AddRowInfo(etable.GetCurrentRowIndex(), valign='top')
+    label = _('Emergency moderation of all list traffic:')
+    if mlist.emergency:
+        label = Bold(label).Format()
+    etable.AddRow(['&nbsp;', '&nbsp;'])
+    etable.AddRow([Center(label + CheckBox('emergency', 1,
+                                           mlist.emergency).Format())])
+    if mlist.emergency:
+        color = mm_cfg.WEB_ERROR_COLOR
     else:
-        form = Form('%s/%s' % (adminurl, category), encoding=encoding)
+        color = mm_cfg.WEB_BG_COLOR
+    etable.AddCellInfo(etable.GetCurrentRowIndex(), 0,
+                       colspan=2, bgcolor=color)
+    linktable.AddRow([etable, otherlinks])
+    # ...and add the links table to the document.
+    form.AddItem(linktable)
+    form.AddItem('<hr>')
     form.AddItem(
         _('''Make your changes in the following section, then submit them
         using the <em>Submit Your Changes</em> button below.''')
@@ -517,11 +531,8 @@ def show_results(mlist, doc, category, subcat, cgidata):
     else:
         form.AddItem(show_variables(mlist, category, subcat, cgidata, doc))
         form.AddItem(Center(submit_button()))
-    # Add the separator
-    form.AddItem('<hr>')
     # And add the form
     doc.AddItem(form)
-    doc.AddItem(linktable)
     doc.AddItem(mlist.GetMailmanFooter())
 
 
@@ -1163,6 +1174,11 @@ def submit_button(name='submit'):
 
 
 def change_options(mlist, category, subcat, cgidata, doc):
+    def safeint(formvar, defaultval=None):
+        try:
+            return int(cgidata.getvalue(formvar))
+        except (ValueError, TypeError):
+            return defaultval
     confirmed = 0
     # Handle changes to the list moderator password.  Do this before checking
     # the new admin password, since the latter will force a reauthentication.
@@ -1185,6 +1201,8 @@ def change_options(mlist, category, subcat, cgidata, doc):
             print mlist.MakeCookie(mm_cfg.AuthListAdmin)
         else:
             doc.addError(_('Administator passwords did not match'))
+    # Handle the emergency stop button
+    mlist.emergency = safeint('emergency', 0)
     # Give the individual gui item a chance to process the form data
     categories = mlist.GetConfigCategories()
     label, gui = categories[category]
@@ -1197,11 +1215,6 @@ def change_options(mlist, category, subcat, cgidata, doc):
     subscribers += cgidata.getvalue('subscribees_upload', '')
     if subscribers:
         entries = filter(None, [n.strip() for n in subscribers.splitlines()])
-        def safeint(formvar, defaultval=None):
-            try:
-                return int(cgidata.getvalue(formvar))
-            except (ValueError, TypeError):
-                return defaultval
         send_welcome_msg = safeint('send_welcome_msg_to_this_batch',
                                    mlist.send_welcome_msg)
         send_admin_notif = safeint('send_notifications_to_list_owner',
