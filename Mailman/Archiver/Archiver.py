@@ -82,7 +82,7 @@ class Archiver:
         # archives/
         #     private/
         #         listname.mbox/
-        #             listname
+        #             listname.mbox
         #         listname/
         #             lots-of-pipermail-stuff
         #     public/
