@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -39,6 +39,7 @@ class AlreadyReceivingDigests(MemberError): pass
 class AlreadyReceivingRegularDeliveries(MemberError): pass
 class CantDigestError(MemberError): pass
 class MustDigestError(MemberError): pass
+class MembershipIsBanned(MemberError): pass
 
 # Exception hierarchy for various authentication failures, can be
 # raised from functions in SecurityManager.py
