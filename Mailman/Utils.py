@@ -30,6 +30,7 @@ import random
 import urlparse
 import sha
 import errno
+import time
 from string import whitespace as WHITESPACE
 
 from mimelib.MsgReader import MsgReader
@@ -678,3 +679,21 @@ def get_domain():
         return host
     else:
         return mm_cfg.DEFAULT_HOST_NAME
+
+
+
+# This algorithm crafts a guaranteed unique message-id.  The theory here is
+# that pid+listname+host will distinguish the message-id for every process on
+# the system, except when process ids wrap around.  To further distinguish
+# message-ids, we prepend the integral time in seconds since the epoch.  It's
+# still possible that we'll vend out more than one such message-id per second,
+# so we prepend a monotonically incrementing serial number.  It's highly
+# unlikely that within a single second, there'll be a pid wraparound.
+_serial = 0
+def unique_message_id(mlist):
+    global _serial
+    msgid = '<mailman.%d.%d.%d.%s@%s>' % (
+        _serial, time.time(), os.getpid(),
+        mlist.internal_name(), mlist.host_name)
+    _serial += 1
+    return msgid
