@@ -66,8 +66,9 @@ def main():
                  }, mlist=mlist)
             text += '\n' + pending_requests(mlist)
             subject = _('%(count)d %(realname)s moderator request(s) waiting')
-            admin = mlist.GetAdminEmail()
-            msg = Message.UserNotification(admin, admin, subject, text,
+            msg = Message.UserNotification(mlist.GetOwnerEmail(),
+                                           mlist.GetBouncesEmail(),
+                                           subject, text,
                                            mlist.preferred_language)
             msg.send(mlist, **{'tomoderators': 1})
             
