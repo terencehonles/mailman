@@ -336,7 +336,7 @@ class Document(Container):
 
     def addError(self, errmsg, tag=None, *args):
         if tag is None:
-            tag = _('Warning: ')
+            tag = _('Error: ')
         self.AddItem(Header(3, Bold(FontAttr(
             _(tag), color=mm_cfg.WEB_ERROR_COLOR, size='+2')).Format() +
                             Italic(errmsg % args).Format()))
