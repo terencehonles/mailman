@@ -1,6 +1,5 @@
 #!/usr/local/bin/python
-#
-#
+
 # Heh, heh, heh, this partition reminds me of the knapsack problem ;-)
 # Ie, the optimal distribution here is NP Complete.
 
@@ -65,7 +64,10 @@ if not os.fork():
     if spawns < 1:
 	spawns = 1
     to_list = sys.argv[4:]
-    file = open(sys.argv[1], 'r')
+    try:
+        file = open(sys.argv[1], 'r')
+    except IOError, msg:
+        raise IOError, (msg[0], msg[1], sys.argv[1])
     text = file.read()
     file.close()
     os.unlink(sys.argv[1])
