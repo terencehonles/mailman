@@ -137,6 +137,12 @@ def DeliverToUser(msg, recipient, add_headers=[]):
 
     Optional argument add_headers should be a list of headers to be added
     to the message, e.g. for Errors-To and X-No-Archive."""
+    # HM: I don't think the deadlock comment below really applies
+    # anymore (because we now send mail with SMTP, not by invoking some
+    # binary).  Thus the forking should probably go away (eventually,
+    # i.e. when we're sure that won't break stuff).  For now, trying to
+    # approach 1.0, I've only moved the forking down a bit.
+    #
     # We fork to ensure no deadlock.  Otherwise, even if sendmail is
     # invoked in forking mode, if it eg detects a bad address before
     # forking, then it will try deliver to the errorsto addr *in the
@@ -144,28 +150,36 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     # that is doing the send - and holding a lock - then the delivery will
     # hang pending release of the lock - deadlock.
 
-    if not os.fork():
-        # child
-        sender = msg.GetSender()
-        try:
+    sender = msg.GetSender()
+    try:
+        msg.headers.remove('\n')
+    except ValueError:
+        pass
+    if not msg.getheader('to'):
+        msg.headers.append('To: %s\n' % recipient)
+    if not msg.getheader('date'):
+        msg.SetDate()
+    for i in add_headers:
+        if i and i[-1] != '\n':
+            i = i + '\n'
+        msg.headers.append(i)
+
+    text = string.join(msg.headers, '') + '\n' + QuotePeriods(msg.body)
+    import OutgoingQueue
+    queue_id = OutgoingQueue.enqueueMessage(sender, recipient, text)
+
+    # If the fork (or anything the child does) fails and raises an
+    # exception, e.g. due to memory exhaustion, the queue runner
+    # will pick up the queue file.
+    try:
+        if not os.fork():
+            # child
             try:
-                msg.headers.remove('\n')
-            except ValueError:
-                pass
-            if not msg.getheader('to'):
-                msg.headers.append('To: %s\n' % recipient)
-            for i in add_headers:
-                if i and i[-1] != '\n':
-                  i = i + '\n'
-                msg.headers.append(i)
-
-            text = string.join(msg.headers, '')+ '\n'+ QuotePeriods(msg.body)
-            import OutgoingQueue
-            queue_id = OutgoingQueue.enqueueMessage(sender, recipient, text)
-            TrySMTPDelivery(recipient,sender,text,queue_id)
-        finally:
-            os._exit(0)
-
+                TrySMTPDelivery(recipient,sender,text,queue_id)
+            finally:
+                os._exit(0)
+    except:
+        OutgoingQueue.deferMessage(queue_id)
 
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
     import socket
