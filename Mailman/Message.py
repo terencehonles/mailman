@@ -17,16 +17,19 @@
 
 """Embody incoming and outgoing messages as objects."""
 
-__version__ = "$Revision: 547 $"
+__version__ = "$Revision: 646 $"
 
 
 import sys
 import rfc822, string, time
 
 
-# A utility function 2 of these classes use:
+# Utility functions 2 of these classes use:
 def AddBackNewline(str):
     return str + '\n'
+
+def RemoveNewline(str):
+    return str[:-1]
 	
 
 # XXX klm - use the standard lib StringIO module instead of FakeFile.
@@ -71,6 +74,10 @@ class IncomingMessage(rfc822.Message):
 	else:
 	    rfc822.Message.__init__(self, FakeFile(text), 0)
 	    self.body = self.fp.read()
+
+    def readlines(self):
+        return map(RemoveNewline, self.headers) + [''] + \
+	       string.split(self.body,'\n')
 
     def GetSender(self):
 	# Look for a Sender field.
@@ -143,6 +150,10 @@ class OutgoingMessage:
 	    self.headers = []
 	self.body = body
 	self.sender = sender
+
+    def readlines(self):
+        return map(RemoveNewline,self.headers) + [''] + \
+	       string.split(self.body,'\n')
 
     def SetHeaders(self, headers):
         self.headers = map(AddBackNewline, string.split(headers, '\n'))
