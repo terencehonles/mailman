@@ -81,6 +81,9 @@ def process(mlist, msg, msgdata):
         rtext = mlist.autoresponse_request_text
     else:
         rtext = mlist.autoresponse_postings_text
+    # Using $-strings?
+    if getattr(mlist, 'use_dollar_strings', 0):
+        rtext = Utils.to_percent(rtext)
     try:
         text = rtext % d
     except Exception, e:
