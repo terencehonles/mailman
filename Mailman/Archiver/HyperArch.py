@@ -33,12 +33,16 @@ import os
 import types
 import HyperDatabase
 import pipermail
+import weakref
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import LockFile
+from Mailman import MailList
 from Mailman import EncWord
+from Mailman import Errors
 from Mailman import i18n
+from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
 from Mailman.Mailbox import ArchiverMailbox
 
@@ -157,6 +161,33 @@ nohtmlpat = re.compile(r'^\s*</HTML>\s*$', re.IGNORECASE)
 quotedpat = re.compile(r'^([>|:]|&gt;)+')
 
 
+
+# This doesn't need to be a weakref instance because it's just storing
+# strings.  Keys are (templatefile, lang) tuples.
+_templatecache = {}
+
+def quick_maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
+    if lang is None:
+        lang = mlist.preferred_language
+    template = _templatecache.get((templatefile, lang))
+    if template is None:
+        # Use the basic maketext, with defaults to get the raw template
+        template = Utils.maketext(templatefile, lang=lang, raw=1)
+        _templatecache[(templatefile, lang)] = template
+    # Copied from Utils.maketext()
+    text = template
+    if dict is not None:
+        try:
+            text = template % SafeDict(dict)
+        except (TypeError, ValueError):
+            # The template is really screwed up
+            pass
+    if raw:
+        return text
+    return Utils.wrap(text)
+
+
+
 # Note: I'm overriding most, if not all of the pipermail Article class
 #       here -ddm
 # The Article class encapsulates a single posting.  The attributes are:
@@ -234,13 +265,51 @@ class Article(pipermail.Article):
         if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
             self.quote = unicode_quote
 
+    # Mapping of listnames to MailList instances as a weak value dictionary.
+    # This code is copied from Runner.py but there's one important operational
+    # difference.  In Runner.py, we always .Load() the MailList object for
+    # each _dispose() run, otherwise the object retrieved from the cache won't
+    # be up-to-date.  Since we're creating a new HyperArchive instance for
+    # each message being archived, we don't need to worry about that -- but it
+    # does mean there are additional opportunities for optimization.
+    _listcache = weakref.WeakValueDictionary()
+
+    def _open_list(self, listname):
+        # Cache the open list so that any use of the list within this process
+        # uses the same object.  We use a WeakValueDictionary so that when the
+        # list is no longer necessary, its memory is freed.
+        mlist = self._listcache.get(listname)
+        if not mlist:
+            try:
+                mlist = MailList.MailList(listname, lock=0)
+            except Errors.MMListError, e:
+                syslog('error', 'error opening list: %s\n%s', listname, e)
+                return None
+            else:
+                self._listcache[listname] = mlist
+        return mlist
+
+    def __getstate__(self):
+        d = self.__dict__.copy()
+        # We definitely don't want to pickle the MailList instance, so just
+        # pickle a reference to it.
+        del d['_mlist']
+        d['__listname'] = self._mlist.internal_name()
+        # Delete a few other things we don't want in the pickle
+        for attr in ('prev', 'next', 'body'):
+            del d[attr]
+        d['body'] = []
+        return d
+
     def __setstate__(self, d):
         # For loading older Articles via pickle.  All this stuff was added
         # when Simone Piunni and Tokio Kikuchi i18n'ified Pipermail.  See SF
         # patch #594771.
         self.__dict__ = d
-        if not d.has_key('_mlist'):
-            self._mlist = None
+        listname = d.get('__listname')
+        if listname:
+            del d['__listname']
+            d['_mlist'] = self._open_list(listname)
         if not d.has_key('_lang'):
             if self._mlist is None:
                 self._lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
@@ -333,7 +402,7 @@ class Article(pipermail.Article):
             d["encoding"] = ""
 
         self._add_decoded(d)
-        return Utils.maketext(
+        return quick_maketext(
              'article.html', d,
              raw=1, lang=self._lang, mlist=self._mlist)
 
@@ -472,18 +541,6 @@ class Article(pipermail.Article):
                 break
             self.body.append(line)
 
-    def __getstate__(self):
-        d={}
-        for each in self.__dict__.keys():
-            if each == "quote":
-                continue
-            if each in ['maillist','prev','next','body']:
-                d[each] = None
-            else:
-                d[each] = self.__dict__[each]
-        d['body']=[]
-        return d
-
 
 
 class HyperArchive(pipermail.T):
@@ -576,7 +633,7 @@ class HyperArchive(pipermail.T):
             else:
                 d["%s_ref" % (t)] = ('<a href="%s.html#start">[ %s ]</a>'
                                      % (t, i[t]))
-        return Utils.maketext(
+        return quick_maketext(
             'archidxfoot.html', d, raw=1,
             lang=mlist.preferred_language,
             mlist=mlist)
@@ -615,7 +672,7 @@ class HyperArchive(pipermail.T):
             d["encoding"] = html_charset % self.charset
         else:
             d["encoding"] = ""
-        return Utils.maketext(
+        return quick_maketext(
             'archidxhead.html', d, raw=1,
             lang=mlist.preferred_language,
             mlist=mlist)
@@ -641,11 +698,11 @@ class HyperArchive(pipermail.T):
                 d["archive_listing"] = ""
             else:
                 d["noarchive_msg"] = ""
-                d["archive_listing_start"] = Utils.maketext(
+                d["archive_listing_start"] = quick_maketext(
                     'archliststart.html', raw=1,
                     lang=mlist.preferred_language,
                     mlist=mlist)
-                d["archive_listing_end"] = Utils.maketext(
+                d["archive_listing_end"] = quick_maketext(
                     'archlistend.html', raw=1,
                     lang=mlist.preferred_language,
                     mlist=mlist)
@@ -660,7 +717,7 @@ class HyperArchive(pipermail.T):
         if not d.has_key("encoding"):
             d["encoding"] = ""
 
-        return Utils.maketext(
+        return quick_maketext(
             'archtoc.html', d, raw=1,
             lang=mlist.preferred_language,
             mlist=mlist)
@@ -691,7 +748,7 @@ class HyperArchive(pipermail.T):
         else:
             # there's no archive file at all... hmmm.
             textlink = ''
-        return Utils.maketext(
+        return quick_maketext(
             'archtocentry.html',
             {'archive': arch,
              'archivelabel': self.volNameToDesc(arch),
@@ -923,7 +980,7 @@ class HyperArchive(pipermail.T):
             'sequence': article.sequence,
             'author':   author
         }
-        print Utils.maketext(
+        print quick_maketext(
             'archidxentry.html', d, raw=1,
             lang=self.maillist.preferred_language,
             mlist=self.maillist)
