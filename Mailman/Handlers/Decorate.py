@@ -74,7 +74,13 @@ def process(mlist, msg, msgdata):
     if not msg.is_multipart() and msgtype == 'text/plain' and \
            msg.get('content-transfer-encoding', '').lower() <> 'base64' and \
            (lcset == 'us-ascii' or mcset == lcset):
-        payload = header + msg.get_payload() + footer
+        oldpayload = msg.get_payload()
+        frontsep = endsep = ''
+        if not header.endswith('\n'):
+            frontsep = '\n'
+        if not oldpayload.endswith('\n'):
+            endsep = '\n'
+        payload = header + frontsep + oldpayload + endsep + footer
         msg.set_payload(payload)
     elif msg.get_type() == 'multipart/mixed':
         # The next easiest thing to do is just prepend the header and append
