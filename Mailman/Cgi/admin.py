@@ -217,8 +217,8 @@ def FormatAdminOverview(error=None):
                        % ((error and "the right ") or ""))
                       +
                       " General list information can be found at ",
-                      Link(os.path.join('../'* Utils.GetNestingLevel(), 
-                          "listinfo/"), "the mailing list overview page"),
+                      Link("%slistinfo" % ('../' * Utils.GetNestingLevel()), 
+                           "the mailing list overview page"),
                       "."
                       "<p>(Send questions and comments to ",
                      Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
@@ -398,7 +398,7 @@ def FormatOptionHelp(doc, varref, lst):
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, item[4]))
     doc.AddItem("%s<p>" % item[5])
 
-    form = Form(os.path.join(lst.GetRelativeScriptURL('admin'), category))
+    form = Form("%s/%s" % (lst.GetRelativeScriptURL('admin'), category))
     valtab = Table(cellspacing=3, cellpadding=4)
     AddOptionsTableItem(valtab, item, category, lst, nodetails=1)
     form.AddItem(valtab)
