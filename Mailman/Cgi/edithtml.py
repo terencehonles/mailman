@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,11 +28,15 @@ from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman import Errors
 from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 
 
 def main():
-    def _(string): return string
+    # Trick out pygettext since we want to mark template_data as translatable,
+    # but we don't want to actually translate it here.
+    def _(string):
+        return string
 
     template_data = (
         ('listinfo.html',    _('General list information page')),
@@ -41,7 +45,9 @@ def main():
         ('handle_opts.html', _('Changing user options results page')),
         )
 
-    _ = gettext.gettext
+    import Mailman.i18n
+    _ = Mailman.i18n._
+
     doc = Document()
     parts = Utils.GetPathPieces()
     if not parts:
@@ -53,9 +59,9 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        doc.AddItem(Header(2, _('No such list <em>%s</em>') % listname))
+        doc.AddItem(Header(2, _('No such list <em>%(listname)s</em>')))
         print doc.Format(bgcolor='#ffffff')
-        syslog('error', _('No such list "%s": %s\n') % (listname, e))
+        syslog('error', _('No such list "%(listname)s": %(e)s\n'))
         return
 
     os.environ['LANG'] = mlist.preferred_language
@@ -82,7 +88,7 @@ def main():
                 break
         else:
             doc.SetTitle(_('Edit HTML : Error'))
-            doc.AddItem(Header(2, _("%s: Invalid template") % template_name))
+            doc.AddItem(Header(2, _("%(template_name)s: Invalid template")))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor='#ffffff')
             return
