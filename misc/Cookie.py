@@ -451,7 +451,7 @@ class Morsel(UserDict):
 
 		# Now add any defined attributes
 		for K,V in self.items():
-			if not V: continue
+			if V == '': continue
 			if K == "expires" and type(V) == type(1):
 				RA("%s=%s;" % (self.__reserved[K], _getdate(V)))
 			elif K == "max-age" and type(V) == type(1):
