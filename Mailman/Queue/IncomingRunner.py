@@ -128,7 +128,7 @@ class IncomingRunner(Runner):
         while pipeline:
             handler = pipeline.pop(0)
             modname = 'Mailman.Handlers.' + handler
-            mod = __import__(modname)
+            __import__(modname)
             try:
                 pid = os.getpid()
                 sys.modules[modname].process(mlist, msg, msgdata)
