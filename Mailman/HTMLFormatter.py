@@ -21,6 +21,7 @@ import re
 
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import MemberAdaptor
 from Mailman.htmlformat import *
 
 from Mailman.i18n import _
@@ -81,7 +82,6 @@ class HTMLFormatter:
                '<em>(%(num_concealed)d private members not shown)</em>')
         else:
             concealed = ''
-        disdel = mm_cfg.DisableDelivery
         items = []
         people.sort()
         for person in people:
@@ -92,16 +92,19 @@ class HTMLFormatter:
             else:
                 showing = person
             got = Link(url, showing)
-            if self.getMemberOption(person, disdel):
+            if self.getDeliveryStatus(person) <> MemberAdaptor.ENABLED:
                 got = Italic('(', got, ')')
             items.append(got)
         # Just return the .Format() so this works until I finish
         # converting everything to htmlformat...
         return concealed + UnorderedList(*tuple(items)).Format()
 
-    def FormatOptionButton(self, type, value, user):
-        users_val = self.getMemberOption(user, type)
-        if users_val == value:
+    def FormatOptionButton(self, option, value, user):
+        if option == mm_cfg.DisableDelivery:
+            optval = self.getDeliveryStatus(user) <> MemberAdaptor.ENABLED
+        else:
+            optval = self.getMemberOption(user, option)
+        if optval == value:
             checked = ' CHECKED'
         else:
             checked = ''
@@ -113,7 +116,7 @@ class HTMLFormatter:
                 mm_cfg.ConcealSubscription      : 'conceal',
                 mm_cfg.SuppressPasswordReminder : 'remind',
                 mm_cfg.ReceiveNonmatchingTopics : 'rcvtopic',
-                }[type]
+                }[option]
         return '<input type=radio name="%s" value="%d"%s>' % (
             name, value, checked)
 
@@ -125,9 +128,20 @@ class HTMLFormatter:
         return '<input type=radio name="digest" value="1"%s>' % checked
 
     def FormatDisabledNotice(self, user):
-        if self.getMemberOption(user, mm_cfg.DisableDelivery):
+        status = self.getDeliveryStatus(user)
+        reason = None
+        if status == MemberAdaptor.BYUSER:
+            reason = _('; it was disabled by you')
+        elif status == MemberAdaptor.BYADMIN:
+            reason = _('; it was disabled by the list administrator')
+        elif status == MemberAdaptor.BYBOUNCE:
+            reason = _('; it was disabled due to excessive bounces')
+        elif status == MemberAdaptor.UNKNOWN:
+            reason = _('; it was disabled for unknown reasons')
+        if reason:
             note = FontSize('+1', _(
-                'Note: your list delivery is currently disabled.')).Format()
+                'Note: your list delivery is currently disabled %(reason)s.'
+                )).Format()
             link = Link('#disable', _('Mail delivery')).Format()
             mailto = Link('mailto:' + self.GetOwnerEmail(),
                           _('the list administrator')).Format()
