@@ -958,14 +958,6 @@ DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER = 1
 DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE = 1
 DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL = 1
 
-# List of addresses (lhs of the @) that likely come only from MTAs bouncing
-# messages.  This is used in the bounce detector and MailCommandHandler.py to
-# stop processing or forwarding such messages.
-#
-# TBD: why orphanage?  why postoffice?
-LIKELY_BOUNCE_SENDERS = ('daemon', 'mailer-daemon', 'postmaster',
-                         'orphanage', 'postoffice')
-
 
 
 #####
@@ -1081,6 +1073,16 @@ SuppressPasswordReminder = 32
 ReceiveNonmatchingTopics = 64
 Moderate = 128
 DontReceiveDuplicates = 256
+
+# A mapping between short option tags and their flag
+OPTINFO = {'hide'    : ConcealSubscription,
+           'nomail'  : DisableDelivery,
+           'ack'     : AcknowledgePosts,
+           'notmetoo': DontReceiveOwnPosts,
+           'digest'  : 0,
+           'plain'   : DisableMime,
+           'nodupes' : DontReceiveDuplicates
+           }
 
 # Authentication contexts.
 #
