@@ -70,7 +70,9 @@ BLOCKFILE = 'gate_news.lck'
 def open_newsgroup(mlist):
     # Open up a "mode reader" connection to the gated newsgroup.  Let
     # exceptions percolate up.
-    conn = nntplib.NNTP(mlist.nntp_host, readermode=1)
+    conn = nntplib.NNTP(mlist.nntp_host, readermode=1,
+                        user=mm_cfg.NNTP_USERNAME,
+                        password=mm_cfg.NNTP_PASSWORD)
     # Get the GROUP information for the list, but we're only really interested
     # in the first article number and the last article number
     r,c,f,l,n = conn.group(mlist.linked_newsgroup)
