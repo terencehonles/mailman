@@ -777,12 +777,15 @@ def uncanonstr(s, lang=None):
             return s
     except UnicodeError:
         # Nope, it contains funny characters, so html-ref it
-        a = []
-        for c in s:
-            o = ord(c)
-            if o > 127:
-                a.append('&#%3d;' % o)
-            else:
-                a.append(c)
-        # Join characters together and coerce to byte string
-        return str(EMPTYSTRING.join(a))
+        return uquote(s)
+
+def uquote(s):
+    a = []
+    for c in s:
+        o = ord(c)
+        if o > 127:
+            a.append('&#%3d;' % o)
+        else:
+            a.append(c)
+    # Join characters together and coerce to byte string
+    return str(EMPTYSTRING.join(a))
