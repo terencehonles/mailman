@@ -62,9 +62,9 @@ gcc 2.8.1 or later is known to work well.
 <h3>Downloading</h3>
 
 <p>Version
-(<!-VERSION--->2.1b4<!-VERSION--->,
+(<!-VERSION--->2.1b5<!-VERSION--->,
 released on
-<!-DATE--->26-Oct-2002<!-DATE--->)
+<!-DATE--->19-Nov-2002<!-DATE--->)
 is a beta release of the next version.  While the betas seem to be
 working quite well, it is still recommended that you use the
 <a href="http://sourceforge.net/project/showfiles.php?group_id=103">latest

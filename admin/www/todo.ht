@@ -3,7 +3,7 @@ Title: The Mailman Wishlist
 <h3> The Mailman Wishlist
 </h3>
  <p>
-<h3> (Last Update: $Date: 2002-10-26 16:32:26 +0100 (Sat, 26 Oct 2002) $)
+<h3> (Last Update: $Date: 2002-11-19 07:11:17 +0000 (Tue, 19 Nov 2002) $)
 </h3>
  Here's the wish list for future versions of Mailman.  Many new
  features have been added to Mailman 2.1, so what's left will
@@ -93,6 +93,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
 </ul>
 <h3> List Administration
 </h3>
@@ -128,6 +131,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -163,6 +169,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
 </ul>
 <h3> List Membership
@@ -199,6 +208,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -234,6 +246,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -284,6 +299,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -319,6 +337,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -375,6 +396,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -410,6 +434,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -472,6 +499,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -507,6 +537,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -579,6 +612,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -614,6 +650,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -697,6 +736,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -732,6 +774,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -818,6 +863,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -853,6 +901,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -948,6 +999,9 @@ Title: The Mailman Wishlist
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
+    <li> Allow a site admin and list admins to categorize lists, so that they can be better organized on the listinfo and admin overview
+ pages.
+
     <li> Allow the moderator to edit posts being held for approval (make it evident, either through a header or other means that the
  message was edited by the moderator).
 
@@ -983,6 +1037,9 @@ Title: The Mailman Wishlist
  when the approved resend is received.
 
     <li> Have an option to sort the list of members by real name or email address.
+
+    <li> Test a message for all hold criteria, record them all instead of just the first match, and do a SpamAssassin like scoring to
+ decide whether the message should get held or not.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
