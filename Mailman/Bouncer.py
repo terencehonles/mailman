@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 394 $"
+__version__ = "$Revision: 418 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -92,11 +92,10 @@ class Bouncer:
 			      self.post_id - inf[1])
 		if post_count < 0:
 		    post_count = 0
+                remain = self.minimum_removal_date * 24 * 60 * 60 - difference
 		self.LogMsg("bounce",
-			    (report + ("%d more posts, %d more secs"
-				       (post_count,
-					(self.minimum_removal_date
-					 * 24 * 60 * 60 - difference)))))
+			    report + ("%d more posts, %d more secs"
+                                      % (post_count, remain)))
 		self.Save()
 		return
 
@@ -228,16 +227,16 @@ class Bouncer:
                                         '"[^"]+"')[1][1:-1]
 
 	if boundry:
-	    relevent_text = string.split(msg.body, '--%s' % boundry)[1]
+	    relevant_text = string.split(msg.body, '--%s' % boundry)[1]
 	else:
 	    # This looks strange, but at least 2 are going to be no-ops.
-	    relevent_text = regsub.split(msg.body,
+	    relevant_text = regsub.split(msg.body,
                                          '^.*Message header follows.*$')[0]
-	    relevent_text = regsub.split(relevent_text,
+	    relevant_text = regsub.split(relevant_text,
                                          '^The text you sent follows:.*$')[0]
-	    relevent_text = regsub.split(
-                relevent_text, '^Additional Message Information:.*$')[0]
-	    relevent_text = regsub.split(relevent_text,
+	    relevant_text = regsub.split(
+                relevant_text, '^Additional Message Information:.*$')[0]
+	    relevant_text = regsub.split(relevant_text,
                                          '^-+Your original message-+.*$')[0]
 	
 	BOUNCE = 1
@@ -268,7 +267,7 @@ class Bouncer:
 	message_groked = 0
 
 	did = []
-	for line in string.split(relevent_text, '\n'):
+	for line in string.split(relevant_text, '\n'):
 	    for pattern, action in simple_bounce_pats:
 		if pattern.match(line) <> -1:
 		    email = self.ExtractBouncingAddr(line)
