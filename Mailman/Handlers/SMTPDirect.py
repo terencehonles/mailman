@@ -103,7 +103,7 @@ def process(mlist, msg, msgdata):
             # It's a permanent failure for this recipient so register it.  We
             # don't save the list between each registration because we assume
             # it happens around the whole message delivery sequence
-            mlist.RegisterBounce(recip, msg, saveifdirty=0)
+            mlist.RegisterBounce(recip, msg)
         else:
             # Deal with persistent transient failures by queuing them up for
             # future delivery.  TBD: this could generate lots of log entries!
