@@ -42,6 +42,7 @@ from SecurityManager import SecurityManager
 from Bouncer import Bouncer
 from GatewayManager import GatewayManager
 from Mailman.Logging.StampedLogger import StampedLogger
+import LockFile
 
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
@@ -67,6 +68,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         except AttributeError:
             # List may not have gotten far enough to have proper _log_files!
             pass
+        self.Unlock()
 
     def GetMembers(self):
         """returns a list of the members. (all lowercase)"""
@@ -257,8 +259,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def InitTempVars(self, name, lock):
         """Set transient variables of this and inherited classes."""
-	self._tmp_lock = lock
-	self._lock_file = None
+	self.__createlock_p = lock
+	self.__lock = LockFile.LockFile(
+            os.path.join(mm_cfg.LOCK_DIR, name) + '.lock',
+            # TBD: is this a good choice of lifetime?
+            lifetime = 60)
 	self._internal_name = name
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
@@ -794,7 +799,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.CheckHTMLArchiveDir()
 
     def Load(self, check_version = 1):
-	if self._tmp_lock:
+        if self.__createlock_p:
            self.Lock()
 	try:
 	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
@@ -1358,35 +1363,22 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.Save()
 
     def Locked(self):
-        try:
-            return self._lock_file and 1
-        except AttributeError:
-            return 0
+        return self.__lock.locked()
 
     def Lock(self):
-	try:
-	    if self._lock_file:
-		return
-	except AttributeError:
-	    return
-	ou = os.umask(0)
-	try:
-	    self._lock_file = posixfile.open(
-		os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % self._internal_name),
-		'a+')
-	finally:
-	    os.umask(ou)
-	self._lock_file.lock('w|', 1)
+        self.__lock.lock()
     
     def Unlock(self):
-        if self.Locked():
-            self._lock_file.lock('u')
-            self._lock_file.close()
-            self._lock_file = None
+        try:
+            self.__lock.unlock()
+        except LockFile.NotLockedError:
+            pass
 
     def __repr__(self):
-	if self.Locked(): status = " (locked)"
-	else: status = ""
-	return ("<%s.%s %s%s at %s>"
-		% (self.__module__, self.__class__.__name__,
-		   `self._internal_name`, status, hex(id(self))[2:]))
+	if self.Locked():
+            status = " (locked)"
+	else:
+            status = ""
+	return ("<%s.%s %s%s at %s>" %
+                (self.__module__, self.__class__.__name__,
+                 `self._internal_name`, status, hex(id(self))[2:]))
