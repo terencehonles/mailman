@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Mon Apr 21 11:13:43 2003\n"
-"PO-Revision-Date: 2003-02-10 10:31+0100\n"
+"PO-Revision-Date: 2003-04-22 09:26+0200\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1463,6 +1463,9 @@ msgid ""
 "            been discarded, and both list administrators have been\n"
 "            alerted."
 msgstr ""
+"            Du er ikke invitert til denne listen. Invitasjonen er "
+"forkastet,\n"
+"            og begge listeadministratorer er varslet."
 
 #: Mailman/Cgi/confirm.py:362
 msgid "Subscription request confirmed"
@@ -2781,7 +2784,6 @@ msgid "You have been successfully subscribed to the %(realname)s mailing list."
 msgstr "Du er n&aring; meldt p&aring; epostlisten %(realname)s."
 
 #: Mailman/Commands/cmd_confirm.py:17
-#, fuzzy
 msgid ""
 "\n"
 "    confirm <confirmation-string>\n"
@@ -2821,7 +2823,6 @@ msgstr ""
 "godkjenning."
 
 #: Mailman/Commands/cmd_confirm.py:63
-#, fuzzy
 msgid ""
 "You are not currently a member.  Have you already unsubscribed or changed\n"
 "your email address?"
@@ -2835,6 +2836,8 @@ msgid ""
 "discarded,\n"
 "and both list administrators have been alerted."
 msgstr ""
+"Du er ikke invitert til denne listen. Invitasjonen er forkastet,\n"
+"og begge listeadministratorer er varslet."
 
 #: Mailman/Commands/cmd_confirm.py:77
 msgid "Confirmation succeeded"
@@ -3551,12 +3554,11 @@ msgstr "Norsk"
 
 #: Mailman/Defaults.py:1270
 msgid "Polish"
-msgstr ""
+msgstr "Polsk"
 
 #: Mailman/Defaults.py:1271
-#, fuzzy
 msgid "Portuguese"
-msgstr "Portugisisk (Brasil)"
+msgstr "Portugisisk"
 
 #: Mailman/Defaults.py:1272
 msgid "Portuguese (Brazil)"
@@ -3599,7 +3601,7 @@ msgstr "Påminnelse fra epostlisten %(listfullname)s"
 
 #: Mailman/Deliverer.py:157 Mailman/Deliverer.py:176
 msgid "Hostile subscription attempt detected"
-msgstr ""
+msgstr "Ulovlig påmeldingsforsøk oppdaget"
 
 #: Mailman/Deliverer.py:158
 msgid ""
@@ -3608,6 +3610,10 @@ msgid ""
 "invitation to your list.  We just thought you'd like to know.  No further\n"
 "action by you is required."
 msgstr ""
+"%(address)s ble invitert til en annen epostliste, men forsøkte å melde seg "
+"på\n"
+"listen din. Vi tenkte kanskje du kunne ha nytte av å vite om dette.\n"
+"Du trenger ikke foreta deg noe, da forsøket ikke lyktes."
 
 #: Mailman/Deliverer.py:177
 msgid ""
@@ -3617,6 +3623,10 @@ msgid ""
 "you\n"
 "is required."
 msgstr ""
+"Du inviterte %(address)s til listen din, som forsøkte å takke ja til\n"
+"en annen liste ved å benytte din invitasjon. Vi tenkte kanskje du kunne\n"
+"ha nytte av å vite om dette. Du trenger ikke foreta deg noe, da forsøket\n"
+"selvsagt ikke lyktes."
 
 #: Mailman/Errors.py:114
 msgid "For some unknown reason"
@@ -5615,6 +5625,20 @@ msgid ""
 "        page.\n"
 "</ul>\n"
 msgstr ""
+"<p>N&aring;r <a href=\"?VARHELP=nondigest/personalize\">personliggj&oslash;"
+"ring av meldinger</a> aktiveres,\n"
+"kan noen flere variabler benyttes i topptekst og bunntekst:\n"
+"\n"
+"<ul>\n"
+"  <li><b>user_address</b> - medlemmets epostadresse, med sm&aring; "
+"bokstaver</li>\n"
+"  <li><b>user_delivered_to</b> - medlemmets epostadresse, slik den ble "
+"p&aring;meldt listen.</li>\n"
+"  <li><b>user_password</b> - medlemmets passord</li>\n"
+"  <li><b>user_name</b> - medlemmets fulle navn</li>\n"
+"  <li><b>user_optionsurl</b> - URL til websiden med personlige innstillinger "
+"for medlemmet.\n"
+"</ul>\n"
 
 #: Mailman/Gui/NonDigest.py:128
 msgid "Header added to mail sent to regular list members"
@@ -7223,9 +7247,9 @@ msgid "The attached message has been automatically discarded."
 msgstr "Den vedlagte meldingen er automatisk forkastet."
 
 #: Mailman/Handlers/Replybot.py:74
-#, fuzzy
 msgid "Auto-response for your message to the \"%(realname)s\" mailing list"
-msgstr "Automatisk svar for meldingen du sendte til "
+msgstr ""
+"Automatisk svar for meldingen du sendte til epostlisten \"%(realname)s\""
 
 #: Mailman/Handlers/Replybot.py:107
 msgid "The Mailman Replybot"
@@ -7376,24 +7400,19 @@ msgstr ""
 "Her er linjene som må legges inn i aliasfilen:\n"
 
 #: Mailman/MTA/Manual.py:75
-#, fuzzy
 msgid ""
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
 "equivalent) file by adding the following lines, and possibly running the\n"
 "`newaliases' program:\n"
 msgstr ""
-"\n"
 "For å fullføre opprettelsen av epostlisten, må du redigere filen /etc/"
 "aliases\n"
 "(eller tilsvarende aliasfil), legge til følgende linjer, og deretter\n"
 "muligens kjøre programmet 'newaliases':\n"
-"\n"
-"## Epostliste: %(listname)s"
 
 #: Mailman/MTA/Manual.py:80
-#, fuzzy
 msgid "## %(listname)s mailing list"
-msgstr "epostlisten \"%(realname)s\""
+msgstr "## epostlisten %(listname)s"
 
 #: Mailman/MTA/Manual.py:97
 msgid "Mailing list creation request for list %(listname)s"
@@ -7547,6 +7566,9 @@ msgid ""
 "No commands were found in this message.\n"
 "To obtain instructions, send a message containing just the word \"help\".\n"
 msgstr ""
+"Ingen kommandoer ble funnet i denne meldingen.\n"
+"For å motta nærmere instruksjoner, send en melding som kun inneholder ordet "
+"\"help\".\n"
 
 #: Mailman/Queue/CommandRunner.py:161
 msgid ""
@@ -7664,7 +7686,6 @@ msgid ""
 msgstr ""
 
 #: bin/add_members:26
-#, fuzzy
 msgid ""
 "Add members to a list from the command line.\n"
 "\n"
@@ -7725,17 +7746,10 @@ msgstr ""
 "        input.\n"
 "\n"
 "    --digest-members-file=filnavn\n"
-"    -d=filnavn\n"
+"    -d filnavn\n"
 "        Akkurat som -n valget ovenfor, men de som står i denne filen blir "
 "satt\n"
 "        opp i sammendrag-modus.\n"
-"\n"
-"    --changes-msg=<y|n>\n"
-"    -c <y|n>\n"
-"        Forteller om det skal sendes ut en meldingen til listens medlemmer "
-"om\n"
-"        at \"det kommer til å bli en stor endring på listen\".\n"
-"        Default: n\n"
 "\n"
 "    --welcome-msg=<y|n>\n"
 "    -w <y|n>\n"
@@ -7936,7 +7950,6 @@ msgid ""
 msgstr ""
 
 #: bin/b4b5-archfix.~1~:19 bin/b4b5-archfix.~2~:19
-#, fuzzy
 msgid ""
 "Fix the MM2.1b4 archives.\n"
 "\n"
@@ -7946,16 +7959,6 @@ msgid ""
 "    -h / --help\n"
 "        Print this help message and exit.\n"
 msgstr ""
-"Genererer Postfix filene data/aliases og data/aliases.db på nytt.\n"
-"\n"
-"Brukes slik:\n"
-"\n"
-"    genaliases [valg]\n"
-"\n"
-"Valg:\n"
-"\n"
-"    --help / -h\n"
-"        Viser denne hjelpeteksten.\n"
 
 #: bin/change_pw:19
 msgid ""
@@ -8227,9 +8230,8 @@ msgid "checking mode for %(prefix)s"
 msgstr "kontrollerer rettigheter for %(prefix)s"
 
 #: bin/check_perms:174
-#, fuzzy
 msgid "WARNING: directory does not exist: %(d)s"
-msgstr "katalogen må minst ha rettighetene 02775: %(d)s"
+msgstr "ADVARSEL: katalogen finnes ikke: %(d)s"
 
 #: bin/check_perms:178
 msgid "directory must be at least 02775: %(d)s"
@@ -9830,7 +9832,6 @@ msgid "No runner name given."
 msgstr "Ingen runner navn ble angitt."
 
 #: bin/remove_members:19
-#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -9899,11 +9900,13 @@ msgstr ""
 "\n"
 "    --nouserack\n"
 "    -n\n"
-"        Ikke send beskjed til medlemmet/medlemmene som fjernes.\n"
+"        Ikke send beskjed til medlemmet/medlemmene som fjernes. Hvis dette\n"
+"        valget ikke benyttes, brukes listens standardinnstilling.\n"
 "\n"
 "    --noadminack\n"
 "    -N\n"
-"        Ikke send beskjed om utmelding til administratoren(e).\n"
+"        Ikke send beskjed om utmelding til administratoren(e). Hvis dette\n"
+"        valget ikke benyttes, brukes listens standardinnstilling.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -9976,9 +9979,8 @@ msgid "Removing %(msg)s"
 msgstr "Fjerner %(msg)s"
 
 #: bin/rmlist:80
-#, fuzzy
 msgid "%(listname)s %(msg)s not found as %(filename)s"
-msgstr "Fant ikke %(listname)s %(msg)s som %(dir)s"
+msgstr "Fant ikke %(listname)s %(msg)s som %(filename)s"
 
 #: bin/rmlist:104
 msgid "No such list (or list already deleted): %(listname)s"
@@ -10000,7 +10002,7 @@ msgstr "listeinformasjon"
 
 #: bin/rmlist:132
 msgid "stale lock file"
-msgstr ""
+msgstr "gammel låsefil"
 
 #: bin/rmlist:137 bin/rmlist:139
 msgid "private archives"
@@ -10802,7 +10804,6 @@ msgstr ""
 "volume nummer for alle lister.\n"
 
 #: cron/checkdbs:19
-#, fuzzy
 msgid ""
 "Check for pending admin requests and mail the list owners if necessary.\n"
 "\n"
@@ -10813,11 +10814,10 @@ msgid ""
 "    -h/--help\n"
 "        Print this message and exit.\n"
 msgstr ""
-"Genererer Postfix filene data/aliases og data/aliases.db på nytt.\n"
+"Sjekker om det ligger forespørsler på vent, og sender en mail til listenes\n"
+"eiere om nødvendig.\n"
 "\n"
-"Brukes slik:\n"
-"\n"
-"    genaliases [valg]\n"
+"Brukes slik: %(PROGRAM)s [valg]\n"
 "\n"
 "Valg:\n"
 "\n"
