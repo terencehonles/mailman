@@ -20,6 +20,8 @@
 import os
 import marshal
 import string
+import sys
+import time
 import errno
 
 #
@@ -39,7 +41,6 @@ try:
 except ImportError:
     import pickle
 
-
 #
 # we're using a python dict in place of
 # of bsddb.btree database.  only defining
@@ -47,12 +48,17 @@ except ImportError:
 # only one thing can access this at a time.
 #
 class DumbBTree:
-    # XXX This dictionary-like object stores pickles of all the
-    # Article objects.  The object itself is stored using marshal.  It 
-    # would be much simpler, and probably faster, to store the actual
-    # objects in the DumbBTree and pickle it.
-    # XXX Also needs a more sensible name, like IteratableDictionary
-    # or SortedDictionary.
+    """Stores pickles of Article objects
+
+    This dictionary-like object stores pickles of all the Article
+    objects.  The object itself is stored using marshal.  It would be
+    much simpler, and probably faster, to store the actual objects in
+    the DumbBTree and pickle it.
+    
+    TBD: Also needs a more sensible name, like IteratableDictionary or
+    SortedDictionary.
+    """
+    
     def __init__(self, path):
         self.current_index = 0
         self.path = path
@@ -74,6 +80,9 @@ class DumbBTree:
             pass
         else:
             self.__sort(dirty=1)
+
+    def __repr__(self):
+        return "DumbBTree(%s)" % self.path
 
     def __sort(self, dirty=None):
         if self.__dirty == 1 or dirty:
@@ -123,9 +132,8 @@ class DumbBTree:
             raise KeyError
         else:
             key = self.sorted[0]
-            res = key, self.dict[key]
             self.current_index = 1
-	    return res
+	    return key, self.dict[key]
 
     def last(self):
         if not self.sorted:
@@ -178,7 +186,6 @@ class DumbBTree:
         fp.close()
         self.unlock()
 
-
 
 # this is lifted straight out of pipermail with
 # the bsddb.btree replaced with above class.
@@ -186,6 +193,8 @@ class DumbBTree:
 # __internal stuff that needs to be here -scott
 #
 class HyperDatabase(pipermail.Database):
+    __super_addArticle = pipermail.Database.addArticle
+    
     def __init__(self, basedir):
         self.__cache = {}
 	self.__currentOpenArchive = None   # The currently open indices
@@ -194,89 +203,73 @@ class HyperDatabase(pipermail.Database):
         self.changed={}
 
     def firstdate(self, archive):
-	import time
 	self.__openIndices(archive)
-	date='None'
+	date = 'None'
 	try:
-	    date, msgid = self.dateIndex.first()
-	    date=time.asctime(time.localtime(string.atof(date)))
-	except KeyError: pass
+	    datekey, msgid = self.dateIndex.first()
+	    date = time.asctime(time.localtime(string.atof(datekey[0])))
+	except KeyError:
+            pass
 	return date
 
     def lastdate(self, archive):
-	import time
 	self.__openIndices(archive)
-	date='None'
+	date = 'None'
 	try:
-	    date, msgid = self.dateIndex.last()
-	    date=time.asctime(time.localtime(string.atof(date)))
-	except KeyError: pass
+	    datekey, msgid = self.dateIndex.last()
+	    date = time.asctime(time.localtime(string.atof(datekey[0])))
+	except KeyError:
+            pass
 	return date
 
     def numArticles(self, archive):
 	self.__openIndices(archive)
 	return len(self.dateIndex)    
 
-    # Add a single article to the internal indexes for an archive.
-
-    def addArticle(self, archive, article, subjectkey, authorkey):
+    def addArticle(self, archive, article, subject=None, author=None,
+                   date=None):
 	self.__openIndices(archive)
+        self.__super_addArticle(archive, article, subject, author, date)
 
-	# Add the new article
-	self.dateIndex[article.date]=article.msgid
-	self.authorIndex[authorkey]=article.msgid
-	self.subjectIndex[subjectkey]=article.msgid
-	# Set the 'body' attribute to empty, to avoid storing the whole message
-	temp = article.body ; article.body=[]
-	self.articleIndex[article.msgid]=pickle.dumps(article)
-	article.body=temp
-	self.changed[archive,article.msgid]=None
-
-	parentID=article.parentID
-	if parentID!=None and self.articleIndex.has_key(parentID): 
-	    parent=self.getArticle(archive, parentID)
-	    myThreadKey=parent.threadKey+article.date+'-'
-	else: myThreadKey = article.date+'-'
-	article.threadKey=myThreadKey
-	self.setThreadKey(archive, myThreadKey+'\000'+article.msgid, article.msgid)
-
-    # Open the BSDDB files that are being used as indices
-    # (dateIndex, authorIndex, subjectIndex, articleIndex)
     def __openIndices(self, archive):
-	if self.__currentOpenArchive==archive: return
+	if self.__currentOpenArchive == archive:
+            return
 	self.__closeIndices()
-	arcdir=os.path.join(self.basedir, 'database')
-	try: mkdir(arcdir, mode=02770)
-        except os.error: pass
-	for i in ['date', 'author', 'subject', 'article', 'thread']:
-	    t=DumbBTree(os.path.join(arcdir, archive+'-'+i)) 
-	    setattr(self, i+'Index', t)
-	self.__currentOpenArchive=archive
+	arcdir = os.path.join(self.basedir, 'database')
+	try:
+            mkdir(arcdir, mode=02770)
+        except os.error:
+            pass
+	for i in ('date', 'author', 'subject', 'article', 'thread'):
+	    t = DumbBTree(os.path.join(arcdir, archive + '-' + i)) 
+	    setattr(self, i + 'Index', t)
+	self.__currentOpenArchive = archive
 
-    # Close the BSDDB files that are being used as indices (if they're
-    # open--this is safe to call if they're already closed)
     def __closeIndices(self):
-	if self.__currentOpenArchive!=None: 
-	    pass
-	for i in ['date', 'author', 'subject', 'thread', 'article']:
-	    attr=i+'Index'
+	for i in ('date', 'author', 'subject', 'thread', 'article'):
+	    attr = i + 'Index'
 	    if hasattr(self, attr): 
-		index=getattr(self, attr) 
-		if i=='article': 
+		index = getattr(self, attr) 
+		if i == 'article': 
 	            if not hasattr(self, 'archive_length'):
-                        self.archive_length={}
-		    self.archive_length[self.__currentOpenArchive]=len(index)
+                        self.archive_length = {}
+                    l = len(index)
+                    self.archive_length[self.__currentOpenArchive] = l
 		index.close() 
-		delattr(self,attr)
-	self.__currentOpenArchive=None
+		delattr(self, attr)
+	self.__currentOpenArchive = None
+        
     def close(self):
 	self.__closeIndices()
+        
     def hasArticle(self, archive, msgid): 
 	self.__openIndices(archive)
 	return self.articleIndex.has_key(msgid)
+    
     def setThreadKey(self, archive, key, msgid):
 	self.__openIndices(archive)
 	self.threadIndex[key]=msgid
+        
     def getArticle(self, archive, msgid):
 	self.__openIndices(archive)
         if not self.__cache.has_key(msgid):
@@ -289,18 +282,21 @@ class HyperDatabase(pipermail.Database):
 
     def first(self, archive, index): 
 	self.__openIndices(archive)
-	index=getattr(self, index+'Index')
+	index = getattr(self, index + 'Index')
 	try: 
 	    key, msgid = index.first()
 	    return msgid
-	except KeyError: return None
+	except KeyError:
+            return None
+        
     def next(self, archive, index): 
 	self.__openIndices(archive)
-	index=getattr(self, index+'Index')
+	index = getattr(self, index + 'Index')
 	try: 
 	    key, msgid = index.next()
 	    return msgid
-	except KeyError: return None
+	except KeyError:
+            return None
 	
     def getOldestArticle(self, archive, subject):
 	self.__openIndices(archive)
@@ -314,7 +310,9 @@ class HyperDatabase(pipermail.Database):
 	except KeyError: 
 	    return None
 
-    def newArchive(self, archive): pass
+    def newArchive(self, archive):
+        pass
+    
     def clearIndex(self, archive, index):
 	self.__openIndices(archive)
 ##	index=getattr(self, index+'Index')

@@ -58,12 +58,13 @@ def fixAuthor(author):
 
 # Abstract class for databases
 
-class Database:    
+class DatabaseInterface:    
     def __init__(self): pass
     def close(self): pass
     def getArticle(self, archive, msgid): pass
     def hasArticle(self, archive, msgid): pass
-    def addArticle(self, archive, article, subjectkey, authorkey): pass
+    def addArticle(self, archive, article, subject=None, author=None,
+                   date=None): pass
     def firstdate(self, archive): pass
     def lastdate(self, archive): pass
     def first(self, archive, index): pass
@@ -72,6 +73,60 @@ class Database:
     def newArchive(self, archive): pass
     def setThreadKey(self, archive, key, msgid): pass
     def getOldestArticle(self, subject): pass
+
+class Database(DatabaseInterface):
+    """Define the basic sorting logic for a database
+
+    Assumes that the database internally uses dateIndex, authorIndex,
+    etc.
+    """
+
+    # TBD Factor out more of the logic shared between BSDDBDatabase
+    # and HyperDatabase and place it in this class.
+    
+    def __init__(self):
+        # This method need not be called by subclasses that do their
+        # own initialization.
+        self.dateIndex = {}
+        self.authorIndex = {}
+        self.subjectIndex = {}
+        self.articleIndex = {}
+        self.changed = {}
+    
+    def addArticle(self, archive, article, subject=None, author=None,
+                   date=None):
+        # create the keys; always end w/ msgid which will be unique
+        authorkey = (author or article.author, article.date,
+                     article.msgid)
+        subjectkey = (subject or article.subject, article.date,
+                      article.msgid)
+        datekey = date or article.date, article.msgid
+
+	# Add the new article
+	self.dateIndex[datekey] = article.msgid
+	self.authorIndex[authorkey] = article.msgid
+	self.subjectIndex[subjectkey] = article.msgid
+
+        self.store_article(article)
+	self.changed[archive, article.msgid] = None
+
+	parentID = article.parentID
+	if parentID is not None and self.articleIndex.has_key(parentID): 
+	    parent = self.getArticle(archive, parentID)
+	    myThreadKey = parent.threadKey + article.date + '-'
+	else:
+            myThreadKey = article.date + '-'
+	article.threadKey = myThreadKey
+        key = myThreadKey, article.msgid
+	self.setThreadKey(archive, key, article.msgid)
+
+    def store_article(self, article):
+        """Store article without message body to save space"""
+        # TBD this is not thread safe!
+	temp = article.body
+        article.body = []
+	self.articleIndex[article.msgid] = pickle.dumps(article)
+	article.body = temp
 
 # The Article class encapsulates a single posting.  The attributes 
 # are:
@@ -330,7 +385,7 @@ class T:
                                                     article.parentID)
                     article.threadKey = parent.threadKey+article.date+'-' 
                 self.database.setThreadKey(self.archive,
-                    article.threadKey + '\000' + article.msgid,
+                    (article.threadKey, article.msgid),
                     msgid)
 	    msgid = self.database.next(self.archive, 'date')
 
@@ -460,80 +515,84 @@ class T:
 	    self.sequence = self.sequence + 1
 	    self.add_article(a)
 
-    # Archive an Article object.
+    def new_archive(self, archive, archivedir):
+        self.archives.append(archive)
+        self.update_TOC = 1
+        self.database.newArchive(archive)
+        # If the archive directory doesn't exist, create it
+        try:
+            os.stat(archivedir)
+        except os.error, errdata:
+            errno, errmsg = errdata
+            if errno == 2: 
+                mkdir(archivedir, self.DIRMODE)
+            else:
+                raise os.error, errdata
+        self.open_new_archive(archive, archivedir)
+
     def add_article(self, article):
-	# Determine into what archives the article should be placed
 	archives = self.get_archives(article)
         if not archives:
             return
 	if type(archives) == type(''):
             archives = [archives]
 
-	# Add the article to each archive in turn
 	article.filename = filename = self.get_filename(article)
-	temp = self.format_article(article) # Reformat the article
-        fmt = "Processing article #%s into archives %s"
-	self.message(fmt % (article.sequence, archives))
-	for i in archives:
-	    self.archive = i
-	    archivedir = os.path.join(self.basedir, i)
-	    # If it's a new archive, create it
-	    if i not in self.archives: 
-		self.archives.append(i)
-                self.update_TOC = 1
-		self.database.newArchive(i)
-		# If the archive directory doesn't exist, create it
-		try:
-                    os.stat(archivedir)
-		except os.error, errdata:
-		    errno, errmsg = errdata
-		    if errno == 2: 
-			mkdir(archivedir, self.DIRMODE)
-		    else:
-                        raise os.error, errdata
-		self.open_new_archive(i, archivedir)
+	temp = self.format_article(article)
+        fmt = "Processing article #%s into archives %s: %s"
+	self.message(fmt % (article.sequence, archives, article.subject))
+	for arch in archives:
+	    self.archive = arch # why do this???
+	    archivedir = os.path.join(self.basedir, arch)
+	    if arch not in self.archives:
+                self.new_archive(arch, archivedir)
 		
 	    # Write the HTML-ized article
-            self.write_article(i, temp, os.path.join(archivedir,
-                                                     filename))  
+            self.write_article(arch, temp, os.path.join(archivedir,
+                                                        filename))  
 
-	    authorkey = fixAuthor(article.author) + '\000' + article.date
-	    subjectkey = string.lower(article.subject ) +'\000' + article.date
+            author = fixAuthor(article.author)
+            subject = string.lower(article.subject)
 
-	    # Update parenting info
-	    parentID = None
-	    if article.in_reply_to:
-                parentID = article.in_reply_to
-	    elif article.references: 
-		refs = self._remove_external_references(article.references)
-                if refs:
-                    maxdate = self.database.getArticle(self.archive,
-                                                       refs[0])
-                    for ref in refs[1:]:
-                        a = self.database.getArticle(self.archive, ref)
-                        if a.date > maxdate.date:
-                            maxdate = a
-		    parentID = maxdate.msgid
-	    else:
-		# Get the oldest article with a matching subject, and
-		# assume this is a follow-up to that article
-		parentID = self.database.getOldestArticle(self.archive,
-                                                          article.subject) 
-
-	    if parentID is not None \
-               and not self.database.hasArticle(self.archive, parentID): 
-		parentID = None
-	    article.parentID = parentID 
-	    if parentID is not None:
-		parent = self.database.getArticle(self.archive, parentID)
-		article.threadKey = parent.threadKey + article.date + '-'
-	    else:
+            article.parentID = parentID = self.get_parent_info(arch, article)
+            if parentID:
+                parent = self.database.getArticle(arch, parentID)
+                article.threadKey = parent.threadKey + article.date + '-'
+            else:
                 article.threadKey = article.date + '-'
-            key = article.threadKey + '\000' + article.msgid
-   	    self.database.setThreadKey(self.archive, key, article.msgid)
-	    self.database.addArticle(i, temp, subjectkey, authorkey)
-	    if i not in self._dirty_archives: 
-		self._dirty_archives.append(i)
+            key = article.threadKey, article.msgid
+            
+   	    self.database.setThreadKey(arch, key, article.msgid)
+	    self.database.addArticle(arch, temp, author=author,
+                                     subject=subject)
+            
+	    if arch not in self._dirty_archives: 
+		self._dirty_archives.append(arch)
+
+    def get_parent_info(self, archive, article):
+        parentID = None
+        if article.in_reply_to:
+            parentID = article.in_reply_to
+        elif article.references: 
+            refs = self._remove_external_references(article.references)
+            if refs:
+                maxdate = self.database.getArticle(archive, refs[0])
+                for ref in refs[1:]:
+                    a = self.database.getArticle(archive, ref)
+                    if a.date > maxdate.date:
+                        maxdate = a
+                parentID = maxdate.msgid
+        else:
+            # Get the oldest article with a matching subject, and
+            # assume this is a follow-up to that article
+            parentID = self.database.getOldestArticle(archive,
+                                                      article.subject) 
+
+        if parentID and not self.database.hasArticle(archive, parentID): 
+            parentID = None
+        return parentID
+    
+        
 
     def write_article(self, index, article, path):
         f = open(path, 'w')
@@ -588,13 +647,16 @@ class T:
 
 
 class BSDDBdatabase(Database):
+    __super_addArticle = Database.addArticle
+    
     def __init__(self, basedir):
 	self.__cachekeys = []
         self.__cachedict = {}
 	self.__currentOpenArchive = None # The currently open indices
 	self.basedir = os.path.expanduser(basedir)
 	self.changed = {} # Recently added articles, indexed only by
-	                  # message ID 
+	                  # message ID
+                          
     def firstdate(self, archive):
 	self.__openIndices(archive)
 	date = 'None'
@@ -604,6 +666,7 @@ class BSDDBdatabase(Database):
 	except KeyError:
             pass
 	return date
+    
     def lastdate(self, archive):
 	self.__openIndices(archive)
 	date = 'None'
@@ -613,41 +676,21 @@ class BSDDBdatabase(Database):
 	except KeyError:
             pass
 	return date
+    
     def numArticles(self, archive):
 	self.__openIndices(archive)
 	return len(self.dateIndex)    
 
-    # Add a single article to the internal indexes for an archive.
-
-    def addArticle(self, archive, article, subjectkey, authorkey):
-	self.__openIndices(archive)
-
-	# Add the new article
-	self.dateIndex[article.date] = article.msgid
-	self.authorIndex[authorkey] = article.msgid
-	self.subjectIndex[subjectkey] = article.msgid
-	# Set the 'body' attribute to empty, to avoid storing the
-	# whole message 
-	temp = article.body
-        article.body = []
-	self.articleIndex[article.msgid] = pickle.dumps(article)
-	article.body = temp
-	self.changed[archive,article.msgid] = None
-
-	parentID = article.parentID
-	if parentID is not None and self.articleIndex.has_key(parentID): 
-	    parent = self.getArticle(archive, parentID)
-	    myThreadKey = parent.threadKey+article.date + '-'
-	else:
-            myThreadKey = article.date + '-'
-	article.threadKey = myThreadKey
-        key = myThreadKey + '\000' + article.msgid
-	self.setThreadKey(archive, key, article.msgid)
+    def addArticle(self, archive, article, subject=None, author=None,
+                   date=None):
+        self.__openIndices(archive)
+        self.__super_addArticle(archive, article, subject, author, date)
 
     # Open the BSDDB files that are being used as indices
     # (dateIndex, authorIndex, subjectIndex, articleIndex)
     def __openIndices(self, archive):
-	if self.__currentOpenArchive == archive: return
+	if self.__currentOpenArchive == archive:
+            return
 
 	import bsddb
 	self.__closeIndices()
@@ -676,6 +719,7 @@ class BSDDBdatabase(Database):
 		index.close() 
 		delattr(self,attr)
 	self.__currentOpenArchive = None
+        
     def close(self):
 	self.__closeIndices()
     def hasArticle(self, archive, msgid): 
