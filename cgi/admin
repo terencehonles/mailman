@@ -101,7 +101,7 @@ def main():
                                     line)
 
 	FormatConfiguration(doc, list, category, category_suffix)
-	print doc.Format()
+	print doc.Format(bgcolor="#ffffff")
 
     finally:
 	list.Unlock()
