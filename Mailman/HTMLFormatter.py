@@ -364,6 +364,7 @@ class HTMLFormatter:
 	    '<mm-request-addr>' : '%s' % self.GetRequestEmail(),
 	    '<mm-owner>' : self.GetAdminEmail(),
 	    '<mm-reminder>' : self.FormatReminder(),
+            '<mm-host>' : self.host_name,
 	    }
 
     def GetAllReplacements(self):
