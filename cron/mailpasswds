@@ -40,9 +40,11 @@ import string
 import errno
 
 import paths
-from Mailman import MailList
 from Mailman import mm_cfg
+from Mailman import MailList
 from Mailman import Utils
+from Mailman import Message
+from Mailman.Handlers import HandlerAPI
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -50,30 +52,12 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 
 
-def waitall():
-    """Return only when there are no forked subprocesses running."""
-    try:
-        while 1:
-            os.wait()
-    except os.error, (code, msg):
-        # errno.ECHILD: "No child processes"
-        if code <> errno.ECHILD:
-            raise
-
-
-
-# Give time for the delivery process-forks to clear every so often, to
-# avoid saturation of the process table.  Set zero or negative for no
-# pauses.
-PAUSE_FREQUENCY = 10
-
 def mail_passwords(mlist, hosts):
     """Send each user their complete list of passwords.
 
     The list can be any random one - it is only used for the message
     delivery mechanism.  Users are grouped by virtual host.
     """
-    count = PAUSE_FREQUENCY
     mailman_owner = mm_cfg.MAILMAN_OWNER
     for host, users in hosts.items():
         subj = host + ' mailing list memberships reminder'
@@ -95,17 +79,9 @@ def mail_passwords(mlist, hosts):
                  })
             # add this to the end so it doesn't get wrapped/filled
             text = text + header + '\n' + string.join(table, '\n')
-            mlist.SendTextToUser(subject = subj,
-                                 recipient = addr,
-                                 text = text,
-                                 sender = mailman_owner,
-                                 add_headers = ["X-No-Archive: yes",
-                                                "Precedence: bulk"])
-            count = count - 1
-            if count == 0:
-                # The pause that refreshes.
-                waitall()
-                count = PAUSE_FREQUENCY
+            msg = Message.UserNotification(mailman_owner, addr, subj, text)
+            msg['X-No-Archive'] = 'yes'
+            HandlerAPI.DeliverToUser(mlist, msg)
 
 
 
