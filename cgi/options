@@ -67,6 +67,7 @@ if not list._ready:
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
     print doc.Format()
+    list.Unlock()
     sys.exit(0)
 
 if string.lower(user) not in list.members + list.digest_members:
@@ -75,6 +76,7 @@ if string.lower(user) not in list.members + list.digest_members:
                                 % (list_name, `user`)))
     doc.AddItem(list.GetMailmanFooter())
     print doc.Format()
+    list.Unlock()
     sys.exit(0)
 
 # Re-obscure the user's address for the page banner if obscure_addresses set.
@@ -129,3 +131,5 @@ replacements['<mm-email-my-pw>'] = list.FormatButton('emailpw',
 
 doc.AddItem(list.ParseTags('options.html', replacements))
 print doc.Format()
+
+list.Unlock()

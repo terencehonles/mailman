@@ -50,7 +50,7 @@ def main():
     list_name = string.lower(list_info[0])
 
     try:
-        list = maillist.MailList(list_name)
+        list = maillist.MailList(list_name, lock=0)
     except:
         list = None
 
@@ -83,8 +83,7 @@ def FormatListinfoOverview(error=None):
 	http_host = None
 
     for n in names:
-	l = maillist.MailList(n)
-	l.Unlock()
+	l = maillist.MailList(n, lock = 0)
 	if l.advertised:
 	    if (http_host
 		and (string.find(http_host, l.host_name) == -1

@@ -55,6 +55,7 @@ if not list._ready:
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
     print doc.Format()
+    list.Unlock()
     sys.exit(0)
 
 form = cgi.FieldStorage()
@@ -81,6 +82,7 @@ if (form.has_key("UserOptions")
         doc.AddItem(htmlformat.Bold("You must supply your email address."))
 	doc.AddItem(list.GetMailmanFooter())
 	print doc.Format()
+        list.Unlock()
 	sys.exit(0)
     addr = form['info'].value
     member = list.FindUser(addr)
@@ -90,6 +92,7 @@ if (form.has_key("UserOptions")
                                     % (list.real_name, addr)))
 	doc.AddItem(list.GetMailmanFooter())
 	print doc.Format()
+        list.Unlock()
 	sys.exit(0)
     call_script('options', [list._internal_name, member])
 if not form.has_key("email"):
@@ -189,3 +192,4 @@ else:
 	
 
 PrintResults()
+list.Unlock()

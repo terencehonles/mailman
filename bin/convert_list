@@ -113,5 +113,5 @@ for member in digest_members:
     pw = GetRandomPassword()
     list.ApprovedAddMember(member, pw, 1)
     
-
+list.Unlock()
 

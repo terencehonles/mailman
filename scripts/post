@@ -71,6 +71,7 @@ try:
             or err_msg == mm_err.FORBIDDEN_SENDER_MSG):
             # Do not send hold-for-approval notices for moderated messages
 	    # or potential spam.
+            current_list.Unlock()
 	    sys.exit(0)
             
 	the_sender = msg.GetSender()
@@ -100,7 +101,4 @@ notification of the moderator's decison.
 # Let another process run.
 finally:
     current_list.Unlock()
-    
-
-
 

@@ -21,7 +21,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 696 $"
+__version__ = "$Revision: 732 $"
 
 import sys
 import os, cgi, string, crypt, types, time
@@ -230,8 +230,7 @@ def FormatAdminOverview(error=None):
     names = mm_utils.list_names()
     names.sort()
     for n in names:
-	l = maillist.MailList(n)
-	l.Unlock()
+	l = maillist.MailList(n, lock=0)
         if l.advertised: advertised.append(l)
 
     if error:

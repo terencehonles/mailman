@@ -147,5 +147,7 @@ Please address all questions to mailman-owner@%s.
        "%s-request@%s" % (list_name, newlist.host_name),
        newlist.host_name))
 
+newlist.Unlock()
+
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv))

@@ -87,7 +87,7 @@ def main():
     site."""
     list = None
     for name in mm_utils.list_names():
-	list = maillist.MailList(name)
+	list = maillist.MailList(name, lock = 0)
 	list_name = list.real_name
 	reminders_to_admins = list.reminders_to_admins
 	if not list.send_reminders:
@@ -102,13 +102,6 @@ def main():
 		users[recipient].append(list_name, password, url)
 	    else:
 		users[recipient] = [(list_name, password, url)]
-	# Unlocking each list after identifying passwords, but before having
-	# the consolidated list, means that there is a window for discrepancy
-	# between the reported and actual password.  Big deal - if the user
-	# changed the password in the meanwhile, they'll realize it, and it's
-	# not worth the extra deadlock risk.
-	list.Unlock()
-
     if list:
 	MailAllPasswords(list, users)
 

@@ -62,6 +62,7 @@ if not list._ready:
     doc.AddItem(htmlformat.Header(2, "Error"))
     doc.AddItem(htmlformat.Bold("%s: No such list." % list_name))
     print doc.Format(bgcolor="#ffffff")
+    list.Unlock()
     sys.exit(0)
 
 
@@ -208,3 +209,6 @@ exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER))
 	pass
     list.SetUserOption(user, mm_cfg.ConcealSubscription, conceal)
     PrintResults("You have successfully set your options.")
+
+
+list.Unlock()
