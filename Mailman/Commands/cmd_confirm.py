@@ -61,7 +61,7 @@ Your request has been forwarded to the list moderator for approval."""))
     except Errors.NotAMemberError:
         # They've already been unsubscribed
         res.results.append(_("""\
-You are not current a member.  Have you already unsubscribed or changed
+You are not currently a member.  Have you already unsubscribed or changed
 your email address?"""))
     except Errors.HostileSubscriptionError:
         res.results.append(_("""\
