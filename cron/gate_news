@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Poll the NNTP servers for messages to be gatewayed to mailing lists.
@@ -87,7 +87,7 @@ def open_newsgroup(mlist):
             conn = nntplib.NNTP(mlist.nntp_host, readermode=1,
                                 user=mm_cfg.NNTP_USERNAME,
                                 password=mm_cfg.NNTP_PASSWORD)
-        except (socket.error, nntplib.NNTPError), e:
+        except (socket.error, nntplib.NNTPError, IOError), e:
             syslog('fromusenet',
                    'error opening connection to nntp_host: %s\n%s',
                    mlist.nntp_host, e)
@@ -251,7 +251,7 @@ def main():
     finally:
         clearcache()
         lock.unlock(unconditionally=1)
-            
+
 
 
 if __name__ == '__main__':
