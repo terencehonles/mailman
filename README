@@ -4,7 +4,7 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 INTRODUCTION
 
-    This is Mailman, a mailing list management system distributed
+    This is GNU Mailman, a mailing list management system distributed
     under the GNU Public License (GPL).  The name of this project is
     spelled "Mailman" with a leading capital `M' but with a lower case
     second `m'.
@@ -68,6 +68,8 @@ FEATURES
 
     - Integrated mail/Usenet gateways.
 
+    - Integrated auto-replies.
+
     - Majordomo-style email based commands.
 
     - Integrated bounce detection within an extensible framework.
@@ -84,8 +86,9 @@ REQUIREMENTS
     to whatever mail transport agent you have running on port 25.  You
     can thus use Mailman with any such MTA, however the script
     bin/newlist still generates sendmail style aliases (this will be
-    fixed).  You can also configure Mailman to submit messages to your
-    MTA via command line invocation.
+    fixed eventually).  You can also configure Mailman to submit
+    messages to your MTA via command line invocation, although there
+    are security considerations in going that route.
 
     Mailman works with any web server that supports CGI.  The HTML it
     generates is pretty pedestrian and stingy on the graphics so it
@@ -147,6 +150,12 @@ FOR MORE INFORMATION
         A read-only list which is an adjunct to the public anonymous
         CVS repository.  You can stay on the bleeding edge of Mailman
         development by subscribing to this list.
+
+    The Mailman project is coordinated on SourceForge at
+
+        http://sourceforge.net/projects/mailman
+
+    You should use SourceForge to report bugs and to upload patches.
 
 
 Local Variables:
