@@ -112,6 +112,8 @@ The Mailman TODO list
 - support for alternative archiving systems, e.g. MHonArc, Hypermail
 - archive link should do *something* reasonable before the first
   message has been posted to the list.
+- optional form front-end to public interfaces as a filter to address
+  harvesters.
 
 *Code cleanup
 - Use the re module where regexp and regsub are used.
