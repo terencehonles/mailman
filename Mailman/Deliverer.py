@@ -19,80 +19,13 @@
 
 
 import string, os, sys, tempfile
-import mm_cfg, mm_message, mm_err, mm_utils
+import mm_cfg
+import Errors
+import Utils
 
-# Text for various messages:
 
-POSTACKTEXT = '''
-Your message entitled:
-
-	%s
-
-was successfully received by the %s mailing list.
-
-List info page: %s
-'''
-
-SUBSCRIBEACKTEXT = """Welcome to the %(real_name)s@%(host_name)s mailing list!
-%(welcome)s
-To post to this list, send your email to:
-
-  %(emailaddr)s
-
-General information about the mailing list is at:
-
-  %(generalurl)s
-
-If you ever want to unsubscribe or change your options (eg, switch to or
-from digest mode, change your password, etc.), visit your subscription
-page at:
-
-  %(optionsurl)s
-
-You can also make such adjustments via email by sending a message to:
-
-  %(real_name)s-request@%(host_name)s
-
-with the word `help' in the subject or body, and you will get back a
-message with instructions.
-
-You must know your password to change your options (including changing
-the password, itself) or to unsubscribe.  It is:
-
-  %(password)s
-
-If you forget your password, don't worry, you will receive a monthly
-reminder telling you what all your %(host_name)s mailing list passwords
-are, and how to unsubscribe or change your options.  There is also a
-button on your options page that will email your current password to
-you.
-
-You may also have your password mailed to you automatically off of the
-web page noted above.
-
-"""
-
-USERPASSWORDTEXT = '''
-This is a reminder of how to unsubscribe or change your configuration
-for the mailing list "%s".  You need to have your password for
-these things.  YOUR %s PASSWORD IS:
-
-  %s
-
-To make changes to your subscription, use the password on your options web
-page:
-
-  %s
-
-You can also make such changes via email - send a message to:
-
-  %s
-
-with the text "help" in the subject or body, and you will be emailed
-instructions.
-
-Questions or comments?  Please send them to %s.
-'''
+# Note that the text templates for the various messages have been moved into
+# the templates directory.
 
 # We could abstract these two better...
 class Deliverer:
@@ -102,12 +35,12 @@ class Deliverer:
         # repr(recipient) necessary for addresses containing "'" quotes!
         if not sender:
             sender = self.GetAdminEmail()
-        mm_utils.SendTextToUser(subject, text, recipient, sender,
+        Utils.SendTextToUser(subject, text, recipient, sender,
                                 add_headers=add_headers, raw=raw)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
-        mm_utils.DeliverToUser(msg, recipient,
+        Utils.DeliverToUser(msg, recipient,
                                add_headers=['Errors-To: %s\n'
                                             % Self.GetAdminEmail()])
 
@@ -172,8 +105,13 @@ class Deliverer:
                 and subject[0:len(sp)] == sp):
                 # Trim off subject prefix
                 subject = subject[len(sp) + 1:]
-	body = POSTACKTEXT % (subject, self.real_name,
-                              self.GetAbsoluteScriptURL('listinfo'))
+        # get the text from the template
+        body = Utils.maketext(
+            'postack.txt',
+            {'subject'     : subject,
+             'listname'    : self.real_name,
+             'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
+             })
 	self.SendTextToUser('%s post acknowlegement' % self.real_name,
                             body, sender)
 
@@ -183,15 +121,19 @@ class Deliverer:
 	else:
 	    welcome = ''
 
-        body = SUBSCRIBEACKTEXT % {'real_name' : self.real_name,
-                                   'host_name' : self.host_name,
-                                   'welcome'   : welcome,
-                                   'emailaddr' : self.GetListEmail(),
-                                   'generalurl': self.GetAbsoluteScriptURL('listinfo'),
-                                   'optionsurl': self.GetAbsoluteOptionsURL(name),
-                                   'password'  : password,
-                                   }
+        # get the text from the template
+        body = Utils.maketext(
+            'subscribeack.txt',
+            {'real_name'   : self.real_name,
+             'host_name'   : self.host_name,
+             'welcome'     : welcome,
+             'emailaddr'   : self.GetListEmail(),
+             'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
+             'optionsurl'  : self.GetAbsoluteOptionsURL(name),
+             'password'    : password,
+             })
         return body
+
 
     def SendSubscribeAck(self, name, password, digest):
         if not self.send_welcome_msg:
@@ -217,28 +159,34 @@ class Deliverer:
 			    recipient = name, 
 			    text = self.goodbye_msg)
     def MailUserPassword(self, user):
-        subjpref = '%s@%s' % (self.real_name, self.host_name)
+        listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
         if self.passwords.has_key(user):
 	    if self.reminders_to_admins:
 		recipient = "%s-admin@%s" % tuple(string.split(user, '@'))
 	    else:
 		recipient = user
-            subj = '%s maillist reminder\n' % subjpref
-            text = USERPASSWORDTEXT % (user,
-				       self.real_name,
-                                       self.passwords[user],
-                                       self.GetAbsoluteOptionsURL(user),
-                                       self.GetRequestEmail(),
-                                       self.GetAdminEmail())
+            subj = '%s maillist reminder\n' % listfullname
+            # get the text from the template
+            text = Utils.maketext(
+                'userpass.txt',
+                {'user'       : user,
+                 'listname'   : self.real_name,
+                 'password'   : self.passwords[user],
+                 'options_url': self.GetAbsoluteOptionsURL(user),
+                 'requestaddr': self.GetRequestEmail(),
+                 'adminaddr'  : self.GetAdminEmail(),
+                 })
         else:
             ok = 0
             recipient = self.GetAdminEmail()
-            subj = '%s user %s missing password!\n' % (subjpref, user)
-            text = ("Mailman noticed (in .MailUserPassword()) that:\n\n"
-                    "\tUser: %s\n\tList: %s\n\nlacks a password - please"
-                    " notify the mailman system manager!"
-                    % (`user`, self._internal_name))
+            subj = '%s user %s missing password!\n' % (listfullname, user)
+            text = Utils.maketext(
+                'nopass.txt',
+                {'username'     : `user`,
+                 'internal_name': self._internal_name,
+                 })
+
 	self.SendTextToUser(subject = subj,
 			    recipient = recipient,
                             text = text,
@@ -246,4 +194,4 @@ class Deliverer:
                                          % self.GetAdminEmail(),
                                          "X-No-Archive: yes"])
         if not ok:
-             raise mm_err.MMBadUserError
+             raise Errors.MMBadUserError
