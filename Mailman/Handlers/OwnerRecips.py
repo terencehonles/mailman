@@ -20,4 +20,7 @@
 
 
 def process(mlist, msg, msgdata):
+    # The recipients are the owner and the moderator
     msgdata['recips'] = mlist.owner + mlist.moderator
+    # Don't decorate these messages with the header/footers
+    msgdata['nodecorate'] = 1
