@@ -138,8 +138,8 @@ class MailCommandHandler:
 	    if subject:
 		#
 		# check to see if confirmation request -- special handling
-		conf_pat = (r'%s -- confirmation of subscription'
-                            r' -- request (\d{6})'
+		conf_pat = (r'%s\s+--\s+confirmation\s+of\s+subscription'
+                            r'\s+--\s+request\s+(\d{6})'
                             % re.escape(self.real_name))
 		mo = re.search(conf_pat, subject, re.IGNORECASE)
 		if not mo:
