@@ -80,10 +80,14 @@ def process(mlist, msg, msgdata):
            (len(recips), (t1-t0)))
 
     if refused:
+        # Always log failures
         syslog('post', 'post to %s from %s, size=%d, %d failures' %
                (mlist.internal_name(), msg.GetSender(), len(msg.body),
                 len(refused)))
-    else:
+    elif msgdata.get('tolist'):
+        # Log the successful post, but only if it really was a post to the
+        # mailing list.  Don't log sends to the -owner, or -admin addrs.
+        # -request addrs should never get here.
         syslog('post', 'post to %s from %s, size=%d, success' %
                (mlist.internal_name(), msg.GetSender(), len(msg.body)))
 
