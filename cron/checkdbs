@@ -24,11 +24,13 @@ from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
 
-def main():
+def main(verbose=0):
 
     for name in Utils.list_names():
 	list = MailList.MailList(name, lock = 0)
         count = list.NumRequestsPending()
+        if verbose:
+            print name, count, list.GetAdminEmail()
 	if count:
             text = Utils.maketext('checkdbs.txt',
                                   {'count': count,
@@ -40,7 +42,7 @@ def main():
 	    list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 
 				(count, list.real_name),
 				recipient = list.GetAdminEmail(),
-				text = text % pending_requests(list))
+				text = text + "\n" + pending_requests(list))
 
 def pending_requests(list):
     import time, string
@@ -67,4 +69,5 @@ def pending_requests(list):
     return string.join(pending, '\n')
 
 if __name__ == "__main__":
-    main()
+    main(verbose=(len(sys.argv) > 1
+                  and sys.argv[1] in ["-v", "--verbose"]))
