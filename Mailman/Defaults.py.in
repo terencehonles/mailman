@@ -381,7 +381,9 @@ SMTP_MAX_SESSIONS_PER_CONNECTION = 0
 # lock.  Use with caution.
 MAX_DELIVERY_THREADS = 0
 
-# SMTP host and port, when DELIVERY_MODULE is 'SMTPDirect'
+# SMTP host and port, when DELIVERY_MODULE is 'SMTPDirect'.  Make sure the
+# host exists and is resolvable (i.e., if it's the default of "localhost" be
+# sure there's a localhost entry in your /etc/hosts file!)
 SMTPHOST = 'localhost'
 SMTPPORT = 0                                      # default from smtplib
 
