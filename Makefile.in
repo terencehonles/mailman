@@ -50,7 +50,7 @@ ARCH_INDEP_DIRS= \
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
-SUBDIRS=	bin cron filters mail misc Mailman scripts src templates
+SUBDIRS=	bin cron filters misc Mailman scripts src templates
 
 
 # Modes for directories and executables created by the install
