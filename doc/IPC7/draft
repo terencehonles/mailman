@@ -1,53 +1,78 @@
-	      Mailman - An Extensibile MLM using Python
+	      Mailman - An Extensible MLM using Python
 	      =========================================
 
 			       Abstract
 			       ========
 
 The explosive growth in the Internet community, and the core role that
-email plays in it, practically demands an extensible, adaptable MLM.
-The extent to which MLMs are versatile and adaptable is the extent to
-which they can accomodate, and even foster, effective new forms of
-Internet community organization.  Mailman is well suited to such
-evolution, and one of the contributing factors is its basis in Python.
+email plays in it, practically demands an adaptable Mailing List
+Management (MLM) system.  The extent to which MLMs are adaptable is
+the extent to which they can accommodate, and even foster, effective
+new forms of Internet community organization.  A new MLM, Mailman, is
+well suited to such evolution, and one of the contributing factors is
+its basis in Python.
 
-In this paper we will look at various ways the versatility of the
-system enables extension of it.  We will consider how the system's
-design, and features of its implementation language, Python, factor
-into it.
+In this paper we will look at various ways that Mailman's versatility
+enables extension of it.  We will consider how the system's design,
+and features of its implementation language, Python, factor into that
+extensibility.
 
 			     Introduction
 			     ============
 
+			    What is Mailman?
+
+Mailman is a Mailing List Management system, like Majordomo and
+Smartmail, used to manage email redistribution lists.  Mailman gives
+each mailing list a web page, and allows users to subscribe,
+unsubscribe, etc. over the web.  List managers can administer their
+lists entirely from the web.  Mailman also integrates most things
+people want to do with mailing lists, including archiving, mail <->
+news gateways, and so on.
+
+(Mailman was originally developed by John Viega.  Ken Manheimer picked
+up the ball to bring Mailman to 1.0.  Currently, Mailman development
+is a group effort, led by John Viega, Ken Manheimer and Barry Warsaw.
+
+See [LO "Mailman"] for more details on the system, and visit the [MD
+"Mailman-developers"] mailing list if you're interested in joing the
+mailman development community.)
+
+Mailman is written completely in Python, and is particularly well
+suited to extension and change.  We will explore that in this paper.
+
 			  Why Extensibility?
 
-From the early days of the ARPAnet to today, email and Mailing List
-Management (MLM) systems have played a crucial role in the formation
-and conduct of communities on the Internet.  With the profound
-dynamicism of the Internet, the infrastructures by which it organizes
-are continually evolving.  Over time, the rapidly increasing scale and
-the advent of improved and new strategies for organization of Internet
+From the early days of the Arpanet to today, email and Mailing List
+Management systems have played a crucial role in the formation and
+conduct of communities on the Internet.  With the profound dynamicism
+of the Internet, the infrastructures by which it organizes are
+continually evolving.  Over time, the rapidly increasing scale and the
+advent of improved and new strategies for organization of Internet
 communities demand continuing development of the mechanisms supporting
-them.  A good MLM will foster that evolution by growing with it.
+them.  New and different approaches may take up some types of the
+traffic, as Usenet News has, but email, as a medium, has proven to be
+particularly versatile and lasting.  A good MLM will help foster the
+evolution of the internet communities, by growing with them.
 
-Another reason for extensibilitie's importance has to do with a core
-constituency of mailing list users - the mailing list administrators.  These
-administrators are typically near enough to the end-users to get clear
-impressions of their needs.  Also, they commonly are savvy enough,
-technically, to be able to implement improvements to accomodate those
-needs - provided the system doesn't present too high a threshold of
-comprehension.  Here is a prime opportunity for exploiting the
-Bazaar-style of open-software development [klm: cite esr's paper],
-enabling the managers of the medium, themselves, to guide its
-development, enabling results more quickly and closely tailored to the
-needs of the user community.
+Another reason for extensibility's importance in this context has to
+do with a core constituency of mailing list users - the mailing list
+administrators.  These administrators are typically near enough to the
+end-users to get clear impressions of their needs.  Also, they
+commonly are savvy enough, technically, to be able to implement
+improvements to accommodate those needs - provided the system doesn't
+present too high a threshold of comprehension.  Here is a prime
+opportunity for exploiting the Bazaar-style of open-software
+development ["The Cathedral and The Bazaar"], enabling the managers of
+the medium, themselves, to guide its development, enabling results
+more quickly and closely tailored to the needs of the user community.
 
 Finally, most aspects of an MLM do not require the kind of speed
 optimizations which force change-impeding hardening of system.
 Performance critical aspects, like mail delivery to large numbers of
 users, is generally the purview of the underlying Mail Transport
 Agents (MTAs), not the MLM.  Large capacities can impose some
-specialized performance demands on the MLM, of course.  The speciality
+specialized performance demands on the MLM, of course.  The specialty
 of those demands, however, enables isolating the optimizations to
 select components, and Python's compiled-language extensibility
 enables hardening those specific components as needed, isolating the
@@ -65,7 +90,7 @@ programmatic handling of just about everything in the language.  By
 satisfying the needs of prototyping and rapid development, as well as
 those of general programming, it can be seen to foster the needs of
 "continuous development", where a system needs to continue to grow to
-accomodate a changing world.
+accommodate a changing world.
 
 	       A Broad Overview of Mailman's Structure
 	       =======================================
@@ -101,16 +126,16 @@ HTMLFormatter:
     This class is used to generate list-specific HTML for presentation
     via the World Wide Web interface.  Primarily, it uses a widget
     library also included in Mailman.  Together this class and library
-    serves a purpose very similar to that of [XXX ref: Robin's HTMLgen,
-    Digicool's DocumentFormatter.]
+    serves a purpose very similar to that of Robin Friedrich's HTMLgen
+    [RF "HTMLgen"] and Digital Creations, L.C. [DC "DocumentFormatter"].
 
 Deliverer:
     This class conducts delivery of any of the email associated
     with a mailing list.  This includes membership delivery of postings,
-    subscription acknowledgements, announcements to the list
+    subscription acknowledgments, announcements to the list
     administrator about list creation, list business pending approval,
     subscriber notices regarding their passwords, and myriad other
-    things.  Email can be used for a lot of things by a mailling list
+    things.  Email can be used for a lot of things by a mailing list
     system, even one with a comprehensive Web interface
 
 ListAdmin:
@@ -127,11 +152,11 @@ Archiver:
     mailing lists can have public or private archives, and this class
     places the posted message in the appropriate location.  It also
     also interfaces with external Hypertext archivers such as Andrew
-    Kuchling's Pipermail [XXX need ref], which is bundled with
+    Kuchling's Pipermail [AMK Pipermail], which is bundled with
     Mailman.
 
 Digester:
-    Maillist members can receive posting immediately, or they can
+    Mailing list members can receive posting immediately, or they can
     opt to have cumulative "digests" of the list traffic sent to them
     periodically.  This class manages accumulation of the digests,
     formulation of the plain and MIME formats (when there are
@@ -182,10 +207,10 @@ the way.
 
 We can also use interactive sessions do MailList "surgery" - to make
 changes to list state not provided for in already created scripts.
-Using a utility function, Utils.map_mailists(), we can apply arbitrary
+Using a utility function, Utils.map_maillists(), we can apply arbitrary
 functions to all or to selected Mailman mailing lists at the site.
-This enables us to do wholescale conversions of the MailLists to
-accomodate, for instance, changes in the address of the site, or to
+This enables us to do wholesale conversions of the MailLists to
+accommodate, for instance, changes in the address of the site, or to
 search for particular members of any of the mailing lists and then do some
 processing on their subscriptions.
 
@@ -197,7 +222,7 @@ to share the component class methods and data throughout the MailList
 object.  It avoids the need to explicitly identify and pass around
 delegate instances in order to use those component's data and methods.
 Having all the methods and data inhabit the namespace of the primary
-MailList instance can lead to inadvertant name collisions.  However,
+MailList instance can lead to inadvertent name collisions.  However,
 we feel that the system would have to get much bigger before that
 would become a practical concern - and at that point we could use
 naming conventions to prevent the collisions, while still enjoying the
@@ -239,7 +264,7 @@ defensive mechanisms which aid the capture of the errors that
 inevitably slip by.  Mailman's logging mechanism provides that
 coverage.
 
-Reliable logging is also key for tracking the occurrance of common
+Reliable logging is also key for tracking the occurrence of common
 events that otherwise take place "behind the scenes".  This can
 include mailing list subscription activity, automated change of
 subscriptions due to delivery failures, and so forth.  It also is
@@ -261,22 +286,26 @@ commonly used within Mailman scripts that run disconnected from a
 terminal, to capture errors.
 
 Loggers are applied in Mailman web-associated components with another
-useful refinement.  All Web CGI scripts are launched via a well-tested
-driver script.  The driver script launches the intended, job-specific
-scripts within the context of an unqualified try-except statement.  If
-any exception escapes the job-specific script - including ones that
-simply cannot be caught within a script, for instance, syntax errors -
-then the driver catches the exception and handles them in a useful
-way.  The driver produces the traceback and a listing of all the HTTP
+useful refinement.  All Web CGI scripts are launched via a driver
+script.  The driver script launches the intended, job-specific scripts
+within the context of an unqualified try-except statement.  If any
+exception escapes the job-specific script - including ones that simply
+cannot be caught within a script, for instance, syntax errors - then
+the driver catches the exception and handles them in a useful way.
+The driver produces the traceback and a listing of all the HTTP
 settings both to stdout (HTML formatted, for rendition on the Web),
 and to the error log file.  This way, the web visitor is provided with
 informative feedback (including instructions about contacting the site
 administrator, if they are inclined), and the site has a detailed
-record of the error.
+record of the error.  (See [Figure, "Excerpt from CGI Driver Script
+Code"], showing the use of error loggers and the comprehensive
+exception guard.)
 
-[Figure: Code excerpt from CGI driver script, exhibiting the use of
-	 error loggers and the comprehensive guard for exceptions from 
-	 the driven scripts.
+(The driver script, itself, is small and carefully hardened, in order
+to minimize the chance that it will introduce errors where they won't
+be caught.)
+
+[Figure: Excerpt from CGI Driver Script Code.
 
     <code>
 	try:
@@ -321,13 +350,13 @@ object, this general mechanism enables publishing access to any aspect
 of MailList operation to the Web.
 
 On this we build typical web-related functionality, like overview of
-the mailing lists on the site, and review and subscription to particular
-lists, available via the web.  In addition, we also extend
-administrative customization of MailList operation (see [configuration
-options], below), administrative action on the disposition of
-subscriptions and postings being held for approval, and subscriber
-control of their subscription status, customization options, and
-password, among other things.
+the mailing lists on the site, and review and subscription to
+particular lists, available via the web.  (See [Figure: "Mailing List
+Home Page"].)  In addition, we also extend administrative customization
+of MailList operation (see the Configuration Options section, below),
+administrative action on the disposition of subscriptions and postings
+being held for approval, and subscriber control of their subscription
+status, customization options, and password, among other things.
 
 The elaborateness of web applications, and the typical lack of a local
 operator and error console, can complicate development and debugging
@@ -336,16 +365,24 @@ provides reporting of unexpected errors, and also provides convenient
 means for debugging flag "printouts" when exercising Mailman's Web
 interfaces via the Web.
 
+[Figure: "Mailing List Home Page".
+
+ [user-ui.jpg]
+
+]
+
 Configuration Options Mechanism Exploits Namespace Dynamicism
 
-One significant subsystem demonstrating interfacing of MailList
-objects with the web is the mailing list customization-options mechanism.
+One significant subsystem demonstrating the power of the interface
+between MailList objects and the web is the mailing list
+customization-options mechanism.  (See [Figure: "Admin Options
+page"].)
 
 MailList configuration options are expressed as simple data structures
 (tuples) specifying the name of the MailList's data member which
 contains the underlying setting, the type and layout of the HTML user
 interface element for the option, a brief description, and an optional
-(ie, elective) elaborate description.  These options are collected
+(i.e., elective) elaborate description.  These options are collected
 into lists according to rough categories, like list-privacy specific
 options, or digest specific settings.  (The option lists also include
 string entries which are used to annotate their presentation,
@@ -358,6 +395,14 @@ the mailing list administrators customize the behaviors of their mailing lists
 in the MailList objects.  Python's dynamic namespaces and high-level
 data structures, among other things, enables this simple mechanism to
 couple user interface with the underlying data members.
+
+
+[Figure: "Admin Options Page".
+
+ [admin-ui.jpg]
+
+]
+
 
 The elementary nature of the mechanism, in turn, simplifies the
 process of adding new configuration variables or changing existing
@@ -422,40 +467,52 @@ be as completely qualified as possible, and should be moved as close
 to the exception they're meant to catch as can be handled.
 
 One fundamental question involved in producing any large programming
-project is the importance of type safety that static typing affords,
-and questions about the viability of a dynamically typed system - even
-one that is strictly typed - as its scale increases and the project,
-of necessity, breaks into separate sub projects.  The relatively new
-phenomenon of Bazaar-style open software development adds new facets
-to this question.  Does the flexibility of dynamic typing add to or
-reduce the approachability of the code, and increase or decrease its
-robustness in the face of numerous different developers of differing
-skill levels?  Or are these qualities more sensitive to the discipline
-and policies of the central maintainers than they are to rigorous
-mechanisms like typing.  The authors of this paper have not come to
-agreement on any of these questions, and we expect that clear, direct
-answers, if any, have yet to be resolved.
+project with Python is the impact of the lack of static types.  Static
+typing would expose a number of very common errors during compilation,
+ones that we otherwise might not notice until some obscure branch of
+the code is exercised a long time after substantial testing has
+completed.  The relatively new phenomenon of Bazaar-style open
+software development adds new facets to this question.  How do the
+tradeoffs in simplicity and robustness pay off in keeping the code
+approachable and reliable in the face of numerous different developers
+of differing skill levels?
 
 			      Conclusion
 			      ==========
 
-The desirability for continuing evolution in an MLM suggests a model
-of the system as being perpetually unfinished - with at least some
-parts at any one time as continuously developing prototypes.  The
-system must be amenable to continuing, and possibly deep, change.
-Prototyping and rapid development are among Python's clear strengths,
-and invaluable in this regard.
+The desirability of continuing evolution in an MLM suggests a model of
+the system as being perpetually unfinished - with at least some parts
+at any one time being continuously developing prototypes.  Prototyping
+and rapid development are among Python's clear strengths, and
+invaluable in this regard.
 
 Mailman exploits many of Python's features, including native object
 orientation, multiple inheritance, polymorphism, high-level control
 structures like exceptions, conventional protocols, dynamic access to
-namespaces, cogent data structures, standard libraries.  A key aspect
-of Python code that's hardly been touched on here, but of great import
-in the context of multi-person, bazaar-style projects, is the tendency
-to readability fostered by the language's uncluttered syntax and its
-promotion of regular layout.  Combined with the power of the language,
-this enables development of sophisticated functionality while
-maintaining approachable, untortured code.  This has already paid off,
-accumulating good implementation-specific suggestions and some
-contributed code from the user community this early in Mailman's
+namespaces, cogent data structures, and a wealth of standard
+libraries.  The power of the language, combined with it's tendency to
+readability, enables development of sophisticated systems with
+approachable, untortured code.  This has already paid off, both in
+easy integration of valuable new subsystems, and in accumulation of
+contributed code from the user community, even this early in Mailman's
 development.
+
+======================================================================
+References
+
+AMK "Pipermail", Andrew Kuchling
+http://starship.skyport.net/crew/amk/maintained/pipermail.html
+
+DC "Document Template", Digital Creations, L.C.
+http://www.digicool.com/releases/bobo/DocumentTemplate-rn.html
+
+ESR "The Cathedral and The Bazaar", Eric Raymond
+http://sagan.earthspace.net/esr/writings/cathedral-bazaar/cathedral-bazaar.html
+
+LO "Mailman", www.list.org
+http://www.list.org/
+
+MD "Mailman-developers", mailman-developers@python.org
+
+RF "HTMLgen", Robin Friedrich
+http://www.python.org/sigs/web-sig/HTMLgen/html/main.html
