@@ -6,3 +6,8 @@
 #
 # 5 AM on the first of each month, mail out password reminders.
 0 5 1 * * @PYTHON@ @prefix@/cron/mailpasswds
+
+# Every 5 mins, try to gate news to mail.  You can comment this one out
+# if you don't want to allow gating, or don't have any going on right now,
+# or want to exclusively use a callback strategy instead of polling.
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * @PYTHON@ @prefix@/cron/gate_news
