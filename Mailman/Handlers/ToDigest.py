@@ -27,6 +27,7 @@
 
 import os
 import re
+import time
 from types import ListType
 
 from mimelib.Parser import Parser
@@ -34,7 +35,7 @@ from mimelib.Generator import Generator
 from mimelib.MIMEBase import MIMEBase
 from mimelib.Text import Text
 from mimelib.address import getaddresses
-from mimelib.ReprMixin import ReprMixin
+from mimelib.StringableMixin import StringableMixin
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -97,12 +98,41 @@ def msgfactory(fp):
         
 
 # We want mimelib's MIMEBase class, but we also want a str() able object.
-class ReprMIME(MIMEBase, ReprMixin):
+class StringableMIME(MIMEBase, StringableMixin):
     pass
 
 
 
 def send_digests(mlist, mboxfp):
+    # Set the digest volume and time
+    if mlist.digest_last_sent_at:
+        bump = 0
+        # See if we should bump the digest volume number
+        timetup = time.localtime(mlist.digest_last_sent_at)
+        now = time.localtime(time.time())
+        freq = mlist.digest_volume_frequency
+        if freq == 0 and timetup[0] < now[0]:
+            bump = 1                              # Yearly
+        elif freq == 1 and timetup[1] <> now[1]:
+            # Monthly, but we take a cheap way to calculate this.  We assume
+            # that the clock isn't going to be reset backwards.
+            bump = 1
+        elif freq == 2 and (timetup[1] % 4 <> now[1] % 4):
+            # Quarterly, same caveat
+            bump = 1
+        elif freq == 3:
+            # Once again, take a cheap way of calculating this
+            weeknum_last = int(time.strftime('%W', timetup))
+            weeknum_now = int(time.strftime('%W', now))
+            if weeknum_now > weeknum_last or timetup[0] > now[0]:
+                bump = 1
+        elif timetup[7] <> now[7]:
+            # assume daily
+            bump = 1
+        if bump:
+            mlist.volume += 1
+            mlist.next_digest_number = 1
+    mlist.digest_last_sent_at = time.time()
     # Wrapper around actually digest crafter to set up the language context
     # properly.  All digests are translated to the list's preferred language.
     otranslation = i18n.get_translation()
@@ -124,7 +154,7 @@ def send_i18n_digests(mlist, mboxfp):
     digestid = _('%(realname)s Digest, Vol %(volume)d, Issue %(issue)d')
     # Set things up for the MIME digest.  Only headers not added by
     # CookHeaders need be added here.
-    mimemsg = ReprMIME('multipart', 'mixed')
+    mimemsg = StringableMIME('multipart', 'mixed')
     mimemsg['From'] = mlist.GetRequestEmail()
     mimemsg['Subject'] = digestid
     mimemsg['To'] = mlist.GetListEmail()
@@ -250,6 +280,7 @@ def send_i18n_digests(mlist, mboxfp):
     print >> plainmsg
     # Now go through and add each message
     mimedigest = MIMEBase('multipart', 'digest')
+    mimedigest.set_payload([])
     mimemsg.add_payload(mimedigest)
     first = 1
     for msg in messages:
