@@ -49,7 +49,7 @@ def main():
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         syslog('error', 'Bad URL specification: %s' % parts)
         return
         
@@ -64,7 +64,7 @@ def main():
                    Bold(FontAttr(title, color='#ff0000', size='+2'))))
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
@@ -79,7 +79,7 @@ def main():
         doc.AddItem(
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
         doc.AddItem(mlist.GetMailmanFooter())
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         syslog('error', 'Bad URL specification: %s' % parts)
         return
 
@@ -90,19 +90,19 @@ def main():
         doc.AddItem(
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
         doc.AddItem(mlist.GetMailmanFooter())
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         syslog('error', 'Attempt to sneakily delete a list: %s' % listname)
         return
 
     if cgidata.has_key('doit'):
         process_request(doc, cgidata, mlist)
-        print doc.Format(bgcolor='#ffffff')
+        print doc.Format()
         return
 
     request_deletion(doc, mlist)
     # Always add the footer and print the document
     doc.AddItem(mlist.GetMailmanFooter())
-    print doc.Format(bgcolor='#ffffff')
+    print doc.Format()
 
 
 
@@ -113,10 +113,12 @@ def process_request(doc, cgidata, mlist):
     except ValueError:
         delarchives = 0
 
-    # Make sure the password matches
-    if not mlist.ValidAdminPassword(password) and \
-           not Utils.check_global_password(password, siteadmin=0) and \
-           not Utils.check_global_password(password):
+    # Removing a list is limited to the list-creator (a.k.a. list-destroyer),
+    # the list-admin, or the site-admin.
+    if not mlist.WebAuthenticate((mm_cfg.AuthCreator,
+                                  mm_cfg.AuthListAdmin,
+                                  mm_cfg.AuthSiteAdmin),
+                                 password):
         request_deletion(
             doc, mlist,
             _('You are not authorized to delete this mailing list'))
@@ -149,7 +151,8 @@ def process_request(doc, cgidata, mlist):
     doc.SetTitle(title)
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
-    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor='#99ccff')
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
     table.AddRow([_('''You have successfully deleted the mailing list
     <b>%(listname)s</b>.''')])
     doc.AddItem(table)
@@ -171,7 +174,8 @@ def request_deletion(doc, mlist, errmsg=None):
 
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
-    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor='#99ccff')
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
 
     # Add any error message
     if errmsg:
@@ -195,19 +199,20 @@ def request_deletion(doc, mlist, errmsg=None):
 
     <p>For your safety, you will be asked to reconfirm the list password.
     """)])
+    GREY = mm_cfg.WEB_ADMINITEM_COLOR
     form = Form(mlist.GetScriptURL('rmlist'))
     ftable = Table(border=0, cols='2', width='100%',
                    cellspacing=3, cellpadding=4)
     
     ftable.AddRow([Label(_('List password:')), PasswordBox('password')])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow([Label(_('Also delete archives?')),
                    RadioButtonArray('delarchives', ('No', 'Yes'),
                                     checked=0, values=(0, 1))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow([Center(Link(
         mlist.GetScriptURL('admin'),
