@@ -82,7 +82,9 @@ def tag2rel(tagname):
     return '"Release_%s"' % tagname.replace('.', '_')
 
 def cvsdo(cvscmd):
-    os.system('cvs %s' % cvscmd)
+    # I don't know why -d is suddenly required -- $CVSROOT used to work just
+    # fine but now (RH7.3) doesn't at all.
+    os.system('cvs -d %s %s' % (os.environ['CVSROOT'], cvscmd))
 
 def tag_release(tagname, retag):
     # Convert dots in tagname to underscores
