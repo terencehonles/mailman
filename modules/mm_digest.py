@@ -19,6 +19,7 @@ class Digester:
 
     def GetConfigInfo(self):
 	return [
+            "Batched-delivery digest characteristics.",
 
 	    ('digestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
 	     'Can list members choose to receive list traffic '
@@ -34,22 +35,24 @@ class Digester:
 
 	    ('digest_size_threshhold', mm_cfg.Number, 3, 0,
 	     'How big in Kb should a digest be before it gets sent out?'),
+            # Should offer a 'set to 0' for no size threshhold.
 
 	    ('digest_send_periodic', mm_cfg.Number, 3, 0,
 	     'Should a digest be dispatched daily when the size threshold '
 	     "isn't reached?"),
 
-	    ('digest_header', mm_cfg.Text, (4, 65), 0,
-	     'Header added to every digest'),
-	    # See msg_header option note.
+	    ('digest_header', mm_cfg.Text, (4, 55), 0,
+	     'Header added to every digest',
+             "Text attached (as an initial message, before the table"
+             " of contents) to the top of digests.<p>"
+             + mm_cfg.MESSAGE_DECORATION_NOTE),
 
-	    ('digest_footer', mm_cfg.Text, (4, 65), 0,
-	     'Footer added to every digest'),
-	    # See msg_header option note.
+	    ('digest_footer', mm_cfg.Text, (4, 55), 0,
+	     'Footer added to every digest',
+             "Text attached (as a final message) to the bottom of digests.<p>"
+             + mm_cfg.MESSAGE_DECORATION_NOTE),
 	    ]
 
-
-	
     def SetUserDigest(self, sender, value):
 	self.IsListInitialized()
 	addr = self.FindUser(sender)
