@@ -232,7 +232,7 @@ def checkperms(state):
         print _('%(DBFILE)s permissions must be 066x (got %(octmode)s)'),
         if state.FIX:
             print _('(fixing)')
-            os.chmod(DBFILE, mode | targetmode)
+            os.chmod(DBFILE, stat[ST_MODE] | targetmode)
         else:
             print
     # Make sure the aliases.db is owned by root.  We don't need to check the
