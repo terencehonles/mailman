@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Handler for auto-responses.
@@ -28,16 +28,19 @@ from Mailman.Logging.Syslog import syslog
 
 
 def process(mlist, msg, msgdata):
-    # "X-Ack: No" header in the original message disables the replybot
+    # Normally, the replybot should get a shot at this message, but there are
+    # some important short-circuits, mostly to suppress 'bot storms, at least
+    # for well behaved email bots (there are other governors for misbehaving
+    # 'bots).  First, if the original message has an "X-Ack: No" header, we
+    # skip the replybot.  Then, if the message has a Precedence header with
+    # values bulk, junk, or list, and there's no explicit "X-Ack: yes" header,
+    # we short-circuit.  Finally, if the message metadata has a true 'noack'
+    # key, then we skip the replybot too.
     ack = msg.get('x-ack', '').lower()
     if ack == 'no' or msgdata.get('noack'):
         return
-    # "Precedence: bulk|junk|list" with no "X-Ack: yes" header inhibits
-    # replybot
     precedence = msg.get('precedence', '').lower()
     if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
-        syslog('vette', 'Precedence: %s message ignored by: %s',
-               precedence, mlist.GetRequestEmail())
         return
     # Check to see if the list is even configured to autorespond to this email
     # message.  Note: the mailowner script sets the `toadmin' or `toowner' key
@@ -93,7 +96,7 @@ def process(mlist, msg, msgdata):
         rtext = Utils.to_percent(rtext)
     try:
         text = rtext % d
-    except Exception, e:
+    except Exception:
         syslog('error', 'Bad autoreply text for list: %s\n%s',
                mlist.internal_name(), rtext)
         text = rtext
