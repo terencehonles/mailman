@@ -8,7 +8,7 @@ This is Mailman, a mailing list management system written mostly in
 Python.  Mailman was originally developed by John Viega.  Subsequent
 development (through version 1.1) was by Ken Manheimer.  Currently,
 Mailman development is a group effort, led by John Viega, Ken
-Manheimer and Barry Warsaw.
+Manheimer, Barry Warsaw, and Scott Cotton.
 
 Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15
 1996.  Mailman 1.0b3, 2, and  1.1 developments by Ken Manheimer,  4/98
