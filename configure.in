@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 711 $)
+AC_REVISION($Revision: 714 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -110,8 +110,6 @@ fi
 AC_DEFUN(MM_FIND_GROUP_ID, [
 # $1 == variable name
 # $2 == user id to check for
-# $3 == purpose
-AC_MSG_CHECKING(for $3 GID)
 AC_SUBST($1)
 changequote(,)
 if test -z "$$1"
@@ -142,7 +140,8 @@ rm -f conftest.out conftest.py])
 
 
 # Group `mailman' must exist
-MM_FIND_GROUP_ID(MAILMAN_GID, mailman, mailman)
+AC_MSG_CHECKING(for mailman GID)
+MM_FIND_GROUP_ID(MAILMAN_GID, mailman)
 if test -z "$MAILMAN_GID"
 then
     AC_MSG_ERROR([
@@ -199,15 +198,17 @@ AC_MSG_RESULT(okay)
 
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
-AC_MSG_CHECKING(for --with-mail-gid)
+AC_MSG_CHECKING(for mail wrapper GID)
 AC_ARG_WITH(mail-gid, [
 	--with-mail-gid  	specify GID mail programs run as])
 if test -z "$with_mail_gid"
 then
-    with_mail_gid="other mail daemon"
+    AC_CACHE_VAL(ac_cv_group_mail, [dnl
+    ac_cv_group_mail="other mail daemon"])
+else
+    ac_cv_group_mail=$with_mail_gid
 fi
-AC_MSG_RESULT($with_mail_gid)
-MM_FIND_GROUP_ID(MAIL_GID, $with_mail_gid, mail_wrapper)
+MM_FIND_GROUP_ID(MAIL_GID, $ac_cv_group_mail)
 if test -z "$MAIL_GID"
 then
     AC_MSG_ERROR([
@@ -220,15 +221,17 @@ then
 ***** for details])
 fi
 
-AC_MSG_CHECKING(for --with-cgi-gid)
+AC_MSG_CHECKING(for CGI wrapper GID)
 AC_ARG_WITH(cgi-gid, [
 	--with-cgi-gid  	specify GID CGI programs run as])
 if test -z "$with_cgi_gid"
 then
-    with_cgi_gid="www www-data nobody"
+    AC_CACHE_VAL(ac_cv_group_cgi, [dnl
+    ac_cv_group_cgi="www www-data nobody"])
+else
+    ac_cv_group_cgi=$with_cgi_gid
 fi
-AC_MSG_RESULT($with_cgi_gid)
-MM_FIND_GROUP_ID(CGI_GID, $with_cgi_gid, cgi_wrapper)
+MM_FIND_GROUP_ID(CGI_GID, $ac_cv_group_cgi)
 if test -z "$CGI_GID"
 then
     AC_MSG_ERROR([
