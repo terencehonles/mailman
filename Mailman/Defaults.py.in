@@ -315,6 +315,7 @@ Email     = 5
 EmailList = 6
 Host      = 7
 Number    = 8
+FileUpload =9
 
 # could add Directory and URL
 
