@@ -241,7 +241,7 @@ def admin_overview(msg=''):
             ])
 
     creatorurl = Utils.ScriptURL('create')
-    mailman_owner = mm_cfg.MAILMAN_OWNER
+    mailman_owner = Utils.get_site_email()
     extra = msg and _('right ') or ''
     welcome.extend([
         _('''To visit the administrators configuration page for an
