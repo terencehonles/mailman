@@ -36,6 +36,18 @@ class CommandRunner(Runner):
                         slice, numslices, cachelists)
 
     def _dispose(self, mlist, msg, msgdata):
+        # Try to figure out whether the message was destined for the -owner or
+        # -admin address.  This used to be calculated in the mailowner script,
+        # but now that's too expensive, so we do it here if the message
+        # metadata doesn't already tell us.
+        #
+        # Yes, the key really is `toauthoritah', Cartman.
+        if msgdata.get('toauthoritah'):
+            del msgdata['toauthoritah']
+            if msg['to'].lower() == mlist.GetOwnerEmail():
+                msgdata['toowner'] = 1
+            else:
+                msgdata['toadmin'] = 1
         # BAW: Not all the functions of this qrunner require the list to be
         # locked.  Still, it's more convenient to lock it here and now and
         # deal with lock failures in one place.
