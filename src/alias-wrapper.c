@@ -1,7 +1,7 @@
 /* alias-wrapper.c --- wrapper to allow the mailman user to modify the aliases
  * database.
  *
- * Copyright (C) 1998 by the Free Software Foundation, Inc.
+ * Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,27 +16,30 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 # 
-# NOTE: This is being deprecated since mailman has been shifted over to an
-#       external archiver (ie, andrew kuchling's latest version of pipermail.)
-#
-# This program shouldn't be attempted by people who don't understand Python.
-# I wrote it to build archives for a few lists I'd been running for a long
-# time under majordomo.
-#
-# Convert majordomo digests all stored in one directory into mailbox
-# format.  Note that the digests correct order in the dir should be
-# alphabetical order.
-#
-# The output file is ARCHIVE.ME in the same directory the digests are in.  
-# Run this program before you transfer the majordomo list.  
-#
-# To get the output file archived, create the list under mailman, 
-# run this script, and then do the following:
-#
-# cat ARCHIVE.ME >> ~mailman/mailman/lists/mylist/archived.mail
-#
-# You also need to adjust the variable: 
-# NUM_LINES_TO_STRIP_FROM_TOP
+
+"""
+NOTE: This is being deprecated since mailman has been shifted over to an
+      external archiver (ie, andrew kuchling's latest version of pipermail.)
+
+This program shouldn't be attempted by people who don't understand Python.
+I wrote it to build archives for a few lists I'd been running for a long
+time under majordomo.
+
+Convert majordomo digests all stored in one directory into mailbox
+format.  Note that the digests correct order in the dir should be
+alphabetical order.
+
+The output file is ARCHIVE.ME in the same directory the digests are in.  
+Run this program before you transfer the majordomo list.  
+
+To get the output file archived, create the list under mailman, 
+run this script, and then do the following:
+
+cat ARCHIVE.ME >> ~mailman/mailman/lists/mylist/archived.mail
+
+You also need to adjust the variable: 
+NUM_LINES_TO_STRIP_FROM_TOP
+"""
 
 import string, sys, os
 
