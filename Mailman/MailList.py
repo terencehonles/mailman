@@ -1269,8 +1269,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	prefix = self.subject_prefix
 	if not subj:
 	    msg.SetHeader('Subject', '%s(no subject)' % prefix)
-	elif prefix and not re.match(re.escape(self.subject_prefix),
-                                     subj, re.I):
+	elif prefix and not re.search(re.escape(self.subject_prefix),
+                                      subj, re.I):
 	    msg.SetHeader('Subject', '%s%s' % (prefix, subj))
         if self.anonymous_list:
             del msg['reply-to']
