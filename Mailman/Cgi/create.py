@@ -276,4 +276,3 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     form.AddItem(ftable)
     table.AddRow([form])
     doc.AddItem(table)
-    return
