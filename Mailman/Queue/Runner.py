@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -44,6 +44,11 @@ class Runner:
         # Create the shunt switchboard
         self._shunt = Switchboard(mm_cfg.SHUNTQUEUE_DIR)
         self._stop = 0
+        # Used by _open_list() to decide whether to freshen the state of any
+        # MailList object retrieved from the cache.  Most runners will
+        # eventually lock their lists, which automatically reloads their
+        # state.  It's only non-locking runners that need to set this.
+        self._freshen = 0
 
     def stop(self):
         self._stop = 1
@@ -171,7 +176,13 @@ class Runner:
             mlist = self._listcache.get(listname)
         else:
             mlist = None
-        if not mlist:
+        if mlist:
+            # Non-locking runners should set this to true so that they'll be
+            # sure they get fresh state.  Locking runners don't need to do
+            # this because the state is reloaded after locking the list.
+            if self._freshen:
+                mlist.Load()
+        else:
             try:
                 mlist = MailList.MailList(listname, lock=0)
                 if self._cachelists:
