@@ -580,7 +580,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             return
         # Initialize any new variables
         self.InitVars()
-        # Then reload the database (but don't recurse)
+        # Then reload the database (but don't recurse).  Force a reload even
+        # if we have the most up-to-date state.
+        self.__timestamp = 0
         self.Load(check_version=0)
         # We must hold the list lock in order to update the schema
         waslocked = self.Locked()
