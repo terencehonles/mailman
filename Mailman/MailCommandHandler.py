@@ -32,6 +32,7 @@ from Mailman import Utils
 from Mailman import Errors
 from Mailman import Message
 from Mailman import Pending
+from Mailman import MemberAdaptor
 from Mailman.UserDesc import UserDesc
 from Mailman.Logging.Syslog import syslog
 import Mailman.i18n
@@ -363,7 +364,20 @@ The following is a detailed description of the problems.
                           trunc=0)
             return
         for option in options:
-            if self.getMemberOption(sender, option_info[option]):
+            # We handle disabled delivery differently now
+            if option == 'nomail':
+                status = self.getDeliveryStatus(sender)
+                if status == MemberAdaptor.ENABLED:
+                    value = _('off')
+                else:
+                    reason = {
+                        MemberAdaptor.BYUSER:   _('by your configuration'),
+                        MemberAdaptor.BYADMIN:  _('by list admin'),
+                        MemberAdaptor.BYBOUNCE: _('by bounce'),
+                        MemberAdaptor.UNKNOWN : _('for unknown reasons'),
+                        }[status]
+                    value = _('on (%(reason)s')
+            elif self.getMemberOption(sender, option_info[option]):
                 value = 'on'
             else:
                 value = 'off'
@@ -423,7 +437,11 @@ Valid options are:
 
         # Set the option
         try:
-            self.setMemberOption(sender, option_info[option], value)
+            # delivery disable is handled separately now
+            if option == 'nomail':
+                self.setDeliveryStatus(sender, MemberAdaptor.BYUSER)
+            else:
+                self.setMemberOption(sender, option_info[option], value)
             self.AddToResponse(_('Succeeded.'))
         except Errors.AlreadyReceivingDigests:
             self.AddError(_('You are already receiving digests.'))
