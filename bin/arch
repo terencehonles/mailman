@@ -15,38 +15,100 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+"""Rebuild a list's archive.
+
+Use this command to rebuild the archives for a mailing list.  You may want to
+do this if you edit some messages in an archive, or remove some messages from
+an archive.
+
+Usage: %(program)s <listname> <mbox> [-h]
+
+Where <mbox> is the path to a list's complete mbox archive.  Usually this will 
+be some path in the archives/private directory.  For example:
+
+%% bin/arch mylist archives/private/mylist.mbox/mylist.mbox
+"""
+
 import sys
 import os
+import getopt
 
 import paths
+from Mailman import mm_cfg
 from Mailman.MailList import MailList
 from Mailman.Archiver.HyperArch import HyperArchive, Article
-from Mailman.Errors import *
+from Mailman.LockFile import LockFile
+from Mailman import Errors
 
-try:
-    listname, mbox = sys.argv[1:]
-except (IndexError, ValueError):
-    print "usage: arch <listname> <mbox>"
-    sys.exit(0)
+program = sys.argv[0]
 
 
-try:
-    list = MailList(listname)
-except MMUnknownListError:
-    print "no such list:", listname
-    sys.exit(1)
-try:
-    f = open(mbox)
-except IOError, rest:
-    print "error opening %s: %s" % (mbox, str(rest))
-    sys.exit(1)
-
-archiver = HyperArchive(list)
-archiver.VERBOSE = 1
-archiver.processUnixMailbox(f, Article)
-archiver.close()
-f.close()
-
-    
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
 
 
+
+def main():
+    # get command line arguments
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+
+    # grok arguments
+    if len(args) <> 2:
+        usage(1, 'listname and/or mbox file is missing')
+
+    # open the mailing list object
+    mlist = None
+    lock = None
+    try:
+        listname, mbox = sys.argv[1:]
+        try:
+            mlist = MailList(listname)
+        except MMUnknownListError:
+            usage(2, 'no such list: ' + listname)
+
+        # lay claim to the archive's lock file.  this is so no other post can
+        # mess up the archive while we're glomming it.  we pick a suitably
+        # long period of time for the lock lifetime, however we really don't
+        # know how long it will take.
+        #
+        # XXX: processUnixMailbox() should refresh the lock.
+        #
+        # XXX: this may not be necessary because I think we lay claim to the
+        # list lock up above, although that may be too short to be of use (and 
+        # maybe we don't really want to lock the list anyway).
+        #
+        lockfile = os.path.join(mm_cfg.LOCK_DIR, mlist._internal_name) + \
+                   '.archiver.lock'
+        # set the lock lifetime to 3 hours.  XXX is this reasonable???
+        lock = LockFile(lockfile, lifetime=3*60*60)
+        lock.lock()
+        try:
+            fp = open(mbox)
+        except IOError, msg:
+            usage(3, 'cannot open mbox file %s: %s' % (mbox, rest))
+
+        archiver = HyperArchive(mlist)
+        archiver.VERBOSE = 1
+        archiver.processUnixMailbox(fp, Article)
+        archiver.close()
+        fp.close()
+    finally:
+        if mlist:
+            mlist.Unlock()
+        if lock:
+            lock.unlock()
+
+
+if __name__ == '__main__':
+    main()
