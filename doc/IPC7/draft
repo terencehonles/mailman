@@ -5,12 +5,12 @@
 			       ========
 
 The explosive growth in the Internet community, and the core role that
-email plays in it, practically demands an adaptable Mailing List
-Management (MLM) system.  The extent to which MLMs are adaptable is
-the extent to which they can accommodate, and even foster, effective
-new forms of Internet community organization.  A new MLM, Mailman, is
-well suited to such evolution, and one of the contributing factors is
-its basis in Python.
+email plays in it, demands an adaptable Mailing List Management (MLM)
+system.  The extent to which MLMs are adaptable is the extent to which
+they can accommodate, and even foster, effective new forms of Internet
+community organization.  A new MLM, Mailman, is well suited to such
+evolution, and one of the contributing factors is its implementation
+in Python.
 
 In this paper we will look at various ways that Mailman's versatility
 enables extension of it.  We will consider how the system's design,
@@ -24,26 +24,26 @@ extensibility.
 
 Mailman is a Mailing List Management system, like Majordomo and
 Smartmail, used to manage email redistribution lists.  Mailman gives
-each mailing list a web page, and allows users to subscribe,
-unsubscribe, etc. over the web.  List managers can administer their
-lists entirely from the web.  Mailman also integrates most things
+each mailing list a Web page, and allows users to subscribe,
+unsubscribe, etc. over the Web.  List managers can administer their
+lists entirely from the Web.  Mailman also integrates most things
 people want to do with mailing lists, including archiving, mail <->
 news gateways, and so on.
 
-(Mailman was originally developed by John Viega.  Ken Manheimer picked
+Mailman was originally developed by John Viega.  Ken Manheimer picked
 up the ball to bring Mailman to 1.0.  Currently, Mailman development
 is a group effort, led by John Viega, Ken Manheimer and Barry Warsaw.
+Mailman has been designated by the Free Software Foundation as the GNU
+Mailing List Manager.
 
 See [LO "Mailman"] for more details on the system, and visit the [MD
-"Mailman-developers"] mailing list if you're interested in joing the
-mailman development community.)
+"Mailman-developers"] mailing list if you're interested in joining the
+Mailman development community.
 
-Mailman is written completely in Python, and is particularly well
-suited to extension and change.  We will explore that in this paper.
 
 			  Why Extensibility?
 
-From the early days of the Arpanet to today, email and Mailing List
+From the early days of the ARPAnet to today, email and Mailing List
 Management systems have played a crucial role in the formation and
 conduct of communities on the Internet.  With the profound dynamicism
 of the Internet, the infrastructures by which it organizes are
@@ -53,7 +53,7 @@ communities demand continuing development of the mechanisms supporting
 them.  New and different approaches may take up some types of the
 traffic, as Usenet News has, but email, as a medium, has proven to be
 particularly versatile and lasting.  A good MLM will help foster the
-evolution of the internet communities, by growing with them.
+evolution of the Internet communities, by growing with them.
 
 Another reason for extensibility's importance in this context has to
 do with a core constituency of mailing list users - the mailing list
@@ -88,8 +88,8 @@ aids the programmer, all the more in the process of changing existing
 code.  It is dynamic in many respects, enabling interaction with and
 programmatic handling of just about everything in the language.  By
 satisfying the needs of prototyping and rapid development, as well as
-those of general programming, it can be seen to foster the needs of
-"continuous development", where a system needs to continue to grow to
+those of general programming, it can be seen to foster "continuous
+development", where a system continues to grow and evolve to
 accommodate a changing world.
 
 	       A Broad Overview of Mailman's Structure
@@ -130,12 +130,12 @@ HTMLFormatter:
     [RF "HTMLgen"] and Digital Creations, L.C. [DC "DocumentFormatter"].
 
 Deliverer:
-    This class conducts delivery of any of the email associated
-    with a mailing list.  This includes membership delivery of postings,
+    This class conducts delivery of any of the email associated with a
+    mailing list.  This includes membership delivery of postings,
     subscription acknowledgments, announcements to the list
     administrator about list creation, list business pending approval,
     subscriber notices regarding their passwords, and myriad other
-    things.  Email can be used for a lot of things by a mailing list
+    things.  Email is used for a lot of things by a mailing list
     system, even one with a comprehensive Web interface
 
 ListAdmin:
@@ -171,7 +171,7 @@ SecurityManager:
 
 Bouncer:
     Mailman catches email delivery bounce notices, and accumulates
-    tallys of bounce scores for the mailing list members.  For tallies
+    tallies of bounce scores for the mailing list members.  For scores
     that exceed designated thresholds within designated timeout
     conditions, the bouncer triggers list-prescribed actions,
     including disabling of mail delivery or, if set by the list
@@ -186,9 +186,11 @@ GatewayManager:
 
 	  Programming and Interacting With MailList Objects
 
-Perhaps the most factor contributing to Mailman's versatility is from
-designing the MailList class for instantiation by external programs,
-or interactively within the interpreters.  Almost all aspects of
+[[XXX: what???!! Perhaps the most factor contributing to Mailman's
+versatility is from designing the MailList class for instantiation by
+external programs, or interactively within the interpreters.]]
+
+Almost all aspects of
 Mailman mailing list operation are articulated via the MailList instance.
 Thus, interaction with mailing lists can be conducted programmatically,
 and also incrementally, using the interactive Python shell.
@@ -205,14 +207,14 @@ exercise and test isolated subsystems and the behavior of the MailList
 as a whole, engaging tools like the Python debugger and profiler along
 the way.
 
-We can also use interactive sessions do MailList "surgery" - to make
-changes to list state not provided for in already created scripts.
-Using a utility function, Utils.map_maillists(), we can apply arbitrary
-functions to all or to selected Mailman mailing lists at the site.
-This enables us to do wholesale conversions of the MailLists to
-accommodate, for instance, changes in the address of the site, or to
-search for particular members of any of the mailing lists and then do some
-processing on their subscriptions.
+We can also use interactive sessions to do mailing list "surgery" - to
+make changes to list state not provided for in already created
+scripts.  Using a utility function, Utils.map_maillists(), we can
+apply arbitrary functions to all or to selected Mailman mailing lists
+at the site.  This enables us to do wholesale conversions of the
+MailLists to accommodate, for instance, changes in the address of the
+site, or to search for particular members of any of the mailing lists
+and then do some processing on their subscriptions.
 
 	       MailList Object Composed via Inheritance
 		    from Task-Oriented Components
@@ -226,8 +228,8 @@ MailList instance can lead to inadvertent name collisions.  However,
 we feel that the system would have to get much bigger before that
 would become a practical concern - and at that point we could use
 naming conventions to prevent the collisions, while still enjoying the
-easy sharing.  This use of multiple inheritance provides this direct
-sharing, along with organization of the system in distinct,
+easy sharing.  Use of multiple inheritance provides this direct
+sharing, along with organization of the system into distinct,
 conceptually motivated modules, easing debugging and development.
 
 New major modules are still being added as task-specific mixin
@@ -255,7 +257,7 @@ newcomers.
 Logging Mechanism
 
 Most of the common interactions with MailList objects are triggered
-remotely - via the Web or Email - or from periodically firing cron
+remotely - via the Web or email - or from periodically firing cron
 jobs.  The lack of an operator or a console can make system failures
 in these contexts hard to trace.  Of course, every program should be
 perfect (:-), or at least fail gracefully.  However, when programming
@@ -285,7 +287,7 @@ Time-stamped logger objects and multi-stream output variants are
 commonly used within Mailman scripts that run disconnected from a
 terminal, to capture errors.
 
-Loggers are applied in Mailman web-associated components with another
+Loggers are applied in Mailman Web-associated components with another
 useful refinement.  All Web CGI scripts are launched via a driver
 script.  The driver script launches the intended, job-specific scripts
 within the context of an unqualified try-except statement.  If any
@@ -293,13 +295,13 @@ exception escapes the job-specific script - including ones that simply
 cannot be caught within a script, for instance, syntax errors - then
 the driver catches the exception and handles them in a useful way.
 The driver produces the traceback and a listing of all the HTTP
-settings both to stdout (HTML formatted, for rendition on the Web),
-and to the error log file.  This way, the web visitor is provided with
-informative feedback (including instructions about contacting the site
-administrator, if they are inclined), and the site has a detailed
-record of the error.  (See [Figure, "Excerpt from CGI Driver Script
-Code"], showing the use of error loggers and the comprehensive
-exception guard.)
+environment variable settings both to stdout (HTML formatted, for
+rendition on the Web), and to the error log file.  This way, the Web
+visitor is provided with informative feedback (including instructions
+about contacting the site administrator, if they are inclined), and
+the site has a detailed record of the error.  (See [Figure, "Excerpt
+from CGI Driver Script Code"], showing the use of error loggers and
+the comprehensive exception guard.)
 
 (The driver script, itself, is small and carefully hardened, in order
 to minimize the chance that it will introduce errors where they won't
@@ -349,16 +351,17 @@ Together with complete access to Mailman mailing lists via the MailList
 object, this general mechanism enables publishing access to any aspect
 of MailList operation to the Web.
 
-On this we build typical web-related functionality, like overview of
-the mailing lists on the site, and review and subscription to
-particular lists, available via the web.  (See [Figure: "Mailing List
-Home Page"].)  In addition, we also extend administrative customization
-of MailList operation (see the Configuration Options section, below),
-administrative action on the disposition of subscriptions and postings
-being held for approval, and subscriber control of their subscription
-status, customization options, and password, among other things.
+On this we build typical Web-related functionality, such as an
+overview of the mailing lists on the site, and review and subscription
+to particular lists, available via the Web.  (See [Figure: "Mailing
+List Home Page"].)  In addition, we also extend administrative
+customization of MailList operation (see the Configuration Options
+section, below), administrative action on the disposition of
+subscriptions and postings being held for approval, and subscriber
+control of their subscription status, customization options, and
+password, among other things.
 
-The elaborateness of web applications, and the typical lack of a local
+The elaborateness of Web applications, and the typical lack of a local
 operator and error console, can complicate development and debugging
 of them.  The use of Mailman's logging utilities, as described above,
 provides reporting of unexpected errors, and also provides convenient
@@ -374,7 +377,7 @@ interfaces via the Web.
 Configuration Options Mechanism Exploits Namespace Dynamicism
 
 One significant subsystem demonstrating the power of the interface
-between MailList objects and the web is the mailing list
+between MailList objects and the Web is the mailing list
 customization-options mechanism.  (See [Figure: "Admin Options
 page"].)
 
@@ -382,14 +385,13 @@ MailList configuration options are expressed as simple data structures
 (tuples) specifying the name of the MailList's data member which
 contains the underlying setting, the type and layout of the HTML user
 interface element for the option, a brief description, and an optional
-(i.e., elective) elaborate description.  These options are collected
-into lists according to rough categories, like list-privacy specific
-options, or digest specific settings.  (The option lists also include
-string entries which are used to annotate their presentation,
-typically at least including a header describing the category of the
-set.)
+elaborate description.  These options are collected into lists
+according to rough categories, e.g. list-privacy specific options, or
+digest specific settings.  (The option lists also include string
+entries which are used to annotate their presentation, typically at
+least including a header describing the category of the set.)
 
-These option descriptors dictate the contents of web pages by which
+These option descriptors dictate the contents of Web pages by which
 the mailing list administrators customize the behaviors of their mailing lists
 - coupling the CGI widgets on the pages with the underlying settings
 in the MailList objects.  Python's dynamic namespaces and high-level
@@ -466,16 +468,20 @@ this role w.r.t. the CGI scripts.)  In general, except clauses should
 be as completely qualified as possible, and should be moved as close
 to the exception they're meant to catch as can be handled.
 
-One fundamental question involved in producing any large programming
-project with Python is the impact of the lack of static types.  Static
-typing would expose a number of very common errors during compilation,
-ones that we otherwise might not notice until some obscure branch of
-the code is exercised a long time after substantial testing has
-completed.  The relatively new phenomenon of Bazaar-style open
-software development adds new facets to this question.  How do the
-tradeoffs in simplicity and robustness pay off in keeping the code
-approachable and reliable in the face of numerous different developers
-of differing skill levels?
+[[XXX is this a better way to say the following?]]
+
+One fundamental question involves the friction between rapid
+prototyping and system hardening, which is particularly related to the
+use of dynamically typed Python.  Dynamic typing is a wonderful tool
+for prototyping and rapid changing of the system.  However, as parts
+of the system evolve and stabilize, it might be more useful to employ
+static typing so that the interfaces between system components, and
+the components themselves, can be hardened.  There have been some
+discussions on the Python newsgroup about adding optional static
+typing to the language, and this would be a very interesting feature
+to experiment with.  The questions are how useful would optional
+static typing be, and would it be flexible enough to allow migration
+of code from dynamic typing to static typing?
 
 			      Conclusion
 			      ==========
