@@ -109,10 +109,10 @@ void main(int argc, char **argv) {
   char  *command;
   int   i;
   
-  f = fopen("/tmp/fart", "w+");
+  /* f = fopen("/tmp/fart", "w+"); */
   if(argc < 2)
     {
-      fprintf(f,"Usage: %s program [args...]\n", argv[0]);
+      printf("Usage: %s program [args...]\n", argv[0]);
       fflush(stdout);
       exit(0);
     }
@@ -121,7 +121,7 @@ void main(int argc, char **argv) {
   sprintf(command, "%s/%s", COMMAND_LOCATION, argv[1]);
 
   if(!valid_command(argv[1])){
-      fprintf(f,"Illegal command.\n");
+      printf("Illegal command.\n");
     }
   else{
     if(legal_caller()) {
@@ -129,7 +129,7 @@ void main(int argc, char **argv) {
       execv(command, &argv[1]);
     }
     else {
-      fprintf(f,"Illegal caller!\n");
+      printf("Illegal caller!\n");
     }
   }
 }
