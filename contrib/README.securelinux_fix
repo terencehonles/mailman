@@ -1,0 +1,12 @@
+The securelinux_fix.py script, if copied in your installed
+~mailman/bin/ directory and run from there will modify permissions of
+files so that Mailman works despite the securelinux (aka openwall)
+symbolic and hard link restrictions.
+
+The way it works is that it makes sure that the UID of any script that
+touches config.db is `mailman'. What this means however is that
+scripts in ~mailman/bin will now only work if run as user mailman or
+root (the script then changes its UID and GID to mailman).
+
+Enjoy
+Marc MERLIN <marcsoft@merlins.org>/<marc_bts@valinux.com>
