@@ -167,6 +167,23 @@ class GatewayManager:
                                    len(string.split(msg.body,"\n")))
             del msg['received']
 
+            # TBD: Gross hack to ensure that we have only one
+            # content-transfer-encoding header.  More than one barfs NNTP.  I
+            # don't know why we sometimes have more than one such header, and
+            # it probably isn't correct to take the value of just the first
+            # one.  What if there are conflicting headers???
+            #
+            # This relies on the new interface for getaddrlist() returning
+            # values for all present headers, and the fact that the legal
+            # values are usually not parseable as addresses.  Yes this is
+            # another bogosity.
+            cteheaders = msg.getaddrlist('content-transfer-encoding')
+            if cteheaders:
+                ctetuple = cteheaders[0]
+                ctevalue = ctetuple[1]
+                del msg['content-transfer-encoding']
+                msg['content-transfer-encoding'] = ctevalue
+
             # NNTP is strict about spaces after the colon in headers.
             for n in range(len(msg.headers)):
                 line = msg.headers[n]
