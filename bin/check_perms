@@ -104,7 +104,7 @@ def checkwalk(arg, dirname, names):
                 print
         # all directories must be at least rwxrwsr-x.  Don't check the private
         # archive directory or database directory themselves since these are
-        # checked in checkarchives below.
+        # checked in checkarchives() and checkarchivedbs() below.
         private = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
         if path == private or (os.path.commonprefix((path, private)) == private
                                and os.path.split(path)[1] == 'database'):
