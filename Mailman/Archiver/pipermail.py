@@ -300,7 +300,7 @@ class T:
         self.update_TOC = 0
         self.write_TOC()
 	# Save the collective state 
-	self.message(_('Pickling archive state into ') \
+	self.message(_('Pickling archive state into ')
                      + os.path.join(self.basedir, 'pipermail.pck'))
 	self.database.close()
 	del self.database
