@@ -99,17 +99,12 @@ def processQueue():
         #
         try:
             st = os.stat(full_fname)
-        except os.error, rest:
-            try:
-                code, msg = rest
-            except ValueError:
-                code = ""
-                msg = str(rest)
+        except os.error, (code, msg):
             if code == errno.ENOENT:
                 # file does not exist, it's already been dequeued
                 continue
             else:
-                raise os.error, rest
+                Utils.reraise()
         #
         # if the file is not a deferred queue message, we check to see if the
         # creation time was too long ago and process it anyway.  If the
