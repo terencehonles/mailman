@@ -19,17 +19,26 @@
 I've seen at least one NMS server version 3.6 (envy.gmp.usyd.edu.au) bounce
 messages of this format.  Bounces come in DSN mime format, but don't include
 any -Recipient: headers.  Gotta just parse the text :(
+
+NMS 4.1 (dfw-smtpin1.email.verio.net) seems even worse, but we'll try to
+decipher the format here too.
+
 """
 
+import string
 import re
 import multifile
 import mimetools
 
 from Mailman.pythonlib.StringIO import StringIO
 
-pcre = re.compile(r'The following recipients did not receive your message:',
-                  re.IGNORECASE)
-acre = re.compile(r'<(?P<addr>[^>]*)>')
+pcre = re.compile(
+    r'This Message was undeliverable due to the following reason:',
+    re.IGNORECASE)
+
+acre = re.compile(
+    r'(?P<reply>please reply to)?.*<(?P<addr>[^>]*)>',
+    re.IGNORECASE)
 
 
 
@@ -77,14 +86,14 @@ def process(msg):
             break
         mo = pcre.search(line)
         if mo:
-            # There seems to be an intervening blank line
-            line = plainmsg.fp.readline()
-            if not line:
-                break
-            line = plainmsg.fp.readline()
-            if not line:
-                break
-            mo = acre.search(line)
-            if mo:
-                addrs.append(mo.group('addr'))
+            # We found a bounce section, but I have no idea what the official
+            # format inside here is.  :(  We'll just search for <addr>
+            # strings.
+            while 1:
+                line = plainmsg.fp.readline()
+                if not line:
+                    break
+                mo = acre.search(line)
+                if mo and not mo.group('reply'):
+                    addrs.append(mo.group('addr'))
     return addrs or None
