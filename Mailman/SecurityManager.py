@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -47,11 +47,12 @@
 # also relies on the security of SHA1.
 
 import os
-import time
+import re
 import sha
+import time
+import Cookie
 import marshal
 import binascii
-import Cookie
 from types import StringType, TupleType
 from urlparse import urlparse
 
@@ -269,14 +270,12 @@ class SecurityManager:
         cookiedata = os.environ.get('HTTP_COOKIE')
         if not cookiedata:
             return 0
-        # Treat the cookie data as simple strings, and do application level
-        # decoding as necessary.  By using SimpleCookie, we prevent any kind
-        # of security breach due to untrusted cookie data being unpickled
-        # (which is quite unsafe).
-        try:
-            c = Cookie.SimpleCookie(cookiedata)
-        except Cookie.CookieError:
-            return 0
+        # We can't use the Cookie module here because it isn't liberal in what
+        # it accepts.  Feed it a MM2.0 cookie along with a MM2.1 cookie and
+        # you get a CookieError. :(.  All we care about is accessing the
+        # cookie data via getitem, so we'll use our own parser, which returns
+        # a dictionary.
+        c = parsecookie(cookiedata)
         # If the user was not supplied, but the authcontext is AuthUser, we
         # can try to glean the user address from the cookie key.  There may be
         # more than one matching key (if the user has multiple accounts
@@ -316,7 +315,7 @@ class SecurityManager:
         # simply request reauthorization, resulting in a new cookie being
         # returned to the client.
         try:
-            data = marshal.loads(binascii.unhexlify(c[key].value))
+            data = marshal.loads(binascii.unhexlify(c[key]))
             issued, received_mac = data
         except (EOFError, ValueError, TypeError, KeyError):
             return 0
@@ -331,3 +330,14 @@ class SecurityManager:
             return 0
         # Authenticated!
         return 1
+
+
+
+splitter = re.compile(';\s*')
+
+def parsecookie(s):
+    c = {}
+    for p in splitter.split(s):
+        k, v = p.split('=')
+        c[k] = v
+    return c
