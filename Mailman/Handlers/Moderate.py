@@ -146,15 +146,17 @@ def do_discard(mlist, msg):
     sender = msg.get_sender()
     # Do we forward auto-discards to the list owners?
     if mlist.forward_auto_discards:
+        lang = mlist.preferred_language
         varhelp = '%s/?VARHELP=privacy/sender/discard_these_nonmembers' % \
                   mlist.GetScriptURL('admin', absolute=1)
         nmsg = Message.UserNotification(mlist.GetOwnerEmail(),
                                         mlist.GetBouncesEmail(),
                                         _('Auto-discard notification'),
-                                        lang=mlist.preferred_language)
+                                        lang=lang)
         nmsg.set_type('multipart/mixed')
         text = MIMEText(Utils.wrap(_(
-            'The attached message has been automatically discarded.')))
+            'The attached message has been automatically discarded.')),
+                        _charset=Utils.GetCharSet(lang))
         nmsg.attach(text)
         nmsg.attach(MIMEMessage(msg))
         nmsg.send(mlist)
