@@ -29,7 +29,6 @@ import errno
 import traceback
 
 from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Mailbox
 from Mailman import LockFile
 from Mailman.SafeDict import SafeDict
@@ -104,12 +103,14 @@ class Archiver:
 	self.archive_directory = os.path.join(
             mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
             self._internal_name)
+        omask = os.umask(0)
         try:
-            Utils.mkdir(self.private_archive_file_dir)
-        except os.error, e:
-            code, msg = e
-            if code <> errno.EEXIST:
-                raise
+            try:
+                os.mkdir(self.private_archive_file_dir, 02775)
+            except OSError, e:
+                if e.errno <> errno.EEXIST: raise
+        finally:
+            os.umask(omask)
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
