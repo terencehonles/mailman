@@ -101,6 +101,21 @@ script.
     l.Save()
 
 
+#
+# this function is passed to os.path.walk
+# to fix the perms on old html archives.
+#
+def archive_path_fixer(unused_arg, dir, files):
+    for f in files:
+        abs = os.path.join(dir, f)
+        if os.path.isdir(abs):
+            if f == "database":
+                os.chmod(abs, 02770)
+            else:
+                os.chmod(abs, 02775)
+        elif os.path.isfile(abs):
+            os.chmod(abs, 0664)
+
 
 if __name__ == '__main__':
     lists = list_names()
@@ -112,11 +127,12 @@ if __name__ == '__main__':
     # in the archiving are set with proper perms for b6.
     #
     if os.path.isdir("%s/public_html/archives" % Mailman.mm_cfg):
-        print "setting all old html archiving directories to have setgid status"
-        os.system("chmod g+rwxs,o-w `find %s/public_html/archives -type d -print`" % \
-                  Mailman.mm_cfg.PREFIX)
-        os.system("chmod g-w `find %s/public_html/archives -type file -print`" % \
-                  Mailman.mm_cfg.PREFIX)
+        print "fixing all the perms on your old html archives to work with b6"
+        print "If your archives are big, this could take a minute or two..."
+        os.path.walk("%s/public_html/archives" % Mailman.mm_cfg,
+                     archive_path_fixer, "")
+        print "done"
+        
         
     for list in lists:
         print 'Updating mailing list: ', list
