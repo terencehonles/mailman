@@ -7,11 +7,14 @@ configured using the standard GNU autoconf software.  You should first
 set up your system as outlined in the sections below, and then
 configure and install the Mailman software.
 
-UPGRADING:
+IMPORTANT: Pay special attention to the step below where you have to
+set up your crontab entries.  If you do not do this, Mailman will not
+work.
 
-Upgrading is usually as easy as just installing the new version over
-the existing installation.  However, you should read the notes in the
-file UPGRADING for important information before you upgrade.
+UPGRADING: Upgrading is usually as easy as just installing the new
+version over the existing installation.  However, you should read the
+notes in the file UPGRADING for important information before you
+upgrade.
 
 0. Installation requirements
 
@@ -260,7 +263,9 @@ file UPGRADING for important information before you upgrade.
 
       Now restart your web server.
 
-    - Set up the crontab entries.  Mailman runs a number of cron jobs
+    - IMPERATIVE!  IMPORTANT!  DO THIS!  YOU'LL BE SORRY IF YOU DON'T!
+
+      Set up the crontab entries.  Mailman runs a number of cron jobs
       for its basic functionality.  You need to be user `mailman' (or
       whatever you specified as --with-ownername) to perform this
       step.  Add $prefix/cron/crontab.in as a crontab entry by
