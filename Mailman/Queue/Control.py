@@ -91,20 +91,26 @@ def start_runner(qrclass, slice, count):
     if pid:
         # parent
         return pid
-    else:
-        # child
-        qrunner = qrclass(slice, count)
-        def sighup_handler(signum, frame, qrunner=qrunner):
-            # Exit the qrunner cleanly.
-            qrunner.stop()
-            syslog('qrunner', '%s qrunner caught SIGHUP.  Stopping.' %
-                   qrunner.__class__.__name__)
-        # Enable the child's SIGHUP handler
-        signal.signal(signal.SIGHUP, sighup_handler)
-        syslog('qrunner', '%s qrunner started.', qrclass.__name__)
-        qrunner.run()
-        syslog('qrunner', '%s qrunner exiting.', qrclass.__name__)
-        os._exit(0)
+    # child
+    #
+    # BAW: We need to think of a good way to force the reloading of Mailman
+    # modules so that a "mailmanctl restart" will utilize any updated code.
+    # Clearing sys.modules is one way, but it has nasty side effects.  Hmm,
+    # maybe exec'ing a new process image is the right thing to do?
+    #
+    # Now instantiate the qrunner class
+    qrunner = qrclass(slice, count)
+    def sighup_handler(signum, frame, qrunner=qrunner):
+        # Exit the qrunner cleanly.
+        qrunner.stop()
+        syslog('qrunner', '%s qrunner caught SIGHUP.  Stopping.' %
+               qrunner.__class__.__name__)
+    # Enable the child's SIGHUP handler
+    signal.signal(signal.SIGHUP, sighup_handler)
+    syslog('qrunner', '%s qrunner started.', qrclass.__name__)
+    qrunner.run()
+    syslog('qrunner', '%s qrunner exiting.', qrclass.__name__)
+    os._exit(0)
 
 
 
