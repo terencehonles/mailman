@@ -19,12 +19,14 @@
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
+from Mailman.Gui.GUIBase import GUIBase
 
-BADJOINER = '</code>, <code>'
+# These are the allowable string substitution variables
+ALLOWEDS = ('listname', 'listurl', 'requestemail', 'adminemail', 'owneremail')
 
 
 
-class Autoresponse:
+class Autoresponse(GUIBase):
     def GetConfigCategory(self):
         return 'autoreply', _('Auto-responder')
 
@@ -84,48 +86,14 @@ box, or you can specify a file on your local system to upload as the text."""),
              message).''')),
             ]
 
-    def HandleForm(self, mlist, cgidata, doc):
-        # BAW: Refactor w/ similar code in NonDigest.py and Digest.py
-        for attr in ('autoresponse_postings_text', 'autoresponse_admin_text',
-                     'autoresponse_request_text'):
-            newval = cgidata.getvalue(attr)
-            # Are we converted to using $-strings?
-            dollarp = getattr(mlist, 'use_dollar_strings', 0)
-            if dollarp:
-                ids = Utils.dollar_identifiers(newval)
-            else:
-                # %-strings
-                ids = Utils.percent_identifiers(newval)
-            # Here's the list of allowable interpolations
-            for allowed in ['listname', 'listurl', 'requestemail',
-                            'adminemail', 'owneremail']:
-                if ids.has_key(allowed):
-                    del ids[allowed]
-            if ids:
-                # What's left are not allowed
-                badkeys = ids.keys()
-                badkeys.sort()
-                bad = BADJOINER.join(badkeys)
-                doc.addError(_(
-                    """The following illegal interpolation variables were
-                    found in the <code>%(attr)s</code> string:
-                    <code>%(bad)s</code>
-                    <p>Your changes will be discarded.  Please correct the
-                    mistakes and try again."""),
-                             tag=_('Error: '))
+    def _setValue(self, mlist, property, val, doc):
+        # Handle these specially because we may need to convert to/from
+        # external $-string representation.
+        if property in ('autoresponse_postings_text',
+                        'autoresponse_admin_text',
+                        'autoresponse_request_text'):
+            val = self._convertString(mlist, property, ALLOWEDS, val, doc)
+            if val is None:
+                # There was a problem, so don't set it
                 return
-            # Now if we're still using %-strings, do a roundtrip conversion
-            # and see if the converted value is the same as the new value.  If
-            # not, then they probably left off a trailing `s'.  We'll warn
-            # them and use the corrected string.
-            if not dollarp:
-                fixed = Utils.to_percent(Utils.to_dollar(newval))
-                if fixed <> newval:
-                    doc.addError(_(
-                        """Your <code>%(attr)s</code> string appeared to have
-                        some correctable problems in its new value.  The fixed
-                        value will be used instead.  Please double check that
-                        this is what you intended.
-                        """))
-                    newval = fixed
-            setattr(mlist, attr, newval)
+        GUIBase._setValue(self, mlist, property, val, doc)
