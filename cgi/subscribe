@@ -10,7 +10,7 @@ sys.path.append('/home/mailman/mailman/modules')
 import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat
 
 NEED_CONFIRM_NOTICE = """
-A request for your subscription to the %s mailing list
+A web request for your subscription to the %s mailing list
 has been received at %s%s
 
 This is a confirmation request, to prevent someone subscribing you
@@ -21,9 +21,12 @@ line:
 subscribe %s
 
 in the body or as the subject line.  If you do not actually wish to
-subscribe you need not do anything.
+subscribe you need not do anything.  Upon subscribing you will receive 
+message welcoming you to the list and describing how to tailor your
+account.
 
-Questions or comments?  Send them to """ + mm_cfg.MAILMAN_OWNER
+Questions or comments?
+Send them to """ + mm_cfg.MAILMAN_OWNER
 
 UNKNOWN_ERROR = '''An unknown error occured.  <p>
 Please send mail to <a href=%s>%s</a> explaining
