@@ -154,7 +154,7 @@ class HTMLFormatter:
 	    return ("(Note - you are subscribing to a list of maillists, so"
                     " the %s notice will be sent to the admin address"
                     " for your membership, %s.)<p>"
-                    % self.GetMemberAdminEmail(name))
+                    % (type, self.GetMemberAdminEmail(user)))
 	else:
 	    return ""
 
