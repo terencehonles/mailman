@@ -14,6 +14,11 @@ def chop (line):
 
     return line
 
+def cmprevision (a, b):
+    '''revisions are something delimited with dots'''
+
+    return cmp (map (lambda x: x.lower (), a.split ('.')), map (lambda x: x.lower (), b.split ('.')))
+
 name = None
 revision = None
 
@@ -39,8 +44,13 @@ for line in open ('status', 'r').readlines ():
         if files.has_key (parts[0]):
             pass    # check the version
 
-            if files[parts[0]] != parts[1]:
+            relation = cmprevision (parts[1], files[parts[0]])
+
+            if relation < 0:
                 print 'Update: %s (%s -> %s)' % (parts[0], parts[1], files[parts[0]])
+                action = 1
+            elif relation > 0:
+                print 'Downgrade?: %s (%s -> %s)' % (parts[0], parts[1], files[parts[0]])
                 action = 1
 
             del files[parts[0]] # delete the item
