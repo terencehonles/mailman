@@ -71,9 +71,7 @@ LIST_PIPELINE = ['SpamDetect',
 
 
 
-# Central mail delivery handler
-def DeliverToList(mlist, msg, msgdata):
-    pipeline = msgdata.get('pipeline', LIST_PIPELINE[:])
+def do_pipeline(mlist, msg, msgdata, pipeline):
     while pipeline:
         modname = pipeline.pop(0)
         mod = __import__('Mailman.Handlers.' + modname)
@@ -82,11 +80,11 @@ def DeliverToList(mlist, msg, msgdata):
             func(mlist, msg, msgdata)
         except DiscardMessage:
             # Throw the message away; we need do nothing else with it.
-            return 0
+            pipeline = []
         except MessageHeld:
             # Let the approval process take it from here.  The message no
             # longer needs to be queued.
-            return 0
+            pipeline = []
         except SomeRecipientsFailed:
             # The delivery module being used (SMTPDirect or Sendmail) failed
             # to deliver the message to one or all of the recipients.  Push
@@ -136,6 +134,15 @@ def DeliverToList(mlist, msg, msgdata):
             traceback.print_exc(file=s)
             syslog('error', s.getvalue())
             break
+    return pipeline
+
+
+
+# Central mail delivery handler
+def DeliverToList(mlist, msg, msgdata):
+    pipeline = msgdata.get('pipeline', LIST_PIPELINE)[:]
+    if not msgdata.get('_enqueue_immediate', 0):
+        pipeline = do_pipeline(mlist, msg, msgdata, pipeline)
     msgdata['pipeline'] = pipeline
     if pipeline:
         msg.Enqueue(mlist, newdata=msgdata)
