@@ -31,6 +31,8 @@ message handling should stop.
 import os
 import time
 import email
+from email.MIMEText import MIMEText
+from email.MIMEMessage import MIMEMessage
 import email.Utils
 from types import ClassType
 
@@ -131,42 +133,6 @@ def process(mlist, msg, msgdata):
         hold_for_approval(mlist, msg, msgdata, Administrivia)
         # no return
     #
-    # Is the poster in the list of explicitly forbidden posters?
-    if len(mlist.forbidden_posters):
-        forbiddens = Utils.List2Dict(mlist.forbidden_posters)
-        addrs = Utils.FindMatchingAddresses(sender, forbiddens)
-        if addrs:
-            hold_for_approval(mlist, msg, msgdata, ForbiddenPoster)
-            # no return
-    #
-    # Is the list moderated?  If so and the sender is not in the list of
-    # allowed posters then hold the message.
-    if mlist.moderated:
-        posters = Utils.List2Dict(mlist.posters)
-        addrs = Utils.FindMatchingAddresses(sender, posters)
-        if not addrs:
-            hold_for_approval(mlist, msg, msgdata, ModeratedPost)
-            # no return
-    #
-    # Postings allowed only from list members?  mlist.posters are allowed in
-    # addition to list members.  If not set, then only the members in posters
-    # are allowed to post without approval.
-    if mlist.member_posting_only:
-        posters = Utils.List2Dict([s.lower() for s in mlist.posters])
-        if not mlist.isMember(sender) and \
-           not Utils.FindMatchingAddresses(sender, posters):
-            # the sender is neither a member of the list, nor in the list of
-            # explicitly approved posters
-            hold_for_approval(mlist, msg, msgdata, NonMemberPost)
-            # no return
-    elif mlist.posters:
-        posters = Utils.List2Dict([s.lower() for s in mlist.posters])
-        if not Utils.FindMatchingAddresses(sender, posters):
-            # the sender is not explicitly in the list of allowed posters
-            # (which is non-empty), so hold the message
-            hold_for_approval(mlist, msg, msgdata, NotExplicitlyAllowed)
-            # no return
-    #
     # Are there too many recipients to the message?
     if mlist.max_num_recipients > 0:
         # figure out how many recipients there are
@@ -219,6 +185,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     sender = msg.get_sender()
     owneraddr = mlist.GetOwnerEmail()
     adminaddr = mlist.GetAdminEmail()
+    requestaddr = mlist.GetRequestEmail()
     # We need to send both the reason and the rejection notice through the
     # translator again, because of the games we play above
     reason = Utils.wrap(exc.reason_notice())
@@ -242,18 +209,18 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     #
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
+    cookie = Pending.new(Pending.HELD_MESSAGE, id)
     if not fromusenet and mlist.respond_to_post_requests:
         # Get a confirmation cookie
-        cookie = Pending.new(Pending.HELD_MESSAGE, id)
         d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
                                      cookie)
         lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
         subject = _('Your message to %(listname)s awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
-        msg = Message.UserNotification(sender, adminaddr, subject, text)
-        msg.add_header('Content-Type', 'text/plain',
-                       charset=Utils.GetCharSet(lang))
-        msg.send(mlist)
+        nmsg = Message.UserNotification(sender, adminaddr, subject, text)
+        nmsg.add_header('Content-Type', 'text/plain',
+                        charset=Utils.GetCharSet(lang))
+        nmsg.send(mlist)
     # Now the message for the list owners.  Be sure to include the list
     # moderators in this message.  This one should appear to come from
     # <list>-owner since we really don't need to do bounce processing on it.
@@ -263,17 +230,33 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         otranslation = i18n.get_translation()
         i18n.set_language(mlist.preferred_language)
         try:
+            lang = mlist.preferred_language
             # We need to regenerate or re-translate a few values in d
             usersubject = msg.get('subject', _('(no subject)'))
             d['reason'] = _(reason)
             d['subject'] = usersubject
-            text = Utils.maketext('postauth.txt', d, raw=1, mlist=mlist)
             # craft the admin notification message and deliver it
             subject = _('%(listname)s post from %(sender)s requires approval')
-            msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
-            msg.add_header('Content-Type', 'text/plain',
-                           charset=Utils.GetCharSet(mlist.preferred_language))
-            msg.send(mlist, **{'tomoderators': 1})
+            nmsg = Message.UserNotification(owneraddr, owneraddr, subject)
+            nmsg['Content-Type'] = 'multipart/mixed'
+            nmsg['MIME-Version'] = '1.0'
+            text = MIMEText(
+                Utils.maketext('postauth.txt', d, raw=1, mlist=mlist),
+                _charset=Utils.GetCharSet(lang))
+            dmsg = MIMEText(Utils.wrap(_("""\
+If you reply to this message, keeping the Subject: header intact, Mailman will
+discard the held message.  Do this if the message is spam.  If you reply to
+this message and include an Approved: header with the list password in it, the
+message will be approved for posting to the list.  The Approved: header can
+also appear in the first line of the body of the reply.""")),
+                            _charset=Utils.GetCharSet(lang))
+            dmsg['Subject'] = 'confirm ' + cookie
+            dmsg['Sender'] = requestaddr
+            dmsg['From'] = requestaddr
+            nmsg.add_payload(text)
+            nmsg.add_payload(MIMEMessage(msg))
+            nmsg.add_payload(MIMEMessage(dmsg))
+            nmsg.send(mlist, **{'tomoderators': 1})
         finally:
             i18n.set_translation(otranslation)
     # Log the held message
