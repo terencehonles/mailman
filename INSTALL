@@ -1,20 +1,20 @@
-Mailman - a mailing list management system
+Mailman - The GNU Mailing List Management System
 Copyright (C) 1998 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-This file contains installation instructions.  Mailman is now
-configured using the standard GNU autoconf software.  You should first
-set up your system as outlined in the sections below, and then
-configure and install the Mailman software.
+This file contains installation instructions.  Mailman is configured
+using the standard GNU autoconf software.  You should first set up
+your system as outlined in the sections below, and then configure and
+install the Mailman software.
 
 UPGRADING:
 
-Generally one can follow the below directions,  giving the location of
-the old install as  the target directory,  and the upgrade will happen
+Generally one can follow the below directions, giving the location of
+the old install as the target directory, and the upgrade will happen
 transparently.  However, please note the following exceptions:
 
     - If upgrading from version 1.0b4 or earlier, templates need to be
-    moved.   For  each  list,  move $prefix/templates/<listname>/*  to
+    moved.  For each list, move $prefix/templates/<listname>/* to
     $prefix/lists/<listname>.  Be careful about stomping template
     changes that your list managers have changed!  (Only the
     options.html template changed from 1.0b5 to 1.0b6.)
@@ -43,7 +43,8 @@ transparently.  However, please note the following exceptions:
     system by adding certain users and groups.
 
     - Add a new user called `mailman'.  Typically this is added to
-      your /etc/passwd file.
+      your /etc/passwd file.  One Mailman program will be installed
+      with the set-user-id bit set (see below).
 
     - Add a new group called `mailman'.  Typically this is added to
       your /etc/group file.  The Mailman files will be installed under
@@ -53,7 +54,7 @@ transparently.  However, please note the following exceptions:
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
-      installed under $prefix.  
+      installed under $prefix.
 
       Note that if you've added a mailman user, and plan to install to
       the default location (/home/mailman), that directory may have
@@ -76,8 +77,8 @@ transparently.  However, please note the following exceptions:
     Do them under your own login, or whatever account you typically
     install software as.  However, make sure that you have write
     permissions to the target installation directory, and permission
-    to create a setgid file in the fs where it resides.  (NFS and
-    other mounts can be configured to inhibit setgid settings.)
+    to create a setgid file in the file system where it resides (NFS
+    and other mounts can be configured to inhibit setgid settings).
 
     - If you've installed other GNU software, you should be familar
       with the configure script.  Usually you can just cd to the
@@ -87,7 +88,7 @@ transparently.  However, please note the following exceptions:
           % cd <mailman-src-dir>
           % ./configure
 
-      and then run `make install'.  The following options allow you to 
+      and then run `make install'.  The following options allow you to
       customize your Mailman installation.
 
       --prefix=dir
@@ -126,8 +127,8 @@ transparently.  However, please note the following exceptions:
             CGI wrapper.  <group-or-groups> can be a list of one or
             more integer group ids or symbolic group names.  The first
             value in the list that resolves to an existing group is
-            used.  By default, the value is the the list
-            `www www-data nobody'. 
+            used.  By default, the value is the the list `www www-data
+            nobody'.
 
             The proper value for this is dependent on your Web server
             configuration, and you must get this right, because the
@@ -147,9 +148,22 @@ transparently.  However, please note the following exceptions:
 
     - Run `make install'
 
-3. Final system set-up
+3. Finishing the install
 
-    - Configure your web server to give $prefix/cgi-bin permission to
+    The final installation step requires you to be root.  In order to
+    provide security for private Pipermail archives, the CGI wrapper
+    program $prefix/cgi-bin/private must be owned by the mailman user, 
+    and it must have the set-user-id bit set.
+
+    As root, run `make finish'.
+
+4. Final system set-up
+
+    Congratulations!  You've installed the Mailman software.  To get
+    everything running you need to hook Mailman up to both your Web
+    server and your mail system.
+
+    - Configure your Web server to give $prefix/cgi-bin permission to
       run CGI scripts, and restart your Web server.  You probably need 
       to be root to do this.
 
@@ -163,12 +177,14 @@ transparently.  However, please note the following exceptions:
 
       Consult your Web server's documentation for details.
 
-    - Configure your web server to point to public mailling list
-      archives:
+    - Configure your Web server to point to the Pipermail public
+      mailing list archives:
 
-      In apache:
-         Alias /public /home/mailman/public_html/archives
+      For example, in Apache:
 
+         Alias /pipermail/ $prefix/public_html/archives/
+
+      Consult your Web server's documentation for details.
 
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       to do things such as send out password reminders, etc.  You need
@@ -195,8 +211,8 @@ transparently.  However, please note the following exceptions:
           3. Some versions of sendmail require you to run the program
              'newaliases' explicitly.
 
-      If you don't run sendmail, consult the documentation of your mail 
-      transport program for information on adding these aliases.
+      If you don't run sendmail, consult the documentation of your
+      mail transport program for information on adding these aliases.
 
 4. Customize Mailman
 
@@ -208,15 +224,16 @@ transparently.  However, please note the following exceptions:
       and DEFAULT_URL are correct, and make any necessary changes.
 
       The variable settings in mm_cfg.py override those in
-      $prefix/Mailman/mm_defaults.py, so consult that file for
-      defaults.  Add any additonal settings that you want to change
-      for your site to mm_cfg.py (don't edit mm_defaults.py).
+      $prefix/Mailman/Defaults.py, so consult that file for the list
+      of variables that control Mailman.  Add any additonal settings
+      that you want to change for your site to mm_cfg.py (don't edit
+      Defaults.py).
 
       The install process will not overwrite an existing mm_cfg.py
       file so you can freely make changes to this file.  Installing
       will always copy the automatically generated mm_cfg.py file to
-      $prefix/Mailman/mm_cfg.py.dist so you can check that file any
-      useful differences or suggestions.
+      $prefix/Mailman/mm_cfg.py.dist so you can check that file for
+      any useful differences or suggestions.
 
       Note: Do *not* change HOME_DIR or MAILMAN_DIR.  These are set
       automatically by the configure script.
@@ -224,14 +241,6 @@ transparently.  However, please note the following exceptions:
     - Create the site password using:
 
         % $prefix/bin/mmsitepass <your-site-password>
-
-    - Point an external archiver at the public and private archives.
-      We recommend Andrew Kuchling's Pipermail, which can be found at: 
-
-          <http://starship.skyport.net/crew/amk/maintained/pipermail.html>
-
-      Future releases of Mailman will probably come bundled with
-      Pipermail.
 
 5. Getting started
 
@@ -266,8 +275,7 @@ transparently.  However, please note the following exceptions:
     
     Where syslog lives on your particular machine may vary.  It may be
     in /var/log/maillog.  It may also be in /var/log/syslog.  On many
-    machines, syslog files live in /adm/log/ instead of
-    /var/log.
+    machines, syslog files live in /adm/log/ instead of /var/log.
 
     If you encounter an error, send an error report to
     mailman-users@python.org.  Include a description of what you're
