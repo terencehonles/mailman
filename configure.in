@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2684 $)
+AC_REVISION($Revision: 2706 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -28,7 +28,11 @@ AC_PREFIX_DEFAULT(/home/mailman)
 AC_MSG_CHECKING(for --with-python)
 AC_ARG_WITH(python, dnl
 [  --with-python		specify path to Python interpreter])
-AC_MSG_RESULT($with_python)
+case "$with_python" in
+    "")	ans="no";;
+    *)  ans="$with_python"
+esac
+AC_MSG_RESULT($ans)
 
 if test -z "$with_python"
 then
@@ -134,6 +138,19 @@ then
 fi
 
 
+# Check for an alternate data directory, separate from installation dir.
+default_var_prefix="/var/mailman"
+AC_SUBST(VAR_PREFIX)
+AC_MSG_CHECKING(for --with-var-prefix)
+AC_ARG_WITH(var-prefix, dnl
+[  --with-var-prefix     directory for mutable data [/var/mailman]])
+case "$with_var_prefix" in
+	yes)	VAR_PREFIX="$default_var_prefix";;
+	""|no)	VAR_PREFIX="$ac_default_prefix";;
+	*)	VAR_PREFIX="$with_var_prefix";;
+esac
+AC_MSG_RESULT($VAR_PREFIX)
+
 # new macro for finding GIDs
 AC_DEFUN(MM_FIND_GROUP_ID, [
 # $1 == variable name
@@ -200,51 +217,53 @@ AC_MSG_RESULT($$1)
 rm -f conftest.out conftest.py])
 
 # Check for some other uid to use than `mailman'
-AC_MSG_CHECKING(for --with-ownername)
-AC_ARG_WITH(ownername, dnl
-[  --with-ownername	specify a user name other than \"mailman\"])
+AC_MSG_CHECKING(for --with-username)
+AC_ARG_WITH(username, dnl
+[  --with-username	specify a user name other than \"mailman\"])
 
-if test -z "$with_ownername"
+if test -z "$with_username"
 then
-	with_ownername="mailman"
+	with_username="mailman"
 fi
-OWNERNAME=$with_ownername
-AC_MSG_RESULT($OWNERNAME)
+USERNAME=$with_username
+AC_MSG_RESULT($USERNAME)
 
 # User `mailman' must exist
-AC_MSG_CHECKING(for $OWNERNAME UID)
-MM_FIND_USER_ID(MAILMAN_UID, $OWNERNAME)
+AC_SUBST(MAILMAN_UID)
+AC_MSG_CHECKING(for $USERNAME UID)
+MM_FIND_USER_ID(MAILMAN_UID, $USERNAME)
 if test -z "$MAILMAN_UID"
 then
     AC_MSG_ERROR([
-***** No \"$OWNERNAME\" user found!
-***** Your system must have a \"$OWNERNAME\" user defined
+***** No \"$USERNAME\" user found!
+***** Your system must have a \"$USERNAME\" user defined
 ***** (usually in your /etc/passwd file).  Please see the INSTALL
 ***** file for details.])
 fi
 
 
 # Check for some other gid to use than `mailman'
-AC_MSG_CHECKING(for --with-ownergroup)
-AC_ARG_WITH(ownergroup, dnl
-[  --with-ownergroup	specify a group name other than \"mailman\"])
+AC_MSG_CHECKING(for --with-groupname)
+AC_ARG_WITH(groupname, dnl
+[  --with-groupname	specify a group name other than \"mailman\"])
 
-if test -z "$with_ownergroup"
+if test -z "$with_groupname"
 then
-	with_ownergroup="mailman"
+	with_groupname="mailman"
 fi
-OWNERGROUP=$with_ownergroup
-AC_MSG_RESULT($OWNERGROUP)
+GROUPNAME=$with_groupname
+AC_MSG_RESULT($GROUPNAME)
 
 
 # Group `mailman' must exist
-AC_MSG_CHECKING(for $OWNERGROUP GID)
-MM_FIND_GROUP_ID(MAILMAN_GID, $OWNERGROUP)
+AC_SUBST(MAILMAN_GID)
+AC_MSG_CHECKING(for $GROUPNAME GID)
+MM_FIND_GROUP_ID(MAILMAN_GID, $GROUPNAME)
 if test -z "$MAILMAN_GID"
 then
     AC_MSG_ERROR([
-***** No \"$OWNERGROUP\" group found!
-***** Your system must have a \"$OWNERGROUP\" group defined
+***** No \"$GROUPNAME\" group found!
+***** Your system must have a \"$GROUPNAME\" group defined
 ***** (usually in your /etc/group file).  Please see the INSTALL
 ***** file for details.])
 fi
@@ -253,12 +272,7 @@ fi
 # Now make sure that $prefix is set up correctly.  It must be group
 # owned by `mailman', it must have the group sticky bit set, and it
 # must be a+rx
-if test "$prefix" = "NONE"
-then
-    prefixcheck=$ac_default_prefix
-else
-    prefixcheck=$prefix
-fi
+prefixcheck=$VAR_PREFIX
 
 AC_MSG_CHECKING(permissions on $prefixcheck)
 changequote(,)
