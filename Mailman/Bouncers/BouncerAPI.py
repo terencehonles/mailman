@@ -51,7 +51,7 @@ def ScanMessages(mlist, msg, testing=0):
                 if not testing:
                     mlist.RegisterBounce(addr, msg)
                 else:
-                    print 'Bounce of %s detected by module %s' % (
+                    print '    Bounce of %s detected by module %s' % (
                         addr, modname)
             # we saw some bounces
             return 1
@@ -71,13 +71,15 @@ if __name__ == '__main__':
             print msg
         sys.exit(code)
 
-    if len(sys.argv) <> 3:
-        usage(1, 'required arguments: <listname> <filename>')
+    if len(sys.argv) < 3:
+        usage(1, 'required arguments: <list> <file> [, <file> ...]')
 
     listname = sys.argv[1]
-    filename = sys.argv[2]
-
     mlist = MailList.MailList(listname, lock=0)
-    fp = open(filename)
-    msg = mimetools.Message(fp)
-    ScanMessages(mlist, msg, testing=1)
+
+    for filename in sys.argv[2:]:
+        print 'scanning file', filename
+        fp = open(filename)
+        msg = mimetools.Message(fp)
+        ScanMessages(mlist, msg, testing=1)
+        fp.close()
