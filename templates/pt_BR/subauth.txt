@@ -4,7 +4,7 @@ na lista de discussão:
     Para:  %(username)s
     Lista: %(listname)s@%(hostname)s
 
-Para sua conveniência, visite:
+Quando lhe for conveniente, visite:
 
     %(admindb_url)s
 

@@ -26,7 +26,7 @@ a própria senha) ou para se desinscrever. Ela é:
   %(password)s
 
 Normalmente, o Mailman lhe lembrará de suas senhas em %(host_name)s 
-uma vez por mês, mas pode desativar isto se preferir. Este lembrete 
-também inclui instruções de como se desinscrever ou modificar suas
-opções de conta. Também existe um botão em sua página de opções que
-poderá lhe enviar a senha.
+uma vez por mês, mas pode desativar este recurso se preferir. Este 
+lembrete também inclui instruções de como se desinscrever ou modificar 
+suas opções de conta. Também existe um botão em sua página de opções 
+que poderá lhe enviar a senha.

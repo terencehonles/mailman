@@ -1,4 +1,4 @@
-Notificação de confirmação da remoção da lista de discussão %(listname)s
+Confirmação da remoção da lista de discussão %(listname)s
 
 Nós recebemos uma requisição%(remote)s para remoção do seu endereço
 de email, "%(email)s" da lista de discussão %(listaddr)s. Para 

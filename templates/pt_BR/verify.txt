@@ -8,7 +8,7 @@ Assunto intacto. Ou visite esta página web:
 
     %(confirmurl)s
 
-Ou adicione as seguinte linha -- e somente a seguinte linha -- em uma 
+Ou adicione as seguinte linha -- e somente esta linha -- em uma 
 mensagem para %(requestaddr)s:
 
     confirm %(cookie)s
