@@ -45,7 +45,7 @@ from Mailman.Handlers import HandlerAPI
 from Mailman.Crypt import crypt
 
 
-ALIASTEMPLATE = '''
+SENDMAIL_ALIAS_TEMPLATE = '''
 Entry for aliases file:
 
 ## %(listname)s mailing list
@@ -55,6 +55,29 @@ Entry for aliases file:
 %(request)s "|%(wrapper)s mailcmd %(listname)s"
 %(owner2)s %(listname)s-admin
 '''
+
+QMAIL_ALIAS_TEMPLATE = """
+To create system aliases:
+
+   echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s
+   echo '|preline %(wrapper)s mailowner %(listname)s' >~alias/.qmail-%(listname)s-admin
+   echo '|preline %(wrapper)s mailcmd %(listname)s' >~alias/.qmail-%(listname)s-request
+   echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s
+   echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner
+   chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin
+   chmod 644 ~alias/.qmail-%(listname)s-request ~alias/.qmail-%(listname)s-owner
+   chmod 644 ~alias/.qmail-owner-%(listname)s
+"""
+
+style = string.lower(mm_cfg.MTA_ALIASES_STYLE)
+if style  == 'qmail':
+    ALIASTEMPLATE = QMAIL_ALIAS_TEMPLATE
+elif style == 'sendmail':
+    ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
+else:
+    print "Warning! I don't understand alias style:", mm_cfg.MTA_ALIASES_STYLE
+    print '(this will print sendmail style...)'
+    ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
 
 
 

@@ -178,6 +178,11 @@ SMTPPORT = 0                                      # default from smtplib
 # when DELIVERY_MODULE is 'Sendmail'.
 SENDMAIL_CMD = '/usr/lib/sendmail'
 
+# Allow for handling of MTA-specific features (i.e. aliases).  Most MTAs use
+# "sendmail" (including Sendmail, Postfix, and Exim).  Qmail uses the "qmail"
+# style.
+MTA_ALIASES_STYLE = 'sendmail'
+
 # Set these variables if you need to authenticate to your NNTP server for
 # Usenet posting or reading.  If no authentication is necessary, specify None
 # for both variables.
