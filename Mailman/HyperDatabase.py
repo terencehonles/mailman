@@ -14,11 +14,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+#
+# site modules
+#
 import os
 import marshal
 import string
 
+#
+# package/project modules
+#
 import pipermail
+import flock
+
 CACHESIZE = pipermail.CACHESIZE
 
 try:
@@ -32,18 +40,32 @@ except ImportError:
 # we're using a python dict in place of
 # of bsddb.btree database.  only defining
 # the parts of the interface used by class HyperDatabase
+# only one thing can access this at a time.
 #
 class DumbBTree:
 
     def __init__(self, path):
+        self.current_index = 0
+        self.path = path
+        self.lockfile = flock.FileLock(self.path + ".lock")
+        self.lock()
         if os.path.exists(path):
             self.dict = marshal.load(open(path))
         else:
             self.dict = {}
         self.sorted = self.dict.keys()
         self.sorted.sort()
-        self.current_index = 0
-        self.path = path
+        
+    def lock(self):
+        self.lockfile.lock()
+
+
+    def unlock(self):
+        try:
+            self.lockfile.unlock()
+        except flock.NotLockedError:
+            pass
+        
 
     def __delitem__(self, item):
 	try:
@@ -119,11 +141,15 @@ class DumbBTree:
     def __len__(self):
         return len(self.sorted)
 
+
     def close(self):
         fp = open(self.path, "w")
         fp.write(marshal.dumps(self.dict))
         fp.close()
-        
+        self.unlock()
+
+
+    
 
 
 
@@ -205,7 +231,6 @@ class HyperDatabase(pipermail.Database):
     def __closeIndices(self):
 	if self.__currentOpenArchive!=None: 
 	    pass
-#	    print 'closing indices for [%s]' % (repr(self.__currentOpenArchive),)
 	for i in ['date', 'author', 'subject', 'thread', 'article']:
 	    attr=i+'Index'
 	    if hasattr(self, attr): 
