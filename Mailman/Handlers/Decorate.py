@@ -76,8 +76,7 @@ def decorate(mlist, template, what):
     try:
         text = (template % d).replace('\r\n', '\n')
     except ValueError, e:
-        syslog('error', 'Exception while calculating %s:\n%s' %
-               (what, e))
+        syslog('error', 'Exception while calculating %s:\n%s', what, e)
         what = what.upper()
         text = _('[INVALID %(what)s]')
     return text

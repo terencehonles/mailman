@@ -279,7 +279,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         finally:
             i18n.set_translation(otranslation)
     # Log the held message
-    syslog('vette', '%s post from %s held: %s' % (listname, sender, reason))
+    syslog('vette', '%s post from %s held: %s', listname, sender, reason)
     # raise the specific MessageHeld exception to exit out of the message
     # delivery pipeline
     raise exc

@@ -21,6 +21,7 @@ import time
 import re
 import socket
 import nntplib
+
 from mimelib.MsgReader import MsgReader
 from mimelib.address import getaddresses
 
@@ -28,6 +29,7 @@ COMMASPACE = ', '
 
 from Mailman import mm_cfg
 from Mailman.Queue.Runner import Runner
+from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
 # Matches our Mailman crafted Message-IDs
@@ -55,12 +57,12 @@ class NewsRunner(Runner):
                     conn.post(fp)
                 except nntplib.error_temp, e:
                     syslog('error',
-                           '(NNTPDirect) NNTP error for list "%s": %s' %
-                           (mlist.internal_name(), e))
+                           '(NNTPDirect) NNTP error for list "%s": %s',
+                           mlist.internal_name(), e)
                 except socket.error, e:
                     syslog('error',
-                           '(NNTPDirect) socket error for list "%s": %s' %
-                           (mlist.internal_name(), e))
+                           '(NNTPDirect) socket error for list "%s": %s',
+                           mlist.internal_name(), e)
             finally:
                 if conn:
                     conn.quit()

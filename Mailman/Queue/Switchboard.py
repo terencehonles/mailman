@@ -274,6 +274,6 @@ elif mm_cfg.METADATA_FORMAT == mm_cfg.METAFMT_BSDDB_NATIVE:
 elif mm_cfg.METADATA_FORMAT == mm_cfg.METAFMT_ASCII:
     Switchboard = ASCIISwitchboard
 else:
-    syslog('error', 'Undefined metadata format: %d (using marshals)' %
+    syslog('error', 'Undefined metadata format: %d (using marshals)',
            mm_cfg.METADATA_FORMAT)
     Switchboard = MarshalSwitchboard

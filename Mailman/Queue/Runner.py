@@ -85,7 +85,7 @@ class Runner:
             # this filebase entry.  dequeue() will automatically unlink the
             # other file, but we should log an error message for diagnostics.
             if msg is None or msgdata is None:
-                syslog('error', 'lost data files for filebase: %s' % filebase)
+                syslog('error', 'lost data files for filebase: %s', filebase)
             else:
                 # Now that we've dequeued the message, we want to be
                 # incredibly anal about making sure that no uncaught exception
@@ -121,7 +121,7 @@ class Runner:
             mlist = self._open_list(listname)
             if not mlist:
                 syslog('error',
-                       'Dequeuing message destined for missing list: %s' %
+                       'Dequeuing message destined for missing list: %s',
                        listname)
                 self._shunt.enqueue(msg, msgdata)
                 return
@@ -171,12 +171,12 @@ class Runner:
                 if self._cachelists:
                     self._listcache[listname] = mlist
             except Errors.MMListError, e:
-                syslog('error', 'error opening list: %s\n%s' % (listname, e))
+                syslog('error', 'error opening list: %s\n%s', listname, e)
                 return None
         return mlist
 
     def _log(self, exc):
-        syslog('error', 'Uncaught runner exception: %s' % exc)
+        syslog('error', 'Uncaught runner exception: %s', exc)
         s = StringIO()
         traceback.print_exc(file=s)
         syslog('error', s.getvalue())

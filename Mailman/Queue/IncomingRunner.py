@@ -136,8 +136,7 @@ class IncomingRunner(Runner):
                 func(mlist, msg, msgdata)
                 # Failsafe -- a child may have leaked through.
                 if pid <> os.getpid():
-                    syslog('error', 'child process leaked through: %s' %
-                           modname)
+                    syslog('error', 'child process leaked thru: %s', modname)
                     os._exit(1)
             except Errors.DiscardMessage:
                 # Throw the message away; we need do nothing else with it.

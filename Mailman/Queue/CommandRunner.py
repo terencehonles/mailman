@@ -122,7 +122,7 @@ class CommandRunner(Runner):
                 else:
                     senderlhs = sender
                 if senderlhs in mm_cfg.LIKELY_BOUNCE_SENDERS:
-                    syslog('error', 'bounce loop detected from: %s' % sender)
+                    syslog('error', 'bounce loop detected from: %s', sender)
                     return
                 # Any messages to the owner address must have Errors-To: set
                 # back to the owners address so bounce loops can be broken, as
