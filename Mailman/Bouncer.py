@@ -93,18 +93,21 @@ class Bouncer:
 
         try:
 
+            now = time.time()
+            secs_per_day = 24 * 60 * 60
+
             # Take the opportunity to cull expired entries.
             pid = self.post_id
             maxposts = self.max_posts_between_bounces
+            stalesecs = self.minimum_removal_date * secs_per_day * 5
             for k, v in self.bounce_info.items():
-                if pid - v[1] > maxposts:
+                if now - v[0] > stalesecs:
                     # It's been long enough to drop their bounce record:
                     del self.bounce_info[k]
                     dirty = 1
 
             this_dude = Utils.FindMatchingAddresses(email,
                                                     self.bounce_info.keys())
-            now = time.time()
             if not this_dude:
                 # No (or expired) priors - new record.
                 self.bounce_info[string.lower(email)] = [now, self.post_id,
@@ -119,9 +122,9 @@ class Bouncer:
             difference = now - hist[0]
             if len(Utils.FindMatchingAddresses(addr, self.members)):
                 if self.post_id - hist[2] > self.max_posts_between_bounces:
-                    # It's been long enough since last bounce that we're
+                    # There's been enough posts since last bounce that we're
                     # restarting.  (Might should keep track of who goes stale
-                    # often.)
+                    # how often.)
                     self.LogMsg("bounce", report + "first fresh")
                     self.bounce_info[addr] = [now, self.post_id, self.post_id]
                     dirty = 1
@@ -131,7 +134,7 @@ class Bouncer:
                 if ((self.post_id - hist[1] >
                      self.minimum_post_count_before_bounce_action)
                     and
-                    (difference > self.minimum_removal_date * 24 * 60 * 60)):
+                    (difference > self.minimum_removal_date * secs_per_day)):
                     self.LogMsg("bounce", report + "exceeded limits")
                     self.HandleBouncingAddress(addr, msg)
                     return
@@ -141,7 +144,7 @@ class Bouncer:
                     if post_count < 0:
                         post_count = 0
                     remain = (self.minimum_removal_date
-                              * 24 * 60 * 60 - difference)
+                              * secs_per_day - difference)
                     self.LogMsg("bounce",
                                 report + ("%d more allowed over %d secs"
                                           % (post_count, remain)))
@@ -153,7 +156,7 @@ class Bouncer:
                                 "%s: first fresh (D)", self._internal_name)
                     self.bounce_info[addr] = [now, self.volume, self.volume]
                     return
-                if difference > self.minimum_removal_date * 24 * 60 * 60:
+                if difference > self.minimum_removal_date * secs_per_day:
                     self.LogMsg("bounce", report + "exceeded limits (D)")
                     self.HandleBouncingAddress(addr, msg)
                     return 
