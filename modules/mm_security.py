@@ -35,7 +35,7 @@ class SecurityManager:
 
     def CheckSiteAdminPassword(self, str):
 	try:
-	    f = open(SITE_PW_FILE, "r+")
+	    f = open(SITE_PW_FILE, "r")
 	    pw = f.read()
 	    f.close()
 	    return mm_crypt.crypt(str, pw) == pw
