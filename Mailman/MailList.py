@@ -913,9 +913,10 @@ it will not be changed."""),
 	else:
 	    self.InitVars() # Init any new variables, 
 	    self.Load(check_version = 0) # then reload the file
-            from versions import Update
-            Update(self, stored_state)
-	    self.data_version = mm_cfg.DATA_FILE_VERSION
+            if self.Locked():
+                from versions import Update
+                Update(self, stored_state)
+                self.data_version = mm_cfg.DATA_FILE_VERSION
         if self.Locked():
             self.Save()
 
