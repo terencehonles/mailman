@@ -26,6 +26,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
 from Mailman import Errors
+from Mailman.MemberAdaptor import ENABLED
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
 
@@ -72,7 +73,7 @@ delivery.  The original message as received by Mailman is attached.
     # Calculate the regular recipients of the message
     recips = [mlist.getMemberCPAddress(m)
               for m in mlist.getRegularMemberKeys()
-              if not mlist.getMemberOption(m, mm_cfg.DisableDelivery)]
+              if mlist.getDeliveryStatus(m) == ENABLED]
     # Remove the sender if they don't want to receive their own posts
     if not include_sender:
         try:
