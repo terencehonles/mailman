@@ -33,13 +33,14 @@ Use this script to help you update to the latest release of Mailman from
 some previous version.  It knows about versions back to 1.0b4 (?).
 """
 
-import sys
 import os
-import time
-import marshal
-import errno
 import md5
+import sys
+import time
+import errno
 import getopt
+import shutil
+import marshal
 
 import paths
 from Mailman import mm_cfg
@@ -381,7 +382,7 @@ def remove_old_sources(module):
     pyc = src + "c"
     if os.path.isdir(src):
         print _('removing directory %(src)s and everything underneath')
-        Utils.rmdirhier(src)
+        shutil.rmtree(src)
     elif os.path.exists(src):
         print _('removing %(src)s')
         try:
