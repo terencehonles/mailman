@@ -36,8 +36,8 @@ UPGRADING FROM PREVIOUS VERSIONS
 
     [Actually, the upgrade to MM2.1a2 /will/ shuffle template files,
      deleting any that it detects are unchanged from the original
-     defaults (calculated via md5 checksums).  BAW: need to describe
-     this in more detail.]
+     defaults (calculated via md5 checksums).]
+
 
 UPGRADING FROM 2.0.x to 2.1
 
@@ -55,7 +55,7 @@ UPGRADING FROM 2.0.x to 2.1
     upgrade, those messages will not get delivered, and I'm not
     exactly sure yet how to upgrade those pending messages.
 
-    NOTE: When upgrading to Mailman 2.1alpha4, you will need to
+    NOTE: When upgrading to Mailman 2.1beta1, you will need to
     regenerate your aliases files.  There have been many changes to
     the alias names, the programs they map to, and the name of the
     wrapper script.  See README.<yourMTA> for details of making
@@ -78,10 +78,12 @@ UPGRADING FROM 2.0.x to 2.1
     duplicates of the defaults, but you'll want to double check this
     manually. 
 
+
 UPGRADING FROM 2.0 to 2.0.1
 
     Nothing much more than running "make install" (after upgrading)
     should be necessary.
+
 
 UPGRADING FROM 2.0 beta to 2.0 final
 
@@ -97,6 +99,7 @@ UPGRADING FROM 2.0 beta to 2.0 final
 
     FAILURE TO DO THIS WILL RESULT IN A LESS THAN OPTIMALLY FUNCTIONAL
     MAILMAN INSTALLATION.
+
 
 UPGRADING FROM 1.x to 2.x
 
@@ -128,6 +131,7 @@ UPGRADING FROM 1.x to 2.x
     If you are upgrading from a pre-1.0 beta, you need to follow the
     instructions below.
 
+
 UPGRADING FROM PRE-1.0 to 2.x
 
     You need to do a few extra things to make sure that the file
@@ -149,6 +153,7 @@ UPGRADING FROM PRE-1.0 to 2.x
     particular cron/upvolumes_yearly, cron/upvolumes_monthly, or
     cron/archive.
 
+
 WHAT "MAKE UPDATE" DOES
 
     Below is an annotated listing of the things that "make update"
@@ -167,8 +172,7 @@ WHAT "MAKE UPDATE" DOES
 
     - The upgrade to 1.0b7 included the removal of
       Mailman/smtplib.py{,c} since Mailman now uses the default Python
-      1.5.2 version of smtplib.  [NOTE HOWEVER THAT MAILMAN 2.0 ADDS
-      THIS FILE BACK IN Mailman/pythonlib].
+      1.5.2 version of smtplib.
 
     - Archiving files are moved around as part of integrating
       Pipermail into Mailman, as of 1.0b6.  In particular,
@@ -231,6 +235,7 @@ WHAT "MAKE UPDATE" DOES
     - Some modules that existed in previous versions, but that have
       been replaced with newer (differently named) modules, are
       removed.
+
 
 
 Local Variables:
