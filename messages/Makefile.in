@@ -74,6 +74,13 @@ all:
 
 catalogs: $(TARGETS)
 
+check:
+	@for file in $(POFILES); \
+	do \
+		echo "Checking $$file"; \
+		msgfmt -o /dev/null --statistics -v $$file; \
+	done
+
 install: doinstall
 
 # we should depend on the .mo files instead of making them!
