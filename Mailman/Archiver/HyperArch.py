@@ -46,6 +46,7 @@ import pipermail
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import EncWord
+from Mailman.Logging.Syslog import syslog
 
 gzip = None
 if mm_cfg.GZIP_ARCHIVE_TXT_FILES:
