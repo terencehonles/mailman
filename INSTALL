@@ -86,18 +86,20 @@ configure and install the Mailman software.
             different installation directory for architecture
             dependent binaries.
 
-      --with-python=/path/to/python
+      --with-python=</path/to/python>
             Specify an alternative Python interpreter to use for the
             wrapper programs.  The default is to use the interpreter
             found first on your shell's $PATH.  Note that when running
             the scripts from the command line, the first Python
             interpreter found on $PATH is always used.
 
-      --with-mail-gid=<gid>
-            Specify an alternative group id for running scripts via
-            the mail wrapper.  By default, this id is for the `other'
-            group (typically defined in your system's /etc/group
-            file).
+      --with-mail-gid=<group-or-groups>
+            Specify an alternative group for running scripts via the
+            mail wrapper.  <group-or-groups> can be a list of one or
+            more integer group ids or symbolic group names.  The first
+            value in the list that resolves to an existing group is
+            used.  By default, the value is the `other' group
+            (typically defined in your system's /etc/group file).
 
             This is highly system dependent and you must get this
             right, because the group id is compiled into the mail
@@ -105,11 +107,13 @@ configure and install the Mailman software.
             sendmail, check your sendmail.cf file to see what group it
             runs programs as.
 
-      --with-cgi-gid=<gid>
-            Specify an alternative group id for running scripts via
-            the CGI wrapper.  By default, this id is for the `nobody'
-            group (typically defined in your system's /etc/group
-            file).
+      --with-cgi-gid=<group-or-groups>
+            Specify an alternative group for running scripts via the
+            CGI wrapper.  <group-or-groups> can be a list of one or
+            more integer group ids or symbolic group names.  The first
+            value in the list that resolves to an existing group is
+            used.  By default, the value is the the list
+            `www www-data nobody'. 
 
             The proper value for this is dependent on your Web server
             configuration, and you must get this right, because the
