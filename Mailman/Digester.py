@@ -45,6 +45,9 @@ You can reach the person managing the list at
 
 
 class Digester:
+    def InitTempVars(self):
+	self._mime_separator = '__--__--' 
+        
     def InitVars(self):
 	# Configurable
 	self.digestable = mm_cfg.DEFAULT_DIGESTABLE
