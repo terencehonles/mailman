@@ -140,6 +140,7 @@ def pending_requests(mlist):
         info = mlist.GetRecord(id)
         when, sender, subject, reason, text, msgdata = mlist.GetRecord(id)
         date = time.ctime(when)
+        reason = _(reason)
         pending.append(_("""\
 From: %(sender)s on %(date)s
 Subject: %(subject)s
