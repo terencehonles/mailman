@@ -261,7 +261,7 @@ The following is a detailed description of the problems.
        })
                 self.__respbuf = header + self.__respbuf
             # send the response
-            subject = 'Mailman results for %s' % self.real_name,
+            subject = 'Mailman results for %s' % self.real_name
             responsemsg = Message.UserNotification(msg.GetSender(),
                                                    self.GetRequestEmail(),
                                                    subject,
