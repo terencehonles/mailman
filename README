@@ -2,6 +2,8 @@ Mailman - a mailing list management system
 Copyright (C) 1998 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+			      Background
+			      ==========
 This is Mailman, mailing list management system written mostly in
 Python.  Mailman was originally developed by John Viega.  Subsequent
 development (through version 1.1) was by Ken Manheimer.  Currently,
@@ -12,26 +14,26 @@ Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15
 1996.  Mailman 1.0b3, 2, and 1.1 developments by Ken Manheimer, 4/98
 and 5/98.  Autoconf support added 5/98 by Barry Warsaw.
 
-We recommend that you join the Mailman user's mailing list.  You may
-do so at the following web address (which also is an example of the
-system in action):
+See the mailman home site for current mailman status: http://www.list.org
+
+To join the Mailman user's mailing list (recommended) - and to see an
+example of a mailman list interface in action - visit:
 
 	    http://www.python.org/mailman/listinfo/mailman-users
 
-For anyone interested in joining the development crowd, or just
-tracking the progress, there's a developer's mailing list:
+To track, and/or participate in, the mailman development crowd:
 
 	    http://www.python.org/mailman/listinfo/mailman-developers
-
 
 See file DONE for info on changes since v. 0.9
 
 Features:
+
   o Most standard mailing list features, including:
 	moderation, mail based commands, digests, etc...
   o An extensive Web interface customizable on a per-list basis.
   o Web based list administration interface for *all* admin-type tasks.
-  o *Automatic Web based hypermail-style archives (using pipermail or
+  o*Automatic Web based hypermail-style archives (using pipermail or
     other external archiver), including provisions for private archives
   o Integrated mail list to newsgroup gatewaying
   o Integrated newsgroup to mail list gatewaying (polling-based... if you
@@ -50,6 +52,8 @@ Features:
 
 * Now missing, but will return soon!
 
+			    Using Mailman
+			    =============
 Requirements:
   You must be root on a machine running a mail transport program that
   uses an /etc/aliases file, and has a sendmail executable (smail
@@ -141,20 +145,23 @@ How to add a new user option
 
 Interactive python sessions with maillists
 
-    You can do substantial things with maillists from th interpreter!
-    Cd to the modules subdir and, with '.' on your pythonpath, start
-    the interpreter and import maillist and mm_utils.  You can
-    instantiate the maillist of your choice, eg for a list named
-    postal:
+    You can do substantial things with maillists from the interpreter!
+    Include the mailman homedir on your shell python path, or manually
+    insert it on sys.path from within python, and import
+    Mailman.MailList and Mailman.Utils from within the interpreter.
+    You can instantiate the maillist of your choice, eg for a list
+    named postal:
 
->>> l = maillist.MailList('postal')
->>> l.Unlock()
+>>> sys.path.insert(0, '/local/mailman')
+>>> from Mailman import MailList, Utils
+>>> l = MailList.MailList('postal', lock=0)
 
-    Don't do the Unlock() if you're going to be doing surgery on the
-    list.  However, if the list is active, and you aren't going to be
-    saving any changes, be sure to do the l.Unlock() immediately.
-    Otherwise, anyone visiting a web interface involving the list, or
-    postings going to the list, will be held awaiting the lock.
+    (Don't set lock=0 if you're going to be changing the state of the
+    list, eg adding or removing members, etc.  However, be aware that
+    while you're locking it you'll be blocking any other processes
+    that are trying to obtain the lock - including handling of new
+    postings to the list, subscriptions, administrative changes, and
+    so forth.)
 
     Now you can examine various aspects of the list:
 
@@ -167,30 +174,31 @@ Interactive python sessions with maillists
 >>> l._internal_name
 'postal'
 
-    dir(l) will present the components of the list. maillists.py has
-    the descriptions of many of the components, though some are defined
-    in other modules.
+    dir(l) will present the components of the list. MailList.py has
+    the descriptions of many of them, though some are defined in other
+    modules.
 
     If you want to save changes, 'l.Save()' will do it.  It's a real
-    good idea to play with trial lists, first, before doing surgery
-    with this method on production lists.
+    good idea to play with trial lists, first, before using this
+    method to do surgery on production lists!
 
     When you do get comfortable with it, you use it and a utility
-    routine, mm_utils.mm_utils.map_maillists(), to do wholesale changes
-    on all your lists.  It takes a function argument, and applies that
-    function to every one of the lists on your system.  For instance,
-    to get the names of all the lists on your system which are
-    advertised:
+    routine, Utils.map_maillists(), to do batched changes on
+    all your lists.  It takes a function as its argument, and applies
+    that function to every one of the lists on your system.  For
+    instance, to get the names of all the lists on your system which
+    are advertised:
 
->>> import maillist, mm_utils
->>> def advertised(l):
-...    if l.advertised: return l.real_name
+>>> def advertised(lst):
+...    if lst.advertised: return lst.real_name
 ...
->>> filter(None, mm_utils.map_maillists(advertised))
-['Mailman-developers', 'Meta-sig', 'Python-Help', 'C++-SIG',
-'Matrix-SIG', 'DB-SIG', 'DO-SIG', 'Doc-SIG', 'GUI-SIG', 'Image-SIG',
-'Objc-SIG', 'Plot-SIG', 'Pythonmac-SIG', 'String-SIG', 'Thread-SIG',
-'Grail', 'XML-SIG', 'JPython-Interest']
+>>> advertised(l)
+>>> filter(None, Utils.map_maillists(advertised))
+['Mailman-Developers', 'Meta-sig', 'Python-Help', 'C++-SIG', 'Matrix-SIG',
+'DB-SIG', 'DO-SIG', 'Doc-SIG', 'GUI-SIG', 'Image-SIG', 'Objc-SIG',
+'Plot-SIG', 'Pythonmac-SIG', 'String-SIG', 'Thread-SIG', 'Grail', 'XML-SIG',
+'JPython-Interest', 'Trove-Dev', 'Mailman-Users']
 
-    If you do list surgery with this mechanism, double check that
-    you're doing what you intend before having the routine do l.Save()'s.
+    If you do list surgery with this mechanism, make really sure that
+    you're doing what you intend before having the routine do an 
+    .Save()'s.
