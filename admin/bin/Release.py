@@ -136,8 +136,7 @@ def do_bump(newvers):
         parts[1] = newvers
         text = VERSIONMARK.join(parts)
         parts = text.split(DATEMARK)
-        timestr = time.ctime(time.time())
-        parts[1] = timestr[4:11] + timestr[-4:]
+        parts[1] = time.strftime('%d-%b-%Y', time.localtime(time.time()))
         text = DATEMARK.join(parts)
         fp.seek(0)
         fp.write(text)
