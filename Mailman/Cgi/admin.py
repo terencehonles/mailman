@@ -42,7 +42,7 @@ CATEGORIES = [('general', "General Options"),
 
 
 
-def isAuthenticated(list, password=None, SECRET="SECRET"):                      
+def isAuthenticated(list, password=None, SECRET="SECRET"):
     if password is not None:  # explicit login
         try:             
             list.ConfirmAdminPassword(password)
@@ -286,13 +286,17 @@ def FormatConfiguration(doc, lst, category, category_suffix):
         form = Form(lst.GetRelativeScriptURL('admin'))
     doc.AddItem(form)
 
-    form.AddItem("Make your changes, below, and then submit it all at the"
-                 " bottom.  (You can also change your password there,"
-                 " as well.)<p>")
+    form.AddItem("Make your changes below, and then submit them using the"
+                 " bottom at the bottom.  (You can change your password"
+                 " there, too.)<p>")
 
     form.AddItem(FormatOptionsSection(category, lst))
 
     form.AddItem(Center(FormatPasswordStuff()))
+
+    form.AddItem("<p>")
+
+    form.AddItem(Center(FormatSubmit()))
 
     form.AddItem(lst.GetMailmanFooter())
 
@@ -503,21 +507,23 @@ def FormatMembershipOptions(lst):
         for ci in chunk_indices:
             start, end = chunks[ci][0], chunks[ci][-1]
 	    url = lst.GetAbsoluteScriptURL('admin')
-            buttons.append("<a href=%s/members?chunk=%d> from %s to %s </a>" % \
-                           ( url,  ci, start, end))
+            buttons.append("<a href=%s/members?chunk=%d> from %s to %s </a>"
+                           % ( url,  ci, start, end))
         buttons = apply(UnorderedList, tuple(buttons))
-        footer = footer + buttons.Format() + "<p>" 
+        footer = footer + buttons.Format() + "<p>"
     else:
         all.sort()
         footer = "<p>"
     for member in all:
         cells = [member + "<input type=hidden name=user value=%s>" % (member),
-                 "subscribed " +CheckBox(member + "_subscribed", "on", 1).Format(),
-                 ]
+                 "subscribed "
+                 + CheckBox(member + "_subscribed", "on", 1).Format()]
         if lst.members.get(member):
-            cells.append("digest " + CheckBox(member + "_digest", "off", 0).Format())
+            cells.append("digest "
+                         + CheckBox(member + "_digest", "off", 0).Format())
         else:
-            cells.append("digest " + CheckBox(member + "_digest", "on", 1).Format())
+            cells.append("digest "
+                         + CheckBox(member + "_digest", "on", 1).Format())
         for opt in ("hide", "nomail", "ack", "norcv", "plain"):
             if lst.GetUserOption(member, MailCommandHandler.option_info[opt]):
                 value = "on"
@@ -541,34 +547,47 @@ def FormatMembershipOptions(lst):
     else:
         nochecked = 1
         yeschecked = 0
-    t.AddRow([("<b>1.</b> Send Welcome message to this batch? " +
-               RadioButton("send_welcome_msg_to_this_batch", 0, nochecked).Format() + " no " +
-               RadioButton("send_welcome_msg_to_this_batch", 1, yeschecked).Format() + " yes ")])
+    t.AddRow([("<b>1.</b> Send Welcome message to this batch? "
+               + RadioButton("send_welcome_msg_to_this_batch", 0,
+                             nochecked).Format()
+               + " no "
+               + RadioButton("send_welcome_msg_to_this_batch", 1,
+                             yeschecked).Format()
+               + " yes ")])
     t.AddRow(["<b>2.</b> Enter one address per line: <p>"])
     container.AddItem(Center(t))
-    container.AddItem(Center(TextArea(name='subscribees', rows=10,cols=60,wrap=None)))
+    container.AddItem(Center(TextArea(name='subscribees',
+                                      rows=10,cols=60,wrap=None)))
     return container
 
 def FormatPasswordStuff():
+    change_pw_table = Table(bgcolor="#99cccc", border=0,
+                            cellspacing=0, cellpadding=2,
+                            valign="top")
+    change_pw_table.AddRow(
+        [Bold(Center('To Change The Administrator Password'))])
+    change_pw_table.AddCellInfo(0, 0, align="left", colspan=2)
+    old = Table(bgcolor="#99cccc", border=1,
+                cellspacing=0, cellpadding=2, valign="top")
+    old.AddRow(['<div ALIGN="right"> Enter current password:</div>',
+                PasswordBox('adminpw')])
+    new = Table(bgcolor="#99cccc", border=1,
+                cellspacing=0, cellpadding=2, valign="top")
+    new.AddRow(['<div ALIGN="right"> Enter new password: </div>',
+                PasswordBox('newpw')])
+    new.AddRow(['<div ALIGN="right">Confirm new password:</div>',
+                PasswordBox('confirmpw')])
+    change_pw_table.AddRow([old, new])
+    change_pw_table.AddCellInfo(1, 0, align="left", valign="top")
+    #change_pw_table.AddCellInfo(1, 1, align="left", valign="top")
+    return change_pw_table
+
+def FormatSubmit():
     submit = Table(bgcolor="#99ccff",
-                            border=0, cellspacing=0, cellpadding=2, width="100%")
+                   border=0, cellspacing=0, cellpadding=2)
     submit.AddRow([Bold(SubmitButton('submit', 'Submit Your Changes'))])
     submit.AddCellInfo(submit.GetCurrentRowIndex(), 0, align="middle")
-    change_pw_table = Table(bgcolor="#99cccc", border=0,
-                            cellspacing=0, cellpadding=2, width="90%")
-    change_pw_table.AddRow([Bold(Center('To Change The Administrator Password')),
-                            '<div ALIGN="right"> Enter the new password: </div>',
-                            PasswordBox('newpw'),])
-    change_pw_table.AddCellInfo(0, 0, align="middle", colspan=2)
-    change_pw_table.AddRow(['<div ALIGN="right"> Enter the current password </div>',
-                            PasswordBox('adminpw'),
-                            '<div ALIGN="right">Again to confirm it:</div>',
-                            PasswordBox('confirmpw')])
-    password_stuff = Container()
-    password_stuff.AddItem(change_pw_table)
-    password_stuff.AddItem("<p>")
-    password_stuff.AddItem(submit)
-    return password_stuff
+    return submit
 
 # XXX klm - looks like turn_on_moderation is orphaned.
 turn_on_moderation = 0
