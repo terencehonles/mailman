@@ -235,6 +235,8 @@ _badchars = re.compile('[][()<>|;]')
 def ValidateEmail(str):
     """Verify that the an email address isn't grossly invalid."""
     # Pretty minimal, cheesy check.  We could do better...
+    if not str:
+        raise Errors.MMBadEmailError
     if _badchars.search(str) or str[0] == '-':
         raise Errors.MMHostileAddress
     if string.find(str, '/') <> -1 and \
