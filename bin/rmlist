@@ -49,7 +49,11 @@ REMOVABLES = [('lists/%s',     'list info'),
               ]
 
 if removeArchives:
-    REMOVABLES.append(('archives/%s', 'archives'))
+    REMOVABLES = REMOVABLES + [('archives/private/%s', 'archives'),
+                               ('archives/private/%s.mbox', 'archives'),
+                               ('archives/public/%s', 'archives'),
+                               ('archives/public/%s.mbox', 'archives'),
+                               ]
 
 REMOVABLES.append(('locks/%s.lock', 'lock file'))
 
