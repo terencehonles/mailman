@@ -33,6 +33,7 @@ from cStringIO import StringIO
 import email
 from email.MIMEMessage import MIMEMessage
 from email.Generator import Generator
+from email.Utils import getaddresses
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -321,11 +322,22 @@ class ListAdmin:
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 raise Errors.LostHeldMessage(path)
-            # If the address getting the forwarded message is a member of the
-            # list, we want the headers of the outer message to be encoded in
-            # their language.  Otherwise it'll be the preferred language of
-            # the mailing list.
-            lang = self.getMemberLanguage(addr)
+            # It's possible the addr is a comma separated list of addresses.
+            addrs = getaddresses([addr])
+            if len(addrs) == 1:
+                realname, addr = addrs[0]
+                # If the address getting the forwarded message is a member of
+                # the list, we want the headers of the outer message to be
+                # encoded in their language.  Otherwise it'll be the preferred
+                # language of the mailing list.
+                lang = self.getMemberLanguage(addr)
+            else:
+                # Throw away the realnames
+                addr = [a for realname, a in addrs]
+                # Which member language do we attempt to use?  We could use
+                # the first match or the first address, but in the face of
+                # ambiguity, let's just use the list's preferred language
+                lang = self.preferred_language
             otrans = i18n.get_translation()
             i18n.set_language(lang)
             try:
