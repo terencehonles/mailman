@@ -3,7 +3,7 @@ import mm_err, mm_utils, mm_cfg
 
 class SecurityManager:
     def SetSiteAdminPassword(self, pw):
-    	old = os.umask(0700)
+    	old = os.umask(0022)
 	f = open(os.path.join(mm_cfg.MAILMAN_DIR, "adm.pw"), "w+")
 	f.write(crypt.crypt(pw, mm_utils.GetRandomSeed()))
 	f.close()
