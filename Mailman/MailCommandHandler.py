@@ -687,7 +687,7 @@ background and instructions for subscribing to and using it, visit:
         except Errors.MMNeedApproval, admin_addr:
             self.AddToResponse(Utils.wrap(
                 _('''Your request has been forwarded to the
-                list administrator for approval.'''),
+                list moderator for approval.'''),
                 honor_leading_ws=0),
                                trunc=0)
         except Errors.MMAlreadyAMember:
