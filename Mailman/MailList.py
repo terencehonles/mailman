@@ -872,6 +872,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
         realname = self.real_name
+        lang = self.getMemberLanguage(oldaddr)
         text = Utils.maketext(
             'verify.txt',
             {'email'      : newaddr,
@@ -882,11 +883,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              'remote'     : '',
              'listadmin'  : self.GetAdminEmail(),
              'confirmurl' : confirmurl,
-             }, lang=self.getMemberLanguage(oldaddr), mlist=self)
+             }, lang=lang, mlist=self)
+        # BAW: We don't pass the Subject: into the UserNotification
+        # constructor because it will encode it in the charset of the language
+        # being used.  For non-us-ascii charsets, this means it will probably
+        # quopri quote it, and thus replies will also be quopri encoded.  But
+        # MailCommandHandler doesn't yet grok such headers, and I'm avoiding
+        # fixing that until a future version which will completely rewrite the
+        # mail command handling.  So, just set the Subject: in a separate
+        # step, although we have to delete the one UserNotification adds.
         msg = Message.UserNotification(
             newaddr, self.GetRequestEmail(),
-            'confirm %s' % cookie,
-            text)
+            text=text, lang=lang)
+        del msg['subject']
+        msg['Subject'] = 'confirm ' + cookie
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
 
@@ -1034,7 +1044,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         msg = Message.UserNotification(
             addr, self.GetRequestEmail(),
             'confirm %s' % cookie,
-            text)
+            text, lang)
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
 
