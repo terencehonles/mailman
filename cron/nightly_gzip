@@ -106,7 +106,10 @@ def main():
         try:
             allfiles = os.listdir(dir)
         except os.error:
-            print 'List', name, 'has a bogus archive_directory:', dir
+            # has the list received any messages?  if not, last_post_time will
+            # be zero, so it's not really a bogus archive dir.
+            if mlist.last_post_time > 0:
+                print 'List', name, 'has a bogus archive_directory:', dir
             continue
         files = []
         for f in allfiles:
