@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2197 $)
+AC_REVISION($Revision: 2479 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -47,6 +47,38 @@ fi
 AC_SUBST(PYTHON)
 PYTHON=$with_python
 AC_MSG_RESULT($PYTHON)
+
+# See if Python is new enough.  1.5.2 or better is required.
+AC_MSG_CHECKING(Python version)
+changequote(,)
+cat > conftest.py <<EOF
+import sys
+import string
+try:
+    v = sys.hexversion
+except AttributeError:
+    v = 0
+# int of hexversion 0x01050200
+if v >= 17105408:
+    s = string.split(sys.version)[0]
+else:
+    s = ""
+fp = open("conftest.out", "w")
+fp.write("%s\n" % s)
+fp.close()
+EOF
+changequote([, ])
+$PYTHON conftest.py
+version=`cat conftest.out`
+rm -f conftest.out conftest.py
+if test -z "$version"
+then
+    AC_MSG_ERROR([
+
+***** $PYTHON is too old (or broken)
+***** Python 1.5.2 or newer is required])
+fi
+AC_MSG_RESULT($version)
 
 # Checks for programs.
 AC_PROG_INSTALL
