@@ -362,7 +362,7 @@ class HTMLFormatter:
         # If only one language is enabled for this mailing list, omit the
         # language choice buttons.
         if len(self.GetAvailableLanguages()) == 1:
-            listlangs = Utils.GetLanguageDescr(self.preferred_language)
+            listlangs = _(Utils.GetLanguageDescr(self.preferred_language))
         else:
             listlangs = self.GetLangSelectBox(lang).Format()
         d = { 
