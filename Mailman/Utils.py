@@ -216,12 +216,16 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
     else:
         OutgoingQueue.dequeueMessage(queue_entry)
     if failure:
+        t, v = failure[0], failure[1]
         # XXX Here may be the place to get the failure info back to the list
         # object, so it can disable the recipient, etc.  But how?
         from Logging.StampedLogger import StampedLogger
         l = StampedLogger("smtp-failures", "TrySMTPDelivery", immediate=1)
         l.write("To %s:\n" % recipient)
-        l.write("\t %s / %s\n" % (failure[0], failure[1]))
+        l.write("\t %s" % t)
+        if v:
+            l.write(' / %s' % v)
+        l.write(' (%s)\n' % (defer and 'deferred' or 'dequeued'))
         l.flush()
 
 
