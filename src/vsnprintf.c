@@ -43,7 +43,7 @@
 #include <strings.h>
 #include <stdarg.h>
 
-int vsnprintf(char* s, int n, char* fmt, va_list stack)
+int vsnprintf(char* s, size_t n, const char* fmt, va_list stack)
 {
 	char *f, *sf = 0;
 	int i, on, argl = 0;
@@ -51,7 +51,7 @@ int vsnprintf(char* s, int n, char* fmt, va_list stack)
 	char *arg, *myfp;
 
 	on = n;
-	f = fmt;
+	f = (char*)fmt;
 	arg = 0;
 	while (arg || (sf = index(f, '%')) || (sf = f + strlen(f))) {
 		if (arg == 0) {
