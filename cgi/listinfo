@@ -60,7 +60,8 @@ replacements['<mm-subscribe-button>'] = list.FormatButton('email-button',
                                                           text='Subscribe')
 replacements['<mm-new-password-box>'] = list.FormatSecureBox('pw')
 replacements['<mm-confirm-password>'] = list.FormatSecureBox('pw-conf')
-replacements['<mm-form-start>'] = list.FormatFormStart('subscribe')
+replacements['<mm-subscribe-form-start>'] = list.FormatFormStart('subscribe')
+replacements['<mm-roster-form-start>'] = list.FormatFormStart('roster')
 replacements['<mm-editing-options>'] = list.FormatEditingOption()
 replacements['<mm-info-button>'] = \
                          htmlformat.SubmitButton('UserOptions',
