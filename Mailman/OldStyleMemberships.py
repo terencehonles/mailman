@@ -339,6 +339,7 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
     def setBounceInfo(self, member, info):
         assert self.__mlist.Locked()
         self.__assertIsMember(member)
+        member = member.lower()
         if info is None:
             if self.__mlist.bounce_info.has_key(member):
                 del self.__mlist.bounce_info[member]
