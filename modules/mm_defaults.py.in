@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.1'
-__version__ = VERSION + "$Revision: 163 $"
+__version__ = VERSION + "$Revision: 176 $"
 
 		   # Many site-specific settings #
 
@@ -27,6 +27,9 @@ CGI_DIR           = os.path.join(HOME_DIR, 'cgi-bin')
 LOG_DIR           = os.path.join(HOME_DIR, 'logs')
 LOCK_DIR          = os.path.join(MAILMAN_DIR, 'locks')
 TEMPLATE_DIR      = os.path.join(MAILMAN_DIR, 'templates')
+PUBLIC_ARCHIVE_FILE_DIR    = os.path.join(HOME_DIR, 'archives/public')
+PRIVATE_ARCHIVE_FILE_DIR   = os.path.join(HOME_DIR, 'archives/private')
+DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 
@@ -53,12 +56,17 @@ DEFAULT_MSG_FOOTER = """------------------------------------------------------
 
 		     # List Accessibility Defaults #
 
+# Is admin notified of admin requests immediately by mail, as well as by
+# daily pending-request reminder?
+DEFAULT_ADMIN_IMMED_NOTIFY = 1
 DEFAULT_MODERATED = 0
 # Bounce if 'to' or 'cc' fields don't explicitly name list (anti-spam)?
 DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
 # {header-name: regexp} spam filtering - we include one for example sake!
 DEFAULT_BOUNCE_MATCHING_HEADERS = """
+# Lines that *start* with a '#' are comments.
 to: friend@public.com
+message-id: relay.comanche.denmark.eu
 """
 # Replies to posts inherently directed to list or original sender?
 DEFAULT_REPLY_GOES_TO_LIST = 0
@@ -84,18 +92,21 @@ DEFAULT_DIGEST_HEADER = ""
 DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
 
 DEFAULT_DIGEST_IS_DEFAULT = 0
-DEFAULT_DIGEST_SIZE_THRESHOLD = 30	# KB
-# 0 = never, 1 = daily, 2 = hourly:
-DEFAULT_ARCHIVE_UPDATE_FREQUENCY = 2
-# 0 = yearly, 1 = monthly
-DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 0
-# Retain a flat text mailbox of postings as well as the fancy archives?
-DEFAULT_ARCHIVE_RETAIN_TEXT_COPY = 1
+DEFAULT_DIGEST_SIZE_THRESHHOLD = 30	# KB
+DEFAULT_DIGEST_SEND_PERIODIC = 1
+# We're only retaining the text file, an external pipermail (andrew's
+# newest version) is pointed at the retained text copies.
+## # 0 = never, 1 = daily, 2 = hourly:
+## DEFAULT_ARCHIVE_UPDATE_FREQUENCY = 2
+## # 0 = yearly, 1 = monthly
+## DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 0
+## # Retain a flat text mailbox of postings as well as the fancy archives?
+## DEFAULT_ARCHIVE_RETAIN_TEXT_COPY = 1
 
 		    # Bounce Processing Defaults #
 
 # Should we do any bounced mail checking at all?
-DEFAULT_BOUNCE_PROCESSING = 0 
+DEFAULT_BOUNCE_PROCESSING = 1
 # Minimum number of days that address has been undeliverable before 
 # we consider nuking it..
 DEFAULT_MINIMUM_REMOVAL_DATE = 5
