@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1\n"
 "POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
-"PO-Revision-Date: 2002-12-11 22:05GMT\n"
+"PO-Revision-Date: 2002-12-25 03:00GMT\n"
 "Last-Translator: Simone Piunno <pioppo@ferrara.linux.it>\n"
 "Language-Team: Italian <mailman-it@ferrara.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -1250,7 +1250,7 @@ msgstr "Togli l'opzione <em>moderato</em> a questo iscritto"
 
 #: Mailman/Cgi/admindb.py:425
 msgid "<em>The sender is now a member of this list</em>"
-msgstr ""
+msgstr "<em>Il mittente ora &egrave; un iscritto di questa lista</em>"
 
 #: Mailman/Cgi/admindb.py:434
 msgid "Add <b>%(esender)s</b> to a sender filter"
@@ -3823,7 +3823,7 @@ msgstr "Coreano"
 
 #: Mailman/Defaults.py:1217
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lituano"
 
 #: Mailman/Defaults.py:1218
 msgid "Dutch"
