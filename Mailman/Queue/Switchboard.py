@@ -72,8 +72,8 @@ class _Switchboard:
         self.__upper = None
         # BAW: test performance and end-cases of this algorithm
         if numslices <> 1:
-            self.__lower = (shamax * slice) / numslices
-            self.__upper = (shamax * (slice+1)) / numslices
+            self.__lower = ((shamax+1) * slice) / numslices
+            self.__upper = (((shamax+1) * (slice+1)) / numslices) - 1
 
     def whichq(self):
         return self.__whichq
@@ -139,7 +139,7 @@ class _Switchboard:
         # plain text.  Second, the actual message file.  However, we want to
         # first unlink the message file and then the .db file, because the
         # qrunner only cues off of the .db file
-        msg = data = None
+        msg = None
         try:
             data = self._ext_read(dbfile)
             os.unlink(dbfile)
