@@ -49,7 +49,9 @@ def ScanMessages(mlist, msg, testing=0):
                 'GroupWise',
                 'SMTP32',
                 'SimpleMatch',
+                'SimpleWarning',
                 'Yale',
+                'LLNL',
                 ]
     for module in pipeline:
         modname = 'Mailman.Bouncers.' + module
