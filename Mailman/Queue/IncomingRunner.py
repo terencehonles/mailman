@@ -146,14 +146,5 @@ class IncomingRunner(Runner):
             except Errors.RejectMessage, e:
                 mlist.BounceMessage(msg, msgdata, e)
                 return 0
-            except Exception, e:
-                # Some other exception occurred, which we definitely did not
-                # expect, so set this message up for requeuing.
-                self._log(e)
-                # We stick the name of the failed module back into the front
-                # of the pipeline list so that it can resume where it left off
-                # when qrunner tries to redeliver it.
-                pipeline.insert(0, handler)
-                return 1
         # We've successfully completed handling of this message
         return 0
