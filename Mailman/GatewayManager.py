@@ -24,8 +24,6 @@ import re
 import time
 import mm_cfg
 
-# XXX: This should be integrated with the Errors module
-ImproperNNTPConfigError = "ImproperNNTPConfigError"
 # XXX: Bogus, but might as we do it `legally'
 QuickEscape = 'QuickEscape'
 
@@ -106,8 +104,14 @@ class GatewayManager:
         import Message
         #if self.gateway_to_news == 0:
         #  return
-        if self.linked_newsgroup == '' or self.nntp_host == '':
-            raise ImproperNNTPConfigError
+        if not self.linked_newsgroup:
+            self.LogMsg('error',
+                        'NNTP gateway improperly configured: no newsgroup')
+            return
+        if not self.nntp_host:
+            self.LogMsg('error',
+                        'NNTP gateway improperly configured: no NNTP host')
+            return
         try:
             if self.tmp_prevent_gate:
                 return
