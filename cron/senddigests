@@ -1,8 +1,10 @@
 #!/usr/local/bin/python 
-# 
-# This script gets called by cron.
-# It goes through all the lists, dispatching the digests for those that have 
-# digest_send_periodic set.
+
+"""Dispatch digests for lists w/pending messages and digest_send_periodic set.
+
+Typically it's invoked via cron."""
+
+__version__ = "$Revision: 389 $"
 
 import sys, os
 

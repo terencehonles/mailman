@@ -1,8 +1,8 @@
 #!/usr/local/bin/python 
-# 
-# This script gets called by cron.
-# It checks each list for pending requests, and mails the admin
-# of that list if something needs his or her attention.
+
+"Invoked by cron, checks for pending list requests and mails the admin if any."
+
+__version__ = "$Revision: 389 $"
 
 import sys, os
 
