@@ -255,6 +255,10 @@ def main():
 
         oldname = mlist.getMemberName(user)
         set_address = set_membername = 0
+
+        # See if the user wants to change their email address globally
+        globally = cgidata.getvalue('changeaddr-globally')
+
         # We will change the member's name under the following conditions:
         # - membername has a value
         # - membername has no value, but they /used/ to have a membername
@@ -269,6 +273,7 @@ def main():
         # subscribed email address (when compared case-sensitively).  If both
         # are blank, but membername is set, we ignore it, otherwise we print
         # an error.
+        msg = ''
         if newaddr and confirmaddr:
             if newaddr <> confirmaddr:
                 options_page(mlist, doc, user, cpuser, userlang,
@@ -280,6 +285,27 @@ def main():
                              _('You are already using that email address'))
                 print doc.Format()
                 return
+            # If they're requesting to subscribe an address which is already a
+            # member, and they're /not/ doing it globally, then refuse.
+            # Otherwise, we'll agree to do it globally (with a warning
+            # message) and let ApprovedChangeMemberAddress() handle already a
+            # member issues.
+            if mlist.isMember(newaddr):
+                safenewaddr = Utils.websafe(newaddr)
+                if globally:
+                    listname = mlist.real_name
+                    msg += _("""\
+The new address you requested %(newaddr)s is already a member of the
+%(listname)s mailing list, however you have also requested a global change of
+address.  Upon confirmation, any other mailing list containing the address
+%(user)s will be changed. """)
+                    # Don't return
+                else:
+                    options_page(
+                        mlist, doc, user, cpuser, userlang,
+                        _('The new address is already a member: %(newaddr)s'))
+                    print doc.Format()
+                    return
             set_address = 1
         elif (newaddr or confirmaddr) and not set_membername:
             options_page(mlist, doc, user, cpuser, userlang,
@@ -287,19 +313,15 @@ def main():
             print doc.Format()
             return
 
-        # See if the user wants to change their email address globally
-        globally = cgidata.getvalue('changeaddr-globally')
-
         # Standard sigterm handler.
         def sigterm_handler(signum, frame, mlist=mlist):
             mlist.Unlock()
             sys.exit(0)
 
         signal.signal(signal.SIGTERM, sigterm_handler)
-        msg = ''
         if set_address:
             # Register the pending change after the list is locked
-            msg = _('A confirmation message has been sent to %(newaddr)s. ')
+            msg += _('A confirmation message has been sent to %(newaddr)s. ')
             mlist.Lock()
             try:
                 try:
