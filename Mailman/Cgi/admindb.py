@@ -109,7 +109,7 @@ def PrintRequests(mlist, doc):
     if not mlist.NumRequestsPending():
 	doc.AddItem('There are no pending requests.  You can now ')
         doc.AddItem(
-            Link(mlist.GetRelativeScriptURL('admin'),
+            Link(mlist.GetScriptURL('admin'),
                  Italic('view or edit the list configuration information.')))
 	doc.AddItem(mlist.GetMailmanFooter())
 	return
@@ -117,10 +117,10 @@ def PrintRequests(mlist, doc):
     doc.AddItem(Utils.maketext(
         'admindbpreamble.html', {'listname': mlist.real_name}, raw=1))
     doc.AddItem(
-        Link(mlist.GetRelativeScriptURL('admin'),
+        Link(mlist.GetScriptURL('admin'),
              Italic('view or edit the list configuration information')))
     doc.AddItem('.<p>')
-    form = Form(mlist.GetRelativeScriptURL('admindb'))
+    form = Form(mlist.GetScriptURL('admindb'))
     doc.AddItem(form)
     form.AddItem(SubmitButton('submit', 'Submit All Data'))
     #
