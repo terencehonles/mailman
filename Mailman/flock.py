@@ -29,7 +29,7 @@ sure no malicious people have access to link() to the lock file.
 
 import socket, os, time
 
-DEFAULT_HUNG_TIMEOUT   = 30
+DEFAULT_HUNG_TIMEOUT   = 15
 DEFAULT_SLEEP_INTERVAL = .25
 
 AlreadyCalledLockError = "AlreadyCalledLockError"
@@ -43,7 +43,7 @@ class FileLock:
     self.hung_timeout = hung_timeout
     self.sleep_interval = sleep_interval
     self.tmpfname = "%s.%s.%d" % (lockfile, socket.gethostname(), os.getpid())
-    self.locked = 0
+    self.is_locked = 0
     if not os.path.exists(self.lockfile):
       try:
          file = open(self.lockfile, "w+")
@@ -61,7 +61,7 @@ class FileLock:
     if timeout > 0:
       timeout_time = time.time() + timeout
     last_pid = -1
-    if self.locked:
+    if self.locked():
       raise AlreadyCalledLockError
     while 1:
       os.link(self.lockfile, self.tmpfname)
@@ -69,7 +69,7 @@ class FileLock:
          file = open(self.tmpfname, 'w+')
          file.write(`os.getpid(),self.tmpfname`)
          file.close()
-         self.locked = 1
+         self.is_locked = 1
          break
       if timeout and timeout_time < time.time():
          raise TimeOutError
@@ -87,7 +87,7 @@ class FileLock:
          file = open(self.tmpfname, 'w+')
      	 file.write(`os.getpid(),self.tmpfname`)
 	 os.unlink(winner)
-         self.locked = 1
+         self.is_locked = 1
 	 break
       os.unlink(self.tmpfname)
       time.sleep(self.sleep_interval)
@@ -95,6 +95,7 @@ class FileLock:
   def unlock(self):
     if not self.locked():
        raise NotLockedError
+    self.is_locked = 0
     os.unlink(self.tmpfname)
   def locked(self):
-    return os.path.exists(self.tmpfname) and self.locked
+    return os.path.exists(self.tmpfname) and self.is_locked
