@@ -161,6 +161,14 @@ def main():
         filemembers = fp.readlines()
         fp.close()
 
+    # strip out lines we don't care about, they are comments (# in first
+    # non-whitespace) or are blank
+    for i in range(len(filemembers)-1, -1, -1):
+        addr = string.strip(filemembers[i])
+        if addr == '' or addr[:1] == '#':
+            del filemembers[i]
+            print 'Ignore  :  %30s' % addr
+
     # first filter out any invalid addresses
     filemembers = Mailman.Utils.ParseAddrs(filemembers)
     invalid = 0
