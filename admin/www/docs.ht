@@ -3,8 +3,9 @@ Links: links.h doco-links.h
 Other-links:
     <h3>Exits</h3>
     <li><a href="http://www.python.org/cgi-bin/faqw-mm.py">FAQ Wizard</a>
+	 <li><a href="http://terri.zone12.com/doc/mailman/">Terri Oda's Docs</a>
     <li><a href="http://staff.imsa.edu/~ckolar/mailman">Chris Kolar's Docs</a>
-    <li><a href="http://www.exim.org/howto/mailman.html">Exim HOWTO</a>
+    <li><a href="http://www.exim.org/howto/mailman21.html">Exim HOWTO</a>
 
 <h3>Mailman Documentation</h3>
 
@@ -61,16 +62,24 @@ list first - then submit your question - so that your question will be
 distributed quickly to the list subscribers and replies also will be
 distributed quickly back to you.
 
+<p><a href="http://terri.zone12.com/">Terri Oda</a> has the most recent
+versions of the <a href="http://terri.zone12.com/doc/mailman/">Mailman
+documenation</a> available on her website.  This currently includes the list
+members manual and the list administrators manual. 
+
 <p><a href="http://staff.imsa.edu/~ckolar/index.htm">Chris Kolar</a> has made
 available <a href="http://staff.imsa.edu/~ckolar/mailman">Mailman
 documentation</a>, primarily for list owners who are not necessarily
 technical, but who own Mailman mailing lists.
 
 <p>Nigel Metheringham has posted a
-<a href="http://www.exim.org/howto/mailman.html">HOWTO on using Exim
+<a href="http://www.exim.org/howto/mailman21.html">HOWTO on using Exim
 and Mailman</a> together.  If you're using the
 <a href="http://www.exim.org">Exim mailer</a> you should check this out.
 
 <p>The <a href="download.html">Mailman source distribution</a> itself
 contains many README files for discussion of issues specific to
 operating system, mail transport agent, or web server.
+
+<p>The most recent versions of the official documenation can be found in the <a
+href="http://cvs.sourceforge.net/viewcvs.py/mailman/mailman/doc/">CVS documenation directory</a>.
