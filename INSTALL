@@ -2,7 +2,7 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-This file contains installation instructions for Mailman, which is
+This file contains installation instructions for GNU Mailman, which is
 configured using the standard GNU autoconf software.  You should first
 set up your system as outlined in the sections below, and then
 configure and install the Mailman software.
@@ -16,16 +16,17 @@ file UPGRADING for important information before you upgrade.
 0. Installation requirements
 
     You must have the Python interpreter installed somewhere on your
-    system.  Currently Python 1.5.2 or later is required.  For
-    information about obtaining Python source code, or pre-compiled
-    binaries please see the Python Web site at
+    system.  Currently Python 1.5.2 or later is required (Python 2.0
+    should work fine).  For information about obtaining Python source
+    code, RPM packages, or pre-compiled binaries please see:
 
         http://www.python.org
+        http://www.pythonlabs.com
 
     You must also have an ANSI C compiler in order to build the
     wrapper programs which are used for improved security.  The GNU C
-    compiler gcc 2.8.1 is known to work well.  For more information
-    about obtaining gcc, see
+    compiler gcc 2.8.1 or later is known to work well.  For more
+    information about obtaining gcc, see
 
         http://www.gnu.org
 
@@ -37,13 +38,16 @@ file UPGRADING for important information before you upgrade.
     system by adding certain users and groups.
 
     - Add a new user called `mailman'.  Typically this is added to
-      your /etc/passwd file.
+      your /etc/passwd file.  If username `mailman' is already in use,
+      choose something else unique and see the --with-ownername flag
+      below.
 
     - Add a new group called `mailman'.  Typically this is added to
       your /etc/group file.  The Mailman files will be installed under
       the `mailman' group, with the set-group-id bit.  This is so both
-      the Web based and mail based programs will have the proper write
-      permissions.
+      the web based and mail based programs will have the proper write
+      permissions.  If groupname `mailman' is already in use, choose
+      something else unique and see the --with-ownergroup below.
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
@@ -59,9 +63,10 @@ file UPGRADING for important information before you upgrade.
       security.  If this describes your environment, simply install
       Mailman in a location that allows setgid programs.
 
-      Make sure this directory is set to group `mailman' and has the
-      setgid bit set.  You probably also want to guarantee that this
-      directory is read and executeable by everyone. For example,
+      Make sure this directory is set to group `mailman' (or whatever
+      you're going to specify as --with-ownergroup) and has the setgid
+      bit set.  You probably also want to guarantee that this
+      directory is readable and executable by everyone.  For example,
       these shell commands will accomplish this:
 
           % cd $prefix
@@ -77,14 +82,15 @@ file UPGRADING for important information before you upgrade.
 
     You should not be root while performing the steps in this section.
     Do them under your own login, or whatever account you typically
-    install software as.
+    install software as.  You do not need to do these steps as user
+    mailman, but you could.
 
-    However, make sure that you have write permissions to the target
+    Make sure that you have write permissions to the target
     installation directory, and permission to create a setgid file in
     the file system where it resides (NFS and other mounts can be
     configured to inhibit setgid settings).
 
-    - If you've installed other GNU software, you should be familar
+    - If you've installed other GNU software, you should be familiar
       with the configure script.  Usually you can just cd to the
       directory you unpacked Mailman into, and run configure with no
       arguments:
@@ -113,6 +119,19 @@ file UPGRADING for important information before you upgrade.
             the scripts from the command line, the first Python
             interpreter found on $PATH is always used.
 
+      --with-ownername=<username-or-uid>
+            Specify a different username than `mailman' to use as a
+            default.  Use this only if the username `mailman' is
+            already in use by somebody (e.g. Mark Ailman's login
+            name).  Can take an integer user id.  Be sure your $prefix
+            directory is owned by this user.
+
+      --with-ownergroup=<groupname-or-gid>
+            Specify a different groupname than `mailman' to use as a
+            default.  Use this only if the groupname `mailman' is
+            already in use.  Can take an integer group id.  Be sure
+            your $prefix directory is group-owned by this group.
+
       --with-mail-gid=<group-or-groups>
             Specify an alternative group for running scripts via the
             mail wrapper.  <group-or-groups> can be a list of one or
@@ -136,7 +155,7 @@ file UPGRADING for important information before you upgrade.
             used.  By default, the value is the the list `www www-data
             nobody'.
 
-            The proper value for this is dependent on your Web server
+            The proper value for this is dependent on your web server
             configuration.  You must get this right, because the group
             id is compiled into the CGI wrapper program for added
             security, and no Mailman CGI scripts will run if this is
@@ -148,7 +167,7 @@ file UPGRADING for important information before you upgrade.
       --with-cgi-ext=<extension>
             Specify an extension for cgi-bin programs.  The CGI
             wrappers placed in $PREFIX/cgi-bin will have this
-            extension (some Web servers require an extension).
+            extension (some web servers require an extension).
             <extension> must include the dot.
 
       --with-gcc=no
@@ -181,7 +200,7 @@ file UPGRADING for important information before you upgrade.
 4. Final system set-up
 
     Congratulations!  You've installed the Mailman software.  To get
-    everything running you need to hook Mailman up to both your Web
+    everything running you need to hook Mailman up to both your web
     server and your mail system.
 
     - If you plan on running your MTA and web server on different
@@ -191,7 +210,7 @@ file UPGRADING for important information before you upgrade.
       CLOCK_SLOP helps the locking mechanism compensate for clock skew
       in this type of environment.
 
-    - Configure your Web server to give $prefix/cgi-bin permission to
+    - Configure your web server to give $prefix/cgi-bin permission to
       run CGI scripts.  You probably need to be root to do this.
 
       The line you should add might look something like the following
@@ -202,14 +221,14 @@ file UPGRADING for important information before you upgrade.
       or:
           ScriptAlias   /mailman/       $prefix/cgi-bin/
 
-      Consult your Web server's documentation for details.
+      Consult your web server's documentation for details.
 
     - You want to be very sure that the user id under which your CGI
       scripts run is *not* in the `mailman' group you created above,
       otherwise private archives will be accessible to anyone.
 
     - Copy the Mailman, Python, and GNU logos to a location accessible
-      to your Web server.  E.g. with Apache, you've usually got an
+      to your web server.  E.g. with Apache, you've usually got an
       `icons' directory that you can drop the images into.  You want
       to copy $prefix/icons/mailman.jpg, $prefix/icons/PythonPowered.png,
       and $prefix/icons/gnu-head-tiny.jpg to this directory.
@@ -222,26 +241,26 @@ file UPGRADING for important information before you upgrade.
       The default value for IMAGE_LOGOS is '/icons/'.  Read the
       comment in Defaults.py.in for details.
 
-    - Configure your Web server to point to the Pipermail public
+    - Configure your web server to point to the Pipermail public
       mailing list archives:
 
       For example, in Apache:
 
          Alias /pipermail/ $prefix/archives/public/
 
-      Consult your Web server's documentation for details.  Also be
-      sure to configure your Web server to follow symbolic links in
+      Consult your web server's documentation for details.  Also be
+      sure to configure your web server to follow symbolic links in
       this directory, otherwise public Pipermail archives won't be
       accessible.  For Apache users, consult the FollowSymLinks
       option.
 
-      Now restart your Web server.
+      Now restart your web server.
 
     - Set up the crontab entries.  Mailman runs a number of cron jobs
-      to do things such as send out password reminders, etc.  You need
-      to be user `mailman' to perform this step.  Add
-      $prefix/cron/crontab.in as a crontab entry by executing these
-      commands:
+      for its basic functionality.  You need to be user `mailman' (or
+      whatever you specified as --with-ownername) to perform this
+      step.  Add $prefix/cron/crontab.in as a crontab entry by
+      executing these commands:
 
           % su - mailman
           % cd $prefix/cron
@@ -274,21 +293,23 @@ file UPGRADING for important information before you upgrade.
     You should do these steps using the account you installed Mailman
     under in section 2 above.
 
-    - Check the file $prefix/Mailman/mm_cfg.py for accuracy.
-      Specifically check to make sure the variables DEFAULT_HOST_NAME
-      and DEFAULT_URL are correct, and make any necessary changes.
+    - The file $prefix/Mailman/Defaults.py contains a number of
+      defaults for your installation.  If any of these are incorrect,
+      override them in $prefix/Mailman/mm_cfg.py, NOT IN Defaults.py!
+      See the comments in Defaults.py for details.
 
-      The variable settings in mm_cfg.py override those in
-      $prefix/Mailman/Defaults.py, so consult that file for the list
-      of variables that control Mailman.  Add any additonal settings
-      that you want to change for your site to mm_cfg.py (don't edit
-      Defaults.py).
+      Specifically check to make sure the variables DEFAULT_HOST_NAME
+      and DEFAULT_URL are correct.
+
+      Consult Defaults.py for the list of variables that control
+      Mailman.  Add any additional settings that you want to change
+      for your site to mm_cfg.py (don't edit Defaults.py).  Once a
+      list is created, editing many of these variables will have no
+      effect (you need to configure your lists through the command
+      line script bin/config_list or through the web admin interface).
 
       The install process will not overwrite an existing mm_cfg.py
-      file so you can freely make changes to this file.  Installing
-      will always copy the automatically generated mm_cfg.py file to
-      $prefix/Mailman/mm_cfg.py.dist so you can check that file for
-      any useful differences or suggestions.
+      file so you can freely make changes to this file.
 
       Note: Do *not* change HOME_DIR or MAILMAN_DIR.  These are set
       automatically by the configure script.
@@ -402,7 +423,7 @@ file UPGRADING for important information before you upgrade.
 
     Solution: Create a separate aliases file for Postfix in it's
               main.cf config file under the variable "alias_maps". Put
-              the file somewhere in mailman's home directory, or
+              the file somewhere in Mailman's home directory, or
               somewhere else where the user mailman has write access
               to it; *as user mailman* call Postfix's "postalias" on the
               alias file.  
@@ -423,13 +444,15 @@ file UPGRADING for important information before you upgrade.
     Problem:  I send mail to the list, and get back mail saying,
               "sh: wrapper not available for sendmail programs"
 
-    Solution: Your system uses sendmail restricted shell.  You need to
-              configure smrsh by creating a symbolic link from the
-              mail wrapper ($prefix/mail/wrapper) to the directory
+    Solution: Your system uses sendmail restricted shell (smrsh).  You
+              need to configure smrsh by creating a symbolic link from
+              the mail wrapper ($prefix/mail/wrapper) to the directory
               identifying executables allowed to run under smrsh.
+
               Some common names for this directory are
               /var/admin/sm.bin, /usr/admin/sm.bin or /etc/smrsh.
-              Note that on Debian linux, the system makes
+
+              Note that on Debian Linux, the system makes
               /usr/lib/sm.bin, which is wrong, you will need to create
               the directory /usr/admin/sm.bin and add the link there.
               NOTE: any aliases newaliases spits out will need to be
@@ -441,7 +464,6 @@ file UPGRADING for important information before you upgrade.
     Solution: % make clean
               % ./configure --with-the-right-options
               % make install
-
 
 
 
