@@ -34,10 +34,10 @@ PYTHON=  	@PYTHON@
 DEFS=   	@DEFS@
 LIBS=		@LIBS@
 
-# UIDs and GIDs
-MAIL_GID=      	@MAIL_GID@
-CGI_GID=	@CGI_GID@
-MAILMAN_UID=	@MAILMAN_UID@
+# user and group ids/names
+MAIL_GROUP=     @MAIL_GROUP@
+CGI_GROUP=	@CGI_GROUP@
+MAILMAN_USER=	@MAILMAN_USER@
 
 # Customizable but not set by configure
 OPT=		@OPT@
@@ -48,9 +48,9 @@ MAILDIR=	$(exec_prefix)/mail
 
 SHELL=		/bin/sh
 
-MAIL_FLAGS=	-DMAIL_GID=$(MAIL_GID)
+MAIL_FLAGS=	-DMAIL_GROUP="\"$(MAIL_GROUP)\""
 
-CGI_FLAGS=	-DCGI_GID=$(CGI_GID)
+CGI_FLAGS=	-DCGI_GROUP="\"$(CGI_GROUP)\""
 
 HELPFUL=	-DHELPFUL
 
@@ -125,12 +125,12 @@ finish:
 	do \
 	    exe=$(CGIDIR)/$$f$(CGIEXT); \
 	    chmod u+s $$exe; \
-	    chown $(MAILMAN_UID) $$exe; \
+	    chown $(MAILMAN_USER) $$exe; \
 	done
 #	-for f in $(SUID_MAIL_PROGS); \
 #	do \
 #	    exe=$(MAILDIR)/$$f; \
-#	    chown $(MAILMAN_UID) $$exe; \
+#	    chown $(MAILMAN_USER) $$exe; \
 #	done
 
 clean:
