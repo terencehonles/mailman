@@ -263,7 +263,10 @@ class SecurityManager:
         # decoding as necessary.  By using SimpleCookie, we prevent any kind
         # of security breach due to untrusted cookie data being unpickled
         # (which is quite unsafe).
-        c = Cookie.SimpleCookie(cookiedata)
+        try:
+            c = Cookie.SimpleCookie(cookiedata)
+        except Cookie.CookieError:
+            return 0
         # If the user was not supplied, but the authcontext is AuthUser, we
         # can try to glean the user address from the cookie key.  There may be
         # more than one matching key (if the user has multiple accounts
