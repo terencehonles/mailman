@@ -119,7 +119,10 @@ def main():
     replacements['<mm-user>'] = user
     replacements['<mm-presentable-user>'] = presentable_user
     replacements['<mm-email-my-pw>'] = list.FormatButton('emailpw',
-                                                         'Email My Password To Me')
+                                                         ('Email My Password'
+                                                          ' To Me'))
+    replacements['<mm-umbrella-notice>'] = list.FormatUmbrellaNotice(user,
+                                                                    "password")
 
 
     doc.AddItem(list.ParseTags('options.html', replacements))
