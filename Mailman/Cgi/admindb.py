@@ -19,38 +19,57 @@
 """Produce and process the pending-approval items for a list."""
 
 import sys
-import os, cgi, string, crypt, types
-import mm_utils, maillist, mm_err, htmlformat
+import os, cgi, string, types
+from Mailman import Utils, MailList, Errors, htmlformat
 
-doc = htmlformat.Document()
+def main():
+    global list
 
-path = os.environ['PATH_INFO']
-list_info = mm_utils.GetPathPieces(path)
+    doc = htmlformat.Document()
+
+    path = os.environ['PATH_INFO']
+    list_info = Utils.GetPathPieces(path)
 
 
-if len(list_info) < 1:
-    doc.SetTitle("Admindb Error")
-    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
-    print doc.Format(bgcolor="#ffffff")
-    sys.exit(0)
-list_name = string.lower(list_info[0])
+    if len(list_info) < 1:
+        doc.SetTitle("Admindb Error")
+        doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+        print doc.Format(bgcolor="#ffffff")
+        sys.exit(0)
+    list_name = string.lower(list_info[0])
 
-try:
-  list = maillist.MailList(list_name)
-except:
-  msg = "%s: No such list." % list_name
-  doc.SetTitle("Admindb Error - %s" % msg)
-  doc.AddItem(htmlformat.Header(2, msg))
-  print doc.Format(bgcolor="#ffffff")
-  sys.exit(0)
+    try:
+      list = MailList.MailList(list_name)
+    except:
+      msg = "%s: No such list." % list_name
+      doc.SetTitle("Admindb Error - %s" % msg)
+      doc.AddItem(htmlformat.Header(2, msg))
+      print doc.Format(bgcolor="#ffffff")
+      sys.exit(0)
 
-if not list._ready:
-    msg = "%s: No such list." % list_name
-    doc.SetTitle("Admindb Error - %s" % msg)
-    doc.AddItem(htmlformat.Header(2, msg))
-    print doc.Format(bgcolor="#ffffff")
-    sys.exit(0)
+    if not list._ready:
+        msg = "%s: No such list." % list_name
+        doc.SetTitle("Admindb Error - %s" % msg)
+        doc.AddItem(htmlformat.Header(2, msg))
+        print doc.Format(bgcolor="#ffffff")
+        sys.exit(0)
 
+    try:
+        form = cgi.FieldStorage()
+        if len(form.keys()):
+            doc.SetTitle("%s Admindb Results" % list.real_name)
+            HandleRequests(doc)
+        else:
+            doc.SetTitle("%s Admindb" % list.real_name)
+        PrintRequests(doc)
+        text = doc.Format(bgcolor="#ffffff")
+        print text
+        sys.stdout.flush()
+    finally:
+        list.Unlock()
+
+
+
 # Note, these 2 functions use i only to count the number of times to
 # go around.  We always operate on the first element of the list
 # because we're going to delete the element after we operate on it.
@@ -107,7 +126,7 @@ def HandleRequests(doc):
 	    continue
 	try:
 	    request = list.GetRequest(request_id)
-	except mm_err.MMBadRequestId:
+	except Errors.MMBadRequestId:
 	    continue # You've already changed the database.  No biggie.
 	if ignore_subscribes and request[0] == 'add_member':
 	    # We already handled this request.
@@ -159,7 +178,11 @@ def PrintPostRequest(val, form):
     form.AddItem('<p>')
 
 
+
 def PrintRequests(doc):
+    # XXX: blech, yuk, ick
+    global list
+
     # The only types of requests we know about are add_member and post.
     # Anything else that might have gotten in here somehow we'll just
     # ignore (This should never happen unless someone is hacking at
@@ -217,16 +240,3 @@ def PrintRequests(doc):
 	    PrintPostRequest(request, form)
     doc.AddItem(list.GetMailmanFooter())
 
-try:
-    form = cgi.FieldStorage()
-    if len(form.keys()):
-        doc.SetTitle("%s Admindb Results" % list.real_name)
-	HandleRequests(doc)
-    else:
-        doc.SetTitle("%s Admindb" % list.real_name)
-    PrintRequests(doc)
-    text = doc.Format(bgcolor="#ffffff")
-    print text
-    sys.stdout.flush()
-finally:
-    list.Unlock()

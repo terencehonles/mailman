@@ -21,99 +21,171 @@
 import sys
 import os, cgi, string
 from regsub import gsub
-import mm_utils, maillist, mm_err, mm_message, mm_cfg, mm_pending, htmlformat
+from Mailman import Utils, MailList, Errors, Pending, htmlformat
+from Mailman import mm_cfg
 
-doc = htmlformat.Document()
+def main():
+    doc = htmlformat.Document()
 
-path = os.environ['PATH_INFO']
-list_info = mm_utils.GetPathPieces(path)
-list_name = string.lower(list_info[0])
+    path = os.environ['PATH_INFO']
+    list_info = Utils.GetPathPieces(path)
+    list_name = string.lower(list_info[0])
 
-if len(list_info) < 1:
-    doc.AddItem(htmlformat.Header(2, "Error"))
-    doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
-    print doc.Format()
-    sys.exit(0)
+    if len(list_info) < 1:
+        doc.AddItem(htmlformat.Header(2, "Error"))
+        doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
+        print doc.Format()
+        sys.exit(0)
 
-try:
-  list = maillist.MailList(list_name)
-except:
-  doc.AddItem(htmlformat.Header(2, "Error"))
-  doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
-  print doc.Format()
-  sys.exit(0)
+    try:
+      list = MailList.MailList(list_name)
+    except:
+      doc.AddItem(htmlformat.Header(2, "Error"))
+      doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
+      print doc.Format()
+      sys.exit(0)
 
 
-if not list._ready:
-    doc.AddItem(htmlformat.Header(2, "Error"))
-    doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
-    print doc.Format()
-    list.Unlock()
-    sys.exit(0)
-
-form = cgi.FieldStorage()
-
-error = 0
-results = ''
-
-def call_script(which, pathinfo):
-    "A little bit of a hack to call one of the scripts..."
-    os.environ['PATH_INFO'] = string.join(pathinfo, '/')
-    file = os.path.join(mm_cfg.SCRIPTS_DIR, which)
-    list.Unlock()
-    execfile(file)
-    sys.exit(0)
-
-#######
-# Preliminaries done, actual processing of the form input below.
-
-if (form.has_key("UserOptions")
-      or (form.has_key("info") and not form.has_key("email"))):
-    # Go to user options section.
-    if not form.has_key("info"):
-	doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("You must supply your email address."))
-	doc.AddItem(list.GetMailmanFooter())
-	print doc.Format()
+    if not list._ready:
+        doc.AddItem(htmlformat.Header(2, "Error"))
+        doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
+        print doc.Format()
         list.Unlock()
-	sys.exit(0)
-    addr = form['info'].value
-    member = list.FindUser(addr)
-    if not list.FindUser(addr):
-	doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("%s has no subscribed addr <i>%s</i>."
-                                    % (list.real_name, addr)))
-	doc.AddItem(list.GetMailmanFooter())
-	print doc.Format()
+        sys.exit(0)
+
+    form = cgi.FieldStorage()
+
+    error = 0
+    results = ''
+
+    def call_script(which, pathinfo):
+        "A little bit of a hack to call one of the scripts..."
+        os.environ['PATH_INFO'] = string.join(pathinfo, '/')
+        file = os.path.join(mm_cfg.SCRIPTS_DIR, which)
         list.Unlock()
-	sys.exit(0)
-    call_script('options', [list._internal_name, member])
-if not form.has_key("email"):
-    error = 1
-    results = results + "You must supply a valid email address.<br>"
-else:
-    email = form["email"].value
-if not form.has_key("pw") or not form.has_key("pw-conf"):
-    error = 1
-    results = results + "You must supply a valid password, and confirm it.<br>"
-else:
-    pw  = form["pw"].value
-    pwc = form["pw-conf"].value
+        execfile(file)
+        sys.exit(0)
 
-if not error and (pw <> pwc):
-    error = 1
-    results = results + "Your passwords did not match.<br>"
+    #######
+    # Preliminaries done, actual processing of the form input below.
 
-if form.has_key("digest"):
-    digest = eval(form["digest"].value)
+    if (form.has_key("UserOptions")
+          or (form.has_key("info") and not form.has_key("email"))):
+        # Go to user options section.
+        if not form.has_key("info"):
+            doc.AddItem(htmlformat.Header(2, "Error"))
+            doc.AddItem(htmlformat.Bold("You must supply your email address."))
+            doc.AddItem(list.GetMailmanFooter())
+            print doc.Format()
+            list.Unlock()
+            sys.exit(0)
+        addr = form['info'].value
+        member = list.FindUser(addr)
+        if not list.FindUser(addr):
+            doc.AddItem(htmlformat.Header(2, "Error"))
+            doc.AddItem(htmlformat.Bold("%s has no subscribed addr <i>%s</i>."
+                                        % (list.real_name, addr)))
+            doc.AddItem(list.GetMailmanFooter())
+            print doc.Format()
+            list.Unlock()
+            sys.exit(0)
+        call_script('options', [list._internal_name, member])
+    if not form.has_key("email"):
+        error = 1
+        results = results + "You must supply a valid email address.<br>"
+    else:
+        email = form["email"].value
+    if not form.has_key("pw") or not form.has_key("pw-conf"):
+        error = 1
+        results = results + "You must supply a valid password, and confirm it.<br>"
+    else:
+        pw  = form["pw"].value
+        pwc = form["pw-conf"].value
 
-if not list.digestable:
-    digest = 0
-elif not list.nondigestable:
-    digest = 1
+    if not error and (pw <> pwc):
+        error = 1
+        results = results + "Your passwords did not match.<br>"
+
+    if form.has_key("digest"):
+        digest = eval(form["digest"].value)
+
+    if not list.digestable:
+        digest = 0
+    elif not list.nondigestable:
+        digest = 1
 
 
-def PrintResults():
+    if error:
+        PrintResults(list, results, doc)
+
+    else:
+        try:
+            results = results + ("Confirmation from your email address is "
+                                 "required, to prevent anyone from covertly "
+                                 "subscribing you.  Instructions are being "
+                                 "sent to you at %s." % email)
+            if os.environ.has_key('REMOTE_HOST'):
+                remote = os.environ['REMOTE_HOST']
+            elif os.environ.has_key('REMOTE_ADDR'):
+                remote = os.environ['REMOTE_ADDR']
+            else:
+                remote = "."
+            if digest:
+                digesting = " digest"
+            else:
+                digesting = ""
+            cookie = Pending.gencookie()
+            Pending.add2pending(email, pw, digest, cookie)
+            text = Utils.maketext(
+                'verify.txt',
+                {"email"      : email,
+                 "listaddr"   : list.GetListEmail(),
+                 "listname"   : list.real_name,
+                 "cookie"     : cookie,
+                 "hostname"   : remote,
+                 "requestaddr": list.GetRequestEmail(),
+                 })
+            list.SendTextToUser(
+                subject="%s -- confirmation of subscription -- request %d" % \
+                (list.real_name, cookie),
+                recipient = email,
+                sender = list.GetRequestEmail(),
+                text = text,
+                add_headers = ["Reply-to: %s"
+                               % list.GetRequestEmail(),
+                               "Errors-To: %s"
+                               % list.GetAdminEmail()])
+        except Errors.MMBadEmailError:
+            results = results + ("Mailman won't accept the given email "
+                                 "address as a valid address. (Does it "
+                                 "have an @ in it???)<p>")
+        except Errors.MMListNotReady:
+            results = results + ("The list is not fully functional, and "
+                                 "can not accept subscription requests.<p>")
+    #
+    # deprecating this, it might be useful if we decide to
+    # allow approved based subscriptions without confirmation
+    #
+    ##     except Errors.MMNeedApproval, x:
+    ##         results = results + ("Subscription was <em>deferred</em> "
+    ## 			     "because:<br> %s<p>Your request must "
+    ## 			     "be approved by the list admin.  "
+    ## 			     "You will receive email informing you "
+    ## 			     "of the moderator's descision when they "
+    ##			     "get to your request.<p>" % x)
+        except Errors.MMHostileAddress:
+            results = results + ("Your subscription is not allowed because "
+                                 "the email address you gave is insecure.<p>")
+        except Errors.MMAlreadyAMember:
+            results = results + "You are already subscribed!<p>"
+
+
+    PrintResults(list, results, doc)
+    list.Unlock()
+
+
+
+def PrintResults(list, results, doc):
     replacements = list.GetStandardReplacements()
     replacements['<mm-results>'] = results
     output = list.ParseTags('subscribe.html', replacements)
@@ -123,66 +195,3 @@ def PrintResults():
     list.Unlock()
     sys.exit(0)
 
-if error:
-    PrintResults()
-
-else:
-    try:
-        results = results + ("Confirmation from your email address is "
-                             "required, to prevent anyone from covertly "
-                             "subscribing you.  Instructions are being "
-                             "sent to you at %s." % email)
-        if os.environ.has_key('REMOTE_HOST'):
-            remote = os.environ['REMOTE_HOST']
-        elif os.environ.has_key('REMOTE_ADDR'):
-            remote = os.environ['REMOTE_ADDR']
-        else:
-            remote = "."
-        if digest:
-            digesting = " digest"
-        else:
-            digesting = ""
-        cookie = mm_pending.gencookie()
-        mm_pending.add2pending(email, pw, digest, cookie)
-        list.SendTextToUser(subject = "%s -- confirmation of subscription -- request %d" % \
-                            (list.real_name, cookie),
-                            recipient = email,
-                            sender = list.GetRequestEmail(),
-                            text = mm_pending.VERIFY_FMT % ({"email": email,
-                                                             "listaddress": list.GetListEmail(),
-                                                             "listname": list.real_name,
-                                                             "cookie": cookie,
-                                                             "requestor": remote,
-                                                             "request_addr": list.GetRequestEmail()}),
-                            
-                            add_headers = ["Reply-to: %s"
-                                           % list.GetRequestEmail(),
-                                           "Errors-To: %s"
-					   % list.GetAdminEmail()])
-    except mm_err.MMBadEmailError:
-	results = results + ("Mailman won't accept the given email "
-			     "address as a valid address. (Does it "
-			     "have an @ in it???)<p>")
-    except mm_err.MMListNotReady:
-        results = results + ("The list is not fully functional, and "
-			     "can not accept subscription requests.<p>")
-#
-# deprecating this, it might be useful if we decide to
-# allow approved based subscriptions without confirmation
-#
-##     except mm_err.MMNeedApproval, x:
-##         results = results + ("Subscription was <em>deferred</em> "
-## 			     "because:<br> %s<p>Your request must "
-## 			     "be approved by the list admin.  "
-## 			     "You will receive email informing you "
-## 			     "of the moderator's descision when they "
-##			     "get to your request.<p>" % x)
-    except mm_err.MMHostileAddress:
-        results = results + ("Your subscription is not allowed because "
-			     "the email address you gave is insecure.<p>")
-    except mm_err.MMAlreadyAMember:
-        results = results + "You are already subscribed!<p>"
-	
-
-PrintResults()
-list.Unlock()
