@@ -17,10 +17,11 @@
 """Produce and process the pending-approval items for a list."""
 
 import os
-import string
 import types
 import cgi
 from errno import ENOENT
+
+from mimelib.Parser import Parser
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -31,6 +32,8 @@ from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
+
+NL = '\n'
 
 
 
@@ -57,7 +60,7 @@ def main():
         return
     # get URL components.  the list name should be the zeroth part
     try:
-        listname = string.lower(parts[0])
+        listname = parts[0].lower()
     except IndexError:
         handle_no_list(doc)
         return
@@ -173,11 +176,12 @@ def PrintPostRequest(mlist, id, info, total, count, form):
     if total <> 1:
         msg = msg + _(' (%d of %d)') % (count, total)
     form.AddItem(Center(Header(2, msg)))
+    p = Parser(Message.Message)
     try:
         fp = open(os.path.join(mm_cfg.DATA_DIR, filename))
-        msg = Message.Message(fp)
+        msg = p.parse(fp)
         fp.close()
-        text = msg.body[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
+        text = msg.get_text()[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
     except IOError, (code, msg):
         if code == ENOENT:
             form.AddItem(_('<em>Message with id #%d was lost.') % id)
@@ -194,7 +198,10 @@ def PrintPostRequest(mlist, id, info, total, count, form):
     t.AddRow([Bold(_('From:')), sender])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    t.AddRow([Bold(_('Subject:')), subject])
+    # HTML quote the subject so it doesn't mess up the page.  E.g. a message
+    # with "Subject: </table>"
+    quoted = subject.replace('<', '&lt;').replace('>', '&gt;')
+    t.AddRow([Bold(_('Subject:')), quoted])
     t.AddCellInfo(row+1, col-1, align='right')
     t.AddRow([Bold(_('Reason:')), reason])
     t.AddCellInfo(row+2, col-1, align='right')
@@ -230,8 +237,9 @@ def PrintPostRequest(mlist, id, info, total, count, form):
         ])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
+    hdrtxt = NL.join(['%s: %s' % (k, v) for k, v in msg.items()])
     t.AddRow([Bold(_('Message Headers:')),
-              TextArea('headers-%d' % id, string.join(msg.headers, ''),
+              TextArea('headers-%d' % id, hdrtxt,
                        rows=10, cols=80)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
