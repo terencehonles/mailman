@@ -19,6 +19,7 @@
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
+from Mailman import LockFile
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
