@@ -29,9 +29,7 @@ The script takes the following protocol on stdin:
 import sys, os
 import paths
 
-# XXX: this really should be merged with Python's standard smtplib library
 from Mailman import mm_cfg
-from Mailman import smtplib
 from Mailman import Utils
 from Mailman import OutgoingQueue
 
