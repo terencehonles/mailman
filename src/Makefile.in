@@ -32,6 +32,7 @@ INSTALL=	@INSTALL@
 PYTHON=  	@PYTHON@
 
 DEFS=   	@DEFS@
+LIBS=		@LIBS@
 
 # UIDs and GIDs
 MAIL_GID=      	@MAIL_GID@
@@ -42,7 +43,7 @@ MAILMAN_UID=	@MAILMAN_UID@
 
 # Customizable but not set by configure
 OPT=		@OPT@
-CFLAGS=		$(OPT) $(DEFS)
+CFLAGS=		$(OPT) $(DEFS) $(LIBS)
 CGIDIR= 	$(exec_prefix)/cgi-bin
 CGIEXT=		@CGIEXT@
 MAILDIR=	$(exec_prefix)/mail

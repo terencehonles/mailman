@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1651 $)
+AC_REVISION($Revision: 1664 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -360,9 +360,20 @@ rm -f conftest.out conftest.py
 AC_CHECK_FUNCS(strerror setregid syslog)
 if test $ac_cv_func_syslog = no; then
   # syslog is not in the default libraries.  See if it's in some other.
+  # Additionally, for at least SCO OpenServer, syslog() is #defined to
+  # one of several _real_ functions in syslog.h, so we need to do the test
+  # with the appropriate include.
   for lib in bsd socket inet; do
-    AC_CHECK_LIB($lib, syslog, [AC_DEFINE(HAVE_SYSLOG)
-      LIBS="$LIBS -l$lib"; break])
+    AC_MSG_CHECKING(for syslog in -l$lib)
+    Mailman_LIBS_save="$LIBS"; LIBS="$LIBS -l$lib"
+    AC_TRY_LINK([#include <syslog.h>],
+                [syslog(LOG_DEBUG, "Just a test...");],
+                [AC_MSG_RESULT(yes)
+      AC_DEFINE(HAVE_SYSLOG)
+      break],
+                [AC_MSG_RESULT(no)
+      LIBS="$Mailman_LIBS_save"])
+    unset Mailman_LIBS_save
   done
 fi
 
