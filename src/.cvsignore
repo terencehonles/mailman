@@ -2,6 +2,7 @@ Makefile
 admin
 admindb
 archives
+confirm
 edithtml
 options
 listinfo
