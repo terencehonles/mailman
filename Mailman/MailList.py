@@ -1216,7 +1216,8 @@ it will not be changed."""),
             localpart = string.split(addr, '@')[0]
             if (# TBD: backwards compatibility: deprecated
                     localpart == self.internal_name() or
-                    # exact match against the complete list address
+                    # Exact match against the complete list address.  TBD:
+                    # this test should be case-insensitive.
                     addr == listfullname):
                 return 1
             recips.append((addr, localpart))
