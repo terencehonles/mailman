@@ -7,26 +7,58 @@ QMAIL ISSUES
 There are some issues that users of the qmail mail transport agent
 have encountered.  None of the core maintainers use qmail, so all of
 this information has been contributed by the Mailman user community,
-especially Martin Preishuber and Christian Tismer.
+especially Martin Preishuber and Christian Tismer, with notes by
+Balazs Nagy (BN).
 
 - You might need to set the mail-gid user to either "qmail" or
   "nofiles" by using the --with-mail-gid configure option.
 
+  BN: it highly depends on your mail storing policy.  For example if
+  you use the simple ~alias/.qmail-* files, you can use `id -g alias`.
+  But if you use /var/qmail/users, the specified mail gid can be
+  used.
+
 - If there is a user `mailman' on your system, the alias
-  `mailman-owner' will not work by default.  You have to do a
-  "touch .qmail-owner" in ~mailman directory to create this alias.
+  `mailman-owner' will work only in ~mailman.  You have to do a "touch
+  .qmail-owner" in ~mailman directory to create this alias.
 
 - In a related issue, if you have any users with the same name as one
   of your mailing lists, you will have problems if list names contain
   `-' in them.  Putting .qmail redirections into the user's homedir
   doesn't work because the Mailman wrappers will not get spawned with
   the proper GID.  The solution is to put the following lines in the
-  /var/qumail/users/assign file:
+  /var/qmail/users/assign file:
 
   +zope-:alias:112:11:/var/qmail/alias:-:zope-:
   .
 
   where in this case the listname is e.g. zope-users.
+
+- BN: If inbound messages are deivered by another user than mailman,
+  it's neccessary to allow it to access ~mailman.  Be sure that
+  ~mailman has group writing access and setgid bit is set.  Then put
+  the delivering user to mailman group, and you can deny access to
+  ~mailman to others.  Be sure that you can do the same with the WWW
+  service.
+
+  By the way the best thing is to make a virtual mailserver to handle
+  all of the mail.  Eg. make a CNAME record for the virtual mailserver
+  (like `lists.kva.hu', thus a `mail.kva.hu IN CNAME lists.kva.hu')
+  into the name service, put a `lists.kva.hu:mailman' line to
+  /var/qmail/control/virtualdomains and a `lists.kva.hu' line to
+  /var/qmail/control/rcpthosts file.  Then every mail to lists.kva.hu
+  will arrive to mail.kva.hu's mailman user.
+
+  Then make your aliases:
+      .qmail              => mailman@...'s letters
+      .qmail-owner        => mailman-owner's letters
+      .qmail-list         => posts to the 'list' list
+      .qmail-list-admin   => posts to the 'list's owner
+      .qmail-list-request => requests to 'list'
+      etc
+
+  This allows people to write to mailman-list and such but it will be
+  held by Mailman by default.
 
 - You have to make sure that the localhost can relay.  If you start
   qmail via inetd and tcpenv, you need some line the following in your 
@@ -40,8 +72,25 @@ especially Martin Preishuber and Christian Tismer.
   143.205.200.:allow,RELAYCLIENT=""
   127.:allow,RELAYCLIENT=""
 
+- BN: Bigger /var/qmail/control/concurrencyremote values work better
+  sending outbound messages.
+
 - More information about setting up qmail and relaying can be found in 
   the qmail documentation.
+
+BN: Last but not least, here's a little script to generate aliases to
+your lists:
+
+#!/bin/sh
+if [ $# = 1 ]; then
+    i=$1
+    echo Making links to $i...
+    echo "|preline /home/mailman/mail/wrapper post $i" > .qmail-$i
+    echo "|preline /home/mailman/mail/wrapper mailowner $i" > .qmail-$i-admin
+    echo "|preline /home/mailman/mail/wrapper mailowner $i" > .qmail-$i-owner
+    echo "|preline /home/mailman/mail/wrapper mailowner $i" > .qmail-owner-$i
+    echo "|preline /home/mailman/mail/wrapper mailcmd $i" > .qmail-$i-request
+fi
 
 
 Local Variables:
