@@ -303,3 +303,13 @@ else:
     syslog('error', 'Undefined metadata format: %d (using marshals)',
            mm_cfg.METADATA_FORMAT)
     Switchboard = MarshalSwitchboard
+
+
+
+# For bin/dumpdb
+class DumperSwitchboard(Switchboard):
+    def __init__(self):
+        pass
+
+    def read(self, filename):
+        return self._ext_read(filename)
