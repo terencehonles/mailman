@@ -40,8 +40,9 @@ class Mailbox(mailbox.UnixMailbox):
         try:
             self.fp.seek(-1, 2)
         except IOError, e:
-            if e.errno <> errno.EINVAL: raise
-            # the file must be empty
+            # Assume the file is empty.  We can't portably test the error code
+            # returned, since it differs per platform.
+            pass
         else:
             if self.fp.read(1) <> '\n':
                 self.fp.write('\n')
