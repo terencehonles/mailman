@@ -1,0 +1,21 @@
+%(listname)s -- feliratkozas megerositese -- kerelem %(cookie)s
+
+A kovekezo cimrol %(remote)s az alabbi email cimmel <%(email)s>,
+a %(listaddr)s levelezesi listara egy feliratkozasi kerelmet
+regisztraltunk. A kerelem megerositesehez a %(requestaddr)s
+cimre kell valaszolni, ugy hogy:
+
+- a level targyat nem valtoztatod meg (az ide beszurt "Re:" resz
+nem okoz problemat),
+ vagy
+
+- a kovetkezo sort - es csak azt - helyezed el a level 
+torzsebe:
+
+confirm %(cookie)s
+
+(A legtobb email klienssel torteno valaszadas alkalmas a kerelem
+ megerositesere, mivel a level targyat nem modositjak.)
+
+Ha nem szeretnel feliratkozni a listara, akkor egyszeruen hagyd 
+figyelmen kivul ezt a levelet. Kerdeseddel fordulj ide %(listadmin)s.

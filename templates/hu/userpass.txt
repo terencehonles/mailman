@@ -1,0 +1,20 @@
+Ez egy emlekezteto arrol, hogy hogyan iratkozhat le, vagy valtoztat-
+hatja meg a(z) "%(user)s" felhasznalo a beallitasait a %(listname)s
+listan. A valtoztatasokhoz szukseg van a jelszavadra.
+A %(listname)s JELSZAVAD A KOVETKEZO:
+
+    %(password)s
+
+A beallitasaid megvaltoztatasahoz hasznald a jelszavadat az alabbi
+Web-cimen:
+
+    %(options_url)s
+
+Ugyanezeket emialen keresztul is el lehet vegezni ezen a cimen:
+
+    %(requestaddr)s
+
+"help" tartalmu level elkuldesevel bovebb informaciot lehet megtudni
+a beallitasokrol.
+
+Kerdesek, eszrevetelek? Kuldj egy levelet ide %(adminaddr)s.

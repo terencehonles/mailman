@@ -1,0 +1,12 @@
+A(z) '%(listname)s' -ra kuldott alabbi targyu leveled 
+
+    %(subject)s
+
+a moderator jovahagyasaig nem kerul fel a listara.
+
+Az ok amiert jova kell hagyni:
+
+    %(reason)s
+
+A level vagy felkerul a listara, vagy a moderator donteserol kulon
+levelben ertesitest kapsz.

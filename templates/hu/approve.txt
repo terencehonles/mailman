@@ -1,0 +1,15 @@
+Feliratkozasi kerelmed a(z) %(requestaddr)s listara:
+
+    %(cmd)s
+
+a lista uzemeltetojehez lett tovabbitva.
+
+Ez valoszinuleg annak a kovetkezmenye, hogy egy 'zartkoru' listara
+probaltal meg feliratkozni.
+
+A lista uzemeltetojenek donteserol a feliratkozasi kerelmeddel 
+kapcsolatban emailben ertesitest fogsz kapni.
+
+Eszreveteleidet a lista politikajarol a kovetkezo cimen tedd meg:
+
+    %(adminaddr)s

@@ -1,0 +1,19 @@
+Ezt a MIME kodolasu uzenetet sima szovegkent lehet elolvasni.
+
+--%(boundary)s
+
+Content-type: text/plain; charset=us-ascii
+
+Mailman tovabbkuldesi (bounce) ertesites a levelezolistarol:
+
+    Lista:       %(listname)s
+    Tag:         %(addr)s
+    Action:     Subscription %(negative)s%(did)s.
+    Indok:      Problemas vagy hibas tovabbkuldes.
+    %(but)s
+
+%(reenable)s
+Az ertesites lejjebb csatolva talalhato.
+
+Kerdes? Fordulj a Mailman rendszer uzemeltetojehez itt: %(owneraddr)s.
+

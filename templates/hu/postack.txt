@@ -1,0 +1,7 @@
+Uzeneted a kovetkezo targgyal
+
+    %(subject)s
+
+a(z) %(listname)s levelezesi listara sikeresen megerkezett.
+
+Lista honlapja: %(listinfo_url)s

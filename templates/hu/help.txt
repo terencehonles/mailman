@@ -1,0 +1,102 @@
+Sugo a %(listname)s levelezesi lista hasznalatahoz:
+
+Ez az email a %(version)s verzioszamu "Mailman" listakeszito
+program parancsait ismerteti. A kovetkezokben ismertetett parancsokkal
+a Mailman altal uzemeltetett listakrol es azok beallitasarol
+lehet olvasni. A parancsokat mind a level torzseben, vagy targyaban
+meg lehet adni.
+
+Erdemes tudni, hogy a kovetkezo dolgokat Web-en keresztul is el lehet
+vegezni a kovekezo cimen:
+
+    %(listinfo_url)s
+
+Peldaul a Web-es cim segitsegevel a sajat cimedre el lehet kuldeni a
+jelszavadat.
+
+A lista beallito parancsokat (pl. subscribe, who, stb.) a listahoz
+tartozo *-request cimre kell kuldeni, pl. a 'mailman' lista eseten
+a 'mailman-request@...' cimet kell hasznalni.
+
+A leirasokkal kapcsolatban - a "<>" jelek kozotti szavak mindig a
+SZUKSEGES dolgokat jelolik, mig a "[]" jelek kozotti szavak csak az
+OPCIONALIS dolgokat jelolik. Azonban a parancsokban sohase hasznaljuk
+a "<>" es "[]" jeleket.
+
+A kovetkezo parancsok allnak rendelkezesre:
+
+    subscribe [jelszo] [digest-opciok] [address=<cim>]
+	  A listara torteno feliratkozast vegzi el. A listarol torteno
+	  leiratkozashoz, vagy a beallitasok megvaltoztatasahoz mindig
+	  meg kell adni a jelszot, amelyet adott idokozonkent ujra el-
+	  kuldunk a feliratkozasi cimre.
+	  'digest-opciok' a kovetkezok lehetnek: 'nodigest' vagy 'digest'
+	  (termeszetesen aposztrofok nelkul megadva!)
+	  Ha egy masik cimrol szeretnel feliratkozni, mint ahonnan a
+	  feliratkozasi kerelem jott, akkor az "address=<masik emilcim>"
+          -et kell meg hasznalni (termeszetesen zarojelek, es idezojelek
+	  nelkul.
+
+    unsubscribe <jelszo> [cim]
+	  A listarol torteno leiratkozast vegzi el. A megadott jelszonak
+	  egyeznie kell a listan beallitott jelszavaddal. Ha egy masik
+	  cimrol probalnal meg leiratkozni, mint amire a feliratkozas
+	  tortent, akkor a 'cim' mezoben add meg a helyes cimet.
+
+    who
+          A lista tagjainak nevsorat adja meg.
+
+    info
+	  A listarol rovid leirast ad meg.
+
+    lists
+	  Felsorolja a Mailman rendszeren uzemeltetett listakat.
+
+    help
+	  Ezt az uzenetet kuldi el.        
+
+    set <opciok> <on|off> <jelszo> 
+	  A lista beallitasait valtoztatja meg. Az opciok lehetnek:
+
+        ack:
+	  	on-ra allitasaval ertesitest kapsz minden egyes elkuldott
+		leveled megerkezeserol a listara.
+
+        digest:
+                A leveleket nem egyesevel, hanem egyben, csokorba szedve
+		kapod meg.
+
+        plain:
+		A digest formaju levelet nem MIME-kodolassal, hanem sima
+		szovegkent kapod meg.
+
+        nomail:
+		Levelek elkuldesenek szuneteltetese. Hasznos parancs ha
+		tavoletedben (pl. udules) nem akarod megkapni a leveleket.
+
+        norcv:
+		on-ra allitasaval az altalad kuldott leveleket NEM kapod
+		meg. Digest formaju leveleknel nem hasznalhato.
+
+        hide:
+		Elrejti a cimedet a 'who' altal keszitett listabol.	
+
+    options
+	 Az aktualis beallitasaidat mutatja meg.        
+
+    password <regi jelszo> <uj jelszo> 
+         A jelszavadat valtoztatja meg.  
+   
+    end vagy --
+	 Leallitja a parancsok ertelmezeset (hasznos ha a levelezesedkor
+	 automatikusan mas informacio is kerul a levelbe, amelynek a 
+	 tartalma nem kapcsolodna ugysem a 'Mailman'-hez, az itt elofordulo 
+	 a 'Mailman' szamara ertelmes parancsokat ekkor nem veszi
+	 figyelembe a program).
+
+
+A parancsokat az alabbi cimre kell kuldeni %(requestaddr)s
+
+Kerdeseidet, eszreveteleidet a kovetkezo cimre kuldjed
+
+    %(adminaddr)s

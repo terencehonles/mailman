@@ -1,0 +1,30 @@
+Tajekoztato a(z) %(listname)s levelezesi listarol. A levelezesi listat
+a "Mailman" nevu listakezelo program mukodteti.
+
+Mire kell figyelned?
+
+1) A lista tagjainak szant uzeneteidet a(z) %(listaddr)s cimre tedd meg.
+
+2) Egyeni jelszoval lehet leiratkozni a listarol, ezzel elkerulheto,
+hogy mas a tudtod nelkul leirat teged a listarol. A jelszot egy kulonallo
+emailben kapod meg, vagy mar meg is kaptad. Ne ess panikba, ha
+elfelejtetted a jelszavadat; minden honapban emlekeztetoul emailben 
+elkuldesre fog kerulni.
+
+3) Web eleres eseten barmikor leiratkozhatsz a listarol, beallithatod
+a levelek fogadasat, megtekintheted a lista archivumat, es mas egyebet 
+tehetsz meg. Mindezeket a kovetkezo Web-cimen lehet vegrehajtani:
+
+  %(listinfo_url)s
+
+4) Web eleres hianyaban mindezeket emailen keresztul is meg lehet 
+tenni. Kuldj egy emailt a(z) %(requestaddr)s cimre a level torzseben
+vagy targyaban megadott "help"-el. Ekkor az automatikus valaszlevel-
+ben leirast fogsz kapni a lehetseges beallitasok mikentjerol.
+
+Barmilyen kerdeseddel, eszreveteleddel a kovetkezo cimre irj:
+%(adminaddr)s.
+
+Ezt a levelet a Mailman %(version)s keszitette. Bovebb informacioert
+a Mailman programmol a Mailman honlapjan lehet olvasni, ezen a cimen:
+http://www.list.org/

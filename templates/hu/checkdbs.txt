@@ -1,0 +1,7 @@
+A(z) %(real_name)s@%(host_name)s levelezesi listarol %(count)d 
+kerelem var megerositesedre a kovetkezo cimen:
+
+	%(adminDB)s
+
+Minel hamarabb latogasd meg a cimet. A megerositendo kerelmekrol,
+ha van egyaltalan, minden nap ertesites tortenik.

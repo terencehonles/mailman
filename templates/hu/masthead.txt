@@ -1,0 +1,14 @@
+A(z) %(real_name)s listara a leveleidet a kovetkezo cimre kuld
+	%(got_list_email)s
+
+Web-en keresztuli fel- vagy leiratkozashoz latogass el ide
+	%(got_listinfo_url)s
+vagy, kuldjel egy 'help' tartalmu levelet az alabbi cimre
+	%(got_request_email)s
+
+A lista adminisztratorat itt ered el
+	%(got_owner_email)s
+
+Level targyanak a tartalmara utalo szoveget adj meg, valasz eseten is,
+mert sokat nem lehet meg tudni, ha a level targya valami ilyen
+"Re: %(real_name)s digest tartalma..."

@@ -1,0 +1,35 @@
+Udvozlunk a(z) %(real_name)s@%(host_name)s levelezesi listan!
+%(welcome)s
+
+A listara az alabbi cimmel kuldhetsz levelet:
+
+  %(emailaddr)s
+
+A levelezesi listarol informaciot itt talalsz:
+
+  %(listinfo_url)s
+
+Ha le szeretnel iratkozni, vagy a beallitasaidat megvaltoztatni (pl.
+digest mod, jelszo valtoztatasa, stb.), latogass el az alabbi cimre:
+
+  %(optionsurl)s
+%(umbrella)s
+Ugyanezeket a dolgokat emailen keresztul is elvegezheted itt:
+
+  %(real_name)s-request@%(host_name)s
+
+A level targyaban vagy torzseben megadott 'help' (aposztrofok nelkul)
+hatasara bovebb informaciokat fogsz errol valaszul kapni.
+
+Csak a jelszavad ismereteben tudod megvaltoztatni a beallitasaidat,
+vagy a leiratkozast elvegezni. A jelszavad:
+
+  %(password)s
+
+A(z) %(host_name)s gepen talalhato lista jelszavadat havonta elkuldjuk,
+hogy el ne felejtsd a jelszavadat es hogy tudd, hogyan lehet
+leiratkozni, vagy beallitasaidat megvaltoztatni. A listatagok oldalan
+talalhato gomb megnyomasaval emilben is elkuldesre kerul a jelszavad.
+
+A fent emlitett Web-cimen termeszetesen kikapcsolhatod a jelszo havi
+elkuldeset is.

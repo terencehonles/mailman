@@ -1,0 +1,2 @@
+A feliratkozasokat a %(admin_url)s/members cimen allithatod at
+az igenyeknek megfeleloen.

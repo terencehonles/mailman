@@ -1,0 +1,11 @@
+A kovetkezo feliratkozasi kerelem megerositesehez szukseges az 
+engedelyed:
+
+    Feladó:	%(username)s
+    Lista:	%(listname)s@%(hostname)s
+
+A kerelemrol a 
+
+	%(admindb_url)s
+	
+cimen tudsz konnyen allast foglalni.

@@ -1,0 +1,36 @@
+A(z) `%(listname)s' levelezesi lista mukodik. A kovetkezokben a 
+levelezesi lista alapveto informacioirol olvashatsz itt.
+
+A levelezesi lista jelszava a kovetkezo:
+
+    %(password)s
+
+Ezzel a jelszoval lehet a lista beallitasait elvegezni. Ezen felul
+ezzel a jelszoval lehet nehany adminisztratori funkciot elvegezni,
+mint peldaul moderalt listan a levelek szureset vegrehajtani.
+
+A levelezesi listat a kovetkezo honlapon lehet beallitani:
+
+    %(admin_url)s
+
+A levelezesi lista tagjai a kovetkezo honlapot hasznalhatjak:
+
+    %(listinfo_url)s
+
+A honlap formjat is meg lehet valtoztatni, azonban ehhez ismerni kell
+a HTML-szerkesztes alapjait.
+
+Emailen keresztul a tagok (de nem az adminisztrator) is elvegezhetik 
+beallitasaik megvaltoztatasat; errol bovebb informaciot egy 'help' 
+tartalmu level kuldesevel a kovetkezo cimre, kaphatsz: 
+
+    %(requestaddr)s
+
+Listatag leiratkoztatasara a levelezesi lista 'listainfo' lapjan a
+listatag nevere kell kattintanod. Az adminisztratori jelszo meg-
+adasaval a listatag leiratkoztatasat teheted meg az itt talalhato
+leiratkozasi helyen. A listatag beallitasait (peldaul digest vagy
+nem-digest formaju levelek fogadasa, vagy szuneteltetese, stb.)
+az adminisztrator jelszoval is elvegezheted.
+
+Tovabbi kerdeseiddel fordulj ide mailman-owner@%(hostname)s.

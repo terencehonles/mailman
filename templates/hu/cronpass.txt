@@ -1,0 +1,19 @@
+Ez az emlekezteto %(hostname)s levelezolista tagjainak minden honap 
+elejen elkuldesre kerul. Tartalmazza a feliratkozasaidat es azt,
+hogy hogyan lehet megvaltoztatni a beallitasaidat, vagy leiratkozni
+a levelezo listarol.
+
+A Web-cimeken a listaval kapcsolatos beallitasaidat, mint peldaul
+a leiratkozast, vagy azt hogy hogyan kapjad/ne kapjad meg (pl. szabi
+miatt) a leveleket, es meg mast teheted meg.
+
+A Web elerhetoseg mellett, termeszetesen emailen keresztul is el lehet
+vegezni a valtoztatasokat. Bovebb informacioert kuldj egy levelet, a
+levelezesi lista '-request' cimere (peldaul %(exreq)s) egy szimpla
+'help' -el a level torzseben. A valaszlevelben reszletes leirast
+fogsz kapni az alkalmazhato parancsokrol.
+
+Kerdeseidet, problemaidat, megjegyzeseidet, egyeb mast a 
+%(owner)s cimre kuld.  Koszi!
+
+%(useraddr)s jelszava:

@@ -1,0 +1,13 @@
+A(z) '%(listname)s' -ra torteno alabbi kerelmedet
+
+    %(request)s
+
+a lista moderatora nem fogadta el. A visszautasitas indoka a
+kovetkezo:
+
+"%(reason)s"
+
+Kerdeseiddel vagy eszreveteleiddel kozvetlenul a lista adminisztra-
+torahoz fordulhatsz a kovetkezo cimen:
+
+    %(adminaddr)s

@@ -1,0 +1,4 @@
+%(member)s leiratkozasa a(z) %(listname)s listarol megtortent.
+
+
+
