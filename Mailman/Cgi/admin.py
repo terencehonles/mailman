@@ -245,14 +245,15 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
 
     otherlinks = UnorderedList()
     otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
-                            'Tend to pending administrative requests.'))
+                            'Tend to pending administrative requests'))
     otherlinks.AddItem(Link(mlist.GetScriptURL('listinfo'),
-                            'Go to the general list information page.'))
+                            'Go to the general list information page'))
     otherlinks.AddItem(Link(mlist.GetScriptURL('edithtml'),
-                            'Edit the HTML for the public list pages.'))
+                            'Edit the HTML for the public list pages'))
+    otherlinks.AddItem(Link(mlist.GetBaseArchiveURL(), 'Go to list archives'))
     otherlinks.AddItem(Link('%s/logout' % adminurl,
                             # TBD: What I really want is a blank line :/
-                            '<FONT SIZE="+1">Logout</FONT>'))
+                            '<FONT SIZE="+2"><b>Logout</b></FONT>'))
 
     categorylinks = UnorderedList()
     for k, v in CATEGORIES:
