@@ -17,8 +17,8 @@ Here is a history of user visible changes to Mailman.
         o Members can change their Real Names on their options page,
           and admins can change members' Real Names on the membership
           pages.  Mass subscribing accepts "email@dom.ain (Real Name)"
-          entries, for both in-text-box and file-upload mass
-          subscriptions.
+          and "Real Name <email@dom.ain>" entries, for both
+          in-text-box and file-upload mass subscriptions.
 
     - Filtering and Privacy
         o Reply-To: munging has been enhanced to allow a wider range
