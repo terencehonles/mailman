@@ -25,7 +25,7 @@ if len(list_info) < 2:
     sys.exit(0)
 
 try:
-  list = maillist.MailList(list_name)
+    list = maillist.MailList(list_name)
 except:
     doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
     print doc.Format()
@@ -55,6 +55,9 @@ error = 0
 operation = ""
 
     
+if string.lower(user) not in list.members:
+    PrintResults("%s not a member!<p>" % user)
+
 if form.has_key("unsub"):
     operation = "Unsubscribe"
     if not form.has_key("upw"):
@@ -67,7 +70,10 @@ if form.has_key("unsub"):
 	except mm_err.MMListNotReady:
 	    PrintResults("List is not functional.")
 	except mm_err.MMNoSuchUserError:
-	    PrintResults("You seem to already no longer be a member.<p>")
+	    PrintResults("You seem to already be not a member.<p>")
+	except mm_err.MMBadUserError:
+	    PrintResults("Your account has gone awry - "
+                         "please contact the list administrator!<p>")
 	except mm_err.MMBadPasswordError:
 	    PrintResults("That password was incorrect.<p>")
 #	except:
@@ -78,10 +84,18 @@ if form.has_key("unsub"):
 
     PrintResults("You have been unsubscribed.<p>")
 elif form.has_key("emailpw"):
-	list.MailUserPassword(user)
-	PrintResults("A reminder of your password has been emailed to you.<p>")
+	try:
+            list.MailUserPassword(user)
+            PrintResults("A reminder of your password "
+                         "has been emailed to you.<p>")
+        except mm_err.MMBadUserError:
+            PrintResults("Your password entry has not been found.  The list "
+                         "manager is being notified.<p>")
+            
 elif form.has_key("changepw"):
-    if form.has_key('opw') and form.has_key('newpw') and form.has_key('confpw'):
+    if (form.has_key('opw')
+        and form.has_key('newpw')
+        and form.has_key('confpw')):
 	try:
 	    list.ConfirmUserPassword(user, form['opw'].value)
 	    list.ChangeUserPassword(user, 
@@ -162,17 +176,7 @@ exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER))
     list.SetUserOption(user, mm_cfg.DisableMime, mime)
     try:
         list.SetUserDigest(user, digest_value)
-    except:
-	pass # Can get MMAlreadyDigested.  Ignore it.
+    except (mm_err.MMAlreadyDigested, mm_err.MMAlreadyUndigested):
+	pass
     list.SetUserOption(user, mm_cfg.ConcealSubscription, conceal)
     PrintResults("You have successfully set your options.")
-
-
-
-
-
-
-
-
-
-
