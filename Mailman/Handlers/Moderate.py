@@ -27,6 +27,7 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman.i18n import _
 from Mailman.Handlers import Hold
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -41,9 +42,31 @@ def process(mlist, msg, msgdata):
     # First of all, is the poster a member or not?
     sender = msg.get_sender()
     if mlist.isMember(sender):
-        # If the member's moderation flag is on, then hold for approval.
+        # If the member's moderation flag is on, then perform the moderation
+        # action.
         if mlist.getMemberOption(sender, mm_cfg.Moderate):
-            Hold.hold_for_approval(mlist, msg, msgdata, ModeratedMemberPost)
+            # Note that for member_moderation_action, 0==Hold, 1=Reject,
+            # 2==Discard
+            if mlist.member_moderation_action == 0:
+                # Hold.  BAW: WIBNI we could add the member_moderation_notice
+                # to the notice sent back to the sender?
+                Hold.hold_for_approval(mlist, msg, msgdata,
+                                       ModeratedMemberPost)
+            elif mlist.member_moderation_action == 1:
+                # Reject
+                text = mlist.member_moderation_notice
+                if text:
+                    text = Utils.wrap(text)
+                else:
+                    # Use the default RejectMessage notice string
+                    text = None
+                raise Errors.RejectMessage, text
+            elif mlist.member_moderation_action == 2:
+                # Discard.  BAW: Again, it would be nice if we could send a
+                # discard notice to the sender
+                raise Errors.DiscardMessage
+            else:
+                assert 0, 'bad member_moderation_action'
         # Should we do anything explict to mark this message as getting past
         # this point?  No, because further pipeline handlers will need to do
         # their own thing.
