@@ -1,4 +1,4 @@
-<!-- $Revision: 3490 $ -->
+<!-- $Revision: 3688 $ -->
 <html>
 <head>
     <title><MM-Presentable-User> membership configuration for <MM-List-Name>
@@ -18,15 +18,15 @@
     <tr><td>
         <b><MM-Presentable-User></b>'s subscription status,
         password, and options for the <MM-List-Name> mailing list.
+        </td><td><mm-logout-button></td>
+    </tr><tr>
+        <td colspan="2">
         <MM-Case-Preserved-User>
 
         <MM-Disabled-Notice>
 
         <p><mm-results>
-
         </td>
-
-        <td><mm-logout-button></td>
     </tr>
 </table>
 
@@ -34,9 +34,9 @@
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
         <FONT COLOR="#000000">
-        <B>Changing your <MM-List-Name> Membership address</B>
+        <B>Changing your <MM-List-Name> membership information</B>
 	</FONT></TD></TR>
-    <tr><td width="50%">You can change the address that you are subscribed
+    <tr><td colspan="2">You can change the address that you are subscribed
         to the mailing list with by entering the new address in the
         fields below.  Note that a confirmation email will be sent to
         the new address, and the change must be confirmed before it is
@@ -44,11 +44,16 @@
 
         <p>Confirmations time out after about <mm-pending-days>.
 
-        <p>If you want to change the membership address for all the
+        <p>You can also optionally set or change your real name
+        (i.e. <em>John Smith</em>).
+
+        <p>If you want to make the membership changes for all the
         lists that you are subscribed to at <mm-host>, turn on the
         <em>Change globally</em> check box.
-    </td><td><center>
-        <table border="0" cellspacing="2" cellpadding="2" width="70%" cols="2">
+
+        </td></tr>
+    <tr><td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
         <tr><td bgcolor="#dddddd"><div align="right">New address:</div></td>
             <td><mm-new-address-box></td>
             </tr>
@@ -56,11 +61,20 @@
             confirm:</div></td> 
             <td><mm-confirm-address-box></td>
             </tr>
-        <tr><td colspan="2"><center><mm-change-address-button>
-            <p><mm-global-change-of-address>Change globally
-            </center></td>
         </tr></table></center>
-    </td>
+        </td>
+        <td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
+            <tr><td bgcolor="#dddddd"><div align="right">Your name
+            (optional):</div></td>
+            <td><mm-fullname-box></td>
+            </tr>
+        </table></center>
+        </td>
+        </tr>
+    <tr><td colspan="2"><center><mm-change-address-button>
+        <p><mm-global-change-of-address>Change globally</center></td>
+    </tr>
 </table>
 
 <p>
@@ -124,9 +138,7 @@
         </table>
 
         <MM-Change-Pass-Button>
-        <p><center><mm-global-pw-changes-button>Change my
-        membership password for every mailing list that I am
-        subscribed to at <mm-host>.
+        <p><center><mm-global-pw-changes-button>Change globally.
         </center>
 </TABLE>
 
@@ -229,6 +241,43 @@ lists you are subscribed to.
         <strong>What language do you prefer?</strong><p>
         </td><td bgcolor="#cccccc">
         <MM-list-langs>
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Which topic categories would you like to subscribe
+                to?</strong><p>
+                By selecting one or more topics, you can filter the
+                traffic on the mailing list, so as to receive only a
+                subset of the messages.  If a message matches one of
+                your selected topics, then you will get the message,
+                otherwise you will not.
+
+                <p>If a message does not match any topic, the delivery
+                rule depends on the setting of the option below.  If
+                you do not select any topics of interest, you will get
+                all the messages sent to the mailing list.
+        </td><td bgcolor="#cccccc">
+        <mm-topics>
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Do you want to receive message that do not match any
+                topic filter?</strong><p>
+
+                This option only takes effect if you've subscribed to
+                at least one topic above.  It describes what the
+                default delivery rule is for messages that don't match
+                any topic filter.  Selecting <em>No</em> says that if
+                the message does not match any topic filters, then you
+                won't get the message, while selecting <em>Yes</em>
+                says to delivery such non-matching messages to you.
+
+                <p>If no topics of interest are selected above, then
+                you will receive every message sent to the mailing
+                list.
+        </td><td bgcolor="#cccccc">
+        <mm-suppress-nonmatching-topics>No<br>
+        <mm-receive-nonmatching-topics>Yes
         </td></tr>
 
     <tr><TD colspan="2">
