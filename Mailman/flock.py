@@ -132,6 +132,11 @@ class FileLock:
                 os.unlink(self.tmpfname)
                 self.__kickstart(force=1)
                 continue
+            # TBD: This assertion is here because if winner==self.tmpfname,
+            # then we should already have the lock.  If we already have the
+            # lock, then we should have never gotten into this loop (in a
+            # single threaded process), because we check the lock status above
+            # first, and raise an AlreadyCalledLockError in that case.
             assert winner <> self.tmpfname
             # record the previous winner and the current time
             if pid <> last_pid:
