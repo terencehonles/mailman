@@ -35,7 +35,7 @@ def LogStdErr(category, label, manual_reprime=1, tee_to_stdout=1):
     try:
         sys.stderr = StampedLogger(category,
                                    label=label,
-                                   manual_reprime=1,
+                                   manual_reprime=manual_reprime,
                                    nofail=0)
         if tee_to_stdout:
             if hasattr(sys, '__stdout__'):
