@@ -5,7 +5,7 @@ message and address munging, a handy-dandy routine to map a function on all
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
 
-__version__ = "$Revision: 462 $"
+__version__ = "$Revision: 464 $"
 
 
 import sys, string, fcntl, os, random, regsub, re
@@ -111,16 +111,16 @@ def ValidEmail(str):
 	    return 1
     if len(domain_parts) < 2:
 	return 0
-    if domain_parts[-1] not in valid_toplevels:
-	if len(domain_parts) <> 4:
-	    return 0
-	try:
-	    domain_parts = map(eval, domain_parts) 
-	except:
-	    return 0
-	for i in domain_parts:
-	    if i < 0 or i > 255:
-		return 0
+##     if domain_parts[-1] not in valid_toplevels:
+## 	if len(domain_parts) <> 4:
+## 	    return 0
+## 	try:
+## 	    domain_parts = map(eval, domain_parts) 
+## 	except:
+## 	    return 0
+## 	for i in domain_parts:
+## 	    if i < 0 or i > 255:
+## 		return 0
     return 1
 
 
