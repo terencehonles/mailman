@@ -93,8 +93,9 @@ class HTMLFormatter:
 		showing = ObscureEmail(person, for_text=1)
 	    else:
 		showing = person
-	    got = Link(os.path.join(me.GetRelativeScriptURL('options'),
-				    id), showing)
+            url = "%s/%s" % (me.GetRelativeScriptURL('options'),
+                             id)
+	    got = Link(url, showing)
             if me.GetUserOption(person, disdel):
                 got = Italic("(", got, ")")
             return got
@@ -292,7 +293,10 @@ class HTMLFormatter:
 
     def FormatFormStart(self, name, extra=''):
 	base_url = self.GetRelativeScriptURL(name)
-	full_url = os.path.join(base_url, extra)
+        if extra:
+            full_url = "%s/%s" % (base_url, extra)
+        else:
+            full_url = base_url
 	return ('<FORM Method=POST ACTION="%s">' % full_url)
 
     def FormatArchiveAnchor(self):
