@@ -58,7 +58,7 @@ www.mydom.ain will be used for both the web interface and the email
 interface.
 
 If you spell the list name as just `mylist', then the email hostname will be
-taken from DEFAULT_HOST_NAME and the url will be taken from DEFAULT_URL (as
+taken from DEFAULT_EMAIL_HOST and the url will be taken from DEFAULT_URL (as
 defined in your Defaults.py file or overridden by settings in mm_cfg.py).
 
 Note that listnames are forced to lowercase.
