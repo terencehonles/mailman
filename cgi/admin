@@ -5,7 +5,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 414 $"
+__version__ = "$Revision: 429 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -171,7 +171,7 @@ def FormatAdminOverview(error=None):
                       Link(os.path.join(mm_cfg.DEFAULT_URL, "listinfo/"),
                            "the maillist overview page"),
                       "."
-                      "<p>(Send questions or comments to ",
+                      "<p>(Send questions and comments to ",
                      Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
                           mm_cfg.MAILMAN_OWNER),
                      ".)<p>"

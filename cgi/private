@@ -7,11 +7,11 @@ subscribers.
 
  - Set the ROOT variable to point to the root of your archives private
    hierarchy.  The script will look there for the private archive files.
- - Put the Cookie.py script in your top-level cgi-bin (where the wrapper
-   executables are (typically ~mailman/cgi-bin).
+ - Put the ../misc/Cookie.py script in ../../cgi-bin (where the wrapper
+   executables are).
 """
 
-__version__ = "$Revision: 426 $"
+__version__ = "$Revision: 429 $"
 
 import sys, os, string, re
 
