@@ -790,7 +790,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    logf = self._log_files[kind]
 	else:
 	    logf = self._log_files[kind] = StampedLogger(kind)
- 	logf.write("%s\n" % (msg % args))
+        logf.write(msg % args + '\n')
 	logf.flush()
 
     def CheckVersion(self, stored_state):
