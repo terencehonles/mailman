@@ -95,7 +95,7 @@ class Archiver:
 	    mbox.AppendMessage(post)
 	    mbox.fp.close()
 	except IOError, msg:
-	    self.LogMsg("system", ("Archive file access failure:\n"
+	    self.LogMsg("error", ("Archive file access failure:\n"
 				   "\t%s %s"
 				   % (afn, `msg[1]`)))
 	if self.clobber_date:
