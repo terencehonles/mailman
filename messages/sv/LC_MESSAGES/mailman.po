@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
 "POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
-"PO-Revision-Date: 2002-12-10 01:41+0100\n"
+"PO-Revision-Date: 2002-12-24 14:35+0100\n"
 "Last-Translator: Eva Österlind <eva.osterlind@arvika.se>\n"
 "Language-Team: Swedish <information@arvika.se>\n"
 "MIME-Version: 1.0\n"
@@ -215,15 +215,13 @@ msgstr "Bygger innehållsförteckning\n"
 
 # Mailman/Archiver/HyperArch.py:1168
 #: Mailman/Archiver/HyperArch.py:1261
-#, fuzzy
 msgid "Updating HTML for article %(seq)s"
-msgstr "Uppdaterar HTML för artikel"
+msgstr "Uppdaterar HTML för artikel %(seq)s"
 
 # Mailman/Archiver/HyperArch.py:1174
 #: Mailman/Archiver/HyperArch.py:1268
-#, fuzzy
 msgid "article file %(filename)s is missing!"
-msgstr "artikelfil %s saknas!"
+msgstr "artikelfil %(filename)s saknas!"
 
 # Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
 # Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
@@ -444,7 +442,7 @@ msgid ""
 "<p>There currently are no publicly-advertised %(mailmanlink)s\n"
 "            mailing lists on %(hostname)s."
 msgstr ""
-"<p>Det finns för närvarande inga offentliga\n"
+"<p>Det finns för närvarande inga offentliga %(mailmanlink)s\n"
 "e-postlistor tillgängliga på %(hostname)s.<br> "
 
 # Mailman/Cgi/admin.py:254
@@ -2635,16 +2633,14 @@ msgstr "Du har inte tillstånd att upprätta nya e-postlistor"
 # Mailman/Cgi/create.py:181
 # Mailman/Cgi/create.py:181 bin/newlist:166
 #: Mailman/Cgi/create.py:181 bin/newlist:166
-#, fuzzy
 msgid "Bad owner email address: %(s)s"
-msgstr "Ogiltig e-postadress: %(owner)s"
+msgstr "Ogiltig e-postadress: %(s)s"
 
 # bin/sync_members:168
 # Mailman/Cgi/create.py:189 bin/newlist:164
 #: Mailman/Cgi/create.py:189 bin/newlist:164
-#, fuzzy
 msgid "Illegal list name: %(s)s"
-msgstr "Ogiltigt listnamn: %(opt)s"
+msgstr "Ogiltigt listnamn: %(s)s"
 
 # Mailman/Cgi/create.py:190
 # Mailman/Cgi/create.py:194
@@ -3365,7 +3361,7 @@ msgstr "%(realname)s: inloggning till personliga inställningar"
 # Mailman/Cgi/options.py:748
 #: Mailman/Cgi/options.py:749
 msgid "email address and "
-msgstr "e-postadress och "
+msgstr "din e-postadress och "
 
 # Mailman/Cgi/options.py:726
 # Mailman/Cgi/options.py:750
@@ -3392,14 +3388,10 @@ msgid ""
 "    effect.\n"
 "    "
 msgstr ""
-"För att ändra på dina personliga inställningar, logga in nedan genom att ge "
-"ditt lösenord.\n"
-"Om du inte kommer ihåg lösenordet, kan du be om att få det skickat till dig "
-"i ett e-postbrev genom att trycka på knappen nedan.\n"
-"Om du bara önskar att avanmäla dig från listan, klicka på knappen "
-"<em>Avanmäl mig </em> nedan.\n"
-"Efter ett tag kommer du att få ta emot ett e-postbrev som ber dig bekräfta "
-"detta.\n"
+"För att ändra på dina personliga inställningar, logga in nedan genom att ge %(extra)sditt lösenord.\n"
+"Om du inte kommer ihåg lösenordet, kan du be om att få det skickat till dig i ett e-postbrev genom att trycka på knappen nedan.\n"
+"Om du bara önskar att avanmäla dig från listan, klicka på knappen <em>Avanmäl mig </em> nedan.\n"
+"Efter ett tag kommer du att få ta emot ett e-postbrev som ber dig bekräfta detta.\n"
 "\n"
 "<p><strong><em>Viktigt:</em></strong> Du måste ha cookies\n"
 "aktiverade i din browser, annars kommer inga ändringar att sparas.\n"
@@ -4852,7 +4844,7 @@ msgstr " (Sammandragsversion)"
 # Mailman/Deliverer.py:68
 #: Mailman/Deliverer.py:68
 msgid "Welcome to the \"%(realname)s\" mailing list%(digmode)s"
-msgstr "Välkommen till e-postlistan \"%(realname)s\""
+msgstr "Välkommen till e-postlistan \"%(realname)s\"%(digmode)s"
 
 # Mailman/Deliverer.py:76
 # Mailman/Deliverer.py:77
@@ -4959,7 +4951,6 @@ msgstr "Automatiska svar"
 # Mailman/Gui/Autoresponse.py:39
 # Mailman/Gui/Autoresponse.py:39
 #: Mailman/Gui/Autoresponse.py:39
-#, fuzzy
 msgid ""
 "Auto-responder characteristics.<p>\n"
 "\n"
@@ -4978,14 +4969,12 @@ msgid ""
 msgstr ""
 "Inställningar för automatiska svar.<p>\n"
 "\n"
-"I textrutorna nedan kan du använda följande variabler (skriv dem så här: %"
-"(&lt;variabelnamn&gt;)s ) för att sätta in önskad information:\n"
+"I textrutorna nedan kan du använda följande variabler (skriv dem så här: %%(&lt;variabelnamn&gt;)s ) för att sätta in önskad information:\n"
 "<p><ul>\n"
 "        <li><b>listname</b> - <em>namnet på listan</em>\n"
 "        <li><b>listurl</b> - <em>URL till listans webbsida</em>\n"
 "        <li><b>requestemail</b> - <em>listans -request e-postadress</em>\n"
-"        <li><b>adminemail</b> - <em>listans -admin e-postadress</em>\n"
-"        <li><b>owneremail</b> - <em>listans -ägare e-postadress</em>\n"
+"        <li><b>owneremail</b> - <em>listans -owner e-postadress</em>\n"
 "</ul>\n"
 "\n"
 "<p>Du kan antingen skriva texten direkt in i textrutorna, eller\n"
@@ -9013,9 +9002,8 @@ msgid ""
 "Your message was too big; please trim it to less than\n"
 "%(kb)d KB in size."
 msgstr ""
-"Ditt meddelande är för stort, var vänlig och minska det så att det blir "
-"mindre än\n"
-"%(kb)s KB."
+"Ditt meddelande är för stort, var vänlig och minska det så att det blir mindre än\n"
+"%(kb)d KB."
 
 # Mailman/Handlers/Hold.py:59
 # Mailman/Handlers/Hold.py:110
@@ -9437,14 +9425,13 @@ msgstr "(fixar)"
 # Mailman/MTA/Postfix.py:328
 #: Mailman/MTA/Postfix.py:328
 msgid "checking ownership of %(dbfile)s"
-msgstr "undersöker ägarskap på filen %(dbbfile)s"
+msgstr "undersöker ägarskap på filen %(dbfile)s"
 
 # Mailman/MTA/Postfix.py:334
 # Mailman/MTA/Postfix.py:336
 #: Mailman/MTA/Postfix.py:336
-#, fuzzy
 msgid "%(dbfile)s owned by %(owner)s (must be owned by %(user)s"
-msgstr "Filen %(dbfile)s ägs av %(owner)s (måste ägas av %(user)s)"
+msgstr "%(dbfile)s ägs av %(owner)s (måste ägas av %(user)s)"
 
 # Mailman/MailList.py:662
 # Mailman/MailList.py:709
@@ -12553,16 +12540,14 @@ msgstr "Du måste fixa de ogiltiga adresserna först."
 # bin/sync_members:254
 # bin/sync_members:258
 #: bin/sync_members:259
-#, fuzzy
 msgid "Added  : %(s)s"
-msgstr "Lade till : <%30(addr)s> %30(name)s"
+msgstr "Lade till : %(s)s"
 
 # bin/rmlist:61 bin/rmlist:64
 # bin/rmlist:65 bin/rmlist:68
 #: bin/sync_members:278
-#, fuzzy
 msgid "Removed: %(s)s"
-msgstr "Tar bort %(msg)s"
+msgstr "Tar bort %(s)s"
 
 # bin/transcheck:18
 #: bin/transcheck:18
@@ -12771,17 +12756,14 @@ msgid ""
 "You can integrate that into the archives if you want by using the 'arch'\n"
 "script.\n"
 msgstr ""
-"%(listname)s har både offentliga och privata mbox arkiv. Eftersom denna "
-"lista\n"
-"bara använder offentligt arkiv, installerar jag den offentliga mbox "
-"arkivfilen\n"
+"%s har både offentliga och privata mbox arkiv. Eftersom denna lista\n"
+"bara använder offentligt arkiv, installerar jag den offentliga mbox arkivfilen\n"
 "(%s) som den aktiva, och ändrar namnet\n"
 "        %s\n"
 "till\n"
 "        %s.preb6\n"
 "\n"
-"Om du vill kan du integrera detta in i arkivet genom att använda 'arch' "
-"skriptet.\n"
+"Om du vill kan du integrera detta in i arkivet genom att använda 'arch' skriptet.\n"
 
 # bin/update:259
 # bin/update:281
@@ -12801,7 +12783,7 @@ msgstr ""
 "    okänd fil i vägen, flyttar\n"
 "        %(o_pri_mbox_file)s\n"
 "    till\n"
-"        %(newname)"
+"        %(newname)s"
 
 # bin/update:274 bin/update:297
 # bin/update:296 bin/update:319
@@ -12831,7 +12813,7 @@ msgstr ""
 "    okänd fil i vägen, flyttar\n"
 "        %(o_pub_mbox_file)s\n"
 "    till\n"
-"        %(newname)"
+"        %(newname)s"
 
 # bin/update:322
 # bin/update:344
