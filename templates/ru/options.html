@@ -1,4 +1,4 @@
-<!-- $Revision: 5015 $ -->
+<!-- $Revision: 5607 $ -->
 <html>
 <head>
     <link rel="SHORTCUT ICON" href="<mm-favicon>">
@@ -11,14 +11,14 @@
         <FONT COLOR="#000000" SIZE=+1>
         <MM-List-Name> mailing list membership configuration for
         <MM-Presentable-User>
-	</FONT></B></TD></TR>
+        </FONT></B></TD></TR>
     </TABLE>
 <p>
 <table width="100%" border="0" cellspacing="5" cellpadding="5">
     <tr><td>
-        <b><MM-Presentable-User></b>'s subscription status,
-        password, and options for the <MM-List-Name> mailing list.
-        </td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
+        <b>Состояние подписки <MM-Presentable-User></b>,
+        пароль и параметры подписки на список рассылки <MM-List-Name>.
+        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -35,8 +35,8 @@
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
         <FONT COLOR="#000000">
-        <B>Changing your <MM-List-Name> membership information</B>
-	</FONT></TD></TR>
+        <B>Изменение вашей подписки на список рассылки <MM-List-Name></B>
+        </FONT></TD></TR>
     <tr><td colspan="2">You can change the address that you are subscribed
         to the mailing list with by entering the new address in the
         fields below.  Note that a confirmation email will be sent to
@@ -83,9 +83,9 @@
     <TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Unsubscribing from <MM-List-Name></B></td>
 
-	<TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Your other <MM-Host> subscriptions</B>
-	</FONT></TD></TR>
+        </FONT></TD></TR>
 
     <tr><td>
         Turn on the confirmation checkbox and hit this button to
@@ -101,13 +101,13 @@
 
         <p>
         <center><MM-Other-Subscriptions-Submit></center>
-	</TD></TR>
+        </TD></TR>
 </table>
 
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Your <MM-List-Name> Password</B>
-	</FONT></TD></TR>
+        </FONT></TD></TR>
 
     <tr valign="TOP"><td WIDTH="50%">
         <a name=reminder>
@@ -147,7 +147,7 @@
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Your <MM-List-Name> Subscription Options</B>
-	</FONT></TD></TR>
+        </FONT></TD></TR>
 </table>
 
 <p>
@@ -164,10 +164,11 @@ lists you are subscribed to.
         <a name="disable">
         <strong>Mail delivery</strong></a><p>
         Set this option to <em>Enabled</em> to receive messages posted
-        to this mailing list.  Set it to <em>Disabled</em> if you
-        don't want mail delivered to you for a while (i.e. you're
-        going on vacation).  If you disable mail delivery, don't
-        forget to come back after your vacation to re-enable it!
+        to this mailing list.  Set it to <em>Disabled</em> if you want
+        to stay subscribed, but don't want mail delivered to you for a
+        while (e.g. you're going on vacation).  If you disable mail
+        delivery, don't forget to re-enable it when you come back; it
+        will not be automatically re-enabled.
         </td><td bgcolor="#cccccc">
         <mm-delivery-enable-button>Enabled<br>
         <mm-delivery-disable-button>Disabled<p>
@@ -177,9 +178,9 @@ lists you are subscribed to.
     <tr><TD BGCOLOR="#cccccc">
         <strong>Set Digest Mode</strong><p>
         If you turn digest mode on, you'll get posts bundled together
-        once a day, instead of singly when they're sent.  If digest mode
-        is changed from on to off, you may receive one last
-        digest.
+        (usually one per day but possibly more on busy lists), instead
+        of singly when they're sent.  If digest mode is changed from
+        on to off, you may receive one last digest.
         </td><td bgcolor="#cccccc">
         <MM-Undigest-Radio-Button>Off<br>
         <MM-Digest-Radio-Button>On
@@ -229,18 +230,19 @@ lists you are subscribed to.
         </td></tr>
 
     <tr><TD BGCOLOR="#cccccc">
-        <strong>Conceal yourself from subscriber list?</strong><p>
-        When someone views the list membership, your email address is
-        normally shown (in an obscured fashion to thwart spam
-        harvesters).  If you do not want your email address to show up
-        on this membership roster, select <em>No</em> for this option.
+        <strong>Скрыть себя из списка подписчиков?</strong><p>
+        На странице просмотра списка подписчиков ваш электронный
+        адрес будет показан (в специальном виде, чтобы затруднить
+        работу сборщиков адресов для рассылки спама). Если вы не хотите,
+        чтобы ваш адрес вообще там показывался, вы можете указать для
+        этого параметра значение <em>Нет</em>.
         </td><td bgcolor="#cccccc">
         <MM-Public-Subscription-Button>No<br>
         <MM-Hide-Subscription-Button>Yes
         </td></tr>
 
     <tr><TD BGCOLOR="#cccccc">
-        <strong>What language do you prefer?</strong><p>
+        <strong>Какой язык вы предпочитаете?</strong><p>
         </td><td bgcolor="#cccccc">
         <MM-list-langs>
         </td></tr>
@@ -280,6 +282,26 @@ lists you are subscribed to.
         </td><td bgcolor="#cccccc">
         <mm-suppress-nonmatching-topics>No<br>
         <mm-receive-nonmatching-topics>Yes
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Avoid duplicate copies of messages?</strong><p>
+
+                When you are listed explicitly in the <tt>To:</tt> or
+                <tt>Cc:</tt> headers of a list message, you can opt to
+                not receive another copy from the mailing list.
+                Select <em>Yes</em> to avoid receiving copies from the
+                mailing list; select <em>No</em> to receive copies.
+
+                <p>If the list has member personalized messages
+                enabled, and you elect to receive copies, every copy
+                will have a <tt>X-Mailman-Copy: yes</tt> header added
+                to it.
+
+        </td><td bgcolor="#cccccc">
+        <mm-receive-duplicates-button>No<br>
+        <mm-dont-receive-duplicates-button>Yes<p>
+        <mm-global-nodupes-button><i>Set globally</i>
         </td></tr>
 
     <tr><TD colspan="2">
