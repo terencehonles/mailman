@@ -80,12 +80,12 @@ your membership administrative address, %s.
         ok = 1
         # find the lowercased version of the user's address
         user = self.FindUser(user)
+        requestaddr = self.GetRequestEmail()
         if user and self.passwords.has_key(user):
             cpuser = self.GetUserSubscribedAddress(user)
             recipient = self.GetMemberAdminEmail(cpuser)
             subject = '%s mailing list reminder' % listfullname
             adminaddr = self.GetAdminEmail()
-            requestaddr = self.GetRequestEmail()
             # get the text from the template
             text = Utils.maketext(
                 'userpass.txt',
