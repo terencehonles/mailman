@@ -24,3 +24,4 @@ from NonDigest import NonDigest
 from Privacy import Privacy
 from Topics import Topics
 from Usenet import Usenet
+from Language import Language
