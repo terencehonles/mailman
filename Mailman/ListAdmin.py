@@ -28,7 +28,7 @@ import os
 import string
 import time
 import marshal
-from errno import ENOENT
+import errno
 
 from Mailman import Message
 from Mailman import mm_cfg
@@ -63,11 +63,9 @@ class ListAdmin:
                 fp = open(self.__filename)
                 self.__db = marshal.load(fp)
                 fp.close()
-            except IOError, (code, msg):
-                if code == ENOENT:
-                    self.__db = {}
-                else:
-                    raise
+            except IOError, e:
+                if e.errno <> errno.ENOENT: raise
+                self.__db = {}
 
     def __closedb(self):
         if self.__db is not None:
@@ -118,15 +116,17 @@ class ListAdmin:
         type, data = self.__db[id]
         return type
 
-    def HandleRequest(self, id, value, comment):
+    def HandleRequest(self, id, value, comment, preserve, forward, addr):
         self.__opendb()
         rtype, data = self.__db[id]
-        del self.__db[id]
         if rtype == HELDMSG:
-            self.__handlepost(data, value, comment)
+            status = self.__handlepost(data, value, comment, preserve,
+                                       forward, addr)
         else:
             assert rtype == SUBSCRIPTION
-            self.__handlesubscription(data, value, comment)
+            status = self.__handlesubscription(data, value, comment)
+        if status:
+            del self.__db[id]
 
     def HoldMessage(self, msg, reason, msgdata={}):
         # assure that the database is open for writing
@@ -160,7 +160,7 @@ class ListAdmin:
         data = time.time(), sender, msgsubject, reason, filename, msgdata
         self.__db[id] = (HELDMSG, data)
 
-    def __handlepost(self, record, value, comment):
+    def __handlepost(self, record, value, comment, preserve, forward, addr):
         # For backwards compatibility with pre 2.0beta3
         if len(record) == 5:
             ptime, sender, subject, reason, filename = record
@@ -169,12 +169,30 @@ class ListAdmin:
             # New format of record
             ptime, sender, subject, reason, filename, msgdata = record
         path = os.path.join(mm_cfg.DATA_DIR, filename)
+        # Handle message preservation
+        if preserve:
+            parts = string.split(os.path.split(path)[1], '-')
+            parts[0] = 'spam'
+            spamfile = string.join(parts, '-')
+            import shutil
+            try:
+                shutil.copy(path, os.path.join(mm_cfg.SPAM_DIR, spamfile))
+            except IOError, e:
+                if e.errno <> errno.ENOENT: raise
+                raise Errors.LostHeldMessage(path)
+        # Now handle updates to the database
         rejection = None
+        msg = None
+        defer = None
         if value == 0:
+            # Defer
+            defer = 1
+        elif value == 1:
             # Approved
             try:
                 fp = open(path)
-            except IOError:
+            except IOError, e:
+                if e.errno <> errno.ENOENT: raise
                 # we lost the message text file.  clean up our housekeeping
                 # and raise an exception.
                 raise Errors.LostHeldMessage(path)
@@ -185,19 +203,36 @@ class ListAdmin:
             # turnaround.
             syslog('vette', 'approved held message enqueued: %s' % filename)
             msg.Enqueue(self, newdata=msgdata)
-        elif value == 1:
+        elif value == 2:
             # Rejected
             rejection = 'Refused'
             self.__refuse('Posting of your message titled "%s"' % subject,
                           sender, comment or '[No reason given]')
         else:
-            assert value == 2
+            assert value == 3
             # Discarded
             rejection = 'Discarded'
-        # Log the rejection
+        #
+        # Forward the message
+        if forward and addr:
+            if not msg:
+                try:
+                    fp = open(path)
+                except IOError, e:
+                    if e.errno <> errno.ENOENT: raise
+                    raise Errors.LostHeldMessage(path)
+                msg = Message.Message(fp)
+            # We don't want this message getting delivered to the list twice.
+            # This should also uniquify the message enough for the hash-based
+            # file naming (not foolproof though).
+            msg['Resent-To'] = addr
+            msg.recips = addr
+            HandlerAPI.DeliverToUser(self, msg)
+        # for safety
         def strquote(s):
             return string.replace(s, '%', '%%')
-
+        #
+        # Log the rejection
 	if rejection:
             note = '''%(listname)s: %(rejection)s posting:
 \tFrom: %(sender)s
@@ -210,16 +245,17 @@ class ListAdmin:
             if comment:
                 note = note + '\n\tReason: ' + strquote(comment)
             syslog('vette', note)
-        # always unlink the file containing the message text.  It's not
+        # Always unlink the file containing the message text.  It's not
         # necessary anymore, regardless of the disposition of the message.
-        try:
-            os.unlink(path)
-        except os.error, (code, msg):
-            if code == ENOENT:
-                # we lost the message text file.  clean up our housekeeping
+        if not defer:
+            try:
+                os.unlink(path)
+            except OSError, e:
+                if e.errno <> errno.ENOENT: raise
+                # We lost the message text file.  Clean up our housekeeping
                 # and raise an exception.
                 raise Errors.LostHeldMessage(path)
-            raise
+        return not defer
             
     def HoldSubscription(self, addr, password, digest):
         # assure that the database is open for writing
@@ -269,7 +305,7 @@ class ListAdmin:
             # subscribe
             assert value == 0
             self.ApprovedAddMember(addr, password, digest)
-
+        return 1
 
     def __refuse(self, request, recip, comment, origmsg=None):
         adminaddr = self.GetAdminEmail()
