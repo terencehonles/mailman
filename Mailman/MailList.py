@@ -4,9 +4,15 @@
 # list once, but it sucked hard, because you'd see the footer 100
 # times in each digest.
 
+try:
+    import mm_cfg
+except ImportError:
+    raise RuntimeError, ('missing mm_cfg - has mm_cfg_dist been configured '
+			 'for the site?')
+
 import sys, os, marshal, string, posixfile, time
 import re
-import mm_cfg, mm_utils, mm_err
+import mm_utils, mm_err
 
 from mm_admin import ListAdmin
 from mm_deliver import Deliverer
