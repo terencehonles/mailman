@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = VERSION + "$Revision: 342 $"
+__version__ = VERSION + "$Revision: 374 $"
 
 		   # Many site-specific settings #
 
@@ -55,9 +55,9 @@ DEFAULT_MSG_FOOTER = """------------------------------------------------------
 %(web_page_url)slistinfo/%(_internal_name)s
 """
 
-MESSAGE_DECORATION_NOTE = """This text can include  %(field)s format strings
-which is resolved against the list's attribute dictionary (__dict__).  Some 
-useful fields are:
+MESSAGE_DECORATION_NOTE = """This text can include  <b>%(field)s</b> format
+strings which are resolved against the list's attribute dictionary (__dict__).
+Some useful fields are:
 
 <dl>
   <dt>real_name
@@ -68,12 +68,12 @@ useful fields are:
   <dt>host_name
   <dd>The domain-qualified host name where the list server runs.
   <dt>web_page_url
-  <dd>The mailman root URL to which, eg, 'listinfo/%(_internal_name)
+  <dd>The mailman root URL to which, eg, 'listinfo/%(_internal_name)s
       can be appended to yield the listinfo page for the list.
   <dt>description
   <dd>The brief description of the list.
   <dt>info
-  <dd>The less brief paragraph or two describing the list.
+  <dd>The less brief list description.
 """
 
 		     # List Accessibility Defaults #
