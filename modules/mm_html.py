@@ -56,20 +56,26 @@ class HTMLFormatter:
  	else:
  	    concealed = ""
 
-	def FormatOneUser(person, me=self):
+	def FormatOneUser(person, me=self, disdel=mm_cfg.DisableDelivery):
 	    import htmlformat, os
 	    id = mm_utils.ObscureEmail(person)
 	    if me.obscure_addresses:
 		showing = mm_utils.ObscureEmail(person, for_text=1)
 	    else:
 		showing = person
-	    return htmlformat.Link(os.path.join(me.GetScriptURL('options'),
-						id), showing)
+	    got = htmlformat.Link(os.path.join(me.GetScriptURL('options'),
+                                               id), showing)
+            if me.GetUserOption(person, disdel):
+                got = htmlformat.Italic("(",
+                                        got,
+                                        ")")
+            return got
 	items = map(FormatOneUser, people) 
 	# Just return the .Format() so this works until I finish
 	# converting everything to htmlformat...
 	return (concealed +
 		apply(htmlformat.UnorderedList, tuple(items)).Format())
+
 
     def FormatOptionButton(self, type, value, user):
 	users_val = self.GetUserOption(user, type)
