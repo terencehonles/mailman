@@ -308,7 +308,7 @@ METADATA_FORMAT = METAFMT_MARSHAL
 # allowed?
 DEFAULT_LIST_ADVERTISED = 1
 DEFAULT_MAX_NUM_RECIPIENTS = 10
-DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
+DEFAULT_MAX_MESSAGE_SIZE = 40           # KB
 
 # These format strings will be expanded w.r.t. the dictionary for the
 # mailing list instance.
@@ -415,7 +415,7 @@ DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
 
 DEFAULT_DIGEST_IS_DEFAULT = 0
 DEFAULT_MIME_IS_DEFAULT_DIGEST = 0
-DEFAULT_DIGEST_SIZE_THRESHHOLD = 30	# KB
+DEFAULT_DIGEST_SIZE_THRESHHOLD = 30     # KB
 DEFAULT_DIGEST_SEND_PERIODIC = 1
 DEFAULT_PLAIN_DIGEST_KEEP_HEADERS = ['message', 'date', 'from',
                                      'subject', 'to', 'cc',
@@ -525,10 +525,10 @@ LIST_LOCK_TIMEOUT = seconds(10)
 # These directories are used to find various important files in the Mailman
 # installation.  PREFIX and EXEC_PREFIX are set by configure and should point
 # to the installation directory of the Mailman package.
-PYTHON  	= '@PYTHON@'
-PREFIX  	= '@prefix@'
-EXEC_PREFIX	= '@exec_prefix@'
-VAR_PREFIX	= '@VAR_PREFIX@'
+PYTHON          = '@PYTHON@'
+PREFIX          = '@prefix@'
+EXEC_PREFIX     = '@exec_prefix@'
+VAR_PREFIX      = '@VAR_PREFIX@'
 
 # Work around a bogus autoconf 2.12 bug
 if EXEC_PREFIX == '${prefix}':
@@ -573,17 +573,17 @@ DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
 
 # Useful directories
-LIST_DATA_DIR	= os.path.join(VAR_PREFIX, 'lists')
-HTML_DIR	= os.path.join(PREFIX, 'public_html')
-CGI_DIR 	= os.path.join(EXEC_PREFIX, 'cgi-bin')
-LOG_DIR 	= os.path.join(VAR_PREFIX, 'logs')
-LOCK_DIR	= os.path.join(VAR_PREFIX, 'locks')
-DATA_DIR	= os.path.join(VAR_PREFIX, 'data')
+LIST_DATA_DIR   = os.path.join(VAR_PREFIX, 'lists')
+HTML_DIR        = os.path.join(PREFIX, 'public_html')
+CGI_DIR         = os.path.join(EXEC_PREFIX, 'cgi-bin')
+LOG_DIR         = os.path.join(VAR_PREFIX, 'logs')
+LOCK_DIR        = os.path.join(VAR_PREFIX, 'locks')
+DATA_DIR        = os.path.join(VAR_PREFIX, 'data')
 SPAM_DIR        = os.path.join(VAR_PREFIX, 'spam')
-WRAPPER_DIR	= os.path.join(EXEC_PREFIX, 'mail')
-SCRIPTS_DIR	= os.path.join(PREFIX, 'scripts')
-TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
-MESSAGES_DIR 	= os.path.join(PREFIX, 'messages')
+WRAPPER_DIR     = os.path.join(EXEC_PREFIX, 'mail')
+SCRIPTS_DIR     = os.path.join(PREFIX, 'scripts')
+TEMPLATE_DIR    = os.path.join(PREFIX, 'templates')
+MESSAGES_DIR    = os.path.join(PREFIX, 'messages')
 PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(VAR_PREFIX, 'archives', 'public')
 PRIVATE_ARCHIVE_FILE_DIR = os.path.join(VAR_PREFIX, 'archives', 'private')
 
@@ -616,7 +616,7 @@ LC_DESCRIPTIONS = {'es': (_("Spanish (Spain)"),      'iso-8859-1'),
                    'it': (_("Italian"),              'iso-8859-1'),
                    'en': (_("English (USA)"),        'us-ascii'),
                    }
-del _				        
+del _                                   
 
 # Set some things up for internationalization.  Individual modules still need
 # to do a "from Mailman.i18n import _"
