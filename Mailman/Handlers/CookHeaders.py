@@ -15,8 +15,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Cook a message's Subject header.
-
-Use Cleanse.py module to actually remove various headers.
 """
 
 import re
@@ -29,6 +27,9 @@ def process(mlist, msg, msgdata):
     # Mark the message as dirty so that its text will be forced to disk next
     # time it's queued.
     msgdata['_dirty'] = 1
+    # Set the "X-Ack: no" header if noack flag is set.
+    if msgdata.get('noack'):
+        msg['X-Ack'] = 'no'
     # Because we're going to modify various important headers in the email
     # message, we want to save some of the information in the msgdata
     # dictionary for later.  Specifically, the sender header will get waxed,
