@@ -125,10 +125,10 @@ def main():
         badaddrs = []
         for addr, passwd in mlist.passwords.items():
             # The user may have disabled password reminders for this list
-            if mlist.GetUserOption(addr, mm_cfg.SuppressPasswordReminder):
+            if mlist.getMemberOption(addr, mm_cfg.SuppressPasswordReminder):
                 continue
             url = mlist.GetOptionsURL(addr, absolute=1)
-            realaddr = mlist.GetUserSubscribedAddress(addr)
+            realaddr = mlist.getMemberCPAddress(addr)
             if not realaddr:
                 badaddrs.append(addr)
                 continue
