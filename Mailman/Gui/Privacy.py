@@ -103,13 +103,13 @@ class Privacy:
              _("""Setting this option causes member email addresses to be
              transformed when they are presented on list web pages (both in
              text and as links), so they're not trivially recognizable as
-             email addresses.  The intention is to to prevent the addresses
+             email addresses.  The intention is to prevent the addresses
              from being snarfed up by automated web scanners for use by
              spammers.""")),
 
             _("General posting filters"),
             ('moderated', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('Must posts be approved by an administrator?')),
+             _('Must posts be approved by the list moderator?')),
 
             ('member_posting_only', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _("""Restrict posting privilege to list members?
@@ -122,8 +122,9 @@ class Privacy:
 
             ('posters', mm_cfg.EmailList, (5, WIDTH), 1,
              _('''Addresses of members accepted for posting to this list
-             without implicit approval requirement. (See "Restrict ... to list
-             members" for whether or not this is in addition to allowing
+             without implicit approval requirement. (See
+             <a href="?VARHELP=privacy/member_posting_only">Restrict... to list
+             members)</a> for whether or not this is in addition to allowing
              posting by list members'''),
 
              _("""Adding entries here will have one of two effects, according
