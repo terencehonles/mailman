@@ -331,7 +331,33 @@ transparently.  However, please note the following exceptions:
                   Attempt to exec script with invalid gid 51, expected 99
 
               You need to reinstall Mailman, and specify $MAIL_GID to
-              be 51, as described in the installation instructions.
+              be 51, as described in the installation
+              instructions. see notes on vmailer below, as by default
+              it will create these problems on installation.
+
+
+    Problem:  I use vmailer for my MTA and the mail wrapper programs
+              are logging complaints about the wrong GID.
+
+    Solution: create a separate aliases file for vmailer in it's
+              main.cf config file under the variable "alias_maps". put
+              the file somewhere in mailman's home directory, or
+              somewhere else where the user mailman has write access
+              to it; *as user mailman* call vmailer's "mkalias" on the
+              alias file.  
+
+              % mkmalias <the alias file>
+
+              Also as user mailman, run 
+
+              % python -c'import os; print os.getgid()' 
+              
+              this should print out the group id that mailman should
+              be configured to expect when the mail wrapper programs
+              are run.  call it "thegid".  rebuild mailman with
+
+              % ./configure --with-mail-gid=thegid
+
 
     Problem:  I send mail to the list, and get back mail saying,
               "sh: wrapper not available for sendmail programs"
