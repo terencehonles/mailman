@@ -349,6 +349,7 @@ NNTP_REWRITE_DUPLICATE_HEADERS = [
 # through this pipeline of handler modules.  Lists themselves can override the
 # global pipeline by defining a `pipeline' attribute.
 GLOBAL_PIPELINE = [
+    # These are the modules that do tasks common to all delivery paths.
     'SpamDetect',
     'Approve',
     'Replybot',
@@ -358,13 +359,18 @@ GLOBAL_PIPELINE = [
     'CalcRecips',
     'Cleanse',
     'CookHeaders',
+    # And now we send the message to the digest mbox file, and to the arch and
+    # news queues.  Runners will provide further processing of the message,
+    # specific to those delivery paths.
     'ToDigest',
     'ToArchive',
+    'ToUsenet',
+    # Now we'll do a few extra things specific to the member delivery
+    # (outgoing) path, finally leaving the message in the out queue.
     'Personalize',
     'Decorate',
     'AfterDelivery',
     'Acknowledge',
-    'ToUsenet',
     'ToOutgoing',
     ]
 
@@ -431,6 +437,67 @@ SMTP_LOG_EACH_FAILURE = (
     'smtp-failure',
     'delivery to %(recipient)s failed with code %(failcode)d: %(failmsg)s')
 
+# These variables control the format and frequency of VERP-like delivery for
+# better bounce detection.  VERP is Variable Envelope Return Path, defined
+# here:
+#
+# http://cr.yp.to/proto/verp.txt
+#
+# Basically, this invovles encoding the address of the recipient as we
+# (Mailman) know it into the envelope sender address (i.e. the SMTP `MAIL TO:'
+# address).  Thus, no matter what kind of forwarding the recipient has in
+# place, should it eventually bounce, we will receive an unambiguous notice of
+# the bouncing address.
+#
+# However, we're technically only "VERP-like" because we're doing the envelope
+# sender encoding in Mailman, not in the MTA.  We do require cooperation from
+# the MTA, so you must be sure your MTA can be configured for extended address
+# semantics.
+#
+# The first variable describes how to encode VERP envelopes.  It must contain
+# these three string interpolations:
+#
+# %(bounces)s -- the list-bounces mailbox will be set here
+# %(mailbox)s -- the recipient's mailbox will be set here
+# %(host)s    -- the recipient's host name will be set here
+#
+# This example uses the default below.
+#
+# FQDN list address is: mylist@dom.ain
+# Recipient is:         aperson@a.nother.dom
+#
+# The envelope sender will be mylist-bounces+aperson=a.nother.dom@dom.ain
+#
+# Note that your MTA /must/ be configured to deliver such an addressed message
+# to mylist-bounces!
+VERP_FORMAT = '%(bounces)s+%(mailbox)s=%(host)s'
+
+# The second describes a regular expression to unambiguously decode such an
+# address, which will be placed in the From: header by the bouncing MTA.
+# Getting this right is critical -- and tricky.  Learn your Python regular
+# expressions.  It must define exactly two named groups, mailbox and host,
+# with the same definition as above.  It will be compiled case-insensitively.
+VERP_REGEXP = r'^[^+]+?\+(?P<mailbox>[^=]+)=(?P<host>[^@]+)@.*$'
+
+# A perfect opportunity for doing VERP is the password reminders, which are
+# already addressed individually to each recipient.  This flag, if true,
+# enables VERPs on all password reminders.
+VERP_PASSWORD_REMINDERS = 0
+
+# Another good opportunity is when regular delivery is personalized.  Here
+# again, we're already incurring the performance hit for addressing each
+# individual recipient.  Set this to true to enable VERPs on all personalized
+# regular deliveries (personalized digests aren't supported yet).
+VERP_PERSONALIZED_DELIVERIES = 0
+
+# And finally, we can VERP normal, non-personalized deliveries.  However,
+# because it can be a significant performance hit, we allow you to decide how
+# often to VERP regular deliveries.  This is the interval, in number of
+# messages, to do a VERP recipient address.  The same variable controls both
+# regular and digest deliveries.  Set to 0 to disable occasional VERPs, set to
+# 1 to VERP every delivery, or to some number > 1 for only occasional VERPs.
+VERP_DELIVERY_INTERVAL = 0
+
 
 
 #####
@@ -448,11 +515,12 @@ SMTP_LOG_EACH_FAILURE = (
 # BAW: although not enforced, the # of slices must be a power of 2
 
 QRUNNERS = [
-    ('IncomingRunner', 1), # posts from the outside world
-    ('OutgoingRunner', 1), # outgoing messages to the smtpd
-    ('NewsRunner',     1), # outgoing messages to the nntpd
     ('ArchRunner',     1), # messages for the archiver
+    ('BounceRunner',   1), # for processing the qfile/bounces directory
     ('CommandRunner',  1), # commands and bounces from the outside world
+    ('IncomingRunner', 1), # posts from the outside world
+    ('NewsRunner',     1), # outgoing messages to the nntpd
+    ('OutgoingRunner', 1), # outgoing messages to the smtpd
     ('VirginRunner',   1), # internally crafted (virgin birth) messages
     ]
 
@@ -602,7 +670,7 @@ DEFAULT_UMBRELLA_LIST = 0
 # administrative notices (subscription confirmations, password reminders):
 DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX = "-owner"
 
-# This variable controlls whether monthly password reminders are sent.
+# This variable controls whether monthly password reminders are sent.
 DEFAULT_SEND_REMINDERS = 1
 
 # Send welcome messages to new users?  Probably should keep this set to 1.
