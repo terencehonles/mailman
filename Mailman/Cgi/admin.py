@@ -130,6 +130,7 @@ def main():
                             ' you fix this problem.')
         if len(cgidata.keys()):
             ChangeOptions(mlist, category, cgidata, doc)
+            mlist.CheckValues()
 	FormatConfiguration(doc, mlist, category, category_suffix, cgidata)
 	print doc.Format(bgcolor="#ffffff")
     finally:
