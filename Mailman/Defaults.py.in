@@ -1091,8 +1091,8 @@ HOLD = 7
 # Standard text field width
 TEXTFIELDWIDTH = 40
 
-# Bitfield for user options.  See DEFAULT_LIST_OPTIONS above to set defaults
-# for all new lists.
+# Bitfield for user options.  See DEFAULT_NEW_MEMBER_OPTIONS above to set
+# defaults for all new lists.
 Digests             = 0 # handled by other mechanism, doesn't need a flag.
 DisableDelivery     = 1 # Obsolete; use set/getDeliveryStatus()
 DontReceiveOwnPosts = 2 # Non-digesters only
