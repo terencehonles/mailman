@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 2001 by the Free Software Foundation, Inc.
+Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
@@ -55,6 +55,14 @@ INTEGRATING POSTFIX AND MAILMAN
       Mailman to honor your virtual domains, read the section below
       first!
 
+    - Add this to Mailman's mm_cfg.py file:
+
+      MTA = 'Postfix'
+
+      The MTA variable names a module in Mailman/MTA which contains the
+      MTA-specific functions to be executed when a list is created or
+      removed.
+
     - Run the genaliases script to initialize your aliases file.
 
       % cd /usr/local/mailman
@@ -88,14 +96,6 @@ INTEGRATING POSTFIX AND MAILMAN
       Postfix will execute Mailman's wrapper program as uid and gid
       mailman.  If you don't use the --with-mail-gid switch, the
       wrapper will bounce messages, complaining of a gid mismatch.
-
-    - Add this to Mailman's mm_cfg.py file:
-
-      MTA = 'Postfix'
-
-      The MTA variable names a module in Mailman/MTA which contains the
-      MTA-specific functions to be executed when a list is created or
-      removed.
 
     That's it!  One caveat: when you add or remove a list, the
     aliases.db file will be modified by Mailman, but it will not
