@@ -51,7 +51,12 @@ composed of the following core developers:
 Meland, Ken Manheimer, Scott Cotton, and John Viega.  Mailman was
 originally written by John Viega.
 
-<p>The Cabal would like to thank the following other developers for
+<p>The Cabal would like to thank
+<a href="http://www.control.com/">Control.com</a> for their
+sponsorship of new Mailman 2.1 features such as the topic filters,
+external membership sources, and "virtual" mailing lists.
+
+<p>The Cabal would also like to thank the following other developers for
 their important contributions (in no particular order): Juan Carlos
 Rey Anaya, Victoriano Giralt, Mads Kiilerich, The Dragon De Monsyne,
 Timothy O'Malley, Balazs Nagy, Michael Mclay, Greg Stein, Gergely
