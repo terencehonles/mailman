@@ -61,16 +61,23 @@ def process(mlist, msg, msgdata):
         chunks = chunkify(recips, mm_cfg.SMTP_MAX_RCPTS)
     refused = {}
     t0 = time.time()
-    if threading:
-        threaded_deliver(admin, msgtext, chunks, refused)
-    else:
-        for chunk in chunks:
-            deliver(admin, msgtext, chunk, refused)
-    #
-    t1 = time.time()
+    # We can improve performance by unlocking the list during delivery.  We
+    # must re-lock it though afterwards to ensure the pipeline delivery
+    # invariant.
+    try:
+        mlist.Save()
+        mlist.Unlock()
+        if threading:
+            threaded_deliver(admin, msgtext, chunks, refused)
+        else:
+            for chunk in chunks:
+                deliver(admin, msgtext, chunk, refused)
+    finally:
+        t1 = time.time()
+        mlist.Lock()
+    # Process any failed deliveries.
     syslog('smtp', 'smtp for %d recips, completed in %.3f seconds' %
            (len(recips), (t1-t0)))
-    # Process any failed deliveries.
     tempfailures = []
     for recip, (code, smtpmsg) in refused.items():
         # DRUMS is an internet draft, but it says:
@@ -154,7 +161,6 @@ def pre_deliver(envsender, msgtext, failures, chunkq):
 
 
 def threaded_deliver(envsender, msgtext, chunks, failures):
-    syslog('error', 'threaded_deliver...')
     threads = {}
     numchunks = len(chunks)
     chunkq = Queue.Queue(numchunks)
@@ -163,7 +169,6 @@ def threaded_deliver(envsender, msgtext, chunks, failures):
         chunkq.put(chunk)
     # Start all the threads
     for i in range(min(numchunks, mm_cfg.MAX_DELIVERY_THREADS)):
-        syslog('error', 'creating thread %d' % i)
         threadfailures = {}
         t = threading.Thread(target=pre_deliver,
                              args=(envsender, msgtext, threadfailures, chunkq))
@@ -173,11 +178,9 @@ def threaded_deliver(envsender, msgtext, chunks, failures):
     # dictionaries.
     for t, threadfailures in threads.items():
         t.join()
-        syslog('error', 'thread %s complete' % t)
         failures.update(threadfailures)
     # All threads have exited
     threads.clear()
-    syslog('error', 'threaded_deliver... done.')
 
 
 
