@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1a4\n"
 "POT-Creation-Date: Tue Mar 12 13:04:19 2002\n"
-"PO-Revision-Date: 2002-02-06 13:02+01:00\n"
+"PO-Revision-Date: 2002-03-16 05:03+0100\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -441,7 +441,7 @@ msgstr "ikke-mine"
 
 #: Mailman/Cgi/admin.py:872
 msgid "nodupes"
-msgstr ""
+msgstr "unngå duplikater"
 
 #: Mailman/Cgi/admin.py:873
 msgid "digest"
@@ -534,22 +534,16 @@ msgstr ""
 "til listen?"
 
 #: Mailman/Cgi/admin.py:986
-#, fuzzy
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
 "        own postings?"
-msgstr ""
-"<b>ikke-mine</b> -- Hvis denne er avkrysset, vil ikke medlemmet f&aring; "
-"epost han/hun sender selv."
+msgstr "<b>ikke-mine</b> -- Hvis denne er avkrysset, vil ikke medlemmet motta epost han/hun selv har sendt til listen."
 
 #: Mailman/Cgi/admin.py:989
-#, fuzzy
 msgid ""
 "<b>nodupes</b> -- Does the member want to avoid duplicates of the\n"
 "        same message?"
-msgstr ""
-"<b>ikke-mine</b> -- Hvis denne er avkrysset, vil ikke medlemmet f&aring; "
-"epost han/hun sender selv."
+msgstr "<b>unngå duplikater</b> -- Hvis denne er avkrysset, vil ikke medlemmet motta epost som har medlemmets epostadresse som mottaker."
 
 #: Mailman/Cgi/admin.py:992
 msgid ""
@@ -737,7 +731,7 @@ msgstr "Ikke p&aring;meldt"
 
 #: Mailman/Cgi/admin.py:1306
 msgid "Ignoring changes to deleted member: %(user)s"
-msgstr ""
+msgstr "Ser bort i fra endring av et medlem som er utmeldt: %(user)s"
 
 #: Mailman/Cgi/admin.py:1345
 msgid "Successfully Removed:"
@@ -1048,7 +1042,6 @@ msgid "Confirm subscription request"
 msgstr "Bekreft s&oslash;knad om medlemskap"
 
 #: Mailman/Cgi/confirm.py:208
-#, fuzzy
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    subscription request to the mailing list <em>%(listname)s</em>.  Your\n"
@@ -1065,18 +1058,16 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this subscription\n"
 "    request."
 msgstr ""
-"Din bekreftelse er n&oslash;dvendig for &aring; fullf&oslash;re din p&aring;"
-"melding p&aring; epostlisten <em>%(listname)s</em>.\n"
-"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du "
-"m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
-"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker "
-"&aring; melde deg p&aring; listen.\n"
-"Gj&oslash;r du det vil din personlige medlemsside vises, der du kan "
-"gj&oslash;re ytterligere endringer p&aring; ditt medlemskap.\n"
+"Din bekreftelse er n&oslash;dvendig for &aring; fullf&oslash;re din p&aring;melding p&aring; epostlisten <em>%(listname)s</em>.\n"
+"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
+"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker &aring; melde deg p&aring; listen.\n"
+"Gj&oslash;r du det vil din personlige medlemsside vises, der du kan gj&oslash;re ytterligere endringer p&aring; ditt medlemskap.\n"
+"\n"
+"<p>Merk: du vil få tilsendt passordet straks du har bekreftet din påmelding. Du kan skifte passord ved å gå inn på din personlige medlemsside.\n"
+"\n"
 "<p>Eller klikk <em>Avbryt</em> for &aring; trekke s&oslash;knaden din."
 
 #: Mailman/Cgi/confirm.py:223
-#, fuzzy
 msgid ""
 "Your confirmation is required in order to continue with\n"
 "        the subscription request to the mailing list <em>%(listname)s</em>.\n"
@@ -1098,15 +1089,13 @@ msgid ""
 "        <p>Or you can hit <em>Cancel and discard</em> now to cancel this\n"
 "        subscription request."
 msgstr ""
-"Din bekreftelse er n&oslash;dvendig for &aring; fortsette din p&aring;"
-"melding p&aring; epostlisten <em>%(listname)s</em>.\n"
-"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du "
-"m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
-"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker "
-"&aring; melde deg p&aring; listen.\n"
-"Gj&oslash;r du det vil s&oslash;knaden din sendes til listemoderatoren, som "
-"vil godkjenne eller avsl&aring; den.\n"
+"Din bekreftelse er n&oslash;dvendig for &aring; fortsette din p&aring;melding p&aring; epostlisten <em>%(listname)s</em>.\n"
+"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
+"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker &aring; melde deg p&aring; listen.\n"
+"Gj&oslash;r du det vil s&oslash;knaden din sendes til listemoderatoren, som vil godkjenne eller avsl&aring; den.\n"
 "Du vil f&aring; beskjed s&aring; snart en avgj&oslash;relse er tatt.\n"
+"\n"
+"<p>Merk: du vil få tilsendt passordet straks du har bekreftet din påmelding. Du kan skifte passord ved å gå inn på din personlige medlemsside.\n"
 "\n"
 "<p>Eller klikk <em>Avbryt</em> for &aring; trekke s&oslash;knaden din."
 
@@ -1902,9 +1891,8 @@ msgid "Invalid options to CGI script."
 msgstr "Ugyldige parametre til CGI skriptet."
 
 #: Mailman/Cgi/options.py:91
-#, fuzzy
 msgid "No address given"
-msgstr "Ingen begrunnelse"
+msgstr "Ingen epostadresse angitt"
 
 #: Mailman/Cgi/options.py:103 Mailman/Cgi/options.py:150
 #: Mailman/Cgi/options.py:172
@@ -2510,7 +2498,7 @@ msgstr "Spansk (Spania)"
 
 #: Mailman/Defaults.py:1095
 msgid "Finnish"
-msgstr ""
+msgstr "Finsk"
 
 #: Mailman/Defaults.py:1096
 msgid "French"
@@ -2628,7 +2616,6 @@ msgid "Auto-responder"
 msgstr "Automatiske svar"
 
 #: Mailman/Gui/Autoresponse.py:39
-#, fuzzy
 msgid ""
 "Auto-responder characteristics.<p>\n"
 "\n"
@@ -2646,20 +2633,19 @@ msgid ""
 "text\n"
 "box, or you can specify a file on your local system to upload as the text."
 msgstr ""
-"I tekstboksene nedenfor vil f&oslash;lgende uttrykk bli erstattet av p&aring;"
-"f&oslash;lgende informasjon:\n"
+"Innstillinger for automatiske svar.<p>\n"
+"\n"
+"I tekstboksene nedenfor kan du bruke følgende variabler (skriv dem slik: %(&lt;variabelnavn&gt;)s ) for å sette inn ønsket informasjon:\n"
 "<p><ul>\n"
-"        <li><b>%(listname)s</b> - <em>navnet p&aring; listen</em>\n"
-"        <li><b>%(listurl)s</b> - <em>URL til listens webside</em>\n"
-"        <li><b>%(requestemail)s</b> - <em>listens -request epostadresse</"
-"em>\n"
-"        <li><b>%(adminemail)s</b> - <em>listens -admin epostadresse</em>\n"
-"        <li><b>%(owneremail)s</b> - <em>listens -owner epostadresse</em>\n"
+"        <li><b>listname</b> - <em>navnet p&aring; listen</em>\n"
+"        <li><b>listurl</b> - <em>URL til listens webside</em>\n"
+"        <li><b>requestemail</b> - <em>listens -request epostadresse</em>\n"
+"        <li><b>adminemail</b> - <em>listens -admin epostadresse</em>\n"
+"        <li><b>owneremail</b> - <em>listens -owner epostadresse</em>\n"
 "</ul>\n"
 "\n"
 "<p>Du kan enten skrive teksten direkte inn i tekstboksene, eller du kan\n"
-"skrive inn navnet p&aring; en fil som inneholder teksten. Denne filen vil "
-"s&aring; lastes inn\n"
+"skrive inn navnet p&aring; en fil som inneholder teksten. Denne filen vil s&aring; lastes inn\n"
 "i tekstboksen, fra ditt lokale filsystem."
 
 #: Mailman/Gui/Autoresponse.py:56
@@ -2729,9 +2715,8 @@ msgstr ""
 "            for &aring; sende automatisk svar hver gang."
 
 #: Mailman/Gui/Bounce.py:26
-#, fuzzy
 msgid "Bounce processing"
-msgstr "Trekk meldingen tilbake"
+msgstr "Behandling av returmeldinger"
 
 #: Mailman/Gui/Bounce.py:32
 msgid ""
@@ -2844,9 +2829,8 @@ msgstr ""
 "epost sendes til listen din."
 
 #: Mailman/Gui/Bounce.py:75
-#, fuzzy
 msgid "Bounce detection sensitivity"
-msgstr "Innstillinger for h&aring;ndtering av epost som kommer i retur"
+msgstr "Følsomhet"
 
 #: Mailman/Gui/Bounce.py:78
 msgid "Should Mailman perform automatic bounce processing?"
@@ -2919,7 +2903,7 @@ msgid ""
 "             that failed to be detected by the bounce processor?  <em>Yes</"
 "em>\n"
 "             is recommended."
-msgstr ""
+msgstr "Skal Mailman sende deg, eieren av listen, returmeldinger som ikke ble gjenkjent av den automatiske returhåndteringen? <em>Ja</em> anbefales."
 
 #: Mailman/Gui/Bounce.py:112
 msgid ""
@@ -2951,12 +2935,22 @@ msgid ""
 "\">autoresponse\n"
 "             message</a> for email to the -owner and -admin address."
 msgstr ""
+"Mailmans automatiske returhåndtering er svært robust, men det er likevel umulig å gjenkjenne alle returmeldinger som finnes.\n"
+"Du bør angi <em>Ja</em> her, av to grunner:\n"
+"1) Hvis det virkelig er en permanent returmelding fra et medlem av listen, bør du antakelig manuelt melde medlemmet ut av listen, og\n"
+"2) du vil kanskje sende meldingen til utviklerne av Mailman slik at returmeldingen kan automatisk gjenkjennes av Mailman.\n"
+"<p>Hvis du ikke vil noen av delene, set denne innstillingen til <em>Nei</em>.\n"
+"Da vil alle returmeldinger forkastes automatisk uten videre behandling.\n"
+"<p><b>Merk:</b> Denne innstillingen vil også innvirke på all epost som sendes til listens -admin adresse.\n"
+"Den adressen er gammel og utgått, men det kan være noen fortsatt vil sende epost til den.\n"
+"Hvis noen gjør det, og du har satt denne innstillingen til <em>Nei</em>, vil de meldingene også forkastes.\n"
+"Kanskje vil du også sette opp et <a href=\"?VARHELP=autoreply/autoresponse_admin_text\">automatisk svar</a> på epost sendt til -owner og -admin adressene."
 
 #: Mailman/Gui/Bounce.py:135
 msgid ""
 "Should Mailman notify you, the list owner, when bounces\n"
 "             cause a member's subscription to be disabled?"
-msgstr ""
+msgstr "Skal Mailman gi deg, eier av listen, beskjed når returmeldinger forårsaker at et medlem slutter å motta epost?"
 
 #: Mailman/Gui/Bounce.py:137
 msgid ""
@@ -2966,12 +2960,15 @@ msgid ""
 "             when a member's delivery is disabled due to excessive bounces.\n"
 "             An attempt to notify the member will always be made."
 msgstr ""
+"Ved å sette denne til <em>Nei</em>, skrur du av beskjeden som vanligvis sendes til eieren(e) av listen,\n"
+"når sending av epost til et medlem stoppes på grunn av for mange returmeldinger.\n"
+"Det vil i tillegg alltid bli gjort et forsøk på gi beskjed til medlemmet."
 
 #: Mailman/Gui/Bounce.py:144
 msgid ""
 "Should Mailman notify you, the list owner, when bounces\n"
 "             cause a member to be unsubscribed?"
-msgstr ""
+msgstr "Skal Mailman gi deg, eier av listen, beskjed når returmeldinger fører til at et medlem meldes ut av listen?"
 
 #: Mailman/Gui/Bounce.py:146
 msgid ""
@@ -2981,15 +2978,15 @@ msgid ""
 "             when a member is unsubscribed due to excessive bounces.  An\n"
 "             attempt to notify the member will always be made."
 msgstr ""
+"Ved å sette denne til <em>Nei</em>, skrur du av beskjeden som vanligvis sendes til eieren(e) av listen,\n"
+"når et medlem meldes ut av listen på grunn av for mange returmeldinger.\n"
+"Det vil i tillegg alltid bli gjort et forsøk på gi beskjed til medlemmet."
 
 #: Mailman/Gui/Bounce.py:173
-#, fuzzy
 msgid ""
 "Bad value for <a href=\"?VARHELP=bounce/%(property)s\"\n"
 "                >%(property)s</a>: %(val)s"
-msgstr ""
-"Ugyldig verdi for <a href=\"?VARHELP=bounce/%(varname)s\">%(varname)s</a>: %"
-"(value)s"
+msgstr "Ugyldig verdi for <a href=\"?VARHELP=bounce/%(property)s\">%(property)s</a>: %(val)s"
 
 #: Mailman/Gui/Digest.py:36
 msgid "Digest options"
@@ -3097,21 +3094,19 @@ msgstr ""
 msgid ""
 "The next digest will be sent as volume\n"
 "            %(volume)s, number %(number)s"
-msgstr ""
+msgstr "Den neste samle-eposten vil sendes som volum %(volume)s, nummer %(number)s"
 
 #: Mailman/Gui/Digest.py:150
-#, fuzzy
 msgid "A digest has been sent."
-msgstr "En epost med bekreftelse er sendt."
+msgstr "En samle-epost er sendt."
 
 #: Mailman/Gui/Digest.py:152
-#, fuzzy
 msgid "There was no digest to send."
-msgstr "Det venter ingen foresp&oslash;rsler eller s&oslash;knader."
+msgstr "Det var ingen samle-epost som skulle sendes."
 
 #: Mailman/Gui/GUIBase.py:139
 msgid "Invalid value for variable: %(property)s"
-msgstr ""
+msgstr "Ugyldig verdi for: %(property)s"
 
 #: Mailman/Gui/GUIBase.py:145
 msgid "Bad email address for option %(property)s: %(val)s"
@@ -3126,6 +3121,9 @@ msgid ""
 "this\n"
 "                problem."
 msgstr ""
+"Følgende ugyldige variabler ble funnet i <code>%(property)s</code>:\n"
+"<code>%(bad)s</code>\n"
+"<p>Det kan oppstå feil med listen din med mindre du retter opp dette."
 
 #: Mailman/Gui/GUIBase.py:183
 msgid ""
@@ -3135,6 +3133,8 @@ msgid ""
 "                    double check that this is what you intended.\n"
 "                    "
 msgstr ""
+"Det ser ut til at en feil med verdien av <code>%(property)s</code> automatisk kunne rettes.\n"
+"Den faste verdien vil bli brukt. Vennligst kontroller at dette var det du ønsket."
 
 #: Mailman/Gui/General.py:34
 msgid "General Options"
@@ -3142,23 +3142,23 @@ msgstr "Generelle innstillinger"
 
 #: Mailman/Gui/General.py:49
 msgid "Conceal the member's address"
-msgstr ""
+msgstr "Gjem medlemmets adresse"
 
 #: Mailman/Gui/General.py:50
 msgid "Acknowledge the member's posting"
-msgstr ""
+msgstr "Godkjenn medlemmets epost"
 
 #: Mailman/Gui/General.py:51
 msgid "Do not send a copy of a member's own post"
-msgstr ""
+msgstr "Ikke send medlemmet en kopi hans/hennes egen epost"
 
 #: Mailman/Gui/General.py:53
 msgid "Get plain text digests (RFC 1153) rather than MIME digests"
-msgstr ""
+msgstr "Motta samle-epost i ren tekst (RFC 1153) istedenfor MIME"
 
 #: Mailman/Gui/General.py:55
 msgid "Filter out duplicate messages to list members (if possible)"
-msgstr ""
+msgstr "Filtrer vekk duplikatmeldinger til medlemmer (hvis mulig)"
 
 #: Mailman/Gui/General.py:62
 msgid ""
@@ -3405,6 +3405,8 @@ msgid ""
 "             regardless of whether an explict <tt>Reply-To:</tt> header is\n"
 "             added by Mailman or not."
 msgstr ""
+"Skal eksisterende <tt>Reply-To:</tt> felt i meldingshodet fjernes?\n"
+"Hvis ja vil dette bli gjort uansett om Mailman legger til et <tt>Reply-To:</tt> felt eller ikke."
 
 #: Mailman/Gui/General.py:162
 msgid "Explicit address"
@@ -3809,15 +3811,14 @@ msgid "Additional settings"
 msgstr "Flere innstillinger"
 
 #: Mailman/Gui/General.py:328
-#, fuzzy
 msgid "Default options for new members joining this list."
-msgstr "%(sender)s er ikke medlem av denne listen."
+msgstr "Standard innstillinger for nye medlemmer som meldes på listen."
 
 #: Mailman/Gui/General.py:330
 msgid ""
 "When a new member is subscripted to this list, their initial\n"
 "             set of options is taken from the this variable's setting."
-msgstr ""
+msgstr "Når et nytt medlem meldes på listen, blir medlemmets innstillinger tatt herfra."
 
 #: Mailman/Gui/General.py:334
 msgid ""
@@ -3933,7 +3934,6 @@ msgstr ""
 "faktisk ogs&aring; forsvinne i senere versjoner)."
 
 #: Mailman/Gui/General.py:388
-#, fuzzy
 msgid ""
 "<p><b>real_name</b> attribute not\n"
 "            changed!  It must differ from the list's name by case\n"
@@ -3947,6 +3947,8 @@ msgid ""
 "<p><b>reply_to_address</b> does not have a\n"
 "                valid email address!  Its valid will not be changed."
 msgstr ""
+"<p><b>reply_to_address</b> har ikke en gyldig epostadresse!\n"
+"Den allerede gyldige adressen vil ikke bli endret."
 
 #: Mailman/Gui/Language.py:32
 msgid "Language&nbsp;options"
@@ -4957,7 +4959,6 @@ msgid "Should the topic filter be enabled or disabled?"
 msgstr "Skal emnefilteret v&aelig;re tilgjengelig eller ikke tilgjengelig?"
 
 #: Mailman/Gui/Topics.py:39
-#, fuzzy
 msgid ""
 "The topic filter categorizes each incoming email message\n"
 "             according to <a\n"
@@ -4985,22 +4986,16 @@ msgid ""
 "             configuration variable."
 msgstr ""
 "Emnefilteret kategoriserer hver epost som kommer til listen,\n"
-"etter <a href=\"http://www.python.org/doc/current/lib/module-re.html"
-"\">regexp-uttrykkene</a>\n"
-"du skriver inn nedenfor. Hvis feltene <code>Subject:</code> eller "
-"<code>Keywords:</code>\n"
-"i meldingshodet i en epost passer mot disse uttrykkene, blir den plassert "
-"under dette\n"
-"emnet. Hvert medlem av listen kan velge &aring; kun motta epost som passer "
-"&oslash;nskede emner.\n"
+"etter <a href=\"http://www.python.org/doc/current/lib/module-re.html\">regexp-uttrykkene</a>\n"
+"du skriver inn nedenfor. Hvis feltene <code>Subject:</code> eller <code>Keywords:</code>\n"
+"i meldingshodet i en epost passer mot disse uttrykkene, blir den plassert under dette\n"
+"emnet. Hvert medlem av listen kan velge &aring; kun motta epost som passer &oslash;nskede emner.\n"
 "Epost som ikke g&aring;r under noe emne, blir ikke levert.\n"
 "\n"
 "<p>Merknad: Dette fungerer bare i normal-modus, ikke i sammendrag-modus.\n"
 "\n"
-"<p>Innholdet i eposten kan ogs&aring; unders&oslash;kes for <code>Subject:</"
-"code> og <code>Keyword:</code>\n"
-"felter, alt etter hva innstillingen <a href=\"?VARHELP=topics/"
-"topics_bodylines_limit\">topics_bodylines_limit</a> er satt til."
+"<p>Innholdet i eposten kan ogs&aring; unders&oslash;kes for <code>Subject:</code> og <code>Keyword:</code>\n"
+"felter, alt etter hva innstillingen <a href=\"?VARHELP=topics/topics_bodylines_limit\">topics_bodylines_limit</a> er satt til."
 
 #: Mailman/Gui/Topics.py:60
 msgid "How many body lines should the topic matcher scan?"
@@ -5067,7 +5062,7 @@ msgstr ""
 msgid ""
 "Topic specifications require both a name and\n"
 "                a pattern.  Incomplete topics will be ignored."
-msgstr ""
+msgstr "Et emne krever både et navn og et uttrykk. Ufullstendige emner vil ikke bli tatt i bruk."
 
 #: Mailman/Gui/Usenet.py:25
 msgid "Mail&lt;-&gt;News&nbsp;gateways"
@@ -5136,7 +5131,7 @@ msgstr ""
 
 #: Mailman/Gui/Usenet.py:69
 msgid "Mass catchup completed"
-msgstr ""
+msgstr "Oppdatering fullført"
 
 #: Mailman/HTMLFormatter.py:46
 msgid "%(listinfo_link)s list run by %(owner_link)s"
@@ -5572,7 +5567,6 @@ msgid "Post by a moderated member"
 msgstr "Melding sendt av et moderert medlem"
 
 #: Mailman/Handlers/Moderate.py:129
-#, fuzzy
 msgid ""
 "You are not allowed to post to this mailing list, and your message has been\n"
 "automatically rejected.  If you think that your messages are being rejected "
@@ -5591,7 +5585,7 @@ msgstr "Automatisk melding: din epost ble avvist"
 
 #: Mailman/Handlers/Moderate.py:147
 msgid "The attached message has been automatically discarded."
-msgstr ""
+msgstr "Den vedlagte meldingen er automatisk forkastet."
 
 #: Mailman/Handlers/Replybot.py:66
 msgid "Auto-response for your message to "
@@ -5698,7 +5692,6 @@ msgid "Posting of your message titled \"%(subject)s\""
 msgstr "Din melding med tittel \"%(subject)s\""
 
 #: Mailman/ListAdmin.py:308
-#, fuzzy
 msgid "Forward of moderated message"
 msgstr "Videresending av moderert melding"
 
@@ -5800,14 +5793,12 @@ msgid "Mailing list removal request for list %(listname)s"
 msgstr "Forespørsel om å fjerne epostlisten %(listname)s"
 
 #: Mailman/MTA/Postfix.py:299
-#, fuzzy
 msgid "checking permissions on %(file)s"
-msgstr "kontrollerer rettigheter for %(pwfile)s"
+msgstr "kontrollerer rettigheter for %(file)s"
 
 #: Mailman/MTA/Postfix.py:309
-#, fuzzy
 msgid "%(file)s permissions must be 066x (got %(octmode)s)"
-msgstr "rettighetene på %(DBFILE)s må være 066x (men er %(octmode)s)"
+msgstr "rettighetene på %(file)s må være 066x (men er %(octmode)s)"
 
 #: Mailman/MTA/Postfix.py:311 Mailman/MTA/Postfix.py:337 bin/check_perms:101
 #: bin/check_perms:123 bin/check_perms:142 bin/check_perms:160
@@ -5817,14 +5808,12 @@ msgid "(fixing)"
 msgstr "(fixer)"
 
 #: Mailman/MTA/Postfix.py:327
-#, fuzzy
 msgid "checking ownership of %(dbfile)s"
-msgstr "undersøker eierskap på filen %(DBFILE)s"
+msgstr "undersøker eierskap på filen %(dbbfile)s"
 
 #: Mailman/MTA/Postfix.py:334
-#, fuzzy
 msgid "%(dbfile)s owned by %(owner)s (must be owned by Mailman)"
-msgstr "Filen %(DBFILE)s eies av %(owner)s (må eies av mailman)"
+msgstr "Filen %(dbfile)s eies av %(owner)s (må eies av mailman)"
 
 #: Mailman/MailCommandHandler.py:57
 msgid ""
@@ -5906,6 +5895,8 @@ msgid ""
 "the\n"
 "list and in either the To: or Cc: headers)."
 msgstr ""
+"Når denne er på, vil du *ikke* motta epost til listen som har deg som mottaker\n"
+"(f.eks. dersom din epostadresse både er medlem av listen og står i To: eller Cc: feltet)"
 
 #: Mailman/MailCommandHandler.py:217
 msgid ""
@@ -7296,7 +7287,6 @@ msgstr ""
 "NUM_LINES_TO_STRIP_FROM_TOP\n"
 
 #: bin/dumpdb:19
-#, fuzzy
 msgid ""
 "Dump the contents of any Mailman `database' file.\n"
 "\n"
@@ -7331,22 +7321,18 @@ msgstr ""
 "Valg:\n"
 "\n"
 "    --marshal / -m\n"
-"        Går ut ifra at filen inneholder en Python marshal, og overstyrer "
-"dermed\n"
+"        Går ut ifra at filen inneholder en Python marshal, og overstyrer dermed\n"
 "        automatisk oppdagelse av filformatet.\n"
 "\n"
 "    --pickle / -p\n"
-"        Går ut ifra at filen inneholder en Python pickle, og overstyrer "
-"dermed\n"
+"        Går ut ifra at filen inneholder en Python pickle, og overstyrer dermed\n"
 "        automatisk oppdagelse av filformatet.\n"
 "\n"
 "    --help / -h\n"
 "        Viser denne hjelpeteksten.\n"
 "\n"
-"Hvis filnavnet slutter på '.db', antar scriptet at filen inneholder en "
-"Python\n"
-"marshal. Hvis filnavnet slutter på '.pck', antar scriptet at filen "
-"inneholder\n"
+"Hvis filnavnet slutter på '.db', antar scriptet at filen inneholder en Python\n"
+"marshal. Hvis filnavnet slutter på '.pck', antar scriptet at filen inneholder\n"
 "en Python pickle. I begge tilfeller må du benytte -p eller -m flaggene hvis\n"
 "du ønsker å overstyre dette (eller hvis filnavnet ikke slutter på noen av\n"
 "delene).\n"
@@ -7641,7 +7627,6 @@ msgid "matching mailing lists found:"
 msgstr "treff på denne epostlisten:"
 
 #: bin/list_members:19
-#, fuzzy
 msgid ""
 "List all the members of a mailing list.\n"
 "\n"
@@ -7698,13 +7683,21 @@ msgstr ""
 "    -o filnavn\n"
 "        Skriver til en fil istedenfor standard output.\n"
 "\n"
-"    --regular\n"
-"    -r\n"
+"    --regular / -r\n"
 "        Viser kun medlemmer som benytter normal-modus.\n"
 "\n"
-"    --digest\n"
-"    -d\n"
+"    --digest[=type] / -d [type]\n"
 "        Viser kun medlemmer som benytter sammendrag-modus.\n"
+"        Den valgfrie parameteren kan enten være \"mime\" eller \"plain\",\n"
+"        som fører til at kun medlemmer med den angitte typen samle-epost\n"
+"        vil vises.\n"
+"\n"
+"    --nomail[=hvorfor] / -n [hvorfor]\n"
+"        Viser alle medlemmer som har stoppet mottak av epost.\n"
+"        Den valgfrie parameteren angir årsak til at mottak er stoppet, og\n"
+"        kan være \"byadmin\", \"byuser\", \"bybounce\", eller \"unknown\".\n"
+"        Den kan også være \"enabled\", da vil alle medlemmer som IKKE har\n"
+"        stoppet mottak av epost vises.\n"
 "\n"
 "    --preserve\n"
 "    -p\n"
@@ -7724,12 +7717,11 @@ msgstr ""
 
 #: bin/list_members:138
 msgid "Bad --nomail option: %(why)s"
-msgstr ""
+msgstr "Ugyldig --nomail parameter: %(why)s"
 
 #: bin/list_members:149
-#, fuzzy
 msgid "Bad --digest option: %(kind)s"
-msgstr "Innstillinger for sammendrag-modus"
+msgstr "Ugyldig --digest parameter: %(kind)s"
 
 #: bin/list_members:167
 msgid "Could not open file for writing:"
@@ -8482,7 +8474,6 @@ msgid "No runner name given."
 msgstr "Ingen runner navn ble angitt."
 
 #: bin/remove_members:19
-#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -8520,7 +8511,7 @@ msgid ""
 msgstr ""
 "Fjerner medlemmer fra en liste.\n"
 "\n"
-"Brukes slik: remove_members [valg] listenavn [addr1 ...]\n"
+"Brukes slik: remove_members [valg] [listenavn] [addr1 ...]\n"
 "\n"
 "Valg:\n"
 "\n"
@@ -8532,6 +8523,13 @@ msgstr ""
 "    --all\n"
 "    -a\n"
 "        Fjerner alle medlemmer av epostlisten.\n"
+"        (Kan ikke benyttes med --fromall)\n"
+"\n"
+"    --fromall\n"
+"        Fjerner de angitte epostadresser fra alle epostlister, uansett\n"
+"        domene hvis flere domener. Dette valget kan ikke benyttes sammen\n"
+"        med -a/--all. Du bør også ikke angi noe listenavn dersom du\n"
+"        benytter dette valget.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -8547,21 +8545,16 @@ msgid "Could not open file for reading: %(filename)s."
 msgstr "Kunne ikke åpne filen \"%(filename)s\" for lesing."
 
 #: bin/remove_members:135
-#, fuzzy
 msgid "Error opening list %(listname)s... skipping."
-msgstr ""
-"Hopper over listen \"%(listname)s\" grunnet feil under åpning.\n"
-"%(e)s"
+msgstr "Hopper over listen \"%(listname)s\" grunnet feil under åpning."
 
 #: bin/remove_members:145
-#, fuzzy
 msgid "No such member: %(addr)s"
-msgstr "Medlemmet finnes ikke: %(safeuser)s."
+msgstr "Medlemmet finnes ikke: %(addr)s."
 
 #: bin/remove_members:149
-#, fuzzy
 msgid "User `%(addr)s' removed from list: %(listname)s."
-msgstr "Forespørsel om å fjerne epostlisten %(listname)s"
+msgstr "%(addr)s er nå fjernet fra listen %(listname)s."
 
 #: bin/rmlist:19
 msgid ""
@@ -8975,7 +8968,7 @@ msgstr "- både %(o_tmpl)s og %(n_tmpl)s eksisterer, rører ikke disse"
 
 #: bin/update:357
 msgid "removing directory %(src)s and everything underneath"
-msgstr ""
+msgstr "fjerner katalogen %(src)s og alle underkataloger"
 
 #: bin/update:360
 msgid "removing %(src)s"
