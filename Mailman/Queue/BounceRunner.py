@@ -76,7 +76,7 @@ class BounceRunner(Runner):
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.
         if not addrs:
-            maybe_forward(mlist, msg, msgdata, outq)
+            maybe_forward(mlist, msg)
             return
         # BAW: It's possible that there are None's in the list of addresses,
         # although I'm unsure how that could happen.  Possibly ScanMessages()
@@ -129,7 +129,7 @@ class BounceRunner(Runner):
             # these, but do log it.
             syslog('bounce', 'bounce message with non-members: %s',
                    COMMASPACE.join(addrs))
-            maybe_forward(mlist, msg, msgdata, outq)
+            maybe_forward(mlist, msg)
 
 
 
@@ -165,7 +165,7 @@ def verp_bounce(mlist, msg):
 
 
 
-def maybe_forward(mlist, msg, msgdata, outq):
+def maybe_forward(mlist, msg):
     # Does the list owner want to get non-matching bounce messages?
     # If not, simply discard it.
     if mlist.bounce_unrecognized_goes_to_list_owner:
