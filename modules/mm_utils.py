@@ -5,7 +5,7 @@ message and address munging, a handy-dandy routine to map a function on all
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
 
-__version__ = "$Revision: 431 $"
+__version__ = "$Revision: 437 $"
 
 
 import sys, string, fcntl, os, random, regsub, re
@@ -82,6 +82,8 @@ def DeliverToUser(msg, recipient, add_headers=[]):
         if not msg.getheader('to'):
             msg.headers.append('To: %s\n' % recipient)
         for i in add_headers:
+            if i and i[-1] != '\n':
+                i = i + '\n'
             msg.headers.append(i)
         file.write(string.join(msg.headers, '')+ '\n') 
         file.write(QuotePeriods(msg.body))
