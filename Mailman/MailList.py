@@ -273,6 +273,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             ' separate archive-privacy settings.)'
             % os.path.join(self.GetScriptURL('admin'), 'archive'),
 
+	    "Subscribing",
+
 	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Advertise this list when people ask what lists are on '
 	     'this machine?'),
