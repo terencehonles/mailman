@@ -232,7 +232,7 @@ def subscription_cancel(mlist, doc, cookie):
 
 
 
-def subscription_confirm(mlist, doc, cookie, cgidata, badconfirmstr):
+def subscription_confirm(mlist, doc, cookie, cgidata):
     # See the comment in admin.py about the need for the signal
     # handler.
     def sigterm_handler(signum, frame, mlist=mlist):
