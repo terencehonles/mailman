@@ -39,7 +39,9 @@ from Mailman import Errors
 from Mailman.UserDesc import UserDesc
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
-from Mailman.i18n import _
+from Mailman import i18n
+
+_ = i18n._
 
 # Request types requiring admin approval
 IGN = 0
@@ -294,12 +296,21 @@ class ListAdmin:
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 raise Errors.LostHeldMessage(path)
-            fmsg = Message.UserNotification(addr,
-                                            self.GetAdminEmail(),
-                                            _('Forward of moderated  message'))
-            fmsg['Content-Type'] = 'message/rfc822'
-            fmsg['MIME-Version'] = '1.0'
-            fmsg.set_payload(copy)
+            # If the address getting the forwarded message is a member of the
+            # list, we want the headers of the outer message to be encoded in
+            # their language.  Otherwise it'll be the preferred language of
+            # the mailing list.
+            lang = self.getMemberLanguage(addr)
+            otrans = i18n.get_translation()
+            i18n.set_language(lang)
+            try:
+                fmsg = Message.UserNotification(
+                    addr, self.GetAdminEmail(),
+                    _('Forward of moderated message'),
+                    copy, lang)
+            finally:
+                i18n.set_translation(otrans)
+            fmsg.set_type('message/rfc822')
             fmsg.send(self)
         # Log the rejection
 	if rejection:
@@ -365,10 +376,8 @@ class ListAdmin:
             # This message should appear to come from the <list>-owner so as
             # to avoid any useless bounce processing.
             owneraddr = self.GetOwnerEmail()
-            msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
-            msg['MIME-Version'] = '1.0'
-            msg.add_header('Content-Type', 'text/plain',
-                           charset=Utils.GetCharSet(self.preferred_language))
+            msg = Message.UserNotification(owneraddr, owneraddr, subject, text,
+                                           self.preferred_language)
             msg.send(self, **{'tomoderators': 1})
 
     def __handlesubscription(self, record, value, comment):
