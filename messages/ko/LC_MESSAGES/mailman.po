@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
+"POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
 "PO-Revision-Date: 2002-03-28 19:21+09:00\n"
 "Last-Translator: Hyejin Soang, Wongyo Jung<redcloak@igrus.inha.ac.kr, "
 "andsoon@igrus.inha.ac.kr>\n"
@@ -1056,24 +1056,24 @@ msgid "Reason for refusal"
 msgstr "거절 이유"
 
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 msgid "Defer"
 msgstr "연기하기"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
-#: Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:609
 msgid "Approve"
 msgstr "승인하기"
 
 #: Mailman/Cgi/admindb.py:291 Mailman/Cgi/admindb.py:348
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "거절하기"
 
 #: Mailman/Cgi/admindb.py:292 Mailman/Cgi/admindb.py:349
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
@@ -1091,7 +1091,7 @@ msgstr "사용자 E메일주소/이름"
 msgid "Unsubscription Requests"
 msgstr "탈퇴 요청들"
 
-#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:590
+#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:593
 msgid "From:"
 msgstr "보낸이:"
 
@@ -1153,7 +1153,7 @@ msgstr "개인 메세지를 보기위해 메세지 번호를 클릭하세요."
 msgid "view all messages from %(esender)s"
 msgstr "%(esender)s 가 보낸 모든 메세지 보기"
 
-#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:596
 msgid "Subject:"
 msgstr "제목:"
 
@@ -1165,78 +1165,78 @@ msgstr " 바이트"
 msgid "Size:"
 msgstr "크기:"
 
-#: Mailman/Cgi/admindb.py:476 Mailman/Cgi/admindb.py:595
-msgid "Reason:"
-msgstr "이유:"
-
-#: Mailman/Cgi/admindb.py:477 Mailman/Handlers/Decorate.py:50
+#: Mailman/Cgi/admindb.py:479 Mailman/Handlers/Decorate.py:50
 #: Mailman/Handlers/Scrubber.py:226 Mailman/Handlers/Scrubber.py:227
 msgid "not available"
 msgstr "이용할 수 없숩니다."
 
-#: Mailman/Cgi/admindb.py:481 Mailman/Cgi/admindb.py:599
+#: Mailman/Cgi/admindb.py:480 Mailman/Cgi/admindb.py:598
+msgid "Reason:"
+msgstr "이유:"
+
+#: Mailman/Cgi/admindb.py:484 Mailman/Cgi/admindb.py:602
 #, fuzzy
 msgid "Received:"
 msgstr "묶음배달(Digest) 로 받을까요?"
 
-#: Mailman/Cgi/admindb.py:539
+#: Mailman/Cgi/admindb.py:542
 msgid "Posting Held for Approval"
 msgstr "승인을 기다리는 글"
 
-#: Mailman/Cgi/admindb.py:541
+#: Mailman/Cgi/admindb.py:544
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(total)d 의 %(count)d)"
 
-#: Mailman/Cgi/admindb.py:552
+#: Mailman/Cgi/admindb.py:555
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>ID #%(id)d 인 메세지를 읽어버렸습니다."
 
-#: Mailman/Cgi/admindb.py:561
+#: Mailman/Cgi/admindb.py:564
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>ID #%(id)d 인 메세지가 깨졌습니다."
 
-#: Mailman/Cgi/admindb.py:612
+#: Mailman/Cgi/admindb.py:615
 msgid "Action:"
 msgstr "행동:"
 
-#: Mailman/Cgi/admindb.py:616
+#: Mailman/Cgi/admindb.py:619
 msgid "Preserve message for site administrator"
 msgstr "사이트 관리자를 위해 메세지 보존하기"
 
-#: Mailman/Cgi/admindb.py:620
+#: Mailman/Cgi/admindb.py:623
 msgid "Additionally, forward this message to: "
 msgstr "게다가, 이 메세지를 다음 사람에게 전달: "
 
-#: Mailman/Cgi/admindb.py:624
+#: Mailman/Cgi/admindb.py:627
 msgid "[No explanation given]"
 msgstr "[설명이 없습니다.]"
 
-#: Mailman/Cgi/admindb.py:626
+#: Mailman/Cgi/admindb.py:629
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr "만약 이글을 거절한다면,<br>그 이유를 설명하세요.(선택사항):"
 
-#: Mailman/Cgi/admindb.py:632
+#: Mailman/Cgi/admindb.py:635
 msgid "Message Headers:"
 msgstr "메세지 헤더:"
 
-#: Mailman/Cgi/admindb.py:637
+#: Mailman/Cgi/admindb.py:640
 msgid "Message Excerpt:"
 msgstr "메세지 인용:"
 
-#: Mailman/Cgi/admindb.py:670 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:673 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "이유가 없습니다."
 
-#: Mailman/Cgi/admindb.py:731 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:734 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[이유가 없습니다]"
 
-#: Mailman/Cgi/admindb.py:760
+#: Mailman/Cgi/admindb.py:763
 msgid "Database Updated..."
 msgstr "DB 가 업데이트되었습니다..."
 
-#: Mailman/Cgi/admindb.py:763
+#: Mailman/Cgi/admindb.py:766
 msgid " is already a member"
 msgstr " 는 이미 회원입니다."
 
@@ -6635,31 +6635,31 @@ msgstr ""
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr "%(realname)s 메일링 리스트에서 탈퇴되셨습니다."
 
-#: Mailman/MailList.py:801 Mailman/MailList.py:1160
+#: Mailman/MailList.py:801 Mailman/MailList.py:1157
 msgid " from %(remote)s"
 msgstr "%(remote)s 부터"
 
-#: Mailman/MailList.py:838
+#: Mailman/MailList.py:835
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "%(realname)s 에 가입하기 위해서는 글관리자의 승인이 필요합니다."
 
-#: Mailman/MailList.py:897 bin/add_members:281
+#: Mailman/MailList.py:894 bin/add_members:281
 msgid "%(realname)s subscription notification"
 msgstr "%(realname)s 가입 공지"
 
-#: Mailman/MailList.py:912
+#: Mailman/MailList.py:909
 msgid "unsubscriptions require moderator approval"
 msgstr "탈퇴하기는 글관리자의 승인이 필요합니다."
 
-#: Mailman/MailList.py:931
+#: Mailman/MailList.py:928
 msgid "%(realname)s unsubscribe notification"
 msgstr "%(realname)s 탈퇴 공지"
 
-#: Mailman/MailList.py:1075
+#: Mailman/MailList.py:1072
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr "%(name)s 에 가입하기 위해서는 관리자의 승인이 필요합니다."
 
-#: Mailman/MailList.py:1329
+#: Mailman/MailList.py:1326
 msgid "Last autoresponse notification for today"
 msgstr ""
 
@@ -6977,7 +6977,7 @@ msgid ""
 "%(e)s"
 msgstr ""
 
-#: bin/arch:169
+#: bin/arch:170
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr ""
 

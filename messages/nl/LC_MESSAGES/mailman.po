@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
+"POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
 "PO-Revision-Date: 2002-10-27 02:54+GMT1\n"
 "Last-Translator: Danny Terweij <danny@terweij.nl>\n"
 "Language-Team: Dutch <danny@terweij.nl>\n"
@@ -1047,24 +1047,24 @@ msgid "Reason for refusal"
 msgstr "Reden voor weigering"
 
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 msgid "Defer"
 msgstr "Uitstellen"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
-#: Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:609
 msgid "Approve"
 msgstr "Toelaten"
 
 #: Mailman/Cgi/admindb.py:291 Mailman/Cgi/admindb.py:348
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "Niet toelaten"
 
 #: Mailman/Cgi/admindb.py:292 Mailman/Cgi/admindb.py:349
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
@@ -1082,7 +1082,7 @@ msgstr "Gebruiker adres/naam"
 msgid "Unsubscription Requests"
 msgstr "Afmeldings verzoeken"
 
-#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:590
+#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:593
 msgid "From:"
 msgstr "Van:"
 
@@ -1146,7 +1146,7 @@ msgstr ""
 msgid "view all messages from %(esender)s"
 msgstr "alle berichten bekijken van %(esender)s"
 
-#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:596
 msgid "Subject:"
 msgstr "Onderwerp:"
 
@@ -1158,77 +1158,77 @@ msgstr " bytes"
 msgid "Size:"
 msgstr "Grootte:"
 
-#: Mailman/Cgi/admindb.py:476 Mailman/Cgi/admindb.py:595
-msgid "Reason:"
-msgstr "Reden:"
-
-#: Mailman/Cgi/admindb.py:477 Mailman/Handlers/Decorate.py:50
+#: Mailman/Cgi/admindb.py:479 Mailman/Handlers/Decorate.py:50
 #: Mailman/Handlers/Scrubber.py:226 Mailman/Handlers/Scrubber.py:227
 msgid "not available"
 msgstr "niet beschikbaar"
 
-#: Mailman/Cgi/admindb.py:481 Mailman/Cgi/admindb.py:599
+#: Mailman/Cgi/admindb.py:480 Mailman/Cgi/admindb.py:598
+msgid "Reason:"
+msgstr "Reden:"
+
+#: Mailman/Cgi/admindb.py:484 Mailman/Cgi/admindb.py:602
 msgid "Received:"
 msgstr "Ontvangen:"
 
-#: Mailman/Cgi/admindb.py:539
+#: Mailman/Cgi/admindb.py:542
 msgid "Posting Held for Approval"
 msgstr "Bericht vastgehouden voor goedkeuring"
 
-#: Mailman/Cgi/admindb.py:541
+#: Mailman/Cgi/admindb.py:544
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(count)d van %(total)d)"
 
-#: Mailman/Cgi/admindb.py:552
+#: Mailman/Cgi/admindb.py:555
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>Bericht met id #%(id)d was verloren."
 
-#: Mailman/Cgi/admindb.py:561
+#: Mailman/Cgi/admindb.py:564
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>Bericht met id #%(id)d is beschadigd."
 
-#: Mailman/Cgi/admindb.py:612
+#: Mailman/Cgi/admindb.py:615
 msgid "Action:"
 msgstr "Aktie:"
 
-#: Mailman/Cgi/admindb.py:616
+#: Mailman/Cgi/admindb.py:619
 msgid "Preserve message for site administrator"
 msgstr "Stuur het bericht door aan de website beheerder"
 
-#: Mailman/Cgi/admindb.py:620
+#: Mailman/Cgi/admindb.py:623
 msgid "Additionally, forward this message to: "
 msgstr "Vervolgens, stuur het bericht door naar: "
 
-#: Mailman/Cgi/admindb.py:624
+#: Mailman/Cgi/admindb.py:627
 msgid "[No explanation given]"
 msgstr "[Geen uitleg gegeven]"
 
-#: Mailman/Cgi/admindb.py:626
+#: Mailman/Cgi/admindb.py:629
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr "Als het bericht niet is toegelaten,<br>Leg dan uit waarom (optioneel):"
 
-#: Mailman/Cgi/admindb.py:632
+#: Mailman/Cgi/admindb.py:635
 msgid "Message Headers:"
 msgstr "Bericht headers:"
 
-#: Mailman/Cgi/admindb.py:637
+#: Mailman/Cgi/admindb.py:640
 msgid "Message Excerpt:"
 msgstr "Bericht inhoud:"
 
-#: Mailman/Cgi/admindb.py:670 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:673 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "Geen reden opgegeven"
 
-#: Mailman/Cgi/admindb.py:731 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:734 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[Geen reden opgegeven]"
 
-#: Mailman/Cgi/admindb.py:760
+#: Mailman/Cgi/admindb.py:763
 msgid "Database Updated..."
 msgstr "De database is gewijzigd..."
 
-#: Mailman/Cgi/admindb.py:763
+#: Mailman/Cgi/admindb.py:766
 msgid " is already a member"
 msgstr " is al lid"
 
@@ -5945,31 +5945,31 @@ msgstr ""
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr ""
 
-#: Mailman/MailList.py:801 Mailman/MailList.py:1160
+#: Mailman/MailList.py:801 Mailman/MailList.py:1157
 msgid " from %(remote)s"
 msgstr ""
 
-#: Mailman/MailList.py:838
+#: Mailman/MailList.py:835
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr ""
 
-#: Mailman/MailList.py:897 bin/add_members:281
+#: Mailman/MailList.py:894 bin/add_members:281
 msgid "%(realname)s subscription notification"
 msgstr ""
 
-#: Mailman/MailList.py:912
+#: Mailman/MailList.py:909
 msgid "unsubscriptions require moderator approval"
 msgstr ""
 
-#: Mailman/MailList.py:931
+#: Mailman/MailList.py:928
 msgid "%(realname)s unsubscribe notification"
 msgstr ""
 
-#: Mailman/MailList.py:1075
+#: Mailman/MailList.py:1072
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr ""
 
-#: Mailman/MailList.py:1329
+#: Mailman/MailList.py:1326
 msgid "Last autoresponse notification for today"
 msgstr ""
 
@@ -6281,7 +6281,7 @@ msgid ""
 "%(e)s"
 msgstr ""
 
-#: bin/arch:169
+#: bin/arch:170
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr ""
 

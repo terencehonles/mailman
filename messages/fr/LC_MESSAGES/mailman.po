@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
+"POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
 "PO-Revision-Date: 2002-08-14 01:18:58+00:00\n"
 "Last-Translator: Ousmane Wilane <wilane@cyg.sn>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
@@ -1074,24 +1074,24 @@ msgid "Reason for refusal"
 msgstr "Motifs du refus"
 
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 msgid "Defer"
 msgstr "Repousser"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
-#: Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:609
 msgid "Approve"
 msgstr "Approuver"
 
 #: Mailman/Cgi/admindb.py:291 Mailman/Cgi/admindb.py:348
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "Rejeter"
 
 #: Mailman/Cgi/admindb.py:292 Mailman/Cgi/admindb.py:349
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
@@ -1109,7 +1109,7 @@ msgstr "Adresse/nom de l'abonné"
 msgid "Unsubscription Requests"
 msgstr "Requêtes de résiliation d'abonnement"
 
-#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:590
+#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:593
 msgid "From:"
 msgstr "De:"
 
@@ -1173,7 +1173,7 @@ msgstr ""
 msgid "view all messages from %(esender)s"
 msgstr "visualisez tous les messages de %(esender)s"
 
-#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:596
 msgid "Subject:"
 msgstr "Objet:"
 
@@ -1185,79 +1185,79 @@ msgstr " octets"
 msgid "Size:"
 msgstr "Taille:"
 
-#: Mailman/Cgi/admindb.py:476 Mailman/Cgi/admindb.py:595
-msgid "Reason:"
-msgstr "Motif:"
-
-#: Mailman/Cgi/admindb.py:477 Mailman/Handlers/Decorate.py:50
+#: Mailman/Cgi/admindb.py:479 Mailman/Handlers/Decorate.py:50
 #: Mailman/Handlers/Scrubber.py:226 Mailman/Handlers/Scrubber.py:227
 msgid "not available"
 msgstr "non disponible"
 
-#: Mailman/Cgi/admindb.py:481 Mailman/Cgi/admindb.py:599
+#: Mailman/Cgi/admindb.py:480 Mailman/Cgi/admindb.py:598
+msgid "Reason:"
+msgstr "Motif:"
+
+#: Mailman/Cgi/admindb.py:484 Mailman/Cgi/admindb.py:602
 #, fuzzy
 msgid "Received:"
 msgstr "Recevoir les messages groupés?"
 
-#: Mailman/Cgi/admindb.py:539
+#: Mailman/Cgi/admindb.py:542
 msgid "Posting Held for Approval"
 msgstr "Soumission mise en attente d'approbation"
 
-#: Mailman/Cgi/admindb.py:541
+#: Mailman/Cgi/admindb.py:544
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(count)d de %(total)d)"
 
-#: Mailman/Cgi/admindb.py:552
+#: Mailman/Cgi/admindb.py:555
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>Message avec l'id #%(id)d perdu."
 
-#: Mailman/Cgi/admindb.py:561
+#: Mailman/Cgi/admindb.py:564
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>Le message avec comme id #%(id)d est altéré."
 
-#: Mailman/Cgi/admindb.py:612
+#: Mailman/Cgi/admindb.py:615
 msgid "Action:"
 msgstr "Action:"
 
-#: Mailman/Cgi/admindb.py:616
+#: Mailman/Cgi/admindb.py:619
 msgid "Preserve message for site administrator"
 msgstr "Concerver les messages pour l'administrateur du site"
 
-#: Mailman/Cgi/admindb.py:620
+#: Mailman/Cgi/admindb.py:623
 msgid "Additionally, forward this message to: "
 msgstr "De plus, faire suivre ce message à:"
 
-#: Mailman/Cgi/admindb.py:624
+#: Mailman/Cgi/admindb.py:627
 msgid "[No explanation given]"
 msgstr "[Aucun motif fournit]"
 
-#: Mailman/Cgi/admindb.py:626
+#: Mailman/Cgi/admindb.py:629
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr ""
 "Si vous rejettez cette soumissions, <b>veillez vous expliquer (facultatif):"
 
-#: Mailman/Cgi/admindb.py:632
+#: Mailman/Cgi/admindb.py:635
 msgid "Message Headers:"
 msgstr "En-tête de message:"
 
-#: Mailman/Cgi/admindb.py:637
+#: Mailman/Cgi/admindb.py:640
 msgid "Message Excerpt:"
 msgstr "Extrait du message:"
 
-#: Mailman/Cgi/admindb.py:670 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:673 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "Sans motif"
 
-#: Mailman/Cgi/admindb.py:731 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:734 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[aucun motif fourni]"
 
-#: Mailman/Cgi/admindb.py:760
+#: Mailman/Cgi/admindb.py:763
 msgid "Database Updated..."
 msgstr "Base de données mise à jour..."
 
-#: Mailman/Cgi/admindb.py:763
+#: Mailman/Cgi/admindb.py:766
 msgid " is already a member"
 msgstr " est déjà abonné"
 
@@ -7273,32 +7273,32 @@ msgstr "%(dbfile)s appartient à %(owner)s (doit appartenir à Mailman)"
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr "Vous êtes invité à vous abonner à la liste %(listname)s"
 
-#: Mailman/MailList.py:801 Mailman/MailList.py:1160
+#: Mailman/MailList.py:801 Mailman/MailList.py:1157
 msgid " from %(remote)s"
 msgstr " A partir de %(remote)s"
 
-#: Mailman/MailList.py:838
+#: Mailman/MailList.py:835
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "les abonnements a %(realname)s nécessitent l'approbation du modérateur"
 
-#: Mailman/MailList.py:897 bin/add_members:281
+#: Mailman/MailList.py:894 bin/add_members:281
 msgid "%(realname)s subscription notification"
 msgstr "notification d'abonnement de %(realname)s"
 
-#: Mailman/MailList.py:912
+#: Mailman/MailList.py:909
 msgid "unsubscriptions require moderator approval"
 msgstr "Les résiliations d'abonnements nécessitent l'approbation du modérateur"
 
-#: Mailman/MailList.py:931
+#: Mailman/MailList.py:928
 msgid "%(realname)s unsubscribe notification"
 msgstr "notification de résiliation de %(realname)s"
 
-#: Mailman/MailList.py:1075
+#: Mailman/MailList.py:1072
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr ""
 "L'abonnement à la liste %(name)s requiert une approbation de l'administrateur"
 
-#: Mailman/MailList.py:1329
+#: Mailman/MailList.py:1326
 msgid "Last autoresponse notification for today"
 msgstr "Dernier avis d'envoi de réponse automatique pour la journée"
 
@@ -7711,7 +7711,7 @@ msgstr ""
 "Liste \"%(listname)s\" introuvable\n"
 "%(e)s"
 
-#: bin/arch:169
+#: bin/arch:170
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr "Impossible d'ouvrir le fichier mbox %(mbox)s: %(msg)s"
 

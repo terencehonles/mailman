@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman v2.1\n"
-"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
-"PO-Revision-Date: $Date: 2002-12-11 13:57:06 +0000 (Wed, 11 Dec 2002) $\n"
+"POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
+"PO-Revision-Date: $Date: 2002-12-12 15:03:50 +0000 (Thu, 12 Dec 2002) $\n"
 "Last-Translator: Mikhail Sobolev <mss@mawhrin.net>\n"
 "Language-Team: Russian <mailman-ru@only.mawhrin.net>\n"
 "MIME-Version: 1.0\n"
@@ -1024,24 +1024,24 @@ msgid "Reason for refusal"
 msgstr "Причина отказа"
 
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 msgid "Defer"
 msgstr "Отложить"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
-#: Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:609
 msgid "Approve"
 msgstr "Одобрить"
 
 #: Mailman/Cgi/admindb.py:291 Mailman/Cgi/admindb.py:348
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "Отказать"
 
 #: Mailman/Cgi/admindb.py:292 Mailman/Cgi/admindb.py:349
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:606
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
@@ -1059,7 +1059,7 @@ msgstr "Адрес/имя пользователя"
 msgid "Unsubscription Requests"
 msgstr "Запросы на прекращение подписки"
 
-#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:590
+#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:593
 msgid "From:"
 msgstr "От:"
 
@@ -1119,7 +1119,7 @@ msgstr ""
 msgid "view all messages from %(esender)s"
 msgstr ""
 
-#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:596
 msgid "Subject:"
 msgstr "Тема:"
 
@@ -1132,77 +1132,77 @@ msgstr " байт"
 msgid "Size:"
 msgstr "Размер:"
 
-#: Mailman/Cgi/admindb.py:476 Mailman/Cgi/admindb.py:595
-msgid "Reason:"
-msgstr "Причина:"
-
-#: Mailman/Cgi/admindb.py:477 Mailman/Handlers/Decorate.py:50
+#: Mailman/Cgi/admindb.py:479 Mailman/Handlers/Decorate.py:50
 #: Mailman/Handlers/Scrubber.py:226 Mailman/Handlers/Scrubber.py:227
 msgid "not available"
 msgstr "отсутствует"
 
-#: Mailman/Cgi/admindb.py:481 Mailman/Cgi/admindb.py:599
+#: Mailman/Cgi/admindb.py:480 Mailman/Cgi/admindb.py:598
+msgid "Reason:"
+msgstr "Причина:"
+
+#: Mailman/Cgi/admindb.py:484 Mailman/Cgi/admindb.py:602
 msgid "Received:"
 msgstr "Полученное:"
 
-#: Mailman/Cgi/admindb.py:539
+#: Mailman/Cgi/admindb.py:542
 msgid "Posting Held for Approval"
 msgstr "Сообщение отложено на рассмотрение"
 
-#: Mailman/Cgi/admindb.py:541
+#: Mailman/Cgi/admindb.py:544
 msgid " (%(count)d of %(total)d)"
 msgstr ""
 
-#: Mailman/Cgi/admindb.py:552
+#: Mailman/Cgi/admindb.py:555
 msgid "<em>Message with id #%(id)d was lost."
 msgstr ""
 
-#: Mailman/Cgi/admindb.py:561
+#: Mailman/Cgi/admindb.py:564
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr ""
 
-#: Mailman/Cgi/admindb.py:612
+#: Mailman/Cgi/admindb.py:615
 msgid "Action:"
 msgstr "Действие:"
 
-#: Mailman/Cgi/admindb.py:616
+#: Mailman/Cgi/admindb.py:619
 msgid "Preserve message for site administrator"
 msgstr "Сохранить сообщение для администратора сервера"
 
-#: Mailman/Cgi/admindb.py:620
+#: Mailman/Cgi/admindb.py:623
 msgid "Additionally, forward this message to: "
 msgstr "Также отправить сообщение по этим адресам: "
 
-#: Mailman/Cgi/admindb.py:624
+#: Mailman/Cgi/admindb.py:627
 msgid "[No explanation given]"
 msgstr "[объяснение отсутствует]"
 
-#: Mailman/Cgi/admindb.py:626
+#: Mailman/Cgi/admindb.py:629
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr ""
 
-#: Mailman/Cgi/admindb.py:632
+#: Mailman/Cgi/admindb.py:635
 msgid "Message Headers:"
 msgstr "Заголовки сообщения:"
 
-#: Mailman/Cgi/admindb.py:637
+#: Mailman/Cgi/admindb.py:640
 msgid "Message Excerpt:"
 msgstr "Выдержка из сообщения:"
 
-#: Mailman/Cgi/admindb.py:670 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:673 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "Причина не указана"
 
-#: Mailman/Cgi/admindb.py:731 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:734 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[Причина не указана]"
 
-#: Mailman/Cgi/admindb.py:760
+#: Mailman/Cgi/admindb.py:763
 msgid "Database Updated..."
 msgstr "База данных обновлена..."
 
-#: Mailman/Cgi/admindb.py:763
+#: Mailman/Cgi/admindb.py:766
 msgid " is already a member"
 msgstr " уже является подписчиком"
 
@@ -5884,31 +5884,31 @@ msgstr ""
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr ""
 
-#: Mailman/MailList.py:801 Mailman/MailList.py:1160
+#: Mailman/MailList.py:801 Mailman/MailList.py:1157
 msgid " from %(remote)s"
 msgstr ""
 
-#: Mailman/MailList.py:838
+#: Mailman/MailList.py:835
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "подписка на %(realname)s требует подтверждения модератора"
 
-#: Mailman/MailList.py:897 bin/add_members:281
+#: Mailman/MailList.py:894 bin/add_members:281
 msgid "%(realname)s subscription notification"
 msgstr ""
 
-#: Mailman/MailList.py:912
+#: Mailman/MailList.py:909
 msgid "unsubscriptions require moderator approval"
 msgstr "удаление подписки требует подтверждения модератора"
 
-#: Mailman/MailList.py:931
+#: Mailman/MailList.py:928
 msgid "%(realname)s unsubscribe notification"
 msgstr ""
 
-#: Mailman/MailList.py:1075
+#: Mailman/MailList.py:1072
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr "подписка на %(name)s требует одобрения администратора"
 
-#: Mailman/MailList.py:1329
+#: Mailman/MailList.py:1326
 msgid "Last autoresponse notification for today"
 msgstr ""
 
@@ -6230,7 +6230,7 @@ msgstr ""
 "Нет такого списка рассылки: \"%(listname)s\"\n"
 "%(e)s"
 
-#: bin/arch:169
+#: bin/arch:170
 msgid "Cannot open mbox file %(mbox)s: %(msg)s"
 msgstr "Не удалось открыть файл %(mbox)s: %(msg)s"
 
