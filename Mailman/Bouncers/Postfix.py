@@ -59,6 +59,7 @@ pcre = re.compile(r'\t\t\tthe postfix program$', re.IGNORECASE)
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
 def findaddr(fp):
+    addrs = []
     # simple state machine
     #     0 == nothing found
     #     1 == salutation found
@@ -66,7 +67,7 @@ def findaddr(fp):
     while 1:
         line = fp.readline()
         if not line:
-            return None
+            break
         # preserve leading whitespace
         line = string.rstrip(line)
         # yes use match to match at beginning of string
@@ -75,6 +76,6 @@ def findaddr(fp):
         elif state == 1 and line:
             mo = acre.search(line)
             if mo:
-                return [mo.group('addr')]
-            # hmm, probably not a postfix bounce
-            return None
+                addrs.append(mo.group('addr'))
+            # probably a continuation line
+    return addrs or None
