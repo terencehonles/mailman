@@ -17,6 +17,9 @@ setting by using the value as a format string against the
 list-instance-object's dictionary - see the distributed value of
 DEFAULT_MSG_FOOTER for an example."""
 
+#######################################################
+#    Here's where we get the distributed defaults.    #
+
 from mm_defaults import *
 
 #######################################################
