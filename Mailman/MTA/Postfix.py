@@ -26,7 +26,15 @@ import errno
 import pwd
 import fcntl
 from stat import *
-import bsddb
+
+# Python's BerkeleyDB support is simply broken, IMO.  The best advice I can
+# give is that if you are having problems, download and install PyBSDDB3, from
+# pybsddb.sf.net, install it, and use it by (possibly) editing the following
+# lines.
+try:
+    import bsddb
+except ImportError:
+    import bsddb3 as bsddb
 
 from Mailman import mm_cfg
 from Mailman import Utils
