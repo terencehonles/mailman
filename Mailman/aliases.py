@@ -30,7 +30,7 @@ for _line in _lines:
     _cur_line = _cur_line + _line
     continue
   if _cur_line:
-    _AddAlias(_curline)
+    _AddAlias(_cur_line)
   _cur_line = _line
   
 def GetAlias(str):
