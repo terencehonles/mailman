@@ -39,8 +39,8 @@ CFLAGS=		$(OPT) $(DEFS)
 TESTDIR=	$(prefix)/tests
 SHELL=		/bin/sh
 
-TEST_MODULES=	test*.py *Base.py
-EXECS=  	onebounce.py fblast.py
+TEST_MODULES=	$(srcdir)/test*.py $(srcdir)/*Base.py
+EXECS=  	$(srcdir)/onebounce.py $(srcdir)/fblast.py
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but

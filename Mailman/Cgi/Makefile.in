@@ -59,7 +59,7 @@ all:
 install:
 	for f in $(CGI_MODULES); \
 	do \
-	    $(INSTALL) -m $(FILEMODE) $$f $(CGIDIR); \
+	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(CGIDIR); \
         done
 
 finish:

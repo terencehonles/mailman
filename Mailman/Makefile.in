@@ -41,7 +41,7 @@ CFLAGS=		$(OPT) $(DEFS)
 PACKAGEDIR= 	$(prefix)/Mailman
 SHELL=		/bin/sh
 
-MODULES=	*.py
+MODULES=	$(srcdir)/*.py
 SUBDIRS=	Cgi Logging Archiver Handlers Bouncers Queue MTA Gui Commands
 
 # Modes for directories and executables created by the install

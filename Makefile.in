@@ -89,7 +89,7 @@ doinstall: $(SUBDIRS)
 	    dir=$(var_prefix)/$$d; \
 	    if test ! -d $$dir; then \
 		echo "Creating directory hierarchy $$dir"; \
-		./mkinstalldirs $$dir; \
+		$(srcdir)/mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
 		$(DIRSETGID) $$dir; \
 	    else true; \
@@ -101,7 +101,7 @@ doinstall: $(SUBDIRS)
 	    dir=$(prefix)/$$d; \
 	    if test ! -d $$dir; then \
 		echo "Creating directory hierarchy $$dir"; \
-		./mkinstalldirs $$dir; \
+		$(srcdir)/mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
 		$(DIRSETGID) $$dir; \
 	    else true; \
@@ -113,7 +113,7 @@ doinstall: $(SUBDIRS)
 	    dir=$(exec_prefix)/$$d; \
 	    if test ! -d $$dir; then \
 		echo "Creating directory hierarchy $$dir"; \
-		./mkinstalldirs $$dir; \
+		$(srcdir)/mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
 		$(DIRSETGID) $$dir; \
 	    else true; \

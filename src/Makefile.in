@@ -98,10 +98,10 @@ mailman: $(srcdir)/mail-wrapper.c $(COMMONOBJS)
 $(CGI_PROGS): $(srcdir)/cgi-wrapper.c $(COMMONOBJS)
 	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) $(COMMONOBJS) -o $@ $(srcdir)/cgi-wrapper.c
 
-common.o: $(srcdir)/common.c $(srcdir)/common.h $(srcdir)/Makefile
+common.o: $(srcdir)/common.c $(srcdir)/common.h Makefile
 	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $(srcdir)/common.c
 
-vsnprintf.o: $(srcdir)/vsnprintf.c $(srcdir)/Makefile
+vsnprintf.o: $(srcdir)/vsnprintf.c Makefile
 	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $(srcdir)/vsnprintf.c
 
 install: all

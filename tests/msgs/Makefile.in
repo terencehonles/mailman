@@ -39,7 +39,7 @@ CFLAGS=		$(OPT) $(DEFS)
 MSGSDIR=	$(prefix)/tests/msgs
 SHELL=		/bin/sh
 
-MSG_FILES=	*.txt
+MSG_FILES=	$(srcdir)/*.txt
 
 
 # Modes for directories and executables created by the install

@@ -66,7 +66,7 @@ DATAMODE=	664
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 
 PATHSDIRS=	bin cron scripts tests
-ICONS=		*.jpg *.png
+ICONS=		$(srcdir)/*.jpg $(srcdir)/*.png
 
 # Rules
 
@@ -86,7 +86,7 @@ install-other:
 install-packages:
 	for p in $(PACKAGES); \
 	do \
-	    gunzip -c $$p.tar.gz | tar xf -; \
+	    gunzip -c $(srcdir)/$$p.tar.gz | tar xf -; \
 	    (cd $$p ; umask 02 ; PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(SETUPCMD)); \
 	done
 

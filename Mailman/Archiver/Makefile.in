@@ -59,7 +59,7 @@ all:
 install: 
 	for f in $(MODULES); \
 	do \
-	    $(INSTALL) -m $(FILEMODE) $$f $(PACKAGEDIR); \
+	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(PACKAGEDIR); \
 	done
 
 finish:

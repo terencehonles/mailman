@@ -61,11 +61,11 @@ all:
 install:
 	for f in $(SCRIPTS); \
 	do \
-	    $(INSTALL) -m $(FILEMODE) $$f $(SCRIPTSDIR); \
+	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(SCRIPTSDIR); \
 	done
-	$(INSTALL) -m $(FILEMODE) bounces $(SCRIPTSDIR)/admin
-	$(INSTALL) -m $(FILEMODE) join    $(SCRIPTSDIR)/subscribe
-	$(INSTALL) -m $(FILEMODE) leave   $(SCRIPTSDIR)/unsubscribe
+	$(INSTALL) -m $(FILEMODE) $(srcdir)/bounces $(SCRIPTSDIR)/admin
+	$(INSTALL) -m $(FILEMODE) $(srcdir)/join    $(SCRIPTSDIR)/subscribe
+	$(INSTALL) -m $(FILEMODE) $(srcdir)/leave   $(SCRIPTSDIR)/unsubscribe
 
 finish:
 

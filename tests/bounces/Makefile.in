@@ -39,7 +39,7 @@ CFLAGS=		$(OPT) $(DEFS)
 BOUNCEDIR=	$(prefix)/tests/bounces
 SHELL=		/bin/sh
 
-BOUNCE_FILES=	*.txt
+BOUNCE_FILES=	$(srcdir)/*.txt
 
 
 # Modes for directories and executables created by the install
