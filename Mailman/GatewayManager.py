@@ -57,26 +57,20 @@ class GatewayManager:
              'to the list?')
             ]
 
-    # Watermarks are kept externally to avoid locking problems.
-    def PollNewsGroup(self, watermark):
-        if (not self.gateway_to_mail or not self.nntp_host or
-            not self.linked_newsgroup):
-            return 0
+    # This function is called from cron/gate_news and assumes the following
+    # have been asserted:
+    # - that the list gates from news to mail
+    # - that list has an nntp_host and linked_newsgroup
+    # - that the connection has been opened
+    # - that this method is run in a child process
+    # - that the watermark is non-zero
+    def PollNewsGroup(self, conn, wm, first, last):
         import nntplib
-        con = nntplib.NNTP(self.nntp_host)
-        r,c,f,l,n = con.group(self.linked_newsgroup)
-        # the (estimated)count, first, and last are numbers returned as
-        # string. We use them as numbers throughout
-        c = int(c)
-        f = int(f)
-        l = int(l)
-        # NEWNEWS is not portable and has synchronization issues...
-        # Use a watermark system instead.
-        if watermark == 0:
-            return l
-        for num in range(max(watermark+1, f, l+1)):
+        # NEWNEWS is not portable and has synchronization issues...  Use a
+        # watermark system instead.
+        for num in range(max(wm+1, first), last+1):
             try:
-                headers = con.head(`num`)[3]
+                headers = conn.head(`num`)[3]
                 found_to = 0
                 for header in headers:
                     i = string.find(header, ':')
@@ -86,7 +80,7 @@ class GatewayManager:
                         continue
                     if header[i:] == ': %s' % self.GetListEmail():
                         raise QuickEscape
-                body = con.body(`num`)[3]
+                body = conn.body(`num`)[3]
                 # Create the pipe to the Mail posting script.  Note that it is
                 # not installed executable, so we'll tack on the path to
                 # Python we discovered when we configured Mailman
@@ -105,9 +99,8 @@ class GatewayManager:
                 file.close()
             except nntplib.error_temp:
                 pass # Probably canceled, etc...        
-            except "QuickEscape":
+            except QuickEscape:
                 pass # We gated this TO news, don't repost it!
-        return l
                                 
     def SendMailToNewsGroup(self, mail_msg):
         import Message
