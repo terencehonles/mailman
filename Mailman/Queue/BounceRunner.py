@@ -16,6 +16,9 @@
 
 """Bounce queue runner."""
 
+import re
+from email.Utils import parseaddr
+
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
@@ -90,33 +93,29 @@ class BounceRunner(Runner):
 
     def __verpbounce(self, mlist, msg):
         bmailbox, bdomain = Utils.ParseEmail(mlist.getListAddress('bounces'))
-        if msg.get('to', '').startswith(bmailbox):
-            i = len(bmailbox)
-            mailbox, domain = Utils.ParseEmail(msg['to'])
-            encaddr = mailbox[i+1:]
-            # Find the right-most = sign.  BAW: hardcoded. :(
-            i = encaddr.rfind('=')
-            if i > 0:
-               addr = encaddr[:i] + '@' + encaddr[i+1:]
-               # Now, if this message has come to the site list, then
-               # search not only it, but all the mailing lists on the
-               # system, registering a bounce with each for this address.
-               if mlist.internal_name() == mm_cfg.MAILMAN_SITE_LIST:
-                   found = 0
-                   for listname in Utils.list_names():
-                       xlist = MailList.MailList(listname, lock=0)
-                       if xlist.isMember(addr):
-                           xlist.Lock()
-                           try:
-                               xlist.RegisterBounce(addr, msg)
-                               found = 1
-                               xlist.Save()
-                           finally:
-                               xlist.Unlock()
-                   return found
-               elif mlist.isMember(addr):
-                   mlist.RegisterBounce(addr, msg)
-                   return 1
+        to = msg.get('to', '')
+        mo = re.search(mm_cfg.VERP_REGEXP, parseaddr(to)[1])
+        if to.startswith(bmailbox) and mo:
+            addr = '%s@%s' % mo.group('mailbox', 'host')
+            # Now, if this message has come to the site list, then search not
+            # only it, but all the mailing lists on the system, registering a
+            # bounce with each for this address.
+            if mlist.internal_name() == mm_cfg.MAILMAN_SITE_LIST:
+                found = 0
+                for listname in Utils.list_names():
+                    xlist = MailList.MailList(listname, lock=0)
+                    if xlist.isMember(addr):
+                        xlist.Lock()
+                        try:
+                            xlist.RegisterBounce(addr, msg)
+                            found = 1
+                            xlist.Save()
+                        finally:
+                            xlist.Unlock()
+                return found
+            elif mlist.isMember(addr):
+                mlist.RegisterBounce(addr, msg)
+                return 1
         return 0
 
     def __scanbounce(self, mlist, msg):
