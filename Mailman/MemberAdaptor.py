@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -190,7 +190,7 @@ class MemberAdaptor:
         """Return the list of members with a matching delivery status.
 
         Optional `status' if given, must be a sequence containing one or more
-        of ENABLED, UNKNOWN, BYCHOICE, or BYBOUNCE.  The members whose
+        of ENABLED, UNKNOWN, BYUSER, BYADMIN, or BYBOUNCE.  The members whose
         delivery status is in this sequence are returned.
         """
         raise NotImplemented
