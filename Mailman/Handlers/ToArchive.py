@@ -28,4 +28,4 @@ def process(mlist, msg, msgdata):
     if archivep and string.lower(archivep) == 'no':
         return
     # TBD: this needs to be converted to the new pipeline machinery
-    mlist.ArchiveMail(msg)
+    mlist.ArchiveMail(msg, msgdata)
