@@ -211,18 +211,18 @@ def GetPathPieces(path):
     return l
 
 
-nesting_level = None
+_nesting_level = None
 def GetNestingLevel():
-  global nesting_level
-  if nesting_level == None:
-    try:
-      path = os.environ['PATH_INFO']
-      if path[0] <> '/': 
-        path= '/' + path
-      nesting_level = len(string.split(path, '/')) - 1
-    except KeyError:
-      nesting_level = 0
-  return nesting_level
+    global _nesting_level
+    if _nesting_level == None:
+        try:
+            path = os.environ['PATH_INFO']
+            if path[0] <> '/': 
+                path= '/' + path
+            _nesting_level = len(string.split(path, '/')) - 1
+        except KeyError:
+            _nesting_level = 0
+    return _nesting_level
 
 
 
