@@ -26,6 +26,7 @@ import marshal
 import string
 import errno
 import re
+import shutil
 from types import StringType, IntType, DictType, ListType
 from urlparse import urlparse
 
@@ -817,13 +818,14 @@ it will not be changed."""),
 	finally:
 	    os.umask(ou)
 	
-    def __save(self, dict, fname):
-        # we want to write this dict in a marshal, but be especially paranoid
+    def __save(self, dict):
+        # We want to write this dict in a marshal, but be especially paranoid
         # about how we write the config.db, so we'll be as robust as possible
         # in the face of, e.g. disk full errors.  The idea is that we want to
         # guarantee that config.db is always valid.  The old way had the bad
         # habit of writing an incomplete file, which happened to be a valid
         # (but bogus) marshal.
+        fname = os.path.join(self._full_path, 'config.db')
         fname_tmp = fname + '.tmp.%d' % os.getpid()
         fname_last = fname + '.last'
         fp = None
@@ -876,19 +878,36 @@ it will not be changed."""),
         # list members' passwords (in clear text).
         omask = os.umask(007)
         try:
-            self.__save(dict, os.path.join(self._full_path, 'config.db'))
+            self.__save(dict)
         finally:
             os.umask(omask)
             self.SaveRequestsDb()
         self.CheckHTMLArchiveDir()
 
     def Load(self, check_version=1):
+        # We first try to load config.db, which contains the up-to-date
+        # version of the database.  If that fails, perhaps because it is
+        # corrupted or missing, then we load config.db.last as a fallback.
+        dbfile = os.path.join(self._full_path, 'config.db')
+        lastfile = dbfile + '.last'
+        try:
+            fp = open(dbfile)
+        except IOError, e:
+            if e.errno == errno.ENOENT:
+                # Attempt to open config.db.last
+                try:
+                    fp = open(lastfile)
+                except IOError, e:
+                    if e.errno == errno.ENOENT:
+                        raise Errors.MMUnknownListError, e
+                    else:
+                        raise
+                # We got config.db.last, so now copy that to config.db
+                shutil.copy(lastfile, dbfile)
+            else:
+                raise
 	try:
-	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
-	except IOError, e:
-	    raise Errors.MMUnknownListError, e
-	try:
-	    dict = marshal.load(file)
+	    dict = marshal.load(fp)
             if type(dict) <> DictType:
                 self.Unlock()
                 raise Errors.MMCorruptListDatabaseError(
@@ -897,7 +916,7 @@ it will not be changed."""),
             raise Errors.MMCorruptListDatabaseError, e
 	for key, value in dict.items():
 	    setattr(self, key, value)
-	file.close()
+	fp.close()
 	self._ready = 1
         if check_version:
             self.CheckValues()
