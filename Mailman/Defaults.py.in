@@ -188,10 +188,12 @@ SMTPPORT = 0                                      # default from smtplib
 # when DELIVERY_MODULE is 'Sendmail'.
 SENDMAIL_CMD = '/usr/lib/sendmail'
 
-# Allow for handling of MTA-specific features (i.e. aliases).  Most MTAs use
-# "sendmail" (including Sendmail, Postfix, and Exim).  Qmail uses the "qmail"
-# style.
-MTA_ALIASES_STYLE = 'sendmail'
+# MTA should name the mail transport agent you use.  This is actually the name
+# of a module in Mailman/MTA which provides the MTA specific functionality for
+# creating and removing lists.  Some MTAs like Exim can be configured to
+# automatically recognize new lists, in which case the MTA variable should be
+# set to None.
+MTA = 'Sendmail'
 
 # Set these variables if you need to authenticate to your NNTP server for
 # Usenet posting or reading.  If no authentication is necessary, specify None
@@ -295,6 +297,12 @@ DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
 # page?  Use a negative number to indicate the entire message, regardless of
 # size (though this will slow down rendering those pages).
 ADMINDB_PAGE_TEXT_LIMIT = 4096
+
+# Set this variable to 1 to allow list owners to delete their own mailing
+# lists.  You may not want to give them this power, in which case, setting
+# this variable to 0 instead requires list removal to be done by the site
+# administrator, via the command line script bin/rmlist.
+OWNERS_CAN_DELETE_THEIR_OWN_LISTS = 0
 
 # These define the available types of external message metadata formats, and
 # the one to use by default.  MARSHAL format uses Python's built-in marshal
@@ -612,6 +620,7 @@ SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
 VIRGINQUEUE_DIR = os.path.join(QUEUE_DIR, 'virgin')
 
 SITE_PW_FILE = os.path.join(DATA_DIR, 'adm.pw')
+LISTCREATOR_PW_FILE = os.path.join(DATA_DIR, 'creator.pw')
 
 # Import a bunch of version numbers
 from Version import *
