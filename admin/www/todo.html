@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Nov  8 13:38:33 2000 -->
+<!-- Fri Nov 10 12:59:33 2000 -->
 <!-- USING HT2HTML 1.1 -->
 <!-- SEE http://www.python.org/~bwarsaw/software/pyware.html -->
 <!-- User-specified headers:
@@ -154,7 +154,8 @@ Free Software Foundation, Inc.
 <ul>
     <li> Use VERP or DSN for address tracing, perhaps tied to the monthly password reminders, or VERPing the occasional regular message.
     <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly (optional).
-    <li> Plain text digests should conform to RFC 1153. 
+    <li> Plain text digests should conform to RFC 1153.
+    <li> If a message has MIME parts and the header/footer is going to be added, the message should be transformed into a mulitpart/mixed with the header and footer added as text/plain parts. 
 </ul>
 <h3> Documentation
 </h3>
@@ -165,7 +166,8 @@ Free Software Foundation, Inc.
     <li> A list-admin's guide
     <li> More on-line documentation and UI help
     <li> A developer's guide w/ architecture and API information
-    <li> manpages for the scripts in bin and cron 
+    <li> manpages for the scripts in bin and cron
+    <li> Integrate Christopher Kolar's documentation 
 </ul>
 <h3> General Web UI
 </h3>
@@ -176,7 +178,7 @@ Free Software Foundation, Inc.
     <li> A heirarchy of page designs and information: e.g. the most specialized of the following wins: site, virtual host, list, language, user.
     <li> Web pages should never mention turned-off features. 
 </ul>
-<h3> List Admin UI
+<h3> List Administration
 </h3>
 <ul>
     <li> Separate list admin role from list moderator role
@@ -195,9 +197,10 @@ Free Software Foundation, Inc.
     <li> Make it easier for an admin who manages multiple lists to handling pending requests sitting on all those lists.
     <li> Ability to ban specific troublesome users (from posting, subscribing, etc).  Posts from banned users would be discarded.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a secondary channel, like moderators@isc.org).
-    <li> Ability to set the next digest volume and issue number from the web 
+    <li> Ability to set the next digest volume and issue number from the web
+    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting 
 </ul>
-<h3> List Member UI
+<h3> List Membership
 </h3>
 <ul>
     <li> Editing your user options should put you back to the edit-options page
@@ -208,7 +211,7 @@ Free Software Foundation, Inc.
     <li> Allow users to subscribe without selecting a password and have Mailman create a password for them.
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks. 
 </ul>
-<h3> Site Administrator's UI
+<h3> Site Administration
 </h3>
 <ul>
     <li> Allow the site admin to define list styles or themes, and list admins to choose one of the canned styles to apply to their list.

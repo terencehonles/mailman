@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Nov  8 13:38:33 2000 -->
+<!-- Fri Nov 10 12:59:32 2000 -->
 <!-- USING HT2HTML 1.1 -->
 <!-- SEE http://www.python.org/~bwarsaw/software/pyware.html -->
 <!-- User-specified headers:
@@ -153,6 +153,19 @@ Free Software Foundation, Inc.
 </b><br> A. You spell it "Mailman", with a leading capital "M" and a lowercase
    second "m".  It is incorrect to spell it "MailMan" (i.e. you should
    not use StudlyCaps).
+<p> <b> Q. I'm getting really terrible performance for outgoing messages.  It
+   seems that if the MTA has trouble resolving DNS for any recipients,
+   qrunner just gets really slow clearing the queue.  Any ideas?
+
+</b><br> A. What's likely happening is that your MTA is doing DNS resolution on
+   recipients for messages delivered locally (i.e. from Mailman to
+   your MTA via SMTPDirect.py).  This is a Bad Thing.  You need to
+   turn off synchronous DNS resolution for messages originating from
+   the local host.
+<p>    In Exim, the value to edit is receiver_verify_hosts.  See
+   README.EXIM for details.  Other MTAs have (of course) different
+   parameters and defaults that control this.  First check the README
+   file for your MTA and then consult your MTA's own documentation.
 <p> <b> Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
