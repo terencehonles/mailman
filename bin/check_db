@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -58,6 +58,7 @@ import cPickle
 import paths
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.MailList import MailList
 from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
@@ -113,10 +114,10 @@ def main():
         if not Utils.list_exists(listname):
             print _('No list named:'), listname
             continue
-
-        pfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.pck')
+        mlist = MailList(listname, lock=0)
+        pfile = os.path.join(mlist.fullpath(), 'config.pck')
         plast = pfile + '.last'
-        dfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db')
+        dfile = os.path.join(mlist.fullpath(), 'config.db')
         dlast = dfile + '.last'
 
         if verbose:
