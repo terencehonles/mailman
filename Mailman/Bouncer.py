@@ -42,7 +42,7 @@ EMPTYSTRING = ''
 class Bouncer:
     def InitVars(self):
         # Not configurable...
-
+        #
         # self.bounce_info registers observed bounce incidents.  It's a
         # dict mapping members addrs to a list:
         #  [
@@ -51,7 +51,6 @@ class Bouncer:
         #    post_id of last offending bounce in current sequence
         #  ]
         self.bounce_info = {}
-
         # Configurable...
         self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
         self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
@@ -61,45 +60,46 @@ class Bouncer:
         self.max_posts_between_bounces = \
                 mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
 
-    def ClearBounceInfo(self, email):
-        email = email.lower()
-        if self.bounce_info.has_key(email):
-            del self.bounce_info[email]
+    def ClearBounceInfo(self, member):
+        member = member.lower()
+        if self.bounce_info.has_key(member):
+            del self.bounce_info[member]
 
-    def RegisterBounce(self, email, msg):
+    def RegisterBounce(self, member, msg):
         """Detect and handle repeat-offender bounce addresses.
         
         We use very sketchy bounce history profiles in self.bounce_info
-        (see comment above it's initialization), together with list-
+        (see comment above its initialization), together with list-
         specific thresholds self.minimum_post_count_before_bounce_action
         and self.max_posts_between_bounces.
         """
-
         # Set 'dirty' if anything needs to be save in the finally clause.
-        report = "%s: %s - " % (self.real_name, email)
+        report = "%s: %s - " % (self.real_name, member)
         now = time.time()
-        secs_per_day = 24 * 60 * 60
-
+        days = mm_cfg.days
         # Take the opportunity to cull expired entries.
         pid = self.post_id
         maxposts = self.max_posts_between_bounces
-        stalesecs = self.minimum_removal_date * secs_per_day * 5
+        # BAW: This can't be right.  minimum_removal_date should only be
+        # multiplied by days(1) :(
+        stalesecs = self.minimum_removal_date * days(5)
         for k, v in self.bounce_info.items():
             if now - v[0] > stalesecs:
                 # It's been long enough to drop their bounce record:
                 del self.bounce_info[k]
                 dirty = 1
 
-        this_dude = Utils.FindMatchingAddresses(email, self.bounce_info)
+        # Is this the first bounce we're seeing from this address?
+        this_dude = Utils.FindMatchingAddresses(member, self.bounce_info)
         if not this_dude:
             # No (or expired) priors - new record.
-            self.bounce_info[email.lower()] = [now, self.post_id,
+            self.bounce_info[member.lower()] = [now, self.post_id,
                                                self.post_id]
             syslog('bounce', '%sfirst', report)
             dirty = 1
             return
 
-        # There are some priors.
+        # No, there are some priors.
         addr = this_dude[0].lower()
         hist = self.bounce_info[addr]
         difference = now - hist[0]
@@ -118,7 +118,7 @@ class Bouncer:
             if ((self.post_id - hist[1] >
                  self.minimum_post_count_before_bounce_action)
                 and
-                (difference > self.minimum_removal_date * secs_per_day)):
+                (difference > self.minimum_removal_date * days(1))):
                 syslog('bounce', '%sexceeded limits', report)
                 self.HandleBouncingAddress(addr, msg)
                 return
@@ -127,8 +127,7 @@ class Bouncer:
                               - (self.post_id - hist[1]))
                 if post_count < 0:
                     post_count = 0
-                remain = (self.minimum_removal_date
-                          * secs_per_day - difference)
+                remain = self.minimum_removal_date * days(1) - difference
                 syslog('bounce', '%s%d more allowed over %d secs',
                        report, post_count, remain)
                 return
@@ -138,7 +137,7 @@ class Bouncer:
                 syslog('bounce', '%s: first fresh (D)', self._internal_name)
                 self.bounce_info[addr] = [now, self.volume, self.volume]
                 return
-            if difference > self.minimum_removal_date * secs_per_day:
+            if difference > self.minimum_removal_date * days(1):
                 syslog('bounce', '%sexceeded limits (D)', report)
                 self.HandleBouncingAddress(addr, msg)
                 return 
@@ -183,8 +182,6 @@ class Bouncer:
 (I.e., bounce notification address itself bounces.)
 Bad admin recipient: %s''', self.internal_name(), addr)
                 return
-            import mimetools
-            boundary = mimetools.choose_boundary()
             # report about success
             but = ''
             if succeeded <> 1:
@@ -200,8 +197,7 @@ Bad admin recipient: %s''', self.internal_name(), addr)
             # the mail message text
             text = Utils.maketext(
                 'bounce.txt',
-                {'boundary' : boundary,
-                 'listname' : self.real_name,
+                {'listname' : self.real_name,
                  'addr'     : addr,
                  'negative' : negative,
                  'did'      : did,
@@ -209,40 +205,22 @@ Bad admin recipient: %s''', self.internal_name(), addr)
                  'reenable' : reenable,
                  'owneraddr': Utils.get_site_email(self.host_name, '-admin'),
                  }, mlist=self)
+            rname = self.real_name
+            msg0 = Message.UserNotification(
+                recipient, Utils.get_site_email(self.host_name, '-admin'),
+                _('%(rname)s member %(addr)s bouncing - %(negative)s%(did)s'))
+            msg0['MIME-Version'] = '1.0'
+            msg0['Content-Type'] = 'multipart/mixed'
+            msg1 = MIMEText(text,
+                _charset=Utils.GetCharSet(self.preferred_language))
+            msg2 = MIMEMessage(msg)
+            msg0.add_payload(msg1)
+            msg0.add_payload(msg2)
             # add this here so it doesn't get wrapped/filled
-            # FIXME
-            text = text + '\n\n--' + boundary + \
-                   '\nContent-type: text/plain; charset=' + Utils.GetCharSet()
-
-            # We do this here so this text won't be wrapped.  note that
-            # 'bounce.txt' has a trailing newline.  Be robust about getting
-            # the body of the message.
-            body = _('[original message unavailable]')
-            try:
-                body = msg.body
-            except AttributeError:
-                try:
-                    msg.rewindbody()
-                    body = msg.fp.read()
-                except IOError:
-                    pass
-            # FIXME
-            text += EMPTYSTRING.join(msg.headers) + '\n' + \
-                    Utils.QuotePeriods(body) + '\n' + \
-                   '--' + boundary + '--'
-
             if negative:
                 negative = negative.upper()
-
             # send the bounce message
-            rname = self.real_name
-            msg = Message.UserNotification(
-                recipient, Utils.get_site_email(self.host_name, '-admin'),
-                _('%(rname)s member %(addr)s bouncing - %(negative)s%(did)s'),
-                text)
-            msg['MIME-Version'] = '1.0'
-            msg['Content-Type'] = 'multipart/mixed; boundary="%s"' % boundary
-            msg.send(self)
+            msg0.send(self)
 
     def DisableBouncingAddress(self, addr):
         """Disable delivery for bouncing user address.
@@ -293,18 +271,20 @@ Bad admin recipient: %s''', self.internal_name(), addr)
             self.Save()
             return Errors.MMNoSuchUserError, 1
 
-    def BounceMessage(self, msg, msgdata, e):
+    def BounceMessage(self, msg, msgdata, e=None):
         # Bounce a message back to the sender, with an error message if
         # provided in the exception argument.
         sender = msg.get_sender()
+        subject = msg.get('subject', _('(no subject)'))
+        if e is None:
+            e = _('[No bounce details are available]')
         # Currently we always craft bounces as MIME messages.
         bmsg = Message.UserNotification(msg.get_sender(),
                                         self.GetOwnerEmail(),
-                                        e.subject())
-        bmsg.addheader('Content-Type', 'multipart/mixed')
+                                        subject)
+        bmsg['Content-Type'] = 'multipart/mixed'
         bmsg['MIME-Version'] = '1.0'
-        txt = MIMEText(e.details(),
-                       _charset=Utils.GetCharSet(self.preferred_language))
+        txt = MIMEText(e, _charset=Utils.GetCharSet(self.preferred_language))
         bmsg.add_payload(txt)
         bmsg.add_payload(MIMEMessage(msg))
         bmsg.send(self)
