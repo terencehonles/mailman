@@ -128,7 +128,8 @@ def main():
     
     if not is_auth:
         # Output the password form
-        print 'Content-type: text/html; charset=' + Utils.GetCharSet() + '\n\n'
+        charset = Utils.GetCharSet(mlist.preferred_language)
+        print 'Content-type: text/html; charset=' + charset + '\n\n'
         while path and path[0] == '/':
             path=path[1:]  # Remove leading /'s
         basepath = os.path.split(mlist.GetBaseArchiveURL())[0]
