@@ -77,7 +77,7 @@ def process(mlist, msg, msgdata):
     else:
         text = mlist.autoresponse_postings_text % d
     outmsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
-                                      subject, text)
+                                      subject, Utils.wrap(text))
     outmsg['X-Mailer'] = 'The Mailman Replybot '
     # prevent recursions and mail loops!
     outmsg['X-Ack'] = 'No'
