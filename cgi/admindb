@@ -2,7 +2,7 @@
 
 """Produce and process the pending-approval items for a list."""
 
-__version__ = "$Revision: 384 $"
+__version__ = "$Revision: 459 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -23,6 +23,7 @@ path = os.environ['PATH_INFO']
 list_info = mm_utils.GetPathPieces(path)
 
 if len(list_info) < 1:
+    doc.SetTitle("Admindb Error")
     doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
     print doc.Format(bgcolor="#ffffff")
     sys.exit(0)
@@ -32,12 +33,16 @@ list_name = string.lower(list_info[0])
 try:
   list = maillist.MailList(list_name)
 except:
-  doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
+  msg = "%s: No such list." % list_name
+  doc.SetTitle("Admindb Error - %s" % msg)
+  doc.AddItem(htmlformat.Header(2, msg))
   print doc.Format(bgcolor="#ffffff")
   sys.exit(0)
 
 if not list._ready:
-    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
+    msg = "%s: No such list." % list_name
+    doc.SetTitle("Admindb Error - %s" % msg)
+    doc.AddItem(htmlformat.Header(2, msg))
     print doc.Format(bgcolor="#ffffff")
     sys.exit(0)
 
@@ -210,7 +215,10 @@ def PrintRequests(doc):
 try:
     form = cgi.FieldStorage()
     if len(form.keys()):
+        doc.SetTitle("%s Admindb Results" % list.real_name)
 	HandleRequests(doc)
+    else:
+        doc.SetTitle("%s Admindb" % list.real_name)
     PrintRequests(doc)
     text = doc.Format(bgcolor="#ffffff")
     print text
