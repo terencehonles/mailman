@@ -61,7 +61,7 @@ def process(mlist, msg, msgdata):
     # Should the original sender should be included in the recipients list?
     include_sender = 1
     try:
-        if mlist.getUserOption(msg.get_sender(), mm_cfg.DontReceiveOwnPosts):
+        if mlist.getMemberOption(msg.get_sender(), mm_cfg.DontReceiveOwnPosts):
             include_sender = 0
     except Errors.NotAMemberError:
         pass
