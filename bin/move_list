@@ -23,12 +23,21 @@ public_archive_file_dir, private_archive_file_dir, and archive_directory by
 recalculating them based on the new Defaults.  It then saves the list.
 
 Usage:
-    move_list listname
+    move_list [options] listname
+
+Options:
+    --help
+    -h
+        Print this help message and exit.
+
+listname must be a valid mailing list name and is required.
 
 """
 
 import os
 import sys
+import getopt
+
 import paths
 from Mailman import MailList
 from Mailman import mm_cfg
@@ -45,9 +54,27 @@ def usage(code, msg=''):
 
 def main():
     try:
-        mlist = MailList.MailList(sys.argv[1])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+
+    if len(args) <> 1:
+        usage(1)
+
+    try:
+        listname = args[0]
     except IndexError:
         usage(1, 'You must supply a list name.')
+
+    try:
+        mlist = MailList.MailList(listname)
+    except Errors.MMUnknownListError:
+        usage(1, 'List not found: ' + listname)
+
     try:
 	mlist.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
 	mlist.private_archive_file_dir = os.path.join(
