@@ -98,6 +98,7 @@ class ListAdmin:
         for k, (type, data) in self.__db.items():
             if type == rtype:
                 ids.append(k)
+        ids.sort()
         return ids
 
     def GetHeldMessageIds(self):
