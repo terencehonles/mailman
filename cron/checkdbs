@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,22 +16,24 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"Invoked by cron, checks for pending list requests and mails the admin if any."
+"""Invoked by cron, this checks for pending moderation requests and mails the
+list moderators if necessary.
+"""
 
 import sys
 import time
-import string
 
 import paths
-from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import MailList
 from Mailman import Message
-from Mailman.Handlers import HandlerAPI
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
+NL = '\n'
 
 
 
@@ -50,13 +52,13 @@ def main():
                      'real_name': mlist.real_name,
                      }, mlist.preferred_language)
                 text = text + '\n' + pending_requests(mlist)
-                subject = '%d %s admin request(s) waiting' % (
+                subject = _('%d %s moderator request(s) waiting' % (
                     count, mlist.real_name)
                 admin = mlist.GetAdminEmail()
                 msg = Message.UserNotification(admin, admin, subject, text)
-                HandlerAPI.DeliverToUser(mlist, msg)
-        finally:
+                msg.send(mlist, **{'tomoderators': 1})
             mlist.Save()
+        finally:
             mlist.Unlock()
             
 
@@ -84,7 +86,7 @@ def pending_requests(mlist):
         pending.append('     From: %s on %s\n    Cause: %s' %
                        (sender, time.ctime(when), reason))
         pending.append('')
-    return string.join(pending, '\n')
+    return NL.join(pending)
 
 
 
