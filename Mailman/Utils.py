@@ -484,13 +484,24 @@ def IsAdministrivia(msg):
     return 0
 
         
-            
+def reraise(exc):
+    """Use this function to re-raise an exception.
+    This implementation hides the differences between Python versions.
+    """
+    # Python 1.5.2
+    # raise
+    # Earlier Python versions
+    raise exc, None, sys.exc_info()[2]
 
 
-
-        
-
-
-
-
-
+def mkdir(dir, mode=02770):
+    """Wraps os.mkdir() in a umask saving try/finally.
+Two differences from os.mkdir():
+    - umask is forced to 0 during mkdir()
+    - default mode is 02770
+"""
+    ou = os.umask(0)
+    try:
+        os.mkdir(dir, mode)
+    finally:
+        os.umask(ou)
