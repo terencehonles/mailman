@@ -121,7 +121,10 @@ def DeliverToList(mlist, msg, msgdata):
             mlist.LogMsg('error', s.getvalue())
             break
     msgdata['pipeline'] = pipeline
-    return len(pipeline)
+    if pipeline:
+        msg.Enqueue(mlist, newdata=msgdata)
+    # for cron qrunner
+    return not not len(pipeline)
 
 
 
