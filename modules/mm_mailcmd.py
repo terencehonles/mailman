@@ -1,6 +1,6 @@
 """Process maillist user commands arriving via email."""
 
-__version__ = "$Revision: 468 $"
+__version__ = "$Revision: 473 $"
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
@@ -59,10 +59,20 @@ class MailCommandHandler:
 	mail = mm_message.IncomingMessage()
 	subject = mail.getheader("subject")
         sender = string.lower(mail.GetSender())
-        if sender in ['mailer-daemon', 'postmaster', 'orphanage',
-                      'postoffice']:
-            self.LogMsg("bounce", "%s: Mailcmd from %s rejected, subj %s",
-                        self._internal_name, sender, `subject`)
+        if sender in ['nobody', 'mailer-daemon', 'postmaster',
+                      'orphanage', 'postoffice']:
+            # This is for what are probably delivery-failure notices of
+            # subscription confirmations that are, of necessity, bounced
+            # back to the -request address.
+            self.LogMsg("bounce",
+                        ("%s: Mailcmd rejected"
+                         "\n\tReason: Probable bounced subscribe-confirmation"
+                         "\n\tFrom: %s"
+                         "\n\tSubject: %s"
+                         ),
+                        self._internal_name,
+                        mail.getheader('from'),
+                        subject)
             return
 	if subject:
 	    subject = string.strip(subject)
