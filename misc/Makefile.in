@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -40,6 +40,7 @@ CFLAGS=		$(OPT) $(DEFS)
 PACKAGEDIR=	$(prefix)/Mailman
 DATADIR=	$(var_prefix)/data
 ICONDIR=        $(prefix)/icons
+SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
 
@@ -68,6 +69,7 @@ install:
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
 	$(INSTALL) -m $(DATAMODE) pending_subscriptions.db $(DATADIR)
+	$(INSTALL) -m $(EXEMODE) mailman $(SCRIPTSDIR)
 
 finish:
 
