@@ -4,22 +4,17 @@
 
 import sys
 
-f = open('/tmp/md.err', 'a+')
-sys.stderr = f
-
 sys.path.append('/home/mailman/mailman/modules')
+import mm_message, mm_utils
 
-import mm_message, mm_deliver
+try:
+    sys.stderr = mm_utils.StampedLogger("error",
+                                        label = 'answer_majordomo_mail',
+                                        manual_reprime=1)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 msg = mm_message.IncomingMessage()
-
 text = open('/home/mailman/mailman/misc/majordomo.answer.txt', 'r').read()
-
-class MyDeliverer(mm_deliver.Deliverer):
-    def GetAdminEmail(self):
-	return "mailman-owner"
-
-d = MyDeliverer()
-	
-d.SendTextToUser('Your mail to Majordomo...', text, msg.GetSender(), 
-	'mailman-owner')
+mm_utils.SendTextToUser('Your mail to Majordomo...', text, msg.GetSender(),
+                        'mailman-owner')
