@@ -244,7 +244,7 @@ def FormatAdminOverview(error=None):
             table.AddRow(
                 [Link(l.GetRelativeScriptURL('admin'), 
                       Bold(l.real_name)),
-                 l.description or Italic('[no description provided]')])
+                 l.description or Italic('[no description available]')])
 
     doc.AddItem(table)
     doc.AddItem('<hr>')
