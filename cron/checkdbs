@@ -10,13 +10,9 @@ sys.path.append('/home/mailman/mailman/modules')
 
 import maillist, mm_cfg, mm_message
 
-dirs = os.listdir(mm_cfg.LIST_DATA_DIR)
-for dir in dirs:
-    if not (os.path.exists(os.path.join(
-	os.path.join(mm_cfg.LIST_DATA_DIR, dir), 'config.db'))):
-	continue
+for name in maillist.list_names():
     try:
-	list = maillist.MailList(dir)
+	list = maillist.MailList(name)
     except:
 	continue
     count = list.RequestsPending()
