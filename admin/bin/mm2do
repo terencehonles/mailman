@@ -20,19 +20,20 @@
 
 # Requires Python 2.0.
 
-infp = open('TODO')
-outfp = open('admin/www/todo.html', 'w')
+import sys
+
+infp = open(sys.argv[1])
+outfp = open(sys.argv[2], 'w')
 
 SPACE = ' '
 
-print >> outfp, '<html><head><title>The Mailman TODO list</title></head>'
-print >> outfp, '<body bgcolor="#ffffff">'
+print >> outfp, 'Title: The Mailman Wishlist\n'
 
 def dumpsection(header, items, hasitems):
     # We're looking at a header
     if header:
         # output the previous section
-        print >> outfp, '<h1>', header, '</h1>'
+        print >> outfp, '<h3>', header, '</h3>'
         if hasitems:
             print >> outfp, '<ul>'
             for item in items:
@@ -64,4 +65,3 @@ while 1:
         items[-1].append(line[:-1])
 
 dumpsection(header, items, hasitems)
-print >> outfp, '</body></html>'
