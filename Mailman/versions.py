@@ -55,13 +55,13 @@ def Update(l, stored_state):
 
 
 
-def ZapOldVars(l):
-    if hasattr(l, 'num_spawns'):
-        del l.num_spawns
-    if hasattr(l, 'filter_prog'):
-        del l.filter_prog
-    if hasattr(l, 'clobber_date'):
-        del l.clobber_date
+def ZapOldVars(mlist):
+    for name in ('num_spawns', 'filter_prog', 'clobber_date',
+                 'public_archive_file_dir', 'private_archive_file_dir',
+                 'archive_directory',
+                 ):
+        if hasattr(mlist, name):
+            delattr(mlist, name)
 
 
 
