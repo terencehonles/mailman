@@ -24,12 +24,14 @@ from Mailman.Logging.Utils import _logexc
 
 class Logger:
     def __init__(self, category, nofail=1, immediate=0):
-        """Nofail (by default) says to fallback to sys.__stderr__ if write
-        fails to category file.  A message is emitted, but the IOError is
-        caught.  Set nofail=0 if you want to handle the error in your code,
-        instead.  immediate=1 says to create the log file immediately,
-        otherwise it's created when first needed.
-        """
+        """Nofail says to fallback to sys.__stderr__ if write fails to
+        category file - a complaint message is emitted, but no exception is
+        raised.  Set nofail=0 if you want to handle the error in your code,
+        instead.
+
+        immediate=1 says to create the log file on instantiation.
+        Otherwise, the file is created only when there are writes pending."""
+
         self.__filename = os.path.join(Mailman.mm_cfg.LOG_DIR, category)
 	self.__fp = None
         self.__nofail = nofail
@@ -40,7 +42,7 @@ class Logger:
         self.close()
 
     def __repr__(self):
-        return '<Logger to file: %s>' % self.__filename
+        return '<%s to %s>' % (self.__class__.__name__, `self.__filename`)
 
     def __get_f(self):
 	if self.__fp:
