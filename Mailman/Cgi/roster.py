@@ -18,7 +18,8 @@
 
 """Produce subscriber roster, using listinfo form data, roster.html template.
 
-Takes listname in PATH_INFO."""
+Takes listname in PATH_INFO.
+"""
 
 
 # We don't need to lock in this script, because we're never going to change
@@ -27,7 +28,7 @@ Takes listname in PATH_INFO."""
 import sys
 import os, string
 import cgi
-import mm_utils, maillist, htmlformat, mm_cfg, mm_err
+from Mailman import Utils, MailList, htmlformat, Errors
 
 def main():
     doc = htmlformat.HeadlessDocument()
@@ -58,8 +59,8 @@ def main():
                         # Private list - members visible.
                         try:
                             list.ConfirmUserPassword(id, pw)
-                        except (mm_err.MMBadUserError, 
-                                mm_err.MMBadPasswordError):
+                        except (Errors.MMBadUserError, 
+                                Errors.MMBadPasswordError):
                             bad = ("%s subscriber authentication failed."
                                    % list.real_name)
                         else:
@@ -81,14 +82,14 @@ def main():
 def get_list():
     "Return list or bail out with error page."
 
-    list_info = mm_utils.GetPathPieces(os.environ['PATH_INFO'])
+    list_info = Utils.GetPathPieces(os.environ['PATH_INFO'])
     if len(list_info) != 1:
         error_page("Invalid options to CGI script.")
         sys.exit(0)
     list_name = string.lower(list_info[0])
     try:
-        list = maillist.MailList(list_name, lock = 0)
-    except mm_err.MMUnknownListError:
+        list = MailList.MailList(list_name, lock = 0)
+    except Errors.MMUnknownListError:
         error_page("%s: No such list.", list_name)
         sys.exit(0)
     if not list._ready:
