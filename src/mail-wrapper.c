@@ -33,6 +33,7 @@ const char* logident = "Mailman mail-wrapper";
 
 
 const char *VALID_COMMANDS[] = {
+	"admin",
 	"bounces",
 	"join",
 	"leave",
