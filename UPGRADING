@@ -93,10 +93,111 @@ UPGRADING FROM 2.0.x to 2.1
     language code for the language of your templates.  Mailman's
     upgrade script should handle cleaning up any templates which are
     duplicates of the defaults, but you'll want to double check this
-    manually. 
+    manually.
 
 
-UPGRADING FROM 2.0 to 2.0.1
+UPGRADING INDIVIDUAL LISTS
+
+    If you're nervous about upgrading all of your lists to 2.1 in one
+    go, you can move them and upgrade them one at a time.  Start by
+    doing a clean Mailman 2.1 installation in an empty directory --
+    call it $MM21.  (I'll assume your Mailman 2.0 installation is in
+    $MM20.)
+
+    Doing this means you'll have co-habiting Mailman 2.0 and 2.1
+    installations for a while, until you have moved all of your lists
+    to Mailman 2.1.  Depending on your MTA and web server, this could
+    be transparent and painless, or it could be an ongoing headache.
+
+    If you use Apache with mod_rewrite, then it's fairly
+    straightforward to set things up so that both Mailman 2.0 and 2.1
+    inhabit the /mailman and /pipermail URL-space of your server; this
+    makes the transition almost transparent to list admins and
+    subscribers.  See below for details.
+
+    Now, for each list that you want to move, you'll have to
+
+      * Shut down your MTA.
+
+        If you have a lot of outgoing list traffic, you might need to
+        leave your MTA up but only let it accept connections from
+        127.0.0.1 (localhost), so Mailman 2.0 can flush its queue.
+        How to do this is MTA-dependent; for Exim, you can set
+        "local_interfaces = 127.0.0.1" and "kill -HUP" the Exim
+        daemon.
+
+      * Shut down your web server.  For a more professional look, or
+        if you want to allow people to keep accessing the rest of your
+        web site, you could make your web server respond to all
+        /mailman/ URLs with a "temporarily unavailable" message.
+
+        How to do this is web server-dependent; with Apache and
+        mod_rewrite, this does the trick:
+
+          RewriteRule ^/mailman/.* /var/www/unavailable.html [L]
+
+        (Of course, you'll have to supply your own
+        /var/www/unavailable.html.)
+
+      * Force Mailman 2.0 to process its queue:
+
+          python -S $MM20/cron/qrunner
+
+        (This is only necessary if there are any files in $MM20/qfiles;
+        if you need to do this, make sure you left your MTA listening to
+        127.0.0.1.)
+
+      * Move the list:
+
+          cd $MM20
+          mv -i lists/foo-list $MM21/lists
+          mv -i archives/private/foo-list $MM21/archives/private
+          mv -i archives/private/foo-list.mbox $MM21/archives/private
+          rm archives/public/foo-list
+          rm archives/public/foo-list.mbox
+          cd $MM21
+          bin/withlist -l -r fix_url mylist
+
+        (The fix_url step will not be necessary if your Mailman 2.0
+        and 2.1 installations will be sharing the same URL-space.)
+
+      * Edit your web server config so the list's URLs continue to
+        work.  There are two possible approaches here; the simpler way
+        is to setup a new slice of URL-space that will be used by your
+        Mailman 2.1 installation, eg. /mailman-21:
+        With Apache and mod_rewrite:
+
+          RewriteRule /mailman/(.*)/(foo-list.*) /mailman-21/$1/$2 [R=temp]
+
+        (The [R=temp] assumes that "/mailman-21/" is a temporary URL,
+        and you'll move all your lists to "/mailman/" when the
+        transition to Mailman 2.1 is complete.)
+
+        If you don't want to expose ugly temporary URLs like
+        "/mailman-21" to the world, it's only slightly more work to make
+        Mailman 2.0 and 2.1 share the same slices of URL-space.  Here's
+        how to do it with Apache and mod_rewrite:
+
+          RewriteRule ^/mailman/(.*)/(foo-list.*) \
+                      $MM21/cgi-bin/$1/$2 \
+                      [T=application/x-httpd-cgi]
+
+        Not only is this more aesthetically pleasing, it's faster -- no
+        redirects.
+
+        In either case, you'll want to rewrite the list's archive URLs
+        to Mailman 2.1's archive:
+
+          RewriteRule ^/pipermail/(foo-list.*) $MM21/archives/public/$1
+
+      * Restart your web server (or disable the "temporarily
+        unavailable" stuff).
+
+      * Restart your MTA (or make it listen to more than just
+        127.0.0.1).
+
+
+UPGRADING FROM 2.0 to 2.0.x (where x >= 1)
 
     Nothing much more than running "make install" (after upgrading)
     should be necessary.
@@ -195,8 +296,8 @@ WHAT "MAKE UPDATE" DOES
       Pipermail into Mailman, as of 1.0b6.  In particular,
 
       1) if a list has only a private mbox archive
-      $prefix/archives/private/<listname> is moved to 
-      $prefix/archives/private/<listname>.mbox/<listname> 
+      $prefix/archives/private/<listname> is moved to
+      $prefix/archives/private/<listname>.mbox/<listname>
 
       2) if a list has only a public mbox archive
       $prefix/archives/public/<listname> is moved to
@@ -206,7 +307,7 @@ WHAT "MAKE UPDATE" DOES
       $prefix/archives/public/<listname>.mbox to
       $prefix/archives/private/<listname>.mbox/<listname>
 
-      3) if a list has both private and public mbox archives, 
+      3) if a list has both private and public mbox archives,
       make update picks one of the above 2 configurations based on
       whether or not the list currently is archived publicly.  It then
       renames the other mbox to mbox.preb6.
@@ -232,7 +333,7 @@ WHAT "MAKE UPDATE" DOES
       module has moved.  You can quick fix this by running
 
       ln -s $prefix/Mailman/Archiver/HyperArch.py \
-              $prefix/Mailman/HyperArch.py  
+              $prefix/Mailman/HyperArch.py
 
     - If upgrading from version 1.0b4 or earlier, "make update" moves
       list-specific templates.  For each list,
