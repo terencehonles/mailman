@@ -38,6 +38,18 @@ def gethelp(mlist):
 def process(res, args):
     # Get the help text introduction
     mlist = res.mlist
+    # Since this message is personalized, add some useful information if the
+    # address requesting help is a member of the list.
+    msg = res.msg
+    for sender in  msg.get_senders():
+        if mlist.isMember(sender):
+            memberurl = mlist.GetOptionsURL(sender, absolute=1)
+            urlhelp = _(
+                'You can access your personal options via the following url:')
+            res.results.append(urlhelp)
+            res.results.append(memberurl)
+            res.results.append('')
+            break
     # build the specific command helps from the module docstrings
     modhelps = {}
     import Mailman.Commands
