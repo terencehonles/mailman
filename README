@@ -1,4 +1,4 @@
-Mailman 1.0b2 (README $Revision: 452 $, $Date: 1998-04-13 21:17:41 +0100 (Mon, 13 Apr 1998) $)
+Mailman 1.0b2 (README $Revision: 460 $, $Date: 1998-04-22 17:38:44 +0100 (Wed, 22 Apr 1998) $)
 
 This is mailman, maillist management software written mostly in
 Python.  Mailman was originally developed by John Viega.  Ken
@@ -102,14 +102,14 @@ List managers, note that:
 Troubleshooting:
 
     Many of the scripts have their stderr logged to
-    ~mailman/logs/error, and some of the modules log caught errors
-    conditions there, as well, so you should check there at least
-    occasionally to look for bugs in the code and problems in your
-    setup.
+    ~mailman/logs/error, and some of the modules write caught errors
+    there, as well, so you should check there at least occasionally to
+    look for bugs in the code and problems in your setup.
 
     One thing that is *not* caught by stderr hook is syntax errors!
-    However, just about all files **except** cron/mailpasswds can be
-    run from the command line with no arguments, and no effect.  So
+    However, most files can be run from the command line with no
+    effect.  (The ones that will do stuff you want to avoid, like
+    sending out spurious password reminders, are in the cron dir.)  So
     you can and should use the python interpreter to check the syntax
     of any changes before trying them out.
 
