@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.21 
+# From configure.in Revision: 2.22 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -1315,7 +1315,7 @@ then
     if eval "test \"`echo '$''{'ac_cv_group_mail'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-      ac_cv_group_mail="other mail daemon"
+      ac_cv_group_mail="mailman other mail daemon"
 fi
 
 else
@@ -1479,14 +1479,14 @@ echo $ac_n "checking for email host name""... $ac_c" 1>&6
 echo "configure:1480: checking for email host name" >&5
 if test -z "$FQDN"
 then
-    FQDN=`head -1 conftest.out`
+    FQDN=`sed q conftest.out`
 fi
 echo "$ac_t""$FQDN" 1>&6
 echo $ac_n "checking for web host name""... $ac_c" 1>&6
 echo "configure:1487: checking for web host name" >&5
 if test -z "$URL"
 then
-    URL=`tail -1 conftest.out`
+    URL=`sed -n '$p' conftest.out`
 fi
 echo "$ac_t""$URL" 1>&6
 rm -f conftest.out conftest.py
