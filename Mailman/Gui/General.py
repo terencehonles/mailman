@@ -48,7 +48,7 @@ class General:
              _("""The list administrator email addresses.  Multiple
              administrator addresses, each on separate line is okay."""),
 
-             _("""There are two ownership roles associated with each mailing
+             _('''There are two ownership roles associated with each mailing
              list.  The <em>list administrators</em> are the people who have
              ultimate control over all parameters of this mailing list.  They
              are able to change any list configuration variable available
@@ -62,17 +62,17 @@ class General:
              administrators</em> can also tend to pending requests.
 
              <p>In order to split the list ownership duties into
-             administrators and moderators, you must set a separate moderator
-             password in the section below, and also provide the email
-             addresses of the list moderators in this section.  Note that the
-             field you are changing here specifies the list
-             administators.""")),
+             administrators and moderators, you must
+             <a href="general#passwords">set a separate moderator password</a>,
+             and also provide the <a href="?VARHELP=general/moderator">email
+             addresses of the list moderators</a>.  Note that the field you
+             are changing here specifies the list administators.''')),
 
             ('moderator', mm_cfg.EmailList, (3, WIDTH), 0,
              _("""The list moderator email addresses.  Multiple
              moderator addresses, each on separate line is okay."""),
 
-             _("""There are two ownership roles associated with each mailing
+             _('''There are two ownership roles associated with each mailing
              list.  The <em>list administrators</em> are the people who have
              ultimate control over all parameters of this mailing list.  They
              are able to change any list configuration variable available
@@ -86,10 +86,11 @@ class General:
              administrators</em> can also tend to pending requests.
 
              <p>In order to split the list ownership duties into
-             administrators and moderators, you must set a separate moderator
-             password in the section below, and also provide the email
-             addresses of the list moderators in this section.  Note that the
-             field you are changing here specifies the list moderators.""")),
+             administrators and moderators, you must
+             <a href="general#passwords">set a separate moderator password</a>,
+             and also provide the email addresses of the list moderators in
+             this section.  Note that the field you are changing here
+             specifies the list moderators.''')),
 
             ('description', mm_cfg.String, WIDTH, 0,
              _('A terse phrase identifying this list.'),
@@ -273,8 +274,8 @@ class General:
              _('''Should administrator get notices of subscribes and
              unsubscribes?''')),
             
-            ('dont_respond_to_post_requests', mm_cfg.Radio,
-             (_('Yes'), _('No')), 0,
+            ('respond_to_post_requests', mm_cfg.Radio,
+             (_('No'), _('Yes')), 0,
              _('Send mail to poster when their posting is held for approval?'),
 
              _("""Approval notices are sent when mail triggers certain of the
