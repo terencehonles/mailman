@@ -442,9 +442,257 @@ flexibility to do whatever \mailheader{Reply-To} munging you might
 
 \end{description}
 
+\subsubsection{Umbrella list settings}
+
+TBD.  Note that umbrella lists are deprecated and will be replace with
+a better mechanism for Mailman 3.0.
+
+\subsubsection{Notifications}
+
+Mailman sends notifications to the list administrators or list members
+under a number of different circumstances.  Most of these
+notifications can be configured in this section, but see the Bounce
+Processing and Auto-responder categories for other notifications that
+Mailman can send.
+
+\begin{description}
+\item[send_reminders] --
+    By default Mailman sends all list members a monthly password
+    reminder.  This notice serves two purposes.  First, it reminds
+    people about all the lists they may be subscribed to on this
+    domain, including the lists where their subscription may be
+    disabled.  Second, it reminds people about their passwords for
+    these lists, as well as the url for their personal options pages,
+    so that they can more easily configure their subscription options.
+
+    Some people get annoyed with these monthly reminders, and they can
+    disable the reminders via their subscription options page.  For
+    some lists, the monthly reminders aren't appropriate for any of
+    the members, so you can disable them list-wide by setting the
+    \code{send_reminders} variable to \emph{No}.
+
+\item[welcome_msg] --
+    When new members are subscribed to the list, either by their own
+    action, or the action of a list administrator, a welcome message
+    can be sent to them.  The welcome message contains some common
+    boilerplate information, such as the name of the list,
+    instructions for posting to the list, and the member's
+    subscription password.  You can add additional information to the
+    welcome message by typing the text into the \code{welcome_msg}
+    text box.  Note that because this text is sent as part of an
+    email, it should \strong{not} contain HTML.
+
+\item[send_welcome_msg] --
+    This flag controls whether or not the welcome message is sent to
+    new subscribers.
+
+\item[goodbye_msg] --
+    Like the \code{welcome_msg}, a ``goodbye'' message can be sent to
+    members when they unsubscribe from the list.  Unlike the welcome
+    message, there's no boilerplate for the goodbye message.  Enter
+    the entire goodbye message you'd like unsubscribing members to
+    receive into the \code{goodbye_msg} text box.
+
+\item[send_goodbye_msg] --
+    This flag controls whether or not the goodbye message is sent to
+    unsubscribing members.
+
+\item[admin_immed_notify] --
+    List moderators get notifications of pending administrative
+    actions, such as subscription or unsubscription requests that
+    require moderator approval, or posted messages that are being held
+    for moderator approval.  List moderators will always get a daily
+    summary of such pending requests, but they can also get immediate
+    notifications when such a request is made.  The
+    \code{admin_immed_notify} variable controls whether these
+    immediate notifications are sent or not.  It's generally a good
+    idea to leave this set to \emph{Yes}.
+
+\item[admin_notify_mchanges] --
+    This variable controls whether the list administrators should get
+    notifications when members join or leave the list.
+
+\item[respond_to_post_requests] --
+    This variable controls whether the original sender of a posting
+    gets a notice when their message is held for moderator approval.
+
+\end{description}
+
+\subsubsection{Additional settings}
+
+This section contains some miscellaneous settings for your mailing
+list.
+
+\begin{description}
+\item[new_member_options] --
+    Each member has a set of subscription options which they can use
+    to control how they receive messages and otherwise interact with
+    the list.  While the members can change these settings by logging
+    into their personal options page, you might want to set the
+    default for a number of the member options.  You can do that with
+    this variable, but see also the other categories for other member
+    defaults you can set.
+
+    This variable presents a set of checkboxes which control the
+    defaults for some of the member options.  \emph{Conceal the
+    member's address} specifies whether or not the address is
+    displayed in the list roster.  \emph{Acknowledge the member's
+    posting} controls whether or not Mailman sends an acknowledgement
+    to a member when they post a message to the list.  \emph{Do not
+    send a copy of a member's own post} specifies whether a member
+    posting to the list will get a copy of their own posting.
+    \emph{Filter out duplicate messages to list members (if possible)}
+    specifies whether members who are explicitly listed as a recipient
+    of a message (e.g. via the \mailheader{Cc} header) will also get a
+    copy from Mailman.
+
+    Of course, members can always override these defaults by making
+    changes on their membership options page.
+
+\item[administrivia] --
+    This option specifies whether Mailman will search posted messages
+    for \emph{admimistrivia}, in other words, email commands which
+    usually should be posted to the \code{-request} address for the
+    list.  Setting this to \emph{Yes} helps prevent such things as
+    unsubscribe messages getting erroneously posted to the list.
+
+    If a message seems to contain administrivia, it is held for
+    moderator approval.
+
+\item[max_message_size] --
+    This option specifies a maximum message size, in kilobytes, over
+    which the message will be held for moderator approval.
+
+\item[host_name] --
+    This option specifies the host name part of email addresses used
+    by this list.  For example, this is the \code{example.com} part of
+    the posting address \code{mylist@example.com}.
+
+    It's generally not a good idea to change this value, since its
+    default value is specified when the mailing list is created.
+    Changing this to an incorrect value could make it difficult to
+    contact your mailing list.  Also not that the url used to visit
+    the list's pages is not configurable through the web interface.
+    This is because if you messed it up, you'd have to have the site
+    administrator fix it.
+
+\item[include_rfc2369_headers] --
+    \rfc{2369} is an internet standard that describes a bunch of
+    headers that mailing list managers should add to messages to make
+    it easier for people to interact with the list.  Mail reading
+    programs which support this standard may provide buttons for easy
+    access to the list's archives, or for subscribing and
+    unsubscribing to the list.  It's generally a good idea to enable
+    these headers as it provides for an improved user experience.
+    These headers are often called the \code{List-*} headers.
+
+    However, not all mail readers are standards compliant yet, and if
+    you have a large number of members who are using non-compliant
+    mail readers, they may be annoyed at these headers.  You should
+    first try to educate your members as to why these headers exist,
+    and how to hide them in their mail clients.  As a last resort you
+    can disable these headers, but this is not recommended.
+
+\item[include_list_post_header] --
+    The \mailheader{List-Post} header is one of the headers
+    recommended by \rfc{2369}.  However for some announce-only mailing
+    lists, only a very select group of people are allowed to post to
+    the list; the general membership is usually not allowed to post to
+    such lists.  For lists of this nature, the \mailheader{List-Post}
+    header is misleading.  Select \emph{No} to disable the inclusion
+    of this header. (This does not affect the inclusion of the other
+    \code{List-*} headers.)
+\end{description}
+
 \subsection{The Passwords Category}
-\subsection{the Language Options Category}
+As mentioned above, there are two primary administrative roles for
+mailing lists.  In this category you can specify the password for
+these roles.
+
+The list owner has total control over the configuration of their
+mailing list (within some bounds as specified by the site
+administrator).  Note that on this page, for historical reasons, the
+list owner role is described here as the \emph{list administrator}.
+You can set the list owner's password by entering it in the password
+field on the left.  You must type it twice for confirmation.  Note
+that if you forget this password, the only way for you to get back
+into your list's administrative pages is to ask the site administrator
+to reset it for you (there's no password reminders for list owners).
+
+If you want to delegate list moderation to someone else, you can enter
+a different moderator password in the field on the right (typed twice
+for confirmation).  Note that if you aren't going to delegate
+moderation, and the same people are going to both configure the list
+and moderate postings to the list, don't enter anything into the
+moderator password fields.  If you do enter a separate moderator
+password, be sure to fill in the \code{moderator} variable in the
+\emph{General options} category page. 
+
+\subsection{The Language Options Category}
+Mailman is multilingual and internationalized, meaning you can set up
+your list so that members can interact with it in any of a number of
+natural languages.  Of course, Mailman won't translate list
+postings. :)
+
+However, if your site administrator has enabled its support, you can
+set your list up to support any of about two dozen languages, such as
+German, Italian, Japanese, or Spanish.  Your list members can then
+choose any of your supported languages as their \emph{preferred
+language} for interacting with the list.  Such things as their member
+options page will be displayed in this language.  Each mailing list
+also has its own \emph{preferred language} which is the language the
+list supports if no other language context is known.
+
+These variables control the language settings for your mailing list:
+
+\begin{description}
+\item[preferred_language] --
+    This is the list's preferred language, which is the language that
+    the list administrative pages will be displayed in.  Also any
+    messages sent to the list owners by Mailman will be sent in this
+    language.  This option is presented as a drop-down list containing
+    the language enabled in the \code{available_languages} variable.
+
+\item[available_languages] --
+    This set of checkboxes contains all the natural languages that
+    your site administrator has made available to your mailing lists.
+    Select any language that you'd either like your members to be able
+    to view the list in, or that you'd like to be able to use in your
+    list's \code{preferred_language} variable.
+
+\item[encode_ascii_prefixes] --
+    If your mailing list's preferred language uses a non-ASCII
+    character set and the \code{subject_prefix} contains non-ASCII
+    characters, the prefix will always be encoded according to the
+    relevant standards.  However, if your subject prefix contains only
+    ASCII characters, you may want to set this option to \emph{Never}
+    to disable prefix encoding.  This can make the subject headers
+    slightly more readable for users with mail readers that don't
+    properly handle non-ASCII encodings.
+
+    Note however, that if your mailing list receives both encoded and
+    unencoded subject headers, you might want to choose \emph{As
+    needed}.  Using this setting, Mailman will not encode ASCII
+    prefixes when the rest of the header contains only ASCII
+    characters, but if the original header contains non-ASCII
+    characters, it will encode the prefix.  This avoids an ambiguity
+    in the standards which could cause some mail readers to display
+    extra, or missing spaces between the prefix and the original
+    header.
+\end{description}
+
 \subsection{The Membership Management Category}
+
+The \emph{Membership Management} category is unlike the other
+administrative categories.  It doesn't contain configuration variables
+or list settings.  Instead, it presents a number of pages that allow
+you to manage the membership of you list.  This includes pages for
+subscribing and unsubscribing members, and for searching for members,
+and for changing various member-specific settings.
+
+More details on membership management are described in the Membership
+Management section.
+
 \subsection{The Non-digest Options Category}
 \subsection{The Digest Options Category}
 \subsection{The Privacy Options Category}
@@ -456,6 +704,7 @@ flexibility to do whatever \mailheader{Reply-To} munging you might
 \subsection{The Topics Category}
 \subsection{Emergency Moderation}
 
+\section{Membership Management}
 \section{Tending to Pending Moderator Requests}
 \section{Editing the Public HTML Pages}
 \section{Deleting the Mailing List}
