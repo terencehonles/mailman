@@ -612,9 +612,9 @@ def get_item_gui_value(mlist, category, kind, varname, params):
     # Give the category a chance to return the value for the variable
     value = None
     label, gui = mlist.GetConfigCategories()[category]
-    if hasattr(gui, 'GetValue'):
+    if hasattr(gui, 'getValue'):
         missing = []
-        value = gui.GetValue(mlist, kind, varname, params)
+        value = gui.getValue(mlist, kind, varname, params)
     # Filter out None, and volatile attributes
     if value is None and not varname.startswith('_'):
         value = getattr(mlist, varname)
@@ -1151,65 +1151,6 @@ def submit_button(name='submit'):
 
 
 
-# Options processing
-def get_valid_value(mlist, prop, wtype, val, dependant):
-    if wtype == mm_cfg.Radio or wtype == mm_cfg.Toggle:
-        if type(val) <> IntType:
-            try:
-                val = int(val)
-            except ValueError:
-                pass
-                # Don't know what to do here...
-            return val
-    elif wtype == mm_cfg.String or wtype == mm_cfg.Text:
-        return val
-    elif wtype == mm_cfg.Email:
-        # BAW: We must allow blank values otherwise reply_to_address can't be
-        # cleared.  This is currently the only mm_cfg.Email type widget in the
-        # interface, so watch out if we ever add any new ones.
-        if val:
-            Utils.ValidateEmail(val)
-        return val
-    elif wtype in (mm_cfg.EmailList, mm_cfg.EmailListEx):
-        def validp(addr, wtype=wtype):
-            try:
-                Utils.ValidateEmail(addr)
-                return 1
-            except Errors.EmailAddressError:
-                if wtype == mm_cfg.EmailListEx and addr.startswith('^'):
-                    # It's interpreted as a regular expression
-                    return 1
-                return 0
-        val = [addr for addr in [s.strip() for s in val.split(NL)]
-               if validp(addr)]
-        return val
-    elif wtype == mm_cfg.Host:
-        return val
-    elif wtype == mm_cfg.Number:
-        num = -1
-        try:
-            num = int(val)
-        except ValueError:
-            # TBD: a float???
-            try:
-                num = float(val)
-            except ValueError:
-                pass
-        if num < 0:
-            return getattr(mlist, prop)
-        return num
-    elif wtype == mm_cfg.Select:
-        return val
-    elif wtype == mm_cfg.Checkbox:
-        if type(val) is not ListType:
-            return [val]
-        return val
-    else:
-        # Should never get here...
-        return val
-
-
-
 def change_options(mlist, category, subcat, cgidata, doc):
     confirmed = 0
     # Handle changes to the list moderator password.  Do this before checking
@@ -1240,62 +1181,9 @@ def change_options(mlist, category, subcat, cgidata, doc):
     # Give the individual gui item a chance to process the form data
     categories = mlist.GetConfigCategories()
     label, gui = categories[category]
-    if hasattr(gui, 'HandleForm'):
-        gui.HandleForm(mlist, cgidata, doc)
-        return
-
+    # BAW: We handle the membership page special... for now.
     if category <> 'members':
-        if cgidata.has_key("subscribe_policy"):
-            if not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-                # we have to add one to the value because the
-                # page didn't present an open list as an option
-                page_setting = int(cgidata["subscribe_policy"].value)
-                cgidata["subscribe_policy"].value = str(page_setting + 1)
-        for item in mlist.GetConfigInfo(category, subcat):
-            if type(item) <> TupleType or len(item) < 5:
-                continue
-            property, kind, args, deps, desc = item[0:5]
-            if cgidata.has_key(property+'_upload') and \
-                   cgidata[property+'_upload'].value:
-                val = cgidata[property+'_upload'].value
-            elif not cgidata.has_key(property):
-                continue
-            elif type(cgidata[property]) == ListType:
-                val = [x.value for x in cgidata[property]]
-            else:
-                val = cgidata[property].value
-            try:
-                value = get_valid_value(mlist, property, kind, val, deps)
-            except Errors.EmailAddressError:
-                doc.addError(
-                    y_('Bad email address for option %(property)s: %(val)s'),
-                    tag=_('Error: '))
-                continue
-            # BAW: Ugly, ugly hack for "do immediately" pseudo-options
-            if property[0] == '_':
-                if property == '_mass_catchup' and value:
-                    mlist.usenet_watermark = None
-                elif property == '_new_volume' and value:
-                    mlist.bump_digest_volume()
-                elif property == '_send_digest_now' and value:
-                    mlist.send_digest_now()
-            elif getattr(mlist, property) <> value:
-                # TBD: Ensure that mlist.real_name differs only in letter
-                # case.  Otherwise a security hole can potentially be opened
-                # when using an external archiver.  This seems ad-hoc and
-                # could use a more general security policy.
-                if property == 'real_name' and \
-                       value.lower() <> mlist._internal_name.lower():
-                    # then don't install this value.
-                    doc.AddItem(_("""<p><b>real_name</b> attribute not
-                    changed!  It must differ from the list's name by case
-                    only.<p>"""))
-                    continue
-                # Watch for changes to preferred_language.  If found, make
-                # sure that the response is generated in the new language.
-                if property == 'preferred_language':
-                    i18n.set_language(value)
-                setattr(mlist, property, value)
+        gui.handleForm(mlist, category, subcat, cgidata, doc)
     # mass subscription, removal processing for members category
     subscribers = ''
     subscribers += cgidata.getvalue('subscribees', '')
