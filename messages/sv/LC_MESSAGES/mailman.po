@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Mon Apr 21 11:13:43 2003\n"
+"POT-Creation-Date: Fri May  2 00:59:38 2003\n"
 "PO-Revision-Date: 2002-12-24 14:35+0100\n"
 "Last-Translator: Eva Österlind <eva.osterlind@arvika.se>\n"
 "Language-Team: Swedish <information@arvika.se>\n"
@@ -500,7 +500,7 @@ msgstr "<p>(Skicka frågor och kommentarer till "
 
 # Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:157
 # Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:177
-#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:181
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:189
 msgid "List"
 msgstr "Lista"
 
@@ -10120,30 +10120,6 @@ msgid ""
 "You will need to run `bin/check_perms -f' after running this script.\n"
 msgstr ""
 
-# bin/genaliases:19
-# bin/genaliases:19
-#: bin/b4b5-archfix.~1~:19 bin/b4b5-archfix.~2~:19
-#, fuzzy
-msgid ""
-"Fix the MM2.1b4 archives.\n"
-"\n"
-"Usage: %(PROGRAM)s [options] file ...\n"
-"\n"
-"Where options are:\n"
-"    -h / --help\n"
-"        Print this help message and exit.\n"
-msgstr ""
-"Genererar Postfix filer data/aliases och data/aliases.db på nytt.\n"
-"\n"
-"Används så här:\n"
-"\n"
-"    genaliases [val]\n"
-"\n"
-"Val:\n"
-"\n"
-"    --help / -h\n"
-"        Visar denna hjälptext.\n"
-
 # bin/change_pw:19
 # bin/change_pw:19
 #: bin/change_pw:19
@@ -12005,6 +11981,42 @@ msgstr "Lösenordet är ändrat."
 msgid "Password change failed."
 msgstr "Fel under ändring av lösenord."
 
+#: bin/msgfmt.py:5
+msgid ""
+"Generate binary message catalog from textual translation description.\n"
+"\n"
+"This program converts a textual Uniforum-style message catalog (.po file) "
+"into\n"
+"a binary GNU catalog (.mo file).  This is essentially the same function as "
+"the\n"
+"GNU msgfmt program, however, it is a simpler implementation.\n"
+"\n"
+"Usage: msgfmt.py [OPTIONS] filename.po\n"
+"\n"
+"Options:\n"
+"    -o file\n"
+"    --output-file=file\n"
+"        Specify the output file to write to.  If omitted, output will go to "
+"a\n"
+"        file named filename.mo (based off the input file name).\n"
+"\n"
+"    -h\n"
+"    --help\n"
+"        Print this message and exit.\n"
+"\n"
+"    -V\n"
+"    --version\n"
+"        Display version information and exit.\n"
+msgstr ""
+
+#: bin/msgfmt.py:49
+msgid "Add a non-fuzzy translation to the dictionary."
+msgstr ""
+
+#: bin/msgfmt.py:57
+msgid "Return the generated output."
+msgstr ""
+
 # bin/newlist:19
 # bin/newlist:19
 #: bin/newlist:19
@@ -13575,13 +13587,13 @@ msgstr ""
 
 # cron/mailpasswds:157
 # cron/mailpasswds:177
-#: cron/mailpasswds:181
+#: cron/mailpasswds:189
 msgid "Password // URL"
 msgstr "Lösenord // URL"
 
 # cron/mailpasswds:177
 # cron/mailpasswds:197
-#: cron/mailpasswds:201
+#: cron/mailpasswds:209
 msgid "%(host)s mailing list memberships reminder"
 msgstr "Påminnelse om lösenord för e-postlistor på %(host)s"
 
@@ -13652,6 +13664,29 @@ msgid ""
 "all\n"
 "        lists are sent out.\n"
 msgstr ""
+
+# bin/genaliases:19
+# bin/genaliases:19
+#, fuzzy
+#~ msgid ""
+#~ "Fix the MM2.1b4 archives.\n"
+#~ "\n"
+#~ "Usage: %(PROGRAM)s [options] file ...\n"
+#~ "\n"
+#~ "Where options are:\n"
+#~ "    -h / --help\n"
+#~ "        Print this help message and exit.\n"
+#~ msgstr ""
+#~ "Genererar Postfix filer data/aliases och data/aliases.db på nytt.\n"
+#~ "\n"
+#~ "Används så här:\n"
+#~ "\n"
+#~ "    genaliases [val]\n"
+#~ "\n"
+#~ "Val:\n"
+#~ "\n"
+#~ "    --help / -h\n"
+#~ "        Visar denna hjälptext.\n"
 
 # bin/add_members:130
 # bin/add_members:134

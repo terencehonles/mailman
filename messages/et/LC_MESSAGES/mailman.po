@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
-"POT-Creation-Date: Mon Apr 21 11:13:43 2003\n"
+"POT-Creation-Date: Fri May  2 00:59:38 2003\n"
 "PO-Revision-Date: 2003-05-01 15:55+0300\n"
 "Last-Translator: Anti Veeranna <duke@linux.ee>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -345,7 +345,7 @@ msgstr "listi infoleht"
 msgid "<p>(Send questions and comments to "
 msgstr "<p>(Küsimused ja kommentaarid saada "
 
-#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:181
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:189
 msgid "List"
 msgstr "List"
 
@@ -685,13 +685,15 @@ msgstr ""
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
-msgstr "<b>kinnitus</b> -- Saata tellijale kinnitus tema kirja listi edastamise kohta"
+msgstr ""
+"<b>kinnitus</b> -- Saata tellijale kinnitus tema kirja listi edastamise kohta"
 
 #: Mailman/Cgi/admin.py:1005
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
 "        own postings?"
-msgstr "<b>v.a. autor</b> -- Edasta kiri kõigile listi tellijatele v.a. autor ise?"
+msgstr ""
+"<b>v.a. autor</b> -- Edasta kiri kõigile listi tellijatele v.a. autor ise?"
 
 #: Mailman/Cgi/admin.py:1008
 msgid ""
@@ -743,7 +745,8 @@ msgstr "%(start)s - %(end)s"
 
 #: Mailman/Cgi/admin.py:1063
 msgid "Subscribe these users now or invite them?"
-msgstr "Lisada aadressid kohe tellijate nimestikku või saata kõigepealt kutsed?"
+msgstr ""
+"Lisada aadressid kohe tellijate nimestikku või saata kõigepealt kutsed?"
 
 #: Mailman/Cgi/admin.py:1065
 msgid "Invite"
@@ -2552,8 +2555,8 @@ msgid ""
 "You are not currently a member.  Have you already unsubscribed or changed\n"
 "your email address?"
 msgstr ""
-"Sa ei ole selle listi liige. Võib-olla lõpetasid juba oma tellimuse "
-"või muutsid tellimuse aadressi?"
+"Sa ei ole selle listi liige. Võib-olla lõpetasid juba oma tellimuse või "
+"muutsid tellimuse aadressi?"
 
 #: Mailman/Commands/cmd_confirm.py:67
 msgid ""
@@ -3682,7 +3685,8 @@ msgid ""
 "             text?  This conversion happens after MIME attachments have "
 "been\n"
 "             stripped."
-msgstr "Teisendada HTML tekstiks? Seda tehakse peale kaasatud failide eemaldamist."
+msgstr ""
+"Teisendada HTML tekstiks? Seda tehakse peale kaasatud failide eemaldamist."
 
 #: Mailman/Gui/ContentFilter.py:110
 msgid ""
@@ -3768,7 +3772,8 @@ msgid "How big in Kb should a digest be before it gets sent out?"
 msgstr "Kui suur (Kb) peaks referaat olema, et see laiali saadetaks?"
 
 #: Mailman/Gui/Digest.py:63
-msgid "Should a digest be dispatched daily when the size threshold isn't reached?"
+msgid ""
+"Should a digest be dispatched daily when the size threshold isn't reached?"
 msgstr ""
 "Saata referaat välja päeva lõpus, ka siis, kui see pole määratud mahtu "
 "saavutanud?"
@@ -4325,7 +4330,8 @@ msgstr "Teavitada haldurit uutest tellijatest ja tellimuste lõpetamistest?"
 
 #: Mailman/Gui/General.py:316
 msgid "Send mail to poster when their posting is held for approval?"
-msgstr "Teavitada postitajat, kui nende saadetud kiri ülevaatuseks kinni peetakse?"
+msgstr ""
+"Teavitada postitajat, kui nende saadetud kiri ülevaatuseks kinni peetakse?"
 
 #: Mailman/Gui/General.py:318
 msgid ""
@@ -4388,7 +4394,8 @@ msgstr ""
 msgid ""
 "Maximum length in kilobytes (KB) of a message body.  Use 0\n"
 "             for no limit."
-msgstr "Listikirja maksimaalne lubatud pikkus (KB). 0 tähendab, et limiiti pole."
+msgstr ""
+"Listikirja maksimaalne lubatud pikkus (KB). 0 tähendab, et limiiti pole."
 
 #: Mailman/Gui/General.py:360
 msgid "Host name this list prefers for email."
@@ -6036,9 +6043,9 @@ msgid ""
 "equivalent) file by adding the following lines, and possibly running the\n"
 "`newaliases' program:\n"
 msgstr ""
-"Selleks, et äsja loodud list tööle hakkaks, pead lisama/etc/aliases "
-"(või analoogse otstarbega) faili lisama järgmised read ja seejärel "
-"käivitama 'newaliases'  nimelise programmi:\n"
+"Selleks, et äsja loodud list tööle hakkaks, pead lisama/etc/aliases (või "
+"analoogse otstarbega) faili lisama järgmised read ja seejärel käivitama "
+"'newaliases'  nimelise programmi:\n"
 
 #: Mailman/MTA/Manual.py:80
 msgid "## %(listname)s mailing list"
@@ -6292,8 +6299,10 @@ msgid "Server Local Time"
 msgstr "Serveri kuupäev"
 
 #: Mailman/i18n.py:139
-msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
-msgstr "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
+msgid ""
+"%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
+msgstr ""
+"%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
 
 #: bin/add_members:26
 msgid ""
@@ -6467,17 +6476,6 @@ msgid ""
 "(note the backquotes are required)\n"
 "\n"
 "You will need to run `bin/check_perms -f' after running this script.\n"
-msgstr ""
-
-#: bin/b4b5-archfix.~1~:19 bin/b4b5-archfix.~2~:19
-msgid ""
-"Fix the MM2.1b4 archives.\n"
-"\n"
-"Usage: %(PROGRAM)s [options] file ...\n"
-"\n"
-"Where options are:\n"
-"    -h / --help\n"
-"        Print this help message and exit.\n"
 msgstr ""
 
 #: bin/change_pw:19
@@ -7635,6 +7633,42 @@ msgstr "Parool on vahetatud."
 msgid "Password change failed."
 msgstr "Paroolivahetus ebaõnnestus."
 
+#: bin/msgfmt.py:5
+msgid ""
+"Generate binary message catalog from textual translation description.\n"
+"\n"
+"This program converts a textual Uniforum-style message catalog (.po file) "
+"into\n"
+"a binary GNU catalog (.mo file).  This is essentially the same function as "
+"the\n"
+"GNU msgfmt program, however, it is a simpler implementation.\n"
+"\n"
+"Usage: msgfmt.py [OPTIONS] filename.po\n"
+"\n"
+"Options:\n"
+"    -o file\n"
+"    --output-file=file\n"
+"        Specify the output file to write to.  If omitted, output will go to "
+"a\n"
+"        file named filename.mo (based off the input file name).\n"
+"\n"
+"    -h\n"
+"    --help\n"
+"        Print this message and exit.\n"
+"\n"
+"    -V\n"
+"    --version\n"
+"        Display version information and exit.\n"
+msgstr ""
+
+#: bin/msgfmt.py:49
+msgid "Add a non-fuzzy translation to the dictionary."
+msgstr ""
+
+#: bin/msgfmt.py:57
+msgid "Return the generated output."
+msgstr ""
+
 #: bin/newlist:19
 msgid ""
 "Create a new, unpopulated mailing list.\n"
@@ -7853,7 +7887,8 @@ msgstr "Sellise aadressiga liiget pole: %(addr)s"
 
 #: bin/remove_members:178
 msgid "User `%(addr)s' removed from list: %(listname)s."
-msgstr "Aadress `%(addr)s' eemaldati listi  %(listname)s tellijate nimekirjast."
+msgstr ""
+"Aadress `%(addr)s' eemaldati listi  %(listname)s tellijate nimekirjast."
 
 #: bin/rmlist:19
 msgid ""
@@ -7895,7 +7930,8 @@ msgstr "Selle nimega listi pole: %(listname)s. Kustutan arhiivid."
 
 #: bin/rmlist:110
 msgid "Not removing archives.  Reinvoke with -a to remove them."
-msgstr "Jätan arhiivid alles. Kui soovid arhiive eemaldada, siis kasuta võtit -a"
+msgstr ""
+"Jätan arhiivid alles. Kui soovid arhiive eemaldada, siis kasuta võtit -a"
 
 #: bin/rmlist:124
 msgid "list info"
@@ -8324,7 +8360,8 @@ msgstr ""
 
 #: bin/update:569
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
-msgstr "Versiooniuuendus: vana versioon %(hexlversion)s, uus versioon %(hextversion)s"
+msgstr ""
+"Versiooniuuendus: vana versioon %(hexlversion)s, uus versioon %(hextversion)s"
 
 #: bin/update:578
 msgid ""
@@ -8671,11 +8708,11 @@ msgid ""
 "        Print this message and exit.\n"
 msgstr ""
 
-#: cron/mailpasswds:181
+#: cron/mailpasswds:189
 msgid "Password // URL"
 msgstr "Parool // URL"
 
-#: cron/mailpasswds:201
+#: cron/mailpasswds:209
 msgid "%(host)s mailing list memberships reminder"
 msgstr "%(host)s listide tellimuste meeldetuletus"
 
@@ -8784,4 +8821,3 @@ msgstr ""
 
 #~ msgid "pygettext.py (xgettext for Python) %s"
 #~ msgstr "pygettext.py (xgettext for Python) %s "
-

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
-"POT-Creation-Date: Mon Apr 21 11:13:43 2003\n"
+"POT-Creation-Date: Fri May  2 00:59:38 2003\n"
 "PO-Revision-Date: 2002-12-12 15:24+0100\n"
 "Last-Translator: Szilard Vizi <vizisz@freemail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -345,7 +345,7 @@ msgstr "levelezõlisták információs oldalán"
 msgid "<p>(Send questions and comments to "
 msgstr "<p>(Kérdéseidet, észrevételeidet címezd ide "
 
-#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:181
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:189
 msgid "List"
 msgstr "Lista"
 
@@ -7814,27 +7814,6 @@ msgstr ""
 "A program futtatása után el ne felejtsük futtatni a `bin/check_perms -f'\n"
 "programot is.\n"
 
-#: bin/b4b5-archfix.~1~:19 bin/b4b5-archfix.~2~:19
-#, fuzzy
-msgid ""
-"Fix the MM2.1b4 archives.\n"
-"\n"
-"Usage: %(PROGRAM)s [options] file ...\n"
-"\n"
-"Where options are:\n"
-"    -h / --help\n"
-"        Print this help message and exit.\n"
-msgstr ""
-"Újra létrehozza a Postfix data/aliases és data/aliases.db állományait.\n"
-"\n"
-"Használat:\n"
-"    genaliases [kapcsolók]\n"
-"\n"
-"Kapcsolók:\n"
-"\n"
-"    -h/--help\n"
-"\t Kiírja ezt a súgót és kilép.\n"
-
 #: bin/change_pw:19
 msgid ""
 "Change a list's password.\n"
@@ -9500,6 +9479,42 @@ msgstr "Jelszó megváltoztatva."
 msgid "Password change failed."
 msgstr "Sikertelen jelszóváltoztatás."
 
+#: bin/msgfmt.py:5
+msgid ""
+"Generate binary message catalog from textual translation description.\n"
+"\n"
+"This program converts a textual Uniforum-style message catalog (.po file) "
+"into\n"
+"a binary GNU catalog (.mo file).  This is essentially the same function as "
+"the\n"
+"GNU msgfmt program, however, it is a simpler implementation.\n"
+"\n"
+"Usage: msgfmt.py [OPTIONS] filename.po\n"
+"\n"
+"Options:\n"
+"    -o file\n"
+"    --output-file=file\n"
+"        Specify the output file to write to.  If omitted, output will go to "
+"a\n"
+"        file named filename.mo (based off the input file name).\n"
+"\n"
+"    -h\n"
+"    --help\n"
+"        Print this message and exit.\n"
+"\n"
+"    -V\n"
+"    --version\n"
+"        Display version information and exit.\n"
+msgstr ""
+
+#: bin/msgfmt.py:49
+msgid "Add a non-fuzzy translation to the dictionary."
+msgstr ""
+
+#: bin/msgfmt.py:57
+msgid "Return the generated output."
+msgstr ""
+
 #: bin/newlist:19
 msgid ""
 "Create a new, unpopulated mailing list.\n"
@@ -11089,11 +11104,11 @@ msgstr ""
 "    -h/--help\n"
 "\tKiírja ezt a súgót és kilép.\n"
 
-#: cron/mailpasswds:181
+#: cron/mailpasswds:189
 msgid "Password // URL"
 msgstr "Jelszó // URL"
 
-#: cron/mailpasswds:201
+#: cron/mailpasswds:209
 msgid "%(host)s mailing list memberships reminder"
 msgstr "%(host)s levelezõlista emlékeztetõ"
 
@@ -11173,6 +11188,26 @@ msgstr ""
 "    --listname=listanév\n"
 " \t Csak a megadott lista digestjét küldi el. Ha nem lett lista\n"
 "\t megadva, akkor az összes lista digestjét elküldi.\n"
+
+#, fuzzy
+#~ msgid ""
+#~ "Fix the MM2.1b4 archives.\n"
+#~ "\n"
+#~ "Usage: %(PROGRAM)s [options] file ...\n"
+#~ "\n"
+#~ "Where options are:\n"
+#~ "    -h / --help\n"
+#~ "        Print this help message and exit.\n"
+#~ msgstr ""
+#~ "Újra létrehozza a Postfix data/aliases és data/aliases.db állományait.\n"
+#~ "\n"
+#~ "Használat:\n"
+#~ "    genaliases [kapcsolók]\n"
+#~ "\n"
+#~ "Kapcsolók:\n"
+#~ "\n"
+#~ "    -h/--help\n"
+#~ "\t Kiírja ezt a súgót és kilép.\n"
 
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
 #~ msgstr "%(listname)s@%(listhost)s levelezõlista nagyot változott"

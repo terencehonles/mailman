@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.1b5\n"
-"POT-Creation-Date: Mon Apr 21 11:13:43 2003\n"
+"POT-Creation-Date: Fri May  2 00:59:38 2003\n"
 "PO-Revision-Date: 2003-01-30 09:46+0000\n"
 "Last-Translator: Gleydson Mazioli da Silva <gleydson@debian.org>\n"
 "Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
@@ -345,7 +345,7 @@ msgstr "a página de visualização da lista de discussão"
 msgid "<p>(Send questions and comments to "
 msgstr "<p>(Envie questões e comentários para "
 
-#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:181
+#: Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:134 cron/mailpasswds:189
 msgid "List"
 msgstr "Lista"
 
@@ -7931,28 +7931,6 @@ msgstr ""
 "\n"
 "Você precisará executar `bin/check_perms -f' após executar este script.\n"
 
-#: bin/b4b5-archfix.~1~:19 bin/b4b5-archfix.~2~:19
-#, fuzzy
-msgid ""
-"Fix the MM2.1b4 archives.\n"
-"\n"
-"Usage: %(PROGRAM)s [options] file ...\n"
-"\n"
-"Where options are:\n"
-"    -h / --help\n"
-"        Print this help message and exit.\n"
-msgstr ""
-"Regenera os arquivos data/aliases e data/aliases.db do nada.\n"
-"\n"
-"Uso:\n"
-"\n"
-"     genaliases [opções]\n"
-"\n"
-"Opções:\n"
-"\n"
-"   -h/--help\n"
-"        Mostra esta mensagem e sai.\n"
-
 #: bin/change_pw:19
 msgid ""
 "Change a list's password.\n"
@@ -9645,6 +9623,42 @@ msgstr "Senhas modificadas."
 msgid "Password change failed."
 msgstr "Falha na alteração de senha."
 
+#: bin/msgfmt.py:5
+msgid ""
+"Generate binary message catalog from textual translation description.\n"
+"\n"
+"This program converts a textual Uniforum-style message catalog (.po file) "
+"into\n"
+"a binary GNU catalog (.mo file).  This is essentially the same function as "
+"the\n"
+"GNU msgfmt program, however, it is a simpler implementation.\n"
+"\n"
+"Usage: msgfmt.py [OPTIONS] filename.po\n"
+"\n"
+"Options:\n"
+"    -o file\n"
+"    --output-file=file\n"
+"        Specify the output file to write to.  If omitted, output will go to "
+"a\n"
+"        file named filename.mo (based off the input file name).\n"
+"\n"
+"    -h\n"
+"    --help\n"
+"        Print this message and exit.\n"
+"\n"
+"    -V\n"
+"    --version\n"
+"        Display version information and exit.\n"
+msgstr ""
+
+#: bin/msgfmt.py:49
+msgid "Add a non-fuzzy translation to the dictionary."
+msgstr ""
+
+#: bin/msgfmt.py:57
+msgid "Return the generated output."
+msgstr ""
+
 #: bin/newlist:19
 msgid ""
 "Create a new, unpopulated mailing list.\n"
@@ -11231,11 +11245,11 @@ msgstr ""
 "    -h/--help\n"
 "        Mostra esta mensagem e sai.\n"
 
-#: cron/mailpasswds:181
+#: cron/mailpasswds:189
 msgid "Password // URL"
 msgstr "Senha //URL"
 
-#: cron/mailpasswds:201
+#: cron/mailpasswds:209
 msgid "%(host)s mailing list memberships reminder"
 msgstr "lembrete de membros da lista de discussão %(host)s"
 
@@ -11316,6 +11330,27 @@ msgstr ""
 "\n"
 "As listas especificadas na linha de comando são conferidas. Se nenhum nome \n"
 "de lista for especificado, todas as listas são conferidas.\n"
+
+#, fuzzy
+#~ msgid ""
+#~ "Fix the MM2.1b4 archives.\n"
+#~ "\n"
+#~ "Usage: %(PROGRAM)s [options] file ...\n"
+#~ "\n"
+#~ "Where options are:\n"
+#~ "    -h / --help\n"
+#~ "        Print this help message and exit.\n"
+#~ msgstr ""
+#~ "Regenera os arquivos data/aliases e data/aliases.db do nada.\n"
+#~ "\n"
+#~ "Uso:\n"
+#~ "\n"
+#~ "     genaliases [opções]\n"
+#~ "\n"
+#~ "Opções:\n"
+#~ "\n"
+#~ "   -h/--help\n"
+#~ "        Mostra esta mensagem e sai.\n"
 
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
 #~ msgstr ""

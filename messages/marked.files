@@ -7,6 +7,7 @@ Mailman/Autoresponder.py
 Mailman/Bouncer.py
 Mailman/Deliverer.py
 Mailman/Digester.py
+Mailman/Defaults.py
 Mailman/Errors.py
 Mailman/GatewayManager.py
 Mailman/HTMLFormatter.py
@@ -16,7 +17,6 @@ Mailman/MailList.py
 Mailman/Mailbox.py
 Mailman/MemberAdaptor.py
 Mailman/Message.py
-Mailman/OldStyleMemberships.py
 Mailman/Pending.py
 Mailman/Post.py
 Mailman/SafeDict.py
@@ -34,7 +34,6 @@ Mailman/Bouncers/BouncerAPI.py
 Mailman/Bouncers/Caiwireless.py
 Mailman/Bouncers/Compuserve.py
 Mailman/Bouncers/DSN.py
-Mailman/Bouncers/Exchange.py
 Mailman/Bouncers/Exim.py
 Mailman/Bouncers/GroupWise.py
 Mailman/Bouncers/LLNL.py
@@ -49,6 +48,7 @@ Mailman/Bouncers/Sina.py
 Mailman/Bouncers/Yahoo.py
 Mailman/Bouncers/Yale.py
 Mailman/Bouncers/__init__.py
+Mailman/Bouncers/Exchange.py
 Mailman/Cgi/Auth.py
 Mailman/Cgi/__init__.py
 Mailman/Cgi/admin.py
@@ -93,7 +93,6 @@ Mailman/Handlers/MimeDel.py
 Mailman/Handlers/Moderate.py
 Mailman/Handlers/OwnerRecips.py
 Mailman/Handlers/Replybot.py
-Mailman/Handlers/SMTPDirect.py
 Mailman/Handlers/Scrubber.py
 Mailman/Handlers/Sendmail.py
 Mailman/Handlers/SpamDetect.py
@@ -103,6 +102,7 @@ Mailman/Handlers/ToDigest.py
 Mailman/Handlers/ToOutgoing.py
 Mailman/Handlers/ToUsenet.py
 Mailman/Handlers/__init__.py
+Mailman/Handlers/SMTPDirect.py
 Mailman/Logging/Logger.py
 Mailman/Logging/MultiLogger.py
 Mailman/Logging/StampedLogger.py
@@ -118,11 +118,12 @@ Mailman/Queue/BounceRunner.py
 Mailman/Queue/CommandRunner.py
 Mailman/Queue/IncomingRunner.py
 Mailman/Queue/MaildirRunner.py
-Mailman/Queue/NewsRunner.py
 Mailman/Queue/OutgoingRunner.py
 Mailman/Queue/Runner.py
 Mailman/Queue/Switchboard.py
 Mailman/Queue/VirginRunner.py
 Mailman/Queue/__init__.py
 Mailman/Queue/sbcache.py
-Mailman/Defaults.py
+Mailman/Queue/NewsRunner.py
+Mailman/BDBMemberAdaptor.py
+Mailman/OldStyleMemberships.py

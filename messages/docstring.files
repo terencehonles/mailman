@@ -1,6 +1,5 @@
 bin/add_members
 bin/arch
-bin/b4b5-archfix
 bin/change_pw
 bin/check_db
 bin/check_perms
@@ -16,7 +15,6 @@ bin/inject
 bin/list_admins
 bin/list_lists
 bin/list_members
-bin/list_owners
 bin/mailmanctl
 bin/mmsitepass
 bin/newlist
@@ -29,6 +27,9 @@ bin/unshunt
 bin/update
 bin/version
 bin/withlist
+bin/b4b5-archfix
+bin/list_owners
+bin/msgfmt.py
 cron/bumpdigests
 cron/checkdbs
 cron/disabled
