@@ -23,17 +23,16 @@ archival.
 """
 
 import os
-import string
 import time
 import errno
 import traceback
+from cStringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Mailbox
 from Mailman import LockFile
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman.i18n import _
 
 
