@@ -335,7 +335,8 @@ upgrade.
 
       If you want to start Mailman every time you reboot your system,
       and your OS supports the chkconfig command (e.g. RedHat and
-      Mandrake Linuxes) you can simply do the following as root:
+      Mandrake Linuxes) you can simply do the following (as root, from
+      the Mailman source directory):
 
           % cp misc/mailman /etc/init.d/mailman
           % chkconfig --add mailman
