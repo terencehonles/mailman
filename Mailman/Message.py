@@ -10,8 +10,8 @@ def AddBackNewline(str):
 # If we're trying to create a message object from text, we need to pass
 # a file object to rfc822.Message to get it to do its magic.  Well,
 # to avoid writing text out to a file, and having it read back in,
-# here we define a class that will fool rfc822 into thinking it's a non-seekable
-# message.
+# here we define a class that will fool rfc822 into thinking it's a
+# non-seekable message.
 # The only method rfc822.Message ever calls on a non-seekable file is
 # readline.  It doesn't use the optional arg to readline, either.
 # In my subclasses, I use the read() method, and might just use readlines() 
@@ -102,15 +102,15 @@ class OutgoingMessage:
 
 	def CacheHeaders(header, s=self):
 	    i = string.find(header, ':')
-	    s.cached_headers[string.lower(string.strip(header[:i]))] = \
-								     header[i+2:]
+	    s.cached_headers[string.lower(string.strip(header[:i]))
+                             ] = header[i+2:]
 	map(CacheHeaders, self.headers)
 
     def SetHeader(self, header, value, crush_duplicates=1):
 	if value[-1] <> '\n':
 	    value = value + '\n'
 	if crush_duplicates:
-	    # Run through the list and make sure the header isn't already there.
+	    # Run through the list and make sure header isn't already there.
 	    remove_these = []
 	    for item in self.headers:
 		f = string.find(item, ':')
