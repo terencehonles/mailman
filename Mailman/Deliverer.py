@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,19 +18,18 @@
 """Mixin class with message delivery routines."""
 
 import os
-import string
 
 from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
-from Mailman.Handlers import HandlerAPI
 
 
 
 class Deliverer:
     def SendSubscribeAck(self, name, password, digest):
-        os.environ['LANG'] = pluser = self.GetPreferredLanguage(name)
+        pluser = self.GetPreferredLanguage(name)
+        os.environ['LANG'] = pluser
         if not self.send_welcome_msg:
 	    return
 	if self.welcome_msg:
@@ -61,13 +60,13 @@ your membership administrative address, %s.
 	    digmode = _(" (Digest mode)")
 	else:
 	    digmode = ''
+        realname = self.real_name
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetRequestEmail(),
-            _('Welcome to the "%s" mailing list%s') %(self.real_name, digmode),
+            _('Welcome to the "%(realname)s" mailing list%(digmode)s'),
             text)
         msg['X-No-Archive'] = 'yes'
-        HandlerAPI.DeliverToUser(self, msg)
-
+        msg.send(self)
 
     def SendUnsubscribeAck(self, name):
         os.environ['LANG'] = self.GetPreferredLanguage(name)
@@ -75,8 +74,7 @@ your membership administrative address, %s.
             self.GetMemberAdminEmail(name), self.GetAdminEmail(),
             _('Unsubscribed from "%s" mailing list') % self.real_name,
             Utils.wrap(self.goodbye_msg))
-        HandlerAPI.DeliverToUser(self, msg)
-
+        msg.send(self)
 
     def MailUserPassword(self, user):
         os.environ['LANG'] = self.GetPreferredLanguage(user)
@@ -111,6 +109,6 @@ your membership administrative address, %s.
                  }, self.GetPreferredLanguage(user))
         msg = Message.UserNotification(recipient, requestaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
-        HandlerAPI.DeliverToUser(self, msg)
+        msg.send(self)
         if not ok:
              raise Errors.MMBadUserError
