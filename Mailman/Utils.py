@@ -32,7 +32,14 @@ import sha
 import errno
 import time
 import email.Iterators
-from string import whitespace as WHITESPACE
+from string import whitespace, digits
+try:
+    # Python 2.2
+    from string import ascii_letters
+except ImportError:
+    # Older Pythons
+    _lower = 'abcdefghijklmnopqrstuvwxyz'
+    ascii_letters = _lower + _lower.upper()
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -41,6 +48,13 @@ from Mailman.SafeDict import SafeDict
 EMPTYSTRING = ''
 NL = '\n'
 DOT = '.'
+IDENTCHARS = ascii_letters + digits + '_'
+
+# Search for $(identifier)s strings, except that the trailing s is optional,
+# since that's a common mistake
+cre = re.compile(r'%\(([_a-z]\w*?)\)s?', re.IGNORECASE)
+# Search for $$, $identifier, or ${identifier}
+dre = re.compile(r'(\${2})|\$([_a-z]\w*)|\${([_a-z]\w*)}', re.IGNORECASE)
 
 
 
@@ -91,7 +105,7 @@ def wrap(text, column=70, honor_leading_ws=1):
             if not line:
                 lines.append(line)
                 continue
-            if honor_leading_ws and line[0] in WHITESPACE:
+            if honor_leading_ws and line[0] in whitespace:
                 fillthis = 0
             else:
                 fillthis = 1
@@ -112,28 +126,28 @@ def wrap(text, column=70, honor_leading_ws=1):
                 else:
                     bol = column
                     # find the last whitespace character
-                    while bol > 0 and text[bol] not in WHITESPACE:
+                    while bol > 0 and text[bol] not in whitespace:
                         bol = bol - 1
                     # now find the last non-whitespace character
                     eol = bol
-                    while eol > 0 and text[eol] in WHITESPACE:
+                    while eol > 0 and text[eol] in whitespace:
                         eol = eol - 1
                     # watch out for text that's longer than the column width
                     if eol == 0:
                         # break on whitespace after column
                         eol = column
                         while eol < len(text) and \
-                              text[eol] not in WHITESPACE:
+                              text[eol] not in whitespace:
                             eol = eol + 1
                         bol = eol
                         while bol < len(text) and \
-                              text[bol] in WHITESPACE:
+                              text[bol] in whitespace:
                             bol = bol + 1
                         bol = bol - 1
                     line = text[:eol+1] + '\n'
                     # find the next non-whitespace character
                     bol = bol + 1
-                    while bol < len(text) and text[bol] in WHITESPACE:
+                    while bol < len(text) and text[bol] in whitespace:
                         bol = bol + 1
                     text = text[bol:]
                 wrapped = wrapped + line
@@ -180,7 +194,7 @@ _badchars = re.compile('[][()<>|;^,/]')
 def ValidateEmail(s):
     """Verify that the an email address isn't grossly evil."""
     # Pretty minimal, cheesy check.  We could do better...
-    if not s:
+    if not s or s.count(' ') > 0:
         raise Errors.MMBadEmailError
     if _badchars.search(s) or s[0] == '-':
         raise Errors.MMHostileAddress
@@ -675,3 +689,53 @@ def unique_message_id(mlist):
         mlist.internal_name(), mlist.host_name)
     _serial += 1
     return msgid
+
+
+
+# Utilities to convert from simplified $identifier substitutions to/from
+# standard Python $(identifier)s substititions.  The "Guido rules" for the
+# former are:
+#    $$ -> $
+#    $identifier -> $(identifier)s
+#    ${identifier} -> $(identifier)s
+
+def to_dollar(s):
+    """Convert from %-strings to $-strings."""
+    s = s.replace('$', '$$')
+    parts = cre.split(s)
+    for i in range(1, len(parts), 2):
+        if parts[i+1] and parts[i+1][0] in IDENTCHARS:
+            parts[i] = '${' + parts[i] + '}'
+        else:
+            parts[i] = '$' + parts[i]
+    return EMPTYSTRING.join(parts)
+
+
+def to_percent(s):
+    """Convert from $-strings to %-strings."""
+    s = s.replace('%', '%%')
+    parts = dre.split(s)
+    for i in range(1, len(parts), 4):
+        if parts[i] is not None:
+            parts[i] = '$'
+        elif parts[i+1] is not None:
+            parts[i+1] = '%(' + parts[i+1] + ')s'
+        else:
+            parts[i+2] = '%(' + parts[i+2] + ')s'
+    return EMPTYSTRING.join(filter(None, parts))
+
+
+def dollar_identifiers(s):
+    """Return the set (dictionary) of identifiers found in a $-string."""
+    d = {}
+    for name in filter(None, [b or c or None for a, b, c in dre.findall(s)]):
+        d[name] = 1
+    return d
+
+
+def percent_identifiers(s):
+    """Return the set (dictionary) of identifiers found in a %-string."""
+    d = {}
+    for name in cre.findall(s):
+        d[name] = 1
+    return d
