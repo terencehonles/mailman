@@ -58,6 +58,7 @@ DIRMODE=	775
 EXEMODE=	755
 FILEMODE=	644
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
+DIRSETGID=	chmod g+s
 
 
 # Rules
@@ -79,7 +80,7 @@ install: $(SUBDIRS)
 		echo "Creating directory hierarchy $$dir"; \
 		./mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
-		chmod g+s $$dir; \
+		$(DIRSETGID) $$dir; \
 	    else true; \
 	    fi; \
 	done
@@ -92,7 +93,7 @@ install: $(SUBDIRS)
 		echo "Creating directory hierarchy $$dir"; \
 		./mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
-		chmod g+s $$dir; \
+		$(DIRSETGID) $$dir; \
 	    else true; \
 	    fi; \
 	done
