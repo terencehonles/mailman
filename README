@@ -1,4 +1,4 @@
-$Revision: 402 $, $Date: 1998-04-10 01:05:30 +0100 (Fri, 10 Apr 1998) $
+$Revision: 442 $, $Date: 1998-04-13 05:37:28 +0100 (Mon, 13 Apr 1998) $
 
 There's still much that I'd like to redo or add.  I'm not incredibly
 proud of the code, and it's a bit embarassing to be sharing it at this
@@ -62,8 +62,8 @@ Install:
   o As root, Restart sendmail.
   o As mailman, cd to /home/mailman/mailman/cron, and add crontab.in
     as your crontab.  (probably done w/: crontab crontab.in)
-  o Edit modules/mm_cfg.py - if you don't already have one, make a
-    copy from modules/mm_cfg.py.dist.  Include settings in mm_cfg.py
+  o Edit mailman/modules/mm_cfg.py - if you don't already have one, make a
+    copy from mailman/modules/mm_cfg.py.dist.  Include settings in mm_cfg.py
     for any of the defaults in mm_defaults.py that you want to tailor
     for your site.
 
