@@ -161,9 +161,7 @@ def process_form(mlist, doc):
     elif not mlist.nondigestable:
         digest = 1
 
-    if error:
-        PrintResults(mlist, results, doc)
-    else:
+    if not error:
         try:
             if mlist.FindUser(email):
                 raise Errors.MMAlreadyAMember, email
