@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Mailman 2.1\n"
+"Project-Id-Version: Mailman CVS-HEAD\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-09-24 10:24+0200\n"
+"PO-Revision-Date: 2003-09-26 22:17+0200\n"
 "Last-Translator: Søren Bondrup <soren@ka-net.dk>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1122,9 +1122,8 @@ msgid "<em>The sender is now a member of this list</em>"
 msgstr "<em>Afsender er nu medlem af denne liste</em>"
 
 #: Mailman/Cgi/admindb.py:434
-#, fuzzy
 msgid "Add <b>%(esender)s</b> to one of these sender filters:"
-msgstr "Tilfoeje <b>%(esender)s</b> i et afsenderfilter som:"
+msgstr "Tilføje <b>%(esender)s</b> i et afsenderfilter som:"
 
 #: Mailman/Cgi/admindb.py:439
 msgid "Accepts"
@@ -1189,7 +1188,7 @@ msgstr "e-mail til listen som venter p&aring; godkendelse"
 
 #: Mailman/Cgi/admindb.py:547
 msgid " (%(count)d of %(total)d)"
-msgstr " (%(count)d av %(total)d)"
+msgstr " (%(count)d af %(total)d)"
 
 #: Mailman/Cgi/admindb.py:558
 msgid "<em>Message with id #%(id)d was lost."
@@ -1523,7 +1522,6 @@ msgid "<em>Not available</em>"
 msgstr "</em>Ikke tilg&aelig;ngelig</em>"
 
 #: Mailman/Cgi/confirm.py:445
-#, fuzzy
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    unsubscription request from the mailing list <em>%(listname)s</em>.  "
@@ -1550,14 +1548,15 @@ msgstr ""
 "  <li><b>e-mailadresse:</b> %(addr)s</li>\n"
 "</ul>\n"
 "\n"
-"Klikk <em>Meld mig ud</em> for at bekr&aelig;fte at du vil framelde dig.\n"
+"Klik <em>Frameld mig ud</em> for at bekr&aelig;ftigee at du vil framelde "
+"dig.\n"
 "\n"
 "<p>Eller klik <em>Afbryd</em> for fortsat at v&aelig;re  medlem af listen."
 
 #: Mailman/Cgi/confirm.py:461 Mailman/Cgi/options.py:673
 #: Mailman/Cgi/options.py:814 Mailman/Cgi/options.py:824
 msgid "Unsubscribe"
-msgstr "Meld mig ud"
+msgstr "Frameld mig"
 
 #: Mailman/Cgi/confirm.py:462 Mailman/Cgi/confirm.py:560
 msgid "Cancel and discard"
@@ -2165,12 +2164,11 @@ msgid "the list admin overview page"
 msgstr "administrationssiden"
 
 #: Mailman/Cgi/listinfo.py:124
-#, fuzzy
 msgid ""
 " to find the management interface for your list.\n"
 "         <p>If you are having trouble using the lists, please contact "
 msgstr ""
-" for &aring; administrere en liste.\n"
+" for at administrere en liste.\n"
 "<p>Send sp&oslash;rsm&aring;l og kommentarer til "
 
 #: Mailman/Cgi/listinfo.py:189
@@ -2195,9 +2193,8 @@ msgid "No address given"
 msgstr "Ingen e-mailadresse angivet"
 
 #: Mailman/Cgi/options.py:110
-#, fuzzy
 msgid "Illegal Email Address: %(safeuser)s"
-msgstr "Feil/Ugyldig e-mailadresse: %(member)s"
+msgstr "Fejl/Ugyldig e-mailadresse: %(safeuser)s"
 
 #: Mailman/Cgi/options.py:117 Mailman/Cgi/options.py:166
 #: Mailman/Cgi/options.py:188
@@ -2218,9 +2215,8 @@ msgid "Authentication failed."
 msgstr "Login mislykkedes."
 
 #: Mailman/Cgi/options.py:243
-#, fuzzy
 msgid "List subscriptions for %(safeuser)s on %(hostname)s"
-msgstr "Vise listemedlemskab for %(user)s p&aring; %(hostname)s"
+msgstr "Vise listemedlemskab for %(safeuser)s p&aring; %(hostname)s"
 
 #: Mailman/Cgi/options.py:246
 msgid ""
@@ -2239,7 +2235,6 @@ msgid "You are already using that email address"
 msgstr "Den e-mailadresse er du allerede tilmeldt med til listen"
 
 #: Mailman/Cgi/options.py:312
-#, fuzzy
 msgid ""
 "The new address you requested %(newaddr)s is already a member of the\n"
 "%(listname)s mailing list, however you have also requested a global change "
@@ -2249,7 +2244,7 @@ msgid ""
 msgstr ""
 "Den nye adressen %(newaddr)s er allerede tilmeldt maillisten %(listname)s,\n"
 "men du har også bedt om ændring på alle lister. Efter din godkendelse vil\n"
-"alle andre e-maillister som indeholder %(user)s blive ændret. "
+"alle andre e-maillister som indeholder %(safeuser)s blive ændret. "
 
 #: Mailman/Cgi/options.py:321
 msgid "The new address is already a member: %(newaddr)s"
@@ -2433,9 +2428,8 @@ msgid "email address and "
 msgstr "e-mailadressen og "
 
 #: Mailman/Cgi/options.py:765
-#, fuzzy
 msgid "%(realname)s list: member options for user %(safeuser)s"
-msgstr "%(realname)s: personlige indstillinger for %(user)s"
+msgstr "%(realname)s: personlige indstillinger for %(safeuser)s"
 
 #: Mailman/Cgi/options.py:790
 msgid ""
@@ -2796,7 +2790,6 @@ msgid "You have been successfully subscribed to the %(realname)s mailing list."
 msgstr "Du er nu tilmeldt til maillisten %(realname)s."
 
 #: Mailman/Commands/cmd_confirm.py:17
-#, fuzzy
 msgid ""
 "\n"
 "    confirm <confirmation-string>\n"
@@ -2805,7 +2798,7 @@ msgid ""
 "        supplied by a mailback confirmation notice.\n"
 msgstr ""
 "\n"
-"    confirm <bekreftelses-indikator>\n"
+"    confirm <confirmation-string>\n"
 "        Bekr&aelig;fter en foresp&oslash;rgsel. En indikator skal angives, "
 "og skal gives\n"
 "        i e-mailen som bad om bekr&aelig;ftigelse.\n"
@@ -2838,13 +2831,12 @@ msgstr ""
 "listemoderatoren for godkendelse."
 
 #: Mailman/Commands/cmd_confirm.py:63
-#, fuzzy
 msgid ""
 "You are not currently a member.  Have you already unsubscribed or changed\n"
 "your email address?"
 msgstr ""
 "Du er ikke medlem af listen. M&aring;ske har du allerede meldt dig ud, eller "
-"du har &aelig;ndret e-mailadresse?"
+"har du &aelig;ndret din e-mailadresse?"
 
 #: Mailman/Commands/cmd_confirm.py:67
 msgid ""
@@ -3584,9 +3576,8 @@ msgid "Polish"
 msgstr ""
 
 #: Mailman/Defaults.py:1274
-#, fuzzy
 msgid "Portuguese"
-msgstr "Portugisisk (Brasil)"
+msgstr "Portugisisk (Brasilien)"
 
 #: Mailman/Defaults.py:1275
 msgid "Portuguese (Brazil)"
@@ -3597,9 +3588,8 @@ msgid "Russian"
 msgstr "Russisk"
 
 #: Mailman/Defaults.py:1277
-#, fuzzy
 msgid "Serbian"
-msgstr "Tysk"
+msgstr "Serbisk"
 
 #: Mailman/Defaults.py:1278
 msgid "Swedish"
@@ -4695,7 +4685,7 @@ msgstr ""
 "En lille introduktion til maillisten, - gerne et par afsnit.\n"
 "Den vil vises (som html), &oslash;verst p&aring; maillistens "
 "informationsside.\n"
-"Linjeskift bruges til opdeling i afsnit - se hj&aelig;lp for mer information."
+"Linieskift bruges til opdeling i afsnit - se hj&aelig;lp for mer information."
 
 #: Mailman/Gui/General.py:133
 msgid ""
@@ -5506,7 +5496,6 @@ msgstr ""
 "og det oprindelige tittelfelt."
 
 #: Mailman/Gui/Membership.py:26
-#, fuzzy
 msgid "Membership&nbsp;Management..."
 msgstr "Administrere&nbsp;medlemmer"
 
@@ -5707,9 +5696,8 @@ msgid "Passwords"
 msgstr "Password"
 
 #: Mailman/Gui/Privacy.py:28
-#, fuzzy
 msgid "Privacy options..."
-msgstr "Restrektioner"
+msgstr "Restriktioner"
 
 #: Mailman/Gui/Privacy.py:32
 msgid "Subscription&nbsp;rules"
@@ -6024,10 +6012,10 @@ msgstr ""
 "alt efter hvad <a href=\"?VARHELP=privacy/sender/generic_nonmember_action"
 "\">generelle regler for ikke-medlemmer</a> viser.\n"
 "\n"
-"<p>I tekstboksene nedenfor il&aelig;gger du en e-mailadresse per linje.\n"
+"<p>I tekstboksene nedenfor il&aelig;gger du en e-mailadresse per linie.\n"
 "Du kan ogs&aring; il&aelig;gge  <a href=\"http://www.python.org/doc/current/"
 "lib/module-re.html\">Python regexp-uttrykk</a>.\n"
-"Begynd is&aring;fald linjen med tegnet ^ for at markere at det er et s&aring;"
+"Begynd is&aring;fald linien med tegnet ^ for at markere at det er et s&aring;"
 "dan udtryk.\n"
 "N&aring;r du benytter backslash, skriv da lige som i rene strings (Python "
 "raw strings) (normalt kun &eacute;n backslash af gangen).\n"
@@ -6158,7 +6146,7 @@ msgid ""
 "             designate a regular expression match."
 msgstr ""
 "e-mail fra disse ikke-medlemmer vil automatisk blive godkendt.\n"
-"Il&aelig;g e-mailadresser, en per linje, start linjen med tegnet ^\n"
+"Il&aelig;g e-mailadresser, en per linie, start linien med tegnet ^\n"
 "for at angive et regexp-uttryk som skal passe med afsenderadressen."
 
 #: Mailman/Gui/Privacy.py:241
@@ -6458,7 +6446,7 @@ msgid ""
 msgstr ""
 "Brug denne indstilling til at fra-filtrere mail til listen,\n"
 "baseret p&aring; indholdet af et eller flere felter i mailhovedet.\n"
-"Her skal du skrive regexp-uttryk (regular expressions), et per linje,\n"
+"Her skal du skrive regexp-uttryk (regular expressions), et per linie,\n"
 "som sammenlignes mod det aktuelle felt.\n"
 "Sammenligningen sk&aelig;lner ikke imellem store og sm&aring; bogstaver.\n"
 "Linier der begynder med '#' sammenlignes ikke.\n"
@@ -6563,7 +6551,7 @@ msgstr ""
 "Her opgiver du hvor mange linier af mailens indhold som emnefilteret skal "
 "s&oslash;ge igennem.\n"
 "En s&oslash;gning stopper n&aring;r s&aring; mange linier er gennoms&oslash;"
-"gt, eller n&aring;r det m&oslash;der en linje som ikke\n"
+"gt, eller n&aring;r det m&oslash;der en linie som ikke\n"
 "ser ud som et meddelelsesfelt. Ved at sætte denne til null (0), vil ingen "
 "linier\n"
 "i indholdet blive unders&oslash;gt (dvs. kun <code>Keywords:</code> og "
@@ -6627,12 +6615,10 @@ msgid "News server settings"
 msgstr "Indstillinger for nyhedsgruppeserver"
 
 #: Mailman/Gui/Usenet.py:40
-#, fuzzy
 msgid "The hostname of the machine your news server is running on."
-msgstr "Internetadressen til nyhedsgruppetjenesten."
+msgstr "Internetadressen til Newsserver."
 
 #: Mailman/Gui/Usenet.py:41
-#, fuzzy
 msgid ""
 "This value may be either the name of your news server, or\n"
 "             optionally of the format name:port, where port is a port "
@@ -6645,8 +6631,8 @@ msgid ""
 "             capable of reading and posting news."
 msgstr ""
 "Nyhedsgruppe-tjeneste er ikke en del af Mailman.\n"
-"Du skal have adgang til en eksisterende NNTP tjenester,\n"
-"og maskinen som denne mailliste kj&oslash;rer p&aring;, skal have adgang til "
+"Du skal have adgang til en eksisterende NNTP tjeneste,\n"
+"og maskinen som denne mailliste k&oslash;rer p&aring;, skal have adgang til "
 "at hente og afsende meddelelser til NNTP tjenesten."
 
 #: Mailman/Gui/Usenet.py:50
@@ -7251,7 +7237,7 @@ msgstr ""
 "mailhovedet\n"
 "der indeholder listens password, vil mailen blive godkendt og sendt til "
 "listen.\n"
-"Approved: feltet kan du også skrive som den første linjen i svaret du sender."
+"Approved: feltet kan du også skrive som den første linien i svaret du sender."
 
 #: Mailman/Handlers/MimeDel.py:56
 msgid "The message's content type was explicitly disallowed"
@@ -7305,9 +7291,8 @@ msgid "The attached message has been automatically discarded."
 msgstr "Den vedlagte meddelelse er automatisk blevet afvist."
 
 #: Mailman/Handlers/Replybot.py:74
-#, fuzzy
 msgid "Auto-response for your message to the \"%(realname)s\" mailing list"
-msgstr "Automatisk svar for meddelelsen du sendte til "
+msgstr "Auto-svar for din meddelelse til \"%(realname)s\" mailliste "
 
 #: Mailman/Handlers/Replybot.py:107
 msgid "The Mailman Replybot"
@@ -7458,24 +7443,19 @@ msgstr ""
 "Her er linirene der skal lægges ind i aliasfilen:\n"
 
 #: Mailman/MTA/Manual.py:75
-#, fuzzy
 msgid ""
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
 "equivalent) file by adding the following lines, and possibly running the\n"
 "`newaliases' program:\n"
 msgstr ""
-"\n"
 "For at færdiggøre oprettelsen af maillisten, skal du redigere filen /etc/"
-"aliases\n"
-"(eller tilsvarende aliasfil), tilføje følgende linier, og derefter\n"
-"muligvis køre programmet 'newaliases':\n"
-"\n"
-"## Mailliste: %(listname)s"
+"aliases (eller\n"
+"lignende) fil ved at tilføje følgende linier og efterfølgende køre "
+"programmet 'newaliases':\n"
 
 #: Mailman/MTA/Manual.py:80
-#, fuzzy
 msgid "## %(listname)s mailing list"
-msgstr "maillisten \"%(realname)s\""
+msgstr "## %(listname)s mailliste"
 
 #: Mailman/MTA/Manual.py:97
 msgid "Mailing list creation request for list %(listname)s"
@@ -7508,7 +7488,7 @@ msgid ""
 "## %(listname)s mailing list"
 msgstr ""
 "\n"
-"For at færdiggøre sleting af denne mailliste, skal følgende linjer slettes "
+"For at færdiggøre sleting af denne mailliste, skal følgende linier slettes "
 "i\n"
 "filen /etc/aliases (eller tilsvarende aliasfil), muligvis efterfulgt af\n"
 "en kørsel af programmet 'newaliases':\n"
@@ -7576,7 +7556,6 @@ msgid "Last autoresponse notification for today"
 msgstr "Sidste automatiske svar i dag"
 
 #: Mailman/Queue/BounceRunner.py:182
-#, fuzzy
 msgid ""
 "The attached message was received as a bounce, but either the bounce format\n"
 "was not recognized, or no member addresses could be extracted from it.  "
@@ -7589,10 +7568,10 @@ msgid ""
 "%(adminurl)s\n"
 "\n"
 msgstr ""
-"Den vedlagte meddelelse blev modtaget som en returmail, men enten er "
+"Den vedlagte meddelelse blev modtaget som en returneter mail, men enten er "
 "formatet\n"
-"ukendt, eller ingen medlemsadresse kunne findes i meddelelsen. Denne\n"
-"mailliste er konfigurert sådan at alle ukendte returmails sendes til\n"
+"ukendt, eller der kunne ikke findes en medlemsadresse i meddelelsen. Denne\n"
+"mailliste er konfigurert sådan at alle ukendte returneede mails sendes til\n"
 "listeadministratoren(e).\n"
 "\n"
 "For mere information, se:\n"
@@ -7749,7 +7728,6 @@ msgid ""
 msgstr ""
 
 #: bin/add_members:26
-#, fuzzy
 msgid ""
 "Add members to a list from the command line.\n"
 "\n"
@@ -7793,56 +7771,42 @@ msgid ""
 "You must supply at least one of -r and -d options.  At most one of the\n"
 "files can be `-'.\n"
 msgstr ""
-"Ilægger nye medlemmer på en liste fra kommandolinjen.\n"
+"Tilføj medlemmer til en liste fra kommandolinie.\n"
 "\n"
 "Brug:\n"
-"    add_members [valg] listenavn\n"
+" add_members [options] listname\n"
 "\n"
-"Valg:\n"
+"Options:<n\n"
+"    --regular-members-file=file\n"
+"    -r file\n"
+"En fil der indeholder e-mailadresser på medlemmer, der skaltilføjes, en e-"
+"mailadresse pr. linie. Denne liste af medlemmer vil blive ikke-digest "
+"medlem. Hvis filen er '-'. læse adresse fra stdin.Bemærk at -n/--non-digest-"
+"members-file er synonym for denne option.\n"
 "\n"
-"    --regular-members-file=filnavn\n"
-"    -r filnavn\n"
-"        Navn på en fil som indeholder e-mailadresserne til medlemmer der "
-"skal\n"
-"        tilføjes, en per linje. Denne liste over medlemmer blir sat opp\n"
-"        i normal-modus. Hvis filnavnet er \"-\", læses adressene fra "
-"standard\n"
-"        input.\n"
-"\n"
-"    --digest-members-file=filnavn\n"
-"    -d=filnavn\n"
-"        Akkurat som -n valget ovenfor, men dem der står i denne fil bliver "
-"sat\n"
-"        til sammendrag-modus.\n"
-"\n"
-"    --changes-msg=<y|n>\n"
-"    -c <y|n>\n"
-"        Fortæller om der skal udsendes en meddelelse til listens medlemmer "
-"om\n"
-"        at \"der kommer en større ændring af listen\".\n"
-"        Default: n\n"
+"    --digest-members-file=file\n"
+"    -d file\n"
+"Samme som ovenstående men disse bliver sammendrags modul medlemmer.\n"
 "\n"
 "    --welcome-msg=<y|n>\n"
 "    -w <y|n>\n"
-"        Fortæller om der skal udsendes en velkomsthilsen til de nye "
-"medlemmer av\n"
-"        listen.\n"
-"        Default: listens \"send_welcome_msg\" indstilling.\n"
+"Vælger hvorvidt der skal sendes en velkomsthilsen eller ej. denne \n"
+"indstilling har højere prioritet end `send_welcome_msg' er indstil\n"
+"let til.\n"
 "\n"
 "    --admin-notify=<y|n>\n"
 "    -a <y|n>\n"
-"        Fortæller om der skal udsendes en meddelelse til listeadministratoren"
-"(e).\n"
-"        Default: listens \"admin_notify_mchanges\" indstilling.\n"
+"indstiller hvorvidt der skal sendes en notification til liste-\n"
+"administrator om succesful til/framelding eller ej. Denne indstilling \n"
+"har højere prioritet end hvad `admin_notify_mchanges' er indstillet til.\n"
 "\n"
 "    --help\n"
 "    -h\n"
-"        Viser denne hjælpetekst.\n"
+"Viser denne hjælpetekst.\n"
 "\n"
-"    listenavn\n"
-"        Navnet på listen der skal have nye medlemmer. Den skal i forvejen "
-"eksistere.\n"
-"\n"
+"    listname\n"
+"Navnet på den mailliste du tilføjer medlemmer til. Den skal eksistere \n"
+"i forvejen.\n"
 "Du skal som minimum vælge \"-r\" eller \"-d\". Kun et filnavnene kan\n"
 "være \"-\".\n"
 
@@ -7852,7 +7816,7 @@ msgstr "Allerede medlem: %(member)s"
 
 #: bin/add_members:140
 msgid "Bad/Invalid email address: blank line"
-msgstr "Fejl/Ugyldig e-mailadresse: blank linje"
+msgstr "Fejl/Ugyldig e-mailadresse: blank linie"
 
 #: bin/add_members:142
 msgid "Bad/Invalid email address: %(member)s"
@@ -8289,9 +8253,8 @@ msgid "checking mode for %(prefix)s"
 msgstr "kontrollerer rettigheder for %(prefix)s"
 
 #: bin/check_perms:174
-#, fuzzy
 msgid "WARNING: directory does not exist: %(d)s"
-msgstr "mappen skal minst have rettighetene 02775: %(d)s"
+msgstr "ADVARSEL: mappen eksisterer ikke: %(d)s"
 
 #: bin/check_perms:178
 msgid "directory must be at least 02775: %(d)s"
@@ -8415,8 +8378,8 @@ msgstr ""
 "rigtige måde. Det sker at dette ikke altid er tilfældet. Dette script "
 "prøver\n"
 "at rette dette ved at foretage et lidt grundigere check på Unix-From "
-"linjer.\n"
-"Linjer som begynner med \"From \" men som ikke passerer dette check, får en\n"
+"linier.\n"
+"Linier der begynder med \"From \" men som ikke passerer dette check, får en\n"
 "\">\" foran sig.\n"
 "\n"
 "Brug: cleanarch [valg] < innfil > utfil\n"
@@ -8424,7 +8387,7 @@ msgstr ""
 "Valg:\n"
 "    -s n\n"
 "    --status=n\n"
-"        Vis en # for hver n'te linje som læses.\n"
+"        Vis en # for hver n'te linie som læses.\n"
 "\n"
 "    -q / --quietly\n"
 "        Vis ikke ændringer der udføres.\n"
@@ -8781,18 +8744,16 @@ msgid ""
 msgstr ""
 
 #: bin/discard:94
-#, fuzzy
 msgid "Ignoring non-held message: %(f)s"
-msgstr "Ændring af medlem, som er udmeldt er ikke udført: %(user)s"
+msgstr "Ignorerer meddelelser der er ikke er i hold: %(f)s"
 
 #: bin/discard:100
 msgid "Ignoring held msg w/bad id: %(f)s"
 msgstr ""
 
 #: bin/discard:112
-#, fuzzy
 msgid "Discarded held msg #%(id)s for list %(listname)s"
-msgstr "Tilmelde mig på listen %(listname)s"
+msgstr "Kasser meddelelse i hold #%(id)s til liste %(listname)s"
 
 #: bin/dumpdb:19
 msgid ""
@@ -9211,7 +9172,6 @@ msgid "matching mailing lists found:"
 msgstr "match på denne mailliste:"
 
 #: bin/list_members:19
-#, fuzzy
 msgid ""
 "List all the members of a mailing list.\n"
 "\n"
@@ -9282,13 +9242,13 @@ msgstr ""
 "    --regular / -r\n"
 "        Viser kun medlemmer som benytter normal-modus.\n"
 "\n"
-"    --digest[=type] / -d [type]\n"
+"    --digest[=kind] / -d [kind]\n"
 "        Viser kun medlemmer der benytter sammendrag-modus.\n"
 "        Den valgfrie parameter kan enten være \"mime\" eller \"plain\",\n"
 "        som fører til at kun medlemmer med den angivnee type samle-e-mail\n"
 "        vil blive vist.\n"
 "\n"
-"    --nomail[=hvorfor] / -n [hvorfor]\n"
+"    --nomail[=why] / -n [why]\n"
 "        Viser alle medlemmer der har stoppet for modtagelse af e-mail.\n"
 "        Den valgfrie parameter angiver årsagen til at modtagelse er stoppet, "
 "og\n"
@@ -9304,7 +9264,7 @@ msgstr ""
 "        Viser medlemmenes e-mailadresse som de blev tilmeldt med til "
 "listen.\n"
 "        Benyttes dette valg ikke, vises alle e-mailadressene med små\n"
-"        bokstaver.\n"
+"        bogstaver.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -9312,7 +9272,7 @@ msgstr ""
 "\n"
 "    listenavn er navnet på maillisten.\n"
 "\n"
-"Bemerk at hvis hverken -r eller -d benyttes, vil medlemmer i normal-modus\n"
+"Bemærk at hvis hverken -r eller -d benyttes, vil medlemmer i normal-modus\n"
 "blive vist først, derefter medlemmer i sammendrag-modus, men ingen status "
 "vises.\n"
 
@@ -9695,7 +9655,7 @@ msgstr ""
 "    -h\n"
 "        Viser denne hjælpetekst.\n"
 "\n"
-"Hvis password ikke angives på kommandolinjen, vil programmet bede password "
+"Hvis password ikke angives på kommandolinien, vil programmet bede password "
 "istedet.\n"
 
 #: bin/mmsitepass:73
@@ -9760,7 +9720,7 @@ msgstr ""
 
 #: bin/msgfmt.py:49
 msgid "Add a non-fuzzy translation to the dictionary."
-msgstr ""
+msgstr "Tilføj en non-fuzzy oversættelse til biblioteket"
 
 #: bin/msgfmt.py:57
 msgid "Return the generated output."
@@ -9845,7 +9805,7 @@ msgstr ""
 "    -h / --help\n"
 "        Viser denne hjælpetekst.\n"
 "\n"
-"Du kan angive så mange parametre du vil på kommandolinjen; dem du ikke "
+"Du kan angive så mange parametre du vil på kommandolinien; dem du ikke "
 "angiver\n"
 "vil du blive bedt om at angive.\n"
 "\n"
@@ -9978,7 +9938,6 @@ msgid "No runner name given."
 msgstr "Intet grunner navn blev angivet."
 
 #: bin/remove_members:19
-#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -10036,12 +9995,12 @@ msgstr ""
 "\n"
 "    --all\n"
 "    -a\n"
-"        Fjerner alle medlemmer af maillisten.\n"
+"        Fjerner alle medlemmer fra maillisten.\n"
 "        (Kan ikke benyttes med --fromall)\n"
 "\n"
 "    --fromall\n"
 "        Fjerner de angivne e-mailadresser fra alle maillister, uanset\n"
-"        domæne hvis flere domæner. Dette valge kan ikke benyttes sammen\n"
+"        domæne hvis flere domæner. Dette valg kan ikke benyttes sammen\n"
 "        med -a/--all. Du bør heller ikke angive noget listenavn såfremt\n"
 "        du benytter dette valg.\n"
 "\n"
@@ -10123,9 +10082,8 @@ msgid "Removing %(msg)s"
 msgstr "Fjerner %(msg)s"
 
 #: bin/rmlist:80
-#, fuzzy
 msgid "%(listname)s %(msg)s not found as %(filename)s"
-msgstr "Fandt ikke %(listname)s %(msg)s som %(dir)s"
+msgstr "%(listname)s %(msg)s ikke fundet som %(filename)s"
 
 #: bin/rmlist:104
 msgid "No such list (or list already deleted): %(listname)s"
@@ -10967,7 +10925,6 @@ msgstr ""
 "volume nummer for alle lister.\n"
 
 #: cron/checkdbs:19
-#, fuzzy
 msgid ""
 "Check for pending admin requests and mail the list owners if necessary.\n"
 "\n"
@@ -10978,15 +10935,13 @@ msgid ""
 "    -h/--help\n"
 "        Print this message and exit.\n"
 msgstr ""
-"Genererer Postfix filene data/aliases og data/aliases.db igen.\n"
+"Check for ventende admin forespørgsler og mailliste ejere om nødvendigt.\n"
 "\n"
-"Brug:\n"
+"Brug: %(PROGRAM)s [options]\n"
 "\n"
-"    genaliases [valg]\n"
+"Valg\n"
 "\n"
-"Valg:\n"
-"\n"
-"    --help / -h\n"
+"    -h/--help\n"
 "        Viser denne hjælpetekst.\n"
 
 #: cron/checkdbs:110
@@ -11231,6 +11186,9 @@ msgstr ""
 "        Send kun samle-epost fra den angivne liste. Hvis dette valg ikke\n"
 "        benyttes, vil det sendes ud fra alle aktuelle lister.\n"
 
+#~ msgid "Danish"
+#~ msgstr "Dansk"
+
 #~ msgid "Big change in %(listname)s@%(listhost)s mailing list"
 #~ msgstr "Stor ændring af maillisten %(listname)s@%(listhost)s"
 
@@ -11339,7 +11297,7 @@ msgstr ""
 #~ msgstr ""
 #~ "For at afslutte oprettelsen af e-maillisten, skal du redigere filen /etc/"
 #~ "aliases\n"
-#~ "(eller tilsvarende aliasfil) og tilføje følgende linjer:\n"
+#~ "(eller tilsvarende aliasfil) og tilføje følgende linier:\n"
 #~ "\n"
 #~ "## Epostliste: %(listname)s\n"
 #~ "## Opprettet: %(date)s %(user)s\n"
@@ -11358,7 +11316,7 @@ msgstr ""
 #~ "%(owner)s %(listname)s-admin\n"
 #~ msgstr ""
 #~ "For at afslutte sletting af e-maillisten, skal du redigere /etc/aliases\n"
-#~ "(eller tilsvarende aliasfil) og fjerne følgende linjer:\n"
+#~ "(eller tilsvarende aliasfil) og fjerne følgende linier:\n"
 #~ "\n"
 #~ "%(list)s \"|%(wrapper)s post %(listname)s\"\n"
 #~ "%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
