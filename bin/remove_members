@@ -116,7 +116,7 @@ def main():
     try:
         for addr in addresses:
             try:
-                mlist.DeleteMember(addr)
+                mlist.ApprovedDeleteMember(addr)
             except Errors.MMNoSuchUserError:
                 print _("User `%(addr)s' not found.")
     finally:
