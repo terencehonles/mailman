@@ -100,7 +100,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	# Must save this state, even though it isn't configurable
 	self.volume = 1
-	self.members = [] # self.digest_members is inited in mm_digest
+	self.members = [] # self.digest_members is initted in mm_digest
 	self.data_version = mm_cfg.VERSION
 	self.last_post_time = 0
 	
@@ -412,10 +412,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    raise mm_err.MMAlreadyAMember
 	if digest:
 	    self.digest_members.append(name)
-	    self.digest_members.sort()
+            kind = "digest"
 	else:
 	    self.members.append(name)
-	    self.members.sort()
+            kind = "regular"
+        self.LogMsg("subscribe", "%s: new %s member %s",
+                    self._internal_name, kind, name)
 	self.passwords[name] = password
 	self.Save()
 	self.SendSubscribeAck(name, password, digest)
@@ -582,8 +584,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# Prepend the subject_prefix to the subject line.
 	subj = msg.getheader('subject')
 	prefix = self.subject_prefix
-	if prefix:
-	    prefix = prefix + ' '
 	if not subj:
 	    msg.SetHeader('Subject', '%s(no subject)' % prefix)
 	elif not re.match("(re:? *)?" + re.escape(self.subject_prefix),
