@@ -29,6 +29,8 @@ except IOError, (x,y):
     watermarks = {}
 
 for name in names:
+    if os.fork():
+	continue
     if watermarks.has_key(name):
         wm = watermarks[name]
     else:
