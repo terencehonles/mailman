@@ -1,4 +1,9 @@
 #!/usr/local/bin/python
+
+"""Script which implements admin editing of the list's html templates."""
+
+__version__ = "$Revision: 386 $"
+
 import sys
 sys.path.append('/home/mailman/mailman/modules')
 import os, cgi, string, crypt, types
