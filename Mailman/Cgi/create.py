@@ -180,57 +180,63 @@ def process_request(doc, cgidata):
                 Please contact the site administrator for assistance.'''))
             return
         
-        # Now do the MTA-specific list creation tasks
-        if mm_cfg.MTA:
-            modname = 'Mailman.MTA.' + mm_cfg.MTA
-            __import__(modname)
-            sys.modules[modname].create(mlist, cgi=1)
-
-        # And send the notice to the list owner.
-        if notify:
-            siteadmin = Utils.get_site_email(mlist.host_name, '-admin')
-            text = Utils.maketext(
-                'newlist.txt',
-                {'listname'    : listname,
-                 'password'    : password, 
-                 'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
-                 'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-                 'requestaddr' : mlist.GetRequestEmail(),
-                 'siteowner'   : siteadmin,
-                 }, mlist=mlist)
-            msg = Message.UserNotification(
-                owner, siteadmin,
-                _('Your new mailing list: %(listname)s'),
-                text)
-            msg.send(mlist)
-
-        # Success!
-        listinfo_url = mlist.GetScriptURL('listinfo', absolute=1)
-        admin_url = mlist.GetScriptURL('admin', absolute=1)
-        create_url = Utils.ScriptURL('create')
-
-        title = _('Mailing list creation results')
-        doc.SetTitle(title)
-        table = Table(border=0, width='100%')
-        table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
-        table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                          bgcolor=mm_cfg.WEB_HEADER_COLOR)
-        table.AddRow([_('''You have successfully created the mailing list
-        <b>%(listname)s</b> and notification has been sent to the list owner
-        <b>%(owner)s</b>.  You can now:''')])
-        ullist = UnorderedList()
-        ullist.AddItem(Link(listinfo_url, _("Visit the list's info page")))
-        ullist.AddItem(Link(admin_url, _("Visit the list's admin page")))
-        ullist.AddItem(Link(create_url, _('Create another list')))
-        table.AddRow([ullist])
-        doc.AddItem(table)
-
+        # Initialize the host_name and web_page_url attributes, based on
+        # virtual hosting settings and the request environment variables.
+        hostname = Utils.get_domain()
+        mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % hostname
+        mlist.host_name = mm_cfg.VIRTUAL_HOSTS.get(hostname, hostname)
+        mlist.Save()
     finally:
         # Now be sure to unlock the list.  It's okay if we get a signal here
         # because essentially, the signal handler will do the same thing.  And
         # unlocking is unconditional, so it's not an error if we unlock while
         # we're already unlocked.
         mlist.Unlock()
+
+    # Now do the MTA-specific list creation tasks
+    if mm_cfg.MTA:
+        modname = 'Mailman.MTA.' + mm_cfg.MTA
+        __import__(modname)
+        sys.modules[modname].create(mlist, cgi=1)
+
+    # And send the notice to the list owner.
+    if notify:
+        siteadmin = Utils.get_site_email(mlist.host_name, '-admin')
+        text = Utils.maketext(
+            'newlist.txt',
+            {'listname'    : listname,
+             'password'    : password, 
+             'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
+             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
+             'requestaddr' : mlist.GetRequestEmail(),
+             'siteowner'   : siteadmin,
+             }, mlist=mlist)
+        msg = Message.UserNotification(
+            owner, siteadmin,
+            _('Your new mailing list: %(listname)s'),
+            text)
+        msg.send(mlist)
+
+    # Success!
+    listinfo_url = mlist.GetScriptURL('listinfo', absolute=1)
+    admin_url = mlist.GetScriptURL('admin', absolute=1)
+    create_url = Utils.ScriptURL('create')
+
+    title = _('Mailing list creation results')
+    doc.SetTitle(title)
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+    table.AddRow([_('''You have successfully created the mailing list
+    <b>%(listname)s</b> and notification has been sent to the list owner
+    <b>%(owner)s</b>.  You can now:''')])
+    ullist = UnorderedList()
+    ullist.AddItem(Link(listinfo_url, _("Visit the list's info page")))
+    ullist.AddItem(Link(admin_url, _("Visit the list's admin page")))
+    ullist.AddItem(Link(create_url, _('Create another list')))
+    table.AddRow([ullist])
+    doc.AddItem(table)
 
 
 
