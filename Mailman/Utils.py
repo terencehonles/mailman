@@ -172,20 +172,17 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
     import OutgoingQueue
 
     # We need to get a modern smtplib.  The Python 1.5.1 version does not
-    # support ehlo (ESMTP), but the Python 1.5.2 version does, so search for
-    # that.  For compatibility, we distribute the just-pre-1.5.2 version in
-    # the Mailman.pythonlib package.  This is about the grossest hack
-    # imaginable, but it will use the standard Python module, if it's
-    # compatible, otherwise it will use our (possibly version skewed) copy.
-    import smtplib
-    if not hasattr(smtplib, 'SMTP') or not hasattr(smtplib.SMTP, 'ehlo'):
-        from Mailman.pythonlib import smtplib
-    assert hasattr(smtplib.SMTP, 'ehlo')
-
+    # support ehlo (ESMTP), but the Python 1.5.2 version does.  However, the
+    # interface to conn.ehlo() has changed between Python 1.5.2beta and 1.5.2
+    # final.  Also, there was a patch to smtplib.py after Python 1.5.2 final
+    # was released.  For all these reasons we import smtplib directly out of
+    # the Mailman.pythonlib package.  This contains the latest (as of
+    # 27-Apr-1999) smtplib.py file from the Python CVS tree.
+    from Mailman.pythonlib import smtplib
     try:
         conn = smtplib.SMTP(mm_cfg.SMTPHOST)
         # Do the EHLO/HELO manually so we can check for DSN support
-        if conn.ehlo() >= 400:
+        if conn.ehlo()[0] >= 400:
             conn.helo()
         # receipt opts, empty unless DSN is supported, in which case we only
         # want notification on failures
