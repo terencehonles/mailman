@@ -93,23 +93,7 @@ delivery.  The original message as received by Mailman is attached.
 def do_topic_filters(mlist, msg, msgdata, recips):
     hits = msgdata.get('topichits')
     zaprecips = []
-    if not hits:
-        # The semantics for a message that did not hit any of the pre-canned
-        # topics is to troll through the membership list, looking for users
-        # who selected at least one topic of interest, but turned on
-        # ReceiveNonmatchingTopics.
-        for user in recips:
-            if not mlist.getMemberTopics(user):
-                # The user did not select any topics of interest, so he gets
-                # this message by default.
-                continue
-            if not mlist.getMemberOption(user,
-                                         mm_cfg.ReceiveNonmatchingTopics):
-                # The user has interest in some topics, but elects not to
-                # receive message that match no topics, so zap him.
-                zaprecips.append(user)
-            # Otherwise, the user wants non-matching messages.
-    else:
+    if hits:
         # The message hit some topics, so only deliver this message to those
         # who are interested in one of the hit topics.
         for user in recips:
@@ -127,7 +111,22 @@ def do_topic_filters(mlist, msg, msgdata, recips):
                 # The user was interested in topics, but not any of the ones
                 # this message matched, so zap him.
                 zaprecips.append(user)
-
+    else:
+        # The semantics for a message that did not hit any of the pre-canned
+        # topics is to troll through the membership list, looking for users
+        # who selected at least one topic of interest, but turned on
+        # ReceiveNonmatchingTopics.
+        for user in recips:
+            if not mlist.getMemberTopics(user):
+                # The user did not select any topics of interest, so he gets
+                # this message by default.
+                continue
+            if not mlist.getMemberOption(user,
+                                         mm_cfg.ReceiveNonmatchingTopics):
+                # The user has interest in some topics, but elects not to
+                # receive message that match no topics, so zap him.
+                zaprecips.append(user)
+            # Otherwise, the user wants non-matching messages.
     # Prune out the non-receiving users
     for user in zaprecips:
         recips.remove(user)
