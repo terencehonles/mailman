@@ -45,7 +45,7 @@ def process(mlist, msg, msgdata):
             'postack.txt',
             {'subject'     : subject,
              'listname'    : mlist.real_name,
-             'listinfo_url': mlist.GetAbsoluteScriptURL('listinfo'),
+             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
              })
         # craft the outgoing message, with all headers and attributes
         # necessary for general delivery
