@@ -824,34 +824,36 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         bucket = 'a'
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
-        qs = cgi.parse_qs(os.environ['QUERY_STRING'])
-        if qs.has_key('letter'):
-            bucket = qs['letter'][0].lower()
-            if bucket not in digits + lowercase:
-                bucket = None
-        if not bucket or not buckets.has_key(bucket):
-            keys = buckets.keys()
-            keys.sort()
-            bucket = keys[0]
-        members = buckets[bucket]
-        action = adminurl + '/members?letter=%s' % bucket
-        if len(members) <= chunksz:
-            form.set_action(action)
-        else:
-            i, r = divmod(len(members), chunksz)
-            numchunks = i + (not not r * 1)
-            # Now chunk them up
-            chunkindex = 0
-            if qs.has_key('chunk'):
-                try:
-                    chunkindex = int(qs['chunk'][0])
-                except ValueError:
-                    chunkindex = 0
-                if chunkindex < 0 or chunkindex > numchunks:
-                    chunkindex = 0
-            members = members[chunkindex*chunksz:(chunkindex+1)*chunksz]
-            # And set the action URL
-            form.set_action(action + '&chunk=%s' % chunkindex)
+        qsenviron = os.environ.get('QUERY_STRING')
+        if qsenviron:
+            qs = cgi.parse_qs(qsenviron)
+            if qs.has_key('letter'):
+                bucket = qs['letter'][0].lower()
+                if bucket not in digits + lowercase:
+                    bucket = None
+            if not bucket or not buckets.has_key(bucket):
+                keys = buckets.keys()
+                keys.sort()
+                bucket = keys[0]
+            members = buckets[bucket]
+            action = adminurl + '/members?letter=%s' % bucket
+            if len(members) <= chunksz:
+                form.set_action(action)
+            else:
+                i, r = divmod(len(members), chunksz)
+                numchunks = i + (not not r * 1)
+                # Now chunk them up
+                chunkindex = 0
+                if qs.has_key('chunk'):
+                    try:
+                        chunkindex = int(qs['chunk'][0])
+                    except ValueError:
+                        chunkindex = 0
+                    if chunkindex < 0 or chunkindex > numchunks:
+                        chunkindex = 0
+                members = members[chunkindex*chunksz:(chunkindex+1)*chunksz]
+                # And set the action URL
+                form.set_action(action + '&chunk=%s' % chunkindex)
     # So now members holds all the addresses we're going to display
     allcnt = len(all)
     if bucket:
