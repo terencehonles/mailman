@@ -26,12 +26,18 @@ this file, to override the distributed defaults with site-specific ones.
 
 import os
 
-# This is the Mailman homepage; you should not change it
-MAILMAN_URL       = 'http://www.list.org/'
+# Should image logos be used?  Set this to false to disable image logos from
+# "our sponsors" and just use textual links instead.  Otherwise, this should
+# contain the URL base path to the logo images (and must contain the trailing
+# slash)..  If you want to disable Mailman's logo footer altogther, hack
+# Mailman/htmlformat.py:MailmanLogo(), which also contains the hardcoded links
+# and image names.
+IMAGE_LOGOS = '/icons/'
 
-# The URL to the `Delivered by Mailman' image.  This will be inserted verbatim
-# in an href.  Set to 0 to disable using an img tag.
-DELIVERED_BY_URL = '/images/mailman.jpg'
+# Don't change MAILMAN_URL, unless you want to point it at the list.org
+# mirror.
+MAILMAN_URL = 'http://www.gnu.org/software/mailman/mailman.html'
+#MAILMAN_URL = 'http://www.list.org/'
 
 		   # Many site-specific settings #
 
