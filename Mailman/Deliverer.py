@@ -18,7 +18,7 @@
 """Mixin class with message delivery routines."""
 
 
-import string, os, sys, tempfile
+import string, os, sys
 import mm_cfg
 import Errors
 import Utils
@@ -49,24 +49,11 @@ class Deliverer:
                       header="", footer="", remove_to=0, tmpfile_prefix = ""):
 	if not(len(recipients)):
 	    return
-        # repr(recipient) necessary for addresses containing "'" quotes!
-        recipients = map(repr, recipients)
-	to_list = string.join(recipients)
-        tempfile.tempdir = '/tmp'
-
-## If this is a digest, or we ask to remove them,
-## Remove old To: headers.  We're going to stick our own in there.
-## Also skip: Sender, return-receipt-to, errors-to, return-path, reply-to,
-## (precedence, and received).
-
+        # Massage the headers.
         if remove_to:
-	    # Writing to a file is better than waiting for sendmail to exit
-            tempfile.template = tmpfile_prefix +'mailman-digest.'
             del msg['to']
             del msg['x-to']
 	    msg.headers.append('To: %s\n' % self.GetListEmail())
- 	else:
-            tempfile.template = tmpfile_prefix + 'mailman.'
 	if self.reply_goes_to_list:
             del msg['reply-to']
             msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
@@ -74,26 +61,30 @@ class Deliverer:
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
 	msg.headers.append('X-BeenThere: %s\n' % self.GetListEmail())
 
-        tmp_file_name = tempfile.mktemp()
- 	tmp_file = open(tmp_file_name, 'w+')
- 	tmp_file.write(string.join(msg.headers,'') + '\n')
+        cmd = "%s %s" % (mm_cfg.PYTHON,
+                         os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"))
+        cmdproc = os.popen(cmd, 'w')
 
+        cmdproc.write("%d\n" % self.num_spawns)
+        cmdproc.write("%s\n" % self.GetAdminEmail())
+        for r in recipients:
+            # Mustn't send blank lines before end of recipients:
+            if not r: continue
+            cmdproc.write(r + "\n")
+        cmdproc.write("\n")             # Empty line for end of recipients.
+        cmdproc.write(string.join(msg.headers, '') + "\n")
 	if header:                      # The *body* header:
-	    tmp_file.write(header + '\n')
-	tmp_file.write(self.QuotePeriods(msg.body))
+	    cmdproc.write(header + "\n")
+	cmdproc.write(self.QuotePeriods(msg.body))
 	if footer:
-	    tmp_file.write(footer)
-	tmp_file.close()
-        cmd = "%s %s %s %s %s %s" % (
-            mm_cfg.PYTHON,
-            os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"),
-            tmp_file_name, self.GetAdminEmail(),
-            self.num_spawns, to_list)
-        file = os.popen(cmd)
-	status = file.close()
+	    cmdproc.write(footer)
+
+	status = cmdproc.close()
+
         if status:
             sys.stderr.write('Non-zero exit status: %d'
-                             '\nCmd: %s' % ((status >> 8), cmd))
+                             '\nCommand: %s' % ((status >> 8), cmd))
+
     def SendPostAck(self, msg, sender):
 	subject = msg.getheader('subject')
 	if not subject:
