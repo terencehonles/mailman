@@ -4,6 +4,26 @@
 import mm_err, mm_cfg, mm_message
 import os, marshal, time, string
 
+SUBSCRIPTION_AUTH_TEXT = """
+Your authorization is required to approve or deny a subscription for
+%s to the %s@%s mailing list.  Please visit:
+
+	%s
+	
+at your convenience to process the request."""
+
+POSTING_AUTH_TEXT = """
+Your authorization is required to approve or deny a posting for
+%s to the %s@%s mailing list.
+
+Reason for hold: %s
+
+Please visit:
+
+	%s
+	
+at your convenience to process the request."""
+
 class ListAdmin:
     def InitVars(self):
 	# Non-configurable data:
@@ -22,11 +42,35 @@ class ListAdmin:
 	    self.LogMsg("vette", ("%s: %s for %s" % (self.real_name,
 						     "Subscription request",
 						     args[2])))
+	    if self.admin_immed_notify:
+		who = args[1]
+		subj = 'New %s subscription request: %s' % (self.real_name,
+							    who)
+		self.SendTextToUser(subject = subj,
+				    recipient = self.GetAdminEmail(),
+				    text = (SUBSCRIPTION_AUTH_TEXT
+					    % (who,
+					       self.real_name,
+					       self.host_name,
+					       self.GetScriptURL('admindb'))))
 	    raise mm_err.MMNeedApproval, "Admin approval required to subscribe"
+
 	elif request == 'post':
 	    sender = args[0][0]
+	    reason = args[1]
 	    self.LogMsg("vette",
-			("%s: %s %s" % (self.real_name, `args[1]`, sender)))
+			"%s: %s %s" % (self.real_name, reason, sender))
+	    if self.admin_immed_notify:
+		subj = '%s posting approval, sender %s' % (self.real_name,
+							   sender)
+		self.SendTextToUser(subject = subj,
+				    recipient = self.GetAdminEmail(),
+				    text = (POSTING_AUTH_TEXT
+					    % (sender,
+					       self.real_name,
+					       self.host_name,
+					       reason,
+					       self.GetScriptURL('admindb'))))
 	    raise mm_err.MMNeedApproval, args[1]
 
     def CleanRequests(self):
