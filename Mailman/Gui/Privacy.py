@@ -24,7 +24,7 @@ from Mailman.i18n import _
 
 class Privacy:
     def GetConfigCategory(self):
-        return 'privacy', _('Privacy Options')
+        return 'privacy', _('Privacy options')
 
     def GetConfigInfo(self, mlist):
         WIDTH = mm_cfg.TEXTFIELDWIDTH

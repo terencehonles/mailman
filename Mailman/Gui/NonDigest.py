@@ -25,7 +25,7 @@ from Mailman.i18n import _
 
 class NonDigest:
     def GetConfigCategory(self):
-        return 'nondigest', _('Non-digest delivery options')
+        return 'nondigest', _('Non-digest&nbsp;options')
 
     def GetConfigInfo(self, mlist):
         WIDTH = mm_cfg.TEXTFIELDWIDTH

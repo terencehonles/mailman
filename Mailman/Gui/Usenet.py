@@ -21,7 +21,7 @@ from Mailman.i18n import _
 
 class Usenet:
     def GetConfigCategory(self):
-        return 'gateway', _('Mail &lt;-&gt; News Gateways')
+        return 'gateway', _('Mail&lt;-&gt;News&nbsp;gateways')
 
     def GetConfigInfo(self, mlist):
         WIDTH = mm_cfg.TEXTFIELDWIDTH
