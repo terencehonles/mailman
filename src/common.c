@@ -131,6 +131,19 @@ check_caller(const char* ident, GID_T parentgid)
 
 
 
+/* list of environment variables which are removed from the given
+ * environment.  Some may or may not be hand crafted and passed into
+ * the execv'd environment.
+ */
+static char* killenvars[] = {
+	"PYTHONPATH=",
+	"PYTHONHOME=",
+	"PATH=",
+	NULL
+};
+    
+
+
 /* Run a Python script out of the script directory
  *
  * args[0] should be the abs path to the Python script to execute
@@ -147,7 +160,7 @@ run_script(const char* script, int argc, char** argv, char** env)
 	int i, j, status;
 	char** newenv;
 	char** newargv;
-    
+
 	/* We need to set the real gid to the effective gid because there are
 	 * some Linux systems which do not preserve the effective gid across
 	 * popen() calls.  This breaks mail delivery unless the ~mailman/data
@@ -178,12 +191,20 @@ run_script(const char* script, int argc, char** argv, char** env)
 	/* okay to be a little too big */
 	newenv = (char**)malloc(sizeof(char*) * (envcnt + 2));
 
-	/* filter out any existing PYTHONPATH in the environment */
-	for (i = 0, j = 0; i < envcnt; i++)
-		if (strncmp(envstr, env[i], envlen)) {
-			newenv[j] = env[i];
-			j++;
+	/* filter out any troublesome environment variables */
+	for (i = 0, j = 0; i < envcnt; i++) {
+		char** k = &killenvars[0];
+		int keep = 1;
+		while (*k) {
+			if (!strncmp(*k, env[i], strlen(*k))) {
+				keep = 0;
+				break;
+			}
+			*k++;
 		}
+		if (keep)
+			newenv[j++] = env[i];
+	}
 
 	/* Tack on our own version of PYTHONPATH, which should contain only
 	 * the path to the Mailman package modules.
