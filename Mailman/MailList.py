@@ -1268,6 +1268,9 @@ bad regexp in bounce_matching_header line: %s
         for posting hold notifications, and serves only as a safety value for
         mail loops with email 'bots.
         """
+        # No limit
+        if mm_cfg.MAX_AUTORESPONSES_PER_DAY == 0:
+            return 1
         today = time.localtime()[:3]
         info = self.hold_and_cmd_autoresponses.get(sender)
         if info is None or info[0] <> today:
