@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -140,15 +140,13 @@ VERBATIM_ENCODING = ['iso-2022-jp']
 # Delivery defaults
 #####
 
-# Delivery module for the message pipeline.  See
-# Mailman/Handlers/HandlerAPI.py for details.  Unless overridden specifically
-# in that module, this handler is used for message delivery to the list, and
-# to an individual user.  This value must be a string naming a module in the
-# Mailman.Handlers package.
+# Final delivery module for outgoing mail.  This handler is used for message
+# delivery to the list via the smtpd, and to an individual user.  This value
+# must be a string naming a module in the Mailman.Handlers package.
 #
 # SECURITY WARNING: The Sendmail module is not secure!  Please read the
 # comments in Mailman/Handlers/Sendmail.py for details.  Use at your own
-# risk.
+# risk.  SMTPDirect is recommended.
 #
 #DELIVERY_MODULE = 'Sendmail'
 DELIVERY_MODULE = 'SMTPDirect'
@@ -192,17 +190,61 @@ NNTP_PASSWORD = None
 # Set this if you have an NNTP server you prefer gatewayed lists to use.
 DEFAULT_NNTP_HOST = ''
 
+# All `normal' messages which are delivered to the entire list membership go
+# through this pipeline of handler modules.  Lists themselves can override the
+# global pipeline by defining a `pipeline' attribute.
+GLOBAL_PIPELINE = [
+    'SpamDetect',
+    'Approve',
+    'Replybot',
+    'Hold',
+    'Cleanse',
+    'CookHeaders',
+    'ToDigest',
+    'ToArchive',
+    'CalcRecips',
+    'Decorate',
+    'AfterDelivery',
+    'Acknowledge',
+    'ToUsenet',
+    'ToOutgoing',
+    ]
+
+
+#####
+# Qrunner defaults
+#####
+
+# Which queues should the qrunner master watchdog spawn?  This is a list of
+# 2-tuples containing the name of the qrunner class (which must live in a
+# module of the same name within the Mailman.Queue package), and the number of
+# parallel processes to fork for each qrunner.  If more than one process is
+# used, each will take an equal subdivision of the hash space.
+
+# BAW: eventually we may support weighted hash spaces.
+#
+# BAW: although not enforced, the # of slices must be a power of 2
+
+QRUNNERS = [
+    ('IncomingRunner', 1), # posts from the outside world
+    ('OutgoingRunner', 1), # outgoing messages to the smtpd
+    ('NewsRunner',     1), # outgoing messages to the nntpd
+    ('ArchRunner',     1), # messages for the archiver
+#    ('BounceRunner',   1), # bounces from the outside world
+    ('VirginRunner',   1), # internally crafted (virgin birth) messages
+    ]
+
+# After processing every file in the qrunner's slice, how long should the
+# runner sleep for before checking the queue directory again for new files?
+# This can be a fraction of a second, or zero to check immediately
+# (essentially busy-loop as fast as possible).
+QRUNNER_SLEEP_TIME = seconds(1)
+
 
 
 #####
 # General defaults
 #####
-
-# Set to true to use the crypt module for passwords instead of md5.  Crypt may
-# not work on all Python installations.  Don't change this value once you have
-# lists running...  In fact, you should just let configure set this one and
-# leave it alone.
-USE_CRYPT = 1
 
 # When allowing only members to post to a mailing list, how is the sender of
 # the message determined?  If this variable is set to 1, then first the
@@ -231,7 +273,6 @@ SMART_ADDRESS_MATCH = 1
 # virtual host".  If unset, then all lists are included in the overview.  The
 # admin page overview always includes all the lists.
 VIRTUAL_HOST_OVERVIEW = 1
-DEFAULT_FILTER_PROG = ''                # Currently not used!
 
 # How many members to display at a time on the admin cgi to unsubscribe them
 # or change their options?
@@ -241,6 +282,20 @@ DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
 # page?  Use a negative number to indicate the entire message, regardless of
 # size (though this will slow down rendering those pages).
 ADMINDB_PAGE_TEXT_LIMIT = 4096
+
+# These define the available types of external message metadata formats, and
+# the one to use by default.  MARSHAL format uses Python's built-in marshal
+# module.  BSDDB_NATIVE uses the bsddb module compiled into Python, which
+# links with whatever version of Berkeley db you've got on your system (in
+# Python 2.0 this is included by default if configure can find it).  ASCII
+# format is a dumb repr()-based format with "key = value" Python assignments.
+# It is human readable and editable (as Python source code) and is appropriate
+# for execfile() food.
+METAFMT_MARSHAL      = 1
+METAFMT_BSDDB_NATIVE = 2
+METAFMT_ASCII        = 3
+
+METADATA_FORMAT = METAFMT_MARSHAL
 
 
 
@@ -400,8 +455,8 @@ DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
 DEFAULT_ADMINISTRIVIA = 1
 
 # List of addresses (lhs of the @) that likely come only from MTAs bouncing
-# messages.  This is used in qrunner and MailCommandHandler.py to stop
-# processing or forwarding such messages.
+# messages.  This is used in the bounce detector and MailCommandHandler.py to
+# stop processing or forwarding such messages.
 #
 # TBD: why orphanage?  why postoffice?
 LIKELY_BOUNCE_SENDERS = ('daemon', 'mailer-daemon', 'postmaster',
@@ -455,25 +510,9 @@ LIST_LOCK_DEBUGGING = 0
 LIST_LOCK_LIFETIME = hours(5)
 
 # This variable specifies how long an attempt will be made to acquire a list
-# lock by the qrunner process.  If the lock acquisition times out, the message
-# will be re-queued for later delivery.
+# lock by the incoming qrunner process.  If the lock acquisition times out,
+# the message will be re-queued for later delivery.
 LIST_LOCK_TIMEOUT = seconds(10)
-
-# cron/qrunner lock lifetime.  This is probably the second most crucial tuning
-# variable in the system.  See the notes for LIST_LOCK_LIFETIME above.  Watch
-# your logs/smtp file and make sure that QRUNNER_LOCK_LIFETIME is set longer
-# than the longest period you see here.  It is a bad thing if multiple
-# qrunners run at the same time.
-QRUNNER_LOCK_LIFETIME = hours(10)
-
-# Two other qrunner resource management variables.  The first controls the
-# maximum lifetime of any single qrunner process, and the second controls the
-# maximum number of messages a single qrunner process will, er, process.
-# Exceeding either limit causes qrunner to exit, reclaiming system resources
-# and deleting the lock.  Other qrunners will then process the remaining
-# messages.  Set either to None to inhibit this resource check.
-QRUNNER_PROCESS_LIFETIME = minutes(15)
-QRUNNER_MAX_MESSAGES = 300
 
 
 
@@ -555,6 +594,9 @@ INQUEUE_DIR     = os.path.join(QUEUE_DIR, 'in')
 OUTQUEUE_DIR    = os.path.join(QUEUE_DIR, 'out')
 BOUNCEQUEUE_DIR = os.path.join(QUEUE_DIR, 'bounce')
 NEWSQUEUE_DIR   = os.path.join(QUEUE_DIR, 'news')
+ARCHQUEUE_DIR   = os.path.join(QUEUE_DIR, 'archive')
+SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
+VIRGINQUEUE_DIR = os.path.join(QUEUE_DIR, 'virgin')
 
 SITE_PW_FILE = os.path.join(DATA_DIR, 'adm.pw')
 
@@ -588,3 +630,10 @@ gettext.bindtextdomain('mailman', MESSAGES_DIR)
 gettext.textdomain('mailman')
 import __builtin__
 __builtin__.__dict__['_'] = gettext.gettext
+
+# BAW: Another hack to get Python's site-packages directory on the path.  This
+# should go away in favor of distributing required non-standard packages like
+# mimelib in the Mailman heirarchy.
+import sys
+sys.path.append(os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                             'site-packages'))
