@@ -256,23 +256,27 @@ def show_pending_subs(mlist, form):
     form.AddItem('<hr>')
     form.AddItem(Center(Header(2, _('Subscription Requests'))))
     table = Table(border=2)
-    table.AddRow([Center(Bold(_('User address/name'))),
+    table.AddRow([Center(Bold(_('Address/name'))),
                   Center(Bold(_('Your decision'))),
                   Center(Bold(_('Reason for refusal')))
                   ])
     for id in pendingsubs:
         time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+        radio = RadioButtonArray(id, (_('Defer'),
+                                      _('Approve'),
+                                      _('Reject'),
+                                      _('Discard')),
+                                 values=(mm_cfg.DEFER,
+                                         mm_cfg.SUBSCRIBE,
+                                         mm_cfg.REJECT,
+                                         mm_cfg.DISCARD),
+                                 checked=0).Format()
+        if addr not in mlist.ban_list:
+            radio += '<br>' + CheckBox('ban-%d' % id, 1).Format() + \
+                     '&nbsp;' + _('Permanently ban from this list')
         table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
-                      RadioButtonArray(id, (_('Defer'),
-                                            _('Approve'),
-                                            _('Reject'),
-                                            _('Discard')),
-                                       values=(mm_cfg.DEFER,
-                                               mm_cfg.SUBSCRIBE,
-                                               mm_cfg.REJECT,
-                                               mm_cfg.DISCARD),
-                                       checked=0),
-                      TextBox('comment-%d' % id, size=45)
+                      radio,
+                      TextBox('comment-%d' % id, size=40)
                       ])
     form.AddItem(table)
 
@@ -387,6 +391,13 @@ def show_helds_overview(mlist, form):
                 (0, 0, 0, 1))
             left.AddRow([btns])
             left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
+            if sender not in mlist.ban_list:
+                left.AddRow([
+                    CheckBox('senderbanp-' + qsender, 1).Format() +
+                    '&nbsp;' +
+                    _("""Ban <b>%(esender)s</b> from ever subscribing to this
+                    mailing list""")])
+                left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
         right = Table(border=0)
         right.AddRow([
             _("""Click on the message number to view the individual
@@ -586,7 +597,7 @@ def process_form(mlist, doc, cgidata):
     for k in cgidata.keys():
         for prefix in ('senderaction-', 'senderpreserve-', 'senderforward-',
                        'senderforwardto-', 'senderfilterp-', 'senderfilter-',
-                       'senderclearmodp-'):
+                       'senderclearmodp-', 'senderbanp-'):
             if k.startswith(prefix):
                 action = k[:len(prefix)-1]
                 sender = unquote_plus(k[len(prefix):])
@@ -639,6 +650,10 @@ def process_form(mlist, doc, cgidata):
             except Errors.NotAMemberError:
                 # This person's not a member any more.  Oh well.
                 pass
+        # And should this address be banned?
+        if actions.get('senderbanp', 0):
+            if sender not in mlist.ban_list:
+                mlist.ban_list.append(sender)
     # Now, do message specific actions
     erroraddrs = []
     for k in cgidata.keys():
@@ -659,6 +674,7 @@ def process_form(mlist, doc, cgidata):
         preservekey = 'preserve-%d' % request_id
         forwardkey = 'forward-%d' % request_id
         forwardaddrkey = 'forward-addr-%d' % request_id
+        bankey = 'ban-%d' % request_id
         # Defaults
         comment = _('[No reason given]')
         preserve = 0
@@ -672,6 +688,12 @@ def process_form(mlist, doc, cgidata):
             forward = cgidata[forwardkey].value
         if cgidata.has_key(forwardaddrkey):
             forwardaddr = cgidata[forwardaddrkey].value
+        # Should we ban this address?  Do this check before handling the
+        # request id because that will evict the record.
+        if cgidata.getvalue(bankey):
+            sender = mlist.GetRecord(request_id)[1]
+            if sender not in mlist.ban_list:
+                mlist.ban_list.append(sender)
         # Handle the request id
         try:
             mlist.HandleRequest(request_id, v, comment,
