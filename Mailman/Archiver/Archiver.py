@@ -137,29 +137,21 @@ class Archiver:
         if self.clobber_date:
             # Resurrect original date setting.
             post.SetHeader('Date', olddate)
-        self.Save ()
 
     #
     # archiving in real time  this is called from list.post(msg)
     #
     def ArchiveMail(self, msg):
-	#
-	# first we fork so that errors here won't
-	# disrupt normal list delivery  -scott
-	#
+        """Store postings in mbox and/or pipermail archive, depending."""
+	# Fork so archival errors won't disrupt normal list delivery
 	if os.fork(): 
 	    return
-        #
-        # archive to mbox only
-        #
-        if mm_cfg.ARCHIVE_TO_MBOX == 1:
+        # archive to builtin html archiver
+        if mm_cfg.ARCHIVE_TO_MBOX in [1, 2]:
             self.ArchiveToMbox(msg)
-            return
-        #
-        # archive to both mbox and built in html archiver
-        #
-        elif mm_cfg.ARCHIVE_TO_MBOX == 2:
-            self.ArchiveToMbox(msg)
+            if mm_cfg.ARCHIVE_TO_MBOX == 1:
+                # Archive to mbox only.
+                os._exit(0)
         try:
             from cStringIO import StringIO
         except ImportError:
@@ -218,7 +210,9 @@ class Archiver:
 	    try:
 		val, msg = rest
 	    except ValueError:
-		self.LogMsg("error", "MailList.Save(): error getting archive mode for %s!: %s\n",
+		self.LogMsg("error",
+                            "MailList.Save(): error getting archive"
+                            " mode for %s!: %s\n",
                             self.real_name, str(rest))
 		return
 	    if val == errno.ENOENT: # no such file
@@ -234,7 +228,9 @@ class Archiver:
 		    os.umask(ou)
 		    return
 	    else:
-		self.LogMsg("error", "CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+		self.LogMsg("error",
+                            "CheckHTMLArchiveDir: error getting archive"
+                            " mode for %s!: %s\n",
                             self.real_name, str(rest))
 		return
         import stat
@@ -245,14 +241,18 @@ class Archiver:
                     ou = os.umask(0)
                     os.chmod(self.archive_directory, 02770)
                 except os.error, rest:
-                    self.LogMsg("error", "CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+                    self.LogMsg("error",
+                                "CheckHTMLArchiveDir: error getting archive"
+                                " mode for %s!: %s\n",
                                 self.real_name, str(rest))                    
         else:
             if mode != 02775:
                 try:
                     os.chmod(self.archive_directory, 02775)
                 except os.error, rest:
-                    self.LogMsg("error", "CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+                    self.LogMsg("error",
+                                "CheckHTMLArchiveDir: error getting archive"
+                                " mode for %s!: %s\n",
                                 self.real_name, str(rest))
                     
         
