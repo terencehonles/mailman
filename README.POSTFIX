@@ -109,7 +109,7 @@ VIRTUAL DOMAINS
 
     With Postfix-style virtual domains, things are a little trickier,
     although Mailman should work well with it.  First, you'll need to
-    a path to Postfix's virtual_maps variable:
+    add a path to Postfix's virtual_maps variable:
 
     virtual_maps = <your normal virtual files>,
         hash:/usr/local/mailman/data/virtual-mailman
