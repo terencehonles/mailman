@@ -85,6 +85,7 @@ def process(mlist, msg, msgdata):
 
     # Process any failed deliveries.
     tempfailures = []
+    permfailures = []
     for recip, (code, smtpmsg) in refused.items():
         # DRUMS is an internet draft, but it says:
         #
@@ -96,18 +97,16 @@ def process(mlist, msg, msgdata):
         #    so the logic below works.
         #
         if code >= 500 and code <> 552:
-            # It's a permanent failure for this recipient so register it.  We
-            # don't save the list between each registration because we assume
-            # it happens around the whole message delivery sequence
-            mlist.RegisterBounce(recip, msg)
+            # A permanent failure
+            permfailures.append(recip)
         else:
             # Deal with persistent transient failures by queuing them up for
             # future delivery.  TBD: this could generate lots of log entries!
-            syslog('smtp-failure', '%d %s (%s)' % (code, recip, smtpmsg))
             tempfailures.append(recip)
-    if tempfailures:
-        msgdata['recips'] = tempfailures
-        raise Errors.SomeRecipientsFailed
+        syslog('smtp-failure', '%d %s (%s)' % (code, recip, smtpmsg))
+    # Return the results
+    if tempfailures or permfailures:
+        raise Errors.SomeRecipientsFailed(tempfailures, permfailures)
 
 
 
