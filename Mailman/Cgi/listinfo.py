@@ -193,7 +193,7 @@ def list_listinfo(mlist, lang):
                                                     _('Edit Options')).Format()
     replacements['<mm-roster-option>'] = mlist.FormatRosterOptionForUser(lang)
     replacements['<mm-displang-box>'] = mlist.FormatButton('displang-button',
-                             text = _("See this page in"))
+                             text = _("View this page in"))
     replacements['<mm-lang-form-start>'] = mlist.FormatFormStart('listinfo')
 
     # Do the expansion.
