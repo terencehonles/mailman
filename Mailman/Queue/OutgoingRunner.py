@@ -1,4 +1,4 @@
-# Copyright (C) 2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,8 +16,9 @@
 
 """Outgoing queue runner."""
 
-import sys
 import os
+import sys
+import copy
 import time
 import socket
 
@@ -31,8 +32,14 @@ from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
 
 # This controls how often _doperiodic() will try to deal with deferred
-# permanent failures.
+# permanent failures.  It is a count of calls to _doperiodic()
 DEAL_WITH_PERMFAILURES_EVERY = 1
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
 
 
 
@@ -51,9 +58,13 @@ class OutgoingRunner(Runner):
         # This prevents smtp server connection problems from filling up the
         # error log.  It gets reset if the message was successfully sent, and
         # set if there was a socket.error.
-        self.__logged = 0
+        self.__logged = False
 
     def _dispose(self, mlist, msg, msgdata):
+        # See if we should retry delivery of this message again.
+        deliver_after = msgdata.get('deliver_after', 0)
+        if time.time() < deliver_after:
+            return True
         # Make sure we have the most up-to-date state
         mlist.Load()
         try:
@@ -63,7 +74,7 @@ class OutgoingRunner(Runner):
             if pid <> os.getpid():
                 syslog('error', 'child process leaked thru: %s', modname)
                 os._exit(1)
-            self.__logged = 0
+            self.__logged = False
         except socket.error:
             # There was a problem connecting to the SMTP server.  Log this
             # once, but crank up our sleep time so we don't fill the error
@@ -75,8 +86,8 @@ class OutgoingRunner(Runner):
             if not self.__logged:
                 syslog('error', 'Cannot connect to SMTP server %s on port %s',
                        mm_cfg.SMTPHOST, port)
-                self.__logged = 1
-            return 1
+                self.__logged = True
+            return True
         except Errors.SomeRecipientsFailed, e:
             # The delivery module being used (SMTPDirect or Sendmail) failed
             # to deliver the message to one or all of the recipients.
@@ -88,14 +99,14 @@ class OutgoingRunner(Runner):
             # handling.  I'm not sure this is necessary, or the right thing to
             # do.
             pcnt = len(e.permfailures)
-            copy = email.message_from_string(str(msg))
+            msgcopy = copy.deepcopy(msg)
             self._permfailures.setdefault(mlist, []).extend(
-                zip(e.permfailures, [copy] * pcnt))
+                zip(e.permfailures, [msgcopy] * pcnt))
             # Temporary failures
             if not e.tempfailures:
                 # Don't need to keep the message queued if there were only
                 # permanent failures.
-                return 0
+                return False
             now = time.time()
             recips = e.tempfailures
             last_recip_count = msgdata.get('last_recip_count', 0)
@@ -104,17 +115,18 @@ class OutgoingRunner(Runner):
                 # We didn't make any progress, so don't attempt delivery any
                 # longer.  BAW: is this the best disposition?
                 if now > deliver_until:
-                    return 0
+                    return False
             else:
-                # Keep trying to delivery this for 3 days
+                # Keep trying to delivery this message for a while
                 deliver_until = now + mm_cfg.DELIVERY_RETRY_PERIOD
             msgdata['last_recip_count'] = len(recips)
             msgdata['deliver_until'] = deliver_until
+            msgdata['deliver_after'] = now + mm_cfg.DELIVERY_RETRY_WAIT
             msgdata['recips'] = recips
             # Requeue
-            return 1
+            return True
         # We've successfully completed handling of this message
-        return 0
+        return False
 
     def _doperiodic(self):
         # Periodically try to acquire the list lock and clear out the
