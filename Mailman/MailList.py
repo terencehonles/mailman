@@ -113,6 +113,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 if func:
                     func(self)
 
+    def __getstate__(self):
+        d = self.__dict__.copy()
+        # Never pickle our lock!
+        del d['_MailList__lock']
+        return d
+
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute
         # access to a delegated member function gets passed to the
