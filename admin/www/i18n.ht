@@ -56,9 +56,9 @@ Project</a> for future language support.
     address</a></td>
     <td>Supported</td>
 </tr>
-<tr><td>Catalan</td><td>??</td>
-    <td><a href="mailto:toni.panades@partal.com">Toni Panades</td>
-    <td>Not yet submitted</td>
+<tr><td>Catalan</td><td>ca</td>
+    <td><a href="mailto:robert@cataloniahosting.com">Robert Garrigos</td>
+    <td>Supported</td>
 </tr>
 <tr><td>Chinese</td><td>Big5, gb</td>
     <td><a href="mailto:max.yu@turbolinux.com.cn">Max Yu</a>
@@ -114,6 +114,10 @@ Project</a> for future language support.
     Szigeti,
     <a href="mailto:Funk.Gabor@hunetkft.hu">Gabor Funk</a></td>
     <td>Supported</td>
+</tr>
+<tr><td>Icelandic</td><td>is</td>
+    <td><a href="mailto:oli@edal.net">&Oacute;lafur Gar&eth;arsson</a></td>
+    <td>Not yet submitted</td>
 </tr>
 <tr><td>Italian</td><td>it</td>
     <td><a href="mailto:pioppo@ferrara.linux.it">Simone Piunno</a></td>

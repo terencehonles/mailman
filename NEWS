@@ -8,6 +8,8 @@ Here is a history of user visible changes to Mailman.
 
     - STEALTH_MODE defaults to On and is now configurable via mm_cfg.py
 
+    - Integrated Catalan support from Robert Garrigós and Toni Panadès.
+
     Bug fixes ported forward from 2.1.3, including
 
     - Closed a cross-site scripting vulnerability in the user options page.

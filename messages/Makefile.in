@@ -48,7 +48,7 @@ MSGFMT= 	@PYTHON@ ../build/bin/msgfmt.py
 MSGMERGE=	msgmerge
 
 # CVS available languages
-LANGUAGES=	cs da de es et eu fi fr hu it ja ko lt nl no pl pt pt_BR \
+LANGUAGES=	ca cs da de es et eu fi fr hu it ja ko lt nl no pl pt pt_BR \
 		ru sl sr sv uk
 LANGDIRS=	$(LANGUAGES:%=messages/%/LC_MESSAGES)
 # Human readable po file
