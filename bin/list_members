@@ -1,0 +1,133 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 1998 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""List all the members of a mailing list.
+
+Usage: %(program)s [-o file] [-r] [-d] [-p] [-h] listname
+
+Where:
+
+    --output file
+    -o file
+        Write output to specified file instead of standard out.
+
+    --regular
+    -r
+        Print just the regular (non-digest) members.
+
+    --digest
+    -d
+        Print just the digest members.
+
+    --preserve
+    -p
+        Output member addresses case preserved the way they were added to the
+        list.  Otherwise, addresses are printed in all lowercase.
+
+    --help
+    -h
+        Print this help message and exit.
+
+    listname is the name of the mailing list to use.
+
+Note that if neither -r or -d is supplied, both regular members are printed
+first, followed by digest members, but no indication is given as to address
+status.
+
+"""
+
+import sys
+import getopt
+import paths
+from Mailman import MailList
+from Mailman import Errors
+
+program = sys.argv[0]
+
+def usage(status, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(status)
+
+
+
+def main():
+    try:
+        opts, args = getopt.getopt(
+            sys.argv[1:],
+            'dpro:h',
+            ['digest', 'regular', 'preserve', 'output=', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if len(args) <> 1:
+        usage(1)
+
+    listname = args[0]
+    outfile = None
+    regular = None
+    digest = None
+    preserve = None
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-o', '--output'):
+            outfile = arg
+        elif opt in ('-r', '--regular'):
+            regular = 1
+        elif opt in ('-d', '--digest'):
+            digest = 1
+        elif opt in ('-p', '--preserve'):
+            preserve = 1
+
+    if regular is None and digest is None:
+        regular = digest = 1
+
+    if outfile:
+        try:
+            fp = open(outfile, 'w')
+        except IOError:
+            print 'Could not open file for writing:', outfile
+            sys.exit(1)
+    else:
+        fp = sys.stdout
+
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMUnknownListError:
+        print 'No list:', listname
+        sys.exit(1)
+
+    if preserve:
+        rmembers = mlist.GetDeliveryMembers()
+        dmembers = mlist.GetDigestDeliveryMembers()
+    else:
+        rmembers = mlist.GetMembers()
+        dmembers = mlist.GetDigestMembers()
+
+    if regular:
+        for addr in rmembers:
+            print addr
+    if digest:
+        for addr in dmembers:
+            print addr
+
+if __name__ == '__main__':
+    main()

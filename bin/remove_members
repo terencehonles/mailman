@@ -1,0 +1,104 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 1998 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
+"""Remove members from a list.
+
+Usage:
+    remove_members [-f file] [-h] listname [addr1 ...]
+
+Where:
+
+    --file file
+    -f file
+        Remove member addresses found in the given file.
+
+    --help
+    -h
+        Print this help message and exit.
+
+    listname is the name of the mailing list to use.
+
+    addr1 ... are additional addresses to remove.
+
+"""
+
+import sys
+import string
+import getopt
+import paths
+from Mailman import MailList
+from Mailman import Errors
+
+def usage(status, msg=''):
+    if msg:
+        print msg
+    print __doc__ % globals()
+    sys.exit(status)
+
+
+
+def main():
+    try:
+        opts, args = getopt.getopt(
+            sys.argv[1:],
+            'f:h',
+            ['file=', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if not len(args) >= 1:
+        usage(1)
+
+    listname = args[0]
+    addresses = args[1:]
+    filename = None
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-f', '--file'):
+            filename = arg
+                
+    if filename:
+        try:
+            fp = open(filename)
+            addresses = addresses + \
+                        filter(None, map(string.strip, fp.readlines()))
+            fp.close()
+        except IOError:
+            print 'Could not open file for reading: %s.  Ignoring...' % \
+                  filename
+
+    try:
+        # open locked
+        mlist = MailList.MailList(listname)
+    except Errors.MMUnknownListError:
+        print 'No list:', listname
+        sys.exit(1)
+
+    for addr in addresses:
+        try:
+            mlist.DeleteMember(addr)
+        except Errors.MMNoSuchUserError:
+            print "User `%s' not found." % addr
+
+    mlist.Save()
+    mlist.Unlock()
+
+if __name__ == '__main__':
+    main()
