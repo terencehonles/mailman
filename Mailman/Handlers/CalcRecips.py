@@ -26,13 +26,13 @@ SendmailDeliver and BulkDeliver modules.
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
+from Mailman import Errors
 from Mailman.i18n import _
-from Mailman.Errors import RejectMessage
 from Mailman.Logging.Syslog import syslog
 
 
 
-class RejectUrgentMessage(RejectMessage):
+class RejectUrgentMessage(Errors.RejectMessage):
     def __init__(self, mlist, msg):
         self._realname = mlist.real_name
         self._subject = msg['subject'] or _('(no subject)')
@@ -58,6 +58,13 @@ def process(mlist, msg, msgdata):
     # regardless of whether the list is empty or not.
     if msgdata.has_key('recips'):
         return
+    # Should the original sender should be included in the recipients list?
+    include_sender = 1
+    try:
+        if mlist.getUserOption(msg.get_sender(), mm_cfg.DontReceiveOwnPosts):
+            include_sender = 0
+    except Errors.NotAMemberError:
+        pass
     # Support for urgent messages, which bypasses digests and disabled
     # delivery and forces an immediate delivery to all members Right Now.  We
     # are specifically /not/ allowing the site admins password to work here
@@ -74,28 +81,69 @@ def process(mlist, msg, msgdata):
             msgdata['recips'] = recips
             return
         else:
-            # Bad Urgent: password, so hold it instead of passing it on.  I
+            # Bad Urgent: password, so reject it instead of passing it on.  I
             # think it's better that the sender know they screwed up than to
             # deliver it normally.
             raise RejectUrgentMessage(mlist, msg)
-    # Normal delivery to the regular members.
-    dont_send_to_sender = 0
-    # Get the membership address of the sender, if a member.  Then get the
-    # sender's receive-own-posts option
-    sender = mlist.FindUser(msg.get_sender())
-    if sender and mlist.GetUserOption(sender, mm_cfg.DontReceiveOwnPosts):
-        dont_send_to_sender = 1
     # Calculate the regular recipients of the message
-    members = mlist.GetDeliveryMembers()
-    recips = [m for m in members
-              if not mlist.GetUserOption(m, mm_cfg.DisableDelivery)]
+    recips = [mlist.getMemberCPAddress(m)
+              for m in mlist.getRegularMemberKeys()
+              if not mlist.getMemberOption(m, mm_cfg.DisableDelivery)]
     # Remove the sender if they don't want to receive their own posts
-    if dont_send_to_sender:
+    if not include_sender:
         try:
-            recips.remove(mlist.GetUserSubscribedAddress(sender))
-        except ValueError:
+            recips.remove(mlist.getMemberCPAddress(sender))
+        except (Errors.NotAMemberError, ValueError):
             # Sender does not want to get copies of their own messages (not
-            # metoo), but delivery to their address is disabled (nomail)
+            # metoo), but delivery to their address is disabled (nomail).  Or
+            # the sender is not a member of the mailing list.
             pass
+    # Handle topic classifications
+    do_topic_filters(mlist, msg, msgdata, recips)
     # Bookkeeping
     msgdata['recips'] = recips
+
+
+
+def do_topic_filters(mlist, msg, msgdata, recips):
+    hits = msgdata.get('topichits')
+    zaprecips = []
+    if not hits:
+        # The semantics for a message that did not hit any of the pre-canned
+        # topics is to troll through the membership list, looking for users
+        # who selected at least one topic of interest, but turned on
+        # ReceiveNonmatchingTopics.
+        for user in recips:
+            if not mlist.topics_userinterest.has_key(user):
+                # The user did not select any topics of interest, so he gets
+                # this message by default.
+                continue
+            if not mlist.getMemberOption(user,
+                                         mm_cfg.ReceiveNonmatchingTopics):
+                # The user has interest in some topics, but elects not to
+                # receive message that match no topics, so zap him.
+                zaprecips.append(user)
+            # Otherwise, the user wants non-matching messages.
+    else:
+        # The message hit some topics, so only deliver this message to those
+        # who are interested in one of the hit topics.
+        for user in recips:
+            utopics = mlist.topics_userinterest.get(user)
+            if not utopics:
+                # This user is not interested in any topics, so they get all
+                # postings.
+                continue
+            # BAW: Slow, first-match, set intersection!
+            for topic in utopics:
+                if topic in hits:
+                    # The user wants this message
+                    break
+            else:
+                # The user was interested in topics, but not any of the ones
+                # this message matched, so zap him.
+                zaprecips.append(user)
+
+    # Prune out the non-receiving users
+    for user in zaprecips:
+        recips.remove(user)
+    
