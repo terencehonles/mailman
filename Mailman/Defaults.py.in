@@ -294,12 +294,16 @@ MTA = 'Manual'
 
 # If you set MTA='Postfix', then you also want to set the following variable,
 # depending on whether you're using virtual domains in Postfix, and which
-# style of virtual domain you're using.  Set this flag to true if you're using
+# style of virtual domain you're using.  Set this flag to false if you're not
+# using virtual domains in Postfix, or if you're using Sendmail-style virtual
+# domains (where all addresses are visible in all domains).  If you're using
 # Postfix-style virtual domains, where aliases should only show up in the
-# virtual domain.  If you are not using virtual domains, or you are using
-# Sendmail-style virtual domains, where all the aliases show up in all the
-# domains then leave this variable false.  See README.POSTFIX for details.
-POSTFIX_STYLE_VIRTUAL_DOMAINS = 0
+# virtual domain, set this variable to the list of host_name values to write
+# separate virtual entries for.  I.e. if you run dom1.ain, dom2.ain, and
+# dom3.ain, but only dom2 and dom3 are virtual, set this variable to the list
+# ['dom2.ain', 'dom3.ain'].  Matches are done against the host_name attribute
+# of the mailing lists.  See README.POSTFIX for details.
+POSTFIX_STYLE_VIRTUAL_DOMAINS = []
 
 # Ceiling on the number of recipients that can be specified in a single SMTP
 # transaction.  Set to 0 to submit the entire recipient list in one
