@@ -469,8 +469,10 @@ def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
                 # Try again after coercing the template to unicode
                 utemplate = unicode(template, GetCharSet(lang), 'replace')
                 text = sdict.interpolate(utemplate)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError), e:
             # The template is really screwed up
+            from Mailman.Logging.Syslog import syslog
+            syslog('error', 'broken template: %s\n%s', filename, e)
             pass
     if raw:
         return text
