@@ -1138,9 +1138,8 @@ msgid "<em>The sender is now a member of this list</em>"
 msgstr "<em>El remitente es ahora subscriptor de esta lista</em>"
 
 #: Mailman/Cgi/admindb.py:434
-#, fuzzy
 msgid "Add <b>%(esender)s</b> to one of these sender filters:"
-msgstr "añadir <b>%(esender)s</b> al filtro de remitentes"
+msgstr "añadir <b>%(esender)s</b> a uno de estos filtros de remitentes:"
 
 #: Mailman/Cgi/admindb.py:439
 msgid "Accepts"
@@ -2195,13 +2194,13 @@ msgid "the list admin overview page"
 msgstr "la página general de administración de listas"
 
 #: Mailman/Cgi/listinfo.py:124
-#, fuzzy
 msgid ""
 " to find the management interface for your list.\n"
 "         <p>If you are having trouble using the lists, please contact "
 msgstr ""
-" para acceder al interfaz de gestión de su lista.\n"
-"        <p>Envíe sus preguntas o comentarios a "
+" para encontrarl la interfaz de gestión de su lista.\n"
+"         <p>Si tiene algún problema usando las listas, haga el favor de\n"
+"         ponerse en contacto con "
 
 #: Mailman/Cgi/listinfo.py:189
 msgid "Edit Options"
@@ -3669,9 +3668,8 @@ msgid "Russian"
 msgstr "Ruso"
 
 #: Mailman/Defaults.py:1277
-#, fuzzy
 msgid "Serbian"
-msgstr "Alemán"
+msgstr "Serbio"
 
 #: Mailman/Defaults.py:1278
 msgid "Swedish"
@@ -3679,7 +3677,7 @@ msgstr "Sueco"
 
 #: Mailman/Defaults.py:1279
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ucraniano"
 
 #: Mailman/Deliverer.py:51
 msgid ""
@@ -5679,9 +5677,8 @@ msgstr ""
 "             espacios extras entre el prefijo y la cabecera original."
 
 #: Mailman/Gui/Membership.py:26
-#, fuzzy
 msgid "Membership&nbsp;Management..."
-msgstr "Administración de los subscriptores"
+msgstr "Administración de los subscriptores..."
 
 #: Mailman/Gui/Membership.py:30
 msgid "Membership&nbsp;List"
@@ -5915,9 +5912,8 @@ msgid "Passwords"
 msgstr "Claves:"
 
 #: Mailman/Gui/Privacy.py:28
-#, fuzzy
 msgid "Privacy options..."
-msgstr "Opciones de Privacidad"
+msgstr "Opciones de Privacidad..."
 
 #: Mailman/Gui/Privacy.py:32
 msgid "Subscription&nbsp;rules"
@@ -6877,14 +6873,10 @@ msgid "News server settings"
 msgstr "Configuración del servidor de noticias"
 
 #: Mailman/Gui/Usenet.py:40
-#, fuzzy
 msgid "The hostname of the machine your news server is running on."
-msgstr ""
-"La dirección Internet de la máquina en la que\n"
-"             se está ejecutando su servidor de noticias."
+msgstr "El nombre de la máquina en la que se está ejecutando su servidor de noticias."
 
 #: Mailman/Gui/Usenet.py:41
-#, fuzzy
 msgid ""
 "This value may be either the name of your news server, or\n"
 "             optionally of the format name:port, where port is a port "
@@ -6896,11 +6888,14 @@ msgid ""
 "             recognize the machine this mailing list runs on as a machine\n"
 "             capable of reading and posting news."
 msgstr ""
-"El servidor de Noticias no es una parte integrante de Mailman. Tienes que\n"
-"             tener acceso al servidor NNTP, y hace falta que ese servidor\n"
-"             NNTP reconozca la máquina donde reside este servidor\n"
-"             de listas de distribución como una máquina\n"
-"             capaz de leer y enviar noticias."
+"Este valor podría ser o el nombre del servidor de noticias u opcionalmente,\n"
+"             nombre:puerto, donde 'puerto' es un número de puerto.\n"
+"\n"
+"             El servidor de Noticias no es una parte integrante de Mailman.\n"
+"             Tienes que tener de antemano acceso al servidor NNTP, y hace\n"
+"             falta que ese servidor NNTP reconozca la máquina donde reside\n"
+"             este servidor de listas de distribución como una máquina\n"
+"             capaz de enviar y recibir noticias."
 
 #: Mailman/Gui/Usenet.py:50
 msgid "The name of the Usenet group to gateway to and/or from."
@@ -9564,7 +9559,6 @@ msgid "matching mailing lists found:"
 msgstr "Las siguientes listas de distribución coinciden:"
 
 #: bin/list_members:19
-#, fuzzy
 msgid ""
 "List all the members of a mailing list.\n"
 "\n"
@@ -9630,28 +9624,21 @@ msgstr ""
 "\n"
 "    --output fichero\n"
 "    -o fichero\n"
-"       Escribe la salida al fichero especificado en vez de la salida "
-"estándar.\n"
+"       Escribe la salida al fichero especificado en vez de la salida estándar.\n"
 "\n"
 "    --regular / -r\n"
 "        Solo imprime los subscriptores regulares (no-digest).\n"
 "\n"
 "    --digest[=tipo] / -d [tipo]\n"
-"        Solo imprime los subscriptores digest. El argumento opcional puede "
-"ser\n"
-"        \"mime\" o \"plain\" que imprime solo a los subscriptores con la "
-"entrega\n"
+"        Solo imprime los subscriptores digest. El argumento opcional puede ser\n"
+"        \"mime\" o \"plain\" que imprime solo a los subscriptores con la entrega\n"
 "        diferida de ese tipo.\n"
 "\n"
 "    --nomail[=why] / -n [why]\n"
-"        Muestra los subscriptores que tienen la recepción del correo "
-"inhabilitada.\n"
-"        Un argumento opcional puede se \"byadmin\", \"byuser\", \"bybounce\" "
-"o \"unknown\"\n"
-"        que selecciona a aquellos subscriptores que tiene la recepción "
-"inactiva por\n"
-"        dicha razón. También puede ser \"enabled\" que solo imprime a "
-"aquellos\n"
+"        Muestra los subscriptores que tienen la recepción del correo inhabilitada.\n"
+"        Un argumento opcional puede se \"byadmin\", \"byuser\", \"bybounce\" o \"unknown\"\n"
+"        que selecciona a aquellos subscriptores que tiene la recepción inactiva por\n"
+"        dicha razón. También puede ser \"enabled\" que solo imprime a aquellos\n"
 "        subscriptores que tienen la recepción habilitada.\n"
 "\n"
 "    --fullnames / -f\n"
@@ -9662,6 +9649,15 @@ msgstr ""
 "        Saca las direcciones tal como fueron apuntadas a la lista.\n"
 "        Por defecto las saca en minúsculas.\n"
 "\n"
+"    --invalid / -i\n"
+"        Imprime únicamente aquellas direcciones registradas en la lista de\n"
+"        subscriptores que se consideran incorrectas.\n"
+"        Esta opción ignora -r, -d, -n\n"
+"\n"
+"    --unicode / -u\n"
+"        Imprime las direcciones que están almacenadas como objetos Unicode en\n"
+"        vez de objetos cadena. Ignora -r, -d, -n.\n"
+"\n"
 "    --help\n"
 "    -h\n"
 "        Imprime este mensaje y termina.\n"
@@ -9669,8 +9665,7 @@ msgstr ""
 "    lista es el nombre de la lista de distribución a usar.\n"
 "\n"
 "Hay que tener en cuenta que si no se indica ni -r ni -d, se imprimirán los\n"
-"subscriptores regulares seguidos por los subscriptores digest sin "
-"indicación\n"
+"subscriptores regulares seguidos por los subscriptores digest sin indicación\n"
 "alguna de qué direcciones son regulares o digest\n"
 "\n"
 
