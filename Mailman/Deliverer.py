@@ -30,29 +30,65 @@ import Utils
 
 # We could abstract these two better...
 class Deliverer:
+    def AddNonStandardHeaders(self, headers, zaplist=None):
+        # Add headers like Precedence: and other useful headers.  None of
+        # these are standard and finding information on some of them are
+        # fairly difficult.  Some are just common practice, and we'll add more 
+        # here as they become necessary.  A good place to look is
+        # http://www.dsv.su.se/~jpalme/ietf/jp-ietf-home.html
+        #
+        # None of these headers are added if they already exist
+        d = {}
+        if zaplist is None:
+            zaplist = headers
+        for h in zaplist:
+            i = string.find(h, ':')
+            key = string.lower(h[:6])
+            d[key] = key
+        if not d.has_key('x-mailman-version'):
+            headers.append('X-Mailman-Version: %s\n' % mm_cfg.VERSION)
+        # semi-controversial: some don't want this included at all, others
+        # want the value to be `list'
+        if not d.has_key('precedence'):
+            headers.append('Precedence: bulk\n')
+        # Other list related non-standard headers.  Defined in:
+        #
+        # Grant Neufeld and Joshua D. Baer: The Use of URLs as Meta-Syntax for
+        # Core Mail List Commands and their Transport through Message Header
+        # fields, draft-baer-listspec-01.txt, September 1997.
+        #
+        # Referenced in
+        #
+        # http://www.dsv.su.se/~jpalme/ietf/mail-attributes.html
+        if not d.has_key('list-id'):
+            headers.append('List-Id: %s\n' % self.GetListIdentifier())
+        # These currently seem like overkill.  Maybe add them in later when
+        # the draft gets closer to a standard
+        # List-Subscribe
+        # List-Unsubscribe
+        # List-Owner
+        # List-Help
+        # List-Post
+        # List-Archive
+        # List-Software
+        # X-Listserver
+
     # This method assumes the sender is list-admin if you don't give one.
     def SendTextToUser(self, subject, text, recipient, sender=None,
-                       add_headers=[]):
+                       add_headers=None):
+        if add_headers is None:
+            add_headers = []
         if not sender:
             sender = self.GetAdminEmail()
-        if (add_headers
-            and not reduce(operator.__or__,
-                           map(lambda x: string.find(string.lower(x),
-                                                     "list-id:")==0,
-                               add_headers))):
-            # No "list-id" header already on add_headers:
-            add_headers.append('List-Id: %s\n' % self.GetListIdentifier())
-        alladd = add_headers + ['X-Mailman-Version: %s\n' % mm_cfg.VERSION]
+        self.AddNonStandardHeaders(add_headers)
         Utils.SendTextToUser(subject, text, recipient, sender,
-                             add_headers=alladd)
+                             add_headers=add_headers)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
         add_headers = []
-        if not msg.getheader('list-id'):
-            add_headers.append('List-Id: %s\n' % self.GetListIdentifier())
+        self.AddNonStandardHeaders(add_headers, msg.headers)
         add_headers.append('Errors-To: %s\n' % self.GetAdminEmail())
-        add_headers.append('X-Mailman-Version: %s\n' % mm_cfg.VERSION)
         Utils.DeliverToUser(msg, recipient, add_headers=add_headers)
 
     def QuotePeriods(self, text):
@@ -111,11 +147,9 @@ class Deliverer:
             del msg['reply-to']
             msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
 	msg.headers.append('Sender: %s\n' % self.GetAdminEmail())
-        if not msg.getheader('list-id'):
-            msg.headers.append('List-Id: %s\n' % self.GetListIdentifier())
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
+        self.AddNonStandardHeaders(msg.headers)
 	msg.headers.append('X-BeenThere: %s\n' % self.GetListEmail())
-	msg.headers.append('X-Mailman-Version: %s\n' % mm_cfg.VERSION)
 
         cmd = "%s %s" % (mm_cfg.PYTHON,
                          os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"))
