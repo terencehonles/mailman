@@ -28,12 +28,16 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Message
+from Mailman import i18n
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 NL = '\n'
+
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
@@ -43,23 +47,25 @@ def main():
 	mlist = MailList.MailList(name)
         try:
             count = mlist.NumRequestsPending()
-            if count:
-                text = Utils.maketext(
-                    'checkdbs.txt',
-                    {'count'    : count,
-                     'host_name': mlist.host_name,
-                     'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
-                     'real_name': mlist.real_name,
-                     }, mlist.preferred_language)
-                text = text + '\n' + pending_requests(mlist)
-                subject = _('%d %s moderator request(s) waiting' % (
-                    count, mlist.real_name))
-                admin = mlist.GetAdminEmail()
-                msg = Message.UserNotification(admin, admin, subject, text)
-                msg.send(mlist, **{'tomoderators': 1})
-            mlist.Save()
+            # Don't save the list since we've done nothing to modify its state
         finally:
             mlist.Unlock()
+            
+        if count:
+            i18n.set_language(mlist.preferred_language)
+            realname = mlist.real_name
+            text = Utils.maketext(
+                'checkdbs.txt',
+                {'count'    : count,
+                 'host_name': mlist.host_name,
+                 'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
+                 'real_name': realname,
+                 }, mlist=mlist)
+            text = text + '\n' + pending_requests(mlist)
+            subject = _('%(count)d %(realname)s moderator request(s) waiting')
+            admin = mlist.GetAdminEmail()
+            msg = Message.UserNotification(admin, admin, subject, text)
+            msg.send(mlist, **{'tomoderators': 1})
             
 
 
@@ -68,14 +74,14 @@ def pending_requests(mlist):
     first = 1
     for id in mlist.GetSubscriptionIds():
         if first:
-            pending.append('Pending subscriptions:')
+            pending.append(_('Pending subscriptions:'))
             first = 0
-        when, addr, passwd, digest = mlist.GetRecord(id)
+        when, addr, passwd, digest, lang = mlist.GetRecord(id)
         pending.append('    %s %s' % (addr, time.ctime(when)))
     first = 1
     for id in mlist.GetHeldMessageIds():
         if first:
-            pending.append('\nPending posts:')
+            pending.append(_('\nPending posts:'))
             first = 0
         info = mlist.GetRecord(id)
         if len(info) == 5:
@@ -83,8 +89,9 @@ def pending_requests(mlist):
             when, sender, subject, reason, text = mlist.GetRecord(id)
         else:
             when, sender, subject, reason, text, msgdata = mlist.GetRecord(id)
-        pending.append('     From: %s on %s\n    Cause: %s' %
-                       (sender, time.ctime(when), reason))
+        date = time.ctime(when)
+        pending.append(_(
+            '     From: %(sender)s on %(date)s\n    Cause: %(reason)s'))
         pending.append('')
     return NL.join(pending)
 
