@@ -382,7 +382,7 @@ class HTMLFormatter:
             '<mm-num-members>' : (`member_len + dmember_len`),
             '<mm-posting-addr>' : '%s' % self.GetListEmail(),
             '<mm-request-addr>' : '%s' % self.GetRequestEmail(),
-            '<mm-owner>' : self.GetAdminEmail(),
+            '<mm-owner>' : self.GetOwnerEmail(),
             '<mm-reminder>' : self.FormatReminder(self.preferred_language),
             '<mm-host>' : self.host_name,
             '<mm-list-langs>' : listlangs,
