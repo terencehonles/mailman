@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Remove the components of a maillist with impunity - beware!
+
+__version__="$Revision: 381 $"
+# $Source$
+
 MAILMAN_DIR='/home/mailman/mailman'
 HTML_DIR='/home/mailman/public_html'  
 
