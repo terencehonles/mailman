@@ -539,8 +539,8 @@ def MailmanLogo():
     else:
         # use only textual links
         mmlink = Link(MAILMAN_URL,
-                      'Delivered by Mailman<br>version %s' % mm_cfg.VERSION)
-        pylink = Link(PYTHON_URL, 'Python Powered')
-        gnulink = Link(GNU_URL, "Gnu's Not Unix")
+                      _('Delivered by Mailman<br>version %s') % mm_cfg.VERSION)
+        pylink = Link(PYTHON_URL, _('Python Powered'))
+        gnulink = Link(GNU_URL, _("Gnu's Not Unix"))
         t.AddRow([mmlink, pylink, gnulink])
     return t

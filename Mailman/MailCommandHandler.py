@@ -33,6 +33,7 @@ from Mailman import Utils
 from Mailman.Handlers import HandlerAPI
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
+from Mailman.i18n import _
 
 
 
@@ -40,26 +41,26 @@ MAXERRORS = 5
 MAXCOLUMN = 70
 
 option_descs = {
-    'hide'   :  '''When turned on, your email address is concealed
-on the Web page that lists the members of the mailing list.''',
-    'nomail' : '''When turned on, delivery to your email address is disabled,
-but your address is still subscribed.  This is useful if you plan on 
-taking a short vacation.''',
-    'ack'    : '''When turned on, you get a separate acknowledgement email
-when you post messages to the list.''',
-    'notmetoo': '''When turned on, you do *not* get copies of your own
-posts to the list.  Otherwise, you do get copies of your own posts
- (yes, this seems a little backwards).  This does not affect the contents
-of digests, so if you receive postings in digests, you will always get
-copies of your messages in the digest.''',
-    'digest' : '''When turned on, you get postings from the list bundled
-into digests.  Otherwise, you get each individual message immediately as
-it is posted to the list.''',
-    'plain'  : """When turned on, you get `plain' digests, which are actually
-formatted using the older RFC934 digest format.  This format can be easier
-to read if you have a non-MIME compliant mail reader.  When this option is
-turned off, you get digests in MIME format, which are much better if you
-have a mail reader that supports MIME.""",
+    'hide'   : _('When turned on, your email address is concealed\n'
+                 'on the Web page that lists the members of the mailing list.'),
+    'nomail' : _('When turned on, delivery to your email address is disabled,\n'
+                 ' but your address is still subscribed.  This is useful if you plan on\n'
+                 ' taking a short vacation.'),
+    'ack'    : _('When turned on, you get a separate acknowledgement email\n'
+                 'when you post messages to the list.'),
+    'notmetoo': _('When turned on, you do *not* get copies of your own\n'
+                  'posts to the list.  Otherwise, you do get copies of your own posts\n'
+                  ' (yes, this seems a little backwards).  This does not affect the contents\n'
+                  'of digests, so if you receive postings in digests, you will always get\n'
+                  'copies of your messages in the digest.'),
+    'digest' : _('When turned on, you get postings from the list bundled\n'
+                 'into digests.  Otherwise, you get each individual message immediately as\n'
+                 'it is posted to the list.'),
+    'plain'  : _("When turned on, you get `plain' digests, which are actually\n"
+                 "formatted using the older RFC934 digest format.  This format can be easier\n"
+                 "to read if you have a non-MIME compliant mail reader.  When this option is\n"
+                 "turned off, you get digests in MIME format, which are much better if you\n"
+                 "have a mail reader that supports MIME."),
     }
 
 option_info = {'digest'  : 0,
@@ -165,13 +166,13 @@ class MailCommandHandler:
 		if mo:
 		    lines = ["confirm %s" % (mo.group(1))]
 		else:
-		    self.AddError('Subject line ignored:\n  ' + subject)
+		    self.AddError(_('Subject line ignored:\n  ') + subject)
         processed = {}                      # For avoiding redundancies.
         maxlines = mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES
 	for linecount in range(len(lines)):
             if linecount > maxlines:
-                self.AddError("Maximum command lines (%d) encountered,"
-                              " ignoring the rest..." % maxlines)
+                self.AddError(_("Maximum command lines (%d) encountered,"
+                              " ignoring the rest...") % maxlines)
                 for line in lines[linecount:]:
                     self.AddToResponse("> " + line, trunc=0)
                 break
@@ -186,16 +187,16 @@ class MailCommandHandler:
                 cmd = mo.group('cmd')
 	    args = args[1:]
 	    if cmd in ['end', '--']:
-		self.AddToResponse('\n***** End: ' + line + '\n'
-                                   'The rest of the message is ignored:')
+		self.AddToResponse('\n***** ' + _('End: ') + line + '\n' +
+                                   _('The rest of the message is ignored:'))
                 for line in lines[linecount+1:]:
                     self.AddToResponse(line, trunc=0, prefix='> ')
 		break
 	    if not self.__dispatch.has_key(cmd):
-                self.AddError(line, prefix='Command? ')
+                self.AddError(line, prefix=_('Command? '))
                 if self.__errors >= MAXERRORS:
-                    self.AddError('\nToo many errors encountered; '
-                                  'the rest of the message is ignored:')
+                    self.AddError(_('\nToo many errors encountered; '
+                                  'the rest of the message is ignored:'))
                     for line in lines[linecount+1:]:
                         self.AddToResponse(line, trunc=0, prefix='> ')
                     break
@@ -226,25 +227,25 @@ class MailCommandHandler:
                         sfp = StringIO()
                         traceback.print_exc(file=sfp)
                         tbmsg = sfp.getvalue()
-                        errmsg = Utils.wrap('''\
+                        errmsg = Utils.wrap(_('''\
 An unexpected Mailman error has occurred.
 
 Please forward your request to the human list administrator in charge of this
 list at <%s>.  The traceback is attached below and will be forwarded to the
-list administrator automatically.''' % admin)
+list administrator automatically.''') % admin)
                         self.AddError(errmsg, trunc=0)
                         self.AddToResponse('\n' + tbmsg, trunc=0)
                         # log it to the error file
                         syslog('error',
-                               'Unexpected Mailman error:\n%s' % tbmsg)
+                               _('Unexpected Mailman error:\n%s') % tbmsg)
                         # and send the traceback to the user
                         responsemsg = Message.UserNotification(
                             admin, admin, 'Unexpected Mailman error',
-                            '''\
+                            _('''\
 An unexpected Mailman error has occurred in
 MailCommandHandler.ParseMailCommands().  Here is the traceback:
 
-''' + tbmsg)
+''') + tbmsg)
                         responsemsg['X-No-Archive'] = 'yes'
                         # TBD: This should check the return value
                         HandlerAPI.DeliverToUser(self, responsemsg)
@@ -254,7 +255,7 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
             adminaddr = self.GetAdminEmail()
             requestaddr = self.GetRequestEmail()
             if self.__errors > 0:
-                header = Utils.wrap('''This is an automated response.
+                header = Utils.wrap(_('''This is an automated response.
 
 There were problems with the email commands you sent to Mailman via the
 administrative address <%(sender)s>.
@@ -268,12 +269,12 @@ send your message to <%(admin)s>.
 
 The following is a detailed description of the problems.
 
-''' % {'sender': requestaddr,
+''') % {'sender': requestaddr,
        'admin' : adminaddr,
        })
                 self.__respbuf = header + self.__respbuf
             # send the response
-            subject = 'Mailman results for %s' % self.real_name
+            subject = _('Mailman results for %s') % self.real_name
             responsemsg = Message.UserNotification(msg.GetSender(),
                                                    self.GetRequestEmail(),
                                                    subject,
@@ -286,39 +287,39 @@ The following is a detailed description of the problems.
 
     def ProcessPasswordCmd(self, args, cmd, mail):
         if len(args) not in [0,2]:
-	    self.AddError("Usage: password [<oldpw> <newpw>]")
+	    self.AddError(_("Usage: password [<oldpw> <newpw>]"))
 	    return
         sender = mail.GetSender()
         if len(args) == 0:
             # Mail user's password to user
             user = self.FindUser(sender)
             if user and self.passwords.has_key(user):
-                self.AddToResponse("You are subscribed as %s,\n"
-                                   "  with password: %s" %
+                self.AddToResponse(_("You are subscribed as %s,\n"
+                                   "  with password: %s") %
                                    (user, self.passwords[user]),
                                    trunc=0)
             else:
-                self.AddError("Found no password for %s" %sender, trunc=0)
+                self.AddError(_("Found no password for %s") %sender, trunc=0)
             return
         # Try to change password
 	try:
             self.ConfirmUserPassword(sender, args[0])
 	    self.ChangeUserPassword(sender, args[1], args[1])
-	    self.AddToResponse('Succeeded.')
+	    self.AddToResponse(_('Succeeded.'))
 	except Errors.MMListNotReadyError:
-	    self.AddError("List is not functional.")
+	    self.AddError(_("List is not functional."))
 	except Errors.MMNotAMemberError:
-	    self.AddError("%s isn't subscribed to this list." % sender,
+	    self.AddError(_("%s isn't subscribed to this list.") % sender,
                           trunc=0)
 	except Errors.MMBadPasswordError:
-	    self.AddError("You gave the wrong password.")
+	    self.AddError(_("You gave the wrong password."))
 	except Errors.MMBadUserError:
-            self.AddError("Bad user - %s." % sender, trunc=0)
+            self.AddError(_("Bad user - %s.") % sender, trunc=0)
 
     def ProcessOptionsCmd(self, args, cmd, mail):
 	sender = self.FindUser(mail.GetSender())
 	if not sender:
-	    self.AddError("%s is not a member of the list." %
+	    self.AddError(_("%s is not a member of the list.") %
                           mail.GetSender(), trunc=0)
 	    return
         for option in options:
@@ -327,15 +328,15 @@ The following is a detailed description of the problems.
             else:
                 value = 'off'
             self.AddToResponse('%8s: %s' % (option, value))
-	self.AddToResponse("\n"
+	self.AddToResponse(_("\n"
                            "To change an option, do: "
                            "set <option> <on|off> <password>\n"
                            "\n"
                            "Option explanations:\n"
-                           "--------------------")
+                           "--------------------"))
 	for option in options:
 	    self.AddToResponse(option + ':')
-            self.AddToResponse(Utils.wrap(option_descs[option]) + '\n',
+            self.AddToResponse(Utils.wrap(_(option_descs[option])) + '\n',
                                trunc=0, prefix="  ")
 	    
     def ProcessSetCmd(self, args, cmd, mail):
@@ -345,9 +346,9 @@ The following is a detailed description of the problems.
             desc_text = ""
 	    for option in options:
 		desc_text = (desc_text +
-                             "%12s:  %s\n" % (option, od[option]))
-	    s.AddError("Usage: set <option> <on|off> <password>\n"
-                       "Valid options are:\n" +
+                             "%12s:  %s\n" % (option, _(od[option])))
+	    s.AddError(_("Usage: set <option> <on|off> <password>\n"
+                       "Valid options are:\n") +
                        desc_text)
 	if len(args) <> 3:
 	    ShowSetUsage()
@@ -363,31 +364,31 @@ The following is a detailed description of the problems.
 	    sender = self.FindUser(mail.GetSender())
 	    self.ConfirmUserPassword(sender, args[2])
 	except Errors.MMNotAMemberError:
-	    self.AddError("%s isn't subscribed to this list."
+	    self.AddError(_("%s isn't subscribed to this list.")
 			  % mail.GetSender(), trunc=0)
 	    return
 	except Errors.MMBadPasswordError:
-	    self.AddError("You gave the wrong password.")
+	    self.AddError(_("You gave the wrong password."))
             return
 	if args[0] == 'digest':
 	    try:
 		self.SetUserDigest(mail.GetSender(), value)
-		self.AddToResponse("Succeeded.")
+		self.AddToResponse(_("Succeeded."))
 	    except Errors.MMAlreadyDigested:
-		self.AddError("You are already receiving digests.")
+		self.AddError(_("You are already receiving digests."))
 	    except Errors.MMAlreadyUndigested:
-		self.AddError("You already have digests off.")
+		self.AddError(_("You already have digests off."))
 	    except Errors.MMBadEmailError:
-		self.AddError("Email address '%s' not accepted by Mailman." % 
+		self.AddError(_("Email address '%s' not accepted by Mailman.") % 
 			      mail.GetSender(), trunc=0)
 	    except Errors.MMMustDigestError:
-		self.AddError("List only accepts digest members.")
+		self.AddError(_("List only accepts digest members."))
 	    except Errors.MMCantDigestError:
-		self.AddError("List doesn't accept digest members.")
+		self.AddError(_("List doesn't accept digest members."))
 	    except Errors.MMListNotReadyError:
-		self.AddError("List is not functional.")
+		self.AddError(_("List is not functional."))
 	    except Errors.MMNoSuchUserError:
-		self.AddError("%s is not subscribed to this list."
+		self.AddError(_("%s is not subscribed to this list.")
                               % mail.GetSender(), trunc=0)
 	    except Errors.MMNeedApproval:
 		self.AddApprovalMsg(cmd)
@@ -398,15 +399,15 @@ The following is a detailed description of the problems.
         if args[0] == 'norcv':
             args[0] = 'notmetoo'
         self.SetUserOption(sender, option_info[args[0]], value)
-        self.AddToResponse("Succeeded.")
+        self.AddToResponse(_("Succeeded."))
 	    
     def ProcessListsCmd(self, args, cmd, mail):
 	if len(args) != 0:
-	    self.AddError("Usage: lists")
+	    self.AddError(_("Usage: lists"))
 	    return
 	lists = Utils.list_names()
 	lists.sort()
-	self.AddToResponse("\nPublic mailing lists run by mailman@%s"
+	self.AddToResponse(_("\nPublic mailing lists run by mailman@%s")
 			   % self.host_name, trunc=0)
 	for listname in lists:
 	    if listname == self._internal_name:
@@ -422,60 +423,60 @@ The following is a detailed description of the problems.
 	    if not listob.advertised and listob <> self: 
 		continue
             self.AddToResponse(listob.real_name + ':')
-            self.AddToResponse('\trequests to: ' + listob.GetRequestEmail(),
+            self.AddToResponse(_('\trequests to: ') + listob.GetRequestEmail(),
                                trunc=0)
             if listob.description:
-                self.AddToResponse('\tdescription: ' + listob.description,
+                self.AddToResponse(_('\tdescription: ') + listob.description,
                                    trunc=0)
 	
     def ProcessInfoCmd(self, args, cmd, mail):
 	if len(args) != 0:
-	    self.AddError("Usage: info\n"
+	    self.AddError(_("Usage: info\n"
                           "To get info for a particular list, "
                           "send your request to\n"
                           "the '-request' address for that list, or "
                           "use the 'lists' command\n"
-                          "to get info for all the lists.")
+                          "to get info for all the lists."))
 	    return
 
 	if self.private_roster and not self.IsMember(mail.GetSender()):
-	    self.AddError("Private list: only members may see info.")
+	    self.AddError(_("Private list: only members may see info."))
 	    return
 
-        msg = Utils.wrap('''
+        msg = Utils.wrap(_('''
 For more complete info about the %(listname)s mailing list, including
 background and instructions for subscribing to and using it, visit:
 
     %(url)s
 
-''' % {'listname': self.real_name,
+''') % {'listname': self.real_name,
        'url'     : self.GetScriptURL('listinfo', absolute=1),
        })
         self.AddToResponse(msg, trunc=0)
 
 	if not self.info:
-	    self.AddToResponse("No other details are available.")
+	    self.AddToResponse(_("No other details are available."))
 	else:
             self.AddToResponse(Utils.wrap(self.info), trunc=0)
 	
     def ProcessWhoCmd(self, args, cmd, mail):
 	if len(args) != 0:
-	    self.AddError("Usage: who\n"
+	    self.AddError(_("Usage: who\n"
                           "To get subscribership for a particular list, "
                           "send your request\n"
-                          "to the '-request' address for that list.")
+                          "to the '-request' address for that list."))
 	    return
 	if self.private_roster == 2:
-	    self.AddError("Private list: No one may see subscription list.")
+	    self.AddError(_("Private list: No one may see subscription list."))
 	    return
 	if self.private_roster and not self.IsMember(mail.GetSender()):
-	    self.AddError("Private list: only members may see list "
-			  "of subscribers.")
+	    self.AddError(_("Private list: only members may see list "
+			  "of subscribers."))
 	    return
         digestmembers = self.GetDigestMembers()
         members = self.GetMembers()
 	if not len(digestmembers) and not len(members):
-	    self.AddToResponse("NO MEMBERS.")
+	    self.AddToResponse(_("NO MEMBERS."))
 	    return
 	
 	def AddTab(str):
@@ -485,27 +486,27 @@ background and instructions for subscribing to and using it, visit:
 
 	if len(digestmembers):
             digestmembers.sort()
-	    self.AddToResponse("Digest Members:\n" +
+	    self.AddToResponse(_("Digest Members:\n") +
                                string.join(map(AddTab,
                                                filter(NotHidden,
                                                       digestmembers)),
                                            "\n"), trunc=0)
 	if len(members):
             members.sort()
-	    self.AddToResponse("Non-Digest Members:\n" +
+	    self.AddToResponse(_("Non-Digest Members:\n") +
                                string.join(map(AddTab,
                                                filter(NotHidden, members)),
                                            "\n"), trunc=0)
 
     def ProcessUnsubscribeCmd(self, args, cmd, mail):
 	if not len(args):
-	    self.AddError("Usage: unsubscribe <password> [<email-address>]")
+	    self.AddError(_("Usage: unsubscribe <password> [<email-address>]"))
 	    return
 	if len(args) > 2:
-	    self.AddError("Usage: unsubscribe <password> [<email-address>]\n"
+	    self.AddError(_("Usage: unsubscribe <password> [<email-address>]\n"
                           "To unsubscribe from a particular list, "
                           "send your request\n"
-                          "to the '-request' address for that list.")
+                          "to the '-request' address for that list."))
 	    return
 	if len(args) == 2:
 	    addr = args[1]
@@ -514,17 +515,17 @@ background and instructions for subscribing to and using it, visit:
 	try:
 	    self.ConfirmUserPassword(addr, args[0])
 	    self.DeleteMember(addr, "mailcmd")
-	    self.AddToResponse("Succeeded.")
+	    self.AddToResponse(_("Succeeded."))
 	except Errors.MMListNotReadyError:
-	    self.AddError("List is not functional.")
+	    self.AddError(_("List is not functional."))
 	except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError):
-	    self.AddError("%s is not subscribed to this list." % addr,
+	    self.AddError(_("%s is not subscribed to this list.") % addr,
                           trunc=0)
 	except Errors.MMBadPasswordError:
-	    self.AddError("You gave the wrong password.")
+	    self.AddError(_("You gave the wrong password."))
         except Errors.MMBadUserError:
-            self.AddError('Your stored password is bogus.')
-            syslog('subscribe', 'User %s on list %s has no password' %
+            self.AddError(_('Your stored password is bogus.'))
+            syslog('subscribe', _('User %s on list %s has no password') %
                    (addr, self.internal_name()))
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
@@ -536,8 +537,8 @@ background and instructions for subscribing to and using it, visit:
 	if not len(args):
 	    password = Utils.MakeRandomPassword()
         elif len(args) > 3:
-            self.AddError("Usage: subscribe [password] "
-                          "[digest|nodigest] [address=<email-address>]",
+            self.AddError(_("Usage: subscribe [password] "
+                          "[digest|nodigest] [address=<email-address>]"),
                           trunc=0)
             return
         else:
@@ -553,9 +554,9 @@ background and instructions for subscribing to and using it, visit:
                 elif not password:
                     password = arg
                 else:
-                    self.AddError("Usage: subscribe [password] "
+                    self.AddError(_("Usage: subscribe [password] "
                                   "[digest|nodigest] "
-                                  "[address=<email-address>]")
+                                  "[address=<email-address>]"))
                     return
         if not password:
             password = Utils.MakeRandomPassword()
@@ -574,27 +575,27 @@ background and instructions for subscribing to and using it, visit:
             #
             self.__NoMailCmdResponse = 1
         except Errors.MMNeedApproval:
-            self.AddToResponse(
+            self.AddToResponse(_(
                 "Your subscription request has been forwarded to the"
                 " list administrator\n"
-                "at %s for review." % self.GetAdminEmail(), trunc=0)
+                "at %s for review.") % self.GetAdminEmail(), trunc=0)
         except Errors.MMBadEmailError:
-            self.AddError("Mailman won't accept the given email "
+            self.AddError(_("Mailman won't accept the given email "
                           "address as a valid address.\n"
-                          "(Does it have an @ in it???)")
+                          "(Does it have an @ in it???)"))
         except Errors.MMListNotReadyError:
-            self.AddError("The list is not fully functional, and "
+            self.AddError(_("The list is not fully functional, and "
                           "can not accept subscription\n"
-                          "requests.")
+                          "requests."))
         except Errors.MMHostileAddress:
-            self.AddError("Your subscription is not allowed because\n"
-                          "the email address you gave is insecure.")
+            self.AddError(_("Your subscription is not allowed because\n"
+                          "the email address you gave is insecure."))
         except Errors.MMAlreadyAMember:
-            self.AddError("You are already subscribed!")
+            self.AddError(_("You are already subscribed!"))
         except Errors.MMCantDigestError:
-            self.AddError("No one can subscribe to the digest of this list!")
+            self.AddError(_("No one can subscribe to the digest of this list!"))
         except Errors.MMMustDigestError:
-            self.AddError("This list only supports digest subscriptions!")
+            self.AddError(_("This list only supports digest subscriptions!"))
         else:
             #
             # if the list sends a welcome message, we don't need a response
@@ -603,19 +604,19 @@ background and instructions for subscribing to and using it, visit:
             if self.send_welcome_msg:
                 self.__NoMailCmdResponse = 1
             else:
-                self.AddToResponse("Succeeded")
+                self.AddToResponse(_("Succeeded"))
 
 
 
     def ProcessConfirmCmd(self, args, cmd, mail):
         """Validate confirmation and carry out the subscription."""
         if len(args) != 1:
-            self.AddError("Usage: confirm <confirmation number>\n")
+            self.AddError(_("Usage: confirm <confirmation number>\n"))
             return
         try:
             cookie = string.atoi(args[0])
         except:
-            self.AddError("Usage: confirm <confirmation number>\n")
+            self.AddError(_("Usage: confirm <confirmation number>\n"))
             return
         try:
             self.ProcessConfirmation(cookie)
@@ -626,19 +627,19 @@ background and instructions for subscribing to and using it, visit:
                                * 1000) / 1000
             if floor(expiredays) == expiredays:
                 expiredays = int(expiredays)
-            self.AddError("Invalid confirmation number!\n"
+            self.AddError(_("Invalid confirmation number!\n"
                           "Note that confirmation numbers expire %s days"
                           " after initial request.\n"
                           "Please check date and number and try again,"
-                          " from the start if necessary."
+                          " from the start if necessary.")
                           % expiredays, trunc=0)
         except Errors.MMNeedApproval, admin_addr:
-            self.AddToResponse("Your request has been forwarded to the list "
-                               "administrator for approval")
+            self.AddToResponse(_("Your request has been forwarded to the list "
+                               "administrator for approval"))
         except Errors.MMAlreadyAMember:
             # Some other subscription request for this address has
             # already succeeded.
-            self.AddError("You are already subscribed!")
+            self.AddError(_("You are already subscribed!"))
         else:
             #
             # if the list sends a welcome message, we don't need a response
@@ -647,7 +648,7 @@ background and instructions for subscribing to and using it, visit:
             if self.send_welcome_msg:
                 self.__NoMailCmdResponse = 1
             else:
-                self.AddToResponse("Succeeded")
+                self.AddToResponse(_("Succeeded"))
 
 
     def AddApprovalMsg(self, cmd):
@@ -669,3 +670,4 @@ background and instructions for subscribing to and using it, visit:
              'adminaddr'   : self.GetAdminEmail(),
              })
         self.AddToResponse(text, trunc=0)
+

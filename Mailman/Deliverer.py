@@ -37,11 +37,11 @@ class Deliverer:
 	else:
 	    welcome = ''
         if self.umbrella_list:
-            umbrella = Utils.wrap('''\
+            umbrella = Utils.wrap(_('''\
 Note: Since this is a list of mailing lists, administrative
 notices like the password reminder will be sent to
 your membership administrative address, %s.
-''' % self.GetMemberAdminEmail(name))
+''') % self.GetMemberAdminEmail(name))
         else:
             umbrella = ''
         # get the text from the template
@@ -62,7 +62,7 @@ your membership administrative address, %s.
 	    digmode = ''
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetRequestEmail(),
-            'Welcome to the "%s" mailing list%s' % (self.real_name, digmode),
+            _('Welcome to the "%s" mailing list%s') % (self.real_name, digmode),
             text)
         msg['X-No-Archive'] = 'yes'
         HandlerAPI.DeliverToUser(self, msg)
@@ -71,7 +71,7 @@ your membership administrative address, %s.
     def SendUnsubscribeAck(self, name):
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetAdminEmail(),
-            'Unsubscribed from "%s" mailing list' % self.real_name,
+            _('Unsubscribed from "%s" mailing list') % self.real_name,
             Utils.wrap(self.goodbye_msg))
         HandlerAPI.DeliverToUser(self, msg)
 
@@ -85,7 +85,7 @@ your membership administrative address, %s.
         if user and self.passwords.has_key(user):
             cpuser = self.GetUserSubscribedAddress(user)
             recipient = self.GetMemberAdminEmail(cpuser)
-            subject = '%s mailing list reminder' % listfullname
+            subject = _('%s mailing list reminder') % listfullname
             adminaddr = self.GetAdminEmail()
             # get the text from the template
             text = Utils.maketext(
@@ -100,7 +100,7 @@ your membership administrative address, %s.
         else:
             ok = 0
             recipient = self.GetAdminEmail()
-            subject = '%s user %s missing password!' % (listfullname, user)
+            subject = _('%s user %s missing password!') % (listfullname, user)
             text = Utils.maketext(
                 'nopass.txt',
                 {'username'     : `user`,

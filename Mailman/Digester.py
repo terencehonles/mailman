@@ -42,37 +42,37 @@ class Digester:
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
 	return [
-            "Batched-delivery digest characteristics.",
+            _("Batched-delivery digest characteristics."),
 
-	    ('digestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
-	     'Can list members choose to receive list traffic '
-	     'bunched in digests?'),
+	    ('digestable', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
+	     _('Can list members choose to receive list traffic '
+	       'bunched in digests?')),
 
 	    ('digest_is_default', mm_cfg.Radio, 
-	     ('Regular', 'Digest'), 0,
-	     'Which delivery mode is the default for new users?'),
+	     (_('Regular'), _('Digest')), 0,
+	     _('Which delivery mode is the default for new users?')),
 
 	    ('mime_is_default_digest', mm_cfg.Radio, 
-	     ('Plain', 'Mime'), 0,
-	     'When receiving digests, which format is default?'),
+	     (_('Plain'), _('MIME')), 0,
+	     _('When receiving digests, which format is default?')),
 
 	    ('digest_size_threshhold', mm_cfg.Number, 3, 0,
-	     'How big in Kb should a digest be before it gets sent out?'),
+	     _('How big in Kb should a digest be before it gets sent out?')),
             # Should offer a 'set to 0' for no size threshhold.
 
- 	    ('digest_send_periodic', mm_cfg.Radio, ('No', 'Yes'), 1,
-	     'Should a digest be dispatched daily when the size threshold '
-	     "isn't reached?"),
+ 	    ('digest_send_periodic', mm_cfg.Radio, (_('No'), _('Yes')), 1,
+	     _('Should a digest be dispatched daily when the size threshold '
+	       "isn't reached?")),
 
             ('digest_header', mm_cfg.Text, (4, WIDTH), 0,
-	     'Header added to every digest',
-             "Text attached (as an initial message, before the table"
-             " of contents) to the top of digests. "
+	     _('Header added to every digest'),
+             _("Text attached (as an initial message, before the table"
+               " of contents) to the top of digests. ")
              + Utils.maketext('headfoot.html', raw=1)),
 
 	    ('digest_footer', mm_cfg.Text, (4, WIDTH), 0,
-	     'Footer added to every digest',
-             "Text attached (as a final message) to the bottom of digests. "
+	     _('Footer added to every digest'),
+             _("Text attached (as a final message) to the bottom of digests. ")
              + Utils.maketext('headfoot.html', raw=1)),
 	    ]
 

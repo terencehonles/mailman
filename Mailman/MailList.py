@@ -355,76 +355,75 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         # XXX: Should this text be migrated into the templates dir?
-	config_info['general'] = [
+	config_info['general'] = [_(
             "Fundamental list characteristics, including descriptive"
-            " info and basic behaviors.",
+            " info and basic behaviors."),
 	    ('real_name', mm_cfg.String, WIDTH, 0,
-	     'The public name of this list (make case-changes only).',
+	     _('The public name of this list (make case-changes only).'),
 
-             "The capitalization of this name can be changed to make it"
+           _("The capitalization of this name can be changed to make it"
              " presentable in polite company as a proper noun, or to make an"
              " acronym part all upper case, etc.  However, the name"
              " will be advertised as the email address (e.g., in subscribe"
              " confirmation notices), so it should <em>not</em> be otherwise"
              " altered.  (Email addresses are not case sensitive, but"
-             " they are sensitive to almost everything else:-)"),
+             " they are sensitive to almost everything else:-)")),
 
 	    ('owner', mm_cfg.EmailList, (3, WIDTH), 0,
-	     "The list admin's email address - having multiple"
-	     " admins/addresses (on separate lines) is ok."),
+	     _("The list admin's email address - having multiple"
+	       " admins/addresses (on separate lines) is ok.")),
 
 	    ('description', mm_cfg.String, WIDTH, 0,
-	     'A terse phrase identifying this list.',
+	     _('A terse phrase identifying this list.'),
 
-             "This description is used when the mailing list is listed with"
+           _("This description is used when the mailing list is listed with"
              " other mailing lists, or in headers, and so forth.  It should"
              " be as succinct as you can get it, while still identifying"
-             " what the list is."),
+             " what the list is.")),
 
-	    ('info', mm_cfg.Text, (7, WIDTH), 0, 
+	    ('info', mm_cfg.Text, (7, WIDTH), 0, _(
 	     ' An introductory description - a few paragraphs - about the'
 	     ' list.  It will be included, as html, at the top of the'
 	     ' listinfo page.  Carriage returns will end a paragraph - see'
-             ' the details for more info.',
+             ' the details for more info.'),
 
-             "The text will be treated as html <em>except</em> that newlines"
+           _("The text will be treated as html <em>except</em> that newlines"
              " newlines will be translated to &lt;br&gt; - so you can use"
              " links, preformatted text, etc, but don't put in carriage"
              " returns except where you mean to separate paragraphs.  And"
              " review your changes - bad html (like some unterminated HTML"
-             " constructs) can prevent display of the entire listinfo page."),
+             " constructs) can prevent display of the entire listinfo page.")),
 
 	    ('subject_prefix', mm_cfg.String, WIDTH, 0,
-	     'Prefix for subject line of list postings.',
+	     _('Prefix for subject line of list postings.'),
 
-             "This text will be prepended to subject lines of messages"
+           _("This text will be prepended to subject lines of messages"
              " posted to the list, to distinguish mailing list messages in"
              " in mailbox summaries.  Brevity is premium here, it's ok"
              " to shorten long mailing list names to something more concise,"
-             " as long as it still identifies the mailing list."),
+             " as long as it still identifies the mailing list.")),
 
 	    ('welcome_msg', mm_cfg.Text, (4, WIDTH), 0,
-	     'List-specific text prepended to new-subscriber welcome message',
+	     _('List-specific text prepended to new-subscriber welcome message'),
 
-             "This value, if any, will be added to the front of the"
+           _("This value, if any, will be added to the front of the"
              " new-subscriber welcome message.  The rest of the"
              " welcome message already describes the important addresses"
              " and URLs for the mailing list, so you don't need to include"
              " any of that kind of stuff here.  This should just contain"
              " mission-specific kinds of things, like etiquette policies"
-             " or team orientation, or that kind of thing."),
+             " or team orientation, or that kind of thing.")),
 
 	    ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
-	     'Text sent to people leaving the list.  If empty, no special'
-	     ' text will be added to the unsubscribe message.'),
+	     _('Text sent to people leaving the list.  If empty, no special'
+	     ' text will be added to the unsubscribe message.')),
 
 	    ('reply_goes_to_list', mm_cfg.Radio,
-             ('Poster', 'This list', 'Explicit address'), 0,
-             '''Where are replies to list messages directed?  <tt>Poster</tt>
-is <em>strongly</em> recommended for most mailing lists.''',
+             (_('Poster'), _('This list'), _('Explicit address')), 0,
+             _('Where are replies to list messages directed?  <tt>Poster</tt> is <em>strongly</em> recommended for most mailing lists.'),
 
              # Details for reply_goes_to_list
-             """This option controls what Mailman does to the
+             _("""This option controls what Mailman does to the
 <tt>Reply-To:</tt> header in messages flowing through this mailing list.  When
 set to <em>Poster</em>, no <tt>Reply-To:</tt> header is added by Mailman,
 although if one is present in the original message, it is not stripped.
@@ -433,7 +432,7 @@ causes Mailman to insert a specific <tt>Reply-To:</tt> header in all messages,
 overriding the header in the original message if necessary (<em>Explicit
 address</em> inserts the value of <a
 href="?VARHELP=general/reply_to_address">reply_to_address</a>).
-
+ 
 <p>There are many reasons not to introduce or override the <tt>Reply-To:</tt>
 header.  One is that some posters depend on their own <tt>Reply-To:</tt>
 settings to convey their valid return address.  Another is that modifying
@@ -448,13 +447,13 @@ devoted to discussions.  Examples are `patches' or `checkin' lists, where
 software changes are posted by a revision control system, but discussion about
 the changes occurs on a developers mailing list.  To support these types of
 mailing lists, select <tt>Explicit address</tt> and set the <tt>Reply-To:</tt>
-address below to point to the parallel list."""),
+address below to point to the parallel list.""")),
 
-            ('reply_to_address', mm_cfg.Email, WIDTH, 0,
-             '''Explicit <tt>Reply-To:</tt> header.''',
+            ('reply_to_address', mm_cfg.Email, WIDTH, 0,_(
+             'Explicit <tt>Reply-To:</tt> header.'),
 
              # Details for reply_to_address
-             """This is the address set in the <tt>Reply-To:</tt> header
+             _("""This is the address set in the <tt>Reply-To:</tt> header
 when the <a href="?VARHELP=general/reply_goes_to_list">reply_goes_to_list</a>
 option is set to <em>Explicit address</em>.
 
@@ -471,95 +470,99 @@ Munging Considered Useful</a> for a dissenting opinion.
 devoted to discussions.  Examples are `patches' or `checkin' lists, where
 software changes are posted by a revision control system, but discussion about
 the changes occurs on a developers mailing list.  To support these types of
-mailing lists, select <tt>Explicit address</tt> and set the <tt>Reply-To:</tt>
-address below to point to the parallel list."""),
+mailing lists, specify the explicit <tt>Reply-To:</tt> address here.  You must
+also specify <tt>Explicit address</tt> in the <tt>reply_goes_to_list</tt>
+variable.
+
+<p>Note that if the original message contains a <tt>Reply-To:</tt> header,
+it will not be changed.""")),
 
             ('administrivia', mm_cfg.Radio, ('No', 'Yes'), 0,
-             "(Administrivia filter) Check postings and intercept ones"
-             " that seem to be administrative requests?",
+             _("(Administrivia filter) Check postings and intercept ones"
+             " that seem to be administrative requests?"),
 
-             "Administrivia tests will check postings to see whether"
+           _("Administrivia tests will check postings to see whether"
              " it's really meant as an administrative request (like"
              " subscribe, unsubscribe, etc), and will add it to the"
              " the administrative requests queue, notifying the "
-             " administrator of the new request, in the process. "),
+             " administrator of the new request, in the process. ")),
 
 
-	    ('umbrella_list', mm_cfg.Radio, ('No', 'Yes'), 0,
+	    ('umbrella_list', mm_cfg.Radio, ('No', 'Yes'), 0,_(
 	     'Send password reminders to, eg, "-owner" address instead of'
-	     ' directly to user.',
+	     ' directly to user.'),
 
-	     "Set this to yes when this list is intended to cascade only to"
+	   _("Set this to yes when this list is intended to cascade only to"
 	     " other mailing lists.  When set, meta notices like confirmations"
              " and password reminders will be directed to an address derived"
              " from the member\'s address - it will have the value of"
              ' \"umbrella_member_suffix\" appended to the'
-             " member\'s account name."),
+             " member\'s account name.")),
 
-	    ('umbrella_member_suffix', mm_cfg.String, WIDTH, 0,
+	    ('umbrella_member_suffix', mm_cfg.String, WIDTH, 0,_(
 	     'Suffix for use when this list is an umbrella for other lists,'
-             ' according to setting of previous "umbrella_list" setting.',
+             ' according to setting of previous "umbrella_list" setting.'),
 
-	     'When \"umbrella_list\" is set to indicate that this list has'
+	     _('When \"umbrella_list\" is set to indicate that this list has'
              " other mailing lists as members, then administrative notices"
              " like confirmations and password reminders need to not be sent"
              " to the member list addresses, but rather to the owner of those"
              " member lists.  In that case, the value of this setting is"
              " appended to the member\'s account name for such notices."
              " \'-owner\' is the typical choice.  This setting has no"
-             ' effect when \"umbrella_list\" is \"No\".'),
+             ' effect when \"umbrella_list\" is \"No\".')),
 
-	    ('send_reminders', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Send monthly password reminders or no? Overrides the previous '
-	     'option.'),
+	    ('send_reminders', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+	     _('Send monthly password reminders or no? Overrides the previous '
+	     'option.')),
 
-	    ('send_welcome_msg', mm_cfg.Radio, ('No', 'Yes'), 0, 
-	     'Send welcome message when people subscribe?',
-	     "Turn this on only if you plan on subscribing people manually "
-	     "and don't want them to know that you did so.  This option "
-	     "is most useful for transparently migrating lists from "
-	     "some other mailing list manager to Mailman."),
+	    ('send_welcome_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0, 
+	     _('Send welcome message when people subscribe?'),
+	     _("Turn this on only if you plan on subscribing people manually "
+	       "and don't want them to know that you did so.  This option "
+	       "is most useful for transparently migrating lists from "
+	       "some other mailing list manager to Mailman.")),
 
 
-	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Should administrator get immediate notice of new requests, '
-	     'as well as daily notices about collected ones?',
+	    ('admin_immed_notify', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+	     _('Should administrator get immediate notice of new requests, '
+	       'as well as daily notices about collected ones?'),
 
-             "List admins are sent daily reminders of pending admin approval"
+           _("List admins are sent daily reminders of pending admin approval"
              " requests, like subscriptions to a moderated list or postings"
 	     " that are being held for one reason or another.  Setting this"
 	     " option causes notices to be sent immediately on the arrival"
-	     " of new requests, as well."),
+	     " of new requests, as well.")),
 
-            ('admin_notify_mchanges', mm_cfg.Radio, ('No', 'Yes'), 0,
-             'Should administrator get notices of subscribes/unsubscribes?'),
+            ('admin_notify_mchanges', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _('Should administrator get notices of subscribes/unsubscribes?')),
             
-	    ('dont_respond_to_post_requests', mm_cfg.Radio, ('Yes', 'No'), 0,
-	     'Send mail to poster when their posting is held for approval?',
+	    ('dont_respond_to_post_requests', mm_cfg.Radio, (_('Yes'), _('No')), 0,
+	     _('Send mail to poster when their posting is held for approval?'),
 
-             "Approval notices are sent when mail triggers certain of the"
+           _("Approval notices are sent when mail triggers certain of the"
              " limits <em>except</em> routine list moderation and spam"
 	     " filters, for which notices are <em>not</em> sent.  This"
-	     " option overrides ever sending the notice."),
+	     " option overrides ever sending the notice.")),
 
 	    ('max_message_size', mm_cfg.Number, 7, 0,
-	     'Maximum length in Kb of a message body.  Use 0 for no limit.'),
+	     _('Maximum length in Kb of a message body.  Use 0 for no limit.')),
 
 	    ('host_name', mm_cfg.Host, WIDTH, 0,
-             'Host name this list prefers.',
+             _('Host name this list prefers.'),
 
-             "The host_name is the preferred name for email to mailman-related"
+           _("The host_name is the preferred name for email to mailman-related"
              " addresses on this host, and generally should be the mail"
              " host's exchanger address, if any.  This setting can be useful"
              " for selecting among alternative names of a host that has"
-             " multiple addresses."),
+             " multiple addresses.")),
 
  	    ('web_page_url', mm_cfg.String, WIDTH, 0,
- 	     '''Base URL for Mailman web interface.  The URL must end in a
+ 	     _('''Base URL for Mailman web interface.  The URL must end in a
  	     single "/".  See also the details for an important warning when
- 	     changing this value.''',
+ 	     changing this value.'''),
 
-             """This is the common root for all Mailman URLs referencing this
+             _("""This is the common root for all Mailman URLs referencing this
              mailing list.  It is also used in the listinfo overview of
              mailing lists to identify whether or not this list resides on the
              virtual host identified by the overview URL; i.e. if this value
@@ -570,14 +573,14 @@ address below to point to the parallel list."""),
              an invalid base URL will render the mailing list unusable.  You
              will also not be able to fix this from the web interface!  In
              that case, the site administrator will have to fix the mailing
-             list from the command line."""),
+             list from the command line.""")),
           ]
         if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
-                           ('none', 'confirm', 'require approval',
-                            'confirm+approval'),  0, 
-                           "What steps are required for subscription?<br>",
-                           "None - no verification steps (<em>Not"
+                           (_('none'), _('confirm'), _('require approval'),
+                            _('confirm+approval')),  0, 
+                           _("What steps are required for subscription?<br>"),
+                           _("None - no verification steps (<em>Not"
                            " Recommended </em>)<br>"
                            "confirm (*) - email confirmation step"
                            " required <br>"
@@ -591,14 +594,14 @@ address below to point to the parallel list."""),
                            " reply to in order to subscribe.<br> This"
                            " prevents mischievous (or malicious) people"
                            " from creating subscriptions for others"
-                           " without their consent."
+                           " without their consent.")
                            )
         else:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
-                           ('confirm', 'require approval',
-                            'confirm+approval'),  1,
-                           "What steps are required for subscription?<br>",
-                           "confirm (*) - email confirmation required <br>"
+                           (_('confirm'), _('require approval'),
+                            _('confirm+approval')),  1,
+                           _("What steps are required for subscription?<br>"),
+                           _("confirm (*) - email confirmation required <br>"
                            "require approval - require list administrator"
                            " approval for subscriptions <br>"
                            "confirm+approval - both confirm and approve"
@@ -608,168 +611,183 @@ address below to point to the parallel list."""),
                            " reply to in order to subscribe.<br> This"
                            " prevents mischievous (or malicious) people"
                            " from creating subscriptions for others"
-                           " without their consent."
+                           " without their consent.")
                            )
 
-
+        # some helpful values
+        adminurl = self.GetScriptURL('admin')
+        
         config_info['privacy'] = [
-            "List access policies, including anti-spam measures,"
-            " covering members and outsiders."
-            '  (See also the <a href="%s/archive">Archival Options'
-            ' section</a> for separate archive-privacy settings.)'
-            % (self.GetScriptURL('admin')),
+          _("""List access policies, including anti-spam measures, covering
+          members and outsiders.  See also the
+          <a href="%(admin)s/archive">Archival Options section</a> for
+          separate archive-privacy settings."""),
 
-	    "Subscribing",
+	    _("Subscribing"),
 
 	    ('advertised', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Advertise this list when people ask what lists are on '
-	     'this machine?'),
+	     _("""Advertise this list when people ask what lists are on this
+	     machine?""")),
 
             sub_cfentry,
             
-            "Membership exposure",
+          _("Membership exposure"),
 
 	    ('private_roster', mm_cfg.Radio,
-	     ('Anyone', 'List members', 'List admin only'), 0,
-	     'Who can view subscription list?',
+	     (_('Anyone'), _('List members'), _('List admin only')), 0,
+	     _('Who can view subscription list?'),
 
-             "When set, the list of subscribers is protected by"
-             " member or admin password authentication."),
+             _('''When set, the list of subscribers is protected by
+             member or admin password authentication.''')),
 
-	    ('obscure_addresses', mm_cfg.Radio, ('No', 'Yes'), 0,
-             "Show member addrs so they're not directly recognizable"
-             ' as email addrs?',
+	    ('obscure_addresses', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _("""Show member addrs so they're not directly recognizable
+             as email addrs?"""),
 
-             "Setting this option causes member email addresses to be"
-             " transformed when they are presented on list web pages (both"
-             " in text and as links), so they're not trivially"
-             " recognizable as email addresses.  The intention is to"
-             " to prevent the addresses from being snarfed up by"
-             " automated web scanners for use by spammers."),
+           _("""Setting this option causes member email addresses to be
+             transformed when they are presented on list web pages (both in
+             text and as links), so they're not trivially recognizable as
+             email addresses.  The intention is to to prevent the addresses
+             from being snarfed up by automated web scanners for use by
+             spammers.""")),
 
-            "General posting filters",
+          _("General posting filters"),
 
-	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Must posts be approved by an administrator?'),
+	    ('moderated', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+	     _('Must posts be approved by an administrator?')),
 
-	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Restrict posting privilege to list members?'
-             ' (<i>member_posting_only</i>)',
+	    ('member_posting_only', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+	     _("""Restrict posting privilege to list members?
+             (<i>member_posting_only</i>)"""),
 
-             "Use this option if you want to restrict posting to list members."
-             " If you want list members to be able to"
-             " post, plus a handful of other posters, see the <i> posters </i>"
-             " setting below"),
+           _("""Use this option if you want to restrict posting to list
+           members.  If you want list members to be able to post, plus a
+           handful of other posters, see the <i> posters </i> setting
+           below""")),
 
 	    ('posters', mm_cfg.EmailList, (5, WIDTH), 1,
-             'Addresses of members accepted for posting to this'
-             ' list without implicit approval requirement. (See'
-             ' "Restrict ... to list members"'
-             ' for whether or not this is in addition to allowing posting'
-             ' by list members',
+             _("""Addresses of members accepted for posting to this list
+             without implicit approval requirement. (See "Restrict ... to list
+             members" for whether or not this is in addition to allowing
+             posting by list members"""),
 
-             "Adding entries here will have one of two effects,"
-             " according to whether another option restricts posting to"
-             " members. <ul>"
-             " <li> If <i>member_posting_only</i> is 'yes', then entries"
-             " added here will have posting privilege in addition to"
-             " list members."
-             " <li> If <i>member_posting_only</i> is 'no', then <em>only</em>"
-             " the posters listed here will be able to post without admin"
-             " approval. </ul>"),
+             _("""Adding entries here will have one of two effects,
+              according to whether another option restricts posting to
+              members.
 
-            "Spam-specific posting filters",
+              <ul>
+                  <li>If <i>member_posting_only</i> is 'yes', then entries
+                  added here will have posting privilege in addition to list
+                  members.
 
- 	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
- 	     'Must posts have list named in destination (to, cc) field'
-             ' (or be among the acceptable alias names, specified below)?',
+                  <li>If <i>member_posting_only</i> is 'no', then
+                  <em>only</em> the posters listed here will be able to post
+                  without admin approval.
 
-             "Many (in fact, most) spams do not explicitly name their myriad"
-             " destinations in the explicit destination addresses - in fact,"
-             " often the to field has a totally bogus address for"
-             " obfuscation.  The constraint applies only to the stuff in"
-             " the address before the '@' sign, but still catches all such"
-             " spams."
-             "<p>The cost is that the list will not accept unhindered any"
-             " postings relayed from other addresses, unless <ol>"
-             " <li>The relaying address has the same name, or"
-             " <li>The relaying address name is included on the options that"
-             " specifies acceptable aliases for the list. </ol>"),
+              </ul>""")),
+
+          _("Spam-specific posting filters"),
+
+ 	    ('require_explicit_destination', mm_cfg.Radio,
+             (_('No'), _('Yes')), 0,
+ 	     _("""Must posts have list named in destination (to, cc) field
+             (or be among the acceptable alias names, specified below)?"""),
+
+             _("""Many (in fact, most) spams do not explicitly name their
+             myriad destinations in the explicit destination addresses - in
+             fact often the To: field has a totally bogus address for
+             obfuscation.  The constraint applies only to the stuff in the
+             address before the '@' sign, but still catches all such spams.
+
+             <p>The cost is that the list will not accept unhindered any
+             postings relayed from other addresses, unless
+
+             <ol>
+                 <li>The relaying address has the same name, or
+
+                 <li>The relaying address name is included on the options that
+                 specifies acceptable aliases for the list.
+
+             </ol>""")),
 
  	    ('acceptable_aliases', mm_cfg.Text, (4, WIDTH), 0,
- 	     'Alias names (regexps) which qualify as explicit to or cc'
-             ' destination names for this list.',
+ 	     _("""Alias names (regexps) which qualify as explicit to or cc
+             destination names for this list."""),
 
-             "Alternate addresses that are acceptable when"
-             " `require_explicit_destination' is enabled.  This option"
-             " takes a list of regular expressions, one per line, which is"
-             " matched against every recipient address in the message.  The"
-             " matching is performed with Python's re.match() function,"
-             " meaning they are anchored to the start of the string."
-             " <p>For backwards compatibility with Mailman 1.1, if the regexp"
-             " does not contain an `@', then the pattern is matched against"
-             " just the local part of the recipient address.  If that match"
-             " fails, or if the pattern does contain an `@', then the pattern"
-             " is matched against the entire recipient address. "
-             " <p>Matching against the local part is deprecated; in a future"
-             " release, the patterm will always be matched against the "
-             " entire recipient address."),
+             _("""Alternate addresses that are acceptable when
+             `require_explicit_destination' is enabled.  This option takes a
+             list of regular expressions, one per line, which is matched
+             against every recipient address in the message.  The matching is
+             performed with Python's re.match() function, meaning they are
+             anchored to the start of the string.
+             
+             <p>For backwards compatibility with Mailman 1.1, if the regexp
+             does not contain an `@', then the pattern is matched against just
+             the local part of the recipient address.  If that match fails, or
+             if the pattern does contain an `@', then the pattern is matched
+             against the entire recipient address.
+             
+             <p>Matching against the local part is deprecated; in a future
+             release, the pattern will always be matched against the entire
+             recipient address.""")),
 
 	    ('max_num_recipients', mm_cfg.Number, 5, 0, 
-	     'Ceiling on acceptable number of recipients for a posting.',
+	     _('Ceiling on acceptable number of recipients for a posting.'),
 
-             "If a posting has this number, or more, of recipients, it is"
-             " held for admin approval.  Use 0 for no ceiling."),
+             _("""If a posting has this number, or more, of recipients, it is
+             held for admin approval.  Use 0 for no ceiling.""")),
 
 	    ('forbidden_posters', mm_cfg.EmailList, (5, WIDTH), 1,
-             'Addresses whose postings are always held for approval.',
+             _('Addresses whose postings are always held for approval.'),
 
-	     "Email addresses whose posts should always be held for"
-             " approval, no matter what other options you have set."
-             " See also the subsequent option which applies to arbitrary"
-             " content of arbitrary headers."),
+	     _("""Email addresses whose posts should always be held for
+             approval, no matter what other options you have set.  See also
+             the subsequent option which applies to arbitrary content of
+             arbitrary headers.""")),
 
  	    ('bounce_matching_headers', mm_cfg.Text, (6, WIDTH), 0,
- 	     'Hold posts with header value matching a specified regexp.',
+ 	     _('Hold posts with header value matching a specified regexp.'),
 
-             "Use this option to prohibit posts according to specific header"
-             " values.  The target value is a regular-expression for"
-             " matching against the specified header.  The match is done"
-             " disregarding letter case.  Lines beginning with '#' are"
-	     " ignored as comments."
-             "<p>For example:<pre>to: .*@public.com </pre> says"
-             " to hold all postings with a <em>to</em> mail header"
-             " containing '@public.com' anywhere among the addresses."
-             "<p>Note that leading whitespace is trimmed from the"
-             " regexp.  This can be circumvented in a number of ways, eg"
-             " by escaping or bracketing it."
-	     "<p> See also the <em>forbidden_posters</em> option for"
-	     " a related mechanism."),
+             _("""Use this option to prohibit posts according to specific
+             header values.  The target value is a regular-expression for
+             matching against the specified header.  The match is done
+             disregarding letter case.  Lines beginning with '#' are ignored
+             as comments.
 
-	    ('anonymous_list', mm_cfg.Radio, ('No', 'Yes'), 0,
-	      'Hide the sender of a message, replacing it with the list '
-	      'address (Removes From, Sender and Reply-To fields)'),
-	         
-            ]
+             <p>For example:<pre>to: .*@public.com </pre> says to hold all
+             postings with a <em>To:</em> mail header containing '@public.com'
+             anywhere among the addresses.
+
+             <p>Note that leading whitespace is trimmed from the regexp.  This
+             can be circumvented in a number of ways, e.g. by escaping or
+             bracketing it.
+             
+	     <p> See also the <em>forbidden_posters</em> option for a related
+	     mechanism.""")),
+
+          ('anonymous_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+           _("""Hide the sender of a message, replacing it with the list
+           address (Removes From, Sender and Reply-To fields)""")),
+          ]
 
 	config_info['nondigest'] = [
-            "Policies concerning immediately delivered list traffic.",
+            _("Policies concerning immediately delivered list traffic."),
 
-	    ('nondigestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
-	     'Can subscribers choose to receive mail immediately,'
-	     ' rather than in batched digests?'),
+	    ('nondigestable', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
+	     _("""Can subscribers choose to receive mail immediately,
+             rather than in batched digests?""")),
 
 	    ('msg_header', mm_cfg.Text, (4, WIDTH), 0,
-	     'Header added to mail sent to regular list members',
+	     _('Header added to mail sent to regular list members'),
 
-             "Text prepended to the top of every immediately-delivery"
-             " message. " + Utils.maketext('headfoot.html', raw=1)),
-	    
+             _("""Text prepended to the top of every immediately-delivery
+             message. """) + Utils.maketext('headfoot.html', raw=1)),
+
 	    ('msg_footer', mm_cfg.Text, (4, WIDTH), 0,
-	     'Footer added to mail sent to regular list members',
+	     _('Footer added to mail sent to regular list members'),
 
-             "Text appended to the bottom of every immediately-delivery"
-             " message. " + Utils.maketext('headfoot.html', raw=1)),
+             _("""Text appended to the bottom of every immediately-delivery
+             message. """) + Utils.maketext('headfoot.html', raw=1)),
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
@@ -925,10 +943,9 @@ address below to point to the parallel list."""),
 	else:
 	    self.InitVars() # Init any new variables, 
 	    self.Load(check_version = 0) # then reload the file
-            if self.Locked():
-                from versions import Update
-                Update(self, stored_state)
-                self.data_version = mm_cfg.DATA_FILE_VERSION
+            from versions import Update
+            Update(self, stored_state)
+	    self.data_version = mm_cfg.DATA_FILE_VERSION
         if self.Locked():
             self.Save()
 
@@ -982,7 +999,7 @@ address below to point to the parallel list."""),
             cookie = Pending().new(name, password, digest)
             if remote is not None:
                 by = " " + remote
-                remote = " from %s" % remote
+                remote = _(" from %s") % remote
             else:
                 by = ""
                 remote = ""
@@ -999,7 +1016,7 @@ address below to point to the parallel list."""),
                                    })
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
-                '%s -- confirmation of subscription -- request %d' %
+                _('%s -- confirmation of subscription -- request %d') %
                 (self.real_name, cookie),
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
@@ -1015,7 +1032,7 @@ address below to point to the parallel list."""),
             # requests database.
             self.HoldSubscription(name, password, digest)
             raise Errors.MMNeedApproval, \
-                  'subscriptions to %s require administrator approval' % \
+                  _('subscriptions to %s require administrator approval') % \
                   self.real_name
 
     def ProcessConfirmation(self, cookie):
@@ -1029,7 +1046,7 @@ address below to point to the parallel list."""),
             if self.subscribe_policy == 3: # confirm + approve
                 self.HoldSubscription(email_addr, password, digest)
                 raise Errors.MMNeedApproval, \
-                      'subscriptions to %s require administrator approval' % \
+                      _('subscriptions to %s require administrator approval') % \
                       self.real_name
             self.ApprovedAddMember(email_addr, password, digest)
         finally:
@@ -1136,7 +1153,7 @@ address below to point to the parallel list."""),
                             digest)
                     if admin_notif:
                         adminaddr = self.GetAdminEmail()
-                        subject = ('%s subscription notification' %
+                        subject = (_('%s subscription notification') %
                                    self.real_name)
                         text = Utils.maketext(
                             "adminsubscribeack.txt",
@@ -1187,7 +1204,7 @@ address below to point to the parallel list."""),
             else:
                 admin_notif = 0
 	if admin_notif:
-            subject = '%s unsubscribe notification' % self.real_name
+            subject = _('%s unsubscribe notification') % self.real_name
             text = Utils.maketext(
                 'adminunsubscribeack.txt',
                 {'member'  : name,
@@ -1229,8 +1246,7 @@ address below to point to the parallel list."""),
             localpart = string.split(addr, '@')[0]
             if (# TBD: backwards compatibility: deprecated
                     localpart == self.internal_name() or
-                    # Exact match against the complete list address.  TBD:
-                    # this test should be case-insensitive.
+                    # exact match against the complete list address
                     addr == listfullname):
                 return 1
             recips.append((addr, localpart))

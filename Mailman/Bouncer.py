@@ -59,26 +59,26 @@ class Bouncer:
 
     def GetConfigInfo(self):
 	return [
-            "Policies regarding systematic processing of bounce messages,"
+            _("Policies regarding systematic processing of bounce messages,"
             " to help automate recognition and handling of defunct"
-            " addresses.",
-	    ('bounce_processing', mm_cfg.Toggle, ('No', 'Yes'), 0,
-	     'Try to figure out error messages automatically? '),
+            " addresses."),
+	    ('bounce_processing', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+	     _('Try to figure out error messages automatically? ')),
 	    ('minimum_removal_date', mm_cfg.Number, 3, 0,
-	     'Minimum number of days an address has been non-fatally '
-             'bad before we take action'),
+	     _('Minimum number of days an address has been non-fatally '
+               'bad before we take action')),
 	    ('minimum_post_count_before_bounce_action', mm_cfg.Number, 3, 0,
-	     'Minimum number of posts to the list since members first '
-             'bounce before we consider removing them from the list'),
+	     _('Minimum number of posts to the list since members first '
+               'bounce before we consider removing them from the list')),
 	    ('max_posts_between_bounces', mm_cfg.Number, 3, 0,
-	     "Maximum number of messages your list gets in an hour.  "
-             "(Yes, bounce detection finds this info useful)"),
+	     _("Maximum number of messages your list gets in an hour.  "
+               "(Yes, bounce detection finds this info useful)")),
 	    ('automatic_bounce_action', mm_cfg.Radio,
-	     ("Do nothing",
-              "Disable and notify me",
-              "Disable and DON'T notify me",
-	      "Remove and notify me"),
-	     0, "Action when critical or excessive bounces are detected.")
+	     (_("Do nothing"),
+              _("Disable and notify me"),
+              _("Disable and DON'T notify me"),
+	      _("Remove and notify me")),
+	     0, _("Action when critical or excessive bounces are detected."))
 	    ]
 
     def ClearBounceInfo(self, email):
@@ -186,7 +186,7 @@ class Bouncer:
             did = "removed"
         if send:
             if succeeded != 1:
-                negative="not "
+                negative=_("not ")
             else:
                 negative=""
             recipient = self.GetAdminEmail()
@@ -234,7 +234,7 @@ class Bouncer:
             # We do this here so this text won't be wrapped.  note that
             # 'bounce.txt' has a trailing newline.  Be robust about getting
             # the body of the message.
-            body = '[original message unavailable]'
+            body = _('[original message unavailable]')
             try:
                 body = msg.body
             except AttributeError:
@@ -254,7 +254,7 @@ class Bouncer:
             # send the bounce message
             msg = Message.UserNotification(
                 recipient, mm_cfg.MAILMAN_OWNER,
-                '%s member %s bouncing - %s%s' % (self.real_name, addr,
+                _('%s member %s bouncing - %s%s') % (self.real_name, addr,
                                                   negative, did),
                 text)
             msg['MIME-Version'] = '1.0'
@@ -293,7 +293,7 @@ class Bouncer:
 
 	Returning success and notification status."""
         if not self.IsMember(addr):
-            reason = "User not found."
+            reason = _("User not found.")
 	    syslog("bounce", "%s: NOT removed %s: %s" %
                    (self.real_name, addr, reason))
             return reason, 1

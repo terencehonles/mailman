@@ -168,7 +168,7 @@ class ListAdmin:
         # name of the file in $PREFIX/data containing the msg text
         # an additional dictionary of message metadata
         #
-        msgsubject = msg.get('subject', '(no subject)')
+        msgsubject = msg.get('subject', _('(no subject)'))
         data = time.time(), sender, msgsubject, reason, filename, msgdata
         self.__db[id] = (HELDMSG, data)
 
@@ -222,8 +222,8 @@ class ListAdmin:
         elif value == mm_cfg.REJECT:
             # Rejected
             rejection = 'Refused'
-            self.__refuse('Posting of your message titled "%s"' % subject,
-                          sender, comment or '[No reason given]')
+            self.__refuse(_('Posting of your message titled "%s"') % subject,
+                          sender, comment or _('[No reason given]'))
         else:
             assert value == mm_cfg.DISCARD
             # Discarded
@@ -305,7 +305,7 @@ class ListAdmin:
                (self.real_name, addr))
         # possibly notify the administrator
         if self.admin_immed_notify:
-            subject = 'New subscription request to list %s from %s' % (
+            subject = _('New subscription request to list %s from %s') % (
                 self.real_name, addr)
             text = Utils.maketext(
                 'subauth.txt',
@@ -322,7 +322,7 @@ class ListAdmin:
         stime, addr, password, digest = record
         if value == mm_cfg.REJECT:
             # refused
-            self.__refuse('Subscription request', addr, comment)
+            self.__refuse(_('Subscription request'), addr, comment)
         else:
             # subscribe
             assert value == mm_cfg.SUBSCRIBE
@@ -344,8 +344,9 @@ class ListAdmin:
         # add in original message, but not wrap/filled
         if origmsg:
             text = string.join([text,
-                                '---------- Original Message ----------',
+                                '---------- ' + _('Original Message') + ' ----------',
                                 str(origmsg)], '\n')
-        subject = 'Request to mailing list %s rejected' % self.real_name
+        subject = _('Request to mailing list %s rejected') % self.real_name
         msg = Message.UserNotification(recip, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
+
