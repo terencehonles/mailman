@@ -512,6 +512,7 @@ EmailList  = 6
 Host       = 7
 Number     = 8
 FileUpload = 9
+Select    = 10
 
 # Held message disposition actions, for use between admindb.py and
 # ListAdmin.py.
@@ -543,8 +544,11 @@ SPAM_DIR        = os.path.join(VAR_PREFIX, 'spam')
 WRAPPER_DIR	= os.path.join(EXEC_PREFIX, 'mail')
 SCRIPTS_DIR	= os.path.join(PREFIX, 'scripts')
 TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
+MESSAGES_DIR 	= os.path.join(PREFIX, 'messages')
 PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(VAR_PREFIX, 'archives', 'public')
 PRIVATE_ARCHIVE_FILE_DIR = os.path.join(VAR_PREFIX, 'archives', 'private')
+
+DEFAULT_SERVER_LANGUAGE = "en"
 
 QUEUE_DIR       = os.path.join(VAR_PREFIX, 'qfiles')
 INQUEUE_DIR     = os.path.join(QUEUE_DIR, 'in')
@@ -556,3 +560,31 @@ SITE_PW_FILE = os.path.join(DATA_DIR, 'adm.pw')
 
 # Import a bunch of version numbers
 from Version import *
+
+# Vgg: Language descriptions and charsets dictionary, any new supported
+# language must have a corresponding entry here. Key is the name of the
+# directories that hold the localized texts. Data are tuples with first
+# element being the description, as described in the catalogs, and second
+# element is the language charset.  I have chosen code from /usr/share/locale
+# in my GNU/Linux. :-)
+def _(string):
+    return string
+
+LC_DESCRIPTIONS = {'es': [_("Spanish (Spain)"),      'iso-8859-1'],
+		   'it': [_("Italian"),              'iso-8859-1'],
+                   'en': [_("English (USA)"),         'us-ascii'],
+                   }
+del _				        
+
+# TDB: this may not be the right way to do this, but it's simple and it works
+# for all entry points into the Mailman system.
+#
+# BAW: This will very likely change to a more explicit import of `_', probably
+# based on the Mailman.i18n module.
+import gettext
+
+os.environ['LANG'] = DEFAULT_SERVER_LANGUAGE
+gettext.bindtextdomain('mailman', MESSAGES_DIR)
+gettext.textdomain('mailman')
+import __builtin__
+__builtin__.__dict__['_'] = gettext.gettext
