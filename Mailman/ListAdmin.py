@@ -336,7 +336,7 @@ class ListAdmin:
             finally:
                 i18n.set_translation(otrans)
             fmsg.set_type('message/rfc822')
-            fmsg.set_payload(copy)
+            fmsg.attach(copy)
             fmsg.send(self)
         # Log the rejection
 	if rejection:
