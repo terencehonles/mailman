@@ -1,8 +1,6 @@
 
 Mailmanで日本語を扱うときの注意 (English summary in the end)
 
-注意: ja_*.py は十分テストされていません.(2002/03/26)
-
 日本語のメールは ISO-2022-JP を使うことが、RFC1468に定められており、
 その後、MIMEによる使用可能な文字集合の拡張がなされていても、これが
 事実上の標準規則となっています。一方で、Mailmanのようにプログラムの
@@ -11,27 +9,34 @@ Mailmanで日本語を扱うときの注意 (English summary in the end)
 うことになります。ここでは Mailman 内部と Web については EUC-JP に
 統一することで、問題を解決しようとしています。
 
-このため、外部から入ってくるメールを ISO-2022-JP から EUC へ変換し、
-Mailman から出ていくメールは全て ISO-2022-JP へ変換する必要があり
-ます。このための変換プログラムを ja_toEuc.py および ja_toJis.py として
-用意しました。また、全てのメールが ja_toJis.py を経て出ていくように、
-ja_SMTPDirect.py を作りました。
+日本語のように、いくつかの文字集合が使われている言語は他にもある
+かもしれません。このため、標準文字集合(stdcharset)と別の文字集合
+(altcharset)を考慮して問題解決の一般化を試みます。
 
-Mailman/Handlers に ja_SMTPDirect.py, ja_toEuc.py, ja_toJis.py を
+このため、外部から入ってくるメールを altcharst から stdcharset へ変換し、
+Mailman から出ていくメールは全て email パッケージに準拠した文字集合へ
+へ変換する必要があります。
+このための変換プログラムを mc_Entry.py および Finish.py として
+用意しました。また、全てのメールが mc_Finish.py を経て出ていくように、
+mc_SMTPDirect.py を作りました。
+
+Mailman/Handlers に mc_SMTPDirect.py, mc_Entry.py, mc_Finish.py を
 入れてください。これらの最新版は http://mm.tkikuchi.net/ から
 ダウンロードできます。
 
-Mailman/mm_cfg.py に以下の３行を追加してください。
-
+Mailman/mm_cfg.py に以下の行を追加してください。
+##################################################################
 DEFAULT_SERVER_LANGUAGE = 'ja'
-GLOBAL_PIPELINE = [ 'ja_toEuc', ] + GLOBAL_PIPELINE
-DELIVERY_MODULE = 'ja_SMTPDirect'
+GLOBAL_PIPELINE = [ 'mc_Entry', ] + GLOBAL_PIPELINE
+DELIVERY_MODULE = 'mc_SMTPDirect'
+# for multi charset language
+def _(s):
+    return s
+LC_DESCRIPTIONS['ja'] = ( _('Japanese'),
+                          'euc-jp', ['iso-2022-jp', 'shift_jis'] )
+##################################################################
 
 以上で、メールの文字コード変換が出来るようになります。
-なお、通常の言語追加手続き、
-(source)/messages/ja と (source)/templates/ja 以下を 
-(prefix)/messages と (prefix)/templates にコピーするのを忘れない
-ようにしてください。(これらは make install で入るかもしれませんが)
 
 なお、templates/ja と messages/ja の最新版も上と同じく
  http://mm.tkikuchi.net/ からダウンロードできます。CVS が古いと
@@ -48,15 +53,19 @@ There is one problem in Japanese message handling; Web documents
 are best treated with EUC-JP charset, while Mail messages should
 be in ISO-2022-JP. Under the Mailman directory, I put programs
 for converting messages to EUC-JP/ISO-2022-JP.
+This approach was generalized for multi-charset languages; incoming
+mail may have alternative charset (altcharset) which will be converted
+to mailman standard charset (stdcharset) by mc_Entry.py and will
+be re-converted into the email-defined charset when going out.
 
-  Mailman +- mm.cfg.py (Add these lines in your config)
-          +- Handlers +- ja_SMTPDirect.py
-                      +- ja_toEuc.py
-                      +- ja_toJis.py
+  Mailman +- mm.cfg.py.add (Add these lines in your config)
+          +- Handlers +- mc_SMTPDirect.py
+                      +- mc_Entry.py
+                      +- mc_Finish.py
 
-Note that ja*.py are still buggy. (2002/03/26)
 
 Revised 2002/03/26
+Revised for multi-charset 2002/12/10
 
 Please visit http://mm.tkikuchi.net/ for more.
 
