@@ -76,10 +76,12 @@ class Digester:
 
 # Internal function, don't call this.
     def SaveForDigest(self, post):
-	# Add message to index, and to the digest.
-	# If the digest is large enough when we're done writing, send it out.
-	digest_file = open(os.path.join(self._full_path, "next-digest"), "a+")
-	topics_file = open(os.path.join(self._full_path, "next-digest-topics"), 
+	"""Add message to index, and to the digest.  If the digest is large
+	enough when we're done writing, send it out."""
+	digest_file = open(os.path.join(self._full_path, "next-digest"),
+			   "a+")
+	topics_file = open(os.path.join(self._full_path,
+					"next-digest-topics"), 
 			   "a+")
 	sender = self.QuoteMime(post.GetSenderName())
 	fromline = self.QuoteMime(post.getheader("from"))
@@ -103,11 +105,12 @@ class Digester:
 	self.SendDigestOnSize(0)
 
     def SendDigestOnSize(self, threshhold):
-	""""Call SendDigest if accumulated digest exceeds threshhold.
+	"""Call SendDigest if accumulated digest exceeds threshhold.
 
 	(There must be some content, even if threshhold is 0.)"""
 	try:
-	    size = os.stat(os.path.join(self._full_path, "next-digest"))[6]
+	    ndf = os.path.join(self._full_path, "next-digest")
+	    size = os.stat(ndf)[6]
 	    if size == 0:
 		return
 	    elif (size/1024.) >= threshhold:
@@ -115,7 +118,8 @@ class Digester:
 	except os.error, err:
 	    if err[0] == 2:
 		# No such file or directory
-		pass
+		self.LogMsg("system", "mm_digest lost digest file %s, %s",
+			    ndf, err)
 
 # If the mime separator appears in the text anywhere, throw a space on
 # both sides of it, so it doesn't get interpreted as a real mime separator.
@@ -138,9 +142,15 @@ class Digester:
 	recipients = filter(DeliveryEnabled, self.digest_members)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
-	digest_log = open('/tmp/digest.log', 'a+')
-	digest_log.write('%s digest %d log--\n' % (self.real_name, self.next_digest_number))
-	digest_log.write('%d total digesters.  %d w/ Delivery disabled. Of the rest, %d Like MIME.  %d Do not.\n' % (len(self.digest_members), len(self.digest_members) - len(recipients), len(mime_recipients), len(text_recipients)))
+	self.LogMsg("digest",
+		    '%s digest %d log--',
+		    self.real_name, self.next_digest_number)
+	self.LogMsg("digest",
+		    ('%d digesters, %d disabled.  '
+		     'Active: %d MIMEers, %d non.'),
+		    len(self.digest_members),
+		    len(self.digest_members) - len(recipients),
+		    len(mime_recipients), len(text_recipients))
 
     def SendDigest(self):
 	msg = mm_message.OutgoingMessage()
@@ -206,11 +216,19 @@ Date: %s
 	recipients = filter(DeliveryEnabled, self.digest_members)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
-	digest_log = open('/tmp/digest.log', 'a+')
-	digest_log.write('%s digest %d log--\n' % (self.real_name, self.next_digest_number))
-	digest_log.write('%d total digesters.  %d w/ Delivery disabled. Of the rest, %d Like MIME.  %d Do not.\n' % (len(self.digest_members), len(self.digest_members) - len(recipients), len(mime_recipients), len(text_recipients)))
+	self.LogMsg("digest",
+		    '%s digest %d log--',
+		    self.real_name, self.next_digest_number)
+	self.LogMsg("digest",
+		    ('%d digesters, %d disabled. '
+		     'Active: %d MIMEers, %d non.'),
+		    len(self.digest_members),
+		    len(self.digest_members) - len(recipients),
+		    len(mime_recipients),
+		    len(text_recipients))
 	self.DeliverToList(msg, mime_recipients, digest_header, 
-	                   digest_footer, remove_to=1, tmpfile_prefix = "mime.")
+	                   digest_footer, remove_to=1,
+			   tmpfile_prefix = "mime.")
 	msg.SetHeader('content-type', 'text/plain', crush_duplicates=1)
 	self.DeliverToList(msg, text_recipients, digest_header,
 			   digest_footer, remove_to=1)
