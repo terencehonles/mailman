@@ -43,6 +43,7 @@ class HTMLFormatter:
 
         # Remove the .Format() when htmlformat conversion is done.
         realname = self.real_name
+        hostname = self.host_name
         return Container(
             '<hr>',
             Address(
@@ -53,6 +54,9 @@ class HTMLFormatter:
                     Link(self.GetScriptURL('admin'),
                          _('%(realname)s administrative interface')),
                     _(' (requires authorization)'),
+                    '<br>',
+                    Link(Utils.ScriptURL('listinfo'),
+                         _('Overview of all %(hostname)s mailing lists')),
                     '<p>', MailmanLogo()))).Format()
 
     def FormatUsers(self, digest, lang=None):
@@ -212,6 +216,7 @@ class HTMLFormatter:
         else:
             checked = ''
         return '<input type=radio name="mime" value="1"%s>' % checked
+
     def FormatPlainDigestsButton(self):
         if self.mime_is_default_digest:
             checked = ''
@@ -220,27 +225,26 @@ class HTMLFormatter:
         return '<input type=radio name="plain" value="1"%s>' % checked
 
     def FormatEditingOption(self, lang):
-        "Present editing options, according to list privacy."
-
         if self.private_roster == 0:
             either = _('<b><i>either</i></b> ')
         else:
             either = ''
         realname = self.real_name
 
-        text = _('''To change your subscription (set options like digest
-        and delivery modes, get a reminder of your password, or unsubscribe
-        from %(realname)s) %(either)senter your subscription email address:
+        text = (_('''To unsubscribe from %(realname)s, get a password reminder,
+        or change your subscription options %(either)senter your subscription
+        email address:
         <p><center> ''')
-
-        text = (text
                 + TextBox('info', size=30).Format()
-                + "  "
-                + SubmitButton('UserOptions', _('Edit Options')).Format()
-                + "</center>")
+                + '  '
+                + SubmitButton('UserOptions',
+                               _('Unsubscribe or edit options')).Format()
+                + '</center>')
         if self.private_roster == 0:
-            text = text + _("<p>... <b><i>or</i></b> select your entry from "
-                             " the subscribers list (see above).")
+            text += _('''<p>... <b><i>or</i></b> select your entry from
+                      the subscribers list (see above).''')
+        text += _(''' If you leave the field blank, you will be prompted for
+        your email address''')
         return text
         
     def RestrictedListMessage(self, which, restriction):
