@@ -141,13 +141,13 @@ class MailCommandHandler:
 		conf_pat = (r'%s -- confirmation of subscription'
                             r' -- request (\d{6})'
                             % re.escape(self.real_name))
-		mo = re.search(conf_pat, subject)
+		mo = re.search(conf_pat, subject, re.IGNORECASE)
 		if not mo:
 		    mo = re.search(conf_pat, msg.body)
 		if mo:
 		    lines = ["confirm %s" % (mo.group(1))]
 		else:
-		    self.AddError("Subject line ignored: %s" % subject,
+		    self.AddError('Subject line ignored:\n' + subject,
                                   trunc=0)
         processed = {}                      # For avoiding redundancies.
         maxlines = mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES
