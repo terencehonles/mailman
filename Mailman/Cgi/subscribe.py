@@ -74,11 +74,11 @@ def main():
     #######
     # Preliminaries done, actual processing of the form input below.
 
-    if (form.has_key("UserOptions")
-          or (form.has_key("info") and not form.has_key("email"))):
-
+    if form.has_key("UserOptions") or \
+       form.has_key("info") and not \
+       form.has_key("email"):
+        # then
         # Go to user options section.
-
         if not form.has_key("info"):
             doc.AddItem(htmlformat.Header(2, "Error"))
             doc.AddItem(
