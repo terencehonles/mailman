@@ -101,6 +101,9 @@ def process(mlist, msg, msgdata):
         chunks = [recips]
     else:
         chunks = chunkify(recips, mm_cfg.SMTP_MAX_RCPTS)
+    # See if this is an unshunted message for which some were undelivered
+    if msgdata.has_key('undelivered'):
+        chunks = msgdata['undelivered']
     # If we're doing bulk delivery, then we can stitch up the message now.
     if deliveryfunc is None:
         Decorate.process(mlist, msg, msgdata)
@@ -110,11 +113,21 @@ def process(mlist, msg, msgdata):
     numsessions = mm_cfg.SMTP_MAX_SESSIONS_PER_CONNECTION
     # Open the initial connection
     origrecips = msgdata['recips']
+    # `undelivered' is a copy of chunks that we pop from to do deliveries.
+    # This seems like a good tradeoff between robustness and resource
+    # utilization.  If delivery really fails (i.e. qfiles/shunt type
+    # failures), then we'll pick up where we left off with `undelivered'.
+    # This means at worst, the last chunk for which delivery was attempted
+    # could get duplicates but not every one, and no recips should miss the
+    # message.
     conn = Connection()
     try:
-        for chunk in chunks:
+        msgdata['undelivered'] = chunks
+        while chunks:
+            chunk = chunks.pop()
             msgdata['recips'] = chunk
             deliveryfunc(mlist, msg, msgdata, envsender, refused, conn)
+        del msgdata['undelivered']
     finally:
         conn.quit()
         msgdata['recips'] = origrecips
