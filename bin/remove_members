@@ -31,13 +31,13 @@ Options:
     --all
     -a
         Remove all members of the mailing list.
-       (mutually exclusive with --fromall)
+        (mutually exclusive with --fromall)
 
     --fromall
-       Removes the given addresses from all the lists on this system
-       regardless of virtual domains if you have any.  This option cannot be
-       used -a/--all.  Also, you should not specify a listname when using this
-       option.
+        Removes the given addresses from all the lists on this system
+        regardless of virtual domains if you have any.  This option cannot be
+        used -a/--all.  Also, you should not specify a listname when using
+        this option.
 
     --nouserack
     -n
