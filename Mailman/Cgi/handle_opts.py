@@ -111,12 +111,6 @@ def main():
                              "please contact the list administrator!<p>")
             except Errors.MMBadPasswordError:
                 PrintResults("That password was incorrect.<p>")
-    #	except:
-    #	    PrintResults('''An unknown error occured.  <p>
-    #Please send mail to <a href=%s>%s</a> explaining 
-    #exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER,
-    #                                                 mm_cfg.MAILMAN_OWNER))
-
         PrintResults("You have been unsubscribed.<p>")
 
 
@@ -142,11 +136,6 @@ def main():
                 PrintResults("You seem to no longer be a list member.")
             except Errors.MMBadPasswordError:
                 PrintResults("Incorrect password.")
-            except:
-                PrintResults('''An unknown error occured.  <p>
-Please send mail to <a href=%s>%s</a> explaining 
-exactly what happened to provoke this error.<p>'''
-                             % (mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER))
 
             doc.AddItem(htmlformat.Header(2,
                                           "List Subscriptions for %s on %s"
@@ -188,11 +177,6 @@ exactly what happened to provoke this error.<p>'''
                 PrintResults("The old password you supplied was incorrect.")
             except Errors.MMPasswordsMustMatch:
                 PrintResults("Passwords must match.")
-            except:
-                PrintResults('''An unknown error occured.  <p>
-Please send mail to <a href=%s>%s</a> explaining 
-exactly what happened to provoke this error.<p>'''
-                             % (mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER))
 
             PrintResults("Your password has been changed.")
         else:
@@ -242,11 +226,6 @@ exactly what happened to provoke this error.<p>'''
                          % mail.GetSender())
         except Errors.MMBadPasswordError:
             PrintResults("You gave the wrong password.")
-        except:
-            PrintResults('''An unknown error occured.  <p>
-            Please send mail to <a href="mailto:%(owner)s">%(owner)s</a>
-            explaining exactly what happened to provoke this error.<p>'''
-                         % {'owner': mm_cfg.MAILMAN_OWNER})
 
         list.SetUserOption(user, mm_cfg.DisableDelivery, disable_mail)
         list.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
