@@ -95,7 +95,7 @@ class SecurityManager:
         c = Cookie.Cookie()
         c[key] = [client_ip, issued, expires, mac]
         # place in oven,
-        path = urlparse(mm_cfg.DEFAULT_URL)[2] # '/mailman'
+        path = urlparse(self.web_page_url)[2] # '/mailman'
         c[key]['path'] = path
         # and bake until golden brown
         c[key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
