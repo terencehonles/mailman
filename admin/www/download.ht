@@ -65,9 +65,9 @@ gcc 2.8.1 or later is known to work well.
 <h3>Downloading</h3>
 
 <p>Version
-(<!-VERSION--->2.0rc3<!-VERSION--->,
+(<!-VERSION--->2.0<!-VERSION--->,
 released on
-<!-DATE--->Nov 16 2000<!-DATE--->)
+<!-DATE--->Nov 21 2000<!-DATE--->)
 is the current GNU release.  It is available from the following mirror sites:
 
 <ul>
@@ -98,3 +98,4 @@ Note also that some versions of <code>tar</code> don't accept the
 % gunzip -c mailman.tar.gz | tar xf -
 </pre>
 </blockquote>
+e>
