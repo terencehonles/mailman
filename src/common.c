@@ -23,7 +23,6 @@
 #define SCRIPTDIR PREFIX ## "/scripts/"	     /* trailing slash */
 #define MODULEDIR PREFIX		     /* no trailing slash */
 
-const char* prefixdir = PREFIX;
 const char* scriptdir = SCRIPTDIR;
 const char* moduledir = MODULEDIR;
 char* python = PYTHON;
