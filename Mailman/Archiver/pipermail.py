@@ -230,10 +230,10 @@ class Article:
                 date = time.mktime(date) - tzoffset
             except (ValueError, OverflowError):
                 date = self._last_article_time + 1
-                print 'Article with bad date:', self.msgid
+                #print 'Article with bad date:', self.msgid
 	else:
 	    date = self._last_article_time + 1
-            print 'Article without date:', self.msgid
+            #print 'Article without date:', self.msgid
 	    
 	self._last_article_time = date 
 	self.date = '%011i' % date
