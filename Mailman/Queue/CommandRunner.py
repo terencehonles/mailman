@@ -23,6 +23,9 @@
 
 
 
+# BAW: get rid of this when we Python 2.2 is a minimum requirement.
+from __future__ import nested_scopes
+
 import re
 
 from Mailman import mm_cfg
@@ -54,25 +57,29 @@ class CommandRunner(Runner):
         # mylist-join, or mylist-leave, and the message metadata will contain
         # a key to which one was used.  BAW: The tojoin and toleave actions
         # are hacks!
+        def parsecmd():
+            try:
+                mlist.ParseMailCommands(msg, msgdata)
+            except LockFile.TimeOutError:
+                # We probably could not get the lock on the pending
+                # database.  That's okay, we'll just try again later.
+                return 1
+            return 0
         try:
+            status = 0
             if msgdata.get('torequest'):
                 # Just pass the message off the command handler
-                mlist.ParseMailCommands(msg, msgdata)
+                status = parsecmd()
             elif msgdata.get('tojoin'):
                 del msg['subject']
                 msg['Subject'] = 'join'
                 msg.set_payload('')
-                mlist.ParseMailCommands(msg, msgdata)
+                status = parsecmd()
             elif msgdata.get('toleave'):
                 del msg['subject']
                 msg['Subject'] = 'leave'
                 msg.set_payload('')
-                try:
-                    mlist.ParseMailCommands(msg, msgdata)
-                except LockFile.TimeOutError:
-                    # We probably could not get the lock on the pending
-                    # database.  That's okay, we'll just try again later.
-                    return 1
+                status = parsecmd()
             elif msgdata.get('toconfirm'):
                 mo = re.match(mm_cfg.VERP_CONFIRM_REGEXP, msg.get('to', ''))
                 if mo:
@@ -81,7 +88,8 @@ class CommandRunner(Runner):
                     # command handling.
                     del msg['subject']
                     msg['Subject'] = 'confirm ' + mo.group('cookie')
-                mlist.ParseMailCommands(msg, msgdata)
+                status = parsecmd()
             mlist.Save()
+            return status
         finally:
             mlist.Unlock()
