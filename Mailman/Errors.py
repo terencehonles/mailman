@@ -125,9 +125,6 @@ class HoldMessage(HandlerError):
 class DiscardMessage(HandlerError):
     """The message can be discarded with no further action"""
 
-class RejectMessage(HandlerError):
-    """The message will be bounced back to the sender"""
-
 class SomeRecipientsFailed(HandlerError):
     """Delivery to some or all recipients failed"""
     def __init__(self, tempfailures, permfailures):
@@ -138,3 +135,13 @@ class SomeRecipientsFailed(HandlerError):
 # multiple inheritance for backwards compatibility
 class LoopError(DiscardMessage, MMLoopingPost):
     """We've seen this message before"""
+
+class RejectMessage(HandlerError):
+    """The message will be bounced back to the sender"""
+    def __init__(self, notice=None):
+        if notice is None:
+            notice = Mailman.i18n._('Your message was rejected')
+        self.__notice = notice
+
+    def notice(self):
+        return self.__notice
