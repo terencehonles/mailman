@@ -550,7 +550,7 @@ def FormatMembershipOptions(lst):
                                          member)
         cells = [mtext + "<input type=hidden name=user value=%s>" % (member),
                  Center(CheckBox(member + "_subscribed", "on", 1).Format())]
-        for opt in ("hide", "nomail", "ack", "norcv"):
+        for opt in ("hide", "nomail", "ack", "notmetoo"):
             if lst.GetUserOption(member, MailCommandHandler.option_info[opt]):
                 value = "on"
                 checked = 1
@@ -862,12 +862,13 @@ def ChangeOptions(lst, category, cgi_info, document):
                     del lst.members[user]
                     dirty = 1
                 
-            for opt in ("hide", "nomail", "ack", "norcv", "plain"):
+            for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
+                okey = MailCommandHandler.option_info[opt]
                 if cgi_info.has_key("%s_%s" % (user, opt)):
-                    lst.SetUserOption(user, MailCommandHandler.option_info[opt], 1)
+                    lst.SetUserOption(user, okey, 1)
                     dirty = 1
                 else:
-                    lst.SetUserOption(user, MailCommandHandler.option_info[opt], 0)
+                    lst.SetUserOption(user, okey, 0)
                     dirty = 1
 
 
