@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -284,7 +284,7 @@ def main():
                              _('Addresses did not match!'))
                 print doc.Format()
                 return
-            if newaddr == user:
+            if newaddr == cpuser:
                 options_page(mlist, doc, user, cpuser, userlang,
                              _('You are already using that email address'))
                 print doc.Format()
@@ -324,12 +324,14 @@ address.  Upon confirmation, any other mailing list containing the address
 
         signal.signal(signal.SIGTERM, sigterm_handler)
         if set_address:
+            if cpuser is None:
+                cpuser = user
             # Register the pending change after the list is locked
             msg += _('A confirmation message has been sent to %(newaddr)s. ')
             mlist.Lock()
             try:
                 try:
-                    mlist.ChangeMemberAddress(user, newaddr, globally)
+                    mlist.ChangeMemberAddress(cpuser, newaddr, globally)
                     mlist.Save()
                 finally:
                     mlist.Unlock()
