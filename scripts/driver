@@ -19,6 +19,7 @@
 # This better succeed.  If this fails, Python is royally screwed so we might
 # as well let the Web server give us a fatal and obtrusive error.
 import sys
+from Mailman.Utils import reraise
 
 # From here on we are as bulletproof as possible!
 
@@ -38,10 +39,8 @@ def open(filename, mode='r', bufsize=-1, realopen=realopen):
         e.strerror = strerror
         e.filename = filename
         e.args = (e.args[0], strerror)
-        # Python 1.5
-        raise e, None, sys.exc_info()[2]
-        # Python 1.5.1
-        #raise
+        reraise(e)
+
 import __builtin__
 __builtin__.__dict__['open'] = open
 
