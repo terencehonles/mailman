@@ -41,7 +41,7 @@ patterns = [
     # sz-sb.de, corridor.com, nfg.nl
     (_c('the following addresses had'),
      _c('transcript of session follows'),
-     _c(r'<(?P<addr>[^>]*)>|\(expanded from: (?P<addr>[^)]*)\)')),
+     _c(r'<(?P<fulladdr>[^>]*)>|\(expanded from: (?P<addr>[^)]*)\)')),
     # robanal.demon.co.uk
     (_c('this message was created automatically by mail delivery software'),
      _c('original message follows'),
@@ -53,7 +53,7 @@ patterns = [
     # Smail
     (_c('failed addresses follow:'),
      _c('message text follows:'),
-     _c('<(?P<addr>[^>]*)>|\s*(?P<addr>\S+@\S+)')),
+     _c(r'\s*(?P<addr>\S+@\S+)')),
     # newmail.ru
     (_c('This is the machine generated message from mail service.'),
      _c('--- Below the next line is a copy of the message.'),
