@@ -19,7 +19,9 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
+#ifdef HAVE_SYSLOG_H
 #include <syslog.h>
+#endif /* HAVE_SYSLOG_H */
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -45,7 +47,7 @@ extern const char* logident;
 #define EXECVE_FAILURE 4
 #define MAIL_USAGE_ERROR 5
 #define MAIL_ILLEGAL_COMMAND 6
-
+#define ADDALIAS_USAGE_ERROR 7
 
 
 /*

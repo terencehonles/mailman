@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1467 $)
+AC_REVISION($Revision: 1651 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -357,8 +357,14 @@ AC_MSG_RESULT($URL)
 rm -f conftest.out conftest.py
 
 # Checks for libraries.
-AC_CHECK_FUNCS(strerror)
-AC_CHECK_FUNCS(setregid)
+AC_CHECK_FUNCS(strerror setregid syslog)
+if test $ac_cv_func_syslog = no; then
+  # syslog is not in the default libraries.  See if it's in some other.
+  for lib in bsd socket inet; do
+    AC_CHECK_LIB($lib, syslog, [AC_DEFINE(HAVE_SYSLOG)
+      LIBS="$LIBS -l$lib"; break])
+  done
+fi
 
 # Checks for header files.
 AC_HEADER_STDC

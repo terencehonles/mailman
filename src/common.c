@@ -65,12 +65,14 @@ fatal(const char* ident, int exitcode, const char* format, ...)
 	vsprintf(log_entry, format, arg_ptr);
 	va_end(arg_ptr);
 
+#ifdef HAVE_SYSLOG
 	/* Write to the console, maillog is often mostly ignored, and root
 	 * should definitely know about any problems.
 	 */
 	openlog(ident, LOG_CONS, LOG_MAIL);
 	syslog(LOG_ERR, "%s", log_entry);
 	closelog();
+#endif /* HAVE_SYSLOG */
 
 #ifdef HELPFUL
 	/* If we're running as a CGI script, we also want to write the log
