@@ -465,3 +465,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._lock_file.lock('u')
 	self._lock_file.close()
 	self._lock_file = None
+
+def all_listpaths():
+    """Return the paths to all lists in default list directory."""
+    got = []
+    for prospect in os.listdir(mm_cfg.LIST_DATA_DIR):
+	it = os.path.join(mm_cfg.LIST_DATA_DIR, prospect)
+	if os.path.isdir(it):
+	    got.append(it)
+    return got
+	    
