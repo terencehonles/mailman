@@ -112,7 +112,7 @@ def FormatListinfoOverview(error=None):
 	    greeting,
             "<p>"
             " Below is the collection of publicly-advertised ",
-            Link(mm_cfg.MAILMAN_URL, "mailman"),
+            Link(mm_cfg.MAILMAN_URL, "Mailman"),
             " mailing lists on %s." % host_name,
             (' Click on a list name to visit the info page'
              ' for that list.  There you can learn more about the list,'
