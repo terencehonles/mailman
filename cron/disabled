@@ -23,9 +23,9 @@ delivery is disabled.  If they have been disabled due to bounces, they will
 receive another notification, or they may be removed if they've received the
 maximum number of notifications.
 
-Use the --byadmin, --byuser, and --unknown flags to also send notifications
-to users whose accounts have been disabled for those reasons.  Use --all to
-send the notification to all disabled users.
+Use the --byadmin, --byuser, and --unknown flags to also send notifications to
+members whose accounts have been disabled for those reasons.  Use --all to
+send the notification to all disabled members.
 
 Usage: %(PROGRAM)s [options]
 
@@ -34,22 +34,26 @@ Options:
         Print this message and exit.
 
     -o / --byadmin
-        Also send notifications to any user disabled by the list
+        Also send notifications to any member disabled by the list
         owner/administrator.
 
     -m / --byuser
-        Also send notifications to any user disabled by themselves (member).
+        Also send notifications to any member disabled by themselves.
 
     -u / --unknown
-        Also send notifications to any user disabled for unknown reasons
+        Also send notifications to any member disabled for unknown reasons
         (usually a legacy disabled address).
 
     -b / --notbybounce
-        Don't send notifications to users disabled because of bounces (the
+        Don't send notifications to members disabled because of bounces (the
         default is to notify bounce disabled members).
 
     -a / --all
-        Send notifications to all disabled users.
+        Send notifications to all disabled members.
+
+    -f / --force
+        Send notifications to disabled members even if they're not due a new
+        notification yet.
 
     -l listname
     --listname=listname
@@ -92,15 +96,16 @@ def usage(code, msg=''):
 def main():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'hl:omuba',
+            sys.argv[1:], 'hl:omubaf',
             ['byadmin', 'byuser', 'unknown', 'notbybounce', 'all',
-             'listname=', 'help'])
+             'listname=', 'help', 'force'])
     except getopt.error, msg:
         usage(1, msg)
 
     if args:
         usage(1)
 
+    force = 0
     listnames = []
     who = [MemberAdaptor.BYBOUNCE]
     for opt, arg in opts:
@@ -123,6 +128,8 @@ def main():
         elif opt in ('-a', '--all'):
             who = [MemberAdaptor.BYBOUNCE, MemberAdaptor.BYADMIN,
                    MemberAdaptor.BYUSER, MemberAdaptor.UNKNOWN]
+        elif opt in ('-f', '--force'):
+            force = 1
 
     who = tuple(who)
 
@@ -181,7 +188,7 @@ def main():
                                     member))
                     mlist.setBounceInfo(member, info)
                 lastnotice = time.mktime(info.lastnotice + (0,) * 6)
-                if today >= lastnotice + interval:
+                if force or today >= lastnotice + interval:
                     notify.append(member)
             # Now, send notifications to anyone who is due
             for member in notify:
