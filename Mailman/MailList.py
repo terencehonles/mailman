@@ -223,6 +223,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     #
     def InitTempVars(self, name):
         """Set transient variables of this and inherited classes."""
+        # The timestamp is set whenever we load the state from disk.  If our
+        # timestamp is newer than the modtime of the config.pck file, we don't
+        # need to reload, otherwise... we do.
+        self.__timestamp = 0
         self.__lock = LockFile.LockFile(
             os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
             # TBD: is this a good choice of lifetime?
@@ -447,6 +451,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
         os.rename(fname_tmp, fname)
+        # Reset the timestamp
+        self.__timestamp = os.path.getmtime(fname)
 
     def Save(self):
         # Refresh the lock, just to let other processes know we're still
@@ -486,7 +492,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         elif dbfile.endswith('.pck') or dbfile.endswith('.pck.last'):
             loadfunc = cPickle.load
         else:
-            assert 0
+            assert 0, 'Bad database file name'
+        mtime = os.path.getmtime(dbfile)
+        if mtime <= self.__timestamp:
+            # File is not newer
+            return None, None
         try:
             fp = open(dbfile)
         except IOError, e:
@@ -502,6 +512,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 return None, e
         finally:
             fp.close()
+        # Update timestamp
+        self.__timestamp = mtime
         return dict, None
 
     def Load(self, check_version=1):
@@ -521,10 +533,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         for file in (pfile, plast, dfile, dlast):
             dict, e = self.__load(file)
             if dict is None:
-                # Had problems with this file; log it and try the next one.
-                syslog('error',
-                       '%s config file was corrupt, trying fallback: %s',
-                       self.internal_name(), file)
+                if e is not None:
+                    # Had problems with this file; log it and try the next one.
+                    syslog('error', "couldn't load config file %s\n%s",
+                           file, e)
+                else:
+                    # We already have the most up-to-date state
+                    return
             else:
                 break
         else:
