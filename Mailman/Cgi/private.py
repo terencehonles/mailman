@@ -118,7 +118,8 @@ def isAuthenticated(list_name):
         raise SystemExit
     try:
 	listobj.ConfirmUserPassword( username, password)
-    except (Errors.MMBadUserError, Errors.MMBadPasswordError): 
+    except (Errors.MMBadUserError, Errors.MMBadPasswordError,
+            Errors.MMNotAMemberError): 
 	return 0
 
     token = `hash(list_name)`
