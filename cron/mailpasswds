@@ -142,7 +142,15 @@ def main():
                     continue
                 # Group by the lower-cased address, since Mailman always
                 # treates person@dom.ain the same as PERSON@dom.ain.
-                password = mlist.getMemberPassword(member)
+                try:
+                    password = mlist.getMemberPassword(member)
+                except Errors.NotAMemberError:
+                    # Here's a member with no passwords, which I think was
+                    # possible in older versions of Mailman.  Log this and
+                    # move on.
+                    syslog('error', 'password-less member %s for list %s',
+                           member, mlist.internal_name())
+                    continue
                 optionsurl = mlist.GetOptionsURL(member)
                 lang = mlist.getMemberLanguage(member)
                 info = (listaddr, password, optionsurl, lang)
