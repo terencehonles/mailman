@@ -309,6 +309,15 @@ configure and install the Mailman software.
               NOTE: any aliases newaliases spits out will need to be
               adjusted to point to the secure link to the wrapper.
 
+    Problem:  I messed up when I called configure.  How do I clean
+              things up and re-install?
+
+    Solution: % make clean
+              % ./configure --with-the-right-options
+              % make install
+
+
+
 
 Local Variables:
 mode: indented-text
