@@ -48,8 +48,9 @@ from mm_gateway import GatewayManager
 
 class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
 	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager):
-    def __init__(self, name=None):
+    def __init__(self, name=None, lock=1):
 	MailCommandHandler.__init__(self)
+	self._tmp_lock = lock
 	self._internal_name = name
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
@@ -537,7 +538,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	file.close()
 
     def Load(self):
-	self.Lock()
+	if self._tmp_lock:
+	   self.Lock()
 	try:
 	    file = open(os.path.join(self._full_path, 'config.db'), 'r')
 	except IOError:
@@ -836,6 +838,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.SaveForDigest(msg)
 	if self.archive:
 	    self.ArchiveMail(msg)
+	if self.gateway_to_news:
+	    self.SendMailToNewsGroup(msg)
 
 	dont_send_to_sender = 0
 	ack_post = 0
@@ -853,9 +857,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
 	recipients = filter(DeliveryEnabled, recipients)
-	self.DeliverToList(msg, recipients,
-			   self.msg_header % self.__dict__,
-			   self.msg_footer % self.__dict__)
+	self.DeliverToList(msg, recipients, 
+			   header = self.msg_header % self.__dict__,
+			   footer = self.msg_footer % self.__dict__)
 	if ack_post:
 	    self.SendPostAck(msg, sender)
 	self.last_post_time = time.time()
