@@ -1118,9 +1118,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             beentheres = map(lambda x: string.split(x, ": ")[1][:-1],
                              msg.getallmatchingheaders('x-beenthere'))
             if self.GetListEmail() in beentheres:
-                self.AddRequest('post', Utils.SnarfMessage(msg),
-                                Errors.LOOPING_POST,
-                                msg.getheader('subject'))
+                # Exit from scripts/post - no longer held
+                raise Errors.MMLoopingPost
 	    if len(self.forbidden_posters):
                 forbidden_posters = Utils.List2Dict(self.forbidden_posters)
 		addrs = Utils.FindMatchingAddresses(sender, forbidden_posters)

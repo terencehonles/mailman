@@ -34,7 +34,7 @@ import paths
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
-from Mailman.Utils import maketext
+from Mailman import Utils
 from Mailman.Logging.Utils import LogStdErr
 
 LogStdErr("error", "post")
@@ -42,14 +42,14 @@ LogStdErr("error", "post")
 # Only let one program run at once per list.
 
 # TODO: This can fail, and should send back an error message when it does.
-current_list = MailList.MailList(sys.argv[1])
+mlist = MailList.MailList(sys.argv[1])
 if len(sys.argv) > 2:
     # assert sys.argv[1] == 'fromusenet'
     fromusenet = 1
 else:
     fromusenet = 0
 try:
-    prog = current_list.filter_prog
+    prog = mlist.filter_prog
     if prog:
 	import os, __main__
 	file = os.path.join(paths.prefix, 'filters', prog)
@@ -70,28 +70,37 @@ try:
     # more of a PITA for the list owner.
     msg.fromusenet = fromusenet
     try:
-	current_list.Post(msg, approved=fromusenet)
+	mlist.Post(msg, approved=fromusenet)
+    except Errors.MMLoopingPost:
+        # let the list admin know this happened, but don't otherwise hold the
+        # message for approval.
+        sys.stderr.write('Message already came through this list\n')
+        map(sys.stderr.write, msg.headers)
+        sys.stderr.write('[body of message suppressed]\n')
+        mlist.SendTextToUser(
+            subject='Message loop detected [message discarded]',
+            text=Utils.SnarfMessage(msg)[1],
+            recipient=mlist.GetAdminEmail())
     except Errors.MMNeedApproval, err_msg:
-	if (current_list.dont_respond_to_post_requests
+	if (mlist.dont_respond_to_post_requests
             or err_msg == Errors.MODERATED_LIST_MSG):
             # Do not send hold-for-approval notices for moderated messages.
-            current_list.Unlock()
+            mlist.Unlock()
 	    sys.exit(0)
-            
 	the_sender = msg.GetSender()
 	subj = msg.getheader('subject')
 	if not subj:
 	    subj = '[no subject]'
-        body = maketext(
+        body = Utils.maketext(
             'postheld.txt',
-            {'list_name': current_list.real_name,
+            {'list_name': mlist.real_name,
              'subject'  : subj,
              'reason'   : err_msg,
              })
-	current_list.SendTextToUser( subject = 'Mail sent to %s' % 
-	                                         current_list.real_name,
-				     recipient = the_sender,
-	     			     text = body)
+	mlist.SendTextToUser(
+            subject = 'Mail sent to %s' % mlist.real_name,
+            recipient = the_sender,
+            text = body)
 # Let another process run.
 finally:
-    current_list.Unlock()
+    mlist.Unlock()
