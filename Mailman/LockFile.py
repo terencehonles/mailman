@@ -24,6 +24,7 @@ to link() to the lock file.
 
 import socket, os, time
 import string
+import errno
 #from stat import ST_NLINK
 ST_NLINK = 3                                      # faster
 
@@ -56,6 +57,10 @@ class TimeOutError(LockError):
     """Raised when a lock was attempted, but did not succeed in the given
     amount of time.
     """
+    pass
+
+class StaleLockFileError(LockError):
+    """Raised when a stale hardlink lock file was found."""
     pass
 
 
@@ -242,7 +247,26 @@ class LockFile:
                 except os.error:
                     # winner lockfile could be missing
                     pass
-                os.unlink(self.__tmpfname)
+                try:
+                    os.unlink(self.__tmpfname)
+                except os.error, (code, msg):
+                    # Let's say we stole the lock, but some other process's
+                    # claim was never cleaned up, perhaps because it crashed
+                    # before that could happen.  The test for acquisition of
+                    # the lock above will fail because there will be more than
+                    # one hard link to the main lockfile.  But we'll get here
+                    # and winner==self.__tmpfname, so the unlink above will
+                    # fail (we'll have deleted it twice).  We could just steal
+                    # the lock, but there's no reliable way to clean up the
+                    # stale hard link, so we raise an exception instead and
+                    # let the human operator take care of the problem.
+                    if code == errno.ENOENT:
+                        raise StaleLockFileError(
+                            'Stale lock file found linked to file: '
+                            +self.__lockfile+' (requires '+
+                            'manual intervention)')
+                    else:
+                        raise
                 continue
             # okay, someone else has the lock, we didn't steal it, and our
             # claim hasn't timed out yet.  So let's wait a while for the owner
