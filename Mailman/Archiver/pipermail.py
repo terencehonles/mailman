@@ -24,6 +24,9 @@ CACHESIZE = 100    # Number of slots in the cache
 # Use our optimized version, which will probably be included in Python 2.0
 from Mailman.Mailbox import Mailbox
 
+# for faking out i18n
+def _(s): return s
+
 
 
 msgid_pat = re.compile(r'(<.*>)')
