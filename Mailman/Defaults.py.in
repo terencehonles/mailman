@@ -97,6 +97,10 @@ MAX_SPAWNS        = 40
 #
 SMTP_MAX_RCPTS = 500
 
+#
+# Command for direct command pipe delivery to sendmail compatible program
+SENDMAIL_CMD = '/usr/lib/sendmail'
+
 
 # 1 to use crypt for passwords instead of md5.
 # Crypt may not work on all python installs.
@@ -261,6 +265,11 @@ ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
 # dropped.
 PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
+# Request types requiring admin approval
+HELDMSG = 1
+SUBSCRIPTION = 2
+
+
 # how many members to display at a time on the admin cgi to unsubscribe
 # them or change their options.
 DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
@@ -321,8 +330,8 @@ TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
 PUBLIC_ARCHIVE_FILE_DIR 	= os.path.join(PREFIX, 'archives/public')
 PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 
-# The Mailman version, also set by configure
-VERSION           = "1.1"
+# The Mailman version
+from Version import VERSION
 
 # Data file version number
 DATA_FILE_VERSION = 15
