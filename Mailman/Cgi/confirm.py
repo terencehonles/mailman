@@ -91,16 +91,14 @@ def bad_confirmation(doc, extra=''):
 
 
 
-def success(mlist, doc, op, data):
+def success(mlist, doc, op, addr, password=None, digest=None, lang=None):
     listname = mlist.real_name
     # Different title based on operation performed
     if op == Pending.SUBSCRIPTION:
         title = _('Subscription request confirmed')
-        addr, password, digest, lang = data
     # Current only one other operation
     else:
         title = _('Removal request confirmed')
-        addr = data
         lang = mlist.GetPreferredLanguage(addr)
     # Use the user's preferred language
     i18n.set_language(lang)
