@@ -236,7 +236,7 @@ def PrintPostRequest(val, form):
         ])
     t.AddRow([
 	FontSize("+1", Bold('If you reject this post, explain (optional):')),
-	TextBox("comment-%d" % val[0], size=50)
+	TextArea("comment-%d" % val[0], "", 3, 50)
         ])
 
     cur_row = t.GetCurrentRowIndex()
