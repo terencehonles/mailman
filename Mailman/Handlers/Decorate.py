@@ -84,8 +84,10 @@ def process(mlist, msg, msgdata):
         payload = msg.get_payload()
         if not isinstance(payload, ListType):
             payload = [payload]
-        payload.append(mimeftr)
-        payload.insert(0, mimehdr)
+        if footer:
+            payload.append(mimeftr)
+        if header:
+            payload.insert(0, mimehdr)
         msg.set_payload(payload)
     elif msg.get_main_type() <> 'multipart':
         # Okay, we've got some 'image/*' or 'audio/*' -like type.  For now, we
