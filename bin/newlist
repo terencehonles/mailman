@@ -10,7 +10,7 @@ immediately.  Otherwise, the script hangs pending input, to give time for
 the person creating the list to customize it before sending the admin an
 email notice about the existence of the new list."""
 
-__version__ = "$Revision: 515 $"
+__version__ = "$Revision: 548 $"
 
 ADDALIASES_CMD = '/home/mailman/mailman/bin/addaliases'
 
@@ -25,6 +25,12 @@ def main(argv):
 	list_name = argv[1]
     else:
 	list_name = string.lower(raw_input("Enter the name of the list: "))
+
+    if '@' in list_name:
+	sys.stderr.write("** List name must not include '@': %s\n"
+			 % `list_name`)
+	sys.stderr.write("   (It's the list name, not address.)\n")
+	return 1
 
     if list_name in mm_utils.list_names():
 	sys.stderr.write("** List with name %s already exists\n" % `list_name`)
