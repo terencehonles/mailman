@@ -27,6 +27,8 @@ from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
 
+COMMASPACE = ', '
+
 
 
 class BounceRunner(Runner):
@@ -95,6 +97,7 @@ class BounceRunner(Runner):
         # the bounces for each of these.  If the bounce came to the site list,
         # then we'll register the address on every list in the system, but
         # note: this could be VERY resource intensive!
+        foundp = 0
         if mlist.internal_name() == mm_cfg.MAILMAN_SITE_LIST:
             for listname in Utils.list_names():
                 xlist = self._open_list(listname)
@@ -111,7 +114,7 @@ class BounceRunner(Runner):
                             unlockp = 1
                         try:
                             xlist.registerBounce(addr, msg)
-                            found = 1
+                            foundp = 1
                             xlist.Save()
                         finally:
                             if unlockp:
@@ -121,13 +124,22 @@ class BounceRunner(Runner):
                 mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
             except LockFile.TimeOutError:
                 # Oh well, forget about this bounce
-                return
-            try:
-                for addr in addrs:
-                    mlist.registerBounce(addr, msg)
-                mlist.Save()
-            finally:
-                mlist.Unlock()
+                pass
+            else:
+                try:
+                    for addr in addrs:
+                        if mlist.isMember(addr):
+                            mlist.registerBounce(addr, msg)
+                            foundp = 1
+                    mlist.Save()
+                finally:
+                    mlist.Unlock()
+        if not foundp:
+            # It means an address was recognized but it wasn't an address
+            # that's on any mailing list at this site.  BAW: don't forward
+            # these, but do log it.
+            syslog('bounce', 'bounce message with non-members: %s',
+                   COMMASPACE.join(addrs))
 
 
 
