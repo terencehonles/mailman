@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -629,8 +629,9 @@ def process_form(mlist, doc, cgidata):
             request_id = int(k)
         except ValueError:
             continue
-        if v not in (mm_cfg.DEFER, mm_cfg.APPROVE,
-                     mm_cfg.REJECT, mm_cfg.DISCARD):
+        if v not in (mm_cfg.DEFER, mm_cfg.APPROVE, mm_cfg.REJECT,
+                     mm_cfg.DISCARD, mm_cfg.SUBSCRIBE, mm_cfg.UNSUBSCRIBE,
+                     mm_cfg.ACCEPT, mm_cfg.HOLD):
             continue
         # Get the action comment and reasons if present.
         commentkey = 'comment-%d' % request_id
