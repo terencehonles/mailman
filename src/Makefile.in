@@ -45,7 +45,7 @@ CGI_GID=	@CGI_GID@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 CGIDIR= 	$(exec_prefix)/cgi-bin
-CGIEXT=		@CGIEXT@
+CGIEXT=		
 MAILDIR=	$(exec_prefix)/mail
 
 SHELL=		/bin/sh
