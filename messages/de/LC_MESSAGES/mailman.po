@@ -1,79 +1,78 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Deutsche Uebersetzung der MailMan messages
+# Jens Vagelpohl <jens@zope.com>, 2001.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: Fri Aug 17 22:12:49 2001\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: Jens Vagelpohl <jens@zope.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.4\n"
 
 
 #: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
 msgid "No subject"
-msgstr ""
+msgstr "Kein Bezug"
 
 #: Mailman/Archiver/pipermail.py:264
 msgid "Creating archive directory "
-msgstr ""
+msgstr "Archiv-Verzeichnis wird erstellt"
 
 #: Mailman/Archiver/pipermail.py:276
 msgid "Reloading pickled archive state"
-msgstr ""
+msgstr "Vorheriger Archivzustand wird geladen"
 
 #: Mailman/Archiver/pipermail.py:303
 msgid "Pickling archive state into "
-msgstr ""
+msgstr "Schreibe Archivzustand in Datei "
 
 #: Mailman/Archiver/pipermail.py:414
 msgid "Updating index files for archive [%(archive)s]"
-msgstr ""
+msgstr "Index-Dateien fuer Archiv [%(archive)s] werden aktualisiert"
 
 #: Mailman/Archiver/pipermail.py:448
 msgid "  Thread"
-msgstr ""
+msgstr "  Diskussionsfaden"
 
 #: Mailman/Bouncer.py:158 Mailman/Bouncer.py:162
 msgid "disabled"
-msgstr ""
+msgstr "abgeschaltet"
 
 #: Mailman/Bouncer.py:168
 msgid "removed"
-msgstr ""
+msgstr "entfernt"
 
 #: Mailman/Bouncer.py:173
 msgid "not "
-msgstr ""
+msgstr " nicht "
 
 #: Mailman/Bouncer.py:191
 msgid "BUT:        %(succeeded)s"
-msgstr ""
+msgstr "ABER:        %(succeeded)s"
 
 #: Mailman/Bouncer.py:220
 msgid "[original message unavailable]"
-msgstr ""
+msgstr "[Originalnachricht nicht verfuegbar]"
 
 #: Mailman/Bouncer.py:241
 msgid "%(rname)s member %(addr)s bouncing - %(negative)s%(did)s"
-msgstr ""
+msgstr "%(rname)s Mitglied %(addr)s kommt zurueck - %(negative)s%(did)s"
 
 #: Mailman/Bouncer.py:253 Mailman/Bouncer.py:280
 msgid "User not found."
-msgstr ""
+msgstr "Benutzer nicht gefunden."
 
 #: Mailman/Cgi/Auth.py:46
 msgid "Moderator"
-msgstr ""
+msgstr "Moderator"
 
 #: Mailman/Cgi/Auth.py:48
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 #: Mailman/Cgi/admin.py:66 Mailman/Cgi/admindb.py:60 Mailman/Cgi/confirm.py:52
 #: Mailman/Cgi/edithtml.py:65 Mailman/Cgi/listinfo.py:49
@@ -81,12 +80,12 @@ msgstr ""
 #: Mailman/Cgi/rmlist.py:60 Mailman/Cgi/roster.py:55
 #: Mailman/Cgi/subscribe.py:57
 msgid "No such list <em>%(listname)s</em>"
-msgstr ""
+msgstr "Keine Liste mit Namen <em>%(listname)s</em> vorhanden."
 
 #: Mailman/Cgi/admin.py:81 Mailman/Cgi/admindb.py:76
 #: Mailman/Cgi/edithtml.py:83 Mailman/Cgi/private.py:121
 msgid "Authorization failed."
-msgstr ""
+msgstr "Zugang verweigert."
 
 #: Mailman/Cgi/admin.py:165
 msgid ""
@@ -96,12 +95,19 @@ msgid ""
 "                non-digest delivery or your mailing list will basically be\n"
 "                unusable."
 msgstr ""
+"Sie haben die Sendung sowohl der Nachrichten als auch\n"
+"               der Zusammenfassungen abgestellt. Damit ist diese Liste\n"
+"               unbrauchbnar fuer Sie. Bitte waehlen Sie den Versand der\n"
+"               Zusammenfassungen oder der individuellen Nachrichten."
 
 #: Mailman/Cgi/admin.py:174
 msgid ""
 "You have digest members, but digests are turned\n"
 "                off. Those people will not receive mail."
 msgstr ""
+"Sie haben Mitglieder, die den Zusammenfassungs-Modus gewaehlt haben, aber\n"
+"               der Zusammenfassungs-Modus ist nicht freigegeben. Diese\n"
+"               Mitglieder bekommen somit keine Nachrichten."
 
 #: Mailman/Cgi/admin.py:179
 msgid ""
@@ -109,24 +115,30 @@ msgid ""
 "                turned off.  They will receive mail until you fix this\n"
 "                problem."
 msgstr ""
+"Sie haben Mitglieder, die den individuellen Nachrichten-Modus gewaehlt\n"
+"                haben, aber dieser Modus ist nicht freigegeben. Diese\n"
+"                Mitglieder bekommen erst dann Nachrichten, wenn Sie den\n"
+"                individuellen Nachrichten-Modus freigegeben haben."
 
 #: Mailman/Cgi/admin.py:203
 msgid "%(hostname)s mailing lists - Admin Links"
-msgstr ""
+msgstr "%(hostname)s Email Listen - Administrative Links"
 
 #: Mailman/Cgi/admin.py:225 Mailman/Cgi/listinfo.py:97
 msgid "Welcome!"
-msgstr ""
+msgstr "Willkommen!"
 
 #: Mailman/Cgi/admin.py:228 Mailman/Cgi/listinfo.py:100
 msgid "Mailman"
-msgstr ""
+msgstr "Mailman"
 
 #: Mailman/Cgi/admin.py:232
 msgid ""
 "<p>There currently are no publicly-advertised %(mailmanlink)s\n"
 "            mailing lists on %(hostname)s."
 msgstr ""
+"<p>Momentan sind keine oeffentlich zugaenglichen %(mailmanlink)s\n"
+"            Email-Listen auf %(hostname)s."
 
 #: Mailman/Cgi/admin.py:238
 msgid ""
@@ -134,10 +146,13 @@ msgid ""
 "            %(mailmanlink)s mailing lists on %(hostname)s.  Click on a list\n"
 "            name to visit the configuration pages for that list."
 msgstr ""
+"<p>Dies ist eine Auflistung aller oeffentlich verfuegbaren\n"
+"            %(mailmanlink)s Email-Listen auf %(hostname)s. Waehlen Sie einen\n"
+"            Listen-Namen, um die Konfigurationsseiten fuer diese Liste zu sehen."
 
 #: Mailman/Cgi/admin.py:245
 msgid "right "
-msgstr ""
+msgstr "rechts "
 
 #: Mailman/Cgi/admin.py:247
 msgid ""
@@ -148,41 +163,47 @@ msgid ""
 "\n"
 "        <p>General list information can be found at "
 msgstr ""
+"Um die Konfigurationsseite fuer eine nicht oeffentlich verfuegbare\n"
+"        Liste zu sehen, haengen sie einfach '/' und den %(extra)s\n"
+"        an diese Addresse an. Falls Sie die erforderliche Zugangsberechtigung haben,\n"
+"        koennen sie auch eine <a href=\"%(creatorurl)s\">neue Liste einrichten</a>.\n"
 
 #: Mailman/Cgi/admin.py:254
 msgid "the mailing list overview page"
-msgstr ""
+msgstr "die Uebersichtsseite fuer die Liste"
 
 #: Mailman/Cgi/admin.py:256
 msgid "<p>(Send questions and comments to "
-msgstr ""
+msgstr "<p>(Bitte senden Sie Fragen oder Kommentare an "
 
 #: Mailman/Cgi/admin.py:266 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:147
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 #: Mailman/Cgi/admin.py:267 Mailman/Cgi/admin.py:508
 #: Mailman/Cgi/listinfo.py:133
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: Mailman/Cgi/admin.py:273 Mailman/Cgi/listinfo.py:139 bin/list_lists:103
 msgid "[no description available]"
-msgstr ""
+msgstr "[keine Beschreibung verfuegbar]"
 
 #: Mailman/Cgi/admin.py:302
 msgid "No valid variable name found."
-msgstr ""
+msgstr "Kein gueltiger Variablennname gefunden"
 
 #: Mailman/Cgi/admin.py:314
 msgid ""
 "%(realname)s Mailing list Configuration Help\n"
 "    <br><em>%(varname)s</em> Option"
 msgstr ""
+"%(realname)s Listenkonfigurationshilfe\n"
+"    <br><em>%(varname)s</em> Option"
 
 #: Mailman/Cgi/admin.py:321
 msgid "Mailman %(varname)s List Option Help"
-msgstr ""
+msgstr "Hilfe fuer Mailman %(varname)s Listen-optionen"
 
 #: Mailman/Cgi/admin.py:334
 msgid ""
