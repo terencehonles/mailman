@@ -35,7 +35,7 @@ def dolist(list):
         os.mkdir(mbox_dir, 02775)
         os.umask(ou)
     else:
-        if not os.path.isdir(mbox_dir):
+        if not os.path.isdir(mbox_dir): # this shouldn't happen, but hey, just in case
             print "for some reason", mbox_dir, "exists as a file.  This won't work with b6"
             print "so I'm renaming it to %s.tmp and proceeding" % (mbox_dir)
             os.rename(mbox_dir, "%s.tmp" % (mbox_dir))
@@ -46,40 +46,47 @@ def dolist(list):
     # Move any existing mboxes around, but watch out for both a public and a
     # private one existing
     if os.path.isfile(o_pri_mbox_file) and os.path.isfile(o_pub_mbox_file):
-        print """\
-I found both a private and a public mbox archive file
-    private: %(o_priv_mbox_file)s
-    public : %(o_pub_mbox_file)s
+        if list.archive_private:
+            print """\
+%s has both public and private mbox archives, since this list
+currently uses private archiving, I'm installing the private mbox
+archive (%s) as the active archive, and renaming
+	%s
+to
+	%s.preb6
 
-In order to proceed and make this list functional in b6, I'm going to rename
-%(o_pri_mbox_file)s to %(o_pri_mbox_file)s.tmp.
+You can integrate that into the archives if you want by using the 'arch'
+script.
+""" % (list._internal_name, o_pri_mbox_file, o_pub_mbox_file, o_pub_mbox_file)
+            os.rename(o_pub_mbox_file, "%s.preb6" % (o_pub_mbox_file))
+        else:
+            print """\
+%s has both public and private mbox archives.  Since this list
+currently uses public archiving, I'm installing the public mbox file
+archive file (%s) as the active one, and renaming
+	%s
+    to
+    	%s.preb6
 
-You should choose one of
-    private archives: %(old_pri_mbox_file)s.tmp
-    public archives: %(old_pub_mbox_file)s
-
-and move it to
-    %(mbox_file)s
-
-You may want to merge them manually, but be careful about exposing private
-correspondences to the public.""" % vars()
-        os.rename(o_pri_mbox_file, "%s.tmp" % (o_pri_mbox_file))
+You can integrate that into the archives if you want by using the 'arch'
+script.
+""" % (list._internal_name, o_pub_mbox_file, o_pri_mbox_file, o_pri_mbox_file)
+            os.rename(o_pri_mbox_file, "%s.preb6" % (o_pri_mbox_file))
     #
-    else:
-        #
-        # move private archive mbox there if it's around
-        #
-        if os.path.isfile(o_pri_mbox_file):
-            os.rename(o_pri_mbox_file, mbox_file)
-        #
-        # move public archive mbox there if it's around
-        #
-        if os.path.exists(o_pub_mbox_file):
-            os.rename(o_pub_mbox_file, mbox_file)
+    # move private archive mbox there if it's around
+    # (don't rename it if it's a dir because then it's from
+    # a very recent cvs tree and is already set up right.)
+    if os.path.isfile(o_pri_mbox_file):
+        os.rename(o_pri_mbox_file, mbox_file)
+    #
+    # move public archive mbox there if it's around
+    #
+    if os.path.exists(o_pub_mbox_file):
+        os.rename(o_pub_mbox_file, mbox_file)
     #
     # move the html archives there
     #
-    if os.path.exists(o_html_dir):
+    if os.path.isdir(o_html_dir):
         os.rename(o_html_dir, html_dir)
         #
         # chmod the html archives
@@ -98,7 +105,7 @@ correspondences to the public.""" % vars()
 if __name__ == '__main__':
     lists = list_names()
     if not lists:
-        print "no lists = nothing to do, exiting"
+        print "no lists == nothing to do, exiting"
         sys.exit(0)
     #
     # for people with web archiving, make sure the directories
@@ -106,7 +113,11 @@ if __name__ == '__main__':
     #
     if os.path.isdir("%s/public_html/archives" % Mailman.mm_cfg):
         print "setting all old html archiving directories to have setgid status"
-        os.system("chmod g+rwxs `find %s/public_html/archives -type d -print`" % Mailman.mm_cfg.PREFIX)
+        os.system("chmod g+rwxs,o-w `find %s/public_html/archives -type d -print`" % \
+                  Mailman.mm_cfg.PREFIX)
+        os.system("chmod g-w `find %s/public_html/archives -type file -print`" % \
+                  Mailman.mm_cfg.PREFIX)
+        
     for list in lists:
         print 'Updating mailing list: ', list
         dolist(list)
