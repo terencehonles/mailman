@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,7 +31,15 @@ exec_prefix = '@exec_prefix@'
 if exec_prefix == '${prefix}':
     exec_prefix = prefix
 
-# hack the path to include the parent directory of the $prefix/Mailman package
-# directory.
+# Hack the path to include the parent directory of the $prefix/Mailman package
+# directory.  Also include Python's site-packages directory if it isn't
+# already part of the search path.  We need this until we require Python 2.2,
+# which includes the email package in its standard library.  Until then, we
+# distribute the email package as a distutils install.
 import sys
+import os
+
 sys.path.insert(0, prefix)
+sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                       'site-packages')
+sys.path.append(sitedir)
