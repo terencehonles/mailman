@@ -147,17 +147,19 @@ class ListAdmin:
 	else:
             # Discard.
 	    rejection = "Discarded"
+
+        def strquote(s):
+            return string.replace(s, '%', '%%')
+
 	if rejection:
             note = '''%(listname)s: %(rejection)s posting:
 \tFrom: %(sender)s
-\tSubject: %(subject)s''' % {'listname' : self._internal_name,
-                             'rejection': rejection,
-                             'sender'   : msg.GetSender(),
-                             'subject'  : msg.getheader('subject', '<none>'),
-                             }
-            def strquote(s):
-                return string.replace(s, '%', '%%')
-            
+\tSubject: %(subject)s''' % {
+                'listname' : self._internal_name,
+                'rejection': rejection,
+                'sender'   : msg.GetSender(),
+                'subject'  : strquote(msg.getheader('subject', '<none>')),
+                }
 	    if data[1]:
 		note = note + '\n\tHeld: ' + strquote(data[1])
 	    if comment:
