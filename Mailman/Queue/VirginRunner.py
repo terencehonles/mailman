@@ -40,4 +40,4 @@ class VirginRunner(IncomingRunner):
     def _get_pipeline(self, mlist, msg, msgdata):
         # It's okay to hardcode this, since it'll be the same for all
         # internally crafted messages.
-        return ['Replybot', 'CookHeaders', 'ToOutgoing']
+        return ['CookHeaders', 'ToOutgoing']
