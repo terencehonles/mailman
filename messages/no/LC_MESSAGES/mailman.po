@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
-"PO-Revision-Date: 2003-04-22 09:26+0200\n"
+"PO-Revision-Date: 2003-09-18 15:57+0200\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1122,9 +1122,8 @@ msgid "<em>The sender is now a member of this list</em>"
 msgstr "<em>Avsender er nå medlem av denne listen</em>"
 
 #: Mailman/Cgi/admindb.py:434
-#, fuzzy
 msgid "Add <b>%(esender)s</b> to one of these sender filters:"
-msgstr "Legge inn <b>%(esender)s</b> i et avsenderfilter som:"
+msgstr "Legge inn <b>%(esender)s</b> i en av disse avsenderfiltrene:"
 
 #: Mailman/Cgi/admindb.py:439
 msgid "Accepts"
@@ -2164,13 +2163,12 @@ msgid "the list admin overview page"
 msgstr "administrasjonssiden"
 
 #: Mailman/Cgi/listinfo.py:124
-#, fuzzy
 msgid ""
 " to find the management interface for your list.\n"
 "         <p>If you are having trouble using the lists, please contact "
 msgstr ""
 " for &aring; administrere en liste.\n"
-"<p>Send sp&oslash;rsm&aring;l og kommentarer til "
+"<p>Har du problemer med &aring; benytte listene, kontakt "
 
 #: Mailman/Cgi/listinfo.py:189
 msgid "Edit Options"
@@ -3571,9 +3569,8 @@ msgid "Russian"
 msgstr "Russisk"
 
 #: Mailman/Defaults.py:1277
-#, fuzzy
 msgid "Serbian"
-msgstr "Tysk"
+msgstr "Serbisk"
 
 #: Mailman/Defaults.py:1278
 msgid "Swedish"
@@ -3581,7 +3578,7 @@ msgstr "Svensk"
 
 #: Mailman/Defaults.py:1279
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainsk"
 
 #: Mailman/Deliverer.py:51
 msgid ""
@@ -5468,9 +5465,8 @@ msgstr ""
 "og det opprinnelige tittelfeltet."
 
 #: Mailman/Gui/Membership.py:26
-#, fuzzy
 msgid "Membership&nbsp;Management..."
-msgstr "Administrere&nbsp;medlemmer"
+msgstr "Administrere&nbsp;medlemmer..."
 
 #: Mailman/Gui/Membership.py:30
 msgid "Membership&nbsp;List"
@@ -5682,9 +5678,8 @@ msgid "Passwords"
 msgstr "Passord"
 
 #: Mailman/Gui/Privacy.py:28
-#, fuzzy
 msgid "Privacy options..."
-msgstr "Restriksjoner"
+msgstr "Restriksjoner..."
 
 #: Mailman/Gui/Privacy.py:32
 msgid "Subscription&nbsp;rules"
@@ -6597,12 +6592,10 @@ msgid "News server settings"
 msgstr "Innstillinger for nyhetsgruppeserver"
 
 #: Mailman/Gui/Usenet.py:40
-#, fuzzy
 msgid "The hostname of the machine your news server is running on."
-msgstr "Internettadressen til nyhetsgruppetjeneren."
+msgstr "Navn på nyhetsgruppetjener."
 
 #: Mailman/Gui/Usenet.py:41
-#, fuzzy
 msgid ""
 "This value may be either the name of your news server, or\n"
 "             optionally of the format name:port, where port is a port "
@@ -6614,10 +6607,13 @@ msgid ""
 "             recognize the machine this mailing list runs on as a machine\n"
 "             capable of reading and posting news."
 msgstr ""
+"Navnet kan enten være kun internettnavnet på nyhetsgruppetjeneren din, eller\n"
+"på formatet navn:port der port er portnummeret.\n"
+"\n"
+"\n"
 "Nyhetsgruppe-tjeneste er ikke en del av Mailman.\n"
 "Du m&aring; ha tilgang til en eksisterende NNTP tjener,\n"
-"og maskinen som denne epostlisten kj&oslash;rer p&aring;, m&aring; ha "
-"tilgang til &aring; lese og sende meldinger til den NNTP tjeneren."
+"og maskinen som denne epostlisten kj&oslash;rer p&aring;, m&aring; ha tilgang til &aring; lese og sende meldinger til den NNTP tjeneren."
 
 #: Mailman/Gui/Usenet.py:50
 msgid "The name of the Usenet group to gateway to and/or from."
@@ -9125,7 +9121,6 @@ msgid "matching mailing lists found:"
 msgstr "treff på denne epostlisten:"
 
 #: bin/list_members:19
-#, fuzzy
 msgid ""
 "List all the members of a mailing list.\n"
 "\n"
@@ -9212,11 +9207,18 @@ msgstr ""
 "    --fullnames / -f\n"
 "        Viser også medlemmenes fulle navn.\n"
 "\n"
-"    --preserve\n"
-"    -p\n"
+"    --preserve / -p\n"
 "        Viser medlemmenes epostadresse slik de ble påmeldt listen.\n"
 "        Benyttes ikke dette valget, vises alle epostadressene med små\n"
 "        bokstaver.\n"
+"\n"
+"    --invalid / -i\n"
+"        Viser kun ugyldige adresser i medlemslisten.\n"
+"        Overstyrer valgene -r, -d, og -n.\n"
+"\n"
+"    --unicode / -u\n"
+"        Viser epostadresser som er lagret som Unicode objekter istedenfor\n"
+"        vanlige streng objekter. Overstyrer valgene -r, -d, og -n.\n"
 "\n"
 "    --help\n"
 "    -h\n"
