@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,21 +25,22 @@ to send acks only after successful delivery.
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
-from Mailman.Handlers import HandlerAPI
 
 
 
 def process(mlist, msg, msgdata):
-    sender = msgdata.get('original_sender', msg.GetSender())
+    # Extract the sender's address and find them in the user database
+    sender = msgdata.get('original_sender', msg.get_sender())
     sender = mlist.FindUser(sender)
     if sender and mlist.GetUserOption(sender, mm_cfg.AcknowledgePosts):
-        subject = msg.getheader('subject')
+        # Okay, they want acknowledgement of their post
+        subject = msg['subject']
+        # Trim off the subject prefix
         if subject:
-            # trim off the subject prefix
             prefix = mlist.subject_prefix
             if subject.startswith(prefix):
                 subject = subject[len(prefix):]
-        # get the text from the template
+        # Get the text from the template
         pluser = mlist.GetPreferredLanguage(sender)
         # BAW: I don't like using $LANG
         os.environ['LANG'] = pluser
@@ -50,9 +51,10 @@ def process(mlist, msg, msgdata):
              'listname'    : realname,
              'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
              }, pluser)
-        # craft the outgoing message, with all headers and attributes
-        # necessary for general delivery
+        # Craft the outgoing message, with all headers and attributes
+        # necessary for general delivery.  Then enqueue it to the outgoing
+        # queue.
         subject = _('%(realname)s post acknowledgement')
-        msg = Message.UserNotification(sender, mlist.GetAdminEmail(),
-                                       subject, text)
-        HandlerAPI.DeliverToUser(mlist, msg)
+        usermsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
+                                           subject, text)
+        usermsg.send(mlist)

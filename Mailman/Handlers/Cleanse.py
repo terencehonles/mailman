@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,7 +22,6 @@ def process(mlist, msg, msgdata):
     # this after the information on the header is actually used, but before a
     # permanent record of the header is saved.
     del msg['approved']
-    #
     # We remove other headers from anonymous lists
     if mlist.anonymous_list:
         del msg['reply-to']
@@ -34,8 +33,5 @@ def process(mlist, msg, msgdata):
     del msg['return-receipt-to']
     del msg['disposition-notification-to']
     del msg['x-confirm-reading-to']
-    # pegasus mail uses this one... sigh
+    # Pegasus mail uses this one... sigh
     del msg['x-pmrqc']
-    # Mark the message as dirty so that its text will be forced to disk next
-    # time it's queued.
-    msgdata['_dirty'] = 1

@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,11 @@
 """Re-queue the message to the outgoing queue."""
 
 from Mailman import mm_cfg
+from Mailman.Queue.sbcache import get_switchboard
+from Mailman.Logging.Syslog import syslog
 
+
+
 def process(mlist, msg, msgdata):
-    msg.Requeue(mlist, newdata=msgdata,
-                _whichq = mm_cfg.OUTQUEUE_DIR)
+    outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
+    outq.enqueue(msg, msgdata, listname=mlist.internal_name())

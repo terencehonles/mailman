@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,20 +35,20 @@ def process(mlist, msg, msgdata):
     dont_send_to_sender = 0
     # Get the membership address of the sender, if a member.  Then get the
     # sender's receive-own-posts option
-    sender = mlist.FindUser(msg.GetSender())
+    sender = mlist.FindUser(msg.get_sender())
     if sender and mlist.GetUserOption(sender, mm_cfg.DontReceiveOwnPosts):
         dont_send_to_sender = 1
-    # calculate the regular recipients of the message
+    # Calculate the regular recipients of the message
     members = mlist.GetDeliveryMembers()
     recips = [m for m in members
               if not mlist.GetUserOption(m, mm_cfg.DisableDelivery)]
-    # remove the sender if they don't want to receive
+    # Remove the sender if they don't want to receive their own posts
     if dont_send_to_sender:
         try:
             recips.remove(mlist.GetUserSubscribedAddress(sender))
         except ValueError:
-            # sender does not want to get copies of their own messages
-            # (not metoo), but delivery to their address is disabled (nomail)
+            # Sender does not want to get copies of their own messages (not
+            # metoo), but delivery to their address is disabled (nomail)
             pass
-    # bookkeeping
+    # Bookkeeping
     msgdata['recips'] = recips

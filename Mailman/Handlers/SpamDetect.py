@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,9 +25,9 @@ TBD: This needs to be made more configurable and robust.
 """
 
 import re
-import HandlerAPI
+from Mailman import Errors
 
-class SpamDetected(HandlerAPI.DiscardMessage):
+class SpamDetected(Errors.DiscardMessage):
     """The message contains known spam"""
 
 

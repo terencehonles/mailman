@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,10 +18,10 @@
 """
 
 import time
-import HandlerAPI
 
 from Mailman import Utils
 from Mailman import Message
+from Mailman.SafeDict import SafeDict
 
 NL = '\n'
 
@@ -47,7 +47,7 @@ def process(mlist, msg, msgdata):
     # Now see if we're in the grace period for this sender.  graceperiod <= 0
     # means always autorespond, as does an "X-Ack: yes" header (useful for
     # debugging).
-    sender = msg.GetSender()
+    sender = msg.get_sender()
     now = time.time()
     graceperiod = mlist.autoresponse_graceperiod
     if graceperiod > 0 and ack <> 'yes':
@@ -65,12 +65,12 @@ def process(mlist, msg, msgdata):
     subject = 'Auto-response for your message to ' + \
               msg.get('to',  'the "%s" mailing list' % mlist.real_name)
     # Do string interpolation
-    d = Utils.SafeDict({'listname'    : mlist.real_name,
-                        'listurl'     : mlist.GetScriptURL('listinfo'),
-                        'requestemail': mlist.GetRequestEmail(),
-                        'adminemail'  : mlist.GetAdminEmail(),
-                        'owneremail'  : mlist.GetOwnerEmail(),
-                        })
+    d = SafeDict({'listname'    : mlist.real_name,
+                  'listurl'     : mlist.GetScriptURL('listinfo'),
+                  'requestemail': mlist.GetRequestEmail(),
+                  'adminemail'  : mlist.GetAdminEmail(),
+                  'owneremail'  : mlist.GetOwnerEmail(),
+                  })
     if toadmin:
         text = mlist.autoresponse_admin_text % d
     elif torequest:
@@ -91,7 +91,7 @@ def process(mlist, msg, msgdata):
     outmsg['X-Mailer'] = 'The Mailman Replybot '
     # prevent recursions and mail loops!
     outmsg['X-Ack'] = 'No'
-    HandlerAPI.DeliverToUser(mlist, outmsg)
+    outmsg.send(mlist)
     # update the grace period database
     if graceperiod > 0:
         # graceperiod is in days, we need # of seconds

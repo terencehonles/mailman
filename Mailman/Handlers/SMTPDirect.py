@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,12 +27,12 @@ import os
 import string
 import time
 import socket
+import smtplib
 
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.Handlers import HandlerAPI
+from Mailman import Errors
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib import smtplib
 
 threading = None
 try:
@@ -50,7 +50,7 @@ def process(mlist, msg, msgdata):
         # Nobody to deliver to!
         return
     admin = mlist.GetAdminEmail()
-    msgtext = str(msg)
+    msgtext = msg.get_text()
     #
     # Split the recipient list into SMTP_MAX_RCPTS chunks.  Most MTAs have a
     # limit on the number of recipients they'll swallow in a single
@@ -61,35 +61,27 @@ def process(mlist, msg, msgdata):
         chunks = chunkify(recips, mm_cfg.SMTP_MAX_RCPTS)
     refused = {}
     t0 = time.time()
-    # We can improve performance by unlocking the list during delivery.  We
-    # must re-lock it though afterwards to ensure the pipeline delivery
-    # invariant.
-    try:
-        mlist.Save()
-        mlist.Unlock()
-        if threading:
-            threaded_deliver(admin, msgtext, chunks, refused)
-        else:
-            for chunk in chunks:
-                deliver(admin, msgtext, chunk, refused)
-    finally:
-        t1 = time.time()
-        mlist.Lock()
+    if threading:
+        threaded_deliver(admin, msgtext, chunks, refused)
+    else:
+        for chunk in chunks:
+            deliver(admin, msgtext, chunk, refused)
     # Log the successful post
+    t1 = time.time()
     syslog('smtp', 'smtp for %d recips, completed in %.3f seconds' %
            (len(recips), (t1-t0)))
 
     if refused:
         # Always log failures
         syslog('post', 'post to %s from %s, size=%d, %d failures' %
-               (mlist.internal_name(), msg.GetSender(), len(msg.body),
+               (mlist.internal_name(), msg.get_sender(), len(msgtext),
                 len(refused)))
     elif msgdata.get('tolist'):
         # Log the successful post, but only if it really was a post to the
         # mailing list.  Don't log sends to the -owner, or -admin addrs.
         # -request addrs should never get here.
         syslog('post', 'post to %s from %s, size=%d, success' %
-               (mlist.internal_name(), msg.GetSender(), len(msg.body)))
+               (mlist.internal_name(), msg.get_sender(), len(msgtext)))
 
     # Process any failed deliveries.
     tempfailures = []
@@ -115,7 +107,7 @@ def process(mlist, msg, msgdata):
             tempfailures.append(recip)
     if tempfailures:
         msgdata['recips'] = tempfailures
-        raise HandlerAPI.SomeRecipientsFailed
+        raise Errors.SomeRecipientsFailed
 
 
 

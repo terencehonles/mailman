@@ -32,8 +32,8 @@ it's not recommended either -- use the SMTPDirect delivery module instead.
 import string
 import os
 
-import HandlerAPI
 from Mailman import mm_cfg
+from Mailman import Errors
 from Mailman.Logging.Syslog import syslog
 
 MAX_CMDLINE = 3000
@@ -98,4 +98,4 @@ def process(mlist, msg, msgdata):
                (mlist.internal_name(), msg.GetSender(), len(msg.body)))
     if failedrecips:
         msgdata['recips'] = failedrecips
-        raise HandlerAPI.SomeRecipientsFailed
+        raise Errors.SomeRecipientsFailed
