@@ -310,7 +310,15 @@ message-id: relay.comanche.denmark.eu
 from: list@listme.com
 from: .*@uplinkpro.com
 """
-# Replies to posts inherently directed to list or original sender?
+
+# Mailman can be configured to "munge" Reply-To: headers for any passing
+# messages.  One the one hand, there are a lot of good reasons not to munge
+# Reply-To: but on the other, people really seem to want this feature.  See
+# the help for reply_goes_to_list in the web UI for links discussing the
+# issue.
+# 0 - Reply-To: not munged
+# 1 - Reply-To: set back to the list
+# 2 - Reply-To: set to an explicit value (reply_to_address)
 DEFAULT_REPLY_GOES_TO_LIST = 0
 
 # SUBSCRIBE POLICY
