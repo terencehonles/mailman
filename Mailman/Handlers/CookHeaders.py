@@ -51,7 +51,7 @@ def process(mlist, msg):
     msg['Errors-To'] = adminaddr
     #
     # Mark message so we know we've been here
-    msg['X-BeenThere'] = mlist.GetListEmail()
+    msg.headers.append('X-BeenThere: %s\n' % mlist.GetListEmail())
     #
     # Add Precedence: and other useful headers.  None of these are standard
     # and finding information on some of them are fairly difficult.  Some are
@@ -67,6 +67,11 @@ def process(mlist, msg):
     # want the value to be `list'.
     if not msg.get('precedence'):
         msg['Precedence'] = 'bulk'
+    #
+    # Set Reply-To: header to point back to list, if the list is so
+    # inclined.
+    if mlist.reply_goes_to_list and not getattr(msg, 'fastrack', 0):
+        msg['reply-to'] = 'Reply-To: %s\n' % mlist.GetListEmail()
     #
     # Other list related non-standard headers.  Defined in:
     #
