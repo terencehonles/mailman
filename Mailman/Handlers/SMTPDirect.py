@@ -86,10 +86,12 @@ def process(mlist, msg, msgdata):
         # Nobody to deliver to!
         return
     # Calculate the non-VERP envelope sender.
-    if mlist:
-        envsender = mlist.GetBouncesEmail()
-    else:
-        envsender = Utils.get_site_email(extra='bounces')
+    envsender = msgdata.get('envsender')
+    if envsender is None:
+        if mlist:
+            envsender = mlist.GetBouncesEmail()
+        else:
+            envsender = Utils.get_site_email(extra='bounces')
     # Time to split up the recipient list.  If we're personalizing or VERPing
     # then each chunk will have exactly one recipient.  We'll then hand craft
     # an envelope sender and stitch a message together in memory for each one
