@@ -1,7 +1,7 @@
 #! @PYTHON@
 
 # Configuration variables - Change these for your site if necessary.
-MailmanHome = "/home/mailman"; # Mailman home directory.
+MailmanHome = "/usr/local/mailman"; # Mailman home directory.
 MailmanOwner = "postmaster@localhost"; # Postmaster and abuse mail recepient.
 # End of configuration variables.
 
@@ -32,7 +32,7 @@ MailmanOwner = "postmaster@localhost"; # Postmaster and abuse mail recepient.
 # To configure a virtual domain to connect to mailman, create these files:
 #
 # ~mailman/.qmail-default
-# |preline /usr/bin/python /home/mailman/mail-in.py
+# |preline /usr/bin/python /usr/local/mailman/mail-in.py
 #
 # /var/qmail/control/virtualdomains:
 # DOMAIN.COM:mailman
