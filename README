@@ -1,4 +1,4 @@
-$Revision: 442 $, $Date: 1998-04-13 05:37:28 +0100 (Mon, 13 Apr 1998) $
+$Revision: 448 $, $Date: 1998-04-13 20:55:46 +0100 (Mon, 13 Apr 1998) $
 
 There's still much that I'd like to redo or add.  I'm not incredibly
 proud of the code, and it's a bit embarassing to be sharing it at this
@@ -6,7 +6,10 @@ point. The weakest points in my mind are probably the cgi scripts and
 html formatting.  Unfortunately, I won't soon have the time to devote
 to doing it better.
 
-Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15 1996
+Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15
+1996.
+Refinements for mailman 1.0b2 by ken manheimer.
+
 See file DONE for info on changes since v. 0.9
 
 Features:
@@ -14,9 +17,12 @@ Features:
 	moderation, mail based commands, digests, etc...
   o An extensive web interface customizable on a per-list basis.
   o Web based list administration interface for *all* admin-type tasks.
-  o Automatic web based hypermail-style archives (using pipermail)
+  o Automatic web based hypermail-style archives (using pipermail or
+    other external archiver), including provisions for private archives
   o Smart bounce detection and correction
   o Fast bulk mailing
+  o Smart spam protection
+  o Extendable logging
   o Multiple list owners and moderators
   o Optional MIME-Compliant digests
   o Nice about which machine you subscribed from if you're from the
@@ -25,8 +31,8 @@ Features:
 Requirements:
   You must be root on a machine running a mail transport program that
 	uses an /etc/aliases file, and has a sendmail executable (smail
-	should be OK).  Eventually I'd really like to support qmail,
-	but currently don't.
+	should be OK).  (We should soon be switching over to direct
+	SMTP connection to whatever you have running on port 25.)
   The machine really needs to have a web server in order to configure lists.
 
 Install:
@@ -66,12 +72,38 @@ Install:
     copy from mailman/modules/mm_cfg.py.dist.  Include settings in mm_cfg.py
     for any of the defaults in mm_defaults.py that you want to tailor
     for your site.
+  o Create the site password, if you don't already have one, using
+    'mailman/bin/mmsitepass password'.
+  o Point external archiver at public and private archives (we recommend
+    http://starship.skyport.net/crew/amk/maintained/pipermail.html ).
 
 Adding a new list:
   o Run the program bin/newlist
 
+List managers, note that:
+
+  o Being a list administrator does not entail receiving the traffic - 
+    you have to subscribe, as well.
+  o Relevant urls - the DEFAULT_URL plus:
+    - mailman/listinfo/listname for public view of list
+    - mailman/admin/listname for options
+    - mailman/admindb/listname for pending requests
+    - and generally, mailman/listinfo for the list of (public) lists
+
 
 Troubleshooting:
+
+    Many of the scripts have their stderr logged to
+    ~mailman/logs/error, and some of the modules log caught errors
+    conditions there, as well, so you should check there at least
+    occasionally to look for bugs in the code and problems in your
+    setup.
+
+    One thing that is *not* caught by stderr hook is syntax errors!
+    However, just about all files **except** cron/mailpasswds can be
+    run from the command line with no arguments, and no effect.  So
+    you can and should use the python interpreter to check the syntax
+    of any changes before trying them out.
 
 If the web pages hang:
 
@@ -84,14 +116,15 @@ If mail isn't getting delivered:
 	The cgi wrappers are failing.  Either a UID is wrong, or your
 	web server / mailer has a non-standard name.
 
-Some notes about the code (Developers notes):
-	How to add a new user option:
+How to add a new user option
+
+    You'll need to do some of these things and not others.
 
 	1) Add a flag to mm_defaults.py, and mm_cfg.py.dist if it's
 	   likely to require a custom value for each site.
 	2) Add an entry to mm_html GetStandardReplacements name
 	 & mapping, to enable referring to the value from mailman html.
-	3) Add replacements lines to the cgi/options and cgi/listionfo
+	3) Add replacements lines to the cgi/options and cgi/listinfo
 	   scripts, to hook the mailman html up with the option.
 	4) For user-specific options, make SetUserOption calls in
 	 & cgi/handle_opts.
@@ -100,6 +133,56 @@ Some notes about the code (Developers notes):
 	6) For user-specific options, add description to mm_mailcmd help
 	7) Update templates if the options have replacements
 	8) Use your option wherever appropriate...
-	
 
+Interactive python sessions with maillists
 
+    You can do substantial things with maillists from th interpreter!
+    Cd to the modules subdir and, with '.' on your pythonpath, start
+    the interpreter and import maillist and mm_utils.  You can
+    instantiate the maillist of your choice, eg for a list named
+    postal:
+
+>>> l = maillist.MailList('postal')
+
+    If the list is active, and you aren't going to be saving any
+    changes, do an l.Unlock() immediately.  (Otherwise, anyone visiting 
+    a web interface involving the list, or postings going to the list,
+    will be held awaiting the lock.)  Now you can examine various
+    aspects of the list:
+
+>>> l.members
+['klm@python.org']
+>>> l.digest_members
+[]
+>>> l.real_name
+'Postal'
+>>> l._internal_name
+'postal'
+
+    dir(l) will present the components of the list. maillists.py has
+    the descriptions of many of the components, though some are defined
+    in other modules.
+
+    If you want to save changes, 'l.Save()' will do it.  It's a real
+    good idea to play with trial lists, first, before doing surgery
+    with this method on production lists.
+
+    When you do get comfortable with it, you use it and a utility
+    routine, mm_utils.mm_utils.map_maillists(), to do wholesale changes
+    on all your lists.  It takes a function argument, and applies that
+    function to every one of the lists on your system.  For instance,
+    to get the names of all the lists on your system which are
+    advertised:
+
+>>> import maillist, mm_utils
+>>> def advertised(l):
+...    if l.advertised: return l.real_name
+...
+>>> filter(None, mm_utils.map_maillists(advertised))
+['Mailman-developers', 'Meta-sig', 'Python-Help', 'C++-SIG',
+'Matrix-SIG', 'DB-SIG', 'DO-SIG', 'Doc-SIG', 'GUI-SIG', 'Image-SIG',
+'Objc-SIG', 'Plot-SIG', 'Pythonmac-SIG', 'String-SIG', 'Thread-SIG',
+'Grail', 'XML-SIG', 'JPython-Interest']
+
+    If you do list surgery with this mechanism, double check that
+    you're doing what you intend before having the routine do l.Save()'s.
