@@ -21,7 +21,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 648 $"
+__version__ = "$Revision: 655 $"
 
 import sys
 import os, cgi, string, crypt, types, time
@@ -704,7 +704,8 @@ def ChangeOptions(lst, category, cgi_info, document):
     # is not "members" and the request is not from the login page
     # -scott 19980515
     #
-    if category != 'members' and not cgi_info.has_key("request_login"):
+    if category != 'members' and not cgi_info.has_key("request_login") and\
+       len(cgi_info.keys()) > 1:
         opt_list = GetConfigOptions(lst, category)
         for item in opt_list:
             if len(item) < 5:
