@@ -1,11 +1,12 @@
-# Norwegian catalog. Translated by
-# Daniel Buchmann <db@bibsys.no>, 2001.
+# Norwegian catalog.
+# Translated 2001, 2002, by
+# Daniel Buchmann <db@bibsys.no>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1a4\n"
 "POT-Creation-Date: Mon Dec 31 16:47:34 2001\n"
-"PO-Revision-Date: 2002-01-04 02:25+01:00\n"
+"PO-Revision-Date: 2002-01-04 16:45+01:00\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -721,8 +722,8 @@ msgid "Submit All Data"
 msgstr "Utf&oslash;re"
 
 #: Mailman/Cgi/admindb.py:193
-msgid "all the %(esender)s's held messages."
-msgstr "alle meldinger fra %(sender)s som holdes tilbake for godkjenning."
+msgid "all the %(sender)s's held messages."
+msgstr "alle meldinger fra %(sender)s, som holdes tilbake for godkjenning."
 
 #: Mailman/Cgi/admindb.py:198
 msgid "a single held message."
@@ -1413,6 +1414,9 @@ msgid ""
 "from\n"
 "    this mailing list."
 msgstr ""
+"Du har avbrutt prosessen med &aring; skru p&aring; medlemskapet ditt igjen.\n"
+"V&aelig;r oppmerksom p&aring; at dersom det fortsatt kommer returmeldinger fra din epostadresse,\n"
+"kan du etter en tid automatisk bli meldt ut av listen."
 
 #: Mailman/Cgi/confirm.py:676
 msgid "Membership re-enabled."
@@ -1466,10 +1470,23 @@ msgid ""
 "    re-enabling your membership.\n"
 "    "
 msgstr ""
+"Ditt medlemskap p&aring; epostlisten %(realname)s er for tiden skrudd av p&aring; grunn av for mange returmelding fra din epostadresse.\n"
+"Vi m&aring; ha din bekreftelse for at du igjen skal motta meldinger fra listen.\n"
+"Vi har f&oslash;lgende informasjon om deg:\n"
+"\n"
+"<ul>\n"
+"  <li><b>Epostadresse:</b> %(member)s\n"
+"  <li><b>Navn:</b> %(username)s\n"
+"  <li><b>Siste returmelding er mottatt:</b> %(date)s\n"
+"  <li><b>Antall dager til du automatisk blir meldt ut av listen: ca. %(daysleft)s\n"
+"</ul>\n"
+"Klikk <em>Motta epost igjen</em> knappen for &aring; skru p&aring; medlemskapet ditt og fortsette &aring; motta epost fra listen.\n"
+"Eller klikk <em>Avbryt</em> knappen hvis du vil gj&oslash;re det en annen gang.\n"
+" "
 
 #: Mailman/Cgi/confirm.py:740
 msgid "Re-enable membership"
-msgstr ""
+msgstr "Motta epost igjen"
 
 #: Mailman/Cgi/confirm.py:741
 msgid "Cancel"
@@ -2674,6 +2691,36 @@ msgid ""
 "            disabled.  You should tune both of these to the frequency and\n"
 "            traffic volume of your list."
 msgstr ""
+"Disse reglene bestemmer hvordan automatisk behandling av returmeldinger gj&oslash;res.\n"
+"Her er en oversikt over hvordan det fungerer.\n"
+"\n"
+"<p>N&aring;r Mailman mottar en returmeldinger, blir to ting fors&oslash;kt tolket.\n"
+"Det ene er epostadressen til medlemmet som egentlig skulle motta eposten,\n"
+"og det andre er &aring;rsaken til problemet. &Aring;rsaken tolkes til &aring; v&aelig;re <em>alvorlig</em>\n"
+"eller <em>lett</em> alt etter om &aring;rsaken er av kritisk eller av mindre alvorlig art.\n"
+"Dersom det er tvil, tolkes &aring;rsaken som alvorlig.\n"
+"\n"
+"<p>Hvis ingen epostadresse kan plukkes ut av meldingen, blir den vanligvis forkastet.\n"
+"Ellers, vil medlemmet som har den epostadressen f&aring; et <em>returtall</em>, og hver\n"
+"gang en returmelding kommer vil tallet &oslash;ke. Alvorlige &aring;rsaker f&oslash;rer til at tallet &oslash;kes\n"
+"med 1, lette &aring;rsaker f&oslash;rer til at det &oslash;kes med 0.5. Dette skjer kun &eacute;n gang per dag,\n"
+"s&aring; selv om det kommer 10 alvorlige returmeldinger fra et medlem p&aring; &eacute;n dag, vil\n"
+"tallet kun &oslash;kes med 1.\n"
+"\n"
+"<p>N&aring;r et returtallet for et medlem n&aring;r en viss <a href=\"?VARHELP=bounce/bounce_score_threshold\">grense</a>,\n"
+"stoppes levering til medlemmet. Dermed vil ikke medlemmet motta epost fra listen f&oslash;r\n"
+"levering skrus p&aring; igjen. Medlemmet vil med jevne mellomrom motta melding om at dette\n"
+"har skjedd, og hva han/hun m&aring; gj&oslash;re for &aring; f&aring; epost fra listen igjen.\n"
+"\n"
+"<p>Du kan bestemme <a href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings\">hvor mange advarsler</a>\n"
+"medlemmet skal f&aring; og <a href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\">hvor ofte</a>\n"
+"han/hun skal motta slike advarsler.\n"
+"\n"
+"<p>Det er &eacute;n viktig innstilling til; etter en viss tid -- hvis ingen returmeldinger dukker opp\n"
+"i l&oslash;pet av denne tiden -- ansees returinformasjon som <a href=\"?VARHELP=bounce/bounce_info_stale_after\">utg&aring;tt</a>\n"
+"og forkastes. Ved &aring; justere denne verdien, og sette en grense for returtallet, kan du bestemme hvor lang tid det skal\n"
+"ta f&oslash;r levering til et medlem stoppes. Begge disse verdiene m&aring; du justere alt etter hvor ofte og hvor mye\n"
+"epost sendes til listen din."
 
 #: Mailman/Gui/Bounce.py:75
 msgid "Should Mailman perform automatic bounce processing?"
@@ -2687,6 +2734,8 @@ msgid ""
 "administrator\n"
 "             isn't inundated with them."
 msgstr ""
+"Ved &aring; sette denne verdien til <em>Nei</em>, skrur du av all automatisk tolking av returmeldinger for denne listen.\n"
+"Merk at slik meldinger vil likevel forkastet slik at listeadministratoren ikke blir plaget med dem."
 
 #: Mailman/Gui/Bounce.py:82
 msgid ""
@@ -2694,6 +2743,8 @@ msgid ""
 "             subscription is disabled.  This value can be a floating point\n"
 "             number."
 msgstr ""
+"Returtall-grense for n&aring;r Mailman stopper levering til et medlem.\n"
+"Dette tallet kan v&aelig;re et flyttall (et tall med desimaler)."
 
 #: Mailman/Gui/Bounce.py:87
 msgid ""
@@ -2701,6 +2752,8 @@ msgid ""
 "             is discarded, if no new bounces have been received in the\n"
 "             interim.  This value must be an integer."
 msgstr ""
+"Antall dager f&oslash;r returinformasjon forkastes dersom ingen flere returmeldinger dukker opp.\n"
+"Dette tallet m&aring; v&aelig;re et heltall."
 
 #: Mailman/Gui/Bounce.py:92
 msgid ""
@@ -2712,18 +2765,23 @@ msgid ""
 "             the list once their bounce score exceeds the threshold.  This\n"
 "             value must be an integer."
 msgstr ""
+"Hvor mange <em>Levering til deg er stoppet</em> advarsler som skal sendes til et medlem f&oslash;r det meldes ut av listen.\n"
+"Sett denne verdien til 0 for &aring; fjerne et medlem fra listen umiddelbart dersom det kommer returmelding fra medlemmets epostadresse.\n"
+"Dette tallet m&aring; v&aelig;re et heltall."
 
 #: Mailman/Gui/Bounce.py:99
 msgid ""
 "The number of days between sending the <em>Your Membership\n"
 "             Is Disabled</em> warnings.  This value must be an integer."
 msgstr ""
+"Antall dager mellom hver gang en <em>Levering til deg er stoppet</em> advarsel skal sendes ut.\n"
+"Dette tallet m&aring; v&aelig;re et heltall."
 
 #: Mailman/Gui/Bounce.py:107
 msgid ""
 "Bad value for <a href=\"?VARHELP=bounce/%(varname)s\"\n"
 "            >%(varname)s</a>: %(value)s"
-msgstr ""
+msgstr "Ugyldig verdi for <a href=\"?VARHELP=bounce/%(varname)s\">%(varname)s</a>: %(value)s"
 
 #: Mailman/Gui/Digest.py:27
 msgid "Digest options"
@@ -4105,7 +4163,7 @@ msgstr ""
 "<p>I tekstboksene nedenfor legger du inn en epostadresse per linje.\n"
 "Du kan ogs&aring; legge inn <a href=\"http://www.python.org/doc/current/lib/module-re.html\">Python regexp-uttrykk</a>.\n"
 "Begynn is&aring;fall linjen med tegnet ^ for &aring; markere at det er et slikt uttrykk.\n"
-"N&aring;r du benytter backslash, skriv da slik som i rene strenger (Python raw strings) (vanligvis bare &egrave;n backslash om gangen).\n"
+"N&aring;r du benytter backslash, skriv da slik som i rene strenger (Python raw strings) (vanligvis bare &eacute;n backslash om gangen).\n"
 "\n"
 "<p>Merk: treff p&aring; vanlige epostadresser utf&oslash;res f&oslash;rst, regexp-uttrykk vil derfor behandles sist."
 
@@ -4716,7 +4774,7 @@ msgstr "<em>(%(num_concealed)d medlemmer vises ikke)</em>"
 
 #: Mailman/HTMLFormatter.py:135
 msgid "; it was disabled by you"
-msgstr ""
+msgstr "; etter ditt eget &oslash;nske"
 
 #: Mailman/HTMLFormatter.py:137
 msgid "; it was disabled by the list administrator"
@@ -4772,6 +4830,11 @@ msgid ""
 "            this address.  Your bounce score will be automatically reset if\n"
 "            the problems are corrected soon."
 msgstr ""
+"<p>Vi har i det siste f&aring;tt en del returmeldinger fra din epostadresse.\n"
+"<em>Returtallet</em> ditt er %(score)s av totalt %(total)s.\n"
+"Vennligst kontroller at epostadressen din er stavet korrekt,\n"
+"og at det ikke problemer med levering til den.\n"
+"Returtallet ditt vil automatisk annulleres dersom problemene retter seg snart."
 
 #: Mailman/HTMLFormatter.py:173
 msgid ""
@@ -5179,11 +5242,11 @@ msgstr "ingen tittel"
 
 #: Mailman/Handlers/Scrubber.py:130
 msgid "no date"
-msgstr ""
+msgstr "ingen dato"
 
 #: Mailman/Handlers/Scrubber.py:131
 msgid "unknown sender"
-msgstr ""
+msgstr "ukjent avsender"
 
 #: Mailman/Handlers/Scrubber.py:133
 msgid ""
@@ -6526,10 +6589,39 @@ msgid ""
 "    -h / --help\n"
 "        Print this message and exit\n"
 msgstr ""
+"Rydder opp i en .mbox fil.\n"
+"\n"
+"Arkivfunksjonen ser etter Unix-From linjer som skiller meldinger fra hverandre\n"
+"i en mbox fil. For kompatibilitet ser den etter linje som begynner med\n"
+"\"From\" -- altså stor F, liten r, o, og m, og et mellomrom. Alt annet på\n"
+"linjen blir oversett.\n"
+"\n"
+"Vanligvis skal linjer som befinner seg i innholdet i en epost, og som begynner\n"
+"med \"From \", egentlig starte med en \">\" slik at melding kan tolkes på riktig\n"
+"måte. Det hender at dette noen ganger ikke er tilfelle. Dette scriptet prøver\n"
+"å rette opp dette vi å foreta en litt strengere sjekk på Unix-From linjer.\n"
+"Linjer som begynner med \"From \" men som ikke passerer denne sjekken, får en\n"
+"\">\" foran seg.\n"
+"\n"
+"Brukes slik: cleanarch [valg] < innfil > utfil\n"
+"\n"
+"Valg:\n"
+"    -s n\n"
+"    --status=n\n"
+"        Vis en # for hver n'te linje som leses.\n"
+"\n"
+"    -q / --quietly\n"
+"        Ikke vis endringer som utføres.\n"
+"\n"
+"    -n / --dry-run\n"
+"        Ikke skriv noe til standard output.\n"
+"\n"
+"    -h / --help\n"
+"        Viser denne hjelpeteksten.\n"
 
 #: bin/cleanarch:78
 msgid "Unix-From line changed: %(lineno)d"
-msgstr ""
+msgstr "Unix-From linje endret: %(lineno)d"
 
 #: bin/cleanarch:106
 msgid "Bad status number: %(arg)s"
@@ -6537,7 +6629,7 @@ msgstr "Ugyldig status nummer: %(arg)s"
 
 #: bin/cleanarch:158
 msgid "%(messages)d messages found"
-msgstr ""
+msgstr "fant %(messages)d meldinger"
 
 #: bin/clone_member:19
 msgid ""
@@ -7674,7 +7766,7 @@ msgstr ""
 
 #: bin/newlist:114
 msgid "Unknown language: %(lang)s"
-msgstr ""
+msgstr "Ukjent språk: %(lang)s"
 
 #: bin/newlist:119
 msgid "Enter the name of the list: "
@@ -8437,7 +8529,7 @@ msgstr "oppdaterer gamle qfiler"
 
 #: bin/update:389
 msgid "getting rid of old source files"
-msgstr ""
+msgstr "fjerner gamle kildefiler"
 
 #: bin/update:398
 msgid "no lists == nothing to do, exiting"
@@ -8810,6 +8902,23 @@ msgid ""
 "    --list listname\n"
 "        Process only the given list, otherwise do all lists.\n"
 msgstr ""
+"Behandle medlemmer som har stoppet levering, dette bør gjøres daglig.\n"
+"\n"
+"Dette scriptet går igjennom alle epostlistene for å finne medlemmer som\n"
+"har stoppet levering. Hvis årsaken er returmeldinger, vil disse\n"
+"medlemmene motta en ny advarsel om dette, eller de kan bli meldt ut av listen\n"
+"dersom max antall advarsler er nådd.\n"
+"\n"
+"Brukes slik: %(PROGRAM)s [valg]\n"
+"\n"
+"Valg:\n"
+"    -h / --help\n"
+"        Viser denne hjelpeteksten.\n"
+"\n"
+"    -l listenavn\n"
+"    --list listenavn\n"
+"        Behandle bare den angitte listen. Hvis dette valget ikke benyttes\n"
+"        vil alle lister behandles.\n"
 
 #: cron/gate_news:19
 msgid ""
