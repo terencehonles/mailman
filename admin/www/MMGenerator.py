@@ -58,7 +58,7 @@ class MMGenerator(Skeleton, Sidebar, Banner):
                           alt="SourceForge Logo"></a>'''
                           % self.__d))
         p.sidebar.append(BLANKCELL)
-        copyright = self.__parser.get('copyright', '1998,1999,2000,2001')
+        copyright = self.__parser.get('copyright', '1998-2002')
         p.sidebar.append((None, '&copy; ' + copyright +
                           '<br>Free Software Foundation, Inc.'))
         Sidebar.__init__(self, p.sidebar)
