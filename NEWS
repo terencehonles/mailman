@@ -4,7 +4,11 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.0 beta 3 (26-Jun-2000)
+2.0 beta 4 (06-Jul-2000)
+
+    - Bug fix release.
+
+2.0 beta 3 (29-Jun-2000)
 
     - Delivery mechanism (qrunner) refined to support immediate
       queuing, queuing directly from MTA, and queuing on any error
@@ -50,7 +54,7 @@ Here is a history of user visible changes to Mailman.
     - Tons more bounce formats are recognized.  The API to the bounce
       modules has changed.
 
-    - A written LockFile module which should fix most (hopefully all)
+    - A rewritten LockFile module which should fix most (hopefully all)
       bugs in the locking machinery.  Many improvements suggested by
       Thomas Wouters and Harald Meland.
 
