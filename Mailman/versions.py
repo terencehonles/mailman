@@ -42,26 +42,36 @@ def Update(l, stored_state):
     UpdateOldVars(l, stored_state)
     UpdateOldUsers(l)
 
+uniqueval = []
 def UpdateOldVars(l, stored_state):
     """Transform old variable values into new ones, deleting old ones.
     stored_state is last snapshot from file, as opposed to from InitVars()."""
 
-    def PreferStored(oldname, newname, l=l, state=stored_state):
-        "Use specified value if new value does not come from stored state."
+    def PreferStored(oldname, newname, newdefault=uniqueval,
+                     l=l, state=stored_state):
+        """Use specified old value if new value does is not in stored state.
+
+        If the old attr does not exist, and no newdefault is specified, the 
+        new attr is *not* created - so either specify a default or be
+        positive that the old attr exists - or don't depend on the new attr."""
         if hasattr(l, oldname):
             if not state.has_key(newname):
                 setattr(l, newname, getattr(l, oldname))
             delattr(l, oldname)
+        if not hasattr(l, newname) and newdefault is not uniqueval:
+                setattr(l, newname, newdefault)
 
-    #                  Pre 1.0b1.2, klm 04/11/1998.
-    #  - migrated vars:
+    # Migrate to 1.0b6, klm 10/22/1998:
+    PreferStored('reminders_to_admins', 'umbrella_list',
+                 mm_cfg.DEFAULT_UMBRELLA_LIST)
+
+    # Migrate up to 1.0b5:
     PreferStored('auto_subscribe', 'open_subscribe')
     PreferStored('closed', 'private_roster')
     PreferStored('mimimum_post_count_before_removal',
                  'mimimum_post_count_before_bounce_action')
     PreferStored('bad_posters', 'forbidden_posters')
     PreferStored('automatically_remove', 'automatic_bounce_action')
-    PreferStored('reminders_to_admins', 'umbrella_list')
     if hasattr(l, "open_subscribe"):
         if l.open_subscribe:
             if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
@@ -74,11 +84,8 @@ def UpdateOldVars(l, stored_state):
     if not hasattr(l, "administrivia"):
         setattr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
     if not hasattr(l, "posters_includes_members"):
-        setattr(l, "posters_includes_members", mm_cfg.DEFAULT_POSTERS_INCLUDES_MEMBERS)
-    #  - dropped vars:
-#    for a in ['archive_retain_text_copy',
-#              'archive_update_frequency']:
-#        if hasattr(l, a): delattr(l, a)
+        setattr(l, "posters_includes_members",
+                mm_cfg.DEFAULT_POSTERS_INCLUDES_MEMBERS)
 
 def UpdateOldUsers(l):
     """Transform sense of changed user options."""
