@@ -19,6 +19,7 @@
 import sys
 import os
 import cgi
+import signal
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -49,7 +50,7 @@ def main():
         
     listname = parts[0].lower()
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         doc.AddItem(Header(2, _("Error")))
         doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
@@ -68,10 +69,30 @@ def main():
     i18n.set_language(language)
     doc.set_language(language)
 
+    # We need a signal handler to catch the SIGTERM that can come from Apache
+    # when the user hits the browser's STOP button.  See the comment in
+    # admin.py for details.
+    #
+    # BAW: Strictly speaking, the list should not need to be locked just to
+    # read the request database.  However the request database asserts that
+    # the list is locked in order to load it and it's not worth complicating
+    # that logic.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        # Make sure the list gets unlocked...
+        mlist.Unlock()
+        # ...and ensure we exit, otherwise race conditions could cause us to
+        # enter MailList.Save() while we're in the unlocked state, and that
+        # could be bad!
+        sys.exit(0)
+
+    mlist.Lock()
     try:
+        # Install the emergency shutdown signal handler
+        signal.signal(signal.SIGTERM, sigterm_handler)
+
         process_form(mlist, doc, cgidata, language)
-    finally:
         mlist.Save()
+    finally:
         mlist.Unlock()
 
 
