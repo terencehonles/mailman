@@ -352,6 +352,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.member_posting_only = mm_cfg.DEFAULT_MEMBER_POSTING_ONLY
 	self.host_name = mm_cfg.DEFAULT_HOST_NAME
         self.admin_member_chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
+        self.administrivia = mm_cfg.DEFAULT_ADMINISTRIVIA
 
 	# Analogs to these are initted in Digester.InitVars
 	self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
