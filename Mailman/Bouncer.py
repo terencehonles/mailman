@@ -209,7 +209,7 @@ class Bouncer:
                 negative = string.upper(negative)
 
             self.SendTextToUser(
-                subject = "%s member %s %s%s due to bounces"
+                subject = "%s member %s bouncing - %s%s"
                 % (self.real_name, addr, negative, did),
                 recipient = recipient,
                 sender = mm_cfg.MAILMAN_OWNER,
