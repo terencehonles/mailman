@@ -126,8 +126,12 @@ class ListAdmin:
 	    self.Post(msg, 1)
         elif value == 1:
             # Refuse.
-	    request = 'Posting of your message entitled:\n\t\t %s' % \
-		      msg.getheader('subject')
+            subj = msg.getheader('subject')
+            if subj == None:
+                request = 'Posting of your untitled message'
+            else:
+                request = ('Posting of your message entitled:\n\t\t %s'
+                           % subj)
 	    if not comment:
 		comment = data[1]
 	    if not self.dont_respond_to_post_requests:
