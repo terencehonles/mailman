@@ -1,30 +1,111 @@
-# This file needs to get auto-generated.
-# As much of it as possible should be gleaned w/o prompting the user.
+"""Institute default settings for all significant configuration variables
+from this file.  The modules that use the default values (maillist,
+mm_archive, etc) use the values from here.
+
+Go through the settings here in order to configure mailman for your site.
+They will dictate the default values for new lists, archives, and so forth, 
+many of which can be customized after list creation on a per-list basis.
+
+In a few cases below we have settings that depend on the individual list
+values, in which case we use dictionary format string references, expecting
+the format string to be resolved with respect to the list instance's
+dictionary.  For example, currently in maillist.py there's a line like:
+
+	self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER % self.__dict__	
+"""
 
 import os
 
-MAILMAN_URL       = 'http://www.python.org/'
+VERSION           = '1.0b1.1'
+__version__ = VERSION + "$Revision: 88 $"
+
+			  # Site Specific #
+
+MAILMAN_URL       = 'http://www.python.org/ftp/python/contrib/Network/mailman/'
 MAX_SPAWNS        = 40
 DEFAULT_HOST_NAME = 'python.org'
-
-VERSION           = '1.0b1'
-# Our home directory.  Once we know this, we can figure out other things
-# for ourselves
+SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'
+DEFAULT_URL       = 'http://www.python.org/mailman'
+ARCHIVE_URL       = 'http://www.python.org/~mailman/archives'
+# Once we know our home directory we can figure out the rest.
 HOME_DIR	  = '/home/mailman'
 MAILMAN_DIR       = '/home/mailman/mailman'
-# I don't think this is used any more
-MAIL_LOG          = '/var/log/maillog'
+
 LIST_DATA_DIR     = os.path.join(MAILMAN_DIR, 'lists')
 HTML_DIR	  = os.path.join(HOME_DIR, 'public_html')
 CGI_DIR           = os.path.join(HOME_DIR, 'cgi-bin')
 LOCK_DIR          = os.path.join(MAILMAN_DIR, 'locks')
-SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'
-DEFAULT_URL       = 'http://%s/mailman/' % DEFAULT_HOST_NAME
 TEMPLATE_DIR      = os.path.join(MAILMAN_DIR, 'templates')
-ARCHIVE_URL       = 'http://%s/~mailman/archives' % DEFAULT_HOST_NAME
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
+# I don't think this is used any more
+MAIL_LOG          = '/var/log/maillog'
 
+			 # General Defaults #
+
+DEFAULT_FILTER_PROG = ''
+DEFAULT_NUM_SPAWNS = 5
+DEFAULT_LIST_ADVERTISED = 1
+DEFAULT_MAX_NUM_RECIPIENTS = 5
+DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
+
+# These format strings will be expanded w.r.t. the dictionary for the
+# maillist instance.
+DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
+DEFAULT_MSG_HEADER = ""
+DEFAULT_MSG_FOOTER = """----------------------------
+%(real_name)s maillist - %(web_page_url)slistinfo/%(_internal_name)s
+"""
+
+		     # List Accessibility Defaults #
+
+DEFAULT_MODERATED = 0
+# Bounce if 'to' or 'cc' fields don't explicitly name list (anti-spam)?
+DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
+# Replies to posts inherently directed to list or original sender?
+DEFAULT_REPLY_GOES_TO_LIST = 0
+# Admin approval unnecessary for subscribes?
+DEFAULT_AUTO_SUBSCRIBE = 1
+# Is view of subscription list restricted to list members?
+DEFAULT_CLOSED = 1
+# Make it 1 when it works.
+DEFAULT_MEMBER_POSTING_ONLY = 0
+# 1 for email subscription verification, 2 for admin confirmation:
+DEFAULT_WEB_SUBSCRIBE_REQUIRES_CONFIRMATION = 1
+
+		     # Digestification Defaults #
+
+# Can we get mailing list in non-digest format?
+DEFAULT_NONDIGESTABLE = 1
+# Can we get mailing list in digest format?
+DEFAULT_DIGESTABLE = 1
+DEFAULT_DIGEST_IS_DEFAULT = 0
+DEFAULT_DIGEST_SIZE_THRESHOLD = 30	# KB
+# 0 = never, 1 = daily, 2 = hourly:
+DEFAULT_ARCHIVE_UPDATE_FREQUENCY = 2
+# 0 = yearly, 1 = monthly
+DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 0
+# Retain a flat text mailbox of postings as well as the fancy archives?
+DEFAULT_ARCHIVE_RETAIN_TEXT_COPY = 1
+
+		    # Bounce Processing Defaults #
+
+# Should we do any bounced mail checking at all?
+DEFAULT_BOUNCE_PROCESSING = 0 
+# Minimum number of days that address has been undeliverable before 
+# we consider nuking it..
+DEFAULT_MINIMUM_REMOVAL_DATE = 5
+# Minimum number of bounced posts to the list before we consider nuking it.
+DEFAULT_MINIMUM_POST_COUNT_BEFORE_REMOVAL = 3
+# 0 means no, 1 means yes but send admin a report,
+# 2 means nuke 'em all and don't tell me (whee:)
+DEFAULT_AUTOMATICALLY_REMOVE = 0
+# Maximum number of posts that can go by w/o a bounce before we figure your
+# problem must have gotten resolved...  usually this could be 1, but we
+# need to account for lag time in getting the error messages.  I'd set this
+# to the maximum number of messages you'd expect your list to reasonably
+# get in 1 hour.
+DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
 
 # Enumeration for types of configurable variables in Mailman.
 Toggle    = 1
