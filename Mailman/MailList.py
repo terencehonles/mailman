@@ -175,9 +175,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'The public name of this list'),
 
 	    ('owner', mm_cfg.EmailList, (3,30), 0,
-	     "The list admin's email address (or addresses).",
-
-             "Multiple list admins - ie, multiple addresses - are ok."),
+	     "The list admin's email address - multiple admins/addresses"
+             " is ok."),
 
 	    ('description', mm_cfg.String, 50, 0,
 	     'A one sentence description of this list.'),
@@ -193,7 +192,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " mess up the entire listinfo page."),
 
 	    ('subject_prefix', mm_cfg.String, 10, 0,
-	     'Subject line prefix.',
+	     'Prefix for subject line of list postings.',
 
              "Text prefixed to posting subject lines to distinguish"
              " maillist messages in mailbox summaries."),
@@ -291,9 +290,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
              "This option determines whether web-initiated subscribes"
              " require further confirmation, either from the subscribed"
-             " address or from the list administrator.  Lack of any"
-             " confirmation makes web-based confirms a target for"
-             " mischievous subscriptions by third parties."),
+             " address or from the list administrator.  Absence of"
+             " <em>any</em> confirmation makes web-based subscription a"
+             " tempting opportunity for mischievous subscriptions by third"
+             " parties."),
 
             "Membership exposure",
 
@@ -310,9 +310,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
              "Setting this option causes member email addresses to be"
              " transformed when they are presented on list web pages (both"
-             " in text and as links), to interfere with automated web"
-             " scanners recognizing them and snarfing them up for"
-             " use by spammers."),
+             " in text and as links), so they're not trivially"
+             " recognizable as email addresses.  The intention is to"
+             " to prevent the addresses from being snarfed up by"
+             " automated web scanners for use by spammers."),
 
             "General posting filters",
 
@@ -348,7 +349,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " postings relayed from other addresses, unless <ol>"
              " <li>The relaying address has the same name, or"
              " <li>The relaying address name is included on the options that"
-             " specifies acceptable aliases for the list. </ol>."),
+             " specifies acceptable aliases for the list. </ol>"),
 
  	    ('acceptable_aliases', mm_cfg.Text, ('4', '30'), 0,
  	     'Alias names (regexps) which qualify as explicit to or cc'
@@ -372,8 +373,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	     'Hold posts with header value matching a specified regexp.',
 
              "Use this option to prohibit posts according to specific header"
-             " values.  The target value is taken as a case-insensitive"
-             " regexp for matching against the specified header."
+             " values.  The target value is a regular-expression for"
+             " matching against the specified header.  The match is done"
+             " disregarding letter case."
+             " <p>For example:<pre>to: .*@public.com </pre> says"
+             " to hold all postings with a <em>TO</em> header containing"
+             " '@public.com' anywhere among the addresses."
              " <p>Note that leading whitespace is trimmed from the"
              " regexp.  This can be circumvented in a number of ways, eg"
              " by escaping or bracketing it."),
