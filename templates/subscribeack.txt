@@ -18,8 +18,8 @@ You can also make such adjustments via email by sending a message to:
 
   %(real_name)s-request@%(host_name)s
 
-with the word `help' in the subject or body, and you will get back a
-message with instructions.
+with the word `help' in the subject or body (don't include the
+quotes), and you will get back a message with instructions.
 
 You must know your password to change your options (including changing
 the password, itself) or to unsubscribe.  It is:
