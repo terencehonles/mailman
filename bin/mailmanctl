@@ -139,7 +139,7 @@ def kill_watcher(sig):
         pidfile = mm_cfg.PIDFILE
         print >> sys.stderr, _('PID unreadable in: %(pidfile)s')
         print >> sys.stderr, e
-        print >> sys.stderr, 'Is qrunner even running?'
+        print >> sys.stderr, _('Is qrunner even running?')
         return
     try:
         os.kill(pid, sig)
@@ -147,13 +147,13 @@ def kill_watcher(sig):
         if e.errno <> errno.ESRCH: raise
         print >> sys.stderr, _('No child with pid: %(pid)s')
         print >> sys.stderr, e
-        print >> sys.stderr, 'Stale pid file removed.'
+        print >> sys.stderr, _('Stale pid file removed.')
         os.unlink(mm_cfg.PIDFILE)
 
 
 
 def get_lock_data():
-    """Return the hostname, pid, and tempfile"""
+    # Return the hostname, pid, and tempfile
     fp = open(LOCKFILE)
     filename = os.path.split(fp.read().strip())[1]
     fp.close()
