@@ -251,7 +251,10 @@ class T:
 	    self.basedir = basedir
 	self.database = database
 
-	# If the directory doesn't exist, create it
+	# If the directory doesn't exist, create it.  This code shouldn't get
+	# run anymore, we create the directory in Archiver.py.  It should only
+	# get used by legacy lists created that are only receiving their first
+	# message in the HTML archive now -- Marc
 	try:
             os.stat(self.basedir)
 	except os.error, errdata:
