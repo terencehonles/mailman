@@ -29,6 +29,20 @@ Here is a history of user visible changes to Mailman.
     - In email commands, "join" is a synonym for "subscribe". "remove"
       and "leave" are synonyms for "unsubscribe".
 
+    - Fixes in 2.0.5 ported forward:
+
+        Fix a lock stagnation problem that can result when the user hits
+        the `stop' button on their browser during a write operation that
+        can take a long time (e.g. hitting the membership management admin
+        page).
+    
+    - Fixes in 2.0.4 ported forward:
+
+        Python 2.1 compatibility release.  There were a few
+        questionable constructs and uses of deprecated modules that
+        caused annoying warnings when used with Python 2.1.  This
+        release quiets those warnings.
+
     - Fixes in 2.0.3 ported forward:
 
         Bug fix release.  There was a small typo in 2.0.2 in
