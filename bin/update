@@ -88,7 +88,7 @@ script.
             print "to"
             print "\t" + newname
         else: # directory
-            print "looks like you have a really recent CVS isntallation..."
+            print "looks like you have a really recent CVS installation..."
             print "you're either one brave soul, or you already ran me"
     
 
@@ -108,7 +108,7 @@ script.
             print "to"
             print "\t" + newname
         else: # directory
-            print "looks like you have a really recent CVS isntallation..."
+            print "looks like you have a really recent CVS installation..."
             print "you're either one brave soul, or you already ran me"
 
     #
