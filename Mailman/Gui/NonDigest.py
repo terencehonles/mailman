@@ -44,18 +44,6 @@ class NonDigest(GUIBase):
             ('nondigestable', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
              _("""Can subscribers choose to receive mail immediately, rather
              than in batched digests?""")),
-
-            ('msg_header', mm_cfg.Text, (10, WIDTH), 0,
-             _('Header added to mail sent to regular list members'),
-             _('''Text prepended to the top of every immediately-delivery
-             message. ''') + Utils.maketext('headfoot.html',
-                                            mlist=mlist, raw=1)),
-            
-            ('msg_footer', mm_cfg.Text, (10, WIDTH), 0,
-             _('Footer added to mail sent to regular list members'),
-             _('''Text appended to the bottom of every immediately-delivery
-             message. ''') + Utils.maketext('headfoot.html',
-                                            mlist=mlist, raw=1)),
             ]
 
         if mm_cfg.OWNERS_CAN_ENABLE_PERSONALIZATION:
@@ -107,7 +95,23 @@ class NonDigest(GUIBase):
                  </ul>
                  """))
                 ])
-
+        # BAW: for very dumb reasons, we want the `personalize' attribute to
+        # show up before the msg_header and msg_footer attrs, otherwise we'll
+        # get a bogus warning if the header/footer contains a personalization
+        # substitution variable, and we're transitioning from no
+        # personalization to personalization enabled.
+        info.extend([('msg_header', mm_cfg.Text, (10, WIDTH), 0,
+             _('Header added to mail sent to regular list members'),
+             _('''Text prepended to the top of every immediately-delivery
+             message. ''') + Utils.maketext('headfoot.html',
+                                            mlist=mlist, raw=1)),
+            
+            ('msg_footer', mm_cfg.Text, (10, WIDTH), 0,
+             _('Footer added to mail sent to regular list members'),
+             _('''Text appended to the bottom of every immediately-delivery
+             message. ''') + Utils.maketext('headfoot.html',
+                                            mlist=mlist, raw=1)),
+            ])
         return info
 
     def _setValue(self, mlist, property, val, doc):
