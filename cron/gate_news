@@ -29,6 +29,11 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import flock
 
+# Work around known problems with some RedHat cron daemons
+import signal
+signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
+
 WATERMARK_FILE = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
 LIST_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_lock.')
 

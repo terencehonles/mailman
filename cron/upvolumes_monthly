@@ -28,6 +28,9 @@ import paths
 from Mailman import MailList
 from Mailman import Utils
 
+# Work around known problems with some RedHat cron daemons
+import signal
+signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 for name in Utils.list_names():
     try:

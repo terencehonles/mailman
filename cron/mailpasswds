@@ -36,6 +36,11 @@ from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
 
+# Work around known problems with some RedHat cron daemons
+import signal
+signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
+
 # Give time for the delivery process-forks to clear every so often, to
 # avoid saturation of the process table.  Set zero or negative for no
 # pauses.

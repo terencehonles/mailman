@@ -170,22 +170,7 @@ class Deliverer:
 	if footer:
 	    cmdproc.write(footer)
 
-        # TBD: this potentially masks a real bug.  We have been getting
-        # several reports from Linux users that this line is raising the
-        # following exception:
-        #
-        # IOError: (10, 'No child processes')
-        #
-        # I don't know how this can happen, I can't reproduce it on Solaris,
-        # and it doesn't seem to affect anything.  So I'm chalking it up to a
-        # harmless Linux artifact that we can safely ignore.
-        try:
-            status = cmdproc.close()
-        except IOError, (code, msg):
-            if errcode <> errno.ECHILD:
-                Utils.reraise()
-            # otherwise just ignore it
-            status = 0
+        status = cmdproc.close()
         if status:
             self.LogMsg('deliverer', 
                         'Non-zero exit status: %d\nCommand: %s',

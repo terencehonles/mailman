@@ -30,6 +30,10 @@ from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
 
+# Work around known problems with some RedHat cron daemons
+import signal
+signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
 def usage():
     sys.stderr.write("Usage: %s level\n" % sys.argv[0])
     sys.stderr.write("\twhere level is an integer, "

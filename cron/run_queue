@@ -24,4 +24,8 @@ import sys
 import paths
 from Mailman import OutgoingQueue
 
+# Work around known problems with some RedHat cron daemons
+import signal
+signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
 OutgoingQueue.processQueue()
