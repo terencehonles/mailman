@@ -18,11 +18,13 @@
 """
 
 import os
+import time
 import unittest
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
+from Mailman import MemberAdaptor
 from Mailman.Errors import NotAMemberError
 from Mailman.UserDesc import UserDesc
 
@@ -184,7 +186,6 @@ class TestMembers(TestBase):
         gmo = self._mlist.getMemberOption
         # First test the current option values
         eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
@@ -197,7 +198,6 @@ class TestMembers(TestBase):
         gmo = self._mlist.getMemberOption
         self._mlist.setMemberOption('person@dom.ain', mm_cfg.Digests, 1)
         eq(gmo('person@dom.ain', mm_cfg.Digests), 1)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
@@ -207,17 +207,28 @@ class TestMembers(TestBase):
 
     def test_set_disable_delivery(self):
         eq = self.assertEqual
-        gmo = self._mlist.getMemberOption
-        self._mlist.setMemberOption('person@dom.ain',
-                                    mm_cfg.DisableDelivery, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 1)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+        gds = self._mlist.getDeliveryStatus
+        eq(gds('person@dom.ain'), MemberAdaptor.ENABLED)
+        self._mlist.setDeliveryStatus('person@dom.ain', MemberAdaptor.UNKNOWN)
+        eq(gds('person@dom.ain'), MemberAdaptor.UNKNOWN)
+        self._mlist.setDeliveryStatus('person@dom.ain', MemberAdaptor.BYUSER)
+        eq(gds('person@dom.ain'), MemberAdaptor.BYUSER)
+        self._mlist.setDeliveryStatus('person@dom.ain', MemberAdaptor.BYBOUNCE)
+        eq(gds('person@dom.ain'), MemberAdaptor.BYBOUNCE)
+        self._mlist.setDeliveryStatus('person@dom.ain', MemberAdaptor.BYADMIN)
+        eq(gds('person@dom.ain'), MemberAdaptor.BYADMIN)
+
+    def test_delivery_status_time(self):
+        now = time.time()
+        time.sleep(1)
+        self._mlist.setDeliveryStatus('person@dom.ain', MemberAdaptor.BYUSER)
+        self.failUnless(
+            self._mlist.getDeliveryStatusChangeTime('person@dom.ain')
+            > now)
+        self._mlist.setDeliveryStatus('person@dom.ain', MemberAdaptor.ENABLED)
+        self.assertEqual(
+            self._mlist.getDeliveryStatusChangeTime('person@dom.ain'),
+            0)
 
     def test_set_dont_receive_own_posts(self):
         eq = self.assertEqual
@@ -225,7 +236,6 @@ class TestMembers(TestBase):
         self._mlist.setMemberOption('person@dom.ain',
                                     mm_cfg.DontReceiveOwnPosts, 1)
         eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 1)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
@@ -239,7 +249,6 @@ class TestMembers(TestBase):
         self._mlist.setMemberOption('person@dom.ain',
                                     mm_cfg.AcknowledgePosts, 1)
         eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 1)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
@@ -253,7 +262,6 @@ class TestMembers(TestBase):
         self._mlist.setMemberOption('person@dom.ain',
                                     mm_cfg.DisableMime, 1)
         eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 1)
@@ -267,7 +275,6 @@ class TestMembers(TestBase):
         self._mlist.setMemberOption('person@dom.ain',
                                     mm_cfg.ConcealSubscription, 1)
         eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
@@ -281,7 +288,6 @@ class TestMembers(TestBase):
         self._mlist.setMemberOption('person@dom.ain',
                                     mm_cfg.SuppressPasswordReminder, 1)
         eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
@@ -295,7 +301,6 @@ class TestMembers(TestBase):
         self._mlist.setMemberOption('person@dom.ain',
                                     mm_cfg.ReceiveNonmatchingTopics, 1)
         eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableDelivery), 0)
         eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
