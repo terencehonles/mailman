@@ -306,6 +306,8 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
         andpassmsg = ""
     form.AddItem("Make your changes below, and then submit them"
                  " using the button at the bottom.%s<p>"
+                 "<STRONG>NOTE:</STRONG> Changes will only take effect"
+                 " if your browser supports \"cookies\".<P>"
                  % andpassmsg)
 
     form.AddItem(FormatOptionsSection(category, mlist, cgi_data))
@@ -764,7 +766,6 @@ def GetValidValue(mlist, prop, my_type, val, dependant):
 
 
 def ChangeOptions(mlist, category, cgi_info, document):
-    dirty = 0
     confirmed = 0
     if cgi_info.has_key('newpw'):
 	if cgi_info.has_key('confirmpw'):
@@ -782,7 +783,6 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 confirm = cgi_info['confirmpw'].value
                 if new == confirm:
                     mlist.password = crypt(new, Utils.GetRandomSeed())
-                    dirty = 1
                     # Re-authenticate (to set new cookie)
                     mlist.WebAuthenticate(password=new, cookie='admin')
                 else:
@@ -852,7 +852,6 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 elif property == 'gateway_to_mail':
                     mlist.usenet_watermark = None
                 setattr(mlist, property, value)
-                dirty = 1
     #
     # mass subscription processing for members category
     #
@@ -893,7 +892,6 @@ def ChangeOptions(mlist, category, cgi_info, document):
             document.AddItem(apply(UnorderedList, tuple((subscribe_success))))
             document.AddItem("<p>")
             # ApprovedAddMembers will already have saved the list for us.
-            # dirty = 1
         if subscribe_errors:
             document.AddItem(Header(5, "Error Subscribing:"))
             items = map(lambda x: "%s -- %s" % (x[0], x[1]), subscribe_errors)
@@ -915,41 +913,32 @@ def ChangeOptions(mlist, category, cgi_info, document):
             if not cgi_info.has_key('%s_subscribed' % (user)):
                 try:
                     mlist.DeleteMember(user)
-                    dirty = 1
                 except Errors.MMNoSuchUserError:
                     unsubscribe_errors.append((user, 'Not subscribed'))
                 continue
             if not cgi_info.has_key("%s_digest" % (user)):
                 if mlist.digest_members.has_key(user):
                     del mlist.digest_members[user]
-                    dirty = 1
                 if not mlist.members.has_key(user):
                     mlist.members[user] = 0
-                    dirty = 1
             else:
                 if not mlist.digest_members.has_key(user):
                     mlist.digest_members[user] = 0
-                    dirty = 1
                 if mlist.members.has_key(user):
                     del mlist.members[user]
-                    dirty = 1
                 
             for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
-                okey = MailCommandHandler.option_info[opt]
+                opt_code = MailCommandHandler.option_info[opt]
                 if cgi_info.has_key("%s_%s" % (user, opt)):
-                    mlist.SetUserOption(user, okey, 1)
-                    dirty = 1
+                    mlist.SetUserOption(user, opt_code, 1, save_list=0)
                 else:
-                    mlist.SetUserOption(user, okey, 0)
-                    dirty = 1
+                    mlist.SetUserOption(user, opt_code, 0, save_list=0)
         if unsubscribe_errors:
             document.AddItem(Header(5, "Error Unsubscribing:"))
             items = map(lambda x: "%s -- %s" % (x[0], x[1]),
                         unsubscribe_errors)
             document.AddItem(apply(UnorderedList, tuple((items))))
             document.AddItem("<p>")
-    if dirty:
-        mlist.Save()
 
 
 
