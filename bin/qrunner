@@ -56,6 +56,11 @@ Options:
     -v/--verbose
         Spit out more debugging information to the logs/qrunner log file.
 
+    -s/--subproc
+        This should only be used when running qrunner as a subprocess of the
+        mailmanctl startup script.  It changes some of the exit-on-error
+        behavior to work better with that framework.
+
     -h/--help
         Print this message and exit.
 
@@ -76,6 +81,9 @@ from Mailman.Logging.Utils import LogStdErr
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
 
+# Flag which says whether we're running under mailmanctl or not.
+AS_SUBPROC = 0
+
 LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=1)
 
 
@@ -93,7 +101,12 @@ def make_qrunner(name, slice, range, once=0):
     try:
         __import__(modulename)
     except ImportError, e:
-        usage(1, e)
+        if AS_SUBPROC:
+            # Exit with SIGTERM exit code so mailmanctl won't try to restart us
+            print >> sys.stderr, 'Cannot import runner module', modulename
+            sys.exit(signal.SIGTERM)
+        else:
+            usage(1, e)
     qrclass = getattr(sys.modules[modulename], name)
     if once:
         # Subclass to hack in the setting of the stop flag in _doperiodic()
@@ -135,10 +148,11 @@ def set_signals(loop):
 
 
 def main():
+    global AS_SUBPROC
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'hlor:v',
-            ['help', 'list', 'once', 'runner=', 'verbose'])
+            sys.argv[1:], 'hlor:vs',
+            ['help', 'list', 'once', 'runner=', 'verbose', 'subproc'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -183,6 +197,8 @@ def main():
                     runners.append((runner, slice, range))
                 else:
                     runners.append((runner + 'Runner', slice, range))
+        elif opt in ('-s', '--subproc'):
+            AS_SUBPROC = 1
         elif opt in ('-v', '--verbose'):
             verbose = 1
 
