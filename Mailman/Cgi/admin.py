@@ -563,7 +563,7 @@ def FormatMembershipOptions(mlist, cgi_data):
         footer = "<p>"
     for member in all:
         mtext = '<a href="%s">%s</a>' % (
-            mlist.GetAbsoluteOptionsURL(member, obscured=1),
+            mlist.GetAbsoluteOptionsURL(member, obscure=1),
             mlist.GetUserSubscribedAddress(member))
         cells = [mtext + "<input type=hidden name=user value=%s>" % (member),
                  Center(CheckBox(member + "_subscribed", "on", 1).Format())]
