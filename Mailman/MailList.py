@@ -823,17 +823,6 @@ it will not be changed.""")),
         self._ready = 1
         self.InitTemplates()
         self.Save()
-	# Touch these files so they have the right dir perms no matter what.
-	# A "just-in-case" thing.  This shouldn't have to be here.
-	ou = os.umask(002)
-	try:
-            path = os.path.join(self._full_path, 'next-digest')
-            fp = open(path, "a+")
-            fp.close()
-	    fp = open(path+'-topics', "a+")
-            fp.close()
-	finally:
-	    os.umask(ou)
 	
     def __save(self, dict):
         # Marshal this dictionary to file, and rotate the old version to a
