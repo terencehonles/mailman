@@ -41,7 +41,7 @@ PATTERNS = [
     # sz-sb.de, corridor.com, nfg.nl
     (_c('the following addresses had'),
      _c('transcript of session follows'),
-     _c(r'<(?P<fulladdr>[^>]*)>|\(expanded from: (?P<addr>[^)]*)\)')),
+     _c(r'<(?P<fulladdr>[^>]*)>|\(expanded from: <?(?P<addr>[^>)]*)>?\)')),
     # robanal.demon.co.uk
     (_c('this message was created automatically by mail delivery software'),
      _c('original message follows'),
@@ -92,7 +92,9 @@ def process(msg, patterns=None):
         if state == 1:
             mo = acre.search(line)
             if mo:
-                addrs[mo.group('addr')] = 1
+                addr = mo.group('addr')
+                if addr:
+                    addrs[mo.group('addr')] = 1
             elif ecre.search(line):
                 break
     return addrs.keys()
