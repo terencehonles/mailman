@@ -48,12 +48,13 @@ configure and install the Mailman software.
       already been made for you.
 
       Make sure this directory is set to group `mailman' and has the
-      group sticky bit set.  For example, these shell commands will
-      accomplish this:
+      group sticky bit set.  You probably also want to guarantee that
+      this directory is read and executeable by everyone. For example,
+      these shell commands will accomplish this:
 
           % cd $prefix
           % chgrp mailman .
-          % chmod g+s .
+          % chmod a+rx,g+s .
 
       You are now ready to configure and install the Mailman software.
 
