@@ -330,6 +330,7 @@ def NewVars(l):
     # Emergency moderation flag
     add_only_if_missing('emergency', 0)
     add_only_if_missing('hold_and_cmd_autoresponses', {})
+    add_only_if_missing('news_prefix_subject_too', 1)
 
 
 
