@@ -26,44 +26,52 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
+from Mailman import i18n
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
+
+# Set up i18n
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
 def main():
     parts = Utils.GetPathPieces()
     if not parts:
-        FormatListinfoOverview()
+        listinfo_overview()
         return
 
     listname = parts[0].lower()
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        FormatListinfoOverview(_('No such list <em>%(listname)s</em>'))
-        syslog('error', 'listinfo: no such list "%s": %s' % (listname, e))
+        listinfo_overview(_('No such list <em>%(listname)s</em>'))
+        syslog('error', 'No such list "%s": %s' % (listname, e))
         return
 
-    # see if the user want to see this page in other language
+    # See if the user want to see this page in other language
     form = cgi.FieldStorage()
     if form.has_key('language'):
         language = form['language'].value
     else:
+        # No?  Okay, use the list's language
         language = mlist.preferred_language
 
-    FormatListListinfo(mlist, language)
+    i18n.set_language(language)
+
+    list_listinfo(mlist, language)
 
 
 
-def FormatListinfoOverview(error=None):
-    "Present a general welcome and itemize the (public) lists for this host."
-
-    # XXX We need a portable way to determine the host by which we are being 
-    #     visited!  An absolute URL would do...
+def listinfo_overview(msg=''):
+    # Present the general listinfo overview
+    #
+    # TBD: We need a portable way to determine the host by which we are being
+    # visited!  An absolute URL would do...
     http_host = os.environ.get('HTTP_HOST', os.environ.get('SERVER_NAME'))
     port = os.environ.get('SERVER_PORT')
-    # strip off the port if there is one
+    # Strip off the port if there is one
     if port and http_host[-len(port)-1:] == ':'+port:
         http_host = http_host[:-len(port)-1]
     if mm_cfg.VIRTUAL_HOST_OVERVIEW and http_host:
@@ -71,7 +79,11 @@ def FormatListinfoOverview(error=None):
     else:
 	hostname = mm_cfg.DEFAULT_HOST_NAME
 
+    # Set up the document and assign it the correct language.  The only one we
+    # know about at the moment is the server's default.
     doc = Document()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
     legend = _("%(hostname)s Mailing Lists")
     doc.SetTitle(legend)
 
@@ -80,12 +92,13 @@ def FormatListinfoOverview(error=None):
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
                       colspan=2, bgcolor="#99ccff")
 
+    # Skip any mailing lists that isn't advertised.
     advertised = []
-    names = Utils.list_names()
-    names.sort()
+    listnames = Utils.list_names()
+    listnames.sort()
 
-    for n in names:
-	mlist = MailList.MailList(n, lock=0)
+    for name in listnames:
+	mlist = MailList.MailList(name, lock=0)
 	if mlist.advertised:
 	    if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
                     http_host and \
@@ -96,34 +109,30 @@ def FormatListinfoOverview(error=None):
 	    else:
 		advertised.append(mlist)
 
-    # This call to environ must be done because MailList overwrite
-    # Environment variable 'LANG'
-    os.environ['LANG'] = mm_cfg.DEFAULT_SERVER_LANGUAGE
-
-    if error:
-	greeting = FontAttr(error, color="ff5060", size="+1")
+    if msg:
+	greeting = FontAttr(msg, color="ff5060", size="+1")
     else:
 	greeting = FontAttr(_('Welcome!'), size='+2')
 
-    welcomeitems = [greeting]
+    welcome = [greeting]
     if not advertised:
-        welcomeitems.extend(
-            ("<p>" + 
-             _(" There currently are no publicly-advertised "),
-             Link(mm_cfg.MAILMAN_URL, "mailman"),
-             _(" mailing lists on %(hostname)s.")))
+        welcome.extend(
+            ('<p>' + 
+             _(' There currently are no publicly-advertised '),
+             Link(mm_cfg.MAILMAN_URL, 'Mailman'),
+             _(' mailing lists on %(hostname)s.')))
     else:
-        welcomeitems.append(
+        welcome.append(
             _('''<p>Below is a listing of all the public mailing lists on
             %(hostname)s.  Click on a list name to get more information about
             the list, or to subscribe, unsubscribe, and change the preferences
             on your subscription.'''))
 
     # set up some local variables
-    adj = error and _('right') or ''
-    welcomeitems.extend(
+    adj = msg and _('right') or ''
+    welcome.extend(
         (_(''' To visit the info page for an unadvertised list,
-        a URL similar to this one, but with a "/" and the %(adj)s
+        a URL similar to this one, but with a '/' and the %(adj)s
         list name appended.
         <p>List administrators, you can visit '''),
          Link(Utils.ScriptURL('admin'),
@@ -134,7 +143,7 @@ def FormatListinfoOverview(error=None):
               mm_cfg.MAILMAN_OWNER),
          '.<p>'))
 
-    table.AddRow([apply(Container, welcomeitems)])
+    table.AddRow([apply(Container, welcome)])
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0, colspan=2)
 
     if advertised:
@@ -154,12 +163,10 @@ def FormatListinfoOverview(error=None):
 
 
 
-def FormatListListinfo(mlist, lang):
-    "Expand the listinfo template against the list's settings, and print."
-
-    os.environ['LANG'] = lang
-
+def list_listinfo(mlist, lang):
+    # Generate list specific listinfo
     doc = HeadlessDocument()
+    doc.set_language(lang)
 
     replacements = mlist.GetStandardReplacements(lang)
 
