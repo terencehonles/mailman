@@ -7,6 +7,9 @@ This script is invoked via the mail wrapper.
 Stdin is the mail message, and argv[1] is the name of the target mailing
 list."""
 
+__version__ = "$Revision: 400 $"
+
+
 # Todo: check size of To: list < 100
 # Send back why the post was rejected.
 
