@@ -135,11 +135,12 @@ def main():
         if cgi_data.has_key('VARHELP'):
             varhelp = cgi_data['VARHELP'].value
         elif cgi_data.has_key('request_login') and \
-             os.environ.has_key('QUERY_STRING'):
+             os.environ.get('QUERY_STRING'):
             # POST methods, even if their actions have a query string, don't
             # get put into FieldStorage's keys :-(
-            qs = cgi.parse_qs(os.environ['QUERY_STRING'])
-            varhelp = qs.get('VARHELP')[0]
+            qs = cgi.parse_qs(os.environ['QUERY_STRING']).get('VARHELP')
+            if qs and type(qs) == types.ListType:
+                varhelp = qs[0]
         if varhelp:
             FormatOptionHelp(doc, varhelp, lst)
             print doc.Format(bgcolor="#ffffff")
