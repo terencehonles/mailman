@@ -904,6 +904,14 @@ DEFAULT_PASS_MIME_TYPES = []
 # is performed.  Conversion is done according to HTML_TO_PLAIN_TEXT_COMMAND
 DEFAULT_CONVERT_HTML_TO_PLAINTEXT = 1
 
+# Default action to take on filtered messages.
+# 0 = Discard, 1 = Reject, 2 = Forward, 3 = Preserve
+DEFAULT_FILTER_ACTION = 0
+
+# Whether to allow list owners to preserve content filtered messages to a
+# special queue on the disk.
+OWNERS_CAN_PRESERVE_FILTERED_MESSAGES = 1
+
 # Check for administrivia in messages sent to the main list?
 DEFAULT_ADMINISTRIVIA = 1
 
