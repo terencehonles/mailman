@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 5373 $)
+AC_REVISION($Revision: 5375 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -270,7 +270,7 @@ fi
 
 AC_MSG_CHECKING(for --with-permcheck)
 AC_ARG_WITH(permcheck, dnl
-[  --without-permcheck    skip the check for target directory permissions])
+[  --without-permcheck	skip the check for target directory permissions])
 if test -z "$with_permcheck"
 then
 	with_permcheck="yes"
@@ -406,7 +406,7 @@ AC_MSG_RESULT($with_cgi_ext)
 AC_SUBST(MAILHOST)
 AC_MSG_CHECKING(for --with-mailhost)
 AC_ARG_WITH(mailhost, dnl
-[  --with-mailhost     specify the hostname part for outgoing email])
+[  --with-mailhost	specify the hostname part for outgoing email])
 if test -z "$with_mailhost"
 then
 	MAILHOST=''
@@ -419,7 +419,7 @@ AC_MSG_RESULT($with_mailhost)
 AC_SUBST(URLHOST)
 AC_MSG_CHECKING(for --with-urlhost)
 AC_ARG_WITH(urlhost, dnl
-[  --with-urlhost     specify the hostname part of urls])
+[  --with-urlhost	specify the hostname part of urls])
 if test -z "$with_urlhost"
 then
 	URLHOST=''

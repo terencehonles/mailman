@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.28 
+# From configure.in Revision: 2.29 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -25,7 +25,7 @@ ac_help="$ac_help
 ac_help="$ac_help
   --with-groupname	specify a group name other than \"mailman\""
 ac_help="$ac_help
-  --without-permcheck    skip the check for target directory permissions"
+  --without-permcheck	skip the check for target directory permissions"
 ac_help="$ac_help
   --with-mail-gid  	specify GID mail programs run as"
 ac_help="$ac_help
@@ -33,9 +33,9 @@ ac_help="$ac_help
 ac_help="$ac_help
   --with-cgi-ext	specify extension for CGI programs (include dot)"
 ac_help="$ac_help
-  --with-mailhost     specify the hostname part for outgoing email"
+  --with-mailhost	specify the hostname part for outgoing email"
 ac_help="$ac_help
-  --with-urlhost     specify the hostname part of urls"
+  --with-urlhost	specify the hostname part of urls"
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
