@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Remove the components of a maillist with impunity - beware!
+"""Remove the components of a mailing list with impunity - beware!
 
 This removes (almost) all traces of a mailing list.  By default, the lists
 archives are not removed, which is very handy for retiring old lists.
@@ -79,7 +79,7 @@ def main():
     if not removeArchives:
         print 'Not removing archives.  Reinvoke with -a to remove them.'
 
-    REMOVABLES = [('lists/%s',     'list info'),
+    REMOVABLES = [('lists/%s', 'list info'),
                   ]
 
     if removeArchives:
@@ -89,8 +89,6 @@ def main():
                       ('archives/public/%s',       'public archives'),
                       ('archives/public/%s.mbox',  'public archives'),
                       ]
-
-    REMOVABLES.append(('locks/%s.lock', 'lock file'))
 
     for dirtmpl, msg in REMOVABLES:
         dir = os.path.join(paths.prefix, dirtmpl % listname)
