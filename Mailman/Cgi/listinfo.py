@@ -138,10 +138,15 @@ def listinfo_overview(msg=''):
         table.AddRow([Bold(FontAttr(_('List'), size='+2')),
                       Bold(FontAttr(_('Description'), size='+2'))
                       ])
-    for mlist in advertised:
-        table.AddRow(
-            [Link(mlist.GetScriptURL('listinfo'), Bold(mlist.real_name)),
-             mlist.description or Italic(_('[no description available]'))])
+        highlight = 1
+        for mlist in advertised:
+            table.AddRow(
+                [Link(mlist.GetScriptURL('listinfo'), Bold(mlist.real_name)),
+                 mlist.description or Italic(_('[no description available]'))])
+            if highlight and mm_cfg.WEB_HIGHLIGHT_COLOR:
+                table.AddRowInfo(table.GetCurrentRowIndex(),
+                                 bgcolor=mm_cfg.WEB_HIGHLIGHT_COLOR)
+            highlight = not highlight
 
     doc.AddItem(table)
     doc.AddItem('<hr>')
