@@ -27,13 +27,13 @@ It also matches something claiming to be `The BNS Postfix program'.
 
 
 import re
-from Mailman.pythonlib.StringIO import StringIO
+from cStringIO import StringIO
 
 
 
 def flatten(msg, leaves):
     # give us all the leaf (non-multipart) subparts
-    if msg.ismultipart():
+    if msg.is_multipart():
         for part in msg.get_payload():
             flatten(part, leaves)
     else:
@@ -72,14 +72,14 @@ def findaddr(msg):
 
 
 def process(msg):
-    if msg.gettype() <> 'multipart/mixed':
+    if msg.get_type() <> 'multipart/mixed':
         return None
     # We're looking for the plain/text subpart with a Content-Description: of
     # `notification'.
     leaves = []
     flatten(msg, leaves)
     for subpart in leaves:
-        if subpart.gettype() == 'text/plain' and \
+        if subpart.get_type() == 'text/plain' and \
            subpart.get('content-description', '').lower() == 'notification':
             # then...
             return findaddr(subpart)

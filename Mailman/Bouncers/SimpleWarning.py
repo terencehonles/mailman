@@ -16,8 +16,6 @@
 
 """Recognizes simple heuristically delimited warnings."""
 
-import re
-from mimelib import MsgReader
 from Mailman.Bouncers.SimpleMatch import _c
 from Mailman.Bouncers.SimpleMatch import process as _process
 

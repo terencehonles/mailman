@@ -31,9 +31,8 @@ import urlparse
 import sha
 import errno
 import time
+import email.Iterators
 from string import whitespace as WHITESPACE
-
-from mimelib.MsgReader import MsgReader
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -501,13 +500,9 @@ ADMINDATA = {
 # unsubscribe, etc).  The test must be a good guess -- messages that return
 # true get sent to the list admin instead of the entire list.
 def is_administrivia(msg):
-    reader = MsgReader(msg)
     linecnt = 0
     lines = []
-    while 1:
-        line = reader.readline()
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         # Strip out any signatures
         if line == '-- ':
             break

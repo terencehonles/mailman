@@ -20,11 +20,9 @@ This is a subclass of mimeo.Message but provides a slightly extended interface
 which is more convenient for use inside Mailman.
 """
 
+import email.Message
+import email.Utils
 from types import ListType
-
-import mimelib.Message
-from mimelib.StringableMixin import StringableMixin
-from mimelib.address import getaddresses
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -33,7 +31,7 @@ COMMASPACE = ', '
 
 
 
-class Message(mimelib.Message.Message, StringableMixin):
+class Message(email.Message.Message):
     def get_sender(self, use_envelope=None, preserve_case=0):
         """Return the address considered to be the author of the email.
 
@@ -67,7 +65,7 @@ class Message(mimelib.Message.Message, StringableMixin):
             fieldval = self[h]
             if not fieldval:
                 continue
-            addrs = getaddresses([fieldval])
+            addrs = email.Utils.getaddresses([fieldval])
             try:
                 realname, address = addrs[0]
             except IndexError:

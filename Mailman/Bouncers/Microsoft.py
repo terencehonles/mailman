@@ -17,7 +17,7 @@
 """Microsoft's `SMTPSVC' nears I kin tell."""
 
 import re
-from Mailman.pythonlib.StringIO import StringIO
+from cStringIO import StringIO
 
 scre = re.compile(r'transcript of session follows', re.IGNORECASE)
 

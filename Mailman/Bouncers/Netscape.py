@@ -26,7 +26,7 @@ decipher the format here too.
 """
 
 import re
-from Mailman.pythonlib.StringIO import StringIO
+from cStringIO import StringIO
 
 pcre = re.compile(
     r'This Message was undeliverable due to the following reason:',

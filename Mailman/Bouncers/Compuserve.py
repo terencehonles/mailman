@@ -17,7 +17,7 @@
 """Compuserve has its own weird format for bounces."""
 
 import re
-from mimelib import MsgReader
+import email
 
 dcre = re.compile(r'your message could not be delivered', re.IGNORECASE)
 acre = re.compile(r'Invalid receiver address: (?P<addr>.*)')
@@ -25,7 +25,7 @@ acre = re.compile(r'Invalid receiver address: (?P<addr>.*)')
 
 
 def process(msg):
-    mi = MsgReader.MsgReader(msg)
+    mi = email.Iterators.body_line_iterator(msg)
     # simple state machine
     #    0 = nothing seen yet
     #    1 = intro line seen

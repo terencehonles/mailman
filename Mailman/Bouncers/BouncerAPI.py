@@ -25,13 +25,13 @@ the filename containing the bounce message.
 import sys
 import traceback
 from types import ListType
+from cStringIO import StringIO
 
 # testing kludge
 if __name__ == '__main__':
     execfile('bin/paths.py')
 
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
 
 class _Stop:
     pass
@@ -91,7 +91,7 @@ def ScanMessages(mlist, msg, testing=0):
 if __name__ == '__main__':
     from Mailman import Message
     from Mailman.i18n import _
-    from mimelib import Parser
+    import email
 
     def usage(code, msg=''):
         print >> sys.stderr, _(__doc__)
@@ -102,11 +102,9 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         usage(1, 'required arguments: <file> [, <file> ...]')
 
-    p = Parser.Parser(_class=Message.Message)
-
     for filename in sys.argv[1:]:
         print 'scanning file', filename
         fp = open(filename)
-        msg = p.parse(fp)
+        msg = email.message_from_file(fp, Message.Message)
         fp.close()
         ScanMessages(None, msg, testing=1)

@@ -17,7 +17,7 @@
 """Recognizes simple heuristically delimited bounces."""
 
 import re
-from mimelib import MsgReader
+import email.Iterators
 
 
 
@@ -72,17 +72,12 @@ patterns = [
 
 
 def process(msg, patterns=patterns):
-    mi = MsgReader.MsgReader(msg)
     # simple state machine
     #     0 = nothing seen yet
     #     1 = intro seen
     addrs = {}
     state = 0
-    while 1:
-        line = mi.readline()
-        #print '(%d) line: %s' % (state, line[:-1])
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         if state == 0:
             for scre, ecre, acre in patterns:
                 if scre.search(line):

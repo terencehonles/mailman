@@ -28,7 +28,7 @@ Escape character is '^]'.
 """
 
 import re
-from mimelib.MsgReader import MsgReader
+import email
 
 ecre = re.compile('original message follows', re.IGNORECASE)
 acre = re.compile(r'''
@@ -47,12 +47,8 @@ def process(msg):
     mailer = msg.get('x-mailer', '')
     if not mailer.startswith('<SMTP32 v'):
         return
-    mi = MsgReader(msg)
     addrs = {}
-    while 1:
-        line = mi.readline()
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         if ecre.search(line):
             break
         mo = acre.search(line)

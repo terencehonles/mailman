@@ -17,7 +17,7 @@
 
 "Extend mailbox.UnixMailbox."
 
-from mimelib.Generator import Generator
+from email.Generator import Generator
 from Mailman.pythonlib import mailbox
 
 
@@ -40,4 +40,4 @@ class Mailbox(mailbox.PortableUnixMailbox):
         self.fp.seek(1, 2)
         # Create a Generator instance to write the message to the file
         g = Generator(self.fp)
-        g.write(msg)
+        g(msg, unixfrom=1)

@@ -24,8 +24,8 @@ their MTA. :(
 """
 
 import re
-from mimelib import address
-from Mailman.pythonlib.StringIO import StringIO
+from cStringIO import StringIO
+from email.Utils import getaddresses
 
 scre = re.compile(r'Message not delivered to the following', re.IGNORECASE)
 ecre = re.compile(r'Error Detail', re.IGNORECASE)
@@ -34,10 +34,10 @@ acre = re.compile(r'\s+(?P<addr>\S+)\s+')
 
 
 def process(msg):
-    if msg.ismultipart():
+    if msg.is_multipart():
         return None
     try:
-        whofrom = address.getaddresses([msg.get('from', '')])[0][1]
+        whofrom = getaddresses([msg.get('from', '')])[0][1]
         if not whofrom:
             return None
         username, domain = whofrom.split('@', 1)

@@ -24,8 +24,8 @@ import os
 import sys
 import re
 import traceback
-
-from mimelib.MsgReader import MsgReader
+import email.Iterators
+from cStringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -34,7 +34,6 @@ from Mailman import Message
 from Mailman import Pending
 from Mailman.UserDesc import UserDesc
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
 import Mailman.i18n
 
 
@@ -182,14 +181,7 @@ Subject: %s''', self.internal_name(), msg['from'], subject)
             if mo:
                 subject = mo.group('cmd')
 
-        reader = MsgReader(msg)
-        # BAW: here's where Python 2.1's xreadlines module would help!
-        lines = []
-        while 1:
-            line = reader.readline()
-            if not line:
-                break
-            lines.append(line)
+        lines = email.Iterators.body_line_iterator(msg)
 
         # Find out if the subject line has a command on it
         subjcmd = []

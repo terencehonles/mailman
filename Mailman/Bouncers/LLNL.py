@@ -17,18 +17,14 @@
 """LLNL's custom Sendmail bounce message."""
 
 import re
-from mimelib.MsgReader import MsgReader
+import email
 
 acre = re.compile(r',\s*(?P<addr>\S+@[^,]+),', re.IGNORECASE)
 
 
 
 def process(msg):
-    mi = MsgReader(msg)
-    while 1:
-        line = mi.readline()
-        if not line:
-            break
+    for line in email.Iterators.body_line_iterator(msg):
         mo = acre.search(line)
         if mo:
             return [mo.group('addr')]

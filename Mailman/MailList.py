@@ -28,15 +28,12 @@ import re
 import shutil
 import socket
 import urllib
+from cStringIO import StringIO
 from UserDict import UserDict
 from urlparse import urlparse
 from types import *
 
-from mimelib.address import getaddresses, dump_address_pair
-# We use this explicitly instead of going through mimelib so that we can pick
-# up the RFC 2822-conformant version of rfc822.py that will be included in
-# Python 2.2.
-from Mailman.pythonlib.rfc822 import parseaddr
+from email.Utils import getaddresses, dump_address_pair, parseaddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -66,7 +63,6 @@ from Mailman import Message
 from Mailman import Pending
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
 
 EMPTYSTRING = ''
 
@@ -917,7 +913,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # specifically To: Cc: and Resent-to:
         to = []
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-            to.extend(getaddresses(msg.getall(header)))
+            to.extend(getaddresses(msg.get_all(header)))
         for fullname, addr in to:
             # It's possible that if the header doesn't have a valid
             # (i.e. RFC822) value, we'll get None for the address.  So skip
@@ -1005,7 +1001,7 @@ bad regexp in bounce_matching_header line: %s
         matches.
         """
         for header, cre, line in self.parse_matching_header_opt():
-            for value in msg.getall(header):
+            for value in msg.get_all(header):
                 if cre.search(value):
                     return line
         return 0

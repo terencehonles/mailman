@@ -16,87 +16,46 @@
 
 """Parse RFC 1894 (i.e. DSN) bounce formats."""
 
-from mimelib import address
-from Mailman.pythonlib.StringIO import StringIO
-
-
-
-def parseaddr(val):
-    try:
-        atype, addr = val.split(';', 1)
-    except ValueError:
-        # Bogus format for Original-Recipient: or Final-Recipient:
-        return None
-    if atype.lower() <> 'rfc822':
-        # Don't know what to do with this address type
-        return None
-    addr = addr.strip()
-    if not addr:
-        return None
-    return address.unquote(addr)
+from email.Iterators import typed_subpart_iterator
+from cStringIO import StringIO
 
 
 
 def check(msg):
-    if msg.ismultipart():
-        # Recursively check the subparts
-        for subpart in msg.get_payload():
-            addrs = check(subpart)
-            if addrs:
-                return addrs
-        return None
-    # It's not a multipart/* object, so see if it's got the content-type
-    # specified in the DSN spec.
-    if msg.gettype() <> 'message/delivery-status':
-        # This content-type doesn't help us
-        return None
-    # BAW: could there be more than one DSN per message?
-    #
-    # Now parse out the per-recipient fields, which are separated by blank
-    # lines.  The first block is actually the per-notification fields, but
-    # those can be safely ignored
-    #
-    # We try to dig out the Original-Recipient (which is optional) and
-    # Final-Recipient (which is mandatory, but may not exactly match an
-    # address on our list).  Some MTA's also use X-Actual-Recipeint as a
-    # synonym for Original-Recipeint, but some apparently use that for
-    # other purposes :(
-    #
-    # Also grok out Action so we can do something with that too.
-    body = StringIO(msg.get_payload())
-    blocks = []
-    headers = {}
-    while 1:
-        line = body.readline()
-        if not line:
-            break
-        line = line.strip()
-        if not line:
-            # A new recipient block
-            blocks.append(headers)
-            headers = {}
-        try:
-            hdr, val = line.split(':', 1)
-        except ValueError:
-            continue
-        headers[hdr.lower()] = val.strip()
-    # Make sure the last one is appended
-    blocks.append(headers)
-    # Now go through all the recipient blocks, looking for addresses that
-    # are reported as bounced.  Preference order is Original-Recipient:
-    # Final-Recipient:
+    # Iterate over each message/delivery-status subpart
     addrs = []
-    for headers in blocks:
-        # Should we treat delayed bounces the same?  Yes, because if the
-        # transient problem clears up, they should get unbounced.
-        if headers.get('action', '').lower() not in ('failed', 'failure',
-                                                     'delayed'):
-            # Some non-permanent failure, so ignore this block
+    for part in typed_subpart_iterator(msg, 'message', 'delivery-status'):
+        if not part.is_multipart():
+            # Huh?
             continue
-        val = headers.get('original-recipient',
-                          headers.get('final-recipient'))
-        if val:
-            addrs.append(parseaddr(val))
+        # Each message/delivery-status contains a list of Message objects
+        # which are the header blocks.  Iterate over those too.
+        for msgblock in part.get_payload():
+            # We try to dig out the Original-Recipient (which is optional) and
+            # Final-Recipient (which is mandatory, but may not exactly match
+            # an address on our list).  Some MTA's also use X-Actual-Recipient
+            # as a synonym for Original-Recipient, but some apparently use
+            # that for other purposes :(
+            #
+            # Also grok out Action so we can do something with that too.
+            action = msgblock.get('action', '')
+            # Should we treat delayed bounces the same?  Yes, because if the
+            # transient problem clears up, they should get unbounced.
+            if action.lower() not in ('failed', 'failure', 'delayed'):
+                # Some non-permanent failure, so ignore this block
+                continue
+            params = []
+            foundp = 0
+            for header in ('original-recipient', 'final-recipient'):
+                for k, v in msgblock.get_params([], header):
+                    if k.lower() == 'rfc822':
+                        foundp = 1
+                    else:
+                        params.append(k)
+                if foundp:
+                    # Note that params should already be unquoted.
+                    addrs.extend(params)
+                    break
     return filter(None, addrs)
 
 
@@ -105,6 +64,6 @@ def process(msg):
     # The report-type parameter should be "delivery-status", but it seems that
     # some DSN generating MTAs don't include this on the Content-Type: header,
     # so let's relax the test a bit.
-    if not msg.ismultipart() or msg.getsubtype() <> 'report':
+    if not msg.is_multipart() or msg.get_subtype() <> 'report':
         return None
     return check(msg)

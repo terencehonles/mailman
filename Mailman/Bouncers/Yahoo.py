@@ -17,7 +17,7 @@
 """Yahoo! has its own weird format for bounces."""
 
 import re
-from mimelib import MsgReader
+import email
 
 tcre = re.compile(r'message\s+from\s+yahoo.com', re.IGNORECASE)
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
@@ -30,7 +30,7 @@ def process(msg):
     # an x-uidl: header, the value of which seems unimportant.
     if msg.get('from', '').lower() <> 'mailer-daemon@yahoo.com':
         return None
-    mi = MsgReader.MsgReader(msg)
+    mi = email.Iterators.body_line_iterator(msg)
     addrs = []
     # simple state machine
     #     0 == nothing seen

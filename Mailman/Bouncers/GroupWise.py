@@ -22,16 +22,16 @@ X-Mailer: Internet Mail Service (5.5.2653.19)
 """
 
 import re
-from Mailman.pythonlib.StringIO import StringIO
+from cStringIO import StringIO
 
 acre = re.compile(r'<(?P<addr>[^>]*)>')
 
 
 
 def find_textplain(msg):
-    if msg.gettype() == 'text/plain':
+    if msg.get_type() == 'text/plain':
         return msg
-    if msg.ismultipart:
+    if msg.is_multipart:
         for part in msg.get_payload():
             ret = find_textplain(part)
             if ret:
@@ -41,7 +41,7 @@ def find_textplain(msg):
 
 
 def process(msg):
-    if msg.gettype() <> 'multipart/mixed' or not msg['x-mailer']:
+    if msg.get_type() <> 'multipart/mixed' or not msg['x-mailer']:
         return None
     addrs = {}
     # find the first text/plain part in the message
