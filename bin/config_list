@@ -229,6 +229,9 @@ class FakeDoc:
             print >> sys.stderr, tag
         print >> sys.stderr, s % args
 
+    def set_language(self, val):
+        pass
+
 
 def do_input(listname, infile, checkonly, verbose):
     fakedoc = FakeDoc()
