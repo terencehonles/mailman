@@ -99,6 +99,7 @@ was successfully received by %s.
 
 If you ever want to unsubscribe or change your options (eg, switch to  
 or from digest mode), visit the web page:
+
       %s  
 
 You must know your password to change your options or unsubscribe.
