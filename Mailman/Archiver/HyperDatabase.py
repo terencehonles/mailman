@@ -26,6 +26,9 @@ import string
 #
 import pipermail
 from Mailman import flock
+from Mailman.Utils import mkdir, open_ex
+# TBD: ugly, ugly, ugly -baw
+open = open_ex
 
 CACHESIZE = pipermail.CACHESIZE
 
@@ -219,8 +222,8 @@ class HyperDatabase(pipermail.Database):
 	if self.__currentOpenArchive==archive: return
 	self.__closeIndices()
 	arcdir=os.path.join(self.basedir, 'database')
-	try: os.mkdir(arcdir, 0700)
-	except os.error: pass
+	try: mkdir(arcdir, mode=02770)
+        except os.error: pass
 	for i in ['date', 'author', 'subject', 'article', 'thread']:
 	    t=DumbBTree(os.path.join(arcdir, archive+'-'+i)) 
 	    setattr(self, i+'Index', t)
