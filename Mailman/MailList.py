@@ -912,10 +912,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 {"listname" : self.real_name,
                  "member"   : formataddr((name, email)),
                  }, lang=lang, mlist=self)
-            msg = Message.UserNotification(
-                self.GetOwnerEmail(),
-                Utils.get_site_email(self.host_name, 'owner'),
-                subject, text, lang)
+            msg = Message.OwnerNotification(self, subject, text)
             msg.send(self)
 
     def DeleteMember(self, name, whence=None, admin_notif=0, userack=1):
@@ -951,10 +948,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 {'member'  : name,
                  'listname': self.real_name,
                  }, mlist=self)
-            msg = Message.OwnerNotification(
-                self,
-                Utils.get_site_email(self.host_name, 'owner'),
-                subject, text)
+            msg = Message.OwnerNotification(self, subject, text)
             msg.send(self)
         if whence:
             whence = "; %s" % whence
