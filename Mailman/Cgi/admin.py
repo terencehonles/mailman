@@ -616,7 +616,6 @@ def get_item_gui_value(mlist, category, kind, varname, params):
     value = None
     label, gui = mlist.GetConfigCategories()[category]
     if hasattr(gui, 'getValue'):
-        missing = []
         value = gui.getValue(mlist, kind, varname, params)
     # Filter out None, and volatile attributes
     if value is None and not varname.startswith('_'):
