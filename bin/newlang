@@ -33,7 +33,6 @@ Options:
 
 code is the corresponding language directory and must exist in
 mm_cfg.TEMPLATES.  code must not be already supported by the list.
-
 """
 
 import sys
