@@ -296,7 +296,8 @@ def ChangeOptions(list, opt_list, cgi_info, document):
 	for new_name in names:
             try:
 #FIXME: The admin needs to be able to specify the options to subscribe w/
-		list.AddMember(new_name, mm_utils.GetRandomSeed())
+		genpw = mm_utils.GetRandomSeed() + mm_utils.GetRandomSeed()
+		list.AddMember(new_name, genpw)
 #FIXME: Give some sort of an indication of which names didn't work, and why
 #       they didn't work...	
 	    except:
