@@ -25,6 +25,7 @@ import time
 import dbhash
 import errno
 import pwd
+import fcntl
 from stat import *
 
 from Mailman import mm_cfg
@@ -38,6 +39,35 @@ LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'creator')
 
 
 
+# Here's the deal with locking.  In order to assure that Postfix doesn't read
+# the file while we're writing updates, we should drop an exclusive advisory
+# lock on the file.  Ideally, we'd specify the `l' flag to dbhash.open() which
+# translates to passing the O_EXLOCK flag to the underlying bsddb open call --
+# on systems that support O_EXLOCK.
+#
+# Unfortunately, Linux is one of those systems that don't support O_EXLOCK.
+# To make matters worse, the default bsddb module in Python gives us no access
+# to the file descriptor of the database file, so we cannot dbhash.open(), dig
+# out the fd, then use fcntl.flock() to acquire the lock.  Bummer. :(
+#
+# Another approach would be to do a file dance to assure exclusivity.
+# I.e. when we add or remove list entries, we actually create a new .tmp file,
+# write all the entries to that file, and then rename() that file to
+# aliases.db.  The problem with /that/ approach though is that we can't get
+# the file ownership right on the tmp file. That's because the process adding
+# or removing entries may be Joe Shmoe who's a member of the `mailman' group,
+# or it may be a cgi process run as `nobody' or `apache'.  Or eventually, it
+# may be run via a mail program or any number of other processes.  Without a
+# setuid program we simply can't assure that the ownership of the tmp file
+# will be the same as the ownership of the original file, and /that/ we must
+# absolutely guarantee.  Postfix runs mail programs under the uid of the owner
+# of the aliases.db file.
+#
+# The best solution I can come up with involves opening the aliases.db file
+# with built-in open(), do the fd digout and flock(), then use dbhash.open()
+# to re-open the file through bsddb.  Blech.  If anybody has a better,
+# portable, solution, I'm all ears.
+
 def makelock():
     return LockFile.LockFile(LOCKFILE)
 
@@ -82,8 +112,13 @@ def create(mlist):
     # Acquire the global list database lock
     lock = makelock()
     lock.lock()
+    lockfp = None
     try:
-        # Crack open the dbhash file
+        # First, open the dbhash file using built-in open so we can acquire an
+        # exclusive lock on it.  See the discussion above for why we do it
+        # this way instead of specifying the `l' option to dbhash.open()
+        lockfp = open(DBFILE)
+        fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
         db = dbhash.open(DBFILE, 'c')
         # Crack open the plain text file
         try:
@@ -101,6 +136,9 @@ def create(mlist):
         db.sync()
         fp.close()
     finally:
+        if lockfp:
+            fcntl.flock(lockfp.fileno(), fcntl.LOCK_UN)
+            lockfp.close()
         lock.unlock(unconditionally=1)
 
 
@@ -109,9 +147,13 @@ def remove(mlist):
     # Acquire the global list database lock
     lock = LockFile.LockFile(LOCKFILE)
     lock.lock()
+    lockfp = None
     try:
         listname = mlist.internal_name()
-        # Crack open the dbhash file, and delete all the entries
+        # Crack open the dbhash file, and delete all the entries.  See the
+        # discussion above for while we lock the aliases.db file this way.
+        lockfp = open(DBFILE)
+        fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
         db = dbhash.open(DBFILE, 'c')
         for k, v in makealiases(listname):
             try:
@@ -168,6 +210,9 @@ def remove(mlist):
         outfp.close()
         os.rename(TEXTFILE+'.tmp', TEXTFILE)
     finally:
+        if lockfp:
+            fcntl.flock(lockfp.fileno(), fcntl.LOCK_UN)
+            lockfp.close()
         lock.unlock(unconditionally=1)
 
 
