@@ -153,7 +153,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                            mlist.linked_newsgroup, num, e)
                     raise _ContinueLoop
                 if found_to:
-                    del msg['X-Originally']
+                    del msg['X-Originally-To']
                     msg['X-Originally-To'] = msg['To']
                     del msg['To']
                 msg['To'] = mlist.GetListEmail()
