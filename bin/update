@@ -100,12 +100,12 @@ if __name__ == '__main__':
     if not lists:
         print "no lists = nothing to do, exiting"
         sys.exit(0)
-    print "setting all old html archiving directories to have setgid status"
     #
     # for people with web archiving, make sure the directories
     # in the archiving are set with proper perms for b6.
     #
     if os.path.isdir("%s/public_html/archives" % Mailman.mm_cfg):
+        print "setting all old html archiving directories to have setgid status"
         os.system("chmod g+rwxs `find %s/public_html/archives -type d -print`" % Mailman.mm_cfg.PREFIX)
     for list in lists:
         print 'Updating mailing list: ', list
