@@ -414,38 +414,6 @@ def UnobscureEmail(addr):
 
 
 
-def map_maillists(func, names=None, unlock=None, verbose=0):
-    """Apply function (of one argument) to all list objs in turn.
-
-    Returns a list of the results.
-
-    Optional arg 'names' specifies which lists, default all.
-    Optional arg unlock says to unlock immediately after instantiation.
-    Optional arg verbose says to print list name as it's about to be
-    instantiated, CR when instantiation is complete, and result of
-    application as it shows."""
-    from Mailman import MailList
-    if names == None:
-        names = list_names()
-    got = []
-    for i in names:
-	if verbose:
-            print i,
-	l = MailList.MailList(i)
-	if verbose:
-            print
-	if unlock and l.Locked():
-	    l.Unlock()
-	got.append(apply(func, (l,)))
-	if verbose:
-            print got[-1]
-	if not unlock:
-	    l.Unlock()
-	del l
-    return got
-
-
-
 def chunkify(members, chunksize=None):
      """
      return a list of lists of members
