@@ -101,7 +101,7 @@ class UserNotification(Message):
             self['To'] = recip
             self.recips = [recip]
 
-    def send(self, mlist):
+    def send(self, mlist, **_kws):
         """Prepares the message for sending by enqueing it to the `virgin'
         queue.
 
@@ -110,7 +110,8 @@ class UserNotification(Message):
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
         virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
-        # The message better have a `recip' attribute
+        # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
                         listname = mlist.internal_name(),
-                        recips = self.recips)
+                        recips = self.recips,
+                        **_kws)
