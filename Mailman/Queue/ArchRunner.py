@@ -16,7 +16,12 @@
 
 """Outgoing queue runner."""
 
+import time
+
+from mimelib.date import parsedate_tz, mktime_tz, formatdate
+
 from Mailman import mm_cfg
+from Mailman import LockFile
 from Mailman.Queue.Runner import Runner
 
 
@@ -38,11 +43,25 @@ class ArchRunner(Runner):
         # original message.  BAW: Note that there should be a third option
         # here: to clobber the date only if it's bogus, i.e. way in the future
         # or way in the past.
-        if mlist.clobber_date:
-            originaldate = msg['date']
+        clobber = 0
+        originaldate = msg.get('date')
+        if not originaldate:
+            clobber = 1
+        elif mm_cfg.ARCHIVER_CLOBBER_DATE_POLICY == 1:
+            clobber = 1
+        elif mm_cfg.ARCHIVER_CLOBBER_DATE_POLICY == 2:
+            # what's the timestamp on the original message?
+            tup = parsedate_tz(originaldate)
+            now = time.time()
+            if not tup:
+                clobber = 1
+            elif abs(now - mktime_tz(tup)) > \
+                     mm_cfg.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW:
+                clobber = 1
+        if clobber:
             del msg['date']
             del msg['x-original-date']
-            msg['Date'] = time.ctime(msgdata['received_time'])
+            msg['Date'] = formatdate(msgdata['received_time'])
             if originaldate:
                 msg['X-Original-Date'] = originaldate
         #
