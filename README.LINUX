@@ -2,11 +2,11 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-LINUX ISSUES
+GNU/LINUX ISSUES
 
-Linux seems to be the most popular platform on which to run Mailman,
-which really shouldn't be a big surprise.  Here are some hints on
-getting Mailman to run on Linux:
+GNU/Linux seems to be the most popular platform on which to run
+Mailman, which really shouldn't be a big surprise.  Here are some
+hints on getting Mailman to run on Linux:
 
 If you are running secure_linux, you probably have restricted
 hardlinks turned on.  Gergely Madarasz says that this not only
