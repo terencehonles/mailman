@@ -338,7 +338,9 @@ upgrade.
       sitelist.cfg).  After you do this, be sure you review the
       configurations via the admin pages for this list.
 
-      Be sure to subscribe yourself to the site list!
+      Be sure to subscribe yourself to the site list, but use the
+      admin interface because mailback subscription confirmations
+      won't work at this point.
 
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       for its basic functionality.  Note that if you're upgrading from
@@ -412,8 +414,6 @@ upgrade.
       to add the following afterwards in the mm_cfg.py file:
 
           add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
-
-    - Subscribe yourself to the mailman list created earlier.
 
 
 5. Customize Mailman
