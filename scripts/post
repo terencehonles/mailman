@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,32 +30,11 @@ import sys
 
 import paths
 from Mailman import mm_cfg
-from Mailman import MailList
-from Mailman import Message
-from Mailman import Errors
+from Mailman import Utils
+from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
-from Mailman.pythonlib.StringIO import StringIO
 
 LogStdErr("error", "post")
-
-
-
-def get_message(mlist):
-    msg = None
-    # Perhaps flow the message text through a filter program
-    prog = mlist.filter_prog
-    if prog:
-        import os, __main__
-        file = os.path.join(mm_cfg.VAR_PREFIX, 'filters', prog)
-        try:
-            execfile(file)
-            msg = Message.Message(StringIO(__main__.mailman_text))
-        except:
-            pass
-    if msg is None:
-        s = StringIO(sys.stdin.read())
-        msg = Message.Message(s)
-    return msg
 
 
 
@@ -67,26 +46,19 @@ def main():
     try:
         listname = sys.argv[1]
     except IndexError:
-        sys.stderr.write('Mailman error: post got no listname.\n')
+        print >> sys.stderr, _('post script got no listname.')
         sys.exit(1)
-    try:
-        mlist = MailList.MailList(listname, lock=0)
-    except Errors.MMListError, e:
-        sys.stderr.write('Mailman error: post got bad listname: %s\n%s' %
-                         (listname, e))
+    # Make sure the list exists
+    if not Utils.list_exists(listname):
+        print >> sys.stderr, _('post script, list not found: %(listname)s')
         sys.exit(1)
-    # We have a valid, unlocked list.  This is enough to extract the message
-    # object in a usable form.  From here on out, we should never lose
-    # messages.
-    msg = get_message(mlist)
-    # Immediately queue the message for the qrunner to deliver, mostly likely
-    # about a minute from now.  The advantage to this approach is that
-    # messages should never get lost -- some MTAs have a hard limit to the
-    # time a filter prog can run.  Postfix is a good example; if the limit is
-    # hit, the proc is SIGKILL'd giving us no chance to save the message.  It
-    # could take a long time to acquire the lock.  This way we're fairly safe
-    # against catastrophe at the expense of more disk I/O.
-    msg.Enqueue(mlist, tolist=1, _whichq=mm_cfg.INQUEUE_DIR)
+    # Immediately queue the message for the incoming qrunner to process.  The
+    # advantage to this approach is that messages should never get lost --
+    # some MTAs have a hard limit to the time a filter prog can run.  Postfix
+    # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
+    # no chance to save the message.
+    inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+    inq.enqueue(sys.stdin.read(), listname=listname, tolist=1)
 
 
 
