@@ -609,3 +609,23 @@ def reap(kids, func=None):
             except KeyError:
                 # Huh?  How can this happen?
                 pass
+
+
+# Useful conversion routines
+# unhexlify(hexlify(s)) == s
+def hexlify(s):
+    acc = []
+    def munge(byte, acc=acc, a=ord('a'), z=ord('0')):
+        if byte > 9: acc.append(byte+a-10)
+        else: acc.append(byte+z)
+    for c in s:
+        hi, lo = divmod(ord(c), 16)
+        munge(hi)
+        munge(lo)
+    return string.join(map(chr, acc), '')
+
+def unhexlify(s):
+    acc = []
+    for i in range(0, len(s), 2):
+        acc.append(chr(int(s[i], 16)*16 + int(s[i+1], 16)))
+    return string.join(acc, '')
