@@ -1,4 +1,4 @@
-Mailman 1.0b2 (README $Revision: 460 $, $Date: 1998-04-22 17:38:44 +0100 (Wed, 22 Apr 1998) $)
+Mailman 1.0b2 (README $Revision: 486 $, $Date: 1998-04-28 23:38:56 +0100 (Tue, 28 Apr 1998) $)
 
 This is mailman, maillist management software written mostly in
 Python.  Mailman was originally developed by John Viega.  Ken
@@ -69,7 +69,10 @@ Install:
 
     (Or whatever is equivalent for your web server)
   o As root, edit /home/mailman/mailman/src/*.c and edit the UID and
-    GID const lines as appropriate.
+    GID const lines as appropriate.  (ID mismatches will be syslogged
+    with the mail.error class - some /etc/syslog.conf files are
+    configured to log this to /var/log/syslog, but you may need to
+    check yours, and set up to see.)
   o As root, cd to /home/mailman/mailman/src and type: make
   o As root, Add mailman as a trusted mail user.  This is usually done
     by adding: Tmailman to /etc/sendmail.cf under the line: Troot
