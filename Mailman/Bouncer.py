@@ -167,13 +167,14 @@ class Bouncer:
         umsg = Message.UserNotification(self.GetOwnerEmail(),
                                         siteowner, subject,
                                         lang=self.preferred_language)
+        # BAW: Be sure you set the type before trying to attach, or you'll get
+        # a MultipartConversionError.
+        umsg.set_type('multipart/mixed')
         umsg.attach(MIMEText(text))
         if isinstance(msg, StringType):
             umsg.attach(MIMEText(msg))
         else:
             umsg.attach(MIMEMessage(msg))
-        umsg['Content-Type'] = 'multipart/mixed'
-        umsg['MIME-Version'] = '1.0'
         umsg.send(self)
 
     def sendNextNotification(self, member):
@@ -194,7 +195,6 @@ class Bouncer:
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 info.cookie)
         optionsurl = self.GetOptionsURL(member, absolute=1)
-        subject = 'confirm ' + info.cookie
         reqaddr = self.GetRequestEmail()
         lang = self.getMemberLanguage(member)
         text = Utils.maketext(
@@ -206,7 +206,11 @@ class Bouncer:
              'password'   : self.getMemberPassword(member),
              'owneraddr'  : self.GetOwnerEmail(),
              }, lang=lang, mlist=self)
-        msg = Message.UserNotification(member, reqaddr, subject, text, lang)
+        msg = Message.UserNotification(member, reqaddr, text=text, lang=lang)
+        # BAW: See the comment in MailList.py ChangeMemberAddress() for why we
+        # set the Subject this way.
+        del msg['subject']
+        msg['Subject'] = 'confirm ' + info.cookie
         msg.send(self)
         info.noticesleft -= 1
         info.lastnotice = time.localtime()[:3]
