@@ -103,12 +103,11 @@ def listinfo_overview(msg=''):
         greeting = FontAttr(_('Welcome!'), size='+2')
 
     welcome = [greeting]
+    mailmanlink = Link(mm_cfg.MAILMAN_URL, _('Mailman')).Format()
     if not advertised:
         welcome.extend(
-            ('<p>' + 
-             _(' There currently are no publicly-advertised '),
-             Link(mm_cfg.MAILMAN_URL, 'Mailman'),
-             _(' mailing lists on %(hostname)s.')))
+            _('''<p>There currently are no publicly-advertised
+            %(mailmanlink)s mailing lists on %(hostname)s.'''))
     else:
         welcome.append(
             _('''<p>Below is a listing of all the public mailing lists on
