@@ -68,7 +68,7 @@ class ArchRunner(Runner):
         # runner specific code
         try:
             mlist.ArchiveMail(msg)
-        finally:
             mlist.Save()
+        finally:
             mlist.Unlock()
         return 0
