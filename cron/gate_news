@@ -16,46 +16,99 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+"""Poll the NNTP servers for messages to be gatewayed to mailing lists.
+"""
+
 import os
 import marshal
 import paths
+import nntplib
+import errno
 from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import flock
+
+WATERMARK_FILE = os.path.join(mm_cfg.DATA_DIR, 'gate_watermarks')
+LIST_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_lock.')
 
 
-names = Utils.list_names()
-try:
-    file = open(os.path.join(mm_cfg.DATA_DIR, "gate_watermarks"), "r")
-    watermarks = marshal.load(file)
-except IOError, (x,y):
-    if x <> 2:
-      raise IOError, (x, y)
-    watermarks = {}
+def main():
+    names = Utils.list_names()
+    try:
+        fp = open(WATERMARK_FILE)
+        watermarks = marshal.load(fp)
+        fp.close()
+    except IOError, (code, msg):
+        if code <> errno.ENOENT:
+            Utils.reraise()
+        watermarks = {}
+    # marshal or open could raise other exceptions, namely EOFError,
+    # ValueError or TypeError.  TBD: should we zap the watermarks file if that
+    # happens?
+    for name in names:
+        # check to see if the list is gating news to mail.  If not, skip the
+        # list.  If so, then we have to poll the newsgroup and gate any
+        # outstanding messages.
+        mlist = MailList.MailList(name, lock=0)
+        if not mlist.gateway_to_mail:
+            continue
+        # try to get a per-list lock because it makes no sense to have more
+        # than one process gating a newsgroup.  if we can't get the lock, just
+        # ignore the list for now... 5 minutes (usually how cron invokes this)
+        # later we'll try again anyway.  We don't need to be anal about giving
+        # up the lock because we're setting a hung_time out of 4 minutes.
+        # This means that if we crashed, the next time the cron job runs,
+        # it'll just wax the lock and try again.
+        lock = flock.FileLock(LIST_LOCK_FILE + name, hung_timeout=240)
+        try:
+            lock.lock(timeout=0.001)
+        except flock.TimeOutError:
+            # someone else is gating this list already
+            continue
+        # open up a connection to the gated newsgroup.  we want to get the
+        # watermark for the group in the parent process so that we can safely
+        # update the gate_watermarks file.  we'll actually do the gating in a
+        # child process
+        conn = nntplib.NNTP(mlist.nntp_host)
+        r,c,first,last,n = conn.group(mlist.linked_newsgroup)
+        first = int(first)
+        last = int(last)
+        wm = watermarks.get(name, 0)
+        watermarks[name] = last
+        if wm <> 0:
+            # TBD: Essentially this does a mass catch-up on the newsgroup.
+            # The first time this script is run, no messages will be will be
+            # forwarded.  We *could* have an option to control this, but who
+            # wants that? ;-)
+            if not os.fork():
+                # in the child.
+                #
+                # steal the lock from the parent because we're going to manage
+                # it from here on, and we have a different PID than our
+                # parent.  we't want to minimize any race conditions where
+                # someone else can steal the lock from us.  I think there's
+                # still a race condition during the time we've actually got
+                # the file open for writing and when we're done writing it
+                # (during the steal()), but that should be very small.
+                lock.steal()
+                mlist.PollNewsGroup(conn, wm, first, last)
+                lock.unlock()
+                os._exit(0)
+        # Save the new watermarks after every newsgroup gating has
+        # started, so in case of a system crash we reduce the number of
+        # multiply gated messages.  it might be better to save after every
+        # post, but that is harder to coordinate safely between the
+        # subprocesses, and would probably be *much* slower
+        omask = os.umask(002)
+        try:
+            fp = open(WATERMARK_FILE + '.tmp', 'w')
+            marshal.dump(watermarks, fp)
+            fp.close()
+            os.rename(WATERMARK_FILE + '.tmp', WATERMARK_FILE)
+        finally:
+            os.umask(omask)
 
-for name in names:
-    if os.fork():
-	continue
-    if watermarks.has_key(name):
-        wm = watermarks[name]
-    else:
-        wm = 0
-    # Save the current state to .last, in case we crash while writing out,
-    # and corrupt the file.
-    list = MailList.MailList(name, lock=0)
-    file = open(os.path.join(mm_cfg.DATA_DIR, "gate_watermarks.last"), "w")
-    marshal.dump(watermarks, file)
-    file.close()
-    watermarks[name] = list.PollNewsGroup(wm)
-    # Save after every newsgroup... should probably save after every post.
-    # Reason being, want to make sure in case of a system crash or something,
-    # The same messages don't get gated multiple times.
-    file = open(os.path.join(mm_cfg.DATA_DIR, "gate_watermarks"), "w")
-    marshal.dump(watermarks, file)
-    file.close()
-    os._exit(0)
 
-
-
-
-
+if __name__ == '__main__':
+    main()
