@@ -60,7 +60,8 @@ def FormatListinfoOverview(error=None):
 
     # XXX We need a portable way to determine the host by which we are being 
     #     visited!  An absolute URL would do...
-    http_host = os.environ.get('HTTP_HOST')
+    http_host = os.environ.get('HTTP_HOST') or\
+                os.environ.get('SERVER_NAME')
     port = os.environ.get('SERVER_PORT')
     # strip off the port if there is one
     if port and http_host[-len(port)-1:] == ':'+port:
