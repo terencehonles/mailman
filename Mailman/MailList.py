@@ -29,6 +29,7 @@ import re
 import shutil
 import socket
 from types import StringType, IntType, DictType, ListType
+import urllib
 from urlparse import urlparse
 
 from Mailman import mm_cfg
@@ -195,7 +196,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         url = self.GetScriptURL('options', absolute)
         if obscure:
             addr = Utils.ObscureEmail(addr)
-        return '%s/%s' % (url, addr)
+        return '%s/%s' % (url, urllib.quote(addr))
 
     def GetUserOption(self, user, option):
         """Return user's setting for option, defaulting to 0 if no settings."""
