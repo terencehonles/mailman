@@ -35,6 +35,7 @@ class MessageHeld(HandlerError):
 def DeliverToList(mlist, msg):
     pipeline = ['SpamDetect',
                 'Approve',
+                'Replybot',
                 'Hold',
                 'Cleanse',
                 'CookHeaders',
@@ -61,7 +62,8 @@ def DeliverToList(mlist, msg):
 # should have already calculated and set msg.recips.  TBD: can the mlist be
 # None?
 def DeliverToUser(mlist, msg):
-    pipeline = ['CookHeaders',
+    pipeline = ['Replybot',
+                'CookHeaders',
                 mm_cfg.DELIVERY_MODULE,
                 ]
     msg.fastrack = 1
