@@ -332,7 +332,8 @@ def show_post_requests(mlist, id, info, total, count, form):
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold(_('Message Excerpt:')),
-              TextArea('fulltext-%d' % id, body, rows=10, cols=80)])
+              TextArea('fulltext-%d' % id, cgi.escape(body),
+                       rows=10, cols=80)])
     t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)
     form.AddItem('<p>')
