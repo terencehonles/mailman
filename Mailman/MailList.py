@@ -527,16 +527,19 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    raise mm_err.MMNoSuchUserError
 
 	def DoActualRemoval(alias, me=self):
+	    kind = "(unfound)"
 	    try:
 		del me.passwords[alias]
 	    except KeyError: 
 		pass
 	    try:
 		me.members.remove(alias)
+		kind = "regular"
 	    except ValueError:
 		pass
 	    try:
 		me.digest_members.remove(alias)
+		kind = "digest"
 	    except ValueError:
 		pass
 
