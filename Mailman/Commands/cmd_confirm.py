@@ -17,7 +17,7 @@
 """
     confirm <confirmation-string>
         Confirm an action.  The confirmation-string is required and should be
-        supplied with in mailback confirmation notice.
+        supplied by a mailback confirmation notice.
 """
 
 from Mailman import mm_cfg
