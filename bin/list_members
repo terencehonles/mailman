@@ -83,7 +83,7 @@ def usage(code, msg=''):
 
 
 
-def statusp(mlist, addr, why):
+def whymatches(mlist, addr, why):
     # Filter out nomails
     status = mlist.getDeliveryStatus(addr)
     if why is None:
@@ -179,14 +179,14 @@ def main():
         rmembers.sort()
         for addr in rmembers:
             # Filter out nomails
-            if not statusp(mlist, addr, why):
+            if nomail and not whymatches(mlist, addr, why):
                 continue
             print >> fp, addr
     if digest:
         dmembers.sort()
         for addr in dmembers:
             # Filter out nomails
-            if not statusp(mlist, addr, why):
+            if nomail and not whymatches(mlist, addr, why):
                 continue
             # Filter out digest kinds
             if mlist.getMemberOption(addr, mm_cfg.DisableMime):
