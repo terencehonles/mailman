@@ -122,6 +122,7 @@ def main():
         elif opt in ('-n', '--no-change'):
             dryrun = 1
             i = i + 1
+            print 'Dry run mode'
         elif opt in ('-d', '--digest'):
             digest = 1
             i = i + 1
@@ -226,8 +227,6 @@ def main():
 
         # addrs contains now all the addresses that need removing
         for laddr, addr in needsadding.items():
-            if dryrun:
-                continue
             pw = '%s%s' % (Mailman.Utils.GetRandomSeed(),
                            Mailman.Utils.GetRandomSeed())
             # should not already be subscribed, otherwise our test above is
@@ -235,16 +234,17 @@ def main():
             # than once.  Second and subsequent ones trigger an
             # MMAlreadyAMember error.  Just catch it and go on.
             try:
-                mlist.ApprovedAddMember(addr, pw, digest, welcome, notifyadmin)
+                if not dryrun:
+                    mlist.ApprovedAddMember(addr, pw, digest,
+                                            welcome, notifyadmin)
                 print 'Added  : %30s (%30s)' % (laddr, addr)
             except Mailman.Errors.MMAlreadyAMember:
                 pass
 
         for laddr, addr in addrs.items():
-            if dryrun:
-                continue
             # should be a member, otherwise our test above is broken
-            mlist.DeleteMember(addr, admin_notif=notifyadmin)
+            if not dryrun:
+                mlist.DeleteMember(addr, admin_notif=notifyadmin)
             print 'Removed: %30s (%30s)' % (laddr, addr)
 
         mlist.Save()
