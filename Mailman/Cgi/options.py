@@ -536,6 +536,8 @@ address.  Upon confirmation, any other mailing list containing the address
             remind = None
             nodupes = None
             mime = None
+            def __nonzero__(self):
+                 len(self.__dict__.keys()) > 0
 
         globalopts = Global()
 
@@ -567,8 +569,9 @@ address.  Upon confirmation, any other mailing list containing the address
                     globalopts.mime = newval
                     break
 
-        for gmlist in lists_of_member(mlist, user):
-            global_options(gmlist, user, globalopts)
+        if globalopts:
+            for gmlist in lists_of_member(mlist, user):
+                global_options(gmlist, user, globalopts)
 
         # Now print the results
         if cantdigest:
