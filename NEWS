@@ -4,6 +4,30 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.0 release candidate 3 (16-Nov-2000)
+
+    - By popular demand, Reply-To: munging policy is now to always
+      override any Reply-To: header in the original message, if
+      reply_goes_to_list is set to "This list" or "Explicit Address"
+
+    - bin/newlist given -q/--quiet flag instead of the <immediate>
+      positional argument
+
+    - Hopefully last fix to DEFAULT_URL not ending in a slash
+      sensitivity
+
+    - 2.0rc2 buglets fixed:
+        o newlist argument parsing
+        o updating with unlocked lists
+        o HyperArch.py traceback when there's no
+          Content-Transfer-Encoding: header
+
+    - SourceForge bugs fixed:
+        122358 (qmail-to-mailman.py listname case folding)
+
+    - SourceForge patches applied:
+        102373 (qmail-to-mailman.py listname case folding)
+
 2.0 release candidate 2 (10-Nov-2000)
 
     - Documentation updates: start at admin/www/index.html
