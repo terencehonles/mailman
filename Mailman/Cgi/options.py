@@ -94,14 +94,15 @@ def main():
     if lcuser == cpuser:
         cpuser = None
 
-    # And now we know the user making the request, so set things up for the
-    # user's preferred language.
-    userlang = mlist.GetPreferredLanguage(user)
+    # And now we know the user making the request, so set things up to for the
+    # user's stored preferred language, overridden by any form settings for
+    # their new language preference.
+    cgidata = cgi.FieldStorage()
+    userlang = cgidata.getvalue('language', mlist.GetPreferredLanguage(user))
     doc.set_language(userlang)
     i18n.set_language(userlang)
 
     # Are we processing an unsubscription request from the login screen?
-    cgidata = cgi.FieldStorage()
     if cgidata.has_key('login-unsub'):
         # Because they can't supply a password for unsubscribing, we'll need
         # to do the confirmation dance.
@@ -327,12 +328,11 @@ def main():
 
             newvals.append((flag, newval))
 
-            # The user language is handled a little differently
-            userlang = cgidata.getvalue('language')
-            if userlang not in mlist.GetAvailableLanguages():
-                newvals.append((SETLANGUAGE, mlist.preferred_language))
-            else:
-                newvals.append((SETLANGUAGE, userlang))
+        # The user language is handled a little differently
+        if userlang not in mlist.GetAvailableLanguages():
+            newvals.append((SETLANGUAGE, mlist.preferred_language))
+        else:
+            newvals.append((SETLANGUAGE, userlang))
 
         # The standard sigterm handler (see above)
         def sigterm_handler(signum, frame, mlist=mlist):
