@@ -39,7 +39,7 @@ DEFS=   	@DEFS@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 PACKAGEDIR= 	$(prefix)/Mailman
-
+CGIDIR=		$(PACKAGEDIR)/Cgi
 SHELL=		/bin/sh
 
 MODULES=	__init__.py aliases.py htmlformat.py maillist.py \
@@ -48,6 +48,11 @@ mm_deliver.py mm_digest.py mm_err.py mm_html.py mm_mailcmd.py \
 mm_mbox.py mm_message.py mm_security.py mm_utils.py \
 mm_pending.py mm_crypt.py mm_gateway.py \
 pipermail.py smtplib.py versions.py 
+
+CGI_MODULES=	__init__.py admin.py admindb.py archives.py \
+edithtml.py handle_opts.py listinfo.py options.py private.py \
+roster.py subscribe.py
+
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -67,6 +72,11 @@ install:
 	do \
 	    $(INSTALL) -m $(FILEMODE) $$f $(PACKAGEDIR); \
 	done
+	$(INSTALL) -d $(PACKAGEDIR)/Cgi
+	for f in $(CGI_MODULES); \
+	do \
+	    $(INSTALL) -m $(FILEMODE) Cgi/$$f $(PACKAGEDIR)/Cgi; \
+        done
 	$(INSTALL) -m $(FILEMODE) mm_cfg.py $(PACKAGEDIR)/mm_cfg.py.dist
 	if test ! -f $(PACKAGEDIR)/mm_cfg.py; \
 	then \
