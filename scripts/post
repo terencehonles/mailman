@@ -34,8 +34,9 @@ import paths
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Errors
-
+from Mailman.Utils import maketext
 from Mailman.Logging.Utils import LogStdErr
+
 LogStdErr("error", "post")
 
 # Only let one program run at once per list.
@@ -73,21 +74,12 @@ try:
 	subj = msg.getheader('subject')
 	if not subj:
 	    subj = '[no subject]'
-	body = """
-Your mail to '%s' with the subject:
-
-%s
-
-Is being held until the list moderator can review it for approval.
-
-The reason it is being held:
-
-        %s
-
-Either the message will get posted to the list, or you will receive 
-notification of the moderator's decison.
-""" % (current_list.real_name, subj, err_msg)
-	
+        body = maketext(
+            'postheld.txt',
+            {'list_name': current_list.real_name,
+             'subject'  : subj,
+             'reason'   : err_msg,
+             })
 	current_list.SendTextToUser( subject = 'Mail sent to %s' % 
 	                                         current_list.real_name,
 				     recipient = the_sender,
