@@ -84,7 +84,6 @@ WEB_VLINK_COLOR = ''                              # If true, forces VLINK=
 WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
                                                   # in listinfo & admin display
 
-
 
 #####
 # Archive defaults
@@ -236,6 +235,7 @@ GLOBAL_PIPELINE = [
     'Approve',
     'Replybot',
     'Hold',
+    'Tagger',
     'CalcRecips',
     'Cleanse',
     'CookHeaders',
@@ -410,6 +410,13 @@ METAFMT_BSDDB_NATIVE = 2
 METAFMT_ASCII        = 3
 
 METADATA_FORMAT = METAFMT_MARSHAL
+
+# This variable controls the order in which list-specific category options are
+# presented in the admin cgi page.
+ADMIN_CATEGORIES = ['general', 'members', 'privacy', 'nondigest',
+                    'digest', 'bounce', 'archive', 'gateway',
+                    'autoreply', 'topics',
+                    ]
 
 
 
@@ -648,7 +655,7 @@ CGIEXT = '@CGIEXT@'
 MAILMAN_UID = @MAILMAN_UID@
 MAILMAN_GID = @MAILMAN_GID@
 
-# Enumeration for types of configurable variables in Mailman.
+# Enumeration for Mailman cgi widget types
 Toggle     = 1
 Radio      = 2
 String     = 3
@@ -658,7 +665,8 @@ EmailList  = 6
 Host       = 7
 Number     = 8
 FileUpload = 9
-Select    = 10
+Select     = 10
+Topics     = 11
 
 # Held message disposition actions, for use between admindb.py and
 # ListAdmin.py.
@@ -678,7 +686,8 @@ DontReceiveOwnPosts = 2 # Non-digesters only
 AcknowledgePosts    = 4
 DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
-SuppressPasswordReminder = 32 # currently, per-list unfortunately
+SuppressPasswordReminder = 32
+ReceiveNonmatchingTopics = 64
 
 # Authentication contexts.
 #
