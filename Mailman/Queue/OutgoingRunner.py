@@ -101,15 +101,16 @@ class OutgoingRunner(Runner):
             last_recip_count = msgdata.get('last_recip_count', 0)
             deliver_until = msgdata.get('deliver_until', now)
             if len(recips) == last_recip_count:
-                # We didn't make any progress.
+                # We didn't make any progress, so don't attempt delivery any
+                # longer.  BAW: is this the best disposition?
                 if now > deliver_until:
-                    # We won't attempt delivery any longer.
                     return 0
             else:
                 # Keep trying to delivery this for 3 days
                 deliver_until = now + mm_cfg.DELIVERY_RETRY_PERIOD
             msgdata['last_recip_count'] = len(recips)
             msgdata['deliver_until'] = deliver_until
+            msgdata['recips'] = recips
             # Requeue
             return 1
         # We've successfully completed handling of this message
