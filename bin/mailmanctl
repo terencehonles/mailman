@@ -39,6 +39,17 @@ Options:
         Don't restart queue runners when they exit because of an error.  Use
         this only for debugging.  Only useful if the `start' command is given.
 
+    -u/--run-as-user
+        Normally, this script will refuse to run if the user id and group id
+        are not set to the `mailman' user and group (as defined when you
+        configured Mailman).  If run as root, this script will change to this
+        user and group before the check is made.
+
+        This can be inconvenient for testing and debugging purposes, so the -u
+        flag means that the step that sets and checks the uid/gid is skipped,
+        and the program is run as the current user and group.  This flag is
+        not recommended for normal production environments.
+
     -h/--help
         Print this message and exit.
 
@@ -61,6 +72,7 @@ import os
 import getopt
 import signal
 import errno
+import pwd
 
 import paths
 from Mailman import mm_cfg
@@ -105,29 +117,35 @@ def kill_subrunners(sig):
 
 
 def check_privs():
-    # Should we check for the availability of these functions ?
+    # If we're running as root (uid == 0), coerce the uid and gid to that
+    # which Mailman was configured for, and refuse to run if we didn't coerce
+    # the uid/gid.
     if os.getuid() == 0:
         os.setgid(mm_cfg.MAILMAN_GID)
         os.setuid(mm_cfg.MAILMAN_UID)
     if os.getuid() <> mm_cfg.MAILMAN_UID:
-        print >> sys.stderr, _("This program should only be run as root "
-                               "or as the Mailman user.")
-        sys.exit(1)
+        name = pwd.getpwuid(mm_cfg.MAILMAN_UID)[0]
+        usage(1, _(
+            'Run this program as root or as the %(name)s user, or use -u.'))
+
 
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hn',
-                                   ['help', 'no-start'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hnu',
+                                   ['help', 'no-start', 'run-as-user'])
     except getopt.error, msg:
         usage(1, msg)
 
     restart = 1
+    checkprivs = 1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-n', '--no-restart'):
             restart = 0
+        elif opt in ('-u', '--run-as-user'):
+            checkprivs = 0
 
     if len(args) < 1:
         usage(1, _('No command given.'))
@@ -139,7 +157,8 @@ def main():
     if command not in ('start', 'stop', 'restart'):
         usage(1, _('Bad command: %(command)s'))
 
-    check_privs()
+    if checkprivs:
+        check_privs()
     # Handle the commands
     if command == 'stop':
         # Sent the master qrunner process a SIGINT, which is equivalent to
