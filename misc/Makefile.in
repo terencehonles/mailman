@@ -50,6 +50,7 @@ SHELL=		/bin/sh
 DIRMODE=	775
 EXEMODE=	755
 FILEMODE=	644
+DATAMODE=	664
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 
 PATHSDIRS=	bin cron scripts mail
@@ -66,7 +67,7 @@ install:
 	    dir=$(prefix)/$$d; \
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
-	$(INSTALL) -m $(FILEMODE) pending_subscriptions.db $(prefix)/data
+	$(INSTALL) -m $(DATAMODE) pending_subscriptions.db $(prefix)/data
 
 clean:
 
