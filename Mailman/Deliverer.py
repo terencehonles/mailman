@@ -30,7 +30,6 @@ from Mailman.i18n import _
 class Deliverer:
     def SendSubscribeAck(self, name, password, digest):
         pluser = self.GetPreferredLanguage(name)
-        os.environ['LANG'] = pluser
         if not self.send_welcome_msg:
 	    return
 	if self.welcome_msg:
@@ -56,7 +55,7 @@ your membership administrative address, %(addr)s.'''))
              'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'optionsurl'  : self.GetOptionsURL(name, absolute=1),
              'password'    : password,
-             }, lang=pluser) 
+             }, lang=pluser, mlist=self)
 	if digest:
 	    digmode = _(' (Digest mode)')
 	else:
@@ -99,7 +98,7 @@ your membership administrative address, %(addr)s.'''))
                  'options_url': self.GetOptionsURL(user, absolute=1),
                  'requestaddr': requestaddr,
                  'adminaddr'  : adminaddr,
-                }, lang=self.GetPreferredLanguage(user))
+                }, lang=self.GetPreferredLanguage(user), mlist=self)
         else:
             ok = 0
             recipient = self.GetAdminEmail()
@@ -108,7 +107,7 @@ your membership administrative address, %(addr)s.'''))
                 'nopass.txt',
                 {'username'     : `user`,
                  'internal_name': self.internal_name(),
-                 }, lang=self.GetPreferredLanguage(user))
+                 }, lang=self.GetPreferredLanguage(user), mlist=self)
         msg = Message.UserNotification(recipient, requestaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
