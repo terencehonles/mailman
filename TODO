@@ -16,6 +16,13 @@ The Mailman Wishlist
 Email Handling
     - Re-implement the bulk mailer to do DNS lookups and remote MTA
       delivery directly (optional).
+    - For low-traffic sites, a queued message could trigger a qrunner
+      process.  It would work until all mail was delivered, then sleep
+      and exit if no new work arrived.
+    - We could get rid of the wrappers by doing a file delivery at the
+      aliases, then having qrunner use UnixMailbox to deliver each
+      message.  There would have to be some locking between the MTA
+      and Mailman.
 
 Documentation
     - A detailed feature list
@@ -49,6 +56,9 @@ List Administration
     - Better integration with moderated newsgroups (and allow some
       addresses to bypass even that moderation and be delivered to a
       secondary channel, like moderators@isc.org).
+    - Allow a list to be marked `disabled' so things like the replybot
+      still works, and the archives are still available, but mail
+      posted to the list is always returned unsent.
 
 List Membership
     - Have one account per user per site, with multiple email
