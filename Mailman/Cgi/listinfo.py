@@ -48,7 +48,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         FormatListinfoOverview('No such list <em>%s</em>' % listname)
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'listinfo: no such list "%s": %s' % (listname, e))
         return
 
     FormatListListinfo(mlist)
