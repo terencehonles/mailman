@@ -18,7 +18,6 @@
 
 import os
 import cgi
-import string
 import gettext
 
 from Mailman import Utils
@@ -35,8 +34,8 @@ from Mailman.i18n import _
 def main():
     # Trick out pygettext since we want to mark template_data as translatable,
     # but we don't want to actually translate it here.
-    def _(string):
-        return string
+    def _(s):
+        return s
 
     template_data = (
         ('listinfo.html',    _('General list information page')),
@@ -55,7 +54,7 @@ def main():
         print doc.Format(bgcolor='#ffffff')
         return
 
-    listname = string.lower(parts[0])
+    listname = parts[0].lower()
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:

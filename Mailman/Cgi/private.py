@@ -20,7 +20,10 @@ Currently this is organized to obtain passwords for Mailman mailing list
 subscribers.
 """
 
-import sys, os, string, cgi
+import sys
+import os
+import cgi
+
 from Mailman import Utils, MailList, Errors
 from Mailman.htmlformat import *
 from Mailman.Logging.Utils import LogStdErr
@@ -35,8 +38,8 @@ _list = None
 
 def true_path(path):
     "Ensure that the path is safe by removing .."
-    path = string.replace(path, "../", "")
-    path = string.replace(path, "./", "")
+    path = path.replace('../', '')
+    path = path.replace('./', '')
     return path[1:]
 
 
@@ -62,7 +65,7 @@ def main():
         mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
         true_path(path))
 
-    listname = string.lower(parts[0])
+    listname = parts[0].lower()
     mboxfile = ''
     if len(parts) > 1:
         mboxfile = parts[1]
