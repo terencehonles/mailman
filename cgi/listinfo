@@ -4,7 +4,7 @@
 
 Errors are redirected to logs/errors."""
 
-__version__ = "$Revision: 412 $"
+__version__ = "$Revision: 413 $"
 
 # No lock needed in this script, because we don't change data.
 
@@ -57,11 +57,6 @@ def FormatListinfoOverview(error=None):
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
                       colspan=2, bgcolor="#99ccff")
 
-    if error:
-        table.AddRow([Center(FontAttr(error, color="ff5060", size="+1"))])
-        table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
-                          colspan=2)
-
     advertised = []
     names = mm_utils.list_names()
     names.sort()
@@ -70,24 +65,29 @@ def FormatListinfoOverview(error=None):
 	l.Unlock()
         if l.advertised: advertised.append(l)
 
+    if error:
+	greeting = FontAttr(error, color="ff5060", size="+1")
+    else:
+	greeting = "Welcome!"
+
     if not advertised:
-        welcome_items = (
-            "Welcome!<p>"
-            " There currently are no publicly-advertised ",
-            Link(mm_cfg.MAILMAN_URL, "mailman"),
-            " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
-            )
+        welcome_items = (greeting,
+			 "<p>"
+			 " There currently are no publicly-advertised ",
+			 Link(mm_cfg.MAILMAN_URL, "mailman"),
+			 " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+			 )
     else:
 
         welcome_items = (
-            "Welcome!<p>"
+	    greeting,
+            "<p>"
             " Below is the collection of publicly-advertised ",
             Link(mm_cfg.MAILMAN_URL, "mailman"),
             " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
             (' Click on a list name to visit the info page'
-             ' for that list.  There you can learn about the list,'
-             ' enter a subscription to it, and find the list of'
-             ' subscribers.'),
+             ' for that list.  There you can learn more about the list,'
+             ' subscribe to it, or find the roster of current subscribers.'),
             )
 
     welcome_items = (welcome_items +
