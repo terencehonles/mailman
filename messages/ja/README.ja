@@ -16,7 +16,7 @@ Mailmanで日本語を扱うときの注意 (English summary in the end)
 このため、外部から入ってくるメールを altcharst から stdcharset へ変換し、
 Mailman から出ていくメールは全て email パッケージに準拠した文字集合へ
 へ変換する必要があります。
-このための変換プログラムを mc_Entry.py および Finish.py として
+このための変換プログラムを mc_Entry.py および mc_Finish.py として
 用意しました。また、全てのメールが mc_Finish.py を経て出ていくように、
 mc_SMTPDirect.py を作りました。
 
@@ -45,7 +45,14 @@ LC_DESCRIPTIONS['ja'] = ( _('Japanese'),
 日本語で Mailman について Q&A したいかたは、mmjp-users メーリングリスト
 があります。これも、上記 URL からたどれますので、ぜひ御参加ください。
 
+注意) 今後の日本語修正について
+Mailman-Developer で若干議論しましたが, 入口と出口でコード変換する
+方法では, ニュースへの中継や, 外部アーカイバへのインターフェースに
+問題が生じる恐れがあります. このため, 方針を見直して内部で Web用の
+stdcharset に変換する方向を探って見たいと考えています. 
+
 by tkikuchi_at_is.kochi-u.ac.jp (2002/03/26)
+rev. for 2.1 final (2002/12/25) 
 
 I18N Jananization Note
 #
