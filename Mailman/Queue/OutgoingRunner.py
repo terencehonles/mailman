@@ -28,6 +28,10 @@ from Mailman import LockFile
 from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
 
+# This controls how often _doperiodic() will try to deal with deferred
+# permanent failures.
+DEAL_WITH_PERMFAILURES_EVERY = 1
+
 
 
 class OutgoingRunner(Runner):
@@ -36,6 +40,7 @@ class OutgoingRunner(Runner):
                         slice, numslices, cachelists)
         # Maps mailing lists to (recip, msg) tuples
         self._permfailures = {}
+        self._permfail_counter = 0
 
     def _dispose(self, mlist, msg, msgdata):
         # Fortunately, we do not need the list lock to do deliveries.
@@ -92,6 +97,12 @@ class OutgoingRunner(Runner):
     def _doperiodic(self):
         # Periodically try to acquire the list lock and clear out the
         # permanent failures.
+        self._permfail_counter += 1
+        if self._permfail_counter < DEAL_WITH_PERMFAILURES_EVERY:
+            return
+        # Reset the counter
+        self._permfail_counter = 0
+        # And deal with the deferred permanent failures.
         for mlist in self._permfailures.keys():
             try:
                 mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
@@ -101,6 +112,6 @@ class OutgoingRunner(Runner):
                 for recip, msg in self._permfailures[mlist]:
                     mlist.RegisterBounce(recip, msg)
                 del self._permfailures[mlist]
-            finally:
                 mlist.Save()
+            finally:
                 mlist.Unlock()
