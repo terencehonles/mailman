@@ -336,7 +336,7 @@ class Article(pipermail.Article):
             i = mo.start()
             chunks.append(buf[offset:i])
             offset = i + 3
-            chunks.append(chr(int(mo.group(1), 16)))
+            chunks.append(chr(string.atoi(mo.group(1), 16)))
         return string.join(chunks, "")
 
     def _add_decoded(self, d):
