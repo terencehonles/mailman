@@ -1,0 +1,36 @@
+<html>
+<head>
+    <title>Аутентификация %(who)s списка рассылки %(listname)s</title>
+</head>
+<body bgcolor="#ffffff">
+<FORM METHOD=POST ACTION="%(path)s">
+%(message)s
+  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+    <TR>
+      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+	<B><FONT COLOR="#000000" SIZE="+1">Аутентификация %(who)s списка рассылки %(listname)s</FONT></B>
+      </TD>
+    </TR>
+    <tr>
+      <!-- %(who)s -->
+      <!-- хе.  слово модератор, админинстратор надо склонять... :( -->
+      <TD><div ALIGN="Right">Введите пароль %(who)s:</div></TD>
+      <TD><INPUT TYPE="password" NAME="adminpw" SIZE="30"></TD>
+    </tr>
+    <tr>
+      <td colspan=2 align=middle><INPUT type="SUBMIT" name="admlogin" value="Пустите меня..."></td>
+    </tr>
+  </TABLE>
+      <p><strong><em>Важно:</em></strong> Для того, чтобы Вы могли вносить изменения в 
+      , Вам необходимо включить куки (cookies).
+
+      <p>Session cookies are used in Mailman's
+      administrative interface so that you don't need to
+      re-authenticate with every administrative operation.  This
+      cookie will expire automatically when you exit your browser, or
+      you can explicitly expire the cookie by hitting the
+      <em>Logout</em> link under <em>Other Administrative
+      Activities</em> (which you'll see once you successfully log in).
+</FORM>
+</body>
+</html>

@@ -1,0 +1,25 @@
+Этот текст может включать строки вида <b><code>%(attribute)s</code></b>,
+вместо которых подставляются значения соответствующих атрибутов
+списка рассылки. Подробную информацию о правилах форматирования, вы можете
+найти на странице "<a href="http://www.python.org/doc/current/lib/typesseq-strings.html">Python's
+    string formatting rules</a>" (по-английски).  Некоторые из полезных
+атрибутов перечислены ниже.
+
+<ul>
+    <li><b><code>real_name</code></b> - The `pretty' name of the list; usually
+    the list name with capitalization.
+
+    <li><b><code>_internal_name</code></b> - The name by which the list is
+    identified in URLs, where case is significant.
+
+    <li><b><code>host_name</code></b> - The fully qualified domain name
+    that the list server runs on.
+
+    <li><b><code>web_page_url</code></b> - The base URL for Mailman.  This
+    can be appended with,
+    e.g. <em><code>listinfo/%(_internal_name)s</code></em> to yield the
+    listinfo page for the mailing list.
+
+    <li><b><code>description</code></b> - краткое описание списка рассылки.
+    <li><b><code>info</code></b> - полное описание списка рассылки.
+</ul>

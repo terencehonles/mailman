@@ -1,0 +1,15 @@
+Сообщения, предназначенные для списка рассылки %(real_name)s, необходимо
+отправлять по адресу
+	%(got_list_email)s
+
+Для того, чтобы изменить параметры
+To subscribe or unsubscribe via the World Wide Web, visit
+	%(got_listinfo_url)s
+or, via email, send a message with subject or body 'help' to
+	%(got_request_email)s
+
+You can reach the person managing the list at
+	%(got_owner_email)s
+
+When replying, please edit your Subject line so it is more specific than
+"Re: Contents of %(real_name)s digest..."
