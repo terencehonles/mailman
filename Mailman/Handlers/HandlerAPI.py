@@ -138,7 +138,7 @@ def RedeliverMessage(mlist, msg):
 # for messages crafted internally by the Mailman system.  The msg object
 # should have already calculated and set msg.recips.  TBD: can the mlist be
 # None?
-def DeliverToUser(mlist, msg):
+def DeliverToUser(mlist, msg, newdata={}):
     pipeline = ['Replybot',
                 'CookHeaders',
                 mm_cfg.DELIVERY_MODULE,
@@ -147,4 +147,8 @@ def DeliverToUser(mlist, msg):
                'fasttrack': 1,
                'recips'   : msg.recips,
                }
+    recips = getattr(msg, 'recips', None)
+    if recips is not None:
+        msgdata['recips'] = recips
+    msgdata.update(newdata)
     return DeliverToList(mlist, msg, msgdata)
