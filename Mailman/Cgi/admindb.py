@@ -263,7 +263,14 @@ def show_pending_subs(mlist, form):
                   Center(Bold(_('Your decision'))),
                   Center(Bold(_('Reason for refusal')))
                   ])
+    # Alphabetical order by email address
+    byaddrs = {}
     for id in pendingsubs:
+        addr = mlist.GetRecord(id)[1]
+        byaddrs.setdefault(addr, []).append(id)
+    addrs = byaddrs.keys()
+    addrs.sort()
+    for id in reduce(lambda x, y: x + y, [byaddrs[k] for k in addrs]):
         time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
         radio = RadioButtonArray(id, (_('Defer'),
                                       _('Approve'),
@@ -297,7 +304,14 @@ def show_pending_unsubs(mlist, form):
                   Center(Bold(_('Your decision'))),
                   Center(Bold(_('Reason for refusal')))
                   ])
+    # Alphabetical order by email address
+    byaddrs = {}
     for id in pendingunsubs:
+        addr = mlist.GetRecord(id)[1]
+        byaddrs.setdefault(addr, []).append(id)
+    addrs = byaddrs.keys()
+    addrs.sort()
+    for id in reduce(lambda x, y: x + y, [byaddrs[k] for k in addrs]):
         addr = mlist.GetRecord(id)
         fullname = mlist.getMemberName(addr)
         if fullname is None:
