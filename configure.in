@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 599 $)
+AC_REVISION($Revision: 612 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -251,4 +251,4 @@ AC_OUTPUT([misc/paths.py modules/mm_defaults.py
            src/Makefile misc/Makefile bin/Makefile modules/Makefile
 	   mail/Makefile templates/Makefile cgi/Makefile cron/Makefile
 	   filters/Makefile scripts/Makefile modules/mm_cfg.py
-	   Makefile])
+	   cron/crontab.in Makefile])
