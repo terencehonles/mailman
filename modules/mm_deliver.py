@@ -13,9 +13,9 @@ was successfully received by the %s maillist.
 (List info page: %s )
 '''
 
-SPECIAL_NOTICE_LISTS = ["grail"]
+USE_SPECIAL_PREFIX_FOR_LISTS = []
 
-CHANGETEXT = '''[%(real_name)s maillist member: Your mailing list
+SPECIAL_PREFIX = '''[%(real_name)s maillist member: Your mailing list
 is being migrated to a new maillist mechanism, one which offers more
 control both to the list members and to the administrator.  (It also,
 surprise surprise, happens to be written in python.)  See more details
@@ -70,18 +70,20 @@ these things.  YOUR PASSWORD IS:
 
       %s
 
-To make changes, use this password on the web site: 
+To make changes to your subscription, visit the web page:
 
       %s
 
+... and use the password to authorize changes to your account.
+
 You can also make such adjustments via email - send a message to:
 
-      %s-request@%s
+      %s
 
-with the text "help" in the subject or body, and you will get back a
-message with instructions.
+with the text "help" in the subject or body, and you will be emailed
+instructions.
 
-Questions or comments?  Send mail to Mailman-owner@%s
+Questions or comments?  Please send them to %s.
 '''
 
 # We could abstract these two better...
@@ -183,8 +185,8 @@ class Deliverer:
 				   header,
 				   welcome))
 
-        if self._internal_name in SPECIAL_NOTICE_LISTS:
-            body = (CHANGETEXT % self.__dict__) + body
+        if self._internal_name in USE_SPECIAL_PREFIX_FOR_LISTS:
+            body = (SPECIAL_PREFIX % self.__dict__) + body
 
         self.SendTextToUser(subject = 'Welcome To "%s"! %s' % (self.real_name, 
 							       digest_mode),
@@ -205,8 +207,8 @@ class Deliverer:
             text = USERPASSWORDTEXT % (self.real_name,
                                        self.passwords[user],
                                        self.GetScriptURL('listinfo'),
-                                       self.real_name, self.host_name,
-                                       self.host_name)
+                                       self.GetRequestEmail(),
+                                       self.GetAdminEmail())
         else:
             ok = 0
             recipient = self.GetAdminEmail()
