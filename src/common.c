@@ -78,7 +78,7 @@ fatal(const char* ident, int exitcode, char* format, ...)
 	 * should definitely know about any problems.
 	 */
 	openlog(ident, LOG_CONS, LOG_MAIL);
-	syslog(LOG_ERR, "%s", log_entry);
+	syslog(LOG_ERR, "%s\n", log_entry);
 	closelog();
 #endif /* HAVE_SYSLOG */
 
@@ -108,7 +108,7 @@ fatal(const char* ident, int exitcode, char* format, ...)
 		printf("</pre>\n");
 	}
 	else
-		fprintf(stderr, log_entry);
+		fprintf(stderr, "%s\n", log_entry);
 #endif /* HELPFUL */
 	exit(exitcode);
 }
