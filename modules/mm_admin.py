@@ -65,7 +65,7 @@ class ListAdmin:
 	    reason = args[1]
 	    subject = args[2]
 	    self.LogMsg("vette",
-			("%s: Posting hold: %s,\n\t%s"
+			("%s: %s post hold, %s"
 			 % (self.real_name, sender, `reason`)))
 	    if self.admin_immed_notify:
 		subj = '%s post approval required for %s' % (self.real_name,
@@ -121,11 +121,14 @@ class ListAdmin:
     def HandlePostRequest(self, data, value, comment):
 	destination_email = data[0][0]
 	msg = mm_message.IncomingMessage(data[0][1])
+	rejection = None
 	if not value:
             # Accept.
 	    self.Post(msg, 1)
+	    return
         elif value == 1:
-            # Refuse.
+            # Reject.
+	    rejection = "Refused"
             subj = msg.getheader('subject')
             if subj == None:
                 request = 'Posting of your untitled message'
@@ -139,7 +142,17 @@ class ListAdmin:
 				   comment, msg)
 	else:
             # Discard.
-            pass
+	    rejection = "Discarded"
+	if rejection:
+	    note = "%s: %s posting:" % (self._internal_name, rejection)
+	    note = note + "\n\tFrom: %s" % msg.GetSender()
+	    note = note + ("\n\tSubject: %s"
+			   % (msg.getheader('subject') or '<none>'))
+	    if data[1]:
+		note = note + "\n\tHeld: %s" % data[1]
+	    if comment:
+		note = note + "\n\tDiscarded: %s" % comment
+            self.LogMsg("vette", note)
 
     def HandleAddMemberRequest(self, data, value, comment):
 	digest = data[0]
