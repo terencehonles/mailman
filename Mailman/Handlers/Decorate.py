@@ -19,6 +19,7 @@
 
 from Mailman import mm_cfg
 from Mailman import Utils
+import string
 
 
 
@@ -26,6 +27,6 @@ def process(mlist, msg):
     d = Utils.SafeDict(mlist.__dict__)
     d['cgiext'] = mm_cfg.CGIEXT
     # interpolate into the header
-    header = mlist.msg_header % d
-    footer = mlist.msg_footer % d
+    header = string.replace(mlist.msg_header % d, '\r\n', '\n')
+    footer = string.replace(mlist.msg_footer % d, '\r\n', '\n')
     msg.body = header + msg.body + footer
