@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! @PYTHON@
 #
 # Copyright (C) 2000 by the Free Software Foundation, Inc.
 #

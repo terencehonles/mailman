@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! @PYTHON@
 # Originally written by Barry Warsaw <barry@zope.com>
 #
 # Minimally patched to make it even more xgettext compatible 

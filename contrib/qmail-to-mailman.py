@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! @PYTHON@
 
 # Configuration variables - Change these for your site if necessary.
 MailmanHome = "/home/mailman"; # Mailman home directory.
