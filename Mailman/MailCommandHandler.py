@@ -117,8 +117,11 @@ class MailCommandHandler:
             return
         # check the autoresponse stuff
         if self.autorespond_requests:
+            # TBD: this is a hack and is not safe with respect to errors in
+            # the Replybot module.  It should be redesigned to work with the
+            # robust delivery scheme.
             from Mailman.Handlers import Replybot
-            Replybot.process(self, msg)
+            Replybot.process(self, msg, msgdata={'torequest':1})
             if self.autorespond_requests == 1:
                 # Yes, auto-respond and discard
                 return
@@ -247,6 +250,7 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
 
 ''' + tbmsg)
                         responsemsg['X-No-Archive'] = 'yes'
+                        # TBD: This should check the return value
                         HandlerAPI.DeliverToUser(self, responsemsg)
                         break
         # send the response
@@ -278,6 +282,7 @@ The following is a detailed description of the problems.
                                                    self.GetRequestEmail(),
                                                    subject,
                                                    self.__respbuf)
+            # TBD: This should check the return value
             HandlerAPI.DeliverToUser(self, responsemsg)
             self.__respbuf = ''
             self.__errors = 0
@@ -521,6 +526,10 @@ background and instructions for subscribing to and using it, visit:
                           trunc=0)
 	except Errors.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
+        except Errors.MMBadUserError:
+            self.AddError('Your stored password is bogus.')
+            self.LogMsg('subscribe', 'User %s on list %s has no password' %
+                        (addr, self.internal_name()))
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
         """Parse subscription request and send confirmation request."""
