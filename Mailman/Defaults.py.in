@@ -39,11 +39,10 @@ IMAGE_LOGOS = '/icons/'
 MAILMAN_URL = 'http://www.gnu.org/software/mailman/mailman.html'
 #MAILMAN_URL = 'http://www.list.org/'
 
-		   # Many site-specific settings #
-
-DEFAULT_HOST_NAME = '@FQDN@'
-DEFAULT_URL       = 'http://@URL@/mailman/'
-PUBLIC_ARCHIVE_URL = '/pipermail'
+# Site-specific settings
+DEFAULT_HOST_NAME   = '@FQDN@'
+DEFAULT_URL         = 'http://@URL@/mailman/'
+PUBLIC_ARCHIVE_URL  = '/pipermail'
 PRIVATE_ARCHIVE_URL = '/mailman/private'
 
 DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
@@ -281,12 +280,33 @@ ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
 # dropped.
 PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
-# How long is the default lifetime for the MailList object lock, in seconds?
-# Set this variable too low, and a slow machine might give timeout erors, but
-# set too high, and a faulty script (or faulty use of bin/withlist) can
-# prevent the list from being used for this long.  Find the right tradeoff for
-# your system.
+
+# These variables control certain aspects of MailList lock acquisition and
+# retention.  They should be tuned as appropriate for your environment.  All
+# variables are specified in units of floating point seconds.
+#
+# LIST_LOCK_DEBUGGING specifies whether lock debug messages should be written
+# to logs/locks.  If you think you're having lock problems, or just want to
+# tune the locks for your system, turn on lock debugging.
+#
+# LIST_LOCK_LIFETIME specifies how long the lock will be retained for a
+# specific operation on a mailing list.  Watch your logs/lock file and if you
+# see a lot of lock breakages, you might need to bump this up.  However if you
+# set this too high, a faulty script (or incorrect use of bin/withlist) can
+# prevent the list from being used until the lifetime expires.
+#
+# LIST_LOCK_TIMEOUT specifies how long an attempt will be made to acquire a
+# list lock.  If the lock acquisition times out, the operation will fail.
+# Most entry-level scripts that handle messages will safely queue the message
+# for another attempt later, but this is currently not as well tested as it
+# should be.  If you're using an MTA, such as Postfix, that has its own
+# command time out limit, make sure this lock timeout is set sufficiently
+# below that value.  Postfix for example kills it's filter processes with
+# SIGKILL, which can't be caught, and if triggered, can cause message loss.
+LIST_LOCK_DEBUGGING = 0
 LIST_LOCK_LIFETIME = 120
+# Postfix's default command_time_limit is 1000 seconds.
+LIST_LOCK_TIMEOUT = 500
 
 # how many members to display at a time on the admin cgi to unsubscribe
 # them or change their options.
@@ -359,4 +379,4 @@ PUBLIC_ARCHIVE_FILE_DIR 	= os.path.join(PREFIX, 'archives/public')
 PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 
 # The Mailman version
-from Version import VERSION, DATA_FILE_VERSION, HEX_VERSION
+from Version import *
