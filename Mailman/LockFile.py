@@ -71,6 +71,12 @@ DEFAULT_LOCK_LIFETIME  = 15
 # Allowable a bit of clock skew
 CLOCK_SLOP = 10
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 # Figure out what logfile to use.  This is different depending on whether
@@ -155,8 +161,8 @@ class LockFile:
         set, unless optional unconditionally is true.
 
     locked():
-        Return 1 if the lock is set, otherwise 0.  To avoid race conditions,
-        this refreshes the lock (on set locks).
+        Return true if the lock is set, otherwise false.  To avoid race
+        conditions, this refreshes the lock (on set locks).
 
     """
     # BAW: We need to watch out for two lock objects in the same process
@@ -168,7 +174,7 @@ class LockFile:
 
     def __init__(self, lockfile,
                  lifetime=DEFAULT_LOCK_LIFETIME,
-                 withlogging=0):
+                 withlogging=True):
         """Create the resource lock using lockfile as the global lock file.
 
         Each process laying claim to this resource lock will create their own
@@ -188,7 +194,7 @@ class LockFile:
         self.__withlogging = withlogging
         self.__logprefix = os.path.split(self.__lockfile)[1]
         # For transferring ownership across a fork.
-        self.__owned = 1
+        self.__owned = True
 	
     def __repr__(self):
         return '<LockFile %s: %s [%s: %ssec] pid=%s>' % (
@@ -208,7 +214,7 @@ class LockFile:
         """Return the lock's lifetime."""
         return self.__lifetime
 
-    def refresh(self, newlifetime=None, unconditionally=0):
+    def refresh(self, newlifetime=None, unconditionally=False):
         """Refreshes the lifetime of a locked file.
 
         Use this if you realize that you need to keep a resource locked longer
@@ -229,7 +235,6 @@ class LockFile:
         greater than 0, in which case, a TimeOutError is raised when timeout
         number of seconds (or possibly more) expires without lock acquisition.
         Raises AlreadyLockedError if the lock is already set.
-
         """
         if timeout:
             timeout_time = time.time() + timeout
@@ -244,8 +249,8 @@ class LockFile:
         self.__writelog('laying claim')
         # for quieting the logging output
         loopcount = -1
-        while 1:
-            loopcount = loopcount + 1
+        while True:
+            loopcount += 1
             # Create the hard link and test for exactly 2 links to the file
             try:
                 os.link(self.__tmpfname, self.__lockfile)
@@ -272,14 +277,14 @@ class LockFile:
                     # Something very bizarre happened.  Clean up our state and
                     # pass the error on up.
                     self.__writelog('unexpected link error: %s' % e,
-                                    important=1)
+                                    important=True)
                     os.unlink(self.__tmpfname)
                     raise
                 elif self.__linkcount() <> 2:
                     # Somebody's messin' with us!  Log this, and try again
                     # later.  TBD: should we raise an exception?
                     self.__writelog('unexpected linkcount: %d' %
-                                    self.__linkcount(), important=1)
+                                    self.__linkcount(), important=True)
                 elif self.__read() == self.__tmpfname:
                     # It was us that already had the link.
                     self.__writelog('already locked')
@@ -298,7 +303,7 @@ class LockFile:
                 # Yes, so break the lock.
                 self.__break()
                 self.__writelog('lifetime has expired, breaking',
-                                important=1)
+                                important=True)
             # Okay, someone else has the lock, our claim hasn't timed out yet,
             # and the expected lock lifetime hasn't expired yet.  So let's
             # wait a while for the owner of the lock to give it up.
@@ -306,7 +311,7 @@ class LockFile:
                 self.__writelog('waiting for claim')
             self.__sleep()
 
-    def unlock(self, unconditionally=0):
+    def unlock(self, unconditionally=False):
         """Unlock the lock.
 
         If we don't already own the lock (either because of unbalanced unlock
@@ -330,9 +335,9 @@ class LockFile:
         self.__writelog('unlocked')
 
     def locked(self):
-        """Returns 1 if we own the lock, 0 if we do not.
+        """Return true if we own the lock, false if we do not.
 
-        Checking the status of the lockfile resets the lock's lifetime, which
+        Checking the status of the lock resets the lock's lifetime, which
         helps avoid race conditions during the lock status test.
         """
         # Discourage breaking the lock for a while.
@@ -342,16 +347,16 @@ class LockFile:
             if e.errno == errno.EPERM:
                 # We can't touch the file because we're not the owner.  I
                 # don't see how we can own the lock if we're not the owner.
-                return 0
+                return False
             else:
                 raise
         # TBD: can the link count ever be > 2?
         if self.__linkcount() <> 2:
-            return 0
+            return False
         return self.__read() == self.__tmpfname
 
     def finalize(self):
-        self.unlock(unconditionally=1)
+        self.unlock(unconditionally=True)
 
     def __del__(self):
         if self.__owned:
@@ -359,10 +364,10 @@ class LockFile:
 
     # Use these only if you're transfering ownership to a child process across
     # a fork.  Use at your own risk, but it should be race-condition safe.
-    # _transfer_to() is called in the parent, passing in the pid of the
-    # child.  _take_possession() is called in the child, and blocks until the
-    # parent has transferred possession to the child.  _disown() is used to
-    # set the __owned flag to 0, and it is a disgusting wart necessary to make
+    # _transfer_to() is called in the parent, passing in the pid of the child.
+    # _take_possession() is called in the child, and blocks until the parent
+    # has transferred possession to the child.  _disown() is used to set the
+    # __owned flag to false, and it is a disgusting wart necessary to make
     # forced lock acquisition work in mailmanctl. :(
     def _transfer_to(self, pid):
         # First touch it so it won't get broken while we're fiddling about.
@@ -380,7 +385,7 @@ class LockFile:
         self.__write()
         # Toggle off our ownership of the file so we don't try to finalize it
         # in our __del__()
-        self.__owned = 0
+        self.__owned = False
         # Unlink the old winner, completing the transfer
         os.unlink(winner)
         # And do some sanity checks
@@ -398,7 +403,7 @@ class LockFile:
         self.__writelog('took possession of the lock')
 
     def _disown(self):
-        self.__owned = 0
+        self.__owned = False
 
     #
     # Private interface
@@ -496,14 +501,14 @@ class LockFile:
 def _dochild():
     prefix = '[%d]' % os.getpid()
     # Create somewhere between 1 and 1000 locks
-    lockfile = LockFile('/tmp/LockTest', withlogging=1, lifetime=120)
+    lockfile = LockFile('/tmp/LockTest', withlogging=True, lifetime=120)
     # Use a lock lifetime of between 1 and 15 seconds.  Under normal
     # situations, Mailman's usage patterns (untested) shouldn't be much longer
     # than this.
     workinterval = 5 * random.random()
     hitwait = 20 * random.random()
     print prefix, 'workinterval:', workinterval
-    islocked = 0
+    islocked = False
     t0 = 0
     t1 = 0
     t2 = 0
@@ -513,7 +518,7 @@ def _dochild():
             print prefix, 'acquiring...'
             lockfile.lock()
             print prefix, 'acquired...'
-            islocked = 1
+            islocked = True
         except TimeOutError:
             print prefix, 'timed out'
         else:
