@@ -235,8 +235,8 @@ class ListAdmin:
             # This should also uniquify the message enough for the hash-based
             # file naming (not foolproof though).
             msg['Resent-To'] = addr
-            msg.recips = addr
-            HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
+            HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1,
+                                                 'recips': [addr]})
         # for safety
         def strquote(s):
             return string.replace(s, '%', '%%')
