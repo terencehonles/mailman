@@ -4,6 +4,32 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.1 beta 6 (09-Dec-2002)
+
+    Lots and lots of bug fixes, and translation updates.  Also,
+
+    - ARCHIVER_OBSCURES_EMAILADDRS is now set to true by default.
+
+    - QRUNNER_SAVE_BAD_MESSAGES is now set to true by default.
+
+    - Bounce messages which were recognized, but in which no member
+      addresses were found are no longer forwarded to the list
+      administrator.
+
+    - bin/arch grew a --wipe option which first removes the entire old
+      archive before regenerating the new one.
+
+    - bin/mailmanctl -u now prints a warning that permission problems
+      could appear, such as when trying to delete a list through the
+      web that has some archives in it.
+
+    - A new script bin/list_owners has been added for printing out
+      list owners and moderators.
+
+    - Dates in the web version of archived messages are now relative
+      to the local timezone, and include the timezone names, when
+      available.
+
 2.1 beta 5 (19-Nov-2002)
 
     As is typical for a late beta release, this one includes the usual
