@@ -1018,9 +1018,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # no confirmation or approval necessary:
             self.ApprovedAddMember(name, password, digest, lang)
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
-            # confirmation:
-            from Pending import Pending
-            cookie = Pending().new(name, password, digest, lang)
+            # User confirmation required
+            import Pending
+            cookie = Pending.new(name, password, digest, lang)
             if remote is not None:
                 by = " " + remote
                 remote = _(" from %(remote)s")
@@ -1029,19 +1029,22 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 remote = ""
             recipient = self.GetMemberAdminEmail(name)
             realname = self.real_name
-            text = Utils.maketext('verify.txt',
-                                  {"email"      : name,
-                                   "listaddr"   : self.GetListEmail(),
-                                   "listname"   : realname,
-                                   "cookie"     : cookie,
-                                   "hostname"   : remote,
-                                   "requestaddr": self.GetRequestEmail(),
-                                   "remote"     : remote,
-                                   "listadmin"  : self.GetAdminEmail(),
-                                  }, lang=lang)
+            confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
+                                    cookie)
+            text = Utils.maketext(
+                'verify.txt',
+                {'email'       : name,
+                 'listaddr'    : self.GetListEmail(),
+                 'listname'    : realname,
+                 'cookie'      : cookie,
+                 'requestaddr' : self.GetRequestEmail(),
+                 'remote'      : remote,
+                 'listadmin'   : self.GetAdminEmail(),
+                 'confirmurl'  : confirmurl,
+                 }, lang=lang)
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
-       _('%(realname)s -- confirmation of subscription -- confirm %(cookie)d'),
+       _('%(realname)s -- confirmation of subscription -- confirm %(cookie)s'),
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
             msg.send(self)
@@ -1059,21 +1062,21 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 'subscriptions to %(realname)s require administrator approval')
 
     def ProcessConfirmation(self, cookie):
-        from Pending import Pending
-        got = Pending().confirmed(cookie)
-        if not got:
+        import Pending
+        data = Pending.confirm(cookie)
+        if data is None:
             raise Errors.MMBadConfirmation
-        else:
-            (email_addr, password, digest, lang) = got
         try:
-            if self.subscribe_policy == 3: # confirm + approve
-                self.HoldSubscription(email_addr, password, digest, lang)
-                name = self.real_name
-                raise Errors.MMNeedApproval, _(
-                    'subscriptions to %(name)s require administrator approval')
-            self.ApprovedAddMember(email_addr, password, digest, lang)
-        finally:
-            self.Save()
+            addr, password, digest, lang = data
+        except ValueError:
+            raise Errors.MMBadConfirmation
+        if self.subscribe_policy == 3: # confirm + approve
+            self.HoldSubscription(addr, password, digest, lang)
+            name = self.real_name
+            raise Errors.MMNeedApproval, _(
+                'subscriptions to %(name)s require administrator approval')
+        self.ApprovedAddMember(addr, password, digest, lang)
+        return addr, password, digest, lang
 
     def ApprovedAddMember(self, name, password, digest,
                           ack=None, admin_notif=None, lang=None):
