@@ -1,2 +1,2 @@
-%(member)s a été désabonné de %(listname)s.
+L'abonnement de %(member)s a été résilié de %(listname)s.
 

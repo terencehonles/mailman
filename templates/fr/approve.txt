@@ -2,7 +2,7 @@ Votre demande à %(requestaddr)s :
 
       %(cmd)s 
 
-a été renvoyée à la personne qui s'occupe de la liste. 
+a été envoyée à la personne qui gère de la liste. 
 
 C'est probablement parceque vous essayez de vous abonner
 à une liste 'fermée'. 
@@ -13,4 +13,4 @@ l'administrateur concernant votre demande d'abonnement.
 Toute question au sujet des principes de gestion de la
 liste doit être adressée à : 
 
-      %(adminaddr)s 
+      %(adminaddr)s

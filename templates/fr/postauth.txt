@@ -3,10 +3,10 @@ pour l'envoi du message suivant vers la liste:
 
     Liste:  %(listname)s@%(hostname)s
     De:     %(sender)s
-    Sujet:  %(subject)s
+    Objet:  %(subject)s
     Raison: %(reason)s
 
-Quand vous le souhaitez, consultez: 
+Quand vous le souhaitez, rendez-vous à: 
 
     %(admindb_url)s 
 

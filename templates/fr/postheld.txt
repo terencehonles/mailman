@@ -1,4 +1,4 @@
-Votre courrier à '%(list_name)s' dont le sujet est
+Votre courrier à '%(list_name)s' dont l'objet est
 
     %(subject)s
 
@@ -9,8 +9,8 @@ La raison de cette mise en attente:
 
     %(reason)s
 
-Soit le message sera envoyé à la liste, soit vous recevrez une
-indication de la décision du modérateur. Si vous souhaitez annuler ce
+Le message sera soit envoyé à la liste, soit vous recevrez une
+indication de la décision du modérateur. Si vous souhaitez annuler le
 message, veillez visiter l'URL suivante:
 
 	 %(confirmurl)s

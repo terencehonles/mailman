@@ -7,4 +7,4 @@ Quand vous pourrez, consultez:
 
 	%(admindb_url)s
 
-pour traiter la demande.
+pour traiter la requête.

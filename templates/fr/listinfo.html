@@ -1,4 +1,4 @@
-<!-- $Revision: 3855 $ -->
+<!-- $Revision: 4372 $ -->
 <HTML>
   <HEAD>
     <TITLE>Page d'infos de <MM-List-Name></TITLE>
@@ -20,7 +20,7 @@
 	    </td>
 	  </tr>
 	  <tr>
-	    <TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	    <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
 	      <B><FONT COLOR="#000000">A propos de <MM-List-Name></FONT></B>
 	    </TD>
             <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
@@ -32,9 +32,9 @@
 	    <tr>
 	      <td colspan="2">
 		<P><MM-List-Info></P>
-	  <p> Pour voir tous les messages pass&eacute;s de la liste,
-	      visitez les <MM-Archive>Archives de <MM-List-Name>
-	      </MM-Archive>.
+		<p> Pour voir tous les messages pass&eacute;s de la liste,
+		visitez les <MM-Archive>Archives de <MM-List-Name>
+		</MM-Archive>.
 	      <MM-Restricted-List-Message>
 	  </p>
 	</TD>
@@ -47,10 +47,10 @@
       <tr>
 	<td colspan="2">
 	  Pour envoyer un message &agrave; tous les abonn&eacute;s de
-	  la liste, envoyez du courrier el&eacute;ctronique &agrave;
+	  la liste, envoyez un courriel &agrave;
 	  <A HREF="mailto:<MM-Posting-Addr>"><MM-Posting-Addr></A>.
 
-	  <p>Vous pouvez vous inscrire sur la liste ou modifier votre
+	  <p>Vous pouvez vous abonner &agrave; la liste ou modifier votre
 	    abonnement actuel dans les sections du bas.
 	</td>
       </tr>
@@ -69,23 +69,29 @@
 	      <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2"
 		WIDTH="70%" HEIGHT= "112">
 		<TR>
-		  <TD BGCOLOR="#dddddd" WIDTH="55%">Votre adresse email:</TD>
+		  <TD BGCOLOR="#dddddd" WIDTH="55%">Votre adresse courriel:</TD>
 		  <TD WIDTH="33%"><MM-Subscribe-Box>
 	</TD>
 	<TD WIDTH="12%">&nbsp;</TD></TR>
+      <tr>
+        <td bgcolor="#dddddd" width="55%">Votre nom (facultatif):</td>
+        <td width="33%"><mm-fullname-box></td>
+	<TD WIDTH="12%">&nbsp;</TD></TR>
       <TR>
 	<TD COLSPAN="3"><FONT SIZE=-1>Vous devez entrer un mot de passe
-	    de confidentialit&eacute;. Ceci ne procure qu'une faible
+	    pour la confidentialit&acute;. Ceci ne procure qu'une faible
 	    s&eacute;curit&eacute; mais devrait n&eacute;anmoins
-	    enp&ecirc;cher n'importe qui de modifier vos abonnements.
+	    enp&ecirc;cher que n'importe qui modifie vos abonnements.
 	    <b>N'utilisez pas un mot de passe important</b> car il
-	    arrivera qu'il vous soit renvoy&eacute; par email en clair.
+	    arrivera qu'il vous soit renvoy&eacute; par courriel en clair.
 
-	    <p>Si vous choisissez de ne pas en fournir, un mot de passe
-	    vous sera g&eacute;n&eacute;r&eacute; automatiquement, et il vous sera envoy&eacute; une
-	    fois que votre requ&ecirc;te d'abonnement aura &eacute;t&eacute; confirm&eacute;e. Il vous
-	    sera toujours possible de vous faire envoyer votre mot de passe
-	    par courriel lorsque vous visualisez vos options personelles.
+		   <p>Si vous choisissez de ne pas en fournir, un mot de
+		   passe vous sera g&eacute;n&eacute;r&eacute;
+		   automatiquement, et il vous sera envoy&eacute; une fois que
+		   votre requ&ecirc;te d'abonnement aura &eacute;t&eacute;
+		   confirm&eacute;e. Il vous sera toujours possible de vous
+		   faire envoyer votre mot de passe par courriel lorsque vous
+		   visualisez vos options personnelles.
 	    <MM-Reminder>
 	</TD>
       </TR>  
@@ -98,12 +104,13 @@
 	<TD><MM-Confirm-Password></TD>
 	<TD>&nbsp; </TD></TR>
       <tr>
-        <TD BGCOLOR="#dddddd">Dans quelle langue voulez-vous que vos messages soient affich&eacute;s?</TD> 
+        <TD BGCOLOR="#dddddd">Dans quelle langue voulez-vous que le 
+		syst&egrave vous parle?</TD> 
         <TD> <MM-list-langs></TD>
         <TD>&nbsp; </TD></TR>
       <tr>
 	<td>Souhaitez-vous recevoir les messages de la liste dans
-	    un unique courrier quotidien?
+	    un seul courriel quotidien groupé?
 	  </td>
 	<td><MM-Undigest-Radio-Button> Non
 	    <MM-Digest-Radio-Button>  Oui
@@ -120,7 +127,8 @@
     <TR>
       <TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
 	<a name="subscribers">
-        <B><FONT COLOR="#000000">Abonn&eacute;s de <MM-List-Name></FONT></B></a>
+        <B><FONT COLOR="#000000">Abonn&eacute;s de
+	<MM-List-Name></FONT></B></a>
       </TD>
     </TR>
     <tr>

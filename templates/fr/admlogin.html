@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Authentification %(who)s pour %(listname)s</title>
+  <title>Authentification %(who)s sur %(listname)s</title>
 </head>
 <body bgcolor="#ffffff">
 <FORM METHOD=POST ACTION="%(path)s">
@@ -17,18 +17,19 @@
       <TD> <INPUT TYPE="password" NAME="adminpw" SIZE="30"></TD>
     </tr>
     <tr>
-      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="admlogin"
-						     value="Je veux entrer...">
+      <td colspan=2 align=middle> <INPUT type="SUBMIT" 
+                                         name="admlogin"
+					 value="Je veux entrer...">
       </td>
     </tr>
   </TABLE>
       <p><strong><em>Important:</em></strong> A partir d'ici, vous devez avoir
       les cookies activ&eacute;s dans votre navigateur, autrement aucun
-      changement ne s'appliquera.
+      changement administratif ne s'appliquera.
 
       <p>Les cookies de session sont utilis&eacute;s dans l'interface
       d'administration de Mailman pour que vous n'ayez pas &agrave; vous
-      authentifier de nouveau &agrave; chaque op&eacute;ration. Le cookie
+      authentifier de nouveau pour chaque op&eacute;ration. Le cookie
       expirera automatiquement lorsque vous quitterez votre navigateur, ou
       vous pouvez le forcer &agrave; expirer en cliquant sur le lien
       <em>D&eacute;connexion</em> en dessous d'<em>Autres op&eacute;rations

@@ -1,7 +1,7 @@
 Votre message intitulé
 
-    %(subject)s 
+    %(subject)s
 
-est bien parvenu à la liste de diffusion %(listname)s. 
+est bien parvenu à la liste de diffusion %(listname)s.
 
-Page d'information de la liste : %(listinfo_url)s 
+Page Info de la liste : %(listinfo_url)s

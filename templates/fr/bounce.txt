@@ -1,4 +1,4 @@
-Ceci est une notification de rebond sur une liste: 
+Ceci est un avis de rebond sur une liste Mailman: 
 
     Liste:      %(listname)s
     Abonné:     %(addr)s
@@ -7,7 +7,7 @@ Ceci est une notification de rebond sur une liste:
     %(but)s
 
 %(reenable)s
-L'avis de déclenchement de rebond est joint ci-dessous.
+Ce qui a déclenché l'avis de rebond est joint ci-dessous.
 
-Des questions? Contactez l'administrateur du site Mailman
-à l'adresse %(owneraddr)s.
+Des questions?  
+Contactez l'administrateur du site Mailman à l'adresse %(owneraddr)s.

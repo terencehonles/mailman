@@ -10,6 +10,6 @@ ou dans le sujet à
 Vous pouvez contacter l'administrateur de la liste à l'adresse
 	%(got_owner_email)s
 
-Si vous répondez, n'oubliez pas de changer le sujet du message
-afin qu'il soit plus spécifique que
-"Re: Contents of %(real_name)s digest..."
+Si vous répondez, n'oubliez pas de changer l'objet du message afin
+qu'il soit plus spécifique que "Re: Contenu du digest
+de %(real_name)s..."
