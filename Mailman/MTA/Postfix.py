@@ -18,10 +18,10 @@
 """
 
 import os
-import time
-import errno
 import pwd
 import grp
+import time
+import errno
 from stat import *
 
 from Mailman import mm_cfg
@@ -34,6 +34,12 @@ from Mailman.Logging.Syslog import syslog
 LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'creator')
 ALIASFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
 VIRTFILE = os.path.join(mm_cfg.DATA_DIR, 'virtual-mailman')
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
 
 
 
@@ -160,7 +166,7 @@ def _check_for_virtual_loopaddr(mlist, filename):
         os.umask(omask)
     try:
         # Find the start of the loop address block
-        while 1:
+        while True:
             line = infp.readline()
             if not line:
                 break
@@ -168,7 +174,7 @@ def _check_for_virtual_loopaddr(mlist, filename):
             if line.startswith('# LOOP ADDRESSES START'):
                 break
         # Now see if our domain has already been written
-        while 1:
+        while True:
             line = infp.readline()
             if not line:
                 break
@@ -212,8 +218,8 @@ def _do_create(mlist, textfile, func):
         _check_for_virtual_loopaddr(mlist, textfile)
 
 
-def create(mlist, cgi=0, nolock=0):
-    # Acquire the global list database lock
+def create(mlist, cgi=False, nolock=False, quiet=False):
+    # Acquire the global list database lock.  quiet flag is ignored.
     lock = None
     if not nolock:
         lock = makelock()
@@ -226,7 +232,7 @@ def create(mlist, cgi=0, nolock=0):
         _update_maps()
     finally:
         if lock:
-            lock.unlock(unconditionally=1)
+            lock.unlock(unconditionally=True)
 
 
 
@@ -247,7 +253,7 @@ def _do_remove(mlist, textfile, virtualp):
             outfp = open(textfile + '.tmp', 'w')
         finally:
             os.umask(omask)
-        filteroutp = 0
+        filteroutp = False
         start = '# STANZA START: ' + listname
         end = '# STANZA END: ' + listname
         while 1:
@@ -260,7 +266,7 @@ def _do_remove(mlist, textfile, virtualp):
             # marker.
             if filteroutp:
                 if line.strip() == end:
-                    filteroutp = 0
+                    filteroutp = False
                     # Discard the trailing blank line, but don't worry if
                     # we're at the end of the file.
                     infp.readline()
@@ -268,7 +274,7 @@ def _do_remove(mlist, textfile, virtualp):
             else:
                 if line.strip() == start:
                     # Filter out this stanza
-                    filteroutp = 1
+                    filteroutp = True
                 else:
                     outfp.write(line)
     # Close up shop, and rotate the files
@@ -278,18 +284,18 @@ def _do_remove(mlist, textfile, virtualp):
     os.rename(textfile+'.tmp', textfile)
 
 
-def remove(mlist, cgi=0):
+def remove(mlist, cgi=False):
     # Acquire the global list database lock
     lock = makelock()
     lock.lock()
     try:
-        _do_remove(mlist, ALIASFILE, 0)
+        _do_remove(mlist, ALIASFILE, False)
         if mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-            _do_remove(mlist, VIRTFILE, 1)
+            _do_remove(mlist, VIRTFILE, True)
         # Regenerate the alias and map files
         _update_maps()
     finally:
-        lock.unlock(unconditionally=1)
+        lock.unlock(unconditionally=True)
 
 
 
