@@ -146,7 +146,7 @@ class HTMLFormatter:
             reason = _('; it was disabled for unknown reasons')
         if reason:
             note = FontSize('+1', _(
-                'Note: your list delivery is currently disabled %(reason)s.'
+                'Note: your list delivery is currently disabled%(reason)s.'
                 )).Format()
             link = Link('#disable', _('Mail delivery')).Format()
             mailto = Link('mailto:' + self.GetOwnerEmail(),
