@@ -116,7 +116,8 @@ class Bounce:
                 error(doc, varname, value)
 
     def HandleForm(self, mlist, cgidata, doc):
-        def convert(varname, func, mlist=mlist, cgidata=cgidata, doc=doc):
+        def convert(varname, func,
+                    self=self, mlist=mlist, cgidata=cgidata, doc=doc):
             self.__convert(mlist, cgidata, varname, doc, func)
 
         def to_days(value):
