@@ -17,17 +17,14 @@
 
 """Routines for presentation of list-specific HTML text."""
 
-
-import os
-import errno
 import re
-import shutil
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.htmlformat import *
 
 from Mailman.i18n import _
+
 
 EMPTYSTRING = ''
 BR = '<br>'
