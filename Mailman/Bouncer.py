@@ -32,6 +32,14 @@ import Errors
 class Bouncer:
     def InitVars(self):
 	# Not configurable...
+
+        # self.bounce_info registers observed bounce incidents.  It's a
+        # dict mapping members addrs to a list:
+        #  [
+        #    time.time() of last bounce,
+        #    post_id of first offending bounce in current sequence,
+        #    post_id of last offending bounce in current sequence
+        #  ]
 	self.bounce_info = {}
 
 	# Configurable...
@@ -72,66 +80,92 @@ class Bouncer:
 	    del self.bounce_info[email]
 
     def RegisterBounce(self, email, msg):
-	report = "%s: %s - " % (self.real_name, email)
-	bouncees = self.bounce_info.keys()
-	this_dude = Utils.FindMatchingAddresses(email, bouncees)
-	now = time.time()
-	if not len(this_dude):
-	    # Time address went bad, post where address went bad,
-	    # What the last post ID was that we saw a bounce.
-	    self.bounce_info[string.lower(email)] = [now, self.post_id,
-						     self.post_id]
-	    self.LogMsg("bounce", report + "first")
-	    self.Save()
-	    return
+        """Detect and handle repeat-offender bounce addresses.
+        
+        We use very sketchy bounce history profiles in self.bounce_info
+        (see comment above it's initialization), together with list-
+        specific thresholds self.minimum_post_count_before_bounce_action
+        and self.max_posts_between_bounces."""
 
-	addr = string.lower(this_dude[0])
-	inf = self.bounce_info[addr]
-	difference = now - inf[0]
-	if len(Utils.FindMatchingAddresses(addr, self.members)):
-	    if self.post_id - inf[2] > self.max_posts_between_bounces:
-		# Stale entry that's now being restarted...
-		# Should maybe keep track in see if people become stale entries
-		# often...
-		self.LogMsg("bounce",
-			    report + "first fresh")
-		self.bounce_info[addr] = [now, self.post_id, self.post_id]
-		return
-	    self.bounce_info[addr][2] = self.post_id
-	    if ((self.post_id - inf[1] >
-                 self.minimum_post_count_before_bounce_action)
-		and difference > self.minimum_removal_date * 24 * 60 * 60):
-		self.LogMsg("bounce", report + "exceeded limits")
-		self.HandleBouncingAddress(addr, msg)
-		return
-	    else:
-		post_count = (self.minimum_post_count_before_bounce_action - 
-			      (self.post_id - inf[1]))
-		if post_count < 0:
-		    post_count = 0
-                remain = self.minimum_removal_date * 24 * 60 * 60 - difference
-		self.LogMsg("bounce",
-			    report + ("%d more allowed over %d secs"
-                                      % (post_count, remain)))
-		self.Save()
-		return
+        # Set 'dirty' if anything needs to be save in the finally clause.
+        dirty = 0
+        report = "%s: %s - " % (self.real_name, email)
 
-	elif len(Utils.FindMatchingAddresses(addr, self.digest_members)):
-	    if self.volume > inf[1]:
-		self.LogMsg("bounce",
-			    "%s: first fresh (D)", self._internal_name)
-		self.bounce_info[addr] = [now, self.volume, self.volume]
-		return
-	    if difference > self.minimum_removal_date * 24 * 60 * 60:
-		self.LogMsg("bounce", report + "exceeded limits (D)")
-		self.HandleBouncingAddress(addr, msg)
-		return 
-	    self.LogMsg("bounce", report + "digester lucked out")
-	else:
-	    self.LogMsg("bounce",
-			"%s: address %s not a member.",
-			self._internal_name,
-			addr)
+        try:
+
+            # Take the opportunity to cull expired entries.
+            pid = self.post_id
+            maxposts = self.max_posts_between_bounces
+            for k, v in self.bounce_info.items():
+                if pid - v[1] > maxposts:
+                    # It's been long enough to drop their bounce record:
+                    del self.bounce_info[k]
+                    dirty = 1
+
+            this_dude = Utils.FindMatchingAddresses(email,
+                                                    self.bounce_info.keys())
+            now = time.time()
+            if not this_dude:
+                # No (or expired) priors - new record.
+                self.bounce_info[string.lower(email)] = [now, self.post_id,
+                                                         self.post_id]
+                self.LogMsg("bounce", report + "first")
+                dirty = 1
+                return
+
+            # There are some priors.
+            addr = string.lower(this_dude[0])
+            hist = self.bounce_info[addr]
+            difference = now - hist[0]
+            if len(Utils.FindMatchingAddresses(addr, self.members)):
+                if self.post_id - hist[2] > self.max_posts_between_bounces:
+                    # It's been long enough since last bounce that we're
+                    # restarting.  (Might should keep track of who goes stale
+                    # often.)
+                    self.LogMsg("bounce", report + "first fresh")
+                    self.bounce_info[addr] = [now, self.post_id, self.post_id]
+                    dirty = 1
+                    return
+                self.bounce_info[addr][2] = self.post_id
+                dirty = 1
+                if ((self.post_id - hist[1] >
+                     self.minimum_post_count_before_bounce_action)
+                    and
+                    (difference > self.minimum_removal_date * 24 * 60 * 60)):
+                    self.LogMsg("bounce", report + "exceeded limits")
+                    self.HandleBouncingAddress(addr, msg)
+                    return
+                else:
+                    post_count = (self.minimum_post_count_before_bounce_action
+                                  - (self.post_id - hist[1]))
+                    if post_count < 0:
+                        post_count = 0
+                    remain = (self.minimum_removal_date
+                              * 24 * 60 * 60 - difference)
+                    self.LogMsg("bounce",
+                                report + ("%d more allowed over %d secs"
+                                          % (post_count, remain)))
+                    return
+
+            elif len(Utils.FindMatchingAddresses(addr, self.digest_members)):
+                if self.volume > hist[1]:
+                    self.LogMsg("bounce",
+                                "%s: first fresh (D)", self._internal_name)
+                    self.bounce_info[addr] = [now, self.volume, self.volume]
+                    return
+                if difference > self.minimum_removal_date * 24 * 60 * 60:
+                    self.LogMsg("bounce", report + "exceeded limits (D)")
+                    self.HandleBouncingAddress(addr, msg)
+                    return 
+                self.LogMsg("bounce", report + "digester lucked out")
+            else:
+                self.LogMsg("bounce",
+                            "%s: address %s not a member.",
+                            self._internal_name,
+                            addr)
+        finally:
+            if dirty:
+                self.Save()
 
     def HandleBouncingAddress(self, addr, msg):
         """Disable or remove addr according to bounce_action setting."""
