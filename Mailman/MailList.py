@@ -22,6 +22,7 @@ Mixes in many task-specific classes.
 
 import sys
 import os
+import time
 import marshal
 import errno
 import re
@@ -29,6 +30,7 @@ import shutil
 import socket
 import urllib
 import cPickle
+
 from cStringIO import StringIO
 from UserDict import UserDict
 from urlparse import urlparse
@@ -240,6 +242,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Non-configurable list info 
         if name:
           self._internal_name = name
+
+        # When was the list created?
+        self.created_at = time.time()
 
         # Must save this state, even though it isn't configurable
         self.volume = 1
