@@ -1,6 +1,13 @@
 #! /usr/bin/env python
 
-import os, sys, pickle, string, re
+import os, sys, string, re
+
+try:
+    import cPickle
+    pickle = cPickle
+except ImportError:
+    import pickle
+
 from Mailman.Utils import mkdir, open_ex
 # TBD: ugly, ugly, ugly -baw
 open = open_ex
@@ -253,7 +260,6 @@ class T:
 
     # Update the threaded index completely
     def updateThreadedIndex(self):
-	import pickle, sys
 	# Erase the threaded index
 	self.database.clearIndex(self.archive, 'thread')
 	
@@ -520,7 +526,6 @@ class BSDDBdatabase(Database):
     # Add a single article to the internal indexes for an archive.
 
     def addArticle(self, archive, article, subjectkey, authorkey):
-	import pickle
 	self.__openIndices(archive)
 
 	# Add the new article
