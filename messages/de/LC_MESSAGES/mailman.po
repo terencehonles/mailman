@@ -7148,7 +7148,7 @@ msgid ""
 " (but we obscure the addresses so they are not\n"
 "                easily recognizable by spammers)."
 msgstr ""
-" (wir verdunkeln die Adressen, damit sie nicht so leicht von Spammern zu "
+" (wir verändern die Adressen, damit sie nicht so leicht von Spammern zu "
 "erkennen sind)."
 
 # Mailman/HTMLFormatter.py:190
@@ -7159,7 +7159,7 @@ msgid ""
 "            this means that your confirmation request will be sent to the\n"
 "            `%(sfx)s' account for your address.)"
 msgstr ""
-"<p>(Beachten Sie, das diese Liste nur den Regenschirm spielt; sie enthält "
+"<p>(Beachten Sie, das diese Liste nur den \"Regenschirm\" spielt; sie enthält nur "
 "nur andere Listen als Mitglieder. Unter anderem bedeutet dies, dass Ihre "
 "Bestätigungsanforderung an das `%(sfx)s' Konto Ihrer Adresse gesendet wird.)"
 
@@ -7179,7 +7179,7 @@ msgid ""
 msgstr ""
 "Um Ihr Abonnement von %(realname)s abzubestellen, eine\n"
 " Passworterinnerung zu erhalten, oder die Abonnementeinstellungen zu\n"
-" ändern, geben Sie %(either)s Ihre Emailadresse: <p><center> "
+" ändern, geben Sie %(either)s Ihre Emailadresse ein: <p><center> "
 
 # Mailman/HTMLFormatter.py:231
 #: Mailman/HTMLFormatter.py:260
@@ -7277,7 +7277,7 @@ msgstr "Abonnentenliste anschauen"
 # Mailman/HTMLFormatter.py:313
 #: Mailman/HTMLFormatter.py:345
 msgid "Once a month, your password will be emailed to you as a reminder."
-msgstr "Zur Erinnerung wird Ihnen einmal monatlich Ihr Passwort gemailt."
+msgstr "Zur Erinnerung wird Ihnen einmal monatlich Ihr Passwort zugemailt."
 
 # Mailman/HTMLFormatter.py:358
 #: Mailman/HTMLFormatter.py:391
