@@ -45,7 +45,7 @@ def main():
     if not parts:
         doc.AddItem(Header(2, _("Error")))
         doc.AddItem(Bold(_('Invalid options to CGI script')))
-        print doc.Format(bgcolor="#ffffff")
+        print doc.Format()
         return
         
     listname = parts[0].lower()
@@ -54,7 +54,7 @@ def main():
     except Errors.MMListError, e:
         doc.AddItem(Header(2, _("Error")))
         doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
-        print doc.Format(bgcolor="#ffffff")
+        print doc.Format()
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
@@ -124,7 +124,7 @@ def process_form(mlist, doc, cgidata, lang):
             doc.AddItem(Header(2, _("Error")))
             doc.AddItem(Bold(_("You must supply your email address.")))
             doc.AddItem(mlist.GetMailmanFooter())
-            print doc.Format(bgcolor="#ffffff")
+            print doc.Format()
             return
 
         addr = cgidata['info'].value
@@ -135,7 +135,7 @@ def process_form(mlist, doc, cgidata, lang):
             doc.AddItem(Bold(
                 _("%(realname)s has no subscribed addr <i>%(addr)s</i>.")))
             doc.AddItem(mlist.GetMailmanFooter())
-            print doc.Format(bgcolor="#ffffff")
+            print doc.Format()
             return
 
         call_script(mlist, member, 'options')
@@ -259,7 +259,7 @@ def print_results(mlist, results, doc, lang):
     replacements['<mm-results>'] = results
     output = mlist.ParseTags('subscribe.html', replacements, lang)
     doc.AddItem(output)
-    print doc.Format(bgcolor="#ffffff")
+    print doc.Format()
 
 
 
