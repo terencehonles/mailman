@@ -1,9 +1,41 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 470 $"
+__version__ = "$Revision: 479 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
-import time, os, string
+import time, os, string, re
+
+DIGEST_HEADER_TEMPLATE = """--%(_mime_separator)s
+
+From: %(got_sender)s
+Subject: Contents of %(real_name)s digest, Vol %(volume)d #%(next_digest_number)d - %(got_topics_number)d msg%(topics_plural)s
+Date: %(got_date)s
+
+Send %(real_name)s maillist submissions to
+	%(got_list_email)s
+
+To subscribe or unsubscribe via the web, visit
+	%(got_listinfo_url)s
+or, via email, send a message with subject or body 'help' to
+	%(got_request_email)s
+You can reach the person managing the list at
+	%(got_owner_email)s
+
+(When replying, please edit your Subject line so it is more specific than
+"Re: Contents of %(real_name)s digest...")
+
+Topics for this digest:
+%(got_topics_text)s
+"""
+
+DIGEST_CLOSE_TEMPLATE = """--%(_mime_separator)s
+
+From: %(got_sender)s
+Subject: %(real_name)s V%(volume)s#%(next_digest_number)s Digest Footer
+Date: %(got_date)s
+
+%(got_footer)s"""
+
 
 class Digester:
     def InitVars(self):
@@ -177,70 +209,38 @@ class Digester:
 		       (self.real_name, self.volume,
                         self.next_digest_number,
                         topics_number, topics_plural))
-	msg.SetHeader('mime-version', '1.0')
-	msg.SetHeader('content-type', 'multipart/digest; boundary="%s"' % 
-		       self._mime_separator)
 	msg.SetHeader('reply-to', self.GetListEmail())
 
         digest_file = open(os.path.join(self._full_path, 'next-digest'), 'r+')
 	msg.SetBody(digest_file.read())
 
 	# Create the header and footer... a bit messy.
-        subst = {}
+        substs = {}
         for k, v in self.__dict__.items():
-            subst[k] = v
-        subst['_mime_separator'] = self._mime_separator
-        subst.update({'got_sender': msg.GetSender(),
-                      'got_listinfo_url': self.GetScriptURL('listinfo'),
-                      'got_request_email': self.GetRequestEmail(),
-                      'got_date':         time.ctime(time.time()),
-                      'got_list_email': self.GetListEmail(),
-                      'got_owner_email': self.GetAdminEmail(),
-                      'got_topics_text': topics_text,
-                      'got_topics_number': topics_number,
-                      'topics_plural': topics_plural,
-                      })
+            substs[k] = v
+        substs['_mime_separator'] = self._mime_separator
+        substs.update({'got_sender': msg.GetSender(),
+                       'got_listinfo_url': self.GetScriptURL('listinfo'),
+                       'got_request_email': self.GetRequestEmail(),
+                       'got_date':         time.ctime(time.time()),
+                       'got_list_email': self.GetListEmail(),
+                       'got_owner_email': self.GetAdminEmail(),
+                       'got_topics_text': topics_text,
+                       'got_topics_number': topics_number,
+                       'topics_plural': topics_plural,
+                       })
 
-	digest_header = '''--%(_mime_separator)s
-
-From: %(got_sender)s
-Subject: Contents of %(real_name)s digest, Vol %(volume)d #%(next_digest_number)d - %(got_topics_number)d msg%(topics_plural)s
-Date: %(got_date)s
-
-Send %(real_name)s maillist submissions to
-	%(got_list_email)s
-
-To subscribe or unsubscribe via the web, visit
-	%(got_listinfo_url)s
-or, via email, send a message with subject or body 'help' to
-	%(got_request_email)s
-You can reach the person managing the list at
-	%(got_owner_email)s
-
-(When replying, please edit your Subject line so it is more specific than
-"Re: Contents of %(real_name)s digest...")
-
-Topics for this digest:
-%(got_topics_text)s
-''' %   subst
+	digest_header = DIGEST_HEADER_TEMPLATE % substs
 
         if self.digest_header:
 	    digest_header = digest_header + (self.digest_header
 					     % self.__dict__)
 	if self.digest_footer:
-            subst['got_footer'] = self.digest_footer % self.__dict__
+            substs['got_footer'] = self.digest_footer % self.__dict__
 
-	    digest_footer = '''--%(_mime_separator)s
-
-From: %(got_sender)s
-Subject: %(real_name)s V%(volume)s#%(next_digest_number)s Digest Footer
-Date: %(got_date)s
-
-%(got_footer)s
---%(_mime_separator)s--''' % subst
+	    digest_footer = DIGEST_CLOSE_TEMPLATE % substs
         else:
-	    digest_footer = '''
---%s--''' % self._mime_separator
+            substs['got_footer'] = ""
 
 
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
@@ -255,29 +255,44 @@ Date: %(got_date)s
 	recipients = filter(DeliveryEnabled, self.digest_members)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
-	self.LogMsg("digest",
-		    ('%s v %d - '
+
+        self.LogMsg("digest",
+                    ('%s v %d - '
                      '%d msgs %d dgstrs: %d m %d non %d dis'),
                     self.real_name,
                     self.next_digest_number,
                     topics_number,
                     len(self.digest_members),
-		    len(mime_recipients),
-		    len(text_recipients),
-		    len(self.digest_members) - len(recipients))
-	self.DeliverToList(msg, mime_recipients, digest_header, 
-	                   digest_footer, remove_to=1,
-			   tmpfile_prefix = "mime.")
-	msg.SetHeader('content-type', 'text/plain', crush_duplicates=1)
+                    len(mime_recipients),
+                    len(text_recipients),
+                    len(self.digest_members) - len(recipients))
 
-        # Zero the digest files only *just* before the messages are out.
-	topics_file.truncate(0)
-	topics_file.close()
-	digest_file.truncate(0)
-	digest_file.close()
+        msg.SetHeader('mime-version', '1.0')
 
-	self.DeliverToList(msg, text_recipients, digest_header,
-			   digest_footer, remove_to=1)
+        # Zero the digest files only just before the messages go out.
+        topics_file.truncate(0)
+        topics_file.close()
+        digest_file.truncate(0)
+        digest_file.close()
+
+        if text_recipients:
+            msg.SetHeader('content-type', 'text/plain', crush_duplicates=1)
+            self.DeliverToList(msg, text_recipients, digest_header,
+                               digest_footer, remove_to=1)
+        if mime_recipients:
+            import mimetools
+            boundary = mimetools.choose_boundary()
+            def cb(text, oldb=self._mime_separator, newb=boundary):
+                return mm_utils.change_boundary(text, oldb, newb)
+            msg.body = cb(msg.body)
+            msg.SetHeader('content-type',
+                          'multipart/mixed; boundary="%s"'
+                          % boundary,
+                          crush_duplicates=1)
+            self.DeliverToList(msg, mime_recipients,
+                               cb(digest_header),
+                               cb(digest_footer) + "\n--%s--" % boundary,
+                               remove_to=1, tmpfile_prefix = "mime.")
 
 	self.next_digest_number = self.next_digest_number + 1
 	self.next_post_number = 1
