@@ -1,10 +1,23 @@
 #!/usr/local/bin/python
-# We don't need to lock in this script, because we're never going to change data.
 
-import sys, os, string
-from regsub import gsub
+"""Produce listinfo page, primary web entry-point to maillists.
+
+Errors are redirected to logs/errors."""
+
+# No lock needed in this script, because we don't change data.
+
+import sys
 sys.path.append('/home/mailman/mailman/modules')
+
+import os, string
+from regsub import gsub
 import mm_utils, maillist, htmlformat
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'listinfo',
+                                        manual_reprime=1)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 doc = htmlformat.Document()
 
@@ -43,13 +56,16 @@ else:
 replacements['<mm-plain-digests-button>'] = list.FormatPlainDigestsButton()
 replacements['<mm-mime-digests-button>'] = list.FormatMimeDigestsButton()
 replacements['<mm-subscribe-box>'] = list.FormatBox('email')
-replacements['<mm-subscribe-button>'] = list.FormatButton('email-button')
+replacements['<mm-subscribe-button>'] = list.FormatButton('email-button',
+                                                          text='Subscribe')
 replacements['<mm-new-password-box>'] = list.FormatSecureBox('pw')
 replacements['<mm-confirm-password>'] = list.FormatSecureBox('pw-conf')
 replacements['<mm-form-start>'] = list.FormatFormStart('subscribe')
-replacements['<mm-change-info>'] = htmlformat.TextBox('info', size=40).Format()
-replacements['<mm-info-button>'] = htmlformat.SubmitButton('submitinfo', 
-	                                                    'Submit').Format()
+replacements['<mm-editing-options>'] = list.FormatEditingOption()
+replacements['<mm-info-button>'] = \
+                         htmlformat.SubmitButton('UserOptions',
+                                                 'Edit Options').Format()
+replacements['<mm-roster-option>'] = list.FormatRosterOptionForUser()
 
 doc.AddItem(list.ParseTags('listinfo.html', replacements))
 print doc.Format()
