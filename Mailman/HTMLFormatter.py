@@ -29,8 +29,11 @@ from htmlformat import *
 
 class HTMLFormatter:
     def InitTempVars(self):
-	self._template_dir = os.path.join(mm_cfg.TEMPLATE_DIR, 
-					  self._internal_name)
+        if self._internal_name:
+            self._template_dir = os.path.join(mm_cfg.TEMPLATE_DIR, 
+                                              self._internal_name)
+        else:
+            self._template_dir = mm_cfg.TEMPLATE_DIR
 
     def GetMailmanFooter(self):
 	owners_html = Container()
