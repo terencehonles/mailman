@@ -131,9 +131,7 @@ class MailCommandHandler:
         sender = string.split(sender, "@")[0]
         #
         # XXX: why 'orphanage'?
-        if sender in ['daemon', 'nobody', 'mailer-daemon', 'postmaster',
-                      'orphanage', 'postoffice']:
-            #
+        if sender in mm_cfg.LIKELY_BOUNCE_SENDERS:
             # This is for what are probably delivery-failure notices of
             # subscription confirmations that are, of necessity, bounced
             # back to the -request address.
