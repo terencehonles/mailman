@@ -77,7 +77,11 @@ internationalized versions of Mailman.
     <dd>Vizi Szilard heads up the Hungarian translation effort, with
     some help from Szabolcs Szigeti.
 
-    <dt><b>Japanese</b></dt>
+    <p><dt><b>Italian</b></dt>
+    <dd><a href="mailto:pioppo@ferrara.linux.it">Simone Piunno</a> is
+    heading up the Italian translations, with help from many others.    
+
+    <p><dt><b>Japanese</b></dt>
     <dd>Tokio Kikuchi maintains the
     <a href="http://mm.tkikuchi.net/"><em>Japanized Mailman Page</em></a>
     and also runs a mailing list for Japanese Mailman users, for which
@@ -95,6 +99,10 @@ internationalized versions of Mailman.
     Kolodziejczyk</a> and <a href="mailto:wanted@mwd.pl">Marcin
     Sochacki</a> have volunteered to spearhead the Polish
     translations.
+
+    <p><dt><b>Russian</b></dt>
+    <a href="mailto:mikhail.sobolev@transas.com">Mikhail Sobolev</a>
+    has volunteered to head up the Russian translation effort.
 
     <p><dt><b>Swedish</b></dt>
     <a href="mailto:jajoa@wmdata.com">Jan Johansson</a> heads up the
