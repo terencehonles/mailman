@@ -29,7 +29,7 @@ import errno
 #
 import pipermail
 from Mailman import LockFile
-from Mailman.Utils import mkdir, open_ex
+from Mailman.Utils import mkdir
 
 CACHESIZE = pipermail.CACHESIZE
 
@@ -168,7 +168,7 @@ class DumbBTree:
 
     def load(self):
         try:
-            fp = open_ex(self.path)
+            fp = open(self.path)
             try:
                 self.dict = marshal.load(fp)
             finally:
@@ -182,7 +182,11 @@ class DumbBTree:
             self.__sort(dirty=1)
 
     def close(self):
-        fp = open_ex(self.path, "w")
+        omask = os.umask(007)
+        try:
+            fp = open(self.path, 'w')
+        finally:
+            os.umask(omask)
         fp.write(marshal.dumps(self.dict))
         fp.close()
         self.unlock()
