@@ -56,6 +56,8 @@ class BounceTest(unittest.TestCase):
         ('SMTP32', 'smtp32_01.txt', ['oliver@pcworld.com.ph']),
         ('SMTP32', 'smtp32_02.txt', ['lists@mail.spicynoodles.com']),
         ('SMTP32', 'smtp32_03.txt', ['borisk@gw.xraymedia.com']),
+        # Qmail
+        ('Qmail', 'qmail_01.txt', ['psadisc@wwwmail.n-h.de']),
         # LLNL's custom Sendmail
         ('LLNL', 'llnl_01.txt', ['trotts1@llnl.gov']),
         # No address can be detected in these...
