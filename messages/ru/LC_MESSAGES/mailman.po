@@ -1,14 +1,14 @@
 # Russian Messages for Mailman v2.1
-# Copyright (C) Mikhail Sobolev <mss@woe.spb.ru>
-# Mikhail Sobolev <mss@woe.spb.ru>, 2001
+# Copyright (C) Mikhail Sobolev <mss@mawhrin.net>
+# Mikhail Sobolev <mss@mawhrin.net>, 2001
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman v2.1\n"
 "POT-Creation-Date: Mon Dec 31 16:47:34 2001\n"
 "PO-Revision-Date: 2001-08-01 23:43-0000\n"
-"Last-Translator: Mikhail Sobolev <mss@woe.spb.ru>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"Last-Translator: Mikhail Sobolev <mss@mawhrin.net>\n"
+"Language-Team: Russian <mailman-ru@only.mawhrin.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -54,7 +54,7 @@ msgstr ""
 #: Mailman/Handlers/Hold.py:235 Mailman/Handlers/ToDigest.py:205
 #: Mailman/ListAdmin.py:209
 msgid "(no subject)"
-msgstr ""
+msgstr "(без темы)"
 
 #: Mailman/Bouncer.py:198
 msgid "[No bounce details are available]"
@@ -187,10 +187,8 @@ msgstr ""
 #: Mailman/Cgi/admin.py:352
 msgid ""
 "<em><strong>Warning:</strong> changing this option here\n"
-"    could cause other screens to be out-of-sync.  Be sure to reload any "
-"other\n"
-"    pages that are displaying this option for this mailing list.  You can "
-"also\n"
+"    could cause other screens to be out-of-sync.  Be sure to reload any other\n"
+"    pages that are displaying this option for this mailing list.  You can also\n"
 "    "
 msgstr ""
 
@@ -208,11 +206,11 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:383
 msgid "Configuration Categories"
-msgstr ""
+msgstr "Группы параметров настройки"
 
 #: Mailman/Cgi/admin.py:384
 msgid "Other Administrative Activities"
-msgstr ""
+msgstr "Другие административные задачи"
 
 #: Mailman/Cgi/admin.py:389
 msgid "Tend to pending moderator requests"
@@ -298,11 +296,11 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:657
 msgid "<em>Enter the text below, or...</em><br>"
-msgstr ""
+msgstr "<em>Введите текст в поле ниже или ...</em><br>"
 
 #: Mailman/Cgi/admin.py:659
 msgid "<br><em>...specify a file to upload</em><br>"
-msgstr ""
+msgstr "<br><em>...укажите файл для загрузки на сервер</em><br>"
 
 #: Mailman/Cgi/admin.py:685 Mailman/Cgi/admin.py:688
 msgid "Topic %(i)d"
@@ -353,7 +351,7 @@ msgstr "Массовое удаление подписчиков"
 
 #: Mailman/Cgi/admin.py:767
 msgid "Membership List"
-msgstr ""
+msgstr "Список подписчиков"
 
 #: Mailman/Cgi/admin.py:783
 msgid "Bad regular expression: "
@@ -482,7 +480,7 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:1005
 msgid "Send notifications to the list owner? "
-msgstr ""
+msgstr "Оповестить владельца списка рассылки? "
 
 #: Mailman/Cgi/admin.py:1014 Mailman/Cgi/admin.py:1048
 msgid "Enter one address per line below..."
@@ -526,23 +524,23 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:1084
 msgid "Enter new administrator password:"
-msgstr ""
+msgstr "Укажите новый пароль администратора:"
 
 #: Mailman/Cgi/admin.py:1086
 msgid "Confirm administator password:"
-msgstr ""
+msgstr "Подтвердите новый пароль администратора:"
 
 #: Mailman/Cgi/admin.py:1091
 msgid "Enter new moderator password:"
-msgstr ""
+msgstr "Укажите новый пароль модератора:"
 
 #: Mailman/Cgi/admin.py:1093
 msgid "Confirm moderator password:"
-msgstr ""
+msgstr "Подтвердите новый пароль модератора:"
 
 #: Mailman/Cgi/admin.py:1103
 msgid "Submit Your Changes"
-msgstr ""
+msgstr "Внести изменения"
 
 #: Mailman/Cgi/admin.py:1181
 msgid "Moderator passwords did not match"
@@ -553,7 +551,7 @@ msgstr ""
 #: Mailman/Cgi/create.py:269 Mailman/Cgi/rmlist.py:176
 #: Mailman/Gui/Bounce.py:109
 msgid "Error: "
-msgstr ""
+msgstr "Ошибка: "
 
 #: Mailman/Cgi/admin.py:1193
 msgid "Administator passwords did not match"
@@ -580,7 +578,7 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:1300 Mailman/Cgi/admin.py:1303
 msgid "Bad/Invalid email address"
-msgstr ""
+msgstr "Недопустимый электронный адрес"
 
 #: Mailman/Cgi/admin.py:1306
 msgid "Hostile address (illegal characters)"
@@ -620,7 +618,7 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:1434
 msgid "Warning: "
-msgstr ""
+msgstr "Предупреждение: "
 
 #: Mailman/Cgi/admindb.py:154 Mailman/Cgi/admindb.py:162
 msgid "%(realname)s Administrative Database"
@@ -644,7 +642,7 @@ msgstr "Административные запросы списка рассылки:"
 
 #: Mailman/Cgi/admindb.py:182 Mailman/Cgi/admindb.py:221
 msgid "Submit All Data"
-msgstr ""
+msgstr "Выполнить"
 
 #: Mailman/Cgi/admindb.py:193
 msgid "all the %(esender)s's held messages."
@@ -664,11 +662,11 @@ msgstr ""
 
 #: Mailman/Cgi/admindb.py:241
 msgid "list of available mailing lists."
-msgstr ""
+msgstr "список доступных списков рассылки."
 
 #: Mailman/Cgi/admindb.py:242
 msgid "You must specify a list name.  Here is the %(link)s"
-msgstr ""
+msgstr "Вы должны указать имя списка рассылки; просмотрите %(link)s"
 
 #: Mailman/Cgi/admindb.py:255
 msgid "Subscription Requests"
@@ -700,7 +698,7 @@ msgstr "Одобрить"
 #: Mailman/Cgi/admindb.py:336 Mailman/Cgi/admindb.py:529
 #: Mailman/Gui/Privacy.py:244
 msgid "Reject"
-msgstr "Отвергнуть"
+msgstr "Отказать"
 
 #: Mailman/Cgi/admindb.py:267 Mailman/Cgi/admindb.py:300
 #: Mailman/Cgi/admindb.py:336 Mailman/Cgi/admindb.py:529
@@ -722,7 +720,7 @@ msgstr ""
 
 #: Mailman/Cgi/admindb.py:336 Mailman/Gui/Privacy.py:244
 msgid "Accept"
-msgstr ""
+msgstr "Принять"
 
 #: Mailman/Cgi/admindb.py:344
 msgid "Preserve messages for the site administrator"
@@ -738,7 +736,7 @@ msgstr ""
 
 #: Mailman/Cgi/admindb.py:372
 msgid "Accepts"
-msgstr ""
+msgstr "Принять"
 
 #: Mailman/Cgi/admindb.py:372
 msgid "Discards"
@@ -772,7 +770,7 @@ msgstr ""
 
 #: Mailman/Cgi/admindb.py:408
 msgid "Size:"
-msgstr ""
+msgstr "Размер:"
 
 #: Mailman/Cgi/admindb.py:409 Mailman/Cgi/admindb.py:522
 msgid "Reason:"
@@ -801,7 +799,7 @@ msgstr ""
 
 #: Mailman/Cgi/admindb.py:535
 msgid "Action:"
-msgstr "Действие"
+msgstr "Действие:"
 
 #: Mailman/Cgi/admindb.py:539
 msgid "Preserve message for site administrator"
@@ -817,7 +815,7 @@ msgstr ""
 
 #: Mailman/Cgi/admindb.py:551
 msgid "[No explanation given]"
-msgstr ""
+msgstr "[объяснение отсутствует]"
 
 #: Mailman/Cgi/admindb.py:556
 msgid "Message Headers:"
@@ -3679,7 +3677,7 @@ msgstr ""
 
 #: Mailman/HTMLFormatter.py:58
 msgid "Overview of all %(hostname)s mailing lists"
-msgstr ""
+msgstr "Списки рассылки, расположенные на %(hostname)s"
 
 #: Mailman/HTMLFormatter.py:79
 msgid "<em>(1 private member not shown)</em>"
@@ -4186,6 +4184,13 @@ msgid ""
 "%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
 "%(owner)s %(listname)s-admin\n"
 msgstr ""
+"Для того, чтобы завершить процесс удаления списка рассылки\n"
+"Вам необходимо удалить в вашем файле /etc/aliases следующие строки:\n"
+"\n"
+"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
+"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
+"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
+"%(owner)s %(listname)s-admin\n"
 
 #: Mailman/MTA/Manual.py:55
 msgid ""
@@ -6415,7 +6420,7 @@ msgstr ""
 
 #: bin/update:357
 msgid "removing %(src)s"
-msgstr ""
+msgstr "удаляется %(src)s"
 
 #: bin/update:361
 msgid "Warning: couldn't remove %(src)s -- %(rest)s"
@@ -6473,8 +6478,7 @@ msgid ""
 "\n"
 "NOTE NOTE NOTE NOTE NOTE\n"
 "\n"
-"    You are upgrading an existing Mailman installation, but I can't tell "
-"what\n"
+"    You are upgrading an existing Mailman installation, but I can't tell what\n"
 "    version you were previously running.\n"
 "\n"
 "    If you are upgrading from Mailman 1.0b9 or earlier you will need to\n"
@@ -6655,7 +6659,7 @@ msgstr ""
 
 #: bin/withlist:151
 msgid "Unlocking (but not saving) list: %(listname)s"
-msgstr ""
+msgstr "Раблокируется (но не обновляется) информация о списке рассылки: %(listname)s"
 
 #: bin/withlist:155
 msgid "Finalizing"
@@ -6679,11 +6683,11 @@ msgstr "(разблокирован)"
 
 #: bin/withlist:207
 msgid "Importing %(module)s..."
-msgstr ""
+msgstr "Импортируется %(module)s..."
 
 #: bin/withlist:210
 msgid "Running %(module)s.%(callable)s()..."
-msgstr ""
+msgstr "Выполняется %(module)s.%(callable)s()..."
 
 #: cron/bumpdigests:19
 msgid ""
