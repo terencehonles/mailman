@@ -79,6 +79,13 @@ class ListAdmin:
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 self.__db = {}
+            except EOFError, e:
+                # The unmarshalling failed, which means the file is corrupt.
+                # Sigh. Start over.
+                syslog('error',
+                       'request.db file corrupt for list %s, blowing it away.',
+                       self.internal_name())
+                self.__db = {}
             # Migrate pre-2.1a3 held subscription records to include the
             # fullname data field.
             type, version = self.__db.get('version', (IGN, None))
@@ -100,16 +107,22 @@ class ListAdmin:
     def __closedb(self):
         if self.__db is not None:
             assert self.Locked()
+            # Save the version number
+            self.__db['version'] = IGN, mm_cfg.REQUESTS_FILE_SCHEMA_VERSION
+            # Now save a temp file and do the tmpfile->real file dance.  BAW:
+            # should we be as paranoid as for the config.pck file?  Should we
+            # use pickle?
+            tmpfile = self.__filename() + '.tmp'
             omask = os.umask(002)
             try:
-                # Save the version number
-                self.__db['version'] = IGN, mm_cfg.REQUESTS_FILE_SCHEMA_VERSION
-                fp = open(self.__filename(), 'w')
+                fp = open(tmpfile, 'w')
                 marshal.dump(self.__db, fp)
                 fp.close()
                 self.__db = None
             finally:
                 os.umask(omask)
+            # Do the dance
+            os.rename(tmpfile, self.__filename())
 
     def __request_id(self):
 	id = self.next_request_id
