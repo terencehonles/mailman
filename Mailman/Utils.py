@@ -507,8 +507,12 @@ def is_administrivia(msg):
     if ADMINDATA.has_key(bodytext.strip().lower()):
         return 1
     # Look at the first N lines and see if there is any administrivia on the
-    # line.  BAW: N is currently hardcoded to 5.
-    for line in lines[:5] + [msg.get('subject', '')]:
+    # line.  BAW: N is currently hardcoded to 5.  str-ify the Subject: header
+    # because it may be an email.Header.Header instance rather than a string.
+    bodylines = lines[:5]
+    subject = str(msg.get('subject', ''))
+    bodylines.append(subject)
+    for line in bodylines:
         if not line.strip():
             continue
         words = [word.lower() for word in line.split()]
@@ -751,6 +755,7 @@ def uncanonstr(s, lang=None):
         charset = 'us-ascii'
     else:
         charset = GetCharSet(lang)
+    # BAW should change this to a type types of s
     try:
         return s.encode(charset, 'strict')
     except UnicodeError:
@@ -761,4 +766,5 @@ def uncanonstr(s, lang=None):
                 a.append('&#%3d;' % o)
             else:
                 a.append(c)
-        return EMPTYSTRING.join(a)
+        # Join characters together and coerce to byte string
+        return str(EMPTYSTRING.join(a))
