@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
-"PO-Revision-Date: 2002-12-04 15:21+0100\n"
+"PO-Revision-Date: 2002-12-09 10:47+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -15,9 +15,8 @@ msgstr ""
 "Generated-By: pygettext.py 1.3\n"
 
 #: Mailman/Archiver/HyperArch.py:111
-#, fuzzy
 msgid "size not available"
-msgstr "ikke tilgjengelig"
+msgstr "størrelsen er ikke tilgjengelig"
 
 #: Mailman/Archiver/HyperArch.py:117
 msgid " %(size)i bytes "
@@ -153,14 +152,12 @@ msgid "Computing threaded index\n"
 msgstr "Bygger innholdsfortegnelse\n"
 
 #: Mailman/Archiver/HyperArch.py:1261
-#, fuzzy
 msgid "Updating HTML for article %(seq)s"
-msgstr "Oppdaterer HTML for artikkel "
+msgstr "Oppdaterer HTML for artikkel %(seq)s"
 
 #: Mailman/Archiver/HyperArch.py:1268
-#, fuzzy
 msgid "article file %(filename)s is missing!"
-msgstr "fil for artikkel %s mangler!"
+msgstr "artikkelfilen %(filename)s mangler!"
 
 #: Mailman/Archiver/pipermail.py:168 Mailman/Archiver/pipermail.py:169
 msgid "No subject"
@@ -6710,9 +6707,8 @@ msgid "; it was disabled for unknown reasons"
 msgstr "; av ukjent grunn"
 
 #: Mailman/HTMLFormatter.py:148
-#, fuzzy
 msgid "Note: your list delivery is currently disabled%(reason)s."
-msgstr "Merk: Levering av epost fra listen er stoppet %(reason)s."
+msgstr "Merk: Levering av epost fra listen er stoppet%(reason)s."
 
 #: Mailman/HTMLFormatter.py:151
 msgid "Mail delivery"
@@ -7578,7 +7574,7 @@ msgstr "Sep"
 
 #: Mailman/i18n.py:95
 msgid "Server Local Time"
-msgstr ""
+msgstr "Lokal tid"
 
 #: Mailman/i18n.py:128
 msgid ""
@@ -9158,6 +9154,26 @@ msgid ""
 "of\n"
 "        all the lists will be displayed.\n"
 msgstr ""
+"Viser hvem som er eier av en epostliste, eller av alle listene.\n"
+"\n"
+"Brukes slik: %(PROGRAM)s [valg] [listenavn ...]\n"
+"\n"
+"Valg:\n"
+"\n"
+"    -w / --with-listnames\n"
+"        Grupperer eierne etter listenavn, og viser listenavnene. Uten dette\n"
+"        valget sorteres eierne etter epostadressen deres.\n"
+"\n"
+"    -m / --moderators\n"
+"        Viser også listemoderatorene.\n"
+"\n"
+"    -h / --help\n"
+"        Viser denne hjelpeteksten.\n"
+"\n"
+"    listenavn\n"
+"        Vis eieren(e) av de angitte lister. Mer en enn liste kan altså\n"
+"        spesifiseres. Dersom ingen liste er angitt, vil eiere av alle lister\n"
+"        vises.\n"
 
 #: bin/mailmanctl:19
 msgid ""
