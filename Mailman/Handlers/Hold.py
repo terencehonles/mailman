@@ -274,7 +274,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             subject = _('%(listname)s post from %(sender)s requires approval')
             msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
             msg.addheader('Content-Type', 'text/plain',
-                          charset=Utils.GetCharSet(lang))
+                          charset=Utils.GetCharSet(mlist.preferred_language))
             msg.send(mlist, **{'tomoderators': 1})
         finally:
             i18n.set_translation(otranslation)
