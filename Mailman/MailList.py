@@ -1094,8 +1094,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 approved = context.get('Approved', context.get('Approve'))
                 if not approved:
                     try:
-                        subpart = email.Iterators.typed_subpart_iterator(
-                            context, 'text', 'plain')[0]
+                        subpart = list(email.Iterators.typed_subpart_iterator(
+                            context, 'text', 'plain'))[0]
                     except IndexError:
                         subpart = None
                     if subpart:
