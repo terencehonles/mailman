@@ -32,7 +32,7 @@ class SafeDict(UserDict):
         try:
             return self.data[key]
         except KeyError:
-            if type(key) == StringType:
+            if isinstance(key, StringType):
                 return '%('+key+')s'
             else:
                 return '<Missing key: %s>' % `key`
@@ -48,14 +48,18 @@ class MsgSafeDict(SafeDict):
         if key.startswith('msg_'):
             return self.__msg.get(key[4:], 'n/a')
         elif key.startswith('allmsg_'):
-            return COMMASPACE.join(self.__msg.getall(key[7:], 'n/a'))
+            missing = []
+            all = self.__msg.get_all(key[7:], missing)
+            if all is missing:
+                return 'n/a'
+            return COMMASPACE.join(all)
         else:
             return SafeDict.__getitem__(self, key)
 
     def copy(self):
         d = self.data.copy()
         for k in self.__msg.keys():
-            vals = self.__msg.getall(k)
+            vals = self.__msg.get_all(k)
             if len(vals) == 1:
                 d['msg_'+k.lower()] = vals[0]
             else:
