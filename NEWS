@@ -6,7 +6,19 @@ Here is a history of user visible changes to Mailman.
 
 X.Y alpha 1 (XX-XXX-XXXX)
 
-    Bug fixes ported forward from 2.1.1
+    Bug fixes ported forward from 2.1.1, including
+
+    - Closed a cross-site scripting vulnerability in the user options page.
+
+    - Restore the ability to control which headers show up in messages
+      included in plaintext and MIME digests.  See the variables
+      PLAIN_DIGEST_KEEP_HEADERS and MIME_DIGEST_KEEP_HEADERS in
+      Defaults.py.
+
+    - Messages included in the plaintext digests are now sent through
+      the scrubber to remove (and archive) attachments.  Otherwise,
+      attachments would screw up plaintext digests.  MIME digests
+      include the attachments inline.
 
 2.1 final (30-Dec-2002)
 
