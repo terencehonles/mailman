@@ -103,8 +103,8 @@ def do_output(listname, outfile):
         print '## captured on', time.ctime(time.time())
         print
         config = mlist.GetConfigInfo()
-        categories = ('general', 'privacy', 'nondigest', 'digest', 'bounce',
-                      'archive', 'gateway')
+        categories = ('general', 'privacy', 'nondigest', 'digest',
+                      'bounce', 'archive', 'gateway', 'autoreply')
         for k in categories:
             info = config[k]
             print '##', string.capitalize(k), 'options'
