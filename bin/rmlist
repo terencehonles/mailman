@@ -39,7 +39,9 @@ import os
 import sys
 import string
 import getopt
+
 import paths
+from Mailman import mm_cfg
 
 
 
@@ -96,7 +98,7 @@ def main():
                       ]
 
     for dirtmpl, msg in REMOVABLES:
-        dir = os.path.join(paths.prefix, dirtmpl % listname)
+        dir = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl % listname)
         remove_it(listname, dir, msg)
 
 
