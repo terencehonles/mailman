@@ -18,8 +18,7 @@
 """
 
 from types import ListType
-
-from mimelib.Text import Text
+from email.MIMEText import MIMEText
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -37,7 +36,7 @@ def process(mlist, msg, msgdata):
     if msgdata.get('personalized'):
         # Calculate the extra personalization dictionary.  Note that the
         # length of the recips list better be exactly 1.
-        recips = msgdata['recips']
+        recips = msgdata.get('recips')
         assert type(recips) == ListType and len(recips) == 1
         member = recips[0].lower()
         d['user_address'] = member
@@ -56,21 +55,21 @@ def process(mlist, msg, msgdata):
     # concatenation when the message is a non-multipart of type text/plain.
     # Otherwise, if it is not a multipart, we make it a multipart, and then we
     # add the header and footer as text/plain parts.
-    if not msg.ismultipart() and msg.gettype() in (None, 'text/plain'):
+    if not msg.is_multipart() and msg.get_type('text/plain') == 'text/plain':
         payload = header + msg.get_payload() + footer
         msg.set_payload(payload)
-    elif msg.gettype() == 'multipart/mixed':
+    elif msg.get_type() == 'multipart/mixed':
         # The next easiest thing to do is just prepend the header and append
         # the footer as additional subparts
-        mimehdr = Text(header)
-        mimeftr = Text(footer)
+        mimehdr = MIMEText(header)
+        mimeftr = MIMEText(footer)
         payload = msg.get_payload()
         if not isinstance(payload, ListType):
             payload = [payload]
         payload.append(mimeftr)
         payload.insert(0, mimehdr)
         msg.set_payload(payload)
-    elif msg.getmaintype() <> 'multipart':
+    elif msg.get_main_type() <> 'multipart':
         # Okay, we've got some 'image/*' or 'audio/*' -like type.  For now, we
         # simply refuse to add headers and footers to this message.  BAW:
         # still trying to decide what the Right Thing To Do is.

@@ -30,8 +30,9 @@ message handling should stop.
 
 import os
 import time
+import email
+import email.Utils
 from types import ClassType
-from mimelib.MsgReader import MsgReader
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -169,13 +170,8 @@ def process(mlist, msg, msgdata):
     # Are there too many recipients to the message?
     if mlist.max_num_recipients > 0:
         # figure out how many recipients there are
-        recips = []
-        toheader = msg['to']
-        if toheader:
-            recips.extend([s.strip() for s in toheader.split(',')])
-        ccheader = msg['cc']
-        if ccheader:
-            recips.extend([s.strip() for s in ccheader.split(',')])
+        recips = email.Utils.getaddresses(msg.get_all('to', []) +
+                                          msg.get_all('cc', []))
         if len(recips) > mlist.max_num_recipients:
             hold_for_approval(mlist, msg, msgdata, TooManyRecipients)
             # no return
@@ -200,12 +196,8 @@ def process(mlist, msg, msgdata):
     #
     # Is the message too big?
     if mlist.max_message_size > 0:
-        reader = MsgReader(msg)
         bodylen = 0
-        while 1:
-            line = reader.readline()
-            if not line:
-                break
+        for line in email.Iterators.body_line_iterator(msg):
             bodylen += len(line)
         if bodylen/1024.0 > mlist.max_message_size:
             hold_for_approval(mlist, msg, msgdata,
@@ -259,8 +251,8 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         subject = _('Your message to %(listname)s awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
-        msg.addheader('Content-Type', 'text/plain',
-                      charset=Utils.GetCharSet(lang))
+        msg.add_header('Content-Type', 'text/plain',
+                       charset=Utils.GetCharSet(lang))
         msg.send(mlist)
     # Now the message for the list owners.  Be sure to include the list
     # moderators in this message.  This one should appear to come from
@@ -279,8 +271,8 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             # craft the admin notification message and deliver it
             subject = _('%(listname)s post from %(sender)s requires approval')
             msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
-            msg.addheader('Content-Type', 'text/plain',
-                          charset=Utils.GetCharSet(mlist.preferred_language))
+            msg.add_header('Content-Type', 'text/plain',
+                           charset=Utils.GetCharSet(mlist.preferred_language))
             msg.send(mlist, **{'tomoderators': 1})
         finally:
             i18n.set_translation(otranslation)

@@ -48,6 +48,6 @@ def process(mlist, msg, msgdata):
         # match?  For now we'll let it percolate up for further determination.
         msgdata['approved'] = 1
     # has this message already been posted to this list?
-    beentheres = [s.strip().lower() for s in msg.getall('x-beenthere')]
+    beentheres = [s.strip().lower() for s in msg.get_all('x-beenthere')]
     if mlist.GetListEmail().lower() in beentheres:
         raise Errors.LoopError

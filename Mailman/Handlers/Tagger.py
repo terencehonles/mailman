@@ -18,8 +18,8 @@
 """
 
 import re
-from mimelib.Parser import Parser
-from mimelib.MsgReader import MsgReader
+import email
+import email.Iterators
 
 from Mailman.Logging.Syslog import syslog
 
@@ -80,11 +80,12 @@ def scanbody(msg, numlines=None):
     # Now that we have a Message object that meets our criteria, let's extract
     # the first numlines of body text.
     lines = []
-    reader = MsgReader(msg)
     lineno = 0
+    reader = email.Iterators.body_line_iterator(msg)
     while numlines is None or lineno < numlines:
-        line = reader.readline()
-        if not line:
+        try:
+            line = reader.pop(0)
+        except IndexError:
             break
         # Blank lines don't count
         if not line.strip():
@@ -95,7 +96,7 @@ def scanbody(msg, numlines=None):
         if line[0] not in ' \t' and line.find(':') < 0:
             break
         lines.append(line)
-    # Concatenate those body text lines with newlines, and then feed it to the
-    # mimelib message Parser
-    msg = Parser().parsestr(NL.join(lines))
+    # Concatenate those body text lines with newlines, and then create a new
+    # message object from those lines.
+    msg = email.message_from_string(NL.join(lines))
     return msg.getall('subject', []) + msg.getall('keywords', [])
