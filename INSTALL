@@ -305,7 +305,7 @@ upgrade.
       Also, if you're going to be supporting internationalized public
       archives, you will probably want to turn off any default charset
       directive for the Pipermail directory, otherwise your
-      multilingual archive pages won't show up correct.  Here's an
+      multilingual archive pages won't show up correctly.  Here's an
       example for Apache, based on the standard installation
       directories:
 
