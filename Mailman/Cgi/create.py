@@ -75,6 +75,10 @@ def process_request(doc, cgidata):
         autogen  = int(cgidata.getvalue('autogen', '0'))
     except ValueError:
         autogen = 0
+    try:
+        notify  = int(cgidata.getvalue('notify', '0'))
+    except ValueError:
+        notify = 0
     password = cgidata.getvalue('password', '').strip()
     confirm  = cgidata.getvalue('confirm', '').strip()
     auth     = cgidata.getvalue('auth', '').strip()
@@ -172,21 +176,22 @@ def process_request(doc, cgidata):
             sys.modules[modname].create(mlist)
 
         # And send the notice to the list owner
-        text = Utils.maketext(
-            'newlist.txt',
-            {'listname'    : listname,
-             'password'    : password, 
-             'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
-             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-             'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
-             'hostname'    : mlist.host_name,
-             }, mlist.preferred_language)
-        msg = Message.UserNotification(
-            owner,
-            'mailman-owner@' + mlist.host_name,
-            _('Your new mailing list: %(listname)s'),
-            text)
-        msg.send(mlist)
+        if notify:
+            text = Utils.maketext(
+                'newlist.txt',
+                {'listname'    : listname,
+                 'password'    : password, 
+                 'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
+                 'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
+                 'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
+                 'hostname'    : mlist.host_name,
+                 }, mlist.preferred_language)
+            msg = Message.UserNotification(
+                owner,
+                'mailman-owner@' + mlist.host_name,
+                _('Your new mailing list: %(listname)s'),
+                text)
+            msg.send(mlist)
 
         # Success!
         listinfo_url = mlist.GetScriptURL('listinfo', absolute=1)
@@ -292,6 +297,17 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
 
     ftable.AddRow([Label(_('Confirm initial password:')),
                    PasswordBox('confirm', cgidata.getvalue('confirm', ''))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+
+    try:
+        notify = int(cgidata.getvalue('notify', '1'))
+    except ValueError:
+        notify = 1
+    ftable.AddRow([Label(_('Send "list created" email to list owner?')),
+                   RadioButtonArray('notify', ('No', 'Yes'),
+                                    checked=notify,
+                                    values=(0, 1))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
 
