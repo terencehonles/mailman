@@ -12,9 +12,9 @@ ligne -- dans un courriel adressé à %(requestaddr)s:
 
     confirm %(cookie)s
 
-Notez qu'un simple `répondre' devrait marcher pour nombres de lecteurs
-de courriels.
+Notez qu'un simple `répondre' devrait marcher pour nombre de lecteurs
+de courriel.
 
-Si vous souhaitez refuser cette invitation, veillez simplement ignorer
-ce message. Si vous avez des questions, veillez les faire parvenir à
+Si vous souhaitez refuser cette invitation, veuillez simplement ignorer
+ce message. Si vous avez des questions, veuillez les faire parvenir à
 %(listowner)s.

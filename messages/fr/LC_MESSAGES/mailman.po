@@ -1,12 +1,12 @@
 # Catalogues Mailman en Français.
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Ousmane Wilane <wilane@cyg.sn>, 2002.
-# Pascal George <george@lyon.inserm.fr>, 2002. 
+# Pascal George <george@lyon.inserm.fr>, 2003. 
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b6\n"
 "POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
-"PO-Revision-Date: 2002-12-24 10:48-0500\n"
+"PO-Revision-Date: 2003-01-22 12:50-0500\n"
 "Last-Translator: Pascal George <george@lyon.inserm.fr>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -717,7 +717,7 @@ msgstr ""
 msgid ""
 "<b>nodupes</b> -- Does the member want to avoid duplicates of the\n"
 "        same message?"
-msgstr "<b>pasmoi</b> -- Les abonnés éludent-ils les doublons?"
+msgstr "<b>sansdoublons</b> -- Les abonnés éludent-ils les doublons?"
 
 #: Mailman/Cgi/admin.py:1011
 msgid ""
@@ -738,7 +738,7 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:1016
 msgid "<b>language</b> -- Language preferred by the user"
-msgstr "<b>Langue</b> -- Langue préféré par l'utilisateur"
+msgstr "<b>Langue</b> -- Langue préférée par l'utilisateur"
 
 #: Mailman/Cgi/admin.py:1030
 msgid "Click here to hide the legend for this table."
@@ -753,7 +753,7 @@ msgid ""
 "<p><em>To view more members, click on the appropriate\n"
 "        range listed below:</em>"
 msgstr ""
-"<p><em>Pour voir d'avantage d'abonnés, cliquer sur l'un des intervalles ci-"
+"<p><em>Pour voir davantage d'abonnés, cliquer sur l'un des intervalles ci-"
 "dessous:<em>"
 
 #: Mailman/Cgi/admin.py:1050
@@ -1415,7 +1415,7 @@ msgstr "Langue préférée:"
 
 #: Mailman/Cgi/confirm.py:284
 msgid "Cancel my subscription request"
-msgstr "Confirmer la requête d'abonnement"
+msgstr "Annuler la requête d'abonnement"
 
 #: Mailman/Cgi/confirm.py:285
 msgid "Subscribe to list %(listname)s"

@@ -11,6 +11,6 @@ La raison de cette mise en attente:
 
 Le message sera soit envoyé à la liste, soit vous recevrez une
 indication de la décision du modérateur. Si vous souhaitez annuler le
-message, veillez visiter l'URL suivante:
+message, veuillez visiter l'URL suivante:
 
 	 %(confirmurl)s

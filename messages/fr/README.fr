@@ -1,21 +1,7 @@
-Francisation de Mailman.
 
-Je vous invite à relire les catalogues et les templates qui sont
-écrites pour la plupart par un Francophone dont la langue maternelle
-n'est pas le français, qui plus est n'est ni doué en grammaire ni
-érudit.  Si vous ne relisez rien et que vous y trouvez des fautes, ne
-grognez surtout pas, suggérez gentillement vos corrections, et elles
-seront apportées illico.
+Notes de traduction :
 
-Questions, suggestions: wilane@yahoo.com
+La francisation de Mailman 2.1 est actuellement tenue à jour par Pascal GEORGE, à partir du travail préalable d'Ousmane Wilane.
+Cette traduction n'est qu'une base de travail, en constante évolution, de nombreuses coquilles/erreurs ou traductions "bancales" sont encore présentes. Veuillez faire parvenir vos remarques/suggestions à p.george@laposte.net (en précisant MailmanFR dans le sujet) ou sur la liste francophone de Mailman : mailman-fr@rezo.net (inscription à l'URL http://listes.rezo.net/mailman/listinfo/mailman-fr)
 
-Ousmane Wilane <wilane@yahoo.com>
-
-Note décembre 2002 : Le traducteur en cours est  Pascal GEORGE. Pour tous commentaires
-veuillez contacter <george@lyon.inserm.fr>
-
-Local Variables:
-mode: indented-text
-indent-tabs-mode: nil
-End:
-
+Janvier 2003
