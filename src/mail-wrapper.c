@@ -95,10 +95,6 @@ main(int argc, char** argv, char** env)
 	check_caller(logident, parentgid);
 
 	/* If we got here, everything must be OK */
-	status = setuid(geteuid());
-	if (status)
-		fatal(logident, "%s", strerror(errno));
-
 	status = run_script(argv[1], argc, argv, env);
 	fatal(logident, "%s", strerror(errno));
 	return status;
