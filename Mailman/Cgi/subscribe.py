@@ -194,8 +194,7 @@ def main():
             results = results + "This list only supports digest subscriptions!"
         else:
             results = results + "You have been successfully subscribed to %s." % (list.real_name)
-
-
+            list.Save()
 
     PrintResults(list, results, doc)
     list.Unlock()
