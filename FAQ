@@ -134,6 +134,50 @@ FREQUENTLY ASKED QUESTIONS
    However, read the comments about this variable in the Defaults.py
    file for a full discussion of the issues.
 
+10. How secure are the authentication mechanisms used in Mailman's web
+    interface?
+
+   If your Mailman installation run on an SSL-enabled web server
+   (i.e. you access the Mailman web pages with "https://..." URLs),
+   you should be as safe as SSL itself is.
+
+   However, most Mailman installation run under standard,
+   encryption-unaware servers.  There's nothing wrong with that for
+   most applications, but a sufficiently determined cracker *could*
+   get unauthorized access by:
+
+    * Packet sniffing: The password used to do the initial
+        authentication for any non-public Mailman page is sent as
+        clear text over the net.  If you consider this to be a big
+        problem, you really should use an SSL-enabled server.
+
+    * Stealing a valid cookie: After successful password
+        authentication, Mailman sends a "cookie" back to the user's
+        browser.  This cookie will be used for "automatic"
+        authentication when browsing further within the list's
+        protected pages.  The cookie will only work for a limited
+        time, and only on connections made from the same IP number as
+        the password-authenticating connection.
+
+        Gaining access to the user's cookie (e.g. by being able to
+        read the user's browser cookie database, or by means of packet
+        sniffing, or maybe even by some broken browser offering all
+        it's cookies to any and all sites the user accesses), and at
+        the same time being able to fulfill the other criteria for
+        using the cookie could result in unauthorized access.
+
+        Note that this problem is easier exploitable when users browse
+        the web via proxies -- in that case, the cookie would be valid
+        for any connections made through that proxy, and not just for
+        connections made from the particular machine the user happens
+        to be accessing the proxy from.
+
+    * Getting access to the user's terminal: This is really just
+        another kind of cookie stealing.  The short cookie expiry time
+        is supposed to help defeat this problem.  It can be considered
+        the price to pay for the convenience of not having to type the
+        password in every time.
+
 
 
 Local Variables:
