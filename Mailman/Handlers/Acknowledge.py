@@ -41,21 +41,22 @@ def process(mlist, msg, msgdata):
             prefix = mlist.subject_prefix
             if subject.startswith(prefix):
                 subject = subject[len(prefix):]
-        # Get the text from the template
-        pluser = mlist.GetPreferredLanguage(sender)
-        # BAW: I don't like using $LANG
-        os.environ['LANG'] = pluser
+        # Get the user's preferred language
+        lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
+        # Now get the acknowledgement template
         realname = mlist.real_name
         text = Utils.maketext(
             'postack.txt',
             {'subject'     : subject,
              'listname'    : realname,
              'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-             }, pluser)
+             }, lang=lang)
         # Craft the outgoing message, with all headers and attributes
         # necessary for general delivery.  Then enqueue it to the outgoing
         # queue.
         subject = _('%(realname)s post acknowledgement')
         usermsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
                                            subject, text)
+        usermsg.addheader('Content-Type', 'text/plain',
+                          charset=Utils.GetCharSet(lang))
         usermsg.send(mlist)
