@@ -191,8 +191,10 @@ def main():
              'adminurl'  : adminurl,
              'filterurl' : adminurl + '/privacy/sender',
              }
+        addform = 1
         if sender:
-            d['description'] = _("all the %(esender)s's held messages.")
+            esender = cgi.escape(sender)
+            d['description'] = _("all of %(esender)s's held messages.")
             doc.AddItem(Utils.maketext('admindbpreamble.html', d,
                                        raw=1, mlist=mlist))
             show_sender_requests(mlist, form, sender)
@@ -209,6 +211,7 @@ def main():
         elif details == 'instructions':
             doc.AddItem(Utils.maketext('admindbdetails.html', d,
                                        raw=1, mlist=mlist))
+            addform = 0
         else:
             # Show a summary of all requests
             doc.AddItem(Utils.maketext('admindbsummary.html', d,
@@ -217,7 +220,7 @@ def main():
             show_pending_unsubs(mlist, form)
             show_helds_overview(mlist, form)
         # Finish up the document, adding buttons to the form
-        if not details:
+        if addform:
             doc.AddItem(form)
             form.AddItem('<hr>')
             form.AddItem(Center(SubmitButton('submit', _('Submit All Data'))))
