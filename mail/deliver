@@ -2,7 +2,7 @@
 
 """Partition a mass delivery into a suitable set of subdeliveries."""
 
-__version__ = "$Revision: 391 $"
+__version__ = "$Revision: 433 $"
 
 # Heh, heh, heh, this partition reminds me of the knapsack problem ;-)
 # Ie, the optimal distribution here is NP Complete.
@@ -23,6 +23,7 @@ if not os.fork():
         "Collect addrs by major subdomain - e.g. the 'python' in python.org."
 	parts = regsub.split(addr, '[.@]')
 	key = string.join(parts[-2:])
+        addr = repr(addr)
 	if not domain_info.has_key(key):
 	    domain_info[key] = [addr]
 	else:
