@@ -90,16 +90,16 @@ PROGRAMS= $(CGI_PROGS) $(MAIL_PROGS) $(ALIAS_PROGS)
 all: $(PROGRAMS)
 
 wrapper: $(srcdir)/mail-wrapper.c common.o
-	$(CC) -I. $(MAIL_FLAGS) $(CFLAGS) common.o -o $@ $<
+	$(CC) -I. $(MAIL_FLAGS) $(CFLAGS) common.o -o $@ $(srcdir)/mail-wrapper.c
 
 #addaliases: $(srcdir)/alias-wrapper.c common.o
-#	$(CC) -I. $(ALIAS_FLAGS) $(CFLAGS) -o $@ $<
+#	$(CC) -I. $(ALIAS_FLAGS) $(CFLAGS) -o $@ $(srcdir)/alias-wrapper.c
 
 $(CGI_PROGS): $(srcdir)/cgi-wrapper.c common.o
-	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) common.o -o $@ $<
+	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) common.o -o $@ $(srcdir)/cgi-wrapper.c
 
 common.o: $(srcdir)/common.c $(srcdir)/common.h $(srcdir)/Makefile
-	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $<
+	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $(srcdir)/common.c
 
 install: all
 	for f in $(CGI_PROGS); \
