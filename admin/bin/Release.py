@@ -2,9 +2,9 @@
 
 """Manage releases of Mailman.
 
-Usage: %(program)s [-b] [-t|-T] [-p] [-d] [-h] tagname
+Usage: %(program)s [options] tagname
 
-Where:
+Where `options' are:
 
     --tag
     -t
