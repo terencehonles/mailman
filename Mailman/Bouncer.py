@@ -57,10 +57,13 @@ class _BounceInfo:
         self.cookie = cookie
         self.reset(score, date, noticesleft)
 
-    def reset(self, score, date, noticesleft):
+    def reset(self, score=0, date=None, noticesleft=None):
+        if date is None:
+            date = ZEROHOUR_PLUSONEDAY
         self.score = score
         self.date = date
-        self.noticesleft = noticesleft
+        if noticesleft is not None:
+            self.noticesleft = noticesleft
         self.lastnotice = ZEROHOUR_PLUSONEDAY
 
     def __repr__(self):
@@ -136,7 +139,7 @@ class Bouncer:
             lastbounce = Utils.midnight(info.date)
             if lastbounce + self.bounce_info_stale_after < now:
                 # Information is stale, so simply reset it
-                info.reset(weight, today, 0)
+                info.reset(noticesleft=mlist.bounce_you_are_disabled_warnings)
                 syslog('bounce', '%s: %s has stale bounce info, resetting',
                        self.internal_name(), member)
             else:
