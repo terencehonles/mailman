@@ -460,7 +460,7 @@ class HyperArchive(pipermail.T):
     DIRMODE = 02775
     FILEMODE = 0660
 
-    VERBOSE = 1
+    VERBOSE = 0
     DEFAULTINDEX = 'thread'
     ARCHIVE_PERIOD = 'month'
  
