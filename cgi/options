@@ -6,7 +6,7 @@ Takes listname/userid in PATH_INFO, expecting an "obscured" userid.
 (Depending on the mm_utils.{O,Uno}bscureEmail utilities tolerance,
 will work fine with an unobscured ids as well.)"""
 
-__version__ = "$Revision: 388 $"
+__version__ = "$Revision: 405 $"
 
 # We don't need to lock in this script, because we're never going to change
 # data. 
@@ -23,7 +23,7 @@ try:
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
-doc = htmlformat.Document()
+doc = htmlformat.HeadlessDocument()
 
 path = os.environ['PATH_INFO']
 list_info = mm_utils.GetPathPieces(path)

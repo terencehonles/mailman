@@ -2,7 +2,7 @@
 
 """Script which implements admin editing of the list's html templates."""
 
-__version__ = "$Revision: 386 $"
+__version__ = "$Revision: 405 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -29,7 +29,7 @@ template_data = (('listinfo.html',    'General list information page'),
 
 
 def InitDocument():
-    return htmlformat.Document()
+    return htmlformat.HeadlessDocument()
 
 doc = InitDocument()
 

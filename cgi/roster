@@ -4,7 +4,7 @@
 
 Takes listname in PATH_INFO."""
 
-__version__ = "$Revision: 388 $"
+__version__ = "$Revision: 405 $"
 
 # We don't need to lock in this script, because we're never going to change
 # data. 
@@ -24,7 +24,7 @@ except IOError:
 
 
 def main():
-    doc = htmlformat.Document()
+    doc = htmlformat.HeadlessDocument()
     form = cgi.FieldStorage()
     list = get_list()
 

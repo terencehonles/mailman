@@ -4,7 +4,7 @@
 
 Errors are redirected to logs/errors."""
 
-__version__ = "$Revision: 388 $"
+__version__ = "$Revision: 405 $"
 
 # No lock needed in this script, because we don't change data.
 
@@ -21,7 +21,7 @@ try:
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
-doc = htmlformat.Document()
+doc = htmlformat.HeadlessDocument()
 
 path = os.environ['PATH_INFO']
 
