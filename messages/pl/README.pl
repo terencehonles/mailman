@@ -20,6 +20,6 @@ przy³±czania siê do projektu):
 W chwili obecnej przet³umaczone jest 99% interfejsu subskrybenta i oko³o 
 50% interfejsu administracyjnego.
 
-2003-04-19, sawickib
+2003-04-19, sawickib 
 
 
