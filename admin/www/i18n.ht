@@ -110,8 +110,10 @@ Project</a> for future language support.
 <tr><td>Italian</td><td>it</td>
     <td><a href="mailto:pioppo@ferrara.linux.it">Simone Piunno</a></td>
     <td>Supported.  Italian translation team mailing list at
-    <a href="http://mailman.ferrara.linux.it/listinfo/mailman-it/"
-    >http://mailman.ferrara.linux.it/listinfo/mailman-it/</a></td>
+    <a href="http://liste.ferrara.linux.it/listinfo/mailman-it/"
+    >http://liste.ferrara.linux.it/listinfo/mailman-it/</a> or email
+    to <a href="mailto:mailman-it@liste.ferrara.linux.it"
+    >mailman-it@liste.ferrara.linux.it</a></td>
 </tr>
 <tr><td>Japanese</td><td>ja</td>
     <td>Tokio Kikuchi</td>
