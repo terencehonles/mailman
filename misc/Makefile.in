@@ -45,7 +45,9 @@ SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
 PYTHONLIBDIR=	$(prefix)/pythonlib
-SETUPINSTOPTS=	--install-lib $(PYTHONLIBDIR) --install-purelib $(PYTHONLIBDIR)
+SETUPINSTOPTS=	--install-lib $(PYTHONLIBDIR) \
+		--install-purelib $(PYTHONLIBDIR) \
+		--install-data $(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
 EMAILPKG=	email-2.1
