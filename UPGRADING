@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
@@ -39,7 +39,7 @@ UPGRADING FROM PREVIOUS VERSIONS
      defaults (calculated via md5 checksums).  BAW: need to describe
      this in more detail.]
 
-UPGRADING FROM 2.0.1 to 2.1
+UPGRADING FROM 2.0.x to 2.1
 
     In Mailman 2.1, the qrunner subsystem has been completely
     rewritten.  You no longer start qrunner from cron!  Instead, there
