@@ -296,8 +296,12 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
     doc.AddItem(links_table)
     doc.AddItem('<hr>')
     if category_suffix:
-        form = Form("%s/%s" % (mlist.GetRelativeScriptURL('admin'),
-                                  category_suffix))
+        encoding = None
+        if category_suffix == 'autoreply':
+            # these have file uploads
+            encoding = 'multipart/form-data'
+        form = Form('%s/%s' % (mlist.GetRelativeScriptURL('admin'),
+                               category_suffix), encoding=encoding)
     else:
         form = Form(mlist.GetRelativeScriptURL('admin'))
     doc.AddItem(form)
@@ -333,7 +337,8 @@ def FormatOptionsSection(category, mlist, cgi_data):
 
     # Get and portray the text label for the category.
     for k, v in CATEGORIES:
-        if k == category: label = v
+        if k == category:
+            label = v
     big_table.AddRow([Center(Header(2, label))])
     big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
                           colspan=2, bgcolor="#99ccff")
@@ -494,7 +499,21 @@ def GetItemGuiValue(mlist, kind, varname, params):
 	    r, c = None, None
 	res = string.join(getattr(mlist, varname), '\n')
 	return TextArea(varname, res, r, c, wrap='off')
-    
+    elif kind == mm_cfg.FileUpload:
+        # like a text area, but also with uploading
+        if params:
+            r, c = params
+        else:
+            r, c = None, None
+        val = getattr(mlist, varname)
+        if not val:
+            val = ''
+        container = Container()
+        container.AddItem('<em>Enter the text below, or...</em><br>')
+        container.AddItem(TextArea(varname, val, r, c))
+        container.AddItem('<br><em>...specify a file to upload</em><br>')
+        container.AddItem(FileUpload(varname+'_upload', r, c))
+        return container
 
 
 def GetItemGuiDescr(mlist, category, varname, descr, elaboration, nodetails):
@@ -504,9 +523,7 @@ def GetItemGuiDescr(mlist, category, varname, descr, elaboration, nodetails):
     if not nodetails and elaboration:
         ref = "../" * (Utils.GetNestingLevel()-1) + mlist.internal_name() + "/"
         ref = ref + '?VARHELP=' + category + "/" + varname
-        descr = Container(descr,
-			  Link(ref, " (Details)", target="MMHelp"),
-			  "</div>")
+        descr = Container(descr, Link(ref, " (Details)"), "</div>")
     else:
         descr = descr + "</div>"
     return descr
@@ -797,14 +814,17 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 #
                 page_setting = string.atoi(cgi_info["subscribe_policy"].value)
                 cgi_info["subscribe_policy"].value = str(page_setting + 1)
-
         opt_list = GetConfigOptions(mlist, category)
         for item in opt_list:
             if len(item) < 5:
                 continue
-            property, kind, args, deps, desc = (item[0], item[1], item[2],
-                                                item[3], item[4])
-            if not cgi_info.has_key(property):
+            property, kind, args, deps, desc = item[0:5]
+            if cgi_info.has_key(property+'_upload') and \
+                   cgi_info[property+'_upload'].value:
+                val = cgi_info[property+'_upload'].value
+##                mlist.LogMsg('debug', 'got ' + property+'_upload: ' +
+##                             string.replace(val, '%', '%%'))
+            elif not cgi_info.has_key(property):
                 if (kind <> mm_cfg.Text and 
                     kind <> mm_cfg.String and 
                     kind <> mm_cfg.EmailList):
