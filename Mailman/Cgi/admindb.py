@@ -18,8 +18,11 @@
 
 """Produce and process the pending-approval items for a list."""
 
-import sys
-import os, cgi, string, types
+import os
+import string
+import types
+import cgi
+
 from Mailman import Utils, MailList, Errors
 from Mailman.htmlformat import *
 from Mailman import mm_cfg
@@ -37,7 +40,6 @@ def handle_no_list(doc, extra=''):
     link = link + 'admin'
     doc.AddItem(Link(link, 'list of available mailing lists.'))
     print doc.Format(bgcolor="#ffffff")
-    sys.exit(0)
 
 
 
@@ -48,17 +50,20 @@ def main():
         path = os.environ['PATH_INFO']
     except KeyError:
         handle_no_list(doc)
+        return
     # get URL components.  the list name should be the zeroth part
     parts = Utils.GetPathPieces(path)
     try:
         listname = string.lower(parts[0])
     except IndexError:
         handle_no_list(doc)
+        return
     # now that we have the list name, create the list object
     try:
         mlist = MailList.MailList(listname)
     except (Errors.MMUnknownListError, Errors.MMListNotReady):
         handle_no_list(doc, 'No such list: <tt>%s</tt><p>' % listname)
+        return
     #
     # now we must authorize the user to view this page, and if they are, to
     # handle both the printing of the current outstanding requests, and the
@@ -113,7 +118,6 @@ def main():
         PrintRequests(mlist, doc, form)
         text = doc.Format(bgcolor="#ffffff")
         print text
-        sys.stdout.flush()
     finally:
         mlist.Save()
         mlist.Unlock()
