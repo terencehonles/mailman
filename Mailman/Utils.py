@@ -593,3 +593,16 @@ def GetRequestURI(fallback=None):
         return os.environ['SCRIPT_NAME'] + os.environ['PATH_INFO']
     else:
         return fallback
+
+
+
+# Wait on a dictionary of child pids
+def reap(kids):
+    while kids:
+        pid, status = os.waitpid(-1, os.WNOHANG)
+        if pid <> 0:
+            try:
+                del kids[pid]
+            except KeyError:
+                # Huh?  How can this happen?
+                pass
