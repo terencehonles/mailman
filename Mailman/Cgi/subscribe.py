@@ -100,6 +100,11 @@ def main():
     if not form.has_key("email"):
         error = 1
         results = results + "You must supply a valid email address.<br>"
+        #
+        # define email so we don't get a NameError below
+        # with if email == list.GetListEmail() -scott
+        #
+        email = ""
     else:
         email = form["email"].value
 
