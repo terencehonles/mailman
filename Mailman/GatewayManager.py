@@ -130,7 +130,7 @@ class GatewayManager:
             subj = msg.getheader('subject')
             if subj:
                 subjpref = self.subject_prefix
-                if not re.match(re.escape(subjpref), subj, re.I):
+                if not re.match('(re:? *)?' + re.escape(subjpref), subj, re.I):
                     msg.SetHeader('Subject', '%s%s' % (subjpref, subj))
             else:
                 msg.SetHeader('Subject', '%s(no subject)' % prefix)
