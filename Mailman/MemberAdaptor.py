@@ -144,10 +144,12 @@ class MemberAdaptor:
         raise NotImplemented
 
     def getMemberName(self, member):
-        """Return the RealName of the member KEY/LCE.
+        """Return the full name of the member KEY/LCE.
 
-        None is returned if the member has no registered RealName.
-        NotAMemberError is raised if member does not refer to a valid member.
+        None is returned if the member has no registered full name.  The
+        returned value may be a Unicode string if there are non-ASCII
+        characters in the name.  NotAMemberError is raised if member does not
+        refer to a valid member.
         """
         raise NotImplemented
 
@@ -234,7 +236,8 @@ class MemberAdaptor:
         - digest == subscribing to digests instead of regular delivery
         - password == user's password
         - language == user's preferred language
-        - realname == user's full Real Name
+        - realname == user's full name (should be Unicode if there are
+          non-ASCII characters in the name)
 
         Any values not passed to **kws is set to the adaptor-specific
         defaults.
@@ -298,9 +301,10 @@ class MemberAdaptor:
         raise NotImplemented
 
     def setMemberName(self, member, realname):
-        """Set the member's RealName.
+        """Set the member's full name.
 
-        member is an LCE/KEY and realname is an arbitrary string.
+        member is an LCE/KEY and realname is an arbitrary string.  It should
+        be a Unicode string if there are non-ASCII characters in the name.
         NotAMemberError is raised if member does not refer to a valid member.
         """
         raise NotImplemented
