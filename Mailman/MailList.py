@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 465 $"
+__version__ = "$Revision: 476 $"
 
 try:
     import mm_cfg
@@ -682,6 +682,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 #msg should be an IncomingMessage object.
     def Post(self, msg, approved=0):
 	self.IsListInitialized()
+        # Be sure to ExtractApproval, whether or not flag is already set!
         msgapproved = self.ExtractApproval(msg)
         if not approved:
             approved = msgapproved
@@ -689,6 +690,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
 	if not approved:
+            from_lists = msg.getallmatchingheaders('x-beenthere')
+            if self.GetListEmail() in from_lists:
+                self.AddRequest('post', mm_utils.SnarfMessage(msg),
+                                mm_err.LOOPING_POST,
+                                msg.getheader('subject'))
 	    if len(self.forbidden_posters):
 		addrs = mm_utils.FindMatchingAddresses(sender,
 						       self.forbidden_posters)
