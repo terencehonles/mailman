@@ -15,3 +15,12 @@ examine and manipulate list object attributes.
 Developers should start with the
 <a href="http://sourceforge.net/projects/mailman">Mailman project at
 SourceForge</a>.
+
+<h3>Mailman Wiki</h3>
+
+You should also take a look at the <a
+href="http://www.zope.org/Members/bwarsaw/MailmanDesignNotes">Mailman
+Design Notes</a> Wiki page.  This is where Mailman's future course
+will be plotted in plain sight.  Because Wikis are intended to be
+collaborative, you're free to contribute to this page in true Wiki
+fashion.
