@@ -51,6 +51,17 @@ ADDING NEW TRANSLATIONS
     the directions in the section above.
 
 
+TRANSLATION HINTS
+
+    Q: If your language uses non-ASCII characters, such as the cedilla in
+       French, how should you add these to the catalogs and templates?
+
+    A: For any message that is destined for the web interface, use an
+       HTML entity reference where appropriate.  For messages destined
+       for email, you should use the non-ASCII characters explicitly.
+       This includes both for the message catalog and the templates.
+
+
 RESYNCHRONIZING THE CATALOG
 
     As Mailman development continues, new updated catalogs
