@@ -335,7 +335,7 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             the list moderator before you will be subscribed.  Your request
             has been forwarded to the list moderator, and you will be notified
             of the moderator's decision."""))
-        except Errors.MMNoSuchUserError:
+        except Errors.NotAMemberError:
             bad_confirmation(doc, _('''Invalid confirmation string.  It is
             possible that you are attempting to confirm a request for an
             address that has already been unsubscribed.'''))
@@ -390,7 +390,7 @@ def unsubscription_confirm(mlist, doc, cookie):
             i18n.set_language(lang)
             doc.set_language(lang)
             op, addr = mlist.ProcessConfirmation(cookie)
-        except Errors.MMNoSuchUserError:
+        except Errors.NotAMemberError:
             bad_confirmation(doc, _('''Invalid confirmation string.  It is
             possible that you are attempting to confirm a request for an
             address that has already been unsubscribed.'''))
@@ -478,7 +478,7 @@ def addrchange_confirm(mlist, doc, cookie):
             i18n.set_language(lang)
             doc.set_language(lang)
             op, oldaddr, newaddr = mlist.ProcessConfirmation(cookie)
-        except Errors.MMNoSuchUserError:
+        except Errors.NotAMemberError:
             bad_confirmation(doc, _('''Invalid confirmation string.  It is
             possible that you are attempting to confirm a request for an
             address that has already been unsubscribed.'''))
@@ -701,7 +701,7 @@ def reenable_confirm(mlist, doc, cookie):
             i18n.set_language(lang)
             doc.set_language(lang)
             op, addr = mlist.ProcessConfirmation(cookie)
-        except Errors.MMNoSuchUserError:
+        except Errors.NotAMemberError:
             bad_confirmation(doc, _('''Invalid confirmation string.  It is
             possible that you are attempting to confirm a request for an
             address that has already been unsubscribed.'''))
