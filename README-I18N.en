@@ -2,6 +2,7 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+
 INTERNATIONALIZATION
 
     Mailman 2.1 is multilingual.  By default it supports English, but
@@ -92,6 +93,18 @@ RESYNCHRONIZING THE CATALOG
     placed at the end of new-messages.po.  Move this file to
     messages.po inside messages/ha/LC_MESSAGE and add the new
     translations as above.
+
+
+CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
+
+    As of this writing (11-Jul-2001), Mailman 2.1alpha2 supports the
+    following languages out of the box:
+
+    - English
+    - Spanish
+
+    Hopefully more translations will be donated as Mailman 2.1
+    development moves along.
 
 
 
