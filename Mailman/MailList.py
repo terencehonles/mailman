@@ -771,8 +771,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             if type(dict) <> DictType:
                 raise Errors.MMBadListError, \
                       'Unmarshaled config info is not a dictionary'
-	except (EOFError, ValueError, TypeError):
-	    raise Errors.MMBadListError, 'Failed to unmarshal config info'
+	except (EOFError, ValueError, TypeError), e:
+	    raise Errors.MMBadListError, ('Failed to unmarshal config info: '
+                                          + e)
 	for key, value in dict.items():
 	    setattr(self, key, value)
 	file.close()
