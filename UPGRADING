@@ -33,7 +33,19 @@ UPGRADING FROM PREVIOUS VERSIONS
 
     http://mail.python.org/pipermail/mailman-users/2000-September/006826.html
 
+    [Actually, the upgrade to MM2.1a2 /will/ shuffle template files,
+     deleting any that it detects are unchanged from the original
+     defaults (calculated via md5 checksums).  BAW: need to describe
+     this in more detail.]
+
 UPGRADING FROM 2.0.1 to 2.1
+
+    In Mailman 2.1, the qrunner subsystem has been completely
+    rewritten.  You no longer start qrunner from cron!  Instead, there
+    is a bin/mailmanctl script which is used to start, stop, and
+    restart mail delivery.  This script is appropriate to use as a
+    Unix init script.  Be sure to update your crontab with the new
+    cron/crontab.in file.
 
     Mailman 2.1 introduces multilingual (a.k.a. internationalization
     or i18n) support.  Previously only one language per list was
@@ -45,10 +57,9 @@ UPGRADING FROM 2.0.1 to 2.1
 
     If you have modified those templates to contain non-English text,
     you will have to manually rename the en subdirectories to the
-    language code for the language of your templates.
-
-    BAW: We may need to elaborate on this quite a bit, or provide
-    scripts to make it much simplier.
+    language code for the language of your templates.  Mailman's
+    upgrade script should handle cleaning up any templates which are
+    duplicates of the defaults.
 
 UPGRADING FROM 2.0 to 2.0.1
 
