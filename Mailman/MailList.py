@@ -194,7 +194,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return '%s/%s%s/%s' % (prefix, scriptname, mm_cfg.CGIEXT,
                                self.internal_name())
 
-    def GetOptionsURL(self, scriptname, obscure=0, relative=0):
+    def GetOptionsURL(self, addr, obscure=0, relative=0):
         addr = string.lower(addr)
         url = self.GetScriptURL('options', relative)
         if obscured:
