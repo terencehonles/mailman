@@ -18,6 +18,8 @@
 """Mixin class with message delivery routines."""
 
 import os
+from email.MIMEText import MIMEText
+from email.MIMEMessage import MIMEMessage
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -116,3 +118,22 @@ your membership administrative address, %(addr)s.'''))
                                        self.getMemberLanguage(user))
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
+
+    def ForwardMessage(self, msg, recips=None, text=None, subject=None):
+        # Wrap the message as an attachment
+        if recips is None:
+            recips = self.owner[:]
+            recips.extend(self.moderator)
+        if text is None:
+            text = _('No reason given')
+        if subject is None:
+            text = _('(no subject)')
+        text = MIMEText(Utils.wrap(text),
+                        _charset=Utils.GetCharSet(self.preferred_language))
+        attachment = MIMEMessage(msg)
+        notice = Message.UserNotification(
+            recips, self.GetBouncesEmail(), subject)
+        notice.set_type('multipart/mixed')
+        notice.attach(text)
+        notice.attach(attachment)
+        notice.send(self)
