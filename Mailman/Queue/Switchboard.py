@@ -224,7 +224,8 @@ class MarshalSwitchboard(_Switchboard):
                 sval = dict[attr]
             except KeyError:
                 pass
-            dict[attr] = eval(sval, {'__builtins__': {}})
+            else:
+                dict[attr] = eval(sval, {'__builtins__': {}})
         fp.close()
         return dict
 
