@@ -172,11 +172,23 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def fullpath(self):
         return self._full_path
 
+    def getListAddress(self, extra=None):
+        if extra is None:
+            return '%s@%s' % (self.internal_name(), self.host_name)
+        return '%s-%s@%s' % (self.internal_name(), extra, self.host_name)
+
+    # For backwards compatibility
     def GetAdminEmail(self):
-        return '%s-admin@%s' % (self._internal_name, self.host_name)
+        return self.getListAddress('admin')
 
     def GetOwnerEmail(self):
-        return '%s-owner@%s' % (self._internal_name, self.host_name)
+        return self.getListAddress('owner')
+
+    def GetRequestEmail(self):
+        return self.getListAddress('request')
+
+    def GetListEmail(self):
+        return self.getListAddress()
 
     def GetMemberAdminEmail(self, member):
         """Usually the member addr, but modified for umbrella lists.
@@ -193,12 +205,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         else:
             acct, host = tuple(member.split('@'))
             return "%s%s@%s" % (acct, self.umbrella_member_suffix, host)
-
-    def GetRequestEmail(self):
-        return '%s-request@%s' % (self._internal_name, self.host_name)
-
-    def GetListEmail(self):
-        return '%s@%s' % (self._internal_name, self.host_name)
 
     def GetScriptURL(self, scriptname, absolute=0):
         return Utils.ScriptURL(scriptname, self.web_page_url, absolute) + \
@@ -747,7 +753,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  "member"   : dump_address_pair((name, email)),
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
-                self.owner, Utils.get_site_email(self.host_name, '-admin'),
+                self.owner, Utils.get_site_email(self.host_name, 'admin'),
                 subject, text)
             msg.send(self)
 
@@ -785,7 +791,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  'listname': self.real_name,
                  }, mlist=self)
             msg = Message.UserNotification(
-                self.owner, Utils.get_site_email(self.host_name, '-admin'),
+                self.owner, Utils.get_site_email(self.host_name, 'admin'),
                 subject, text)
             msg.send(self)
         if whence:
