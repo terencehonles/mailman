@@ -34,6 +34,10 @@ class ContentFilter(GUIBase):
             return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
+        actions = [_('Discard'), _('Reject'), _('Forward to List Owner')]
+        if mm_cfg.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
+            actions.append(_('Preserve'))
+
         return [
             _("""Policies concerning the content of list traffic.
 
@@ -95,11 +99,39 @@ class ContentFilter(GUIBase):
              <tt>multipart</tt> to this list, any messages with attachments
              will be rejected by the pass filter.""")),
 
-            ('convert_html_to_plaintext',
-             mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('convert_html_to_plaintext', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _("""Should Mailman convert <tt>text/html</tt> parts to plain
              text?  This conversion happens after MIME attachments have been
              stripped.""")),
+
+            ('filter_action', mm_cfg.Radio, tuple(actions), 0,
+
+             _("""Action to take when a message matches the content filtering
+             rules."""),
+
+             _("""One of these actions is take when the message matches one of
+             the content filtering rules, meaning, the top-level
+             content type matches one of the <a
+             href="?VARHELP=contentfilter/filter_mime_types"
+             >filter_mime_types</a>, or the top-level content type does
+             <strong>not</strong> match one of the
+             <a href="?VARHELP=contentfilter/pass_mime_types"
+             >pass_mime_types</a>, or if after filtering the subparts of the
+             message, the message ends up empty.
+
+             <p>Note this action is not taken if after filtering the message
+             still contains content.  In that case the message is always
+             forwarded on to the list membership.
+
+             <p>When messages are discarded, a log entry is written
+             containing the Message-ID of the discarded message.  When
+             messages are rejected or forwarded to the list owner, a reason
+             for the rejection is included in the bounce message to the
+             original author.  When messages are preserved, they are saved in
+             a special queue directory on disk for the site administrator to
+             view (and possibly rescue) but otherwise discarded.  This last
+             option is only available if enabled by the site
+             administrator.""")),
             ]
 
     def _setValue(self, mlist, property, val, doc):
