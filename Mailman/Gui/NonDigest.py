@@ -67,17 +67,23 @@ class NonDigest:
 
                  <p>However, some lists can benefit from a more personalized
                  approach.  In this case, Mailman crafts a new message for
-                 each member on the regular delivery list.  Turning this on
-                 adds a few more expansion variables that can be included in
-                 the <a href="?VARHELP=nondigest/msg_header">message header</a>
-                 and <a href="?VARHELP=nondigest/msg_footer">message footer</a>
-                 but it may degrade the performance of your site as
-                 a whole.
+                 each member on the regular delivery list.  Turning this
+                 feature on may degrade the performance of your site, so you
+                 need to carefully consider whether the trade-off is worth it,
+                 or whether there are other ways to accomplish what you want.
+                 You should also carefully monitor your system load to make
+                 sure it is acceptable.
 
-                 <p>You need to carefully consider whether the trade-off is
-                 worth it, or whether there are other ways to accomplish what
-                 you want.  You should also carefully monitor your system load
-                 to make sure it is acceptable.
+                 <p>When personalized lists are enabled, two things happen.
+                 First, the <code>To:</code> header of the posted message is
+                 modified so that each individual user is addressed
+                 specifically.  I.e. it looks like the message was addressed
+                 to the recipient instead of to the list.
+
+                 <p>Second a few more expansion variables that can be included
+                 in the <a href="?VARHELP=nondigest/msg_header">message
+                 header</a> and
+                 <a href="?VARHELP=nondigest/msg_footer">message footer</a>.
 
                  <p>These additional substitution variables will be available
                  for your headers and footers, when this feature is enabled:
