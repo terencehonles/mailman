@@ -107,7 +107,7 @@ class Bouncer:
                     dirty = 1
 
             this_dude = Utils.FindMatchingAddresses(email,
-                                                    self.bounce_info.keys())
+                                                    self.bounce_info)
             if not this_dude:
                 # No (or expired) priors - new record.
                 self.bounce_info[string.lower(email)] = [now, self.post_id,
