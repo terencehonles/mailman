@@ -182,7 +182,14 @@ Project</a> for future language support.
 </tr>
 <tr><td>Spanish</td><td>es</td>
     <td><a href="mailto:jcrey@uma.es">Juan Carlos Rey Anaya</a></td>
-    <td>Supported</td>
+    <td>Supported.
+	 
+	 <p>In addition, the list member manual has been translated to Spanish by Pablo
+	 Chamorro C.  View <a
+	 href="mailman-member-es/index.html">GNU Mailman Manual del Suscriptor de
+	 Listas</a> in HTML or in <a href="mailman-member-es.pdf">PDF format</a>
+	 (approx. 132k).
+	 </td>
 </tr>
 <tr><td>Swedish</td><td>sv</td>
     <td><a href="mailto:tomfa@debian.org">Tomas Fasth</a> and
