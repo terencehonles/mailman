@@ -1,6 +1,6 @@
 """Process maillist user commands arriving via email."""
 
-__version__ = "$Revision: 473 $"
+__version__ = "$Revision: 489 $"
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
@@ -59,7 +59,7 @@ class MailCommandHandler:
 	mail = mm_message.IncomingMessage()
 	subject = mail.getheader("subject")
         sender = string.lower(mail.GetSender())
-        if sender in ['nobody', 'mailer-daemon', 'postmaster',
+        if sender in ['daemon', 'nobody', 'mailer-daemon', 'postmaster',
                       'orphanage', 'postoffice']:
             # This is for what are probably delivery-failure notices of
             # subscription confirmations that are, of necessity, bounced
