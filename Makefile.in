@@ -41,7 +41,7 @@ CFLAGS=		$(OPT) $(DEFS)
 
 ARCH_INDEP_DIRS=	public_html logs archives bin \
 archives/private archives/public lists locks templates scripts filters \
-cron data Mailman Mailman/Cgi
+cron data Mailman Mailman/Cgi Mailman/Logging
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
