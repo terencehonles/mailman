@@ -40,21 +40,6 @@ from Mailman.htmlformat import *
 from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
 
-# Mark, but don't translate yet
-def _(s): return s
-
-CATEGORIES = [('general',   _('General Options')),
-              ('members',   _('Membership Management')),
-              ('privacy',   _('Privacy Options')),
-              ('nondigest', _('Regular delivery (non-digest) Options')),
-              ('digest',    _('Digest Options')),
-              ('bounce',    _('Bounce Options')),
-              ('archive',   _('Archival Options')),
-              ('gateway',   _('Mail-News and News-Mail gateways')),
-              ('autoreply', _('Auto-responder')),
-              ]
-
-
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
@@ -103,14 +88,17 @@ def main():
     else:
         category = parts[1]
         category_suffix = category
+
     # Is this a log-out request?
     if category == 'logout':
         print mlist.ZapCookie(mm_cfg.AuthListAdmin)
         Auth.loginpage(mlist, 'admin', frontpage=1)
         return
+
     # Sanity check
-    if category not in [x[0] for x in CATEGORIES]:
+    if category not in mlist.GetConfigCategories().keys():
         category = 'general'
+
     # Is the request for variable details?
     varhelp = None
     if cgidata.has_key('VARHELP'):
@@ -124,27 +112,28 @@ def main():
     if varhelp:
         option_help(mlist, varhelp)
         return
+
     # The html page document
     doc = Document()
     doc.set_language(mlist.preferred_language)
 
     # From this point on, the MailList object must be locked.  However, we
-    # must release the lock no matter how we exit.  try/finally isn't
-    # enough, because of this scenario: user hits the admin page which may
-    # take a long time to render; user gets bored and hits the browser's
-    # STOP button; browser shuts down socket; server tries to write to
-    # broken socket and gets a SIGPIPE.  Under Apache 1.3/mod_cgi, Apache
-    # catches this SIGPIPE (I presume it is buffering output from the cgi
-    # script), then turns around and SIGTERMs the cgi process.  Apache
-    # waits three seconds and then SIGKILLs the cgi process.  We /must/
-    # catch the SIGTERM and do the most reasonable thing we can in as
-    # short a time period as possible.  If we get the SIGKILL we're
-    # screwed (because its uncatchable and we'll have no opportunity to
-    # clean up after ourselves).
+    # must release the lock no matter how we exit.  try/finally isn't enough,
+    # because of this scenario: user hits the admin page which may take a long
+    # time to render; user gets bored and hits the browser's STOP button;
+    # browser shuts down socket; server tries to write to broken socket and
+    # gets a SIGPIPE.  Under Apache 1.3/mod_cgi, Apache catches this SIGPIPE
+    # (I presume it is buffering output from the cgi script), then turns
+    # around and SIGTERMs the cgi process.  Apache waits three seconds and
+    # then SIGKILLs the cgi process.  We /must/ catch the SIGTERM and do the
+    # most reasonable thing we can in as short a time period as possible.  If
+    # we get the SIGKILL we're screwed (because it's uncatchable and we'll
+    # have no opportunity to clean up after ourselves).
     #
-    # This signal handler catches the SIGTERM and unlocks the list.  The
-    # effect of this is that the changes made to the MailList object will
-    # be aborted, which seems like the only sensible semantics.
+    # This signal handler catches the SIGTERM, unlocks the list, and then
+    # exits the process.  The effect of this is that the changes made to the
+    # MailList object will be aborted, which seems like the only sensible
+    # semantics.
     #
     # BAW: This may not be portable to other web servers or cgi execution
     # models.
@@ -176,12 +165,12 @@ def main():
                 non-digest delivery or your mailing list will basically be
                 unusable.'''))
 
-        if not mlist.digestable and len(mlist.GetDigestMembers()):
+        if not mlist.digestable and mlist.getDigestMemberKeys():
             add_error_message(
                 doc,
                 _('''You have digest members, but digests are turned
                 off. Those people will not receive mail.'''))
-        if not mlist.nondigestable and len(mlist.GetMembers()):
+        if not mlist.nondigestable and mlist.getRegularMemberKeys():
             add_error_message(
                 doc,
                 _('''You have regular list members but non-digestified mail is
@@ -300,7 +289,7 @@ def option_help(mlist, varhelp):
     reflist = varhelp.split('/')
     if len(reflist) == 2:
         category, varname = reflist
-        options = get_config_options(mlist, category)
+        options = mlist.GetConfigInfo()[category]
         for i in options:
             if i and i[0] == varname:
                 item = i
@@ -356,11 +345,8 @@ def option_help(mlist, varhelp):
 def show_results(mlist, doc, category, category_suffix, cgidata):
     # Produce the results page
     adminurl = mlist.GetScriptURL('admin')
-
-    for k, v in CATEGORIES:
-        if k == category:
-            label = _(v)
-            break
+    categories = mlist.GetConfigCategories()
+    label = _(categories[category][0])
 
     # Set up the document's headers
     realname = mlist.real_name
@@ -396,28 +382,32 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
                             _('Logout')))
     # These are links to other categories and live in the left column
     categorylinks = UnorderedList()
-    for k, v in CATEGORIES:
+    for k in categories.keys():
+        label = _(categories[k][0])
         url = '%s/%s' % (adminurl, k)
-        # Translate
-        v = _(v)
         if k == category:
-            # Membership management has some subcategories
-            if k == category == 'members':
-                subcat_items = []
+            # Handle subcategories
+            subcats = mlist.GetConfigSubCategories(k)
+            if subcats:
                 subcat = Utils.GetPathPieces()[-1]
-                if subcat == 'members':
-                    subcat = 'list'
-                for sub, text in (('list',   _('Membership List')),
-                                  ('add',    _('Mass Subscription')),
-                                  ('remove', _('Mass Removal'))):
+                for k, v in subcats:
+                    if k == subcat:
+                        break
+                else:
+                    # The first subcategory in the list is the default
+                    subcat = subcats[0][0]
+                subcat_items = []
+                for sub, text in subcats:
                     if sub == subcat:
                         text = Bold('[%s]' % text).Format()
-                    subcat_items.append(Link('%s/%s/%s' % (adminurl, k, sub),
-                                             text))
-                v += UnorderedList(*subcat_items).Format()
+                    subcat_items.append(Link(url + '/' + sub, text))
+                categorylinks.AddItem(
+                    Bold(label).Format() + 
+                    UnorderedList(*subcat_items).Format())
             else:
-                v = Bold('[%s]' % v).Format()
-        categorylinks.AddItem(Link('%s/%s' % (adminurl, k), v))
+                categorylinks.AddItem(Link(url, Bold('[%s]' % label)))
+        else:
+            categorylinks.AddItem(Link(url, label))
     # Add all the links to the links table...
     linktable.AddRow([categorylinks, otherlinks])
     linktable.AddRowInfo(max(linktable.GetCurrentRowIndex(), 0),
@@ -467,47 +457,46 @@ def show_variables(mlist, category, cgidata, doc, form):
         # Special case for members section.
         return membership_options(mlist, cgidata, doc, form)
 
-    options = get_config_options(mlist, category)
+    options = mlist.GetConfigInfo()[category]
 
     # The table containing the results
     table = Table(cellspacing=3, cellpadding=4)
+
     # Get and portray the text label for the category.
-    for k, v in CATEGORIES:
-        if k == category:
-            label = _(v)
-            break
+    categories = mlist.GetConfigCategories()
+    label = _(categories[category][0])
 
     table.AddRow([Center(Header(2, label))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
-    # Convenience
-    def column_header(table=table):
-        table.AddRow([Center(Bold(_('Description'))),
-                      Center(Bold(_('Value')))])
-        table.AddCellInfo(table.GetCurrentRowIndex(), 0, width='15%')
-        table.AddCellInfo(table.GetCurrentRowIndex(), 1, width='85%')
+    # The very first item in the config info will be treated as a general
+    # description if it is a string
+    description = options[0]
+    if isinstance(description, types.StringType):
+        table.AddRow([description])
+        table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+        options = options[1:]
 
-    did_col_header = 0
+    if not options:
+        return table
+
+    # Add the global column headers
+    table.AddRow([Center(Bold(_('Description'))),
+                  Center(Bold(_('Value')))])
+    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
+                      width='15%')
+    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 1,
+                      width='85%')
+
     for item in options:
         if type(item) == types.StringType:
             # The very first banner option (string in an options list) is
             # treated as a general description, while any others are
             # treated as section headers - centered and italicized...
-            if did_col_header:
-                item = "<center><i>" + item + "</i></center>"
-            table.AddRow([item])
-            table.AddCellInfo(max(table.GetCurrentRowIndex(), 0),
-                                  0, colspan=2)
-            if not did_col_header:
-                # Do col header after very first string descr, if any...
-                column_header()
-                did_col_header = 1
+            table.AddRow([Center(Italic(item))])
+            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
         else:
-            if not did_col_header:
-                # ... but do col header before anything else.
-                column_header()
-                did_col_header = 1
             add_options_table_item(mlist, category, table, item)
     table.AddRow(['<br>'])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
@@ -605,7 +594,6 @@ def get_item_gui_value(mlist, kind, varname, params):
         container.AddItem(_('<br><em>...specify a file to upload</em><br>'))
         container.AddItem(FileUpload(varname+'_upload', r, c))
         return container
-    # jcrey - new to deal with language popup
     elif kind == mm_cfg.Select:
         if params:
            values, legend, selected = params
@@ -614,7 +602,54 @@ def get_item_gui_value(mlist, kind, varname, params):
            legend = map(_, map(Utils.GetLanguageDescr, values))
            selected = values.index(mlist.preferred_language)
         return SelectOptions(varname, values, legend, selected)
-
+    elif kind == mm_cfg.Topics:
+        # A complex and specialized widget type that allows for setting of a
+        # topic name, a mark button, a regexp text box, an "add after mark",
+        # and a delete button.  Yeesh!  params are ignored.
+        table = Table(border=0)
+        # This adds the html for the entry widget
+        def makebox(i, name, pattern, desc, empty=0, table=table):
+            deltag   = 'topic_delete_%02d' % i
+            boxtag   = 'topic_box_%02d' % i
+            reboxtag = 'topic_rebox_%02d' % i
+            desctag  = 'topic_desc_%02d' % i
+            wheretag = 'topic_where_%02d' % i
+            addtag   = 'topic_add_%02d' % i
+            newtag   = 'topic_new_%02d' % i
+            if empty:
+                table.AddRow([Center(Bold(_('Topic %(i)d'))),
+                              Hidden(newtag)])
+            else:
+                table.AddRow([Center(Bold(_('Topic %(i)d'))),
+                              SubmitButton(deltag, _('Delete'))])
+            table.AddRow([Label(_('Topic name:')),
+                          TextBox(boxtag, value=name, size=30)])
+            table.AddRow([Label(_('Regexp:')),
+                          TextArea(reboxtag, text=pattern,
+                                   rows=4, cols=30, wrap='off')])
+            table.AddRow([Label(_('Description:')),
+                          TextArea(desctag, text=desc,
+                                   rows=4, cols=30, wrap='soft')])
+            if not empty:
+                table.AddRow([SubmitButton(addtag, _('Add new item...')),
+                              SelectOptions(wheretag, ('before', 'after'),
+                                            (_('...before this one.'),
+                                             _('...after this one.')),
+                                            selected=1),
+                              ])
+            table.AddRow(['<hr>'])
+            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+        # Now for each element in the existing data, create a widget
+        i = 1
+        data = getattr(mlist, varname)
+        for name, pattern, desc, empty in data:
+            makebox(i, name, pattern, desc, empty)
+            i += 1
+        # Add one more non-deleteable widget as the first blank entry, but
+        # only if there are no real entries.
+        if i == 1:
+            makebox(i, '', '', '', empty=1)
+        return table
 
 
 def get_item_gui_description(mlist, category, varname, descr, detailsp):
@@ -670,7 +705,7 @@ def membership_options(mlist, cgidata, doc, form):
     # If there are more members than allowed by chunksize, then we split the
     # membership up alphabetically.  Otherwise just display them all.
     chunksz = mlist.admin_member_chunksize
-    all = mlist.GetMembers() + mlist.GetDigestMembers()
+    all = mlist.getMembers()
     all.sort(lambda x, y: cmp(x.lower(), y.lower()))
     # See if the query has a regular expression
     regexp = ''
@@ -765,22 +800,28 @@ def membership_options(mlist, cgidata, doc, form):
     for i in range(9):
         usertable.AddCellInfo(rowindex, i, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     # Find the longest name in the list
+    longest = 0
     if members:
-        longest = max([len(s) for s in members])
-    else:
-        longest = 0
+        names = filter(None, [mlist.getMemberName(s) for s in members])
+        if names:
+            longest = max([len(s) for s in names])
     # Now populate the rows
     for addr in members:
         link = Link(mlist.GetOptionsURL(addr, obscure=1),
-                    mlist.GetUserSubscribedAddress(addr))
-#        name = TextBox(addr + '_realname', 'NOT YET IMPLEMENTED', size=longest)
+                    mlist.getMemberCPAddress(addr))
+        fullname = mlist.getMemberName(addr)
+        if fullname:
+            name = TextBox(addr + '_realname', fullname, size=longest).Format()
+        else:
+            name = ''
         cells = [link.Format() + '<br>' +
-                 #name.Format() + '\n' +
+                 name + 
                  Hidden('user', urllib.quote(addr)).Format(),
                  Center(CheckBox(addr + '_subscribed', 'on', 1).Format()),
                  ]
         for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
-            if mlist.GetUserOption(addr, MailCommandHandler.option_info[opt]):
+            if mlist.getMemberOption(addr,
+                                     MailCommandHandler.option_info[opt]):
                 value = 'on'
                 checked = 1
             else:
@@ -792,7 +833,8 @@ def membership_options(mlist, cgidata, doc, form):
             cells.append(Center(CheckBox(addr + '_digest', 'off', 0).Format()))
         else:
             cells.append(Center(CheckBox(addr + '_digest', 'on', 1).Format()))
-        if mlist.GetUserOption(addr, MailCommandHandler.option_info['plain']):
+        if mlist.getMemberOption(addr,
+                                 MailCommandHandler.option_info['plain']):
             value = 'on'
             checked = 1
         else:
@@ -1041,6 +1083,14 @@ def change_options(mlist, category, cgidata, doc):
             add_error_message(
                 doc, _('Administator passwords did not match'),
                 tag=_('Error: '))
+
+    # Give the individual gui item a chance to process the form data
+    categories = mlist.GetConfigCategories()
+    label, gui = categories[category]
+    if hasattr(gui, 'HandleForm'):
+        gui.HandleForm(mlist, cgidata, doc)
+        return
+
     # for some reason, the login page mangles important values for the list
     # such as .real_name so we only process these changes if the category
     # is not "members" and the request is not from the login page
@@ -1058,7 +1108,7 @@ def change_options(mlist, category, cgidata, doc):
                 #
                 page_setting = int(cgidata["subscribe_policy"].value)
                 cgidata["subscribe_policy"].value = str(page_setting + 1)
-        opt_list = get_config_options(mlist, category)
+        opt_list = mlist.GetConfigInfo()[category]
         for item in opt_list:
             if type(item) <> types.TupleType or len(item) < 5:
                 continue
@@ -1172,9 +1222,10 @@ def change_options(mlist, category, cgidata, doc):
         unsubscribe_success = []
         for addr in names:
             try:
-                mlist.DeleteMember(addr, whence='admin mass unsub',
-                                   admin_notif=send_unsub_notifications,
-                                   userack=userack)
+                mlist.ApprovedDeleteMember(
+                    addr, whence='admin mass unsub',
+                    admin_notif=send_unsub_notifications,
+                    userack=userack)
                 unsubscribe_success.append(addr)
             except Errors.MMNoSuchUserError:
                 unsubscribe_errors.append(addr)
@@ -1203,30 +1254,35 @@ def change_options(mlist, category, cgidata, doc):
         for user in users:
             if not cgidata.has_key('%s_subscribed' % (user)):
                 try:
-                    mlist.DeleteMember(user)
+                    mlist.ApprovedDeleteMember(user)
                 except Errors.MMNoSuchUserError:
                     errors.append((user, _('Not subscribed')))
                 continue
             value = cgidata.has_key('%s_digest' % user)
             try:
-                mlist.SetUserDigest(user, value, force=1)
-            except (Errors.MMNotAMemberError,
-                    Errors.MMAlreadyDigested,
-                    Errors.MMAlreadyUndigested):
+                mlist.setMemberOption(user, mm_cfg.Digests, value)
+            except (Errors.NotAMemberError,
+                    Errors.AlreadyReceivingDigests,
+                    Errors.AlreadyReceivingRegularDeliveries,
+                    Errors.CantDigestError,
+                    Errors.MustDigestError):
                 pass
 
-            if cgidata.has_key(user+'_language'):
-                newlang = cgidata[user+'_language'].value
-                oldlang = mlist.GetPreferredLanguage(user)
-                if newlang <> oldlang:
-                    mlist.SetPreferredLanguage(user, newlang)
+            newname = cgidata.getvalue(user+'_realname')
+            if newname:
+                mlist.setMemberName(user, newname)
+
+            newlang = cgidata.getvalue(user+'_language')
+            oldlang = mlist.GetPreferredLanguage(user)
+            if newlang and newlang <> oldlang:
+                mlist.setMemberLanguage(user, newlang)
                   
             for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
                 opt_code = MailCommandHandler.option_info[opt]
-                if cgidata.has_key("%s_%s" % (user, opt)):
-                    mlist.SetUserOption(user, opt_code, 1, save_list=0)
+                if cgidata.has_key('%s_%s' % (user, opt)):
+                    mlist.setMemberOption(user, opt_code, 1)
                 else:
-                    mlist.SetUserOption(user, opt_code, 0, save_list=0)
+                    mlist.setMemberOption(user, opt_code, 0)
         if errors:
             doc.AddItem(Header(5, _("Error Unsubscribing:")))
             items = ['%s -- %s' % (x[0], x[1]) for x in errors]
@@ -1239,8 +1295,3 @@ def add_error_message(doc, errmsg, tag='Warning: ', *args):
     doc.AddItem(Header(3, Bold(FontAttr(
         _(tag), color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
                        Italic(errmsg % args).Format()))
-
-
-
-def get_config_options(mlist, category):
-    return mlist.GetConfigInfo()[category]
