@@ -115,13 +115,9 @@ class Archiver:
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
-            return os.path.join(
-                mm_cfg.PRIVATE_ARCHIVE_URL,
-                self._internal_name + '/')
+            return "%s/%s/" % (mm_cfg.PRIVATE_ARCHIVE_URL, self._internal_name)
         else:
-            return os.path.join(
-                mm_cfg.PUBLIC_ARCHIVE_URL,
-                self._internal_name)
+            return "%s/%s/" % (mm_cfg.PUBLIC_ARCHIVE_URL, self._internal_name)
 
     def GetConfigInfo(self):
 	return [
