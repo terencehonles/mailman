@@ -1,7 +1,17 @@
-Here is a list of contributors to Mailman.  Please let us know if you
-feel you've been unjustly left off.
+The following folks are the primary maintainers of Mailman:
 
-John Viega, Mailman's inventor
-Ken Manheimer, Mailman's savior
-Barry Warsaw, Mailman's yappy dog
-Scott Cotton, Cookie Monster
+	John Viega, Mailman's inventor
+	Ken Manheimer, Mailman's savior
+	Barry Warsaw, Mailman's yappy dog
+
+Here is the list of other contributors who have donated large bits of
+code, and have assigned copyright for this code to the FSF:
+
+	Scott Cotton, Cookie Monster
+
+And here is the list of other people who have contributed useful
+ideas, suggestions, bug fixes, testing, etc.:
+
+	Michael Mclay
+
+Thank you, all!
