@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2712 $)
+AC_REVISION($Revision: 2720 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -274,6 +274,7 @@ fi
 # must be a+rx
 if test "$VAR_PREFIX" = "NONE"
 then
+    VAR_PREFIX=$ac_default_prefix
     prefixcheck=$ac_default_prefix
 else
     prefixcheck=$VAR_PREFIX
