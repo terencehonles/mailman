@@ -128,14 +128,19 @@ DELIVERY_MODULE = 'SMTPDirect'
 SENDMAIL_CMD = '/usr/lib/sendmail'
 
 # SMTP host and port, when DELIVERY_MODULE is 'SMTPDirect'
-SMTPHOST	  = 'localhost'
-SMTPPORT          = 0                             # default from smtplib
+SMTPHOST = 'localhost'
+SMTPPORT = 0                                      # default from smtplib
+
+# Set these variables if you need to authenticate to your NNTP server for
+# Usenet posting or reading.  None indicates no authentication is needed.
+NNTP_USERNAME = None
+NNTP_PASSWORD = None
 
 # 1 to use crypt for passwords instead of md5.
 # Crypt may not work on all python installs.
 # Don't change this value once you have lists running...
 # In fact, you should just let configure set this one and leave it alone.
-USE_CRYPT         = 1
+USE_CRYPT = 1
 
 			 # General Defaults #
 
