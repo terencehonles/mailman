@@ -42,21 +42,26 @@ Exim configuration
    been written to allow you to have co-habitating Mailman 2.0.x and
    Mailman 2.1 installations.
    
-Main config file section
-    
+------------------------- ALL EXIM CONFIGURATION -----------------------------
 ## Top section of config file - macro definitions.  Tailor these to
 ## fit your installation; pretty much everything else should just
 ## fit...
 ##
 # Home dir for your Mailman installation
-MAILMAN21_HOME=/usr/local/mailman
+MAILMAN_HOME=/var/local/mailman
 # Wrapper script for Mailman
-MAILMAN21_WRAP=MAILMAN21_HOME/mail/mailman
+MAILMAN_WRAP=MAILMAN_HOME/mail/mailman
 # User and group for Mailman, should match your --with-mail-gid
 # switch to Mailman's configure script.
-MAILMAN21_UID=mailman
-MAILMAN21_GID=mailman
+MAILMAN_UID=mail
+MAILMAN_GID=mail
+------------------------- ALL EXIM CONFIGURATION -----------------------------
 
+   The second half of the configuration is different depending on whether you
+   use exim 3.x or exim 4.x
+
+
+------------------------- EXIM 3.x  CONFIGURATION -----------------------------
     Transports config file section
     
 ## Transports section
@@ -65,30 +70,84 @@ MAILMAN21_GID=mailman
 ## elaborate command...
 mm21_transport:
     driver = pipe
-    command = MAILMAN21_WRAP "${if def:local_part_suffix{${substr_1:${lc:$local_part_suffix}}}{post}}" ${lc:$local_part}
-    current_directory = MAILMAN21_HOME
-    home_directory = MAILMAN21_HOME
-    user = MAILMAN21_UID
-    group = MAILMAN21_GID
-
+    # In case you wonder, substr_2 removes the leading '-'
+    # and the regex removes optional +foo=hostname that can be after -bounce
+    # (if you use VERP) -- Marc
+    command = MAILMAN_WRAP "${if def:local_part_suffix{${substr_2:{${sg{${lc:$local_part_suffix}}{\\\\\+.*}{}}}}{post}}" ${lc:$local_part}
+    current_directory = MAILMAN_HOME
+    home_directory = MAILMAN_HOME
+    user = MAILMAN_UID
+    group = MAILMAN_GID
 ### end of transports section fragment
+
 
     Directors config file section
     
 ## Directors section [this deals with local addresses]
 ##
 ## List existence checks are done by seeing if the file
-## MAILMAN21_HOME/lists/*/config.pck exists.
+## MAILMAN_HOME/lists/*/config.pck exists.
+
+# Directors magic to support mailman lists without explicit aliases
+# We want this director first in case we have a list named something like
+# mailman-owner -- Marc
+mm21_main_director:
+    driver = smartuser
+    require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
+    transport = mm21_transport
 
 mm21_director:
     driver = smartuser
-    require_files = MAILMAN21_HOME/lists/${lc:$local_part}/config.pck
-    suffix = "-bounces:-join:-leave:-owner:-request:-admin"
-    suffix_optional
+    require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
+    suffix = "-bounces:-bounces+*:-confirm+*:-join:-leave:-owner:-request:-admin"
+    transport = mm21_transport
+### end of directors section fragment
+------------------------- EXIM 3.x  CONFIGURATION -----------------------------
+
+
+
+------------------------- EXIM 4.x  CONFIGURATION -----------------------------
+    Transports config file section
+    
+## Transports section
+##
+## For Mailman 2.1, you only need one transport, albeit with a rather
+## elaborate command...
+mm21_transport:
+    driver = pipe
+    # In case you wonder, substr_2 removes the leading '-'
+    # and the regex removes optional +foo=hostname that can be after -bounce
+    # (if you use VERP) -- Marc
+    command = MAILMAN_WRAP "${if def:local_part_suffix{${substr_2:{${sg{${lc:$local_part_suffix}}{\\\\\+.*}{}}}}{post}}" ${lc:$local_part}
+    current_directory = MAILMAN_HOME
+    home_directory = MAILMAN_HOME
+    user = MAILMAN_UID
+    group = MAILMAN_GID
+
+
+    Directors config file section
+    
+## Directors section [this deals with local addresses]
+##
+## List existence checks are done by seeing if the file
+## MAILMAN_HOME/lists/*/config.pck exists.
+
+# Directors magic to support mailman lists without explicit aliases
+# We want this director first in case we have a list named something like
+# mailman-owner
+mm21_main_director:
+    driver = accept
+    require_files = MAILMAN_HOME/lists/${lc::$local_part}/config.pck
     transport = mm21_transport
 
-## End of directors fragment
-## End of config files bits
+mm21_director:
+    driver = accept
+    require_files = MAILMAN_HOME/lists/${lc::$local_part}/config.pck
+    local_part_suffix = "-bounces:-bounces+*:-confirm+*:-join:-leave:-owner:-request:-admin"
+    transport = mm21_transport
+### end of directors section fragment
+------------------------- EXIM 4.x  CONFIGURATION -----------------------------
+
 
 Notes
 
@@ -102,6 +161,15 @@ Notes
    
   Problems
   
+    * Mailman will send as many MAIL FROM/RCPT TO as it needs. It may result
+      in more than 10 or 100 messages sent in one connection, which will exceed
+      the default value of exim's smtp_accept_queue_per_connection
+      This is bad because it will cause exim to switch into queue mode and
+      severely delay delivery of your list messages.
+      The way to fix this is to set mailman's SMTP_MAX_SESSIONS_PER_CONNECTION
+      (in ~mailman/Mailman/mm_cfg.py) to a smaller value than exim's
+      smtp_accept_queue_per_connection
+
     * Mailman should ignore Exim delay warning messages, even though
       Exim should never send this to list messages.  Mailman 2.1's
       general bounce detection and VERP support should greatly improve
@@ -111,10 +179,23 @@ Notes
       for a list.  If you delete lists by foul means, be aware of this.
 
     * If you are getting Exim or Mailman complaining about user ids
-      when you send mail to a list, check that the MAILMAN21_UID and
-      MAILMAN21_GID match those of Mailman itself (i.e. what were used
+      when you send mail to a list, check that the MAILMAN_UID and
+      MAILMAN_GID match those of Mailman itself (i.e. what were used
       in the configure script).  Also make sure you do not have
       aliases in the main alias file for the list.
+
+
+Doing VERP with exim and mailman
+
+    VERP will send one Email for each of your subscribers, read the information
+    in ~mailman/Mailman/Default.py for the options that start with VERP.
+    In a nutshell, all you need to do to enable VERP with exim is:
+    VERP_PASSWORD_REMINDERS = 1
+    VERP_PERSONALIZED_DELIVERIES = 1
+    VERP_DELIVERY_INTERVAL = 1
+    VERP_CONFIRMATIONS = 1
+    (the magic directors above are smart enough to deal with VERP bounces)
+    -- Marc
        
 Other Tweaks
 
@@ -156,13 +237,6 @@ log_refused_recipients
 log_received_sender
 log_smtp_confirmation
 #
-# RBL settings - these are more severe than I use
-rbl_domains = rbl.maps.vix.com/reject:relays.mail-abuse.org/reject:dul.maps.vix
-.com/reject:relays.orbs.org=127.0.0.2,127.0.0.3/reject
-rbl_hosts = !LOCAL_NETS:0.0.0.0/0
-rbl_log_rcpt_count
-recipients_reject_except=postmaster@*:*-admin@*
-#
 # relay control - from our local network only
 host_accept_relay = LOCAL_NETS
 #
@@ -181,6 +255,12 @@ sender_verify
 # performance tweaks - 1st is good for linux, maybe less so for others
 split_spool_directory
 remote_max_parallel = 15
+
+# Accept up to 100 messages in one connection, and make sure you also set
+# mailman's SMTP_MAX_SESSIONS_PER_CONNECTION to a value lower than that -- Marc
+smtp_accept_queue_per_connection = 100
+
+
 
 List verification
 
@@ -204,9 +284,10 @@ exim-users-admin@www.exim.org
 
   __________________________________________________________________________
 
-    [2]Nigel Metheringham
+    [2]Nigel Metheringham & [3]Marc MERLIN (exim 4, directors, and VERP updates)
     
 References
 
    1. http://www.list.org/
    2. mailto:Postmaster@exim.org
+   3. mailto:marc_soft@merlins.org
