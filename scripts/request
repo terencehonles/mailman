@@ -26,30 +26,30 @@ Errors are redirected to logs/errors.
 
 
 import sys
+
 import paths
+from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
-
+from Mailman import Message
+from Mailman.pythonlib.StringIO import StringIO
 from Mailman.Logging.Utils import LogStdErr
+
 LogStdErr("error", "mailcmd")
 
-# Only let one program run at once per list.
 
-if sys.argv[1] not in Utils.list_names():
-    from Mailman import mm_cfg
-    Utils.SendTextToUser("Misconfigured list %s" % sys.argv[1],
-                         ("List %s in aliases but not among "
-                          "list_names?\n\n"
-                          "---------- Forwarded message ----------\n"
-                          "%s"
-                          % (mm_cfg.MAILMAN_OWNER, sys.stdin.read())),
-                         mm_cfg.MAILMAN_OWNER,
-                         sender=mm_cfg.MAILMAN_OWNER)
+
+def main():
+    # allow misconfigurations to be logged in logs/error
+    mlist = MailList.MailList(sys.argv[1])
+    try:
+        s = StringIO(sys.stdin.read())
+        msg = Message.Message(s)
+        mlist.ParseMailCommands(msg)
+    finally:
+        mlist.Save()
+        mlist.Unlock()
 
-list = MailList.MailList(sys.argv[1])
 
-try:
-    list.ParseMailCommands()
-finally:
-    list.Unlock()
-
+if __name__ == '__main__':
+    main()
