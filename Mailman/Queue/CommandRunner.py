@@ -158,8 +158,8 @@ class CommandRunner(Runner):
 
     def _dispose(self, mlist, msg, msgdata):
         # The policy here is similar to the Replybot policy.  If a message has
-        # "Precedence: bulk" and no "X-Ack: yes" header, we discard it to
-        # prevent replybot response storms.
+        # "Precedence: bulk|junk|list" and no "X-Ack: yes" header, we discard
+        # it to prevent replybot response storms.
         precedence = msg.get('precedence', '').lower()
         ack = msg.get('x-ack', '').lower()
         if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
