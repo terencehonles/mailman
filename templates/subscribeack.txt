@@ -13,7 +13,7 @@ from digest mode, change your password, etc.), visit your subscription
 page at:
 
   %(optionsurl)s
-
+%(umbrella)s
 You can also make such adjustments via email by sending a message to:
 
   %(real_name)s-request@%(host_name)s
