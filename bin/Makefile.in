@@ -47,7 +47,7 @@ SCRIPTS=	digest_arch mmsitepass newlist rmlist add_members \
 		version config_list list_lists dumpdb cleanarch \
 		list_admins genaliases change_pw mailmanctl qrunner inject
 
-NONSCRIPTS=	fix_url.py
+NONSCRIPTS=	fix_url.py convert.py
 
 BUILDDIR=	../build/bin
 
