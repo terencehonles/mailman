@@ -156,7 +156,8 @@ Attached is your original message.
         msg = Message.UserNotification(
             recip,
             self.mlist.GetBouncesEmail(),
-            _('The results of your email commands'))
+            _('The results of your email commands'),
+            lang=self.mlist.preferred_language)
         msg.set_type('multipart/mixed')
         msg.attach(results)
         orig = MIMEMessage(self.msg)
