@@ -1209,6 +1209,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             del msg['reply-to']
             del msg['sender']
             msg.SetHeader('From', self.GetAdminEmail())
+            msg.SetHeader('Reply-to', self.GetListEmail())
 	if self.digestable:
 	    self.SaveForDigest(msg)
 	if self.archive:
