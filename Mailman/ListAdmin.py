@@ -262,12 +262,12 @@ class ListAdmin:
 
     def __handlesubscription(self, record, value, comment):
         stime, addr, password, digest = record
-        if value == 0:
+        if value == 1:
             # refused
             self.__refuse('Subscription request', addr, comment)
         else:
             # subscribe
-            assert value == 1
+            assert value == 0
             self.ApprovedAddMember(addr, password, digest)
 
 
