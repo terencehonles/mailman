@@ -55,7 +55,7 @@ _ = i18n._
 KEEP = ['Date', 'From', 'To', 'Cc', 'Subject', 'Message-ID', 'Keywords',
         # I believe we should also keep these headers though.
         'In-Reply-To', 'References', 'Content-Type', 'MIME-Version',
-        'Content-Transfer-Encoding', 'Precedence',
+        'Content-Transfer-Encoding', 'Precedence', 'Reply-To',
         # Mailman 2.0 adds these headers, but they don't need to be kept from
         # the original message: Message
         ]
