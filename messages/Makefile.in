@@ -47,10 +47,8 @@ MSGFMT= 	msgfmt
 MSGMERGE=	msgmerge
 
 # CVS available languages
-LANGUAGES=	es ja
+LANGUAGES=	es ja fr
 LANGDIRS=	$(LANGUAGES:%=messages/%/LC_MESSAGES)
-# Global pygettext extracted po template file
-POTFILE=	mailman.pot
 # Human readable po file
 POFILES=	$(LANGUAGES:%=%/LC_MESSAGES/mailman.po)
 # Binary generated mo file
@@ -107,27 +105,29 @@ doinstall:
 finish:
 
 clean:
-	-rm -f message.files $(POTFILE)
+	-rm -f marked.files docstring.files *.pot
 
 distclean:
 	-rm -f Makefile */LC_MESSAGES/mailman.mo */LC_MESSAGES/mailman.po.old $(POTFILE)
 
 
-message.files: FORCE
-	@echo "Calculating input files for pygettext"
-	touch $@
-	(cd ..; find Mailman -path '*pythonlib' -prune -o -name '*.py' -print >> messages/$@)
-	(cd ..; grep -d skip -l '^#! /usr/bin/env python' `find bin -name ".#*" -prune -o -print` >> messages/$@)
+marked.files: FORCE
+	@echo "Calculating marked input files for pygettext"
+	(cd ..; find Mailman -path '*pythonlib' -prune -o -name '*.py' -print >| messages/$@)
 
-$(POTFILE): message.files
-	@echo "Running pygettext; this might take a while"
-	(cd ..; $(PROG) -p messages -d mailman -D `cat messages/$<`)
+docstring.files: FORCE
+	@echo "Calculating script input files for pygettext"
+	(cd ..; grep -d skip -l '^#! /usr/bin/env python' `find bin cron scripts -name ".#*" -prune -o -print` >| messages/$@)
+
+mailman.pot: marked.files docstring.files
+	@echo "Running pygettext on $@; this make take a while."
+	(cd ..; $(PROG) -p messages -d mailman -D -X messages/marked.files `cat messages/marked.files messages/docstring.files`)
 
 # Update the individual mailman.po files with the new changes to the
 # .pot file
-%/LC_MESSAGES/mailman.po: $(POTFILE)
+%/LC_MESSAGES/mailman.po: mailman.pot
 	@echo "Merging new template file with existing translations"
-	-mv $@ $@.old && $(MSGMERGE) -o $@ $@.old $(POTFILE)
+	-mv $@ $@.old && $(MSGMERGE) -o $@ $@.old mailman.pot
 
 
 FORCE:
