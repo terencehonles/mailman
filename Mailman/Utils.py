@@ -473,13 +473,15 @@ class SafeDict(UserDict):
                 return '<Missing key: %s>' % `key`
 
 
-def maketext(templatefile, dict, raw=0):
+def maketext(templatefile, dict=None, raw=0):
     """Make some text from a template file.
 
     Reads the `templatefile', relative to mm_cfg.TEMPLATE_DIR, does string
     substitution by interpolating in the `dict', and if `raw' is false,
     wraps/fills the resulting text by calling wrap().
     """
+    if dict is None:
+        dict = {}
     file = os.path.join(mm_cfg.TEMPLATE_DIR, templatefile)
     fp = open(file)
     template = fp.read()
