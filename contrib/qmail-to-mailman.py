@@ -74,9 +74,12 @@ def main():
             sys.exit(0)
 
     type = "post"
-    types = (("-admin$", "mailowner"),
-             ("-owner$", "mailowner"),
-             ("-request$", "mailcmd"))
+    types = (("-admin$", "bounces"),
+             ("-bounces$", "bounces"),
+             ("-join$", "join"),
+             ("-leave$", "leave"),
+             ("-owner$", "owner"),
+             ("-request$", "request"))
 
     for i in types:
         if re.search(i[0],local):
