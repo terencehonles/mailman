@@ -18,7 +18,8 @@
 
 import unittest
 
-MODULES = ('bounces', 'handlers', 'membership')
+MODULES = ('bounces', 'handlers', 'membership', 'message', 'safedict',
+           'security_mgr')
 
 
 
