@@ -3,9 +3,9 @@
 
 import os
 
-MAILMAN_URL       = 'http://www.list.org/'
+MAILMAN_URL       = 'http://parrot.python.org/'
 MAX_SPAWNS        = 40
-DEFAULT_HOST_NAME = 'list.org'
+DEFAULT_HOST_NAME = 'parrot.python.org'
 
 VERSION           = '1.0b1'
 # Our home directory.  Once we know this, we can figure out other things
@@ -18,7 +18,7 @@ LIST_DATA_DIR     = os.path.join(MAILMAN_DIR, 'lists')
 HTML_DIR	  = os.path.join(HOME_DIR, 'public_html')
 CGI_DIR           = os.path.join(HOME_DIR, 'cgi-bin')
 LOCK_DIR          = os.path.join(MAILMAN_DIR, 'locks')
-SENDMAIL_CMD      = '/usr/sbin/sendmail -f %s %s'
+SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'
 DEFAULT_URL       = 'http://%s/mailman/' % DEFAULT_HOST_NAME
 TEMPLATE_DIR      = os.path.join(MAILMAN_DIR, 'templates')
 ARCHIVE_URL       = 'http://%s/~mailman/archives' % DEFAULT_HOST_NAME
