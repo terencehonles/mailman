@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2706 $)
+AC_REVISION($Revision: 2709 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -146,7 +146,7 @@ AC_ARG_WITH(var-prefix, dnl
 [  --with-var-prefix     directory for mutable data [/var/mailman]])
 case "$with_var_prefix" in
 	yes)	VAR_PREFIX="$default_var_prefix";;
-	""|no)	VAR_PREFIX="$ac_default_prefix";;
+	""|no)	VAR_PREFIX="$prefix";;
 	*)	VAR_PREFIX="$with_var_prefix";;
 esac
 AC_MSG_RESULT($VAR_PREFIX)

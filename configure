@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.47 
+# From configure.in Revision: 1.48 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -1109,7 +1109,7 @@ fi
 
 case "$with_var_prefix" in
 	yes)	VAR_PREFIX="$default_var_prefix";;
-	""|no)	VAR_PREFIX="$ac_default_prefix";;
+	""|no)	VAR_PREFIX="$prefix";;
 	*)	VAR_PREFIX="$with_var_prefix";;
 esac
 echo "$ac_t""$VAR_PREFIX" 1>&6
