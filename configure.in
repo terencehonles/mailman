@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 4517 $)
+AC_REVISION($Revision: 4623 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -479,6 +479,7 @@ bin/digest_arch \
 bin/dumpdb \
 bin/find_member \
 bin/genaliases \
+bin/inject \
 bin/list_admins \
 bin/list_lists \
 bin/list_members \

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.17 
+# From configure.in Revision: 2.18 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -1991,6 +1991,7 @@ build/bin/digest_arch:bin/digest_arch \
 build/bin/dumpdb:bin/dumpdb \
 build/bin/find_member:bin/find_member \
 build/bin/genaliases:bin/genaliases \
+build/bin/inject:bin/inject \
 build/bin/list_admins:bin/list_admins \
 build/bin/list_lists:bin/list_lists \
 build/bin/list_members:bin/list_members \
