@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 457 $"
+__version__ = "$Revision: 475 $"
 
 
 import string, os, sys, tempfile
@@ -97,7 +97,7 @@ class Deliverer:
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
     def DeliverToList(self, msg, recipients, header, footer, remove_to=0,
-		      tmpfile_prefix = ""):
+                      tmpfile_prefix = ""):
 	if not(len(recipients)):
 	    return
         # repr(recipient) necessary for addresses containing "'" quotes!
@@ -113,16 +113,16 @@ class Deliverer:
         if remove_to:
 	    # Writing to a file is better than waiting for sendmail to exit
             tempfile.template = tmpfile_prefix +'mailman-digest.'
-	    for item in msg.headers:
-		if (item[0:3] == 'To:' or 
-		    item[0:5] == 'X-To:'):
-		    msg.headers.remove(item)
+            del msg['to']
+            del msg['x-to']
 	    msg.headers.append('To: %s\n' % self.GetListEmail())
  	else:
             tempfile.template = tmpfile_prefix + 'mailman.'
 	if self.reply_goes_to_list:
+            del msg['reply-to']
             msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
+	msg.headers.append('X-BeenThere: %s\n' % self.GetListEmail())
 
         tmp_file_name = tempfile.mktemp()
  	tmp_file = open(tmp_file_name, 'w+')
