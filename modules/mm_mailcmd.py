@@ -262,17 +262,22 @@ class MailCommandHandler:
 	def NotHidden(x, s=self, v=mm_cfg.ConcealSubscription):
 	    return not s.GetUserOption(x, v)
 
-	if len(self.members):
-	    self.AddToResponse("Non-Digest Members:")
-	    self.AddToResponse(string.join(map(AddTab, filter(NotHidden,
-						      self.members)), "\n"))
-
 	if len(self.digest_members):
 	    self.AddToResponse("")
 	    self.AddToResponse("Digest Members:")
-	    self.AddToResponse(string.join(map(AddTab, filter(NotHidden,
-					     self.digest_members)), "\n"))
-
+            digestmembers = self.digest_members[:]
+            digestmembers.sort()
+	    self.AddToResponse(string.join(map(AddTab,
+                                               filter(NotHidden,
+                                                      digestmembers)),
+                                           "\n"))
+	if len(self.members):
+	    self.AddToResponse("Non-Digest Members:")
+            members = self.members[:]
+            members.sort()
+	    self.AddToResponse(string.join(map(AddTab,
+                                               filter(NotHidden, members)),
+                                           "\n"))
 
     def ProcessUnsubscribeCmd(self, args, cmd, mail):
 	if not len(args):
