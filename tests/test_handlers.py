@@ -24,6 +24,7 @@ import unittest
 import cPickle
 import errno
 import email
+from email.Generator import Generator
 from types import ListType
 
 from Mailman import mm_cfg
@@ -730,7 +731,7 @@ From: aperson@dom.ain
            '<http://www.dom.ain/mailman/listinfo/_xtest>,'
            '\n\t<mailto:_xtest-request@dom.ain?subject=subscribe>')
         eq(msg['list-post'], '<mailto:_xtest@dom.ain>')
-        eq(msg['list-archive'], '<http://www.dom.ain/pipermail/_xtest/>')
+        eq(msg['list-archive'], '<http://www.dom.ain/pipermail/_xtest>')
 
     def test_list_headers_with_description(self):
         eq = self.assertEqual
@@ -750,7 +751,7 @@ From: aperson@dom.ain
            '<http://www.dom.ain/mailman/listinfo/_xtest>,'
            '\n\t<mailto:_xtest-request@dom.ain?subject=subscribe>')
         eq(msg['list-post'], '<mailto:_xtest@dom.ain>')
-        eq(msg['list-archive'], '<http://www.dom.ain/pipermail/_xtest/>')
+        eq(msg['list-archive'], '<http://www.dom.ain/pipermail/_xtest>')
 
 
 
@@ -1624,7 +1625,81 @@ It rocks!
 
 
 class TestToDigest(TestBase):
-    pass
+    def _makemsg(self, i=0):
+        msg = email.message_from_string("""From: aperson@dom.ain
+To: _xtest@dom.ain
+Subject: message number %(i)d
+
+Here is message %(i)d
+""" % {'i' : i})
+        return msg
+
+    def setUp(self):
+        TestBase.setUp(self)
+        self._path = os.path.join(self._mlist.fullpath(), 'digest.mbox')
+        fp = open(self._path, 'w')
+        g = Generator(fp)
+        for i in range(5):
+            g(self._makemsg(i), unixfrom=1)
+        fp.close()
+        self._sb = Switchboard(mm_cfg.VIRGINQUEUE_DIR)
+
+    def tearDown(self):
+        try:
+            os.unlink(self._path)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+        for f in os.listdir(mm_cfg.VIRGINQUEUE_DIR):
+            os.unlink(os.path.join(mm_cfg.VIRGINQUEUE_DIR, f))
+        TestBase.tearDown(self)
+
+    def test_short_circuit(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.digestable = 0
+        eq(ToDigest.process(mlist, None, {}), None)
+        mlist.digestable = 1
+        eq(ToDigest.process(mlist, None, {'isdigest': 1}), None)
+        eq(self._sb.files(), [])
+
+    def test_undersized(self):
+        msg = self._makemsg(99)
+        size = os.path.getsize(self._path) + len(str(msg))
+        self._mlist.digest_size_threshhold = (size + 1) * 1024
+        ToDigest.process(self._mlist, msg, {})
+        self.assertEqual(self._sb.files(), [])
+
+    def test_send_a_digest(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        msg = self._makemsg(99)
+        size = os.path.getsize(self._path) + len(str(msg))
+        mlist.digest_size_threshhold = 0
+        ToDigest.process(mlist, msg, {})
+        files = self._sb.files()
+        # There should be two files in the queue, one for the MIME digest and
+        # one for the RFC 1153 digest.
+        eq(len(files), 2)
+        # Now figure out which of the two files is the MIME digest and which
+        # is the RFC 1153 digest.
+        for filebase in files:
+            qmsg, qdata = self._sb.dequeue(filebase)
+            if qmsg['mime-version']:
+                mimemsg = qmsg
+                mimedata = qdata
+            else:
+                rfc1153msg = qmsg
+                rfc1153data = qdata
+        eq(mimemsg.get_type(), 'multipart/mixed')
+        eq(mimemsg['from'], mlist.GetRequestEmail())
+        eq(mimemsg['subject'],
+           '%(realname)s Digest, Vol %(volume)d, Issue %(issue)d' % {
+            'realname': mlist.real_name,
+            'volume'  : mlist.volume,
+            'issue'   : mlist.next_digest_number - 1,
+            })
+        eq(mimemsg['to'], mlist.GetListEmail())
+        # BAW: this test is incomplete...
 
 
 
