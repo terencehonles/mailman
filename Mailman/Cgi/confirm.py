@@ -230,7 +230,7 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
 
     <p>Or hit <em>Cancel and discard</em> to cancel this subscription
     request.""") + '<p><hr>'
-    if mlist.subscribe_policy in (1, 3):
+    if mlist.subscribe_policy in (2, 3):
         # Confirmation is required
         result = _("""Your confirmation is required in order to continue with
         the subscription request to the mailing list <em>%(listname)s</em>.
@@ -330,6 +330,8 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             bad_confirmation(doc, _('''Invalid confirmation string.  It is
             possible that you are attempting to confirm a request for an
             address that has already been unsubscribed.'''))
+        except Errors.MMAlreadyAMember:
+            doc.addError(_("You are already a member of this mailing list!"))
         else:
             # Use the user's preferred language
             i18n.set_language(lang)
