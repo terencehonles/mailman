@@ -85,6 +85,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetListEmail(self):
 	return '%s@%s' % (self._internal_name, self.host_name)
 
+    def GetListIdentifier(self):
+        """Return the unique (RFC draft-chandhok-listid-02) identifier."""
+        return ("%s <%s.%s>" %
+                (self.description, self._internal_name, self.host_name))
+
     def GetRelativeScriptURL(self, script_name):
 	prefix = '../'*Utils.GetNestingLevel()
         return '%s%s/%s' % (prefix,script_name, self._internal_name)
