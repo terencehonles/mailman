@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -140,6 +140,8 @@ class IncomingRunner(Runner):
                     os._exit(1)
             except Errors.DiscardMessage:
                 # Throw the message away; we need do nothing else with it.
+                syslog('vette', 'Message discarded, msgid: %s',
+                       msg.get('message-id', 'n/a'))
                 return 0
             except Errors.HoldMessage:
                 # Let the approval process take it from here.  The message no
