@@ -23,7 +23,7 @@ DEFAULT_URL       = 'http://%s/mailman/' % DEFAULT_HOST_NAME
 TEMPLATE_DIR      = os.path.join(MAILMAN_DIR, 'templates')
 ARCHIVE_URL       = 'http://%s/~mailman/archives' % DEFAULT_HOST_NAME
 HOME_PAGE         = 'index.html'
-MAILMAN_OWNER     = 'mailman@%s' % DEFAULT_HOST_NAME
+MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 
 
 # Enumeration for types of configurable variables in Mailman.
