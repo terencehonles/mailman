@@ -762,7 +762,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMAlreadyAMember
         if name == string.lower(self.GetListEmail()):
             # Trying to subscribe the list to itself!
-            raise mm_err.MMBadEmailError
+            raise Errors.MMBadEmailError
 
 	if digest and not self.digestable:
             raise Errors.MMCantDigestError

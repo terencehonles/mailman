@@ -32,7 +32,7 @@ import regsub
 import fcntl
 import random
 import mm_cfg
-
+import Errors
 
 def list_names():
     """Return the names of all lists in default list directory."""
@@ -233,10 +233,10 @@ def ValidEmail(str):
     # Pretty minimal, cheesy check.  We could do better...
     if ((string.find(str, '|') <> -1) or (string.find(str, ';') <> -1)
 	or str[0] == '-'):
-	raise mm_err.MMHostileAddress
+	raise Errors.MMHostileAddress
     if string.find(str, '/') <> -1:
 	if os.path.isdir(os.path.split(str)[0]):
-	    raise mm_err.MMHostileAddress
+	    raise Errors.MMHostileAddress
     user, domain_parts = ParseEmail(str)
     if not domain_parts:
 	if string.find(str, '@') < 1:
