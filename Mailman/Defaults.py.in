@@ -9,12 +9,12 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.1'
-__version__ = VERSION + "$Revision: 149 $"
+__version__ = VERSION + "$Revision: 163 $"
 
 		   # Many site-specific settings #
 
 MAILMAN_URL       = 'http://www.python.org/ftp/python/contrib/Network/mailman/'
-DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.NAME'
+DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.OR.HOST.NAME'
 SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s' # yours may be different
 DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
 ARCHIVE_URL       = 'http://www.OVERRIDE.WITH.YOUR.ARCHIVE.DIR/'
@@ -46,8 +46,8 @@ DEFAULT_MAX_MESSAGE_SIZE = 40		# KB
 # maillist instance.
 DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
 DEFAULT_MSG_HEADER = ""
-DEFAULT_MSG_FOOTER = """----------------------------
-%(real_name)s maillist
+DEFAULT_MSG_FOOTER = """------------------------------------------------------
+%(real_name)s maillist  -  %(real_name)s@%(host_name)s
 %(web_page_url)slistinfo/%(_internal_name)s
 """
 
@@ -66,6 +66,9 @@ DEFAULT_REPLY_GOES_TO_LIST = 0
 DEFAULT_AUTO_SUBSCRIBE = 1
 # Is view of subscription list restricted to list members?
 DEFAULT_CLOSED = 0
+# When exposing members, make them unrecognizable as email addrs.  To
+# web-spiders from picking up addrs for spamming.
+DEFAULT_OBSCURE_ADDRESSES = 1
 # Make it 1 when it works.
 DEFAULT_MEMBER_POSTING_ONLY = 0
 # 1 for email subscription verification, 2 for admin confirmation:
@@ -73,10 +76,13 @@ DEFAULT_WEB_SUBSCRIBE_REQUIRES_CONFIRMATION = 1
 
 		     # Digestification Defaults #
 
-# Can we get mailing list in non-digest format?
+# Will list be available in non-digested form?
 DEFAULT_NONDIGESTABLE = 1
-# Can we get mailing list in digest format?
+# Will list be available in digested form?
 DEFAULT_DIGESTABLE = 1
+DEFAULT_DIGEST_HEADER = ""
+DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
+
 DEFAULT_DIGEST_IS_DEFAULT = 0
 DEFAULT_DIGEST_SIZE_THRESHOLD = 30	# KB
 # 0 = never, 1 = daily, 2 = hourly:
