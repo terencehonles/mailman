@@ -22,26 +22,47 @@ The site password can be used in most if not all places that the list
 administrator's password can be used, which in turn can be used in most places
 that a list users password can be used.
 
-Usage: mmsitepass [password]
+Usage: %(PROGRAM)s [options] [password]
+
+Options:
+
+    -h/--help
+        Print this help message and exit.
 
 If password is not given on the command line, it will be prompted for.
-
 """
 
 import sys
 import getpass
+import getopt
 
 import paths
 from Mailman import Utils
 
+PROGRAM = sys.argv[0]
+
+
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
 
 
 def main():
-    if len(sys.argv) > 2:
-        print __doc__
-        sys.exit(1)
-    elif len(sys.argv) == 2:
-        pw1 = sys.argv[1]
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+
+    if len(args) == 1:
+        pw1 = args[0]
     else:
         try:
             pw1 = getpass.getpass("New Password: ")
