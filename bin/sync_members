@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Synchronize a mailing list's membership with a flat file.
@@ -177,7 +177,7 @@ def main():
             except IndexError:
                 usage(1, _('No listname given'))
             break
-        
+
     if listname is None or filename is None:
         usage(1, _('Must have a listname and a filename'))
 
@@ -255,24 +255,27 @@ def main():
             try:
                 if not dryrun:
                     mlist.ApprovedAddMember(userdesc, welcome, notifyadmin)
-                print _('Added  : <%(addr)30s> %(name)s')
+                s = email.Utils.formataddr((name, addr)).encode(enc, 'replace')
+                print _('Added  : %(s)s')
             except Errors.MMAlreadyAMember:
                 pass
 
         for laddr, addr in addrs.items():
-            name = mlist.getMemberName(laddr) or ''
-            # should be a member, otherwise our test above is broken
+            # Should be a member, otherwise our test above is broken
             if not dryrun:
                 try:
                     mlist.ApprovedDeleteMember(addr, admin_notif=notifyadmin,
                                                userack=goodbye)
-                except Errors.MMNoSuchUserError:
+                except Errors.NotAMemberError:
                     # This can happen if the address is illegal (i.e. can't be
                     # parsed by email.Utils.parseaddr()) but for legacy
                     # reasons is in the database.  Use a lower level remove to
                     # get rid of this member's entry
                     mlist.removeMember(addr)
-            print _('Removed: <%(addr)30s> %(name)s')
+            name = mlist.getMemberName(laddr) or ''
+            enc = sys.getdefaultencoding()
+            s = email.Utils.formataddr((name, addr)).encode(enc, 'replace')
+            print _('Removed: %(s)s')
 
         mlist.Save()
     finally:
