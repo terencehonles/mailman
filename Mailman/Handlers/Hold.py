@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Determine whether this message should be held for approval.
@@ -28,8 +28,6 @@ message handling should stop.
 
 """
 
-import os
-import time
 import email
 from email.MIMEText import MIMEText
 from email.MIMEMessage import MIMEMessage
@@ -108,6 +106,10 @@ class MessageTooBig(Errors.HoldMessage):
         return _('''Your message was too big; please trim it to less than
 %(kb)d KB in size.''')
 
+class ModeratedNewsgroup(ModeratedPost):
+    reason = _('Posting to a moderated newsgroup')
+
+
 
 # And reset the translator
 _ = i18n._
@@ -178,6 +180,11 @@ def process(mlist, msg, msgdata):
             hold_for_approval(mlist, msg, msgdata,
                               MessageTooBig(bodylen, mlist.max_message_size))
             # no return
+    #
+    # Are we gatewaying to a moderated newsgroup and is this list the
+    # moderator's address for the group?
+    if mlist.news_moderation == 2:
+        hold_for_approval(mlist, msg, msgdata, ModeratedNewsgroup)
 
 
 
