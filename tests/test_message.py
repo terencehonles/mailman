@@ -60,7 +60,7 @@ class TestSentMessage(EmailBase):
         eq(qmsg['list-unsubscribe'], """\
 <http://www.dom.ain/mailman/listinfo/_xtest>,
 	<mailto:_xtest-request@dom.ain?subject=unsubscribe>""")
-        eq(qmsg['list-archive'], '<http://www.dom.ain/pipermail/_xtest/>')
+        eq(qmsg['list-archive'], '<http://www.dom.ain/pipermail/_xtest>')
         eq(qmsg.get_payload(), 'About your test list')
 
     def test_bounce_message(self):
