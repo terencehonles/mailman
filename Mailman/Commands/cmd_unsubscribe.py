@@ -74,7 +74,8 @@ approval."""))
         # instead of unsubscribing them here.
         cpaddr = mlist.getMemberCPAddress(address)
         mlist.ConfirmUnsubscription(cpaddr)
-        res.results.append(_('A removal confirmation message has been sent.'))
+        # We don't also need to send a confirmation to this command
+        res.respond = 0
     else:
         # No admin approval is necessary, so we can just delete them if the
         # passwords match.

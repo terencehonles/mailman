@@ -125,7 +125,8 @@ the email address you gave is insecure."""))
         res.results.append(_('This list only supports digest subscriptions!'))
         return STOP
     except Errors.MMSubscribeNeedsConfirmation:
-        res.results.append(_('A confirmation email has been sent separately.'))
+        # We don't need to respond /and/ send a confirmation message.
+        res.respond = 0
     except Errors.MMNeedApproval:
         res.results.append(_("""\
 Your subscription request has been forwarded to the list administrator
