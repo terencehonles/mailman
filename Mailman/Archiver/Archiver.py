@@ -118,23 +118,6 @@ class Archiver:
         else:
             return '%s/%s/' % (mm_cfg.PUBLIC_ARCHIVE_URL, self._internal_name)
 
-    def GetConfigInfo(self):
-	return [
-            _("List traffic archival policies."),
-
-	    ('archive', mm_cfg.Toggle, (_('No'), _('Yes')), 0, 
-	     _('Archive messages?')),
-
-	    ('archive_private', mm_cfg.Radio, (_('public'), _('private')), 0,
-             _('Is archive file source for public or private archival?')),
-
- 	    ('archive_volume_frequency', mm_cfg.Radio, 
-             (_('Yearly'), _('Monthly'), _('Quarterly'),
-              _('Weekly'), _('Daily')),
-             0,
- 	     _('How often should a new archive volume be started?')),
-	    ]
-
     def ArchiveFileName(self):
 	"""The mbox name where messages are left for archive construction."""
         return os.path.join(self.private_archive_file_dir,
