@@ -44,7 +44,8 @@ def main():
     doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
-    if not parts or len(parts) < 2:
+    lenparts = len(parts)
+    if not parts or lenparts < 1:
         title = _('CGI script error')
         doc.SetTitle(title)
         doc.AddItem(Header(2, title))
@@ -70,22 +71,27 @@ def main():
         syslog('error', 'No such list "%s": %s\n', listname, e)
         return
 
+    # The total contents of the user's response
+    cgidata = cgi.FieldStorage()
+
+    if lenparts < 2:
+        user = cgidata.getvalue('email')
+        if not user:
+            loginpage(mlist, doc, None, cgidata)
+            print doc.Format()
+            return
+    else:
+        user = Utils.LCDomain(Utils.UnobscureEmail(SLASH.join(parts[1:])))
+
     # Now we know which list is requested, so we can set the language to the
     # list's preferred language.
     i18n.set_language(mlist.preferred_language)
     doc.set_language(mlist.preferred_language)
 
     # Sanity check the user
-    user = Utils.UnobscureEmail(SLASH.join(parts[1:]))
-    user = Utils.LCDomain(user)
     if not mlist.isMember(user):
-        realname = mlist.real_name
-        title = _('CGI script error')
-        doc.SetTitle(title)
-        doc.AddItem(Header(2, title))
-        add_error_message(
-            doc,
-            _('List "%(realname)s" has no such member: %(user)s.'))
+        add_error_message(doc, _('No such member: %(user)s.'))
+        loginpage(mlist, doc, None, cgidata)
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
@@ -95,9 +101,6 @@ def main():
     cpuser = mlist.getMemberCPAddress(lcuser)
     if lcuser == cpuser:
         cpuser = None
-
-    # The total contents of the user's response
-    cgidata = cgi.FieldStorage()
 
     # And now we know the user making the request, so set things up to for the
     # user's stored preferred language, overridden by any form settings for
@@ -612,23 +615,30 @@ You are subscribed to this list with the case-preserved address
 
 def loginpage(mlist, doc, user, cgidata):
     realname = mlist.real_name
-    obuser = Utils.ObscureEmail(user)
+    if user is None:
+        title = _('%(realname)s list: member options login page')
+        actionurl = mlist.GetScriptURL('options')
+        extra = _('email address and ')
+    else:
+        title = _('%(realname)s list: member options for user %(user)s')
+        obuser = Utils.ObscureEmail(user)
+        actionurl = '%s/%s' % (mlist.GetScriptURL('options'), obuser)
+        extra = ''
     # Set up the login page
-    form = Form('%s/%s' % (mlist.GetScriptURL('options'), obuser))
+    form = Form(actionurl)
     table = Table(width='100%', border=0, cellspacing=4, cellpadding=5)
     # Set up the title
-    title = _('%(realname)s list: member options for user %(user)s')
     doc.SetTitle(title)
     table.AddRow([Center(Header(2, title))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
     # Preamble
     table.AddRow([_("""In order to change your membership option, you must
-    first log in by giving your membership password in the section below.  If
-    you don't remember your membership password, you can have it emailed to
-    you by clicking on the button below.  If you just want to unsubscribe from
-    this list, click on the <em>Unsubscribe</em> button and a confirmation
-    message will be sent to you.
+    first log in by giving your %(extra)smembership password in the section
+    below.  If you don't remember your membership password, you can have it
+    emailed to you by clicking on the button below.  If you just want to
+    unsubscribe from this list, click on the <em>Unsubscribe</em> button and a
+    confirmation message will be sent to you.
 
     <p><strong><em>Important:</em></strong> From this point on, you must have
     cookies enabled in your browser, otherwise none of your changes will take
@@ -642,6 +652,9 @@ def loginpage(mlist, doc, user, cgidata):
     """)])
     # Password and login button
     ptable = Table(width='50%', border=0, cellspacing=4, cellpadding=5)
+    if user is None:
+        ptable.AddRow([Label(_('Email address:')),
+                       TextBox('email', size=20)])
     ptable.AddRow([Label(_('Password:')),
                    PasswordBox('password', size=20)])
     ptable.AddRow([Center(SubmitButton('login', _('Log in')))])
