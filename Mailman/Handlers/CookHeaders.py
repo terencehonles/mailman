@@ -26,13 +26,17 @@ from Mailman import mm_cfg
 
 def process(mlist, msg):
     subject = msg.getheader('subject')
-    prefix = mlist.subject_prefix
     adminaddr = mlist.GetAdminEmail()
-    # we purposefully leave no space b/w prefix and subject!
-    if not subject:
-        msg['Subject'] = prefix + '(no subject)'
-    elif prefix and not re.search(re.escape(prefix), subject, re.I):
-        msg['Subject'] = prefix + subject
+    if not getattr(msg, 'isdigest', 0):
+        # add the subject prefix unless the message is a digest.  we assume
+        # all digests have an appropriate subject header added by the ToDigest
+        # module.
+        prefix = mlist.subject_prefix
+        # we purposefully leave no space b/w prefix and subject!
+        if not subject:
+            msg['Subject'] = prefix + '(no subject)'
+        elif prefix and not re.search(re.escape(prefix), subject, re.I):
+            msg['Subject'] = prefix + subject
     #
     # get rid of duplicate headers
     del msg['sender']
