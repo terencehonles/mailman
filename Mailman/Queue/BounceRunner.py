@@ -21,7 +21,6 @@ from email.Utils import parseaddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import MailList
 from Mailman import LockFile
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Queue.Runner import Runner
@@ -119,7 +118,7 @@ class BounceRunner(Runner):
             if mlist.internal_name() == mm_cfg.MAILMAN_SITE_LIST:
                 found = 0
                 for listname in Utils.list_names():
-                    xlist = MailList.MailList(listname, lock=0)
+                    xlist = self._open_list(listname)
                     if xlist.isMember(addr):
                         unlockp = 0
                         if not xlist.Locked():
@@ -142,7 +141,7 @@ class BounceRunner(Runner):
         if mlist.internal_name() == mm_cfg.MAILMAN_SITE_LIST:
             found = 0
             for listname in Utils.list_names():
-                xlist = MailList.MailList(listname, lock=0)
+                xlist = self._open_list(listname)
                 unlockp = 0
                 if not xlist.Locked():
                     xlist.Lock()
