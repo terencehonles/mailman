@@ -120,9 +120,9 @@ def main():
             PrintResults("A reminder of your password "
                          "has been emailed to you.<p>")
         except Errors.MMBadUserError:
-            PrintResults("Your password entry has not been found.  The"
-                         "  list administrator is being notified.<p>")
-
+            PrintResults("The password entry for `%s' has not "
+                         'been found.  The list administrator is being '
+                         'notified.<p>' % user)
 
     elif form.has_key("othersubs"):
         if not form.has_key('othersubspw'):

@@ -29,6 +29,7 @@ import sys, os, marshal, string, posixfile, time
 import re
 import Utils
 import Errors
+from types import StringType, IntType
 
 from ListAdmin import ListAdmin
 from Deliverer import Deliverer
@@ -78,7 +79,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         """returns a list of the members with username case preserved."""
         res = []
         for k,v in self.members.items():
-            if type(v) is type(""):
+            if type(v) is StringType:
                 res.append(v)
             else:
                 res.append(k)
@@ -88,7 +89,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         """returns a list of the members with username case preserved."""
         res = []
         for k,v in self.digest_members.items():
-            if type(v) is type(""):
+            if type(v) is StringType:
                 res.append(v)
             else:
                 res.append(k)
@@ -99,7 +100,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
         If the username has upercase letters in it, then the value
         in the members dict is the case preserved address, otherwise,
-        the value is 0."""
+        the value is 0.
+        """
         if Utils.LCDomain(addr) == string.lower(addr):
             if digest:
                 self.digest_members[addr] = 0
@@ -121,12 +123,37 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         like confirmation requests and passwords must not be sent to the
         member addresses - the sublists - but rather to the administrators
         of the sublists.  This routine picks the right address, considering 
-        regular member address to be their own administrative addresses."""
+        regular member address to be their own administrative addresses.
+
+        """
         if not self.umbrella_list:
             return member
         else:
             acct, host = tuple(string.split(member, '@'))
             return "%s%s@%s" % (acct, self.umbrella_member_suffix, host)
+
+    def GetUserSubscribedAddress(self, member):
+        """Return the member's case preserved address.
+        """
+        member = string.lower(member)
+        cpuser = self.members.get(member)
+        if type(cpuser) == IntType:
+            return member
+        elif type(cpuser) == StringType:
+            return cpuser
+        cpuser = self.digest_members.get(member)
+        if type(cpuser) == IntType:
+            return member
+        elif type(cpuser) == StringType:
+            return cpuser
+        return None
+
+    def GetUserCanonicalAddress(self, member):
+        """Return the member's address lower cased."""
+        cpuser = self.GetUserSubscribedAddress(member)
+        if cpuser is not None:
+            return string.lower(cpuser)
+        return None
 
     def GetRequestEmail(self):
 	return '%s-request@%s' % (self._internal_name, self.host_name)
@@ -154,7 +181,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return "%s/%s%s/%s" % (prefix, script_name, mm_cfg.CGIEXT,
                                self._internal_name)
 
-    def GetAbsoluteOptionsURL(self, addr, obscured=0,):
+    def GetAbsoluteOptionsURL(self, addr, obscured=0):
         # address could come in case-preserved
         addr = string.lower(addr)
 	options = self.GetAbsoluteScriptURL('options')
@@ -183,13 +210,46 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    del self.user_options[user]
 	self.Save()
 
+    # Here are the rules for the three dictionaries self.members,
+    # self.digest_members, and self.passwords:
+    #
+    # The keys of all these dictionaries are the lowercased version of the
+    # address.  This makes finding a user very quick: just lowercase the name
+    # you're matching against, and do a has_key() or get() on first
+    # self.members, then if that returns false, self.digest_members
+    #
+    # The value of the key in self.members and self.digest_members is either
+    # the integer 0, meaning the user was subscribed with an all-lowercase
+    # address, or a string which would be the address with the username part
+    # case preserved.  Note that for Mailman versions before 1.0b11, the value 
+    # could also have been the integer 1.  This is a bug that was caused when
+    # a user switched from regular to/from digest membership.  If this
+    # happened, you're screwed because there's no way to recover the case
+    # preserved address. :-(
+    #
+    # The keys for self.passwords is also lowercase, although for versions of
+    # Mailman before 1.0b11, this was not always true.  1.0b11 has a hack in
+    # Load() that forces the keys to lowercase.  The value for the keys in
+    # self.passwords is, of course the password in plain text.
+    
     def FindUser(self, email):
+        """Return the lowercased version of the subscribed email address.
+
+        If email is not subscribed, either as a regular member or digest
+        member, None is returned.  If they are subscribed, the return value is 
+        guaranteed to be lowercased.
+        """
+        # shortcut
+        lcuser = self.GetUserCanonicalAddress(email)
+        if lcuser is not None:
+            return lcuser
 	matches = Utils.FindMatchingAddresses(email,
                                               self.members,
                                               self.digest_members)
+        # sadly, matches may or may not be case preserved
 	if not matches or not len(matches):
 	    return None
-	return matches[0]
+	return string.lower(matches[0])
 
     def InitTempVars(self, name, lock):
         """Set transient variables of this and inherited classes."""
@@ -684,7 +744,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         fname_last = fname + ".last"
         file = aside_new(fname, fname_last, reopen=1)
 	dict = {}
-	for (key, value) in self.__dict__.items():
+	for key, value in self.__dict__.items():
 	    if key[0] <> '_':
 		dict[key] = value
         try:
@@ -710,7 +770,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    dict = marshal.load(file)
 	except (EOFError, ValueError, TypeError):
 	    raise mm_cfg.MMBadListError, 'Failed to unmarshal config info'
-	for (key, value) in dict.items():
+	for key, value in dict.items():
 	    setattr(self, key, value)
 	file.close()
 	self._ready = 1
@@ -856,7 +916,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                            1 - self.mime_is_default_digest)
         self.LogMsg("subscribe", "%s: new%s %s",
                     self._internal_name, kind, name)
-	self.passwords[name] = password
+	self.passwords[string.lower(name)] = password
         if ack:
             self.SendSubscribeAck(name, password, digest)
         if admin_notif:

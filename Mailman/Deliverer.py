@@ -247,17 +247,16 @@ class Deliverer:
     def MailUserPassword(self, user):
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
-        # find the case-preserved version of the user's address
-        cpuser = self.members.get(self.FindUser(user))
-        if type(cpuser) == type(''):
-            user = cpuser
+        # find the lowercased version of the user's address
+        user = self.FindUser(user)
         if user and self.passwords.has_key(user):
-            recipient = self.GetMemberAdminEmail(user)
+            cpuser = self.GetUserSubscribedAddress(user)
+            recipient = self.GetMemberAdminEmail(cpuser)
             subj = '%s mailing list reminder\n' % listfullname
             # get the text from the template
             text = Utils.maketext(
                 'userpass.txt',
-                {'user'       : user,
+                {'user'       : cpuser,
                  'listname'   : self.real_name,
                  'password'   : self.passwords[user],
                  'options_url': self.GetAbsoluteOptionsURL(user),

@@ -546,8 +546,9 @@ def FormatMembershipOptions(lst):
         all.sort()
         footer = "<p>"
     for member in all:
-        mtext = '<a href="%s">%s</a>' % (lst.GetAbsoluteOptionsURL(member),
-                                         member)
+        mtext = '<a href="%s">%s</a>' % (
+            lst.GetAbsoluteOptionsURL(member, obscured=1),
+            lst.GetUserSubscribedAddress(member))
         cells = [mtext + "<input type=hidden name=user value=%s>" % (member),
                  Center(CheckBox(member + "_subscribed", "on", 1).Format())]
         for opt in ("hide", "nomail", "ack", "notmetoo"):

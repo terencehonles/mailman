@@ -104,6 +104,7 @@ class Digester:
 	addr = self.FindUser(sender)
 	if not addr:
 	    raise Errors.MMNotAMemberError
+        cpuser = self.GetUserSubscribedAddress(addr)
 	if self.members.has_key(addr):
 	    if value == 0:
 		raise Errors.MMAlreadyUndigested
@@ -111,7 +112,7 @@ class Digester:
 		if not self.digestable:
 		    raise Errors.MMCantDigestError
 		del self.members[addr]
-		self.digest_members[addr] = 1
+		self.digest_members[addr] = cpuser
 	else:
 	    if value == 1:
 		raise Errors.MMAlreadyDigested
@@ -123,7 +124,7 @@ class Digester:
                 except AttributeError:
                     self.one_last_digest = {addr: self.digest_members[addr]}
 		del self.digest_members[addr]
-		self.members[addr] = 1
+		self.members[addr] = cpuser
 	self.Save()
 
     # Internal function, don't call this.

@@ -71,26 +71,14 @@ class SecurityManager:
         """True if password is valid for site, list admin, or specific user."""
         if self.ValidAdminPassword(pw):
             return 1
-
-        # We need to obtain the right letter-case translated version, if any:
-        got = self.members.get(string.lower(user), None)
-        if got == None:
-            got = self.digest_members.get(string.lower(user), None)
-        if got == None:
-            # Not found in either members dict, resort to expensive FindUser.
-            normalized = self.FindUser(user)
-        elif type(got) == types.StringType:
-            # Found case translated version, use it:
-            normalized = got
-        else:                           # Found, no case translation needed:
-            normalized = user
-
-        try:
-            # XXX  Huh??  Why eliminate password case info??  klm # 11/23/98.
-            if (string.lower(pw) <> string.lower(self.passwords[normalized])):
-                raise Errors.MMBadPasswordError
-        except KeyError:
+        addr = self.FindUser(user)
+        if addr is None:
+            raise Errors.MMNotAMemberError
+        storedpw = self.passwords.get(addr)
+        if storedpw is None:
             raise Errors.MMBadUserError
+        if storedpw <> pw:
+            raise Errors.MMBadPasswordError
         return 1
 
     def ChangeUserPassword(self, user, newpw, confirm):
