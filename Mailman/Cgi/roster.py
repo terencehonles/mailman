@@ -65,50 +65,36 @@ def main():
         lang = mlist.preferred_language
 
     i18n.set_language(lang)
-    bad = ''
-    # These nested conditionals constituted a cascading authentication
-    # check, yielding a 
-    # jcrey:
-    # Already in roster page, an user may desire to see roster page 
-    # in a different language in a list with privacy access
 
-    fromurl = os.environ.get('HTTP_REFERER', '')
-    
-    if not mlist.private_roster or \
-           mlist.GetScriptURL('roster', absolute=1) == fromurl:
-        # No privacy.
-        bad = ''
+    # Perform authentication for protected rosters.  If the roster isn't
+    # protected, then anybody can see the pages.  If members-only or
+    # "admin"-only, then we try to cookie authenticate the user, and failing
+    # that, we check roster-email and roster-pw fields for a valid password.
+    # (also allowed: the list moderator, the list admin, and the site admin).
+    if mlist.private_roster == 0:
+        # No privacy
+        ok = 1
+    elif mlist.private_roster == 1:
+        # Members only
+        addr = cgidata.getvalue('roster-email', '')
+        password = cgidata.getvalue('roster-pw', '')
+        ok = mlist.WebAuthenticate((mm_cfg.AuthUser,
+                                    mm_cfg.AuthListModerator,
+                                    mm_cfg.AuthListAdmin,
+                                    mm_cfg.AuthSiteAdmin),
+                                   password, addr)
     else:
+        # Admin only, so we can ignore the address field
+        password = cgidata.getvalue('roster-pw', '')
+        ok = mlist.WebAuthenticate((mm_cfg.AuthListModerator,
+                                    mm_cfg.AuthListAdmin,
+                                    mm_cfg.AuthSiteAdmin),
+                                   password)
+    if not ok:
         realname = mlist.real_name
-        auth_req = _("%(realname)s subscriber list requires authentication.")
-        if not cgidata.has_key("roster-pw"):
-            bad = auth_req
-        else:
-            pw = cgidata['roster-pw'].value
-            # Just the admin password is sufficient - check it early.
-            if not mlist.ValidAdminPassword(pw):
-                if not cgidata.has_key('roster-email'):
-                    # No admin password and no user id, nogo.
-                    bad = auth_req
-                else:
-                    id = cgidata['roster-email'].value
-                    if mlist.private_roster == 1:
-                        # Private list - members visible.
-                        try:
-                            mlist.ConfirmUserPassword(id, pw)
-                        except (Errors.MMBadUserError, 
-                                Errors.MMBadPasswordError,
-                                Errors.MMNotAMemberError):
-                            bad = _(
-                              "%(realname)s subscriber authentication failed.")
-                    else:
-                        # Anonymous list - admin-only visible
-                        # - and we already tried admin password, above.
-                        bad = _("%(realname)s admin authentication failed.")
-    if bad:
         doc = Document()
         doc.set_language(lang)
-        error_page_doc(doc, bad)
+        error_page_doc(doc, _('%(realname)s roster authentication failed.'))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
