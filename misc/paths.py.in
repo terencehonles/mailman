@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@
 # attributes that other modules may use to get the absolute path to the
 # installed Mailman distribution.
 
+import sys
+import os
+
 # some scripts expect this attribute to be in this module
 prefix = '@prefix@'
 exec_prefix = '@exec_prefix@'
@@ -33,5 +36,13 @@ if exec_prefix == '${prefix}':
 
 # Hack the path to include the parent directory of the $prefix/Mailman package
 # directory.
-import sys
 sys.path.insert(0, prefix)
+
+# Include Python's site-packages directory.  We need this even for Python 2.2
+# since the email package has some patches not included in 2.2 final (though
+# likely included in a 2.2 patch release, not available as of this writing
+# 29-Jan-2002).  That's why we prepend sitedir to sys.path, not append it.
+import sys
+sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                       'site-packages')
+sys.path.insert(0, sitedir)
