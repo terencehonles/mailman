@@ -62,7 +62,7 @@ DIRMODE=	775
 EXEMODE=	755
 FILEMODE=	644
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
-PROG=		bin/pygettext.py
+PROG=		build/bin/pygettext.py
 
 .SUFFIXES:	.po .mo
 .po.mo:
@@ -117,7 +117,7 @@ marked.files:
 
 docstring.files:
 	@echo "Calculating script input files for pygettext"
-	(cd ..; grep -d skip -l '^#! /usr/bin/env python' `find bin cron scripts -name ".#*" -prune -o -print` >| messages/$@)
+	(cd ..; grep -d skip -l '^#! @PYTHON@' `find bin cron scripts -name ".#*" -prune -o -print` >| messages/$@)
 
 mailman.pot: marked.files docstring.files
 	@echo "Running pygettext on $@; this make take a while."
