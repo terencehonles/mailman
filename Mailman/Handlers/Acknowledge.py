@@ -37,7 +37,7 @@ def process(mlist, msg, msgdata):
         ack = mlist.getMemberOption(sender, mm_cfg.AcknowledgePosts)
         if not ack:
             return
-    except Errors.NotAMember:
+    except Errors.NotAMemberError:
         return
     # Okay, they want acknowledgement of their post
     subject = msg['subject']
