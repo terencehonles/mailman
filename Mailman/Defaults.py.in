@@ -141,7 +141,7 @@ from: .*@uplinkpro.com
 """
 # Replies to posts inherently directed to list or original sender?
 DEFAULT_REPLY_GOES_TO_LIST = 0
-#
+
 # SUBSCRIBE POLICY
 # 0 - open list (only when ALLOW_OPEN_SUBSCRIBE is set to 1) **
 # 1 - confirmation required for subscribes
@@ -150,18 +150,14 @@ DEFAULT_REPLY_GOES_TO_LIST = 0
 #
 # ** please do not choose option 0 if you are not allowing open
 # subscribes (next variable)
-#
 DEFAULT_SUBSCRIBE_POLICY = 1
-#
 # does this site allow completely unchecked subscriptions?
-#
 ALLOW_OPEN_SUBSCRIBE = 0
-
 
 # Private_roster == 0: anyone can see, 1: members only, 2: admin only.
 DEFAULT_PRIVATE_ROSTER = 0
-# When exposing members, make them unrecognizable as email addrs.  To
-# web-spiders from picking up addrs for spamming.
+# When exposing members, make them unrecognizable as email addrs, so
+# web-spiders can't pick up addrs for spam purposes.
 DEFAULT_OBSCURE_ADDRESSES = 1
 # Make it 1 when it works.
 DEFAULT_MEMBER_POSTING_ONLY = 0
@@ -185,42 +181,39 @@ DEFAULT_PLAIN_DIGEST_KEEP_HEADERS = ['message', 'date', 'from',
 
 		    # Bounce Processing Defaults #
 
-# Should we do any bounced mail checking at all?
+# Should we do any bounced mail response at all?
 DEFAULT_BOUNCE_PROCESSING = 1
 # Minimum number of days that address has been undeliverable before 
-# we consider nuking it..
+# we take the automatic bounce action.
 DEFAULT_MINIMUM_REMOVAL_DATE = 5
-# Minimum number of bounced posts to the list before we consider nuking it.
+# Minimum number of delivery failure notices for an account before we
+# consider doing the automatic bounce action.
 DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION = 3
 # 0 means do nothing
 # 1 means disable and send admin a report,
 # 2 means nuke'em (remove) and send admin a report,
 # 3 means nuke 'em and don't report (whee:)
 DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
-# Maximum number of posts that can go by w/o a bounce before we figure your
-# problem must have gotten resolved...  usually this could be 1, but we
-# need to account for lag time in getting the error messages.  I'd set this
-# to the maximum number of messages you'd expect your list to reasonably
-# get in 1 hour.
+# Maximum number of posts that can go by w/o a bounce before we figure 
+# delivery failures to a particular recipient have been resolved.  This
+# needs to account for the big lag between delivery attempt and issuance of 
+# the failure notice.  We recommend a value representing the maximum number
+# of messages you'd reasonably expect an average list to get in 1 hour.
 DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
 
 DEFAULT_ADMINISTRIVIA = 1
 
-#
-# how long the cookie authorizing administrative
-# changes via the admin cgi lasts
-#
+# How long the cookie authorizing administrative changes via the admin cgi
+# lasts before it needs to be reauthenticated (ie, password demanded).
 ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
 
 # How long subscriptions request should await confirmation before being
 # dropped.
 PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
-# how many members to display at a time
-# on the admin cgi to unsubscribe them or change their options
-#
-ADMIN_MEMBER_CHUNKSIZE = 10
-
+# how many members to display at a time on the admin cgi to unsubscribe
+# them or change their options.
+ADMIN_MEMBER_CHUNKSIZE = 30
 
 
 # These directories are used to find various important files in the Mailman
