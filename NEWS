@@ -4,8 +4,13 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.1 rc 1 (XX-XXX-XXXX)
+2.1 rc 1 (24-Dec-2002)
 
+    Bug fixes and language updates.  Also,
+
+    - bin/remove_members grew --nouserack and --noadminack switches
+
+    - configure now honors --srcdir
 
 2.1 beta 6 (09-Dec-2002)
 
