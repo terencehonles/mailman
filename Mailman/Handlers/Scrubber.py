@@ -118,6 +118,30 @@ URL: %(url)s
 An HTML attachment was scrubbed...
 URL: %(url)s
 """))
+        elif part.get_type() == 'message/rfc822':
+            # This part contains a submessage, so it too needs scrubbing
+            submsg = part.get_payload()
+            omask = os.umask(002)
+            try:
+                url = save_attachment(mlist, part)
+            finally:
+                os.umask(omask)
+            subject = submsg.get('subject', _('no subject'))
+            date = submsg.get('date', _('no date'))
+            who = submsg.get('from', _('unknown sender'))
+            size = len(str(submsg))
+            part.set_payload(_("""\
+An embedded message was scrubbed...
+From: %(who)s
+Subject: %(subject)s
+Date: %(date)s
+Size: %(size)s
+Url: %(url)s
+"""))
+            # If we were to leave the message/rfc822 Content-Type: header, it
+            # would confuse the generator.  So just delete it.  The generator
+            # will treat this as a text/plain message.
+            del part['content-type']
         # If the message isn't a multipart, then we'll strip it out as an
         # attachment that would have to be separately downloaded.  Pipermail
         # will transform the url into a hyperlink.
@@ -194,8 +218,13 @@ def save_attachment(mlist, msg, filter_html=1):
     ext = mimetypes.guess_extension(msg.get_type())
     if not ext:
         # We don't know what it is, so assume it's just a shapeless
-        # application/octet-stream
-        ext = '.bin'
+        # application/octet-stream, unless the Content-Type: is
+        # message/rfc822, in which case we know we'll coerce the type to
+        # text/plain below.
+        if msg.get_type() == 'message/rfc822':
+            ext = '.txt'
+        else:
+            ext = '.bin'
     path = None
     # We need a lock to calculate the next attachment number
     lockfile = os.path.join(dir, msgdir, 'attachments.lock')
@@ -263,9 +292,18 @@ def save_attachment(mlist, msg, filter_html=1):
         # if the return data is. :(
         path = base + '.txt'
         filename = os.path.splitext(filename)[0] + '.txt'
+    # Is it a message/rfc822 attachment?
+    elif msg.get_type() == 'message/rfc822':
+        submsg = msg.get_payload()
+        # BAW: I'm sure we can eventually do better than this. :(
+        decodedpayload = cgi.escape(str(submsg))
     fp = open(path, 'w')
     fp.write(decodedpayload)
     fp.close()
     # Now calculate the url
-    url = mlist.GetBaseArchiveURL() + '/attachments/%s/%s' % (msgdir, filename)
+    baseurl = mlist.GetBaseArchiveURL()
+    # Private archives will likely have a trailing slash.  Normalize.
+    if baseurl[-1] <> '/':
+        baseurl += '/'
+    url = mlist.GetBaseArchiveURL() + 'attachments/%s/%s' % (msgdir, filename)
     return url
