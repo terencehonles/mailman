@@ -664,7 +664,7 @@ def midnight(date=None):
 
 def to_dollar(s):
     """Convert from %-strings to $-strings."""
-    s = s.replace('$', '$$')
+    s = s.replace('$', '$$').replace('%%', '%')
     parts = cre.split(s)
     for i in range(1, len(parts), 2):
         if parts[i+1] and parts[i+1][0] in IDENTCHARS:
@@ -676,7 +676,7 @@ def to_dollar(s):
 
 def to_percent(s):
     """Convert from $-strings to %-strings."""
-    s = s.replace('%', '%%')
+    s = s.replace('%', '%%').replace('$$', '$')
     parts = dre.split(s)
     for i in range(1, len(parts), 4):
         if parts[i] is not None:
