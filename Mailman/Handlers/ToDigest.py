@@ -250,6 +250,7 @@ class Digest:
             lines.append("Content-type: text/plain; charset=us-ascii")
             lines.append("Content-description: Masthead (%s digest, %s)"
                          % (self.__mlist.real_name, self.__volume))
+            lines.append('')
         masthead = Utils.maketext('masthead.txt', self.TemplateRefs())
         lines = lines + string.split(masthead, '\n')
         # List-specific header:
