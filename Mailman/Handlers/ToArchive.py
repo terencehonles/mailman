@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,6 +18,10 @@
 
 import time
 
+from Mailman import mm_cfg
+from Mailman.Queue.sbcache import get_switchboard
+from Mailman.pythonlib.StringIO import StringIO
+
 
 
 def process(mlist, msg, msgdata):
@@ -26,27 +30,11 @@ def process(mlist, msg, msgdata):
         return
     # Common practice seems to favor "X-No-Archive: yes".  I'm keeping
     # "X-Archive: no" for backwards compatibility.
-    if msg.getheader('x-no-archive', '').lower() == 'yes' or \
-           msg.getheader('x-archive', '').lower() == 'no':
+    if msg.get('x-no-archive', '').lower() == 'yes' or \
+           msg.get('x-archive', '').lower() == 'no':
         return
-    #
-    # TBD: This is a kludge around the archiver to properly support
-    # clobber_date, which sets the date in the archive to the resent date
-    # (i.e. now) instead of the potentially bogus date in the original
-    # message.  We still want the outgoing message to contain the Date: header
-    # as originally sent.
-    #
-    # Note that there should be a third option here: to clobber the date only
-    # if it's bogus, i.e. way in the future or way in the past.
-    date = archivedate = msg.getheader('date')
-    try:
-        if mlist.clobber_date:
-            archivedate = time.ctime(time.time())
-            msg['Date'] = archivedate
-            msg['X-Original-Date'] = date
-        # TBD: this needs to be converted to the new pipeline machinery
-        mlist.ArchiveMail(msg, msgdata)
-    finally:
-        # Restore the original date
-        if date is not None:
-            msg['Date'] = date
+    # Send the message to the archiver queue
+    archq = get_switchboard(mm_cfg.ARCHQUEUE_DIR)
+    # Send the message to the queue
+    archq.enqueue(msg, msgdata,
+                  received_time = time.time())
