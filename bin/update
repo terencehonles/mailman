@@ -167,8 +167,7 @@ def archive_path_fixer(unused_arg, dir, files):
             os.chmod(abs, 0664)
 
 def remove_old_sources(module):
-    src = "%s/Mailman/%s.py" % (Mailman.mm_cfg.PREFIX,
-                                module)
+    src = "%s/%s" % (Mailman.mm_cfg.PREFIX, module)
     pyc = src + "c"
     if os.path.exists(src):
         print "removing", src
@@ -176,7 +175,7 @@ def remove_old_sources(module):
             os.unlink(src)
         except os.error, rest:
             print "Warning: couldn't remove", src, "--", str(rest)
-    if os.path.exists(pyc):
+    if module[-3:] == '.py' and os.path.exists(pyc):
         try:
             os.unlink(pyc)
         except os.error, rest:
@@ -184,8 +183,10 @@ def remove_old_sources(module):
 
 
 if __name__ == '__main__':
-    for mod in ("Archiver", "HyperArch", "HyperDatabase", "pipermail",
-                'smtplib'):
+    for mod in ('Mailman/Archiver.py', 'Mailman/HyperArch.py',
+                'Mailman/HyperDatabase.py', 'Mailman/pipermail.py',
+                'Mailman/smtplib.py',
+                'bin/update_to_10b6'):
         remove_old_sources(mod)
     lists = list_names()
     if not lists:
