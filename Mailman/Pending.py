@@ -98,6 +98,7 @@ def confirm(cookie, expunge=1):
         # Remove the entry from the database
         if expunge:
             del db[cookie]
+            del db['evictions'][cookie]
             _save(db)
         return content
     finally:
@@ -127,6 +128,10 @@ def _save(db):
         if now > timestamp:
             # The entry is stale, so remove it.
             del db[cookie]
+            del evictions[cookie]
+    # Clean out any bogus eviction entries.
+    for cookie in evictions.keys():
+        if not db.has_key(cookie):
             del evictions[cookie]
     db['version'] = mm_cfg.PENDING_FILE_SCHEMA_VERSION
     omask = os.umask(007)
