@@ -631,7 +631,7 @@ def get_item_gui_value(mlist, kind, varname, params):
         if not val:
             val = ''
         return TextArea(varname, val, r, c)
-    elif kind == mm_cfg.EmailList:
+    elif kind in (mm_cfg.EmailList, mm_cfg.EmailListEx):
         if params:
             r, c = params
         else:
@@ -1111,12 +1111,15 @@ def get_valid_value(mlist, prop, wtype, val, dependant):
         if val:
             Utils.ValidateEmail(val)
         return val
-    elif wtype == mm_cfg.EmailList:
-        def validp(addr):
+    elif wtype in (mm_cfg.EmailList, mm_cfg.EmailListEx):
+        def validp(addr, wtype=wtype):
             try:
                 Utils.ValidateEmail(addr)
                 return 1
             except Errors.EmailAddressError:
+                if wtype == mm_cfg.EmailListEx and addr.startswith('^'):
+                    # It's interpreted as a regular expression
+                    return 1
                 return 0
         val = [addr for addr in [s.strip() for s in val.split(NL)]
                if validp(addr)]
