@@ -108,8 +108,7 @@ class MailCommandHandler:
         self.__errors = self.__errors + 1
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
 	
-    def ParseMailCommands(self):
-	msg = Message.Message(sys.stdin)
+    def ParseMailCommands(self, msg):
 	subject = msg.getheader("subject")
         sender = string.lower(msg.GetSender())
         sender = string.split(sender, "@")[0]
