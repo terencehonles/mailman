@@ -205,7 +205,9 @@ class ListAdmin:
         self.__opendb()
         # get the next unique id
         id = self.__request_id()
-        assert not self.__db.has_key(id)
+        while self.__db.has_key(id):
+            # Shouldn't happen unless the db has gone odd, but let's cope.
+            id = self.__request_id()
         # get the message sender
         sender = msg.get_sender()
         # calculate the file name for the message text and write it to disk
