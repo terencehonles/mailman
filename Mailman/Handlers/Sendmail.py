@@ -52,6 +52,8 @@ def process(mlist, msg):
     program.
     
     """
+    # Use -f to set the envelope sender
+    cmd = mm_cfg.SENDMAIL_CMD + ' -f ' + msg.GetSender() + ' '
     # make sure the command line is of a manageable size
     recipchunks = []
     currentchunk = []
@@ -71,7 +73,8 @@ def process(mlist, msg):
     msgtext = str(msg)
     # cycle through all chunks
     for recips in recipchunks:
-        fp = os.popen(mm_cfg.SENDMAIL_CMD + ' ' + recips, 'w')
+        # TBD: SECURITY ALERT.  This invokes the shell!
+        fp = os.popen(cmd + recips, 'w')
         fp.write(msgtext)
         status = fp.close()
         if status:
