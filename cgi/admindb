@@ -119,7 +119,7 @@ def PrintPostRequest(val, form):
 			    htmlformat.Bold('If you reject this post, '
 					    'why you chose to reject it '
 					    '(optional):')),
-	htmlformat.TextBox("comment-%d" % val[0], size=60)])
+	htmlformat.TextBox("comment-%d" % val[0], size=50)])
 
     cur_row = t.GetCurrentRowIndex()
     cur_col = t.GetCurrentCellIndex()
