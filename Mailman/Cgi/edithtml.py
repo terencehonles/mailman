@@ -18,171 +18,131 @@
 
 """Script which implements admin editing of the list's html templates."""
 
-import sys
-import os, cgi, string, types
+import os
+import cgi
+import string
+
 from Mailman import Utils, MailList
-from Mailman import htmlformat
+from Mailman.htmlformat import *
 from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman import Errors
 
 
-#Editable templates.  We should also be able to edit the archive index, which 
-#currently isn't a working template, but will be soon.
-
+
 def main():
-    # XXX: blech, yuck, ick
-    global doc
-    global list
-    global template_info
-    global template_name
+    template_data = (
+        ('listinfo.html',    'General list information page'),
+        ('subscribe.html',   'Subscribe results page'),
+        ('options.html',     'User specific options page'),
+        ('handle_opts.html', 'Changing user options results page'),
+        )
 
-    template_data = (('listinfo.html',    'General list information page'),
-                     ('subscribe.html',   'Subscribe results page'),
-                     ('options.html',     'User specific options page'),
-                     ('handle_opts.html', 'Changing user options results page'),
-                     ('archives.html',    'Archives index page')
-                    )
-
-
-    doc = InitDocument()
+    doc = Document()
 
     path = os.environ['PATH_INFO']
-    list_info = Utils.GetPathPieces(path)
+    parts = Utils.GetPathPieces(path)
 
-    if len(list_info) < 1:
-        doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
-        print doc.Format()
-        sys.exit(0)
+    if len(parts) < 1:
+        doc.AddItem(Header(2, "List name is required."))
+        print doc.Format(bgcolor='#ffffff')
+        return
 
-    list_name = string.lower(list_info[0])
-
+    listname = string.lower(parts[0])
     try:
-        list = MailList.MailList(list_name, lock=0)
-    except:
-        doc.AddItem(htmlformat.Header(2, "%s : No such list" % list_name))
-        print doc.Format()
-        sys.exit(0)
+        mlist = MailList.MailList(listname, lock=0)
+    except (Errors.MMUnknownListError, Errors.MMListNotReady):
+        doc.AddItem(Header(2, "%s : No such list" % listname))
+        print doc.Format(bgcolor='#ffffff')
+        return
 
-    if not list._ready:
-        doc.AddItem(htmlformat.Header(2, "%s : No such list" % list_name))
-        print doc.Format()
-        sys.exit(0)
-    #
     # get the list._template_dir attribute
-    #
-    HTMLFormatter.InitVars(list)
+    HTMLFormatter.InitVars(mlist)
 
-    if len(list_info) > 1:
-        template_name = list_info[1]
+    if len(parts) > 1:
+        template_name = parts[1]
         for (template, info) in template_data:
             if template == template_name:
                 template_info = info
                 doc.SetTitle('%s -- Edit html for %s' % 
-                             (list.real_name, template_info)) 
+                             (mlist.real_name, template_info)) 
                 break
         else:
             doc.SetTitle('Edit HTML : Error')
-            doc.AddItem(htmlformat.Header(2, "%s: Invalid template" % template_name))
-            doc.AddItem(list.GetMailmanFooter())
-            print doc.Format()
-            sys.exit(0)
+            doc.AddItem(Header(2, "%s: Invalid template" % template_name))
+            doc.AddItem(mlist.GetMailmanFooter())
+            print doc.Format(bgcolor='#ffffff')
+            return
     else:
-        doc.SetTitle('%s -- HTML Page Editing' % list.real_name)
-        doc.AddItem(htmlformat.Header(1, '%s -- HTML Page Editing' % list.real_name))
-        doc.AddItem(htmlformat.Header(2, 'Select page to edit:'))
-        template_list = htmlformat.UnorderedList()
+        doc.SetTitle('%s -- HTML Page Editing' % mlist.real_name)
+        doc.AddItem(Header(1, '%s -- HTML Page Editing' % mlist.real_name))
+        doc.AddItem(Header(2, 'Select page to edit:'))
+        template_list = UnorderedList()
         for (template, info) in template_data:
-            l = htmlformat.Link("%s/%s" % (list.GetRelativeScriptURL('edithtml'),template),
-                                info)
+            l = Link(mlist.GetRelativeScriptURL('edithtml') + '/' + template,
+                     info)
             template_list.AddItem(l)
-        doc.AddItem(htmlformat.FontSize("+2", template_list))
-        doc.AddItem(list.GetMailmanFooter())
-        print doc.Format()
-        sys.exit(0)
+        doc.AddItem(FontSize("+2", template_list))
+        doc.AddItem(mlist.GetMailmanFooter())
+        print doc.Format(bgcolor='#ffffff')
+        return
 
     try:
         cgi_data = cgi.FieldStorage()
         if len(cgi_data.keys()):
             if not cgi_data.has_key('adminpw'):
                 m = 'Error: You must supply the admin password to edit html.'
-                doc.AddItem(htmlformat.Header(3,
-                                              htmlformat.Italic(
-                                                  htmlformat.FontAttr(
-                                                      m, color="ff5060"))))
+                doc.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))
                 doc.AddItem('<hr>')
             else:
                 try:
-                    list.ConfirmAdminPassword(cgi_data['adminpw'].value)
-                    ChangeHTML(list, cgi_data, template_name, doc)
+                    mlist.ConfirmAdminPassword(cgi_data['adminpw'].value)
+                    ChangeHTML(mlist, cgi_data, template_name, doc)
                 except Errors.MMBadPasswordError:
                     m = 'Error: Incorrect admin password.'
-                    doc.AddItem(htmlformat.Header(3, 
-                                                  htmlformat.Italic(
-                                                      htmlformat.FontAttr(
-                                                          m, color="ff5060"))))
+                    doc.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))
                     doc.AddItem('<hr>')
-
-
-
-        FormatHTML(doc)
-
+        FormatHTML(mlist, doc, template_name, template_info)
     finally:
-        try:
-            doc.AddItem(list.GetMailmanFooter())
-            print doc.Format()
-        except:
-            pass
+        doc.AddItem(mlist.GetMailmanFooter())
+        print doc.Format(bgcolor='#ffffff')
 
 
 
-def InitDocument():
-    return htmlformat.HeadlessDocument()
-
-
-def FormatHTML(doc):
-    # XXX: blech, yuck, ick
-    global list
-    global template_info
-    global template_name
-
-    doc.AddItem(htmlformat.Header(1,'%s:' % list.real_name))
-    doc.AddItem(htmlformat.Header(1, template_info))
-
+def FormatHTML(mlist, doc, template_name, template_info):
+    doc.AddItem(Header(1,'%s:' % mlist.real_name))
+    doc.AddItem(Header(1, template_info))
     doc.AddItem('<hr>')
 
-    link = htmlformat.Link(list.GetRelativeScriptURL('admin'),
-			   'View or edit the list configuration information.')
-    doc.AddItem(htmlformat.FontSize("+1", link))
+    link = Link(mlist.GetRelativeScriptURL('admin'),
+                'View or edit the list configuration information.')
+
+    doc.AddItem(FontSize("+1", link))
     doc.AddItem('<p>')
-
     doc.AddItem('<hr>')
-
-    form = htmlformat.Form("%s/%s" % (list.GetRelativeScriptURL('edithtml'),
-                                      template_name))
+    form = Form(mlist.GetRelativeScriptURL('edithtml') + '/' + template_name)
     doc.AddItem(form)
 
-    password_table = htmlformat.Table()
+    password_table = Table()
     password_table.AddRow(['Enter the admin password to edit html:',
-			   htmlformat.PasswordBox('adminpw')])
+			   PasswordBox('adminpw')])
     password_table.AddRow(['When you are done making changes...', 
-			   htmlformat.SubmitButton('submit', 'Submit Changes')])
+			   SubmitButton('submit', 'Submit Changes')])
 
     form.AddItem(password_table)
+    text = Utils.QuoteHyperChars(mlist.SnarfHTMLTemplate(template_name))
+    form.AddItem(TextArea('html_code', text, rows=40, cols=75))
 
-    text = Utils.QuoteHyperChars(list.SnarfHTMLTemplate(template_name))
-    form.AddItem(htmlformat.TextArea('html_code', text, rows=40, cols=75))
 
-
-def ChangeHTML(list, cgi_info, template_name, doc):
+
+def ChangeHTML(mlist, cgi_info, template_name, doc):
     if not cgi_info.has_key('html_code'):
-	doc.AddItem(htmlformat.Header(3,"Can't have empty html page."))
-	doc.AddItem(htmlformat.Header(3,"HTML Unchanged."))
+	doc.AddItem(Header(3,"Can't have empty html page."))
+	doc.AddItem(Header(3,"HTML Unchanged."))
 	doc.AddItem('<hr>')
 	return
     code = cgi_info['html_code'].value
-    f = open(os.path.join(list._template_dir, template_name), 'w')
+    f = open(os.path.join(mlist._template_dir, template_name), 'w')
     f.write(code)
     f.close()
-    doc.AddItem(htmlformat.Header(3, 'HTML successfully updated.'))
+    doc.AddItem(Header(3, 'HTML successfully updated.'))
     doc.AddItem('<hr>')
-    
