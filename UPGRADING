@@ -27,7 +27,18 @@ UPGRADING FROM PREVIOUS VERSIONS
       Mailman URLs.  Refer to your web server documentation for
       details.
 
+    Mailman will NOT upgrade the template files for existing lists.
+    Chuq Von Rospach gives some useful advice in this message to the
+    users mailing list:
+
+    http://www.python.org/pipermail/mailman-users/2000-September/007523.html
+
 UPGRADING FROM 2.0 beta to 2.0 final
+
+    You MUST re-run configure; running config.status is not sufficient
+    due to some recent changes in the autoconf scripts.  You can do a
+    head of config.status if you don't remember the options you
+    originally ran configure with.
 
     The cron jobs for Mailman 2.0 final have changed considerably,
     including the frequency with which they run.  You should reload
