@@ -95,11 +95,12 @@ def SendExplanation(ml, users):
     ml.DeliverToList(msg, users, None, None)
 
 
-def AddMember(ml, addr, digest_p):
+def AddMember(ml, addr, digest_p, noack):
     # if the line was empty, just ignore it
     pw = GetRandomPassword()
+
     try:
-        ml.ApprovedAddMember(addr, pw, digest_p)
+        ml.ApprovedAddMember(addr, pw, digest_p, noack)
     except Mailman.Errors.MMAlreadyAMember:
         print 'Already subscribed (skipping):', addr
         
@@ -138,7 +139,10 @@ def main():
     except Mailman.Errors.MMUnknownListError:
         usage(1, 'You must first create the list by running: newlist %s' %
               listname)
-
+    if ml.send_welcome_msg:
+	noack = 0
+    else:
+	noack = 1
     try:
         dmembers = []
         if dfile:
@@ -162,10 +166,10 @@ def main():
             usage(1)
 
         for member in nmembers:
-            AddMember(ml, member, 0)
+            AddMember(ml, member, 0, noack)
 
         for member in dmembers:
-            AddMember(ml, member, 1)
+            AddMember(ml, member, 1, noack)
 
         SendExplanation(ml, nmembers + dmembers)
     finally:
