@@ -508,7 +508,7 @@ class HyperArchive(pipermail.T):
     IQUOTES = 1               # Italicize quoted text.
     SHOWBR = 0                # Add <br> onto every line
 
-    def __init__(self, maillist, unlock=0):
+    def __init__(self, maillist):
         # can't init the database while other processes are writing to it!
         # XXX TODO- implement native locking
         # with mailman's LockFile module for HyperDatabase.HyperDatabase
@@ -518,7 +518,6 @@ class HyperArchive(pipermail.T):
         self.__super_init(dir, reload=1, database=db)
 
         self.maillist = maillist
-        self._unlocklist = unlock
         self._lock_file = None
         self._charsets = {}
         self.charset = Utils.GetCharSet(maillist.preferred_language)
@@ -755,8 +754,6 @@ class HyperArchive(pipermail.T):
         except IOError:
             pass
         os.rename(name,wname)
-        if self._unlocklist:
-            self.maillist.Unlock()
         archfile = open(wname)
         self.processUnixMailbox(archfile)
         archfile.close()
@@ -1057,8 +1054,7 @@ class HyperArchive(pipermail.T):
                 pass
             os.unlink(txtfile)
 
-    _skip_attrs = ('maillist', '_lock_file', '_unlocklist',
-                   'charset')
+    _skip_attrs = ('maillist', '_lock_file', 'charset')
 
     def getstate(self):
         d={}
