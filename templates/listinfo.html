@@ -1,4 +1,4 @@
-<!-- $Revision: 3054 $ -->
+<!-- $Revision: 3178 $ -->
 <HTML>
   <HEAD>
     <TITLE><MM-List-Name> Info Page</TITLE>
@@ -6,7 +6,6 @@
   </HEAD>
   <BODY BGCOLOR="#ffffff">
 
-    <MM-Subscribe-Form-Start>
     <P>
       <TABLE COLS="1" BORDER="0" CELLSPACING="4" CELLPADDING="5">
 	<TR>
@@ -21,9 +20,15 @@
 	    </td>
 	  </tr>
 	  <tr>
-	    <TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	    <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
 	      <B><FONT COLOR="#000000">About <MM-List-Name></FONT></B>
 	    </TD>
+            <TD COLSPAN="1" WIDTH="100%" BGCOLOR="#FFF0D0">
+              <MM-lang-form-start><MM-displang-box> <MM-list-langs>
+              <MM-form-end>
+    <MM-Subscribe-Form-Start>
+            </TD>
+
 	  </TR>
 	    <tr>
 	      <td colspan="2">
@@ -88,6 +93,12 @@
 	<TD BGCOLOR="#dddddd">Reenter password to confirm:</TD>
 	<TD><MM-Confirm-Password></TD>
 	<TD>&nbsp; </TD></TR>
+      <tr>
+        <TD BGCOLOR="#dddddd">Which language would you like to use for
+        your interactions with this list?</TD> 
+        <TD> <MM-list-langs></TD>
+        <TD>&nbsp; </TD></TR>
+
       <tr>
 	<td>Would you like to receive list mail batched in a daily
 	  digest?
