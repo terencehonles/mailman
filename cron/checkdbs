@@ -69,7 +69,7 @@ def pending_requests(mlist):
             pending.append('Pending subscriptions:')
             first = 0
         when, addr, passwd, digest = mlist.GetRecord(id)
-        pending.append('    %s %s' % addr, time.ctime(when))
+        pending.append('    %s %s' % (addr, time.ctime(when)))
     first = 1
     for id in mlist.GetHeldMessageIds():
         if first:
