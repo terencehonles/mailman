@@ -112,7 +112,7 @@ def do_output(listname, outfile):
             if subcats is None:
                 do_list_categories(mlist, k, None, outfp)
             else:
-                for subcat in subcats:
+                for subcat in [t[0] for t in subcats]:
                     do_list_categories(mlist, k, subcat, outfp)
     finally:
         if closep:
