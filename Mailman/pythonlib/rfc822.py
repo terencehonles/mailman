@@ -272,7 +272,7 @@ class Message:
     def getheader(self, name, default=None):
         """Get the header value for a name.
         
-        This is the normal interface: it return a stripped
+        This is the normal interface: it returns a stripped
         version of the header value for a given header name,
         or None if it doesn't exist.  This uses the dictionary
         version which finds the *last* such header.
@@ -282,6 +282,32 @@ class Message:
         except KeyError:
             return default
     get = getheader
+
+    def getheaders(self, name):
+        """Get all values for a header.
+
+        This returns a list of values for headers given more than once;
+        each value in the result list is stripped in the same way as the
+        result of getheader().  If the header is not given, return an
+        empty list.
+        """
+        result = []
+        current = ''
+        have_header = 0
+        for s in self.getallmatchingheaders(name):
+            if s[0] in string.whitespace:
+                if current:
+                    current = "%s\n %s" % (current, string.strip(s))
+                else:
+                    current = string.strip(s)
+            else:
+                if have_header:
+                    result.append(current)
+                current = string.strip(s[string.find(s, ":") + 1:])
+                have_header = 1
+        if have_header:
+            result.append(current)
+        return result
     
     def getaddr(self, name):
         """Get a single address from a header, as a tuple.
@@ -527,10 +553,11 @@ class AddrlistClass:
             # address is a group
             returnlist = []
             
+            fieldlen = len(self.field)
             self.pos = self.pos + 1
-            while self.pos < len(self.field):
+            while self.pos < fieldlen:
                 self.gotonext()
-                if self.field[self.pos] == ';':
+                if self.pos < fieldlen and self.field[self.pos] == ';':
                     self.pos = self.pos + 1
                     break
                 returnlist = returnlist + self.getaddress()
@@ -598,7 +625,7 @@ class AddrlistClass:
                 aslist.append('.')
                 self.pos = self.pos + 1
             elif self.field[self.pos] == '"':
-                aslist.append(self.getquote())
+                aslist.append('"%s"' % self.getquote())
             elif self.field[self.pos] in self.atomends:
                 break
             else: aslist.append(self.getatom())
@@ -808,6 +835,7 @@ def parsedate_tz(data):
         if not mm in _monthnames:
             return None
     mm = _monthnames.index(mm)+1
+    if mm > 12: mm = mm - 12
     if dd[-1] == ',':
 	dd = dd[:-1]
     i = string.find(yy, ':')
@@ -872,6 +900,16 @@ def mktime_tz(data):
     else:
         t = time.mktime(data[:8] + (0,))
         return t - data[9] - time.timezone
+
+def formatdate(timeval=None):
+    """Returns time format preferred for Internet standards.
+
+    Sun, 06 Nov 1994 08:49:37 GMT  ; RFC 822, updated by RFC 1123
+    """
+    if timeval is None:
+        timeval = time.time()
+    return "%s" % time.strftime('%a, %d %b %Y %H:%M:%S GMT',
+                                time.gmtime(timeval))
 
 
 # When used as script, run a small test program.
