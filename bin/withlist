@@ -61,6 +61,12 @@ Options:
 
         The global variable `r' will be set to the results of this call.
 
+    --all / -a
+        This option only works with the -r option.  Use this if you want to
+        execute the script on all mailing lists.  When you use -a you should
+        not include a listname argument on the command line.  The variable `r'
+        will be a list of all the results.
+
     --quiet / -q
         Suppress all status messages.
 
@@ -117,6 +123,7 @@ import getopt
 import code
 
 import paths
+from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman.i18n import _
@@ -125,6 +132,7 @@ from Mailman.i18n import _
 m = None
 r = None
 VERBOSE = 1
+LOCK = 0
 
 
 
@@ -156,52 +164,65 @@ def atexit():
 
 
 
-def main():
+def do_list(listname, args, func):
     global m
-    global r
+    # first try to open mailing list
+    if VERBOSE:
+        print >> sys.stderr, _('Loading list %(listname)s'),
+        if LOCK:
+            print >> sys.stderr, _('(locked)')
+        else:
+            print >> sys.stderr, _('(unlocked)')
+
+    try:
+        m = MailList.MailList(listname, lock=LOCK)
+    except Errors.MMUnknownListError:
+        print >> sys.stderr, _('Unknown list: %(listname)s')
+        m = None
+
+    # try to import the module and run the callable
+    if func:
+        return func(m, *args)
+    return None
+
+
+
+def main():
     global VERBOSE
+    global LOCK
+    global r
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'hlr:qi',
-            ['help', 'lock', 'run=', 'quiet', 'interactive'])
+            sys.argv[1:], 'hlr:qia',
+            ['help', 'lock', 'run=', 'quiet', 'interactive', 'all'])
     except getopt.error, msg:
         usage(1, msg)
 
-    lock = 0
     run = None
     interact = 0
+    all = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-l', '--lock'):
-            lock = 1
+            LOCK = 1
         elif opt in ('-r', '--run'):
             run = arg
         elif opt in ('-q', '--quiet'):
             VERBOSE = 0
         elif opt in ('-i', '--interactive'):
             interact = 1
+        elif opt in ('-a', '--all'):
+            all = 1
 
-    if len(args) < 1:
+    if len(args) < 1 and not all:
         usage(1, _('No list name supplied.'))
 
-    listname = args.pop(0).lower().strip()
+    if all and not run:
+        usage(1, _('--all requires --run'))
 
-    # first try to open mailing list
-    if VERBOSE:
-        print >> sys.stderr, _('Loading list %(listname)s'),
-        if lock:
-            print >> sys.stderr, _('(locked)')
-        else:
-            print >> sys.stderr, _('(unlocked)')
-
-    try:
-        m = MailList.MailList(listname, lock=lock)
-    except Errors.MMUnknownListError:
-        print >> sys.stderr, _('Unknown list: %(listname)s')
-        m = None
-
-    # try to import the module and run the callable
+    # try to import the module for the callable
+    func = None
     if run:
         i = run.find('.')
         if i < 0:
@@ -215,7 +236,13 @@ def main():
         mod = __import__(module)
         if VERBOSE:
             print >> sys.stderr, _('Running %(module)s.%(callable)s()...')
-        r = getattr(mod, callable)(m, *args)
+        func = getattr(mod, callable)
+
+    if all:
+        r = [do_list(listname, args, func) for listname in Utils.list_names()]
+    else:
+        listname = args.pop(0).lower().strip()
+        r = do_list(listname, args, func)
 
     # Now go to interactive mode, perhaps
     if interact:
