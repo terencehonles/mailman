@@ -888,35 +888,30 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 users.append(user[ui].value)
         else:
             users = [user.value]
-        unsubscribe_errors = []
+        errors = []
         for user in users:
             if not cgi_info.has_key('%s_subscribed' % (user)):
                 try:
                     mlist.DeleteMember(user)
                 except Errors.MMNoSuchUserError:
-                    unsubscribe_errors.append((user, 'Not subscribed'))
+                    errors.append((user, 'Not subscribed'))
                 continue
-            if not cgi_info.has_key("%s_digest" % (user)):
-                if mlist.digest_members.has_key(user):
-                    del mlist.digest_members[user]
-                if not mlist.members.has_key(user):
-                    mlist.members[user] = 0
-            else:
-                if not mlist.digest_members.has_key(user):
-                    mlist.digest_members[user] = 0
-                if mlist.members.has_key(user):
-                    del mlist.members[user]
-                
+            value = cgi_info.has_key('%s_digest' % user)
+            try:
+                mlist.SetUserDigest(user, value, force=1)
+            except (Errors.MMNotAMemberError,
+                    Errors.MMAlreadyDigested,
+                    Errors.MMAlreadyUndigested):
+                pass
             for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
                 opt_code = MailCommandHandler.option_info[opt]
                 if cgi_info.has_key("%s_%s" % (user, opt)):
                     mlist.SetUserOption(user, opt_code, 1, save_list=0)
                 else:
                     mlist.SetUserOption(user, opt_code, 0, save_list=0)
-        if unsubscribe_errors:
+        if errors:
             document.AddItem(Header(5, "Error Unsubscribing:"))
-            items = map(lambda x: "%s -- %s" % (x[0], x[1]),
-                        unsubscribe_errors)
+            items = map(lambda x: "%s -- %s" % (x[0], x[1]), errors)
             document.AddItem(apply(UnorderedList, tuple((items))))
             document.AddItem("<p>")
 
