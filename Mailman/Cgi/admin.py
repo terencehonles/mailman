@@ -433,6 +433,8 @@ def FormatOptionHelp(doc, varref, mlist):
     #     since they'll go out of sync.
     #form.AddItem(Center(FormatPasswordStuff()))
     doc.AddItem(Center(form))
+    doc.AddItem("(<em><strong>Don't change the option here.</strong> "
+                'Use the main options page instead.</em>)')
 
 
 
