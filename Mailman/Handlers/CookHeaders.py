@@ -25,12 +25,18 @@ from Mailman import mm_cfg
 
 
 def process(mlist, msg):
+    # Because we're going to modify various important headers in the email
+    # message, we want to save some of the information as attributes for
+    # later.  Specifically, the sender header will get waxed, but we need it
+    # for the Acknowledge module later.
+    msg.original_sender = msg.GetSender()
     subject = msg.getheader('subject')
     adminaddr = mlist.GetAdminEmail()
-    if not getattr(msg, 'isdigest', 0):
-        # add the subject prefix unless the message is a digest.  we assume
-        # all digests have an appropriate subject header added by the ToDigest
-        # module.
+    if not getattr(msg, 'isdigest', 0) and not getattr(msg, 'fastrack', 0):
+        # Add the subject prefix unless the message is a digest or is being
+        # fast tracked (e.g. internally crafted, delivered to a single user
+        # such as the list admin).  We assume all digests have an appropriate
+        # subject header added by the ToDigest module.
         prefix = mlist.subject_prefix
         # we purposefully leave no space b/w prefix and subject!
         if not subject:
@@ -57,8 +63,8 @@ def process(mlist, msg):
     # None of these headers are added if they already exist
     if not msg.get('x-mailman-version'):
         msg['X-Mailman-Version'] = mm_cfg.VERSION
-    # semi-controversial: some don't want this included at all, others
-    # want the value to be `list'
+    # Semi-controversial: some don't want this included at all, others
+    # want the value to be `list'.
     if not msg.get('precedence'):
         msg['Precedence'] = 'bulk'
     #
