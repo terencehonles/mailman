@@ -188,9 +188,8 @@ class ListAdmin:
         elif value == 1:
             # Rejected
             rejection = 'Refused'
-            if not self.dont_respond_to_post_requests:
-                self.__refuse('Posting of your message titled "%s"' % subject,
-                              sender, comment or '[No reason given]')
+            self.__refuse('Posting of your message titled "%s"' % subject,
+                          sender, comment or '[No reason given]')
         else:
             assert value == 2
             # Discarded
