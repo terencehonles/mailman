@@ -1,13 +1,13 @@
 # Catalogues Mailman en Français.
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# Ousmane Wilane <wilane@yahoo.com>, 2001.
+# Ousmane Wilane <wilane@cyg.sn>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: <>\n"
 "POT-Creation-Date: Sun Feb  3 18:15:46 2002\n"
-"PO-Revision-Date: 2001-01-08 04:14:32+00:00\n"
-"Last-Translator: Ousmane Wilane <wilane@yahoo.com>\n"
+"PO-Revision-Date: 2002-02-05 02:36:28+00:00\n"
+"Last-Translator: Ousmane Wilane <wilane@cyg.sn>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -423,7 +423,7 @@ msgstr "mod"
 
 #: Mailman/Cgi/admin.py:871
 msgid "nomail<br>[reason]"
-msgstr ""
+msgstr "noncourriel<br>[raison]"
 
 #: Mailman/Cgi/admin.py:872
 msgid "ack"
@@ -447,19 +447,19 @@ msgstr "langue"
 
 #: Mailman/Cgi/admin.py:885
 msgid "?"
-msgstr ""
+msgstr "?"
 
 #: Mailman/Cgi/admin.py:886
 msgid "U"
-msgstr ""
+msgstr "U"
 
 #: Mailman/Cgi/admin.py:887
 msgid "A"
-msgstr ""
+msgstr "A"
 
 #: Mailman/Cgi/admin.py:888
 msgid "B"
-msgstr ""
+msgstr "R"
 
 #: Mailman/Cgi/admin.py:960
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
@@ -501,6 +501,19 @@ msgid ""
 "                    in older versions of Mailman.\n"
 "            </ul>"
 msgstr ""
+"<b>noncourriel</b> -- La remise est-elle désactivée pour l'abonné?\n"
+"Si oui, une abréviation sera fournit pour en indiquer la raison:\n"
+"    <ul><li><b>U</b> -- La remise a été désactivée par l'abonné à\n"
+"            partir de la page d'option personnelle.\n"
+"        <li><b>A</b> -- La remise a été désactivée par les\n"
+"            administrateurs de la liste.\n"
+"        <li><b>R</b> -- La remise a été désactivée par le système\n"
+"            suite à des rebonds excessifs en provenance de l'adresse\n"
+"            de l'abonné.\n"
+"        <li><b>?</b> -- Le motif de la désactivation est inconnue.\n"
+"            C'est le cas de toutes les désactivations opérées dans\n"
+"            des versions précédentes de Mailman.\n"
+"    </ul>"
 
 #: Mailman/Cgi/admin.py:983
 msgid ""
@@ -539,11 +552,11 @@ msgstr "<b>Langue</b> -- Langue préféré par l'utilisateur"
 
 #: Mailman/Cgi/admin.py:1008
 msgid "Click here to hide the legend for this table."
-msgstr ""
+msgstr "Cliquez ici pour cacher la légende de cette table."
 
 #: Mailman/Cgi/admin.py:1012
 msgid "Click here to include the legend for this table."
-msgstr ""
+msgstr "Cliquer ici pour inclure la légende de cette table."
 
 #: Mailman/Cgi/admin.py:1019
 msgid ""
@@ -757,9 +770,8 @@ msgid "Submit All Data"
 msgstr "Soumettre toutes les données"
 
 #: Mailman/Cgi/admindb.py:197
-#, fuzzy
 msgid "all of %(esender)s's held messages."
-msgstr "tous les messages en attente de %(esender)s."
+msgstr "tous les messages de %(esender)s en attente."
 
 #: Mailman/Cgi/admindb.py:202
 msgid "a single held message."
@@ -786,9 +798,8 @@ msgid "Subscription Requests"
 msgstr "Requêtes d'abonnement"
 
 #: Mailman/Cgi/admindb.py:262
-#, fuzzy
 msgid "Address/name"
-msgstr "Adresse/nom de l'abonné"
+msgstr "Adresse/nom"
 
 #: Mailman/Cgi/admindb.py:263 Mailman/Cgi/admindb.py:304
 msgid "Your decision"
@@ -821,9 +832,8 @@ msgid "Discard"
 msgstr "Ignorer"
 
 #: Mailman/Cgi/admindb.py:286
-#, fuzzy
 msgid "Permanently ban from this list"
-msgstr "Langue par défaut pour cette liste."
+msgstr "Définitivement banni de cette liste"
 
 #: Mailman/Cgi/admindb.py:301
 msgid "Unsubscription Requests"
@@ -855,7 +865,7 @@ msgstr "Faire suivre les messages (individuellement) à:"
 
 #: Mailman/Cgi/admindb.py:391
 msgid "Clear this member's <em>moderate</em> flag"
-msgstr ""
+msgstr "Annuler le bit de <em>modération</em> de cet abonné"
 
 #: Mailman/Cgi/admindb.py:401
 msgid "Add <b>%(esender)s</b> to a sender filter"
@@ -882,6 +892,8 @@ msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
 msgstr ""
+"Ajouter <b>%(esender)s</b> aux utilisateurs qui ne pourront jamais\n"
+"s'abonner à cette liste. "
 
 #: Mailman/Cgi/admindb.py:420
 msgid ""
@@ -2351,6 +2363,9 @@ msgid ""
 "        mailing list.  If you think this restriction is erroneous, please\n"
 "        contact the list owners at %(listowner)s."
 msgstr ""
+"L'adresse courriel fournit est bannie de cette liste. Si vous pensez\n"
+"que cette restriction est erronée, veillez entrer en contact avec le\n"
+"propriétaire de la liste à l'adresse %(listowner)s."
 
 #: Mailman/Cgi/subscribe.py:185
 msgid ""
@@ -4073,18 +4088,16 @@ msgstr ""
 "lesquelles tous les employés doivent être abonnés."
 
 #: Mailman/Gui/Privacy.py:120
-#, fuzzy
 msgid "Ban list"
-msgstr "Usage: listes"
+msgstr "Liste des proscrits"
 
 #: Mailman/Gui/Privacy.py:122
 msgid ""
 "List of addresses which are banned from membership in this\n"
 "             mailing list."
-msgstr ""
+msgstr "Liste des adresses dont l'abonnement est bannie de cette liste."
 
 #: Mailman/Gui/Privacy.py:125
-#, fuzzy
 msgid ""
 "Addresses in this list are banned outright from subscribing\n"
 "             to this mailing list, with no further moderation required.  "
@@ -4092,10 +4105,10 @@ msgid ""
 "             addresses one per line; start the line with a ^ character to\n"
 "             designate a regular expression match."
 msgstr ""
-"Toutes soumissions provenant de ces non-abonnés sera automatiquement\n"
-"accepté sans autre forme de procès. Ajouter les adresses des abonnés,\n"
-"une par ligne; commencez la ligne avec le caractère ^ pour désigner\n"
-"une expression régulière."
+"Les adresses contenues dans cette liste sont interdit d'abonnement\n"
+"sans autre forme de procès. Ajouter les adresses, une par ligne;\n"
+"commencez la ligne avec le caractère ^ pour désigner une comparaison\n"
+"avec une expression régulière."
 
 #: Mailman/Gui/Privacy.py:130
 msgid "Membership exposure"
@@ -4222,9 +4235,8 @@ msgstr ""
 "<p>Notez que les comparaison non-regexp sont prioritaires."
 
 #: Mailman/Gui/Privacy.py:184
-#, fuzzy
 msgid "Member filters"
-msgstr "Liste des abonnements"
+msgstr "Filtres d'abonné"
 
 #: Mailman/Gui/Privacy.py:187
 msgid "By default, should new list member postings be moderated?"
@@ -4280,6 +4292,8 @@ msgid ""
 "Action to take when a moderated member posts to the\n"
 "             list."
 msgstr ""
+"Mesure à prendre lorsqu'un abonné sous modération soumet un message à\n"
+"liste."
 
 #: Mailman/Gui/Privacy.py:208
 msgid ""
@@ -4298,6 +4312,19 @@ msgid ""
 "             no notice sent to the post's author.\n"
 "             </ul>"
 msgstr ""
+"<ul><li><b>En attente</b> -- ceci met le message en attente\n"
+"            d'approbation par le modérateur de la liste.\n"
+"\n"
+"        <p><li><b>Rejeter</b> -- ceci rejette automatiquement le\n"
+"        message en envoyant un avis de rebond à l'auteur de la\n"
+"        soumission. <a\n"
+"        href=\"?VARHELP=privacy/sender/member_moderation_notice\">Vous\n"
+"        pouvez configurer</a> le texte de l'avis de rebond.\n"
+"\n"
+"        <p><li><b>Ignorer</b> -- ceci ignore tout simplement le\n"
+"        message sans rien envoyer en retour à son auteur.\n"
+"\n"
+"        </ul>"
 
 #: Mailman/Gui/Privacy.py:222
 msgid ""
@@ -4306,11 +4333,14 @@ msgid ""
 "             >rejection notice</a> to\n"
 "             be sent to moderated members who post to this list."
 msgstr ""
+"Texte à inclure dans les <a\n"
+"href=\"?VARHELP/privacy/sender/member_moderation_action>avis de\n"
+"rejet</a> à envoyer aux abonnés sous modération ayant soumit un\n"
+"message à la liste."
 
 #: Mailman/Gui/Privacy.py:227
-#, fuzzy
 msgid "Non-member filters"
-msgstr "Filtres Anti-spam"
+msgstr "Filtres de non-abonné"
 
 #: Mailman/Gui/Privacy.py:230
 msgid ""
@@ -6010,6 +6040,9 @@ msgid ""
 "If you think this restriction is erroneous, please contact the list\n"
 "owners at %(listowner)s."
 msgstr ""
+"L'adresse spécifiée est bannie de cette liste. Si vous pensez que\n"
+"cette mesure est erronée, veillez contacter le propriétaire de la\n"
+"liste à l'adresse %(listowner)s."
 
 #: Mailman/MailCommandHandler.py:678
 msgid ""
@@ -7289,15 +7322,38 @@ msgid ""
 "filename is the name of the plaintext message file to inject.  If omitted,\n"
 "standard input is used.\n"
 msgstr ""
+"Injecter un message d'un fichier vers la file d'attente d'arrivé de\n"
+"Mailman.\n"
+"\n"
+"Usage: inject [options] [nomfichier]\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h / --help\n"
+"        Affiche ce message et quitte.\n"
+"\n"
+"    -l nomliste\n"
+"    --listname=nomliste\n"
+"        Le nom de la liste dans laquelle le message sera\n"
+"        injectée. Obligatoire.\n"
+"\n"
+"    -q nomfileattente\n"
+"    --queue=nomfileattente\n"
+"        Le nom de la file d'attente réceptrice du\n"
+"        message. nomfileattente doit être un sous-répertoire du\n"
+"        répertoire qfiles. Si vous l'omettez, la file d'attente\n"
+"        d'arrivé sera utilisée.\n"
+"\n"
+"nomfichier est le nom du fichier message texte brute à\n"
+"injecter. L'entrée standard est utilisé si vous l'omettez.\n"
 
 #: bin/inject:79
 msgid "Bad queue directory: %(qdir)s"
-msgstr ""
+msgstr "Nom de répertoire file d'attente erroné: %(qdir)s"
 
 #: bin/inject:84
-#, fuzzy
 msgid "A list name is required"
-msgstr "Nom de liste requis"
+msgstr "Un nom de liste requit"
 
 #: bin/list_admins:19
 msgid ""
@@ -8339,7 +8395,6 @@ msgid "User `%(addr)s' not found."
 msgstr "Adresse d'utilisateur '%(addr)s' non trouvée"
 
 #: bin/rmlist:19
-#, fuzzy
 msgid ""
 "Remove the components of a mailing list with impunity - beware!\n"
 "\n"
@@ -8373,7 +8428,8 @@ msgstr ""
 "Où:\n"
 "    --archives\n"
 "    -a\n"
-"        Supprime aussi les archives de la liste.\n"
+"        Supprime aussi les archives de la liste, ou supprime les\n"
+"        archives restantes si la liste a déjà été supprimée.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -8388,14 +8444,14 @@ msgid "%(listname)s %(msg)s not found as %(dir)s"
 msgstr "%(msg)s %(listname)s non trouvé en tant que %(dir)s"
 
 #: bin/rmlist:91
-#, fuzzy
 msgid "No such list (or list already deleted): %(listname)s"
-msgstr "Liste introuvable: %(listname)s"
+msgstr "Liste introuvable (ou liste déjà supprimée): %(listname)s"
 
 #: bin/rmlist:93
-#, fuzzy
 msgid "No such list: %(listname)s.  Removing its residual archives."
-msgstr "Liste introuvable: %(listname)s"
+msgstr ""
+"Liste introuvable: %(listname)s. Suppression de ses archives\n"
+"résiduels."
 
 #: bin/rmlist:97
 msgid "Not removing archives.  Reinvoke with -a to remove them."
@@ -8403,9 +8459,8 @@ msgstr ""
 "Archives non suppriméés. Réinvoquez avec l'option -a pour les supprimer."
 
 #: bin/rmlist:111
-#, fuzzy
 msgid "list info"
-msgstr "par l'admin de la liste"
+msgstr "info liste"
 
 #: bin/rmlist:117 bin/rmlist:119
 msgid "private archives"
@@ -8568,9 +8623,8 @@ msgid "Ignore  :  %30(addr)s"
 msgstr "Ignorer  :  %30(addr)s"
 
 #: bin/sync_members:192
-#, fuzzy
 msgid "Invalid :  %(addr)30s"
-msgstr "Invalide : %30(addr)s"
+msgstr "Invalide : %(addr)30s"
 
 #: bin/sync_members:195
 msgid "You must fix the preceding invalid addresses first."
@@ -8890,7 +8944,6 @@ msgid "Using Mailman version:"
 msgstr "Utilisation de la version de Mailman:"
 
 #: bin/withlist:19
-#, fuzzy
 msgid ""
 "General framework for interacting with a mailing list object.\n"
 "\n"
@@ -9008,28 +9061,23 @@ msgid ""
 msgstr ""
 "Cadre générique pour travailler avec les objets liste de diffusion.\n"
 "\n"
-"Il y a deux façons d'utiliser ce script: Interactivement ou de façon\n"
-"programatique. De façon interactive vous pourrez explorer, afficher et\n"
+"Il y a deux façons d'utiliser ce script: Inter-activement ou de façon\n"
+"programmatique. De façon interactive vous pourrez explorer, afficher et\n"
 "modifier un objet MailList en utilisant un interface Python\n"
-"interactif. Pour faire cela, exécutez le script comme suit:\n"
+"interactif.  En mode interactif, un objet MailList nommé m sera est\n"
+"disponible dans l'espace de nommage global. La classe MailList est\n"
+"aussi chargée dans l'espace de nommage global.  De façon\n"
+"programmatique, vous pouvez écrire une fonction qui opère sur un objet\n"
+"MailList, ce script prendra alors soins des détails (voir plus loin\n"
+"pour des exemples).\n"
 "\n"
-"%% python -i bin/withlist [options] nomliste [args ...]\n"
-"\n"
-"Cette commande chargera l'objet liste spécifié par nomliste (requit)\n"
-"sous le nom `m' dans l'espace de nommage global. Elle chargera\n"
-"également la classe MailList dans l'espace de nommage global.\n"
-"\n"
-"De façon programatique, vous pourrez écrire une fonction qui travaille\n"
-"avec un objet MailList, et ce script prendra soins de tous les détails\n"
-"(Voir exemples ci-dessous).\n"
 "Dans ce cas, la syntaxe générique est:\n"
 "\n"
 "%% bin/withlist [options] nomliste [args ...]\n"
 "\n"
 "Options:\n"
 "\n"
-"    -l\n"
-"    --lock\n"
+"    -l / --lock\n"
 "        Verrouiller la liste à l'ouverture. En principe la liste est\n"
 "        ouverte sans verrou (e.g. pour les opérations en lecture\n"
 "        seule). Vous pourrez toujours verrouiller la liste après coup\n"
@@ -9041,6 +9089,10 @@ msgstr ""
 "        automatiquement les modifications de l'objet MailList (il\n"
 "        déverrouillera par contre la liste).\n"
 "\n"
+"    -i / --interactive\n"
+"        Vous laisse devant un prompt interactif après que tous les\n"
+"        autres traitements aient étés effectués.\n"
+"\n"
 "    --run [module.]callable\n"
 "    -r [module.]callable\n"
 "        Ceci peut être utilisé pour exécuter un script avec un objet\n"
@@ -9049,21 +9101,27 @@ msgstr ""
 "        appeler `callable' à partir du module. callable peut être une\n"
 "        classe ou une fonction; il est appelé avec l'objet MailList\n"
 "        comme premier argument. Si d'autres arguments sont fournit sur\n"
-"        la ligne de commade, ils sont passés comme paramètres\n"
+"        la ligne de commande, ils sont passés comme paramètres\n"
 "        additionnels  à callable.\n"
 "\n"
-"        Notez que `module' est facultatif; quand il est omis, un\n"
+"        Notez que `module.' est facultatif; quand il est omis, un\n"
 "        module nommé `callable' sera importé.\n"
 "\n"
 "        La variable globale `r' prendra la valeur de retour de\n"
 "        cet appel.\n"
 "\n"
-"    --quiet\n"
-"    -q\n"
-"        Supprimer tous les messages de statut.\n"
+"    --all / -a\n"
+"        Cette option fonctionne uniquement avec l'option -r. Utilisez\n"
+"        la si vous voulez exécuter le script sur toutes les listes de\n"
+"        diffusion. Lorsque vous utiliser cette option, vous ne devrez\n"
+"        pas fournir un nom de liste en argument. La variable `r' sera\n"
+"        une `liste' (Ndt: Comme type de données) de tous les\n"
+"        résultats.\n"
 "\n"
-"    --help\n"
-"    -h\n"
+"    --quiet / -q\n"
+"        Supprimer tous les messages informatifs.\n"
+"\n"
+"    --help / -h\n"
 "        Afficher ce message puis quitter\n"
 "\n"
 "\n"
@@ -9149,9 +9207,8 @@ msgid "(unlocked)"
 msgstr "(dévérouillé)"
 
 #: bin/withlist:180
-#, fuzzy
 msgid "Unknown list: %(listname)s"
-msgstr "Chargement de la liste %(listname)s en cours"
+msgstr "Liste inconnue: %(listname)s"
 
 #: bin/withlist:219
 msgid "No list name supplied."
@@ -9159,7 +9216,7 @@ msgstr "Nom de liste non fourni."
 
 #: bin/withlist:222
 msgid "--all requires --run"
-msgstr ""
+msgstr "--all va avec --run"
 
 #: bin/withlist:235
 msgid "Importing %(module)s..."
@@ -9172,6 +9229,8 @@ msgstr "Exécution de %(module)s.%(callable)s()..."
 #: bin/withlist:259
 msgid "The variable `m' is the %(listname)s MailList instance"
 msgstr ""
+"La variable `m' est une instance de la classe MailList de\n"
+"%(listname)s"
 
 #: cron/bumpdigests:19
 msgid ""
@@ -9272,6 +9331,8 @@ msgstr ""
 #: cron/disabled:87
 msgid "[disabled by periodic sweep and cull, no message available]"
 msgstr ""
+"[désactivé pour raison d'entretien périodique, aucun message\n"
+"disponible]"
 
 #: cron/gate_news:19
 msgid ""
@@ -9402,12 +9463,3 @@ msgstr ""
 "lesquelles la variable digest_send_periodic est définit.\n"
 "\n"
 "Il est généralement appelé par cron.\n"
-
-#~ msgid "nomail"
-#~ msgstr "arrêt"
-
-#~ msgid "<b>nomail</b> -- Is delivery to the member disabled?"
-#~ msgstr "<b>arrêt</b> -- Les remises à l'abonné sont-elle désactivées?"
-
-#~ msgid "General sender filters"
-#~ msgstr "Filtres pour soumissions générales"
