@@ -13,13 +13,16 @@ was successfully received by the %s maillist.
 (List info page: %s )
 '''
 
-CHANGETEXT = '''[PSA SIG maillist member: Your mailing list is being migrated to a new
-maillist mechanism which offers more control both to the list members and
-to the administrator (and which, surprise surprise, happens to be written
-in python).  See more details below.  We will be switching over immediately
-after the subscriptions are transferred.  Actual communication on the list
-should work pretty much the same (unless, eg, you elect to receive it in
-digest mode...)
+SPECIAL_NOTICE_LISTS = ["grail"]
+
+CHANGETEXT = '''[%(real_name)s maillist member: Your mailing list
+is being migrated to a new maillist mechanism, one which offers more
+control both to the list members and to the administrator.  (It also,
+surprise surprise, happens to be written in python.)  See more details
+below - in particular note the instructions for changing your options and
+subscription.  We will be switching over immediately after the
+subscriptions are transferred.  Actual communication on the list works
+pretty much the same.
 
 Ken Manheimer, klm@python.org.]
 
@@ -32,7 +35,7 @@ or from digest mode, change your password, etc.), visit the web page:
 
       %s
 
-You can also make these adjustments via email - send a message to:
+You can also make such adjustments via email - send a message to:
 
       %s-request@%s
 
@@ -71,7 +74,7 @@ To make changes, use this password on the web site:
 
       %s
 
-You can also make these adjustments via email - send a message to:
+You can also make such adjustments via email - send a message to:
 
       %s-request@%s
 
@@ -84,10 +87,12 @@ Questions or comments?  Send mail to Mailman-owner@%s
 # We could abstract these two better...
 class Deliverer:
     # This method assumes the sender is list-admin if you don't give one.
-    def SendTextToUser(self, subject, text, recipient, sender=None):
+    def SendTextToUser(self, subject, text, recipient, sender=None,
+                       errorsto=None):
 	if not sender:
 	    sender = self.GetAdminEmail()
-        mm_utils.SendTextToUser(subject, text, recipient, sender)
+        mm_utils.SendTextToUser(subject, text, recipient, sender,
+                                errorsto=errorsto)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
@@ -169,8 +174,6 @@ class Deliverer:
 	    header = ''
 	    welcome = ''
 
-##        body = (CHANGETEXT +
-##                SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
         body = (SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
 				   self.GetScriptURL('listinfo'),
 				   self.real_name, self.host_name,
@@ -179,6 +182,9 @@ class Deliverer:
 				   self.GetListEmail(),
 				   header,
 				   welcome))
+
+        if self._internal_name in SPECIAL_NOTICE_LISTS:
+            body = (CHANGETEXT % self.__dict__) + body
 
         self.SendTextToUser(subject = 'Welcome To "%s"! %s' % (self.real_name, 
 							       digest_mode),
@@ -191,12 +197,26 @@ class Deliverer:
 			    recipient = name, 
 			    text = self.goodbye_msg)
     def MailUserPassword(self, user):
-	self.SendTextToUser(subject = ('%s@%s maillist reminder\n'
-				       % (self.real_name, self.host_name)),
-			    recipient = user,
-			    text = (USERPASSWORDTEXT
-				    % (self.real_name,
-				       self.passwords[user],
-				       self.GetScriptURL('listinfo'),
-				       self.real_name, self.host_name,
-				       self.host_name)))
+        subjpref = '%s@%s' % (self.real_name, self.host_name)
+        ok = 1
+        if self.passwords.has_key(user):
+            recipient = user
+            subj = '%s maillist reminder\n' % subjpref
+            text = USERPASSWORDTEXT % (self.real_name,
+                                       self.passwords[user],
+                                       self.GetScriptURL('listinfo'),
+                                       self.real_name, self.host_name,
+                                       self.host_name)
+        else:
+            ok = 0
+            recipient = self.GetAdminEmail()
+            subj = '%s user %s missing password!\n' % (subjpref, user)
+            text = ("Mailman noticed (in .MailUserPassword()) that:\n\n"
+                    "\tUser: %s\n\tList: %s\n\nlacks a password - please"
+                    " notify the mailman system manager!"
+                    % (`user`, self._internal_name))
+	self.SendTextToUser(subject = subj,
+			    recipient = recipient,
+                            text = text)
+        if not ok:
+             raise mm_err.MMBadUserError
