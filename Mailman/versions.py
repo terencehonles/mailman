@@ -1,4 +1,4 @@
-# Copyright (C) 1998 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -111,9 +111,11 @@ def UpdateOldVars(l, stored_state):
             if l.posters:
                 l.member_posting_only = 0
         delattr(l, "posters_includes_members")
-    else: # make sure everyone gets the behavior the list used to have
-        if l.posters:
-            l.member_posting_only = 0
+    elif l.data_version <= 10 and l.posters:
+        # make sure everyone gets the behavior the list used to have, but only
+        # for really old versions of Mailman (1.0b5 or before).  Any newer
+        # version of Mailman should not get this attribute whacked.
+        l.member_posting_only = 0
     #
     # transfer the list data type for holding members and digest members
     # to the dict data type starting file format version 11
