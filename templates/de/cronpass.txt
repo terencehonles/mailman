@@ -1,11 +1,18 @@
-Dies ist die monatliche Infomail, die Sie über Ihre Abonnements auf
-%(hostname)s informiert. Enthalten sind Informationen über Ihr Abonnement
-und wie Sie dieses kündigen bzw. modifizieren können.
 
-Sie können die angegebenen Webseiten besuchen, um Ihre Mitgliedschaft oder
-Konfigurationen zu ändern, das Abonnement zu kündigen, den Versand von
-Nachrichtensammlungen zu aktivieren, den Empfang komplett auszusetzen
-(zB während eines Urlaubs), usw.
+Dies ist die monatliche Infomail, die Sie über Ihre Mitgliedschaften in den
+Mailinglisten auf dem Server %(hostname)s informiert. Mailinglisten sind
+Diskussionsrunden oder Infoverteiler von Privatpersonen, Gruppen, Vereinen 
+o.ä., in den Sie sich eingetragen haben.
+
+Mit dieser monatlichen Erinnerungsmail geben wir Ihnen die Informationen,
+wie Sie den Bezug der genannten Mailinglisten beenden, ihre
+eingetragene Mailadresse ändern lassen, bzw. andere persönliche 
+Einstellungen vornehmen lassen können.
+
+       * Wenn Sie sich austragen wollen: LESEN SIE DIESE E-MAIL! *
+
+Bitte antworten Sie nicht auf diese e-Mail, ohne es nicht vorher selbst
+versucht zu haben.
 
 Zusätzlich zum Web-Interface können Sie solche Änderungen auch via Email
 vornehmen. Um detaillierte Informationen zu dieser Methode zu erhalten,
@@ -16,8 +23,13 @@ im Nachrichtentext enthält.
 Sie erhalten dann eine Antwort mit genauen Instruktionen.
 
 Wenn Sie Fragen, Probleme, Kommentare etc. haben, dann wenden Sie sich
-bitte an %(owner)s.
-Danke!
+bitte an %(owner)s. Danke!
 
-Passwörter für %(useraddr)s:
+Sie kriegen jetzt den Namen der Mailingliste, daneben das Kennwort (oft ein
+sechsstelliger Buchstabencode) aufgelistet. *UM SICH AUSZUTRAGEN* klicken Sie
+bitte auf den jeweils darunter stehenden Link und geben Sie dann das
+geforderte Kennwort ein. Achten Sie darauf, daß Ihre Mailsoftware den Link
+nicht "abschneidet"!
+
+Passwörter für die Mailadresse %(useraddr)s:
 
