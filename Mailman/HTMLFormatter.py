@@ -48,8 +48,10 @@ class HTMLFormatter:
 	else:
 	    people = filter(NotHidden, self.members)
 	    num_concealed = len(self.members) - len(people)
- 	if (num_concealed > 0):
-	    concealed = "<em>(%d private members)</em>" % num_concealed
+	if (num_concealed > 0):
+	    plurality = (((num_concealed > 1) and "s") or "")
+	    concealed = ("<em>(%d private member%s not shown)</em>"
+			 % (num_concealed, plurality))
  	else:
  	    concealed = ""
 
