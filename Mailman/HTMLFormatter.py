@@ -19,12 +19,15 @@
 
 
 import os
+import errno
 # XXX: should be converted to use re module
 import regsub 
 import string
 import mm_cfg
 import Utils
 from htmlformat import *
+
+from Mailman.i18n import _
 
 
 
@@ -45,6 +48,7 @@ class HTMLFormatter:
 		owners_html.AddItem(', ')
 
 	# Remove the .Format() when htmlformat conversion is done.
+        realname = self.real_name
 	return Container(
 	    '<hr>',
 	    Address(
@@ -53,7 +57,7 @@ class HTMLFormatter:
 		    _(' list run by '), owners_html,
 		    '<br>',
                     Link(self.GetScriptURL('admin'),
-                         _('%s administrative interface') % self.real_name),
+                         _('%(realname)s administrative interface')),
                     ' (requires authorization)',
                     '<p>', MailmanLogo()))).Format()
 
@@ -63,7 +67,14 @@ class HTMLFormatter:
             lang = self.preferred_language
         HTMLFormatter.InitVars(self)
 	filename = os.path.join(self._template_dir, lang, file)
-	f = open(filename,'r')
+        try:
+            f = open(filename)
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+            # Could be a list that was created before i18n support was added.
+            # In that case, use the templates one directory higher.
+            filename = os.path.join(self._template_dir, file)
+            f = open(filename)
 	str = f.read()
 	f.close()
 	return str
@@ -196,8 +207,8 @@ class HTMLFormatter:
                           "the members list is available only to the "
                           "list administrator.  ") % also
         else:
-            msg = msg + _("This is %sa public list, which means that the "
-                          "members list is openly available") % also
+            msg = msg + _("This is %(also)sa public list, which means that the"
+                          " members list is openly available")
             if self.obscure_addresses:
                 msg = msg + _(" (but we obscure the addresses so they are "
                               "not easily recognizable by spammers).  ")
@@ -236,17 +247,17 @@ class HTMLFormatter:
     def FormatEditingOption(self, lang):
         "Present editing options, according to list privacy."
 
-        text = (_('To change your subscription (set options like digest'
-                  ' and delivery modes, get a reminder of your password,'
-                  ' or unsubscribe from ')
-                + self.real_name
-                + _('), %senter your subscription email address:')
-                + '<p><center> ')
-
         if self.private_roster == 0:
-            text = text % _("<b><i> either</i></b> ")
+            either = _('<b><i>either</i></b> ')
         else:
-            text = text % ""
+            either = ''
+        realname = self.real_name
+
+        text = _('''To change your subscription (set options like digest
+        and delivery modes, get a reminder of your password, or unsubscribe
+        from %(realname)s) %(either)senter your subscription email address:
+        <p><center> ''')
+
         text = (text
                 + TextBox('info', size=30).Format()
                 + "  "
@@ -357,7 +368,10 @@ class HTMLFormatter:
         member_len = len(self.GetMembers())
         values = self.GetAvailableLanguages()
         legend = map(_, map(Utils.GetLanguageDescr, values))
-        selected = values.index(self.preferred_language)
+        try:
+            selected = values.index(self.preferred_language)
+        except ValueError:
+            selected = mm_cfg.DEFAULT_SERVER_LANGUAGE
 
 	return { 
 	    '<mm-mailman-footer>' : self.GetMailmanFooter(),
@@ -405,14 +419,15 @@ class HTMLFormatter:
             langs = [mm_cfg.DEFAULT_SERVER_LANGUAGE]
 
         for L in langs:
-	  files = filter(ExtensionFilter,
-                         os.listdir(os.path.join(mm_cfg.TEMPLATE_DIR, L)))
-	  Utils.MakeDirTree(os.path.join(self._template_dir, L))
-    
-	  for filename in files:
-	     file1 = open(os.path.join(mm_cfg.TEMPLATE_DIR, L, filename))
-	     text = file1.read()
-	     file1.close()
-	     file2 = open(os.path.join(self._template_dir, L, filename), 'w+')
-	     file2.write(text)
-	     file2.close()
+            files = filter(ExtensionFilter,
+                           os.listdir(os.path.join(mm_cfg.TEMPLATE_DIR, L)))
+            Utils.MakeDirTree(os.path.join(self._template_dir, L))
+
+            for filename in files:
+                file1 = open(os.path.join(mm_cfg.TEMPLATE_DIR, L, filename))
+                text = file1.read()
+                file1.close()
+                file2 = open(os.path.join(self._template_dir, L, filename),
+                             'w+')
+                file2.write(text)
+                file2.close()
