@@ -937,11 +937,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    self.AddRequest('post', Utils.SnarfMessage(msg),
 				    Errors.FORBIDDEN_SENDER_MSG,
 				    msg.getheader('subject'))
-            if self.moderated:
+            if self.moderated and not len(self.posters):
 		self.AddRequest('post', Utils.SnarfMessage(msg),
 				Errors.MODERATED_LIST_MSG,
-				msg.getheader('subject'))                
-	    if len(self.posters):
+				msg.getheader('subject'))
+            elif self.moderated and len(self.posters):
+                addrs = Utils.FindMatchingAddresses(sender, self.posters)
+                if not len(addrs):
+                    self.AddRequest('post', Utils.SnarfMessage(msg),
+                                    Errors.MODERATED_LIST_MSG,
+                                    msg.getheader('subject'))                    
+            #
+            # not moderated
+            #
+	    elif len(self.posters): 
 		addrs = Utils.FindMatchingAddresses(sender, self.posters)
 		if not len(addrs):
                     if self.member_posting_only:
