@@ -2540,7 +2540,7 @@ msgstr "Vous n'êtes pas autorisé à supprimer cette liste"
 
 #: Mailman/Cgi/rmlist.py:160
 msgid "Mailing list deletion results"
-msgstr "Résulats de la suppression de la liste"
+msgstr "Résultats de la suppression de la liste"
 
 #: Mailman/Cgi/rmlist.py:167
 msgid ""
