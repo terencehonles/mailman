@@ -17,13 +17,13 @@
 
 """Process maillist user commands arriving via email."""
 
-__version__ = "$Revision: 547 $"
+__version__ = "$Revision: 621 $"
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
 
-import string, os, sys
-import mm_message, mm_err, mm_cfg, mm_utils
+import string, os, sys, re
+import mm_message, mm_err, mm_cfg, mm_utils, mm_pending
 
 option_descs = { 'digest' :
 		     'receive mail from the list bundled together instead of '
@@ -56,6 +56,7 @@ class MailCommandHandler:
 	self._response_buffer = ''
 	self._cmd_dispatch = {
 	    'subscribe' : self.ProcessSubscribeCmd,
+            'confirm': self.ProcessConfirmCmd,
 	    'unsubscribe' : self.ProcessUnsubscribeCmd,
 	    'who' : self.ProcessWhoCmd,
 	    'info' : self.ProcessInfoCmd,
@@ -65,6 +66,7 @@ class MailCommandHandler:
 	    'options' : self.ProcessOptionsCmd,
 	    'password' : self.ProcessPasswordCmd,
 	    }
+        self.__NoMailCmdResponse = 0
 
     def AddToResponse(self, text):
 	self._response_buffer = self._response_buffer + text + "\n"
@@ -98,7 +100,16 @@ class MailCommandHandler:
         else:
 	    lines = string.split(mail.body, '\n')
 	    if subject:
-		self.AddError("Subject line ignored: %s" % subject)
+		#
+		# check to see if confirmation request -- special handling
+		#
+		conf_pat = r"%s -- confirmation of subscription -- request (\d\d\d\d\d\d)" % \
+			   self.real_name
+		match = re.search(conf_pat, mail.body)
+		if match:
+		    lines = ["confirm %s" % (match.group(1))]
+		else:
+		    self.AddError("Subject line ignored: %s" % subject)
 	for line in lines:
 	    line = string.strip(line)
 	    if not line:
@@ -117,7 +128,8 @@ class MailCommandHandler:
 		self.AddError("%s: Command UNKNOWN." % cmd)
 	    else:
 		self._cmd_dispatch[cmd](args, line, mail)
-	self.SendMailCmdResponse(mail)
+        if not self.__NoMailCmdResponse:
+            self.SendMailCmdResponse(mail)
 
     def SendMailCmdResponse(self, mail):
 	self.SendTextToUser(subject = 'Mailman results for %s' % 
@@ -373,47 +385,61 @@ class MailCommandHandler:
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
 	digest = self.digest_is_default
+        password = ""
+        address = ""
+        done_digest = 0
 	if not len(args):
 	    password = "%s%s" % (mm_utils.GetRandomSeed(), 
 				 mm_utils.GetRandomSeed())
-	elif len(args) == 1:
-	    if string.lower(args[0]) == 'digest':
-		digest = 1
-		password = "%s%s" % (mm_utils.GetRandomSeed(), 
+        elif len(args) > 3:
+            self.AddError("Usage: subscribe [password] [digest|nodigest] [address=<email-address>]")
+            return
+        else:
+            for arg in args:
+                if string.lower(arg) == 'digest' and not done_digest:
+                    digest = 1
+                    done_digest = 1
+                elif string.lower(arg) == 'nodigest' and not done_digest:
+                    digest = 0
+                    done_digest = 1
+                elif string.lower(arg)[:8] == 'address=' and not address:
+                    address = string.lower(arg)[8:]
+                elif not password:
+                    password = arg
+                else:
+                    self.AddError("Usage: subscribe [password] "
+                                  "[digest|nodigest] [address=<email-address>]")
+                    return
+        if not password:
+            password = "%s%s" % (mm_utils.GetRandomSeed(), 
 				 mm_utils.GetRandomSeed())
-	    elif string.lower(args[0]) == 'nodigest':
-		digest = 0
-		password = "%s%s" % (mm_utils.GetRandomSeed(), 
-				 mm_utils.GetRandomSeed())
-	    else:
-		password = args[0]
+        if not address:
+            pending_addr = mail.GetSender()
+        else:
+            pending_addr = address
+        cookie = mm_pending.gencookie()
+        mm_pending.add2pending(pending_addr, password, digest, cookie)
+        self.SendTextToUser(subject = "%s -- confirmation of subscription -- request %d" % \
+                            (self.real_name, cookie),
+                            recipient = pending_addr,
+                            sender = self.GetRequestEmail(),
+                            text = mm_pending.VERIFY_FMT % ({"email": pending_addr,
+                                                             "listaddress": self.GetListEmail(),
+                                                             "listname": self.real_name,
+                                                             "cookie": cookie,
+                                                             "requestor": mail.GetSender(),
+                                                             "request_addr": self.GetRequestEmail()}))
+        self.__NoMailCmdResponse = 1
+        return
 
-	elif len(args) == 2:
-	    if string.lower(args[1]) == 'nodigest':
-		digest = 0
-		password = args[0]
-	    elif string.lower(args[1]) == 'digest':
-		digest = 1
-		password = args[0]
-	    elif string.lower(args[0]) == 'nodigest':
-		digest = 0
-		password = args[1]
-	    elif string.lower(args[0]) == 'digest':
-		digest = 1
-		password = args[1]
-	    else:
-		self.AddError("Usage: subscribe [password] [digest|nodigest]")
-		return
-	elif len(args) > 2:
-		self.AddError("Usage: subscribe [password] [digest|nodigest]")
-		return
 
+    def FinishSubscribe(self, addr, password, digest):
 	try:
-	    self.AddMember(mail.GetSender(), password, digest)
+	    self.AddMember(addr, password, digest)
 	    self.AddToResponse("Succeeded.")
 	except mm_err.MMBadEmailError:
 	    self.AddError("Email address '%s' not accepted by Mailman." % 
-			  mail.GetSender())
+			  addr)
 	except mm_err.MMMustDigestError:
 	    self.AddError("List only accepts digest members.")
 	except mm_err.MMCantDigestError:
@@ -424,15 +450,42 @@ class MailCommandHandler:
 	    self.AddApprovalMsg(cmd)
         except mm_err.MMHostileAddress:
 	    self.AddError("Email address '%s' not accepted by Mailman "
-			  "(insecure address)" % mail.GetSender())
+			  "(insecure address)" % addr)
 	except mm_err.MMAlreadyAMember:
-	    self.AddError("%s is already a list member." % mail.GetSender())
+	    self.AddError("%s is already a list member." % addr)
 	except:
 	    # TODO: Should log the error we got if we got here.
 	    self.AddError("An unknown Mailman error occured.")
 	    self.AddError("Please forward on your request to %s" %
 			  self.GetAdminEmail())
 	    self.AddError("%s" % sys.exc_type)
+
+
+
+    def ProcessConfirmCmd(self, args, cmd, mail):
+        if len(args) != 1:
+            self.AddError("Usage: confirm <confirmation number>\n")
+            return
+        try:
+            cookie = string.atoi(args[0])
+        except:
+            self.AddError("Usage: confirm <confirmation number>\n")
+            return
+        pending = mm_pending.get_pending()
+        if not pending.has_key(cookie):
+            self.AddError("Invalid confirmation number!\n"
+                          "Please recheck the confirmation number and try again.")
+            return
+        (email_addr, password, digest, ts) = pending[cookie]
+        if self.open_subscribe:
+            self.ApprovedAddMember(email_addr, password, digest)
+            self.AddToResponse("Succeeded")
+        else:
+            self.AddRequest('add_member', digest, email_addr, password)
+        del pending[cookie]
+        mm_pending.set_pending(pending)
+
+
 		
     def AddApprovalMsg(self, cmd):
         self.AddError('''Your request to %s:
@@ -478,13 +531,14 @@ the commands.
 
 The following commands are valid:
 
-    subscribe [password] [digest-option]
+    subscribe [password] [digest-option] [address=<address>]
         Subscribe to the mailing list.  Your password must be given to
         unsubscribe or change your options.  When you subscribe to the
         list, you'll be reminded of your password periodically.
         'digest-option' may be either: 'nodigest' or 'digest' (no quotes!)
-	To subscribe this way, you must subscribe from the account in 
-	which you wish to receive mail.
+        If you wish to subscribe an address other than the address you send
+        this request from, you may specify "address=<email address>" (no brackets
+        around the email address, no quotes!) 
 
     unsubscribe <password> [address]
         Unsubscribe from the mailing list.  Your password must match

@@ -10,8 +10,8 @@ import time
 import whrandom
 import mm_cfg
 
-DB_PATH = mm_cfg.MAILMAN_DIR + "/misc/pending_subscriptions.db"
-LOCK_PATH = mm_cfg.LOCK_DIR + "/pending_subscriptions.lock"
+DB_PATH = os.path.join(mm_cfg.MISC_DIR,"pending_subscriptions.db")
+LOCK_PATH = os.path.join(mm_cfg.LOCK_DIR, "pending_subscriptions.lock")
 
 
 VERIFY_FMT = """\
