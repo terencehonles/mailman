@@ -127,7 +127,7 @@ def make_pkg(tagname):
 def do_bump(newvers):
     print 'doing bump...',
     # hack the index.html file
-    print 'index.html...',
+    print 'download.ht...',
     fp = open('admin/www/download.ht', 'r+')
     text = fp.read()
     parts = string.split(text, '<!-VERSION--->')
