@@ -217,6 +217,10 @@ class LockFile:
         # Make sure my temp lockfile exists, and that its contents are
         # up-to-date (e.g. the temp file name, and the lock lifetime).
         self.__write()
+        # TBD: This next call can fail with an EPERM.  I have no idea why, but
+        # I'm nervous about wrapping this in a try/except.  It seems to be a
+        # very rare occurence, only happens from cron, and (only?) on Solaris
+        # 2.6.
         self.__touch()
         self.__writelog('laying claim')
         # for quieting the logging output
