@@ -115,7 +115,7 @@ DELIVERY_MODULE = 'SMTPDirect'
 SENDMAIL_CMD = '/usr/lib/sendmail'
 
 # SMTP host and port, when DELIVERY_MODULE is 'SMTPDirect'
-SMTPHOST	  = '@FQDN@'
+SMTPHOST	  = '@URL@'
 SMTPPORT          = 0                             # default from smtplib
 
 # 1 to use crypt for passwords instead of md5.
