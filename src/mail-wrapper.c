@@ -38,8 +38,8 @@ const char *LEGAL_PARENT_NAMES[] = {
 };
 
 /* Should make these arrays too... */
-const int  LEGAL_PARENT_UID = 0;  /* mail's UID *//* actually, using smtp's */
-const int  LEGAL_PARENT_GID = 0; /* mail's GID *//* actually, using smtp's */
+const int  LEGAL_PARENT_UID = 1;  /* mail's UID */
+const int  LEGAL_PARENT_GID = 1; /* mail's GID */
 
 
 /*
