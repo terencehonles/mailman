@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -65,6 +65,8 @@ class Digester:
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
             # List has no outstanding digests
+            return 0
+        return 1
 
     def bump_digest_volume(self):
         self.volume += 1
