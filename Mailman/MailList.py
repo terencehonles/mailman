@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 501 $"
+__version__ = "$Revision: 502 $"
 
 try:
     import mm_cfg
@@ -171,14 +171,27 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             "Fundamental list characteristics, including descriptive"
             " info and basic behaviors.",
 	    ('real_name', mm_cfg.String, 50, 0,
-	     'The public name of this list'),
+	     'The public name of this list',
+
+             "The capitalization of this name can be changed to make it"
+             " presentable in polite company as a noun, or to make an"
+             " acronym part all upper case, etc.  However, the name"
+             " will be advertised as the email address (e.g., in subscribe"
+             " confirmation notices), so it should <em>not</em> be otherwise"
+             " altered.  (Email addresses are not case sensitive, but"
+             " they are sensitive to almost everything else:-)"),
 
 	    ('owner', mm_cfg.EmailList, (3,30), 0,
 	     "The list admin's email address - having multiple"
-	     " admins/addresses is ok."),
+	     " admins/addresses (on separate lines) is ok."),
 
 	    ('description', mm_cfg.String, 50, 0,
-	     'A one sentence description of this list.'),
+	     'A terse phrase identifying this list.',
+
+             "This description is used when the maillist is listed with"
+             " other maillists, or in headers, and so forth.  It should"
+             " be as succinct as you can get it, while still identifying"
+             " what the list is."),
 
 	    ('info', mm_cfg.Text, (7, 50), 0, 
 	     'A descriptive paragraph about the list.',
@@ -193,11 +206,22 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('subject_prefix', mm_cfg.String, 10, 0,
 	     'Prefix for subject line of list postings.',
 
-             "Text prefixed to posting subject lines to distinguish"
-             " maillist messages in mailbox summaries."),
+             "This text will be prepended to subject lines of messages"
+             " posted to the list, to distinguish maillist messages in"
+             " in mailbox summaries.  Brevity is premium here, it's ok"
+             " to shorten long maillist names to something more concise,"
+             " as long as it still identifies the maillist."),
 
 	    ('welcome_msg', mm_cfg.Text, (4, 50), 0,
-	     'List-specific text prepended to new-subscriber welcome message'),
+	     'List-specific text prepended to new-subscriber welcome message',
+
+             "This value, if any, will be added to the front of the"
+             " new-subscriber welcome message.  The rest of the"
+             " welcome message already describes the important addresses"
+             " and URLs for the maillist, so you don't need to include"
+             " any of that kind of stuff here.  This should just contain"
+             " mission-specific kinds of things, like etiquette policies"
+             " or team orientation, or that kind of thing."),
 
 	    ('goodbye_msg', mm_cfg.Text, (4, 50), 0,
 	     'Text sent to people leaving the list.  If empty, no special'
@@ -252,19 +276,22 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              "This determines the maximum number of batches into which"
              " a mass posting will be divided."),
 
-	    ('host_name', mm_cfg.Host, 50, 0, 'Host name this list prefers',
+	    ('host_name', mm_cfg.Host, 50, 0, 'Host name this list prefers.',
 
              "The host_name is the preferred name for email to mailman-related"
              " addresses on this host, and generally should be the mail"
-             " host's exchanger address, if any."),
+             " host's exchanger address, if any.  This setting can be useful"
+             " for selecting among alternative names of a host that has"
+             " multiple addresses."),
 
-# I suspect this should not be changeable by arbitrary list admins.
-## 	    ('web_page_url', mm_cfg.String, 50, 0,
-## 	     'Base URL for Mailman web interface',
+ 	    ('web_page_url', mm_cfg.String, 50, 0,
+ 	     'Base URL for Mailman web interface',
 
-##              "This is the common root of all mailman URLs concerning this"
-##              " list."),
-	    ]
+             "This is the common root for all mailman URLs concerning this"
+             " list.  It can be useful for selecting a particular URL"
+             " of a host that has multiple addresses."),
+          ]
+
         config_info['privacy'] = [
             "List access policies, including anti-spam measures,"
             " covering members and outsiders."
