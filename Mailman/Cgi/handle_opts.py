@@ -44,8 +44,11 @@ def PrintResults(mlist, operation, doc, results):
 def main():
     doc = Document()
 
-    path = os.environ['PATH_INFO']
-    parts = Utils.GetPathPieces(path)
+    path = os.environ.get('PATH_INFO')
+    if path:
+        parts = Utils.GetPathPieces(path)
+    else:
+        parts = []
 
     if len(parts) < 2:
         doc.AddItem(Header(2, "Error"))
