@@ -1,4 +1,9 @@
 #!/usr/local/bin/python
+
+"""Produce the list-administration web page on stdout.
+
+We need the environment var PATH_INFO to name the list."""
+
 import sys, os, cgi, string, crypt, types
 f = open('/tmp/quick', 'a+')
 #sys.stderr = sys.stdout
