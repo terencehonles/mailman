@@ -149,12 +149,12 @@ class Deliverer:
 
         if self.umbrella_list:
             umbrella = Utils.wrap(
-                "\n(Since this is a list of mailing lists, administrative"
+                "(Since this is a list of mailing lists, administrative"
                 " notices like the password reminder will be sent to"
                 " your membership administrative address, %s.\n"
                 % self.GetMemberAdminEmail(name))
         else:
-            umbrella_spiel = ''
+            umbrella = ''
         # get the text from the template
         body = Utils.maketext(
             'subscribeack.txt',
