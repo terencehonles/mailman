@@ -1,5 +1,9 @@
 #!/usr/local/bin/python
 
+"""Partition a mass delivery into a suitable set of subdeliveries."""
+
+__version__ = "$Revision: 391 $"
+
 # Heh, heh, heh, this partition reminds me of the knapsack problem ;-)
 # Ie, the optimal distribution here is NP Complete.
 
