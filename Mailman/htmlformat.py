@@ -473,8 +473,6 @@ class CheckBox(InputObj):
     def __init__(self, name, value, checked=0, **kws):
         apply(InputObj.__init__, (self, name, "CHECKBOX", value, checked), kws)
 
-
-
 class VerticalSpacer:
     def __init__(self, size=10):
 	self.size = size
@@ -482,29 +480,30 @@ class VerticalSpacer:
 	output = '<spacer type="vertical" height="%d">' % self.size
 	return output 
 
-class RadioButtonArray:
-    def __init__(self, name, button_names, checked=None, horizontal=1,
-                 values=None):
-	self.button_names = button_names
-	self.horizontal = horizontal
+class WidgetArray:
+    Widget = None
+
+    def __init__(self, name, button_names, checked, horizontal, values):
 	self.name = name
+	self.button_names = button_names
 	self.checked = checked
 	self.horizontal = horizontal
-        if values is not None:
-            assert len(values) == len(button_names)
-            self.values = values
-        else:
-            self.values = range(len(button_names))
+        self.values = values
+        assert len(values) == len(button_names)
+        # Don't assert `checked' because for RadioButtons it is a scalar while
+        # for CheckedBoxes it is a vector.  Subclasses will assert length.
+
+    def ischecked(self, i):
+        raise NotImplemented
 
     def Format(self, indent=0):
 	t = Table(cellspacing=5)
         items = []
-        for i, name, value in map(None,
-                                  range(len(self.button_names)),
+        for i, name, value in zip(range(len(self.button_names)),
                                   self.button_names,
                                   self.values):
-            ischecked = (self.checked == i)
-            item = RadioButton(self.name, value, ischecked).Format() + name
+            ischecked = (self.ischecked(i))
+            item = self.Widget(self.name, value, ischecked).Format() + name
             items.append(item)
             if not self.horizontal:
                 t.AddRow(items)
@@ -512,6 +511,37 @@ class RadioButtonArray:
 	if self.horizontal:
 	    t.AddRow(items)
 	return t.Format(indent)
+
+class RadioButtonArray(WidgetArray):
+    Widget = RadioButton
+
+    def __init__(self, name, button_names, checked=None, horizontal=1,
+                 values=None):
+        if values is None:
+            values = range(len(button_names))
+        # BAW: assert checked is a scalar...
+        WidgetArray.__init__(self, name, button_names, checked, horizontal,
+                             values)
+
+    def ischecked(self, i):
+        return self.checked == i
+
+class CheckBoxArray(WidgetArray):
+    Widget = CheckBox
+
+    def __init__(self, name, button_names, checked=None, horizontal=0,
+                 values=None):
+        if checked is None:
+            checked = [0] * len(button_names)
+        else:
+            assert len(checked) == len(button_names)
+        if values is None:
+            values = range(len(button_names))
+        WidgetArray.__init__(self, name, button_names, checked, horizontal,
+                             values)
+
+    def ischecked(self, i):
+        return self.checked[i]
 
 class UnorderedList(Container):
     def Format(self, indent=0):
