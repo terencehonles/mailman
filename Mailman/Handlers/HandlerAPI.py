@@ -16,6 +16,8 @@
 
 """Contains all the common functionality for the msg handler API."""
 
+from Mailman import mm_cfg
+
 class HandlerError(Exception):
     """Base class for all handler errors"""
     pass
@@ -24,13 +26,6 @@ class HandlerError(Exception):
 class MessageHeld(HandlerError):
     """Base class for all message-being-held short circuits"""
     pass
-
-
-# Choose either Sendmail or SMTPDirect as your message delivery module, or
-# edit the pipeline variables if you want to use a different one for delivery
-# to the lists and delivery to a single recipient.
-DELIVERY_MODULE = 'Sendmail'
-#DELIVERY_MODULE = 'SMTPDirect'
 
 
 
@@ -47,7 +42,7 @@ def DeliverToList(mlist, msg):
                 'ToUsenet',
                 'CalcRecips',
                 'Decorate',
-                DELIVERY_MODULE,
+                mm_cfg.DELIVERY_MODULE,
                 'Acknowledge',
                 'AfterDelivery',
                 ]
@@ -66,7 +61,7 @@ def DeliverToList(mlist, msg):
 # None?
 def DeliverToUser(mlist, msg):
     pipeline = ['CookHeaders',
-                DELIVERY_MODULE,
+                mm_cfg.DELIVERY_MODULE,
                 ]
     msg.fastrack = 1
     for modname in pipeline:
