@@ -47,7 +47,7 @@ SHELL=		/bin/sh
 PYTHONLIBDIR=	$(prefix)/pythonlib
 SETUPCMD=	setup.py --quiet install --install-lib
 
-EMAILPKG=	email-2.0
+EMAILPKG=	email-2.0.1
 JACODECSPKG=	JapaneseCodecs-1.4.4
 KOCODECSPKG=	KoreanCodecs-1.0.0
 
