@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -208,7 +208,7 @@ def send_i18n_digests(mlist, mboxfp):
                       subject, re.IGNORECASE)
         if mo:
             subject = subject[:mo.start(2)] + subject[mo.end(2):]
-        addresses = getaddresses([msg['From']])
+        addresses = getaddresses([msg.get('From', '')])
         username = ''
         # Take only the first author we find
         if type(addresses) is ListType and len(addresses) > 0:
