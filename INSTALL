@@ -54,7 +54,9 @@ upgrade.
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
-      installed under $prefix.
+      installed under $prefix.  Run "configure --help" for ways to
+      split the installation up based on read-only vs. read/write
+      files.
 
       Note that if you've added a mailman user, and plan to install to
       the default location (/home/mailman), that directory may have
@@ -254,7 +256,10 @@ upgrade.
 
       For example, in Apache:
 
-         Alias /pipermail/ $prefix/archives/public/
+         Alias /pipermail/ $varprefix/archives/public/
+
+      where $varprefix is usually $prefix unless you've used the
+      --with-var-prefix option to configure.
 
       Consult your web server's documentation for details.  Also be
       sure to configure your web server to follow symbolic links in
@@ -280,7 +285,7 @@ upgrade.
       MTA up to Mailman.  If so, there will be a README.<yourMTA> file
       in the Mailman source directory.
 
-    - Add aliases for `mailman' and `owner-mailman' to the system's
+    - Add aliases for `mailman' and `mailman-owner' to the system's
       mail alias database.  These aliases should point to whoever is
       ultimately responsible for the Mailman installation.  Here are
       instructions for those running sendmail:
