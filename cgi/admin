@@ -31,7 +31,7 @@ def main():
 
     CGI input indicates that we're returning from submission of some new
     settings, which is processed before producing the new version."""
-    global doc, list_name		# For encompassing try/except.
+    global list_name		# For encompassing try/except.
     doc = Document()
 
     path = os.environ['PATH_INFO']
@@ -64,6 +64,9 @@ def main():
 
         cgi_data = cgi.FieldStorage()
 	if len(cgi_data.keys()):
+	    if cgi_data.has_key('VARHELP'):
+                print FormatOptionHelp(cgi_data['VARHELP'].value, list)
+                return
 	    if not cgi_data.has_key('adminpw'):
                 AddErrorMessage(doc,
                                 'Error: You must supply the admin password to'
@@ -172,12 +175,12 @@ def FormatOptionsSection(category, list):
 
     options = GetConfigOptions(list, category)
 
+    big_table = Table(cellspacing=3, cellpadding=4)
+
+    # Get and portray the text label for the category.
     for k, v in CATEGORIES:
         if k == category: label = v
-
-    big_table = Table(cellspacing=3, cellpadding=4)
     big_table.AddRow([Center(Header(2, label))])
-    
     big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
                           colspan=2, bgcolor="#99ccff")
 
@@ -203,7 +206,7 @@ def FormatOptionsSection(category, list):
                 # ... but do col header before anything else.
                 ColHeader()
                 did_col_header = 1
-            big_table.AddRow(GetGuiItem(item, list))
+            big_table.AddRow(GetGuiItem(item, category, list))
             big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 1,
                                   bgcolor="#cccccc")
             big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
@@ -212,7 +215,25 @@ def FormatOptionsSection(category, list):
     big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
     return big_table
 
-def GetGuiItem(table_entry, list):
+def FormatOptionHelp(varref, list):
+    print "Content-type: text/html\n\n"
+    item = None
+    reflist = string.split(varref, '/')
+    if len(reflist) == 2:
+        category, varname = reflist
+        options = GetConfigOptions(list, category)
+        for i in options:
+            if i and i[0] == varname:
+                item = i
+                break
+    if not item:
+        return "Option %s/%s not found. %s" % (category, varname,
+                                               os.environ['PATH_INFO'])
+    if len(item) < 6:
+        return "Option %s has no extended help." % varname
+    return item[5]
+
+def GetGuiItem(table_entry, category, list):
     """Return the contents for a table row representing an options item.
 
     Elements of the table_entry list are:
@@ -255,7 +276,14 @@ def GetGuiItem(table_entry, list):
 	    r, c = None, None
 	res = string.join(getattr(list, varname), '\n')
 	gui_part = TextArea(varname, res, r, c, wrap='off')
-    return [table_entry[4], gui_part]
+    descr = '<div ALIGN="right">' + descr
+    if elaboration:
+        ref = '?VARHELP=' + category + "/" + varname
+        descr = Container(descr, Link(ref, " (Details)",
+                                      target="MMHelp"), "</div>")
+    else:
+        descr = descr + "</div>"
+    return [descr, gui_part]
 
 def FormatMembershipOptions(list):
     container = Container()
