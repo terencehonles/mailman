@@ -133,6 +133,12 @@ transparently.  However, please note the following exceptions:
             added security.  On system using Apache for example, check
             the values for the `Group' option in your httpd.conf file.
 
+      --with-cgi-ext=<extension>
+            Specify an extension for cgi-bin programs.  The CGI
+            wrappers placed in $PREFIX/cgi-bin will have this
+            extension (some Web servers require an extension).
+            <extension> must include the dot.
+
       --with-gcc=no
             Don't use gcc, even if it is found.  `cc' must be found on
             your $PATH

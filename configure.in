@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 897 $)
+AC_REVISION($Revision: 924 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -256,6 +256,20 @@ fi
 #MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
 #MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
 
+# Scan for --with-cgi-ext
+AC_SUBST(CGIEXT)
+AC_MSG_CHECKING(for --with-cgi-ext)
+AC_ARG_WITH(cgi-ext, [
+	--with-cgi-ext  	specify extensions on CGI programs])
+if test -z "$with_cgi_ext"
+then
+    AC_CACHE_VAL(ac_cv_ext_cgi, [dnl
+    ac_cv_ext_cgi=""])
+else
+    ac_cv_ext_cgi=$with_cgi_ext
+fi
+CGIEXT=$ac_cv_ext_cgi
+AC_MSG_RESULT($CGIEXT)
 
 # figure out the DEFAULT_HOST_NAME and DEFAULT_URL
 AC_SUBST(FQDN)
