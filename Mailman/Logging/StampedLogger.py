@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,8 +16,11 @@
 
 import os
 import time
-from Logger import Logger
 
+from Mailman.Logging.Logger import Logger
+
+
+
 class StampedLogger(Logger):
     """Record messages in log files, including date stamp and optional label.
 
@@ -62,7 +65,7 @@ class StampedLogger(Logger):
                 self.__primed = 0
             else:
                 stamp = ""
-            if self.__label == None:
+            if self.__label is None:
                 label = "(%d)" % os.getpid()
             else:
                 label = "%s(%d):" % (self.__label, os.getpid())
