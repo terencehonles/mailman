@@ -26,11 +26,8 @@ the password, itself) or to unsubscribe.  It is:
 
   %(password)s
 
-If you forget your password, don't worry, you will receive a monthly
-reminder telling you what all your %(host_name)s mailing list passwords
-are, and how to unsubscribe or change your options.  There is also a
-button on your options page that will email your current password to
-you.
-
-You may also have your password mailed to you automatically off of the
-Web page noted above.
+Normally, Mailman will remind you of your %(host_name)s mailing list
+passwords once every month, although you can disable this if you
+prefer.  This reminder will also include instructions on how to
+unsubscribe or change your account options.  There is also a button on
+your options page that will email your current password to you.
