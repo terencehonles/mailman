@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -93,9 +93,25 @@ class BounceRunner(Runner):
 
     def __verpbounce(self, mlist, msg):
         bmailbox, bdomain = Utils.ParseEmail(mlist.getListAddress('bounces'))
-        to = msg.get('to', '')
-        mo = re.search(mm_cfg.VERP_REGEXP, parseaddr(to)[1])
-        if to.startswith(bmailbox) and mo:
+        # Sadly not every MTA bounces VERP messages correctly.  Fall back to
+        # Delivered-to: and Apparently-To:, and then short-circuit if we still
+        # don't have anything to work with.  Note that there can be multiple
+        # Delivered-To: headers so we need to search them all (and we don't
+        # worry about false positives for forwarded email, because only one
+        # should match VERP_REGEXP).
+        vals = []
+        for header in ('to', 'delivered-to', 'apparently-to'):
+            vals.extend(msg.get_all(header, []))
+        for field in vals:
+            to = parseaddr(field)[1]
+            if not to:
+                continue                          # empty header
+            mo = re.search(mm_cfg.VERP_REGEXP, to)
+            if not mo:
+                continue                          # no match of regexp
+            if bmailbox <> mo.group('bounces'):
+                continue                          # not a bounce to our list
+            # All is good
             addr = '%s@%s' % mo.group('mailbox', 'host')
             # Now, if this message has come to the site list, then search not
             # only it, but all the mailing lists on the system, registering a
