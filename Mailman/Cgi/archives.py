@@ -63,7 +63,7 @@ def GetArchiveList(list):
 	except:
 	    return 0
     try:
-	dir_listing = filter(ArchiveFilter, os.listdir(list.archive_directory))
+	dir_listing = filter(ArchiveFilter, os.listdir(list.archive_dir()))
     except posix.error:
 	return "<h3><em>No archives are currently available.</em></h3>"
     if not len(dir_listing):
