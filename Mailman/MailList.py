@@ -69,10 +69,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         try:
             for f in self._log_files.values():
                 f.close()
+            self.Unlock()
         except AttributeError:
-            # List may not have gotten far enough to have proper _log_files!
+            # List may not have gotten far enough to have proper _log_files or
+            # lock object!
             pass
-        self.Unlock()
 
     def GetMembers(self):
         """returns a list of the members. (all lowercase)"""
