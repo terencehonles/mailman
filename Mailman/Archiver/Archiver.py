@@ -126,10 +126,13 @@ class Archiver:
             inv = {}
             for k, v in mm_cfg.VIRTUAL_HOSTS.items():
                 inv[v] = k
-            return mm_cfg.PUBLIC_ARCHIVE_URL % {
+            url = mm_cfg.PUBLIC_ARCHIVE_URL % {
                 'listname': self.internal_name(),
                 'hostname': inv.get(self.host_name, mm_cfg.DEFAULT_URL_HOST),
                 }
+            if not url.endswith('/'):
+                url += '/'
+            return url
 
     def __archive_file(self, afn):
 	"""Open (creating, if necessary) the named archive file."""
