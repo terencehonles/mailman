@@ -28,7 +28,23 @@ from Mailman.MTA.Utils import makealiases
 
 
 
-def create(mlist, cgi=0):
+# no-ops for interface compliance
+def makelock():
+    class Dummy:
+        def lock(self):
+            pass
+        def unlock(self, unconditionally=0):
+            pass
+    return Dummy()
+
+
+def clear():
+    pass
+
+
+
+# nolock argument is ignored, but exists for interface compliance
+def create(mlist, cgi=0, nolock=0):
     listname = mlist.internal_name()
     fieldsz = len(listname) + len('-request')
     if cgi:
