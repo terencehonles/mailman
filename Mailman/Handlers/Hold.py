@@ -175,9 +175,7 @@ def process(mlist, msg, msgdata):
 def hold_for_approval(mlist, msg, msgdata, exc):
     # BAW: This should really be tied into the email confirmation system so
     # that the message can be approved or denied via email as well as the
-    # web.  That's for later though, because it would mean a revamp of the
-    # MailCommandHandler too.
-    #
+    # web.
     if type(exc) is ClassType:
         # Go ahead and instantiate it now.
         exc = exc()
