@@ -61,7 +61,7 @@ Subject: %(subject)s
 
 """
 
-article_template="""\
+article_template='''\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
  <HEAD>
@@ -104,7 +104,7 @@ article_template="""\
          </LI>
        </UL>
 </body></html>
-"""
+'''
 
 
 
@@ -292,7 +292,7 @@ class Article(pipermail.Article):
 #
 # Archive class specific stuff
 #
-index_header_template="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+index_header_template='''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
   <HEAD>
      <title>The %(listname)s %(archive)s Archive by %(archtype)s</title>
@@ -313,9 +313,9 @@ index_header_template="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
          <b>Ending:</b> <i>%(lastdate)s</i><br>
          <b>Messages:</b> %(size)s<p>
      <ul>
-"""
+'''
 
-index_footer_template="""\
+index_footer_template='''\
     </ul>
     <p>
       <a name="end"><b>Last message date:</b></a> 
@@ -337,9 +337,9 @@ index_footer_template="""\
      Pipermail %(version)s</a>.</i>
   </BODY>
 </HTML>
-"""
+'''
 
-TOC_template="""\
+TOC_template='''\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
   <HEAD>
@@ -356,9 +356,9 @@ TOC_template="""\
      %(archive_listing_end)s
      </BODY>
      </HTML>
-"""
+'''
 
-TOC_entry_template = """\
+TOC_entry_template = '''\
 
 	    <tr>
             <td>%(archive)s:</td>
@@ -371,15 +371,15 @@ TOC_entry_template = """\
             <td><A href="%(archive)s.txt">[ Text ]</a></td>
             </tr>
 
-"""
-arch_listing_start = """\
+'''
+arch_listing_start = '''\
 	<table border=3>
           <tr><td>Archive</td> <td>View by:</td> <td>Downloadable version</td></tr>
-"""
+'''
 
-arch_listing_end = """\
+arch_listing_end = '''\
          </table>
-"""
+'''
  
 
 class HyperArchive(pipermail.T):
@@ -479,10 +479,11 @@ class HyperArchive(pipermail.T):
         # XXX TODO- implement native locking
         # with mailman's flock module for HyperDatabase.HyperDatabase
         #
-	pipermail.T.__init__(self,
-			     maillist.archive_directory,
-			     reload=1,
-			     database=HyperDatabase.HyperDatabase(maillist.archive_directory))
+	pipermail.T.__init__(
+            self,
+            maillist.archive_dir(),
+            reload=1,
+            database=HyperDatabase.HyperDatabase(maillist.archive_dir()))
 
         if hasattr(self.maillist,'archive_volume_frequency'):
             if self.maillist.archive_volume_frequency == 0:
@@ -729,7 +730,8 @@ class HyperArchive(pipermail.T):
             archivedir=os.path.join(self.basedir, i)
             # If it's a new archive, create it
             if i not in self.archives: 
-                self.archives.append(i) ; self.update_TOC=1
+                self.archives.append(i)
+                self.update_TOC=1
                 self.database.newArchive(i)
                 # If the archive directory doesn't exist, create it
                 try: os.stat(archivedir)
