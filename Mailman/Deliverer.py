@@ -29,7 +29,7 @@ from Mailman.i18n import _
 
 class Deliverer:
     def SendSubscribeAck(self, name, password, digest):
-        pluser = self.GetPreferredLanguage(name)
+        pluser = self.getMemberLanguage(name)
         if not self.send_welcome_msg:
 	    return
 	if self.welcome_msg:
@@ -96,7 +96,7 @@ your membership administrative address, %(addr)s.'''))
                  'options_url': self.GetOptionsURL(user, absolute=1),
                  'requestaddr': requestaddr,
                  'owneraddr'  : self.GetOwnerEmail(),
-                }, lang=self.GetPreferredLanguage(user), mlist=self)
+                }, lang=self.getMemberLanguage(user), mlist=self)
         else:
             ok = 0
             recipient = self.GetAdminEmail()
@@ -105,7 +105,7 @@ your membership administrative address, %(addr)s.'''))
                 'nopass.txt',
                 {'username'     : `user`,
                  'internal_name': self.internal_name(),
-                 }, lang=self.GetPreferredLanguage(user), mlist=self)
+                 }, lang=self.getMemberLanguage(user), mlist=self)
         msg = Message.UserNotification(recipient, adminaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
