@@ -77,7 +77,7 @@ if form.has_key("unsub"):
 	try:
 	    pw = form["upw"].value
 	    if list.ConfirmUserPassword(user, pw):
-		list.DeleteMember(user)
+		list.DeleteMember(user, "handle_opts")
 	except mm_err.MMListNotReady:
 	    PrintResults("List is not functional.")
 	except mm_err.MMNoSuchUserError:
