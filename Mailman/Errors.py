@@ -47,12 +47,12 @@ MMPasswordsMustMatch = "MMPasswordsMustMatch"
 MMAlreadyDigested    = "MMAlreadyDigested"
 MMAlreadyUndigested  = "MMAlreadyUndigested"
 MMBadRequestId       = "MMBadRequestId"
+MMLoopingPost	     = "Post already went through this list!"
 
 MODERATED_LIST_MSG    = "Moderated list"
 IMPLICIT_DEST_MSG     = "Implicit destination"
 SUSPICIOUS_HEADER_MSG = "Suspicious header"
 FORBIDDEN_SENDER_MSG  = "Forbidden sender"
-LOOPING_POST	      = "Post already went through this list!"
 
 # XXX: This should be converted to templates/*.txt style
 MESSAGE_DECORATION_NOTE = """This text can include  <b>%(field)s</b> format
