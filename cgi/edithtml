@@ -6,7 +6,7 @@ import mm_utils, maillist, mm_cfg
 import htmlformat
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error", label = 'mmroster',
+    sys.stderr = mm_utils.StampedLogger("error", label = 'edithtml',
                                         manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
