@@ -61,6 +61,7 @@ class Results:
         self.ignored = []
         self.lineno = 0
         self.subjcmdretried = 0
+        self.respond = 1
         # Always process the Subject: header first
         self.commands.append(msg.get('subject', ''))
         # Find the first text/plain part
@@ -119,9 +120,12 @@ class Results:
         return handler.process(self, args)
 
     def send_response(self):
+        # Helper
         def indent(lines):
             return ['    ' + line for line in lines]
-
+        # Quick exit for some commands which don't need a response
+        if not self.respond:
+            return
         resp = [Utils.wrap(_("""\
 The results of your email command are provided below.
 Attached is your original message.
