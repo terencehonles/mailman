@@ -125,14 +125,9 @@ DEFAULT_DIGEST_IS_DEFAULT = 0
 DEFAULT_MIME_IS_DEFAULT_DIGEST = 0
 DEFAULT_DIGEST_SIZE_THRESHHOLD = 30	# KB
 DEFAULT_DIGEST_SEND_PERIODIC = 1
-# We're only retaining the text file, an external pipermail (andrew's
-# newest version) is pointed at the retained text copies.
-## # 0 = never, 1 = daily, 2 = hourly:
-## DEFAULT_ARCHIVE_UPDATE_FREQUENCY = 2
-## # 0 = yearly, 1 = monthly
-## DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 0
-## # Retain a flat text mailbox of postings as well as the fancy archives?
-## DEFAULT_ARCHIVE_RETAIN_TEXT_COPY = 1
+DEFAULT_PLAIN_DIGEST_KEEP_HEADERS = ['message', 'date', 'from',
+                                     'subject', 'to', 'cc',
+                                     'reply-to', 'organization']
 
 		    # Bounce Processing Defaults #
 
