@@ -74,6 +74,8 @@ option_info = {'digest'  : 0,
 # ordered list
 options = ('hide', 'nomail', 'ack', 'notmetoo', 'digest', 'plain')
 
+# strip just the outer layer of quotes
+quotecre = re.compile(r'["\'`](?P<cmd>.*)["\'`]')
 
 
 class MailCommandHandler:
@@ -133,6 +135,10 @@ class MailCommandHandler:
             return
 	if subject:
 	    subject = string.strip(subject)
+            # remove quotes so "help" works
+            mo = quotecre.search(subject)
+            if mo:
+                subject = mo.group('cmd')
 	if (subject and
             self.__dispatch.has_key(string.lower(string.split(subject)[0]))):
 	    lines = [subject] + string.split(msg.body, '\n')
@@ -165,6 +171,10 @@ class MailCommandHandler:
 		continue
 	    args = string.split(line)
 	    cmd = string.lower(args[0])
+            # remove quotes so "help" or `help' works
+            mo = quotecre.search(cmd)
+            if mo:
+                cmd = mo.group('cmd')
 	    args = args[1:]
 	    if cmd in ['end', '--']:
 		self.AddToResponse('\n***** End: ' + line + '\n'
