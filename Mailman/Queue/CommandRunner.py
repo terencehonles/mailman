@@ -162,8 +162,9 @@ class CommandRunner(Runner):
         # prevent replybot response storms.
         precedence = msg.get('precedence', '').lower()
         ack = msg.get('x-ack', '').lower()
-        if precedence == 'bulk' and ack <> 'yes':
-            syslog('vette', 'Precedence: bulk message discarded by: %s',
+        if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
+            syslog('vette',
+                   'Precedence: bulk/junk/list message discarded by: %s',
                    mlist.GetRequestEmail())
             return 0
         res = Results(mlist, msg, msgdata)

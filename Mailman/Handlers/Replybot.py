@@ -34,8 +34,8 @@ def process(mlist, msg, msgdata):
         return
     # "Precedence: bulk" with no "X-Ack: yes" header inhibits replybot
     precedence = msg.get('precedence', '').lower()
-    if precedence == 'bulk' and ack <> 'yes':
-        syslog('vette', 'Precedence: bulk message discarded by: %s',
+    if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
+        syslog('vette', 'Precedence: bulk/junk/list message discarded by: %s',
                mlist.GetRequestEmail())
         return
     # Check to see if the list is even configured to autorespond to this email
