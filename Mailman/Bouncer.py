@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 418 $"
+__version__ = "$Revision: 463 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -16,9 +16,8 @@ class Bouncer:
 	# Not configurable...
 	self.bounce_info = {}
 
-	
-	self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
 	# Configurable...
+	self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
 	self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
 	self.minimum_post_count_before_bounce_action = \
 		mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION
@@ -210,6 +209,7 @@ class Bouncer:
     def ScanMessage(self, msg):
 ##	realname, who_from = msg.getaddr('from')
 ##	who_info = string.lower(who_from)
+        candidates = []
 	who_info = string.lower(msg.GetSender())
         at_index = string.find(who_info, '@')
 	who_from = who_info[:at_index]
@@ -266,18 +266,12 @@ class Bouncer:
 
 	message_groked = 0
 
-	did = []
 	for line in string.split(relevant_text, '\n'):
 	    for pattern, action in simple_bounce_pats:
 		if pattern.match(line) <> -1:
 		    email = self.ExtractBouncingAddr(line)
 		    if action == REMOVE:
-			emails = string.split(email,',')
-			for email_addr in emails:
-			    if email_addr not in did:
-				self.HandleBouncingAddress(
-				    string.strip(email_addr))
-				did.append(email_addr)
+			candidates = candidates + string.split(email,',')
 			message_groked = 1
 			continue
 		    elif action == BOUNCE:
@@ -301,26 +295,31 @@ class Bouncer:
                 or messy_pattern_4.match(line) <> -1
                 or messy_pattern_5.match(line) <> -1):
 		username = string.split(line)[1]
-		self.HandleBouncingAddress('%s@%s' % (username, remote_host))
+                candidates.append('%s@%s' % (username, remote_host))
 		message_groked = 1
 		continue
 	    if messy_pattern_6.match(line) <> -1:
 		username = string.split(string.strip(line))[0][:-1]
-		self.HandleBouncingAddress('%s@%s' % (username, remote_host))
+                candidates.append('%s@%s' % (username, remote_host))
 		message_groked = 1
 		continue
 	    if messy_pattern_7.match(line) <> -1:
 		username = string.split(string.strip(line))[0]
-		self.HandleBouncingAddress('%s@%s' % (username, remote_host))
+                candidates.append('%s@%s' % (username, remote_host))
 		message_groked = 1
 		continue
 
+        did = []
+        for i in candidates:
+            if i not in did:
+                self.HandleBouncingAddress(i)
+                did.append(i)
 	return message_groked
 
     def ExtractBouncingAddr(self, line):
 	# First try with angles:
 	email = regsub.splitx(line, '[^ \t@<>]+@[^ \t@<>]+\.[^ \t<>.]+')[1]
 	if email[0] == '<':
-	    return email[1:-1]
+	    return regsub.splitx(email[1:], ">")[0]
 	else:
 	    return email
