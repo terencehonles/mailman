@@ -384,6 +384,22 @@ class General(GUIBase):
                  this is not recommended (and in fact, your ability to disable
                  these headers may eventually go away)."""))
                 )
+        # Suppression of List-Post: headers
+        rtn.append(
+            ('include_list_post_header', mm_cfg.Radio,
+             (_('No'), _('Yes')), 0,
+             _('Should postings include the <tt>List-Post:</tt> header?'),
+             _("""The <tt>List-Post:</tt> header is one of the headers
+             recommended by
+             <a href="http://www.faqs.org/rfc/rfc2369.html">RFC 2369</a>.
+             However for some <em>announce-only</em> mailing lists, only a
+             very select group of people are allowed to post to the list; the
+             general membership is usually not allowed to post.  For lists of
+             this nature, the <tt>List-Post:</tt> header is misleading.
+             Select <em>No</em> to disable the inclusion of this header. (This
+             does not affect the inclusion of the other <tt>List-*:</tt>
+             headers.)"""))
+            )
 
         return rtn
 
