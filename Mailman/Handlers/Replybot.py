@@ -32,7 +32,12 @@ def process(mlist, msg, msgdata):
     ack = msg.get('x-ack', '').lower()
     if ack == 'no' or msgdata.get('noack'):
         return
-    #
+    # "Precedence: bulk" with no "X-Ack: yes" header inhibits replybot
+    precedence = msg.get('precedence', '').lower()
+    if precedence == 'bulk' and ack <> 'yes':
+        syslog('vette', 'Precedence: bulk message discarded by: %s',
+               mlist.GetRequestEmail())
+        return
     # Check to see if the list is even configured to autorespond to this email
     # message.  Note: the mailowner script sets the `toadmin' or `toowner' key
     # (which for replybot purposes are equivalent), and the mailcmd script
