@@ -315,6 +315,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # New sender-centric moderation (privacy) options
         self.default_member_moderation = \
                                        mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+        # Emergency moderation bit
+        self.emergency = 0
         # This really ought to default to mm_cfg.HOLD, but that doesn't work
         # with the current GUI description model.  So, 0==Hold, 1==Reject,
         # 2==Discard
