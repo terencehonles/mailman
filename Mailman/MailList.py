@@ -306,7 +306,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# Must save this state, even though it isn't configurable
 	self.volume = 1
 	self.members = {} # self.digest_members is initted in mm_digest
-	self.data_version = mm_cfg.VERSION
+	self.data_version = mm_cfg.DATA_FILE_VERSION
 	self.last_post_time = 0
 	
 	self.post_id = 1.  # A float so it never has a chance to overflow.
@@ -933,7 +933,8 @@ it will not be changed."""),
             from versions import Update
             Update(self, stored_state)
 	    self.data_version = mm_cfg.DATA_FILE_VERSION
-	self.Save()
+        if self.Locked():
+            self.Save()
 
     def CheckValues(self):
 	"""Normalize selected values to known formats."""
