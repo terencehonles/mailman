@@ -1,0 +1,27 @@
+<html>
+<head>
+  <title>%(listname)s Adminisztrátor Azonosítás</title>
+</head>
+<body bgcolor="#ffffff">
+<FORM METHOD=POST ACTION="%(path)s">
+%(message)s
+  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+    <TR>
+      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+	<B><FONT COLOR="#000000" SIZE="+1">%(listname)s Adminisztrátor Azonosítás</FONT></B>
+      </TD>
+    </TR>
+    <tr>
+      <TD> <div ALIGN="Right"> Lista Adminisztrátori Jelszava: </div> </TD>
+      <TD> <INPUT TYPE=password NAME=adminpw SIZE=30></TD>
+    </tr>
+    <tr>
+      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name="request_login"
+						     value="Belépés...">
+      </td>
+    </tr>
+  </TABLE>
+      <p><strong><em>Fontos:</em></strong> Ettõl az oldaltól engedélyezned kell a cookie-k fogadását a böngészõdben, különben semmilyen adminisztrátori változtatás nem fog végrehajtódni.
+
+      <p>Mailman folyamatos azonosításhoz az adminisztrációs müveleteknél cookie-t használ. A cookie a böngészõ bezárásával, illetve a <em>Other Administrative Activites</em> pontban a <em>Logout</em>-ra kattintva érvényét veszti.
+</FORM>
