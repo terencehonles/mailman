@@ -142,7 +142,7 @@ class Message(rfc822.Message):
         """
         # Calculate a unique name for the queue file
         text = repr(self)
-        hashfood = text + mlist.internal_name() + `time.time()`
+        hashfood = text + mlist.internal_name()
         filebase = sha.new(hashfood).hexdigest()
         msgfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.msg')
         dbfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.db')
