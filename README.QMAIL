@@ -16,7 +16,7 @@ There are some issues that users of the qmail mail transport agent
 have encountered.  None of the core maintainers use qmail, so all of
 this information has been contributed by the Mailman user community,
 especially Martin Preishuber and Christian Tismer, with notes by
-Balazs Nagy (BN).
+Balazs Nagy (BN) and Norbert Bollow (NB).
 
 - You might need to set the mail-gid user to either "qmail", "mailman", or
   "nofiles" by using the --with-mail-gid configure option.
@@ -36,6 +36,10 @@ Balazs Nagy (BN).
   `mailman-owner' will work only in ~mailman.  You have to do a "touch
   .qmail-owner" in ~mailman directory to create this alias.
 
+  NB: An alternative, IMHO better solution is to `chown root
+  ~mailman', that will stop qmail from considering `mailman' to be a
+  user to whom mail can be delivered.  (See `man 8 qmail-getpw'.)
+
 - In a related issue, if you have any users with the same name as one
   of your mailing lists, you will have problems if list names contain
   `-' in them.  Putting .qmail redirections into the user's home
@@ -48,6 +52,10 @@ Balazs Nagy (BN).
 
   where in this case the listname is e.g. zope-users.
 
+  NB: Alternatively, you could host the lists on a virtual domain, and
+  use the /var/qmail/control/virtualdomains file to put the mailman
+  user in charge of this virtual domain.
+
 - BN: If inbound messages are delivered by another user than mailman,
   it's necessary to allow it to access ~mailman.  Be sure that
   ~mailman has group writing access and setgid bit is set.  Then put
@@ -56,13 +64,13 @@ Balazs Nagy (BN).
   service.
 
   By the way the best thing is to make a virtual mail server to handle
-  all of the mail.  Eg. make a CNAME record for the virtual mailserver
-  (like `lists.kva.hu', thus a `mail.kva.hu IN CNAME lists.kva.hu')
-  into the name service, add the line `lists.kva.hu:mailman' to
-  /var/qmail/control/virtualdomains and a `lists.kva.hu' line to
-  /var/qmail/control/rcpthosts file.  Don't forget to HUP the qmail-send
-  after modifying "virtualdomains".  Then every mail to lists.kva.hu
-  will arrive to mail.kva.hu's mailman user.
+  all of the mail.  NB: E.g. make an additional "A" DNS record for the
+  virtual mailserver pointing to your IP address, add the line
+  `lists.kva.hu:mailman' to /var/qmail/control/virtualdomains and a
+  `lists.kva.hu' line to /var/qmail/control/rcpthosts file.  Don't
+  forget to HUP the qmail-send after modifying "virtualdomains".  Then
+  every mail to lists.kva.hu will arrive to mail.kva.hu's mailman
+  user.
 
   Then make your aliases:
       .qmail              => mailman@...'s letters
