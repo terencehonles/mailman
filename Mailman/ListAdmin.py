@@ -106,7 +106,7 @@ class ListAdmin:
 		    return
 	raise Errors.MMBadRequestId
 
-    def RequestsPending(self):
+    def NumRequestsPending(self):
 	self.CleanRequests()
 	total = 0
 	for (k,v) in self.requests.items():
