@@ -1,151 +1,250 @@
-<!-- $Revision: 3450 $ -->
+<!-- $Revision: 3569 $ -->
 <html>
 <head>
-<title><MM-Presentable-User> Configuraci&oacute;n de la lista  <MM-List-Name></title>
-
+    <title><MM-Presentable-User> membership configuration for <MM-List-Name>
+    </title>
 </head>
 <BODY BGCOLOR="#ffffff">
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
-	<TR><TD WIDTH="100%" BGCOLOR="#99CCFF"><B>
-	<FONT COLOR="#000000" SIZE=+1>
-<MM-List-Name> Configuraci&oacute;n del usuario <MM-Presentable-User>
-	</FONT></B></TD></TR> </TABLE>
+    <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#99CCFF"><B>
+        <FONT COLOR="#000000" SIZE=+1>
+        <MM-List-Name> Configuraci&oacute;n del usuario 
+        <MM-Presentable-User>
+	</FONT></B></TD></TR>
+    </TABLE>
 <MM-Form-Start>
+<p>
+<table width="100%" border="0" cellspacing="5" cellpadding="5">
+    <tr><td>
+        Opciones de subscripci&oacute;n  de <b><MM-Presentable-User></b>
+        en la lista de distribuci&oacute;n <MM-List-Name>.
+        <MM-Case-Preserved-User>
+
+        <MM-Disabled-Notice>
+
+        <p><mm-results>
+
+        </td>
+
+        <td><mm-logout-button></td>
+    </tr>
+</table>
 
 <p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
+        <FONT COLOR="#000000">
+        <B>Para cambiar la direcci&oacute;n de correo con la que est&aacute; subscrito a <MM-List-Name></B>
+	</FONT></TD></TR>
+    <tr><td width="50%"> Puede cambiar la direcci&oacute;n con la que
+        est&aacute; subscrito a la lista de distribuci&oacute;n,
+        introduciendo una direcci&oacute;n nueva en el campo que aparece
+        m&aacute;s abajo. Se le mandar&aacute; un mensaje de confirmaci&oacute;n
+        a la direcci&oacute;n que especifique, ya que los cambios no se
+        ser&aacute;n efectivos hasta que lo confirme.
 
-Estado de la subscripci&oacute;n de <b> <MM-Presentable-User></b>, 
-clave, y opciones para la lista de distribuci&oacute;n <MM-List-Name>.
+        <p>Las confirmaciones caducan despu&eacute;s de <mm-pending-days>.
 
-<MM-Disabled-Notice>
+        <p>Si quiere cambiar la direcci&oacute;n de subscripci&oacute;n de
+        todas las listas a las que est&aacute; subscrito en <mm-host>,
+        habilite la casilla de verificaci&oacute;n <em>Aplicar globalmente</em>.
+    </td><td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="70%" cols="2">
+        <tr><td bgcolor="#dddddd"><div align="right">Direcci&oacute;n nueva:</div></td>
+            <td><mm-new-address-box></td>
+            </tr>
+        <tr><td bgcolor="#dddddd"><div align="right">De nuevo para confirmar:</div></td> 
+            <td><mm-confirm-address-box></td>
+            </tr>
+        <tr><td colspan="2"><center><mm-change-address-button>
+            <p><mm-global-change-of-address>Aplicar globalmente
+            </center></td>
+        </tr></table></center>
+    </td>
+</table>
 
 <p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="5">
+    <TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Para anular la subscripci&oacute;n de <MM-List-Name></B></td>
 
-<a name=unsub>
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="5">
-	<TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<B>Anular la subscripci&oacute;n de <MM-List-Name></B>
-        <TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<B>Todas las subscripciones que tiene en <MM-Host></B>
+	<TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>El resto de las subscripciones que tiene en <MM-Host></B>
 	</FONT></TD></TR>
 
-	<tr>
-	 <td>
+    <tr><td>
+        Selecciones la casilla de confirmaci&oacute;n y pulse este bot&oacute;n
+        para anular la subscripci&oacute;n de esta lista de distribuci&oacute;n.
+        <strong>Advertencia:</strong>
+        Esta acci&oacute;n tendr&aacute; efecto inmediato!
+        <p>
+        <center><MM-Unsubscribe-Button></center></td>
+    <td>
+        Puede ver una informe del resto de las listas de distribuci&oacute;n de
+        <mm-host> en las que est&aacute; subscrito. Utilice esta parte, si
+        quiere aplicar cambios globales al resto de sus subscripciones
 
-Para anular su subscripci&oacute;n, introduzca su clave y pulse luego el bot&oacute;n. Si ha perdido su clave, vea un poco <a href=#mailpass>m&aacute;s abajo</a> como hacer que se le env&iacute;e por correo electr&oacute;nico.
-
-<p>
-clave: <MM-Unsub-Pw-Box> &nbsp;
-<MM-Unsubscribe-Button>
-</a>
-	</td> <td>
-Introduzca su clave para ver una lista de enlaces a las p&aacute;ginas de opciones
-de todas las listas a las que est&aacute; subscrito.
-
-<p>
-Clave: <MM-Other-Subscriptions-Pw-Box>  <MM-Other-Subscriptions-Submit><p>
-
-	</TD></TR> </table>
-
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
-	<TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<a name=mailpass><B>Su clave para <MM-List-Name> </B>
-	</FONT></TD>
-</TR>
-<tr valign="TOP">
-<td WIDTH="50%">
-<a name=reminder>
-<center>
-<h3>&iquest;Ha olvidado su clave?</h3>
-</center>
-Pulse este bot&oacute;n para hacer que se le env&iacute;e por correo electr&oacute;nico a la direcci&oacute;n con la que est&aacute; subscrito.
-<p>
-<MM-Umbrella-Notice>
-<center>
-<MM-Email-My-Pw>
-</center>
-</td>
-<td WIDTH="50%">
-<a name=changepw>
-<center>
-<h3>Cambio de clave</h3>
-      <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="1" WIDTH="70%" COLS=2>
-      <TR>
-	<TD WIDTH="50%" BGCOLOR="#dddddd"> Clave antigua:</TD>
-	<TD WIDTH="50%"><MM-Old-Pw-Box></TD>
-      </TR>
-      <TR>
-	<TD BGCOLOR="#dddddd">Clave nueva:</TD>
-	<TD><MM-New-Pass-Box></TD>
-      </TR>
-      <TR> 
-	<TD BGCOLOR="#dddddd">Verificaci&oacute;n:</TD>
-	<TD><MM-Confirm-Pass-Box></TD>
-      </TR>
+        <p>
+        <center><MM-Other-Subscriptions-Submit></center>
+	</TD></TR>
 </table>
-           <MM-Change-Pass-Button>
-    </TABLE>
+
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Su clave para <MM-List-Name></B>
+	</FONT></TD></TR>
+
+    <tr valign="TOP"><td WIDTH="50%">
+        <a name=reminder>
+        <center>
+        <h3>&iquest;Ha olvidado su clave?</h3>
+        </center>
+        Pulse este bot&oacute;n para hacer que se le env&iacute;e por correo
+        electr&oacute;nico a la direcci&oacute;nn con la que est&aacute;
+        subscrito.
+        <p><MM-Umbrella-Notice>
+        <center>
+        <MM-Email-My-Pw>
+        </center>
+        </td>
+
+    <td WIDTH="50%">
+        <a name=changepw>
+        <center>
+        <h3>Para cambiar su clave</h3>
+        <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2" WIDTH="70%" COLS=2>
+            <TR><TD BGCOLOR="#dddddd"><div align="right">Clave
+                nueva:</div></TD>
+                <TD><MM-New-Pass-Box></TD>
+                </TR>
+            <TR>
+                <TD BGCOLOR="#dddddd"><div align="right">De nuevo para
+                confirmar:</div></TD>
+                <TD><MM-Confirm-Pass-Box></TD>
+            </TR>
+        </table>
+
+        <MM-Change-Pass-Button>
+        <p><center><mm-global-pw-changes-button>Cambiar mi clave de
+        subscripci&oacute;n en todas las listas de <mm-host>
+        en las que estoy subscrito.
+        </center>
+</TABLE>
 
 <p>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+    <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <B>Sus opciones de subscripci&oacuten para la lista <MM-List-Name></B>
+	</FONT></TD></TR>
+</table>
 
-<a name=options>
-	<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
-	<TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
-<B>Sus opciones de subscripci&oacute;n para la lista <MM-List-Name></B>
-	</FONT></TD></TR> </table>
 <p>
-<i><strong>Los valores actuales se han comprobado.</strong></i><p>
-<p>
-<TABLE BORDER="0" CELLSPACING="2" CELLPADDING="3" WIDTH="100%">
-<tr><TD BGCOLOR="#dcdcdc">
-<a name="disable">
-<strong> Inhabilitar la recepci&oacute;n de correo </strong> <br>
-Active  esta opci&oacute;n  si no desea recibir correo durante un periodo de tiempo.<br>
-<mm-delivery-enable-button> Desactivar
-<mm-delivery-disable-button> Activar <p>
-</a>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> Activar modo resumen (Digest Mode)</strong> <br>
-Si habilita este modo, recibir&aacute; diariamente todos los mensajes enviados a la lista recopilados en un &uacute;nico mensaje, en lugar de recibirlos a medida que se env&iacute;an.<br>
+<i><strong>Los valores actuales se han comprobado.</strong></i>
 
-<MM-Undigest-Radio-Button> Desactivar
-<MM-Digest-Radio-Button> Activar <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong>&iquest;Recibir resumenes en texto plano o con codificaci&oacute;n MIME?</strong> <br>
-Si tiene problemas para recibir resumenes codificados en MIME, seleccione texto plano. <br>
-<MM-Mime-Digests-Button> MIME
-<MM-Plain-Digests-Button> Texto plano <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> &iquest;Quiere recibir el correo que usted env&iacute;e a la lista? </strong><br>
-<mm-dont-receive-own-mail-button> No
-<mm-receive-own-mail-button> S&iacute; <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> &iquest;Quiere recibir una confirmaci&oacute;n cuando env&iacute;e correo a la lista? </strong><br>
-<mm-dont-ack-posts-button> No
-<mm-ack-posts-button> S&iacute; <p>
-</td></tr>
-<tr><td bgcolor="#dcdcdc">
-<strong> Get password reminder email for this list? </strong><br>
-<mm-dont-get-password-reminder-button> No
-<mm-get-password-reminder-button> S&iacute; <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> &iquest;Quiere ocultarse de la lista de subscriptores? </strong> 
-<br>
-<MM-Public-Subscription-Button> No
-<MM-Hide-Subscription-Button> S&iacute; <p>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-<strong> &iquest;En que idioma deseas ver los mensajes de la lista?</strong><MM-list-langs>
-</td></tr>
-<tr><TD BGCOLOR="#dcdcdc">
-clave: <MM-Digest-Pw-Box>  <MM-Digest-Submit><p>
-</td></tr></table>
+<p>Observe que alguna de las opciones tienen una casilla seleccionable
+<em>Aplicar globalmente</em>.
+Activando este campo, causar&aacute; que los cambios se apliquen a cada una
+de las listas de distribuci&oacute;n de <mm-host> en las que est&aacute;
+subscrito. Dele con el rat&oacute;n a <em>Listar el resto de mis subscripciones</em>
+ m&aacute;s arriba para ver en que otras listas est&aacute; subscrito.
+
+<p>
+<TABLE BORDER="0" CELLSPACING="3" CELLPADDING="4" WIDTH="100%">
+    <tr><TD BGCOLOR="#cccccc">
+        <a name="disable">
+        <strong>Entrega de correo</strong></a><p>
+        Si selecciona <em>Habilitada</em> recibir&aacute; los mensajes que se
+        env&iacute;en a esta lista de distribuci&oacute;n. Si selecciona
+        <em>Inhabilitada</em> indica su deseo de no recibir el correo enviado
+        a la lista de distribuci&oacute;n durante un tiempo (por ejemplo, se va
+        de vacaciones). Si inhabilita la recepci&oacute;n de los mensajes de
+        correo, no olvide volver a habilitar la recepci&oacute;n cuando proceda.
+        </td><td bgcolor="#cccccc">
+        <mm-delivery-enable-button>Habilitado<br>
+        <mm-delivery-disable-button>Inhabilitado<p>
+        <mm-global-deliver-button><i>Aplicar globalmente</i>
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>Activar modo Digest</strong><p>
+        Si habilita el modo digest, recibir&aacute; diariamente los mensajes
+        enviados a la lista recopilados en un &uacute;nico mensaje,
+        en lugar de recibirlos a medida que se env&iacute;n. Si cambia el modo
+        digest de Activar a Desactivar, puede que reciba un &uacute;ltimo
+        digest.
+        </td><td bgcolor="#cccccc">
+        <MM-Undigest-Radio-Button>Desativar<br>
+        <MM-Digest-Radio-Button>Activar
+        </td></tr>
+        
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>&iquest;Recibir los recopilatorios en texto plano
+        o con codificación MIME?</strong><p>
+        Su lector de correo puede que no soporte recopilaciones (digests) MIME.
+        En general se prefieren las recopilaciones MIME, pero si tiene problemas
+        a la hora de leerlas, seleccione las recopilaciones en texto plano.
+        </td><td bgcolor="#cccccc">
+        <MM-Mime-Digests-Button>MIME<br>
+        <MM-Plain-Digests-Button>Texto plano
+        </td></tr>
+        
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>&iquest;Quiere recibir los mensajes que usted mismo 
+        env&iacute;e a esta lista?</strong><p>
+        Normalmente, recibir&aacute; una copia de cada mensaje que env&iacute;
+        a la lista. Si no quiere recibir dicha copia, ponga esta opci&oacute;n a
+        <em>No</em>.
+        </td><td bgcolor="#cccccc">
+        <mm-dont-receive-own-mail-button>No<br>
+        <mm-receive-own-mail-button>Yes
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>&iquest;Quiere recibir una confirmación cuando envíe correo
+        a esta lista?</strong><p>
+        </td><td bgcolor="#cccccc">
+        <mm-dont-ack-posts-button>No<br>
+        <mm-ack-posts-button>Si
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>&iquest;Quiere recibir los recordatorios de esta lista?</strong><p>
+        Mensualmente, recibir&aacute; un mensaje de correo con la clave de
+        cada una de las listas en la que est&aacute; subscrito. Puede
+        inhabilitar este comportamiento por lista, con solo seleccionar
+        <em>No</em> en esta opci&oacute;n. Si decide inhabilitar el recordatorio
+        de las claves en todas las listas a las que est&aacute; subscrito, no
+        se le mandar&aacute; ning&uacute;n mensaje.
+        </td><td bgcolor="#cccccc">
+        <mm-dont-get-password-reminder-button>No<br>
+        <mm-get-password-reminder-button>Si<p>
+        <mm-global-remind-button><i>Aplicar globalmente</i>
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>&iquest;Quiere ocultarse de la lista de subscriptores?</strong><p>
+        Cuando alguien vea la lista de subscriptores, normalmente su
+        direcci&oacute;n de correo electr&oacute;nico saldr&aacute; listada 
+        (de una forma obscura para frustrar los escaneadores spam). Si no
+        quiere que su direcci&oacute;n salga a relucir, seleccione <em>No</em>.
+        </td><td bgcolor="#cccccc">
+        <MM-Public-Subscription-Button>No<br>
+        <MM-Hide-Subscription-Button>Si
+        </td></tr>
+
+    <tr><TD BGCOLOR="#cccccc">
+        <strong>&iquest;En que idioma deseas ver los mensajes de la lista?</strong><p>
+        </td><td bgcolor="#cccccc">
+        <MM-list-langs>
+        </td></tr>
+
+    <tr><TD colspan="2">
+        <center><MM-options-Submit-button></center>
+        </td></tr>
+
+</table>
 </center>
+<p>
 <MM-Form-End>
 
 <MM-Mailman-Footer>
