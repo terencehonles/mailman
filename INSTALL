@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.
+Copyright (C) 1998-2003 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 This file contains installation instructions for GNU Mailman, which is
@@ -65,8 +65,8 @@ upgrade.
       security is based on group-ownership permissions, so it is
       important to get this step right.  If groupname `mailman' is
       already in use, choose something else unique and see the
-      --with-groupname below. The mailman user created in the previous
-      step must be a member of this group.
+      --with-groupname below.  The mailman user created in the
+      previous step must be a member of this group.
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
