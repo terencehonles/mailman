@@ -419,6 +419,15 @@ LIST_LOCK_TIMEOUT = seconds(10)
 # qrunners run at the same time.
 QRUNNER_LOCK_LIFETIME = hours(10)
 
+# Two other qrunner resource management variables.  The first controls the
+# maximum lifetime of any single qrunner process, and the second controls the
+# maximum number of messages a single qrunner process will, er, process.
+# Exceeding either limit causes qrunner to exit, reclaiming system resources
+# and deleting the lock.  Other qrunners will then process the remaining
+# messages.  Set either to None to inhibit this resource check.
+QRUNNER_PROCESS_LIFETIME = hours(1)
+QRUNNER_MAX_MESSAGES = 300
+
 
 
 #####
