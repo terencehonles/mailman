@@ -41,8 +41,6 @@ class HTMLFormatter:
 	def NotHidden(x, s=self, v=mm_cfg.ConcealSubscription):
 	    return not s.GetUserOption(x, v)
 
-	if self.private_roster:
-	    return 'Sorry, not available over the web.'
 	if digest:
 	    people = filter(NotHidden, self.digest_members)
 	    num_concealed = len(self.digest_members) - len(people)
@@ -150,6 +148,70 @@ class HTMLFormatter:
 	else:
 	    checked = ' CHECKED'
 	return '<input type=radio name="plain" value="1"%s>' % checked
+
+    def FormatEditingOption(self):
+        "Present editing options, according to list privacy."
+
+        text = ("<b>%s subscribers</b>, to edit your subscription options"
+                % self.real_name)
+        text = text + " %senter your email address: "
+
+        if self.private_roster == 0:
+            text = text % "<b><i>either</i></b> "
+        else:
+            text = text % ""
+        text = (text
+                + "<ul>"
+                + htmlformat.TextBox('info', size=40).Format()
+                + "  "
+                + htmlformat.SubmitButton('UserOptions',
+                                          'Edit Options').Format()
+                + "</ul>")
+        if self.private_roster == 0:
+            text = text + ("<p><b><i>or</i></b> visit the subscribers list"
+                           ' (<a href="#subscribers">above</a>) and select'
+                           " your entry.")
+        return text
+        
+    def FormatRosterOptionForAdmin(self):
+        return "Admin subscriber roster would require admin password."
+    def FormatRosterOptionForUser(self):
+        "Provide avenue to subscribers roster, contingent to .private_roster."
+        text = ""
+        if not self.private_roster:
+            text = (text +
+                    "Click here for the roster of "
+                    + self.real_name
+                    + " subscribers: "
+                    + htmlformat.SubmitButton('SubscriberRoster',
+                                              'Visit Subscriber list'
+                                              ).Format())
+        else:
+            if self.private_roster == 1:
+                only = 'members'
+                whom = 'Member:'
+            else:
+                only = 'the list administrator'
+                whom = 'Admin:'
+            # Solicit the user and password.
+            text = (text +
+                    ("The subscriber roster is only available to %s.<br>Enter"
+                     % only)
+                    + (" your %s address and password to visit the"
+                       % string.lower(whom[:-1]))
+                    + " subscriber's roster:"
+                    " <br><ul> "
+                    + whom
+                    + " "
+                    + self.FormatBox('roster-email')
+                    + " Password: "
+                    + self.FormatSecureBox('roster-pw')
+                    + "<br>"
+                    + htmlformat.SubmitButton('SubscriberRoster',
+                                              'Visit Subscriber List'
+                                              ).Format()
+                    + "</ul>")
+        return text
 
     def FormatFormStart(self, name, extra=''):
 	base_url = self.GetScriptURL(name)
