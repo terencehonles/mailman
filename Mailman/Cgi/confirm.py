@@ -253,10 +253,15 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
                 setformpasswd = 1
                 pw = cgipasswd
             lang = cgidata.getvalue('language')
+            if cgidata.has_key('digests'):
+                try:
+                    digest = int(cgidata.getvalue('digests'))
+                except ValueError:
+                    digest = None
+            else:
+                digest = None
             userdesc = UserDesc(fullname=cgidata.getvalue('realname', None),
-                                password=pw,
-                                digest=cgidata.getvalue('digests', None),
-                                lang=lang)
+                                password=pw, digest=digest, lang=lang)
             op, addr, pw, digest, lang = mlist.ProcessConfirmation(
                 cookie, userdesc)
         except Errors.MMNeedApproval:
