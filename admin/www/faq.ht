@@ -27,6 +27,26 @@ Title: Mailman Frequently Asked Questions
    end-users.  Mailman is compliant with RFC 2369, which is where
    these headers are defined.  See the file README.USERAGENT for hints
    on what to tell your end users.
+<p> <b> Q. Can I put the user's address in the footer that Mailman adds to
+   each message?
+
+</b><br> A. No.  The reason is that, for efficiency, Mailman batches together
+   message delivery for many users at once.  Putting the user's
+   address in the footer would require Mailman to craft a unique
+   message for each recipient, and this would likely unacceptably bog
+   down your system.
+<p>    Some MTAs may provide may provide the ability to accomplish this,
+   using a technique akin to VERP (variable envelope return path).
+   You'll need to investigate the configuration options of your MTA
+   for details.
+<p> <b> Q. My users hate HTML in their email and for security reasons, I want
+   to strip out all MIME attachments.  How can I do this?
+
+</b><br> A. Mailman 2.1 will probably have this feature built-in, but for now
+   you can use add-on tools such as demime or stripmime.  More
+   information on these tools can be found at:
+<p>    (Stripmime) <a href="http://www.phred.org/~alex/stripmime.html.">http://www.phred.org/~alex/stripmime.html.</a>
+   (Demime)    <a href="http://scifi.squawk.com/demime.html.">http://scifi.squawk.com/demime.html.</a>
 <p> <b> Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
