@@ -2,6 +2,7 @@ MODERATED_LIST_MSG	= "Moderated list."
 
 MMUnknownListError   = "MMUnknownListError"
 MMBadListError       = "MMBadListError"
+MMBadUserError       = "MMBadUserError"
 MMBadConfigError     = "MMBadConfigError"
 
 MMBadEmailError      = "MMBadEmailError"
