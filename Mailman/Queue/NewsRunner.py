@@ -16,8 +16,6 @@
 
 """NNTP queue runner."""
 
-import os
-import time
 import re
 import socket
 import nntplib
@@ -28,12 +26,22 @@ from mimelib.address import getaddresses
 COMMASPACE = ', '
 
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.Queue.Runner import Runner
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
-# Matches our Mailman crafted Message-IDs
-mcre = re.compile(r'<mailman.\d+.\d+.(?P<listname>[^@]+)@(?P<hostname>[^>]+)>')
+# Matches our Mailman crafted Message-IDs.  See Utils.unique_message_id()
+mcre = re.compile(r"""
+    <mailman.                                     # match the prefix
+    \d+.                                          # serial number
+    \d+.                                          # time in seconds since epoch
+    \d+.                                          # pid
+    (?P<listname>[^@]+)                           # list's internal_name()
+    @                                             # localpart@dom.ain
+    (?P<hostname>[^>]+)                           # list's host_name
+    >                                             # trailer
+    """, re.VERBOSE)
 
 
 
@@ -111,8 +119,7 @@ def prepare_message(mlist, msg, msgdata):
                 hackmsgid = 0
     if hackmsgid:
         del msg['message-id']
-        msg['Message-ID'] = '<mailman.%d.%d.%s@%s>' % (
-            time.time(), os.getpid(), mlist.internal_name(), mlist.host_name)
+        msg['Message-ID'] = Utils.unique_message_id(mlist)
     #
     # Lines: is useful
     if msg['Lines'] is None:
