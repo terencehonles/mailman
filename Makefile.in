@@ -140,6 +140,7 @@ distclean: $(SUBDIRS)
 	    (cd $$d; $(MAKE) distclean); \
 	done
 	-rm -f config.cache config.log config.status Makefile
+	-rm -rf build
 
 langpack:
 	tar zcvf langpack-$(DATE).tgz $(EXCLUDES) $(LANGPACK)
