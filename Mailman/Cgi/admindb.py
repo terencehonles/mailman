@@ -186,7 +186,7 @@ def PrintAddMemberRequest(mlist, id, table):
     time, addr, passwd, digest = mlist.GetRecord(id)
     table.AddRow([addr,
                   RadioButtonArray(id, ('Subscribe', 'Refuse'),
-                                   values=(mm_cfg.APPROVE, mm_cfg.REJECT)),
+                                   values=(mm_cfg.SUBSCRIBE, mm_cfg.REJECT)),
                   TextBox('comment-%d' % id, size=60)
                   ])
 
