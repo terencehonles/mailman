@@ -68,17 +68,26 @@ class SecurityManager:
 	return 1
 
     def ConfirmUserPassword(self, user, pw):
-	if self.ValidAdminPassword(pw):
-	    return 1
-	if not self.members.has_key(user) \
-           and not self.digest_members.has_key(user):
-	    user = self.FindUser(user)
+        """True if password is valid for site, list admin, or specific user."""
+        if self.ValidAdminPassword(pw):
+            return 1
+        # We need to obtain the right letter-case translated version, if any:
+        got = self.members.get(string.lower(user), None)
+        if got == None:
+            got = self.digest_members.get(string.lower(user), None)
+        if got == 0:                    # Found, and case translation unneeded:
+            normalized = user
+        elif got == None:               # Not found in either members dict:
+            normalized = self.FindUser(user)
+        else:                           # Found, use case translation version:
+            normalized = got
         try:
-            if string.lower(pw) <> string.lower(self.passwords[user]):
+            # XXX  Huh??  Why eliminate password case info??  klm # 11/23/98.
+            if (string.lower(pw) <> string.lower(self.passwords[normalized])):
                 raise Errors.MMBadPasswordError
         except KeyError:
             raise Errors.MMBadUserError
-	return 1
+        return 1
 
     def ChangeUserPassword(self, user, newpw, confirm):
 	self.IsListInitialized()
