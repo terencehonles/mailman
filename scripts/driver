@@ -1,0 +1,147 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 1998 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+
+
+# This standard driver script is used to run CGI programs, wrapped in code
+# that catches errors, and displays them as HTML.  This guarantees that
+# (almost) any problems in the Mailman software doesn't result in a Web server
+# error.  It is much more helpful to generate and show a traceback, which the
+# user could send to the administrator, than to display a server error and
+# have to trudge through server logs.
+
+# Note: this isn't 100% perfect!  Here are some things that can go wrong that
+# are not caught and reported as traceback-containing HTML:
+#
+# - This file could contain a syntax error.  In that case, you would indeed
+#   get a Web server error since this file wouldn't even compile, and there's
+#   no way to catch that.
+#
+# - The sys module could be royally screwed.  Either we couldn't import it, or 
+#   it didn't have a sys.stderr attribute.  Both those would indicate serious
+#   problems in the Python installation.  These won't generate Web server
+#   errors, but neither will they give meaningful tracebacks.
+#
+# - We couldn't import the traceback module, or traceback.print_exc()
+#   failed.  Same diagnosis and effect as with sys being broken.
+#
+# I consider all these pretty unlikely.  Note that it is also possible that
+# the environment variables wouldn't be printed, perhaps because os couldn't
+# be imported or there was some problem with os.environ.  Again, not likely.
+
+
+
+def run_main():
+    try:
+        # insert the relative path to the parent of the Mailman package
+        # directory, so we can pick up the Utils module
+        import os
+        sys.path.insert(0, os.pardir)
+        # map stderr to a logger, if possible
+        import Mailman.Utils
+        try:
+            sys.stderr = Utils.StampedLogger('error', label='admin',
+                                             manual_reprime=1,
+                                             nofail=0)
+        except:
+            # semi-bogus bare except means that if any problems in creating
+            # the logger occur, we should just use standard stderr
+            pass
+        #
+        # The name of the module to run is passed in argv[1].  What we
+        # actually do is import the module named by argv[1] that lives in the
+        # Mailman.Cgi package.  That module must have a main() function, which
+        # we dig out and call.
+        #
+        scriptname = sys.argv[1]
+        # See the reference manual for why we have to do things this way.
+        # Note that importing should have no side-effects!
+        pkg = __import__('Mailman.Cgi', globals(), locals(), [scriptname])
+        module = getattr(pkg, scriptname)
+        main = getattr(module, 'main')
+        try:
+            main()
+        except SystemExit:
+            # this is a valid way for the function to exit
+            pass
+    except:
+        print_traceback()
+        print_environment()
+
+
+
+def print_traceback():
+    print """\
+Content-type: text/html
+
+<p><h3>We're sorry, we hit a bug!</h3>
+
+<p>If you would like to help us identify the problem, please
+email a copy of this page to the webmaster for this site with
+a description of what happened.  Thanks!
+
+<h4>Traceback:</h4>
+<p><pre>
+"""
+    try:
+        import traceback
+        traceback.print_exc(file=sys.stdout)
+    except:
+        print '[failed to get a traceback]'
+    print '\n\n</pre>'
+
+
+
+def print_environment():
+    try:
+        import os
+        print '''\
+<p><hr><h4>Environment variables:</h4>
+
+<p><table>
+<tr><td><strong>Variable</strong></td>
+<td><strong>Value</strong></td></tr>
+'''
+        for varname, value in os.environ.items():
+            print '<tr><td>', varname, '</td><td>', value, '</td></tr>'
+        print '</table>'
+    except:
+        print '<p><hr>[environment variables are not available]'
+
+
+try:
+    import sys
+    # cache so we can undo this, even though it's probably not strictly
+    # necessary since the script is exiting soon anyway
+    stderr = sys.stderr
+    try:
+        run_main()
+    finally:
+        sys.stderr = stderr
+except:
+    # Jeez, we couldn't even import sys, or sys didn't have a stderr
+    # attribute!
+    print """\
+Content-type: text/html
+
+<p><h3>We're sorry, we hit a bug!</h3>
+
+Mailman experienced a very low level failure and could not even generate
+a useful traceback.  Please report this to the Mailman administrator at
+this site.
+"""
