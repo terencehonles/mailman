@@ -48,6 +48,7 @@ import paths
 import nntplib
 import errno
 import traceback
+import socket
 
 from Mailman import MailList
 from Mailman import mm_cfg
@@ -70,7 +71,6 @@ LogStdErr('fromusenet', 'gate_news')
 
 
 def main():
-    sys.stderr.write('Begin gating, process id %d\n' % os.getpid())
     # check command line options
     names = None
     updatewatermarks = 1
@@ -116,8 +116,17 @@ def main():
         # open up a connection to the gated newsgroup.  we want to get the
         # watermark for the group in the parent process so that we can safely
         # update the gate_watermarks file.  we'll actually do the gating in a
-        # child process
-        conn = nntplib.NNTP(mlist.nntp_host)
+        # child process, so we do need to open up a new connection for each
+        # list.
+        try:
+            conn = nntplib.NNTP(mlist.nntp_host)
+        except socket.error, e:
+            # couldn't open a socket to the NNTP host.  maybe we've got too
+            # many open right now, or the server is unavailable
+            sys.stderr.write('process %d connect to nntp_host failed\n' %
+                             os.getpid())
+            sys.stderr.write(`e`)
+            break
         r,c,f,l,n = conn.group(mlist.linked_newsgroup)
         if not updatewatermarks:
             # just post the specified messages and be done with it
@@ -250,13 +259,15 @@ def poll_newsgroup(mlist, conn, first, last):
                     mlist.Lock()
                 except Locked.AlreadyLockedError:
                     pass
+                sys.stderr.write('process %d posting msgid %d to list %s\n' %
+                                 (os.getpid(), num, mlist.internal_name()))
                 mlist.Post(msg)
+                sys.stderr.write('process %d posted msgid %d to list %s\n' %
+                             (os.getpid(), num, mlist.internal_name()))
             finally:
                 mlist.Save()
                 if not lockflag:
                     mlist.Unlock()
-            sys.stderr.write('process %d sent usenet msgid %d to list %s\n' %
-                             (os.getpid(), num, mlist.internal_name()))
         except nntplib.error_temp, msg:
             sys.stderr.write('process %d encountered NNTP error for list %s\n'
                              % (os.getpid(), mlist.internal_name()))
@@ -296,4 +307,6 @@ def reap(children, watermarks):
 
 
 if __name__ == '__main__':
+    sys.stderr.write('process %d begin gating\n' % os.getpid())
     main()
+    sys.stderr.write('process %d end gating\n' % os.getpid())
