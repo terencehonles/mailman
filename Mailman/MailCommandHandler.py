@@ -17,13 +17,19 @@
 
 """Process maillist user commands arriving via email."""
 
-__version__ = "$Revision: 693 $"
-
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
 
-import string, os, sys, re
-import mm_message, mm_err, mm_cfg, mm_utils, mm_pending
+import os
+import sys
+import string
+import re
+import Message
+import Errors
+import mm_cfg
+import Utils
+import Pending
+
 
 option_descs = { 'digest' :
 		     'receive mail from the list bundled together instead of '
@@ -75,7 +81,7 @@ class MailCommandHandler:
 	self._response_buffer = self._response_buffer + "**** " + text + "\n"
 	
     def ParseMailCommands(self):
-	mail = mm_message.IncomingMessage()
+	mail = Message.IncomingMessage()
 	subject = mail.getheader("subject")
         sender = string.lower(mail.GetSender())
         if sender in ['daemon', 'nobody', 'mailer-daemon', 'postmaster',
@@ -149,12 +155,12 @@ class MailCommandHandler:
 	    self.ChangeUserPassword(mail.GetSender(),
 				    args[0], args[1], args[1])
 	    self.AddToResponse('Succeeded.')
-	except mm_err.MMListNotReady:
+	except Errors.MMListNotReady:
 	    self.AddError("List is not functional.")
-	except mm_err.MMNotAMemberError:
+	except Errors.MMNotAMemberError:
 	    self.AddError("%s isn't subscribed to this list." %
 			  mail.GetSender())
-	except mm_err.MMBadPasswordError:
+	except Errors.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
 	except:
 	    self.AddError("An unknown Mailman error occured.")
@@ -214,7 +220,7 @@ class MailCommandHandler:
 		self.ConfirmUserPassword(sender, args[2])
 		self.SetUserOption(sender, option_info[args[0]], value)
 		self.AddToResponse("Succeeded.")
-	    except mm_err.MMBadPasswordError:
+	    except Errors.MMBadPasswordError:
 		self.AddError("You gave the wrong password.")
 	    except:
 		self.AddError("An unknown Mailman error occured.")
@@ -225,28 +231,28 @@ class MailCommandHandler:
 	    try:
 		self.SetUserDigest(mail.GetSender(), args[2], value)
 		self.AddToResponse("Succeeded.")
-	    except mm_err.MMAlreadyDigested:
+	    except Errors.MMAlreadyDigested:
 		self.AddError("You are already receiving digests.")
-	    except mm_err.MMAlreadyUndigested:
+	    except Errors.MMAlreadyUndigested:
 		self.AddError("You already have digests off.")
-	    except mm_err.MMBadEmailError:
+	    except Errors.MMBadEmailError:
 		self.AddError("Email address '%s' not accepted by Mailman." % 
 			      mail.GetSender())
-	    except mm_err.MMMustDigestError:
+	    except Errors.MMMustDigestError:
 		self.AddError("List only accepts digest members.")
-	    except mm_err.MMCantDigestError:
+	    except Errors.MMCantDigestError:
 		self.AddError("List doesn't accept digest members.")
-	    except mm_err.MMNotAMemberError:
+	    except Errors.MMNotAMemberError:
 		self.AddError("%s isn't subscribed to this list."
                               % mail.GetSender())
-	    except mm_err.MMListNotReady:
+	    except Errors.MMListNotReady:
 		self.AddError("List is not functional.")
-	    except mm_err.MMNoSuchUserError:
+	    except Errors.MMNoSuchUserError:
 		self.AddError("%s is not subscribed to this list."
                               % mail.GetSender())
-	    except mm_err.MMBadPasswordError:
+	    except Errors.MMBadPasswordError:
 		self.AddError("You gave the wrong password.")
-	    except mm_err.MMNeedApproval:
+	    except Errors.MMNeedApproval:
 		self.AddApprovalMsg(cmd)
 	    except:
 		# TODO: Should log the error we got if we got here.
@@ -271,8 +277,8 @@ class MailCommandHandler:
 		listob = self
 	    else:
 		try:
-		    import maillist
-		    listob = maillist.MailList(list)
+		    import MailList
+		    listob = MailList.MailList(list)
 		except:
 		    continue
 	    # We can mention this list if you already know about it.
@@ -370,12 +376,12 @@ class MailCommandHandler:
 	    self.ConfirmUserPassword(addr, args[0])
 	    self.DeleteMember(addr, "mailcmd")
 	    self.AddToResponse("Succeeded.")
-	except mm_err.MMListNotReady:
+	except Errors.MMListNotReady:
 	    self.AddError("List is not functional.")
-	except mm_err.MMNoSuchUserError:
+	except Errors.MMNoSuchUserError:
 	    self.AddError("%s is not subscribed to this list."
                           % mail.GetSender())
-	except mm_err.MMBadPasswordError:
+	except Errors.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
 	except:
 	    # TODO: Should log the error we got if we got here.
@@ -391,8 +397,8 @@ class MailCommandHandler:
         address = ""
         done_digest = 0
 	if not len(args):
-	    password = "%s%s" % (mm_utils.GetRandomSeed(), 
-				 mm_utils.GetRandomSeed())
+	    password = "%s%s" % (Utils.GetRandomSeed(), 
+				 Utils.GetRandomSeed())
         elif len(args) > 3:
             self.AddError("Usage: subscribe [password] [digest|nodigest] [address=<email-address>]")
             return
@@ -413,24 +419,29 @@ class MailCommandHandler:
                                   "[digest|nodigest] [address=<email-address>]")
                     return
         if not password:
-            password = "%s%s" % (mm_utils.GetRandomSeed(), 
-				 mm_utils.GetRandomSeed())
+            password = "%s%s" % (Utils.GetRandomSeed(), 
+				 Utils.GetRandomSeed())
         if not address:
             pending_addr = mail.GetSender()
         else:
             pending_addr = address
-        cookie = mm_pending.gencookie()
-        mm_pending.add2pending(pending_addr, password, digest, cookie)
-        self.SendTextToUser(subject = "%s -- confirmation of subscription -- request %d" % \
-                            (self.real_name, cookie),
-                            recipient = pending_addr,
-                            sender = self.GetRequestEmail(),
-                            text = mm_pending.VERIFY_FMT % ({"email": pending_addr,
-                                                             "listaddress": self.GetListEmail(),
-                                                             "listname": self.real_name,
-                                                             "cookie": cookie,
-                                                             "requestor": mail.GetSender(),
-                                                             "request_addr": self.GetRequestEmail()}))
+        cookie = Pending.gencookie()
+        Pending.add2pending(pending_addr, password, digest, cookie)
+        text = Utils.maketext(
+            'verify.txt',
+            {'email'       : pending_addr,
+             'listaddress' : self.GetListEmail(),
+             'listname'    : self.real_name,
+             'cookie'      : cookie,
+             'requestor'   : mail.GetSender(),
+             'request_addr': self.GetRequestEmail(),
+             })
+        self.SendTextToUser(
+            subject = "%s -- confirmation of subscription -- request %d" %
+                (self.real_name, cookie),
+            recipient = pending_addr,
+            sender = self.GetRequestEmail(),
+            text = text)
         self.__NoMailCmdResponse = 1
         return
 
@@ -439,21 +450,21 @@ class MailCommandHandler:
 	try:
 	    self.AddMember(addr, password, digest)
 	    self.AddToResponse("Succeeded.")
-	except mm_err.MMBadEmailError:
+	except Errors.MMBadEmailError:
 	    self.AddError("Email address '%s' not accepted by Mailman." % 
 			  addr)
-	except mm_err.MMMustDigestError:
+	except Errors.MMMustDigestError:
 	    self.AddError("List only accepts digest members.")
-	except mm_err.MMCantDigestError:
+	except Errors.MMCantDigestError:
 	    self.AddError("List doesn't accept digest members.")
-	except mm_err.MMListNotReady:
+	except Errors.MMListNotReady:
 	    self.AddError("List is not functional.")
-	except mm_err.MMNeedApproval:
+	except Errors.MMNeedApproval:
 	    self.AddApprovalMsg(cmd)
-        except mm_err.MMHostileAddress:
+        except Errors.MMHostileAddress:
 	    self.AddError("Email address '%s' not accepted by Mailman "
 			  "(insecure address)" % addr)
-	except mm_err.MMAlreadyAMember:
+	except Errors.MMAlreadyAMember:
 	    self.AddError("%s is already a list member." % addr)
 	except:
 	    # TODO: Should log the error we got if we got here.
@@ -473,7 +484,7 @@ class MailCommandHandler:
         except:
             self.AddError("Usage: confirm <confirmation number>\n")
             return
-        pending = mm_pending.get_pending()
+        pending = Pending.get_pending()
         if not pending.has_key(cookie):
             self.AddError("Invalid confirmation number!\n"
                           "Please recheck the confirmation number and try again.")
@@ -485,11 +496,12 @@ class MailCommandHandler:
         else:
             self.AddRequest('add_member', digest, email_addr, password)
         del pending[cookie]
-        mm_pending.set_pending(pending)
+        Pending.set_pending(pending)
 
 
 		
     def AddApprovalMsg(self, cmd):
+        # XXX: convert to templates/*.txt style
         self.AddError('''Your request to %s:
 
         %s
@@ -509,99 +521,12 @@ Any questions about the list owner's policy should be directed to:
 
 
     def ProcessHelpCmd(self, args, cmd, mail):
-	self.AddToResponse("**** Help for %s maillist:" % self.real_name)
-	self.AddToResponse("""
-This is email command help for version %s of the "Mailman" list manager.
-The following describes commands you can send to get information about and
-control your subscription to mailman lists at this site.  A command can
-be the subject line or in the body of the message.
-
-(Note that much of the following can also be accomplished via the web, at:
-
-	%s
-
-In particular, you can use the web site to have your password sent to your
-delivery address.)
-
-List specific commands (subscribe, who, etc) should be sent to the
-*-request address for the particular list, e.g. for the 'mailman' list,
-use 'mailman-request@...'.
-
-About the descriptions - words in "<>"s signify REQUIRED items and words in
-"[]" denote OPTIONAL items.  Do not include the "<>"s or "[]"s when you use
-the commands.
-
-The following commands are valid:
-
-    subscribe [password] [digest-option] [address=<address>]
-        Subscribe to the mailing list.  Your password must be given to
-        unsubscribe or change your options.  When you subscribe to the
-        list, you'll be reminded of your password periodically.
-        'digest-option' may be either: 'nodigest' or 'digest' (no quotes!)
-        If you wish to subscribe an address other than the address you send
-        this request from, you may specify "address=<email address>" (no brackets
-        around the email address, no quotes!) 
-
-    unsubscribe <password> [address]
-        Unsubscribe from the mailing list.  Your password must match
-	the one you gave when you subscribed.  If you are trying to
-	unsubscribe from a different address than the one you subscribed
-	from, you may specify it in the 'address' field.
-
-    who
-        See who is on this mailing list.
-
-    info
-        View the introductory information for this list.
-
-    lists
-        See what mailing lists are run by this Mailman server.
-
-    help
-        This message.
-
-    set <option> <on|off> <password> 
-	Turn on or off list options.  Valid options are:
-
-	ack:
-	Turn this on to receive acknowlegement mail when you send mail to
-	the list 
-
-	digest:
-	receive mail from the list bundled together instead of one post at
-	a time 
-
-	plain:
-	Get plain-text, not MIME-compliant, digests (only if digest is set)
-
-	nomail:
-	Stop delivering mail.  Useful if you plan on taking a short vacation.
-
-	norcv:
-	Turn this on to NOT receive posts you send to the list. 
-	Does not work if digest is set
-
-	hide:
-	Conceals your address when people look at who is on this list.
-
-
-    options
-	Show the current values of your list options.
-
-    password <oldpassword> <newpassword> 
-        Change your list password.
-    
-    end
-       Stop processing commands (good to do if your mailer automatically
-       adds a signature file - it'll save you from a lot of cruft).
-
-
-Commands should be sent to %s
-
-Questions and concerns for the attention of a person should be sent to
-%s
-""" % (mm_cfg.VERSION,
-       self.GetAbsoluteScriptURL('listinfo'),
-       self.GetRequestEmail(),
-       self.GetAdminEmail()))
-	
+        text = Utils.maketext(
+            'help.txt',
+            {'listname'    : self.real_name,
+             'version'     : mm_cfg.VERSION,
+             'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
+             'requestaddr' : self.GetRequestEmail(),
+             'adminaddr'   : self.GetAdminEmail(),
+             })
+        self.AddToResponse(text)
