@@ -69,13 +69,26 @@ class SmtpConnection:
 	lines  = string.split(text, '\n')
 	self._sock.send('MAIL FROM: <%s>\r\n' % frm)
 	self.getresp()
+        valid_recipients = []
         if type(to) == types.StringType:
             self._sock.send('RCPT TO: <%s>\r\n' % to)
             self.getresp()
+            valid_recipients.append(to)
         else:
             for item in to:
                 self._sock.send('RCPT TO: <%s>\r\n' % item)
-                self.getresp(impunity=1)
+                lastresp = self.getresp(impunity=1)
+                if not lastresp:
+                    # XXX klm 07/23/1998 Invalid recipients on local host
+                    # are a special problem, since they are recognized
+                    # and refused immediately by, eg, sendmail, rather than
+                    # being queued.  So we do not get the benefit of a
+                    # bounce message for, eg, disabling the recipient, and
+                    # it would knock out delivery to other recipients if we 
+                    # didn't take this precaution.
+                    valid_recipients.append(item)
+        if not valid_recipients:
+            return
 	self._sock.send('DATA\r\n')
 	self.getresp()
 	if headers:
@@ -113,15 +126,22 @@ class SmtpConnection:
 	return line
 
     def getresp(self, impunity=0):
+        """Get response, raising suitable exception for errors.
+
+        If option 'impunity' is set, on failure the exception and message
+        that would have been raised are instead returned."""
 	resp = self.getmultiline()
 	self.lastresp = resp[:3]
-        if impunity:
-            return resp
 	c = resp[:1]
+        bad = None
 	if c == '4':
-	    raise error_temp, resp
+            bad = error_temp
 	if c == '5':
-	    raise error_perm, resp
+            bad = error_perm
 	if c not in '123':
-	    raise error_proto, resp
-	return resp
+            bad = error_proto
+        if bad:
+            if impunity:
+                return bad, resp
+            else:
+                raise bad, resp
