@@ -23,8 +23,15 @@ import os
 import socket
 import time
 import dbhash
+import errno
+import pwd
+import grp
+from stat import *
 
 from Mailman import mm_cfg
+from Mailman.i18n import _
+
+DBFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases.db')
 
 
 
@@ -60,7 +67,7 @@ def _rmlist(listname, db):
 
 def create(mlist):
     listname = mlist.internal_name()
-    db = dbhash.open(os.path.join(mm_cfg.DATA_DIR, 'aliases.db'), 'c')
+    db = dbhash.open(DBFILE, 'c')
     _addlist(listname, db)
     db.sync()
 
@@ -68,6 +75,45 @@ def create(mlist):
 
 def remove(mlist):
     listname = mlist.internal_name()
-    db = dbhash.open(os.path.join(mm_cfg.DATA_DIR, 'aliases.db'), 'c')
+    db = dbhash.open(DBFILE, 'c')
     _rmlist(listname, db)
     db.sync()
+
+
+
+def checkperms(state):
+    targetmode = S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
+    if state.VERBOSE:
+        print _('checking permissions on %(DBFILE)s')
+    try:
+        stat = os.stat(DBFILE)
+    except OSError, e:
+        if e.errno <> errno.ENOENT: raise
+        return
+    if (stat[ST_MODE] & targetmode) <> targetmode:
+        state.ERRORS += 1
+        octmode = oct(stat[ST_MODE])
+        print _('%(DBFILE)s permissions must be 066x (got %(octmode)s)'),
+        if state.FIX:
+            print _('(fixing)')
+            os.chmod(DBFILE, mode | targetmode)
+        else:
+            print
+    # Make sure the aliases.db is owned by root.  We don't need to check the
+    # group ownership of the file, since check_perms checks this itself.
+    if state.VERBOSE:
+        print _('checking ownership of %(DBFILE)s')
+    rootuid = pwd.getpwnam('root')[2]
+    ownerok = stat[ST_UID] == rootuid
+    if not ownerok:
+        try:
+            owner = pwd.getpwuid(stat[ST_UID])[0]
+        except KeyError:
+            owner = 'uid %d' % stat[ST_UID]
+        print _('%(DBFILE)s owned by %(owner)s (must be owned by root)')
+        state.ERRORS += 1
+        if state.FIX:
+            print _('(fixing)')
+            os.chown(DBFILE, rootuid, mm_cfg.MAILMAN_GID)
+        else:
+            print
