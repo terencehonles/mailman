@@ -39,3 +39,7 @@ import os
 # Actually for now, put $prefix/Mailman directly on sys.path because the
 # modules haven't been completely packagized yet.
 sys.path.insert(0, os.path.join(prefix, 'Mailman'))
+
+# Insert the path to the package in front while migrating. Eventually the
+# above line should disappear.
+sys.path.insert(0, prefix)
