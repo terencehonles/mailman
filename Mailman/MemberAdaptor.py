@@ -122,6 +122,7 @@ class MemberAdaptor:
         If the member KEY/LCE is not a member of the list, raise
         NotAMemberError.
         """
+        raise NotImplemented
 
     def getMemberLanguage(self, member):
         """Return the preferred language for the member KEY/LCE.
