@@ -449,7 +449,7 @@ background and instructions for subscribing to and using it, visit:
     %(url)s
 
 ''' % {'listname': self.real_name,
-       'url'     : self.GetAbsoluteScriptURL('listinfo'),
+       'url'     : self.GetScriptURL('listinfo', absolute=1),
        })
         self.AddToResponse(msg, trunc=0)
 
@@ -664,7 +664,7 @@ background and instructions for subscribing to and using it, visit:
             'help.txt',
             {'listname'    : self.real_name,
              'version'     : mm_cfg.VERSION,
-             'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
+             'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'requestaddr' : self.GetRequestEmail(),
              'adminaddr'   : self.GetAdminEmail(),
              })
