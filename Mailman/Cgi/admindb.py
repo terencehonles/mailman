@@ -108,12 +108,12 @@ def main():
             is_auth = isAuthenticated(list)
             message = ''
         if not is_auth:
+            defaulturi = '/mailman/admindb%s/%s' % (mm_cfg.CGIEXT, list_name)
             print 'Content-type: text/html\n\n'
             text = Utils.maketext(
                 'admlogin.txt',
                 {'listname': list_name,
-                 'path'    : os.environ.get('REQUEST_URI',
-                                            '/mailman/admindb/' + list_name),
+                 'path'    : os.environ.get('REQUEST_URI', defaulturi),
                  'message' : message,
                  })
             print text
