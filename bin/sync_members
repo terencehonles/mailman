@@ -242,7 +242,7 @@ def main():
             if dryrun:
                 continue
             # should be a member, otherwise our test above is broken
-            mlist.DeleteMember(addr, admin_notify=notifyadmin)
+            mlist.DeleteMember(addr, admin_notif=notifyadmin)
 
         mlist.Save()
     finally:
