@@ -60,23 +60,42 @@ def main():
     # from the original message.  This is the most direct way to figure out
     # which list the message was intended for.
     extension = os.environ.get('EXTENSION', '').lower()
-    try:
-        listname, subdest = extension.split('-', 1)
-        subdest = DISPOSE_MAP.get(subdest)
-    except ValueError:
+    i = extension.rfind('-')
+    if i < 0:
         listname = extension
         subdest = 'tolist'
+    else:
+        missing = []
+        listname = extension[:i]
+        subdest = DISPOSE_MAP.get(extension[i+1:], missing)
+        if not Utils.list_exists(listname) or subdest is missing:
+            # must be a list that has a `-' in it's name
+            listname = extension
+            subdest = 'tolist'
+    if not listname:
+        print >> sys.stderr, 'Empty list name (someone being subversive?)'
+        return EX_NOUSER
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError:
         print >> sys.stderr, 'List not found:', listname
         return EX_NOUSER
 
+    # Make sure that the domain part of the incoming address matches the
+    # domain of the mailing list.  Actually, it's possible that one or the
+    # other is more fully qualified, and thus longer.  So we split the domains
+    # by dots, reverse them and make sure that whatever parts /are/ defined
+    # for both are equivalent.
     domain = os.environ.get('DOMAIN', '').lower()
-    if domain <> mlist.host_name:
-        print >> sys.stderr, 'Domain mismatch: %s@%s' % (listname,
-                                                         mlist.host_name)
-        return EX_NOUSER
+    domainp = domain.split('.')
+    hostname = mlist.host_name.split('.')
+    domainp.reverse()
+    hostname.reverse()
+    for ca, cb in zip(domainp, hostname):
+        if ca <> cb:
+            print >> sys.stderr, 'Domain mismatch: %s@%s (expected @%s)' \
+                  % (listname, domain, mlist.host_name)
+            return EX_NOUSER
 
     if subdest is None:
         print >> sys.stderr, 'Bad sub-destination:', extension
