@@ -240,17 +240,24 @@ class Document(Container):
     def SetTitle(self, title):
 	self.title = title
 
-    def Format(self, indent=0):
+    def Format(self, indent=0, **kw):
 	output = 'Content-type: text/html\n\n'
 	spaces = ' ' * indent
 	output = output + spaces
-#	output = output + '<html>\n'
+	output = output + '<html>\n'
 	if self.title:
 	    output = '%s%s<TITLE>%s</TITLE>\n'  % (output, spaces,
 						   self.title)
-#	output = '%s%s<body>\n' % (output, ' '*indent)
+	output = '%s%s</html>\n%s<body' % (output, spaces, spaces)
+	quals = []
+	for k, v in kw.items():
+	    quals.append('%s="%s"' % (k, v))
+	if quals:
+	    output = output + ' %s>\n' % string.join(quals, " ")
+	else:
+	    output = output + '>\n'
 	output = output + Container.Format(self, indent)
-#	output = '%s\n%s</body>\n%s</html>\n' % (output, spaces, spaces)
+	output = output + '%s</html>\n' % spaces
 	return output
     
 class StdContainer(Container):
