@@ -53,3 +53,9 @@ for name in names:
     file = open(os.path.join(mm_cfg.DATA_DIR, "gate_watermarks"), "w")
     marshal.dump(watermarks, file)
     file.close()
+    os._exit(0)
+
+
+
+
+
