@@ -1,17 +1,17 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Produce and process the pending-approval items for a list."""
@@ -111,7 +111,7 @@ def main():
     # Set up the results document
     doc = Document()
     doc.set_language(mlist.preferred_language)
-    
+
     # See if we're requesting all the messages for a particular sender, or if
     # we want a specific held message.
     sender = None
@@ -307,7 +307,7 @@ def show_pending_subs(mlist, form):
         form.AddItem(table)
     return num
 
-    
+
 
 def show_pending_unsubs(mlist, form):
     # Add the pending unsubscription request section
