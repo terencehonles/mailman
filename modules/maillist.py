@@ -483,7 +483,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # ... and only then try the regexp acceptable aliases.
         for recip in recips:
             for alias in string.split(self.acceptable_aliases, '\n'):
-                if re.match(string.strip(alias), recip):
+                stripped = string.strip(alias)
+                if stripped and re.match(stripped, recip):
                     return 1
 	return 0
 
