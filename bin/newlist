@@ -25,6 +25,8 @@ The optional <immediate> argument, if present, means to send out the notice
 immediately.  Otherwise, the script hangs pending input, to give time for
 the person creating the list to customize it before sending the admin an
 email notice about the existence of the new list.
+
+Note that list-names are forced to lowercase.
 """
 
 import sys, os, string
@@ -52,7 +54,8 @@ def main(argv):
     if len(argv) > 1:
 	list_name = argv[1]
     else:
-	list_name = string.lower(raw_input("Enter the name of the list: "))
+	list_name = raw_input("Enter the name of the list: ")
+    list_name = string.lower(list_name)
 
     if '@' in list_name:
 	sys.stderr.write("** List name must not include '@': %s\n"
