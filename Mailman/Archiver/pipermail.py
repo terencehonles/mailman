@@ -519,6 +519,7 @@ class T:
     
     def processUnixMailbox(self, input, articleClass = Article):
 	mbox = ArchiverMailbox(input, self.maillist)
+        counter = 0
 	while 1:
             try:
                 m = mbox.next()
@@ -526,6 +527,9 @@ class T:
                 continue
 	    if not m:
                 break
+            counter += 1
+            msgid = m.get('message-id', 'n/a')
+            self.message(_('#%(counter)05d %(msgid)s'))
 	    a = articleClass(m, self.sequence)
 	    self.sequence = self.sequence + 1
 	    self.add_article(a)
