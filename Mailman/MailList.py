@@ -298,6 +298,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.max_message_size = mm_cfg.DEFAULT_MAX_MESSAGE_SIZE
         self.web_page_url = mm_cfg.DEFAULT_URL   
         self.owner = [admin]
+        self.moderator = []
         self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
         self.reply_to_address = ''
         self.posters = []
@@ -383,8 +384,51 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              almost everything else :-)''')),
 
             ('owner', mm_cfg.EmailList, (3, WIDTH), 0,
-             _("""The list admin's email address - having multiple
-             admins/addresses (on separate lines) is ok.""")),
+             _("""The list administrator email addresses.  Multiple
+             administrator addresses, each on separate line is okay."""),
+
+             _("""There are two ownership roles associated with each mailing
+             list.  The <em>list administrators</em> are the people who have
+             ultimate control over all parameters of this mailing list.  They
+             are able to change any list configuration variable available
+             through these administration web pages.
+
+             <p>The <em>list moderators</em> have more limited permissions;
+             they are not able to change any list configuration variable, but
+             they are allowed to tend to pending administration requests,
+             including approving or rejecting held subscription requests, and
+             disposing of held postings.  Of course, the <em>list
+             administrators</em> can also tend to pending requests.
+
+             <p>In order to split the list ownership duties into
+             administrators and moderators, you must set a separate moderator
+             password in the section below, and also provide the email
+             addresses of the list moderators in this section.  Note that the
+             field you are changing here specifies the list
+             administators.""")),
+
+            ('moderator', mm_cfg.EmailList, (3, WIDTH), 0,
+             _("""The list moderator email addresses.  Multiple
+             moderator addresses, each on separate line is okay."""),
+
+             _("""There are two ownership roles associated with each mailing
+             list.  The <em>list administrators</em> are the people who have
+             ultimate control over all parameters of this mailing list.  They
+             are able to change any list configuration variable available
+             through these administration web pages.
+
+             <p>The <em>list moderators</em> have more limited permissions;
+             they are not able to change any list configuration variable, but
+             they are allowed to tend to pending administration requests,
+             including approving or rejecting held subscription requests, and
+             disposing of held postings.  Of course, the <em>list
+             administrators</em> can also tend to pending requests.
+
+             <p>In order to split the list ownership duties into
+             administrators and moderators, you must set a separate moderator
+             password in the section below, and also provide the email
+             addresses of the list moderators in this section.  Note that the
+             field you are changing here specifies the list moderators.""")),
 
             ('preferred_language', mm_cfg.Select,
              (langs, langnames, langi),
@@ -1067,6 +1111,42 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMNeedApproval, _(
                 'subscriptions to %(realname)s require administrator approval')
 
+    def ChangeMemberAddress(self, oldaddr, newaddr, globally):
+        # Changing a member address consists of verifying the new address,
+        # making sure the new address isn't already a member, and optionally
+        # going through the confirmation process.
+        #
+        # Most of these checks are copied from AddMember
+        newaddr = Utils.LCDomain(newaddr)
+        Utils.ValidateEmail(newaddr)
+        if self.IsMember(newaddr):
+            raise Errors.MMAlreadyAMember
+        if newaddr == self.GetListEmail().lower():
+            raise Errors.MMBadEmailError
+        # Pend the subscription change
+        cookie = Pending.new(Pending.CHANGE_OF_ADDRESS,
+                             oldaddr, newaddr, globally)
+        confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
+                                cookie)
+        realname = self.real_name
+        text = Utils.maketext(
+            'verify.txt',
+            {'email'      : newaddr,
+             'listaddr'   : self.GetListEmail(),
+             'listname'   : realname,
+             'cookie'     : cookie,
+             'requestaddr': self.GetRequestEmail(),
+             'remote'     : '',
+             'listadmin'  : self.GetAdminEmail(),
+             'confirmurl' : confirmurl,
+             }, lang=self.GetPreferredLanguage(oldaddr), mlist=self)
+        msg = Message.UserNotification(
+            newaddr, self.GetRequestEmail(),
+       _('%(realname)s -- confirmation of subscription -- confirm %(cookie)s'),
+            text)
+        msg['Reply-To'] = self.GetRequestEmail()
+        msg.send(self)
+
     def ProcessConfirmation(self, cookie):
         data = Pending.confirm(cookie)
         if data is None:
@@ -1093,6 +1173,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # Can raise MMNoSuchUserError if they unsub'd via other means
             self.DeleteMember(addr, whence='web confirmation')
             return op, addr
+        elif op == Pending.CHANGE_OF_ADDRESS:
+            oldaddr, newaddr, globally = data
+            self.ApprovedChangeMemberAddress(oldaddr, newaddr, globally)
+            return op, newaddr
 
     def ConfirmUnsubscription(self, addr, lang=None, remote=None):
         if lang is None:
@@ -1128,7 +1212,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def ApprovedAddMember(self, name, password, digest,
                           ack=None, admin_notif=None, lang=None):
         res = self.ApprovedAddMembers([name], [password],
-                                      digest, lang, ack, admin_notif)
+                                      digest, ack, admin_notif, lang)
         # There should be exactly one (key, value) pair in the returned dict,
         # extract the possible exception value
         res = res.values()[0]
@@ -1282,7 +1366,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             else:
                 admin_notif = 0
         if admin_notif:
-            subject = _('%s unsubscribe notification') % self.real_name
+            realname = self.real_name
+            subject = _('%(realname)s unsubscribe notification')
             text = Utils.maketext(
                 'adminunsubscribeack.txt',
                 {'member'  : name,
@@ -1298,6 +1383,48 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             whence = ""
         syslog('subscribe', '%s: deleted %s%s' %
                (self.internal_name(), name, whence))
+
+    def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
+        # Get the user's current options and password.  Ugly hack: if a user's
+        # options would have been zero, then Mailman saves room by deleting
+        # the entry for the user from the user_options dictionary.  Note that
+        # /really/ it would be better if GetUserOption() and SetUserOption()
+        # supported an interface to get the entire option value.
+        flags = self.user_options.get(oldaddr, 0)
+        password = self.passwords[oldaddr]
+        digest = oldaddr in self.GetDigestMembers()
+        lang = self.GetPreferredLanguage(oldaddr)
+        self.ApprovedAddMember(newaddr, password, digest,
+                               ack=1, admin_notif=1, lang=lang)
+        # hack the account flags
+        if not flags:
+            try:
+                del self.user_options[newaddr]
+            except KeyError:
+                pass
+        else:
+            self.user_options[newaddr] = flags
+        # Delete the old address
+        self.DeleteMember(oldaddr, userack=1)
+        # Now, if the globally flag was set, then try to do this for every
+        # mailing list that had the oldaddr as a member.
+        if not globally:
+            return
+        for listname in Utils.list_names():
+            # Don't bother with ourselves
+            if listname == self.internal_name():
+                continue
+            mlist = MailList(listname, lock=0)
+            if mlist.host_name <> self.host_name:
+                continue
+            if not mlist.IsMember(oldaddr):
+                continue
+            mlist.Lock()
+            try:
+                mlist.ApprovedChangeMemberAddress(oldaddr, newaddr, 0)
+                mlist.Save()
+            finally:
+                mlist.Unlock()
 
     def IsMember(self, address):
         return len(Utils.FindMatchingAddresses(address, self.members,
@@ -1440,6 +1567,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return self._full_path
 
     def SetPreferredLanguage(self, name, lang):
+        assert lang in self.GetAvailableLanguages()
         lcname = name.lower()
         if lang <> self.preferred_language:
             self.language[lcname] = lang
@@ -1457,5 +1585,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # language support to the list, then the general admin page may have a
         # blank field where the list owner is supposed to chose the list's
         # preferred language.
-        dirs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+        if mm_cfg.DEFAULT_SERVER_LANGUAGE not in dirs:
+            dirs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
         return [d for d in dirs if mm_cfg.LC_DESCRIPTIONS.has_key(d)]
