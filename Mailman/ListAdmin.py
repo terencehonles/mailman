@@ -192,7 +192,7 @@ class ListAdmin:
 \tSubject: %(subject)s''' % {
                 'listname' : self.internal_name(),
                 'rejection': rejection,
-                'sender'   : sender,
+                'sender'   : strquote(sender),
                 'subject'  : strquote(subject),
                 }
             if comment:
