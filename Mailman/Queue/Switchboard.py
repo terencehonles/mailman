@@ -225,6 +225,9 @@ class MarshalSwitchboard(_Switchboard):
             except KeyError:
                 pass
             else:
+                # Do a safe eval by setting up a restricted execution
+                # environment.  This may not be strictly necessary since we
+                # know they are floats, but it can't hurt.
                 dict[attr] = eval(sval, {'__builtins__': {}})
         fp.close()
         return dict
