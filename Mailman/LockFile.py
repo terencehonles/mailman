@@ -167,3 +167,7 @@ class FileLock:
             return 0
         pid, winner = self.__read()
         return pid == os.getpid()
+
+    # use with caution!!!
+    def steal(self):
+        self.__write()
