@@ -191,7 +191,7 @@ PRIVATE_EXTERNAL_ARCHIVER = 0
 # function that takes a MailList object and a Message object.  It should raise
 # Errors.DiscardMessage if it wants to throw the message away.  Otherwise it
 # should modify the Message object as necessary.
-ARCHIVE_CLEANSER = 'Mailman.Handlers.Scrubber'
+ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 
 # Set this to 1 to enable gzipping of the downloadable archive .txt file.
 # Note that this is /extremely/ inefficient, so an alternative is to just
