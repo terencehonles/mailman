@@ -56,6 +56,10 @@ class NonMemberPost(HandlerAPI.MessageHeld):
     "Post by non-member to a members-only list"
     pass
 
+class NotExplicitlyAllowed(HandlerAPI.MessageHeld):
+    "Posting to a restricted list by sender requires approval"
+    pass
+
 class TooManyRecipients(HandlerAPI.MessageHeld):
     "Too many recipients to the message"
     pass
@@ -112,7 +116,8 @@ def process(mlist, msg):
             # no return
     #
     # postings only from list members?  mlist.posters are allowed in addition
-    # to list members
+    # to list members.  If not set, then only the members in posters are
+    # allowed to post without approval.
     if mlist.member_posting_only:
         posters = Utils.List2Dict(mlist.posters)
         if not mlist.IsMember(sender) and \
@@ -120,6 +125,13 @@ def process(mlist, msg):
             # the sender is neither a member of the list, nor in the list of
             # explicitly approved posters
             hold_for_approval(mlist, msg, NonMemberPost)
+            # no return
+    elif mlist.posters:
+        posters = Utils.List2Dict(mlist.posters)
+        if not Utils.FindMatchingAddresses(sender, posters):
+            # the sender is not explicitly in the list of allowed posters
+            # (which is non-empty), so hold the message
+            hold_for_approval(mlist, msg, NotExplicitlyAllowed)
             # no return
     #
     # are there too many recipients to the message?
