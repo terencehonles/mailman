@@ -34,6 +34,7 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman.Handlers import HandlerAPI
 from Mailman.Bouncers import BouncerAPI
+from Mailman.Logging.Syslog import syslog
 from Mailman.Logging.Utils import LogStdErr
 from Mailman.pythonlib.StringIO import StringIO
 
@@ -91,8 +92,7 @@ def open_list(listname):
             mlist = MailList.MailList(listname, lock=0)
             _listcache[listname] = mlist
         except Errors.MMListError, e:
-            sys.stderr.write('qrunner error opening list: %s\n%s\n' %
-                             (listname, e))
+            syslog('qrunner', 'error opening list: %s\n%s' % (listname, e))
     return mlist
 
 
@@ -104,10 +104,11 @@ def dequeue(root):
 
 
 
-def main():
-    stderr = sys.stderr
+def main(lock):
     allkids = {}
     for file in os.listdir(mm_cfg.QUEUE_DIR):
+        # Keep the qrunner lock alive for a while longer
+        lock.refresh()
         root, ext = os.path.splitext(os.path.join(mm_cfg.QUEUE_DIR, file))
         if ext <> '.msg':
             # trigger just off the .msg file
@@ -126,7 +127,7 @@ def main():
             # For some reason we had trouble getting all the information out
             # of the queued files.  log this and move on (we figure it's a
             # temporary problem)
-            stderr.write('Exception reading qfile: %s\n%s\n' % (root, e))
+            syslog('qrunner', 'Exception reading qfile: %s\n%s' % (root, e))
             if msgfp:
                 msgfp.close()
             if dbfp:
@@ -135,12 +136,12 @@ def main():
         # Dispose of it, after ensuring that we've got the lock on the list.
         listname = msgdata.get('listname')
         if not listname:
-            stderr.write('qfile metadata specifies no list: %s\n' % root)
+            syslog('qrunner', 'qfile metadata specifies no list: %s' % root)
             continue
         mlist = open_list(listname)
         if not mlist:
-            stderr.write('Dequeuing message destined for missing list: %s\n'
-                         % root)
+            syslog('qurnner',
+                   'Dequeuing message destined for missing list: %s' % root)
             dequeue(root)
             continue
         # Now try to get the list lock
@@ -169,6 +170,7 @@ def main():
 
 if __name__ == '__main__':
     global _listcache
+    syslog('qrunner', 'qrunner begining')
     # first, claim the queue runner lock
     lock = LockFile.LockFile(QRUNNER_LOCK_FILE,
                              lifetime=mm_cfg.QRUNNER_LOCK_LIFETIME)
@@ -176,11 +178,11 @@ if __name__ == '__main__':
         lock.lock(timeout=0.5)
     except LockFile.TimeOutError:
         # Some other qrunner process is running, which is fine.
-        sys.stderr.write('Could not acquire qrunner lock\n')
+        syslog('qrunner', 'Could not acquire qrunner lock')
     else:
         kids = {}
         try:
-            kids = main()
+            kids = main(lock)
         finally:
             lock.unlock(unconditionally=1)
             # Clear the global cache to be clean about it.  Also, we can reap
@@ -188,3 +190,4 @@ if __name__ == '__main__':
             # (e.g. from ToUsenet).
             _listcache.clear()
             Utils.reap(kids)
+    syslog('qrunner', 'qrunner ended')
