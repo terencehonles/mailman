@@ -4,19 +4,20 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
 
 			      Background
 			      ==========
-This is Mailman, mailing list management system written mostly in
-Python.  Mailman was originally developed by John Viega.  Subsequent
-development (through version 1.1) was by Ken Manheimer.  Currently,
-Mailman development is a group effort, led by John Viega, Ken
+This is Mailman,  mailing   list management system written  mostly  in
+Python.  Mailman  was originally developed  by John Viega.  Subsequent
+development (through version 1.1)   was by Ken  Manheimer.  Currently,
+Mailman    development is a  group  effort,   led by  John Viega,  Ken
 Manheimer and Barry Warsaw.
 
-Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15
-1996.  Mailman 1.0b3, 2, and 1.1 developments by Ken Manheimer, 4/98
+Initial version  of Mailman (v. 0.9)  written by John  Viega Dec 12-15
+1996.  Mailman 1.0b3, 2, and  1.1 developments by Ken Manheimer,  4/98
 and 5/98.  Autoconf support added 5/98 by Barry Warsaw.
 
-See the mailman home site for current mailman status: http://www.list.org
+See  the mailman home site  for current  mailman status, including new
+releases and known problems: http://www.list.org
 
-To join the Mailman user's mailing list (recommended) - and to see an
+To join the Mailman user's mailing list (recommended)  - and to see an
 example of a mailman list interface in action - visit:
 
 	    http://www.python.org/mailman/listinfo/mailman-users
@@ -55,16 +56,17 @@ Features:
 			    Using Mailman
 			    =============
 Requirements:
-  You must be root on a machine running a mail transport program that
-  uses an /etc/aliases file, and has a sendmail executable (smail
-  should be OK).  We will soon be switching over to use a direct SMTP
-  connection to whatever you have running on port 25.  The machine
+
+  You must  be root on a machine  running a mail transport  program that
+  uses an /etc/aliases file, and has a sendmail executable (smail should
+  be OK).  We will    soon be switching     over to use a  direct   SMTP
+  connection to  whatever  you have  running  on port   25.  The machine
   really needs to have a web server in order to configure lists.
 
 Install:
-  Please see the file INSTALL for details on installing Mailman.  In
-  the instructions that follow, all file paths are assumed to be
-  relative to the installation directory $prefix.
+  Please see the file INSTALL for details on installing Mailman.  In the
+  instructions that follow, all file paths are assumed to be relative to
+  the installation directory $prefix.
 
 Adding a new list:
   o Run the program bin/newlist
@@ -86,45 +88,44 @@ Troubleshooting:
   If from the web you get "document contains no data":
   If mail isn't getting delivered:
 
-    The cgi wrappers are failing.  Either a UID is wrong, or your web
+    The  cgi  wrappers are failing.   Either a  UID is  wrong, or your web
     server / mailer has a non-standard name.
 
-    If you're unsure about the proper settings, the cgi and mail
-    wrapper programs use syslog to register mismatches, indicating the
-    correct setting in the process.  You need to have syslog running
-    and configured to log the mail.error log class somewhere - on sun
-    systems, the line
+    If you're unsure about  the proper settings,  the cgi and mail wrapper
+    programs  use syslog to   register mismatches, indicating  the correct
+    setting  in  the process.   You  need   to   have syslog  running  and
+    configured to log the mail.error log class somewhere - on sun systems,
+    the line
 
       mail.debug		/var/log/syslog
 
-    causes the messages to go to them in /var/log/syslog, for example.
-    (The distributed syslog.conf forwards the message to the loghost,
-    when present.  See the syslog man page for more details.)  If your
-    system is set like this, if you get a failure trying to visit the
-    mailman/listinfo web page and it's due to a UID or GID mismatch,
-    then you should get an entry at the end of /var/log/syslog
-    identifying the expected and received values.
+    causes  the messages to go  to  them in /var/log/syslog, for  example.
+    (The distributed syslog.conf forwards the message to the loghost, when
+    present.  See  the syslog man page for  more details.)  If your system
+    is  set   like this,  if   you get   a  failure  trying to   visit the
+    mailman/listinfo web page and it's due to  a UID or GID mismatch, then
+    you should get an entry at  the end of /var/log/syslog identifying the
+    expected and received values.
 
   If the web pages hang:
 
-    CERN web servers might leave python's running, and in some
-    cases might hang the cgi completely.  In that case, switch to
-    Apache.
+    CERN web servers might leave python's running, and in some cases might
+    hang the cgi completely.  In that case, switch to Apache.
 
   Check ~mailman/logs/error periodically:
 
-    Many of the scripts have their stderr logged to
-    ~mailman/logs/error, and some of the modules write caught errors
-    there, as well, so you should check there at least occasionally to
-    look for bugs in the code and problems in your setup.
+    Many of the scripts have  their stderr logged to  ~mailman/logs/error,
+    and some of the modules  write caught errors  there,  as well, so  you
+    should check there at least occasionally to  look for bugs in the code
+    and problems in your setup.
 
-    One thing that is *not* caught by stderr hook is syntax errors!
-    However, most files can be run from the command line with no
-    effect.  (The ones that will do stuff you want to avoid, like
-    sending out spurious password reminders, are in the cron dir.)  So
-    you can and should use the python interpreter to check the syntax
-    of any changes before trying them out.
-
+    One thing that   is  *not* caught  by  stderr hook  is syntax  errors!
+    However, most files can be run  from the command  line with no effect.
+    (The  ones that will   do stuff you  want  to avoid, like  sending out
+    spurious  password  reminders, are in the  cron  dir.)  So you can and
+    should use  the python interpreter to check  the of any changes before
+    trying them out.
+    
 How to add a new user option
 
     You'll need to do some of these things and not others.
@@ -145,23 +146,21 @@ How to add a new user option
 
 Interactive python sessions with maillists
 
-    You can do substantial things with maillists from the interpreter!
-    Include the mailman homedir on your shell python path, or manually
-    insert it on sys.path from within python, and import
-    Mailman.MailList and Mailman.Utils from within the interpreter.
-    You can instantiate the maillist of your choice, eg for a list
-    named postal:
+    You  can  do substantial  things  with maillists from the interpreter!
+    Include the mailman  homedir on  your shell  python path, or  manually
+    insert it on sys.path  from within python, and import Mailman.MailList
+    and Mailman.Utils  from within the  interpreter.  You  can instantiate
+    the maillist of your choice, eg for a list named postal:
 
 >>> sys.path.insert(0, '/local/mailman')
 >>> from Mailman import MailList, Utils
 >>> l = MailList.MailList('postal', lock=0)
 
-    (Don't set lock=0 if you're going to be changing the state of the
-    list, eg adding or removing members, etc.  However, be aware that
-    while you're locking it you'll be blocking any other processes
-    that are trying to obtain the lock - including handling of new
-    postings to the list, subscriptions, administrative changes, and
-    so forth.)
+    (Don't set lock=0 if  you're  going to  be  changing the state of  the
+    list, eg adding or  removing  members, etc.   However, be  aware  that
+    while you're locking  it you'll be blocking  any other  processes that
+    are trying to obtain the lock -  including handling of new postings to
+    the list, subscriptions, administrative changes, and so forth.)
 
     Now you can examine various aspects of the list:
 
@@ -174,20 +173,20 @@ Interactive python sessions with maillists
 >>> l._internal_name
 'postal'
 
-    dir(l) will present the components of the list. MailList.py has
+    dir(l) will present the  components  of the list. MailList.py  has
     the descriptions of many of them, though some are defined in other
     modules.
 
-    If you want to save changes, 'l.Save()' will do it.  It's a real
-    good idea to play with trial lists, first, before using this
+    If you  want to save changes, 'l.Save()'  will do it.  It's a real
+    good  idea to  play with   trial lists, first,  before using  this
     method to do surgery on production lists!
 
-    When you do get comfortable with it, you use it and a utility
-    routine, Utils.map_maillists(), to do batched changes on
-    all your lists.  It takes a function as its argument, and applies
-    that function to every one of the lists on your system.  For
-    instance, to get the names of all the lists on your system which
-    are advertised:
+    When you  do get  comfortable with it,  you use  it and  a utility
+    routine, Utils.map_maillists(),  to do batched  changes on all
+    your lists.  It takes a function as its argument, and applies that
+    function to every one of the  lists on your system.  For instance,
+    to get the  names of  all   the lists on   your system  which  are
+    advertised:
 
 >>> def advertised(lst):
 ...    if lst.advertised: return lst.real_name
@@ -199,6 +198,6 @@ Interactive python sessions with maillists
 'Plot-SIG', 'Pythonmac-SIG', 'String-SIG', 'Thread-SIG', 'Grail', 'XML-SIG',
 'JPython-Interest', 'Trove-Dev', 'Mailman-Users']
 
-    If you do list surgery with this mechanism, make really sure that
-    you're doing what you intend before having the routine do an 
+    If you do list surgery with this  mechanism, make really sure that
+    you're doing  what you  intend  before having   the routine do any
     .Save()'s.
