@@ -124,8 +124,13 @@ def process_request(doc, cgidata):
                              _('Initial list passwords do not match'))
             return
         if not password:
-            request_creation(doc, cgidata,
-                             _('The list password cannot be empty'))
+            request_creation(
+                doc, cgidata,
+                # The little <!-- ignore --> tag is used so that this string
+                # differs from the one in bin/newlist.  The former is destined
+                # for the web while the latter is destined for email, so they
+                # must be different entries in the message catalog.
+                _('The list password cannot be empty<!-- ignore -->'))
             return
     # The authorization password must be non-empty, and it must match either
     # the list creation password or the site admin password
