@@ -23,7 +23,7 @@
 
 /* passed in by configure */
 #define SCRIPTNAME  SCRIPT
-#define LOG_IDENT   "Mailman cgi-wrapper (" ## SCRIPT ## ")"
+#define LOG_IDENT   "Mailman cgi-wrapper (" SCRIPT ")"
 
 /* GID that CGI scripts run as.  See your Web server's documentation. */
 #define LEGAL_PARENT_GID CGI_GID

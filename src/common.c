@@ -20,7 +20,7 @@
 #include "common.h"
 
 /* passed in by configure */
-#define SCRIPTDIR PREFIX ## "/scripts/"	     /* trailing slash */
+#define SCRIPTDIR PREFIX "/scripts/"	     /* trailing slash */
 #define MODULEDIR PREFIX		     /* no trailing slash */
 
 const char* scriptdir = SCRIPTDIR;
