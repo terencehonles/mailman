@@ -39,7 +39,7 @@ Features:
      I'd like to help get that going and come up
      with instructions)
   o Smart bounce detection and correction
-  o Integrated fast bulk mailing (useful for sendmail users)
+  o Integrated fast bulk mailing
   o Smart spam protection
   o Extensible logging
   o Multiple list owners and moderators are possible
@@ -51,14 +51,16 @@ Features:
                             Using Mailman
                             =============
 Requirements:
+  The default mail delivery mechanism uses a direct SMTP connection to
+  whatever mail transport agent you have running on port 25.  You can
+  thus use Mailman with any such MTA, however the script bin/newlist
+  still generates sendmail style aliases (this will be fixed).  You
+  can also configure Mailman to use your MTA directly.
 
-  [XXX: This needs to be reviewed]
-
-  You must  be root on a machine  running a mail transport  program that
-  uses an /etc/aliases file, and has a sendmail executable (smail should
-  be OK).  We will    soon be switching     over to use a  direct   SMTP
-  connection to  whatever  you have  running  on port   25.  The machine
-  really needs to have a web server in order to configure lists.
+  You will need root access on the machine running Mailman in order to
+  create a new account and group (see the INSTALL file for details).
+  You will also need write access to your Web server configuration and
+  MTA aliases file in order hook Mailman up to the Web and email.
 
 Install:
   Please see the file INSTALL for details on installing Mailman.  In the
