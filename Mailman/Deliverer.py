@@ -23,6 +23,7 @@ from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
+from Mailman.i18n import _
 
 
 
@@ -37,11 +38,11 @@ class Deliverer:
 	else:
 	    welcome = ''
         if self.umbrella_list:
+            addr = self.GetMemberAdminEmail(name)
             umbrella = Utils.wrap(_('''\
 Note: Since this is a list of mailing lists, administrative
 notices like the password reminder will be sent to
-your membership administrative address, %s.
-''') % self.GetMemberAdminEmail(name))
+your membership administrative address, %(addr)s.'''))
         else:
             umbrella = ''
         # get the text from the template
@@ -55,9 +56,9 @@ your membership administrative address, %s.
              'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'optionsurl'  : self.GetOptionsURL(name, absolute=1),
              'password'    : password,
-             }, pluser) 
+             }, lang=pluser) 
 	if digest:
-	    digmode = _(" (Digest mode)")
+	    digmode = _(' (Digest mode)')
 	else:
 	    digmode = ''
         realname = self.real_name
@@ -70,9 +71,10 @@ your membership administrative address, %s.
 
     def SendUnsubscribeAck(self, name):
         os.environ['LANG'] = self.GetPreferredLanguage(name)
+        realname = self.real_name
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetAdminEmail(),
-            _('Unsubscribed from "%s" mailing list') % self.real_name,
+            _('Unsubscribed from "%(realname)s" mailing list'),
             Utils.wrap(self.goodbye_msg))
         msg.send(self)
 
@@ -86,7 +88,7 @@ your membership administrative address, %s.
         if user and self.passwords.has_key(user):
             cpuser = self.GetUserSubscribedAddress(user)
             recipient = self.GetMemberAdminEmail(cpuser)
-            subject = _('%s mailing list reminder') % listfullname
+            subject = _('%(listfullname)s mailing list reminder')
             adminaddr = self.GetAdminEmail()
             # get the text from the template
             text = Utils.maketext(
@@ -97,16 +99,16 @@ your membership administrative address, %s.
                  'options_url': self.GetOptionsURL(user, absolute=1),
                  'requestaddr': requestaddr,
                  'adminaddr'  : adminaddr,
-                }, self.GetPreferredLanguage(user))
+                }, lang=self.GetPreferredLanguage(user))
         else:
             ok = 0
             recipient = self.GetAdminEmail()
-            subject = _('%s user %s missing password!') % (listfullname, user)
+            subject = _('%(listfullname)s user %(user)s missing password!')
             text = Utils.maketext(
                 'nopass.txt',
                 {'username'     : `user`,
                  'internal_name': self.internal_name(),
-                 }, self.GetPreferredLanguage(user))
+                 }, lang=self.GetPreferredLanguage(user))
         msg = Message.UserNotification(recipient, requestaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
