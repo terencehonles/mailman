@@ -21,7 +21,7 @@ We accumulate users and their passwords, and use the last list to send a
 single message to each user with their complete collection of passwords,
 rather than sending a single message for each password."""
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 541 $"
 
 # This puppy should probably do lots of logging.
 
@@ -92,12 +92,17 @@ def main():
     for name in mm_utils.list_names():
 	list = maillist.MailList(name)
 	list_name = list.real_name
+	reminders_to_admins = list.reminders_to_admins
 	for user, password in list.passwords.items():
 	    url = list.GetOptionsURL(user)
-	    if users.has_key(user):
-		users[user].append(list_name, password, url)
+	    if reminders_to_admins:
+		recipient = "%s-admin@%s" % tuple(string.split(user, '@'))
 	    else:
-		users[user] = [(list_name, password, url)]
+		recipient = user
+	    if users.has_key(recipient):
+		users[recipient].append(list_name, password, url)
+	    else:
+		users[recipient] = [(list_name, password, url)]
 	# Unlocking each list after identifying passwords, but before having
 	# the consolidated list, means that there is a window for discrepancy
 	# between the reported and actual password.  Big deal - if the user
