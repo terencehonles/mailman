@@ -45,9 +45,9 @@ from Mailman import MailList
 from Mailman import Errors
 
 def usage(status, msg=''):
+    print __doc__ % globals()
     if msg:
         print msg
-    print __doc__ % globals()
     sys.exit(status)
 
 
