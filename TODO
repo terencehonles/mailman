@@ -24,6 +24,7 @@ Documentation
     - More on-line documentation and UI help
     - A developer's guide w/ architecture and API information
     - manpages for the scripts in bin and cron
+    - Integrate Christopher Kolar's documentation
 
 General Web UI
     - NO DEAD ENDS
@@ -36,7 +37,7 @@ General Web UI
       language, user.
     - Web pages should never mention turned-off features.
 
-List Admin UI
+List Administration
     - Separate list admin role from list moderator role
     - Allow the moderator to edit posts being held for approval (make
       it evident, either through a header or other means that the
@@ -68,8 +69,10 @@ List Admin UI
       secondary channel, like moderators@isc.org).
     - Ability to set the next digest volume and issue number from the
       web
+    - Add an option to include Reply-To: header in the membership test
+      for a members-only list posting
 
-List Member UI
+List Membership
     - Editing your user options should put you back to the edit-options page
     - Allow the user to be excluded from postings if they're getting
       them in the to: or cc: headers.  Be smarter about filtering out
@@ -87,7 +90,7 @@ List Member UI
     - Timed vacations, allowing a user to postpone or discard email
       for a certain number of days or weeks.
 
-Site Administrator's UI
+Site Administration
     - Allow the site admin to define list styles or themes, and list
       admins to choose one of the canned styles to apply to their
       list.
