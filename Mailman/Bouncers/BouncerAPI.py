@@ -46,6 +46,8 @@ def ScanMessages(mlist, msg, testing=0):
                 'Smail',
                 'Exim',
                 'Netscape',
+                'Compuserve',
+                'Microsoft',
                 'Catchall',
                 ]
     for modname in pipeline:
