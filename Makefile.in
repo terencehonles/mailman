@@ -31,6 +31,7 @@ exec_prefix=	@exec_prefix@
 
 CC=		@CC@
 INSTALL=	@INSTALL@
+PYTHON= 	@PYTHON@
 
 DEFS=		@DEFS@
 
@@ -99,6 +100,7 @@ install: $(SUBDIRS)
 	do \
 	    (cd $$d; $(MAKE) install); \
 	done
+	$(PYTHON) -c 'import compileall; compileall.compile_dir("$(prefix)")'
 	@echo "*****"
 	@echo "***** If you are installing over an old installation, please"
 	@echo "***** run \"make update\".  See the UPGRADING file for details."
