@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@ from Mailman.htmlformat import *
 from Mailman.Logging.Utils import LogStdErr
 from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 LogStdErr("error", "private")
 
@@ -87,8 +88,8 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
         mlist.IsListInitialized()
     except Errors.MMListError, e:
-        msg = _('No such list <em>%s</em>') % listname
-        doc.SetTitle(_("Private Archive Error - %s") % msg)
+        msg = _('No such list <em>%(listname)s</em>')
+        doc.SetTitle(_("Private Archive Error - %(msg)s"))
         doc.AddItem(Header(2, msg))
         print doc.Format(bgcolor="#FFFFFF")
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
@@ -97,17 +98,18 @@ def main():
     form = cgi.FieldStorage()
     user = password = None
     if form.has_key('username'):
-	user = form['username']
-	if type(user) == type([]): user = user[0]
-	user = user.value
+        user = form['username']
+        if type(user) == type([]): user = user[0]
+        user = user.value
     if form.has_key('password'): 
-	password = form['password']
-	if type(password) == type([]): password = password[0]
-	password = password.value
+        password = form['password']
+        if type(password) == type([]): password = password[0]
+        password = password.value
 
     is_auth = 0
-    message = (_("Please enter your %s subscription email address "
-               "and password.") % mlist.real_name)
+    realname = mlist.real_name
+    message = (_("Please enter your %(realname)s subscription email address "
+               "and password."))
     try:
         is_auth = mlist.WebAuthenticate(user=user,
                                           password=password,
@@ -131,7 +133,8 @@ def main():
             path=path[1:]  # Remove leading /'s
         basepath = os.path.split(mlist.GetBaseArchiveURL())[0]
         listname = mlist.real_name
-        print Utils.maketext('private.txt', vars(), mlist.preferred_language)
+        print Utils.maketext('private.txt', vars(),
+                             lang=mlist.preferred_language)
         sys.exit(0)
 
     # Authorization confirmed... output the desired file
