@@ -43,7 +43,7 @@ from Mailman.Utils import reraise, mkdir
 from Mailman import Utils
 from Mailman import Mailbox
 from Mailman import mm_cfg
-from Mailman.LockFile import LockFile
+from Mailman import LockFile
 
 
 
@@ -195,7 +195,7 @@ class Archiver:
         # archive to builtin html archiver.  first grab the archiver lock
         lockfile = os.path.join(mm_cfg.LOCK_DIR, self._internal_name) + \
                    '.archiver.lock'
-        lock = LockFile(lockfile, lifetime=60)
+        lock = LockFile.LockFile(lockfile, lifetime=60*5)
         lock.lock()
         try:
             try:
@@ -225,7 +225,11 @@ class Archiver:
             except:
                 traceback.print_exc(file=sys.stderr)
         finally:
-            lock.unlock()
+            # it's still possible to take a long time to run the archiver :(
+            try:
+                lock.unlock()
+            except LockFile.NotLockedError:
+                pass
             # need this or we'll never see the error messages!
             sys.stderr.flush()
             os._exit(0)
