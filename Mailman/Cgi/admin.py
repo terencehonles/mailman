@@ -793,40 +793,41 @@ def ChangeOptions(lst, category, cgi_info, document):
     if cgi_info.has_key('subscribees'):
 	name_text = cgi_info['subscribees'].value
         name_text = string.replace(name_text, '\r', '')
-	names = string.split(name_text, '\n')
-        subscribe_success = []
-        subscribe_errors = []
+	names = map(string.strip, string.split(name_text, '\n'))
         send_welcome_msg = string.atoi(
             cgi_info["send_welcome_msg_to_this_batch"].value)
-	for new_name in map(string.strip, names):
-            new_name = Utils.ParseAddrs(new_name)
+        digest = 0
+        if not lst.digestable:
             digest = 0
-            if not lst.digestable:
-                digest = 0
-            if not lst.nondigestable:
-                digest = 1
-	    try:
-                Utils.ValidateEmail(new_name)
-		lst.ApprovedAddMember(
-                    new_name,
-                    Utils.GetRandomSeed() + Utils.GetRandomSeed(),
-                    digest, send_welcome_msg)
-                subscribe_success.append(new_name)
-	    except Errors.MMAlreadyAMember:
-                subscribe_errors.append((new_name, 'Already a member'))
-            except Errors.MMBadEmailError:
-                if new_name == '':
-                    new_name = '&lt;blank line&gt;'
-                subscribe_errors.append(
-                    (new_name, "Bad/Invalid email address"))
-            except Errors.MMHostileAddress:
-                subscribe_errors.append(
-                    (new_name, "Hostile Address (illegal characters)"))
+        if not lst.nondigestable:
+            digest = 1
+        subscribe_errors = []
+        subscribe_success = []
+        result = lst.ApprovedAddMembers(names, None,
+                                        digest, send_welcome_msg)
+        for name in result.keys():
+            if result[name] is None:
+                subscribe_success.append(name)
+            else:
+                # `name' was not subscribed, find out why.  On failures,
+                # result[name] is set from sys.exc_info()[:2]
+                e, v = result[name]
+                if e is Errors.MMAlreadyAMember:
+                    subscribe_errors.append((name, 'Already a member'))
+                elif e is Errors.MMBadEmailError:
+                    if name == '':
+                        name = '&lt;blank line&gt;'
+                    subscribe_errors.append(
+                        (name, "Bad/Invalid email address"))
+                elif e is Errors.MMHostileAddress:
+                    subscribe_errors.append(
+                        (name, "Hostile Address (illegal characters)"))
         if subscribe_success:
             document.AddItem(Header(5, "Successfully Subscribed:"))
             document.AddItem(apply(UnorderedList, tuple((subscribe_success))))
             document.AddItem("<p>")
-            dirty = 1
+            # ApprovedAddMembers will already have saved the list for us.
+            # dirty = 1
         if subscribe_errors:
             document.AddItem(Header(5, "Error Subscribing:"))
             items = map(lambda x: "%s -- %s" % (x[0], x[1]), subscribe_errors)

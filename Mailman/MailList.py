@@ -199,7 +199,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    return 0
 	return not not self.user_options[user] & option
 
-    def SetUserOption(self, user, option, value):
+    def SetUserOption(self, user, option, value, save_list=1):
 	if not self.user_options.has_key(user):
 	    self.user_options[user] = 0
 	if value:
@@ -208,7 +208,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.user_options[user] = self.user_options[user] & ~(option)
 	if not self.user_options[user]:
 	    del self.user_options[user]
-	self.Save()
+	if save_list:
+            self.Save()
 
     # Here are the rules for the three dictionaries self.members,
     # self.digest_members, and self.passwords:
@@ -887,11 +888,36 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         else: # approval needed
             self.AddRequest('add_member', digest, name, password)
             raise Errors.MMNeedApproval, self.GetAdminEmail()
-        
-
 
     def ApprovedAddMember(self, name, password, digest,
                           ack=None, admin_notif=None):
+        res = self.ApprovedAddMembers([name], [password],
+                                      digest, ack, admin_notif)
+        # There should be exactly one (key, value) pair in the returned dict,
+        # extract the possible exception value
+        res = res.values()[0]
+        if res is None:
+            # User was added successfully
+            return
+        else:
+            # Split up the exception list and reraise it here
+            e, v = res
+            raise e, v
+
+    def ApprovedAddMembers(self, names, passwords, digest,
+                          ack=None, admin_notif=None):
+        """Subscribe members in list `names'.
+
+        Passwords can be supplied in the passwords list.  If an empty
+        password is encountered, a random one is generated and used.
+
+        Returns a dict where the keys are addresses that were tried
+        subscribed, and the corresponding values are either two-element
+        tuple containing the first exception type and value that was
+        raised when trying to add that address, or `None' to indicate
+        that no exception was raised.
+
+        """
         if ack is None:
             if self.send_welcome_msg:
                 ack = 1
@@ -902,38 +928,77 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 admin_notif = 1
             else:
                 admin_notif = 0
-        # normalize the name, it could be of the form
-        #
-        # <person@place.com> User Name
-        # person@place.com (User Name)
-        # etc
-        #
-        name = Utils.ParseAddrs(name)
-        Utils.ValidateEmail(name)
-        name = Utils.LCDomain(name)
-	if self.IsMember(name):
-	    raise Errors.MMAlreadyAMember
-        self.__AddMember(name, digest)
-	if digest:
-            kind = " (D)"
-	else:
-            kind = ""
-        self.SetUserOption(name, mm_cfg.DisableMime,
-                           1 - self.mime_is_default_digest)
-        self.LogMsg("subscribe", "%s: new%s %s",
-                    self._internal_name, kind, name)
-	self.passwords[string.lower(name)] = password
-        if ack:
-            self.SendSubscribeAck(name, password, digest)
-        if admin_notif:
-	    import Message
-	    txt = Utils.maketext("adminsubscribeack.txt",
-				 {"mmowner": mm_cfg.MAILMAN_OWNER,
-				  "admin_email": self.GetAdminEmail(),
-				  "listname": self.real_name,
-				  "member": name}, 1)
-	    msg = Message.IncomingMessage(txt)
-	    self.DeliverToOwner(msg, self.owner)
+        if type(passwords) is type([]):
+            pass
+        else:
+            # Type error -- ignore the original value
+            passwords = [None] * len(names)
+        while len(passwords) < len(names):
+            passwords.append(None)
+        result = {}
+        dirty = 0
+        for i in range(len(names)):
+            try:
+                # normalize the name, it could be of the form
+                #
+                # <person@place.com> User Name
+                # person@place.com (User Name)
+                # etc
+                #
+                name = Utils.ParseAddrs(names[i])
+                Utils.ValidateEmail(name)
+                name = Utils.LCDomain(name)
+            except (Errors.MMBadEmailError, Errors.MMHostileAddress):
+                # We don't really need the traceback object for the exception,
+                # and as using it in the wrong way prevents garbage collection
+                # from working smoothly, we strip it away
+                result[name] = sys.exc_info()[:2]
+            # WIBNI we could `continue' within `try' constructs...
+            if result.has_key(name):
+                continue
+            if self.IsMember(name):
+                result[name] = [Errors.MMAlreadyAMember, None]
+                continue
+            self.__AddMember(name, digest)
+            self.SetUserOption(name, mm_cfg.DisableMime,
+                               1 - self.mime_is_default_digest,
+                               save_list=0)
+            # Make sure we set a "good" password
+            password = passwords[i]
+            if not password:
+                password = Utils.MakeRandomPassword()
+            self.passwords[string.lower(name)] = password
+            # An address has been added successfully, make sure the
+            # list config is saved later on
+            dirty = 1
+            result[name] = None
+
+        if dirty:
+            self.Save()
+            if digest:
+                kind = " (D)"
+            else:
+                kind = ""
+            for name in result.keys():
+                if result[name] is None:
+                    self.LogMsg("subscribe", "%s: new%s %s",
+                                self._internal_name, kind, name)
+                    if ack:
+                        self.SendSubscribeAck(
+                            name,
+                            self.passwords[string.lower(name)],
+                            digest)
+                    if admin_notif:
+                        import Message
+                        txt = Utils.maketext(
+                            "adminsubscribeack.txt",
+                            {"mmowner": mm_cfg.MAILMAN_OWNER,
+                             "admin_email": self.GetAdminEmail(),
+                             "listname": self.real_name,
+                             "member": name}, 1)
+                        msg = Message.IncomingMessage(txt)
+                        self.DeliverToOwner(msg, self.owner)
+        return result
 
     def ProcessConfirmation(self, cookie):
         from Pending import Pending
@@ -1204,8 +1269,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	prefix = self.subject_prefix
 	if not subj:
 	    msg.SetHeader('Subject', '%s(no subject)' % prefix)
-	elif not re.match("(re:? *)?" + re.escape(self.subject_prefix),
-			  subj, re.I):
+	elif prefix and not re.match(re.escape(self.subject_prefix),
+                                     subj, re.I):
 	    msg.SetHeader('Subject', '%s%s' % (prefix, subj))
         if self.anonymous_list:
             del msg['reply-to']
@@ -1291,7 +1356,9 @@ def aside_new(old_name, new_name, reopen=0):
     """Utility to move aside a file, optionally returning a fresh open version.
 
     We ensure maintanance of proper umask in the process."""
-    ou = os.umask(002)
+    # Make config.db unreadable by `other', as it contains all the list
+    # members' passwords (in clear text).
+    ou = os.umask(007)
     try:
         if os.path.exists(new_name):
             os.unlink(new_name)

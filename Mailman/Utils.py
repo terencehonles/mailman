@@ -231,7 +231,7 @@ def QuotePeriods(text):
 
 
 # TBD: what other characters should be disallowed?
-_badchars = re.compile('[][()<>|;^],')
+_badchars = re.compile('[][()<>|;^,]')
 
 def ValidateEmail(str):
     """Verify that the an email address isn't grossly invalid."""
@@ -443,6 +443,14 @@ def GetRandomSeed():
             c = c - 26 + 97
         return c
     return "%c%c" % tuple(map(mkletter, (chr1, chr2)))
+
+
+def MakeRandomPassword(length=4):
+    password = ""
+    while len(password) < length:
+        password = password + GetRandomSeed()
+    password = password[:length]
+    return password
 
 
 def SnarfMessage(msg):
