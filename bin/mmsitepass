@@ -24,13 +24,13 @@ places that a list users password can be used."""
 
 import sys
 import paths
-import maillist
+from Mailman import MailList
 
 def main(argv):
     if len(sys.argv) != 2:
         print "Usage: mmsitepass password"
         raise SystemExit, 1
-    l = maillist.MailList()
+    l = MailList.MailList()
     l.SetSiteAdminPassword(sys.argv[1])
     if l.CheckSiteAdminPassword(sys.argv[1]):
         print "Password changed."

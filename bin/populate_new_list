@@ -28,10 +28,13 @@ just email addrs, one per line."""
 
 import sys, os, crypt, string
 import paths
-import maillist, mm_utils, mm_message, mm_cfg, mm_err
+from Mailman import MailList
+from Mailman import Utils
+from Mailman import Errors
+
 
 def GetRandomPassword():
-    return "%s%s" % (mm_utils.GetRandomSeed(), mm_utils.GetRandomSeed())
+    return "%s%s" % (Utils.GetRandomSeed(), Utils.GetRandomSeed())
 
 def main(argv):
     if len(argv) not in [3, 4]:
@@ -40,8 +43,8 @@ def main(argv):
         sys.exit(0)
 
     try:
-        list = maillist.MailList(sys.argv[1])
-    except mm_err.MMUnknownListError, msg:
+        list = MailList.MailList(sys.argv[1])
+    except Errors.MMUnknownListError, msg:
         sys.stderr.write("list %s not found\n" % `argv[1]`)
         sys.exit(1)
 
@@ -75,7 +78,7 @@ def main(argv):
         try:
             list.ApprovedAddMember(member, pw, 0)
             print "Regular member", member, "added"
-        except mm_err.MMAlreadyAMember:
+        except Errors.MMAlreadyAMember:
             sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
 
@@ -84,7 +87,7 @@ def main(argv):
         try:
             list.ApprovedAddMember(member, pw, 1)
             print "Digest member", member, "added"
-        except mm_err.MMAlreadyAMember:
+        except Errors.MMAlreadyAMember:
             sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
 
