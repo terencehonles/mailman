@@ -8,7 +8,8 @@ Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
     A Mailmannek minden gond nélkül mûködnie kell egy általánosan
     beállított Postfix-el. A dokumentáció írásakor a beállítások
     Postfix 19991231 verziótól kezdve pl13 verzióig, és 200010228
-    verziótól pl08 verzióig lettek tesztelve.
+    verziótól pl08 verzióig, valamint Postfix 2.0.15-tel lettek 
+    tesztelve.
 
     A Postfix alapértelmezésként speciális módon kezeli az -owner
     és -request címekre érkezõ leveleket. Ha azt szeretnénk, hogy
@@ -124,24 +125,33 @@ POSTFIX ÉS MAILMAN ÖSSZEKAPCSOLÁSA
 
 VIRTUÁLIS TARTOMÁNYOK
 
-    A Postfix két típusú a "Postfix-típusú" és "Sendmail-típusú" virtuális
-    tartománykezelésre képes. Az utóbbinál minden bejegyzés (aliases)
-    minden tartományban látható, ekkor semmi különleges beállításra nincs
-    szükség a Mailmannél.
+    A Postix 2.0 a támogatja "virtual alias domains" kezelést, amelyet
+    a korábbi Postfix verziókban egyszerûen csak Postfix-típusú virtuális
+    tartománykezelésnek hívtak. Ahhoz, hogy a Mailman képes legyen a 
+    virtuális tartománykezelés használatához mind a Mailman, mind a 
+    Postfix beállításokon változtatni kell. A Mailman alapesetben az
+    összes virtuális tartományhoz tartaozó bejegyzést az 
+    /usr/local/mailman/data/virtual-mailman állományban tárolja. A postmap
+    program is ezen állomány alapján készíti el a virtual-mailman.db 
+    állományt, melyet a Postfix valójában használni fog.
 
-    A Postfix-típusú virtuális tartományoknál már kicsit tükközni kell,
-    azonban itt sem lesz gond a Mailman beállításánál. Elõször is a
-    Postfix virtual_maps változóhoz kell egy újabb könyvtár elérési
-    utat adni:
+    Elõször a Postfix dokumentációban foglaltak alapján állítsuk be a 
+    virtuális tartománykezelést (bõvebben a Postfix virtual(5) súgója ad
+    eligazítást). Fontos, hogy el ne felejtsük megadni, ahogy a súgóban
+    le van írva a "virtual-alias.domain anything" sort, mivel a Mailman
+    virtual-mailman állománya nem tartalmazza ezt a sort. Javasoljuk,
+    hogy még mielõtt telepítenénk a Mailmant, gyõzödjünk meg róla, hogy
+    megfelelõen mûködik a virtuális tartománykezelés.
+
+    A következõ lépséként a Postfix virtual_maps változóhoz kell egy 
+    újabb könyvtár elérési utat adni:
 
     virtual_maps = <your normal virtual files>,
         hash:/usr/local/mailman/data/virtual-mailman
 
-    Esetünkben a Mailman alapértelmezett telepítési könyvtárát vettük fel
-    a változóba. Fontos, hogy kövessük a Postfix leírást arról, hogy
-    hogyan kell virtuális tartományokat beállítani; ezért már a Mailman
-    beállítása elõtt hozzuk létre a megfelelõen mûködõ virtuális
-    tartományokat.
+    Esetünkben a Mailman az alapértelmezett telepítési könyvtárban
+    helyezkedik el. Régebbi Postfix-eknél nincsen virtual_alias_maps
+    változó, ez esetben használjuk a virtual_maps változót.
 
     Következõ lépésként az mm_cfg.py állományba állítsuk be a
     POSTFIX_STYLE_VIRTUAL_DOMAINS változóba azon virtuális tartományokat,
@@ -159,7 +169,8 @@ VIRTUÁLIS TARTOMÁNYOK
         myhostname = mail.dom1.ain
         mydomain = dom1.ain
         mydestination = $myhostname, localhost.$mydomain
-        virtual_maps = hash:/some/path/to/virtual-dom1,
+        virtual_maps = 
+	    hash:/some/path/to/virtual-dom1,
             hash:/some/path/to/virtual-dom2,
             hash:/some/path/to/virtual-dom2
 
