@@ -489,7 +489,7 @@ class HyperArchive(pipermail.T):
     IQUOTES = 1               # Italicize quoted text.
     SHOWBR = 0                # Add <br> onto every line
 
-    def __init__(self, maillist, unlock=1):
+    def __init__(self, maillist, unlock=0):
         # can't init the database while other processes are writing to it!
         # XXX TODO- implement native locking
         # with mailman's LockFile module for HyperDatabase.HyperDatabase
