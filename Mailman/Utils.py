@@ -27,8 +27,6 @@ import sys
 import os
 import string
 import re
-# XXX: obsolete, should use re module
-import regsub
 import random
 import urlparse
 import sha
@@ -401,19 +399,8 @@ def CheckSiteAdminPassword(response):
 
 
 def QuoteHyperChars(str):
-    arr = regsub.splitx(str, '[<>"&]')
-    i = 1
-    while i < len(arr):
-	if arr[i] == '<':
-	    arr[i] = '&lt;'
-	elif arr[i] == '>':
-	    arr[i] = '&gt;'
-	elif arr[i] == '"':
-	    arr[i] = '&quot;'
-	else:     #if arr[i] == '&':
-	    arr[i] = '&amp;'
-	i = i + 2
-    return string.join(arr, '')
+    from cgi import escape
+    return escape(str, quote=1)
 
 
 
