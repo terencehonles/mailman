@@ -86,7 +86,8 @@ if form.has_key("SubscriberRoster"):
     # Get the roster of subscribers.
     call_script('mmroster', [list._internal_name])
     
-elif form.has_key("UserOptions"):
+elif (form.has_key("UserOptions")
+      or (form.has_key("info") and not form.has_key("email"))):
     # Go to user options section.
     if not form.has_key("info"):
 	doc.AddItem(htmlformat.Header(2, "Error"))
@@ -98,7 +99,7 @@ elif form.has_key("UserOptions"):
     member = list.FindUser(addr)
     if not list.FindUser(addr):
 	doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("%s has not subscribed addr <i>%s</i>."
+        doc.AddItem(htmlformat.Bold("%s has no subscribed addr <i>%s</i>."
                                     % (list.real_name, addr)))
 	doc.AddItem(list.GetMailmanFooter())
 	print doc.Format()
