@@ -43,12 +43,13 @@ OPT=		@OPT@
 CFLAGS=		@CFLAGS@ $(OPT) $(DEFS)
 
 VAR_DIRS= \
-	logs archives lists locks qfiles data spam filters \
+	logs archives lists locks data spam filters \
+	qfiles qfiles/in qfiles/out qfiles/bounce qfiles/news \
 	archives/private archives/public
 ARCH_INDEP_DIRS= \
 	bin templates scripts cron \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
-	Mailman/Handlers Mailman/Bouncers Mailman/pythonlib \
+	Mailman/Handlers Mailman/Queue Mailman/Bouncers Mailman/pythonlib \
 	icons
 ARCH_DEP_DIRS=	cgi-bin mail
 
