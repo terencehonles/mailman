@@ -17,8 +17,7 @@
 
 """The class representing a Mailman mailing list.
 
-Mixes in many feature classes.
-"""
+Mixes in many task-specific classes."""
 
 try:
     import mm_cfg
@@ -676,26 +675,24 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# pretty hosed.  That's a good reason to make this a daemon not a
 	# program.
 	self.IsListInitialized()
-	ou = os.umask(002)
-	try:
-	    fname = os.path.join(self._full_path, 'config.db')
-            fname_last = fname + ".last"
-	    if os.path.exists(fname_last):
-  	        os.unlink(fname_last)
-	    if os.path.exists(fname):
-	        os.link(fname, fname_last)
-	        os.unlink(fname)
-	    file = open(fname, 'w')
-	finally:
-	    os.umask(ou)
+        fname = os.path.join(self._full_path, 'config.db')
+        fname_last = fname + ".last"
+        file = aside_new(fname, fname_last, reopen=1)
 	dict = {}
 	for (key, value) in self.__dict__.items():
 	    if key[0] <> '_':
 		dict[key] = value
-	marshal.dump(dict, file)
-	file.close()
+        try:
+            marshal.dump(dict, file)
+            file.close()
+        except IOError, status:
+            # Darn - try to resurrect the old config.db.
+            file = aside_new(fname_last, fname, reopen=0)
+            self.LogMsg("error",
+                        "Failed config file write '%s',"
+                        " old config resurrected." % `status.args`)
+            raise
         self.CheckHTMLArchiveDir()
-
 
     def Load(self, check_version = 1):
 	if self._tmp_lock:
@@ -816,7 +813,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         
 
 
-    def ApprovedAddMember(self, name, password, digest, ack=None, admin_notif=None):
+    def ApprovedAddMember(self, name, password, digest,
+                          ack=None, admin_notif=None):
         if ack is None:
             if self.send_welcome_msg:
                 ack = 1
@@ -1028,8 +1026,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 				Errors.MODERATED_LIST_MSG,
 				msg.getheader('subject'))
             elif self.moderated and len(self.posters):
-                addrs = Utils.FindMatchingAddresses(sender,
-                                                    Utils.List2Dict(self.posters))
+                addrs = Utils.FindMatchingAddresses(
+                    sender, Utils.List2Dict(self.posters))
                 if not len(addrs):
                     self.AddRequest('post', Utils.SnarfMessage(msg),
                                     Errors.MODERATED_LIST_MSG,
@@ -1038,8 +1036,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # not moderated
             #
 	    elif len(self.posters): 
-		addrs = Utils.FindMatchingAddresses(sender,
-                                                    Utils.List2Dict(self.posters))
+		addrs = Utils.FindMatchingAddresses(
+                    sender, Utils.List2Dict(self.posters))
 		if not len(addrs):
                     if self.member_posting_only:
                         if not self.IsMember(sender):
@@ -1183,3 +1181,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return ("<%s.%s %s%s at %s>"
 		% (self.__module__, self.__class__.__name__,
 		   `self._internal_name`, status, hex(id(self))[2:]))
+
+def aside_new(old_name, new_name, reopen=0):
+    """Utility to move aside a file, optionally returning a fresh open version.
+
+    We ensure maintanance of proper umask in the process."""
+    ou = os.umask(002)
+    try:
+        if os.path.exists(new_name):
+            os.unlink(new_name)
+        if os.path.exists(old_name):
+            os.link(old_name, new_name)
+            os.unlink(old_name)
+        if reopen:
+            file = open(old_name, 'w')
+            return file
+    finally:
+        os.umask(ou)
