@@ -20,7 +20,7 @@
 Encapsulate HTML formatting directives in classes that act as containers
 for python and, recursively, for nested HTML formatting objects."""
 
-__version__ = "$Revision: 547 $"
+__version__ = "$Revision: 635 $"
 
 # Eventually could abstract down to HtmlItem, which outputs an arbitrary html
 # object given start / end tags, valid options, and a value.
@@ -405,6 +405,11 @@ class TextArea:
 class RadioButton(InputObj):
     def __init__(self, name, value, checked=0, **kws):
 	apply(InputObj.__init__, (self, name, 'RADIO', value, checked), kws)
+
+class CheckBox(InputObj):
+    def __init__(self, name, value, checked=0, **kws):
+        apply(InputObj.__init__, (self, name, "CHECKBOX", value, checked), kws)
+
 
 
 class VerticalSpacer:

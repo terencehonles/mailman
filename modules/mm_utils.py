@@ -477,3 +477,17 @@ class StampedLogger(Logger):
 		    Logger.write(self, ' ' + l)
 		else:
 		    Logger.write(self, l)
+
+def chunkify(members, chunksize=mm_cfg.ADMIN_MEMBER_CHUNKSIZE):
+     """
+     return a list of lists of members
+     """
+     members.sort()
+     res = []
+     while 1:
+         if not members:
+             break
+         chunk = members[:chunksize]
+         res.append(chunk)
+         members = members[chunksize:]
+     return res

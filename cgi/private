@@ -74,7 +74,6 @@ PAGE = '''
 login_attempted = 0
 _list = None
 
-# XXX: This looks broken, should investigate
 name_pat = re.compile(r"""
 (?: / (?: \d{4} q \d\. )?   # Match "/", and, optionally, 1998q1."
     ( [^/]* ) /?      # The SIG name
@@ -88,20 +87,6 @@ name_pat = re.compile(r"""
 )
 """, re.VERBOSE)
 
-# " XXX: Emacs turd
-# the following is a potentially better rewrite
-
-## name_pat = re.compile(
-##     r'(?: / (?: \d{4} q \d\. )?'   # Match "/", and, optionally, 1998q1."
-##     r'( [^/]* ) /?'                # The SIG name
-##     r'/[^/]*$'                     # The trailing 12345.html portion
-##     r') | (?:'
-##     r'/ ( [^/.]* )'                # Match matrix-sig
-##     r'(?:\.html)?'                 # Optionally match .html
-##     r'/?'                          # Optionally match a trailing slash
-##     r'$)'                          # Must match to end of string
-##     , re.VERBOSE)
-
 def getListName(path):
     match = name_pat.search(path)
     if match is None: return
@@ -109,13 +94,6 @@ def getListName(path):
     if match.group(2): return match.group(2)
     raise ValueError, "Can't identify SIG name"
 
-#for i in ['/matrix-sig.html', '/1998q1.c++-sig/index.html',
-#           '/1998q1.string-sig/foobar.html',
-#          '/psa-members.html']:
-#     print i, `getListName(i)`
-#sys.exit(0)
-
-## sys.exit(0)
 
 def GetListobj(list_name):
     """Return an unlocked instance of the named maillist, if found."""

@@ -75,8 +75,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return '%s@%s' % (self._internal_name, self.host_name)
 
     def GetScriptURL(self, script_name):
-	return os.path.join(self.web_page_url, '%s/%s' % 
-			    (script_name, self._internal_name))
+        if self.web_page_url:
+            prefix = self.web_page_url
+        else:
+            prefix = mm_cfg.DEFAULT_URL
+        return os.path.join(prefix, '%s/%s' % (script_name,
+                                               self._internal_name))
+
     def GetOptionsURL(self, addr, obscured=0):
 	options = self.GetScriptURL('options')
         if obscured:
@@ -84,9 +89,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         else:
             treated = addr
         return os.path.join(options, treated)
-
-    def GetOptionsURL(self, addr):
-	return os.path.join(self.GetScriptURL('options'), addr)
 
     def GetUserOption(self, user, option):
 	if option == mm_cfg.Digests:
@@ -212,10 +214,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " what the list is."),
 
 	    ('info', mm_cfg.Text, (7, 50), 0, 
-	     'An introductory description - a few paragraphs - about the'
-	     'list.  It will be included, as html, at the top of the'
-	     'listinfo page.  Carriage returns will end a paragraph - see'
-             'the details for more info.',
+	     ' An introductory description - a few paragraphs - about the'
+	     ' list.  It will be included, as html, at the top of the'
+	     ' listinfo page.  Carriage returns will end a paragraph - see'
+             ' the details for more info.',
 
              "The text will be treated as html <em>except</em> that newlines"
              " newlines will be translated to &lt;br&gt; - so you can use"
