@@ -31,12 +31,13 @@ import sys, os, string
 from Mailman import MailList, Errors
 from Mailman import Cookie
 from Mailman.Logging.Utils import LogStdErr
+import Mailman.mm_cfg
 
 LogStdErr("error", "private")
 
 
 
-ROOT = "/home/mailman/public_html/archives"
+ROOT = os.path.join(Mailman.mm_cfg.PREFIX, "public_html/archives")
 SECRET = "secret"  # XXX used for hashing
 
 PAGE = '''
