@@ -114,8 +114,8 @@ class GatewayManager:
         except AttributeError:
             pass # Wasn't remailed by the news gater then.  Let it through.
         # Fork in case the nntp connection hangs.
-        x = os.fork()
-        if not x:
+        if not os.fork():
+            # child
             import nntplib
             # Now make the news message...
             msg = Message.NewsMessage(mail_msg)
