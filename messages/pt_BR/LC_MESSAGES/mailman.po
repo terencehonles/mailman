@@ -1052,7 +1052,7 @@ msgstr "Razão para recusa"
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
 #: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 msgid "Defer"
-msgstr "Deferir"
+msgstr "Adiar"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
 #: Mailman/Cgi/admindb.py:612
