@@ -1,6 +1,6 @@
 #! @PYTHON@
 
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -105,6 +105,8 @@ import paths
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import LockFile
+from Mailman import Errors
+from Mailman.MailList import MailList
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
 from Mailman.Logging.Utils import LogStdErr
@@ -267,6 +269,16 @@ def start_all_runners():
 
 
 
+def check_for_site_list():
+    sitelistname = mm_cfg.MAILMAN_SITE_LIST
+    try:
+        sitelist = MailList(sitelistname, lock=0)
+    except Errors.MMUnknownListError:
+        print >> sys.stderr, _('Site list is missing: %(sitelistname)s')
+        syslog('error', 'Site list is missing: %s', mm_cfg.MAILMAN_SITE_LIST)
+        sys.exit(1)
+
+
 def check_privs():
     # If we're running as root (uid == 0), coerce the uid and gid to that
     # which Mailman was configured for, and refuse to run if we didn't coerce
@@ -341,6 +353,8 @@ def main():
             print _('Re-opening all log files')
         kill_watcher(signal.SIGHUP)
     elif command == 'start':
+        # First, complain loudly if there's no site list.
+        check_for_site_list()
         # Here's the scoop on the processes we're about to create.  We'll need
         # one for each qrunner, and one for a master child process watcher /
         # lock refresher process.
