@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-#
 # Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -22,11 +20,19 @@ import sys
 
 # From here on we are as bulletproof as possible!
 
+# The driver script prints out a lot of information when a Mailman bug is
+# encountered.  This really helps for development, but it also reveals
+# information about the host system that some administrators are not
+# comfortable with.  By setting STEALTH_MODE to 1, you disable the printing of
+# this information to the web pages.  This information is still, and always,
+# printed in the error logs.
+STEALTH_MODE = 0
+
 
 
 # This standard driver script is used to run CGI programs, wrapped in code
 # that catches errors, and displays them as HTML.  This guarantees that
-# (almost) any problems in the Mailman software doesn't result in a Web server
+# (almost) any problem in the Mailman software doesn't result in a Web server
 # error.  It is much more helpful to generate and show a traceback, which the
 # user could send to the administrator, than to display a server error and
 # have to trudge through server logs.
@@ -48,26 +54,26 @@ def run_main():
     try:
         # These will ensure that even if something between now and the
         # creation of the real logger below fails, we can still get
-        # *something* meaningful
+        # *something* meaningful.
         logger = None
-        # insert the relative path to the parent of the Mailman package
-        # directory, so we can pick up the Utils module
+        # Insert the relative path to the parent of the Mailman package
+        # directory, so we can pick up the Utils module.
         import os
-        # sys gets imported at module level below
+        # sys gets imported at module level below.
         sys.path.insert(0, os.pardir)
-        # map stderr to a logger, if possible
+        # Map stderr to a logger, if possible.
         from Mailman.Logging.StampedLogger import StampedLogger
         logger = StampedLogger('error',
                                label='admin',
                                manual_reprime=1,
                                nofail=0,
                                immediate=1)
-        # pre-load the `cgi' module.  we do this because we're distributing a
-        # slightly different version than the standard Python module.  it's
+        # Pre-load the `cgi' module.  We do this because we're distributing a
+        # slightly different version than the standard Python module.  It's
         # essentially Python 1.5.2's module, with an experimental patch to
         # handle clients that give bogus or non-existant content-type headers.
         #
-        # we assign sys.modules['cgi'] to this special cgi module because we
+        # We assign sys.modules['cgi'] to this special cgi module because we
         # don't want to have to rewrite all the Mailman.Cgi modules to get the
         # special one.
         import Mailman.pythonlib.cgi
@@ -90,7 +96,7 @@ def run_main():
             finally:
                 sys.stderr = sys.__stderr__
         except SystemExit:
-            # this is a valid way for the function to exit
+            # This is a valid way for the function to exit.
             pass
     except:
         print_traceback(logger)
@@ -115,7 +121,7 @@ def print_traceback(logfp=None):
     except ImportError:
         VERSION = '&lt;undetermined&gt;'
 
-    # write to the log file first
+    # Write to the log file first.
     logfp.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
     logfp.write('[----- Mailman Version: %s -----]\n' % VERSION)
     logfp.write('[----- Traceback ------]\n')
@@ -125,26 +131,31 @@ def print_traceback(logfp=None):
         logfp.write('[failed to import module traceback]\n')
         logfp.write('[exc: %s, var: %s]\n' % sys.exc_info()[0:2])
 
-    # print to the HTML sink
+    # Write to the HTML sink.
     print """\
 Content-type: text/html
 
 <head><title>Bug in Mailman version %(VERSION)s</title></head>
-<body><h2>Bug in Mailman version %(VERSION)s</h2>
+<body bgcolor=#ffffff><h2>Bug in Mailman version %(VERSION)s</h2>
 <p><h3>We're sorry, we hit a bug!</h3>
-
-<p>If you would like to help us identify the problem, please
-email a copy of this page to the webmaster for this site with
+""" % locals()
+    if not STEALTH_MODE:
+        print '''<p>If you would like to help us identify the problem,
+please email a copy of this page to the webmaster for this site with
 a description of what happened.  Thanks!
 
-<h4>Traceback:</h4>
-<p><pre>""" % locals()
-    if traceback:
-        traceback.print_exc(file=sys.stdout)
+<h4>Traceback:</h4><p><pre>'''
+        if traceback:
+            traceback.print_exc(file=sys.stdout)
+        else:
+            print '[failed to import module traceback]'
+            print '[exc: %s, var: %s]' % sys.exc_info()[0:2]
+        print '\n\n</pre></body>'
     else:
-        print '[failed to import module traceback]'
-        print '[exc: %s, var: %s]' % sys.exc_info()[0:2]
-    print '\n\n</pre></body>'
+        print '''<p>Please inform the webmaster for this site of this
+problem.  Printing of traceback and other system information has been
+explicitly inhibited, but the webmaster can find this information in the
+Mailman error logs.'''
 
 
 
@@ -157,18 +168,17 @@ def print_environment(logfp=None):
     except ImportError:
         os = None
 
-    # some information about our Python executable
+    # Write some information about our Python executable to the log file.
     logfp.write('[----- Python Information -----]\n')
     logfp.write('sys.version    = %s\n' % sys.version)
     logfp.write('sys.executable = %s\n' % sys.executable)
     logfp.write('sys.prefix     = %s\n' % sys.prefix)
     logfp.write('sys.exec_prefix= %s\n' % sys.exec_prefix)
-    # what else?
     logfp.write('sys.path       = %s\n' % sys.exec_prefix)
     logfp.write('sys.platform   = %s\n' % sys.platform)
 
-    # some information about our Python executable
-    if os:
+    # Write the same information to the HTML sink.
+    if not STEALTH_MODE:
         print '''\
 <p><hr><h4>Python information:</h4>
 
@@ -189,7 +199,7 @@ def print_environment(logfp=None):
               sys.platform, '</td></tr>'
         print '</table>'
 
-    # write to the log file first
+    # Write environment variables to the log file.
     logfp.write('[----- Environment Variables -----]\n')
     if os:
         for k, v in os.environ.items():
@@ -197,19 +207,20 @@ def print_environment(logfp=None):
     else:
         logfp.write('[failed to import module os]')
 
-    # write to the HTML sink
-    if os:
+    # Write environment variables to the HTML sink.
+    if not STEALTH_MODE:
         print '''\
 <p><hr><h4>Environment variables:</h4>
 
 <p><table>
 <tr><th>Variable</th><th>Value</th></tr>
 '''
-        for k, v in os.environ.items():
-            print '<tr><td><tt>', k, '</tt></td><td>', v, '</td></tr>'
-        print '</table>'
-    else:
-        print '<p><hr>[failed to import module os]'
+        if os:
+            for k, v in os.environ.items():
+                print '<tr><td><tt>', k, '</tt></td><td>', v, '</td></tr>'
+            print '</table>'
+        else:
+            print '<p><hr>[failed to import module os]'
 
 
 
@@ -218,7 +229,7 @@ try:
 except:
     # Some exception percolated all the way back up to the top.  This
     # generally shouldn't happen because the run_main() call is similarly
-    # wrapped, but just in case, we'll give it one last ditch effort to report 
+    # wrapped, but just in case, we'll give it one last ditch effort to report
     # problems to *somebody*.  Most likely this will end up in the Web server
     # log file.
     try:
