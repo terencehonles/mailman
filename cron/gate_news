@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,11 +30,12 @@ Where options are
 
 import sys
 import os
-import string
 import time
 import getopt
-import traceback
 import socket
+import nntplib
+
+from mimelib.Parser import Parser
 
 import paths
 from Mailman import mm_cfg
@@ -42,13 +43,10 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman import Message
 from Mailman import LockFile
-from Mailman.Handlers import HandlerAPI
+from Mailman.i18n import _
+from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 from Mailman.Logging.Syslog import syslog
-
-# The version we have is from Python 1.5.2+ and fixes the "mode reader"
-# problem.
-from Mailman.pythonlib import nntplib
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -58,10 +56,13 @@ GATENEWS_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_news.lock')
 
 LogStdErr('error', 'gate_news', manual_reprime=0, tee_to_stdout=1)
 
+LOCK_LIFETIME = mm_cfg.hours(2)
+NL = '\n'
+
 
 
 def usage(status, msg=''):
-    print __doc__ % globals()
+    print >> sys.stderr, _(__doc__)
     if msg:
         print msg
     sys.exit(status)
@@ -92,8 +93,8 @@ def poll_newsgroup(mlist, conn, first, last, glock):
             found_to = 0
             beenthere = 0
             for header in headers:
-                i = string.find(header, ':')
-                value = string.lower(header[:i])
+                i = header.find(':')
+                value = header[:i].lower()
                 if i > 0 and value == 'to':
                     found_to = 1
                 if value <> 'x-beenthere':
@@ -107,19 +108,24 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 # (i.e. "From " header).  This breaks Pipermail archiving, so
                 # we will synthesize one.  Be sure to use the format searched
                 # for by mailbox.UnixMailbox._isrealfromline()
-                timehdr = time.ctime(time.time())
-                lines = ['From ' + mlist.GetAdminEmail() + '  ' + timehdr]
+                lines = ['From %s  %s' % (mlist.GetAdminEmail(),
+                                          time.ctime(time.time()))]
                 lines.extend(headers)
                 lines.append('')
                 lines.extend(body)
                 lines.append('')
-                msg = Message.OutgoingMessage(string.join(lines, '\n'))
+                p = Parser(Message.Message)
+                msg = p.parsestr(NL.join(lines))
                 if found_to:
+                    del msg['X-Originally']
                     msg['X-Originally-To'] = msg['To']
+                    del msg['To']
                 msg['To'] = mlist.GetListEmail()
                 # Post the message to the locked list
-                HandlerAPI.DeliverToList(mlist, msg, {'fromusenet': 1,
-                                                      '_enqueue_immediate': 1})
+                inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+                inq.enqueue(msg,
+                            listname = mlist.internal_name(),
+                            fromusenet = 1)
                 syslog('fromusenet',
                        'posted to list %s: %7d' % (listname, num))
         except nntplib.error_temp, msg:
@@ -197,7 +203,7 @@ def process_lists(glock):
 def main():
     lock = LockFile.LockFile(GATENEWS_LOCK_FILE,
                              # it's okay to hijack this
-                             lifetime=mm_cfg.QRUNNER_LOCK_LIFETIME)
+                             lifetime=LOCK_LIFETIME)
     try:
         lock.lock(timeout=0.5)
     except LockFile.TimeOutError:
