@@ -20,7 +20,7 @@
 
 Usage:
 
-    newlang [options] code1 code2 ...
+    newlang [options] [lang1 [lang2 ...]]
 
 Options:
 
@@ -29,10 +29,12 @@ Options:
 
     --listname=listname
     -l listname
-        The name of the mailing list to add the language support to.
+        The name of the mailing list to add the language support to.  This is
+        a required option.
 
-code is the corresponding language directory and must exist in
-mm_cfg.TEMPLATES.  code must not be already supported by the list.
+lang is the corresponding language directory and must exist in
+mm_cfg.TEMPLATES.  If no lang is given on the command line, the server's
+default language is used.
 """
 
 import sys
@@ -45,8 +47,10 @@ from Mailman import Utils
 from Mailman import Errors
 from Mailman import MailList
 from Mailman import LockFile
-from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.i18n import _
+
+COMMASPACE = ', '
+
 
 
 def usage(code, msg=''):
@@ -59,8 +63,7 @@ def usage(code, msg=''):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'l:h',
-                                   ['listname=', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'l:h', ['listname=', 'help'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -75,7 +78,7 @@ def main():
     if listname is None:
         usage(1, _('--listname/-l is required'))
     if not languages:
-        usage(1, _('no languages given'))
+        languages = [mm_cfg.DEFAULT_SERVER_LANGUAGE]
 
     listname = listname.lower()
     try:
@@ -83,41 +86,33 @@ def main():
     except Errors.MMListError, e:
         usage(1, _('No such list "%(listname)s"\n%(e)s'))
 
-    try:
-        mlist.Lock(timeout=0.5)
-    except LockFile.TimeOutError:
-        usage(1, _("Could't acquire list lock, try again later: %(listname)s"))
-
-    try:
-        HTMLFormatter.InitVars(mlist)
-        ok_langs = []
-        for lang in languages:
-            dir = os.path.join(mm_cfg.TEMPLATE_DIR, lang)
-            if not os.path.exists(dir):
-                print >> sys.stderr, _(
-                    'No template directory for language: %(dir)s')
-                continue
-            if os.path.exists(os.path.join(mlist._template_dir, lang)):
+    # We only need to create the language subdirectory in order to make the
+    # list support this language.  Note that unless the list owner
+    # specifically wants to specialize their templates, the global defaults
+    # for the given language will work just fine.
+    ok_langs = []
+    for lang in languages:
+        gtemplatesdir = os.path.join(mm_cfg.TEMPLATE_DIR, lang)
+        if not os.path.isdir(gtemplatesdir):
+            print >> sys.stderr, _(
+                'No template directory for language: %(dir)s')
+            continue
+        ltemplatesdir = os.path.join(mlist.fullpath(), lang)
+        omask = os.umask(0)
+        try:
+            try:
+                os.mkdir(ltemplatesdir, 02775)
+                ok_langs.append(lang)
+            except OSError, e:
+                if e.errno <> errno.EEXIST: raise
                 print >> sys.stderr, _(
                     'List already supports language: %(lang)s')
-                continue
-            ok_langs.append(lang)
+        finally:
+            os.umask(omask)
 
-        # VGG, moved this out of the loop, as list.InitTemplates walks a list
-        if not ok_langs:
-            print _('No languages added to list: %(listname)s')
-            return
-
-        # Copy all the templates from the generic language template directory
-        # to a directory living under lists/<mylist>.
-        mlist.InitTemplates(ok_langs)
-        print _('Language support for'),
-        for lang in ok_langs:
-            print '%s,' % lang,
-        print _('added')
-    finally:
-        mlist.Save()
-        mlist.Unlock()
+    # All done
+    okmsg = COMMASPACE.join(ok_langs)
+    print _('Language support for %(okmsg)s added')
 
 
 
