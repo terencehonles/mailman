@@ -31,6 +31,7 @@ from Mailman.Logging.Syslog import syslog
 
 class BounceRunner(Runner):
     QDIR = mm_cfg.BOUNCEQUEUE_DIR
+    CACHELISTS = 0
 
     def _dispose(self, mlist, msg, msgdata):
         outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)

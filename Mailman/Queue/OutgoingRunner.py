@@ -38,8 +38,8 @@ DEAL_WITH_PERMFAILURES_EVERY = 1
 class OutgoingRunner(Runner):
     QDIR = mm_cfg.OUTQUEUE_DIR
 
-    def __init__(self, slice=None, numslices=1, cachelists=1):
-        Runner.__init__(self, slice, numslices, cachelists)
+    def __init__(self, slice=None, numslices=1):
+        Runner.__init__(self, slice, numslices)
         # Maps mailing lists to (recip, msg) tuples
         self._permfailures = {}
         self._permfail_counter = 0

@@ -34,9 +34,11 @@ from Mailman.Logging.Syslog import syslog
 
 
 class Runner:
-    def __init__(self, slice=None, numslices=1, cachelists=1):
+    CACHELISTS = 1
+
+    def __init__(self, slice=None, numslices=1):
         self._kids = {}
-        self._cachelists = cachelists
+        self._cachelists = self.CACHELISTS
         # Create our own switchboard.  Don't use the switchboard cache because
         # we want to provide slice and numslice arguments.
         self._switchboard = Switchboard(self.QDIR, slice, numslices)
