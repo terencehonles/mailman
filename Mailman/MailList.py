@@ -917,11 +917,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             admin_notif = self.admin_notify_mchanges
         # Delete a member, for which we know the approval has been made
         fullname, emailaddr = parseaddr(name)
+        userlang = self.getMemberLanguage(emailaddr)
         # Remove the member
         self.removeMember(emailaddr)
         # And send an acknowledgement to the user...
         if userack:
-            self.SendUnsubscribeAck(name)
+            self.SendUnsubscribeAck(emailaddr, userlang)
         # ...and to the administrator
         if admin_notif:
             realname = self.real_name
@@ -1053,7 +1054,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         if op == Pending.SUBSCRIPTION:
             try:
                 userdesc = data[0]
-                # BAW: This should eventually be refactored
+                # If confirmation comes from the web, context should be a
+                # UserDesc instance which contains overrides of the original
+                # subscription information.  If it comes from email, then
+                # context is a Message and isn't relevant.
+                if isinstance(context, UserDesc):
+                    userdesc += context
                 addr = userdesc.address
                 fullname = userdesc.fullname
                 password = userdesc.password
@@ -1071,12 +1077,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
                     'subscriptions to %(name)s require administrator approval')
-            # If confirmation comes from the web, context should be a UserDesc
-            # instance which contains overrides of the original subscription
-            # information.  If it comes from email, then context is a Message
-            # and isn't relevant.
-            if isinstance(context, UserDesc):
-                userdesc += context
             self.ApprovedAddMember(userdesc)
             return op, addr, password, digest, lang
         elif op == Pending.UNSUBSCRIPTION:
