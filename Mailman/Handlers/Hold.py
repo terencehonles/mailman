@@ -43,8 +43,10 @@ import HandlerAPI
 from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.Logging.Syslog import syslog
 
 
+
 class ForbiddenPoster(HandlerAPI.MessageHeld):
     "Sender is explicitly forbidden"
     pass
@@ -99,7 +101,7 @@ def process(mlist, msg, msgdata):
     # sendmail will change the envelope sender of the message to "bar" before
     # delivering.  This feature does not appear to be configurable.  *Boggle*.
     if not sender or sender[:len(listname)+6] == adminaddr:
-        sender = msg.GetSender(envelope=0)
+        sender = msg.GetSender(use_envelope=0)
     #
     # is the poster in the list of explicitly forbidden posters?
     if len(mlist.forbidden_posters):
@@ -221,8 +223,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         msg = Message.UserNotification(sender, adminaddr, subject, text)
         HandlerAPI.DeliverToUser(mlist, msg)
     # Log the held message
-    mlist.LogMsg('vette', '%s post from %s held: %s' %
-                 (listname, sender, reason))
+    syslog('vette', '%s post from %s held: %s' % (listname, sender, reason))
     # raise the specific MessageHeld exception to exit out of the message
     # delivery pipeline
     raise exc
