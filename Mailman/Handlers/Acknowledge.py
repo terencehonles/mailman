@@ -51,7 +51,8 @@ def process(mlist, msg, msgdata):
         {'subject'     : origsubj,
          'listname'    : realname,
          'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-         }, lang=lang, mlist=mlist)
+         'optionsurl'  : mlist.GetOptionsURL(sender, absolute=1),
+         }, lang=lang, mlist=mlist, raw=1)
     # Craft the outgoing message, with all headers and attributes
     # necessary for general delivery.  Then enqueue it to the outgoing
     # queue.
