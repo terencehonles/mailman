@@ -25,34 +25,26 @@ TBD: This needs to be made more configurable and robust.
 """
 
 import re
+
+from Mailman import mm_cfg
 from Mailman import Errors
 
+
+
 class SpamDetected(Errors.DiscardMessage):
     """The message contains known spam"""
-
-
-# This variable contains a list of 2-tuple of the format (header, regex) which
-# this module uses to match against the current message.  If the regex matches
-# the given header in the current message, then it is flagged as spam.  header
-# can be None to indicate regex search of the body of the message.  Note that
-# the more searching done, the slower this whole process gets.
-
-KNOWN_SPAMMERS = []
 
 
 
 def process(mlist, msg, msgdata):
     if msgdata.get('approved'):
         return
-    for header, regex in KNOWN_SPAMMERS:
+    for header, regex in mm_cfg.KNOWN_SPAMMERS:
         cre = re.compile(regex, re.IGNORECASE)
-        if header is None:
-            text = msg.body
-        else:
-            text = msg.get(header)
-            if not text:
-                continue
-        mo = cre.search(text)
+        value = msg[header]
+        if not value:
+            continue
+        mo = cre.search(value)
         if mo:
             # we've detected spam, so throw the message away
             raise SpamDetected
