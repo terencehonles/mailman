@@ -38,6 +38,7 @@ from Mailman import Utils
 from Mailman import Errors
 from Mailman import Message
 from Mailman import i18n
+from Mailman import Pending
 from Mailman.Logging.Syslog import syslog
 
 # First, play footsie with _ so that the following are marked as translated,
@@ -229,7 +230,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # translator again, because of the games we play above
     reason = _(str(exc))
     msgdata['rejection-notice'] = _(exc.rejection_notice(mlist))
-    mlist.HoldMessage(msg, reason, msgdata)
+    id = mlist.HoldMessage(msg, reason, msgdata)
     # Now we need to craft and send a message to the list admin so they can
     # deal with the held message.
     d = {'listname'   : listname,
@@ -249,6 +250,10 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
     if not fromusenet and not mlist.dont_respond_to_post_requests:
+        # Get a confirmation cookie
+        cookie = Pending.new(Pending.HELD_MESSAGE, id)
+        d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
+                                     cookie)
         lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
         subject = _('Your message to %(listname)s awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
