@@ -21,37 +21,37 @@
 
 # No lock needed in this script, because we don't change data.
 
-import sys
-import os, string
-from regsub import gsub
-from Mailman import Utils, MailList
+import os
+import string
+
+from Mailman import Utils
+from Mailman import MailList
 from Mailman import mm_cfg
+from Mailman import Errors
 from Mailman.htmlformat import *
 
+
+
 def main():
     try:
         path = os.environ['PATH_INFO']
     except KeyError:
-        path = ""
-
-    list_info = Utils.GetPathPieces(path)
-
-    if len(list_info) == 0:
         FormatListinfoOverview()
         return
 
-    list_name = string.lower(list_info[0])
-
-    try:
-        list = MailList.MailList(list_name, lock=0)
-    except:
-        list = None
-
-    if not (list and list._ready):
-        FormatListinfoOverview(error="List <em>%s</em> not found." % list_name)
+    parts = Utils.GetPathPieces(path)
+    if len(parts) == 0:
+        FormatListinfoOverview()
         return
 
-    FormatListListinfo(list)
+    listname = string.lower(parts[0])
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except (Errors.MMUnknownListError, Errors.MMListNotReady):
+        FormatListinfoOverview(error="List <em>%s</em> not found." % listname)
+        return
+
+    FormatListListinfo(mlist)
 
 
 
@@ -60,8 +60,7 @@ def FormatListinfoOverview(error=None):
 
     # XXX We need a portable way to determine the host by which we are being 
     #     visited!  An absolute URL would do...
-    http_host = os.environ.get('HTTP_HOST') or\
-                os.environ.get('SERVER_NAME')
+    http_host = os.environ.get('HTTP_HOST', os.environ.get('SERVER_NAME'))
     port = os.environ.get('SERVER_PORT')
     # strip off the port if there is one
     if port and http_host[-len(port)-1:] == ':'+port:
@@ -85,16 +84,16 @@ def FormatListinfoOverview(error=None):
     names.sort()
 
     for n in names:
-	l = MailList.MailList(n, lock = 0)
-	if l.advertised:
-	    if (mm_cfg.VIRTUAL_HOST_OVERVIEW
-                and http_host
-		and (string.find(http_host, l.web_page_url) == -1
-		     and string.find(l.web_page_url, http_host) == -1)):
+	mlist = MailList.MailList(n, lock=0)
+	if mlist.advertised:
+	    if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
+                    http_host and \
+                    string.find(http_host, mlist.web_page_url) == -1 and \
+                    string.find(mlist.web_page_url, http_host) == -1:
 		# List is for different identity of this host - skip it.
 		continue
 	    else:
-		advertised.append(l)
+		advertised.append(mlist)
 
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
@@ -109,7 +108,6 @@ def FormatListinfoOverview(error=None):
 			 " mailing lists on %s." % host_name,
 			 )
     else:
-
         welcome_items = (
 	    greeting,
             "<p>"
@@ -142,50 +140,56 @@ def FormatListinfoOverview(error=None):
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0, colspan=2)
 
     if advertised:
-        table.AddRow([Italic("List"), Italic("Description")])
-    for l in advertised:
-        table.AddRow([Link(l.GetRelativeScriptURL('listinfo'), 
-	      Bold(l.real_name)), l.description])
+        table.AddRow(['&nbsp;', '&nbsp;'])
+        table.AddRow([Bold("List"), Bold("Description")])
+    for mlist in advertised:
+        table.AddRow(
+            [Link(mlist.GetRelativeScriptURL('listinfo'), 
+                  Bold(mlist.real_name)),
+             mlist.description or Italic('[no description available]')])
 
     doc.AddItem(table)
     doc.AddItem('<hr>')
     doc.AddItem(MailmanLogo())
     print doc.Format(bgcolor="#ffffff")
 
-def FormatListListinfo(list):
+
+
+def FormatListListinfo(mlist):
     "Expand the listinfo template against the list's settings, and print."
 
     doc = HeadlessDocument()
 
-    replacements = list.GetStandardReplacements()
+    replacements = mlist.GetStandardReplacements()
 
-    if not list.digestable or not list.nondigestable:
+    if not mlist.digestable or not mlist.nondigestable:
         replacements['<mm-digest-radio-button>'] = ""
         replacements['<mm-undigest-radio-button>'] = ""
     else:
-        replacements['<mm-digest-radio-button>'] = list.FormatDigestButton()
+        replacements['<mm-digest-radio-button>'] = mlist.FormatDigestButton()
         replacements['<mm-undigest-radio-button>'] = \
-                                                   list.FormatUndigestButton()
-    replacements['<mm-plain-digests-button>'] = list.FormatPlainDigestsButton()
-    replacements['<mm-mime-digests-button>'] = list.FormatMimeDigestsButton()
-    replacements['<mm-subscribe-box>'] = list.FormatBox('email', size=30)
-    replacements['<mm-subscribe-button>'] = list.FormatButton('email-button',
-                                                              text='Subscribe')
-    replacements['<mm-new-password-box>'] = list.FormatSecureBox('pw')
-    replacements['<mm-confirm-password>'] = list.FormatSecureBox('pw-conf')
-    replacements['<mm-subscribe-form-start>'] = \
-                                              list.FormatFormStart('subscribe')
-    replacements['<mm-roster-form-start>'] = list.FormatFormStart('roster')
-    replacements['<mm-editing-options>'] = list.FormatEditingOption()
+                                                   mlist.FormatUndigestButton()
+    replacements['<mm-plain-digests-button>'] = \
+                                              mlist.FormatPlainDigestsButton()
+    replacements['<mm-mime-digests-button>'] = mlist.FormatMimeDigestsButton()
+    replacements['<mm-subscribe-box>'] = mlist.FormatBox('email', size=30)
+    replacements['<mm-subscribe-button>'] = mlist.FormatButton(
+        'email-button', text='Subscribe')
+    replacements['<mm-new-password-box>'] = mlist.FormatSecureBox('pw')
+    replacements['<mm-confirm-password>'] = mlist.FormatSecureBox('pw-conf')
+    replacements['<mm-subscribe-form-start>'] = mlist.FormatFormStart(
+        'subscribe')
+    replacements['<mm-roster-form-start>'] = mlist.FormatFormStart('roster')
+    replacements['<mm-editing-options>'] = mlist.FormatEditingOption()
     replacements['<mm-info-button>'] = SubmitButton('UserOptions',
                                                     'Edit Options').Format()
-    replacements['<mm-roster-option>'] = list.FormatRosterOptionForUser()
+    replacements['<mm-roster-option>'] = mlist.FormatRosterOptionForUser()
 
     # Do the expansion.
-    doc.AddItem(list.ParseTags('listinfo.html', replacements))
-
+    doc.AddItem(mlist.ParseTags('listinfo.html', replacements))
     print doc.Format()
 
 
+
 if __name__ == "__main__":
     main()
