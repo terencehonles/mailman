@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: Sat Sep 13 09:21:50 2003\n"
-"PO-Revision-Date: 2003-08-18 17:00+0900\n"
+"PO-Revision-Date: 2003-09-22 13:00+0900\n"
 "Last-Translator: Tokio Kikuchi <tkikuchi@is.kochi-u.ac.jp>\n"
 "Language-Team: Japanese <mmjp-users@mm.tkikuchi.net>\n"
 "MIME-Version: 1.0\n"
@@ -2578,7 +2578,7 @@ msgid ""
 msgstr ""
 "あなたの入会申請を受け付けましたので, まもなく処理されるでしょう.\n"
 "メーリングリストの設定によりますが, あなたの入会申請は,\n"
-"まずメールで確認されまるか リスト司会者によって承認されるかします.\n"
+"まずメールで確認されるか リスト司会者によって承認されるかします.\n"
 "もし, 確認が必要であれば, あなたのもとへその後の指示を書いた\n"
 "確認メールが届くでしょう."
 
@@ -5391,7 +5391,7 @@ msgstr "送信者フィルター"
 
 #: Mailman/Gui/Privacy.py:34
 msgid "Recipient&nbsp;filters"
-msgstr "受信者フィルター"
+msgstr "宛先フィルター"
 
 #: Mailman/Gui/Privacy.py:35
 msgid "Spam&nbsp;filters"
@@ -5909,19 +5909,19 @@ msgid ""
 "This section allows you to configure various filters based on\n"
 "            the recipient of the message."
 msgstr ""
-"このセクションではメールの受信者に基づく様々のフィルターの\n"
+"このセクションではメールの宛先に基づく様々のフィルターの\n"
 "設定を行います."
 
 #: Mailman/Gui/Privacy.py:306
 msgid "Recipient filters"
-msgstr "受信者フィルター"
+msgstr "宛先フィルター"
 
 #: Mailman/Gui/Privacy.py:310
 msgid ""
 "Must posts have list named in destination (to, cc) field\n"
 "             (or be among the acceptable alias names, specified below)?"
 msgstr ""
-"投稿にはリスト名があて先(to, cc) に含まれてい\n"
+"投稿にはリスト名が宛先(to, cc) に含まれてい\n"
 "なければならないでしょうか? (または以下に指定\n"
 "する別名の中に入っていなければな\n"
 "らない)?"
@@ -6716,7 +6716,7 @@ msgstr ""
 
 #: Mailman/Handlers/Hold.py:69
 msgid "Too many recipients to the message"
-msgstr "受信者が多すぎます"
+msgstr "受信人が多すぎます"
 
 #: Mailman/Handlers/Hold.py:70
 msgid "Please trim the recipient list; it is too long."
@@ -6928,7 +6928,7 @@ msgstr ""
 msgid "Skipped content of type %(partctype)s"
 msgstr "MIME タイプ %(partctype)s 飛ばします"
 
-#: Mailman/Handlers/Scrubber.py:319
+#: Mailman/Handlers/Scrubber.py:316
 msgid "-------------- next part --------------\n"
 msgstr ""
 
@@ -9354,7 +9354,7 @@ msgstr ""
 "が出て入力を要求する.\n"
 "\n"
 "Mailman のリストはそれぞれ2つのパラメータ, つまりメールが出て行くときの\n"
-"ホスト名と, ウェブインターフェースの URL を持っている. Mailman の初期\n"
+"ホスト名と, ウェブインタフェースの URL を持っている. Mailman の初期\n"
 "設定を行うときに, デフォルトが設定される. しかし, 複数の仮想 Mailman \n"
 "サイトを持っているときには, そのデフォルトは作成するリストに合わない\n"
 "かもしれない.\n"
@@ -10244,7 +10244,7 @@ msgstr ""
 "    それぞれのメーリングリストについて, template/options.html から\n"
 "    lists/<リスト名>/options.html にコピーする必要があります.\n"
 "\n"
-"    しかし, もしこのファイルをウェブインターフェースから編集した\n"
+"    しかし, もしこのファイルをウェブインタフェースから編集した\n"
 "    のであれば, その変更をこのファイルに適用する必要があります.\n"
 "    もしそうしないと, 変更は失われるでしょう.\n"
 "\n"
