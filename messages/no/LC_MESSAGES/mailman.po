@@ -1482,8 +1482,7 @@ msgid ""
 "            "
 msgstr ""
 "Du vil nå motta epost fra epostlisten %(listname)s igjen.\n"
-"Du kan n&aring; <a href=\"%(optionurl)s\">g&aring; til din personlige "
-"medlemsside</a> hvis du vil."
+"Du kan n&aring; <a href=\"%(optionsurl)s\">g&aring; til din personlige medlemsside</a> hvis du vil."
 
 #: Mailman/Cgi/confirm.py:683
 msgid "Re-enable mailing list membership"
