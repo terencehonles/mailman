@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -130,6 +130,23 @@ class TestMembers(TestBase):
                'person@dom.ain', mm_cfg.AcknowledgePosts)
         raises(NotAMemberError, mlist.getMemberName, 'person@dom.ain')
         raises(NotAMemberError, mlist.getMemberTopics, 'person@dom.ain')
+
+    def test_remove_member_clears(self):
+        eq = self.assertEqual
+        raises = self.assertRaises
+        # We don't really care what the bounce info is
+        class Info: pass
+        info = Info()
+        mlist = self._mlist
+        mlist.setBounceInfo('person@dom.ain', info)
+        mlist.setDeliveryStatus('person@dom.ain', MemberAdaptor.BYADMIN)
+        mlist.removeMember('person@dom.ain')
+        raises(NotAMemberError, mlist.getDeliveryStatus, 'person@dom.ain')
+        raises(NotAMemberError, mlist.getDeliveryStatusChangeTime,
+               'person@dom.ain')
+        raises(NotAMemberError, mlist.getBounceInfo, 'person@dom.ain')
+        eq(mlist.getDeliveryStatusMembers(), [])
+        eq(mlist.getBouncingMembers(), [])
 
     def test_change_address(self):
         eq = self.assertEqual
@@ -321,6 +338,33 @@ class TestMembers(TestBase):
                                  ['topic1', 'topic2', 'topic3'])
         mlist.setMemberTopics('person@dom.ain', None)
         eq(mlist.getMemberTopics('person@dom.ain'), [])
+
+    def test_bounce_info(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        # We don't really care what info is stored
+        class Info: pass
+        info = Info()
+        # Test setting and getting
+        mlist.setBounceInfo('person@dom.ain', info)
+        eq(mlist.getBounceInfo('person@dom.ain'), info)
+        # Test case sensitivity
+        eq(mlist.getBounceInfo('PERSON@dom.ain'), info)
+        info2 = Info()
+        mlist.setBounceInfo('PeRsOn@dom.ain', info2)
+        eq(mlist.getBounceInfo('person@dom.ain'), info2)
+        eq(mlist.getBounceInfo('PeRsOn@dom.ain'), info2)
+        eq(mlist.getBounceInfo('PERSON@DOM.AIN'), info2)
+        # Test getBouncingMembers...
+        eq(mlist.getBouncingMembers(), ['person@dom.ain'])
+        # Test clearing bounce information...
+        mlist.setBounceInfo('person@dom.ain', None)
+        eq(mlist.getBouncingMembers(), [])
+        eq(mlist.getBounceInfo('person@dom.ain'), None)
+        # Make sure that you can clear the attributes case insensitively
+        mlist.setBounceInfo('person@dom.ain', info)
+        mlist.setBounceInfo('PERSON@dom.ain', None)
+        eq(mlist.getBouncingMembers(), [])
 
 
 
