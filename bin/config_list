@@ -126,7 +126,7 @@ def do_output(listname, outfile):
                     print '#', line
                 # munge the value based on its type
                 value = getattr(mlist, varname)
-                if vtype == mm_cfg.Text:
+                if vtype in (mm_cfg.Text, mm_cfg.FileUpload):
                     print varname, '=',
                     lines = string.split(string.replace(value, '\r', ''), '\n')
                     if len(lines) == 1:
