@@ -160,11 +160,14 @@ def main():
         # then
         true_filename = true_filename + '.gz'
 
-    if not isAuthenticated(list_name):
+    if not list_name or not isAuthenticated(list_name):
         # Output the password form
         print 'Content-type: text/html\n'
         page = PAGE
-            
+
+        if not list_name:
+            print '\n<h3>No list name found.</h3>'
+            raise SystemExit
         try:
             listobj = GetListobj(list_name)
         except Errors.MMUnknownListError:
