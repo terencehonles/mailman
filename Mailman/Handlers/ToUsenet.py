@@ -50,9 +50,9 @@ def process(mlist, msg, msgdata):
         # In the parent.  This is a bit of a kludge to keep a list of the
         # children that need to be waited on.  We want to be sure to do the
         # waiting while the list is unlocked!
-        kids = msgdata.get('kids', {})
+        kids = msgdata.get('_kids', {})
         kids[pid] = pid
-        msgdata['kids'] = kids
+        msgdata['_kids'] = kids
     else:
         do_child(mlist, msg)
         
