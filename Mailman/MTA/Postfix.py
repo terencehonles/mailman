@@ -277,37 +277,47 @@ def remove(mlist, cgi=0):
 
 def checkperms(state):
     targetmode = S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
-    if state.VERBOSE:
-        print _('checking permissions on %(DBFILE)s')
-    try:
-        stat = os.stat(DBFILE)
-    except OSError, e:
-        if e.errno <> errno.ENOENT: raise
-        return
-    if (stat[ST_MODE] & targetmode) <> targetmode:
-        state.ERRORS += 1
-        octmode = oct(stat[ST_MODE])
-        print _('%(DBFILE)s permissions must be 066x (got %(octmode)s)'),
-        if state.FIX:
-            print _('(fixing)')
-            os.chmod(DBFILE, stat[ST_MODE] | targetmode)
-        else:
-            print
-    # Make sure the aliases.db is owned by root.  We don't need to check the
-    # group ownership of the file, since check_perms checks this itself.
-    if state.VERBOSE:
-        print _('checking ownership of %(DBFILE)s')
-    rootuid = pwd.getpwnam('mailman')[2]
-    ownerok = stat[ST_UID] == rootuid
-    if not ownerok:
+    for file in ALIASFILE, VIRTFILE:
+        if state.VERBOSE:
+            print _('checking permissions on %(file)s')
+        stat = None
         try:
-            owner = pwd.getpwuid(stat[ST_UID])[0]
-        except KeyError:
-            owner = 'uid %d' % stat[ST_UID]
-        print _('%(DBFILE)s owned by %(owner)s (must be owned by mailman)')
-        state.ERRORS += 1
-        if state.FIX:
-            print _('(fixing)')
-            os.chown(DBFILE, rootuid, mm_cfg.MAILMAN_GID)
-        else:
-            print
+            stat = os.stat(file)
+        except OSError, e:
+            if e.errno <> errno.ENOENT:
+                raise
+        if stat and (stat[ST_MODE] & targetmode) <> targetmode:
+            state.ERRORS += 1
+            octmode = oct(stat[ST_MODE])
+            print _('%(file)s permissions must be 066x (got %(octmode)s)'),
+            if state.FIX:
+                print _('(fixing)')
+                os.chmod(file, stat[ST_MODE] | targetmode)
+            else:
+                print
+        # Make sure the corresponding .db files are owned by the Mailman user.
+        # We don't need to check the group ownership of the file, since
+        # check_perms checks this itself.
+        dbfile = file + '.db'
+        stat = None
+        try:
+            stat = os.stat(dbfile)
+        except OSError, e:
+            if e.errno <> errno.ENOENT:
+                raise
+            continue
+        if state.VERBOSE:
+            print _('checking ownership of %(dbfile)s')
+        ownerok = stat[ST_UID] == mm_cfg.MAILMAN_UID
+        if not ownerok:
+            try:
+                owner = pwd.getpwuid(stat[ST_UID])[0]
+            except KeyError:
+                owner = 'uid %d' % stat[ST_UID]
+            print _('%(dbfile)s owned by %(owner)s (must be owned by Mailman)')
+            state.ERRORS += 1
+            if state.FIX:
+                print _('(fixing)')
+                os.chown(dbfile, mm_cfg.MAILMAN_UID, mm_cfg.MAILMAN_GID)
+            else:
+                print
