@@ -243,31 +243,6 @@ def ScriptURL(target, web_page_url=None, absolute=0):
 
 
 
-# Return 1 if the 2 addresses match.  0 otherwise.
-# Might also want to match if there's any common domain name...
-# There's password protection anyway.
-def AddressesMatch(addr1, addr2):
-    "True when username matches and host addr of one addr contains other's."
-    addr1, addr2 = map(LCDomain, [addr1, addr2])
-    if not mm_cfg.SMART_ADDRESS_MATCH:
-        return addr1 == addr2
-    user1, domain1 = ParseEmail(addr1)
-    user2, domain2 = ParseEmail(addr2)
-    if user1 != user2:
-        return 0
-    if domain1 == domain2:
-        return 1
-    elif not domain1 or not domain2:
-        return 0
-    for i in range(-1 * min(len(domain1), len(domain2)), 0):
-        # By going from most specific component of host part we're likely
-        # to hit a difference sooner.
-        if domain1[i] != domain2[i]:
-            return 0
-    return 1
-
-
-
 def GetPossibleMatchingAddrs(name):
     """returns a sorted list of addresses that could possibly match
     a given name.
@@ -300,30 +275,6 @@ def List2Dict(list, foldcase=0):
     return d
 
 
-def FindMatchingAddresses(name, dict, *dicts):
-    """Given an email address, and any number of dictionaries keyed by
-    email addresses, returns the subset of the list that matches the
-    given address.  Should sort based on exactness of match,
-    just in case."""
-    dicts = list(dicts)
-    dicts.insert(0, dict)
-    if not mm_cfg.SMART_ADDRESS_MATCH:
-        for d in dicts:
-            if d.has_key(name.lower()):
-                return [name]
-        return []
-    #
-    # GetPossibleMatchingAddrs return string.lower'd values
-    #
-    p_matches = GetPossibleMatchingAddrs(name) 
-    res = []
-    for pm in p_matches:
-        for d in dicts:
-            if d.has_key(pm):
-                res.append(pm)
-    return res
-
-  
 
 _vowels = ('a', 'e', 'i', 'o', 'u')
 _consonants = ('b', 'c', 'd', 'f', 'g', 'h', 'k', 'm', 'n',
