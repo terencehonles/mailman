@@ -110,12 +110,12 @@ class Runner:
                     self._onefile(msg, msgdata)
                 except Exception, e:
                     self._log(e)
-                    syslog('error', 'SHUNTING: %s', filebase)
                     # Put a marker in the metadata for unshunting
                     msgdata['whichq'] = self._switchboard.whichq()
-                    self._shunt.enqueue(msg, msgdata)
+                    filebase = self._shunt.enqueue(msg, msgdata)
+                    syslog('error', 'SHUNTING: %s', filebase)
             # Other work we want to do each time through the loop
-            Utils.reap(self._kids, once=1)
+            Utils.reap(self._kids, once=True)
             self._doperiodic()
             if self._shortcircuit():
                 break
@@ -177,7 +177,7 @@ class Runner:
         mlist = self._listcache.get(listname)
         if not mlist:
             try:
-                mlist = MailList.MailList(listname, lock=0)
+                mlist = MailList.MailList(listname, lock=False)
             except Errors.MMListError, e:
                 syslog('error', 'error opening list: %s\n%s', listname, e)
                 return None
