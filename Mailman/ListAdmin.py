@@ -45,6 +45,7 @@ from Mailman.i18n import _
 IGN = 0
 HELDMSG = 1
 SUBSCRIPTION = 2
+UNSUBSCRIPTION = 3
 
 # Return status from __handlepost()
 DEFER = 0
@@ -137,6 +138,9 @@ class ListAdmin:
     def GetSubscriptionIds(self):
         return self.__getmsgids(SUBSCRIPTION)
 
+    def GetUnsubscriptionIds(self):
+        return self.__getmsgids(UNSUBSCRIPTION)
+
     def GetRecord(self, id):
         self.__opendb()
         type, data = self.__db[id]
@@ -154,6 +158,8 @@ class ListAdmin:
         if rtype == HELDMSG:
             status = self.__handlepost(data, value, comment, preserve,
                                        forward, addr)
+        elif rtype == UNSUBSCRIPTION:
+            status = self.__handleunsubscription(data, value, comment)
         else:
             assert rtype == SUBSCRIPTION
             status = self.__handlesubscription(data, value, comment)
@@ -307,13 +313,13 @@ class ListAdmin:
         return status
             
     def HoldSubscription(self, addr, fullname, password, digest, lang):
-        # assure that the database is open for writing
+        # Assure that the database is open for writing
         self.__opendb()
-        # get the next unique id
+        # Get the next unique id
         id = self.__request_id()
         assert not self.__db.has_key(id)
         #
-        # save the information to the request database. for held subscription
+        # Save the information to the request database. for held subscription
         # entries, each record in the database will be one of the following
         # format:
         #
@@ -329,8 +335,8 @@ class ListAdmin:
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
         syslog('vette', '%s: held subscription request from %s',
-               self.real_name, addr)
-        # possibly notify the administrator in default list language
+               self.internal_name(), addr)
+        # Possibly notify the administrator in default list language
         if self.admin_immed_notify:
             realname = self.real_name
             subject = _(
@@ -338,7 +344,7 @@ class ListAdmin:
             text = Utils.maketext(
                 'subauth.txt',
                 {'username'   : addr,
-                 'listname'   : self.real_name,
+                 'listname'   : self.internal_name(),
                  'hostname'   : self.host_name,
                  'admindb_url': self.GetScriptURL('admindb', absolute=1),
                  }, mlist=self, lang=lang)
@@ -355,7 +361,6 @@ class ListAdmin:
         elif value == mm_cfg.DISCARD:
             pass
         elif value == mm_cfg.REJECT:
-            # refused
             self.__refuse(_('Subscription request'), addr, comment, lang=lang)
         else:
             # subscribe
@@ -371,6 +376,50 @@ class ListAdmin:
             self.__opendb()
         return REMOVE
 
+    def HoldUnsubscription(self, addr):
+        # Assure the database is open for writing
+        self.__opendb()
+        # Get the next unique id
+        id = self.__request_id()
+        assert not self.__db.has_key(id)
+        # All we need to do is save the unsubscribing address
+        self.__db[id] = (UNSUBSCRIPTION, addr)
+        syslog('vette', '%s: held unsubscription request from %s',
+               self.internal_name(), addr)
+        # Possibly notify the administrator of the hold
+        if self.admin_immed_notify:
+            realname = self.real_name
+            subject = _(
+                'New unsubscription request from %(realname)s by %(addr)s')
+            text = Utils.maketext(
+                'unsubauth.txt',
+                {'username'   : addr,
+                 'listname'   : self.internal_name(),
+                 'hostname'   : self.host_name,
+                 'admindb_url': self.GetScriptURL('admindb', absolute=1),
+                 }, mlist=self)
+            # This message should appear to come from the <list>-owner so as
+            # to avoid any useless bounce processing.
+            owneraddr = self.GetOwnerEmail()
+            msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
+            msg.send(self, **{'tomoderators': 1})
+
+    def __handleunsubscription(self, record, value, comment):
+        addr = record
+        if value == mm_cfg.DEFER:
+            return DEFER
+        elif value == mm_cfg.DISCARD:
+            pass
+        elif value == mm_cfg.REJECT:
+            self.__refuse(_('Unsubscription request'), addr, comment)
+        else:
+            assert value == mm_cfg.UNSUBSCRIBE
+            try:
+                self.ApprovedDeleteMember(addr)
+            except Errors.NotAMemberError:
+                # User has already been unsubscribed
+                pass
+        return REMOVE
 
     def __refuse(self, request, recip, comment, origmsg=None, lang=None):
         adminaddr = self.GetAdminEmail()
