@@ -41,7 +41,11 @@ StudlyCaps).
 (<!-VERSION--->2.1a2<!-VERSION--->,
 released on
 <!-DATE--->11-Jul-2001<!-DATE--->)
-is the current stable GNU release.
+is an alpha release providing an early glimpse into what the next
+version of Mailman will look like.  It should <strong>not</strong> be
+used in production environments.  Instead, please use
+<a href="http://sourceforge.net/project/shownotes.php?release_id=45268"
+>version 2.0.6</a>, the latest stable release.
 
 <h3>Acknowledgements</h3>
 
