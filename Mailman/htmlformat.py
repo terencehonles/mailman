@@ -334,10 +334,19 @@ class Document(Container):
             output.append('%s</HTML>' % tab)
         return NL.join(output)
 
+    def addError(self, errmsg, tag=None, *args):
+        if tag is None:
+            tag = _('Warning: ')
+        self.AddItem(Header(3, Bold(FontAttr(
+            _(tag), color=mm_cfg.WEB_ERROR_COLOR, size='+2')).Format() +
+                            Italic(errmsg % args).Format()))
+
+
 class HeadlessDocument(Document):
     """Document without head section, for templates that provide their own."""
     suppress_head = 1
     
+
 class StdContainer(Container):
     def Format(self, indent=0):
 	# If I don't start a new I ignore indent
@@ -446,22 +455,26 @@ class Hidden(InputObj):
         InputObj.__init__(self, name, 'HIDDEN', value, checked=0)
 
 class TextArea:
-    def __init__(self, name, text='', rows=None, cols=None, wrap='soft'):
+    def __init__(self, name, text='', rows=None, cols=None, wrap='soft',
+                 readonly=0):
 	self.name = name
 	self.text = text
 	self.rows = rows
 	self.cols = cols
 	self.wrap = wrap
+        self.readonly = readonly
 
     def Format(self, indent=0):
 	output = '<TEXTAREA NAME=%s' % self.name
 	if self.rows:
-	    output = output + ' ROWS=%s' % self.rows
+	    output += ' ROWS=%s' % self.rows
 	if self.cols:
-	    output = output + ' COLS=%s' % self.cols
+	    output += ' COLS=%s' % self.cols
 	if self.wrap:
-	    output = output + ' WRAP=%s' % self.wrap
-	output = output + '>%s</TEXTAREA>' % self.text
+	    output += ' WRAP=%s' % self.wrap
+        if self.readonly:
+            output += ' READONLY'
+	output += '>%s</TEXTAREA>' % self.text
 	return output
 
 class FileUpload(InputObj):
