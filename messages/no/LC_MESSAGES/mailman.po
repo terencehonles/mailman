@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Sun May  5 17:07:13 2002\n"
+"POT-Creation-Date: Sun May 19 12:46:02 2002\n"
 "PO-Revision-Date: 2002-05-05 18:13+0200\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -628,7 +628,7 @@ msgstr "Sende velkomsthilsen til nye medlemmer?"
 #: Mailman/Gui/NonDigest.py:51 Mailman/Gui/Privacy.py:100
 #: Mailman/Gui/Privacy.py:106 Mailman/Gui/Privacy.py:139
 #: Mailman/Gui/Privacy.py:187 Mailman/Gui/Privacy.py:295
-#: Mailman/Gui/Privacy.py:310 Mailman/Gui/Privacy.py:377
+#: Mailman/Gui/Privacy.py:310 Mailman/Gui/Privacy.py:374
 #: Mailman/Gui/Usenet.py:46 Mailman/Gui/Usenet.py:50 Mailman/Gui/Usenet.py:54
 msgid "No"
 msgstr "Nei"
@@ -653,7 +653,7 @@ msgstr "Nei"
 #: Mailman/Gui/Privacy.py:100 Mailman/Gui/Privacy.py:106
 #: Mailman/Gui/Privacy.py:139 Mailman/Gui/Privacy.py:187
 #: Mailman/Gui/Privacy.py:295 Mailman/Gui/Privacy.py:310
-#: Mailman/Gui/Privacy.py:377 Mailman/Gui/Usenet.py:46
+#: Mailman/Gui/Privacy.py:374 Mailman/Gui/Usenet.py:46
 #: Mailman/Gui/Usenet.py:50 Mailman/Gui/Usenet.py:54
 msgid "Yes"
 msgstr "Ja"
@@ -2528,7 +2528,7 @@ msgstr ""
 "gitt\n"
 "        eposten som ba om bekreftelse.\n"
 
-#: Mailman/Commands/cmd_confirm.py:39 Mailman/Commands/cmd_lists.py:39
+#: Mailman/Commands/cmd_confirm.py:39 Mailman/Commands/cmd_lists.py:40
 #: Mailman/Commands/cmd_set.py:133 Mailman/Commands/cmd_subscribe.py:68
 #: Mailman/Commands/cmd_unsubscribe.py:52 Mailman/Commands/cmd_who.py:65
 msgid "Usage:"
@@ -2601,6 +2601,10 @@ msgstr ""
 "    help\n"
 "        Viser denne hjelpeteksten.\n"
 
+#: Mailman/Commands/cmd_help.py:47
+msgid "You can access your personal options via the following url:"
+msgstr ""
+
 #: Mailman/Commands/cmd_info.py:17
 msgid ""
 "\n"
@@ -2611,7 +2615,7 @@ msgstr ""
 "    info\n"
 "        Viser informasjon om denne epostlisten.\n"
 
-#: Mailman/Commands/cmd_info.py:39 Mailman/Commands/cmd_lists.py:56
+#: Mailman/Commands/cmd_info.py:39 Mailman/Commands/cmd_lists.py:62
 msgid "n/a"
 msgstr ""
 
@@ -2659,19 +2663,19 @@ msgstr ""
 "denne\n"
 "        GNU Mailman serveren.\n"
 
-#: Mailman/Commands/cmd_lists.py:43
+#: Mailman/Commands/cmd_lists.py:44
 msgid "Public mailing lists at %(hostname)s:"
 msgstr "Epostlister offentlig tilgjengelig på %(hostname)s:"
 
-#: Mailman/Commands/cmd_lists.py:60
+#: Mailman/Commands/cmd_lists.py:66
 msgid "%(i)3d. List name:   %(realname)s"
 msgstr "%(i)3d. Listenavn:   %(realname)s"
 
-#: Mailman/Commands/cmd_lists.py:61
+#: Mailman/Commands/cmd_lists.py:67
 msgid "     Description: %(description)s"
 msgstr "     Beskrivelse: %(description)s"
 
-#: Mailman/Commands/cmd_lists.py:62
+#: Mailman/Commands/cmd_lists.py:68
 msgid "     Requests to: %(requestaddr)s"
 msgstr "     Forespørsler til: %(requestaddr)s"
 
@@ -3205,59 +3209,63 @@ msgstr "Medlemmer i normal-modus:"
 msgid "Digest members:"
 msgstr "Medlemmer i sammendrag-modus:"
 
-#: Mailman/Defaults.py:1159
+#: Mailman/Defaults.py:1151
 msgid "Traditional Chinese"
 msgstr "Kinesisk (Traditional)"
 
-#: Mailman/Defaults.py:1160
+#: Mailman/Defaults.py:1152
 msgid "Czech"
 msgstr "Tsjekkisk"
 
-#: Mailman/Defaults.py:1161
+#: Mailman/Defaults.py:1153
 msgid "German"
 msgstr "Tysk"
 
-#: Mailman/Defaults.py:1162
+#: Mailman/Defaults.py:1154
 msgid "English (USA)"
 msgstr "Engelsk (USA)"
 
-#: Mailman/Defaults.py:1163
+#: Mailman/Defaults.py:1155
 msgid "Spanish (Spain)"
 msgstr "Spansk (Spania)"
 
-#: Mailman/Defaults.py:1164
+#: Mailman/Defaults.py:1156
+msgid "Estonian"
+msgstr ""
+
+#: Mailman/Defaults.py:1157
 msgid "Finnish"
 msgstr "Finsk"
 
-#: Mailman/Defaults.py:1165
+#: Mailman/Defaults.py:1158
 msgid "French"
 msgstr "Fransk"
 
-#: Mailman/Defaults.py:1166
+#: Mailman/Defaults.py:1159
 msgid "Simplified Chinese"
 msgstr "Kinesisk (Simplified)"
 
-#: Mailman/Defaults.py:1167
+#: Mailman/Defaults.py:1160
 msgid "Hungarian"
 msgstr "Ungarsk"
 
-#: Mailman/Defaults.py:1168
+#: Mailman/Defaults.py:1161
 msgid "Italian"
 msgstr "Italiensk"
 
-#: Mailman/Defaults.py:1169
+#: Mailman/Defaults.py:1162
 msgid "Japanese"
 msgstr "Japansk"
 
-#: Mailman/Defaults.py:1170
+#: Mailman/Defaults.py:1163
 msgid "Korean"
 msgstr "Koreansk"
 
-#: Mailman/Defaults.py:1171
+#: Mailman/Defaults.py:1164
 msgid "Norwegian"
 msgstr "Norsk"
 
-#: Mailman/Defaults.py:1172
+#: Mailman/Defaults.py:1165
 msgid "Russian"
 msgstr "Russisk"
 
@@ -5763,6 +5771,7 @@ msgstr ""
 "meldingshodet) som passer med egendefinerte regexp-uttrykk."
 
 #: Mailman/Gui/Privacy.py:360
+#, fuzzy
 msgid ""
 "Use this option to prohibit posts according to specific\n"
 "             header values.  The target value is a regular-expression for\n"
@@ -5779,11 +5788,7 @@ msgid ""
 "             <p>Note that leading whitespace is trimmed from the regexp.  "
 "This\n"
 "             can be circumvented in a number of ways, e.g. by escaping or\n"
-"             bracketing it.\n"
-"             \n"
-"             <p> See also the <em>forbidden_posters</em> option for a "
-"related\n"
-"             mechanism."
+"             bracketing it."
 msgstr ""
 "Bruk denne innstillingen til &aring; filtrere ut epost til listen,\n"
 "basert p&aring; innholdet av et eller flere felt i meldingshodet.\n"
@@ -5803,7 +5808,7 @@ msgstr ""
 "<p>Se ogs&aring; innstillingen <em>forbidden_posters</em> for en lignende "
 "m&aring;te &aring; blokkere epost p&aring;."
 
-#: Mailman/Gui/Privacy.py:378
+#: Mailman/Gui/Privacy.py:375
 msgid ""
 "Hide the sender of a message, replacing it with the list\n"
 "           address (Removes From, Sender and Reply-To fields)"
@@ -6462,7 +6467,7 @@ msgstr ""
 msgid "Post by a moderated member"
 msgstr "Melding sendt av et moderert medlem"
 
-#: Mailman/Handlers/Moderate.py:129
+#: Mailman/Handlers/Moderate.py:130
 msgid ""
 "You are not allowed to post to this mailing list, and your message has been\n"
 "automatically rejected.  If you think that your messages are being rejected "
@@ -6475,23 +6480,23 @@ msgstr ""
 "kontakt\n"
 "epostlistens eier på %(listowner)s."
 
-#: Mailman/Handlers/Moderate.py:144
+#: Mailman/Handlers/Moderate.py:145
 msgid "Auto-discard notification"
 msgstr "Automatisk melding: din epost ble avvist"
 
-#: Mailman/Handlers/Moderate.py:147
+#: Mailman/Handlers/Moderate.py:148
 msgid "The attached message has been automatically discarded."
 msgstr "Den vedlagte meldingen er automatisk forkastet."
 
-#: Mailman/Handlers/Replybot.py:66
+#: Mailman/Handlers/Replybot.py:71
 msgid "Auto-response for your message to "
 msgstr "Automatisk svar for meldingen du sendte til "
 
-#: Mailman/Handlers/Replybot.py:67
+#: Mailman/Handlers/Replybot.py:72
 msgid "the \"%(realname)s\" mailing list"
 msgstr "epostlisten \"%(realname)s\""
 
-#: Mailman/Handlers/Replybot.py:97
+#: Mailman/Handlers/Replybot.py:102
 msgid "The Mailman Replybot"
 msgstr "Mailmans Automatiske Svarer"
 
@@ -8768,209 +8773,6 @@ msgstr "Ugyldig epostadresse: %(owner_mail)s"
 #: bin/newlist:184
 msgid "Hit enter to notify %(listname)s owner..."
 msgstr "Trykk [Enter] for å sende melding til eieren av listen %(listname)s..."
-
-#: bin/pygettext.py:7
-msgid ""
-"pygettext -- Python equivalent of xgettext(1)\n"
-"\n"
-"Many systems (Solaris, Linux, Gnu) provide extensive tools that ease the\n"
-"internationalization of C programs.  Most of these tools are independent of\n"
-"the programming language and can be used from within Python programs.  "
-"Martin\n"
-"von Loewis' work[1] helps considerably in this regard.\n"
-"\n"
-"There's one problem though; xgettext is the program that scans source code\n"
-"looking for message strings, but it groks only C (or C++).  Python "
-"introduces\n"
-"a few wrinkles, such as dual quoting characters, triple quoted strings, and\n"
-"raw strings.  xgettext understands none of this.\n"
-"\n"
-"Enter pygettext, which uses Python's standard tokenize module to scan "
-"Python\n"
-"source code, generating .pot files identical to what GNU xgettext[2] "
-"generates\n"
-"for C and C++ code.  From there, the standard GNU tools can be used.\n"
-"\n"
-"A word about marking Python strings as candidates for translation.  GNU\n"
-"xgettext recognizes the following keywords: gettext, dgettext, dcgettext, "
-"and\n"
-"gettext_noop.  But those can be a lot of text to include all over your "
-"code.\n"
-"C and C++ have a trick: they use the C preprocessor.  Most internationalized "
-"C\n"
-"source includes a #define for gettext() to _() so that what has to be "
-"written\n"
-"in the source is much less.  Thus these are both translatable strings:\n"
-"\n"
-"    gettext(\"Translatable String\")\n"
-"    _(\"Translatable String\")\n"
-"\n"
-"Python of course has no preprocessor so this doesn't work so well.  Thus,\n"
-"pygettext searches only for _() by default, but see the -k/--keyword flag\n"
-"below for how to augment this.\n"
-"\n"
-" [1] http://www.python.org/workshops/1997-10/proceedings/loewis.html\n"
-" [2] http://www.gnu.org/software/gettext/gettext.html\n"
-"\n"
-"NOTE: pygettext attempts to be option and feature compatible with GNU "
-"xgettext\n"
-"where ever possible.  However some options are still missing or are not "
-"fully\n"
-"implemented.  Also, xgettext's use of command line switches with option\n"
-"arguments is broken, and in these cases, pygettext just defines additional\n"
-"switches.\n"
-"\n"
-"Usage: pygettext [options] inputfile ...\n"
-"\n"
-"Options:\n"
-"\n"
-"    -a\n"
-"    --extract-all\n"
-"        Extract all strings.\n"
-"\n"
-"    -d name\n"
-"    --default-domain=name\n"
-"        Rename the default output file from messages.pot to name.pot.\n"
-"\n"
-"    -E\n"
-"    --escape\n"
-"        Replace non-ASCII characters with octal escape sequences.\n"
-"\n"
-"    -D\n"
-"    --docstrings\n"
-"        Extract module, class, method, and function docstrings.  These do "
-"not\n"
-"        need to be wrapped in _() markers, and in fact cannot be for Python "
-"to\n"
-"        consider them docstrings. (See also the -X option).\n"
-"\n"
-"    -h\n"
-"    --help\n"
-"        Print this help message and exit.\n"
-"\n"
-"    -k word\n"
-"    --keyword=word\n"
-"        Keywords to look for in addition to the default set, which are:\n"
-"        %(DEFAULTKEYWORDS)s\n"
-"\n"
-"        You can have multiple -k flags on the command line.\n"
-"\n"
-"    -K\n"
-"    --no-default-keywords\n"
-"        Disable the default set of keywords (see above).  Any keywords\n"
-"        explicitly added with the -k/--keyword option are still recognized.\n"
-"\n"
-"    --no-location\n"
-"        Do not write filename/lineno location comments.\n"
-"\n"
-"    -n\n"
-"    --add-location\n"
-"        Write filename/lineno location comments indicating where each\n"
-"        extracted string is found in the source.  These lines appear before\n"
-"        each msgid.  The style of comments is controlled by the -S/--style\n"
-"        option.  This is the default.\n"
-"\n"
-"    -o filename\n"
-"    --output=filename\n"
-"        Rename the default output file from messages.pot to filename.  If\n"
-"        filename is `-' then the output is sent to standard out.\n"
-"\n"
-"    -p dir\n"
-"    --output-dir=dir\n"
-"        Output files will be placed in directory dir.\n"
-"\n"
-"    -S stylename\n"
-"    --style stylename\n"
-"        Specify which style to use for location comments.  Two styles are\n"
-"        supported:\n"
-"\n"
-"        Solaris  # File: filename, line: line-number\n"
-"        GNU      #: filename:line\n"
-"\n"
-"        The style name is case insensitive.  GNU style is the default.\n"
-"\n"
-"    -v\n"
-"    --verbose\n"
-"        Print the names of the files being processed.\n"
-"\n"
-"    -V\n"
-"    --version\n"
-"        Print the version of pygettext and exit.\n"
-"\n"
-"    -w columns\n"
-"    --width=columns\n"
-"        Set width of output to columns.\n"
-"\n"
-"    -x filename\n"
-"    --exclude-file=filename\n"
-"        Specify a file that contains a list of strings that are not be\n"
-"        extracted from the input files.  Each string to be excluded must\n"
-"        appear on a line by itself in the file.\n"
-"\n"
-"    -X filename\n"
-"    --no-docstrings=filename\n"
-"        Specify a file that contains a list of files (one per line) that\n"
-"        should not have their docstrings extracted.  This is only useful in\n"
-"        conjunction with the -D option above.\n"
-"\n"
-"If `inputfile' is -, standard input is read.\n"
-msgstr ""
-
-#: bin/pygettext.py:165
-msgid ""
-"# SOME DESCRIPTIVE TITLE.\n"
-"# Copyright (C) YEAR ORGANIZATION\n"
-"# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.\n"
-"#\n"
-"msgid \"\"\n"
-"msgstr \"\"\n"
-"\"Project-Id-Version: PACKAGE VERSION\\n\"\n"
-"\"POT-Creation-Date: %(time)s\\n\"\n"
-"\"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n\"\n"
-"\"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n\"\n"
-"\"Language-Team: LANGUAGE <LL@li.org>\\n\"\n"
-"\"MIME-Version: 1.0\\n\"\n"
-"\"Content-Type: text/plain; charset=CHARSET\\n\"\n"
-"\"Content-Transfer-Encoding: ENCODING\\n\"\n"
-"\"Generated-By: pygettext.py %(version)s\\n\"\n"
-"\n"
-msgstr ""
-
-#: bin/pygettext.py:366
-msgid "# File: %(filename)s, line: %(lineno)d"
-msgstr ""
-
-#: bin/pygettext.py:374
-msgid " %(filename)s:%(lineno)d"
-msgstr ""
-
-#: bin/pygettext.py:451
-msgid "Invalid value for --style: %s"
-msgstr ""
-
-#: bin/pygettext.py:459
-msgid "pygettext.py (xgettext for Python) %s"
-msgstr ""
-
-#: bin/pygettext.py:465
-msgid "--width argument must be an integer: %s"
-msgstr ""
-
-#: bin/pygettext.py:492
-msgid "Can't read --exclude-file: %s"
-msgstr ""
-
-#: bin/pygettext.py:503
-msgid "Reading standard input"
-msgstr ""
-
-#: bin/pygettext.py:508
-msgid "Working on %s"
-msgstr ""
-
-#: bin/pygettext.py:541
-msgid "a unicode string"
-msgstr ""
 
 #: bin/qrunner:19
 msgid ""

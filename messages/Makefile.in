@@ -119,7 +119,7 @@ marked.files:
 
 docstring.files:
 	@echo "Calculating script input files for pygettext"
-	(cd ..; grep -d skip -l -i '^#! .*python.*' `find bin cron scripts -name ".#*" -prune -o -print` >| messages/$@)
+	(cd ..; grep -d skip -l -i '^#! .*python.*' `find bin cron scripts -name ".#*" -prune -o -print` | grep -v pygettext >| messages/$@)
 	(cd ..; ls Mailman/Commands/cmd_*.py >> messages/$@)
 
 mailman.pot: marked.files docstring.files
