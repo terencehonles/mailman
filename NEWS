@@ -132,6 +132,12 @@ Here is a history of user visible changes to Mailman.
         o If the site administrator agrees, list owners have the
           ability to disable RFC 2369 List-* headers.
 
+        o There is now an API for an external process to post a
+          message to a list.  This posting process can also specify an
+          explicit list of recipients, in effect turning the mailing
+          list into a "virtual list" with a fluid membership.  See
+          Mailman/Post.py for details.
+
     - Building/testing/configuration
         o mimelib is no longer required, but you must install the
           email package (see the tarball in the misc directory).
