@@ -152,25 +152,22 @@ class HTMLFormatter:
     def FormatEditingOption(self):
         "Present editing options, according to list privacy."
 
-        text = ("<b>%s subscribers</b>, to edit your subscription options"
+        text = ("<b>%s subscribers</b>, to edit your subscription options:"
                 % self.real_name)
         text = text + " %senter your email address: "
 
         if self.private_roster == 0:
-            text = text % "<b><i>either</i></b> "
+            text = text % "<p><b><i>Either</i></b> "
         else:
             text = text % ""
         text = (text
-                + "<ul>"
                 + htmlformat.TextBox('info', size=40).Format()
                 + "  "
                 + htmlformat.SubmitButton('UserOptions',
-                                          'Edit Options').Format()
-                + "</ul>")
+                                          'Edit Options').Format())
         if self.private_roster == 0:
-            text = text + ("<p><b><i>or</i></b> visit the subscribers list"
-                           ' (<a href="#subscribers">above</a>) and select'
-                           " your entry.")
+            text = text + ("<p><b><i>Or</i></b> visit the subscribers list"
+                           " (above) and select your entry.")
         return text
         
     def FormatRosterOptionForAdmin(self):
