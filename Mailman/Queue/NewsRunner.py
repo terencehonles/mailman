@@ -85,6 +85,12 @@ class NewsRunner(Runner):
 
 
 def prepare_message(mlist, msg, msgdata):
+    # Should we restore the original, non-prefixed subject for gatewayed
+    # messages?
+    origsubj = msgdata.get('origsubj')
+    if not mlist.news_prefix_subject_too and origsubj is not None:
+        del msg['subject']
+        msg['subject'] = origsubj
     # Add the appropriate Newsgroups: header
     ngheader = msg['newsgroups']
     if ngheader is not None:
