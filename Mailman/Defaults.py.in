@@ -66,6 +66,13 @@ MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 # System ceiling on number of batches into which deliveries are divided:
 MAX_SPAWNS        = 40
 
+#
+# ceiling on the number of recipients that can be specified in a single
+# smtp transaction
+#
+SMTP_MAX_RCPTS = 500
+
+
 # 1 to use crypt for passwords instead of md5.
 # Crypt may not work on all python installs.
 # Don't change this value once you have lists running...
@@ -275,3 +282,14 @@ VERSION           = '@VERSION@'
 
 # Data file version number
 DATA_FILE_VERSION = 13
+
+
+
+
+
+
+
+
+
+
+

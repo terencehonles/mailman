@@ -35,7 +35,9 @@ from Mailman import smtplib
 from Mailman import Utils
 from Mailman import OutgoingQueue
 
+from Mailman.mm_cfg import SMTP_MAX_RCPTS
 from Mailman.Logging.Utils import LogStdErr
+
 LogStdErr("error", "contact_transport")
 
 from_addr = sys.stdin.readline()[:-1]
@@ -47,15 +49,23 @@ while 1:
     to_addrs.append(l)
 text = sys.stdin.read()
 
-try:
-    queue_id = OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
-except IOError:
-    # Log the error event and reraise the exception.
-    (exc, exc_msg, exc_tb) = sys.exc_info()
-    sys.stderr.write("IOError writing outgoing queue\n\t%s/%s\n"
-                     % (str(exc), str(exc_msg)))
-    sys.stderr.flush()
-    raise exc, exc_msg, exc_tb
-Utils.TrySMTPDelivery(to_addrs, from_addr, text, queue_id)
+#
+# make sure that not more than SMTP_MAX_RCPTS goes into
+# a single smtp delivery
+#
+addr_chunks = Utils.chunkify(to_addrs, SMTP_MAX_RCPTS)
+
+for to_addrs in addr_chunks:
+    try:	
+        queue_id = OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
+    except IOError:
+        # Log the error event and reraise the exception.
+        (exc, exc_msg, exc_tb) = sys.exc_info()
+        sys.stderr.write("IOError writing outgoing queue\n\t%s/%s\n"
+                         % (str(exc), str(exc_msg)))
+        sys.stderr.flush()
+        raise exc, exc_msg, exc_tb
+    Utils.TrySMTPDelivery(to_addrs, from_addr, text, queue_id)
+
 
 
