@@ -43,7 +43,7 @@ import posixfile
 import HyperDatabase
 import pipermail
 
-from Mailman import mm_cfg
+from Mailman import mm_cfg, EncWord
 from Mailman.Logging.Syslog import syslog
 
 from Mailman.Utils import mkdir, open_ex
@@ -173,11 +173,32 @@ quotedpat=re.compile(r'^([>|:]|&gt;)+')
 #  body     : A list of strings making up the message body
 
 class Article(pipermail.Article):
-    __last_article_time=time.time()
+    __super_init = pipermail.Article.__init__
+    __super_set_date = pipermail.Article._set_date
+    
+    _last_article_time = time.time()
 
-    html_tmpl=article_template
-    text_tmpl=article_text_template
+    html_tmpl = article_template
+    text_tmpl = article_text_template
 
+    def __init__(self, message=None, sequence=0, keepHeaders=[]):
+        self.__super_init(message, sequence, keepHeaders)
+
+        self.prev = None
+        self.next = None
+
+        # Trim Re: from the subject line
+	i = 0
+	while i != -1:
+	    result = REpat.match(self.subject)
+	    if result: 
+		i = result.end(0)
+		self.subject = self.subject[i:]
+	    else:
+                i = -1
+
+        if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
+            self.email = re.sub('@', ' at ', self.email)
 
     def as_html(self):
 	d = self.__dict__.copy()
@@ -206,6 +227,7 @@ class Article(pipermail.Article):
 	d["email_url"] = url_quote(self.email)
 	d["datestr_html"] = html_quote(self.datestr)
 	d["body"] = string.join(self.body, "")
+        
         return self.html_tmpl % d
 
     def as_text(self):
@@ -213,89 +235,9 @@ class Article(pipermail.Article):
 	d["body"] = string.join(self.body, "")
         return self.text_tmpl % d
 
-
-    def __init__(self, message=None, sequence=0, keepHeaders=[]):
-	if message==None: return
-	self.sequence=sequence
-
-	self.parentID = None 
-        self.threadKey = None
-        self.prev=None
-        self.next=None
-	# otherwise the current sequence number is used.
-	id=pipermail.strip_separators(message.getheader('Message-Id'))
-	if id=="": self.msgid=str(self.sequence)
-	else: self.msgid=id
-
-	if message.has_key('Subject'): self.subject=str(message['Subject'])
-	else: self.subject='No subject'
-	i=0
-	while (i!=-1):
-	    result=REpat.match(self.subject)
-	    if result: 
-		i = result.end(0)
-		self.subject=self.subject[i:]
-	    else: i=-1
-	if self.subject=="": self.subject='No subject'
-
-	if message.has_key('Date'): 
-	    self.datestr=str(message['Date'])
-   	    date=message.getdate_tz('Date')
-	else: 
-	    self.datestr='None' 
-	    date=None
-	if date!=None:
-	    date, tzoffset=date[:9], date[-1] 
-            if not tzoffset:
-                tzoffset = 0
-            try:
-                date=time.mktime(date)-tzoffset
-            except (ValueError, OverflowError):
-                # bogus year most likely
-                date=time.time()
-	else:
-	    date=self.__last_article_time+1 
-	    
-        self.fromdate = time.ctime(date)
-	self.__last_article_time=date 
-	self.date='%011i' % (date,)
-
-	# Figure out the e-mail address and poster's name
-	self.author, self.email=message.getaddr('From')
-	self.email=pipermail.strip_separators(self.email)
-        if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
-            self.email = re.sub('@', ' at ', self.email)
-	self.author=pipermail.strip_separators(self.author)
-
-	if self.author=="": self.author=self.email
-
-	# Save the 'In-Reply-To:' and 'References:' lines
-	i_r_t=message.getheader('In-Reply-To')
-	if i_r_t==None: self.in_reply_to=''
-	else:
-	    match=pipermail.msgid_pat.search(i_r_t)
-	    if match==None: self.in_reply_to=''
-	    else: self.in_reply_to=pipermail.strip_separators(match.group(1))
-		
-	references=message.getheader('References')
-	if references==None:
-            self.references=[]
-	else:
-            self.references = map(pipermail.strip_separators,
-                                  string.split(references))
-
-	# Save any other interesting headers
-	self.headers={}
-	for i in keepHeaders:
-	    if message.has_key(i): self.headers[i]=message[i]
-
-	# Read the message body
-	self.body=[]
-	message.rewindbody()
-	while (1):
-	    line=message.fp.readline()
-	    if line=="": break
-	    self.body.append(line)
+    def _set_date(self, message):
+        self.__super_set_date(message)
+        self.fromdate = time.ctime(int(self.date))
 	
     def loadbody_fromHTML(self,fileobj):
         self.body=[]
@@ -542,10 +484,6 @@ class HyperArchive(pipermail.T):
         return self.html_TOC_tmpl % d
 
     def __init__(self, maillist, unlock=1):
-        self.maillist = maillist
-        self._unlocklist = unlock
-        self._lock_file = None
- 
         # can't init the database while other
         # processes are writing to it!
         # XXX TODO- implement native locking
@@ -554,6 +492,10 @@ class HyperArchive(pipermail.T):
         dir = maillist.archive_dir()
         db = HyperDatabase.HyperDatabase(dir)
         self.__super_init(dir, reload=1, database=db)
+
+        self.maillist = maillist
+        self._unlocklist = unlock
+        self._lock_file = None
 
         if hasattr(self.maillist,'archive_volume_frequency'):
             if self.maillist.archive_volume_frequency == 0:

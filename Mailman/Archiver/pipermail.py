@@ -90,7 +90,7 @@ class Database:
 # body       : A list of strings making up the message body
 
 class Article:
-    __last_article_time = time.time()
+    _last_article_time = time.time()
     
     def __init__(self, message = None, sequence = 0, keepHeaders = []):
 	if message is None:
@@ -111,21 +111,7 @@ class Article:
             self.subject = 'No subject'
 	if self.subject == "": self.subject = 'No subject'
 
-	if message.has_key('Date'): 
-	    self.datestr = str(message['Date'])
-   	    date = message.getdate_tz('Date')
-	else: 
-	    self.datestr = 'None' 
-	    date = None
-	if date is not None:
-	    date, tzoffset = date[:9], date[-1] 
-	    date = time.mktime(date)-tzoffset
-	else:
-	    date = self.__last_article_time+1
-            print 'Article without date:', self.msgid
-	    
-	self.__last_article_time = date 
-	self.date = '%011i' % (date,)
+        self._set_date(message)
 
 	# Figure out the e-mail address and poster's name
 	self.author, self.email = message.getaddr('From')
@@ -167,6 +153,28 @@ class Article:
 	    if line == "":
                 break
 	    self.body.append(line)
+
+    def _set_date(self, message):
+	if message.has_key('Date'): 
+	    self.datestr = str(message['Date'])
+   	    date = message.getdate_tz('Date')
+	else: 
+	    self.datestr = 'None' 
+	    date = None
+	if date is not None:
+	    date, tzoffset = date[:9], date[-1]
+            try:
+                date = time.mktime(date)-tzoffset
+            except (ValueError, OverflowError):
+                date = self._last_article_time + 1
+                print 'Article with bad date:', self.msgid
+	else:
+	    date = self._last_article_time + 1
+            print 'Article without date:', self.msgid
+	    
+	self._last_article_time = date 
+	self.date = '%011i' % date
+
     def __repr__(self):
 	return '<Article ID = '+repr(self.msgid)+'>'
 
