@@ -18,6 +18,7 @@
 
 import sys
 import os
+import time
 
 from mimelib.Parser import Parser
 
