@@ -153,8 +153,6 @@ def main():
             if statuscnt > 50:
                 print >> sys.stderr
                 statuscnt = 0
-    # We've found `messages' separators, so the number of messages is +1
-    messages += 1
     print >> sys.stderr, _('%(messages)d messages found')
 
 
