@@ -171,6 +171,8 @@ def maybe_forward(mlist, msg, msgdata, outq):
     if mlist.bounce_unrecognized_goes_to_list_owner:
         mlist.ForwardMessage(
             msg,
+            # Don't send undetected bounces to the moderators
+            recips=mlist.owner[:],
             text=_("""\
 The attached message was received as a bounce, but either the bounce format
 was not recognized, or no member addresses could be extracted from it.  You,
