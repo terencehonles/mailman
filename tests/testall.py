@@ -18,9 +18,13 @@
 
 import unittest
 
-MODULES = ('bounces', 'handlers', 'membership', 'message', 'safedict',
-           'security_mgr')
+MODULES = ('bounces', 'handlers', 'membership', 'safedict',
+           'security_mgr', 'runners',
+           )
 
+# test_message.py can only be run when mailmanctl is running, but mailmanctl
+# can't be run when the other tests are run, 'cause it'll clobber qfiles.
+# This means you have to run test_message.py manually. :(
 
 
 def suite():
