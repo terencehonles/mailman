@@ -119,11 +119,8 @@ your membership administrative address, %(addr)s.'''))
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
 
-    def ForwardMessage(self, msg, recips=None, text=None, subject=None):
+    def ForwardMessage(self, msg, text=None, subject=None, tomoderators=1):
         # Wrap the message as an attachment
-        if recips is None:
-            recips = self.owner[:]
-            recips.extend(self.moderator)
         if text is None:
             text = _('No reason given')
         if subject is None:
@@ -131,9 +128,11 @@ your membership administrative address, %(addr)s.'''))
         text = MIMEText(Utils.wrap(text),
                         _charset=Utils.GetCharSet(self.preferred_language))
         attachment = MIMEMessage(msg)
-        notice = Message.UserNotification(
-            recips, self.GetBouncesEmail(), subject,
-            lang=self.preferred_language)
+        notice = Message.OwnerNotification(
+            self, self.GetBouncesEmail(), subject,
+            lang=self.preferred_language,
+            tomoderators=tomoderators)
+        # Make it look like the message is going to the -owner address
         notice.set_type('multipart/mixed')
         notice.attach(text)
         notice.attach(attachment)
