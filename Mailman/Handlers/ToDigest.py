@@ -55,6 +55,12 @@ _ = i18n._
 UEMPTYSTRING = u''
 EMPTYSTRING = ''
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 def process(mlist, msg, msgdata):
@@ -68,7 +74,7 @@ def process(mlist, msg, msgdata):
     finally:
         os.umask(omask)
     g = Generator(mboxfp)
-    g.flatten(msg, unixfrom=1)
+    g.flatten(msg, unixfrom=True)
     # Calculate the current size of the accumulation file.  This will not tell
     # us exactly how big the MIME, rfc1153, or any other generated digest
     # message will be, but it's the most easily available metric to decide
@@ -88,30 +94,30 @@ def process(mlist, msg, msgdata):
 def send_digests(mlist, mboxfp):
     # Set the digest volume and time
     if mlist.digest_last_sent_at:
-        bump = 0
+        bump = False
         # See if we should bump the digest volume number
         timetup = time.localtime(mlist.digest_last_sent_at)
         now = time.localtime(time.time())
         freq = mlist.digest_volume_frequency
         if freq == 0 and timetup[0] < now[0]:
             # Yearly
-            bump = 1
+            bump = True
         elif freq == 1 and timetup[1] <> now[1]:
             # Monthly, but we take a cheap way to calculate this.  We assume
             # that the clock isn't going to be reset backwards.
-            bump = 1
+            bump = True
         elif freq == 2 and (timetup[1] % 4 <> now[1] % 4):
             # Quarterly, same caveat
-            bump = 1
+            bump = True
         elif freq == 3:
             # Once again, take a cheap way of calculating this
             weeknum_last = int(time.strftime('%W', timetup))
             weeknum_now = int(time.strftime('%W', now))
             if weeknum_now > weeknum_last or timetup[0] > now[0]:
-                bump = 1
+                bump = True
         elif freq == 4 and timetup[7] <> now[7]:
             # Daily
-            bump = 1
+            bump = True
         if bump:
             mlist.bump_digest_volume()
     mlist.digest_last_sent_at = time.time()
@@ -230,11 +236,11 @@ def send_i18n_digests(mlist, mboxfp):
         else:
             slines[-1] += username
         # Add this subject to the accumulating topics
-        first = 1
+        first = True
         for line in slines:
             if first:
                 print >> toc, ' ', line
-                first = 0
+                first = False
             else:
                 print >> toc, '     ', line.lstrip()
         # We do not want all the headers of the original message to leak
@@ -247,7 +253,7 @@ def send_i18n_digests(mlist, mboxfp):
         all_keepers = {}
         for header in (mm_cfg.MIME_DIGEST_KEEP_HEADERS +
                        mm_cfg.PLAIN_DIGEST_KEEP_HEADERS):
-            all_keepers[header] = 1
+            all_keepers[header] = True
         all_keepers = all_keepers.keys()
         for keep in all_keepers:
             keeper[keep] = msg.get_all(keep, [])
@@ -281,13 +287,13 @@ def send_i18n_digests(mlist, mboxfp):
     # Now go through and add each message
     mimedigest = MIMEBase('multipart', 'digest')
     mimemsg.attach(mimedigest)
-    first = 1
+    first = True
     for msg in messages:
         # MIME
         mimedigest.attach(MIMEMessage(msg))
         # rfc1153
         if first:
-            first = 0
+            first = False
         else:
             print >> plainmsg, separator30
             print >> plainmsg
@@ -300,7 +306,10 @@ def send_i18n_digests(mlist, mboxfp):
                 uh = '\n\t'.join(uh.split('\n'))
                 print >> plainmsg, uh
         print >> plainmsg
-        print >> plainmsg, msg.get_payload(decode=1)
+        payload = msg.get_payload(decode=True)
+        print >> plainmsg, payload
+        if not payload.endswith('\n'):
+            print >> plainmsg
     # Now add the footer
     if mlist.digest_footer:
         footertxt = decorate(mlist, mlist.digest_footer, _('digest footer'))
@@ -356,13 +365,13 @@ def send_i18n_digests(mlist, mboxfp):
     virginq.enqueue(mimemsg,
                     recips=mimerecips,
                     listname=mlist.internal_name(),
-                    isdigest=1)
+                    isdigest=True)
     # RFC 1153
     rfc1153msg.set_payload(plainmsg.getvalue(), lcset)
     virginq.enqueue(rfc1153msg,
                     recips=plainrecips,
                     listname=mlist.internal_name(),
-                    isdigest=1)
+                    isdigest=True)
 
 
 
