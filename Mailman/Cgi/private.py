@@ -135,11 +135,13 @@ def main():
         print 'Content-type: text/html; charset=' + charset + '\n\n'
         while path and path[0] == '/':
             path=path[1:]  # Remove leading /'s
-        basepath = os.path.split(mlist.GetBaseArchiveURL())[0]
-        listname = mlist.real_name
-        print Utils.maketext('private.txt', vars(),
-                             lang=mlist.preferred_language)
-        sys.exit(0)
+        print Utils.maketext(
+            'private.html',
+            {'action'  : mlist.GetScriptURL('private', absolute=1),
+             'realname': mlist.real_name,
+             'message' : message,
+             }, lang=mlist.preferred_language)
+        return
 
     # Authorization confirmed... output the desired file
     try:
