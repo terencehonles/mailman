@@ -721,7 +721,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  "member"   : dump_address_pair((name, email)),
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
-                self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
+                self.owner, Utils.get_site_email(self.host_name, '-admin'),
+                subject, text)
             msg.send(self)
 
     def ApprovedDeleteMember(self, name, whence=None,
@@ -747,9 +748,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 {'member'  : name,
                  'listname': self.real_name,
                  }, mlist=self)
-            msg = Message.UserNotification(self.owner,
-                                           mm_cfg.MAILMAN_OWNER,
-                                           subject, text)
+            msg = Message.UserNotification(
+                self.owner, Utils.get_site_email(self.host_name, '-admin'),
+                subject, text)
             msg.send(self)
         if whence:
             whence = "; %s" % whence
