@@ -1,17 +1,17 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Mixin class for MailList which handles administrative requests.
@@ -95,19 +95,25 @@ class ListAdmin:
             # fullname data field.
             type, version = self.__db.get('version', (IGN, None))
             if version is None:
-                # No previous revisiont number, must be upgrading to 2.1a3 or
+                # No previous revision number, must be upgrading to 2.1a3 or
                 # beyond from some unknown earlier version.
                 for id, (type, data) in self.__db.items():
-                    if id == IGN:
+                    if type == IGN:
                         pass
-                    elif id == HELDMSG and len(data) == 5:
+                    elif type == HELDMSG and len(data) == 5:
                         # tack on a msgdata dictionary
                         self.__db[id] = data + ({},)
-                    elif id == SUBSCRIPTION and len(data) == 5:
-                        # a fullname field was added
-                        stime, addr, password, digest, lang = data
-                        self.__db[id] = stime, addr, '', password, digest, lang
-                        
+                    elif type == SUBSCRIPTION:
+                        if len(data) == 4:
+                            # fullname and lang was added
+                            stime, addr, password, digest = data
+                            lang = self.preferred_language
+                            data = stime, addr, '', password, digest, lang
+                        elif len(data) == 5:
+                            # a fullname field was added
+                            stime, addr, password, digest, lang = data
+                            data = stime, addr, '', password, digest, lang
+                        self.__db[id] = type, data
 
     def __closedb(self):
         if self.__db is not None:
@@ -130,9 +136,9 @@ class ListAdmin:
             os.rename(tmpfile, self.__filename())
 
     def __request_id(self):
-	id = self.next_request_id
-	self.next_request_id += 1
-	return id
+        id = self.next_request_id
+        self.next_request_id += 1
+        return id
 
     def SaveRequestsDb(self):
         self.__closedb()
@@ -351,7 +357,7 @@ class ListAdmin:
             fmsg.attach(copy)
             fmsg.send(self)
         # Log the rejection
-	if rejection:
+        if rejection:
             note = '''%(listname)s: %(rejection)s posting:
 \tFrom: %(sender)s
 \tSubject: %(subject)s''' % {
@@ -374,7 +380,7 @@ class ListAdmin:
                 # and inform of this status.
                 return LOST
         return status
-            
+
     def HoldSubscription(self, addr, fullname, password, digest, lang):
         # Assure that the database is open for writing
         self.__opendb()
@@ -390,7 +396,7 @@ class ListAdmin:
         # the subscriber's address
         # the subscriber's selected password (TBD: is this safe???)
         # the digest flag
-	# the user's preferred language
+        # the user's preferred language
         #
         data = time.time(), addr, fullname, password, digest, lang
         self.__db[id] = (SUBSCRIPTION, data)
@@ -493,7 +499,7 @@ class ListAdmin:
         # to his/her language choice, if they are a member.  Otherwise use the
         # list's preferred language.
         realname = self.real_name
-	if lang is None:
+        if lang is None:
             lang = self.getMemberLanguage(recip)
         text = Utils.maketext(
             'refuse.txt',
