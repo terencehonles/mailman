@@ -202,7 +202,11 @@ class Archiver:
                     txt = txt + h
                 if msg.body[0] != '\n':
                     txt = txt + "\n"
-                txt = txt + msg.body
+                for line in string.split(msg.body, '\n'):
+                    # Quote unprotected From_ lines appearing in body
+                    if line and line[:5] == 'From ':
+                        line = '>' + line
+                    txt = txt + "%s\n" % line
                 f = StringIO(txt)
                 import HyperArch
                 h = HyperArch.HyperArchive(self)
