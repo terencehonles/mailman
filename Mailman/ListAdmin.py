@@ -28,9 +28,11 @@ import time
 import marshal
 import errno
 import cPickle
+from cStringIO import StringIO
+
 import email
 from email.MIMEMessage import MIMEMessage
-from cStringIO import StringIO
+from email.Generator import Generator
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -56,6 +58,12 @@ LOST = 2
 
 DASH = '-'
 NL = '\n'
+
+# Should held messages be saved on disk as Python pickles or as plain text?
+# The former is more efficient since we don't need to go through the
+# parse/generate roundtrip each time, but the latter might be preferred if you
+# want to edit the held message on disk.
+HOLD_MESSAGES_AS_PICKLES = 1
 
 
 
@@ -200,12 +208,20 @@ class ListAdmin:
         # get the message sender
         sender = msg.get_sender()
         # calculate the file name for the message text and write it to disk
-        filename = 'heldmsg-%s-%d.pck' % (self.internal_name(), id)
+        if HOLD_MESSAGES_AS_PICKLES:
+            ext = 'pck'
+        else:
+            ext = 'txt'
+        filename = 'heldmsg-%s-%d.%s' % (self.internal_name(), id, ext)
         omask = os.umask(002)
         fp = None
         try:
             fp = open(os.path.join(mm_cfg.DATA_DIR, filename), 'w')
-            cPickle.dump(msg, fp, 1)
+            if HOLD_MESSAGES_AS_PICKLES:
+                cPickle.dump(msg, fp, 1)
+            else:
+                g = Generator(fp)
+                g(msg, 1)
         finally:
             if fp:
                 fp.close()
