@@ -21,11 +21,11 @@ Received: from alb-net.com (www.alb-net.com [205.216.244.65])
 Received: from localhost (localhost [127.0.0.1])
 	by alb-net.com (8.11.0/8.11.0) with ESMTP id e932AAU22315;
 	Mon, 2 Oct 2000 22:10:10 -0400 (EDT)
-From: Mentor Cana <mentor@alb-net.com>
+From: Zzzzz TTTT <zzzzz@alb-net.com>
 Cc: mailman-developers@python.org
 Message-ID: <Pine.GSO.4.21.0010022206280.5021-100000@alb-net.com>
 Organization: "http://www.alb-net.com/"
-X-Loop: MENTOR
+X-Loop: ZZZZZ
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Subject: [Mailman-Users] "download the full raw archive"
@@ -52,7 +52,7 @@ addresses of public archives can be still harvested by various robots out
 there.
 
 later,
-Mentor
+Zzzzz
 
 
 ------------------------------------------------------
