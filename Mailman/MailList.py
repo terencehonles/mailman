@@ -340,7 +340,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         ListAdmin.InitVars(self)
         Bouncer.InitVars(self)
         GatewayManager.InitVars(self)
-        HTMLFormatter.InitVars(self)
         Autoresponder.InitVars(self)
 
         # These need to come near the bottom because they're dependent on
@@ -843,7 +842,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.__lock.lock()
         self.InitVars(name, admin, crypted_password)
         self._ready = 1
-        self.InitTemplates()
         self.CheckValues()
         self.Save()
         
