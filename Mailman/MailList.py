@@ -417,6 +417,16 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     def Create(self, name, admin, crypted_password, langs=None):
         if Utils.list_exists(name):
             raise Errors.MMListAlreadyExistsError, name
+        # Validate what will be the list's posting address.  If that's
+        # invalid, we don't want to create the mailing list.  The hostname
+        # part doesn't really matter, since that better already be valid.
+        # However, most scripts already catch MMBadEmailError as exceptions on
+        # the admin's email address, so transform the exception.
+        try:
+            Utils.ValidateEmail('%s@%s' % (name, mm_cfg.DEFAULT_EMAIL_HOST))
+        except Errors.MMBadEmailError:
+            raise Errors.BadListNameError, name
+        # Validate the admin's email address
         Utils.ValidateEmail(admin)
         self._internal_name = name
         self._full_path = Site.get_listpath(name, create=1)
