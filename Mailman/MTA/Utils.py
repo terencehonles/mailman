@@ -37,10 +37,12 @@ def getusername():
 def makealiases(listname):
     wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'wrapper')
     return (
+        # All the normal delivery addresses
         (listname,              '"|%s post %s"'      % (wrapper, listname)),
-        (listname + '-admin',   '"|%s mailowner %s"' % (wrapper, listname)),
-        (listname + '-request', '"|%s mailcmd %s"'   % (wrapper, listname)),
+        (listname + '-admin',   '"|%s bounces %s"'   % (wrapper, listname)),
+        (listname + '-bounces', '"|%s bounces %s'    % (wrapper, listname)),
         (listname + '-join',    '"|%s join %s"'      % (wrapper, listname)),
-        (listname + '-leave',   '"|%s leave %s"'      % (wrapper, listname)),
-        (listname + '-owner',   '%s-admin' % listname),
+        (listname + '-leave',   '"|%s leave %s"'     % (wrapper, listname)),
+        (listname + '-owner',   '"|%s mailowner %s'  % (wrapper, listname)),
+        (listname + '-request', '"|%s mailcmd %s"'   % (wrapper, listname)),
         )
