@@ -210,9 +210,9 @@ exactly what happened to provoke this error.<p>'''
             PrintResults("You gave the wrong password.")
         except:
             PrintResults('''An unknown error occured.  <p>
-    Please send mail to <a href=%s>%s</a> explaining
-    exactly what happened to provoke this error.<p>'''
-                         % (mm_cfg.MAILMAN_OWNER))
+            Please send mail to <a href="mailto:%(owner)s">%(owner)s</a>
+            explaining exactly what happened to provoke this error.<p>'''
+                         % {'owner': mm_cfg.MAILMAN_OWNER})
 
         list.SetUserOption(user, mm_cfg.DisableDelivery, disable_mail)
         list.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
