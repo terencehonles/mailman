@@ -69,11 +69,11 @@ your membership administrative address, %(addr)s.'''))
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
 
-    def SendUnsubscribeAck(self, name):
+    def SendUnsubscribeAck(self, addr):
         realname = self.real_name
         msg = Message.UserNotification(
-            self.GetMemberAdminEmail(name), self.GetAdminEmail(),
-            _('Unsubscribed from "%(realname)s" mailing list'),
+            self.GetMemberAdminEmail(addr), self.GetAdminEmail(),
+            _('You have been unsubscribed from the %(realname)s mailing list'),
             Utils.wrap(self.goodbye_msg))
         msg.send(self)
 
