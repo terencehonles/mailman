@@ -28,20 +28,15 @@ import HandlerAPI
 from Mailman import mm_cfg
 from Mailman import Errors
 
-
-class NotApproved(HandlerAPI.HandlerError):
-    pass
-
-
 # multiple inheritance for backwards compatibility
-class LoopError(NotApproved, Errors.MMLoopingPost):
-    pass
+class LoopError(HandlerAPI.DiscardMessage, Errors.MMLoopingPost):
+    """We've seen this message before"""
 
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     # short circuits
-    if getattr(msg, 'approved', 0):
+    if msgdata.get('approved'):
         # digests, Usenet postings, and some other messages come
         # pre-approved.  TBD: we may want to further filter Usenet messages,
         # so the test above may not be entirely correct.
@@ -52,7 +47,7 @@ def process(mlist, msg):
         # TBD: should we definitely deny if the password exists but does not
         # match?  For now we'll let it percolate up for further
         # determination.
-        msg.approved = 1
+        msgdata['approved'] = 1
     # has this message already been posted to this list?
     beentheres = map(filterfunc, msg.getallmatchingheaders('x-beenthere'))
     if mlist.GetListEmail() in beentheres:

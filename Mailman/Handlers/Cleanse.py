@@ -17,12 +17,13 @@
 """Cleanse certain headers from all messages."""
 
 
-def process(mlist, msg):
-    # Always remove this header from any outgoing messages, but be sure to do
-    # this before the information on the header is actually used.
+def process(mlist, msg, msgdata):
+    # Always remove this header from any outgoing messages.  Be sure to do
+    # this after the information on the header is actually used, but before a
+    # permanent record of the header is saved.
     del msg['approved']
     #
-    # We remove other headers for anonymous lists
+    # We remove other headers from anonymous lists
     if mlist.anonymous_list:
         del msg['reply-to']
         del msg['sender']

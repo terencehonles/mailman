@@ -25,12 +25,11 @@ import socket
 from Mailman.pythonlib.StringIO import StringIO
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     # short circuits
     if not mlist.gateway_to_news or \
-            getattr(msg, 'isdigest', 0) or \
-            getattr(msg, 'fromusenet', 0):
-        # then
+           msgdata.get('isdigest') or \
+           msgdata.get('fromusenet'):
         return
     # sanity checks
     error = []
@@ -39,17 +38,20 @@ def process(mlist, msg):
     if not mlist.nntp_host:
         error.append('no NNTP host')
     if error:
-        msg = 'NNTP gateway improperly configured: ' + string.join(error, ', ')
-        mlist.LogMsg('error', msg)
+        mlist.LogMsg('NNTP gateway improperly configured: ' +
+                     string.join(error, ', '))
         return
     # Fork in case the nntp connection hangs.
     pid = os.fork()
-    if not pid:
+    if pid:
+        # In the parent.  This is a bit of a kludge to keep a list of the
+        # children that need to be waited on.  We want to be sure to do the
+        # waiting while the list is unlocked!
+        kids = msgdata.get('kids', {})
+        kids[pid] = pid
+        msgdata['kids'] = kids
+    else:
         do_child(mlist, msg)
-    # TBD: we probably want to reap all those children, but do it in a way
-    # that doesn't keep the MailList object locked.  Problem is that we don't
-    # know what other handlers are going to execute.  Handling children should
-    # be pushed up into a higher module
         
 
 

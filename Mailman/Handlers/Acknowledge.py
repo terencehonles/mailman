@@ -29,8 +29,8 @@ from Mailman.Handlers import HandlerAPI
 
 
 
-def process(mlist, msg):
-    sender = getattr(msg, 'original_sender', msg.GetSender())
+def process(mlist, msg, msgdata):
+    sender = msgdata.get('original_sender', msg.GetSender())
     sender = mlist.FindUser(sender)
     if sender and mlist.GetUserOption(sender, mm_cfg.AcknowledgePosts):
         subject = msg.getheader('subject')

@@ -24,15 +24,16 @@ from Mailman import mm_cfg
 
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     # Because we're going to modify various important headers in the email
-    # message, we want to save some of the information as attributes for
-    # later.  Specifically, the sender header will get waxed, but we need it
-    # for the Acknowledge module later.
-    msg.original_sender = msg.GetSender()
+    # message, we want to save some of the information in the msgdata
+    # dictionary for later.  Specifically, the sender header will get waxed,
+    # but we need it for the Acknowledge module later.
+    msgdata['original_sender'] = msg.GetSender()
     subject = msg.getheader('subject')
     adminaddr = mlist.GetAdminEmail()
-    if not getattr(msg, 'isdigest', 0) and not getattr(msg, 'fasttrack', 0):
+    fasttrack = msgdata.get('fasttrack')
+    if not msgdata.get('isdigest') and not fasttrack:
         # Add the subject prefix unless the message is a digest or is being
         # fast tracked (e.g. internally crafted, delivered to a single user
         # such as the list admin).  We assume all digests have an appropriate
@@ -70,7 +71,7 @@ def process(mlist, msg):
     #
     # Reply-To: munging.  Do not do this if the message is "fast tracked",
     # meaning it is internally crafted and delivered to a specific user.
-    if not getattr(msg, 'fasttrack', 0):
+    if not fasttrack:
         # Set Reply-To: header to point back to this list
         if mlist.reply_goes_to_list == 1:
             msg['Reply-To'] = mlist.GetListEmail()

@@ -18,15 +18,17 @@
 
 This module hard codes site wide spam detection.  By hacking the
 KNOWN_SPAMMERS variable, you can set up more regular expression matches
-against message headers.  If spam is detected, it is held for approval (see
-Hold.py).
+against message headers.  If spam is detected the message is discarded
+immediately.
 
 TBD: This needs to be made more configurable and robust.
 """
 
 import re
 import HandlerAPI
-import Hold
+
+class SpamDetected(HandlerAPI.DiscardMessage):
+    """The message contains known spam"""
 
 
 # This variable contains a list of 2-tuple of the format (header, regex) which
@@ -38,14 +40,9 @@ import Hold
 KNOWN_SPAMMERS = []
 
 
-class SpamDetected(HandlerAPI.MessageHeld):
-    """Potential spam detected"""
-    pass
-
-
 
-def process(mlist, msg):
-    if getattr(msg, 'approved', 0):
+def process(mlist, msg, msgdata):
+    if msgdata.get('approved'):
         return
     for header, regex in KNOWN_SPAMMERS:
         cre = re.compile(regex, re.IGNORECASE)
@@ -57,6 +54,5 @@ def process(mlist, msg):
                 continue
         mo = cre.search(text)
         if mo:
-            # we've detected spam
-            Hold.hold_for_approval(mlist, msg, SpamDetected)
-            # no return
+            # we've detected spam, so throw the message away
+            raise SpamDetected

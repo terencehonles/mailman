@@ -38,10 +38,10 @@ EXCLUDE_HEADERS = ('received', 'errors-to')
 
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     # short circuit non-digestable lists, or for messages that are already
     # digests
-    if not mlist.digestable or getattr(msg, 'isdigest', 0):
+    if not mlist.digestable or msgdata.get('isdigest'):
         return
     digestfile = os.path.join(mlist.fullpath(), 'next-digest')
     topicsfile = os.path.join(mlist.fullpath(), 'next-digest-topics')
@@ -109,7 +109,7 @@ def process(mlist, msg):
         size = os.stat(digestfile)[ST_SIZE]
         if size/1024.0 >= mlist.digest_size_threshhold:
             inject_digest(mlist, digestfile, topicsfile)
-    except os.error, e:
+    except OSError, e:
         code, msg = e
         if code == ENOENT:
             mlist.LogMsg('error', 'Lost digest file: %s' % digestfile)
@@ -155,20 +155,15 @@ def inject_digest(mlist, digestfile, topicsfile):
     # do any deliveries
     if mime_recips or text_recips:
         digest = Digest(mlist, topicsdata, fp.read())
-        # generate and post the MIME digest
+        # Generate the MIME digest, but only queue it for delivery so we don't
+        # hold the lock too long.
         msg = digest.asMIME()
         msg['To'] = mlist.GetListEmail()
-        msg.recips = mime_recips
-        msg.isdigest = 1
-        msg.approved = 1
-        mlist.Post(msg)
-        # generate and post the RFC934 "plain text" digest
+        msg.Enqueue(mlist, recips=mime_recips, isdigest=1, approved=1)
+        # Generate the RFC934 "plain text" digest, and again, just queue it
         msg = digest.asText()
-        msg.recips = text_recips
         msg['To'] = mlist.GetListEmail()
-        msg.isdigest = 1
-        msg.approved = 1
-        mlist.Post(msg)
+        msg.Enqueue(mlist, recips=text_recips, isdigest=1, approved=1)
     # zap accumulated digest information for the next round
     os.unlink(digestfile)
     os.unlink(topicsfile)

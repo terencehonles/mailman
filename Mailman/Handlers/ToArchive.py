@@ -17,13 +17,12 @@
 """Add the message to the archives."""
 
 import string
-from Mailman import mm_cfg
 
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     # short circuits
-    if getattr(msg, 'isdigest', 0) or not mlist.archive:
+    if msgdata.get('isdigest') or not mlist.archive:
         return
     archivep = msg.getheader('x-archive')
     if archivep and string.lower(archivep) == 'no':

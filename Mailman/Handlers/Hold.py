@@ -31,6 +31,7 @@ message handling should stop.
 import os
 import string
 import time
+from types import ClassType
 
 try:
     import cPickle
@@ -77,13 +78,17 @@ class SuspiciousHeaders(HandlerAPI.MessageHeld):
     pass
 
 class MessageTooBig(HandlerAPI.MessageHeld):
-    "Message body is too big"
-    pass
+    "Message body is too big: %d KB"
+    def __init__(self, msgsize):
+        self.__msgsize = msgsize
+
+    def __str__(self):
+        return HandlerAPI.Message.__str__(self) % self.__msgsize
 
 
 
-def process(mlist, msg):
-    if getattr(msg, 'approved', 0):
+def process(mlist, msg, msgdata):
+    if msgdata.get('approved'):
         return
     # get the sender of the message
     listname = mlist.internal_name()
@@ -101,7 +106,7 @@ def process(mlist, msg):
         forbiddens = Utils.List2Dict(mlist.forbidden_posters)
         addrs = Utils.FindMatchingAddresses(sender, forbiddens)
         if addrs:
-            hold_for_approval(mlist, msg, ForbiddenPoster)
+            hold_for_approval(mlist, msg, msgdata, ForbiddenPoster)
             # no return
     #
     # is the list moderated?  if so and the sender is not in the list of
@@ -110,7 +115,7 @@ def process(mlist, msg):
         posters = Utils.List2Dict(mlist.posters)
         addrs = Utils.FindMatchingAddresses(sender, posters)
         if not addrs:
-            hold_for_approval(mlist, msg, ModeratedPost)
+            hold_for_approval(mlist, msg, msgdata, ModeratedPost)
             # no return
     #
     # postings only from list members?  mlist.posters are allowed in addition
@@ -122,14 +127,14 @@ def process(mlist, msg):
            not Utils.FindMatchingAddresses(sender, posters):
             # the sender is neither a member of the list, nor in the list of
             # explicitly approved posters
-            hold_for_approval(mlist, msg, NonMemberPost)
+            hold_for_approval(mlist, msg, msgdata, NonMemberPost)
             # no return
     elif mlist.posters:
         posters = Utils.List2Dict(map(string.lower, mlist.posters))
         if not Utils.FindMatchingAddresses(sender, posters):
             # the sender is not explicitly in the list of allowed posters
             # (which is non-empty), so hold the message
-            hold_for_approval(mlist, msg, NotExplicitlyAllowed)
+            hold_for_approval(mlist, msg, msgdata, NotExplicitlyAllowed)
             # no return
     #
     # are there too many recipients to the message?
@@ -143,7 +148,7 @@ def process(mlist, msg):
         if ccheader:
             recips = recips + map(string.strip, string.split(ccheader, ','))
         if len(recips) > mlist.max_num_recipients:
-            hold_for_approval(mlist, msg, TooManyRecipients)
+            hold_for_approval(mlist, msg, msgdata, TooManyRecipients)
             # no return
     #
     # implicit destination?  Note that message originating from the Usenet
@@ -152,12 +157,12 @@ def process(mlist, msg):
        not mlist.HasExplicitDest(msg) and \
        not getattr(msg, 'fromusenet', 0):
         # then
-        hold_for_approval(mlist, msg, ImplicitDestination)
+        hold_for_approval(mlist, msg, msgdata, ImplicitDestination)
         # no return
     #
     # possible administrivia?
     if mlist.administrivia and Utils.IsAdministrivia(msg):
-        hold_for_approval(mlist, msg, Administrivia)
+        hold_for_approval(mlist, msg, msgdata, Administrivia)
         # no return
     #
     # suspicious headers?
@@ -166,28 +171,32 @@ def process(mlist, msg):
         if triggered:
             # TBD: Darn - can't include the matching line for the admin
             # message because the info would also go to the sender
-            hold_for_approval(mlist, msg, SuspiciousHeaders)
+            hold_for_approval(mlist, msg, msgdata, SuspiciousHeaders)
             # no return
     #
     # message too big?
     if mlist.max_message_size > 0:
-        if len(msg.body)/1024.0 > mlist.max_message_size:
-            hold_for_approval(mlist, msg, MessageTooBig)
+        bodylen = len(msg.body)/1024.0
+        if bodylen > mlist.max_message_size:
+            hold_for_approval(mlist, msg, msgdata, MessageTooBig(bodylen))
             # no return
 
 
 
-def hold_for_approval(mlist, msg, excclass):
+def hold_for_approval(mlist, msg, msgdata, exc):
     # TBD: This should really be tied into the email confirmation system so
     # that the message can be approved or denied via email as well as the
     # Web.  That's for later though, because it would mean a revamp of the
     # MailCommandHandler too.
     #
+    if type(exc) is ClassType:
+        # Go ahead and instantiate it now.
+        exc = exc()
     listname = mlist.real_name
-    reason = excclass.__doc__
+    reason = str(exc)
     sender = msg.GetSender()
     adminaddr = mlist.GetAdminEmail()
-    mlist.HoldMessage(msg, reason)
+    mlist.HoldMessage(msg, reason, msgdata)
     # now we need to craft and send a message to the list admin so they can
     # deal with the held message
     d = {'listname'   : listname,
@@ -216,4 +225,4 @@ def hold_for_approval(mlist, msg, excclass):
                  (listname, sender, reason))
     # raise the specific MessageHeld exception to exit out of the message
     # delivery pipeline
-    raise excclass
+    raise exc

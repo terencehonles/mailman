@@ -26,35 +26,36 @@ from Mailman import Message
 
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     # "X-Ack: No" header in the original message disables the replybot
     ack = string.lower(msg.get('x-ack', ''))
     if ack == 'no':
         return
+    #
     # Check to see if the list is even configured to autorespond to this email
-    # message.  Note: the mailowner script sets the `toadmin' attribute, and
-    # the mailcmd script sets the `torequest' attribute.
-    toadmin = getattr(msg, 'toadmin', 0)
-    torequest = getattr(msg, 'torequest', 0)
-    if (toadmin and not mlist.autorespond_admin) or \
-       (torequest and not mlist.autorespond_requests) or \
-       (not toadmin and not torequest and not mlist.autorespond_postings):
+    # message.  Note: the mailowner script sets the `toadmin' key, and the
+    # mailcmd script sets the `torequest' key.
+    toadmin = msgdata.get('toadmin')
+    torequest = msgdata.get('torequest')
+    if ((toadmin and not mlist.autorespond_admin) or
+           (torequest and not mlist.autorespond_requests) or \
+           (not toadmin and not torequest and not mlist.autorespond_postings)):
         return
     #
-    # Now see if we're in the grace period for this sender (guaranteed to be
-    # lower cased).  graceperiod <= 0 means always autorespond, as does an
-    # "X-Ack: yes" header (useful for debugging).
+    # Now see if we're in the grace period for this sender.  graceperiod <= 0
+    # means always autorespond, as does an "X-Ack: yes" header (useful for
+    # debugging).
     sender = msg.GetSender()
     now = time.time()
     graceperiod = mlist.autoresponse_graceperiod
     if graceperiod > 0 and ack <> 'yes':
         if toadmin:
-            quite_until = mlist.admin_responses.get(sender, 0)
+            quiet_until = mlist.admin_responses.get(sender, 0)
         elif torequest:
-            quite_until = mlist.request_responses.get(sender, 0)
+            quiet_until = mlist.request_responses.get(sender, 0)
         else:
-            quite_until = mlist.postings_responses.get(sender, 0)
-        if quite_until > now:
+            quiet_until = mlist.postings_responses.get(sender, 0)
+        if quiet_until > now:
             return
     #
     # Okay, we know we're going to auto-respond to this sender, craft the
@@ -82,10 +83,10 @@ def process(mlist, msg):
     # update the grace period database
     if graceperiod > 0:
         # graceperiod is in days, we need # of seconds
-        quite_until = now + graceperiod * 24 * 60 * 60
+        quiet_until = now + graceperiod * 24 * 60 * 60
         if toadmin:
-            mlist.admin_responses[sender] = quite_until
+            mlist.admin_responses[sender] = quiet_until
         elif torequest:
-            mlist.request_responses[sender] = quite_until
+            mlist.request_responses[sender] = quiet_until
         else:
-            mlist.postings_responses[sender] = quite_until
+            mlist.postings_responses[sender] = quiet_until

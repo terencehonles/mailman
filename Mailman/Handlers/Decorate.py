@@ -23,7 +23,7 @@ import string
 
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     d = Utils.SafeDict(mlist.__dict__)
     d['cgiext'] = mm_cfg.CGIEXT
     # interpolate into the header

@@ -29,15 +29,11 @@ import os
 import HandlerAPI
 from Mailman import mm_cfg
 
-class SendmailHandlerError(HandlerAPI.HandlerError):
-    pass
-
-
 MAX_CMDLINE = 3000
 
 
 
-def process(mlist, msg):
+def process(mlist, msg, msgdata):
     """Process the message object for the given list.
 
     The message object is an instance of Mailman.Message and must be fully
@@ -52,8 +48,9 @@ def process(mlist, msg):
     program.
     
     """
-    if msg.recips == 0:
-        # nothing to do!
+    recips = msgdata.get('recips')
+    if not recips:
+        # Nobody to deliver to!
         return
     # Use -f to set the envelope sender
     cmd = mm_cfg.SENDMAIL_CMD + ' -f ' + mlist.GetAdminEmail() + ' '
@@ -61,7 +58,7 @@ def process(mlist, msg):
     recipchunks = []
     currentchunk = []
     chunklen = 0
-    for r in msg.recips:
+    for r in recips:
         currentchunk.append(r)
         chunklen = chunklen + len(r) + 1
         if chunklen > MAX_CMDLINE:
@@ -75,9 +72,10 @@ def process(mlist, msg):
     # over again
     msgtext = str(msg)
     # cycle through all chunks
-    for recips in recipchunks:
+    failedrecips = []
+    for chunk in recipchunks:
         # TBD: SECURITY ALERT.  This invokes the shell!
-        fp = os.popen(cmd + recips, 'w')
+        fp = os.popen(cmd + chunk, 'w')
         fp.write(msgtext)
         status = fp.close()
         if status:
@@ -85,7 +83,12 @@ def process(mlist, msg):
             mlist.LogMsg('post', 'post to %s from %s, size=%d, failure=%d' %
                          (mlist.internal_name(), msg.GetSender(),
                           len(msg.body), errcode))
-            raise SendmailHandlerError(errcode)
+            # TBD: can we do better than this?  What if only one recipient out
+            # of the entire chunk failed?
+            failedrecips.extend(chunk)
         # Log the successful post
         mlist.LogMsg('post', 'post to %s from %s, size=%d, success' %
                      (mlist.internal_name(), msg.GetSender(), len(msg.body)))
+    if failedrecips:
+        msgdata['recips'] = failedrecips
+        raise HandlerAPI.SomeRecipientsFailed

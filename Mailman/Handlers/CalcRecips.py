@@ -27,10 +27,10 @@ from Mailman import mm_cfg
 
 
 
-def process(mlist, msg):
-    # yes, short circuit if the message object already has a recipients
-    # attribute, regardless of whether the list is empty or not.
-    if hasattr(msg, 'recips'):
+def process(mlist, msg, msgdata):
+    # Short circuit if we've already calculated the recipients list,
+    # regardless of whether the list is empty or not.
+    if msgdata.has_key('recips'):
         return
     dont_send_to_sender = 0
     # Get the membership address of the sender, if a member.  Then get the
@@ -53,4 +53,4 @@ def process(mlist, msg):
             # (not metoo), but delivery to their address is disabled (nomail)
             pass
     # bookkeeping
-    msg.recips = recips
+    msgdata['recips'] = recips
