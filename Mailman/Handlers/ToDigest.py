@@ -95,6 +95,7 @@ def process(mlist, msg):
                    (MIME_SEPARATOR, mlist.next_post_number,
                     string.join(kept_headers, ''),
                     body))
+    digestfp.write('\n')
     mlist.next_post_number = mlist.next_post_number + 1
     topicsfp.close()
     digestfp.close()
@@ -103,7 +104,7 @@ def process(mlist, msg):
     try:
         size = os.stat(digestfile)[ST_SIZE]
         if size/1024.0 >= mlist.digest_size_threshhold:
-            injectdigest(mlist, digestfile, topicsfile)
+            inject_digest(mlist, digestfile, topicsfile)
     except os.error, e:
         code, msg = e
         if code == ENOENT:
@@ -120,11 +121,11 @@ def inject_digest(mlist, digestfile, topicsfile):
     fp = open(digestfile)
     #
     # filters for recipient calculation
-    def delivery_enabled_p(x, s=self, v=mm_cfg.DisableDelivery):
+    def delivery_enabled_p(x, s=mlist, v=mm_cfg.DisableDelivery):
         return not s.GetUserOption(x, v)
-    def likes_mime_p(x, s=self, v=mm_cfg.DisableMime):
+    def likes_mime_p(x, s=mlist, v=mm_cfg.DisableMime):
         return not s.GetUserOption(x, v)
-    def hates_mime_p(x, s=self, v=mm_cfg.DisableMime):
+    def hates_mime_p(x, s=mlist, v=mm_cfg.DisableMime):
         return s.GetUserOption(x, v)
     #
     # these people have switched their options from digest delivery to
@@ -150,14 +151,20 @@ def inject_digest(mlist, digestfile, topicsfile):
     # do any deliveries
     if mime_recips or text_recips:
         digest = Digest(mlist, topicsdata, fp.read())
-        mimemsg = digest.asMIME()
-        mimemsg.recips = mime_recips
-        mimemsg.isdigest = 1
-        mlist.Post(mimemsg)
-        textmsg = digest.asText()
-        textmsg.recips = text_recips
-        mimemsg.isdigest = 1
-        mlist.Post(textmsg)
+        # generate and post the MIME digest
+        msg = digest.asMIME()
+        msg['To'] = mlist.GetListEmail()
+        msg.recips = mime_recips
+        msg.isdigest = 1
+        msg.approved = 1
+        mlist.Post(msg)
+        # generate and post the RFC934 "plain text" digest
+        msg = digest.asText()
+        msg.recips = text_recips
+        msg['To'] = mlist.GetListEmail()
+        msg.isdigest = 1
+        msg.approved = 1
+        mlist.Post(msg)
     # zap accumulated digest information for the next round
     os.unlink(digestfile)
     os.unlink(topicsfile)
@@ -243,7 +250,8 @@ class Digest:
             lines.append("Content-type: text/plain; charset=us-ascii")
             lines.append("Content-description: Masthead (%s digest, %s)"
                          % (self.__mlist.real_name, self.__volume))
-        lines.append(Utils.maketext('masthead.txt', self.TemplateRefs()))
+        masthead = Utils.maketext('masthead.txt', self.TemplateRefs())
+        lines = lines + string.split(masthead, '\n')
         # List-specific header:
         if self.__mlist.digest_header:
             lines.append('')
@@ -281,7 +289,6 @@ class Digest:
                                     digestboundary))
         # List-specific footer:
         if self.__mlist.digest_footer:
-            lines.append('')
             lines.append(dashbound)
             if mime:
                 lines.append("Content-type: text/plain; charset=us-ascii")
@@ -295,7 +302,7 @@ class Digest:
             lines.append(dashbound + "--")
         lines.append('')
         lines.append("End of %s Digest" % self.__mlist.real_name)
-        msg.SetBody(string.join(lines, "\n"))
+        msg.body = string.join(lines, '\n')
         return msg
 
 
