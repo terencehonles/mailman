@@ -481,12 +481,6 @@ class HyperArchive(pipermail.T):
  
 
         #
-        # this is always called from inside it's own forked
-        # process, and access is protected via list.Save()
-        # so we're leavin' the perms wide open from here on out
-        #
-        ou = os.umask(0)
-        #
         # can't init the database while other
         # processes are writing to it!
         # XXX TODO- implement native locking
