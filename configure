@@ -536,7 +536,7 @@ fi
 
 # Set VERSION so we only need to edit it in one place
 
-VERSION=1.0b4
+VERSION=1.0b5
 
 
 # /home/mailman is the default installation directory
