@@ -1,9 +1,7 @@
-Ce texte peut contenir des cha&icirc;nes
-<b><code>%(attribut)s</code></b> qui sont remplac&eacute;es par les
-attributs de la liste.  Pour plus de d&eacute;tails, voir <a
-href="http://www.python.org/doc/current/lib/typesseq-strings.html">les
-règles de formattage de chaînes de Python</a>.  Voici quelques
-attributs utiles:
+Ce texte peut contenir <a
+href="http://www.python.org/doc/current/lib/typesseq-strings.html">des
+formats de cha&icirc;nes Python</a>qui sont remplac&eacute;es par les
+attributs de la liste.  La liste des substitutions valides est:
 
 <ul>
     <li><b><code>real_name</code></b> - Le `joli' nom le la liste;
@@ -18,7 +16,7 @@ attributs utiles:
 
     <li><b><code>web_page_url</code></b> - L'URL de base pour Mailman.
     Elle peut &ecirc;tre concact&eacute;n&eacute;e avec, par exemple
-    <em><code>listinfo/%(_internal_name)s</code></em> pour donner la
+    <em><code>listinfo/%(internal_name)s</code></em> pour donner la
     page d'infos de la liste.
 
     <li><b><code>description</code></b> - La description courte de la
