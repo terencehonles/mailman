@@ -14,7 +14,7 @@ if [ "$1" = "-a" ]; then
 fi
 
 if [ -z "$1" ]; then
-  echo "Usage: $0 [ -a ] list-name"
+  echo "Usage: rmlist [ -a ] list-name"
   exit 1
 else
   listname="$1"
