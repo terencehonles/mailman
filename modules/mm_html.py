@@ -17,7 +17,7 @@
 
 """Routines for presentation of list-specific HTML text."""
 
-__version__ = "$Revision: 693 $"
+__version__ = "$Revision: 730 $"
 
 
 import os
@@ -27,7 +27,7 @@ import mm_cfg, mm_utils
 from htmlformat import *
 
 class HTMLFormatter:
-    def InitVars(self):
+    def InitTempVars(self):
 	self._template_dir = os.path.join(mm_cfg.TEMPLATE_DIR, 
 					  self._internal_name)
 
