@@ -1,0 +1,144 @@
+#! /usr/bin/env python
+#
+# Copyright (C) 1998 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""Find all lists that a member's address is on.
+
+Usage:
+    find_member [-h] [-l listname] [-x listname] regex
+
+Where:
+    --list listname
+    -l listname
+        Include only the named list in the search
+
+    --exclude listname
+    -x listname
+        Exclude the named list from the search
+
+    --help
+    -h
+        Print this help message and exit.
+
+    regex
+        A Python regular expression to match against
+
+The interaction between -l and -x is as follows.  If any -l option is given
+then only the named list will be included in the search.  If any -x option is
+given but no -l option is given, then all lists will be search except those
+specifically excluded.
+
+Regular expression syntax is Perl5-like, using the Python re module.  Complete
+specifications are at:
+
+http://www.python.org/doc/current/lib/module-re.html
+
+Address matches are case-insensitive, but case-preserved addresses are
+displayed.
+"""
+
+import sys
+import re
+import paths
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import Errors
+
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+
+
+def scanlists(listnames, cre):
+    matches = {}
+    for name in listnames:
+        try:
+            m = MailList.MailList(name)
+        except Errors.MMUnknownListError:
+            # XXX: Warn?
+            pass
+        allmembers = m.GetMembers() + m.GetDigestMembers()
+        for member in allmembers:
+            if cre.search(member):
+                addr = m.GetUserSubscribedAddress(member)
+                foundlists = matches.get(addr, {})
+                foundlists[name] = addr
+                matches[addr] = foundlists
+    return matches
+
+
+
+def main():
+    listnames = Utils.list_names()
+    loptseen = 0
+    searchre = None
+    # parse options and figure out the lists to search
+    try:
+        argvi = 1
+        while argvi < len(sys.argv):
+            argv = sys.argv[argvi]
+            if argv in ('-h', '--help'):
+                usage(0)
+            elif argv in ('-l', '--list'):
+                argvi = argvi + 1
+                name = sys.argv[argvi]
+                if not loptseen:
+                    listnames = []
+                    loptseen = 1
+                listnames.append(name)
+            elif argv in ('-x', '--exclude'):
+                argvi = argvi + 1
+                name = sys.argv[argvi]
+                try:
+                    listnames.remove(name)
+                except ValueError:
+                    pass
+            elif searchre:
+                usage(1, 'multiple search regexps not allowed')
+            else:
+                searchre = argv
+            argvi = argvi + 1
+    except IndexError:
+        usage(2)
+
+    if not listnames:
+        print 'No lists to search'
+        sys.exit(0)
+
+    if not searchre:
+        usage(3, 'no regexp provided')
+
+    matches = scanlists(listnames, re.compile(searchre, re.IGNORECASE))
+    addrs = matches.keys()
+    addrs.sort()
+    for k in addrs:
+        lists = matches[k].keys()
+        if len(lists) == 1:
+            print k, 'found in list', lists[0]
+        else:
+            print k, 'found in:'
+            for name in lists:
+                print '   ', name
+
+
+
+if __name__ == '__main__':
+    main()
