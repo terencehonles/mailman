@@ -9,6 +9,26 @@ from regsub import gsub
 sys.path.append('/home/mailman/mailman/modules')
 import mm_utils, maillist, mm_err, mm_message, mm_cfg, htmlformat
 
+NEED_CONFIRM_NOTICE = """
+A subscription to the %s mailing has been submitted for you%s
+
+This is a confirmation request, to prevent someone subscribing you
+against your wishes.  In order to complete this subscription you
+must send a confirming email by repling to this mail, and putting the
+line: 
+
+subscribe %s
+
+in the body.  If you do not actually wish to subscribe you need not do
+anything.
+
+Questions or comments?  Send them to """ + mm_cfg.MAILMAN_OWNER
+
+UNKNOWN_ERROR = '''An unknown error occured.  <p>
+Please send mail to <a href=%s>%s</a> explaining
+exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER,
+	mm_cfg.MAILMAN_OWNER)
+
 doc = htmlformat.Document()
 
 path = os.environ['PATH_INFO']
@@ -40,7 +60,8 @@ results = ''
 
 if form.has_key("submitinfo"):
     if not form.has_key("info"):
-	doc.AddItem(htmlformat.Header(2, "You must supply your email address."))
+	doc.AddItem(htmlformat.Header(2,
+				      "You must supply your email address."))
 	doc.AddItem(list.GetMailmanFooter())
 	print doc.Format()
 	sys.exit(0)
@@ -102,32 +123,49 @@ else:
 
     try:
 	list.AddMember(email, pw, digest, web_subscribe=1)
-	results = results + "You have successfully been added.  You should receive confirmation by e-mail within an hour.  If you do not receive confirmation, then the email address you gave probably bounced, in which case you should try again.<p>"
+	results = results + ("You have successfully been added.  "
+			     "You should receive confirmation by "
+			     "e-mail within an hour.  If you do not "
+			     "receive confirmation, then the email "
+			     "address you gave probably bounced, "
+			     "in which case you should try again.<p>")
     except mm_err.MMWebSubscribeRequiresConfirmation:
-	results = results + "You must send confirmation email in order to subscribe.  Further directions will be sent to you at %s." % email
+	results = results + ("Confirmation from your email address is "
+			     "required, to prevent anyone from covertly "
+			     "subscribing other people.  Instructions "
+			     "are being sent to you at %s." % email)
+	if os.environ.has_key('REMOTE_HOST'):
+	    remote = " from\n%s. " % os.environ['REMOTE_HOST']
+	elif os.environ.has_key('REMOTE_ADDR'):
+	    remote = " from\n%s." % os.environ['REMOTE_ADDR']
+	else:
+	    remote = "."
 	list.SendTextToUser(subject = 'Subscribing to %s' % list.real_name,
 			    recipient = email,
 			    sender = list.GetRequestEmail(),
-			    text = '''
-In order to subscribe to this mailing list, you need to send a
-confirming email.  This is to prevent people from subscribing you to a
-email list to which you don't want to be subscribed.  To send
-confirmation, reply to this mail, and put in the body: 	subscribe %s
-''' % pw)
+			    text = NEED_CONFIRM_NOTICE % (list.real_name,
+							  remote,
+							  pw))
     except mm_err.MMBadEmailError:
-	results = results + "Mailman won't accept the given email address as a valid address. (Does it have an @ in it???)<p>"
+	results = results + ("Mailman won't accept the given email "
+			     "address as a valid address. (Does it "
+			     "have an @ in it???)<p>")
     except mm_err.MMListNotReady:
-        results = results + "The list is not fully functional, and can not accept subscription requests.<p>"
+        results = results + ("The list is not fully functional, and "
+			     "can not accept subscription requests.<p>")
     except mm_err.MMNeedApproval, x:
-        results = results + "Subscription was <em>deferred</em> because:<br> %s<p>Your request must be approved by the list admin.  You will receive email informing you of the moderator's descision when he or she gets to your request.<p>" % x
+        results = results + ("Subscription was <em>deferred</em> "
+			     "because:<br> %s<p>Your request must "
+			     "be approved by the list admin.  "
+			     "You will receive email informing you "
+			     "of the moderator's descision when they "
+			     "get to your request.<p>" % x)
     except mm_err.MMHostileAddress:
-        results = results + "Your subscription is not allowed because the email address you gave is insecure.<p>"
+        results = results + ("Your subscription is not allowed because "
+			     "the email address you gave is insecure.<p>")
     except mm_err.MMAlreadyAMember:
         results = results + "You are already subscribed!<p>"
     except:
-        results = results + '''An unknown error occured.  <p>
-Please send mail to <a href=%s>%s</a> explaining
-exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER,
-	mm_cfg.MAILMAN_OWNER)
+        results = results + UNKNOWN_ERROR
 
 PrintResults()
