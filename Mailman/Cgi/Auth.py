@@ -17,6 +17,7 @@
 """Common routines for logging in and logging out of the admin interface.
 """
 
+from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 from Mailman.htmlformat import FontAttr
@@ -40,46 +41,18 @@ def loginpage(mlist, scriptname, msg='', frontpage=None):
         actionurl = Utils.GetRequestURI(url)
     if msg:
         msg = FontAttr(msg, color='#ff0000', size='+1').Format()
+    if scriptname == 'admindb':
+        who = _('Moderator')
+    else:
+        who = _('Administrator')
     # Language stuff
     charset = Utils.GetCharSet(mlist.preferred_language)
     print 'Content-type: text/html; charset=' + charset + '\n\n'
     print Utils.maketext(
-        # Should really be admlogin.html :/
-        'admlogin.txt',
+        'admlogin.html',
         {'listname': mlist.real_name,
          'path'    : actionurl,
          'message' : msg,
+         'who'     : who,
          }, mlist=mlist)
-
-    
-
-def authenticate(mlist, cgidata):
-    # Returns 1 if the user is properly authenticated, otherwise it does
-    # everything necessary to put up a login screen and returns 0.
-    isauthed = 0
-    adminpw = None
-    msg = ''
-    #
-    # If we get a password change request, we first authenticate by cookie
-    # here, and issue a new cookie later on iff the password change worked
-    # out.  The idea is to set only one cookie when the admin password
-    # changes.  The new cookie is necessary, because the checksum part of the
-    # cookie is based on (among other things) the list's admin password.
-    if cgidata.has_key('adminpw') and \
-           cgidata['adminpw'].value and \
-           not cgidata.has_key('newpw'):
-        # then
-        adminpw = cgidata['adminpw'].value
-    # Attempt to authenticate
-    try:
-        isauthed = mlist.WebAuthenticate(password=adminpw, cookie='admin')
-    except Errors.MMExpiredCookieError:
-        msg = _('Stale cookie found')
-    except Errors.MMInvalidCookieError:
-        msg = _('Error decoding authorization cookie')
-    except (Errors.MMBadPasswordError, Errors.MMAuthenticationError):
-        msg = _('Authentication failed')
-    #
-    # Returns successfully if logged in
-    if not isauthed:
-        raise NotLoggedInError(msg)
+    print mlist.GetMailmanFooter()
