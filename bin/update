@@ -244,19 +244,7 @@ def remove_old_sources(module):
             print "couldn't remove old file", pyc, "--", str(rest)
 
 
-if __name__ == '__main__':
-    # calculate the versions
-    lastversion, thisversion = calcversions()
-    if lastversion == thisversion:
-        # nothing to do
-        sys.exit(0)
-    if lastversion > thisversion:
-        print 'Downgrade detected, from version', hex(lastversion), \
-              'to version', hex(thisversion)
-        print 'This is probably not safe.  Exiting.'
-        sys.exit(1)
-    print 'Upgrading from version', hex(lastversion), 'to', hex(thisversion)
-    #
+def main():
     # get rid of old stuff
     for mod in ('Mailman/Archiver.py', 'Mailman/HyperArch.py',
                 'Mailman/HyperDatabase.py', 'Mailman/pipermail.py',
@@ -266,7 +254,7 @@ if __name__ == '__main__':
     lists = Utils.list_names()
     if not lists:
         print "no lists == nothing to do, exiting"
-        sys.exit(0)
+        return
     #
     # for people with web archiving, make sure the directories
     # in the archiving are set with proper perms for b6.
@@ -326,9 +314,23 @@ NOTE NOTE NOTE NOTE NOTE
 NOTE NOTE NOTE NOTE NOTE
 
 """
-    #
-    # Now record the version we just upgraded to
-    #
+
+
+
+if __name__ == '__main__':
+    # calculate the versions
+    lastversion, thisversion = calcversions()
+    if lastversion == thisversion:
+        # nothing to do
+        sys.exit(0)
+    if lastversion > thisversion:
+        print 'Downgrade detected, from version', hex(lastversion), \
+              'to version', hex(thisversion)
+        print 'This is probably not safe.  Exiting.'
+        sys.exit(1)
+    print 'Upgrading from version', hex(lastversion), 'to', hex(thisversion)
+    main()
+    # Record the version we just upgraded to
     fp = open(LMVFILE, 'w')
     fp.write(hex(mm_cfg.HEX_VERSION) + '\n')
     fp.close()
