@@ -47,6 +47,16 @@ A. No.  The reason is that, for efficiency, Mailman batches together
    You'll need to investigate the configuration options of your MTA
    for details.
 
+Q. My users hate HTML in their email and for security reasons, I want
+   to strip out all MIME attachments.  How can I do this?
+
+A. Mailman 2.1 will probably have this feature built-in, but for now
+   you can use add-on tools such as demime or stripmime.  More
+   information on these tools can be found at:
+
+   (Stripmime) http://www.phred.org/~alex/stripmime.html.
+   (Demime)    http://scifi.squawk.com/demime.html.
+
 Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
