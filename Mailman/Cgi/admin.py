@@ -31,7 +31,7 @@ import signal
 from types import *
 from string import lowercase, digits
 
-from email.Utils import unquote, parseaddr
+from email.Utils import unquote, parseaddr, formataddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -795,14 +795,17 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     all = mlist.getMembers()
     all.sort(lambda x, y: cmp(x.lower(), y.lower()))
     # See if the query has a regular expression
-    regexp = cgidata.getvalue('findmember')
+    regexp = cgidata.getvalue('findmember', '').strip()
     if regexp:
         try:
             cre = re.compile(regexp, re.IGNORECASE)
         except re.error:
             doc.addError(_('Bad regular expression: ') + regexp)
         else:
-            all = [s for s in all if cre.search(s)]
+            # BAW: There's got to be a more efficient way of doing this!
+            names = [mlist.getMemberName(s) or '' for s in all]
+            all = [a for n, a in zip(names, all)
+                   if cre.search(n) or cre.search(a)]
     chunkindex = None
     bucket = None
     actionurl = None
