@@ -142,14 +142,29 @@ def main():
         # each entry in this dictionary is a list of tuples of the following
         # form: (listaddr, listreq, password, url)
         users = hosts.get(host, {})
+        badaddrs = []
         for addr, passwd in mlist.passwords.items():
             url = mlist.GetAbsoluteOptionsURL(addr)
-            recip = mlist.GetMemberAdminEmail(addr)
+            realaddr = mlist.GetUserSubscribedAddress(addr)
+            if not realaddr:
+                badaddrs.append(addr)
+                continue
+            recip = mlist.GetMemberAdminEmail(realaddr)
             userinfo = (listaddr, listreq, passwd, url)
             infolist = users.get(recip, [])
             infolist.append(userinfo)
             users[recip] = infolist
         hosts[host] = users
+        # were there any addresses that are in the password dictionary but are
+        # not subscribed?
+        if badaddrs:
+            mlist.Lock()
+            try:
+                for addr in badaddrs:
+                    del mlist.passwords[addr]
+                mlist.Save()
+            finally:
+                mlist.Unlock()
     if a_public_list:
         MailAllPasswords(a_public_list, hosts)
 
