@@ -327,7 +327,7 @@ def send_i18n_digests(mlist, mboxfp):
     # Calculate the recipients lists
     plainrecips = []
     mimerecips = []
-    drecips = mlist.getDigestMemberKeys() + self.one_last_digest.keys()
+    drecips = mlist.getDigestMemberKeys() + mlist.one_last_digest.keys()
     for user in mlist.getMemberCPAddresses(drecips):
         if user is None:
             # It means that someone who toggled off digest delivery
@@ -339,7 +339,7 @@ def send_i18n_digests(mlist, mboxfp):
         else:
             mimerecips.append(user)
     # Zap this since we're now delivering the last digest to these folks.
-    self.one_last_digest.clear()
+    mlist.one_last_digest.clear()
     # MIME
     virginq.enqueue(mimemsg, recips=mimerecips, listname=mlist.internal_name())
     # rfc1153
