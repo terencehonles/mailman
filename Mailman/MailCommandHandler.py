@@ -609,7 +609,10 @@ background and instructions for subscribing to and using it, visit:
         except Errors.MMNeedApproval, admin_addr:
             self.AddToResponse("Your request has been forwarded to the list "
                                "administrator for approval")
-            
+        except Errors.MMAlreadyAMember:
+            # Some other subscription request for this address has
+            # already succeeded.
+            self.AddError("You are already subscribed!")
         else:
             #
             # if the list sends a welcome message, we don't need a response
