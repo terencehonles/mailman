@@ -176,13 +176,17 @@ def process_request(doc, cgidata):
                 mlist.Create(listname, owner, pw, langs)
             finally:
                 os.umask(oldmask)
-        except Errors.MMBadEmailError:
+        except Errors.MMBadEmailError, s:
             request_creation(doc, cgidata,
-                             _('Bad owner email address: %(owner)s'))
+                             _('Bad owner email address: %(s)s'))
             return
         except Errors.MMListAlreadyExistsError:
             request_creation(doc, cgidata,
                              _('List already exists: %(listname)s'))
+            return
+        except Errors.BadListNameError, s:
+            request_creation(doc, cgidata,
+                             _('Illegal list name: %(s)s'))
             return
         except Errors.MMListError:
             request_creation(
