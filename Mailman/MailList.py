@@ -477,6 +477,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             fp = open(fname_tmp, 'w')
             # Use a binary format... it's more efficient.
             cPickle.dump(dict, fp, 1)
+            fp.flush()
+            if mm_cfg.SYNC_AFTER_WRITE:
+                os.fsync(fp.fileno())
             fp.close()
         except IOError, e:
             syslog('error',
