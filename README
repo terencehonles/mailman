@@ -25,24 +25,31 @@ INTRODUCTION
 
     The Mailman home page is
 
-        http://www.gnu.org/software/mailman/mailman.html
+        http://www.gnu.org/software/mailman
 
     which is mirrored at
 
         http://www.list.org
+        http://mailman.sf.net
 
     Mailman requires Python 2.0 or greater, which can be downloaded
     from
 
         http://www.python.org
 
+    Note that in order to comply with the GPL, it is recommended that
+    you use Python 2.0.1.  Python 2.1.1 and Python 2.2 will also be
+    GPL-compatible, but they have not yet been released as of this
+    writing (09-Jul-2001).
+
     You will also need an ANSI C compiler; gcc (the GNU C compiler)
-    works just fine.  Mailman currently works only on Unix-alike
-    operating systems (e.g. Solaris, GNU/Linux, etc.).
+    works just fine.  Mailman currently works only on GNU/Linux and
+    other Unix-like operating systems (e.g. Solaris, *BSD, etc.).
 
     See the INSTALL file for installation instructions.  If you are
     upgrading from a previous version of Mailman, you need to read the
     UPGRADING file for important information.
+
 
 FEATURES
 
@@ -66,7 +73,7 @@ FEATURES
       and public archives, and hooks for external archivers.
 
     - Per-user configuration optional digest delivery for either
-      MIME-compliant or RFC 934 style "plain text" digests.
+      MIME-compliant or RFC 1153 style "plain text" digests.
 
     - Integrated mail/Usenet gateways.
 
@@ -82,37 +89,83 @@ FEATURES
 
     - Support for virtual domains.
 
+
 REQUIREMENTS
 
     The default mail delivery mechanism uses a direct SMTP connection
     to whatever mail transport agent you have running on port 25.  You
-    can thus use Mailman with any such MTA, however the script
-    bin/newlist still generates sendmail style aliases (this will be
-    fixed eventually).  You can also configure Mailman to submit
-    messages to your MTA via command line invocation, although there
-    are security considerations in going that route.
+    can thus use Mailman with any such MTA, however with certain MTA
+    (e.g. Exim and Postfix), Mailman will support thru-the-web
+    creation and removal of mailing lists.  You can also configure
+    Mailman to submit messages to your MTA via command line
+    invocation, although there are security considerations in going
+    that route.
 
-    Mailman works with any web server that supports CGI.  The HTML it
-    generates is pretty pedestrian and stingy on the graphics so it
-    should be friendly to most web browsers.
+    Mailman works with any web server that supports CGI/1.1.  The HTML
+    it generates is quite pedestrian and stingy on the graphics so it
+    should be friendly to most web browsers.  It is regularly tested
+    with IE 5.5, Netscape 4.7x, and Mozilla 0.9.x on Windows and
+    Netscape 4.7x and Mozilla 0.9.x on Linux (and occasionally Lynx on
+    Linux too!).
 
     You will need root access on the machine hosting your Mailman
     installation in order to complete some of the configuration
     steps.  See the INSTALL file for details.
 
-GETTING STARTED QUICKLY
 
-    These instructions assume that you are sitting in a shell in the
-    install directory (by default /home/mailman).
+CREATE YOUR FIRST LIST
 
-    Once you've installed Mailman according to the INSTALL file, you
-    can create your first list by running the program bin/newlist.
-    bin/newlist will print out some aliases that you should add to
-    your /etc/aliases file (if you're running a sendmail compatible
-    MTA; see the various README files for more specific information).
+    These instructions assume that you've installed and configured
+    Mailman according to the instructions in the INSTALL file.  To
+    create and test your first list, try the following:
 
-    Next you should visit the your new list's admin page and set the
-    various configuration options that you want.
+    - First, initialize the site administrator's password by cd'ing to
+      the install directory (by default /home/mailman) and typing
+
+      % bin/mmsitepass
+      New site password: [hidden]
+      Again to confirm password: [hidden]
+      Password changed.
+
+    - Visit the url
+
+        http://my.dom.ain/mailman/create
+
+      Fill out the form as described in the on-screen instructions, and
+      in the "List creator's password" field, type the password you
+      entered above.  Type your own email address for the "Initial
+      list owner address", and select "Yes" to notify the list
+      administrator.
+
+    - Hit "Create List"
+
+    - Check your email for a message from Mailman informing you that
+      your new mailing list was created.
+
+    - NOTE: If you are using an MTA other than Exim or Postfix
+      (e.g. Sendmail or Qmail), then you'll need to do the extra step
+      of installing the mailing list aliases manually.  Follow the
+      instructions in an email message that you should have received
+      (you'll need to know how to do this for your particular MTA, see
+      the README for your MTA for more information).
+
+    - Now visit the list's admin page (either by following the link on
+      the web page or entering the link from the email Mailman just
+      sent you).  Type in the list's password and click on "Let me in..."
+    
+    - Click on "Membership Management" and then on "Mass Subscription".
+
+    - Enter your email address in the big text field, and click on
+      "Submit Your Changes"
+
+    - Now go to your email and send a message to yourlist@my.dom.ain.
+      Within a minute or two you should see your message reflected
+      back to you via Mailman.
+
+    Congratulations!  You've just set up and tested your first Mailman
+    mailing list.  If you had any problems along the way, please see
+    the section below on FOR MORE INFORMATION.
+
 
 FOR MORE INFORMATION
 
