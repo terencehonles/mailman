@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 394 $"
+__version__ = "$Revision: 409 $"
 
 try:
     import mm_cfg
@@ -401,13 +401,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Header added to mail sent to regular list members',
 
              "Text prepended to the top of every immediately-delivery"
-             " message.  <p>" + mm_cfg.MESSAGE_DECORATION_NOTE),
+             " message.  <p>" + mm_err.MESSAGE_DECORATION_NOTE),
 	    
 	    ('msg_footer', mm_cfg.Text, (4, 55), 0,
 	     'Footer added to mail sent to regular list members',
 
              "Text appended to the bottom of every immediately-delivery"
-             " message.  <p>" + mm_cfg.MESSAGE_DECORATION_NOTE),
+             " message.  <p>" + mm_err.MESSAGE_DECORATION_NOTE),
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
