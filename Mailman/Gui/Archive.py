@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,10 +16,11 @@
 
 from Mailman import mm_cfg
 from Mailman.i18n import _
+from Mailman.Gui.GUIBase import GUIBase
 
 
 
-class Archive:
+class Archive(GUIBase):
     def GetConfigCategory(self):
         return 'archive', _('Archiving Options')
 
@@ -41,4 +42,3 @@ class Archive:
              0,
  	     _('How often should a new archive volume be started?')),
 	    ]
-
