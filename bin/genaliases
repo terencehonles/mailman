@@ -60,6 +60,13 @@ def usage(code, msg=''):
 
 
 
+def zapfile(filename):
+    # Truncate the file w/o messing with the file permissions
+    fp = open(filename, 'w')
+    fp.close()
+
+
+
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
@@ -79,27 +86,26 @@ def main():
     lock = Postfix.makelock()
     lock.lock()
     lockfp = None
+    # Group lists by virtual hostname
+    mlists = {}
+    for listname in Utils.list_names():
+        mlist = MailList.MailList(listname, lock=0)
+        mlists.setdefault(mlist.host_name, []).append(mlist)
     # Make sure the files are created rw-rw-xxx; it should be okay to be world
     # readable.
     omask = os.umask(002)
     try:
-        # Overwrite the current file contents, since we're going to be adding
-        # all new entries.  See the discussion in Mailman/MTA/Postfix.py for
-        # why we do the locking this way.
-        lockfp = open(Postfix.DBFILE, 'w')
-        fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
-        db = bsddb.hashopen(Postfix.DBFILE, 'n')
-        fp = open(Postfix.TEXTFILE, 'w')
-        for listname in Utils.list_names():
-            mlist = MailList.MailList(listname, lock=0)
-            Postfix.addlist(mlist, db, fp)
-        db.sync()
-        fp.close()
+        # Remove the original files
+        zapfile(Postfix.DBFILE)
+        zapfile(Postfix.TEXTFILE)
+        for hostname, vlists in mlists.items():
+            dbfile, textfile = Postfix.virtual_files(hostname)
+            zapfile(dbfile)
+            zapfile(textfile)
+            for mlist in vlists:
+                Postfix.create(mlist, nolock=1)
     finally:
         os.umask(omask)
-        if lockfp:
-            fcntl.flock(lockfp.fileno(), fcntl.LOCK_UN)
-            lockfp.close()
         lock.unlock(unconditionally=1)
 
 
