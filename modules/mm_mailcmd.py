@@ -1,6 +1,6 @@
 """Process maillist user commands arriving via email."""
 
-__version__ = "$Revision: 398 $"
+__version__ = "$Revision: 468 $"
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.
@@ -58,6 +58,12 @@ class MailCommandHandler:
     def ParseMailCommands(self):
 	mail = mm_message.IncomingMessage()
 	subject = mail.getheader("subject")
+        sender = string.lower(mail.GetSender())
+        if sender in ['mailer-daemon', 'postmaster', 'orphanage',
+                      'postoffice']:
+            self.LogMsg("bounce", "%s: Mailcmd from %s rejected, subj %s",
+                        self._internal_name, sender, `subject`)
+            return
 	if subject:
 	    subject = string.strip(subject)
 	if (subject and self._cmd_dispatch.has_key(string.split(subject)[0])):
