@@ -399,6 +399,7 @@ GLOBAL_PIPELINE = [
     'Hold',
     'Tagger',
     'CalcRecips',
+    'AvoidDuplicates',
     'Cleanse',
     'CookHeaders',
     # And now we send the message to the digest mbox file, and to the arch and
@@ -657,6 +658,11 @@ ADMIN_CATEGORIES = [
     # Second column
     'privacy', 'bounce',    'archive',  'gateway', 'autoreply', 'topics',
     ]
+
+# See "Bitfield for user options" below; make this a sum of those options, to
+# make all new members of lists start with those options flagged.  We assume
+# by default that people don't want to receive two copies of posts
+DEFAULT_NEW_MEMBER_OPTIONS = 256
 
 
 
@@ -978,7 +984,8 @@ HOLD = 7
 # Standard text field width
 TEXTFIELDWIDTH = 40
 
-# Bitfield for user options
+# Bitfield for user options.  See DEFAULT_LIST_OPTIONS above to set defaults
+# for all new lists.
 Digests             = 0 # handled by other mechanism, doesn't need a flag.
 DisableDelivery     = 1 # Obsolete; use set/getDeliveryStatus()
 DontReceiveOwnPosts = 2 # Non-digesters only
@@ -988,6 +995,7 @@ ConcealSubscription = 16
 SuppressPasswordReminder = 32
 ReceiveNonmatchingTopics = 64
 Moderate = 128
+DontReceiveDuplicates = 256
 
 # Authentication contexts.
 #
