@@ -31,6 +31,7 @@ import urlparse
 import sha
 import errno
 import time
+import cgi
 import email.Iterators
 from string import whitespace, digits
 try:
@@ -542,7 +543,7 @@ def rmdirhier(dir):
 
 
 
-def GetRequestURI(fallback=None):
+def GetRequestURI(fallback=None, escape=1):
     """Return the full virtual path this CGI script was invoked with.
 
     Newer web servers seems to supply this info in the REQUEST_URI
@@ -553,13 +554,17 @@ def GetRequestURI(fallback=None):
     Optional argument `fallback' (default `None') is returned if both of
     the above methods fail.
 
+    The url will be cgi escaped to prevent cross-site scripting attacks,
+    unless `escape' is set to 0.
     """
+    url = fallback
     if os.environ.has_key('REQUEST_URI'):
-        return os.environ['REQUEST_URI']
+        url = os.environ['REQUEST_URI']
     elif os.environ.has_key('SCRIPT_NAME') and os.environ.has_key('PATH_INFO'):
-        return os.environ['SCRIPT_NAME'] + os.environ['PATH_INFO']
-    else:
-        return fallback
+        url = os.environ['SCRIPT_NAME'] + os.environ['PATH_INFO']
+    if escape:
+        return cgi.escape(url)
+    return url
 
 
 
