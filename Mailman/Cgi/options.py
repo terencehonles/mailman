@@ -417,19 +417,13 @@ def main():
             for flag, newval in newvals:
                 # Handle language settings differently
                 if flag == SETLANGUAGE:
-                    mlist.SetPreferredLanguage(user, newval)
+                    mlist.setMemberLanguage(user, newval)
                     continue
 
                 mlist.setMemberOption(user, flag, newval)
 
-            # Set the topics information
-            # FIXME: should use MemberAdaptor API
-            if topicnames:
-                mlist.topics_userinterest[user] = topicnames
-            elif mlist.topics_userinterest.has_key(user):
-                del mlist.topics_userinterest[user]
-
-            # All done
+            # Set the topics information.
+            mlist.setMemberTopics(user, topicnames)
             mlist.Save()
         finally:
             mlist.Unlock()
@@ -582,7 +576,7 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
 
     # Create the topics radios.  BAW: what if the list admin deletes a topic,
     # but the user still wants to get that topic message?
-    usertopics = mlist.topics_userinterest.get(user, [])
+    usertopics = mlist.getMemberTopics(user)
     if mlist.topics:
         table = Table(border="0")
         for name, pattern, description, emptyflag in mlist.topics:
