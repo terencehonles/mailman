@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.15 
+# From configure.in Revision: 2.16 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -2010,6 +2010,7 @@ build/contrib/rotatelogs.py:contrib/rotatelogs.py \
 build/contrib/securelinux_fix.py:contrib/securelinux_fix.py \
 build/cron/bumpdigests:cron/bumpdigests \
 build/cron/checkdbs:cron/checkdbs \
+build/cron/disabled:cron/disabled \
 build/cron/gate_news:cron/gate_news \
 build/cron/mailpasswds:cron/mailpasswds \
 build/cron/nightly_gzip:cron/nightly_gzip \
