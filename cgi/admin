@@ -115,7 +115,7 @@ def FormatConfiguration(doc, list, category, category_suffix):
         if k == category: label = v
 
     doc.SetTitle('%s Administration' % list.real_name)
-    doc.AddItem(Center(Header(2, ('%s Maillist %s Configuration'
+    doc.AddItem(Center(Header(2, ('%s Maillist Configuration - %s Section'
                                   % (list.real_name, label)))))
     doc.AddItem('<hr>')
 
@@ -175,28 +175,34 @@ def FormatOptionsSection(category, list):
     for k, v in CATEGORIES:
         if k == category: label = v
 
-    big_table = Table(cellspacing=4, cellpadding=5)
+    big_table = Table(cellspacing=3, cellpadding=4)
     big_table.AddRow([Center(Header(2, label))])
     
     big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
                           colspan=2, bgcolor="#99ccff")
-    def AddOptionsHeader(big_table=big_table):
-        big_table.AddRow([Center(Bold('Option')),
-                          Bold('Value')])
+
+    def ColHeader(big_table = big_table):
+        big_table.AddRow([Center(Bold('Option')), Bold('Value')])
         big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
                               width="15%")
         big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 1,
                               width="85%")
+    did_col_header = 0
 
-    if type(options[0]) != types.StringType:
-        AddOptionsHeader()
     for item in options:
         if type(item) == types.StringType:
             big_table.AddRow([Bold(item)])
             big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
                                   colspan=2, bgcolor ="#FFF0D0")
-            AddOptionsHeader()
+            if not did_col_header:
+                # Do col header after very first string descr, if any...
+                ColHeader()
+                did_col_header = 1
         else:
+            if not did_col_header:
+                # ... but do col header before anything else.
+                ColHeader()
+                did_col_header = 1
             big_table.AddRow(GetGuiItem(item, list))
             big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 1,
                                   bgcolor="#cccccc")
