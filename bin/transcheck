@@ -5,19 +5,19 @@
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the version 2.0 of the GNU General Public License as
 # published by the Free Software Foundation.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc., 
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """
-Check a given Mailman translation, making sure that variables and 
-tags referenced in translation are the same variables and tags in 
+Check a given Mailman translation, making sure that variables and
+tags referenced in translation are the same variables and tags in
 the original templates and catalog.
 
 Usage:
@@ -25,7 +25,7 @@ Usage:
 cd $MAILMAN_DIR
 %(program)s [-q] <lang>
 
-Where <lang> is your country code (e.g. 'it' for Italy) and -q is 
+Where <lang> is your country code (e.g. 'it' for Italy) and -q is
 to ask for a brief summary.
 """
 
@@ -33,6 +33,18 @@ import sys
 import re
 import os
 import getopt
+
+import paths
+from Mailman.i18n import _
+
+
+
+def usage(code, msg):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+
 
 
 class TransChecker:
@@ -45,7 +57,7 @@ class TransChecker:
     def checkin(self, string):
         "scan a string from the original file"
         for key in self.regexp.findall(string):
-            if self.dict.has_key(key): 
+            if self.dict.has_key(key):
                 self.dict[key] += 1
             else:
                 self.dict[key] = 1
@@ -57,16 +69,16 @@ class TransChecker:
                 self.dict[key] -= 1
             else:
                 self.errs.append(
-                    "%(key)s was not found" % 
+                    "%(key)s was not found" %
                     { 'key' : key }
                 )
-    
+
     def computeErrors(self):
         "check for differences between checked in and checked out"
         for key in self.dict.keys():
             if self.dict[key] < 0:
                 self.errs.append(
-                    "Too much %(key)s" % 
+                    "Too much %(key)s" %
                     { 'key'  : key }
                 )
             if self.dict[key] > 0:
@@ -91,7 +103,7 @@ class TransChecker:
     def reset(self):
         self.dict = {}
         self.errs = []
-        
+
 
 
 class POParser:
@@ -112,7 +124,7 @@ class POParser:
 
     def close(self):
         self.f.close()
-    
+
     def parse(self):
         """States table for the finite-states-machine parser:
             0  idle
@@ -126,7 +138,7 @@ class POParser:
         self.msgid = ""
         self.msgstr = ""
 
-        
+
         # can't continue if status == 4, this is a dead status
         if self.status == 4:
             return 0
@@ -143,12 +155,12 @@ class POParser:
                     return 0
 
             # keep the line count up-to-date
-            if c == "\n": 
+            if c == "\n":
                 self.line += 1
-                
-            # a pound was detected the previous char... 
+
+            # a pound was detected the previous char...
             if self.status == 1:
-                if c == ":": 
+                if c == ":":
                     # was a line of filenames
                     row = self.f.readline()
                     self.files += row.split()
@@ -166,11 +178,11 @@ class POParser:
 
             # in idle status we search for a '#' or for a 'm'
             if self.status == 0:
-                if   c == "#": 
+                if   c == "#":
                     # this could be a comment or a filename
                     self.status = 1;
                     continue
-                elif c == "m": 
+                elif c == "m":
                     # this should be a msgid start...
                     s = self.f.read(4)
                     assert s == "sgid"
@@ -206,7 +218,7 @@ class POParser:
                         if c == "\"":
                             # end of string found
                             break
-                        # a normal char, add it 
+                        # a normal char, add it
                         self.msgid += c
                 if c == "m":
                     # this should be a msgstr identifier
@@ -214,7 +226,7 @@ class POParser:
                     assert s == "sgstr"
                     # ok, now search for the msgstr string
                     self.status = 3
-    
+
             # searching for the msgstr string
             if self.status == 3:
                 if c == "\n":
@@ -253,40 +265,40 @@ class POParser:
 def check_file(translatedFile, originalFile, html=0, quiet=0):
     """check a translated template against the original one
        search also <MM-*> tags if html is not zero"""
-       
+
     if html:
         c = TransChecker("(%\([^)]+\)[0-9]*[sd]|</?MM-[^>]+>)")
     else:
         c = TransChecker("(%\([^)]+\)[0-9]*[sd])")
-    
+
     try:
         f = open(originalFile)
     except IOError:
         if not quiet:
             print " - Can'open original file " + originalFile
         return 1
-    
+
     while 1:
         line = f.readline()
         if not line: break
         c.checkin(line)
-        
+
     f.close()
-    
+
     try:
         f = open(translatedFile)
     except IOError:
         if not quiet:
             print " - Can'open translated file " + translatedFile
         return 1
-    
+
     while 1:
         line = f.readline()
         if not line: break
         c.checkout(line)
-        
+
     f.close()
-    
+
     n = 0
     msg = ""
     for desc in c.computeErrors():
@@ -319,26 +331,24 @@ def check_po(file, quiet=0):
     return n
 
 
-def __main__():
-    #try:
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'qh', ['quiet', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
     quiet = 0
-    optlist, args = getopt.getopt(sys.argv[1:], "q");
-    lang = args[0]
-        
-    #except:
-        #print "Usage: %s [-q] <lang>" % sys.argv[0]
-        #sys.exit(1)
-        
-    for o, a in optlist:
-        if o == "-q":
-            if a:
-                print "q is a valid option but without parameters"
-                sys.exit(1)
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-q', '--quiet'):
             quiet = 1
-            break
-        print "%s is not a valid option" % o
-        sys.exit(1)
-            
+
+    if len(args) <> 1:
+        usage(1)
+
+    lang = args[0]
+
     isHtml = re.compile("\.html$");
     isTxt = re.compile("\.txt$");
 
@@ -366,10 +376,10 @@ def __main__():
             if n:
                 numerrors += n
                 numfiles += 1
-            
+
         else:
             continue
-            
+
     file = "messages/" + lang + "/LC_MESSAGES/mailman.po"
     if not quiet:
         print "PO   checking " + file + "... "
@@ -379,11 +389,11 @@ def __main__():
         numfiles += 1
 
     if quiet:
-        print "%(errs)u warnings in %(files)u files" % { 
-            'errs':  numerrors, 
-            'files': numfiles 
+        print "%(errs)u warnings in %(files)u files" % {
+            'errs':  numerrors,
+            'files': numfiles
         }
-    
+
 
 if __name__ == '__main__':
-    __main__()
+    main()
