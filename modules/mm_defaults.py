@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = VERSION + "$Revision: 244 $"
+__version__ = VERSION + "$Revision: 278 $"
 
 		   # Many site-specific settings #
 
@@ -73,7 +73,7 @@ from: list@listme.com
 DEFAULT_REPLY_GOES_TO_LIST = 0
 # Admin approval unnecessary for subscribes?
 DEFAULT_OPEN_SUBSCRIBE = 1
-# Is view of subscription list restricted to list members?
+# Private_roster == 0: anyone can see, 1: members only, 2: admin only.
 DEFAULT_PRIVATE_ROSTER = 0
 # When exposing members, make them unrecognizable as email addrs.  To
 # web-spiders from picking up addrs for spamming.
