@@ -30,6 +30,7 @@ from Mailman import MailCommandHandler
 from Mailman.htmlformat import *
 from Mailman.Crypt import crypt
 from Mailman import mm_cfg
+from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
 
 
@@ -46,48 +47,6 @@ CATEGORIES = [('general', "General Options"),
 
 
 
-def authenticated(mlist, cgidata):
-    # Returns 1 if the user is properly authenticated, otherwise it does
-    # everything necessary to put up a login screen and returns 0.
-    isauthed = 0
-    adminpw = None
-    msg = ''
-    #
-    # If we get a password change request, we first authenticate by cookie
-    # here, and issue a new cookie later on iff the password change worked
-    # out.  The idea is to set only one cookie when the admin password
-    # changes.  The new cookie is necessary, because the checksum part of the
-    # cookie is based on (among other things) the list's admin password.
-    if cgidata.has_key('adminpw') and not cgidata.has_key('newpw'):
-        adminpw = cgidata['adminpw'].value
-    # Attempt to authenticate
-    try:
-        isauthed = mlist.WebAuthenticate(password=adminpw, cookie='admin')
-    except Errors.MMExpiredCookieError:
-        msg = 'Stale cookie found'
-    except Errors.MMInvalidCookieError:
-        msg = 'Error decoding authorization cookie'
-    except (Errors.MMBadPasswordError, Errors.MMAuthenticationError):
-        msg = 'Authentication failed'
-    #
-    # Put up the login page if not authenticated
-    if not isauthed:
-        url = mlist.GetScriptURL('admin', relative=1)
-        if msg:
-            msg = FontAttr(msg, color='#FF5060', size='+1').Format()
-        print 'Content-type: text/html\n'
-        print Utils.maketext(
-            # Should really be admlogin.html :/
-            'admlogin.txt',
-            {'listname': mlist.real_name,
-             'path'    : Utils.GetRequestURI(url),
-             'message' : msg,
-             })
-        return 0
-    return 1
-
-
-
 def main():
     """Process and produce list options form.
 
@@ -95,6 +54,7 @@ def main():
     settings, which is processed before producing the new version.
 
     """
+    syslog('debug', 'in admin.py')
     doc = Document()
     try:
         path = os.environ['PATH_INFO']
@@ -122,14 +82,22 @@ def main():
             category = parts[1]
             category_suffix = category
 
+        # If the user is not authenticated, we're done.
+        cgidata = cgi.FieldStorage()
+        try:
+            Auth.authenticate(mlist, cgidata)
+        except Auth.NotLoggedInError, e:
+            Auth.loginpage(mlist, 'admin', e.message)
+            return
+
+        # Is this a log-out request?
+        if category == 'logout':
+            print mlist.ZapCookie('admin')
+            Auth.loginpage(mlist, 'admin', frontpage=1)
+            return
+
         if category not in map(lambda x: x[0], CATEGORIES):
             category = 'general'
-
-        cgidata = cgi.FieldStorage()
-
-        # If the user is not authenticated, we're done.
-        if not authenticated(mlist, cgidata):
-            return
 
         # is the request for variable details?
         varhelp = None
@@ -264,44 +232,44 @@ def FormatConfiguration(doc, mlist, category, category_suffix, cgi_data):
                               % (mlist.real_name, label + ' Section'))))
     doc.AddItem('<hr>')
 
-    links_table = Table(valign="top")
+    linktable = Table(valign="top")
+    linktable.AddRow([Center(Bold("Configuration Categories")),
+                      Center(Bold("Other Administrative Activities"))])
 
-    links_table.AddRow([Center(Bold("Configuration Categories")),
-                        Center(Bold("Other Administrative Activities"))])
-    other_links = UnorderedList()
-    link = Link(mlist.GetRelativeScriptURL('admindb'), 
-                'Tend to pending administrative requests.')
-    other_links.AddItem(link)
-    link = Link(mlist.GetRelativeScriptURL('listinfo'),
-                'Go to the general list information page.')
-    other_links.AddItem(link)
-    link = Link(mlist.GetRelativeScriptURL('edithtml'),
-                'Edit the HTML for the public list pages.')
-    other_links.AddItem(link)
+    adminurl = mlist.GetRelativeScriptURL('admin')
 
-    these_links = UnorderedList()
+    otherlinks = UnorderedList()
+    otherlinks.AddItem(Link(mlist.GetRelativeScriptURL('admindb'), 
+                            'Tend to pending administrative requests.'))
+    otherlinks.AddItem(Link(mlist.GetRelativeScriptURL('listinfo'),
+                            'Go to the general list information page.'))
+    otherlinks.AddItem(Link(mlist.GetRelativeScriptURL('edithtml'),
+                            'Edit the HTML for the public list pages.'))
+    otherlinks.AddItem(Link('%s/logout' % adminurl,
+                            # TBD: What I really want is a blank line :/
+                            '<FONT SIZE="+1">Logout</FONT>'))
+
+    categorylinks = UnorderedList()
     for k, v in CATEGORIES:
         if k == category:
-            these_links.AddItem("<em>" + v + "</em>")
+            categorylinks.AddItem("<em>%s</em>" % v)
         else:
-            these_links.AddItem(Link("%s/%s" % 
-	                 (mlist.GetRelativeScriptURL('admin'),k),v))
+            categorylinks.AddItem(Link("%s/%s" % (adminurl, k), v))
 
-    links_table.AddRow([these_links, other_links])
-    links_table.AddRowInfo(max(links_table.GetCurrentRowIndex(), 0),
-                           valign="top")
+    linktable.AddRow([categorylinks, otherlinks])
+    linktable.AddRowInfo(max(linktable.GetCurrentRowIndex(), 0),
+                         valign="top")
 
-    doc.AddItem(links_table)
+    doc.AddItem(linktable)
     doc.AddItem('<hr>')
     if category_suffix:
         encoding = None
         if category_suffix == 'autoreply':
             # these have file uploads
             encoding = 'multipart/form-data'
-        form = Form('%s/%s' % (mlist.GetRelativeScriptURL('admin'),
-                               category_suffix), encoding=encoding)
+        form = Form('%s/%s' % (adminurl, category_suffix), encoding=encoding)
     else:
-        form = Form(mlist.GetRelativeScriptURL('admin'))
+        form = Form(adminurl)
     doc.AddItem(form)
 
     if category == 'general':
