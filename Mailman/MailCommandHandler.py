@@ -175,16 +175,15 @@ class MailCommandHandler:
 	if len(args) <> 2:
 	    self.AddError("Usage: password <oldpw> <newpw>")
 	    return
+        sender = mail.GetSender()
 	try:
-            who = mail.GetSender()
-            self.ConfirmUserPassword(who, args[0])
-	    self.ChangeUserPassword(mail.GetSender(), args[1], args[1])
+            self.ConfirmUserPassword(sender, args[0])
+	    self.ChangeUserPassword(sender, args[1], args[1])
 	    self.AddToResponse('Succeeded.')
 	except Errors.MMListNotReady:
 	    self.AddError("List is not functional.")
 	except Errors.MMNotAMemberError:
-	    self.AddError("%s isn't subscribed to this list." %
-			  mail.GetSender())
+	    self.AddError("%s isn't subscribed to this list." % sender)
 	except Errors.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
 	except:
