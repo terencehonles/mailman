@@ -56,7 +56,7 @@ The following commands are valid:
         Turn on or off list options.  Valid options are:
 
         ack:
-            Turn this on to receive acknowlegement mail when you send
+            Turn this on to receive acknowledgement mail when you send
             mail to the list.
 
         digest:
