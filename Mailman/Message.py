@@ -145,7 +145,9 @@ class IncomingMessage(rfc822.Message):
 
     def SetHeader(self, name, value, crush_duplicates=1):
 	# Well, we crush dups in the dict no matter what...
-	name = "%s%s" % (name[0], name[1:])
+        # XXX Note that as of Python 1.5.2, rfc822 message objects support
+        #     a .__setattr__() that does what we want, so eventually we'll
+        #     want to switch to that instead of mucking w/the internal rep.
         newheader = not self.dict.has_key(string.lower(name))
 	self.dict[string.lower(name)] = value
 	if value[-1] <> '\n':
