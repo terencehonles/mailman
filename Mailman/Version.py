@@ -36,10 +36,13 @@ HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))
 
 # config.db schema version number
-DATA_FILE_VERSION = 30
+DATA_FILE_VERSION = 31
 
 # qfile/*.db schema version number
 QFILE_SCHEMA_VERSION = 3
 
 # version number for the data/pending.db file schema
 PENDING_FILE_SCHEMA_VERSION = 1
+
+# version number for the lists/<listname>/request.db file schema
+REQUESTS_FILE_SCHEMA_VERSION = 1
