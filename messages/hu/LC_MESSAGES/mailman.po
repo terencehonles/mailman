@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-09-23 11:02--100\n"
+"PO-Revision-Date: 2003-12-22 13:54--100\n"
 "Last-Translator: Szilárd Vizi <vizisz@freemail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -6759,7 +6759,7 @@ msgstr "feliratkozáshoz a(z) %(realname)s listára szerkesztõi jóváhagyás szükség
 #: Mailman/MailList.py:910
 #: bin/add_members:242
 msgid "%(realname)s subscription notification"
-msgstr "Értesítés %(realname)s listára feliratkozásáról"
+msgstr "Értesítés feliratkozásról a(z) %(realname)s listán"
 
 #: Mailman/MailList.py:929
 msgid "unsubscriptions require moderator approval"
@@ -6767,7 +6767,7 @@ msgstr "leiratkozáshoz szerkesztõi jóváhagyás szükséges"
 
 #: Mailman/MailList.py:949
 msgid "%(realname)s unsubscribe notification"
-msgstr "Értesítés %(realname)s listáról leiratkozásáról"
+msgstr "Értesítés leiratkozásról a(z) %(realname)s listán"
 
 #: Mailman/MailList.py:1098
 msgid "subscriptions to %(name)s require administrator approval"
