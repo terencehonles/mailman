@@ -118,4 +118,5 @@ class Language(GUIBase):
         # context as well
         if property == 'preferred_language':
             i18n.set_language(val)
+            doc.set_language(val)
         GUIBase._setValue(self, mlist, property, val, doc)
