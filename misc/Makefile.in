@@ -45,9 +45,10 @@ SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
 PYTHONLIBDIR=	$(prefix)/pythonlib
-SETUPCMD=	setup.py --quiet install --install-lib
+SETUPINSTOPTS=	--install-lib $(PYTHONLIBDIR) --install-purelib $(PYTHONLIBDIR)
+SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
-EMAILPKG=	email-2.0.1
+EMAILPKG=	email-2.0.2
 JACODECSPKG=	JapaneseCodecs-1.4.5
 KOCODECSPKG=	KoreanCodecs-1.0.0
 
@@ -82,7 +83,7 @@ install-packages:
 	for p in $(PACKAGES); \
 	do \
 	    gunzip -c $$p.tar.gz | tar xf -; \
-	    (cd $$p ; PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(SETUPCMD) $(PYTHONLIBDIR)); \
+	    (cd $$p ; PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(SETUPCMD)); \
 	done
 
 finish:
