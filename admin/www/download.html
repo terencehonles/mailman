@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Nov 10 22:54:22 2000 -->
+<!-- Tue Nov 14 00:44:20 2000 -->
 <!-- USING HT2HTML 1.1 -->
 <!-- SEE http://www.wooz.org/barry/software/pyware.html -->
 <!-- User-specified headers:
@@ -188,8 +188,11 @@ Free Software Foundation, Inc.
 <h3>Requirements</h3>
 
 <p>Mailman currently runs only on Unix-y systems, such as Linux,
-Solaris, *BSD, etc.  It does not run on Windows or MacOS (but does
-work on MacOSX).
+Solaris, *BSD, etc.  It should work on MacOSX but not earlier versions
+of MacOS.  It probably does not work on Windows, although it's
+possible you could get it running on a Cygwin system (please
+<a href="mailto:mailman-developers@python.org">let the developer
+community know</a> if you have success with this!)
 
 <p>
 Before you can run Mailman, you need to make sure that
@@ -199,6 +202,7 @@ and Python 2.0.  Most Linux systems come with Python pre-installed, so
 you just need to make sure you're running an up-to-date version.  You
 can do this by executing the following at your shell's command line:
 
+<blockquote>
 <pre>
 % python
 Python 2.0 (#128, Oct 18 2000, 04:48:44) 
@@ -206,6 +210,7 @@ Python 2.0 (#128, Oct 18 2000, 04:48:44)
 Type "copyright", "credits" or "license" for more information.
 >>> ^D
 </pre>
+</blockquote>
 
 <p>You will also need an SMTP server (a.k.a. mail transport agent or
 <em>MTA</em>) for mail delivery and reception.
@@ -242,6 +247,29 @@ is the current GNU release.  It is available from the following mirror sites:
     <li><a href="http://www.list.org/mailman.tar.gz">From List.Org</a>
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=103">From SourceForge</a>
 </ul>
+
+<em>If you're using a command line FTP client, be sure to set the mode
+to binary</em>.  Once you've downloaded the source tarball, you can
+unpack it with the following commands:
+
+<blockquote>
+<pre>
+% cd /usr/local/src
+% tar zxf mailman.tar.gz
+</pre>
+</blockquote>
+
+Mailman's tarball unpacks into a directory called
+<code>mailman-xyz</code> where <em>xyz</em> is the version number.
+Note also that some versions of <code>tar</code> don't accept the
+<em>z</em> option.  In that case, you'll need to use the
+<code>gunzip</code> program like so:
+
+<blockquote>
+<pre>
+% gunzip -c mailman.tar.gz | tar xf -
+</pre>
+</blockquote>
 
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->
