@@ -97,7 +97,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self._memberadaptor = OldStyleMemberships(self)
         # This extension mechanism allows list-specific overrides of any
         # method (well, except __init__(), InitTempVars(), and InitVars()
-        # I think).
+        # I think).  Note that fullpath() will return None when we're creating
+        # the list, which will only happen when name is None.
+        if name is None:
+            return
         filename = os.path.join(self.fullpath(), 'extend.py')
         dict = {}
         try:
@@ -108,12 +111,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             func = dict.get('extend')
             if func:
                 func(self)
-        if name:
-            if lock:
-                # This will load the database.
-                self.Lock()
-            else:
-                self.Load()
+        if lock:
+            # This will load the database.
+            self.Lock()
+        else:
+            self.Load()
 
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute
