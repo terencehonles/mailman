@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Produce user options form, from list options.html template.
+"""Produce user options form, from options.html template.
 
 Takes listname/userid in PATH_INFO, expecting an `obscured' userid.  Depending
 on the Utils.{O,Uno}bscureEmail utilities tolerance, will work fine with an
@@ -99,23 +99,29 @@ def main():
             mm_cfg.AcknowlegePosts, 1, user)
     replacements['<mm-receive-own-mail-button>'] = list.FormatOptionButton(
             mm_cfg.DontReceiveOwnPosts, 0, user)
-    replacements['<mm-dont-receive-own-mail-button>'] = list.FormatOptionButton(
-            mm_cfg.DontReceiveOwnPosts, 1, user)
-    replacements['<mm-public-subscription-button>'] = list.FormatOptionButton(
-            mm_cfg.ConcealSubscription, 0, user)
+    replacements['<mm-dont-receive-own-mail-button>'] = (
+        list.FormatOptionButton(mm_cfg.DontReceiveOwnPosts, 1, user))
+    replacements['<mm-public-subscription-button>'] = (
+        list.FormatOptionButton(mm_cfg.ConcealSubscription, 0, user))
     replacements['<mm-hide-subscription-button>'] = list.FormatOptionButton(
             mm_cfg.ConcealSubscription, 1, user)
 
     replacements['<mm-digest-submit>'] = list.FormatButton('setdigest',
                                                            'Submit My Changes')
-    replacements['<mm-unsubscribe-button>'] = list.FormatButton('unsub', 'Unsubscribe')
+    replacements['<mm-unsubscribe-button>'] = (
+        list.FormatButton('unsub', 'Unsubscribe'))
     replacements['<mm-digest-pw-box>'] = list.FormatSecureBox('digpw')
     replacements['<mm-unsub-pw-box>'] = list.FormatSecureBox('upw')
     replacements['<mm-old-pw-box>'] = list.FormatSecureBox('opw')
     replacements['<mm-new-pass-box>'] = list.FormatSecureBox('newpw')
     replacements['<mm-confirm-pass-box>'] = list.FormatSecureBox('confpw')
-    replacements['<mm-change-pass-button>'] = list.FormatButton('changepw',
-                                                                "Change My Password")
+    replacements['<mm-other-subscriptions-pw-box>'] = (
+        list.FormatSecureBox('othersubspw'))
+    replacements['<mm-other-subscriptions-submit>'] = (
+        list.FormatButton('othersubs',
+                          'List my other subscriptions'))
+    replacements['<mm-change-pass-button>'] = (
+        list.FormatButton('changepw', "Change My Password"))
     replacements['<mm-form-start>'] = list.FormatFormStart('handle_opts', user)
     replacements['<mm-user>'] = user
     replacements['<mm-presentable-user>'] = presentable_user
