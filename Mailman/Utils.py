@@ -22,8 +22,6 @@ message and address munging, a handy-dandy routine to map a function on all
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
 
-__version__ = "$Revision: 547 $"
-
 
 import sys, string, fcntl, os, random, regsub, re
 import mm_cfg
@@ -66,11 +64,83 @@ def list_names():
 	got.append(fn)
     return got
 
-def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
+# a much more naive implementation than say, Emacs's fill-paragraph!
+def wrap(text, column=70):
+    """Wrap and fill the text to the specified column.
+
+    Wrapping is always in effect, although if it is not possible to wrap a
+    line (because some word is longer than `column' characters) the line is
+    broken at the next available whitespace boundary.  Paragraphs are also
+    always filled, unless the line begins with whitespace.  This is the
+    algorithm that the Python FAQ wizard uses, and seems like a good
+    compromise.
+
+    """
+    wrapped = ''
+    # first split the text into paragraphs, defined as a blank line
+    paras = re.split('\n\n', text)
+    for para in paras:
+        # fill
+        lines = []
+        fillprev = 0
+        for line in string.split(para, '\n'):
+            if not line:
+                lines.append(line)
+                continue
+            if line[0] in string.whitespace:
+                fillthis = 0
+            else:
+                fillthis = 1
+            if fillprev and fillthis:
+                # if the previous line should be filled, then just append a
+                # single space, and the rest of the current line
+                lines[-1] = string.rstrip(lines[-1]) + ' ' + line
+            else:
+                # no fill, i.e. retain newline
+                lines.append(line)
+            fillprev = fillthis
+        # wrap each line
+        for text in lines:
+            while text:
+                if len(text) < column:
+                    line = text
+                    text = ''
+                else:
+                    bol = column
+                    # find the last whitespace character
+                    while bol > 0 and text[bol] not in string.whitespace:
+                        bol = bol - 1
+                    # now find the last non-whitespace character
+                    eol = bol
+                    while eol > 0 and text[eol] in string.whitespace:
+                        eol = eol - 1
+                    # watch out for text that's longer than the column width
+                    if eol == 0:
+                        # break on whitespace after column
+                        eol = column
+                        while eol < len(text) and \
+                              text[eol] not in string.whitespace:
+                            eol = eol + 1
+                        bol = eol
+                        while bol < len(text) and \
+                              text[bol] in string.whitespace:
+                            bol = bol + 1
+                        bol = bol - 1
+                    line = text[:eol+1] + '\n'
+                    text = text[bol+1:]
+                wrapped = wrapped + line
+            wrapped = wrapped + '\n'
+        wrapped = wrapped + '\n'
+    return wrapped
+    
+
+def SendTextToUser(subject, text, recipient, sender, add_headers=[], raw=0):
     import mm_message
     msg = mm_message.OutgoingMessage()
     msg.SetSender(sender)
     msg.SetHeader('Subject', subject, 1)
+    if not raw:
+        text = wrap(text)
     msg.SetBody(QuotePeriods(text))
     DeliverToUser(msg, recipient, add_headers=add_headers)
 
