@@ -44,8 +44,12 @@ from Mailman import Errors
 
 def list_exists(listname):
     """Return true iff list `listname' exists."""
-    return os.path.exists(
-        os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db'))
+    # It is possible that config.db got removed erroneously, in which case we
+    # can fall back to config.db.last
+    dbfile = os.path.join(mm_cfg.LIST_DATA_DIR, listname, 'config.db')
+    lastfile = dbfile + '.last'
+    return os.path.exists(dbfile) or os.path.exists(lastfile)
+
 
 
 def list_names():
@@ -55,6 +59,7 @@ def list_names():
         if list_exists(fn):
             got.append(fn)
     return got
+
 
 
 # a much more naive implementation than say, Emacs's fill-paragraph!
