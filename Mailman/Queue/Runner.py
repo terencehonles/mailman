@@ -141,7 +141,7 @@ class Runner:
         otranslation = i18n.get_translation()
         sender = msg.get_sender()
         if mlist:
-            lang = mlist.GetPreferredLanguage(sender)
+            lang = mlist.getMemberLanguage(sender)
         else:
             lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
         i18n.set_language(lang)
