@@ -19,14 +19,14 @@ Reliable Software Technologies
 
 The explosive growth in the Internet community, and the core role that
 email plays in it, calls for a Mailing List Management (MLM) system
-which can adapt to, and even foster, new effective forms of Internet
-community organization.  A new MLM, Mailman, is well suited to such
-evolution because it is designed to be extensible, and one factor
-contributing to this versatility is its implementation in Python.
+which can adapt to, and even foster, new forms of organization of the
+community.  A new MLM, Mailman, is well suited to such evolution
+because it is designed to be versatile and extensible.  One factor
+contributing to these strengths is its implementation in Python.
 
 In this paper we will look at various aspects of Mailman's
-extensibility.  We will consider how the system's design, and features
-of its implementation language, Python, factor into that
+extensibility.  We will consider how the system's design and how
+features of its implementation language, Python, factor into that
 extensibility.
 
 			     Introduction
@@ -535,6 +535,10 @@ http://www.digicool.com/releases/bobo/DocumentTemplate-rn.html
 
 ESR "The Cathedral and The Bazaar", Eric Raymond
 http://sagan.earthspace.net/esr/writings/cathedral-bazaar/cathedral-bazaar.html
+
+JV "Mailman: The GNU Mailing List Manager", John Viega, Barry Warsaw,
+Ken Manheimer,
+Accepted paper for LISA '98, Dec. 6-11, 1998 Boston, Massachusetts 
 
 LO "Mailman", www.list.org
 http://www.list.org/
