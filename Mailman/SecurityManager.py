@@ -87,26 +87,44 @@ class SecurityManager:
 
     def MakeCookie(self, key):
         # Ingredients for our cookie: our `secret' which is the list's admin
-        # password (never sent in the clear), the time right now in seconds
-        # since the epoch, and the calculated expire time.
+        # password (never sent in the clear) and the time right now in seconds
+        # since the epoch.
         secret = self.password
         issued = int(time.time())
-        expires = issued + int(mm_cfg.ADMIN_COOKIE_LIFE)
         # Get a digest of the secret, plus other information.
-        mac = sha.new(secret + `issued` + `expires`).hexdigest()
+        mac = sha.new(secret + `issued`).hexdigest()
         # Create the cookie object.  The way the cookie module converts
         # non-strings to pickles can cause problems if the resulting string
         # needs to be quoted.  So we'll do the conversion ourselves.
         c = Cookie.Cookie()
-        c[key] = Utils.hexlify(marshal.dumps((issued, expires, mac)))
+        c[key] = Utils.hexlify(marshal.dumps((issued, mac)))
         # The path to all Mailman stuff, minus the scheme and host,
         # i.e. usually the string `/mailman'
         path = urlparse(self.web_page_url)[2]
         c[key]['path'] = path
-        # The Cookie module defines the semantics for the value of the
-        # `expires' key to be an offset from now, not the absolute time
-        # value!
-        c[key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
+        # Should we use session or persistent cookies?
+        if mm_cfg.ADMIN_COOKIE_LIFE > 0:
+            c[key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
+            c[key]['max-age'] = mm_cfg.ADMIN_COOKIE_LIFE
+        # Set the RFC 2109 required header
+        c[key]['version'] = 1
+        return c
+
+    def ZapCookie(self, cookie=None):
+        key = self.internal_name()
+        if cookie:
+            key = key + ':' + cookie
+        # Logout of the session by zapping the cookie.  For safety both set
+        # max-age=0 (as per RFC2109) and set the cookie data to the empty
+        # string.
+        c = Cookie.Cookie()
+        c[key] = ''
+        # The path to all Mailman stuff, minus the scheme and host,
+        # i.e. usually the string `/mailman'
+        path = urlparse(self.web_page_url)[2]
+        c[key]['path'] = path
+        c[key]['max-age'] = 0
+        c[key]['version'] = 1
         return c
 
     def CheckCookie(self, key):
@@ -119,16 +137,14 @@ class SecurityManager:
         # Undo the encoding we performed in MakeCookie() above
         try:
             cookie = marshal.loads(Utils.unhexlify(c[key].value))
-            issued, expires, received_mac = cookie
+            issued, received_mac = cookie
         except (EOFError, ValueError, TypeError):
             raise Errors.MMInvalidCookieError
         now = time.time()
         if now < issued:
             raise Errors.MMInvalidCookieError
-        if now > expires:
-            raise Errors.MMExpiredCookieError
         secret = self.password
-        mac = sha.new(secret + `issued` + `expires`).hexdigest()
+        mac = sha.new(secret + `issued`).hexdigest()
         if mac <> received_mac:
             raise Errors.MMInvalidCookieError
         return 1
