@@ -22,6 +22,11 @@ Usage: %(PROGRAM)s <listname> <listadmin's-addr> <admin-password> <immediate>
 
 Options:
 
+    -o file
+    --output=file
+        Append the alias setting recommendations to file, in addition to
+        printing them to standard output.
+
     -h/--help
         Print this help text and exit.
 
@@ -53,8 +58,6 @@ from Mailman.Crypt import crypt
 PROGRAM = sys.argv[0]
 
 SENDMAIL_ALIAS_TEMPLATE = '''
-Entry for aliases file:
-
 ## %(listname)s mailing list
 ## created: %(date)s %(user)s
 %(list)s "|%(wrapper)s post %(listname)s"
@@ -64,8 +67,6 @@ Entry for aliases file:
 '''
 
 QMAIL_ALIAS_TEMPLATE = """
-To create system aliases:
-
    echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s
    echo '|preline %(wrapper)s mailowner %(listname)s' >~alias/.qmail-%(listname)s-admin
    echo '|preline %(wrapper)s mailcmd %(listname)s' >~alias/.qmail-%(listname)s-request
@@ -76,15 +77,17 @@ To create system aliases:
    chmod 644 ~alias/.qmail-owner-%(listname)s
 """
 
+# defaults
+STDOUTMSG = 'Entry for aliases file:'
+ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
+
 style = string.lower(mm_cfg.MTA_ALIASES_STYLE)
 if style  == 'qmail':
     ALIASTEMPLATE = QMAIL_ALIAS_TEMPLATE
-elif style == 'sendmail':
-    ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
-else:
+    STDOUTMSG = 'To create system aliases:'
+elif style <> 'sendmail':
     print "Warning! I don't understand alias style:", mm_cfg.MTA_ALIASES_STYLE
     print '(this will print sendmail style...)'
-    ALIASTEMPLATE = SENDMAIL_ALIAS_TEMPLATE
 
 
 
@@ -109,11 +112,15 @@ def usage(code, msg=''):
 
 def main(argv):
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'ho:',
+                                   ['help', 'output='])
     except getopt.error, msg:
         usage(1, msg)
 
+    appendfile = None
     for opt, arg in opts:
+        if opt in ('-o', '--output'):
+            appendfile = arg
         if opt in ('-h', '--help'):
             usage(0)
 
@@ -161,7 +168,7 @@ def main(argv):
         except Errors.MMListAlreadyExistsError:
             usage(1, 'List already exists: ' + listname)
 
-        print ALIASTEMPLATE % {
+        output = ALIASTEMPLATE % {
             'listname': listname,
             'list'    : "%-24s" % (listname + ":"),
             'wrapper' : '%s/wrapper' % mm_cfg.WRAPPER_DIR,
@@ -171,6 +178,13 @@ def main(argv):
             'date'    : time.strftime('%d-%b-%Y', time.localtime(time.time())),
             'user'    : getusername(),
             }
+        print STDOUTMSG
+        print output
+        if appendfile:
+            fp = open(appendfile, 'a')
+            fp.write(output)
+            fp.write('\n')
+            fp.close()
 
         if len(argv) < 5:
             print ("Hit enter to continue with %s owner notification..."
