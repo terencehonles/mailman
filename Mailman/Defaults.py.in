@@ -62,6 +62,28 @@ MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 
 
 #####
+# Web UI defaults
+#####
+
+# The various colors for the cgi scripts
+
+# This is the background color for all the scripts
+WEB_BGCOLOR = '#ffffff'
+
+# This is the color for the section headers in the admin script
+WEB_HEADERCOLOR = '#99ccff'
+
+# This is the background color of the cells in the admin script option
+# settings
+WEB_ADMINITEM_COLOR = '#dddddd'
+
+# This is the background color of the cells in the "change the admin password"
+# boxes
+WEB_ADMINPW_COLOR = '#99cccc'
+
+
+
+#####
 # Archive defaults
 #####
 
@@ -488,13 +510,6 @@ LIKELY_BOUNCE_SENDERS = ('daemon', 'mailer-daemon', 'postmaster',
 # General time limits
 #####
 
-# Authentication cookie control.  When set to 0, Mailman's admin cookie
-# expires at the end of your session.  This is preferred for security reasons,
-# and to avoid potential problems with incorrect clock and timezone settings.
-# Set this to a value > 0 to use persistent admin cookies with a lifetime of
-# that number of seconds.
-ADMIN_COOKIE_LIFE = 0
-
 # How long should subscriptions requests await confirmation before being
 # dropped?
 PENDING_REQUEST_LIFE = days(3)
@@ -592,6 +607,30 @@ AcknowledgePosts    = 4
 DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
 SuppressPasswordReminder = 32 # currently, per-list unfortunately
+
+# Authentication contexts.
+#
+# Mailman defines the following roles:
+
+# - User, a normal user who has no permissions except to change their personal
+#   option settings
+# - List creator, someone who can create and delete lists, but cannot
+#   (necessarily) configure the list.
+# - List moderator, someone who can tend to pending requests such as
+#   subscription requests, or held messages
+# - List administrator, someone who has total control over a list, can
+#   configure it, modify user options for members of the list, subscribe and
+#   unsubscribe members, etc.
+# - Site administrator, someone who has total control over the entire site and
+#   can do any of the tasks mentioned above.  This person usually also has
+#   command line access.
+
+UnAuthorized = 0
+AuthUser = 1          # Joe Shmoe User
+AuthCreator = 2       # List Creator / Destroyer
+AuthListAdmin = 3     # List Administrator (total control over list)
+AuthListModerator = 4 # List Moderator (can only handle held requests)
+AuthSiteAdmin = 5     # Site Administrator (total control over everything)
 
 # Useful directories
 LIST_DATA_DIR   = os.path.join(VAR_PREFIX, 'lists')
