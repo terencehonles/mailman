@@ -15,9 +15,10 @@ class Bouncer:
 	self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
 	# Configurable...
 	self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
-	self.minimum_post_count_before_removal = \
-		mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_REMOVAL
-	self.automatically_remove = mm_cfg.DEFAULT_AUTOMATICALLY_REMOVE
+	self.minimum_post_count_before_bounce_action = \
+		mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION
+	self.automatic_bounce_action = \
+                                     mm_cfg.DEFAULT_AUTOMATIC_BOUNCE_ACTION
 	self.max_posts_between_bounces = \
 		mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
 
@@ -27,14 +28,14 @@ class Bouncer:
 	     'Try to figure out error messages automatically? '),
 	    ('minimum_removal_date', mm_cfg.Number, 3, 0,
 	     'Minimum number of days an address has been bad before we consider nuking it'),
-	    ('minimum_post_count_before_removal', mm_cfg.Number, 3, 0,
-	     'Minimum number of posts to the list since your first bounce before we consider '
-	     'removing you from the list'),
+	    ('minimum_post_count_before_bounce_action', mm_cfg.Number, 3, 0,
+	     'Minimum number of posts to the list since members first '
+             'bounce before we consider removing them from the list'),
 	    ('max_posts_between_bounces', mm_cfg.Number, 3, 0,
-	     "Maximum number of messages your list gets in an hour.  (Yes, bounce detection "
-	     "finds this info useful)"),
-	    ('automatically_remove', mm_cfg.Radio,
-	     ("Don't remove and notify me; ", "Remove, but notify me",
+	     "Maximum number of messages your list gets in an hour.  "
+             "(Yes, bounce detection finds this info useful)"),
+	    ('automatic_bounce_action', mm_cfg.Radio,
+	     ("Do nothing", "Disable and notify me ", "Remove and notify me",
 	      "Remove and don't notify me"),
 	     0, "Automatically remove addresses considered for removal, or alert you?")
 	    ]
@@ -70,13 +71,14 @@ class Bouncer:
 		self.bounce_info[addr] = [now, self.post_id, self.post_id]
 		return
 	    self.bounce_info[addr][2] = self.post_id
-	    if (self.post_id - inf[1] > self.minimum_post_count_before_removal
+	    if ((self.post_id - inf[1] >
+                 self.minimum_post_count_before_bounce_action)
 		and difference > self.minimum_removal_date * 24 * 60 * 60):
 		self.LogMsg("bounce", report + "they're Out of here...")
 		self.RemoveBouncingAddress(addr)
 		return
 	    else:
-		post_count = (self.minimum_post_count_before_removal - 
+		post_count = (self.minimum_post_count_before_bounce_action - 
 			      self.post_id - inf[1])
 		if post_count < 0:
 		    post_count = 0
@@ -108,11 +110,20 @@ class Bouncer:
 			self._internal_name)
 
 	    
+    def DisableBouncingAddress(self, addr):
+	try:
+	    self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
+	    self.LogMsg("bounce", "%s: inhibited %s", self.real_name, addr)
+	    # Send mail to the user... but we can't!
+	except mm_err.MMNoSuchUserError:
+	    self.ClearBounceInfo(addr)
+	self.Save()
+	    
     def RemoveBouncingAddress(self, addr):
 	try:
 	    self.DeleteMember(addr)
 	    self.LogMsg("bounce", "%s: removed %s", self.real_name, addr) 
-	    # Send mail to the user...
+	    # Send mail to the user... but we can't!
 	except mm_err.MMNoSuchUserError:
 	    self.ClearBounceInfo(addr)
 	self.Save()
