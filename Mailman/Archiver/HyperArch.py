@@ -334,7 +334,7 @@ class Article(pipermail.Article):
             next = next_wsubj = ""
         return next, next_wsubj
 
-    _rx_quote = re.compile('=([A-Z0-9][A-Z0-9])')
+    _rx_quote = re.compile('=([A-F0-9][A-F0-9])')
     _rx_softline = re.compile('=[ \t]*$')
 
     def _get_body(self):
