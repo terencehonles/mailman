@@ -153,6 +153,8 @@ def process_form(mlist, doc):
         except ValueError:
             # TBD: Hmm, this shouldn't happen
             digest = 0
+    else:
+        digest = 0
 
     if not mlist.digestable:
         digest = 0
