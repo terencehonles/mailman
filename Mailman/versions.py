@@ -282,6 +282,10 @@ def NewVars(l):
     add_only_if_missing('personalize', 0)
     add_only_if_missing('first_strip_reply_to',
                         mm_cfg.DEFAULT_FIRST_STRIP_REPLY_TO)
+    add_only_if_missing('unsubscribe_policy',
+                        mm_cfg.DEFAULT_UNSUBSCRIBE_POLICY)
+    add_only_if_missing('send_goodbye_msg', mm_cfg.DEFAULT_SEND_GOODBYE_MSG)
+    add_only_if_missing('include_rfc2369_headers', 1)
 
 
 
