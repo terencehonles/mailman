@@ -116,10 +116,11 @@ def isAuthenticated(list_name):
     # be displayed with an appropriate message.
     global login_attempted
     login_attempted=1
-    listobj = GetListobj(list_name)
-    if not listobj:
-        print '\n<P>A list named,', repr(list_name), "was not found."
-        return 0
+    try:
+        listobj = GetListobj(list_name)
+    except Errors.MMUnknownListError:
+        print "\n<H3>List", repr(list_name), "not found.</h3>"
+        raise SystemExit
     try:
 	listobj.ConfirmUserPassword( username, password)
     except (Errors.MMBadUserError, Errors.MMBadPasswordError): 
@@ -153,7 +154,11 @@ def main():
         print 'Content-type: text/html\n'
         page = PAGE
             
-        listobj = GetListobj(list_name)
+        try:
+            listobj = GetListobj(list_name)
+        except Errors.MMUnknownListError:
+            print "\n<H3>List", repr(list_name), "not found.</h3>"
+            raise SystemExit
         if login_attempted:
             message = ("Your email address or password were incorrect."
                        " Please try again.")
