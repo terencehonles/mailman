@@ -106,10 +106,16 @@ class BounceRunner(Runner):
             mo = re.search(mm_cfg.VERP_REGEXP, to)
             if not mo:
                 continue                          # no match of regexp
-            if bmailbox <> mo.group('bounces'):
-                continue                          # not a bounce to our list
-            # All is good
-            addr = '%s@%s' % mo.group('mailbox', 'host')
+            try:
+                if bmailbox <> mo.group('bounces'):
+                    continue                      # not a bounce to our list
+                # All is good
+                addr = '%s@%s' % mo.group('mailbox', 'host')
+            except IndexError:
+                syslog('error',
+                       "VERP_REGEXP doesn't yield the right match groups: %s",
+                       mm_cfg.VERP_REGEXP)
+                return 0
             # Now, if this message has come to the site list, then search not
             # only it, but all the mailing lists on the system, registering a
             # bounce with each for this address.
