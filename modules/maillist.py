@@ -123,6 +123,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.moderated = mm_cfg.DEFAULT_MODERATED
 	self.require_explicit_destination = \
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
+        self.accepable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
 	self.bounce_matching_headers = \
 		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
@@ -206,7 +207,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
  	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
  	     'Anti-spam: Must posts have list named in destination (to, cc) '
-	     '  field?'),
+	     ' field?'),
+
+ 	    ('acceptable_aliases', mm_cfg.Text, ('4', '30'), 0,
+ 	     'Anti-spam: alias names (regexps) which qualify as explicit'
+             ' to or cc destination names for this list.'),
 
 	    # Note that leading whitespace in the matchexp is trimmed - you can
 	    # defeat that by, eg, containing it in gratuitous square brackets.
@@ -462,14 +467,24 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 						    self.digest_members))
 
     def HasExplicitDest(self, msg):
-	"True if list name is explicitly included among the to or cc addrs."
-	# Note that host can be different!  This allows, eg, for relaying
-	# from remote lists that have the same name.  Still stringent, but
-	# offers a way to provide for remote exploders.
+	"""True if list name or any acceptable_alias is included among the
+        to or cc addrs."""
+	# Note that qualified host can be different!  This allows, eg, for
+        # relaying from remote lists that have the same name.  Still
+        # stringent, but offers a way to provide for remote exploders.
 	lowname = string.lower(self.real_name)
+        recips = []
+        # First check all dests against simple name:
 	for recip in msg.getaddrlist('to') + msg.getaddrlist('cc'):
-	    if lowname == string.lower(string.split(recip[1], '@')[0]):
+            curr = string.lower(string.split(recip[1], '@')[0])
+	    if lowname == curr:
 		return 1
+            recips.append(curr)
+        # ... and only then try the regexp acceptable aliases.
+        for recip in recips:
+            for alias in string.split(self.acceptable_aliases, '\n'):
+                if re.match(string.strip(alias), recip):
+                    return 1
 	return 0
 
     def parse_matching_header_opt(self):
