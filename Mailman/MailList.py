@@ -17,7 +17,7 @@
 
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 539 $"
+__version__ = "$Revision: 542 $"
 
 try:
     import mm_cfg
@@ -76,14 +76,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetScriptURL(self, script_name):
 	return os.path.join(self.web_page_url, '%s/%s' % 
 			    (script_name, self._internal_name))
-
-    def GetOptionsURL(self, addr):
+    def GetOptionsURL(self, addr, obscured=0):
 	options = self.GetScriptURL('options')
-        if self.obscure_addresses:
+        if obscured:
             treated = mm_utils.ObscureEmail(addr, for_text=0)
         else:
             treated = addr
         return os.path.join(options, treated)
+
+    def GetOptionsURL(self, addr):
+	return os.path.join(self.GetScriptURL('options'), addr)
 
     def GetUserOption(self, user, option):
 	if option == mm_cfg.Digests:
@@ -144,6 +146,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.require_explicit_destination = \
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
         self.acceptable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
+	self.reminders_to_admins = mm_cfg.DEFAULT_REMINDERS_TO_ADMINS
 	self.bounce_matching_headers = \
 		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
@@ -256,6 +259,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              ' <a href="http://www.unicom.com/pw/reply-to-harmful.html">'
              '"Reply-To" Munging Considered Harmful</a> for a general.'
              " discussion of this issue."),
+
+	    ('reminders_to_admins', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     'Send password reminders to "-owner" address instead of'
+	     ' directly to user.',
+
+	     "Set this to yes when this list is intended only to cascade to"
+	     " other maillists.  When set, the password reminders will be"
+	     " directed to an address derived from the member's address"
+	     ' - it will have "-owner" appended to the member\'s account'
+	     " name."),
 
 	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Should administrator get immediate notice of new requests, '
