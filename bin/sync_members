@@ -55,7 +55,7 @@ Where `options' are:
         (or if no -d option given) they are added as regular members.
 
     --notifyadmin[=<yes|no>]
-    --a[=<yes|no>]
+    -a[=<yes|no>]
         Specifies whether the admin should be notified for each subscription
         or unsubscription.  If you're adding a lot of addresses, you
         definitely want to turn this off!  With -a=yes or -a, the admin is
