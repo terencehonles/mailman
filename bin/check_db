@@ -1,0 +1,70 @@
+#! /usr/bin/env python
+
+"""Check the raw config.db for a mailing list.
+Also check the config.db.last if the live file is corrupted.
+
+Usage: %(program)s listname
+"""
+
+import sys
+import os
+import marshal
+import paths
+import Mailman.mm_cfg
+
+program = sys.argv[0]
+
+def testfile(filename):
+    try:
+        fp = open(filename)
+    except IOError, (code, msg):
+        print filename, 'cannot be opened:\n\t', msg
+        return 1
+    else:
+        try:
+            d = marshal.load(fp)
+        except (EOFError, ValueError, TypeError), msg:
+            print filename, 'is corrupted:\n\t', msg
+            return 1
+        else:
+            print filename, 'is fine'
+            return 0
+
+
+def main():
+    if len(sys.argv) == 2:
+        listname = sys.argv[1]
+    else:
+        print __doc__ % globals()
+        sys.exit(1)
+
+    listpath = os.path.join(Mailman.mm_cfg.LIST_DATA_DIR, listname)
+    configdb = os.path.join(listpath, 'config.db')
+    lastdb = os.path.join(listpath, 'config.db.last')
+
+    origbad = testfile(configdb)
+    backupbad = testfile(lastdb)
+
+    if origbad and not backupbad:
+        print """
+***** ALERT *****
+The original database file is corrupt, but the backup seems fine.
+Consider copying
+    %(lastdb)s
+to
+    %(configdb)s
+however, you may lose some data.""" % locals()
+    elif origbad and backupbad:
+        print """
+***** ALERT *****
+Both the original database file and the backup seem
+corrupted.  You will probably need to recover both
+    %(configdb)s
+and
+    %(lastdb)s
+from a system backup, or remove the list `%(listname)s' and
+re-create it from scratch.""" % locals()
+        
+
+if __name__ == '__main__':
+    main()
