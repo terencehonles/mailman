@@ -1,6 +1,6 @@
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 463 $"
+__version__ = "$Revision: 467 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -212,8 +212,12 @@ class Bouncer:
         candidates = []
 	who_info = string.lower(msg.GetSender())
         at_index = string.find(who_info, '@')
-	who_from = who_info[:at_index]
-	remote_host = who_info[at_index+1:]
+	if at_index != -1:
+	    who_from = who_info[:at_index]
+	    remote_host = who_info[at_index+1:]
+	else:
+	    who_from = who_info
+	    remote_host = self.host_name
 	if not who_from in ['mailer-daemon', 'postmaster', 'orphanage',
 			    'postoffice', 'ucx_smtp', 'a2']:
 	    return 0
@@ -311,15 +315,17 @@ class Bouncer:
 
         did = []
         for i in candidates:
+	    el = string.find(i, "...")
+	    if el != -1: i = i[:el]
             if i not in did:
                 self.HandleBouncingAddress(i)
                 did.append(i)
 	return message_groked
 
     def ExtractBouncingAddr(self, line):
-	# First try with angles:
 	email = regsub.splitx(line, '[^ \t@<>]+@[^ \t@<>]+\.[^ \t<>.]+')[1]
 	if email[0] == '<':
+	    # Remove what's within the angles.
 	    return regsub.splitx(email[1:], ">")[0]
 	else:
 	    return email
