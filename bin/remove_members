@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 """Remove members from a list.
@@ -38,6 +38,14 @@ Options:
        regardless of virtual domains if you have any.  This option cannot be
        used -a/--all.  Also, you should not specify a listname when using this
        option.
+
+    --nouserack
+    -n
+        Don't send the user acknowledgements.
+
+    --noadminack
+    -N
+        Don't send the admin acknowledgements.
 
     --help
     -h
@@ -89,7 +97,8 @@ def ReadFile(filename):
 def main():
     try:
         opts, args = getopt.getopt(
-           sys.argv[1:], 'af:h', ['all', 'fromall', 'file=', 'help'])
+            sys.argv[1:], 'naf:hN',
+            ['all', 'fromall', 'file=', 'help', 'nouserack', 'noadminack'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -99,6 +108,8 @@ def main():
     filename = None
     all = 0
     alllists = 0
+    userack = 1
+    admin_notif = 1
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -109,9 +120,13 @@ def main():
             all = 1
         elif opt == '--fromall':
             alllists = 1
+        elif opt in ('-n', '--nouserack'):
+            userack = 0
+        elif opt in ('-N', '--noadminack'):
+            admin_notif = 0
 
     # You probably don't want to delete all the users of all the lists -- Marc
-    if all == 1 and alllists == 1:
+    if all and alllists:
        usage(1)
 
     if alllists:
@@ -148,7 +163,10 @@ def main():
                    if not alllists:
                        print _('No such member: %(addr)s')
                    continue
-               mlist.ApprovedDeleteMember(addr)
+               mlist.ApprovedDeleteMember(addr,
+                                          'bin/remove_members',
+                                          admin_notif,
+                                          userack)
                if alllists:
                    print _("User `%(addr)s' removed from list: %(listname)s.")
            mlist.Save()
