@@ -26,6 +26,8 @@ import paths
 from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Message
+from Mailman.Handlers import HandlerAPI
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -47,13 +49,14 @@ def main():
                      'adminDB'  : mlist.GetAbsoluteScriptURL('admindb'),
                      'real_name': mlist.real_name,
                      })
-                mlist.SendTextToUser(
-                    subject = '%d %s admin request(s) waiting' % 
-                    (count, mlist.real_name),
-                    recipient = mlist.GetAdminEmail(),
-                    text = text + "\n" + pending_requests(mlist),
-                    add_headers = ["Precedence: bulk"])
+                text = text + '\n' + pending_requests(mlist)
+                subject = '%d %s admin request(s) waiting' % (
+                    count, mlist.real_name)
+                admin = mlist.GetAdminEmail()
+                msg = Message.UserNotification(admin, admin, subject, text)
+                HandlerAPI.DeliverToUser(mlist, msg)
         finally:
+            mlist.Save()
             mlist.Unlock()
             
 
@@ -73,8 +76,9 @@ def pending_requests(mlist):
             pending.append('\nPending posts:')
             first = 0
         when, sender, subject, reason, text = mlist.GetRecord(id)
-        pending.append('    From: %s on %s:\n    Cause: %s' %
+        pending.append('     From: %s on %s\n    Cause: %s' %
                        (sender, time.ctime(when), reason))
+        pending.append('')
     return string.join(pending, '\n')
 
 
