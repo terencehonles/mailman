@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: <>\n"
 "POT-Creation-Date: Mon Dec 31 16:47:34 2001\n"
-"PO-Revision-Date: 2001-11-09 19:40+00:00\n"
+"PO-Revision-Date: 2001-01-08 04:14:32+00:00\n"
 "Last-Translator: Ousmane Wilane <wilane@yahoo.com>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,11 +23,11 @@ msgstr "Création du répertoire des archives "
 
 #: Mailman/Archiver/pipermail.py:274
 msgid "Reloading pickled archive state"
-msgstr "Chargement de l'etat assaisonné des archives"
+msgstr "Chargement de l'etat pickle des archives"
 
 #: Mailman/Archiver/pipermail.py:301
 msgid "Pickling archive state into "
-msgstr "Assaisonnemnt de l'etat des archives vers"
+msgstr "Pickle de l'etat des archives vers"
 
 #: Mailman/Archiver/pipermail.py:412
 msgid "Updating index files for archive [%(archive)s]"
@@ -39,16 +39,15 @@ msgstr "\tThread"
 
 #: Mailman/Archiver/pipermail.py:532
 msgid "#%(counter)05d %(msgid)s"
-msgstr ""
+msgstr "#%(counter)05d %(msgid)s"
 
 #: Mailman/Bouncer.py:143
 msgid "disabled"
 msgstr "désactivé"
 
 #: Mailman/Bouncer.py:148
-#, fuzzy
 msgid "Bounce action notification"
-msgstr "notification d'abonnement de %(realname)s"
+msgstr "Avis de mesure de rebond"
 
 #: Mailman/Bouncer.py:196 Mailman/Handlers/Acknowledge.py:50
 #: Mailman/Handlers/CookHeaders.py:57 Mailman/Handlers/Hold.py:200
@@ -74,9 +73,8 @@ msgstr "Administrateur"
 #: Mailman/Cgi/options.py:70 Mailman/Cgi/private.py:97
 #: Mailman/Cgi/rmlist.py:62 Mailman/Cgi/roster.py:57
 #: Mailman/Cgi/subscribe.py:61
-#, fuzzy
 msgid "No such list <em>%(safelistname)s</em>"
-msgstr "Liste inexistante <em>%(listname)s</em>"
+msgstr "Liste inexistante <em>%(safelistname)s</em>"
 
 #: Mailman/Cgi/admin.py:82 Mailman/Cgi/admindb.py:100
 #: Mailman/Cgi/edithtml.py:85 Mailman/Cgi/private.py:122
@@ -708,9 +706,8 @@ msgid "There are no pending requests."
 msgstr "Pas de rquêtes en instance."
 
 #: Mailman/Cgi/admindb.py:175
-#, fuzzy
 msgid "Detailed instructions for the administrative database"
-msgstr "Base de données administrative de %(realname)s"
+msgstr "Instructions détaillées pour la Base de données administrative"
 
 #: Mailman/Cgi/admindb.py:179
 msgid "Administrative requests for mailing list:"
@@ -722,17 +719,15 @@ msgstr "Soumettre toutes les données"
 
 #: Mailman/Cgi/admindb.py:193
 msgid "all the %(esender)s's held messages."
-msgstr ""
+msgstr "tous les messages en attente de %(esender)s."
 
 #: Mailman/Cgi/admindb.py:198
-#, fuzzy
 msgid "a single held message."
-msgstr "Annulez l'envoi de messages en attente"
+msgstr "un seul message en attente"
 
 #: Mailman/Cgi/admindb.py:203
-#, fuzzy
 msgid "all held messages."
-msgstr "Annulez l'envoi de messages en attente"
+msgstr "tous les messages en attente."
 
 #: Mailman/Cgi/admindb.py:236
 msgid "Mailman Administrative Database Error"
@@ -794,68 +789,63 @@ msgstr "De:"
 
 #: Mailman/Cgi/admindb.py:332
 msgid "Action to take on all these held messages:"
-msgstr ""
+msgstr "Mesure à prendre pour tous ces messages en attente:"
 
 #: Mailman/Cgi/admindb.py:336 Mailman/Gui/Privacy.py:244
 msgid "Accept"
 msgstr "Accepter"
 
 #: Mailman/Cgi/admindb.py:344
-#, fuzzy
 msgid "Preserve messages for the site administrator"
 msgstr "Concerver les messages pour l'administrateur du site"
 
 #: Mailman/Cgi/admindb.py:350
 msgid "Forward messages (individually) to:"
-msgstr ""
+msgstr "Faire suivre les messages (individuellement) à:"
 
 #: Mailman/Cgi/admindb.py:367
-#, fuzzy
 msgid "Add <b>%(esender)s</b> to a sender filter"
-msgstr "Filtres pour soumissions générales"
+msgstr "Ajouter <b>%(esender)s</b> à un filtre expéditeur"
 
 #: Mailman/Cgi/admindb.py:372
-#, fuzzy
 msgid "Accepts"
-msgstr "Accepter"
+msgstr "Approbations"
 
 #: Mailman/Cgi/admindb.py:372
-#, fuzzy
 msgid "Discards"
-msgstr "Ignorer"
+msgstr "Ignorances"
 
 #: Mailman/Cgi/admindb.py:372
-#, fuzzy
 msgid "Holds"
-msgstr "En attente"
+msgstr "Attentes"
 
 #: Mailman/Cgi/admindb.py:372
-#, fuzzy
 msgid "Rejects"
-msgstr "Rejet"
+msgstr "Rejets"
 
 #: Mailman/Cgi/admindb.py:379
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
 msgstr ""
+"Cliquez sur le numéros du message pour voir le message\n"
+"            individuel, à moins que"
 
 #: Mailman/Cgi/admindb.py:381
 msgid "view all messages from %(esender)s"
-msgstr ""
+msgstr "visualisez tous les messages de %(esender)s"
 
 #: Mailman/Cgi/admindb.py:405 Mailman/Cgi/admindb.py:520
 msgid "Subject:"
 msgstr "Objet:"
 
 #: Mailman/Cgi/admindb.py:408
-#, fuzzy
 msgid " bytes"
-msgstr " oui "
+msgstr " octets"
 
 #: Mailman/Cgi/admindb.py:408
 msgid "Size:"
-msgstr ""
+msgstr "Taille:"
 
 #: Mailman/Cgi/admindb.py:409 Mailman/Cgi/admindb.py:522
 msgid "Reason:"
@@ -912,9 +902,8 @@ msgid "Message Excerpt:"
 msgstr "Extrait du message:"
 
 #: Mailman/Cgi/admindb.py:593
-#, fuzzy
 msgid "No reason given"
-msgstr "[aucun motif fourni]"
+msgstr "Sans motif"
 
 #: Mailman/Cgi/admindb.py:641 Mailman/ListAdmin.py:267
 msgid "[No reason given]"
@@ -933,7 +922,6 @@ msgid "Confirmation string was empty."
 msgstr "La chaîne de confirmation était vide."
 
 #: Mailman/Cgi/confirm.py:89
-#, fuzzy
 msgid ""
 "<b>Invalid confirmation string:</b>\n"
 "    %(safecookie)s.\n"
@@ -945,7 +933,7 @@ msgid ""
 "    string."
 msgstr ""
 "<b>Chaîne de confirmation non valide:</b>\n"
-"    %(cookie)s.\n"
+"    %(safecookie)s.\n"
 "\n"
 "    <p>Notez que la chaîne de confirmation expire au bout de %(days)d\n"
 "    jours à partir de l'émission de la requête initiale\n"
@@ -956,7 +944,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:142
 msgid "System error, bad content: %(content)s"
-msgstr ""
+msgstr "Erreur système, mauvais contenu: %(content)s"
 
 #: Mailman/Cgi/confirm.py:152
 msgid "Bad confirmation string"
@@ -1423,44 +1411,42 @@ msgid ""
 "from\n"
 "    this mailing list."
 msgstr ""
+"Vous avez annulé la ré-activation de votre abonnement. Si votre\n"
+"adresse continue à rebondir, elle pourra être supprimée de cette\n"
+"liste de diffusion."
 
 #: Mailman/Cgi/confirm.py:676
-#, fuzzy
 msgid "Membership re-enabled."
-msgstr "Exposition de l'abonnement"
+msgstr "Ré-activation de l'abonnement."
 
 #: Mailman/Cgi/confirm.py:680
-#, fuzzy
 msgid ""
 "            You have successfully re-enabled your membership in the\n"
 "            %(listname)s mailing list.  You can now <a\n"
 "            href=\"%(optionsurl)s\">visit your member options page</a>.\n"
 "            "
 msgstr ""
-"Votre abonnement à la liste %(listname)s a été résilié avec\n"
-"succès. Vous pourrez à présent <a href=\"%(listinfourl)s\">visiter la\n"
-"page principal d'informations de la liste</a>."
+"Votre abonnement à la liste %(listname)s a été réactivé avec\n"
+"succès. Vous pourrez à présent <a href=\"%(optionsurl)s\">visiter \n"
+"votre page d'options d'abonné</a>."
 
 #: Mailman/Cgi/confirm.py:692
-#, fuzzy
 msgid "Re-enable mailing list membership"
-msgstr "Rappel pour les abonnements aux listes sur %(host)s"
+msgstr "Ré-activez l'abonnement à la liste"
 
 #: Mailman/Cgi/confirm.py:709
-#, fuzzy
 msgid ""
 "We're sorry, but you have already been unsubscribed\n"
 "        from this mailing list.  To re-subscribe, please visit the\n"
 "        <a href=\"%(listinfourl)s\">list information page</a>."
 msgstr ""
-"Votre abonnement à la liste %(listname)s a été résilié avec\n"
-"succès. Vous pourrez à présent <a href=\"%(listinfourl)s\">visiter la\n"
-"page principal d'informations de la liste</a>."
+"Désolé mais votre abonnement à la liste %(listname)s a été\n"
+"résilié. Pour vous réabonner, veillez visiter la <a\n"
+"href=\"%(listinfourl)s\">la page d'informations de la liste</a>."
 
 #: Mailman/Cgi/confirm.py:718
-#, fuzzy
 msgid "<em>not available</em>"
-msgstr "<em>Non disponible</em>"
+msgstr "<em>non disponible</em>"
 
 #: Mailman/Cgi/confirm.py:720
 msgid ""
@@ -1483,15 +1469,30 @@ msgid ""
 "    re-enabling your membership.\n"
 "    "
 msgstr ""
+"Votre abonnement à la liste %(realname)s est actuellement désactivé\n"
+"suite à des rebonds excessifs. Nous vous demandons confirmation pour\n"
+"le réactiver. Nous disposons des informations suivantes sur fichier:\n"
+"\n"
+"    <ul><li><b>Adresse d'abonné:</b> %(member)s\n"
+"        <li><b>Nom d'abonné:</b> %(username)s\n"
+"        <li><b>Date de réception du dernier rebond</b>: %(date)s\n"
+"        <li><b>Nombre approximatif de jours restant avant la\n"
+"suppression de votre abonnement à la liste:</b> %(daysleft)s\n"
+"    </ul>\n"
+"\n"
+"    Cliquez sur le bouton <em>Réactivez l'abonnement</em> pour\n"
+"continuer à recevoir les soumissions envoyées à la liste. Cliquez sur\n"
+"le bouton <em>Annuler</em> pour différer la ré-activation de votre\n"
+"abonnement.\n"
+"    "
 
 #: Mailman/Cgi/confirm.py:740
 msgid "Re-enable membership"
-msgstr ""
+msgstr "Réactivez l'abonnement"
 
 #: Mailman/Cgi/confirm.py:741
-#, fuzzy
 msgid "Cancel"
-msgstr "Annulez l'envoi"
+msgstr "Annuler"
 
 #: Mailman/Cgi/create.py:48 Mailman/Cgi/rmlist.py:46
 msgid "Bad URL specification"
@@ -1720,9 +1721,8 @@ msgid "Edit HTML : Error"
 msgstr "Modifier HTML: Erreur"
 
 #: Mailman/Cgi/edithtml.py:104
-#, fuzzy
 msgid "%(safetemplatename)s: Invalid template"
-msgstr "%(template_name)s: template invalide"
+msgstr "%(safetemplatename)s: template invalide"
 
 #: Mailman/Cgi/edithtml.py:109 Mailman/Cgi/edithtml.py:110
 msgid "%(realname)s -- HTML Page Editing"
@@ -1828,9 +1828,8 @@ msgid "Invalid options to CGI script."
 msgstr "Options non valide pour un script CGI."
 
 #: Mailman/Cgi/options.py:102
-#, fuzzy
 msgid "No such member: %(safeuser)s."
-msgstr "Abonné inconnu: %(user)s."
+msgstr "Abonné inconnu: %(safeuser)s."
 
 #: Mailman/Cgi/options.py:150
 msgid "The confirmation email has been sent."
@@ -2158,9 +2157,8 @@ msgid "Private Archive Error - %(msg)s"
 msgstr "Erreur d'archive privée - %(msg)s"
 
 #: Mailman/Cgi/private.py:153
-#, fuzzy
 msgid "Private archive file not found"
-msgstr "Fichier archive non trouvé"
+msgstr "Fichier archive privé non trouvé"
 
 #: Mailman/Cgi/rmlist.py:79
 msgid "You're being a sneaky list owner!"
@@ -2680,11 +2678,53 @@ msgid ""
 "            disabled.  You should tune both of these to the frequency and\n"
 "            traffic volume of your list."
 msgstr ""
+"Ces règles contrôlent le système de gestion automatique des rebonds\n"
+"sous Mailman. Nous allons décrire sommairement son fonctionnement.\n"
+"\n"
+"<p>Lorsqu'un rebond est reçu, Mailman essaie d'extraire deux\n"
+"informations du message: l'adresse de l'abonné à qui le message était\n"
+"destiné et la sévérité du problème ayant causé le rebond. La sévérité\n"
+"peut être <em>forte</em> ou <em>légère</em> signifiant qu'une erreur\n"
+"fatale est survenu ou que l'erreur est passagère. En cas de doute, la\n"
+"sévérité est supposée forte.\n"
+"\n"
+"<p>Si une adresse d'abonné ne peut être extraite du rebond, alors il\n"
+"est généralement ignoré, sinon, chaque abonné dispose d'un <em>score\n"
+"de rebond</em> qui est incrémenté chaque fois que son adresse fait\n"
+"l'objet. Les rebonds forts font l'objet d'une incrémentation\n"
+"de 1 contre 0,5 pour les rebonds légers. Le score de rebond n'est\n"
+"incrémenté qu'une fois par jour, ainsi, même si dix rebonds forts sont\n"
+"reçus pour un abonné, son compteur n'est incrémenté de 1 pour la\n"
+"journée.\n"
+"\n"
+"<p>Lorsque le score de rebond d'un abonné est supérieur à <a\n"
+"href=\"?VARHELP=bounce/bounce_score_threshold\">la limite du score de\n"
+"rebond</a>, son abonnement est désactivé. Une fois désactivé, l'abonné\n"
+"ne recevra plus de soumissions en provenance de la liste jusqu'à ce\n"
+"que son abonnement soit explicitement réactivé (soit par\n"
+"l'administrateur de la liste, soit par l'abonné). Il recevra toutefois\n"
+"des rappels occasionnels lui faisant part de l'état de son abonnement,\n"
+"rappels qui contiendront des informations concernant les mesures à\n"
+"prendre pour réactiver son abonnement.\n"
+"\n"
+"<p>Vous avez un contrôle totale sur <a\n"
+"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings\">le nombre de\n"
+"rappels</a> reçu par l'abonné et sur <a\n"
+"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\">périodicité</a>\n"
+"avec laquelle ces rappels sont envoyés.\n"
+"\n"
+"<p>Il y a une autre variable de configuration importante; après une\n"
+"certaine période -- durant laquelle aucun rebond provenant de l'abonné\n"
+"n'est reçu -- les informations de rebond sont <a\n"
+"href=\"?VARHELP=bounce/bounce_info_stale_after\">considérées comme\n"
+"caduques</a> et ignorées. Ainsi, si vous ajuster ce paramètre et la\n"
+"limite du score, vous pourrez contrôler la rapidité avec laquelle les\n"
+"abonnés à rebond sont désactivés. Ces deux paramètres doivent être\n"
+"adaptés à la taille et au volume du trafic de votre liste."
 
 #: Mailman/Gui/Bounce.py:75
-#, fuzzy
 msgid "Should Mailman perform automatic bounce processing?"
-msgstr "Mailman doit-il effectuer une <em>capture</em> sur le groupe de news?"
+msgstr "Mailman doit-il traiter automatiquement les rebonds?"
 
 #: Mailman/Gui/Bounce.py:76
 msgid ""
@@ -2694,6 +2734,10 @@ msgid ""
 "administrator\n"
 "             isn't inundated with them."
 msgstr ""
+"Si vous choisissez <em>Non</em> pour cette valeur, vous désactivez la\n"
+"gestion automatique des rebonds pour cette liste, les messages qui\n"
+"rebondissent seront toutefois ignorés évitant ainsi que\n"
+"l'administrateur en soit inondé."
 
 #: Mailman/Gui/Bounce.py:82
 msgid ""
@@ -2701,6 +2745,8 @@ msgid ""
 "             subscription is disabled.  This value can be a floating point\n"
 "             number."
 msgstr ""
+"La limite du record de rebond avant que l'abonnement ne soit\n"
+"désactivé. Cette  valeur peut être un nombre à virgule flottante."
 
 #: Mailman/Gui/Bounce.py:87
 msgid ""
@@ -2708,6 +2754,9 @@ msgid ""
 "             is discarded, if no new bounces have been received in the\n"
 "             interim.  This value must be an integer."
 msgstr ""
+"Le nombre de jour au-delà desquels les informations de rebond d'un\n"
+"abonné deviennent caduques si de nouveaux rebonds ne proviennent pas\n"
+"de son adresse entre temps. Cette valeur doit être un entier."
 
 #: Mailman/Gui/Bounce.py:92
 msgid ""
@@ -2719,18 +2768,27 @@ msgid ""
 "             the list once their bounce score exceeds the threshold.  This\n"
 "             value must be an integer."
 msgstr ""
+"Combien de message d'avertissement de type <em>Votre abonnement est\n"
+"désactivé</em> un abonné dont le compte a été désactivé doit-il\n"
+"recevoir avant que son adresse ne soit supprimé de la liste. Spécifier\n"
+"0 pour supprimer immédiatement l'adresse dés que la limite du record\n"
+"de rebond est atteinte. Cette valeur doit être un entier."
 
 #: Mailman/Gui/Bounce.py:99
 msgid ""
 "The number of days between sending the <em>Your Membership\n"
 "             Is Disabled</em> warnings.  This value must be an integer."
 msgstr ""
+"Le nombre de jours entre les messages de type <em>Votre abonnement est\n"
+"désactivé</em>. Cette valeur doit être un entier."
 
 #: Mailman/Gui/Bounce.py:107
 msgid ""
 "Bad value for <a href=\"?VARHELP=bounce/%(varname)s\"\n"
 "            >%(varname)s</a>: %(value)s"
 msgstr ""
+"Valeur erronée de <a\n"
+"href=\"?VARHELP=bounce/%(varname)s\">%(varname)s</a>: %(value)s"
 
 #: Mailman/Gui/Digest.py:27
 msgid "Digest options"
@@ -4000,7 +4058,6 @@ msgstr ""
 "        pour l'usage des spammers."
 
 #: Mailman/Gui/Privacy.py:141
-#, fuzzy
 msgid ""
 "When a message is posted to the list, a series of\n"
 "            moderation steps are take to decide whether the a moderator "
@@ -4053,13 +4110,22 @@ msgstr ""
 "href=\"?VARHELP=privacy/sender/accept_these_nonmembers\">acceptées</a>,\n"
 "ou <a\n"
 "href=\"?VARHELP=privacy/sender/reject_these_nonmembers\">rejetées</a>,\n"
-"ou <a\n"
+"(rebondit) ou <a\n"
 "href=\"?VARHELP=privacy/sender/discard_these_nonmembers\">ignorées</a>\n"
-"ou individuellement ou par groupe. Tout message en provenance d'un\n"
+"soit individuellement ou par groupe. Tout message en provenance d'un\n"
 "non-abonné non explicitement accepté, rejeté ou ignoré devra subir\n"
 "les filtres définit par les <a\n"
 "href=\"?VARHELP=privacy/sender/generic_nonmember_action\">règles\n"
-"générales des non-abonnés</a>."
+"générales des non-abonnés</a>.\n"
+"\n"
+"<p>Dans la zone de texte ci-dessous, ajouter une adresse par ligne;\n"
+"commencez la ligne avec le caractère ^ pour designer une <a\n"
+"href=\"http://www.python.org/doc/current/lib/module-re.html\">expression\n"
+"régulière Python</a>. Si vous utilisez des backslashe, faîtes-le comme\n"
+"si vous utilisiez des chaînes Python brutes (i.e. en utilisant un seul\n"
+"backslash).\n"
+"\n"
+"<p>Notez que les comparaison non-regexp sont prioritaires."
 
 #: Mailman/Gui/Privacy.py:174
 msgid "General sender filters"
@@ -4119,7 +4185,6 @@ msgstr ""
 "automatiquement être acceptées."
 
 #: Mailman/Gui/Privacy.py:198
-#, fuzzy
 msgid ""
 "Postings from any of these non-members will be automatically\n"
 "             accepted with no further moderation applied.  Add member\n"
@@ -4127,7 +4192,9 @@ msgid ""
 "             designate a regular expression match."
 msgstr ""
 "Toutes soumissions provenant de ces non-abonnés sera automatiquement\n"
-"accepté sans autre forme de procès."
+"accepté sans autre forme de procès. Ajouter les adresses des abonnés,\n"
+"une par ligne; commencez la ligne avec le caractère ^ pour désigner\n"
+"une expression régulière."
 
 #: Mailman/Gui/Privacy.py:204
 msgid ""
@@ -4138,7 +4205,6 @@ msgstr ""
 "automatiquement mise en attente de modération."
 
 #: Mailman/Gui/Privacy.py:207
-#, fuzzy
 msgid ""
 "Postings from any of these non-members will be immediately\n"
 "             and automatically held for moderation by the list moderators.\n"
@@ -4152,7 +4218,9 @@ msgstr ""
 "Toutes soumissions en provenance de ces non-abonnés sera immédiatement\n"
 "mise en attente de modération par les modérateurs de la liste. Le\n"
 "soumissionnaire recevra un message lui permettant d'annuler le message\n"
-"mise en attente."
+"mise en attente. Ajouter les adresses des abonnés, une par ligne;\n"
+"commencez la ligne avec le caractère ^ pour désigner une expression\n"
+"régulière."
 
 #: Mailman/Gui/Privacy.py:215
 msgid ""
@@ -4163,7 +4231,6 @@ msgstr ""
 "automatiquement rejetées."
 
 #: Mailman/Gui/Privacy.py:218
-#, fuzzy
 msgid ""
 "Postings from any of these non-members will be automatically\n"
 "             rejected.  In other words, their messages will be bounced back "
@@ -4183,7 +4250,11 @@ msgstr ""
 "retournés avec un avis de rejet automatique. Cette option n'est pas\n"
 "approprié pour les spammers connus; leurs messages doivent être <a\n"
 "href=\"?VARHELP=privacy/sender/discard_these_nonmembers\">automatiquement\n"
-"ignorées</a>."
+"ignorées</a>.\n"
+"\n"
+"<p>Ajouter les adresses des abonnés, une par ligne;\n"
+"commencez la ligne avec le caractère ^ pour désigner une expression\n"
+"régulière."
 
 #: Mailman/Gui/Privacy.py:230
 msgid ""
@@ -4194,7 +4265,6 @@ msgstr ""
 "automatiquement ignorés."
 
 #: Mailman/Gui/Privacy.py:233
-#, fuzzy
 msgid ""
 "Postings from any of these non-members will be automatically\n"
 "             discarded.  That is, the message will be thrown away with no\n"
@@ -4213,7 +4283,10 @@ msgstr ""
 "sans autre forme de procès. L'expéditeur ne recevra ni avis ni rebond,\n"
 "toutefois, l'administrateur pourra, s'il le désire, <a\n"
 "href=\"?VARHELP=privacy/sender/forward_auto_discards\">recevoir des\n"
-"copies de ces messages.</a>"
+"copies de ces messages.</a><\n"
+"\n"
+"<p>Ajouter les adresses des abonnés, une par ligne; commencez la ligne\n"
+"avec le caractère ^ pour désigner une expression régulière."
 
 #: Mailman/Gui/Privacy.py:244
 msgid "Hold"
@@ -4662,26 +4735,23 @@ msgstr "<em>(%(num_cancealed)d aboonnés privés non affichés</em>"
 
 #: Mailman/HTMLFormatter.py:135
 msgid "; it was disabled by you"
-msgstr ""
+msgstr "; vous l'avez désactivé"
 
 #: Mailman/HTMLFormatter.py:137
-#, fuzzy
 msgid "; it was disabled by the list administrator"
-msgstr "l'administrateur de la liste"
+msgstr "; il a été désactivé par l'administrateur de la liste"
 
 #: Mailman/HTMLFormatter.py:139
 msgid "; it was disabled due to excessive bounces"
-msgstr ""
+msgstr "; il a été désactivé suite à des rebonds excessifs"
 
 #: Mailman/HTMLFormatter.py:141
-#, fuzzy
 msgid "; it was disabled for unknown reasons"
-msgstr "Pour des raisons inconnues"
+msgstr "; il a été désactivé pour des raisons inconnues"
 
 #: Mailman/HTMLFormatter.py:143
-#, fuzzy
 msgid "Note: your list delivery is currently disabled %(reason)s."
-msgstr "Note: les remises sur votre liste sont actuellement désactivées."
+msgstr "Note: les remises sur votre liste sont actuellement désactivées %(reason)s."
 
 #: Mailman/HTMLFormatter.py:146
 msgid "Mail delivery"
@@ -4720,6 +4790,11 @@ msgid ""
 "            this address.  Your bounce score will be automatically reset if\n"
 "            the problems are corrected soon."
 msgstr ""
+"Nous avons reçu des rebonds récents de votre adresse. Votre score\n"
+"actuel de rebond est de %(score)s sur maximum de %(total)s. Veillez\n"
+"re-vérifier que votre adresse d'abonnement est correcte et qu'il n'y a\n"
+"aucun problème de remise à cette adresse. Votre score sera\n"
+"re-initialisé si le problème est réglé dans les meilleurs délais."
 
 #: Mailman/HTMLFormatter.py:173
 msgid ""
@@ -5125,20 +5200,18 @@ msgstr ""
 "URL: %(url)s\n"
 
 #: Mailman/Handlers/Scrubber.py:129
-#, fuzzy
 msgid "no subject"
-msgstr "(sans objet)"
+msgstr "sans objet"
 
 #: Mailman/Handlers/Scrubber.py:130
 msgid "no date"
-msgstr ""
+msgstr "pas de date"
 
 #: Mailman/Handlers/Scrubber.py:131
 msgid "unknown sender"
-msgstr ""
+msgstr "expéditeur inconnu"
 
 #: Mailman/Handlers/Scrubber.py:133
-#, fuzzy
 msgid ""
 "An embedded message was scrubbed...\n"
 "From: %(who)s\n"
@@ -5147,11 +5220,11 @@ msgid ""
 "Size: %(size)s\n"
 "Url: %(url)s\n"
 msgstr ""
-"Une pièce jointe non texte a été nettoyée...\n"
-"Nom: %(filename)s\n"
-"Type: %(ctype)s\n"
-"Taille: %(size)d octets\n"
-"Desc: %(desc)s\n"
+"Une pièce jointe a été nettoyée...\n"
+"De: %(who)s\n"
+"Objet: %(subject)s\n"
+"Date: %(date)s\n"
+"Taille: %(size)s\n"
 "Url: %(url)s\n"
 
 #: Mailman/Handlers/Scrubber.py:159
@@ -5620,32 +5693,28 @@ msgid "%(sender)s is not a member of this list."
 msgstr "%(sender)s n'est pas abonné à cette liste."
 
 #: Mailman/MailCommandHandler.py:371
-#, fuzzy
 msgid "off"
-msgstr "Off"
+msgstr "off"
 
 #: Mailman/MailCommandHandler.py:374
 msgid "by your configuration"
-msgstr ""
+msgstr "par votre configuration"
 
 #: Mailman/MailCommandHandler.py:375
-#, fuzzy
 msgid "by list admin"
-msgstr "Uniquement pour l'admin de la liste"
+msgstr "par l'admin de la liste"
 
 #: Mailman/MailCommandHandler.py:376
 msgid "by bounce"
-msgstr ""
+msgstr "suite à des rebonds"
 
 #: Mailman/MailCommandHandler.py:377
-#, fuzzy
 msgid "for unknown reasons"
-msgstr "Pour des raisons inconnues"
+msgstr "pour des raisons inconnues"
 
 #: Mailman/MailCommandHandler.py:379
-#, fuzzy
 msgid "on (%(reason)s"
-msgstr " A partir de %(remote)s"
+msgstr "sur (%(reason)s"
 
 #: Mailman/MailCommandHandler.py:385
 msgid ""
@@ -5854,7 +5923,6 @@ msgid "Usage: confirm <confirmation string>\n"
 msgstr "Usage: confirm <chaîne de confirmation>\n"
 
 #: Mailman/MailCommandHandler.py:713
-#, fuzzy
 msgid ""
 "Invalid confirmation string.  Note that confirmation strings expire\n"
 "approximately %(days)s days after the initial subscription request.  If "
@@ -5865,7 +5933,7 @@ msgstr ""
 "Chaîne de confirmation non valide. Notez que la chaîne de confirmation\n"
 "expire au bout de %(days)s jours à partir de l'émission de la requête\n"
 "d'abonnement.  Si votre requête d'abonnement a expirée, essayer de\n"
-"demander un nouvel abonnement."
+"soumettre votre requête ou votre message initial de nouveau."
 
 #: Mailman/MailCommandHandler.py:722
 msgid "Your request has been forwarded to the list moderator for approval."
@@ -6492,19 +6560,47 @@ msgid ""
 "    -h / --help\n"
 "        Print this message and exit\n"
 msgstr ""
+"Nettoie un fichier archive .mbox.\n"
+"\n"
+"L'archiveur recherche des lignes Unix-From séparant les messages dans\n"
+"le fichier archive mbox. Pour la compatibilité, il recherche en\n"
+"particulier les lignes qui commençant par un \"From \" -- i.e. la lettre\n"
+"F-Majuscule, r-minuscule, o, m, espace et rien d'autre.\n"
+"\n"
+"En principe chaque ligne commençant par un \"From \" dans le corps du\n"
+"message devrait être échappé de sorte que le caractère > soit le début\n"
+"de la ligne. Il est toutefois possible que le corps du message ne soit\n"
+"pas échappé, ce script essaie de corriger cela en effectuant un test\n"
+"plus strict de lignes de type Unix-From. Toute ligne commençant par\n"
+"\"From \" qui ne passe pas ce test sera échappé par le caractère >.\n"
+"\n"
+"Usage: cleanarch [options] < fichierentree > fichiersortie\n"
+"Options:\n"
+"    -s n\n"
+"    --status=n\n"
+"        Affiche le caractère # après le traitement de chaque n lignes\n"
+"\n"
+"    -q / --quiet\n"
+"        Ne pas afficher d'information sur la ligne modifiée sur la\n"
+"sortie standard.\n"
+"\n"
+"    -n / --dry-run\n"
+"        Ne rien afficher du tout.\n"
+"\n"
+"    -h / --help\n"
+"        Affiche ce message et quitter\n"
 
 #: bin/cleanarch:78
 msgid "Unix-From line changed: %(lineno)d"
-msgstr ""
+msgstr "Ligne Unix-From modifiée: %(lineno)d"
 
 #: bin/cleanarch:106
-#, fuzzy
 msgid "Bad status number: %(arg)s"
-msgstr "Mauvais argument: %(pargs)s"
+msgstr "Mauvais numéros de statut: %(arg)s"
 
 #: bin/cleanarch:158
 msgid "%(messages)d messages found"
-msgstr ""
+msgstr "%(messages)d messages trouvés"
 
 #: bin/clone_member:19
 msgid ""
@@ -7203,7 +7299,6 @@ msgid "Could not open file for writing:"
 msgstr "Impossible d'ouvrir le fichier en écriture:"
 
 #: bin/mailmanctl:19
-#, fuzzy
 msgid ""
 "Primary start-up and shutdown script for Mailman's qrunner daemon.\n"
 "\n"
@@ -7296,7 +7391,10 @@ msgstr ""
 "\n"
 "Ce script démarre, arrête et redémarre le gestionnaire de file\n"
 "d'attente principal de Mailman en prenant soins de la bonne marche des\n"
-"qrunners fils qui tournent depuis un moment.\n"
+"qrunners fils qui tournent depuis un moment. Cette opération est\n"
+"assuré par un fork et un exec des qrunners fils avec l'attente de\n"
+"leurs pids. Lorsque la sortie d'un sous processus est détecté, il peut\n"
+"être re-démaré.\n"
 "\n"
 "Les qrunners fils réagissent à SIGINT, SIGTERM et SIGHUP. Aussi bien\n"
 "SIGINT que SIGTERM causent un arrêt correcte des qrunners fils pendant\n"
@@ -7369,6 +7467,7 @@ msgstr ""
 "\n"
 "    reopen -  Ceci donne l'ordre de fermeture puis de réouverture de\n"
 "              tous les fichiers journaux.\n"
+"\n"
 
 #: bin/mailmanctl:140
 msgid "PID unreadable in: %(pidfile)s"
@@ -7539,7 +7638,6 @@ msgid "Password change failed."
 msgstr "Echec de modification du mot de passe."
 
 #: bin/newlist:19
-#, fuzzy
 msgid ""
 "Create a new, unpopulated mailing list.\n"
 "\n"
@@ -7602,6 +7700,11 @@ msgstr ""
 "\n"
 "Options:\n"
 "\n"
+"    -l langue\n"
+"    --language langue\n"
+"        Faire de `langue' la langue préférée de cette liste, ceci doit\n"
+"        être composé des deux lettres du code de la langue.\n"
+"\n"
 "    -q/--quiet\n"
 "        En principe l'administrateur reçoit un courriel (après\n"
 "        demande de confirmation) que sa liste a été crée. Cette option\n"
@@ -7641,7 +7744,7 @@ msgstr ""
 
 #: bin/newlist:114
 msgid "Unknown language: %(lang)s"
-msgstr ""
+msgstr "Langue inconnue: %(lang)s"
 
 #: bin/newlist:119
 msgid "Enter the name of the list: "
@@ -7871,7 +7974,6 @@ msgid "a unicode string"
 msgstr "une chaîne unicode"
 
 #: bin/qrunner:19
-#, fuzzy
 msgid ""
 "Run one or more qrunners, once or repeatedly.\n"
 "\n"
@@ -7937,7 +8039,7 @@ msgstr ""
 "Exécute un ou plusieurs qrunners, en une seule fois ou de de façon\n"
 "répétitive. Chaque classe de gestionnaire nommée est exécutée en\n"
 "round-robin. En d'autres termes, le premier gestionnaire est exécuté\n"
-"pour traiter tous les fichiers qui sont actuellement dans son\n"
+"pour traiter tous les fichiers qui sont actuellement dans /son/\n"
 "répertoire et ainsi de suite. Le nombre total d'itérations peut être\n"
 "fournit en ligne de commande.\n"
 "\n"
@@ -7976,6 +8078,13 @@ msgstr ""
 "        -v/--verbose\n"
 "            Déverser d'avantage d'informations de déboguage dans le\n"
 "            fichier journal logs/qrunner.\n"
+"\n"
+"        -s/--subproc\n"
+"            Cette option ne doit être utilisé que lorsque le qrunner\n"
+"            est executé comme sous processus du script de démarrage\n"
+"            mailmanctl. Elle modifie le comportement de\n"
+"            sortie-quand-erreur pour mieux s'accommoder avec ce\n"
+"            dispositif.\n"
 "\n"
 "        -h/--help\n"
 "            Affiche ce message puis quitte.\n"
@@ -8454,7 +8563,7 @@ msgstr "mise à jour des vieux fichiers qfiles"
 
 #: bin/update:389
 msgid "getting rid of old source files"
-msgstr ""
+msgstr "suppression des anciens fichiers source"
 
 #: bin/update:398
 msgid "no lists == nothing to do, exiting"
@@ -8930,6 +9039,23 @@ msgid ""
 "    --list listname\n"
 "        Process only the given list, otherwise do all lists.\n"
 msgstr ""
+"Traitement des abonnés désactivé, recommandé une fois par jour.\n"
+"\n"
+"Ce script scrute chaque liste à la recherche d'abonné pour lesquels la\n"
+"remise est désactivée. Si les abonnements ont été désactivés suite à\n"
+"des rebonds, ils recevront un autre avis à moins qu'ils ne soient\n"
+"supprimés s'ils ont déjà reçu le nombre maximal d'avis.\n"
+"\n"
+"Usage: %(PROGRAM)s [options]\n"
+"\n"
+"Options:\n"
+"    -h / --help\n"
+"        Affiche ce message puis quitte.\n"
+"\n"
+"    -l nomliste\n"
+"    --list nomliste\n"
+"        Traiter seulement la liste spécifiée. Lorsqu'omis, toutes les\n"
+"listes sont traitées.\n"
 
 #: cron/gate_news:19
 msgid ""
@@ -9060,611 +9186,3 @@ msgstr ""
 "lesquelles la variable digest_send_periodic est définit.\n"
 "\n"
 "Il est généralement appelé par cron.\n"
-
-#~ msgid "removed"
-#~ msgstr "supprimé"
-
-#~ msgid "not "
-#~ msgstr "pas "
-
-#~ msgid "BUT:        %(succeeded)s"
-#~ msgstr "SAUF:\t%(succeeded)s"
-
-#~ msgid "%(rname)s member %(addr)s bouncing - %(negative)s%(did)s"
-#~ msgstr ""
-#~ "l'adresse %(addr)s de l'abonné %(rname)s n'est pas remisable - "
-#~ "%(negative)s%(did)s"
-
-#~ msgid "User not found."
-#~ msgstr "Utilisateur introuvable."
-
-#~ msgid "No file"
-#~ msgstr "Pas de fichier"
-
-#~ msgid ""
-#~ "Policies regarding systematic processing of bounce messages,\n"
-#~ "            to help automate recognition and handling of defunct\n"
-#~ "            addresses."
-#~ msgstr ""
-#~ "Les règles concernant la gestion systématique des messages non remisables,\n"
-#~ "\tpour assister à l'identification et à la gestion automatique des\n"
-#~ "\tadresses obsolètes."
-
-#~ msgid "Try to figure out error messages automatically?"
-#~ msgstr "Essayer de deviner les messages d'erreurs automatiquement?"
-
-#~ msgid ""
-#~ "Minimum number of days an address has been non-fatally bad\n"
-#~ "             before we take action"
-#~ msgstr ""
-#~ "Le nombre minimal de jour pendant lesquels une adresse peut\n"
-#~ "\timpunément ne pas être remisable"
-
-#~ msgid ""
-#~ "Minimum number of posts to the list since members first\n"
-#~ "             bounce before we consider removing them from the list"
-#~ msgstr ""
-#~ "Le nombre minimal de soumissions subséquentes au premier rebond de l'dresse\n"
-#~ "d'un abonné avant que celui-ci ne soit supprimé de la liste"
-
-#~ msgid ""
-#~ "Maximum number of messages your list gets in an hour. (Yes,\n"
-#~ "             bounce detection finds this info useful)"
-#~ msgstr ""
-#~ "Le nombre maximale de messages reçus par le liste toutes les heures, (Oui, "
-#~ "le système de detection\n"
-#~ "d'adresses non remisable se sert de cette information)"
-
-#~ msgid "Do nothing"
-#~ msgstr "Ne rien faire"
-
-#~ msgid "Disable and notify me"
-#~ msgstr "Désactivez et m'aviser"
-
-#~ msgid "Disable and DON'T notify me"
-#~ msgstr "Désactive et NE ME préviens pas"
-
-#~ msgid "Remove and notify me"
-#~ msgstr "Supprimez et avisez-moi"
-
-#~ msgid "Action when critical or excessive bounces are detected."
-#~ msgstr ""
-#~ "Action lorsque des non-remises critiques ou excessives sont détéctées."
-
-#~ msgid ""
-#~ "Primary start-up and shutdown script for Mailman's qrunner daemon.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM) [options] [ start | stop | restart ]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Print this message and exit.\n"
-#~ "\n"
-#~ "Commands:\n"
-#~ "\n"
-#~ "    start   - Start the master qrunner daemon.  Prints a message and "
-#~ "returns\n"
-#~ "              if the master qrunner daemon is already running.\n"
-#~ "\n"
-#~ "    stop    - Stops the master qrunner daemon and all worker qrunners.  "
-#~ "After\n"
-#~ "              stopping, no more messages will be processed.\n"
-#~ "\n"
-#~ "    restart - Restarts the master qrunner daemon by sending it a SIGHUP.  "
-#~ "This\n"
-#~ "              will cause all worker qrunners to be stopped and restarted, "
-#~ "and\n"
-#~ "              will cause any log files open by the master qrunner to be\n"
-#~ "              re-opened.\n"
-#~ msgstr ""
-#~ "Script principal de démarrage te d'arrêt du démon qrunner Mailman.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM) [options] [ start | stop | restart ]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Affiche ce message te quitte.\n"
-#~ "\n"
-#~ "Commandes:\n"
-#~ "\n"
-#~ "    start   - Démarre le démon qrunner principal. Affiche un message et\n"
-#~ "              rend la main si le démon qrunner principal est déjà\n"
-#~ "              lancé.\n"
-#~ "\n"
-#~ "    stop    - Arrête le démon qrunner principal et tous les qrunners\n"
-#~ "              ouvriers. Après l'arrêt, aucun message ne sera plus\n"
-#~ "              traité.\n"
-#~ "\n"
-#~ "    restart - Redémarre le démon qrunner principal en lui envoyant un\n"
-#~ "              SIGHUP. Cela entraîne l'arrêt puis le Re-démarrage de\n"
-#~ "              tous les qrunners ouvriers ainsi que la réouverture de\n"
-#~ "              tous les fichiers journaux ouverts par le qrunner\n"
-#~ "              principal.\n"
-
-#~ msgid "PID unreadable in: %(PIDFILE)s"
-#~ msgstr "PID illisible dans: %(PIDFILE)s"
-
-#~ msgid ""
-#~ "Primary start-up and shutdown script for Mailman's qrunner daemon.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] [ start | stop | restart ]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    -n/--no-restart\n"
-#~ "        Don't restart queue runners when they exit because of an error.  "
-#~ "Use\n"
-#~ "        this only for debugging.  Only useful if the `start' command is "
-#~ "given.\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Print this message and exit.\n"
-#~ "\n"
-#~ "Commands:\n"
-#~ "\n"
-#~ "    start   - Start the master qrunner daemon.  Prints a message and "
-#~ "returns\n"
-#~ "              if the master qrunner daemon is already running.\n"
-#~ "\n"
-#~ "    stop    - Stops the master qrunner daemon and all worker qrunners.  "
-#~ "After\n"
-#~ "              stopping, no more messages will be processed.\n"
-#~ "\n"
-#~ "    restart - Restarts the master qrunner daemon by sending it a SIGHUP.  "
-#~ "This\n"
-#~ "              will cause all worker qrunners to be stopped and restarted, "
-#~ "and\n"
-#~ "              will cause any log files open by the master qrunner to be\n"
-#~ "              re-opened.\n"
-#~ msgstr ""
-#~ "Script principal de démarrage te d'arrêt du démon qrunner Mailman.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM) [options] [ start | stop | restart ]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    -n/--no-restart\n"
-#~ "        Ne pas re-démarrer les gestionnaires de file lorsqu'ils se\n"
-#~ "        terminent suite à une erreur. Utilisez cette option uniquement\n"
-#~ "        à des fins de déboguage. Elle n'a de sens qu'avec la commande\n"
-#~ "        start.\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Affiche ce message te quitte.\n"
-#~ "\n"
-#~ "Commandes:\n"
-#~ "\n"
-#~ "    start   - Démarre le démon qrunner principal. Affiche un message et\n"
-#~ "              rend la main si le démon qrunner principal est déjà\n"
-#~ "              lancé.\n"
-#~ "\n"
-#~ "    stop    - Arrête le démon qrunner principal et tous les qrunners\n"
-#~ "              ouvriers. Après l'arrêt, aucun message ne sera plus\n"
-#~ "              traité.\n"
-#~ "\n"
-#~ "    restart - Redémarre le démon qrunner principal en lui envoyant un\n"
-#~ "              SIGHUP. Cela entraîne l'arrêt puis le Re-démarrage de\n"
-#~ "              tous les qrunners ouvriers ainsi que la réouverture de\n"
-#~ "              tous les fichiers journaux ouverts par le qrunner\n"
-#~ "              principal.\n"
-
-#~ msgid ""
-#~ "Process emailed commands.\n"
-#~ "\n"
-#~ "Called by the wrapper, stdin is the mail message, and argv[1] is the name\n"
-#~ "of the target mailing list.\n"
-#~ "\n"
-#~ "Errors are redirected to logs/errors.\n"
-#~ msgstr ""
-#~ "Traite un courriel contenant des commandes.\n"
-#~ "\n"
-#~ "Appelé par le wrapper, stdin est le message et argv[1] est le nom de\n"
-#~ "la liste cible.\n"
-#~ "\n"
-#~ "Les erreurs sont dirigés vers log/errors.\n"
-
-#~ msgid "mailcmd script got no listname."
-#~ msgstr "le script mailcmd n'a pas reçu de nom de liste."
-
-#~ msgid "mailcmd script, list not found: %(listname)s"
-#~ msgstr "script mailcmd, liste introuvable: %(listname)s"
-
-#~ msgid "Changing user options results page"
-#~ msgstr "Page des résultats de la modification des options utilisateur"
-
-#~ msgid "[original message unavailable]"
-#~ msgstr "[message d'origine indisponible]"
-
-#~ msgid "  (You can change your password there, too.)"
-#~ msgstr "  (Vous pourrez également y changer votre mot de passe.)"
-
-#~ msgid "(Details)"
-#~ msgstr "(Détails)"
-
-#~ msgid "Web site "
-#~ msgstr "Site web"
-
-#~ msgid "unidentified origin"
-#~ msgstr "Origine non identifiée"
-
-#~ msgid ""
-#~ "Mailman won't accept the given email address as a valid address.\n"
-#~ "(E.g it must have an @ in it.)<p>"
-#~ msgstr ""
-#~ "Mailman n'acceptera pas l'adresse fournit comme étant valide.\n"
-#~ "(E.g. elle doit contenir un @.)<p>"
-
-#~ msgid ""
-#~ "The list is not fully functional, and can not accept subscription\n"
-#~ "requests.<p>"
-#~ msgstr ""
-#~ "La liste n'est pas tout à fait fonctionnelle, elle ne permet pas les\n"
-#~ "abonnements.<p>"
-
-#~ msgid "You are already subscribed!<p>"
-#~ msgstr "Vous êtes déjà abonné!<p>"
-
-#~ msgid ""
-#~ "Send monthly password reminders or no? Overrides the\n"
-#~ "             previous option."
-#~ msgstr ""
-#~ "Envoyer un rappel des mots de passe mensuel ou non? Cette option \n"
-#~ "court-circuite la précédente."
-
-#~ msgid "Must posts be approved by the list moderator?"
-#~ msgstr "Les soumissions doivent-elles être approuvées par le modérateur?"
-
-#~ msgid ""
-#~ "Restrict posting privilege to list members?\n"
-#~ "             (<i>member_posting_only</i>)"
-#~ msgstr ""
-#~ "Limiter les privillèges de soumissions aux abonnés? "
-#~ "(<i>soumission_abonné_seulement</i>)"
-
-#~ msgid ""
-#~ "Use this option if you want to restrict posting to list\n"
-#~ "             members.  If you want list members to be able to post, plus a\n"
-#~ "             handful of other posters, see the <i> posters </i> setting\n"
-#~ "             below."
-#~ msgstr ""
-#~ "Utilisez cette option si vous voulez limiter les soumissions aux abonnés\n"
-#~ "à la liste. Si vous voulez permettre aux abonnés de soumettre des articles\n"
-#~ "ainsi que certaines autres personnes, voyez l'options <i>posters</i> "
-#~ "ci-dessous."
-
-#~ msgid ""
-#~ "Addresses of members accepted for posting to this list\n"
-#~ "             without implicit approval requirement. (See\n"
-#~ "             <a href=\"?VARHELP=privacy/member_posting_only\">Restrict... to "
-#~ "list\n"
-#~ "             members)</a> for whether or not this is in addition to "
-#~ "allowing\n"
-#~ "             posting by list members"
-#~ msgstr ""
-#~ "Adresses des abonnés autorisés à soumettre à la liste sans requérir\n"
-#~ "une autorisation préalable. (Voir <a\n"
-#~ "href=\"VARHELP=privacy/member_posting_only\">Limitez ...aux abonnés</a>)\n"
-#~ "pour savoir si ceci est concomitant à la permission accordées aux\n"
-#~ "membres de soumettre des messages à la liste"
-
-#~ msgid ""
-#~ "Adding entries here will have one of two effects, according\n"
-#~ "             to whether another option restricts posting to members.\n"
-#~ "\n"
-#~ "             <ul>\n"
-#~ "                 <li>If <i>member_posting_only</i> is 'yes', then entries\n"
-#~ "                 added here will have posting privilege in addition to list\n"
-#~ "                 members.\n"
-#~ "\n"
-#~ "                 <li>If <i>member_posting_only</i> is 'no', then "
-#~ "<em>only</em>\n"
-#~ "                 the posters listed here will be able to post without admin\n"
-#~ "                 approval.\n"
-#~ "\n"
-#~ "             </ul>"
-#~ msgstr ""
-#~ "Ajouter des entrées ipmlique l'une de deux choses suivant que qu'un autre\n"
-#~ "paramètre limitant la soumission aux seuls abonnés aura été activé ou non.\n"
-#~ "\n"
-#~ "<ul>\n"
-#~ "\t<li>Si <i>soumission_abonné_seulement</i> vaut 'Yes', alors les entrés\n"
-#~ "\ttrouvées disposeront des privillèges de soumissions en plus des\n"
-#~ "\tabonnés de la liste.\n"
-#~ "\n"
-#~ "\t<li>Si <i>soumission_abonné_seulement</i>vaut 'no', alors seule les\n"
-#~ "\tsoumissionnaires listés ici auront les privillèges de soumissions\n"
-#~ "\tsans approbation préalable de l'administrateur.\n"
-#~ "\n"
-#~ "</ul>"
-
-#~ msgid "Spam-specific posting filters"
-#~ msgstr "Filtre spécifiques aux soumissions de type spam"
-
-#~ msgid "Addresses whose postings are always held for approval."
-#~ msgstr ""
-#~ "Les adresses dont les soumissions sont toujours mise en attente\n"
-#~ "d'approbation."
-
-#~ msgid ""
-#~ "Email addresses whose posts should always be held for\n"
-#~ "             approval, no matter what other options you have set.  See also\n"
-#~ "             the subsequent option which applies to arbitrary content of\n"
-#~ "             arbitrary headers."
-#~ msgstr ""
-#~ "Les adresses courriels dont les soumissions doivent toujours subir une "
-#~ "approbation, peu\n"
-#~ "importe les autres options. Veillez lire les options qui s'appliquent aux "
-#~ "contenus et en-têtes arbitraires."
-
-#~ msgid " list run by "
-#~ msgstr " liste gérée par "
-
-#~ msgid "Your urgent message was rejected"
-#~ msgstr "Votre message urgent a été refusé"
-
-#~ msgid ""
-#~ "Check the databases for mailing lists.\n"
-#~ "\n"
-#~ "Both the config.db and config.db.last files are checked for corruption.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] [listname [listname ...]]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    --all\n"
-#~ "    -a\n"
-#~ "        Check all databases.  Otherwise only the lists named on the command\n"
-#~ "        line are checked.\n"
-#~ "\n"
-#~ "    --verbose\n"
-#~ "    -v\n"
-#~ "        Verbose output.\n"
-#~ "\n"
-#~ "    --help\n"
-#~ "    -h\n"
-#~ "        Print this text and exit.\n"
-#~ msgstr ""
-#~ "Vérifie les bases de données des listes de diffusion.\n"
-#~ "\n"
-#~ "Les fichiers config.db et config.db.last passent au contrôle\n"
-#~ "d'intégrité.\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    --all\n"
-#~ "    -a\n"
-#~ "        Vérifier toutes les bases de données. Si cette option n'est\n"
-#~ "        pas fournit, seule la liste spécifiée est contrôlée.\n"
-#~ "\n"
-#~ "    --verbose\n"
-#~ "    -v\n"
-#~ "        Sortie verbeux.\n"
-#~ "\n"
-#~ "    --help\n"
-#~ "    -h\n"
-#~ "        Afficher ce texte et sortir.\n"
-
-#~ msgid ""
-#~ "%(filename)s cannot be opened for reading:\n"
-#~ "\t"
-#~ msgstr ""
-#~ "impossible d'ouvrir %(filename)s en lecture:\n"
-#~ "\t"
-
-#~ msgid ""
-#~ "%(filename)s contains a corrupt marshal:\n"
-#~ "\t"
-#~ msgstr ""
-#~ "%(filename)s contient un marshal corrompu:\n"
-#~ "\t"
-
-#~ msgid ""
-#~ "***** ALERT *****\n"
-#~ "The original database file for the list `%(listname)s' is corrupt, but the\n"
-#~ "backup seems fine.  Consider copying\n"
-#~ "    %(lastdb)s\n"
-#~ "to\n"
-#~ "    %(configdb)s\n"
-#~ "however, you may lose some data."
-#~ msgstr ""
-#~ "***** ALERTE *****\n"
-#~ "Le fichier original de données de la liste '%(listname)s' est corrompu,\n"
-#~ "alors que la sauvegarde semble correcte. Pensez copier\n"
-#~ " %(lastdb)s\n"
-#~ "sur\n"
-#~ "%(configdb)s\n"
-#~ "Vous pourrez tout de même perdre quelques données."
-
-#~ msgid ""
-#~ "\n"
-#~ "***** ALERT *****\n"
-#~ "Both the original database file and the backup for list `%(listname)s' seem\n"
-#~ "corrupted.  You will probably need to recover both\n"
-#~ "    %(configdb)s\n"
-#~ "and\n"
-#~ "    %(lastdb)s\n"
-#~ "from a system backup, or remove the list `%(listname)s' and\n"
-#~ "re-create it from scratch."
-#~ msgstr ""
-#~ "\n"
-#~ "***** ALERTE *****\n"
-#~ "Le fichier base de données de la liste %(listname)s ainsi que la\n"
-#~ "sauvegarde semblent corrompus. Vous devrez probablemnt recupérer aussi bien\n"
-#~ "%(configdb)s\n"
-#~ "que\n"
-#~ "%(lastdb)s\n"
-#~ "à partir d'une sauvegarde du système, ou supprimer la liste %(listname)s\n"
-#~ "et la recréer à partir de rien."
-
-#~ msgid "The list `%(listname)s' databases seem fine."
-#~ msgstr "La base de données de la liste %(listname)s paraît parfaite."
-
-#~ msgid ""
-#~ "\n"
-#~ "The master qrunner lock appears to be stale.  Cleaning up and trying again."
-#~ msgstr ""
-#~ "\n"
-#~ "Le verrou du qrunner principal semble avoir vieillit. Nettoyage et\n"
-#~ "nouvel essai."
-
-#~ msgid ""
-#~ "\n"
-#~ "The master qrunner lock could not be acquired.  Either another qrunner is\n"
-#~ "already running, or a stale lock exists.  Please check to see if the lock\n"
-#~ "file is stale, or use the -s option.\n"
-#~ "\n"
-#~ "Lock file: %(lockfile)s\n"
-#~ "\n"
-#~ "Exiting."
-#~ msgstr ""
-#~ "\n"
-#~ "Le verrou du qrunner principal ne peut être obtenu. Un autre processus\n"
-#~ "qrunner est en cours d'exécution à moins qu'il y ait un verrou\n"
-#~ "vieillit. Veillez vérifier si le fichier verrou est vieillit ou\n"
-#~ "utiliser l'option -s.\n"
-#~ "\n"
-#~ "Fichier verrou: %(lockfile)s\n"
-#~ "\n"
-#~ "Sortie."
-
-#~ msgid ""
-#~ "One-shot qrunner, er, runner.\n"
-#~ "\n"
-#~ "This script is primarily for debugging purposes, and is used to invoke a\n"
-#~ "specific sub-qrunner.  The invoked qrunner will run once through its\n"
-#~ "processing loop and then exit.  You can only call this script if there is "
-#~ "no\n"
-#~ "master qrunner daemon running.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] runnername\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "\n"
-#~ "    -l/--list\n"
-#~ "        Shows the available qrunner names.\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Print this message and exit.\n"
-#~ "\n"
-#~ "runnername is required unless -l or -h is given, and it must be one of the\n"
-#~ "names displayed by the -l switch.\n"
-#~ msgstr ""
-#~ "qrunner à un coup, er, exécutant.\n"
-#~ "\n"
-#~ "Ce script est principalement destiné au déboguage et est utilisé pour\n"
-#~ "invoquer un sous-qrunner spécifique. Le processus invoqué va\n"
-#~ "traverser une seule fois sa boucle de traitement avant de sortir. Ce\n"
-#~ "script ne peut être appelé que si aucun démon qrunner principal n'est\n"
-#~ "en cours d'exécution.\n"
-#~ "\n"
-#~ "Usage: %(PROGRAM)s [options] nomexécutant\n"
-#~ "\n"
-#~ "    -l/--list\n"
-#~ "        Affiche les noms des exécutants disponible.\n"
-#~ "\n"
-#~ "    -h/--help\n"
-#~ "        Affiche ce message puis quitte.\n"
-#~ "\n"
-#~ "nomexécutant est requit à moins que l'une des options -l ou -h ne soit\n"
-#~ "spécifiée, de plus, ce nom doit être l'un des noms affichés par\n"
-#~ "l'option -l.\n"
-
-#~ msgid "Automatically send a message to a mailing list.\n"
-#~ msgstr "Envoyer automatiquement un message à une liste de diffusion.\n"
-
-#~ msgid ""
-#~ "Simple join-a-list email address.\n"
-#~ "\n"
-#~ "Called by the wrapper, stdin is the mail message, and argv[1] is the name\n"
-#~ "of the target mailing list.\n"
-#~ "\n"
-#~ "Errors are redirected to logs/errors.\n"
-#~ msgstr ""
-#~ "Rejoint l'adresse courriel d'une liste.\n"
-#~ "\n"
-#~ "Appelé par le wrapper, stdin est le message et argv[1] est le nom de\n"
-#~ "la liste de diffusion cible.\n"
-#~ "\n"
-#~ "Les erreurs sont dirigées vers logs/errors.\n"
-
-#~ msgid "join script got no listname."
-#~ msgstr "le script join n'a pas reçu de nom de liste."
-
-#~ msgid "join script, list not found: %(listname)s"
-#~ msgstr "script join, liste introuvable: %(listname)s"
-
-#~ msgid ""
-#~ "Simple leave-a-list email address.\n"
-#~ "\n"
-#~ "Called by the wrapper, stdin is the mail message, and argv[1] is the name\n"
-#~ "of the target mailing list.\n"
-#~ "\n"
-#~ "Errors are redirected to logs/errors.\n"
-#~ msgstr ""
-#~ "Quitte l'adresse courriel d'une liste.\n"
-#~ "\n"
-#~ "Appelé par le wrapper, stdin est le message et argv[1] est le nom de\n"
-#~ "la liste cible.\n"
-#~ "\n"
-#~ "Les messages d'erreurs sont dirigés vers logs/errors.\n"
-
-#~ msgid "leave script got no listname."
-#~ msgstr "le script leave n'a pas reçu de nom de liste."
-
-#~ msgid "leave script, list not found: %(listname)s"
-#~ msgstr "script leave, liste introuvable: %(listname)s"
-
-#~ msgid ""
-#~ "Send a message to the mailing list owner.\n"
-#~ "\n"
-#~ "The -owner address for alist should be filtered to this program, through "
-#~ "the\n"
-#~ "mail wrapper.  E.g. for list `test@yourdomain.com', the `test-owner' alias\n"
-#~ "would deliver to this script.\n"
-#~ "\n"
-#~ "Stdin is the mail message, and argv[1] is the name of the target mailing "
-#~ "list.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Envoie un message au propriétaire de la liste.\n"
-#~ "\n"
-#~ "L'adresse -owner d'une liste doit être filtré par ce programme à\n"
-#~ "travers le wrapper courriel. Pour la liste `test@votredomaine.com',\n"
-#~ "l'alias test-owner devrait faire la remise à ce script.\n"
-#~ "\n"
-#~ "Stdin est le message et argv[1] est le nom de la liste cible.\n"
-#~ "\n"
-
-#~ msgid "mailowner got no listname."
-#~ msgstr "le script mailowner n'a pas reçu de nom de liste"
-
-#~ msgid "mailowner script, list not found: %(listname)s"
-#~ msgstr "script mailowner, liste introuvable: %(listname)s"
-
-#~ msgid ""
-#~ "Accept posts to a list and handle them properly.\n"
-#~ "\n"
-#~ "The main advertised address for a list should be filtered to this program,\n"
-#~ "through the mail wrapper.  E.g. for list `test@yourdomain.com', the `test'\n"
-#~ "alias would deliver to this script.\n"
-#~ "\n"
-#~ "Stdin is the mail message, and argv[1] is the name of the target mailing "
-#~ "list.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Accepte les soumissions vers une liste et les gère correctement.\n"
-#~ "\n"
-#~ "L'adresse de base publiée d'une liste doit être filtré par ce\n"
-#~ "programme à travers le wrapper courriel. Pour la liste\n"
-#~ "`test@votredomaine.com', l'alias test devrait être remise à ce script.\n"
-#~ "\n"
-#~ "Stdin est le message et argv[1] est le nom de la liste cible.\n"
-#~ "\n"
-
-#~ msgid "post script got no listname."
-#~ msgstr "le script post n'a pas reçu de nom de liste"
-
-#~ msgid "post script, list not found: %(listname)s"
-#~ msgstr "script post, liste introuvable: %(listname)s"
