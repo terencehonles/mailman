@@ -1,9 +1,10 @@
 #!/usr/local/bin/python 
 
-"""This script gets called by cron.  It goes through all the lists,
-and locks each list as it processes it.  It goes through every
-address, and mails a password reminder.  It isn't a big enough deal
-to worry about what happens if someone is on multiple lists."""
+"""Send password reminders for all lists to all users.
+
+We accumulate users and their passwords, and use the last list to send a
+single message to each user with their complete collection of passwords,
+rather than sending a single message for each password."""
 
 # This puppy should probably do lots of logging.
 
