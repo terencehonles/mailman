@@ -251,15 +251,23 @@ class LockFile:
                     self.__writelog('unexpected link error: %s' % e)
                     os.unlink(self.__tmpfname)
                     raise
+                elif self.__linkcount() == 1:
+                    # We've hit a race window.  Proc1 is in the middle of
+                    # unlocking and has removed their tmpfname, leaving
+                    # lockfile with a link count of one.  Proc2's os.link()
+                    # above fails w/EEXIST but the linkcount will be 1.  Even
+                    # if multiple ProcN's attempt to claim the lock while
+                    # Proc1 is unlocking, linkcount can never be > 2.  We'll
+                    # just try again later.
+                    self.__writelog('hit proc1 unlock race condition')
                 elif self.__linkcount() <> 2:
                     # Somebody's messin' with us!  Log this, and try again
                     # later.  TBD: should we raise an exception?
-                    self.__writelog('unexpected linkcount <> 2: %d' %
+                    self.__writelog('unexpected linkcount: %d' %
                                     self.__linkcount())
                 elif self.__read() == self.__tmpfname:
                     # It was us that already had the link.
                     self.__writelog('already locked')
-                    os.unlink(self.__tmpfname)
                     raise AlreadyLockedError
                 # otherwise, someone else has the lock
                 pass
@@ -287,13 +295,9 @@ class LockFile:
 
         If we don't already own the lock (either because of unbalanced unlock
         calls, or because the lock was stolen out from under us), raise a
-        NotLockedError, unless optional `unconditional' is true.
+        NotLockedError, unless optional `unconditionally' is true.
         """
-        islocked = 0
-        try:
-            islocked = self.locked()
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+        islocked = self.locked()
         if not islocked and not unconditionally:
             raise NotLockedError
         # Remove our tempfile
@@ -379,31 +383,29 @@ class LockFile:
             return -1
 
     def __break(self):
-        # First, touch the global lock file so no other process will try to
-        # break the lock while we're doing it.  Specifically, this avoids the
-        # race condition where we've decided to break the lock at the same
-        # time someone else has, but between the time we made this decision
-        # and the time we read the winner out of the global lock file, they've
-        # gone ahead and claimed the lock.
+        # First, touch the global lock file.  This reduces but does not
+        # eliminate the chance for a race condition during breaking.  Two
+        # processes could both pass the test for lock expiry in lock() before
+        # one of them gets to touch the global lockfile.  This shouldn't be
+        # too bad because all they'll do in this function is wax the lock
+        # files, not claim the lock, and we can be defensive for ENOENTs
+        # here.
         #
-        # TBD: This could fail if the process breaking the lock and the
-        # process that claimed the lock have different owners.  We could solve
-        # this by set-uid'ing the CGI and mail wrappers, but I don't think
-        # it's that big a problem.
+        # Touching the lock could fail if the process breaking the lock and
+        # the process that claimed the lock have different owners.  We could
+        # solve this by set-uid'ing the CGI and mail wrappers, but I don't
+        # think it's that big a problem.
         try:
             self.__touch(self.__lockfile)
         except OSError, e:
             if e.errno <> errno.EPERM: raise
         # Try to remove the old winner's temp file, since we're assuming the
         # winner process has hung or died.  Don't worry too much if we can't
-        # unlink their temp file -- this doesn't break the locking algorithm,
+        # unlink their temp file -- this doesn't wreck the locking algorithm,
         # but will leave temp file turds laying around, a minor inconvenience.
-        try:
-            winner = self.__read()
-            if winner:
-                os.unlink(winner)
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+        winner = self.__read()
+        if winner:
+            os.unlink(winner)
         # Now remove the global lockfile, which actually breaks the lock.
         try:
             os.unlink(self.__lockfile)
@@ -457,15 +459,30 @@ def _dochild():
     time.sleep(hitwait)
 
 
+def _seed():
+    try:
+        fp = open('/dev/random')
+        d = fp.read(40)
+        fp.close()
+    except (IOError, OSError), e:
+        if e.errno <> errno.ENOENT:
+            raise
+        import sha
+        d = sha.new(`os.getpid()`+`time.time()`).hexdigest()
+    random.seed(d)
+
+
 def _onetest():
     loopcount = random.randint(1, 100)
     for i in range(loopcount):
+        print 'Loop %d of %d' % (i+1, loopcount)
         pid = os.fork()
         if pid:
             # parent, wait for child to exit
             pid, status = os.waitpid(pid, 0)
         else:
             # child
+            _seed()
             try:
                 _dochild()
             except KeyboardInterrupt:
@@ -490,9 +507,8 @@ def _test(numtests):
             kids[pid] = pid
         else:
             # child
+            _seed()
             try:
-                import sha
-                random.seed(sha.new(`os.getpid()`+`time.time()`).hexdigest())
                 _onetest()
             except KeyboardInterrupt:
                 pass
