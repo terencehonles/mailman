@@ -29,14 +29,29 @@ upgrade.
 
         http://www.gnu.org
 
-    If you are building the Mailman 2.1 alpha releases, either through
-    the official file releases, or by checking out via CVS, you must
-    download and install the mimelib package.
+    Mailman 2.1 now requires the "email" package, which comes as part
+    of Python 2.2.  If you are running an older version of Python,
+    then you need to install the standalone email package by doing the
+    following steps:
 
-        http://sf.net/projects/mimelib
+    % cd misc
+    % tar zxf email-0.90.tar.gz
+    % cd email-0.90
+    % python setup.py install
 
-    Mailman 2.1alpha2 requires mimelib 0.4 or better.  mimelib will
-    eventually be bundled with Mailman 2.1 and Python 2.2.
+    Check to make sure the email package is properly installed by
+    doing the following:
+
+    % python
+    Python 2.1.1 (#1, Aug 31 2001, 17:07:00) 
+    [GCC egcs-2.91.66 19990314/Linux (egcs-1.1.2 release)] on linux2
+    Type "copyright", "credits" or "license" for more information.
+    >>> import email
+    >>> email.__version__
+    '0.90'
+
+    (Note that if you are using Python 2.2, email.__version__ will be
+    "1.0"; either version is fine.)
 
 
 1. System setup
