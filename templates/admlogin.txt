@@ -21,12 +21,16 @@
 						     value="Let me in...">
       </td>
     </tr>
-    <tr>
-      <td colspan=2 align=middle>
-      <strong><em>From this point on, you must have
-      cookies enabled in your browser, otherwise no administrative changes
-      will take effect.</em></strong>
-      </td>
-    </tr>
   </TABLE>
+      <p><strong><em>Important:</em></strong> From this point on, you
+      must have cookies enabled in your browser, otherwise no
+      administrative changes will take effect.
+
+      <p>Session cookies are used in Mailman's
+      administrative interface so that you don't need to
+      re-authenticate with every administrative operation.  This
+      cookie will expire automatically when you exit your browser, or
+      you can explicitly expire the cookie by hitting the
+      <em>Logout</em> link under <em>Other Administrative
+      Activities</em> (which you'll see once you successfully log in).
 </FORM>
