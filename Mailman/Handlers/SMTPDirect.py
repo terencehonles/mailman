@@ -54,7 +54,7 @@ def process(mlist, msg, msgdata):
         admin = mlist.GetAdminEmail()
     else:
         admin = Utils.get_site_email()
-    msgtext = msg.get_text()
+    msgtext = msg.as_string(unixfrom=0)
     #
     # Split the recipient list into SMTP_MAX_RCPTS chunks.  Most MTAs have a
     # limit on the number of recipients they'll swallow in a single
