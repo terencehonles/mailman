@@ -47,6 +47,8 @@ def process(mlist, msg, msgdata):
         # BAW: should we definitely deny if the password exists but does not
         # match?  For now we'll let it percolate up for further determination.
         msgdata['approved'] = 1
+        # Used by the Emergency module
+        msgdata['adminapproved'] = 1
     # has this message already been posted to this list?
     beentheres = [s.strip().lower() for s in msg.get_all('x-beenthere', [])]
     if mlist.GetListEmail().lower() in beentheres:
