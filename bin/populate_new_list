@@ -9,6 +9,9 @@
 The email address lists must not have comments or other fancy formatting -
 just email addrs, one per line."""
 
+__version__ = "$Revision: 380 $"
+# $Source$
+
 import sys, os, crypt, string
 
 sys.path.append('/home/mailman/mailman/modules')
