@@ -114,6 +114,15 @@ _ = i18n._
 
 
 
+def ackp(msg):
+    ack = msg.get('x-ack', '').lower()
+    precedence = msg.get('precedence', '').lower()
+    if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
+        return 0
+    return 1
+
+
+
 def process(mlist, msg, msgdata):
     if msgdata.get('approved'):
         return
@@ -208,7 +217,8 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
     cookie = Pending.new(Pending.HELD_MESSAGE, id)
-    if not fromusenet and mlist.respond_to_post_requests:
+    if not fromusenet and ackp(msg) and mlist.respond_to_post_requests and \
+           mlist.autorespondToSender(sender):
         # Get a confirmation cookie
         d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
                                      cookie)
