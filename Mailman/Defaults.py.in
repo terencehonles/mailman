@@ -536,8 +536,8 @@ SPAM_DIR        = os.path.join(VAR_PREFIX, 'spam')
 WRAPPER_DIR	= os.path.join(EXEC_PREFIX, 'mail')
 SCRIPTS_DIR	= os.path.join(PREFIX, 'scripts')
 TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
-PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(VAR_PREFIX, 'archives/public')
-PRIVATE_ARCHIVE_FILE_DIR = os.path.join(VAR_PREFIX, 'archives/private')
+PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(VAR_PREFIX, 'archives', 'public')
+PRIVATE_ARCHIVE_FILE_DIR = os.path.join(VAR_PREFIX, 'archives', 'private')
 
 SITE_PW_FILE = os.path.join(DATA_DIR, 'adm.pw')
 
