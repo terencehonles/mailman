@@ -665,6 +665,13 @@ DEFAULT_SERVER_LANGUAGE = 'en'
 # spoofed messages may get through.
 USE_ENVELOPE_SENDER = 0
 
+# Membership tests for posting purposes are usually performed by looking at a
+# set of headers, passing the test if any of their values match a member of
+# the list.  Headers are checked in the order given in this variable.  The
+# value None means use the From_ (envelope sender) header.  Field names are
+# case insensitive.
+SENDER_HEADERS = ('from', None, 'reply-to', 'sender')
+
 # How many members to display at a time on the admin cgi to unsubscribe them
 # or change their options?
 DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
