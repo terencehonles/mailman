@@ -164,8 +164,8 @@ def master(restart, lock):
     else:
         restarting = ''
     try:
-        while 1:
-            try:
+        try:
+            while 1:
                 pid, status = os.wait()
                 killsig = status & 0xff
                 exitstatus = (status >> 8) & 0xff
@@ -189,8 +189,8 @@ qrunner watchdog detected subprocess exit
                     if restart:
                         newpid = start_runner(qrclass, slice, count)
                         kids[newpid] = (qrclass, slice, count)
-            except KeyboardInterrupt:
-                break
+        except KeyboardInterrupt:
+            pass
     finally:
         # Should we leave the main loop for any reason, we want to be sure all
         # of our children are exited cleanly.  Send SIGINTs to all the child
