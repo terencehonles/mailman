@@ -119,6 +119,13 @@ def main():
                 addrchange_confirm(mlist, doc, cookie)
             else:
                 addrchange_prompt(mlist, doc, cookie, *content[1:])
+        elif content[0] == Pending.HELD_MESSAGE:
+            if cgidata.getvalue('cancel'):
+                heldmsg_cancel(mlist, doc, cookie)
+            elif cgidata.getvalue('submit'):
+                heldmsg_confirm(mlist, doc, cookie)
+            else:
+                heldmsg_prompt(mlist, doc, cookie, *content[1:])
         else:
             bad_confirmation(doc)
     except Errors.MMBadConfirmation:
@@ -467,6 +474,113 @@ def addrchange_prompt(mlist, doc, cookie, oldaddr, newaddr, globally):
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     table.AddRow([SubmitButton('submit', _('Change address')),
                   SubmitButton('cancel', _('Cancel and discard'))])
+
+    form.AddItem(table)
+    doc.AddItem(form)
+
+
+
+def heldmsg_cancel(mlist, doc, cookie):
+    # Discard this cookie
+    title = _('Continue awaiting approval')
+    doc.SetTitle(title)
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+    Pending.confirm(cookie, expunge=1)
+    table.AddRow([_('''Okay, the list moderator will still have the
+    opportunity to approve or reject this message.''')])
+    doc.AddItem(table)
+
+
+
+def heldmsg_confirm(mlist, doc, cookie):
+    # See the comment in admin.py about the need for the signal
+    # handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+        sys.exit(0)
+
+    mlist.Lock()
+    try:
+        try:
+            # Do this in two steps so we can get the preferred language for
+            # the user who posted the message.
+            op, id = Pending.confirm(cookie, expunge=1)
+            ign, sender, msgsubject, ign, ign, ign = mlist.GetRecord(id)
+            subject = cgi.escape(msgsubject)
+            lang = mlist.getMemberLanguage(sender)
+            i18n.set_language(lang)
+            doc.set_language(lang)
+            # Discard the message
+            mlist.HandleRequest(id, mm_cfg.DISCARD,
+                                _('Sender discarded message via web.'))
+        except Errors.LostHeldMessage:
+            bad_confirmation(doc, _('''The held message with the Subject:
+            header <em>%(subject)s</em> could not be found.  The most likely
+            reason for this is that the list moderator has already approved or
+            rejected the message.  You were not able to cancel it in
+            time.'''))
+        else:
+            # The response
+            listname = mlist.real_name
+            title = _('Posted message canceled')
+            doc.SetTitle(title)
+            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
+            doc.AddItem(_('''\
+            You have successfully canceled the posting of your message with
+            the Subject: header <em>%(subject)s</em> to the mailing list
+            %(listname)s.'''))
+        mlist.Save()
+    finally:
+        mlist.Unlock()
+
+
+
+def heldmsg_prompt(mlist, doc, cookie, id):
+    title = _('Cancel held message posting')
+    doc.SetTitle(title)
+    form = Form(mlist.GetScriptURL('confirm', 1))
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+
+    # Blarg.  The list must be locked in order to interact with the ListAdmin
+    # database, even for read-only.
+    # See the comment in admin.py about the need for the signal
+    # handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+        sys.exit(0)
+
+    mlist.Lock()
+    try:
+        ign, sender, msgsubject, givenreason, ign, ign = mlist.GetRecord(id)
+    finally:
+        mlist.Unlock()
+    subject = cgi.escape(msgsubject)
+    reason = cgi.escape(givenreason)
+    listname = mlist.real_name
+    table.AddRow([_('''Your confirmation is required in order to cancel the
+    posting of your message to the mailing list <em>%(listname)s</em>:
+
+    <ul><li><b>Sender:</b> %(sender)s
+        <li><b>Subject:</b> %(subject)s
+        <li><b>Reason:</b> %(reason)s
+    </ul>
+
+    Hit the <em>Cancel posting</em> button to discard the posting.
+
+    <p>Or hit the <em>Continue awaiting approval</em> button to continue to
+    allow the list moderator to approve or reject the message.''')
+                    + '<p><hr>'])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Hidden('cookie', cookie)])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([SubmitButton('submit', _('Cancel posting')),
+                  SubmitButton('cancel', _('Continue awaiting approval'))])
 
     form.AddItem(table)
     doc.AddItem(form)
