@@ -177,7 +177,7 @@ def send_i18n_digests(mlist, mboxfp):
          'got_listinfo_url':  mlist.GetScriptURL('listinfo', absolute=1),
          'got_request_email': mlist.GetRequestEmail(),
          'got_owner_email':   mlist.GetOwnerEmail(),
-         }, lang=lang)
+         }, mlist=mlist)
     # MIME
     masthead = Text(mastheadtxt, _charset=Utils.GetCharSet(lang))
     masthead['Content-Description'] = digestid
