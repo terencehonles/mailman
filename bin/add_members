@@ -65,7 +65,7 @@ Options:
         The name of the Mailman list you are adding members to.  It must
         already exist.
 
-You must supply at least one of -n and -d options.  At most one of the
+You must supply at least one of -r and -d options.  At most one of the
 files can be `-'.
 """
 
