@@ -27,6 +27,8 @@ import sys
 import os
 import string
 import re
+from UserDict import UserDict
+from types import StringType
 # XXX: obsolete, should use re module
 import regsub
 import random
@@ -620,6 +622,24 @@ def chunkify(members, chunksize=None):
 
 
 
+class SafeDict(UserDict):
+    """Dictionary which returns a default value for unknown keys.
+
+    This is used in maketext so that editing templates is a bit more robust.
+    """
+    def __init__(self, d):
+        UserDict.__init__(self, d)
+
+    def __getitem__(self, key):
+        try:
+            return self.data[key]
+        except KeyError:
+            if type(key) == StringType:
+                return '%('+key+')s'
+            else:
+                return '<Missing key: %s>' % `key`
+
+
 def maketext(templatefile, dict, raw=0):
     """Make some text from a template file.
 
@@ -631,9 +651,10 @@ def maketext(templatefile, dict, raw=0):
     fp = open(file)
     template = fp.read()
     fp.close()
+    text = template % SafeDict(dict)
     if raw:
-        return template % dict
-    return wrap(template % dict)
+        return text
+    return wrap(text)
 
 
 
