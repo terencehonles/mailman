@@ -3,9 +3,8 @@ Title: The Mailman Wishlist
 <h3> The Mailman Wishlist
 </h3>
  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 <p>
@@ -13,31 +12,25 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
 </ul>
 <h3> Documentation
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -51,16 +44,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -71,8 +61,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -81,16 +71,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -101,8 +88,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -110,8 +97,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -119,24 +104,19 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
 
 </ul>
 <h3> List Membership
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -147,8 +127,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -156,8 +136,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -165,11 +143,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -180,9 +153,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -193,16 +163,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -213,8 +180,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -222,8 +189,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -231,11 +196,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -246,9 +206,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -265,16 +222,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -285,8 +239,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -294,8 +248,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -303,11 +255,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -318,9 +265,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -333,8 +277,7 @@ Title: The Mailman Wishlist
  by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
- authorization to modify the sub & superlists.  Majordomo2 is
- reported to have some good features in this regard.
+ authorization to modify the sub & superlists.
 
     <li> Add a limit on the number of posts from any one individual within a period of time (1 post per day, 10 per week, etc).
  Also, limits on mailbacks, infos, etc.
@@ -344,16 +287,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -364,8 +304,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -373,8 +313,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -382,11 +320,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -397,9 +330,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -412,8 +342,7 @@ Title: The Mailman Wishlist
  by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
- authorization to modify the sub & superlists.  Majordomo2 is
- reported to have some good features in this regard.
+ authorization to modify the sub & superlists.
 
     <li> Add a limit on the number of posts from any one individual within a period of time (1 post per day, 10 per week, etc).
  Also, limits on mailbacks, infos, etc.
@@ -433,16 +362,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -453,8 +379,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -462,8 +388,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -471,11 +395,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -486,9 +405,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -501,8 +417,7 @@ Title: The Mailman Wishlist
  by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
- authorization to modify the sub & superlists.  Majordomo2 is
- reported to have some good features in this regard.
+ authorization to modify the sub & superlists.
 
     <li> Add a limit on the number of posts from any one individual within a period of time (1 post per day, 10 per week, etc).
  Also, limits on mailbacks, infos, etc.
@@ -521,12 +436,7 @@ Title: The Mailman Wishlist
  relational database, ZODB, LDAP, etc)
 
     <li> Member profiles
-    <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
-    <li> More sophisticated attachment handling: strip and discard attachments, post attachments (e.g. via WebDAV) and rewrite to
- include URLs, etc.  Should be admin configurable based on MIME
- type.  Check out Bill Bumgarner's work on this.
-
     <li> Should be able to gather statistics, such as deliveries/day, performance, number of subscribers over time, etc.
 
     <li> Implement something like Roundup's nosy lists, maybe even integrate with Roundup.
@@ -538,16 +448,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -558,8 +465,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -567,8 +474,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -576,11 +481,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -591,9 +491,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -606,8 +503,7 @@ Title: The Mailman Wishlist
  by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
- authorization to modify the sub & superlists.  Majordomo2 is
- reported to have some good features in this regard.
+ authorization to modify the sub & superlists.
 
     <li> Add a limit on the number of posts from any one individual within a period of time (1 post per day, 10 per week, etc).
  Also, limits on mailbacks, infos, etc.
@@ -626,12 +522,7 @@ Title: The Mailman Wishlist
  relational database, ZODB, LDAP, etc)
 
     <li> Member profiles
-    <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
-    <li> More sophisticated attachment handling: strip and discard attachments, post attachments (e.g. via WebDAV) and rewrite to
- include URLs, etc.  Should be admin configurable based on MIME
- type.  Check out Bill Bumgarner's work on this.
-
     <li> Should be able to gather statistics, such as deliveries/day, performance, number of subscribers over time, etc.
 
     <li> Implement something like Roundup's nosy lists, maybe even integrate with Roundup.
@@ -641,22 +532,18 @@ Title: The Mailman Wishlist
     <li> Add more patterns for bounce handling (never ending)
     <li> Send mail to people who are being removed without their knowledge (even though they're likely not to get it).
 
-    <li> Delete bounce disabled address after some period of retry
 </ul>
 <h3> Pipermail + Archiving mechanism
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -667,8 +554,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -676,8 +563,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -685,11 +570,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -700,9 +580,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -715,8 +592,7 @@ Title: The Mailman Wishlist
  by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
- authorization to modify the sub & superlists.  Majordomo2 is
- reported to have some good features in this regard.
+ authorization to modify the sub & superlists.
 
     <li> Add a limit on the number of posts from any one individual within a period of time (1 post per day, 10 per week, etc).
  Also, limits on mailbacks, infos, etc.
@@ -735,12 +611,7 @@ Title: The Mailman Wishlist
  relational database, ZODB, LDAP, etc)
 
     <li> Member profiles
-    <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
-    <li> More sophisticated attachment handling: strip and discard attachments, post attachments (e.g. via WebDAV) and rewrite to
- include URLs, etc.  Should be admin configurable based on MIME
- type.  Check out Bill Bumgarner's work on this.
-
     <li> Should be able to gather statistics, such as deliveries/day, performance, number of subscribers over time, etc.
 
     <li> Implement something like Roundup's nosy lists, maybe even integrate with Roundup.
@@ -750,13 +621,10 @@ Title: The Mailman Wishlist
     <li> Add more patterns for bounce handling (never ending)
     <li> Send mail to people who are being removed without their knowledge (even though they're likely not to get it).
 
-    <li> Delete bounce disabled address after some period of retry
     <li> Search engine for archives
     <li> Provide downloadable tar.gz's of the html archives
     <li> sort by date should go most-recent to oldest
     <li> allow list owner to edit archive messages
-    <li> archive link should do *something* reasonable before the first message has been posted to the list.
-
     <li> optional form front-end to public interfaces as a filter to address harvesters.
 
     <li> In general the whole Pipermail subsystem needs a good rewrite.
@@ -765,16 +633,13 @@ Title: The Mailman Wishlist
 </h3>
 <ul>
     <li>  Here's the wish list for future versions of Mailman.  Many new
- features have been added to Mailman 2.1 (still in alpha as of this
- writing 21-Jan-2002), so what's left will probably end up in a
- Mailman 3.0.
+ features have been added to Mailman 2.1, so what's left will
+ probably end up in a Mailman 3.0.
  Please also see the Mailman design notes wiki at
  http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
-    <li> Re-implement bulk mailer the Right Way: an asynchat/asyncore server to do DNS lookups and remote MTA delivery directly
- (optional).
+    <li> Re-implement the bulk mailer to do DNS lookups and remote MTA delivery directly (optional).
 
-    <li> allow customizable notices on moderated member helds and discards
     <li> A detailed feature list
     <li> A user's guide
     <li> A site-admin's guide
@@ -785,8 +650,8 @@ Title: The Mailman Wishlist
     <li> Integrate Christopher Kolar's documentation
     <li> NO DEAD ENDS and every web page is reachable.
     <li> All web UI must be configurable so that it more easily integrates into an existing site's design.  Probably means using
- a template language/system like Zope's Presentation Templates,
- Quixote, or PHP.
+ a better template language/system like Zope's Presentation
+ Templates, Quixote, or PHP.
 
     <li> Default UI should add a navigation sidebar to all web pages.
     <li> Web pages should never mention disabled features.
@@ -794,8 +659,6 @@ Title: The Mailman Wishlist
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
-    <li> Ability to set defaults for the various user settings from the "Membership Management" page.
-
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -803,11 +666,6 @@ Title: The Mailman Wishlist
     <li> New moderation choice: annotate and send to author for resubmittal.
     <li> Better integration with moderated newsgroups (and allow some addresses to bypass even that moderation and be delivered to a
  secondary channel, like moderators@isc.org).
-
-    <li> Add an option to include Reply-To: header in the membership test for a members-only list posting
-
-    <li> Allow the user to be excluded from postings if they're getting them in the to: or cc: headers.  Be smarter about filtering out
- duplicate deliveries.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -818,9 +676,6 @@ Title: The Mailman Wishlist
     <li> More flexible digests: index digests (subject and authors only, with URLs to retrieve the article)
 
     <li> Timed vacations, allowing a user to postpone or discard email for a certain number of days or weeks.
-
-    <li> Mailing list invitations; i.e. a middle ground between "mass subscribe" and informally mailing a bunch of folks to tell them
- about the list.
 
     <li> Keep user-centric stats, such as the date the user was subscribed, the date of their last change to their account, the
  date they last sent a message through the list.  Perhaps also
@@ -833,8 +688,7 @@ Title: The Mailman Wishlist
  by addressing it to mailman@site.dom).
 
     <li> A better strategy is needed for sub-lists and super-lists, including dealing with the resulting password reminders and
- authorization to modify the sub & superlists.  Majordomo2 is
- reported to have some good features in this regard.
+ authorization to modify the sub & superlists.
 
     <li> Add a limit on the number of posts from any one individual within a period of time (1 post per day, 10 per week, etc).
  Also, limits on mailbacks, infos, etc.
@@ -853,12 +707,7 @@ Title: The Mailman Wishlist
  relational database, ZODB, LDAP, etc)
 
     <li> Member profiles
-    <li> Do a serious and thorough security audit (ongoing)
     <li> Allow lists of the same name in two different virtual domains
-    <li> More sophisticated attachment handling: strip and discard attachments, post attachments (e.g. via WebDAV) and rewrite to
- include URLs, etc.  Should be admin configurable based on MIME
- type.  Check out Bill Bumgarner's work on this.
-
     <li> Should be able to gather statistics, such as deliveries/day, performance, number of subscribers over time, etc.
 
     <li> Implement something like Roundup's nosy lists, maybe even integrate with Roundup.
@@ -868,16 +717,13 @@ Title: The Mailman Wishlist
     <li> Add more patterns for bounce handling (never ending)
     <li> Send mail to people who are being removed without their knowledge (even though they're likely not to get it).
 
-    <li> Delete bounce disabled address after some period of retry
     <li> Search engine for archives
     <li> Provide downloadable tar.gz's of the html archives
     <li> sort by date should go most-recent to oldest
     <li> allow list owner to edit archive messages
-    <li> archive link should do *something* reasonable before the first message has been posted to the list.
-
     <li> optional form front-end to public interfaces as a filter to address harvesters.
 
     <li> In general the whole Pipermail subsystem needs a good rewrite.
     <li> Turn all remaining string exceptions into class exceptions
-    <li> Unit and system test suite!
+    <li> Unit and system test suite! (ongoing)
 </ul>

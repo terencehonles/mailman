@@ -2,7 +2,11 @@ Title: Mailman in Use and in the News
 
 <h3>Mailman in Use and in the News</h3>
 
-Mailman was featured in a
+Mailman was featured as the Project of the Month in the
+<a href="http://www.linux-mag.com/2002-05/toc.html">May 2002 issue of
+Linux Magazine</a>.
+
+<p>Mailman was featured in a
 <a href="http://www.sunworld.com/swol-03-1999/swol-03-mailtools.html">
 cover story article</a> in the March 1999 issue
 of SunWorld.  The article was written by Cameron Laird and Kathryn
@@ -61,6 +65,9 @@ like to be included in this list, please
     Linux User Group mailing lists</a>
     <!-- Marc Merlin -->
     <li><a href="http://linuxia64.org/">IA-64 Linux Project</a>
+    <!-- Markus Grundmann -->
+    <li><a href="http://www.orsn.org/">ORSN, Open Root Server Network
+    in Europe</a>
     <!-- Jim Hebert -->
     <li><a href="http://www.cosource.com/">Cosource.com</a>
     <li><a href="http://www.vistasource.com/">VistaSource.com</a>
@@ -73,12 +80,8 @@ like to be included in this list, please
     <!-- Bill Hoffman -->
     <li><a href="http://public.kitware.com/">Visualization Tool Kit
     (VTK)</a>
-
-    <!-- J C Lawrence
-      -- <li><a href="https://www.kanga.nu/lists/listinfo/">Kanga.NU<a>
-      -- currently having h/w problems
-      -->
-
+    <!-- J C Lawrence -->
+    <li><a href="https://www.kanga.nu/lists/listinfo/">Kanga.NU<a>
     <!-- Michael Dunston -->
     <li><a href="http://www.music.vt.edu">Music and Technology
     Department, Virginia Tech School of the Arts</a>
@@ -361,5 +364,29 @@ like to be included in this list, please
     <!-- Erik J. Heels -->
     <a href="http://www.iserver.com">iServer</a> and
     <a href="http://www.lawlawlaw.com">www.lawlawlaw.com</a>
+    <!-- Peter Verhas -->
+    <a href="http://Scriptbasic.com">Scriptbasic.com</a>
+    <!-- webmaster@itxzone.com -->
+    <a href="http://www.itxzone.com/">ITXZONE: The Indian IT Zone</a>
+    <!-- renn@cy1000.com.tw>
+    <a href="http://csrfree.csrsr.ncu.edu.tw/mailman/listinfo/ncuce83/"
+    >National Central University, Dept. of Civil Engineering, the 83th</a>
+    <!-- Jerry Feldman -->
+    <a href="http://www.blu.org/">Boston Linux and Unix user group</a>
+    <!-- Leandro Rache Sanchez -->
+    <a href="http://www.hipertek.net/">Hipertek Ltda.</a>
+    <!-- Jan Kampherbeek -->
+    <a href="http://spiderpro.com/">SpiderPro</a>
+    <!-- Porfirio Trincheiras -->
+    <a href="http://www.fmh.utl.pt">Faculdade de Motricidade Humana</a>
+    <a href="http://www.fmv.utl.pt">Faculdade de Medicina Veterinária</a>
+    <!-- info@compamerica.com -->
+    <a href="http://www.american-computer.com">American Computer</a>
+    <!-- Bob Radvanovsky -->
+    <a href="http://www.unixworks.net">Unixworks</a>
+    <!-- Mats Brante -->
+    <a href="http://www.osthyvel.net">Osthyvel.net</a>
+    <!-- Nemeth Tamas -->
+    <a href="http://lists.sek.nyme.hu">University of West Hungary</a>
 
 </ul>

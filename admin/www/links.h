@@ -9,3 +9,6 @@
 <li><a href="faq.html">Frequently Asked Questions</a>
 <li><a href="inthenews.html">Mailman in Use</a>
 <li><a href="todo.html">Wishlist!</a>
+<h3>Exits</h3>
+<li><a href="http://listowners.org">Listowners.Org</a>
+<!-- add a link to listowners.org/faq -->

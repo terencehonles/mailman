@@ -5,7 +5,7 @@ Other-links:
 
 <h3>Mailman Features</h3>
 
-This is just a short summary of all the features of Mailman.
+This is just a short summary of all the features of Mailman 2.1.
 
 <ul>
 <li>Web based list administration for nearly all tasks, including list
@@ -22,7 +22,8 @@ This is just a short summary of all the features of Mailman.
     depending on the MTA).
 
 <li>Per-list privacy features, such as closed-subscriptions, private
-    archives, private membership rosters, etc.
+    archives, private membership rosters, and sender-based posting
+    rules.
 
 <li>Multi-lingual support: list web pages and email notices can be in
     any supported language, configurable per-site, per-list, and
@@ -39,7 +40,7 @@ This is just a short summary of all the features of Mailman.
     Automatic disposition of bouncing addresses (disable,
     unsubscribe).
 
-<li>Integrated spam filters.
+<li>Integrated spam filters and MIME-based content filters.
 
 <li>Automatic web-based Hypermail-style archiving, with hooks for
     external archivers such as
@@ -57,7 +58,7 @@ This is just a short summary of all the features of Mailman.
 
 <li>Runs on GNU/Linux and most Un*x-like systems, compatible with most
     web servers and browsers, and most SMTP servers.  Requires Python
-    2.0 or newer.
+    2.1 or newer.
 
 <li>An extensible mail delivery pipeline.
 

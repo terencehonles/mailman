@@ -6,19 +6,25 @@ We have several mailing lists devoted to Mailman, which also provide a
 nice demonstration of Mailman!
 
 <ul>
-<li><a href="http://www.python.org/mailman/listinfo/mailman-announce">
-    Mailman Announce</a> is a read-only list that you can subscribe to 
-    if you are only interested in release notices and other important
-    news.  Only the core Mailman developers can post messages to this
-    list.
-    (<a href="http://www.python.org/pipermail/mailman-announce/"><em>archives</em></a>)
-
 <p><li><a href="http://www.python.org/mailman/listinfo/mailman-users">
     Mailman Users</a> is the mailing list to subscribe to if you are
     using Mailman at your site, and may have problems or questions
     relating to installation, use, etc.  We'll try to keep the deep
     technical discussions off this list.
     (<a href="http://www.python.org/pipermail/mailman-users/"><em>archives</em></a>)
+
+<li><a href="http://listowner.org/">Listowners</a>
+    is a mailing list with a non-technical focus, specifically for
+    discussions from the perspective of listowners and moderators
+    who do not have "shell access" to the mailing list server
+    where the Mailman software runs.
+
+<li><a href="http://www.python.org/mailman/listinfo/mailman-announce">
+    Mailman Announce</a> is a read-only list that you can subscribe to 
+    if you are only interested in release notices and other important
+    news.  Only the core Mailman developers can post messages to this
+    list.
+    (<a href="http://www.python.org/pipermail/mailman-announce/"><em>archives</em></a>)
 
 <p><li><a href="http://www.python.org/mailman/listinfo/mailman-developers">
     Mailman Developers</a> is the mailing list to use if you are
