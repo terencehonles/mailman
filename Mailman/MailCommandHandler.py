@@ -181,7 +181,12 @@ Subject: %s''', self.internal_name(), msg['from'], subject)
             if mo:
                 subject = mo.group('cmd')
 
-        lines = email.Iterators.body_line_iterator(msg)[:]
+        # We must have a real list because of the way we insert an element and
+        # iterate over it.  In email 0.x (pre-Python 2.2) body_line_iterator()
+        # returns a real list, but in email 1.x (Python 2.2), it returns a
+        # generator.  This is the only way to coerce it to a concrete list
+        # object in both cases.
+        lines = list(email.Iterators.body_line_iterator(msg))
 
         # Find out if the subject line has a command on it
         subjcmd = []
