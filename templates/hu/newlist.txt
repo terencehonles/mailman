@@ -5,7 +5,7 @@ A levelezési lista jelszava a következõ:
 
     %(password)s
 
-A megadott jelszóval lehet a lista beállításait megváltoztatni. Ezen
+A megadott jelszóval lehet a lista beállításait megváltoztatni. Ezen-
 felül ezzel a jelszóval lehet néhány adminisztrátori tevékenységet is
 elvégezni, mint például moderált listán a levelek szûrését végrehajtani.
 

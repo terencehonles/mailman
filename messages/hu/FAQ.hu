@@ -252,10 +252,16 @@ V. Ha a Mailmant SSL-re képes web kiszolgálóra telepítettük (pl.
      arra melyet a felhasználó kezdeményezett.
 
    * Hozzáférés a felhasználó termináljához: Ez is egy süti lopó
-     módszer, ezt azonban a sütik rövid élettartama nehezíti meg.
+     módszer. Azonban ezt a sütik rövid élettartama nehezíti meg.
      Fogjuk fel annak, hogy a kényelemért meg kell elégednünk a 
      csökkentett biztonságért, különben minden pillanatban gépelhetjük
      be a jelszavunkat.
+
+K. A listámról biztonsági másolatot (backup) akarok készíteni. Miket
+   kell lementenem?
+
+A. A válasz a FAQ wizard-ban a következõ címen található:
+   http://www.python.org/cgi-bin/faqw-mm.py?req=show&file=faq04.006.htp
 
 K. Hogyan tudom a listát átnevezni?
 
@@ -289,11 +295,11 @@ V. A listák átnevezése jelenleg még elég bonyolult mûvelet, fõleg ha
      listára teszi át. Amíg a lista átnevezésével nem végeztünk addig ez
      az átirányítás sem fog mûködni.
 
-     Tegyük fel, hogy "oldname" listát kell átnevezzük "newname" listává.
+     Tegyük fel, hogy az "elavult" listát kell átnevezzük "hasznos" listává.
      Ekkor a következõ Apache parancsokat kell használnunk:
 
-     RedirectMatch permanent /mailman/(.*)/oldname(.*) http://www.dom.ain/mailman/$1/newname$2
-     RedirectMatch permanent /pipermail/oldname(.*)    http://www.dom.ain/pipermail/newname$1
+     RedirectMatch permanent /mailman/(.*)/elavult(.*) http://www.dom.ain/mailman/$1/hasznos$2
+     RedirectMatch permanent /pipermail/elavult(.*)    http://www.dom.ain/pipermail/hasznos$1
 
      Ezeket a sorokat a httpd.conf állományba kell elhelyezni, majd 
      indítsuk újra az Apache-ot.
@@ -307,52 +313,52 @@ V. A listák átnevezése jelenleg még elég bonyolult mûvelet, fõleg ha
 
      % cd lists
 
-     Itt találunk egy 'oldname' könyvtárat. Nevezzük át 'newname'-é:
+     Itt találunk egy 'elavult' könyvtárat. Nevezzük át 'hasznos'-sá:
 
-     % mv oldname newname
-
+     % mv elavult hasznos
+     
    - Most menjünk a privát archívum könyvtárába:
 
      % cd ../archives/private
 
-     Az oldname.mbox könyvtárát és a benne található állományokat kell
+     Az elavult.mbox könyvtárát és a benne található állományokat kell
      átneveznünk. Most még ne törõdjünk a nyilvános archívum idemutató
      hivatkozásaival, késõbb azokról is gondoskodunk:
 
-     % mv oldname.mbox newname.mbox
-     % mv newname.mbox/oldname.mbox newname.mbox/newname.mbox
+     % mv elavult.mbox hasznos.mbox
+     % mv hasznos.mbox/elavult.mbox hasznos.mbox/hasznos.mbox
 
    - Most már futtathatjuk a 'bin/move_list' programot az archívum elérési
      útjainak frissítéséhez. FONTOS: ha Mailman 2.1-et használunk, akkor
      hagyjuk ki ezt a lépést!
 
      % cd ../..
-     % bin/move_list newname
+     % bin/move_list hasznos
 
    - Hozzuk újra létre a nyilvános archívumot:
 
-     % bin/arch newname
+     % bin/arch hasznos
 
    - Ezek után néhány lista beállítást is meg kell változtatni, hogyha
      szeretnénk a régi listára küldött leveleket az új listán látni. Menjünk
      az új lista adminisztrációs oldalára:
 
-     o General options beállítások
+     o Általános beállítások rész
 
-     o A "real_name" résznél adjuk meg a lista új nevét, pl. "Newname"
+     o A "real_name" résznél adjuk meg a lista új nevét, pl. "Hasznos"
 
      o Adjuk meg a levél tárgysorába beszúrandó részt (prefix),
-       pl. "[Newname] " (igen, fontos a szóköz a végén).
+       pl. "[Hasznos] " (igen, fontos a szóköz a végén).
 
      o Ha szükséges változtassuk meg más beállításokat is, mint például
        a lista rövid leírása, üdvözlõ szövege, stb.
 
      o Mentsük el a változtatásokat.
 
-     o Privacy options rész
+     o Privát beállítások rész
 
      o Adjuk az acceptable_aliases részhez a régi lista címét. 
-       Pl. "oldname@dom.ain" Ezzel (ha a késõbb leírt /etc/aliases 
+       Pl. "elavult@dom.ain" Ezzel (ha a késõbb leírt /etc/aliases 
        módosítást is elvégezzük) a régi listára küldött levelek nem
        fognak szerkesztõi jóváhagyásra várni "implicit destination"
        hibával.
@@ -368,22 +374,22 @@ V. A listák átnevezése jelenleg még elég bonyolult mûvelet, fõleg ha
 
      o Jelöljük ki és másoljuk át közvetlenül a régi alá ezeket a sorokat.
 
-     o Az átmásolt részben minden "oldname" részt írjuk át "newname"-é.
+     o Az átmásolt részben minden "elavult" részt írjuk át "hasznos"-sá.
 
      o Most változtassuk meg a régi listához tartozó címeket, hogy azok
        az új lista megfelelõ címeire mutassanak. Ha mindezt jól csináltuk,
        akkor a következõhöz hasonlót kell kapnunk:
 
        # A régi listát átirányítottuk az új címére
-       oldname:         newname@dom.ain
-       oldname-request: newname-request@dom.ain
-       oldname-admin:   newname-admin@dom.ain
-       oldname-owner:   newname-owner@dom.ain
+       elavult:         hasznos@dom.ain
+       elavult-request: hasznos-request@dom.ain
+       elavult-admin:   hasznos-admin@dom.ain
+       elavult-owner:   hasznos-owner@dom.ain
 
-       newname:         "|/usr/local/mailman/mail/wrapper post newname"
-       newname-admin:   "|/usr/local/mailman/mail/wrapper mailowner newname"
-       newname-request: "|/usr/local/mailman/mail/wrapper mailcmd newname"
-       newname-owner:   newname-admin
+       hasznos:         "|/usr/local/mailman/mail/mailman post hasznos"
+       hasznos-admin:   "|/usr/local/mailman/mail/mailman mailowner hasznos"
+       hasznos-request: "|/usr/local/mailman/mail/mailman mailcmd hasznos"
+       hasznos-owner:   hasznos-admin
 
      o Futassuk a 'newaliases' programot.
 
@@ -392,7 +398,7 @@ V. A listák átnevezése jelenleg még elég bonyolult mûvelet, fõleg ha
      Ezt a következõképen tehetjük meg:
 
      % cd /usr/local/mailman/qfiles
-     % grep oldaname *.msg
+     % grep elavult *.msg
 
      Ha nincs találat, akkor ugorhatunk a következõ lépésre, egy gonddal
      kevesebb.
@@ -421,7 +427,7 @@ V. A listák átnevezése jelenleg még elég bonyolult mûvelet, fõleg ha
      Adjuk ki azokon az állományokon a következõ parancsot, amelyekre
      a grep találatot jelzett.
 
-     % python hackdb.py nagyonhosszuhexafilenev1.db newname
+     % python hackdb.py nagyonhosszuhexafilenev1.db hasznos
 
    - Ezek után indítsuk el az MTA-t.
 

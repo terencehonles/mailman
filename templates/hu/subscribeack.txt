@@ -1,6 +1,5 @@
 Üdvözlünk a(z) %(real_name)s@%(host_name)s levelezési listán!
 %(welcome)s
-
 A listára az alábbi címre küldhetsz levelet:
 
   %(emailaddr)s

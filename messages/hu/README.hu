@@ -19,8 +19,8 @@ BEVEZETÉS
     fejlesztését Barry Warsaw vezeti; a fejlesztésben résztvevõk egy részének
     névsorát az ACKNOWLEDGMENTS állományban lehet olvasni. A Mailman 2.0-ban
     található Pipermail kódjának fejlesztésében nagy része volt Jeremy 
-    Hlyton-nak.
-
+    Hylton-nak.
+    
     A Mailman honlapja
 
         http://www.gnu.org/software/mailman
@@ -35,12 +35,10 @@ BEVEZETÉS
 
         http://www.python.org
 
-    A GPL licenszben foglaltakhoz célszerû Python 2.0.1-et, vagy 
-    2.1.1-et használni.A Python 2.2 szintén GPL kompatibilis lesz, 
-    de az ezen idõpontban (2001. október 21.) még nem jelent meg.
-    A Mailman az összes Python 2.x verzióval együtt tud mûködni,
-    azonban Python 2.2-es verziójával még csak felületesen lett
-    tesztelve.
+    A GPL licenszben foglaltakhoz célszerû Python 2.0.1-et, Python 2.1.1-et,
+    vagy Python 2.2-t használni. A Mailman az összes Python 2.x verzióval
+    együtt tud mûködni, azonban a tesztelés fõleg a Python 2.1 és 2.2-es
+    verziójával történt.
 
     Szükség van továbbá egy ANSI C fordítóra; gcc (a GNU C fordítója)
     megfelel a célnak. A Mailman jelenleg GNU/Linux és más Unix-típusú
@@ -58,7 +56,7 @@ TULAJDONSÁGOK
     A NEWS állományban a 0.9-es verziótól fogva követhetõk nyomon a 
     változások. A TODO állományban a kívánság lista található (azon
     újabb tulajdonságok, változtatások, amelyeket a felhasználók szívesen
-    használnának). A következõ címen látható a Mailman mûködés közben: 
+    használnának). A következõ címen látható mûködés közben a Mailman: 
 
 
         http://www.python.org/mailman/listinfo
@@ -71,7 +69,7 @@ TULAJDONSÁGOK
       feliratkozás és felhasználói beállítási lehetõség. Minden listához
       külön megváltoztatható információs oldal.
 
-    - Biztonsági beállítások, mind szerkesztés, nyitott és zártkörû listák,
+    - Biztonsági beállítások, mint moderálás, nyitott és zártkörû listák,
       feliratkozási korlátozások és privát tagnévsor.
 
     - Beépített automatikus web alapú levél archiválás mind nyilvános, mind
@@ -86,7 +84,7 @@ TULAJDONSÁGOK
 
     - Majordomo-stílusú e-mail parancsok.
 
-    - Beépített visszapattanás kezelés.
+    - Beépített és bõvíthetõ visszapattanás kezelés.
 
     - Beépített spamkezelés.
 
@@ -131,25 +129,31 @@ ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA
     - Elõször váltsunk abba a könyvtárba, ahova a Mailman telepítve lett
       (alapesetben ez az /usr/local/mailman), majd állítsuk be a rendszer 
       adminisztrátori jelszót az alábbi paranccsal 
+
       (Megjegyzés: a kijelzett üzenetek eltérhetnek, ha a Mailman 
-      alapértelmezett nyelve eltér az angoltól):
+      alapértelmezett nyelve eltér a magyartól. A magyar nyelvi támogatás
+      beállításához parancssori programok esetén a LANG környezeti változót
+      kell 'hu'-ra  állítani (pl. bash esetén ez az export LANG=hu paranccsal
+      tehetõ meg). A webfelület a $MAILMAN_HOME/Mailman/mm_cfg.py állományba
+      elhelyezett DEFAULT_SERVER_LANGUAGE=hu sorral mindenhol magyarul fog
+      megjelenni.)
 
       % bin/mmsitepass
-      New site password: [sajátjelszó]
-      Again to confirm password: [sajátjelszó]
-      Password changed.
+      új webhely jelszó: [sajátjelszó]
+      Ismételd meg a jelszót: [sajátjelszó]
+      Jelszó megváltoztatva.
 
     - Látogassunk el a következõ címre:
 
         http://sajatgep.vhol/mailman/create
 
       Töltsük ki az oldalon található ûrlapot az ott található magyarázatok
-      segítségével, a "List creator's password" mezõbe a fent beállított
-      jelszót adjuk meg. "Initial list owner address" mezõbe írjuk be a 
-      saját e-mail címünket, majd válasszuk ki a lista adminisztrátorának
+      segítségével. A "Listalétrehozó jelszó" mezõbe a fent beállított
+      jelszót adjuk meg. "A lista elsõ gazdájának e-mail címe" mezõbe írjuk
+      be a saját e-mail címünket, majd válasszuk ki a lista tulajdonosának
       értesítését.
 
-    - Kattintsunk a "Create List" gombra.
+    - Kattintsunk a "Lista létrehozása" gombra.
 
     - A postafiókunkban hamarosan találunk egy értesítést a Mailmantól az új
       levelezõlista sikeres létrehozásáról.
@@ -164,13 +168,13 @@ ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA
     - Ezek után látogassunk el a lista adminisztrációs oldalára (ide vagy a
       fõoldalról elindulva vagy a Mailmantól kapott levélben megadott cím
       alapján juthatunk el). Adjuk meg a listához használt jelszavunkat és 
-      kattintsunk a "Let me in..." gombra.
+      kattintsunk a "Belépés..." gombra.
 
-    - Kattintsunk a "Membership Management" majd a "Mass Subscription" 
+    - Kattintsunk a "Listatagok kezelése" majd a "Több tag felvétele" 
       hivatkozásra.
 
     - Adjuk meg a saját e-mail címünket a nagy üres szövegmezõben, majd
-      kattintsunk a "Submit Your Changes" gombra.
+      kattintsunk a "Változtatások mentése" gombra.
 
     - Ezek után a listank@sajatgep.vhol címre küldjünk egy próba levelet.
       A Mailman a levelünket perceken belül továbbítani fogja címünkre. 
@@ -178,6 +182,7 @@ ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA
     Gratulálunk! Sikeresen létrehoztuk és teszteltük elsõ saját levelezõ-
     listánkat. Probléma esetén olvassuk el az alább található EGYÉB 
     INFORMÁCIÓK részt.
+
 
 EGYÉB INFORMÁCIÓK
 
@@ -234,13 +239,14 @@ EGYÉB INFORMÁCIÓK
     A SourceForge-on keresztül célszerû a különbözõ hibákat bejelenteni
     (bugs report) és hibajavításokat közzétenni.
 
+
 KÖSZÖNETNYILVÁNÍTÁS
 
     Szeretném megköszönni a segítségüket Funk Gábornak, Fintha Attilának 
     és Komáromi Tamásnak, akik remek tanácsaikkal és észrevételeikkel
     segítették a fordítás elkészültét.
 
-    Magyar fordítás Vizi Szilárd.
+    Magyar fordítás Vizi Szilárd és csapata.
 
 
 Local Variables:

@@ -15,6 +15,7 @@ FRISSÍTÉS: A frissítés legtöbbször nem jelent mást, mint a régi
 verzióra egy új verzió másolását. Azonban frissítés elõtt ajánljuk el-
 olvasásra az UPGRADING  állományban található fontos információkat.
 
+
 0. Telepítési igények
 
     A Python feldolgozó nyelvnek telepítve kell lennie a rendszeren. 
@@ -34,12 +35,12 @@ olvasásra az UPGRADING  állományban található fontos információkat.
         http://www.gnu.org
 
     Mailman 2.1 mûködéséhez szükség van az "email" csomagra, amely a 
-    Python 2.2 része. Ha régebbi verziójú Pythont használ, akkor 
+    Python 2.2 része. Ha régebbi verziójú Pythont használunk, akkor 
     telepítenünk kell ezt a különálló csomagot a következõ módon:
 
     % cd misc
-    % tar zxf email-0.93.tar.gz
-    % cd email-0.93
+    % tar zxf email-0.96.tar.gz
+    % cd email-0.96
     % python setup.py install
 
     Az email programcsomag sikeres telepítését a következõképpen
@@ -56,6 +57,14 @@ olvasásra az UPGRADING  állományban található fontos információkat.
     (Megjegyzés: a megjelenõ verziószám Python 2.2 esetén "1.0" lesz; 
     bármelyik verzió megfelelõ.)
 
+    Ha találunk a levélszerverünkhöz (MTA) README.<MTAnk> állományt,
+    akkor olvassuk el azt. Néhány MTA jobban együtt tud mûködni a
+    Mailmannal, ezeknél webfelületrõl automatikusan tudunk listákat
+    létrehozni vagy megszüntetni. Ilyen levélszerver az Exim vagy a
+    Postfix. A levélszerverhez szükséges beállításokról a megfelelõ
+    README állományokban lehet olvasni.
+
+
 1. A rendszer beállítása
 
     A következõ lépésekhez root jogokkal kell rendelkeznünk.
@@ -66,7 +75,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
     - Hozzunk létre egy új felhasználót `mailman' névvel. Ez legtöbbször
       az /etc/passwd állományba kerül bejegyzésre. Ha a `mailman'
       felhasználónév már foglalt, akkor bármilyen más egyedi nevet
-      választhatunk, ekkor olvassuk el a --with-ownername kapcsolónál
+      választhatunk, ekkor olvassuk el a --with-username kapcsolónál
       található megjegyzést.
      
     - Hozzunk létre egy `mailman' nevû csoportot. Ez legtöbbször az
@@ -75,7 +84,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       bit jogokkal. Ezzel mind a webes és levelezõprogramok együtt 
       tudnak mûködni. Ha a `mailman' csoportnév már foglalt, akkor 
       bármilyen más egyedi nevet megadhatunk. Ekkor olvassuk el alább
-      a --with-ownergroup kapcsolónál található megjegyzést.
+      a --with-groupname kapcsolónál található megjegyzést.
 
     - Hozzunk létre egy könyvtárat, ahová a programot telepíteni fogjuk
       (ezt a továbbiakban $prefix-nek nevezzük). A Mailman összes
@@ -100,7 +109,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       programok futása.
       
       Gyõzõdjünk meg arról hogy a telepítés könyvtára a `mailman'
-      (vagy a --with-ownergroup-nál megadott) csoport tulajdonában
+      (vagy a --with-groupname-nél megadott) csoport tulajdonában
       van és rendelkezik a setgid bit-tel (BSD rendszergazdák olvassák
       el a README.BSD állományt bõvebb információért). A könyvtárat
       ezenfelül mindenki számára elérhetõvé és futtathatóvá kell
@@ -112,6 +121,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 
       Ezek után lehet a Mailmant telepítésre felkészíteni, majd
       telepíteni.
+
 
 2. configure futtatása
 
@@ -195,6 +205,9 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 	    (Ha nincs megadva, csak megjegyzésként feltüntetve 
 	    /commented out/, akkor is valószínû a jó értéket mutatja...)
 
+	    Ez itt megadandó értékhez olvassuk el a saját MTAnk 
+	    dokumentációjaát vagy konfigurációs állományát.
+
       --with-cgi-gid=<csoport-vagy-csoportok>
 	    Egyéni csoportot lehet megadni a szkriptek futtatásához
 	    a CGI wrappernél. <csoport-vagy-csoportok>-nak több
@@ -251,19 +264,12 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 
     - Majd ismételgessük az elõzõ lépéseket, amíg a hiba meg nem szûnik!
 
+
 4. Végsõ beállítások
 
     Gratulálunk! Sikeresen telepítettük a Mailman programot. A mûködéséhez
     már csak a web részt és levelezõrészt kell a Mailmannal egybehangolni. 
 
-    - Ha található README.<MTA> állomány, ahol az MTA a levelezõ 
-      szerverünk (MTA) neve, akkor olvassuk el azt. Egyes MTA-k sokkal jobban
-      együtt tudnak mûködni a Mailman-nal, mint mások, így akár weben
-      keresztül lehet levelezõlistákat létrehozni vagy megszüntetni.
-      Ilyenek pl. az Exim vagy a Postfix. Az egyes MTA-khoz kapcsolódó
-      különleges telepítési beállításokról ezekben a README állományokban
-      lehet olvasni.
-      
     - Ha a levelezõrendszert és web kiszolgálót eltérõ gépeken szeretnénk
       futtatni, a Mailman programot NFS-en megosztani, akkor fontos,
       hogy a gépek rendszerórája egymással szinkronban legyen. A 
@@ -336,7 +342,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
           % cd $prefix/cron
           % crontab -u mailman crontab.in
 
-      Ha használtuk a --with-ownername kapcsolót, akkor a mailman 
+      Ha használtuk a --with-username kapcsolót, akkor a mailman 
       helyett az ott megadott értéket használjuk az -u kapcsolónál.
       Ha crontab nem támogatja az -u kapcsolót, akkor használjuk a
       következõ parancsokat:
@@ -382,16 +388,22 @@ olvasásra az UPGRADING  állományban található fontos információkat.
           % cd ../rc6.d
           % ln -s ../init.d/mailman K12mailman
       
-    - Hozzuk létre a "központi" levelezõlistát. A jelszó emlékeztetõk
-      ennek a listának a címérõl fognak érkezni. A lista neve általában
-      "mailman", de igény szerint változtatható a MAILMAN_SITE_LIST
-      változó segítségével, amelyet az mm_cfg.py (lásd késõbb) állományban
-      kell megadni.
+   - Ellenõrízzük, hogy a Defaults.py állományban a DEFAULT_EMAIL_HOST
+     és DEFAULT_URL_HOST változók helyes értéket mutatnak. Ha nem, 
+     akkor a helyes értékkel ezeket a változókat az mm_cfg.py állományba
+     helyezzük el.
 
-      % bin/newlist mailman
+   - Hozzuk létre a "központi" levelezõlistát. A jelszó emlékeztetõk
+     ennek a listának a címérõl fognak érkezni. A lista neve általában
+     "mailman", de igény szerint változtatható a MAILMAN_SITE_LIST
+     változó segítségével, amelyet az mm_cfg.py (lásd késõbb) állományban
+     kell megadni.
 
-   - Ezek után már fel tudunk iratkozni a mailman levelezõlistára.   
-      
+     % bin/newlist mailman
+
+   - Ezek után iratkozzunk fel erre a mailman levelezõlistára.   
+    
+    
 5. Mailman finomhangolása
 
     A következõ beállításokat a 2-es fejezetben tárgyalt felhasználóként
@@ -400,11 +412,11 @@ olvasásra az UPGRADING  állományban található fontos információkat.
     - A $prefix/Mailman/Defaults.py számos beállítást tartalmaz. Ha 
       ezek valamelyikét meg akarjuk változtatni, akkor azt a 
       $prefix/Mailman/mm_cfg.py állományban kell megadni és SOHA SEM
-      a Default.py állományban. A Defaults.py-ben minderrõl bõvebben
-      lehet olvasni. A listák létrehozása után ezen beállítások meg-
-      változtatása nem okoz változást. A listákat az adminisztrációs
-      oldalon keresztül, vagy parancssorban a bin/config_list parancs
-      segítségével lehet beállítani.
+      a Defaults.py állományban. A Defaults.py-ben minderrõl bõvebben
+      lehet olvasni. A listák létrehozása után, ha ezeket a beállításokat
+      megváltoztatjuk, akkor többnyire nem okoznak változást. A listákat
+      az adminisztrációs oldalon keresztül, vagy parancssorban a 
+      bin/config_list parancs segítségével lehet beállítani.
 
       Ellenõrizzük le, hogy a DEFAULT_HOST_NAME és DEFAULT_URL
       helyesen van-e kitöltve. Az utóbbinak perjellel KELL végzõdnie.
@@ -439,10 +451,12 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       listákat létrehozni és törölni web-felületrõl). A jelszó 
       beállításához a "mmsitepass"-t a -c kapcsolóval kell futtatni.
 
+
 6. Munka megkezdése
 
-    Lásd a README.hu "ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA" szakaszt egy 
-    próba levelezõlista létrehozásához.
+    Lásd a README.hu állomány "ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA" 
+    szakaszát egy próba levelezõlista létrehozásához.
+
 
 7. Problémák
   
@@ -536,13 +550,16 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 
               % ./configure --with-mail-gid=joGID
 
+	      Olvassuk el a README.POSTFIX.hu állományt a Postfix és
+	      Mailman összekapcsolásához.
+
 
     Hiba:     A listára küldött levelem visszajön a következõ üzenettel:
               "sh: wrapper not available for sendmail programs"
 
     Megoldás: A rendszer sendmail korlátozott shell-t használ (smrsh). Be
               kell állítani az smrsh-t úgy, hogy egy szimbolikus hivatkozást
-              hozunk létre a mail wrapperrõl (%prefix/mail/wrapper) abba
+              hozunk létre a mail wrapperrõl (%prefix/mail/mailman) abba
               a könyvtárba, amelyben az engedélyezett smrsh-k futhatnak.
 
               Ezt a könyvtárat általában a /var/admin/sm.bin, 
@@ -557,7 +574,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
               törölni a felesleges fájlokat újratelepítéshez?
 
     Megoldás: % make clean
-              % ./configure --with-a-jó-kapcsolók
+              % ./configure --with-jó-kapcsolók
               % make install
 
 
