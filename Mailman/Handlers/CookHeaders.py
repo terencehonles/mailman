@@ -127,7 +127,8 @@ def process(mlist, msg, msgdata):
         # because some folks think that some MUAs make it easier to delete
         # addresses from the right than from the left.
         if mlist.reply_goes_to_list == 1:
-            add((mlist.description, mlist.GetListEmail()))
+            i18ndesc = uheader(mlist, mlist.description)
+            add((str(i18ndesc), mlist.GetListEmail()))
         del msg['reply-to']
         # Don't put Reply-To: back if there's nothing to add!
         if new:
@@ -149,7 +150,8 @@ def process(mlist, msg, msgdata):
             d = {}
             for pair in getaddresses(msg.get_all('cc', [])):
                 add(pair)
-            add((mlist.description, mlist.GetListEmail()))
+            i18ndesc = uheader(mlist, mlist.description)
+            add((str(i18ndesc), mlist.GetListEmail()))
             del msg['Cc']
             msg['Cc'] = COMMASPACE.join([formataddr(pair) for pair in new])
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
