@@ -36,12 +36,10 @@ PYTHON=  	@PYTHON@
 DEFS=   	@DEFS@
 
 # UIDs and GIDs
-MAIL_UID=      	@MAIL_UID@
 MAIL_GID=      	@MAIL_GID@
-ALIAS_UID=	@ALIAS_UID@
-ALIAS_GID=	@ALIAS_GID@
-CGI_UID=	@CGI_UID@
 CGI_GID=	@CGI_GID@
+#ALIAS_UID=	@ALIAS_UID@
+#ALIAS_GID=	@ALIAS_GID@
 
 # Customizable but not set by configure
 
@@ -52,14 +50,12 @@ MAILDIR=	$(exec_prefix)/mail
 
 SHELL=		/bin/sh
 
+MAIL_FLAGS=	-DMAIL_GID=$(MAIL_GID)
+
+CGI_FLAGS=	-DCGI_GID=$(CGI_GID)
+
 #ALIAS_FLAGS=	-DALIAS_UID=$(ALIAS_UID) \
 #		-DALIAS_GID=$(ALIAS_GID)
-
-MAIL_FLAGS=	-DMAIL_UID=$(MAIL_UID) \
-		-DMAIL_GID=$(MAIL_GID)
-
-CGI_FLAGS=	-DCGI_UID=$(CGI_UID) \
-		-DCGI_GID=$(CGI_GID)
 
 COMMON_FLAGS=	-DPREFIX="\"$(prefix)\"" \
 		-DPYTHON="\"$(PYTHON)\""
@@ -97,7 +93,7 @@ wrapper: $(srcdir)/mail-wrapper.c common.o
 $(CGI_PROGS): $(srcdir)/cgi-wrapper.c common.o
 	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) common.o -o $@ $<
 
-common.o: $(srcdir)/common.c
+common.o: $(srcdir)/common.c $(srcdir)/common.h
 	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $<
 
 install: all
