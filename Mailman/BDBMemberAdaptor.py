@@ -387,17 +387,16 @@ class BDBMemberAdaptor(MemberAdaptor.MemberAdaptor):
 
     # The readable interface
 
-    def memberCount(self):
-        return len(self._members)
-
+    # BAW: It would be more efficient to simply return the iterator, but
+    # modules like admin.py can't handle that yet.  They requires lists.
     def getMembers(self):
-        return _AllMembersIterator(self._members)
+        return list(_AllMembersIterator(self._members))
 
     def getRegularMemberKeys(self):
-        return _DeliveryMemberIterator(self._members, REGFLAG)
+        return list(_DeliveryMemberIterator(self._members, REGFLAG))
 
     def getDigestMemberKeys(self):
-        return _DeliveryMemberIterator(self._members, DIGFLAG)
+        return list(_DeliveryMemberIterator(self._members, DIGFLAG))
 
     def __assertIsMember(self, member):
         if not self.isMember(member):
