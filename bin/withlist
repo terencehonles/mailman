@@ -63,6 +63,10 @@ Options:
 
         The global variable `r' will be set to the results of this call.
 
+    --quiet
+    -q
+        Suppress all status messages.
+
     --help
     -h
         Print this message and exit
@@ -121,6 +125,7 @@ from Mailman.i18n import _
 
 m = None
 r = None
+VERBOSE = 1
 
 
 
@@ -141,10 +146,13 @@ def atexit():
     if not m:
         return
     if m.Locked():
-        print >> sys.stderr, _('Unlocking (but not saving) list:'), \
-              m.internal_name()
+        if VERBOSE:
+            listname = m.internal_name()
+            print >> sys.stderr, _(
+                'Unlocking (but not saving) list: %(listname)s')
         m.Unlock()
-    print >> sys.stderr, _('Finalizing')
+    if VERBOSE:
+        print >> sys.stderr, _('Finalizing')
     del m
 
 
@@ -152,9 +160,10 @@ def atexit():
 def main():
     global m
     global r
+    global VERBOSE
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hlr:',
-                                   ['help', 'lock', 'run='])
+        opts, args = getopt.getopt(sys.argv[1:], 'hlr:q',
+                                   ['help', 'lock', 'run=', 'quiet'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -167,6 +176,8 @@ def main():
             lock = 1
         elif opt in ('-r', '--run'):
             run = arg
+        elif opt in ('-q', '--quiet'):
+            VERBOSE = 0
 
     if len(args) < 1:
         usage(1, _('No list name supplied.'))
@@ -174,11 +185,12 @@ def main():
     listname = args.pop(0).lower().strip()
 
     # first try to open mailing list
-    print >> sys.stderr, _('Loading list %(listname)s'),
-    if lock:
-        print >> sys.stderr, _('(locked)')
-    else:
-        print >> sys.stderr, _('(unlocked)')
+    if VERBOSE:
+        print >> sys.stderr, _('Loading list %(listname)s'),
+        if lock:
+            print >> sys.stderr, _('(locked)')
+        else:
+            print >> sys.stderr, _('(unlocked)')
 
     m = MailList.MailList(listname, lock=lock)
 
@@ -191,9 +203,11 @@ def main():
         else:
             module = run[:i]
             callable = run[i+1:]
-        print >> sys.stderr, _('Importing %(module)s...')
+        if VERBOSE:
+            print >> sys.stderr, _('Importing %(module)s...')
         mod = __import__(module)
-        print >> sys.stderr, _('Running %(module)s.%(callable)s()...')
+        if VERBOSE:
+            print >> sys.stderr, _('Running %(module)s.%(callable)s()...')
         r = getattr(mod, callable)(m, *args)
 
 
