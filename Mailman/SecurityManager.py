@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -111,12 +111,17 @@ class SecurityManager:
             key += 'admin'
         # BAW: AuthCreator
         elif authcontext == mm_cfg.AuthSiteAdmin:
-            # BAW: this should probably hand out a site password based cookie,
-            # but that makes me a bit nervous, so just treat site admin as a
-            # list admin since there is currently no site admin-only
-            # functionality.
-            secret = self.password
-            key += 'admin'
+            sitepass = Utils.get_global_password()
+            if mm_cfg.ALLOW_SITE_ADMIN_COOKIES and sitepass:
+                secret = sitepass
+                key = 'site'
+            else:
+                # BAW: this should probably hand out a site password based
+                # cookie, but that makes me a bit nervous, so just treat site
+                # admin as a list admin since there is currently no site
+                # admin-only functionality.
+                secret = self.password
+                key += 'admin'
         else:
             return None, None
         return key, secret
