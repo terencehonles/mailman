@@ -493,14 +493,21 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             loadfunc = cPickle.load
         else:
             assert 0, 'Bad database file name'
-        mtime = os.path.getmtime(dbfile)
-        if mtime <= self.__timestamp:
-            # File is not newer
-            return None, None
         try:
+            # Check the mod time of the file first.  If it matches our
+            # timestamp, then the state hasn't change since the last time we
+            # loaded it.  Otherwise open the file for loading, below.  If the
+            # file doesn't exist, we'll get an EnvironmentError with errno set
+            # to ENOENT (EnvironmentError is the base class of IOError and
+            # OSError).
+            mtime = os.path.getmtime(dbfile)
+            if mtime <= self.__timestamp:
+                # File is not newer
+                return None, None
             fp = open(dbfile)
-        except IOError, e:
+        except EnvironmentError, e:
             if e.errno <> errno.ENOENT: raise
+            # The file doesn't exist yet
             return None, e
         try:
             try:
