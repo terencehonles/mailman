@@ -239,7 +239,11 @@ class Article(pipermail.Article):
 	    date, tzoffset=date[:9], date[-1] 
             if not tzoffset:
                 tzoffset = 0
-	    date=time.mktime(date)-tzoffset
+            try:
+                date=time.mktime(date)-tzoffset
+            except ValueError:
+                # bogus year most likely
+                date=time.gmtime(time.time())
 	else:
 	    date=self.__last_article_time+1 
 	    
