@@ -39,6 +39,7 @@ Where:
 import os
 import sys
 import getopt
+import shutil
 
 import paths
 from Mailman import mm_cfg
@@ -66,7 +67,7 @@ def remove_it(listname, dir, msg):
         os.unlink(dir)
     elif os.path.isdir(dir):
         print _('Removing %(msg)s')
-        Utils.rmdirhier(dir)
+        shutil.rmtree(dir)
     else:
         print _('%(listname)s %(msg)s not found as %(dir)s')
 
