@@ -139,7 +139,7 @@ def prepare_message(mlist, msg, msgdata):
     #
     # This relies on the fact that the legal values are usually not parseable
     # as addresses.  Yes this is another bogosity.
-    cteheaders = getaddresses(msg.getall('content-transfer-encoding'))
+    cteheaders = getaddresses(msg.get_all('content-transfer-encoding'))
     if cteheaders:
         ctetuple = cteheaders[0]
         ctevalue = ctetuple[1]
