@@ -27,7 +27,7 @@ INTRODUCTION
 
         http://www.gnu.org/software/mailman
 
-    which is mirrored at
+    with mirrors at
 
         http://www.list.org
         http://mailman.sf.net
@@ -40,11 +40,14 @@ INTRODUCTION
     Note that in order to comply with the GPL, it is recommended that
     you use Python 2.0.1.  Python 2.1.1 and Python 2.2 will also be
     GPL-compatible, but they have not yet been released as of this
-    writing (09-Jul-2001).
+    writing (09-Jul-2001).  Mailman will work with any Python 2.x
+    version.
 
     You will also need an ANSI C compiler; gcc (the GNU C compiler)
     works just fine.  Mailman currently works only on GNU/Linux and
-    other Unix-like operating systems (e.g. Solaris, *BSD, etc.).
+    other Unix-like operating systems (e.g. Solaris, *BSD, etc.).  It
+    does not run on Windows, although web and mail clients on any
+    platform should be able to interact with Mailman just fine.
 
     See the INSTALL file for installation instructions.  If you are
     upgrading from a previous version of Mailman, you need to read the
@@ -94,7 +97,7 @@ REQUIREMENTS
 
     The default mail delivery mechanism uses a direct SMTP connection
     to whatever mail transport agent you have running on port 25.  You
-    can thus use Mailman with any such MTA, however with certain MTA
+    can thus use Mailman with any such MTA, however with certain MTAs
     (e.g. Exim and Postfix), Mailman will support thru-the-web
     creation and removal of mailing lists.  You can also configure
     Mailman to submit messages to your MTA via command line
@@ -103,14 +106,18 @@ REQUIREMENTS
 
     Mailman works with any web server that supports CGI/1.1.  The HTML
     it generates is quite pedestrian and stingy on the graphics so it
-    should be friendly to most web browsers.  It is regularly tested
-    with IE 5.5, Netscape 4.7x, and Mozilla 0.9.x on Windows and
-    Netscape 4.7x and Mozilla 0.9.x on Linux (and occasionally Lynx on
-    Linux too!).
+    should be friendly to most web browsers and network connections.
+    It is regularly tested with IE 5.5, Netscape 4.7x, and Mozilla
+    0.9.x on Windows and Netscape 4.7x and Mozilla 0.9.x on Linux (and
+    occasionally Lynx on Linux and Netscape on MacOS too!).
 
     You will need root access on the machine hosting your Mailman
     installation in order to complete some of the configuration
     steps.  See the INSTALL file for details.
+
+    Mailman's web and email user interface should be compatible with
+    just about any mail reader or web browser.  You do not need Java,
+    JavaScript, or any other fancy plugins.
 
 
 CREATE YOUR FIRST LIST
@@ -123,8 +130,8 @@ CREATE YOUR FIRST LIST
       the install directory (by default /home/mailman) and typing
 
       % bin/mmsitepass
-      New site password: [hidden]
-      Again to confirm password: [hidden]
+      New site password: [yourpassword]
+      Again to confirm password: [yourpassword]
       Password changed.
 
     - Visit the url
@@ -203,9 +210,8 @@ FOR MORE INFORMATION
 
     Mailman-I18N
         An open list for the discussion of the Mailman
-        internationalization effort.  Multi-lingual patches are
-        available and will be integrated into the standard
-        distribution after the 2.0 release.
+        internationalization effort.  Mailman 2.1 will be fully
+        multi-lingual.
 
     Mailman-Checkins
         A read-only list which is an adjunct to the public anonymous
@@ -214,9 +220,10 @@ FOR MORE INFORMATION
 
     The Mailman project is coordinated on SourceForge at
 
-        http://sourceforge.net/projects/mailman
+        http://sf.net/projects/mailman
 
     You should use SourceForge to report bugs and to upload patches.
+
 
 
 Local Variables:

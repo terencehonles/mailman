@@ -2,10 +2,10 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-The following folks are the primary maintainers of Mailman (in reverse
-alphabetical order):
+The following folks are or have been the primary maintainers of Mailman:
 
     Barry Warsaw, Mailman's yappy guard dog
+    Thomas Wouters, Mailman's Dutch treat
     John Viega, Mailman's inventor
     Harald Meland, Norse Mailman
     Ken Manheimer, Mailman's savior
@@ -20,7 +20,6 @@ code, and have assigned copyright for this code to the FSF:
     Juan Carlos Rey Anaya
     Victoriano Giralt
     Mads Kiilerich
-    Thomas Wouters
 
 Thanks also to Dragon for his winning Mailman logo contribution!
 
@@ -68,6 +67,7 @@ in answering questions on mailman-users.
     Gerald Oskoboiny
     Sean Reifschneider
     Bernhard Reiter
+    Guido van Rossum
     Chris Snell
     Greg Stein
     Vizi Szilard
