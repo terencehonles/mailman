@@ -1,12 +1,12 @@
-Hilfe zur Mailingliste %(listname)s:
+Hilfetext zur Mailingliste %(listname)s:
 
-Sie lesen den Hilfetext für Email-Kommandos des Mailinglistenservers "Mailman",
-Version %(version)s. Im Folgenden werden Kommandos beschrieben, die Sie senden
-können, um Informationen über Ihre Abonnements zu erhalten oder diese zu
-ändern. Alle Kommandos können in der Betreffzeile (Subject) oder im
-Nachrichtentext (Body) stehen.
+Sie lesen den Hilfetext für Email-Befehle des Mailinglistenservers
+"Mailman", Version %(version)s. Im Folgenden werden Befehle beschrieben,
+die Sie senden können, um Informationen über Ihre Abonnements zu erhalten
+oder diese zu ändern. Alle Befehle können in der Betreffzeile (Subject)
+oder im Nachrichtentext (Body) stehen.
 
-Auf viele der folgenden Kommandos kann auch über ein Webinterface
+Auf viele der folgenden Befehle kann auch über ein Webinterface
 zugegriffen werden, das Sie unter
 
     %(listinfo_url)s
@@ -14,15 +14,15 @@ zugegriffen werden, das Sie unter
 finden. Insbesondere können Sie über das Webinterface veranlassen, dass
 Ihnen Ihr Passwort an die Abonnementadresse geschickt wird.
 
-Listen-spezifische Kommandos (subscribe, who, usw.) sollten an die *-request
+Listenspezifische Befehle (subscribe, who, usw.) sollten an die *-request
 Adresse der Liste geschickt werden, für die 'mailman' Liste zB würde diese
 'mailman-request@...' lauten.
 
 Noch kurz zu den Beschreibungen: Worte in "<>" (spitzen Klammern) sind
-ERFORDERLICHE Angaben, Worte in "[]" (eckigen Klammern) sind OPTIONALE Angaben.
-Die Klammern "<>" oder "[]" gehören NICHT zu den Kommandos.
+ERFORDERLICHE Angaben, Worte in "[]" (eckigen Klammern) sind OPTIONALE
+Angaben. Die Klammern "<>" oder "[]" gehören NICHT zu den Befehlen.
 
-Die folgenden Kommandos werden verstanden:
+Die folgenden Befehle sind gültig:
 
     subscribe [Passwort] [Digest-Option] [address=<name@host>]
 	Die Mailingliste abonnieren. Ein Passwort muss angegeben werden,
@@ -30,14 +30,14 @@ Die folgenden Kommandos werden verstanden:
 	Wenn sie die Liste einmal abonniert haben, werden sie regelmäßig an
 	Ihr Passwort erinnert werden. Die 'Digest-Option' kann entweder
 	'digest' oder 'nodigest' (ohne Anführungszeichen) lauten. Wenn Sie die
-	Liste für eine andere Adresse als jene, von der sie dieses Kommando
+	Liste für eine andere Adresse als jene, von der sie diesen Befehl
 	senden, abonnieren wollen, geben sie "address=<andere Adresse>" an
 	(wieder: ohne Anführungszeichen und spitze Klammern!).
 
     unsubscribe <Passwort> [Adresse]
-	Die Mailingliste kündigen. Das Passwort muss jenem entprechen, dass
+	Das Abonnement kündigen. Das Passwort muss jenem entprechen, dass
 	Sie beim Abonnieren angegeben haben. Wenn sie eine andere Adresse
-	kündigen möchten als jene, von der Sie dieses Kommando senden, können
+	kündigen möchten als jene, von der Sie diesen Befehl senden, können
 	Sie diese im 'Adresse'-Feld angeben.
 
     who
@@ -47,12 +47,13 @@ Die folgenden Kommandos werden verstanden:
         Den Einführungstext für diese Liste anzeigen.
 
     lists
-        Alle Listen anzeigen, die auf diesem Mailman-Server verwaltet werden.
+        Alle Listen anzeigen, die auf diesem Mailman-Server verwaltet
+	werden.
 
     help
         Diese Nachricht.
 
-    set <option> <on|off> <Passwort> 
+    set <option> <on|off> <Passwort>
         Optionen der Liste Ein- bzw. Ausschalten. Gültige Optionen sind:
 
         ack:
@@ -87,15 +88,15 @@ Die folgenden Kommandos werden verstanden:
     options
 	Den gegenwärtigen Stand Ihrer Optionen anzeigen.
 
-    password <altes Passwort> <neues Passwort> 
+    password <altes Passwort> <neues Passwort>
 	Ändert ihr Passwort für diese Liste.
-    
-    end oder -- 
-	Die Abarbeitung von Kommandos an dieser Stelle abbrechen (wenn Ihr
+
+    end oder --
+	Die Abarbeitung von Befehlen an dieser Stelle abbrechen (wenn Ihr
 	Email Programm automatisch eine Signatur in dieser Form anhängt, dann
 	kann das unter Umständen einiges an Fehlermeldungen ersparen).
 
-Alle Kommandos sollten an
+Alle Befehle sollten an
 
     %(requestaddr)s
 

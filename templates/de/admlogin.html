@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>%(listname)s %(who)s Authentifizierung</title>
+  <title>Anmeldung als %(listname)s-%(who)s</title>
 </head>
 <body bgcolor="#ffffff">
 <FORM METHOD=POST ACTION="%(path)s">
@@ -8,32 +8,32 @@
   <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
     <TR>
       <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
-	<B><FONT COLOR="#000000" SIZE="+1">%(listname)s %(who)s
-	    Authentifizierung</FONT></B>
+	<B><FONT COLOR="#000000" SIZE="+1">Anmeldung als %(listname)s-%(who)s
+	    </FONT></B>
       </TD>
     </TR>
     <tr>
-      <TD><div ALIGN="Right">Passwort der Liste %(who)s:</div></TD>
+      <TD><div ALIGN="Right">%(who)s-Passwort:</div></TD>
       <TD><INPUT TYPE="password" NAME="adminpw" SIZE="30"></TD>
     </tr>
     <tr>
       <td colspan=2 align=middle><INPUT type="SUBMIT"
                                         name="admlogin"
-					value="Let me in...">
+					value="Sesam, &ouml;ffne dich...">
       </td>
     </tr>
   </TABLE>
-      <p><strong><em>Wichtig:</em></strong> Ab diesem Punkt müssen in Ihrem
-      Browser "Cookies" aktiviert sein, da ansonsten keine Ihrer Änderungen
-      in Aktion tritt.
+      <p><strong><em>Wichtig:</em></strong> Ab diesem Punkt m&uuml;ssen in Ihrem
+      Browser "cookies" aktiviert sein, da ansonsten keine Ihrer &Auml;nderungen
+      gespeichert wird.
 
       <p>Mailmans Administrationsinterface benutzt sog. "session cookies",
-      damit Sie sich nicht für jede Administrationsaufgabe erneut
-      authentifizieren müssen. Diese "cookies" verfallen automatisch bei
-      Beendigung Ihres Webbrowsers; Sie können Sie allerdings auch sofort
-      verfallen lassen, indem Sie auf den <em>Ausloggen</em> Link unter
-      <em>Andere Administrative Taetigkeiten</em> klicken (den Sie sehen
-      werden sobald Sie erfolgrecih eingeloggt sind).
+      damit Sie sich nicht f&uuml;r jede Administrationsaufgabe erneut
+      authentifizieren m&uuml;ssen. Diese "cookies" verfallen automatisch beim
+      Schlie&szlig;en Ihres Webbrowsers, Sie k&ouml;nnen Sie allerdings auch sofort
+      verfallen lassen, indem Sie auf den <em>Abmelden</em> Link unter
+      <em>Andere administrative T&auml;tigkeiten</em> klicken (den Sie sehen
+      werden, sobald Sie erfolgreich eingeloggt sind).
 </FORM>
 </body>
 </html>

@@ -1,12 +1,13 @@
-This is a Mailman mailing list bounce action notice:
+Dies ist eine Mailman-Verständigung betreffend die Unzustellbarkeit von
+Emails an eine bestimmte Adresse ("bounce").
 
     Liste:      %(listname)s
     Abonnent:   %(addr)s
-    Aktion:     Abonnement %(negative)s%(did)s.
-    Grund:      Exzessive oder fatale Bounces
+    Vorgang:    Abonnement %(negative)s%(did)s.
+    Grund:      Zu viele oder fatale Bounces
     %(but)s
 
 %(reenable)s
-The triggering bounce notice is attached below.
+Die auslösende Nachricht ist weiter unten angehängt.
 
-Fragen? Kontaktieren Sie den Mailman Site Administrator unter %(owneraddr)s.
+Fragen? Kontaktieren Sie den Mailman Systemverwalter unter %(owneraddr)s.

@@ -1,20 +1,23 @@
-Dies ist die monatliche Infomail, die Sie ueber Ihre Abonnemnts auf
-%(hostname)s informiert. Enthalten sind Informationen ueber Ihr Abonnement
-und wies Sie dieses beenden bzw. modifizieren koennen.
+Dies ist die monatliche Infomail, die Sie über Ihre Abonnements auf
+%(hostname)s informiert. Enthalten sind Informationen über Ihr Abonnement
+und wie Sie dieses kündigen bzw. modifizieren können.
 
-Sie koennen die Seiten besuchen, um Ihren Abonnementsstatus zu aendern oder
-um Konfigurationsaenderungen vorzunehmen.
+Sie können die angegebenen Webseiten besuchen, um Ihre Mitgliedschaft oder
+Konfigurationen zu ändern, das Abonnement zu kündigen, den Versand von
+Nachrichtensammlungen zu aktivieren, den Empfang komplett auszusetzen
+(zB während eines Urlaubs), usw.
 
-Zusaetzlich zu dem WWW-Interface koennen Sie solche Aenderungen auch via
-Email vornehmen. Um mehr Informationen zu dieser Methode zu erhalten,
-schicken Sie bitte eine Email an die '-request' Adresse der Liste (z.B. an
-%(exreq)s), die nur das Wort 'help' im Subject/Betreff oder Text enthaelt.
+Zusätzlich zum Web-Interface können Sie solche Änderungen auch via Email
+vornehmen. Um detaillierte Informationen zu dieser Methode zu erhalten,
+schicken Sie bitte ein Email an die '-request' Adresse der Liste (z.B. an
+%(exreq)s), die nur das Wort "help" (ohne Anführungszeichen) im Betreff oder
+im Nachrichtentext enthält.
 
-Sie erhalten dann eine Antwort mit detaillierten Informationen.
+Sie erhalten dann eine Antwort mit genauen Instruktionen.
 
-Wenn Sie Fragen, Probleme, Kommentare under sonstiges haben, schicken Sie
-diese an %(owner)s. 
+Wenn Sie Fragen, Probleme, Kommentare etc. haben, dann wenden Sie sich
+bitte an %(owner)s.
 Danke!
 
-Passwoerter fuer %(useraddr)s:
+Passwörter für %(useraddr)s:
 
