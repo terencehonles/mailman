@@ -104,6 +104,7 @@ def make_qrunner(name, slice, range, once=0):
         if AS_SUBPROC:
             # Exit with SIGTERM exit code so mailmanctl won't try to restart us
             print >> sys.stderr, 'Cannot import runner module', modulename
+            print >> sys.stderr, e
             sys.exit(signal.SIGTERM)
         else:
             usage(1, e)
