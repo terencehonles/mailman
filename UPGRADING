@@ -71,6 +71,10 @@ UPGRADING FROM PRE-1.0 to 2.x
     and run bin/update.  This is the same as above except that the
     update.log file is not generated.
 
+    Check your crontab entry.  Remove any runs of obsolete scripts, in
+    particular cron/upvolumes_yearly, cron/upvolumes_monthly, or
+    cron/archive.
+
 WHAT "MAKE UPDATE" DOES
 
     Below is an annotated listing of the things that "make update"
