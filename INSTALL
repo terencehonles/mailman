@@ -178,6 +178,13 @@ file UPGRADING for important information before you upgrade.
     everything running you need to hook Mailman up to both your Web
     server and your mail system.
 
+    - If you plan on running your MTA and web server on different
+      machines, sharing Mailman installations via NFS, be sure that
+      the clocks on those two machines are synchronized closely.  You
+      might take a look at the file Mailman/LockFile.py; the constant
+      CLOCK_SLOP helps the locking mechanism compensate for clock skew
+      in this type of environment.
+
     - Configure your Web server to give $prefix/cgi-bin permission to
       run CGI scripts.  You probably need to be root to do this.
 
