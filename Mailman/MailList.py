@@ -152,8 +152,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             prefix = prefix[:-1]
         return "%s/%s/%s" % (prefix, script_name, self._internal_name)
 
-
     def GetAbsoluteOptionsURL(self, addr, obscured=0,):
+        # address could come in case-preserved
+        addr = string.lower(addr)
 	options = self.GetAbsoluteScriptURL('options')
         if obscured:
             treated = Utils.ObscureEmail(addr, for_text=0)
