@@ -220,9 +220,7 @@ def admin_overview(msg=''):
         mlist = MailList.MailList(name, lock=0)
         if mlist.advertised:
             if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
-                    hostname and \
-                    hostname.find(mlist.web_page_url) == -1 and \
-                    mlist.web_page_url.find(hostname) == -1:
+                   mlist.web_page_url.find(hostname) == -1:
                 # List is for different identity of this host - skip it.
                 continue
             else:
