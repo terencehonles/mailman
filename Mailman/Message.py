@@ -111,7 +111,10 @@ class UserNotification(Message):
         charset = None
         if lang is not None:
             charset = Charset(Utils.GetCharSet(lang))
-        if text is not None:
+        if text is None:
+            self.set_charset(charset)
+        else:
+            # Implies a set_charset() call
             self.set_payload(text, charset)
         if subject is None:
             subject = '(no subject)'
