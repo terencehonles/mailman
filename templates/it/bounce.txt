@@ -3,7 +3,7 @@ che è stato preso in seguito a problemi nell'invio
 di messaggi da parte di una delle liste di Mailman:
 
     Lista:       %(listname)s
-    Membro:      %(addr)s
+    Iscritto:    %(addr)s
     Azione:      Iscrizione %(negative)s%(did)s.
     Motivo:      Errori (troppi o fatali) nell'invio dei messaggi.
     %(but)s
@@ -11,5 +11,5 @@ di messaggi da parte di una delle liste di Mailman:
 %(reenable)s
 L'evento che ha scatenato questo provvedimento è allegato.
 
-Domande? Contatta l'amministratore di Mailman all'indirizzo
-%(owneraddr)s.
+Domande? 
+Contatta l'amministratore di Mailman all'indirizzo %(owneraddr)s.

@@ -9,7 +9,7 @@ Informazioni generali sulla lista si trovano all'indirizzo:
 
   %(listinfo_url)s
 
-Se un giorno vorrai cancellarii o cambiare le tue opzioni (ad esempio
+Se un giorno vorrai cancellarti o cambiare le tue opzioni (ad esempio
 passare al modo digest o cambiare la tua password etc.), visita la
 tua pagina di iscrizione all'indirizzo:
 
@@ -19,7 +19,7 @@ Puoi anche effettuare variazioni via email inviando un messaggio a:
 
   %(real_name)s-request@%(host_name)s
 
-con la parola `help' nel soggetto o nel testo (non includere le 
+con la parola `help' nell'oggetto o nel testo (non includere le 
 virgolette), e ti tornerà indietro un messaggio con le istruzioni.
 
 Devi conoscere la tua password per cambiare le tue opzioni (inclusi

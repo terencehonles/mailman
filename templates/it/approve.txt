@@ -4,8 +4,8 @@ La tua richiesta alla lista %(requestaddr)s:
  
 è stata inoltrata all'amministratore.
  
-Questo probabilmente perchè stai cercando di iscriverti ad una 
-lista `chiusa`
+Questo probabilmente perché stai cercando di iscriverti ad una 
+lista `chiusa'
  
 Riceverai una email di notifica sulla decisione 
 dell'amministratore riguardo la tua richiesta di iscrizione. 

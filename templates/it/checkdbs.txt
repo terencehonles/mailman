@@ -3,7 +3,7 @@ che attendono la tua attenzione a:
 
          %(adminDB)s
 
-Per piacere occupatene il prima possibile. 
+Per piacere occupatene appena ti è possibile. 
 Questa notifica di richieste in attesa, in ogni caso, 
 verrà spedita giornalmente.
 

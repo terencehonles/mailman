@@ -7,7 +7,7 @@ La tua password per la lista è:
 
 Avrai bisogno di questa password per la configurarazione.  
 Inoltre la dovrai usare per gestire le richieste amministrative,
-come ad esempio l'approvazione di messaggi se hai sceglierai il 
+come ad esempio l'approvazione di messaggi se sceglierai il 
 regime di lista moderata.
 
 Puoi configurare la tua lista a questa pagina web:
@@ -25,7 +25,7 @@ linguaggio HTML per farlo.
 Esiste anche un'interfaccia per gli utenti basata sull'email 
 (non per gli amministratori); puoi ottenere informazioni sul
 suo utilizzo inviando un messaggio con la sola parola `help'
-nel soggetto o nel testo, all'indirizzo:
+nell'oggetto o nel testo, all'indirizzo:
 
     %(requestaddr)s
 

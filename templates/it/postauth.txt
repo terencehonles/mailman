@@ -3,10 +3,10 @@ richiesta per il seguente messaggio:
 
     Lista:     %(listname)s@%(hostname)s
     Mittente:  %(sender)s
-    Soggetto:  %(subject)s
+    Oggetto:   %(subject)s
     Motivo:    %(reason)s
 
-Se credi, visita:
+Quando riterrai opportuno, visita:
 
     %(admindb_url)s
         

@@ -1,11 +1,11 @@
-Il tuo messaggio alla lista '%(listname)s' con soggetto
+Il tuo messaggio alla lista '%(list_name)s' con oggetto
 
     %(subject)s
 
 è stato trattenuto in attesa che il moderatore della lista 
 possa esaminarlo per l'approvazione.
 
-La ragione per il quale è stato trattenuto:
+La ragione per la quale è stato trattenuto:
 
     %(reason)s
 

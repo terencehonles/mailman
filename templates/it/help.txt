@@ -4,7 +4,7 @@ Questo è il messaggio di aiuto per la versione %(version)s del
 list-manager "Mailman".  Il testo seguente descrive i comandi che puoi
 mandare per ricevere informazioni e per controllare la tua iscrizione
 alle liste di Mailman di questo sito. 
-Un comando può essere inviato nel soggetto o nel corpo del messaggio.
+Un comando può essere inviato nell'oggetto o nel corpo del messaggio.
 
 Nota che molto di quello che segue può essere compiuto via World Wide
 Web, all'indirizzo:
@@ -86,7 +86,7 @@ I seguenti comandi sono validi:
     
     end o --
        
-       Smette di processare i comandi (utile se il tuo client di 
+       Smette di elaborare i comandi (utile se il tuo client di 
        posta aggiunge automaticamente una firma - ti eviterà 
        parecchio lavoro).
       

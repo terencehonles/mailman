@@ -24,7 +24,7 @@ L'indirizzo Web di queste risorse è:
     %(listinfo_url)s
 
 4) Se non hai un accesso WWW, puoi fare le stesse cose via email. 
-Invia un messaggio a %(requestaddr)s con il soggetto o il testo
+Invia un messaggio a %(requestaddr)s con l'oggetto o il testo
 contenente solamente la parola "help" (senza le virgolette). 
 Riceverai una risposta automatica che ti darà ulteriori informazioni.
 
