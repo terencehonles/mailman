@@ -1,17 +1,17 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Unit tests for OldStyleMemberships.
@@ -84,7 +84,7 @@ class TestMembers(TestBase):
                                  password='xxXXxx',
                                  language='xx',
                                  realname='A. Nice Person')
-        
+
     def test_add_member(self):
         eq = self.assertEqual
         mlist = self._mlist
@@ -97,7 +97,7 @@ class TestMembers(TestBase):
         eq(mlist.getMemberCPAddresses(('person@dom.ain', 'noperson@dom.ain')),
            ['person@dom.ain', None])
         eq(mlist.getMemberPassword('person@dom.ain'), 'xxXXxx')
-        eq(mlist.getMemberLanguage('person@dom.ain'), 'xx')
+        eq(mlist.getMemberLanguage('person@dom.ain'), 'en')
         eq(mlist.getMemberOption('person@dom.ain', mm_cfg.Digests), 0)
         eq(mlist.getMemberOption('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(mlist.getMemberName('person@dom.ain'), 'A. Nice Person')
@@ -163,7 +163,7 @@ class TestMembers(TestBase):
         eq(mlist.getMemberCPAddresses(('nice@dom.ain', 'nonice@dom.ain')),
            ['nice@dom.ain', None])
         eq(mlist.getMemberPassword('nice@dom.ain'), 'xxXXxx')
-        eq(mlist.getMemberLanguage('nice@dom.ain'), 'xx')
+        eq(mlist.getMemberLanguage('nice@dom.ain'), 'en')
         eq(mlist.getMemberOption('nice@dom.ain', mm_cfg.Digests), 0)
         eq(mlist.getMemberOption('nice@dom.ain', mm_cfg.AcknowledgePosts), 0)
         eq(mlist.getMemberName('nice@dom.ain'), 'A. Nice Person')
@@ -195,8 +195,9 @@ class TestMembers(TestBase):
         self.failIf(mlist.authenticateMember('person@dom.ain', 'xxXXxx'))
 
     def test_set_language(self):
-        self._mlist.setMemberLanguage('person@dom.ain', 'yy')
-        self.assertEqual(self._mlist.getMemberLanguage('person@dom.ain'), 'yy')
+        self._mlist.available_languages.append('xx')
+        self._mlist.setMemberLanguage('person@dom.ain', 'xx')
+        self.assertEqual(self._mlist.getMemberLanguage('person@dom.ain'), 'xx')
 
     def test_basic_option(self):
         eq = self.assertEqual
