@@ -475,3 +475,12 @@ class DefinitionList(Container):
                       HTMLFormatObject(dd, indent+2))
         output = output + '%s</dl>\n' % spaces
         return output
+
+
+def MailmanLogo():
+    if mm_cfg.DELIVERED_BY_URL:
+        img = ('<img src="%s" alt="Delivered by Mailman" border=0> v %s' % 
+               (mm_cfg.DELIVERED_BY_URL, mm_cfg.VERSION))
+    else:
+        img = 'Delivered by Mailman v %s' % mm_cfg.VERSION
+    return Link(mm_cfg.MAILMAN_URL, img)
