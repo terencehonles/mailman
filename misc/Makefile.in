@@ -75,4 +75,5 @@ finish:
 clean:
 
 distclean:
-	-rm Makefile paths.py
+	-rm Makefile paths.py mailman
+
