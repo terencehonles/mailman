@@ -338,6 +338,10 @@ splitter = re.compile(';\s*')
 def parsecookie(s):
     c = {}
     for p in splitter.split(s):
-        k, v = p.split('=')
-        c[k] = v
+        try:
+            k, v = p.split('=', 1)
+        except ValueError:
+            pass
+        else:
+            c[k] = v
     return c
