@@ -248,6 +248,70 @@ GLOBAL_PIPELINE = [
     'ToOutgoing',
     ]
 
+# This defines syslog() format strings for the SMTPDirect delivery module (see
+# DELIVERY_MODULE above).  Valid %()s string substitutions include:
+#
+#     time -- the time in float seconds that it took to complete the smtp
+#     hand-off of the message from Mailman to your smtpd.
+#
+#     size -- the size of the entire message, in bytes
+#
+#     #recips -- the number of actual recipients for this message.
+#
+#     #refused -- the number of smtp refused recipients (use this only in
+#     SMTP_LOG_REFUSED).
+#
+#     listname -- the `internal' name of the mailing list for this posting
+#
+#     msg_<header> -- the value of the delivered message's given header.  If
+#     the message had no such header, then "n/a" will be used.  Note though
+#     that if the message had multiple such headers, then it is undefined
+#     which will be used.
+#
+#     allmsg_<header> - Same as msg_<header> above, but if there are multiple
+#     such headers in the message, they will all be printed, separated by
+#     comma-space.
+#
+#     sender -- the "sender" of the messages, which will be the From: or
+#     envelope-sender as determeined by the USE_ENVELOPE_SENDER variable
+#     below.
+#
+# The format of the entries is a 2-tuple with the first element naming the
+# file in logs/ to print the message to, and the second being a format string
+# appropriate for Python's %-style string interpolation.  The file name is
+# arbitrary; qfiles/<name> will be created automatically if it does not
+# exist.
+
+# The format of the message printed for every delivered message, regardless of
+# whether the delivery was successful or not.  Set to None to disable the
+# printing of this log message.
+SMTP_LOG_EVERY_MESSAGE = (
+    'smtp',
+    '%(msg_message-id)s smtp for %(#recips)d recips, completed in %(time).3f seconds')
+
+# This will only be printed if there were no immediate smtp failures.
+# Mutually exclusive with SMTP_LOG_REFUSED.
+SMTP_LOG_SUCCESS = (
+    'post',
+    'post to %(listname)s from %(sender)s, size=%(size)d, success')
+
+# This will only be printed if there were any addresses which encountered an
+# immediate smtp failure.  Mutually exclusive with SMTP_LOG_SUCCESS.
+SMTP_LOG_REFUSED = (
+    'post',
+    'post to %(listname)s from %(sender)s, size=%(size)d, %(#refused)d failures')
+
+# This will be logged for each specific recipient failure.  Additional %()s
+# keys are:
+#
+#     recipient -- the failing recipient address
+#     failcode  -- the smtp failure code
+#     failmsg   -- the actual smtp message, if available
+SMTP_LOG_EACH_FAILURE = (
+    'smtp-failure',
+    'delivery to %(recipient)s failed with code %(failcode)d: %(failmsg)s')
+
+
 
 #####
 # Qrunner defaults
@@ -283,6 +347,11 @@ QRUNNER_SLEEP_TIME = seconds(1)
 #####
 # General defaults
 #####
+
+# The default language for this server.  Whenever we can't figure out the list
+# context or user context, we'll fall back to using this language.  See
+# LC_DESCRIPTIONS below for legal values.
+DEFAULT_SERVER_LANGUAGE = 'en'
 
 # When allowing only members to post to a mailing list, how is the sender of
 # the message determined?  If this variable is set to 1, then first the
@@ -637,8 +706,6 @@ AuthSiteAdmin = 5     # Site Administrator (total control over everything)
 
 # Useful directories
 LIST_DATA_DIR   = os.path.join(VAR_PREFIX, 'lists')
-HTML_DIR        = os.path.join(PREFIX, 'public_html')
-CGI_DIR         = os.path.join(EXEC_PREFIX, 'cgi-bin')
 LOG_DIR         = os.path.join(VAR_PREFIX, 'logs')
 LOCK_DIR        = os.path.join(VAR_PREFIX, 'locks')
 DATA_DIR        = os.path.join(VAR_PREFIX, 'data')
@@ -650,8 +717,7 @@ MESSAGES_DIR    = os.path.join(PREFIX, 'messages')
 PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(VAR_PREFIX, 'archives', 'public')
 PRIVATE_ARCHIVE_FILE_DIR = os.path.join(VAR_PREFIX, 'archives', 'private')
 
-DEFAULT_SERVER_LANGUAGE = "en"
-
+# Directories used by the qrunner subsystem
 QUEUE_DIR       = os.path.join(VAR_PREFIX, 'qfiles')
 INQUEUE_DIR     = os.path.join(QUEUE_DIR, 'in')
 OUTQUEUE_DIR    = os.path.join(QUEUE_DIR, 'out')
@@ -661,6 +727,7 @@ ARCHQUEUE_DIR   = os.path.join(QUEUE_DIR, 'archive')
 SHUNTQUEUE_DIR  = os.path.join(QUEUE_DIR, 'shunt')
 VIRGINQUEUE_DIR = os.path.join(QUEUE_DIR, 'virgin')
 
+# Other useful files
 SITE_PW_FILE = os.path.join(DATA_DIR, 'adm.pw')
 LISTCREATOR_PW_FILE = os.path.join(DATA_DIR, 'creator.pw')
 
@@ -673,8 +740,8 @@ from Version import *
 # element being the description, as described in the catalogs, and second
 # element is the language charset.  I have chosen code from /usr/share/locale
 # in my GNU/Linux. :-)
-def _(string):
-    return string
+def _(s):
+    return s
 
 LC_DESCRIPTIONS = {'es': (_("Spanish (Spain)"),      'iso-8859-1'),
                    'it': (_("Italian"),              'iso-8859-1'),
