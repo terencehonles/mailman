@@ -76,9 +76,9 @@ def process(mlist, msg, msgdata):
            (lcset == 'us-ascii' or mcset == lcset):
         oldpayload = msg.get_payload()
         frontsep = endsep = ''
-        if not header.endswith('\n'):
+        if header and not header.endswith('\n'):
             frontsep = '\n'
-        if not oldpayload.endswith('\n'):
+        if footer and not oldpayload.endswith('\n'):
             endsep = '\n'
         payload = header + frontsep + oldpayload + endsep + footer
         msg.set_payload(payload)
