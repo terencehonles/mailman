@@ -1,8 +1,4 @@
 #!/bin/sh
-#
-# If you don't want to rm archives when you rm a list, you probably
-# want to comment out that line, or set the archives aside before you
-# nuke the list.
 
 MAILMAN_DIR='/home/mailman/mailman'
 HTML_DIR='/home/mailman/public_html'  
@@ -25,7 +21,7 @@ rmit () {
     echo Removing "$1"
     rm -rf "$2"
   else
-    echo "$listname $1 not found"
+    echo "$listname $1 not found as $2"
   fi
 }
 
