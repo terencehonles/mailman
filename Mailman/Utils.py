@@ -546,24 +546,6 @@ def IsAdministrivia(msg):
 
         
 
-def reraise(exc=None, val=None):
-    """Use this function to re-raise an exception.
-
-    This implementation hides the differences between Python versions.
-    Optional exc is the exception type to raise.  When exc is not None,
-    optional val is the exception value to raise.
-
-    """
-    # Python 1.5.2
-    # raise
-    # Earlier Python versions
-    if exc is None:
-        t, v, tb = sys.exc_info()
-        raise t, v, tb
-    raise exc, val, sys.exc_info()[2]
-
-
-
 def mkdir(dir, mode=02775):
     """Wraps os.mkdir() in a umask saving try/finally.
 Two differences from os.mkdir():
@@ -611,7 +593,7 @@ def open_ex(filename, mode='r', bufsize=-1, perms=0664):
             return fp
         # transform any os.errors into IOErrors
         except os.error, e:
-            reraise(IOError, e)
+            raise IOError, e
     finally:
         os.umask(ou)
 
