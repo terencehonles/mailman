@@ -367,6 +367,22 @@ def FindMatchingAddresses(name, dict, *dicts):
 
   
 
+_vowels = ('a', 'e', 'i', 'o', 'u')
+_consonants = ('b', 'c', 'd', 'f', 'g', 'h', 'k', 'm', 'n',
+               'p', 'r', 's', 't', 'v', 'w', 'x', 'z')
+_syllables = []
+
+for v in _vowels:
+    for c in _consonants:
+        _syllables.append(c+v)
+        _syllables.append(v+c)
+
+def MakeRandomPassword(length=6):
+    syls = []
+    while len(syls)*2 < length:
+        syls.append(random.choice(_syllables))
+    return string.join(syls, '')[:length]
+
 def GetRandomSeed():
     chr1 = int(random.random() * 52)
     chr2 = int(random.random() * 52)
@@ -377,14 +393,6 @@ def GetRandomSeed():
             c = c - 26 + 97
         return c
     return "%c%c" % tuple(map(mkletter, (chr1, chr2)))
-
-
-def MakeRandomPassword(length=4):
-    password = ""
-    while len(password) < length:
-        password = password + GetRandomSeed()
-    password = password[:length]
-    return password
 
 
 
