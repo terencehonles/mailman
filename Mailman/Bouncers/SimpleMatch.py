@@ -53,7 +53,7 @@ patterns = [
     # Smail
     (_c('failed addresses follow:'),
      _c('message text follows:'),
-     _c('<(?P<addr>[^>]*)>')),
+     _c('<(?P<addr>[^>]*)>|\s*(?P<addr>\S+@\S+)')),
     # newmail.ru
     (_c('This is the machine generated message from mail service.'),
      _c('--- Below the next line is a copy of the message.'),
