@@ -1192,7 +1192,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         sender = None
         if mm_cfg.USE_ENVELOPE_SENDER:
             sender = msg.GetEnvelopeSender()
-        if not sender:
+        # Specialcase an ugly sendmail feature: If there exists an
+        # "owner-foo: bar" alias and sendmail receives mail for address
+        # "foo", sendmail will change the envelope sender of the message
+        # to "bar" before delivering.  This feature does not appear to
+        # be configurable.  *Boggle*.
+        if (not sender or sender[:len(self._internal_name)+6] ==
+            '%s-admin' % self._internal_name):
             sender = msg.GetSender()
 ##        sys.stderr.write('envsend: %s, sender: %s\n' %
 ##                         (msg.GetEnvelopeSender(), msg.GetSender()))
