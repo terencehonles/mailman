@@ -73,6 +73,9 @@ Options:
         Run the qrunner process in the background.  Only effective if --runner
         option is not used.
 
+    -n/--no-restart
+        Don't restart queue runners when they exit because of an error.
+
     -h/--help
         Print this help message and exit.
 """
@@ -96,6 +99,14 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 
 
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+
+
+
 def start_runner(qrclass, slice, count):
     pid = os.fork()
     if pid:
@@ -110,7 +121,7 @@ def start_runner(qrclass, slice, count):
 
 
 
-def master():
+def master(restart):
     kids = {}
     # Start up all the qrunners
     for classname, count in mm_cfg.QRUNNERS:
@@ -135,10 +146,11 @@ def master():
 qrunner watchdog detected subprocess exit
     (pid: %d, sig: %d, sts: %d, class: %s, slice %d of %d)
     restarting''' % (pid, killsig, exitstatus, qrclass, slice, count))
-                # Now restart the process
+                # Now perhaps restart the process
                 del kids[pid]
-                newpid = start_runner(qrclass, slice, count)
-                kids[newpid] = (qrclass, slice, count)
+                if restart:
+                    newpid = start_runner(qrclass, slice, count)
+                    kids[newpid] = (qrclass, slice, count)
             except KeyboardInterrupt:
                 break
     finally:
@@ -159,13 +171,14 @@ qrunner watchdog detected subprocess exit
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'r:h',
-                                   ['runner=', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'r:nh',
+                                   ['runner=', 'no-restart', 'help'])
     except getopt.error, msg:
         usage(1, msg)
 
     bg = None
     runner = None
+    restart = 1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -173,6 +186,8 @@ def main():
             runner = arg
         elif opt in ('-b', '--background'):
             bg = 1
+        elif opt in ('-n', '--no-restart'):
+            restart = 0
 
     COMMASPACE = ', '
     if args:
@@ -184,7 +199,9 @@ def main():
         LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
         if bg and not os.fork():
             # child
-            master()
+            master(restart)
+            os._exit(0)
+        master(restart)
     else:
         classname = runner + 'Runner'
         modulename = 'Mailman.Queue.%s' % classname
