@@ -1250,7 +1250,10 @@ def change_options(mlist, category, subcat, cgidata, doc):
                                 digest, mlist.preferred_language)
             try:
                 if subscribe_or_invite:
-                    mlist.InviteNewMember(userdesc, invitation)
+                    if mlist.isMember(address):
+                        raise Errors.MMAlreadyAMember
+                    else:
+                        mlist.InviteNewMember(userdesc, invitation)
                 else:
                     mlist.ApprovedAddMember(userdesc, send_welcome_msg,
                                             send_admin_notif, invitation)
