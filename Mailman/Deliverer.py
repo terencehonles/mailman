@@ -201,7 +201,6 @@ class Deliverer:
 	    welcome = Utils.wrap(self.welcome_msg) + '\n'
 	else:
 	    welcome = ''
-
         if self.umbrella_list:
             umbrella = Utils.wrap(
                 "(Since this is a list of mailing lists, administrative"
@@ -232,7 +231,6 @@ class Deliverer:
 	    digest_mode = '(Digest mode)'
 	else:
 	    digest_mode = ''
-
         self.SendTextToUser(subject = 'Welcome To "%s"! %s' % (self.real_name, 
 							       digest_mode),
 			    recipient = self.GetMemberAdminEmail(name),
@@ -248,7 +246,9 @@ class Deliverer:
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
         # find the case-preserved version of the user's address
-        user = self.members.get(self.FindUser(user))
+        cpuser = self.members.get(self.FindUser(user))
+        if cpuser <> 0:
+            user = cpuser
         if user and self.passwords.has_key(user):
             recipient = self.GetMemberAdminEmail(user)
             subj = '%s maillist reminder\n' % listfullname
