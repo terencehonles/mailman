@@ -107,18 +107,12 @@ def PrintRequests(mlist, doc):
                        mlist.real_name + '</em>'))
     # short circuit for when there are no pending requests
     if not mlist.NumRequestsPending():
-	doc.AddItem('There are no pending requests.  You can now ')
-        doc.AddItem(
-            Link(mlist.GetScriptURL('admin'),
-                 Italic('view or edit the list configuration information.')))
+	doc.AddItem('There are no pending requests.')
 	doc.AddItem(mlist.GetMailmanFooter())
 	return
 
     doc.AddItem(Utils.maketext(
         'admindbpreamble.html', {'listname': mlist.real_name}, raw=1))
-    doc.AddItem(
-        Link(mlist.GetScriptURL('admin'),
-             Italic('view or edit the list configuration information')))
     doc.AddItem('.<p>')
     form = Form(mlist.GetScriptURL('admindb'))
     doc.AddItem(form)
