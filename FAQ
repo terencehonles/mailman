@@ -120,6 +120,20 @@ FREQUENTLY ASKED QUESTIONS
    former is set by the SMTP agent while the latter is easily
    spoofable by the end user.
 
+   [ The possible causes for envelope sender munging taking place are
+     many, but the "owner-alias" sendmail feature probably deserves
+     special mention:
+
+     If mail arrives for list "foo", and there is an alias entry for
+     "owner-foo" as well, the envelope sender of the message will be
+     changed to the single-level expansion of the "owner-foo" alias.
+
+     Code has been included in post-1.0rc2 Mailman releases to try
+     working around the problem this (unconfigurable) sendmail feature
+     constitutes.  Prior to this, some people worked around the
+     problem by not including the suggested "owner-LISTNAME" alias
+     entries for Mailman lists in their alias files. ]
+
    However, if you are having this problem, you may opt to favor the
    From: header over the envelope sender.  Do this by adding the
    following line to your mm_cfg.py file:
