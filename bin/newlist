@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Create a new, unpopulated maillist.
+"""Create a new, unpopulated mailing list.
 
   newlist <list-name> <list-admin's-address> <admin-password> <immediate>
 
