@@ -84,6 +84,10 @@ class MailCommandHandler:
 	mail = Message.IncomingMessage()
 	subject = mail.getheader("subject")
         sender = string.lower(mail.GetSender())
+        #
+        # shouldn't this be checking the username only part?
+        # why 'orphanage'?
+        #
         if sender in ['daemon', 'nobody', 'mailer-daemon', 'postmaster',
                       'orphanage', 'postoffice']:
             # This is for what are probably delivery-failure notices of
@@ -433,7 +437,7 @@ class MailCommandHandler:
                     digest = 0
                     done_digest = 1
                 elif string.lower(arg)[:8] == 'address=' and not address:
-                    address = string.lower(arg)[8:]
+                    address = Utils.LCDomain(arg[8:])
                 elif not password:
                     password = arg
                 else:
@@ -445,7 +449,7 @@ class MailCommandHandler:
             password = "%s%s" % (Utils.GetRandomSeed(), 
 				 Utils.GetRandomSeed())
         if not address:
-            subscribe_address = string.lower(mail.GetSender())
+            subscribe_address = Utils.LCDomain(mail.GetSender())
         else:
             subscribe_address = address
         remote = mail.GetSender()

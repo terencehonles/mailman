@@ -681,7 +681,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def AddMember(self, name, password, digest=0, remote=None):
 	self.IsListInitialized()
 	# Remove spaces... it's a common thing for people to add...
-	name = string.join(string.split(string.lower(name)), '')
+	name = string.join(string.split(name), '')
+        # lower case only the domain part
+        name = Utils.LCDomain(name)
 
 	# Validate the e-mail address to some degree.
 	if not Utils.ValidEmail(name):
@@ -739,15 +741,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 
     def ApprovedAddMember(self, name, password, digest, ack=None):
-        # XXX klm: It *might* be nice to leave the case of the name alone,
-        #          but provide a common interface that always returns the
-        #          lower case version for computations.
         if ack is None:
             if self.send_welcome_msg:
                 ack = 1
             else:
                 ack = 0
-        name = string.lower(name)
+        name = Utils.LCDomain(name)
 	if self.IsMember(name):
 	    raise Errors.MMAlreadyAMember
 	if digest:

@@ -33,31 +33,6 @@ import fcntl
 import random
 import mm_cfg
 
-# Valid toplevel domains for when we check the validity of an email address.
-
-valid_toplevels = ["com", "edu", "gov", "int", "mil", "net", "org",
-"inc", "af", "al", "dz", "as", "ad", "ao", "ai", "aq", "ag", "ar",
-"am", "aw", "au", "at", "az", "bs", "bh", "bd", "bb", "by", "be",
-"bz", "bj", "bm", "bt", "bo", "ba", "bw", "bv", "br", "io", "bn",
-"bg", "bf", "bi", "kh", "cm", "ca", "cv", "ky", "cf", "td", "cl",
-"cn", "cx", "cc", "co", "km", "cg", "ck", "cr", "ci", "hr", "cu",
-"cy", "cz", "dk", "dj", "dm", "do", "tp", "ec", "eg", "sv", "gq",
-"ee", "et", "fk", "fo", "fj", "fi", "fr", "gf", "pf", "tf", "ga",
-"gm", "ge", "de", "gh", "gi", "gb", "uk", "gr", "gl", "gd", "gp",
-"gu", "gt", "gn", "gw", "gy", "ht", "hm", "hn", "hk", "hu", "is",
-"in", "id", "ir", "iq", "ie", "il", "it", "jm", "jp", "jo", "kz",
-"ke", "ki", "kp", "kr", "kw", "kg", "la", "lv", "lb", "ls", "lr",
-"ly", "li", "lt", "lu", "mo", "mg", "mw", "my", "mv", "ml", "mt",
-"mh", "mq", "mr", "mu", "mx", "fm", "md", "mc", "mn", "ms", "ma",
-"mz", "mm", "na", "nr", "np", "an", "nl", "nt", "nc", "nz", "ni",
-"ne", "ng", "nu", "nf", "mp", "no", "om", "pk", "pw", "pa", "pg",
-"py", "pe", "ph", "pn", "pl", "pt", "pr", "qa", "re", "ro", "ru",
-"rw", "kn", "lc", "vc", "sm", "st", "sa", "sn", "sc", "sl", "sg",
-"sk", "si", "sb", "so", "za", "es", "lk", "sh", "pm", "sd", "sr",
-"sj", "sz", "se", "ch", "sy", "tw", "tj", "tz", "th", "tg", "tk",
-"to", "tt", "tn", "tr", "tm", "tc", "tv", "ug", "ua", "um", "us",
-"uy", "uz", "vu", "va", "ve", "vn", "vg", "vi", "wf", "eh", "ws",
-"ye", "yu", "zr", "zm", "zw", "su"]
 
 def list_names():
     """Return the names of all lists in default list directory."""
@@ -253,20 +228,10 @@ def ValidEmail(str):
 	    return 1
     if len(domain_parts) < 2:
 	return 0
-##     if domain_parts[-1] not in valid_toplevels:
-## 	if len(domain_parts) <> 4:
-## 	    return 0
-## 	try:
-## 	    domain_parts = map(eval, domain_parts) 
-## 	except:
-## 	    return 0
-## 	for i in domain_parts:
-## 	    if i < 0 or i > 255:
-## 		return 0
     return 1
 
 
-#
+
 def GetPathPieces(path):
     l = string.split(path, '/')
     try:
@@ -320,12 +285,24 @@ def ParseEmail(email):
     domain = string.split(rest, '.')
     return (user, domain)
 
+
+def LCDomain(addr):
+    "returns the address with the domain part lowercased"
+    atind = string.find(addr, '@')
+    if atind == -1: # no domain part
+        return addr
+    return addr[:atind] + '@' + string.lower(addr[atind + 1:])
+
+
+
 # Return 1 if the 2 addresses match.  0 otherwise.
 # Might also want to match if there's any common domain name...
 # There's password protection anyway.
-
 def AddressesMatch(addr1, addr2):
     "True when username matches and host addr of one addr contains other's."
+    addr1, addr2 = map(LCDomain, [addr1, addr2])
+    if not mm_cfg.SMART_ADDRESS_MATCH:
+        return addr1 == addr2
     user1, domain1 = ParseEmail(addr1)
     user2, domain2 = ParseEmail(addr2)
     if user1 != user2:

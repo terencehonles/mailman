@@ -62,7 +62,14 @@ MAX_SPAWNS        = 40
 USE_CRYPT         = 1
 
 			 # General Defaults #
-
+#
+# if this is set to 1, then mailman will consider user@host.domain as
+# the same address as user@domain.  if it is set to 0, mailman will consider
+# user@host.domain the same address as user@Host.DoMain, but different
+# than user@domain.  usernames will be case preserved, host parts of addresses
+# will all be lowercased.
+#
+SMART_ADDRESS_MATCH = 1
 DEFAULT_FILTER_PROG = ''
 # Default number of batches in which to divide large deliveries:
 DEFAULT_NUM_SPAWNS = 5
