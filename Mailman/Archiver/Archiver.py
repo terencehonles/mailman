@@ -115,7 +115,9 @@ class Archiver:
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
-            return "%s/%s/" % (mm_cfg.PRIVATE_ARCHIVE_URL, self._internal_name)
+            return "%s%s/%s/" % (mm_cfg.PRIVATE_ARCHIVE_URL,
+                                 mm_cfg.CGIEXT,
+                                 self._internal_name)
         else:
             return "%s/%s/" % (mm_cfg.PUBLIC_ARCHIVE_URL, self._internal_name)
 
