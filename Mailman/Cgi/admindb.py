@@ -198,13 +198,18 @@ def PrintPostRequest(mlist, id, info, total, count, form):
     t.AddCellInfo(row+1, col-1, align='right')
     t.AddRow([Bold('Reason:'), reason])
     t.AddCellInfo(row+2, col-1, align='right')
-    t.AddRow([
-        Bold('Action:'),
-        RadioButtonArray(id, ('Defer', 'Approve', 'Reject', 'Discard'),
-                         values=(mm_cfg.DEFER, mm_cfg.APPROVE, mm_cfg.REJECT,
-                                 mm_cfg.DISCARD),
-                         checked=0)
-        ])
+    # We can't use a RadioButtonArray here because horizontal placement can be
+    # confusing to the user and vertical placement takes up too much
+    # real-estate.  This is a hack!
+    buttons = Table(cellspacing="5", cellpadding="0")
+    buttons.AddRow(map(lambda x, s='&nbsp;'*5: s+x+s,
+                       ('Defer', 'Approve', 'Reject', 'Discard')))
+    buttons.AddRow([Center(RadioButton(id, mm_cfg.DEFER, 1)),
+                    Center(RadioButton(id, mm_cfg.APPROVE, 0)),
+                    Center(RadioButton(id, mm_cfg.REJECT, 0)),
+                    Center(RadioButton(id, mm_cfg.DISCARD, 0)),
+                    ])
+    t.AddRow([Bold('Action:'), buttons])
     t.AddCellInfo(row+3, col-1, align='right')
     t.AddRow(['&nbsp;',
               CheckBox('preserve-%d' % id, 'on', 0).Format() +
