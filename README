@@ -31,16 +31,24 @@ Features:
 	moderation, mail based commands, digests, etc...
   o An extensive Web interface customizable on a per-list basis.
   o Web based list administration interface for *all* admin-type tasks.
-  o Automatic Web based hypermail-style archives (using pipermail or
+  o *Automatic Web based hypermail-style archives (using pipermail or
     other external archiver), including provisions for private archives
+  o Integrated mail list to newsgroup gatewaying
+  o Integrated newsgroup to mail list gatewaying (polling-based... if you
+     have access to the nntp server, you should be able to easily do 
+     non-polling based news->mail list gatewaying; email viega@list.org, 
+     I'd like to help get that going and come up
+     with instructions)
   o Smart bounce detection and correction
-  o Fast bulk mailing
+  o Integrated fast bulk mailing (useful for sendmail users)
   o Smart spam protection
   o Extensible logging
-  o Multiple list owners and moderators
+  o Multiple list owners and moderators are possible
   o Optional MIME-compliant digests
   o Nice about which machine you subscribed from if you're from the
 	right domain.
+
+* Now missing, but will return soon!
 
 Requirements:
   You must be root on a machine running a mail transport program that
