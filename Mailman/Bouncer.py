@@ -170,58 +170,56 @@ class Bouncer:
                 return
             import mimetools
             boundary = mimetools.choose_boundary()
-            text = [""]
-            text.append("(This MIME message should be"
-                        " readable as plain text.)")
-            text.append("")
-            text.append("--" + boundary)
-            text.append("Content-type: text/plain; charset=us-ascii")
-            text.append("")
-            text.append("This is a mailman mailing list bounce action notice:")
-            text.append("")
-            text.append("\tMaillist:\t%s" % self.real_name)
-            text.append("\tMember:\t\t%s" % addr)
-            text.append("\tAction:\t\tSubscription %s%s." % (negative, did))
-            text.append("\tReason:\t\tExcessive or fatal bounces.")
-            if succeeded != 1:
-                text.append("\tBUT:\t\t%s\n" % succeeded)
-            text.append("")
-            if did == "disabled" and succeeded == 1:
-                text.append("You can reenable their subscription by visiting "
-                            "their options page")
-                text.append("(via %s) and using your"
-                            % self.GetAbsoluteScriptURL('listinfo'))
-                text.append(
-                    "list admin password to authorize the option change.")
-            text.append("")
-            text.append("The triggering bounce notice is attached below.")
-            text.append("")
-            text.append("Questions?  Contact the mailman site admin,")
-            text.append("\t" + mm_cfg.MAILMAN_OWNER)
+            # report about success
+            but = ''
+            if succeeded <> 1:
+                but = 'BUT:        %s' % succeeded
+            # disabled?
+            if did == 'disabled' and succeeded == 1:
+                reenable = Utils.maketext(
+                    'reenable.txt',
+                    {'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
+                     })
+            else:
+                reenable = ''
+            # the mail message text
+            text = Utils.maketext(
+                'bounce.txt',
+                {'boundary' : boundary,
+                 'listname' : self.real_name,
+                 'addr'     : addr,
+                 'negative' : negative,
+                 'did'      : did,
+                 'but'      : but,
+                 'reenable' : reenable,
+                 'owneraddr': mm_cfg.MAILMAN_OWNER,
+                 })
+            # add this here so it doesn't get wrapped/filled
+            text = text + '\n\n--' + boundary + \
+                   '\nContent-type: text/plain; charset=us-ascii\n'
 
-            text.append("")
-            text.append("--" + boundary)
-            text.append("Content-type: text/plain; charset=us-ascii")
-            text.append("")
-            text.append(string.join(msg.headers, ''))
-            text.append("")
-            text.append(Utils.QuotePeriods(msg.body))
-            text.append("")
-            text.append("--" + boundary + "--")
+            # we do this here so this text won't be wrapped.  note that
+            # 'bounce.txt' has a trailing newline
+            text = text + \
+                   string.join(msg.headers, '') + '\n' + \
+                   Utils.QuotePeriods(msg.body) + '\n' + \
+                   '--' + boundary + '--'
 
             if negative:
                 negative = string.upper(negative)
-            self.SendTextToUser(subject = ("%s member %s %s%s due to bounces"
-                                           % (self.real_name, addr,
-                                              negative, did)),
-                                recipient = recipient,
-                                sender = mm_cfg.MAILMAN_OWNER,
-                                add_headers = [
-                                    "Errors-To: %s" % mm_cfg.MAILMAN_OWNER,
-                                    "MIME-version: 1.0",
-                                    "Content-type: multipart/mixed;"
-                                    ' boundary="%s"' % boundary],
-                                text = string.join(text, '\n'))
+
+            self.SendTextToUser(
+                subject = "%s member %s %s%s due to bounces"
+                % (self.real_name, addr, negative, did),
+                recipient = recipient,
+                sender = mm_cfg.MAILMAN_OWNER,
+                add_headers = [
+                    "Errors-To: %s" % mm_cfg.MAILMAN_OWNER,
+                    "MIME-version: 1.0",
+                    "Content-type: multipart/mixed;"
+                    ' boundary="%s"' % boundary],
+                text = text)
+
     def DisableBouncingAddress(self, addr):
 	"""Disable delivery for bouncing user address.
 
