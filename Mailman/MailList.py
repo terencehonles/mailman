@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 507 $"
+__version__ = "$Revision: 518 $"
 
 try:
     import mm_cfg
@@ -227,7 +227,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
 	     'Are replies to a post directed to the original poster'
 	     ' or to the list?  <tt>Poster</tt> is <em>strongly</em>'
-             ' recommended.'
+             ' recommended.',
 
              "There are many reasons not to introduce headers like reply-to"
              " into other peoples messages - one is that some posters depend"
@@ -238,7 +238,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " discussion of this issue."),
 
 	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Should administrator get immediate notifice of new requests, '
+	     'Should administrator get immediate notice of new requests, '
 	     'as well as daily notices about collected ones?',
 
              "List admins are sent daily reminders of pending admin approval"
