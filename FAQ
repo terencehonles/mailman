@@ -14,13 +14,16 @@ Q. I'm getting really terrible performance for outgoing messages.  It
    seems that if the MTA has trouble resolving DNS for any recipients,
    qrunner just gets really slow clearing the queue.  Any ideas?
 
-A. What's likely happening is that your MTA is doing DNS resolution
-   for messages delivered locally (i.e. from Mailman to your MTA via
-   SMTPDirect.py).  This is a Bad Thing.  You need to turn off
-   synchronous DNS resolution for messages originating from the local
-   host.  See the README.YOURMTA file to see if there's specific
-   instructions on how to fix this for your MTA, or check your MTA's
-   documentation.
+A. What's likely happening is that your MTA is doing DNS resolution on
+   recipients for messages delivered locally (i.e. from Mailman to
+   your MTA via SMTPDirect.py).  This is a Bad Thing.  You need to
+   turn off synchronous DNS resolution for messages originating from
+   the local host.
+
+   In Exim, the value to edit is receiver_verify_hosts.  See
+   README.EXIM for details.  Other MTAs have (of course) different
+   parameters and defaults that control this.  First check the README
+   file for your MTA and then consult your MTA's own documentation.
 
 Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
