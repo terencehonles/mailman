@@ -88,6 +88,7 @@ install: $(SUBDIRS)
 	        echo "Creating directory hierarchy $$dir"; \
 		./mkinstalldirs $$dir; \
 		chmod $(DIRMODE) $$dir; \
+		chmod g+s $$dir; \
 	    else true; \
 	    fi; \
 	done
