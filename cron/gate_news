@@ -154,7 +154,7 @@ def poll_newsgroup(mlist, conn, wm, first, last):
             cmd = '%s %s %s fromusenet' % (
                 mm_cfg.PYTHON,
                 os.path.join(mm_cfg.SCRIPTS_DIR, 'post'),
-                mlist._internal_name())
+                mlist.internal_name())
             file = os.popen(cmd, 'w')
             # Usenet originated messages will not have a Unix envelope
             # (i.e. "From " header).  This breaks Pipermail archiving, so
