@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,29 +21,58 @@ should be compatible with any modern SMTP server.  It is expected that the MTA
 handles all final delivery.  We have to play tricks so that the list object
 isn't locked while delivery occurs synchronously.
 
+Note: This file only handles single threaded delivery.  See SMTPThreaded.py
+for a threaded implementation.
 """
 
-import os
 import time
 import socket
 import smtplib
-from types import TupleType
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
+from Mailman.Handlers import Decorate
 from Mailman.Logging.Syslog import syslog
 from Mailman.SafeDict import MsgSafeDict
 
-threading = None
-try:
-    if mm_cfg.MAX_DELIVERY_THREADS > 0:
-        import threading
-        import Queue
-except ImportError:
-    pass
+import email
+import email.Utils
 
 DOT = '.'
+
+
+
+# Manage a connection to the SMTP server
+class Connection:
+    def __init__(self):
+        self.__connect()
+
+    def __connect(self):
+        self.__conn = smtplib.SMTP()
+        self.__conn.connect(mm_cfg.SMTPHOST, mm_cfg.SMTPPORT)
+        self.__numsessions = mm_cfg.SMTP_MAX_SESSIONS_PER_CONNECTION
+
+    def sendmail(self, envsender, recips, msgtext):
+        try:
+            return self.__conn.sendmail(envsender, recips, msgtext)
+        except smtplib.SMTPException:
+            # For safety, reconnect
+            self.__conn.quit()
+            self.__connect()
+            # Let exceptions percolate up
+            raise
+        # Decrement the session counter, reconnecting if necessary
+        self.__numsessions -= 1
+        # By testing exactly for equality to 0, we automatically handle the
+        # case for SMTP_MAX_SESSIONS_PER_CONNECTION <= 0 meaning never close
+        # the connection.  We won't worry about wraparound <wink>.
+        if self.__numsessions == 0:
+            self.__conn.quit()
+            self.__connect()
+
+    def quit(self):
+        self.__conn.quit()
 
 
 
@@ -52,60 +81,51 @@ def process(mlist, msg, msgdata):
     if not recips:
         # Nobody to deliver to!
         return
-    # Calculate the envelope sender.  When VERPing, envsender is a 2-tuple
-    # containing the list's bounces address and the list's host_name.
-    envsender = None
+    # Calculate the non-VERP envelope sender.
     if mlist:
-        listname = mlist.internal_name()
-        if not msgdata.get('verp'):
-            envsender = mlist.getListAddress('bounces')
+        envsender = mlist.getListAddress('bounces')
     else:
-        listname = '<no list>'
-        if not msgdata.get('verp'):
-            envsender = Utils.get_site_email(extra='bounces')
-    if envsender is None:
-        # We're VERPing.  Pre-calculate what we can.
-        bmailbox, bdomain = Utils.ParseEmail(mlist.getListAddress('bounces'))
-        envsender = (bmailbox, DOT.join(bdomain))
-        # Also, blow away the Sender: and Errors: to headers so remote MTAs
-        # won't be tempted to deliver bounces there instead of our VERP'd
-        # envelope sender.  It would be better to stick in our VERP return
-        # address, but that would have to get done in deliver() below, and by
-        # then we've already flattened the message.  BAW: maybe we shouldn't
-        # do that here?)
-        del msg['sender']
-        del msg['errors-to']
-    # Get the flat, plain text of the message
-    msgtext = msg.as_string(unixfrom=0)
-    # Time to split up the recipient list.  If we're VERPing then each chunk
-    # will have exactly one recipient, and we'll hand craft an envelope sender
-    # for each one separately.  If we're not VERPing, then we'll chunkify
-    # based on SMTP_MAX_RCPTS.  Note that most MTAs have a limit on the number
-    # of recipients they'll swallow in a single transaction.
-    if msgdata.get('verp'):
+        envsender = Utils.get_site_email(extra='bounces')
+    # Time to split up the recipient list.  If we're personalizing or VERPing
+    # then each chunk will have exactly one recipient.  We'll then hand craft
+    # an envelope sender and stitch a message together in memory for each one
+    # separately.  If we're not VERPing, then we'll chunkify based on
+    # SMTP_MAX_RCPTS.  Note that most MTAs have a limit on the number of
+    # recipients they'll swallow in a single transaction.
+    deliveryfunc = None
+    if msgdata.get('verp') or mlist.personalize:
         chunks = [[recip] for recip in recips]
+        msgdata['personalize'] = 1
+        deliveryfunc = verpdeliver
     elif mm_cfg.SMTP_MAX_RCPTS <= 0:
         chunks = [recips]
     else:
         chunks = chunkify(recips, mm_cfg.SMTP_MAX_RCPTS)
+    # If we're doing bulk delivery, then we can stitch up the message now.
+    if deliveryfunc is None:
+        Decorate.process(mlist, msg, msgdata)
+        deliveryfunc = bulkdeliver
     refused = {}
     t0 = time.time()
-    if threading:
-        threaded_deliver(envsender, msgtext, chunks, refused)
-    else:
-        # Don't supply a hostname and port here because that implies a
-        # connection attempt.  We'll connect later in deliver().
-        conn = smtplib.SMTP()
+    numsessions = mm_cfg.SMTP_MAX_SESSIONS_PER_CONNECTION
+    # Open the initial connection
+    origrecips = msgdata['recips']
+    conn = Connection()
+    try:
         for chunk in chunks:
-            deliver(envsender, msgtext, chunk, refused, conn)
+            msgdata['recips'] = chunk
+            deliveryfunc(mlist, msg, msgdata, envsender, refused, conn)
+    finally:
         conn.quit()
+        msgdata['recips'] = origrecips
     # Log the successful post
     t1 = time.time()
     d = MsgSafeDict(msg, {'time'    : t1-t0,
-                          'size'    : len(msgtext),
+                          # BAW: Urg.  This seems inefficient.
+                          'size'    : len(msg.as_string()),
                           '#recips' : len(recips),
                           '#refused': len(refused),
-                          'listname': listname,
+                          'listname': mlist.internal_name(),
                           'sender'  : msg.get_sender(),
                           })
     # We have to use the copy() method because extended call syntax requires a
@@ -206,71 +226,64 @@ def chunkify(recips, chunksize):
 
 
 
-def pre_deliver(envsender, msgtext, failures, chunkq, conn):
-    while 1:
-        # Get the next recipient chunk, if there is one
-        try:
-            recips = chunkq.get(0)
-        except Queue.Empty:
-            # We're done
-            break
-        # Otherwise, process the chunk
-        deliver(envsender, msgtext, recips, failures, conn)
-
-
-def threaded_deliver(envsender, msgtext, chunks, failures):
-    threads = {}
-    numchunks = len(chunks)
-    chunkq = Queue.Queue(numchunks)
-    # Populate the queue with all the chunks that need processing.
-    for chunk in chunks:
-        chunkq.put(chunk)
-    # Start all the threads.  We want each thread to share a connection to the
-    # SMTP server.
-    for i in range(min(numchunks, mm_cfg.MAX_DELIVERY_THREADS)):
-        threadfailures = {}
-        # Don't supply a hostname and port here because that implies a
-        # connection attempt.  We'll connect later in deliver().
-        conn = smtplib.SMTP()
-        t = threading.Thread(
-            target=pre_deliver,
-            args=(envsender, msgtext, threadfailures, chunkq, conn))
-        threads[t] = (threadfailures, conn)
-        t.start()
-    # Now wait for all the threads to complete and collate their failure
-    # dictionaries.
-    for t, (threadfailures, conn) in threads.items():
-        t.join()
-        failures.update(threadfailures)
-        conn.quit()
-    # All threads have exited
-    threads.clear()
+def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
+    for recip in msgdata['recips']:
+        # We now need to stitch together the message with its header and
+        # footer.  If we're VERPIng, we have to calculate the envelope sender
+        # for each recipient.  Note that the list of recipients must be of
+        # length 1.
+        #
+        # BAW: ezmlm includes the message number in the envelope, used when
+        # sending a notification to the user telling her how many messages
+        # they missed due to bouncing.  Neat idea.
+        msgdata['recips'] = [recip]
+        # Make a copy of the message and decorate + delivery that
+        msgcopy = email.message_from_string(msg.as_string())
+        Decorate.process(mlist, msgcopy, msgdata)
+        # Calculate the envelope sender, which we may be VERPing
+        if msgdata.get('verp'):
+            bmailbox, bdomain = Utils.ParseEmail(envsender)
+            rmailbox, rdomain = Utils.ParseEmail(recip)
+            d = {'bounces': bmailbox,
+                 'mailbox': rmailbox,
+                 'host'   : DOT.join(rdomain),
+                 }
+            envsender = '%s@%s' % ((mm_cfg.VERP_FORMAT % d), DOT.join(bdomain))
+        if mlist.personalize:
+            # When personalizing, we want to To: address to point to the
+            # recipient, not to the mailing list
+            del msgcopy['to']
+            if mlist.isMember(recip):
+                name = mlist.getMemberName(recip)
+                msgcopy['To'] = email.Utils.dump_address_pair((name, recip))
+            else:
+                msgcopy['To'] = recip
+        # We can flag the mail as a duplicate for each member, if they've
+        # already received this message, as calculated by Message-ID.  See
+        # AvoidDuplicates.py for details.
+        del msgcopy['x-mailman-copy']
+        if msgdata.get('add-dup-header', {}).has_key(recip):
+            msgcopy['X-Mailman-Copy'] = 'yes'
+        # For the final delivery stage, we can just bulk deliver to a party of
+        # one. ;)
+        bulkdeliver(mlist, msgcopy, msgdata, envsender, failures, conn)
 
 
 
-def deliver(envsender, msgtext, recips, failures, conn):
-    # If we're VERPIng, we have to calculate the envelope sender for each
-    # recipient.  Note that the list of recipients must be of length 1.
-    #
-    # BAW: ezmlm includes the message number in the envelope, used when
-    # sending a notification to the user telling her how many messages they
-    # missed due to bouncing.  Neat idea.
-    if isinstance(envsender, TupleType) and len(recips) == 1:
-        mailbox, domain = Utils.ParseEmail(recips[0])
-        d = {'bounces': envsender[0],
-             'mailbox': mailbox,
-             'host'   : DOT.join(domain),
-             }
-        envsender = '%s@%s' % ((mm_cfg.VERP_FORMAT % d), envsender[1])
+def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
+    # Do some final cleanup of the message header.  Start by blowing away
+    # any the Sender: and Errors-To: headers so remote MTAs won't be
+    # tempted to delivery bounces there instead of our envelope sender
+    del msg['sender']
+    del msg['errors-to']
+    msg['Sender'] = envsender
+    msg['Errors-To'] = envsender
+    # Get the plain, flattened text of the message, sans unixfrom
+    msgtext = msg.as_string()
     refused = {}
     try:
-        # We attempt to connect to the SMTP server.  This test is bogus
-        # because there should be a cleaner way to see if we're already
-        # connected or not. :(
-        if not getattr(conn, 'sock', 0):
-            conn.connect(mm_cfg.SMTPHOST, mm_cfg.SMTPPORT)
         # Send the message
-        refused = conn.sendmail(envsender, recips, msgtext)
+        refused = conn.sendmail(envsender, msgdata['recips'], msgtext)
     except smtplib.SMTPRecipientsRefused, e:
         refused = e.recipients
     # MTA not responding, or other socket problems, or any other kind of
