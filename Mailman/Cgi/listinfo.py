@@ -164,7 +164,7 @@ def FormatListListinfo(list):
                                                    list.FormatUndigestButton()
     replacements['<mm-plain-digests-button>'] = list.FormatPlainDigestsButton()
     replacements['<mm-mime-digests-button>'] = list.FormatMimeDigestsButton()
-    replacements['<mm-subscribe-box>'] = list.FormatBox('email')
+    replacements['<mm-subscribe-box>'] = list.FormatBox('email', size=30)
     replacements['<mm-subscribe-button>'] = list.FormatButton('email-button',
                                                               text='Subscribe')
     replacements['<mm-new-password-box>'] = list.FormatSecureBox('pw')
