@@ -3,6 +3,4 @@ try:
 except ImportError:
     def crypt(string, seed):
         import md5
-        m = md5.new()
-        m.update(string)
-        return m.digest()
+        return md5.new(string).digest()
