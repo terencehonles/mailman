@@ -25,6 +25,7 @@ import sys
 import re
 import traceback
 import email.Iterators
+import email.Utils
 from cStringIO import StringIO
 
 from Mailman import mm_cfg
@@ -626,8 +627,9 @@ approval."""), trunc=0)
     def ProcessSubscribeCmd(self, args, cmd, mail):
         """Parse subscription request and send confirmation request."""
         digest = self.digest_is_default
-        password = ""
-        address = ""
+        password = ''
+        address = ''
+        fullname = ''
         done_digest = 0
         if not len(args):
             password = Utils.MakeRandomPassword()
@@ -655,13 +657,18 @@ Usage: subscribe [password] [digest|nodigest] [address=<email-address>]"""))
         if not password:
             password = Utils.MakeRandomPassword()
         if not address:
-            subscribe_address = Utils.LCDomain(mail.get_sender())
+            sender = mail['from']
+            if not sender:
+                sender = mail.get_sender()
+            fullname, addr = email.Utils.parseaddr(sender)
+            subscribe_address = Utils.LCDomain(addr)
         else:
             subscribe_address = address
         remote = mail.get_sender()
         try:
             # FIXME: extract fullname
             userdesc = UserDesc(address=subscribe_address,
+                                fullname=fullname,
                                 password=password,
                                 digest=digest)
             self.AddMember(userdesc, remote)
