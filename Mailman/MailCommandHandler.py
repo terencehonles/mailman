@@ -241,10 +241,18 @@ class MailCommandHandler:
 	else:
 	    ShowSetUsage()
 	    return
+	try:
+	    sender = self.FindUser(mail.GetSender())
+	    self.ConfirmUserPassword(sender, args[2])
+	except Errors.MMNotAMemberError:
+	    self.AddError("%s isn't subscribed to this list."
+			  % mail.GetSender())
+	    return
+	except Errors.MMBadPasswordError:
+	    self.AddError("You gave the wrong password.")
+            return
 	if args[0] == 'digest':
 	    try:
-		sender = self.FindUser(mail.GetSender())
-		self.ConfirmUserPassword(sender, args[2])
 		self.SetUserDigest(mail.GetSender(), value)
 		self.AddToResponse("Succeeded.")
 	    except Errors.MMAlreadyDigested:
@@ -258,16 +266,11 @@ class MailCommandHandler:
 		self.AddError("List only accepts digest members.")
 	    except Errors.MMCantDigestError:
 		self.AddError("List doesn't accept digest members.")
-	    except Errors.MMNotAMemberError:
-		self.AddError("%s isn't subscribed to this list."
-                              % mail.GetSender())
 	    except Errors.MMListNotReady:
 		self.AddError("List is not functional.")
 	    except Errors.MMNoSuchUserError:
 		self.AddError("%s is not subscribed to this list."
                               % mail.GetSender())
-	    except Errors.MMBadPasswordError:
-		self.AddError("You gave the wrong password.")
 	    except Errors.MMNeedApproval:
 		self.AddApprovalMsg(cmd)
 	    except:
@@ -278,15 +281,8 @@ class MailCommandHandler:
 		self.AddError("%s" % sys.exc_type)
 	elif option_info.has_key(args[0]):
 	    try:
-		sender = self.FindUser(mail.GetSender())
-		if not sender:
-		    self.AddError("You aren't subscribed.")
-		    return
-		self.ConfirmUserPassword(sender, args[2])
 		self.SetUserOption(sender, option_info[args[0]], value)
 		self.AddToResponse("Succeeded.")
-	    except Errors.MMBadPasswordError:
-		self.AddError("You gave the wrong password.")
 	    except:
 		self.AddError("An unknown Mailman error occured.")
 		self.AddError("Please forward on your request to %s" %
