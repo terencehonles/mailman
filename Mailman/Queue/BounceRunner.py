@@ -87,6 +87,10 @@ class BounceRunner(Runner):
                 syslog('bounce', 'discarding unrecognized, message-id: %s',
                        msg.get('message-id', 'n/a'))
             return
+        # BAW: It's possible that there are None's in the list of addresses,
+        # although I'm unsure how that could happen.  Possibly ScanMessages()
+        # can let None's sneak through.  In any event, this will kill them.
+        addrs = filter(None, addrs)
         # Okay, we have some recognized addresses.  We now need to register
         # the bounces for each of these.  If the bounce came to the site list,
         # then we'll register the address on every list in the system, but
