@@ -22,6 +22,11 @@ Usage: %(PROGRAM)s [options] [listname [listadmin-addr [admin-password]]]
 
 Options:
 
+    -l language
+    --language language
+        Make the list's preferred language `language', which must be a two
+        letter language code.
+
     -q/--quiet
         Normally the administrator is notified by email (after a prompt) that
         their list has been created.  This option suppresses the prompt and
@@ -71,7 +76,9 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
 from Mailman import Message
-from Mailman.i18n import _
+from Mailman import i18n
+
+_ = i18n._
 
 PROGRAM = sys.argv[0]
 
@@ -87,17 +94,24 @@ def usage(code, msg=''):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hq',
-                                   ['help', 'quiet'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hql:',
+                                   ['help', 'quiet', 'language='])
     except getopt.error, msg:
         usage(1, msg)
 
+    lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
     quiet = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         if opt in ('-q', '--quiet'):
             quiet = 1
+        if opt in ('-l', '--language'):
+            lang = arg
+
+    # Is the language known?
+    if lang not in mm_cfg.LC_DESCRIPTIONS.keys():
+        usage(1, _('Unknown language: %(lang)s'))
 
     if len(args) > 0:
 	listname = args[0]
@@ -152,6 +166,9 @@ def main():
             mlist.host_name = host_name
             mlist.web_page_url = web_page_url
 
+        # And assign the preferred language
+        mlist.preferred_language = lang
+
         mlist.Save()
     finally:
         mlist.Unlock()
@@ -175,12 +192,20 @@ def main():
              'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
              'requestaddr' : mlist.GetRequestEmail(),
              'siteowner'   : siteadmin,
-             }, mlist.preferred_language)
-        msg = Message.UserNotification(
-            owner_mail, siteadmin,
-            _('Your new mailing list: %(listname)s'),
-            text)
-        msg.send(mlist)
+             }, mlist=mlist)
+        # Set the I18N language to the list's preferred language so the header
+        # will match the template language.  Stashing and restoring the old
+        # translation context is just (healthy? :) paranoia.
+        otranslation = i18n.get_translation()
+        i18n.set_language(mlist.preferred_language)
+        try:
+            msg = Message.UserNotification(
+                owner_mail, siteadmin,
+                _('Your new mailing list: %(listname)s'),
+                text)
+            msg.send(mlist)
+        finally:
+            i18n.set_translation(otranslation)
 
 
 
