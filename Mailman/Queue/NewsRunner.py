@@ -47,9 +47,7 @@ mcre = re.compile(r"""
 
 
 class NewsRunner(Runner):
-    def __init__(self, slice=None, numslices=1, cachelists=1):
-        Runner.__init__(self, mm_cfg.NEWSQUEUE_DIR,
-                        slice, numslices, cachelists)
+    QDIR = mm_cfg.NEWSQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
         if not msgdata.get('prepped'):

@@ -89,9 +89,7 @@ from Mailman.Logging.Syslog import syslog
 
 
 class IncomingRunner(Runner):
-    def __init__(self, slice=None, numslices=1, cachelists=1):
-        Runner.__init__(self, mm_cfg.INQUEUE_DIR,
-                        slice, numslices, cachelists)
+    QDIR = mm_cfg.INQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
         # Try to get the list lock.

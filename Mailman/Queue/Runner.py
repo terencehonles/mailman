@@ -34,13 +34,12 @@ from Mailman.Logging.Syslog import syslog
 
 
 class Runner:
-    def __init__(self, qdir, slice=None, numslices=1, cachelists=1):
-        self._qdir = qdir
+    def __init__(self, slice=None, numslices=1, cachelists=1):
         self._kids = {}
         self._cachelists = cachelists
         # Create our own switchboard.  Don't use the switchboard cache because
         # we want to provide slice and numslice arguments.
-        self._switchboard = Switchboard(qdir, slice, numslices)
+        self._switchboard = Switchboard(self.QDIR, slice, numslices)
         # Create the shunt switchboard
         self._shunt = Switchboard(mm_cfg.SHUNTQUEUE_DIR)
         self._stop = 0

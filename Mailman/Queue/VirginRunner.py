@@ -29,11 +29,7 @@ from Mailman.Queue.IncomingRunner import IncomingRunner
 
 
 class VirginRunner(IncomingRunner):
-    def __init__(self, slice=None, numslices=1, cachelists=1):
-        # Don't call IncomingRunner's __init__() because we want to supply a
-        # different queue directory.
-        Runner.__init__(self, mm_cfg.VIRGINQUEUE_DIR,
-                        slice, numslices, cachelists)
+    QDIR = mm_cfg.VIRGINQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
         # We need to fasttrack this message through any handlers that touch
