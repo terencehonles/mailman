@@ -70,6 +70,9 @@ class Results:
             # Either there was no text/plain part or we ignored some
             # non-text/plain parts.
             self.results.append(_('Ignoring non-text/plain MIME parts'))
+        if part is None:
+            # E.g the outer Content-Type: was text/html
+            return
         body = part.get_payload()
         # text/plain parts better have string payloads
         assert isinstance(body, StringType) or isinstance(body, UnicodeType)
