@@ -137,10 +137,10 @@ def FormatHTML(mlist, doc, template_name, template_info):
 
 def ChangeHTML(mlist, cgi_info, template_name, doc):
     if not cgi_info.has_key('html_code'):
-	doc.AddItem(Header(3,_("Can't have empty html page.")))
-	doc.AddItem(Header(3,_("HTML Unchanged.")))
-	doc.AddItem('<hr>')
-	return
+        doc.AddItem(Header(3,_("Can't have empty html page.")))
+        doc.AddItem(Header(3,_("HTML Unchanged.")))
+        doc.AddItem('<hr>')
+        return
     code = cgi_info['html_code'].value
     f = open(os.path.join(mlist._template_dir, mlist.preferred_language,
                           template_name),

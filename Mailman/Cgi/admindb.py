@@ -33,7 +33,7 @@ from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
 
-
+
 def handle_no_list(doc, extra=''):
     doc.SetTitle(_('Mailman Admindb Error'))
     doc.AddItem(Header(2, _('Mailman Admindb Error')))
@@ -47,7 +47,7 @@ def handle_no_list(doc, extra=''):
     print doc.Format(bgcolor="#ffffff")
 
 
-
+
 def main():
     doc = Document()
     # figure out which list we're going to process
@@ -101,7 +101,7 @@ def main():
         mlist.Unlock()
 
 
-
+
 def PrintRequests(mlist, doc):
     # The only types of requests we know about are add member and post.
     # Anything else that might have gotten in here somehow we'll just ignore
@@ -110,9 +110,9 @@ def PrintRequests(mlist, doc):
                        mlist.real_name + '</em>'))
     # short circuit for when there are no pending requests
     if not mlist.NumRequestsPending():
-	doc.AddItem(_('There are no pending requests.'))
-	doc.AddItem(mlist.GetMailmanFooter())
-	return
+        doc.AddItem(_('There are no pending requests.'))
+        doc.AddItem(mlist.GetMailmanFooter())
+        return
 
     doc.AddItem(Utils.maketext(
         'admindbpreamble.html', {'listname': mlist.real_name},
@@ -126,16 +126,16 @@ def PrintRequests(mlist, doc):
     subpendings = mlist.GetSubscriptionIds()
     if subpendings:
         form.AddItem('<hr>')
-	form.AddItem(Center(Header(2, _('Subscription Requests'))))
-	t = Table(border=2)
-	t.AddRow([
-	    Bold(_('Address')),
-	    Bold(_('Your Decision')),
-	    Bold(_('If you refuse this subscription, please explain (optional)'))
+        form.AddItem(Center(Header(2, _('Subscription Requests'))))
+        t = Table(border=2)
+        t.AddRow([
+            Bold(_('Address')),
+            Bold(_('Your Decision')),
+            Bold(_('If you refuse this subscription, please explain (optional)'))
             ])
         for id in subpendings:
-	    PrintAddMemberRequest(mlist, id, t)
-	form.AddItem(t)
+            PrintAddMemberRequest(mlist, id, t)
+        form.AddItem(t)
     # Post holds are now handled differently
     heldmsgs = mlist.GetHeldMessageIds()
     total = len(heldmsgs)
@@ -150,7 +150,7 @@ def PrintRequests(mlist, doc):
     doc.AddItem(mlist.GetMailmanFooter())
 
 
-
+
 def PrintAddMemberRequest(mlist, id, table):
     time, addr, passwd, digest, lang  = mlist.GetRecord(id)
     table.AddRow([addr,
@@ -159,6 +159,8 @@ def PrintAddMemberRequest(mlist, id, table):
                   TextBox('comment-%d' % id, size=60)
                   ])
 
+
+
 def PrintPostRequest(mlist, id, info, total, count, form):
     # For backwards compatibility with pre 2.0beta3
     if len(info) == 5:
@@ -220,8 +222,8 @@ def PrintPostRequest(mlist, id, info, total, count, form):
                       value=mlist.GetOwnerEmail()).Format()
               ])
     t.AddRow([
-	Bold(_('If you reject this post,<br>please explain (optional):')),
-	TextArea('comment-%d' % id, rows=4, cols=80,
+        Bold(_('If you reject this post,<br>please explain (optional):')),
+        TextArea('comment-%d' % id, rows=4, cols=80,
                  text = Utils.wrap(msgdata.get('rejection-notice',
                                                _('[No explanation given]')),
                                    column=80))
@@ -233,14 +235,14 @@ def PrintPostRequest(mlist, id, info, total, count, form):
                        rows=10, cols=80)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    t.AddRow	([Bold(_('Message Excerpt:')),
+    t.AddRow    ([Bold(_('Message Excerpt:')),
               TextArea('fulltext-%d' % id, text, rows=10, cols=80)])
     t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)
     form.AddItem('<p>')
 
 
-
+
 def HandleRequests(mlist, doc, cgidata):
     erroraddrs = []
     for k in cgidata.keys():

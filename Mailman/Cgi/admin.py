@@ -143,20 +143,20 @@ def main():
                 non-digest delivery or your mailing list will basically be
                 unusable.'''))
 
-	if not mlist.digestable and len(mlist.GetDigestMembers()):
-	    add_error_message(
+        if not mlist.digestable and len(mlist.GetDigestMembers()):
+            add_error_message(
                 doc,
                 _('''You have digest members, but digests are turned
                 off. Those people will not receive mail.'''))
-	if not mlist.nondigestable and len(mlist.GetMembers()):
-	    add_error_message(
+        if not mlist.nondigestable and len(mlist.GetMembers()):
+            add_error_message(
                 doc,
                 _('''You have regular list members but non-digestified mail is
                 turned off.  They will receive mail until you fix this
                 problem.'''))
         # Glom up the results page and print it out
-	show_results(mlist, doc, category, category_suffix, cgidata)
-	print doc.Format(bgcolor='#ffffff')
+        show_results(mlist, doc, category, category_suffix, cgidata)
+        print doc.Format(bgcolor='#ffffff')
     finally:
         mlist.Save()
         mlist.Unlock()
@@ -186,14 +186,14 @@ def admin_overview(msg=''):
     listnames = Utils.list_names()
     listnames.sort()
     for name in listnames:
-	mlist = MailList.MailList(name, lock=0)
+        mlist = MailList.MailList(name, lock=0)
         if mlist.advertised:
             advertised.append(mlist)
     # Greeting depends on whether there was an error or not
     if msg:
-	greeting = FontAttr(msg, color="ff5060", size="+1")
+        greeting = FontAttr(msg, color="ff5060", size="+1")
     else:
-	greeting = _("Welcome!")
+        greeting = _("Welcome!")
 
     welcome = []
     if not advertised:
@@ -205,7 +205,7 @@ def admin_overview(msg=''):
             ])
     else:
         welcome.extend([
-	    greeting,
+            greeting,
             _('<p>Below is the collection of publicly-advertised '),
             Link(mm_cfg.MAILMAN_URL, _('Mailman')),
             _(' mailing lists on %(hostname)s.'),
@@ -435,14 +435,14 @@ def show_variables(mlist, category, cgidata):
     did_col_header = 0
     for item in options:
         if type(item) == types.StringType:
-	    # The very first banner option (string in an options list) is
-	    # treated as a general description, while any others are
-	    # treated as section headers - centered and italicized...
-	    if did_col_header:
-		item = "<center><i>" + item + "</i></center>"
+            # The very first banner option (string in an options list) is
+            # treated as a general description, while any others are
+            # treated as section headers - centered and italicized...
+            if did_col_header:
+                item = "<center><i>" + item + "</i></center>"
             table.AddRow([item])
-	    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0),
-				  0, colspan=2)
+            table.AddCellInfo(max(table.GetCurrentRowIndex(), 0),
+                                  0, colspan=2)
             if not did_col_header:
                 # Do col header after very first string descr, if any...
                 column_header()
@@ -452,7 +452,7 @@ def show_variables(mlist, category, cgidata):
                 # ... but do col header before anything else.
                 column_header()
                 did_col_header = 1
-	    add_options_table_item(mlist, category, table, item)
+            add_options_table_item(mlist, category, table, item)
     table.AddRow(['<br>'])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     return table
@@ -469,9 +469,9 @@ def add_options_table_item(mlist, category, table, item, detailsp=1):
     val = get_item_gui_value(mlist, kind, varname, params)
     table.AddRow([descr, val])
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 1,
-		      bgcolor="#cccccc")
+                      bgcolor="#cccccc")
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
-		      bgcolor="#cccccc")
+                      bgcolor="#cccccc")
 
 
 
@@ -491,7 +491,7 @@ def get_item_characteristics(record):
     elif len(record) == 6:
         varname, kind, params, dependancies, descr, elaboration = record
     else:
-	raise ValueError, _('Badly formed options entry:\n %(record)s')
+        raise ValueError, _('Badly formed options entry:\n %(record)s')
     return varname, kind, params, dependancies, descr, elaboration
 
 
@@ -516,24 +516,24 @@ def get_item_gui_value(mlist, kind, varname, params):
             checked = checked - 1
         return RadioButtonArray(varname, params, checked)
     elif (kind == mm_cfg.String or kind == mm_cfg.Email or
-	  kind == mm_cfg.Host or kind == mm_cfg.Number):
-	return TextBox(varname, getattr(mlist, varname), params)
+          kind == mm_cfg.Host or kind == mm_cfg.Number):
+        return TextBox(varname, getattr(mlist, varname), params)
     elif kind == mm_cfg.Text:
-	if params:
-	    r, c = params
-	else:
-	    r, c = None, None
-	val = getattr(mlist, varname)
-	if not val:
-	    val = ''
-	return TextArea(varname, val, r, c)
+        if params:
+            r, c = params
+        else:
+            r, c = None, None
+        val = getattr(mlist, varname)
+        if not val:
+            val = ''
+        return TextArea(varname, val, r, c)
     elif kind == mm_cfg.EmailList:
-	if params:
-	    r, c = params
-	else:
-	    r, c = None, None
-	res = NL.join(getattr(mlist, varname))
-	return TextArea(varname, res, r, c, wrap='off')
+        if params:
+            r, c = params
+        else:
+            r, c = None, None
+        res = NL.join(getattr(mlist, varname))
+        return TextArea(varname, res, r, c, wrap='off')
     elif kind == mm_cfg.FileUpload:
         # like a text area, but also with uploading
         if params:
@@ -552,12 +552,12 @@ def get_item_gui_value(mlist, kind, varname, params):
     # jcrey - new to deal with language popup
     elif kind == mm_cfg.Select:
         if params:
-	   values, legend, selected = params
-	else:
-	   values = mlist.GetAvailableLanguages()
-	   legend = map(_, map(Utils.GetLanguageDescr, values))
-	   selected = values.index(mlist.preferred_language)
-	return SelectOptions(varname, values, legend, selected)
+           values, legend, selected = params
+        else:
+           values = mlist.GetAvailableLanguages()
+           legend = map(_, map(Utils.GetLanguageDescr, values))
+           selected = values.index(mlist.preferred_language)
+        return SelectOptions(varname, values, legend, selected)
 
 
 
@@ -628,7 +628,7 @@ def membership_options(mlist, cgidata):
         buttons = []
         for ci in chunk_indices:
             start, end = chunks[ci][0], chunks[ci][-1]
-	    url = mlist.GetScriptURL('admin')
+            url = mlist.GetScriptURL('admin')
             buttons.append("<a href=%(url)s/members?chunk=%(ci)d>" +
             _("from %(start)s to %(end)s") + "</a>")
         buttons = apply(UnorderedList, tuple(buttons))
@@ -762,37 +762,37 @@ def submit_button():
 # Options processing
 def get_valid_value(mlist, prop, my_type, val, dependant):
     if my_type == mm_cfg.Radio or my_type == mm_cfg.Toggle:
-	if type(val) <> types.IntType:
+        if type(val) <> types.IntType:
             try:
                 val = int(val)
             except ValueError:
-		pass
-		# Don't know what to do here...
-	    return val
+                pass
+                # Don't know what to do here...
+            return val
     elif my_type == mm_cfg.String or my_type == mm_cfg.Text:
-	return val
+        return val
     elif my_type == mm_cfg.Email:
-	try:
+        try:
             Utils.ValidateEmail(val)
             return val
         except Errors.EmailAddressError:
             # TBD: should have a way of displaying the results of the
             # operation.
             pass
-	# Revert to the old value.
-	return getattr(mlist, prop)
+        # Revert to the old value.
+        return getattr(mlist, prop)
     elif my_type == mm_cfg.EmailList:
         def validp(addr):
-	    try:
+            try:
                 Utils.ValidateEmail(addr)
                 return 1
             except Errors.EmailAddressError:
                 return 0
         val = [addr for addr in [s.strip() for s in val.split(NL)]
                if validp(addr)]
-	return val
+        return val
     elif my_type == mm_cfg.Host:
-	return val
+        return val
     elif my_type == mm_cfg.Number:
         num = -1
         try:
@@ -809,15 +809,15 @@ def get_valid_value(mlist, prop, my_type, val, dependant):
     elif my_type == mm_cfg.Select:
         return val
     else:
-	# Should never get here...
-	return val
+        # Should never get here...
+        return val
 
 
 
 def change_options(mlist, category, cgi_info, document):
     confirmed = 0
     if cgi_info.has_key('newpw'):
-	if cgi_info.has_key('confirmpw'):
+        if cgi_info.has_key('confirmpw'):
             if cgi_info.has_key('adminpw') and cgi_info['adminpw'].value:
                 try:
                     mlist.ConfirmAdminPassword(cgi_info['adminpw'].value)
@@ -840,7 +840,7 @@ def change_options(mlist, category, cgi_info, document):
                 else:
                     add_error_message(document, _('Passwords did not match'),
                                     tag='Error: ')
-	else:
+        else:
             add_error_message(document,
                             _('You must type in your new password twice'),
                             tag='Error: ')
@@ -906,7 +906,7 @@ def change_options(mlist, category, cgi_info, document):
     # mass subscription processing for members category
     #
     if cgi_info.has_key('subscribees'):
-	name_text = cgi_info['subscribees'].value
+        name_text = cgi_info['subscribees'].value
         name_text = name_text.replace('\r', '')
         names = filter(None, [unquote(n.strip()) for n in name_text.split(NL)])
         send_welcome_msg = int(
