@@ -137,7 +137,7 @@ def main():
             elif os.environ.has_key('REMOTE_ADDR'):
                 remote = os.environ['REMOTE_ADDR']
             if remote:
-                remote = " from %s"
+                remote = " from %s" % remote
 
             if digest:
                 digesting = " digest"
