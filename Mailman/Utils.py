@@ -615,9 +615,9 @@ def reap(kids, func=None):
 # unhexlify(hexlify(s)) == s
 def hexlify(s):
     acc = []
-    def munge(byte, acc=acc, a=ord('a'), z=ord('0')):
-        if byte > 9: acc.append(byte+a-10)
-        else: acc.append(byte+z)
+    def munge(byte, append=acc.append, a=ord('a'), z=ord('0')):
+        if byte > 9: append(byte+a-10)
+        else: append(byte+z)
     for c in s:
         hi, lo = divmod(ord(c), 16)
         munge(hi)
@@ -626,6 +626,9 @@ def hexlify(s):
 
 def unhexlify(s):
     acc = []
+    append = acc.append
+    # In Python 2.0, we can use the int() built-in
+    int16 = string.atol
     for i in range(0, len(s), 2):
-        acc.append(chr(int(s[i], 16)*16 + int(s[i+1], 16)))
+        append(chr(int16(s[i], 16)*16 + int16(s[i+1], 16)))
     return string.join(acc, '')
