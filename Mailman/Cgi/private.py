@@ -105,6 +105,16 @@ def main():
         true_path(path))
 
     listname = string.lower(parts[0])
+    mboxfile = ''
+    if len(parts) > 1:
+        mboxfile = parts[1]
+
+    # See if it's the list's mbox file is being requested
+    if listname[-5:] == '.mbox' and mboxfile[-5:] == '.mbox' and \
+           listname[:-5] == mboxfile[:-5]:
+        listname = listname[:-5]
+    else:
+        mboxfile = ''
 
     # If it's a directory, we have to append index.html in this script.  We
     # must also check for a gzipped file, because the text archives are
@@ -117,8 +127,8 @@ def main():
         true_filename = true_filename + '.gz'
 
     try:
-        listobj = MailList.MailList(listname, lock=0)
-        listobj.IsListInitialized()
+        mlist = MailList.MailList(listname, lock=0)
+        mlist.IsListInitialized()
     except Errors.MMListError, e:
         msg = 'No such list <em>%s</em>' % listname
         doc.SetTitle("Private Archive Error - %s" % msg)
@@ -140,9 +150,9 @@ def main():
 
     is_auth = 0
     message = ("Please enter your %s subscription email address "
-               "and password." % listobj.real_name)
+               "and password." % mlist.real_name)
     try:
-        is_auth = listobj.WebAuthenticate(user=user,
+        is_auth = mlist.WebAuthenticate(user=user,
                                           password=password,
                                           cookie='archive')
     except (Errors.MMBadUserError, Errors.MMBadPasswordError,
@@ -162,14 +172,19 @@ def main():
         print 'Content-type: text/html\n\n'
         page = PAGE
         while path and path[0] == '/': path=path[1:]  # Remove leading /'s
-        basepath = os.path.split(listobj.GetBaseArchiveURL())[0]
-        listname = listobj.real_name
+        basepath = os.path.split(mlist.GetBaseArchiveURL())[0]
+        listname = mlist.real_name
         print page % vars()
         sys.exit(0)
 
     # Authorization confirmed... output the desired file
     try:
-        if true_filename[-3:] == '.gz':
+        ctype = content_type(path)
+        if mboxfile:
+            f = open(os.path.join(mlist.archive_directory + '.mbox',
+                                  mlist.internal_name() + '.mbox'))
+            ctype = 'text/plain'
+        elif true_filename[-3:] == '.gz':
             import gzip
             f = gzip.open(true_filename, 'r')
         else:
@@ -180,9 +195,6 @@ def main():
         print "<H3>Archive File Not Found</H3>"
         print "No file", path, '(%s)' % true_filename
     else:
-        print 'Content-type:', content_type(path), '\n'
-        while (1):
-            data = f.read(16384)
-            if data == "": break
-            sys.stdout.write(data)
+        print 'Content-type: %s\n' % ctype
+        sys.stdout.write(f.read())
         f.close()
