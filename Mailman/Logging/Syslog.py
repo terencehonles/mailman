@@ -36,7 +36,14 @@ class _Syslog:
     def __del__(self):
         self.close()
 
-    def LogMsg(self, kind, msg, *args, **kws):
+    def write(self, kind, msg, *args, **kws):
+        self.write_ex(kind, msg, args, kws)
+
+    # We need this because SMTPDirect tries to pass in a special dict-like
+    # object, which is not a concrete dictionary.  This is not allowed by
+    # Python's extended call syntax. :(
+    def write_ex(self, kind, msg, args=None, kws=None):
+        origmsg = msg
         logf = self._logfiles.get(kind)
         if not logf:
             logf = self._logfiles[kind] = StampedLogger(kind)
@@ -47,11 +54,11 @@ class _Syslog:
                 msg %= kws
         # It's really bad if exceptions in the syslogger cause other crashes
         except Exception, e:
-            msg = 'Bad format "%s": %s' % (msg, e)
+            msg = 'Bad format "%s": %s: %s' % (origmsg, repr(e), e)
         logf.write(msg + '\n')
 
     # For the ultimate in convenience
-    __call__ = LogMsg
+    __call__ = write
 
     def close(self):
         for kind, logger in self._logfiles.items():
