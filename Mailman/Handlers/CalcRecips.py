@@ -20,7 +20,6 @@ This module calculates the non-digest recipients for the message based on the
 list's membership and configuration options.  It places the list of recipients
 on the `recips' attribute of the message.  This attribute is used by the
 SendmailDeliver and BulkDeliver modules.
-
 """
 
 from Mailman import mm_cfg
