@@ -25,6 +25,8 @@ import types
 import Crypt
 import Errors
 import Utils
+import Cookie
+from urlparse import urlparse
 import mm_cfg
 
 # TBD: is this the best location for the site password?
@@ -68,30 +70,60 @@ class SecurityManager:
 	    raise Errors.MMBadPasswordError
 	return 1
 
-    def MakeCookie(self):
+    def WebAuthenticate(self, user=None, password=None, cookie=None):
+        if cookie:
+            cookie_key = self._internal_name + ':' + cookie
+        else:
+            cookie_key = self._internal_name
+        if password is not None:  # explicit login
+            if user:
+                self.ConfirmUserPassword(user, password)
+            else:
+                self.ConfirmAdminPassword(password)
+            print self.MakeCookie(cookie_key)
+            return 1
+        else:
+            return self.CheckCookie(cookie_key)
+
+    def MakeCookie(self, key):
+        # Make sure we have the necessary ingredients for our cookie
         client_ip = os.environ.get('REMOTE_ADDR') or '0.0.0.0'
         issued = int(time.time())
         expires = issued + mm_cfg.ADMIN_COOKIE_LIFE
+        # ... including the secret ingredient :)
         secret = self.password
         mac = hash(secret + client_ip + `issued` + `expires`)
-        return [client_ip, issued, expires, mac]
+        # Mix all ingredients gently together,
+        c = Cookie.Cookie()
+        c[key] = [client_ip, issued, expires, mac]
+        # place in oven,
+        path = urlparse(mm_cfg.DEFAULT_URL)[2] # '/mailman'
+        c[key]['path'] = path
+        # and bake until golden brown
+        c[key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
+        return c
 
-    def CheckCookie(self, cookie):
-        if type(cookie) <> type([]):
+    def CheckCookie(self, key):
+        if not os.environ.has_key('HTTP_COOKIE'):
             return 0
-        if len(cookie) <> 4:
+        c = Cookie.Cookie(os.environ['HTTP_COOKIE'])
+        if not c.has_key(key):
             return 0
+        cookie = c[key].value
+        if (type(cookie) <> type([]) or
+            len(cookie) <> 4):
+            raise Errors.MMInvalidCookieError
         client_ip = os.environ.get('REMOTE_ADDR') or '0.0.0.0'
-        [for_ip, issued, expires, received_mac] = cookie
-        if for_ip <> client_ip:
-            return 0
         now = time.time()
-        if not issued < now < expires:
-            return 0
+        [for_ip, issued, expires, received_mac] = cookie
+        if (for_ip <> client_ip or now < issued):
+            raise Errors.MMInvalidCookieError
+        if now > expires:
+            raise Errors.MMExpiredCookieError
         secret = self.password
         mac = hash(secret + client_ip + `issued` + `expires`)
         if mac <> received_mac:
-            return 0
+            raise Errors.MMInvalidCookieError
         return 1
 
     def ConfirmUserPassword(self, user, pw):

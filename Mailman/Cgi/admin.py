@@ -26,7 +26,6 @@ import sys
 import os, cgi, string, types, time
 import paths                                      # path hacking
 from Mailman import Utils, MailList, Errors, MailCommandHandler
-from Mailman import Cookie
 from Mailman.htmlformat import *
 from Mailman.Crypt import crypt
 from Mailman import mm_cfg
@@ -39,33 +38,6 @@ CATEGORIES = [('general', "General Options"),
               ('bounce', "Bounce Options"),
               ('archive', "Archival Options"),
 	      ('gateway', "Mail-News and News-Mail gateways")]
-
-
-
-def isAuthenticated(list, password=None, SECRET="SECRET"):
-    if password is not None:  # explicit login
-        try:             
-            list.ConfirmAdminPassword(password)
-        except Errors.MMBadPasswordError:
-            AddErrorMessage(doc, 'Error: Incorrect admin password.')
-            return 0
-
-        token = list.MakeCookie()
-        c = Cookie.Cookie()
-        cookie_key = list_name + "-admin"
-        c[cookie_key] = token
-        c[cookie_key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
-        print c                         # Output the cookie
-        return 1
-    if os.environ.has_key('HTTP_COOKIE'):
-        c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
-        if c.has_key(list_name + "-admin"):
-            if list.CheckCookie(c[list_name + "-admin"].value):
-		return 1
-	    else:
-		AddErrorMessage(doc, "error decoding authorization cookie")
-		return 0
-    return 0
 
 
 def main():
@@ -110,26 +82,51 @@ def main():
             category = 'general'
         global cgi_data
         cgi_data = cgi.FieldStorage()
+
+        # Authenticate.
         is_auth = 0
-        if cgi_data.has_key("adminpw"):
-            is_auth = isAuthenticated(lst, cgi_data["adminpw"].value)
-            message = FontAttr("Sorry, wrong password. Try again.",
-                               color="ff5060", size="+1").Format()
-        else: 
-             is_auth = isAuthenticated(lst)
-             message = ""
+        adminpw = None
+        message = ""
+
+        # If we get a password change request, we first authenticate
+        # by cookie here, and issue a new cookie later on iff the
+        # password change worked out.
+        #
+        # The idea is to set only _one_ cookie when the admin password
+        # changes.  The new cookie is needed, because the checksum part
+        # of the cookie is based on (among other things) the list's
+        # admin password.
+        if cgi_data.has_key('adminpw') and not cgi_data.has_key('newpw'):
+            adminpw = cgi_data['adminpw'].value
+        try:
+            # admin uses cookies with -admin name suffix
+            is_auth = lst.WebAuthenticate(password=adminpw,
+                                          cookie='admin')
+        except Errors.MMBadPasswordError:
+            message = 'Sorry, wrong password.  Try again.'
+        except Errors.MMExpiredCookieError:
+            message = 'Your cookie has gone stale, ' \
+                      'enter password to get a new one.',
+        except Errors.MMInvalidCookieError:
+            message = 'Error decoding authorization cookie.'
+        except Errors.MMAuthenticationError:
+            message = 'Authentication error.'
+
         if not is_auth:
             defaulturi = '/mailman/admin%s/%s' % (mm_cfg.CGIEXT, list_name)
-            print "Content-type: text/html\n\n"
+            if message:
+                message = FontAttr(
+                    message, color='FF5060', size='+1').Format()
+            print 'Content-type: text/html\n\n'
             text = Utils.maketext(
                 'admlogin.txt',
-                {"listname": list_name,
-                 "path"    : Utils.GetRequestURI(defaulturi),
-                 "message" : message,
+                {'listname': list_name,
+                 'path'    : Utils.GetRequestURI(defaulturi),
+                 'message' : message,
                  })
             print text
             return
-        
+
         # is the request for variable details?
         varhelp = None
         if cgi_data.has_key('VARHELP'):
@@ -743,6 +740,8 @@ def ChangeOptions(lst, category, cgi_info, document):
                 if new == confirm:
                     lst.password = crypt(new, Utils.GetRandomSeed())
                     dirty = 1
+                    # Re-authenticate (to set new cookie)
+                    lst.WebAuthenticate(password=new, cookie='admin')
                 else:
                     m = 'Error: Passwords did not match.'
                     document.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))

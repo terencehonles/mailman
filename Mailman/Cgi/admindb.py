@@ -22,34 +22,7 @@ import sys
 import os, cgi, string, types
 from Mailman import Utils, MailList, Errors
 from Mailman.htmlformat import *
-from Mailman import Cookie
 from Mailman import mm_cfg
-
-# copied from admin.py
-def isAuthenticated(mlist, password=None, SECRET="SECRET"):
-    if password is not None:  # explicit login
-        try:             
-            mlist.ConfirmAdminPassword(password)
-        except Errors.MMBadPasswordError:
-            AddErrorMessage(doc, 'Error: Incorrect admin password.')
-            return 0
-
-        token = list.MakeCookie()
-        c = Cookie.Cookie()
-        cookie_key = list_name + "-admin"
-        c[cookie_key] = token
-        c[cookie_key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
-        print c                         # Output the cookie
-        return 1
-    if os.environ.has_key('HTTP_COOKIE'):
-        c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
-        if c.has_key(list_name + "-admin"):
-	    if list.CheckCookie(c[list_name + "-admin"].value):
-		return 1
-	    else:
-		AddErrorMessage(doc, "error decoding authorization cookie")
-		return 0
-    return 0
 
 
 def main():
@@ -98,17 +71,32 @@ def main():
     try:
         form = cgi.FieldStorage()
 
-        # authenticate.  all copied from admin.py
+        # Authenticate.
         is_auth = 0
+        adminpw = None
+        message = ""
+
         if form.has_key('adminpw'):
-            is_auth = isAuthenticated(list, form['adminpw'].value)
-            message = FontAttr('Sorry, wrong password.  Try again.',
-                               color='ff5060', size='+1').Format()
-        else:
-            is_auth = isAuthenticated(list)
-            message = ''
+            adminpw = form['adminpw'].value
+        try:
+            # admindb uses the same cookie as admin
+            is_auth = list.WebAuthenticate(password=adminpw,
+                                           cookie='admin')
+        except Errors.MMBadPasswordError:
+            message = 'Sorry, wrong password.  Try again.'
+        except Errors.MMExpiredCookieError:
+            message = 'Your cookie has gone stale, ' \
+                      'enter password to get a new one.',
+        except Errors.MMInvalidCookieError:
+            message = 'Error decoding authorization cookie.'
+        except Errors.MMAuthenticationError:
+            message = 'Authentication error.'
+            
         if not is_auth:
             defaulturi = '/mailman/admindb%s/%s' % (mm_cfg.CGIEXT, list_name)
+            if message:
+                message = FontAttr(
+                    message, color='FF5060', size='+1').Format()
             print 'Content-type: text/html\n\n'
             text = Utils.maketext(
                 'admlogin.txt',
