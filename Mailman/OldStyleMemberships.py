@@ -204,9 +204,13 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         else:
             self.__mlist.members[member] = value
         self.setMemberPassword(member, password)
+
         self.setMemberLanguage(member, language)
         if realname:
             self.setMemberName(member, realname)
+        # Set the member's default set of options
+        if self.__mlist.new_member_options:
+            self.__mlist.user_options[member] = self.__mlist.new_member_options
     
     def removeMember(self, member):
         assert self.__mlist.Locked()
