@@ -311,7 +311,7 @@ class Bouncer:
 	REMOVE = 2
 
 	# Bounce patterns where it's simple to figure out the email addr.
-	email_regexp = '<?\([^ \t@s|<>]+@[^ \t@<>]+\.[^ \t<>.]+\)>?'
+	email_regexp = '<?\([^ \t@|<>]+@[^ \t@<>]+\.[^ \t<>.]+\)>?'
 	simple_bounce_pats = (
 	    (regex.compile('.*451 %s.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*554 %s.*' % email_regexp), BOUNCE),
@@ -322,7 +322,8 @@ class Bouncer:
 	    (regex.compile('%s .bounced.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*%s\.\.\. Deferred.*' % email_regexp), BOUNCE),
 	    (regex.compile('.*User %s not known.*' % email_regexp), REMOVE),
-	    (regex.compile('.*%s: User unknown.*' % email_regexp), REMOVE))
+	    (regex.compile('.*%s: User unknown.*' % email_regexp), REMOVE),
+            (regex.compile('.*%s\.\.\. User unknown' % email_regexp), REMOVE))
 	# patterns we can't directly extract the email (special case these)
 	messy_pattern_1 = regex.compile('^Recipient .*$')
 	messy_pattern_2 = regex.compile('^Addressee: .*$')
