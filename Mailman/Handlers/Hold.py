@@ -239,6 +239,8 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             nmsg = Message.UserNotification(owneraddr, owneraddr, subject,
                                             lang=lang)
             nmsg.set_type('multipart/mixed')
+            # No charset parameter on multipart/mixeds
+            nmsg.set_charset(None)
             text = MIMEText(
                 Utils.maketext('postauth.txt', d, raw=1, mlist=mlist),
                 _charset=charset)
