@@ -184,8 +184,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetListIdentifier(self):
         """Return the unique (RFC draft-chandhok-listid-02) identifier."""
-        return ("%s <%s.%s>" %
-                (self.description, self._internal_name, self.host_name))
+        id = '<%s.%s>' % (self._internal_name, self.host_name)
+        if self.description:
+            id = self.description + ' ' + id
+        return id
 
     def GetScriptURL(self, scriptname, absolute=0):
         return Utils.ScriptURL(scriptname, self.web_page_url, absolute) + \
