@@ -25,7 +25,7 @@ import errno
 import mimetypes
 import tempfile
 from cStringIO import StringIO
-from types import StringType
+from types import IntType
 
 from email.Parser import HeaderParser
 from email.Generator import Generator
@@ -75,7 +75,7 @@ def process(mlist, msg, msgdata=None):
         # If the part is text/plain, we leave it alone
         if part.get_type('text/plain') == 'text/plain':
             pass
-        elif part.get_type() == 'text/html' and sanitize in (0, 1, 2):
+        elif part.get_type() == 'text/html' and isinstance(sanitize, IntType):
             if sanitize == 0:
                 if outer:
                     raise DiscardMessage
@@ -83,6 +83,19 @@ def process(mlist, msg, msgdata=None):
             elif sanitize == 2:
                 # By leaving it alone, Pipermail will automatically escape it
                 pass
+            elif sanitize == 3:
+                # Pull it out as an attachment but leave it unescaped.  This
+                # is dangerous, but perhaps useful for heavily moderated
+                # lists.
+                omask = os.umask(002)
+                try:
+                    url = save_attachment(mlist, part, filter_html=0)
+                finally:
+                    os.umask(omask)
+                part.set_payload(_("""\
+An HTML attachment was scrubbed...
+URL: %(url)s
+"""))
             else:
                 # HTML-escape it and store it as an attachment, but make it
                 # look a /little/ bit prettier. :(
@@ -102,7 +115,7 @@ def process(mlist, msg, msgdata=None):
                 finally:
                     os.umask(omask)
                 part.set_payload(_("""\
-An HTML attachment was scrubbed.
+An HTML attachment was scrubbed...
 URL: %(url)s
 """))
         # If the message isn't a multipart, then we'll strip it out as an
