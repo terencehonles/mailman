@@ -1226,7 +1226,7 @@ it will not be changed."""),
         # check all recipient addresses against the list's explicit addresses,
         # specifically To: Cc: and Resent-to:
         to = []
-        for header in ('to', 'cc', 'resent-to'):
+        for header in ('to', 'cc', 'resent-to', 'resent-cc'):
             to.extend(msg.getaddrlist(header))
         for fullname, addr in to:
             addr = string.lower(addr)
