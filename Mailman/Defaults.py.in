@@ -322,7 +322,7 @@ PUBLIC_ARCHIVE_FILE_DIR 	= os.path.join(PREFIX, 'archives/public')
 PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 
 # The Mailman version, also set by configure
-VERSION           = "1.0.2"
+VERSION           = "1.1"
 
 # Data file version number
 DATA_FILE_VERSION = 15
