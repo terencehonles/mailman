@@ -40,3 +40,6 @@ def process(mlist, msg, msgdata):
         syslog('error', 'Exception while calculating message footer:\n%s' % e)
         footer = '[INVALID FOOTER]'
     msg.body = header + msg.body + footer
+    # Mark the message as dirty so that its text will be forced to disk next
+    # time it's queued.
+    msgdata['_dirty'] = 1

@@ -36,3 +36,6 @@ def process(mlist, msg, msgdata):
     del msg['x-confirm-reading-to']
     # pegasus mail uses this one... sigh
     del msg['x-pmrqc']
+    # Mark the message as dirty so that its text will be forced to disk next
+    # time it's queued.
+    msgdata['_dirty'] = 1

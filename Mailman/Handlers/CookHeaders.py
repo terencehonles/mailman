@@ -103,3 +103,7 @@ def process(mlist, msg, msgdata):
     # List-Archive
     # List-Software
     # X-Listserver
+    #
+    # Mark the message as dirty so that its text will be forced to disk next
+    # time it's queued.
+    msgdata['_dirty'] = 1
