@@ -25,7 +25,7 @@ started:
 	@cat status | while read name version status rest; do [ "$$status" == "started" ] && echo $$name; done | sort
 
 status-%: %
-	@cat status | fgrep $<
+	@cat status | grep "^$< "
 
 install:
 	sudo install -d $(TARGET)
