@@ -36,6 +36,7 @@ import os, sys
 import string, re
 import paths
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.Logging.Utils import LogStdErr
 
 LogStdErr("error", "deliver")
@@ -46,6 +47,7 @@ TRIES = 5                               # Number of times to retry
 
 def main():
     if not forker():
+        # in the child
         try:
             do_child()
         finally:
@@ -130,7 +132,7 @@ def ContactTransportForEachGroup(sender, groups, text):
             os._exit(0)
 
 def forker(tries=TRIES, refract=REFRACT):
-    """Fork, retrying on EGAIN errors with refract secs pause between tries.
+    """Fork, retrying on EAGAIN errors with refract secs pause between tries.
 
     Returns value of os.fork(), or raises the exception for:
      (1) non-EAGAIN exception, or
@@ -149,7 +151,7 @@ def forker(tries=TRIES, refract=REFRACT):
                 time.sleep(refract)
             else:
                 # No go - reraise original exception, same stack frame and all.
-                raise val, None, sys.exc_info()[2]
+                Utils.reraise()
     return got
 
 if __name__ == "__main__":
