@@ -19,9 +19,8 @@ users = {}				# user: (listname, password, url)
 
 USERPASSWORDSTEXT = """
 This is a reminder, sent out once a month, about your %s
-mailing list memberships.  It includes your configuration info and
-how to use it to change it or unsubscribe from a list.  Here are the
-details:
+mailing list memberships.  It includes your subscription info and
+how to use it to change it or unsubscribe from a list.
 
 %s
 %s
@@ -31,12 +30,12 @@ configuration for the respective list.
 
 In addition to the URL web interfaces, you can also use email to make the
 changes.  For more info, send a message to the '-request' address of the
-list (for example, %s-request@%s) containing just the word
-'help' in the message body, and an email message will be sent to you with
-instructions.
+list (for example, %s-request@%s) containing just the
+word 'help' in the message body, and an email message will be sent to you
+with instructions.
 
-Questions, problems, comments?
-Please send them to mailman-owner@%s.  Thanks!
+If you have questions, problems, comments, etc, send them to
+mailman-owner@%s.  Thanks!
 """
 
 def MailAllPasswords(list, users):
@@ -48,7 +47,10 @@ def MailAllPasswords(list, users):
     for user, data in users.items():
 	table = []
 	for l, p, u in data:
-	    table.append("%-10s %-10s  %s" % (l, p, u))
+	    if len(l) > 9:
+		table.append("%s\n           %-10s  %s" % (l, p, u))
+	    else:
+		table.append("%-10s %-10s  %s" % (l, p, u))
 	header = ("%-10s %-10s  %s\n%-10s %-10s  %s"
 		  % ("List", "Password", "URL", "----", "--------", "---"))
 	text = USERPASSWORDSTEXT % (list.host_name,
@@ -56,19 +58,17 @@ def MailAllPasswords(list, users):
 				    string.join(table, "\n"),
 				    l, list.host_name,
 				    list.host_name)
- 	list.SendTextToUser(subject = subj,
- 			    recipient = user,
- 			    text = text)
+  	list.SendTextToUser(subject = subj,
+  			    recipient = user,
+  			    text = text,
+			    sender = mm_cfg.MAILMAN_OWNER)
 
 # Consolidate all the list/url/password info for each user, so we send
 # the user a single message with the info for all their lists on this
 # site.
 list = None
 for name in maillist.list_names():
-    try:
-	list = maillist.MailList(name)
-    except:
-	continue
+    list = maillist.MailList(name)
     url = list.GetScriptURL('listinfo')
     list_name = list.real_name
     for user, password in list.passwords.items():
