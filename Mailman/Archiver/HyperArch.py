@@ -917,7 +917,8 @@ class HyperArchive(pipermail.T):
     def __getstate__(self):
         d={}
         for each in self.__dict__.keys():
-            if not (each in ['maillist','_lock_file','_unlocklist']):
+            if not (each in ['maillist','_lock_file','_unlocklist',
+                             'VERBOSE']):
                 d[each] = self.__dict__[each]
         return d
 
