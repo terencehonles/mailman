@@ -120,7 +120,8 @@ class Message(rfc822.Message):
         For each enqueued message, a .msg and a .db file is written.  The .msg
         contains the plain text of the message (TBD: should this be called
         .txt?).  The .db contains a marshaled dictionary of message metadata.
-        The base name of the file is the SHA hexdigest of the message text.
+        The base name of the file is the SHA hexdigest of some unique data,
+        currently the message text + the list's name + the current time.
 
         The message metadata is a dictionary calculated as follows:
 
@@ -141,7 +142,8 @@ class Message(rfc822.Message):
         """
         # Calculate a unique name for the queue file
         text = repr(self)
-        filebase = sha.new(text).hexdigest()
+        hashfood = text + mlist.internal_name() + `time.time()`
+        filebase = sha.new(hashfood).hexdigest()
         msgfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.msg')
         dbfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.db')
         # Initialize the information about this message delivery.  It's
