@@ -395,12 +395,5 @@ class General(GUIBase):
                 if opt in val:
                     newopts |= bitfield
             mlist.new_member_options = newopts
-        elif property == 'reply_to_address':
-            try:
-                Utils.ValidateEmail(val)
-            except Errors.EmailAddressError:
-                doc.addError(_("""<p><b>reply_to_address</b> does not have a
-                valid email address!  Its valid will not be changed."""))
-            mlist.reply_to_address = val
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
