@@ -1,13 +1,13 @@
-Lista adminisztratorkent a kovetkezo level a megadott listan
-torteno megjelenesehez az engedelyedre van szukseg:
+A lista adminisztrátorként a következõ levél megjelenéséhez szükség
+van az engedélyedre:
 
-    List:    %(listname)s@%(hostname)s
-    From:    %(sender)s
-    Subject: %(subject)s
-    Reason:  %(reason)s
+    Lista:    %(listname)s@%(hostname)s
+    Feladó:   %(sender)s
+    Targy:    %(subject)s
+    Indok:    %(reason)s
 
-A kovetkezo cimen:
+A következõ címen:
 
     %(admindb_url)s
         
-engedelyezheted, vagy utasithatod el a level megjeleneset.
+engedélyezheted, vagy elutasíthatod a levél megjelenését.

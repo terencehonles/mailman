@@ -1,7 +1,7 @@
-A(z) %(real_name)s@%(host_name)s levelezesi listarol %(count)d 
-kerelem var megerositesedre a kovetkezo cimen:
+%(real_name)s@%(host_name)s levelezési listáról %(count)d 
+kérelem vár a megerõsítésedre a következõ címen:
 
 	%(adminDB)s
 
-Minel hamarabb latogasd meg a cimet. A megerositendo kerelmekrol,
-ha van egyaltalan, minden nap ertesites tortenik.
+Minél hamarabb látogasd meg a címet. A megerõsítendõ kérelmekrõl,
+ha vannak egyáltalán, minden nap értesítést küldünk.

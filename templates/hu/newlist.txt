@@ -1,36 +1,35 @@
-A(z) `%(listname)s' levelezesi lista mukodik. A kovetkezokben a 
-levelezesi lista alapveto informacioirol olvashatsz itt.
+A(z) `%(listname)s' levelezési lista mükõdik. A következõkben a 
+levelezési lista alapvetõ információiról olvashatsz itt.
 
-A levelezesi lista jelszava a kovetkezo:
+A levelezési lista jelszava a következõ:
 
     %(password)s
 
-Ezzel a jelszoval lehet a lista beallitasait elvegezni. Ezen felul
-ezzel a jelszoval lehet nehany adminisztratori funkciot elvegezni,
-mint peldaul moderalt listan a levelek szureset vegrehajtani.
+Ezzel a jelszóval lehet a lista beállításait elvégezni. Ezen felül ezzel
+a jelszóval lehet néhány adminisztrátori tevékenységet elvégezni, mint 
+például moderált listán a levelek szûrését végrehajtani.
 
-A levelezesi listat a kovetkezo honlapon lehet beallitani:
+A levelezési listát a következõ honlapon lehet beállítani:
 
     %(admin_url)s
 
-A levelezesi lista tagjai a kovetkezo honlapot hasznalhatjak:
+A levelezési lista tagjai a következõ honlapot használhatják:
 
     %(listinfo_url)s
 
-A honlap formjat is meg lehet valtoztatni, azonban ehhez ismerni kell
-a HTML-szerkesztes alapjait.
+A honlap formáját is meg lehet változtatni, azonban ehhez ismerni kell a 
+HTML-szerkesztés alapjait.
 
-Emailen keresztul a tagok (de nem az adminisztrator) is elvegezhetik 
-beallitasaik megvaltoztatasat; errol bovebb informaciot egy 'help' 
-tartalmu level kuldesevel a kovetkezo cimre, kaphatsz: 
+E-mailen keresztül a tagok (de nem az adminisztrátor) is elvégezhetik 
+beállításaik megváltoztatását; errõl bõvebb információt kaphatsz, ha egy
+'help' tartalmú levelet küldesz a következõ címre: 
 
     %(requestaddr)s
 
-Listatag leiratkoztatasara a levelezesi lista 'listainfo' lapjan a
-listatag nevere kell kattintanod. Az adminisztratori jelszo meg-
-adasaval a listatag leiratkoztatasat teheted meg az itt talalhato
-leiratkozasi helyen. A listatag beallitasait (peldaul digest vagy
-nem-digest formaju levelek fogadasa, vagy szuneteltetese, stb.)
-az adminisztrator jelszoval is elvegezheted.
+Listatag eltávolításához a levelezési lista 'listainfo' lapján a listatag
+nevére kell kattintanod. Az adminisztrátori jelszó megadasaval a listatag
+törleset teheted meg az ott talalhato leiratkozasi helyen. A listatag 
+beallitásait (például digest vagy nem-digest formájú levelek fogadása, 
+vagy szüneteltetése, stb.) az adminisztrátori jelszóval is elvégezheted.
 
-Tovabbi kerdeseiddel fordulj ide %(siteowner)s.
+További kérdéseiddel fordulj ide mailman-owner@%(hostname)s.

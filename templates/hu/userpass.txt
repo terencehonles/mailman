@@ -1,20 +1,23 @@
-Ez egy emlekezteto arrol, hogy hogyan iratkozhat le, vagy valtoztat-
-hatja meg a(z) "%(user)s" felhasznalo a beallitasait a %(listname)s
-listan. A valtoztatasokhoz szukseg van a jelszavadra.
-A %(listname)s JELSZAVAD A KOVETKEZO:
+Te, vagy valaki a nevedben, a %(fqdn_lname)s levelezõlistához tartozó
+jelszavadat kérte ki e-mailben. A jelszóval a listatagsági beállításaidat
+(mint pl. a levelek küldésének módját) tudod beállítani. A jelszó
+ismeretében a listáról le is tudsz iratkozni.
 
-    %(password)s
+A következõ címmel vagy feliratozva: %(user)s
 
-A beallitasaid megvaltoztatasahoz hasznald a jelszavadat az alabbi
-Web-cimen:
+A %(listname)s jelszavad a következõ: %(password)s
+
+A beállításaid megváltoztatásához jelszavad ismeretében lépj be a
+következõ weboldalra:
 
     %(options_url)s
 
-Ugyanezeket emialen keresztul is el lehet vegezni ezen a cimen:
+Ugyanezeket e-mailen keresztül is el tudod végezni ezen a címen:
 
     %(requestaddr)s
 
-"help" tartalmu level elkuldesevel bovebb informaciot lehet megtudni
-a beallitasokrol.
+"help" tartalmú levél elküldésével bõvebb információt lehet megtudni
+a beállításokról.
 
-Kerdesek, eszrevetelek? Kuldj egy levelet ide %(adminaddr)s.
+Kérdések, észrevételek? Küldj egy levelet a(z) %(listname)s levelezõlista
+adminisztrátorának %(adminaddr)s címre.

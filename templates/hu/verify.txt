@@ -1,21 +1,25 @@
-%(listname)s -- feliratkozas megerositese -- kerelem %(cookie)s
+Értesítés a(z) %(listname)s levelezõlistára történõ feliratkozási 
+kérelmed megerõsítésérõl.
 
-A kovekezo cimrol %(remote)s az alabbi email cimmel <%(email)s>,
-a %(listaddr)s levelezesi listara egy feliratkozasi kerelmet
-regisztraltunk. A kerelem megerositesehez a %(requestaddr)s
-cimre kell valaszolni, ugy hogy:
+A(z)%(remote)s címrõl a(z) %(email)s e-mail címmel,
+a(z) %(listaddr)s levelezési listára egy feliratkozási kérelmet
+regisztráltunk. A levelezõlistára való feliratkozás megerõsítéséhez
+erre a levélre kell válaszolni úgy, hogy a Subject: (Tárgy:) mezõt
+nem változtatod meg. A következõ weblapon is megerõsítheted
+feliratkozási szándékodat:
 
-- a level targyat nem valtoztatod meg (az ide beszurt "Re:" resz
-nem okoz problemat),
- vagy
+    %(confirmurl)s
+    
+Vagy a következõ sort - és csak azt - helyezed el egy e-mail törzsébe,
+amelyet a(z) %(requestaddr)s címre kell elküldened.
 
-- a kovetkezo sort - es csak azt - helyezed el a level 
-torzsebe:
+    confirm %(cookie)s
 
-confirm %(cookie)s
+A legtöbb e-mail klienssel történõ válaszadás alkalmas a kérelem 
+megerõsítésére, mivel a levél tárgyát nem módosítják (az ide 
+beszúrt "Re:" vagy "VÁ:" nem okoz gondot).
 
-(A legtobb email klienssel torteno valaszadas alkalmas a kerelem
- megerositesere, mivel a level targyat nem modositjak.)
-
-Ha nem szeretnel feliratkozni a listara, akkor egyszeruen hagyd 
-figyelmen kivul ezt a levelet. Kerdeseddel fordulj ide %(listadmin)s.
+Ha nem szeretnél feliratkozni a listára, akkor egyszerûen hagyd 
+figyelmen kívül ezt a levelet. Ha úgy gondolod, hogy jogtalanul
+irtak fel egy listára, vagy más észrevételed van, akkor fordulj
+az adminisztrátorához; %(listadmin)s.

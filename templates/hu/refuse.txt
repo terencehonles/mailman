@@ -1,13 +1,13 @@
-A(z) '%(listname)s' -ra torteno alabbi kerelmedet
+A(z) '%(listname)s' listára történõ alábbi kérelmedet
 
     %(request)s
 
-a lista moderatora nem fogadta el. A visszautasitas indoka a
-kovetkezo:
+a lista szerkesztõje nem fogadta el. A visszautasítás indoka a
+következõ:
 
 "%(reason)s"
 
-Kerdeseiddel vagy eszreveteleiddel kozvetlenul a lista adminisztra-
-torahoz fordulhatsz a kovetkezo cimen:
+Kérdéseiddel vagy észrevételeiddel közvetlenül a lista adminisztrá-
+torához fordulhatsz a következõ címen:
 
     %(adminaddr)s

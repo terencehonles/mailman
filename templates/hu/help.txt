@@ -1,102 +1,102 @@
-Sugo a %(listname)s levelezesi lista hasznalatahoz:
+Súgó %(listname)s levelezési lista használatához:
 
-Ez az email a %(version)s verzioszamu "Mailman" listakeszito
-program parancsait ismerteti. A kovetkezokben ismertetett parancsokkal
-a Mailman altal uzemeltetett listakrol es azok beallitasarol
-lehet olvasni. A parancsokat mind a level torzseben, vagy targyaban
+Ez az e-mail a %(version)s verziószámú "Mailman" listakészítõ
+program parancsait ismerteti. A következõkben ismertetett parancsokkal
+a Mailman által üzemeltetett listákról és azok beállításáról
+lehet olvasni. A parancsokat mind a levél törzsében, vagy tárgyában
 meg lehet adni.
 
-Erdemes tudni, hogy a kovetkezo dolgokat Web-en keresztul is el lehet
-vegezni a kovekezo cimen:
+Érdemes tudni, hogy az itt megemlített módosításokat Web-en keresztül is
+végre lehet hajtani a kövekezõ címen:
 
     %(listinfo_url)s
 
-Peldaul a Web-es cim segitsegevel a sajat cimedre el lehet kuldeni a
+Például az említett oldal segítségével a saját címedre el küldheted a
 jelszavadat.
 
-A lista beallito parancsokat (pl. subscribe, who, stb.) a listahoz
-tartozo *-request cimre kell kuldeni, pl. a 'mailman' lista eseten
-a 'mailman-request@...' cimet kell hasznalni.
+A lista beállító parancsokat (pl. subscribe, who, stb.) a listához
+tartozó *-request címre kell küldeni, pl. a 'mailman' lista esetén
+a 'mailman-request@...' címet kell használni.
 
-A leirasokkal kapcsolatban - a "<>" jelek kozotti szavak mindig a
-SZUKSEGES dolgokat jelolik, mig a "[]" jelek kozotti szavak csak az
-OPCIONALIS dolgokat jelolik. Azonban a parancsokban sohase hasznaljuk
-a "<>" es "[]" jeleket.
+A leírásokkal kapcsolatban - a "<>" jelek közötti szavak mindig a
+SZÜKSÉGES dolgokat jelölik, míg a "[]" jelek közötti szavak csak az
+OPCIONÁLIS dolgokat jelölik. Azonban a parancsokban sohase használjuk
+a "<>" és "[]" jeleket.
 
-A kovetkezo parancsok allnak rendelkezesre:
+A következõ parancsok állnak rendelkezésre:
 
-    subscribe [jelszo] [digest-opciok] [address=<cim>]
-	  A listara torteno feliratkozast vegzi el. A listarol torteno
-	  leiratkozashoz, vagy a beallitasok megvaltoztatasahoz mindig
-	  meg kell adni a jelszot, amelyet adott idokozonkent ujra el-
-	  kuldunk a feliratkozasi cimre.
-	  'digest-opciok' a kovetkezok lehetnek: 'nodigest' vagy 'digest'
-	  (termeszetesen aposztrofok nelkul megadva!)
-	  Ha egy masik cimrol szeretnel feliratkozni, mint ahonnan a
-	  feliratkozasi kerelem jott, akkor az "address=<masik emilcim>"
-          -et kell meg hasznalni (termeszetesen zarojelek, es idezojelek
-	  nelkul.
+    subscribe [jelszó] [digest-opciók] [address=<cim>]
+	  A listára történõ feliratkozást végzi el. A listáról törtenõ
+	  leiratkozáshoz, vagy a beállítások megváltoztatásához mindig
+	  meg kell adni a jelszót, amelyet adott idõközönként újra el-
+	  küldünk a feliratkozási címre.
+	  'digest-opciók' a következõk lehetnek: 'nodigest' vagy 'digest'
+	  (természetesen aposztrófok nélkül megadva!)
+	  Ha egy másik címrõl szeretnél feliratkozni, mint ahonnan a
+	  feliratkozasi kérelem jött, akkor az "address=<másik emilcím>"
+          részt is meg kell adni (természetesen zárójelek, idézõjelek 
+	  nélkül.
 
-    unsubscribe <jelszo> [cim]
-	  A listarol torteno leiratkozast vegzi el. A megadott jelszonak
-	  egyeznie kell a listan beallitott jelszavaddal. Ha egy masik
-	  cimrol probalnal meg leiratkozni, mint amire a feliratkozas
-	  tortent, akkor a 'cim' mezoben add meg a helyes cimet.
+    unsubscribe <jelszó> [cím]
+	  A listáról történõ leiratkozast végzi el. A megadott jelszónak
+	  egyeznie kell a listán beállított jelszavaddal. Ha egy masik
+	  címrõl próbálnál meg leiratkozni, mint amivel a feliratkozás
+	  törtent, akkor a 'cím' mezõben add meg a helyes címet.
 
     who
-          A lista tagjainak nevsorat adja meg.
+          A lista tagjainak névsorát adja meg.
 
     info
-	  A listarol rovid leirast ad meg.
+	  A listáról rövid leírást ad.
 
     lists
-	  Felsorolja a Mailman rendszeren uzemeltetett listakat.
+	  Felsorolja a Mailman rendszeren üzemeltetett listákat.
 
     help
-	  Ezt az uzenetet kuldi el.        
+	  Ezt az üzenetet küldi el.        
 
-    set <opciok> <on|off> <jelszo> 
-	  A lista beallitasait valtoztatja meg. Az opciok lehetnek:
+    set <opciók> <on|off> <jelszó> 
+	  A lista beállításait változtatja meg. Az opciók lehetnek:
 
         ack:
-	  	on-ra allitasaval ertesitest kapsz minden egyes elkuldott
-		leveled megerkezeserol a listara.
+	  	on-ra állításával értesítést kapsz minden egyes elküldött
+		leveled megérkezésérõl a listára.
 
         digest:
-                A leveleket nem egyesevel, hanem egyben, csokorba szedve
+                A leveleket nem egyesével, hanem egyben, csokorba szedve
 		kapod meg.
 
         plain:
-		A digest formaju levelet nem MIME-kodolassal, hanem sima
-		szovegkent kapod meg.
+		A digest formájú levelet nem MIME-kódolással, hanem sima
+		szövegként kapod meg.
 
         nomail:
-		Levelek elkuldesenek szuneteltetese. Hasznos parancs ha
-		tavoletedben (pl. udules) nem akarod megkapni a leveleket.
+		Levelek elküldésének szüneteltetése. Hasznos parancs ha
+		távolétedben (pl. üdülés) nem akarsz leveleket fogadni.
 
         norcv:
-		on-ra allitasaval az altalad kuldott leveleket NEM kapod
-		meg. Digest formaju leveleknel nem hasznalhato.
+		on-ra állításával az általad küldött leveleket NEM kapod
+		meg. Digest típusú leveleknél nem használható.
 
         hide:
-		Elrejti a cimedet a 'who' altal keszitett listabol.	
+		Elrejti a címedet a 'who' által készített listából.	
 
-    options
-	 Az aktualis beallitasaidat mutatja meg.        
+    opciók
+	 Az aktuális beállításaidat mutatja meg.        
 
-    password <regi jelszo> <uj jelszo> 
-         A jelszavadat valtoztatja meg.  
+    password <régi jelszó> <új jelszó> 
+         A jelszavadat változtatja meg.  
    
     end vagy --
-	 Leallitja a parancsok ertelmezeset (hasznos ha a levelezesedkor
-	 automatikusan mas informacio is kerul a levelbe, amelynek a 
-	 tartalma nem kapcsolodna ugysem a 'Mailman'-hez, az itt elofordulo 
-	 a 'Mailman' szamara ertelmes parancsokat ekkor nem veszi
+	 Leállítja a parancsok értelmezését (hasznos ha a levelezésedkor
+	 automatikusan más információ is kerül a levélbe, amelynek a 
+	 tartalma nem kapcsolódna úgysem a 'Mailman'-hoz, az itt elõforduló 
+	 a 'Mailman' számára esetleg értelmes parancsokat ekkor nem veszi
 	 figyelembe a program).
 
 
-A parancsokat az alabbi cimre kell kuldeni %(requestaddr)s
+A parancsokat az alábbi címre kell küldeni %(requestaddr)s
 
-Kerdeseidet, eszreveteleidet a kovetkezo cimre kuldjed
+Kérdéseidet, észrevételeidet a következõ címre küldjed
 
     %(adminaddr)s

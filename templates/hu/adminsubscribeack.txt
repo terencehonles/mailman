@@ -1,3 +1,1 @@
-%(member)s feliratkozasa a(z) %(listname)s listara megtortent.
-
-
+%(member)s feliratkozott a(z) %(listname)s listára.

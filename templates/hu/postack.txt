@@ -1,7 +1,7 @@
-Uzeneted a kovetkezo targgyal
+Üzeneted a következõ tárggyal
 
     %(subject)s
 
-a(z) %(listname)s levelezesi listara sikeresen megerkezett.
+%(listname)s levelezési listára sikeresen megérkezett.
 
 Lista honlapja: %(listinfo_url)s

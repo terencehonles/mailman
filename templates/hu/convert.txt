@@ -1,30 +1,31 @@
-Tajekoztato a(z) %(listname)s levelezesi listarol. A levelezesi listat
-a "Mailman" nevu listakezelo program mukodteti.
+Tájékoztató a(z) %(listname)s levelezési listán bekövetkezõ változásokról. 
+A levelezési listát a "Mailman" nevû listakezelõ program müködteti. 
+Reméljük ezzel számos eddig jelentkezõ probléma megszûnik.
 
 Mire kell figyelned?
 
-1) A lista tagjainak szant uzeneteidet a(z) %(listaddr)s cimre tedd meg.
+1) A lista tagjainak szánt üzeneteidet a(z) %(listaddr)s cimre küldd el.
 
-2) Egyeni jelszoval lehet leiratkozni a listarol, ezzel elkerulheto,
-hogy mas a tudtod nelkul leirat teged a listarol. A jelszot egy kulonallo
-emailben kapod meg, vagy mar meg is kaptad. Ne ess panikba, ha
-elfelejtetted a jelszavadat; minden honapban emlekeztetoul emailben 
-elkuldesre fog kerulni.
+2) Egyéni jelszóval lehet leiratkozni a listáról, ezzel elkerülhetõ,
+hogy más a tudtod nélkül töröl téged a listáról. A jelszót egy különálló
+e-mailben kapod meg, vagy már meg is kaptad. Ne ess pánikba, ha
+elfelejtetted a jelszavadat, mivel minden honapban emlékeztetõül e-mailben 
+elküldésre fog kerülni.
 
-3) Web eleres eseten barmikor leiratkozhatsz a listarol, beallithatod
-a levelek fogadasat, megtekintheted a lista archivumat, es mas egyebet 
-tehetsz meg. Mindezeket a kovetkezo Web-cimen lehet vegrehajtani:
+3) Web elérés esetén bármikor leiratkozhatsz a listáról, beállíthatod
+a levelek fogadását, megtekintheted a lista archívumát, és más egyebet 
+tehetsz meg. Mindezeket a következõ Web-címen lehet végrehajtani:
 
   %(listinfo_url)s
 
-4) Web eleres hianyaban mindezeket emailen keresztul is meg lehet 
-tenni. Kuldj egy emailt a(z) %(requestaddr)s cimre a level torzseben
-vagy targyaban megadott "help"-el. Ekkor az automatikus valaszlevel-
-ben leirast fogsz kapni a lehetseges beallitasok mikentjerol.
+4) Web elérés hiányában mindezeket e-mailen keresztul is meg lehet 
+tenni. Küldj egy e-mailt a(z) %(requestaddr)s címre a level törzsében
+vagy tárgyában megadott "help"-el. Ekkor egy automatikus válaszlevélben
+bõvebb leírást fogsz kapni a lehetséges beállításokról.
 
-Barmilyen kerdeseddel, eszreveteleddel a kovetkezo cimre irj:
+Bármilyen kérdéseddel, észrevételeddel a következõ címre írj:
 %(adminaddr)s.
 
-Ezt a levelet a Mailman %(version)s keszitette. Bovebb informacioert
-a Mailman programmol a Mailman honlapjan lehet olvasni, ezen a cimen:
-http://www.list.org/
+Ezt a levelet a Mailman %(version)s automatikusan készítette. Bõvebb 
+információért a Mailman programmól a Mailman honlapján lehet olvasni,
+a http://www.list.org/ címen.

@@ -1,11 +1,11 @@
-A kovetkezo feliratkozasi kerelem megerositesehez szukseges az 
-engedelyed:
+A következõ feliratkozási kérelem megerõsítéséhez szükséges az 
+engedélyed:
 
     Feladó:	%(username)s
     Lista:	%(listname)s@%(hostname)s
 
-A kerelemrol a 
+A kérelemrõl a 
 
 	%(admindb_url)s
 	
-cimen tudsz konnyen allast foglalni.
+címen tudsz állást foglalni.

@@ -1,19 +1,18 @@
-Ezt a MIME kodolasu uzenetet sima szovegkent lehet elolvasni.
+Ezt a MIME kódolású üzenetet sima szövegként lehet elolvasni.
 
 --%(boundary)s
 
-Content-type: text/plain; charset=us-ascii
+Content-type: text/plain; charset=iso-8859-2
 
-Mailman tovabbkuldesi (bounce) ertesites a levelezolistarol:
+Mailman levelezõlista visszadobási (bounce) értesítés:
 
-    Lista:       %(listname)s
-    Tag:         %(addr)s
-    Action:     Subscription %(negative)s%(did)s.
-    Indok:      Problemas vagy hibas tovabbkuldes.
+    Lista:      %(listname)s
+    Tag:        %(addr)s
+    Teendõ:     Feliratkozás %(negative)s%(did)s.
+    Indok:      Problémás vagy hibás e-mail cím.
     %(but)s
 
 %(reenable)s
-Az ertesites lejjebb csatolva talalhato.
+Az értesítés a levél alján látható.
 
-Kerdes? Fordulj a Mailman rendszer uzemeltetojehez itt: %(owneraddr)s.
-
+Kérdés? Fordulj a Mailman rendszer üzemeltetõjéhez: %(owneraddr)s.

@@ -1,12 +1,15 @@
-A(z) '%(listname)s' -ra kuldott alabbi targyu leveled 
+A(z) '%(listname)s' listára küldött alábbi tárgyú leveled
 
     %(subject)s
 
-a moderator jovahagyasaig nem kerul fel a listara.
+a szerkesztõ jóváhagyásáig nem kerül megjelenésre.
 
-Az ok amiert jova kell hagyni:
+Az ok amiért jóvá kell hagyni:
 
     %(reason)s
 
-A level vagy felkerul a listara, vagy a moderator donteserol kulon
-levelben ertesitest kapsz.
+A levél vagy megjelenik a listán, vagy a szerkesztõ elutasító döntésérõl
+külön levélben értesítést kapsz. Ha mégsem szeretnéd, hogy a levél
+megjelenjen, akkor látogass el a következõ címre:
+
+   %(confirmurl)s

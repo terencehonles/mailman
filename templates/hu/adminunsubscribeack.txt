@@ -1,4 +1,1 @@
-%(member)s leiratkozasa a(z) %(listname)s listarol megtortent.
-
-
-
+%(member)s törölve a(z) %(listname)s listáról.

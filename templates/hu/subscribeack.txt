@@ -1,35 +1,35 @@
-Udvozlunk a(z) %(real_name)s@%(host_name)s levelezesi listan!
+Üdvözlünk a(z) %(real_name)s@%(host_name)s levelezési listán!
 %(welcome)s
 
-A listara az alabbi cimmel kuldhetsz levelet:
+A listára az alábbi címre küldhetsz levelet:
 
   %(emailaddr)s
 
-A levelezesi listarol informaciot itt talalsz:
+A levelezési listáról információt itt találsz:
 
   %(listinfo_url)s
 
-Ha le szeretnel iratkozni, vagy a beallitasaidat megvaltoztatni (pl.
-digest mod, jelszo valtoztatasa, stb.), latogass el az alabbi cimre:
+Ha le szeretnél iratkozni, vagy a beállításaidat megváltoztatni (pl.
+digest mód, jelszó változtatása, stb.), látogass el az alábbi címre:
 
   %(optionsurl)s
 %(umbrella)s
-Ugyanezeket a dolgokat emailen keresztul is elvegezheted itt:
+Ugyanezeket a dolgokat e-mailen keresztül is elvégezheted itt:
 
   %(real_name)s-request@%(host_name)s
 
-A level targyaban vagy torzseben megadott 'help' (aposztrofok nelkul)
-hatasara bovebb informaciokat fogsz errol valaszul kapni.
+Részletes ismertetõt kaphatsz a beállításokról, ha egy 'help' tartalmú
+levelet (a tárgyban vagy a törzsben feltüntetve, aposztrófok nélkül) küldesz
+a fenti címre.
 
-Csak a jelszavad ismereteben tudod megvaltoztatni a beallitasaidat,
-vagy a leiratkozast elvegezni. A jelszavad:
+Csak a jelszavad ismeretében tudod megváltoztatni a beállításaidat,
+vagy a leiratkozást elvégezni. A jelszavad:
 
   %(password)s
 
-A(z) %(host_name)s gepen talalhato lista jelszavadat havonta elkuldjuk,
-hogy el ne felejtsd a jelszavadat es hogy tudd, hogyan lehet
-leiratkozni, vagy beallitasaidat megvaltoztatni. A listatagok oldalan
-talalhato gomb megnyomasaval emilben is elkuldesre kerul a jelszavad.
-
-A fent emlitett Web-cimen termeszetesen kikapcsolhatod a jelszo havi
-elkuldeset is.
+A Mailman alapesetben minden hónapban elküdi a %(host_name)s gépen
+található levelezõlistához tartozó jelszavadat, ha ezt az emlkékeztetõt
+nem kéred, akkor a beállítások oldalon kikapcsolhatod a havi küldést.
+Az üzenet a leiratkozásrol és beállításiad megváltoztatásának módjára
+emlékeztet. A listatagok oldalán található gomb megnyomásával e-mailben
+is kikérheted a jelszavadat.
