@@ -754,14 +754,19 @@ from Version import *
 def _(s):
     return s
 
-LC_DESCRIPTIONS = {'es': (_("Spanish (Spain)"),      'iso-8859-1'),
-                   'it': (_("Italian"),              'iso-8859-1'),
-                   'en': (_("English (USA)"),        'us-ascii'),
-                   }
-del _                                   
+LC_DESCRIPTIONS = {}
 
 def add_language(code, description, charset):
     LC_DESCRIPTIONS[code] = (description, charset)
+
+add_language('en', _('English (USA)'),   'us-ascii')
+add_language('es', _('Spanish (Spain)'), 'iso-8859-1')
+add_language('fr', _('French'),          'iso-8859-1')
+add_language('it', _('Italian'),         'iso-8859-1')
+add_language('ja', _('Japanese'),        'iso-2022-jp')
+
+del _                                   
+
 
 
 # BAW: Another hack to get Python's site-packages directory on the path.  This
