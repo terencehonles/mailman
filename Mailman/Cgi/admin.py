@@ -22,6 +22,7 @@ import os
 import cgi
 import types
 import sha
+import urllib
 
 from mimelib.address import unquote
 
@@ -395,7 +396,7 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     form.AddItem(show_variables(mlist, category, cgidata))
 
     if category == 'general':
-        form.AddItem(Center(FormatPasswordStuff()))
+        form.AddItem(Center(password_inputs()))
 
     form.AddItem("<p>")
     form.AddItem(Center(submit_button()))
@@ -641,7 +642,9 @@ def membership_options(mlist, cgidata):
         mtext = '<a href="%s">%s</a>' % (
             mlist.GetOptionsURL(member, obscure=1),
             mlist.GetUserSubscribedAddress(member))
-        cells = [mtext + "<input type=hidden name=user value=%s>" % (member),
+        cells = [mtext +
+                 '<input type="hidden" name="user" value="%s">' %
+                 urllib.quote(member),
                  Center(CheckBox(member + "_subscribed", "on", 1).Format())]
         for opt in ("hide", "nomail", "ack", "notmetoo"):
             if mlist.GetUserOption(member,MailCommandHandler.option_info[opt]):
@@ -725,7 +728,7 @@ def membership_options(mlist, cgidata):
 
 
 
-def FormatPasswordStuff():
+def password_inputs():
     change_pw_table = Table(bgcolor="#99cccc", border=0,
                             cellspacing=0, cellpadding=2,
                             valign="top")
@@ -953,12 +956,12 @@ def change_options(mlist, category, cgi_info, document):
     #
     if cgi_info.has_key('user'):
         user = cgi_info["user"]
-        if type(user) is type([]):
+        if type(user) is types.ListType:
             users = []
             for ui in range(len(user)):
-                users.append(user[ui].value)
+                users.append(urllib.unquote(user[ui].value))
         else:
-            users = [user.value]
+            users = [urllib.unquote(user.value)]
         errors = []
         for user in users:
             if not cgi_info.has_key('%s_subscribed' % (user)):
