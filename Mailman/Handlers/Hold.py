@@ -47,33 +47,33 @@ def _(s):
 
 
 
-class ForbiddenPoster(Errors.MessageHeld):
+class ForbiddenPoster(Errors.HoldMessage):
     "Sender is explicitly forbidden"
     rejection = _('You are forbidden from posting messages to this list.')
 
-class ModeratedPost(Errors.MessageHeld):
+class ModeratedPost(Errors.HoldMessage):
     "Post to moderated list"
     rejection = _('Your message was deemed inappropriate by the moderator.')
 
-class NonMemberPost(Errors.MessageHeld):
+class NonMemberPost(Errors.HoldMessage):
     "Post by non-member to a members-only list"
     rejection = _('Non-members are not allowed to post messages to this list.')
 
-class NotExplicitlyAllowed(Errors.MessageHeld):
+class NotExplicitlyAllowed(Errors.HoldMessage):
     "Posting to a restricted list by sender requires approval"
     rejection = _('This list is restricted; your message was not approved.')
 
-class TooManyRecipients(Errors.MessageHeld):
+class TooManyRecipients(Errors.HoldMessage):
     "Too many recipients to the message"
     rejection = _('Please trim the recipient list; it is too long.')
 
-class ImplicitDestination(Errors.MessageHeld):
+class ImplicitDestination(Errors.HoldMessage):
     "Message has implicit destination"
     rejection = _('''Blind carbon copies or other implicit destinations are
 not allowed.  Try reposting your message by explicitly including the list
 address in the To: or Cc: fields.''')
 
-class Administrivia(Errors.MessageHeld):
+class Administrivia(Errors.HoldMessage):
     "Message may contain administrivia"
 
     def rejection_notice(self, mlist):
@@ -84,18 +84,18 @@ list.  If you wish to subscribe, visit %(listurl)s or send a message with the
 word `help' in it to the request address, %(request)s, for further
 instructions.""")
 
-class SuspiciousHeaders(Errors.MessageHeld):
+class SuspiciousHeaders(Errors.HoldMessage):
    "Message has a suspicious header"
    rejection = _('Your message had a suspicious header.')
 
-class MessageTooBig(Errors.MessageHeld):
+class MessageTooBig(Errors.HoldMessage):
     "Message body is too big: %d bytes but there's a limit of %d KB"
     def __init__(self, msgsize, limit):
         self.__msgsize = msgsize
         self.__limit = limit
 
     def __str__(self):
-        return Errors.MessageHeld.__str__(self) % (
+        return Errors.HoldMessage.__str__(self) % (
             self.__msgsize, self.__limit)
 
     def rejection_notice(self, mlist):
