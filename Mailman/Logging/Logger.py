@@ -18,8 +18,8 @@
 
 import sys
 import os
-import Mailman.mm_cfg
-from Mailman.Utils import reraise
+
+from Mailman import mm_cfg
 from Mailman.Logging.Utils import _logexc
 
 
@@ -33,7 +33,7 @@ class Logger:
         immediate=1 says to create the log file on instantiation.
         Otherwise, the file is created only when there are writes pending."""
 
-        self.__filename = os.path.join(Mailman.mm_cfg.LOG_DIR, category)
+        self.__filename = os.path.join(mm_cfg.LOG_DIR, category)
 	self.__fp = None
         self.__nofail = nofail
         if immediate:
@@ -60,7 +60,7 @@ class Logger:
                     _logexc(self, e)
                     f = self.__fp = sys.__stderr__
                 else:
-                    reraise()
+                    raise
             return f
 
     def flush(self):
