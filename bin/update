@@ -189,6 +189,10 @@ def dolist(listname):
                                '%(listname)s')
         return 1
 
+    # Update the held requests database
+    print _("""Updating the held requests database.""")
+    mlist._UpdateRecords()
+
     mbox_dir = make_varabs('archives/private/%s.mbox' % (listname))
     mbox_file = make_varabs('archives/private/%s.mbox/%s' % (listname,
                                                              listname))
