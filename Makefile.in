@@ -41,10 +41,12 @@ MAILMAN_UID=	@MAILMAN_UID@
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 
-ARCH_INDEP_DIRS=	logs archives bin \
+ARCH_INDEP_DIRS= \
+	logs archives bin \
 	lists locks templates scripts filters cron data \
 	archives/private archives/public \
-	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver Mailman/pythonlib
+	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
+	Mailman/Handlers Mailman/pythonlib
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
