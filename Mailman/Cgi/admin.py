@@ -44,8 +44,8 @@ def _(s): return s
 CATEGORIES = [('general',   _('General Options')),
               ('members',   _('Membership Management')),
               ('privacy',   _('Privacy Options')),
-              ('nondigest', _('Regular-member (non-digest) Options')),
-              ('digest',    _('Digest-member Options')),
+              ('nondigest', _('Regular delivery (non-digest) Options')),
+              ('digest',    _('Digest Options')),
               ('bounce',    _('Bounce Options')),
               ('archive',   _('Archival Options')),
               ('gateway',   _('Mail-News and News-Mail gateways')),
@@ -1030,6 +1030,10 @@ def change_options(mlist, category, cgidata, doc):
                 # this).
                 if property == '_mass_catchup' and value:
                     mlist.usenet_watermark = None
+                elif property == '_new_volume' and value:
+                    mlist.bump_digest_volume()
+                elif property == '_send_digest_now' and value:
+                    mlist.send_digest_now()
             elif getattr(mlist, property) <> value:
                 # TBD: Ensure that mlist.real_name differs only in letter
                 # case.  Otherwise a security hole can potentially be opened
