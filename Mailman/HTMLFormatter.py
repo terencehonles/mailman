@@ -262,8 +262,10 @@ class HTMLFormatter:
         else:
             return ("<i>The %s is only available to the list"
                     " administrator.</i>" % which)
+
     def FormatRosterOptionForUser(self):
         return self.RosterOption().Format()
+
     def RosterOption(self):
         "Provide avenue to subscribers roster, contingent to .private_roster."
         container = Container()
@@ -285,7 +287,7 @@ class HTMLFormatter:
                                                          self.private_roster)
                               + " <p>Enter your "
                               + string.lower(whom[:-1])
-                              + " address and password to visit"
+                              + " and password to visit"
                               "  the subscribers list: <p><center> "
                               + whom
                               + " ")
