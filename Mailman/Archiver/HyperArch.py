@@ -888,40 +888,43 @@ class HyperArchive(pipermail.T):
             return time.strftime("%Y-%B",datetuple)
 
 
-    def volNameToDate(self,volname):
+    def volNameToDate(self, volname):
         volname = volname.strip()
         for each in self._volre.keys():
-            match=re.match(self._volre[each],volname)
+            match = re.match(self._volre[each],volname)
             if match:
-                year=int(match.group('year'))
-                month=1
+                year = int(match.group('year'))
+                month = 1
                 day = 1
                 if each == 'quarter':
-                    q=int(match.group('quarter'))
-                    month=(q*3)-2
+                    q = int(match.group('quarter'))
+                    month = (q * 3) - 2
                 elif each == 'month':
-                    monthstr=match.group('month').lower()
-                    m=[]
+                    monthstr = match.group('month').lower()
+                    m = []
                     for i in range(1,13):
                         m.append(
                             time.strftime("%B",(1999,i,1,0,0,0,0,1,0)).lower())
                     try:
-                        month=m.index(monthstr)+1
+                        month = m.index(monthstr) + 1
                     except ValueError:
                         pass
                 elif each == 'week' or each == 'day':
                     month = int(match.group("month"))
                     day = int(match.group("day"))
-                return time.mktime((year,month,1,0,0,0,0,1,-1))
+                try:
+                    return time.mktime((year,month,1,0,0,0,0,1,-1))
+                except OverflowError:
+                    return 0.0
         return 0.0
 
     def sortarchives(self):
-        def sf(a,b,s=self):
-            al=s.volNameToDate(a)
-            bl=s.volNameToDate(b)
-            if al>bl:
+        def sf(a, b):
+            al = self.volNameToDate(a)
+            bl = self.volNameToDate(b)
+            if al > bl:
                 return 1
-            elif al<bl:
+            elif al < bl:
                 return -1
             else:
                 return 0
