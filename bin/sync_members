@@ -229,7 +229,7 @@ def main():
 
         # addrs contains now all the addresses that need removing
         for laddr, addr in needsadding.items():
-            pw = '%s%s' % (Utils.GetRandomSeed(), Utils.GetRandomSeed())
+            pw = Utils.MakeRandomPassword()
             # should not already be subscribed, otherwise our test above is
             # broken.  Bogosity is if the address is listed in the file more
             # than once.  Second and subsequent ones trigger an
