@@ -69,12 +69,17 @@ def ScanMessages(mlist, msg, testing=0):
             return 1
         if addrs:
             for addr in addrs:
+                if not addr:
+                    continue
                 # we found a bounce or a list of bounce addrs
                 if not testing:
                     try:
                         mlist.registerBounce(addr, msg)
                     except Exception, e:
-                        syslog('error', 'Bouncer exception: %s', e)
+                        syslog(
+                            'error',
+                            'Bouncer exception while processing module %s: %s',
+                            module, e)
                         s = StringIO()
                         traceback.print_exc(file=s)
                         syslog('error', s.getvalue())
