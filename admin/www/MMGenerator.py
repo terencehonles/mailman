@@ -2,7 +2,7 @@
 
 Requires ht2html.py, available from
 
-http://www.wooz.org/users/barry/software/pyware.html
+http://barry.wooz.org/software/pyware.html
 """
 
 import os
@@ -49,14 +49,18 @@ class MMGenerator(Skeleton, Sidebar, Banner):
         self.__d = {'rootdir': rootdir}
         self.__linkfixer.massage(p.sidebar, self.__d)
         # tweak
-        p.sidebar.append(('http://www.python.org/', '''
-<center>
-    <img border=0 src="%(rootdir)s/images/PythonPoweredSmall.png"></center>'''
-                           % self.__d))
+        p.sidebar.append((None,
+                          '''<a href="http://www.python.org/"><img border=0
+                          src="%(rootdir)s/images/PythonPoweredSmall.png"
+                          ></a>&nbsp;<a href="http://sourceforge.net"><img 
+                          src="http://sourceforge.net/sflogo.php?group_id=103"
+                          width="88" height="31" border="0"
+                          alt="SourceForge Logo"></a>'''
+                          % self.__d))
         p.sidebar.append(BLANKCELL)
-        copyright = self.__parser.get('copyright', '1998,1999,2000')
-        p.sidebar.append((None, '&copy; ' + copyright))
-        p.sidebar.append((None, 'Free Software Foundation, Inc.'))
+        copyright = self.__parser.get('copyright', '1998,1999,2000,2001')
+        p.sidebar.append((None, '&copy; ' + copyright +
+                          '<br>Free Software Foundation, Inc.'))
         Sidebar.__init__(self, p.sidebar)
         #
         # fix up our site links, no relthis because the site links are
