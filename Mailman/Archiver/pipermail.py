@@ -6,7 +6,6 @@ import re
 import sys
 import time
 import email.Utils
-import email.Errors
 import cPickle as pickle
 from cStringIO import StringIO
 from string import lowercase
@@ -535,10 +534,7 @@ class T:
                 m = mbox.next()
             except Errors.DiscardMessage:
                 continue
-            except email.Errors.MessageParseError:
-                # Probably a missing terminating boundary
-                continue
-            if not m:
+            if m is None:
                 return
             counter += 1
 	while 1:
@@ -547,15 +543,15 @@ class T:
                 m = mbox.next()
             except Errors.DiscardMessage:
                 continue
-            except email.Errors.MessageParseError:
-                # Probably a missing terminating boundary
-                continue
             except Exception, e:
                 syslog('error', 'uncaught archiver exception at filepos: %s',
                        pos)
                 raise
-	    if not m:
+	    if m is None:
                 break
+            if m == '':
+                # It was an unparseable message
+                continue
             msgid = m.get('message-id', 'n/a')
             self.message(_('#%(counter)05d %(msgid)s'))
 	    a = articleClass(m, self.sequence)
