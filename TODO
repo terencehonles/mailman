@@ -47,6 +47,8 @@ The Mailman TODO list
   the page, so the site admin can change them...
 - All the list-admin to require approvals for unsubs
 - Allow the admin to disable option settings by users
+- Allow the admin to easily "retire" a list, both through the Web or
+  email commands.
 
 *List Member UI
 - Editing your user options should put you back to the edit-options page. 
