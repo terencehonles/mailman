@@ -40,7 +40,7 @@ def main(argv):
     else:
         try:
             pw = getpass.getpass("New Password: ")
-            confirm = getpass.getpass("Again to confirm: ")
+            confirm = getpass.getpass("Again to confirm password: ")
             if pw != confirm:
                 print "Mismatch - password not changed."
                 raise SystemExit, 1
