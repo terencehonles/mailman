@@ -26,8 +26,9 @@ Jûsø slaptaþodis yra:
 
 	%(password)s
 
-Sistema paprastai kartà per mënesá primena apie dalyvavimà forume.
-Laiðke siunèiama instrukcija kaip atsisakyti forumo bei kaip
+Sistema paprastai kartà per mënesá primena apie dalyvavimà %(host_name)s
+forume,jei tai jums nepatiks - galësite uþdrausti slaptaþodio priminimà.
+Priminimo laiðke siunèiama instrukcija kaip atsisakyti forumo bei kaip
 pakeisti nustatymus.
 
 Forumo tinklapyje bet kada galite papraðyti iðsiøsti Jums slaptaþodá.

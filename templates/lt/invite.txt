@@ -1,5 +1,5 @@
 Diskusijø forumo %(listname)s, esanèio %(hostname)s,
-administratorius kvieèia Jus, <%(email)s> dalyvauti forume.
+administratorius kvieèia Jus, <%(email)s> dalyvauti forume %(listname)s.
 
 Jei norite dalyvauti ðiose diskusijose, atsakykite á ðá laiðkà 
 nepakeisdami jo temos (subject), arba aplankykite mûsø tinklapá:
