@@ -404,15 +404,17 @@ def FormatOptionHelp(doc, varref, mlist):
     valtab = Table(cellspacing=3, cellpadding=4)
     AddOptionsTableItem(valtab, item, category, mlist, detailsp=0)
     form.AddItem(valtab)
-    # XXX I don't think we want to be able to set options from two places,
-    #     since they'll go out of sync.
-    #form.AddItem(Center(FormatPasswordStuff()))
+    form.AddItem('<p>')
+    form.AddItem(Center(FormatSubmit()))
     doc.AddItem(Center(form))
-    doc.AddItem("(<em><strong>Don't change the option here.</strong> "
-                'Use the ')
+    doc.AddItem("""<em><strong>Warning:</strong> changing this option here
+    could cause other screens to be out-of-sync.  Be sure to reload any other
+    pages that are displaying this option for this mailing list.  You can
+    also """)
     doc.AddItem(Link('%s/%s' % (mlist.GetScriptURL('admin'), category),
-                     category + ' options page'))
-    doc.AddItem(' instead.</em>)')
+                     'return to the ' + category + ' options page.'))
+    doc.AddItem('</em>')
+    doc.AddItem(mlist.GetMailmanFooter())
 
 
 
@@ -497,13 +499,19 @@ def GetItemGuiDescr(mlist, category, varname, descr, detailsp):
     Details are not included if this is a VARHELP page, because that /is/ the
     details page!
     """
-    if not detailsp:
-        return '<div ALIGN="right">' + descr + '</div>'
-    return Container('<div ALIGN="right">' + descr + ' ',
+    if detailsp:
+        text = Container('<div ALIGN="right">' + descr + ' ',
                      Link(mlist.GetScriptURL('admin')
                               + '/?VARHELP=' + category + '/' + varname,
                           '(Details)'),
-                     '</div>')
+                     '</div>').Format()
+    else:
+        text = '<div ALIGN="right">' + descr + '</div>'
+    if varname[0] == '_':
+        text = text + '''<div ALIGN="right"><br><em><strong>Note:</strong>
+        setting this value performs an immediate action but does not modify
+        permanent state.</em></div>'''
+    return text
 
 
 
@@ -793,19 +801,14 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 cgi_info["subscribe_policy"].value = str(page_setting + 1)
         opt_list = GetConfigOptions(mlist, category)
         for item in opt_list:
-            if len(item) < 5:
+            if type(item) <> types.TupleType or len(item) < 5:
                 continue
             property, kind, args, deps, desc = item[0:5]
             if cgi_info.has_key(property+'_upload') and \
                    cgi_info[property+'_upload'].value:
                 val = cgi_info[property+'_upload'].value
             elif not cgi_info.has_key(property):
-                if (kind <> mm_cfg.Text and 
-                    kind <> mm_cfg.String and 
-                    kind <> mm_cfg.EmailList):
-                    continue
-                else:
-                    val = ''
+                continue
             else:
                 val = cgi_info[property].value
             value = GetValidValue(mlist, property, kind, val, deps)
@@ -924,9 +927,5 @@ def AddErrorMessage(doc, errmsg, *args):
 
 
 
-_config_info = None
 def GetConfigOptions(mlist, category):
-    global _config_info
-    if _config_info == None:
-        _config_info = mlist.GetConfigInfo()
-    return _config_info[category]
+    return mlist.GetConfigInfo()[category]
