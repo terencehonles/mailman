@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 435 $"
+__version__ = "$Revision: 438 $"
 
 
 import string, os, sys, tempfile
@@ -217,6 +217,7 @@ class Deliverer:
 			    recipient = recipient,
                             text = text,
                             add_headers=["Errors-To: %s"
-                                         % self.GetAdminEmail()])
+                                         % self.GetAdminEmail(),
+                                         "X-No-Archive: yes"])
         if not ok:
              raise mm_err.MMBadUserError
