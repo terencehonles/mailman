@@ -136,10 +136,13 @@ def _addvirtual(mlist, fp):
 # Note that you should already have this virtual domain set up properly in
 # your Postfix installation.  See README.POSTFIX for details.
 
+# Set up Postfix-style virtual domains
+%s\tIGNORED
+
 # LOOP ADDRESSES START
 %s\t%s
 # LOOP ADDRESSES END
-""" % (loopaddr, loopdest)
+""" % (hostname, loopaddr, loopdest)
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
