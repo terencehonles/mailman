@@ -25,16 +25,13 @@ import sys
 import string
 import re
 import traceback
-import Message
-import Errors
-import mm_cfg
-import Utils
-import MailList
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from Mailman import Message
+from Mailman import Errors
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import MailList
+from Mailman.pythonlib.StringIO import StringIO
 
 
 MAXERRORS = 5
@@ -111,7 +108,7 @@ class MailCommandHandler:
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
 	
     def ParseMailCommands(self):
-	msg = Message.IncomingMessage()
+	msg = Message.Message(sys.stdin)
 	subject = msg.getheader("subject")
         sender = string.lower(msg.GetSender())
         sender = string.split(sender, "@")[0]
