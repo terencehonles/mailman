@@ -117,8 +117,10 @@ finish:
 clean:
 	-rm -f */LC_MESSAGES/mailman.mo
 
-potclean:
+fileclean:
 	-rm -f marked.files docstring.files
+
+potclean: fileclean
 	-rm -f Makefile $(POTFILE)
 
 distclean: clean potclean
