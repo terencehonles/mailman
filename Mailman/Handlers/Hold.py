@@ -80,7 +80,7 @@ class Administrivia(HandlerAPI.MessageHeld):
         return """Please do *not* post administrative requests to the mailing
 list.  If you wish to subscribe, visit %(listurl)s or send a message with the
 word `help' in it to the request address, %(request)s, for further
-instructions.""" % {'listurl': mlist.GetAbsoluteScriptURL('listinfo'),
+instructions.""" % {'listurl': mlist.GetScriptURL('listinfo', absolute=1),
                     'request': mlist.GetRequestEmail(),
                     }
 
@@ -223,7 +223,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
          'reason'     : reason,
          'sender'     : sender,
          'subject'    : msg.get('subject', '(no subject)'),
-         'admindb_url': mlist.GetAbsoluteScriptURL('admindb'),
+         'admindb_url': mlist.GetScriptURL('admindb', absolute=1),
          }
     if mlist.admin_immed_notify:
         # get the text from the template
