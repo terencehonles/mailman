@@ -1,5 +1,5 @@
 A(z) `%(listname)s' levelezési lista mûkõdik. A következõkben a 
-levelezési lista alapvetõ információiról lehet itt olvasni.
+levelezési lista alapvetõ információiról lehet olvasni.
 
 A levelezési lista jelszava a következõ:
 

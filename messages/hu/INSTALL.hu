@@ -42,7 +42,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
     % cd email-0.93
     % python setup.py install
 
-    Az email programcsomag sikeres telepítését a következõképen
+    Az email programcsomag sikeres telepítését a következõképpen
     ellenõrizhetjük:
 
     % python
@@ -58,8 +58,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 
 1. A rendszer beállítása
 
-    Root jogokkal kell rendelkeznünk a következõ beállítások végre-
-    hajtásához.
+    A következõ lépésekhez root jogokkal kell rendelkeznünk.
 
     A Mailman program telepítése elõtt a rendszerhez kell adni a 
     megfelelõ felhasználót és csoportot.
@@ -92,9 +91,10 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       akkor külön meg kell adnunk a --prefix kapcsolót, hacsak nem
       akarjuk a listákat magunktól áthelyezni.
       
-      Néhány rendszeren az /usr/local partíción tiltva van a SUID programok
-      futtatása. A Mailman rendes mûködéséhez 'set-gid'-es programokat
-      használ, ezért ilyen partíciókra nem célszerû telepíteni.
+      Néhány rendszeren az /usr/local könyvtárat tartalmazó partíción 
+      tiltva van a SUID programok futtatása. A Mailman rendes mûködéséhez
+      'set-gid'-es programokat használ, ezért ilyen partíciókra nem 
+      célszerû telepíteni.
       Ha a rendszer ilyen partícióval rendelkezik, akkor a Mailmant
       olyan könyvtárba kell telepíteni, ahol engedélyezett a setgid
       programok futása.
@@ -103,7 +103,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
       (vagy a --with-ownergroup-nál megadott) csoport tulajdonában
       van és rendelkezik a setgid bit-tel (BSD rendszergazdák olvassák
       el a README.BSD állományt bõvebb információért). A könyvtárat
-      ezenfelül mindenki számára elérhetõnek és futtathatóvá kell
+      ezenfelül mindenki számára elérhetõvé és futtathatóvá kell
       tenni. Ezt pl. a következõ parancsokkal lehet biztosítani:
 
           % cd $prefix
@@ -220,8 +220,9 @@ olvasásra az UPGRADING  állományban található fontos információkat.
 	    A <kiterjesztés>-ben a pontot is meg kell adni.
 
       --with-gcc=no
-	    Ne használjunk gcc-t még ha az a rendszeren rendelkezésre is
-	    áll. A $PATH-ból elérhetõnek kell lennie ilyenkor a `cc'-nek.
+	    A fordításhoz ne gcc-t, még ha az a rendszeren meg is
+	    található, használjon. Ilyenkor a $PATH-ból elérhetõnek
+	    kell lennie a `cc' fordítóprogramnak.
 
 
 3. Telepítés utáni ellenõrzés
@@ -496,6 +497,7 @@ olvasásra az UPGRADING  állományban található fontos információkat.
               adatbázis, vagy nem lett futtatva a newaliases parancs. Ekkor 
               az 5-ös fejezetben tárgyaltak szerint járjunk el.
 
+
     Hiba:     A listára küldött levelem visszajön a következõ üzenettel:
               "unknown mailer error".
 
@@ -550,8 +552,9 @@ olvasásra az UPGRADING  állományban található fontos információkat.
               nem mûködik, ezért hozzuk létre az /usr/admin/sm.bin
               könyvtárat és ide hozzuk létre a szimbolikus hivatkozásokat.
 
+
     Hiba:     Összezavarodtam a configure futtatásánál. Hogyan tudom
-              törölni a hülyeségeket újratelepítéshez?
+              törölni a felesleges fájlokat újratelepítéshez?
 
     Megoldás: % make clean
               % ./configure --with-a-jó-kapcsolók

@@ -2,6 +2,10 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+Megjegyzés: A Mailman GYIK (angolul a FAQ) már on-line is elérhetõ a 
+            "FAQ Wizard" rendszer segítségével, a 
+	    http://www.python.org/cgi-bin/faqw-mm.py címen.
+
 GYAKRAN ISMÉTLÕDÕ KÉRDÉSEK
 
 K. Hogyan kell helyesen leírni a program nevét?
@@ -14,9 +18,9 @@ K. A kimenõ leveleket iszonyúan lassan továbbítja a program. Úgy tûnik,
    hogy amikor az MTA valamely címzettnél DNS kérést végez, akkor a
    qrunner nagyon lassan dolgozza fel a várakozási sort. Ötlet?
 
-V. Valójában az MTA DNS kérést végez a címzetteknél, amikor a leveleket
-   helyben továbbadja (pl. a Mailman az SMTPDirect.py-vel az MTA-nal).
-   Ez biza hiba. Ki kell kapcsolnunk a gép folyamatos DNS kérését.
+V. Valóban az MTA DNS kérést végez a címzetteknél, amikor a leveleket
+   helyben továbbadja (pl. a Mailman az SMTPDirect.py-vel az MTA-nak).
+   Ez bizony hiba. Ki kell kapcsolnunk a gép folyamatos DNS kérését.
 
    Exim esetén, ez a receiver_verify_hosts megfelelõ beállításával
    történhet. Bõvebb információt a README.EXIM-ben találhatunk.
@@ -131,7 +135,7 @@ K. Miért nem mûködik az archívum?
 V. A listára érkezett már levél? Ez egy ismert hiba; az archívum addig
    nem mûködik amíg legalább egy levél nem érkezett a listára.
 
-K. Okés, az archívum mûködne, de mégsem tudom a nyilvános archívumot
+K. Rendben, az archívum mûködne, de mégsem tudom a nyilvános archívumot
    elérni. Miért?
 
 V. Apache esetén gyõzõdjünk meg, hogy a FollowSymlinks a nyilvános
@@ -248,7 +252,7 @@ V. Ha a Mailmant SSL-re képes web kiszolgálóra telepítettük (pl.
      arra melyet a felhasználó kezdeményezett.
 
    * Hozzáférés a felhasználó termináljához: Ez is egy süti lopó
-     módszer. Azonban ezt a sütik rövid élettartama nehezíti meg.
+     módszer, ezt azonban a sütik rövid élettartama nehezíti meg.
      Fogjuk fel annak, hogy a kényelemért meg kell elégednünk a 
      csökkentett biztonságért, különben minden pillanatban gépelhetjük
      be a jelszavunkat.

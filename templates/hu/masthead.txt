@@ -10,5 +10,5 @@ A lista adminisztrátorát itt éred el
 	%(got_owner_email)s
 
 Levél tárgyának a tartalmára utaló szöveget adj meg, válasz esetén is,
-mert sokat nem lehet meg tudni, ha a levél tárgya valami ilyen
+mert sokat nem lehet megtudni, ha a levél tárgya valami ilyen
 "Re: %(real_name)s digest tartalma..."
