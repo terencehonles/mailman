@@ -56,10 +56,10 @@ class Runner:
                 while 1:
                     # Once through the loop that processes all the files in
                     # the queue directory.
-                    filecnt = self.__oneloop()
+                    filecnt = self._oneloop()
                     # Do the periodic work for the subclass.  BAW: this
                     # shouldn't be called here.  There should be one more
-                    # _doperiodic() call at the end of the __oneloop() loop.
+                    # _doperiodic() call at the end of the _oneloop() loop.
                     self._doperiodic()
                     # If the stop flag is set, we're done.
                     if self._stop:
@@ -75,7 +75,7 @@ class Runner:
             # subprocesses we've created and do any other necessary cleanups.
             self._cleanup()
 
-    def __oneloop(self):
+    def _oneloop(self):
         # First, list all the files in our queue directory.
         # Switchboard.files() is guaranteed to hand us the files in FIFO
         # order.  Return an integer count of the number of files that were
@@ -102,7 +102,7 @@ class Runner:
                 # message to be stored in the shunt queue for human
                 # intervention.
                 try:
-                    self.__onefile(msg, msgdata)
+                    self._onefile(msg, msgdata)
                 except Exception, e:
                     self._log(e)
                     # Put a marker in the metadata for unshunting
@@ -115,7 +115,7 @@ class Runner:
                 break
         return len(files)
 
-    def __onefile(self, msg, msgdata):
+    def _onefile(self, msg, msgdata):
         # Do some common sanity checking on the message metadata.  It's got to
         # be destined for a particular mailing list.  This switchboard is used
         # to shunt off badly formatted messages.  We don't want to just trash
@@ -236,7 +236,7 @@ class Runner:
     def _shortcircuit(self):
         """Return a true value if the individual file processing loop should
         exit before it's finished processing each message in the current slice
-        of hash space.  A false value tells __oneloop() to continue processing
+        of hash space.  A false value tells _oneloop() to continue processing
         until the current snapshot of hash space is exhausted.
 
         You could, for example, implement a throttling algorithm here.
