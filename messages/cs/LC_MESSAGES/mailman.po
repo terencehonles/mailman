@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0rc3\n"
 "POT-Creation-Date: Tue Oct 29 15:07:11 2002\n"
-"PO-Revision-Date: 2002-10-21 22:33+0200\n"
+"PO-Revision-Date: 2002-11-10 22:56+0100\n"
 "Last-Translator: Dan Ohnesorg <dan@ohnesorg.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -152,7 +152,7 @@ msgstr "Aktualizuji HTML stránky archivu"
 
 #: Mailman/Archiver/HyperArch.py:1174
 msgid "article file %s is missing!"
-msgstr ""
+msgstr "soubor %s ve kterém je ulo¾en pøíspìvìk nebyl nalezen!"
 
 #: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
 msgid "No subject"
@@ -519,9 +519,8 @@ msgid "...after this one."
 msgstr "... za tuto."
 
 #: Mailman/Cgi/admin.py:747
-#, fuzzy
 msgid "<br>(Edit <b>%(varname)s</b>)"
-msgstr "<br>(Detaily o <b>%(varname)s</b>)"
+msgstr "<br>(Editovat <b>%(varname)s</b>)"
 
 #: Mailman/Cgi/admin.py:749
 msgid "<br>(Details for <b>%(varname)s</b>)"
@@ -694,8 +693,7 @@ msgstr "<b>potvrzení</b> -- Dostává pøispìvatel potvrzení o pøijetí pøíspìvku?"
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
 "        own postings?"
-msgstr ""
-"<b>not metoo</b> -- Úèasník si nepøeje dostávat kopie vlastních pøíspìvkù."
+msgstr "<b>not metoo</b> -- Úèasník si nepøeje dostávat kopie vlastních pøíspìvkù."
 
 #: Mailman/Cgi/admin.py:1011
 msgid ""
@@ -747,8 +745,7 @@ msgstr "od %(start)s do %(end)s"
 
 #: Mailman/Cgi/admin.py:1066
 msgid "Subscribe these users now or invite them?"
-msgstr ""
-"Mají být tito úèastníci pøihlá¹eni a nebo pozváni k úèasti v konferenci?"
+msgstr "Mají být tito úèastníci pøihlá¹eni a nebo pozváni k úèasti v konferenci?"
 
 #: Mailman/Cgi/admin.py:1068
 msgid "Invite"
@@ -1160,9 +1157,8 @@ msgid "not available"
 msgstr "[¾ádný popis není k dispozici]"
 
 #: Mailman/Cgi/admindb.py:467 Mailman/Cgi/admindb.py:584
-#, fuzzy
 msgid "Received:"
-msgstr "Dostávat pøíspìvky jako digest?"
+msgstr "Doruèeno:"
 
 #: Mailman/Cgi/admindb.py:524
 msgid "Posting Held for Approval"
@@ -2422,8 +2418,7 @@ msgstr "Pøipomínka hesla"
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
-msgstr ""
-"Kliknutím na tlaèítko <em>Po¹li heslo</em> Vám bude zaslána Va¹e heslo."
+msgstr "Kliknutím na tlaèítko <em>Po¹li heslo</em> Vám bude zaslána Va¹e heslo."
 
 #: Mailman/Cgi/options.py:819
 msgid "Remind"
@@ -4124,10 +4119,8 @@ msgid "How big in Kb should a digest be before it gets sent out?"
 msgstr "Jaká je maximální velikost digestu?"
 
 #: Mailman/Gui/Digest.py:63
-msgid ""
-"Should a digest be dispatched daily when the size threshold isn't reached?"
-msgstr ""
-"Má být digest odeslán ka¾dý den i pøi nepøekroèení maximální velikosti?"
+msgid "Should a digest be dispatched daily when the size threshold isn't reached?"
+msgstr "Má být digest odeslán ka¾dý den i pøi nepøekroèení maximální velikosti?"
 
 #: Mailman/Gui/Digest.py:67
 msgid "Header added to every digest"
@@ -4258,8 +4251,7 @@ msgstr "Filtruj duplicitní pøíspìvky, pokud je to mo¾né"
 msgid ""
 "Fundamental list characteristics, including descriptive\n"
 "            info and basic behaviors."
-msgstr ""
-"Základní charakteristika konference, vèetnì popisu a základních informací."
+msgstr "Základní charakteristika konference, vèetnì popisu a základních informací."
 
 #: Mailman/Gui/General.py:60
 msgid "General list personality"
@@ -4267,8 +4259,7 @@ msgstr "Informaèní stránka konference"
 
 #: Mailman/Gui/General.py:63
 msgid "The public name of this list (make case-changes only)."
-msgstr ""
-"Jméno konference. Je v nìm mo¾né provádìt pouze zmìny velikosti písmen."
+msgstr "Jméno konference. Je v nìm mo¾né provádìt pouze zmìny velikosti písmen."
 
 #: Mailman/Gui/General.py:64
 msgid ""
@@ -4803,8 +4794,7 @@ msgstr ""
 msgid ""
 "Should administrator get notices of subscribes and\n"
 "             unsubscribes?"
-msgstr ""
-"Má být administrátor informován o pøihla¹ování a odhla¹ování úèastníkù?"
+msgstr "Má být administrátor informován o pøihla¹ování a odhla¹ování úèastníkù?"
 
 #: Mailman/Gui/General.py:316
 msgid "Send mail to poster when their posting is held for approval?"
@@ -5900,8 +5890,7 @@ msgstr ""
 
 #: Mailman/Gui/Privacy.py:352
 msgid "Ceiling on acceptable number of recipients for a posting."
-msgstr ""
-"Maximální poèet adresátù, pokud bude pøekroèen pøíspìvek nebude rozeslán."
+msgstr "Maximální poèet adresátù, pokud bude pøekroèen pøíspìvek nebude rozeslán."
 
 #: Mailman/Gui/Privacy.py:354
 msgid ""
@@ -5929,8 +5918,7 @@ msgstr "Anti spam filtry"
 
 #: Mailman/Gui/Privacy.py:367
 msgid "Hold posts with header value matching a specified regexp."
-msgstr ""
-"Pozastav distribuci pøíspìvkù, které obsahují v hlavièce takovéto øetìzce."
+msgstr "Pozastav distribuci pøíspìvkù, které obsahují v hlavièce takovéto øetìzce."
 
 #: Mailman/Gui/Privacy.py:368
 msgid ""
@@ -6031,8 +6019,7 @@ msgstr ""
 
 #: Mailman/Gui/Topics.py:62
 msgid "How many body lines should the topic matcher scan?"
-msgstr ""
-"Kolik øádek z tìla pøíspìvku má být prohlédnuto pøi hledání klíèových slov?"
+msgstr "Kolik øádek z tìla pøíspìvku má být prohlédnuto pøi hledání klíèových slov?"
 
 #: Mailman/Gui/Topics.py:64
 msgid ""
@@ -6597,8 +6584,7 @@ msgstr "Do konference není mo¾né pøispívat bez souhlasu moderátora"
 
 #: Mailman/Handlers/Hold.py:66
 msgid "This list is restricted; your message was not approved."
-msgstr ""
-"Tato konference není veøejnì pøístupná, Vás pøíspìvek nebyl akceptován."
+msgstr "Tato konference není veøejnì pøístupná, Vás pøíspìvek nebyl akceptován."
 
 #: Mailman/Handlers/Hold.py:69
 msgid "Too many recipients to the message"
@@ -6655,8 +6641,7 @@ msgstr "Vá¹ pøíspìvek má neplatnou hlavièku."
 msgid ""
 "Message body is too big: %(size)d bytes with a limit of\n"
 "%(limit)d KB"
-msgstr ""
-"Tìlo zprávy je pøíli¹ veliké: %(size)d bytù, kde¾to limit je %(limit)d KB."
+msgstr "Tìlo zprávy je pøíli¹ veliké: %(size)d bytù, kde¾to limit je %(limit)d KB."
 
 #: Mailman/Handlers/Hold.py:106
 msgid ""
@@ -6968,8 +6953,7 @@ msgstr "Ovìøuji práva souboru %(dbfile)s"
 
 #: Mailman/MTA/Postfix.py:336
 msgid "%(dbfile)s owned by %(owner)s (must be owned by %(user)s"
-msgstr ""
-"Soubor %(dbfile)s patøí u¾ivateli %(owner)s (musí být vlastnìn %(user)s)"
+msgstr "Soubor %(dbfile)s patøí u¾ivateli %(owner)s (musí být vlastnìn %(user)s)"
 
 #: Mailman/MailList.py:709
 msgid "You have been invited to join the %(listname)s mailing list"
@@ -7156,7 +7140,6 @@ msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
 msgstr "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
 
 #: bin/add_members:26
-#, fuzzy
 msgid ""
 "Add members to a list from the command line.\n"
 "\n"
@@ -7205,50 +7188,6 @@ msgid ""
 "You must supply at least one of -r and -d options.  At most one of the\n"
 "files can be `-'.\n"
 msgstr ""
-"Pøihlas úèastníka z pøíkazové øádky.\n"
-"\n"
-"Pou¾ití:\n"
-"    add_members [parametry] název_konference\n"
-"\n"
-"Mo¾né parametry:\n"
-"\n"
-"    --non-digest-members-file=file\n"
-"    -n file\n"
-"        A file containing addresses of the members to be added, one\n"
-"        address per line.  This list of people become non-digest\n"
-"        members.  If file is `-', read addresses from stdin.\n"
-"\n"
-"    --digest-members-file=file\n"
-"    -d=file\n"
-"        Similar to above, but these people become digest members.\n"
-"\n"
-"    --changes-msg=<y|n>\n"
-"    -c <y|n> \n"
-"\tSet whether or not to send the list members the `there's going to be\n"
-"\tbig changes to your list' message. defaults to no.\n"
-"\n"
-"    --welcome-msg=<y|n>\n"
-"    -w <y|n>\n"
-"        Set whether or not to send the list members a welcome message,\n"
-"        overriding whatever the list's `send_welcome_msg' setting is.\n"
-"\n"
-"    --admin-notify=<y|n>\n"
-"    -a <y|n>\n"
-"        Set whether or not to send the list administrators a notification "
-"on\n"
-"        the success/failure of these subscriptions, overriding whatever the\n"
-"        list's `admin_notify_mchanges' setting is.\n"
-"\n"
-"    --help\n"
-"    -h\n"
-"        Print this help message and exit.\n"
-"\n"
-"    listname\n"
-"        The name of the Mailman list you are adding members to.  It must\n"
-"        already exist.\n"
-"\n"
-"You must supply at least one of -n and -d options.  At most one of the\n"
-"files can be `-'.\n"
 
 #: bin/add_members:134
 msgid "Big change in %(listname)s@%(listhost)s mailing list"
@@ -9333,14 +9272,14 @@ msgstr ""
 "Èekající pøíspìvky:"
 
 #: cron/checkdbs:114
-#, fuzzy
 msgid ""
 "From: %(sender)s on %(date)s\n"
 "Subject: %(subject)s\n"
 "Cause: %(reason)s"
 msgstr ""
-"     Od: %(sender)s dne %(date)s\n"
-"     Dùvod: %(reason)s"
+"Od: %(sender)s dne %(date)s\n"
+"Vìc: %(subject)s\n"
+"Dùvod: %(reason)s"
 
 #: cron/disabled:19
 msgid ""
@@ -9962,3 +9901,4 @@ msgstr ""
 #~ "Pokud potøebujete dal¹í informace a nebo seznam neplatných adres,\n"
 #~ "nahlédnìte do: \n"
 #~ "    %(varhelp)s\n"
+
