@@ -2,6 +2,37 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+1.1 (05-Nov-1999)
+
+- All GIFs removed.  See http://www.gnu.org/philosophy/gif.html for
+  the reason why.
+
+- Improvements to the Pipermail archiver which make things faster.
+  Primary change is that the .txt files are not gzip'd on every posted
+  message.  Instead, use the new cron script `nightly_gzip' to gzip
+  the .txt file in batches (this means that the .txt file will lag
+  behind the on-line archives a little).
+
+- From the C drivers programs, Python is invoked with the -S option.
+  This tells Python to avoid importing the site module, which can
+  improve start up time of the Python process considerably.  Note that
+  the command line script invocation has not been changed.
+
+- New configuration variables PUBLIC_EXTERNAL_ARCHIVER and
+  PRIVATE_EXTERNAL_ARCHIVER which can contain a shell command string
+  for os.popen().  This can be used to invoke an external archiver
+  instead of the bundled Pipermail archiver.  See Defaults.py for
+  details.
+
+- new script `bin/find_member' which can be used to search for a
+  member by regular expression.
+
+- More child processes are reaped, which should eliminate most
+  occurances of zombie processes.
+
+- A few small miscellaneous bug fixes (including PR#99, PR#107) and
+  improvements to the file locking algorithms.
+
 1.0
 
 - Configure script now allows $PREFIX (by default /home/mailman) to be 
