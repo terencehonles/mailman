@@ -169,7 +169,8 @@ Project</a> for future language support.
     <td>Supported</td>
 </tr>
 <tr><td>Swedish</td><td>sv</td>
-    <td><a href="mailto:tomfa@debian.org">Tomas Fasth</a></td>
+    <td><a href="mailto:tomfa@debian.org">Tomas Fasth</a> and
+        <a href="mailto:anders@norrbring.biz">Anders Norrbring</a></td>
     <td>Supported</td>
 </tr>
 <tr><td>Turkish</td><td>tr</td>
