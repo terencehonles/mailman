@@ -1,13 +1,14 @@
 # Deutsche Übersetzung der Mailman messages
-# Jens Vagelpohl jens@zope.com und
-# Dieter Kirchner dkirchner@bupnet.de, 2001.
+# Jens Vagelpohl jens@zope.com,
+# Dieter Kirchner dkirchner@bupnet.de und,
+# Holger Jahn <holja@t-online.de>, 2001.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Tue Nov  6 18:57:25 2001\n"
+"POT-Creation-Date: Tue Dec  5 18:42:25 2001\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Dieter Kirchner <dkirchner@bupnet.de>\n"
+"Last-Translator: Holger Jahn <holja@t-online.de.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=charset=ISO-8859-1\n"
@@ -131,7 +132,7 @@ msgid ""
 msgstr ""
 "Sie haben die Sendung sowohl der Einzelnachrichten als auch\n"
 "               der Nachrichtensammlungen abgestellt. Damit ist diese Liste\n"
-"               unbrauchbnar für Sie. Bitte wählen Sie entweder Versand von\n"
+"               unbrauchbar für Sie. Bitte wählen Sie entweder Versand von\n"
 "               Nachrichtensammlungen oder der einzelnen Nachrichten."
 
 # Mailman/Cgi/admin.py:174
@@ -6337,14 +6338,14 @@ msgid ""
 "Options:\n"
 "\n"
 "    -h/--help\n"
-"        Print this message and exit.\n"
+"        Print this text and exit.\n"
 msgstr ""
 
 #: bin/list_admins:19
 msgid ""
 "List all the owners of a mailing list.\n"
 "\n"
-"Usage: %(program)s [options] listname ...\n"
+"Benutzung: %(program)s [options] listname ...\n"
 "\n"
 "Where:\n"
 "\n"
@@ -6517,7 +6518,7 @@ msgid ""
 "        standard error.\n"
 "\n"
 "    -h/--help\n"
-"        Print this message and exit.\n"
+"        Print this text and exit.\n"
 "\n"
 "Commands:\n"
 "\n"
@@ -6619,7 +6620,7 @@ msgid ""
 "Options:\n"
 "\n"
 "    -h/--help\n"
-"        Print this message and exit.\n"
+"        Print this text and exit.\n"
 "\n"
 "Commands:\n"
 "\n"
@@ -7049,7 +7050,7 @@ msgid ""
 "        Spit out more debugging information to the logs/qrunner log file.\n"
 "\n"
 "    -h/--help\n"
-"        Print this message and exit.\n"
+"        Print this text and exit.\n"
 "\n"
 "runner is required unless -l or -h is given, and it must be one of the "
 "names\n"
@@ -7086,7 +7087,7 @@ msgid ""
 "given.\n"
 "\n"
 "    -h/--help\n"
-"        Print this message and exit.\n"
+"        Print this text and exit.\n"
 "\n"
 "Commands:\n"
 "\n"
@@ -7133,16 +7134,40 @@ msgid ""
 "    addr1 ... are additional addresses to remove.\n"
 "\n"
 msgstr ""
+"Entferne Mitglieder aus einer Mailingliste.\n"
+"\n"
+"Benutzung:\n"
+"    remove_members [optionen] listenname [adresse1 ...]\n"
+"\n"
+"optionen:\n"
+"\n"
+"    --file=file\n"
+"    -f file\n"
+"        Entferne Mitgliedsadressen, die in Datei stehen. Ist der\n"
+"        Dateiname `-', lese von stdin.\n"
+"\n"
+"    --all\n"
+"    -a\n"
+"        Entferne alle Mitglieder einer Mailingliste.\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Ausgabe dieser Maldung und Schluss\n"
+"\n"
+"    listenname ist der Name der Mailingliste, die benutzt werden soll.\n"
+"\n"
+"    adresse1 ... erste und weitere Adressen, die entfernt werden sollen.\n"
+"\n"
 
 #: bin/remove_members:104
 msgid "Could not open file for reading: %(filename)s."
-msgstr ""
+msgstr "Kann Datei %(filename)s nicht zum Lesen öffnen."
 
 # Mailman/Bouncer.py:253 Mailman/Bouncer.py:280
 #: bin/remove_members:121
 #, fuzzy
 msgid "User `%(addr)s' not found."
-msgstr "Benutzer nicht gefunden."
+msgstr "Benutzer `%(addr)s' nicht gefunden."
 
 #: bin/rmlist:19
 msgid ""
@@ -7164,30 +7189,47 @@ msgid ""
 "        print this help message and exit\n"
 "\n"
 msgstr ""
+"Vorsicht: Entferne sorgloserweise die Komponenten einer Mailingliste!\n"
+"\n"
+"Diese Aktion entfern (fast) alle Spuren einer Mailingliste, bis auf die\n"
+"Archive, was sehr praktisch für die Ablage alter Listen sein kann.\n"
+"\n"
+"Benutzung:\n"
+"    rmlist [-a] [-h] listenname\n"
+"\n"
+"Wobei gilt:\n"
+"    --archives\n"
+"    -a\n"
+"        entferne auch die Listenarchive\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Ausgabe dieser Meldung und Schluss\n"
+"\n"
 
 #: bin/rmlist:60 bin/rmlist:63
 msgid "Removing %(msg)s"
-msgstr ""
+msgstr "Entferne %(msg)s"
 
 #: bin/rmlist:66
 msgid "%(listname)s %(msg)s not found as %(dir)s"
-msgstr ""
+msgstr "%(listname)s %(msg)s nicht als %(dir)s gefunden"
 
 #: bin/rmlist:94
 msgid "Not removing archives.  Reinvoke with -a to remove them."
-msgstr ""
+msgstr "Archive nicht entfernt. Nochmals mit -a aufrufen, um sie zu entfernen"
 
 # Mailman/Cgi/private.py:62
 #: bin/rmlist:107 bin/rmlist:108
 #, fuzzy
 msgid "private archives"
-msgstr "Fehler im privaten Archiv"
+msgstr "Private Archive"
 
 # Mailman/Cgi/admin.py:373
 #: bin/rmlist:109 bin/rmlist:110
 #, fuzzy
 msgid "public archives"
-msgstr "Zum Listen-Archiv gehen"
+msgstr "Öffentliche Archive"
 
 #: bin/sync_members:19
 msgid ""
@@ -7249,62 +7291,114 @@ msgid ""
 "    listname\n"
 "        Required.  This specifies the list to synchronize.\n"
 msgstr ""
+"Synchronisiere Mitgliedsliste einer Mailingliste mit einer Textdatei.\n"
+"\n"
+"Dieses Skript ist besonders dann nützlich, wenn Sie eine Mailliste und eine\n"
+"Sendmail-Stil :include:-Adressliste (analog Majordomo) haben. Jeder\n"
+"Adresseintrag in der Datei, der nicht in der Mailliste vorhanden ist, wird\n"
+"zur Mailingliste hinzugefügt."
+"\n"
+"Jede in der Mauilingsliste vorhandene Adresse, die in der Datei nicht\n"
+"existiert, wird aus der Mailliste entfernt.  Die anderen Optioenen steuern,\n"
+"wie Adressen hinzugefügt oder entfernt werden.\n"
+"\n"
+"Benutzung: %(PROGRAMM)e [optionen] -f datei listenname\n"
+"\n"
+"Wobei `optionen' sein können:\n"
+"\n"
+"    --no-change\n"
+"    -n\n"
+"        Ändere nicht. Gebe statt dessen aus, was an der Liste geändert\n"
+"        werden würde.\n"
+"\n"
+"    --welcome-msg[=<yes|no>]\n"
+"    -w[=<yes|no>]\n"
+"        Festlegen, ob neu hinzugekommene Benutzer eine Willkommens-\n"
+"        nachricht erhalten. Dieser Parameter überschreibt den Wert der\n"
+"        `send_welcome_msg'-Variablen.\n"
+"        Mit -w=yes oder -w wird die Nachricht gesendet, mit -w=no nicht.\n"
+"\n"
+"    --digest[=<yes|no>]\n"
+"    -d[=<yes|no>]\n"
+"        Legt fest, ob neue Listenmitglieder Nachrichtensammlungen\n"
+"        erhalten. Mit -d=yes or -d erhalten sie diese. Mit -d=no nicht.\n"
+"\n"
+"    --notifyadmin[=<yes|no>]\n"
+"    --a[=<yes|no>]\n"
+"        Legt fest, ob der Administrator einer Liste über jedes abonnieren/\n"
+"        abbestellen per Email informiert wird. Bei Eingabe von Massenabos\n"
+"        empfiehlt es sich, diese Option abzuschalten! Mit -a=yes or -a\n"
+"        wird der Admin benachrichtigt, mit -a=no nicht und mit nicht\n"
+"        gesetzter Option wird der Fehlwert benutzt.\n"
+"\n"
+"    --file <dateiname | ->\n"
+"    -f <dateiname | ->\n"
+"        Diese Angabe ist erforderlich. Sie spezifiziert die Synchronisations\n"
+"        datei.  Pro Zeile darf eine Emailadresse drin stehen. Ist statt des\n"
+"        Dateinames ein `-' angegeben, wird stdin benutzt.\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Ausgabe dieser Meldung.\n"
+"\n"
+"    listenname\n"
+"        Erforderlich.  Liste, mit der synchronisiert werden soll.\n"
 
 #: bin/sync_members:102
 msgid "Bad choice: %(yesno)s"
-msgstr ""
+msgstr "Schlecht gewählt: %(yesno)s"
 
 #: bin/sync_members:124
 msgid "Dry run mode"
-msgstr ""
+msgstr "Was-Wäre-Wenn-Modus"
 
 #: bin/sync_members:139
 msgid "Only one -f switch allowed"
-msgstr ""
+msgstr "Parameter -f nur einmal pro Befehl erlaubt"
 
 # Mailman/Cgi/admindb.py:338 Mailman/ListAdmin.py:258
 
 #: bin/sync_members:143
 #, fuzzy
 msgid "No argument to -f given"
-msgstr "[Kein Grund angegeben]"
+msgstr "Kein Wert für Parameter -f angegeben"
 
 #: bin/sync_members:152
 msgid "Illegal option: %(opt)s"
-msgstr ""
+msgstr "Unzulässige Option:  %(opt)s"
 
 # Mailman/Cgi/admindb.py:338 Mailman/ListAdmin.py:258
 
 #: bin/sync_members:158
 #, fuzzy
 msgid "No listname given"
-msgstr "[Kein Grund angegeben]"
+msgstr "Kein Listenname angegeben"
 
 #: bin/sync_members:162
 msgid "Must have a listname and a filename"
-msgstr ""
+msgstr "Benötige Listenname und Dateiname"
 
 #: bin/sync_members:171
 msgid "Cannot read address file: %(filename)s: %(msg)s"
-msgstr ""
+msgstr "Kann Adressdatei nicht lesen: %(filename)s: %(msg)s"
 
 #: bin/sync_members:183
 msgid "Ignore  :  %30(addr)s"
-msgstr ""
+msgstr "Ignoriere: %30(addr)s"
 
 # Mailman/Cgi/admin.py:1232 Mailman/Cgi/admin.py:1235
 #: bin/sync_members:192
 #, fuzzy
 msgid "Invalid :  %30(addr)s"
-msgstr "Ungültige Email-Addresse"
+msgstr "Ungültig : %30(addr)s"
 
 #: bin/sync_members:195
 msgid "You must fix the preceding invalid addresses first."
-msgstr ""
+msgstr "Korrigieren Sie zuerst die vorangehende ungültige Adresse."
 
 #: bin/sync_members:236
 msgid "Added  : <%(addr)30s> %(name)s"
-msgstr ""
+msgstr "Hinzugefügt: <%(addr)30s> %(name)s"
 
 #: bin/sync_members:245
 msgid "Removed: <%(addr)30s> %(name)s"
@@ -7329,25 +7423,43 @@ msgid ""
 "Use this script to help you update to the latest release of Mailman from\n"
 "some previous version.  It knows about versions back to 1.0b4 (?).\n"
 msgstr ""
+"Updates werden ausgeführt.\n"
+"\n"
+"Benutzung: %(PROGRAMM)e [optionen]\n"
+"\n"
+"Optionen:\n"
+"    -f/--force\n"
+"        Erzwinge Ausführung der Updates.  Bei identischer Versionsnummer\n"
+"        von Update und vorhandener Installaion wird im Regelfall gar nichts\n"
+"        getan.\n"
+"\n"
+"    -h/--help\n"
+"        Ausgabe dieser Meldung und Schluss.\n"
+"\n"
+"Benutzen Sie dieses Skript, um auf das neueste verfügbare Update von\n"
+"Mailman zu aktualisieren. Das Update ist möglich ab Version 1.0b4 (?).\n"
 
 # Mailman/Cgi/create.py:101 Mailman/Cgi/create.py:174 bin/newlist:122
 # bin/newlist:154
 #: bin/update:98
 #, fuzzy
 msgid "Fixing language templates: %(listname)s"
-msgstr "Liste existiert bereits: %(listname)s"
+msgstr "Korrigiere Sprachschablone für Liste: %(listname)s"
 
 # Mailman/Cgi/create.py:203 bin/newlist:184
 #: bin/update:187 bin/update:429
 #, fuzzy
 msgid "WARNING: could not acquire lock for list: %(listname)s"
-msgstr "Ihre neue Mailingliste: %(listname)s"
+msgstr "WARNUNG: Keine Kontrolle über die Dateisperre der Liste: %(listname)s"
 
 #: bin/update:210
 msgid ""
 "For some reason, %(mbox_dir)s exists as a file.  This won't work with\n"
 "b6, so I'm renaming it to %(mbox_dir)s.tmp and proceeding."
 msgstr ""
+"Aus irgendwelchen Gründen existiert %(mbox_dir)s als Datei. Das\n"
+"funktioniert nicht in Verbindung mit b6, weshalb ich die Datei nach\n"
+"%(mbox_dir)s.tmp umbenennen und fortfahren werde."
 
 #: bin/update:222
 msgid ""
@@ -7362,6 +7474,17 @@ msgid ""
 "You can integrate that into the archives if you want by using the 'arch'\n"
 "script.\n"
 msgstr ""
+"\n"
+"%(listname)s beinhaltet sowohl ein öffentliches, als auch ein privates\n"
+"mbox-Archiv. Da diese Liste im Augenblick private Archivierung benutzt,\n"
+"installiere ich nun das private mbox-Dateiarchiv -- %(o_pri_mbox_file)s --\n"
+"als das aktive und benenne\n"
+"        %(o_pub_mbox_file)s\n"
+"    nach\n"
+"        %(o_pub_mbox_file)s.preb6\n"
+"um.\n"
+"Sie können dieses Archiv in Ihre Archive integrieren, indem Sie das 'arch'-\n"
+"Skript benutzen.\n"
 
 #: bin/update:237
 msgid ""
@@ -7375,10 +7498,19 @@ msgid ""
 "You can integrate that into the archives if you want by using the 'arch'\n"
 "script.\n"
 msgstr ""
+"%s beinhaltet sowohl ein öffentliches, als auch ein privates mbox-Archiv.\n"
+"Da diese Liste im Augenblick öffentliche Archivierung benutzt, installiere\n"
+"ich nun das öffentliche mbox-Dateiarchiv (%s) als das aktive und benenne\n"
+"        %s\n"
+"    nach\n"
+"        %s.preb6\n"
+"um.\n"
+"Sie können dieses Archiv in Ihre Archive integrieren, indem Sie das 'arch'-\n"
+"Skript benutzen.\n"
 
 #: bin/update:254
 msgid "- updating old private mbox file"
-msgstr ""
+msgstr "- aktualisiere alte, öffentliche mbox-Datei"
 
 #: bin/update:262
 msgid ""
@@ -7387,16 +7519,23 @@ msgid ""
 "    to\n"
 "        %(newname)s"
 msgstr ""
+"    unbekannte Datei im Weg, verschiebe\n"
+"        %(o_pri_mbox_file)s\n"
+"    nach\n"
+"        %(newname)s"
 
 #: bin/update:269 bin/update:292
 msgid ""
 "    looks like you have a really recent CVS installation...\n"
 "    you're either one brave soul, or you already ran me"
 msgstr ""
+"    Sieht so aus, als hätten Sie eine richtig aktuelle CVS Installation...\n"
+"    entweder sind Sie ein tapferes Schneiderlein, oder haben mich bereits\n"
+"    einmal laufen lassen"
 
 #: bin/update:278
 msgid "- updating old public mbox file"
-msgstr ""
+msgstr "- aktualisiere alte, öffentliche mbox-Datei"
 
 #: bin/update:286
 msgid ""
@@ -7405,30 +7544,34 @@ msgid ""
 "    to\n"
 "        %(newname)s"
 msgstr ""
+"    unbekannte Datei im Weg, verschiebe\n"
+"        %(o_pub_mbox_file)s\n"
+"    nach\n"
+"        %(newname)s"
 
 #: bin/update:317
 msgid "- This list looks like it might have <= b4 list templates around"
-msgstr ""
+msgstr "- Sieht so aus, als basierte die Liste auf Schablonen <= b4"
 
 #: bin/update:324
 msgid "- moved %(o_tmpl)s to %(n_tmpl)s"
-msgstr ""
+msgstr "- %(o_tmpl)s nach %(n_tmpl)s verschoben"
 
 #: bin/update:326
 msgid "- both %(o_tmpl)s and %(n_tmpl)s exist, leaving untouched"
-msgstr ""
+msgstr "- Lasse die Finger davon: %(o_tmpl)s und %(n_tmpl)s existieren."
 
 #: bin/update:357
 msgid "removing %(src)s"
-msgstr ""
+msgstr "Entferne %(src)s"
 
 #: bin/update:361
 msgid "Warning: couldn't remove %(src)s -- %(rest)s"
-msgstr ""
+msgstr "Warnung: Konnte Datei %(src)s nicht entfernen  -- %(rest)s"
 
 #: bin/update:366
 msgid "couldn't remove old file %(pyc)s -- %(rest)s"
-msgstr ""
+msgstr "konnte alte Datei %(pyc)s nicht entfernen  -- %(rest)s"
 
 #: bin/update:370
 msgid "updating old qfiles"
@@ -7436,13 +7579,15 @@ msgstr ""
 
 #: bin/update:396
 msgid "no lists == nothing to do, exiting"
-msgstr ""
+msgstr "Keine Listen == Nichts zu tun. Feierabend."
 
 #: bin/update:403
 msgid ""
 "fixing all the perms on your old html archives to work with b6\n"
 "If your archives are big, this could take a minute or two..."
 msgstr ""
+"korrigiere die Berechtigungen an Ihren alten HTML-Archiven, damit diese\n"
+"zu b6 passen. Bei grösseren Archiven kann dieses einige Minuten dauern..."
 
 # Mailman/Cgi/confirm.py:208 Mailman/Cgi/create.py:301
 # Mailman/Cgi/create.py:347 Mailman/Gui/Archive.py:30
@@ -7461,29 +7606,29 @@ msgstr ""
 #: bin/update:408
 #, fuzzy
 msgid "done"
-msgstr "Nein"
+msgstr "erledigt"
 
 # Mailman/Cgi/create.py:203 bin/newlist:184
 #: bin/update:410
 #, fuzzy
 msgid "Updating mailing list: %(listname)s"
-msgstr "Ihre neue Mailingliste: %(listname)s"
+msgstr "Aktualisiere Mailingliste: %(listname)s"
 
 #: bin/update:412
 msgid "Updating Usenet watermarks"
-msgstr ""
+msgstr "Aktualisiere Usenet-Wasserzeichen"
 
 #: bin/update:417
 msgid "- nothing to update here"
-msgstr ""
+msgstr "- kein Update erforderlich"
 
 #: bin/update:440
 msgid "- usenet watermarks updated and gate_watermarks removed"
-msgstr ""
+msgstr "- Usenet-Wasserzeichen aktualisiert und gate_watermarks entfernt"
 
 #: bin/update:450
 msgid "Updating old pending_subscriptions.db database"
-msgstr ""
+msgstr "Update der alten pending_subscriptions.db Datenbank"
 
 #: bin/update:467
 msgid ""
@@ -7507,10 +7652,27 @@ msgid ""
 "NOTE NOTE NOTE NOTE NOTE\n"
 "\n"
 msgstr ""
+"\n"
+"\n"
+"ACHTUNG ACHTUNG ACHTUNG\n"
+"\n"
+"    Sie updaten gerade eine vorhandene Mailman-Installation, aber ich\n"
+"    kann nicht ermitteln, welche Version zuvor lief.\n"
+"\n"
+"    Wenn Sie von Mailman-Version 1.0b9 oder älter updaten, müssen Sie\n"
+"    Ihre Mailinglisten manuell updaten. Sie müssen die Datei templates/\n"
+"    options.html jeder Liste nach lists/<listname>/options.html kopieren.\n"
+"\n"
+"    Auf jeden Fall müssen Sie die Änderungen von Hand in diese Datei\n"
+"    einfügen, wenn Sie die Webschnittstelle zum Editieren benutzt haben,\n"
+"    da Sie ansonsten alle Änderungen dieser Datei verlieren.\n"
+"\n"
+"ACHTUNG ACHTUNG ACHTUNG\n"
+"\n"
 
 #: bin/update:520
 msgid "No updates are necessary."
-msgstr ""
+msgstr "Keine Updates erforderlich."
 
 #: bin/update:523
 msgid ""
@@ -7518,10 +7680,13 @@ msgid ""
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
+"Einspielen einer älteren Version erkannt (Version %(hexlversion)s nach\n"
+"Version %(hextversion)s). Dies macht wahrscheinlich wenig Sinn....\n"
+"Programmende."
 
 #: bin/update:528
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
-msgstr ""
+msgstr "Update von Version %(hexlversion)s auf %(hextversion)s"
 
 #: bin/update:537
 msgid ""
@@ -7538,14 +7703,53 @@ msgid ""
 "re-run \"make update\" manually.  See the INSTALL and UPGRADE files for "
 "details.\n"
 msgstr ""
+"\n"
+"FEHLER:\n"
+"\n"
+"Die Sperren einiger Listen konnten nicht übernommen werden. Das bedeutet\n"
+"entweder, das Mailman beim letzten Upgrade aktiv war, oder dass ungültige\n"
+"Sperren im Verzeichnis %(lockdir)s vorhanden sind.\n"
+"\n"
+"Sie müssen Mailman stoppen, alle ungültigen Sperren beseitigen und dann\n"
+"nochmals den Befehl \"make update\" manuell aufrufen. Siehe die INSTALL-\n"
+
+#: bin/update:528
+msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
+msgstr "Upgrade von Version %(hexlversion)s auf %(hextversion)s"
+
+#: bin/update:537
+msgid ""
+"\n"
+"ERROR:\n"
+"\n"
+"The locks for some lists could not be acquired.  This means that either\n"
+"Mailman was still active when you upgraded, or there were stale locks in "
+"the\n"
+"%(lockdir)s directory.\n"
+"\n"
+"You must put Mailman into a quiescent state and remove all stale locks, "
+"then\n"
+"re-run \"make update\" manually.  See the INSTALL and UPGRADE files for "
+"details.\n"
+msgstr ""
+"\n"
+"FEHLER:\n"
+"\n"
+"Die Sperren einiger Listen konnten nicht übernommen werden. Das bedeutet\n"
+"entweder, das Mailman beim letzten Upgrade aktiv war, oder dass ungültige\n"
+"Sperren im Verzeichnis %(lockdir)s vorhanden sind.\n"
+"\n"
+"Sie müssen Mailman stoppen, alle ungültigen Sperren beseitigen und dann\n"
+"nochmals den Befehl \"make update\" manuell aufrufen. Siehe die INSTALL-\n"
+"und UPGRADE-Dateien zu Details hierzu.\n"
 
 #: bin/version:19
 msgid "Print the Mailman version.\n"
-msgstr ""
+msgstr "Ausgabe der Mailman-Version.\n"
 
 #: bin/version:26
 msgid "Using Mailman version:"
-msgstr ""
+msgstr "Benutze Mailman-Version:"
 
 #: bin/withlist:19
 msgid ""
@@ -7612,7 +7816,7 @@ msgid ""
 "\n"
 "    --help\n"
 "    -h\n"
-"        Print this message and exit\n"
+"        Print this text and exit\n"
 "\n"
 "\n"
 "Here's an example of how to use the -r option.  Say you have a file in the\n"
@@ -7659,6 +7863,108 @@ msgid ""
 "and run this from the command line:\n"
 "%% bin/withlist -l -r changepw mylist somebody@somewhere.org foobar\n"
 msgstr ""
+"Generelles Rahmenwerk zur Interaktion mit einem Mailinglisten-Objekt.\n"
+"\n"
+"Es gibt zwei Wege, dieses Skript zu benutzen: interaktiv oder programmiert.\n"
+"Der interaktive Weg erlaubt es, herum zu spielen und ein MailList-Objekt\n"
+"mit Python's interaktivem Interpreter zu modifizieren. Um dies zu tun, \n"
+"kann Python wie folgt gestartet werden:\n"
+"\n"
+"%% python -i bin/withlist [options] listenname [argumente ...]\n"
+"\n"
+"Lädt das angegebene Listenobjekt (Angabe erforderlich) in ein Objekt mit dem\n"
+"Namen `m' innerhalb des globalen Namespace. Aussdem lädt es die Klasse\n"
+"MailList in den globalen Namespace.\n"
+"\n"
+"Programmiertechnisch können sie eine Funktion schreiben, um mit einem\n"
+"MailList-Objekt zu arbeiten und das Skipt wird sich um das Haushalten\n"
+"kümmern (s.u. für Beispiele). In diesem Fall lautet die generelle Syntax:\n"
+"\n"
+"%% bin/withlist [optionen] listenname [argumente ...]\n"
+"\n"
+"Optionen:\n"
+"\n"
+"    -l\n"
+"    --lock\n"
+"        Sperre die Liste beim Öffnen.  Fehlwert: Entgesperrt beim Öffnen.\n"
+"        (z.B. fü Nurlese-Operationen).  Das Sperren der Liste ist jederzeit\n"
+"        möglich durch Eingabe von `m.Lock()'\n"
+"\n"
+"        Wenn Sie die Sperre benutzen, sollten Sie vor dem Beenden die\n"
+"        Funktion m.Save() aufrufen, da die Aufräumprozedur des Interpreters\n"
+"        nicht automatisch alle Änderungen am MailList-Ojekt speichert (aber\n"
+"        er entsperrt wenigstens die Liste.)\n"
+"\n"
+"    --run [module.]callable\n"
+"    -r [module.]callable\n"
+"        Diese Option kann benutzt werden, um ein Skript innerhalb eines\n"
+"        geöffneten MailList-Objekts laufen zu lassen. Dies geschieht durch\n"
+"        das Importieren von `module' (welches über den sys.path bereits\n"
+"        zugänglich sein muss), und dem anschliessendem Laden von `callable'.\n"
+"        `callable' kann eine Klasse oder Funktion sein, sie wird aufgerufem\n"
+"        mit dem Namen des MailList-Objektes als erstem Argument.\n"
+"        Wurden weitere Parameter angegeben, werden diese an `callable'\n"
+"        in gleicher Reihenfolge weitergereicht.\n"
+"\n"
+"        Beachten Sie, dass die Angabe von `module.' optional ist; wurde auf\n"
+"        die Angabe verzichtet, wird ein Modul mit dem Namen `callable'\n" 
+"        importiert.\n"
+"\n"
+"        Die globale Variable `r' wird auf den Rückkehrwert dieses Aufrufes\n"
+"        gesetzt\n"
+"\n"
+"    --quiet\n"
+"    -q\n"
+"        Unterdrücke alle Statusmeldungen.\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Ausgabe dieser Meldung und Schluss.\n"
+"\n"
+"\n"
+"Hier nun ein Beispiel zur Benutzung der -r Option. Wenn Sie eine Datei\n"
+"im Mailman-Installationsverzeichnis namens `listaddr.py' haben, die die\n"
+"beiden folgenden Funktion enthält:\n"
+"\n"
+"def listaddr(mlist):\n"
+"    print mlist.GetListEmail()\n"
+"\n"
+"def requestaddr(mlist):\n"
+"    print mlist.GetRequestEmail()\n"
+"\n"
+"Damit können Sie sich auf der Kommandozeile die Postingadresse einer Liste\n"
+"ausgeben lassen, indem Sie diese Befehle eingeben:\n"
+"\n"
+"%% bin/withlist -r listaddr mylist\n"
+"Loading list: mylist (unlocked)\n"
+"Importing listaddr ...\n"
+"Running listaddr.listaddr() ...\n"
+"mylist@myhost.com\n"
+"\n"
+"Und durch Aufruf des folgenden können Sie sich die Request-Adresse\n"
+"geben lassen:\n"
+"\n"
+"%% bin/withlist -r listaddr.requestaddr mylist\n"
+"Loading list: mylist (unlocked)\n"
+"Importiere Mailinglistenadresse ...\n"
+"Running listaddr.requestaddr() ...\n"
+"mylist-request@myhost.com\n"
+"\n"
+"Als ein weiteres Beispiel - um sagen wir einmal, das Passwort eines\n"
+"bestimmten Benutzers einer bestimmten Liste zu ändern -, könnten Sie\n"
+"die folgenden Funktionen in eine Datei names `changepw.py' stecken:\n"
+"\n"
+"from Mailman.Errors import NotAMember\n"
+"\n"
+"def changepw(mlist, addr, newpasswd):\n"
+"    try:\n"
+"        mlist.setMemberPassword(addr, newpasswd)\n"
+"        mlist.Save()\n"
+"    except NotAMember:\n"
+"        print 'Es passte keine Adresse:', addr\n"
+"\n"
+"und diesen Befehl in der Kommandozeile eingeben:\n"
+"%% bin/withlist -l -r changepw mylist somebody@somewhere.org foobar\n"
 
 #: bin/withlist:140
 msgid ""
@@ -7670,44 +7976,51 @@ msgid ""
 "though.\n"
 "    "
 msgstr ""
+"Gebe eine zuvor gesperrte Liste wieder frei, sichere sie aber ausdrücklich\n"
+"nicht via Save().\n"
+"\n"
+"    Wird nicht ausgeführt, wenn der Interpreter ein Exitsignal erhält, oder"
+"    die Methode os._exit() aufgerufen wird (obwohl sie aufgerufen wird,\n"
+"    falls eine Exception auftritt).\n"
+"    "
 
 # Mailman/Cgi/create.py:203 bin/newlist:184
 #: bin/withlist:151
 #, fuzzy
 msgid "Unlocking (but not saving) list: %(listname)s"
-msgstr "Ihre neue Mailingliste: %(listname)s"
+msgstr "Gebe Mailingliste wieder frei (aber speichere nicht): %(listname)s"
 
 #: bin/withlist:155
 msgid "Finalizing"
-msgstr ""
+msgstr "Vollende"
 
 # Mailman/Cgi/edithtml.py:57
 #: bin/withlist:183
 #, fuzzy
 msgid "No list name supplied."
-msgstr "Der Name der Liste ist erforderlich"
+msgstr "Kein Mailingslisten-Name angegeben."
 
 # Mailman/Cgi/create.py:203 bin/newlist:184
 #: bin/withlist:189
 #, fuzzy
 msgid "Loading list %(listname)s"
-msgstr "Ihre neue Mailingliste: %(listname)s"
+msgstr "Lade Mailingliste: %(listname)s"
 
 #: bin/withlist:191
 msgid "(locked)"
-msgstr ""
+msgstr "(gesperrt)"
 
 #: bin/withlist:193
 msgid "(unlocked)"
-msgstr ""
+msgstr "(entsperrt)"
 
 #: bin/withlist:207
 msgid "Importing %(module)s..."
-msgstr ""
+msgstr "Importiere %(module)s..."
 
 #: bin/withlist:210
 msgid "Running %(module)s.%(callable)s()..."
-msgstr ""
+msgstr "Ausführen von %(module)s.%(callable)s()..."
 
 #: cron/bumpdigests:19
 msgid ""
@@ -7718,22 +8031,37 @@ msgid ""
 "Options:\n"
 "\n"
 "    --help/-h\n"
-"        Print this message and exit.\n"
+"        Print this text and exit.\n"
 "\n"
 "The lists named on the command line are bumped.  If no list names are "
 "given,\n"
 "all lists are bumped.\n"
 msgstr ""
+"Hochzählen der Sammlungs-Bandnummer und zurücksetzen des Sammlungszählers\n"
+"auf Eins\n"
+"\n"
+"Benutzung: %(PROGRAM)s [optionen] [listenname ...]\n"
+"\n"
+"Optionen:\n"
+"\n"
+"    --help/-h\n"
+"        Ausgabe dieser Meldung und Schluss.\n"
+"\n"
+"Die auf der Kommandozeile angegeben Listen werden geschoben. Wird kein\n"
+"Listenname angegeben, werden alle vorhandenen Listen geschoben.\n"
 
 #: cron/checkdbs:19
 msgid ""
 "Invoked by cron, this checks for pending moderation requests and mails the\n"
 "list moderators if necessary.\n"
 msgstr ""
+"Via Cron gesteuert sucht dieses Programm nach offenen, moderierten\n"
+"Anforderungen und sendet gegebenenfalls eine Email an den Moderator der\n"
+"betreffenden Listen.\n"
 
 #: cron/checkdbs:68
 msgid "%(count)d %(realname)s moderator request(s) waiting"
-msgstr ""
+msgstr "%(count)d %(realname)s Moderatoranforderung(en) warten"
 
 # Mailman/Cgi/admin.py:707
 #: cron/checkdbs:80
@@ -7746,12 +8074,16 @@ msgid ""
 "\n"
 "Pending posts:"
 msgstr ""
+"\n"
+"Offene Eingänge:"
 
 #: cron/checkdbs:96
 msgid ""
 "     From: %(sender)s on %(date)s\n"
 "    Cause: %(reason)s"
 msgstr ""
+"     Von: %(sender)s am %(date)s\n"
+"    Grund: %(reason)s"
 
 #: cron/gate_news:19
 msgid ""
@@ -7766,6 +8098,17 @@ msgid ""
 "        Print this text and exit.\n"
 "\n"
 msgstr ""
+"NNTP-Server auf Nachrichten abfragen, die an Mailinglisten durchgereicht\n"
+"werden müssen.\n"
+"\n"
+"Benutzung: gate_news [optionen]\n"
+"\n"
+"Wobei gilt\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Ausgabe dieser Maldung und Schluss.\n"
+"\n"
 
 #: cron/mailpasswds:19
 msgid ""
@@ -7784,8 +8127,22 @@ msgid ""
 "\n"
 "Options:\n"
 "    -h/--help\n"
-"        Print this message and exit.\n"
+"        Print this text and exit.\n"
 msgstr ""
+"Sende Passwort-Erinnerung an alle Benutzer aller Listen.\n"
+"\n"
+"Dieses Programm durchsucht alle Listen und sammelt alle Benutzer und deren\n"
+"Passwörter, gruppiert nach dem Hostnamen der Liste, sofern die Option\n"
+"mm_cfg.VIRTUAL_HOST_OVERVIEW gesetzt ist. Anschliessend wird eine Email an\n"
+"jeden eindeutigen Benutzer gesendet (pro virtuellen Host), die das Passwort\n"
+"der Liste und einen Link auf die Benutzeroptionen enthält.\n"
+"Die Passwort-Erinnerung wird von mm_cfg.MAILMAN_SITE_LIST gesteuert.\n"
+"\n"
+"Benutzung: %(PROGRAM)s [optionen]\n"
+"\n"
+"Optionen:\n"
+"    -h/--help\n"
+"        Ausgabe dieser Meldung und Schluss.\n"
 
 # Mailman/Cgi/create.py:101 Mailman/Cgi/create.py:174 bin/newlist:122
 # bin/newlist:154
@@ -7798,13 +8155,13 @@ msgstr "Liste existiert bereits: %(listname)s"
 #: cron/mailpasswds:111
 #, fuzzy
 msgid "%(host)s mailing list memberships reminder"
-msgstr "%(listfullname)s Mailinglisten Erinnerun"
+msgstr "%(host)s Mitgliedschafts-Erinnerung"
 
 # Mailman/Cgi/confirm.py:203 Mailman/Cgi/options.py:658
 #: cron/mailpasswds:156
 #, fuzzy
 msgid "Password // URL"
-msgstr "Passwort:"
+msgstr "Passwort // URL"
 
 #: cron/nightly_gzip:19
 msgid ""
@@ -7831,6 +8188,28 @@ msgid ""
 "        this, all archivable lists are processed.\n"
 "\n"
 msgstr ""
+"Erneutes generieren der komprimierten Pipermail-Archivdateien.\n"
+"\n"
+"Dieses Skript sollte nachts per cron laufen.  Das Programm kennt die \n"
+"folgenden Kommandozeilenparameter:\n"
+"\n"
+"Benutzung: %(program)s [-v] [-h] [listennamen]\n"
+"\n"
+"Wobei gilt:\n"
+"\n"
+"    --verbose\n"
+"    -v\n"
+"        Ausgabe des Dateinamens beim Komprimieren\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Ausgabe dieser Meldung und Schluss\n"
+"\n"
+"    listennamen\n"
+"        Optional, nur komprimieren vorhandener .txt Dateien der angegebene\n"
+"        Liste. Ohne Angabe des Listennamens werden die Dateien aller Listen\n"
+"        komprimiert\n."
+"\n"
 
 #: cron/senddigests:19
 msgid ""
@@ -7838,6 +8217,10 @@ msgid ""
 "\n"
 "Typically it's invoked via cron.\n"
 msgstr ""
+"Verteile Nachrichtensammlungen für Listen mit zurückgehaltenen Nachrichten\n"
+"und gesetzter Option digest_send_periodic.\n"
+"\n"
+"Typischerweise erfolgt der Aufruf via cron.\n"
 
 #: scripts/join.~1~:19 scripts/leave.~1~:19
 msgid ""
@@ -7847,11 +8230,17 @@ msgid ""
 "of the target mailing list.\n"
 "\n"
 "Errors are redirected to logs/errors.\n"
-msgstr ""
+msgstr "Verarbeite Emailbefehle.\n"
+"\n"
+"Wurde vom Wrapper aufgerufen; die Nachricht steht in der Standardeingabe \n"
+"und argv[1] enthält den Namen der Zielmailingliste\n"
+"\n"
+"Fehler wurden umgeleitet nach logs/errors.\n"
+
 
 #: scripts/join.~1~:45 scripts/leave.~1~:45
 msgid "mailcmd script got no listname."
-msgstr ""
+msgstr "mailcmd-Skript erhielt keinen Listennamen"
 
 # Mailman/Cgi/admin.py:66 Mailman/Cgi/admindb.py:60 Mailman/Cgi/confirm.py:52
 # Mailman/Cgi/edithtml.py:65 Mailman/Cgi/listinfo.py:49
