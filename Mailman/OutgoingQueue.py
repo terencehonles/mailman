@@ -82,7 +82,9 @@ def processQueue():
     import Utils
 
     lock_file = flock.FileLock(
-        os.path.join(mm_cfg.LOCK_DIR, "mmqueue_run.lock"))
+        os.path.join(mm_cfg.LOCK_DIR, "mmqueue_run.lock"),
+        # running the queue can take a long time.
+        hung_timeout=14400)
     lock_file.lock()
     files = os.listdir(mm_cfg.DATA_DIR)
     for file in files:
@@ -176,4 +178,11 @@ def deferMessage(q_entry):
 # remove it from the queue 
 #
 def dequeueMessage(q_entry):
-    os.unlink(q_entry)
+    try:
+        os.unlink(q_entry)
+    except os.error, (code, msg):
+        if code == errno.ENOENT:
+            # file does not exist, probably because the lock was stolen
+            pass
+        else:
+            Utils.reraise()
