@@ -24,3 +24,4 @@ def process(mlist, msg, msgdata):
     msgdata['recips'] = mlist.owner + mlist.moderator
     # Don't decorate these messages with the header/footers
     msgdata['nodecorate'] = 1
+    msgdata['personalize'] = 0
