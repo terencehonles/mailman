@@ -160,7 +160,7 @@ class Runner:
     # Mapping of listnames to MailList instances
     _listcache = {}
 
-    def _open_list(self, listname, lockp=1):
+    def _open_list(self, listname):
         # Cache the opening of the list object given its name.  The probably
         # is only a moderate win because when a list is locked, all its
         # attributes are re-read from the config.db file.  This may help more
