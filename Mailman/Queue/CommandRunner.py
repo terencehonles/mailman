@@ -14,7 +14,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Bounce and command queue runner."""
+"""Bounce and -request command queue runner."""
 
 # See the delivery diagram in IncomingRunner.py.  This module handles all
 # email destined for mylist-owner, mylist-admin, and mylist-request.
