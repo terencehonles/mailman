@@ -61,7 +61,7 @@ def main():
     inq = get_switchboard(mm_cfg.INQUEUE_DIR)
     inq.enqueue(sys.stdin.read(),
                 listname=listname,
-                tolist=1)
+                tolist=1, _plaintext=1)
 
 
 

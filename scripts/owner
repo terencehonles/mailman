@@ -47,7 +47,8 @@ def main():
         sys.exit(1)
     # Make sure the list exists
     if not Utils.list_exists(listname):
-        print >> sys.stderr, _('mailcmd script, list not found: %(listname)s')
+        print >> sys.stderr, _(
+            'mailowner script, list not found: %(listname)s')
         sys.exit(1)
     # Immediately queue the message for the bounce/cmd qrunner to process.
     # The advantage to this approach is that messages should never get lost --
@@ -60,7 +61,8 @@ def main():
     # processing while -owner messages do not.  However, it's too expensive to
     # make this determination here, so we defer it to the CommandRunner.
     cmdq = get_switchboard(mm_cfg.CMDQUEUE_DIR)
-    cmdq.enqueue(sys.stdin.read(), listname=listname, toauthoritah=1)
+    cmdq.enqueue(sys.stdin.read(), listname=listname, toauthoritah=1,
+                 _plaintext=1)
 
 
 
