@@ -61,7 +61,7 @@ your membership administrative address, %s.
 	else:
 	    digmode = ''
         msg = Message.UserNotification(
-            self.GetMemberAdminEmail(name), self.GetAdminEmail(),
+            self.GetMemberAdminEmail(name), self.GetRequestEmail(),
             'Welcome to the "%s" mailing list%s' % (self.real_name, digmode),
             text)
         HandlerAPI.DeliverToUser(self, msg)
@@ -85,6 +85,7 @@ your membership administrative address, %s.
             recipient = self.GetMemberAdminEmail(cpuser)
             subject = '%s mailing list reminder' % listfullname
             adminaddr = self.GetAdminEmail()
+            requestaddr = self.GetRequestEmail()
             # get the text from the template
             text = Utils.maketext(
                 'userpass.txt',
@@ -92,7 +93,7 @@ your membership administrative address, %s.
                  'listname'   : self.real_name,
                  'password'   : self.passwords[user],
                  'options_url': self.GetAbsoluteOptionsURL(user),
-                 'requestaddr': self.GetRequestEmail(),
+                 'requestaddr': requestaddr,
                  'adminaddr'  : adminaddr,
                  })
         else:
@@ -104,11 +105,8 @@ your membership administrative address, %s.
                 {'username'     : `user`,
                  'internal_name': self.internal_name(),
                  })
-        msg = Message.UserNotification(recipient, adminaddr, subject, text)
+        msg = Message.UserNotification(recipient, requestaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
-        fp = open('/tmp/msg', 'w')
-        fp.write(str(msg))
-        fp.close()
         HandlerAPI.DeliverToUser(self, msg)
         if not ok:
              raise Errors.MMBadUserError
