@@ -589,7 +589,14 @@ def reap(kids, func=None, once=0):
     while kids:
         if func:
             func()
-        pid, status = os.waitpid(-1, os.WNOHANG)
+        try:
+            pid, status = os.waitpid(-1, os.WNOHANG)
+        except OSError, e:
+            # If the child procs had a bug we might have no children
+            if e.errno <> errno.ECHILD:
+                raise
+            kids.clear()
+            break
         if pid <> 0:
             try:
                 del kids[pid]
