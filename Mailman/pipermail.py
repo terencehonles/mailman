@@ -1,5 +1,4 @@
-#!/usr/local/bin/python
-# Hey Emacs, this is -*-Python-*- code!
+#! /usr/bin/env python
 #
 # Pipermail 0.0.2-mm
 #
