@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -244,6 +244,7 @@ def main():
             print _('Nothing to do.')
             sys.exit(0)
 
+        enc = sys.getdefaultencoding()
         # addrs contains now all the addresses that need removing
         for laddr, (name, addr) in needsadding.items():
             pw = Utils.MakeRandomPassword()
@@ -262,6 +263,7 @@ def main():
 
         for laddr, addr in addrs.items():
             # Should be a member, otherwise our test above is broken
+            name = mlist.getMemberName(laddr) or ''
             if not dryrun:
                 try:
                     mlist.ApprovedDeleteMember(addr, admin_notif=notifyadmin,
@@ -272,8 +274,6 @@ def main():
                     # reasons is in the database.  Use a lower level remove to
                     # get rid of this member's entry
                     mlist.removeMember(addr)
-            name = mlist.getMemberName(laddr) or ''
-            enc = sys.getdefaultencoding()
             s = email.Utils.formataddr((name, addr)).encode(enc, 'replace')
             print _('Removed: %(s)s')
 
