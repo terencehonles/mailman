@@ -203,7 +203,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # We need to send both the reason and the rejection notice through the
     # translator again, because of the games we play above
     reason = Utils.wrap(exc.reason_notice())
-    msgdata['rejection-notice'] = Utils.wrap(exc.rejection_notice(mlist))
+    msgdata['rejection_notice'] = Utils.wrap(exc.rejection_notice(mlist))
     id = mlist.HoldMessage(msg, reason, msgdata)
     # Now we need to craft and send a message to the list admin so they can
     # deal with the held message.
