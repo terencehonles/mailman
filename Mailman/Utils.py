@@ -553,7 +553,7 @@ def IsAdministrivia(msg):
                   "who": (0,0),
                   "info": (0,0),
                   "lists": (0,0),
-                  "set": (2, 3),
+                  "set": (3, 3),
                   "help": (0,0),
                   "password": (2, 2),
                   "options": (0,0),
@@ -562,7 +562,7 @@ def IsAdministrivia(msg):
     for line in lines:
         if string.strip(line):
             lines_with_text = lines_with_text + 1
-        if lines_with_text > 30: # we might want to change this to mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES.
+        if lines_with_text > mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES:
             return 0
     sig_ind =  string.find(msg.body, "\n-- ")
     if sig_ind != -1:
@@ -583,6 +583,9 @@ def IsAdministrivia(msg):
         if admin_data.has_key(words[0]):
             min_args, max_args = admin_data[words[0]]
             if min_args <= len(words[1:]) <= max_args:
+                if (words[0] == 'set'
+                    and (words[2] not in ['on', 'off'])):
+                    continue
                 return 1
     return 0
 
