@@ -23,13 +23,6 @@ the filename containing the bounce message.
 """
 
 import sys
-import traceback
-from types import ListType
-from cStringIO import StringIO
-
-# testing kludge
-if __name__ == '__main__':
-    execfile('bin/paths.py')
 
 from Mailman.Logging.Syslog import syslog
 
@@ -44,7 +37,7 @@ Stop = _Stop()
 
 
 # msg must be a mimetools.Message
-def ScanMessages(mlist, msg, testing=0):
+def ScanMessages(mlist, msg):
     pipeline = ['DSN',
                 'Qmail',
                 'Postfix',
@@ -66,54 +59,9 @@ def ScanMessages(mlist, msg, testing=0):
         __import__(modname)
         addrs = sys.modules[modname].process(msg)
         if addrs is Stop:
-            return 1
-        if addrs:
-            for addr in addrs:
-                if not addr:
-                    continue
-                # we found a bounce or a list of bounce addrs
-                if not testing:
-                    try:
-                        mlist.registerBounce(addr, msg)
-                    except Exception, e:
-                        syslog(
-                            'error',
-                            'Bouncer exception while processing module %s: %s',
-                            module, e)
-                        s = StringIO()
-                        traceback.print_exc(file=s)
-                        syslog('error', s.getvalue())
-                        return 0
-                else:
-                    print '\t%s: detected address <%s>' % (modname, addr)
-            # we saw some bounces
-            return 1
-##        else:
-##            if testing:
-##                print '\t%11s: no bounces detected' % modname
-    # no bounces detected
-    return 0
-
-
-
-# for testing
-if __name__ == '__main__':
-    from Mailman import Message
-    from Mailman.i18n import _
-    import email
-
-    def usage(code, msg=''):
-        print >> sys.stderr, _(__doc__)
-        if msg:
-            print >> sys.stderr, msg
-        sys.exit(code)
-
-    if len(sys.argv) < 2:
-        usage(1, 'required arguments: <file> [, <file> ...]')
-
-    for filename in sys.argv[1:]:
-        print 'scanning file', filename
-        fp = open(filename)
-        msg = email.message_from_file(fp, Message.Message)
-        fp.close()
-        ScanMessages(None, msg, testing=1)
+            # One of the detectors recognized the bounce, but there were no
+            # addresses to extract.  Return the empty list.
+            return []
+        elif addrs:
+            return addrs
+    return []
