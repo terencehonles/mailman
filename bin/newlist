@@ -75,7 +75,14 @@ def main(argv):
 
     newlist = MailList.MailList()
     pw = crypt(list_pw , Utils.GetRandomSeed())
-    newlist.Create(list_name, owner_mail, pw)
+    # guarantee that all newly created files have the proper permission.
+    # proper group ownership should be assured by the autoconf script
+    # enforcing that all directories have the group sticky bit set
+    oldmask = os.umask(002)
+    try:
+        newlist.Create(list_name, owner_mail, pw)
+    finally:
+        os.umask(oldmask)
 
     ###os.system('%s %s' % (ADDALIASES_CMD, list_name))
     print '''
