@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,19 +26,27 @@ unobscured ids as well.
 # data. 
 
 import os
-import string
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
+from Mailman import i18n
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
+
+SLASH = '/'
+
+# Set up i18n
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
 def main():
     doc = HeadlessDocument()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
     parts = Utils.GetPathPieces()
     if not parts or len(parts) < 2:
         doc.AddItem(Header(2, _("Error")))
@@ -47,32 +55,35 @@ def main():
         return
 
     # get the list and user's name
-    listname = string.lower(parts[0])
-    user = Utils.UnobscureEmail(string.join(parts[1:], '/'))
+    listname = parts[0].lower()
     # open list
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         doc.AddItem(Header(2, _("Error")))
-        doc.AddItem(Bold(_('No such list <em>%s</em>') % listname))
+        doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
         print doc.Format()
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
-    os.environ['LANG'] = mlist.preferred_language
+    # Now we know which list is requested, so we can set the language to the
+    # list's preferred language.
+    i18n.set_language(mlist.preferred_language)
+    doc.set_language(mlist.preferred_language)
 
     # Sanity check the user
+    user = Utils.UnobscureEmail(SLASH.join(parts[1:]))
     user = Utils.LCDomain(user)
     if not mlist.members.has_key(user) and \
             not mlist.digest_members.has_key(user):
         # then
         doc.AddItem(Header(2, _("Error")))
-        doc.AddItem(Bold(_("%s: No such member %s.") % (listname, `user`)))
+        doc.AddItem(Bold(_('%(listname)s: No such member %(user)s.')))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
 
-    # find the case preserved email address (the one the user subscribed with)
+    # Find the case preserved email address (the one the user subscribed with)
     lcuser = mlist.FindUser(user)
     cpuser = mlist.GetUserSubscribedAddress(lcuser)
     if lcuser == cpuser:
@@ -84,12 +95,14 @@ def main():
     else:
         presentable_user = user
 
-    # user's preferred language
-    pluser = mlist.GetPreferredLanguage(user)
-    os.environ['LANG'] = pluser
+    # And now we know the user making the request, so set things up for the
+    # user's preferred language.
+    userlang = mlist.GetPreferredLanguage(user)
+    doc.set_language(userlang)
+    i18n.set_language(userlang)
 
     # Do replacements
-    replacements = mlist.GetStandardReplacements(pluser)
+    replacements = mlist.GetStandardReplacements(userlang)
     replacements['<mm-digest-radio-button>'] = mlist.FormatOptionButton(
         mm_cfg.Digests, 1, user)
     replacements['<mm-undigest-radio-button>'] = mlist.FormatOptionButton(
@@ -135,18 +148,17 @@ def main():
         mlist.FormatFormStart('handle_opts', user))
     replacements['<mm-user>'] = user
     replacements['<mm-presentable-user>'] = presentable_user
-    replacements['<mm-email-my-pw>'] = mlist.FormatButton('emailpw',
-                                                          (_('Email My Password'
-                                                           ' To Me')))
+    replacements['<mm-email-my-pw>'] = mlist.FormatButton(
+        'emailpw', (_('Email My Password To Me')))
     replacements['<mm-umbrella-notice>'] = (
         mlist.FormatUmbrellaNotice(user, _("password")))
 
     if cpuser is not None:
         replacements['<mm-case-preserved-user>'] = _('''
 You are subscribed to this list with the case-preserved address
-<em>%s</em>.''') % cpuser
+<em>%(cpuser)s</em>.''')
     else:
         replacements['<mm-case-preserved-user>'] = ''
 
-    doc.AddItem(mlist.ParseTags('options.html', replacements, pluser))
+    doc.AddItem(mlist.ParseTags('options.html', replacements, userlang))
     print doc.Format()
