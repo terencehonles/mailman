@@ -5,7 +5,7 @@ message and address munging, a handy-dandy routine to map a function on all
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
 
-__version__ = "$Revision: 399 $"
+__version__ = "$Revision: 431 $"
 
 
 import sys, string, fcntl, os, random, regsub, re
@@ -72,7 +72,8 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     if os.fork():
         return
     try:
-        file = os.popen(mm_cfg.SENDMAIL_CMD % (msg.GetSender(), recipient),
+        file = os.popen(mm_cfg.SENDMAIL_CMD % (msg.GetSender(),
+                                               repr(recipient)),
                         'w')
         try:
             msg.headers.remove('\n')
