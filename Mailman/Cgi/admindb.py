@@ -426,11 +426,7 @@ def show_helds_overview(mlist, form):
         counter = 1
         for id in bysender[sender]:
             info = mlist.GetRecord(id)
-            if len(info) == 5:
-                ptime, sender, subject, reason, filename = info
-                msgdata = {}
-            else:
-                ptime, sender, subject, reason, filename, msgdata = info
+            ptime, sender, subject, reason, filename, msgdata = info
             # BAW: This is really the size of the message pickle, which should
             # be close, but won't be exact.  Sigh, good enough.
             try:
