@@ -32,6 +32,7 @@ from Mailman import Utils
 from Mailman import Errors
 from Mailman import Message
 from Mailman import Pending
+from Mailman.UserDesc import UserDesc
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 import Mailman.i18n
@@ -285,9 +286,8 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
 
 ''') + tbmsg)
                         responsemsg['X-No-Archive'] = 'yes'
-                        lang = msgdata.get(
-                            'lang',
-                            self.GetPreferredLanguage(admin))
+                        lang = msgdata.get('lang',
+                                           self.getMemberLanguage(admin))
                         responsemsg.addheader('Content-Type', 'text/plain',
                                               charset=Utils.GetCharSet(lang))
                         responsemsg.send(self)
@@ -317,7 +317,7 @@ The following is a detailed description of the problems.
             realname = self.real_name
             subject = _('Mailman results for %(realname)s')
             sender = msg.get_sender()
-            lang = msgdata.get('lang', self.GetPreferredLanguage(sender))
+            lang = msgdata.get('lang', self.getMemberLanguage(sender))
             responsemsg = Message.UserNotification(msg.get_sender(),
                                                    self.GetRequestEmail(),
                                                    subject,
@@ -624,7 +624,9 @@ background and instructions for subscribing to and using it, visit:
             subscribe_address = address
         remote = mail.get_sender()
         try:
-            self.AddMember(subscribe_address, password, digest, remote)
+            # FIXME: extract fullname
+            userdesc = UserDesc(subscribe_address, password, digest)
+            self.AddMember(userdesc, remote)
             self.Save()
         except Errors.MMSubscribeNeedsConfirmation:
             #
