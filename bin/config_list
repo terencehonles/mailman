@@ -108,8 +108,8 @@ def do_output(listname, outfile):
 ''')
 
         config = mlist.GetConfigInfo()
-        categories = (_('general'), _('privacy'), _('nondigest'), _('digest'),
-                      _('bounce'), _('archive'), _('gateway'), _('autoreply'))
+        categories = ('general', 'privacy', 'nondigest', 'digest',
+                      'bounce', 'archive', 'gateway', 'autoreply')
         for k in categories:
             info = config[k]
             print >> outfp, '##', k.capitalize(), _('options')
