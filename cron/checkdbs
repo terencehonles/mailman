@@ -50,27 +50,39 @@ def main():
 	mlist = MailList.MailList(name)
         try:
             count = mlist.NumRequestsPending()
-            # Don't save the list since we've done nothing to modify its state
+            # While we're at it, let's evict yesterday's autoresponse data
+            midnightToday = Utils.midnight()
+            evictions = []
+            for sender in mlist.hold_and_cmd_autoresponses.keys():
+                date, count = mlist.hold_and_cmd_autoresponses[sender]
+                if Utils.midnight(date) < midnightToday:
+                    evictions.append(sender)
+            if evictions:
+                for sender in evictions:
+                    del mlist.hold_and_cmd_autoresponses[sender]
+                # Only here have we changed the list's database
+                mlist.Save()
+            if count:
+                i18n.set_language(mlist.preferred_language)
+                realname = mlist.real_name
+                text = Utils.maketext(
+                    'checkdbs.txt',
+                    {'count'    : count,
+                     'host_name': mlist.host_name,
+                     'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
+                     'real_name': realname,
+                     }, mlist=mlist)
+                text += '\n' + pending_requests(mlist)
+                subject = _(
+                    '%(count)d %(realname)s moderator request(s) waiting')
+                msg = Message.UserNotification(mlist.GetOwnerEmail(),
+                                               mlist.GetBouncesEmail(),
+                                               subject, text,
+                                               mlist.preferred_language)
+                msg.send(mlist, **{'tomoderators': 1})
         finally:
             mlist.Unlock()
             
-        if count:
-            i18n.set_language(mlist.preferred_language)
-            realname = mlist.real_name
-            text = Utils.maketext(
-                'checkdbs.txt',
-                {'count'    : count,
-                 'host_name': mlist.host_name,
-                 'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
-                 'real_name': realname,
-                 }, mlist=mlist)
-            text += '\n' + pending_requests(mlist)
-            subject = _('%(count)d %(realname)s moderator request(s) waiting')
-            msg = Message.UserNotification(mlist.GetOwnerEmail(),
-                                           mlist.GetBouncesEmail(),
-                                           subject, text,
-                                           mlist.preferred_language)
-            msg.send(mlist, **{'tomoderators': 1})
             
 
 
