@@ -65,13 +65,13 @@ def main():
     i18n.set_language(mlist.preferred_language)
 
     # Make sure the user is authorized to see this page.
-    cgidata = cgi.FieldStorage()
+    cgidata = cgi.FieldStorage(keep_blank_values=1)
 
     if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
                                   mm_cfg.AuthListModerator,
                                   mm_cfg.AuthSiteAdmin),
                                  cgidata.getvalue('adminpw', '')):
-        if cgidata.has_key('admlogin'):
+        if cgidata.has_key('adminpw'):
             # This is a re-authorization attempt
             msg = Bold(FontSize('+1', _('Authorization failed.'))).Format()
         else:
@@ -175,8 +175,8 @@ def show_requests(mlist, doc):
                       Center(Bold(_('Reason for refusal')))
                       ])
         for id in subpendings:
-            time, addr, passwd, digest, lang = mlist.GetRecord(id)
-            table.AddRow([addr,
+            time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+            table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
                           RadioButtonArray(id, (_('Defer'),
                                                 _('Approve'),
                                                 _('Reject'),
