@@ -73,6 +73,8 @@ def calcversions():
 def makeabs(relpath):
     return os.path.join(mm_cfg.PREFIX, relpath)
 
+def make_varabs(relpath):
+    return os.path.join(mm_cfg.VAR_PREFIX, relpath)
 
 
 def move_language_templates(mlist):
@@ -109,11 +111,12 @@ def dolist(listname):
                                '%(listname)s')
         return 1
 
-    mbox_dir = makeabs('archives/private/%s.mbox' % (listname))
-    mbox_file = makeabs('archives/private/%s.mbox/%s' % (listname, listname))
+    mbox_dir = make_varabs('archives/private/%s.mbox' % (listname))
+    mbox_file = make_varabs('archives/private/%s.mbox/%s' % (listname,
+                                                             listname))
 
-    o_pub_mbox_file = makeabs('archives/public/%s' % (listname))
-    o_pri_mbox_file = makeabs('archives/private/%s' % (listname))
+    o_pub_mbox_file = make_varabs('archives/public/%s' % (listname))
+    o_pri_mbox_file = make_varabs('archives/private/%s' % (listname))
 
     html_dir = o_pri_mbox_file
     o_html_dir = makeabs('public_html/archives/%s' % (listname))
@@ -222,9 +225,9 @@ script.
     # save the new variables and
     # let it create public symlinks if necessary
     #
-    mlist.archive_directory = makeabs('archives/private/%s' % (listname))
-    mlist.private_archive_file_dir = makeabs('archives/private/%s.mbox' %
-                                             listname)
+    mlist.archive_directory = make_varabs('archives/private/%s' % (listname))
+    mlist.private_archive_file_dir = make_varabs('archives/private/%s.mbox' %
+                                                 listname)
     mlist.Save()
     #
     # check to see if pre-b4 list-specific templates are around
