@@ -43,6 +43,7 @@ from Mailman.Handlers import CookHeaders
 from Mailman.Handlers import Decorate
 from Mailman.Handlers import FileRecips
 from Mailman.Handlers import Hold
+from Mailman.Handlers import Moderate
 from Mailman.Handlers import Personalize
 from Mailman.Handlers import Replybot
 from Mailman.Handlers import SMTPDirect
@@ -1340,6 +1341,11 @@ From: aperson@dom.ain
 
 
 
+class TestModerate(TestBase):
+    pass
+
+
+
 class TestPersonalize(TestBase):
     def setUp(self):
         TestBase.setUp(self)
@@ -1796,6 +1802,7 @@ def suite():
     suite.addTest(unittest.makeSuite(TestDecorate))
     suite.addTest(unittest.makeSuite(TestFileRecips))
     suite.addTest(unittest.makeSuite(TestHold))
+    suite.addTest(unittest.makeSuite(TestModerate))
     suite.addTest(unittest.makeSuite(TestPersonalize))
     suite.addTest(unittest.makeSuite(TestReplybot))
     suite.addTest(unittest.makeSuite(TestSMTPDirect))
