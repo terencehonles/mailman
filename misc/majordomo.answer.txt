@@ -1,25 +1,4 @@
-We no longer run Majordomo here.  
-
-Here's some info about our mailing lists:
-
-****************************************************************
-Nancies:  The Dave Matthews Band Mailing List
-
-Please visit: http://listserv.redlt.com/mailman/listinfo/nancies
-
-Or send email to nancies-request@dmb.list.org, and put
-in the body:
-
-help
-****************************************************************
-Vibes:  The Agents Of Good Roots Mailing List
-
-Please visit: http://listserv.redlt.com/mailman/listinfo/vibes
-
-Or send email to vibes-request@dmb.list.org, and put
-in the body:
-
-help
-****************************************************************
+We no longer run Majordomo here - we run mailman - see
+http://www.python.org/sigs for a list of lists.
 
 Sorry for the inconvenience!!
