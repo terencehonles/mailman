@@ -57,8 +57,20 @@ def main():
 
 def FormatListinfoOverview(error=None):
     "Present a general welcome and itemize the (public) lists for this host."
+
+    # XXX We need a portable way to determine the host by which we are being 
+    #     visited!  An absolute URL would do...
+    if os.environ.has_key('HTTP_HOST'):
+	http_host = os.environ['HTTP_HOST']
+    else:
+	http_host = None
+    if mm_cfg.VIRTUAL_HOST_OVERVIEW and http_host:
+	host_name = http_host
+    else:
+	host_name = mm_cfg.DEFAULT_HOST_NAME
+
     doc = Document()
-    legend = "%s mailing lists" % mm_cfg.DEFAULT_HOST_NAME
+    legend = "%s mailing lists" % host_name
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -69,13 +81,6 @@ def FormatListinfoOverview(error=None):
     advertised = []
     names = Utils.list_names()
     names.sort()
-
-    # XXX We need a portable way to determine the host by which we are being 
-    #     visited!  An absolute URL would do...
-    if os.environ.has_key('HTTP_HOST'):
-	http_host = os.environ['HTTP_HOST']
-    else:
-	http_host = None
 
     for n in names:
 	l = MailList.MailList(n, lock = 0)
@@ -99,7 +104,7 @@ def FormatListinfoOverview(error=None):
 			 "<p>"
 			 " There currently are no publicly-advertised ",
 			 Link(mm_cfg.MAILMAN_URL, "mailman"),
-			 " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+			 " mailing lists on %s." % host_name,
 			 )
     else:
 
@@ -108,7 +113,7 @@ def FormatListinfoOverview(error=None):
             "<p>"
             " Below is the collection of publicly-advertised ",
             Link(mm_cfg.MAILMAN_URL, "mailman"),
-            " mailing lists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+            " mailing lists on %s." % host_name,
             (' Click on a list name to visit the info page'
              ' for that list.  There you can learn more about the list,'
              ' subscribe to it, or find the roster of current subscribers.'),
