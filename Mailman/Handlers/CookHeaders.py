@@ -86,14 +86,15 @@ def process(mlist, msg, msgdata):
     # if we're adding a value, otherwise don't touch it.  (Should we collapse
     # in all cases?)
     if not fasttrack:
-        replyto = []
+        # A convenience function, requires nested scopes.  pair is (name, addr)
+        new = []
         d = {}
-        def add((name, addr)):
-            lcaddr = addr.lower()
+        def add(pair):
+            lcaddr = pair[1].lower()
             if d.has_key(lcaddr):
                 return
-            d[lcaddr] = (name, addr)
-            replyto.append((name, addr))
+            d[lcaddr] = pair
+            new.append(pair)
         # List admin wants an explicit Reply-To: added
         if mlist.reply_goes_to_list == 2:
             add(parseaddr(mlist.reply_to_address))
@@ -112,19 +113,28 @@ def process(mlist, msg, msgdata):
             add((mlist.description, mlist.GetListEmail()))
         del msg['reply-to']
         # Don't put Reply-To: back if there's nothing to add!
-        if replyto:
+        if new:
             # Preserve order
             msg['Reply-To'] = COMMASPACE.join(
-                [formataddr(pair) for pair in replyto])
-    # The To field normally contains the list posting address.  However when
-    # messages are personalized, that header will get overwritten with the
-    # address of the recipient.  We need to get the posting address in one of
-    # the recipient headers or they won't be able to reply back to the list.
-    # It's possible the posting address was munged into the Reply-To header,
-    # but if not, we'll add it to a Cc header.  BAW: should we force it into a
-    # Reply-To header in the above code?
-    if mlist.personalize and mlist.reply_goes_to_list <> 1:
-        msg['Cc'] = formataddr((mlist.description, mlist.GetListEmail()))
+                [formataddr(pair) for pair in new])
+        # The To field normally contains the list posting address.  However
+        # when messages are personalized, that header will get overwritten
+        # with the address of the recipient.  We need to get the posting
+        # address in one of the recipient headers or they won't be able to
+        # reply back to the list.  It's possible the posting address was
+        # munged into the Reply-To header, but if not, we'll add it to a Cc
+        # header.  BAW: should we force it into a Reply-To header in the above
+        # code?
+        if mlist.personalize and mlist.reply_goes_to_list <> 1:
+            # Watch out for existing Cc headers, merge, and remove dups.  Note
+            # that RFC 2822 says only zero or one Cc header is allowed.
+            new = []
+            d = {}
+            for pair in getaddresses(msg.get_all('cc', [])):
+                add(pair)
+            add((mlist.description, mlist.GetListEmail()))
+            del msg['Cc']
+            msg['Cc'] = COMMASPACE.join([formataddr(pair) for pair in new])
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
     # if the message is being crafted for a specific list (e.g. not for the
     # password reminders).
