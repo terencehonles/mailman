@@ -10,7 +10,7 @@ import time
 import whrandom
 import mm_cfg
 
-DB_PATH = os.path.join(mm_cfg.MISC_DIR,"pending_subscriptions.db")
+DB_PATH = os.path.join(mm_cfg.DATA_DIR,"pending_subscriptions.db")
 LOCK_PATH = os.path.join(mm_cfg.LOCK_DIR, "pending_subscriptions.lock")
 
 
