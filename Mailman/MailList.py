@@ -313,6 +313,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.preferred_language = mm_cfg.DEFAULT_SERVER_LANGUAGE
         self.available_languages = []
         self.include_rfc2369_headers = 1
+        self.filter_mime_types = mm_cfg.DEFAULT_FILTER_MIME_TYPES
+        self.filter_content = mm_cfg.DEFAULT_FILTER_CONTENT
+        self.convert_html_to_plaintext = \
+            mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT
         # Analogs to these are initted in Digester.InitVars
         self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
         self.personalize = 0
