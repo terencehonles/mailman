@@ -192,7 +192,11 @@ def main():
         try:
             Control.start(restart)
         except LockFile.TimeOutError:
-            print >> sys.stderr, 'Another qrunner is already running, exiting.'
+            lockfile = Control.LOCKFILE
+            print >> sys.stderr, _("""
+The master qrunner lock could not be acquired.  Either another qrunner is
+already running, or a stale lock exists.  Please check to see if the lock
+file %(lockfile)s is stale.  Exiting.""")
 
 
 
