@@ -95,12 +95,12 @@ def usage(code, msg=''):
 
 
 
-def safe(addr):
-    if addr is None:
+def safe(s):
+    if not s:
         return ''
-    if isinstance(addr, UnicodeType):
-        return addr.encode(ENC, 'replace')
-    return unicode(addr, ENC, 'replace').encode(ENC, 'replace')
+    if isinstance(s, UnicodeType):
+        return s.encode(ENC, 'replace')
+    return unicode(s, ENC, 'replace').encode(ENC, 'replace')
 
 
 
@@ -211,7 +211,7 @@ def main():
     if regular:
         rmembers.sort()
         for addr in rmembers:
-            name = fullnames and mlist.getMemberName(addr)
+            name = fullnames and mlist.getMemberName(addr) or ''
             # Filter out nomails
             if nomail and not whymatches(mlist, addr, why):
                 continue
@@ -219,7 +219,7 @@ def main():
     if digest:
         dmembers.sort()
         for addr in dmembers:
-            name = fullnames and mlist.getMemberName(addr)
+            name = fullnames and mlist.getMemberName(addr) or ''
             # Filter out nomails
             if nomail and not whymatches(mlist, addr, why):
                 continue
