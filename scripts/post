@@ -86,7 +86,7 @@ def main():
     # hit, the proc is SIGKILL'd giving us no chance to save the message.  It
     # could take a long time to acquire the lock.  This way we're fairly safe
     # against catastrophe at the expense of more disk I/O.
-    msg.Enqueue(mlist)
+    msg.Enqueue(mlist, tolist=1)
 
 
 
