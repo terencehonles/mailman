@@ -301,6 +301,7 @@ def show_pending_subs(mlist, form):
 
 def show_pending_unsubs(mlist, form):
     # Add the pending unsubscription request section
+    lang = mlist.preferred_language
     pendingunsubs = mlist.GetUnsubscriptionIds()
     if not pendingunsubs:
         return
@@ -321,12 +322,10 @@ def show_pending_unsubs(mlist, form):
     for addr, ids in byaddrs.items():
         # Eliminate duplicates
         for id in ids[1:]:
-            mlist.HandleREquest(id, mm_cfg.DISCARD)
+            mlist.HandleRequest(id, mm_cfg.DISCARD)
         id = ids[0]
         addr = mlist.GetRecord(id)
-        fullname = mlist.getMemberName(addr)
-        if fullname is None:
-            fullname = ''
+        fullname = Utils.uncanonstr(mlist.getMemberName(addr), lang)
         table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
                       RadioButtonArray(id, (_('Defer'),
                                             _('Approve'),
