@@ -159,7 +159,12 @@ def main():
 
         if cgidata.keys():
             # There are options to change
-            change_options(mlist, category, subcat, cgidata, doc)
+            try:
+                change_options(mlist, category, subcat, cgidata, doc)
+            except Errors.NotAMemberError:
+                # We're unsubscribing /and/ changing an option.  Just ignore
+                # the option change.
+                pass
             # Let the list sanity check the changed values
             mlist.CheckValues()
         # Additional sanity checks
