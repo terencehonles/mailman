@@ -760,6 +760,9 @@ DEFAULT_OBSCURE_ADDRESSES = 1
 # these headers.
 ALLOW_RFC2369_OVERRIDES = 0
 
+# Check for administrivia in messages sent to the main list?
+DEFAULT_ADMINISTRIVIA = 1
+
 
 
 #####
@@ -791,29 +794,44 @@ DEFAULT_PLAIN_DIGEST_KEEP_HEADERS = ['message', 'date', 'from',
 # Should we do any bounced mail response at all?
 DEFAULT_BOUNCE_PROCESSING = 1
 
-# Minimum number of days that address has been undeliverable before 
-# we take the automatic bounce action.
-DEFAULT_MINIMUM_REMOVAL_DATE = 5
+# Bounce processing works like this: when a bounce from a member is received,
+# we look up the `bounce info' for this member. If there is no bounce info,
+# this is the first bounce we've received from this member.  In that case, we
+# record today's date, and initialize the bounce score (see below for initial
+# value).
+#
+# If there is existing bounce info for this member, we look at the last bounce
+# receive date.  If this date is farther away from today than the `bounce
+# expiration interval', we throw away all the old data and initialize the
+# bounce score as if this were the first bounce from the member.
+#
+# Otherwise, we increment the bounce score.  If we can determine whether the
+# bounce was soft or hard (i.e. transient or fatal), then we use a score value
+# of 0.5 for soft bounces and 1.0 for hard bounces.  Note that we only score
+# one bounce per day.  If the bounce score is then greater than the `bounce
+# threshold' we disable the member's address.
+#
+# After disabling the address, we can send warning messages to the member,
+# providing a confirmation cookie/url for them to use to re-enable their
+# delivery.  After a configurable period of time, we'll delete the address.
+# When we delete the address due to bouncing, we'll send one last message to
+# the member.
 
-# Minimum number of delivery failure notices for an account before we
-# consider doing the automatic bounce action.
-DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION = 3
+# Bounce scores greater than this value get disabled.
+DEFAULT_BOUNCE_SCORE_THRESHOLD = 5.0
 
-# 0 means do nothing
-# 1 means disable and notify the list admin
-# 2 means disable and don't notify the list admin
-# 3 means remove and notify
-DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
+# Bounce information older than this interval is considered stale, and is
+# discarded.
+DEFAULT_BOUNCE_INFO_STALE_AFTER = days(7)
 
-# Maximum number of posts that can go by w/o a bounce before we figure 
-# delivery failures to a particular recipient have been resolved.  This
-# needs to account for the big lag between delivery attempt and issuance of 
-# the failure notice.  We recommend a value representing the maximum number
-# of messages you'd reasonably expect an average list to get in 1 hour.
-DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
+# The number of notifications to send to the disabled/removed member before we
+# remove them from the list.  A value of 0 means we remove the address
+# immediately (with one last notification).  Note that the first one is sent
+# upon change of status to disabled.
+DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS = 3
 
-# Check for administrivia in messages sent to the main list?
-DEFAULT_ADMINISTRIVIA = 1
+# The interval of time between disabled warnings.
+DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL = days(7)
 
 # List of addresses (lhs of the @) that likely come only from MTAs bouncing
 # messages.  This is used in the bounce detector and MailCommandHandler.py to
