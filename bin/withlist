@@ -104,6 +104,22 @@ def usage(msg='', code=1):
     sys.exit(code)
 
 
+def atexit():
+    """Unlock a locked list, but do not implicitly Save() it.
+
+    This does not get run if the interpreter exits because of a signal, or if
+    os._exit() is called.  It will get called if an exception occurs though.
+    """
+    global m
+    if not m:
+        return
+    if m.Locked():
+        print 'Unlocking (but not saving) list:', m.internal_name()
+        m.Unlock()
+    print 'Finalizing'
+    del m
+
+
 
 def main():
     global m
@@ -131,8 +147,10 @@ def main():
 
     # first try to open mailing list
     print 'Loading list:', listname,
-    if lock: print '(locked)'
-    else: print '(unlocked)'
+    if lock:
+        print '(locked)'
+    else:
+        print '(unlocked)'
 
     m = MailList(listname, lock=lock)
 
@@ -150,4 +168,7 @@ def main():
         print 'Running %s.%s()' % (module, callable), '...'
         r = getattr(mod, callable)(m)
 
+
+
+sys.exitfunc = atexit
 main()
