@@ -299,7 +299,7 @@ class HTMLFormatter:
         return container
 
     def FormatFormStart(self, name, extra=''):
-	base_url = self.GetAbsoluteScriptURL(name)
+	base_url = self.GetScriptURL(name, relative=1)
         if extra:
             full_url = "%s/%s" % (base_url, extra)
         else:
