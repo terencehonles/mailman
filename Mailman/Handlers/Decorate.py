@@ -30,8 +30,8 @@ from Mailman.Logging.Syslog import syslog
 
 
 def process(mlist, msg, msgdata):
-    if msgdata.get('isdigest'):
-        # Digests already have their own header and footer
+    # Digests and Mailman-craft messages should not get additional headers
+    if msgdata.get('isdigest') or msgdata.get('nodecorate'):
         return
     d = {}
     if msgdata.get('personalize'):
