@@ -27,6 +27,7 @@ import mimetools
 
 import paths
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman import MailList
 from Mailman import LockFile
 from Mailman import Message
@@ -35,7 +36,6 @@ from Mailman.Handlers import HandlerAPI
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Logging.Utils import LogStdErr
 from Mailman.pythonlib.StringIO import StringIO
-
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -104,10 +104,9 @@ def dequeue(root):
 
 
 
-_kids = {}
 def main():
     stderr = sys.stderr
-    global _kids
+    allkids = {}
     for file in os.listdir(mm_cfg.QUEUE_DIR):
         root, ext = os.path.splitext(os.path.join(mm_cfg.QUEUE_DIR, file))
         if ext <> '.msg':
@@ -123,13 +122,6 @@ def main():
             msgdata = marshal.load(dbfp)
             dbfp.close()
             dbfp = None
-            # The `kids' key is special.  It contains the pids of subprocesses
-            # that need to be waited on by the delivery module.  For
-            # implementation ease, it can get stored in the message data, but
-            # since this refers to pids not descendent from us, it should just
-            # be chucked.
-            if msgdata.has_key('kids'):
-                del msgdata['kids']
         except (EOFError, ValueError, TypeError, IOError), e:
             # For some reason we had trouble getting all the information out
             # of the queued files.  log this and move on (we figure it's a
@@ -161,22 +153,22 @@ def main():
             keepqueued = dispose_message(mlist, msg, msgdata)
             # Did the delivery generate child processes?  Don't store them in
             # the message data files.
-            kids = msgdata.get('kids')
+            kids = msgdata.get('_kids')
             if kids:
-                _kids.update(kids)
-                del msgdata['kids']
+                allkids.update(kids)
+                del msgdata['_kids']
             if not keepqueued:
                 # We're done with this message
                 dequeue(root)
         finally:
             mlist.Save()
             mlist.Unlock()
+    return allkids
 
 
 
 if __name__ == '__main__':
     global _listcache
-    global _kids
     # first, claim the queue runner lock
     lock = LockFile.LockFile(QRUNNER_LOCK_FILE,
                              lifetime=mm_cfg.QRUNNER_LOCK_LIFETIME)
@@ -186,15 +178,13 @@ if __name__ == '__main__':
         # Some other qrunner process is running, which is fine.
         sys.stderr.write('Could not acquire qrunner lock\n')
     else:
+        kids = {}
         try:
-            main()
+            kids = main()
         finally:
             lock.unlock(unconditionally=1)
             # Clear the global cache to be clean about it.  Also, we can reap
             # any child processes that were created during the delivery
             # (e.g. from ToUsenet).
             _listcache.clear()
-            while _kids:
-                pid, status = os.waitpid(-1, os.WNOHANG)
-                if pid <> 0:
-                    del _kids[pid]
+            Utils.reap(kids)
