@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -109,7 +109,7 @@ def main():
             elif cgidata.getvalue('submit'):
                 subscription_confirm(mlist, doc, cookie, cgidata)
             else:
-                subscription_prompt(mlist, doc, cookie, *content[1:])
+                subscription_prompt(mlist, doc, cookie, content[1])
         elif content[0] == Pending.UNSUBSCRIPTION:
             if cgidata.getvalue('cancel'):
                 unsubscription_cancel(mlist, doc, cookie)
@@ -186,8 +186,12 @@ def ask_for_cookie(mlist, doc, extra=''):
 
 
 
-def subscription_prompt(mlist, doc, cookie,
-                        email, name, password, digest, lang):
+def subscription_prompt(mlist, doc, cookie, userdesc):
+    email = userdesc.address
+    name = userdesc.fullname
+    password = userdesc.password
+    digest = userdesc.digest
+    lang = userdesc.language
     title = _('Confirm subscription request')
     doc.SetTitle(title)
     i18n.set_language(lang)
@@ -293,8 +297,10 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
                     digest = None
             else:
                 digest = None
-            userdesc = UserDesc(fullname=cgidata.getvalue('realname', None),
-                                digest=digest, lang=lang)
+            userdesc = Pending.confirm(cookie, expunge=0)[1]
+            overrides = UserDesc(fullname=cgidata.getvalue('realname', None),
+                                 digest=digest, lang=lang)
+            userdesc += overrides
             op, addr, pw, digest, lang = mlist.ProcessConfirmation(
                 cookie, userdesc)
         except Errors.MMNeedApproval:
