@@ -164,11 +164,13 @@ def main():
         # Sent the master qrunner process a SIGINT, which is equivalent to
         # giving cron/qrunner a ctrl-c or KeyboardInterrupt.  This will
         # effectively shut everything down.
+        print _("Shutting down Mailman's master qrunner.")
         kill_subrunners(signal.SIGINT)
     elif command == 'restart':
         # Sent the master qrunner process a SIGHUP.  This will cause the
         # master qrunner to kill and restart all the worker qrunners, and to
         # close and re-open its log files.
+        print _("Restarting Mailman's master qrunner.")
         kill_subrunners(signal.SIGHUP)
     else:
         # Must be `start'
@@ -176,6 +178,7 @@ def main():
         # Daemon process startup according to Stevens, Advanced Programming in
         # the UNIX Environment, Chapter 13.
         if os.fork():
+            print _("Starting Mailman's master qrunner.")
             # parent
             sys.exit(0)
         # child
