@@ -45,6 +45,7 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman import Message
 from Mailman.Handlers import HandlerAPI
+from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -60,7 +61,7 @@ def mail_passwords(mlist, hosts):
     """
     mailman_owner = mm_cfg.MAILMAN_OWNER
     for host, users in hosts.items():
-        subj = host + ' mailing list memberships reminder'
+        subj = _(' %(host)s mailing list memberships reminder')
         for addr, data in users.items():
             table = []
             for l, r, p, u in data:
@@ -76,7 +77,7 @@ def mail_passwords(mlist, hosts):
                  'useraddr': addr,
                  'exreq'   : r,
                  'owner'   : mailman_owner,
-                 })
+                 }, mlist.preferred_language)
             # add this to the end so it doesn't get wrapped/filled
             text = text + header + '\n' + string.join(table, '\n')
             msg = Message.UserNotification(addr, mailman_owner, subj, text)
