@@ -35,8 +35,6 @@ PYTHON= 	@PYTHON@
 
 DEFS=		@DEFS@
 
-MAILMAN_UID=	@MAILMAN_UID@
-
 # Customizable but not set by configure
 
 OPT=		@OPT@
