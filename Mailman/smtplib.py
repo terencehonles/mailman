@@ -20,6 +20,10 @@
 # A lot of functionality was borrowed directly from ftplib...
 # John Viega (viega@list.org)
 
+# Adapted dan ohnesorg's hack to use DSN.  We gotta start using the
+# official smtplib - as of 1.5.2 it'll have esmtp, we won't have to dabble
+# in this shit.  Ken.
+
 # >>> from smtplib import *
 # >>> s = SmtpConnection('list.org')
 # >>> s.helo('adder.cs.virginia.edu')
@@ -47,6 +51,7 @@ class SmtpConnection:
 	self.host = host
 	self._file = None
 	self.connect()
+        self.DSN_support = 0
 
     def connect(self):
 	self._sock = socket(AF_INET, SOCK_STREAM)
@@ -55,8 +60,17 @@ class SmtpConnection:
 	self.getresp()
 
     def helo(self, host):
-	self._sock.send('HELO %s\r\n' % host)
-	self.getresp()
+        """First try an esmtp EHLO, falling back to old HELO if necessary.
+
+        We also determine (a bit haphazardly) whether DSN is supported."""
+        
+        self._sock.send('EHLO %s\r\n' % host)
+        try:
+            resp = self.getresp()
+        except error_perm:
+            self._sock.send('HELO %s\r\n' % host)
+            resp = self.getresp()
+        self.DSN_support = (string.find(resp, '-DSN') != -1)
 
     def quit(self):
 	self._sock.send('QUIT\r\n')
@@ -70,15 +84,21 @@ class SmtpConnection:
 	self._sock.send('MAIL FROM: <%s>\r\n' % frm)
 	self.getresp()
         valid_recipients = []
+
+        if self.DSN_support:
+            rcpt_form = 'RCPT TO: <%s> NOTIFY=failure\r\n'
+        else:
+            rcpt_form = 'RCPT TO: <%s>\r\n'
+
         if type(to) == types.StringType:
-            self._sock.send('RCPT TO: <%s>\r\n' % to)
+            self._sock.send(rcpt_form % to)
             self.getresp()
-            valid_recipients.append(to)
+            valid_recipients.append(rcpt_form % to)
         else:
             for item in to:
-                self._sock.send('RCPT TO: <%s>\r\n' % item)
+                self._sock.send(rcpt_form % item)
                 lastresp = self.getresp(impunity=1)
-                if not lastresp:
+                if type(lastresp) == type(""):
                     # XXX klm 07/23/1998 Invalid recipients on local host
                     # are a special problem, since they are recognized
                     # and refused immediately by, eg, sendmail, rather than
@@ -100,6 +120,7 @@ class SmtpConnection:
 	    self._sock.send(line + '\r\n')
 	self._sock.send('.\r\n')
 	self.getresp()
+        print "send: done"
 
 # Private crap from here down.
     def getline(self):
@@ -145,3 +166,4 @@ class SmtpConnection:
                 return bad, resp
             else:
                 raise bad, resp
+        return resp
