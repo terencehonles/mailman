@@ -17,12 +17,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Distributed default settings for significant Mailman config variables.
-
-You should NOT edit the values here unless you're changing settings for
-distribution.  For site-specific settings, put your definitions in
-mm_cfg.py after the point at which it includes (via 'from ... import *')
-this file, to override the distributed defaults with site-specific ones.
 """
+
+# NEVER make site configuration changes to this file.  ALWAYS make them in
+# mm_cfg.py instead, in the designated area.  See the comments in that file
+# for details.
+
 
 import os
 
