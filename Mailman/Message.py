@@ -126,7 +126,8 @@ class Message(email.Message.Message):
         pairs = []
         for h in headers:
             if h is None:
-                fieldval = self.get_unixfrom()
+                # get_unixfrom() returns None if there's no envelope
+                fieldval = self.get_unixfrom() or ''
                 try:
                     pairs.append(fieldval.split()[1])
                 except IndexError:
