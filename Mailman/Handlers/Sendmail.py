@@ -19,8 +19,8 @@
 This module delivers the message via the command line interface to the
 sendmail program.  It should work for sendmail clones like Postfix.  It is
 expected that sendmail handles final delivery, message queueing, etc.  The
-recipient list is only trivially split so that the command line is less that
-4k in size.
+recipient list is only trivially split so that the command line is less than
+about 3k in size.
 
 """
 
