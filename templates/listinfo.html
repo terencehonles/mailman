@@ -1,58 +1,112 @@
 <html>
 <body>
 <h1><MM-List-Name> -- <MM-List-Description></h1>
-<h3>About <MM-List-Name>:</h3>
+
+<ul>
+      <li><a href="#about">About</a>
+      <li><a href="#archives">Archives</a>
+      <li><a href="#posting">Posting messages</a>
+      <li><a href="#subscribing">Subscribing</a>
+      <li><a href="#changing">Changing your subscription options</a>
+      <li><a href="#members">List members</a>
+</ul>
+
+<hr>
+	
+<a name="about"><h3>About <MM-List-Name>:</h3></a>
+<table BORDER=1>
+ <tr>
+   <td>
 <MM-List-Info>
-<hr> 
-<h3>Talking on the list</h3>
-You may send mail to the members of the list by sending email to <a href=mailto:<MM-Posting-Addr>><MM-Posting-Addr></a>.
+   </td>
+ </tr>
+</table>
+
+<a name="posting"><h3>Posting to <MM-List-Name></h3></a>
+You can send mail to the members of the list by sending email
+to <a href=mailto:<MM-Posting-Addr>><MM-Posting-Addr></a>.
+
+<a name="help"><h3>Getting help</h3></a>
+
+To contact a person about the list, send a message to
+<a href=mailto:<MM-Owner>><MM-Owner></a>.
+
+<a name="archives"><h3><MM-List-Name> Archives</h3></a>
+Visit the <MM-List-Name> <MM-Archive>Archives</MM-Archive>!
 <hr>
-Visit the <MM-List-Name> <MM-Archive>Archives!</MM-Archive>
-<hr>
-<h3>Subscribe to <MM-List-Name>:</h3>
-Fill out to <MM-List-Name> by filling out the following form:<p>
+<a name="subscribing"><h3>Subscribe to <MM-List-Name>:</h3></a>
 <MM-Form-Start>
-<font size=+1>Would you like to receive mail in digested form?<br>
-<font size=+2>Yes</font> <MM-Digest-Radio-Button> 
-<font size=+2>No</font> <MM-Undigest-Radio-Button> <p>
 
 <table>
 <tr>
 <td><font size=+1>Your E-mail address:</font></td>
-<td><MM-Subscribe-Box></td>
+<td COLSPAN="2"><MM-Subscribe-Box></td>
+</tr>
+<tr>
+<td COLSPAN="3">
+<font size=+1>Would you like to receive postings batched together in
+digested form or as separate messages?</font>
+</td>
+</tr>
+<tr>
+<td><font size=+1>Message batching:</font>
+<td>
+<font size=+2>Separate</font> <MM-Undigest-Radio-Button> <p>
+</td>
+<td>
+<font size=+2>Digestified</font> <MM-Digest-Radio-Button> 
+</td>
 </tr>
 <tr>
 <td colspan=3>
 <br>
-<font size=+1>You must enter a privacy password.  This is not really for security
-sake, but is a good way to keep others from unsubscribing you.
-Your privacy password will be e-mailed to you once a month as a reminder.</font></td>
+<font size=+1>You must enter a privacy password.  You will need it in
+order to change your subscription or unsubscribe - it's a mild
+precaution to prevent others from doing so without your knowing.  Your
+privacy password will be e-mailed to you once a month as a
+reminder.</font></td>
 </tr>
 <tr>
 <td><font size=+1>Your Privacy password:</font></td>
 <td><MM-New-Password-Box></td>
 </tr>
 <tr>
-<td><font size=+1>Again to confirm:</font></td>
+<td><font size=+1>Again to verify:</font></td>
 <td><MM-Confirm-Password></td>
 </tr>
 </table>
 <MM-Subscribe-Button><p>
 
 <hr>
-Type in your e-mail to edit your options: <mm-change-info> <mm-info-button>
-<MM-Form-End>
 
-<br>
-<em><font size=+1>OR</font></em> find your name below and click on it.<p>
+<a name="changing"><h3>Changing your subscription options:</h3></a>
 
-<h3><mm-num-reg-users> Non-digested Members of <MM-List-Name>:</h3>
-<h4>Click on your e-mail to unsubscribe or change options</h4>
+<font size=+1>To edit your subscription options or unsubscribe:</font>
+
+<p>
+<em><font size=+1>Either</font></em> enter your e-mail: <mm-change-info>
+<mm-info-button> <MM-Form-End>
+
+<p>
+<em><font size=+1>Or</font></em> click on your e-mail address, below:
+<a name="members">
+</a>
+<table BORDER="1" COLS="2">
+  <tr COLSPAN="2">
+    <h4>
+  <tr VALIGN="top">
+    <td WIDTH="50%">
+<h3><mm-num-reg-users> Non-digested Recipient of <MM-List-Name>:</h3>
 <MM-Regular-Users>
-<hr>
-<h3><mm-num-digesters> Digested Members of <MM-List-Name>:</h3>
-<h4>Click on your e-mail to unsubscribe or change options</h4>
+    </td>
+    <td WIDTH="50%">
+<h3><mm-num-digesters> Digested Recipient of <MM-List-Name>:</h3>
 <MM-Digest-Users>
+    </td>
+  </tr>
+</table>
+
 <MM-Mailman-Footer>
+
 </body>
 </html>
