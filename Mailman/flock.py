@@ -113,6 +113,7 @@ class FileLock:
         last_pid = -1
         if self.locked():
             raise AlreadyCalledLockError
+        stolen = 0
         while 1:
             # create the hard link and test for exactly 2 links to the file
             os.link(self.lockfile, self.tmpfname)
@@ -122,6 +123,7 @@ class FileLock:
                 self.__write()
                 break
             if timeout and timeout_time < time.time():
+                os.unlink(self.tmpfname)
                 raise TimeOutError
             # someone else must have gotten the lock.  let's find out who it
             # is.  if there is some bogosity in the lock file's data then we
@@ -132,12 +134,29 @@ class FileLock:
                 os.unlink(self.tmpfname)
                 self.__kickstart(force=1)
                 continue
-            # TBD: This assertion is here because if winner==self.tmpfname,
-            # then we should already have the lock.  If we already have the
-            # lock, then we should have never gotten into this loop (in a
-            # single threaded process), because we check the lock status above
-            # first, and raise an AlreadyCalledLockError in that case.
-            assert winner <> self.tmpfname
+            # If we've gotten to here, we should be the winner, because
+            # otherwise, an AlreadyCalledLockError should have been raised
+            # above, and we should have never gotten into this loop.  However, 
+            # the following scenario can occur, and this is what the stolen
+            # flag takes care of:
+            #
+            # Say that processes A and B are already laying claim to the lock
+            # by creating link files, and say A actually has the lock (i.e., A 
+            # is the winner).  We are process C and we lay claim by creating a 
+            # link file.  All is cool, and we'll trip the pid <> last_pid
+            # test, unlink our claim, sleep and try again.  Second time
+            # through our loop, we again determine that A is the winner but
+            # because it and B are swapped out, we trip our hung_timeout test
+            # and figure we need to steal the lock.  So we piss on the hydrant 
+            # (write our info into the lock file), unlink A's link file and go 
+            # around the loop again.  However, because B is still laying
+            # claim, and we never knew it (since it wasn't the winner), we
+            # again have 3 links to the lock file the next time through this
+            # loop, and the assert will trip.
+            #
+            # The stolen flag alerts us that this has happened, but I still
+            # worry that our logic might be flawed here.
+            assert stolen or winner <> self.tmpfname
             # record the previous winner and the current time
             if pid <> last_pid:
                 last_pid = pid
@@ -146,7 +165,8 @@ class FileLock:
             # lockfile hasn't changed in hung_timeout seconds, then we assume
             # that the locker crashed
             elif stime + self.hung_timeout < time.time():
-                self.__write()                    # steal
+                self.__write()                # steal
+                stolen = 1
                 try:
                     os.unlink(winner)
                 except os.error:
