@@ -272,10 +272,10 @@ class HTMLFormatter:
             return ''
         elif restriction == 1:
             return _(
-                '''(<i>The %(which)s is only available to the list
+                '''(<i>%(which)s is only available to the list
                 members.</i>)''')
         else:
-            return _('''(<i>The %(which)s is only available to the list
+            return _('''(<i>%(which)s is only available to the list
             administrator.</i>)''')
 
     def FormatRosterOptionForUser(self, lang):
@@ -298,8 +298,9 @@ class HTMLFormatter:
                 only = _('the list administrator')
                 whom = _('Admin address:')
             # Solicit the user and password.
-            container.AddItem(self.RestrictedListMessage(_('subscribers list'),
-                                                         self.private_roster)
+            container.AddItem(
+                self.RestrictedListMessage(_('The subscribers list'),
+                                           self.private_roster)
                               + _(" <p>Enter your ")
                               + whom[:-1].lower()
                               + _(" and password to visit"
@@ -387,7 +388,7 @@ class HTMLFormatter:
             '</mm-archive>'  : '</a>',
             '<mm-list-subscription-msg>' : self.FormatSubscriptionMsg(),
             '<mm-restricted-list-message>' : \
-                self.RestrictedListMessage(_('current archive'),
+                self.RestrictedListMessage(_('The current archive'),
                                            self.archive_private),
             '<mm-num-reg-users>' : `member_len`,
             '<mm-num-digesters>' : `dmember_len`,
