@@ -34,6 +34,7 @@ from UserDict import UserDict
 from urlparse import urlparse
 from types import *
 
+import email.Iterators
 from email.Utils import getaddresses, dump_address_pair, parseaddr
 
 from Mailman import mm_cfg
@@ -262,12 +263,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.moderator = []
         self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
         self.reply_to_address = ''
-        self.posters = []
-        self.forbidden_posters = []
         self.admin_immed_notify = mm_cfg.DEFAULT_ADMIN_IMMED_NOTIFY
         self.admin_notify_mchanges = \
                 mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES
-        self.moderated = mm_cfg.DEFAULT_MODERATED
         self.require_explicit_destination = \
                 mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
         self.acceptable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
@@ -288,7 +286,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.subscribe_policy = mm_cfg.DEFAULT_SUBSCRIBE_POLICY
         self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
         self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
-        self.member_posting_only = mm_cfg.DEFAULT_MEMBER_POSTING_ONLY
         self.host_name = mm_cfg.DEFAULT_HOST_NAME
         self.admin_member_chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
         self.administrivia = mm_cfg.DEFAULT_ADMINISTRIVIA
@@ -297,7 +294,15 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Analogs to these are initted in Digester.InitVars
         self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
         self.personalize = 0
-
+        # New sender-centric moderation (privacy) options
+        self.default_member_moderation = \
+                                       mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+        self.accept_these_nonmembers = []
+        self.hold_these_nonmembers = []
+        self.reject_these_nonmembers = []
+        self.discard_these_nonmembers = []
+        self.forward_auto_discards = mm_cfg.DEFAULT_FORWARD_AUTO_DISCARDS
+        self.generic_nonmember_action = mm_cfg.DEFAULT_GENERIC_NONMEMBER_ACTION
 	# BAW: This should really be set in SecurityManager.InitVars()
 	self.password = crypted_password
 
@@ -350,15 +355,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                     return subcat
         return None
 
-    def GetConfigInfo(self):
-        info = {}
+    def GetConfigInfo(self, category, subcat=None):
         for gui in self._gui:
-            if hasattr(gui, 'GetConfigCategory') and \
-                   hasattr(gui, 'GetConfigInfo'):
-                key = gui.GetConfigCategory()[0]
-                value = gui.GetConfigInfo(self)
-                info[key] = value
-        return info
+            if hasattr(gui, 'GetConfigInfo'):
+                value = gui.GetConfigInfo(self, category, subcat)
+                if value:
+                    return value
 
 
     #
@@ -709,7 +711,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                           password=password, language=lang)
         self.setMemberOption(email, mm_cfg.DisableMime,
                              1 - self.mime_is_default_digest)
-
+        self.setMemberOption(email, mm_cfg.Moderate,
+                             self.default_member_moderation)
         # Now send and log results
         if digest:
             kind = ' (digest)'
@@ -856,7 +859,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     #
     # Confirmation processing
     #
-    def ProcessConfirmation(self, cookie, userdesc_overrides=None):
+    def ProcessConfirmation(self, cookie, context=None):
         data = Pending.confirm(cookie)
         if data is None:
             raise Errors.MMBadConfirmation, 'data is None'
@@ -876,8 +879,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 raise Errors.MMNeedApproval, _(
                     'subscriptions to %(name)s require administrator approval')
             userdesc = UserDesc(addr, fullname, password, digest, lang)
-            if userdesc_overrides is not None:
-                userdesc += userdesc_overrides
+            # If confirmation comes from the web, context should be a UserDesc
+            # instance which contains overrides of the original subscription
+            # information.  If it comes from email, then context is a Message
+            # and isn't relevant.
+            if isinstance(context, UserDesc):
+                userdesc += context
             self.ApprovedAddMember(userdesc)
             return op, addr, password, digest, lang
         elif op == Pending.UNSUBSCRIPTION:
@@ -889,6 +896,53 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             oldaddr, newaddr, globally = data
             self.ApprovedChangeMemberAddress(oldaddr, newaddr, globally)
             return op, oldaddr, newaddr
+        elif op == Pending.HELD_MESSAGE:
+            id = data[0]
+            approved = None
+            # Confirmation should be coming from email, where context should
+            # be the confirming message.  If the message does not have an
+            # Approved: header, this is a discard, otherwise it's an approval
+            # (if the passwords match).
+            if isinstance(context, Message.Message):
+                # See if it's got an Approved: header, either in the headers,
+                # or in the first text/plain section of the response.  For
+                # robustness, we'll accept Approve: as well.
+                approved = context.get('Approved', context.get('Approve'))
+                if not approved:
+                    try:
+                        subpart = email.Iterators.typed_subpart_iterator(
+                            context, 'text', 'plain')[0]
+                    except IndexError:
+                        subpart = None
+                    if subpart:
+                        s = StringIO(subpart.get_payload())
+                        while 1:
+                            line = s.readline()
+                            if not line:
+                                break
+                            if not line.strip():
+                                continue
+                            i = line.find(':')
+                            if i > 0:
+                                if (line[:i].lower() == 'approve' or
+                                    line[:i].lower() == 'approved'):
+                                    # then
+                                    approved = line[i+1:].strip()
+                            break
+            # Okay, does the approved header match the list password?
+            if approved and self.Authenticate([mm_cfg.AuthListAdmin,
+                                               mm_cfg.AuthListModerator],
+                                              approved) <> mm_cfg.UnAuthorized:
+                action = mm_cfg.APPROVE
+            else:
+                action = mm_cfg.DISCARD
+            try:
+                self.HandleRequest(id, action)
+            except KeyError:
+                # Most likely because the message has already been disposed of
+                # via the admindb page.
+                syslog('error', 'Could not process HELD_MESSAGE: %s', id)
+            return (op,)
 
     def ConfirmUnsubscription(self, addr, lang=None, remote=None):
         if lang is None:
