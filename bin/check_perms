@@ -64,13 +64,12 @@ def checkwalk(arg, dirname, names):
     for name in names:
         path = os.path.join(dirname, name)
         if arg.VERBOSE:
-            print 'checking gid and mode for', path
+            print '    checking gid and mode for', path
         try:
             mode, gid = statgidmode(path)
-        except os.error, (code, msg):
-            if code == errno.ENOENT:
-                continue
-            raise
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+            continue
         if gid <> MAILMAN_GID:
             try:
                 groupname = grp.getgrgid(gid)[0]
@@ -93,7 +92,7 @@ def checkwalk(arg, dirname, names):
             continue
         if S_ISDIR(mode) and (mode & DIRPERMS) <> DIRPERMS:
             arg.ERRORS = arg.ERRORS + 1
-            print 'directory must be at least 02775:', path,
+            print 'directory permissions must be at least 02775:', path,
             if STATE.FIX:
                 print '(fixing)'
                 os.chmod(path, mode | DIRPERMS)
@@ -144,10 +143,9 @@ def checkarchivedbs():
         dbdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, dir, 'database')
         try:
             mode = statmode(dbdir)
-        except os.error, (code, msg):
-            if code == errno.ENOENT:
-                continue
-            raise
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+            continue
         if mode & S_IRWXO:
             STATE.ERRORS = STATE.ERRORS + 1
             print dbdir, '"other" perms must be 000',
@@ -159,11 +157,13 @@ def checkarchivedbs():
 
 
 def checkcgi():
+    if STATE.VERBOSE:
+        print 'checking cgi-bin permissions'
     exes = os.listdir(mm_cfg.CGI_DIR)
     for f in exes:
         path = os.path.join(mm_cfg.CGI_DIR, f)
         if STATE.VERBOSE:
-            print 'checking set-gid for', path
+            print '    checking set-gid for', path
         mode = statmode(path)
         if mode & S_IXGRP and not mode & S_ISGID:
             STATE.ERRORS = STATE.ERRORS + 1
@@ -190,20 +190,44 @@ def checkadminpw():
     adminpw = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
     targetmode = S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP
     if STATE.VERBOSE:
-        print 'checking perms on', adminpw
+        print 'checking permissions on', adminpw
     try:
         mode = statmode(adminpw)
-    except os.error, (code, msg):
-        # adm.pw may not exist
-        if code == errno.ENOENT:
-            return
-        raise
+    except OSError, e:
+        if e.errno <> errno.ENOENT: raise
+        return
     if mode <> targetmode:
         STATE.ERRORS = STATE.ERRORS + 1
         print adminpw, 'permissions must be exactly 0640 (got %s)' % oct(mode)
         if STATE.FIX:
             print '(fixing)'
             os.chmod(adminpw, targetmode)
+
+def checkdata():
+    targetmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
+    checkfiles = ['config.db', 'config.db.last',
+                  'next-digest', 'next-digest-topics']
+    if STATE.VERBOSE:
+        print 'checking permissions on list data'
+    for dir in os.listdir(mm_cfg.LIST_DATA_DIR):
+        for file in checkfiles:
+            path = os.path.join(mm_cfg.LIST_DATA_DIR, dir, file)
+            if STATE.VERBOSE:
+                print '    checking permissions on:', path
+            try:
+                mode = statmode(path)
+            except OSError, e:
+                if e.errno <> errno.ENOENT: raise
+                continue
+            if (mode & targetmode) <> targetmode:
+                STATE.ERRORS = STATE.ERRORS + 1
+                print 'file permissions must be at least 660:', path,
+                if STATE.FIX:
+                    print '(fixing)'
+                    os.chmod(path, mode | targetmode)
+                else:
+                    print
+
 
 
 def usage(code=0, msg=''):
@@ -234,10 +258,12 @@ if __name__ == '__main__':
     checkarchivedbs()
     checkcgi()
     checkmail()
+    checkdata()
     checkadminpw()
 
     if not STATE.ERRORS:
         print 'No problems found'
     else:
         print 'Problems found:', STATE.ERRORS
-        print 'Re-run as owner (or root) with -f flag until no errors are found'
+        print 'Re-run as owner (or root) with -f flag until no errors ' \
+              'are found'
