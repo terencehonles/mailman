@@ -187,12 +187,12 @@ SMTPPORT = 0                                      # default from smtplib
 # when DELIVERY_MODULE is 'Sendmail'.
 SENDMAIL_CMD = '/usr/lib/sendmail'
 
-# MTA should name the mail transport agent you use.  This is actually the name
-# of a module in Mailman/MTA which provides the MTA specific functionality for
-# creating and removing lists.  Some MTAs like Exim can be configured to
-# automatically recognize new lists, in which case the MTA variable should be
-# set to None.
-MTA = 'Sendmail'
+# MTA should name a module in Mailman/MTA which provides the MTA specific
+# functionality for creating and removing lists.  Some MTAs like Exim can be
+# configured to automatically recognize new lists, in which case the MTA
+# variable should be set to None.  Currently only Postfix is supported, while
+# the fallback Manual prints to standard out (or sends an email).
+MTA = 'Manual'
 
 # Set these variables if you need to authenticate to your NNTP server for
 # Usenet posting or reading.  If no authentication is necessary, specify None
