@@ -33,6 +33,9 @@ int run_script(const char*, int, char**, char**);
 /* bogus global variable used as a flag */
 extern int running_as_cgi;
 
+/* extern to reference this global from one of the wrapper mains */
+extern const char* logident;
+
 
 
 /*
