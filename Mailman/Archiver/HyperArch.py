@@ -393,6 +393,8 @@ class Article(pipermail.Article):
             d["email_url"] = url_quote(self.email)
             d["datestr_html"] = self.quote(i18n.ctime(int(self.date)))
             d["body"] = self._get_body()
+            d['listurl'] = self._mlist.GetScriptURL('listinfo', absolute=1)
+            d['listname'] = self._mlist.real_name
         finally:
             i18n.set_translation(otrans)
 
