@@ -408,7 +408,7 @@ GLOBAL_PIPELINE = [
     'ToArchive',
     'ToUsenet',
     # Now we'll do a few extra things specific to the member delivery
-    # (outgoing) path, finally leaving the message in the out queue.
+    # (outgoing) path, finally leaving the message in the outgoing queue.
     'Personalize',
     'Decorate',
     'AfterDelivery',
@@ -1075,12 +1075,3 @@ add_language('no',   _('Norwegian'),           'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
 
 del _                                   
-
-# Include Python's site-packages directory.  We need this even for Python 2.2
-# since the email package has some patches not included in 2.2 final (though
-# likely included in a 2.2 patch release, not available as of this writing
-# 29-Jan-2002).  That's why we prepend sitedir to sys.path, not append it.
-import sys
-sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
-                       'site-packages')
-sys.path.insert(0, sitedir)
