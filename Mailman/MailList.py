@@ -221,8 +221,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     '(Useful, eg, for signature auto-stripping, etc...)'),
 
 	    ('max_num_recipients', mm_cfg.Number, 3, 0, 
-	     'Max number of TO and CC recipients before admin approval is'
-	     'required (anti-spam).  Use 0 for no limit.'),
+	     'Max number of TO and CC recipients before admin approval '
+	     'is required (anti-spam).  Use 0 for no limit.'),
 
 	    ('max_message_size', mm_cfg.Number, 3, 0,
 	     'Maximum length in Kb of a message body. '
