@@ -25,6 +25,7 @@ PREFIX = Mailman.mm_cfg.PREFIX
 
 PROGRAM = sys.argv[0]
 
+
 
 class State:
     FIX = 0
@@ -36,11 +37,11 @@ STATE = State()
 
 
 def statmode(path):
-    return os.stat(path)[0]
+    return os.stat(path)[ST_MODE]
 
 def statgidmode(path):
     stat = os.stat(path)
-    return stat[0], stat[5]
+    return stat[ST_MODE], stat[ST_GID]
 
 def checkwalk(arg, dirname, names):
     for name in names:
