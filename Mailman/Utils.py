@@ -203,7 +203,7 @@ def ScriptURL(target, web_page_url=None, absolute=0):
     absolute - a flag which if set, generates an absolute url
     """
     if web_page_url is None:
-        web_page_url = mm_cfg.DEFAULT_URL
+        web_page_url = mm_cfg.DEFAULT_URL_PATTERN % get_domain()
         if web_page_url[-1] <> '/':
             web_page_url = web_page_url + '/'
     fullpath = os.environ.get('REQUEST_URI')
@@ -636,7 +636,7 @@ def get_domain():
 
 def get_site_email(hostname=None, extra=''):
     if hostname is None:
-        hostname = get_domain()
+        hostname = mm_cfg.VIRTUAL_HOSTS.get(get_domain(), get_domain())
     return '%s%s@%s' % (mm_cfg.MAILMAN_SITE_LIST, extra, hostname)
 
 
