@@ -78,7 +78,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetDeliveryMembers(self):
         """returns a list of the members with username case preserved."""
         res = []
-        for k,v in self.members.items():
+        for k, v in self.members.items():
             if type(v) is StringType:
                 res.append(v)
             else:
@@ -1232,19 +1232,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             if not self.GetUserOption(m, mm_cfg.DisableDelivery):
                 recipients.append(m)
 	if dont_send_to_sender:
-            try:
-                recipients.remove(sender)
-            #
-            # sender not in list (case sensitive username problem?)
-            #
-            except ValueError:
-                self.LogMsg("error",
-                            "couldn't remove %s from recipient list: %s",
-                            sender,
-                            str(members))
+            recipients.remove(self.GetUserSubscribedAddress(sender))
         self.LogMsg("post", "post to %s from %s size=%d",
                     self._internal_name, msg.GetSender(), len(msg.body))
-        
 	self.DeliverToList(msg, recipients, 
 			   header = self.msg_header % self.__dict__,
 			   footer = self.msg_footer % self.__dict__)
