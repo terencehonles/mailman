@@ -114,8 +114,11 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 # Usenet originated messages will not have a Unix envelope
                 # (i.e. "From " header).  This breaks Pipermail archiving, so
                 # we will synthesize one.  Be sure to use the format searched
-                # for by mailbox.UnixMailbox._isrealfromline()
-                lines = ['From %s  %s' % (mlist.GetAdminEmail(),
+                # for by mailbox.UnixMailbox._isrealfromline().  BAW: We use
+                # the -bounces address here in case any downstream clients use
+                # the envelope sender for bounces; I'm not sure about this,
+                # but it's the closest to the old semantics.
+                lines = ['From %s  %s' % (mlist.GetBouncesEmail(),
                                           time.ctime(time.time()))]
                 lines.extend(headers)
                 lines.append('')
