@@ -52,7 +52,7 @@ class Archiver:
 	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
 	self.private_archive_file_dir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
 	self.archive_directory = os.path.join(mm_cfg.HTML_DIR,
-                                              'archives'
+                                              'archives',
                                               self._internal_name)
 
     def GetBaseArchiveURL(self):
