@@ -809,10 +809,6 @@ msgstr ""
 "Tienes que especificar un nombre de lista. Aquí está el "
 "%(link)s"
 
-#: Mailman/Cgi/admindb.py:148
-msgid "Administrative requests for mailing list:"
-msgstr "Peticiones administrativas para la lista de distribución:"
-
 #: Mailman/Cgi/admindb.py:260
 msgid "Subscription Requests"
 msgstr "Peticiones de Subscripción"
@@ -960,18 +956,6 @@ msgstr "<em>Se ha perdido el mensaje con el identificador #%(id)d"
 #: Mailman/Cgi/admindb.py:529
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>El mensaje con el id #%(id)d esta corrupto."
-
-#: Mailman/Cgi/admindb.py:288
-msgid "From:"
-msgstr "de:"
-
-#: Mailman/Cgi/admindb.py:291
-msgid "Subject:"
-msgstr "Asunto:"
-
-#: Mailman/Cgi/admindb.py:293
-msgid "Reason:"
-msgstr "Motivo:"
 
 #: Mailman/Cgi/admindb.py:576
 msgid "Action:"
@@ -9525,10 +9509,6 @@ msgstr "Desbloqueando (pero sin guardar) la lista: %(listname)s"
 #: bin/withlist:162
 msgid "Finalizing"
 msgstr "Terminando"
-
-#: bin/withlist:183
-msgid "No list name supplied."
-msgstr "No se ha proporcionado ningún nombre de lista."
 
 #: bin/withlist:171
 msgid "Loading list %(listname)s"
