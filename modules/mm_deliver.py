@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 394 $"
+__version__ = "$Revision: 432 $"
 
 
 import string, os, sys, tempfile
@@ -86,8 +86,11 @@ class Deliverer:
     # This method assumes the sender is list-admin if you don't give one.
     def SendTextToUser(self, subject, text, recipient, sender=None,
                        add_headers=[]):
-	if not sender:
-	    sender = self.GetAdminEmail()
+        # repr(recipient) necessary for addresses containing "'" quotes!
+        self.LogMsg("test", "(mmd) plain: %s, repr: %s" % (recipient,
+                                                           repr(recipient)))
+        if not sender:
+            sender = self.GetAdminEmail()
         mm_utils.SendTextToUser(subject, text, recipient, sender,
                                 add_headers=add_headers)
 
@@ -103,6 +106,8 @@ class Deliverer:
 		      tmpfile_prefix = ""):
 	if not(len(recipients)):
 	    return
+        # repr(recipient) necessary for addresses containing "'" quotes!
+        recipients = map(repr, recipients)
 	to_list = string.join(recipients)
         tempfile.tempdir = '/tmp'
 
