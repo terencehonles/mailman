@@ -63,11 +63,11 @@ class StampedLogger(Logger):
             else:
                 stamp = ""
             if self.__label == None:
-                label = ""
+                label = "(%d)" % os.getpid()
             else:
-                label = "%s:" % self.__label
+                label = "%s(%d):" % (os.getpid(), self.__label)
             prefix = stamp + label
-        Logger.write(self, "%s(%d) %s" % (prefix, os.getpid(), msg))
+        Logger.write(self, "%s %s" % (prefix, msg))
         if msg and msg[-1] == '\n':
             self.__bol = 1
         else:
