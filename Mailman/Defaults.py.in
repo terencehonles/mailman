@@ -36,8 +36,6 @@ DELIVERED_BY_URL = '/images/mailman.jpg'
 		   # Many site-specific settings #
 
 DEFAULT_HOST_NAME = '@FQDN@'
-SMTPHOST	  = '@FQDN@'
-SMTPPORT          = 0                             # default from smtplib
 DEFAULT_URL       = 'http://@URL@/mailman/'
 PUBLIC_ARCHIVE_URL = '/pipermail'
 PRIVATE_ARCHIVE_URL = '/mailman/private'
@@ -98,10 +96,21 @@ MAX_SPAWNS        = 40
 #
 SMTP_MAX_RCPTS = 500
 
-#
-# Command for direct command pipe delivery to sendmail compatible program
+# Delivery module for the message pipeline.  See
+# Mailman/Handlers/HandlerAPI.py for details.  Unless overridden specifically
+# in that module, this handler is used for message delivery to the list, and
+# to an individual user.  This value must be a string naming a module in the
+# Mailman.Handlers package.
+DELIVERY_MODULE = 'Sendmail'
+#DELIVERY_MODULE = 'SMTPDirect'
+
+# Command for direct command pipe delivery to sendmail compatible program,
+# when DELIVERY_MODULE is 'Sendmail'.
 SENDMAIL_CMD = '/usr/lib/sendmail'
 
+# SMTP host and port, when DELIVERY_MODULE is 'SMTPDirect'
+SMTPHOST	  = '@FQDN@'
+SMTPPORT          = 0                             # default from smtplib
 
 # 1 to use crypt for passwords instead of md5.
 # Crypt may not work on all python installs.
