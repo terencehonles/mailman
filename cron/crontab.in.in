@@ -17,5 +17,5 @@
 # GZIP_ARCHIVE_TXT_FILES is false in mm_cfg.py
 27 3 * * * @PYTHON@ @prefix@/cron/nightly_gzip
 #
-# Every 1/2 hour retry failed deliveries.
-12,42 * * * * @PYTHON@ @prefix@/cron/qrunner
+# Every 10 minutes retry failed deliveries.
+02,12,22,32,42,52 * * * * @PYTHON@ @prefix@/cron/qrunner
