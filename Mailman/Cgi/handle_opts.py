@@ -30,7 +30,13 @@ from Mailman.Logging.Syslog import syslog
 
 
 
-def PrintResults(mlist, operation, doc, results):
+def PrintResults(mlist, operation, doc, results, user=None):
+    if user:
+        url = '%s/%s' % (mlist.GetScriptURL('options'),
+                         Utils.ObscureEmail(user))
+        results = results + '<p>Continue to ' + \
+                  Link(url, 'edit your personal options').Format() + \
+                  '.'
     replacements = mlist.GetStandardReplacements()
     replacements['<mm-results>'] = results
     replacements['<mm-operation>'] = operation
@@ -91,63 +97,68 @@ def process_form(mlist, user, doc):
 
     if not Utils.FindMatchingAddresses(user, mlist.members,
                                        mlist.digest_members):
-        PrintResults(mlist, operation, doc, "%s not a member!<p>" % user)
+        PrintResults(mlist, operation, doc, "%s not a member!<p>" % user, user)
 
     if form.has_key("unsub"):
         operation = "Unsubscribe"
         if not form.has_key("upw"):
             PrintResults(mlist, operation, doc,
-                         "You must give your password to unsubscribe.<p>")
+                         "You must give your password to unsubscribe.<p>",
+                         user)
         else:
             try:
                 pw = form["upw"].value
                 if mlist.ConfirmUserPassword(user, pw):
                     mlist.DeleteMember(user, "web cmd")
             except Errors.MMListNotReadyError:
-                PrintResults(mlist, operation, doc, "List is not functional.")
+                PrintResults(mlist, operation, doc, "List is not functional.",
+                             user)
             except Errors.MMNoSuchUserError:
                 PrintResults(mlist, operation, doc,
-                             "You seem to already be not a member.<p>")
+                             "You seem to already be not a member.<p>", user)
             except Errors.MMBadUserError:
                 PrintResults(mlist, operation, doc,
                              "Your account has gone awry - "
-                             "please contact the list administrator!<p>")
+                             "please contact the list administrator!<p>", user)
             except Errors.MMBadPasswordError:
                 PrintResults(mlist, operation, doc,
                              "That password was incorrect.<p>")
-        PrintResults(mlist, operation, doc, "You have been unsubscribed.<p>")
+        PrintResults(mlist, operation, doc, "You have been unsubscribed.<p>",
+                     user)
 
     elif form.has_key("emailpw"):
         try:
             mlist.MailUserPassword(user)
             PrintResults(mlist, operation, doc,
                          "A reminder of your password "
-                         "has been emailed to you.<p>")
+                         "has been emailed to you.<p>", user)
         except Errors.MMBadUserError:
             PrintResults(mlist, operation, doc,
                          "The password entry for `%s' has not "
                          'been found.  The list administrator is being '
-                         'notified.<p>' % user)
+                         'notified.<p>' % user, user)
 
     elif form.has_key("othersubs"):
         if not form.has_key('othersubspw'):
             PrintResults(mlist, operation, doc,
-                         "You must specify your password.")
+                         "You must specify your password.", user)
         else:
             try:
                 mlist.ConfirmUserPassword(user, form['othersubspw'].value)
             except Errors.MMListNotReadyError:
                 PrintResults(mlist, operation, doc,
-                             "The list is currently not functional.")
+                             "The list is currently not functional.", user)
             except Errors.MMNotAMemberError:
                 PrintResults(mlist, operation, doc,
-                             "You seem to no longer be a list member.")
+                             "You seem to no longer be a list member.", user)
             except Errors.MMBadPasswordError:
-                PrintResults(mlist, operation, doc, "Incorrect password.")
+                PrintResults(mlist, operation, doc, "Incorrect password.",
+                             user)
             except Errors.MMBadUserError:
                 PrintResults(
                     mlist, operation, doc,
-                    "You have no password.  Contact the list administrator.")
+                    "You have no password.  Contact the list administrator.",
+                    user)
 
             doc.AddItem(Header(2, "List Subscriptions for %s on %s"
                                % (user, mlist.host_name)))
@@ -185,22 +196,27 @@ def process_form(mlist, user, doc):
                                          form['confpw'].value)
             except Errors.MMListNotReadyError:
                 PrintResults(mlist, operation, doc,
-                             "The list is currently not functional.")
+                             "The list is currently not functional.",
+                             user)
             except Errors.MMNotAMemberError:
                 PrintResults(mlist, operation, doc,
-                             "You seem to no longer be a list member.")
+                             "You seem to no longer be a list member.",
+                             user)
             except Errors.MMBadPasswordError:
                 PrintResults(mlist, operation, doc,
-                             "The old password you supplied was incorrect.")
+                             "The old password you supplied was incorrect.",
+                             user)
             except Errors.MMPasswordsMustMatch:
-                PrintResults(mlist, operation, doc, "Passwords must match.")
+                PrintResults(mlist, operation, doc, "Passwords must match.",
+                             user)
 
             PrintResults(mlist, operation, doc,
-                         "Your password has been changed.")
+                         "Your password has been changed.",
+                         user)
         else:
             PrintResults(mlist, operation, doc,
                          "You must specify your old password,"
-                         " and your new password twice.")
+                         " and your new password twice.", user)
 
     else:
         # if key doesn't exist, or its value can't be int()'ified, return the
@@ -225,7 +241,8 @@ def process_form(mlist, user, doc):
 
         if not form.has_key("digpw"):
             PrintResults(mlist, operation, doc,
-                         "You must supply a password to change options.")
+                         "You must supply a password to change options.",
+                         user)
         try:
             mlist.ConfirmUserPassword(user, form['digpw'].value)
         except Errors.MMAlreadyDigested:
@@ -234,22 +251,24 @@ def process_form(mlist, user, doc):
             pass
         except Errors.MMMustDigestError:
             PrintResults(mlist, operation, doc,
-                         "List only accepts digest members.")
+                         "List only accepts digest members.", user)
         except Errors.MMCantDigestError:
             PrintResults(mlist, operation, doc,
-                         "List doesn't accept digest members.")
+                         "List doesn't accept digest members.", user)
         except Errors.MMNotAMemberError:
             PrintResults(mlist, operation, doc,
                          "%s isn't subscribed to this list."
-                         % mail.GetSender())
+                         % mail.GetSender(), user)
         except Errors.MMListNotReadyError:
-            PrintResults(mlist, operation, doc, "List is not functional.")
+            PrintResults(mlist, operation, doc, "List is not functional.",
+                         user)
         except Errors.MMNoSuchUserError:
             PrintResults(mlist, operation, doc,
                          "%s is not subscribed to this list."
-                         % mail.GetSender())
+                         % mail.GetSender(), user)
         except Errors.MMBadPasswordError:
-            PrintResults(mlist, operation, doc, "You gave the wrong password.")
+            PrintResults(mlist, operation, doc,
+                         "You gave the wrong password.", user)
 
         mlist.SetUserOption(user, mm_cfg.DisableDelivery, disable_mail)
         mlist.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
@@ -262,12 +281,16 @@ def process_form(mlist, user, doc):
             # to the user.
             if digest_value == 0:
                 PrintResults(mlist, operation, doc,
-                             'You may get one last digest.')
+                             'You may get one last digest.', user)
         except (Errors.MMAlreadyDigested, Errors.MMAlreadyUndigested):
             pass
         except Errors.MMCantDigestError:
-            msg = 'The list administrator has disabled digest delivery for ' \
-                  'this list, however your other options have been ' \
-                  'successfully set.'
+            msg = '''The list administrator has disabled digest delivery for
+            this list, so your delivery option has not been set.  However your
+            other options have been set successfully.'''
+        except Errors.MMMustDigestError:
+            msg = '''The list administrator has disabled non-digest delivery
+            for this list, so your delivery option has not been set.  However
+            your other options have been set successfully.'''
         mlist.SetUserOption(user, mm_cfg.ConcealSubscription, conceal)
-        PrintResults(mlist, operation, doc, msg)
+        PrintResults(mlist, operation, doc, msg, user)
