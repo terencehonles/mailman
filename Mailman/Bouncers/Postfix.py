@@ -56,6 +56,7 @@ def process(mlist, msg):
 
 # are these heuristics correct or guaranteed?
 pcre = re.compile(r'\t\t\tthe postfix program$', re.IGNORECASE)
+rcre = re.compile(r'failure reason:$', re.IGNORECASE)
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
 def findaddr(fp):
@@ -71,7 +72,7 @@ def findaddr(fp):
         # preserve leading whitespace
         line = string.rstrip(line)
         # yes use match to match at beginning of string
-        if state == 0 and pcre.match(line):
+        if state == 0 and (pcre.match(line) or rcre.match(line)):
             state = 1
         elif state == 1 and line:
             mo = acre.search(line)
