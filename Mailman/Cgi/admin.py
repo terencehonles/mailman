@@ -502,18 +502,6 @@ def show_results(mlist, doc, category, subcat, cgidata):
             table.AddRow([Center(Header(2, _('Additional Member Tasks')))])
             table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
                               bgcolor=mm_cfg.WEB_HEADER_COLOR)
-            table.AddRow([_(
-                '''<li>Find members by
-                <a href="http://www.python.org/doc/current/lib/re-syntax.html"
-                >Python regular expression</a> (<em>regexp</em>)<br>''')])
-            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
-            table.AddRow([Label(_('Regexp:')),
-                          TextBox('findmember',
-                                  value=cgidata.getvalue('findmember', ''),
-                                  size='75%')])
-            table.AddRow([Center(SubmitButton('findmember_btn',
-                                              _('Search...')))])
-            table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
             # Add a blank separator row
             table.AddRow(['&nbsp;', '&nbsp;'])
             # Add a section to set the moderation bit for all members
@@ -595,9 +583,9 @@ def add_options_table_item(mlist, category, subcat, table, item, detailsp=1):
                                      varname, descr, detailsp)
     val = get_item_gui_value(mlist, category, kind, varname, params)
     table.AddRow([descr, val])
-    table.AddCellInfo(table.GetCurrentRowIndex(), 1,
-                      bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+    table.AddCellInfo(table.GetCurrentRowIndex(), 1,
                       bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
 
 
@@ -737,6 +725,8 @@ def get_item_gui_value(mlist, category, kind, varname, params):
         return table
     elif kind == mm_cfg.Checkbox:
         return CheckBoxArray(varname, *params)
+    else:
+        assert 0, 'Bad gui widget type: %s' % kind
 
 
 
@@ -789,6 +779,16 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
                        bgcolor=mm_cfg.WEB_HEADER_COLOR)
     container.AddItem(header)
+    # Add a "search for member" button
+    table = Table(width='100%')
+    link = Link('http://www.python.org/doc/current/lib/re-syntax.html',
+                _('(help)')).Format()
+    table.AddRow([Label(_('Find member %(link)s:')),
+                  TextBox('findmember',
+                          value=cgidata.getvalue('findmember', '')),
+                  SubmitButton('findmember_btn', _('Search...'))])
+    container.AddItem(table)
+    container.AddItem('<hr><p>')
     usertable = Table(width="90%", border='2')
     # If there are more members than allowed by chunksize, then we split the
     # membership up alphabetically.  Otherwise just display them all.
