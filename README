@@ -1,4 +1,4 @@
-Mailman 1.0b2 (README $Revision: 486 $, $Date: 1998-04-28 23:38:56 +0100 (Tue, 28 Apr 1998) $)
+Mailman 1.0b2 (README $Revision: 493 $, $Date: 1998-04-29 22:53:58 +0100 (Wed, 29 Apr 1998) $)
 
 This is mailman, maillist management software written mostly in
 Python.  Mailman was originally developed by John Viega.  Ken
@@ -69,10 +69,8 @@ Install:
 
     (Or whatever is equivalent for your web server)
   o As root, edit /home/mailman/mailman/src/*.c and edit the UID and
-    GID const lines as appropriate.  (ID mismatches will be syslogged
-    with the mail.error class - some /etc/syslog.conf files are
-    configured to log this to /var/log/syslog, but you may need to
-    check yours, and set up to see.)
+    GID const lines as appropriate.  (See Troubleshooting, below, for
+    hints about determining the proper settings when you're unsure.)
   o As root, cd to /home/mailman/mailman/src and type: make
   o As root, Add mailman as a trusted mail user.  This is usually done
     by adding: Tmailman to /etc/sendmail.cf under the line: Troot
@@ -104,6 +102,36 @@ List managers, note that:
 
 Troubleshooting:
 
+  If from the web you get "document contains no data":
+  If mail isn't getting delivered:
+
+    The cgi wrappers are failing.  Either a UID is wrong, or your web
+    server / mailer has a non-standard name.
+
+    If you're unsure about the proper settings, the cgi and mail
+    wrapper programs use syslog to register mismatches, indicating the
+    correct setting in the process.  You need to have syslog running
+    and configured to log the mail.error log class somewhere - on sun
+    systems, the line
+
+      mail.debug		/var/log/syslog
+
+    causes the messages to go to them in /var/log/syslog, for example.
+    (The distributed syslog.conf forwards the message to the loghost,
+    when present.  See the syslog man page for more details.)  If your
+    system is set like this, if you get a failure trying to visit the
+    mailman/listinfo web page and it's due to a UID or GID mismatch,
+    then you should get an entry at the end of /var/log/syslog
+    identifying the expected and received values.
+
+  If the web pages hang:
+
+    CERN web servers might leave python's running, and in some
+    cases might hang the cgi completely.  In that case, switch to
+    Apache.
+
+  Check ~mailman/logs/error periodically:
+
     Many of the scripts have their stderr logged to
     ~mailman/logs/error, and some of the modules write caught errors
     there, as well, so you should check there at least occasionally to
@@ -115,17 +143,6 @@ Troubleshooting:
     sending out spurious password reminders, are in the cron dir.)  So
     you can and should use the python interpreter to check the syntax
     of any changes before trying them out.
-
-If the web pages hang:
-
-	CERN web servers might leave python's running, and in some
-	cases might hang the cgi completely.  In that case, switch to
-	Apache.
-
-If from the web you get "document contains no data":
-If mail isn't getting delivered:
-	The cgi wrappers are failing.  Either a UID is wrong, or your
-	web server / mailer has a non-standard name.
 
 How to add a new user option
 
