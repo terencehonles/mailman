@@ -632,9 +632,9 @@ def get_domain():
     if port and host.endswith(':' + port):
         host = host[:-len(port)-1]
     if mm_cfg.VIRTUAL_HOST_OVERVIEW and host:
-        return host
+        return host.lower()
     else:
-        return mm_cfg.DEFAULT_HOST_NAME
+        return mm_cfg.DEFAULT_HOST_NAME.lower()
 
 
 def get_site_email(hostname=None, extra=''):
