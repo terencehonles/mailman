@@ -1,11 +1,9 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 506 $"
+__version__ = "$Revision: 507 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string, re
-
-SUBJ_REGARDS_PREFIX = "[rR][eE][: ]*[ ]*"
 
 DIGEST_MASTHEAD = """
 Send %(real_name)s maillist submissions to

@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 504 $"
+__version__ = "$Revision: 507 $"
 
 try:
     import mm_cfg
@@ -24,9 +24,6 @@ from mm_bouncer import Bouncer
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
 # a variable that does not save when we marshal our state.
-
-# Expression for generally matching the "Re: " prefix in message subject lines:
-SUBJ_REGARDS_PREFIX = "[rR][eE][: ]*[ ]*"
 
 # Use mixins here just to avoid having any one chunk be too large.
 
