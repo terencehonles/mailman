@@ -2,6 +2,7 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+
 UPGRADING FROM PREVIOUS VERSIONS
 
     For the most part, upgrading Mailman is as easy as just installing
@@ -47,6 +48,13 @@ UPGRADING FROM 2.0.1 to 2.1
     Unix init script.  Be sure to update your crontab with the new
     cron/crontab.in file.
 
+    NOTE: It is very important that if you are upgrading from a
+    pre-MM2.1alpha2 system to a post-MM2.1alpha2 system that you let
+    the old qrunner process clear any and all messages sitting in the
+    qfiles/ directory *BEFORE* you upgrade.  Otherwise after the
+    upgrade, those messages will not get delivered, and I'm not
+    exactly sure yet how to upgrade those pending messages.
+
     Mailman 2.1 introduces multilingual (a.k.a. internationalization
     or i18n) support.  Previously only one language per list was
     supported, and it was assumed that this language would be English.
@@ -59,7 +67,8 @@ UPGRADING FROM 2.0.1 to 2.1
     you will have to manually rename the en subdirectories to the
     language code for the language of your templates.  Mailman's
     upgrade script should handle cleaning up any templates which are
-    duplicates of the defaults.
+    duplicates of the defaults, but you'll want to double check this
+    manually. 
 
 UPGRADING FROM 2.0 to 2.0.1
 
