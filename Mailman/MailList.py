@@ -28,6 +28,7 @@ import re
 import shutil
 import socket
 import urllib
+import cPickle
 from cStringIO import StringIO
 from UserDict import UserDict
 from urlparse import urlparse
@@ -374,7 +375,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             os.umask(omask)
         self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
         self._internal_name = name
-        # Don't use Lock() since that tries to load the non-existant config.db
+        # Don't use Lock() since that tries to load the non-existant config.pck
         self.__lock.lock()
         self.InitVars(name, admin, crypted_password)
         self.CheckValues()
@@ -383,32 +384,33 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         else:
             self.available_languages = langs
 
-        
+
 
     #
     # Database and filesystem I/O
     #
     def __save(self, dict):
-        # Marshal this dictionary to file, and rotate the old version to a
-        # backup file.  The dictionary must contain only builtin objects.  We
-        # must guarantee that config.db is always valid so we never rotate
-        # unless the we've successfully written the temp file.
-        fname = os.path.join(self._full_path, 'config.db')
+        # Save the file as a binary pickle, and rotate the old version to a
+        # backup file.  We must guarantee that config.pck is always valid so
+        # we never rotate unless the we've successfully written the temp file.
+        # We use pickle now because marshal is not guaranteed to be compatible
+        # between Python versions.
+        fname = os.path.join(self._full_path, 'config.pck')
         fname_tmp = fname + '.tmp.%s.%d' % (socket.gethostname(), os.getpid())
         fname_last = fname + '.last'
         fp = None
         try:
             fp = open(fname_tmp, 'w')
-            # marshal doesn't check for write() errors so this is safer.
-            fp.write(marshal.dumps(dict))
+            # Use a binary format... it's more efficient.
+            cPickle.dump(dict, fp, 1)
             fp.close()
         except IOError, e:
             syslog('error',
-                   'Failed config.db write, retaining old state.\n%s', e)
+                   'Failed config.pck write, retaining old state.\n%s', e)
             if fp is not None:
                 os.unlink(fname_tmp)
             raise
-        # Now do config.db.tmp.xxx -> config.db -> config.db.last rotation
+        # Now do config.pck.tmp.xxx -> config.pck -> config.pck.last rotation
         # as safely as possible.
         try:
             # might not exist yet
@@ -428,13 +430,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # the lock (which is a serious problem!).  TBD: do we need to be more
         # defensive?
         self.__lock.refresh()
-        # copy all public attributes to marshalable dictionary
+        # copy all public attributes to serializable dictionary
         dict = {}
         for key, value in self.__dict__.items():
             if key[0] == '_' or type(value) is MethodType:
                 continue
             dict[key] = value
-        # Make config.db unreadable by `other', as it contains all the
+        # Make config.pck unreadable by `other', as it contains all the
         # list members' passwords (in clear text).
         omask = os.umask(007)
         try:
@@ -445,10 +447,22 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.CheckHTMLArchiveDir()
 
     def __load(self, dbfile):
-        # Attempt to load and unmarshal the specified database file, which
-        # could be config.db or config.db.last.  On success return a 2-tuple
-        # of (dictionary, None).  On error, return a 2-tuple of the form
-        # (None, errorobj).
+        # Attempt to load and unserialize the specified database file.  This
+        # could actually be a config.db (for pre-2.1alpha3) or config.pck,
+        # i.e. a marshal or a binary pickle.  Actually, it could also be a
+        # .last backup file if the primary storage file was corrupt.  The
+        # decision on whether to unpickle or unmarshal is based on the file
+        # extension, but we always save it using pickle (since only it, and
+        # not marshal is guaranteed to be compatible across Python versions).
+        #
+        # On success return a 2-tuple of (dictionary, None).  On error, return
+        # a 2-tuple of the form (None, errorobj).
+        if dbfile.endswith('.db') or dbfile.endswith('.db.last'):
+            loadfunc = marshal.load
+        elif dbfile.endswith('.pck') or dbfile.endswith('.pck.last'):
+            loadfunc = cPickle.load
+        else:
+            assert 0
         try:
             fp = open(dbfile)
         except IOError, e:
@@ -456,10 +470,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             return None, e
         try:
             try:
-                dict = marshal.load(fp)
+                dict = loadfunc(fp)
                 if type(dict) <> DictType:
-                    return None, 'Unmarshal expected to return a dictionary'
-            except (EOFError, ValueError, TypeError, MemoryError), e:
+                    return None, 'Load() expected to return a dictionary'
+            except (EOFError, ValueError, TypeError, MemoryError,
+                    cPickle.PicklingError), e:
                 return None, e
         finally:
             fp.close()
@@ -468,34 +483,42 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def Load(self, check_version=1):
         if not Utils.list_exists(self.internal_name()):
             raise Errors.MMUnknownListError
-        # We first try to load config.db, which contains the up-to-date
-        # version of the database.  If that fails, perhaps because it is
-        # corrupted or missing, then we load config.db.last as a fallback.
-        dbfile = os.path.join(self._full_path, 'config.db')
-        lastfile = dbfile + '.last'
-        dict, e = self.__load(dbfile)
-        if dict is None:
-            # Had problems with config.db.  Either it's missing or it's
-            # corrupted.  Try config.db.last as a fallback.
-            syslog('error', '%s db file was corrupt, using fallback: %s',
-                   self.internal_name(), lastfile)
-            dict, e = self.__load(lastfile)
+        # We first try to load config.pck, which contains the up-to-date
+        # version of the database.  If that fails, perhaps because it's
+        # corrupted or missing, we'll try to load the backup file
+        # config.pck.last.
+        #
+        # Should both of those fail, we'll look for config.db and
+        # config.db.last for backwards compatibility with pre-2.1alpha3
+        pfile = os.path.join(self.fullpath(), 'config.pck')
+        plast = pfile + '.last'
+        dfile = os.path.join(self.fullpath(), 'config.db')
+        dlast = dfile + '.last'
+        for file in (pfile, plast, dfile, dlast):
+            dict, e = self.__load(file)
             if dict is None:
-                # config.db.last is busted too.  Nothing much we can do now.
-                syslog('error', '%s fallback was corrupt, giving up',
-                       self.internal_name())
-                raise Errors.MMCorruptListDatabaseError, e
-            # We had to read config.db.last, so copy it back to config.db.
-            # This allows the logic in Save() to remain unchanged.  Ignore
-            # any OSError resulting from possibly illegal (but unnecessary)
-            # chmod.
-            try:
-                shutil.copy(lastfile, dbfile)
-            except OSError, e:
-                if e.errno <> errno.EPERM:
-                    raise
-        # Copy the unmarshaled dictionary into the attributes of the mailing
-        # list object.
+                # Had problems with this file; log it and try the next one.
+                syslog('error',
+                       '%s config file was corrupt, trying fallback: %s',
+                       self.internal_name(), file)
+            else:
+                break
+        else:
+            # Nothing worked, so we have to give up
+            syslog('error', 'All %s fallbacks were corrupt, giving up',
+                   self.internal_name())
+            raise Errors.MMCorruptListDatabaseError, e
+        # Now, if we didn't end up using the primary database file, we want to
+        # copy the fallback into the primary so that the logic in Save() will
+        # still work.  For giggles, we'll copy it to a safety backup.
+        if file == plast:
+            shutil.copy(file, pfile)
+            shutil.copy(file, pfile + '.safety')
+        elif file == dlast:
+            shutil.copy(file, dfile)
+            shutil.copy(file, pfile + '.safety')
+        # Copy the loaded dictionary into the attributes of the current
+        # mailing list object, then run sanity check on the data.
         self.__dict__.update(dict)
         if check_version:
             self.CheckValues()
