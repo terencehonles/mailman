@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,6 +31,7 @@ from cStringIO import StringIO
 from Mailman import mm_cfg
 from Mailman import Mailbox
 from Mailman import LockFile
+from Mailman import Utils
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
@@ -89,9 +90,22 @@ class Archiver:
         omask = os.umask(0)
         try:
             try:
+		listname = self.internal_name();
                 os.mkdir(self.archive_dir()+'.mbox', 02775)
+                # We also create an empty pipermail archive directory
+                # (pipermail would create it, but in the meantime lists with
+                # no archives return errors when you browse the non existant
+                # archive dir).  -- Marc
+                os.mkdir(self.archive_dir(), 02775)
             except OSError, e:
                 if e.errno <> errno.EEXIST: raise
+            fp = open(os.path.join(self.archive_dir(), 'index.html'), 'w')
+            fp.write(Utils.maketext(
+                'emptyarchive.html',
+                {'listname': self.real_name,
+                 'listinfo': self.GetScriptURL('listinfo', absolute=1),
+                 }, mlist=self))
+            fp.close()
         finally:
             os.umask(omask)
 
