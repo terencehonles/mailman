@@ -135,8 +135,7 @@ def main():
         except socket.error, e:
             # couldn't open a socket to the NNTP host.  maybe we've got too
             # many open right now, or the server is unavailable
-            sys.stderr.write('process %d connect to nntp_host failed\n' %
-                             os.getpid())
+            sys.stderr.write('connect to nntp_host failed\n')
             sys.stderr.write(`e`)
             break
         r,c,f,l,n = conn.group(mlist.linked_newsgroup)
@@ -170,7 +169,6 @@ def main():
             # again, until the stale lock is removed.  For now, we just log
             # this potentially deadlocked situation, but this should really be
             # fixed (probably in LockFile.py though).
-            sys.stderr.write('process %d\n' % os.getpid())
             sys.stderr.write('Could not acquire lock for list %s\n' % name)
             sys.stderr.write('Some other process is gating this list\n')
             # someone else is gating this list already
@@ -271,18 +269,18 @@ def poll_newsgroup(mlist, conn, first, last):
                     mlist.Lock()
                 except Locked.AlreadyLockedError:
                     pass
-                sys.stderr.write('process %d posting msgid %d to list %s\n' %
-                                 (os.getpid(), num, mlist.internal_name()))
+                sys.stderr.write('posting msgid %d to list %s\n' %
+                                 (num, mlist.internal_name()))
                 mlist.Post(msg)
-                sys.stderr.write('process %d posted msgid %d to list %s\n' %
-                             (os.getpid(), num, mlist.internal_name()))
+                sys.stderr.write('posted msgid %d to list %s\n' %
+                                 (num, mlist.internal_name()))
             finally:
                 mlist.Save()
                 if not lockflag:
                     mlist.Unlock()
         except nntplib.error_temp, msg:
-            sys.stderr.write('process %d encountered NNTP error for list %s\n'
-                             % (os.getpid(), mlist.internal_name()))
+            sys.stderr.write('encountered NNTP error for list %s\n' %
+                             (mlist.internal_name()))
             sys.stderr.write(msg + '\n')
         except QuickEscape:
             pass # We gated this TO news, don't repost it!
@@ -319,6 +317,6 @@ def reap(children, watermarks):
 
 
 if __name__ == '__main__':
-    sys.stderr.write('process %d begin gating\n' % os.getpid())
+    sys.stderr.write('begin gating\n')
     main()
-    sys.stderr.write('process %d end gating\n' % os.getpid())
+    sys.stderr.write('end gating\n')
