@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 453 $"
+__version__ = "$Revision: 456 $"
 
 
 import string, os, sys, tempfile
@@ -122,17 +122,15 @@ class Deliverer:
 	    msg.headers.append('To: %s\n' % self.GetListEmail())
  	else:
             tempfile.template = tmpfile_prefix + 'mailman.'
+	if self.reply_goes_to_list:
+            msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
 
         tmp_file_name = tempfile.mktemp()
  	tmp_file = open(tmp_file_name, 'w+')
+ 	tmp_file.write(string.join(msg.headers,'') + '\n')
 
- 	tmp_file.write(string.join(msg.headers,''))
-	# If replys don't go to the list, then they should go to the
-	# real sender
-	if self.reply_goes_to_list:
-	    tmp_file.write('Reply-To: %s\n\n' % self.GetListEmail())
-	if header:
+	if header:                      # The *body* header:
 	    tmp_file.write(header + '\n')
 	tmp_file.write(self.QuotePeriods(msg.body))
 	if footer:
