@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
 "POT-Creation-Date: Fri Aug  9 23:58:02 2002\n"
-"PO-Revision-Date: 2002-07-13 02:45:55+00:00\n"
+"PO-Revision-Date: 2002-08-14 01:18:58+00:00\n"
 "Last-Translator: Ousmane Wilane <wilane@cyg.sn>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr "Avis de mesure de rebond"
 
 #: Mailman/Bouncer.py:237
 msgid " The last bounce received from you was dated %(date)s"
-msgstr ""
+msgstr " Le dernier rebond en provenance de votre adresse date du %(date)s"
 
 #: Mailman/Bouncer.py:262 Mailman/Handlers/Acknowledge.py:44
 #: Mailman/Handlers/CookHeaders.py:212 Mailman/Handlers/Hold.py:207
@@ -851,9 +851,8 @@ msgid "There are no pending requests."
 msgstr "Pas de requêtes en instance."
 
 #: Mailman/Cgi/admindb.py:169
-#, fuzzy
 msgid "Click here to reload this page."
-msgstr "Cliquez ici pour cacher la légende de cette table."
+msgstr "Cliquez ici pour recharger cette page."
 
 #: Mailman/Cgi/admindb.py:180
 msgid "Detailed instructions for the administrative database"
@@ -3313,7 +3312,7 @@ msgstr "Norvégien"
 
 #: Mailman/Defaults.py:1202
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr " Portugais (Brésil)"
 
 #: Mailman/Defaults.py:1203
 msgid "Russian"
@@ -4899,18 +4898,16 @@ msgstr ""
 "défaut</a> doit être présente."
 
 #: Mailman/Gui/Language.py:77
-#, fuzzy
 msgid "Always"
-msgstr "jours"
+msgstr "Toujours"
 
 #: Mailman/Gui/Language.py:77
 msgid "As needed"
-msgstr ""
+msgstr "Au besoin"
 
 #: Mailman/Gui/Language.py:77
-#, fuzzy
 msgid "Never"
-msgstr "Repousser"
+msgstr "Jamais"
 
 #: Mailman/Gui/Language.py:78
 msgid ""
@@ -4918,6 +4915,8 @@ msgid ""
 "             <a href=\"?VARHELP=general/subject_prefix\">subject\n"
 "             prefix</a> even when it consists of only ASCII characters?"
 msgstr ""
+"Encoder le <a href=\"?VARHELP=general/subject_prefix\">préfixe de\n"
+"l'objet</a> même si les caractères sont tous ASCII?"
 
 #: Mailman/Gui/Language.py:82
 msgid ""
@@ -4946,6 +4945,22 @@ msgid ""
 "             extra, or missing spaces between the prefix and the original\n"
 "             header."
 msgstr ""
+"Si votre la langue par défaut de votre liste de diffusion utilise des\n"
+"caractères non ASCII, le préfixe sera toujours encodé en conformité\n"
+"avec le standard approprié. Toutefois, si votre préfixe ne contient\n"
+"que des caractères ASCII, vous devrez choisir <em>Jamais</em> pour\n"
+"désactiver l'encodage du préfixe. Ceci peut rendre l'en-tête objet un\n"
+"peu plus lisible pour les utilisateurs dont le lecteur de courriel ne\n"
+"gère pas correctement les encodages non ASCII.\n"
+"\n"
+"<p>Notez toutefois que si votre liste reçoit aussi bien des en-têtes\n"
+"objet encodés que non-encodés, vous devrez sélectionner <em>Au\n"
+"besoin</em>. Avec ce paramètrage, Mailman n'encodera pas les préfixes\n"
+"lorsque le reste des en-têtes ne contiennent que des caractères ASCII\n"
+"et il l'encodera lorsque les en-têtes originaux contiennent des\n"
+"caractères non ASCII. Ceci résout une ambiguïté dans les standards qui\n"
+"pourrait faire que certains lecteurs de courriel affiche des extra\n"
+"espaces entre le préfixe et l'en-tête original."
 
 #: Mailman/Gui/Membership.py:26
 msgid "Membership&nbsp;Management"
@@ -6068,6 +6083,8 @@ msgstr ""
 #: Mailman/Gui/Usenet.py:65
 msgid "Prefix <tt>Subject:</tt> headers on postings gated to news?"
 msgstr ""
+"Préfixer l'en-tête <tt>Subject:</tt> sur les soumissions transmises\n"
+"aux groupes de nouvelles?"
 
 #: Mailman/Gui/Usenet.py:66
 msgid ""
@@ -6081,6 +6098,13 @@ msgid ""
 "             normal <tt>Subject:</tt> prefixes, they won't be prefixed for\n"
 "             gated messages either."
 msgstr ""
+"Mailman préfixe les en-têtes <tt>Subject:</tt> avec <a\n"
+"href=\"?VARHELP=general/subject_prefix\">un texte que vous pouvez\n"
+"personnaliser</a> et en principe, ce préfixe dans les messages\n"
+"transmis aux groupes de nouvelles. Vous pouvez mettre ce paramètre à\n"
+"<em>Non</em> pour désactiver les préfixes sur les messages transmis. Si\n"
+"vous désactiver les préfixes <tt>Subject:</tt> normaux, la même règle\n"
+"va évidemment s'appliquer aux messages transmis."
 
 #: Mailman/Gui/Usenet.py:79
 msgid "Mass catchup completed"
@@ -6094,6 +6118,11 @@ msgid ""
 "                the <a href=\"?VARHELP=gateway/linked_newsgroup\">linked\n"
 "                newsgroup</a> fields are filled in."
 msgstr ""
+"Vous ne pouvez activer la transmission vers les groupes de nouvelles\n"
+"tant que vous n'aurez pas renseigner et <a\n"
+"href=\"?VARHELP=gateway/nntp_host\">le champs serveur de nouvelles</a>\n"
+"et le champ <a href=\"?VARHELP=gateway/linked_newsgroup\">groupe de nouvelle\n"
+"lié</a>."
 
 #: Mailman/HTMLFormatter.py:47
 msgid "%(listinfo_link)s list run by %(owner_link)s"
@@ -6128,11 +6157,12 @@ msgid "; it was disabled by the list administrator"
 msgstr "; il a été désactivé par l'administrateur de la liste"
 
 #: Mailman/HTMLFormatter.py:143
-#, fuzzy
 msgid ""
 "; it was disabled due to excessive bounces.  The\n"
 "            last bounce was received on %(date)s"
-msgstr "; il a été désactivé suite à des rebonds excessifs"
+msgstr ""
+"; il a été désactivé suite à des rebonds excessifs. Le dernier à été\n"
+"reçu le %(date)s"
 
 #: Mailman/HTMLFormatter.py:146
 msgid "; it was disabled for unknown reasons"
@@ -7943,7 +7973,6 @@ msgid "%%%"
 msgstr "%%%"
 
 #: bin/dumpdb:19
-#, fuzzy
 msgid ""
 "Dump the contents of any Mailman `database' file.\n"
 "\n"
@@ -7979,7 +8008,7 @@ msgid ""
 "assumption\n"
 "-- or if the file ends in neither suffix -- use the -p or -m flags.\n"
 msgstr ""
-"Extrait le contenu de n'importe quel fichier base de donnée de\n"
+"Extrait le contenu de n'importe quel fichier `base de donnée' de\n"
 "Mailman.\n"
 "\n"
 "Usage: %(PROGRAM)s [options] nom_fichier\n"
@@ -7991,6 +8020,15 @@ msgstr ""
 "    --pickle/-p\n"
 "        Suppose que le fichier contient un pickle Python, annulant\n"
 "        ainsi toute forme de détection automatique.\n"
+"\n"
+"    --noprint/-n\n"
+"        Ne pas essayer d'afficher les objets sous un format\n"
+"        élégant. Ceci est surtout utile lorsque vous avez des\n"
+"        problèmes avec les objets et désirer juste en avoir une\n"
+"        représentation non Picklé. Utile avec `python -i bin/dumpdb\n"
+"        <file>'. Dans ce cas, la racine de l'arbre sera globale et\n"
+"        sera apellée \"msg\".\n"
+"\n"
 "\n"
 "    --help/-h\n"
 "        Affiche ce message et quitte.\n"
@@ -8411,7 +8449,6 @@ msgid "Could not open file for writing:"
 msgstr "Impossible d'ouvrir le fichier en écriture:"
 
 #: bin/mailmanctl:19
-#, fuzzy
 msgid ""
 "Primary start-up and shutdown script for Mailman's qrunner daemon.\n"
 "\n"
@@ -8502,12 +8539,12 @@ msgid ""
 msgstr ""
 "Script principal de démarrage et d'arrêt du démon qrunner de Mailman.\n"
 "\n"
-"Ce script démarre, arrête et redémarre le gestionnaire de file\n"
+"Ce script démarre, arrête et re-démarre le gestionnaire de file\n"
 "d'attente principal de Mailman en prenant soins de la bonne marche des\n"
 "qrunners fils qui tournent depuis un moment. Cette opération est\n"
 "assuré par un fork et un exec des qrunners fils avec l'attente de\n"
 "leurs pids. Lorsque la sortie d'un sous processus est détecté, il peut\n"
-"être re-démaré.\n"
+"être re-démarré.\n"
 "\n"
 "Les qrunners fils réagissent à SIGINT, SIGTERM et SIGHUP. Aussi bien\n"
 "SIGINT que SIGTERM causent un arrêt correcte des qrunners fils pendant\n"
@@ -8566,14 +8603,14 @@ msgstr ""
 "\n"
 "Commandes:\n"
 "\n"
-"    start - Démarre le démon qrunner principal et tous ses\n"
-"            fils. Affiche un message et quitte si le qrunner principal\n"
-"            est déjà lancé.\n"
+"    start   - Démarre le démon qrunner principal et tous ses\n"
+"              fils. Affiche un message et quitte si le qrunner principal\n"
+"              est déjà lancé.\n"
 "\n"
 "    stop    - Arrête le démon qrunner principal et tous les qrunners\n"
 "              fils. Après cet arrêt, aucun message ne sera traité.\n"
 "\n"
-"    restart - Redémarre les qrunner fils et pas le principal.\n"
+"    restart - Re-démarre les qrunner fils et pas le principal.\n"
 "              Ceci se révèle très utile lors du développement et sans\n"
 "              cette commande, les qrunners fils ne rechargeront pas\n"
 "              les modules qui ont changés entre temps.\n"
@@ -8588,7 +8625,7 @@ msgstr "PID illisible dans: %(pidfile)s"
 
 #: bin/mailmanctl:142
 msgid "Is qrunner even running?"
-msgstr ""
+msgstr "qrunner tourne-t-il?"
 
 #: bin/mailmanctl:148
 msgid "No child with pid: %(pid)s"
@@ -8596,7 +8633,7 @@ msgstr "Pas de fils avec un pid: %(pid)s"
 
 #: bin/mailmanctl:150
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "vieux fichier pid supprimé."
 
 #: bin/mailmanctl:208
 msgid ""
@@ -10129,7 +10166,6 @@ msgstr ""
 " Cause: %(reason)s"
 
 #: cron/disabled:19
-#, fuzzy
 msgid ""
 "Process disabled members, recommended once per day.\n"
 "\n"
@@ -10181,7 +10217,7 @@ msgstr ""
 "Traite les abonnements désactivés, recommandé au moins une fois par\n"
 "jour.\n"
 "\n"
-"Ce script scrute toute les listes de diffusion à la recherche d'abonnés\n"
+"Ce script scrute toutes les listes de diffusion à la recherche d'abonnés\n"
 "pour lesquels la remise est désactivée. Si ces abonnements ont étés\n"
 "désactivés suite à des rebonds, ils recevront un autre avis ou seront\n"
 "supprimés s'ils ont déjà reçu le nombre maximal d'avis autorisés.\n"
@@ -10221,7 +10257,11 @@ msgstr ""
 "        Envoyer un avis à tous les utilisateurs pour lesquels la\n"
 "        remise est désactivée.\n"
 "\n"
-"    -l listname\n"
+"    -f / --force\n"
+"        Envoyer les avis aux abonnés désactivés même si le terme n'est\n"
+"        pas échu.\n"
+"\n"
+"    -l nomliste\n"
 "    --listname=nomliste\n"
 "        Traiter uniquement la liste fournit. Sinon traiter toute les\n"
 "        listes.\n"
@@ -10374,6 +10414,3 @@ msgstr ""
 "lesquelles la variable digest_send_periodic est définit.\n"
 "\n"
 "Il est généralement appelé par .\n"
-
-#~ msgid "Return the hostname, pid, and tempfile"
-#~ msgstr "Renvoie le nom d'hôte, le pid et le fichier temporaire"
