@@ -184,10 +184,13 @@ def process_form(mlist, doc):
             results = results + ("The list is not fully functional, and "
                                  "can not accept subscription requests.<p>")
         except Errors.MMSubscribeNeedsConfirmation:
-            results = results + ("Confirmation from your email address is "
-                                 "required, to prevent anyone from covertly "
-                                 "subscribing you.  Instructions are being "
-                                 "sent to you at %s." % email)
+             results = results + ("Confirmation from your email address is "
+                                  "required, to prevent anyone from "
+                                  "subscribing you without permission. "
+                                  "Instructions are being "
+                                  "sent to you at %s. Please note your "
+                                  "subscription will not start until you "
+                                  "confirm your subscription." % email)
 
         except Errors.MMNeedApproval, x:
             results = results + ("Subscription was <em>deferred</em> "
