@@ -137,8 +137,7 @@ html_charset = '<META http-equiv="Content-Type" ' \
 
 def CGIescape(arg): 
     s = cgi.escape(str(arg))
-    s = re.sub('"', '&quot;', s)
-    return s
+    return string.replace(s, '"', '&quot;')
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])') 
@@ -273,24 +272,9 @@ class Article(pipermail.Article):
 
     def as_html(self):
 	d = self.__dict__.copy()
-	if self.prev:
-	    d["prev"] = ('<LINK REL="Previous"  HREF="%s">'
-                         % (url_quote(self.prev.filename)))
-	    d["prev_wsubj"] = ('<LI> Previous message:'
-                               ' <A HREF="%s">%s</A></li>'
-                               % (url_quote(self.prev.filename),
-                                  html_quote(self.prev.subject)))
-	else:
-	    d["prev"] = d["prev_wsubj"] = ""
-	    
-	if self.next:
-	    d["next"] = ('<LINK REL="Next" HREF="%s">'
-                         % (html_quote(self.next.filename)))
-	    d["next_wsubj"] = ('<LI> Next message: <A HREF="%s">%s</A></li>'
-                               % (url_quote(self.next.filename),
-                                  html_quote(self.next.subject)))
-	else:
-	    d["next"] = d["next_wsubj"] = ""
+
+        d["prev"], d["prev_wsubj"] = self._get_prev()
+        d["next"], d["next_wsubj"] = self._get_next()
 	
 	d["email_html"] = html_quote(self.email)
 	d["title"] = html_quote(self.subject)
@@ -308,6 +292,46 @@ class Article(pipermail.Article):
         self._add_decoded(d)
             
         return self.html_tmpl % d
+
+    def _get_prev(self):
+        """Return the href and subject for the previous message"""
+	if self.prev:
+            subject = self._get_subject_enc(self.prev)
+	    prev = ('<LINK REL="Previous"  HREF="%s">'
+                    % (url_quote(self.prev.filename)))
+	    prev_wsubj = ('<LI> Previous message:'
+                          ' <A HREF="%s">%s\n</A></li>'
+                          % (url_quote(self.prev.filename),
+                             html_quote(subject)))
+        else:
+            prev = prev_wsubj = ""
+        return prev, prev_wsubj
+
+    def _get_subject_enc(self, art):
+        """Return the subject of art, decoded if possible.
+
+        If the charset of the current message and art match and the
+        article's subject is encoded, decode it.
+        """
+        if self.charset and art.charset \
+           and self.charset == art.charset \
+           and art.decoded.has_key('subject'):
+            return art.decoded['subject']
+        return art.subject
+
+    def _get_next(self):
+        """Return the href and subject for the previous message"""
+	if self.next:
+            subject = self._get_subject_enc(self.next)
+	    next = ('<LINK REL="Next"  HREF="%s">'
+                    % (url_quote(self.next.filename)))
+	    next_wsubj = ('<LI> Next message:'
+                          ' <A HREF="%s">%s\n</A></li>'
+                          % (url_quote(self.next.filename),
+                             html_quote(subject)))
+        else:
+            next = next_wsubj = ""
+        return next, next_wsubj
 
     _rx_quote = re.compile('=([A-Z0-9][A-Z0-9])')
     _rx_softline = re.compile('=[ \t]*$')
@@ -360,19 +384,19 @@ class Article(pipermail.Article):
         self.fromdate = time.ctime(int(self.date))
 	
     def loadbody_fromHTML(self,fileobj):
-        self.body=[]
-        begin=0
-	while(1):
-            line=fileobj.readline()
+        self.body = []
+        begin = 0
+	while 1:
+            line = fileobj.readline()
             if not line:
                 break
-            if (not begin) and string.strip(line)=='<!--beginarticle-->':
-	        begin=1
+            if not begin:
+                if string.strip(line) == '<!--beginarticle-->':
+                    begin = 1
                 continue
-            if string.strip(line)=='<!--endarticle-->':
+            if string.strip(line) == '<!--endarticle-->':
                 break
-            if begin:
-                self.body.append(line)
+            self.body.append(line)
 
     def __getstate__(self):
         d={}
@@ -807,7 +831,8 @@ class HyperArchive(pipermail.T):
 	if self.VERBOSE:
             f = sys.stderr
             f.write(msg)
-            if msg[-1:]!='\n': f.write('\n')
+            if msg[-1:] != '\n':
+                f.write('\n')
             f.flush()
 
     def open_new_archive(self, archive, archivedir):
@@ -855,11 +880,6 @@ class HyperArchive(pipermail.T):
 	print '<!--%i %s -->' % (depth, article.threadKey)
 	self.depth = depth
         self.write_index_entry(article)
-        # XXX why + 910 below ???
-##	print ('<LI> <A HREF="%s">%s</A> <A NAME="%i"></A><I>%s</I>'
-##               % (CGIescape(urllib.quote(article.filename)),
-##                  CGIescape(article.subject), article.sequence+910, 
-##                  CGIescape(article.author)))
 
     def write_TOC(self):
         self.sortarchives()
@@ -955,7 +975,13 @@ class HyperArchive(pipermail.T):
 
     # Add <A HREF="..."> tags around URLs and e-mail addresses.
 
-    def __processbody_URLquote(self, source, dest):
+    def __processbody_URLquote(self, lines):
+        # XXX a lot to do here:
+        # 1. use lines directly, rather than source and dest
+        # 2. make it clearer
+        # 3. make it faster
+        source = lines[:]
+        dest = lines
 	body2=[]
 	last_line_was_quoted=0
 	for i in xrange(0, len(source)):
@@ -998,59 +1024,49 @@ class HyperArchive(pipermail.T):
 	    L=prefix+L2+L+suffix
 	    if L!=Lorig: source[i], dest[i]=None, L
 
-    # Escape all special characters
-    def __processbody_CGIescape(self, source, dest):
-        for i in xrange(0, len(source)):
-	    if source[i]!=None: 
-	        dest[i]=cgi.escape(source[i]) ; source[i]=None
-		
     # Perform Hypermail-style processing of <HTML></HTML> directives
     # in message bodies.  Lines between <HTML> and </HTML> will be written
     # out precisely as they are; other lines will be passed to func2
     # for further processing .
 
-    def __processbody_HTML(self, source, dest):
-        l=len(source) ; i=0
-	while i<l:
-	    while i<l and htmlpat.match(source[i])==None: i=i+1
-	    if i<l: source[i]=None ; i=i+1
-	    while i<l and nohtmlpat.match(source[i])==None:
+    def __processbody_HTML(self, lines):
+        # XXX need to make this method modify in place
+        source = lines[:]
+        dest = lines
+        l = len(source)
+        i = 0
+	while i < l:
+	    while i < l and htmlpat.match(source[i]) is None:
+                i = i + 1
+	    if i < l:
+                source[i] = None
+                i = i + 1
+	    while i < l and nohtmlpat.match(source[i]) is None:
 	        dest[i], source[i] = source[i], None
-	        i=i+1
-	    if i<l: source[i]=None ; i=i+1
+	        i = i + 1
+	    if i < l:
+                source[i] = None
+                i = i + 1
 	    
     def format_article(self, article):
-	source=article.body ; dest=[None]*len(source)
+	lines = filter(None, article.body)
 	# Handle <HTML> </HTML> directives
 	if self.ALLOWHTML: 
-	    self.__processbody_HTML(source, dest)
-	self.__processbody_URLquote(source, dest)
-	if not self.SHOWHTML: 
-	    # Do simple formatting here: <PRE>..</PRE>
-	    for i in range(0, len(source)):
-		s=source[i]
-		if s==None: continue
-		dest[i]=CGIescape(s) ; source[i]=None
-	    if len(dest) > 0:
-                dest.insert(0, '<PRE>')
-                dest.append('</pre>')
+	    self.__processbody_HTML(lines)
+	self.__processbody_URLquote(lines)
+	if not self.SHOWHTML and lines: 
+            lines.insert(0, '<PRE>')
+            lines.append('</PRE>')
 	else:
 	    # Do fancy formatting here
 	    if self.SHOWBR:
-		# Add <BR> onto every line
-		for i in range(0, len(source)):
-		    s=source[i]
-		    if s==None: continue
-		    s=CGIescape(s) +'<BR>'
-		    dest[i]=s ; source[i]=None
+                lines = map(lambda x:x + "<BR>", lines)
 	    else:
-		for i in range(0, len(source)):
-		    s=source[i]
-		    if s==None: continue
-		    s=CGIescape(s)
-		    if s[0:1] in ' \t\n': s='<P>'+s
-		    dest[i]=s ; source[i]=None
-        article.body=filter(lambda x: x!=None, dest)
+		for i in range(0, len(lines)):
+                    s = lines[i]
+		    if s[0:1] in ' \t\n':
+                        lines[i] = '<P>' + s
+        article.body = lines
 	return article
 
     def update_article(self, arcdir, article, prev, next):

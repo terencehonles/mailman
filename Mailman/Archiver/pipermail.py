@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import mailbox
 import os
 import re
 import sys
@@ -20,6 +21,12 @@ __version__ = '0.05 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
+
+class FastUnixMailbox(mailbox.UnixMailbox):
+    _rx_fromline = re.compile(mailbox.UnixMailbox._fromlinepattern)
+
+    def _isrealfromline(self, line):
+        return FastUnixMailbox._rx_fromline.match(line)
 
 
 msgid_pat = re.compile(r'(<.*>)')
@@ -201,13 +208,8 @@ class Article:
                 self.headers[i] = message[i]
 
 	# Read the message body
-	self.body = []
 	message.rewindbody()
-	while 1:
-	    line = message.fp.readline()
-	    if line == "":
-                break
-	    self.body.append(line)
+        self.body = message.fp.readlines()
 
     def _set_date(self, message):
 	if message.has_key('Date'): 
@@ -505,9 +507,8 @@ class T:
     # object will then be archived.
     
     def processUnixMailbox(self, input, articleClass = Article):
-	import mailbox
-	mbox = mailbox.UnixMailbox(input)
-	while (1):
+	mbox = FastUnixMailbox(input)
+	while 1:
 	    m = mbox.next()
 	    if not m:
                 break
@@ -539,8 +540,6 @@ class T:
 
 	article.filename = filename = self.get_filename(article)
 	temp = self.format_article(article)
-        fmt = "Processing article #%s into archives %s: %s"
-	self.message(fmt % (article.sequence, archives, article.subject))
 	for arch in archives:
 	    self.archive = arch # why do this???
 	    archivedir = os.path.join(self.basedir, arch)
