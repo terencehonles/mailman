@@ -36,6 +36,7 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'sendmail_01.txt', ['zzzzz@nfg.nl']),
         ('SimpleMatch', 'simple_01.txt', ['bbbsss@turbosport.com']),
         ('SimpleMatch', 'simple_02.txt', ['chris.ggggmmmm@usa.net']),
+        ('SimpleMatch', 'simple_04.txt', ['claird@starbase.neosoft.com']),
         ('SimpleMatch', 'newmailru_01.txt', ['zzzzz@newmail.ru']),
         # SimpleWarning
         ('SimpleWarning', 'simple_03.txt', ['jacobus@geo.co.za']),
@@ -50,7 +51,15 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_03.txt', ['ddd.kkk@advalvas.be']),
         ('DSN', 'dsn_04.txt', ['max.haas@unibas.ch']),
         ('DSN', 'dsn_05.txt', ['pkocmid@atlas.cz']),
-        # Can't be tested:
+        ('DSN', 'dsn_06.txt', ['hao-nghi.au@fr.thalesgroup.com']),
+        ('DSN', 'dsn_07.txt', ['david.farrar@parliament.govt.nz']),
+        # SMTP32
+        ('SMTP32', 'smtp32_01.txt', ['oliver@pcworld.com.ph']),
+        ('SMTP32', 'smtp32_02.txt', ['lists@mail.spicynoodles.com']),
+        ('SMTP32', 'smtp32_03.txt', ['borisk@gw.xraymedia.com']),
+        # LLNL's custom Sendmail
+        ('LLNL', 'llnl_01.txt', ['trotts1@llnl.gov']),
+        # No address can be detected in these...
         # dumbass_01.txt - We love Microsoft. :(
         # Done
         )
