@@ -69,3 +69,19 @@ class Usenet(GUIBase):
             doc.AddItem(_('Mass catchup completed'))
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
+
+    def _postValidate(self, mlist, doc):
+        # Make sure that if we're gating, that the newsgroups and host
+        # information are not blank.
+        if mlist.gateway_to_news or mlist.gateway_to_mail:
+            # BAW: It's too expensive and annoying to ensure that both the
+            # host is valid and that the newsgroup is a valid n.g. on the
+            # server.  This should be good enough.
+            if not mlist.nntp_host or not mlist.linked_newsgroup:
+                doc.addError(_("""You cannot enable gatewaying unless both the
+                <a href="?VARHELP=gateway/nntp_host">news server field</a> and
+                the <a href="?VARHELP=gateway/linked_newsgroup">linked
+                newsgroup</a> fields are filled in."""))
+                # And reset these values
+                mlist.gateway_to_news = 0
+                mlist.gateway_to_mail = 0
