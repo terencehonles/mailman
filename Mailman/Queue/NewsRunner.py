@@ -125,25 +125,21 @@ def prepare_message(mlist, msg, msgdata):
         # BAW: is there a better way?
         count = len(email.Iterators.body_line_iterator(msg))
         msg['Lines'] = str(count)
-    # BAW: It appears that some news servers have problems if the message
-    # contains X-Trace:, NNTP-Posting-Host: or duplicate Cc: headers.  Should
-    # we retain X-Trace or NNTP-Posting-Host as backup X-* headers?
-    del msg['received']
-    del msg['x-trace']
-    del msg['nntp-posting-host']
-    # BAW: Gross hack to ensure that we have only one
-    # content-transfer-encoding header.  More than one barfs NNTP.  I don't
-    # know why we sometimes have more than one such header, and it probably
-    # isn't correct to take the value of just the first one.  What if there
-    # are conflicting headers???
-    #
-    # This relies on the fact that the legal values are usually not parseable
-    # as addresses.  Yes this is another bogosity.
-    cteheaders = getaddresses(msg.get_all('content-transfer-encoding'))
-    if cteheaders:
-        ctetuple = cteheaders[0]
-        ctevalue = ctetuple[1]
-        del msg['content-transfer-encoding']
-        msg['content-transfer-encoding'] = ctevalue
+    # Massage the message headers by remove some and rewriting others.  This
+    # woon't completely sanitize the message, but it will eliminate the bulk
+    # of the rejections based on message headers.  The NNTP server may still
+    # reject the message because of other problems.
+    for header in mm_cfg.NNTP_REMOVE_HEADERS:
+        del msg[header]
+    for header, rewrite in mm_cfg.NNTP_REWRITE_DUPLICATE_HEADERS:
+        values = msg.get_all(header, [])
+        if len(values) < 2:
+            # We only care about duplicates
+            continue
+        del msg[header]
+        # But keep the first one...
+        msg[header] = values[0]
+        for v in values[1:]:
+            msg[rewrite] = v
     # Mark this message as prepared in case it has to be requeued
     msgdata['prepped'] = 1
