@@ -19,7 +19,7 @@
 import sys
 import os
 import Mailman.mm_cfg
-from Logging.Utils import __logexc
+from Mailman.Logging.Utils import __logexc
 
 
 class Logger:
