@@ -275,13 +275,16 @@ def GetPossibleMatchingAddrs(name):
 
 
 
-def List2Dict(list):
-    """List2Dict returns a dict keyed by the entries in the list
-    passed to it."""
-    res = {}
-    for item in list:
-        res[item] = 1
-    return res
+def List2Dict(list, foldcase=0):
+    """Return a dict keyed by the entries in the list passed to it."""
+    d = {}
+    if foldcase:
+        for i in list:
+            d[i.lower()] = 1
+    else:
+        for i in list:
+            d[i] = 1
+    return d
 
 
 def FindMatchingAddresses(name, dict, *dicts):
