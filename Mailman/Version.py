@@ -18,4 +18,4 @@
 VERSION = '1.2 (beta 1)'
 
 # Data file version number, for changes to the schema
-DATA_FILE_VERSION = 17
+DATA_FILE_VERSION = 18
