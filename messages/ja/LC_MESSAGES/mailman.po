@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-09-22 13:00+0900\n"
+"POT-Creation-Date: Mon Sep 22 10:07:56 2003\n"
+"PO-Revision-Date: 2003-09-24 17:00+0900\n"
 "Last-Translator: Tokio Kikuchi <tkikuchi@is.kochi-u.ac.jp>\n"
 "Language-Team: Japanese <mmjp-users@mm.tkikuchi.net>\n"
 "MIME-Version: 1.0\n"
@@ -3371,96 +3371,104 @@ msgstr "普通配送会員:"
 msgid "Digest members:"
 msgstr "まとめ読み会員:"
 
-#: Mailman/Defaults.py:1257
+#: Mailman/Defaults.py:1260
 msgid "Traditional Chinese"
 msgstr "中国語(伝統的)"
 
-#: Mailman/Defaults.py:1258
+#: Mailman/Defaults.py:1261
 msgid "Czech"
 msgstr "チェコ語"
 
-#: Mailman/Defaults.py:1259
+#: Mailman/Defaults.py:1262
+msgid "Danish"
+msgstr "デンマーク語"
+
+#: Mailman/Defaults.py:1263
 msgid "German"
 msgstr "ドイツ語"
 
 # mm_cfg.py
-#: Mailman/Defaults.py:1260
+#: Mailman/Defaults.py:1264
 msgid "English (USA)"
 msgstr "英語 (米国)"
 
-#: Mailman/Defaults.py:1261
+#: Mailman/Defaults.py:1265
 msgid "Spanish (Spain)"
 msgstr "スペイン語 (スペイン)"
 
-#: Mailman/Defaults.py:1262
+#: Mailman/Defaults.py:1266
 msgid "Estonian"
 msgstr "エストニア語"
 
-#: Mailman/Defaults.py:1263
+#: Mailman/Defaults.py:1267
+msgid "Euskara"
+msgstr "バスク語"
+
+#: Mailman/Defaults.py:1268
 msgid "Finnish"
 msgstr "フィンランド語"
 
-#: Mailman/Defaults.py:1264
+#: Mailman/Defaults.py:1269
 msgid "French"
 msgstr "フランス語"
 
-#: Mailman/Defaults.py:1265
+#: Mailman/Defaults.py:1270
 msgid "Simplified Chinese"
 msgstr "中国語(簡体字)"
 
-#: Mailman/Defaults.py:1266
+#: Mailman/Defaults.py:1271
 msgid "Hungarian"
 msgstr "ハンガリー語"
 
-#: Mailman/Defaults.py:1267
+#: Mailman/Defaults.py:1272
 msgid "Italian"
 msgstr "イタリア語"
 
-#: Mailman/Defaults.py:1268
+#: Mailman/Defaults.py:1273
 msgid "Japanese"
 msgstr "日本語"
 
-#: Mailman/Defaults.py:1269
+#: Mailman/Defaults.py:1274
 msgid "Korean"
 msgstr "韓国語"
 
-#: Mailman/Defaults.py:1270
+#: Mailman/Defaults.py:1275
 msgid "Lithuanian"
 msgstr "リトアニア語"
 
-#: Mailman/Defaults.py:1271
+#: Mailman/Defaults.py:1276
 msgid "Dutch"
 msgstr "オランダ語"
 
-#: Mailman/Defaults.py:1272
+#: Mailman/Defaults.py:1277
 msgid "Norwegian"
 msgstr "ノルウェー語"
 
-#: Mailman/Defaults.py:1273
+#: Mailman/Defaults.py:1278
 msgid "Polish"
 msgstr "ポーランド語"
 
-#: Mailman/Defaults.py:1274
+#: Mailman/Defaults.py:1279
 msgid "Portuguese"
 msgstr "ポルトガル語"
 
-#: Mailman/Defaults.py:1275
+#: Mailman/Defaults.py:1280
 msgid "Portuguese (Brazil)"
 msgstr "ポルトガル語(ブラジル)"
 
-#: Mailman/Defaults.py:1276
+#: Mailman/Defaults.py:1281
 msgid "Russian"
 msgstr "ロシア語"
 
-#: Mailman/Defaults.py:1277
+#: Mailman/Defaults.py:1282
 msgid "Serbian"
 msgstr "セルビア語"
 
-#: Mailman/Defaults.py:1278
+#: Mailman/Defaults.py:1283
 msgid "Swedish"
 msgstr "スウェーデン語"
 
-#: Mailman/Defaults.py:1279
+#: Mailman/Defaults.py:1284
 msgid "Ukrainian"
 msgstr "ウクライナ語"
 
@@ -8299,7 +8307,6 @@ msgid "%%%"
 msgstr ""
 
 #: bin/discard:19
-#, fuzzy
 msgid ""
 "Discard held messages.\n"
 "\n"
@@ -8313,28 +8320,30 @@ msgid ""
 "    --quiet / -q\n"
 "        Don't print status messages.\n"
 msgstr ""
-"MM2.1b4 の保存書庫を修理する.\n"
+"保留メールを破棄する.\n"
 "\n"
-"使用法: %(PROGRAM)s [オプション] ファイル ...\n"
+"使用法:\n"
+"    discard [オプション] ファイル ...\n"
 "\n"
 "オプション:\n"
 "\n"
-"    -h / --help\n"
-"        このメッセージを表示して終了する.\n"
+"    --help / -h\n"
+"        このヘルプメッセージを表示して終了する.\n"
+"\n"
+"    --quiet / -q\n"
+"        作業状況を出力しない.\n"
 
 #: bin/discard:94
-#, fuzzy
 msgid "Ignoring non-held message: %(f)s"
-msgstr "削除された会員の変更を無視: %(user)s"
+msgstr "保留でないメールを無視: %(f)s"
 
 #: bin/discard:100
 msgid "Ignoring held msg w/bad id: %(f)s"
-msgstr ""
+msgstr "Id がおかしいメールを無視: %(f)s"
 
 #: bin/discard:112
-#, fuzzy
 msgid "Discarded held msg #%(id)s for list %(listname)s"
-msgstr "%(listname)s リストに入会"
+msgstr "%(listname)s リストのメール #%(id)s を破棄"
 
 #: bin/dumpdb:19
 msgid ""
@@ -9760,6 +9769,19 @@ msgid ""
 "\n"
 "Example: show_qfiles qfiles/shunt/*.pck\n"
 msgstr ""
+"Mailman の qfiles にあるメールの内容を表示する.\n"
+"\n"
+"使用法: show_qfiles [オプション] キューファイル ...\n"
+"\n"
+"オプション:\n"
+"\n"
+"    -q / --quiet\n"
+"        メールの区切りを示す補助メッセージを出力しない.\n"
+"\n"
+"    -h / --help\n"
+"        このヘルプメッセージを出力して終了する.\n"
+"\n"
+"例: show_qfiles qfiles/shunt/*.pck\n"
 
 #: bin/sync_members:19
 msgid ""
