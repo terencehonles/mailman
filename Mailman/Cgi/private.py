@@ -140,7 +140,7 @@ def main():
     try:
         ctype = content_type(path)
         if mboxfile:
-            f = open(os.path.join(mlist.archive_directory + '.mbox',
+            f = open(os.path.join(mlist.archive_dir() + '.mbox',
                                   mlist.internal_name() + '.mbox'))
             ctype = 'text/plain'
         elif true_filename[-3:] == '.gz':
