@@ -61,6 +61,11 @@ class Runner:
                     # Once through the loop that processes all the files in
                     # the queue directory.
                     filecnt = self.__oneloop()
+                    # If the _freshen flag is set, then we evict all the
+                    # MailList objects from the cache so that their state will
+                    # be updated, the next time through the loop.
+                    if self._freshen:
+                        self._listcache.clear()
                     # Do the periodic work for the subclass.  BAW: this
                     # shouldn't be called here.  There should be one more
                     # _doperiodic() call at the end of the __oneloop() loop.
@@ -176,13 +181,7 @@ class Runner:
             mlist = self._listcache.get(listname)
         else:
             mlist = None
-        if mlist:
-            # Non-locking runners should set this to true so that they'll be
-            # sure they get fresh state.  Locking runners don't need to do
-            # this because the state is reloaded after locking the list.
-            if self._freshen:
-                mlist.Load()
-        else:
+        if not mlist:
             try:
                 mlist = MailList.MailList(listname, lock=0)
                 if self._cachelists:
