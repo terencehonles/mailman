@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -44,22 +44,22 @@ class HTMLFormatter:
             self._template_dir = mm_cfg.TEMPLATE_DIR
 
     def GetMailmanFooter(self):
-	owners_html = Container()
-	for i in range(len(self.owner)):
-	    owner = self.owner[i]
-	    owners_html.AddItem(Link('mailto:%s' % owner, owner))
-	    if i + 1 <> len(self.owner):
-		owners_html.AddItem(', ')
+        owners_html = Container()
+        for i in range(len(self.owner)):
+            owner = self.owner[i]
+            owners_html.AddItem(Link('mailto:%s' % owner, owner))
+            if i + 1 <> len(self.owner):
+                owners_html.AddItem(', ')
 
-	# Remove the .Format() when htmlformat conversion is done.
+        # Remove the .Format() when htmlformat conversion is done.
         realname = self.real_name
-	return Container(
-	    '<hr>',
-	    Address(
-		Container( 
+        return Container(
+            '<hr>',
+            Address(
+                Container( 
                     Link(self.GetScriptURL('listinfo'), self.real_name),
-		    _(' list run by '), owners_html,
-		    '<br>',
+                    _(' list run by '), owners_html,
+                    '<br>',
                     Link(self.GetScriptURL('admin'),
                          _('%(realname)s administrative interface')),
                     _(' (requires authorization)'),
@@ -70,36 +70,36 @@ class HTMLFormatter:
         if lang is None:
             lang = self.preferred_language
         HTMLFormatter.InitVars(self)
-	filename = os.path.join(self._template_dir, lang, file)
+        filename = os.path.join(self._template_dir, lang, file)
         fp = open(filename)
-	data = fp.read()
-	fp.close()
-	return data
+        data = fp.read()
+        fp.close()
+        return data
 
     def FormatUsers(self, digest, lang=None):
         if lang is None:
             lang = self.preferred_language
         conceal_sub = mm_cfg.ConcealSubscription
         people = []
-	if digest:
+        if digest:
             digestmembers = self.GetDigestMembers()
             for dm in digestmembers:
                 if not self.GetUserOption(dm, conceal_sub):
                     people.append(dm)
             num_concealed = len(digestmembers) - len(people)
-	else:
+        else:
             members = self.GetMembers()
             for m in members:
                 if not self.GetUserOption(m, conceal_sub):
                     people.append(m)
-	    num_concealed = len(members) - len(people)
+            num_concealed = len(members) - len(people)
         people.sort()
-	if (num_concealed > 0):
-	    plu = (((num_concealed > 1) and "s") or "")
-	    concealed = _(
+        if (num_concealed > 0):
+            plu = (((num_concealed > 1) and "s") or "")
+            concealed = _(
                 "<em>(%(num_concealed)d private member%(plu)s not shown)</em>")
- 	else:
- 	    concealed = ""
+        else:
+            concealed = ""
         ObscureEmail = Utils.ObscureEmail
         options_url = self.GetScriptURL('options')
         disdel = mm_cfg.DisableDelivery
@@ -115,63 +115,63 @@ class HTMLFormatter:
             if self.GetUserOption(person, disdel):
                 got = Italic("(", got, ")")
             items.append(got)
-	# Just return the .Format() so this works until I finish
-	# converting everything to htmlformat...
-	return (concealed +
-		apply(UnorderedList, tuple(items)).Format())
+        # Just return the .Format() so this works until I finish
+        # converting everything to htmlformat...
+        return (concealed +
+                apply(UnorderedList, tuple(items)).Format())
 
 
     def FormatOptionButton(self, type, value, user):
-	users_val = self.GetUserOption(user, type)
-	if users_val == value:
-	    checked = ' CHECKED'
-	else:
-	    checked = ''
-	name = {mm_cfg.DontReceiveOwnPosts : "dontreceive",
+        users_val = self.GetUserOption(user, type)
+        if users_val == value:
+            checked = ' CHECKED'
+        else:
+            checked = ''
+        name = {mm_cfg.DontReceiveOwnPosts : "dontreceive",
                 mm_cfg.DisableDelivery     : "disablemail",
                 mm_cfg.DisableMime         : "mime",
                 mm_cfg.AcknowledgePosts    : "ackposts",
                 mm_cfg.Digests             : "digest",
                 mm_cfg.ConcealSubscription : "conceal"
                 }[type]
-	import sys
-	return ('<input type=radio name="%s" value="%d"%s>'
-		% (name, value, checked))
+        import sys
+        return ('<input type=radio name="%s" value="%d"%s>'
+                % (name, value, checked))
 
     def FormatDigestButton(self):
-	if self.digest_is_default:
-	    checked = ' CHECKED'
-	else:
-	    checked = ''
-	return '<input type=radio name="digest" value="1"%s>' % checked
+        if self.digest_is_default:
+            checked = ' CHECKED'
+        else:
+            checked = ''
+        return '<input type=radio name="digest" value="1"%s>' % checked
 
     def FormatDisabledNotice(self, user):
-	if self.GetUserOption(user, mm_cfg.DisableDelivery):
-	    text = Center(Header(3, _(
+        if self.GetUserOption(user, mm_cfg.DisableDelivery):
+            text = Center(Header(3, _(
                 "Note - your list delivery is currently disabled."))).Format()
-	    text = text + "\n"
-	    text = text + _("You may have set non-delivery deliberately, or"
+            text = text + "\n"
+            text = text + _("You may have set non-delivery deliberately, or"
                             " it may have been triggered by bounces from your"
                             " delivery address.  In either case, to reenable "
                             " delivery, change the ")
-	    text = text + Link('#disable',
-			       _("Disable mail delivery")).Format()
-	    text = text + _(" option.  Contact ")
-	    text = text + Link('mailto:' + self.GetAdminEmail(),
-			       _("your list administrator")).Format()
-	    text = text + _(" if you have questions.")
-	    return text
-	else:
-	    return ""
+            text = text + Link('#disable',
+                               _("Disable mail delivery")).Format()
+            text = text + _(" option.  Contact ")
+            text = text + Link('mailto:' + self.GetAdminEmail(),
+                               _("your list administrator")).Format()
+            text = text + _(" if you have questions.")
+            return text
+        else:
+            return ""
 
     def FormatUmbrellaNotice(self, user, type):
         addr = self.GetMemberAdminEmail(user)
         if self.umbrella_list:
-	    return _("(Note - you are subscribing to a list of mailing lists, "
+            return _("(Note - you are subscribing to a list of mailing lists, "
                      "so the %(type)s notice will be sent to the admin address"
                      " for your membership, %(addr)s.)<p>")
-	else:
-	    return ""
+        else:
+            return ""
 
     def FormatSubscriptionMsg(self):
         "Tailor to approval, roster privacy, and web vetting requirements."
@@ -223,24 +223,24 @@ class HTMLFormatter:
         return msg
 
     def FormatUndigestButton(self):
-	if self.digest_is_default:
-	    checked = ''
-	else:
-	    checked = ' CHECKED'
-	return '<input type=radio name="digest" value="0"%s>' % checked
+        if self.digest_is_default:
+            checked = ''
+        else:
+            checked = ' CHECKED'
+        return '<input type=radio name="digest" value="0"%s>' % checked
 
     def FormatMimeDigestsButton(self):
-	if self.mime_is_default_digest:
-	    checked = ' CHECKED'
-	else:
-	    checked = ''
-	return '<input type=radio name="mime" value="1"%s>' % checked
+        if self.mime_is_default_digest:
+            checked = ' CHECKED'
+        else:
+            checked = ''
+        return '<input type=radio name="mime" value="1"%s>' % checked
     def FormatPlainDigestsButton(self):
-	if self.mime_is_default_digest:
-	    checked = ''
-	else:
-	    checked = ' CHECKED'
-	return '<input type=radio name="plain" value="1"%s>' % checked
+        if self.mime_is_default_digest:
+            checked = ''
+        else:
+            checked = ' CHECKED'
+        return '<input type=radio name="plain" value="1"%s>' % checked
 
     def FormatEditingOption(self, lang):
         "Present editing options, according to list privacy."
@@ -287,7 +287,7 @@ class HTMLFormatter:
                               + self.real_name
                               + _(" subscribers: "))
             container.AddItem(SubmitButton('SubscriberRoster',
-					   _("Visit Subscriber list")))
+                                           _("Visit Subscriber list")))
         else:
             if self.private_roster == 1:
                 only = _('members')
@@ -309,53 +309,53 @@ class HTMLFormatter:
                               + self.FormatSecureBox('roster-pw')
                               + "&nbsp;&nbsp;")
             container.AddItem(SubmitButton('SubscriberRoster',
-					   _('Visit Subscriber List')))
+                                           _('Visit Subscriber List')))
             container.AddItem("</center>")
         return container
 
     def FormatFormStart(self, name, extra=''):
-	base_url = self.GetScriptURL(name)
+        base_url = self.GetScriptURL(name)
         if extra:
             full_url = "%s/%s" % (base_url, extra)
         else:
             full_url = base_url
-	return ('<FORM Method=POST ACTION="%s">' % full_url)
+        return ('<FORM Method=POST ACTION="%s">' % full_url)
 
     def FormatArchiveAnchor(self):
-	return '<a href="%s">' % self.GetBaseArchiveURL()
+        return '<a href="%s">' % self.GetBaseArchiveURL()
 
     def FormatFormEnd(self):
-	return '</FORM>'
+        return '</FORM>'
 
     def FormatBox(self, name, size=20):
-	return '<INPUT type="Text" name="%s" size="%d">' % (name, size)
+        return '<INPUT type="Text" name="%s" size="%d">' % (name, size)
 
     def FormatSecureBox(self, name):
-	return '<INPUT type="Password" name="%s" size="15">' % name
+        return '<INPUT type="Password" name="%s" size="15">' % name
 
     def FormatButton(self, name, text='Submit'):
-	return '<INPUT type="Submit" name="%s" value="%s">' % (name, text)
+        return '<INPUT type="Submit" name="%s" value="%s">' % (name, text)
 
     def FormatReminder(self, lang):
-	if self.send_reminders:
-	    return _('Once a month, your password will be emailed to you as'
+        if self.send_reminders:
+            return _('Once a month, your password will be emailed to you as'
                      ' a reminder.')
-	return ''
+        return ''
 
     def ParseTags(self, template, replacements, lang=None):
-	if lang is None:
+        if lang is None:
             lang = self.preferred_language
-	text = self.SnarfHTMLTemplate(template, lang)
-	parts = regsub.splitx(text, '</?[Mm][Mm]-[^>]*>')
-	i = 1
-	while i < len(parts):
-	    tag = string.lower(parts[i])
-	    if replacements.has_key(tag):
-		parts[i] = replacements[tag]
-	    else:
-		parts[i] = ''
-	    i = i + 2
-	return string.join(parts, '')
+        text = self.SnarfHTMLTemplate(template, lang)
+        parts = regsub.splitx(text, '</?[Mm][Mm]-[^>]*>')
+        i = 1
+        while i < len(parts):
+            tag = string.lower(parts[i])
+            if replacements.has_key(tag):
+                parts[i] = replacements[tag]
+            else:
+                parts[i] = ''
+            i = i + 2
+        return string.join(parts, '')
 
     # This needs to wait until after the list is inited, so let's build it
     # when it's needed only.
@@ -371,31 +371,31 @@ class HTMLFormatter:
         except ValueError:
             selected = mm_cfg.DEFAULT_SERVER_LANGUAGE
 
-	return { 
-	    '<mm-mailman-footer>' : self.GetMailmanFooter(),
-	    '<mm-list-name>' : self.real_name,
-	    '<mm-email-user>' : self._internal_name,
-	    '<mm-list-description>' : self.description,
-	    '<mm-list-info>' : string.join(string.split(self.info, '\n'),
-					   '<br>'),
-	    '<mm-form-end>'  : self.FormatFormEnd(),
-	    '<mm-archive>'   : self.FormatArchiveAnchor(),
-	    '</mm-archive>'  : '</a>',
+        return { 
+            '<mm-mailman-footer>' : self.GetMailmanFooter(),
+            '<mm-list-name>' : self.real_name,
+            '<mm-email-user>' : self._internal_name,
+            '<mm-list-description>' : self.description,
+            '<mm-list-info>' : string.join(string.split(self.info, '\n'),
+                                           '<br>'),
+            '<mm-form-end>'  : self.FormatFormEnd(),
+            '<mm-archive>'   : self.FormatArchiveAnchor(),
+            '</mm-archive>'  : '</a>',
             '<mm-list-subscription-msg>' : self.FormatSubscriptionMsg(),
             '<mm-restricted-list-message>' : \
-            	self.RestrictedListMessage(_('current archive'),
+                self.RestrictedListMessage(_('current archive'),
                                            self.archive_private),
-	    '<mm-num-reg-users>' : `member_len`,
-	    '<mm-num-digesters>' : `dmember_len`,
-	    '<mm-num-members>' : (`member_len + dmember_len`),
-	    '<mm-posting-addr>' : '%s' % self.GetListEmail(),
-	    '<mm-request-addr>' : '%s' % self.GetRequestEmail(),
-	    '<mm-owner>' : self.GetAdminEmail(),
-	    '<mm-reminder>' : self.FormatReminder(self.preferred_language),
+            '<mm-num-reg-users>' : `member_len`,
+            '<mm-num-digesters>' : `dmember_len`,
+            '<mm-num-members>' : (`member_len + dmember_len`),
+            '<mm-posting-addr>' : '%s' % self.GetListEmail(),
+            '<mm-request-addr>' : '%s' % self.GetRequestEmail(),
+            '<mm-owner>' : self.GetAdminEmail(),
+            '<mm-reminder>' : self.FormatReminder(self.preferred_language),
             '<mm-host>' : self.host_name,
-	    '<mm-list-langs>' : SelectOptions('language', values, legend,
+            '<mm-list-langs>' : SelectOptions('language', values, legend,
                                               selected).Format(),
-	    }
+            }
 
     def GetAllReplacements(self, lang=None):
         """
