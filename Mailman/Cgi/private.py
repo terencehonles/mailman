@@ -70,16 +70,19 @@ PAGE = '''
 
 login_attempted = 0
 _list = None
-
 name_pat = re.compile(
-    r'(?: / (?: \d{4} q \d\. )?'      # Match "/", and, optionally, 1998q1.
-    r'( [^/]* ) /?'                   # The SIG name
-    r'/[^/]*$'                        # The trailing 12345.html portion
-    r') | (?:'
-    r'/ ( [^/.]* )'                   # Match matrix-sig
-    r'(?:\.html)?'                    # Optionally match .html
-    r'/?'                             # Optionally match a trailing slash
-    r'$'                              # Must match to end of string
+    r'(?: '                             # Being first alternative...
+    r'/ (?: \d{4} q \d\. )?'            # Match "/", and, optionally, 1998q1.
+    r'( [^/]* ) /?'                     # The list name
+    r'/[^/]*$'                          # The trailing 12345.html portion
+    r')'                                # End first alternative
+    r' | '
+    r'(?:'                              # Begin second alternative...
+    r'/ ( [^/.]* )'                     # Match matrix-sig
+    r'(?:\.html)?'                      # Optionally match .html
+    r'/?'                               # Optionally match a trailing slash
+    r'$'                                # Must match to end of string
+    r')'                                # And close the second alternate.
     , re.VERBOSE)
 
 def getListName(path):
