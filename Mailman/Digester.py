@@ -126,8 +126,6 @@ class Digester:
                     self.one_last_digest = {addr: self.digest_members[addr]}
 		del self.digest_members[addr]
 		self.members[addr] = cpuser
-        # BAW: This Save() can probably go away.
-	self.Save()
 
     def send_digest_now(self):
         # Note: Handler.ToDigest.send_digests() handles bumping the digest
