@@ -32,6 +32,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Mailbox
 from Mailman import LockFile
+from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
@@ -145,8 +146,11 @@ class Archiver:
 
     def __archive_file(self, afn):
 	"""Open (creating, if necessary) the named archive file."""
-        from Mailman.Utils import open_ex
-        return Mailbox.Mailbox(open_ex(afn, "a+"))
+        omask = os.umask(002)
+        try:
+            return Mailbox.Mailbox(open(afn, 'a+'))
+        finally:
+            os.umask(omask)
 
     #
     # old ArchiveMail function, retained under a new name
@@ -165,7 +169,7 @@ class Archiver:
             raise
 
     def ExternalArchive(self, ar, txt):
-        d = Utils.SafeDict({'listname': self.internal_name()})
+        d = SafeDict({'listname': self.internal_name()})
         cmd = ar % d
         extarch = os.popen(cmd, 'w')
         extarch.write(txt)
@@ -177,7 +181,7 @@ class Archiver:
     #
     # archiving in real time  this is called from list.post(msg)
     #
-    def ArchiveMail(self, msg, msgdata):
+    def ArchiveMail(self, msg):
         """Store postings in mbox and/or pipermail archive, depending."""
 	# Fork so archival errors won't disrupt normal list delivery
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
@@ -197,16 +201,7 @@ class Archiver:
         # from.
         t0 = time.time()
         try:
-            txt = msg.unixfrom
-            for h in msg.headers:
-                txt = txt + h
-            if not msg.body or msg.body[0] <> '\n':
-                txt = txt + "\n"
-            for line in string.split(msg.body, '\n'):
-                # Quote unprotected From_ lines appearing in body
-                if line and line[:5] == 'From ':
-                    line = '>' + line
-                txt = txt + "%s\n" % line
+            txt = str(msg)
             # should we use the internal or external archiver?
             private_p = self.archive_private
             if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
@@ -253,5 +248,7 @@ class Archiver:
             breaklink(pubdir)
             breaklink(pubmbox)
         else:
+            # BAW: privdir or privmbox could be nonexistant.  We'd get an
+            # OSError, ENOENT which should be caught and reported properly.
             makelink(privdir, pubdir)
             makelink(privmbox, pubmbox)
