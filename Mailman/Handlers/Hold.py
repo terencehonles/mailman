@@ -88,15 +88,13 @@ def process(mlist, msg):
     # get the sender of the message
     listname = mlist.internal_name()
     adminaddr = listname + '-admin'
-    sender = None
-    if mm_cfg.USE_ENVELOPE_SENDER:
-        sender = msg.GetEnvelopeSender()
+    sender = msg.GetSender()
     # Special case an ugly sendmail feature: If there exists an alias of the
     # form "owner-foo: bar" and sendmail receives mail for address "foo",
     # sendmail will change the envelope sender of the message to "bar" before
     # delivering.  This feature does not appear to be configurable.  *Boggle*.
     if not sender or sender[:len(listname)+6] == adminaddr:
-        sender = msg.GetSender()
+        sender = msg.GetSender(envelope=0)
     #
     # is the poster in the list of explicitly forbidden posters?
     if len(mlist.forbidden_posters):
