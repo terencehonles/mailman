@@ -18,6 +18,7 @@
 
 import signal
 import cgi
+import time
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -130,8 +131,15 @@ def main():
                 heldmsg_confirm(mlist, doc, cookie)
             else:
                 heldmsg_prompt(mlist, doc, cookie, *content[1:])
+        elif content[0] == Pending.RE_ENABLE:
+            if cgidata.getvalue('cancel'):
+                reenable_cancel(mlist, doc, cookie)
+            elif cgidata.getvalue('submit'):
+                reenable_confirm(mlist, doc, cookie)
+            else:
+                reenable_prompt(mlist, doc, cookie, *content[1:])
         else:
-            bad_confirmation(doc)
+            bad_confirmation(doc, _('System error, bad content: %(content)s'))
     except Errors.MMBadConfirmation:
         bad_confirmation(doc, badconfirmstr)
 
@@ -625,6 +633,112 @@ def heldmsg_prompt(mlist, doc, cookie, id):
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     table.AddRow([SubmitButton('submit', _('Cancel posting')),
                   SubmitButton('cancel', _('Continue awaiting approval'))])
+
+    form.AddItem(table)
+    doc.AddItem(form)
+
+
+
+def reenable_cancel(mlist, doc, cookie):
+    # Don't actually discard this cookie, since the user may decide to
+    # re-enable their membership at a future time, and we may be sending out
+    # future notifications with this cookie value.
+    doc.AddItem(_("""You have canceled the re-enabling of your membership.  If
+    we continue to receive bounces from your address, it could be deleted from
+    this mailing list."""))
+
+
+
+def reenable_confirm(mlist, doc, cookie):
+    # See the comment in admin.py about the need for the signal
+    # handler.
+    def sigterm_handler(signum, frame, mlist=mlist):
+        mlist.Unlock()
+        sys.exit(0)
+
+    mlist.Lock()
+    try:
+        try:
+            # Do this in two steps so we can get the preferred language for
+            # the user who is unsubscribing.
+            op, listname, addr = Pending.confirm(cookie, expunge=0)
+            lang = mlist.getMemberLanguage(addr)
+            i18n.set_language(lang)
+            doc.set_language(lang)
+            op, addr = mlist.ProcessConfirmation(cookie)
+        except Errors.MMNoSuchUserError:
+            bad_confirmation(doc, _('''Invalid confirmation string.  It is
+            possible that you are attempting to confirm a request for an
+            address that has already been unsubscribed.'''))
+        else:
+            # The response
+            listname = mlist.real_name
+            title = _('Membership re-enabled.')
+            optionsurl = mlist.GetOptionsURL(addr, absolute=1)
+            doc.SetTitle(title)
+            doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
+            doc.AddItem(_("""\
+            You have successfully re-enabled your membership in the
+            %(listname)s mailing list.  You can now <a
+            href="%(optionsurl)s">visit your member options page</a>.
+            """))
+        mlist.Save()
+    finally:
+        mlist.Unlock()
+
+
+
+def reenable_prompt(mlist, doc, cookie, list, member):
+    title = _('Re-enable mailing list membership')
+    doc.SetTitle(title)
+    form = Form(mlist.GetScriptURL('confirm', 1))
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+
+    lang = mlist.getMemberLanguage(member)
+    i18n.set_language(lang)
+    doc.set_language(lang)
+
+    realname = mlist.real_name
+    info = mlist.getBounceInfo(member)
+    if not info:
+        listinfourl = mlist.GetScriptURL('listinfo', absolute=1)
+        # They've already be unsubscribed
+        table.AddRow([_("""We're sorry, but you have already been unsubscribed
+        from this mailing list.  To re-subscribe, please visit the
+        <a href="%(listinfourl)s">list information page</a>.""")])
+        return
+
+    date = time.strftime('%A, %B %d, %Y', info.date + (0,) * 6)
+    daysleft = int(info.noticesleft *
+                   mlist.bounce_you_are_disabled_warnings_interval /
+                   mm_cfg.days(1))
+    username = mlist.getMemberName(member) or _('<em>not available</em>')
+
+    table.AddRow([_("""Your membership in the %(realname)s mailing list is
+    currently disabled due to excessive bounces.  Your confirmation is
+    required in order to re-enable delivery to your address.  We have the
+    following information on file:
+
+    <ul><li><b>Member address:</b> %(member)s
+        <li><b>Member name:</b> %(username)s
+        <li><b>Last bounce received on:</b> %(date)s
+        <li><b>Approximate number of days before you are permanently removed
+               from this list:</b> %(daysleft)s
+    </ul>
+
+    Hit the <em>Re-enable membership</em> button to resume receiving postings
+    from the mailing list.  Or hit the <em>Cancel</em> button to defer
+    re-enabling your membership.
+    """)])
+
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Hidden('cookie', cookie)])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([SubmitButton('submit', _('Re-enable membership')),
+                  SubmitButton('cancel', _('Cancel'))])
 
     form.AddItem(table)
     doc.AddItem(form)
