@@ -47,8 +47,6 @@ from Mailman.Logging.Syslog import syslog
 def Update(l, stored_state):
     "Dispose of old vars and user options, mapping to new ones when suitable."
     ZapOldVars(l)
-    # Be sure to call UpdateOldUsers() before updating NewVars(), otherwise
-    # the list's bounce_info attribute won't be updated correctly.
     UpdateOldUsers(l)
     NewVars(l)
     UpdateOldVars(l, stored_state)
@@ -334,17 +332,21 @@ def NewVars(l):
 
 
 
-def UpdateOldUsers(l):
+def UpdateOldUsers(mlist):
     """Transform sense of changed user options."""
     # pre-1.0b11 to 1.0b11.  Force all keys in l.passwords to be lowercase
     passwords = {}
-    for k, v in l.passwords.items():
+    for k, v in mlist.passwords.items():
         passwords[k.lower()] = v
-    l.passwords = passwords
-    # If there is no delivery_status attribute on the list, clear out
-    # bounce_info; we're going to do things completely differently.
-    if not hasattr(l, 'delivery_status'):
-        l.bounce_info = {}
+    mlist.passwords = passwords
+    # Go through all the keys in bounce_info.  If the key is not a member, or
+    # if the data is not a _BounceInfo instance, chuck the bounce info.  We're
+    # doing things differently now.
+    from Mailman.Bouncer import _BounceInfo
+    for m in mlist.bounce_info.keys():
+        if not mlist.isMember(m) or not isinstance(mlist.getBounceInfo(m),
+                                                   _BounceInfo):
+            del mlist.bounce_info[m]
 
 
 
