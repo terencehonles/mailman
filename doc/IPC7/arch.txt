@@ -1,0 +1,178 @@
+Architecture
+============
+
+Core Classes
+============
+
+The Mailman software consisted of a core set of Python classes,
+oriented around the specifically supported tasks.  For example, there
+is a Deliverer class which has primary responsibility for delivering
+messages of various kinds to users.  There are also classes that
+handle message bounces, formatting of the Web pages, list
+administration, etc.  These are covered in more detail below.  These
+task-oriented classes are composed into a higher-level MailList class
+via multiple inheritance.  These classes live inside individual
+modules in a Python package directory.
+
+Whenever access to a specific list is made, either via the Web forms,
+email commands, or interactively, an instance of the MailList class
+must be instantiated.  The MailList class adds to the mixin base
+classes methods to extract list specific information such as important
+URLs or email addresses.  It coordinates the initialization of the
+mixin classes, handles saving and loading a mailing list's persistent
+data, creating new lists, and managing file system locks.  The
+MailList class also manages the posting of messages to the list,
+although this might rightly be migrated to a separate base class.
+Most importantly, the MailList class coordinates the set of
+configuration options that are exposed to the Web user, although some
+of the mixin classes do actually define additional option categories
+(more on this below).
+
+The task-oriented base class perform all the other functions that can
+be invoked on a mailing list object.  The following base classes
+currently exist:
+
+MailCommandHandler:
+    This class implements the parsing and execution of Majordomo-style 
+    commands embedded in email to -request addresses.  Although most
+    users will interact with mailing lists directly through the Web
+    interface, for compatibility, commands can be injected into the
+    Mailman system via email, and where appropriate, the commands have 
+    the same syntax and semantics as the corresponding Majordomo
+    commands.
+
+HTMLFormatter:
+    This class is used to generate list-specific HTML for presentation
+    via the Web interface.  Primarily, it uses a widget library also
+    included in Mailman.  Together this class and library serves a
+    purpose very similar to [XXX ref: Robin's or Digicool's
+    DocumentFormatter, not sure]
+
+Deliverer:
+    It is this class's task to deliver email messages to list member
+    and individual users.  It handles such tasks as sending post and
+    subscription acknowledgements, and mailing users their passwords
+    (either through the periodic reminder system, or when explicitly
+    told to via the user specific Web interface).
+
+ListAdmin:
+    This class manages the queuing and notification of requests to the 
+    Mailman system that are held for approval.  For example, it may be 
+    that all subscriptions must be approved by the list owner.  In
+    this case the message is held and managed by the ListAdmin class.
+    This class handles posting and subscription holds, as well as the
+    sending of refusal messagse.
+
+Archiver:
+    This class handles the archiving of messages posted to a list.
+    Mailing lists can have public or private archives and this class
+    places the posted message in the appropriate location.  This class 
+    also interfaces with external Hypertext archivers such as Andrew
+    Kuchling's Pipermail [XXX need ref] which is bundled with Mailman.
+
+Digester:
+    Members can receive posting immediately, or they can request to
+    have periodic digests of the discussions email to them instead.
+    This is a per-user settable option, although there is some
+    override available to list owners.  The Digester class manages
+    digest creation options (such as whether digests will be sent as
+    MIME, what the digest size thresholds should be).  It is
+    responsible for collecting messages during the posting process,
+    and manages the creating and sending of the digests when the time
+    comes.
+
+SecurityManager:
+    This class primarily verifies authorization passwords for the site 
+    administrator, list administrators, and users.  It also performs
+    the task of sanitizing posting which contain the Majordomo-style
+    approval headers.
+
+Bouncer:
+    Mailman contains some sophisticated email bounce handling
+    facilities, which allow it to do things like disable or remove
+    users from lists when their addresses receive excessive bounces.
+    The Bouncer class manages these facilities and the options that
+    control them.
+
+GatewayManager:
+    This class handles optional email-to-Usenet gateways for mailing
+    lists.
+
+
+Interfacing to the Outside World
+================================
+
+The MailList class provides the central access for doing anything with 
+a mailing list.  This class, as well as other utility functions are
+combined and used by scripts which provide interfaces to the Web via
+CGI, or commands executed by the mail system.  The core Mailman system 
+is designed to also be accessed through an interactive Python
+interpreter, which facilitates testing and development.
+
+[[XXX Ken wants to tone this down]]
+
+The CGI scripts in turn are started by a common driver script, which
+wraps all the functionality in flexible error handling code.  This is
+so that when a system error occurs, a detailed traceback, along with a 
+dump of the current environment variables, are displayed both on the
+Web browser (so the user has better feedback on what when wrong), and
+in a log file on the Mailman system.  These two forms of error
+feedback help ensure that problems can be more quickly traced and
+fixed.  Finally, there are C wrapper programs that invoke the driver
+script from CGI or sendmail.  The wrapper programs are used for added
+security.
+
+Mix-in Structure Benefits
+=========================
+
+The mix-in structure of the system has a number of important benefits.
+First, the task-orientation of the base classes allows for new
+functionality to be easily added.  For example, when an email to
+Usenet news gateway was added, it was a fairly simple matter to write
+the GatewayManager class (described above) that handled this task, and
+add that to the list of MailList base classes.  Second, since all the
+data is list-centric, almost everything that can be done to a list is
+available as methods on the MailList class.  Using mix-in classes here
+simplifies the passing of arguments, and reduces the amount of the
+interface that has to be duplicated from base classes to the derived
+class.
+
+[[XXX Ken may wish to move this]]
+
+There are some downsides to the mix-in architecture, but they are
+relatively minor.  Using mixins, with many cross class method calls,
+leads to a lack of compartmentalization increasing maintenance
+burdens.  It is more difficult to unit test each class.  It can also
+be difficult to figure out when reading the code, in which of the base
+classes a particular method is implemented.  Using delegation would
+ease this latter burden because the target of the method would always
+be discernible.  Also, initialization of the MailList class happens in
+two phases and it is sometimes difficult to coordinate initialization
+correctly with all the base classes.  All in all though, using
+multiple inheritance is a larger benefit.
+
+List Specific Persistent Data Store
+===================================
+
+The persistent data for each list is maintained as a marshalled
+dictionary which is saved in a file.  This file is read from the
+filesystem and the data attributes are unmarshalled when a specific
+list is instantiated.  The elements of the dictionary are actually
+taken from the attributes of the MailList instances (attributes whose
+name begins with an underscore are filtered out).  [[XXX Ken wants to
+reveal this later]] Thus as new option-controlling attributes are
+added, they can be automatically included in the list databases.
+
+Configuration Options
+=====================
+
+Each configuration option supported by Mailman is described in the
+MailList class as a tuple of information, containing: the name of the
+option (which also names the instance attribute), the data type
+(primarily describing the Web GUI widget for editing the option),
+option value ranges or other parameters to the widget, and short
+description and a longer description.  These tuples are gathered
+together into a dictionary with the keys being the high-level Mailman
+configuration categories.  Again, this makes it easy to add new
+options and to integrate new options in the mixin classes.
+
