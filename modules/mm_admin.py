@@ -5,24 +5,30 @@ import mm_err, mm_cfg, mm_message
 import os, marshal, time, string
 
 SUBSCRIPTION_AUTH_TEXT = """
-Your authorization is required to approve or deny a subscription for
-%s to the %s@%s mailing list.  Please visit:
+Your authorization is required for a maillist subscription request approval:
+
+For:		%s
+List:		%s@%s
+
+At your convenience, visit:
 
 	%s
 	
-at your convenience to process the request."""
+to process the request."""
 
 POSTING_AUTH_TEXT = """
-Your authorization is required to approve or deny a posting for
-%s to the %s@%s mailing list.
+Your authorization is required for a maillist posting request approval:
 
-Reason for hold: %s
+List:		%s@%s
+Reason held:	%s
+From:		%s
+Subject:	%s
 
-Please visit:
+At your convenience, visit:
 
 	%s
 	
-at your convenience to process the request."""
+to approve or deny the request."""
 
 class ListAdmin:
     def InitVars(self):
@@ -58,18 +64,20 @@ class ListAdmin:
 	elif request == 'post':
 	    sender = args[0][0]
 	    reason = args[1]
+	    subject = args[2]
 	    self.LogMsg("vette",
 			"%s: %s %s" % (self.real_name, reason, sender))
 	    if self.admin_immed_notify:
-		subj = '%s posting approval, sender %s' % (self.real_name,
+		subj = '%s posting approval for: %s' % (self.real_name,
 							   sender)
 		self.SendTextToUser(subject = subj,
 				    recipient = self.GetAdminEmail(),
 				    text = (POSTING_AUTH_TEXT
-					    % (sender,
-					       self.real_name,
+					    % (self.real_name,
 					       self.host_name,
 					       reason,
+					       sender,
+					       subject,
 					       self.GetScriptURL('admindb'))))
 	    raise mm_err.MMNeedApproval, args[1]
 
@@ -118,12 +126,9 @@ class ListAdmin:
 		      msg.getheader('subject')
 	    if not comment:
 		comment = data[1]
-	    # If there's an extra arg on data, we don't send an error message.
-	    # This is because if people are posting to a moderated list, they
-	    # Are expecting to wait on approval.
-	    if len(data) < 3:
-		if not self.dont_respond_to_post_requests:
-		    self.RefuseRequest(request, destination_email, comment, msg)
+	    if not self.dont_respond_to_post_requests:
+		self.RefuseRequest(request, destination_email,
+				   comment, msg)
 	else:
 	    self.Post(msg, 1)
 
