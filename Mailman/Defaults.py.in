@@ -210,7 +210,11 @@ DEFAULT_ADMINISTRIVIA = 1
 # how long the cookie authorizing administrative
 # changes via the admin cgi lasts
 #
-ADMIN_COOKIE_LIFE = 60 * 60 * 3 # 3 hours
+ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
+
+# How long subscriptions request should await confirmation before being
+# dropped.
+PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
 # how many members to display at a time
 # on the admin cgi to unsubscribe them or change their options
