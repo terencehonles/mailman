@@ -7,7 +7,7 @@ import os
 import re
 import sys
 import time
-from email.Utils import parseaddr, parsedate_tz
+from email.Utils import parseaddr, parsedate_tz, mktime_tz
 import cPickle as pickle
 from cStringIO import StringIO
 from string import lowercase
@@ -224,7 +224,7 @@ class Article:
                 return None
             date = parsedate_tz(datestr)
             try:
-                return time.mktime(date[:9])
+                return mktime_tz(date)
             except (TypeError, ValueError, OverflowError):
                 return None
         date = floatdate('date')
