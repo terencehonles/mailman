@@ -4,12 +4,16 @@
 
 To run stand-alone for debugging, set env var PATH_INFO to name of list."""
 
-import sys, os, cgi, string, crypt, types
-#f = open('/tmp/quick', 'a+')
-#sys.stderr = f
-##sys.stderr = sys.stdout
+import sys
 sys.path.append('/home/mailman/mailman/modules')
+import os, cgi, string, crypt, types
 import mm_utils, maillist, mm_cfg, htmlformat, mm_err
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'mmroster',
+                                        manual_reprime=1, nofail=0)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 
 def main():

@@ -1,11 +1,17 @@
 #!/usr/local/bin/python
 
-import sys, os, cgi, string, crypt, types
-
-f = open('/tmp/fboggle', 'a+')
-sys.stderr = sys.stdout
+import sys
 sys.path.append('/home/mailman/mailman/modules')
+
+import os, cgi, string, crypt, types
 import mm_utils, maillist, mm_err, htmlformat
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'mmroster',
+                                        manual_reprime=1, nofail=0)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
+
 
 doc = htmlformat.Document()
 
