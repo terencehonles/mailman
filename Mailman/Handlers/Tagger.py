@@ -98,8 +98,6 @@ def scanbody(msg, numlines=None):
     # message object from those lines.
     p = _ForgivingParser()
     msg = p.parsestr(EMPTYSTRING.join(lines))
-    syslog('debug', 'lines: %s', ''.join(lines))
-    syslog('debug', 'msg: %s', msg.as_string())
     return msg.get_all('subject', []) + msg.get_all('keywords', [])
 
 
