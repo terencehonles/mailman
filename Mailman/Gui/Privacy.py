@@ -181,7 +181,7 @@ class Privacy:
 
             <p>Note that non-regexp matches are always done first."""),
 
-            _("General sender filters"),
+            _('Member filters'),
 
             ('default_member_moderation', mm_cfg.Radio, (_('No'), _('Yes')),
              0, _('By default, should new list member postings be moderated?'),
@@ -200,6 +200,31 @@ class Privacy:
              individual member's moderation bit by using the
              <a href="%(adminurl)s/members">membership management
              screens</a>.""")),
+
+            ('member_moderation_action', mm_cfg.Radio,
+             (_('Hold'), _('Reject'), _('Discard')), 0,
+             _("""Action to take when a moderated member posts to the
+             list."""),
+             _("""<ul><li><b>Hold</b> -- this holds the message for approval
+             by the list moderators.
+
+             <p><li><b>Reject</b> -- this automatically rejects the message by
+             sending a bounce notice to the post's author.  The text of the
+             bounce notice can be <a
+             href="?VARHELP=privacy/sender/member_moderation_notice"
+             >configured by you</a>.
+
+             <p><li><b>Discard</b> -- this simply discards the message, with
+             no notice sent to the post's author.
+             </ul>""")),
+
+            ('member_moderation_notice', mm_cfg.Text, (10, WIDTH), 1,
+             _("""Text to include in any
+             <a href="?VARHELP/privacy/sender/member_moderation_action"
+             >rejection notice</a> to
+             be sent to moderated members who post to this list.""")),
+
+            _('Non-member filters'),
 
             ('accept_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings should be
@@ -359,4 +384,3 @@ class Privacy:
             return spam_rtn
         else:
             return subscribing_rtn
-
