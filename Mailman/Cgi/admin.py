@@ -117,20 +117,26 @@ def main():
         if cgidata.has_key('bounce_matching_headers'):
             pairs = mlist.parse_matching_header_opt()
 
-	if not mlist.digestable and len(mlist.GetDigestMembers()):
-	    AddErrorMessage(doc,
-                            'Warning:  you have digest members,'
-                            ' but digests are turned off.'
-                            '  Those people will not receive mail.')
-	if not mlist.nondigestable and len(mlist.GetMembers()):
-	    AddErrorMessage(doc,
-                            'Warning:  you have list members,'
-                            ' but non-digestified mail is turned'
-                            ' off.  They will receive mail until'
-                            ' you fix this problem.')
         if len(cgidata.keys()):
             ChangeOptions(mlist, category, cgidata, doc)
             mlist.CheckValues()
+
+        # Sanity checks
+        if not mlist.digestable and not mlist.nondigestable:
+            AddErrorMessage(doc, '''You have turned off delivery of
+            both digest and non-digest messages.  This is an incompatible
+            state of affairs.  You must turn on either digest delivery or
+            non-digest delivery or your mailing list will basically be
+            unusable.''')
+	if not mlist.digestable and len(mlist.GetDigestMembers()):
+	    AddErrorMessage(doc, '''You have digest members,
+            but digests are turned off. Those people will not receive
+            mail.''')
+	if not mlist.nondigestable and len(mlist.GetMembers()):
+	    AddErrorMessage(doc, '''You have regular list members
+            but non-digestified mail is turned off.  They will receive mail
+            until you fix this problem.''')
+
 	FormatConfiguration(doc, mlist, category, category_suffix, cgidata)
 	print doc.Format(bgcolor="#ffffff")
     finally:
@@ -917,8 +923,9 @@ def ChangeOptions(mlist, category, cgi_info, document):
 
 
 def AddErrorMessage(doc, errmsg, *args):
-    doc.AddItem(Header(3, Italic(FontAttr(errmsg % args,
-                                          color="#ff66cc"))))
+    doc.AddItem(Header(3, Bold(FontAttr(
+        'Warning: ', color="#ff0000", size="+2")).Format() +
+                       Italic(errmsg % args).Format()))
 
 
 
