@@ -1,16 +1,11 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 479 $"
+__version__ = "$Revision: 500 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string, re
 
-DIGEST_HEADER_TEMPLATE = """--%(_mime_separator)s
-
-From: %(got_sender)s
-Subject: Contents of %(real_name)s digest, Vol %(volume)d #%(next_digest_number)d - %(got_topics_number)d msg%(topics_plural)s
-Date: %(got_date)s
-
+DIGEST_MASTHEAD = """
 Send %(real_name)s maillist submissions to
 	%(got_list_email)s
 
@@ -23,18 +18,7 @@ You can reach the person managing the list at
 
 (When replying, please edit your Subject line so it is more specific than
 "Re: Contents of %(real_name)s digest...")
-
-Topics for this digest:
-%(got_topics_text)s
 """
-
-DIGEST_CLOSE_TEMPLATE = """--%(_mime_separator)s
-
-From: %(got_sender)s
-Subject: %(real_name)s V%(volume)s#%(next_digest_number)s Digest Footer
-Date: %(got_date)s
-
-%(got_footer)s"""
 
 
 class Digester:
@@ -202,56 +186,14 @@ class Digester:
 	topics_text = topics_file.read()
         topics_number = string.count(topics_text, '\n')
         topics_plural = ((topics_number != 1) and "s") or ""
-
-	msg = mm_message.OutgoingMessage()
-	msg.SetSender(self.GetAdminEmail())
-	msg.SetHeader('Subject', '%s digest, Vol %d #%d - %d msg%s' % 
-		       (self.real_name, self.volume,
-                        self.next_digest_number,
-                        topics_number, topics_plural))
-	msg.SetHeader('reply-to', self.GetListEmail())
-
         digest_file = open(os.path.join(self._full_path, 'next-digest'), 'r+')
-	msg.SetBody(digest_file.read())
-
-	# Create the header and footer... a bit messy.
-        substs = {}
-        for k, v in self.__dict__.items():
-            substs[k] = v
-        substs['_mime_separator'] = self._mime_separator
-        substs.update({'got_sender': msg.GetSender(),
-                       'got_listinfo_url': self.GetScriptURL('listinfo'),
-                       'got_request_email': self.GetRequestEmail(),
-                       'got_date':         time.ctime(time.time()),
-                       'got_list_email': self.GetListEmail(),
-                       'got_owner_email': self.GetAdminEmail(),
-                       'got_topics_text': topics_text,
-                       'got_topics_number': topics_number,
-                       'topics_plural': topics_plural,
-                       })
-
-	digest_header = DIGEST_HEADER_TEMPLATE % substs
-
-        if self.digest_header:
-	    digest_header = digest_header + (self.digest_header
-					     % self.__dict__)
-	if self.digest_footer:
-            substs['got_footer'] = self.digest_footer % self.__dict__
-
-	    digest_footer = DIGEST_CLOSE_TEMPLATE % substs
-        else:
-            substs['got_footer'] = ""
-
 
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
-
 	def LikesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return not s.GetUserOption(x, v)
-
 	def HatesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return s.GetUserOption(x, v)
-
 	recipients = filter(DeliveryEnabled, self.digest_members)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
@@ -267,33 +209,146 @@ class Digester:
                     len(text_recipients),
                     len(self.digest_members) - len(recipients))
 
-        msg.SetHeader('mime-version', '1.0')
+        if mime_recipients or text_recipients:
+            d = Digest(self, topics_text, digest_text)
+        else:
+            d = None
 
         # Zero the digest files only just before the messages go out.
         topics_file.truncate(0)
         topics_file.close()
         digest_file.truncate(0)
         digest_file.close()
-
-        if text_recipients:
-            msg.SetHeader('content-type', 'text/plain', crush_duplicates=1)
-            self.DeliverToList(msg, text_recipients, digest_header,
-                               digest_footer, remove_to=1)
-        if mime_recipients:
-            import mimetools
-            boundary = mimetools.choose_boundary()
-            def cb(text, oldb=self._mime_separator, newb=boundary):
-                return mm_utils.change_boundary(text, oldb, newb)
-            msg.body = cb(msg.body)
-            msg.SetHeader('content-type',
-                          'multipart/mixed; boundary="%s"'
-                          % boundary,
-                          crush_duplicates=1)
-            self.DeliverToList(msg, mime_recipients,
-                               cb(digest_header),
-                               cb(digest_footer) + "\n--%s--" % boundary,
-                               remove_to=1, tmpfile_prefix = "mime.")
-
 	self.next_digest_number = self.next_digest_number + 1
 	self.next_post_number = 1
 	self.Save()
+
+        if text_recipients:
+            self.DeliverToList(d.Present(mime=0),
+                               text_recipients, remove_to=1)
+        if mime_recipients:
+            self.DeliverToList(d.Present(mime=1),
+                               mime_recipients,
+                               remove_to=1, tmpfile_prefix = "mime.")
+
+class Digest:
+    "Represent a maillist digest, presentable in either plain or mime format."
+    def __init__(self, list, toc, body):
+        self.list = list
+        self.toc = toc
+        self.body = body
+        self.baseheaders = []
+        self.volinfo = "Vol %d #%d" % (list.volume, list.next_digest_number)
+        numtopics = string.count(self.toc, '\n')
+        plural = ((numtopics != 1) and "s") or ""
+        self.numinfo = "%d msg%s" % (numtopics, plural)
+
+    def ComposeBaseHeaders(self, msg):
+        """Populate the message with the presentation-independent headers."""
+        lst = self.list
+	msg.SetSender(lst.GetAdminEmail())
+	msg.SetHeader('Subject',
+                      ('%s digest, %s - %s' % 
+                       (lst.real_name, self.volinfo, self.numinfo)))
+	msg.SetHeader('Reply-to', lst.GetListEmail())
+        msg.SetHeader('X-Mailer', "Mailman v%s" % mm_cfg.VERSION)
+        msg.SetHeader('MIME-version', '1.0')
+
+    def SatisfyRefs(self, text):
+        """Resolve references in a format string against list settings.
+
+        The resolution is done against a copy of the lists attribute
+        dictionary, with the addition of some of settings for computed
+        items - got_listinfo_url, got_request_email, got_list_email, and
+        got_owner_email."""
+        # Collect the substitutions:
+        if hasattr(self, 'substitutions'):
+            substs = self.substitutions
+        else:
+            lst = self.list
+            substs = {}
+            substs.update(lst.__dict__)
+            substs.update({'got_listinfo_url': lst.GetScriptURL('listinfo'),
+                           'got_request_email': lst.GetRequestEmail(),
+                           'got_list_email': lst.GetListEmail(),
+                           'got_owner_email': lst.GetAdminEmail(),
+                           })
+        return text % substs
+
+    def Present(self, mime=0):
+        """Produce a rendering of the digest, as an OutgoingMessage."""
+        msg = mm_message.OutgoingMessage()
+        self.ComposeBaseHeaders(msg)
+        digestboundary = self.list._mime_separator
+        if mime:
+            import mimetools
+            envboundary = mimetools.choose_boundary()
+            msg.SetHeader('Content-type',
+                          'multipart/mixed; boundary="%s"' % envboundary)
+        else:
+            envboundary = self.list._mime_separator
+            msg.SetHeader('Content-type', 'text/plain')
+        dashbound = "--" + envboundary
+
+        lines = []
+
+        # Masthead:
+        if mime:
+            lines.append(dashbound)
+            lines.append("Content-type: text/plain; charset=us-ascii")
+            lines.append("Content-description: Masthead (%s digest, Vol %s)"
+                         % (self.list.real_name, self.volinfo))
+        lines.append(self.SatisfyRefs(DIGEST_MASTHEAD))
+        
+        # List-specific header:
+        if self.list.digest_header:
+            lines.append("")
+            if mime:
+                lines.append(dashbound)
+                lines.append("Content-type: text/plain; charset=us-ascii")
+                lines.append("Content-description: Digest Header")
+                lines.append("")
+            lines.append(self.SatisfyRefs(self.list.digest_header))
+
+        # Table of contents:
+        lines.append("")
+        if mime:
+            lines.append(dashbound)
+            lines.append("Content-type: text/plain; charset=us-ascii")
+            lines.append("Content-description: Today's Topics (%s)" %
+                         self.numinfo)
+            lines.append("")
+        lines.append("Today's Topics:")
+        lines.append("")
+        lines.append(self.toc)
+
+        # Digest text:
+        if mime:
+            lines.append(dashbound)
+            lines.append('Content-type: multipart/digest; boundary="%s"'
+                         % digestboundary)
+            lines.append("")
+        lines.append(self.body)
+
+        # List-specific footer:
+        if self.list.digest_footer:
+            lines.append("")
+            lines.append(dashbound)
+            if mime:
+                lines.append("Content-type: text/plain; charset=us-ascii")
+                lines.append("Content-description: Digest Footer")
+            lines.append("")
+            lines.append(self.SatisfyRefs(self.list.digest_footer))
+
+        # Close:
+        lines.append("")
+        lines.append("--" + digestboundary + "--")
+        if mime:
+            # Close encompassing mime envelope.
+            lines.append("")
+            lines.append(dashbound + "--")
+        lines.append("")
+        lines.append("End of %s Digest" % self.list.real_name)
+
+        msg.SetBody(string.join(lines, "\n"))
+        return msg
