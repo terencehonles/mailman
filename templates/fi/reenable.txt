@@ -1,0 +1,2 @@
+Voit uudelleenaktivoida heidän liittymisensä käymällä jäsenhallintavuilla
+%(admin_url)s/member ja asettemalla heidän jäsenyys"arvonsa" sen mukaisiksi

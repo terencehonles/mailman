@@ -1,0 +1,2 @@
+%(member)s on poistettu listalta %(listname)s.
+

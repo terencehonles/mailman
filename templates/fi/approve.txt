@@ -1,0 +1,15 @@
+Pyyntösi osoitteeseen %(requestaddr)s:
+
+    %(cmd)s
+
+on edelleenohjattu listan ylläpitohenkilöille.
+
+Tämä johtuu todennäköisesti siitä että olet 
+yrittänyt liittyä suljetulle listalle.
+
+Tulet saamaan sähköpostitse listan ylläpitäjän päätöksen 
+listalle liittymisestäsi.
+
+Lisäkysymykset asiasta voit osoittaa listan ylläpitäjälle.
+
+    %(adminaddr)s
