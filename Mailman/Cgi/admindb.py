@@ -22,6 +22,7 @@ import cgi
 import errno
 import signal
 import email
+import time
 from types import ListType
 from urllib import quote_plus, unquote_plus
 
@@ -44,6 +45,9 @@ NL = '\n'
 # server's default.
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+EXCERPT_HEIGHT = 10
+EXCERPT_WIDTH = 76
 
 
 
@@ -455,6 +459,11 @@ def show_helds_overview(mlist, form):
             t.AddRow(['&nbsp;', Bold(_('Size:')), str(size) + _(' bytes')])
             t.AddRow(['&nbsp;', Bold(_('Reason:')),
                       reason or _('not available')])
+            # Include the date we received the message, if available
+            when = msgdata.get('received_time')
+            if when:
+                t.AddRow(['&nbsp;', Bold(_('Received:')),
+                          time.ctime(when)])
             counter += 1
             right.AddRow([t])
         stable.AddRow([left, right])
@@ -568,6 +577,10 @@ def show_post_requests(mlist, id, info, total, count, form):
     t.AddCellInfo(row+1, col-1, align='right')
     t.AddRow([Bold(_('Reason:')), _(reason)])
     t.AddCellInfo(row+2, col-1, align='right')
+    when = msgdata.get('received_time')
+    if when:
+        t.AddRow([Bold(_('Received:')), time.ctime(when)])
+        t.AddCellInfo(row+2, col-1, align='right')
     # We can't use a RadioButtonArray here because horizontal placement can be
     # confusing to the user and vertical placement takes up too much
     # real-estate.  This is a hack!
@@ -594,19 +607,19 @@ def show_post_requests(mlist, id, info, total, count, form):
     notice = msgdata.get('rejection-notice', _('[No explanation given]'))
     t.AddRow([
         Bold(_('If you reject this post,<br>please explain (optional):')),
-        TextArea('comment-%d' % id, rows=4, cols=80,
+        TextArea('comment-%d' % id, rows=4, cols=EXCERPT_WIDTH,
                  text = Utils.wrap(_(notice), column=80))
         ])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold(_('Message Headers:')),
               TextArea('headers-%d' % id, hdrtxt,
-                       rows=10, cols=80, readonly=1)])
+                       rows=EXCERPT_HEIGHT, cols=EXCERPT_WIDTH, readonly=1)])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold(_('Message Excerpt:')),
               TextArea('fulltext-%d' % id, Utils.websafe(body),
-                       rows=10, cols=80, readonly=1)])
+                       rows=EXCERPT_HEIGHT, cols=EXCERPT_WIDTH, readonly=1)])
     t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)
     form.AddItem('<p>')
