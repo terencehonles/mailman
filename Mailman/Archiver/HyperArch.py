@@ -587,7 +587,7 @@ class HyperArchive(pipermail.T):
 
     def html_TOC(self):
         listname = self.maillist.internal_name()
-        mbox = os.path.join(self.maillist.archive_directory+'.mbox',
+        mbox = os.path.join(self.maillist.archive_dir()+'.mbox',
                             listname+'.mbox')
         d = {"listname": self.maillist.real_name,
              "listinfo": self.maillist.GetScriptURL('listinfo', absolute=1),
