@@ -30,20 +30,9 @@ class General:
     def GetConfigInfo(self, mlist):
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
-        # Set things up for the language choices
-        langs = mlist.GetAvailableLanguages()
-        langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]
-        try:
-            langi = langs.index(mlist.preferred_language)
-        except ValueError:
-            # Someone must have deleted the list's preferred language.  Could
-            # be other trouble lurking!
-            langi = 0
-
-        # XXX: Should this text be migrated into the templates dir?
         return [
-            _("Fundamental list characteristics, including descriptive"
-              " info and basic behaviors."),
+            _('''Fundamental list characteristics, including descriptive
+            info and basic behaviors.'''),
 
             ('real_name', mm_cfg.String, WIDTH, 0,
              _('The public name of this list (make case-changes only).'),
@@ -101,13 +90,6 @@ class General:
              password in the section below, and also provide the email
              addresses of the list moderators in this section.  Note that the
              field you are changing here specifies the list moderators.""")),
-
-            ('preferred_language', mm_cfg.Select,
-             (langs, langnames, langi),
-             0,
-             _('Default language for this list.'),
-             _('''All messages not related to an specific user will be
-             displayed in this language.''')),
 
             ('description', mm_cfg.String, WIDTH, 0,
              _('A terse phrase identifying this list.'),
