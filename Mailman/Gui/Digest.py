@@ -21,11 +21,17 @@ from Mailman import Utils
 from Mailman.i18n import _
 
 # Intra-package import
-from Mailman.Gui.NonDigest import handle_form
+from Mailman.Gui.GUIBase import GUIBase
+
+# Common b/w nondigest and digest headers & footers.  Personalizations may add
+# to this.
+ALLOWEDS = ('real_name', 'list_name', 'host_name', 'web_page_url',
+            'description', 'info', 'cgiext', '_internal_name',
+            )
 
 
 
-class Digest:
+class Digest(GUIBase):
     def GetConfigCategory(self):
         return 'digest', _('Digest options')
 
@@ -130,6 +136,25 @@ class Digest:
 
         return info
 
-    def HandleForm(self, mlist, cgidata, doc):
-        for attr in ('digest_header', 'digest_footer'):
-            handle_form(mlist, attr, cgidata, doc, 0)
+    def _setValue(self, mlist, property, val, doc):
+        # Watch for the special, immediate action attributes
+        if property == '_new_volume' and val:
+            mlist.bump_digest_volume()
+            volume = mlist.volume
+            number = mlist.next_digest_number
+            doc.AddItem(_("""The next digest will be sent as volume
+            %(volume)s, number %(number)s"""))
+        elif property == '_send_digest_now' and val:
+            status = mlist.send_digest_now()
+            if status:
+                doc.AddItem(_("""A digest has been sent."""))
+            else:
+                doc.AddItem(_("""There was no digest to send."""))
+        else:
+            # Everything else...
+            if property in ('digest_header', 'digest_footer'):
+                val = self._convertString(mlist, property, ALLOWEDS, val, doc)
+                if val is None:
+                    # There was a problem, so don't set it
+                    return
+            GUIBase._setValue(self, mlist, property, val, doc)
