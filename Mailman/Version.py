@@ -14,4 +14,8 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-VERSION = '1.2 (experimental)'
+# Mailman version
+VERSION = '1.2 (beta 1)'
+
+# Data file version number, for changes to the schema
+DATA_FILE_VERSION = 17
