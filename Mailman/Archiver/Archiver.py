@@ -22,8 +22,6 @@ mechanism (eg, pipermail) should be pointed to the right places, to do the
 archival.
 """
 
-
-import sys
 import os
 import string
 import errno
@@ -187,20 +185,27 @@ class Archiver:
     #
     # archiving in real time  this is called from list.post(msg)
     #
-    def ArchiveMail(self, msg):
+    def ArchiveMail(self, msg, msgdata):
         """Store postings in mbox and/or pipermail archive, depending."""
 	# Fork so archival errors won't disrupt normal list delivery
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
             return
-	if os.fork(): 
-	    return
+        pid = os.fork()
+        if pid:
+            # in the parent
+            kids = msgdata.get('_kids', {})
+            kids[pid] = pid
+            msgdata['_kids'] = kids
+            return
+        # in the child
+        #
         # archive to builtin html archiver.  first grab the archiver lock
-        lockfile = os.path.join(mm_cfg.LOCK_DIR, self._internal_name) + \
-                   '.archiver.lock'
-        lock = LockFile.LockFile(lockfile, lifetime=60*5)
-        lock.lock()
         try:
             try:
+                lockfile = os.path.join(mm_cfg.LOCK_DIR,
+                                        self.internal_name()+'.archiver.lock')
+                lock = LockFile.LockFile(lockfile, lifetime=mm_cfg.hours(1))
+                lock.lock()
                 if mm_cfg.ARCHIVE_TO_MBOX in [1, 2]:
                     self.__archive_to_mbox(msg)
                     if mm_cfg.ARCHIVE_TO_MBOX == 1:
@@ -208,6 +213,7 @@ class Archiver:
                         os._exit(0)
                 # from this point on, we're doing all the expensive archiving
                 # work.
+                syslog('error', 'starting to archive')
                 txt = msg.unixfrom
                 for h in msg.headers:
                     txt = txt + h
@@ -221,7 +227,7 @@ class Archiver:
                 # should we use the internal or external archiver?
                 private_p = self.archive_private
                 if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
-		    self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
+                    self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
                 elif mm_cfg.PRIVATE_EXTERNAL_ARCHIVER and private_p:
                     self.ExternalArchive(mm_cfg.PRIVATE_EXTERNAL_ARCHIVER, txt)
                 else:
@@ -232,17 +238,16 @@ class Archiver:
                     h.processUnixMailbox(f, HyperArch.Article)
                     h.close()
                     f.close()
-            except:
-                traceback.print_exc(file=sys.stderr)
-        finally:
-            # it's still possible to take a long time to run the archiver :(
-            try:
-                lock.unlock()
-            except LockFile.NotLockedError:
-                pass
-            # need this or we'll never see the error messages!
-            sys.stderr.flush()
+            finally:
+                # It's still possible to take a long time to run the archiver
+                lock.unlock(unconditionally=1)
+                syslog('error', 'finished archiving')
             os._exit(0)
+        except:
+            traceback.print_exc()
+            syslog('error', 'CORRUPT ARCHIVE FOR LIST: %s' %
+                   self.internal_name())
+            os._exit(1)
 	
     #
     # called from MailList.MailList.Save()
