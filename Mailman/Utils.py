@@ -301,19 +301,36 @@ class Logger:
 	    pass
 	    
 class StampedLogger(Logger):
-    "Record messages in log files, including date stamp and optional label."
-    def __init__(self, category, label=None):
+    """Record messages in log files, including date stamp and optional label.
+
+    If manual_reset is off (default on), then timestamp will only be
+    included in first .write() and in any writes that are preceeded by a
+    call to the .reprime() method.  This is useful for when StampedLogger
+    is substituting for sys.stderr, where you'd like to see the grouping of
+    multiple writes under a single timestamp (and there is often is one 
+    group, for uncaught exceptions where a script is bombing)."""
+
+    def __init__(self, category, label=None, manual_reprime=0):
 	"If specified, optional label is included after timestamp."
 	self.label = label
+        self.manual_reprime = manual_reprime
+        self.primed = 1
 	Logger.__init__(self, category)
+    def reprime(self):
+        """Reset so timestamp will be included with next write."""
+        self.primed = 1
     def write(self, msg):
 	import time
-	stamp = time.strftime("%b %d %H:%M:%S %Y",
-			      time.localtime(time.time()))
+        if not self.manual_reprime or self.primed:
+            stamp = time.strftime("%b %d %H:%M:%S %Y ",
+                                  time.localtime(time.time()))
+            self.primed = 0
+        else:
+            stamp = ""
 	if self.label == None:
 	    label = ""
 	else:
-	    label = " %s:" % self.label
+	    label = "%s:" % self.label
 	Logger.write(self, "%s%s %s" % (stamp, label, msg))
     def writelines(self, lines):
 	first = 1
