@@ -135,6 +135,8 @@ def print_traceback(logfp=None):
     # Write to the HTML sink.
     print """\
 Content-type: text/html
+Cache-control: no-cache
+Expires: 0
 
 <head><title>Bug in Mailman version %(VERSION)s</title></head>
 <body bgcolor=#ffffff><h2>Bug in Mailman version %(VERSION)s</h2>
@@ -240,6 +242,8 @@ except:
         # Nope, we're quite screwed
         print """\
 Content-type: text/html
+Cache-control: no-cache
+Expires: 0
 
 <p><h3>We're sorry, we hit a bug!</h3>
 
