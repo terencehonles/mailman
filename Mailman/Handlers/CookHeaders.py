@@ -17,10 +17,11 @@
 """Cook a message's Subject header.
 """
 
-import string
 import re
 import urlparse
 from Mailman import mm_cfg
+
+CONTINUATION = ',\n\t'
 
 
 
@@ -58,7 +59,7 @@ def process(mlist, msg, msgdata):
     msg['Errors-To'] = msgdata.get('errorsto', adminaddr)
     #
     # Mark message so we know we've been here
-    msg.headers.append('X-BeenThere: %s\n' % mlist.GetListEmail())
+    msg['X-BeenThere'] = mlist.GetListEmail()
     #
     # Add Precedence: and other useful headers.  None of these are standard
     # and finding information on some of them are fairly difficult.  Some are
@@ -125,7 +126,7 @@ def process(mlist, msg, msgdata):
         # shouldn't be hardcoded.  The adding of 2 is for the colon-space
         # separator.
         if len(h) + 2 + len(v) > 78:
-            v = string.join(string.split(v, ', '), ',\n\t')
+            v = CONTINUATION.join(v.split(', '))
         msg[h] = v
     #
     # Always delete List-Archive header, but only add it back if the list is
