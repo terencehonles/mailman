@@ -1,0 +1,26 @@
+Mailman - The GNU Mailing List Management System
+Copyright (C) 1998 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
+SENDMAIL ISSUES
+
+Newer versions of Sendmail come with a restricted execution utility
+called "smrsh", which limits the executables that sendmail can use as
+mail filter programs.  You need to explicitly allow Mailman's wrapper
+program to be used with smrsh.  One good way of doing this is to
+
+    - cd into /etc/smrsh
+
+    - create a symbolic link to Mailman's wrapper program
+
+For example, if you've installed Mailman in the standard location, you
+can just execute these commands (you might have to do these as root):
+
+    % cd /etc/smrsh
+    % ln -s /home/mailman/mail/wrapper wrapper
+
+
+Local Variables:
+mode: text
+indent-tabs-mode: nil
+End:
