@@ -27,7 +27,8 @@ class Bouncer:
 	    ('bounce_processing', mm_cfg.Toggle, ('No', 'Yes'), 0,
 	     'Try to figure out error messages automatically? '),
 	    ('minimum_removal_date', mm_cfg.Number, 3, 0,
-	     'Minimum number of days an address has been bad before we consider nuking it'),
+	     'Minimum number of days an address has been non-fatally '
+             'bad before we take action'),
 	    ('minimum_post_count_before_bounce_action', mm_cfg.Number, 3, 0,
 	     'Minimum number of posts to the list since members first '
              'bounce before we consider removing them from the list'),
@@ -35,9 +36,11 @@ class Bouncer:
 	     "Maximum number of messages your list gets in an hour.  "
              "(Yes, bounce detection finds this info useful)"),
 	    ('automatic_bounce_action', mm_cfg.Radio,
-	     ("Do nothing", "Disable and notify me ", "Remove and notify me",
-	      "Remove and don't notify me"),
-	     0, "Automatically remove addresses considered for removal, or alert you?")
+	     ("Do nothing",
+              "Disable and notify me",
+              "Disable and DON'T notify me",
+	      "Remove and notify me"),
+	     0, "Action when fatal or excessive bounces are detected.")
 	    ]
     def ClearBounceInfo(self, email):
 	email = string.lower(email)
@@ -54,7 +57,7 @@ class Bouncer:
 	    # What the last post ID was that we saw a bounce.
 	    self.bounce_info[string.lower(email)] = [now, self.post_id,
 						     self.post_id]
-	    self.LogMsg("bounce", report + "first bounce")
+	    self.LogMsg("bounce", report + "first")
 	    self.Save()
 	    return
 
@@ -67,15 +70,15 @@ class Bouncer:
 		# Should maybe keep track in see if people become stale entries
 		# often...
 		self.LogMsg("bounce",
-			    report + "first fresh bounce on a stale addr")
+			    report + "first fresh")
 		self.bounce_info[addr] = [now, self.post_id, self.post_id]
 		return
 	    self.bounce_info[addr][2] = self.post_id
 	    if ((self.post_id - inf[1] >
                  self.minimum_post_count_before_bounce_action)
 		and difference > self.minimum_removal_date * 24 * 60 * 60):
-		self.LogMsg("bounce", report + "they're Out of here...")
-		self.RemoveBouncingAddress(addr)
+		self.LogMsg("bounce", report + "exceeded limits")
+		self.HandleBouncingAddress(addr)
 		return
 	    else:
 		post_count = (self.minimum_post_count_before_bounce_action - 
@@ -93,40 +96,108 @@ class Bouncer:
 	elif len(mm_utils.FindMatchingAddresses(addr, self.digest_members)):
 	    if self.volume > inf[1]:
 		self.LogMsg("bounce",
-			    "%s: First fresh bounce on a stale addr (D).",
+			    "%s: first fresh (D)",
 			    self._internal_name)
 		self.bounce_info[addr] = [now, self.volume, self.volume]
 		return
 	    if difference > self.minimum_removal_date * 24 * 60 * 60:
-		self.LogMsg("bounce", "Seeya, digest-ee...")
-		self.RemoveBouncingAddress(addr)
+		self.LogMsg("bounce", "exceeded limits (D)")
+		self.HandleBouncingAddress(addr)
 		return 
 	    self.LogMsg("bounce",
-			"digester lucked out, he's still got time!")
+			"digester lucked out")
 	else:
 	    self.LogMsg("bounce",
-			"Address %s wasn't a member of %s.",
-			addr,
-			self._internal_name)
+			"%s: address %s not a member.",
+			self._internal_name,
+			addr)
 
-	    
+    def HandleBouncingAddress(self, addr):
+        """Disable or remove addr according to bounce_action setting."""
+        if self.automatic_bounce_action == 0:
+            return
+        elif self.automatic_bounce_action == 1:
+            succeeded = self.DisableBouncingAddress(addr)
+            did = "disabled"
+            send = 1
+        elif self.automatic_bounce_action == 2:
+            succeeded = self.DisableBouncingAddress(addr)
+            did = "disabled"
+            send = 0
+        elif self.automatic_bounce_action == 3:
+            succeeded = self.RemoveBouncingAddress(addr)
+            did = "removed"
+            send = 1
+        if send:
+            if succeeded != 1:
+                negative="not "
+                recipient = mm_cfg.MAILMAN_OWNER
+            else:
+                negative=""
+                recipient = self.GetAdminEmail()
+            text = ("This is a mailman maillist administrator notice.\n"
+                    "\n\tMaillist:\t%s\n"
+                    "\tMember:\t\t%s\n"
+                    "\tAction:\t\tSubscription %s%s.\n"
+                    "\tReason:\t\tExcessive or fatal bounces.\n"
+                    % (self.real_name, addr, negative, did))
+            if succeeded != 1:
+                text = text + "\tFailure reason:\t%s\n\n" % succeeded
+            else:
+                text = text + "\n"
+            if did == "disabled" and succeeded == 1:
+                text = text + (
+                    "You can reenable their subscription by visiting "
+                    "their options page\n"
+                    "(via %s) and using your\n"
+                    "list admin password to authorize the option change.\n\n"
+                    % self.GetScriptURL('listinfo'))
+            text = text + ("Questions?  Contact the mailman site admin,\n%s"
+                           % mm_cfg.MAILMAN_OWNER)
+            if negative:
+                negative = string.upper(negative)
+            self.SendTextToUser(subject = ("%s member %s %s%s due to bounces"
+                                           % (self.real_name, addr,
+                                              negative, did)),
+                                recipient = recipient,
+                                sender = mm_cfg.MAILMAN_OWNER,
+                                errorsto = mm_cfg.MAILMAN_OWNER,
+                                text = text)
     def DisableBouncingAddress(self, addr):
+        if not self.IsMember(addr):
+            reason = "User not found."
+	    self.LogMsg("bounce", "%s: NOT disabled %s: %s",
+                        self.real_name, addr, reason)
+            return reason
 	try:
 	    self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
-	    self.LogMsg("bounce", "%s: inhibited %s", self.real_name, addr)
-	    # Send mail to the user... but we can't!
+	    self.LogMsg("bounce", "%s: disabled %s", self.real_name, addr)
+            self.Save()
+            return 1
 	except mm_err.MMNoSuchUserError:
+	    self.LogMsg("bounce", "%s: NOT disabled %s: %s",
+                        self.real_name, addr, mm_err.MMNoSuchUserError)
 	    self.ClearBounceInfo(addr)
-	self.Save()
+            self.Save()
+            return mm_err.MMNoSuchUserError
 	    
     def RemoveBouncingAddress(self, addr):
+        if not self.IsMember(addr):
+            reason = "User not found."
+	    self.LogMsg("bounce", "%s: NOT removed %s: %s",
+                        self.real_name, addr, reason)
+            return reason
 	try:
 	    self.DeleteMember(addr)
 	    self.LogMsg("bounce", "%s: removed %s", self.real_name, addr) 
-	    # Send mail to the user... but we can't!
+            self.Save()
+            return 1
 	except mm_err.MMNoSuchUserError:
+	    self.LogMsg("bounce", "%s: NOT removed %s: %s",
+                        self.real_name, addr, mm_err.MMNoSuchUserError)
 	    self.ClearBounceInfo(addr)
-	self.Save()
+            self.Save()
+            return mm_err.MMNoSuchUserError
 
     # Return 0 if we couldn't make any sense of it, 1 if we handled it.
     def ScanMessage(self, msg):
@@ -191,14 +262,13 @@ class Bouncer:
 			emails = string.split(email,',')
 			for email_addr in emails:
 			    if email_addr not in did:
-				self.RemoveBouncingAddress(
+				self.HandleBouncingAddress(
 				    string.strip(email_addr))
 				did.append(email_addr)
 			message_groked = 1
 			continue
 		    elif action == BOUNCE:
 			emails = string.split(email,',')
-			print emails
 			for email_addr in emails:
 			    self.RegisterBounce(email_addr)
 			message_groked = 1
@@ -215,17 +285,17 @@ class Bouncer:
 		continue
 	    if messy_pattern_3.match(line) <> -1 or messy_pattern_4.match(line) <> -1 or messy_pattern_5.match(line) <> -1:
 		username = string.split(line)[1]
-		self.RemoveBouncingAddress('%s@%s' % (username, remote_host))
+		self.HandleBouncingAddress('%s@%s' % (username, remote_host))
 		message_groked = 1
 		continue
 	    if messy_pattern_6.match(line) <> -1:
 		username = string.split(string.strip(line))[0][:-1]
-		self.RemoveBouncingAddress('%s@%s' % (username, remote_host))
+		self.HandleBouncingAddress('%s@%s' % (username, remote_host))
 		message_groked = 1
 		continue
 	    if messy_pattern_7.match(line) <> -1:
 		username = string.split(string.strip(line))[0]
-		self.RemoveBouncingAddress('%s@%s' % (username, remote_host))
+		self.HandleBouncingAddress('%s@%s' % (username, remote_host))
 		message_groked = 1
 		continue
 
