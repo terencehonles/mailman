@@ -327,6 +327,11 @@ class Article(pipermail.Article):
         if not d.has_key('decoded'):
             self.decoded = {}
 
+    def setListIfUnset(self, mlist):
+        mylist = getattr(mlist, '_mlist', None)
+        if mlist is None:
+            self._mlist = mlist
+
     def quote(self, buf):
         return html_quote(buf)
 
@@ -400,8 +405,15 @@ class Article(pipermail.Article):
             d["subject_html"] = self.quote(self.subject)
             d["subject_url"] = url_quote(self.subject)
             d["in_reply_to_url"] = url_quote(self.in_reply_to)
-            d["author_html"] = self.quote(self.author)
-            d["email_url"] = url_quote(self.email)
+            if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
+                # Point the mailto url back to the list
+                author = re.sub('@', _(' at '), self.author)
+                emailurl = self._mlist.GetListEmail()
+            else:
+                author = self.author
+                emailurl = self.email
+            d["author_html"] = self.quote(author)
+            d["email_url"] = url_quote(emailurl)
             d["datestr_html"] = self.quote(i18n.ctime(int(self.date)))
             d["body"] = self._get_body()
             d['listurl'] = self._mlist.GetScriptURL('listinfo', absolute=1)
@@ -583,7 +595,7 @@ class HyperArchive(pipermail.T):
         # with mailman's LockFile module for HyperDatabase.HyperDatabase
         #
         dir = maillist.archive_dir()
-        db = HyperDatabase.HyperDatabase(dir)
+        db = HyperDatabase.HyperDatabase(dir, maillist)
         self.__super_init(dir, reload=1, database=db)
 
         self.maillist = maillist
@@ -979,6 +991,8 @@ class HyperArchive(pipermail.T):
     def write_index_entry(self, article):
         subject = self.get_header("subject", article)
         author = self.get_header("author", article)
+        if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
+            author = re.sub('@', _(' at '), author)
         subject = CGIescape(subject)
         author = CGIescape(author)
 
@@ -1132,15 +1146,25 @@ class HyperArchive(pipermail.T):
                     L= L[quoted:]
                     last_line_was_quoted=1
             # Check for an e-mail address
-            L2="" ; jr=emailpat.search(L) ; kr=urlpat.search(L)
-            while jr!=None or kr!=None:
-                if jr==None: j=-1
-                else: j = jr.start(0)
-                if kr==None: k=-1
-                else: k = kr.start(0)
-                if j!=-1 and (j<k or k==-1):
-                    text=jr.group(1) ; URL='mailto:'+text ; pos=j
-                elif k!=-1 and (j>k or j==-1): text=URL=kr.group(1) ; pos=k
+            L2=""
+            jr = emailpat.search(L)
+            kr = urlpat.search(L)
+            while jr != None or kr != None:
+                if jr == None:
+                    j = -1
+                else:
+                    j = jr.start(0)
+                if kr == None:
+                    k = -1
+                else:
+                    k = kr.start(0)
+                if j != -1 and (j < k or k == -1):
+                    text = jr.group(1)
+                    URL = 'mailto:' + text
+                    pos = j
+                elif k!=-1 and (j>k or j==-1):
+                    text = URL = kr.group(1)
+                    pos=k
                 else: # j==k
                     raise ValueError, "j==k: This can't happen!"
                 length=len(text)
