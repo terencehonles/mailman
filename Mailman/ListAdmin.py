@@ -347,7 +347,7 @@ class ListAdmin:
                  'listname'   : self.internal_name(),
                  'hostname'   : self.host_name,
                  'admindb_url': self.GetScriptURL('admindb', absolute=1),
-                 }, mlist=self, lang=lang)
+                 }, mlist=self)
             # This message should appear to come from the <list>-owner so as
             # to avoid any useless bounce processing.
             owneraddr = self.GetOwnerEmail()
