@@ -90,8 +90,7 @@ def main():
         except Errors.MMListError, e:
             usage(2, _('No such list "%(listname)s"\n%(e)s'))
         if mbox is None:
-            mbox = os.path.join(mlist.private_archive_file_dir,
-                                listname + '.mbox')
+            mbox = mlist.ArchiveFileName()
 
         # lay claim to the archive's lock file.  this is so no other post can
         # mess up the archive while we're glomming it.  we pick a suitably
@@ -120,10 +119,10 @@ def main():
         archiver.close()
         fp.close()
     finally:
-        if mlist:
-            mlist.Unlock()
         if lock:
             lock.unlock()
+        if mlist:
+            mlist.Unlock()
 
 
 if __name__ == '__main__':
