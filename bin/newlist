@@ -21,7 +21,28 @@ list_pw = raw_input("Enter the initial list password:")
 newlist = maillist.MailList()
 pw = crypt.crypt(list_pw , mm_utils.GetRandomSeed())
 newlist.Create(list_name, owner_mail, pw)
-os.system('%s %s' % (ADDALIASES_CMD, list_name))
+
+###os.system('%s %s' % (ADDALIASES_CMD, list_name))
+print '''
+Entry needed in aliases file:
+
+#-- %(listname)s -- mailing list aliases:
+%(list)s |"%(wrapper)s post %(listname)s"
+%(admin)s |"%(wrapper)s mailowner %(listname)s"
+%(request)s |"%(wrapper)s mailcmd %(listname)s"
+%(owner1)s %(listname)s-admin
+%(owner2)s %(listname)s-admin
+''' % {'listname': list_name,
+       'list': "%-24s" % (list_name + ":"),
+       'wrapper': '/home/mailman/bin/wrapper',
+       'admin': "%-24s" % ("%s-admin:" % list_name),
+       'request': "%-24s" % ("%s-request:" % list_name),
+       'owner1': "%-24s" % ("owner-%s:" % list_name),
+       'owner2': "%-24s" % ("%s-owner:" % list_name)}
+
+print "Hit enter to continue with owner notification...",
+sys.stdin.readline()
+
 newlist.SendTextToUser(subject="Your new mailing list", recipient=owner_mail,
 	sender='mailman-owner@%s' % newlist.host_name, 
 	text='''
