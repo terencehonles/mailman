@@ -16,10 +16,20 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+"""Send a message via local SMTP, or queue it if SMTP port is not responding.
+
+The script takes the following protocol on stdin:
+
+ line [1]: sender
+ line [2:n+1]: n recipients
+ line [n+2]: <empty> - delimiting end of recipients
+ line [n+3:]: message content
+"""
+
 import sys, os
 import paths
 
-# XXX: this REALLY should be merged with Python's standard smtplib library
+# XXX: this really should be merged with Python's standard smtplib library
 from Mailman import mm_cfg
 from Mailman import smtplib
 from Mailman import Utils
@@ -28,10 +38,15 @@ from Mailman import OutgoingQueue
 from Mailman.Logging.Utils import LogStdErr
 LogStdErr("error", "contact_transport")
 
-from_addr = sys.argv[1]
-to_addrs  = sys.argv[2:]
-
+from_addr = sys.stdin.readline()[:-1]
+to_addrs  = []
+while 1:
+    l = sys.stdin.readline()[:-1]
+    if not l:
+        break
+    to_addrs.append(l)
 text = sys.stdin.read()
+
 queue_id = OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
 Utils.TrySMTPDelivery(to_addrs, from_addr, text, queue_id)
 OutgoingQueue.processQueue()
