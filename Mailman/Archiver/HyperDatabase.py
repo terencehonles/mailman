@@ -25,8 +25,7 @@ import string
 # package/project modules
 #
 import pipermail
-import Mailman.flock
-flock = Mailman.flock
+from Mailman import flock
 
 CACHESIZE = pipermail.CACHESIZE
 
