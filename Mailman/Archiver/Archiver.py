@@ -108,8 +108,12 @@ class Archiver:
         if self.archive_private:
             return self.GetScriptURL('private', absolute=1) + '/'
         else:
+            inv = {}
+            for k, v in mm_cfg.VIRTUAL_HOSTS.items():
+                inv[v] = k
             return mm_cfg.PUBLIC_ARCHIVE_URL % {
                 'listname': self.internal_name(),
+                'hostname': inv.get(self.host_name, mm_cfg.DEFAULT_URL_HOST),
                 }
 
     def __archive_file(self, afn):
