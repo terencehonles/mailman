@@ -68,7 +68,7 @@ your membership administrative address, %(addr)s.'''))
             _('Welcome to the "%(realname)s" mailing list%(digmode)s'),
             text, pluser)
         msg['X-No-Archive'] = 'yes'
-        msg.send(self)
+        msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
 
     def SendUnsubscribeAck(self, addr):
         realname = self.real_name
@@ -76,7 +76,7 @@ your membership administrative address, %(addr)s.'''))
             self.GetMemberAdminEmail(addr), self.GetBouncesEmail(),
             _('You have been unsubscribed from the %(realname)s mailing list'),
             Utils.wrap(self.goodbye_msg), self.getMemberLanguage(addr))
-        msg.send(self)
+        msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
 
     def MailUserPassword(self, user):
         listfullname = '%s@%s' % (self.real_name, self.host_name)
@@ -116,7 +116,7 @@ your membership administrative address, %(addr)s.'''))
         msg = Message.UserNotification(recipient, adminaddr, subject, text,
                                        self.getMemberLanguage(user))
         msg['X-No-Archive'] = 'yes'
-        msg.send(self)
+        msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
 
     def ForwardMessage(self, msg, text=None, subject=None, tomoderators=1):
         # Wrap the message as an attachment
