@@ -2,7 +2,7 @@
 
 """Process listinfo form submission, ie subscriptions or roster requests."""
 
-__version__ = "$Revision: 481 $"
+__version__ = "$Revision: 482 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -177,7 +177,9 @@ else:
                                        list.GetRequestEmail(),
                                        pw,
                                        digesting)),
-                            add_headers = ["Errors-To: %s"
+                            add_headers = ["Reply-to: %s"
+                                           % list.GetRequestEmail(),
+                                           "Errors-To: %s"
 					   % list.GetAdminEmail()])
     except mm_err.MMBadEmailError:
 	results = results + ("Mailman won't accept the given email "
