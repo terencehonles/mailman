@@ -618,18 +618,14 @@ LC_DESCRIPTIONS = {'es': [_("Spanish (Spain)"),      'iso-8859-1'],
                    }
 del _				        
 
-# TDB: this may not be the right way to do this, but it's simple and it works
-# for all entry points into the Mailman system.
-#
-# BAW: This will very likely change to a more explicit import of `_', probably
-# based on the Mailman.i18n module.
+# Set some things up for internationalization.  Individual modules still need
+# to do a "from Mailman.i18n import _"
 import gettext
 
 os.environ['LANG'] = DEFAULT_SERVER_LANGUAGE
 gettext.bindtextdomain('mailman', MESSAGES_DIR)
 gettext.textdomain('mailman')
-import __builtin__
-__builtin__.__dict__['_'] = gettext.gettext
+
 
 # BAW: Another hack to get Python's site-packages directory on the path.  This
 # should go away in favor of distributing required non-standard packages like
