@@ -84,7 +84,7 @@ COMMASPACE = ', '
 # Flag which says whether we're running under mailmanctl or not.
 AS_SUBPROC = 0
 
-LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=1)
+LogStdErr('error', 'qrunner', manual_reprime=0)
 
 
 

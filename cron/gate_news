@@ -56,7 +56,7 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 GATENEWS_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_news.lock')
 
-LogStdErr('error', 'gate_news', manual_reprime=0, tee_to_stdout=1)
+LogStdErr('error', 'gate_news', manual_reprime=0)
 
 LOCK_LIFETIME = mm_cfg.hours(2)
 NL = '\n'
