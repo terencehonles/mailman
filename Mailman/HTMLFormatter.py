@@ -47,7 +47,7 @@ class HTMLFormatter:
 	    num_concealed = len(self.digest_members) - len(people)
 	else:
 	    people = filter(NotHidden, self.members)
-	    num_concealed = len(self.digest_members) - len(people)
+	    num_concealed = len(self.members) - len(people)
  	if (num_concealed > 0):
 	    concealed = "<br><em>(%d private)</em><br>" % num_concealed
  	else:
