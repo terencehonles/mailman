@@ -86,7 +86,7 @@ def process(mlist, msg, msgdata):
             payload = [payload]
         payload.append(mimeftr)
         payload.insert(0, mimehdr)
-        msg.set_payload(payload, mlist.preferred_language)
+        msg.set_payload(payload)
     elif msg.get_main_type() <> 'multipart':
         # Okay, we've got some 'image/*' or 'audio/*' -like type.  For now, we
         # simply refuse to add headers and footers to this message.  BAW:
