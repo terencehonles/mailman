@@ -65,9 +65,9 @@ gcc 2.8.1 or later is known to work well.
 <h3>Downloading</h3>
 
 <p>Version
-(<!-VERSION--->2.0.1<!-VERSION--->,
+(<!-VERSION--->2.1a1<!-VERSION--->,
 released on
-<!-DATE--->Jan  3 2001<!-DATE--->)
+<!-DATE--->Mar  4 2001<!-DATE--->)
 is the current GNU release.  It is available from the following mirror sites:
 
 <ul>
