@@ -61,9 +61,6 @@ class Archiver:
     # Interface to Pipermail.  HyperArch.py uses this method to get the
     # archive directory for the mailing list
     #
-    def archive_dir(self):
-        return self.archive_directory
-
     def InitVars(self):
 	# Configurable
 	self.archive = mm_cfg.DEFAULT_ARCHIVE
@@ -72,11 +69,6 @@ class Archiver:
  	self.archive_volume_frequency = \
  		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
 
-	# Though the archive file dirs are list-specific, they are not
-	# settable from the web interface.  If you REALLY want to redirect
-	# something to a different dir, you can set the member vars by
-	# hand, from the Python interpreter!
-        #
         # The archive file structure by default is:
         #
         # archives/
@@ -95,33 +87,29 @@ class Archiver:
         # the private directory, pointing directly to the private/listname
         # which has o+rx permissions.  Private archives do not have the
         # symbolic links.
-
-	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
-	self.private_archive_file_dir = os.path.join(
-            mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
-            self._internal_name + '.mbox')
-	self.archive_directory = os.path.join(
-            mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
-            self._internal_name)
         omask = os.umask(0)
         try:
             try:
-                os.mkdir(self.private_archive_file_dir, 02775)
+                os.mkdir(self.ArchiveFileName(), 02775)
             except OSError, e:
                 if e.errno <> errno.EEXIST: raise
         finally:
             os.umask(omask)
+
+    def archive_dir(self):
+        return os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
+                            self.internal_name())
+
+    def ArchiveFileName(self):
+	"""The mbox name where messages are left for archive construction."""
+        return os.path.join(self.archive_dir() + '.mbox',
+                            self.internal_name() + '.mbox')
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
             return self.GetScriptURL('private', absolute=1) + '/'
         else:
             return '%s/%s/' % (mm_cfg.PUBLIC_ARCHIVE_URL, self._internal_name)
-
-    def ArchiveFileName(self):
-	"""The mbox name where messages are left for archive construction."""
-        return os.path.join(self.private_archive_file_dir,
-                            self._internal_name + '.mbox')
 
     def __archive_file(self, afn):
 	"""Open (creating, if necessary) the named archive file."""
@@ -205,23 +193,18 @@ class Archiver:
     # called from MailList.MailList.Save()
     #
     def CheckHTMLArchiveDir(self):
-        #
-        # we need to make sure that the archive
-        # directory has the right perms for public vs
-        # private.  If it doesn't exist, or some weird
-        # permissions errors prevent us from stating
-        # the directory, it's pointless to try to
-        # fix the perms, so we just return  -scott
-        #
+        # We need to make sure that the archive directory has the right perms
+        # for public vs private.  If it doesn't exist, or some weird
+        # permissions errors prevent us from stating the directory, it's
+        # pointless to try to fix the perms, so we just return -scott
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
             # Archiving is completely disabled, don't require the skeleton.
             return
-        pubdir  = os.path.join(self.public_archive_file_dir,
-                               self._internal_name)
-        privdir = self.archive_directory
-        pubmbox = os.path.join(self.public_archive_file_dir,
-                               self._internal_name + '.mbox')
-        privmbox = self.archive_directory + '.mbox'
+        pubdir  = os.path.join(mm_cfg.PUBLIC_ARCHIVE_FILE_DIR,
+                               self.internal_name())
+        privdir = self.archive_dir()
+        pubmbox = pubdir + '.mbox'
+        privmbox = privdir + '.mbox'
         if self.archive_private:
             breaklink(pubdir)
             breaklink(pubmbox)
