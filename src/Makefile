@@ -1,7 +1,7 @@
 HOME=/home/mailman
 MAILMAN=/home/mailman/mailman
 
-all: admin_wrapper admindb_wrapper archives_wrapper edithtml_wrapper options_wrapper listinfo_wrapper subscribe_wrapper handle_opts_wrapper mail_wrapper alias_wrapper
+all: admin_wrapper admindb_wrapper archives_wrapper edithtml_wrapper options_wrapper listinfo_wrapper subscribe_wrapper roster_wrapper handle_opts_wrapper mail_wrapper alias_wrapper
 
 admin_wrapper:
 	gcc -o ${HOME}/cgi-bin/admin admin-wrapper.c
@@ -30,6 +30,10 @@ listinfo_wrapper:
 subscribe_wrapper:
 	gcc -o ${HOME}/cgi-bin/subscribe subscribe-wrapper.c
 	chmod a+sx ${HOME}/cgi-bin/subscribe
+
+roster_wrapper:
+	gcc -o ${HOME}/cgi-bin/roster roster-wrapper.c
+	chmod a+sx ${HOME}/cgi-bin/roster
 
 handle_opts_wrapper:
 	gcc -o ${HOME}/cgi-bin/handle_opts handle_opts-wrapper.c
