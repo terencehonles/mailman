@@ -40,6 +40,7 @@ Where:
 
 import sys
 import getopt
+import string
 import paths
 
 from Mailman import mm_cfg
