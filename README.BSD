@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 BSD ISSUES
@@ -18,14 +18,6 @@ BSD ISSUES
 
    This turns off the chmod g+s on each directory as they are
    installed.
-
-2. There is a known problem with the posixfile.py module in all
-   versions of Python before 1.5.2 final (the problem was /not/ fixed
-   in Python 1.5.2b2).  This will cause errors in Mailman's locking
-   routines.  See this message from the mailman-developers archive
-   which explains things in greater detail.  Guido provides a patch.
-
-   http://www.python.org/pipermail/mailman-developers/1999-March/001008.html
 
 
 
