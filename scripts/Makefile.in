@@ -40,7 +40,7 @@ SCRIPTSDIR= 	$(prefix)/scripts
 
 SHELL=		/bin/sh
 
-SCRIPTS=	answer_majordomo_mail mailcmd mailowner post driver
+SCRIPTS=	answer_majordomo_mail mailcmd mailowner post driver auto
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
