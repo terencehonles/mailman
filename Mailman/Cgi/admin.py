@@ -1201,8 +1201,10 @@ def change_options(mlist, category, subcat, cgidata, doc):
             print mlist.MakeCookie(mm_cfg.AuthListAdmin)
         else:
             doc.addError(_('Administator passwords did not match'))
-    # Handle the emergency stop button
-    mlist.emergency = safeint('emergency', 0)
+    # Handle the emergency stop button.  Only take its value from the form if
+    # we're not logging in.
+    if not cgidata.has_key('admlogin') and not cgidata.has_key('adminpw'):
+        mlist.emergency = safeint('emergency', 0)
     # Give the individual gui item a chance to process the form data
     categories = mlist.GetConfigCategories()
     label, gui = categories[category]
