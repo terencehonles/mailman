@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 SENDMAIL `smrsh' COMPATIBILITY
@@ -24,17 +24,7 @@ SENDMAIL `smrsh' COMPATIBILITY
     root):
 
         % cd /etc/smrsh
-        % ln -s /home/mailman/mail/wrapper wrapper
-
-    One complication: if you're running Majordomo and Mailman
-    simultaneously (i.e. in the process of migrating from MD to MM :),
-    then you might have a small problem because Majordomo also uses a
-    program called `wrapper'.  In this case, Paul Tomblin suggests
-    calling the Mailman symlink `mailman_wrapper', and changing the
-    alias entries to call this instead of `wrapper'.
-
-    If you do this, you'll probably want to hack Mailman/MTA/Utils.py
-    to output the correct path to your wrapper program.
+        % ln -s /usr/local/mailman/mail/mailman mailman
 
 
 INTEGRATING SENDMAIL AND MAILMAN
