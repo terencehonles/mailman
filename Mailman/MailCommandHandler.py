@@ -166,11 +166,11 @@ class MailCommandHandler:
             # This is for what are probably delivery-failure notices of
             # subscription confirmations that are, of necessity, bounced
             # back to the -request address.
-            syslog("bounce", "%s: Mailcmd rejected"
-                   "\n\tReason: Probable bounced subscribe-confirmation"
-                   "\n\tFrom: %s"
-                   "\n\tSubject: %s" % (self.internal_name(),
-                                        msg['from'], subject))
+            syslog('bounce', '''\
+%s: Mailcmd rejected
+Reason: Probable bounced subscribe-confirmation
+From: %s
+Subject: %s''', self.internal_name(), msg['from'], subject)
             return
         if subject:
             subject = subject.strip()
@@ -273,7 +273,7 @@ the list administrator automatically.'''))
                         self.AddToResponse('\n' + tbmsg, trunc=0)
                         # log it to the error file
                         syslog('error',
-                               _('Unexpected Mailman error:\n%(tbmsg)s'))
+                               'Unexpected Mailman error:\n%s', tbmsg)
                         # and send the traceback to the user
                         responsemsg = Message.UserNotification(
                             admin, admin, _('Unexpected Mailman error'),
@@ -596,9 +596,9 @@ background and instructions for subscribing to and using it, visit:
             self.AddError(_("You gave the wrong password."))
         except Errors.MMBadUserError:
             self.AddError(_('Your stored password is bogus.'))
-            internalname = self.internal_name()
             syslog('subscribe',
-                   _('User %(addr)s on list %(internalname)s has no password'))
+                   'User %s on list %s has no password',
+                   addr, self.internal_name())
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
         """Parse subscription request and send confirmation request."""
@@ -688,7 +688,6 @@ background and instructions for subscribing to and using it, visit:
         try:
             self.ProcessConfirmation(args[0])
         except Errors.MMBadConfirmation, e:
-            #syslog('debug', 'MMBadConfirmation: %s' % e)
             # Express in approximate days
             days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
             self.AddError(Utils.wrap(
