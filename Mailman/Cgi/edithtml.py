@@ -28,6 +28,8 @@ from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
 from Mailman import i18n
 
+_ = i18n._
+
 
 
 def main():
@@ -46,7 +48,6 @@ def main():
     doc = Document()
 
     # Set up the system default language
-    _ = i18n._
     i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
     doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
@@ -71,10 +72,17 @@ def main():
 
     # Must be authenticated to get any farther
     cgidata = cgi.FieldStorage()
-    try:
-        Auth.authenticate(mlist, cgidata)
-    except Auth.NotLoggedInError, e:
-        Auth.loginpage(mlist, 'edithtml', e.message)
+
+    # Editing the html for a list is limited to the list admin and site admin.
+    if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
+                                  mm_cfg.AuthSiteAdmin),
+                                 cgidata.getvalue('adminpw', '')):
+        if cgidata.has_key('admlogin'):
+            # This is a re-authorization attempt
+            msg = Bold(FontSize('+1', _('Authorization failed.'))).Format()
+        else:
+            msg = ''
+        Auth.loginpage(mlist, 'admin', msg=msg)
         return
 
     realname = mlist.real_name
