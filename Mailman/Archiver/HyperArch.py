@@ -486,7 +486,7 @@ class HyperArchive(pipermail.T):
                 # Check to see if the archive is gzip'd or not
                 txtfile = os.path.join(mm_cfg.PREFIX,
                                        'archives/private',
-                                       self.maillist._internal_name,
+                                       self.maillist.internal_name(),
                                        a + '.txt')
                 gzfile = txtfile + '.gz'
                 templ = '<td><A href="%(url)s">[ %(fmt)sText%(sz)s]</a></td>'
@@ -567,7 +567,7 @@ class HyperArchive(pipermail.T):
         try:
             self._lock_file = posixfile.open(
                 os.path.join(mm_cfg.LOCK_DIR, '%s@arch.lock'
-                             % self.maillist._internal_name), 'a+')
+                             % self.maillist.internal_name()), 'a+')
         finally:
             os.umask(ou)
         # minor race condition here, there is no way to atomicly 
@@ -643,7 +643,7 @@ class HyperArchive(pipermail.T):
 # The following two methods should be inverses of each other. -ddm
 
     def dateToVolName(self,date):
-        datetuple=time.gmtime(date)
+        datetuple=time.localtime(date)
 	if self.ARCHIVE_PERIOD=='year':
 	    return time.strftime("%Y",datetuple)
 	elif self.ARCHIVE_PERIOD=='quarter':
@@ -658,13 +658,12 @@ class HyperArchive(pipermail.T):
 	elif self.ARCHIVE_PERIOD == 'day':
 	    return time.strftime("%Y%m%d", datetuple)
 	elif self.ARCHIVE_PERIOD == 'week':
-	    datetuple = list(datetuple)
-	    datetuple[2] = datetuple[2] - datetuple[6] # subtract week day
-	    #
-	    # even if the the day of the month counter is negative,
-	    # we still get the right thing from strftime! -scott
-	    #
-	    return time.strftime("Week-of-Mon-%Y%m%d", tuple(datetuple))
+            # Reconstruct "seconds since epoch", and subtract weekday
+            # multiplied by the number of seconds in a day.
+            monday = time.mktime(datetuple) - datetuple[6] * 24 * 60 * 60
+            # Build a new datetuple from this "seconds since epoch" value
+            datetuple = time.localtime(monday)
+            return time.strftime("Week-of-Mon-%Y%m%d", datetuple)
         # month. -ddm
  	else:
             return time.strftime("%Y-%B",datetuple)
