@@ -1,0 +1,53 @@
+# -*- python -*-
+#
+# Copyright (C) 1998 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""Start interacting with a mailing list.
+
+This is useful for playing with a list from Python's interactive interpreter.
+Run this script as follows:
+
+% python -i bin/withlist <listname> [locked?]
+
+This will load the list object named by <listname> into an object called `m'
+in the global namespace.  It also loads the class MailList into the global
+namespace.
+
+If second argument is given, the list will be locked (the value of the
+argument is ignored).
+
+"""
+
+import sys
+import paths
+from Mailman.MailList import MailList
+
+m = None
+try:
+    listname = sys.argv[1]
+except IndexError:
+    print "Warning: no listname given.  `m' will be None."
+else:
+    locked = 0
+    try:
+        sys.argv[2]
+        locked = 1
+    except IndexError:
+        pass
+    print 'Loading list:', listname, '(%s)' % (locked and 'locked' or
+                                               'unlocked')
+    m = MailList(listname, lock=locked)
