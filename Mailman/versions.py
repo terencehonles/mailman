@@ -114,25 +114,105 @@ def UpdateOldVars(l, stored_state):
         l.forward_auto_discards = mm_cfg.DEFAULT_FORWARD_AUTO_DISCARDS
     if not hasattr(l, 'generic_nonmember_action'):
         l.generic_nonmember_action = mm_cfg.DEFAULT_GENERIC_NONMEMBER_ACTION
-    # Now convert what we can...
+    # Now convert what we can...  Note that the interaction between the
+    # MM2.0.x attributes `moderated', `member_posting_only', and `posters' is
+    # so confusing, it makes my brain really ache.  Which is why they go away
+    # in MM2.1.  I think the best we can do semantically is the following:
+    #
+    # - If moderated == yes, then any sender who's address is not on the
+    #   posters attribute would get held for approval.  If the sender was on
+    #   the posters list, then we'd defer judgement to a later step
+    # - If member_posting_only == yes, then members could post without holds,
+    #   and if there were any addresses added to posters, they could also post
+    #   without holds.
+    # - If member_posting_only == no, then what happens depends on the value
+    #   of the posters attribute:
+    #       o If posters was empty, then anybody can post without their
+    #         message being held for approval
+    #       o If posters was non-empty, then /only/ those addresses could post
+    #         without approval, i.e. members not on posters would have their
+    #         messages held for approval.
+    #
+    # How to translate this mess to MM2.1 values?  I'm sure I got this wrong
+    # before, but here's how we're going to do it, as of MM2.1b3.
+    #
+    # - We'll control member moderation through their Moderate flag, and
+    #   non-member moderation through the generic_nonmember_action,
+    #   hold_these_nonmembers, and accept_these_nonmembers.
+    # - If moderated == yes then we need to troll through the addresses on
+    #   posters, and any non-members would get added to
+    #   accept_these_nonmembers.  /Then/ we need to troll through the
+    #   membership and any member on posters would get their Moderate flag
+    #   unset, while members not on posters would get their Moderate flag set.
+    #   Then generic_nonmember_action gets set to 1 (hold) so nonmembers get
+    #   moderated, and default_member_moderation will be set to 1 (hold) so
+    #   new members will also get held for moderation.  We'll stop here.
+    # - We only get to here if moderated == no.
+    # - If member_posting_only == yes, then we'll turn off the Moderate flag
+    #   for members.  We troll through the posters attribute and add all those
+    #   addresses to accept_these_nonmembers.  We'll also set
+    #   generic_nonmember_action to 1 and default_member_moderation to 0.
+    #   We'll stop here.
+    # - We only get to here if member_posting_only == no
+    # - If posters is empty, then anybody could post without being held for
+    #   approval, so we'll set generic_nonmember_action to 0 (accept), and
+    #   we'll turn off the Moderate flag for all members.  We'll also turn off
+    #   default_member_moderation so new members can post without approval.
+    #   We'll stop here.
+    # - We only get here if posters is non-empty.
+    # - This means that /only/ the addresses on posters got to post without
+    #   being held for approval.  So first, we troll through posters and add
+    #   all non-members to accept_these_nonmembers.  Then we troll through the
+    #   membership and if their address is on posters, we'll clear their
+    #   Moderate flag, otherwise we'll set it.  We'll turn on
+    #   default_member_moderation so new members get moderated.  We'll set
+    #   generic_nonmember_action to 1 (hold) so all other non-members will get
+    #   moderated.  And I think we're finally done.
+    #
+    # SIGH.
     if hasattr(l, 'moderated'):
-        # The closest we can get to the semantics of this variable is to set
-        # the default member moderation flag so that new members are always
-        # moderated, and to set the generic nonmember action.  We also need to
-        # go through the list membership and turn on all the moderation flags
-        # for every member.
-        oldval = getattr(l, 'moderated')
-        # Flag values have the same semantic
-        l.default_member_moderation = oldval
-        # If we were moderating, then hold nonmember postings, otherwise
-        # accept them.
-        if oldval:
-            l.generic_nonmember_action = 1
+        # We'll assume we're converting all these attributes at once
+        if l.moderated:
+            #syslog('debug', 'Case 1')
+            for addr in l.posters:
+                if not l.isMember(addr):
+                    l.accept_these_nonmembers.append(addr)
             for member in l.getMembers():
-                l.setMemberOption(member, mm_cfg.Moderate, 1)
-        else:
+                l.setMemberOption(member, mm_cfg.Moderate,
+                                  # reset for explicitly named members
+                                  member not in l.posters)
+            l.generic_nonmember_action = 1
+            l.default_member_moderation = 1
+        elif l.member_posting_only:
+            #syslog('debug', 'Case 2')
+            for addr in l.posters:
+                if not l.isMember(addr):
+                    l.accept_these_nonmembers.append(addr)
+            for member in l.getMembers():
+                l.setMemberOption(member, mm_cfg.Moderate, 0)
+            l.generic_nonmember_action = 1
+            l.default_member_moderation = 0
+        elif not l.posters:
+            #syslog('debug', 'Case 3')
+            for member in l.getMembers():
+                l.setMemberOption(member, mm_cfg.Moderate, 0)
             l.generic_nonmember_action = 0
+            l.default_member_moderation = 0
+        else:
+            #syslog('debug', 'Case 4')
+            for addr in l.posters:
+                if not l.isMember(addr):
+                    l.accept_these_nonmembers.append(addr)
+            for member in l.getMembers():
+                l.setMemberOption(member, mm_cfg.Moderate,
+                                  # reset for explicitly named members
+                                  member not in l.posters)
+            l.generic_nonmember_action = 1
+            l.default_member_moderation = 1
+        # Now get rid of the old attributes
         del l.moderated
+        del l.posters
+        del l.member_posting_only
     if hasattr(l, 'forbidden_posters'):
         # For each of the posters on this list, if they are members, toggle on
         # their moderation flag.  If they are not members, then add them to
@@ -144,32 +224,6 @@ def UpdateOldVars(l, stored_state):
             else:
                 l.hold_these_nonmembers.append(addr)
         del l.forbidden_posters
-    if hasattr(l, 'posters'):
-        # This is a fun one. :( The semantics of this and member_posting_only
-        # is way too confusing, which is why we're getting rid of them here.
-        # If there are posters and member_posting_only == yes, then posters
-        # are members or non-members that we will automatically accept.  If
-        # there are posters, but member_posting_only == no, then we will
-        # automatically accept any members or non-members, but all other
-        # member postings will be held for approval.  I think.
-        posters = l.posters
-        membersonly = l.member_posting_only
-        if posters:
-            if not membersonly:
-                # Turn on the moderation bit of all the existing members, and
-                # the default moderation bit
-                l.default_member_moderation = 1
-                for addr in l.getMembers():
-                    l.setMemberOption(addr, mm_cfg.Moderate, 1)
-            # Now turn off the moderation bit for all poster members, or add
-            # non-members to auto-accept.
-            for addr in posters:
-                if l.isMember(addr):
-                    l.setMemberOption(addr, mm_cfg.Moderate, 0)
-                else:
-                    l.accept_these_nonmembers.append(addr)
-        del l.posters
-        del l.member_posting_only
 
     # Migrate to 1.0b6, klm 10/22/1998:
     PreferStored('reminders_to_admins', 'umbrella_list',
