@@ -66,7 +66,7 @@ def main():
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
         handle_no_list(doc, 'No such list <em>%s</em><p>' % listname)
-        syslog('No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
     #
     # now we must authorize the user to view this page, and if they are, to
