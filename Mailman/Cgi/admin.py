@@ -728,7 +728,7 @@ def get_item_gui_description(mlist, category, subcat,
         else:
             varhelp = '/?VARHELP=%s/%s' % (category, varname)
         link = Link(mlist.GetScriptURL('admin') + varhelp,
-                    _('<br>(Details for <b>%s</b>)' % varname)).Format()
+                    _('<br>(Details for <b>%(varname)s</b>)')).Format()
         text = Label('%s %s' % (descr, link)).Format()
     else:
         text = Label(descr).Format()
