@@ -65,7 +65,7 @@ fatal(const char* ident, int exitcode, char* format, ...)
         /* A replacement is provided in vsnprintf.c for ancient systems still
 	 * lacking one in their C library.
 	 */
-        int vsnprintf(char*, int, char*, va_list);
+        int vsnprintf(char*, size_t, const char*, va_list);
 #endif /* !HAVE_VSNPRINTF */
 
         char log_entry[BUFSIZE];
