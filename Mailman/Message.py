@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -117,6 +117,9 @@ class UserNotification(Message):
         # this is useful for logging to logs/smtp.
         if not self.has_key('message-id'):
             self['Message-ID'] = Utils.unique_message_id(mlist)
+        # Ditto for Date: which is required by RFC 2822
+        if not self.has_key('date'):
+            self['Date'] = email.Utils.formatdate(localtime=1)
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
         virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
