@@ -24,3 +24,7 @@ from Mailman.i18n import _
 class Passwords:
     def GetConfigCategory(self):
         return 'passwords', _('Passwords')
+
+    def HandleForm(self, mlist, cgidata, doc):
+        # Nothing more needs to be done
+        pass
