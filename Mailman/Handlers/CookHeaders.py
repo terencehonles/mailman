@@ -163,6 +163,29 @@ def process(mlist, msg, msgdata):
 
 
 
+def encode_p(mlist, subject, prefix):
+    # Decide whether we're going to encode the prefix or not
+    if mlist.encode_ascii_prefixes == 1:
+        # Always encode
+        return 1
+    try:
+        prefix.encode('us-ascii')
+    except UnicodeError:
+        # There are non-ASCII characters in the prefix, so we must encode it
+        return 1
+    if mlist.encode_ascii_prefixes == 0:
+        # Never encode if the prefix is ASCII
+        return 0
+    # What's left is `As needed' encoding.  Meaning, we'll only encode the
+    # prefix if the Subject: header contains non-ASCII characters.  Note that
+    # subject might be a Header instance, so str()-ify it first.
+    try:
+        str(subject).encode('us-ascii')
+    except UnicodeError:
+        return 1
+    return 0
+
+
 def prefix_subject(mlist, msg, msgdata):
     # Add the subject prefix unless the message is a digest or is being fast
     # tracked (e.g. internally crafted, delivered to a single user such as the
@@ -188,9 +211,12 @@ def prefix_subject(mlist, msg, msgdata):
         msg['Subject'] = h
     elif prefix and not has_prefix:
         del msg['subject']
-        # We'll encode the new prefix (just in case) but leave the old subject
-        # alone, in case it was already encoded.
-        h = Header(prefix, charset, 128, header_name='Subject')
+        if encode_p(mlist, subject, prefix):
+            # We'll encode the new prefix (just in case) but leave the old
+            # subject alone, in case it was already encoded.
+            h = Header(prefix, charset, 128, header_name='Subject')
+        else:
+            h = Header(prefix, header_name='Subject')
         for s, c in headerbits:
             h.append(s, c)
         msg['Subject'] = h
