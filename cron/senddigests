@@ -18,22 +18,63 @@
 
 """Dispatch digests for lists w/pending messages and digest_send_periodic set.
 
-Typically it's invoked via cron.
+Usage: %(PROGRAM)s [options]
+
+Options:
+    -h / --help
+        Print this message and exit.
+
+    -l listname
+    --listname=listname
+        Send the digest for the given list only, otherwise the digests for all
+        lists are sent out.
 """
+
+import sys
+import getopt
 
 import paths
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
+from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
+PROGRAM = sys.argv[0]
+
+
+
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+
 
 
 def main():
-    for listname in Utils.list_names():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'hl:', ['help', 'listname='])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if args:
+        usage(1)
+
+    listnames = []
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-l', '--listname'):
+            listnames.append(arg)
+
+    if not listnames:
+        listnames = Utils.list_names()
+
+    for listname in listnames:
         mlist = MailList.MailList(listname, lock=0)
         if mlist.digest_send_periodic:
             mlist.Lock()
