@@ -576,8 +576,8 @@ def FormatMembershipOptions(lst):
     container.AddItem(Center(user_table))
     legend = UnorderedList()
     legend.AddItem('<b>subscr</b> -- Is the member subscribed?')
-    legend.AddItem('<b>hide</b> -- '
-                   "Is the member's address hidden from Web browsers?")
+    legend.AddItem("<b>hide</b> -- Is the member's address "
+                   "concealed on the list of subscribers?")
     legend.AddItem('<b>nomail</b> -- Is delivery to the member disabled?')
     legend.AddItem('<b>ack</b> -- '
                    'Does the member get acknowledgements of their posts?')
