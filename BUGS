@@ -1,14 +1,8 @@
-Send bug reports to mailman-developers@python.org
+Bugs are now managed by a Jitterbug database.  Please visit the
+following URL to view current resolved and open bugs, or to report a
+new bug in Mailman.
 
-Known bugs:
-
-- There seems to be a problem building the C wrappers on FreeBSD
-  systems when not using GNU make (gmake).  The symptom is that you
-  get an undefined symbol `_main' in /usr/lib/crt0.o.  We don't know
-  anything more about the causes, and there is some suspicion that the 
-  problem is unrelated to Mailman.  Using gmake to build Mailman
-  appears to solve the problem.
-
+    http://www.python.org/mailman-bugs
 
 
 Local Variables:
