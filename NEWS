@@ -4,8 +4,98 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.1 beta 4 (XX-XXX-2002)
+2.1 beta 4 (26-Oct-2002)
 
+    The usual assortment of bug fixes and language updates, some u/i
+    tweaks, as well as the following:
+
+    - Configuring / building / installing
+        o Tightened up some configure checks; it will now bark loudly
+          if you don't have the Python distutils package available
+          (some Linux distros only include distutils in their "devel"
+          packages).
+
+        o Mailman's username/group security assertions are now done by
+          symbolic name instead of numeric id.  This provides a level
+          of indirection that makes it much easier to move or package
+          Mailman.  --with-mail-gid and --with-cgi-gid are retained,
+          but they control the group names used instead.
+
+    - Command line scripts
+        o A new script, bin/transcheck that language teams can use to
+          check their .po files.
+
+        o bin/list_members grew a --fullnames/-f option to print the
+          full names along with the addresses.
+
+        o cron/senddigests grew --help/-h and --listname/-l options.
+
+        o bin/fix_url.py grew some command line options to support moving
+          a list to a specific virtual domain.
+
+    - Pipermail / archiving
+        o Reworked the directory layout for archive attachments to be
+          less susceptible to inode overload.  Attachments are now
+          placed in
+
+          archives/private/<listname>/attachments/<YYYYMMDD>/<msgidhash>
+
+        o Internationalization support in the archiver has been improved.
+
+    - Internationalization
+        o New languages: Swedish.
+
+    - Mail handling
+        o Content filtering now has a pass_mime_type variable, which
+          is a whitelist of MIME types to allow in postings.  See the
+          details of the variable in the Content Filtering category
+          for more information.
+
+        o If a member has enabled their DontReceiveDuplicates option,
+          we'll also strip their addresses from the Cc headers in the
+          copy of the message sent to the list.  This helps keep the
+          Cc lines from growing astronomically.
+
+        o Bounce messages are now forwarded to the list administrators
+          both if they are unrecognized, and if no list member's
+          address could be extracted.
+
+        o Content filtering now has a filter_action variable which
+          controls what happens when a message matches the content
+          filter rules.  The default is still to discard the message.
+
+        o When searching for an Approve/Approved header, the first
+          non-whitespace line of the body of the message is also
+          checked, if the body has a MIME type of text/plain.
+
+        o If a list is personalized, and the list's posting address is
+          not included in a Reply-To header, the posting address is
+          copied into a Cc header, otherwise there was no (easy) way a
+          recipient could reply back to the list.
+
+        o Added a MS Exchange bounce recognizer.
+
+        o New configuration variable news_moderation which allows the
+          mail->news gateway to properly post to moderated newsgroups.
+
+        o Messages sent to a list's owners now comes from the site
+          list to prevent mail loops when list owners or moderators
+          having bouncing addresses.
+
+    - Miscellaneous
+        o mailanctl prevents runaway restarts by imposing a maximum
+          restart value (defaulting to 10) for restarting the
+          qrunners.  If you hit this limit, do "mailmanctl stop"
+          followed by "mailmanctl start".
+
+        o The Membership Management page's search feature now includes
+          searching on members real names.
+
+        o The start of a manual for list administrators is given in
+          Python HOWTO format (LaTeX).  It's in doc/mailman-admin.tex
+          but it still needs lots of fleshing out.
+
+        o More protections against creating a list with an invalid name.
 
 2.1 beta 3 (09-Aug-2002)
 
@@ -761,7 +851,7 @@ Here is a history of user visible changes to Mailman.
           password is given, the removal is performed immediately.  If
           no password is given, then a confirmation message is
           generated.
-    
+
     - Internationalization
         o More I18N patches.  The basic infrastructure should now be
           working correctly.  Spanish templates and catalogs are
@@ -1583,8 +1673,8 @@ Here is a history of user visible changes to Mailman.
 
      - Refine mail command processing to prevent loops.
 
-     - Pending subscription DB redone with better locking and cleaner 
-       interface. 
+     - Pending subscription DB redone with better locking and cleaner
+       interface.
 
      - posters functionality expanded.
 
@@ -1607,7 +1697,7 @@ Here is a history of user visible changes to Mailman.
 
 
 1.0b4 (03-Jun-1998)
- 
+
     - A configure script for easy installation (Barry Warsaw)
 
     - The ability to install Mailman to locations other than
@@ -1726,11 +1816,11 @@ Here is a history of user visible changes to Mailman.
     - Removed hardwired (and failure-prone) /tmp file logging from
       answer.majordomo_mail, and generally spiffed up following janne
       sinkkonen's lead.
-   
+
 1.0b2 (13-Apr-1998)
 1.0b1 (09-Apr-1998)
 
-  Web pages much more polished 
+  Web pages much more polished
    - Better organized, text more finely crafted
    - Easier, more refined layout
    - List info and admin interface overviews, enumerate all public lists
@@ -1761,7 +1851,7 @@ Here is a history of user visible changes to Mailman.
      seeking targets for spammers.
 
   Site configuration arrangement organized - in mailman/mailman/modules:
-   - When installing, create a mailman/modules/mm_cfg.py (if there's not 
+   - When installing, create a mailman/modules/mm_cfg.py (if there's not
      one already there), using mm_cfg.py.dist as a template.
      mm_default.py contains the distributed defaults, including
      descriptions of the values.  mm_cfg.py does a 'from mm_defaults.py
@@ -1814,11 +1904,11 @@ Here is a history of user visible changes to Mailman.
    - Bounce handling - offer 'disable' option, instead of remove, and
      never remove without notifying admin
    - Moved subscribers off of listinfo (and made private lists visible
-     modulo authentication) 
+     modulo authentication)
    - Parameterize default digest headers and footers and create some
    - Put titles on cgi result pages that do not get titles (all?)
    - Option for immediate admin notifcation via email of pending
-     requests, as well as periodic 
+     requests, as well as periodic
    - Admin options web-page help
    - Enabled grouped and cascading lists despite implicit-name constraint
    - Changed subscribers list so it has its own script (roster)
@@ -1855,22 +1945,22 @@ Here is a history of user visible changes to Mailman.
      large lists don't spend a lot of time locked.
   -  GetSender() no longer assumes that you don't have an owner-xxx address.
   -  Fixed unsubscribing via mail.
-  -  Made subscribe via mail generate a password if you don't supply one.  
+  -  Made subscribe via mail generate a password if you don't supply one.
   -  Added an option to clobber the date in the archives to the date the list
      resent the post, so that the archive doesn't get mail from people sending
       bad dates clumped up at the beginning or end.
   -  Added automatic error message processing as an option.  Currently
-     logging to /tmp/bounce.log 
+     logging to /tmp/bounce.log
   -  Changed archive to take a list as an argument, (the old way was broken)
   -  Remove (ignore) spaces in email addresses
   -  Allow user passwords to be case insensitive.
   -  Removed the cleanup script since it was now redundant.
   -  Fixed archives if there were no archives.
   -  Added a Lock() call to Load() and Create().  This fixes the
-     problem of loading then locking. 
+     problem of loading then locking.
   -  Removed all occurances of Lock() except for the ones in mailing
-     list since creating a list 
-     now implicitly locks it. 
+     list since creating a list
+     now implicitly locks it.
   -  Quote single periods in message text.
   - Made bounce system handle digest users fairly.
 
@@ -1905,19 +1995,19 @@ Here is a history of user visible changes to Mailman.
   -  tweaked pipermail (see comments on pipermail header)
   -  templates are now on a per-list basis as intended.
   -  request over web that your password be emailed to you.
-  -  option so that web subscriptions require email confirmation. 
+  -  option so that web subscriptions require email confirmation.
   -  wrote a first pass at an admin interface to configurable variables.
   -  made digests mime-compliant.
   -  added a FakeFile class that simulates enough of a file object on a
-	string of text to fool rfc822.Message in non-seek mode.
+        string of text to fool rfc822.Message in non-seek mode.
   -  changed OutgoingMessage not to require its args in constructor.
   -  added an admin request DB interface.
   -  clearly separated the internal name from the real name.
-  -  replaced lots of ugly, redundant code w/ nice code.  
-	(added Get...Email() interfaces, GetScriptURL, etc...)
-  -  Wrote a lot of pretty html formatting functions / classes. 
-  -  Fleshed out the newlist command a lot.  It now mails the new list 
-	admin, and auto-updates the aliases file.  
+  -  replaced lots of ugly, redundant code w/ nice code.
+        (added Get...Email() interfaces, GetScriptURL, etc...)
+  -  Wrote a lot of pretty html formatting functions / classes.
+  -  Fleshed out the newlist command a lot.  It now mails the new list
+        admin, and auto-updates the aliases file.
   -  Made multiple owners acceptable.
   -  Non-advertised lists, closed lists, max header length, max msg length
   -  Allowed editing templates from list admin pages.
