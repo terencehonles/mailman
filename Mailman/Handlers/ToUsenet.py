@@ -41,4 +41,4 @@ def process(mlist, msg, msgdata):
         return
     # Put the message in the news runner's queue
     newsq = get_switchboard(mm_cfg.NEWSQUEUE_DIR)
-    newsq.enqueue(msg, listname=mlist.internal_name())
+    newsq.enqueue(msg, msgdata, listname=mlist.internal_name())
