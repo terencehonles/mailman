@@ -1,13 +1,1 @@
-Aquesta és una notificació de rebot de la llista de correu Mailman:
-
-    List:     %(listname)s
-    Member:     %(addr)s
-    Action:      Subscripció %(negative)s%(did)s.
-    Reason:        Excessive or fatal bounces.
-    %(but)s
-
-%(reenable)s
-La causa d'aquesta notificació de rebot està adjuntada tot seguit.
-
-preguntes?  
-Contacteu l'administrador de Mailman a  %(owneraddr)s.
+Aquesta és una notificació de rebot de la llista de correu Mailman:    Llista:     %(listname)s    Membre:     %(addr)s    Acció:      Subscripció %(negative)s%(did)s.    Raó:        Massa rebots o rebot fatal.    %(but)s%(reenable)sLa causa d'aquesta notificació de rebot està adjuntada tot seguit.Preguntes?  Contacteu l'administrador de Mailman a  %(owneraddr)s.
