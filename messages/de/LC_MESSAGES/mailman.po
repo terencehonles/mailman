@@ -272,6 +272,8 @@ msgid ""
 "Make your changes in the following section, then submit them\n"
 "        using the <em>Submit Your Changes</em> button below."
 msgstr ""
+"Aenderungen koennen im folgenden Abschnitt eingestellt und dann\n"
+"        mit dem <em>Aenderungen vornehmen</em>-Schalter vorgenommen werden."
 
 #: Mailman/Cgi/admin.py:460
 msgid ""
@@ -279,64 +281,69 @@ msgid ""
 "          <a href=\"http://www.python.org/doc/current/lib/re-syntax.html\">Python\n"
 "          regular expression</a>:"
 msgstr ""
+"Mitgliedersuche mit Hilfe von\n"
+"          <a href=\"http://www.python.org/doc/current/lib/re-syntax.html\">Python\n"
+"          regulaeren Ausdruecken</a>:"
 
 #: Mailman/Cgi/admin.py:466
 msgid "Search..."
-msgstr ""
+msgstr "Suchen..."
 
 #: Mailman/Cgi/admin.py:509
 msgid "Value"
-msgstr ""
+msgstr "Wert"
 
 #: Mailman/Cgi/admin.py:562
 msgid ""
 "Badly formed options entry:\n"
 " %(record)s"
 msgstr ""
+"Ungueltige Konfiguration:\n"
+" %(record)s"
 
 #: Mailman/Cgi/admin.py:614
 msgid "<em>Enter the text below, or...</em><br>"
-msgstr ""
+msgstr "<em>Setzen Sie den Text unten ein, oder...</em><br>"
 
 #: Mailman/Cgi/admin.py:616
 msgid "<br><em>...specify a file to upload</em><br>"
-msgstr ""
+msgstr "<br><em>...waehlen Sie eine Datei</em><br>"
 
 #: Mailman/Cgi/admin.py:642 Mailman/Cgi/admin.py:645
 msgid "Topic %(i)d"
-msgstr ""
+msgstr "Thema %(i)d"
 
 #: Mailman/Cgi/admin.py:646
 msgid "Delete"
-msgstr ""
+msgstr "Loeschen"
 
 #: Mailman/Cgi/admin.py:647
 msgid "Topic name:"
-msgstr ""
+msgstr "Themenname:"
 
 #: Mailman/Cgi/admin.py:649
 msgid "Regexp:"
-msgstr ""
+msgstr "Regulaerer Ausdruck:"
 
 #: Mailman/Cgi/admin.py:652 Mailman/Cgi/options.py:799
 msgid "Description:"
-msgstr ""
+msgstr "Beschreibung:"
 
 #: Mailman/Cgi/admin.py:656
 msgid "Add new item..."
-msgstr ""
+msgstr "Neuen Eintrag hinzufuegen..."
 
 #: Mailman/Cgi/admin.py:658
 msgid "...before this one."
-msgstr ""
+msgstr "...vor diesem Eintrag."
 
 #: Mailman/Cgi/admin.py:659
 msgid "...after this one."
-msgstr ""
+msgstr "...nach diesem Eintrag."
 
 #: Mailman/Cgi/admin.py:689
 msgid "(Details)"
-msgstr ""
+msgstr "(Details)"
 
 #: Mailman/Cgi/admin.py:694
 msgid ""
@@ -344,152 +351,167 @@ msgid ""
 "        setting this value performs an immediate action but does not modify\n"
 "        permanent state.</em>"
 msgstr ""
+"<br><em><strong>Hinweis:</strong>\n"
+"        Aenderungen dieses Wertes werden sofort vorgenommen aber modifizieren\n"
+"        nicht dem permanenten Zustand.</em>"
 
 #: Mailman/Cgi/admin.py:707
 msgid "Mass Subscriptions"
-msgstr ""
+msgstr "Abonnieren en masse"
 
 #: Mailman/Cgi/admin.py:714
 msgid "Mass Removals"
-msgstr ""
+msgstr "Entfernen en masse"
 
 #: Mailman/Cgi/admin.py:721 Mailman/Gui/Membership.py:30
 msgid "Membership List"
-msgstr ""
+msgstr "Mitgliederliste"
 
 #: Mailman/Cgi/admin.py:788
 msgid "%(allcnt)s members total, %(membercnt)s shown"
-msgstr ""
+msgstr "%(allcnt)s Mitglieder insgesamt, %(membercnt)s werden gezeigt"
 
 #: Mailman/Cgi/admin.py:791
 msgid "%(allcnt)s members total"
-msgstr ""
+msgstr "%(allcnt)s Mitglieder insgesamt"
 
 #: Mailman/Cgi/admin.py:814
 msgid "unsub"
-msgstr ""
+msgstr "Entfernen"
 
 #: Mailman/Cgi/admin.py:815
 msgid "member address<br>member name"
-msgstr ""
+msgstr "Mitglieder-Adresse<br>Mitgliedsname"
 
 #: Mailman/Cgi/admin.py:816
 msgid "hide"
-msgstr ""
+msgstr "Verstecken"
 
 #: Mailman/Cgi/admin.py:816
 msgid "nomail"
-msgstr ""
+msgstr "Abgestellt"
 
 #: Mailman/Cgi/admin.py:817
 msgid "ack"
-msgstr ""
+msgstr "Bestaetigung"
 
 #: Mailman/Cgi/admin.py:817
 msgid "not metoo"
-msgstr ""
+msgstr "Keine eigenen"
 
 #: Mailman/Cgi/admin.py:818
 msgid "digest"
-msgstr ""
+msgstr "Zusammenfassung"
 
 #: Mailman/Cgi/admin.py:818
 msgid "plain"
-msgstr ""
+msgstr "Einfach"
 
 #: Mailman/Cgi/admin.py:819
 msgid "language"
-msgstr ""
+msgstr "Sprache"
 
 #: Mailman/Cgi/admin.py:880
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
-msgstr ""
+msgstr "<b>Entfernen</b> -- Abonnement beenden"
 
 #: Mailman/Cgi/admin.py:882
 msgid ""
 "<b>hide</b> -- Is the member's address concealed on\n"
 "        the list of subscribers?"
 msgstr ""
+"<b>Verstecken</b> -- Ist diese Mitgliedsaddresse auf der\n"
+"        Abonnentenliste unsichtbar?"
 
 #: Mailman/Cgi/admin.py:884
 msgid "<b>nomail</b> -- Is delivery to the member disabled?"
-msgstr ""
+msgstr "<b>Abgestellt</b> -- Ist der Versand an dieses Mitglied gestoppt?"
 
 #: Mailman/Cgi/admin.py:886
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
 msgstr ""
+"<b>Bestaetigung</b> -- Bekommt dieses Mitglied Bestaetigungen fuer seine\n"
+"        Sendungen an die Liste?"
 
 #: Mailman/Cgi/admin.py:889
 msgid ""
 "<b>not metoo</b> -- Does the member avoid copies of their own\n"
 "        posts?"
 msgstr ""
+"<b>Keine eigenen</b> -- Moechte dieses Mitglied keine Mitteilungen\n"
+"        erhalten, die von Ihm selber gesendet wurden?"
 
 #: Mailman/Cgi/admin.py:892
 msgid ""
 "<b>digest</b> -- Does the member get messages in digests?\n"
 "        (otherwise, individual messages)"
 msgstr ""
+"<b>Zusammenfassung</b> -- Bekommt dieses Mitglied Zusammenfassungen\n"
+"        anstatt einzelner Mitteilungen?"
 
 #: Mailman/Cgi/admin.py:895
 msgid ""
 "<b>plain</b> -- If getting digests, does the member get plain\n"
 "        text digests?  (otherwise, MIME)"
 msgstr ""
+"<b>Einfach</b> -- Falls Zusammenfassung gewaehlt wurde, bekommt\n"
+"        dieses Mitglied Mitteilungen in einfachem Text oder MIME-Format?"
 
 #: Mailman/Cgi/admin.py:897
 msgid "<b>language</b> -- Language preferred by the user"
-msgstr ""
+msgstr "<b>Sprache</b> -- Die bevorzugte Sprache des Mitglieds"
 
 #: Mailman/Cgi/admin.py:904
 msgid ""
 "<p><em>To view more members, click on the appropriate\n"
 "        range listed below:</em>"
 msgstr ""
+"<p><em>Um mehr Mitglieder zu sehen, waehlen Sie die entsprechende\n"
+"        Laenge:</em>"
 
 #: Mailman/Cgi/admin.py:913
 msgid "from %(start)s to %(end)s"
-msgstr ""
+msgstr "von %(start)s bis %(end)s"
 
 #: Mailman/Cgi/admin.py:927
 msgid "Send welcome message to this batch?"
-msgstr ""
+msgstr "Eine Willkommensmitteilung an diese Gruppe senden?"
 
 #: Mailman/Cgi/admin.py:931 Mailman/Cgi/admin.py:942 Mailman/Cgi/admin.py:966
 #: Mailman/Cgi/admin.py:976
 msgid " no "
-msgstr ""
+msgstr " Nein "
 
 #: Mailman/Cgi/admin.py:934 Mailman/Cgi/admin.py:945 Mailman/Cgi/admin.py:968
 #: Mailman/Cgi/admin.py:979
 msgid " yes "
-msgstr ""
+msgstr " Ja "
 
 #: Mailman/Cgi/admin.py:938
 msgid "Send notifications to the list owner? "
-msgstr ""
+msgstr "Notiz an den Listen-Besitzer schicken?"
 
 #: Mailman/Cgi/admin.py:947 Mailman/Cgi/admin.py:981
 msgid "Enter one address per line below..."
-msgstr ""
+msgstr "Fuegen Sie eine Adresse pro Zeile ein..."
 
 #: Mailman/Cgi/admin.py:952 Mailman/Cgi/admin.py:986
 msgid "...or specify a file to upload:"
-msgstr ""
+msgstr "...oder waehlen Sie ine Datei:"
 
 #: Mailman/Cgi/admin.py:963
 msgid "Send unsubscription acknowledgement to the user?"
-msgstr ""
+msgstr "Bestaetigung des beendeten Abonnements an den Benutzer senden?"
 
 #: Mailman/Cgi/admin.py:972
 msgid "Send notifications to the list owner?"
-msgstr ""
+msgstr "Notizen an den Listen-Besitzer senden?"
 
 #: Mailman/Cgi/admin.py:994
 msgid "Change list ownership passwords"
-msgstr ""
+msgstr "Passworte fuer Listen-Besitzer andern"
 
 #: Mailman/Cgi/admin.py:997
 msgid ""
@@ -509,44 +531,57 @@ msgid ""
 "and also provide the email addresses of the list moderators in the section\n"
 "above."
 msgstr ""
+"<a name=\"passwords\">Die</a> <em>Listen-Administratoren</em> haben volle\n"
+"Kontrolle ueber die Konfiguration dieser Liste. Alle Einstellungen auf diesen\n"
+"Webseiten koennen von ihnen geaendert werden.\n"
+"\n"
+"<em>Listen-Moderatoren</em> haben limitierte Befugnisse. Die koennen keine\n"
+"Einstellungen aendern, aber ueber Anmeldungen neuer Listenmitglieder entscheiden.\n"
+"Sie koennen auch zurueckgehaltene Mitteilungen an die Liste freigeben oder loeschen.\n"
+"All diese Taetigkeiten koennen natuerlich auch von <em>Listen-Administratoren</em>\n"
+"vorgenommen werden.\n"
+"\n"
+"<p>Um die Listenpflege auf Administratoren und Moderatoren aufzuteilen, muessen Sie\n"
+"in den entsprechenden Feldern unten ein separates Passwort fuer Moderatoren setzen\n"
+"und die Adressen der Moderatoren in der oberen Sektion angeben."
 
 #: Mailman/Cgi/admin.py:1017
 msgid "Enter new administrator password:"
-msgstr ""
+msgstr "Neues Administratoren-Passwort einsetzen:"
 
 #: Mailman/Cgi/admin.py:1019
 msgid "Confirm administator password:"
-msgstr ""
+msgstr "Administratoren-Passwort bestaetigen:"
 
 #: Mailman/Cgi/admin.py:1024
 msgid "Enter new moderator password:"
-msgstr ""
+msgstr "Neues Moderatoren-Passwort einsetzen:"
 
 #: Mailman/Cgi/admin.py:1026
 msgid "Confirm moderator password:"
-msgstr ""
+msgstr "Moderatoren-Passwort bestaetigen:"
 
 #: Mailman/Cgi/admin.py:1036
 msgid "Submit Your Changes"
-msgstr ""
+msgstr "Aenderungen vornehmen"
 
 #: Mailman/Cgi/admin.py:1111
 msgid "Moderator passwords did not match"
-msgstr ""
+msgstr "Das Moderatoren-Passwort und die Bestaetigung sind nicht gleich"
 
 #: Mailman/Cgi/admin.py:1112 Mailman/Cgi/admin.py:1124
 #: Mailman/Cgi/admin.py:1170 Mailman/Cgi/create.py:258
 #: Mailman/Cgi/rmlist.py:183
 msgid "Error: "
-msgstr ""
+msgstr "Fehler: "
 
 #: Mailman/Cgi/admin.py:1123
 msgid "Administator passwords did not match"
-msgstr ""
+msgstr "Inkorrektes Administratoren-Passwort"
 
 #: Mailman/Cgi/admin.py:1169
 msgid "Bad email address for option %(property)s: %(val)s"
-msgstr ""
+msgstr "Ungueltige Email-Adresse fuer  %(property)s: %(val)s"
 
 #: Mailman/Cgi/admin.py:1188
 msgid ""
@@ -554,186 +589,189 @@ msgid ""
 "                    changed!  It must differ from the list's name by case\n"
 "                    only.<p>"
 msgstr ""
+"<p><b>real_name</b> Wert unveraendert!\n"
+"                    Es darf sich nur in Klein- oder Grossschreibung vom\n"
+"                    Listennamen unterscheiden.<p>"
 
 #: Mailman/Cgi/admin.py:1228
 msgid "Already a member"
-msgstr ""
+msgstr "Bereits Mitglied"
 
 #: Mailman/Cgi/admin.py:1231
 msgid "&lt;blank line&gt;"
-msgstr ""
+msgstr "&lt;Leerzeile&gt;"
 
 #: Mailman/Cgi/admin.py:1232 Mailman/Cgi/admin.py:1235
 msgid "Bad/Invalid email address"
-msgstr ""
+msgstr "Ungueltige Email-Addresse"
 
 #: Mailman/Cgi/admin.py:1238
 msgid "Hostile address (illegal characters)"
-msgstr ""
+msgstr "Vermutlich feindliche Adresse (illegale Zeichen)"
 
 #: Mailman/Cgi/admin.py:1242
 msgid "Successfully Subscribed:"
-msgstr ""
+msgstr "Erfolgreich abonniert:"
 
 #: Mailman/Cgi/admin.py:1246
 msgid "Error Subscribing:"
-msgstr ""
+msgstr "Fehler im Abonnement:"
 
 #: Mailman/Cgi/admin.py:1276
 msgid "Successfully Unsubscribed:"
-msgstr ""
+msgstr "Erfolgreich beendete Abonnements:"
 
 #: Mailman/Cgi/admin.py:1281
 msgid "Cannot unsubscribe non-members:"
-msgstr ""
+msgstr "Nicht-Mitglieder koennen nicht aus dem Abonnement genommen werden:"
 
 #: Mailman/Cgi/admin.py:1301
 msgid "Not subscribed"
-msgstr ""
+msgstr "Nicht abonniert:"
 
 #: Mailman/Cgi/admin.py:1328
 msgid "Error Unsubscribing:"
-msgstr ""
+msgstr "Fehler beim Beenden des Abonnement:"
 
 #: Mailman/Cgi/admin.py:1337
 msgid "Warning: "
-msgstr ""
+msgstr "Achtung: "
 
 #: Mailman/Cgi/admindb.py:111
 msgid "%(realname)s Administrative Database"
-msgstr ""
+msgstr "%(realname)s Administrative Datenbank"
 
 #: Mailman/Cgi/admindb.py:114
 msgid "%(realname)s Administrative Database Results"
-msgstr ""
+msgstr "%(realname)s  Administrative Datenbank-Ergebnisse"
 
 #: Mailman/Cgi/admindb.py:131
 msgid "Mailman Administrative Database Error"
-msgstr ""
+msgstr "Mailman Administrative Datenbank Fehler"
 
 #: Mailman/Cgi/admindb.py:136
 msgid "list of available mailing lists."
-msgstr ""
+msgstr "Liste der verfuegbaren Listen."
 
 #: Mailman/Cgi/admindb.py:137
 msgid "You must specify a list name.  Here is the %(link)s"
-msgstr ""
+msgstr "Sie muessen einen Listennamen angeben. Benutzen Sie bitte %(link)s"
 
 #: Mailman/Cgi/admindb.py:149
 msgid "Administrative requests for mailing list:"
-msgstr ""
+msgstr "Administrative Anfragen fuer Liste:"
 
 #: Mailman/Cgi/admindb.py:153
 msgid "There are no pending requests."
-msgstr ""
+msgstr "Keine unbearbeiteten Anfragen."
 
 #: Mailman/Cgi/admindb.py:166 Mailman/Cgi/admindb.py:202
 msgid "Submit All Data"
-msgstr ""
+msgstr "Alle Daten senden"
 
 #: Mailman/Cgi/admindb.py:171
 msgid "Subscription Requests"
-msgstr ""
+msgstr "Abonnement-Anfragen"
 
 #: Mailman/Cgi/admindb.py:173
 msgid "User address/name"
-msgstr ""
+msgstr "Benutzer-Addresse und Name"
 
 #: Mailman/Cgi/admindb.py:174
 msgid "Your decision"
-msgstr ""
+msgstr "Ihre Entscheidung"
 
 #: Mailman/Cgi/admindb.py:175
 msgid "Reason for refusal"
-msgstr ""
+msgstr "Ablehnungsgrund"
 
 #: Mailman/Cgi/admindb.py:180 Mailman/Cgi/admindb.py:280
 msgid "Defer"
-msgstr ""
+msgstr "Verschieben"
 
 #: Mailman/Cgi/admindb.py:181 Mailman/Cgi/admindb.py:280
 msgid "Approve"
-msgstr ""
+msgstr "Annehmen"
 
 #: Mailman/Cgi/admindb.py:182 Mailman/Cgi/admindb.py:280
 msgid "Reject"
-msgstr ""
+msgstr "Ablehnen"
 
 #: Mailman/Cgi/admindb.py:183 Mailman/Cgi/admindb.py:280
 msgid "Discard"
-msgstr ""
+msgstr "Wegwerfen"
 
 #: Mailman/Cgi/admindb.py:216
 msgid "Posting Held for Approval"
-msgstr ""
+msgstr "Mitteilung zur Kontrolle zurueckgehalten"
 
 #: Mailman/Cgi/admindb.py:218
 msgid " (%(count)d of %(total)d)"
-msgstr ""
+msgstr " (%(count)d von %(total)d)"
 
 #: Mailman/Cgi/admindb.py:232
 msgid "<em>Message with id #%(id)d was lost."
-msgstr ""
+msgstr "<em>Mitteilung mit ID #%(id)d verloren."
 
 #: Mailman/Cgi/admindb.py:241
 msgid "<em>Message with id #%(id)d is corrupted."
-msgstr ""
+msgstr "<em>Mitteilung mit ID #%(id)d ist fehlerhaft."
 
 #: Mailman/Cgi/admindb.py:268
 msgid "From:"
-msgstr ""
+msgstr "Absender:"
 
 #: Mailman/Cgi/admindb.py:271
 msgid "Subject:"
-msgstr ""
+msgstr "Thema:"
 
 #: Mailman/Cgi/admindb.py:273
 msgid "Reason:"
-msgstr ""
+msgstr "Grund:"
 
 #: Mailman/Cgi/admindb.py:286
 msgid "Action:"
-msgstr ""
+msgstr "Taetigkeit:"
 
 #: Mailman/Cgi/admindb.py:290
 msgid "Preserve message for site administrator"
-msgstr ""
+msgstr "Mitteilung fuer Administrator erhalten"
 
 #: Mailman/Cgi/admindb.py:294
 msgid "Additionally, forward this message to: "
-msgstr ""
+msgstr "Zusaetzliche Adressaten: "
 
 #: Mailman/Cgi/admindb.py:299
 msgid "If you reject this post,<br>please explain (optional):"
-msgstr ""
+msgstr "Falls Sie diese Mitteilung zurueckweisen,<br>geben Sie den Grund (optional):"
 
 #: Mailman/Cgi/admindb.py:302
 msgid "[No explanation given]"
-msgstr ""
+msgstr "[Keine Erklaerung angegeben]"
 
 #: Mailman/Cgi/admindb.py:307
 msgid "Message Headers:"
-msgstr ""
+msgstr "Mitteilungs-Header:"
 
 #: Mailman/Cgi/admindb.py:312
 msgid "Message Excerpt:"
-msgstr ""
+msgstr "Auszug:"
 
 #: Mailman/Cgi/admindb.py:338 Mailman/ListAdmin.py:258
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Kein Grund angegeben]"
 
 #: Mailman/Cgi/admindb.py:361
 msgid "Database Updated..."
-msgstr ""
+msgstr "Datenbank angeglichen..."
 
 #: Mailman/Cgi/admindb.py:364
 msgid " is already a member"
-msgstr ""
+msgstr " ist bereits Mitglied."
 
 #: Mailman/Cgi/confirm.py:66
 msgid "Confirmation string was empty."
-msgstr ""
+msgstr "Leere Bestaetigungszeile."
 
 #: Mailman/Cgi/confirm.py:84
 msgid ""
@@ -746,14 +784,21 @@ msgid ""
 "    Otherwise, <a href=\"%(confirmurl)s\">re-enter</a> your confirmation\n"
 "    string."
 msgstr ""
+"<b>Ungueltige Bestaetigung:</b>\n"
+"    %(cookie)s.\n"
+"\n"
+"    <p>Bitte beachten Sie, dass Bestaetigungen ungefaehr %(days)s Tage\n"
+"    nach der Anfrage ungueltig werden. Falls Ihre Bestaetigung ungueltig\n"
+"    ist, senden Sie bitte eine neue Anfrage.\n"
+"    Andernfalls geben Sie Ihre Bestaetigung <a href=\"%(confirmurl)s\">erneut</a>.\n"
 
 #: Mailman/Cgi/confirm.py:140
 msgid "Bad confirmation string"
-msgstr ""
+msgstr "Fehlerhafte Bestaetigung"
 
 #: Mailman/Cgi/confirm.py:148
 msgid "Enter confirmation cookie"
-msgstr ""
+msgstr "Bitte geben Sie den Bestaetigungs-Cookie an"
 
 #: Mailman/Cgi/confirm.py:161
 msgid ""
