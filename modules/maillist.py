@@ -718,13 +718,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		continue
 	    else:
 		try:
-		    h, e = re.split(":[ 	]*", line)
-		    all.append((h, e, line))
+		    h, e = re.split(":[ 	]*", stripped)
+		    all.append((h, e, stripped))
 		except ValueError:
 		    # Whoops - some bad data got by:
 		    self.LogMsg("config", "%s - "
 				"bad bounce_matching_header line %s"
-				% (self.real_name, `line`))
+				% (self.real_name, `stripped`))
 	return all
 
 
@@ -748,7 +748,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    and f[l] == ":"
 		    and string.lower(field) == string.lower(f[0:l])):
 		    # Non-continuation line - trim header name:
-		    subjs.append(f[l+1:])
+		    subjs.append(f[l+2:])
 		elif not subjs:
 		    # Whoops - non-continuation that matches?
 		    subjs.append(f)
