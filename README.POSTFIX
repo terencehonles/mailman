@@ -7,21 +7,25 @@ INTEGRATING POSTFIX AND MAILMAN
 
     You can integrate Postfix and Mailman such that when new lists are
     created, or lists are removed, Postfix's alias database will
-    automatically be updated.  This is done by Mailman writing alias
-    entries to a DB hash file that Postfix has been configured to consult
-    when looking for local delivery addresses.  The following are the
-    steps you need to take to make this work.
+    automatically be updated.  The following are the steps you need to
+    take to make this work.
 
-    In the description below, $mailman is the directory into which
-    you've installed Mailman.  I.e. it is /usr/local/mailman if you
-    did not use the --prefix switch when you configured Mailman,
-    otherwise it is the directory you specified with --prefix.  Note
-    that if you used --with-var-prefix then $mailman is this
-    directory.
+    In the description below, we assume that you've installed Mailman
+    in the default location, i.e. /usr/local/mailman.  If that's not
+    the case, adjust the instructions according to your use of
+    configure's --prefix and --with-var-prefix options.
 
-    - touch the file $mailman/data/aliases.db and make sure that both
-      the owner and group-owner of the file is `mailman'.  Make sure
-      that both owner and group have read and write permission.
+    - Run the genaliases script to initialize your aliases file.
+
+      % cd /usr/local/mailman
+      % bin/genaliases
+
+      Make sure that the owner of the data/aliases and data/aliases.db
+      file is `mailman' and that the group owner for those files is
+      `mailman'.  E.g.:
+
+      % su
+      % chown mailman.mailman data/aliases*
 
     - Hack your Postfix's main.cf file to include $mailman/data/aliases
       (no trailing .db) in the alias_map variable but not alias_database.
