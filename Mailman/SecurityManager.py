@@ -32,26 +32,8 @@ from Mailman import Cookie
 from Mailman import mm_cfg
 
 
-# TBD: is this the best location for the site password?
-SITE_PW_FILE = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
-
-
+
 class SecurityManager:
-    def SetSiteAdminPassword(self, pw):
-        fp = Utils.open_ex(SITE_PW_FILE, 'w', perms=0640)
-        fp.write(Crypt.crypt(pw, Utils.GetRandomSeed()))
-        fp.close()
-
-    def CheckSiteAdminPassword(self, str):
-	try:
-	    f = open(SITE_PW_FILE, "r")
-	    pw = f.read()
-	    f.close()
-	    return Crypt.crypt(str, pw) == pw
-	# There probably is no site admin password if there was an exception
-	except: 
-	    return 0
-
     def InitVars(self, crypted_password):
 	# Configurable, however, we don't pass this back in GetConfigInfo
 	# because it's a special case as it requires confirmation to change.
@@ -60,7 +42,7 @@ class SecurityManager:
 	self.passwords = {}
 
     def ValidAdminPassword(self, pw):
-	if self.CheckSiteAdminPassword(pw):
+	if Utils.CheckSiteAdminPassword(pw):
             return 1
 	return type(pw) == StringType and \
                Crypt.crypt(pw, self.password) == self.password

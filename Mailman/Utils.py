@@ -40,6 +40,7 @@ from Mailman import Errors
 ##    import md5
 ##except ImportError:
 ##    md5 = None
+from Mailman import Crypt
 
 
 
@@ -391,6 +392,21 @@ def GetRandomSeed():
             c = c - 26 + 97
         return c
     return "%c%c" % tuple(map(mkletter, (chr1, chr2)))
+
+def SetSiteAdminPassword(pw):
+    fp = open_ex(mm_cfg.SITE_PW_FILE, 'w', perms=0640)
+    fp.write(Crypt.crypt(pw, GetRandomSeed()))
+    fp.close()
+
+def CheckSiteAdminPassword(pw1):
+    try:
+        f = open(mm_cfg.SITE_PW_FILE)
+        pw2 = f.read()
+        f.close()
+        return Crypt.crypt(pw1, pw2[:2]) == pw2
+    # There probably is no site admin password if there was an exception
+    except IOError:
+        return 0
 
 
 
