@@ -472,7 +472,11 @@ def GetItemGuiValue(mlist, kind, varname, params):
         # for the fact that there is one fewer option. correspondingly,
         # we alter the value back in the change options function -scott
         #
-        checked = getattr(mlist, varname)
+        # TBD: this is an ugly ugly hack.
+        if varname[0] == '_':
+            checked = 0
+        else:
+            checked = getattr(mlist, varname)
         if varname == 'subscribe_policy' and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             checked = checked - 1
         return RadioButtonArray(varname, params, checked)
@@ -831,7 +835,17 @@ def ChangeOptions(mlist, category, cgi_info, document):
             else:
                 val = cgi_info[property].value
             value = GetValidValue(mlist, property, kind, val, deps)
-            if getattr(mlist, property) <> value:
+            #
+            # This is an ugly, ugly hack
+            if property[0] == '_':
+                # TBD: When turning on usenet->mail gating we want to
+                # automatically catch up the newsgroup otherwise the mailing
+                # list will suddently get flooded.  There should be a much
+                # better way to do this (or for the admin to specify they want
+                # this).
+                if property == '_mass_catchup' and value:
+                    mlist.usenet_watermark = None
+            elif getattr(mlist, property) <> value:
                 # TBD: Ensure that mlist.real_name differs only in letter
                 # case.  Otherwise a security hole can potentially be opened
                 # when using an external archiver.  This seems ad-hoc and
@@ -843,13 +857,6 @@ def ChangeOptions(mlist, category, cgi_info, document):
                     changed!  It must differ from the list's name by case
                     only.<p>""")
                     continue
-                # TBD: When turning on usenet->mail gating we want to
-                # automatically catch up the newsgroup otherwise the mailing
-                # list will suddently get flooded.  There should be a much
-                # better way to do this (or for the admin to specify they want
-                # this).
-                elif property == 'gateway_to_mail':
-                    mlist.usenet_watermark = None
                 setattr(mlist, property, value)
     #
     # mass subscription processing for members category
