@@ -66,29 +66,33 @@ class FileLock:
     while 1:
       os.link(self.lockfile, self.tmpfname)
       if os.stat(self.tmpfname)[3] == 2:
-         file = open(self.tmpfname, 'w+')
-         file.write(`os.getpid(),self.tmpfname`)
-         file.close()
-         self.is_locked = 1
-         break
+        file = open(self.tmpfname, 'w+')
+        file.write(`os.getpid(),self.tmpfname`)
+        file.close()
+        self.is_locked = 1
+        break
       if timeout and timeout_time < time.time():
-         raise TimeOutError
+        raise TimeOutError
       file = open(self.tmpfname, 'r')
       try:
         pid,winner = eval(file.read())
       except SyntaxError: # no info in file... *can* happen
         file.close()
+        os.unlink(self.tmpfname)
         continue
       file.close()
       if pid <> last_pid:
-         last_pid = pid
-         stime = time.time()
+        last_pid = pid
+        stime = time.time()
       if (stime + self.hung_timeout < time.time()) and self.hung_timeout > 0:
-         file = open(self.tmpfname, 'w+')
-     	 file.write(`os.getpid(),self.tmpfname`)
-	 os.unlink(winner)
-         self.is_locked = 1
-	 break
+        file = open(self.tmpfname, 'w+')
+    	file.write(`os.getpid(),self.tmpfname`)
+        try:
+          os.unlink(winner)
+        except os.error:
+          pass
+        os.unlink(self.tmpfname)
+        continue
       os.unlink(self.tmpfname)
       time.sleep(self.sleep_interval)
   # This could error if the lock is stolen.  You must catch it.
