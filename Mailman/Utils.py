@@ -568,8 +568,9 @@ def open_ex(filename, mode='r', bufsize=-1, perms=0664):
             fp = os.fdopen(fd, mode, bufsize)
             return fp
         # transform any os.errors into IOErrors
-        except os.error, e:
-            raise IOError, e
+        except OSError, e:
+            e.__class__ = IOError
+            raise IOError, e, sys.exc_info()[2]
     finally:
         os.umask(ou)
 
