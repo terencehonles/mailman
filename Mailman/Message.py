@@ -27,6 +27,7 @@ from mimelib.StringableMixin import StringableMixin
 from mimelib.address import getaddresses
 
 from Mailman import mm_cfg
+from Mailman import Utils
 
 COMMASPACE = ', '
 
@@ -63,8 +64,14 @@ class Message(mimelib.Message.Message, StringableMixin):
         for h in headers:
             # Use only the first occurrance of Sender: or From:, although it's
             # not likely there will be more than one.
-            addrs = getaddresses([self[h]])
-            realname, address = addrs[0]
+            fieldval = self[h]
+            if not fieldval:
+                continue
+            addrs = getaddresses([fieldval])
+            try:
+                realname, address = addrs[0]
+            except IndexError:
+                continue
             if address:
                 break
         else:
@@ -103,11 +110,15 @@ class UserNotification(Message):
             self.recips = [recip]
 
     def send(self, mlist, **_kws):
-        """Prepares the message for sending by enqueing it to the `virgin'
-        queue.
+        """Sends the message by enqueuing it to the `virgin' queue.
 
         This is used for all internally crafted messages.
         """
+        # Since we're crafting the message from whole cloth, let's make sure
+        # this message has a Message-ID.  Yes, the MTA would give us one, but
+        # this is useful for logging to logs/smtp.
+        if not self.has_key('message-id'):
+            self['Message-ID'] = Utils.unique_message_id(mlist)
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
         virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
