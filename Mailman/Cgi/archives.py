@@ -69,7 +69,7 @@ def GetArchiveList(list):
     if not len(dir_listing):
 	return "<h3><em>No archives are currently available.</em></h3>"
     for dir in dir_listing:
-	link = htmlformat.Link(os.path.join(list._base_archive_url, dir),
+	link = htmlformat.Link("%s/%s" % (list._base_archive_url, dir),
 			       "Volume %s" % dir[7:])
 	archive_list.AddItem(link)
 
