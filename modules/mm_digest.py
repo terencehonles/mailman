@@ -1,9 +1,11 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 505 $"
+__version__ = "$Revision: 506 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string, re
+
+SUBJ_REGARDS_PREFIX = "[rR][eE][: ]*[ ]*"
 
 DIGEST_MASTHEAD = """
 Send %(real_name)s maillist submissions to
@@ -96,33 +98,68 @@ class Digester:
 		self.members.append(addr)
 	self.Save()
 
-
 # Internal function, don't call this.
     def SaveForDigest(self, post):
 	"""Add message to index, and to the digest.  If the digest is large
 	enough when we're done writing, send it out."""
-	digest_file = open(os.path.join(self._full_path, "next-digest"),
-			   "a+")
-	topics_file = open(os.path.join(self._full_path,
-					"next-digest-topics"), 
-			   "a+")
+	ou = os.umask(002)
+	try:
+            digest_file = open(os.path.join(self._full_path, "next-digest"),
+                               "a+")
+            topics_file = open(os.path.join(self._full_path,
+                                            "next-digest-topics"), 
+                               "a+")
+	finally:
+	    os.umask(ou)
 	sender = self.QuoteMime(post.GetSenderName())
 	fromline = self.QuoteMime(post.getheader("from"))
-	subject = self.QuoteMime(post.getheader("subject"))
 	date = self.QuoteMime(post.getheader("date"))
 	body = self.QuoteMime(post.body)
+	subject = self.QuoteMime(post.getheader("subject"))
+        # Don't include the redundant subject prefix in the toc entries:
+        matched = re.match("(re:? *)?(%s)" % re.escape(self.subject_prefix),
+                           subject, re.I)
+        if matched:
+            subject = subject[:matched.start(2)] + subject[matched.end(2):]
 	topics_file.write("  %d. %s (%s)\n" % (self.next_post_number,
 					       subject, sender))
+        # We exclude specified headers *and* all "X-*" headers.
+        exclude_headers = ['received', 'errors-to']
+        kept_headers = []
+        keeping = 0
+        have_content_type = 0
+        have_content_description = 0
+        lower, split = string.lower, string.split
+        for h in post.headers:
+            if (lower(h[:2]) == "x-"
+                or lower(split(h, ':')[0]) in exclude_headers):
+                keeping = 0
+            elif (h and h[0] in [" ", "\t"]):
+                if (keeping and kept_headers):
+                    # Continuation of something we're keeping.
+                    kept_headers[-1] = kept_headers[-1] + h
+            else:
+                keeping = 1
+                if lower(h[:7]) == "content-":
+                    kept_headers.append(h)
+                    if lower(h[:12]) == "content-type":
+                        have_content_type = 1
+                    if lower(h[:19]) == "content-description":
+                        have_content_description = 1
+                else:
+                    kept_headers.append(self.QuoteMime(h))
+        if (have_content_type and not have_content_description):
+            kept_headers.append("Content-Description: %s\n" % subject)
         if self.reply_goes_to_list:
-            maybe_replyto=('Reply-To: %s\n'
-                           % self.QuoteMime(self.GetListEmail()))
-        else:
-            maybe_replyto=''            
-        digest_file.write("--%s\n\nMessage: %d"
-                          "\nFrom: %s\nDate: %s\nSubject: %s\n%s\n%s" % 
-                          (self._mime_separator, self.next_post_number,
-                           fromline, date, subject, maybe_replyto,
-                           body))
+            # Munge the reply-to - sigh.
+            kept_headers.append('Reply-To: %s\n'
+                                % self.QuoteMime(self.GetListEmail()))
+
+        # Do the save.
+        digest_file.write("--%s\n\nMessage: %d\n%s\n%s"
+                          % (self._mime_separator, self.next_post_number,
+                             string.join(kept_headers, ""),
+                             body))
 	self.next_post_number = self.next_post_number + 1
 	topics_file.close()
 	digest_file.close()    
@@ -296,7 +333,7 @@ class Digest:
         if mime:
             lines.append(dashbound)
             lines.append("Content-type: text/plain; charset=us-ascii")
-            lines.append("Content-description: Masthead (%s digest, Vol %s)"
+            lines.append("Content-description: Masthead (%s digest, %s)"
                          % (self.list.real_name, self.volinfo))
         lines.append(self.SatisfyRefs(DIGEST_MASTHEAD))
         
