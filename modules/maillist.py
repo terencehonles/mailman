@@ -104,6 +104,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.posters = []
 	self.bad_posters = []
 	self.moderated = 0
+	self.require_explicit_destination = 1
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
 				   self._internal_name[1:])
 	self.description = ''
@@ -118,7 +119,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.web_subscribe_requires_confirmation = 2
 	self.host_name = mm_cfg.DEFAULT_HOST_NAME
 
-	# Analogs to these are inited in Digester.InitVars
+	# Analogs to these are initted in Digester.InitVars
 	# Can we get this mailing list in non-digest format?
 	self.nondigestable = 1
 	self.msg_header = None
@@ -168,13 +169,18 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('moderated', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Posts have to be approved by a moderator'),
 
+ 	    ('require_explicit_destination', mm_cfg.Radio, ('No', 'Yes'), 0,
+ 	     'Posts must have list named in destination (to, cc) field'
+	     ' (anti-spam)'),
+
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
 	     'Email addresses whose posts are auto-approved '
 	     '(adding anyone to this list will make this a moderated list)'),
 
 	    ('bad_posters', mm_cfg.EmailList, (5, 30), 1,
 	     'Email addresses whose posts should always be bounced until '
-	     'you approve them, no matter what other options you have set.'),
+	     'you approve them, no matter what other options you have set'
+	     ' (anti-spam)'),
 
 	    ('closed', mm_cfg.Radio, ('Anyone', 'List members', 'No one'), 0,
 	     'Who can see the subscription list'),
@@ -369,6 +375,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return len(mm_utils.FindMatchingAddresses(address, self.members +
 						    self.digest_members))
 
+    def HasExplicitDest(self, msg):
+	"True if list name is explicitly included among the to or cc addrs."
+	# Note that host can be different!  This allows, eg, for relaying
+	# from remote lists that have the same name.  Still stringent, but
+	# offers a way to provide for remote exploders.
+	lowname = string.lower(self.real_name)
+	for recip in msg.getaddrlist('to') + msg.getaddrlist('cc'):
+	    if lowname == string.lower(string.split(recip[1], '@')[0]):
+		return 1
+	return 0
+
 #msg should be an IncomingMessage object.
     def Post(self, msg, approved=0):
 	self.IsListInitialized()
@@ -409,6 +426,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		if len(recips) > self.max_num_recipients:
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
 				    'Too many recipients.')
+ 	    if (self.require_explicit_destination and
+ 		  not self.HasExplicitDest(msg)):
+ 		self.AddRequest('post', mm_utils.SnarfMessage(msg),
+ 				'Missing explicit list destination: '
+ 				'Admin approval required.')
 	    if self.max_message_size > 0:
 		if len(msg.body)/1024. > self.max_message_size:
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
@@ -466,12 +488,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._lock_file.close()
 	self._lock_file = None
 
-def all_listpaths():
-    """Return the paths to all lists in default list directory."""
+def list_names():
+    """Return the names of all lists in default list directory."""
     got = []
-    for prospect in os.listdir(mm_cfg.LIST_DATA_DIR):
-	it = os.path.join(mm_cfg.LIST_DATA_DIR, prospect)
-	if os.path.isdir(it):
-	    got.append(it)
+    for fn in os.listdir(mm_cfg.LIST_DATA_DIR):
+	if not (
+	    os.path.exists(
+		os.path.join(os.path.join(mm_cfg.LIST_DATA_DIR, fn),
+			     'config.db'))):
+	    continue
+	got.append(fn)
     return got
-	    
