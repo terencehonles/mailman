@@ -654,13 +654,17 @@ def GetValidValue(lst, prop, my_type, val, dependant):
 ## 		return val
 ## 	return getattr(list, prop)
     elif my_type == mm_cfg.Number:
-	try:
-	    num = eval(val)
-	    if num < 0:
-		return getattr(lst, prop)
-	    return num
-	except:
-	    return getattr(lst, prop)
+        num = -1
+        try:
+            num = int(val)
+        except ValueError:
+            # TBD: a float???
+            try:
+                num = float(val)
+            except ValueError:
+                pass
+        if num < 0:
+            return getattr(lst, prop)
     else:
 	# Should never get here...
 	return val
