@@ -974,7 +974,7 @@ fi
 
 if test -z "$with_mail_gid"
 then
-    with_mail_gid=other
+    with_mail_gid="other daemon"
 fi
 echo "$ac_t""$with_mail_gid" 1>&6
 

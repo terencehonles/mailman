@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 681 $)
+AC_REVISION($Revision: 684 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -156,7 +156,7 @@ AC_ARG_WITH(mail-gid, [
 	--with-mail-gid  	specify GID mail programs run as])
 if test -z "$with_mail_gid"
 then
-    with_mail_gid=other
+    with_mail_gid="other daemon"
 fi
 AC_MSG_RESULT($with_mail_gid)
 MM_FIND_GROUP_ID(MAIL_GID, $with_mail_gid, mail_wrapper)
