@@ -23,7 +23,10 @@ import os, cgi, string, types
 from Mailman import Utils, MailList, Errors, htmlformat
 
 def main():
+    # XXX: Yuk, blech, ick
     global list
+    global form
+    global doc
 
     doc = htmlformat.Document()
 
@@ -75,6 +78,9 @@ def main():
 # because we're going to delete the element after we operate on it.
 
 def SubscribeAll():
+    # XXX: Yuk, blech, ick
+    global list
+    global form
     for i in range(len(list.requests['add_member'])):
 	comment_key = 'comment-%d' % list.requests['add_member'][0][0]
 	if form.has_key(comment_key):
@@ -83,6 +89,9 @@ def SubscribeAll():
 	    list.HandleRequest(('add_member', 0), 1)
 
 def SubscribeNone():
+    # XXX: Yuk, blech, ick
+    global list
+    global form
     for i in range(len(list.requests['add_member'])):
 	comment_key = 'comment-%d' % list.requests['add_member'][0][0]
 	if form.has_key(comment_key):
@@ -91,6 +100,9 @@ def SubscribeNone():
 	    list.HandleRequest(('add_member', 0), 0)
 
 def PrintHeader(str, error=0):
+    # XXX: blech, yuk, ick
+    global doc
+
     if error:
 	it = htmlformat.FontAttr(str, color="ff5060")
     else:
@@ -99,6 +111,9 @@ def PrintHeader(str, error=0):
     doc.AddItem('<hr>')
 
 def HandleRequests(doc):
+    # XXX: Yuk, blech, ick
+    global list
+    global form
     if not form.has_key('adminpw'):
 	PrintHeader('You need to supply the admin password '
 		    'to answer requests.', error=1)
@@ -180,8 +195,9 @@ def PrintPostRequest(val, form):
 
 
 def PrintRequests(doc):
-    # XXX: blech, yuk, ick
+    # XXX: Yuk, blech, ick
     global list
+    global form
 
     # The only types of requests we know about are add_member and post.
     # Anything else that might have gotten in here somehow we'll just
