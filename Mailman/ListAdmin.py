@@ -363,7 +363,14 @@ class ListAdmin:
             # subscribe
             assert value == mm_cfg.SUBSCRIBE
             try:
-                self.ApprovedAddMember(addr, password, digest, lang)
+                class UserDesc: pass
+                userdesc = UserDesc()
+                userdesc.address = addr
+                userdesc.fullname = fullname
+                userdesc.password = password
+                userdesc.digest = digest
+                userdesc.lang = lang
+                self.ApprovedAddMember(userdesc)
             except Errors.MMAlreadyAMember:
                 # User has already been subscribed, after sending the request
                 pass
