@@ -756,13 +756,13 @@ it will not be changed."""),
 	     'Header added to mail sent to regular list members',
 
              "Text prepended to the top of every immediately-delivery"
-             " message.  <p>" + Errors.MESSAGE_DECORATION_NOTE),
+             " message. " + Utils.maketext('headfoot.html', raw=1)),
 	    
 	    ('msg_footer', mm_cfg.Text, (4, WIDTH), 0,
 	     'Footer added to mail sent to regular list members',
 
              "Text appended to the bottom of every immediately-delivery"
-             " message.  <p>" + Errors.MESSAGE_DECORATION_NOTE),
+             " message. " + Utils.maketext('headfoot.html', raw=1)),
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
