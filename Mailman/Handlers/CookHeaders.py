@@ -228,6 +228,8 @@ def prefix_subject(mlist, msg, msgdata):
         # Once again, convert the string to unicode.
         if c is None:
             c = Charset('iso-8859-1')
+        if not isinstance(c, Charset):
+            c = Charset(c)
         if not _isunicode(s):
             codec = c.input_codec or 'ascii'
             s = unicode(s, codec, 'replace')
