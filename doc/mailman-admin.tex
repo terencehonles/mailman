@@ -1086,9 +1086,237 @@ list.
 
 \subsubsection{Sender filters}
 
-XXX HERE
+When a message is posted to the list, a series of moderation criteria are
+applied to determine the disposition of the message.  This section
+contains the modeation controls for postings from both members and
+non-members.
+
+\begin{description}
+\item[default_member_moderation]
+    Member postings are held for moderation if their \emph{moderation
+    flag} is turned on.  Note that only the list administrators can
+    change the value of a member's moderation flag.
+
+    You can control whether new members get their moderation flag
+    turned on or off by default when they subscribe to the list.  By
+    turning this flag off by default, postings by members will be
+    allowed without further intervention (barring other restrictions
+    such as size or implicit recipient lists -- see below).  By
+    turning the flag on, you can quarantine new member postings to
+    make sure that they meet your criteria for netiquette, topicality,
+    etc.  Once you determine that the new member understands the
+    community's posting rules, you can turn off their moderation flag
+    and let their postings go through unstopped.
+
+    E-newsletter style lists can also be set up by using the
+    moderation flag.  By setting the \code{member_moderation_action}
+    to \emph{Reject}, and by turning off the moderation flag for just
+    the few approved senders, your list will operate in essentially a
+    one-way direction.  Note that you'd also need to reject or discard
+    postings from non-members.
+
+\item[member_moderation_action]
+    This is the action to take for postings from a member who's
+    moderation flag is set.  For typical discussion lists, you'll
+    likely set this to \emph{Hold} so that the list moderator will get
+    a chance to manually approve, reject, or discard the message.  For
+    e-newsletter and announcement lists, you might want to set this to
+    \emph{Reject} or \emph{Discard}.
+
+    Note that when a moderated member posts to your list, and the
+    \code{member_moderation_action} is set to \emph{Hold}, the message
+    will appear on the administrative requests page.  When you dispose
+    of the message, you will be given an opportunity to clear the
+    moderation flag at the same time.   If you're quarantining new
+    posts, this makes it very convenient to both approve a new
+    member's post and de-moderate them at the same time.
+
+\item[member_moderation_notice]
+    When a member's moderation flag is turned on and
+    \code{member_moderation_action} is \emph{Reject}, this variable
+    contains the text sent in the rejection notice.
+\end{description}
+
+The next batch of variables controls what happens when non-members
+post messages to the list.  Each of these accepts one email address
+per line; regular expressions are allowed if the line starts with the
+\^ (caret) character.  These address lists are always consulted in the
+order in which they're presented on this page (i.e. accepts first,
+followed by holds, rejections, and discards).
+
+\begin{description}
+\item[accept_these_nonmembers]
+    Postings from non-members whose addresses match this list are
+    accepted, barring other list restrictions due to size, implicit
+    recipients, etc.  You might want to add alternative addresses of
+    approved posters to this list.
+
+\item[hold_these_nonmembers]
+    Postings from non-members whose addresses match this list are
+    held for moderator approval.
+
+\item[reject_these_nonmembers]
+    Postings from non-members whose addresses match this list are
+    rejected, i.e. bounced back to the original sender.  There
+    currently is no way to add additional text to the rejection
+    message.
+
+\item[discard_these_nonmembers]
+    Postings from non-members whose addresses match this list are
+    discarded, with no bounce back message.  You might want to add the
+    addresses of known spammers to this list.
+
+\item[generic_nonmember_action]
+    This variable controls what happens to non-member posts when the
+    address of the sender doesn't match any of the above four lists.
+    If you set this to \emph{Hold}, the posting will appear on the
+    administrative requests page, and you will be given an opportunity
+    to add the non-member to one of the above four lists at the same
+    time you dispose of the held message.
+
+\item[forward_auto_discards]
+    When messages from non-members are discarded, either because the
+    sender address matched \code{discard_these_nonmembers}, or because
+    \code{generic_nonmember_action} is \emph{Discard}, you can choose
+    whether such messages are forwarded to the lsit administrators or
+    not.
+\end{description}
+
+\subsubsection{Recipient Filters}
+
+The variables in this section control various filters based on the
+recipient of the message.
+
+\begin{description}
+\item[require_explicit_destination]
+    This controls whether the mailing list posting address must be
+    explicitly named in the \mailheader{To} or \mailheader{Cc}
+    recipient lists.  The main reason why it wouldn't is if the
+    message was blind-carbon-copied (i.e. \mailheader{Bcc}'d) to the
+    list.  Spammers like to do this, but sometimes legitimate messages
+    are forwarded to the list this way.
+
+    If the list is not explicitly addressed and this setting is turned
+    on, the message will be held for moderator approval.
+
+\item[acceptable_aliases]
+    This is the list of alternative addresses that are acceptable as a
+    list posting address when \code{require_explicit_destination} is
+    enabled.  This is useful for when there aliases for the main
+    posting address (e.g. \code{help@example.com} may be an alias for
+    \code{help-list@example.com}).
+
+\item[max_num_recipients]
+    This is the maximum number of explicit recipients that are allowed
+    on the posted message.  Spammers sometimes send messages with lots
+    of explicit recipients, so setting this number to a reasonable
+    value may cut down on spam.
+\end{description}
+
+\subsubsection{Spam Filters}
+
+This section provides some adjuncts to spam fighting tools; it
+doesn't replace dedicated anti-spam tools such as SpamAssassin or
+Spambayes.
+
+\begin{description}
+\item[bounce_matching_headers]
+    This variable contains header regular expressions, one per line,
+    and if any of a message's headers matches one of these patterns,
+    it will be held for moderation.  The format is a colon separated
+    header and value, where the header is case insensitive and the
+    value is any valid Python regular expression.  Lines that start
+    with \# are ignored.
+
+    This variable can be used to catch known spammers by writing
+    regexps that match against \mailheader{To} or \mailheader{Cc}
+    lines, or known-bad \mailheader{Message-ID}s.  Perhaps more useful
+    though are patterns that match headers added by spam detection
+    tools higher up in the tool chain.  For example, you might
+    configure SpamAssassin to add an \mailheader{X-Spam-Score} header
+    with between zero and 5 stars depending on the spam score.  Then
+    you can add a line to this variable like:
+
+    \begin{verbatim}
+    X-Spam-Score: [*]{3,5}
+    \end{verbatim}
+
+    This line will match from 3 to 5 stars in the value of this
+    field.
+\end{description}
 
 \subsection{The Bounce Processing Category}
+
+These policies control the automatic bounce processing system in
+Mailman.  Here's an overview of how it works:
+
+When a bounce is received, Mailman tries to extract two pieces of
+information from the message: the address of the member the message
+was intended for, and the severity of the problem causing the bounce.
+The severity can be either \emph{hard} for fatal errors, or
+\emph{soft} for transient errors.  When in doubt, a hard severity is
+used.
+
+If no member address can be extracted from the bounce, then the bounce
+message is usually discarded.  Every member has a \emph{bounce score},
+initialized at zero, and every time we encounter a bounce from a
+member we increment that member's score.  Hard bounces increment by 1
+while soft bounces increment by 0.5.  We only increment the bounce
+score once per day, so even if we receive ten hard bounces from a
+member per day, their score will increase by only 1 for that day.
+
+When a member's bounce score is greater than the \emph{bounce score
+threshold} (see below), the member's subscription is disabled.  Once
+disabled, the member will not receive any postings from the list until
+their membership is explicitly re-enabled, either by the list
+administrator or the user.  However, they will receive occasional
+reminders that their membership has been disabled, and these reminders
+will include information about how to re-enable their membership.  You
+can control both the number of reminders the member will receive and
+the frequency with which these reminders are sent.
+
+There is one other important configuration variable; after a certain
+period of time -- during which no bounces from the member are received
+-- the bounce information is considered stale and discarded.  Thus by
+adjusting this value, and the score threshold, you can control how
+quickly bouncing members are disabled.  You should tune both of these
+to the frequency and traffic volume of your list.
+
+\begin{description}
+
+\item[bounce_processing]
+    Specifies whether or not this list should do automatic bounce
+    processing.
+
+\item[bounce_score_threshold]
+    This is the bounce score above which a member's subscription will
+    be automatically disabled.  When the subscription is re-enabled,
+    their bounce score will be reset to zero.  This value can be a
+    floating point number.
+
+\item[bounce_info_stale_after]
+    Thenumber of days after which a member's bounce information is
+    considered stale.  If no new bounces have been received in the
+    interrim, the bounce score is reset to zero.  This value must be
+    an integer.
+
+\item[bounce_you_are_disabled_warnings]
+    The number of notices a disabled member will receive before their
+    address is removed from the mailing list's roster.  Set this to 0
+    to immediately remove an address from the list once their bounce
+    score exceeds the threshold.  This value must be an integer.
+
+\item[bounce_you_are_disabled_warnings_interval]
+    The number of days between each disabled notification.
+
+\item[bounce_unrecognized_goes_to_list_owner]
+    This variable controls whether unrecognized bounces are discarded,
+    or forwarded on the list administrator.  The bounce detector isn't
+    perfect, although personalization can make it much more accurate.
+    The list owner may want to receive unrecognized bounces so that
+    they can manually disable or remove such members.
+\end{description}
+
 \subsection{The Archiving Options Category}
 \subsection{The Mail/News Gateway Category}
 \subsection{The Auto-responder Category}
