@@ -93,7 +93,7 @@ def main(args):
     a_public_list = None
     for name in Utils.list_names():
 	list = MailList.MailList(name, lock = 0)
-        if not a_public_list and not list.advertised:
+        if not a_public_list and list.advertised:
             a_public_list = list
 	list_name = list.real_name
 	umbrella_list = list.umbrella_list
