@@ -1,4 +1,4 @@
-您寄到列表 '%(list_name)s' 的邮件 , 标题为 :
+您寄到列表 '%(listname)s' 的邮件 , 标题为 :
 
     %(subject)s
 

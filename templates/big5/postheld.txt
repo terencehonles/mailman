@@ -1,4 +1,4 @@
-您寄到論壇 '%(list_name)s' 的郵件 , 標題為 :
+您寄到論壇 '%(listname)s' 的郵件 , 標題為 :
 
     %(subject)s
 

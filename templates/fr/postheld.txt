@@ -1,4 +1,4 @@
-Votre courrier à '%(list_name)s' dont l'objet est
+Votre courrier à '%(listname)s' dont l'objet est
 
     %(subject)s
 
