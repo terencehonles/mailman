@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Sat Oct 27 01:18:45 2001\n"
+"POT-Creation-Date: Fri Nov  2 18:27:42 2001\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,11 +121,11 @@ msgstr ""
 msgid "%(hostname)s mailing lists - Admin Links"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:235 Mailman/Cgi/listinfo.py:97
+#: Mailman/Cgi/admin.py:235 Mailman/Cgi/listinfo.py:95
 msgid "Welcome!"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:238 Mailman/Cgi/listinfo.py:100
+#: Mailman/Cgi/admin.py:238 Mailman/Cgi/listinfo.py:98
 msgid "Mailman"
 msgstr ""
 
@@ -164,16 +164,16 @@ msgstr ""
 msgid "<p>(Send questions and comments to "
 msgstr ""
 
-#: Mailman/Cgi/admin.py:276 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:147
+#: Mailman/Cgi/admin.py:276 Mailman/Cgi/listinfo.py:130 cron/mailpasswds:147
 msgid "List"
 msgstr ""
 
 #: Mailman/Cgi/admin.py:277 Mailman/Cgi/admin.py:546
-#: Mailman/Cgi/listinfo.py:133
+#: Mailman/Cgi/listinfo.py:131
 msgid "Description"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:283 Mailman/Cgi/listinfo.py:139 bin/list_lists:103
+#: Mailman/Cgi/admin.py:283 Mailman/Cgi/listinfo.py:137 bin/list_lists:103
 msgid "[no description available]"
 msgstr ""
 
@@ -884,7 +884,7 @@ msgstr ""
 msgid "Preferred language:"
 msgstr ""
 
-#: Mailman/Cgi/confirm.py:220 Mailman/Cgi/listinfo.py:171
+#: Mailman/Cgi/confirm.py:220 Mailman/Cgi/listinfo.py:169
 msgid "Subscribe"
 msgstr ""
 
@@ -1325,13 +1325,13 @@ msgstr ""
 msgid "%(hostname)s Mailing Lists"
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:103
+#: Mailman/Cgi/listinfo.py:101
 msgid ""
 "<p>There currently are no publicly-advertised\n"
 "            %(mailmanlink)s mailing lists on %(hostname)s."
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:107
+#: Mailman/Cgi/listinfo.py:105
 msgid ""
 "<p>Below is a listing of all the public mailing lists on\n"
 "            %(hostname)s.  Click on a list name to get more information about\n"
@@ -1339,11 +1339,11 @@ msgid ""
 "            on your subscription."
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:113
+#: Mailman/Cgi/listinfo.py:111
 msgid "right"
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:116
+#: Mailman/Cgi/listinfo.py:114
 msgid ""
 " To visit the info page for an unadvertised list,\n"
 "        a URL similar to this one, but with a '/' and the %(adj)s\n"
@@ -1351,21 +1351,21 @@ msgid ""
 "        <p>List administrators, you can visit "
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:121
+#: Mailman/Cgi/listinfo.py:119
 msgid "the list admin overview page"
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:122
+#: Mailman/Cgi/listinfo.py:120
 msgid ""
 " to find the management interface for your list.\n"
 "         <p>Send questions or comments to "
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:180
+#: Mailman/Cgi/listinfo.py:178
 msgid "Edit Options"
 msgstr ""
 
-#: Mailman/Cgi/listinfo.py:183 Mailman/Cgi/roster.py:109
+#: Mailman/Cgi/listinfo.py:181 Mailman/Cgi/roster.py:109
 msgid "View this page in"
 msgstr ""
 
@@ -1819,47 +1819,47 @@ msgstr ""
 msgid "You have been successfully subscribed to the %(realname)s mailing list."
 msgstr ""
 
-#: Mailman/Defaults.py:912
+#: Mailman/Defaults.py:922
 msgid "Traditional Chinese"
 msgstr ""
 
-#: Mailman/Defaults.py:913
+#: Mailman/Defaults.py:923
 msgid "German"
 msgstr ""
 
-#: Mailman/Defaults.py:914
+#: Mailman/Defaults.py:924
 msgid "English (USA)"
 msgstr ""
 
-#: Mailman/Defaults.py:915
+#: Mailman/Defaults.py:925
 msgid "Spanish (Spain)"
 msgstr ""
 
-#: Mailman/Defaults.py:916
+#: Mailman/Defaults.py:926
 msgid "French"
 msgstr ""
 
-#: Mailman/Defaults.py:917
+#: Mailman/Defaults.py:927
 msgid "Simplified Chinese"
 msgstr ""
 
-#: Mailman/Defaults.py:918
+#: Mailman/Defaults.py:928
 msgid "Hungarian"
 msgstr ""
 
-#: Mailman/Defaults.py:919
+#: Mailman/Defaults.py:929
 msgid "Italian"
 msgstr ""
 
-#: Mailman/Defaults.py:920
+#: Mailman/Defaults.py:930
 msgid "Japanese"
 msgstr ""
 
-#: Mailman/Defaults.py:921
+#: Mailman/Defaults.py:931
 msgid "Norwegian"
 msgstr ""
 
-#: Mailman/Defaults.py:922
+#: Mailman/Defaults.py:932
 msgid "Russian"
 msgstr ""
 
@@ -3457,8 +3457,8 @@ msgid ""
 "delivery.  The original message as received by Mailman is attached.\n"
 msgstr ""
 
-#: Mailman/Handlers/Decorate.py:48 Mailman/Handlers/Scrubber.py:120
-#: Mailman/Handlers/Scrubber.py:121
+#: Mailman/Handlers/Decorate.py:48 Mailman/Handlers/Scrubber.py:133
+#: Mailman/Handlers/Scrubber.py:134
 msgid "not available"
 msgstr ""
 
@@ -3610,13 +3610,13 @@ msgstr ""
 msgid "HTML attachment scrubbed and removed"
 msgstr ""
 
-#: Mailman/Handlers/Scrubber.py:104
+#: Mailman/Handlers/Scrubber.py:95 Mailman/Handlers/Scrubber.py:117
 msgid ""
-"An HTML attachment was scrubbed.\n"
+"An HTML attachment was scrubbed...\n"
 "URL: %(url)s\n"
 msgstr ""
 
-#: Mailman/Handlers/Scrubber.py:122
+#: Mailman/Handlers/Scrubber.py:135
 msgid ""
 "A non-text attachment was scrubbed...\n"
 "Name: %(filename)s\n"
