@@ -218,8 +218,8 @@ class Article(pipermail.Article):
 
         # Snag the content-* headers.  RFC 1521 states that their values are
         # case insensitive.
-        ctype = message.getheader('Content-Type') or "text/plain"
-        cenc = message.getheader('Content-Transfer-Encoding')
+        ctype = message.getheader('Content-Type', 'text/plain')
+        cenc = message.getheader('Content-Transfer-Encoding', '')
         self.ctype = string.lower(ctype)
         self.cenc = string.lower(cenc)
         self.decoded = {}
