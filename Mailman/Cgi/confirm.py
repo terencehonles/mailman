@@ -313,7 +313,7 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             userdesc = Pending.confirm(cookie, expunge=0)[1]
             fullname = cgidata.getvalue('realname', None)
             if fullname is not None:
-                fullname = Utils.canonstr(fullname)
+                fullname = Utils.canonstr(fullname, lang)
             overrides = UserDesc(fullname=fullname, digest=digest, lang=lang)
             userdesc += overrides
             op, addr, pw, digest, lang = mlist.ProcessConfirmation(
