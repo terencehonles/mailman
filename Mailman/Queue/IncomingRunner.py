@@ -16,64 +16,82 @@
 
 """Incoming queue runner."""
 
-# A typical Mailman list exposes seven aliases which point to four different
+# A typical Mailman list exposes nine aliases which point to seven different
 # wrapped scripts.  E.g. for a list named `mylist', you'd have:
 #
+# mylist-bounces -> bounces (-admin is a deprecated alias)
+# mylist-confirm -> confirm
+# mylist-join    -> join    (-subscribe is an alias)
+# mylist-leave   -> leave   (-unsubscribe is an alias)
+# mylist-owner   -> owner
 # mylist         -> post
-# mylist-admin   -> bounces
-# mylist-request -> mailcmd
-# mylist-join    -> mailcmd
-# mylist-leave   -> mailcmd
-# mylist-owner   -> mailowner
-# mylist-bounces -> bounces
+# mylist-request -> request
 #
-# mylist-request is a robot address; its sole purpose is to process emailed
-# commands in a Majordomo-like fashion.  mylist-admin is supposed to reach the
-# list owners, but it performs one vital step before list owner delivery - it
-# examines the message for bounce content.  mylist-owner is the fallback for
-# delivery to the list owners; it performs no bounce detection, but it /does/
-# look for bounce loops, which can occur if a list owner address is bouncing.
-# mylist-bounces is a reception robot that receives all normal delivery
-# bounces.  Its messages are not handled by the incoming qrunner.
+# -request, -join, and -leave are a robot addresses; their sole purpose is to
+# process emailed commands in a Majordomo-like fashion (although the latter
+# two are hardcoded to subscription and unsubscription requests).  -bounces is
+# the automated bounce processor, and all messages to list members have their
+# return address set to -bounces.  If the bounce processor fails to extract a
+# bouncing member address, it can optionally forward the message on to the
+# list owners.
+#
+# -owner is for reaching a human operator with minimal list interaction
+# (i.e. no bounce processing).  -confirm is another robot address which
+# processes replies to VERP-like confirmation notices.
 #
 # So delivery flow of messages look like this:
 #
 # joerandom ---> mylist ---> list members
 #    |                           |
 #    |                           |[bounces]
-#    +-------> mylist-admin <----+ <-------------------------------+
+#    |        mylist-bounces <---+ <-------------------------------+
 #    |              |                                              |
 #    |              +--->[internal bounce processing]              |
-#    |                               |                             |
-#    |                               |    [bounce found]           |
-#    |                               +--->[register and discard]   |
-#    |                               |                             |
-#    |                               |     [no bounce found]       |
-#    |                               +---> list owners <------+    |
-#    |                                          |             |    |
-#    |                                          |[bounces]    |    |
-#    +-------> mylist-owner <-------------------+             |    |
-#    |              |                                         |    |
-#    |              |     [bounce loop detected]              |    |
-#    |              +---> [log and discard]                   |    |
-#    |              |                                         |    |
-#    |              +-----------------------------------------+    |
-#    |               [no bounce loop detected]                     |
+#    |              ^                |                             |
+#    |              |                |    [bounce found]           |
+#    |         [bounces *]           +--->[register and discard]   |
+#    |              |                |                      |      |
+#    |              |                |                      |[*]   |
+#    |        [list owners]          |[no bounce found]     |      |
+#    |              ^                |                      |      |
+#    |              |                |                      |      |
+#    +-------> mylist-owner <--------+                      |      |
+#    |                                                      |      |
+#    |           data/owner-bounces.mbox <--[site list] <---+      |
 #    |                                                             |
-#    |                                                             |
+#    +-------> mylist-join--+                                      |
+#    |                      |                                      |
+#    +------> mylist-leave--+                                      |
+#    |                      |                                      |
+#    |                      v                                      |
 #    +-------> mylist-request                                      |
-#                   |                                              |
-#                   +---> [command processor]                      |
-#                                 |                                |
-#                                 +---> joerandom                  |
+#    |              |                                              |
+#    |              +---> [command processor]                      |
+#    |                            |                                |
+#    +-----> mylist-confirm ----> +---> joerandom                  |
 #                                           |                      |
 #                                           |[bounces]             |
 #                                           +----------------------+
 #
-# With Mailman 2.1 we're splitting the normal incoming mail from the
-# owner/admin/request mail because we'd like to be able to tune each queue
-# separately.  The IncomingRunner handles only mail sent to the list, which
-# ends up in qfiles/in
+# A person can send an email to the list address (for posting), the -owner
+# address (to reach the human operator), or the -confirm, -join, -leave, and
+# -request mailbots.  Message to the list address are then forwarded on to the
+# list membership, with bounces directed to the -bounces address.
+#
+# [*] Messages sent to the -owner address are forwarded on to the list
+# owner/moderators.  All -owner destined messages have their bounces directed
+# to the site list -bounces address, regardless of whether a human sent the
+# message or the message was crafted internally.  The intention here is that
+# the site owners want to be notified when one of their list owners' addresses
+# starts bouncing (yes, the will be automated in a future release).
+#
+# Any messages to site owners has their bounces directed to a special
+# "loop-killer" address, which just dumps the message into
+# data/owners-bounces.mbox.
+#
+# Finally, message to any of the mailbots causes the requested action to be
+# performed.  Results notifications are sent to the author of the message,
+# which all bounces pointing back to the -bounces address.
 
 
 import sys
