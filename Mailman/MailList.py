@@ -1150,7 +1150,7 @@ it will not be changed."""),
                         HandlerAPI.DeliverToUser(self, msg)
         return result
 
-    def DeleteMember(self, name, whence=None, admin_notif=None):
+    def DeleteMember(self, name, whence=None, admin_notif=None, userack=1):
 	self.IsListInitialized()
         # FindMatchingAddresses *should* never return more than 1 address.
         # However, should log this, just to make sure.
@@ -1179,7 +1179,7 @@ it will not be changed."""),
 		pass
 
 	map(DoActualRemoval, aliases)
-	if self.goodbye_msg and len(self.goodbye_msg):
+	if userack and self.goodbye_msg and len(self.goodbye_msg):
 	    self.SendUnsubscribeAck(name)
 	self.ClearBounceInfo(name)
 	self.Save()
