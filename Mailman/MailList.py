@@ -996,7 +996,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
         # Change the membership for the current list first.  We don't lock and
         # save ourself since we assume that the list is already locked.
-        self.changeMemberAddress(oldaddr, newaddr)
+        if self.isMember(newaddr):
+            # Just delete the old address
+            if self.isMember(oldaddr):
+                self.ApprovedDeleteMember(oldaddr, admin_notif=1, userack=1)
+        else:
+            self.changeMemberAddress(oldaddr, newaddr)
         # If globally is true, then we also include every list for which
         # oldaddr is a member.
         if not globally:
