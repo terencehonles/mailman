@@ -160,7 +160,11 @@ CREATE YOUR FIRST LIST
 
     - Now visit the list's admin page (either by following the link on
       the web page or entering the link from the email Mailman just
-      sent you).  Type in the list's password and click on "Let me in..."
+      sent you).  Typically the url will be something like
+
+        http://my.dom.ain/mailman/admin/mysitelist
+
+      Type in the list's password and click on "Let me in..."
     
     - Click on "Membership Management" and then on "Mass Subscription".
 
