@@ -32,12 +32,25 @@ def process(mlist, msg, msgdata):
     newpipeline = ['Decorate', 'ToOutgoing']
     inq = get_switchboard(mm_cfg.INQUEUE_DIR)
 
+    # Save the original To: line
+    originalto = msg['To']
+    
     for member in msgdata.get('recips', []):
         metadatacopy = msgdata.copy()
         metadatacopy['pipeline'] = newpipeline
         metadatacopy['recips'] = [member]
         metadatacopy['personalized'] = 1
+        del msg['To']
+        name = mlist.getMemberName(member)
+        if name:
+            msg['To'] = '%s (%s)' % (member, name)
+        else:
+            msg['To'] = member
         inq.enqueue(msg, metadatacopy, listname=mlist.internal_name())
+
+    # Restore the original To: line
+    del msg['To']
+    msg['To'] = originalto
 
     # Don't let the normal ToOutgoing processing actually send the original
     # copy.
