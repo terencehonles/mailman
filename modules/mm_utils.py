@@ -102,7 +102,7 @@ def wrap(text, column=70):
         # wrap each line
         for text in lines:
             while text:
-                if len(text) < column:
+                if len(text) <= column:
                     line = text
                     text = ''
                 else:
