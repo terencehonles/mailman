@@ -26,11 +26,13 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
+from Mailman import Message
 from Mailman.UserDesc import UserDesc
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
 SLASH = '/'
+ERRORSEP = '\n\n<p>'
 
 # Set up i18n
 _ = i18n._
@@ -95,112 +97,154 @@ def main():
 
 
 def process_form(mlist, doc, cgidata, lang):
-    error = 0
-    results = ''
+    realname = mlist.real_name
+    results = []
 
-    if not cgidata.has_key('email'):
-        error = 1
-        results += _("You must supply a valid email address.<br>")
-        # define email so we don't get a NameError below
-        # with if email == mlist.GetListEmail() -scott
-        email = ''
-    else:
-        email = cgidata['email'].value
+    # The email address being subscribed, required
+    email = cgidata.getvalue('email', '')
+    if not email:
+        results.append(_('You must supply a valid email address.'))
 
+    # The full name of the subscribee, optional
     fullname = cgidata.getvalue('fullname', '')
 
-    remote = remote_addr()
+    # Who was doing the subscribing?
+    remote = os.environ.get('REMOTE_HOST',
+                            os.environ.get('REMOTE_ADDR',
+                                           'unidentified origin'))
+
+    # Was an attempt made to subscribe the list to itself?
     if email == mlist.GetListEmail():
-        error = 1
-        if remote:
-            remote = _("Web site ") + remote
-        else:
-            remote = _("unidentified origin")
-        badremote = "\n\tfrom " + remote
-        syslog('mischief', 'Attempt to self subscribe %s:%s', email, badremote)
-        results += _('You must not subscribe a list to itself!<br>')
+        syslog('mischief', 'Attempt to self subscribe %s: %s', email, remote)
+        results.append(_('You may not subscribe a list to itself!'))
 
     # If the user did not supply a password, generate one for him
-    if cgidata.has_key('pw'):
-        password = cgidata['pw'].value
-    else:
-        password = None
-    if cgidata.has_key('pw-conf'):
-        confirmed = cgidata['pw-conf'].value
-    else:
-        confirmed = None
+    password = cgidata.getvalue('pw')
+    confirmed = cgidata.getvalue('pw-conf')
 
     if password is None and confirmed is None:
         password = Utils.MakeRandomPassword()
     elif password is None or confirmed is None:
-        error = 1
-        results += _('If you supply a password, you must confirm it.<br>')
+        results.append(_('If you supply a password, you must confirm it.'))
     elif password <> confirmed:
-        error = 1
-        results += _('Your passwords did not match.<br>')
+        results.append(_('Your passwords did not match.'))
 
     # Get the digest option for the subscription.
-    if cgidata.has_key('digest'):
+    digestflag = cgidata.getvalue('digest')
+    if digestflag:
         try:
-            digest = int(cgidata['digest'].value)
+            digest = int(digestflag)
         except ValueError:
-            # TBD: Hmm, this shouldn't happen
             digest = 0
     else:
         digest = mlist.digest_is_default
 
+    # Sanity check based on list configuration.  BAW: It's actually bogus that
+    # the page allows you to set the digest flag if you don't really get the
+    # choice. :/
     if not mlist.digestable:
         digest = 0
     elif not mlist.nondigestable:
         digest = 1
 
-    if not error:
-        try:
-            if mlist.isMember(email):
-                raise Errors.MMAlreadyAMember, email
-            userdesc = UserDesc(email, fullname, password, digest, lang)
-            mlist.AddMember(userdesc, remote)
-        # check for all the errors that mlist.AddMember can throw
-        # options  on the web page for this cgi
-        except Errors.MMBadEmailError:
-            results += (_("""\
-Mailman won't accept the given email address as a valid address.
-(E.g it must have an @ in it.)<p>"""))
-        except Errors.MMListError:
-            results += (_("""\
-The list is not fully functional, and can not accept subscription
-requests.<p>"""))
-        except Errors.MMSubscribeNeedsConfirmation:
-             results += (_("""\
+    if results:
+        print_results(mlist, ERRORSEP.join(results), doc, lang)
+        return
+
+    # If this list has private rosters, we have to be careful about the
+    # message that gets printed, otherwise the subscription process can be
+    # used to mine for list members.  It may be inefficient, but it's still
+    # possible, and that kind of defeats the purpose of private rosters.
+    # We'll use this string for all successful or unsuccessful subscription
+    # results.
+    if mlist.private_roster == 0:
+        # Public rosters
+        privacy_results = ''
+    else:
+        privacy_results = _("""\
+Your subscription request has been received, and will soon be acted upon.
+Depending on the configuration of this mailing list, your subscription request
+may have to be first confirmed by you via email, or approved by the list
+moderator.  If confirmation is required, you will soon get a confirmation
+email which contains further instructions.""")
+
+    try:
+        userdesc = UserDesc(email, fullname, password, digest, lang)
+        mlist.AddMember(userdesc, remote)
+        results = ''
+    # Check for all the errors that mlist.AddMember can throw options on the
+    # web page for this cgi
+    except Errors.MMBadEmailError:
+        results = _("""\
+The email address you supplied is not valid.  (E.g. it must contain an
+`@'.)""")
+    except Errors.MMHostileAddress:
+        results = _("""\
+Your subscription is not allowed because the email address you gave is
+insecure.""")
+    except Errors.MMSubscribeNeedsConfirmation:
+        # Results string depends on whether we have private rosters or not
+        if privacy_results:
+            results = privacy_results
+        else:
+            results = _("""\
 Confirmation from your email address is required, to prevent anyone from
 subscribing you without permission.  Instructions are being sent to you at
-%(email)s. Please note your subscription will not start until you confirm your
-subscription."""))
-        except Errors.MMNeedApproval, x:
-            # We need to interpolate into x
-            realname = mlist.real_name
-            x = _(x)
-            results += (_("""\
-Subscription was <em>deferred</em> because %(x)s.  Your request has been
-forwarded to the list moderator.  You will receive email informing you of
-the moderator's decision when they get to your request.<p>"""))
-        except Errors.MMHostileAddress:
-            results += (_("""\
-Your subscription is not allowed because the email address you gave is
-insecure.<p>"""))
-        except Errors.MMAlreadyAMember:
-            results += _("You are already subscribed!<p>")
-        #
-        # these shouldn't happen, but if someone's futzing with the cgi
-        # they might -scott
-        #
-        except Errors.MMCantDigestError:
-            results += _("No one can subscribe to the digest of this list!")
-        except Errors.MMMustDigestError:
-            results += _("This list only supports digest subscriptions!")
+%(email)s.  Please note your subscription will not start until you confirm
+your subscription.""")
+    except Errors.MMNeedApproval, x:
+        # Results string depends on whether we have private rosters or not
+        if privacy_results:
+            results = privacy_results
         else:
-            rname = mlist.real_name
-            results += _("You have been successfully subscribed to %(rname)s.")
+            # We need to interpolate into x
+            x = _(x)
+            results = _("""\
+Your subscription request was deferred because %(x)s.  Your request has been
+forwarded to the list moderator.  You will receive email informing you of the
+moderator's decision when they get to your request.""")
+    except Errors.MMAlreadyAMember:
+        # Results string depends on whether we have private rosters or not
+        if not privacy_results:
+            results = _('You are already subscribed.')
+        else:
+            results = privacy_results
+            # This could be a membership probe.  For safety, let the user know
+            # a probe occurred.  BAW: should we inform the list moderator?
+            listaddr = mlist.GetListEmail()
+            listowner = mlist.GetOwnerEmail()
+            msg = Message.UserNotification(
+                mlist.getMemberCPAddress(email),
+                mlist.GetAdminEmail(),
+                _('Mailman privacy alert'),
+                _("""\
+An attempt was made to subscribe your address to the mailing list
+%(listaddr)s.  You are already subscribed to this mailing list.
+
+Note that the list membership is not public, so it is possible that a bad
+person was trying to probe the list for its membership.  This would be a
+privacy violation if we let them do this, but we didn't.
+
+If you submitted the subscription request and forgot that you were already
+subscribed to the list, then you can ignore this message.  If you suspect that
+an attempt is being made to covertly discover whether you are a member of this
+list, and you are worried about your privacy, then feel free to send a message
+to the list administrator at %(listowner)s.
+"""))
+            msg.send(mlist)
+    # These shouldn't happen unless someone's tampering with the form
+    except Errors.MMCantDigestError:
+        results = _('This list does not support digest delivery.')
+    except Errors.MMMustDigestError:
+        results = _('This list only supports digest delivery.')
+    else:
+        # Everything's cool.  Our return string actually depends on whether
+        # this list has private rosters or not
+        if privacy_results:
+            results = privacy_results
+        else:
+            results = _("""\
+You have been successfully subscribed to the %(realname)s mailing list.""")
     # Show the results
     print_results(mlist, results, doc, lang)
 
@@ -208,7 +252,7 @@ insecure.<p>"""))
 
 def print_results(mlist, results, doc, lang):
     # The bulk of the document will come from the options.html template, which
-    # includes it's own html armor (head tags, etc.).  Suppress the head that
+    # includes its own html armor (head tags, etc.).  Suppress the head that
     # Document() derived pages get automatically.
     doc.suppress_head = 1
 
@@ -217,14 +261,3 @@ def print_results(mlist, results, doc, lang):
     output = mlist.ParseTags('subscribe.html', replacements, lang)
     doc.AddItem(output)
     print doc.Format()
-
-
-
-def remote_addr():
-    "Try to return the remote addr, or if unavailable, None."
-    if os.environ.has_key('REMOTE_HOST'):
-        return os.environ['REMOTE_HOST']
-    elif os.environ.has_key('REMOTE_ADDR'):
-        return os.environ['REMOTE_ADDR']
-    else:
-        return None
