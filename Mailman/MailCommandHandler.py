@@ -28,6 +28,7 @@ import Message
 import Errors
 import mm_cfg
 import Utils
+import traceback
 
 
 option_descs = { 'digest' :
@@ -175,8 +176,9 @@ class MailCommandHandler:
 	    self.AddError("Usage: password <oldpw> <newpw>")
 	    return
 	try:
-	    self.ChangeUserPassword(mail.GetSender(),
-				    args[0], args[1], args[1])
+            who = mail.GetSender()
+            self.ConfirmUserPassword(who, args[0])
+	    self.ChangeUserPassword(mail.GetSender(), args[1], args[1])
 	    self.AddToResponse('Succeeded.')
 	except Errors.MMListNotReady:
 	    self.AddError("List is not functional.")
@@ -186,10 +188,14 @@ class MailCommandHandler:
 	except Errors.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
 	except:
-	    self.AddError("An unknown Mailman error occured.")
+            exc = sys.exc_info()
+	    self.AddError("An unknown Mailman error occured."
 	    self.AddError("Please forward on your request to %s" %
 			  self.GetAdminEmail())
-	    self.AddError("%s" % sys.exc_type)
+            self.LogMsg("error",
+                        "MailCommandHandler.ProcessPasswordCmd():\n%s%s, %s",
+                        string.join(traceback.format_tb(exc[2])),
+                        exc[0], exc[1])
 
     def ProcessOptionsCmd(self, args, cmd, mail):
 	sender = self.FindUser(mail.GetSender())
