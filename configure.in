@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 2144 $)
+AC_REVISION($Revision: 2148 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -331,6 +331,8 @@ for h in aliases:
             www = h
         elif not fqdn:
             fqdn = h
+    if www and fqdn:
+        break
 fp = open('conftest.out', 'w')
 if not www and fqdn:
     fp.write('%s\n%s\n' % (fqdn, fqdn))
