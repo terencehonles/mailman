@@ -115,7 +115,7 @@ DELIVERY_MODULE = 'SMTPDirect'
 SENDMAIL_CMD = '/usr/lib/sendmail'
 
 # SMTP host and port, when DELIVERY_MODULE is 'SMTPDirect'
-SMTPHOST	  = '@URL@'
+SMTPHOST	  = 'localhost'
 SMTPPORT          = 0                             # default from smtplib
 
 # 1 to use crypt for passwords instead of md5.
@@ -281,6 +281,13 @@ ADMIN_COOKIE_LIFE = 60 * 60 * 3         # 3 hours
 # dropped.
 PENDING_REQUEST_LIFE = 60 * 60 * 24 * 3 # 3 days
 
+# How long is the default lifetime for the MailList object lock, in seconds?
+# Set this variable too low, and a slow machine might give timeout erors, but
+# set too high, and a faulty script (or faulty use of bin/withlist) can
+# prevent the list from being used for this long.  Find the right tradeoff for
+# your system.
+LIST_LOCK_LIFETIME = 120
+
 # how many members to display at a time on the admin cgi to unsubscribe
 # them or change their options.
 DEFAULT_ADMIN_MEMBER_CHUNKSIZE = 30
@@ -344,6 +351,7 @@ CGI_DIR 	= os.path.join(EXEC_PREFIX, 'cgi-bin')
 LOG_DIR 	= os.path.join(PREFIX, 'logs')
 LOCK_DIR	= os.path.join(PREFIX, 'locks')
 DATA_DIR	= os.path.join(PREFIX, 'data')
+QUEUE_DIR       = os.path.join(PREFIX, 'qfiles')
 WRAPPER_DIR	= os.path.join(EXEC_PREFIX, 'mail')
 SCRIPTS_DIR	= os.path.join(PREFIX, 'scripts')
 TEMPLATE_DIR	= os.path.join(PREFIX, 'templates')
