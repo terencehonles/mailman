@@ -1,5 +1,8 @@
 #!/usr/local/bin/python 
 # 
+# NOTE: This is being deprecated since mailman has been shifted over to an
+#       external archiver (ie, andrew kuchling's latest version of pipermail.)
+#
 # This script gets called by cron.
 # It updates the archive for all mailing lists with update-frequency equal
 # to or greater than the specified archive level.
