@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 476 $"
+__version__ = "$Revision: 501 $"
 
 try:
     import mm_cfg
@@ -205,12 +205,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
 	     'Are replies to a post directed to the original poster'
-	     ' or to the list?',
+	     ' or to the list?  <tt>Poster</tt> is <em>strongly</em>'
+             ' recommended.'
 
-             "List postings include headers which designate where replies"
-             " to the posts are directed.  This option picks whether the"
-             " headers should be contrived to direct the replies to the"
-             " original poster or to the list as a whole."),
+             "There are many reasons not to introduce headers like reply-to"
+             " into other peoples messages - one is that some posters depend"
+             " on their own reply-to setting to convey their valid email"
+             " addr.  See"
+             ' <a href="http://www.unicom.com/pw/reply-to-harmful.html">'
+             '"Reply-To" Munging Considered Harmful</a> for a general.'
+             " discussion of this issue."),
 
 	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Should administrator get immediate notifice of new requests, '
