@@ -44,6 +44,10 @@ class BounceTest(unittest.TestCase):
         ('SimpleWarning', 'simple_03.txt', ['jacobus@geo.co.za']),
         # GroupWise
         ('GroupWise', 'groupwise_01.txt', ['thoff@MAINEX1.ASU.EDU']),
+        # This one really sucks 'cause it's text/html.  Just make sure it
+        # doesn't throw an exception, but we won't get any meaningful
+        # addresses back from it.
+        ('GroupWise', 'groupwise_02.txt', []),
         # Yale's own
         ('Yale', 'yale_01.txt', ['thomas.dtankengine@cs.yale.edu',
                                  'thomas.dtankengine@yale.edu']),
