@@ -431,7 +431,7 @@ def show_helds_overview(mlist, form):
             left.AddRow([
                 CheckBox('senderfilterp-' + qsender, 1).Format() +
                 '&nbsp;' +
-                _('Add <b>%(esender)s</b> to a sender filter')
+                _('Add <b>%(esender)s</b> to one of these sender filters:')
                 ])
             left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
             btns = hacky_radio_buttons(
