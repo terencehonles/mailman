@@ -91,18 +91,20 @@ replacements['<mm-hide-subscription-button>'] = list.FormatOptionButton(
 	mm_cfg.ConcealSubscription, 1, user)
 
 replacements['<mm-digest-submit>'] = list.FormatButton('setdigest',
-                                                       'Submit')
+                                                       'Submit My Changes')
 replacements['<mm-unsubscribe-button>'] = list.FormatButton('unsub', 'Unsubscribe')
 replacements['<mm-digest-pw-box>'] = list.FormatSecureBox('digpw')
 replacements['<mm-unsub-pw-box>'] = list.FormatSecureBox('upw')
 replacements['<mm-old-pw-box>'] = list.FormatSecureBox('opw')
 replacements['<mm-new-pass-box>'] = list.FormatSecureBox('newpw')
 replacements['<mm-confirm-pass-box>'] = list.FormatSecureBox('confpw')
-replacements['<mm-change-pass-button>'] = list.FormatButton('changepw')
+replacements['<mm-change-pass-button>'] = list.FormatButton('changepw',
+                                                            "Change My Password")
 replacements['<mm-form-start>'] = list.FormatFormStart('handle_opts', user)
 replacements['<mm-user>'] = user
 replacements['<mm-presentable-user>'] = presentable_user
-replacements['<mm-email-my-pw>'] = list.FormatButton('emailpw', 'Email my password')
+replacements['<mm-email-my-pw>'] = list.FormatButton('emailpw',
+                                                     'Email My Password To Me')
 
 
 doc.AddItem(list.ParseTags('options.html', replacements))
