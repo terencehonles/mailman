@@ -328,7 +328,7 @@ def CanonicalizeUserOptions(l):
         flags = 0
         if options.has_key(lcuser):
             flags = options[lcuser]
-        flags = flags | v
+        flags |= v
         options[lcuser] = flags
     l.user_options = options
     # 2.1alpha3 -> 2.1alpha4.  The DisableDelivery flag is now moved into
