@@ -181,10 +181,10 @@ class _Switchboard:
         return [times[k] for k in keys]
 
     def _ext_write(self, tmpfile, data):
-        raise UnimplementedError
+        raise NotImplementedError
 
     def _ext_read(self, dbfile):
-        raise UnimplementedError
+        raise NotImplementedError
 
 
 

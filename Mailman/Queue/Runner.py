@@ -210,7 +210,7 @@ class Runner:
 
         msgdata is a dictionary of message metadata.
         """
-        raise UnimplementedError
+        raise NotImplementedError
 
     def _doperiodic(self):
         """Do some processing `every once in a while'.
