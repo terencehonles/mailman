@@ -392,6 +392,7 @@ def NewVars(l):
     else:
         encode = 2
     add_only_if_missing('encode_ascii_prefixes', encode)
+    add_only_if_missing('news_moderation', 0)
 
 
 
