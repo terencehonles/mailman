@@ -28,9 +28,10 @@ Errors are redirected to logs/errors.
 import sys
 
 import paths
-from Mailman import MailList
-from Mailman import Message
-from Mailman import Errors
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman.i18n import _
+from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 
 LogStdErr("error", "mailcmd")
@@ -41,27 +42,19 @@ def main():
     try:
         listname = sys.argv[1]
     except IndexError:
-        print >> sys.stderr, 'Mailman error: mailcmd got no listname.'
+        print >> sys.stderr, _('mailcmd script got no listname.')
         sys.exit(1)
-    try:
-        mlist = MailList.MailList(listname, lock=0)
-    except Errors.MMListError, e:
-        print >> sys.stderr 'Mailman error: mailcmd got bad listname: %s\n%s' \
-              % (listname, e)
+    # Make sure the list exists
+    if not Utils.list_exists(listname):
+        print >> sys.stderr, _('mailcmd script, list not found: %(listname)s')
         sys.exit(1)
-    # Create the message object
-    msg = Message.Message(sys.stdin)
-    # Immediately queue the message for disposition by qrunner, most likely in
-    # about a minute from now.  The advantage to this approach is that
-    # messages should never get lost -- some MTAs have a hard limit to the
-    # time a filter prog can run.  Postfix is a good example; if the limit is
-    # hit, the proc is SIGKILL'd giving us no chance to save the message.  It
-    # could take a long time to acquire the lock.  This way we're fairly safe
-    # against catastrophe at the expense of more disk I/O.
-    #
-    # The `torequest' flag is a message to qrunner that an alternative route
-    # should be taken for this message.
-    msg.Enqueue(mlist, torequest=1, _whichq=mm_cfg.INQUEUE_DIR)
+    # Immediately queue the message for the bounce/cmd qrunner to process.
+    # The advantage to this approach is that messages should never get lost --
+    # some MTAs have a hard limit to the time a filter prog can run.  Postfix
+    # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
+    # no chance to save the message.
+    cmdq = get_switchboard(mm_cfg.CMDQUEUE_DIR)
+    cmdq.enqueue(sys.stdin.read(), listname=listname, torequest=1)
 
 
 
