@@ -476,10 +476,10 @@ def GetItemGuiValue(mlist, kind, varname, params):
         # for the fact that there is one fewer option. correspondingly,
         # we alter the value back in the change options function -scott
         #
-        if varname == "subscribe_policy" and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-            return RadioButtonArray(varname, params, getattr(mlist, varname)-1)
-        else:
-            return RadioButtonArray(varname, params, getattr(mlist, varname))
+        checked = getattr(mlist, varname)
+        if varname == 'subscribe_policy' and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+            checked = checked - 1
+        return RadioButtonArray(varname, params, checked)
     elif (kind == mm_cfg.String or kind == mm_cfg.Email or
 	  kind == mm_cfg.Host or kind == mm_cfg.Number):
 	return TextBox(varname, getattr(mlist, varname), params)
