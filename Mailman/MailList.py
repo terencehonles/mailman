@@ -206,7 +206,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     GetAbsoluteScriptURL = GetScriptURL
 
     def GetRelativeScriptURL(self, scriptname):
-        return GetScriptURL(self, scriptname, relative=1)
+        return self.GetScriptURL(scriptname, relative=1)
 
     def GetUserOption(self, user, option):
         """Return user's setting for option, defaulting to 0 if no settings."""
