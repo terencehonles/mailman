@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,10 +16,11 @@
 
 from Mailman import mm_cfg
 from Mailman.i18n import _
+from Mailman.Gui.GUIBase import GUIBase
 
 
 
-class Usenet:
+class Usenet(GUIBase):
     def GetConfigCategory(self):
         return 'gateway', _('Mail&lt;-&gt;News&nbsp;gateways')
 
@@ -60,3 +61,11 @@ class Usenet:
              <em>read</em>.  By catching up, your mailing list members will
              not see any of the earlier messages.'''))
             ]
+
+    def _setValue(self, mlist, property, val, doc):
+        # Watch for the special, immediate action attributes
+        if property == '_mass_catchup' and val:
+            mlist.usenet_watermark = None
+            doc.AddItem(_('Mass catchup completed'))
+        else:
+            GUIBase._setValue(self, mlist, property, val, doc)
