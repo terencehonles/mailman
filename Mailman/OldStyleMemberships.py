@@ -111,7 +111,7 @@ class OldStyleMemberships(MemberAdaptor):
         return self.__mlist.language.get(member.lower(),
                                          self.__mlist.preferred_language)
 
-    def getMemberOption(self, member, flag=None):
+    def getMemberOption(self, member, flag):
         option = self.__mlist.user_options.get(member.lower(), 0)
         return not not (option & flag)
 
@@ -185,7 +185,7 @@ class OldStyleMemberships(MemberAdaptor):
         assert self.__mlist.Locked()
         # Get the old values
         memberkey = member.lower()
-        flags = self.__mlist.user_options.get(memberkey)
+        flags = self.__mlist.user_options.get(memberkey, 0)
         digestsp = self.getMemberOption(memberkey, mm_cfg.Digests)
         password = self.__mlist.passwords.get(memberkey,
                                               Utils.MakeRandomPassword())
@@ -194,7 +194,7 @@ class OldStyleMemberships(MemberAdaptor):
         self.addNewMember(newaddress, digest=digestsp, password=password,
                           language=lang)
         # Set the entire options bitfield
-        if flags <> 0:
+        if flags:
             self.__mlist.user_options[memberkey] = flags
         # Delete the old memberkey
         self.removeMember(memberkey)
