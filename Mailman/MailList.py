@@ -27,9 +27,9 @@ import errno
 import re
 import shutil
 import socket
-from types import StringType, IntType, DictType, ListType
 import urllib
 from urlparse import urlparse
+from types import *
 
 from mimelib.address import getaddresses
 
@@ -49,12 +49,12 @@ from Mailman.SecurityManager import SecurityManager
 from Mailman.Bouncer import Bouncer
 from Mailman.GatewayManager import GatewayManager
 from Mailman.Autoresponder import Autoresponder
-from Mailman.Logging.Syslog import syslog
 
 # other useful classes
 from Mailman import Message
 from Mailman import Pending
 from Mailman.i18n import _
+from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
 EMPTYSTRING = ''
@@ -905,7 +905,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             fp.close()
         except IOError, e:
             syslog('error',
-                   'Failed config.db write, retaining old state.\n%s' % e)
+                   'Failed config.db write, retaining old state.\n%s', e)
             if fp is not None:
                 os.unlink(fname_tmp)
             raise
@@ -981,13 +981,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         if dict is None:
             # Had problems with config.db.  Either it's missing or it's
             # corrupted.  Try config.db.last as a fallback.
-            syslog('error', '%s db file was corrupt, using fallback: %s'
-                   % (self.internal_name(), lastfile))
+            syslog('error', '%s db file was corrupt, using fallback: %s',
+                   self.internal_name(), lastfile)
             dict, e = self.__load(lastfile)
             if dict is None:
                 # config.db.last is busted too.  Nothing much we can do now.
-                syslog('error', '%s fallback was corrupt, giving up'
-                       % self.internal_name())
+                syslog('error', '%s fallback was corrupt, giving up',
+                       self.internal_name())
                 raise Errors.MMCorruptListDatabaseError, e
             # We had to read config.db.last, so copy it back to config.db.
             # This allows the logic in Save() to remain unchanged.  Ignore
@@ -1101,8 +1101,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             if recipient != name:
                 who = "%s (%s)" % (name, recipient.split('@')[0])
             else: who = name
-            syslog('subscribe', '%s: pending %s %s' %
-                   (self.internal_name(), who, by))
+            syslog('subscribe', '%s: pending %s %s',
+                   self.internal_name(), who, by)
             raise Errors.MMSubscribeNeedsConfirmation
         else:
             # subscription approval is required.  add this entry to the admin
@@ -1304,8 +1304,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 kind = ""
             for name in result.keys():
                 if result[name] is None:
-                    syslog('subscribe', '%s: new%s %s' %
-                           (self.internal_name(), kind, name))
+                    syslog('subscribe', '%s: new%s %s',
+                           self.internal_name(), kind, name)
                     if ack:
                         self.SendSubscribeAck(
                             name,
@@ -1381,8 +1381,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             whence = "; %s" % whence
         else:
             whence = ""
-        syslog('subscribe', '%s: deleted %s%s' %
-               (self.internal_name(), name, whence))
+        syslog('subscribe', '%s: deleted %s%s',
+               self.internal_name(), name, whence)
 
     def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
         # Get the user's current options and password.  Ugly hack: if a user's
@@ -1504,8 +1504,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             if i < 0:
                 # This didn't look like a header line.  BAW: should do a
                 # better job of informing the list admin.
-                syslog('config', 'bad bounce_matching_header line: %s\n%s'
-                       % (self.real_name, line))
+                syslog('config', 'bad bounce_matching_header line: %s\n%s',
+                       self.real_name, line)
             else:
                 header = line[:i]
                 value = line[i+1:].lstrip()
@@ -1514,10 +1514,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 except re.error, e:
                     # The regexp was malformed.  BAW: should do a better
                     # job of informing the list admin.
-                    syslog('config',
-                           'bad regexp in bounce_matching_header line: %s'
-                           '\n%s (cause: %s)' %
-                           (self.real_name, value, e))
+                    syslog('config', '''\
+bad regexp in bounce_matching_header line: %s
+\n%s (cause: %s)''', self.real_name, value, e)
                 else:
                     all.append((header, cre, line))
         return all

@@ -270,6 +270,6 @@ def NewRequestsDatabase(l):
                 l.HoldSubscription(addr, password, digest)
             del r[k]
         else:
-            syslog('error',
-                   "VERY BAD NEWS.  Unknown pending request type `%s' found"
-                   ' for list: %s' % (k, l.internal_name()))
+            syslog('error', """\
+VERY BAD NEWS.  Unknown pending request type `%s' found for list: %s""",
+                   k, l.internal_name())

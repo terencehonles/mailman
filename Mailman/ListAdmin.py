@@ -27,6 +27,7 @@ import os
 import time
 import marshal
 import errno
+
 from mimelib.Generator import Generator
 from mimelib.Parser import Parser
 
@@ -221,7 +222,7 @@ class ListAdmin:
             # Queue the file for delivery by qrunner.  Trying to deliver the
             # message directly here can lead to a huge delay in web
             # turnaround.
-            syslog('vette', 'approved held message enqueued: %s' % filename)
+            syslog('vette', 'approved held message enqueued: %s', filename)
             # Stick the message back in the incoming queue for further
             # processing.
             inq = get_switchboard(mm_cfg.INQUEUE_DIR)
@@ -313,8 +314,8 @@ class ListAdmin:
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
-        syslog('vette', '%s: held subscription request from %s' %
-               (self.real_name, addr))
+        syslog('vette', '%s: held subscription request from %s',
+               self.real_name, addr)
         # possibly notify the administrator in default list language
         if self.admin_immed_notify:
             realname = self.real_name
