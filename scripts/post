@@ -82,4 +82,6 @@ def main():
 
 
 if __name__ == '__main__':
+    sys.stderr.write('starting\n')
     main()
+    sys.stderr.write('ending\n')
