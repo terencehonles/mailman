@@ -65,6 +65,7 @@ COMMON_FLAGS=	-DPREFIX="\"$(prefix)\"" \
 DIRMODE=	775
 EXEMODE=	755
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
+DIRSETGID=	chmod g+s
 
 # Fixed definitions
 
@@ -108,17 +109,13 @@ install: all
 	do \
 	    exe=$(CGIDIR)/$$f$(CGIEXT); \
 	    $(INSTALL_PROGRAM) $$f $$exe; \
-	    chmod g+s $$exe; \
+	    $(DIRSETGID) $$exe; \
 	done
 	for f in $(MAIL_PROGS); \
 	do \
 	    $(INSTALL_PROGRAM) $$f $(MAILDIR); \
-	    chmod g+s $(MAILDIR)/$$f; \
+	    $(DIRSETGID) $(MAILDIR)/$$f; \
 	done
-#	@for f in $(ALIAS_PROGS); \
-#	do \
-#	    $(INSTALL_PROGRAM) $$f $(bindir) ; \
-#	done
 
 finish:
 	-for f in $(SUID_CGI_PROGS); \
@@ -127,11 +124,6 @@ finish:
 	    chmod u+s $$exe; \
 	    chown $(MAILMAN_USER) $$exe; \
 	done
-#	-for f in $(SUID_MAIL_PROGS); \
-#	do \
-#	    exe=$(MAILDIR)/$$f; \
-#	    chown $(MAILMAN_USER) $$exe; \
-#	done
 
 clean:
 	-@rm *.o
