@@ -177,11 +177,10 @@ def main():
                  'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
                  'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
                  'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
-                 'hostname'    : mlist.host_name,
+                 'owner'       : mm_cfg.MAILMAN_OWNER,
                  }, mlist.preferred_language)
             msg = Message.UserNotification(
-                owner_mail,
-                'mailman-owner@' + mlist.host_name,
+                owner_mail, mm_cfg.MAILMAN_OWNER,
                 _('Your new mailing list: %(listname)s'),
                 text)
             msg.send(mlist)
