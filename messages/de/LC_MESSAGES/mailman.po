@@ -4545,7 +4545,7 @@ msgstr ""
 
 #: Mailman/Gui/ContentFilter.py:30
 msgid "Content&nbsp;filtering"
-msgstr "Absender-Filter"
+msgstr "Mail-Filter"
 
 #: Mailman/Gui/ContentFilter.py:37
 msgid "Forward to List Owner"
