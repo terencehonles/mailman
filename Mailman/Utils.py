@@ -506,10 +506,12 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
     return got
 
 
-def chunkify(members, chunksize=mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE):
+def chunkify(members, chunksize=None):
      """
      return a list of lists of members
      """
+     if chunksize is None:
+         chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
      members.sort()
      res = []
      while 1:
