@@ -99,6 +99,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             prefix = self.web_page_url
         else:
             prefix = mm_cfg.DEFAULT_URL
+        while prefix[-1] == "/":
+            prefix = prefix[:-1]
         return "%s/%s/%s" % (prefix, script_name, self._internal_name)
 
 
