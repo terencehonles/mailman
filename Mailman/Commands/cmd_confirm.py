@@ -63,6 +63,10 @@ Your request has been forwarded to the list moderator for approval."""))
         res.results.append(_("""\
 You are not current a member.  Have you already unsubscribed or changed
 your email address?"""))
+    except Errors.HostileSubscriptionError:
+        res.results.append(_("""\
+You were not invited to this mailing list.  The invitation has been discarded,
+and both list administrators have been alerted."""))
     else:
         if ((results[0] == Pending.SUBSCRIPTION and mlist.send_welcome_msg)
             or
