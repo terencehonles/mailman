@@ -880,18 +880,21 @@ MAILMAN_UID = @MAILMAN_UID@
 MAILMAN_GID = @MAILMAN_GID@
 
 # Enumeration for Mailman cgi widget types
-Toggle     = 1
-Radio      = 2
-String     = 3
-Text       = 4
-Email      = 5
-EmailList  = 6
-Host       = 7
-Number     = 8
-FileUpload = 9
-Select     = 10
-Topics     = 11
-Checkbox   = 12
+Toggle      = 1
+Radio       = 2
+String      = 3
+Text        = 4
+Email       = 5
+EmailList   = 6
+Host        = 7
+Number      = 8
+FileUpload  = 9
+Select      = 10
+Topics      = 11
+Checkbox    = 12
+# An "extended email list".  Contents must be an email address or a ^-prefixed
+# regular expression.  Used in the sender moderation text boxes.
+EmailListEx = 13
 
 # Held message disposition actions, for use between admindb.py and
 # ListAdmin.py.
