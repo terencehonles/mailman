@@ -308,7 +308,13 @@ class Message:
         for h in self.getallmatchingheaders(name):
             i = string.find(h, ':')
             if i > 0:
-                raw.append(string.strip(h[i+1:]))
+                addr = string.strip(h[i+1:])
+            # its a continuation line
+            elif h[0] in ' \t':
+                addr = string.strip(h)
+            if addr[-1] == ',':
+                addr = addr[:-1]
+            raw.append(addr)
         alladdrs = string.join(raw, ', ')
         a = AddrlistClass(alladdrs)
         return a.getaddrlist()
