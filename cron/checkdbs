@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,12 +16,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Invoked by cron, this checks for pending moderation requests and mails the
-list moderators if necessary.
+"""Check for pending admin requests and mail the list owners if necessary.
+
+Usage: %(PROGRAM)s [options]
+
+Options:
+
+    -h/--help
+        Print this message and exit.
 """
 
 import sys
 import time
+import getopt
 from types import UnicodeType
 
 import paths
@@ -40,16 +47,38 @@ import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 NL = '\n'
+PROGRAM = sys.argv[0]
 
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
-def _isunicode(s):
-    return isinstance(s, UnicodeType)
+
+
+def usage(code, msg=''):
+    if code:
+        fd = sys.stderr
+    else:
+        fd = sys.stdout
+    print >> fd, _(__doc__)
+    if msg:
+        print >> fd, msg
+    sys.exit(code)
 
 
 
 def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+
+    if args:
+        usage(1)
+
     for name in Utils.list_names():
         # the list must be locked in order to open the requests database
         mlist = MailList.MailList(name)
@@ -116,15 +145,23 @@ From: %(sender)s on %(date)s
 Subject: %(subject)s
 Cause: %(reason)s"""))
         pending.append('')
+    # Coerce all items in pending to a Unicode so we can join them
+    upending = []
+    charset = Utils.GetCharSet(mlist.preferred_language)
+    for s in pending:
+        if isinstance(s, UnicodeType):
+            upending.append(s)
+        else:
+            upending.append(unicode(s, charset, 'replace'))
     # Make sure that the text we return from here can be encoded to a byte
     # string in the charset of the list's language.  This could fail if for
     # example, the request was pended while the list's language was French,
     # but then it was changed to English before checkdbs ran.
-    text = NL.join(pending)
+    text = u'\n'.join(upending)
     charset = Charset(Utils.GetCharSet(mlist.preferred_language))
     incodec = charset.input_codec or 'ascii'
     outcodec = charset.output_codec or 'ascii'
-    if _isunicode(text):
+    if isinstance(text, UnicodeType):
         return text.encode(outcodec, 'replace')
     # Be sure this is a byte string encodeable in the list's charset
     utext = unicode(text, incodec, 'replace')
