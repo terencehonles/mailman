@@ -87,6 +87,16 @@ def run_main():
                                manual_reprime=1,
                                nofail=0,
                                immediate=1)
+        # pre-load the `cgi' module.  we do this because we're distributing a
+        # slightly different version than the standard Python module.  it's
+        # essentially Python 1.5.2's module, with an experimental patch to
+        # handle clients that give bogus or non-existant content-type headers.
+        #
+        # we assign sys.modules['cgi'] to this special cgi module because we
+        # don't want to have to rewrite all the Mailman.Cgi modules to get the
+        # special one.
+        import Mailman.pythonlib.cgi
+        sys.modules['cgi'] = Mailman.pythonlib.cgi
         # The name of the module to run is passed in argv[1].  What we
         # actually do is import the module named by argv[1] that lives in the
         # Mailman.Cgi package.  That module must have a main() function, which
