@@ -18,6 +18,7 @@
 
 """
 
+import sys
 import os
 import re
 import cgi
@@ -1102,18 +1103,20 @@ def change_options(mlist, category, cgidata, doc):
                     i18n.set_language(value)
                 setattr(mlist, property, value)
     # mass subscription, removal processing for members category
-    subscriptions = ''
-    if cgidata.has_key('subscribees'):
-        subscriptions += cgidata['subscribees'].value
-    if cgidata.has_key('subscribees_upload') and \
-           cgidata['subscribees_upload'].value:
-        subscriptions += cgidata['subscribees_upload'].value
-    if subscriptions:
-        subscriptions.replace('\r', '')
-        names = filter(None,
-                       [unquote(n.strip()) for n in subscriptions.split(NL)])
-        send_welcome_msg = int(
-            cgidata['send_welcome_msg_to_this_batch'].value)
+    subscribers = ''
+    subscribers += cgidata.getvalue('subscribees', '')
+    subscribers += cgidata.getvalue('subscribees_upload', '')
+    if subscribers:
+        names = filter(None, [unquote(n.strip())
+                              for n in subscribers.replace('\r','').split(NL)])
+        send_welcome_msg = mlist.send_welcome_msg
+        if cgidata.has_key('send_welcome_msg_to_this_batch'):
+            send_welcome_msg = int(
+                cgidata.getvalue('send_welcome_msg_to_this_batch'))
+        send_admin_notif = mlist.admin_notify_mchanges
+        if cgidata.has_key('send_notifications_to_list_owner'):
+            send_admin_notif = int(
+                cgidata.getvalue('send_notifications_to_list_owner'))
         digest = 0
         if not mlist.digestable:
             digest = 0
@@ -1121,8 +1124,9 @@ def change_options(mlist, category, cgidata, doc):
             digest = 1
         subscribe_errors = []
         subscribe_success = []
-        result = mlist.ApprovedAddMembers(names, None,
-                                          digest, None, send_welcome_msg)
+        result = mlist.ApprovedAddMembers(names, None, digest,
+                                          ack=send_welcome_msg,
+                                          admin_notif=send_admin_notif)
         for name in result.keys():
             if result[name] is None:
                 subscribe_success.append(name)
