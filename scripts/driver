@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -58,11 +58,7 @@ def run_main():
     # *something* meaningful.
     logger = None
     try:
-        # Insert the relative path to the parent of the Mailman package
-        # directory, so we can pick up the Utils module.
-        import os
-        # sys gets imported at module level below.
-        sys.path.insert(0, os.pardir)
+        import paths
         # Map stderr to a logger, if possible.
         from Mailman.Logging.StampedLogger import StampedLogger
         logger = StampedLogger('error',
