@@ -26,7 +26,7 @@ import marshal
 import time
 import whrandom
 import mm_cfg
-import flock
+import LockFile
 
 DB_PATH = os.path.join(mm_cfg.DATA_DIR, "pending_subscriptions.db")
 LOCK_PATH = os.path.join(mm_cfg.LOCK_DIR, "pending_subscriptions.lock")
@@ -58,7 +58,7 @@ class Pending:
                db_lock_timeout = DB_LOCK_TIMEOUT):
         self.item_life = item_life
         self.db_path = db_path
-        self.__lock = flock.FileLock(lock_path)
+        self.__lock = LockFile.LockFile(lock_path)
         self.cull_interval = cull_interval
         self.db_lock_timeout = db_lock_timeout
     def new(self, *content):
@@ -102,7 +102,7 @@ class Pending:
         """Marshal dict db to file - the exception is propagated on failure.
         Cull stale items from the db, if that hasn't been done in a while."""
         if not self.__lock.locked():
-            raise flock.NotLockedError
+            raise LockFile.NotLockedError
         # Cull if its been a while (or if cull key is missing, ie, old
         # version - which will be reformed to new format by cull).
         if (db.get(self.LAST_CULL_KEY, 0)
@@ -118,7 +118,7 @@ class Pending:
         Raises TimeOutError if unable to get lock within timeout."""
         try:
             self.__lock.lock(timeout)
-        except flock.AlreadyCalledLockError:
+        except LockFile.AlreadyCalledLockError:
             pass
     def __release_lock(self):
         self.__lock.unlock()
