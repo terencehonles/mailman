@@ -39,12 +39,15 @@ from mimelib.ReprMixin import ReprMixin
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Message
-from Mailman.i18n import _
+from Mailman import i18n
 from Mailman.Handlers.Decorate import decorate
 from Mailman.Queue.sbcache import get_switchboard
 
 from Mailman.pythonlib import mailbox
 from Mailman.pythonlib.StringIO import StringIO
+
+_ = i18n._
+
 
 # rfc1153 says we should keep only these headers, and present them in this
 # exact order.
@@ -100,10 +103,25 @@ class ReprMIME(MIMEBase, ReprMixin):
 
 
 def send_digests(mlist, mboxfp):
+    # Wrapper around actually digest crafter to set up the language context
+    # properly.  All digests are translated to the list's preferred language.
+    otranslation = i18n.get_translation()
+    i18n.set_language(mlist.preferred_language)
+    try:
+        send_i18n_digests(mlist, mboxfp)
+    finally:
+        i18n.set_translation(otranslation)
+
+
+
+def send_i18n_digests(mlist, mboxfp):
     mbox = mailbox.UnixMailbox(mboxfp, msgfactory)
     # Prepare common information
-    digestid = '%s Digest, Vol %d, Issue %d' % (
-        mlist.real_name, mlist.volume, mlist.next_digest_number)
+    lang = mlist.preferred_language
+    realname = mlist.real_name
+    volume = mlist.volume
+    issue = mlist.next_digest_number
+    digestid = _('%(realname)s Digest, Vol %(volume)d, Issue %(issue)d')
     # Set things up for the MIME digest.  Only headers not added by
     # CookHeaders need be added here.
     mimemsg = ReprMIME('multipart', 'mixed')
@@ -119,7 +137,7 @@ def send_digests(mlist, mboxfp):
     separator70 = '-' * 70
     separator30 = '-' * 30
     # In the rfc1153 digest, the masthead contains the digest boilerplate plus
-    # any digest footer.  In the MIME digests, the masthead and digest header
+    # any digest header.  In the MIME digests, the masthead and digest header
     # are separate MIME subobjects.  In either case, it's the first thing in
     # the digest, and we can calculate it now, so go ahead and add it now.
     mastheadtxt = Utils.maketext(
@@ -129,9 +147,9 @@ def send_digests(mlist, mboxfp):
          'got_listinfo_url':  mlist.GetScriptURL('listinfo', absolute=1),
          'got_request_email': mlist.GetRequestEmail(),
          'got_owner_email':   mlist.GetOwnerEmail(),
-         }, mlist.preferred_language)
+         }, lang=lang)
     # MIME
-    masthead = Text(mastheadtxt)
+    masthead = Text(mastheadtxt, _charset=Utils.GetCharSet(lang))
     masthead['Content-Description'] = digestid
     mimemsg.add_payload(masthead)
     # rfc1153
@@ -139,10 +157,10 @@ def send_digests(mlist, mboxfp):
     print >> plainmsg
     # Now add the optional digest header
     if mlist.digest_header:
-        headertxt = decorate(mlist, mlist.digest_header, 'digest header')
+        headertxt = decorate(mlist, mlist.digest_header, _('digest header'))
         # MIME
         header = Text(headertxt)
-        header['Content-Description'] = 'Digest Header'
+        header['Content-Description'] = _('Digest Header')
         mimemsg.add_payload(header)
         # rfc1153
         print >> plainmsg, headertxt
@@ -155,7 +173,7 @@ def send_digests(mlist, mboxfp):
     #
     # Meanwhile prepare things for the table of contents
     toc = StringIO()
-    print >> toc, "Today's Topics:\n"
+    print >> toc, _("Today's Topics:\n")
     # Now cruise through all the messages in the mailbox of digest messages,
     # building the MIME payload and core of the rfc1153 digest.  We'll also
     # accumulate Subject: headers and authors for the table-of-contents.
@@ -173,20 +191,20 @@ def send_digests(mlist, mboxfp):
         if mo:
             subject = subject[:mo.start(2)] + subject[mo.end(2):]
         addresses = getaddresses([msg['From']])
-        realname = ''
+        username = ''
         # Take only the first author we find
         if type(addresses) is ListType and len(addresses) > 0:
-            realname = addresses[0][0]
-        if realname:
-            realname = ' (%s)' % realname
+            username = addresses[0][0]
+        if username:
+            username = ' (%s)' % username
         # Wrap the toc subject line
         wrapped = Utils.wrap('%2d. %s' % (msgcount, subject))
-        # Split by lines and see if the realname can fit on the last line
+        # Split by lines and see if the username can fit on the last line
         slines = wrapped.split('\n')
-        if len(slines[-1]) + len(realname) > 70:
-            slines.append(realname)
+        if len(slines[-1]) + len(username) > 70:
+            slines.append(username)
         else:
-            slines[-1] += realname
+            slines[-1] += username
         # Add this subject to the accumulating topics
         first = 1
         for line in slines:
@@ -212,7 +230,7 @@ def send_digests(mlist, mboxfp):
                 msg[keep] = field
         # And a bit of extra stuff
         msg['Message'] = `msgcount`
-        # Append to the rfc1153 body, adding a separator if necessary
+        # Get the next message in the digest mailbox
         msg = mbox.next()
     # Now we're finished with all the messages in the digest.  First do some
     # sanity checking and then on to adding the toc.
@@ -222,7 +240,7 @@ def send_digests(mlist, mboxfp):
     toctext = toc.getvalue()
     # MIME
     tocpart = Text(toctext)
-    tocpart['Content-Description'] = "Today's Topics (%d messages)" % msgcount
+    tocpart['Content-Description']= _("Today's Topics (%(msgcount)d messages)")
     mimemsg.add_payload(tocpart)
     # rfc1153
     print >> plainmsg, toctext
@@ -247,10 +265,10 @@ def send_digests(mlist, mboxfp):
         g.write(msg, unixfrom=0)
     # Now add the footer
     if mlist.digest_footer:
-        footertxt = decorate(mlist, mlist.digest_footer, 'digest footer')
+        footertxt = decorate(mlist, mlist.digest_footer, _('digest footer'))
         # MIME
         footer = Text(footertxt)
-        footer['Content-Description'] = 'Digest Footer'
+        footer['Content-Description'] = _('Digest Footer')
         mimemsg.add_payload(footer)
         # rfc1153
         # BAW: This is not strictly conformant rfc1153.  The trailer is only
@@ -264,7 +282,7 @@ def send_digests(mlist, mboxfp):
         print >> plainmsg, footertxt
         print >> plainmsg
     # Do the last bit of stuff for each digest type
-    signoff = 'End of ' + digestid
+    signoff = _('End of ') + digestid
     # MIME
     # BAW: This stuff is outside the normal MIME goo, and it's what the old
     # MIME digester did.  No one seemed to complain, probably because you
