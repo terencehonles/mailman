@@ -118,7 +118,7 @@ class CheckFixUid:
 	os.chmod(file, 06755)
 
     print "\nMaking mail wrapper setuid mailman"
-    file= paths.prefix + '/mail/wrapper'
+    file= paths.prefix + '/mail/mailman'
     os.chown(file, MAILMAN_UID, MAILMAN_GID)
     os.chmod(file, 06755)
     print file
