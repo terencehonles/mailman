@@ -91,9 +91,12 @@ import paths
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import LockFile
-from Mailman.i18n import _
+from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
 from Mailman.Logging.Utils import LogStdErr
+
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 # Work around known problems with some RedHat cron daemons
 import signal
