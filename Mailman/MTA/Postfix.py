@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,74 +15,45 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Creation/deletion hooks for the Postfix MTA.
-
-Note: only hash: type maps are currently supported.
 """
 
 import os
-import socket
 import time
 import errno
 import pwd
-import fcntl
 from stat import *
-
-# Python's BerkeleyDB support is simply broken, IMO.  The best advice I can
-# give is that if you are having problems, download and install PyBSDDB3, from
-# pybsddb.sf.net, install it, and use it by (possibly) editing the following
-# lines.
-try:
-    import bsddb
-except ImportError:
-    import bsddb3 as bsddb
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import LockFile
 from Mailman.i18n import _
 from Mailman.MTA.Utils import makealiases
+from Mailman.Logging.Syslog import syslog
 
 LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'creator')
-
-TEXTFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
-DBFILE = TEXTFILE + '.db'
-
-VTEXTFILE = os.path.join(mm_cfg.DATA_DIR, 'virtual-mailman')
-VDBFILE = VTEXTFILE + '.db'
+ALIASFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
+VIRTFILE = os.path.join(mm_cfg.DATA_DIR, 'virtual-mailman')
 
 
 
-# Here's the deal with locking.  In order to assure that Postfix doesn't read
-# the file while we're writing updates, we should drop an exclusive advisory
-# lock on the file.  Ideally, we'd specify the `l' flag to bsddb.hashopen()
-# which translates to passing the O_EXLOCK flag to the underlying open call,
-# for systems that support O_EXLOCK.
-#
-# Unfortunately, Linux is one of those systems that don't support O_EXLOCK.
-# To make matters worse, the default bsddb module in Python gives us no access
-# to the file descriptor of the database file, so we cannot hashopen(), dig
-# out the fd, then use fcntl.flock() to acquire the lock.  Bummer. :(
-#
-# Another approach would be to do a file dance to assure exclusivity.
-# I.e. when we add or remove list entries, we actually create a new .tmp file,
-# write all the entries to that file, and then rename() that file to
-# aliases.db.  The problem with /that/ approach though is that we can't get
-# the file ownership right on the tmp file. That's because the process adding
-# or removing entries may be Joe Shmoe who's a member of the `mailman' group,
-# or it may be a cgi process run as `nobody' or `apache'.  Or eventually, it
-# may be run via a mail program or any number of other processes.  Without a
-# setuid program we simply can't assure that the ownership of the tmp file
-# will be the same as the ownership of the original file, and /that/ we must
-# absolutely guarantee.  Postfix runs mail programs under the uid of the owner
-# of the aliases.db file.
-#
-# The best solution I can come up with involves opening the aliases.db file
-# with bsddb.hashopen() first, then do a built-in open(), digout the fd from
-# the file object and flock() it.  We have to open with bsddb.hashopen() first
-# in case the file doesn't exist yet, but we can't write to it until we get
-# the lock.  Blech.  If anybody has a better, portable, solution, I'm all
-# ears.
+def _update_maps():
+    msg = 'command failed: %s (status: %s, %s)'
+    acmd = mm_cfg.POSTFIX_ALIAS_CMD + ' ' + ALIASFILE
+    status = (os.system(acmd) >> 8) & 0xff
+    if status:
+        errstr = os.strerror(status)
+        syslog('error', msg, acmd, status, errstr)
+        raise RuntimeError, msg % (acmd, status, errstr)
+    if os.path.exists(VIRTFILE):
+        vcmd = mm_cfg.POSTFIX_MAP_CMD + ' ' + VIRTFILE
+        status = (os.system(vcmd) >> 8) & 0xff
+        if status:
+            errstr = os.strerror(status)
+            syslog('error', msg, vcmd, status, errstr)
+            raise RuntimeError, msg % (vcmd, status, errstr)
 
+
+
 def makelock():
     return LockFile.LockFile(LOCKFILE)
 
@@ -95,23 +66,13 @@ def _zapfile(filename):
         fp.close()
 
 
-def _zapdb(filename):
-    if os.path.exists(filename):
-        db = bsddb.hashopen(filename, 'c')
-        for k in db.keys():
-            del db[k]
-        db.close()
-
-
 def clear():
     _zapfile(TEXTFILE)
     _zapfile(VTEXTFILE)
-    _zapdb(DBFILE)
-    _zapdb(VDBFILE)
 
 
 
-def addlist(mlist, db, fp):
+def _addlist(mlist, fp):
     # Set up the mailman-loop address
     loopaddr = Utils.ParseEmail(Utils.get_site_email(extra='loop'))[0]
     loopmbox = os.path.join(mm_cfg.DATA_DIR, 'owner-bounces.mbox')
@@ -128,11 +89,6 @@ def addlist(mlist, db, fp):
         print >> fp, '# The ultimate loop stopper address'
         print >> fp, '%s: %s' % (loopaddr, loopmbox)
         print >> fp
-    # Always update YP_LAST_MODIFIED
-    db['YP_LAST_MODIFIED'] = '%010d' % time.time()
-    # Add a YP_MASTER_NAME only if there isn't one already
-    if not db.has_key('YP_MASTER_NAME'):
-        db['YP_MASTER_NAME'] = socket.getfqdn()
     # Bootstrapping.  bin/genaliases must be run before any lists are created,
     # but if no lists exist yet then mlist is None.  The whole point of the
     # exercise is to get the minimal aliases.db file into existance.
@@ -143,14 +99,8 @@ def addlist(mlist, db, fp):
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
-    # Add the loop stopper address
-    db[loopaddr + '\0'] = loopmbox + '\0'
     # Now add all the standard alias entries
     for k, v in makealiases(listname):
-        # Every key and value in the dbhash file as created by Postfix
-        # must end in a null byte.  That is, except YP_LAST_MODIFIED and
-        # YP_MASTER_NAME.
-        db[k + '\0'] = v + '\0'
         # Format the text file nicely
         print >> fp, k + ':', ((fieldsz - len(k) + 1) * ' '), v
     # Finish the text file stanza
@@ -159,7 +109,7 @@ def addlist(mlist, db, fp):
 
 
 
-def addvirtual(mlist, db, fp):
+def _addvirtual(mlist, fp):
     listname = mlist.internal_name()
     fieldsz = len(listname) + len('request')
     hostname = mlist.host_name
@@ -183,18 +133,12 @@ def addvirtual(mlist, db, fp):
 %s\t%s
 # LOOP ADDRESSES END
 """ % (loopaddr, loopdest)
-        # Add the loop address entry to the db file
-        db[loopaddr + '\0'] = loopdest + '\0'
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(listname):
         fqdnaddr = '%s@%s' % (k, hostname)
-        # Every key and value in the dbhash file as created by Postfix
-        # must end in a null byte.  That is, except YP_LAST_MODIFIED and
-        # YP_MASTER_NAME.
-        db[fqdnaddr + '\0'] = k + '\0'
         # Format the text file nicely
         print >> fp, fqdnaddr, ((fieldsz - len(k) + 1) * ' '), '\t', k
     # Finish the text file stanza
@@ -204,14 +148,9 @@ def addvirtual(mlist, db, fp):
 
 
 # Blech.
-def check_for_virtual_loopaddr(mlist, db, filename):
+def _check_for_virtual_loopaddr(mlist, filename):
     loopaddr = Utils.get_site_email(mlist.host_name, extra='loop')
     loopdest = Utils.ParseEmail(loopaddr)[0]
-    # If the loop address is already in the database, we don't need to add it
-    # to the plain text file, but if it isn't, then we do!
-    if db.has_key(loopaddr + '\0'):
-        # It's already there
-        return
     infp = open(filename)
     omask = os.umask(007)
     try:
@@ -232,41 +171,27 @@ def check_for_virtual_loopaddr(mlist, db, filename):
         infp.close()
         outfp.close()
     os.rename(filename + '.tmp', filename)
-    db[loopaddr + '\0'] = loopdest + '\0'
 
 
 
-def do_create(mlist, dbfile, textfile, func):
-    lockfp = None
+def _do_create(mlist, textfile, func):
+    # Crack open the plain text file
     try:
-        # First, open the dbhash file using built-in open so we can acquire an
-        # exclusive lock on it.  See the discussion above for why we do it
-        # this way instead of specifying the `l' option to dbhash.open()
-        db = bsddb.hashopen(dbfile, 'c')
-        lockfp = open(dbfile)
-        fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
-        # Crack open the plain text file
+        fp = open(textfile, 'r+')
+    except IOError, e:
+        if e.errno <> errno.ENOENT: raise
+        omask = os.umask(007)
         try:
-            fp = open(textfile, 'r+')
-        except IOError, e:
-            if e.errno <> errno.ENOENT: raise
-            omask = os.umask(007)
-            try:
-                fp = open(textfile, 'w+')
-            finally:
-                os.umask(omask)
-        func(mlist, db, fp)
-        # And flush everything out to disk
-        fp.close()
+            fp = open(textfile, 'w+')
+        finally:
+            os.umask(omask)
+    try:
+        func(mlist, fp)
         # Now double check the virtual plain text file
-        if func is addvirtual:
-            check_for_virtual_loopaddr(mlist, db, textfile)
-        db.sync()
-        db.close()
+        if func is _addvirtual:
+            _check_for_virtual_loopaddr(mlist, textfile)
     finally:
-        if lockfp:
-            fcntl.flock(lockfp.fileno(), fcntl.LOCK_UN)
-            lockfp.close()
+        fp.close()
     
 
 def create(mlist, cgi=0, nolock=0):
@@ -277,45 +202,28 @@ def create(mlist, cgi=0, nolock=0):
         lock.lock()
     # Do the aliases file, which need to be done in any case
     try:
-        do_create(mlist, DBFILE, TEXTFILE, addlist)
+        _do_create(mlist, ALIASFILE, _addlist)
         if mlist and mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-            do_create(mlist, VDBFILE, VTEXTFILE, addvirtual)
+            _do_create(mlist, VIRTFILE, _addvirtual)
+        _update_maps()
     finally:
         if lock:
             lock.unlock(unconditionally=1)
 
 
 
-def do_remove(mlist, dbfile, textfile, virtualp):
-    lockfp = None
+def _do_remove(mlist, textfile, virtualp):
+    listname = mlist.internal_name()
+    # Now do our best to filter out the proper stanza from the text file.
+    # The text file better exist!
+    outfp = None
     try:
-        listname = mlist.internal_name()
-        # Crack open the dbhash file, and delete all the entries.  See the
-        # discussion above for while we lock the aliases.db file this way.
-        lockfp = open(dbfile)
-        fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
-        db = bsddb.hashopen(dbfile, 'c')
-        for k, v in makealiases(listname):
-            try:
-                del db[k + '\0']
-            except KeyError:
-                pass
-        if not virtualp:
-            # Always update YP_LAST_MODIFIED, but only for the aliases file
-            db['YP_LAST_MODIFIED'] = '%010d' % time.time()
-            # Add a YP_MASTER_NAME only if there isn't one already
-            if not db.has_key('YP_MASTER_NAME'):
-                db['YP_MASTER_NAME'] = socket.getfqdn()
-        # And flush the changes to disk
-        db.sync()
-        # Now do our best to filter out the proper stanza from the text file.
-        # The text file better exist!
-        try:
-            infp = open(textfile)
-        except IOError, e:
-            if e.errno <> errno.ENOENT: raise
-            # Otherwise, there's no text file to filter so we're done.
-            return
+        infp = open(textfile)
+    except IOError, e:
+        if e.errno <> errno.ENOENT: raise
+        # Otherwise, there's no text file to filter so we're done.
+        return
+    try:
         omask = os.umask(007)
         try:
             outfp = open(textfile + '.tmp', 'w')
@@ -328,10 +236,10 @@ def do_remove(mlist, dbfile, textfile, virtualp):
             line = infp.readline()
             if not line:
                 break
-            # If we're filtering out a stanza, just look for the end marker
-            # and filter out everything in between.  If we're not in the
-            # middle of filter out a stanza, we're just looking for the proper
-            # begin marker.
+            # If we're filtering out a stanza, just look for the end marker and
+            # filter out everything in between.  If we're not in the middle of
+            # filtering out a stanza, we're just looking for the proper begin
+            # marker.
             if filteroutp:
                 if line.startswith(end):
                     filteroutp = 0
@@ -345,14 +253,11 @@ def do_remove(mlist, dbfile, textfile, virtualp):
                     filteroutp = 1
                 else:
                     outfp.write(line)
-        # Close up shop, and rotate the files
+    # Close up shop, and rotate the files
+    finally:
         infp.close()
         outfp.close()
-        os.rename(textfile+'.tmp', textfile)
-    finally:
-        if lockfp:
-            fcntl.flock(lockfp.fileno(), fcntl.LOCK_UN)
-            lockfp.close()
+    os.rename(textfile+'.tmp', textfile)
     
 
 def remove(mlist, cgi=0):
@@ -360,9 +265,11 @@ def remove(mlist, cgi=0):
     lock = makelock()
     lock.lock()
     try:
-        do_remove(mlist, DBFILE, TEXTFILE, 0)
+        _do_remove(mlist, ALIASFILE, 0)
         if mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-            do_remove(mlist, VDBFILE, VTEXTFILE, 1)
+            _do_remove(mlist, VIRTFILE, 1)
+        # Regenerate the alias and map files
+        _update_maps()
     finally:
         lock.unlock(unconditionally=1)
 
