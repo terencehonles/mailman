@@ -1,4 +1,4 @@
-E' richiesta la tua autorizzazione è per approvare il seguente 
+E' richiesta la tua autorizzazione per approvare il seguente 
 messaggio:
 
     Lista:     %(listname)s@%(hostname)s
