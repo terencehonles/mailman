@@ -721,7 +721,11 @@ def canonstr(s, lang=None):
             break
         ref = parts.pop(0)
         if ref.startswith('#'):
-            appchr(int(ref[1:]))
+            try:
+                appchr(int(ref[1:]))
+            except ValueError:
+                # Non-convertable, stick with what we got
+                newparts.append('&'+ref+';')
         else:
             c = htmlentitydefs.entitydefs.get(ref, '?')
             if c.startswith('#') and c.endswith(';'):
@@ -746,8 +750,9 @@ def canonstr(s, lang=None):
 
 
 # The opposite of canonstr() -- sorta.  I.e. it attempts to encode s in the
-# charset of the given language, and failing that, replaces non-ASCII
-# characters with their html references.
+# charset of the given language, which is the character set that the page will
+# be rendered in, and failing that, replaces non-ASCII characters with their
+# html references.  It always returns a byte string.
 def uncanonstr(s, lang=None):
     if s is None:
         s = u''
@@ -755,10 +760,17 @@ def uncanonstr(s, lang=None):
         charset = 'us-ascii'
     else:
         charset = GetCharSet(lang)
-    # BAW should change this to a type types of s
+    # See if the string contains characters only in the desired character
+    # set.  If so, return it unchanged, except for coercing it to a byte
+    # string.
     try:
-        return s.encode(charset, 'strict')
+        if isinstance(s, UnicodeType):
+            return s.encode(charset)
+        else:
+            u = unicode(s, charset)
+            return s
     except UnicodeError:
+        # Nope, it contains funny characters, so html-ref it
         a = []
         for c in s:
             o = ord(c)
