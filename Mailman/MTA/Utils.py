@@ -34,7 +34,7 @@ def getusername():
 
 
 
-def makealiases(listname):
+def _makealiases_mailprog(listname):
     wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'mailman')
     # Most of the list alias extensions are quite regular.  I.e. if the
     # message is delivered to listname-foobar, it will be filtered to a
@@ -53,3 +53,27 @@ def makealiases(listname):
         aliases.append(('%s-%s' % (listname, ext),
                         '"|%s %s %s"' % (wrapper, ext, listname)))
     return aliases
+
+
+
+def _makealiases_maildir(listname):
+    maildir = mm_cfg.MAILDIR_DIR
+    if not maildir.endswith('/'):
+        maildir += '/'
+    # Deliver everything using maildir style.  This way there's no mail
+    # program, no forking and no wrapper necessary!
+    #
+    # Note, don't use this unless your MTA leaves the envelope recipient in
+    # Delivered-To:, Envelope-To:, or Apparently-To:
+    aliases = [(listname, maildir)]
+    for ext in ('admin', 'bounces', 'confirm', 'join', 'leave', 'owner',
+                'request', 'subscribe', 'unsubscribe'):
+        aliases.append(('%s-%s' % (listname, ext), maildir))
+    return aliases
+
+
+
+if mm_cfg.USE_MAILDIR:
+    makealiases = _makealiases_maildir
+else:
+    makealiases = _makealiases_mailprog
