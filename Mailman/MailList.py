@@ -707,11 +707,18 @@ it will not be changed."""),
  	     'Alias names (regexps) which qualify as explicit to or cc'
              ' destination names for this list.',
 
-             "Alternate list names (the stuff before the '@') that are to be"
-             " accepted when the explicit-destination constraint (a prior"
-             " option) is active.  This enables things like cascading"
-             " mailing lists and relays while the constraint is still"
-             " preventing random spams."), 
+             "Alternate addresses that are acceptable when"
+             " `require_explicit_destination' is enabled.  This option"
+             " takes a list of regular expressions, one per line, which is"
+             " matched against every recipient address in the message.  The"
+             " matching is performed with Python's re.match() function,"
+             " meaning they are anchored to the start of the string."
+             " <p>For backwards compatibility with Mailman 1.1, if the regexp"
+             " contains an `@', then the entire recipient address is matched"
+             " against the regexp.  Otherwise, only the localpart of the"
+             " address is matched.  This behavior is deprecated, and in a"
+             " future release, only the entire recipient address will be"
+             " matched against."),
 
 	    ('max_num_recipients', mm_cfg.Number, 5, 0, 
 	     'Ceiling on acceptable number of recipients for a posting.',
@@ -800,6 +807,46 @@ it will not be changed."""),
 	finally:
 	    os.umask(ou)
 	
+    def __save(self, dict, fname):
+        # we want to write this dict in a marshal, but be especially paranoid
+        # about how we write the config.db, so we'll be as robust as possible
+        # in the face of, e.g. disk full errors.  The idea is that we want to
+        # guarantee that config.db is always valid.  The old way had the bad
+        # habit of writing an incomplete file, which happened to be a valid
+        # (but bogus) marshal.
+        fname_tmp = fname + '.tmp.%d' % os.getpid()
+        fname_last = fname + '.last'
+        fp = None
+        try:
+            try:
+                fp = open(fname_tmp, 'w')
+                marshal.dump(dict, fp)
+            except (ValueError, IOError), e:
+                self.LogMsg('error',
+                            'Failed config.db file write, retaining old state.'
+                            '\n%s' % e)
+                if fp:
+                    os.unlink(fname_tmp)
+                raise
+        finally:
+            if fp:
+                fp.close()
+        # Now do config.db.tmp.xxx -> config.db -> config.db.last rotation
+        # as safely as possible.
+        try:
+            # might not exist yet
+            os.unlink(fname_last)
+        except OSError, e:
+            if e.errno <> errno.ENOENT:
+                raise
+        try:
+            # might not exist yet
+            os.link(fname, fname_last)
+        except OSError, e:
+            if e.errno <> errno.ENOENT:
+                raise
+        os.rename(fname_tmp, fname)
+
     def Save(self):
 	# If more than one client is manipulating the database at once, we're
 	# pretty hosed.  That's a good reason to make this a daemon not a
@@ -810,52 +857,15 @@ it will not be changed."""),
 	for key, value in self.__dict__.items():
 	    if key[0] <> '_':
 		dict[key] = value
-        # we want to write this dict in a marshal, but be especially paranoid
-        # about how we write the config.db, so we'll be as robust as possible
-        # in the face of, e.g. disk full errors.  The idea is that we want to
-        # guarantee that config.db is always valid.  The old way had the bad
-        # habit of writing an incomplete file, which happened to be a valid
-        # (but bogus) marshal.
-        fname = os.path.join(self._full_path, 'config.db')
-        fname_tmp = fname + '.tmp.' + `os.getpid()`
-        fname_last = fname + ".last"
         # Make config.db unreadable by `other', as it contains all the
         # list members' passwords (in clear text).
         omask = os.umask(007)
         try:
-            try:
-                fp = open(fname_tmp, 'w')
-                marshal.dump(dict, fp)
-                fp.close()
-            except IOError, status:
-                try:
-                    os.unlink(fname_tmp)
-                except OSError, e:
-                    if e.errno <> errno.ENOENT:
-                        raise
-                self.LogMsg('error',
-                            'Failed config.db file write, retaining old state'
-                            '\n %s' % `status.args`)
-                raise
-            # Now do config.db.tmp.xxx -> config.db -> config.db.last
-            # rotation -- safely.
-            try:
-                # might not exist yet
-                os.unlink(fname_last)
-            except os.error, (code, msg):
-                if code <> errno.ENOENT:
-                    raise
-            try:
-                # might not exist yet
-                os.link(fname, fname_last)
-            except os.error, (code, msg):
-                if code <> errno.ENOENT:
-                    raise
-            os.rename(fname_tmp, fname)
+            self.__save(dict, os.path.join(self._full_path, 'config.db'))
         finally:
             os.umask(omask)
+            self.SaveRequestsDb()
         self.CheckHTMLArchiveDir()
-        self.SaveRequestsDb()
 
     def Load(self, check_version=1):
         if self.__createlock_p:
@@ -1202,30 +1212,38 @@ it will not be changed."""),
     def HasExplicitDest(self, msg):
 	"""True if list name or any acceptable_alias is included among the
         to or cc addrs."""
-	# Note that qualified host can be different!  This allows, eg, for
-        # relaying from remote lists that have the same name.  Still
-        # stringent, but offers a way to provide for remote exploders.
-        listname = self.internal_name()
+        # this is the list's full address
+        listfullname = '%s@%s' % (self.internal_name(), self.host_name)
         recips = []
-        # First check all dests against simple name:
-        for recip in msg.getaddrlist('to') + msg.getaddrlist('cc'):
-            curr = string.lower(string.split(recip[1], '@')[0])
-	    if listname == curr:
-		return 1
-            recips.append(curr)
+        # check all recipient addresses against the list's full address...
+        for fullname, addr in msg.getaddrlist('to') + msg.getaddrlist('cc'):
+            localpart = string.lower(string.split(addr, '@')[0])
+            laddr = string.lower(addr)
+            if (# TBD: backwards compatibility: deprecated
+                    localpart == self.internal_name() or
+                    # new behavior
+                    laddr == listfullname):
+                return 1
+            recips.append((laddr, localpart))
         # ... and only then try the regexp acceptable aliases.
-        for recip in recips:
+        for laddr, localpart in recips:
             for alias in string.split(self.acceptable_aliases, '\n'):
                 stripped = string.strip(alias)
+                if '@' in stripped:
+                    # new behavior: match the entire recipient string
+                    recip = laddr
+                else:
+                    # TBD: backwards compatibility: deprecated
+                    recip = localpart
                 try:
                     # The list alias in `stripped` is a user supplied regexp,
                     # which could be malformed.
-                    if stripped and re.search(stripped, recip):
+                    if stripped and re.match(stripped, recip):
                         return 1
                 except re.error:
                     # `stripped' is a malformed regexp -- try matching
                     # safely, with all non-alphanumerics backslashed:
-                    if stripped and re.search(re.escape(stripped), recip):
+                    if stripped and re.match(re.escape(stripped), recip):
                         return 1
 	return 0
 
