@@ -22,10 +22,15 @@ import os
 import time
 import sha
 import marshal
+import binascii
 from types import StringType, TupleType
 from urlparse import urlparse
 
-from Mailman import Crypt
+try:
+    import crypt
+except ImportError:
+    crypt = None
+
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Cookie
@@ -41,11 +46,24 @@ class SecurityManager:
 	# Non configurable
 	self.passwords = {}
 
-    def ValidAdminPassword(self, pw):
-	if Utils.CheckSiteAdminPassword(pw):
+    def ValidAdminPassword(self, response):
+        if Utils.CheckSiteAdminPassword(response):
             return 1
-	return type(pw) == StringType and \
-               Crypt.crypt(pw, self.password) == self.password
+        # Old passwords may have been encrypted w/crypt.  First try comparing
+        # challenge with sha hashed response and if that fails, use crypt and
+        # upgrade.
+        challenge = self.password
+        sha_response = sha.new(response).hexdigest()
+        if challenge == sha_response:
+            return 1
+        if crypt and challenge == crypt.crypt(response, challenge[:2]):
+            # Upgrade the password hash to SHA1.   BAW: should we store the
+            # plaintext password as well?  We could implement a mail-back
+            # option for list owners that way.
+            self.password = sha_response
+            return 1
+        # Didn't match.
+        return 0
 
     def ConfirmAdminPassword(self, pw):
         if not self.ValidAdminPassword(pw):
@@ -79,7 +97,7 @@ class SecurityManager:
         # non-strings to pickles can cause problems if the resulting string
         # needs to be quoted.  So we'll do the conversion ourselves.
         c = Cookie.Cookie()
-        c[key] = Utils.hexlify(marshal.dumps((issued, mac)))
+        c[key] = binascii.hexlify(marshal.dumps((issued, mac)))
         # The path to all Mailman stuff, minus the scheme and host,
         # i.e. usually the string `/mailman'
         path = urlparse(self.web_page_url)[2]
@@ -119,7 +137,7 @@ class SecurityManager:
             return 0
         # Undo the encoding we performed in MakeCookie() above
         try:
-            cookie = marshal.loads(Utils.unhexlify(c[key].value))
+            cookie = marshal.loads(binascii.unhexlify(c[key].value))
             issued, received_mac = cookie
         except (EOFError, ValueError, TypeError):
             raise Errors.MMInvalidCookieError
@@ -157,14 +175,3 @@ class SecurityManager:
 	    raise Errors.MMPasswordsMustMatch
 	self.passwords[addr] = newpw
 	self.Save()
-
-    def ExtractApproval(self, msg):
-        """True if message has valid administrator approval.
-
-        Approval line is always stripped from message as a side effect.
-        """
-        p = msg.getheader('approved')
-        if p is None:
-            return 0
-        del msg['approved']         # Mustn't deliver this line!!
-        return self.ValidAdminPassword(p)
