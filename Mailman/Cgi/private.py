@@ -45,6 +45,13 @@ def true_path(path):
 
 
 
+def guess_type(url, strict):
+    if hasattr(mimetypes, 'common_types'):
+        return mimetypes.guess_type(url, strict)
+    return mimetypes.guess_type(url)
+
+
+
 def main():
     doc = Document()
     doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
@@ -133,7 +140,9 @@ def main():
 
     # Authorization confirmed... output the desired file
     try:
-        ctype, enc = mimetypes.guess_type(path, strict=0)
+        ctype, enc = guess_type(path, strict=0)
+        if ctype is None:
+            ctype = 'text/html'
         if mboxfile:
             f = open(os.path.join(mlist.archive_dir() + '.mbox',
                                   mlist.internal_name() + '.mbox'))
