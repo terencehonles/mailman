@@ -29,6 +29,7 @@ import marshal
 import errno
 import cPickle
 import email
+from email.MIMEMessage import MIMEMessage
 from cStringIO import StringIO
 
 from Mailman import mm_cfg
@@ -263,7 +264,6 @@ class ListAdmin:
             assert value == mm_cfg.DISCARD
             # Discarded
             rejection = 'Discarded'
-        #
         # Forward the message
         if forward and addr:
             # If we've approved the message, we need to be sure to craft a
@@ -275,15 +275,12 @@ class ListAdmin:
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
                 raise Errors.LostHeldMessage(path)
-            # We don't want this message getting delivered to the list twice.
-            # This should also uniquify the message enough for the hash-based
-            # file naming (not foolproof though).
-            del copy['resent-to']
-            copy['Resent-To'] = addr
-            virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
-            virginq.enqueue(copy, listname=self.internal_name(),
-                            recips=[addr])
-        #
+            fmsg = Message.UserNotification(addr,
+                                            self.GetAdminEmail(),
+                                            _('Forward of moderated  message'))
+            fmsg.add_header('Content-Type', 'message/rfc822')
+            fmsg.add_payload(copy)
+            fmsg.send(self)
         # Log the rejection
 	if rejection:
             note = '''%(listname)s: %(rejection)s posting:
