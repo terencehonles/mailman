@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 4033 $)
+AC_REVISION($Revision: 4049 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -57,14 +57,13 @@ AC_MSG_CHECKING(Python version)
 changequote(,)
 cat > conftest.py <<EOF
 import sys
-import string
 try:
     v = sys.hexversion
 except AttributeError:
     v = 0
 # int of hexversion 0x20000f1
 if v >= 33554673:
-    s = string.split(sys.version)[0]
+    s = sys.version.split()[0]
 else:
     s = ""
 fp = open("conftest.out", "w")
@@ -160,9 +159,9 @@ changequote(,)
 if test -z "$$1"
 then
     cat > conftest.py <<EOF
-import grp, string
+import grp
 gid = ''
-for group in string.split("$2"):
+for group in "$2".split():
     try:
         try:
             gid = grp.getgrgid(int(group))[2]
@@ -193,9 +192,9 @@ changequote(,)
 if test -z "$$1"
 then
     cat > conftest.py <<EOF
-import pwd, string
+import pwd
 uid = ''
-for user in string.split("$2"):
+for user in "$2".split():
     try:
         try:
             uid = pwd.getpwuid(int(user))[2]
@@ -283,14 +282,14 @@ fi
 AC_MSG_CHECKING(permissions on $prefixcheck)
 changequote(,)
 cat > conftest.py <<EOF
-import os, grp, string
+import os, grp
 from stat import *
 prefix = "$prefixcheck"
 groupname = "$GROUPNAME"
 mailmangid = $MAILMAN_GID
 problems = []
 try: statdata = os.stat(prefix)
-except os.error:
+except OSError:
     problems.append("Directory doesn't exist: " + prefix)
 else:    
     mode = statdata[ST_MODE]
@@ -299,14 +298,14 @@ else:
         problems.append("Directory must be owned by group " +
                         groupname + ": " + prefix)
     if (mode & S_ISGID) <> S_ISGID:
-        problems.append("Set-gid bit must be set for directory: " +prefix)
+        problems.append("Set-gid bit must be set for directory: " + prefix)
     perms = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
     if (mode & perms) <> perms:
         problems.append("Permissions should be at least 02775: " + prefix)
 if not problems:
     msg = "okay\n"
 else:
-    msg = '***** ' + string.join(problems, '\n***** ') + '\n'
+    msg = '***** ' + '\n***** '.join(problems) + '\n'
 fp = open("conftest.out", "w")
 fp.write(msg)
 fp.close()
@@ -398,25 +397,20 @@ changequote(,)
 cat > conftest.py <<EOF
 # attempt to figure out the default hostname and URL
 from socket import *
-import string
-fqdn = None
+fqdn = getfqdn()
 www = None
-host, aliases, ipaddrs = gethostbyaddr(gethostbyname(gethostname()))
+host, aliases, ipaddrs = gethostbyaddr(fqdn)
 aliases.insert(0, host)
 for h in aliases:
-    parts = string.split(h, '.')
-    if len(parts) > 1:
-        if parts[0] == 'www':
-            www = h
-        elif not fqdn:
-            fqdn = h
-    if www and fqdn:
+    parts = h.split('.')
+    if len(parts) > 1 and parts[0] == 'www':
+        www = h
         break
 fp = open('conftest.out', 'w')
-if not www and fqdn:
+if not www:
     fp.write('%s\n%s\n' % (fqdn, fqdn))
 elif www:
-    dhn = string.join(string.split(www, '.')[1:], '.')
+    dhn = '.'.join(www.split('.')[1:])
     fp.write('%s\n%s\n' % (dhn, www))
 else:
     fp.write('please.change.me\nwww.please.change.me\n')
@@ -424,13 +418,13 @@ fp.close()
 EOF
 $PYTHON conftest.py
 changequote([, ])
-AC_MSG_CHECKING(for default fully qualified host name)
+AC_MSG_CHECKING(for email host name)
 if test -z "$FQDN"
 then
     FQDN=`head -1 conftest.out`
 fi
 AC_MSG_RESULT($FQDN)
-AC_MSG_CHECKING(for default URL host component)
+AC_MSG_CHECKING(for web host name)
 if test -z "$URL"
 then
     URL=`tail -1 conftest.out`
