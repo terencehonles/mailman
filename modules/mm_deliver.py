@@ -80,16 +80,17 @@ Questions or comments?  Please send them to %s.
 class Deliverer:
     # This method assumes the sender is list-admin if you don't give one.
     def SendTextToUser(self, subject, text, recipient, sender=None,
-                       errorsto=None):
+                       add_headers=[]):
 	if not sender:
 	    sender = self.GetAdminEmail()
         mm_utils.SendTextToUser(subject, text, recipient, sender,
-                                errorsto=errorsto)
+                                add_headers=add_headers)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
         mm_utils.DeliverToUser(msg, recipient,
-                               errorsto=Self.GetAdminEmail())
+                               add_headers=['Errors-To: %s\n'
+                                            % Self.GetAdminEmail()])
 
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
@@ -209,6 +210,8 @@ class Deliverer:
                     % (`user`, self._internal_name))
 	self.SendTextToUser(subject = subj,
 			    recipient = recipient,
-                            text = text)
+                            text = text,
+                            add_headers=["Errors-To: %s"
+                                         % self.GetAdminEmail()])
         if not ok:
              raise mm_err.MMBadUserError
