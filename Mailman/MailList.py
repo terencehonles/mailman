@@ -878,10 +878,8 @@ it will not be changed."""),
         try:
             fp = open(dbfile)
         except IOError, e:
-            if e.errno == errno.ENOENT:
-                return None, e
-            else:
-                raise
+            if e.errno <> errno.ENOENT: raise
+            return None, e
         try:
             try:
                 dict = marshal.load(fp)
