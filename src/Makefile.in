@@ -73,7 +73,7 @@ listinfo subscribe roster private confirm create rmlist
 
 COMMONOBJS= common.o vsnprintf.o
 
-MAIL_PROGS= wrapper
+MAIL_PROGS= mailman
 
 #ALIAS_PROGS= addaliases
 
@@ -88,7 +88,7 @@ PROGRAMS= $(CGI_PROGS) $(MAIL_PROGS) $(ALIAS_PROGS)
 
 all: $(PROGRAMS)
 
-wrapper: $(srcdir)/mail-wrapper.c $(COMMONOBJS)
+mailman: $(srcdir)/mail-wrapper.c $(COMMONOBJS)
 	$(CC) -I. $(MAIL_FLAGS) $(CFLAGS) $(COMMONOBJS) -o $@ $(srcdir)/mail-wrapper.c
 
 #addaliases: $(srcdir)/alias-wrapper.c $(COMMONOBJS)
