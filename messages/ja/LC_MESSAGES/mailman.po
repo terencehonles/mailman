@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Fri Aug 17 17:24:30 2001\n"
-"PO-Revision-Date: 2001-05-29 09:00+0900\n"
+"POT-Creation-Date: Fri Aug 17 22:12:49 2001\n"
+"PO-Revision-Date: 2001-08-16 17:00+0900\n"
 "Last-Translator: Tokio Kikuchi <tkikuchi@is.kochi-u.ac.jp>\n"
 "Language-Team: Japanese <mmjp-users@mm.tkikuchi.net>\n"
 "MIME-Version: 1.0\n"
@@ -95,10 +95,10 @@ msgid ""
 "                non-digest delivery or your mailing list will basically be\n"
 "                unusable."
 msgstr ""
-"¤¢¤Ê¤¿¤Ï¡¤¤Þ¤È¤áÆÉ¤ßµ¡Ç½¤È¸ÄÊÌÇÛÁ÷\n"
-"µ¡Ç½¤ÎÎ¾Êý¤È¤â¥ª¥Õ¤Ë¤·¤Þ¤·¤¿¡¥¤³¤ì¤ÏÎ¾Î©¤Ç¤­¤Þ¤»¤ó¡¥\n"
+"¤¢¤Ê¤¿¤Ï, ¤Þ¤È¤áÆÉ¤ßµ¡Ç½¤È¸ÄÊÌÇÛÁ÷\n"
+"µ¡Ç½¤ÎÎ¾Êý¤È¤â¥ª¥Õ¤Ë¤·¤Þ¤·¤¿. ¤³¤ì¤ÏÎ¾Î©¤Ç¤­¤Þ¤»¤ó. \n"
 "¤Þ¤È¤áÆÉ¤ßµ¡Ç½¤«¸ÄÊÌÇÛÁ÷µ¡Ç½¤Î¤É¤Á¤é¤«¤ò¥ª¥ó¤Ë¤·¤Æ¤ª¤«¤Ê¤¤¤È\n"
-"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ï´ðËÜÅª¤ËÍøÍÑ¤Ç¤­¤Ê¤¯¤Ê¤ê¤Þ¤¹¡¥"
+"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ï´ðËÜÅª¤ËÍøÍÑ¤Ç¤­¤Ê¤¯¤Ê¤ê¤Þ¤¹. "
 
 #: Mailman/Cgi/admin.py:174
 msgid ""
@@ -194,7 +194,7 @@ msgstr "[ÀâÌÀÌµ¤·]"
 
 #: Mailman/Cgi/admin.py:302
 msgid "No valid variable name found."
-msgstr ""
+msgstr "Í­¸ú¤ÊÌ¾Á°¤¬¸«¤Ä¤«¤ê¤Þ¤»¤ó."
 
 #: Mailman/Cgi/admin.py:314
 msgid ""
@@ -250,9 +250,8 @@ msgid "Go to the general list information page"
 msgstr "°ìÈÌ¸þ¤±¤Î¥ê¥¹¥È°ÆÆâ¥Ú¡¼¥¸¤Ø"
 
 #: Mailman/Cgi/admin.py:371
-#, fuzzy
 msgid "Edit the public HTML pages"
-msgstr "²ñ°÷¸þ¤±¥Ú¡¼¥¸¤Î HTML ¤òÊÔ½¸¤¹¤ë"
+msgstr "¸ø³« HTML ¥Ú¡¼¥¸¤òÊÔ½¸¤¹¤ë"
 
 #: Mailman/Cgi/admin.py:373
 msgid "Go to list archives"
@@ -263,9 +262,8 @@ msgid "Delete this mailing list"
 msgstr "¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ò¾Ãµî¤¹¤ë"
 
 #: Mailman/Cgi/admin.py:378
-#, fuzzy
 msgid " (requires confirmation)<br>&nbsp;<br>"
-msgstr " (¥Ñ¥¹¥ï¡¼¥É¤¬É¬Í×¤Ç¤¹)"
+msgstr " (³ÎÇ§¤¬É¬Í×¤Ç¤¹)<br>&nbsp;<br>"
 
 #: Mailman/Cgi/admin.py:384
 msgid "Logout"
@@ -276,11 +274,12 @@ msgid "  (You can change your password there, too.)"
 msgstr " (¤½¤³¤Ç¥Ñ¥¹¥ï¡¼¥É¤òÊÑ¹¹¤¹¤ë¤³¤È¤â¤Ç¤­¤Þ¤¹.)"
 
 #: Mailman/Cgi/admin.py:444
-#, fuzzy
 msgid ""
 "Make your changes in the following section, then submit them\n"
 "        using the <em>Submit Your Changes</em> button below."
-msgstr "°Ê²¼¤Î¹àÌÜ¤òÊÑ¹¹¤·¤Æ, °ìÈÖ²¼¤Î¥Ü¥¿¥ó¤ò ¥¯¥ê¥Ã¥¯¤·¤ÆÁ÷¿®¤·¤Æ¤¯¤À¤µ¤¤."
+msgstr ""
+"°Ê²¼¤Î¹àÌÜ¤òÊÑ¹¹¤·¤Æ, <em>ÊÑ¹¹¤òÁ÷¿®¤¹¤ë</em>¤Î¥Ü¥¿¥ó¤ò\n"
+" ¥¯¥ê¥Ã¥¯¤·¤ÆÁ÷¿®¤·¤Æ¤¯¤À¤µ¤¤."
 
 #: Mailman/Cgi/admin.py:460
 msgid ""
@@ -289,6 +288,8 @@ msgid ""
 "href=\"http://www.python.org/doc/current/lib/re-syntax.html\">Python\n"
 "          regular expression</a>:"
 msgstr ""
+"<a href=\"http://www.python.org/doc/current/lib/re-syntax.html\">\n"
+"Python ¤ÎÀµµ¬É½¸½</a> ¤Ç²ñ°÷¤ò¸¡º÷¤¹¤ë:"
 
 #: Mailman/Cgi/admin.py:466
 msgid "Search..."
@@ -316,36 +317,35 @@ msgstr "<br><em>... ¥¢¥Ã¥×¥í¡¼¥É¤¹¤ë¥Õ¥¡¥¤¥ë¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤.</em><br>"
 
 #: Mailman/Cgi/admin.py:642 Mailman/Cgi/admin.py:645
 msgid "Topic %(i)d"
-msgstr ""
+msgstr "ÏÃÂê %(i)d"
 
 #: Mailman/Cgi/admin.py:646
 msgid "Delete"
-msgstr ""
+msgstr "ºï½ü"
 
 #: Mailman/Cgi/admin.py:647
 msgid "Topic name:"
-msgstr ""
+msgstr "ÏÃÂêÌ¾:"
 
 #: Mailman/Cgi/admin.py:649
 msgid "Regexp:"
-msgstr ""
+msgstr "Àµµ¬É½¸½:"
 
 #: Mailman/Cgi/admin.py:652 Mailman/Cgi/options.py:799
-#, fuzzy
 msgid "Description:"
-msgstr "ÀâÌÀ"
+msgstr "ÀâÌÀ:"
 
 #: Mailman/Cgi/admin.py:656
 msgid "Add new item..."
-msgstr ""
+msgstr "¿·¤·¤¤¹àÌÜ¤òÄÉ²Ã..."
 
 #: Mailman/Cgi/admin.py:658
 msgid "...before this one."
-msgstr ""
+msgstr "...¤³¤ÎÁ°¤Ë."
 
 #: Mailman/Cgi/admin.py:659
 msgid "...after this one."
-msgstr ""
+msgstr "...¤³¤Î¸å¤Ë."
 
 #: Mailman/Cgi/admin.py:689
 msgid "(Details)"
@@ -383,7 +383,7 @@ msgstr "¹ç·× %(allcnt)s Ì¾"
 
 #: Mailman/Cgi/admin.py:814
 msgid "unsub"
-msgstr ""
+msgstr "Âà²ñ"
 
 #: Mailman/Cgi/admin.py:815
 msgid "member address<br>member name"
@@ -419,7 +419,7 @@ msgstr "¸À¸ì"
 
 #: Mailman/Cgi/admin.py:880
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
-msgstr ""
+msgstr "<b>Âà²ñ</b> -- ²ñ°÷¤òÂà²ñ¤µ¤»¤ë¤Ë¤Ï, ¤³¤³¤ò¥¯¥ê¥Ã¥¯."
 
 #: Mailman/Cgi/admin.py:882
 msgid ""
@@ -477,7 +477,6 @@ msgid "from %(start)s to %(end)s"
 msgstr "%(start)s ¤«¤é %(end)s ¤Þ¤Ç"
 
 #: Mailman/Cgi/admin.py:927
-#, fuzzy
 msgid "Send welcome message to this batch?"
 msgstr "¤³¤Î¿ÍÃ£¤Ë´¿·Þ¥á¡¼¥ë¤ò½Ð¤·¤Þ¤¹¤«?"
 
@@ -504,12 +503,10 @@ msgid "...or specify a file to upload:"
 msgstr "...Ëô¤Ï¥¢¥Ã¥×¥í¡¼¥É¤¹¤ë¥Õ¥¡¥¤¥ë¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤:"
 
 #: Mailman/Cgi/admin.py:963
-#, fuzzy
 msgid "Send unsubscription acknowledgement to the user?"
-msgstr "Âà²ñ¤Î³ÎÇ§¤ò¥æ¡¼¥¶¤ËÁ÷¤ê¤Þ¤¹¤«?"
+msgstr "Âà²ñ¼êÂ³¤­´°Î»¤ÎÃÎ¤é¤»¥æ¡¼¥¶¤ËÁ÷¤ê¤Þ¤¹¤«?"
 
 #: Mailman/Cgi/admin.py:972
-#, fuzzy
 msgid "Send notifications to the list owner?"
 msgstr "¥ê¥¹¥È´ÉÍý¼Ô¤ËÄÌÃÎ¤·¤Þ¤¹¤«?"
 
@@ -518,7 +515,6 @@ msgid "Change list ownership passwords"
 msgstr "¥ê¥¹¥È´ÉÍý¼Ô¥Ñ¥¹¥ï¡¼¥ÉÊÑ¹¹"
 
 #: Mailman/Cgi/admin.py:997
-#, fuzzy
 msgid ""
 "<a name=\"passwords\">The</a> <em>list administrators</em> are the people "
 "who\n"
@@ -589,7 +585,7 @@ msgstr "´ÉÍý¼Ô¤Î¥Ñ¥¹¥ï¡¼¥É¤¬°ìÃ×¤·¤Þ¤»¤ó"
 
 #: Mailman/Cgi/admin.py:1169
 msgid "Bad email address for option %(property)s: %(val)s"
-msgstr ""
+msgstr "%(property)s ¤Î¥ª¥×¥·¥ç¥ó¤Ë¤Ä¤¤¤Æ¥á¡¼¥ë¥¢¥É¥ì¥¹¤¬ÉÔÀµ: %(val)s"
 
 #: Mailman/Cgi/admin.py:1188
 msgid ""
@@ -606,14 +602,13 @@ msgstr "´û¤Ë²ñ°÷¤Ç¤¹"
 
 #: Mailman/Cgi/admin.py:1231
 msgid "&lt;blank line&gt;"
-msgstr ""
+msgstr "&lt;¶õÇò¹Ô&gt;"
 
 #: Mailman/Cgi/admin.py:1232 Mailman/Cgi/admin.py:1235
 msgid "Bad/Invalid email address"
 msgstr "ÉÔÀµ¤Ê¥á¡¼¥ë¥¢¥É¥ì¥¹"
 
 #: Mailman/Cgi/admin.py:1238
-#, fuzzy
 msgid "Hostile address (illegal characters)"
 msgstr "ÈóÍ§¹¥Åª¥¢¥É¥ì¥¹ (ÉÔÀµ¤ÊÊ¸»ú)"
 
@@ -643,7 +638,7 @@ msgstr "Âà²ñ¼êÂ³¤­¤Î¥¨¥é¡¼:"
 
 #: Mailman/Cgi/admin.py:1337
 msgid "Warning: "
-msgstr ""
+msgstr "·Ù¹ð: "
 
 #: Mailman/Cgi/admindb.py:111
 msgid "%(realname)s Administrative Database"
@@ -682,12 +677,10 @@ msgid "Subscription Requests"
 msgstr "Æþ²ñ¿½ÀÁ"
 
 #: Mailman/Cgi/admindb.py:173
-#, fuzzy
 msgid "User address/name"
-msgstr "²ñ°÷¥¢¥É¥ì¥¹<br>²ñ°÷Ì¾"
+msgstr "²ñ°÷¥¢¥É¥ì¥¹/²ñ°÷Ì¾"
 
 #: Mailman/Cgi/admindb.py:174
-#, fuzzy
 msgid "Your decision"
 msgstr "·èºÑ"
 
@@ -780,12 +773,10 @@ msgid " is already a member"
 msgstr " ¤Ï´û¤Ë²ñ°÷¤Ç¤¹"
 
 #: Mailman/Cgi/confirm.py:66
-#, fuzzy
 msgid "Confirmation string was empty."
-msgstr "³ÎÇ§Ê¸»úÎó¤¬°ã¤¤¤Þ¤¹"
+msgstr "³ÎÇ§Ê¸»úÎó¤¬¶õ¤Ç¤¹"
 
 #: Mailman/Cgi/confirm.py:84
-#, fuzzy
 msgid ""
 "<b>Invalid confirmation string:</b>\n"
 "    %(cookie)s.\n"
@@ -796,18 +787,22 @@ msgid ""
 "    Otherwise, <a href=\"%(confirmurl)s\">re-enter</a> your confirmation\n"
 "    string."
 msgstr ""
-"³ÎÇ§Ê¸»úÎó¤¬°ã¤¤¤Þ¤¹. ³ÎÇ§Ê¸»úÎó¤ÏºÇ½é¤ÎÆþ²ñ¿½ÀÁ¤«¤é¤ª¤è¤½ %(days)sÆü¤Ç\n"
+"<b>³ÎÇ§Ê¸»úÎó¤¬°ã¤¤¤Þ¤¹:</b>\n"
+"    %(cookie)s.\n"
+"\n"
+"<p>³ÎÇ§Ê¸»úÎó¤ÏºÇ½é¤ÎÆþ²ñ¿½ÀÁ¤«¤é¤ª¤è¤½ %(days)sÆü¤Ç\n"
 "´ü¸Â¤¬ÀÚ¤ì¤ë¤³¤È¤ËÃí°Õ¤·¤Æ¤¯¤À¤µ¤¤. ¤â¤·³ÎÇ§¤¬´ü¸ÂÀÚ¤ì¤Ç¤¢¤ì¤Ð, ¤â¤¦°ìÅÙ\n"
-"Æþ²ñ¿½ÀÁ¤«¤é¤ä¤êÄ¾¤·¤Æ¤¯¤À¤µ¤¤."
+"Æþ²ñ¿½ÀÁ¤«¤é¤ä¤êÄ¾¤·¤Æ¤¯¤À¤µ¤¤.\n"
+"¤¢¤ë¤¤¤Ï, ³ÎÇ§Ê¸»úÎó¤ò<a "
+"href=\"%(confirmurl)s\">¤³¤³¤ÇºÆÆþÎÏ</a>¤·¤Æ¤¯¤À¤µ¤¤."
 
 #: Mailman/Cgi/confirm.py:140
 msgid "Bad confirmation string"
 msgstr "³ÎÇ§Ê¸»úÎó¤¬°ã¤¤¤Þ¤¹"
 
 #: Mailman/Cgi/confirm.py:148
-#, fuzzy
 msgid "Enter confirmation cookie"
-msgstr "³ÎÇ§Ê¸»úÎó¤¬°ã¤¤¤Þ¤¹"
+msgstr "³ÎÇ§¥¯¥Ã¥­¡¼(Ê¸»úÎó)¤òÆþÎÏ¤·¤Æ¤¯¤À¤µ¤¤"
 
 #: Mailman/Cgi/confirm.py:161
 msgid ""
@@ -817,21 +812,21 @@ msgid ""
 "    below.  Then hit the <em>Submit</em> button to proceed to the next\n"
 "    confirmation step."
 msgstr ""
+"²¼¤ÎÆþÎÏÍó¤Ë, ¤¢¤Ê¤¿¤¬¥á¡¼¥ë¤Ç¼õ¤±¼è¤Ã¤¿³ÎÇ§Ê¸»úÎó(¤Ä¤Þ¤ê<em>\n"
+"¥¯¥Ã¥­¡¼</em>)¤òÆþ¤ì¤Æ¤¯¤À¤µ¤¤. ¼¡¤Ë, <em>Á÷¿®</em>¥Ü¥¿¥ó¤ò²¡¤·¤Æ, \n"
+"¼¡¤Î³ÎÇ§¼êÂ³¤­¤Ë¿Ê¤ó¤Ç¤¯¤À¤µ¤¤."
 
 #: Mailman/Cgi/confirm.py:166
-#, fuzzy
 msgid "Confirmation string:"
-msgstr "³ÎÇ§Ê¸»úÎó¤¬°ã¤¤¤Þ¤¹"
+msgstr "³ÎÇ§Ê¸»úÎó:"
 
 #: Mailman/Cgi/confirm.py:168
-#, fuzzy
 msgid "Submit"
-msgstr "ÊÑ¹¹¤òÁ÷¿®"
+msgstr "Á÷¿®"
 
 #: Mailman/Cgi/confirm.py:179
-#, fuzzy
 msgid "Confirm subscription request"
-msgstr "Æþ²ñ¿½ÀÁ"
+msgstr "Æþ²ñ¿½ÀÁ¤ò³ÎÇ§"
 
 #: Mailman/Cgi/confirm.py:188
 msgid ""
@@ -847,28 +842,35 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this subscription\n"
 "    request."
 msgstr ""
+"<em>%(listname)s</em> ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ø¤ÎÆþ²ñ¿½ÀÁ¤ò´°Î»\n"
+"¤µ¤»¤ë¤Ë¤Ï, ¤¢¤Ê¤¿¤Î³ÎÇ§¤¬É¬Í×¤Ç¤¹. ¤¢¤Ê¤¿¤ÎÆþ²ñÀßÄê¤¬°Ê²¼¤Ë¼¨¤µ¤ì¤Æ\n"
+"¤¤¤Þ¤¹. É¬Í×¤ÊÊÑ¹¹¤ò¹Ô¤Ê¤Ã¤Æ<em>Æþ²ñ</em>¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤¹¤ë¤È\n"
+"Æþ²ñ¼êÂ³¤­¤ò´°Î»¤·¤Þ¤¹. Æþ²ñ¿½ÀÁ³ÎÇ§¤¬´°Î»¤¹¤ë¤È, ²ñ°÷¥ª¥×¥·¥ç¥ó¥Ú¡¼¥¸\n"
+"¤Ë¿Ê¤ß¤Þ¤¹. ¤½¤³¤Ç¤¢¤Ê¤¿¤Ï²ñ°÷¥ª¥×¥·¥ç¥ó¤ò¤µ¤é¤Ë¥«¥¹¥¿¥Þ¥¤¥º¤¹¤ë¤³¤È¤¬\n"
+"¤Ç¤­¤Þ¤¹.\n"
+"\n"
+"<p>¤Þ¤¿¤Ï<em>¥­¥ã¥ó¥»¥ë¡¦ÇË´þ</em>¥Ü¥¿¥ó¤ò²¡¤·¤ÆÆþ²ñ¿½ÀÁ¤ò¼è¤ê¾Ã¤¹¤³¤È¤â\n"
+"¤Ç¤­¤Þ¤¹."
 
 #: Mailman/Cgi/confirm.py:200
-#, fuzzy
 msgid "Your email address:"
-msgstr "¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤¬É¬Í×¤Ç¤¹."
+msgstr "¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹:"
 
 #: Mailman/Cgi/confirm.py:201
 msgid "Your real name:"
-msgstr ""
+msgstr "¤¢¤Ê¤¿¤Î¼ÂÌ¾:"
 
 #: Mailman/Cgi/confirm.py:203 Mailman/Cgi/options.py:658
 msgid "Password:"
 msgstr "¥Ñ¥¹¥ï¡¼¥É:"
 
 #: Mailman/Cgi/confirm.py:205
-#, fuzzy
 msgid "Password (confirm):"
-msgstr "¥Ñ¥¹¥ï¡¼¥É:"
+msgstr "¥Ñ¥¹¥ï¡¼¥É (³ÎÇ§):"
 
 #: Mailman/Cgi/confirm.py:207
 msgid "Receive digests?"
-msgstr ""
+msgstr "¤Þ¤È¤áÆÉ¤ß¤Ë¤·¤Þ¤¹¤«?"
 
 #: Mailman/Cgi/confirm.py:208 Mailman/Cgi/create.py:301
 #: Mailman/Cgi/create.py:347 Mailman/Gui/Archive.py:30
@@ -906,7 +908,7 @@ msgstr "¤Ï¤¤"
 
 #: Mailman/Cgi/confirm.py:216
 msgid "Preferred language:"
-msgstr ""
+msgstr "¸À¸ì¤ÎÁªÂò:"
 
 #: Mailman/Cgi/confirm.py:220 Mailman/Cgi/listinfo.py:171
 msgid "Subscribe"
@@ -915,17 +917,15 @@ msgstr "Æþ²ñ¤ò¿½¤·¹þ¤à"
 #: Mailman/Cgi/confirm.py:221 Mailman/Cgi/confirm.py:389
 #: Mailman/Cgi/confirm.py:481
 msgid "Cancel and discard"
-msgstr ""
+msgstr "¥­¥ã¥ó¥»¥ë¡¦ÇË´þ"
 
 #: Mailman/Cgi/confirm.py:231
-#, fuzzy
 msgid "You have canceled your subscription request."
-msgstr "¥ª¥×¥·¥ç¥ó¤ÎÀßÄêÊÑ¹¹¤¬´°Î»¤·¤Þ¤·¤¿."
+msgstr "¤¢¤Ê¤¿¤ÏÆþ²ñ¿½ÀÁ¤ò¥­¥ã¥ó¥»¥ë¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/confirm.py:268
-#, fuzzy
 msgid "Awaiting moderator approval"
-msgstr "Åê¹Æ¤Ï¾µÇ§¤Î¤¿¤áÊÝÎ±"
+msgstr "»Ê²ñ¼Ô¤Î¾µÇ§¤òÂÔ¤Ã¤Æ¤¤¤Þ¤¹"
 
 #: Mailman/Cgi/confirm.py:271
 msgid ""
@@ -938,6 +938,10 @@ msgid ""
 "notified\n"
 "            of the moderator's decision."
 msgstr ""
+"¤¢¤Ê¤¿¤Ï %(listname)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ø¤ÎÆþ²ñ¿½ÀÁ³ÎÇ§¼êÂ³¤­¤ò\n"
+"´°Î»¤·¤Þ¤·¤¿. ¤·¤«¤·, ¤¢¤Ê¤¿¤¬Æþ²ñ¤¹¤ë¤Ë¤Ï¥ê¥¹¥È¤Î»Ê²ñ¼Ô¤ÎºÇ½ª¾µÇ§¤¬\n"
+"É¬Í×¤Ç¤¹. ¤¢¤Ê¤¿¤Î¿½ÀÁ¤Ï»Ê²ñ¼Ô¤ØÅ¾Á÷¤µ¤ì¤Æ¤¤¤Þ¤¹¤Î¤Ç, ·èÄê¤Ë¤Ä¤¤¤Æ\n"
+"ÄÌÃÎ¤¬¤¢¤ë¤Ç¤·¤ç¤¦."
 
 #: Mailman/Cgi/confirm.py:278 Mailman/Cgi/confirm.py:339
 #: Mailman/Cgi/confirm.py:421
@@ -964,9 +968,12 @@ msgid ""
 "                membership password will be sent to you in a separate\n"
 "                acknowledgement email.<p>"
 msgstr ""
+"³ÎÇ§²èÌÌ¤ÇÆþÎÏ¤·¤¿¥Ñ¥¹¥ï¡¼¥É¤¬°ìÃ×¤·¤Þ¤»¤ó. ¤½¤Î¤¿¤á, ºÇ½é¤Î\n"
+"Æþ²ñ¥Ñ¥¹¥ï¡¼¥É¤¬»È¤ï¤ì¤Þ¤¹. ¤â¤·, ¥Ñ¥¹¥ï¡¼¥É¤ÎÍó¤ò¶õÇò¤Ë¤·¤Æ¤¤¤¿¾ì¹ç¤Ï\n"
+"Mailman¤¬¥Ñ¥¹¥ï¡¼¥É¤ò¼«Æ°À¸À®¤·¤Þ¤¹. ¤É¤Á¤é¤Ë¤·¤Æ¤â, ¤¢¤Ê¤¿¤Î¥Ñ¥¹¥ï¡¼¥É\n"
+"¤Ï, ÊÌ¤ÎÆþ²ñ¾µÇ§¥á¡¼¥ë¤ÇÄÌÃÎ¤µ¤ì¤Þ¤¹."
 
 #: Mailman/Cgi/confirm.py:299
-#, fuzzy
 msgid ""
 "            You have successfully confirmed your subscription request for\n"
 "            \"%(addr)s\" to the %(listname)s mailing list.  A separate\n"
@@ -979,17 +986,18 @@ msgid ""
 msgstr ""
 "¤¢¤Ê¤¿¤Î, %(listname)s¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ø '%(addr)s' ¤òÆþ²ñ¤µ¤»¤ë·ï¤Ë\n"
 "¤Ä¤¤¤Æ¤Î¿½ÀÁ¤Ï, ³ÎÇ§¤ò´°Î»¤·¤Þ¤·¤¿. ÊÌÊØ¤Ç, ¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹°¸¤Ë, \n"
-"³ÎÇ§¤Î¥á¥Ã¥»¡¼¥¸¤È¥Ñ¥¹¥ï¡¼¥É, ¤½¤ÎÂ¾¤ÎÊØÍø¤Ê¾ðÊó¤¬ÆÏ¤±¤é¤ì¤Þ¤¹."
+"³ÎÇ§¤Î¥á¥Ã¥»¡¼¥¸¤È¥Ñ¥¹¥ï¡¼¥É, ¤½¤ÎÂ¾¤ÎÊØÍø¤Ê¾ðÊó¤¬ÆÏ¤±¤é¤ì¤Þ¤¹.\n"
+"\n"
+"<p>¤³¤³¤Ç, ¤µ¤é¤Ë <a href=\"%(optionsurl)s\">²ñ°÷¥í¥°¥¤¥ó¥Ú¡¼¥¸</a>¤Ø¿Ê¤à\n"
+"¤³¤È¤¬¤Ç¤­¤Þ¤¹."
 
 #: Mailman/Cgi/confirm.py:317
-#, fuzzy
 msgid "You have canceled your unsubscription request."
-msgstr "¥ª¥×¥·¥ç¥ó¤ÎÀßÄêÊÑ¹¹¤¬´°Î»¤·¤Þ¤·¤¿."
+msgstr "Âà²ñ¼êÂ³¤­¿½ÀÁ¤ò¥­¥ã¥ó¥»¥ë¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/confirm.py:345
-#, fuzzy
 msgid "Unsubscription request confirmed"
-msgstr "Æþ²ñ¿½ÀÁ¤ò³ÎÇ§"
+msgstr "Âà²ñ¿½ÀÁ¤ò³ÎÇ§¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/confirm.py:349
 msgid ""
@@ -999,15 +1007,17 @@ msgid ""
 "main\n"
 "            information page</a>."
 msgstr ""
+"¤¢¤Ê¤¿¤Ï %(listname)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤«¤é¤ÎÂà²ñ¼êÂ³¤­¤ò´°Î»\n"
+"¤·¤Þ¤·¤¿. °ú¤­Â³¤­<a href=\"%(listinfourl)s\">¥ê¥¹¥È¤Î°ÆÆâ¥Ú¡¼¥¸</a>\n"
+"¤Ø."
 
 #: Mailman/Cgi/confirm.py:360
-#, fuzzy
 msgid "Confirm unsubscription request"
-msgstr "Æþ²ñ¿½ÀÁ"
+msgstr "Âà²ñ¿½ÀÁ¤ò³ÎÇ§"
 
 #: Mailman/Cgi/confirm.py:371 Mailman/Cgi/confirm.py:454
 msgid "<em>Not available</em>"
-msgstr ""
+msgstr "<em>¤¢¤ê¤Þ¤»¤ó</em>"
 
 #: Mailman/Cgi/confirm.py:372
 msgid ""
@@ -1026,6 +1036,14 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this unsubscription\n"
 "    request."
 msgstr ""
+"<em>%(listname)s</em>¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤«¤éÂà²ñ¤¹¤ë¤Ë¤Ï, Âà²ñ¿½ÀÁ¤ò\n"
+"¤¢¤Ê¤¿¤¬³ÎÇ§¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹. ¤¢¤Ê¤¿¤Ï¸½ºß°Ê²¼¤Î¤è¤¦¤ËÆþ²ñ¤·¤Æ¤¤¤Þ¤¹...\n"
+"<ul><li><b>¼ÂÌ¾:</b> %(fullname)s\n"
+"    <li><b>¥á¡¼¥ë¥¢¥É¥ì¥¹:</b> %(addr)s\n"
+"</ul>\n"
+"²¼¤Î<em>Âà²ñ</em>¥Ü¥¿¥ó¤ò²¡¤·¤Æ³ÎÇ§½èÍý¤ò´°Î»¤·¤Æ¤¯¤À¤µ¤¤.\n"
+"<p>¤Þ¤¿¤Ï, <em>¥­¥ã¥ó¥»¥ë¡¦ÇË´þ</em>¥Ü¥¿¥ó¤ÇÂà²ñ¿½ÀÁ¤ò¼è¤ê¾Ã¤¹¤³¤È¤â\n"
+"¤Ç¤­¤Þ¤¹."
 
 #: Mailman/Cgi/confirm.py:388 Mailman/Cgi/options.py:530
 #: Mailman/Cgi/options.py:665 Mailman/Cgi/options.py:675
@@ -1034,12 +1052,11 @@ msgstr "Âà²ñ"
 
 #: Mailman/Cgi/confirm.py:399
 msgid "You have canceled your change of address request."
-msgstr ""
+msgstr "¤¢¤Ê¤¿¤Ï¥¢¥É¥ì¥¹ÊÑ¹¹¤Î¿½ÀÁ¤ò¼è¤ê¾Ã¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/confirm.py:427
-#, fuzzy
 msgid "Change of address request confirmed"
-msgstr "¥¢¥É¥ì¥¹ÊÑ¹¹¤ò³ÎÇ§¤·¤Þ¤·¤¿"
+msgstr "¥¢¥É¥ì¥¹ÊÑ¹¹¿½ÀÁ¤ò³ÎÇ§¤·¤Þ¤·¤¿"
 
 #: Mailman/Cgi/confirm.py:431
 msgid ""
@@ -1049,15 +1066,17 @@ msgid ""
 "            can now <a href=\"%(optionsurl)s\">proceed to your membership\n"
 "            login page</a>."
 msgstr ""
+"¤¢¤Ê¤¿¤Ï %(listname)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ç¤Î¼õ¿®¥¢¥É¥ì¥¹¤ò\n"
+"<b>%(oldaddr)s</b> ¤«¤é <b>%(newaddr)s</b> ¤ËÊÑ¹¹´°Î»¤·¤Þ¤·¤¿.\n"
+"°ú¤­Â³¤­ <a href=\"%(optionsurl)s\">²ñ°÷¥í¥°¥¤¥ó¥Ú¡¼¥¸</a>¤Ø¤É¤¦¤¾."
 
 #: Mailman/Cgi/confirm.py:443
-#, fuzzy
 msgid "Confirm change of address request"
-msgstr "¥¢¥É¥ì¥¹ÊÑ¹¹¤ò³ÎÇ§¤·¤Þ¤·¤¿"
+msgstr "¥¢¥É¥ì¥¹ÊÑ¹¹¿½ÀÁ¤ò³ÎÇ§¤·¤Þ¤·¤¿"
 
 #: Mailman/Cgi/confirm.py:456
 msgid "globally"
-msgstr ""
+msgstr "Á´Éô"
 
 #: Mailman/Cgi/confirm.py:459
 msgid ""
@@ -1082,26 +1101,37 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this change of address\n"
 "    request."
 msgstr ""
+"<em>%(listname)s</em>¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ç¤Î¤¢¤Ê¤¿¤ÎÇÛÁ÷¥á¡¼¥ë¥¢¥É¥ì¥¹\n"
+"ÊÑ¹¹¤ò´°Î»¤¹¤ë¤Ë¤Ï, ¤¢¤Ê¤¿¼«¿È¤Ë¤è¤ë³ÎÇ§¤¬É¬Í×¤Ç¤¹. ¸½ºß, ¤¢¤Ê¤¿¤Ï\n"
+"<ul><li><b>¼ÂÌ¾:</b> %(fullname)s\n"
+"    <li><b>µì¥á¡¼¥ë¥¢¥É¥ì¥¹:</b> %(oldaddr)s\n"
+"</ul>\n"
+"¤ÇÆþ²ñ¤·¤Æ¤¤¤Þ¤¹. ¤½¤·¤Æ, ¤¢¤Ê¤¿¤Ï¥á¡¼¥ë¥¢¥É¥ì¥¹¤ò\n"
+"<ul><li><b>¿·¥á¡¼¥ë¥¢¥É¥ì¥¹:</b> %(oldaddr)s\n"
+"¤Ë %(globallys)s ÊÑ¹¹¤¹¤ë¤è¤¦¤Ë¿½ÀÁ¤·¤Þ¤·¤¿.\n"
+"³ÎÇ§¼êÂ³¤­¤ò´°Î»¤¹¤ë¤Ë¤Ï, ²¼¤Î<em>¥¢¥É¥ì¥¹ÊÑ¹¹</em>¥Ü¥¿¥ó¤ò²¡¤·¤Æ¤¯¤À¤µ¤¤.\n"
+"<p>¤¢¤ë¤¤¤Ï, <em>¥­¥ã¥ó¥»¥ë¡¦ÇË´þ</em>¥Ü¥¿¥ó¤ò²¡¤·¤Æ¥¢¥É¥ì¥¹ÊÑ¹¹¿½ÀÁ¤ò\n"
+"¼è¤ê¾Ã¤¹¤³¤È¤â¤Ç¤­¤Þ¤¹."
 
 #: Mailman/Cgi/confirm.py:480
-#, fuzzy
 msgid "Change address"
-msgstr "¥¢¥É¥ì¥¹ÊÑ¹¹¤ò³ÎÇ§¤·¤Þ¤·¤¿"
+msgstr "¥¢¥É¥ì¥¹ÊÑ¹¹"
 
 #: Mailman/Cgi/confirm.py:490 Mailman/Cgi/confirm.py:588
-#, fuzzy
 msgid "Continue awaiting approval"
-msgstr "Åê¹Æ¤Ï¾µÇ§¤Î¤¿¤áÊÝÎ±"
+msgstr "¾µÇ§ÂÔ¤Á¤òÂ³¹Ô"
 
 #: Mailman/Cgi/confirm.py:497
 msgid ""
 "Okay, the list moderator will still have the\n"
 "    opportunity to approve or reject this message."
 msgstr ""
+"Î»²ò. ¥ê¥¹¥È»Ê²ñ¼Ô¤Ë¤Ï, ¤³¤Î¥á¡¼¥ë¤ò¾µÇ§¤¹¤ë¤«µñÈÝ¤¹¤ë¤«\n"
+"¤ò·èÄê¤¹¤ë¥Á¥ã¥ó¥¹¤¬¤Þ¤À¤¢¤ê¤Þ¤¹."
 
 #: Mailman/Cgi/confirm.py:523
 msgid "Sender discarded message via web."
-msgstr ""
+msgstr "Á÷¿®¼Ô¤¬ Web ¤Ç¥á¡¼¥ë¤òÇË´þ¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/confirm.py:525
 msgid ""
@@ -1113,10 +1143,13 @@ msgid ""
 "            rejected the message.  You were not able to cancel it in\n"
 "            time."
 msgstr ""
+"·ïÌ¾: ¤¬ <em>%(subject)s</em>¤Ç¤¢¤ë¤è¤¦¤ÊÊÝÎ±¥á¡¼¥ë¤Ï¸«¤Ä¤«¤ê¤Þ¤»¤ó\n"
+"¤Ç¤·¤¿. ¤â¤·¤«¤·¤¿¤é, ¥ê¥¹¥È¤Î»Ê²ñ¼Ô¤¬´û¤Ë¾µÇ§¤Þ¤¿¤ÏµñÈÝ¤·¤¿¤Î¤«¤â\n"
+"¤·¤ì¤Þ¤»¤ó. ¼è¤ê¾Ã¤¹¤Î¤¬´Ö¤Ë¹ç¤ï¤Ê¤«¤Ã¤¿¤È¤¤¤¦¤³¤È¤Ç¤¹."
 
 #: Mailman/Cgi/confirm.py:533
 msgid "Posted message canceled"
-msgstr ""
+msgstr "Åê¹Æ¥á¡¼¥ë¤Ï¼è¤ê¾Ã¤µ¤ì¤Þ¤·¤¿."
 
 #: Mailman/Cgi/confirm.py:536
 msgid ""
@@ -1124,11 +1157,12 @@ msgid ""
 "            the Subject: header <em>%(subject)s</em> to the mailing list\n"
 "            %(listname)s."
 msgstr ""
+"·ïÌ¾: ¤¬ <em>%(subject)s</em>¤Ç¤¢¤ë, %(listname)s ¥á¡¼¥ê¥ó¥°\n"
+"¥ê¥¹¥È¤Ø¤ÎÅê¹Æ¥á¥Ã¥»¡¼¥¸¤Ï¼è¤ê¾Ã¤·¤ò´°Î»¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/confirm.py:547
-#, fuzzy
 msgid "Cancel held message posting"
-msgstr "ÊÝÎ±¥á¥Ã¥»¡¼¥¸¤ÏÊ¶¼º¤·¤Æ¤¤¤Þ¤¹."
+msgstr "ÊÝÎ±Ãæ¤ÎÅê¹Æ¥á¥Ã¥»¡¼¥¸¤ò¥­¥ã¥ó¥»¥ë."
 
 #: Mailman/Cgi/confirm.py:571
 msgid ""
@@ -1145,11 +1179,19 @@ msgid ""
 "    <p>Or hit the <em>Continue awaiting approval</em> button to continue to\n"
 "    allow the list moderator to approve or reject the message."
 msgstr ""
+"¤¢¤Ê¤¿¤¬ <em>%(listname)s</em> ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ØÅê¹Æ¤·¤¿\n"
+"°Ê²¼¤Î¥á¡¼¥ë¤ò¼è¤ê¾Ã¤¹¤Ë¤Ï, ¤¢¤Ê¤¿¤Î³ÎÇ§¤¬É¬Í×¤Ç¤¹. <ul><li><b>Á÷¿®¼Ô:</b> "
+"%(sender)s\n"
+"    <li><b>·ïÌ¾:</b> %(subject)s\n"
+"    <li><b>ÍýÍ³:</b> %(reason)s\n"
+"</ul>\n"
+"<em>Åê¹Æ¼è¤ê¾Ã¤·</em>¥Ü¥¿¥ó¤ò²¡¤·¤ÆÅê¹Æ¥á¡¼¥ë¤òÇË´þ¤·¤Æ¤¯¤À¤µ¤¤.\n"
+"<p>¤¢¤ë¤¤¤Ï, <em>¾µÇ§ÂÔ¤Á¤òÂ³¹Ô</em>¥Ü¥¿¥ó¤ò²¡¤¹¤È, °ú¤­Â³¤­, \n"
+"¥á¡¼¥ë¤ò¾µÇ§¤¹¤ë¤«µñÈÝ¤¹¤ë¤«¤ÎÈ½ÃÇ¤ò, »Ê²ñ¼Ô¤Ë¤æ¤À¤Í¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹."
 
 #: Mailman/Cgi/confirm.py:587
-#, fuzzy
 msgid "Cancel posting"
-msgstr "¥æ¥Ë¥³¡¼¥ÉÊ¸»úÎó"
+msgstr "Åê¹Æ¼è¤ê¾Ã¤·"
 
 #: Mailman/Cgi/create.py:48 Mailman/Cgi/rmlist.py:46 Mailman/Cgi/rmlist.py:77
 msgid "Bad URL specification"
@@ -1181,9 +1223,8 @@ msgid "List already exists: %(listname)s"
 msgstr "¥ê¥¹¥È¤¬´û¤Ë¤¢¤ê¤Þ¤¹: %(listname)s"
 
 #: Mailman/Cgi/create.py:105
-#, fuzzy
 msgid "You forgot to enter the list name"
-msgstr "¥ê¥¹¥È´ÉÍý¼Ô¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤."
+msgstr "¥ê¥¹¥ÈÌ¾¤òËº¤ì¤Æ¤¤¤Þ¤¹."
 
 #: Mailman/Cgi/create.py:109
 msgid "You forgot to specify the list owner"
@@ -1325,6 +1366,9 @@ msgid ""
 "        select at least one initial language, the list will use the server\n"
 "        default language of %(deflang)s"
 msgstr ""
+"ºÇ½é¤Ë»ÈÍÑ¤Ç¤­¤ë¸À¸ì. <p>ºÇ½é¤Ë»ÈÍÑ¤Ç¤­¤ë¸À¸ì¤ò¾¯¤Ê¤¯¤È¤â¤Ò¤È¤Ä¤Ï\n"
+"Áª¤ó¤Ç¤ª¤«¤Ê¤¤¤È, ¥ê¥¹¥È¤Ï¥µ¡¼¥Ð¤Î¥Ç¥Õ¥©¥ë¥È¸À¸ì¤Ç¤¢¤ë %(deflang)s ¤ò\n"
+"»ÈÍÑ¤·¤Þ¤¹."
 
 #: Mailman/Cgi/create.py:346
 msgid "Send \"list created\" email to list owner?"
@@ -1476,9 +1520,8 @@ msgid "Invalid options to CGI script."
 msgstr "CGI ¤Î¥ª¥×¥·¥ç¥ó¤¬ÉÔÀµ¤Ç¤¹."
 
 #: Mailman/Cgi/options.py:93
-#, fuzzy
 msgid "No such member: %(user)s."
-msgstr "%(realname)s ¥ê¥¹¥È¤Ë¤Ï %(user)s ¤È¤¤¤¦²ñ°÷¤Ï¤¤¤Þ¤»¤ó."
+msgstr "¤½¤Î¤è¤¦¤Ê²ñ°÷¤Ï¤¤¤Þ¤»¤ó: %(user)s."
 
 #: Mailman/Cgi/options.py:133
 msgid "The confirmation email has been sent."
@@ -1508,9 +1551,8 @@ msgid "Addresses did not match!"
 msgstr "¥¢¥É¥ì¥¹¤¬°ìÃ×¤·¤Þ¤»¤ó"
 
 #: Mailman/Cgi/options.py:236
-#, fuzzy
 msgid "You are already using that email address"
-msgstr "¤¢¤Ê¤¿¤Ï´û¤Ë¡Ö¤Þ¤È¤áÆÉ¤ß¡×¤Ë¤Ê¤Ã¤Æ¤¤¤Þ¤¹."
+msgstr "¤¢¤Ê¤¿¤Ï´û¤Ë¤½¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤ò»È¤Ã¤Æ¤¤¤Þ¤¹."
 
 #: Mailman/Cgi/options.py:242
 msgid "Addresses may not be blank"
@@ -1533,9 +1575,8 @@ msgid "%(newaddr)s is already a member of the list."
 msgstr "%(newaddr)s ¤Ï´û¤Ë¥ê¥¹¥È²ñ°÷¤Ç¤¹."
 
 #: Mailman/Cgi/options.py:280
-#, fuzzy
 msgid "Member name successfully changed."
-msgstr "¥Ñ¥¹¥ï¡¼¥É¤òÊÑ¹¹¤·¤Þ¤·¤¿."
+msgstr "²ñ°÷Ì¾¤òÊÑ¹¹¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/options.py:291
 msgid "Passwords may not be blank"
@@ -1575,8 +1616,8 @@ msgid ""
 "        %(owneraddr)s."
 msgstr ""
 "¤¢¤Ê¤¿¤Ï %(fqdn_listname)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤«¤é¤ÎÂà²ñ½èÍý¤ò´°Î»¤·¤Þ¤·¤¿.\n"
-"¤â¤·¡¤¤Þ¤È¤áÆÉ¤ß¤ò¼õ¤±¼è¤Ã¤Æ¤¤¤ì¤Ð¡¤ºÇ¸å¤Î¥á¡¼¥ë¤¬ÆÏ¤¯¤«¤â¤·¤ì¤Þ¤»¤ó.\n"
-"Âà²ñ¤Ë´Ø¤·¤Æ¼ÁÌä¤¬¤¢¤ì¤Ð¡¤¥ê¥¹¥È´ÉÍý¼Ô¤Î %(owneraddr)s ¤Þ¤Ç¤ª´ê¤¤¤·¤Þ¤¹."
+"¤â¤·, ¤Þ¤È¤áÆÉ¤ß¤ò¼õ¤±¼è¤Ã¤Æ¤¤¤ì¤Ð, ºÇ¸å¤Î¥á¡¼¥ë¤¬ÆÏ¤¯¤«¤â¤·¤ì¤Þ¤»¤ó.\n"
+"Âà²ñ¤Ë´Ø¤·¤Æ¼ÁÌä¤¬¤¢¤ì¤Ð, ¥ê¥¹¥È´ÉÍý¼Ô¤Î %(owneraddr)s ¤Þ¤Ç¤ª´ê¤¤¤·¤Þ¤¹."
 
 #: Mailman/Cgi/options.py:458
 msgid ""
@@ -1585,8 +1626,8 @@ msgid ""
 "your\n"
 "            other options have been set successfully."
 msgstr ""
-"¥ê¥¹¥È´ÉÍý¼Ô¤¬¡Ö¤Þ¤È¤áÆÉ¤ß¡×µ¡Ç½¤òÄä»ß¤·¤¿¤¿¤á¡¤\n"
-"  ÇÛÁ÷¥ª¥×¥·¥ç¥ó¤ÏÀßÄê¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡¥¤·¤«¤·¡¤¤½¤ÎÂ¾¤Î\n"
+"¥ê¥¹¥È´ÉÍý¼Ô¤¬¡Ö¤Þ¤È¤áÆÉ¤ß¡×µ¡Ç½¤òÄä»ß¤·¤¿¤¿¤á, \n"
+"  ÇÛÁ÷¥ª¥×¥·¥ç¥ó¤ÏÀßÄê¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿. ¤·¤«¤·, ¤½¤ÎÂ¾¤Î\n"
 "  ¥ª¥×¥·¥ç¥ó¤ÏÀßÄêÊÑ¹¹¤¬´°Î»¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/options.py:462
@@ -1596,8 +1637,8 @@ msgid ""
 "However\n"
 "            your other options have been set successfully."
 msgstr ""
-"¥ê¥¹¥È´ÉÍý¼Ô¤¬¡Ö¸Ä¡¹ÇÛÁ÷¡×µ¡Ç½¤òÄä»ß¤·¤¿¤¿¤á¡¤\n"
-"  ÇÛÁ÷¥ª¥×¥·¥ç¥ó¤ÏÀßÄê¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡¥¤·¤«¤·¡¤¤½¤ÎÂ¾¤Î\n"
+"¥ê¥¹¥È´ÉÍý¼Ô¤¬¡Ö¸Ä¡¹ÇÛÁ÷¡×µ¡Ç½¤òÄä»ß¤·¤¿¤¿¤á, \n"
+"  ÇÛÁ÷¥ª¥×¥·¥ç¥ó¤ÏÀßÄê¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿. ¤·¤«¤·, ¤½¤ÎÂ¾¤Î\n"
 "  ¥ª¥×¥·¥ç¥ó¤ÏÀßÄêÊÑ¹¹¤¬´°Î»¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/options.py:466
@@ -1610,7 +1651,7 @@ msgstr "ºÇ¸å¤Î¡Ö¤Þ¤È¤áÆÉ¤ß¡×¤¬ÆÏ¤¯¤«¤â¤·¤ì¤Þ¤»¤ó."
 
 #: Mailman/Cgi/options.py:532
 msgid "<em>Yes, I really want to unsubscribe</em>"
-msgstr "<em>¤Ï¤¤¡¢»ä¤ÏËÜÅö¤ËÂà²ñ¤·¤¿¤¤¤Ç¤¹</em>"
+msgstr "<em>¤Ï¤¤, »ä¤ÏËÜÅö¤ËÂà²ñ¤·¤¿¤¤¤Ç¤¹</em>"
 
 #: Mailman/Cgi/options.py:536
 msgid "Change My Password"
@@ -1649,13 +1690,12 @@ msgid "%(days)d %(units)s"
 msgstr ""
 
 #: Mailman/Cgi/options.py:570
-#, fuzzy
 msgid "Change My Address and Name"
-msgstr "¥¢¥É¥ì¥¹ÊÑ¹¹"
+msgstr "»ä¤Î¥¢¥É¥ì¥¹¤ÈÌ¾Á°¤òÊÑ¹¹"
 
 #: Mailman/Cgi/options.py:598
 msgid "<em>No topics defined</em>"
-msgstr ""
+msgstr "<em>ÏÃÂê¤¬ÄêµÁ¤µ¤ì¤Æ¤¤¤Þ¤»¤ó</em>"
 
 #: Mailman/Cgi/options.py:606
 msgid ""
@@ -1668,21 +1708,18 @@ msgstr ""
 "Æþ²ñ¤·¤Þ¤·¤¿."
 
 #: Mailman/Cgi/options.py:619
-#, fuzzy
 msgid "%(realname)s list: member options login page"
-msgstr "%(realname)s¥ê¥¹¥È: %(user)s ²ñ°÷¥ª¥×¥·¥ç¥ó"
+msgstr "%(realname)s ¥ê¥¹¥È: ²ñ°÷¥ª¥×¥·¥ç¥ó¥í¥°¥¤¥ó¥Ú¡¼¥¸"
 
 #: Mailman/Cgi/options.py:621
-#, fuzzy
 msgid "email address and "
-msgstr "¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤¬É¬Í×¤Ç¤¹."
+msgstr "¥á¡¼¥ë¥¢¥É¥ì¥¹¤È"
 
 #: Mailman/Cgi/options.py:623
 msgid "%(realname)s list: member options for user %(user)s"
 msgstr "%(realname)s¥ê¥¹¥È: %(user)s ²ñ°÷¥ª¥×¥·¥ç¥ó"
 
 #: Mailman/Cgi/options.py:636
-#, fuzzy
 msgid ""
 "In order to change your membership option, you must\n"
 "    first log in by giving your %(extra)smembership password in the section\n"
@@ -1707,26 +1744,26 @@ msgid ""
 "    you'll see once you successfully log in).\n"
 "    "
 msgstr ""
-"¤¢¤Ê¤¿¤Î²ñ°÷¥ª¥×¥·¥ç¥ó¤òÊÑ¹¹¤¹¤ë¤Ë¤Ï¡¢¤Þ¤º¡¢²¼¤Î¥Õ¥©¡¼¥à¤Ë\n"
-"²ñ°÷¥Ñ¥¹¥ï¡¼¥É¤òÆþ¤ì¤Æ¥í¥°¥¤¥ó¤·¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó¡£¤â¤·¡¢²ñ°÷¥Ñ¥¹¥ï¡¼¥É\n"
-"¤òËº¤ì¤Æ¤¤¤¿¤é¡¢²¼¤Î¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤·¤Æ¥á¡¼¥ë¤Ç¼è¤ê´ó¤»¤ë¤³¤È¤¬\n"
-"¤Ç¤­¤Þ¤¹¡£¤Þ¤¿¡¢Ã±¤Ë¤³¤Î¥ê¥¹¥È¤«¤éÂà²ñ¤·¤¿¤¤¤À¤±¤Ç¤¢¤ì¤Ð¡¢<em>Âà²ñ</em>\n"
-"¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤·¤Æ¤¯¤À¤µ¤¤¡£³ÎÇ§¤Î¥á¡¼¥ë¤¬¤¢¤Ê¤¿°¸¤ËÁ÷¤é¤ì¤Þ¤¹¡£\n"
+"¤¢¤Ê¤¿¤Î²ñ°÷¥ª¥×¥·¥ç¥ó¤òÊÑ¹¹¤¹¤ë¤Ë¤Ï, ¤Þ¤º, ²¼¤Î¥Õ¥©¡¼¥à¤Ë\n"
+"%(extra)s²ñ°÷¥Ñ¥¹¥ï¡¼¥É¤òÆþ¤ì¤Æ¥í¥°¥¤¥ó¤·¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó. ¤â¤·, "
+"²ñ°÷¥Ñ¥¹¥ï¡¼¥É\n"
+"¤òËº¤ì¤Æ¤¤¤¿¤é, ²¼¤Î¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤·¤Æ¥á¡¼¥ë¤Ç¼è¤ê´ó¤»¤ë¤³¤È¤¬\n"
+"¤Ç¤­¤Þ¤¹. ¤Þ¤¿, Ã±¤Ë¤³¤Î¥ê¥¹¥È¤«¤éÂà²ñ¤·¤¿¤¤¤À¤±¤Ç¤¢¤ì¤Ð, <em>Âà²ñ</em>\n"
+"¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤·¤Æ¤¯¤À¤µ¤¤. ³ÎÇ§¤Î¥á¡¼¥ë¤¬¤¢¤Ê¤¿°¸¤ËÁ÷¤é¤ì¤Þ¤¹. \n"
 "\n"
-"<p><strong><em>½ÅÍ×:</em></strong> ¤³¤Î»þÅÀ¤«¤éÀè¤Ï¡¢¥Ö¥é¥¦¥¶¤Î\n"
-"¥¯¥Ã¥­¡¼¤òÍ­¸ú¤Ë¤·¤Æ¤ª¤¤¤Æ¤¯¤À¤µ¤¤¡£¤Ç¤Ê¤¤¤È¡¢ÊÑ¹¹¤¬Í­¸ú¤Ë¤Ê¤ê¤Þ¤»¤ó¡£\n"
+"<p><strong><em>½ÅÍ×:</em></strong> ¤³¤Î»þÅÀ¤«¤éÀè¤Ï, ¥Ö¥é¥¦¥¶¤Î\n"
+"¥¯¥Ã¥­¡¼¤òÍ­¸ú¤Ë¤·¤Æ¤ª¤¤¤Æ¤¯¤À¤µ¤¤. ¤Ç¤Ê¤¤¤È, ÊÑ¹¹¤¬Í­¸ú¤Ë¤Ê¤ê¤Þ¤»¤ó. \n"
 "\n"
-"<p>Mailman ¤Î²ñ°÷¥ª¥×¥·¥ç¥ó¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤Ç¤Ï¡¢¥»¥Ã¥·¥ç¥ó¡¦¥¯¥Ã¥­¡¼\n"
-"¤ò»ÈÍÑ¤·¤Æ¤¤¤Þ¤¹¡£¤³¤Î¤¿¤á¡¢Áàºî¤ÎÅÙ¤Ë¤¤¤Á¤¤¤Á¥Ñ¥¹¥ï¡¼¥É¤òÆþÎÏ¤¹¤ëÉ¬Í×\n"
-"¤¬¤¢¤ê¤Þ¤»¤ó¡£¥¯¥Ã¥­¡¼¤Ï¥Ö¥é¥¦¥¶¤ò½ªÎ»¤·¤¿¤È¤­¡¢¤¢¤ë¤¤¤Ï¡¢<em>¥í¥°¥¢¥¦¥È</em>"
-"\n"
-"¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤·¤Æ°Õ¿ÞÅª¤ËÌµ¸ú¤Ë¤·¤¿¤È¤­¤Ë´ü¸ÂÀÚ¤ì¤Ë¤Ê¤ê¤Þ¤¹¡£\n"
+"<p>Mailman ¤Î²ñ°÷¥ª¥×¥·¥ç¥ó¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤Ç¤Ï, ¥»¥Ã¥·¥ç¥ó¡¦¥¯¥Ã¥­¡¼\n"
+"¤ò»ÈÍÑ¤·¤Æ¤¤¤Þ¤¹. ¤³¤Î¤¿¤á, Áàºî¤ÎÅÙ¤Ë¤¤¤Á¤¤¤Á¥Ñ¥¹¥ï¡¼¥É¤òÆþÎÏ¤¹¤ëÉ¬Í×\n"
+"¤¬¤¢¤ê¤Þ¤»¤ó. ¥¯¥Ã¥­¡¼¤Ï¥Ö¥é¥¦¥¶¤ò½ªÎ»¤·¤¿¤È¤­, ¤¢¤ë¤¤¤Ï, "
+"<em>¥í¥°¥¢¥¦¥È</em>\n"
+"¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤·¤Æ°Õ¿ÞÅª¤ËÌµ¸ú¤Ë¤·¤¿¤È¤­¤Ë´ü¸ÂÀÚ¤ì¤Ë¤Ê¤ê¤Þ¤¹. \n"
 "(¥í¥°¥¢¥¦¥È¡¦¥Ü¥¿¥ó¤Ï¥í¥°¥¤¥ó¤ËÀ®¸ù¤¹¤ë¤È½Ð¤Æ¤­¤Þ¤¹)"
 
 #: Mailman/Cgi/options.py:656
-#, fuzzy
 msgid "Email address:"
-msgstr "¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤¬É¬Í×¤Ç¤¹."
+msgstr "¥á¡¼¥ë¥¢¥É¥ì¥¹:"
 
 #: Mailman/Cgi/options.py:660
 msgid "Log in"
@@ -1742,11 +1779,11 @@ msgid ""
 "        also confirm by email; see the instructions in the confirmation\n"
 "        message)."
 msgstr ""
-"<em>Âà²ñ</em>¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤¹¤ë¤³¤È¤Ç¡¢³ÎÇ§¤Î¥á¡¼¥ë¤¬\n"
-"¤¢¤Ê¤¿°¸¤Æ¤ËÁ÷¿®¤µ¤ì¤Þ¤¹¡£¤³¤Î¥á¡¼¥ë¤Ë¤Ï\n"
-"¥ê¥ó¥¯¤¬Æþ¤Ã¤Æ¤¤¤Æ¡¢¤½¤ì¤ò¥¯¥ê¥Ã¥¯¤¹¤ë¤ÈÂà²ñ½èÍý¤¬´°Î»¤·¤Þ¤¹¡£\n"
-"(¤Þ¤¿¤Ï¡¢¥á¡¼¥ë¤Ç³ÎÇ§¤¹¤ë¤³¤È¤â¤Ç¤­¤Þ¤¹; ¾Ü¤·¤¯¤Ï¡¢¤½¤Î¥á¡¼¥ë¤Ë\n"
-"½ñ¤«¤ì¤¿»Ø¼¨¤òÆÉ¤ó¤Ç¤¯¤À¤µ¤¤¡£"
+"<em>Âà²ñ</em>¥Ü¥¿¥ó¤ò¥¯¥ê¥Ã¥¯¤¹¤ë¤³¤È¤Ç, ³ÎÇ§¤Î¥á¡¼¥ë¤¬\n"
+"¤¢¤Ê¤¿°¸¤Æ¤ËÁ÷¿®¤µ¤ì¤Þ¤¹. ¤³¤Î¥á¡¼¥ë¤Ë¤Ï\n"
+"¥ê¥ó¥¯¤¬Æþ¤Ã¤Æ¤¤¤Æ, ¤½¤ì¤ò¥¯¥ê¥Ã¥¯¤¹¤ë¤ÈÂà²ñ½èÍý¤¬´°Î»¤·¤Þ¤¹. \n"
+"(¤Þ¤¿¤Ï, ¥á¡¼¥ë¤Ç³ÎÇ§¤¹¤ë¤³¤È¤â¤Ç¤­¤Þ¤¹; ¾Ü¤·¤¯¤Ï, ¤½¤Î¥á¡¼¥ë¤Ë\n"
+"½ñ¤«¤ì¤¿»Ø¼¨¤òÆÉ¤ó¤Ç¤¯¤À¤µ¤¤. "
 
 #: Mailman/Cgi/options.py:679
 msgid "Password reminder"
@@ -1766,23 +1803,23 @@ msgstr "ÄÌÃÎ"
 
 #: Mailman/Cgi/options.py:776
 msgid "<missing>"
-msgstr ""
+msgstr "<¤¢¤ê¤Þ¤»¤ó>"
 
 #: Mailman/Cgi/options.py:787
 msgid "Requested topic is not valid: %(topicname)s"
-msgstr ""
+msgstr "Í×µá¤µ¤ì¤¿ÏÃÂê¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹: %(topicname)s"
 
 #: Mailman/Cgi/options.py:792
 msgid "Topic filter details"
-msgstr ""
+msgstr "ÏÃÂê¥Õ¥£¥ë¥¿¡¼¤Î¾ÜºÙ"
 
 #: Mailman/Cgi/options.py:795
 msgid "Name:"
-msgstr ""
+msgstr "Ì¾¾Î:"
 
 #: Mailman/Cgi/options.py:797
 msgid "Pattern (as regexp):"
-msgstr ""
+msgstr "¥Ñ¥¿¡¼¥ó(Àµµ¬É½¸½):"
 
 #: Mailman/Cgi/private.py:62
 msgid "Private Archive Error"
@@ -1806,7 +1843,7 @@ msgstr "¥Õ¥¡¥¤¥ë¤¬¤¢¤ê¤Þ¤»¤ó"
 
 #: Mailman/Cgi/rmlist.py:88
 msgid "You're being a sneaky list owner!"
-msgstr ""
+msgstr "¥ê¥¹¥È´ÉÍý¼Ô¤È¤·¤Æ¤½¤ì¤Ï¥Þ¥º¤¤¤ó¤¸¤ã¤Ê¤¤?!"
 
 #: Mailman/Cgi/rmlist.py:124
 msgid "You are not authorized to delete this mailing list"
@@ -1915,7 +1952,6 @@ msgid "Your passwords did not match.<br>"
 msgstr "¥Ñ¥¹¥ï¡¼¥É¤¬°ìÃ×¤·¤Þ¤»¤ó.<br>"
 
 #: Mailman/Cgi/subscribe.py:166
-#, fuzzy
 msgid ""
 "Mailman won't accept the given email address as a valid address.\n"
 "(E.g it must have an @ in it.)<p>"
@@ -1924,7 +1960,6 @@ msgstr ""
 "¤¬Æþ¤Ã¤Æ¤¤¤Þ¤¹¤«???)<p>"
 
 #: Mailman/Cgi/subscribe.py:170
-#, fuzzy
 msgid ""
 "The list is not fully functional, and can not accept subscription\n"
 "requests.<p>"
@@ -1932,7 +1967,6 @@ msgstr ""
 "¥ê¥¹¥È¤Ï´°Á´¤Ë¤Ïµ¡Ç½¤·¤Æ¤¤¤Þ¤»¤ó. ¤³¤Î¤¿¤áÆþ²ñ¿½ÀÁ¤ò¼õ¤±ÉÕ¤±¤é¤ì¤Þ¤»¤ó."
 
 #: Mailman/Cgi/subscribe.py:174
-#, fuzzy
 msgid ""
 "Confirmation from your email address is required, to prevent anyone from\n"
 "subscribing you without permission.  Instructions are being sent to you at\n"
@@ -1947,18 +1981,16 @@ msgstr ""
 "¤¢¤Ê¤¿¤ÎÆþ²ñ³ÎÇ§¤¬Ìµ¤±¤ì¤ÐÆþ²ñ¼êÂ³¤­¤¬´°Î»¤·¤Ê¤¤¤³¤È¤ËÃí°Õ¤·¤Æ¤¯¤À¤µ¤¤."
 
 #: Mailman/Cgi/subscribe.py:183
-#, fuzzy
 msgid ""
 "Subscription was <em>deferred</em> because %(x)s.  Your request has been\n"
 "forwarded to the list moderator.  You will receive email informing you of\n"
 "the moderator's decision when they get to your request.<p>"
 msgstr ""
-"%(x)s ¤Î¤¿¤áÆþ²ñ¤ÏÊÝÎ±¤µ¤ì¤Þ¤·¤¿. "
+"%(x)s ¤Î¤¿¤áÆþ²ñ¤Ï<em>ÊÝÎ±</em>¤µ¤ì¤Þ¤·¤¿. "
 "¤¢¤Ê¤¿¤Î¿½ÀÁ¤Ï¥ê¥¹¥È´ÉÍý¼Ô¤ØÅ¾Á÷¤µ¤ì¤Æ¤¤¤Þ¤¹. "
 "¿½ÀÁ¤Ë¤Ä¤¤¤Æ¤Î·èÄê¤¬¤Ê¤µ¤ì¤¿¤é, ¤½¤Î¤³¤È¤¬¥á¡¼¥ë¤ÇÄÌÃÎ¤µ¤ì¤ë¤Ç¤·¤ç¤¦.<p>"
 
 #: Mailman/Cgi/subscribe.py:188
-#, fuzzy
 msgid ""
 "Your subscription is not allowed because the email address you gave is\n"
 "insecure.<p>"
@@ -1984,7 +2016,7 @@ msgstr "%(rname)s ¤Ø¤ÎÆþ²ñ¼êÂ³¤­¤¬´°Î»¤·¤Þ¤·¤¿."
 
 #: Mailman/Defaults.py:771
 msgid "Traditional Chinese"
-msgstr ""
+msgstr "Ãæ¹ñ¸ì(ÈË»ú)"
 
 # mm_cfg.py
 #: Mailman/Defaults.py:772
@@ -1997,15 +2029,15 @@ msgstr "¥¹¥Ú¥¤¥ó¸ì (¥¹¥Ú¥¤¥ó)"
 
 #: Mailman/Defaults.py:774
 msgid "French"
-msgstr ""
+msgstr "¥Õ¥é¥ó¥¹¸ì"
 
 #: Mailman/Defaults.py:775
 msgid "Simplified Chinese"
-msgstr ""
+msgstr "Ãæ¹ñ¸ì(´Ê»ú)"
 
 #: Mailman/Defaults.py:776
 msgid "Hungarian"
-msgstr ""
+msgstr "¥Ï¥ó¥¬¥ê¡¼¸ì"
 
 #: Mailman/Defaults.py:777
 msgid "Italian"
@@ -2017,7 +2049,7 @@ msgstr "ÆüËÜ¸ì"
 
 #: Mailman/Defaults.py:779
 msgid "Norwegian"
-msgstr ""
+msgstr "¥Î¥ë¥¦¥§¡¼¸ì"
 
 #: Mailman/Deliverer.py:42
 msgid ""
@@ -2049,7 +2081,6 @@ msgid "Your message was rejected"
 msgstr "¤¢¤Ê¤¿¤Î¥á¡¼¥ë¤ÏµñÈÝ¤µ¤ì¤Þ¤·¤¿"
 
 #: Mailman/Gui/Archive.py:24
-#, fuzzy
 msgid "Archiving Options"
 msgstr "ÊÝÂ¸½ñ¸Ë¥ª¥×¥·¥ç¥ó"
 
@@ -2121,7 +2152,7 @@ msgid ""
 msgstr ""
 "¼«Æ°±þÅú¤ÎÀßÄê.<p>\n"
 "\n"
-"°Ê²¼¤Î¥Æ¥­¥¹¥È¥Õ¥£¡¼¥ë¥É¤Ç¤Ï¡¤Python ¤Î %(string)s ¤Ë¤è¤Ã¤Æ\n"
+"°Ê²¼¤Î¥Æ¥­¥¹¥È¥Õ¥£¡¼¥ë¥É¤Ç¤Ï, Python ¤Î %(string)s ¤Ë¤è¤Ã¤Æ\n"
 "°Ê²¼¤Î¥­¡¼¥ï¡¼¥É ÃÖ¤­´¹¤¨¤¬¹Ô¤ï¤ì¤Þ¤¹:\n"
 "<p><ul>\n"
 "   <li><b>%(listname)s</b> - <em>¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎÌ¾Á°¤¬Æþ¤ê¤Þ¤¹</em>\n"
@@ -2131,9 +2162,9 @@ msgstr ""
 "   <li><b>%(adminemail)s</b> - <em>¥ê¥¹¥È¤Î -admin ¥¢¥É¥ì¥¹¤¬Æþ¤ê¤Þ¤¹</em>\n"
 "   <li><b>%(owneremail)s</b> - <em>¥ê¥¹¥È¤Î -owner ¥¢¥É¥ì¥¹¤¬Æþ¤ê¤Þ¤¹</em>\n"
 "</ul>\n"
-"<p>¤½¤ì¤¾¤ì¤Î¥Æ¥­¥¹¥È¥Õ¥£¡¼¥ë¥É¤Ë¤Ä¤¤¤Æ¡¤Ä¾ÀÜ¥Æ¥­¥¹¥È¥Ü¥Ã¥¯¥¹¤Ë\n"
+"<p>¤½¤ì¤¾¤ì¤Î¥Æ¥­¥¹¥È¥Õ¥£¡¼¥ë¥É¤Ë¤Ä¤¤¤Æ, Ä¾ÀÜ¥Æ¥­¥¹¥È¥Ü¥Ã¥¯¥¹¤Ë\n"
 "½ñ¤­Æþ¤ì¤ë¤³¤È¤â ¤¢¤Ê¤¿¤Î¥í¡¼¥«¥ë¥·¥¹¥Æ¥à\n"
-"¤Ë¤¢¤ë¥Õ¥¡¥¤¥ë¤ò¥¢¥Ã¥×¥í¡¼¥É¤¹¤ë¤³¤È¤â¤Ç¤­¤Þ¤¹¡¥"
+"¤Ë¤¢¤ë¥Õ¥¡¥¤¥ë¤ò¥¢¥Ã¥×¥í¡¼¥É¤¹¤ë¤³¤È¤â¤Ç¤­¤Þ¤¹. "
 
 #: Mailman/Gui/Autoresponse.py:49
 msgid ""
@@ -2170,8 +2201,8 @@ msgid ""
 "             Mailman to discard the original email, or forward it on to the\n"
 "             system as a normal mail command."
 msgstr ""
-"-request ¥¢¥É¥ì¥¹¤ËÍè¤¿¥á¡¼¥ë¤ËÂÐ¤·¤Æ¼«Æ°±þÅú¤òÁ÷¤ê¤Þ¤¹¤«? ¤â¤·¡¤¤Ï¤¤ "
-"¤òÁª¤ó¤À¾ì¹ç¡¤¸µ¤Î¥á¡¼¥ë¤òÇË´þ¤¹¤ë¤«¡¤¤½¤ì¤È¤âÄÌ¾ï¤Î¥á¡¼¥ë¥³¥Þ¥ó¥É\n"
+"-request ¥¢¥É¥ì¥¹¤ËÍè¤¿¥á¡¼¥ë¤ËÂÐ¤·¤Æ¼«Æ°±þÅú¤òÁ÷¤ê¤Þ¤¹¤«? ¤â¤·, ¤Ï¤¤ "
+"¤òÁª¤ó¤À¾ì¹ç, ¸µ¤Î¥á¡¼¥ë¤òÇË´þ¤¹¤ë¤«, ¤½¤ì¤È¤âÄÌ¾ï¤Î¥á¡¼¥ë¥³¥Þ¥ó¥É\n"
 "¤ÈÆ±ÍÍ¤Ë¥·¥¹¥Æ¥à¤ØÅ¾Á÷¤¹¤ë¤«¤òÁª¤ó¤Ç¤¯¤À¤µ¤¤."
 
 #: Mailman/Gui/Autoresponse.py:73
@@ -2187,13 +2218,12 @@ msgid ""
 "             message)."
 msgstr ""
 "Æ±¤¸È¯¿®¼Ô¤«¤éÍè¤¿ ¥ê¥¹¥È ¤Þ¤¿¤Ï -admin/-owner ¥á¡¼¥ë\n"
-"¥¢¥É¥ì¥¹ ¤ËÂÐ¤·¼«Æ°±þÅú¤ò¹Ô¤¦´Ö³Ö¤ÎÆü¿ô¡¥¥¼¥í¤Þ¤¿¤ÏÉé¤Ë\n"
-"¤¹¤ë¤È¥á¡¼¥ë¤¬Íè¤ë¤¿¤Ó¤Ë ±þÅú¤¹¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹¡¥"
+"¥¢¥É¥ì¥¹ ¤ËÂÐ¤·¼«Æ°±þÅú¤ò¹Ô¤¦´Ö³Ö¤ÎÆü¿ô. ¥¼¥í¤Þ¤¿¤ÏÉé¤Ë\n"
+"¤¹¤ë¤È¥á¡¼¥ë¤¬Íè¤ë¤¿¤Ó¤Ë ±þÅú¤¹¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹. "
 
 #: Mailman/Gui/Bounce.py:24
-#, fuzzy
 msgid "Bounce detection"
-msgstr "ÇÛÁ÷¥¨¥é¡¼½èÍý¥ª¥×¥·¥ç¥ó"
+msgstr "ÇÛÁ÷¥¨¥é¡¼¸¡½Ð"
 
 #: Mailman/Gui/Bounce.py:28
 msgid ""
@@ -2220,7 +2250,7 @@ msgid ""
 "Minimum number of posts to the list since members first\n"
 "             bounce before we consider removing them from the list"
 msgstr ""
-"ºÇ½é¤ÎÇÛÁ÷¥¨¥é¡¼¤¬µ¯¤³¤Ã¤Æ¤«¤é¡¤²ñ°÷½üÌ¾¤ò¹Í¤¨¤ë¤Þ¤Ç¤ËºÇÄã²¿ÄÌ¤Î\n"
+"ºÇ½é¤ÎÇÛÁ÷¥¨¥é¡¼¤¬µ¯¤³¤Ã¤Æ¤«¤é, ²ñ°÷½üÌ¾¤ò¹Í¤¨¤ë¤Þ¤Ç¤ËºÇÄã²¿ÄÌ¤Î\n"
 "¥á¡¼¥ë¤¬Åê¹Æ¤µ¤ì¤Æ¥¨¥é¡¼¤Ë¤Ê¤Ã¤Æ¤¤¤ë¤«"
 
 #: Mailman/Gui/Bounce.py:44
@@ -2251,9 +2281,8 @@ msgid "Action when critical or excessive bounces are detected."
 msgstr "ÇÛÁ÷¥¨¥é¡¼¤¬Â¿¿ôÈ¯À¸¤·¤¿¤È¤­¤Î½èÃÖ"
 
 #: Mailman/Gui/Digest.py:27
-#, fuzzy
 msgid "Digest options"
-msgstr "¡Ö¤Þ¤È¤áÆÉ¤ß¡×²ñ°÷¥ª¥×¥·¥ç¥ó"
+msgstr "¡Ö¤Þ¤È¤áÆÉ¤ß¡×¥ª¥×¥·¥ç¥ó"
 
 #: Mailman/Gui/Digest.py:33
 msgid "Batched-delivery digest characteristics."
@@ -2285,7 +2314,7 @@ msgstr "Ê¿Ê¸"
 
 #: Mailman/Gui/Digest.py:45
 msgid "When receiving digests, which format is default?"
-msgstr "¤Þ¤È¤áÆÉ¤ß¤ÇÇÛÁ÷¤¹¤ë¤È¤­¡¤¤É¤Á¤é¤Î·Á¼°¤¬¥Ç¥Õ¥©¥ë¥È¤Ç¤¹¤«?"
+msgstr "¤Þ¤È¤áÆÉ¤ß¤ÇÇÛÁ÷¤¹¤ë¤È¤­, ¤É¤Á¤é¤Î·Á¼°¤¬¥Ç¥Õ¥©¥ë¥È¤Ç¤¹¤«?"
 
 #: Mailman/Gui/Digest.py:48
 msgid "How big in Kb should a digest be before it gets sent out?"
@@ -2342,14 +2371,13 @@ msgstr ""
 msgid ""
 "Should Mailman send the next digest right now, if it is not\n"
 "             empty?"
-msgstr "¤â¤·, ¥á¡¼¥ë¤¬Î¯¤Þ¤Ã¤Æ¤¤¤¿¤é, º£¡¢Ä¾¤Á¤Ë¡Ö¤Þ¤È¤áÆÉ¤ß¡×¤òÈ¯Á÷¤·¤Þ¤¹¤«?"
+msgstr "¤â¤·, ¥á¡¼¥ë¤¬Î¯¤Þ¤Ã¤Æ¤¤¤¿¤é, º£, Ä¾¤Á¤Ë¡Ö¤Þ¤È¤áÆÉ¤ß¡×¤òÈ¯Á÷¤·¤Þ¤¹¤«?"
 
 #: Mailman/Gui/General.py:28
 msgid "General Options"
 msgstr "°ìÈÌ¥ª¥×¥·¥ç¥ó"
 
 #: Mailman/Gui/General.py:34
-#, fuzzy
 msgid ""
 "Fundamental list characteristics, including descriptive\n"
 "            info and basic behaviors."
@@ -2372,11 +2400,11 @@ msgid ""
 "             almost everything else :-)"
 msgstr ""
 "ÂçÊ¸»ú¤ò»È¤¦¤È¸ÇÍ­Ì¾»ì¤È¤·¤ÆÇ§¼±¤·¤Æ¤â¤é¤¨¤ë¤Î¤Ç,\n"
-" ÃúÇ«¤Ê²ñ¼Ò¤Ø»ý¤Ã¤Æ¤¤¤Ã¤Æ¤âÄÌÍÑ¤·¤Þ¤¹¡¥\n"
-" ¤Þ¤¿¡¤Æ¬Ê¸»ú¤ÎÎ¬¸ì¤òÂçÊ¸»ú¤ÇÉ½¸½¤·¤Æ¤â¤è¤¤¤Ç¤·¤ç¤¦¡¥\n"
-" ¤·¤«¤·¡¤Ì¾Á°¤Ï¥á¡¼¥ë¥¢¥É¥ì¥¹¤È¤·¤Æ¹­¹ð¤µ¤ì¤ë¤Î¤Ç\n"
-" (Îã¤¨¤Ð¡¤Æþ²ñ³ÎÇ§¥á¡¼¥ë¤Ê¤É¤Ç)\n"
-" Â¾¤ÎÊ¸»ú¤ËÃÖ¤­´¹¤¨¤ë¤³¤È¤Ï<em>¤Ç¤­¤Ê¤Þ¤»¤ó</em>¡¥\n"
+" ÃúÇ«¤Ê²ñ¼Ò¤Ø»ý¤Ã¤Æ¤¤¤Ã¤Æ¤âÄÌÍÑ¤·¤Þ¤¹. \n"
+" ¤Þ¤¿, Æ¬Ê¸»ú¤ÎÎ¬¸ì¤òÂçÊ¸»ú¤ÇÉ½¸½¤·¤Æ¤â¤è¤¤¤Ç¤·¤ç¤¦. \n"
+" ¤·¤«¤·, Ì¾Á°¤Ï¥á¡¼¥ë¥¢¥É¥ì¥¹¤È¤·¤Æ¹­¹ð¤µ¤ì¤ë¤Î¤Ç\n"
+" (Îã¤¨¤Ð, Æþ²ñ³ÎÇ§¥á¡¼¥ë¤Ê¤É¤Ç)\n"
+" Â¾¤ÎÊ¸»ú¤ËÃÖ¤­´¹¤¨¤ë¤³¤È¤Ï<em>¤Ç¤­¤Ê¤Þ¤»¤ó</em>. \n"
 " (ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹¤ÏÂç¾®Ê¸»ú¤Î¶èÊÌ¤ò¤·¤Þ¤»¤ó¤¬\n"
 " Â¾¤Î¤Û¤È¤ó¤É¤Î¤³¤È¤Ï¶èÊÌ¤·¤Þ¤¹ :-)"
 
@@ -2385,11 +2413,10 @@ msgid ""
 "The list administrator email addresses.  Multiple\n"
 "             administrator addresses, each on separate line is okay."
 msgstr ""
-"¥ê¥¹¥È´ÉÍý¼Ô¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¡¥Ê£¿ô¤Î´ÉÍý¼Ô¤ò\n"
+"¥ê¥¹¥È´ÉÍý¼Ô¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹. Ê£¿ô¤Î´ÉÍý¼Ô¤ò\n"
 " ÊÌ¡¹¤Î¹Ô¤Ë¤Ê¤é¤Ù¤Æ¤â¤è¤¤."
 
 #: Mailman/Gui/General.py:51
-#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -2417,32 +2444,32 @@ msgid ""
 "             addresses of the list moderators</a>.  Note that the field you\n"
 "             are changing here specifies the list administators."
 msgstr ""
-"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î´ÉÍý¼Ô(½êÍ­¼Ô)¤Ë¤Ï£²¤Ä¤ÎÌò³ä¤¬¤¢¤ê¤Þ¤¹¡£\n"
+"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î´ÉÍý¼Ô(½êÍ­¼Ô)¤Ë¤Ï£²¤Ä¤ÎÌò³ä¤¬¤¢¤ê¤Þ¤¹. \n"
 "<em>¥ê¥¹¥È´ÉÍý¼Ô</em>¤Ï¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎÁ´¤Æ¤Î¥Ñ¥é¥á¡¼¥¿¤Ë\n"
-"¤Ä¤¤¤Æµæ¶Ë¤ÎÀ©¸æ¤ò¹Ô¤Ê¤¤¤Þ¤¹¡£´ÉÍýWeb¥Ú¡¼¥¸¤òÄÌ¤¸¤ÆÊÑ¹¹¤Ç¤­¤ë\n"
-"Á´¤Æ¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£\n"
+"¤Ä¤¤¤Æµæ¶Ë¤ÎÀ©¸æ¤ò¹Ô¤Ê¤¤¤Þ¤¹. ´ÉÍýWeb¥Ú¡¼¥¸¤òÄÌ¤¸¤ÆÊÑ¹¹¤Ç¤­¤ë\n"
+"Á´¤Æ¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. \n"
 "\n"
-"<p>°ìÊý¡¢<em>¥ê¥¹¥È»Ê²ñ¼Ô</em> ¤Î»Å»ö¤Ï¡¢¤è¤ê¸ÂÄê¤µ¤ì¤Æ¤¤¤Þ¤¹¡£\n"
-"¥ê¥¹¥È¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó¤¬¡¢ÊÝÎ±Ãæ¤Î´ÉÍý¿½ÀÁ¤ò\n"
-"½èÍý¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£¤Ä¤Þ¤ê¡¢ÊÝÎ±Ãæ¤ÎÆþ²ñ¿½ÀÁ¤ò¾µÇ§¤·¤¿¤êµñÈÝ¤¹¤ë¤³¤È¡¢\n"
-"ÊÝÎ±Ãæ¤ÎÅê¹Æ¥á¡¼¥ë¤ò½èÍý¤¹¤ë¤³¤È¤Ê¤É¤Ç¤¹¡£¤â¤Á¤í¤ó¡¢<em>¥ê¥¹¥È´ÉÍý¼Ô</em>\n"
-"¤â¡¢¿½ÀÁ½èÍý¤ò¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£\n"
+"<p>°ìÊý, <em>¥ê¥¹¥È»Ê²ñ¼Ô</em> ¤Î»Å»ö¤Ï, ¤è¤ê¸ÂÄê¤µ¤ì¤Æ¤¤¤Þ¤¹. \n"
+"¥ê¥¹¥È¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó¤¬, ÊÝÎ±Ãæ¤Î´ÉÍý¿½ÀÁ¤ò\n"
+"½èÍý¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. ¤Ä¤Þ¤ê, ÊÝÎ±Ãæ¤ÎÆþ²ñ¿½ÀÁ¤ò¾µÇ§¤·¤¿¤êµñÈÝ¤¹¤ë¤³¤È, \n"
+"ÊÝÎ±Ãæ¤ÎÅê¹Æ¥á¡¼¥ë¤ò½èÍý¤¹¤ë¤³¤È¤Ê¤É¤Ç¤¹. ¤â¤Á¤í¤ó, <em>¥ê¥¹¥È´ÉÍý¼Ô</em>\n"
+"¤â, ¿½ÀÁ½èÍý¤ò¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. \n"
 "\n"
-"<p>¥ê¥¹¥È½êÍ­¼Ô¤Î»Å»ö¤ò´ÉÍý¼Ô¤È»Ê²ñ¼Ô¤ËÊ¬¤±¤ë¤Ë¤Ï¡¢²¼¤Î¥»¥¯¥·¥ç¥ó¤Ë\n"
-"ÊÌ¤Î»Ê²ñ¼Ô¥Ñ¥¹¥ï¡¼¥É¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤¡£¤Þ¤¿¡¢¤³¤Î¥»¥¯¥·¥ç¥ó¤Ë¤Ï»Ê²ñ¼Ô¤Î\n"
-"¥á¡¼¥ë¥¢¥É¥ì¥¹¤òµ­Æþ¤·¤Æ¤¯¤À¤µ¤¤¡£¤³¤³¤Ç¡¢ÊÑ¹¹¤·¤è¤¦¤È¤·¤Æ¤¤¤ë¤Î¤Ï\n"
-"¥ê¥¹¥È»Ê²ñ¼Ô¤Ë¤Ä¤¤¤Æ¤Ç¤¹¡£"
+"<p>¥ê¥¹¥È½êÍ­¼Ô¤Î»Å»ö¤ò´ÉÍý¼Ô¤È»Ê²ñ¼Ô¤ËÊ¬¤±¤ë¤Ë¤Ï, \n"
+"<a href=\"general#passwords\">ÊÌ¤Î»Ê²ñ¼Ô¥Ñ¥¹¥ï¡¼¥É¤òÀßÄê</a>\n"
+"¤·¤Æ¤¯¤À¤µ¤¤. ¤Þ¤¿, <a href=\"?VARHELP=general/moderator\">»Ê²ñ¼Ô¤Î\n"
+"¥á¡¼¥ë¥¢¥É¥ì¥¹¤ò</a>µ­Æþ¤·¤Æ¤¯¤À¤µ¤¤. ¤³¤³¤Ç, ÊÑ¹¹¤·¤è¤¦¤È¤·¤Æ¤¤¤ë¤Î¤Ï\n"
+"¥ê¥¹¥È´ÉÍý¼Ô¤Ë¤Ä¤¤¤Æ¤Ç¤¹. "
 
 #: Mailman/Gui/General.py:72
 msgid ""
 "The list moderator email addresses.  Multiple\n"
 "             moderator addresses, each on separate line is okay."
 msgstr ""
-"¥ê¥¹¥È»Ê²ñ¼Ô¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¡¥Ê£¿ô¤Î»Ê²ñ¼Ô¤ò\n"
+"¥ê¥¹¥È»Ê²ñ¼Ô¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹. Ê£¿ô¤Î»Ê²ñ¼Ô¤ò\n"
 " ÊÌ¡¹¤Î¹Ô¤Ë¤Ê¤é¤Ù¤Æ¤â¤è¤¤."
 
 #: Mailman/Gui/General.py:75
-#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -2469,21 +2496,23 @@ msgid ""
 "             this section.  Note that the field you are changing here\n"
 "             specifies the list moderators."
 msgstr ""
-"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î´ÉÍý¼Ô(½êÍ­¼Ô)¤Ë¤Ï£²¤Ä¤ÎÌò³ä¤¬¤¢¤ê¤Þ¤¹¡£\n"
+"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î´ÉÍý¼Ô(½êÍ­¼Ô)¤Ë¤Ï£²¤Ä¤ÎÌò³ä¤¬¤¢¤ê¤Þ¤¹. \n"
 "<em>¥ê¥¹¥È´ÉÍý¼Ô</em>¤Ï¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎÁ´¤Æ¤Î¥Ñ¥é¥á¡¼¥¿¤Ë\n"
-"¤Ä¤¤¤Æµæ¶Ë¤ÎÀ©¸æ¤ò¹Ô¤Ê¤¤¤Þ¤¹¡£´ÉÍýWeb¥Ú¡¼¥¸¤òÄÌ¤¸¤ÆÊÑ¹¹¤Ç¤­¤ë\n"
-"Á´¤Æ¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£\n"
+"¤Ä¤¤¤Æµæ¶Ë¤ÎÀ©¸æ¤ò¹Ô¤Ê¤¤¤Þ¤¹. ´ÉÍýWeb¥Ú¡¼¥¸¤òÄÌ¤¸¤ÆÊÑ¹¹¤Ç¤­¤ë\n"
+"Á´¤Æ¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. \n"
 "\n"
-"<p>°ìÊý¡¢<em>¥ê¥¹¥È»Ê²ñ¼Ô</em> ¤Î»Å»ö¤Ï¡¢¤è¤ê¸ÂÄê¤µ¤ì¤Æ¤¤¤Þ¤¹¡£\n"
-"¥ê¥¹¥È¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó¤¬¡¢ÊÝÎ±Ãæ¤Î´ÉÍý¿½ÀÁ¤ò\n"
-"½èÍý¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£¤Ä¤Þ¤ê¡¢ÊÝÎ±Ãæ¤ÎÆþ²ñ¿½ÀÁ¤ò¾µÇ§¤·¤¿¤êµñÈÝ¤¹¤ë¤³¤È¡¢\n"
-"ÊÝÎ±Ãæ¤ÎÅê¹Æ¥á¡¼¥ë¤ò½èÍý¤¹¤ë¤³¤È¤Ê¤É¤Ç¤¹¡£¤â¤Á¤í¤ó¡¢<em>¥ê¥¹¥È´ÉÍý¼Ô</em>\n"
-"¤â¡¢¿½ÀÁ½èÍý¤ò¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£\n"
+"<p>°ìÊý, <em>¥ê¥¹¥È»Ê²ñ¼Ô</em> ¤Î»Å»ö¤Ï, ¤è¤ê¸ÂÄê¤µ¤ì¤Æ¤¤¤Þ¤¹. \n"
+"¥ê¥¹¥È¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó¤¬, ÊÝÎ±Ãæ¤Î´ÉÍý¿½ÀÁ¤ò\n"
+"½èÍý¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. ¤Ä¤Þ¤ê, ÊÝÎ±Ãæ¤ÎÆþ²ñ¿½ÀÁ¤ò¾µÇ§¤·¤¿¤êµñÈÝ¤¹¤ë¤³¤È, \n"
+"ÊÝÎ±Ãæ¤ÎÅê¹Æ¥á¡¼¥ë¤ò½èÍý¤¹¤ë¤³¤È¤Ê¤É¤Ç¤¹. ¤â¤Á¤í¤ó, <em>¥ê¥¹¥È´ÉÍý¼Ô</em>\n"
+"¤â, ¿½ÀÁ½èÍý¤ò¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. \n"
 "\n"
-"<p>¥ê¥¹¥È½êÍ­¼Ô¤Î»Å»ö¤ò´ÉÍý¼Ô¤È»Ê²ñ¼Ô¤ËÊ¬¤±¤ë¤Ë¤Ï¡¢²¼¤Î¥»¥¯¥·¥ç¥ó¤Ë\n"
-"ÊÌ¤Î»Ê²ñ¼Ô¥Ñ¥¹¥ï¡¼¥É¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤¡£¤Þ¤¿¡¢¤³¤Î¥»¥¯¥·¥ç¥ó¤Ë¤Ï»Ê²ñ¼Ô¤Î\n"
-"¥á¡¼¥ë¥¢¥É¥ì¥¹¤òµ­Æþ¤·¤Æ¤¯¤À¤µ¤¤¡£¤³¤³¤Ç¡¢ÊÑ¹¹¤·¤è¤¦¤È¤·¤Æ¤¤¤ë¤Î¤Ï\n"
-"¥ê¥¹¥È»Ê²ñ¼Ô¤Ë¤Ä¤¤¤Æ¤Ç¤¹¡£"
+"<p>¥ê¥¹¥È½êÍ­¼Ô¤Î»Å»ö¤ò´ÉÍý¼Ô¤È»Ê²ñ¼Ô¤ËÊ¬¤±¤ë¤Ë¤Ï, \n"
+"<a href=\"general#passwords\">\n"
+"ÊÌ¤Î»Ê²ñ¼Ô¥Ñ¥¹¥ï¡¼¥É¤òÀßÄê</a>¤·¤Æ¤¯¤À¤µ¤¤. ¤Þ¤¿, "
+"¤³¤Î¥»¥¯¥·¥ç¥ó¤Ë¤Ï»Ê²ñ¼Ô¤Î\n"
+"¥á¡¼¥ë¥¢¥É¥ì¥¹¤òµ­Æþ¤·¤Æ¤¯¤À¤µ¤¤. ¤³¤³¤Ç, ÊÑ¹¹¤·¤è¤¦¤È¤·¤Æ¤¤¤ë¤Î¤Ï\n"
+"¥ê¥¹¥È»Ê²ñ¼Ô¤Ë¤Ä¤¤¤Æ¤Ç¤¹. "
 
 #: Mailman/Gui/General.py:96
 msgid "A terse phrase identifying this list."
@@ -2498,8 +2527,8 @@ msgid ""
 "what\n"
 "                the list is."
 msgstr ""
-"¤³¤Î¸ì¶ç¤ò¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î°ìÍ÷¤Ç¤ÎÀâÌÀ¤ä¥Ø¥Ã¥À¤ËÆþ¤ì¤ë»þ¤Ê¤É¤Ë»È¤¤¤Þ¤¹¡¥\n"
-" ¤Ç¤­¤ë¤À¤±´Ê·é¤Ë¡¤¤·¤«¤â¥ê¥¹¥È¤¬²¿¤Ç¤¢¤ë¤«¤ï¤«¤ë¤è¤¦¤Ë¤·¤Æ¤¯¤À¤µ¤¤."
+"¤³¤Î¸ì¶ç¤ò¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î°ìÍ÷¤Ç¤ÎÀâÌÀ¤ä¥Ø¥Ã¥À¤ËÆþ¤ì¤ë»þ¤Ê¤É¤Ë»È¤¤¤Þ¤¹. \n"
+" ¤Ç¤­¤ë¤À¤±´Ê·é¤Ë, ¤·¤«¤â¥ê¥¹¥È¤¬²¿¤Ç¤¢¤ë¤«¤ï¤«¤ë¤è¤¦¤Ë¤·¤Æ¤¯¤À¤µ¤¤."
 
 #: Mailman/Gui/General.py:104
 msgid ""
@@ -2509,10 +2538,10 @@ msgid ""
 "             page.  Carriage returns will end a paragraph - see the details\n"
 "             for more info."
 msgstr ""
-"¥ê¥¹¥È¤ÎÆâÍÆ¡¦°ÆÆâ¤ò 2,3ÀáÄøÅÙ¤ÎÊ¸¾Ï¤ÇÉ½¤¹¡¥\n"
-" ¤³¤ì¤Ï HTML ¤Ç¥ê¥¹¥È°ÆÆâ¤Î¥Ú¡¼¥¸¤ËÉ½¼¨¤µ¤ì¤Þ¤¹¡¥\n"
-" ²þ¹Ô¤ÏÊ¸Àá¤Î½ª¤ï¤ê¤È¤Ê¤ê¤Þ¤¹¡¥\n"
-" ¤µ¤é¤Ë¾ÜºÙ¤ò»²¾È¤Î¤³¤È¡¥"
+"¥ê¥¹¥È¤ÎÆâÍÆ¡¦°ÆÆâ¤ò 2,3ÀáÄøÅÙ¤ÎÊ¸¾Ï¤ÇÉ½¤¹. \n"
+" ¤³¤ì¤Ï HTML ¤Ç¥ê¥¹¥È°ÆÆâ¤Î¥Ú¡¼¥¸¤ËÉ½¼¨¤µ¤ì¤Þ¤¹. \n"
+" ²þ¹Ô¤ÏÊ¸Àá¤Î½ª¤ï¤ê¤È¤Ê¤ê¤Þ¤¹. \n"
+" ¤µ¤é¤Ë¾ÜºÙ¤ò»²¾È¤Î¤³¤È. "
 
 #: Mailman/Gui/General.py:108
 msgid ""
@@ -2529,7 +2558,7 @@ msgstr ""
 "ÆþÎÏÊ¸¤Ï²þ¹Ô¤ò &lt;br&gt; ¤ËÊÑ¹¹¤¹¤ë¤Î¤ò<em>½ü¤¤¤Æ</em>\n"
 " HTML¤È¤·¤Æ°·¤ï¤ì¤Þ¤¹. ¤½¤ì¤Ç, ¥ê¥ó¥¯¤äÀ°·ÁºÑ¤ßÊ¸½ñ¤Ê¤È¤ò\n"
 " »È¤¦¤³¤È¤¬¤Ç¤­¤Þ¤¹¤¬, ÃÊÍî¤òÉÕ¤±¤ë»þ°Ê³°¤Ï²þ¹Ô¤òÆþ¤ì¤Ê¤¤\n"
-" ¤è¤¦¤Ë¤·¤Æ¤¯¤À¤µ¤¤. ¤Þ¤¿¡¤ÊÑ¹¹ÅÀ¤ò¤è¤¯¥Á¥§¥Ã¥¯¤·¤Æ¤¯¤À¤µ¤¤\n"
+" ¤è¤¦¤Ë¤·¤Æ¤¯¤À¤µ¤¤. ¤Þ¤¿, ÊÑ¹¹ÅÀ¤ò¤è¤¯¥Á¥§¥Ã¥¯¤·¤Æ¤¯¤À¤µ¤¤\n"
 " HTML¤¬°­¤¤¤È(¥¿¥°¤¬ÊÄ¤¸¤Æ¤¤¤Ê¤¤¤Ê¤É)¥Ú¡¼¥¸Á´ÂÎ¤¬É½¼¨¤µ¤ì¤Ê¤¤\n"
 " ¤³¤È¤âµ¯¤³¤êÆÀ¤Þ¤¹."
 
@@ -2548,10 +2577,10 @@ msgid ""
 "             still identifies the mailing list."
 msgstr ""
 "¤³¤Î¥Æ¥­¥¹¥È¤¬¥ê¥¹¥È¤ËÅê¹Æ¤µ¤ì¤¿¥á¡¼¥ë¤Î·ïÌ¾¤Ë ÉÕ¤±¤é\n"
-"¤ì¤Þ¤¹¡¥¤³¤ì¤Ï¥á¡¼¥ë¥ê¡¼¥À¥½¥Õ¥È¤Ê¤É¤ÇÂ¾¤Î¥á¡¼\n"
-"¥ë¤È¶èÊÌ¤¹¤ë¤Î¤Ë Í­¸ú¤Ç¤¹¡¥´Ê·é¤ò¤³¤³¤í¤¬¤±¤Þ¤·¤ç¤¦¡¥\n"
-"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎÌ¾¾Î¤¬Ä¹¤«¤Ã¤¿¤é¡¤ ¥á¡¼¥ê¥ó¥°¥ê\n"
-"¥¹¥È¤Ç¤¢¤ë¤³¤È¤¬¤ï¤«¤ëÈÏ°Ï¤Ç¡¤Ã»¤¯´Ê·é¤Ë¤¹¤ë¤È¤è¤¤¤Ç¤·¤ç¤¦¡¥"
+"¤ì¤Þ¤¹. ¤³¤ì¤Ï¥á¡¼¥ë¥ê¡¼¥À¥½¥Õ¥È¤Ê¤É¤ÇÂ¾¤Î¥á¡¼\n"
+"¥ë¤È¶èÊÌ¤¹¤ë¤Î¤Ë Í­¸ú¤Ç¤¹. ´Ê·é¤ò¤³¤³¤í¤¬¤±¤Þ¤·¤ç¤¦. \n"
+"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎÌ¾¾Î¤¬Ä¹¤«¤Ã¤¿¤é,  ¥á¡¼¥ê¥ó¥°¥ê\n"
+"¥¹¥È¤Ç¤¢¤ë¤³¤È¤¬¤ï¤«¤ëÈÏ°Ï¤Ç, Ã»¤¯´Ê·é¤Ë¤¹¤ë¤È¤è¤¤¤Ç¤·¤ç¤¦. "
 
 #: Mailman/Gui/General.py:124
 msgid ""
@@ -2560,7 +2589,6 @@ msgid ""
 msgstr "¿·¤·¤¯Æþ²ñ¤·¤¿²ñ°÷¤ØÁ÷¤é¤ì¤ë¥á¥Ã¥»¡¼¥¸¤ÎÁ°ÃÖ¤­Ê¸"
 
 #: Mailman/Gui/General.py:127
-#, fuzzy
 msgid ""
 "This value, if any, will be added to the front of the\n"
 "             new-subscriber welcome message.  The rest of the welcome "
@@ -2582,13 +2610,18 @@ msgid ""
 "                 <li>A blank line separates paragraphs.\n"
 "             </ul>"
 msgstr ""
-"¤³¤ÎÊ¸¾Ï¤¬¡¤¿·¤·¤¯Æþ²ñ¤·¤¿²ñ°÷¤Ø¤Î´¿·ÞÊ¸¤Î\n"
-" ¤Ï¤¸¤á¤Ë½ñ¤­¤³¤Þ¤ì¤Þ¤¹¡¥´¿·ÞÊ¸¤Î»Ä¤ê¤ÎÉôÊ¬¤Ë¤Ï\n"
+"¤³¤ÎÊ¸¾Ï¤¬, ¿·¤·¤¯Æþ²ñ¤·¤¿²ñ°÷¤Ø¤Î´¿·ÞÊ¸¤Î\n"
+" ¤Ï¤¸¤á¤Ë½ñ¤­¤³¤Þ¤ì¤Þ¤¹. ´¿·ÞÊ¸¤Î»Ä¤ê¤ÎÉôÊ¬¤Ë¤Ï\n"
 " ¥ê¥¹¥È¤Ç½ÅÍ×¤Ê¥á¡¼¥ë¥¢¥É¥ì¥¹¤ä URL ¤Ë¤Ä¤¤¤Æ¤ÎÀâÌÀ¤¬\n"
-" ¤¢¤é¤«¤¸¤áÆþ¤ì¤é¤ì¤Æ¤¤¤Þ¤¹¡¥¤Ç¤¹¤«¤é¤½¤¦¤¤¤Ã¤¿Îà¤Î\n"
-" ¤â¤Î¤òÆþ¤ì¤ëÉ¬Í×¤Ï¤¢¤ê¤Þ¤»¤ó¡¥¤³¤³¤Ë¤Ï¥ê¥¹¥È¤ÎÌÜÅª¤ä\n"
+" ¤¢¤é¤«¤¸¤áÆþ¤ì¤é¤ì¤Æ¤¤¤Þ¤¹. ¤Ç¤¹¤«¤é¤½¤¦¤¤¤Ã¤¿Îà¤Î\n"
+" ¤â¤Î¤òÆþ¤ì¤ëÉ¬Í×¤Ï¤¢¤ê¤Þ¤»¤ó. ¤³¤³¤Ë¤Ï¥ê¥¹¥È¤ÎÌÜÅª¤ä\n"
 " ¥¨¥Á¥±¥Ã¥È¤Î¥Ý¥ê¥·¡¼¤È¤¤¤Ã¤¿¸ÇÍ­¤ÎÌäÂê¤Ë\n"
-" ¤Ä¤¤¤Æ½ñ¤¤¤Æ¤¯¤À¤µ¤¤¡¥"
+" ¤Ä¤¤¤Æ½ñ¤¤¤Æ¤¯¤À¤µ¤¤. <p>Ãí°Õ "
+"¤³¤ÎÊ¸¾Ï¤Ï°Ê²¼¤Îµ¬Â§¤Ë½¾¤Ã¤Æ¹ÔËö¤ÎÀÞ¤êÊÖ¤·¤¬¤Ê¤µ¤ì¤Þ¤¹:\n"
+"<ul><li>£±¹Ô¤¬70Ê¸»ú°ÊÆâ¤Ë¤Ê¤ë¤è¤¦¤Ë¹ÔµÍ¤á¤¬¤Ê¤µ¤ì¤Þ¤¹.\n"
+"    <li>¶õÇòÊ¸»ú¤Ç»Ï¤Þ¤ë¹Ô¤Ï¹ÔµÍ¤á¤µ¤ì¤Þ¤»¤ó.\n"
+"    <li>¶õÇò¹Ô¤ÏÃÊÍî¤Î¶èÀÚ¤ê¤Ë¤Ê¤ê¤Þ¤¹.\n"
+"</ul>"
 
 #: Mailman/Gui/General.py:144
 msgid ""
@@ -2596,7 +2629,7 @@ msgid ""
 "             text will be added to the unsubscribe message."
 msgstr ""
 "¥ê¥¹¥È¤òÂà²ñ¤¹¤ë¿Í¤Ë¤¢¤Æ¤ëÊ¸.  ¤â¤·¶õÇò¤Ç¤¢¤ì¤Ð\n"
-" Âà²ñ¼Ô¤Ø¤¢¤Æ¤¿¥á¡¼¥ë¤Ë¤Ï²¿¤âÉÕ¤±²Ã¤¨¤é¤ì¤Þ¤»¤ó¡¥"
+" Âà²ñ¼Ô¤Ø¤¢¤Æ¤¿¥á¡¼¥ë¤Ë¤Ï²¿¤âÉÕ¤±²Ã¤¨¤é¤ì¤Þ¤»¤ó. "
 
 #: Mailman/Gui/General.py:148
 msgid "Explicit address"
@@ -2617,9 +2650,9 @@ msgid ""
 "mailing\n"
 "             lists."
 msgstr ""
-"Åê¹Æ¤µ¤ì¤¿µ­»ö¤ËÊÖ¿®¤¹¤ë¤È¡¤¤É¤³¤Ø¹Ô¤¯¤è¤¦¤Ë¤·¤Þ¤¹¤«?\n"
+"Åê¹Æ¤µ¤ì¤¿µ­»ö¤ËÊÖ¿®¤¹¤ë¤È, ¤É¤³¤Ø¹Ô¤¯¤è¤¦¤Ë¤·¤Þ¤¹¤«?\n"
 " Â¿¤¯¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ë¤Ä¤¤¤Æ <tt>Åê¹Æ¼Ô</tt>\n"
-" ¤ò <em>¶¯¤¯</em> ¿ä¾©¤·¤Þ¤¹¡¥"
+" ¤ò <em>¶¯¤¯</em> ¿ä¾©¤·¤Þ¤¹. "
 
 #: Mailman/Gui/General.py:154
 msgid ""
@@ -2663,39 +2696,39 @@ msgid ""
 "             list."
 msgstr ""
 "¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤òÎ®¤ì¤ë¥á¥Ã¥»¡¼¥¸¤Î\n"
-"<tt>Reply-To:</tt> ¤ò¤É¤Î¤è¤¦¤Ë°·¤¦¤«¤òÀ©¸æ¤·¤Þ¤¹¡¥\n"
-"¤â¤·¡¤<em>Åê¹Æ¼Ô</em>¤Ë¤Ê¤Ã¤Æ¤¤¤ë¾ì¹ç¤Ë¤Ï "
+"<tt>Reply-To:</tt> ¤ò¤É¤Î¤è¤¦¤Ë°·¤¦¤«¤òÀ©¸æ¤·¤Þ¤¹. \n"
+"¤â¤·, <em>Åê¹Æ¼Ô</em>¤Ë¤Ê¤Ã¤Æ¤¤¤ë¾ì¹ç¤Ë¤Ï "
 "<tt>Reply-To:</tt>¥Ø¥Ã¥À¤òÉÕ¤±²Ã¤¨¤ë\n"
-"¤³¤È¤Ï¤·¤Þ¤»¤ó¡¥¤â¤·¥ª¥ê¥¸¥Ê¥ë¤Î¥á¥Ã¥»¡¼¥¸¤ËÉÕ¤¤¤Æ¤¤¤¿¾ì¹ç¤Ë¤Ï¡¤ºï½ü¤µ¤ì¤Þ¤»"
-")B¡¥¤³¤Î)BÃÍ\n"
-"<em>¤³¤Î¥ê¥¹¥È</em>¤Þ¤¿¤Ï<em>ÊÌ¤Î¥¢¥É¥ì¥¹</em>¤ËÀßÄê¤¹¤ë¤È¡¤\n"
-"Mailman "
-"¤Ï¤¹¤Ù¤Æ¤Î¥á¥Ã¥»¡¼¥¸¤ËÆÃÄê¤µ¤ì¤¿<tt>Reply-To:</tt>¥Ø¥Ã¥À¤òÉÕ¤±¤Þ¤¹¡¥\n"
-"¤³¤ì¤ÏÉ¬Í×¤Ê¤é¥ª¥ê¥¸¥Ê¥ë¥á¥Ã¥»¡¼¥¸¤Î¥Ø¥Ã¥À¤ò½ñ¤­´¹¤¨¤Þ¤¹¡¥\n"
+"¤³¤È¤Ï¤·¤Þ¤»¤ó. ¤â¤·¥ª¥ê¥¸¥Ê¥ë¤Î¥á¥Ã¥»¡¼¥¸¤ËÉÕ¤¤¤Æ¤¤¤¿¾ì¹ç¤Ë¤Ï, "
+"ºï½ü¤µ¤ì¤Þ¤». )B¤³¤ÎÃÍ\n"
+"<em>¤³¤Î¥ê¥¹¥È</em>¤Þ¤¿¤Ï<em>ÊÌ¤Î¥¢¥É¥ì¥¹</em>¤ËÀßÄê¤¹¤ë¤È, \n"
+"Mailman ¤Ï¤¹¤Ù¤Æ¤Î¥á¥Ã¥»¡¼¥¸¤ËÆÃÄê¤µ¤ì¤¿<tt>Reply-To:</tt>¥Ø¥Ã¥À¤òÉÕ¤±¤Þ¤¹. "
+"\n"
+"¤³¤ì¤ÏÉ¬Í×¤Ê¤é¥ª¥ê¥¸¥Ê¥ë¥á¥Ã¥»¡¼¥¸¤Î¥Ø¥Ã¥À¤ò½ñ¤­´¹¤¨¤Þ¤¹. \n"
 "<em>ÊÌ¤Î¥¢¥É¥ì¥¹</em> ¤Ï\n"
 "<a href=\"?VARHELP=general/reply_to_address\">reply_to_address</a>¤Ç\n"
-"ÆþÎÏ¥¢¥É¥ì¥¹¤ËÀßÄê¤·¤Þ¤¹¡¥\n"
+"ÆþÎÏ¥¢¥É¥ì¥¹¤ËÀßÄê¤·¤Þ¤¹. \n"
 " \n"
 "<p><tt>Reply-To:</tt> ¤Î¤è¤¦¤Ê¥Ø¥Ã¥À¤ò\n"
-"Â¾¿Í¤Î¥á¥Ã¥»¡¼¥¸¤ËÉÕ¤±²Ã¤¨¤Ê¤¤¤È¤¤¤¦¤Î¤Ë¤Ï¡¤Â¿¤¯¤ÎÍýÍ³¤¬¤¢¤ê¤Þ¤¹¡¥\n"
+"Â¾¿Í¤Î¥á¥Ã¥»¡¼¥¸¤ËÉÕ¤±²Ã¤¨¤Ê¤¤¤È¤¤¤¦¤Î¤Ë¤Ï, Â¿¤¯¤ÎÍýÍ³¤¬¤¢¤ê¤Þ¤¹. \n"
 "¿Í¤Ë¤è¤Ã¤Æ¤Ï¼«Ê¬¼«¿È¤Ç<tt>Reply-To:</tt> ¤òÉÕ¤±¤ÆÊÖ»ö¤òÆÏ¤±¤Æ\n"
-"¤Û¤·¤¤¥á¡¼¥ë¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Þ¤¹¡¥\n"
-"ÊÌ¤ÎÍýÍ³¤È¤·¤Æ¡¤<tt>Reply-To:</tt>¤òÊÑ¹¹¤¹¤ë¤È¸Ä¿ÍÅª¤ËÊÖ»ö¤ò\n"
-"Á÷¤ë¤³¤È¤¬Æñ¤·¤¯¤Ê¤ë¤È¤¤¤¦¤Î¤â¤¢¤ê¤Þ¤¹¡¥\n"
+"¤Û¤·¤¤¥á¡¼¥ë¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Þ¤¹. \n"
+"ÊÌ¤ÎÍýÍ³¤È¤·¤Æ, <tt>Reply-To:</tt>¤òÊÑ¹¹¤¹¤ë¤È¸Ä¿ÍÅª¤ËÊÖ»ö¤ò\n"
+"Á÷¤ë¤³¤È¤¬Æñ¤·¤¯¤Ê¤ë¤È¤¤¤¦¤Î¤â¤¢¤ê¤Þ¤¹. \n"
 "<a href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To' "
 "Munging\n"
-"Considered Harmful</a>  ¤Ë¤Ï¡¤¤³¤ì¤Ë¤Ä¤¤¤Æ¤Î°ìÈÌÅª¤ÊµÄÏÀ¤¬¤¢¤ê¤Þ¤¹¡¥\n"
+"Considered Harmful</a>  ¤Ë¤Ï, ¤³¤ì¤Ë¤Ä¤¤¤Æ¤Î°ìÈÌÅª¤ÊµÄÏÀ¤¬¤¢¤ê¤Þ¤¹. \n"
 "<a "
 "href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
-"Munging Considered Useful</a> ¤ÎÈ¿ÂÐ°Õ¸«¤â»²¹Í¤Ë¤·¤Æ¤¯¤À¤µ¤¤¡¥\n"
+"Munging Considered Useful</a> ¤ÎÈ¿ÂÐ°Õ¸«¤â»²¹Í¤Ë¤·¤Æ¤¯¤À¤µ¤¤. \n"
 " \n"
-"<p>¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ë¤è¤Ã¤Æ¤ÏÅê¹Æ¤ËÀ©¸Â¤ò¤Ä¤±¤Æ¡¤Ê¿¹Ô¤·¤ÆÆ¤ÏÀ¤Î¤¿¤á¤Î\n"
-"¥ê¥¹¥È¤òºî¤Ã¤Æ¤¤¤ë¾ì¹ç¤â¤¢¤ê¤Þ¤¹¡¥Îã¤È¤·¤Æ¤Ï `patches' ¤ä `checkin' ¥ê¥¹¥È\n"
-"¤¬¤¢¤ê¤Þ¤¹¡¥¤³¤Î¾ì¹ç¥½¥Õ¥È¥¦¥§¥¢¤ÎÊÑ¹¹¤¬ revision control system\n"
-"(²þÄûÈÇÀ©¸æµ¡¹½) ¤«¤éÅê¹Æ¤µ¤ì¤Þ¤¹¡¥¤·¤«¤·¡¤ÊÑ¹¹¤Ë¤Ä¤¤¤Æ¤ÎµÄÏÀ¤Ï\n"
-"ÊÌ¤Î³«È¯¼Ô¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ç¹Ô¤ï¤ì¤Þ¤¹¡¥\n"
-"¤³¤Î¥¿¥¤¥×¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ò¥µ¥Ý¡¼¥È¤¹¤ë¤¿¤á¤Ë¤Ï¡¤<tt>ÊÌ¤Î¥¢¥É¥ì¥¹</tt>\n"
-"¤òÁª¤ó¤Ç¡¤²¼¤Î <tt>Reply-To:</tt> ¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤¡¥"
+"<p>¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ë¤è¤Ã¤Æ¤ÏÅê¹Æ¤ËÀ©¸Â¤ò¤Ä¤±¤Æ, Ê¿¹Ô¤·¤ÆÆ¤ÏÀ¤Î¤¿¤á¤Î\n"
+"¥ê¥¹¥È¤òºî¤Ã¤Æ¤¤¤ë¾ì¹ç¤â¤¢¤ê¤Þ¤¹. Îã¤È¤·¤Æ¤Ï `patches' ¤ä `checkin' ¥ê¥¹¥È\n"
+"¤¬¤¢¤ê¤Þ¤¹. ¤³¤Î¾ì¹ç¥½¥Õ¥È¥¦¥§¥¢¤ÎÊÑ¹¹¤¬ revision control system\n"
+"(²þÄûÈÇÀ©¸æµ¡¹½) ¤«¤éÅê¹Æ¤µ¤ì¤Þ¤¹. ¤·¤«¤·, ÊÑ¹¹¤Ë¤Ä¤¤¤Æ¤ÎµÄÏÀ¤Ï\n"
+"ÊÌ¤Î³«È¯¼Ô¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ç¹Ô¤ï¤ì¤Þ¤¹. \n"
+"¤³¤Î¥¿¥¤¥×¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ò¥µ¥Ý¡¼¥È¤¹¤ë¤¿¤á¤Ë¤Ï, <tt>ÊÌ¤Î¥¢¥É¥ì¥¹</tt>\n"
+"¤òÁª¤ó¤Ç, ²¼¤Î <tt>Reply-To:</tt> ¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤. "
 
 #: Mailman/Gui/General.py:186
 msgid "Explicit <tt>Reply-To:</tt> header."
@@ -2745,29 +2778,28 @@ msgstr ""
 "  ¤ò<em>ÊÌ¤Î¥¢¥É¥ì¥¹</em>¤ËÀßÄê¤·¤¿¤È¤­ <tt>Reply-To:</tt> "
 "¥Ø¥Ã¥À¤Ë»È¤ï¤ì¤Þ¤¹.\n"
 "<p><tt>Reply-To:</tt> ¤Î¤è¤¦¤Ê¥Ø¥Ã¥À¤ò\n"
-"  Â¾¿Í¤Î¥á¥Ã¥»¡¼¥¸¤ËÉÕ¤±²Ã¤¨¤Ê¤¤¤È¤¤¤¦¤Î¤Ë¤Ï¡¤Â¿¤¯¤ÎÍýÍ³¤¬¤¢¤ê¤Þ¤¹¡¥\n"
+"  Â¾¿Í¤Î¥á¥Ã¥»¡¼¥¸¤ËÉÕ¤±²Ã¤¨¤Ê¤¤¤È¤¤¤¦¤Î¤Ë¤Ï, Â¿¤¯¤ÎÍýÍ³¤¬¤¢¤ê¤Þ¤¹. \n"
 "  ¿Í¤Ë¤è¤Ã¤Æ¤Ï¼«Ê¬¼«¿È¤Ç<tt>Reply-To:</tt> ¤òÉÕ¤±¤ÆÊÖ»ö¤òÆÏ¤±¤Æ\n"
-"  ¤Û¤·¤¤¥á¡¼¥ë¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Þ¤¹¡¥\n"
-"  ÊÌ¤ÎÍýÍ³¤È¤·¤Æ¡¤<tt>Reply-To:</tt>¤òÊÑ¹¹¤¹¤ë¤È¸Ä¿ÍÅª¤ËÊÖ»ö¤ò\n"
-"  Á÷¤ë¤³¤È¤¬Æñ¤·¤¯¤Ê¤ë¤È¤¤¤¦¤Î¤â¤¢¤ê¤Þ¤¹¡¥\n"
+"  ¤Û¤·¤¤¥á¡¼¥ë¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Þ¤¹. \n"
+"  ÊÌ¤ÎÍýÍ³¤È¤·¤Æ, <tt>Reply-To:</tt>¤òÊÑ¹¹¤¹¤ë¤È¸Ä¿ÍÅª¤ËÊÖ»ö¤ò\n"
+"  Á÷¤ë¤³¤È¤¬Æñ¤·¤¯¤Ê¤ë¤È¤¤¤¦¤Î¤â¤¢¤ê¤Þ¤¹. \n"
 "  <a href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To' "
 "Munging\n"
-"  Considered Harmful</a>  ¤Ë¤Ï¡¤¤³¤ì¤Ë¤Ä¤¤¤Æ¤Î°ìÈÌÅª¤ÊµÄÏÀ¤¬¤¢¤ê¤Þ¤¹¡¥\n"
+"  Considered Harmful</a>  ¤Ë¤Ï, ¤³¤ì¤Ë¤Ä¤¤¤Æ¤Î°ìÈÌÅª¤ÊµÄÏÀ¤¬¤¢¤ê¤Þ¤¹. \n"
 "  <a "
 "href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
-"  Munging Considered Useful</a> ¤ÎÈ¿ÂÐ°Õ¸«¤â»²¹Í¤Ë¤·¤Æ¤¯¤À¤µ¤¤¡¥\n"
+"  Munging Considered Useful</a> ¤ÎÈ¿ÂÐ°Õ¸«¤â»²¹Í¤Ë¤·¤Æ¤¯¤À¤µ¤¤. \n"
 "\n"
-"<p>¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ë¤è¤Ã¤Æ¤ÏÅê¹Æ¤ËÀ©¸Â¤ò¤Ä¤±¤Æ¡¤Ê¿¹Ô¤·¤ÆÆ¤ÏÀ¤Î¤¿¤á¤Î\n"
-"  ¥ê¥¹¥È¤òºî¤Ã¤Æ¤¤¤ë¾ì¹ç¤â¤¢¤ê¤Þ¤¹¡¥Îã¤È¤·¤Æ¤Ï `patches' ¤ä `checkin' "
+"<p>¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ë¤è¤Ã¤Æ¤ÏÅê¹Æ¤ËÀ©¸Â¤ò¤Ä¤±¤Æ, Ê¿¹Ô¤·¤ÆÆ¤ÏÀ¤Î¤¿¤á¤Î\n"
+"  ¥ê¥¹¥È¤òºî¤Ã¤Æ¤¤¤ë¾ì¹ç¤â¤¢¤ê¤Þ¤¹. Îã¤È¤·¤Æ¤Ï `patches' ¤ä `checkin' "
 "¥ê¥¹¥È\n"
-"  ¤¬¤¢¤ê¤Þ¤¹¡¥¤³¤Î¾ì¹ç¥½¥Õ¥È¥¦¥§¥¢¤ÎÊÑ¹¹¤¬ revision control system\n"
-"  (²þÄûÈÇÀ©¸æµ¡¹½) ¤«¤éÅê¹Æ¤µ¤ì¤Þ¤¹¡¥¤·¤«¤·¡¤ÊÑ¹¹¤Ë¤Ä¤¤¤Æ¤ÎµÄÏÀ¤Ï\n"
-"  ÊÌ¤Î³«È¯¼Ô¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ç¹Ô¤ï¤ì¤Þ¤¹¡¥\n"
-"  "
-"¤³¤Î¥¿¥¤¥×¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ò¥µ¥Ý¡¼¥È¤¹¤ë¤¿¤á¤Ë¤Ï¡¤<tt>reply_goes_to_list</t"
-"t>¤Ç\n"
-"  <tt>ÊÌ¤Î¥¢¥É¥ì¥¹</tt>¤òÁª¤ó¤Ç¡¤¤³¤³¤Ç <tt>Reply-To:</tt> "
-"¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤¡¥\n"
+"  ¤¬¤¢¤ê¤Þ¤¹. ¤³¤Î¾ì¹ç¥½¥Õ¥È¥¦¥§¥¢¤ÎÊÑ¹¹¤¬ revision control system\n"
+"  (²þÄûÈÇÀ©¸æµ¡¹½) ¤«¤éÅê¹Æ¤µ¤ì¤Þ¤¹. ¤·¤«¤·, ÊÑ¹¹¤Ë¤Ä¤¤¤Æ¤ÎµÄÏÀ¤Ï\n"
+"  ÊÌ¤Î³«È¯¼Ô¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ç¹Ô¤ï¤ì¤Þ¤¹. \n"
+"  ¤³¤Î¥¿¥¤¥×¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ò¥µ¥Ý¡¼¥È¤¹¤ë¤¿¤á¤Ë¤Ï, "
+"<tt>reply_goes_to_list</tt>¤Ç\n"
+"  <tt>ÊÌ¤Î¥¢¥É¥ì¥¹</tt>¤òÁª¤ó¤Ç, ¤³¤³¤Ç <tt>Reply-To:</tt> "
+"¥¢¥É¥ì¥¹¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤. \n"
 "\n"
 "<p>¤â¤·¥ª¥ê¥¸¥Ê¥ë¤Î¥á¡¼¥ë¤Ë<tt>Reply-To:</tt>¥Ø¥Ã¥À¤¬ÉÕ¤¤¤Æ¤¤¤ë¤È, "
 "¤½¤ì¤ÏÊÑ¹¹¤µ¤ì¤Þ¤»¤ó."
@@ -2789,19 +2821,19 @@ msgid ""
 "request,\n"
 "             in the process."
 msgstr ""
-"´ÉÍý¥³¥Þ¥ó¥É¸¡ºº¤Ç¤ÏÅê¹Æ¤ò¥Á¥§¥Ã¥¯¤·¤Æ¡¤¤½¤ì¤¬ËÜÅö¤Ï\n"
-" ´ÉÍý¾å¤Î¿½ÀÁ¤Ç¤¢¤ë¤«¤òÄ´¤Ù¤Þ¤¹¡¥(Îã¤¨¤Ð \n"
+"´ÉÍý¥³¥Þ¥ó¥É¸¡ºº¤Ç¤ÏÅê¹Æ¤ò¥Á¥§¥Ã¥¯¤·¤Æ, ¤½¤ì¤¬ËÜÅö¤Ï\n"
+" ´ÉÍý¾å¤Î¿½ÀÁ¤Ç¤¢¤ë¤«¤òÄ´¤Ù¤Þ¤¹. (Îã¤¨¤Ð \n"
 " subscribe, unsubscribe, Åù), ¤½¤·¤Æ´ÉÍýÂÔ¤Á¹ÔÎó¤Ë²Ã¤¨\n"
 " ´ÉÍý¼Ô¤Ë¿·¤·¤¤¿½ÀÁ¤¬Íè¤Æ¤¤¤ë¤³¤È¤ò\n"
-" ÃÎ¤é¤»¤Þ¤¹¡¥"
+" ÃÎ¤é¤»¤Þ¤¹. "
 
 #: Mailman/Gui/General.py:228
 msgid ""
 "Send password reminders to, eg, \"-owner\" address instead of\n"
 "             directly to user."
 msgstr ""
-"¥Ñ¥¹¥ï¡¼¥ÉÄÌÃÎ¤Ê¤É¤ò¡¤Îã¤¨¤Ð '-owner' ¤Î¥¢¥É\n"
-"     ¥ì¥¹¤ËÁ÷¤ê¡¤ Ä¾ÀÜ²ñ°÷¤Ë¤ÏÁ÷¤ê¤Þ¤»¤ó."
+"¥Ñ¥¹¥ï¡¼¥ÉÄÌÃÎ¤Ê¤É¤ò, Îã¤¨¤Ð '-owner' ¤Î¥¢¥É\n"
+"     ¥ì¥¹¤ËÁ÷¤ê,  Ä¾ÀÜ²ñ°÷¤Ë¤ÏÁ÷¤ê¤Þ¤»¤ó."
 
 #: Mailman/Gui/General.py:231
 msgid ""
@@ -2812,10 +2844,10 @@ msgid ""
 "             value of \"umbrella_member_suffix\" appended to the member's\n"
 "             account name."
 msgstr ""
-"¤³¤Î¥ª¥×¥·¥ç¥ó¤ò ¡Ö¤Ï¤¤¡× ¤Ë¤¹¤ë¤Î¤Ï¡¤Îã¤¨¤ÐÂ¾¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ë\n"
-" ÇÛÁ÷¤¹¤ë¤¿¤á¤Î¥ê¥¹¥È¤Ç¤¢¤ë¾ì¹ç¤Ç¤¹. ¤â¤·¡¤¡Ö¤Ï¤¤¡× ¤Ë¤Ê¤Ã¤Æ¤¤¤ë¤È\n"
-" ³ÎÇ§¤ä¥Ñ¥¹¥ï¡¼¥ÉÄÌÃÎ¤Ê¤É¤Ï²ñ°÷¥¢¥É¥ì¥¹¤½¤Î¤â¤Î¤Ç¤Ê¤¯¡¤²¼¤Î¹àÌÜ¤Ç»ØÄê¤µ¤ì¤ë\n"
-" ¥µ¥Õ¥£¥Ã¥¯¥¹¤òÉÕ¤±¤¿¥¢¥É¥ì¥¹¤ØÁ÷¤é¤ì¤Þ¤¹¡¥\n"
+"¤³¤Î¥ª¥×¥·¥ç¥ó¤ò ¡Ö¤Ï¤¤¡× ¤Ë¤¹¤ë¤Î¤Ï, Îã¤¨¤ÐÂ¾¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ë\n"
+" ÇÛÁ÷¤¹¤ë¤¿¤á¤Î¥ê¥¹¥È¤Ç¤¢¤ë¾ì¹ç¤Ç¤¹. ¤â¤·, ¡Ö¤Ï¤¤¡× ¤Ë¤Ê¤Ã¤Æ¤¤¤ë¤È\n"
+" ³ÎÇ§¤ä¥Ñ¥¹¥ï¡¼¥ÉÄÌÃÎ¤Ê¤É¤Ï²ñ°÷¥¢¥É¥ì¥¹¤½¤Î¤â¤Î¤Ç¤Ê¤¯, ²¼¤Î¹àÌÜ¤Ç»ØÄê¤µ¤ì¤ë\n"
+" ¥µ¥Õ¥£¥Ã¥¯¥¹¤òÉÕ¤±¤¿¥¢¥É¥ì¥¹¤ØÁ÷¤é¤ì¤Þ¤¹. \n"
 " (²ñ°÷¤¬ child@some.where.com ¤Ç ¥µ¥Õ¥£¥Ã¥¯¥¹¤¬ -owner ¤È¤¹¤ë¤È\n"
 " child-owner@some.where.com ¤ØÁ÷¤é¤ì¤Þ¤¹)"
 
@@ -2825,7 +2857,7 @@ msgid ""
 "             lists, according to setting of previous \"umbrella_list\"\n"
 "             setting."
 msgstr ""
-"¥ê¥¹¥È¤¬Â¾¤Î¥ê¥¹¥È¤Î»±¥ê¥¹¥È¤Ç¤¢¤ë¾ì¹ç¤Ë¡¤¤½¤Î¥µ¥Õ¥£¥Ã¥¯¥¹.\n"
+"¥ê¥¹¥È¤¬Â¾¤Î¥ê¥¹¥È¤Î»±¥ê¥¹¥È¤Ç¤¢¤ë¾ì¹ç¤Ë, ¤½¤Î¥µ¥Õ¥£¥Ã¥¯¥¹.\n"
 " ¾å¤Î¹àÌÜ¤ò Yes ¤Ë¤¹¤ë¤ÈÍ­¸ú¤È¤Ê¤ë."
 
 #: Mailman/Gui/General.py:243
@@ -2843,12 +2875,12 @@ msgid ""
 "             is \"No\"."
 msgstr ""
 "¤³¤³¤Ç 'umbrella_list' ¤¬¥»¥Ã¥È¤µ¤ì¤Æ¤³¤Î¥ê¥¹¥È¤¬Â¾¤Î\n"
-"¥ê¥¹¥È¤ò ²ñ°÷¤È¤¹¤ë¤è¤¦¤Ë¤·¤¿¤È¤­¡¤³ÎÇ§¤ä¥Ñ¥¹¥ï¡¼¥ÉÄÌÃÎ¤Ê\n"
-"¤É´ÉÍý¾å¤ÎÄÌÃÎ ¤Ê¤É¤Ï¡¤²ñ°÷¤Î¤¤¤ë¥ê¥¹¥È¥¢¥É¥ì¥¹¤Ç¤Ê¤¯\n"
-"¤½¤Î¥ê¥¹¥È¤Î´ÉÍý¼Ô¤Ø ÄÌÃÎ¤¹¤ë¤Û¤¦¤¬¤è¤¤¡¥¤³¤Î\n"
+"¥ê¥¹¥È¤ò ²ñ°÷¤È¤¹¤ë¤è¤¦¤Ë¤·¤¿¤È¤­, ³ÎÇ§¤ä¥Ñ¥¹¥ï¡¼¥ÉÄÌÃÎ¤Ê\n"
+"¤É´ÉÍý¾å¤ÎÄÌÃÎ ¤Ê¤É¤Ï, ²ñ°÷¤Î¤¤¤ë¥ê¥¹¥È¥¢¥É¥ì¥¹¤Ç¤Ê¤¯\n"
+"¤½¤Î¥ê¥¹¥È¤Î´ÉÍý¼Ô¤Ø ÄÌÃÎ¤¹¤ë¤Û¤¦¤¬¤è¤¤. ¤³¤Î\n"
 "¾ì¹ç¤³¤³¤Ë½ñ¤«¤ì¤¿¥µ¥Õ¥£¥Ã¥¯¥¹¤¬ ²ñ°÷¤Î¥¢¥É¥ì¥¹¤ËÉÕ¤±\n"
-"²Ã¤¨¤é¤ì¤ÆÁ÷¿®¤µ¤ì¤Þ¤¹¡¥ '-owner' ¤¬ÉáÄÌ¤Ï»È\n"
-"¤ï¤ì¤Þ¤¹¡¥¤³¤ÎÀßÄê¤Ï¡¤ ¾å¤Î 'umbrella_list' ¤¬ ¡Ö¤¤¤¤¤¨¡× \n"
+"²Ã¤¨¤é¤ì¤ÆÁ÷¿®¤µ¤ì¤Þ¤¹.  '-owner' ¤¬ÉáÄÌ¤Ï»È\n"
+"¤ï¤ì¤Þ¤¹. ¤³¤ÎÀßÄê¤Ï,  ¾å¤Î 'umbrella_list' ¤¬ ¡Ö¤¤¤¤¤¨¡× \n"
 "¤Î¾ì¹ç¤Ë¤ÏÌµ¸ú¤Ç¤¹."
 
 #: Mailman/Gui/General.py:253
@@ -2873,11 +2905,10 @@ msgid ""
 "             list manager to Mailman."
 msgstr ""
 "¤â¤·²ñ°÷¤ò´ÉÍý¼Ô¤¬¼êÆ°¤ÇÅÐÏ¿¤·¤Æ¤½¤Î¤³¤È¤ò\n"
-"ÃÎ¤é¤»¤¿¤¯¤Ê¤«¤Ã¤¿¤é No ¤Ë¤·¤Æ¤¯¤À¤µ¤¤¡¥Â¾¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹\n"
-"¥È´ÉÍý¥×¥í¥°¥é¥à¤«¤é Mailman ¤Ë°Ü¹Ô¤¹¤ë»þ¤Ê¤É¤ËÍ­¸ú¤Ç¤·¤ç¤¦¡¥"
+"ÃÎ¤é¤»¤¿¤¯¤Ê¤«¤Ã¤¿¤é No ¤Ë¤·¤Æ¤¯¤À¤µ¤¤. Â¾¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹\n"
+"¥È´ÉÍý¥×¥í¥°¥é¥à¤«¤é Mailman ¤Ë°Ü¹Ô¤¹¤ë»þ¤Ê¤É¤ËÍ­¸ú¤Ç¤·¤ç¤¦. "
 
 #: Mailman/Gui/General.py:264
-#, fuzzy
 msgid ""
 "Should the list moderators get immediate notice of new\n"
 "             requests, as well as daily notices about collected ones?"
@@ -2886,7 +2917,6 @@ msgstr ""
 "¤¹¤°¤Ë´ÉÍý¼Ô¤ËÃÎ¤é¤»¤Þ¤¹¤«?"
 
 #: Mailman/Gui/General.py:267
-#, fuzzy
 msgid ""
 "List moderators (and list administrators) are sent daily\n"
 "             reminders of requests pending approval, like subscriptions to "
@@ -2896,10 +2926,10 @@ msgid ""
 "             another.  Setting this option causes notices to be sent\n"
 "             immediately on the arrival of new requests as well."
 msgstr ""
-"´ÉÍý¼Ô¤ÏÊÝÎ±Ãæ¤Î´ÉÍý¿½ÀÁ¤Ë´Ø¤¹¤ëÄÌÃÎ¤òËèÆü¼õ¤±¼è¤ê¤Þ¤¹. \n"
-" Îã¤¨¤ÐÈó¸ø³«¤Î¥ê¥¹¥È¤Ø¤Î²ÃÆþ¿½ÀÁ¤ä¡¤²¿¤é¤«¤ÎÍýÍ³¤Ç\n"
-" ÊÝÎ±¤µ¤ì¤Æ¤¤¤ëÅê¹Æ¤Ê¤É¤Ç¤¹¡¥¤³¤Î¥ª¥×¥·¥ç¥ó¤òÀßÄê¤¹¤ë¤È\n"
-" ¿·¤·¤¤¿½ÀÁ¤¬Íè¤ë¤¿¤Ó¤ËÄ¾¤Á¤Ë´ÉÍý¼Ô¤ØÄÌÃÎ¤µ¤ì¤Þ¤¹."
+"»Ê²ñ¼Ô(¤È´ÉÍý¼Ô)¤ÏÊÝÎ±Ãæ¤Î´ÉÍý¿½ÀÁ¤Ë´Ø¤¹¤ëÄÌÃÎ¤òËèÆü¼õ¤±¼è¤ê¤Þ¤¹. \n"
+" Îã¤¨¤ÐÈó¸ø³«¤Î¥ê¥¹¥È¤Ø¤Î²ÃÆþ¿½ÀÁ¤ä, ²¿¤é¤«¤ÎÍýÍ³¤Ç\n"
+" ÊÝÎ±¤µ¤ì¤Æ¤¤¤ëÅê¹Æ¤Ê¤É¤Ç¤¹. ¤³¤Î¥ª¥×¥·¥ç¥ó¤òÀßÄê¤¹¤ë¤È\n"
+" ¿·¤·¤¤¿½ÀÁ¤¬Íè¤ë¤¿¤Ó¤ËÄ¾¤Á¤ËÄÌÃÎ¤µ¤ì¤Þ¤¹."
 
 #: Mailman/Gui/General.py:274
 msgid ""
@@ -2920,18 +2950,17 @@ msgid ""
 "overrides\n"
 "             ever sending the notice."
 msgstr ""
-"¥ê¥¹¥È¤Î»Ê²ñ(¥â¥Ç¥ì¡¼¥È)¤ÈSPAM¥Õ¥£¥ë¥¿¡¼<em>°Ê³°</em>¤Ç¤Ï¡¤ÀßÄê¾ò·ï¤Ë\n"
+"¥ê¥¹¥È¤Î»Ê²ñ(¥â¥Ç¥ì¡¼¥È)¤ÈSPAM¥Õ¥£¥ë¥¿¡¼<em>°Ê³°</em>¤Ç¤Ï, ÀßÄê¾ò·ï¤Ë\n"
 " ¤è¤Ã¤Æ¥á¡¼¥ë¤¬ÊÝÎ±¤Ë¤Ê¤Ã¤¿¤³¤È¤òÃÎ¤é¤»¤Þ¤¹. ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ç¤Ï\n"
-" ÄÌÃÎ¤òÁ÷¤é¤Ê¤¤¤è¤¦¤Ë¾å½ñ¤­ÀßÄê¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡¥"
+" ÄÌÃÎ¤òÁ÷¤é¤Ê¤¤¤è¤¦¤Ë¾å½ñ¤­ÀßÄê¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. "
 
 #: Mailman/Gui/General.py:287
-#, fuzzy
 msgid ""
 "Maximum length in kilobytes (KB) of a message body.  Use 0\n"
 "             for no limit."
 msgstr ""
-"Åê¹Æ¥á¥Ã¥»¡¼¥¸ËÜÊ¸¤ÎºÇÂç¥µ¥¤¥º(Kb)¡¥À©¸ÂÌµ¤·¤Ï 0\n"
-" ¤Ë¤·¤Æ¤¯¤À¤µ¤¤¡¥"
+"Åê¹Æ¥á¥Ã¥»¡¼¥¸ËÜÊ¸¤ÎºÇÂç¥µ¥¤¥º(KB). À©¸ÂÌµ¤·¤Ï 0\n"
+" ¤Ë¤·¤Æ¤¯¤À¤µ¤¤. "
 
 #: Mailman/Gui/General.py:291
 msgid "Host name this list prefers for email."
@@ -2949,17 +2978,17 @@ msgid ""
 "             multiple addresses."
 msgstr ""
 "host_name ¤Ï¤³¤Î¥Û¥¹¥È¤ÇÅÅ»Ò¥á¡¼¥ë¤ä Mailman ¤Î¥¢¥É¥ì¥¹¤Ë\n"
-" »È¤¦»þ¤ÎÌ¾Á°¤Ç¡¤°ìÈÌ¤Ë¤Ï¤½¤Î¥Û¥¹¥È¤Î ¥á¡¼¥ë¸ò´¹(MX) ¥¢¥É¥ì¥¹\n"
-" ¤Ç¤¹¡¥¥Û¥¹¥È¤¬Ê£¿ô¤Î¥¢¥É¥ì¥¹¤ò»ý¤Ã¤Æ¤¤¤ë¤è¤¦¤Ê¾ì¹ç\n"
+" »È¤¦»þ¤ÎÌ¾Á°¤Ç, °ìÈÌ¤Ë¤Ï¤½¤Î¥Û¥¹¥È¤Î ¥á¡¼¥ë¸ò´¹(MX) ¥¢¥É¥ì¥¹\n"
+" ¤Ç¤¹. ¥Û¥¹¥È¤¬Ê£¿ô¤Î¥¢¥É¥ì¥¹¤ò»ý¤Ã¤Æ¤¤¤ë¤è¤¦¤Ê¾ì¹ç\n"
 " ¤³¤³¤ÇÀßÄê¤¹¤ë¤ÈÊØÍø¤Ç¤¹."
 
 #: Mailman/Gui/Language.py:29
 msgid "Language&nbsp;options"
-msgstr ""
+msgstr "¸À¸ì¥ª¥×¥·¥ç¥ó"
 
 #: Mailman/Gui/Language.py:48
 msgid "Natural language (internationalization) options."
-msgstr ""
+msgstr "¼«Á³¸À¸ì(¹ñºÝ²½)¥ª¥×¥·¥ç¥ó"
 
 #: Mailman/Gui/Language.py:53
 msgid "Default language for this list."
@@ -2978,11 +3007,16 @@ msgid ""
 "             applies to both web-based and email-based messages, but not to\n"
 "             email posted by list members."
 msgstr ""
+"¤³¤ì¤Ï, ¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎÉ¸½à¤Î¼«Á³¸À¸ì¤Ç¤¹.\n"
+"¤â¤·, <a "
+"href=\"?VARHELP=language/available_languages\">¤Ò¤È¤Ä°Ê¾å¤Î¸À¸ì</a>\n"
+"¤ò»È¤¨¤ë¤è¤¦¤Ë¤¹¤ë¤Î¤Ç¤¢¤ì¤Ð, ¥ê¥¹¥È¤È¤ä¤ê¤È¤ê¤¹¤ë¤È¤­¤Ë»È¤¦, ¹¥¤ß¤Î¸À¸ì\n"
+"¤òÁª¤Ö¤³¤È¤¬¤Ç¤­¤Þ¤¹. ¤³¤ì¤Ï Web¤È¥á¡¼¥ë¤Î¤½¤ì¤¾¤ì¤Î¥á¥Ã¥»¡¼¥¸¤ËÅ¬ÍÑ\n"
+"¤µ¤ì¤Þ¤¹¤¬, ¥ê¥¹¥È¤Î²ñ°÷¤«¤éÅê¹Æ¤µ¤ì¤ë¥á¡¼¥ë¤Ë¤ÏÅ¬ÍÑ¤µ¤ì¤Þ¤»¤ó."
 
 #: Mailman/Gui/Language.py:64
-#, fuzzy
 msgid "Languages supported by this list."
-msgstr "¤³¤Î¥ê¥¹¥È¤ÎÉ¸½à¸À¸ì"
+msgstr "¤³¤Î¥ê¥¹¥È¤Ç»È¤¨¤ë¸À¸ì"
 
 #: Mailman/Gui/Language.py:66
 msgid ""
@@ -2991,9 +3025,11 @@ msgid ""
 "             <a href=\"?VARHELP=language/preferred_language\">default\n"
 "             language</a> must be included."
 msgstr ""
+"¤³¤ì¤é¤Ï, ¤³¤Î¥ê¥¹¥È¤Ç»ÈÍÑ¤Ç¤­¤ë¼«Á³¸À¸ì¤Î°ìÍ÷¤Ç¤¹.\n"
+"<a href=\"?VARHELP=language/preferred_language\">¥Ç¥Õ¥©¥ë¥È¤Î¸À¸ì</a>\n"
+"¤¬´Þ¤Þ¤ì¤Æ¤¤¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó¤Î¤Ç, Ãí°Õ¤·¤Æ¤¯¤À¤µ¤¤."
 
 #: Mailman/Gui/Membership.py:26
-#, fuzzy
 msgid "Membership&nbsp;Management"
 msgstr "²ñ°÷´ÉÍý"
 
@@ -3006,9 +3042,8 @@ msgid "Mass Removal"
 msgstr "¤Þ¤È¤á¤Æºï½ü¤¹¤ë"
 
 #: Mailman/Gui/NonDigest.py:28
-#, fuzzy
 msgid "Non-digest&nbsp;options"
-msgstr "¡Ö¤Þ¤È¤áÆÉ¤ß¡×²ñ°÷¥ª¥×¥·¥ç¥ó"
+msgstr "ÉáÄÌÇÛÁ÷¥ª¥×¥·¥ç¥ó"
 
 #: Mailman/Gui/NonDigest.py:34
 msgid "Policies concerning immediately delivered list traffic."
@@ -3051,6 +3086,10 @@ msgid ""
 "                 section for a discussion of important performance\n"
 "                 issues."
 msgstr ""
+"ÉáÄÌÇÛÁ÷¤Ë¤Ä¤¤¤Æ, ÇÛÁ÷¤ò¸ÄÊÌ²½¤·¤Þ¤¹¤«?\n"
+"¤³¤ì¤Ï, ¤ªÃÎ¤é¤»¤Î¤ß¤Î¥ê¥¹¥È¤Î¾ì¹ç¤ËÊØÍø¤Ê¤³¤È¤¬Â¿¤¤¤Ç¤¹.\n"
+"¤·¤«¤·, <a href=\"?VARHELP=nondigest/personalize\">¾ÜºÙ</a>\n"
+"¤âÆÉ¤ó¤Ç¤¯¤À¤µ¤¤. ¸úÎ¨¤ÎÅÀ¤Ç¤ÎµÄÏÀ¤¬¤¢¤ê¤Þ¤¹."
 
 #: Mailman/Gui/NonDigest.py:63
 msgid ""
@@ -3105,9 +3144,37 @@ msgid ""
 "                         page.\n"
 "                 "
 msgstr ""
+"ÄÌ¾ï¤Ï, Mailman ¤ÏÉáÄÌÇÛÁ÷²ñ°÷¤Ø¤Î¥á¡¼¥ë¤ò¤Þ¤È¤á¤Æ¥á¡¼¥ë¥µ¡¼¥Ð¤Ë\n"
+"Á÷¿®¤·¤Þ¤¹. ¤³¤ì¤Ï Mailman ¤È¥á¡¼¥ë¥µ¡¼¥Ð¤Î´Ö¤ÎÄÌ¿®¤ò¸º¤é¤¹¤Î¤Ç, \n"
+"¸úÎ¨¤ÎÎÉ¤¤ÊýË¡¤Ç¤¹. \n"
+"<p>\n"
+"¤·¤«¤·, ¥ê¥¹¥È¤Ë¤è¤Ã¤Æ¤Ï, ¤è¤ê¸ÄÊÌ²½¤µ¤ì¤¿ÊýË¡¤¬¤è¤¤¤³¤È¤â¤¢¤ê¤Þ¤¹.\n"
+"¤³¤Î¾ì¹ç, Mailman¤ÏÄÌ¾ï¤ÎÇÛÁ÷¥ê¥¹¥È¤Î¸Ä¡¹¤Î²ñ°÷¤½¤ì¤¾¤ì¤Ë, ¿·¤·¤¤\n"
+"¥á¡¼¥ëËÜÊ¸¤òºî¤ê¤Þ¤¹. ¤³¤Î¥ª¥×¥·¥ç¥ó¤ò¥ª¥ó¤Ë¤¹¤ë¤³¤È¤Ç, \n"
+"°ìÊý¤Ç, ¤³¤ì¤¬¤¢¤Ê¤¿¤Î¥µ¥¤¥È¤Î¸úÎ¨¤òÁ´ÂÎÅª¤ËÄã²¼¤µ¤»¤ë²ÄÇ½À­¤¬¤¢¤ê¤Þ¤¹.\n"
+"¤³¤Î¥È¥ì¡¼¥É¡¦¥ª¥Õ¤¬¤½¤ì¤À¤±¤Î²ÁÃÍ¤¬¤¢¤ë¤«¤É¤¦¤«, Ãí°Õ¤·¤Æ¸¡Æ¤¤·¤Æ\n"
+"¤¯¤À¤µ¤¤. ¤¢¤ë¤¤¤Ï, ¤ä¤í¤¦¤È¤·¤Æ¤¤¤ë¤³¤È¤ò¼Â¸½¤¹¤ë¤Î¤Ë, \n"
+"Â¾¤ÎÊýË¡¤¬Ìµ¤¤¤È¤â¸Â¤ê¤Þ¤»¤ó. ¤Þ¤¿, ¥·¥¹¥Æ¥à¤ÎÉé²Ù¤òÃí°Õ¿¼¤¯¥â¥Ë¥¿¡¼\n"
+"¤·¤Æ, µöÍÆ¤Ç¤­¤ë¤³¤È¤ò³ÎÇ§¤·¤Æ¤¯¤À¤µ¤¤.\n"
+"<p>\n"
+"¤³¤ì¤òÍ­¸ú¤Ë¤¹¤ë¤È, 2¤Ä¤Î¤³¤È¤¬µ¯¤³¤ê¤Þ¤¹. \n"
+"¤Þ¤º, ¥á¡¼¥ë¤Î<code>To:</code>¥Ø¥Ã¥À¤¬¸Ä¡¹¤Î¥æ¡¼¥¶°¸¤Æ¤Ë¤Ê¤ê¤Þ¤¹.\n"
+"¤Ä¤Þ¤ê, ¤¢¤¿¤«¤â¥ê¥¹¥È¤ËÇÛÁ÷¤µ¤ì¤ë¤Î¤Ç¤Ê¤¯, ¼õ¿®¿Í¸Ä¿Í¤Ë°¸¤Æ¤é¤ì¤Æ¤¤¤ë¤«¤Î\n"
+"¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹.\n"
+"<p>¼¡¤Ë, ¤¤¤¯¤Ä¤«¤ÎÃÖ¤­´¹¤¨²ÄÇ½¤ÊÊÑ¿ô¤ò<a "
+"href=\"?VARHELP=nondigest/msg_header\">\n"
+"¥Ø¥Ã¥À</a>¤È<a href=\"?VARHELP=nondigest/msg_footer\">¥Õ¥Ã¥¿</a>¤ËÆþ¤ì¤ë\n"
+"¤³¤È¤¬¤Ç¤­¤ë¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹. \n"
+"\n"
+"<p>°Ê²¼¤ÎÊÑ¿ô¤¬¤³¤ì¤òÍ­¸ú¤Ë¤¹¤ë¤È¥Ø¥Ã¥À¤È¥Õ¥Ã¥¿¤ËÆþ¤ì¤é¤ì¤Þ¤¹:\n"
+"<ul><li><b>user_address</b> - ²ñ°÷¤Î¥¢¥É¥ì¥¹(¾®Ê¸»ú¤Ë¤Ê¤ë)\n"
+"    <li><b>user_delivered_to</b> - ²ñ°÷¤¬ÅÐÏ¿¤·¤¿Âç¾®Ê¸»ú¤ò»È¤Ã¤¿¥¢¥É¥ì¥¹\n"
+"    <li><b>user_password</b> - ²ñ°÷¤Î¥Ñ¥¹¥ï¡¼¥É\n"
+"    <li><b>user_name</b> - ²ñ°÷¤Î¥Õ¥ë¥Í¡¼¥à\n"
+"    <li><b>user_optionsurl</b> - ²ñ°÷¥ª¥×¥·¥ç¥ó¥Ú¡¼¥¸¤Î URL\n"
+" "
 
 #: Mailman/Gui/Privacy.py:27
-#, fuzzy
 msgid "Privacy options"
 msgstr "¥×¥é¥¤¥Ð¥·¡¼¡¦¥ª¥×¥·¥ç¥ó"
 
@@ -3156,7 +3223,7 @@ msgstr ""
 "¾µÇ§ - ¥ê¥¹¥È´ÉÍý¼Ô¤Î¾µÇ§¤¬É¬Í× <br>\n"
 "³ÎÇ§+¾µÇ§ - ³ÎÇ§ ¤È ¾µÇ§ Î¾ÊýÉ¬Í×\n"
 "\n"
-"<p> (*) Ã¯¤«¤¬Æþ²ñ¿½ÀÁ¤ò½Ð¤¹¤ÈMailman ¤ÏÆþ²ñ¿½ÀÁÈÖ¹æ¤òÉÕ¤±¤ÆÊÖ¿®¤·¤Þ¤¹¡¥\n"
+"<p> (*) Ã¯¤«¤¬Æþ²ñ¿½ÀÁ¤ò½Ð¤¹¤ÈMailman ¤ÏÆþ²ñ¿½ÀÁÈÖ¹æ¤òÉÕ¤±¤ÆÊÖ¿®¤·¤Þ¤¹. \n"
 " ¿½ÀÁ¼Ô¤Ï¤½¤ÎÈÖ¹æ¤ò»È¤Ã¤ÆÊÖ¿®¤·¤Ê¤¤¤È²ÃÆþ¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤»¤ó.<br> \n"
 " ¤³¤ì¤Ë¤è¤êÂ¾¿Í¤ÎÎ»²ò¤òÆÀ¤º¤ËÆþ²ñ¤µ¤»¤ë¤È¤¤¤¦Í­³²¤Ê(¤¢¤ë¤¤¤Ï°­°Õ¤¢¤ë)\n"
 " ¹Ô°Ù¤òËÉ¤°¤³¤È¤¬¤Ç¤­¤Þ¤¹."
@@ -3181,7 +3248,7 @@ msgstr ""
 "³ÎÇ§+¾µÇ§ - ³ÎÇ§ ¤È ¾µÇ§ Î¾ÊýÉ¬Í×\n"
 "\n"
 "<p>(*) Ã¯¤«¤¬Æþ²ñ¿½ÀÁ¤ò½Ð¤¹¤È Mailman ¤ÏÆþ²ñ¿½ÀÁÈÖ¹æ¤ò\n"
-" ÉÕ¤±¤ÆÊÖ¿®¤·¤Þ¤¹¡¥¿½ÀÁ¼Ô¤Ï¤½¤ÎÈÖ¹æ¤ò»È¤Ã¤ÆÊÖ¿®¤·¤Ê¤¤¤È\n"
+" ÉÕ¤±¤ÆÊÖ¿®¤·¤Þ¤¹. ¿½ÀÁ¼Ô¤Ï¤½¤ÎÈÖ¹æ¤ò»È¤Ã¤ÆÊÖ¿®¤·¤Ê¤¤¤È\n"
 " ²ÃÆþ¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤»¤ó.<br>\n"
 " ¤³¤ì¤Ë¤è¤êÂ¾¿Í¤ÎÎ»²ò¤òÆÀ¤º¤ËÆþ²ñ¤µ¤»¤ë¤È¤¤¤¦Í­³²¤Ê\n"
 " (¤¢¤ë¤¤¤Ï°­°Õ¤¢¤ë) ¹Ô°Ù¤òËÉ¤°¤³¤È¤¬¤Ç¤­¤Þ¤¹."
@@ -3194,7 +3261,7 @@ msgid ""
 "separate\n"
 "            archive-privacy settings."
 msgstr ""
-"¥ê¥¹¥È¤Ø¤Î¥¢¥¯¥»¥¹¥Ý¥ê¥·¡¼. ²ñ°÷¤ª¤è¤ÓÈó²ñ°÷¤«¤é¤ÎSPAMÍ½ËÉÁ¼ÃÖ¤ò´Þ¤à¡¥\n"
+"¥ê¥¹¥È¤Ø¤Î¥¢¥¯¥»¥¹¥Ý¥ê¥·¡¼. ²ñ°÷¤ª¤è¤ÓÈó²ñ°÷¤«¤é¤ÎSPAMÍ½ËÉÁ¼ÃÖ¤ò´Þ¤à. \n"
 "  (ÊÝÂ¸½ñ¸Ë¤Î¥×¥é¥¤¥Ð¥·¡¼¤Ë¤Ä¤¤¤Æ¤Ï <a href=\"%(admin)s/archive\">\n"
 " ÊÝÂ¸½ñ¸Ë¥ª¥×¥·¥ç¥ó¤ÎÉô</a> ¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤.)"
 
@@ -3235,18 +3302,17 @@ msgid ""
 "When set, the list of subscribers is protected by member or\n"
 "             admin password authentication."
 msgstr ""
-"ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤È²ñ°÷Ì¾Êí¤ò¸«¤ë¤Ë¤Ï ²ñ°÷¤Þ¤¿¤Ï´ÉÍý¼Ô¥Ñ¥¹¥ï¡¼¥É¤¬É¬Í×¤Ë¤Ê¤ë¡¥"
+"ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤È²ñ°÷Ì¾Êí¤ò¸«¤ë¤Ë¤Ï ²ñ°÷¤Þ¤¿¤Ï´ÉÍý¼Ô¥Ñ¥¹¥ï¡¼¥É¤¬É¬Í×¤Ë¤Ê¤ë. "
 
 #: Mailman/Gui/Privacy.py:101
 msgid ""
 "Show member addrs so they're not directly recognizable as\n"
 "             email addrs?"
 msgstr ""
-"²ñ°÷¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤òÉ½¼¨¤¹¤ë¤È¤­¤Ë¡¤\n"
+"²ñ°÷¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤òÉ½¼¨¤¹¤ë¤È¤­¤Ë, \n"
 " ¥¢¥É¥ì¥¹¤Ç¤¢¤ë¤Èµ¤ÉÕ¤«¤ì¤Ê¤¤¤è¤¦¤ËÉ½¼¨¤·¤Þ¤¹¤«?"
 
 #: Mailman/Gui/Privacy.py:103
-#, fuzzy
 msgid ""
 "Setting this option causes member email addresses to be\n"
 "             transformed when they are presented on list web pages (both in\n"
@@ -3257,8 +3323,8 @@ msgid ""
 msgstr ""
 "¤³¤Î¥ª¥×¥·¥ç¥ó¤òÀßÄê¤¹¤ë¤È²ñ°÷¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹\n"
 "¤Ï (Ê¸¤Ç¤â¥ê¥ó¥¯¤Ç¤â)´ÊÃ±¤Ë¤Ï¥á¡¼¥ë¥¢¥É¥ì¥¹¤Ç¤¢¤ë ¤³¤È\n"
-"¤¬Ê¬¤«¤é¤Ê¤¤¤è¤¦¤ËÊÑ´¹¤µ¤ì¤Þ¤¹¡¥ ¤³¤ì¤Ï¡¤SPAMmer ¤Ë\n"
-"¼«Æ°Åª¤Ê Web ¥¹¥­¥ã¥Ê¤ò »È¤Ã¤Æ¥á¡¼¥ë¥¢¥É¥ì¥¹¤ò\n"
+"¤¬Ê¬¤«¤é¤Ê¤¤¤è¤¦¤ËÊÑ´¹¤µ¤ì¤Þ¤¹.  ¤³¤ì¤Ï, SPAMmer ¤Ë\n"
+"¼«Æ° Web ¥¹¥­¥ã¥Ê¤ò »È¤Ã¤Æ¥á¡¼¥ë¥¢¥É¥ì¥¹¤ò\n"
 "¤«¤­½¸¤á¤é¤ì¤Ê¤¤¤è¤¦¤Ë ¤¹¤ë¤¿¤á¤Î¤â¤Î¤Ç¤¹."
 
 #: Mailman/Gui/Privacy.py:110
@@ -3266,9 +3332,8 @@ msgid "General posting filters"
 msgstr "°ìÈÌÅê¹Æ¥Õ¥£¥ë¥¿¡¼"
 
 #: Mailman/Gui/Privacy.py:112
-#, fuzzy
 msgid "Must posts be approved by the list moderator?"
-msgstr "Åê¹Æ¤Ï´ÉÍý¼Ô¤Î¾µÇ§¤¬É¬Í×¤Ç¤¹¤«?"
+msgstr "Åê¹Æ¤Ï»Ê²ñ¼Ô¤Î¾µÇ§¤¬É¬Í×¤Ç¤¹¤«?"
 
 #: Mailman/Gui/Privacy.py:115
 msgid ""
@@ -3283,12 +3348,11 @@ msgid ""
 "             handful of other posters, see the <i> posters </i> setting\n"
 "             below."
 msgstr ""
-"¤³¤Î¥ª¥×¥·¥ç¥ó¤ò»È¤Ã¤Æ²ñ°÷¤À¤±¤¬Åê¹Æ¤Ç¤­¤ë¤è¤¦¤Ë¤Ç¤­¤Þ¤¹¡¥\n"
-" ²ñ°÷°Ê³°¤Ë¤â¾¯¿ô¤Î¿Í¤ËÅê¹Æ¼Ô¤òµö²Ä¤·¤¿¤¤¾ì¹ç¤Ë¤Ï¡¤\n"
-" ²¼¤Î<i> posters </i>¤ÎÀßÄê¤ò¤´Í÷²¼¤µ¤¤¡¥"
+"¤³¤Î¥ª¥×¥·¥ç¥ó¤ò»È¤Ã¤Æ²ñ°÷¤À¤±¤¬Åê¹Æ¤Ç¤­¤ë¤è¤¦¤Ë¤Ç¤­¤Þ¤¹. \n"
+" ²ñ°÷°Ê³°¤Ë¤â¾¯¿ô¤Î¿Í¤ËÅê¹Æ¼Ô¤òµö²Ä¤·¤¿¤¤¾ì¹ç¤Ë¤Ï, \n"
+" ²¼¤Î<i> posters </i>¤ÎÀßÄê¤ò¤´Í÷²¼¤µ¤¤. "
 
 #: Mailman/Gui/Privacy.py:124
-#, fuzzy
 msgid ""
 "Addresses of members accepted for posting to this list\n"
 "             without implicit approval requirement. (See\n"
@@ -3299,10 +3363,10 @@ msgid ""
 "             posting by list members"
 msgstr ""
 "´ÉÍý¼Ô¤Î¾µÇ§¤Ê¤·¤Ë¥ê¥¹¥È¤ËÅê¹Æ¤Ç¤­¤ë\n"
-" ¿Í¤¿¤Á¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤Î¥ê¥¹¥È¡¥\n"
-" ¾å¤ÎÅê¹ÆÀ©¸Â¤ÎÀßÄê¤Ë¤è¤Ã¤Æ¡¤\n"
-" ¤³¤Î¹àÌÜ¤Ë¥¢¥É¥ì¥¹¤òÅÐÏ¿¤¹¤ë¤È¤É¤Î¤è¤¦¤ÊÆ°ºî¤Ë¤Ê¤ë¤«\n"
-" ¤¬ÊÑ¤ï¤ê¤Þ¤¹¡¥"
+" ¿Í¤¿¤Á¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤Î¥ê¥¹¥È. \n"
+" ¥ê¥¹¥È²ñ°÷°Ê³°¤Ë¤âÅê¹Æ¤òÇ§¤á¤ë¤Î¤«¤É¤¦¤«¤Ï, \n"
+" <a href=\"?VARHELP=privacy/member_posting_only\">¥ê¥¹¥È²ñ°÷¤ËÅê¹ÆÀ©¸Â</a>\n"
+"¤â»²¾È¤·¤Æ¤¯¤À¤µ¤¤."
 
 #: Mailman/Gui/Privacy.py:130
 msgid ""
@@ -3365,20 +3429,20 @@ msgid ""
 "\n"
 "             </ol>"
 msgstr ""
-"Â¿¤¯¤Î(¼ÂºÝ¡¤¤Û¤È¤ó¤É¤Î) SPAM ¤ÏÂô»³¤Î°¸Àè¤ò\n"
-"ÌÀ¼¨Åª¤Ë °¸Àè¥¢¥É¥ì¥¹¤Ë½ñ¤­Ï¢¤Í¤¿¤ê¤·¤Ê¤¤¤â¤Î¤Ç¤¹¡¥\n"
-"¼ÂºÝ¤Ë To: ¤ËÆþ¤Ã¤Æ¤¤¤ë¤Î¤Ï¡¤¤Þ¤ë¤Ã¤­¤ê¤Ç¤¿¤é¤á¤Î\n"
-"¥¢¥É¥ì¥¹¤Ç¤¢¤ë¤³¤È¤¬¤è¤¯¤¢¤ê¤Þ¤¹¡¥ ¤³¤³¤Ç¤ÎÀ©¸ÂÊýË¡\n"
-"¤Ï '@' µ­¹æ¤ÎÁ°¤Ë¤¢¤ëÌ¾Á°¤À¤±¤ò»È¤¤¤Þ¤¹¤¬¡¤¤³¤ì¤À¤±\n"
+"Â¿¤¯¤Î(¼ÂºÝ, ¤Û¤È¤ó¤É¤Î) SPAM ¤ÏÂô»³¤Î°¸Àè¤ò\n"
+"ÌÀ¼¨Åª¤Ë °¸Àè¥¢¥É¥ì¥¹¤Ë½ñ¤­Ï¢¤Í¤¿¤ê¤·¤Ê¤¤¤â¤Î¤Ç¤¹. \n"
+"¼ÂºÝ¤Ë To: ¤ËÆþ¤Ã¤Æ¤¤¤ë¤Î¤Ï, ¤Þ¤ë¤Ã¤­¤ê¤Ç¤¿¤é¤á¤Î\n"
+"¥¢¥É¥ì¥¹¤Ç¤¢¤ë¤³¤È¤¬¤è¤¯¤¢¤ê¤Þ¤¹.  ¤³¤³¤Ç¤ÎÀ©¸ÂÊýË¡\n"
+"¤Ï '@' µ­¹æ¤ÎÁ°¤Ë¤¢¤ëÌ¾Á°¤À¤±¤ò»È¤¤¤Þ¤¹¤¬, ¤³¤ì¤À¤±\n"
 "¤Ç¤â¤Û¤È¤ó¤É¤Î SPAM ¤òÊá¤é¤¨¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹.\n"
 "\n"
-"<p>Âå½þ¤È¤·¤Æ¡¤Â¾¤Î¥¢¥É¥ì¥¹¤«¤é¤½¤Î¤Þ¤ÞÃæ·ÑÅ¾Á÷¤µ¤ì¤¿\n"
-"¥á¡¼¥ë¤ò¼õ¤±¤Ä¤±¤Æ¤¯¤ì¤Þ¤»¤ó¡¥Ã¢¤·\n"
+"<p>Âå½þ¤È¤·¤Æ, Â¾¤Î¥¢¥É¥ì¥¹¤«¤é¤½¤Î¤Þ¤ÞÃæ·ÑÅ¾Á÷¤µ¤ì¤¿\n"
+"¥á¡¼¥ë¤ò¼õ¤±¤Ä¤±¤Æ¤¯¤ì¤Þ¤»¤ó. Ã¢¤·\n"
 "<ol>\n"
-"    <li>Ãæ·Ñ¤Î¥¢¥É¥ì¥¹¤¬Æ±¤¸Ì¾Á°¤ò»ý¤Ã¤Æ¤¤¤ë¤«¡¤Ëô¤Ï \n"
+"    <li>Ãæ·Ñ¤Î¥¢¥É¥ì¥¹¤¬Æ±¤¸Ì¾Á°¤ò»ý¤Ã¤Æ¤¤¤ë¤«, Ëô¤Ï \n"
 "    <li>Ãæ·Ñ¤Î¥¢¥É¥ì¥¹¤ò¼õÍý²ÄÇ½¤ÊÊÌÌ¾¤Î¥ê¥¹¥È¤ËÆþ¤ì¤Æ¤ª¤¯ \n"
 "</ol>\n"
-"¤È¡¤¼õ¤±ÉÕ¤±¤Æ¤¯¤ì¤ë¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹¡¥"
+"¤È, ¼õ¤±ÉÕ¤±¤Æ¤¯¤ì¤ë¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹. "
 
 #: Mailman/Gui/Privacy.py:169
 msgid ""
@@ -3413,19 +3477,19 @@ msgid ""
 "             recipient address."
 msgstr ""
 "`require_explicit_destination' ¤¬Í­¸ú¤Ë¤Ê¤Ã¤Æ¤¤¤ë¤È¤­\n"
-" Âå¤ï¤ê¤ÎÌ¾Á°¤È¤·¤Æ¼õÍý¤Ç¤­¤ë¥¢¥É¥ì¥¹¡¥¤³¤ì¤ÏÁ´¤Æ¤Î¼õ¿®¿Í\n"
+" Âå¤ï¤ê¤ÎÌ¾Á°¤È¤·¤Æ¼õÍý¤Ç¤­¤ë¥¢¥É¥ì¥¹. ¤³¤ì¤ÏÁ´¤Æ¤Î¼õ¿®¿Í\n"
 " ¥¢¥É¥ì¥¹¤Ë¥Þ¥Ã¥Á¤µ¤»¤ëÀµµ¬É½¸½¤Î¥ê¥¹¥È¤Ç 1¹Ô¤Ë1¤Ä¤º¤Ä½ñ\n"
-" ¤¯¤³¤È¤¬¤Ç¤­¤Þ¤¹¡¥¥Þ¥Ã¥Á¥ó¥°¤Ï Python ¤Î re.match() ¤ò\n"
-" »È¤¤¤Þ¤¹¤Î¤Ç¡¤ Ê¸»úÎó¤ÎºÇ½é¤Ë¥¢¥ó¥«¡¼¤¬¤¢¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹¡¥\n"
+" ¤¯¤³¤È¤¬¤Ç¤­¤Þ¤¹. ¥Þ¥Ã¥Á¥ó¥°¤Ï Python ¤Î re.match() ¤ò\n"
+" »È¤¤¤Þ¤¹¤Î¤Ç,  Ê¸»úÎó¤ÎºÇ½é¤Ë¥¢¥ó¥«¡¼¤¬¤¢¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹. \n"
 "\n"
 "<p>Mailman 1.1 ¤È¤Î¸ß´¹À­¤Î¤¿¤á, Àµµ¬É½¸½¤¬ `@' ¤ò´Þ¤Þ¤Ê¤¤\n"
-" ¤È¤­¡¤¥Ñ¥¿¡¼¥ó¥Þ¥Ã¥Á¥ó¥°¤Ï¼õ¿®¥¢¥É¥ì¥¹¤Î¥í¡¼¥«¥ë¥Ñ¡¼¥È ¤Ë\n"
-" ¤Î¤ß¹Ô¤ï¤ì¤Þ¤¹¡¥¤â¤·¥Þ¥Ã¥Á¥ó¥°¤Ë¼ºÇÔ¤·¤¿¾ì¹ç ¤Þ¤¿¤Ï¥Ñ¥¿¡¼¥ó¤Ë\n"
-" `@' ¤¬´Þ¤Þ¤ì¤ë¾ì¹ç¤Ë¤Ï¡¤ ¼õ¿®¥¢¥É¥ì¥¹Á´ÂÎ¤ËÂÐ¤·¤Æ¥Ñ¥¿¡¼¥ó¥Þ¥Ã\n"
-" ¥Á¥ó¥°¤ò¹Ô¤¤¤Þ¤¹¡¥\n"
+" ¤È¤­, ¥Ñ¥¿¡¼¥ó¥Þ¥Ã¥Á¥ó¥°¤Ï¼õ¿®¥¢¥É¥ì¥¹¤Î¥í¡¼¥«¥ë¥Ñ¡¼¥È ¤Ë\n"
+" ¤Î¤ß¹Ô¤ï¤ì¤Þ¤¹. ¤â¤·¥Þ¥Ã¥Á¥ó¥°¤Ë¼ºÇÔ¤·¤¿¾ì¹ç ¤Þ¤¿¤Ï¥Ñ¥¿¡¼¥ó¤Ë\n"
+" `@' ¤¬´Þ¤Þ¤ì¤ë¾ì¹ç¤Ë¤Ï,  ¼õ¿®¥¢¥É¥ì¥¹Á´ÂÎ¤ËÂÐ¤·¤Æ¥Ñ¥¿¡¼¥ó¥Þ¥Ã\n"
+" ¥Á¥ó¥°¤ò¹Ô¤¤¤Þ¤¹. \n"
 "\n"
 "<p>¾­Íè¤Î¥ê¥ê¡¼¥¹¤Ë¤ª¤¤¤Æ¤Ï¥í¡¼¥«¥ë¥Ñ¡¼¥È¤Ø¤Î¥Þ¥Ã¥Á¥ó¥°¤Ï\n"
-" ¹Ô¤ï¤ì¤º¡¤¼õ¿®¥¢¥É¥ì¥¹Á´ÂÎ¤ËÂÐ¤·¤Æ¹Ô¤ï¤ì¤ë¤è¤¦¤Ë¤Ê¤ë¤Ç¤·¤ç¤¦¡¥"
+" ¹Ô¤ï¤ì¤º, ¼õ¿®¥¢¥É¥ì¥¹Á´ÂÎ¤ËÂÐ¤·¤Æ¹Ô¤ï¤ì¤ë¤è¤¦¤Ë¤Ê¤ë¤Ç¤·¤ç¤¦. "
 
 #: Mailman/Gui/Privacy.py:190
 msgid "Ceiling on acceptable number of recipients for a posting."
@@ -3436,8 +3500,8 @@ msgid ""
 "If a posting has this number, or more, of recipients, it is\n"
 "             held for admin approval.  Use 0 for no ceiling."
 msgstr ""
-"¤â¤·Åê¹Æ¤Î°¸Àè¤¬¤³¤Î¿ô¤ò±Û¤¨¤Æ¤¤¤¿¤é¡¤´ÉÍý¼Ô¤Î\n"
-" ¾µÇ§¤òµá¤á¤Þ¤¹¡¥¾å¸ÂÌµ¤·¤Î¾ì¹ç 0¤ËÀßÄê¤·¤Æ¤¯¤À¤µ¤¤¡¥"
+"¤â¤·Åê¹Æ¤Î°¸Àè¤¬¤³¤Î¿ô¤ò±Û¤¨¤Æ¤¤¤¿¤é, ´ÉÍý¼Ô¤Î\n"
+" ¾µÇ§¤òµá¤á¤Þ¤¹. ¾å¸ÂÌµ¤·¤Î¾ì¹ç 0¤ËÀßÄê¤·¤Æ¤¯¤À¤µ¤¤. "
 
 #: Mailman/Gui/Privacy.py:196
 msgid "Addresses whose postings are always held for approval."
@@ -3450,10 +3514,10 @@ msgid ""
 "             the subsequent option which applies to arbitrary content of\n"
 "             arbitrary headers."
 msgstr ""
-"¤³¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤«¤é¤ÎÅê¹Æ¤¬¤¢¤Ã¤¿¾ì¹ç¡¤\n"
+"¤³¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤«¤é¤ÎÅê¹Æ¤¬¤¢¤Ã¤¿¾ì¹ç, \n"
 " Â¾¤Ë¤É¤Î¥ª¥×¥·¥ç¥ó¤òÀßÄê¤·¤Æ¤¤¤Æ¤â´ÉÍý¼Ô¤Î¾µÇ§¤òµá¤á¤ë¤¿¤á\n"
-" ÇÛÁ÷¤¬ÊÝÎ±¤µ¤ì¤Þ¤¹¡¥Ç¤°Õ¤Î¥Ø¥Ã¥À¤Î\n"
-" ÆâÍÆ¤ËÅ¬ÍÑ¤µ¤ì¤ë²¼¤Î¥ª¥×¥·¥ç¥ó¤â¤´Í÷¤¯¤À¤µ¤¤¡¥"
+" ÇÛÁ÷¤¬ÊÝÎ±¤µ¤ì¤Þ¤¹. Ç¤°Õ¤Î¥Ø¥Ã¥À¤Î\n"
+" ÆâÍÆ¤ËÅ¬ÍÑ¤µ¤ì¤ë²¼¤Î¥ª¥×¥·¥ç¥ó¤â¤´Í÷¤¯¤À¤µ¤¤. "
 
 #: Mailman/Gui/Privacy.py:203
 msgid "Hold posts with header value matching a specified regexp."
@@ -3484,15 +3548,15 @@ msgid ""
 msgstr ""
 "¤³¤Î¥ª¥×¥·¥ç¥ó¤ò»È¤¦¤ÈÆÃÄê¤Î¥Ø¥Ã¥À¤ÎÆâÍÆ¤ÇÅê¹Æ¤ò¶Ø»ß¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹\n"
 " ÂÐ¾Ý¤Ë¤Ê¤ë¤Î¤ÏÆÃÄê¤Î¥Ø¥Ã¥À¤ËÂÐ¤¹¤ëÀµµ¬É½¸½¤Ç¤¹\n"
-" ¥Þ¥Ã¥Á¥ó¥°¤ÏÂçÊ¸»ú¡¦¾®Ê¸»ú¤ò¶èÊÌ¤»¤º¤Ë¹Ô¤ï¤ì¡¤\n"
-" '#' ¤Ç»Ï¤Þ¤ë¹Ô¤Ï¥³¥á¥ó¥È¤È¤ß¤Ê¤µ¤ì¤Þ¤¹¡¥\n"
+" ¥Þ¥Ã¥Á¥ó¥°¤ÏÂçÊ¸»ú¡¦¾®Ê¸»ú¤ò¶èÊÌ¤»¤º¤Ë¹Ô¤ï¤ì, \n"
+" '#' ¤Ç»Ï¤Þ¤ë¹Ô¤Ï¥³¥á¥ó¥È¤È¤ß¤Ê¤µ¤ì¤Þ¤¹. \n"
 " <p>Îã¡§<pre>to: .*@public.com </pre>\n"
 " ¤Ï <em>to</em>(°¸Àè) ¤Î¥á¡¼¥ë¥Ø¥Ã¥À¤Î¥¢¥É¥ì¥¹¤Ç\n"
 " Ãæ¤Ë '@public.com' ¤¬¤É¤³¤«¤ËÆþ¤Ã¤Æ¤¤¤ë¤È¤¤¤¦°ÕÌ£¤Ç¤¹.\n"
-" <p>Àè¹Ô¤·¤Æ¶õÇò¤¬¤¢¤ë¾ì¹ç¤Ë¤Ï¡¤¤½¤³¤ÏÀµµ¬É½¸½¤«¤é¤Ï¤º¤µ¤ì¤Þ¤¹¡¥\n"
-" ¤·¤«¤·Îã¤¨¤Ð¥¨¥¹¥±¡¼¥×¤ä¥Ö¥é¥±¥Ã¥È¤òÍÑ¤¤¤Æ¡¤Â¿¤¯¤Î\n"
-" ÊýË¡¤Ç²óÈò¤Ç¤­¤Þ¤¹¡¥\n"
-" <p> ´ØÏ¢¤·¤Æ <em>forbidden_posters</em> ¤â»²¾È¤·¤Æ¤¯¤À¤µ¤¤¡¥"
+" <p>Àè¹Ô¤·¤Æ¶õÇò¤¬¤¢¤ë¾ì¹ç¤Ë¤Ï, ¤½¤³¤ÏÀµµ¬É½¸½¤«¤é¤Ï¤º¤µ¤ì¤Þ¤¹. \n"
+" ¤·¤«¤·Îã¤¨¤Ð¥¨¥¹¥±¡¼¥×¤ä¥Ö¥é¥±¥Ã¥È¤òÍÑ¤¤¤Æ, Â¿¤¯¤Î\n"
+" ÊýË¡¤Ç²óÈò¤Ç¤­¤Þ¤¹. \n"
+" <p> ´ØÏ¢¤·¤Æ <em>forbidden_posters</em> ¤â»²¾È¤·¤Æ¤¯¤À¤µ¤¤. "
 
 #: Mailman/Gui/Privacy.py:222
 msgid ""
@@ -3503,28 +3567,24 @@ msgstr ""
 "(From, Sender ¤È Reply-To ¤òºï½ü¤·¤Þ¤¹)"
 
 #: Mailman/Gui/Topics.py:25
-#, fuzzy
 msgid "Topic filters"
-msgstr "¥Õ¥¡¥¤¥ë¤¬¤¢¤ê¤Þ¤»¤ó"
+msgstr "ÏÃÂê¥Õ¥£¥ë¥¿¡¼"
 
 #: Mailman/Gui/Topics.py:31
-#, fuzzy
 msgid "List topic keywords"
-msgstr "¥ê¥¹¥È¤Î¥Ñ¥¹¥ï¡¼¥É"
+msgstr "¥ê¥¹¥È¤ÎÏÃÂê¥­¡¼¥ï¡¼¥É"
 
 #: Mailman/Gui/Topics.py:33
-#, fuzzy
 msgid "Disabled"
-msgstr "ÇÛÁ÷Ää»ß"
+msgstr "»ÈÍÑ¤·¤Ê¤¤"
 
 #: Mailman/Gui/Topics.py:33
-#, fuzzy
 msgid "Enabled"
-msgstr "ÇÛÁ÷Ää»ß"
+msgstr "»ÈÍÑ¤¹¤ë"
 
 #: Mailman/Gui/Topics.py:34
 msgid "Should the topic filter be enabled or disabled?"
-msgstr ""
+msgstr "ÏÃÂê¥Õ¥£¥ë¥¿¡¼¤ò»ÈÍÑ¤·¤Þ¤¹¤«, ¤·¤Þ¤»¤ó¤«?"
 
 #: Mailman/Gui/Topics.py:36
 msgid ""
@@ -3553,10 +3613,27 @@ msgid ""
 "href=\"?VARHELP=topics/topics_bodylines_limit\">topics_bodylines_limit</a>\n"
 "             configuration variable."
 msgstr ""
+"ÏÃÂê¥Õ¥£¥ë¥¿¡¼¤Ï, ¤¢¤Ê¤¿¤¬°Ê²¼¤ËÄêµÁ¤¹¤ë\n"
+"<a href=\"http://www.python.org/doc/current/lib/module-re.html\">Àµµ¬É½¸½\n"
+"¥Õ¥£¥ë¥¿¡¼</a> ¤Ë¤è¤Ã¤Æ, Æþ¤Ã¤Æ¤¯¤ë¥á¡¼¥ë¥á¥Ã¥»¡¼¥¸¤òÊ¬Îà¤·¤Þ¤¹.\n"
+"¤â¤·, ¥á¡¼¥ë¤Ë <code>Subject:</code> ¤Þ¤¿¤Ï <code>Keywords:</code> ¥Ø¥Ã¥À¤¬\n"
+"¤¢¤Ã¤Æ, ÏÃÂê¥Õ¥£¥ë¥¿¡¼¤ËÅ¬¹ç¤·¤¿¤é, "
+"¤½¤Î¥á¡¼¥ë¤ÏÏÀÍýÅª¤ËÏÃÂê¤Î<em>¥Ð¥±¥Ä</em>\n"
+"¤ËÆþ¤ì¤é¤ì¤Þ¤¹. ¼¡¤Ë, ²ñ°÷¤Ï¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ØÅê¹Æ¤µ¤ì¤¿¥á¡¼¥ë¤Î¤¦¤Á¤«¤é, \n"
+"ÆÃÄê¤ÎÏÃÂê¤Î¥Ð¥±¥Ä¤«¤é¤Î¤ß¤ò¼õ¤±¼è¤ë¤è¤¦¤Ë, ÁªÂò¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹.\n"
+"<p>\n"
+"¤³¤ì¤Ï, ÉáÄÌÇÛÁ÷¤Ë¤Î¤ßÅ¬ÍÑ²ÄÇ½¤Ç, "
+"¤Þ¤È¤áÆÉ¤ß¤Ç¤Ï»È¤¨¤Ê¤¤¤³¤È¤ËÃí°Õ¤·¤Æ¤¯¤À¤µ.\n"
+"<p>\n"
+"¥á¡¼¥ëËÜÊ¸¤Ë<code>Subject:</code> ¤È <code>Keyword:</code>¤òÆþ¤ì¤Æ\n"
+"¤ª¤¯¤è¤¦¤Ë¤¹¤ë¤³¤È¤â¤Ç¤­¤Þ¤¹. ¤³¤Î¾ì¹ç, \n"
+"<a "
+"href=\"?VARHELP=topics/topics_bodylines_limit\">topics_bodylines_limit</a>\n"
+"¤ÎÀßÄêÊÑ¿ô¤Ç²¿¹ÔÌÜ¤Þ¤Ç¥¹¥­¥ã¥ó¤¹¤ë¤«ÀßÄê¤Ç¤­¤Þ¤¹."
 
 #: Mailman/Gui/Topics.py:57
 msgid "How many body lines should the topic matcher scan?"
-msgstr ""
+msgstr "¥á¡¼¥ëËÜÊ¸¤Î²¿¹ÔÌÜ¤Þ¤ÇÏÃÂê¤ò¥¹¥­¥ã¥ó¤·¤Þ¤¹¤«?"
 
 #: Mailman/Gui/Topics.py:59
 msgid ""
@@ -3576,10 +3653,16 @@ msgid ""
 "             until a non-header-like line is encountered.\n"
 "             "
 msgstr ""
+"ÏÃÂê¤Î¥¹¥­¥ã¥ó¤Ç¤Ï, ¤³¤Î¹Ô¿ô¤À¤±ËÜÊ¸¤ÎÃæ¤«¤éÏÃÂê¤Î¥­¡¼¥ï¡¼¥É¤ò\n"
+"Ãµ¤·¤Þ¤¹. ËÜÊ¸¤Î¥¹¥­¥ã¥ó¤Ï¤³¤Î¹Ô¿ô¤À¤±¤¢¤ë¤¤¤Ï, ¥Ø¥Ã¥À¤Ç¤Ê¤µ¤½¤¦¤Ê¹Ô¤¬\n"
+"½Ð¤Æ¤­¤¿¤é¥¹¥È¥Ã¥×¤·¤Þ¤¹. ¤³¤ÎÃÍ¤ò¥¼¥í¤Ë¤·¤Æ¤ª¤¯¤È, ËÜÊ¸¤Î¥¹¥­¥ã¥ó¤Ï\n"
+"¤ª¤³¤Ê¤¤¤Þ¤»¤ó. (¤Ä¤Þ¤ê <code>Keywords:</code> ¤È <code>Subject:</code>\n"
+"¥Ø¥Ã¥À¤À¤±¤ò¸«¤Þ¤¹) ¤³¤ÎÃÍ¤òÉé¤Ë¤·¤Æ¤ª¤¯¤È, ¥Ø¥Ã¥À¤Ç¤Ê¤µ¤½¤¦¤Ê¹Ô¤¬\n"
+"½Ð¤Æ¤¯¤ë¤Þ¤ÇËÜÊ¸¤ò¥¹¥­¥ã¥ó¤·¤Þ¤¹."
 
 #: Mailman/Gui/Topics.py:70
 msgid "Topic keywords, one per line, to match against each message."
-msgstr ""
+msgstr "¥á¡¼¥ë¤Ë¥Þ¥Ã¥Á¤µ¤»¤ëÏÃÂê¥­¡¼¥ï¡¼¥É, 1¹Ô¤Ë¤Ä¤­1¸Ä"
 
 #: Mailman/Gui/Topics.py:72
 msgid ""
@@ -3593,11 +3676,15 @@ msgid ""
 "             contain a <code>Keywords:</code> and <code>Subject:</code>\n"
 "             \"header\" on which matching is also performed."
 msgstr ""
+"¤½¤ì¤¾¤ì¤ÎÏÃÂê¥­¡¼¥ï¡¼¥É¤Ï¼ÂºÝ¤Ë¤ÏÀµµ¬É½¸½¤Ç¤¹. ¤³¤ì¤Ï¥á¡¼¥ë¤Î\n"
+"ÆÃÄê¤ÎÉôÊ¬, ¤Ä¤Þ¤ê<code>Keywords:</code> ¤È <code>Subject:</code>\n"
+"¥Ø¥Ã¥À¤Ë, Å¬¹ç¤¹¤ë¤«¤ò¸¡ºº¤¹¤ë¤Î¤Ë»È¤ï¤ì¤Þ¤¹. ¥á¡¼¥ëËÜÊ¸¤ÎºÇ½é¤Ë\n"
+"<code>Keywords:</code> ¤È <code>Subject:</code> \"¥Ø¥Ã¥À\" ¤¬¤¢¤Ã¤Æ¤â\n"
+"Å¬¹ç¸¡ºº(¥Þ¥Ã¥Á¥ó¥°)¤¬¹Ô¤Ê¤ï¤ì¤Þ¤¹."
 
 #: Mailman/Gui/Usenet.py:24
-#, fuzzy
 msgid "Mail&lt;-&gt;News&nbsp;gateways"
-msgstr "¥á¡¼¥ë¡¦¥Ë¥å¡¼¥¹Áê¸ßÇÛÁ÷"
+msgstr "¥á¡¼¥ë &lt;-&gt; ¥Ë¥å¡¼¥¹Áê¸ßÇÛÁ÷"
 
 #: Mailman/Gui/Usenet.py:30
 msgid "Mail-to-News and News-to-Mail gateway services."
@@ -3617,10 +3704,10 @@ msgid ""
 "             recognize the machine this mailing list runs on as a machine\n"
 "             capable of reading and posting news."
 msgstr ""
-"¥Ë¥å¡¼¥¹¥µ¡¼¥Ð¤Ï Mailman ¤Îµ¡Ç½¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó¡¥¤¢¤Ê¤¿¤Ï´û¤Ë\n"
-" NNTP ¥µ¡¼¥Ð¤Ë¥¢¥¯¥»¥¹¸¢¤ò»ý¤Ã¤Æ¤¤¤ëÉ¬Í×¤¬¤¢¤ê¡¤¤½¤Î\n"
+"¥Ë¥å¡¼¥¹¥µ¡¼¥Ð¤Ï Mailman ¤Îµ¡Ç½¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó. ¤¢¤Ê¤¿¤Ï´û¤Ë\n"
+" NNTP ¥µ¡¼¥Ð¤Ë¥¢¥¯¥»¥¹¸¢¤ò»ý¤Ã¤Æ¤¤¤ëÉ¬Í×¤¬¤¢¤ê, ¤½¤Î\n"
 " NNTP¥µ¡¼¥Ð¤Ï¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤¬²ÔÆ°¤·¤Æ¤¤¤ë¥Þ¥·¥ó¤ò\n"
-"¡Ö¥Ë¥å¡¼¥¹¤òÆÉ¤ß½ñ¤­¤Ç¤­¤ë¥Û¥¹¥È¡×¤ÈÇ§¼±¤·¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó¡¥"
+"¡Ö¥Ë¥å¡¼¥¹¤òÆÉ¤ß½ñ¤­¤Ç¤­¤ë¥Û¥¹¥È¡×¤ÈÇ§¼±¤·¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó. "
 
 #: Mailman/Gui/Usenet.py:41
 msgid "The name of the Usenet group to gateway to and/or from."
@@ -3653,10 +3740,10 @@ msgid ""
 "             <em>read</em>.  By catching up, your mailing list members will\n"
 "             not see any of the earlier messages."
 msgstr ""
-"¥­¥ã¥Ã¥Á¥¢¥Ã¥×¤¹¤ë(ÄÉ¤¤ÉÕ¤¯)¤È¤¤¤¦¤³¤È¤Ï¡¤¼¡¤Î¿·¤·¤¤Åê¹Æ¤¬¤¢¤Ã¤¿»þÅÀ¤«¤é\n"
-" Å¾Á÷¤ò³«»Ï¤¹¤ë¤È¤¤¤¦¤³¤È¤Ç¤¹¡¥ ¤½¤ì°ÊÁ°¤Î¥Ë¥å¡¼¥¹¥°¥ë¡¼¥×¤Î\n"
-" µ­»ö¤ÏÌµ»ë¤µ¤ì¤Þ¤¹¡¥ ¤³¤ì¤Ï¡¤¤¢¤Ê¤¿¼«¿È¤¬¥Ë¥å¡¼¥¹¤òÆÉ¤ó¤Ç¤¤¤Æ¡¤\n"
-" ¸½ºß¤Î µ­»ö¤òÁ´Éô¡Ö´ûÆÉ¡×¤Ë¤¹¤ë¤Î¤ÈÆ±¤¸¤³¤È¤Ç¤¹¡¥\n"
+"¥­¥ã¥Ã¥Á¥¢¥Ã¥×¤¹¤ë(ÄÉ¤¤ÉÕ¤¯)¤È¤¤¤¦¤³¤È¤Ï, ¼¡¤Î¿·¤·¤¤Åê¹Æ¤¬¤¢¤Ã¤¿»þÅÀ¤«¤é\n"
+" Å¾Á÷¤ò³«»Ï¤¹¤ë¤È¤¤¤¦¤³¤È¤Ç¤¹.  ¤½¤ì°ÊÁ°¤Î¥Ë¥å¡¼¥¹¥°¥ë¡¼¥×¤Î\n"
+" µ­»ö¤ÏÌµ»ë¤µ¤ì¤Þ¤¹.  ¤³¤ì¤Ï, ¤¢¤Ê¤¿¼«¿È¤¬¥Ë¥å¡¼¥¹¤òÆÉ¤ó¤Ç¤¤¤Æ, \n"
+" ¸½ºß¤Î µ­»ö¤òÁ´Éô¡Ö´ûÆÉ¡×¤Ë¤¹¤ë¤Î¤ÈÆ±¤¸¤³¤È¤Ç¤¹. \n"
 " ¥­¥ã¥Ã¥Á¥¢¥Ã¥×¤¹¤ë¤È¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î¥á¥ó¥Ð¡¼¤Ï°ÊÁ°¤Î¥á¥Ã¥»¡¼¥¸¤ò\n"
 " ¸«¤ë¤³¤È¤Ï¤¢¤ê¤Þ¤»¤ó."
 
@@ -3673,9 +3760,8 @@ msgid " (requires authorization)"
 msgstr " (¥Ñ¥¹¥ï¡¼¥É¤¬É¬Í×¤Ç¤¹)"
 
 #: Mailman/HTMLFormatter.py:59
-#, fuzzy
 msgid "Overview of all %(hostname)s mailing lists"
-msgstr "%(hostname)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤òºîÀ®"
+msgstr "%(hostname)s ¤ÎÁ´¥á¡¼¥ê¥ó¥°¥ê¥¹¥È°ìÍ÷"
 
 #: Mailman/HTMLFormatter.py:82
 msgid "<em>(%(num_concealed)d private member%(plu)s not shown)</em>"
@@ -3705,11 +3791,11 @@ msgid ""
 msgstr ""
 "<p>%(note)s\n"
 "\n"
-"<p>¤¢¤Ê¤¿¤Ï¼«Ê¬¤ÇÇÛÁ÷¤ò»ß¤á¤¿¤Î¤«¤â¤·¤ì¤Þ¤»¤ó¡£¤¢¤ë¤¤¤Ï¡¢\n"
-"¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤Ø¤ÎÇÛÁ÷¥¨¥é¡¼¤Ç¤³¤¦¤Ê¤Ã¤¿¤Î¤«¤â¤·¤ì¤Þ¤»¤ó¡£\n"
-"¤É¤Á¤é¤Ë¤·¤Æ¤â¡¢ÇÛÁ÷¤òºÆ³«¤¹¤ë¤Ë¤Ï¡¢²¼¤Î %(link)s ¥ª¥×¥·¥ç¥ó¤ò\n"
-"ÊÑ¹¹¤·¤Æ¤¯¤À¤µ¤¤¡£¤â¤·¡¢¼ÁÌä¤¬¤¢¤Ã¤¿¤ê½õ¤±¤¬É¬Í×¤Ê¾ì¹ç¤Ë¤Ï¡¢\n"
-"%(mailto)s ¤ËÏ¢Íí¤·¤Æ¤¯¤À¤µ¤¤¡£"
+"<p>¤¢¤Ê¤¿¤Ï¼«Ê¬¤ÇÇÛÁ÷¤ò»ß¤á¤¿¤Î¤«¤â¤·¤ì¤Þ¤»¤ó. ¤¢¤ë¤¤¤Ï, \n"
+"¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤Ø¤ÎÇÛÁ÷¥¨¥é¡¼¤Ç¤³¤¦¤Ê¤Ã¤¿¤Î¤«¤â¤·¤ì¤Þ¤»¤ó. \n"
+"¤É¤Á¤é¤Ë¤·¤Æ¤â, ÇÛÁ÷¤òºÆ³«¤¹¤ë¤Ë¤Ï, ²¼¤Î %(link)s ¥ª¥×¥·¥ç¥ó¤ò\n"
+"ÊÑ¹¹¤·¤Æ¤¯¤À¤µ¤¤. ¤â¤·, ¼ÁÌä¤¬¤¢¤Ã¤¿¤ê½õ¤±¤¬É¬Í×¤Ê¾ì¹ç¤Ë¤Ï, \n"
+"%(mailto)s ¤ËÏ¢Íí¤·¤Æ¤¯¤À¤µ¤¤. "
 
 #: Mailman/HTMLFormatter.py:151
 msgid ""
@@ -3721,7 +3807,6 @@ msgstr ""
 "¤ËÁ÷¿®¤µ¤ì¤Þ¤¹.)"
 
 #: Mailman/HTMLFormatter.py:161
-#, fuzzy
 msgid ""
 "You will be sent email requesting confirmation, to\n"
 "            prevent others from gratuitously subscribing you."
@@ -3730,7 +3815,6 @@ msgstr ""
 "¤¢¤Ê¤¿°¸¤Ë³ÎÇ§¤¹¤ë¤è¤¦¤Ë¥á¡¼¥ë¤¬È¯¿®¤µ¤ì¤Þ¤¹. "
 
 #: Mailman/HTMLFormatter.py:164
-#, fuzzy
 msgid ""
 "This is a closed list, which means your subscription\n"
 "            will be held for approval.  You will be notified of the list\n"
@@ -3745,7 +3829,6 @@ msgid "also "
 msgstr "¤Þ¤¿"
 
 #: Mailman/HTMLFormatter.py:169
-#, fuzzy
 msgid ""
 "You will be sent email requesting confirmation, to\n"
 "            prevent others from gratuitously subscribing you.  Once\n"
@@ -3756,20 +3839,18 @@ msgid ""
 msgstr ""
 "Â¾¿Í¤¬¤ª¤»¤Ã¤«¤¤¤ÇÆþ²ñ¼êÂ³¤­¤ò¤·¤Ê¤¤¤è¤¦¤Ë, "
 "¤¢¤Ê¤¿°¸¤Ë³ÎÇ§¤¹¤ë¤è¤¦¤Ë¥á¡¼¥ë¤¬È¯¿®¤µ¤ì¤Þ¤¹. "
-"¤¢¤Ê¤¿¤Î³ÎÇ§¤¬´°Î»¤¹¤ë¤È¼¡¤Ë¥ê¥¹¥È´ÉÍý¼Ô¤Î¾µÇ§¤Î¤¿¤á°ìÃ¶ÊÝÎ±¤µ¤ì¤Þ¤¹¡¥´ÉÍý¼Ô"
-")BÎ·èÄê¤Ï¥á¡¼¥ë¤ÇÆÏ¤±¤é¤ì¤)BÞ¤."
+"¤¢¤Ê¤¿¤Î³ÎÇ§¤¬´°Î»¤¹¤ë¤È¼¡¤Ë¥ê¥¹¥È´ÉÍý¼Ô¤Î¾µÇ§¤Î¤¿¤á°ìÃ¶ÊÝÎ±¤µ¤ì¤Þ¤¹. "
+"´ÉÍý¼Ô¤Î·èÄê¤Ï¥á¡¼¥ë¤ÇÄÌÃÎ¤µ¤ì¤ë¤Ç¤·¤ç¤¦."
 
 #: Mailman/HTMLFormatter.py:176
-#, fuzzy
 msgid ""
 "This is %(also)sa private list, which means that the\n"
 "            list of members is not available to non-members."
 msgstr ""
-"¤³¤ì¤Ï %(also) "
-"¸ÂÄê¸ø³«¥ê¥¹¥È¤Ç¤¹¡¥¤Ä¤Þ¤ê²ñ°÷Ì¾Êí¤Ï²ñ°÷³°¤Ë¤Ï¸ø³«¤·¤Æ¤¤¤Þ¤»¤ó."
+"¤³¤ì¤Ï %(also) ¸ÂÄê¸ø³«¥ê¥¹¥È¤Ç¤¹. "
+"¤Ä¤Þ¤ê²ñ°÷Ì¾Êí¤Ï²ñ°÷³°¤Ë¤Ï¸ø³«¤·¤Æ¤¤¤Þ¤»¤ó."
 
 #: Mailman/HTMLFormatter.py:179
-#, fuzzy
 msgid ""
 "This is %(also)sa hidden list, which means that the\n"
 "            list of members is available only to the list administrator."
@@ -3778,7 +3859,6 @@ msgstr ""
 "¤Ä¤Þ¤ê²ñ°÷Ì¾Êí¤Ï¥ê¥¹¥È´ÉÍý¼Ô¤À¤±¤¬¸«¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹. "
 
 #: Mailman/HTMLFormatter.py:182
-#, fuzzy
 msgid ""
 "This is %(also)sa public list, which means that the\n"
 "            list of members list is available to everyone."
@@ -3786,14 +3866,12 @@ msgstr ""
 "¤³¤ì¤Ï %(also)s ¸ø³«¥ê¥¹¥È¤Ç¤¹, ¤Ä¤Þ¤ê²ñ°÷Ì¾Êí¤ÏÃ¯¤Ç¤â¸«¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹"
 
 #: Mailman/HTMLFormatter.py:185
-#, fuzzy
 msgid ""
 " (but we obscure the addresses so they are not\n"
 "                easily recognizable by spammers)."
 msgstr " (¤½¤ÎÂå¤ï¤ê SPAMmer ¤ËÊ¬¤«¤ê¤Ë¤¯¤¤¤è¤¦¤Ë¥¢¥É¥ì¥¹¤ò½ñ¤­´¹¤¨¤Þ¤¹)."
 
 #: Mailman/HTMLFormatter.py:190
-#, fuzzy
 msgid ""
 "<p>(Note that this is an umbrella list, intended to\n"
 "            have only other mailing lists as members.  Among other things,\n"
@@ -3810,7 +3888,6 @@ msgid "<b><i>either</i></b> "
 msgstr "<b><i>¤«...</i></b>"
 
 #: Mailman/HTMLFormatter.py:224
-#, fuzzy
 msgid ""
 "To unsubscribe from %(realname)s, get a password reminder,\n"
 "        or change your subscription options %(either)senter your "
@@ -3824,12 +3901,10 @@ msgstr ""
 "<p><center> "
 
 #: Mailman/HTMLFormatter.py:231
-#, fuzzy
 msgid "Unsubscribe or edit options"
-msgstr "Âà²ñ·ë²Ì"
+msgstr "Âà²ñ¤Þ¤¿¤Ï¥ª¥×¥·¥ç¥ó¤ÎÊÑ¹¹"
 
 #: Mailman/HTMLFormatter.py:234
-#, fuzzy
 msgid ""
 "<p>... <b><i>or</i></b> select your entry from\n"
 "                      the subscribers list (see above)."
@@ -3841,7 +3916,7 @@ msgstr ""
 msgid ""
 " If you leave the field blank, you will be prompted for\n"
 "        your email address"
-msgstr ""
+msgstr "¤³¤ÎÍó¤ò¶õÇò¤Ë¤·¤¿¾ì¹ç¤Ï, ¼¡¤Î²èÌÌ¤Ç¥á¡¼¥ë¥¢¥É¥ì¥¹¤ÎÆþÎÏ¤òÍ×µá¤·¤Þ¤¹."
 
 #: Mailman/HTMLFormatter.py:244
 msgid ""
@@ -3918,9 +3993,8 @@ msgid "(no subject)"
 msgstr "(ÌµÂê)"
 
 #: Mailman/Handlers/CalcRecips.py:40
-#, fuzzy
 msgid "Your urgent message was rejected"
-msgstr "¤¢¤Ê¤¿¤Î¥á¡¼¥ë¤ÏµñÈÝ¤µ¤ì¤Þ¤·¤¿"
+msgstr "¤¢¤Ê¤¿¤Î¶ÛµÞ¥á¡¼¥ë¤ÏµñÈÝ¤µ¤ì¤Þ¤·¤¿"
 
 #: Mailman/Handlers/CalcRecips.py:46
 msgid ""
@@ -3929,13 +4003,12 @@ msgid ""
 "\n"
 msgstr ""
 "¤¢¤Ê¤¿¤Î %(realname)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ø¤Î¶ÛµÞ¥á¡¼¥ë¤ÏÇÛÁ÷¤¬\n"
-"¾µÇ§¤µ¤ì¤Æ¤¤¤Þ¤»¤ó¡£Mailman ¤¬¼õ¤±¼è¤Ã¤¿¥ª¥ê¥¸¥Ê¥ë¥á¡¼¥ë¤òÅºÉÕ¤·¤Þ¤¹¡£\n"
+"¾µÇ§¤µ¤ì¤Æ¤¤¤Þ¤»¤ó. Mailman ¤¬¼õ¤±¼è¤Ã¤¿¥ª¥ê¥¸¥Ê¥ë¥á¡¼¥ë¤òÅºÉÕ¤·¤Þ¤¹. \n"
 "\n"
 
 #: Mailman/Handlers/Decorate.py:49
-#, fuzzy
 msgid "not available"
-msgstr "[ÀâÌÀÌµ¤·]"
+msgstr "Ìµ¤·"
 
 #: Mailman/Handlers/Decorate.py:53
 msgid "non-digest header"
@@ -4090,9 +4163,9 @@ msgid ""
 "%(owner)s %(listname)s-admin\n"
 msgstr ""
 "\n"
-"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥ÈºîÀ®¤ò´°Î»¤¹¤ë¤Ë¤Ï¡¢/etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
-"¥Õ¥¡¥¤¥ë) ¤Ë¡¢¼¡¤Î¹Ô¤òÉÕ¤±²Ã¤¨¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó¡£\n"
-"¤Þ¤¿¡¢Â¿Ê¬¡¢`newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦¡£\n"
+"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥ÈºîÀ®¤ò´°Î»¤¹¤ë¤Ë¤Ï, /etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
+"¥Õ¥¡¥¤¥ë) ¤Ë, ¼¡¤Î¹Ô¤òÉÕ¤±²Ã¤¨¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó. \n"
+"¤Þ¤¿, Â¿Ê¬, `newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦. \n"
 "\n"
 "## %(listname)s mailing list"
 
@@ -4108,9 +4181,9 @@ msgid ""
 "%(owner)s %(listname)s-admin\n"
 msgstr ""
 "\n"
-"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥Èºï½ü¤ò´°Î»¤¹¤ë¤Ë¤Ï¡¢/etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
-"¥Õ¥¡¥¤¥ë) ¤«¤é¡¢¼¡¤Î¹Ô¤òºï½ü¤·¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó¡£\n"
-"¤Þ¤¿¡¢Â¿Ê¬¡¢`newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦¡£\n"
+"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥Èºï½ü¤ò´°Î»¤¹¤ë¤Ë¤Ï, /etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
+"¥Õ¥¡¥¤¥ë) ¤«¤é, ¼¡¤Î¹Ô¤òºï½ü¤·¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó. \n"
+"¤Þ¤¿, Â¿Ê¬, `newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦. \n"
 "\n"
 "## %(listname)s mailing list"
 
@@ -4123,12 +4196,12 @@ msgid ""
 "\n"
 "Here are the entries for the /etc/aliases file:\n"
 msgstr ""
-"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È `%(listname)s' ¤¬¡¢Web ¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤ò»È¤Ã¤Æ\n"
-"ºîÀ®¤µ¤ì¤Þ¤·¤¿¡£¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎºîÀ®¤ò´°Î»¤µ¤»¤ë¤Ë¤Ï¡¢\n"
-"/etc/aliases (¤Þ¤¿¤ÏÆ±Åù)¤ò¹¹¿·¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹¡£¤Þ¤¿¡¢`newaliases'\n"
-"¥×¥í¥°¥é¥à¤Î¼Â¹Ô¤âÉ¬Í×¤Ç¤·¤ç¤¦¡£\n"
+"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È `%(listname)s' ¤¬, Web ¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤ò»È¤Ã¤Æ\n"
+"ºîÀ®¤µ¤ì¤Þ¤·¤¿. ¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎºîÀ®¤ò´°Î»¤µ¤»¤ë¤Ë¤Ï, \n"
+"/etc/aliases (¤Þ¤¿¤ÏÆ±Åù)¤ò¹¹¿·¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹. ¤Þ¤¿, `newaliases'\n"
+"¥×¥í¥°¥é¥à¤Î¼Â¹Ô¤âÉ¬Í×¤Ç¤·¤ç¤¦. \n"
 "\n"
-"°Ê²¼¤Ï¡¢/etc/aliases ¤ËÆþ¤ì¤ë¤Ù¤­¹àÌÜ¤Ç¤¹:\n"
+"°Ê²¼¤Ï, /etc/aliases ¤ËÆþ¤ì¤ë¤Ù¤­¹àÌÜ¤Ç¤¹:\n"
 
 #: Mailman/MTA/Manual.py:48
 msgid ""
@@ -4140,9 +4213,9 @@ msgid ""
 "## %(listname)s mailing list"
 msgstr ""
 "\n"
-"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥ÈºîÀ®¤ò´°Î»¤¹¤ë¤Ë¤Ï¡¢/etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
-"¥Õ¥¡¥¤¥ë) ¤Ë¡¢¼¡¤Î¹Ô¤òÉÕ¤±²Ã¤¨¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó¡£\n"
-"¤Þ¤¿¡¢Â¿Ê¬¡¢`newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦¡£\n"
+"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥ÈºîÀ®¤ò´°Î»¤¹¤ë¤Ë¤Ï, /etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
+"¥Õ¥¡¥¤¥ë) ¤Ë, ¼¡¤Î¹Ô¤òÉÕ¤±²Ã¤¨¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó. \n"
+"¤Þ¤¿, Â¿Ê¬, `newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦. \n"
 "\n"
 "## %(listname)s mailing list"
 
@@ -4160,12 +4233,12 @@ msgid ""
 "\n"
 "Here are the entries in the /etc/aliases file that should be removed:\n"
 msgstr ""
-"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È `%(listname)s' ¤¬¡¢Web ¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤ò»È¤Ã¤Æ\n"
-"ºï½ü¤µ¤ì¤Þ¤·¤¿¡£¤³¤Îºï½ü¤ò´°Î»¤µ¤»¤ë¤Ë¤Ï¡¢\n"
-"/etc/aliases (¤Þ¤¿¤ÏÆ±Åù)¤ò¹¹¿·¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹¡£¤Þ¤¿¡¢`newaliases'\n"
-"¥×¥í¥°¥é¥à¤Î¼Â¹Ô¤âÉ¬Í×¤Ç¤·¤ç¤¦¡£\n"
+"¥á¡¼¥ê¥ó¥°¥ê¥¹¥È `%(listname)s' ¤¬, Web ¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤ò»È¤Ã¤Æ\n"
+"ºï½ü¤µ¤ì¤Þ¤·¤¿. ¤³¤Îºï½ü¤ò´°Î»¤µ¤»¤ë¤Ë¤Ï, \n"
+"/etc/aliases (¤Þ¤¿¤ÏÆ±Åù)¤ò¹¹¿·¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹. ¤Þ¤¿, `newaliases'\n"
+"¥×¥í¥°¥é¥à¤Î¼Â¹Ô¤âÉ¬Í×¤Ç¤·¤ç¤¦. \n"
 "\n"
-"°Ê²¼¤Ï¡¢/etc/aliases ¤«¤éºï½ü¤¹¤Ù¤­¹àÌÜ¤Ç¤¹:\n"
+"°Ê²¼¤Ï, /etc/aliases ¤«¤éºï½ü¤¹¤Ù¤­¹àÌÜ¤Ç¤¹:\n"
 
 #: Mailman/MTA/Manual.py:91
 msgid ""
@@ -4177,9 +4250,9 @@ msgid ""
 "## %(listname)s mailing list"
 msgstr ""
 "\n"
-"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥Èºï½ü¤ò´°Î»¤¹¤ë¤Ë¤Ï¡¢/etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
-"¥Õ¥¡¥¤¥ë) ¤«¤é¡¢¼¡¤Î¹Ô¤òºï½ü¤·¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó¡£\n"
-"¤Þ¤¿¡¢Â¿Ê¬¡¢`newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦¡£\n"
+"¤¢¤Ê¤¿¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥Èºï½ü¤ò´°Î»¤¹¤ë¤Ë¤Ï, /etc/aliases (¤Þ¤¿¤ÏÆ±Åù¤Î\n"
+"¥Õ¥¡¥¤¥ë) ¤«¤é, ¼¡¤Î¹Ô¤òºï½ü¤·¤Æ¤ä¤é¤Ê¤±¤ì¤Ð¤Ê¤ê¤Þ¤»¤ó. \n"
+"¤Þ¤¿, Â¿Ê¬, `newaliases' ¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤·¤Ê¤±¤ì¤Ð¤Ê¤é¤Ê¤¤¤Ç¤·¤ç¤¦. \n"
 "\n"
 "## %(listname)s mailing list"
 
@@ -4210,7 +4283,7 @@ msgstr "%(DBFILE)s ¤Î½êÍ­¼Ô¤ò¥Á¥§¥Ã¥¯Ãæ"
 
 #: Mailman/MTA/Postfix.py:249
 msgid "%(DBFILE)s owned by %(owner)s (must be owned by mailman)"
-msgstr "%(DBFILE)s ¤Î½êÍ­¼Ô¤Ï %(owner)s ¤Ç¤¹¡£(mailman ¤Ç¤Ê¤±¤ì¤Ð¤¤¤±¤Þ¤»¤ó)"
+msgstr "%(DBFILE)s ¤Î½êÍ­¼Ô¤Ï %(owner)s ¤Ç¤¹. (mailman ¤Ç¤Ê¤±¤ì¤Ð¤¤¤±¤Þ¤»¤ó)"
 
 #: Mailman/MTA/Qmail.py:31
 msgid ""
@@ -4251,15 +4324,15 @@ msgid ""
 "your address is still subscribed.  This is useful if you plan on taking a\n"
 "short vacation."
 msgstr ""
-"ON ¤Ë¤¹¤ë¤È¡¤Æþ²ñ¤·¤¿¤Þ¤Þ¤Ç¡¤¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹\n"
-"¤Ø¤ÎÇÛÁ÷¤òÄä»ß¤·¤Þ¤¹¡¥¤³¤ì¤Ï¡¤Ã»´ü´Ö¤ÎµÙ²Ë¤Î»þ¤Ê¤É¤ËÍøÍÑ¤Ç¤­¤Þ¤¹¡¥"
+"ON ¤Ë¤¹¤ë¤È, Æþ²ñ¤·¤¿¤Þ¤Þ¤Ç, ¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹\n"
+"¤Ø¤ÎÇÛÁ÷¤òÄä»ß¤·¤Þ¤¹. ¤³¤ì¤Ï, Ã»´ü´Ö¤ÎµÙ²Ë¤Î»þ¤Ê¤É¤ËÍøÍÑ¤Ç¤­¤Þ¤¹. "
 
 #: Mailman/MailCommandHandler.py:64
 msgid ""
 "When turned on, you get a separate acknowledgement email when you\n"
 "post messages to the list."
 msgstr ""
-"ON ¤Ë¤¹¤ë¤È¡¤¥ê¥¹¥È¤Ë¥á¡¼¥ëÅê¹Æ¤·¤¿¤È¤­¤Ë¼õ¤±¼è¤ê¤Î\n"
+"ON ¤Ë¤¹¤ë¤È, ¥ê¥¹¥È¤Ë¥á¡¼¥ëÅê¹Æ¤·¤¿¤È¤­¤Ë¼õ¤±¼è¤ê¤Î\n"
 "¥á¡¼¥ë¤òÈ¯¹Ô¤·¤Þ¤¹."
 
 #: Mailman/MailCommandHandler.py:67
@@ -4271,11 +4344,11 @@ msgid ""
 "receive postings in digests, you will always get copies of your messages in\n"
 "the digest."
 msgstr ""
-"ON ¤Ë¤¹¤ë¤È¡¤¼«Ê¬¤¬Åê¹Æ¤·¤¿¥á¡¼¥ë¤ò¼«Ê¬°¸¤Æ¤Ë¤Ï\n"
-"ÇÛÁ÷¤·¤Ê¤¤¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹¡¥OFF¤Ë¤·¤Æ¤ª¤¯¤È¡¤¼«Ê¬¤¬½Ð¤·¤¿¥á¡¼¥ë¤â\n"
+"ON ¤Ë¤¹¤ë¤È, ¼«Ê¬¤¬Åê¹Æ¤·¤¿¥á¡¼¥ë¤ò¼«Ê¬°¸¤Æ¤Ë¤Ï\n"
+"ÇÛÁ÷¤·¤Ê¤¤¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹. OFF¤Ë¤·¤Æ¤ª¤¯¤È, ¼«Ê¬¤¬½Ð¤·¤¿¥á¡¼¥ë¤â\n"
 "¼«Ê¬°¸¤Æ¤ËÇÛÁ÷¤µ¤ì¤Þ¤¹.\n"
-"¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤Þ¤È¤áÆÉ¤ß¤ÎÆâÍÆ¤Ë¤Ï±Æ¶Á¤·¤Þ¤»¤ó¤Î¤Ç¡¤¤Þ¤È¤áÆÉ¤ß\n"
-"¤ò¤·¤Æ¤¤¤ë¤È¾ï¤Ë¼«Ê¬¤ÎÅê¹Æ¤â´Þ¤Þ¤ì¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹¡¥"
+"¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤Þ¤È¤áÆÉ¤ß¤ÎÆâÍÆ¤Ë¤Ï±Æ¶Á¤·¤Þ¤»¤ó¤Î¤Ç, ¤Þ¤È¤áÆÉ¤ß\n"
+"¤ò¤·¤Æ¤¤¤ë¤È¾ï¤Ë¼«Ê¬¤ÎÅê¹Æ¤â´Þ¤Þ¤ì¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹. "
 
 #: Mailman/MailCommandHandler.py:73
 msgid ""
@@ -4283,9 +4356,9 @@ msgid ""
 "digests.  Otherwise, you get each individual message immediately as it is\n"
 "posted to the list."
 msgstr ""
-"ON ¤Ë¤¹¤ë¤È¡¤¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ø¤ÎÅê¹Æ¤ò¤Þ¤È¤á¤Æ\n"
-"ÆÉ¤à(digest)¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹¡¥OFF¤Ë¤·¤Æ¤ª¤¯¤È¡¤Åê¹Æ¤¬¤¢¤Ã¤¿ÅÙ¤Ë\n"
-"¥á¡¼¥ë¤ò¼õ¤±¼è¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹¡¥"
+"ON ¤Ë¤¹¤ë¤È, ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ø¤ÎÅê¹Æ¤ò¤Þ¤È¤á¤Æ\n"
+"ÆÉ¤à(digest)¤è¤¦¤Ë¤Ê¤ê¤Þ¤¹. OFF¤Ë¤·¤Æ¤ª¤¯¤È, Åê¹Æ¤¬¤¢¤Ã¤¿ÅÙ¤Ë\n"
+"¥á¡¼¥ë¤ò¼õ¤±¼è¤ë¤³¤È¤Ë¤Ê¤ê¤Þ¤¹. "
 
 #: Mailman/MailCommandHandler.py:77
 msgid ""
@@ -4297,11 +4370,11 @@ msgid ""
 "you get digests in MIME format, which are much better if you have a mail\n"
 "reader that supports MIME."
 msgstr ""
-"ON ¤Ë¤¹¤ë¤È¡¤Ê¿Ê¸(¤Ä¤Þ¤ê RFC1154 ·Á¼°)¤Ç¤Þ¤È¤á\n"
-"ÆÉ¤ß¥á¡¼¥ë¤ò¼õ¤±¼è¤ê¤Þ¤¹¡¥¤â¤· MIME ÈóÂÐ±þ¤Î¥á¡¼¥ë¥ê¡¼¥À¤ò»È¤Ã¤Æ\n"
-"¤¤¤ë¾ì¹ç¤Ë¤Ï¡¤¤³¤Î·Á¼°¤ÎÊý¤¬ÆÉ¤ß¤ä¤¹¤¤¤Ç¤·¤ç¤¦¡¥¤³¤Î¥ª¥×¥·¥ç¥ó¤ò\n"
-"OFF¤Ë¤¹¤ë¤È¡¤¤Þ¤È¤áÆÉ¤ß¤Ï MIME ·Á¼°¤ÇÁ÷¤é¤ì¤Þ¤¹¡¥¥á¡¼¥ë¥ê¡¼¥À¤¬\n"
-"¤³¤Î·Á¼°¤ò¥µ¥Ý¡¼¥È¤·¤Æ¤¤¤¿¤é¡¤¤³¤Á¤é¤ÎÊý¤¬¤è¤¤¤Ç¤·¤ç¤¦¡¥"
+"ON ¤Ë¤¹¤ë¤È, Ê¿Ê¸(¤Ä¤Þ¤ê RFC1154 ·Á¼°)¤Ç¤Þ¤È¤á\n"
+"ÆÉ¤ß¥á¡¼¥ë¤ò¼õ¤±¼è¤ê¤Þ¤¹. ¤â¤· MIME ÈóÂÐ±þ¤Î¥á¡¼¥ë¥ê¡¼¥À¤ò»È¤Ã¤Æ\n"
+"¤¤¤ë¾ì¹ç¤Ë¤Ï, ¤³¤Î·Á¼°¤ÎÊý¤¬ÆÉ¤ß¤ä¤¹¤¤¤Ç¤·¤ç¤¦. ¤³¤Î¥ª¥×¥·¥ç¥ó¤ò\n"
+"OFF¤Ë¤¹¤ë¤È, ¤Þ¤È¤áÆÉ¤ß¤Ï MIME ·Á¼°¤ÇÁ÷¤é¤ì¤Þ¤¹. ¥á¡¼¥ë¥ê¡¼¥À¤¬\n"
+"¤³¤Î·Á¼°¤ò¥µ¥Ý¡¼¥È¤·¤Æ¤¤¤¿¤é, ¤³¤Á¤é¤ÎÊý¤¬¤è¤¤¤Ç¤·¤ç¤¦. "
 
 #: Mailman/MailCommandHandler.py:208
 msgid ""
@@ -4363,7 +4436,7 @@ msgid ""
 "\n"
 msgstr ""
 "¸¶°øÉÔÌÀ¤ÎMailman¥¨¥é¡¼¤¬ MailCommandHandler.ParseMailCommands()\n"
-"¤ÇÈ¯À¸¤·¤Þ¤·¤¿¡¥°Ê²¼¤Ï¥È¥ì¡¼¥¹¾ðÊó¤Ç¤¹:\n"
+"¤ÇÈ¯À¸¤·¤Þ¤·¤¿. °Ê²¼¤Ï¥È¥ì¡¼¥¹¾ðÊó¤Ç¤¹:\n"
 "\n"
 
 #: Mailman/MailCommandHandler.py:300
@@ -4408,7 +4481,6 @@ msgid "Usage: password [<oldpw> <newpw>]"
 msgstr "»ÈÍÑË¡: password [<µì¥Ñ¥¹¥ï¡¼¥É> <¿·¥Ñ¥¹¥ï¡¼¥É>]"
 
 #: Mailman/MailCommandHandler.py:344
-#, fuzzy
 msgid "You are subscribed as %(user)s, with password: %(password)s"
 msgstr ""
 "¤¢¤Ê¤¿¤Ï %(user)s ¤È¤·¤Æ²ñ°÷ÅÐÏ¿¤µ¤ì¤Æ¤¤¤Æ,\n"
@@ -4430,23 +4502,20 @@ msgstr "À®¸ù"
 
 #: Mailman/MailCommandHandler.py:359 Mailman/MailCommandHandler.py:365
 #: Mailman/MailCommandHandler.py:420 Mailman/MailCommandHandler.py:587
-#, fuzzy
 msgid "%(sender)s is not a member of this list."
-msgstr "%(origsender)s ¤Ï¥ê¥¹¥È²ñ°÷¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó."
+msgstr "%(sender)s ¤Ï¥ê¥¹¥È²ñ°÷¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó."
 
 #: Mailman/MailCommandHandler.py:374
-#, fuzzy
 msgid ""
 "To change an option, do: set <option> <on|off> <password>\n"
 "\n"
 "Option explanations:\n"
 "--------------------\n"
 msgstr ""
-"\n"
 "¥ª¥×¥·¥ç¥ó¤ÎÊÑ¹¹¤Ë¤Ï: set <¥ª¥×¥·¥ç¥ó> <on|off> <¥Ñ¥¹¥ï¡¼¥É>\n"
 "\n"
 "¥ª¥×¥·¥ç¥ó¤ÎÀâÌÀ:\n"
-"--------------------"
+"--------------------\n"
 
 #: Mailman/MailCommandHandler.py:391
 msgid ""
@@ -4493,7 +4562,6 @@ msgid "\tdescription: "
 msgstr "\tÀâÌÀ: "
 
 #: Mailman/MailCommandHandler.py:474
-#, fuzzy
 msgid ""
 "\n"
 "Usage: info\n"
@@ -4501,10 +4569,11 @@ msgid ""
 "the `-request' address for that list, or use the `lists' command\n"
 "to get info for all the lists."
 msgstr ""
+"\n"
 "»ÈÍÑË¡: info\n"
 "ÆÃÄê¤Î¥ê¥¹¥È¤Î info ¤ò¸«¤ë¤Ë¤Ï, ¿½ÀÁ¥á¡¼¥ë¤ò\n"
 "¤½¤Î¥ê¥¹¥È¤Î '-request' ¥¢¥É¥ì¥¹¤ËÁ÷¤Ã¤Æ²¼¤µ¤¤\n"
-"¤Þ¤¿¡¤'lists' ¥³¥Þ¥ó¥É¤ÇÁ´Éô¤Î¥ê¥¹¥È¤Î info ¤ò\n"
+"¤Þ¤¿, 'lists' ¥³¥Þ¥ó¥É¤ÇÁ´Éô¤Î¥ê¥¹¥È¤Î info ¤ò\n"
 "¸«¤ë¤³¤È¤â¤Ç¤­¤Þ¤¹."
 
 #: Mailman/MailCommandHandler.py:482
@@ -4533,7 +4602,6 @@ msgid "No other details are available."
 msgstr "Â¾¤Ë¾Ü¤·¤¤¾ðÊó¤Ï¤¢¤ê¤Þ¤»¤ó."
 
 #: Mailman/MailCommandHandler.py:501
-#, fuzzy
 msgid ""
 "Usage: who\n"
 "To get subscribership for a particular list, send your request\n"
@@ -4564,16 +4632,14 @@ msgid "Non-Digest Members:\n"
 msgstr "ÉáÄÌÇÛÁ÷²ñ°÷:\n"
 
 #: Mailman/MailCommandHandler.py:560
-#, fuzzy
 msgid ""
 "Usage: unsubscribe [password] [email-address]\n"
 "To unsubscribe from a particular list, send your request to\n"
 "the `-request' address for that list."
 msgstr ""
 "»ÈÍÑË¡: unsubscribe [¥Ñ¥¹¥ï¡¼¥É] [¥á¡¼¥ë¥¢¥É¥ì¥¹]\n"
-"\n"
-"          ÆÃÄê¤Î¥ê¥¹¥È¤«¤éÂà²ñ¤¹¤ë¤Ë¤Ï, ¿½ÀÁ¤ò¤½¤Î¥ê¥¹¥È¤Î\n"
-"          `-request' ¥¢¥É¥ì¥¹¤ËÁ÷¤ê¤Þ¤¹."
+"  ÆÃÄê¤Î¥ê¥¹¥È¤«¤éÂà²ñ¤¹¤ë¤Ë¤Ï, ¿½ÀÁ¤ò¤½¤Î¥ê¥¹¥È¤Î\n"
+"  `-request' ¥¢¥É¥ì¥¹¤ËÁ÷¤ê¤Þ¤¹."
 
 #: Mailman/MailCommandHandler.py:574
 msgid "A removal confirmation message has been sent."
@@ -4585,7 +4651,6 @@ msgstr ""
 "»ÈÍÑË¡: subscribe [¥Ñ¥¹¥ï¡¼¥É] [digest|nodigest] [address=<¥á¡¼¥ë¥¢¥É¥ì¥¹>]"
 
 #: Mailman/MailCommandHandler.py:641
-#, fuzzy
 msgid ""
 "Your subscription request has been forwarded to the  list administrator\n"
 "at %(adminemail)s for review."
@@ -4593,7 +4658,6 @@ msgstr ""
 "¤¢¤Ê¤¿¤ÎÆþ²ñ¿½ÀÁ¤Ï¿³ºº¤Î¤¿¤á, ¥ê¥¹¥È´ÉÍý¼Ô¤Î %(adminemail)s ¤ØÅ¾Á÷¤µ¤ì¤Þ¤·¤¿."
 
 #: Mailman/MailCommandHandler.py:645
-#, fuzzy
 msgid ""
 "Mailman won't accept the given email address as a valid address.\n"
 "(E.g. it must have an @ in it.)"
@@ -4602,7 +4666,6 @@ msgstr ""
 "(@ ¤¬Æþ¤Ã¤Æ¤¤¤Þ¤¹¤«???)"
 
 #: Mailman/MailCommandHandler.py:649
-#, fuzzy
 msgid ""
 "The list is not fully functional, and can not accept subscription requests."
 msgstr ""
@@ -4630,7 +4693,6 @@ msgid "Usage: confirm <confirmation string>\n"
 msgstr "»ÈÍÑË¡: confirm <³ÎÇ§Ê¸»úÎó>\n"
 
 #: Mailman/MailCommandHandler.py:684
-#, fuzzy
 msgid ""
 "Invalid confirmation string.  Note that confirmation strings expire\n"
 "approximately %(days)s days after the initial subscription request.  If "
@@ -4643,20 +4705,18 @@ msgstr ""
 "  ¤Î¤Ç¤¢¤ì¤Ð, ¤â¤¦°ìÅÙÆþ²ñ¿½ÀÁ¤·¤Æ¤¯¤À¤µ¤¤."
 
 #: Mailman/MailCommandHandler.py:692
-#, fuzzy
 msgid "Your request has been forwarded to the list moderator for approval."
 msgstr ""
 "¤¢¤Ê¤¿¤Î¿½ÀÁ¤Ï¾µÇ§¤ò¼õ¤±¤ë¤¿¤á\n"
-"      ¥ê¥¹¥È´ÉÍý¼Ô¤ØÅ¾Á÷¤·¤Þ¤·¤¿."
+"      ¥ê¥¹¥È»Ê²ñ¼Ô¤ØÅ¾Á÷¤·¤Þ¤·¤¿."
 
 #: Mailman/MailCommandHandler.py:699
 msgid "You are already subscribed."
 msgstr "¤¢¤Ê¤¿¤Ï´û¤ËÆþ²ñ¤·¤Æ¤¤¤Þ¤¹."
 
 #: Mailman/MailCommandHandler.py:703
-#, fuzzy
 msgid "You are not a member.  Have you already unsubscribed?"
-msgstr "¤¢¤Ê¤¿¤Ï´û¤ËÆþ²ñ¤·¤Æ¤¤¤Þ¤¹!"
+msgstr "¤¢¤Ê¤¿¤Ï²ñ°÷¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó. ´û¤ËÂà²ñ¤·¤Æ¤¤¤Þ¤¹¤«?"
 
 #: Mailman/MailList.py:614 Mailman/MailList.py:886
 msgid " from %(remote)s"
@@ -4664,10 +4724,9 @@ msgstr " %(remote)s ¤«¤é"
 
 #: Mailman/MailList.py:633 Mailman/MailList.py:810 Mailman/MailList.py:903
 msgid "confirm %(cookie)s"
-msgstr ""
+msgstr "³ÎÇ§ %(cookie)s"
 
 #: Mailman/MailList.py:649
-#, fuzzy
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "%(realname)s ¤Ø¤ÎÆþ²ñ¤Ë¤Ï´ÉÍý¼Ô¤Î¾µÇ§¤¬É¬Í×¤Ç¤¹"
 
@@ -4685,15 +4744,15 @@ msgstr "%(name)s ¤Ø¤ÎÆþ²ñ¤Ë¤Ï´ÉÍý¼Ô¤Î¾µÇ§¤¬É¬Í×¤Ç¤¹"
 
 #: Mailman/htmlformat.py:611
 msgid "Delivered by Mailman<br>version %(version)s"
-msgstr ""
+msgstr "Mailman Âè %(version)s ÈÇ<br> ¤¬¤ªÆÏ¤±¤·¤Þ¤¹"
 
 #: Mailman/htmlformat.py:612
 msgid "Python Powered"
-msgstr ""
+msgstr "Python ¤Ç¸µµ¤"
 
 #: Mailman/htmlformat.py:613
 msgid "Gnu's Not Unix"
-msgstr ""
+msgstr "¥Ì¡¼¤Ï Unix ¤ä¤¢¤é¤Ø¤ó"
 
 #: bin/add_members:26
 msgid ""
@@ -4742,35 +4801,77 @@ msgid ""
 "You must supply at least one of -n and -d options.  At most one of the\n"
 "files can be `-'.\n"
 msgstr ""
+"¥³¥Þ¥ó¥É¹Ô¤«¤é²ñ°÷ÅÐÏ¿¤¹¤ë.\n"
+"\n"
+"»ÈÍÑË¡:\n"
+"    add_members [¥ª¥×¥·¥ç¥ó] ¥ê¥¹¥ÈÌ¾\n"
+"\n"
+"¥ª¥×¥·¥ç¥ó:\n"
+"\n"
+"    --non-digest-members-file=¥Õ¥¡¥¤¥ë\n"
+"    -n ¥Õ¥¡¥¤¥ë\n"
+"        A file containing addresses of the members to be added, one\n"
+"        address per line.  This list of people become non-digest\n"
+"        members.  If file is `-', read addresses from stdin.\n"
+"        ÅÐÏ¿¤¹¤ë²ñ°÷¤Î¥¢¥É¥ì¥¹¤¬Æþ¤Ã¤¿¥Õ¥¡¥¤¥ë. 1 ¹Ô¤Ë 1 ¥¢¥É¥ì¥¹.\n"
+"        ¤³¤Î²ñ°÷¤ÏÄÌ¾ïÇÛÁ÷²ñ°÷¤Ë¤Ê¤ê¤Þ¤¹. ¤â¤·, ¥Õ¥¡¥¤¥ë¤¬ - ¤Ç¤¢¤ì\n"
+"        ¤Ð, ¥á¡¼¥ë¥¢¥É¥ì¥¹¤òÉ¸½àÆþÎÏ¤«¤éÆÉ¤ß¹þ¤ß¤Þ¤¹.\n"
+"\n"
+"    --digest-members-file=¥Õ¥¡¥¤¥ë\n"
+"    -d=¥Õ¥¡¥¤¥ë\n"
+"        ¾å¤ÈÆ±ÍÍ. Ã¢¤·, ¤³¤Î²ñ°÷¤Ï¤Þ¤È¤áÆÉ¤ß²ñ°÷¤Ë¤Ê¤ê¤Þ¤¹.\n"
+"\n"
+"    --changes-msg=<y|n>\n"
+"    -c <y|n> \n"
+"\tSet whether or not to send the list members the `there's going to be\n"
+"\tbig changes to your list' message. defaults to no.\n"
+"\n"
+"    --welcome-msg=<y|n>\n"
+"    -w <y|n>\n"
+"        Set whether or not to send the list members a welcome message,\n"
+"        overriding whatever the list's `send_welcome_msg' setting is.\n"
+"\n"
+"    --admin-notify=<y|n>\n"
+"    -a <y|n>\n"
+"        Set whether or not to send the list administrators a notification "
+"on\n"
+"        the success/failure of these subscriptions, overriding whatever the\n"
+"        list's `admin_notify_mchanges' setting is.\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Print this help message and exit.\n"
+"\n"
+"    listname\n"
+"        The name of the Mailman list you are adding members to.  It must\n"
+"        already exist.\n"
+"\n"
+"You must supply at least one of -n and -d options.  At most one of the\n"
+"files can be `-'.\n"
 
 #: bin/add_members:123
 msgid "Big change in %(listname)s@%(listhost)s mailing list"
-msgstr ""
+msgstr "%(listname)s@%(listhost)s ¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ËÂç¤­¤ÊÊÑ¹¹¤¬¤¢¤ê¤Þ¤·¤¿"
 
 #: bin/add_members:152
-#, fuzzy
 msgid "Already a member: %(member)s"
-msgstr "´û¤Ë²ñ°÷¤Ç¤¹"
+msgstr "´û¤Ë²ñ°÷¤Ç¤¹: %(member)s"
 
 #: bin/add_members:155
-#, fuzzy
 msgid "Bad/Invalid email address: blank line"
-msgstr "ÉÔÀµ¤Ê¥á¡¼¥ë¥¢¥É¥ì¥¹"
+msgstr "ÉÔÀµ/Ìµ¸ú¤Ê¥á¡¼¥ë¥¢¥É¥ì¥¹: ¶õÇò¹Ô"
 
 #: bin/add_members:157
-#, fuzzy
 msgid "Bad/Invalid email address: %(member)s"
-msgstr "ÉÔÀµ¤Ê¥á¡¼¥ë¥¢¥É¥ì¥¹"
+msgstr "ÉÔÀµÌµ¸ú¤Ê¥á¡¼¥ë¥¢¥É¥ì¥¹: %(member)s"
 
 #: bin/add_members:159
-#, fuzzy
 msgid "Hostile address (illegal characters): %(member)s"
-msgstr "ÈóÍ§¹¥Åª¥¢¥É¥ì¥¹ (ÉÔÀµ¤ÊÊ¸»ú)"
+msgstr "ÈóÍ§¹¥Åª¥¢¥É¥ì¥¹ (ÉÔÀµ¤ÊÊ¸»ú): %(member)s"
 
 #: bin/add_members:161
-#, fuzzy
 msgid "Subscribed: %(member)s"
-msgstr "Èó²ñ°÷¤ÏÂà²ñ¤Ç¤­¤Þ¤»¤ó:"
+msgstr "Æþ²ñ¤·¤Þ¤·¤¿: %(member)s"
 
 #: bin/add_members:200
 msgid "Bad argument to -c/--changes-msg: %(arg)s"
@@ -5335,9 +5436,8 @@ msgid ""
 msgstr ""
 
 #: bin/dumpdb:87
-#, fuzzy
 msgid "No filename given."
-msgstr "[ÍýÍ³¤Ï¼¨¤µ¤ì¤Æ¤¤¤Þ¤»¤ó]"
+msgstr "¥Õ¥¡¥¤¥ëÌ¾¤¬¤¢¤ê¤Þ¤»¤ó."
 
 #: bin/dumpdb:90
 msgid "Bad arguments: %(pargs)s"
@@ -5625,9 +5725,8 @@ msgid "Shutting down Mailman's master qrunner."
 msgstr ""
 
 #: bin/mailmanctl:186
-#, fuzzy
 msgid "No command given."
-msgstr "[ÍýÍ³¤Ï¼¨¤µ¤ì¤Æ¤¤¤Þ¤»¤ó]"
+msgstr "¥³¥Þ¥ó¥É¤¬¤¢¤ê¤Þ¤»¤ó."
 
 #: bin/mailmanctl:189 bin/mailmanctl:277 bin/qrunner:84
 msgid "Bad command: %(command)s"
@@ -6036,9 +6135,8 @@ msgid "-r %(name)s runs the %(runnername)s qrunner"
 msgstr ""
 
 #: bin/qrunner:81
-#, fuzzy
 msgid "No runner name given."
-msgstr "[ÍýÍ³¤Ï¼¨¤µ¤ì¤Æ¤¤¤Þ¤»¤ó]"
+msgstr "¥é¥ó¥Ê¡¼Ì¾¤¬¤¢¤ê¤Þ¤»¤ó."
 
 #: bin/remove_members:19
 msgid ""
@@ -6438,9 +6536,8 @@ msgid ""
 msgstr ""
 
 #: bin/version:19
-#, fuzzy
 msgid "Print the Mailman version.\n"
-msgstr "»ÈÍÑÃæ¤Î Mailman ¥Ð¡¼¥¸¥ç¥ó¤Ï:"
+msgstr "Mailman ¥Ð¡¼¥¸¥ç¥ó¤ò½ÐÎÏ¤¹¤ë.\n"
 
 #: bin/version:26
 msgid "Using Mailman version:"
@@ -6571,9 +6668,8 @@ msgid ""
 msgstr ""
 
 #: bin/withlist:151
-#, fuzzy
 msgid "Unlocking (but not saving) list: %(listname)s"
-msgstr "¥ê¥¹¥È¤ò¥í¥Ã¥¯²ò½ü (ÊÝÂ¸¤Ï¤·¤Æ¤Þ¤»¤ó):"
+msgstr "¥ê¥¹¥È¤ò¥í¥Ã¥¯²ò½ü (ÊÝÂ¸¤Ï¤·¤Æ¤Þ¤»¤ó): %(listname)s"
 
 #: bin/withlist:155
 msgid "Finalizing"
@@ -6630,9 +6726,8 @@ msgid "%(count)d %(realname)s moderator request(s) waiting"
 msgstr ""
 
 #: cron/checkdbs:80
-#, fuzzy
 msgid "Pending subscriptions:"
-msgstr "¤Þ¤È¤á¤Æ²ñ°÷ÅÐÏ¿"
+msgstr "ÊÝÎ±Ãæ¤Î²ñ°÷ÅÐÏ¿:"
 
 #: cron/checkdbs:87
 msgid ""
@@ -6681,14 +6776,12 @@ msgid ""
 msgstr ""
 
 #: cron/mailpasswds:102
-#, fuzzy
 msgid "%(host)s mailing list memberships reminder"
-msgstr "%(listfullname)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥ÈÄÌÃÎ"
+msgstr "%(host)s ¥á¡¼¥ê¥ó¥°¥ê¥¹¥È²ñ°÷ÄÌÃÎ"
 
 #: cron/mailpasswds:147
-#, fuzzy
 msgid "Password // URL"
-msgstr "¥Ñ¥¹¥ï¡¼¥É: "
+msgstr "¥Ñ¥¹¥ï¡¼¥É // URL"
 
 #: cron/nightly_gzip:19
 msgid ""
@@ -6742,9 +6835,8 @@ msgid "join script got no listname."
 msgstr ""
 
 #: scripts/join:48
-#, fuzzy
 msgid "join script, list not found: %(listname)s"
-msgstr "%(listname)s ¤È¤¤¤¦¥ê¥¹¥È¤Ï¤¢¤ê¤Þ¤»¤ó"
+msgstr "join ¥¹¥¯¥ê¥×¥È, ¥ê¥¹¥È¤¬¤¢¤ê¤Þ¤»¤ó: %(listname)s"
 
 #: scripts/leave:19
 msgid ""
@@ -6761,9 +6853,8 @@ msgid "leave script got no listname."
 msgstr ""
 
 #: scripts/leave:48
-#, fuzzy
 msgid "leave script, list not found: %(listname)s"
-msgstr "%(listname)s ¤È¤¤¤¦¥ê¥¹¥È¤Ï¤¢¤ê¤Þ¤»¤ó"
+msgstr "leave ¥¹¥¯¥ê¥×¥È, ¥ê¥¹¥È¤¬¤¢¤ê¤Þ¤»¤ó: %(listname)s"
 
 #: scripts/mailcmd:19
 msgid ""
@@ -6780,9 +6871,8 @@ msgid "mailcmd script got no listname."
 msgstr ""
 
 #: scripts/mailcmd:48
-#, fuzzy
 msgid "mailcmd script, list not found: %(listname)s"
-msgstr "%(listname)s ¤È¤¤¤¦¥ê¥¹¥È¤Ï¤¢¤ê¤Þ¤»¤ó"
+msgstr "mailcmd ¥¹¥¯¥ê¥×¥È, ¥ê¥¹¥È¤¬¤¢¤ê¤Þ¤»¤ó: %(listname)s"
 
 #: scripts/mailowner:19
 msgid ""
@@ -6803,9 +6893,8 @@ msgid "mailowner got no listname."
 msgstr ""
 
 #: scripts/mailowner:50
-#, fuzzy
 msgid "mailowner script, list not found: %(listname)s"
-msgstr "%(listname)s ¤È¤¤¤¦¥ê¥¹¥È¤Ï¤¢¤ê¤Þ¤»¤ó"
+msgstr "mailowner ¥¹¥¯¥ê¥×¥È, ¥ê¥¹¥È¤¬¤¢¤ê¤Þ¤»¤ó: %(listname)s"
 
 #: scripts/post:19
 msgid ""
@@ -6825,174 +6914,5 @@ msgid "post script got no listname."
 msgstr ""
 
 #: scripts/post:54
-#, fuzzy
 msgid "post script, list not found: %(listname)s"
-msgstr "%(listname)s ¤È¤¤¤¦¥ê¥¹¥È¤Ï¤¢¤ê¤Þ¤»¤ó"
-
-#~ msgid "No valid variable details request not found: %(path_info)s"
-#~ msgstr "Í­¸ú¤Ê¾ÜºÙ¾ðÊó¤¬¤¢¤ê¤Þ¤»¤ó: %(path_info)s"
-
-#~ msgid "subscr"
-#~ msgstr "²ñ°÷"
-
-#~ msgid "<b>subscr</b> -- Is the member subscribed?"
-#~ msgstr "<b>²ñ°÷</b> -- ¤³¤Î¥¢¥É¥ì¥¹¤Ï²ñ°÷¤Ç¤¹¤«?"
-
-#~ msgid "Find members by regular expression:"
-#~ msgstr "Àµµ¬É½¸½¤Ç²ñ°÷¤ò¸¡º÷:"
-
-#~ msgid "You must supply your email address."
-#~ msgstr "¤¢¤Ê¤¿¤Î¥á¡¼¥ë¥¢¥É¥ì¥¹¤¬É¬Í×¤Ç¤¹."
-
-#~ msgid "%(realname)s has no subscribed addr <i>%(addr)s</i>."
-#~ msgstr "%(realname)s ¤Ë¤Ï <i>%(addr)s</i> ¤È¤¤¤¦²ñ°÷¤Ï¤¤¤Þ¤»¤ó."
-
-#~ msgid "%(listfullname)s user %(user)s missing password!"
-#~ msgstr "%(listfullname)s ¤Î²ñ°÷ %(user)s ¤Ë¤Ï¥Ñ¥¹¥ï¡¼¥É¤¬¤¢¤ê¤Þ¤»¤ó!"
-
-#~ msgid ""
-#~ "There are two ownership roles associated with each mailing\n"
-#~ "             list.  The <em>list administrators</em> are the people who "
-#~ "have\n"
-#~ "             ultimate control over all parameters of this mailing list.  "
-#~ "They\n"
-#~ "             are able to change any list configuration variable available\n"
-#~ "             through these administration web pages.\n"
-#~ "\n"
-#~ "             <p>The <em>list moderators</em> have more limited permissions;\n"
-#~ "             they are not able to change any list configuration variable, "
-#~ "but\n"
-#~ "             they are allowed to tend to pending administration requests,\n"
-#~ "             including approving or rejecting held subscription requests, "
-#~ "and\n"
-#~ "             disposing of held postings.  Of course, the <em>list\n"
-#~ "             administrators</em> can also tend to pending requests.\n"
-#~ "\n"
-#~ "             <p>In order to split the list ownership duties into\n"
-#~ "             administrators and moderators, you must set a separate "
-#~ "moderator\n"
-#~ "             password in the section below, and also provide the email\n"
-#~ "             addresses of the list moderators in this section.  Note that "
-#~ "the\n"
-#~ "             field you are changing here specifies the list\n"
-#~ "             administators."
-#~ msgstr ""
-#~ "¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Î´ÉÍý¼Ô(½êÍ­¼Ô)¤Ë¤Ï£²¤Ä¤ÎÌò³ä¤¬¤¢¤ê¤Þ¤¹¡£\n"
-#~ "<em>¥ê¥¹¥È´ÉÍý¼Ô</em>¤Ï¤³¤Î¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤ÎÁ´¤Æ¤Î¥Ñ¥é¥á¡¼¥¿¤Ë\n"
-#~ "¤Ä¤¤¤Æµæ¶Ë¤ÎÀ©¸æ¤ò¹Ô¤Ê¤¤¤Þ¤¹¡£´ÉÍýWeb¥Ú¡¼¥¸¤òÄÌ¤¸¤ÆÊÑ¹¹¤Ç¤­¤ë\n"
-#~ "Á´¤Æ¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£\n"
-#~ "\n"
-#~ "<p>°ìÊý¡¢<em>¥ê¥¹¥È»Ê²ñ¼Ô</em> ¤Î»Å»ö¤Ï¡¢¤è¤ê¸ÂÄê¤µ¤ì¤Æ¤¤¤Þ¤¹¡£\n"
-#~ "¥ê¥¹¥È¤ÎÀßÄêÊÑ¿ô¤òÊÑ¹¹¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó¤¬¡¢ÊÝÎ±Ãæ¤Î´ÉÍý¿½ÀÁ¤ò\n"
-#~ "½èÍý¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£¤Ä¤Þ¤ê¡¢ÊÝÎ±Ãæ¤ÎÆþ²ñ¿½ÀÁ¤ò¾µÇ§¤·¤¿¤êµñÈÝ¤¹¤ë¤³¤È¡¢\n"
-#~ "ÊÝÎ±Ãæ¤ÎÅê¹Æ¥á¡¼¥ë¤ò½èÍý¤¹¤ë¤³¤È¤Ê¤É¤Ç¤¹¡£¤â¤Á¤í¤ó¡¢<em>¥ê¥¹¥È´ÉÍý¼Ô</em>\n"
-#~ "¤â¡¢¿½ÀÁ½èÍý¤ò¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£\n"
-#~ "\n"
-#~ "<p>¥ê¥¹¥È½êÍ­¼Ô¤Î»Å»ö¤ò´ÉÍý¼Ô¤È»Ê²ñ¼Ô¤ËÊ¬¤±¤ë¤Ë¤Ï¡¢²¼¤Î¥»¥¯¥·¥ç¥ó¤Ë\n"
-#~ "ÊÌ¤Î»Ê²ñ¼Ô¥Ñ¥¹¥ï¡¼¥É¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤¡£¤Þ¤¿¡¢¤³¤Î¥»¥¯¥·¥ç¥ó¤Ë¤Ï»Ê²ñ¼Ô¤Î\n"
-#~ "¥á¡¼¥ë¥¢¥É¥ì¥¹¤òµ­Æþ¤·¤Æ¤¯¤À¤µ¤¤¡£¤³¤³¤Ç¡¢ÊÑ¹¹¤·¤è¤¦¤È¤·¤Æ¤¤¤ë¤Î¤Ï\n"
-#~ "¥ê¥¹¥È´ÉÍý¼Ô¤Ë¤Ä¤¤¤Æ¤Ç¤¹¡£"
-
-#~ msgid ""
-#~ "All messages not related to an specific user will be\n"
-#~ "             displayed in this language."
-#~ msgstr "»ØÄê¤·¤¿¥æ¡¼¥¶¤Ë´Ø·¸¤·¤Æ¤¤¤Ê¤¤¥á¥Ã¥»¡¼¥¸¤Ï¤³¤Î¸À¸ì¤ÇÉ½¼¨¤µ¤ì¤Þ¤¹."
-
-#~ msgid "%(sender)s isn't subscribed to this list."
-#~ msgstr "%(sender)s ¤Ï¤³¤Î¥ê¥¹¥È¤Î²ñ°÷¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó."
-
-#~ msgid "%(addr)s is not subscribed to this list."
-#~ msgstr "%(addr)s ¤Ï¤³¤Î¥ê¥¹¥È¤Î²ñ°÷¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó."
-
-#~ msgid "Removal request confirmed"
-#~ msgstr "Âà²ñ¿½ÀÁ¤ò³ÎÇ§"
-
-#~ msgid ""
-#~ "        You have successfully confirmed your removal request for "
-#~ "\"%(addr)s\" to\n"
-#~ "        the %(listname)s mailing list."
-#~ msgstr ""
-#~ "¤¢¤Ê¤¿¤Î%(listname)s¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤«¤é '%(addr)s' "
-#~ "¤òÂà²ñ¤µ¤»¤ë·ï¤Ë¤Ä¤¤¤Æ¤Î\n"
-#~ "¿½ÀÁ¤Ï, ³ÎÇ§¤ò´°Î»¤·¤Þ¤·¤¿."
-
-#~ msgid ""
-#~ "        You have successfully confirmed your change of address to "
-#~ "\"%(addr)s\"\n"
-#~ "        for the %(listname)s mailing list."
-#~ msgstr ""
-#~ "%(listname)s¥á¡¼¥ê¥ó¥°¥ê¥¹¥È¤Ç¤Î '%(addr)s' ¤Ø¤Î¥¢¥É¥ì¥¹ÊÑ¹¹¤Ï, "
-#~ "³ÎÇ§¤ò´°Î»¤·¤Þ¤·¤¿."
-
-#~ msgid "The mbox name where messages are left for archive construction."
-#~ msgstr "ÊÝÂ¸½ñ¸Ë¹½ÃÛ¤Î¤¿¤á¤Ë¥á¡¼¥ë¤òÊÝÂ¸¤¹¤ë mbox ¥Õ¥¡¥¤¥ë¤ÎÌ¾Á°"
-
-#~ msgid "Exception raised when no matching admin cookie was found."
-#~ msgstr "´ÉÍý¥¯¥Ã¥­¡¼¤¬Â¸ºß¤·¤Ê¤¤»þ¤ËÈ¯À¸¤¹¤ëÎã³°"
-
-#~ msgid "Regular delivery (non-digest) Options"
-#~ msgstr "ÉáÄÌ²ñ°÷¥ª¥×¥·¥ç¥ó"
-
-#~ msgid "Address"
-#~ msgstr "¥¢¥É¥ì¥¹"
-
-#~ msgid "Ensure that the path is safe by removing .."
-#~ msgstr "¼è¤ê½ü¤¤¤Æ¥Ñ¥¹¤Î°ÂÁ´À­³ÎÊÝ .."
-
-#~ msgid "Base class for email address validation errors."
-#~ msgstr "ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹¤Î´ðËÜ¥¯¥é¥¹¸¡ºº¤Ç¥¨¥é¡¼."
-
-#~ msgid "Sender is explicitly forbidden"
-#~ msgstr "Á÷¿®¼Ô¤Ï¥Ö¥é¥Ã¥¯¥ê¥¹¥È¤ËÆþ¤Ã¤Æ¤¤¤Þ¤¹"
-
-#~ msgid "Post to moderated list"
-#~ msgstr "»Ê²ñ¼ÔÉÕ¤­¥ê¥¹¥È¤Ø¤ÎÅê¹Æ"
-
-#~ msgid "Posting to a restricted list by sender requires approval"
-#~ msgstr "À©¸ÂÉÕ¤­¥ê¥¹¥È¤Ø¤ÎÅê¹Æ¤Ï¾µÇ§¤¬É¬Í×¤Ç¤¹"
-
-#~ msgid "Message has a suspicious header"
-#~ msgstr "¥á¡¼¥ë¤Ë¤ÏÉÔ¿³¤Ê¥Ø¥Ã¥À¤¬¤¢¤ê¤Þ¤¹."
-
-#~ msgid "List is not functional."
-#~ msgstr "¥ê¥¹¥È¤Ïµ¡Ç½¤·¤Æ¤¤¤Þ¤»¤ó."
-
-#~ msgid "Bad user - %(sender)s."
-#~ msgstr "ÉÔÀµ¥æ¡¼¥¶ - %(sender)s."
-
-#~ msgid "%(origsender)s isn't subscribed to this list."
-#~ msgstr "%(origsender)s ¤Ï¤³¤Î¥ê¥¹¥È¤Î²ñ°÷¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó."
-
-#~ msgid "Email address '%(origsender)s' not accepted by Mailman."
-#~ msgstr "'%(origsender)s' ¤È¤¤¤¦¥¢¥É¥ì¥¹¤Ï Mailman ¤Ç, ¼õÉÕ¤±¤Ç¤­¤Þ¤»¤ó."
-
-#~ msgid "%(origsender)s is not subscribed to this list."
-#~ msgstr "%(origsender)s ¤Ï, ¤³¤Î¥ê¥¹¥È¤Î²ñ°÷¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó."
-
-#~ msgid "Your stored password is bogus."
-#~ msgstr "ÊÝÂ¸¤·¤Æ¤¢¤ë¥Ñ¥¹¥ï¡¼¥É¤¬Ìµ¸ú¤Ç¤¹."
-
-#~ msgid "Parse subscription request and send confirmation request."
-#~ msgstr "Æþ²ñ¿½ÀÁ¤ò²òÆÉ¤·¤Æ³ÎÇ§Í×µá¤òÁ÷¤ë."
-
-#~ msgid "You must supply a list name"
-#~ msgstr "¥ê¥¹¥ÈÌ¾¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤."
-
-#~ msgid "%(realname)s -- confirmation of subscription -- confirm %(cookie)s"
-#~ msgstr "%(realname)s -- Æþ²ñ³ÎÇ§ -- confirm %(cookie)s"
-
-#~ msgid "%(realname)s -- confirmation of removal -- confirm %(cookie)s"
-#~ msgstr "%(realname)s -- Âà²ñ³ÎÇ§ -- confirm %(cookie)s"
-
-#~ msgid "No such list \"%(listname)s\": %(e)s\n"
-#~ msgstr "%(listname)s ¤È¤¤¤¦¥ê¥¹¥È¤Ï¤¢¤ê¤Þ¤»¤ó: %(e)s\n"
-
-#~ msgid ""
-#~ "Unexpected Mailman error:\n"
-#~ "%(tbmsg)s"
-#~ msgstr ""
-#~ "¸¶°øÉÔÌÀ¤Î Mailman ¥¨¥é¡¼:\n"
-#~ "%(tbmsg)s"
-
-#~ msgid "User %(addr)s on list %(internalname)s has no password"
-#~ msgstr "%(internalname)s ¥ê¥¹¥È¤Î %(addr)s ¤µ¤ó¤Ë¤Ï¥Ñ¥¹¥ï¡¼¥É¤¬¤¢¤ê¤Þ¤»¤ó"
+msgstr "post ¥¹¥¯¥ê¥×¥È, ¥ê¥¹¥È¤¬¤¢¤ê¤Þ¤»¤ó: %(listname)s"

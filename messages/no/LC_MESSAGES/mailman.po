@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1a2\n"
-"POT-Creation-Date: Fri Aug 17 17:24:30 2001\n"
+"POT-Creation-Date: Fri Aug 17 22:12:49 2001\n"
 "PO-Revision-Date: 2001-08-10 15:29+02:00\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"

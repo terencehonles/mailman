@@ -17,7 +17,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
-"POT-Creation-Date: Fri Aug 17 17:24:30 2001\n"
+"POT-Creation-Date: Fri Aug 17 22:12:49 2001\n"
 "PO-Revision-Date: 2001-06-27 16:05-04:00\n"
 "Last-Translator: Juan Carlos Rey Anaya <jcrey@uma.es>\n"
 "Language-Team: Spanish <LL@li.org>\n"

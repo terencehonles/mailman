@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
-"POT-Creation-Date: Fri Aug 17 17:24:30 2001\n"
+"POT-Creation-Date: Fri Aug 17 22:12:49 2001\n"
 "PO-Revision-Date: Thu Jul 28 00:32:21 2001\n"
 "Last-Translator: Ousmane Wilane <wilane@mint.sn>\n"
 "Language-Team: French <traduc@traduc.org>\n"
