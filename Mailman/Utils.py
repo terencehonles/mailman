@@ -338,6 +338,14 @@ def GetPossibleMatchingAddrs(name):
     return res
 
 
+def List2Dict(list):
+    """List2Dict returns a dict keyed by the entries in the list
+    passed to it."""
+    res = {}
+    for item in list:
+        res[item] = 1
+    return res
+
 
 def FindMatchingAddresses(name, dict, *dicts):
     """Given an email address, and any number of dictionaries keyed by

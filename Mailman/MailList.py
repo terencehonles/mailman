@@ -141,8 +141,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def FindUser(self, email):
 	matches = Utils.FindMatchingAddresses(email,
-                                              (self.members,
-                                               self.digest_members))
+                                              self.members,
+                                              self.digest_members)
 	if not matches or not len(matches):
 	    return None
 	return matches[0]
@@ -944,8 +944,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                                 Errors.LOOPING_POST,
                                 msg.getheader('subject'))
 	    if len(self.forbidden_posters):
-		addrs = Utils.FindMatchingAddresses(sender,
-						       self.forbidden_posters)
+                forbidden_posters = Utils.List2Dict(self.forbidden_posters)
+		addrs = Utils.FindMatchingAddresses(sender, forbidden_posters)
 		if len(addrs):
 		    self.AddRequest('post', Utils.SnarfMessage(msg),
 				    Errors.FORBIDDEN_SENDER_MSG,
@@ -955,7 +955,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 				Errors.MODERATED_LIST_MSG,
 				msg.getheader('subject'))
             elif self.moderated and len(self.posters):
-                addrs = Utils.FindMatchingAddresses(sender, self.posters)
+                addrs = Utils.FindMatchingAddresses(sender,
+                                                    Utils.List2Dict(self.posters))
                 if not len(addrs):
                     self.AddRequest('post', Utils.SnarfMessage(msg),
                                     Errors.MODERATED_LIST_MSG,
@@ -964,7 +965,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # not moderated
             #
 	    elif len(self.posters): 
-		addrs = Utils.FindMatchingAddresses(sender, self.posters)
+		addrs = Utils.FindMatchingAddresses(sender,
+                                                    Utils.List2Dict(self.posters))
 		if not len(addrs):
                     if self.member_posting_only:
                         if not self.IsMember(sender):
