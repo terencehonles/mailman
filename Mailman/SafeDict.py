@@ -19,6 +19,8 @@
 from types import StringType
 from UserDict import UserDict
 
+COMMASPACE = ', '
+
 
 
 class SafeDict(UserDict):
@@ -34,3 +36,28 @@ class SafeDict(UserDict):
                 return '%('+key+')s'
             else:
                 return '<Missing key: %s>' % `key`
+
+
+
+class MsgSafeDict(SafeDict):
+    def __init__(self, msg, dict=None):
+        self.__msg = msg
+        SafeDict.__init__(self, dict)
+
+    def __getitem__(self, key):
+        if key.startswith('msg_'):
+            return self.__msg.get(key[4:], 'n/a')
+        elif key.startswith('allmsg_'):
+            return COMMASPACE.join(self.__msg.getall(key[7:], 'n/a'))
+        else:
+            return SafeDict.__getitem__(self, key)
+
+    def copy(self):
+        d = self.data.copy()
+        for k in self.__msg.keys():
+            vals = self.__msg.getall(k)
+            if len(vals) == 1:
+                d['msg_'+k.lower()] = vals[0]
+            else:
+                d['allmsg_'+k.lower()] = COMMASPACE.join(vals)
+        return d
