@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 705 $)
+AC_REVISION($Revision: 707 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -137,15 +137,65 @@ EOF
     $1=`cat conftest.out`
 fi
 changequote([, ])
-if test -z "$$1"
+AC_MSG_RESULT($$1)
+rm -f conftest.out conftest.py])
+
+
+# Group `mailman' must exist
+MM_FIND_GROUP_ID(MAILMAN_GID, mailman, mailman)
+if test -z "$MAILMAN_GID"
 then
     AC_MSG_ERROR([
 
-***** No group for the $3 program found!
-***** Please see the INSTALL file for details])
+***** No `mailman' group found!
+***** Your system must have a `mailman' group defined (usually
+***** in your /etc/group file).  Please see the INSTALL file
+***** file details.])
 fi
-AC_MSG_RESULT($$1)
-rm -f conftest.out conftest.py])
+
+
+# Now make sure that $prefix is set up correctly.  It must be group
+# owned by `mailman', it must have the group sticky bit set, and it
+# must be a+rx
+AC_MSG_CHECKING(permissions on $prefix)
+changequote(,)
+cat > conftest.py <<EOF
+import os, grp, string
+from stat import *
+prefix = '$prefix'
+mailmangid = $MAILMAN_GID
+statdata = os.stat(prefix)
+mode = statdata[ST_MODE]
+gid = statdata[ST_GID]
+problems = []
+if mailmangid <> gid:
+    problems.append("Directory must be owned by group mailman: " + prefix)
+if (mode & S_ISGID) <> S_ISGID:
+    problems.append("Group set-id bit must be set for directory: " + prefix)
+perms = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+if (mode & perms) <> perms:
+    problems.append("Permissions should be at least 0775: " + prefix)
+if not problems:
+    msg = "okay\n"
+else:
+    msg = '***** ' + string.join(problems, '\n***** ') + '\n'
+fp = open("conftest.out", "w")
+fp.write(msg)
+fp.close()
+EOF
+changequote([, ])
+$PYTHON conftest.py
+status=`cat conftest.out`
+rm -f conftest.out conftest.py
+if test "$status" != "okay"
+then
+    AC_MSG_ERROR([
+
+***** Installation directory $prefix is not configured properly!
+$status])
+fi
+AC_MSG_RESULT(okay)
+
 
 # Now find the UIDs and GIDs
 # Support --with-mail-gid and --with-cgi-gid
@@ -158,6 +208,17 @@ then
 fi
 AC_MSG_RESULT($with_mail_gid)
 MM_FIND_GROUP_ID(MAIL_GID, $with_mail_gid, mail_wrapper)
+if test -z "$MAIL_GID"
+then
+    AC_MSG_ERROR([
+
+***** No existing group found for the mail_wrapper program.
+***** This is the group that your mail delivery agent runs under, and
+***** uses to run filter programs.  You might want to specify an
+***** existing group with the --with-mail-gid configure option.
+***** Please see your mail agent's documentation, and the INSTALL file
+***** for details])
+fi
 
 AC_MSG_CHECKING(for --with-cgi-gid)
 AC_ARG_WITH(cgi-gid, [
@@ -168,6 +229,16 @@ then
 fi
 AC_MSG_RESULT($with_cgi_gid)
 MM_FIND_GROUP_ID(CGI_GID, $with_cgi_gid, cgi_wrapper)
+if test -z "$CGI_GID"
+then
+    AC_MSG_ERROR([
+
+***** No existing group found for the cgi_wrapper program.
+***** This is the group that your Web server runs CGI scripts under.
+***** You might want to specify an existing group with the
+***** --with-cgi-gid configure option.  Please see your Web server's
+***** documentation, and the INSTALL file for details])
+fi
 
 #MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
 #MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
