@@ -153,6 +153,26 @@ def checkarchives():
             print
 
 
+MBOXPERMS = S_IRGRP | S_IWGRP | S_IRUSR | S_IWUSR
+
+
+def checkmboxfile(mboxdir):
+    absdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, mboxdir)
+    for f in os.listdir(absdir):
+        if f[-5:] <> '.mbox':
+            continue
+        mboxfile = os.path.join(absdir, f)
+        mode = statmode(mboxfile)
+        if (mode & MBOXPERMS) <> MBOXPERMS:
+            STATE.ERRORS = STATE.ERRORS + 1
+            print 'mbox file must be at least 0660', mboxfile
+            if STATE.FIX:
+                print '(fixing)'
+                os.chmod(mboxfile, mode | MBOXPERMS)
+            else:
+                print
+
+
 def checkarchivedbs():
     # The archives/private/listname/database file must not be other readable
     # or executable otherwise those files will be accessible when the archives
@@ -160,7 +180,7 @@ def checkarchivedbs():
     # anyway.
     for dir in os.listdir(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR):
         if dir[-5:] == '.mbox':
-            continue
+            checkmboxfile(dir)
         dbdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, dir, 'database')
         try:
             mode = statmode(dbdir)
