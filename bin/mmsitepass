@@ -19,46 +19,48 @@
 """Set the site password, prompting from the terminal.
 
 The site password can be used in most if not all places that the list
-administrator's password can be used, which in turn can be used in most
-places that a list users password can be used."""
+administrator's password can be used, which in turn can be used in most places
+that a list users password can be used.
+
+Usage: mmsitepass [password]
+
+If password is not given on the command line, it will be prompted for.
+
+"""
 
 import sys
+import getpass
+
 import paths
-try:
-    import getpass
-except ImportError:
-    # we must be in Python 1.5, which didn't have the getpass module
-    from Mailman.pythonlib import getpass
-from Mailman import MailList
+from Mailman import Utils
 
 
 
-def main(argv):
+def main():
     if len(sys.argv) > 2:
-        print "Usage: mmsitepass [ password ]"
-        raise SystemExit, 1
+        print __doc__
+        sys.exit(1)
     elif len(sys.argv) == 2:
-        pw = sys.argv[1]
+        pw1 = sys.argv[1]
     else:
         try:
-            pw = getpass.getpass("New Password: ")
-            confirm = getpass.getpass("Again to confirm password: ")
-            if pw != confirm:
-                print "Mismatch - password not changed."
-                raise SystemExit, 1
+            pw1 = getpass.getpass("New Password: ")
+            pw2 = getpass.getpass("Again to confirm password: ")
+            if pw1 <> pw2:
+                print 'Passwords do not match; no changes made.'
+                sys.exit(1)
         except KeyboardInterrupt:
             print "Interrupted..."
-            raise SystemExit, 1
-    l = MailList.MailList()
-    l.SetSiteAdminPassword(pw)
-    if l.CheckSiteAdminPassword(pw):
-        print "Password changed."
-        raise SystemExit, 0
+            sys.exit(0)
+    # Set the site password by writing it to a local file.  Make sure the
+    # permissions don't allow other+read.
+    Utils.SetSiteAdminPassword(pw1)
+    if Utils.CheckSiteAdminPassword(pw1):
+        print 'Password changed.'
     else:
-        print "Password change failed."
-        raise SystemExit, 1
+        print 'Password change failed.'
 
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
