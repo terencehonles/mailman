@@ -30,7 +30,7 @@ attempts to fix these by doing a stricter test of the Unix-From lines.  Any
 lines that start "From " but do not pass this stricter test are escaped with a
 > character.
 
-Usage: fixfrom [options] < inputfile > outputfile
+Usage: cleanarch [options] < inputfile > outputfile
 Options:
     -s n
     --status=n
