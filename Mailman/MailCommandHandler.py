@@ -409,12 +409,16 @@ Any questions about the list owner's policy should be directed to:
 
 
     def ProcessHelpCmd(self, args, cmd, mail):
-	self.AddToResponse("**** Help for %s:" % self.real_name)
+	self.AddToResponse("**** Help for %s maillist:" % self.real_name)
 	self.AddToResponse("""
 This is email command help for version %s of the "Mailman" list manager.
 The following describes commands you can send to get information about and
 control your subscription to mailman lists at this site.  A command can
-be in the subject line and many can be in the body of the message.
+be the subject line or in the body of the message.
+
+(Note that much of the following can also be accomplished via the web, at:
+
+	%s )
 
 List specific commands (subscribe, who, etc) should be sent to the
 *-request address for the particular list, e.g. for the 'mailman' list,
@@ -492,5 +496,8 @@ Commands should be sent to %s
 
 Questions and concerns for the attention of a person should be sent to
 %s
-""" % (mm_cfg.VERSION, self.GetRequestEmail(), self.GetAdminEmail()))
+""" % (mm_cfg.VERSION,
+       self.GetScriptURL('listinfo'),
+       self.GetRequestEmail(),
+       self.GetAdminEmail()))
 	
