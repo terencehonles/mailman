@@ -1327,16 +1327,17 @@ def change_options(mlist, category, cgidata, doc):
             if newlang and newlang <> oldlang:
                 mlist.setMemberLanguage(user, newlang)
                   
-            for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
+            for opt in ('hide', 'nomail', 'ack', 'notmetoo', 'plain'):
                 opt_code = MailCommandHandler.option_info[opt]
                 if cgidata.has_key('%s_%s' % (user, opt)):
                     mlist.setMemberOption(user, opt_code, 1)
                 else:
                     mlist.setMemberOption(user, opt_code, 0)
         # Give some feedback on who's been removed
-        doc.AddItem(Header(5, _('Successfully Removed:')))
-        doc.AddItem(UnorderedList(*removes))
-        doc.AddItem('<p>')
+        if removes:
+            doc.AddItem(Header(5, _('Successfully Removed:')))
+            doc.AddItem(UnorderedList(*removes))
+            doc.AddItem('<p>')
         if errors:
             doc.AddItem(Header(5, _("Error Unsubscribing:")))
             items = ['%s -- %s' % (x[0], x[1]) for x in errors]
