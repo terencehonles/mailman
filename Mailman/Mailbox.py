@@ -30,7 +30,7 @@ class Mailbox(mailbox.UnixMailbox):
 	self.fp.write(msg.unixfrom)
 	for line in msg.headers:
 	    self.fp.write(line)
-	if msg.body[0] <> '\n':
+	if not msg.body or msg.body[0] <> '\n':
 	    self.fp.write('\n') 
 	self.fp.write(msg.body)
 	
