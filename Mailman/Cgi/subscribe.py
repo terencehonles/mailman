@@ -163,34 +163,31 @@ def process_form(mlist, doc, cgidata, lang):
         # check for all the errors that mlist.AddMember can throw
         # options  on the web page for this cgi
         except Errors.MMBadEmailError:
-            results += (_("Mailman won't accept the given email "
-                          "address as a valid address. (Does it "
-                          "have an @ in it???)<p>"))
+            results += (_("""\
+Mailman won't accept the given email address as a valid address.
+(E.g it must have an @ in it.)<p>"""))
         except Errors.MMListError:
-            results += (_("The list is not fully functional, and "
-                          "can not accept subscription requests.<p>"))
+            results += (_("""\
+The list is not fully functional, and can not accept subscription
+requests.<p>"""))
         except Errors.MMSubscribeNeedsConfirmation:
-             results += (_("Confirmation from your email address is "
-                           "required, to prevent anyone from "
-                           "subscribing you without permission. "
-                           "Instructions are being "
-                           "sent to you at %(email)s. Please note your "
-                           "subscription will not start until you "
-                           "confirm your subscription."))
-
+             results += (_("""\
+Confirmation from your email address is required, to prevent anyone from
+subscribing you without permission.  Instructions are being sent to you at
+%(email)s. Please note your subscription will not start until you confirm your
+subscription."""))
         except Errors.MMNeedApproval, x:
             # We need to interpolate into x
             realname = mlist.real_name
             x = _(x)
-            results += (_("Subscription was <em>deferred</em> "
-                          "because %(x)s.  Your request has been "
-                          "forwarded to the list administrator.  "
-                          "You will receive email informing you "
-                          "of the moderator's decision when they "
-                          "get to your request.<p>"))
+            results += (_("""\
+Subscription was <em>deferred</em> because %(x)s.  Your request has been
+forwarded to the list moderator.  You will receive email informing you of
+the moderator's decision when they get to your request.<p>"""))
         except Errors.MMHostileAddress:
-            results += (_("Your subscription is not allowed because "
-                          "the email address you gave is insecure.<p>"))
+            results += (_("""\
+Your subscription is not allowed because the email address you gave is
+insecure.<p>"""))
         except Errors.MMAlreadyAMember:
             results += _("You are already subscribed!<p>")
         #
