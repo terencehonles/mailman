@@ -1,19 +1,20 @@
-%(listname)s -- confirmation of subscription -- confirm %(cookie)s
+Subscription confirmation notice for mailing list %(listname)s
 
 We have received a request%(remote)s for subscription of your email
-address, <%(email)s>, to the %(listaddr)s mailing list.  To confirm
-the request, please send a message to %(requestaddr)s, and either:
+address, "%(email)s", to the %(listaddr)s mailing list.  To confirm
+this request, simply reply to this message, keeping the Subject:
+header intact.  Or visit this web page:
 
-- maintain the subject line as is (the reply's additional "Re:" is ok),
+    %(confirmurl)s
 
-- or include the following line - and only the following line - in
-the message body: 
+Or include the following line -- and only the following line -- in a
+message to %(requestaddr)s:
 
-confirm %(cookie)s
+    confirm %(cookie)s
 
-(Simply sending a 'reply' to this message should work from most email
-interfaces, since that usually leaves the subject line in the right
-form.)
+Note that simply sending a `reply' to this message should work from
+most email interfaces, since that usually leaves the Subject: line in
+the right form (additional "Re:" text in the Subject: is okay).
 
 If you do not wish to subscribe to this list, please simply disregard
 this message.  Send questions to %(listadmin)s.
