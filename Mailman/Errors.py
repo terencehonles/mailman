@@ -1,4 +1,7 @@
-MODERATED_LIST_MSG	= "Moderated list."
+MODERATED_LIST_MSG    = "Moderated list"
+IMPLICIT_DEST_MSG     = "Implicit destination"
+SUSPICIOUS_HEADER_MSG = "Suspicious header"
+FORBIDDEN_SENDER_MSG  = "Forbidden sender"
 
 MMUnknownListError   = "MMUnknownListError"
 MMBadListError       = "MMBadListError"
