@@ -63,6 +63,7 @@ import socket
 import time
 import errno
 import random
+import traceback
 from stat import ST_NLINK, ST_MTIME
 
 # Units are floating-point seconds.
@@ -403,7 +404,9 @@ class LockFile:
 
     def __writelog(self, msg):
         if self.__withlogging:
-            _get_logfile().write('%s %s\n' % (self.__logprefix, msg))
+            logf = _get_logfile()
+            logf.write('%s %s\n' % (self.__logprefix, msg))
+            traceback.print_stack(file=logf)
 
     def __write(self):
         # Make sure it's group writable
