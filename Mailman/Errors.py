@@ -115,6 +115,10 @@ class DiscardMessage(HandlerError):
 
 class SomeRecipientsFailed(HandlerError):
     """Delivery to some or all recipients failed"""
+    def __init__(self, tempfailures, permfailures):
+        HandlerError.__init__(self)
+        self.tempfailures = tempfailures
+        self.permfailures = permfailures
 
 # multiple inheritance for backwards compatibility
 class LoopError(DiscardMessage, MMLoopingPost):
