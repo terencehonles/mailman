@@ -222,7 +222,7 @@ def FormatAdminOverview(error=None):
                       " an unadvertised list, open a URL similar to this"
                       +
                       (" one, but with a '/' and the %slist name appended.<p>"
-                       % ((error and "the right ") or ""))
+                       % ((error and "right ") or ""))
                       +
                       " General list information can be found at ",
                       Link("%slistinfo%s" % ('../' * Utils.GetNestingLevel(),
