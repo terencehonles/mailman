@@ -41,11 +41,6 @@ Options:
     -d file
         Similar to above, but these people become digest members.
 
-    --changes-msg=<y|n>
-    -c <y|n>
-        Set whether or not to send the list members the `there's going to be
-        big changes to your list' message. defaults to no.
-
     --welcome-msg=<y|n>
     -w <y|n>
         Set whether or not to send the list members a welcome message,
@@ -116,31 +111,6 @@ def readfile(filename):
 
 
 
-def SendExplanation(mlist, users):
-    listname = mlist.real_name
-    listhost = mlist.host_name
-    d = {'listname'    : listname,
-         'listhost'    : listhost,
-         'listaddr'    : mlist.GetListEmail(),
-         'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-         'requestaddr' : mlist.GetRequestEmail(),
-         'adminaddr'   : mlist.GetOwnerEmail(),
-         'version'     : mm_cfg.VERSION,
-         }
-    otrans = i18n.get_translation()
-    i18n.set_language(mlist.preferred_language)
-    try:
-        text = Utils.maketext('convert.txt', d)
-        subject = _('Big change in %(listname)s@%(listhost)s mailing list')
-        msg = Message.UserNotification(users, mlist.GetBouncesEmail(),
-                                       subject, text,
-                                       mlist.preferred_language)
-    finally:
-        i18n.set_translation(otrans)
-    msg.send(mlist)
-
-
-
 class Tee:
     def __init__(self, outfp):
         self.__outfp = outfp
@@ -180,12 +150,11 @@ def addall(mlist, members, digest, ack, outfp):
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   'a:n:r:d:c:w:h',
+                                   'a:n:r:d:w:h',
                                    ['admin-notify=',
                                     'regular-members-file=',
                                     'non-digest-members-file=',
                                     'digest-members-file=',
-                                    'changes-msg=',
                                     'welcome-msg=',
                                     'help'])
     except getopt.error, msg:
@@ -197,7 +166,6 @@ def main():
     listname = args[0].lower().strip()
     nfile = None
     dfile = None
-    send_changes_msg = 0
     send_welcome_msg = None
     admin_notif = None
     for opt, arg in opts:
@@ -214,13 +182,6 @@ def main():
             # I don't think we need to use the warnings module here.
             print >> sys.stderr, 'option', opt, \
                   'is deprecated, use -r/--regular-members-file'
-        elif opt in ('-c', '--changes-msg'):
-            if arg.lower()[0] == 'y':
-                send_changes_msg = 1
-            elif arg.lower()[0] == 'n':
-                send_changes_msg = 0
-            else:
-                usage(1, _('Bad argument to -c/--changes-msg: %(arg)s'))
         elif opt in ('-w', '--welcome-msg'):
             if arg.lower()[0] == 'y':
                 send_welcome_msg = 1
@@ -283,9 +244,6 @@ def main():
                 mlist.owner, Utils.get_site_email(), subject, s.getvalue(),
                 mlist.preferred_language)
             msg.send(mlist)
-
-        if send_changes_msg:
-            SendExplanation(mlist, nmembers + dmembers)
 
         mlist.Save()
     finally:
