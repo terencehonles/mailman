@@ -166,7 +166,7 @@ def main():
     if not quiet:
         print _('Hit enter to notify %(listname)s owner...'),
         sys.stdin.readline()
-        siteadmin = Utils.get_site_email(mlist.host_name, '-admin')
+        siteadmin = Utils.get_site_email(mlist.host_name, 'admin')
         text = Utils.maketext(
             'newlist.txt',
             {'listname'    : listname,
