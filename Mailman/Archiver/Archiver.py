@@ -108,7 +108,7 @@ class Archiver:
             mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
             self._internal_name)
         try:
-            mkdir(self.private_archive_file_dir, mode=02775)
+            mkdir(self.private_archive_file_dir)
         except os.error, e:
             code, msg = e
             if code <> errno.EEXIST:
@@ -150,11 +150,8 @@ class Archiver:
 
     def __archive_file(self, afn):
 	"""Open (creating, if necessary) the named archive file."""
-	ou = os.umask(002)
-	try:
-            return Mailbox.Mailbox(open(afn, "a+"))
-	finally:
-	    os.umask(ou)
+        from Mailman.Utils import open_ex
+        return Mailbox.Mailbox(open_ex(afn, "a+"))
 
     #
     # old ArchiveMail function, retained under a new name
@@ -175,6 +172,7 @@ class Archiver:
             self.LogMsg("error", ("Archive file access failure:\n"
                                   "\t%s %s"
                                   % (afn, `msg[1]`)))
+            reraise(msg)
         if self.clobber_date:
             # Resurrect original date setting.
             post.SetHeader('Date', olddate)
