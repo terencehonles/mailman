@@ -1,8 +1,8 @@
 Ditt medlemskap på epostlisten %(listname)s er midlertidig skrudd av
-på grunn av for mange returmeldinger fra din epostadresse. Du vil ikke
-motta flere meldinger fra denne listen inntil du skrur medlemskapet
-ditt på igjen. Du vil motta %(noticesleft)s påminnelser som denne før
-du blir meldt ut av listen.
+%(reason)s.
+Du vil ikke motta flere meldinger fra denne listen inntil
+du skrur medlemskapet ditt på igjen. Du vil motta %(noticesleft)s
+påminnelser som denne før du blir meldt ut av listen.
 
 For å skru på mottak av meldinger igjen, kan du svare på denne eposten
 (med Subject: feltet slik det er), eller gå inn på denne websiden:
