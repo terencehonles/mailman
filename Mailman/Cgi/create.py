@@ -173,7 +173,7 @@ def process_request(doc, cgidata):
         if mm_cfg.MTA:
             modname = 'Mailman.MTA.' + mm_cfg.MTA
             __import__(modname)
-            sys.modules[modname].create(mlist)
+            sys.modules[modname].create(mlist, cgi=1)
 
         # And send the notice to the list owner.  BAW: Note that we might be
         # setting the wrong From: address.  There should probably be a
