@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4\n"
 "POT-Creation-Date: Sun Oct 20 11:44:44 2002\n"
-"PO-Revision-Date: 2002-10-10 21:20GMT\n"
+"PO-Revision-Date: 2002-10-20 18:34GMT\n"
 "Last-Translator: Simone Piunno <pioppo@ferrara.linux.it>\n"
 "Language-Team: Italian <mailman-it@ferrara.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -750,8 +750,7 @@ msgstr ""
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
-msgstr ""
-"<b>conferma</b> -- L'iscritto deve ricevere conferma dei messaggi che manda?"
+msgstr "<b>conferma</b> -- L'iscritto deve ricevere conferma dei messaggi che manda?"
 
 # /home/mailman/Mailman/Cgi/admin.py:619
 #: Mailman/Cgi/admin.py:1004
@@ -3038,8 +3037,7 @@ msgstr ""
 msgid ""
 "You are not current a member.  Have you already unsubscribed or changed\n"
 "your email address?"
-msgstr ""
-"Non sei un iscritto.  Ti sei già cancellato o hai cambiato il tuo indirizzo?"
+msgstr "Non sei un iscritto.  Ti sei già cancellato o hai cambiato il tuo indirizzo?"
 
 #: Mailman/Commands/cmd_confirm.py:66
 msgid "Confirmation succeeded"
@@ -4587,8 +4585,7 @@ msgstr "Normale"
 # /home/mailman/Mailman/Digester.py:64
 #: Mailman/Gui/Digest.py:52
 msgid "Which delivery mode is the default for new users?"
-msgstr ""
-"Qual &egrave; la modalit&agrave; di invio predefinita per i nuovi iscritti?"
+msgstr "Qual &egrave; la modalit&agrave; di invio predefinita per i nuovi iscritti?"
 
 #: Mailman/Gui/Digest.py:55
 msgid "MIME"
@@ -4610,8 +4607,7 @@ msgid "How big in Kb should a digest be before it gets sent out?"
 msgstr "Quanti Kb dovrebbe essere grande un digest prima di essere inviato?"
 
 #: Mailman/Gui/Digest.py:63
-msgid ""
-"Should a digest be dispatched daily when the size threshold isn't reached?"
+msgid "Should a digest be dispatched daily when the size threshold isn't reached?"
 msgstr ""
 "I digest devono essere inviati giornalmente anche se non raggiungono la "
 "dimensione minima?"
@@ -4625,8 +4621,7 @@ msgstr "Intestazione aggiunta ad ogni digest"
 msgid ""
 "Text attached (as an initial message, before the table of contents) to the "
 "top of digests. "
-msgstr ""
-"Testo inserito (come introduzione, prima del sommario) in cima ai digest."
+msgstr "Testo inserito (come introduzione, prima del sommario) in cima ai digest."
 
 # /home/mailman/Mailman/Digester.py:85
 #: Mailman/Gui/Digest.py:73
@@ -5352,8 +5347,7 @@ msgstr ""
 # /home/mailman/Mailman/MailList.py:480
 #: Mailman/Gui/General.py:298
 msgid "Send goodbye message to members when they are unsubscribed?"
-msgstr ""
-"Devo inviare un messaggio di saluto agli iscritti quando si cancellano?"
+msgstr "Devo inviare un messaggio di saluto agli iscritti quando si cancellano?"
 
 #: Mailman/Gui/General.py:301
 msgid ""
@@ -6259,8 +6253,7 @@ msgstr "Filtri per iscritti"
 
 #: Mailman/Gui/Privacy.py:189
 msgid "By default, should new list member postings be moderated?"
-msgstr ""
-"I messaggi inviati dai nuovi iscritti devono essere moderati per default?"
+msgstr "I messaggi inviati dai nuovi iscritti devono essere moderati per default?"
 
 #: Mailman/Gui/Privacy.py:191
 msgid ""
@@ -6881,7 +6874,7 @@ msgstr "Servizio conversione Mail-to-News e News-to-Mail."
 
 #: Mailman/Gui/Usenet.py:37
 msgid "News server settings"
-msgstr ""
+msgstr "Configurazione del news server"
 
 # /home/mailman/Mailman/GatewayManager.py:48
 #: Mailman/Gui/Usenet.py:40
@@ -6907,41 +6900,36 @@ msgstr ""
 # /home/mailman/Mailman/GatewayManager.py:55
 #: Mailman/Gui/Usenet.py:48
 msgid "The name of the Usenet group to gateway to and/or from."
-msgstr ""
-"Il nome del gruppo Usenet verso il quale eseguire la conversione da e per."
+msgstr "Il nome del gruppo Usenet verso il quale eseguire la conversione da e per."
 
 #: Mailman/Gui/Usenet.py:51
 msgid ""
 "Should new posts to the mailing list be sent to the\n"
 "             newsgroup?"
-msgstr ""
-"I nuovi messaggi mandati alla lista dovrebbero essere inoltrati al newsgroup?"
+msgstr "I nuovi messaggi mandati alla lista dovrebbero essere inoltrati al newsgroup?"
 
 #: Mailman/Gui/Usenet.py:55
 msgid ""
 "Should new posts to the newsgroup be sent to the mailing\n"
 "             list?"
-msgstr ""
-"I nuovi messaggi inviati al newsgroup dovrebbero essere inoltrati alla lista?"
+msgstr "I nuovi messaggi inviati al newsgroup dovrebbero essere inoltrati alla lista?"
 
 # /home/mailman/Mailman/Cgi/admin.py:44
 #: Mailman/Gui/Usenet.py:58
-#, fuzzy
 msgid "Forwarding options"
-msgstr "Opzioni di archiviazione"
+msgstr "Opzioni di inoltro"
 
 #: Mailman/Gui/Usenet.py:61
-#, fuzzy
 msgid "Moderated"
-msgstr "Moderatore"
+msgstr "Moderato"
 
 #: Mailman/Gui/Usenet.py:61
 msgid "Open list, moderated group"
-msgstr ""
+msgstr "Lista aperta, gruppo moderato"
 
 #: Mailman/Gui/Usenet.py:64
 msgid "The moderation policy of the newsgroup."
-msgstr ""
+msgstr "La stessa poltica del gruppo"
 
 #: Mailman/Gui/Usenet.py:66
 msgid ""
@@ -6979,11 +6967,37 @@ msgid ""
 "             Mailman moderation facilities, but to add an <tt>Approved</tt>\n"
 "             header to all messages that are gatewayed to Usenet."
 msgstr ""
+"Questa impostazione determina la politica di moderazione del gruppo\n"
+"             e le sue interazioni con la politica di moderazione della\n"
+"             lista.  Questo si applica soltanto per i gruppi verso i\n"
+"             quali stai inoltrando i messaggi della lista, quindi metti\n"
+"             questa opzione a <em>Nessuno</em> se stai inoltrando solo\n"
+"             da Usenet verso la lista o se il gruppo interessato non\n"
+"             &egrave; moderato.\n"
+"\n"
+"             <p>Se il gruppo &egrave; moderato, puoi usare questa\n"
+"             lista come indirizzo di moderazione per il gruppo.\n"
+"             Scegliendo <em>Moderato</em>, sar&agrave; aggiunto uno\n"
+"             stato di sospensione addizionale al processo di approvazione\n"
+"             dei messaggi.  Tutti i messaggi inviati alla lista dovranno\n"
+"             essere approvati prima di essere spediti al gruppo o agli\n"
+"             iscritti della lista.\n"
+"\n"
+"             <p><em>Nota che se il messaggio ha un campo <tt>Approved</tt>\n"
+"             contenente la password di amministrazione della lista, questo\n"
+"             controllo sar&agrave; saltato, permettendo in questo modo ad\n"
+"             alcune persone privilegiate di inviare messaggi direttamente\n"
+"             alla lista e al gruppo.</em>\n"
+"\n"
+"             <p>Infine, se il gruppo &egrave; moderato ma vuoi avere una\n"
+"             politica di invio aperto in ogni caso, puoi selezionare\n"
+"             <em>Lista aperta, gruppo moderato</em>.  L'effetto di\n"
+"             questa scelta &egrave; che tutti i messaggi inoltrati a\n"
+"             Usenet conterranno un campo <tt>Approved</tt>."
 
 #: Mailman/Gui/Usenet.py:92
 msgid "Prefix <tt>Subject:</tt> headers on postings gated to news?"
-msgstr ""
-"Metto il prefisso nel <tt>Subject:</tt> dei messaggi inoltrati ai newsgroup?"
+msgstr "Metto il prefisso nel <tt>Subject:</tt> dei messaggi inoltrati ai newsgroup?"
 
 #: Mailman/Gui/Usenet.py:93
 msgid ""
@@ -7008,9 +7022,8 @@ msgstr ""
 "             newsgroup non viene modificato."
 
 #: Mailman/Gui/Usenet.py:101
-#, fuzzy
 msgid "Mass catch up"
-msgstr "Messa in pari completata"
+msgstr "Messa in pari di massa"
 
 #: Mailman/Gui/Usenet.py:104
 msgid "Should Mailman perform a <em>catchup</em> on the newsgroup?"
@@ -7368,8 +7381,7 @@ msgstr "Visita la Lista degli Iscritti"
 # /home/mailman/Mailman/HTMLFormatter.py:334
 #: Mailman/HTMLFormatter.py:344
 msgid "Once a month, your password will be emailed to you as a reminder."
-msgstr ""
-"Una volta al mese, la tua password ti verr&agrave; spedita come promemoria."
+msgstr "Una volta al mese, la tua password ti verr&agrave; spedita come promemoria."
 
 # /home/mailman/Mailman/HTMLFormatter.py:373
 #: Mailman/HTMLFormatter.py:390
@@ -7405,8 +7417,7 @@ msgstr "Sospensione di emergenza per tutti i messaggi attivata"
 
 #: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:58
 msgid "Your message was deemed inappropriate by the moderator."
-msgstr ""
-"Il tuo messaggio &egrave; stato giudicato inappropriato dal moderatore."
+msgstr "Il tuo messaggio &egrave; stato giudicato inappropriato dal moderatore."
 
 #: Mailman/Handlers/Hold.py:53
 msgid "Sender is explicitly forbidden"
@@ -7499,9 +7510,8 @@ msgstr ""
 "in modo che diventi meno di %(kb)d KB."
 
 #: Mailman/Handlers/Hold.py:110
-#, fuzzy
 msgid "Posting to a moderated newsgroup"
-msgstr "Messaggio inviato ad una lista moderata"
+msgstr "Messaggio inviato ad un gruppo moderato"
 
 #: Mailman/Handlers/Hold.py:233
 msgid "Your message to %(listname)s awaits moderator approval"
@@ -8539,8 +8549,7 @@ msgstr "    controllo di gid e modo per %(path)s"
 
 #: bin/check_perms:93
 msgid "%(path)s bad group (has: %(groupname)s, expected %(MAILMAN_GROUP)s)"
-msgstr ""
-"gruppo errato per %(path)s (ha %(groupname)s invece di %(MAILMAN_GROUP)s)"
+msgstr "gruppo errato per %(path)s (ha %(groupname)s invece di %(MAILMAN_GROUP)s)"
 
 #: bin/check_perms:116
 msgid "directory permissions must be %(octperms)s: %(path)s"
@@ -9797,8 +9806,7 @@ msgstr ""
 
 #: bin/mailmanctl:274
 msgid "Run this program as root or as the %(name)s user, or use -u."
-msgstr ""
-"Esegui questo programma come root o come l'utente %(name)s, oppure usa -u."
+msgstr "Esegui questo programma come root o come l'utente %(name)s, oppure usa -u."
 
 # /home/mailman/Mailman/ListAdmin.py:210
 #: bin/mailmanctl:305
@@ -10670,6 +10678,8 @@ msgstr "ATTENZIONE: non riesco ad acquisire il lock per la lista: %(listname)s"
 #: bin/update:209
 msgid "Resetting %(n)s BYBOUNCEs disabled addrs with no bounce info"
 msgstr ""
+"Riabilito %(n)s indirizzi che erano stati disabilitati per errori di "
+"spedizione ma per i quali non abbiamo altre informazioni"
 
 #: bin/update:215
 msgid "Updating the held requests database."
@@ -11219,8 +11229,7 @@ msgstr "Eseguo %(module)s.%(callable)s()..."
 
 #: bin/withlist:266
 msgid "The variable `m' is the %(listname)s MailList instance"
-msgstr ""
-"La variabile `m' è l'istanza dell'oggetto MailList per la lista %(listname)s"
+msgstr "La variabile `m' è l'istanza dell'oggetto MailList per la lista %(listname)s"
 
 #: cron/bumpdigests:19
 msgid ""
@@ -11544,3 +11553,4 @@ msgstr ""
 "    --listname=nomelista\n"
 "        Invia il digest soltanto per la lista indicata, altrimenti viene\n"
 "        inviato per tutte.\n"
+
