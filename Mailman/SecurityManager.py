@@ -141,10 +141,12 @@ class SecurityManager:
                 # response being passed in is plain text, so we need to
                 # digestify it first.
                 if ac in (mm_cfg.AuthListAdmin, mm_cfg.AuthListModerator):
-                    response = sha.new(response).hexdigest()
+                    chkresponse = sha.new(response).hexdigest()
+                else:
+                    chkresponse = response
 
                 key, secret = self.AuthContextInfo(ac, user)
-                if secret is not None and response == secret:
+                if secret is not None and chkresponse == secret:
                     return ac
         return mm_cfg.UnAuthorized
 
