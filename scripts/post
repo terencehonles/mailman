@@ -44,9 +44,10 @@ LogStdErr("error", "post")
 # TODO: This can fail, and should send back an error message when it does.
 current_list = MailList.MailList(sys.argv[1])
 if len(sys.argv) > 2:
-    current_list.tmp_prevent_gate = 1
+    # assert sys.argv[1] == 'fromusenet'
+    fromusenet = 1
 else:
-    current_list.tmp_prevent_gate = 0
+    fromusenet = 0
 try:
     prog = current_list.filter_prog
     if prog:
@@ -60,9 +61,16 @@ try:
     else:
 	text = sys.stdin.read()
     msg = Message.IncomingMessage(text)
-
+    # this attribute is a flag to both the GatewayManager and the approval
+    # mechanism.  When a message originates from Usenet, we do not want to
+    # post it back there again.  Also, such messages are never held for
+    # approval.  It makes no sense to send an acknowledgement to the author --
+    # who may not even know of the mailing list's existance.  It *might* still
+    # make sense to hold the message for approval, but I suspect that's just
+    # more of a PITA for the list owner.
+    msg.fromusenet = fromusenet
     try:
-	current_list.Post(msg)
+	current_list.Post(msg, approved=fromusenet)
     except Errors.MMNeedApproval, err_msg:
 	if (current_list.dont_respond_to_post_requests
             or err_msg == Errors.MODERATED_LIST_MSG):
