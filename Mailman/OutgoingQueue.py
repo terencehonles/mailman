@@ -75,7 +75,24 @@ def processQueue():
         if TEMPLATE != file[:len(TEMPLATE)]:
             continue
         full_fname = os.path.join(mm_cfg.DATA_DIR, file)
-        st = os.stat(full_fname)
+        #
+        # we need to stat the file if it still exists (atomically, we
+        # can't use use os.path.exists then stat.
+        # if it doesn't exist, it's been dequeued since we saw
+        # it in the directory listing
+        #
+        try:
+            st = os.stat(full_fname)
+        except os.error, rest:
+            try:
+                code, msg = rest
+            except ValueError:
+                code = ""
+                msg = str(rest)
+            if code == errno.ENOENT: # file does not exist, it's already been dequeued
+                continue
+            else:
+                raise os.error, rest
         #
         # if the file is not a deferred q message, we check to
         # see if the creation time was too long ago and process
