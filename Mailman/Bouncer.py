@@ -78,6 +78,10 @@ class Bouncer:
             mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL
         self.bounce_unrecognized_goes_to_list_owner = \
             mm_cfg.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER
+        self.bounce_notify_owner_on_disable = \
+            mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE
+        self.bounce_notify_owner_on_removal = \
+            mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL
         # Not configurable...
         #
         # This holds legacy member related information.  It's keyed by the
@@ -146,7 +150,8 @@ class Bouncer:
                info.score, self.bounce_score_threshold)
         self.setDeliveryStatus(member, MemberAdaptor.BYBOUNCE)
         self.sendNextNotification(member)
-        self.__sendAdminBounceNotice(member, msg)
+        if self.bounce_notify_owner_on_disable:
+            self.__sendAdminBounceNotice(member, msg)
         
     def __sendAdminBounceNotice(self, member, msg):
         # BAW: This is a bit kludgey, but we're not providing as much
@@ -185,8 +190,10 @@ class Bouncer:
             return
         if info.noticesleft <= 0:
             # BAW: Remove them now, with a notification message
-            self.ApprovedDeleteMember(member, 'bouncing address',
-                                      admin_notif=1, userack=1)
+            self.ApprovedDeleteMember(
+                member, 'bouncing address',
+                admin_notif=self.bounce_notify_owner_on_removal,
+                userack=1)
             # Expunge the pending cookie for the user.  We throw away the
             # returned data.
             Pending.confirm(info.cookie)
