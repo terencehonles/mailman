@@ -35,10 +35,14 @@ def process(mlist, msg, msgdata):
         # TBD: we may want to further filter Usenet messages, so the test
         # above may not be entirely correct.
         return
-    # See if the message has an Approved: header with a valid password
-    passwd = msg['approved']
-    if passwd and mlist.ValidAdminPassword(passwd):
-        # TBD: should we definitely deny if the password exists but does not
+    # See if the message has an Approved: or Approve: header with a valid
+    # list-moderator, list-admin, or site-admin password
+    missing = []
+    passwd = msg.get('approved', msg.get('approve', missing))
+    if passwd is not missing and mlist.Authenticate((mm_cfg.AuthListModerator,
+                                                     mm_cfg.AuthListAdmin),
+                                                    passwd):
+        # BAW: should we definitely deny if the password exists but does not
         # match?  For now we'll let it percolate up for further determination.
         msgdata['approved'] = 1
     # has this message already been posted to this list?
