@@ -44,7 +44,9 @@ def process(mlist, msg):
             refused = conn.sendmail(msg.GetSender(), msg.recips, str(msg))
         finally:
             t1 = time.time()
-            mlist.LogMsg('smtp', 'smtp completed in %.3f seconds' % (t1-t0))
+            mlist.LogMsg('smtp',
+                         'smtp for %d recips, completed in %.3f seconds' %
+                         (len(msg.recips), (t1-t0)))
             conn.quit()
     except smtplib.SMTPRecipientsRefused, e:
         refused = e.recipients
