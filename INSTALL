@@ -15,7 +15,9 @@ transparently.  However, please note the following exceptions:
 
     - If upgrading from version 1.0b4 or earlier, templates need to be
     moved.   For  each  list,  move $prefix/templates/<listname>/*  to
-    $prefix/lists/<listname>.
+    $prefix/lists/<listname>.  Be careful about stomping template
+    changes that your list managers have changed!  (Only the
+    options.html template changed from 1.0b5 to 1.0b6.)
 
 0. Installation requirements
 
