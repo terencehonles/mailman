@@ -39,22 +39,16 @@ def process(mlist, msg, msgdata):
             return
     except Errors.NotAMemberError:
         return
-    # Okay, they want acknowledgement of their post
-    subject = msg['subject']
-    # Trim off the subject prefix
-    if subject:
-        prefix = mlist.subject_prefix
-        if subject.startswith(prefix):
-            subject = subject[len(prefix):]
-    else:
-        subject = _('(no subject)')
+    # Okay, they want acknowledgement of their post.  Give them their original
+    # subject.  BAW: do we want to use the decoded header?
+    origsubj = msgdata.get('origsubj', msg.get('subject', _('(no subject)')))
     # Get the user's preferred language
     lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
     # Now get the acknowledgement template
     realname = mlist.real_name
     text = Utils.maketext(
         'postack.txt',
-        {'subject'     : subject,
+        {'subject'     : origsubj,
          'listname'    : realname,
          'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
          }, lang=lang, mlist=mlist)
