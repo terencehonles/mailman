@@ -63,8 +63,6 @@ NL = '\n'
 
 
 def main():
-    global CATEGORIES
-
     # Try to find out which list is being administered
     parts = Utils.GetPathPieces()
     if not parts:
@@ -89,7 +87,7 @@ def main():
     if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
                                   mm_cfg.AuthSiteAdmin),
                                  cgidata.getvalue('adminpw', '')):
-        if cgidata.has_key('admlogin'):
+        if cgidata.has_key('adminpw'):
             # This is a re-authorization attempt
             msg = Bold(FontSize('+1', _('Authorization failed.'))).Format()
         else:
@@ -356,8 +354,6 @@ def option_help(mlist, varhelp):
 
 def show_results(mlist, doc, category, category_suffix, cgidata):
     # Produce the results page
-    global CATEGORIES
-
     adminurl = mlist.GetScriptURL('admin')
 
     for k, v in CATEGORIES:
