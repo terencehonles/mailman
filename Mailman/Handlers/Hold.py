@@ -39,6 +39,7 @@ except ImportError:
     import pickle
 
 import HandlerAPI
+from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
 
@@ -177,6 +178,7 @@ def hold_for_approval(mlist, msg, excclass):
     mlist.LogMsg('vette', '%s post from %s held: %s' %
                  (listname, sender, reason))
     if mlist.admin_immed_notify:
+        # get the text from the template
         subject = '%s post from %s requires approval' % (listname, sender)
         text = Utils.maketext(
             'postauth.txt',
@@ -187,10 +189,10 @@ def hold_for_approval(mlist, msg, excclass):
              'subject'    : msg.get('subject', '(no subject)'),
              'admindb_url': mlist.GetAbsoluteScriptURL('admindb'),
              }, raw=1)
-        # TBD: we should send the message to the admin using the same
-        # mechanism used to post messages to the list (e.g. if we're doing
-        # sendmail injection, we should use it for all sent messages)
-        mlist.SendTextToUser(subject=subject,
-                             recipient=mlist.GetAdminEmail(),
-                             text=text)
+        # craft the admin notification message and deliver it
+        adminaddr = mlist.GetAdminEmail()
+        msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
+        HandlerAPI.DeliverToUser(mlist, msg)
+    # raise the specific MessageHeld exception to exit out of the message
+    # delivery pipeline
     raise excclass
