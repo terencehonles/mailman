@@ -144,6 +144,7 @@ def main():
         if mbox is None:
             mbox = mlist.ArchiveFileName()
 
+        i18n.set_language(mlist.preferred_language)
         # lay claim to the archive's lock file.  this is so no other post can
         # mess up the archive while we're glomming it.  we pick a suitably
         # long period of time for the lock lifetime, however we really don't
