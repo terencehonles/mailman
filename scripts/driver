@@ -22,16 +22,6 @@ import sys
 
 # From here on we are as bulletproof as possible!
 
-# The driver script prints out a lot of information when a Mailman bug is
-# encountered.  This really helps for development, but it also reveals
-# information about the host system that some administrators are not
-# comfortable with.  By setting STEALTH_MODE to 1, you disable the printing of
-# this information to the web pages.  This information is still, and always,
-# printed in the error logs.
-STEALTH_MODE = 0
-
-
-
 # This standard driver script is used to run CGI programs, wrapped in code
 # that catches errors, and displays them as HTML.  This guarantees that
 # (almost) any problem in the Mailman software doesn't result in a Web server
@@ -51,6 +41,7 @@ STEALTH_MODE = 0
 #   This would indicate a serious problem with the Python installation, so
 #   it's also highly unlikely to occur.
 
+
 
 def run_main():
     # These will ensure that even if something between now and the
@@ -63,9 +54,9 @@ def run_main():
         from Mailman.Logging.StampedLogger import StampedLogger
         logger = StampedLogger('error',
                                label='admin',
-                               manual_reprime=1,
-                               nofail=0,
-                               immediate=1)
+                               manual_reprime=True,
+                               nofail=False,
+                               immediate=True)
         # Collect stdout in a cStringIO so that if /any/ errors occur during
         # printing it won't mess up our diagnostics page.
         from cStringIO import StringIO
@@ -112,9 +103,10 @@ def print_traceback(logfp=None):
     except ImportError:
         traceback = None
     try:
-        from Mailman.mm_cfg import VERSION
+        from Mailman.mm_cfg import VERSION, STEALTH_MODE
     except ImportError:
         VERSION = '&lt;undetermined&gt;'
+        STEALTH_MODE = False
 
     # Write to the log file first.
     print >> logfp, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
@@ -162,6 +154,12 @@ def print_environment(logfp=None):
         import os
     except ImportError:
         os = None
+
+    try:
+        from Mailman.mm_cfg import STEALTH_MODE
+    except ImportError:
+        VERSION = '&lt;undetermined&gt;'
+        STEALTH_MODE = False
 
     # Write some information about our Python executable to the log file.
     print >> logfp, '[----- Python Information -----]'
