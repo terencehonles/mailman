@@ -59,7 +59,7 @@ def ScanMessages(mlist, msg, testing=0):
                     try:
                         mlist.RegisterBounce(addr, msg)
                     except Exception, e:
-                        syslog('error', 'Delivery exception: %s' % e)
+                        syslog('error', 'Bouncer exception: %s' % e)
                         s = StringIO()
                         traceback.print_exc(file=s)
                         syslog('error', s.getvalue())
