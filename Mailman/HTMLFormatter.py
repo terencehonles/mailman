@@ -342,9 +342,12 @@ class HTMLFormatter:
         values = self.GetAvailableLanguages()
         legend = map(_, map(Utils.GetLanguageDescr, values))
         try:
-            selected = values.index(self.preferred_language)
+            selected = values.index(lang)
         except ValueError:
-            selected = mm_cfg.DEFAULT_SERVER_LANGUAGE
+            try:
+                selected = values.index(self.preferred_language)
+            except ValueError:
+                selected = mm_cfg.DEFAULT_SERVER_LANGUAGE
 
         return { 
             '<mm-mailman-footer>' : self.GetMailmanFooter(),
