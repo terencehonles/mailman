@@ -206,7 +206,7 @@ def process_request(doc, cgidata):
         table = Table(border=0, width='100%')
         table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
         table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                          bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                          bgcolor=mm_cfg.WEB_HEADER_COLOR)
         table.AddRow([_('''You have successfully created the mailing list
         <b>%(listname)s</b> and notification has been sent to the list owner
         <b>%(owner)s</b>.  You can now:''')])
@@ -243,7 +243,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
     # Add any error message
     if errmsg:
         table.AddRow([Header(3, Bold(

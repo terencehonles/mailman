@@ -152,7 +152,7 @@ def process_request(doc, cgidata, mlist):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
     table.AddRow([_('''You have successfully deleted the mailing list
     <b>%(listname)s</b>.''')])
     doc.AddItem(table)
@@ -175,7 +175,7 @@ def request_deletion(doc, mlist, errmsg=None):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
     # Add any error message
     if errmsg:

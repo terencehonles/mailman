@@ -78,7 +78,7 @@ def listinfo_overview(msg=''):
     table = Table(border=0, width="100%")
     table.AddRow([Center(Header(2, legend))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
     # Skip any mailing lists that isn't advertised.
     advertised = []
