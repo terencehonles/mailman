@@ -93,7 +93,8 @@ def process(mlist, msg, msgdata):
     # SMTP_MAX_RCPTS.  Note that most MTAs have a limit on the number of
     # recipients they'll swallow in a single transaction.
     deliveryfunc = None
-    if msgdata.get('verp') or mlist.personalize:
+    if (not msgdata.has_key('personalize') or msgdata['personalize']) and (
+           msgdata.get('verp') or mlist.personalize):
         chunks = [[recip] for recip in recips]
         msgdata['personalize'] = 1
         deliveryfunc = verpdeliver
