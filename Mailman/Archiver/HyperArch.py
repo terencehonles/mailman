@@ -25,6 +25,8 @@
        (probably in the 'update_dirty_archives' method).
 """
 
+from __future__ import nested_scopes
+
 import sys
 import re
 import errno
@@ -81,14 +83,14 @@ if sys.platform == 'darwin':
 
 
 
-def html_quote(s):
+def html_quote(s, lang=None):
     repls = ( ('&', '&amp;'),
               ("<", '&lt;'),
               (">", '&gt;'),
               ('"', '&quot;'))
     for thing, repl in repls:
         s = s.replace(thing, repl)
-    return Utils.uquote(s)
+    return Utils.uncanonstr(s, lang)
 
 
 def url_quote(s):
@@ -125,12 +127,12 @@ def sizeof(filename, lang):
 html_charset = '<META http-equiv="Content-Type" ' \
                'content="text/html; charset=%s">'
 
-def CGIescape(arg):
+def CGIescape(arg, lang=None):
     if isinstance(arg, types.UnicodeType):
         s = Utils.websafe(arg)
     else:
         s = Utils.websafe(str(arg))
-    return Utils.uquote(s.replace('"', '&quot;'))
+    return Utils.uncanonstr(s.replace('"', '&quot;'), lang)
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])')
@@ -268,6 +270,9 @@ class Article(pipermail.Article):
         self.check_header_charsets(charset)
         if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
             self.quote = Utils.uquote
+            # Only one 'uquote' is left here. I wonder if this is of
+            # any use because 'quoting' conflicts 'verbatim'. There should
+            # not be any verbatim charset IMHO. (TK)
 
     # Mapping of listnames to MailList instances as a weak value dictionary.
     # This code is copied from Runner.py but there's one important operational
@@ -339,7 +344,7 @@ class Article(pipermail.Article):
             self._mlist = mlist
 
     def quote(self, buf):
-        return html_quote(buf)
+        return html_quote(buf, self._lang)
 
     def check_header_charsets(self, msg_charset=None):
         """Check From and Subject for encoded-words
@@ -362,7 +367,7 @@ class Article(pipermail.Article):
         if self.charset is None and a_charset:
             self.charset = a_charset
         subject, s_charset = self.decode_charset(self.subject)
-        if self.charset is None and a_charset:
+        if self.charset is None and s_charset:
             self.charset = s_charset
         if author:
             self.decoded['author'] = author
@@ -382,7 +387,7 @@ class Article(pipermail.Article):
             # If the charset of all the header parts match the article's
             # charset, leave it as encoded, otherwise try converting to
             # Unicode.
-            if c <> self.charset:
+            if c and c <> 'us-ascii' and c <> self.charset:
                 mustunicode = 1
                 break
         if mustunicode:
@@ -523,7 +528,8 @@ class Article(pipermail.Article):
         """Add encoded-word keys to HTML output"""
         for src, dst in (('author', 'author_html'),
                          ('email', 'email_html'),
-                         ('subject', 'subject_html')):
+                         ('subject', 'subject_html'),
+                         ('subject', 'title')):
             if self.decoded.has_key(src):
                 d[dst] = self.quote(self.decoded[src])
 
@@ -606,6 +612,7 @@ class HyperArchive(pipermail.T):
 
         self.maillist = maillist
         self._lock_file = None
+        self.lang = maillist.preferred_language
         self.charset = Utils.GetCharSet(maillist.preferred_language)
 
         if hasattr(self.maillist,'archive_volume_frequency'):
@@ -641,9 +648,12 @@ class HyperArchive(pipermail.T):
         mlist = self.maillist
         otrans = i18n.get_translation()
         i18n.set_language(mlist.preferred_language)
+        # Convenience
+        def quotetime(s):
+            return html_quote(i18n.ctime(s), self.lang)
         try:
-            d = {"lastdate": html_quote(i18n.ctime(self.lastdate)),
-                 "archivedate": html_quote(i18n.ctime(self.archivedate)),
+            d = {"lastdate": quotetime(self.lastdate),
+                 "archivedate": quotetime(self.archivedate),
                  "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
                  "version": self.version,
                  }
@@ -671,13 +681,16 @@ class HyperArchive(pipermail.T):
         mlist = self.maillist
         otrans = i18n.get_translation()
         i18n.set_language(mlist.preferred_language)
+        # Convenience
+        def quotetime(s):
+            return html_quote(i18n.ctime(s), self.lang)
         try:
-            d = {"listname": html_quote(mlist.real_name),
+            d = {"listname": html_quote(mlist.real_name, self.lang),
                  "archtype": self.type,
                  "archive":  self.volNameToDesc(self.archive),
                  "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
-                 "firstdate": html_quote(i18n.ctime(self.firstdate)),
-                 "lastdate": html_quote(i18n.ctime(self.lastdate)),
+                 "firstdate": quotetime(self.firstdate),
+                 "lastdate": quotetime(self.lastdate),
                  "size": self.size,
                  }
             i = {"thread": _("thread"),
@@ -999,8 +1012,8 @@ class HyperArchive(pipermail.T):
         author = self.get_header("author", article)
         if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
             author = re.sub('@', _(' at '), author)
-        subject = CGIescape(subject)
-        author = CGIescape(author)
+        subject = CGIescape(subject, self.lang)
+        author = CGIescape(author, self.lang)
 
         d = {
             'filename': urllib.quote(article.filename),
@@ -1133,34 +1146,37 @@ class HyperArchive(pipermail.T):
         # 3. make it faster
         source = lines[:]
         dest = lines
-        last_line_was_quoted=0
+        last_line_was_quoted = 0
         for i in xrange(0, len(source)):
-            Lorig=L=source[i] ; prefix=suffix=""
-            if L==None: continue
+            Lorig = L = source[i]
+            prefix = suffix = ""
+            if L is None:
+                continue
             # Italicise quoted text
             if self.IQUOTES:
-                quoted=quotedpat.match(L)
-                if quoted==None: last_line_was_quoted=0
+                quoted = quotedpat.match(L)
+                if quoted is None:
+                    last_line_was_quoted = 0
                 else:
                     quoted = quoted.end(0)
-                    prefix=CGIescape(L[:quoted]) + '<i>'
-                    suffix='</I>'
+                    prefix = CGIescape(L[:quoted], self.lang) + '<i>'
+                    suffix = '</I>'
                     if self.SHOWHTML:
-                        suffix=suffix+'<BR>'
+                        suffix += '<BR>'
                         if not last_line_was_quoted:
-                            prefix='<BR>'+prefix
-                    L= L[quoted:]
-                    last_line_was_quoted=1
+                            prefix = '<BR>' + prefix
+                    L = L[quoted:]
+                    last_line_was_quoted = 1
             # Check for an e-mail address
-            L2=""
+            L2 = ""
             jr = emailpat.search(L)
             kr = urlpat.search(L)
-            while jr != None or kr != None:
+            while jr is not None or kr is not None:
                 if jr == None:
                     j = -1
                 else:
                     j = jr.start(0)
-                if kr == None:
+                if kr is None:
                     k = -1
                 else:
                     k = kr.start(0)
@@ -1168,21 +1184,26 @@ class HyperArchive(pipermail.T):
                     text = jr.group(1)
                     URL = 'mailto:' + text
                     pos = j
-                elif k!=-1 and (j>k or j==-1):
+                elif k != -1 and (j > k or j == -1):
                     text = URL = kr.group(1)
-                    pos=k
+                    pos = k
                 else: # j==k
                     raise ValueError, "j==k: This can't happen!"
-                length=len(text)
+                length = len(text)
                 #self.message("URL: %s %s %s \n"
                 #             % (CGIescape(L[:pos]), URL, CGIescape(text)))
-                L2 = L2 + ('%s<A HREF="%s">%s</A>'
-                           % (CGIescape(L[:pos]), URL, CGIescape(text)))
-                L=L[pos+length:]
-                jr=emailpat.search(L) ; kr=urlpat.search(L)
-            if jr==None and kr==None: L=CGIescape(L)
-            L=prefix+L2+L+suffix
-            if L!=Lorig: source[i], dest[i]=None, L
+                L2 += '%s<A HREF="%s">%s</A>' % (
+                    CGIescape(L[:pos], self.lang), 
+                    URL, CGIescape(text, self.lang))
+                L = L[pos+length:]
+                jr = emailpat.search(L)
+                kr = urlpat.search(L)
+            if jr is None and kr is None:
+                L = CGIescape(L, self.lang)
+            L = prefix + L2 + L + suffix
+            if L != Lorig:
+                source[i] = None
+                dest[i] = L
 
     # Perform Hypermail-style processing of <HTML></HTML> directives
     # in message bodies.  Lines between <HTML> and </HTML> will be written
