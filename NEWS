@@ -4,6 +4,14 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.0 release candidate 1 (23-Oct-2000)
+
+    - Bug fixes and security patches.
+
+    - Better html rendition of articles in non us-ascii charsets
+      (Jeremy Hylton).  See VERBATIM_ENCODING variable in
+      Defaults.py.in for customization.
+
 2.0 beta 6 (22-Sep-2000)
 
     - Building
