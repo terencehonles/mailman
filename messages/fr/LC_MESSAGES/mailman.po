@@ -102,9 +102,7 @@ msgstr "Attention: "
 msgid ""
 "You have digest members, but digests are turned\n"
 "                off. Those people will not receive mail."
-msgstr ""
-"Vous avez des abonnés en mode de rmise groupé alors que cette option est "
-"désactivée. Ces abonnés ne recevront pas de courriels."
+msgstr "Vous avez des abonnés en mode de remise groupé alors que cette option est désactivée. Ces abonnés ne recevront pas de courriels."
 
 #: Mailman/Cgi/admin.py:186
 msgid ""
@@ -4006,7 +4004,7 @@ msgstr "Suppression&nbsp;en&nbsp;masse"
 
 #: Mailman/Gui/NonDigest.py:34
 msgid "Non-digest&nbsp;options"
-msgstr "Options&nbsp;de&nbsp;rmises&nbsp;Non-groupées"
+msgstr "Options&nbsp;de&nbsp;remises&nbsp;Non-groupées"
 
 #: Mailman/Gui/NonDigest.py:42
 msgid "Policies concerning immediately delivered list traffic."
