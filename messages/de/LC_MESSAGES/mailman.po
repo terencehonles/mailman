@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
-"PO-Revision-Date: 2003-01-15 14:09+0100\n"
+"PO-Revision-Date: 2003-01-20 17:37+0100\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch\n"
 "MIME-Version: 1.0\n"
@@ -507,7 +507,9 @@ msgstr "Abmelden"
 
 #: Mailman/Cgi/admin.py:468
 msgid "Emergency moderation of all list traffic is enabled"
-msgstr "Notmoderation aller eingehenden Nachrichten"
+msgstr ""
+"Notmoderation aller eingehenden Nachrichten aktiviert<BR> "
+"(Allgemeine Optionen / Zusätzliche Einstellungen)"
 
 # Mailman/Cgi/admin.py:444
 #: Mailman/Cgi/admin.py:479
@@ -1132,7 +1134,7 @@ msgstr "Nicht abonniert:"
 
 #: Mailman/Cgi/admin.py:1360
 msgid "Ignoring changes to deleted member: %(user)s"
-msgstr "Ã„nderungen fÂ¨r gelÃ¶schtes Mitglied %(user)s ignoriert"
+msgstr "Änderungen für gelöschtes Mitglied %(user)s ignoriert"
 
 # Mailman/Cgi/admin.py:1242
 #: Mailman/Cgi/admin.py:1400
@@ -1274,7 +1276,7 @@ msgstr "Abbestellungs-Anfragen"
 # Mailman/Cgi/admindb.py:268
 #: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:596
 msgid "From:"
-msgstr "Absender:"
+msgstr "Absender: "
 
 #: Mailman/Cgi/admindb.py:385
 msgid "Action to take on all these held messages:"
@@ -1282,12 +1284,12 @@ msgstr "Was soll mit diesen Nachrichten geschehen?"
 
 #: Mailman/Cgi/admindb.py:389 Mailman/Gui/Privacy.py:281
 msgid "Accept"
-msgstr "Akzeptiert"
+msgstr "Akzeptieren"
 
 # Mailman/Cgi/admindb.py:290
 #: Mailman/Cgi/admindb.py:397
 msgid "Preserve messages for the site administrator"
-msgstr "Mitteilung für Administrator erhalten"
+msgstr "Mitteilung für Administrator sichern"
 
 #: Mailman/Cgi/admindb.py:403
 msgid "Forward messages (individually) to:"
@@ -1295,7 +1297,7 @@ msgstr "Nachrichten (einzeln) weiterleiten an:"
 
 #: Mailman/Cgi/admindb.py:421
 msgid "Clear this member's <em>moderate</em> flag"
-msgstr "<em>Moderationseinstellung</em> fÃ¼r dieses mitglied lÃ¶schen"
+msgstr "Absender auf <em>unmoderiert</em> setzen"
 
 #: Mailman/Cgi/admindb.py:425
 msgid "<em>The sender is now a member of this list</em>"
@@ -1356,7 +1358,7 @@ msgstr " Bytes"
 
 #: Mailman/Cgi/admindb.py:478
 msgid "Size:"
-msgstr "GrÃ¶sse:"
+msgstr "Grösse:"
 
 # Mailman/Handlers/Decorate.py:49
 #: Mailman/Cgi/admindb.py:482 Mailman/Handlers/Decorate.py:50
@@ -1377,7 +1379,7 @@ msgstr "Erhalten:"
 # Mailman/Cgi/admindb.py:216
 #: Mailman/Cgi/admindb.py:545
 msgid "Posting Held for Approval"
-msgstr "Mitteilung zur Kontrolle zurückgehalten"
+msgstr "e-Mail zur Kontrolle zurückgehalten"
 
 # Mailman/Cgi/admindb.py:218
 #: Mailman/Cgi/admindb.py:547
@@ -1397,7 +1399,7 @@ msgstr "<em>Mitteilung mit ID #%(id)d ist fehlerhaft."
 # Mailman/Cgi/admindb.py:286
 #: Mailman/Cgi/admindb.py:618
 msgid "Action:"
-msgstr "Tätigkeit:"
+msgstr "Aktion:"
 
 # Mailman/Cgi/admindb.py:290
 #: Mailman/Cgi/admindb.py:622
@@ -1407,7 +1409,7 @@ msgstr "Mitteilung für Administrator erhalten"
 # Mailman/Cgi/admindb.py:294
 #: Mailman/Cgi/admindb.py:626
 msgid "Additionally, forward this message to: "
-msgstr "Zusätzlich weiterleiten an Adressaten: "
+msgstr "Weiterleiten an Adresse: "
 
 # Mailman/Cgi/admindb.py:302
 #: Mailman/Cgi/admindb.py:630
@@ -1424,12 +1426,12 @@ msgstr ""
 # Mailman/Cgi/admindb.py:307
 #: Mailman/Cgi/admindb.py:638
 msgid "Message Headers:"
-msgstr "Mitteilungs-Header:"
+msgstr "Mail-Header:"
 
 # Mailman/Cgi/admindb.py:312
 #: Mailman/Cgi/admindb.py:643
 msgid "Message Excerpt:"
-msgstr "Auszug:"
+msgstr "Mail-Auszug: "
 
 # Mailman/Cgi/admindb.py:338 Mailman/ListAdmin.py:258
 #: Mailman/Cgi/admindb.py:676 Mailman/Deliverer.py:124
@@ -7088,7 +7090,7 @@ msgstr "Emailadresse:"
 # Mailman/HTMLFormatter.py:268
 #: Mailman/HTMLFormatter.py:299
 msgid "Admin address:"
-msgstr "Administratoremailadresse:"
+msgstr "Mailadresse des Administrators:"
 
 # Mailman/HTMLFormatter.py:270
 #: Mailman/HTMLFormatter.py:302
