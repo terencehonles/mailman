@@ -21,7 +21,9 @@
 
 import sys
 import os
+import string
 import marshal
+import mimetools
 
 import paths
 from Mailman import mm_cfg
@@ -30,7 +32,9 @@ from Mailman import LockFile
 from Mailman import Message
 from Mailman import Errors
 from Mailman.Handlers import HandlerAPI
+from Mailman.Bouncers import BouncerAPI
 from Mailman.Logging.Utils import LogStdErr
+from Mailman.pythonlib.StringIO import StringIO
 
 
 # Work around known problems with some RedHat cron daemons
@@ -38,18 +42,43 @@ import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 QRUNNER_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'qrunner.lock')
-QRUNNER_LOCK_LIFETIME = 60 * 30                   # 30 minutes
 
 LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
 
 
 
 def dispose_message(mlist, msg, msgdata):
-    # Pre 2.0beta3 qfiles have no schema version number
-    version = msgdata.get('version', 0)
-    if version < 1:
-        return HandlerAPI.RedeliverMessage(mlist, msg)
-    return HandlerAPI.DeliverToList(mlist, msg, msgdata)
+    # The message may be destined for one of three subsystems: the list
+    # delivery subsystem (i.e. the message gets delivered to every member of
+    # the list), the bounce detector (i.e. this was a message to the -owner
+    # address), or the mail command handler (i.e. this was a message to the
+    # -request address).  The flags controlling this path are found in the
+    # message data, as queued by the post, mailowner, and mailcmd scripts
+    # respectively:
+    #
+    # post      - no `toadmin' or `torequest' key
+    # mailowner - `toadmin' == true
+    # mailcmd   - `torequest' == true
+    if msgdata.get('toadmin', 0):
+        s = StringIO(str(msg))
+        mimemsg = mimetools.Message(s)
+        if mlist.bounce_processing:
+            if BouncerAPI.ScanMessages(mlist, mimemsg):
+                return
+        # Either bounce processing isn't turned on or the bounce detector
+        # found no recognized bounce format in the message.  In either case,
+        # forward the dang thing off to the list owner.
+        msgdata['recips'] = mlist.owner[:]
+        return HandlerAPI.DeliverToUser(mlist, msg, msgdata)
+    elif msgdata.get('torequest', 0):
+        mlist.ParseMailCommands(msg)
+        return 0
+    else:
+        # Pre 2.0beta3 qfiles have no schema version number
+        version = msgdata.get('version', 0)
+        if version < 1:
+            return HandlerAPI.RedeliverMessage(mlist, msg)
+        return HandlerAPI.DeliverToList(mlist, msg, msgdata)
 
 
 
@@ -84,18 +113,21 @@ def main():
         if ext <> '.msg':
             # trigger just off the .msg file
             continue
+        msgfp = dbfp = None
         try:
             msgfp = open(root + '.msg')
-            msgtext = msgfp.read()
+            msg = Message.Message(msgfp)
             msgfp.close()
+            msgfp = None
             dbfp = open(root + '.db')
             msgdata = marshal.load(dbfp)
             dbfp.close()
-            # TBD: The `kids' key is special.  It contains the pids of
-            # subprocesses that need to be waited on by the delivery module.
-            # For implementation ease, it can get stored in the message data,
-            # but since this refers to pids not descendent from us, it should
-            # just be chucked.
+            dbfp = None
+            # The `kids' key is special.  It contains the pids of subprocesses
+            # that need to be waited on by the delivery module.  For
+            # implementation ease, it can get stored in the message data, but
+            # since this refers to pids not descendent from us, it should just
+            # be chucked.
             if msgdata.has_key('kids'):
                 del msgdata['kids']
         except (EOFError, ValueError, TypeError, IOError), e:
@@ -103,6 +135,10 @@ def main():
             # of the queued files.  log this and move on (we figure it's a
             # temporary problem)
             stderr.write('Exception reading qfile: %s\n%s\n' % (root, e))
+            if msgfp:
+                msgfp.close()
+            if dbfp:
+                dbfp.close()
             continue
         # Dispose of it, after ensuring that we've got the lock on the list.
         listname = msgdata.get('listname')
@@ -122,7 +158,6 @@ def main():
             # oh well, try again later
             continue
         try:
-            msg = Message.OutgoingMessage(msgtext)
             keepqueued = dispose_message(mlist, msg, msgdata)
             # Did the delivery generate child processes?  Don't store them in
             # the message data files.
@@ -143,7 +178,8 @@ if __name__ == '__main__':
     global _listcache
     global _kids
     # first, claim the queue runner lock
-    lock = LockFile.LockFile(QRUNNER_LOCK_FILE, lifetime=QRUNNER_LOCK_LIFETIME)
+    lock = LockFile.LockFile(QRUNNER_LOCK_FILE,
+                             lifetime=mm_cfg.QRUNNER_LOCK_LIFETIME)
     try:
         lock.lock(timeout=0.5)
     except LockFile.TimeOutError:
