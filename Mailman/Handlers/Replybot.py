@@ -76,8 +76,17 @@ def process(mlist, msg, msgdata):
         text = mlist.autoresponse_request_text % d
     else:
         text = mlist.autoresponse_postings_text % d
+    #
+    # If the autoresponse text contains a colon in its first line, the headers
+    # and body will be mixed up.  The fix is to include a blank delimiting
+    # line at the front of the wrapped text.
+    text = Utils.wrap(text)
+    lines = string.split(text, '\n')
+    if string.find(lines[0], ':') >= 0:
+        lines.insert(0, '')
+    text = string.join(lines, '\n')
     outmsg = Message.UserNotification(sender, mlist.GetAdminEmail(),
-                                      subject, Utils.wrap(text))
+                                      subject, text)
     outmsg['X-Mailer'] = 'The Mailman Replybot '
     # prevent recursions and mail loops!
     outmsg['X-Ack'] = 'No'
