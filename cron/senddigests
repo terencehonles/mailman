@@ -20,8 +20,6 @@
 
 Typically it's invoked via cron."""
 
-__version__ = "$Revision: 567 $"
-
 import sys, os
 import paths
 import maillist, mm_cfg, mm_message, mm_utils
