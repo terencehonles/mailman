@@ -70,9 +70,7 @@ def DeliverToList(mlist, msg, msgdata):
         mod = __import__('Mailman.Handlers.' + modname)
         func = getattr(getattr(getattr(mod, 'Handlers'), modname), 'process')
         try:
-            mlist.LogMsg('debug', 'starting ' + modname)
             func(mlist, msg, msgdata)
-            mlist.LogMsg('debug', 'done with ' + modname)
         except DiscardMessage:
             # Throw the message away; we need do nothing else with it.
             return 0
@@ -145,7 +143,6 @@ def DeliverToUser(mlist, msg, newdata={}):
                 ]
     msgdata = {'pipeline' : pipeline,
                'fasttrack': 1,
-               'recips'   : msg.recips,
                }
     recips = getattr(msg, 'recips', None)
     if recips is not None:
