@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -45,6 +45,13 @@ def process(mlist, msg, msgdata):
             msg['To'] = '%s (%s)' % (member, name)
         else:
             msg['To'] = member
+        # We can flag the mail as a duplicate for each member, if they've
+        # already received that message. (See AvoidDuplicates.py).  First,
+        # delete any existing such header first
+        del msg['x-mailman-copy']
+        if msgdata.get('add-dup-header', {}).has_key(member):
+            msg['X-Mailman-Copy'] = 'yes'
+
         # See if we're taking the opportunity to VERP for more reliable bounce
         # processing.
         metadatacopy['verp'] = mm_cfg.VERP_PERSONALIZED_DELIVERIES
@@ -52,6 +59,8 @@ def process(mlist, msg, msgdata):
     # Restore the original To: line
     del msg['To']
     msg['To'] = originalto
+    # The original message is not a copy.
+    del msg['x-mailman-copy']
     # Don't let the normal ToOutgoing processing actually send the original
-    # copy, otherwise we'll get duplicates.
+    # copy, otherwise we'll get copys.
     del msgdata['recips']
