@@ -171,7 +171,7 @@ class Archiver:
         except IOError, msg:
             self.LogMsg("error", ("Archive file access failure:\n"
                                   "\t%s %s"
-                                  % (afn, `msg[1]`)))
+                                  % (afn, `msg`)))
             reraise(msg)
         if self.clobber_date:
             # Resurrect original date setting.
@@ -183,31 +183,39 @@ class Archiver:
     def ArchiveMail(self, msg):
         """Store postings in mbox and/or pipermail archive, depending."""
 	# Fork so archival errors won't disrupt normal list delivery
+        if mm_cfg.ARCHIVE_TO_MBOX == -1:
+            return
 	if os.fork(): 
 	    return
         # archive to builtin html archiver
-        if mm_cfg.ARCHIVE_TO_MBOX in [1, 2]:
-            self.__archive_to_mbox(msg)
-            if mm_cfg.ARCHIVE_TO_MBOX == 1:
-                # Archive to mbox only.
-                os._exit(0)
+        import traceback
         try:
-            from cStringIO import StringIO
-        except ImportError:
-            from StringIO import StringIO
-        txt = msg.unixfrom
-        for h in msg.headers:
-            txt = txt + h
-        if msg.body[0] != '\n':
-            txt = txt + "\n"
-        txt = txt + msg.body
-        f = StringIO(txt)
-        import HyperArch
-        h = HyperArch.HyperArchive(self)
-        h.processUnixMailbox(f, HyperArch.Article)
-        h.close()
-        f.close()
-        os._exit(0)
+            try:
+                if mm_cfg.ARCHIVE_TO_MBOX in [1, 2]:
+                    self.__archive_to_mbox(msg)
+                    if mm_cfg.ARCHIVE_TO_MBOX == 1:
+                        # Archive to mbox only.
+                        os._exit(0)
+                try:
+                    from cStringIO import StringIO
+                except ImportError:
+                    from StringIO import StringIO
+                txt = msg.unixfrom
+                for h in msg.headers:
+                    txt = txt + h
+                if msg.body[0] != '\n':
+                    txt = txt + "\n"
+                txt = txt + msg.body
+                f = StringIO(txt)
+                import HyperArch
+                h = HyperArch.HyperArchive(self)
+                h.processUnixMailbox(f, HyperArch.Article)
+                h.close()
+                f.close()
+            except:
+                traceback.print_exc(file=sys.stderr)
+        finally:
+            os._exit(0)
 	
     #
     # called from MailList.MailList.Save()
@@ -221,7 +229,9 @@ class Archiver:
         # the directory, it's pointless to try to
         # fix the perms, so we just return  -scott
         #
-        #
+        if mm_cfg.ARCHIVE_TO_MBOX == -1:
+            # Archiving is completely disabled, don't require the skeleton.
+            return
         pubdir  = os.path.join(self.public_archive_file_dir,
                                self._internal_name)
         privdir = self.archive_directory
