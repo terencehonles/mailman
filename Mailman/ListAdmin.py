@@ -180,7 +180,7 @@ class ListAdmin:
             msg = Message.Message(fp)
             msgdata['approved'] = 1
             # ignore return value
-            HandlerAPI.DeliverToList(self, msg, newdata=msgdata)
+            HandlerAPI.DeliverToList(self, msg, msgdata)
         elif value == 1:
             # Rejected
             rejection = 'Refused'
