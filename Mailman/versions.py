@@ -366,6 +366,7 @@ def CanonicalizeUserOptions(l):
             # There's a key in user_options that isn't associated with a real
             # member address.  This is likely caused by an earlier bug.
             del l.user_options[k]
+            continue
         if l.getMemberOption(k, mm_cfg.DisableDelivery):
             # Convert this flag into a legacy disable
             l.setDeliveryStatus(k, UNKNOWN)
