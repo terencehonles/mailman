@@ -83,6 +83,7 @@ def main():
            mlist = MailList.MailList(listname, lock=0)
        except Errors.MMListError, e:
            print _('No such list: %(listname)s')
+           continue
 
        if vhost and vhost <> mlist.host_name:
            continue
