@@ -84,7 +84,7 @@ class Message(email.Message.Message):
                 # TBD: now what?!
                 address = ''
         if not preserve_case:
-            address = address.lower()
+            return address.lower()
         return address
 
 
