@@ -937,7 +937,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 self,
                 Utils.get_site_email(self.host_name, 'owner'),
                 subject, text)
-            # Make it look like the 
             msg.send(self)
         if whence:
             whence = "; %s" % whence
