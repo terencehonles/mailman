@@ -743,23 +743,38 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# pretty hosed.  That's a good reason to make this a daemon not a
 	# program.
 	self.IsListInitialized()
-        fname = os.path.join(self._full_path, 'config.db')
-        fname_last = fname + ".last"
-        file = aside_new(fname, fname_last, reopen=1)
-	dict = {}
+        # copy all public attributes to marshalable dictionary
+        dict = {}
 	for key, value in self.__dict__.items():
 	    if key[0] <> '_':
 		dict[key] = value
+        # we want to write this dict in a marshal, but be especially paranoid
+        # about how we write the config.db, so we'll be as robust as possible
+        # in the face of, e.g. disk full errors.  The idea is that we want to
+        # guarantee that config.db is always valid.  The old way had the bad
+        # habit of writing an incomplete file, which happened to be a valid
+        # (but bogus) marshal.
+        fname = os.path.join(self._full_path, 'config.db')
+        fname_tmp = fname + '.tmp.' + `os.getpid()`
+        fname_last = fname + ".last"
+        omask = os.umask(007)
         try:
-            marshal.dump(dict, file)
-            file.close()
-        except IOError, status:
-            # Darn - try to resurrect the old config.db.
-            file = aside_new(fname_last, fname, reopen=0)
-            self.LogMsg("error",
-                        "Failed config file write '%s',"
-                        " old config resurrected." % `status.args`)
-            Utils.reraise()
+            try:
+                fp = open(fname_tmp, 'w')
+                marshal.dump(dict, fp)
+                fp.close()
+            except IOError, status:
+                os.unlink(fname_tmp)
+                self.LogMsg('error',
+                            'Failed config.db file write, retaining old state'
+                            '\n %s' % `status.args`)
+                Utils.reraise()
+            # now move config.db -> config.db.last
+            # then move config.db.tmp.xxx -> config.db
+            aside_new(fname, fname_last)
+            aside_new(fname_tmp, fname)
+        finally:
+            os.umask(omask)
         self.CheckHTMLArchiveDir()
 
     def Load(self, check_version = 1):
