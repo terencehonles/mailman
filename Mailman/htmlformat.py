@@ -259,6 +259,19 @@ class Container:
             output.append(HTMLFormatObject(item, indent))
         return string.join(output, '')
 
+
+class Label(Container):
+    align = 'right'
+
+    def __init__(self, *items):
+        Container.__init__(self, *items)
+
+    def Format(self, indent=0):
+        return ('<div align="%s">' % self.align) + \
+               Container.Format(self, indent) + \
+               '</div>'
+
+
 # My own standard document template.  YMMV.
 # something more abstract would be more work to use...
 
@@ -403,11 +416,11 @@ class SubmitButton(InputObj):
 	InputObj.__init__(self, name, "SUBMIT", button_text, checked=0)
 
 class PasswordBox(InputObj):
-    def __init__(self, name):
-	InputObj.__init__(self, name, "PASSWORD", '', checked=0)
+    def __init__(self, name, value='', size=mm_cfg.TEXTFIELDWIDTH):
+	InputObj.__init__(self, name, "PASSWORD", value, checked=0, size=size)
 
 class TextBox(InputObj):
-    def __init__(self, name, value='', size=10):
+    def __init__(self, name, value='', size=mm_cfg.TEXTFIELDWIDTH):
 	InputObj.__init__(self, name, "TEXT", value, checked=0, size=size)
 
 class Hidden(InputObj):
