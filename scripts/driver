@@ -26,7 +26,7 @@ import sys
 
 # Useful for debugging.  When an error occurs, this attaches the file name to
 # the exception string and re-raises (using the bogus Python 1.5 semantics)
-# this may be unnecessary in Python 1.5.2
+# this is unnecessary in Python 1.5.2.
 
 realopen = open
 def open(filename, mode='r', bufsize=-1, realopen=realopen):
