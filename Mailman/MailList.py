@@ -693,7 +693,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.LogMsg("error",
                         "Failed config file write '%s',"
                         " old config resurrected." % `status.args`)
-            raise
+            Utils.reraise()
         self.CheckHTMLArchiveDir()
 
     def Load(self, check_version = 1):
