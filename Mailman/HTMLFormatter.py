@@ -30,7 +30,7 @@ from htmlformat import *
 
 class HTMLFormatter:
     def InitVars(self):
-        if self._internal_name:
+        if self.internal_name():
             self._template_dir = os.path.join(mm_cfg.LIST_DATA_DIR,
                                               self._internal_name)
         else:
@@ -49,10 +49,8 @@ class HTMLFormatter:
 	    '<hr>',
 	    Address(
 		Container( 
-                    Link(self.GetRelativeScriptURL('listinfo'),
-                         self.real_name),
-		    ' list run by ',
-		    owners_html,
+                    Link(self.GetScriptURL('listinfo'), self.real_name),
+		    ' list run by ', owners_html,
 		    '<p>', MailmanLogo()))).Format()
 
     def SnarfHTMLTemplate(self, file):
@@ -87,7 +85,7 @@ class HTMLFormatter:
  	else:
  	    concealed = ""
         ObscureEmail = Utils.ObscureEmail
-        options_url = self.GetRelativeScriptURL('options')
+        options_url = self.GetScriptURL('options')
         disdel = mm_cfg.DisableDelivery
         items = []
         for person in people:
@@ -299,7 +297,7 @@ class HTMLFormatter:
         return container
 
     def FormatFormStart(self, name, extra=''):
-	base_url = self.GetScriptURL(name, relative=1)
+	base_url = self.GetScriptURL(name)
         if extra:
             full_url = "%s/%s" % (base_url, extra)
         else:
