@@ -21,6 +21,7 @@ import os
 import string
 import re
 import socket
+import traceback
 
 from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
@@ -41,21 +42,25 @@ def process(mlist, msg, msgdata):
     if not mlist.nntp_host:
         error.append('no NNTP host')
     if error:
-        syslog('NNTP gateway improperly configured: ' +
+        syslog('error', 'NNTP gateway improperly configured: ' +
                string.join(error, ', '))
         return
     # Fork in case the nntp connection hangs.
     pid = os.fork()
     if pid:
-        # In the parent.  This is a bit of a kludge to keep a list of the
-        # children that need to be waited on.  We want to be sure to do the
-        # waiting while the list is unlocked!
+        # In the parent.
         kids = msgdata.get('_kids', {})
         kids[pid] = pid
         msgdata['_kids'] = kids
-    else:
+        return
+    # In the child
+    try:
         do_child(mlist, msg)
-        
+        os._exit(0)
+    except:
+        traceback.print_exc()
+        os._exit(1)
+
 
 
 def do_child(mlist, msg):
@@ -145,4 +150,3 @@ def do_child(mlist, msg):
     finally:
         if conn:
             conn.quit()
-    os._exit(0)
