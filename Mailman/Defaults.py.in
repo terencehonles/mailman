@@ -283,6 +283,24 @@ VERBATIM_ENCODING = ['iso-2022-jp']
 #DELIVERY_MODULE = 'Sendmail'
 DELIVERY_MODULE = 'SMTPDirect'
 
+# MTA should name a module in Mailman/MTA which provides the MTA specific
+# functionality for creating and removing lists.  Some MTAs like Exim can be
+# configured to automatically recognize new lists, in which case the MTA
+# variable should be set to None.  Use 'Manual' to print new aliases to
+# standard out (or send an email to the site list owner) for manual twiddling
+# of an /etc/aliases style file.  Use 'Postfix' if you are using the Postfix
+# MTA -- but then also see POSTFIX_STYLE_VIRTUAL_DOMAINS.
+MTA = 'Manual'
+
+# If you set MTA='Postfix', then you also want to set the following variable,
+# depending on whether you're using virtual domains in Postfix, and which
+# style of virtual domain you're using.  Set this flag to true if you're using
+# Postfix-style virtual domains, where aliases should only show up in the
+# virtual domain.  If you are not using virtual domains, or you are using
+# Sendmail-style virtual domains, where all the aliases show up in all the
+# domains then leave this variable false.  See README.POSTFIX for details.
+POSTFIX_STYLE_VIRTUAL_DOMAINS = 0
+
 # Ceiling on the number of recipients that can be specified in a single SMTP
 # transaction.  Set to 0 to submit the entire recipient list in one
 # transaction.  Only used with the SMTPDirect DELIVERY_MODULE.
@@ -307,13 +325,6 @@ SMTPPORT = 0                                      # default from smtplib
 # Command for direct command pipe delivery to sendmail compatible program,
 # when DELIVERY_MODULE is 'Sendmail'.
 SENDMAIL_CMD = '/usr/lib/sendmail'
-
-# MTA should name a module in Mailman/MTA which provides the MTA specific
-# functionality for creating and removing lists.  Some MTAs like Exim can be
-# configured to automatically recognize new lists, in which case the MTA
-# variable should be set to None.  Currently only Postfix is supported, while
-# the fallback Manual prints to standard out (or sends an email).
-MTA = 'Manual'
 
 # Set these variables if you need to authenticate to your NNTP server for
 # Usenet posting or reading.  If no authentication is necessary, specify None
