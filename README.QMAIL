@@ -1,0 +1,50 @@
+Mailman - The GNU Mailing List Management System
+Copyright (C) 1998 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
+QMAIL ISSUES
+
+There are some issues that users of the qmail mail transport agent
+have encountered.  None of the core maintainers use qmail, so all of
+this information has been contributed by the Mailman user community,
+especially Martin Preishuber and Christian Tismer.
+
+- You might need to set the mail-gid user to either "qmail" or
+  "nofiles" by using the --with-mail-gid configure option.
+
+- If there is a user `mailman' on your system, the alias
+  `mailman-owner' will not work by default.  You have to do a
+  "touch .qmail-owner" in ~mailman directory to create this alias.
+
+- In a related issue, if you have any users with the same name as one
+  of your mailing lists, you will have problems if list names contain
+  `-' in them.  Putting .qmail redirections into the user's homedir
+  doesn't work because the Mailman wrappers will not get spawned with
+  the proper GID.  The solution is to put the following lines in the
+  /var/qumail/users/assign file:
+
+  +zope-:alias:112:11:/var/qmail/alias:-:zope-:
+  .
+
+  where in this case the listname is e.g. zope-users.
+
+- You have to make sure that the localhost can relay.  If you start
+  qmail via inetd and tcpenv, you need some line the following in your 
+  /etc/hosts.allow file:
+
+  tcp-env: 127. 143.205.200 : setenv RELAYCLIENT
+
+  where 143.205.200. is your domain.  If you use tcpserver, then you
+  need something like the following in your /etc/tcp.smtp file:
+
+  143.205.200.:allow,RELAYCLIENT=""
+  127.:allow,RELAYCLIENT=""
+
+- More information about setting up qmail and relaying can be found in 
+  the qmail documentation.
+
+
+Local Variables:
+mode: text
+indent-tabs-mode: nil
+End:
