@@ -185,7 +185,8 @@ def PrintRequests(mlist, doc, form):
 def PrintAddMemberRequest(mlist, id, table):
     time, addr, passwd, digest = mlist.GetRecord(id)
     table.AddRow([addr,
-                  RadioButtonArray(id, ('Subscribe', 'Refuse')),
+                  RadioButtonArray(id, ('Subscribe', 'Refuse'),
+                                   values=(mm_cfg.APPROVE, mm_cfg.REJECT)),
                   TextBox('comment-%d' % id, size=60)
                   ])
 
@@ -213,7 +214,7 @@ def PrintPostRequest(mlist, id, info, total, count, form):
             # TBD: kludge to remove id from requests.db.  value==2 means
             # discard the message.
             try:
-                mlist.HandleRequest(id, 3, None, None, None, None)
+                mlist.HandleRequest(id, mm_cfg.DISCARD)
             except Errors.LostHeldMessage:
                 pass
             return
@@ -229,6 +230,8 @@ def PrintPostRequest(mlist, id, info, total, count, form):
     t.AddRow([
         Bold('Action:'),
         RadioButtonArray(id, ('Defer', 'Approve', 'Reject', 'Discard'),
+                         values=(mm_cfg.DEFER, mm_cfg.APPROVE, mm_cfg.REJECT,
+                                 mm_cfg.DISCARD),
                          checked=0)
         ])
     t.AddCellInfo(row+3, col-1, align='right')
