@@ -54,7 +54,6 @@ def main():
     settings, which is processed before producing the new version.
 
     """
-    syslog('debug', 'in admin.py')
     doc = Document()
     try:
         path = os.environ['PATH_INFO']
