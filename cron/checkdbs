@@ -1,0 +1,34 @@
+#!/usr/local/bin/python 
+# 
+# This script gets called by cron.
+# It checks each list for pending requests, and mails the admin
+# of that list if something needs his or her attention.
+
+import sys, os
+
+sys.path.append('/home/mailman/mailman/modules')
+
+import maillist, mm_cfg, mm_message
+
+dirs = os.listdir(mm_cfg.LIST_DATA_DIR)
+for dir in dirs:
+    if not (os.path.exists(os.path.join(
+	os.path.join(mm_cfg.LIST_DATA_DIR, dir), 'config.db'))):
+	continue
+    try:
+	list = maillist.MailList(dir)
+    except:
+	continue
+    count = list.RequestsPending()
+    if count:
+	list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 
+			              (count, list.real_name),
+			    recipient = list.GetAdminEmail(),
+			    text = '''
+	The %s mailing list has %d request(s) waiting 
+	for your consideration at:
+	%s
+	
+	Please attend to this at your earliest convenience.''' % 
+			 (list.real_name, count, list.GetScriptURL('admindb')))
+    list.Unlock()
