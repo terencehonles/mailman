@@ -7,6 +7,16 @@ configured using the standard GNU autoconf software.  You should first
 set up your system as outlined in the sections below, and then
 configure and install the Mailman software.
 
+UPGRADING:
+
+Generally one can follow the below directions,  giving the location of
+the old install as  the target directory,  and the upgrade will happen
+transparently.  However, please note the following exceptions:
+
+    - If upgrading from version 1.0b4 or earlier, templates need to be
+    moved.   For  each  list,  move $prefix/templates/<listname>/*  to
+    $prefix/lists/<listname>.
+
 0. Installation requirements
 
     You must have the Python interpreter installed somewhere on your
