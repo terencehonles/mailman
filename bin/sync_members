@@ -228,21 +228,26 @@ def main():
 
         # addrs contains now all the addresses that need removing
         for laddr, addr in needsadding.items():
-            print 'Adding  : %30s (%30s)' % (laddr, addr)
             if dryrun:
                 continue
             pw = '%s%s' % (Mailman.Utils.GetRandomSeed(),
                            Mailman.Utils.GetRandomSeed())
             # should not already be subscribed, otherwise our test above is
-            # broken
-            mlist.ApprovedAddMember(addr, pw, digest, welcome, notifyadmin)
+            # broken.  Bogosity is if the address is listed in the file more
+            # than once.  Second and subsequent ones trigger an
+            # MMAlreadyAMember error.  Just catch it and go on.
+            try:
+                mlist.ApprovedAddMember(addr, pw, digest, welcome, notifyadmin)
+                print 'Added  : %30s (%30s)' % (laddr, addr)
+            except Mailman.Errors.MMAlreadyAMember:
+                pass
 
         for laddr, addr in addrs.items():
-            print 'Removing: %30s (%30s)' % (laddr, addr)
             if dryrun:
                 continue
             # should be a member, otherwise our test above is broken
             mlist.DeleteMember(addr, admin_notif=notifyadmin)
+            print 'Removed: %30s (%30s)' % (laddr, addr)
 
         mlist.Save()
     finally:
