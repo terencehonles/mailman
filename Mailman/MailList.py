@@ -71,12 +71,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.InitTempVars(name)
         if name:
             if lock:
+                # This will load the database
                 self.Lock()
-            try:
+            else:
                 self.Load()
-            except Errors.MMListError:
-                self.Unlock()
-                raise
 
     def __del__(self):
         try:
@@ -1343,12 +1341,11 @@ it will not be changed."""),
 
     def Lock(self, timeout=0):
         self.__lock.lock(timeout)
+        # Must reload our database for consistency
+        self.Load()
     
     def Unlock(self):
-        try:
-            self.__lock.unlock()
-        except LockFile.NotLockedError:
-            pass
+        self.__lock.unlock(unconditionally=1)
 
     def __repr__(self):
 	if self.Locked():
