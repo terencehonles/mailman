@@ -23,7 +23,6 @@ not tested by this module.
 
 """
 
-import string
 import HandlerAPI
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -49,11 +48,7 @@ def process(mlist, msg, msgdata):
         # determination.
         msgdata['approved'] = 1
     # has this message already been posted to this list?
-    beentheres = map(filterfunc, msg.getallmatchingheaders('x-beenthere'))
+    beentheres = [s.split(':', 1)[1].strip() for s in
+                  msg.getallmatchingheaders('x-beenthere')]
     if mlist.GetListEmail() in beentheres:
         raise LoopError
-
-
-
-def filterfunc(s):
-    return string.strip(string.split(s, ': ')[1])
