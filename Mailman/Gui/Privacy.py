@@ -26,16 +26,28 @@ class Privacy:
     def GetConfigCategory(self):
         return 'privacy', _('Privacy options')
 
-    def GetConfigInfo(self, mlist):
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+    def GetConfigSubCategories(self, category):
+        if category == 'privacy':
+            return [('subscribing', _('Subscription&nbsp;rules')),
+                    ('sender',      _('Sender&nbsp;filters')),
+                    ('spam',        _('Spam&nbsp;filters')),
+                    ]
+        return None
 
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'privacy':
+            return None
+        # Pre-calculate some stuff.  Technically, we shouldn't do the
+        # sub_cfentry calculation here, but it's too ugly to indent it any
+        # further, and besides, that'll mess up i18n catalogs.
+        WIDTH = mm_cfg.TEXTFIELDWIDTH
         if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
                            # choices
                            (_('none'),
                             _('confirm'),
                             _('require approval'),
-                            _('confirm+approval')),
+                            _('confirm and approve')),
                            0, 
                            _('What steps are required for subscription?<br>'),
                            _('''None - no verification steps (<em>Not
@@ -76,11 +88,12 @@ class Privacy:
         # some helpful values
         admin = mlist.GetScriptURL('admin')
 
-        return [
-            _("""List access policies, including anti-spam measures, covering
-            members and outsiders.  See also the <a
-            href="%(admin)s/archive">Archival Options section</a> for separate
-            archive-privacy settings."""),
+        subscribing_rtn = [
+            _("""This section allows you to configure subscription and
+            membership exposure policy.  You can also control whether this
+            list is public or not.  See also the
+            <a href="%(admin)s/archive">Archival Options</a> section for
+            separate archive-related privacy settings."""),
 
             _('Subscribing'),
             ('advertised', mm_cfg.Radio, (_('No'), _('Yes')), 0,
@@ -106,42 +119,118 @@ class Privacy:
              email addresses.  The intention is to prevent the addresses
              from being snarfed up by automated web scanners for use by
              spammers.""")),
+            ]
 
-            _("General posting filters"),
-            ('moderated', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('Must posts be approved by the list moderator?')),
+        sender_rtn = [
+            _("""When a message is posted to the list, a series of
+            moderation steps are take to decide whether the a moderator must
+            first approve the message or not.  This section contains the
+            controls for moderation of both member and non-member postings.
 
-            ('member_posting_only', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _("""Restrict posting privilege to list members?
-             (<i>member_posting_only</i>)"""),
+            <p>Member postings are held for moderation if their
+            <b>moderation flag</b> is turned on.  You can control whether
+            member postings are moderated by default or not.
 
-             _("""Use this option if you want to restrict posting to list
-             members.  If you want list members to be able to post, plus a
-             handful of other posters, see the <i> posters </i> setting
-             below.""")),
+            <p>Non-member postings can be automatically
+            <a href="?VARHELP=privacy/sender/accept_these_nonmembers"
+            >accepted</a>,
+            <a href="?VARHELP=privacy/sender/hold_these_nonmembers">held for
+            moderation</a>,
+            <a href="?VARHELP=privacy/sender/reject_these_nonmembers"
+            >rejected</a> (bounced), or
+            <a href="?VARHELP=privacy/sender/discard_these_nonmembers"
+            >discarded</a>,
+            either individually or as a group.  Any
+            posting from a non-member who is not explicitly accepted,
+            rejected, or discarded, will have their posting filtered by the
+            <a href="?VARHELP=privacy/sender/generic_nonmember_action">general
+            non-member rules</a>."""),
 
-            ('posters', mm_cfg.EmailList, (5, WIDTH), 1,
-             _('''Addresses of members accepted for posting to this list
-             without implicit approval requirement. (See
-             <a href="?VARHELP=privacy/member_posting_only">Restrict... to list
-             members)</a> for whether or not this is in addition to allowing
-             posting by list members'''),
+            _("General sender filters"),
 
-             _("""Adding entries here will have one of two effects, according
-             to whether another option restricts posting to members.
+            ('default_member_moderation', mm_cfg.Radio, (_('No'), _('Yes')),
+             0, _('By default, should list member postings be moderated?'),
 
-             <ul>
-                 <li>If <i>member_posting_only</i> is 'yes', then entries
-                 added here will have posting privilege in addition to list
-                 members.
+             _("""Each list member has a <em>moderation flag</em> which says
+             whether messages from the list member can be posted directly to
+             the list, or must first be approved by the list moderator.  When
+             the moderation flag is turned on, list member postings must be
+             approved first.  You, the list administrator can decide whether a
+             specific individual's postings will be moderated or not.
 
-                 <li>If <i>member_posting_only</i> is 'no', then <em>only</em>
-                 the posters listed here will be able to post without admin
-                 approval.
+             <p>This option specifies the default state of the member
+             moderation flag.  Turn this option off to accept member postings
+             by default.  Turn this option on to, by default, moderate member
+             postings first.""")),
 
-             </ul>""")),
+            ('accept_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+             _("""List of non-member addresses whose postings should be
+             automatically accepted."""),
 
-            _("Spam-specific posting filters"),
+             _("""Postings from any of these non-members will be automatically
+             accepted with no further moderation applied.""")),
+
+            ('hold_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+             _("""List of non-member addresses whose postings will be
+             immediately held for moderation."""),
+
+             _("""Postings from any of these non-members will be immediately
+             and automatically held for moderation by the list moderators.
+             The sender will receive a notification message which will allow
+             them to cancel their held message.""")),
+
+            ('reject_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+             _("""List of non-member addresses whose postings will be
+             automatically rejected."""),
+
+             _("""Postings from any of these non-members will be automatically
+             rejected.  In other words, their messages will be bounced back to
+             the sender with a notification of automatic rejection.  This
+             option is not appropriate for known spam senders; their messages
+             should be
+             <a href="?VARHELP=privacy/sender/discard_these_non_members"
+             >automatically discarded</a>.""")),
+
+            ('discard_these_nonmembers', mm_cfg.EmailList, (10, WIDTH), 1,
+             _("""List of non-member addresses whose postings will be
+             automatically discarded."""),
+
+             _("""Postings from any of these non-members will be automatically
+             discarded.  That is, the message will be thrown away with no
+             further processing or notification.  The sender will not receive
+             a notification or a bounce, however the list moderators can
+             optionally <a href="?VARHELP=privacy/sender/forward_auto_discards"
+             >receive copies of auto-discarded messages.</a>.""")),
+
+            ('generic_nonmember_action', mm_cfg.Radio,
+             (_('Accept'), _('Hold'), _('Reject'), _('Discard')), 0,
+             _("""Action to take for postings from non-members for which no
+             explicit action is defined."""),
+
+             _("""When a post from a non-member is received, the message's
+             sender is matched against the list of explicitly
+             <a href="?VARHELP=privacy/sender/accept_these_nonmembers"
+             >accepted</a>,
+             <a href="?VARHELP=privacy/sender/hold_these_nonmembers">held</a>,
+             <a href="?VARHELP=privacy/sender/reject_these_nonmembers"
+             >rejected</a> (bounced), and
+             <a href="?VARHELP=privacy/sender/discard_these_nonmembers"
+             >discarded</a> addresses.  If no match is found, then this action
+             is taken.""")),
+
+            ('forward_auto_discards', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _("""Should messages from non-members, which are automatically
+             discarded, be forwarded to the list moderator?""")),
+
+            ]
+
+        spam_rtn = [
+            _("""This section allows you to configure various anti-spam
+            filters posting filters, which can help reduce the amount of spam
+            your list members end up receiving.
+            """),
+
+            _("Anti-Spam filters"),
 
             ('require_explicit_destination', mm_cfg.Radio,
              (_('No'), _('Yes')), 0,
@@ -192,13 +281,6 @@ class Privacy:
              _('''If a posting has this number, or more, of recipients, it is
              held for admin approval.  Use 0 for no ceiling.''')),
 
-            ('forbidden_posters', mm_cfg.EmailList, (5, WIDTH), 1,
-             _('Addresses whose postings are always held for approval.'),
-             _('''Email addresses whose posts should always be held for
-             approval, no matter what other options you have set.  See also
-             the subsequent option which applies to arbitrary content of
-             arbitrary headers.''')),
-
             ('bounce_matching_headers', mm_cfg.Text, (6, WIDTH), 0,
              _('Hold posts with header value matching a specified regexp.'),
              _("""Use this option to prohibit posts according to specific
@@ -222,4 +304,11 @@ class Privacy:
            _("""Hide the sender of a message, replacing it with the list
            address (Removes From, Sender and Reply-To fields)""")),
           ]
+
+        if subcat == 'sender':
+            return sender_rtn
+        elif subcat == 'spam':
+            return spam_rtn
+        else:
+            return subscribing_rtn
 
