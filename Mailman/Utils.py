@@ -33,6 +33,8 @@ import random
 import mm_cfg
 import Errors
 
+
+
 def list_names():
     """Return the names of all lists in default list directory."""
     got = []
@@ -45,6 +47,7 @@ def list_names():
 	got.append(fn)
     return got
 
+
 # a much more naive implementation than say, Emacs's fill-paragraph!
 def wrap(text, column=70):
     """Wrap and fill the text to the specified column.
@@ -122,6 +125,7 @@ def wrap(text, column=70):
     return wrapped[:-2]
     
 
+
 def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
     import Message
     msg = Message.OutgoingMessage()
@@ -129,6 +133,7 @@ def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
     msg.SetHeader('Subject', subject, 1)
     msg.SetBody(QuotePeriods(text))
     DeliverToUser(msg, recipient, add_headers=add_headers)
+
 
 
 def DeliverToUser(msg, recipient, add_headers=[]):
@@ -178,6 +183,8 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     except:
         OutgoingQueue.deferMessage(queue_id)
 
+
+
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
     import socket
     import OutgoingQueue
@@ -279,6 +286,7 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         l.flush()
 
 
+
 def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
 
@@ -305,6 +313,7 @@ def ValidateEmail(str):
 	raise Errors.MMBadEmailError
 
 
+
 # User J. Person <person@allusers.com>
 _addrcre1 = re.compile('<(.*)>')
 # person@allusers.com (User J. Person)
@@ -346,6 +355,7 @@ def ParseAddrs(addresses):
     return map(string.strip, parsed)
 
 
+
 def GetPathPieces(path):
     l = string.split(path, '/')
     try:
@@ -355,6 +365,7 @@ def GetPathPieces(path):
 	pass
     return l
 
+
 nesting_level = None
 def GetNestingLevel():
   global nesting_level
@@ -368,6 +379,8 @@ def GetNestingLevel():
       nesting_level = 0
   return nesting_level
 
+
+
 def MakeDirTree(path, perms=0775, verbose=0):
     made_part = '/'
     path_parts = GetPathPieces(path)
@@ -386,6 +399,8 @@ def MakeDirTree(path, perms=0775, verbose=0):
 	    if verbose:
 		print 'made directory: ', madepart
   
+
+
 # This takes an email address, and returns a tuple containing (user,host)
 def ParseEmail(email):
     user = None
@@ -408,7 +423,7 @@ def LCDomain(addr):
     return addr[:atind] + '@' + string.lower(addr[atind + 1:])
 
 
-
+
 # Return 1 if the 2 addresses match.  0 otherwise.
 # Might also want to match if there's any common domain name...
 # There's password protection anyway.
@@ -433,7 +448,7 @@ def AddressesMatch(addr1, addr2):
     return 1
 
 
-
+
 def GetPossibleMatchingAddrs(name):
     """returns a sorted list of addresses that could possibly match
     a given name.
@@ -453,6 +468,7 @@ def GetPossibleMatchingAddrs(name):
     return res
 
 
+
 def List2Dict(list):
     """List2Dict returns a dict keyed by the entries in the list
     passed to it."""
@@ -486,6 +502,7 @@ def FindMatchingAddresses(name, dict, *dicts):
     return res
 
   
+
 def GetRandomSeed():
     chr1 = int(random.random() * 52)
     chr2 = int(random.random() * 52)
@@ -506,6 +523,7 @@ def MakeRandomPassword(length=4):
     return password
 
 
+
 def SnarfMessage(msg):
     if msg.unixfrom:
 	text = msg.unixfrom + string.join(msg.headers, '') + '\n' + msg.body
@@ -514,6 +532,7 @@ def SnarfMessage(msg):
     return (msg.GetSender(), text) 
 
 
+
 def QuoteHyperChars(str):
     arr = regsub.splitx(str, '[<>"&]')
     i = 1
@@ -529,9 +548,10 @@ def QuoteHyperChars(str):
 	i = i + 2
     return string.join(arr, '')
 
+
+
 # Just changing these two functions should be enough to control the way
 # that email address obscuring is handled.
-
 def ObscureEmail(addr, for_text=0):
     """Make email address unrecognizable to web spiders, but invertable.
 
@@ -549,6 +569,7 @@ def UnobscureEmail(addr):
     return string.replace(addr, "__at__", "@")
 
 
+
 def map_maillists(func, names=None, unlock=None, verbose=0):
     """Apply function (of one argument) to all list objs in turn.
 
@@ -579,6 +600,8 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
 	del l
     return got
 
+
+
 def chunkify(members, chunksize=None):
      """
      return a list of lists of members
@@ -596,6 +619,7 @@ def chunkify(members, chunksize=None):
      return res
 
 
+
 def maketext(templatefile, dict, raw=0):
     """Make some text from a template file.
 
@@ -612,7 +636,7 @@ def maketext(templatefile, dict, raw=0):
     return wrap(template % dict)
 
 
-#
+
 # given an IncomingMessage object,
 # test for administrivia (eg subscribe, unsubscribe, etc).
 # the test must be a good guess -- messages that return true
@@ -683,6 +707,7 @@ def reraise(exc=None, val=None):
     raise exc, val, sys.exc_info()[2]
 
 
+
 def mkdir(dir, mode=02775):
     """Wraps os.mkdir() in a umask saving try/finally.
 Two differences from os.mkdir():
@@ -695,6 +720,8 @@ Two differences from os.mkdir():
     finally:
         os.umask(ou)
 
+
+
 def open_ex(filename, mode='r', bufsize=-1, perms=0664):
     """Use os.open() to open a file in a particular mode.
 
@@ -732,6 +759,8 @@ def open_ex(filename, mode='r', bufsize=-1, perms=0664):
     finally:
         os.umask(ou)
 
+
+
 def GetRequestURI(fallback=None):
     """Return the full virtual path this CGI script was invoked with.
 
