@@ -33,6 +33,10 @@ if __name__ == '__main__':
 
 from Mailman.Logging.Syslog import syslog
 
+# If a bounce detector returns Stop, that means to just discard the message.
+# An example is warning messages for temporary delivery problems.  These
+# shouldn't trigger a bounce notification, but we also don't want to send them
+# on to the list administrator.
 class _Stop:
     pass
 Stop = _Stop()
