@@ -223,6 +223,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         exc = exc()
     listname = mlist.real_name
     sender = msg.get_sender()
+    owneraddr = mlist.GetOwnerEmail()
     adminaddr = mlist.GetAdminEmail()
     # We need to send both the reason and the rejection notice through the
     # translator again, because of the games we play above
@@ -244,6 +245,9 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # languages (the user's preferred and the list's preferred for the admin),
     # we need to play some i18n games here.  Since the current language
     # context ought to be set up for the user, let's craft his message first.
+    #
+    # This message should appear to come from <list>-admin so as to handle any
+    # bounce processing that might be needed.
     if not fromusenet and not mlist.dont_respond_to_post_requests:
         lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
         subject = _('Your message to %(listname)s awaits moderator approval')
@@ -252,7 +256,9 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         msg.addheader('Content-Type', 'text/plain',
                       charset=Utils.GetCharSet(lang))
         msg.send(mlist)
-    # Now the message for the administrator
+    # Now the message for the list owners.  Be sure to include the list
+    # moderators in this message.  This one should appear to come from
+    # <list>-owner since we really don't need to do bounce processing on it.
     if mlist.admin_immed_notify:
         # Now let's temporarily set the language context to that which the
         # admin is expecting.
@@ -266,11 +272,10 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             text = Utils.maketext('postauth.txt', d, raw=1, mlist=mlist)
             # craft the admin notification message and deliver it
             subject = _('%(listname)s post from %(sender)s requires approval')
-            msg = Message.UserNotification(adminaddr, adminaddr, subject,
-            text)
+            msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
             msg.addheader('Content-Type', 'text/plain',
                           charset=Utils.GetCharSet(lang))
-            msg.send(mlist)
+            msg.send(mlist, **{'tomoderators': 1})
         finally:
             i18n.set_translation(otranslation)
     # Log the held message
