@@ -28,14 +28,18 @@ import getpass
 from Mailman import MailList
 
 def main(argv):
-    if len(sys.argv) >= 2:
+    if len(sys.argv) > 2:
         print "Usage: mmsitepass [ password ]"
         raise SystemExit, 1
     elif len(sys.argv) == 2:
         pw = sys.argv[1]
     else:
         try:
-            pw = getpass.getpass("Password: ")
+            pw = getpass.getpass("New Password: ")
+            confirm = getpass.getpass("Again to confirm: ")
+            if pw != confirm:
+                print "Mismatch - password not changed."
+                raise SystemExit, 1
         except KeyboardInterrupt:
             print "Interrupted..."
             raise SystemExit, 1
