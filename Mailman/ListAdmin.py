@@ -81,6 +81,8 @@ class ListAdmin:
             else:
                 raise
         self.__dbflags = flags
+        # sanity check, but this is faster than checking all the keys
+        assert len(self.requests.keys()) == len(self.__db.keys())
 
     def __closedb(self):
         if self.__db is not None:
