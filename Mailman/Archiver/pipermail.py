@@ -722,7 +722,7 @@ class BSDDBdatabase(Database):
                 os.mkdir(arcdir, 02775)
             except OSError:
                 # BAW: Hmm...
-                pas
+                pass
         finally:
             os.umask(omask)
 	for hdr in ('date', 'author', 'subject', 'article', 'thread'):
