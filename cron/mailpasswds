@@ -64,7 +64,8 @@ def MailAllPasswords(list, users):
    	list.SendTextToUser(subject = subj,
    			    recipient = user,
    			    text = text,
- 			    sender = mm_cfg.MAILMAN_OWNER)
+ 			    sender = mm_cfg.MAILMAN_OWNER,
+                            add_headers = ["X-No-Archive: yes"])
 
 # Consolidate all the list/url/password info for each user, so we send
 # the user a single message with the info for all their lists on this
