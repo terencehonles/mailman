@@ -42,7 +42,7 @@ def flatten(msg, leaves):
 
 
 # are these heuristics correct or guaranteed?
-pcre = re.compile(r'\t\t\tthe\s*(bns)?\s*(postfix|keftamail)', re.IGNORECASE)
+pcre = re.compile(r'[ \t]*the\s*(bns)?\s*(postfix|keftamail)', re.IGNORECASE)
 rcre = re.compile(r'failure reason:$', re.IGNORECASE)
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
