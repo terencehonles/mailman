@@ -46,7 +46,7 @@ def clear():
 # nolock argument is ignored, but exists for interface compliance
 def create(mlist, cgi=0, nolock=0):
     listname = mlist.internal_name()
-    fieldsz = len(listname) + len('-request')
+    fieldsz = len(listname) + len('-unsubscribe')
     if cgi:
         # If a list is being created via the CGI, the best we can do is send
         # an email message to mailman-owner requesting that the proper aliases
@@ -77,11 +77,14 @@ equivalent) file by adding the following lines, and possibly running the
     if not cgi:
         print >> outfp
         return
-    siteowner = Utils.get_site_email()
+    # Send the message to the site -owner so someone can do something about
+    # this request.
+    siteowner = Utils.get_site_email(extra='owner')
+    # Should this be sent in the site list's preferred language?
     msg = Message.UserNotification(
         siteowner, siteowner,
         _('Mailing list creation request for list %(listname)s'),
-        sfp.getvalue(), mlist.preferred_language)
+        sfp.getvalue(), mm_cfg.DEFAULT_SERVER_LANGUAGE)
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
     outq.enqueue(msg, recips=[siteowner])
 
@@ -89,7 +92,7 @@ equivalent) file by adding the following lines, and possibly running the
 
 def remove(mlist, cgi=0):
     listname = mlist.internal_name()
-    fieldsz = len(listname) + len('-request')
+    fieldsz = len(listname) + len('-unsubscribe')
     if cgi:
         # If a list is being removed via the CGI, the best we can do is send
         # an email message to mailman-owner requesting that the appropriate
@@ -120,10 +123,11 @@ equivalent) file by removing the following lines, and possibly running the
     if not cgi:
         print >> outfp
         return
-    siteowner = Utils.get_site_email()
+    siteowner = Utils.get_site_email(extra='owner')
+    # Should this be sent in the site list's preferred language?
     msg = Message.UserNotification(
         siteowner, siteowner,
         _('Mailing list removal request for list %(listname)s'),
-        sfp.getvalue())
+        sfp.getvalue(), mm_cfg.DEFAULT_SERVER_LANGUAGE)
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
     outq.enqueue(msg, recips=[siteowner])
