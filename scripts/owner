@@ -29,10 +29,10 @@ import sys
 import mimetools
 
 import paths
-
 from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Message
+from Mailman import Errors
 from Mailman.Handlers import HandlerAPI
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Logging.Utils import LogStdErr
@@ -43,9 +43,24 @@ LogStdErr('error', 'post')
 
 
 def main():
-    # Only let one program per list run at any one time.  TBD: This *can*
-    # fail, and should send back an error message when it does.
-    mlist = MailList.MailList(sys.argv[1])
+    try:
+        listname = sys.argv[1]
+    except IndexError:
+        sys.stderr.write('Mailman error: mailowner got no listname.\n')
+        sys.exit(1)
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMListError, e:
+        sys.stderr.write('Mailman error: mailowner got bad listname: %s\n%s' %
+                         (listname, e))
+        sys.exit(1)
+    # Try to obtain the mailing list lock.  If that fails, enqueue the message
+    # for delivery by the qrunner cron job.
+    try:
+        mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+    except LockFile.TimeOutError:
+        msg.Enqueue(mlist)
+        return
     try:
         s = StringIO(sys.stdin.read())
         msg = mimetools.Message(s)
@@ -55,12 +70,15 @@ def main():
         # okay, no bounces were detected, but we have to convert this
         # mimetools.Message thingie to one of our OutgoingMessages.
         msg = Message.OutgoingMessage(s.getvalue())
-        msg.recips = mlist.owner[:]
-        # for debugging purposes
-##        msg.recips.append(mm_cfg.MAILMAN_OWNER)
-        # flag this message as coming to the -admin address
-        msg.toadmin = 1
-        HandlerAPI.DeliverToUser(mlist, msg)
+        recips = mlist.owner[:]
+        # debugging
+        #recips.append(mm_cfg.MAILMAN_OWNER)
+        msgdata = {'recips' : recips,
+                   'toadmin': 1,
+                   }
+        enqueue = HandlerAPI.DeliverToUser(mlist, msg, msgdata)
+        if enqueue:
+            msg.Enqueue(mlist, newdata=msgdata)
     finally:
         mlist.Save()
         mlist.Unlock()
