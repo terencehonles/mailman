@@ -20,6 +20,7 @@ import sys
 import os
 import string
 import re
+import socket
 
 from Mailman.pythonlib.StringIO import StringIO
 
@@ -123,14 +124,18 @@ def do_child(mlist, msg):
     # flatten the message object, stick it in a StringIO object and post
     # that resulting thing to the newsgroup
     fp = StringIO(str(msg))
-    conn = nntplib.NNTP(mlist.nntp_host, readermode=1)
+    conn = None
     try:
         try:
+            conn = nntplib.NNTP(mlist.nntp_host, readermode=1)
             conn.post(fp)
         except nntplib.error_temp, e:
-            sys.stderr.write('encountered NNTP error for list %s\n' %
-                             mlist.internal_name())
-            sys.stderr.write(str(e) + '\n')
+            mlist.LogMsg('error', '(ToUsenet) NNTP error for list "%s": %s' %
+                         (mlist.internal_name(), e))
+        except socket.error, e:
+            mlist.LogMsg('error', '(ToUsenet) socket error for list "%s": %s'
+                         % (mlist.internal_name(), e))
     finally:
-        conn.quit()
+        if conn:
+            conn.quit()
     os._exit(0)
