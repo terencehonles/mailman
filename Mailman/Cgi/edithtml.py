@@ -18,6 +18,7 @@
 
 import os
 import cgi
+import errno
 
 from Mailman import Utils
 from Mailman import MailList
@@ -151,9 +152,16 @@ def ChangeHTML(mlist, cgi_info, template_name, doc):
         doc.AddItem('<hr>')
         return
     code = cgi_info['html_code'].value
-    fp = open(os.path.join(mlist.fullpath(), mlist.preferred_language,
-                           template_name), 'w')
-    fp.write(code)
-    fp.close()
+    langdir = os.path.join(mlist.fullpath(), mlist.preferred_language)
+    # Make sure the directory exists
+    try:
+        os.mkdir(langdir, 02775)
+    except OSError, e:
+        if e.errno <> errno.EEXIST: raise
+    fp = open(os.path.join(langdir, template_name), 'w')
+    try:
+        fp.write(code)
+    finally:
+        fp.close()
     doc.AddItem(Header(3, _('HTML successfully updated.')))
     doc.AddItem('<hr>')
