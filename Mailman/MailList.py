@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,7 +23,6 @@ Mixes in many task-specific classes.
 import sys
 import os
 import marshal
-import string
 import errno
 import re
 import shutil
@@ -31,6 +30,8 @@ import socket
 from types import StringType, IntType, DictType, ListType
 import urllib
 from urlparse import urlparse
+
+from mimelib.address import getaddresses
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -53,7 +54,8 @@ from Mailman.Logging.Syslog import syslog
 # other useful classes
 from Mailman.pythonlib.StringIO import StringIO
 from Mailman import Message
-from Mailman.Handlers import HandlerAPI
+
+EMPTYSTRING = ''
 
 
 
@@ -120,16 +122,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         in the members dict is the case preserved address, otherwise,
         the value is 0.
         """
-        if Utils.LCDomain(addr) == string.lower(addr):
+        if Utils.LCDomain(addr) == addr.lower():
             if digest:
                 self.digest_members[addr] = 0
             else:
                 self.members[addr] = 0
         else:
             if digest:
-                self.digest_members[string.lower(addr)] = addr
+                self.digest_members[addr.lower()] = addr
             else:
-                self.members[string.lower(addr)] = addr
+                self.members[addr.lower()] = addr
 
     def GetAdminEmail(self):
         return '%s-admin@%s' % (self._internal_name, self.host_name)
@@ -150,13 +152,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         if not self.umbrella_list:
             return member
         else:
-            acct, host = tuple(string.split(member, '@'))
+            acct, host = tuple(member.split('@'))
             return "%s%s@%s" % (acct, self.umbrella_member_suffix, host)
 
     def GetUserSubscribedAddress(self, member):
         """Return the member's case preserved address.
         """
-        member = string.lower(member)
+        member = member.lower()
         cpuser = self.members.get(member)
         if type(cpuser) == IntType:
             return member
@@ -173,7 +175,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         """Return the member's address lower cased."""
         cpuser = self.GetUserSubscribedAddress(member)
         if cpuser is not None:
-            return string.lower(cpuser)
+            return cpuser.lower()
         return None
 
     def GetRequestEmail(self):
@@ -187,7 +189,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                '/' + self.internal_name()
 
     def GetOptionsURL(self, addr, obscure=0, absolute=0):
-        addr = string.lower(addr)
+        addr = addr.lower()
         url = self.GetScriptURL('options', absolute)
         if obscure:
             addr = Utils.ObscureEmail(addr)
@@ -254,7 +256,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # sadly, matches may or may not be case preserved
 	if not matches or not len(matches):
 	    return None
-	return string.lower(matches[0])
+	return matches[0].lower()
 
     def InitTempVars(self, name):
         """Set transient variables of this and inherited classes."""
@@ -288,7 +290,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.language = {}
 
 	# This stuff is configurable
-	self.filter_prog = mm_cfg.DEFAULT_FILTER_PROG
 	self.dont_respond_to_post_requests = 0
 	self.advertised = mm_cfg.DEFAULT_LIST_ADVERTISED
 	self.max_num_recipients = mm_cfg.DEFAULT_MAX_NUM_RECIPIENTS
@@ -314,8 +315,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.bounce_matching_headers = \
 		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
         self.anonymous_list = mm_cfg.DEFAULT_ANONYMOUS_LIST
-	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
-				   self._internal_name[1:])
+        internalname = self.internal_name()
+        self.real_name = internalname[0].upper() + internalname[1:]
 	self.description = ''
 	self.info = ''
 	self.welcome_msg = ''
@@ -357,19 +358,20 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         # XXX: Should this text be migrated into the templates dir?
-	config_info['general'] = [_(
-            "Fundamental list characteristics, including descriptive"
-            " info and basic behaviors."),
+	config_info['general'] = [
+            _("Fundamental list characteristics, including descriptive"
+              " info and basic behaviors."),
+
 	    ('real_name', mm_cfg.String, WIDTH, 0,
 	     _('The public name of this list (make case-changes only).'),
 
-           _("The capitalization of this name can be changed to make it"
-             " presentable in polite company as a proper noun, or to make an"
-             " acronym part all upper case, etc.  However, the name"
-             " will be advertised as the email address (e.g., in subscribe"
-             " confirmation notices), so it should <em>not</em> be otherwise"
-             " altered.  (Email addresses are not case sensitive, but"
-             " they are sensitive to almost everything else:-)")),
+             _("The capitalization of this name can be changed to make it"
+               " presentable in polite company as a proper noun, or to make an"
+               " acronym part all upper case, etc.  However, the name"
+               " will be advertised as the email address (e.g., in subscribe"
+               " confirmation notices), so it should <em>not</em> be otherwise"
+               " altered.  (Email addresses are not case sensitive, but"
+               " they are sensitive to almost everything else:-)")),
 
 	    ('owner', mm_cfg.EmailList, (3, WIDTH), 0,
 	     _("The list admin's email address - having multiple"
@@ -384,47 +386,47 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('description', mm_cfg.String, WIDTH, 0,
 	     _('A terse phrase identifying this list.'),
 
-           _("This description is used when the mailing list is listed with"
-             " other mailing lists, or in headers, and so forth.  It should"
-             " be as succinct as you can get it, while still identifying"
-             " what the list is.")),
+             _("This description is used when the mailing list is listed with"
+               " other mailing lists, or in headers, and so forth.  It should"
+               " be as succinct as you can get it, while still identifying"
+               " what the list is.")),
 
-	    ('info', mm_cfg.Text, (7, WIDTH), 0, _(
-	     ' An introductory description - a few paragraphs - about the'
-	     ' list.  It will be included, as html, at the top of the'
-	     ' listinfo page.  Carriage returns will end a paragraph - see'
-             ' the details for more info.'),
+	    ('info', mm_cfg.Text, (7, WIDTH), 0,
+             _(' An introductory description - a few paragraphs - about the'
+               ' list.  It will be included, as html, at the top of the'
+               ' listinfo page.  Carriage returns will end a paragraph - see'
+               ' the details for more info.'),
 
-           _("The text will be treated as html <em>except</em> that newlines"
-             " newlines will be translated to &lt;br&gt; - so you can use"
-             " links, preformatted text, etc, but don't put in carriage"
-             " returns except where you mean to separate paragraphs.  And"
-             " review your changes - bad html (like some unterminated HTML"
-             " constructs) can prevent display of the entire listinfo page.")),
+             _("The text will be treated as html <em>except</em> that newlines"
+               " newlines will be translated to &lt;br&gt; - so you can use"
+               " links, preformatted text, etc, but don't put in carriage"
+               " returns except where you mean to separate paragraphs.  And"
+               " review your changes - bad html (like some unterminated HTML"
+               " constructs) can prevent display of the entire listinfo page.")),
 
 	    ('subject_prefix', mm_cfg.String, WIDTH, 0,
 	     _('Prefix for subject line of list postings.'),
 
-           _("This text will be prepended to subject lines of messages"
-             " posted to the list, to distinguish mailing list messages in"
-             " in mailbox summaries.  Brevity is premium here, it's ok"
-             " to shorten long mailing list names to something more concise,"
-             " as long as it still identifies the mailing list.")),
+             _("This text will be prepended to subject lines of messages"
+               " posted to the list, to distinguish mailing list messages in"
+               " in mailbox summaries.  Brevity is premium here, it's ok"
+               " to shorten long mailing list names to something more concise,"
+               " as long as it still identifies the mailing list.")),
 
 	    ('welcome_msg', mm_cfg.Text, (4, WIDTH), 0,
 	     _('List-specific text prepended to new-subscriber welcome message'),
 
-           _("This value, if any, will be added to the front of the"
-             " new-subscriber welcome message.  The rest of the"
-             " welcome message already describes the important addresses"
-             " and URLs for the mailing list, so you don't need to include"
-             " any of that kind of stuff here.  This should just contain"
-             " mission-specific kinds of things, like etiquette policies"
-             " or team orientation, or that kind of thing.")),
+             _("This value, if any, will be added to the front of the"
+               " new-subscriber welcome message.  The rest of the"
+               " welcome message already describes the important addresses"
+               " and URLs for the mailing list, so you don't need to include"
+               " any of that kind of stuff here.  This should just contain"
+               " mission-specific kinds of things, like etiquette policies"
+               " or team orientation, or that kind of thing.")),
 
 	    ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
 	     _('Text sent to people leaving the list.  If empty, no special'
-	     ' text will be added to the unsubscribe message.')),
+               ' text will be added to the unsubscribe message.')),
 
 	    ('reply_goes_to_list', mm_cfg.Radio,
              (_('Poster'), _('This list'), _('Explicit address')), 0,
@@ -458,7 +460,7 @@ mailing lists, select <tt>Explicit address</tt> and set the <tt>Reply-To:</tt>
 address below to point to the parallel list.""")),
 
             ('reply_to_address', mm_cfg.Email, WIDTH, 0,_(
-             'Explicit <tt>Reply-To:</tt> header.'),
+            'Explicit <tt>Reply-To:</tt> header.'),
 
              # Details for reply_to_address
              _("""This is the address set in the <tt>Reply-To:</tt> header
@@ -495,33 +497,33 @@ it will not be changed.""")),
                " the administrative requests queue, notifying the "
                " administrator of the new request, in the process. ")),
 
-	    ('umbrella_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,_(
-	     'Send password reminders to, eg, "-owner" address instead of'
-	     ' directly to user.'),
+	    ('umbrella_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _('Send password reminders to, eg, "-owner" address instead of'
+               ' directly to user.'),
 
-	   _("Set this to yes when this list is intended to cascade only to"
-	     " other mailing lists.  When set, meta notices like confirmations"
-             " and password reminders will be directed to an address derived"
-             " from the member\'s address - it will have the value of"
-             ' \"umbrella_member_suffix\" appended to the'
-             " member\'s account name.")),
+             _("Set this to yes when this list is intended to cascade only to"
+               " other mailing lists.  When set, meta notices like confirmations"
+               " and password reminders will be directed to an address derived"
+               " from the member\'s address - it will have the value of"
+               ' \"umbrella_member_suffix\" appended to the'
+               " member\'s account name.")),
 
-	    ('umbrella_member_suffix', mm_cfg.String, WIDTH, 0,_(
-	     'Suffix for use when this list is an umbrella for other lists,'
-             ' according to setting of previous "umbrella_list" setting.'),
+	    ('umbrella_member_suffix', mm_cfg.String, WIDTH, 0,
+             _('Suffix for use when this list is an umbrella for other lists,'
+               ' according to setting of previous "umbrella_list" setting.'),
 
 	     _('When \"umbrella_list\" is set to indicate that this list has'
-             " other mailing lists as members, then administrative notices"
-             " like confirmations and password reminders need to not be sent"
-             " to the member list addresses, but rather to the owner of those"
-             " member lists.  In that case, the value of this setting is"
-             " appended to the member\'s account name for such notices."
-             " \'-owner\' is the typical choice.  This setting has no"
-             ' effect when \"umbrella_list\" is \"No\".')),
+               " other mailing lists as members, then administrative notices"
+               " like confirmations and password reminders need to not be sent"
+               " to the member list addresses, but rather to the owner of those"
+               " member lists.  In that case, the value of this setting is"
+               " appended to the member\'s account name for such notices."
+               " \'-owner\' is the typical choice.  This setting has no"
+               ' effect when \"umbrella_list\" is \"No\".')),
 
 	    ('send_reminders', mm_cfg.Radio, (_('No'), _('Yes')), 0,
 	     _('Send monthly password reminders or no? Overrides the previous '
-	     'option.')),
+               'option.')),
 
 	    ('send_welcome_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0, 
 	     _('Send welcome message when people subscribe?'),
@@ -530,16 +532,15 @@ it will not be changed.""")),
 	       "is most useful for transparently migrating lists from "
 	       "some other mailing list manager to Mailman.")),
 
-
 	    ('admin_immed_notify', mm_cfg.Radio, (_('No'), _('Yes')), 0,
 	     _('Should administrator get immediate notice of new requests, '
 	       'as well as daily notices about collected ones?'),
 
-           _("List admins are sent daily reminders of pending admin approval"
-             " requests, like subscriptions to a moderated list or postings"
-	     " that are being held for one reason or another.  Setting this"
-	     " option causes notices to be sent immediately on the arrival"
-	     " of new requests, as well.")),
+             _("List admins are sent daily reminders of pending admin approval"
+               " requests, like subscriptions to a moderated list or postings"
+               " that are being held for one reason or another.  Setting this"
+               " option causes notices to be sent immediately on the arrival"
+               " of new requests, as well.")),
 
             ('admin_notify_mchanges', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('Should administrator get notices of subscribes/unsubscribes?')),
@@ -548,10 +549,10 @@ it will not be changed.""")),
              (_('Yes'), _('No')), 0,
 	     _('Send mail to poster when their posting is held for approval?'),
 
-           _("Approval notices are sent when mail triggers certain of the"
-             " limits <em>except</em> routine list moderation and spam"
-	     " filters, for which notices are <em>not</em> sent.  This"
-	     " option overrides ever sending the notice.")),
+             _("Approval notices are sent when mail triggers certain of the"
+               " limits <em>except</em> routine list moderation and spam"
+               " filters, for which notices are <em>not</em> sent.  This"
+               " option overrides ever sending the notice.")),
 
 	    ('max_message_size', mm_cfg.Number, 7, 0,
 	     _('Maximum length in Kb of a message body.  Use 0 for no limit.')),
@@ -559,11 +560,11 @@ it will not be changed.""")),
 	    ('host_name', mm_cfg.Host, WIDTH, 0,
              _('Host name this list prefers.'),
 
-           _("The host_name is the preferred name for email to mailman-related"
-             " addresses on this host, and generally should be the mail"
-             " host's exchanger address, if any.  This setting can be useful"
-             " for selecting among alternative names of a host that has"
-             " multiple addresses.")),
+             _("The host_name is the preferred name for email to mailman-related"
+               " addresses on this host, and generally should be the mail"
+               " host's exchanger address, if any.  This setting can be useful"
+               " for selecting among alternative names of a host that has"
+               " multiple addresses.")),
 
  	    ('web_page_url', mm_cfg.String, WIDTH, 0,
  	     _('''Base URL for Mailman web interface.  The URL must end in a
@@ -985,7 +986,7 @@ it will not be changed.""")),
         #
         name = Utils.ParseAddrs(name)
 	# Remove spaces... it's a common thing for people to add...
-	name = string.join(string.split(name), '')
+	name = EMPTYSTRING.join(name.split())
         # lower case only the domain part
         name = Utils.LCDomain(name)
 
@@ -993,7 +994,7 @@ it will not be changed.""")),
 	Utils.ValidateEmail(name)
 	if self.IsMember(name):
             raise Errors.MMAlreadyAMember
-        if name == string.lower(self.GetListEmail()):
+        if name == self.GetListEmail().lower():
             # Trying to subscribe the list to itself!
             raise Errors.MMBadEmailError
 
@@ -1035,9 +1036,9 @@ it will not be changed.""")),
                 (self.real_name, cookie),
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
-            HandlerAPI.DeliverToUser(self, msg)
+            msg.send(self)
             if recipient != name:
-                who = "%s (%s)" % (name, string.split(recipient, '@')[0])
+                who = "%s (%s)" % (name, recipient.split('@')[0])
             else: who = name
             syslog('subscribe', '%s: pending %s %s' %
                    (self.internal_name(), who, by))
@@ -1068,7 +1069,7 @@ it will not be changed.""")),
             self.Save()
 
     def ApprovedAddMember(self, name, password, digest,
-                          lang=None, ack=None, admin_notif=None):
+                          ack=None, admin_notif=None, lang=None):
         res = self.ApprovedAddMembers([name], [password],
                                       digest, lang, ack, admin_notif)
         # There should be exactly one (key, value) pair in the returned dict,
@@ -1082,8 +1083,8 @@ it will not be changed.""")),
             e, v = res
             raise e, v
 
-    def ApprovedAddMembers(self, names, passwords, digest, lang=None,
-                          ack=None, admin_notif=None):
+    def ApprovedAddMembers(self, names, passwords, digest,
+                           ack=None, admin_notif=None, lang=None):
         """Subscribe members in list `names'.
 
         Passwords can be supplied in the passwords list.  If an empty
@@ -1148,7 +1149,7 @@ it will not be changed.""")),
             password = passwords[i]
             if not password:
                 password = Utils.MakeRandomPassword()
-            self.passwords[string.lower(name)] = password
+            self.passwords[name.lower()] = password
             # An address has been added successfully, make sure the
             # list config is saved later on
             dirty = 1
@@ -1167,12 +1168,12 @@ it will not be changed.""")),
                     if ack:
                         self.SendSubscribeAck(
                             name,
-                            self.passwords[string.lower(name)],
+                            self.passwords[name.lower()],
                             digest)
                     if admin_notif:
                         adminaddr = self.GetAdminEmail()
-                        subject = (_('%s subscription notification') %
-                                   self.real_name)
+                        realname = self.real_name
+                        subject = _('%(realname)s subscription notification')
                         text = Utils.maketext(
                             "adminsubscribeack.txt",
                             {"listname" : self.real_name,
@@ -1180,7 +1181,7 @@ it will not be changed.""")),
                              }, lang)
                         msg = Message.UserNotification(
                             self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
-                        HandlerAPI.DeliverToUser(self, msg)
+                        msg.send(self)
         return result
 
     def DeleteMember(self, name, whence=None, admin_notif=None, userack=1):
@@ -1233,7 +1234,7 @@ it will not be changed.""")),
             msg = Message.UserNotification(self.owner,
                                            mm_cfg.MAILMAN_OWNER,
                                            subject, text)
-            HandlerAPI.DeliverToUser(self, msg)
+            msg.send(self)
         if whence:
             whence = "; %s" % whence
         else:
@@ -1255,15 +1256,15 @@ it will not be changed.""")),
         # specifically To: Cc: and Resent-to:
         to = []
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-            to.extend(msg.getaddrlist(header))
+            to.extend(getaddresses(msg.getall(header)))
         for fullname, addr in to:
             # It's possible that if the header doesn't have a valid
             # (i.e. RFC822) value, we'll get None for the address.  So skip
             # it.
             if addr is None:
                 continue
-            addr = string.lower(addr)
-            localpart = string.split(addr, '@')[0]
+            addr = addr.lower()
+            localpart = addr.split('@')[0]
             if (# TBD: backwards compatibility: deprecated
                     localpart == self.internal_name() or
                     # exact match against the complete list address
@@ -1292,8 +1293,8 @@ it will not be changed.""")),
         # 2. If that match fails, or the pattern does have an `@' in it, we
         #    try matching against the entire recip address.
         for addr, localpart in recips:
-            for alias in string.split(self.acceptable_aliases, '\n'):
-                stripped = string.strip(alias)
+            for alias in self.acceptable_aliases.split('\n'):
+                stripped = alias.strip()
                 if not stripped:
                     # ignore blank or empty lines
                     continue
@@ -1309,63 +1310,45 @@ it will not be changed.""")),
 	# - Leading whitespace in the matchexp is trimmed - you can defeat
 	#   that by, eg, containing it in gratuitous square brackets.
 	all = []
-	for line in string.split(self.bounce_matching_headers, '\n'):
-	    stripped = string.strip(line)
-	    if not stripped or (stripped[0] == "#"):
-		# Skip blank lines and lines *starting* with a '#'.
+	for line in self.bounce_matching_headers.split('\n'):
+	    line = line.strip()
+            # Skip blank lines and lines *starting* with a '#'.
+            if not line or line[0] == "#":
 		continue
-	    else:
-		try:
-		    h, e = re.split(":[ \t]*", stripped, 1)
-                    try:
-                        re.compile(e)
-                        all.append((h, e, stripped))
-                    except re.error, cause:
-                        # The regexp in this line is malformed -- log it
-                        # and ignore it
-                        syslog('config',
-                               '%s - bad regexp %s [%s] '
-                               'in bounce_matching_header line %s'
-                               % (self.real_name, `e`, `cause`, `stripped`))
-		except ValueError:
-		    # Whoops - some bad data got by:
-		    syslog('config', '%s - bad bounce_matching_header line %s'
-                           % (self.real_name, `stripped`))
-	return all
+            i = line.find(':')
+            if i < 0:
+                # This didn't look like a header line.  BAW: should do a
+                # better job of informing the list admin.
+                syslog('config', 'bad bounce_matching_header line: %s\n%s'
+                       % (self.real_name, line))
+            else:
+                header = line[:i]
+                value = line[i+1:].lstrip()
+                try:
+                    cre = re.compile(value, re.IGNORECASE)
+                except re.error, e:
+                    # The regexp was malformed.  BAW: should do a better
+                    # job of informing the list admin.
+                    syslog('config',
+                           'bad regexp in bounce_matching_header line: %s'
+                           '\n%s (cause: %s)' %
+                           (self.real_name, value, e))
+                else:
+                    all.append((header, cre, line))
+        return all
 
-    def HasMatchingHeader(self, msg):
-	"""True if named header field (case-insensitive) matches regexp.
-
-	Case insensitive.
+    def hasMatchingHeader(self, msg):
+	"""Return true if named header field matches a regexp in the
+	bounce_matching_header list variable.
 
 	Returns constraint line which matches or empty string for no
-	matches."""
-	
-	pairs = self.parse_matching_header_opt()
-
-	for field, matchexp, line in pairs:
-	    fragments = msg.getallmatchingheaders(field)
-	    subjs = []
-	    l = len(field)
-	    for f in fragments:
-		# Consolidate header lines, stripping header name & whitespace.
-		if (len(f) > l
-		    and f[l] == ":"
-		    and string.lower(field) == string.lower(f[0:l])):
-		    # Non-continuation line - trim header name:
-		    subjs.append(f[l+2:])
-		elif not subjs:
-		    # Whoops - non-continuation that matches?
-		    subjs.append(f)
-		else:
-		    # Continuation line.
-		    subjs[-1] = subjs[-1] + f
-	    for s in subjs:
-                # This is safe because parse_matching_header_opt only
-                # returns valid regexps
-		if re.search(matchexp, s, re.I):
-		    return line
-	return 0
+	matches.
+        """
+        for header, cre, line in self.parse_matching_header_opt():
+            for value in msg.getall(header):
+                if cre.search(value):
+                    return line
+        return 0
 
     def Locked(self):
         return self.__lock.locked()
@@ -1399,7 +1382,7 @@ it will not be changed.""")),
         return self._full_path
 
     def SetPreferredLanguage(self, name, lang):
-        lcname = string.lower(name)
+        lcname = name.lower()
         if lang <> self.preferred_language:
             self.language[lcname] = lang
         else:
@@ -1407,7 +1390,7 @@ it will not be changed.""")),
                 del self.language[lcname]
 
     def GetPreferredLanguage(self, name):
-        lcname = string.lower(name)
+        lcname = name.lower()
         if self.language.has_key(lcname):
             return self.language[lcname]
         else:
