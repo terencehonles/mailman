@@ -5,7 +5,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 412 $"
+__version__ = "$Revision: 414 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -127,11 +127,6 @@ def FormatAdminOverview(error=None):
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
                       colspan=2, bgcolor="#99ccff")
 
-    if error:
-        table.AddRow([Center(FontAttr(error, color="ff5060", size="+1"))])
-        table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
-                          colspan=2)
-
     advertised = []
     names = mm_utils.list_names()
     names.sort()
@@ -140,17 +135,23 @@ def FormatAdminOverview(error=None):
 	l.Unlock()
         if l.advertised: advertised.append(l)
 
+    if error:
+	greeting = FontAttr(error, color="ff5060", size="+1")
+    else:
+	greeting = "Welcome!"
+
     if not advertised:
-        welcome_items = (
-            "Welcome!<p>"
-            " There currently are no publicly-advertised ",
-            Link(mm_cfg.MAILMAN_URL, "mailman"),
-            " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
-            )
+        welcome_items = (greeting,
+			 "<p>"
+			 " There currently are no publicly-advertised ",
+			 Link(mm_cfg.MAILMAN_URL, "mailman"),
+			 " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+			 )
     else:
 
         welcome_items = (
-            "Welcome!<p>"
+	    greeting,
+            "<p>"
             " Below is the collection of publicly-advertised ",
             Link(mm_cfg.MAILMAN_URL, "mailman"),
             " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
