@@ -567,8 +567,7 @@ class HyperArchive(pipermail.T):
 
     def html_TOC_entry(self, arch):
         # Check to see if the archive is gzip'd or not
-        txtfile = os.path.join(mm_cfg.PREFIX,
-                               'archives/private',
+        txtfile = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
                                self.maillist.internal_name(),
                                arch + '.txt')
         gzfile = txtfile + '.gz'
