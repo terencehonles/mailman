@@ -31,12 +31,12 @@ Note that list-names are forced to lowercase.
 
 import sys, os, string
 import time
+import paths                                      # path hacking
 try:
     import getpass
 except ImportError:
     # we must be in Python 1.5, which didn't have the getpass module
     from Mailman.pythonlib import getpass
-import paths                                      # path hacking
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import mm_cfg
