@@ -147,9 +147,9 @@ b6, so I'm renaming it to %(mbox_dir)s.tmp and proceeding.""")
 %(listname)s has both public and private mbox archives.  Since this list
 currently uses private archiving, I'm installing the private mbox archive
 -- %(o_pri_mbox_file)s -- as the active archive, and renaming
-	%(o_pub_mbox_file)s
+        %(o_pub_mbox_file)s
 to
-	%(o_pub_mbox_file)s.preb6
+        %(o_pub_mbox_file)s.preb6
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
@@ -161,9 +161,9 @@ script.
 %s has both public and private mbox archives.  Since this list
 currently uses public archiving, I'm installing the public mbox file
 archive file (%s) as the active one, and renaming
-	%s
+        %s
     to
-    	%s.preb6
+        %s.preb6
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
@@ -239,7 +239,7 @@ script.
     b4_tmpl_dir = os.path.join(tmpl_dir, mlist._internal_name)
     new_tmpl_dir = os.path.join(list_dir, mlist._internal_name)
     if os.path.exists(b4_tmpl_dir):
-	print "- This list looks like it might have <= b4 " \
+        print "- This list looks like it might have <= b4 " \
               'list templates around'
         for f in os.listdir(b4_tmpl_dir):
             o_tmpl = os.path.join(b4_tmpl_dir, f)
