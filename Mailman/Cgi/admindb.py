@@ -113,7 +113,7 @@ def main():
                 'admlogin.txt',
                 {'listname': list_name,
                  'path'    : os.environ.get('REQUEST_URI',
-                                            '/mailman/admin/' + list_name),
+                                            '/mailman/admindb/' + list_name),
                  'message' : message,
                  })
             print text
