@@ -345,6 +345,7 @@ class Digest:
                            'got_request_email': lst.GetRequestEmail(),
                            'got_list_email': lst.GetListEmail(),
                            'got_owner_email': lst.GetAdminEmail(),
+                           'cgiext': mm_cfg.CGIEXT,
                            })
         return text % substs
 
