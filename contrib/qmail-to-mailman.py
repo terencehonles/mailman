@@ -62,6 +62,7 @@ def main():
         sys.stderr.write("LOCAL not set in environment?\n")
         sys.exit(100)
 
+    local = string.lower(local)
     local = re.sub("^mailman-","",local)
 
     names = ("root", "postmaster", "mailer-daemon", "mailman-owner", "owner",
