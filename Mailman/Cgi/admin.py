@@ -904,11 +904,11 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                   MemberAdaptor.BYBOUNCE: _('B'),
                   }
     # Now populate the rows
-    lang = mlist.preferred_language
     for addr in members:
         link = Link(mlist.GetOptionsURL(addr, obscure=1),
                     mlist.getMemberCPAddress(addr))
-        fullname = Utils.uncanonstr(mlist.getMemberName(addr), lang)
+        fullname = Utils.uncanonstr(mlist.getMemberName(addr),
+                                    mlist.preferred_language)
         name = TextBox(addr + '_realname', fullname, size=longest).Format()
         cells = [Center(CheckBox(addr + '_unsub', 'off', 0).Format()),
                  link.Format() + '<br>' +
