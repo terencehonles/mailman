@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Posting moderation filter.
@@ -44,7 +44,7 @@ def process(mlist, msg, msgdata):
         if mlist.isMember(sender):
             break
     else:
-        sender = None    
+        sender = None
     if sender:
         # If the member's moderation flag is on, then perform the moderation
         # action.
@@ -82,7 +82,7 @@ def process(mlist, msg, msgdata):
     if matches_p(sender, mlist.accept_these_nonmembers):
         return
     if matches_p(sender, mlist.hold_these_nonmembers):
-        Hold.hold_for_approval(mlist, msg, msgdata, Hold.ModeratedPost)
+        Hold.hold_for_approval(mlist, msg, msgdata, Hold.NonMemberPost)
         # No return
     if matches_p(sender, mlist.reject_these_nonmembers):
         do_reject(mlist)
@@ -98,7 +98,7 @@ def process(mlist, msg, msgdata):
         # Accept
         return
     elif mlist.generic_nonmember_action == 1:
-        Hold.hold_for_approval(mlist, msg, msgdata, Hold.ModeratedPost)
+        Hold.hold_for_approval(mlist, msg, msgdata, Hold.NonMemberPost)
     elif mlist.generic_nonmember_action == 2:
         do_reject(mlist)
     elif mlist.generic_nonmember_action == 3:
