@@ -102,9 +102,24 @@ class SecurityManager:
         return c
 
     def CheckCookie(self, key):
-        if not os.environ.has_key('HTTP_COOKIE'):
+        cookiedata = os.environ.get('HTTP_COOKIE')
+        if not cookiedata:
             return 0
-        c = Cookie.Cookie(os.environ['HTTP_COOKIE'])
+        #
+        # TBD: At least some versions of MS Internet Explorer stores cookies
+        # without the double quotes.  This has been verified for MSIE 4.01,
+        # although MSIE 5 is fixed.  The bug (see PR#80) is that if these
+        # double quotes are missing, the cookie data does not unpickle
+        # into the list that we expect.  The kludge given here (slightly
+        # modified) was initially provided by Evaldas Auryla
+        # <evaldas.auryla@pheur.org>
+        #
+##        self.LogMsg('debug', 'Browser Cookie: ' + cookiedata)
+        keylen = len(key)
+        if cookiedata[keylen+1] <> '"' and cookiedata[-1] <> '"':
+            cookiedata = key + '="' + cookiedata[keylen+1:] + '"'
+##            self.LogMsg('debug', 'Using   Cookie: ' + cookiedata)
+        c = Cookie.Cookie(cookiedata)
         if not c.has_key(key):
             return 0
         cookie = c[key].value
