@@ -63,11 +63,11 @@ def main():
                                 Errors.MMBadPasswordError):
                             bad = ("%s subscriber authentication failed."
                                    % list.real_name)
-                        else:
-                            # Anonymous list - admin-only visible
-                            # - and we already tried admin password, above.
-                            bad = ("%s admin authentication failed."
-                                   % list.real_name)
+                    else:
+                        # Anonymous list - admin-only visible
+                        # - and we already tried admin password, above.
+                        bad = ("%s admin authentication failed."
+                               % list.real_name)
     if bad:
         doc = error_page_doc(bad)
         doc.AddItem(list.GetMailmanFooter())
