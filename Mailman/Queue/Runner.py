@@ -73,27 +73,34 @@ class Runner:
             self._cleanup()
 
     def __oneloop(self):
-        # First, list all the files in our queue directory, and randomize them
-        # for better coverage even at resource limits.
+        # First, list all the files in our queue directory.
+        # Switchboard.files() is guaranteed to hand us the files in FIFO
+        # order.
         files = self._switchboard.files()
-        random.shuffle(files)
         for filebase in files:
             # Ask the switchboard for the message and metadata objects
             # associated with this filebase.
             msg, msgdata = self._switchboard.dequeue(filebase)
-            # Now that we've dequeued the message, we want to be incredibly
-            # anal about making sure that no uncaught exception could cause us
-            # to lose the message.  All runners that implement _dispose() must
-            # guarantee that exceptions are caught and dealt with properly.
-            # Still, there may be a bug in the infrastructure, and we do not
-            # want those to cause messages to be lost.  Any uncaught
-            # exceptions will cause the message to be stored in the shunt
-            # queue for human intervention.
-            try:
-                self.__onefile(msg, msgdata)
-            except Exception, e:
-                self._log(e)
-                self._shunt.enqueue(msg, msgdata)
+            # It's possible one or both files got lost.  If so, just ignore
+            # this filebase entry.  dequeue() will automatically unlink the
+            # other file, but we should log an error message for diagnostics.
+            if msg is None or msgdata is None:
+                syslog('error', 'lost data files for filebase: %s' % filebase)
+            else:
+                # Now that we've dequeued the message, we want to be
+                # incredibly anal about making sure that no uncaught exception
+                # could cause us to lose the message.  All runners that
+                # implement _dispose() must guarantee that exceptions are
+                # caught and dealt with properly.  Still, there may be a bug
+                # in the infrastructure, and we do not want those to cause
+                # messages to be lost.  Any uncaught exceptions will cause the
+                # message to be stored in the shunt queue for human
+                # intervention.
+                try:
+                    self.__onefile(msg, msgdata)
+                except Exception, e:
+                    self._log(e)
+                    self._shunt.enqueue(msg, msgdata)
             # Other work we want to do each time through the loop
             Utils.reap(self._kids, once=1)
             self._doperiodic()
