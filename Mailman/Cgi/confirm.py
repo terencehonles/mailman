@@ -207,10 +207,10 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
     digest = userdesc.digest
     lang = userdesc.language
     name = Utils.uncanonstr(userdesc.fullname, lang)
-    title = _('Confirm subscription request')
-    doc.SetTitle(title)
     i18n.set_language(lang)
     doc.set_language(lang)
+    title = _('Confirm subscription request')
+    doc.SetTitle(title)
 
     form = Form(mlist.GetScriptURL('confirm', 1))
     table = Table(border=0, width='100%')
@@ -271,7 +271,7 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
                       RadioButtonArray('digests', (_('No'), _('Yes')),
                                        checked=digest, values=(0, 1))])
     langs = mlist.GetAvailableLanguages()
-    values = [mm_cfg.LC_DESCRIPTIONS[l][0] for l in langs]
+    values = [_(Utils.GetLanguageDescr(l)) for l in langs]
     try:
         selected = langs.index(lang)
     except ValueError:
@@ -291,7 +291,10 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
 
 def subscription_cancel(mlist, doc, cookie):
     # Discard this cookie
-    Pending.confirm(cookie, expunge=1)
+    userdesc = Pending.confirm(cookie, expunge=1)[1]
+    lang = userdesc.language
+    i18n.set_language(lang)
+    doc.set_language(lang)
     doc.AddItem(_('You have canceled your subscription request.'))
 
 
@@ -310,6 +313,8 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             # Some pending values may be overridden in the form.  email of
             # course is hardcoded. ;)
             lang = cgidata.getvalue('language')
+            i18n.set_language(lang)
+            doc.set_language(lang)
             if cgidata.has_key('digests'):
                 try:
                     digest = int(cgidata.getvalue('digests'))
