@@ -104,6 +104,26 @@ def checkarchives():
             print
 
 
+def checkarchivedbs():
+    # The archives/private/listname/database file must not be other readable
+    # or executable otherwise those files will be accessible when the archives
+    # are public.  That may not be a horrible breach, but let's close this off
+    # anyway.
+    for dir in os.listdir(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR):
+        if dir[-5:] == '.mbox':
+            continue
+        dbdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, dir, 'database')
+        mode = statmode(dbdir)
+        if mode & S_IRWXO:
+            STATE.ERRORS = STATE.ERRORS + 1
+            print dbdir, 'must be other 000'
+            if STATE.FIX:
+                print '(fixing)'
+                os.chmod(dbdir, mode & ~S_IRWXO)
+            else:
+                print
+
+
 def checkcgi():
     exes = os.listdir(mm_cfg.CGI_DIR)
     for f in exes:
@@ -177,6 +197,7 @@ if __name__ == '__main__':
 
     checkall()
     checkarchives()
+    checkarchivedbs()
     checkcgi()
     checkmail()
     checkadminpw()
