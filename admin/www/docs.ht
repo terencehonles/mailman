@@ -1,5 +1,5 @@
 Title: Mailman Documentation
-Links: doco-links.h
+Links: links.h doco-links.h
 Other-links:
     <h3>Exits</h3>
     <li><a href="http://www.python.org/cgi-bin/faqw-mm.py">FAQ Wizard</a>

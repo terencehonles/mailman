@@ -1,5 +1,5 @@
 Title: Mailman Requirements
-Links: download-links.h
+Links: links.h download-links.h
 Other-links:
     <h3>SMTP servers</h3>
     <li><a href="http://www.postfix.org/">Postfix</a>
