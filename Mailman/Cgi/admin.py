@@ -298,10 +298,13 @@ def FormatConfiguration(doc, lst, category, category_suffix):
         form = Form(lst.GetRelativeScriptURL('admin'))
     doc.AddItem(form)
 
+    if category == 'general':
+        andpassmsg = "  (You can change your password there, too.)"
+    else:
+        andpassmsg = ""
     form.AddItem("Make your changes below, and then submit them using the"
-                 " bottom at the bottom.  (You can change your password"
-                 " there, too.)<p>")
-
+                 " bottom at the bottom.%s<p>"
+                 % andpassmsg)
     form.AddItem(FormatOptionsSection(category, lst))
 
     if category == 'general':
