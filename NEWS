@@ -121,6 +121,13 @@ Here is a history of user visible changes to Mailman.
           FIFO order of message clearing.
 
     - Command line scripts
+        o bin/mailmanctl script added, which is used to start, stop,
+          and restart the qrunner daemon.  This replaces cron/qrunner
+          which is now obsolete and has been removed.
+
+        o bin/qrunner script added which allows a single sub-qrunner
+          to run once through its processing loop.
+
         o bin/change_pw script added (eases mass changing of list
           passwords).
 
