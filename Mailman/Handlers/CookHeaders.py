@@ -19,6 +19,7 @@
 
 from __future__ import nested_scopes
 import re
+from types import UnicodeType
 
 from email.Charset import Charset
 from email.Header import Header, decode_header
@@ -32,6 +33,11 @@ from Mailman.Logging.Syslog import syslog
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '
 MAXLINELEN = 78
+
+
+
+def _isunicode(s):
+    return isinstance(s, UnicodeType)
 
 
 
@@ -163,29 +169,6 @@ def process(mlist, msg, msgdata):
 
 
 
-def encode_p(mlist, subject, prefix):
-    # Decide whether we're going to encode the prefix or not
-    if mlist.encode_ascii_prefixes == 1:
-        # Always encode
-        return 1
-    try:
-        prefix.encode('us-ascii')
-    except UnicodeError:
-        # There are non-ASCII characters in the prefix, so we must encode it
-        return 1
-    if mlist.encode_ascii_prefixes == 0:
-        # Never encode if the prefix is ASCII
-        return 0
-    # What's left is `As needed' encoding.  Meaning, we'll only encode the
-    # prefix if the Subject: header contains non-ASCII characters.  Note that
-    # subject might be a Header instance, so str()-ify it first.
-    try:
-        str(subject).encode('us-ascii')
-    except UnicodeError:
-        return 1
-    return 0
-
-
 def prefix_subject(mlist, msg, msgdata):
     # Add the subject prefix unless the message is a digest or is being fast
     # tracked (e.g. internally crafted, delivered to a single user such as the
@@ -198,27 +181,34 @@ def prefix_subject(mlist, msg, msgdata):
     # and each word of the prefix is encoded in a different chunk in the
     # header, we won't find it.  I think in practice that's unlikely though.
     headerbits = decode_header(subject)
-    has_prefix = 0
     if prefix and subject:
         pattern = re.escape(prefix.strip())
         for decodedsubj, charset in headerbits:
             if re.search(pattern, decodedsubj, re.IGNORECASE):
-                has_prefix = 1
-    charset = Charset(Utils.GetCharSet(mlist.preferred_language))
-    # We purposefully leave no space b/w prefix and subject!
+                # The subject's already got the prefix, so don't change it
+                return
+    del msg['subject']
     if not subject:
-        del msg['subject']
-        h = Header(prefix, charset, header_name='Subject')
-        h.append(_('(no subject)'), charset)
-        msg['Subject'] = h
-    elif prefix and not has_prefix:
-        del msg['subject']
-        if encode_p(mlist, subject, prefix):
-            # We'll encode the new prefix (just in case) but leave the old
-            # subject alone, in case it was already encoded.
-            h = Header(prefix, charset, 128, header_name='Subject')
-        else:
-            h = Header(prefix, header_name='Subject')
-        for s, c in headerbits:
-            h.append(s, c)
-        msg['Subject'] = h
+        subject = _('(no subject)')
+    # Get the charset to encode the prefix in.  If this is us-ascii, we'll use
+    # iso-8859-1 instead, just to get a little extra coverage, and because the
+    # Header class tries us-ascii first anyway.
+    charset = Utils.GetCharSet(mlist.preferred_language)
+    if charset == 'us-ascii':
+        charset = 'iso-8859-1'
+    charset = Charset(charset)
+    # Convert the prefix to unicode so Header will do the 3-charset encoding.
+    # If prefix is a byte string and there are funky characters in it that
+    # don't match the charset, we might as well replace them now.
+    if not _isunicode(prefix):
+        prefix = unicode(prefix, charset.get_output_charset(), 'replace')
+    # We purposefully leave no space b/w prefix and subject!
+    h = Header(prefix, charset, header_name='Subject')
+    for s, c in headerbits:
+        # Once again, convert the string to unicode.
+        if c is None:
+            c = 'iso-8859-1'
+        if not _isunicode(s):
+            s = unicode(s, c, 'replace')
+        h.append(s, c)
+    msg['Subject'] = h
