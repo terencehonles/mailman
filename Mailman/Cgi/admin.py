@@ -41,10 +41,8 @@ CATEGORIES = [('general', "General Options"),
 	      ('gateway', "Mail-News and News-Mail gateways")]
 
 
-SECRET="monty"
 
 def isAuthenticated(list, password=None, SECRET="SECRET"):                      
-    import base64, md5                                            
     if password is not None:  # explicit login
         try:             
             list.ConfirmAdminPassword(password)
@@ -52,9 +50,7 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
             AddErrorMessage(doc, 'Error: Incorrect admin password.')
             return 0
 
-        token = md5.new(SECRET + list_name + SECRET).digest()
-        token = base64.encodestring(token)
-        token = string.replace(token, "\n", "@")
+        token = `hash(list_name)`
         c = Cookie.Cookie()
         cookie_key = list_name + "-admin"
         c[cookie_key] = token
@@ -64,13 +60,11 @@ def isAuthenticated(list, password=None, SECRET="SECRET"):
     if os.environ.has_key('HTTP_COOKIE'):
         c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
         if c.has_key(list_name + "-admin"):
-            inp = base64.decodestring(string.replace(
-	              c[list_name + "-admin"].value, "@", "\n"))
-            check = md5.new(SECRET+list_name+SECRET).digest()
-            if inp == check:
-                return 1
-            else:
-                return 0
+	    if c[list_name + "-admin"].value == `hash(list_name)`:
+		return 1
+	    else:
+		AddErrorMessage(doc, "error decoding authorization cookie")
+		return 0
     return 0
 
 
