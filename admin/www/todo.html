@@ -20,6 +20,7 @@
 <A NAME=c1><H3>Bugs</H3>
 <UL>
 <LI> "Stale" addresses don't update properly when new bounces come in   (stale means we had some bounces, but delivery to that address started   working again before we booted them from the list)</LI>
+<LI> Treat corrupted queue files more gracefully.</LI>
 </UL>
 <A NAME=c2><H3>Documentation</H3>
 <UL>
@@ -57,6 +58,7 @@
 <LI> All the list-admin to require approvals for unsubs</LI>
 <LI> Allow the admin to disable option settings by users</LI>
 <LI> Allow the admin to easily "retire" a list, both through the Web or  email commands.</LI>
+<LI> Ability to set defaults for the various user settings from the  "Membership Management" page. </LI>
 <LI> Allow admins to control and set individual headers, adding,  removing, or overriding those in the original message (sometimes  very useful, but could be dangerous!)</LI>
 <LI> member management page should display case-preserved email addresses   (but still sort case-insensitively).</LI>
 </UL>
@@ -112,7 +114,7 @@
 <LI> Use the re module where regexp and regsub are used.</LI>
 <LI> Refine any remaining unqualified exception guards to specify target   exceptions, when appropriate.</LI>
 <LI> Turn standard mailman exceptions into class exceptions. (In  particular, categorize into, eg, message-hold vs other sorts of  exceptions.)</LI>
-<LI> Make error messages indicate the file, maillist, etc at fault, when  possible.</LI>
+<LI> Make error messages indicate the file, mailing list, etc at fault,  when possible.</LI>
 <LI> Seperate edit-options from the subscribe script.</LI>
 <LI> Remove dead code, etc.</LI>
 </UL>
@@ -125,5 +127,6 @@
 <LI> Refine locking to lock only necessary sections to get rid of superfluous  contention.</LI>
 <LI> Implement member profiles, using a class to store name,  organization, description, etc, and default option settings.  The  lists still can have their own data, but the user can set defaults in  their profile...</LI>
 <LI> Need to go through and verify there are no obvious security problems.</LI>
+<LI> Restrict file and directory permissions as much as possible without  breaking Mailman functionality.</LI>
 </UL>
 </BODY></HTML>
