@@ -36,13 +36,6 @@ from Mailman.Logging.Utils import LogStdErr
 
 LogStdErr('error', 'mailowner')
 
-OWNER_PIPELINE = [
-    'SpamDetect',
-    'Replybot',
-    'OwnerRecips',
-    'ToOutgoing',
-    ]
-
 
 
 def main():
@@ -65,7 +58,7 @@ def main():
                 listname=listname,
                 _plaintext=1,
                 envsender=Utils.get_site_email(extra='bounces'),
-                pipeline=OWNER_PIPELINE,
+                pipeline=mm_cfg.OWNER_PIPELINE,
                 toowner=1)
 
 
