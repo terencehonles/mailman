@@ -51,15 +51,9 @@ def main():
         return
 
     # See if the user want to see this page in other language
-    form = cgi.FieldStorage()
-    if form.has_key('language'):
-        language = form['language'].value
-    else:
-        # No?  Okay, use the list's language
-        language = mlist.preferred_language
-
+    cgidata = cgi.FieldStorage()
+    language = cgidata.getvalue('language', mlist.preferred_language)
     i18n.set_language(language)
-
     list_listinfo(mlist, language)
 
 
@@ -187,6 +181,7 @@ def list_listinfo(mlist, lang):
     replacements['<mm-displang-box>'] = mlist.FormatButton('displang-button',
                              text = _("View this page in"))
     replacements['<mm-lang-form-start>'] = mlist.FormatFormStart('listinfo')
+    replacements['<mm-fullname-box>'] = mlist.FormatBox('fullname', size=30)
 
     # Do the expansion.
     doc.AddItem(mlist.ParseTags('listinfo.html', replacements, lang))
