@@ -16,15 +16,10 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Provide a password-interface wrapper around a hierarchy of web pages.
+"""Provide a password-interface wrapper around private archives.
 
-Currently this is organized to obtain passwords for mailman maillist
+Currently this is organized to obtain passwords for Mailman mailing list
 subscribers.
-
- - Set the ROOT variable to point to the root of your archives private
-   hierarchy.  The script will look there for the private archive files.
- - Put the ../misc/Cookie.py script in ../../cgi-bin (where the wrapper
-   executables are).
 """
 
 import sys, os, string
@@ -140,14 +135,30 @@ def true_path(path):
     return path[1:]
 
 
+def content_type(path):
+    if path[-3:] == '.gz':
+        path = path[:-3]
+    if path[-4:] == '.txt':
+        return 'text/plain'
+    return 'text/html'
+
+
 def main():
     path = os.environ.get('PATH_INFO', "/index.html")
     true_filename = os.path.join(
         Mailman.mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
         true_path(path))
     list_name = getListName(path)
+
+    # If it's a directory, we have to append index.html in this script.  We
+    # must also check for a gzipped file, because the text archives are
+    # usually stored in compressed form.
     if os.path.isdir(true_filename):
         true_filename = true_filename + '/index.html'
+    if not os.path.exists(true_filename) and \
+       os.path.exists(true_filename + '.gz'):
+        # then
+        true_filename = true_filename + '.gz'
 
     if not isAuthenticated(list_name):
         # Output the password form
@@ -170,20 +181,23 @@ def main():
         listname = listobj.real_name
         print '\n\n', page % vars()
         sys.exit(0)
-    print 'Content-type: text/html\n'
-    
-    print '\n\n'
+
     # Authorization confirmed... output the desired file
     try:
-        f = open(true_filename, 'r')
+        if true_filename[-3:] == '.gz':
+            import gzip
+            f = gzip.open(true_filename, 'r')
+        else:
+            f = open(true_filename, 'r')
     except IOError:
+        print 'Content-type: text/html\n'
+
         print "<H3>Archive File Not Found</H3>"
         print "No file", path, '(%s)' % true_filename
     else:
+        print 'Content-type:', content_type(path), '\n'
         while (1):
             data = f.read(16384)
             if data == "": break
             sys.stdout.write(data)
         f.close()
-
-
