@@ -76,6 +76,8 @@ INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 CGI_PROGS= admin admindb archives edithtml options \
 listinfo subscribe roster handle_opts private
 
+COMMONOBJS= common.o vsnprintf.o
+
 MAIL_PROGS= wrapper
 
 #ALIAS_PROGS= addaliases
@@ -91,17 +93,20 @@ PROGRAMS= $(CGI_PROGS) $(MAIL_PROGS) $(ALIAS_PROGS)
 
 all: $(PROGRAMS)
 
-wrapper: $(srcdir)/mail-wrapper.c common.o
-	$(CC) -I. $(MAIL_FLAGS) $(CFLAGS) common.o -o $@ $(srcdir)/mail-wrapper.c
+wrapper: $(srcdir)/mail-wrapper.c $(COMMONOBJS)
+	$(CC) -I. $(MAIL_FLAGS) $(CFLAGS) $(COMMONOBJS) -o $@ $(srcdir)/mail-wrapper.c
 
-#addaliases: $(srcdir)/alias-wrapper.c common.o
+#addaliases: $(srcdir)/alias-wrapper.c $(COMMONOBJS)
 #	$(CC) -I. $(ALIAS_FLAGS) $(CFLAGS) -o $@ $(srcdir)/alias-wrapper.c
 
-$(CGI_PROGS): $(srcdir)/cgi-wrapper.c common.o
-	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) common.o -o $@ $(srcdir)/cgi-wrapper.c
+$(CGI_PROGS): $(srcdir)/cgi-wrapper.c $(COMMONOBJS)
+	$(CC) -DSCRIPT="\"$@\"" -I. $(CGI_FLAGS) $(CFLAGS) $(COMMONOBJS) -o $@ $(srcdir)/cgi-wrapper.c
 
 common.o: $(srcdir)/common.c $(srcdir)/common.h $(srcdir)/Makefile
 	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $(srcdir)/common.c
+
+vsnprintf.o: $(srcdir)/vsnprintf.c $(srcdir)/Makefile
+	$(CC) -c -I. $(COMMON_FLAGS) $(CFLAGS) $(srcdir)/vsnprintf.c
 
 install: all
 	for f in $(CGI_PROGS); \
