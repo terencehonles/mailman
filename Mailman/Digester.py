@@ -1,6 +1,6 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 458 $"
+__version__ = "$Revision: 470 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string
@@ -97,11 +97,16 @@ class Digester:
 	body = self.QuoteMime(post.body)
 	topics_file.write("  %d. %s (%s)\n" % (self.next_post_number,
 					       subject, sender))
-	digest_file.write("--%s\n\nMessage: %d"
-			  "\nFrom: %s\nDate: %s\nSubject: %s\n\n%s" % 
-			 (self._mime_separator, self.next_post_number,
-			  fromline, date, subject,
-			  body))
+        if self.reply_goes_to_list:
+            maybe_replyto=('Reply-To: %s\n'
+                           % self.QuoteMime(self.GetListEmail()))
+        else:
+            maybe_replyto=''            
+        digest_file.write("--%s\n\nMessage: %d"
+                          "\nFrom: %s\nDate: %s\nSubject: %s\n%s\n%s" % 
+                          (self._mime_separator, self.next_post_number,
+                           fromline, date, subject, maybe_replyto,
+                           body))
 	self.next_post_number = self.next_post_number + 1
 	topics_file.close()
 	digest_file.close()    
