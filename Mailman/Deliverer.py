@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 432 $"
+__version__ = "$Revision: 434 $"
 
 
 import string, os, sys, tempfile
@@ -19,7 +19,7 @@ was successfully received by the %s maillist.
 '''
 
 SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list!
-
+%s%s
 General information about the maillist is at:
 
   %s
@@ -53,10 +53,6 @@ the web page noted above.
 To post to this list, send your email to:
 
    %s
-
-%s
-
-%s
 '''
 
 USERPASSWORDTEXT = '''
@@ -166,21 +162,20 @@ class Deliverer:
 
     def CreateSubscribeAck(self, name, password):
 	if self.welcome_msg:
-	    header = 'Here is the list-specific information:'
-	    welcome = self.welcome_msg
+	    header = '\nHere is the list-specific welcome message:\n\n'
+	    welcome = self.welcome_msg + '\n'
 	else:
 	    header = ''
 	    welcome = ''
 
-        body = (SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
+        body = (SUBSCRIBEACKTEXT % (header, welcome,
+                                    self.real_name, self.host_name,
                                     self.GetScriptURL('listinfo'),
                                     self.GetOptionsURL(name),
                                     self.real_name, self.host_name,
                                     password,
                                     self.host_name,
-                                    self.GetListEmail(),
-                                    header,
-                                    welcome))
+                                    self.GetListEmail())
         return body
 
     def SendSubscribeAck(self, name, password, digest):
