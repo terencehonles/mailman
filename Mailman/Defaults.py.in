@@ -9,7 +9,7 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.2'
-__version__ = "$Revision: 395 $"
+__version__ = "$Revision: 423 $"
 
 		   # Many site-specific settings #
 
@@ -18,7 +18,8 @@ DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.OR.HOST.NAME'
 SMTPHOST	  = 'localhost'
 SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'     # yours may be different
 DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
-ARCHIVE_URL       = 'http://www.OVERRIDE.WITH.YOUR.ARCHIVE.DIR/'
+PUBLIC_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PUBLIC.ARCHIVE.URL/'
+PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
 # Once we know our home directory we can figure out the rest.
 HOME_DIR	  = '/home/mailman'		# Override if you change
 MAILMAN_DIR       = '/home/mailman/mailman'	# Override if you change

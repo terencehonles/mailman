@@ -17,7 +17,7 @@ setting by using the value as a format string against the
 list-instance-object's dictionary - see the distributed value of
 DEFAULT_MSG_FOOTER for an example."""
 
-__version__ = "$Revision: 392 $"
+__version__ = "$Revision: 423 $"
 
 #######################################################
 #    Here's where we get the distributed defaults.    #
@@ -31,7 +31,8 @@ DEFAULT_HOST_NAME = 'python.org'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'
 DEFAULT_URL       = 'http://www.python.org/mailman'
-ARCHIVE_URL       = 'http://www.python.org/pipermail'
+PUBLIC_ARCHIVE_URL = 'http://www.python.org/pipermail'
+PRIVATE_ARCHIVE_URL = 'http://www.python.org/cgi-bin/private
 # Once we know our home directory we can figure out the rest.
 HOME_DIR	  = '/home/mailman'
 MAILMAN_DIR       = '/home/mailman/mailman'
