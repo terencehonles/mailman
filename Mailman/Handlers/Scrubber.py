@@ -305,5 +305,5 @@ def save_attachment(mlist, msg, filter_html=1):
     # Private archives will likely have a trailing slash.  Normalize.
     if baseurl[-1] <> '/':
         baseurl += '/'
-    url = mlist.GetBaseArchiveURL() + 'attachments/%s/%s' % (msgdir, filename)
+    url = baseurl + 'attachments/%s/%s' % (msgdir, filename)
     return url
