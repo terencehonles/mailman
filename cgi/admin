@@ -1,133 +1,239 @@
 #!/usr/local/bin/python
 
-"""Produce the list-administration web page on stdout.
+"""Process and produce the list-administration options forms.
 
-To run stand-alone for debugging, set env var PATH_INFO to name of list."""
+To run stand-alone for debugging, set env var PATH_INFO to name of list
+and, optionally, options category."""
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
 import os, cgi, string, crypt, types
-import mm_utils, maillist, mm_cfg, htmlformat, mm_err
+import mm_utils, maillist, mm_cfg, mm_err
+from htmlformat import *
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error", label = 'mmroster',
+    sys.stderr = mm_utils.StampedLogger("error", label = 'admin',
                                         manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
+CATEGORIES = [('general', "General Options"),
+              ('members', "Membership Management"),
+              ('privacy', "Privacy Options"),
+              ('nondigest', "Regular-member (non-digest) Options"),
+              ('digest', "Digest-member Options"),
+              ('bounce', "Bounce Options"),
+              ('archive', "Archival Options")]
+
 
 def main():
+    """Process and produce list options form.
 
+    CGI input indicates that we're returning from submission of some new
+    settings, which is processed before producing the new version."""
     global doc, list_name		# For encompassing try/except.
-    doc = htmlformat.Document()
+    doc = Document()
 
     path = os.environ['PATH_INFO']
     list_info = mm_utils.GetPathPieces(path)
 
     if len(list_info) < 1:
-	doc.AddItem(htmlformat.Header(2,
-				      "Invalid options to CGI script."))
+	doc.AddItem(Header(2, "Invalid options to CGI script."))
 	print doc.Format()
 	sys.exit(0)
 
     list_name = string.lower(list_info[0])
 
     list = maillist.MailList(list_name)
-
+    
     try:
 	if not (list and list._ready):
-	    doc.AddItem(htmlformat.Header(3,
-					  "%s: No such list" % list_name))
+	    doc.AddItem(Header(3, "%s: No such list" % list_name))
 	    print doc.Format()
 	    sys.exit(0)
 
-	info = list.GetConfigInfo()
-	general  = info['general']
-	nodigest = info['nondigest']
-	digest   = info['digest']
-	archives = info['archive'] 
-	# XXX klm - looks like john distinguished some special '.jp' lists
-	if list._internal_name[-3:] <> '.jp':
-	    bounce   = info['bounce']
-	else:
-	    bounce = []
+        if len(list_info) == 1:
+            category = 'general'
+            category_suffix = ''
+        else:
+            category = list_info[1]
+            category_suffix = category
 
-	cgi_data = cgi.FieldStorage()
+        if category not in map(lambda x: x[0], CATEGORIES):
+            category = 'general'
+
+        cgi_data = cgi.FieldStorage()
 	if len(cgi_data.keys()):
 	    if not cgi_data.has_key('adminpw'):
-		doc.AddItem('<hr>')
-		m = ('Error: You must supply the admin password to '
-		     'change options.')
-		doc.AddItem(
-		    htmlformat.Header(3,
-				      htmlformat.Italic(
-					  htmlformat.FontAttr(
-					      m, color="ff5060"))))
+                AddErrorMessage(doc,
+                                'Error: You must supply the admin password to'
+                                ' change options.')
 	    else:
 		try:
 		    list.ConfirmAdminPassword(cgi_data['adminpw'].value)
-		    ChangeOptions(list,
-				  (general + nodigest + digest
-				   + archives + bounce),
-				  cgi_data, doc)
+		    ChangeOptions(list, category, cgi_data, doc)
 		    # Yuck.  This shouldn't need to be here.
 		    if not list.digestable and not list.nondigestable:
 			list.nondigestable = 1
 		except mm_err.MMBadPasswordError:
-		    doc.AddItem('<hr>')
-		    m = 'Error: Incorrect admin password.'
-		    doc.AddItem(
-			htmlformat.Header(3,
-					  htmlformat.Italic(
-					      htmlformat.FontAttr(
-						  m, color="ff5060"))))
+		    AddErrorMessage(doc, 'Error: Incorrect admin password.')
 
 	if not list.digestable and len(list.digest_members):
-	    doc.AddItem('<hr>')
-	    doc.AddItem(
-		htmlformat.Header(3, 'Warning:  you have digest members, '
-				  'but digests are turned off.  '
-				  'Those people will not receive mail.'))
+	    AddErrorMessage(doc,
+                            'Warning:  you have digest members,'
+                            ' but digests are turned off.'
+                            '  Those people will not receive mail.')
 	if not list.nondigestable and len(list.members):
-	    doc.AddItem('<hr>')
-	    doc.AddItem(
-		htmlformat.Header(3, 'Warning: you have list members, '
-				  'but non-digestified mail is turned '
-				  'off.  They will receive mail until '
-				  'you fix this problem.'))
+	    AddErrorMessage(doc,
+                            'Warning:  you have list members,'
+                            ' but non-digestified mail is turned'
+                            ' off.  They will receive mail until'
+                            ' you fix this problem.')
 
 	if len(cgi_data.keys()):
 	    if (cgi_data.has_key('bounce_matching_headers')):
 		try:
 		    pairs = list.parse_matching_header_opt()
 		except mm_err.MMBadConfigError, line:
-		    doc.AddItem('<hr>')
-		    m = ('Warning: bad matching-header line'
-			 '(does it have the colon?)<ul> %s </ul>'
-			 % line)
-		    doc.AddItem(
-			htmlformat.Header(3,
-					  htmlformat.Italic(
-					      htmlformat.FontAttr(
-						  m, color="ff5060"))))
+                    AddErrorMessage(doc,
+                                    'Warning: bad matching-header line'
+                                    ' (does it have the colon?)<ul> %s </ul>',
+                                    line)
 
-	FormatConfiguration(doc, list)
-
+	FormatConfiguration(doc, list, category, category_suffix)
 	print doc.Format()
+
     finally:
 	list.Unlock()
 
+
+# Form Production:
+
+def FormatConfiguration(doc, list, category, category_suffix):
+    """Produce the overall doc, *except* any processing error messages."""
+    for k, v in CATEGORIES:
+        if k == category: label = v
+
+    doc.SetTitle('%s Administration' % list.real_name)
+    doc.AddItem(Center(Header(2, ('%s Maillist %s Configuration'
+                                  % (list.real_name, label)))))
+    doc.AddItem('<hr>')
+
+    links_table = Table(valign="top")
+
+    links_table.AddRow([Center(Bold("Configuration Categories")),
+                        Center(Bold("Other Administrative Activities"))])
+    other_links = UnorderedList()
+    link = Link(list.GetScriptURL('admindb'), 
+                'Tend to pending administrative requests.')
+    other_links.AddItem(link)
+    link = Link(list.GetScriptURL('listinfo'),
+                'Go to the general list information page.')
+    other_links.AddItem(link)
+    link = Link(list.GetScriptURL('edithtml'),
+                'Edit the HTML for the public list pages.')
+    other_links.AddItem(link)
+
+    these_links = UnorderedList()
+    url = list.GetScriptURL('admin')
+    for k, v in CATEGORIES:
+        if k == category:
+            these_links.AddItem("<b> =&gt; " + v + " &lt;= </b>")
+        else:
+            these_links.AddItem(Link(os.path.join(url, k), v))
+
+    links_table.AddRow([these_links, other_links])
+    links_table.AddRowInfo(max(links_table.GetCurrentRowIndex(), 0),
+                           valign="top")
+
+    doc.AddItem(links_table)
+    doc.AddItem('<hr>')
+    if category_suffix:
+        form = Form(os.path.join(list.GetScriptURL('admin'), category))
+    else:
+        form = Form(list.GetScriptURL('admin'))
+    doc.AddItem(form)
+
+    form.AddItem("Make your changes, below, and then submit it all at the"
+                 " bottom.  (You can also change your password there,"
+                 " as well.)<p>")
+
+    form.AddItem(FormatOptionsSection(category, list))
+
+    form.AddItem(Center(FormatPasswordStuff()))
+
+    form.AddItem(list.GetMailmanFooter())
+
+def FormatOptionsSection(category, list):
+    """Produce the category-specific options table."""
+    if category == 'members':
+        # Special case for members section.
+        return FormatMembershipOptions(list)
+
+    options = GetConfigOptions(list, category)
+
+    for k, v in CATEGORIES:
+        if k == category: label = v
+
+    big_table = Table(cellspacing=4, cellpadding=5)
+    big_table.AddRow([Center(Header(2, label))])
+    
+    big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
+                          colspan=2, bgcolor="#99ccff")
+    def AddOptionsHeader(big_table=big_table):
+        big_table.AddRow([Center(Bold('Option')),
+                          Bold('Value')])
+        big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
+                              width="15%")
+        big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 1,
+                              width="85%")
+
+    if type(options[0]) != types.StringType:
+        AddOptionsHeader()
+    for item in options:
+        if type(item) == types.StringType:
+            big_table.AddRow([Bold(item)])
+            big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
+                                  colspan=2, bgcolor ="#FFF0D0")
+            AddOptionsHeader()
+        else:
+            big_table.AddRow(GetGuiItem(item, list))
+            big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 1,
+                                  bgcolor="#cccccc")
+            big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
+                                  bgcolor="#cccccc")
+    big_table.AddRow(['<br>'])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+    return big_table
+
 def GetGuiItem(table_entry, list):
-    varname, type, params, dependancies, descr = table_entry
-    if type == mm_cfg.Radio or type == mm_cfg.Toggle:
-	gui_part = htmlformat.RadioButtonArray(varname, params, 
-					      getattr(list, varname))
-    elif (type == mm_cfg.String or type == mm_cfg.Email or
-	  type == mm_cfg.Host or type == mm_cfg.Number):
-	gui_part = htmlformat.TextBox(varname,
-				      getattr(list, varname),
-				      params)
-    elif type == mm_cfg.Text:
+    """Return the contents for a table row representing an options item.
+
+    Elements of the table_entry list are:
+       0 option-var name
+       1 type
+       2 entry size
+       3 ?dependancies?
+       4 Brief description
+       5 OPTIONAL description elaboration
+    """
+    
+    if len(table_entry) == 5:
+        elaboration = None
+        varname, kind, params, dependancies, descr = table_entry
+    elif len(table_entry) == 6:
+        varname, kind, params, dependancies, descr, elaboration = table_entry
+    else:
+        list.LogMsg("error",
+                    "admin: Badly formed options entry:\n  %s",
+                    table_entry)
+        return Italic("<malformed option>")
+    if kind == mm_cfg.Radio or kind == mm_cfg.Toggle:
+	gui_part = RadioButtonArray(varname, params, getattr(list, varname))
+    elif (kind == mm_cfg.String or kind == mm_cfg.Email or
+	  kind == mm_cfg.Host or kind == mm_cfg.Number):
+	gui_part = TextBox(varname, getattr(list, varname), params)
+    elif kind == mm_cfg.Text:
 	if params:
 	    r, c = params
 	else:
@@ -135,146 +241,83 @@ def GetGuiItem(table_entry, list):
 	val = getattr(list, varname)
 	if not val:
 	    val = ''
-	gui_part = htmlformat.TextArea(varname, val, r, c)
-    elif type == mm_cfg.EmailList:
+	gui_part = TextArea(varname, val, r, c)
+    elif kind == mm_cfg.EmailList:
 	if params:
 	    r, c = params
 	else:
 	    r, c = None, None
 	res = string.join(getattr(list, varname), '\n')
-	gui_part = htmlformat.TextArea(varname, res, r, c, wrap='off')
-    return gui_part
+	gui_part = TextArea(varname, res, r, c, wrap='off')
+    return [table_entry[4], gui_part]
 
-def FormatConfiguration(doc, list):
+def FormatMembershipOptions(list):
+    container = Container()
+    header = Table(width="100%")
+    header.AddRow([Center(Header(2, "Membership Management"))])
+    header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
+                       colspan=2, bgcolor="#99ccff")
+    header.AddRow([Bold("Subscribe and Unsubscribe Members")])
+    header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
+                       colspan=2, bgcolor ="#FFF0D0")
+    container.AddItem(header)
+    
+    container.AddItem('<h3>Mass Subscribe Members</h3>')
+    container.AddItem('<h4>Enter one email address per line</h4>')
+    container.AddItem(TextArea(name='subscribees', rows=20,cols=60,wrap=None))
 
-    info = list.GetConfigInfo()
-    general  = info['general']
-    nodigest = info['nondigest']
-    digest   = info['digest']
-    archives = info['archive'] 
-    # XXX klm - looks like john distinguished some special '.jp' lists
-    if list._internal_name[-3:] <> '.jp':
-	bounce   = info['bounce']
-    else:
-	bounce = []
+    container.AddItem('<h3>To Unsubscribe Members...</h3>')
+    container.AddItem("""
+    To unsubscribe members you must use your admin password in place of the
+    user's password on the user's edit-options page.  Visit their
+    edit-options page (via the <a href="%s">roster</a> page) and do the
+    unsubscribe procedure, providing the admin password instead of the
+    user's password.
+    <p>(Note that you can, alternately, set the subscriber's no-delivery
+    option to inhibit delivery of their messages, if you want to only
+    temporarily disable their delivery.)<p>"""
+                 % list.GetScriptURL('roster'))
+    return container
 
-    doc.SetTitle('%s Administration' % list.real_name)
-    doc.AddItem(htmlformat.Header(2, ('Configuration for %s'
-				      % list.real_name)))
-    doc.AddItem('<hr>')
-
-    links = htmlformat.UnorderedList()
-
-    link = htmlformat.Link(list.GetScriptURL('admindb'), 
-			   'View or edit the administrative '
-			   'requests database.')
-    link = htmlformat.FontAttr(link, size="+1")
-    links.AddItem(link)
-
-    link = htmlformat.Link(list.GetScriptURL('listinfo'),
-			   'Go to the general list information page.')
-    link = htmlformat.FontAttr(link, size="+1")
-    links.AddItem(link)
-
-    link = htmlformat.Link(list.GetScriptURL('edithtml'),
-			   'Edit the HTML for the public list pages.')
-    link = htmlformat.FontAttr(link, size="+1")
-    links.AddItem(link)
-
-    doc.AddItem(links)
-
-    doc.AddItem('<hr>')
-
-
-    form = htmlformat.Form(list.GetScriptURL('admin'))
-    doc.AddItem(form)
-
-    password_submit = htmlformat.Table()
-    password_submit.AddRow([htmlformat.Bold('For changes, enter the '
-					    'admin password:'),
-			   htmlformat.PasswordBox('adminpw')])
-    rdy = htmlformat.Center(htmlformat.Bold("And when you're ready... "))
-    password_submit.AddRow([rdy,
-			    htmlformat.FontAttr(
-				htmlformat.SubmitButton('submit',
-							'Submit Changes'),
-				color='red'),])
-
-    change_pw_table = htmlformat.Table()
-    change_pw_table.AddRow(
-	[htmlformat.Underline(htmlformat.Center('Change Your Password'))])
-    change_pw_table.AddCellInfo(change_pw_table.GetCurrentRowIndex(),
-				0,
+def FormatPasswordStuff():
+    password_submit = Table(width="100%", bgcolor="#99cccc", border=0,
+                            cellspacing=0, cellpadding=2)
+    password_submit.AddRow([Center(Bold('To Submit Your Changes'))])
+    password_submit.AddCellInfo(password_submit.GetCurrentRowIndex(), 0,
+				colspan=2)
+    password_submit.AddRow(["Enter the Administrator Password:",
+                            PasswordBox('adminpw')])
+    password_submit.AddRow([Center("and..."),
+                            Center(Bold(SubmitButton('submit',
+                                                     'Submit Changes')))])
+    change_pw_table = Table(width="100%", bgcolor="#cccccc", border=0,
+                            cellspacing=0, cellpadding=2)
+    change_pw_table.AddRow([Bold(Center('To Change Your Password'))])
+    change_pw_table.AddCellInfo(change_pw_table.GetCurrentRowIndex(), 0,
+				colspan=2)
+    change_pw_table.AddRow(['Enter your new password:', 
+			   PasswordBox('newpw')])
+    change_pw_table.AddRow(['And also confirm it:', 
+			   PasswordBox('confirmpw')])
+    change_pw_table.AddRow([Center('... and then submit your changes, above.')])
+    change_pw_table.AddCellInfo(change_pw_table.GetCurrentRowIndex(), 0,
 				colspan=2)
 
-    change_pw_table.AddRow(['Enter your new password:', 
-			   htmlformat.PasswordBox('newpw')])
-    change_pw_table.AddRow(['And also confirm it:', 
-			   htmlformat.PasswordBox('confirmpw')])
-
-    password_stuff = htmlformat.Table(border=1)
-    password_stuff.AddRow([password_submit, change_pw_table])
-    form.AddItem(password_stuff)
-
-    big_table = htmlformat.Table(border=1)
-
-    FormatOptionsSection('General Options', general, big_table, list)
-    FormatOptionsSection('Non-Digest Options', nodigest, big_table, list)
-    FormatOptionsSection('Digest Options', digest, big_table, list)
-    FormatOptionsSection('Bounce Administration Options',
-			 bounce, big_table, list)
-    FormatOptionsSection('Archival Options', archives, big_table, list)
-
-    form.AddItem(big_table)
-    # Improve the html here...
-    form.AddItem('<h3>Mass Subscribe Members</h3>')
-    form.AddItem('<h4>Enter one email address per line</h4>')
-    form.AddItem(htmlformat.TextArea(name='subscribees',
-				     rows=20,cols=60,wrap=None))
-
-    form.AddItem('<h3>To Unsubscribe Members...</h3>')
-    form.AddItem("""
-    The key to unsubscribing members is the fact that you can use your
-    admin password in place of the user's password to change user options
-    or unsubscribe them.  Visit the user in question's options page (from
-    the <a href="%s">listinfo</a> page) and do the unsubscribe procedure,
-    providing the admin password instead of the user's privacy password.
-    <p>Note that you can also use the subscriber option to inhibit their
-    delivery of messages, if you figure the bounces are transient."""  %
-    list.GetScriptURL('listinfo'))
-
-    form.AddItem(list.GetMailmanFooter())
-
-def FormatOptionsSection(name, options, big_table, list):
-    big_table.AddRow([htmlformat.Center(
-	htmlformat.Header(2, name))])
-    big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
-			  colspan=2)
-    big_table.AddRow([htmlformat.Bold('Option'),
-		      htmlformat.Bold('Value')])
-
-    item = options[0]
-    gui_item = GetGuiItem(item, list)
-    big_table.AddRow([item[4], gui_item])
-    if len(options) > 1:
-	if options[0][1] == mm_cfg.Toggle:
-	    big_table.AddRow([htmlformat.Header(2, "If so:")])
-	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(),
-				  0, colspan=2)
-	for item in options[1:]:
-	    gui_item = GetGuiItem(item, list)
-	    big_table.AddRow([item[4], gui_item])
-    big_table.AddRow(['<br>'])
-    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0,
-			  colspan=2)
+    password_stuff = Table()
+    password_stuff.AddRow([password_submit])
+    password_stuff.AddRow([change_pw_table])
+    return password_stuff
 
 # XXX klm - looks like turn_on_moderation is orphaned.
 turn_on_moderation = 0
+
+# Options processing
 
 def GetValidValue(list, prop, my_type, val, dependant):
     if my_type == mm_cfg.Radio or my_type == mm_cfg.Toggle:
 	if type(val) <> types.IntType:
 	    try:
+                # XXX Security!?
 		val = eval(val)
 	    except:
 		pass
@@ -344,21 +387,28 @@ def GetValidValue(list, prop, my_type, val, dependant):
 	return val
 
 
-def ChangeOptions(list, opt_list, cgi_info, document):
-    for item in opt_list:
-	property, type, args, dependancies, desc = item
-	if not cgi_info.has_key(property):
-	    if (type <> mm_cfg.Text and 
-		type <> mm_cfg.String and 
-		type <> mm_cfg.EmailList):
-		continue
-	    else:
-		val = ''
-	else:
-	    val = cgi_info[property].value
-	value = GetValidValue(list, property, type, val,
-			      dependancies)
-	setattr(list, property, value)
+def ChangeOptions(list, category, cgi_info, document):
+    dirty = 0
+    if category != 'members':
+        opt_list = GetConfigOptions(list, category)
+        for item in opt_list:
+            if len(item) < 5:
+                continue
+            property, kind, args, deps, desc = (item[0], item[1], item[2],
+                                                item[3], item[4])
+            if not cgi_info.has_key(property):
+                if (kind <> mm_cfg.Text and 
+                    kind <> mm_cfg.String and 
+                    kind <> mm_cfg.EmailList):
+                    continue
+                else:
+                    val = ''
+            else:
+                val = cgi_info[property].value
+            value = GetValidValue(list, property, kind, val, deps)
+            if getattr(list, property) != value:
+                setattr(list, property, value)
+                dirty = 1
     if cgi_info.has_key('subscribees'):
 	name_text = cgi_info['subscribees'].value
 	names = string.split(name_text, '\r\n')
@@ -367,6 +417,7 @@ def ChangeOptions(list, opt_list, cgi_info, document):
 #FIXME: The admin needs to be able to specify subscribe options
 		list.AddMember(new_name, (mm_utils.GetRandomSeed() +
 					  mm_utils.GetRandomSeed()))
+                dirty = 1
 #FIXME: Give some sort of an indication of which names didn't work,
 #	and why they didn't work...	
 	    except:
@@ -378,35 +429,40 @@ def ChangeOptions(list, opt_list, cgi_info, document):
 	    if new == confirm:
 		list.password = crypt.crypt(new,
 					    mm_utils.GetRandomSeed())
+                dirty = 1
 	    else:
 		m = 'Error: Passwords did not match.'
 		document.AddItem(
-		    htmlformat.Header(3,
-				      htmlformat.Italic(
-					  htmlformat.FontAttr(
-					      m, color="ff5060"))))
+		    Header(3, Italic(FontAttr(m, color="ff5060"))))
 
 	else:
 	    m = 'Error: You must type in your new password twice.'
 	    document.AddItem(
-		htmlformat.Header(3, 
-				  htmlformat.Italic(
-				      htmlformat.FontAttr(
-					  m, color="ff5060"))))
+                Header(3, Italic(FontAttr(m, color="ff5060"))))
 
-    list.Save()
+    if dirty:
+        list.Save()
+
+def AddErrorMessage(doc, errmsg, *args):
+    doc.AddItem(Header(3, Italic(FontAttr(errmsg % args,
+                                          color="#ff66cc"))))
 
 def error_page(errmsg, *args):
     print apply(error_page_doc, (errmsg,) + args).Format()
 
 def error_page_doc(errmsg, *args):
-    """Produce a simple error-message page on stdout and exit.
-
-    Optional arg justreturn means just return the doc, don't print it."""
-    doc = htmlformat.Document()
-    doc.AddItem(htmlformat.Header(2, "Error"))
-    doc.AddItem(htmlformat.Bold(errmsg % args))
+    """Produce a simple error-message page on stdout and exit."""
+    doc = Document()
+    doc.AddItem(Header(2, "Error"))
+    doc.AddItem(Bold(errmsg % args))
     return doc
+
+_config_info = None
+def GetConfigOptions(list, category):
+    global _config_info
+    if _config_info == None:
+        _config_info = list.GetConfigInfo()
+    return _config_info[category]
 
 if __name__ == "__main__":
     try:
