@@ -59,8 +59,8 @@ all:
 install:
 	for d in $(LANGUAGES); \
 	do \
-	    ../mkinstalldirs $(TEMPLATEDIR)/$$d; \
-	    for f in $$d/*.html $$d/*.txt; \
+	    $(srcdir)/../mkinstalldirs $(TEMPLATEDIR)/$$d; \
+	    for f in $(srcdir)/$$d/*.html $(srcdir)/$$d/*.txt; \
 	    do \
 	    	$(INSTALL) -m $(FILEMODE) $$f $(TEMPLATEDIR)/$$d; \
 	    done; \

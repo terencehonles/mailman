@@ -89,13 +89,13 @@ doinstall:
 	do \
 	    dir=$(prefix)/$$d; \
 	    echo "Creating language directory $$dir"; \
-	    ../mkinstalldirs $$dir; \
+	    $(srcdir)/../mkinstalldirs $$dir; \
 	    chmod $(DIRMODE) $$dir; \
 	    $(DIRSETGID) $$dir; \
 	done
 	@for d in $(LANGUAGES); \
 	do \
-	    readme=$$d/README.$$d; \
+	    readme=$(srcdir)/$$d/README.$$d; \
 	    if test -f $$readme; \
 	    then \
 		$(INSTALL) -m $(FILEMODE) $$readme $(prefix)/messages/$$d; \
@@ -103,8 +103,8 @@ doinstall:
 	done
 	@for d in $(LANGUAGES); \
 	do \
-	    po=$$d/LC_MESSAGES/mailman.po; \
-	    mo=$$d/LC_MESSAGES/mailman.mo; \
+	    po=$(srcdir)/$$d/LC_MESSAGES/mailman.po; \
+	    mo=$(srcdir)/$$d/LC_MESSAGES/mailman.mo; \
 	    dir=$(prefix)/messages/$$d/LC_MESSAGES; \
 	    $(INSTALL) -m $(FILEMODE) $$po $$mo $$dir; \
 	done
@@ -115,6 +115,7 @@ clean:
 	-rm -f marked.files docstring.files
 
 distclean: clean
+	-rm -f Makefile
 
 catclean:
 	-rm -f Makefile */LC_MESSAGES/mailman.mo */LC_MESSAGES/mailman.po.old $(POTFILE)
