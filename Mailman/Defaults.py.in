@@ -95,6 +95,7 @@ DEFAULT_MAIL_COMMANDS_MAX_LINES = 25
 # daily pending-request reminder?
 DEFAULT_ADMIN_IMMED_NOTIFY = 1
 DEFAULT_MODERATED = 0
+DEFAULT_POSTERS_INCLUDES_MEMBERS = 0
 # Bounce if 'to' or 'cc' fields don't explicitly name list (anti-spam)?
 DEFAULT_REQUIRE_EXPLICIT_DESTINATION = 1
 # Alternate names acceptable as explicit destinations for this list.
@@ -254,4 +255,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 6
+DATA_FILE_VERSION = 7

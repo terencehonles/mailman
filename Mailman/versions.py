@@ -71,7 +71,9 @@ def UpdateOldVars(l, stored_state):
             l.subscribe_policy = 2      # admin approval
         delattr(l, "open_subscribe")
     if not hasattr(l, "administrivia"):
-        setatrr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
+        setattr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
+    if not hasattr(l, "posters_includes_members"):
+        setattr(l, "posters_includes_members", mm_cfg.DEFAULT_POSTERS_INCLUDES_MEMBERS)
     #  - dropped vars:
 #    for a in ['archive_retain_text_copy',
 #              'archive_update_frequency']:

@@ -435,18 +435,39 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              ' list to be moderated, regadless of this setting.'),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Restrict posting privilege to only list members?'),
+	     'Restrict posting privilege to only list members?',
+
+
+             "Use this option if you want posting from list members "
+             "<em>only</em>.  If you want list members to be able to "
+             "post, plus a handful of other posters, see the <i> posters </i> "
+             "and <i>posters_includes_members</i> settings below"),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
              'Addresses of members accepted for posting to this'
-             ' list with no required approval. (But then moderation'
-             ' is activated for all other members.)',
+             ' list with no required approval. (See <i> posters_includes_members </i> '
+             'below for whether or not list members are effected by adding '
+             'addresses here.',
 
-             "Adding any entries here causes the list to moderated,"
-             " regardless of the separate setting of the"
-             " <i>moderated</i> option."),
-##??              % os.path.join(self.GetRelativeScriptURL('admin'),
-##??                             'privacy#moderated'
+             "Adding any entries here will have one of 2 effects according to the "
+             "setting of <i>posters_includes_members </i>: <p> If <i>posters_includes_members</i> "
+             "is set to 'yes', then adding entries here will allow list members and anyone "
+             "listed here to post without going through administrative approval. <p> "
+             "If <i>posters_includes_members</i> is set to 'no', then <em>only</em> the "
+             "posters listed here will be able to post without administrative approval. "),
+
+            ('posters_includes_members', mm_cfg.Radio, ('No', 'Yes'), 0,
+             "If you have anyone listed under 'posters' above, should you "
+             "allow list members to post as well? ",
+             
+             "If you have listed addresses under <i>posters</i> "
+             "then setting this to 'yes' will allow list members <em>and</em> the addresses "
+             "listed in the <i> posters</i> setting to post without administrative approval. <br>"
+             "Correspondingly, setting this to 'no' will allow only the addresses "
+             " listed in <i> posters </i> to post to the list without approval, regardless "
+             " of whether or not they are a member of the list.<br>"
+             "Setting this when there are no addresses listed under the <i>posters</i> "
+             "setting has no effect whatsoever. "),
 
             "Spam-specific posting filters",
 
@@ -936,10 +957,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if len(self.posters):
 		addrs = Utils.FindMatchingAddresses(sender, self.posters)
 		if not len(addrs):
-		    self.AddRequest('post', Utils.SnarfMessage(msg),
-				    'Only approved posters may post without '
-				    'moderator approval.',
-				    msg.getheader('subject'))
+                    if self.include_members_in_posters:
+                        if not self.IsMember(sender):
+                            self.AddRequest('post', Utils.SnarfMessage(msg),
+                                            'Only approved posters may post without '
+                                            'moderator approval.',
+                                            msg.getheader('subject'))
+                    else:
+                        self.AddRequest('post', Utils.SnarfMessage(msg),
+                                        'Only approved posters may post without '
+                                        'moderator approval.',
+                                        msg.getheader('subject'))
 	    elif self.moderated:
 		self.AddRequest('post', Utils.SnarfMessage(msg),
 				Errors.MODERATED_LIST_MSG,
