@@ -37,9 +37,12 @@ Where:
 
 import os
 import sys
+import string
 import getopt
 import paths
 
+
+
 def usage(status, msg=''):
     print __doc__ % globals()
     if msg:
