@@ -4,44 +4,236 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.1 beta 1 (???)
+2.1 beta 1 (16-Mar-2002)
 
-    - The action to take when a moderated member posts to a list is
-      now configurable.  The list can either hold, reject (bounce), or
-      discard the message.  If the message is rejected, a rejection
-      notice string can be given.
+    In addition to the usual bug fixes, performance improvements, and
+    GUI changes, here are the highlights:
 
-    - ALLOW_SITE_ADMIN_COOKIES is a new configuration variable which
-      says whether to allow AuthSiteAdmin cookies or not.  Normally,
-      when a list administrator logs into a list with the site
-      password, they are issued a cookie that only allows them to do
-      administration for this one list.  By setting
-      ALLOW_SITE_ADMIN_COOKIES to 1, the user only needs to
-      authenticate to one list with the site password, and they can
-      administer any mailing list.
+    - MIME and other message handling
 
-      I'm not sure this feature is wise, so the default value for
-      ALLOW_SITE_ADMIN_COOKIES is 0.
+        o More robustness against badly MIME encapsulated messages: if
+          a MessageParseError is raised during the initial parse, the
+          message can either be discarded or saved in qfiles/bad,
+          depending on the value of the new configuration variable
+          QRUNNER_SAVE_BAD_MESSAGES.
 
-    - New feature: banned subscription addresses.  Privacy
-      options/subscription rules now has an additional list box, which
-      can contain addresses or regular expressions.  Subscription
-      requests from any matching address is automatically rejected.
+        o There is a new per-user option that can be used to avoid
+          receipt of extra copies, when a member of the list is also
+          explicitly CC'd.
 
-    - The configuration variable DEFAULT_DEFAULT_MEMBER_MODERATION is
-      now set to 1 by default.  This means that by default, new
-      members will have their moderation flag turned on.
+        o Always add an RFC 2822 Date: header if missing, since not
+          all MTAs insert one automatically.
 
-    - admindb summary page gives the option of clearing the moderation
-      flag of members who are on probation.
+        o The Sender: and Errors-To: headers are no longer added to
+          outgoing messages.
 
-    - More robustness against badly MIME encapsulated messages: if a
-      MessageParseError is raised during the initial parse, the
-      message can either be discarded or saved in qfiles/bad,
-      depending on the value of the new configuration variable
-      QRUNNER_SAVE_BAD_MESSAGES.
+        o Headers and footers are always added by concatenation, if
+          the message is not MIME and if the list's charset is a
+          superset of us-ascii.
 
-    - Russian templates and catalogs have been added.
+    - List administration
+        o An `invitation' feature has been added.  This is selectable
+          as a radio button on the mass subscribe page.  When
+          selected, users are invited to join instead of immediately
+          joined, i.e. they get a confirmation message.
+
+        o You can now enable and disable list owner notifications for
+          disabled-due-to-bouncing and removal-due-to-bouncing
+          actions.  The site config variables
+          DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE and
+          DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL control the default
+          behavior.
+
+        o List owners can now decide whether they receive unrecognized
+          bounce messages or not (i.e. messages that the bounce
+          processor doesn't recognize).  Site admins can set the
+          default value for this flag with the config variable
+          DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER.
+
+        o The admindb summary page gives the option of clearing the
+          moderation flag of members who are on quarantined.
+
+        o The action to take when a moderated member posts to a list
+          is now configurable.  The message can either be held,
+          rejected (bounced), or discarded.  If the message is
+          rejected, a rejection notice string can be given.
+
+        o In the General admin page, you can now set the default value
+          for five per-user flags: concealing the user's email
+          address, acknowledging posts sent by the user, copy
+          suppression, not-me-too selection, and the default digest
+          type.  Site admins can set the default bit field with the
+          new DEFAULT_NEW_MEMBER_OPTIONS variable.
+
+        o A new "Emergency brake" feature for turning on moderation of
+          all list postings.  This is useful for when flamewars break
+          out, and the list needs a cooling off period.  Messages
+          containing an Approved: header with the list owner password
+          are still allowed through, as are messages approved through
+          the admindb interface.
+
+        o When a moderated message is approved for the list, add an
+          X-Mailman-Approved-At: header which contains the timestamp
+          of the approval action (changed from X-Moderated: with a
+          different format).
+
+        o Lists can now be converted to using a less error prone
+          mechanism for variable substitution syntax in headers and
+          footers.  Instead of %(var)s strings, you'd use $var
+          strings.  You must use "bin/withlist -r convert" to enable
+          this.
+
+        o When moderating held messages, the header text box and the
+          message excerpt text box are now both read-only.
+
+        o You can't delete the site list through the web.
+
+        o When creating new lists through the web, you have the option
+          of setting the "default member moderation" flag.
+
+    - Security and privacy
+        o New feature: banned subscription addresses.  Privacy
+          options/subscription rules now have an additional list box
+          which can contain addresses or regular expressions.
+          Subscription requests from any matching address are
+          automatically rejected.
+
+        o Membership tests which compare message headers against list
+          rosters are now more robust.  They now check, by default
+          these header in order: From:, unixfrom, Reply-To:, Sender:.
+          If any match, then the membership test succeeds.
+
+        o ALLOW_SITE_ADMIN_COOKIES is a new configuration variable
+          which says whether to allow AuthSiteAdmin cookies or not.
+          Normally, when a list administrator logs into a list with
+          the site password, they are issued a cookie that only allows
+          them to do administration for this one list.  By setting
+          ALLOW_SITE_ADMIN_COOKIES to 1, the user only needs to
+          authenticate to one list with the site password, and they
+          can administer any mailing list.
+
+          I'm not sure this feature is wise, so the default value for
+          ALLOW_SITE_ADMIN_COOKIES is 0.
+
+        o Marc MERLIN's new recipes for secure Linuxes have been
+          updated.
+
+        o DEFAULT_PRIVATE_ROSTER now defaults to 1.
+
+        o Passwords are no longer included in the confirmation pages.
+
+    - Internationalization
+        o With the approval of Tamito KAJIYAMA, the Japanese codes for
+          Python are now included automatically, so you don't need to
+          download and install these separate.  It is installed in a
+          Mailman-specific place so it won't affect your larger Python
+          installation.
+
+        o The configure script will produce a warning if the Chinese
+          codes are not installed.  This is not a fatal error.
+
+        o Russian templates and catalogs have been added.
+
+        o Finnish templates and catalogs have been added.
+
+    - Scripts and utilities
+        o New program bin/unshunt to safely move shunted messages back
+          into the appropriate processing queue.
+
+        o New program bin/inject for sending a plaintext message into
+          the incoming queue from the command line.
+
+        o New cron script cron/disabled for periodically culling the
+          disabled membership.
+
+        o bin/list_members has grown some new command line switches
+          for filtering on different criteria (digest mode, disable
+          mode, etc.)
+
+        o bin/remove_members has grown the --fromall switch.
+
+        o You can now do a bin/rmlist -a to remove an archive even
+          after the list has been deleted.
+
+        o bin/update removes the $prefix/Mailman/pythonlib directory.
+
+        o bin/withlist grows a --all/-a flag so the --run/-r option
+          can be applied to all the mailing lists.  Also, interactive
+          mode is now the default if -r isn't used.  You don't need to
+          run this script as "python -i bin/withlist" anymore.
+
+        o There is a new script contrib/majordomo2mailman.pl which
+          should ease the transition from Majordomo to Mailman.
+
+    - MTA integration
+        o Postfix integration has been made much more robust, but now
+          you have to set POSTFIX_ALIAS_CMD and POSTFIX_MAP_CMD to
+          point to the postalias and postmap commands respectively.
+
+        o VERP-ish delivery has been made much more efficient by
+          eliminating extra disk copies of messages for each recipient
+          of a VERP delivery.  It has also been made more robust in
+          the face of failures during chunk delivery.  This required a
+          rewrite of SMTPDirect.py and one casualty of that rewrite
+          was the experimental threaded delivery.  It is no longer
+          supported (but /might/ be resurrected if there's enough
+          demand -- or a contributed patch :).
+
+        o A new site config variable SMTP_MAX_SESSIONS_PER_CONNECTION
+          specifies how many consecutive SMTP sessions will be
+          conducted down the same socket connection.  Some MTAs have a
+          limit on this.
+
+        o Support for VERP-ing confirmation messages.  These are less
+          error prone since the Subject: header doesn't need to be
+          retained, and they allow a more user friendly (and i18n'd)
+          Subject: header.  VERP_CONFIRM_FORMAT, VERP_CONFIRM_REGEXP,
+          and VERP_CONFIRMATIONS control this feature (only supported
+          for invitation confirmations currently, but will be expanded
+          to the other confirmations).
+
+        o Several new list-centric addresses have been added:
+          -subscribe and -unsubscribe are synonyms for -join and
+          -leave, respectively.  Also -confirm has been added to
+          support VERP'd confirmations.
+
+    - Archiver
+        o There's now a default page for the Pipermail archive link
+          for when no messages have yet been posted to the list.
+
+        o Just the mere presence of an X-No-Archive: is enough to
+          inhibit archiving for this message; the value of the header
+          is now ignored.
+
+    - Configuring, building, installing
+        o Mailman now has a new favicon, donated by Terry Oda.  Not
+          all web pages are linked to the favicon yet though.
+
+        o The add-on email package is now distributed and installed
+          automatically, so you don't need to do this.  It is
+          installed in a Mailman-specific place so it won't affect
+          your larger Python installation.
+
+        o The default value of VERP_REGEXP has changed.
+
+        o New site configuration variables BADQUEUE_DIR and
+          QRUNNER_SAVE_BAD_MESSAGES which describe where to save
+          messages which are not properly MIME encoded.
+
+        o configure should be more POSIX-ly conformant.
+
+        o The Mailman/pythonlib directory has been removed, but a new
+          $prefix/pythonlib directory has been added.
+
+        o Regression tests are now installed.
+
+        o The second argument to add_virtual() calls in mm_cfg.py are
+          now optional.
+
+        o DEFAULT_FIRST_STRIP_REPLY_TO now defaults to 0.
+
+        o Site administrators can edit the Mailman/Site.py file to
+          customize some filesystem layout policies.
 
 
 2.1 alpha 4 (31-Dec-2001)
