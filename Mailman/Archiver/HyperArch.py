@@ -100,7 +100,13 @@ def null_to_space(s):
 
 
 def sizeof(filename, lang):
-    size = os.path.getsize(filename)
+    try:
+        size = os.path.getsize(filename)
+    except OSError, e:
+        # ENOENT can happen if the .mbox file was moved away or deleted, and
+        # an explicit mbox file name was given to bin/arch.
+        if e.errno <> errno.ENOENT: raise
+        return _('size not available')
     if size < 1000:
         # Avoid i18n side-effects
         otrans = i18n.get_translation()
