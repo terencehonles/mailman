@@ -17,6 +17,8 @@
 """MailList mixin class managing the language options.
 """
 
+import codecs
+
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import i18n
@@ -34,6 +36,7 @@ class Language(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'language':
             return None
+
         # Set things up for the language choices
         langs = mlist.GetAvailableLanguages()
         langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]
@@ -44,7 +47,17 @@ class Language(GUIBase):
             # be other trouble lurking!
             langi = 0
 
-        all = mm_cfg.LC_DESCRIPTIONS.keys()
+        # Only allow the admin to choose a language if the system has a
+        # charset for it.  I think this is the best way to test for that.
+        def checkcodec(charset):
+            try:
+                codecs.lookup(charset)
+                return 1
+            except LookupError:
+                return 0
+
+        all = [key for key in mm_cfg.LC_DESCRIPTIONS.keys()
+               if checkcodec(Utils.GetCharSet(key))]
         all.sort()
         checked = [L in langs for L in all]
         allnames = [_(Utils.GetLanguageDescr(L)) for L in all]
