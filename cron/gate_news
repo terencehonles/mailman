@@ -271,8 +271,8 @@ def poll_newsgroup(mlist, conn, first, last):
                     mlist.Unlock()
         except nntplib.error_temp, msg:
             sys.stderr.write('encountered NNTP error for list %s\n' %
-                             (mlist.internal_name()))
-            sys.stderr.write(msg + '\n')
+                             mlist.internal_name())
+            sys.stderr.write(str(msg) + '\n')
         except QuickEscape:
             pass # We gated this TO news, don't repost it!
 
