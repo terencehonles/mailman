@@ -14,17 +14,19 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+"""Extend mailbox.UnixMailbox.
+"""
 
-"Extend mailbox.UnixMailbox."
+import sys
 
 from email.Generator import Generator
 from email.Parser import Parser
 
+from Mailman import mm_cfg
 from Mailman.Message import Message
 from Mailman.pythonlib import mailbox
 
 
-
 
 # Factory callable for UnixMailboxes.  This ensures that any object we get out
 # of the mailbox is an instance of our subclass.  (requires Python 2.1's
@@ -57,3 +59,41 @@ class Mailbox(mailbox.PortableUnixMailbox):
         # Create a Generator instance to write the message to the file
         g = Generator(self.fp)
         g(msg, unixfrom=1)
+
+
+
+# This stuff is used by pipermail.py:processUnixMailbox().  It provides an
+# opportunity for the built-in archiver to scrub archived messages of nasty
+# things like attachments and such...
+def _archfactory(mailbox):
+    # The factory gets a file object, but it also needs to have a MailList
+    # object, so the clearest <wink> way to do this is to build a factory
+    # function that has a reference to the mailbox object, which in turn holds
+    # a reference to the mailing list.  Nested scopes would help here, BTW,
+    # but we can't rely on them being around (e.g. Python 2.0).
+    def scrubber(fp, mailbox=mailbox):
+        p = Parser(Message)
+        msg = p.parse(fp)
+        return mailbox.scrub(msg)
+    return scrubber
+
+
+class ArchiverMailbox(Mailbox):
+    # This is a derived class which is instantiated with a reference to the
+    # MailList object.  It is build such that the factory calls back into its
+    # scrub() method, giving the scrubber module a chance to do its thing
+    # before the message is archived.
+    def __init__(self, fp, mlist):
+        if mm_cfg.ARCHIVE_SCRUBBER:
+            __import__(mm_cfg.ARCHIVE_SCRUBBER)
+            self._scrubber = sys.modules[mm_cfg.ARCHIVE_SCRUBBER].process
+        else:
+            self._scrubber = None
+        self._mlist = mlist
+        mailbox.PortableUnixMailbox.__init__(self, fp, _archfactory(self))
+
+    def scrub(self, msg):
+        if self._scrubber:
+            return self._scrubber(self._mlist, msg)
+        else:
+            return msg
