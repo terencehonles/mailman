@@ -21,5 +21,5 @@ beszúrt "Re:" vagy "VÁ:" nem okoz gondot).
 
 Ha nem szeretnél feliratkozni a listára, akkor egyszerûen hagyd 
 figyelmen kívül ezt a levelet. Ha úgy gondolod, hogy jogtalanul
-irtak fel egy listára, vagy más észrevételed van, akkor fordulj
+írtak fel egy listára, vagy más észrevételed van, akkor fordulj
 az adminisztrátorához; %(listadmin)s.

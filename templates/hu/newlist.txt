@@ -1,4 +1,4 @@
-A(z) `%(listname)s' levelezési lista mükõdik. A következõkben a 
+A(z) `%(listname)s' levelezési lista mûkõdik. A következõkben a 
 levelezési lista alapvetõ információiról olvashatsz itt.
 
 A levelezési lista jelszava a következõ:
@@ -26,10 +26,10 @@ beállításaik megváltoztatását; errõl bõvebb információt kaphatsz, ha egy
 
     %(requestaddr)s
 
-Listatag eltávolításához a levelezési lista 'listainfo' lapján a listatag
-nevére kell kattintanod. Az adminisztrátori jelszó megadasaval a listatag
-törleset teheted meg az ott talalhato leiratkozasi helyen. A listatag 
-beallitásait (például digest vagy nem-digest formájú levelek fogadása, 
+Listatag eltávolításához a levelezési lista 'információs' lapján a listatag
+nevére kell kattintanod. Az adminisztrátori jelszó megadásával a listatag
+törlését teheted meg az ott található leiratkozási helyen. A listatag 
+beállításait (például digest vagy nem-digest formájú levelek fogadása, 
 vagy szüneteltetése, stb.) az adminisztrátori jelszóval is elvégezheted.
 
 További kérdéseiddel fordulj ide mailman-owner@%(hostname)s.

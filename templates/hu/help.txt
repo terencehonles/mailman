@@ -7,7 +7,7 @@ lehet olvasni. A parancsokat mind a levél törzsében, vagy tárgyában
 meg lehet adni.
 
 Érdemes tudni, hogy az itt megemlített módosításokat Web-en keresztül is
-végre lehet hajtani a kövekezõ címen:
+végre lehet hajtani a következõ címen:
 
     %(listinfo_url)s
 
@@ -26,22 +26,22 @@ a "<>" és "[]" jeleket.
 A következõ parancsok állnak rendelkezésre:
 
     subscribe [jelszó] [digest-opciók] [address=<cim>]
-	  A listára történõ feliratkozást végzi el. A listáról törtenõ
+	  A listára történõ feliratkozást végzi el. A listáról történõ
 	  leiratkozáshoz, vagy a beállítások megváltoztatásához mindig
 	  meg kell adni a jelszót, amelyet adott idõközönként újra el-
 	  küldünk a feliratkozási címre.
 	  'digest-opciók' a következõk lehetnek: 'nodigest' vagy 'digest'
 	  (természetesen aposztrófok nélkül megadva!)
 	  Ha egy másik címrõl szeretnél feliratkozni, mint ahonnan a
-	  feliratkozasi kérelem jött, akkor az "address=<másik emilcím>"
+	  feliratkozási kérelem jött, akkor az "address=<másik emilcím>"
           részt is meg kell adni (természetesen zárójelek, idézõjelek 
 	  nélkül.
 
     unsubscribe <jelszó> [cím]
-	  A listáról történõ leiratkozast végzi el. A megadott jelszónak
-	  egyeznie kell a listán beállított jelszavaddal. Ha egy masik
+	  A listáról történõ leiratkozást végzi el. A megadott jelszónak
+	  egyeznie kell a listán beállított jelszavaddal. Ha egy másik
 	  címrõl próbálnál meg leiratkozni, mint amivel a feliratkozás
-	  törtent, akkor a 'cím' mezõben add meg a helyes címet.
+	  történt, akkor a 'cím' mezõben add meg a helyes címet.
 
     who
           A lista tagjainak névsorát adja meg.

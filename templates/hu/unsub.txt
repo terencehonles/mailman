@@ -19,5 +19,5 @@ beszúrt "Re:" vagy "VÁ:" nem okoz gondot).
 
 Ha nem szeretnél leiratkozni a listáról, akkor egyszerûen hagyd 
 figyelmen kívül ezt a levelet. Ha úgy gondolod, hogy jogtalanul
-törltek a listáról, vagy más észrevételed van, akkor fordulj
+töröltek a listáról, vagy más észrevételed van, akkor fordulj
 az adminisztrátorához; %(listadmin)s.

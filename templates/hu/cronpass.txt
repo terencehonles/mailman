@@ -4,7 +4,7 @@ hogy hogyan lehet megváltoztatni a beállításaidat, vagy leiratkozni
 a levelezõlistáról.
 
 A Web-címeken a listával kapcsolatos beállításaidat, mint például
-a leiratkozást, vagy a levelküldés típusának beállítását, esetleg 
+a leiratkozást, vagy a levélküldés típusának beállítását, esetleg 
 szüneteltetését (pl. nyaralás idejére) teheted meg.
 
 A Web elérhetõség mellett, természetesen e-mailen keresztül is el lehet

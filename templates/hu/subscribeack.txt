@@ -27,9 +27,9 @@ vagy a leiratkozást elvégezni. A jelszavad:
 
   %(password)s
 
-A Mailman alapesetben minden hónapban elküdi a %(host_name)s gépen
-található levelezõlistához tartozó jelszavadat, ha ezt az emlkékeztetõt
+A Mailman alapesetben minden hónapban elküldi a %(host_name)s gépen
+található levelezõlistához tartozó jelszavadat, ha ezt az emlékeztetõt
 nem kéred, akkor a beállítások oldalon kikapcsolhatod a havi küldést.
-Az üzenet a leiratkozásrol és beállításiad megváltoztatásának módjára
+Az üzenet a leiratkozásról és beállításiad megváltoztatásának módjára
 emlékeztet. A listatagok oldalán található gomb megnyomásával e-mailben
 is kikérheted a jelszavadat.

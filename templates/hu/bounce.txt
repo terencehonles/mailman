@@ -9,4 +9,5 @@ Mailman levelezõlista visszadobási (bounce) értesítés:
 %(reenable)s
 Az értesítés a levél alján látható.
 
-Kérdés? Fordulj a Mailman rendszer üzemeltetõjéhez: %(owneraddr)s.
+Kérdés?
+Fordulj a Mailman rendszer üzemeltetõjéhez: %(owneraddr)s.

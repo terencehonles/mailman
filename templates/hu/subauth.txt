@@ -4,7 +4,7 @@ engedélyed:
     Feladó:	%(username)s
     Lista:	%(listname)s@%(hostname)s
 
-A kérelemrõl a 
+A kérelemrõl a(z) 
 
 	%(admindb_url)s
 	
