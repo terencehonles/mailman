@@ -61,6 +61,7 @@ def UpdateOldVars(l, stored_state):
                  'mimimum_post_count_before_bounce_action')
     PreferStored('bad_posters', 'forbidden_posters')
     PreferStored('automatically_remove', 'automatic_bounce_action')
+    PreferStored('reminders_to_admins', 'umbrella_list')
     if hasattr(l, "open_subscribe"):
         if l.open_subscribe:
             if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
