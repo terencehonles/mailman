@@ -1,0 +1,25 @@
+この文章には <b><code>%(attribute)s</code></b> の形式の文字列を
+含むことができ，それはリストの属性に置きかえられます．
+詳しくは，<a href="http://www.python.org/doc/current/lib/typesseq-strings.html">
+Python の文字列置き換え規則</a>をご覧ください．
+便利な属性としては，以下のようなものがあります．
+
+<ul>
+    <li><b><code>real_name</code></b> - リストの「きれいな」名前;
+    普通は大文字の入ったリストの名前になります．
+
+    <li><b><code>_internal_name</code></b> - URL の中でリストが識別される
+    名前．ここで，大/小文字の違いは区別されます．
+
+    <li><b><code>host_name</code></b> - リストサーバーが作動するホストの
+    正式のドメイン名(FQDN).
+
+    <li><b><code>web_page_url</code></b> - Mailman の基本 URL.
+    例えば <em><code>listinfo/%(_internal_name)s</code></em> を付け加えると
+    メーリングリストの案内ページになります．
+
+    <li><b><code>description</code></b> - このメーリングリストの短い
+    説明文.
+
+    <li><b><code>info</code></b> - このメーリングリストの長い説明文.
+</ul>
