@@ -132,7 +132,7 @@ def main():
              }, mlist=mlist)
         return
 
-    lang = mlist.GetPreferredLanguage(username)
+    lang = mlist.getMemberLanguage(username)
     i18n.set_language(lang)
     doc.set_language(lang)
 
