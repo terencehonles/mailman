@@ -22,8 +22,9 @@ import re
 import sha
 import time
 import errno
-import mimetypes
+import binascii
 import tempfile
+import mimetypes
 from cStringIO import StringIO
 from types import IntType
 
@@ -103,17 +104,23 @@ def process(mlist, msg, msgdata=None):
     if msgdata is None:
         msgdata = {}
     dir = calculate_attachments_dir(mlist, msg, msgdata)
+    charset = None
     # Now walk over all subparts of this message and scrub out various types
     for part in msg.walk():
         ctype = part.get_type(part.get_default_type())
         # If the part is text/plain, we leave it alone
         if ctype == 'text/plain':
-            pass
+            # We need to choose a charset for the scrubbed message, so we'll
+            # arbitrarily pick the charset of the first text/plain part in the
+            # message.
+            if charset is None:
+                charset = part.get_content_charset(charset)
         elif ctype == 'text/html' and isinstance(sanitize, IntType):
             if sanitize == 0:
                 if outer:
                     raise DiscardMessage
                 part.set_payload(_('HTML attachment scrubbed and removed'))
+                part.set_type('text/plain')
             elif sanitize == 2:
                 # By leaving it alone, Pipermail will automatically escape it
                 pass
@@ -130,6 +137,7 @@ def process(mlist, msg, msgdata=None):
 An HTML attachment was scrubbed...
 URL: %(url)s
 """))
+                part.set_type('text/plain')
             else:
                 # HTML-escape it and store it as an attachment, but make it
                 # look a /little/ bit prettier. :(
@@ -155,6 +163,7 @@ URL: %(url)s
 An HTML attachment was scrubbed...
 URL: %(url)s
 """))
+                part.set_type('text/plain')
         elif ctype == 'message/rfc822':
             # This part contains a submessage, so it too needs scrubbing
             submsg = part.get_payload(0)
@@ -175,10 +184,7 @@ Date: %(date)s
 Size: %(size)s
 Url: %(url)s
 """))
-            # If we were to leave the message/rfc822 Content-Type: header, it
-            # would confuse the generator.  So just delete it.  The generator
-            # will treat this as a text/plain message.
-            del part['content-type']
+            part.set_type('text/plain')
         # If the message isn't a multipart, then we'll strip it out as an
         # attachment that would have to be separately downloaded.  Pipermail
         # will transform the url into a hyperlink.
@@ -201,24 +207,48 @@ Size: %(size)d bytes
 Desc: %(desc)s
 Url : %(url)s
 """))
+            part.set_type('text/plain')
         outer = 0
-    # We still have to sanitize the message to flat text because Pipermail
-    # can't handle messages with list payloads.  This is a kludge (def (n)
-    # clever hack ;).
+    # We still have to sanitize multipart messages to flat text because
+    # Pipermail can't handle messages with list payloads.  This is a kludge;
+    # def (n) clever hack ;).
     if msg.is_multipart():
-        # We're corrupting the boundary to provide some more useful
-        # information, because while we can suppress subpart headers, we can't
-        # suppress the inter-part boundary without a redesign of the Generator
-        # class or a rewrite of of the whole _handle_multipart() method.
-        msg.set_boundary('%s %s attachment' %
-                         ('-'*20, msg.get_type('text/plain')))
-        sfp = StringIO()
-        g = ScrubberGenerator(sfp, mangle_from_=0, skipheaders=0)
-        g(msg)
-        sfp.seek(0)
-        # We don't care about parsing the body because we've already scrubbed
-        # it of nasty stuff.  Just slurp it all in.
-        msg = HeaderParser(Message.Message).parse(sfp)
+        # By default we take the charset of the first text/plain part in the
+        # message, but if there was none, we'll use the list's preferred
+        # language's charset.
+        if charset is None:
+            charset = Utils.GetCharSet(mlist.preferred_language)
+        # We now want to concatenate all the parts which have been scrubbed to
+        # text/plain, into a single text/plain payload.  We need to make sure
+        # all the characters in the concatenated string are in the same
+        # encoding, so we'll use the 'replace' key in the coercion call.
+        # BAW: Martin's original patch suggested we might want to try
+        # generalizing to utf-8, and that's probably a good idea (eventually).
+        text = []
+        for part in msg.get_payload():
+            # All parts should be scrubbed to text/plain by now.
+            partctype = part.get_content_type()
+            if partctype <> 'text/plain':
+                text.append(_('Skipped content of type %(partctype)s'))
+                continue
+            try:
+                t = part.get_payload(decode=1)
+            except binascii.Error:
+                t = part.get_payload()
+            partcharset = part.get_charset()
+            if partcharset and partcharset <> charset:
+                try:
+                    t = unicode(t, partcharset, 'replace')
+                    # Should use HTML-Escape, or try generalizing to UTF-8
+                    t = t.encode(charset, 'replace')
+                except UnicodeError:
+                    # Replace funny characters
+                    t = unicode(t, 'ascii', 'replace').encode('ascii')
+            text.append(t)
+        # Now join the text and set the payload
+        sep = _('-------------- next part --------------\n')
+        msg.set_payload(sep.join(text), charset)
+        msg.set_type('text/plain')
     return msg
 
 
