@@ -134,6 +134,12 @@ check_caller(const char* ident, GID_T parentgid)
 /* list of environment variables which are removed from the given
  * environment.  Some may or may not be hand crafted and passed into
  * the execv'd environment.
+ *
+ * TBD: The logic of this should be inverted.  IOW, we should audit the
+ * Mailman CGI code for those environment variables that are used, and
+ * specifically white list them, removing all other variables.  John Viega
+ * also suggests imposing a maximum size just in case Python doesn't handle
+ * them right (which it should because Python strings have no hard limits).
  */
 static char* killenvars[] = {
 	"PYTHONPATH=",
@@ -149,6 +155,8 @@ static char* killenvars[] = {
  * args[0] should be the abs path to the Python script to execute
  * argv[1:] are other args for the script
  * env may or may not contain PYTHONPATH, we'll substitute our own
+ *
+ * TBD: third argument env may not be universally portable
  */
 int
 run_script(const char* script, int argc, char** argv, char** env)

@@ -35,6 +35,8 @@
  *
  * RMS says it's okay to include this code in Mailman but it should be kept
  * in a separate file.
+ *
+ * TBD: This file needs a security audit.
  */
 
 #ifndef HAVE_VSNPRINTF
