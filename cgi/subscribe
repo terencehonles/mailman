@@ -8,16 +8,16 @@ NEED_CONFIRM_NOTICE = """
 A web request for your subscription to the %s mailing list
 has been received at %s%s
 
-This is a confirmation request, to prevent someone subscribing you
-against your wishes.  In order to complete this subscription you
-must send a confirming email by repling to this mail, including just the
-line: 
+This is a confirmation request, to prevent anyone from subscribing
+you against your wishes.  In order to complete this subscription you
+must send a confirming email, to %s, by 
+repling to this mail, and including just the line: 
 
 subscribe %s
 
 in the body or as the subject line.  If you do not actually wish to
 subscribe you need not do anything.  Upon subscribing you will receive 
-message welcoming you to the list and describing how to tailor your
+a message welcoming you to the list and describing how to tailor your
 account.
 
 Questions or comments?
@@ -131,8 +131,8 @@ else:
     except mm_err.MMWebSubscribeRequiresConfirmation:
 	results = results + ("Confirmation from your email address is "
 			     "required, to prevent anyone from covertly "
-			     "subscribing other people.  Instructions "
-			     "are being sent to you at %s." % email)
+			     "subscribing you.  Instructions are being "
+			     "sent to you at %s." % email)
 	if os.environ.has_key('REMOTE_HOST'):
 	    remote = " from %s. " % os.environ['REMOTE_HOST']
 	elif os.environ.has_key('REMOTE_ADDR'):
@@ -142,10 +142,13 @@ else:
 	list.SendTextToUser(subject = 'Subscribing to %s' % list.real_name,
 			    recipient = email,
 			    sender = list.GetRequestEmail(),
-			    text = NEED_CONFIRM_NOTICE % (list.real_name,
-							  list.host_name,
-							  remote,
-							  pw))
+			    text = (NEED_CONFIRM_NOTICE
+                                    % (list.real_name,
+                                       list.host_name,
+                                       remote,
+                                       list.GetRequestEmail(),
+                                       pw)),
+                            errorsto = list.GetAdminEmail())
     except mm_err.MMBadEmailError:
 	results = results + ("Mailman won't accept the given email "
 			     "address as a valid address. (Does it "
