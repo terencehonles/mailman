@@ -40,8 +40,8 @@ CRONDIR= 	$(prefix)/cron
 
 SHELL=		/bin/sh
 
-SCRIPTS=	checkdbs crontab.in mailpasswds senddigests \
-gate_news run_queue nightly_gzip
+SCRIPTS=	checkdbs crontab.in mailpasswds senddigests gate_news \
+nightly_gzip
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
