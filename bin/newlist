@@ -7,7 +7,7 @@ import sys, crypt, os, string
 
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist, mm_utils
+import maillist, mm_utils, mm_cfg
 
 def main(argv):
     if len(argv) > 1:
@@ -15,7 +15,7 @@ def main(argv):
     else:
 	list_name = string.lower(raw_input("Enter the name of the list: "))
 
-    if list_name in maillist.list_names():
+    if list_name in mm_utils.list_names():
 	sys.stderr.write("** List with name %s already exists\n" % `list_name`)
 	return 1
 
@@ -45,7 +45,7 @@ Entry for aliases file:
 %(owner2)s %(listname)s-admin
 ''' % {'listname': list_name,
 	   'list': "%-24s" % (list_name + ":"),
-	   'wrapper': '/home/mailman/bin/wrapper',
+	   'wrapper': '%s/bin/wrapper' % mm_cfg.MAILMAN_DIR,
 	   'admin': "%-24s" % ("%s-admin:" % list_name),
 	   'request': "%-24s" % ("%s-request:" % list_name),
 	   'owner1': "%-24s" % ("owner-%s:" % list_name),
@@ -62,8 +62,9 @@ def sendnotice(newlist, list_name, owner_mail, list_pw):
 			   recipient=owner_mail,
 			   sender='mailman-owner@%s' % newlist.host_name, 
 			   text='''
-The mailing list '%s' has just been created for you.  Here is some basic
-information about your mailing list:
+The mailing list '%s' has just been created for you.
+
+Here is some basic information about your mailing list:
 
 Your mailing list password is:
 	%s
@@ -81,6 +82,11 @@ The web page for users of your mailing list is:
 You can even customize these web pages from the list configuration page.  
 However, you do need to know html to be able to do this.
 
+There is also an email-based interface for users (not admin) of your list - 
+you can get info about using it by sending a message with just the word
+help as subject or in the body, to:
+	%s
+
 To unsubscribe a user: from the mailing list 'listinfo' web page, click on
 or enter the user's email address as if you were that user.  Where that
 user would put in their password to unsubscribe, put in your admin
@@ -90,6 +96,7 @@ including digestification, delivery disabling, etc.
 Please address all questions to mailman-owner@%s.
 ''' % (list_name, list_pw, 
        newlist.GetScriptURL('admin'), newlist.GetScriptURL('listinfo'),
+       "%s-request@%s" % (list_name, newlist.host_name),
        newlist.host_name))
 
 if __name__ == "__main__":
