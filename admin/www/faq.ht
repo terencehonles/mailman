@@ -218,6 +218,10 @@ Title: Mailman Frequently Asked Questions
      time is supposed to help defeat this problem.  It can be
      considered the price to pay for the convenience of not having to
      type the password in every time.
+<p> <b> Q. I want to backup my lists.  What do I need to save?
+
+</b><br> A. See this FAQ wizard entry:
+   <a href="http://www.python.org/cgi-bin/faqw-mm.py?req=show&file=faq04.006.htp">http://www.python.org/cgi-bin/faqw-mm.py?req=show&file=faq04.006.htp</a>
 <p> <b> Q. How do I rename a list?
 
 </b><br> A. Renaming a list is currently a bit of a pain to do completely

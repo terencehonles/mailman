@@ -16,9 +16,10 @@ upgrade.
 0. Installation requirements
 
     You must have the Python interpreter installed somewhere on your
-    system.  Currently Python 2.0 or later is required.  For
-    information about obtaining Python source code, RPM packages, or
-    pre-compiled binaries please see:
+    system.  Currently Python 2.0 or later is required, although
+    Python 2.1.1 or Python 2.2 is recommended.  For information about
+    obtaining Python source code, RPM packages, or pre-compiled
+    binaries please see:
 
         http://www.python.org
 
@@ -35,8 +36,8 @@ upgrade.
     following steps:
 
     % cd misc
-    % tar zxf email-0.93.tar.gz
-    % cd email-0.93
+    % tar zxf email-0.96.tar.gz
+    % cd email-0.96
     % python setup.py install
 
     Check to make sure the email package is properly installed by
@@ -52,6 +53,13 @@ upgrade.
 
     (Note that if you are using Python 2.2, email.__version__ will be
     "1.0"; either version is fine.)
+
+    If there is a README.<yourMTA> file that describes your mail
+    server (MTA), read it now.  Some MTAs are more compatible with
+    Mailman such that you can do automatic creation and removal of
+    mailing lists, including through-the-web operations.  Examples are
+    Exim and Postfix.  Setup instructions for specific MTAs are
+    contained in these README files.
 
 
 1. System setup
@@ -252,13 +260,6 @@ upgrade.
     everything running you need to hook Mailman up to both your web
     server and your mail system.
 
-    - If there is a README.<yourMTA> file that describes your mail
-      server (MTA), read it now.  Some MTAs are more compatible with
-      Mailman such that you can do automatic creation and removal of
-      mailing lists, including through-the-web operations.  Examples
-      are Exim and Postfix.  Setup instructions for specific MTAs are
-      contained in these README files.
-
     - If you plan on running your MTA and web server on different
       machines, sharing Mailman installations via NFS, be sure that
       the clocks on those two machines are synchronized closely.  You
@@ -377,6 +378,9 @@ upgrade.
           % ln -s ../init.d/mailman S98mailman
           % cd ../rc6.d
           % ln -s ../init.d/mailman K12mailman
+
+    - Check the values for DEFAULT_EMAIL_HOST and DEFAULT_URL_HOST in
+      Defaults.py.  Make any necessary changes in the mm_cfg.py file.
 
     - Create a "site-wide" mailing list.  This is the one that
       password reminders will appear to come from.  Usually this

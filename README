@@ -5,9 +5,9 @@ Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 INTRODUCTION
 
     This is GNU Mailman, a mailing list management system distributed
-    under the GNU Public License (GPL).  The name of this project is
-    spelled "Mailman" with a leading capital `M' but with a lower case
-    second `m'.
+    under the terms of the GNU General Public License (GPL).  The name
+    of this project is spelled "Mailman" with a leading capital `M'
+    but with a lower case second `m'.  Any other spelling is incorrect.
 
     Mailman is written primarily in Python, a free object-oriented
     scripting language.  There is some ANSI C code for security
@@ -20,8 +20,7 @@ INTRODUCTION
     Cotton, Harald Meland, and John Viega.  Version 1.0 and beyond
     have been primarily maintained by Barry Warsaw with contributions
     from many; see the ACKNOWLEDGMENTS file for details.  Jeremy
-    Hylton has helped considerably with the Pipermail code in Mailman
-    2.0.
+    Hylton helped considerably with the Pipermail code in Mailman 2.0.
 
     The Mailman home page is
 
@@ -38,17 +37,15 @@ INTRODUCTION
         http://www.python.org
 
     Note that in order to comply with the GPL, it is recommended that
-    you use Python 2.0.1 or Python 2.1.1.  Python 2.2 will also be
-    GPL-compatible, but it has not yet been released as of this
-    writing (21-Oct-2001).  Mailman will work with any Python 2.x
-    version, although only very limited testing has been done with
-    Python 2.2.
+    you use Python 2.0.1, Python 2.1.1, or Python 2.2.  Mailman will
+    work with any Python 2.x version, although most testing has been
+    done with Python 2.1.1 and Python 2.2.
 
     You will also need an ANSI C compiler; gcc (the GNU C compiler)
     works just fine.  Mailman currently works only on GNU/Linux and
-    other Unix-like operating systems (e.g. Solaris, *BSD, etc.).  It
-    does not run on Windows, although web and mail clients on any
-    platform should be able to interact with Mailman just fine.
+    other Unix-like operating systems (e.g. Solaris, *BSD, MacOSX,
+    etc.).  It does not run on Windows, although web and mail clients
+    on any platform should be able to interact with Mailman just fine.
 
     See the INSTALL file for installation instructions.  If you are
     upgrading from a previous version of Mailman, you need to read the

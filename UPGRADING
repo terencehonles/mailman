@@ -55,6 +55,14 @@ UPGRADING FROM 2.0.1 to 2.1
     upgrade, those messages will not get delivered, and I'm not
     exactly sure yet how to upgrade those pending messages.
 
+    NOTE: When upgrading to Mailman 2.1alpha4, you will need to
+    regenerate your aliases files.  There have been many changes to
+    the alias names, the programs they map to, and the name of the
+    wrapper script.  See README.<yourMTA> for details of making
+    Mailman work with your mail server.
+
+    To regenerate your aliases, use the bin/genaliases script.
+
     Mailman 2.1 introduces multilingual (a.k.a. internationalization
     or i18n) support.  Previously only one language per list was
     supported, and it was assumed that this language would be English.
