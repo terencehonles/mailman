@@ -27,7 +27,7 @@
  */
 #define LEGAL_PARENT_GID MAIL_GID
 
-const int parentgid = LEGAL_PARENT_GID;
+const GID_T parentgid = LEGAL_PARENT_GID;
 const char* logident = "Mailman mail-wrapper";
 
 

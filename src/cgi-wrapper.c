@@ -30,7 +30,7 @@
 
 const char* logident = LOG_IDENT;
 char* script = SCRIPTNAME;
-const int parentgid = LEGAL_PARENT_GID;
+const GID_T parentgid = LEGAL_PARENT_GID;
 
 
 int

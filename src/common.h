@@ -28,8 +28,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+/* GETGROUPS_T gets set in the makefile by configure */
+#define GID_T GETGROUPS_T
+
 extern void fatal(const char*, int, char*, ...);
-extern void check_caller(const char*, gid_t);
+extern void check_caller(const char*, GID_T);
 extern int run_script(const char*, int, char**, char**);
 
 /* bogus global variable used as a flag */
