@@ -57,7 +57,9 @@ def main():
         msg = Message.OutgoingMessage(s.getvalue())
         msg.recips = mlist.owner[:]
         # for debugging purposes
-        msg.recips.append(mm_cfg.MAILMAN_OWNER)
+##        msg.recips.append(mm_cfg.MAILMAN_OWNER)
+        # flag this message as coming to the -admin address
+        msg.toadmin = 1
         HandlerAPI.DeliverToUser(mlist, msg)
     finally:
         mlist.Save()
