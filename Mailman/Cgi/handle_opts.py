@@ -97,10 +97,10 @@ def process_form(mlist, user, doc):
     if form.has_key("unsub"):
         operation = _("Unsubscribe")
         if not form.has_key("upw"):
-            PrintResults(
-                mlist, operation, doc,
-                _("You must give your password to unsubscribe.") + "<p>",
-                user, pluser)
+            mlist.ConfirmUnsubscription(user, pluser)
+            PrintResults(mlist, operation, doc,
+                         _('A removal confirmation will be emailed to you.'),
+                         user, pluser)
         else:
             try:
                 pw = form["upw"].value
