@@ -90,7 +90,7 @@ class OldStyleMemberships(MemberAdaptor):
         cpaddr, where = self.__get_cp_member(member)
         if cpaddr is None:
             raise Errors.NotAMemberError, member
-        return member
+        return cpaddr
 
     def getMemberCPAddresses(self, members):
         return [self.__get_cp_member(member)[0] for member in members]
