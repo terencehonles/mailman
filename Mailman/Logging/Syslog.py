@@ -22,12 +22,13 @@ This might eventually be replaced by a syslog based logger, hence the name.
 from StampedLogger import StampedLogger
 
 
-# global, shared logger instance
+# Global, shared logger instance.  All clients should use this object.
 syslog = None
 
 
 
-class Syslog:
+# Don't instantiate except below.
+class _Syslog:
     def __init__(self):
         self._logfiles = {}
 
@@ -49,4 +50,4 @@ class Syslog:
         self._logfiles.clear()
 
 
-syslog = Syslog()
+syslog = _Syslog()
