@@ -24,6 +24,7 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
 from Mailman.i18n import _
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -78,36 +79,39 @@ your membership administrative address, %(addr)s.'''))
 
     def MailUserPassword(self, user):
         listfullname = '%s@%s' % (self.real_name, self.host_name)
-        ok = 1
         requestaddr = self.GetRequestEmail()
         # find the lowercased version of the user's address
-        if self.isMember(user) and self.getMemberPassword(user):
-            cpuser = self.getMemberCPAddress(user)
-            recipient = self.GetMemberAdminEmail(cpuser)
-            subject = _('%(listfullname)s mailing list reminder')
-            adminaddr = self.GetAdminEmail()
-            # get the text from the template
-            text = Utils.maketext(
-                'userpass.txt',
-                {'user'       : cpuser,
-                 'listname'   : self.real_name,
-                 'fqdn_lname' : self.GetListEmail(),
-                 'password'   : self.passwords[user],
-                 'options_url': self.GetOptionsURL(user, absolute=1),
-                 'requestaddr': requestaddr,
-                 'owneraddr'  : self.GetOwnerEmail(),
-                }, lang=self.getMemberLanguage(user), mlist=self)
-        else:
-            ok = 0
-            recipient = self.GetAdminEmail()
-            subject = _('%(listfullname)s user %(user)s missing password!')
-            text = Utils.maketext(
-                'nopass.txt',
-                {'username'     : `user`,
-                 'internal_name': self.internal_name(),
-                 }, lang=self.getMemberLanguage(user), mlist=self)
+        adminaddr = self.GetAdminEmail()
+        assert self.isMember(user)
+        if not self.getMemberPassword(user):
+            # The user's password somehow got corrupted.  Generate a new one
+            # for him, after logging this bogosity.
+            syslog('error', 'User %s had a false password for list %s',
+                   user, self.internal_name())
+            waslocked = self.Locked()
+            if not waslocked:
+                self.Lock()
+            try:
+                self.setMemberPassword(user, Utils.MakeRandomPassword())
+                self.Save()
+            finally:
+                if not waslocked:
+                    self.Unlock()
+        # Now send the user his password
+        cpuser = self.getMemberCPAddress(user)
+        recipient = self.GetMemberAdminEmail(cpuser)
+        subject = _('%(listfullname)s mailing list reminder')
+        # get the text from the template
+        text = Utils.maketext(
+            'userpass.txt',
+            {'user'       : cpuser,
+             'listname'   : self.real_name,
+             'fqdn_lname' : self.GetListEmail(),
+             'password'   : self.passwords[user],
+             'options_url': self.GetOptionsURL(user, absolute=1),
+             'requestaddr': requestaddr,
+             'owneraddr'  : self.GetOwnerEmail(),
+            }, lang=self.getMemberLanguage(user), mlist=self)
         msg = Message.UserNotification(recipient, adminaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
         msg.send(self)
-        if not ok:
-             raise Errors.MMBadUserError
