@@ -330,7 +330,7 @@ index_footer_template='''\
     <p>
       <a name="end"><b>Last message date:</b></a> 
        <i>%(lastdate)s</i><br>
-    <b>Archived on:</b> <i><!--#var archivedate --></i>
+    <b>Archived on:</b> <i>%(archivedate)s</i>
     <p>
    <ul>
          <li> <b>Messages sorted by:</b>
