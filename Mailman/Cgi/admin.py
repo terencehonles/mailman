@@ -199,7 +199,7 @@ def admin_overview(msg=''):
     #
     # This page should be displayed in the server's default language, which
     # should have already been set.
-    hostname = mm_cfg.DEFAULT_HOST_NAME
+    hostname = Utils.get_domain()
     legend = _('%(hostname)s mailing lists - Admin Links')
     # The html `document'
     doc = Document()
@@ -214,10 +214,19 @@ def admin_overview(msg=''):
     advertised = []
     listnames = Utils.list_names()
     listnames.sort()
+
     for name in listnames:
         mlist = MailList.MailList(name, lock=0)
         if mlist.advertised:
-            advertised.append(mlist)
+            if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
+                    hostname and \
+                    hostname.find(mlist.web_page_url) == -1 and \
+                    mlist.web_page_url.find(hostname) == -1:
+                # List is for different identity of this host - skip it.
+                continue
+            else:
+                advertised.append(mlist)
+
     # Greeting depends on whether there was an error or not
     if msg:
         greeting = FontAttr(msg, color="ff5060", size="+1")
