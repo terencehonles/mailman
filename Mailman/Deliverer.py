@@ -107,7 +107,7 @@ your membership administrative address, %(addr)s.'''))
             {'user'       : cpuser,
              'listname'   : self.real_name,
              'fqdn_lname' : self.GetListEmail(),
-             'password'   : self.passwords[user],
+             'password'   : self.getMemberPassword(user),
              'options_url': self.GetOptionsURL(user, absolute=1),
              'requestaddr': requestaddr,
              'owneraddr'  : self.GetOwnerEmail(),
