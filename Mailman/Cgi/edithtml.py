@@ -78,9 +78,6 @@ def main():
         Auth.loginpage(mlist, 'edithtml', e.message)
         return
 
-    # get the list._template_dir attribute
-    HTMLFormatter.InitVars(mlist)
-
     realname = mlist.real_name
     if len(parts) > 1:
         template_name = parts[1]
@@ -131,7 +128,8 @@ def FormatHTML(mlist, doc, template_name, template_info):
     doc.AddItem('<p>')
     doc.AddItem('<hr>')
     form = Form(mlist.GetScriptURL('edithtml') + '/' + template_name)
-    text = Utils.QuoteHyperChars(mlist.SnarfHTMLTemplate(template_name))
+    text = Utils.QuoteHyperChars(
+        Utils.maketext(template_name, raw=1, mlist=mlist))
     form.AddItem(TextArea('html_code', text, rows=40, cols=75))
     form.AddItem('<p>' + _('When you are done making changes...'))
     form.AddItem(SubmitButton('submit', _('Submit Changes')))
@@ -146,10 +144,9 @@ def ChangeHTML(mlist, cgi_info, template_name, doc):
         doc.AddItem('<hr>')
         return
     code = cgi_info['html_code'].value
-    f = open(os.path.join(mlist._template_dir, mlist.preferred_language,
-                          template_name),
-             'w')
-    f.write(code)
-    f.close()
+    fp = open(os.path.join(mlist.fullpath(), mlist.preferred_language,
+                           template_name), 'w')
+    fp.write(code)
+    fp.close()
     doc.AddItem(Header(3, _('HTML successfully updated.')))
     doc.AddItem('<hr>')
