@@ -6,7 +6,7 @@ information about and control your subscription to Mailman lists at
 this site.  A command can be in the subject line or in the body of the
 message.
 
-Note that much of the following can also be accomplished via the World 
+Note that much of the following can also be accomplished via the World
 Wide Web, at:
 
     %(listinfo_url)s
@@ -37,8 +37,8 @@ The following commands are valid:
     unsubscribe <password> [address]
         Unsubscribe from the mailing list.  Your password must match
         the one you gave when you subscribed.  If you are trying to
-        unsubscribe from a different address than the one you subscribed
-        from, you may specify it in the 'address' field.
+        unsubscribe from a different address than the one you
+        subscribed from, you may specify it in the 'address' field.
 
     who
         See everyone who is on this mailing list.
@@ -87,8 +87,9 @@ The following commands are valid:
         Change your list password.
     
     end or --
-       Stop processing commands (good to do if your mailer automatically
-       adds a signature file - it'll save you from a lot of cruft).
+       Stop processing commands (good to do if your mailer
+       automatically adds a signature file - it'll save you from a lot
+       of cruft).
 
 
 Commands should be sent to %(requestaddr)s
