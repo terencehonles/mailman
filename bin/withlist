@@ -1,4 +1,4 @@
-# -*- python -*-
+#! /usr/bin/env python
 #
 # Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 #
@@ -71,7 +71,7 @@ def requestaddr(mlist):
 Now, from the command line you can print the list's posting address by running
 the following from the command line:
 
-% python bin/withlist -r listaddr mylist
+%% python bin/withlist -r listaddr mylist
 Loading list: mylist (unlocked)
 Importing listaddr ...
 Running listaddr.listaddr() ...
@@ -79,7 +79,7 @@ mylist@myhost.com
 
 And you can print the list's request address by running:
 
-% python bin/withlist -r listaddr.requestaddr mylist
+%% python bin/withlist -r listaddr.requestaddr mylist
 Loading list: mylist (unlocked)
 Importing listaddr ...
 Running listaddr.requestaddr() ...
