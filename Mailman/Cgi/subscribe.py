@@ -21,7 +21,7 @@
 import sys
 import os, cgi, string
 from regsub import gsub
-from Mailman import Utils, MailList, Errors, Pending, htmlformat
+from Mailman import Utils, MailList, Errors, htmlformat
 from Mailman import mm_cfg
 
 def main():
