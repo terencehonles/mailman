@@ -182,8 +182,8 @@ def remove_old_sources(module):
 
 
 if __name__ == '__main__':
-    for mods in ("Archiver", "HyperArch", "HyperDatabase", "pipermail"):
-        remove_old_sources(module)
+    for mod in ("Archiver", "HyperArch", "HyperDatabase", "pipermail"):
+        remove_old_sources(mod)
     lists = list_names()
     if not lists:
         print "no lists == nothing to do, exiting"
