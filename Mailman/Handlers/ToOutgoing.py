@@ -33,7 +33,12 @@ def process(mlist, msg, msgdata):
     # Also, if personalization is /not/ enabled, but VERP_DELIVERY_INTERVAL is
     # set (and we've hit this interval), then again, this message should be
     # VERPed. Otherwise, no.
-    if mlist.personalize:
+    #
+    # Note that the verp flag may already be set, e.g. by mailpasswds using
+    # VERP_PASSWORD_REMINDERS.  Preserve any existing verp flag.
+    if msgdata.has_key('verp'):
+        pass
+    elif mlist.personalize:
         if mm_cfg.VERP_PERSONALIZED_DELIVERIES:
             msgdata['verp'] = 1
     elif interval == 0:
