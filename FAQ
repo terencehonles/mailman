@@ -33,6 +33,20 @@ A. These headers are added by Mailman for the long-term benefit of
    these headers are defined.  See the file README.USERAGENT for hints
    on what to tell your end users.
 
+Q. Can I put the user's address in the footer that Mailman adds to
+   each message?
+
+A. No.  The reason is that, for efficiency, Mailman batches together
+   message delivery for many users at once.  Putting the user's
+   address in the footer would require Mailman to craft a unique
+   message for each recipient, and this would likely unacceptably bog
+   down your system.
+
+   Some MTAs may provide may provide the ability to accomplish this,
+   using a technique akin to VERP (variable envelope return path).
+   You'll need to investigate the configuration options of your MTA
+   for details.
+
 Q. What if I get "document contains no data" from the web server, or
    mail isn't getting delivered, or I see "Premature end of script
    headers" or "Mailman CGI error!!!"
