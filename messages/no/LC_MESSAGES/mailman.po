@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1a4\n"
 "POT-Creation-Date: Sun Feb  3 18:15:46 2002\n"
-"PO-Revision-Date: 2002-01-04 16:45+01:00\n"
+"PO-Revision-Date: 2002-02-06 13:02+01:00\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -424,7 +424,7 @@ msgstr "moderert"
 
 #: Mailman/Cgi/admin.py:871
 msgid "nomail<br>[reason]"
-msgstr ""
+msgstr "stopp epost<br>[årsak]"
 
 #: Mailman/Cgi/admin.py:872
 msgid "ack"
@@ -452,15 +452,15 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:886
 msgid "U"
-msgstr ""
+msgstr "M"
 
 #: Mailman/Cgi/admin.py:887
 msgid "A"
-msgstr ""
+msgstr "A"
 
 #: Mailman/Cgi/admin.py:888
 msgid "B"
-msgstr ""
+msgstr "R"
 
 #: Mailman/Cgi/admin.py:960
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
@@ -503,6 +503,14 @@ msgid ""
 "                    in older versions of Mailman.\n"
 "            </ul>"
 msgstr ""
+"<b>stopp epost</b> -- Stopp levering av epost til medlemmet? Hvis ja, vil en\n"
+"årsak angis med en bokstav:\n"
+"<ul>\n"
+"  <li><b>M</b> -- Medlemmet har satt dette selv via sin personlige medlemsside.\n"
+"  <li><b>A</b> -- Satt av listeadministratoren\n"
+"  <li><b>R</b> -- Satt av Mailman grunnet for mange returmeldinger fra medlemmets epostadresse\n"
+"  <li><b>?</b> -- Ukjent årsak. Dette er tilfelle dersom epost ble stoppet for medlemmet i en tidligere versjon av Mailman.\n"
+"</ul>"
 
 #: Mailman/Cgi/admin.py:983
 msgid ""
@@ -543,11 +551,11 @@ msgstr "<b>spr&aring;k</b> -- &Oslash;nsket spr&aring;k"
 
 #: Mailman/Cgi/admin.py:1008
 msgid "Click here to hide the legend for this table."
-msgstr ""
+msgstr "Klikk her for å ikke vise forklaringen av innstillingene."
 
 #: Mailman/Cgi/admin.py:1012
 msgid "Click here to include the legend for this table."
-msgstr ""
+msgstr "Klikk her for å vise forklaring av innstillingene."
 
 #: Mailman/Cgi/admin.py:1019
 msgid ""
@@ -761,9 +769,8 @@ msgid "Submit All Data"
 msgstr "Utf&oslash;re"
 
 #: Mailman/Cgi/admindb.py:197
-#, fuzzy
 msgid "all of %(esender)s's held messages."
-msgstr "alle meldinger fra %(sender)s, som holdes tilbake for godkjenning."
+msgstr "alle meldinger fra %(esender)s, som holdes tilbake for godkjenning."
 
 #: Mailman/Cgi/admindb.py:202
 msgid "a single held message."
@@ -790,9 +797,8 @@ msgid "Subscription Requests"
 msgstr "S&oslash;knader om medlemskap"
 
 #: Mailman/Cgi/admindb.py:262
-#, fuzzy
 msgid "Address/name"
-msgstr "Medlemmets adresse/navn"
+msgstr "Adresse/navn"
 
 #: Mailman/Cgi/admindb.py:263 Mailman/Cgi/admindb.py:304
 msgid "Your decision"
@@ -825,9 +831,8 @@ msgid "Discard"
 msgstr "Kaste"
 
 #: Mailman/Cgi/admindb.py:286
-#, fuzzy
 msgid "Permanently ban from this list"
-msgstr "Standard spr&aring;k for denne listen."
+msgstr "Utesteng for alltid fra denne listen"
 
 #: Mailman/Cgi/admindb.py:301
 msgid "Unsubscription Requests"
@@ -859,7 +864,7 @@ msgstr "Videresend meldinger (individuelt) til:"
 
 #: Mailman/Cgi/admindb.py:391
 msgid "Clear this member's <em>moderate</em> flag"
-msgstr ""
+msgstr "Skru av dette medlemmets <em>moderasjonsflagg</em>"
 
 #: Mailman/Cgi/admindb.py:401
 msgid "Add <b>%(esender)s</b> to a sender filter"
@@ -885,7 +890,7 @@ msgstr "Avsl&aring;r"
 msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
-msgstr ""
+msgstr "Utesteng <b>%(esender)s</b> fra å melde seg på denne epostlisten"
 
 #: Mailman/Cgi/admindb.py:420
 msgid ""
@@ -2374,6 +2379,8 @@ msgid ""
 "        mailing list.  If you think this restriction is erroneous, please\n"
 "        contact the list owners at %(listowner)s."
 msgstr ""
+"Epostadressen du oppga er utestengt fra denne epostlisten.\n"
+"Dersom du tror dette kan være en feil, kontakt listens eier på %(listowner)s."
 
 #: Mailman/Cgi/subscribe.py:185
 msgid ""
@@ -4160,18 +4167,16 @@ msgstr ""
 "en slik liste."
 
 #: Mailman/Gui/Privacy.py:120
-#, fuzzy
 msgid "Ban list"
-msgstr "Brukes slik: lists"
+msgstr "Utestengte adresser"
 
 #: Mailman/Gui/Privacy.py:122
 msgid ""
 "List of addresses which are banned from membership in this\n"
 "             mailing list."
-msgstr ""
+msgstr "Liste over epostadresser som ikke har lov til å melde seg på denne epostlisten."
 
 #: Mailman/Gui/Privacy.py:125
-#, fuzzy
 msgid ""
 "Addresses in this list are banned outright from subscribing\n"
 "             to this mailing list, with no further moderation required.  "
@@ -4179,8 +4184,8 @@ msgid ""
 "             addresses one per line; start the line with a ^ character to\n"
 "             designate a regular expression match."
 msgstr ""
-"Epost fra disse ikke-medlemmene vil automatisk bli godkjent.\n"
-"Legg inn epostadresser, en per linje, start linjen med tegnet ^\n"
+"Alle epostadresser som angis her vil bli utestengt fra listen, og kan ikke\n"
+"melde seg på. Legg inn epostadresser, en per linje, start linjen med tegnet ^\n"
 "for &aring; angi et regexp-uttrykk som skal passe med avsenderadressen."
 
 #: Mailman/Gui/Privacy.py:130
@@ -4316,9 +4321,8 @@ msgstr ""
 "regexp-uttrykk vil derfor behandles sist."
 
 #: Mailman/Gui/Privacy.py:184
-#, fuzzy
 msgid "Member filters"
-msgstr "Liste over medlemmer"
+msgstr "Filtrering av epost fra medlemmer"
 
 #: Mailman/Gui/Privacy.py:187
 msgid "By default, should new list member postings be moderated?"
@@ -4379,7 +4383,7 @@ msgstr "Holde&nbsp;tilbake"
 msgid ""
 "Action to take when a moderated member posts to the\n"
 "             list."
-msgstr ""
+msgstr "Hva som skjer når et moderert medlem sender epost til listen."
 
 #: Mailman/Gui/Privacy.py:208
 msgid ""
@@ -4398,6 +4402,11 @@ msgid ""
 "             no notice sent to the post's author.\n"
 "             </ul>"
 msgstr ""
+"<ul>\n"
+"  <li><b>Holde tilbake</b> -- meldingen holdes tilbake for godkjenning av listemoderatoren(e).\n"
+"  <p><li><b>Avslå</b> -- meldingen sendes automatisk i retur til avsender. Begrunnelsen som sendes kan du <a href=\"?VARHELP=privacy/sender/member_moderation_notice\">skrive selv</a>\n"
+"  <p><li><b>Kaste</b> -- meldingen blir forkastet uten å gi beskjed om dette til avsender.\n"
+"</ul>"
 
 #: Mailman/Gui/Privacy.py:222
 msgid ""
@@ -4406,11 +4415,12 @@ msgid ""
 "             >rejection notice</a> to\n"
 "             be sent to moderated members who post to this list."
 msgstr ""
+"Tekst som skal sendes med\n"
+"<a href=\"?VARHELP/privacy/sender/member_moderation_action\">meldingen om retur</a> som sendes til modererte medlemmer av listen."
 
 #: Mailman/Gui/Privacy.py:227
-#, fuzzy
 msgid "Non-member filters"
-msgstr "Anti-Spam filtre"
+msgstr "Filtrering av epost fra ikke-medlemmer"
 
 #: Mailman/Gui/Privacy.py:230
 msgid ""
@@ -6098,6 +6108,8 @@ msgid ""
 "If you think this restriction is erroneous, please contact the list\n"
 "owners at %(listowner)s."
 msgstr ""
+"Epostadressen du har angitt er utestengt fra denne epostlisten.\n"
+"Dersom du tror dette kan være en feil, kontakt listens eier på %(listowner)s."
 
 #: Mailman/MailCommandHandler.py:678
 msgid ""
@@ -7391,15 +7403,32 @@ msgid ""
 "filename is the name of the plaintext message file to inject.  If omitted,\n"
 "standard input is used.\n"
 msgstr ""
+"Sette inn en epost i en Mailman kø.\n"
+"\n"
+"Brukes slik: inject [valg] [filnavn]\n"
+"\n"
+"Valg:\n"
+"\n"
+"    -l listenavn\n"
+"    --listname=listenavn\n"
+"        Navn på listen som skal motta meldingen. MÅ spesifiseres.\n"
+"\n"
+"    -q kønavn\n"
+"    --queue=kønavn\n"
+"        Navn på køen som meldingen skal settes inn i. Kønavnet må tilsvare\n"
+"        navn på en av katalogene i qfiles katalogen. 'incoming' køen brukes\n"
+"        hvis ingen kø blir angitt.\n"
+"\n"
+"filnavn er navnet på filen som inneholder en epost i ren tekst som skal settes\n"
+"inn i en kø. Hvis ingen fil angis, benyttes standard input.\n"
 
 #: bin/inject:79
 msgid "Bad queue directory: %(qdir)s"
-msgstr ""
+msgstr "Ugyldig kø-katalog: %(qdir)s"
 
 #: bin/inject:84
-#, fuzzy
 msgid "A list name is required"
-msgstr "krever listens navn"
+msgstr "Navn på liste må angis"
 
 #: bin/list_admins:19
 msgid ""
@@ -8381,7 +8410,6 @@ msgid "User `%(addr)s' not found."
 msgstr "Fant ikke medlemmet '%(addr)s'."
 
 #: bin/rmlist:19
-#, fuzzy
 msgid ""
 "Remove the components of a mailing list with impunity - beware!\n"
 "\n"
@@ -8404,8 +8432,7 @@ msgid ""
 msgstr ""
 "Fjerner alle komponenter av en epostliste fra systemet!\n"
 "\n"
-"Denne kommandoen fjerner (nesten) alle spor av en epostliste. Uten -a "
-"valget\n"
+"Denne kommandoen fjerner (nesten) alle spor av en epostliste. Uten -a valget\n"
 "fjernes ikke arkivet for listen, som kan være ganske nyttig for å avvikle\n"
 "gamle lister.\n"
 "\n"
@@ -8414,7 +8441,8 @@ msgstr ""
 "Der:\n"
 "    --archives\n"
 "    -a\n"
-"        Fjern (slett) også listens arkiv.\n"
+"        Fjern (slett) også listens arkiv, eller dersom listen allerede er\n"
+"        slettet, fjern arkivene som evt. ligger igjen.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -8430,14 +8458,12 @@ msgid "%(listname)s %(msg)s not found as %(dir)s"
 msgstr "Fant ikke %(listname)s %(msg)s som %(dir)s"
 
 #: bin/rmlist:91
-#, fuzzy
 msgid "No such list (or list already deleted): %(listname)s"
-msgstr "Listen finnes ikke: %(listname)s"
+msgstr "Listen finnes ikke (eller er allerede slettet): %(listname)s"
 
 #: bin/rmlist:93
-#, fuzzy
 msgid "No such list: %(listname)s.  Removing its residual archives."
-msgstr "Listen finnes ikke: %(listname)s"
+msgstr "Listen finnes ikke: %(listname)s. Fjerner arkivet som ligger igjen."
 
 #: bin/rmlist:97
 msgid "Not removing archives.  Reinvoke with -a to remove them."
@@ -8446,9 +8472,8 @@ msgstr ""
 "å fjerne arkivet."
 
 #: bin/rmlist:111
-#, fuzzy
 msgid "list info"
-msgstr "av listeadministratoren"
+msgstr "listeinformasjon"
 
 #: bin/rmlist:117 bin/rmlist:119
 msgid "private archives"
@@ -8608,9 +8633,8 @@ msgid "Ignore  :  %30(addr)s"
 msgstr "Hopper over : %30(addr)s"
 
 #: bin/sync_members:192
-#, fuzzy
 msgid "Invalid :  %(addr)30s"
-msgstr "Ugyldig     : %30(addr)s"
+msgstr "Ugyldig :  %(addr)30s"
 
 #: bin/sync_members:195
 msgid "You must fix the preceding invalid addresses first."
@@ -9081,9 +9105,8 @@ msgid "(unlocked)"
 msgstr "(åpen)"
 
 #: bin/withlist:180
-#, fuzzy
 msgid "Unknown list: %(listname)s"
-msgstr "Leser listen %(listname)s"
+msgstr "Ukjent liste: %(listname)s"
 
 #: bin/withlist:219
 msgid "No list name supplied."
@@ -9208,7 +9231,7 @@ msgstr ""
 
 #: cron/disabled:87
 msgid "[disabled by periodic sweep and cull, no message available]"
-msgstr ""
+msgstr "[stoppet av periodisk undersøkelse, ingen melding tilgjengelig]"
 
 #: cron/gate_news:19
 msgid ""
