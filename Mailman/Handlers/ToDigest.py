@@ -134,17 +134,16 @@ def inject_digest(mlist, digestfile, topicsfile):
     def hates_mime_p(x, s=mlist, v=mm_cfg.DisableMime):
         return s.GetUserOption(x, v)
     #
-    # these people have switched their options from digest delivery to
-    # non-digest delivery.  they need to get one last digest...
-    try:
-        final_digesters = mlist.one_last_digest.keys()
-        mlist.one_last_digest = {}
-    except AttributeError:
-        final_digesters = []
-    #
-    # calculate various recipient lists
-    digestmembers = mlist.GetDigestMembers() + final_digesters
-    recipients = filter(delivery_enabled_p, digestmembers)
+    # These people have switched their options from digest delivery to
+    # non-digest delivery.  they need to get one last digest, but be sure they
+    # haven't switched back to digest delivery in the meantime!
+    digestmembers = {}
+    if hasattr(mlist, 'one_last_digest'):
+        digestmembers.update(mlist.one_last_digest)
+        del mlist.one_last_digest
+    for addr in mlist.GetDigestMembers():
+        digestmembers[addr] = addr
+    recipients = filter(delivery_enabled_p, digestmembers.keys())
     mime_recips = filter(likes_mime_p, recipients)
     text_recips = filter(hates_mime_p, recipients)
     #
