@@ -605,7 +605,7 @@ def show_post_requests(mlist, id, info, total, count, form):
               TextBox('forward-addr-%d' % id, size=47,
                       value=mlist.GetOwnerEmail()).Format()
               ])
-    notice = msgdata.get('rejection-notice', _('[No explanation given]'))
+    notice = msgdata.get('rejection_notice', _('[No explanation given]'))
     t.AddRow([
         Bold(_('If you reject this post,<br>please explain (optional):')),
         TextArea('comment-%d' % id, rows=4, cols=EXCERPT_WIDTH,
