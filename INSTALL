@@ -4,8 +4,8 @@ Copyright (C) 1998 Free Software Foundation, Inc.
 
 This file contains installation instructions.  Mailman is now
 configured using the standard GNU autoconf software.  You should first
-set up your system as outlined in section 1 below, and then configure
-and install the Mailman software.
+set up your system as outlined in the sections below, and then
+configure and install the Mailman software.
 
 0. Installation requirements
 
@@ -127,7 +127,7 @@ and install the Mailman software.
       $MAIL_GID   The gid to use in the CGI wrapper (default is
                   the gid for the group `mail')
 
-       For example, to set $MAIL_GID to 20 instead of the default,
+      For example, to set $MAIL_GID to 20 instead of the default,
       users of csh or tcsh should type:
 
             % setenv MAIL_GID 20
@@ -136,13 +136,17 @@ and install the Mailman software.
 
             % export MAIL_GID=20
 
+      or, you can invoke configure like so:
+
+            % MAIL_GID=20 ./configure
+
       For $CGI_UID and $CGI_GID, consult your Web server's
       documentation.  This uid and gid should match the user and group 
-      that the Web server will execute CGI scripts as.
+      that the Web server will use to execute CGI scripts.
 
       For $MAIL_UID and $MAIL_GID, consult your sendmail documentation
       or sendmail.cf file.  This is the user and group that your mail
-      delivery will execute filter programs as.
+      delivery will use to execute filter programs.
 
     - Run `make install'
 
@@ -182,10 +186,10 @@ and install the Mailman software.
           % cd $prefix/cron
           % crontab crontab.in
 
-    - Add aliases for mailman and owner-mailman to the system's mail 
-      alias database.  These aliases should point to whoever is ultimately 
-      responsible for the Mailman installation.  Here are instructions 
-       for those running sendmail:
+    - Add aliases for `mailman' and `owner-mailman' to the system's
+      mail alias database.  These aliases should point to whoever is
+      ultimately responsible for the Mailman installation.  Here are
+      instructions for those running sendmail:
 
           1. su to root.
           2. Assuming your email is fred@flintstone.com, add the following
@@ -194,7 +198,8 @@ and install the Mailman software.
              mailman: fred@flintstone.com
              mailman-owner: mailman
 
-          3. Run the program 'newaliases'.
+          3. Some versions of sendmail require you to run the program
+             'newaliases' explicitly.
 
       If you don't run sendmail, consult the documentation of your mail 
       transport program for information on adding these aliases.
@@ -236,37 +241,45 @@ and install the Mailman software.
 
 5. Getting started
 
-    - Create a list named test.  To do so, run the program 
-      $prefix/bin/newlist.  You will be prompted for the name of the list,
-      as well as the email address of the person running the list.  Put
-      your own email address as the list administrator's address.
+    - Create a list named `test'.  To do so, run the program
+      $prefix/bin/newlist.  You will be prompted for the name of the
+      list, as well as the email address of the person running the
+      list.  Put your own email address as the list administrator's
+      address.
        
-    - Running newlist will generate a list of aliases that must be added
-      to the system.  If you are running Sendmail, you may add the lines
-      output directly to the file /etc/aliases.  You must then run the
-      command 'newaliases' (all as root).  Now the mailing address for 
-      your list as well as its administrative addresses will be set up.
-      If you are not running Sendmail, consult your MUA's documentation
-      for information on adding aliases.
+    - Running newlist will generate a list of aliases that must be
+      added to the system.  If you are running Sendmail, you may add
+      the lines output directly to the file /etc/aliases.  You may
+      need to run the command 'newaliases' (all as root).  Now the
+      mailing address for your list as well as its administrative
+      addresses will be set up.  If you are not running Sendmail,
+      consult your MUA's documentation for information on adding
+      aliases.
 
-    - You will receive email instructions on how to visit the list you 
-      just created.  Using these instructions, subscribe to the mailing
-      list.  Once you have subscribed (which requires a confirmation step!),
-      send a message to the list, and see if you get it.  If so, then you
-      have successfully installed Mailman, and set up your first list!
+    - You will receive email instructions on how to visit the list you
+      just created.  Using these instructions, subscribe to the
+      mailing list.  Once you have subscribed (which requires a
+      confirmation step!), send a message to the list, and see if you
+      get it.  If so, then you have successfully installed Mailman,
+      and set up your first list!
 
 
 6. Troubleshooting
   
-    If you encounter problems with running Mailman, first check the 
-    "Common Problems" section, below.  If your problem is not covered there,
-    then check for a log entry from Mailman in your syslog.  Where syslog lives
-    on your particular machine may vary.  It may be in /var/log/maillog.
-    It may also be in /var/log/syslog.  On many machines, syslog files live
-    in /adm/log/ instead of /var/log. Then, send an error report to 
-    mailman-users@python.org.  Include a description of what you're doing 
-    to cause the problem, and the relevant lines from your syslog.  
-    Also include information on your operating system and version of Python.
+    If you encounter problems with running Mailman, first check the
+    "Common Problems" section, below.  If your problem is not covered
+    there, then check for a log entry from Mailman in your syslog.
+    
+    Where syslog lives on your particular machine may vary.  It may be
+    in /var/log/maillog.  It may also be in /var/log/syslog.  On many
+    machines, syslog files live in /adm/log/ instead of
+    /var/log.
+
+    If you encounter an error, send an error report to
+    mailman-users@python.org.  Include a description of what you're
+    doing to cause the problem, and the relevant lines from your
+    syslog.  Also include information on your operating system and
+    version of Python.
 
 7. Common Problems
 
@@ -296,22 +309,30 @@ and install the Mailman software.
 
 
     Problem:  I send mail to the list, and get back mail saying the
-               list is not found!
+              list is not found!
 
     Solution: You probably didn't add the necessary aliases to the system
-              alias database, given to you when you ran the newlist command.
-              If you did add them, you likely did not update the alias
-              database.  Refer to section 5 above for more information.
+              alias database, given to you when you ran the newlist
+              command.  If you did add them, you likely did not update
+              the alias database, or your system requires you to run
+              newaliases explicitly.  Refer to section 5 above for
+              more information.
 
 
     Problem:  I send mail to the list, and get back mail saying,
-               "unknown mailer error".
+              "unknown mailer error".
 
     Solution: The likely problem is that you are using the wrong GID or 
-              UID for mail.  Check your syslog.  If you see, for example,
-              a line like: 
+              UID for mail.  Check your syslog.  If you see, for
+              example, a line like:
 
                   Attempt to exec script with invalid gid 51, expected 99
 
-              You need to reinstall Mailman, and specify $MAIL_GID to be 51,
-              as described in the installation instructions.
+              You need to reinstall Mailman, and specify $MAIL_GID to
+              be 51, as described in the installation instructions.
+
+
+Local Variables:
+mode: indented-text
+insert-tabs-mode: nil
+End:
