@@ -25,9 +25,9 @@ added.  For every address in the mailing list that does not appear in the
 file, the address is removed.  Other options control what happens when an
 address is added or removed.
 
-Usage: %(program)s [-n] [-w[=<yes|no>]] [-d[=<yes|no>]] [-h] -f file listname
+Usage: %(program)s [options] -f file listname
 
-Where:
+Where `options' are:
 
     --no-change
     -n
@@ -46,6 +46,14 @@ Where:
         Selects whether to make newly added members receive messages in
         digests.  With -d=yes or -d, they become digest members.  With -d=no
         (or if no -d option given) they are added as regular members.
+
+    --notifyadmin[=<yes|no>]
+    --a[=<yes|no>]
+        Specifies whether the admin should be notified for each subscription
+        or unsubscription.  If you're adding a lot of addresses, you
+        definitely want to turn this off!  With -a=yes or -a, the admin is
+        notified.  With -a=no, the admin is not notified.  With no -a option,
+        the default for the list is used.
 
     --help
     -h
@@ -103,6 +111,7 @@ def main():
     welcome = None
     filename = None
     listname = None
+    notifyadmin = None
 
     i = 1
     while i < len(sys.argv):
@@ -115,13 +124,13 @@ def main():
         elif opt in ('-d', '--digest'):
             digest = 1
             i = i + 1
-        elif startswith(opt, '-d=') or startswith(opt, '-digest='):
+        elif startswith(opt, '-d=') or startswith(opt, '--digest='):
             digest = yesno(opt)
             i = i + 1
         elif opt in ('-w', '--welcome-msg'):
             welcome = 1
             i = i + 1
-        elif startswith(opt, '-w=') or startswith(opt, '-welcome-msg='):
+        elif startswith(opt, '-w=') or startswith(opt, '--welcome-msg='):
             welcome = yesno(opt)
             i = i + 1
         elif opt in ('-f', '--file'):
@@ -132,6 +141,12 @@ def main():
             except IndexError:
                 usage(1, 'No argument to -f given')
             i = i + 2
+        elif opt in ('-a', '--notifyadmin'):
+            notifyadmin = 1
+            i = i + 1
+        elif startswith(opt, '-a=') or startswith(opt, '--notifyadmin='):
+            notifyadmin = yesno(opt)
+            i = i + 1
         elif opt[0] == '-':
             usage(1, 'Illegal option: ' + opt)
         else:
@@ -220,14 +235,14 @@ def main():
                            Mailman.Utils.GetRandomSeed())
             # should not already be subscribed, otherwise our test above is
             # broken
-            mlist.ApprovedAddMember(addr, pw, digest, welcome)
+            mlist.ApprovedAddMember(addr, pw, digest, welcome, notifyadmin)
 
         for laddr, addr in addrs.items():
             print 'Removing: %30s (%30s)' % (laddr, addr)
             if dryrun:
                 continue
             # should be a member, otherwise our test above is broken
-            mlist.DeleteMember(addr)
+            mlist.DeleteMember(addr, admin_notify=notifyadmin)
 
         mlist.Save()
     finally:
