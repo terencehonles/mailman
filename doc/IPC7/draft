@@ -5,256 +5,229 @@ Mailman - Extensibility and Python
 
 From the early days of the ARPAnet to today, email and Mailing List
 Management (MLM) systems have played a crucial role in the formation
-and conduct of communities on the internet.  With the internet's
-profound dynamicism, the form of those communities has dramatic
-potential for continued growth and evolution.  The extent to which
-MLMs are versatile and adaptable is the extent to which they can
-accomodate, and even foster, effective new forms of community
-organization.  Mailman is specifically designed for such evolution,
-and one of the contributing features is its basis in Python.
+and conduct of communities on the internet.  With the profound
+dynamicism of the internet, the form of those communities has
+tremendous potential for continued growth and evolution.  The extent
+to which MLMs are versatile and adaptable is the extent to which they
+can accomodate, and even foster, effective new forms of community
+organization.  Mailman is well suited to such evolution, and one of
+the contributing features is its basis in Python.
 
-In this paper we will look at customizability and extensibility in
-Mailman, considering how the systems design and, in particular, the
-implementation language, Python, factor into it.  We examine a
-continuum of adaptability in the system, ranging from simple,
-non-intrusive option-setting customizations, to incorporation of entire
-new subsystems, like a mail/news gateway, at the lowest level.
+In this paper we will look at various ways the versatility of the
+system enables extension of it, considering how the system's design
+and its implementation language, Python, factor into it.
 
-. - Why Python?
+. - Why Versatility?
 
-Python is particularly well suited to to implementing an extensive and
-changing system.
+Why is extensibility important in a contemporary MLM?  It is because
+of the explosive growth in the internet community, and the core role
+that email plays in it.  The internet community is growing, and the
+infrastructures by which it organizes are evolving.  Over time,
+changes in the scale and development of improved and new strategies
+for organizing of internet communities demand continuing development
+of the mechanisms supporting them.  A good MLM will foster that
+evolution by growing with it.
 
-Python code tends to be emminently readable, due to its regular,
-uncluttered syntax and promotion of an uncluttered layout, and due to
-its emphasis on cogent, high-level data types and control constructs.
-This combination of clean syntax and cogent semantics aids the
-programmer, all the more in the process of changing existing code.
-
-The language is dynamic in many respects.  It has the immediacy of
-interpretation and dynamic typing, enabling an interactive
-change/test/modify cycle.  Everything is an first class object, with
-introspection, enabling interaction with and programmatic handling of
-just about everything in the language.
-
-Automatic memory management, strict typing, comprehensive provisions
-for encapsulation - including comprehensive object-oriented
-programming and storage modules - all facilitate the development
-process and reduce programming pitfalls.
-
-Why is all this important in a contemporary MLM?  A good MLM needs to
-accomodate continuing development and change.  The internet community
-is growing, and the infrastructures by which organizes itself are
-evolving.  A good MLM will foster that evolution by growing with it.
-
-Another reason for extensibility's importance has to do with the
-expertise of mailman administrators.  These administrators are
-typically near enough to the end-users to get clear impressions of
-their needs.  Also, more than occasionally they are technically savvy
-enough to be able to implement improvements to accomodate those needs
-- provided the system doesn't present too high a threshold of
-comprehenshion.  Here is a prime opportunity for exploiting the
-Bazaar-style of system development [klm: cite esr's paper], enabling
-the facilitators of the medium, themselves, to guide its development,
-so it can be closely tailored to the needs of the community using it.
+Another reason the importance of extensibility's has to do with a core
+constituency of the maillist users - the maillist administrators.
+These administrators are typically near enough to the end-users to get
+clear impressions of their needs.  Also, they commonly are savvy
+enough, technically, to be able to implement improvements to
+accomodate those needs - provided the system doesn't present too high
+a threshold of comprehension.  Here is a prime opportunity for
+exploiting the Bazaar-style of system development [klm: cite esr's
+paper], enabling the managers of the medium, themselves, to guide its
+development, so it can be closely tailored to the needs of the
+community using it.
 
 Finally, most aspects of an MLM do not require the kind of speed
 optimizations which force change-impeding hardening of system.
 Performance critical aspects, like mail delivery to large numbers of
 users, is generally the purview of the underlying Mail Transport
-Agents (MTAs), rather than the MLM.  Large capacities can impose some
+Agents (MTAs), not the MLM.  Large capacities can impose some
 specialized performance demands on the MLM, of course.  The speciality
 of those demands, however, enables isolating the optimizations to
 select components, and Python's compiled-language extensibility
 enables hardening those specific components as needed, isolating the
 rigidity to the particular subsystems that need it.
 
-. - Ranges of adaptability
+. - Why Python?
 
-The least intrusive provisions for changing a system's operation
-involve configuration options, programmed in for anticipated needs.
-By organizing and formally structuring the options mechanism, the
-programmer simplifies the eventual process of incorporating new
-options, minimizing their impact on the program's structure.
+Python is particularly well suited to to implementing an extensive and
+changing system.  Its combination of clean syntax and cogent semantics
+aids the programmer, all the more in the process of changing existing
+code.  It is dynamic in many respects, enabling interaction with and
+programmatic handling of just about everything in the language.  By
+satisfying the needs of prototyping and rapid development, as well as
+those of general programming, it can be seen to foster the needs of
+"continuous development", where a system needs to continue to grow to
+accomodate a changing world.
 
-Similarly, by formulating a procedural template for certain routine
-tasks, hooks can be implemented so that changes to the program only
-involve supplying new code that implements a plug-in function which
-satisfies the template, avoiding any change to the core program.
-
-A programmer can only anticipate so much in their design for a system.
-At some point, particularly in a dynamic world, deeper changes to
-existing code, and even to the organization of the code, will often be
-necessary.  Though the designer cannot provide for all eventualities,
-good fundamental design and clean implementation can facilitate the
-program's evolution.
-
-Mailman provides some extensive customization facilities, including
-parameters for many of the operational behaviors of a maillist, or of a
-subscriber's membership, and also mechanisms for customizing, via the
-web, the layout of the web pages associated with a maillist.  Mailman
-is also organized to facilitate changes and additions to the program,
-capitalizing on Python's object-oriented programming facilities and
-modularity.
-
-Below we will first introduce Mailman's architecture, and then examine
-in greater detail some changes that have recently been made to
-mailman's, particularly including the customization mechanisms, in
-order to expose the ways that use of Python has facilitated extension
-and evolution of the system.
-
-.+ An introduction to Mailman's architecture
+.+ An Overview of Mailman's Structure
 
 . - MailList class and mixins
 
-[klm: i'm not doing this section, but here's my read on the mixin vs
-delegate question.]
+. - Configuration variables
+.  : default values and site configuration - Defaults.py vs mm_cfg.py
+.  : Option declarations
+.   . Persistent storage
+.   . User interface - maillist administrator
+.  : Pending issues?
 
-The MailList class is composed by inheritance from of a number of
-task-oriented component classes, as mixins.  The task oriented
-components textually gather together code related to a particular
-functionality, and include initialization of task-specific data, while
-mixin composition enables easy sharing of methods and data throughout
-the maillist object.  This avoids the need to explicitly identify
-components in order to use their data and methods.  Also, methods
-within what would be delegate classes are automatically available
-externally, avoiding the need for redundant mediator methods.
+. - Filtering of postings
+.  : All postings of dubious character are held for admin approval
+.  : Dubious character is configurable according to sections of a
+     filter routine
+.  : New filtering mechanisms, eg spam protection, have been added
+.  : Probably better as a hook-list of filters, which are passed the
+     list object, to obtain configuration state, and the posting
+     object. 
 
-This arrangement has a potential drawback, lack of
-compartmentalization, which increases the possibility of name
-collisions across components.  Also, the coder cannot as easily
-identify which class a method comes from, needing to search (eg, grep)
-where a particular method or variable is defined.  In practice we have
-not experienced collisions, and in general have enjoyed the coding
-ease of sharing methods and data.
+. - Security
 
-.  : Configuration variables
-.   . default values and site configuration - Defaults.py vs mm_cfg.py
-.   . Option declarations
-.    ; Persistent storage
-.    ; User interface - maillist administrator
-.   . Pending issues?
+. - Web interfaces
+.  : HTMLFormatter
+.  : htmlformat.py library
 
-.  : Filtering of postings
-.   . All postings of dubious character are held for admin approval
-.   . Dubious character is configurable according to sections of a
-      filter routine
-.   . New filtering mechanisms, eg spam protection, have been added
-.   . Probably better as a hook-list of filters, which are passed the
-      list object, to obtain configuration state, and the posting
-      object. 
+. - Mail interface
 
-.  : Web interfaces
-.   . HTMLFormatter
-.   . htmlformat.py library
+. - Etc...
 
-.  : Mail interface
+.+ Highlights of Mailman's System Versatility
 
-.  : Etc...
+. - MailList object composed of Task-oriented mixin classes
+.  : Enables compartmentalizing while maintaining easy sharing
 
-.+ The Extension Process
+	       MailList Object Composed via Inheritance
+		    from Task-Oriented Components
 
-. - List Admin Options
+The MailList class is composed by multiple inheritance from a number
+of task-oriented component classes, as mixins.  The task oriented
+components contain the methods and variable declarations and
+initializations related to the functionality of a particular
+subsystem, for example, that of the delivery mechanism or of the mail
+commands handler.  This enables easy sharing of their methods and data
+throughout the maillist object.  It avoids the need to explicitly
+identify and pass around, for example, delegate instances, in order to
+use those component's data and methods.
 
-The maillist administrator options expose many aspects of a list's
-behavior to customization via the web.  Like the numerous options
-available to the user of a contemporary web browser, there are a lot
-of them, so they are segregated categorically in the user interface,
-in order to ease finding the one being sought.  This is a typical 
-substantial new mailman features to entail changes to existing admin
-options, or additions of new ones.  This will be a common facet of all 
-the changes we describe, and 
+Having all the methods and data inhabit the namespace of the primary
+MailList instance can lead to inadvertant name collisions.  However,
+we feel that the system would have to get much bigger before that
+would become a practical concern, and then we could use naming
+conventions to prevent the collisions while still enjoying the easy
+sharing without explicit passing of delegate instances.  This use of
+multiple inheritance provides this direct sharing along with
+organization of the system in distinct, conceptually motivated
+modules, easing debugging and development.
 
-.  : Simple: Adding a new simple configuration variable: reminders_to_admins
+		  MailList Object State Persistence
+	      Exploits Introspection And Simple Sharing
 
-     cascading lists - interoperating with both mailman and other MLMs
+This direct sharing also simplifies the maillist object's persistence
+mechanism.  Exploiting the ability of a Python class instance to
+identify its data members via self.__dict__, the persistence mechanism
+save and restores maillist state using a familiar standard python
+mechanism, marshal.  (Members that should not be saved are
+distinguished with a leading "_" underscore.)  As with sharing in the
+first place, the simplicity of the arrangement is uncomplicated,
+easing approach and acquaintence by newcomers - prospective
+contributors to the closer tailoring of the system to the user's
+needs.
 
-.  : Also simple, but a bit more widespread: virtual hosting
+Configuration Options Mechanism Exploits Namespace Dynamicism
 
-     Another feature implemented via a few options.
+Yet another important subsystem, the maillist customization-options
+mechanism, benefits from the elementary expression of the maillist
+state, and the ability to dynamically couple that with internal
+maillist state. 
 
-     Implemented with a combination of list-specific and site options,
-     the modular list architecture and structured list admin options
-     mechanism made this easy.  [klm: Actually, this was already in
-     mailman when i got to it, but worth expressing how a few config
-     vars enable a whole new dimension.]
+Sets of configuration options are expressed as lists of tuples, each
+tuple specifying the name of the data member which contains the
+underlying setting, the type and layout of the element that will
+represent it in the HTML user interface, a brief description of the
+option, and optional (ie, elective) elaborate description of the
+option.  (The option lists also include string entries which are used
+to annotate their presentation, typically at least including a header
+describing the category of the set.)  Python's dynamic namespaces
+enables this simple mechanism to couple external user interface with
+the underlying data member.
 
-.  : Deeper: Adding help for listadmin options
+The elementary nature of the mechanism, in turn, simplifies the
+process of adding new configuration variables or changing existing
+ones - a common occurrence when new features are added or existing
+ones are changed.
 
-     An elaboration in the structure of the help options, possible
-     because they are structured in the first place.  And facilitated
-     by the HTML layout being programmatic.
+The formal structuring of the options has provided another benefit -
+it enables central enhancement of the options mechanism as a whole.
+One recent example is addition of a help mechanism, which entailed
+adding the optional slot for elaborate descriptions and a
+corresponding addition to the presentation mechanism to offer help for
+those variables that contain the elaborate description.
 
-.  : Deeper still [and pending implementation]: Implement options as a class
-     so they will, eg, defer to defaults values until custom value is set.
-     For instance, to enable a central maintainence of the list of known
-     spammers, forbidden_posters, such that changes to the central
-     copy propagate out...
+These option description tables could and should be divided into
+plugin directories, to further separate the introduction of new
+options from the main body of the program, enabling two benefits:
 
-. - New procedures:
+ - Isolation of the program from disruption due to faults in the
+   option descriptions (which tend to be changed more commonly than
+   other parts of the program).
 
-.  : some effective spam protection
+ - Reevaluation of the option descriptions while the program is
+   running (which will be particularly useful when the program is able 
+   to run as a persistent daemon)
 
-    Many flavors, including the particularly effective
-    require_explicit_destination, worth detailing.
+A language lacking a dynamic 'eval' which can access and effect a
+runtime namespaces could not do any of this without significant
+indirection, hence obtuseness in the code.
 
-.   . Pending issues: Posting filters should be implemented via hook functions.
+			    Web Interface
 
-.  : integration with external mechanisms (psa membership automation)
+The web interface, itself, capitalizes on the standard python HTML and
+CGI libraries. 
+. - HTML generation library and abstractions
 
-     Another kind of extension - use of mailman as an adjunct library
-     from another application.
+.  : Enables tieing together web pages and forms with maillist state,
+     and enables us to provide list administrator editing of those
+     pages and forms via the web.
+.  : Possible due to powerful python libraries - html, cgi, etc - and
+     dynamic access to variables
 
-     By which registration for membership in the PSA invokes the
-     procedures for subscribing members to the PSA mailing lists.  This
-     sort of functionality is too general to be able to anticipate it
-     with hooks - MLM programmability was [klm: once i do the PSA
-     stuff:-] crucial here.
+			  Logging Mechanism
 
-.  : list-owners - managing the local community [pending implementation]
+.  : Generic wrapper that mediates all web and email interfaces,
+     providing automatically for, among other things, sensible logging
+     of system errors.
+.  : Enabled because of polymorphism and standard file-object protocol
 
-     Some restructuring.
+. - Interaction with maillists programmatically
 
-     A community inherent in the operation of an MLM site, it makes
-     sense to use the MLM to communicate with the managers of the
-     lists.  Likewise, given an extensible MLM, it makes sense to build
-     this into the system, an implicit list.  As partitions like
-     virtual domains and cascading maillists evolve, it may make sense
-     to differentiate subsets of these implicit lists.
-
-. - Whole new subsystems - mail/news, direct smtp, etc.
-
-.  : Power of encapsulation!
-
-.  : Power of the Python library!
-
-.+ What kinds of elaborations might we want to deal with?
-
-. - "Subchannels" - more elaborate maillist interrelationships
-
-.  : Collaborative filtering
-
-     Whereby members subscribe to threads based on valuation (e.g.,
-     topical or merit classification) by other members
-
-.  : More elaborate cascading
-
-.   . by category
-
-. - Shared identification
-
-.  : Whereby an account id and delivery preferences are shared across
-     lists on a site, and even across mailman sites
+.  : "Scripting" - ie high-level programming that manipulates
+     maillists from other applications.  All of the 
+.  : Interaction - *great* for development code/test/debugging cycle, with
+     actual maillists
+.  : Able to examine and exercise pinpoint components
 
 .+ Conclusion
 
-[klm: for the conclusion: In effect, the need for the continuing
-evolution of an MLM suggests a model with at least parts of the
-production system - the parts that need to be fluid - perpetually in
-the prototype stage of evolution.  *Mature* prototypes - well
-exercised and integrated - but amenable to continuing, and possibly
-deep, change.  Prototyping and rapid development are among Python's
-clear strengths, and invaluable in this regard.]
+Multiple Inheritance, polymorphism, conventional protocols, dynamic
+access to namespaces, standard libraries, all have been mentioned
+above.  We have not even chimed in about the way the language's
+incipient readability contributes to 
+afforded by
+Python's particularly uncluttered syntax and promotion of a regular
+layout, and it's orthogonal, cogent data types and control
+constructs.  It is harder to substantiate this with specific examples, 
+but can be experienced by anyone who spends time with this and other
+languages.
+
+In effect, the need for the continuing evolution of an MLM suggests a
+model with at least parts of the production system - the parts that
+need to be fluid - perpetually in the prototype stage of evolution.
+*Mature* prototypes - well exercised and integrated - but amenable to
+continuing, and possibly deep, change.  Prototyping and rapid
+development are among Python's clear strengths, and invaluable in this
+regard.]
 
 .+ Local emacs vars.
 . - (`outline-layout' is for allout.el outline-mode)
