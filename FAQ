@@ -2,62 +2,83 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-If from the web you get "document contains no data":
-If mail isn't getting delivered:
+FREQUENTLY ASKED QUESTIONS
 
-    The cgi wrappers are failing.  Either a UID is wrong, or your web
-    server / mailer has a non-standard name.
+1. If from the web you get "document contains no data"
+   If mail isn't getting delivered
+   If you see "Premature end of script headers"
+   If you see "Mailman CGI error!!!"
 
-    If you're unsure about the proper settings, the cgi and mail
-    wrapper programs use syslog to register mismatches, indicating the
-    correct setting in the process.  You need to have syslog running
-    and configured to log the mail.error log class somewhere - on Sun
-    systems, the line
+      The most likely cause of this is that the GID that is compiled
+      into the C wrappers does not match the GID that your Web server
+      invokes CGI scripts with.  Note that a similar error could occur
+      if your mail system invokes filter programs under a GID that
+      does not match the one compiled into the C mail wrapper.
 
-      mail.debug                /var/log/syslog
+      To fix this you will need to re-configure Mailman using the
+      --with-cgi-gid and --with-mail-gid options.  See INSTALL for
+      details.
 
-    causes the messages to go to them in /var/log/syslog, for example.
-    (The distributed syslog.conf forwards the message to the loghost,
-    when present.  See the syslog man page for more details.)  If your
-    system is set like this, if you get a failure trying to visit the
-    mailman/listinfo web page and it's due to a UID or GID mismatch,
-    then you should get an entry at the end of /var/log/syslog
-    identifying the expected and received values.
+      These errors are logged to syslog and they do not show up in the
+      Mailman log files.  Problems with the CGI wrapper do get
+      reported in the Web browser though, and include the expected
+      GID, so that should help a lot.
 
-If the web pages hang:
+      You may want to have syslog running and configured to log the
+      mail.error log class somewhere; on Solaris systems, the line
 
-    CERN web servers might leave Python processes running, and in some
-    cases might hang the cgi completely.  In that case, switch to
-    Apache.
+          mail.debug                /var/log/syslog
 
-Check ~mailman/logs/error periodically:
+      causes the messages to go to them in /var/log/syslog, for
+      example.  (The distributed syslog.conf forwards the message to
+      the loghost, when present.  See the syslog man page for more
+      details.)
 
-    Many of the scripts have their stderr logged to
-    ~mailman/logs/error, and some of the modules write caught errors
-    there, as well, so you should check there at least occasionally to
-    look for bugs in the code and problems in your setup.
+      If your system is set like this, and you get a failure trying to
+      visit the mailman/listinfo web page, and it's due to a UID or
+      GID mismatch, then you should get an entry at the end of
+      /var/log/syslog identifying the expected and received values.
 
-    One thing that is *not* caught by stderr hook is syntax errors!
-    However, most files can be run from the command line with no
-    effect.  (The ones that will do stuff you want to avoid, like
-    sending out spurious password reminders, are in the cron dir.)  So
-    you can and should use the Python interpreter to check the of any
-    changes before trying them out.
+2. If the web pages hang:
+
+      CERN Web servers might leave Python processes running, and in
+      some cases might hang the CGI completely.  In that case, switch
+      to Apache.
+
+3. Check ~mailman/logs/error periodically:
+
+      Many of the scripts have their stderr logged to
+      ~mailman/logs/error, and some of the modules write caught errors
+      there, as well, so you should check there at least occasionally
+      to look for bugs in the code and problems in your setup.
+
+      One thing that is *not* caught by stderr hook is syntax errors,
+      but any of these should have been caught in the installation
+      phase, which byte-compiles all .py files in the distribution.
+      There may be syntax errors lurking if you hacked the code, or in 
+      the scripts that are not modules.
+
+      You can always use the Python module `compile' or `compileall'
+      to force byte compilation of a file, or just fire up the Python
+      interpreter and try importing the module!
     
-Other debugging aids
+4. Other debugging aids
 
-    If you get exceptions in the log and/or Web pages, and these are
-    complaining that files could not be opened, you might like to see
-    which files Mailman is trying to open!  In Python 1.5.2, this will 
-    be a standard part of the exception message.  In Python 1.5.1 the
-    best you can do is to comment out the code in
-    $prefix/scripts/driver where it is redefining the built-in open
-    function.  This simulates what Python 1.5.2 will do when it raises 
-    an IOError exception, however this only works for open().  While
-    this is the most common case, Python 1.5.2 will handle many other
-    cases where files are unsuccessfully referenced.
+      If you get exceptions in the log and/or Web pages, and these are
+      complaining that files could not be opened, you might like to
+      see which files Mailman is trying to open!
+
+      In Python 1.5.2, this will be a standard part of the exception
+      message.  In Python 1.5.1 the best you can do is to comment out
+      the code in $prefix/scripts/driver where it is redefining the
+      built-in open function.  This simulates what Python 1.5.2 will
+      do when it raises an IOError exception, however this only works
+      for open().  While this is the most common case, Python 1.5.2
+      will handle many other cases where files are unsuccessfully
+      referenced.
 
 
 Local Variables:
+mode: text
 indent-tabs-mode: nil
 End:
