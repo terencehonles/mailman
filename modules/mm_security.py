@@ -17,23 +17,25 @@
 
 """Handle passwords and sanitize approved messages."""
 
-__version__ = "$Revision: 547 $"
-
 
 import crypt, types, string, os
 import mm_err, mm_utils, mm_cfg
 
+# TBD: is this the best location for the site password?
+SITE_PW_FILE = os.path.join(mm_cfg.LIST_DATA_DIR, 'adm.pw')
+
+
 class SecurityManager:
     def SetSiteAdminPassword(self, pw):
     	old = os.umask(0022)
-	f = open(os.path.join(mm_cfg.MAILMAN_DIR, "adm.pw"), "w+")
+	f = open(SITE_PW_FILE, "w+")
 	f.write(crypt.crypt(pw, mm_utils.GetRandomSeed()))
 	f.close()
         os.umask(old)
 
     def CheckSiteAdminPassword(self, str):
 	try:
-	    f = open(os.path.join(mm_cfg.MAILMAN_DIR, "adm.pw"), "r+")
+	    f = open(SITE_PW_FILE, "r+")
 	    pw = f.read()
 	    f.close()
 	    return crypt.crypt(str, pw) == pw
