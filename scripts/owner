@@ -1,8 +1,14 @@
 #! /usr/local/bin/python 
-# 
-# This script gets called by the wrapper.
-# Stdin is the mail message, and argv[1] is the name of the mailing list
-# whose owner(s) to send mail to.
+
+"""Send a message to the maillist owner.
+
+This script gets called by the wrapper.
+
+Stdin is the mail message, and argv[1] is the name of the mailing list
+whose owner(s) to send mail to."""
+
+__version__ = "$Revision: 399 $"
+
 
 import sys
 f = open('/tmp/owner.errs', 'a+')

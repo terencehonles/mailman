@@ -7,6 +7,9 @@ of the target mailing list.
 
 Errors are redirected to logs/errors."""
 
+__version__ = "$Revision: 399 $"
+
+
 import sys
 
 sys.path.append('/home/mailman/mailman/modules')

@@ -1,3 +1,8 @@
+"""Handle passwords and sanitize approved messages."""
+
+__version__ = "$Revision: 399 $"
+
+
 import crypt, types, string, os
 import mm_err, mm_utils, mm_cfg
 

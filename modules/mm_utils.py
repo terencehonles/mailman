@@ -1,3 +1,13 @@
+"""Miscellaneous essential routines.
+
+This inncludes actual message transmission routines, address checking and
+message and address munging, a handy-dandy routine to map a function on all 
+the maillists, the Logging routines, and whatever else doesn't belong
+elsewhere."""
+
+__version__ = "$Revision: 399 $"
+
+
 import sys, string, fcntl, os, random, regsub, re
 import mm_cfg
 

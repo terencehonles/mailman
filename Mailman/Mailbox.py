@@ -1,3 +1,8 @@
+"Extend mailbox.UnixMailbox."
+
+__version__ = "$Revision: 399 $"
+
+
 import mailbox
 
 class Mailbox(mailbox.UnixMailbox):

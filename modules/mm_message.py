@@ -1,3 +1,8 @@
+"""Embody incoming and outgoing messages as objects."""
+
+__version__ = "$Revision: 399 $"
+
+
 import sys
 import rfc822, string, time
 

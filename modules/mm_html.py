@@ -1,3 +1,8 @@
+"""Routines for presentation of list-specific HTML text."""
+
+__version__ = "$Revision: 399 $"
+
+
 import os
 import regsub 
 import string
