@@ -27,7 +27,6 @@ def dolist(list):
 
     html_dir = o_pri_mbox_file
     o_html_dir = makeabs('public_html/archives/%s' % (list))
-
     #
     # make the mbox directory if it's not there.
     #
@@ -97,14 +96,17 @@ correspondences to the public.""" % vars()
 
 
 if __name__ == '__main__':
-    print "setting all directories to have setgid status"
-    os.system("chmod g+rwxs `find %s -type d -print`" % Mailman.mm_cfg.PREFIX)
-    for list in list_names():
+    lists = list_names()
+    if not lists:
+        print "no lists = nothing to do, exiting"
+        sys.exit(0)
+    print "setting all old html archiving directories to have setgid status"
+    #
+    # for people with web archiving, make sure the directories
+    # in the archiving are set with proper perms for b6.
+    #
+    if os.path.isdir("%s/public_html/archives" % Mailman.mm_cfg):
+        os.system("chmod g+rwxs `find %s/public_html/archives -type d -print`" % Mailman.mm_cfg.PREFIX)
+    for list in lists:
         print 'Updating mailing list: ', list
         dolist(list)
-    print 'Setting permission o-rw,o+x on archives/private'
-    os.system('chmod o-rw,o+x %s' % os.path.join(Mailman.mm_cfg.PREFIX,
-                                                 'archives/private'))
-
-
-
