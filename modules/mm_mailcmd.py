@@ -376,10 +376,12 @@ Any questions about the list owner's policy should be directed to:
     def ProcessHelpCmd(self, args, cmd, mail):
 	self.AddToResponse("**** Help for %s:" % self.real_name)
 	self.AddToResponse("""
-This is version %s of the "Mailman" list manager.
-Words in <>'s denote required items.  When providing them, do not include
-the <>'s around it.  Words in [] denote OPTIONAL items.  do not include the
-[]'s in your response.
+This is email command help for version %s of the "Mailman" list manager.
+The following describes commands you can send to get information about and
+control your subscription to mailman lists at this site.  About the
+descriptions - words in "<>"s signify REQUIRED items and words in "[]"
+denote OPTIONAL items.  Do not include the "<>"s or "[]"s when you use the
+commands.
 
 The following commands are valid:
 
@@ -413,10 +415,12 @@ The following commands are valid:
 	Turn on or off list options.  Valid options are:
 
 	ack:
-	Turn this on to receive acknowlegement mail when you send mail to the list
+	Turn this on to receive acknowlegement mail when you send mail to
+	the list 
 
 	digest:
-	receive mail from the list bundled together instead of one post at a time
+	receive mail from the list bundled together instead of one post at
+	a time 
 
 	fancy:
 	Get MIME-compliant digests (only works if digest is set)
@@ -440,11 +444,12 @@ The following commands are valid:
     
     end
        Stop processing commands (good to do if your mailer automatically
-       adds a signature file.  It'll save you from a lot of spam.)
+       adds a signature file - it'll save you from a lot of cruft).
 
 
-Commands should be sent to "%s".
+Commands should be sent to %s
 
-Other concerns should be addressed to "%s".
+Questions and concerns for the attention of a person should be sent to
+%s
 """ % (mm_cfg.VERSION, self.GetRequestEmail(), self.GetAdminEmail()))
 	
