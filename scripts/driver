@@ -24,9 +24,10 @@ import sys
 
 
 
-# Useful for debugging.  When an error occurs, this attaches the file name to
-# the exception string and re-raises.  This will be unnecessary in Python
-# 1.5.2, which also does sensible things to most os module functions.
+# This function is useful for debugging.  When an error occurs, this attaches
+# the file name to the exception string and re-raises.  This will be
+# unnecessary in Python 1.5.2, which also does sensible things to most os
+# module functions.
 
 realopen = open
 def open(filename, mode='r', bufsize=-1, realopen=realopen):
