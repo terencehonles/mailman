@@ -25,7 +25,7 @@ from Mailman.Gui.GUIBase import GUIBase
 # BAW: bogus!  This should be in a separate module (Utils?)
 from Mailman.MailCommandHandler import option_info
 
-OPTIONS = ('hide', 'ack', 'notmetoo', 'plain', 'nodupes')
+OPTIONS = ('hide', 'ack', 'notmetoo', 'nodupes')
 
 
 
@@ -42,15 +42,12 @@ class General(GUIBase):
         bitfields = {'hide'     : mm_cfg.ConcealSubscription,
                      'ack'      : mm_cfg.AcknowledgePosts,
                      'notmetoo' : mm_cfg.DontReceiveOwnPosts,
-                     'plain'    : mm_cfg.DisableMime,
                      'nodupes'  : mm_cfg.DontReceiveDuplicates
                      }
         bitdescrs = {
             'hide'     : _("Conceal the member's address"),
             'ack'      : _("Acknowledge the member's posting"),
             'notmetoo' : _("Do not send a copy of a member's own post"),
-            'plain'    :
-            _('Get plain text digests (RFC 1153) rather than MIME digests'),
             'nodupes'  :
             _('Filter out duplicate messages to list members (if possible)'),
             }
