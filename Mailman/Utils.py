@@ -194,7 +194,7 @@ def DeliverToUser(msg, recipient, add_headers=[]):
         os._exit(0)
 
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
-    import socket
+    import sys, socket
     import smtplib
     import OutgoingQueue
 
@@ -203,28 +203,35 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         con.helo(mm_cfg.DEFAULT_HOST_NAME)
         con.send(to=recipient,frm=sender,text=text)
         con.quit()
-        OutgoingQueue.dequeueMessage(queue_entry)
+        dequeue = 1
+        failure = None
 
     # Any exceptions that warrant leaving the message on the queue should
-    # be identified here.  Otherwise we fall through to the blanket
-    # 'except', which does *not* leave the message queued.
+    # be identified by their exception, below, with setting 'dequeue' to 1
+    # and 'failure' to something suitable.  Without a particular exception
+    # we fall through to the blanket 'except:', which dequeues the message.
 
     except socket.error:
-        # MTA not responding - leave on queue for later.
-        pass
+        # MTA not responding, or other socket prob - leave on queue.
+        dequeue = 0
+        failure = sys.exc_info()
 
     except:
-        # Delivery failed for anticipated reason - *don't* leave message 
-        # queued, or it may stay, under delivery attempts, forever!
+        # Unanticipated cause of delivery failure - *don't* leave message 
+        # queued, or it may stay, with reattempted delivery, forever...
+        dequeue = 1
+        failure = sys.exc_info()
+
+    if dequeue:
         OutgoingQueue.dequeueMessage(queue_entry)
+    if failure:
         # XXX Here may be the place to get the failure info back to the
         #     list object, so it can disable the recipient, etc.  But how?
-        import sys
-        e = sys.exc_info()
-        from Logging.Logger import Logger
-        Logger("error").write(
-            "TrySMTPDelivery: bad smtp delivery to %s\n\t%s/%s\n"
-            % (recipient, e[0], e[1]))
+        from Logging.StampedLogger import StampedLogger
+        l = StampedLogger("smtp-failures", "TrySMTPDelivery", immediate=1)
+        l.write("To %s:\n" % recipient)
+        l.write("\t %s / %s\n" % (failure[0], failure[1]))
+        l.flush()
         
 def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
