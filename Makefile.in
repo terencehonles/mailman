@@ -43,7 +43,7 @@ CFLAGS=		$(OPT) $(DEFS)
 
 ARCH_INDEP_DIRS= \
 	logs archives bin lists locks templates scripts \
-	qfiles filters cron data \
+	qfiles filters cron data spam \
 	archives/private archives/public \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
 	Mailman/Handlers Mailman/Bouncers Mailman/pythonlib
