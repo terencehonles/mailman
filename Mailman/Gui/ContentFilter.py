@@ -63,8 +63,9 @@ class ContentFilter(GUIBase):
 
             <p>Finally, any <tt>text/html</tt> parts that are left in the
             message may be converted to <tt>text/plain</tt> if
-            <a href="?VARHELP=contentfilter/convert_html_to_plaintext"</a> is
-            enabled and the site is configured to allow these conversions."""),
+            <a href="?VARHELP=contentfilter/convert_html_to_plaintext"
+            >convert_html_to_plaintext</a> is enabled and the site is
+            configured to allow these conversions."""),
 
             ('filter_content', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _("""Should Mailman filter the content of list traffic according
