@@ -23,13 +23,6 @@ code, and have assigned copyright for this code to the FSF:
 
 Thanks also to Dragon for his winning Mailman logo contribution!
 
-Here is a list of authors of separate modules which are distributed
-with Mailman for convenience purposes:
-
-    Timothy O'Malley, author of misc/Cookie.py.  This file is
-    distributed under the GNU LGPL, and is included in the Mailman
-    distribution for convenience only.  It is not part of Mailman.
-
 Control.com sponsored development of several Mailman 2.1 features,
 including topics filters, external membership sources, and initial
 virtual mailing list support.  My thanks especially to Dan Pierson and
@@ -45,7 +38,9 @@ in answering questions on mailman-users.
     Daniel Buchmann
     Ted Cabeen
     Mentor Cana
+    John Carnes
     David Champion
+    Paul Cox
     Fil
     Erik Forsberg
     Darrell Fuhriman
@@ -73,6 +68,7 @@ in answering questions on mailman-users.
     Hrvoje Niksic
     Les Niles
     Mike Noyes
+    Timothy O'Malley
     Dan Ohnesorg
     Gerald Oskoboiny
     Simone Piunno
@@ -89,6 +85,7 @@ in answering questions on mailman-users.
     Jim Tittsler
     Chuq Von Rospach
     Jens Vagelpohl
+    Greg Ward
     Ousmane Wilane
     Michael Yount
     Noam Zeilberger
