@@ -4,128 +4,126 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 FREQUENTLY ASKED QUESTIONS
 
-1. How do you spell this program?
+Q. How do you spell this program?
 
-      You spell it "Mailman", with a leading capital "M" and a
-      lowercase second "m".  It is incorrect to spell it "MailMan"
-      (i.e. you should not use StudlyCaps).
+A. You spell it "Mailman", with a leading capital "M" and a lowercase
+   second "m".  It is incorrect to spell it "MailMan" (i.e. you should
+   not use StudlyCaps).
 
-2. If from the web you get "document contains no data"
-   If mail isn't getting delivered
-   If you see "Premature end of script headers"
-   If you see "Mailman CGI error!!!"
+Q. What if I get "document contains no data" from the web server, or
+   mail isn't getting delivered, or I see "Premature end of script
+   headers" or "Mailman CGI error!!!"
 
-      The most likely cause of this is that the GID that is compiled
-      into the C wrappers does not match the GID that your Web server
-      invokes CGI scripts with.  Note that a similar error could occur
-      if your mail system invokes filter programs under a GID that
-      does not match the one compiled into the C mail wrapper.
+A. The most likely cause of this is that the GID that is compiled into
+   the C wrappers does not match the GID that your Web server invokes
+   CGI scripts with.  Note that a similar error could occur if your
+   mail system invokes filter programs under a GID that does not match
+   the one compiled into the C mail wrapper.
 
-      To fix this you will need to re-configure Mailman using the
-      --with-cgi-gid and --with-mail-gid options.  See the INSTALL
-      file for details.
+   To fix this you will need to re-configure Mailman using the
+   --with-cgi-gid and --with-mail-gid options.  See the INSTALL file
+   for details.
 
-      These errors are logged to syslog and they do not show up in the
-      Mailman log files.  Problems with the CGI wrapper do get
-      reported in the Web browser though, and include the expected
-      GID, so that should help a lot.
+   These errors are logged to syslog and they do not show up in the
+   Mailman log files.  Problems with the CGI wrapper do get reported
+   in the Web browser though, and include the expected GID, so that
+   should help a lot.
 
-      You may want to have syslog running and configured to log the
-      mail.error log class somewhere; on Solaris systems, the line
+   You may want to have syslog running and configured to log the
+   mail.error log class somewhere; on Solaris systems, the line
 
-          mail.debug                /var/log/syslog
+       mail.debug                /var/log/syslog
 
-      causes the messages to go to them in /var/log/syslog, for
-      example.  (The distributed syslog.conf forwards the message to
-      the loghost, when present.  See the syslog man page for more
-      details.)
+   causes the messages to go to them in /var/log/syslog, for example.
+   (The distributed syslog.conf forwards the message to the loghost,
+   when present.  See the syslog man page for more details.)
 
-      If your system is set like this, and you get a failure trying to
-      visit the mailman/listinfo web page, and it's due to a UID or
-      GID mismatch, then you should get an entry at the end of
-      /var/log/syslog identifying the expected and received values.
+   If your system is set like this, and you get a failure trying to
+   visit the mailman/listinfo web page, and it's due to a UID or GID
+   mismatch, then you should get an entry at the end of
+   /var/log/syslog identifying the expected and received values.
 
-3. If the web pages hang:
+Q. Why do my web pages hang?
 
-      CERN Web servers might leave Python processes running, and in
-      some cases might hang the CGI completely.  In that case, switch
-      to Apache.
+A. CERN Web servers might leave Python processes running, and in some
+   cases might hang the CGI completely.  In that case, switch to
+   Apache.
 
-      It is also possible that you have stale locks.  Mailman tries to
-      be very careful about the lock files it creates to ensure the
-      integrity of it's databases, but sometimes system faults can
-      cause stale locks to persist.  Look in $prefix/locks for any
-      stale list locks and remove them (you can determine if they're
-      stale by getting the pid from the file contents and using ps to
-      see if those processes are still running or not).
+   It is also possible that you have stale locks.  Mailman tries to
+   be very careful about the lock files it creates to ensure the
+   integrity of its databases, but sometimes system faults can
+   cause stale locks to persist.  Look in $prefix/locks for any
+   stale list locks and remove them (you can determine if they're
+   stale by getting the pid from the file contents and using ps to
+   see if those processes are still running or not).
 
-4. Check ~mailman/logs/error periodically:
+Q. What should I check periodically?
 
-      Many of the scripts have their stderr logged to
-      ~mailman/logs/error, and some of the modules write caught errors
-      there, as well, so you should check there at least occasionally
-      to look for bugs in the code and problems in your setup.
+A. Many of the scripts have their standard error logged to
+   ~mailman/logs/error, and some of the modules write caught errors
+   there, as well, so you should check there at least occasionally to
+   look for bugs in the code and problems in your setup.
 
-      One thing that is *not* caught by stderr hook is syntax errors,
-      but any of these should have been caught in the installation
-      phase, which byte-compiles all .py files in the distribution.
-      There may be syntax errors lurking if you hacked the code, or in 
-      the scripts that are not modules.
+   One thing that is *not* caught by the standard error hook is syntax
+   errors, but any of these should have been caught in the
+   installation phase, which byte-compiles all .py files in the
+   distribution.  There may be syntax errors lurking if you hacked the
+   code, or in the scripts that are not modules.
 
-      You can always use the Python module `compile' or `compileall'
-      to force byte compilation of a file, or just fire up the Python
-      interpreter and try importing the module.
-    
-5. Why doesn't the archive link work?
+   You can always use the Python module `compile' or `compileall' to
+   force byte compilation of a file, or just fire up the Python
+   interpreter and try importing the module.
 
-      Have any messages been posted to the list?  This is a known
-      buglet; the archive link doesn't work until at least one message 
-      has been posted.
+Q. Why doesn't the archive link work?
 
-6. Okay, the archive link works, but I can't access the public
-   archives.
+A. Have any messages been posted to the list?  This is a known buglet;
+   the archive link doesn't work until at least one message has been
+   posted.
 
-      If you are using Apache, you must make sure that FollowSymLinks
-      is enabled for the path to the public archives.  Note that the
-      actual archives always reside in the private tree, and only when 
-      archives are public, is the symlink followed. See this archive
-      message for more details:
+Q. Okay, the archive link works, but I can't access the public
+   archives.  Why?
 
-      http://www.python.org/pipermail/mailman-users/1998-November/000173.html
+A. If you are using Apache, you must make sure that FollowSymLinks is
+   enabled for the path to the public archives.  Note that the actual
+   archives always reside in the private tree, and only when archives
+   are public, is the symlink followed. See this archive message for
+   more details:
 
-7. Still having problems?  Running QMail?
+   http://www.python.org/pipermail/mailman-users/1998-November/000173.html
 
-    Make sure that you are using "preline" before calling "wrapper":
+Q. Still having problems?  Running QMail?
 
-        |preline /home/mailman/mail/wrapper post listname
-    
-    "preline" adds a Unix-style "From " header which the archiver requires.
-    You can fix the archive mbox files by adding:
+A. Make sure that you are using "preline" before calling "wrapper":
 
-        From somebody Mon Oct  9 12:27:34 MDT 2000
-    
-    before every message and re-running the archive command
-    "bin/arch listname".  The archives should now exist.  See README.QMAIL
-    for more information.
+       |preline /home/mailman/mail/wrapper post listname
 
-8. Still having problems?  Running on GNU/Linux?
+   "preline" adds a Unix-style "From " header which the archiver requires.
+   You can fix the archive mbox files by adding:
 
-    See the README.LINUX file.
+       From somebody Mon Oct  9 12:27:34 MDT 2000
 
-9. I want to get rid of some messages in my archive.  How do I do
+   before every message and re-running the archive command
+   "bin/arch listname".  The archives should now exist.  See README.QMAIL
+   for more information.
+
+Q. Still having problems?  Running on GNU/Linux?
+
+A. See the README.LINUX file.
+
+Q. I want to get rid of some messages in my archive.  How do I do
    this?
 
-   David Rocher posts the following recipe:
+A. David Rocher posts the following recipe:
 
-     . remove $prefix/archives/private/<listname>
-     . edit $prefix/archives/private/<listname>.mbox/<listname>.mbox [optional]
-     . run $prefix/bin/arch <listname> 
+   * remove $prefix/archives/private/<listname>
+   * edit $prefix/archives/private/<listname>.mbox/<listname>.mbox [optional]
+   * run $prefix/bin/arch <listname> 
 
-10. I set member_posting_only to yes because I want to limit posts to
-    members only, however it seems like all messages coming from
-    members are held for approval.
+Q. I set member_posting_only to yes because I want to limit posts to
+   members only, however it seems like all messages coming from
+   members are held for approval.  Why?
 
-   There appears to be a problem on some systems where the envelope
+A. There appears to be a problem on some systems where the envelope
    sender (e.g. the Unix "From " line) is set incorrectly.  This will
    cause a negative match when checking to see if the sender is a
    member of the list.  Until 1.0b12, Mailman defaulted to using the
@@ -162,10 +160,10 @@ FREQUENTLY ASKED QUESTIONS
    file for a full discussion of the issues.  By default, Mailman 2.0
    relies on the From: header for doing address matching.
 
-11. How secure are the authentication mechanisms used in Mailman's web
-    interface?
+Q. How secure are the authentication mechanisms used in Mailman's web
+   interface?
 
-   If your Mailman installation run on an SSL-enabled web server
+A. If your Mailman installation run on an SSL-enabled web server
    (i.e. you access the Mailman web pages with "https://..." URLs),
    you should be as safe as SSL itself is.
 
@@ -182,10 +180,9 @@ FREQUENTLY ASKED QUESTIONS
    * Stealing a valid cookie: After successful password
      authentication, Mailman sends a "cookie" back to the user's
      browser.  This cookie will be used for "automatic" authentication
-     when browsing further within the list's protected pages.  The
-     cookie will only work for a limited time, and only on connections
-     made from the same IP number as the password-authenticating
-     connection.
+     when browsing further within the list's protected pages.  Mailman
+     employs "session cookies" which are set until you quit your
+     browser or explicitly log out.
 
      Gaining access to the user's cookie (e.g. by being able to read
      the user's browser cookie database, or by means of packet
@@ -194,7 +191,7 @@ FREQUENTLY ASKED QUESTIONS
      time being able to fulfill the other criteria for using the
      cookie could result in unauthorized access.
 
-     Note that this problem is easier exploitable when users browse
+     Note that this problem is more easily exploited when users browse
      the web via proxies -- in that case, the cookie would be valid
      for any connections made through that proxy, and not just for
      connections made from the particular machine the user happens to
