@@ -1,9 +1,36 @@
 #!/usr/bin/env python
 
 """
-# Id: Cookie.py,v 2.4 1998/02/13 16:42:30 timo Exp
-#  by  Timothy O'Malley <timo@bbn.com> Date: 1998/02/13 16:42:30
+####
+# Copyright (C) 1998 GTE Internetworking
+#    Author: Timothy O'Malley <timo@bbn.com>
 #
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation, version 2.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You can retrieve a copy of the GNU Library General Public License
+# from http://www.gnu.org/.  For a copy via US Mail, write to the
+#     Free Software Foundation, Inc.
+#     59 Temple Place - Suite 330,
+#     Boston, MA  02111-1307
+#     USA
+#
+# GTE Internetworking can be reached electronically via the URL
+# http://www.bbn.com or via US Mail at
+#
+#     GTE Internetworking
+#     5525 N. MacArthur Boulevard
+#     Suite 320
+#     Irving, Texas 75038
+#     USA
+####
+
 #  Cookie.py is an update for the old nscookie.py module.
 #    Under the old module, it was not possible to set attributes,
 #    such as "secure" or "Max-Age" on key,value granularity.  This
@@ -126,8 +153,6 @@ you should feel free to override them.
 
 Finis.
 """
-
-__version__ = "$Revision: 424 $"
 
 #
 # Import our required modules
