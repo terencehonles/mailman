@@ -233,8 +233,8 @@ class MailCommandHandler:
 				listob.description))
 	
     def ProcessInfoCmd(self, args, cmd, mail):
-	if self.closed and not self.IsMember(mail.GetSender()):
-	    self.AddError("Closed list: only members may see info.")
+	if self.private_roster and not self.IsMember(mail.GetSender()):
+	    self.AddError("Private list: only members may see info.")
 	    return
 
 	self.AddToResponse("Here is the info for list %s:" % self.real_name)
@@ -248,11 +248,12 @@ class MailCommandHandler:
 	def AddTab(str):
 	    return '\t' + str
 
-	if self.closed == 2:
-	    self.AddError("Closed list: No one may see subscription list.")
+	if self.private_roster == 2:
+	    self.AddError("Private list: No one may see subscription list.")
 	    return
-	if self.closed and not self.IsMember(mail.GetSender()):
-	    self.AddError("Closed list: only members may see list subscribers.")
+	if self.private_roster and not self.IsMember(mail.GetSender()):
+	    self.AddError("Private list: only members may see list "
+			  "of subscribers.")
 	    return
 	if not len(self.digest_members) and not len(self.members):
 	    self.AddToResponse("NO MEMBERS.")
