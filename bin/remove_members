@@ -111,7 +111,7 @@ def main():
         sys.exit(1)
 
     if all:
-        addresses = mlist.GetMembers() + mlist.GetDigestMembers()
+        addresses = mlist.getMembers()
 
     try:
         for addr in addresses:

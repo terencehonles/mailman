@@ -204,8 +204,7 @@ def main():
         # get the list of addresses currently subscribed
         addrs = {}
         needsadding = {}
-        for addr in (mlist.GetDeliveryMembers() +
-                     mlist.GetDigestDeliveryMembers()):
+        for addr in mlist.getMemberCPAddresses(mlist.getMembers()):
             addrs[addr.lower()] = addr
 
         for addr in filemembers:

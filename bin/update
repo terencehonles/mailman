@@ -112,12 +112,15 @@ def move_language_templates(mlist):
     # First, get rid of any lists/<list> template or lists/<list>/en template
     # that is identical to the global templates/* default.
     for gtemplate in os.listdir(os.path.join(mm_cfg.TEMPLATE_DIR, 'en')):
+        # BAW: get rid of old templates, e.g. admlogin.txt and
+        # handle_opts.html
         try:
             fp = open(os.path.join(mm_cfg.TEMPLATE_DIR, gtemplate))
         except IOError, e:
             if e.errno <> errno.ENOENT: raise
             # No global template
             continue
+
         gcksum = md5.new(fp.read()).digest()
         fp.close()
         # Match against the lists/<list>/* template

@@ -97,9 +97,9 @@ def scanlists(options):
         else:
             owners = []
         for cre in cres:
-            for member in mlist.GetMembers() + mlist.GetDigestMembers():
+            for member in mlist.getMembers():
                 if cre.search(member):
-                    addr = mlist.GetUserSubscribedAddress(member)
+                    addr = mlist.getMemberCPAddress(member)
                     entries = matches.get(addr, {})
                     aswhat = entries.get(listname, 0)
                     aswhat |=  AS_MEMBER

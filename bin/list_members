@@ -117,12 +117,14 @@ def main():
         print _('No such list: %(listname)s')
         sys.exit(1)
 
+    # Get the lowercased member addresses
+    rmembers = mlist.getRegularMemberKeys()
+    dmembers = mlist.getDigestMemberKeys()
+
     if preserve:
-        rmembers = mlist.GetDeliveryMembers()
-        dmembers = mlist.GetDigestDeliveryMembers()
-    else:
-        rmembers = mlist.GetMembers()
-        dmembers = mlist.GetDigestMembers()
+        # Convert to the case preserved addresses
+        rmembers = mlist.getMemberCPAddresses(rmembers)
+        dmembers = mlist.getMemberCPAddresses(dmembers)
 
     if regular:
         for addr in rmembers:
