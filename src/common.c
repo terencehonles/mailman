@@ -160,6 +160,31 @@ run_script(const char* script, int argc, char** argv, char** env)
 
 
 /*
+ *  Some older systems don't define strerror().  Provide a replacement
+ *  that is good enough for our purposes.
+ */
+
+#ifdef NEED_STRERROR
+
+extern char *sys_errlist[];      
+extern int sys_nerr;                      
+        
+char* strerror(int errno)                
+{                                                   
+   if(errno < 0 || errno >= sys_nerr)            
+     { 
+       return "unknown error";
+     }
+   else
+     {
+       return sys_errlist[errno];
+     }
+}
+
+#endif /* NEED_STRERROR */
+
+
+/*
  * Local Variables:
  * c-file-style: "python"
  * End:
