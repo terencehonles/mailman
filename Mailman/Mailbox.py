@@ -18,13 +18,13 @@
 """
 
 import sys
+import mailbox
 
 from email.Generator import Generator
 from email.Parser import Parser
 
 from Mailman import mm_cfg
 from Mailman.Message import Message
-from Mailman.pythonlib import mailbox
 
 
 
