@@ -1,35 +1,58 @@
-Mailman is beta software.  Because it's development tree is always
-immediately available via anonymous CVS, it is sometimes in a less
-stable state.  Contained below are some instructions that should make
-it easier for you to upgrade between beta releases.  We intend to
-improve the upgradeability of Mailman in the future.
+For the most part, mailling lists upgrade themselves with the new
+versions.  However, there are some changes in the filesystem that need
+to be taken care of separately.  running "make update" takes care of
+this for you.  If you still have problems upgrading after running
+this, or want to integrate mbox archives into the pipermail archiving,
+read on.
 
-- If upgrading from version 1.0b4 or earlier, templates need to be
-  moved.  For each list, move $prefix/templates/<listname>/* to
-  $prefix/lists/<listname>.  Be careful about stomping template
-  changes that your list managers have changed!  (Only the
-  options.html template changed from 1.0b5 to 1.0b6.)
+"make update" creates a file named "update.log" in the top level of
+the source distribution.  If the script that updates the mailman
+filesystem encounters something that is not resolvable, it will log
+info about this to "update.log".  This might be worth checking.
 
-- If you are upgrading to 1.0b6 from an earlier version, and you have
-  archiving turned on, you will need to move and or merge your mbox
-  archives.  1.0b6 has a different layout for its archiving mbox and
-  Pipermail indexes, which are now integrated in Mailman.
+Below is an annotated listing of the things that "make upgrade" does.
+Hopefully, this will help resolve any problems you are having.
 
-  Previous versions of Mailman stored public mboxes in
-  $prefix/archives/public/<listname> and private mboxes in
-  $prefix/archives/private/<listname>.  No provision was made to
-  merge private and public archives when their permissions changed.
+- Archiving files are moved around as part of integrating pipermail
+  into mailman.  In particular, 
 
-  Mailman now stores a consolidated mbox archive in
-  $prefix/archives/private/<listname>.mbox/<listname>.mbox and uses
-  symbolic links to provide public access to the mbox when permitted.
+  1) if a list has only a private mbox archive
+  $prefix/archives/private/<listname> is moved to 
+  $prefix/archives/private/<listname>.mbox/<listname> 
 
-  If you want to retain your archive across the upgrade, move your old 
-  mbox to the new locations.
+  2) if a list has only a public mbox archive
+  $prefix/archives/public/<listname> is moved to
+  $prefix/archives/private/<listname>.mbox/<listname>
+  and
+  a symlink is made that points
+  $prefix/archives/public/<listname>.mbox to
+  $prefix/archives/private/<listname>.mbox/<listname>
 
-  TBD: We need to deal with batch creation of Pipermail archive from
-  an old existing mbox.
+  3) if a list has both private and public mbox archives, 
+  make update picks one of the above 2 configurations based on whether
+  or not the list currently is archived publicly.  It then renames the  
+  other mbox to mbox.preb6.
 
+  4) if a list used recent cvs sources, where archives were placed in
+  $prefix/public_html/archives, then these are moved to
+  $prefix/archives/private/<listname> and a symlink is made from
+  $prefix/archives/public/<listname> to that spot if the list's
+  archives are public.  Also, a permissions-related security  problem
+  is removed. 
+
+  To integrate mbox archives of old lists, log in as mailman and run 
+  $prefix/bin/arch <listname> <path-to-mbox-archive>.
+
+  Also, by default, beta6 does both mbox and html based archiving, you
+  can configure mailman to do one, both, or neither.  please see
+  $prefix/Mailman/Defaults.py for details.
+
+- If upgrading from version 1.0b4 or earlier, you will have to move
+  list-specific templates.  For each list, move
+  $prefix/templates/<listname>/* to $prefix/lists/<listname>.  Please
+  reference the generic templates in $prefix/templates to see if any
+  variables have changed (There shouldn't be many, only options.html
+  was updated from b5 to b6).
 
 
 Local Variables:
