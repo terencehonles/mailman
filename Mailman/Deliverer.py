@@ -19,6 +19,7 @@
 
 
 import string, os, sys
+import operator
 import mm_cfg
 import Errors
 import Utils
@@ -34,17 +35,25 @@ class Deliverer:
                        add_headers=[]):
         if not sender:
             sender = self.GetAdminEmail()
-        alladd = add_headers + ['X-MailmanVersion: %s\n' % mm_cfg.VERSION]
+        if (add_headers
+            and not reduce(operator.__or__,
+                           map(lambda x: string.find(string.lower(x),
+                                                     "list-id:")==0,
+                               add_headers))):
+            # No "list-id" header already on add_headers:
+            add_headers.append('List-Id: %s\n' % self.GetListIdentifier())
+        alladd = add_headers + ['X-Mailman-Version: %s\n' % mm_cfg.VERSION]
         Utils.SendTextToUser(subject, text, recipient, sender,
                              add_headers=alladd)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
-        Utils.DeliverToUser(msg, recipient,
-                               add_headers=['Errors-To: %s\n'
-                                            % Self.GetAdminEmail(),
-                                            'X-MailmanVersion: %s\n'
-                                            % mm_cfg.VERSION])
+        add_headers = []
+        if not msg.getheader('list-id'):
+            add_headers.append('List-Id: %s\n' % self.GetListIdentifier())
+        add_headers.append('Errors-To: %s\n' % self.GetAdminEmail())
+        add_headers.append('X-Mailman-Version: %s\n' % mm_cfg.VERSION)
+        Utils.DeliverToUser(msg, recipient, add_headers=add_headers)
 
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
@@ -97,9 +106,11 @@ class Deliverer:
             del msg['reply-to']
             msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
 	msg.headers.append('Sender: %s\n' % self.GetAdminEmail())
+        if not msg.getheader('list-id'):
+            msg.headers.append('List-Id: %s\n' % self.GetListIdentifier())
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
 	msg.headers.append('X-BeenThere: %s\n' % self.GetListEmail())
-	msg.headers.append('X-MailmanVersion: %s\n' % mm_cfg.VERSION)
+	msg.headers.append('X-Mailman-Version: %s\n' % mm_cfg.VERSION)
 
         cmd = "%s %s" % (mm_cfg.PYTHON,
                          os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"))
