@@ -101,16 +101,20 @@ file UPGRADING for important information before you upgrade.
       and then run `make install'.  The following options allow you to
       customize your Mailman installation.
 
-      --prefix=dir
+      --prefix=<dir>
             Standard GNU configure option which changes the base
             directory that Mailman is installed into.  By default
             $prefix is /home/mailman.  This directory must already
             exist, and be set up as described in section 1 above.
 
-      --exec_prefix=dir
+      --exec-prefix=<dir>
             Standard GNU configure option which lets you specify a
             different installation directory for architecture
             dependent binaries.
+
+      --with-var-prefix=<dir>
+            Store mutable data under <dir> instead of under the prefix
+            or exec_prefix.
 
       --with-python=</path/to/python>
             Specify an alternative Python interpreter to use for the
@@ -119,14 +123,14 @@ file UPGRADING for important information before you upgrade.
             the scripts from the command line, the first Python
             interpreter found on $PATH is always used.
 
-      --with-ownername=<username-or-uid>
+      --with-username=<username-or-uid>
             Specify a different username than `mailman' to use as a
             default.  Use this only if the username `mailman' is
             already in use by somebody (e.g. Mark Ailman's login
             name).  Can take an integer user id.  Be sure your $prefix
             directory is owned by this user.
 
-      --with-ownergroup=<groupname-or-gid>
+      --with-groupname=<groupname-or-gid>
             Specify a different groupname than `mailman' to use as a
             default.  Use this only if the groupname `mailman' is
             already in use.  Can take an integer group id.  Be sure
