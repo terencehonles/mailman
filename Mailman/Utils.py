@@ -392,7 +392,7 @@ def UnobscureEmail(addr):
 
 
 
-def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
+def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     # Make some text from a template file.  The order of searches depends on
     # whether mlist and lang are provided.  Once the templatefile is found,
     # string substitution is performed by interpolation in `dict'.  If `raw'
@@ -437,6 +437,12 @@ def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     # on the above description.  Mailman's upgrade script cannot do this for
     # you.
     #
+    # The function has been revised and renamed as it now returns both the
+    # template text and the path from which it retrieved the template. The
+    # original function is now a wrapper which just returns the template text
+    # as before, by calling this renamed function and discarding the second
+    # item returned.
+    #
     # Calculate the languages to scan
     languages = []
     if lang is not None:
@@ -471,7 +477,8 @@ def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
         # Try one last time with the distro English template, which, unless
         # you've got a really broken installation, must be there.
         try:
-            fp = open(os.path.join(mm_cfg.TEMPLATE_DIR, 'en', templatefile))
+            filename = os.path.join(mm_cfg.TEMPLATE_DIR, 'en', templatefile)
+            fp = open(filename)
         except IOError, e:
             if e.errno <> errno.ENOENT: raise
             # We never found the template.  BAD!
@@ -494,8 +501,12 @@ def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
             syslog('error', 'broken template: %s\n%s', filename, e)
             pass
     if raw:
-        return text
-    return wrap(text)
+        return text, filename
+    return wrap(text), filename
+
+
+def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
+    return findtext(templatefile, dict, raw, lang, mlist)[0]
 
 
 
