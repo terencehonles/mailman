@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0rc3\n"
-"POT-Creation-Date: Tue Feb  4 00:15:28 2003\n"
+"POT-Creation-Date: Mon Feb 10 21:41:53 2003\n"
 "PO-Revision-Date: 2002-12-15 00:39+0100\n"
 "Last-Translator: Dan Ohnesorg <dan@ohnesorg.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -219,9 +219,9 @@ msgstr ""
 "datum: %(date)s"
 
 #: Mailman/Bouncer.py:264 Mailman/Deliverer.py:126
-#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:242
+#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:245
 #: Mailman/Handlers/Hold.py:214 Mailman/Handlers/Hold.py:249
-#: Mailman/Handlers/ToDigest.py:205 Mailman/ListAdmin.py:235
+#: Mailman/Handlers/ToDigest.py:208 Mailman/ListAdmin.py:241
 msgid "(no subject)"
 msgstr "(no subject)"
 
@@ -1220,8 +1220,8 @@ msgstr "Èást zprávy"
 msgid "No reason given"
 msgstr "Bez udání dùvodu"
 
-#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:308
-#: Mailman/ListAdmin.py:429
+#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:314
+#: Mailman/ListAdmin.py:435
 msgid "[No reason given]"
 msgstr "[Bez udání dùvodu]"
 
@@ -7059,67 +7059,67 @@ msgstr "Zde byl umístìn nepøijatelný obsah typu: %(partctype)s"
 msgid "-------------- next part --------------\n"
 msgstr "------------- dal¹í èást ---------------\n"
 
-#: Mailman/Handlers/ToDigest.py:134
+#: Mailman/Handlers/ToDigest.py:137
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 
-#: Mailman/Handlers/ToDigest.py:175
+#: Mailman/Handlers/ToDigest.py:178
 msgid "digest header"
 msgstr "Záhlaví Digest zprávy"
 
-#: Mailman/Handlers/ToDigest.py:178
+#: Mailman/Handlers/ToDigest.py:181
 msgid "Digest Header"
 msgstr "Záhlaví Digest zprávy"
 
-#: Mailman/Handlers/ToDigest.py:191
+#: Mailman/Handlers/ToDigest.py:194
 msgid "Today's Topics:\n"
 msgstr "Dne¹ní menu:\n"
 
-#: Mailman/Handlers/ToDigest.py:274
+#: Mailman/Handlers/ToDigest.py:273
 msgid "Today's Topics (%(msgcount)d messages)"
 msgstr "Dne¹ní menu (%(msgcount)d zpráv):"
 
-#: Mailman/Handlers/ToDigest.py:307
+#: Mailman/Handlers/ToDigest.py:306
 msgid "digest footer"
 msgstr "Patièka digestu"
 
-#: Mailman/Handlers/ToDigest.py:310
+#: Mailman/Handlers/ToDigest.py:309
 msgid "Digest Footer"
 msgstr "Patièka digestu"
 
-#: Mailman/Handlers/ToDigest.py:324
+#: Mailman/Handlers/ToDigest.py:323
 msgid "End of "
 msgstr "Konec: "
 
-#: Mailman/ListAdmin.py:307
+#: Mailman/ListAdmin.py:313
 msgid "Posting of your message titled \"%(subject)s\""
 msgstr "Va¹e zpráva ve vìci %(subject)s\""
 
-#: Mailman/ListAdmin.py:346
+#: Mailman/ListAdmin.py:352
 msgid "Forward of moderated message"
 msgstr "Forwardovat moderovanou zprávu"
 
-#: Mailman/ListAdmin.py:405
+#: Mailman/ListAdmin.py:411
 msgid "New subscription request to list %(realname)s from %(addr)s"
 msgstr "Po¾adavek na pøihlá¹ení do konference %(realname)s od %(addr)s"
 
-#: Mailman/ListAdmin.py:428
+#: Mailman/ListAdmin.py:434
 msgid "Subscription request"
 msgstr "®ádost o pøihlá¹ení"
 
-#: Mailman/ListAdmin.py:458
+#: Mailman/ListAdmin.py:464
 msgid "New unsubscription request from %(realname)s by %(addr)s"
 msgstr "Po¾adavek na pøihlá¹ení do konference %(realname)s od %(addr)s"
 
-#: Mailman/ListAdmin.py:481
+#: Mailman/ListAdmin.py:487
 msgid "Unsubscription request"
 msgstr "®ádost o odhlá¹ení"
 
-#: Mailman/ListAdmin.py:512
+#: Mailman/ListAdmin.py:518
 msgid "Original Message"
 msgstr "Pùvodní zpráva"
 
-#: Mailman/ListAdmin.py:515
+#: Mailman/ListAdmin.py:521
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "Po¾adavek do konference %(realname)s byl zamítnut."
 
@@ -7279,7 +7279,7 @@ msgstr "Nesrozumitelné oznámení o nedoruèitelnosti"
 msgid "Ignoring non-text/plain MIME parts"
 msgstr "Ignoruji MIME èásti jiného typu ne¾ text/plain"
 
-#: Mailman/Queue/CommandRunner.py:129
+#: Mailman/Queue/CommandRunner.py:130
 msgid ""
 "The results of your email command are provided below.\n"
 "Attached is your original message.\n"
@@ -7287,11 +7287,11 @@ msgstr ""
 "Ní¾e naleznete výsledek pøíkazù, které jste zaslal.\n"
 "Pøikládám i pùvodní emailovou zprávu.\n"
 
-#: Mailman/Queue/CommandRunner.py:134
+#: Mailman/Queue/CommandRunner.py:135
 msgid "- Results:"
 msgstr "- Výsledky:"
 
-#: Mailman/Queue/CommandRunner.py:140
+#: Mailman/Queue/CommandRunner.py:141
 msgid ""
 "\n"
 "- Unprocessed:"
@@ -7299,7 +7299,7 @@ msgstr ""
 "\n"
 " Nezpracováno:"
 
-#: Mailman/Queue/CommandRunner.py:143
+#: Mailman/Queue/CommandRunner.py:144
 msgid ""
 "\n"
 "- Ignored:"
@@ -7307,7 +7307,7 @@ msgstr ""
 "\n"
 " Ignorováno:"
 
-#: Mailman/Queue/CommandRunner.py:145
+#: Mailman/Queue/CommandRunner.py:146
 msgid ""
 "\n"
 "- Done.\n"
@@ -7317,7 +7317,7 @@ msgstr ""
 " Hotovo:\n"
 " \n"
 
-#: Mailman/Queue/CommandRunner.py:163
+#: Mailman/Queue/CommandRunner.py:164
 msgid "The results of your email commands"
 msgstr "Výsledky pøíkazù zaslaných e-mailem"
 

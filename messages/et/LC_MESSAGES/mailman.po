@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
-"POT-Creation-Date: Tue Feb  4 00:15:28 2003\n"
+"POT-Creation-Date: Mon Feb 10 21:41:53 2003\n"
 "PO-Revision-Date: 2002-12-29 23:16+0200\n"
 "Last-Translator: Anti Veeranna <duke@linux.ee>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -215,9 +215,9 @@ msgid " The last bounce received from you was dated %(date)s"
 msgstr " Viimane tagastatud kiri oli kuupäevaga %(date)s"
 
 #: Mailman/Bouncer.py:264 Mailman/Deliverer.py:126
-#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:242
+#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:245
 #: Mailman/Handlers/Hold.py:214 Mailman/Handlers/Hold.py:249
-#: Mailman/Handlers/ToDigest.py:205 Mailman/ListAdmin.py:235
+#: Mailman/Handlers/ToDigest.py:208 Mailman/ListAdmin.py:241
 msgid "(no subject)"
 msgstr "(teemat pole)"
 
@@ -1217,8 +1217,8 @@ msgstr "Väljavõte kirjast:"
 msgid "No reason given"
 msgstr "Põhjus puudub"
 
-#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:308
-#: Mailman/ListAdmin.py:429
+#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:314
+#: Mailman/ListAdmin.py:435
 msgid "[No reason given]"
 msgstr "[Põhjus puudub]"
 
@@ -5909,67 +5909,67 @@ msgstr ""
 msgid "-------------- next part --------------\n"
 msgstr "-------------- next part --------------\n"
 
-#: Mailman/Handlers/ToDigest.py:134
+#: Mailman/Handlers/ToDigest.py:137
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr "%(realname)s referaat, Vol %(volume)d, number %(issue)d"
 
-#: Mailman/Handlers/ToDigest.py:175
+#: Mailman/Handlers/ToDigest.py:178
 msgid "digest header"
 msgstr "referaadi päis"
 
-#: Mailman/Handlers/ToDigest.py:178
+#: Mailman/Handlers/ToDigest.py:181
 msgid "Digest Header"
 msgstr "Referaadi päis"
 
-#: Mailman/Handlers/ToDigest.py:191
+#: Mailman/Handlers/ToDigest.py:194
 msgid "Today's Topics:\n"
 msgstr "Tänased teemad:\n"
 
-#: Mailman/Handlers/ToDigest.py:274
+#: Mailman/Handlers/ToDigest.py:273
 msgid "Today's Topics (%(msgcount)d messages)"
 msgstr "Tänased teemad (%(msgcount)d kirja)"
 
-#: Mailman/Handlers/ToDigest.py:307
+#: Mailman/Handlers/ToDigest.py:306
 msgid "digest footer"
 msgstr "referaadi jalus"
 
-#: Mailman/Handlers/ToDigest.py:310
+#: Mailman/Handlers/ToDigest.py:309
 msgid "Digest Footer"
 msgstr "Referaadi jalus"
 
-#: Mailman/Handlers/ToDigest.py:324
+#: Mailman/Handlers/ToDigest.py:323
 msgid "End of "
 msgstr "Lõpp"
 
-#: Mailman/ListAdmin.py:307
+#: Mailman/ListAdmin.py:313
 msgid "Posting of your message titled \"%(subject)s\""
 msgstr ""
 
-#: Mailman/ListAdmin.py:346
+#: Mailman/ListAdmin.py:352
 msgid "Forward of moderated message"
 msgstr ""
 
-#: Mailman/ListAdmin.py:405
+#: Mailman/ListAdmin.py:411
 msgid "New subscription request to list %(realname)s from %(addr)s"
 msgstr ""
 
-#: Mailman/ListAdmin.py:428
+#: Mailman/ListAdmin.py:434
 msgid "Subscription request"
 msgstr "Tellimissoov"
 
-#: Mailman/ListAdmin.py:458
+#: Mailman/ListAdmin.py:464
 msgid "New unsubscription request from %(realname)s by %(addr)s"
 msgstr ""
 
-#: Mailman/ListAdmin.py:481
+#: Mailman/ListAdmin.py:487
 msgid "Unsubscription request"
 msgstr "Tellimuse lõpetamise soov"
 
-#: Mailman/ListAdmin.py:512
+#: Mailman/ListAdmin.py:518
 msgid "Original Message"
 msgstr "Esialgne kiri"
 
-#: Mailman/ListAdmin.py:515
+#: Mailman/ListAdmin.py:521
 msgid "Request to mailing list %(realname)s rejected"
 msgstr ""
 
@@ -6112,17 +6112,17 @@ msgstr ""
 msgid "Ignoring non-text/plain MIME parts"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:129
+#: Mailman/Queue/CommandRunner.py:130
 msgid ""
 "The results of your email command are provided below.\n"
 "Attached is your original message.\n"
 msgstr ""
 
-#: Mailman/Queue/CommandRunner.py:134
+#: Mailman/Queue/CommandRunner.py:135
 msgid "- Results:"
 msgstr "- Tulemused:"
 
-#: Mailman/Queue/CommandRunner.py:140
+#: Mailman/Queue/CommandRunner.py:141
 msgid ""
 "\n"
 "- Unprocessed:"
@@ -6130,7 +6130,7 @@ msgstr ""
 "\n"
 "- Töötlemata:"
 
-#: Mailman/Queue/CommandRunner.py:143
+#: Mailman/Queue/CommandRunner.py:144
 msgid ""
 "\n"
 "- Ignored:"
@@ -6138,7 +6138,7 @@ msgstr ""
 "\n"
 "- Ignoreeriti:"
 
-#: Mailman/Queue/CommandRunner.py:145
+#: Mailman/Queue/CommandRunner.py:146
 msgid ""
 "\n"
 "- Done.\n"
@@ -6148,7 +6148,7 @@ msgstr ""
 "- Tehtud.\n"
 "\n"
 
-#: Mailman/Queue/CommandRunner.py:163
+#: Mailman/Queue/CommandRunner.py:164
 msgid "The results of your email commands"
 msgstr ""
 

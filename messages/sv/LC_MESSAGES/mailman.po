@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Tue Feb  4 00:15:28 2003\n"
+"POT-Creation-Date: Mon Feb 10 21:41:53 2003\n"
 "PO-Revision-Date: 2002-12-24 14:35+0100\n"
 "Last-Translator: Eva Österlind <eva.osterlind@arvika.se>\n"
 "Language-Team: Swedish <information@arvika.se>\n"
@@ -320,9 +320,9 @@ msgstr " Det sist mottagna returmeddelandet från dig var daterat %(date)s"
 # Mailman/Handlers/Hold.py:214 Mailman/Handlers/Hold.py:249
 # Mailman/Handlers/ToDigest.py:211 Mailman/ListAdmin.py:235
 #: Mailman/Bouncer.py:264 Mailman/Deliverer.py:126
-#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:242
+#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:245
 #: Mailman/Handlers/Hold.py:214 Mailman/Handlers/Hold.py:249
-#: Mailman/Handlers/ToDigest.py:205 Mailman/ListAdmin.py:235
+#: Mailman/Handlers/ToDigest.py:208 Mailman/ListAdmin.py:241
 msgid "(no subject)"
 msgstr "(utan titel)"
 
@@ -1838,8 +1838,8 @@ msgstr "Ingen orsak given"
 # Mailman/ListAdmin.py:417
 # Mailman/Cgi/admindb.py:714 Mailman/ListAdmin.py:308
 # Mailman/ListAdmin.py:429
-#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:308
-#: Mailman/ListAdmin.py:429
+#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:314
+#: Mailman/ListAdmin.py:435
 msgid "[No reason given]"
 msgstr "[Ingen orsak given]"
 
@@ -9234,97 +9234,97 @@ msgstr ""
 
 # Mailman/Handlers/ToDigest.py:140
 # Mailman/Handlers/ToDigest.py:141
-#: Mailman/Handlers/ToDigest.py:134
+#: Mailman/Handlers/ToDigest.py:137
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr "Sammandrag av %(realname)s, Vol %(volume)d, Utgåva %(issue)d"
 
 # Mailman/Handlers/ToDigest.py:178
 # Mailman/Handlers/ToDigest.py:181
-#: Mailman/Handlers/ToDigest.py:175
+#: Mailman/Handlers/ToDigest.py:178
 msgid "digest header"
 msgstr "topptext"
 
 # Mailman/Handlers/ToDigest.py:181
 # Mailman/Handlers/ToDigest.py:184
-#: Mailman/Handlers/ToDigest.py:178
+#: Mailman/Handlers/ToDigest.py:181
 msgid "Digest Header"
 msgstr "Topptext"
 
 # Mailman/Handlers/ToDigest.py:194
 # Mailman/Handlers/ToDigest.py:197
-#: Mailman/Handlers/ToDigest.py:191
+#: Mailman/Handlers/ToDigest.py:194
 msgid "Today's Topics:\n"
 msgstr "Dagens ämnen:\n"
 
 # Mailman/Handlers/ToDigest.py:261
 # Mailman/Handlers/ToDigest.py:267
-#: Mailman/Handlers/ToDigest.py:274
+#: Mailman/Handlers/ToDigest.py:273
 msgid "Today's Topics (%(msgcount)d messages)"
 msgstr "Dagens ämnen (%(msgcount)d meddelanden)"
 
 # Mailman/Handlers/ToDigest.py:287
 # Mailman/Handlers/ToDigest.py:292
-#: Mailman/Handlers/ToDigest.py:307
+#: Mailman/Handlers/ToDigest.py:306
 msgid "digest footer"
 msgstr "bottentext"
 
 # Mailman/Handlers/ToDigest.py:290
 # Mailman/Handlers/ToDigest.py:295
-#: Mailman/Handlers/ToDigest.py:310
+#: Mailman/Handlers/ToDigest.py:309
 msgid "Digest Footer"
 msgstr "Bottentext"
 
 # Mailman/Handlers/ToDigest.py:304
 # Mailman/Handlers/ToDigest.py:309
-#: Mailman/Handlers/ToDigest.py:324
+#: Mailman/Handlers/ToDigest.py:323
 msgid "End of "
 msgstr "Slut på "
 
 # Mailman/ListAdmin.py:306
 # Mailman/ListAdmin.py:307
-#: Mailman/ListAdmin.py:307
+#: Mailman/ListAdmin.py:313
 msgid "Posting of your message titled \"%(subject)s\""
 msgstr "Ditt meddelande med titel \"%(subject)s\""
 
 # Mailman/ListAdmin.py:334
 # Mailman/ListAdmin.py:346
-#: Mailman/ListAdmin.py:346
+#: Mailman/ListAdmin.py:352
 msgid "Forward of moderated message"
 msgstr "Vidaresändning av modererat meddelande"
 
 # Mailman/ListAdmin.py:393
 # Mailman/ListAdmin.py:405
-#: Mailman/ListAdmin.py:405
+#: Mailman/ListAdmin.py:411
 msgid "New subscription request to list %(realname)s from %(addr)s"
 msgstr "Ny ansökan om medlemskap på listan %(realname)s från %(addr)s"
 
 # Mailman/ListAdmin.py:416
 # Mailman/ListAdmin.py:428
-#: Mailman/ListAdmin.py:428
+#: Mailman/ListAdmin.py:434
 msgid "Subscription request"
 msgstr "Ansökan om medlemskap"
 
 # Mailman/ListAdmin.py:446
 # Mailman/ListAdmin.py:458
-#: Mailman/ListAdmin.py:458
+#: Mailman/ListAdmin.py:464
 msgid "New unsubscription request from %(realname)s by %(addr)s"
 msgstr "Ansökan från %(addr)s om avanmälan från listan %(realname)s"
 
 # Mailman/ListAdmin.py:469
 # Mailman/ListAdmin.py:481
-#: Mailman/ListAdmin.py:481
+#: Mailman/ListAdmin.py:487
 msgid "Unsubscription request"
 msgstr "Ansökan om avanmälan"
 
 # Mailman/ListAdmin.py:500
 # Mailman/ListAdmin.py:512
-#: Mailman/ListAdmin.py:512
+#: Mailman/ListAdmin.py:518
 msgid "Original Message"
 msgstr "Ursprungligt meddelande"
 
 # Mailman/ListAdmin.py:503
 # Mailman/ListAdmin.py:515
-#: Mailman/ListAdmin.py:515
+#: Mailman/ListAdmin.py:521
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "Fråga till e-postlistan %(realname)s inte godkänd"
 
@@ -9544,7 +9544,7 @@ msgstr "Hoppar över MIME-delar som inte är text/plain"
 
 # Mailman/Queue/CommandRunner.py:124
 # Mailman/Queue/CommandRunner.py:125
-#: Mailman/Queue/CommandRunner.py:129
+#: Mailman/Queue/CommandRunner.py:130
 msgid ""
 "The results of your email command are provided below.\n"
 "Attached is your original message.\n"
@@ -9554,13 +9554,13 @@ msgstr ""
 
 # Mailman/Queue/CommandRunner.py:129
 # Mailman/Queue/CommandRunner.py:130
-#: Mailman/Queue/CommandRunner.py:134
+#: Mailman/Queue/CommandRunner.py:135
 msgid "- Results:"
 msgstr "- Resultat:"
 
 # Mailman/Queue/CommandRunner.py:135
 # Mailman/Queue/CommandRunner.py:136
-#: Mailman/Queue/CommandRunner.py:140
+#: Mailman/Queue/CommandRunner.py:141
 msgid ""
 "\n"
 "- Unprocessed:"
@@ -9570,7 +9570,7 @@ msgstr ""
 
 # Mailman/Queue/CommandRunner.py:138
 # Mailman/Queue/CommandRunner.py:139
-#: Mailman/Queue/CommandRunner.py:143
+#: Mailman/Queue/CommandRunner.py:144
 msgid ""
 "\n"
 "- Ignored:"
@@ -9580,7 +9580,7 @@ msgstr ""
 
 # Mailman/Queue/CommandRunner.py:140
 # Mailman/Queue/CommandRunner.py:141
-#: Mailman/Queue/CommandRunner.py:145
+#: Mailman/Queue/CommandRunner.py:146
 msgid ""
 "\n"
 "- Done.\n"
@@ -9592,7 +9592,7 @@ msgstr ""
 
 # Mailman/Queue/CommandRunner.py:147
 # Mailman/Queue/CommandRunner.py:159
-#: Mailman/Queue/CommandRunner.py:163
+#: Mailman/Queue/CommandRunner.py:164
 msgid "The results of your email commands"
 msgstr "Resultatet av dina kommandon"
 
