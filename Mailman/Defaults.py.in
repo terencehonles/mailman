@@ -117,6 +117,22 @@ GZIP_ARCHIVE_TXT_FILES = 0
 # in the archives too.
 ARCHIVER_OBSCURES_EMAILADDRS = 0
 
+# Pipermail assumes that messages bodies contain US-ASCII text.
+# Change this option to define a different character set to be used as
+# the default character set for the archive.  The term "character set"
+# is used in MIME to refer to a method of converting a sequence of
+# octets into a sequence of characters.  If you change the default
+# charset, you might need to add it to VERBATIM_ENCODING below.
+DEFAULT_CHARSET = None
+
+# Most character set encodings require special HTML entity characters
+# to be quoted, otherwise they won't look right in the Pipermail
+# archives.  However some character sets must not quote these
+# characters so that they can be rendered properly in the browsers.
+# The primary issue is multi-byte encodings where the octet 0x26 does
+# not always represent the & character.  This variable contains a list
+# of such characters sets which are not HTML-quoted in the archives.
+VERBATIM_ENCODING = ['iso-2022-jp']
 
 
 #####

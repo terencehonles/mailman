@@ -194,7 +194,7 @@ class Article(pipermail.Article):
     text_tmpl = article_text_template
 
     # for compatibility with old archives loaded via pickle
-    charset = None
+    charset = mm_cfg.DEFAULT_CHARSET
     cenc = None
     decoded = {}
 
@@ -226,9 +226,11 @@ class Article(pipermail.Article):
             self.check_header_charsets(string.lower(mo.group(1)))
         else:
             self.check_header_charsets()
-        if self.charset:
-            assert self.charset == string.lower(self.charset), \
-                   self.charset
+        if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
+            self.quote = lambda x:x
+
+    def quote(self, buf):
+        return html_quote(buf)
 
     def check_header_charsets(self, msg_charset=None):
         """Check From and Subject for encoded-words
@@ -276,12 +278,12 @@ class Article(pipermail.Article):
         d["prev"], d["prev_wsubj"] = self._get_prev()
         d["next"], d["next_wsubj"] = self._get_next()
 	
-	d["email_html"] = html_quote(self.email)
-	d["title"] = html_quote(self.subject)
-	d["subject_html"] = html_quote(self.subject)
-	d["author_html"] = html_quote(self.author)
+	d["email_html"] = self.quote(self.email)
+	d["title"] = self.quote(self.subject)
+	d["subject_html"] = self.quote(self.subject)
+	d["author_html"] = self.quote(self.author)
 	d["email_url"] = url_quote(self.email)
-	d["datestr_html"] = html_quote(self.datestr)
+	d["datestr_html"] = self.quote(self.datestr)
         d["body"] = self._get_body()
 
         if self.charset is not None:
@@ -302,7 +304,7 @@ class Article(pipermail.Article):
 	    prev_wsubj = ('<LI> Previous message:'
                           ' <A HREF="%s">%s\n</A></li>'
                           % (url_quote(self.prev.filename),
-                             html_quote(subject)))
+                             self.quote(subject)))
         else:
             prev = prev_wsubj = ""
         return prev, prev_wsubj
@@ -328,7 +330,7 @@ class Article(pipermail.Article):
 	    next_wsubj = ('<LI> Next message:'
                           ' <A HREF="%s">%s\n</A></li>'
                           % (url_quote(self.next.filename),
-                             html_quote(subject)))
+                             self.quote(subject)))
         else:
             next = next_wsubj = ""
         return next, next_wsubj
@@ -338,13 +340,17 @@ class Article(pipermail.Article):
 
     def _get_body(self):
         """Return the message body ready for HTML, decoded if necessary"""
+        try:
+            body = self.html_body
+        except AttributeError:
+            body = self.body
         if self.charset is None or self.cenc != "quoted-printable":
-            return null_to_space(string.join(self.body, ""))
+            return null_to_space(string.join(body, ""))
         # the charset is specified and the body is quoted-printable
         # first get rid of soft line breaks, then decode literals
         lines = []
         rx = self._rx_softline
-        for line in self.body:
+        for line in body:
             mo = rx.search(line)
             if mo:
                 i = string.rfind(line, "=")
@@ -401,6 +407,8 @@ class Article(pipermail.Article):
     def __getstate__(self):
         d={}
         for each in self.__dict__.keys():
+            if each == "quote":
+                continue
             if each in ['maillist','prev','next','body']:
                 d[each] = None
             else:
@@ -888,6 +896,7 @@ class HyperArchive(pipermail.T):
         toc.close()
 
     def write_article(self, index, article, path):
+        # called by add_article
         f = open_ex(path, 'w')
         f.write(article.as_html())
         f.close()
@@ -1049,9 +1058,14 @@ class HyperArchive(pipermail.T):
                 i = i + 1
 	    
     def format_article(self, article):
+        # called from add_article
+        # TBD: Why do the HTML formatting here and keep it in the
+        # pipermail database?  It makes more sense to do the html
+        # formatting as the article is being written as html and toss
+        # the data after it has been written to the archive file.
 	lines = filter(None, article.body)
 	# Handle <HTML> </HTML> directives
-	if self.ALLOWHTML: 
+	if self.ALLOWHTML:
 	    self.__processbody_HTML(lines)
 	self.__processbody_URLquote(lines)
 	if not self.SHOWHTML and lines: 
@@ -1066,7 +1080,7 @@ class HyperArchive(pipermail.T):
                     s = lines[i]
 		    if s[0:1] in ' \t\n':
                         lines[i] = '<P>' + s
-        article.body = lines
+        article.html_body = lines
 	return article
 
     def update_article(self, arcdir, article, prev, next):
