@@ -42,6 +42,7 @@ import getopt
 import paths
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import MailList
 from Mailman.i18n import _
 
 
@@ -58,9 +59,9 @@ def remove_it(listname, dir, msg):
     if os.path.islink(dir):
         print _('Removing %(msg)s')
         os.unlink(dir)
-    elif os.path.exists(dir):
+    elif os.path.isdir(dir):
         print _('Removing %(msg)s')
-        os.system('rm -rf ' + dir)
+        Utils.rmdirhier(dir)
     else:
         print _('%(listname)s %(msg)s not found as %(dir)s')
 
@@ -80,6 +81,8 @@ def main():
     if not Utils.list_exists(listname):
         usage(1, _('No such list: %(listname)s'))
 
+    mlist = MailList.MailList(listname, lock=0)
+
     removeArchives = 0
     for opt, arg in opts:
         if opt in ('-a', '--archives'):
@@ -90,16 +93,22 @@ def main():
     if not removeArchives:
         print _('Not removing archives.  Reinvoke with -a to remove them.')
 
+    # Do the MTA-specific list deletion tasks
+    if mm_cfg.MTA:
+        modname = 'Mailman.MTA.' + mm_cfg.MTA
+        __import__(modname)
+        sys.modules[modname].remove(mlist)
+
     REMOVABLES = [('lists/%s', 'list info'),
                   ]
 
     if removeArchives:
-        REMOVABLES = REMOVABLES + \
-                     [('archives/private/%s',      _('private archives')),
-                      ('archives/private/%s.mbox', _('private archives')),
-                      ('archives/public/%s',       _('public archives')),
-                      ('archives/public/%s.mbox',  _('public archives')),
-                      ]
+        REMOVABLES.extend(
+            [('archives/private/%s',      _('private archives')),
+             ('archives/private/%s.mbox', _('private archives')),
+             ('archives/public/%s',       _('public archives')),
+             ('archives/public/%s.mbox',  _('public archives')),
+             ])
 
     for dirtmpl, msg in REMOVABLES:
         dir = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl % listname)
