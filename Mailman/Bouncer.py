@@ -30,7 +30,7 @@ from Mailman import Message
 from Mailman import MemberAdaptor
 from Mailman import Pending
 from Mailman.Logging.Syslog import syslog
-from Mailman.i18n import _
+from Mailman import i18n
 
 EMPTYSTRING = ''
 
@@ -38,6 +38,16 @@ EMPTYSTRING = ''
 # after the epoch.  We'll add (0,)*6 to this tuple to get a value appropriate
 # for time.mktime().
 ZEROHOUR_PLUSONEDAY = time.localtime(mm_cfg.days(1))[:3]
+
+def _(s): return s
+
+REASONS = {MemberAdaptor.BYBOUNCE: _('due to excessive bounces'),
+           MemberAdaptor.BYUSER: _('by yourself'),
+           MemberAdaptor.BYADMIN: _('by the list administrator'),
+           MemberAdaptor.UNKNOWN: _('for unknown reasons'),
+           }
+
+_ = i18n._
 
 
 
@@ -122,8 +132,8 @@ class Bouncer:
             # Continue to check phase below
         else:
             # See if this member's bounce information is stale.
-            now = time.mktime(today + (0,) * 6)
-            lastbounce = time.mktime(info.date + (0,) * 6)
+            now = Utils.midnight(today)
+            lastbounce = Utils.midnight(info.date)
             if lastbounce + self.bounce_info_stale_after < now:
                 # Information is stale, so simply reset it
                 info.reset(weight, today, 0)
@@ -188,17 +198,26 @@ class Bouncer:
         info = self.getBounceInfo(member)
         if info is None:
             return
+        reason = self.getDeliveryStatus(member)
         if info.noticesleft <= 0:
             # BAW: Remove them now, with a notification message
             self.ApprovedDeleteMember(
-                member, 'bouncing address',
+                member, 'disabled address',
                 admin_notif=self.bounce_notify_owner_on_removal,
                 userack=1)
             # Expunge the pending cookie for the user.  We throw away the
             # returned data.
             Pending.confirm(info.cookie)
-            syslog('bounce', '%s: %s deleted after exhausting notices',
-                   self.internal_name(), member)
+            if reason == MemberAdaptor.BYBOUNCE:
+                syslog('bounce', '%s: %s deleted after exhausting notices',
+                       self.internal_name(), member)
+            syslog('subscribe', '%s: %s auto-unsubscribed [reason: %s]',
+                   self.internal_name(), member,
+                   {MemberAdaptor.BYBOUNCE: 'BYBOUNCE',
+                    MemberAdaptor.BYUSER: 'BYUSER',
+                    MemberAdaptor.BYADMIN: 'BYADMIN',
+                    MemberAdaptor.BYUNKNOWN: 'BYUNKNOWN'}.get(
+                reason, 'invalid value'))
             return
         # Send the next notification
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
@@ -206,6 +225,11 @@ class Bouncer:
         optionsurl = self.GetOptionsURL(member, absolute=1)
         reqaddr = self.GetRequestEmail()
         lang = self.getMemberLanguage(member)
+        reason = REASONS.get(reason)
+        if reason is None:
+            reason = _('for unknown reasons')
+        else:
+            reason = _(reason)
         text = Utils.maketext(
             'disabled.txt',
             {'listname'   : self.real_name,
@@ -214,6 +238,7 @@ class Bouncer:
              'optionsurl' : optionsurl,
              'password'   : self.getMemberPassword(member),
              'owneraddr'  : self.GetOwnerEmail(),
+             'reason'     : reason,
              }, lang=lang, mlist=self)
         msg = Message.UserNotification(member, reqaddr, text=text, lang=lang)
         # BAW: See the comment in MailList.py ChangeMemberAddress() for why we
