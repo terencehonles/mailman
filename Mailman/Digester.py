@@ -1,6 +1,6 @@
 """Mixin class with list-digest handling methods and settings."""
 
-__version__ = "$Revision: 394 $"
+__version__ = "$Revision: 396 $"
 
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string
@@ -49,12 +49,12 @@ class Digester:
 	     'Header added to every digest',
              "Text attached (as an initial message, before the table"
              " of contents) to the top of digests.<p>"
-             + mm_cfg.MESSAGE_DECORATION_NOTE),
+             + mm_err.MESSAGE_DECORATION_NOTE),
 
 	    ('digest_footer', mm_cfg.Text, (4, 55), 0,
 	     'Footer added to every digest',
              "Text attached (as a final message) to the bottom of digests.<p>"
-             + mm_cfg.MESSAGE_DECORATION_NOTE),
+             + mm_err.MESSAGE_DECORATION_NOTE),
 	    ]
 
     def SetUserDigest(self, sender, value):
