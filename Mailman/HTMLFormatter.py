@@ -69,12 +69,15 @@ class HTMLFormatter:
 	def NotHidden(x, s=self, v=mm_cfg.ConcealSubscription):
 	    return not s.GetUserOption(x, v)
 
+        
 	if digest:
-	    people = filter(NotHidden, self.digest_members)
-	    num_concealed = len(self.digest_members) - len(people)
+            digestmembers = self.GetDigestMembers()
+	    people = filter(NotHidden, digestmembers)
+	    num_concealed = len(digestmembers) - len(people)
 	else:
-	    people = filter(NotHidden, self.members)
-	    num_concealed = len(self.members) - len(people)
+            members = self.GetMembers()
+	    people = filter(NotHidden, members)
+	    num_concealed = len(members) - len(people)
         people.sort()
 	if (num_concealed > 0):
 	    plurality = (((num_concealed > 1) and "s") or "")
@@ -339,6 +342,8 @@ class HTMLFormatter:
     # This needs to wait until after the list is inited, so let's build it
     # when it's needed only.
     def GetStandardReplacements(self):
+        dmember_len = len(self.GetDigestMembers())
+        member_len = len(self.GetMembers())
 	return { 
 	    '<mm-mailman-footer>' : self.GetMailmanFooter(),
 	    '<mm-list-name>' : self.real_name,
@@ -355,10 +360,9 @@ class HTMLFormatter:
             	self.RestrictedListMessage('current archive',
                                            self.archive_private),
 	    '<mm-digest-users>' : self.FormatUsers(1),
-	    '<mm-num-reg-users>' : `len(self.members)`,
-	    '<mm-num-digesters>' : `len(self.digest_members)`,
-	    '<mm-num-members>' : (`len(self.members)`
-				  + `len(self.digest_members)`),
+	    '<mm-num-reg-users>' : `member_len`,
+	    '<mm-num-digesters>' : `dmember_len`,
+	    '<mm-num-members>' : (`member_len + dmember_len`),
 	    '<mm-posting-addr>' : '%s' % self.GetListEmail(),
 	    '<mm-request-addr>' : '%s' % self.GetRequestEmail(),
 	    '<mm-owner>' : self.GetAdminEmail(),

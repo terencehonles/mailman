@@ -144,12 +144,12 @@ def main():
                                     ' (does it have the colon?)<ul> %s </ul>',
                                     line)
 
-	if not lst.digestable and len(lst.digest_members):
+	if not lst.digestable and len(lst.GetDigestMembers()):
 	    AddErrorMessage(doc,
                             'Warning:  you have digest members,'
                             ' but digests are turned off.'
                             '  Those people will not receive mail.')
-	if not lst.nondigestable and len(lst.members):
+	if not lst.nondigestable and len(lst.GetMembers()):
 	    AddErrorMessage(doc,
                             'Warning:  you have lst members,'
                             ' but non-digestified mail is turned'
@@ -487,13 +487,7 @@ def FormatMembershipOptions(lst):
                            user_table.GetCurrentCellIndex(),
                            bgcolor="#cccccc", colspan=8)
 
-    members = {}
-    digests = {}
-    for member in lst.members:
-        members[member] = 1
-    for member in lst.digest_members:
-        digests[member] = 1
-    all = lst.members + lst.digest_members
+    all = lst.GetMembers() + lst.GetDigestMembers()
     if len(all) > lst.admin_member_chunksize:
         chunks = Utils.chunkify(all, lst.admin_member_chunksize)
         if not cgi_data.has_key("chunk"):
@@ -520,7 +514,7 @@ def FormatMembershipOptions(lst):
         cells = [member + "<input type=hidden name=user value=%s>" % (member),
                  "subscribed " +CheckBox(member + "_subscribed", "on", 1).Format(),
                  ]
-        if members.get(member):
+        if lst.members.get(member):
             cells.append("digest " + CheckBox(member + "_digest", "off", 0).Format())
         else:
             cells.append("digest " + CheckBox(member + "_digest", "on", 1).Format())
@@ -772,18 +766,18 @@ def ChangeOptions(lst, category, cgi_info, document):
                 dirty = 1
                 continue
             if not cgi_info.has_key("%s_digest" % (user)):
-                if user in lst.digest_members:
-                    lst.digest_members.remove(user)
+                if lst.digest_members.has_key(user):
+                    del lst.digest_members[user]
                     dirty = 1
-                if user not in lst.members:
-                    lst.members.append(user)
+                if not lst.members.has_key(user):
+                    lst.members[user] = 1
                     dirty = 1
             else:
-                if user not in lst.digest_members:
-                    lst.digest_members.append(user)
+                if not lst.digest_members.has_key(user):
+                    lst.digest_members[user] = 1
                     dirty = 1
-                if user in lst.members:
-                    lst.members.remove(user)
+                if lst.members.has_key(user):
+                    del lst.members[user]
                     dirty = 1
                 
             for opt in ("hide", "nomail", "ack", "norcv", "plain"):

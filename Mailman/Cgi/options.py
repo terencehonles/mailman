@@ -63,8 +63,9 @@ def main():
         doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
         print doc.Format()
         sys.exit(0)
-
-    if Utils.LCDomain(user) not in list.members + list.digest_members:
+    user = Utils.LCDomain(user)
+    if not list.members.has_key(user) \
+       and not list.digest_members.has_key(user):
         doc.AddItem(htmlformat.Header(2, "Error"))
         doc.AddItem(htmlformat.Bold("%s: No such member %s."
                                     % (list_name, `user`)))

@@ -60,7 +60,7 @@ class Digester:
 	self.digest_footer = mm_cfg.DEFAULT_DIGEST_FOOTER
 	
 	# Non-configurable.
-	self.digest_members = []
+	self.digest_members = {}
 	self.next_digest_number = 1
 
     def GetConfigInfo(self):
@@ -104,25 +104,25 @@ class Digester:
 	addr = self.FindUser(sender)
 	if not addr:
 	    raise Errors.MMNotAMemberError
-	if addr in self.members:
+	if self.members.has_key(addr):
 	    if value == 0:
 		raise Errors.MMAlreadyUndigested
 	    else:
 		if not self.digestable:
 		    raise Errors.MMCantDigestError
-		self.members.remove(addr)
-		self.digest_members.append(addr)
+		del self.members[addr]
+		self.digest_members[addr] = 1
 	else:
 	    if value == 1:
 		raise Errors.MMAlreadyDigested
 	    else:
 		if not self.nondigestable:
 		    raise Errors.MMMustDigestError
-		self.digest_members.remove(addr)
-		self.members.append(addr)
+		del self.digest_members[addr]
+		self.members[addr] = 1
 	self.Save()
 
-# Internal function, don't call this.
+    # Internal function, don't call this.
     def SaveForDigest(self, post):
 	"""Add message to index, and to the digest.  If the digest is large
 	enough when we're done writing, send it out."""
@@ -228,7 +228,8 @@ class Digester:
 	def HatesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return s.GetUserOption(x, v)
 
-	recipients = filter(DeliveryEnabled, self.digest_members)
+        digestmembers = self.GetDigestMembers()
+	recipients = filter(DeliveryEnabled, digestmembers)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
 	self.LogMsg("digest",
@@ -237,8 +238,8 @@ class Digester:
 	self.LogMsg("digest",
 		    ('Fake %d digesters, %d disabled.  '
 		     'Active: %d MIMEers, %d non.'),
-		    len(self.digest_members),
-		    len(self.digest_members) - len(recipients),
+		    len(digestmembers),
+		    len(digestmembers) - len(recipients),
 		    len(mime_recipients), len(text_recipients))
 
     def SendDigest(self):
@@ -255,7 +256,8 @@ class Digester:
 	    return not s.GetUserOption(x, v)
 	def HatesMime(x, s=self, v=mm_cfg.DisableMime):
 	    return s.GetUserOption(x, v)
-	recipients = filter(DeliveryEnabled, self.digest_members)
+        digestmembers = self.GetDigestMembers()
+	recipients = filter(DeliveryEnabled, digestmembers)
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
 
@@ -265,10 +267,10 @@ class Digester:
                     self.real_name,
                     self.next_digest_number,
                     topics_number,
-                    len(self.digest_members),
+                    len(digestmembers),
                     len(mime_recipients),
                     len(text_recipients),
-                    len(self.digest_members) - len(recipients))
+                    len(digestmembers) - len(recipients))
 
         if mime_recipients or text_recipients:
             d = Digest(self, topics_text, digest_file.read())

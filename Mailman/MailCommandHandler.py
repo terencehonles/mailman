@@ -358,25 +358,26 @@ class MailCommandHandler:
 	    self.AddError("Private list: only members may see list "
 			  "of subscribers.")
 	    return
-	if not len(self.digest_members) and not len(self.members):
+        digestmembers = self.GetDigestMembers()
+        members = self.GetMembers()
+	if not len(digestmembers) and not len(members):
 	    self.AddToResponse("NO MEMBERS.")
 	    return
 	
 	def NotHidden(x, s=self, v=mm_cfg.ConcealSubscription):
 	    return not s.GetUserOption(x, v)
 
-	if len(self.digest_members):
+
+	if len(digestmembers):
 	    self.AddToResponse("")
 	    self.AddToResponse("Digest Members:")
-            digestmembers = self.digest_members[:]
             digestmembers.sort()
 	    self.AddToResponse(string.join(map(AddTab,
                                                filter(NotHidden,
                                                       digestmembers)),
                                            "\n"))
-	if len(self.members):
+	if len(members):
 	    self.AddToResponse("Non-Digest Members:")
-            members = self.members[:]
             members.sort()
 	    self.AddToResponse(string.join(map(AddTab,
                                                filter(NotHidden, members)),

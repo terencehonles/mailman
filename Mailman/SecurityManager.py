@@ -70,7 +70,8 @@ class SecurityManager:
     def ConfirmUserPassword(self, user, pw):
 	if self.ValidAdminPassword(pw):
 	    return 1
-	if not user in self.members and not user in self.digest_members:
+	if not self.members.has_key(user) \
+           and not self.digest_members.has_key(user):
 	    user = self.FindUser(user)
         try:
             if string.lower(pw) <> string.lower(self.passwords[user]):

@@ -88,8 +88,12 @@ def main():
 
     error = 0
     operation = ""
-
-    if string.lower(user) not in list.members + list.digest_members:
+    user = Utils.LCDomain(user)
+    #
+    # XXX shouldn't this check use Utils.FindMatchingAddresses?
+    #                                               -scott
+    if not list.members.has_key(user) \
+       and not list.digest_members.has_key(user):
         PrintResults("%s not a member!<p>" % user)
 
     if form.has_key("unsub"):

@@ -63,8 +63,17 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	for f in self._log_files.values():
 	    f.close()
 
+    def GetMembers(self):
+        """returns a list of the members."""
+        return self.members.keys()
+
+    def GetDigestMembers(self):
+        """returns a list of digest members."""
+        return self.digest_members.keys()
+
     def GetAdminEmail(self):
         return '%s-admin@%s' % (self._internal_name, self.host_name)
+
     def GetMemberAdminEmail(self, member):
         """Usually the member addr, but modified for umbrella lists.
 
@@ -114,7 +123,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetUserOption(self, user, option):
 	if option == mm_cfg.Digests:
-	    return user in self.digest_members
+	    return self.digest_members.has_key(user)
 	if not self.user_options.has_key(user):
 	    return 0
 	return not not self.user_options[user] & option
@@ -132,8 +141,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def FindUser(self, email):
 	matches = Utils.FindMatchingAddresses(email,
-						 (self.members
-						  + self.digest_members))
+                                              (self.members,
+                                               self.digest_members))
 	if not matches or not len(matches):
 	    return None
 	return matches[0]
@@ -157,7 +166,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	# Must save this state, even though it isn't configurable
 	self.volume = 1
-	self.members = [] # self.digest_members is initted in mm_digest
+	self.members = {} # self.digest_members is initted in mm_digest
 	self.data_version = mm_cfg.VERSION
 	self.last_post_time = 0
 	
@@ -767,10 +776,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	if self.IsMember(name):
 	    raise Errors.MMAlreadyAMember
 	if digest:
-	    self.digest_members.append(name)
+	    self.digest_members[name] = 1
             kind = " (D)"
 	else:
-	    self.members.append(name)
+	    self.members[name] = 1
             kind = ""
         self.SetUserOption(name, mm_cfg.DisableMime,
                            1 - self.mime_is_default_digest)
@@ -800,8 +809,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.IsListInitialized()
         # FindMatchingAddresses *should* never return more than 1 address.
         # However, should log this, just to make sure.
-	aliases = Utils.FindMatchingAddresses(name, self.members + 
-						 self.digest_members)
+	aliases = Utils.FindMatchingAddresses(name, self.members, 
+                                              self.digest_members)
 	if not len(aliases):
 	    raise Errors.MMNoSuchUserError
 
@@ -814,14 +823,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if me.user_options.has_key(alias):
 		del me.user_options[alias]
 	    try:
-		me.members.remove(alias)
+		del me.members[alias]
 		kind = "regular"
-	    except ValueError:
+	    except KeyError:
 		pass
 	    try:
-		me.digest_members.remove(alias)
+		del me.digest_members[alias]
 		kind = "digest"
-	    except ValueError:
+	    except KeyError:
 		pass
 
 	map(DoActualRemoval, aliases)
@@ -835,8 +844,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                     self._internal_name, name, whence)
 
     def IsMember(self, address):
-	return len(Utils.FindMatchingAddresses(address, self.members +
-						    self.digest_members))
+	return len(Utils.FindMatchingAddresses(address, self.members,
+                                               self.digest_members))
 
     def HasExplicitDest(self, msg):
 	"""True if list name or any acceptable_alias is included among the
@@ -1038,7 +1047,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if self.GetUserOption(sender, mm_cfg.AcknowlegePosts):
 		ack_post = 1
 	# Deliver the mail.
-	recipients = self.members[:] 
+	recipients = self.GetMembers()
 	if dont_send_to_sender:
             try:
                 recipients.remove(sender)

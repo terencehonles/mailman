@@ -100,13 +100,29 @@ def UpdateOldVars(l, stored_state):
     else: # make sure everyone gets the behavior the list used to have
         if l.posters:
             l.member_posting_only = 0
+    #
+    # transfer the list data type for holding members and digest members
+    # to the dict data type starting file format version 11
+    #
+    if type(l.members) is type([]):
+        members = {}
+        for m in l.members:
+            members[m] = 1
+        l.members = members
+    if type(l.digest_members) is type([]):
+        dmembers = {}
+        for dm in l.digest_members:
+            dmembers[dm] = 1
+        l.digest_members = dmembers
+
+        
     
 
 def UpdateOldUsers(l):
     """Transform sense of changed user options."""
     if older(l.data_version, "1.0b1.2"):
         # Mime-digest bitfield changed from Enable to Disable after 1.0b1.1.
-        for m in l.members + l.digest_members:
+        for m in l.GetMembers() + l.GetDigestMembers():
             was = l.GetUserOption(m, mm_cfg.DisableMime)
             l.SetUserOption(m, mm_cfg.DisableMime, not was)
 
@@ -165,3 +181,8 @@ def older(version, reference):
 #            section = int(section)
 #        got.append(section)
 #    return got
+
+
+
+
+

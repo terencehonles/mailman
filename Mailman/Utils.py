@@ -319,16 +319,48 @@ def AddressesMatch(addr1, addr2):
     return 1
 
 
-def FindMatchingAddresses(name, array):
-    """Given an email address, and a list of email addresses, returns the
-    subset of the list that matches the given address.  Should sort based
-    on exactness of match, just in case."""
 
-    def CallAddressesMatch (x, y=name):
-	return AddressesMatch(x,y)
+def GetPossibleMatchingAddrs(name):
+    """returns a sorted list of addresses that could possibly match
+    a given name.
 
-    matches = filter(CallAddressesMatch, array)
-    return matches
+    For Example, given scott@pobox.com, return ['scott@pobox.com'],
+    given scott@blackbox.pobox.com return ['scott@blackbox.pobox.com',
+                                           'scott@pobox.com']"""
+
+    name = LCDomain(name)
+    user, domain = ParseEmail(name)
+    res = [name]
+    domain = domain[1:]
+    while len(domain) >= 2:
+        res.append("%s@%s" % (user, string.join(domain, ".")))
+        domain = domain[1:]
+    return res
+
+
+
+def FindMatchingAddresses(name, *dicts):
+    """Given an email address, and any number of dictionaries keyed by
+    email addresses, returns the subset of the list that matches the
+    given address.  Should sort based on exactness of match,
+    just in case."""
+
+    if not mm_cfg.SMART_ADDRESS_MATCH:
+        for d in dicts:
+            if d.has_key(LCDomain(name)):
+                return [name]
+        return []
+    #
+    # GetPossibleMatchingAddrs return LCDomain'd values
+    #
+    p_matches = GetPossibleMatchingAddrs(name) 
+    res = []
+    for pm in p_matches:
+        for d in dicts:
+            if d.has_key(pm):
+                res.append(pm)
+    return res
+
   
 def GetRandomSeed():
     chr1 = int(random.random() * 57) + 65
