@@ -44,18 +44,18 @@ class Privacy:
         if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
                            # choices
-                           (_('none'),
-                            _('confirm'),
-                            _('require approval'),
-                            _('confirm and approve')),
+                           (_('None'),
+                            _('Confirm'),
+                            _('Require approval'),
+                            _('Confirm and approve')),
                            0, 
                            _('What steps are required for subscription?<br>'),
                            _('''None - no verification steps (<em>Not
                            Recommended </em>)<br>
-                           confirm (*) - email confirmation step required <br>
-                           require approval - require list administrator
-                           approval for subscriptions <br>
-                           confirm+approval - both confirm and approve
+                           Confirm (*) - email confirmation step required <br>
+                           Require approval - require list administrator
+                           Approval for subscriptions <br>
+                           Confirm and approve - both confirm and approve
                            
                            <p>(*) when someone requests a subscription,
                            Mailman sends them a notice with a unique
@@ -68,15 +68,15 @@ class Privacy:
         else:
             sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
                            # choices
-                           (_('confirm'),
-                            _('require approval'),
-                            _('confirm+approval')),
+                           (_('Confirm'),
+                            _('Require approval'),
+                            _('Confirm and approve')),
                            1,
                            _('What steps are required for subscription?<br>'),
-                           _('''confirm (*) - email confirmation required <br>
-                           require approval - require list administrator
+                           _('''Confirm (*) - email confirmation required <br>
+                           Require approval - require list administrator
                            approval for subscriptions <br>
-                           confirm+approval - both confirm and approve
+                           Confirm and approve - both confirm and approve
                            
                            <p>(*) when someone requests a subscription,
                            Mailman sends them a notice with a unique
@@ -102,6 +102,21 @@ class Privacy:
 
             sub_cfentry,
             
+            ('unsubscribe_policy', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+             _("""Is the list moderator's approval required for unsubscription
+             requests?  (<em>No</em> is recommended)"""),
+
+             _("""When members want to leave a list, they will make an
+             unsubscription request, either via the web or via email.
+             Normally it is best for you to allow open unsubscriptions so that
+             users can easily remove themselves from mailing lists (they get
+             really upset if they can't get off lists!).
+
+             <p>For some lists though, you may want to impose moderator
+             approval before an unsubscription request is processed.  Examples
+             of such lists include a corporate mailing list that all employees
+             are required to be members of.""")),
+
             _("Membership exposure"),
             ('private_roster', mm_cfg.Radio,
              (_('Anyone'), _('List members'), _('List admin only')), 0,
