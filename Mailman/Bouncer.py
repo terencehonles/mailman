@@ -86,7 +86,7 @@ class Bouncer:
 	if self.bounce_info.has_key(email):
 	    del self.bounce_info[email]
 
-    def RegisterBounce(self, email, msg, saveifdirty=1):
+    def RegisterBounce(self, email, msg):
         """Detect and handle repeat-offender bounce addresses.
         
         We use very sketchy bounce history profiles in self.bounce_info
@@ -95,82 +95,76 @@ class Bouncer:
         and self.max_posts_between_bounces."""
 
         # Set 'dirty' if anything needs to be save in the finally clause.
-        dirty = 0
         report = "%s: %s - " % (self.real_name, email)
+        now = time.time()
+        secs_per_day = 24 * 60 * 60
 
-        try:
-            now = time.time()
-            secs_per_day = 24 * 60 * 60
+        # Take the opportunity to cull expired entries.
+        pid = self.post_id
+        maxposts = self.max_posts_between_bounces
+        stalesecs = self.minimum_removal_date * secs_per_day * 5
+        for k, v in self.bounce_info.items():
+            if now - v[0] > stalesecs:
+                # It's been long enough to drop their bounce record:
+                del self.bounce_info[k]
+                dirty = 1
 
-            # Take the opportunity to cull expired entries.
-            pid = self.post_id
-            maxposts = self.max_posts_between_bounces
-            stalesecs = self.minimum_removal_date * secs_per_day * 5
-            for k, v in self.bounce_info.items():
-                if now - v[0] > stalesecs:
-                    # It's been long enough to drop their bounce record:
-                    del self.bounce_info[k]
-                    dirty = 1
+        this_dude = Utils.FindMatchingAddresses(email, self.bounce_info)
+        if not this_dude:
+            # No (or expired) priors - new record.
+            self.bounce_info[string.lower(email)] = [now, self.post_id,
+                                                     self.post_id]
+            syslog("bounce", report + "first")
+            dirty = 1
+            return
 
-            this_dude = Utils.FindMatchingAddresses(email, self.bounce_info)
-            if not this_dude:
-                # No (or expired) priors - new record.
-                self.bounce_info[string.lower(email)] = [now, self.post_id,
-                                                         self.post_id]
-                syslog("bounce", report + "first")
+        # There are some priors.
+        addr = string.lower(this_dude[0])
+        hist = self.bounce_info[addr]
+        difference = now - hist[0]
+        if len(Utils.FindMatchingAddresses(addr, self.members)):
+            if self.post_id - hist[2] > self.max_posts_between_bounces:
+                # There's been enough posts since last bounce that we're
+                # restarting.  (Might should keep track of who goes stale
+                # how often.)
+                syslog("bounce", report + "first fresh")
+                self.bounce_info[addr] = [now, self.post_id, self.post_id]
                 dirty = 1
                 return
-
-            # There are some priors.
-            addr = string.lower(this_dude[0])
-            hist = self.bounce_info[addr]
-            difference = now - hist[0]
-            if len(Utils.FindMatchingAddresses(addr, self.members)):
-                if self.post_id - hist[2] > self.max_posts_between_bounces:
-                    # There's been enough posts since last bounce that we're
-                    # restarting.  (Might should keep track of who goes stale
-                    # how often.)
-                    syslog("bounce", report + "first fresh")
-                    self.bounce_info[addr] = [now, self.post_id, self.post_id]
-                    dirty = 1
-                    return
-                self.bounce_info[addr][2] = self.post_id
-                dirty = 1
-                if ((self.post_id - hist[1] >
-                     self.minimum_post_count_before_bounce_action)
-                    and
-                    (difference > self.minimum_removal_date * secs_per_day)):
-                    syslog("bounce", report + "exceeded limits")
-                    self.HandleBouncingAddress(addr, msg)
-                    return
-                else:
-                    post_count = (self.minimum_post_count_before_bounce_action
-                                  - (self.post_id - hist[1]))
-                    if post_count < 0:
-                        post_count = 0
-                    remain = (self.minimum_removal_date
-                              * secs_per_day - difference)
-                    syslog("bounce", report + ("%d more allowed over %d secs"
-                                               % (post_count, remain)))
-                    return
-
-            elif len(Utils.FindMatchingAddresses(addr, self.digest_members)):
-                if self.volume > hist[1]:
-                    syslog("bounce", "%s: first fresh (D)" %
-                           self._internal_name)
-                    self.bounce_info[addr] = [now, self.volume, self.volume]
-                    return
-                if difference > self.minimum_removal_date * secs_per_day:
-                    syslog("bounce", report + "exceeded limits (D)")
-                    self.HandleBouncingAddress(addr, msg)
-                    return 
-                syslog("bounce", report + "digester lucked out")
+            self.bounce_info[addr][2] = self.post_id
+            dirty = 1
+            if ((self.post_id - hist[1] >
+                 self.minimum_post_count_before_bounce_action)
+                and
+                (difference > self.minimum_removal_date * secs_per_day)):
+                syslog("bounce", report + "exceeded limits")
+                self.HandleBouncingAddress(addr, msg)
+                return
             else:
-                syslog("bounce", "%s: address %s not a member." %
-                       (self.internal_name(), addr))
-        finally:
-            if dirty and saveifdirty:
-                self.Save()
+                post_count = (self.minimum_post_count_before_bounce_action
+                              - (self.post_id - hist[1]))
+                if post_count < 0:
+                    post_count = 0
+                remain = (self.minimum_removal_date
+                          * secs_per_day - difference)
+                syslog("bounce", report + ("%d more allowed over %d secs"
+                                           % (post_count, remain)))
+                return
+
+        elif len(Utils.FindMatchingAddresses(addr, self.digest_members)):
+            if self.volume > hist[1]:
+                syslog("bounce", "%s: first fresh (D)" %
+                       self._internal_name)
+                self.bounce_info[addr] = [now, self.volume, self.volume]
+                return
+            if difference > self.minimum_removal_date * secs_per_day:
+                syslog("bounce", report + "exceeded limits (D)")
+                self.HandleBouncingAddress(addr, msg)
+                return 
+            syslog("bounce", report + "digester lucked out")
+        else:
+            syslog("bounce", "%s: address %s not a member." %
+                   (self.internal_name(), addr))
 
     def HandleBouncingAddress(self, addr, msg):
         """Disable or remove addr according to bounce_action setting."""
@@ -239,11 +233,9 @@ class Bouncer:
 
             # we do this here so this text won't be wrapped.  note that
             # 'bounce.txt' has a trailing newline
-            msg.rewindbody()
-            body = msg.fp.read()
             text = text + \
                    string.join(msg.headers, '') + '\n' + \
-                   Utils.QuotePeriods(body) + '\n' + \
+                   Utils.QuotePeriods(msg.body) + '\n' + \
                    '--' + boundary + '--'
 
             if negative:
