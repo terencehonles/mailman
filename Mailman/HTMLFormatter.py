@@ -29,18 +29,14 @@ from Mailman.i18n import _
 EMPTYSTRING = ''
 BR = '<br>'
 NL = '\n'
+COMMASPACE = ', '
 
 
 
 class HTMLFormatter:
     def GetMailmanFooter(self):
-        owners_html = Container()
-        for i in range(len(self.owner)):
-            owner = self.owner[i]
-            owners_html.AddItem(Link('mailto:%s' % owner, owner))
-            if i + 1 <> len(self.owner):
-                owners_html.AddItem(', ')
-
+        ownertext = COMMASPACE.join([Utils.ObscureEmail(a, 1)
+                                     for a in self.owner])
         # Remove the .Format() when htmlformat conversion is done.
         realname = self.real_name
         hostname = self.host_name
@@ -49,7 +45,8 @@ class HTMLFormatter:
             Address(
                 Container( 
                     Link(self.GetScriptURL('listinfo'), self.real_name),
-                    _(' list run by '), owners_html,
+                    _(' list run by '),
+                    Link('mailto:' + self.GetOwnerEmail(), ownertext),
                     '<br>',
                     Link(self.GetScriptURL('admin'),
                          _('%(realname)s administrative interface')),
