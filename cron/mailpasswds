@@ -22,6 +22,8 @@ This is a reminder, sent out once a month, about your %s
 mailing list memberships.  It includes your subscription info and
 how to use it to change it or unsubscribe from a list.
 
+Passwords for address %s:
+
 %s
 %s
 
@@ -54,14 +56,15 @@ def MailAllPasswords(list, users):
 	header = ("%-10s %-10s  %s\n%-10s %-10s  %s"
 		  % ("List", "Password", "URL", "----", "--------", "---"))
 	text = USERPASSWORDSTEXT % (list.host_name,
+                                    user,
 				    header,
 				    string.join(table, "\n"),
 				    l, list.host_name,
 				    list.host_name)
-  	list.SendTextToUser(subject = subj,
-  			    recipient = user,
-  			    text = text,
-			    sender = mm_cfg.MAILMAN_OWNER)
+   	list.SendTextToUser(subject = subj,
+   			    recipient = user,
+   			    text = text,
+ 			    sender = mm_cfg.MAILMAN_OWNER)
 
 # Consolidate all the list/url/password info for each user, so we send
 # the user a single message with the info for all their lists on this
