@@ -181,6 +181,11 @@ class UserNotification(Message):
         # Ditto for Date: which is required by RFC 2822
         if not self.has_key('date'):
             self['Date'] = email.Utils.formatdate(localtime=1)
+        # UserNotifications are typically for admin messages, and for messages
+        # other than list explosions.  Send these out as Precedence: bulk, but
+        # don't override an existing Precedence: header.
+        if not self.has_key('precedence'):
+            self['Precedence'] = 'bulk'
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
         virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
