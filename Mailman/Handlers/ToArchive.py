@@ -36,5 +36,5 @@ def process(mlist, msg, msgdata):
     # Send the message to the archiver queue
     archq = get_switchboard(mm_cfg.ARCHQUEUE_DIR)
     # Send the message to the queue
-    archq.enqueue(msg, msgdata,
-                  received_time = time.time())
+    msgdata.setdefault('received_time', time.time())
+    archq.enqueue(msg, msgdata)
