@@ -898,7 +898,9 @@ DEFAULT_FILTER_CONTENT = 0
 DEFAULT_FILTER_MIME_TYPES = []
 
 # DEFAULT_PASS_MIME_TYPES is a list of MIME types to be passed through.  Format is the same as DEFAULT_FILTER_MIME_TYPES
-DEFAULT_PASS_MIME_TYPES = []
+DEFAULT_PASS_MIME_TYPES = ['multipart/mixed',
+                           'multipart/alternative',
+                           'text/plain']
 
 # Whether text/html should be converted to text/plain after content filtering
 # is performed.  Conversion is done according to HTML_TO_PLAIN_TEXT_COMMAND
