@@ -283,6 +283,8 @@ def show_pending_subs(mlist, form):
             mlist.HandleRequest(id, mm_cfg.DISCARD)
         id = ids[0]
         time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+        if fullname:
+            fullname = Utils.uncanonstr(fullname, mlist.preferred_language)
         radio = RadioButtonArray(id, (_('Defer'),
                                       _('Approve'),
                                       _('Reject'),
