@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -189,7 +189,7 @@ def main():
         try:
             Utils.ValidateEmail(addr)
         except Errors.EmailAddressError:
-            print _('Invalid :  %30(addr)s')
+            print _('Invalid :  %(addr)30s')
             invalid = 1
     if invalid:
         print _('You must fix the preceding invalid addresses first.')
@@ -206,6 +206,7 @@ def main():
         # Get the list of addresses currently subscribed
         addrs = {}
         needsadding = {}
+        matches = {}
         for addr in mlist.getMemberCPAddresses(mlist.getMembers()):
             addrs[addr.lower()] = addr
 
@@ -215,7 +216,8 @@ def main():
             laddr = addr.lower()
             if addrs.has_key(laddr):
                 del addrs[laddr]
-            else:
+                matches[laddr] = 1
+            elif not matches.has_key(laddr):
                 needsadding[laddr] = (name, addr)
 
         if not needsadding and not addrs:
@@ -238,10 +240,18 @@ def main():
                 pass
 
         for laddr, addr in addrs.items():
-            name = mlist.getMemberName(addr)
+            name = mlist.getMemberName(laddr) or ''
             # should be a member, otherwise our test above is broken
             if not dryrun:
-                mlist.DeleteMember(addr, admin_notif=notifyadmin)
+                try:
+                    mlist.ApprovedDeleteMember(addr, admin_notif=notifyadmin,
+                                               userack=0)
+                except Errors.MMNoSuchUserError:
+                    # This can happen if the address is illegal (i.e. can't be
+                    # parsed by email.Utils.parseaddr()) but for legacy
+                    # reasons is in the database.  Use a lower level remove to
+                    # get rid of this member's entry
+                    mlist.removeMember(addr)
             print _('Removed: <%(addr)30s> %(name)s')
 
         mlist.Save()
