@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
 "POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
-"PO-Revision-Date: 2002-12-24 13:49+0100\n"
+"PO-Revision-Date: 2002-12-25 15:10+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1121,7 +1121,7 @@ msgstr "Skru av dette medlemmets <em>moderasjonsflagg</em>"
 
 #: Mailman/Cgi/admindb.py:425
 msgid "<em>The sender is now a member of this list</em>"
-msgstr ""
+msgstr "<em>Avsender er nå medlem av denne listen</em>"
 
 #: Mailman/Cgi/admindb.py:434
 msgid "Add <b>%(esender)s</b> to a sender filter"
@@ -3520,11 +3520,11 @@ msgstr "Koreansk"
 
 #: Mailman/Defaults.py:1217
 msgid "Lithuanian"
-msgstr ""
+msgstr "Litauisk"
 
 #: Mailman/Defaults.py:1218
 msgid "Dutch"
-msgstr "Nederlansk"
+msgstr "Nederlandsk"
 
 #: Mailman/Defaults.py:1219
 msgid "Norwegian"
