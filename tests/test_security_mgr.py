@@ -1,17 +1,17 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Unit tests for Mailman/SecurityManager.py
@@ -27,7 +27,8 @@ try:
     import crypt
 except ImportError:
     crypt = None
-from cStringIO import StringIO
+# Don't use cStringIO because we're going to inherit
+from StringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -101,7 +102,7 @@ class TestAuthenticate(TestBase):
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
         TestBase.tearDown(self)
-        
+
     def test_auth_creator(self):
         self.assertEqual(self._mlist.Authenticate(
             [mm_cfg.AuthCreator], 'ccCCcc'), mm_cfg.AuthCreator)
@@ -176,7 +177,7 @@ class TestAuthenticate(TestBase):
     def test_no_user(self):
         mlist = self._mlist
         mlist.addNewMember('aperson@dom.ain', password='nosrepa')
-        self.assertRaises(TypeError, mlist.Authenticate,
+        self.assertRaises(AttributeError, mlist.Authenticate,
                           [mm_cfg.AuthUser], 'nosrepa')
 
     def test_user_unauth(self):
@@ -192,6 +193,14 @@ class TestAuthenticate(TestBase):
 
 
 
+class StripperIO(StringIO):
+    HEAD = 'Set-Cookie: '
+    def write(self, s):
+        if s.startswith(self.HEAD):
+            s = s[len(self.HEAD):]
+        StringIO.write(self, s)
+
+
 class TestWebAuthenticate(TestBase):
     def setUp(self):
         TestBase.setUp(self)
@@ -201,13 +210,15 @@ class TestWebAuthenticate(TestBase):
         mlist.mod_password = password('abcdefg')
         mlist.addNewMember('aperson@dom.ain', password='qqQQqq')
         # Set up the cookie data
-        sfp = StringIO()
+        sfp = StripperIO()
         print >> sfp, mlist.MakeCookie(mm_cfg.AuthSiteAdmin)
         # AuthCreator isn't handled in AuthContextInfo()
         print >> sfp, mlist.MakeCookie(mm_cfg.AuthListAdmin)
         print >> sfp, mlist.MakeCookie(mm_cfg.AuthListModerator)
         print >> sfp, mlist.MakeCookie(mm_cfg.AuthUser, 'aperson@dom.ain')
-        os.environ['HTTP_COOKIE'] = sfp.getvalue()
+        # Strip off the "Set-Cookie: " prefix
+        cookie = sfp.getvalue()
+        os.environ['HTTP_COOKIE'] = cookie
 
     def tearDown(self):
         try:
@@ -218,6 +229,7 @@ class TestWebAuthenticate(TestBase):
             os.unlink(mm_cfg.LISTCREATOR_PW_FILE)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
+        del os.environ['HTTP_COOKIE']
         TestBase.tearDown(self)
 
     def test_auth_site_admin(self):
