@@ -85,6 +85,13 @@ def UpdateOldVars(l, stored_state):
         if not hasattr(l, newname) and newdefault is not uniqueval:
                 setattr(l, newname, newdefault)
 
+    # Migrate to 2.1b3, baw 17-Aug-2001
+    if hasattr(l, 'dont_respond_to_post_requests'):
+        oldval = getattr(l, 'dont_respond_to_post_requests')
+        if not hasattr(l, 'respond_to_post_requests'):
+            l.respond_to_post_requests = not oldval
+        del l.dont_respond_to_post_requests
+
     # Migrate to 1.0b6, klm 10/22/1998:
     PreferStored('reminders_to_admins', 'umbrella_list',
                  mm_cfg.DEFAULT_UMBRELLA_LIST)
