@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Set the site password, using the argument passed in the command line.
+"""Set the site password, prompting from the terminal.
 
 The site password can be used in most if not all places that the list
 administrator's password can be used, which in turn can be used in most
@@ -25,14 +25,23 @@ places that a list users password can be used."""
 import sys
 import paths
 from Mailman import MailList
+from Mailman.Utils import getTtyPwWithConfirm
 
 def main(argv):
-    if len(sys.argv) != 2:
-        print "Usage: mmsitepass password"
+    if len(sys.argv) >= 2:
+        print "Usage: mmsitepass [ password ]"
         raise SystemExit, 1
+    elif len(sys.argv) == 2:
+        pw = sys.argv[1]
+    else:
+        try:
+            pw = getTtyPwWithConfirm("Password: ")
+        except KeyboardInterrupt:
+            print "Interrupted..."
+            raise SystemExit, 1
     l = MailList.MailList()
-    l.SetSiteAdminPassword(sys.argv[1])
-    if l.CheckSiteAdminPassword(sys.argv[1]):
+    l.SetSiteAdminPassword(pw)
+    if l.CheckSiteAdminPassword(pw):
         print "Password changed."
         raise SystemExit, 0
     else:

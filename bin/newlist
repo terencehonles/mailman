@@ -71,7 +71,8 @@ def main(argv):
     if len(argv) > 3:
 	list_pw = argv[3]
     else:
-	list_pw = raw_input("Enter the initial list password: ")
+        list_pw = Utils.getTtyPwWithConfirm("Initial %s password: "
+                                            % list_name)
 
     newlist = MailList.MailList()
     pw = crypt(list_pw , Utils.GetRandomSeed())
