@@ -561,21 +561,24 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
     instantiated, CR when instantiation is complete, and result of
     application as it shows."""
     from MailList import MailList
-    if names == None: names = list_names()
+    if names == None:
+        names = list_names()
     got = []
     for i in names:
-	if verbose: print i,
+	if verbose:
+            print i,
 	l = MailList(i)
-	if verbose: print
+	if verbose:
+            print
 	if unlock and l.Locked():
 	    l.Unlock()
 	got.append(apply(func, (l,)))
-	if verbose: print got[-1]
+	if verbose:
+            print got[-1]
 	if not unlock:
 	    l.Unlock()
 	del l
     return got
-
 
 def chunkify(members, chunksize=None):
      """
