@@ -52,6 +52,7 @@ Where `options' are:
 import sys
 import os
 import string
+import errno
 import re
 import time
 import tempfile
@@ -167,10 +168,8 @@ def do_bump(newvers):
 
 def main():
     try:
-	opts, args = getopt.getopt(
-	    sys.argv[1:],
-	    'btTph',
-	    ['bump', 'tag', 'TAG', 'package', 'help'])
+	opts, args = getopt.getopt(sys.argv[1:], 'btTph',
+                                   ['bump', 'tag', 'TAG', 'package', 'help'])
     except getopt.error, msg:
 	usage(1, msg)
 
@@ -179,6 +178,17 @@ def main():
 	usage(1, 'tagname argument is required')
 
     tagname = args[0]
+
+    # We need a $CVSROOT
+    if not os.environ.get('CVSROOT'):
+        try:
+            fp = open('CVS/Root')
+            os.environ['CVSROOT'] = string.strip(fp.read())
+            fp.close()
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+            usage(1, 'CVSROOT is not set and could not be guessed')
+    print 'Using CVSROOT:', os.environ['CVSROOT']
 
     # default options
     tag = 0
