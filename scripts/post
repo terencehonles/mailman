@@ -31,6 +31,7 @@ import sys
 import paths
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.i18n import _
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 
