@@ -272,12 +272,18 @@ def admin_overview(msg=''):
 
     if advertised:
         table.AddRow(['&nbsp;', '&nbsp;'])
-        table.AddRow([Bold(_('List')), Bold(_('Description'))])
+        table.AddRow([Bold(FontAttr(_('List'), size='+2')),
+                      Bold(FontAttr(_('Description'), size='+2'))
+                      ])
+        highlight = 1
         for mlist in advertised:
             table.AddRow(
                 [Link(mlist.GetScriptURL('admin'), Bold(mlist.real_name)),
-                 mlist.description or Italic(_('[no description available]')),
-                 ])
+                 mlist.description or Italic(_('[no description available]'))])
+            if highlight and mm_cfg.WEB_HIGHLIGHT_COLOR:
+                table.AddRowInfo(table.GetCurrentRowIndex(),
+                                 bgcolor=mm_cfg.WEB_HIGHLIGHT_COLOR)
+            highlight = not highlight
 
     doc.AddItem(table)
     doc.AddItem('<hr>')
