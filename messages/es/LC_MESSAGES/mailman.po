@@ -1,12 +1,12 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
-# FIRST AUTHOR <jcrey@uma.es>, 2000
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
 "POT-Creation-Date: Mon Feb 10 21:41:53 2003\n"
-"PO-Revision-Date: 2002-06-04 11:54GMT\n"
+"PO-Revision-Date: 2003-04-06 01:59-0500\n"
 "Last-Translator: Victoriano Giralt <victoriano@uma.es>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2188,7 +2188,7 @@ msgid ""
 " to find the management interface for your list.\n"
 "         <p>Send questions or comments to "
 msgstr ""
-"para acceder al interfaz de gestión de su lista.\n"
+" para acceder al interfaz de gestión de su lista.\n"
 "        <p>Envíe sus preguntas o comentarios a "
 
 #: Mailman/Cgi/listinfo.py:189
