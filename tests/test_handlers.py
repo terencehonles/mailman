@@ -111,8 +111,6 @@ From: aperson@dom.ain
 
     def test_ack_no_subject(self):
         eq = self.assertEqual
-        self._mlist.host_name = 'dom.ain'
-        self._mlist.web_page_url = 'http://www.dom.ain/mailman/'
         self._mlist.setMemberOption(
             'aperson@dom.ain', mm_cfg.AcknowledgePosts, 1)
         eq(len(self._sb.files()), 0)
@@ -151,8 +149,6 @@ List info page: http://www.dom.ain/mailman/listinfo/_xtest
 
     def test_ack_with_subject(self):
         eq = self.assertEqual
-        self._mlist.host_name = 'dom.ain'
-        self._mlist.web_page_url = 'http://www.dom.ain/mailman/'
         self._mlist.setMemberOption(
             'aperson@dom.ain', mm_cfg.AcknowledgePosts, 1)
         eq(len(self._sb.files()), 0)
@@ -192,8 +188,6 @@ List info page: http://www.dom.ain/mailman/listinfo/_xtest
 
     def test_ack_with_prefixed_subject(self):
         eq = self.assertEqual
-        self._mlist.host_name = 'dom.ain'
-        self._mlist.web_page_url = 'http://www.dom.ain/mailman/'
         self._mlist.subject_prefix = '[XTEST] '
         self._mlist.setMemberOption(
             'aperson@dom.ain', mm_cfg.AcknowledgePosts, 1)
@@ -314,7 +308,6 @@ Approve: wazoo
 
     def test_trip_beentheres(self):
         mlist = self._mlist
-        mlist.host_name = 'dom.ain'
         msg = email.message_from_string("""\
 X-BeenThere: %s
 
@@ -422,7 +415,6 @@ Urgent: zzZZzz
 class TestCleanse(TestBase):
     def setUp(self):
         TestBase.setUp(self)
-        self._mlist.host_name = 'dom.ain'
 
     def test_simple_cleanse(self):
         eq = self.assertEqual
@@ -526,7 +518,6 @@ Errors-To: bsystem@dom.ain
 
     def test_implicit_sender_and_errors_to(self):
         eq = self.assertEqual
-        self._mlist.host_name = 'dom.ain'
         msg = email.message_from_string("""\
 Sender: asystem@dom.ain
 Errors-To: bsystem@dom.ain
@@ -537,7 +528,6 @@ Errors-To: bsystem@dom.ain
         eq(msg['errors-to'], '_xtest-admin@dom.ain')
 
     def test_xbeenthere(self):
-        self._mlist.host_name = 'dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 
@@ -547,7 +537,6 @@ From: aperson@dom.ain
 
     def test_multiple_xbeentheres(self):
         eq = self.assertEqual
-        self._mlist.host_name = 'dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 X-BeenThere: alist@another.dom.ain
@@ -651,7 +640,6 @@ Subject: Re: [XTEST] About Mailman...
     def test_reply_to_list(self):
         eq = self.assertEqual
         self._mlist.reply_goes_to_list = 1
-        self._mlist.host_name = 'dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 
@@ -663,7 +651,6 @@ From: aperson@dom.ain
     def test_reply_to_list_with_xreplyto(self):
         eq = self.assertEqual
         self._mlist.reply_goes_to_list = 1
-        self._mlist.host_name = 'dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 Reply-To: bperson@dom.ain
@@ -676,7 +663,6 @@ Reply-To: bperson@dom.ain
     def test_reply_to_explicit(self):
         eq = self.assertEqual
         self._mlist.reply_goes_to_list = 2
-        self._mlist.host_name = 'dom.ain'
         self._mlist.reply_to_address = 'mlist@dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
@@ -689,7 +675,6 @@ From: aperson@dom.ain
     def test_reply_to_list_with_xreplyto2(self):
         eq = self.assertEqual
         self._mlist.reply_goes_to_list = 2
-        self._mlist.host_name = 'dom.ain'
         self._mlist.reply_to_address = 'mlist@dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
@@ -703,7 +688,6 @@ Reply-To: bperson@dom.ain
     def test_reply_to_explicit_with_bad_address(self):
         eq = self.assertEqual
         self._mlist.reply_goes_to_list = 2
-        self._mlist.host_name = 'dom.ain'
         # A bad address that is missing the domain part
         self._mlist.reply_to_address = 'mlist'
         msg = email.message_from_string("""\
@@ -732,8 +716,6 @@ From: aperson@dom.ain
     def test_list_headers(self):
         eq = self.assertEqual
         self._mlist.archive = 1
-        self._mlist.host_name = 'dom.ain'
-        self._mlist.web_page_url = 'http://www.dom.ain/mailman/'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 
@@ -754,8 +736,6 @@ From: aperson@dom.ain
         eq = self.assertEqual
         self._mlist.archive = 1
         self._mlist.description = 'A Test List'
-        self._mlist.host_name = 'dom.ain'
-        self._mlist.web_page_url = 'http://www.dom.ain/mailman/'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 
@@ -830,6 +810,7 @@ Here is a message.
         
     def test_no_multipart_value_error(self):
         mlist = self._mlist
+        # These will generate warnings in logs/error
         mlist.msg_header = '%(real_name)p header\n'
         mlist.msg_footer = '%(real_name)p footer'
         mlist.real_name = 'XTest'
@@ -971,7 +952,6 @@ aperson@dom.ain
 %(user_optionsurl)s
 """
         mlist.msg_footer = mlist.msg_header
-        mlist.web_page_url = 'http://www.dom.ain/mailman/'
         mlist.addNewMember('APerson@dom.ain', language='xx',
                            password='xxXXxx', realname='A. Person')
         msg = email.message_from_string("""\
@@ -1005,7 +985,6 @@ http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
 %(user_optionsurl)s
 """
         mlist.msg_footer = mlist.msg_header
-        mlist.web_page_url = 'http://www.dom.ain/mailman/'
         mlist.addNewMember('APerson@dom.ain', language='xx', password='xxXXxx')
         msg = email.message_from_string("""\
 From: aperson@dom.ain
@@ -1322,7 +1301,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         eq = self.assertEqual
         self._mlist.respond_to_post_requests = 1
         self._mlist.admin_immed_notify = 1
-        self._mlist.host_name = 'dom.ain'
         # Now cause an implicit destination hold
         msg = email.message_from_string("""\
 From: aperson@dom.ain
@@ -1529,7 +1507,8 @@ It rocks!
         msg2, data = self._sb.dequeue(files[0])
         eq(len(data), 2)
         eq(data['version'], 3)
-        self.failUnless(data['received_time'] <= time.time())
+        # Clock skew makes this unreliable
+        #self.failUnless(data['received_time'] <= time.time())
         eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
 
 
@@ -1568,7 +1547,8 @@ It rocks!
         eq(data['bar'], 2)
         eq(data['version'], 3)
         eq(data['listname'], '_xtest')
-        self.failUnless(data['received_time'] <= time.time())
+        # Clock skew makes this unreliable
+        #self.failUnless(data['received_time'] <= time.time())
 
 
 
@@ -1615,7 +1595,8 @@ Mailman rocks!
         eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
         eq(data['version'], 3)
         eq(data['listname'], '_xtest')
-        self.failUnless(data['received_time'] <= time.time())
+        # Clock skew makes this unreliable
+        #self.failUnless(data['received_time'] <= time.time())
 
 
 
