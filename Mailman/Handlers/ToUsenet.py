@@ -23,6 +23,10 @@ import re
 
 from Mailman.pythonlib.StringIO import StringIO
 
+# The version we have is from Python 1.5.2+ and fixes the "mode reader"
+# problem.
+from Mailman.pythonlib import nntplib
+
 
 
 def process(mlist, msg):
@@ -123,7 +127,7 @@ def do_child(mlist, msg):
     # flatten the message object, stick it in a StringIO object and post
     # that resulting thing to the newsgroup
     fp = StringIO(str(msg))
-    conn = nntplib.NNTP(mlist.nntp_host)
+    conn = nntplib.NNTP(mlist.nntp_host, readermode=1)
     try:
         try:
             conn.post(fp)
