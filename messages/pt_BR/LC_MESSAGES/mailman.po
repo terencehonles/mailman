@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.1b5\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-09-25 10:25-0300\n"
+"PO-Revision-Date: 2003-09-29 09:23-0300\n"
 "Last-Translator: Gleydson Mazioli da Silva <gleydson@debian.org>\n"
 "Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgstr "data"
 
 #: Mailman/Archiver/HyperArch.py:717
 msgid "<P>Currently, there are no archives. </P>"
-msgstr "<p>Atualmente, não existem arquivos das listas.</p>"
+msgstr "<p>Os arquivos das listas não existem atualmente.</p>"
 
 #: Mailman/Archiver/HyperArch.py:754
 msgid "Gzip'd Text%(sz)s"
@@ -148,7 +148,7 @@ msgstr "%(day)i %(month)s %(year)i"
 
 #: Mailman/Archiver/HyperArch.py:987
 msgid "Computing threaded index\n"
-msgstr "Computando a indice da thread\n"
+msgstr "Computando o índice da discussão\n"
 
 #: Mailman/Archiver/HyperArch.py:1244
 msgid "Updating HTML for article %(seq)s"
@@ -209,11 +209,11 @@ msgstr "desativado"
 
 #: Mailman/Bouncer.py:186
 msgid "Bounce action notification"
-msgstr "Notificação retorno de mensagem"
+msgstr "Notificação de retorno de mensagem"
 
 #: Mailman/Bouncer.py:241
 msgid " The last bounce received from you was dated %(date)s"
-msgstr " O último bounce recebido de voce foi verificado em %(date)s"
+msgstr " O último bounce recebido de voce foi em %(date)s"
 
 #: Mailman/Bouncer.py:266 Mailman/Deliverer.py:135
 #: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:233
@@ -245,7 +245,7 @@ msgstr "Nenhumta tal lista <em>%(safelistname)s</em>"
 #: Mailman/Cgi/admin.py:85 Mailman/Cgi/admindb.py:105
 #: Mailman/Cgi/edithtml.py:85 Mailman/Cgi/private.py:123
 msgid "Authorization failed."
-msgstr "Falha na autorização"
+msgstr "Falha na autorização."
 
 #: Mailman/Cgi/admin.py:175
 msgid ""
@@ -1084,7 +1084,7 @@ msgstr "Nome/endereço do Usuário"
 
 #: Mailman/Cgi/admindb.py:359
 msgid "Unsubscription Requests"
-msgstr "Requisições de Desinscrição"
+msgstr "Requisições de Remoção"
 
 #: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:596
 msgid "From:"
@@ -1271,7 +1271,7 @@ msgid ""
 "                a member of the mailing list.  Perhaps you have already been\n"
 "                unsubscribed, e.g. by the list administrator?"
 msgstr ""
-"O endereço que está solicitando a desinscrição não é um\n"
+"O endereço que está solicitando sua remoção não é um\n"
 "                membro da lista de discussão. Talvez você já tenha sido\n"
 "                desinscrito, e.g. pelo administrador da lista?"
 
@@ -1490,11 +1490,11 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:384
 msgid "You have canceled your unsubscription request."
-msgstr "Você cancelou sua requisição de desinscrição."
+msgstr "Você cancelou sua requisição de remoção."
 
 #: Mailman/Cgi/confirm.py:412
 msgid "Unsubscription request confirmed"
-msgstr "Requisição de desinscrição confirmada"
+msgstr "Requisição de remoção confirmada"
 
 #: Mailman/Cgi/confirm.py:416
 msgid ""
@@ -1510,7 +1510,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:427
 msgid "Confirm unsubscription request"
-msgstr "Confirmar requisição de desinscrição"
+msgstr "Confirmar requisição de remoção"
 
 #: Mailman/Cgi/confirm.py:442 Mailman/Cgi/confirm.py:531
 msgid "<em>Not available</em>"
@@ -1533,7 +1533,7 @@ msgid ""
 "    request."
 msgstr ""
 "Sua confirmação é requerida para completar a requisição\n"
-"        de desinscrição da lista de discussão <em>%(listname)s</em>. Você \n"
+"        de remoção da lista de discussão <em>%(listname)s</em>. Você \n"
 "        está atualmente inscrito com\n"
 "\n"
 "    <ul><li><b>Nome Real:</b> %(fullname)s\n"
@@ -1544,7 +1544,7 @@ msgstr ""
 "        processo de confirmação.\n"
 "\n"
 "        <p>Ou clique em <em>Cancelar e descartar</em> para cancelar\n"
-"        esta requisição de desinscrição."
+"        esta requisição de remoção."
 
 #: Mailman/Cgi/confirm.py:461 Mailman/Cgi/options.py:673
 #: Mailman/Cgi/options.py:814 Mailman/Cgi/options.py:824
@@ -2270,13 +2270,13 @@ msgid ""
 "                on the checkbox below the <em>Unsubscribe</em> button.  You\n"
 "                have not been unsubscribed!"
 msgstr ""
-"Você deve confirmar sua desinscrição ativando\n"
+"Você deve confirmar sua remoção ativando\n"
 "                a caixa de checagem abaixo do botão <em>Unsubscribe</em>. \n"
 "                Você não foi desinscrito!"
 
 #: Mailman/Cgi/options.py:435
 msgid "Unsubscription results"
-msgstr "Resultados da Desinscrição"
+msgstr "Resultados da Remoção"
 
 #: Mailman/Cgi/options.py:439
 msgid ""
@@ -2285,7 +2285,7 @@ msgid ""
 "            receive notification once the list moderators have made their\n"
 "            decision."
 msgstr ""
-"Sua requisição de desinscrição foi recebida e \n"
+"Sua requisição de remoção foi recebida e \n"
 "             encaminhada para aprovação dos moderadores da lista. Você \n"
 "             receberá uma notificação assim que os moderadores da lista\n"
 "             fizeram sua decisão."
@@ -2302,7 +2302,7 @@ msgstr ""
 "Você foi descadastrado com sucesso da lista de discussão\n"
 "           %(fqdn_listname)s. Se você estava recebendo entregas\n"
 "           digest você pode receber ainda um digest. Se tiver \n"
-"           quaisquer questões sobre sua desinscrição, por favor\n"
+"           quaisquer questões sobre sua remoção, por favor\n"
 "           contecte os donos da lista em %(owneraddr)s."
 
 #: Mailman/Cgi/options.py:595
@@ -3384,7 +3384,7 @@ msgstr "Você forneceu a senha incorreta"
 
 #: Mailman/Commands/cmd_unsubscribe.py:87
 msgid "Unsubscription request succeeded."
-msgstr "Requisição de desinscrição processada."
+msgstr "Requisição de remoção processada."
 
 #: Mailman/Commands/cmd_who.py:29
 msgid ""
@@ -4966,7 +4966,7 @@ msgid ""
 msgstr ""
 "Texto que será enviado a pessoas deixando a lista. Caso esteja vazio, "
 "\n        nenhum texto especial será adicionado a mensagem de \n"
-"        desinscrição."
+"        remoção."
 
 #: Mailman/Gui/General.py:298
 msgid "Send goodbye message to members when they are unsubscribed?"
@@ -5660,7 +5660,7 @@ msgid ""
 "             requests?  (<em>No</em> is recommended)"
 msgstr ""
 "É requerida a aprovação do moderador para requisições de "
-"desinscrição?\n        (<em>Não</em> é recomendado)."
+"remoção?\n        (<em>Não</em> é recomendado)."
 
 #: Mailman/Gui/Privacy.py:111
 msgid ""
@@ -5679,14 +5679,14 @@ msgid ""
 "             are required to be members of."
 msgstr ""
 "Quando membros desejam deixar a lista, eles farão uma requisição de\n"
-"        desinscrição, ou via web ou via email.\n"
+"        remoção, ou via web ou via email.\n"
 "        Normalmente é melhor que permite o descadastramento livre assim\n"
 "        aqueles usuários podem se auto-remover das listas de discussão\n"
 "        (eles ficarão realmente preocupados se não puderem sair das \n"
 "        listas!).\n"
 "\n"
 "        <p>No entanto para algumas listas, você pode querer impor a\n"
-"        aprovação do moderador antes da requisição de desinscrição\n"
+"        aprovação do moderador antes da requisição de remoção\n"
 "        ser processada. Exemplos de tais listas incluem uma lista\n"
 "        de discussão corporativa em que todos os funcionários devem\n"
 "        ser membros."
@@ -7212,19 +7212,19 @@ msgstr "Encaminhamento de mensagem moderada"
 
 #: Mailman/ListAdmin.py:413
 msgid "New subscription request to list %(realname)s from %(addr)s"
-msgstr "Nova requisição de desinscrição de %(realname)s pelo %(addr)s"
+msgstr "Nova requisição de inscrição de %(realname)s pelo %(addr)s"
 
 #: Mailman/ListAdmin.py:436
 msgid "Subscription request"
-msgstr "Requisição de desinscrição"
+msgstr "Requisição de inscrição"
 
 #: Mailman/ListAdmin.py:466
 msgid "New unsubscription request from %(realname)s by %(addr)s"
-msgstr "Nova requisição de desinscrição de %(realname)s por %(addr)s"
+msgstr "Nova requisição de remoção de %(realname)s por %(addr)s"
 
 #: Mailman/ListAdmin.py:489
 msgid "Unsubscription request"
-msgstr "Requisição de desinscrição"
+msgstr "Requisição de remoção"
 
 #: Mailman/ListAdmin.py:520
 msgid "Original Message"
@@ -7350,7 +7350,7 @@ msgstr "as desinscrições requerem aprovação pelo moderador"
 
 #: Mailman/MailList.py:949
 msgid "%(realname)s unsubscribe notification"
-msgstr "notificação de desinscrição de %(realname)s"
+msgstr "notificação de remoção de %(realname)s"
 
 #: Mailman/MailList.py:1098
 msgid "subscriptions to %(name)s require administrator approval"
@@ -7913,7 +7913,7 @@ msgstr "Nova %(listname)s senha: %(notifypassword)s"
 
 #: bin/change_pw:188
 msgid "Your new %(listname)s list password"
-msgstr "Sua noav senha da lista %(listname)s"
+msgstr "Sua nova senha da lista %(listname)s"
 
 #: bin/change_pw:189
 msgid ""
@@ -10123,7 +10123,7 @@ msgstr ""
 "    --notifyadmin[=<yes|no>]\n"
 "    --a[=<yes|no>]\n"
 "        Especifica se o administrador deverá ser notificado de cada\n"
-"        inscrição ou desinscrição. Se estiver cadastrando diversos "
+"        inscrição ou remoção. Se estiver cadastrando diversos "
 "endereços,\n        é interessante desativar esta opção com -a=yes ou -a, o \n"
 "        administrador será notificado. Com -a=no, o administrador não será\n"
 "        notificado. Com nenhuma opção -a, o padrão para a lista é usado.\n"
