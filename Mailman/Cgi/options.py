@@ -43,8 +43,12 @@ def main():
 
     parts = Utils.GetPathPieces()
     if not parts or len(parts) < 2:
-        doc.AddItem(Header(2, _('Error')))
-        doc.AddItem(Bold(_('Invalid options to CGI script.')))
+        title = _('CGI script error')
+        doc.SetTitle(title)
+        doc.AddItem(Header(2, title))
+        add_error_message(doc, _('Invalid options to CGI script.'))
+        doc.AddItem('<hr>')
+        doc.AddItem(MailmanLogo())
         print doc.Format()
         return
 
@@ -54,8 +58,12 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        doc.AddItem(Header(2, _("Error")))
-        doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
+        title = _('CGI script error')
+        doc.SetTitle(title)
+        doc.AddItem(Header(2, title))
+        add_error_message(doc, _('No such list <em>%(listname)s</em>'))
+        doc.AddItem('<hr>')
+        doc.AddItem(MailmanLogo())
         print doc.Format()
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
@@ -69,8 +77,13 @@ def main():
     user = Utils.UnobscureEmail(SLASH.join(parts[1:]))
     user = Utils.LCDomain(user)
     if not mlist.IsMember(user):
-        doc.AddItem(Header(2, _("Error")))
-        doc.AddItem(Bold(_('%(listname)s: No such member %(user)s.')))
+        realname = mlist.real_name
+        title = _('CGI script error')
+        doc.SetTitle(title)
+        doc.AddItem(Header(2, title))
+        add_error_message(
+            doc,
+            _('List "%(realname)s" has no such member: %(user)s.'))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
@@ -123,7 +136,7 @@ def main():
         # to authenticate via cgi (instead of cookie), then print an error
         # message.
         if cgidata.has_key('login'):
-            add_error_message(doc, _('Authentication failed.'), tag='Error: ')
+            add_error_message(doc, _('Authentication failed.'))
 
         loginpage(mlist, doc, user, cgidata)
         print doc.Format()
@@ -511,7 +524,7 @@ def loginpage(mlist, doc, user, cgidata):
     doc.SetTitle(title)
     table.AddRow([Center(Header(2, title))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
     # Preamble
     table.AddRow([_("""In order to change your membership option, you must
     first log in by giving your membership password in the section below.  If
@@ -541,7 +554,7 @@ def loginpage(mlist, doc, user, cgidata):
     if not cgidata.has_key('login-unsub'):
         table.AddRow([Center(Header(2, _('Unsubscribe')))])
         table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                          bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                          bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
         table.AddRow([_("""By clicking on the <em>Unsubscribe</em> button, a
         confirmation message will be emailed to you.  This message will have a
@@ -555,7 +568,7 @@ def loginpage(mlist, doc, user, cgidata):
     if not cgidata.has_key('login-remind'):
         table.AddRow([Center(Header(2, _('Password reminder')))])
         table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                          bgcolor=mm_cfg.WEB_HEADERCOLOR)
+                          bgcolor=mm_cfg.WEB_HEADER_COLOR)
 
         table.AddRow([_("""By clicking on the <em>Remind</em> button, your
         password will be emailed to you.""")])
@@ -568,9 +581,9 @@ def loginpage(mlist, doc, user, cgidata):
 
 
 
-def add_error_message(doc, errmsg, tag='Warning: ', *args):
+def add_error_message(doc, errmsg, tag='Error: ', *args):
     doc.AddItem(Header(3, Bold(FontAttr(
-        _(tag), color="#ff0000", size="+2")).Format() +
+        _(tag), color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
                        Italic(errmsg % args).Format()))
 
 
