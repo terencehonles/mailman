@@ -142,22 +142,24 @@ class _Switchboard:
             os.unlink(dbfile)
         except EnvironmentError, e:
             if e.errno <> errno.ENOENT: raise
-        # Using a pickle file will be the more common operation, so try to
-        # open that first, and only open the plain text file if that fails.
+        msgfp = None
         try:
-            msgfp = open(pckfile)
-            msg = cPickle.load(msgfp)
-            msgfp.close()
-            os.unlink(pckfile)
-        except EnvironmentError, e:
-            if e.errno <> errno.ENOENT: raise
             try:
-                msgfp = open(msgfile)
-                msg = Parser(_class=Message.Message).parse(msgfp)
-                msgfp.close()
-                os.unlink(msgfile)
+                msgfp = open(pckfile)
+                msg = cPickle.load(msgfp)
+                os.unlink(pckfile)
             except EnvironmentError, e:
                 if e.errno <> errno.ENOENT: raise
+                msgfp = None
+                try:
+                    msgfp = open(msgfile)
+                    msg = Parser(_class=Message.Message).parse(msgfp)
+                    os.unlink(msgfile)
+                except EnvironmentError, e:
+                    if e.errno <> errno.ENOENT: raise
+        finally:
+            if msgfp:
+                msgfp.close()
         return msg, data
 
     def files(self):
