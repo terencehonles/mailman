@@ -66,7 +66,7 @@ def main():
                 Link(Utils.ScriptURL('admin'),
                      _('administrative list overview')).Format())
     doc.AddItem(MailmanLogo())
-    print doc.Format(bgcolor='#ffffff')
+    print doc.Format()
 
 
 
@@ -205,7 +205,8 @@ def process_request(doc, cgidata):
         doc.SetTitle(title)
         table = Table(border=0, width='100%')
         table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
-        table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor='#99ccff')
+        table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                          bgcolor=mm_cfg.WEB_HEADERCOLOR)
         table.AddRow([_('''You have successfully created the mailing list
         <b>%(listname)s</b> and notification has been sent to the list owner
         <b>%(owner)s</b>.  You can now:''')])
@@ -225,7 +226,7 @@ def process_request(doc, cgidata):
 
 
 
-# For convenience
+# Because the cgi module blows
 class Dummy:
     def getvalue(self, name, default):
         return default
@@ -241,7 +242,8 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     doc.SetTitle(title)
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
-    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor='#99ccff')
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0,
+                      bgcolor=mm_cfg.WEB_HEADERCOLOR)
     # Add any error message
     if errmsg:
         table.AddRow([Header(3, Bold(
@@ -268,19 +270,20 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     password can also be used for authentication.
     """)])
     # Build the form for the necessary input
+    GREY = mm_cfg.WEB_ADMINITEM_COLOR
     form = Form(Utils.ScriptURL('create'))
     ftable = Table(border=0, cols='2', width='100%',
                    cellspacing=3, cellpadding=4)
 
     ftable.AddRow([Label(_('Name of list:')),
                    TextBox('listname', cgidata.getvalue('listname', ''))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow([Label(_('Initial list owner address:')),
                    TextBox('owner', cgidata.getvalue('owner', ''))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     try:
         autogen = int(cgidata.getvalue('autogen', '0'))
@@ -290,18 +293,18 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
                    RadioButtonArray('autogen', (_('No'), _('Yes')),
                                     checked=autogen,
                                     values=(0, 1))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow([Label(_('Initial list password:')),
                    PasswordBox('password', cgidata.getvalue('password', ''))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow([Label(_('Confirm initial password:')),
                    PasswordBox('confirm', cgidata.getvalue('confirm', ''))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     try:
         notify = int(cgidata.getvalue('notify', '1'))
@@ -311,15 +314,15 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
                    RadioButtonArray('notify', (_('No'), _('Yes')),
                                     checked=notify,
                                     values=(0, 1))])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow(['<hr>'])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
     ftable.AddRow([Label(_("List creator's (authentication) password:")),
                    PasswordBox('auth')])
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
-    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     ftable.AddRow([Center(SubmitButton('doit', _('Create List'))),
                    Center(SubmitButton('clear', _('Clear Form')))])
