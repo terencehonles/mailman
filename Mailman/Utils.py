@@ -66,15 +66,15 @@ def list_names():
 
 
 # a much more naive implementation than say, Emacs's fill-paragraph!
-def wrap(text, column=70):
+def wrap(text, column=70, honor_leading_ws=1):
     """Wrap and fill the text to the specified column.
 
     Wrapping is always in effect, although if it is not possible to wrap a
     line (because some word is longer than `column' characters) the line is
     broken at the next available whitespace boundary.  Paragraphs are also
-    always filled, unless the line begins with whitespace.  This is the
-    algorithm that the Python FAQ wizard uses, and seems like a good
-    compromise.
+    always filled, unless honor_leading_ws is true and the line begins with
+    whitespace.  This is the algorithm that the Python FAQ wizard uses, and
+    seems like a good compromise.
 
     """
     wrapped = ''
@@ -88,7 +88,7 @@ def wrap(text, column=70):
             if not line:
                 lines.append(line)
                 continue
-            if line[0] in string.whitespace:
+            if honor_leading_ws and line[0] in string.whitespace:
                 fillthis = 0
             else:
                 fillthis = 1
