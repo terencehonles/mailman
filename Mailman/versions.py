@@ -168,8 +168,10 @@ def NewVars(l):
     # Autoresponder mixin class attributes
     add_only_if_missing('autorespond_postings', 0, l)
     add_only_if_missing('autorespond_admin', 0, l)
+    add_only_if_missing('autorespond_requests', 0, l)
     add_only_if_missing('autoresponse_postings_text', '', l)
     add_only_if_missing('autoresponse_admin_text', '', l)
+    add_only_if_missing('autoresponse_request_text', '', l)
     add_only_if_missing('autoresponse_graceperiod', 90, l)
     add_only_if_missing('postings_responses', {}, l)
     add_only_if_missing('admin_responses', {}, l)
