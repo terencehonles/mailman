@@ -71,7 +71,7 @@ patterns = [
 
 
 
-def process(msg):
+def process(msg, patterns=patterns):
     mi = MsgReader.MsgReader(msg)
     # simple state machine
     #     0 = nothing seen yet
@@ -80,6 +80,7 @@ def process(msg):
     state = 0
     while 1:
         line = mi.readline()
+        #print '(%d) line: %s' % (state, line[:-1])
         if not line:
             break
         if state == 0:
