@@ -1,5 +1,17 @@
 #!/usr/local/bin/python 
 
+"""Create a new, unpopulated maillist.
+
+  newlist <list-name> <list-admin's-address> <admin-password> <immediate>
+
+You can specify as many of the arguments as you want on the command line. 
+The optional <immediate> argument, if present, means to send out the notice 
+immediately.  Otherwise, the script hangs pending input, to give time for
+the person creating the list to customize it before sending the admin an
+email notice about the existence of the new list."""
+
+__version__ = "$Revision: 382 $"
+# $Source$
 
 ADDALIASES_CMD = '/home/mailman/mailman/bin/addaliases'
 
