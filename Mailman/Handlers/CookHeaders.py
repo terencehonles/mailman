@@ -76,17 +76,22 @@ def process(mlist, msg, msgdata):
         msg['Precedence'] = 'bulk'
     #
     # Reply-To: munging.  Do not do this if the message is "fast tracked",
-    # meaning it is internally crafted and delivered to a specific user,
-    # or if there is already a reply-to set.  If the user has set
-    # one we assume they have a good reason for it, and we don't
-    # second guess them.
-    if not fasttrack and not msg.get('reply-to'):
+    # meaning it is internally crafted and delivered to a specific user.
+    # Yuck, I hate this feature but enough people want it that we should
+    # support it as an option.
+    if not fasttrack:
+        xreplyto = None
         # Set Reply-To: header to point back to this list
         if mlist.reply_goes_to_list == 1:
+            xreplyto = msg.get('reply-to')
             msg['Reply-To'] = mlist.GetListEmail()
         # Set Reply-To: an explicit address
         elif mlist.reply_goes_to_list == 2:
+            xreplyto = msg.get('reply-to')
             msg['Reply-To'] = mlist.reply_to_address
+        # Give the recipient some ability to un-munge things.
+        if xreplyto:
+            msg['X-Reply-To'] = xreplyto
     #
     # Add list-specific headers as defined in RFC 2369, but only if the
     # message is being crafted for a specific list (e.g. not for the password
