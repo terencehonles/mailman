@@ -444,6 +444,14 @@ Host       = 7
 Number     = 8
 FileUpload = 9
 
+# Held message disposition actions, for use between admindb.py and
+# ListAdmin.py.
+DEFER = 0
+APPROVE = 1
+REJECT = 2
+DISCARD = 3
+SUBSCRIBE = 4
+
 # Standard text field width
 TEXTFIELDWIDTH = 40
 
