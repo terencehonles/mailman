@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,7 +19,8 @@
 This might eventually be replaced by a syslog based logger, hence the name.
 """
 
-from StampedLogger import StampedLogger
+from Mailman.Logging.StampedLogger import StampedLogger
+
 
 
 # Global, shared logger instance.  All clients should use this object.
@@ -35,10 +36,18 @@ class _Syslog:
     def __del__(self):
         self.close()
 
-    def LogMsg(self, kind, msg):
+    def LogMsg(self, kind, msg, *args, **kws):
         logf = self._logfiles.get(kind)
         if not logf:
             logf = self._logfiles[kind] = StampedLogger(kind)
+        try:
+            if args:
+                msg %= args
+            if kws:
+                msg %= kws
+        # It's really bad if exceptions in the syslogger cause other crashes
+        except Exception, e:
+            msg = 'Bad format "%s": %s' % (msg, e)
         logf.write(msg + '\n')
 
     # For the ultimate in convenience
