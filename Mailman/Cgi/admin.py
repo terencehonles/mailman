@@ -68,7 +68,9 @@ def main():
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
             FormatAdminOverview('No such list <em>%s</em>' % listname)
-            sys.stderr.write('No such list "%s": %s\n' % (listname, e))
+            sys.stderr.write(
+                'Someone tried to access the admin interface for a '
+                'non-existent list: %s\n' % listname)
             return
     try:
         if len(parts) == 1:
