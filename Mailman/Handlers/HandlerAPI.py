@@ -26,6 +26,13 @@ class MessageHeld(HandlerError):
     pass
 
 
+# Choose either Sendmail or SMTPDirect as your message delivery module, or
+# edit the pipeline variables if you want to use a different one for delivery
+# to the lists and delivery to a single recipient.
+DELIVERY_MODULE = 'Sendmail'
+#DELIVERY_MODULE = 'SMTPDirect'
+
+
 
 # for messages that arrive from the outside, to be delivered to all mailing
 # list subscribers
@@ -40,7 +47,7 @@ def DeliverToList(mlist, msg):
                 'ToUsenet',
                 'CalcRecips',
                 'Decorate',
-                'Sendmail',
+                DELIVERY_MODULE,
                 'Acknowledge',
                 'AfterDelivery',
                 ]
@@ -59,7 +66,7 @@ def DeliverToList(mlist, msg):
 # None?
 def DeliverToUser(mlist, msg):
     pipeline = ['CookHeaders',
-                'Sendmail',
+                DELIVERY_MODULE,
                 ]
     msg.fastrack = 1
     for modname in pipeline:
