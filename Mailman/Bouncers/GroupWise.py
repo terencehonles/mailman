@@ -22,6 +22,7 @@ X-Mailer: Internet Mail Service (5.5.2653.19)
 """
 
 import re
+from email.Message import Message
 from cStringIO import StringIO
 
 acre = re.compile(r'<(?P<addr>[^>]*)>')
@@ -29,10 +30,12 @@ acre = re.compile(r'<(?P<addr>[^>]*)>')
 
 
 def find_textplain(msg):
-    if msg.get_type() == 'text/plain':
+    if msg.get_type(msg.get_default_type()) == 'text/plain':
         return msg
     if msg.is_multipart:
         for part in msg.get_payload():
+            if not isinstance(part, Message):
+                continue
             ret = find_textplain(part)
             if ret:
                 return ret
