@@ -130,6 +130,7 @@ class HTMLFormatter:
     def FormatDisabledNotice(self, user):
         status = self.getDeliveryStatus(user)
         reason = None
+        info = self.getBounceInfo(user)
         if status == MemberAdaptor.BYUSER:
             reason = _('; it was disabled by you')
         elif status == MemberAdaptor.BYADMIN:
@@ -152,6 +153,17 @@ class HTMLFormatter:
             address.  In either case, to re-enable delivery, change the
             %(link)s option below.  Contact %(mailto)s if you have any
             questions or need assistance.''')
+        elif info and info.score > 0:
+            # Provide information about their current bounce score.  We know
+            # their membership is currently enabled.
+            score = info.score
+            total = self.bounce_score_threshold
+            return _('''<p>We have received some recent bounces from your
+            address.  Your current <em>bounce score</em> is %(score)s out of a
+            maximum of %(total)s.  Please double check that your subscribed
+            address is correct and that there are no problems with delivery to
+            this address.  Your bounce score will be automatically reset if
+            the problems are corrected soon.''')
         else:
             return ''
 
