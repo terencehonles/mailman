@@ -45,7 +45,7 @@ class ModeratedMemberPost(Hold.ModeratedPost):
 
 
 def process(mlist, msg, msgdata):
-    if msgdata.get('approved'):
+    if msgdata.get('approved') or msgdata.get('fromusenet'):
         return
     # First of all, is the poster a member or not?
     for sender in msg.get_senders():
