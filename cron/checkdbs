@@ -111,8 +111,10 @@ def pending_requests(mlist):
         info = mlist.GetRecord(id)
         when, sender, subject, reason, text, msgdata = mlist.GetRecord(id)
         date = time.ctime(when)
-        pending.append(_(
-            '     From: %(sender)s on %(date)s\n    Cause: %(reason)s'))
+        pending.append(_("""\
+From: %(sender)s on %(date)s
+Subject: %(subject)s
+Cause: %(reason)s"""))
         pending.append('')
     # Make sure that the text we return from here can be encoded to a byte
     # string in the charset of the list's language.  This could fail if for
