@@ -101,16 +101,15 @@ class HTMLFormatter:
         else:
             concealed = ""
         ObscureEmail = Utils.ObscureEmail
-        options_url = self.GetScriptURL('options')
         disdel = mm_cfg.DisableDelivery
         items = []
         for person in people:
             id = ObscureEmail(person)
+            url = self.GetOptionsURL(person)
             if self.obscure_addresses:
                 showing = ObscureEmail(person, for_text=1)
             else:
                 showing = person
-            url = "%s/%s" % (options_url, id)
             got = Link(url, showing)
             if self.GetUserOption(person, disdel):
                 got = Italic("(", got, ")")
