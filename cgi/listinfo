@@ -4,7 +4,7 @@
 
 Errors are redirected to logs/errors."""
 
-__version__ = "$Revision: 410 $"
+__version__ = "$Revision: 412 $"
 
 # No lock needed in this script, because we don't change data.
 
@@ -49,7 +49,7 @@ def main():
 def FormatListinfoOverview(error=None):
     "Present a general welcome and itemize the (public) lists."
     doc = Document()
-    legend = "%s Maillists" % mm_cfg.DEFAULT_HOST_NAME
+    legend = "%s maillists" % mm_cfg.DEFAULT_HOST_NAME
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -63,7 +63,9 @@ def FormatListinfoOverview(error=None):
                           colspan=2)
 
     advertised = []
-    for n in mm_utils.list_names():
+    names = mm_utils.list_names()
+    names.sort()
+    for n in names:
 	l = maillist.MailList(n)
 	l.Unlock()
         if l.advertised: advertised.append(l)

@@ -5,7 +5,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 411 $"
+__version__ = "$Revision: 412 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -119,7 +119,7 @@ def main():
 def FormatAdminOverview(error=None):
     "Present a general welcome and itemize the (public) lists."
     doc = Document()
-    legend = "%s Maillists - Admin Links" % mm_cfg.DEFAULT_HOST_NAME
+    legend = "%s maillists - Admin Links" % mm_cfg.DEFAULT_HOST_NAME
     doc.SetTitle(legend)
 
     table = Table(border=0, width="100%")
@@ -133,7 +133,9 @@ def FormatAdminOverview(error=None):
                           colspan=2)
 
     advertised = []
-    for n in mm_utils.list_names():
+    names = mm_utils.list_names()
+    names.sort()
+    for n in names:
 	l = maillist.MailList(n)
 	l.Unlock()
         if l.advertised: advertised.append(l)
