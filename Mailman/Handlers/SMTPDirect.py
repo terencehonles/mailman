@@ -24,6 +24,7 @@ isn't locked while delivery occurs synchronously.
 """
 
 import os
+import string
 import time
 import socket
 
@@ -39,11 +40,82 @@ def process(mlist, msg, msgdata):
     if not recips:
         # Nobody to deliver to!
         return
-    # I want to record how long the SMTP dialog takes because this will help
-    # diagnose whether we need to rewrite this module to relinquish the list
-    # lock or not.
-    t0 = time.time()
+    #
+    # Split the recipient list into SMTP_MAX_RCPTS chunks.  Most MTAs have a
+    # limit on the number of recipients they'll swallow in a single
+    # transaction.
+    if mm_cfg.SMTP_MAX_RCPTS <= 0:
+        chunks = [recips]
+    else:
+        chunks = chunkify(recips, mm_cfg.SMTP_MAX_RCPTS)
     refused = {}
+    for chunk in chunks:
+        failures = deliver(mlist, msg, chunk)
+        refused.update(failures)
+    #
+    # Process any failed deliveries.
+    tempfailures = []
+    for recip, (code, smtpmsg) in refused.items():
+        # DRUMS is an internet draft, but it says:
+        #
+        #    [RFC-821] incorrectly listed the error where an SMTP server
+        #    exhausts its implementation limit on the number of RCPT commands
+        #    ("too many recipients") as having reply code 552.  The correct
+        #    reply code for this condition is 452. Clients SHOULD treat a 552
+        #    code in this case as a temporary, rather than permanent failure
+        #    so the logic below works.
+        #
+        if code >= 500 and code <> 552:
+            # It's a permanent failure for this recipient so register it.  We
+            # don't save the list between each registration because we assume
+            # it happens around the whole message delivery sequence
+            mlist.RegisterBounce(recip, msg, saveifdirty=0)
+        else:
+            # Deal with persistent transient failures by queuing them up for
+            # future delivery.  TBD: this could generate lots of log entries!
+            mlist.LogMsg('smtp-failure', '%d %s (%s)' % (code, recip, smtpmsg))
+            tempfailures.append(recip)
+    if tempfailures:
+        msgdata['recips'] = tempfailures
+        raise HandlerAPI.SomeRecipientsFailed
+
+
+
+def chunkify(recips, chunksize):
+    # First do a simple sort on top level domain.  It probably doesn't buy us
+    # much to try to sort on MX record -- that's the MTA's job.  We're just
+    # trying to avoid getting a max recips error.
+    buckets = {}
+    for r in recips:
+        bin = None
+        i = string.rfind(r, '.')
+        if i >= 0:
+            bin = r[i+1:]
+        bucket = buckets.get(bin, [])
+        bucket.append(r)
+        buckets[bin] = bucket
+    # Now start filling the chunks
+    chunks = []
+    currentchunk = []
+    chunklen = 0
+    for bin in buckets.values():
+        for r in bin:
+            currentchunk.append(r)
+            chunklen = chunklen + 1
+            if chunklen >= chunksize:
+                chunks.append(currentchunk)
+                currentchunk = []
+                chunklen = 0
+    if currentchunk:
+        chunks.append(currentchunk)
+    return chunks
+
+
+
+def deliver(mlist, msg, recips):
+    refused = {}
+    # Gather statistics on how long each SMTP dialog takes.
+    t0 = time.time()
     try:
         conn = smtplib.SMTP(mm_cfg.SMTPHOST, mm_cfg.SMTPPORT)
         try:
@@ -63,32 +135,10 @@ def process(mlist, msg, msgdata):
     # SMTPException.  In that case, nothing got delivered
     except (socket.error, smtplib.SMTPException), e:
         mlist.LogMsg('smtp', 'All recipients refused: %s' % e)
-        # no recipients ever received the message
-        msgdata['recips'] = recips
-        raise HandlerAPI.SomeRecipientsFailed
-    #
-    # Go through all refused recipients and deal with them if possible
-    tempfailures = []
-    for recip, (code, smtpmsg) in refused.items():
-        # DRUMS is an internet draft, but it says:
-        #
-        #    [RFC-821] incorrectly listed the error where an SMTP server
-        #    exhausts its implementation limit on the number of RCPT commands
-        #    ("too many recipients") as having reply code 552.  The correct
-        #    reply code for this condition is 452. Clients SHOULD treat a 552
-        #    code in this case as a temporary, rather than permanent failure
-        #    so the logic below works.
-        #
-        if code >= 500 and code <> 552:
-            # It's a permanent failure for this recipient so register it.  We
-            # don't save the list between each registration because we assume
-            # it happens around the whole message delivery sequence
-            mlist.RegisterBounce(recip, msg, saveifdirty=0)
-        else:
-            # deal with persistent transient failures by queuing them up for
-            # future delivery.
-            mlist.LogMsg('smtp-failure', '%d %s (%s)' % (code, recip, smtpmsg))
-            tempfailures.append(recip)
-    if tempfailures:
-        msgdata['recips'] = tempfailures
-        raise HandlerAPI.SomeRecipientsFailed
+        # If the exception had an associated error code, use it, otherwise,
+        # fake it with a non-triggering exception code
+        errcode = getattr(e, 'smtp_code', -1)
+        errmsg = getattr(e, 'smtp_error', 'ignore')
+        for r in recips:
+            refused[r] = (errcode, errmsg)
+    return refused
