@@ -17,6 +17,35 @@
 
 """Handle passwords and sanitize approved messages."""
 
+# There are current 5 roles defined in Mailman, as codified in Defaults.py:
+# user, list-creator, list-moderator, list-admin, site-admin.
+#
+# Here's how we do cookie based authentication.
+#
+# Each role (see above) has an associated password, which is currently the
+# only way to authenticate a role (in the future, we'll authenticate a
+# user and assign users to roles).
+#
+# Each cookie has the following ingredients: the authorization context's
+# secret (i.e. the password, and a timestamp.  We generate an SHA1 hex
+# digest of these ingredients, which we call the `mac'.  We then marshal
+# up a tuple of the timestamp and the mac, hexlify that and return that as
+# a cookie keyed off the authcontext.  Note that authenticating the user
+# also requires the user's email address to be included in the cookie.
+#
+# The verification process is done in CheckCookie() below.  It extracts
+# the cookie, unhexlifies and unmarshals the tuple, extracting the
+# timestamp.  Using this, and the shared secret, the mac is calculated,
+# and it must match the mac passed in the cookie.  If so, they're golden,
+# otherwise, access is denied.
+#
+# It is still possible for an adversary to attempt to brute force crack
+# the password if they obtain the cookie, since they can extract the
+# timestamp and create macs based on password guesses.  They never get a
+# cleartext version of the password though, so security rests on the
+# difficulty and expense of retrying the cgi dialog for each attempt.  It
+# also relies on the security of SHA1.
+
 
 import os
 import time
@@ -40,56 +69,112 @@ from Mailman import mm_cfg
 
 class SecurityManager:
     def InitVars(self, crypted_password):
-	# Configurable, however, we don't pass this back in GetConfigInfo
+	# Configurable, however we don't pass these back in GetConfigInfo
 	# because it's a special case as it requires confirmation to change.
-	self.password = crypted_password      
+	self.password = crypted_password
+        self.mod_password = None
 	# Non configurable
 	self.passwords = {}
 
-    def ValidAdminPassword(self, response):
-        if Utils.check_global_password(response):
-            return 1
-        # Old passwords may have been encrypted w/crypt.  First try comparing
-        # challenge with sha hashed response and if that fails, use crypt and
-        # upgrade.
-        challenge = self.password
-        sha_response = sha.new(response).hexdigest()
-        if challenge == sha_response:
-            return 1
-        if crypt and challenge == crypt.crypt(response, challenge[:2]):
-            # Upgrade the password hash to SHA1.   BAW: should we store the
-            # plaintext password as well?  We could implement a mail-back
-            # option for list owners that way.
-            self.password = sha_response
-            return 1
-        # Didn't match.
+    def AuthContextInfo(self, authcontext, user):
+        # authcontext may be one of AuthUser, AuthListModerator,
+        # AuthListAdmin, AuthSiteAdmin.  Not supported is the AuthCreator
+        # context.
+        #
+        # user is ignored unless authcontext is AuthUser
+        #
+        # Return the authcontext's secret and cookie key.  If the authcontext
+        # doesn't exist, return the tuple (None, None).  If authcontext is
+        # AuthUser, but the user isn't a member of this mailing list, raise a
+        # MMNotAMemberError error.  If the user's secret is None, raise a
+        # MMBadUserError.
+        key = self.internal_name() + ':'
+        if authcontext == mm_cfg.AuthUser:
+            if user is None:
+                # A bad system error
+                raise TypeError, 'No user supplied for AuthUser context'
+            addr = self.FindUser(user)
+            if addr is None:
+                raise Errors.MMNotAMemberError
+            secret = self.passwords.get(addr)
+            if secret is None:
+                raise Errors.MMBadUserError
+            key += 'user:%s' % addr
+        elif authcontext == mm_cfg.AuthListModerator:
+            secret = self.mod_password
+            key += 'moderator'
+        elif authcontext == mm_cfg.AuthListAdmin:
+            secret = self.password
+            key += 'admin'
+        # BAW: AuthCreator
+        elif authcontext == mm_cfg.AuthSiteAdmin:
+            # BAW: this should probably hand out a site password based cookie,
+            # but that makes me a bit nervous, so just treat site admin as a
+            # list admin since there is currently no site admin-only
+            # functionality.
+            secret = self.password
+            key += 'admin'
+        else:
+            return None, None
+        return key, secret
+
+    def Authenticate(self, authcontexts, response, user=None):
+        # Given a list of authentication contexts, check to see if the
+        # response matches one of the passwords.  authcontexts must be a
+        # sequence, and if it contains the context AuthUser, then the user
+        # argument must not be None.
+        #
+        # Return the authcontext from the argument sequence that matches the
+        # response, or UnAuthorized.
+        for ac in authcontexts:
+            if ac == mm_cfg.AuthCreator:
+                ok = Utils.check_global_password(response, siteadmin=0)
+                if ok:
+                    return mm_cfg.AuthCreator
+            elif ac == mm_cfg.AuthSiteAdmin:
+                ok = Utils.check_global_password(response)
+                if ok:
+                    return mm_cfg.AuthSiteAdmin
+            else:
+                # The password for the list admin and list moderator are not
+                # kept as plain text, but instead as an sha hexdigest.  The
+                # response being passed in is plain text, so we need to
+                # digestify it first.
+                if ac in (mm_cfg.AuthListAdmin, mm_cfg.AuthListModerator):
+                    response = sha.new(response).hexdigest()
+
+                key, secret = self.AuthContextInfo(ac, user)
+                if secret is not None and response == secret:
+                    return ac
+        return mm_cfg.UnAuthorized
+
+    def WebAuthenticate(self, authcontexts, response, user=None):
+        # Given a list of authentication contexts, check to see if the cookie
+        # contains a matching authorization, falling back to checking whether
+        # the response matches one of the passwords.  authcontexts must be a
+        # sequence, and if it contains the context AuthUser, then the user
+        # argument must not be None.
+        #
+        # Returns a flag indicating whether authentication succeeded or not.
+        try:
+            for ac in authcontexts:
+                ok = self.CheckCookie(ac, user)
+                if ok:
+                    return 1
+            # Check passwords
+            ac = self.Authenticate(authcontexts, response, user)
+            if ac:
+                print self.MakeCookie(ac, user)
+                return 1
+        except Errors.MMNotAMemberError:
+            pass
         return 0
 
-    def ConfirmAdminPassword(self, pw):
-        if not self.ValidAdminPassword(pw):
-	    raise Errors.MMBadPasswordError
-	return 1
-
-    def WebAuthenticate(self, user=None, password=None, cookie=None):
-        key = self.internal_name()
-        if cookie:
-            key = key + ':' + cookie
-        # password will be None for explicit login
-        if password is None:
-            return self.CheckCookie(key)
-        else:
-            if user:
-                self.ConfirmUserPassword(user, password)
-            else:
-                self.ConfirmAdminPassword(password)
-            print self.MakeCookie(key)
-            return 1
-
-    def MakeCookie(self, key):
-        # Ingredients for our cookie: our `secret' which is the list's admin
-        # password (never sent in the clear) and the time right now in seconds
-        # since the epoch.
-        secret = self.password
+    def MakeCookie(self, authcontext, user=None):
+        key, secret = self.AuthContextInfo(authcontext, user)
+        if key is None or secret is None:
+            raise MMBadUserError
+        # Timestamp
         issued = int(time.time())
         # Get a digest of the secret, plus other information.
         mac = sha.new(secret + `issued`).hexdigest()
@@ -102,18 +187,14 @@ class SecurityManager:
         # i.e. usually the string `/mailman'
         path = urlparse(self.web_page_url)[2]
         c[key]['path'] = path
-        # Should we use session or persistent cookies?
-        if mm_cfg.ADMIN_COOKIE_LIFE > 0:
-            c[key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
-            c[key]['max-age'] = mm_cfg.ADMIN_COOKIE_LIFE
-        # Set the RFC 2109 required header
+        # We use session cookies, so don't set `expires' or `max-age' keys.
+        # Set the RFC 2109 required header.
         c[key]['version'] = 1
         return c
 
-    def ZapCookie(self, cookie=None):
-        key = self.internal_name()
-        if cookie:
-            key = key + ':' + cookie
+    def ZapCookie(self, authcontext, user=None):
+        # We can throw away the secret.
+        key, secret = self.AuthContextInfo(authcontext, user)
         # Logout of the session by zapping the cookie.  For safety both set
         # max-age=0 (as per RFC2109) and set the cookie data to the empty
         # string.
@@ -128,7 +209,14 @@ class SecurityManager:
         c[key]['version'] = 1
         return c
 
-    def CheckCookie(self, key):
+    def CheckCookie(self, authcontext, user=None):
+        # Two results can occur: we return 1 meaning the cookie authentication
+        # succeeded for the authorization context, we return 0 meaning the
+        # authentication failed.
+        key, secret = self.AuthContextInfo(authcontext, user)
+        # Dig out the cookie data, which better be passed on this cgi
+        # environment variable.  If there's no cookie data, we reject the
+        # authentication.
         cookiedata = os.environ.get('HTTP_COOKIE')
         if not cookiedata:
             return 0
@@ -137,17 +225,20 @@ class SecurityManager:
             return 0
         # Undo the encoding we performed in MakeCookie() above
         try:
-            cookie = marshal.loads(binascii.unhexlify(c[key].value))
-            issued, received_mac = cookie
+            data = marshal.loads(binascii.unhexlify(c[key].value))
+            issued, received_mac = data
         except (EOFError, ValueError, TypeError):
-            raise Errors.MMInvalidCookieError
+            return 0
+        # Make sure the issued timestamp makes sense
         now = time.time()
         if now < issued:
-            raise Errors.MMInvalidCookieError
-        secret = self.password
+            return 0
+        # Calculate what the mac ought to be based on the cookie's timestamp
+        # and the shared secret.
         mac = sha.new(secret + `issued`).hexdigest()
         if mac <> received_mac:
-            raise Errors.MMInvalidCookieError
+            return 0
+        # Authenticated!
         return 1
 
     def ConfirmUserPassword(self, user, pw):
@@ -167,11 +258,9 @@ class SecurityManager:
         return 1
 
     def ChangeUserPassword(self, user, newpw, confirm):
-	self.IsListInitialized()
 	addr = self.FindUser(user)
 	if not addr:
 	    raise Errors.MMNotAMemberError
 	if newpw <> confirm:
 	    raise Errors.MMPasswordsMustMatch
 	self.passwords[addr] = newpw
-	self.Save()
