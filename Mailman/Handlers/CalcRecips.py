@@ -31,27 +31,6 @@ from Mailman.Logging.Syslog import syslog
 
 
 
-class RejectUrgentMessage(Errors.RejectMessage):
-    def __init__(self, mlist, msg):
-        self._realname = mlist.real_name
-        self._subject = msg['subject'] or _('(no subject)')
-
-    def subject(self):
-        return _('Your urgent message was rejected')
-
-    def details(self):
-        # Do it this way for i18n.
-        realname = self._realname
-        subject = self._subject
-        txt = _("""\
-Your urgent message to the %(realname)s mailing list was not authorized for
-delivery.  The original message as received by Mailman is attached.
-
-""")
-        return Utils.wrap(txt)
-
-
-
 def process(mlist, msg, msgdata):
     # Short circuit if we've already calculated the recipients list,
     # regardless of whether the list is empty or not.
@@ -84,7 +63,11 @@ def process(mlist, msg, msgdata):
             # Bad Urgent: password, so reject it instead of passing it on.  I
             # think it's better that the sender know they screwed up than to
             # deliver it normally.
-            raise RejectUrgentMessage(mlist, msg)
+            text = _("""\
+Your urgent message to the %(realname)s mailing list was not authorized for
+delivery.  The original message as received by Mailman is attached.
+""")
+            raise Errors.RejectMessage, Utils.wrap(text)
     # Calculate the regular recipients of the message
     recips = [mlist.getMemberCPAddress(m)
               for m in mlist.getRegularMemberKeys()
