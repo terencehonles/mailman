@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Distributed default settings for significant Mailman config variables.
@@ -739,7 +739,7 @@ ADMIN_CATEGORIES = [
     # First column
     'general', 'passwords', 'language', 'members', 'nondigest', 'digest',
     # Second column
-    'privacy', 'bounce', 'archive', 'gateway', 'autoreply', 
+    'privacy', 'bounce', 'archive', 'gateway', 'autoreply',
     'contentfilter', 'topics',
     ]
 
@@ -896,6 +896,9 @@ DEFAULT_FILTER_CONTENT = 0
 # E.g. "text/html" strips all html attachments while "image" strips all image
 # types regardless of subtype (jpeg, gif, etc.).
 DEFAULT_FILTER_MIME_TYPES = []
+
+# DEFAULT_PASS_MIME_TYPES is a list of MIME types to be passed through.  Format is the same as DEFAULT_FILTER_MIME_TYPES
+DEFAULT_PASS_MIME_TYPES = []
 
 # Whether text/html should be converted to text/plain after content filtering
 # is performed.  Conversion is done according to HTML_TO_PLAIN_TEXT_COMMAND
@@ -1202,4 +1205,4 @@ add_language('no',   _('Norwegian'),           'iso-8859-1')
 add_language('pt_BR', _('Portuguese (Brazil)'), 'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
 
-del _                                   
+del _
