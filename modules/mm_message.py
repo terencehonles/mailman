@@ -85,6 +85,21 @@ class IncomingMessage(rfc822.Message):
 		string.lower(name) + ':'):
 		self.headers[i] = '%s: %s' % (name, value)
 		
+    # XXX delitem should be removed when rfc822.Message() has its own,
+    # possibly in Python 1.5.1.  klm 04/98.
+    def delitem(self, name):
+        """Remove all headers with the specified name.
+
+        None is returned if the named header is not present."""
+        lname = string.lower(name)
+        if not self.dict.has_key(name):
+            return None
+        del self.dict[name]
+        for i in range(1, len(self.headers)):
+            h = self.headers[-1 * i]
+            if len(h) > len(name) and string.lower(h[0:len(name)]) == name:
+                del self.headers[-1 * i]
+
 # This is a simplistic class.  It could do multi-line headers etc...
 # But it doesn't because I don't need that for this app.
 class OutgoingMessage:
