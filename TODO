@@ -4,8 +4,8 @@ The Mailman TODO list
 - Turning off bounce processing doesn't seem to work (still?).
 - Turning on non-member post exclusion doesn't seem to work (Still?).
 - "Stale" addresses don't update properly when new bounces come in 
-(stale means we had some bounces, but delivery to that address started 
-working again before we booted them from the list)
+  (stale means we had some bounces, but delivery to that address started 
+  working again before we booted them from the list)
 
 *Documentation
 - A detailed feature list
@@ -17,43 +17,43 @@ working again before we booted them from the list)
 
 *General Web UI
 - Add a navigation sidebar to all web pages - central links, and
-list-specific links for list-specific pages.
+  list-specific links for list-specific pages.
 - Implement cookies for edithtml and admindb
 - Make sure when settings are changed, there is always some sort of 
-confirmation!
+  confirmation!
 
 *List Admin UI
 - Make it so mass-subscribe doesn't hang waiting for the mail transport to 
-do all delivery. (This may have been done w/ the admin cookie patches?)
+  do all delivery. (This may have been done w/ the admin cookie patches?)
 - Time out admin requests, and have them auto-fail after that period.
 - Allow the admin to edit posts in the database (put a header in the post 
-noting that it was edited by a moderator, however!)
+  noting that it was edited by a moderator, however!)
 - Have the option for moderator passwords, so that moderators don't have 
-access to the general list options.
+  access to the general list options.
 - An -urgent address for each list that may only be posted to by the list 
-admin.  It will seem to be sent to the whole list, but will deliver to 
-everyone ASAP, and not wait for digests.
+  admin.  It will seem to be sent to the whole list, but will deliver to 
+  everyone ASAP, and not wait for digests.
 - A web UI to the -urgent address.
 - Better options for the policy on bundling digests (periodic w/ arbitrary 
-periods, size based, a combo of the two, etc).
+  periods, size based, a combo of the two, etc).
 - A button that will bundle a digest right now (tm).
 - A generic error template page.
 - An option for setting the precedence header.
 - Make the MM-tags accept useful options where appropriate.
 - Revamp the admindb user interface, it's fairly clunky (include a decent 
-cataloging mechanism based on the file system).
+  cataloging mechanism based on the file system).
 - Be able to edit ALL the web pages, as well as the mail messages.
 - Use templates from the templates dir until the list owner changes
-  the page, so the site admin can change them...
+    the page, so the site admin can change them...
 
 *List Member UI
 - Editing your user options should put you back to the edit-options page. 
 - Allow the user to be excluded from postings if they're getting them
-in the to: or cc: headers.
+  in the to: or cc: headers.
 - An option to change your email address.
 - Allow users to specify a different address for password reminders
-(w/ confirmation), or come up w/ a better strategy for remailing lists
-(could be done as the default, given a generic filter mechanism).
+  (w/ confirmation), or come up w/ a better strategy for remailing lists
+  (could be done as the default, given a generic filter mechanism).
 
 *Site Administrator's UI
 - Make a web based site admin UI for adding lists, deleting lists, etc.
@@ -62,10 +62,10 @@ in the to: or cc: headers.
 
 *Email Handling
 - Implement a more general (form-based, like the netscape email
-filter) filtering/bouncing/etc. mechanism.
+  filter) filtering/bouncing/etc. mechanism.
 - Allow for programs to run that perform filtering / reformatting.
 - Set asside messages IMMEDIATELY as a rescue mechanism... make sure no
-  mails are ever lost, even if there turned out to be a bad Mailman bug.
+    mails are ever lost, even if there turned out to be a bad Mailman bug.
 
 *Mailcmd interface
 - Provide an email interface to administrative commands.
@@ -78,7 +78,7 @@ filter) filtering/bouncing/etc. mechanism.
 - Add more patterns for bounce handling
 - Occasionally remove stale bounce entries
 - Send mail to people that are being removed w/o their knowlege (even though
-they're likely not to get it).
+  they're likely not to get it).
 - Clean the code up, make it more robust and efficent (see also bugs)
 
 *Pipermail + Archiving mechanism
@@ -88,7 +88,7 @@ they're likely not to get it).
 *Code cleanup
 - Use the re module where regexp and regsub are used.
 - Refine any remaining unqualified exception guards to specify target 
-  exceptions, when appropriate.
+    exceptions, when appropriate.
 - Turn standard mailman exceptions into class exceptions.
 - Seperate edit-options from the subscribe script.
 - Remove dead code, etc.
@@ -96,17 +96,17 @@ they're likely not to get it).
 *Misc
 - Automatically update aliases again?
 - Make the listinfo pages static, and have them regenerate when options are 
-changed, or html is edited.
+  changed, or html is edited.
 - Make it so Mailman can run as a threaded server (this feature should be 
-optional).
+  optional).
 - The threaded server should be able to off its workload to friendly machines 
-if it is overworked (distributed support).
+  if it is overworked (distributed support).
 - Refine locking to lock only necessary sections to get rid of superfluous
-contention.
+  contention.
 - Implement member profiles, using a class to store name,
-organization, description, etc, and default option settings.  The
-lists still can have their own data, but the user can set defaults in
-their profile...
+  organization, description, etc, and default option settings.  The
+  lists still can have their own data, but the user can set defaults in
+  their profile...
 - Need to go through and verify there are no obvious security problems.
 
 
