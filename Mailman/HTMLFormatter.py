@@ -17,6 +17,7 @@
 
 """Routines for presentation of list-specific HTML text."""
 
+import time
 import re
 
 from Mailman import mm_cfg
@@ -137,7 +138,10 @@ class HTMLFormatter:
         elif status == MemberAdaptor.BYADMIN:
             reason = _('; it was disabled by the list administrator')
         elif status == MemberAdaptor.BYBOUNCE:
-            reason = _('; it was disabled due to excessive bounces')
+            date = time.strftime('%d-%b-%Y',
+                                 time.localtime(Utils.midnight(info.date)))
+            reason = _('''; it was disabled due to excessive bounces.  The
+            last bounce was received on %(date)s''')
         elif status == MemberAdaptor.UNKNOWN:
             reason = _('; it was disabled for unknown reasons')
         if reason:
