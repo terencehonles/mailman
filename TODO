@@ -4,6 +4,7 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 
 The Mailman Wishlist
+(Last Update: $Date: 2002-10-07 23:12:10 +0100 (Mon, 07 Oct 2002) $)
 
     Here's the wish list for future versions of Mailman.  Many new
     features have been added to Mailman 2.1, so what's left will
@@ -147,6 +148,8 @@ Pipermail + Archiving mechanism
     - optional form front-end to public interfaces as a filter to
       address harvesters.
     - In general the whole Pipermail subsystem needs a good rewrite.
+    - Write an API between Mailman and the archiver so that message
+      footers can contain the URL to the archived message.
 
 Code cleanup
     - Turn all remaining string exceptions into class exceptions
