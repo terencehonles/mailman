@@ -31,6 +31,41 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman import mm_cfg
 
+FRESH = 0
+NOTFRESH = -1
+
+LMVFILE = os.path.join(mm_cfg.DATA_DIR, 'last_mailman_version')
+
+
+
+def calcversions():
+    # Returns a tuple of (lastversion, thisversion).  If the last version
+    # could not be determined, lastversion will be FRESH or NOTFRESH,
+    # depending on whether this installation appears to be fresh or not.  The
+    # determining factor is whether there are files in the $prefix/logs subdir
+    # or not.  The version numbers are HEX_VERSIONs.
+    #
+    # See if we stored the last updated version
+    lastversion = None
+    thisversion = mm_cfg.HEX_VERSION
+    try:
+        fp = open(LMVFILE)
+        data = fp.read()
+        fp.close()
+        lastversion = string.atoi(data, 16)
+    except (IOError, ValueError):
+        pass
+    #
+    # try to figure out if this is a fresh install
+    if lastversion is None:
+        lastversion = FRESH
+        try:
+            if os.listdir(mm_cfg.LOG_DIR):
+                lastversion = NOTFRESH
+        except OSError:
+            pass
+    return (lastversion, thisversion)
+
 
 
 def makeabs(relpath):
@@ -210,6 +245,19 @@ def remove_old_sources(module):
 
 
 if __name__ == '__main__':
+    # calculate the versions
+    lastversion, thisversion = calcversions()
+    if lastversion == thisversion:
+        # nothing to do
+        sys.exit(0)
+    if lastversion > thisversion:
+        print 'Downgrade detected, from version', hex(lastversion), \
+              'to version', hex(thisversion)
+        print 'This is probably not safe.  Exiting.'
+        sys.exit(1)
+    print 'Upgrading from version', hex(lastversion), 'to', hex(thisversion)
+    #
+    # get rid of old stuff
     for mod in ('Mailman/Archiver.py', 'Mailman/HyperArch.py',
                 'Mailman/HyperDatabase.py', 'Mailman/pipermail.py',
                 'Mailman/smtplib.py',
@@ -252,32 +300,11 @@ if __name__ == '__main__':
         os.unlink(wmfile)
         print '- usenet watermarks updated and gate_watermarks removed'
     #
-    # See if we stored the last updated version
-    #
-    try:
-        lvfile = os.path.join(mm_cfg.DATA_DIR, 'last_mailman_version')
-        fp = open(lvfile)
-        data = fp.read()
-        fp.close()
-        lastversion = string.atoi(data, 16)
-    except (IOError, ValueError):
-        lastversion = 0
-    #
-    # try to figure out if this is a fresh install
-    #
-    if lastversion == 0:
-        fresh = 0
-        try:
-            logfiles = os.listdir(mm_cfg.LOG_DIR)
-            fresh = not len(logfiles)
-        except OSError:
-            pass
-    #
     # This warning was necessary for the upgrade from 1.0b9 to 1.0b10.
     # There's no good way of figuring this out for releases prior to 2.0beta2
     # :(
     #
-    if lastversion == 0 and not fresh:
+    if lastversion == NOTFRESH:
         print """
 
 NOTE NOTE NOTE NOTE NOTE
@@ -299,6 +326,6 @@ NOTE NOTE NOTE NOTE NOTE
     #
     # Now record the version we just upgraded to
     #
-    fp = open(lvfile, 'w')
+    fp = open(LMVFILE, 'w')
     fp.write(hex(mm_cfg.HEX_VERSION) + '\n')
     fp.close()
