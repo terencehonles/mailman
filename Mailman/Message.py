@@ -112,7 +112,7 @@ class Message(rfc822.Message):
             return string.lower(string.split(self.unixfrom)[1])
         else:
             # TBD: now what?!
-            return None
+            return ''
 
     def Enqueue(self, mlist, newdata={}, **kws):
         """Enqueue a message for redelivery by the qrunner cronjob.
