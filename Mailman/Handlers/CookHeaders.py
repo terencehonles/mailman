@@ -19,6 +19,8 @@
 
 import re
 
+from email.Charset import Charset
+from email.Header import Header, decode_header
 import email.Utils
 
 from Mailman import mm_cfg
@@ -28,6 +30,7 @@ from Mailman.i18n import _
 
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '
+MAXLINELEN = 78
 
 
 
@@ -41,22 +44,10 @@ def process(mlist, msg, msgdata):
     # dictionary for later.  Specifically, the sender header will get waxed,
     # but we need it for the Acknowledge module later.
     msgdata['original_sender'] = msg.get_sender()
-    subject = msg['subject']
     # VirginRunner sets _fasttrack for internally crafted messages.
     fasttrack = msgdata.get('_fasttrack')
     if not msgdata.get('isdigest') and not fasttrack:
-        # Add the subject prefix unless the message is a digest or is being
-        # fast tracked (e.g. internally crafted, delivered to a single user
-        # such as the list admin).  We assume all digests have an appropriate
-        # subject header added by the ToDigest module.
-        prefix = mlist.subject_prefix
-        # We purposefully leave no space b/w prefix and subject!
-        if not subject:
-            del msg['subject']
-            msg['Subject'] = prefix + _('(no subject)')
-        elif prefix and not re.search(re.escape(prefix), subject, re.I):
-            del msg['subject']
-            msg['Subject'] = prefix + subject
+        prefix_subject(mlist, msg, msgdata)
     # Mark message so we know we've been here, but leave any existing
     # X-BeenThere's intact.
     msg['X-BeenThere'] = mlist.GetListEmail()
@@ -161,3 +152,43 @@ def process(mlist, msg, msgdata):
         if len(h) + 2 + len(v) > 78:
             v = CONTINUATION.join(v.split(', '))
         msg[h] = v
+
+
+
+def prefix_subject(mlist, msg, msgdata):
+    # Add the subject prefix unless the message is a digest or is being fast
+    # tracked (e.g. internally crafted, delivered to a single user such as the
+    # list admin).
+    prefix = mlist.subject_prefix
+    subject = msg['subject']
+    # The header may be multilingual; decode it from base64/quopri and search
+    # each chunk for the prefix.
+    has_prefix = 0
+    if prefix and subject:
+        pattern = re.escape(prefix.strip())
+        for decodedsubj, charset in decode_header(subject):
+            if re.search(pattern, decodedsubj, re.IGNORECASE):
+                has_prefix = 1
+    charset = Charset(Utils.GetCharSet(mlist.preferred_language))
+    # We purposefully leave no space b/w prefix and subject!
+    if not subject:
+        del msg['subject']
+        msg['Subject'] = Header(prefix + _('(no subject)'),
+                                charset,
+                                header_name='Subject')
+    elif prefix and not has_prefix:
+        del msg['subject']
+        # We'll encode the new prefix (just in case) but leave the old subject
+        # alone, in case it was already encoded.
+        new_subject = Header(prefix, charset, header_name='Subject').encode()
+        # If we go over 76 characters with the prefix, just put the old
+        # subject on its own line.
+        first = subject.split('\n')[0]
+        if len(new_subject) + len(first) + 1 >= MAXLINELEN - len('Subject: '):
+            new_subject += '\n '
+        # We might have to add a space because the prefix and old subject may
+        # both be MIME-encoded, losing the space at the end of the prefix.
+        elif new_subject[-1] <> ' ':
+            new_subject += ' '
+        new_subject += subject
+        msg['Subject'] = new_subject
