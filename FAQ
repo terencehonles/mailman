@@ -4,7 +4,13 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 FREQUENTLY ASKED QUESTIONS
 
-1. If from the web you get "document contains no data"
+1. How do you spell this program?
+
+      You spell it "Mailman", with a leading capital "M" and a
+      lowercase second "m".  It is incorrect to spell it "MailMan"
+      (i.e. you should not use StudlyCaps).
+
+2. If from the web you get "document contains no data"
    If mail isn't getting delivered
    If you see "Premature end of script headers"
    If you see "Mailman CGI error!!!"
@@ -39,13 +45,13 @@ FREQUENTLY ASKED QUESTIONS
       GID mismatch, then you should get an entry at the end of
       /var/log/syslog identifying the expected and received values.
 
-2. If the web pages hang:
+3. If the web pages hang:
 
       CERN Web servers might leave Python processes running, and in
       some cases might hang the CGI completely.  In that case, switch
       to Apache.
 
-3. Check ~mailman/logs/error periodically:
+4. Check ~mailman/logs/error periodically:
 
       Many of the scripts have their stderr logged to
       ~mailman/logs/error, and some of the modules write caught errors
@@ -62,7 +68,7 @@ FREQUENTLY ASKED QUESTIONS
       to force byte compilation of a file, or just fire up the Python
       interpreter and try importing the module.
     
-4. Other debugging aids
+5. Other debugging aids
 
       If you get exceptions in the log and/or Web pages, and these are
       complaining that files could not be opened, you might like to
@@ -77,13 +83,13 @@ FREQUENTLY ASKED QUESTIONS
       will handle many other cases where files are unsuccessfully
       referenced.
 
-5. Why doesn't the archive link work?
+6. Why doesn't the archive link work?
 
       Have any messages been posted to the list?  This is a known
       buglet; the archive link doesn't work until at least one message 
       has been posted.
 
-6. Okay, the archive link works, but I can't access the public
+7. Okay, the archive link works, but I can't access the public
    archives.
 
       If you are using Apache, you must make sure that FollowSymLinks
@@ -94,11 +100,11 @@ FREQUENTLY ASKED QUESTIONS
 
       http://www.python.org/pipermail/mailman-users/1998-November/000173.html
 
-7. Still having problems?  Running on Linux?
+8. Still having problems?  Running on Linux?
 
     See the README.LINUX file.
 
-8. I want to get rid of some messages in my archive.  How do I do
+9. I want to get rid of some messages in my archive.  How do I do
    this?
 
    David Rocher posts the following recipe:
@@ -107,9 +113,9 @@ FREQUENTLY ASKED QUESTIONS
      . edit $prefix/archives/private/<listname>.mbox/<listname>.mbox [optional]
      . run $prefix/bin/arch <listname> 
 
-9. I set member_posting_only to yes because I want to limit posts to
-   members only, however it seems like all messages coming from
-   members are held for approval.
+10. I set member_posting_only to yes because I want to limit posts to
+    members only, however it seems like all messages coming from
+    members are held for approval.
 
    There appears to be a problem on some systems where the envelope
    sender (e.g. the Unix "From " line) is set incorrectly.  This will
@@ -147,7 +153,7 @@ FREQUENTLY ASKED QUESTIONS
    However, read the comments about this variable in the Defaults.py
    file for a full discussion of the issues.
 
-10. How secure are the authentication mechanisms used in Mailman's web
+11. How secure are the authentication mechanisms used in Mailman's web
     interface?
 
    If your Mailman installation run on an SSL-enabled web server

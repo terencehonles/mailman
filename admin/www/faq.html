@@ -13,12 +13,23 @@
 	</td>
     </tr>
     <tr>
+        <td width=100% bgcolor="fff0d0">
+        <font size=+1><strong>
+        1. How do you spell this program?</strong></font>
+        </td></tr>
+        <tr><td>
+        You spell it <strong>Mailman</strong>, with a leading capital
+        <em>M</em> and a lowercase second <em>m</em>.  It is
+        <strong>incorrect</strong> to spell it "MailMan" (i.e. you
+        should not use StudlyCaps).
+    </tr>
+    <tr>
 	<td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	1. If from the web you get "document contains no data", or
-        if mail isn't getting delivered, or
-        if you see "Premature end of script headers", or
-        if you see "Mailman CGI error!!!"
+	2. If from the web you get "document contains no data", or<br>
+        if mail isn't getting delivered, or<br>
+        if you see "Premature end of script headers", or<br>
+        if you see "Mailman CGI error!!!"<br>
 	</strong></font>
 	</td></tr>
 	<tr><td>
@@ -57,7 +68,7 @@
 
 	<tr><td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	2. If the web pages hang...
+	3. If the web pages hang...
 	</strong></font>
 	</td></tr>
 	<tr><td>CERN Web servers might leave Python processes running, and in
@@ -67,7 +78,7 @@
 
 	<tr><td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	3. Check ~mailman/logs/error periodically...
+	4. Check ~mailman/logs/error periodically...
 	</strong></font>
 	</td></tr>
 	<tr><td>
@@ -90,7 +101,7 @@
 
 	<tr><td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	4. Other debugging aids
+	5. Other debugging aids
 	</strong></font>
 	</td></tr>
 	<tr><td>
@@ -110,7 +121,7 @@
 
 	<tr><td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	5. Why doesn't the archive link work?
+	6. Why doesn't the archive link work?
 	</strong></font>
 	</td></tr>
 	<tr><td>
@@ -121,7 +132,7 @@
 
 	<tr><td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	6. Okay, the archive link works, but I can't access the public
+	7. Okay, the archive link works, but I can't access the public
 	archives.
 	</strong></font>
 	</td></tr>
@@ -138,7 +149,7 @@
 
 	<tr><td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	7. Still having problems?  Running on Linux?
+	8. Still having problems?  Running on Linux?
 	</strong></font>
 	</td></tr>
 	<tr><td>
@@ -147,7 +158,7 @@
 
 	<tr><td width=100% bgcolor="fff0d0">
 	<font size=+1><strong>
-	8. I want to get rid of some messages in my archive.  How do I do
+	9. I want to get rid of some messages in my archive.  How do I do
 	this?
 	</strong></font>
 	</td></tr>
@@ -157,10 +168,109 @@
     <pre><blockquote>
      . remove $prefix/archives/private/<em>listname</em>
      . edit $prefix/archives/private/<em>listname</em>.mbox/<em>listname</em>.mbox [optional]
-     . run $prefix/bin/arch <em>listname</em> 
-	   $prefix/archives/private/<em>listname</em>.mbox/<em>listname</em>.mbox
+     . run $prefix/bin/arch <em>listname</em>
     </blockquote></pre>
 	</td></tr>
+
+    <tr><td width=100% bgcolor="fff0d0">
+    <font size=+1><strong>
+    10. I set member_posting_only to yes because I want to limit posts to
+       members only, however it seems like all messages coming from
+       members are held for approval.
+    </strong></font>
+    </td></tr>
+    <tr><td>
+    There appears to be a problem on some systems where the envelope
+    sender (e.g. the Unix "From " line) is set incorrectly.  This will
+    cause a negative match when checking to see if the sender is a
+    member of the list.  Until 1.0b12, Mailman defaulted to using the
+    envelope sender before the sender (i.e. "From:" header) because the
+    former is set by the SMTP agent while the latter is easily
+    spoofable by the end user.
+
+    <p>
+    <blockquote>    
+    The possible causes for envelope sender munging taking place are
+    many, but the <em>owner-alias</em> sendmail feature probably deserves
+    special mention:
+
+    <p>If mail arrives for list <em>foo</em>, and there is an alias entry for
+    <em>owner-foo</em> as well, the envelope sender of the message will be
+    changed to the single-level expansion of the <em>owner-foo</em> alias.
+
+    <p>Code has been included in post-1.0rc2 Mailman releases to try
+    working around the problem this (unconfigurable) sendmail feature
+    constitutes.  Prior to this, some people worked around the
+    problem by not including the suggested <em>owner-LISTNAME</em> alias
+    entries for Mailman lists in their alias files.
+    </blockquote>
+
+    <p>
+    However, if you are having this problem, you may opt to favor the
+    From: header over the envelope sender.  Do this by adding the
+    following line to your mm_cfg.py file:
+
+    <p>USE_ENVELOPE_SENDER=0
+
+    <p>if you want (arguably) more security, add this to your mm_cfg.py
+    file:
+
+    <p>USE_ENVELOPE_SENDER=1
+
+    <p>However, read the comments about this variable in the Defaults.py
+    file for a full discussion of the issues.
+    </td></tr>
+    
+    <tr><td width=100% bgcolor="fff0d0">
+    <font size=+1><strong>
+    11. How secure are the authentication mechanisms used in Mailman's web
+    interface?
+    </strong></font></td></tr>
+    <tr><td>
+    If your Mailman installation run on an SSL-enabled web server
+    (i.e. you access the Mailman web pages with "https://..." URLs),
+    you should be as safe as SSL itself is.
+
+    <p>However, most Mailman installation run under standard,
+    encryption-unaware servers.  There's nothing wrong with that for
+    most applications, but a sufficiently determined cracker <b>could</b>
+    get unauthorized access by:
+
+    <p><ul>
+    <li><b>Packet sniffing:</b> The password used to do the initial
+    authentication for any non-public Mailman page is sent as clear
+    text over the net.  If you consider this to be a big problem, you
+    really should use an SSL-enabled server.
+
+    <p><li><b>Stealing a valid cookie:</b> After successful password
+    authentication, Mailman sends a cookie back to the user's
+    browser.  This cookie will be used for automatic authentication
+    when browsing further within the list's protected pages.  The
+    cookie will only work for a limited time, and only on connections
+    made from the same IP number as the password-authenticating
+    connection.
+
+    <p>Gaining access to the user's cookie (e.g. by being able to read
+    the user's browser cookie database, or by means of packet
+    sniffing, or maybe even by some broken browser offering all it's
+    cookies to any and all sites the user accesses), and at the same
+    time being able to fulfill the other criteria for using the
+    cookie could result in unauthorized access.
+
+    <p> Note that this problem is easier exploitable when users browse
+    the web via proxies -- in that case, the cookie would be valid
+    for any connections made through that proxy, and not just for
+    connections made from the particular machine the user happens to
+    be accessing the proxy from.
+
+    <li><b>Getting access to the user's terminal:</b> This is really just
+    another kind of cookie stealing.  The short cookie expiry time is
+    supposed to help defeat this problem.  It can be considered the
+    price to pay for the convenience of not having to type the
+    password in every time.
+    </ul>
+
+    </td></tr>
 
     </table>
   </body>
