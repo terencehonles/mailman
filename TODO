@@ -36,6 +36,7 @@ The Mailman TODO list
 - Better options for the policy on bundling digests (periodic w/ arbitrary 
   periods, size based, a combo of the two, etc).
 - A button that will bundle a digest right now (tm).
+- Ability to set the next digest volume and issue number from the Web
 - A generic error template page.
 - An option for setting the precedence header.
 - Make the MM-tags accept useful options where appropriate.
@@ -89,6 +90,7 @@ The Mailman TODO list
 - Provide downloadable tar.gz's of the html archives
 - sort by date should go most-recent to oldest
 - allow list owner to edit archive messages
+- support for alternative archiving systems, e.g. MHonArc, Hypermail
 
 *Code cleanup
 - Use the re module where regexp and regsub are used.
