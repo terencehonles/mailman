@@ -17,8 +17,6 @@ __version__ = '0.06 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
-# Use our optimized version, which will probably be included in Python 2.0
-from Mailman.Utils import mkdir
 from Mailman.Mailbox import Mailbox
 from Mailman.i18n import _
 
@@ -264,7 +262,11 @@ class T:
                 raise os.error, errdata
 	    else: 
 		self.message(_('Creating archive directory ') + self.basedir)
-		mkdir(self.basedir, self.DIRMODE)
+                omask = os.umask(0)
+                try:
+                    os.mkdir(self.basedir, self.DIRMODE)
+                finally:
+                    os.umask(omask)
 
 	# Try to load previously pickled state
 	try:
@@ -537,8 +539,12 @@ class T:
             os.stat(archivedir)
         except os.error, errdata:
             errno, errmsg = errdata
-            if errno == 2: 
-                mkdir(archivedir, self.DIRMODE)
+            if errno == 2:
+                omask = os.umask(0)
+                try:
+                    os.mkdir(archivedir, self.DIRMODE)
+                finally:
+                    os.umask(omask)
             else:
                 raise os.error, errdata
         self.open_new_archive(archive, archivedir)
@@ -710,8 +716,15 @@ class BSDDBdatabase(Database):
 	import bsddb
 	self.__closeIndices()
 	arcdir = os.path.join(self.basedir, 'database')
-	try: mkdir(arcdir)
-	except os.error: pass
+        omask = os.umask(0)
+        try:
+            try:
+                os.mkdir(arcdir, 02775)
+            except OSError:
+                # BAW: Hmm...
+                pas
+        finally:
+            os.umask(omask)
 	for hdr in ('date', 'author', 'subject', 'article', 'thread'):
             path = os.path.join(arcdir, archive + '-' + hdr)
 	    t = bsddb.btopen(path, 'c') 
