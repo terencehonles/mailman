@@ -919,7 +919,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             msg = Message.OwnerNotification(self, subject, text)
             msg.send(self)
 
-    def DeleteMember(self, name, whence=None, admin_notif=None, userack=1):
+    def DeleteMember(self, name, whence=None, admin_notif=None, userack=True):
         realname, email = parseaddr(name)
         if self.unsubscribe_policy == 0:
             self.ApprovedDeleteMember(name, whence, admin_notif, userack)
