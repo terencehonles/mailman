@@ -1,101 +1,107 @@
-Hilfe fuer die Mailingliste %(listname)s:
+Hilfe zur Mailingliste %(listname)s:
 
-Dies Ist die Emai-Kommando Hilfe fuer die Version %(version)s des "Mailman"
-Listenservers. Im folgenden werden die Kommandos beschrieben, mit derer
-Hilfe Sie Ihre Abonnement-Optionen steuern koennen.
-Jedes Kommando kann im Subject/Betreff oder im Text der Email enthalten sein.
+Sie lesen den Hilfetext für Email-Kommandos des Mailinglistenservers "Mailman",
+Version %(version)s. Im Folgenden werden Kommandos beschrieben, die Sie senden
+können, um Informationen über Ihre Abonnements zu erhalten oder diese zu
+ändern. Alle Kommandos können in der Betreffzeile (Subject) oder im
+Nachrichtentext (Body) stehen.
 
-Viele der folgenden Operationen koennen auch ueber ein Webinterface
-vorgenommen werde, das Sie unter:
+Auf viele der folgenden Kommandos kann auch über ein Webinterface
+zugegriffen werden, das Sie unter
 
     %(listinfo_url)s
 
-finden.
-
-Insbesondere koennen Sie ueber das Webinterface erreichen, dass Ihnen Ihr
-Passwort an die Abonnementsadresse geschickt wird.
+finden. Insbesondere können Sie über das Webinterface veranlassen, dass
+Ihnen Ihr Passwort an die Abonnementadresse geschickt wird.
 
 Listen-spezifische Kommandos (subscribe, who, usw.) sollten an die *-request
-Adresse der Liste geschickt werden, z.B. fuer die 'mailman' Liste waere diese
-'mailman-request@...'.
+Adresse der Liste geschickt werden, für die 'mailman' Liste zB würde diese
+'mailman-request@...' lauten.
 
-Worte in "<>" (spitze Klammern) sind ERFORDERLICHE Eintrage, und Worte in
-"[]" (eckigen Klammern) sind OPTIONALE Eintraege.
+Noch kurz zu den Beschreibungen: Worte in "<>" (spitzen Klammern) sind
+ERFORDERLICHE Angaben, Worte in "[]" (eckigen Klammern) sind OPTIONALE Angaben.
+Die Klammern "<>" oder "[]" gehören NICHT zu den Kommandos.
 
-Die Klammern "<>" oder "[]" gehoeren NICHT zu den Kommandos.
-
-Die folgenden Kommandos sind gueltig:
+Die folgenden Kommandos werden verstanden:
 
     subscribe [Passwort] [Digest-Option] [address=<name@host>]
-        Subscribe to the mailing list.  Your password must be given to
-        unsubscribe or change your options.  When you subscribe to the
-        list, you'll be reminded of your password periodically.
-        'Digest-Option' may be either: 'nodigest' or 'digest' (no
-        quotes!)  If you wish to subscribe an address other than the
-        address you send this request from, you may specify
-        "address=<email address>" (no brackets around the email
-        address, no quotes!)
+	Die Mailingliste abonnieren. Ein Passwort muss angegeben werden,
+	dass zum Kündigen oder Ändern Ihrer Einstellungen benötigt wird.
+	Wenn sie die Liste einmal abonniert haben, werden sie regelmäßig an
+	Ihr Passwort erinnert werden. Die 'Digest-Option' kann entweder
+	'digest' oder 'nodigest' (ohne Anführungszeichen) lauten. Wenn Sie die
+	Liste für eine andere Adresse als jene, von der sie dieses Kommando
+	senden, abonnieren wollen, geben sie "address=<andere Adresse>" an
+	(wieder: ohne Anführungszeichen und spitze Klammern!).
 
-    unsubscribe <password> [address]
-        Unsubscribe from the mailing list.  Your password must match
-        the one you gave when you subscribed.  If you are trying to
-        unsubscribe from a different address than the one you
-        subscribed from, you may specify it in the 'address' field.
+    unsubscribe <Passwort> [Adresse]
+	Die Mailingliste kündigen. Das Passwort muss jenem entprechen, dass
+	Sie beim Abonnieren angegeben haben. Wenn sie eine andere Adresse
+	kündigen möchten als jene, von der Sie dieses Kommando senden, können
+	Sie diese im 'Adresse'-Feld angeben.
 
     who
-        See everyone who is on this mailing list.
+        Alle Abonnenten dieser Liste anzeigen.
 
     info
-        View the introductory information for this list.
+        Den Einführungstext für diese Liste anzeigen.
 
     lists
-        See what mailing lists are run by this Mailman server.
+        Alle Listen anzeigen, die auf diesem Mailman-Server verwaltet werden.
 
     help
-        This message.
+        Diese Nachricht.
 
-    set <option> <on|off> <password> 
-        Turn on or off list options.  Valid options are:
+    set <option> <on|off> <Passwort> 
+        Optionen der Liste Ein- bzw. Ausschalten. Gültige Optionen sind:
 
         ack:
-            Turn this on to receive acknowledgement mail when you send
-            mail to the list.
+	    Einschalten, um eine Bestätigung zu erhalten, wenn Sie eine
+	    Nachricht an die Liste senden.
 
         digest:
-            Receive mail from the list bundled together instead of one
-            post at a time.
+	    Die Nachrichten gebündelt anstatt jede einzeln erhalten.
 
         plain:
-            Get plain-text, not MIME-compliant, digests (only if
-            digest is set)
+	    Nachrichten als reinen Text, nicht MIME-kompatibel, erhalten
+	    (nur wenn 'digest' aktiviert ist).
 
         nomail:
-            Stop delivering mail.  Useful if you plan on taking a
-            short vacation.
+	    Versand von Nachrichten einstellen. Nützlich, wenn einmal
+	    ein kleiner Urlaub anstehen sollte.
 
         norcv:
-            Turn this on to NOT receive posts you send to the list.
-            Does not work if digest is set.
+	    Einschalten, um Nachrichten, die Sie selbst an die Liste senden,
+	    NICHT zu erhalten. Funktioniert nicht, wenn 'digest' aktiviert ist.
 
         hide:
-            Conceals your address when people look at who is on this
-            list.
+	    Versteckt ihre Adresse, wenn jemand die Liste der Abonnenten
+	    einsehen möchte.
 
+    	nodupes:
+	    Einschalten, um Nachrichten nicht doppelt zu erhalten, falls
+	    Ihre Adresse explizit im To: oder CC: Feld der Nachricht steht,
+	    oder in mehreren Listen eingetragen ist, die ein und dieselbe
+	    Nachricht erhalten.
 
     options
-        Show the current values of your list options.
+	Den gegenwärtigen Stand Ihrer Optionen anzeigen.
 
-    password <oldpassword> <newpassword> 
-        Change your list password.
+    password <altes Passwort> <neues Passwort> 
+	Ändert ihr Passwort für diese Liste.
     
-    end or --
-       Stop processing commands (good to do if your mailer
-       automatically adds a signature file - it'll save you from a lot
-       of cruft).
+    end oder -- 
+	Die Abarbeitung von Kommandos an dieser Stelle abbrechen (wenn Ihr
+	Email Programm automatisch eine Signatur in dieser Form anhängt, dann
+	kann das unter Umständen einiges an Fehlermeldungen ersparen).
 
+Alle Kommandos sollten an
 
-Commands should be sent to %(requestaddr)s
+    %(requestaddr)s
 
-Questions and concerns for the attention of a person should be sent to
+gesendet werden.
+Fragen und Anliegen, die eines menschlichen Wesens bedürfen, sollten an
 
     %(adminaddr)s
+
+gesendet werden.
