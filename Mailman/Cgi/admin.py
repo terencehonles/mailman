@@ -811,6 +811,17 @@ def ChangeOptions(mlist, category, cgi_info, document):
                 val = cgi_info[property].value
             value = GetValidValue(mlist, property, kind, val, deps)
             if getattr(mlist, property) != value:
+                # TBD: Ensure that mlist.real_name differs only in letter
+                # case.  Otherwise a security hole can potentially be opened
+                # when using an external archiver.  This seems ad-hoc and
+                # could use a more general security policy.
+                if property == 'real_name' and \
+                   string.lower(value) <> string.lower(mlist._internal_name):
+                    # then don't install this value.
+                    document.AddItem("""<p><b>real_name</b> attribute not
+                    changed!  It must differ from the list's name by case
+                    only.<p>""")
+                    continue
                 setattr(mlist, property, value)
                 dirty = 1
     #
