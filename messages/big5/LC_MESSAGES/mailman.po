@@ -1,0 +1,2595 @@
+# Big5 translate PO.
+# GPL (C) 2001
+# Michael Fang <michael@xlinux.com;ccfang@kalug.ks.edu.tw>, 2001.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mailman-2.0\n"
+"PO-Revision-Date: Tue Jan 16 10:00:00 2001\n"
+"Last-Translator: Michael Fang <michael@xlinux.com;ccfang@kalug.ks.edu.tw>\n"
+"Language-Team: Traditional Chinese <zh-L10n@linux.org.tw>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=Big5\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 0.2\n"
+
+
+#: /home/mailman/Mailman/HTMLFormatter.py:53
+msgid " list run by "
+msgstr "論壇壇主"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:115
+msgid "That password was incorrect."
+msgstr "密碼錯誤。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:487
+msgid "<em>Enter the text below, or...</em><br>"
+msgstr "<em>請在下方輸入文字，或 ...</em><br>"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:444
+msgid ""
+"Usage: info\n"
+"To get info for a particular list, send your request to\n"
+"the '-request' address for that list, or use the 'lists' command\n"
+"to get info for all the lists."
+msgstr ""
+"用法: info\n"
+"欲取得該論壇相關資訊，請將需求寄到\n"
+"該論壇之 '-request' 信箱，或者使用 'lists' 指令\n"
+"以取得全部論壇的相關資訊。" 
+
+#: /home/mailman/Mailman/MailList.py:761
+msgid "Hide the sender of a message, replacing it with the list address (Removes From, Sender and Reply-To fields)"
+msgstr "隱藏寄信人地址，並以論壇信箱取代之 (移除來源、寄信人及回信欄位)"
+
+#: /home/mailman/Mailman/Bouncer.py:189
+msgid "not "
+msgstr "否"
+
+#: /home/mailman/Mailman/Cgi/admin.py:249
+msgid "Edit the HTML for the public list pages"
+msgstr "編輯公開論壇簡介 HTML 網頁"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:154
+#: /home/mailman/Mailman/Cgi/listinfo.py:179
+msgid "Subscribe"
+msgstr "訂閱"
+
+#: /home/mailman/Mailman/Cgi/admin.py:56
+#: /home/mailman/Mailman/Cgi/edithtml.py:56
+#: /home/mailman/Mailman/Cgi/handle_opts.py:68
+#: /home/mailman/Mailman/Cgi/listinfo.py:45
+#: /home/mailman/Mailman/Cgi/options.py:57
+#: /home/mailman/Mailman/Cgi/private.py:90
+#: /home/mailman/Mailman/Cgi/roster.py:51
+#: /home/mailman/Mailman/Cgi/subscribe.py:48
+msgid "No such list <em>%s</em>"
+msgstr "無此論壇 <em>%s</em>"
+
+#: /home/mailman/Mailman/Cgi/Auth.py:76
+msgid "Error decoding authorization cookie"
+msgstr "驗證 cookie 解讀失敗"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:90
+msgid "%s not a member!<p>"
+msgstr "%s 非訂戶！<p>"
+
+#: /home/mailman/Mailman/Archiver/pipermail.py:170
+#: /home/mailman/Mailman/Archiver/pipermail.py:171
+msgid "No subject"
+msgstr "無主題"
+
+#: /home/mailman/Mailman/Cgi/admin.py:168
+#: /home/mailman/Mailman/Cgi/listinfo.py:105
+msgid "Welcome!"
+msgstr "歡迎！"
+
+#: /home/mailman/Mailman/Deliverer.py:61
+msgid " (Digest mode)"
+msgstr " (摘要模式)"
+
+#: /home/mailman/Mailman/MailList.py:591
+msgid "None - no verification steps (<em>Not Recommended </em>)<br>confirm (*) - email confirmation step required <br>require approval - require list administrator approval for subscriptions <br>confirm+approval - both confirm and approve<p> (*) when someone requests a subscription, mailman sends them a notice with a unique subscription request number that they must reply to in order to subscribe.<br> This prevents mischievous (or malicious) people from creating subscriptions for others without their consent."
+msgstr "免 - 不需確認手續(<em>不建議</em>)<br>需確認 (*) - 需經 email 確認手續<br>需核准 - 需經壇主核准<br>確認＋核准 - 需經壇主核准後確認<p> (*) 當有人提出訂閱申請時， mailman 會寄給申請人一封要求確認的信件，上面會有一個訂閱號碼用以識別。訂閱人必須回覆此封確認信才算完成確認的手續。<br>這是為了預防有人惡作劇，未經 email 帳號所有人之同意之下代為申請加入通信論壇。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:55
+msgid ""
+"When turned on, you get a separate acknowledgement email\n"
+"when you post messages to the list."
+msgstr ""
+"當開啟本功能後，每當您寄信到論壇，您將會額外收\n"
+"到一封知會的 email。"
+
+
+#: /home/mailman/Mailman/Handlers/Hold.py:248
+msgid "Your message to %(listname)s awaits moderator approval"
+msgstr "您寄到 %(listname)s 的信件已送交壇主裁決"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:201
+msgid "Discard"
+msgstr "忽略"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:288
+msgid "subscribers list"
+msgstr "訂閱會員清單"
+
+#: /home/mailman/Mailman/MailList.py:375
+msgid "The list admin's email address - having multiple admins/addresses (on separate lines) is ok."
+msgstr "壇主 email - 可以同時指派數位壇主(每個壇主 email 以單獨一行區隔)。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:301
+msgid "Visit Subscriber List"
+msgstr "查看訂閱會員清單"
+
+#: /home/mailman/Mailman/Cgi/admin.py:619
+msgid "<b>subscr</b> -- Is the member subscribed?"
+msgstr "<b>訂閱</b> -- 是否已經訂閱？"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:233
+msgid "Message Excerpt:"
+msgstr "訊息摘要："
+
+#: /home/mailman/Mailman/MailList.py:529
+msgid "Turn this on only if you plan on subscribing people manually and don't want them to know that you did so.  This option is most useful for transparently migrating lists from some other mailing list manager to Mailman."
+msgstr "若訂閱時不想發出通知信，請打開此功能。通常用於將現行的 alias 轉為 Mailman 管理的大量訂閱時。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:247
+msgid "Go to the general list information page"
+msgstr "前往論壇簡介網頁"
+
+#: /home/mailman/Mailman/MailList.py:524
+msgid "Send monthly password reminders or no? Overrides the previous option."
+msgstr "要不要每月寄出提醒密碼？ 變更之前的設定。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:391
+msgid "%s Mailing list Configuration Help<br><em>%s</em> Option"
+msgstr "%s 通信論壇設定說明<br><em>%s</em> 設定"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:537
+msgid "Your stored password is bogus."
+msgstr "您儲存的密碼不存在。"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:274
+msgid "You have successfully set your options."
+msgstr "您已經設定成功。"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:131
+msgid "If you refuse this subscription, please explain (optional)"
+msgstr "若您拒絕訂閱，請略述原因(選擇性)"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:190
+#: /home/mailman/Mailman/Cgi/roster.py:114
+msgid "See this page in"
+msgstr "相關網頁在"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:285
+msgid ""
+"The list administrator has disabled digest delivery for\n"
+"            this list, so your delivery option has not been set.  However your\n"
+"            other options have been set successfully."
+msgstr ""
+"本論壇壇主已關閉本論壇摘要模式訂閱功能，\n"
+"            因此有關訂閱模式的設定未變更，\n"
+"            但其他設定變更成功。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:184
+msgid " Click on a list name to visit the configuration pages for that list."
+msgstr " 點選論壇名稱以前往該論壇設定畫面。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:673
+msgid " Enter current password:"
+msgstr " 輸入現在的密碼："
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:134
+msgid "HTML Unchanged."
+msgstr "HTML 沒有變動。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:550
+msgid "digest"
+msgstr "摘要"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:189
+msgid "From:"
+msgstr "來源："
+
+#: /home/mailman/Mailman/MailList.py:644
+msgid "List members"
+msgstr "論壇訂閱會員"
+
+#: /home/mailman/Mailman/MailList.py:364
+msgid "The public name of this list (make case-changes only)."
+msgstr "此論壇的公開名稱 (僅會變更大小寫)。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:175
+#: /home/mailman/Mailman/Cgi/admin.py:183
+#: /home/mailman/Mailman/Cgi/listinfo.py:112
+msgid " mailing lists on %s."
+msgstr " %s 上的通信論壇 。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:655
+msgid " yes "
+msgstr " 是 "
+
+#: /home/mailman/Mailman/HTMLFormatter.py:198
+msgid "This is %sa public list, which means that the members list is openly available"
+msgstr "這是主機 %s 上的公開論壇，意思是說訂閱會員清單可公開查閱"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:68
+msgid "Please trim the recipient list; it is too long."
+msgstr "請刪減收件人的數目，收件人太多了。"
+
+#: /home/mailman/Mailman/MailList.py:682
+msgid "Adding entries here will have one of two effects, according to whether another option restricts posting to members. <ul> <li> If <i>member_posting_only</i> is 'yes', then entries added here will have posting privilege in addition to list members. <li> If <i>member_posting_only</i> is 'no', then <em>only</em> the posters listed here will be able to post without admin approval. </ul>"
+msgstr "加在以下的人員，根據另外的設定 '限制會員投書' 而有下列兩種結果。<ul> <li> 若 <i>限_會員_投書</i> 為 '是' , 則所加人員為額外允許發言之人員。 <li> 若 <i>限_會員_投書</i> 為 '否', 則 <em>僅有</em> 名列清單的會員發言不需經壇主許可。 </ul>"
+
+#: /home/mailman/Mailman/GatewayManager.py:40
+msgid "Mail-to-News and News-to-Mail gateway services."
+msgstr "Mail-to-News 及 News-to-Mail 閘道服務。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:292
+msgid " and password to visit  the subscribers list: <p><center> "
+msgstr " 及密碼以前往會員設定網頁：<p><center>"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:117
+msgid ""
+"<p>Below is a listing of all the public mailing lists on\n"
+"            %(hostname)s.  Click on a list name to get more information about\n"
+"            the list, or to subscribe, unsubscribe, and change the preferences\n"
+"            on your subscription."
+msgstr ""
+"<p>以下是主機 %(hostname)s 上全部的公開論壇清單，\n\n\n"
+#:"            點取通信論壇名稱以取得該論壇更多的資訊\n"
+#:"            、訂、退訂及變更訂戶的相關設定\n"
+
+
+#: /home/mailman/Mailman/MailList.py:406
+msgid "Prefix for subject line of list postings."
+msgstr "論壇信件主題前置文字"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:307
+msgid ""
+"You are subscribed as %s,\n"
+"  with password: %s"
+msgstr ""
+"您以 %s 的帳號訂閱，\n"
+"  密碼為： %s"
+
+
+#: /home/mailman/Mailman/Cgi/admindb.py:207
+msgid "Action:"
+msgstr "動作："
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:196
+msgid "The old password you supplied was incorrect."
+msgstr "您輸入的舊密碼不正確。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:212
+#: /home/mailman/Mailman/Cgi/admin.py:316
+#: /home/mailman/Mailman/Cgi/listinfo.py:145
+msgid "Description"
+msgstr "退訂"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:194
+msgid "Reason:"
+msgstr "原因："
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:136
+msgid "You must not subscribe a list to itself!<br>"
+msgstr "您不可以論壇本身的 email 訂閱自己！<br>"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:132
+msgid "unidentified origin"
+msgstr "無法辨識來源"
+
+#: /home/mailman/Mailman/Cgi/admin.py:925
+msgid "Not subscribed"
+msgstr "未訂閱"
+
+#: /home/mailman/Mailman/Bouncer.py:74
+msgid "Maximum number of messages your list gets in an hour.  (Yes, bounce detection finds this info useful)"
+msgstr "通信論壇每小時最大處理信件數。(沒錯，退信偵測十分需要這個資訊)"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:624
+#: /home/mailman/Mailman/MailCommandHandler.py:629
+msgid ""
+"Usage: confirm <confirmation number>\n"
+msgstr ""
+"用法：confirm <確認號碼>\n"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:211
+#: /home/mailman/Mailman/MailCommandHandler.py:606
+msgid "No one can subscribe to the digest of this list!"
+msgstr "不可以摘要模式訂閱此論壇！"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:207
+msgid "<p>(Note that this is an umbrella list, intended to have only other mailing lists as members.  Among other things, this means that your confirmation request will be sent to the '%s' account for your address.)"
+msgstr "<p>(請注意這是成員僅限於通信論壇帳號的樹狀通信論壇。  也就是說您的確認信申請應寄到您在主機 '%s' 上的帳號。)"
+
+#: /home/mailman/Mailman/MailList.py:460
+msgid "Explicit <tt>Reply-To:</tt> header."
+msgstr "明確 <tt>Reply-To:</tt> 標題。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:85
+#: /home/mailman/Mailman/Cgi/admin.py:530
+msgid "Membership Management"
+msgstr "會員管理"
+
+#: /home/mailman/Mailman/Digester.py:50
+msgid "Can list members choose to receive list traffic bunched in digests?"
+msgstr "會員是否可選擇以摘要模式收到退信記錄？"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:130
+msgid " List administrators, you can visit "
+msgstr " 壇主您好，您可造訪 "
+
+#: /home/mailman/Mailman/Handlers/Hold.py:80
+msgid ""
+"Please do *not* post administrative requests to the mailing\n"
+"list.  If you wish to subscribe, visit %(listurl)s or send a message with the\n"
+"word `help' in it to the request address, %(request)s, for further\n"
+"instructions."
+msgstr ""
+"請 *不要* 寄發管理要求到通信論壇上，如果您需要訂閱\n"
+"，請到 %(listurl)s 或以 'help' 為信件內容寄到申請帳號\n"
+" %(request)s ，以取得進一步的指示。"
+
+
+#: /home/mailman/Mailman/MailCommandHandler.py:550
+#: /home/mailman/Mailman/MailCommandHandler.py:567
+msgid "Usage: subscribe [password] [digest|nodigest] [address=<email-address>]"
+msgstr "用法：subscribe [密碼][digest|nodigest][address=<email 地址>]"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:215
+msgid "Additionally, forward this message to: "
+msgstr "此外，轉送此訊息到： "
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:289
+msgid ""
+"The list administrator has disabled non-digest delivery\n"
+"            for this list, so your delivery option has not been set.  However\n"
+"            your other options have been set successfully."
+msgstr ""
+"壇主已關閉本論壇非摘要訂閱\n"
+"            ，所以您不可設定訂閱模式。此外\n"
+"            您其他的設定均已設定成功。"
+
+#: /home/mailman/Mailman/MailList.py:503
+msgid "Set this to yes when this list is intended to cascade only to other mailing lists.  When set, meta notices like confirmations and password reminders will be directed to an address derived from the member's address - it will have the value of \"umbrella_member_suffix\" appended to the member's account name."
+msgstr "若本論壇僅供串連其他通信論壇之用，請設定為 '是' 。當設定之後，管理信件如：確認信、密碼提醒將被轉寄到訂閱會員地址的衍生地址 - 該地址應為訂閱會員地址加上\"umbrella_member_suffix\" 的設定值。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:549
+msgid "nomail"
+msgstr "不收信件"
+
+#: /home/mailman/Mailman/Archiver/pipermail.py:303
+msgid "Pickling archive state into "
+msgstr "準備歸檔狀態到"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:279
+msgid "Visit Subscriber list"
+msgstr "查看訂閱會員清單"
+
+#: /home/mailman/Mailman/Defaults.py:558
+msgid "Spanish (Spain)"
+msgstr "西班牙語 (西班牙)"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:239
+msgid "%(listname)s post from %(sender)s requires approval"
+msgstr "%(listname)s 發言 來自 %(sender)s 需要核准"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:133
+msgid "Can't have empty html page."
+msgstr "不接受空白網頁。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:640
+msgid ""
+"Invalid confirmation number!\n"
+"Note that confirmation numbers expire %s days after initial request.\n"
+"Please check date and number and try again, from the start if necessary."
+msgstr ""
+"確認號碼錯誤！\n"
+"確認號碼在申請提出 %s 天後過期。\n"
+"請再次確認申請時間及確認碼後再試一次，若有必要請再從新申請一次。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:550
+msgid "language"
+msgstr "語言"
+
+#: /home/mailman/cron/mailpasswds:63
+msgid " %s mailing list memberships reminder"
+msgstr " %s 通信論壇會籍提醒"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:208
+msgid ""
+"\n"
+"Too many errors encountered; the rest of the message is ignored:"
+msgstr ""
+"\n"
+"發生太多錯誤 ; 將忽略信件其餘部分︰"
+
+#: /home/mailman/Mailman/Cgi/admin.py:669
+msgid "To Change The Administrator Password"
+msgstr "變更壇主密碼"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:110
+msgid " There currently are no publicly-advertised "
+msgstr " 現在是非公開"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:127
+msgid " the %slist name appended."
+msgstr " 加上論壇名稱 %s "
+
+#: /home/mailman/Mailman/Cgi/private.py:55
+msgid "You must specify a list."
+msgstr "您必須指定一個論壇。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:388
+msgid "You are already receiving digests."
+msgstr "您已經在收摘要。"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:56
+#: /home/mailman/Mailman/Cgi/handle_opts.py:67
+#: /home/mailman/Mailman/Cgi/options.py:44
+#: /home/mailman/Mailman/Cgi/options.py:56
+#: /home/mailman/Mailman/Cgi/options.py:69
+#: /home/mailman/Mailman/Cgi/roster.py:130
+#: /home/mailman/Mailman/Cgi/roster.py:131
+#: /home/mailman/Mailman/Cgi/subscribe.py:37
+#: /home/mailman/Mailman/Cgi/subscribe.py:47
+#: /home/mailman/Mailman/Cgi/subscribe.py:95
+#: /home/mailman/Mailman/Cgi/subscribe.py:104
+msgid "Error"
+msgstr "錯誤"
+
+#: /home/mailman/Mailman/MailList.py:539
+msgid "List admins are sent daily reminders of pending admin approval requests, like subscriptions to a moderated list or postings that are being held for one reason or another.  Setting this option causes notices to be sent immediately on the arrival of new requests, as well."
+msgstr "若論壇有待核准之案件壇主每天將會收到提醒的信件，例如訂閱申請或是留置信件處置。打開此項設定後，若有待裁決的案件，壇主也會立刻收到通知。"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:107
+msgid "Administrative requests for mailing list:"
+msgstr "通信論壇主管事務申請"
+
+#: /home/mailman/Mailman/MailList.py:744
+msgid "Hold posts with header value matching a specified regexp."
+msgstr "若信件標題符合 regexp 則予以留置。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:899
+msgid "Successfully Subscribed:"
+msgstr "已訂閱成功："
+
+#: /home/mailman/Mailman/MailCommandHandler.py:617
+#: /home/mailman/Mailman/MailCommandHandler.py:661
+msgid "Succeeded"
+msgstr "成功"
+
+#: /home/mailman/Mailman/ListAdmin.py:226
+msgid "Posting of your message titled \"%s\""
+msgstr "以標題 \"%s\" 投書"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:538
+msgid "User %s on list %s has no password"
+msgstr "使用者 %s 在論壇 %s 沒有密碼"
+
+#: /home/mailman/Mailman/Bouncer.py:68
+msgid "Minimum number of days an address has been non-fatally bad before we take action"
+msgstr "郵件試投次數"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:201
+msgid "The rest of the message is ignored:"
+msgstr "此信件其餘部分將忽略："
+
+#: /home/mailman/Mailman/Handlers/HandlerAPI.py:40
+msgid "Your message was rejected"
+msgstr "您的投書已遭退回"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:45
+msgid "list of available mailing lists."
+msgstr "通信論壇列表。"
+
+#: /home/mailman/Mailman/MailList.py:698
+msgid "Many (in fact, most) spams do not explicitly name their myriad destinations in the explicit destination addresses - in fact, often the to field has a totally bogus address for obfuscation.  The constraint applies only to the stuff in the address before the '@' sign, but still catches all such spams.<p>The cost is that the list will not accept unhindered any postings relayed from other addresses, unless <ol> <li>The relaying address has the same name, or <li>The relaying address name is included on the options that specifies acceptable aliases for the list. </ol>"
+msgstr "大多數的垃圾信並沒有明確的收件人與寄信人 - 事實上通常是一個不存在的地址。唯一的限制是管制 '@' 之前的成員名稱。<p>它的價值在於論壇不會接受任何其他轉信地址的投書，除非<ol><li>轉信地址與該論壇同名，或<li>轉信地址是該論壇指定可接受的別名。</ol>"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:108
+msgid "You seem to already be not a member."
+msgstr "您看起來已經不是會員。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:245
+msgid "<b><i> either</i></b> "
+msgstr "<b><i> 同時</i></b> "
+
+#: /home/mailman/Mailman/MailCommandHandler.py:287
+msgid "Mailman results for %s"
+msgstr "%s Mailman 的結果"
+
+#: /home/mailman/Mailman/Cgi/admin.py:86
+msgid "Privacy Options"
+msgstr "隱密設定"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:74
+msgid "%s Mailing Lists"
+msgstr "%s 通信論壇"
+
+#: /home/mailman/Mailman/Cgi/admin.py:91
+msgid "Mail-News and News-Mail gateways"
+msgstr "Mail-News 及 News-Mail 閘道"
+
+#: /home/mailman/Mailman/MailList.py:1206
+msgid "%s unsubscribe notification"
+msgstr "%s 退訂通知"
+
+#: /home/mailman/Mailman/Cgi/options.py:131
+msgid "List my other subscriptions"
+msgstr "列出我其他的訂閱"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:56
+msgid "%s administrative interface"
+msgstr "%s 管理介面"
+
+#: /home/mailman/Mailman/Cgi/admin.py:649
+msgid "Send Welcome message to this batch? "
+msgstr "本次是否寄發歡迎訊息？"
+
+#: /home/mailman/Mailman/Cgi/private.py:91
+msgid "Private Archive Error - %s"
+msgstr "私人論壇存檔錯誤 - %s"
+
+#: /home/mailman/Mailman/Cgi/admin.py:239
+msgid "Other Administrative Activities"
+msgstr "其他管理活動"
+
+#: /home/mailman/Mailman/MailList.py:997
+msgid " from %s"
+msgstr " 寄自 %s"
+
+#: /home/mailman/Mailman/Cgi/admin.py:622
+msgid "<b>nomail</b> -- Is delivery to the member disabled?"
+msgstr "<b>暫停送信</b> -- 該會員是否暫停送信？"
+
+#: /home/mailman/Mailman/MailList.py:1014
+msgid "%s -- confirmation of subscription -- request %d"
+msgstr "%s -- 確認信 -- 申請 %d"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:327
+msgid "Bad user - %s."
+msgstr "不良使用者 - %s"
+
+#: /home/mailman/Mailman/MailList.py:415
+msgid "List-specific text prepended to new-subscriber welcome message"
+msgstr "本論壇新會員歡迎信件的附加訊息"
+
+#: /home/mailman/Mailman/MailList.py:426
+msgid "Text sent to people leaving the list.  If empty, no special text will be added to the unsubscribe message."
+msgstr "本論壇會員退訂的訊息。若空白，則退訂訊息不會有額外的訊息。"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:201
+msgid "Your subscription is not allowed because the email address you gave is insecure.<p>"
+msgstr "您的訂閱申請不通過，因為您給的 email 地址不安全。<p>"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:176
+msgid "This is a closed list, which means your subscription will be held for approval.  You will be notified of the administrator's decision by email.  "
+msgstr "這是不公開的通信論壇，也就是說您的訂閱申請將送壇主核准。您將會收到壇主裁決結果的 email 通知。 "
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:137
+msgid "Quarterly"
+msgstr "每季"
+
+#: /home/mailman/Mailman/Cgi/options.py:145
+msgid ""
+"\n"
+"You are subscribed to this list with the case-preserved address\n"
+"<em>%s</em>."
+msgstr ""
+"\n"
+"您以保留大寫字母的地址訂閱本論壇\n"
+"<em>%s</em>。"
+
+
+#: /home/mailman/Mailman/Cgi/admindb.py:211
+msgid "Preserve message for site administrator"
+msgstr "總壇主私人信件"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:67
+msgid "No such list <em>%s</em><p>"
+msgstr "無此論壇 <em>%s</em><p>"
+
+#: /home/mailman/Mailman/Cgi/admin.py:127
+msgid ""
+"You have digest members,\n"
+"            but digests are turned off. Those people will not receive\n"
+"            mail."
+msgstr ""
+"您有摘要模式的會員，\n"
+"            但摘要模式已經關閉，前述人員將收不到信件\n"
+
+
+#: /home/mailman/Mailman/MailList.py:661
+msgid "General posting filters"
+msgstr "通用信件檢查規則"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:506
+msgid ""
+"Non-Digest Members:\n"
+msgstr ""
+"非-摘要會員：\n"
+
+#: /home/mailman/Mailman/MailList.py:387
+msgid "This description is used when the mailing list is listed with other mailing lists, or in headers, and so forth.  It should be as succinct as you can get it, while still identifying what the list is."
+msgstr "這裡的敘述用於當論壇名列其他論壇中或在標題中，諸如此類。敘述應越簡潔越好，只要能識別它是一個論壇即可。"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:223
+msgid "[No explanation given]"
+msgstr "[沒有原因]"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:62
+msgid ""
+"When turned on, you get postings from the list bundled\n"
+"into digests.  Otherwise, you get each individual message immediately as\n"
+"it is posted to the list."
+msgstr ""
+"當打開此項設定後，您將會收到集結成摘要的投書。\n"
+"否則當有人投書到論壇時，您會立即收到個別投書的信件。\n"
+""
+
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:126
+#: /home/mailman/Mailman/Bouncer.py:65
+#: /home/mailman/Mailman/Digester.py:49
+#: /home/mailman/Mailman/Digester.py:65
+#: /home/mailman/Mailman/GatewayManager.py:52
+#: /home/mailman/Mailman/GatewayManager.py:55
+#: /home/mailman/Mailman/GatewayManager.py:58
+#: /home/mailman/Mailman/MailList.py:488
+#: /home/mailman/Mailman/MailList.py:499
+#: /home/mailman/Mailman/MailList.py:523
+#: /home/mailman/Mailman/MailList.py:527
+#: /home/mailman/Mailman/MailList.py:535
+#: /home/mailman/Mailman/MailList.py:545
+#: /home/mailman/Mailman/MailList.py:548
+#: /home/mailman/Mailman/MailList.py:635
+#: /home/mailman/Mailman/MailList.py:650
+#: /home/mailman/Mailman/MailList.py:663
+#: /home/mailman/Mailman/MailList.py:666
+#: /home/mailman/Mailman/MailList.py:694
+#: /home/mailman/Mailman/MailList.py:760
+#: /home/mailman/Mailman/MailList.py:769
+msgid "No"
+msgstr "否"
+
+#: /home/mailman/Mailman/Deliverer.py:66
+msgid "Welcome to the \"%s\" mailing list%s"
+msgstr "歡迎加入 \"%s\" 通信論壇 %s"
+
+#: /home/mailman/Mailman/MailList.py:730
+msgid "Ceiling on acceptable number of recipients for a posting."
+msgstr "投書收信人數上限。"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:84
+msgid "%s: Invalid template"
+msgstr "%s:樣版不正確"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:91
+msgid "Select page to edit:"
+msgstr "選擇欲編輯網頁："
+
+#: /home/mailman/Mailman/MailList.py:654
+msgid "Setting this option causes member email addresses to be transformed when they are presented on list web pages (both in text and as links), so they're not trivially recognizable as email addresses.  The intention is to to prevent the addresses from being snarfed up by automated web scanners for use by spammers."
+msgstr "開啟本設定後，顯示在網頁的會員的 email 地址(不論是文字或連結)將會略做變形，讓人認不出那是 email 地址。這個功能是用來防止網頁自動掃瞄軟體取得會員的 email。"
+
+#: /home/mailman/Mailman/Cgi/options.py:133
+msgid "Change My Password"
+msgstr "變更密碼"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:111
+msgid "There are no pending requests."
+msgstr "沒有待處理的要求。"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:194
+msgid "Subscription was <em>deferred</em> because %s.  Your request has been forwarded to the list administrator.  You will receive email informing you of the moderator's decision when they get to your request.<p>"
+msgstr "訂閱將因 %s 而 <em>延期</em>。 您的申請將轉送壇主核准，稍晚您會收到壇主的裁決通知的 email。<p>"
+
+#: /home/mailman/Mailman/Cgi/admin.py:88
+msgid "Digest-member Options"
+msgstr "摘要-會員 設定"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:148
+msgid "Your passwords did not match.<br>"
+msgstr "您的密碼不符。<br>"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:52
+msgid ""
+"When turned on, delivery to your email address is disabled,\n"
+" but your address is still subscribed.  This is useful if you plan on\n"
+" taking a short vacation."
+msgstr ""
+"當打開此項設定後，您的 email 地址將暫停送信，\n"
+"但您仍保有會員的資格。這個設定對於計畫出遊的人\n"
+"很有幫助。"
+
+#: /home/mailman/Mailman/Handlers/ToDigest.py:267
+msgid " Masthead (%s digest, %s)"
+msgstr "發行人 (%s  摘要，%s)"
+
+#: /home/mailman/Mailman/Cgi/admin.py:549
+msgid "ack"
+msgstr "回執"
+
+#: /home/mailman/Mailman/MailList.py:464
+msgid ""
+"This is the address set in the <tt>Reply-To:</tt> header\n"
+"when the <a href=\"?VARHELP=general/reply_goes_to_list\">reply_goes_to_list</a>\n"
+"option is set to <em>Explicit address</em>.\n"
+"\n"
+"<p>There are many reasons not to introduce or override the <tt>Reply-To:</tt>\n"
+"header.  One is that some posters depend on their own <tt>Reply-To:</tt>\n"
+"settings to convey their valid return address.  Another is that modifying\n"
+"<tt>Reply-To:</tt> makes it much more difficult to send private replies.  See\n"
+"<a href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To' Munging\n"
+"Considered Harmful</a> for a general discussion of this issue.  See <a\n"
+"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"Munging Considered Useful</a> for a dissenting opinion.\n"
+"\n"
+"<p>Some mailing lists have restricted posting privileges, with a parallel list\n"
+"devoted to discussions.  Examples are `patches' or `checkin' lists, where\n"
+"software changes are posted by a revision control system, but discussion about\n"
+"the changes occurs on a developers mailing list.  To support these types of\n"
+"mailing lists, specify the explicit <tt>Reply-To:</tt> address here.  You must\n"
+"also specify <tt>Explicit address</tt> in the <tt>reply_goes_to_list</tt>\n"
+"variable.\n"
+"\n"
+"<p>Note that if the original message contains a <tt>Reply-To:</tt> header,\n"
+"it will not be changed."
+msgstr ""
+"這是 <tt>Reply-To:</tt> 標題的設定值\n"
+"當 <a href=\"?VARHELP=general/reply_goes_to_list\">回信到論壇</a>\n"
+"設定為 <em>明確地址</em>。\n"
+"\n"
+"<p>基於許多原因，我們不建議您更換信件 <tt>Reply-To:</tt>的標題。\n"
+"其一是有些投書民眾依賴自己的 <tt>Reply-To:</tt> 來設定他們正\n"
+"確的回信地址。 其二是修改 <tt>Reply-To:</tt> 不易回覆私人信件。\n"
+"請參考 <a href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To' Munging\n"
+"Considered Harmful</a> ，這裡有這個題目進一步的討論。  請到 <a\n"
+"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"Munging Considered Useful</a> 發表您的意見。\n"
+"\n"
+"<p>某些平行論壇(同時使用兩個論壇)會限制投書者的資格。\n"
+"如 `patches' 或 `checkin' 論壇，其軟體變更發佈由 RCS 自動寄出\n"
+"，但是其討論區卻在開發者論壇。欲支援此種型態的通信論壇時\n"
+"，請將 <tt>回信到論壇</tt> 設定為 <tt>明確地址</tt> ，\n"
+"並將 <tt>Reply-To:</tt> 的設定指向平行的論壇。\n"
+"<p>註：若原信件已指定 <tt>Reply-To:</tt> 標題，\n"
+"則不做變更。"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:139
+#: /home/mailman/Mailman/Cgi/handle_opts.py:188
+msgid "The list is currently not functional."
+msgstr "本論壇目前尚未開放。"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:207
+msgid "You must specify your old password, and your new password twice."
+msgstr "您必須輸入舊密碼，以及輸入兩次新密碼。"
+
+#: /home/mailman/Mailman/MailList.py:560
+msgid "Host name this list prefers."
+msgstr "本論壇的主機名稱"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:130
+msgid "Is archive file source for public or private archival?"
+msgstr "歸檔舊信要公開還是不公開？"
+
+#: /home/mailman/Mailman/Cgi/admin.py:570
+msgid "from %s to %s"
+msgstr "從 %s 到 %s"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:588
+msgid ""
+"Your subscription request has been forwarded to the list administrator\n"
+"at %s for review."
+msgstr ""
+"您的訂閱申請已轉送 %s 壇主審核。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:897
+msgid "Hostile Address (illegal characters)"
+msgstr "反對地址(不正確的字元)"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:200
+msgid "End: "
+msgstr "結束： "
+
+#: /home/mailman/Mailman/MailList.py:776
+msgid "Text prepended to the top of every immediately-delivery message. "
+msgstr "附加在每封立即發送信件最前面的文字。"
+
+#: /home/mailman/Mailman/MailList.py:562
+msgid "The host_name is the preferred name for email to mailman-related addresses on this host, and generally should be the mail host's exchanger address, if any.  This setting can be useful for selecting among alternative names of a host that has multiple addresses."
+msgstr "本論壇相關 email 帳號合宜的主機名稱，通常是郵件伺服器的地址。本設定適合主機同時擁有多個位址的狀況。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:282
+msgid "members"
+msgstr "會員"
+
+#: /home/mailman/Mailman/MailList.py:573
+msgid ""
+"This is the common root for all Mailman URLs referencing this\n"
+"             mailing list.  It is also used in the listinfo overview of\n"
+"             mailing lists to identify whether or not this list resides on the\n"
+"             virtual host identified by the overview URL; i.e. if this value\n"
+"             is found (anywhere) in the URL, then this list is considered to\n"
+"             be on that virtual host.  If not, then it is excluded from the\n"
+"             listing.\n"
+"             <p><b><font size=\"+1\">Warning:</font></b> setting this value to\n"
+"             an invalid base URL will render the mailing list unusable.  You\n"
+"             will also not be able to fix this from the web interface!  In\n"
+"             that case, the site administrator will have to fix the mailing\n"
+"             list from the command line."
+msgstr ""
+"這是所有通信論壇相關網頁的 Mailman URLs 的基準。\n"
+"             通常用於列出同一虛擬主機上的通信論壇清單。\n"
+"             這個設定可由 URL 識別通信論壇是否同一虛擬主機。\n"
+"             同理，如果 URL 欄位有任何的文字，則該論壇為虛擬\n"
+"             主機的通信論壇。否則該論壇不會出現在論壇清單上。\n"
+""
+"             <p><b><font size=\"+1\">警告：</font></b> 若基準 URLs \n"
+"             設定錯誤將導致通信論壇無法運作。 同時您也無法利用\n"
+"             web 介面來修改相關的設定。在這種情形之下，唯一的方法\n"
+"             就是請總壇主下指令修改相關設定。\n"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:152
+msgid "your list administrator"
+msgstr "您的壇主"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:144
+msgid "You may have set non-delivery deliberately, or it may have been triggered by bounces from your delivery address.  In either case, to reenable  delivery, change the "
+msgstr "您可能故意設定不收信，或者是肇因於您的收信地址發生太多退信所致。在這種情況下，欲恢復收信請變更"
+
+#: /home/mailman/Mailman/MailList.py:1030
+#: /home/mailman/Mailman/MailList.py:1044
+msgid "subscriptions to %s require administrator approval"
+msgstr "%s 的訂閱需要壇主核准"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:37
+#: /home/mailman/Mailman/Cgi/admindb.py:38
+msgid "Mailman Admindb Error"
+msgstr "Mailman 資料庫管理錯誤"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:79
+msgid "%s -- Edit html for %s"
+msgstr "%s -- 編輯 %s 的 html"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:483
+msgid "Private list: only members may see list of subscribers."
+msgstr "私人論壇：限會員查看會員清單"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:169
+msgid " (%d of %d)"
+msgstr ""
+
+#: /home/mailman/Mailman/MailCommandHandler.py:513
+msgid "Usage: unsubscribe <password> [<email-address>]"
+msgstr "用法： unsubscribe <密碼> [<email 地址>]"
+
+#: /home/mailman/Mailman/Cgi/admin.py:634
+msgid "<b>language</b> --Language preferred by the user"
+msgstr "<b>語言</b> -- 使用者適用的語言"
+
+#: /home/mailman/Mailman/Bouncer.py:62
+msgid "Policies regarding systematic processing of bounce messages, to help automate recognition and handling of defunct addresses."
+msgstr "退信處理政策，用以協助辨認及操作無效的地址。"
+
+#: /home/mailman/Mailman/GatewayManager.py:50
+msgid "The name of the Usenet group to gateway to and/or from."
+msgstr "轉信新聞群組的名稱。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:206
+msgid "Command? "
+msgstr "指令？"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:214
+#: /home/mailman/Mailman/MailCommandHandler.py:608
+msgid "This list only supports digest subscriptions!"
+msgstr "本論壇僅提供摘要會員訂閱！"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:369
+msgid "current archive"
+msgstr "現在的檔案"
+
+#: /home/mailman/Mailman/MailList.py:381
+msgid "Default language for this list."
+msgstr "本論壇的預設語言"
+
+#: /home/mailman/Mailman/Cgi/admin.py:652
+msgid " no "
+msgstr " 否"
+
+#: /home/mailman/Mailman/MailList.py:780
+msgid "Footer added to mail sent to regular list members"
+msgstr "一般論壇成員收信的註腳"
+
+#: /home/mailman/Mailman/ListAdmin.py:332
+msgid "Subscription request"
+msgstr "訂閱申請"
+
+#: /home/mailman/Mailman/Digester.py:70
+msgid "Header added to every digest"
+msgstr "每封摘要的標頭"
+
+#: /home/mailman/Mailman/MailList.py:366
+msgid "The capitalization of this name can be changed to make it presentable in polite company as a proper noun, or to make an acronym part all upper case, etc.  However, the name will be advertised as the email address (e.g., in subscribe confirmation notices), so it should <em>not</em> be otherwise altered.  (Email addresses are not case sensitive, but they are sensitive to almost everything else:-)"
+msgstr "名稱的大小寫可能被修改為符合一般用語，或者說將第一個字母轉為大寫，等等。該名稱用在 email 地址(例如，訂閱確認提示)時將<em>不</em> 會用其他方法替換。(Email 地址大小寫無關，其餘的幾乎都有關係:-)"
+
+#: /home/mailman/Mailman/Cgi/admin.py:550
+msgid "plain"
+msgstr "純文字"
+
+#: /home/mailman/Mailman/MailList.py:499
+msgid "Send password reminders to, eg, \"-owner\" address instead of directly to user."
+msgstr "將密碼提醒信寄到，例如，\"-owner\" 地址而非直接寄給使用者。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:623
+msgid "<b>ack</b> -- Does the member get acknowledgements of their posts?"
+msgstr "<b>回執</b> -- 收到會員投書後是否應寄信通知本人？"
+
+#: /home/mailman/Mailman/MailList.py:736
+msgid "Addresses whose postings are always held for approval."
+msgstr "列管人員，投書均需經核准。"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:126
+msgid "Subscription Requests"
+msgstr "訂閱申請"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:140
+msgid "Note - your list delivery is currently disabled."
+msgstr "備註 - 您論壇的收信設定現在是關閉。"
+
+#: /home/mailman/Mailman/Handlers/ToDigest.py:290
+msgid "Today's Topics:"
+msgstr "今日標題："
+
+#: /home/mailman/Mailman/Deliverer.py:41
+msgid ""
+"Note: Since this is a list of mailing lists, administrative\n"
+"notices like the password reminder will be sent to\n"
+"your membership administrative address, %s.\n"
+msgstr ""
+"備註：因為這是論壇的一覽表，管理事項如\n"
+"密碼提醒，將會寄到您的會員管理地址，%s。\n"
+
+
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:154
+msgid "Click a link to visit your options page for that mailing list:"
+msgstr "點選鏈結以前往您在該論壇的設定網頁"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:290
+msgid " <p>Enter your "
+msgstr " <p>輸入您的 "
+
+#: /home/mailman/Mailman/Archiver/pipermail.py:444
+msgid "  Thread"
+msgstr " 線緒"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:601
+msgid ""
+"Your subscription is not allowed because\n"
+"the email address you gave is insecure."
+msgstr ""
+"您的訂閱申請不通過，因為您給的 \n"
+"email 地址不安全。"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:52
+msgid "You are forbidden from posting messages to this list."
+msgstr "您被禁止投書到本論壇。"
+
+#: /home/mailman/Mailman/MailList.py:492
+msgid "Administrivia tests will check postings to see whether it's really meant as an administrative request (like subscribe, unsubscribe, etc), and will add it to the the administrative requests queue, notifying the  administrator of the new request, in the process. "
+msgstr "管理測試將檢查投書是否為管理事項申請(像訂閱，退訂，等等)，同時送進申請佇列，並將新申請通知壇主。"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:89
+#: /home/mailman/Mailman/Cgi/edithtml.py:90
+msgid "%s -- HTML Page Editing"
+msgstr "%s -- HTML 網頁編輯"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:246
+#: /home/mailman/Mailman/MailCommandHandler.py:397
+msgid "List doesn't accept digest members."
+msgstr "論壇不接受摘要會員"
+
+#: /home/mailman/Mailman/Cgi/admin.py:238
+msgid "Configuration Categories"
+msgstr "設定目錄"
+
+#: /home/mailman/Mailman/Defaults.py:560
+msgid "English (USA)"
+msgstr "英語 (USA)"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:149
+msgid "You have no password.  Contact the list administrator."
+msgstr "您沒有密碼。 請與壇主聯繫。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:489
+msgid "NO MEMBERS."
+msgstr "沒有成員。"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:137
+msgid "Weekly"
+msgstr "每週"
+
+#: /home/mailman/Mailman/Digester.py:54
+msgid "Digest"
+msgstr "摘要"
+
+#: /home/mailman/Mailman/Deliverer.py:91
+msgid "%s mailing list reminder"
+msgstr "%s 通信論壇提醒"
+
+#: /home/mailman/Mailman/MailList.py:408
+msgid "This text will be prepended to subject lines of messages posted to the list, to distinguish mailing list messages in in mailbox summaries.  Brevity is premium here, it's ok to shorten long mailing list names to something more concise, as long as it still identifies the mailing list."
+msgstr " 輸入文字將加在投書信件的主題之前，以便在信箱摘要中一眼就認出通信論壇的信件。此處簡潔最重要，可以將論壇名稱用縮寫表示，只要足以辨別即可。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:180
+#: /home/mailman/Mailman/HTMLFormatter.py:188
+msgid "also "
+msgstr "也"
+
+#: /home/mailman/Mailman/Cgi/options.py:139
+msgid "Email My Password To Me"
+msgstr "將密碼寄給我自己"
+
+#: /home/mailman/Mailman/MailList.py:627
+msgid "List access policies, including anti-spam measures, covering members and outsiders.  (See also the <a href=\"%s/archive\">Archival Options section</a> for separate archive-privacy settings.)"
+msgstr "論壇管制政策，包括防垃圾信措施，會員及非會員。(個別歸檔設定請參考<a href=\"%s/archive\">歸檔設定頁</a> )"
+
+#: /home/mailman/Mailman/Handlers/ToDigest.py:110
+msgid "Message"
+msgstr "信件"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:254
+msgid ""
+"An unexpected Mailman error has occurred in\n"
+"MailCommandHandler.ParseMailCommands().  Here is the traceback:\n"
+"\n"
+msgstr ""
+"發生不可預期的 Mailman 錯誤在\n"
+"MailCommandHandler.ParseMailCommands()。 以下是追蹤：\n"
+"\n"
+
+#: /home/mailman/Mailman/Cgi/admin.py:408
+msgid ""
+"<em><strong>Warning:</strong> changing this option here\n"
+"    could cause other screens to be out-of-sync.  Be sure to reload any other\n"
+"    pages that are displaying this option for this mailing list.  You can\n"
+"    also "
+msgstr ""
+"<em><strong>警告：<strong> 在這邊變更設定會造成\n"
+"    其它的畫面不同步。  請更新該論壇顯示此項設定的其他網頁。\n"
+"    您也可以"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:201
+msgid " (but we obscure the addresses so they are not easily recognizable by spammers).  "
+msgstr "(但是我們隱藏地址以防止寄發垃圾信的人輕易的取得郵件地址)。"
+
+#: /home/mailman/Mailman/MailList.py:489
+msgid "(Administrivia filter) Check postings and intercept ones that seem to be administrative requests?"
+msgstr "(管理規則) 檢查並攔截看起來像申請信件的投書？"
+
+#: /home/mailman/Mailman/Cgi/admin.py:858
+msgid ""
+"<p><b>real_name</b> attribute not\n"
+"                    changed!  It must differ from the list's name by case\n"
+"                    only.<p>"
+msgstr ""
+"<p><b>正式名稱</b> 屬性未變更！\n"
+"                    與論壇名稱僅大小寫不同而已。\n"
+"                    <p>"
+
+#: /home/mailman/Mailman/MailList.py:641
+msgid "Membership exposure"
+msgstr "會員公告"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:201
+msgid "Reject"
+msgstr "拒絕"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:201
+msgid "Defer"
+msgstr "延遲"
+
+#: /home/mailman/Mailman/MailList.py:664
+msgid "Must posts be approved by an administrator?"
+msgstr "投書均需經壇主核准嗎？"
+
+#: /home/mailman/Mailman/MailList.py:738
+msgid "Email addresses whose posts should always be held for approval, no matter what other options you have set. See also the subsequent option which applies to arbitrary content of arbitrary headers."
+msgstr "經常列管 Email 地址，不論做何種設定，列管之 email 帳號的投書均會送壇主核准。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:948
+msgid "Error Unsubscribing:"
+msgstr "退訂失敗："
+
+#: /home/mailman/Mailman/Handlers/Hold.py:89
+msgid "Your message had a suspicious header."
+msgstr "您的信件含有可疑的標題。"
+
+#: /home/mailman/Mailman/Cgi/options.py:142
+msgid "password"
+msgstr "密碼"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:286
+msgid " is already a member"
+msgstr " 已經是會員"
+
+#: /home/mailman/Mailman/Cgi/admin.py:172
+msgid "<p> There currently are no publicly-advertised "
+msgstr "<p> 現在並無公開之通信論壇"
+
+#: /home/mailman/Mailman/Digester.py:55
+msgid "Which delivery mode is the default for new users?"
+msgstr "新會員的預設收信模式？"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:341
+msgid ""
+"\n"
+"To change an option, do: set <option> <on|off> <password>\n"
+"\n"
+"Option explanations:\n"
+"--------------------"
+msgstr ""
+"\n"
+"欲變更設定，請打 set <設定項目> <on|off> <密碼>\n"
+"\n"
+"設定說明：\n"
+"--------------------"
+
+#: /home/mailman/Mailman/Cgi/admin.py:656
+msgid "Enter one address per line:"
+msgstr "每行輸入一個 email 地址："
+
+#: /home/mailman/Mailman/Bouncer.py:296
+msgid "User not found."
+msgstr "未發現使用者"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:154
+msgid "Refuse"
+msgstr "拒絕"
+
+#: /home/mailman/Mailman/MailList.py:417
+msgid "This value, if any, will be added to the front of the new-subscriber welcome message.  The rest of the welcome message already describes the important addresses and URLs for the mailing list, so you don't need to include any of that kind of stuff here.  This should just contain mission-specific kinds of things, like etiquette policies or team orientation, or that kind of thing."
+msgstr "輸入文字將加在新會員歡迎信件之前，歡迎信件其餘的部分將說明該論壇相關的重要地址及 URL，所以不需要輸入此類資訊。應該輸入任務性質之類的訊息，如禮節規範或者團隊方針或諸如此類的事情。"
+
+#: /home/mailman/Mailman/Archiver/pipermail.py:410
+msgid "Updating index files for archive [%s]"
+msgstr "更新索引檔 [%s]"
+
+#: /home/mailman/Mailman/MailList.py:732
+msgid "If a posting has this number, or more, of recipients, it is held for admin approval.  Use 0 for no ceiling."
+msgstr "若收件人超過設定值時，信件將留置轉送壇主裁決。 0 代表沒有限制。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:520
+msgid ""
+"<div ALIGN=\"right\"><br><em><strong>Note:</strong>\n"
+"        setting this value performs an immediate action but does not modify\n"
+"        permanent state.</em></div>"
+msgstr ""
+"<div ALIGN=\"right\"><br><em><strong>備註：</strong>\n"
+"        本次的設定僅供立即的處置，設定狀態並未因此變更。\n"
+"        </em></div>"
+
+
+#: /home/mailman/Mailman/Cgi/admindb.py:130
+msgid "Your Decision"
+msgstr "您的裁決"
+
+#: /home/mailman/Mailman/MailList.py:557
+msgid "Maximum length in Kb of a message body.  Use 0 for no limit."
+msgstr "信件內容上限。 若不限制請填 0 。"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:217
+msgid "You have been successfully subscribed to %s."
+msgstr "您已經成功訂閱 %s 論壇。"
+
+#: /home/mailman/Mailman/Cgi/Auth.py:74
+msgid "Stale cookie found"
+msgstr "找到舊的 cookie"
+
+#: /home/mailman/Mailman/Cgi/admin.py:121
+msgid ""
+"You have turned off delivery of\n"
+"            both digest and non-digest messages.  This is an incompatible\n"
+"            state of affairs.  You must turn on either digest delivery or\n"
+"            non-digest delivery or your mailing list will basically be\n"
+"            unusable."
+msgstr ""
+"您已經關閉摘要與一般訂閱 \n"
+"            信件的發送。  此二者是互斥事件。您必須自兩者中\n"
+"            擇一使用，不然您的通信論壇基本上是無法使用的。\n"
+
+#: /home/mailman/Mailman/Cgi/admin.py:196
+msgid " General list information can be found at "
+msgstr " 找不到論壇簡介資訊，網址："
+
+#: /home/mailman/Mailman/Cgi/admin.py:620
+msgid "<b>hide</b> -- Is the member's address concealed on the list of subscribers?"
+msgstr "<b>隱藏</b> -- 會員的 email 是否要出現在訂閱會員清單？"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:40
+msgid "User specific options page"
+msgstr "使用者設定網頁"
+
+#: /home/mailman/Mailman/Archiver/pipermail.py:268
+msgid "Creating archive directory "
+msgstr "建立歸檔目錄 "
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:133
+msgid "You must specify your password."
+msgstr "您必須給定您的密碼。"
+
+#: /home/mailman/Mailman/MailList.py:536
+msgid "Should administrator get immediate notice of new requests, as well as daily notices about collected ones?"
+msgstr "當有申請核准案件時，壇主應立即收到通知，還是每日收集後再寄出通知？"
+
+#: /home/mailman/Mailman/Bouncer.py:257
+msgid "%s member %s bouncing - %s%s"
+msgstr "%s 會員 %s 退信 - %s%s"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:254
+msgid "<p>... <b><i>or</i></b> select your entry from the subscribers list (see above)."
+msgstr "<p>... <b><i>或</i></b> 自會員清單點選您的帳號 (見上方)。"
+
+#: /home/mailman/Mailman/Cgi/roster.py:79
+msgid "%s subscriber list requires authentication."
+msgstr "%s 會員清單需要密碼驗證。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:889
+msgid "Already a member"
+msgstr "已是會員"
+
+#: /home/mailman/Mailman/Cgi/admin.py:796
+msgid "Empty admin passwords are not allowed"
+msgstr "不允許管理者密碼空白"
+
+#: /home/mailman/Mailman/MailList.py:588
+msgid "none"
+msgstr "無"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:50
+msgid ""
+"When turned on, your email address is concealed\n"
+"on the Web page that lists the members of the mailing list."
+msgstr ""
+"當打開此項設定後，您的 email 將不會顯示在\n"
+"論壇的訂閱清單網頁中。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:285
+msgid "the list administrator"
+msgstr "壇主"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:178
+msgid "Mailman won't accept the given email address as a valid address. (Does it have an @ in it???)<p>"
+msgstr "Mailman 認為您的 email 地址錯誤。(是不是漏掉了一個 @ ??? )<p>"
+
+#: /home/mailman/Mailman/ListAdmin.py:356
+msgid "Original Message"
+msgstr "原文"
+
+#: /home/mailman/Mailman/Cgi/private.py:120
+msgid "Your cookie has gone stale, enter password to get a new one."
+msgstr "您的 cookie 已經遺失，請再次輸入密碼。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:436
+msgid "\trequests to: "
+msgstr "\t申請處： "
+
+#: /home/mailman/Mailman/HTMLFormatter.py:149
+msgid "Disable mail delivery"
+msgstr "取消信件發送"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:122
+msgid "A reminder of your password has been emailed to you."
+msgstr "您的密碼提醒信件已經郵寄給您"
+
+#: /home/mailman/Mailman/MailList.py:647
+msgid "When set, the list of subscribers is protected by member or admin password authentication."
+msgstr "設定後，論壇的訂閱會員清單將限訂閱會員或壇主密碼驗證後，方可檢視。"
+
+#: /home/mailman/Mailman/Digester.py:77
+msgid "Text attached (as a final message) to the bottom of digests. "
+msgstr "摘要信尾(作為最後訊息)的文字"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:104
+#: /home/mailman/Mailman/Cgi/handle_opts.py:252
+#: /home/mailman/Mailman/MailCommandHandler.py:320
+#: /home/mailman/Mailman/MailCommandHandler.py:399
+#: /home/mailman/Mailman/MailCommandHandler.py:530
+msgid "List is not functional."
+msgstr "論壇功能未開啟。"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:256
+#: /home/mailman/Mailman/MailCommandHandler.py:401
+#: /home/mailman/Mailman/MailCommandHandler.py:532
+msgid "%s is not subscribed to this list."
+msgstr "%s 並未訂閱本論壇"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:51
+msgid "Sender is explicitly forbidden"
+msgstr "寄信人被明令禁止"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:439
+msgid "\tdescription: "
+msgstr "\t描述： "
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:39
+msgid "Subscribe results page"
+msgstr "訂閱結果"
+
+#: /home/mailman/Mailman/MailList.py:770
+msgid "Can subscribers choose to receive mail immediately, rather than in batched digests?"
+msgstr "會員是否可選擇立即收到信件，而非分批的摘要？"
+
+#: /home/mailman/Mailman/ListAdmin.py:358
+msgid "Request to mailing list %s rejected"
+msgstr "在論壇 %s 的申請已被拒絕"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:249
+#: /home/mailman/Mailman/MailCommandHandler.py:322
+#: /home/mailman/Mailman/MailCommandHandler.py:377
+msgid "%s isn't subscribed to this list."
+msgstr "%s 並未訂閱本論壇。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:240
+msgid ""
+"An unexpected Mailman error has occurred.\n"
+"\n"
+"Please forward your request to the human list administrator in charge of this\n"
+"list at <%s>.  The traceback is attached below and will be forwarded to the\n"
+"list administrator automatically."
+msgstr ""
+"發生不可預期的 Mailman 錯誤。\n"
+"\n"
+"請將您的申請寄給在 <%s> 上的壇主。以下所列的偵錯資訊將自動寄\n"
+"給壇主參考。"
+
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:126
+msgid "Submit Changes"
+msgstr "送出變更"
+
+#: /home/mailman/Mailman/Cgi/roster.py:104
+msgid "%s admin authentication failed."
+msgstr "%s 驗證失敗。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:212
+#: /home/mailman/Mailman/Cgi/listinfo.py:144
+msgid "List"
+msgstr "論壇"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:58
+msgid ""
+"No such list \"%s\": %s\n"
+msgstr ""
+"無此論壇 \"%s\": %s\n"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:105
+msgid "%s has no subscribed addr <i>%s</i>."
+msgstr "%s 上並無 <i>%s</i> 訂閱記錄。"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:41
+msgid "Changing user options results page"
+msgstr "會員變更設定結果"
+
+#: /home/mailman/Mailman/Bouncer.py:237
+msgid "[original message unavailable]"
+msgstr "[不提供原始信件]"
+
+#: /home/mailman/Mailman/Cgi/admin.py:433
+msgid ""
+"Badly formed options entry:\n"
+"  %s"
+msgstr ""
+"設定格式無法辨別：\n"
+"  %s"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:330
+msgid "Once a month, your password will be emailed to you as a reminder."
+msgstr "您的密碼每個月將自動寄給你一次備忘。"
+
+#: /home/mailman/Mailman/MailList.py:392
+msgid " An introductory description - a few paragraphs - about the list.  It will be included, as html, at the top of the listinfo page.  Carriage returns will end a paragraph - see the details for more info."
+msgstr "關於此論壇的簡介說明。輸入文字將以 html 的格式包含在論壇簡介網頁的最前面。 Return 用於劃分段落 -  詳情請參考細節。"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:117
+msgid "You must supply a valid email address.<br>"
+msgstr "您必須給定正確的 email 地址。<br>"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:138
+msgid "How often should a new archive volume be started?"
+msgstr "舊信歸檔的週期？"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:201
+msgid "Approve"
+msgstr "核准"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:92
+msgid "Message body is too big: %d bytes but there's a limit of %d KB"
+msgstr "信件內容過大： %d bytes （上限 %d KB)"
+
+#: /home/mailman/Mailman/Cgi/admin.py:549
+msgid "not metoo"
+msgstr "我也不要"
+
+#: /home/mailman/Mailman/MailList.py:385
+msgid "A terse phrase identifying this list."
+msgstr "識別本論壇的縮寫"
+
+#: /home/mailman/Mailman/Cgi/admin.py:131
+msgid ""
+"You have regular list members\n"
+"            but non-digestified mail is turned off.  They will receive mail\n"
+"            until you fix this problem."
+msgstr ""
+"您有一般訂閱會員，但是非摘要會員\n"
+"            的郵遞選項被關閉。 一般會員將持續收到信件直到您修正前述問題點\n"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:220
+msgid "If you reject this post,<br>please explain (optional):"
+msgstr "若您拒絕此信件，<br>請說明(選擇性)："
+
+#: /home/mailman/Mailman/MailList.py:434
+msgid ""
+"This option controls what Mailman does to the\n"
+"<tt>Reply-To:</tt> header in messages flowing through this mailing list.  When\n"
+"set to <em>Poster</em>, no <tt>Reply-To:</tt> header is added by Mailman,\n"
+"although if one is present in the original message, it is not stripped.\n"
+"Setting this value to either <em>This list</em> or <em>Explicit address</em>\n"
+"causes Mailman to insert a specific <tt>Reply-To:</tt> header in all messages,\n"
+"overriding the header in the original message if necessary (<em>Explicit\n"
+"address</em> inserts the value of <a\n"
+"href=\"?VARHELP=general/reply_to_address\">reply_to_address</a>).\n"
+" \n"
+"<p>There are many reasons not to introduce or override the <tt>Reply-To:</tt>\n"
+"header.  One is that some posters depend on their own <tt>Reply-To:</tt>\n"
+"settings to convey their valid return address.  Another is that modifying\n"
+"<tt>Reply-To:</tt> makes it much more difficult to send private replies.  See\n"
+"<a href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To' Munging\n"
+"Considered Harmful</a> for a general discussion of this issue.  See <a\n"
+"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"Munging Considered Useful</a> for a dissenting opinion.\n"
+"\n"
+"<p>Some mailing lists have restricted posting privileges, with a parallel list\n"
+"devoted to discussions.  Examples are `patches' or `checkin' lists, where\n"
+"software changes are posted by a revision control system, but discussion about\n"
+"the changes occurs on a developers mailing list.  To support these types of\n"
+"mailing lists, select <tt>Explicit address</tt> and set the <tt>Reply-To:</tt>\n"
+"address below to point to the parallel list."
+msgstr ""
+"本設定牽涉到 Mailman 對本論壇對回信地址 <tt>Reply-To:</tt> 的控制。\n"
+"當設定為 <em>投書者</em>, Mailman 不會加上 <tt>Reply-To:</tt> 標題，\n"
+"假使投書信件有 <tt>Reply-To:</tt> 標題，Mailman 會保留原回信地址 。\n"
+"若設定為 <em>本論壇</em> 或 <em>明確地址</em> Mailman 會在所有\n"
+"信件加上特定的 <tt>Reply-To:</tt> 回信地址 ，\n"
+"如果有需要可以變更回信地址 (<em>明確地址</em> \n"
+"到下面的連結填上<a href=\"?VARHELP=general/reply_to_address\">回信地址 </a>)。\n"
+" \n"
+"<p>基於許多原因，我們不建議您更換 <tt>Reply-To:</tt> 的內容。\n"
+"其一是有些投書民眾依賴自己的 <tt>Reply-To:</tt> 來設定他們正\n"
+"確的回信地址。 其二是修改 <tt>Reply-To:</tt> 不易回覆私人信件。\n"
+"請參考 <a href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To' Munging\n"
+"Considered Harmful</a> ，這裡有這個題目進一步的討論。  請到 <a\n"
+"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"Munging Considered Useful</a> 發表您的意見。\n"
+"\n"
+"<p>某些平行論壇(同時使用兩個論壇)會限制投書者的資格。\n"
+"如 `patches' 或 `checkin' 論壇，其軟體變更發佈由 RCS 自動寄出\n"
+"，但是其討論區卻在開發者論壇。欲支援此種型態的通信論壇時\n"
+"，請選擇 <tt>明確地址</tt> 並將 <tt>Reply-To:</tt> 的設定\n"
+"指向平行的論壇。"
+
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:132
+msgid "the list admin overview page"
+msgstr "論壇管理總覽網頁"
+
+#: /home/mailman/Mailman/MailList.py:670
+msgid "Use this option if you want to restrict posting to list members. If you want list members to be able to post, plus a handful of other posters, see the <i> posters </i> setting below"
+msgstr "若您想限制僅由會員投書請使用本項設定。如果您要論壇成員可以投書以外，另外以手動加入其他允許投書的人員，請參考以下 <i>投書人</i>的設定"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:456
+msgid ""
+"\n"
+"For more complete info about the %(listname)s mailing list, including\n"
+"background and instructions for subscribing to and using it, visit:\n"
+"\n"
+"    %(url)s\n"
+"\n"
+msgstr ""
+"\n"
+"有關 %(listname)s 通信論壇的進一步消息，包括\n"
+"背景資料以及訂閱及使用的簡介請參考網頁：\n"
+"\n"
+"    %(url)s\n"
+"\n"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:420
+msgid ""
+"\n"
+"Public mailing lists run by mailman@%s"
+msgstr ""
+"\n"
+"本公開通信論壇由 mailman@%s 執行"
+
+#: /home/mailman/Mailman/MailList.py:398
+msgid "The text will be treated as html <em>except</em> that newlines newlines will be translated to &lt;br&gt; - so you can use links, preformatted text, etc, but don't put in carriage returns except where you mean to separate paragraphs.  And review your changes - bad html (like some unterminated HTML constructs) can prevent display of the entire listinfo page."
+msgstr "這些文字將視為 html <em>除了</em>新行字元，新行字元將被轉為 &lt;br&gt; - 所以您可以使用超連結，格式化的文字 ... 等等，但請勿輸入 return ，除非您真的想分段落。並且審視您變更後的文件 - 不完整的 html 格式(例如不成對的 HTML 標籤) 將造成論壇簡介網頁無法正常顯示。"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:182
+msgid "The list is not fully functional, and can not accept subscription requests.<p>"
+msgstr "本論壇未開放訂閱。<p>"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:179
+msgid ""
+"Subject line ignored:\n"
+"  "
+msgstr ""
+"主題行忽略：\n"
+"  "
+
+#: /home/mailman/Mailman/Digester.py:66
+msgid "Should a digest be dispatched daily when the size threshold isn't reached?"
+msgstr "當摘要大小未達門檻時，是否仍須每日發送摘要？"
+
+#: /home/mailman/Mailman/Cgi/admin.py:87
+msgid "Regular-member (non-digest) Options"
+msgstr "一般會員設定(非摘要)設定"
+
+#: /home/mailman/Mailman/Digester.py:62
+msgid "How big in Kb should a digest be before it gets sent out?"
+msgstr "摘要大小(Kb，累積信件超過此值才發送摘要)?"
+
+#: /home/mailman/Mailman/Cgi/admin.py:562
+msgid "<p><em>To View other sections, click on the appropriate range listed below</em>"
+msgstr "<p><em>欲查看其他頁，點選以下所列各頁</em>"
+
+#: /home/mailman/Mailman/MailList.py:782
+msgid "Text appended to the bottom of every immediately-delivery message. "
+msgstr "附加在每封立即發送信件之後的文字"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:499
+msgid ""
+"Digest Members:\n"
+msgstr ""
+"摘要會員：\n"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:124
+msgid "List traffic archival policies."
+msgstr "論壇政策。"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:129
+msgid "Address"
+msgstr "地址"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:604
+#: /home/mailman/Mailman/MailCommandHandler.py:652
+msgid "You are already subscribed!"
+msgstr "您已經訂閱！"
+
+#: /home/mailman/Mailman/Digester.py:54
+msgid "Regular"
+msgstr "一般"
+
+#: /home/mailman/Mailman/MailList.py:633
+msgid "Subscribing"
+msgstr "訂閱"
+
+#: /home/mailman/Mailman/Handlers/ToDigest.py:287
+msgid "Today's Topics (%s)"
+msgstr "今日標題 (%s)"
+
+#: /home/mailman/Mailman/Digester.py:59
+msgid "When receiving digests, which format is default?"
+msgstr "您希望收到哪一種格式的摘要？"
+
+#: /home/mailman/Mailman/MailList.py:612
+msgid "confirm (*) - email confirmation required <br>require approval - require list administrator approval for subscriptions <br>confirm+approval - both confirm and approve<p> (*) when someone requests a subscription, mailman sends them a notice with a unique subscription request number that they must reply to in order to subscribe.<br> This prevents mischievous (or malicious) people from creating subscriptions for others without their consent."
+msgstr "需經確認(*) - 需經 email 確認 <br>需經核准 - 訂閱需經壇主核准<br>確認+核准 - 需經過確認和核准<p>(*) 當有人要求訂閱時，mailman 會寄出一封含有確認號碼的確認信，而訂閱者要回這封確認才完成訂閱。<br>這是為了預防有人惡作劇，未經 email 帳號所有人之同意之下代為申請加入通信論壇。"
+
+#: /home/mailman/Mailman/MailList.py:360
+msgid "Fundamental list characteristics, including descriptive info and basic behaviors."
+msgstr "論壇基本資料，包括說明與公布的資訊。"
+
+#: /home/mailman/Mailman/MailList.py:430
+msgid "Poster"
+msgstr "投書者"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:392
+msgid "Email address '%s' not accepted by Mailman."
+msgstr "Mailman 不接受 '%s' email 地址。"
+
+#: /home/mailman/Mailman/MailList.py:767
+msgid "Policies concerning immediately delivered list traffic."
+msgstr "一般論壇信件的流量管制政策。"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:38
+msgid "<p>Continue to "
+msgstr "<p>連續 "
+
+#: /home/mailman/Mailman/MailList.py:588
+#: /home/mailman/Mailman/MailList.py:609
+msgid "require approval"
+msgstr "需經核准"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:160
+msgid "(Note - you are subscribing to a list of mailing lists, so the %s notice will be sent to the admin address for your membership, %s.)<p>"
+msgstr "(註 - 您訂閱了一個通信論壇，所以 %s 會將您的會籍通知壇主， %s 。)<p>"
+
+#: /home/mailman/Mailman/Cgi/private.py:152
+msgid "No file"
+msgstr "沒有檔案"
+
+#: /home/mailman/Mailman/Bouncer.py:81
+msgid "Action when critical or excessive bounces are detected."
+msgstr "當偵測到嚴重或超量的垃圾郵件時做出反應。"
+
+#: /home/mailman/Mailman/MailList.py:746
+msgid "Use this option to prohibit posts according to specific header values.  The target value is a regular-expression for matching against the specified header.  The match is done disregarding letter case.  Lines beginning with '#' are ignored as comments.<p>For example:<pre>to: .*@public.com </pre> says to hold all postings with a <em>to</em> mail header containing '@public.com' anywhere among the addresses.<p>Note that leading whitespace is trimmed from the regexp.  This can be circumvented in a number of ways, eg by escaping or bracketing it.<p> See also the <em>forbidden_posters</em> option for a related mechanism."
+msgstr "此項設定用於攔截特定標題的信件。所輸入的值用於與信件標題做 reqular-expression 的比對。比對時字母大小寫不影響。行首以 '#' 標記者為註解。<p>例如： <pre>to: .*@public.com </pre>  表示攔截郵件<em>to</em>標題中，地址內含有 '@public.com' 字句的信件。<p>請注意，前導的空白 regexp 將忽略不計。有好幾個方法可迂迴的進行檢查，如例外字元或刮號。<p> 相關機制請參考 <em>禁止投書人員</em> 設定"
+
+#: /home/mailman/Mailman/GatewayManager.py:59
+msgid "Should Mailman perform a <em>catchup</em> on the newsgroup?"
+msgstr "是否需要 Mailman 在新聞群組中 <em>抓信</em>？"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:480
+msgid "Private list: No one may see subscription list."
+msgstr "私人論壇： 訂閱清單無可奉告。"
+
+#: /home/mailman/Mailman/Digester.py:58
+msgid "MIME"
+msgstr ""
+
+#: /home/mailman/Mailman/Cgi/admin.py:803
+msgid "Passwords did not match"
+msgstr "密碼不符"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:312
+msgid "Found no password for %s"
+msgstr "未發現 %s 的密碼"
+
+#: /home/mailman/Mailman/MailList.py:546
+msgid "Should administrator get notices of subscribes/unsubscribes?"
+msgstr "當有 訂閱/退訂 舉動時是否要通知壇主？"
+
+#: /home/mailman/Mailman/Cgi/admin.py:200
+msgid "<p>(Send questions and comments to "
+msgstr "<p>(將您的意見或疑問寄給 "
+
+#: /home/mailman/Mailman/MailCommandHandler.py:65
+msgid ""
+"When turned on, you get `plain' digests, which are actually\n"
+"formatted using the older RFC934 digest format.  This format can be easier\n"
+"to read if you have a non-MIME compliant mail reader.  When this option is\n"
+"turned off, you get digests in MIME format, which are much better if you\n"
+"have a mail reader that supports MIME."
+msgstr ""
+"當打開此設定，您會收到'純文字'格式的摘要，此格式\n"
+"完全遵照舊的 RFC 934 摘要格式。如果您使用的是非 MIME 相容的\n"
+"收信軟體時，此種格式很容易被支援。 當關閉此設定時，您將會收\n"
+"到 MIME 格式的摘要，如果您用支援 MIME 的郵件軟體時較為合適\n"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:468
+msgid "No other details are available."
+msgstr "無未盡事宜。"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:40
+msgid "You must specify a list name.  Here is the "
+msgstr "您必須指定論壇名稱。 這裡是 "
+
+#: /home/mailman/Mailman/Cgi/admin.py:631
+msgid "<b>plain</b> -- If getting digests, does the member get plain text digests? (otherwise, MIME)"
+msgstr "<b>純文字</b> -- 如果選擇摘要模式，會員是否要收到純文字格式的摘要？(否則以 MIME 寄送)"
+
+#: /home/mailman/Mailman/Cgi/admin.py:233
+msgid "%s mailing list administration<br>%s Section"
+msgstr "%s 通信論壇管理<br>%s 頁"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:204
+msgid "You are already subscribed!<p>"
+msgstr "您已經訂閱成功！<p>"
+
+#: /home/mailman/Mailman/MailList.py:430
+msgid "This list"
+msgstr "此論壇"
+
+#: /home/mailman/Mailman/MailList.py:675
+msgid "Addresses of members accepted for posting to this list without implicit approval requirement. (See \"Restrict ... to list members\" for whether or not this is in addition to allowing posting by list members"
+msgstr "允許不經核准投書之會員地址。(請看\"限會員投書\"以決定是否允許論壇會員投書"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:167
+msgid "Posting Held for Approval"
+msgstr "投書遭留置審查"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:178
+msgid "<em>Message with id #%d was lost."
+msgstr "<em>編號 #%d 的信件遺失。"
+
+#: /home/mailman/Mailman/MailList.py:651
+msgid "Show member addrs so they're not directly recognizable as email addrs?"
+msgstr "顯示會員地址但是不直接顯示 email 格式？"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:593
+msgid ""
+"Mailman won't accept the given email address as a valid address.\n"
+"(Does it have an @ in it???)"
+msgstr ""
+"Mailman 認為您的 email 地址錯誤。\n"
+"(是不是漏掉了一個 @ ??? )"
+
+#: /home/mailman/Mailman/MailList.py:431
+msgid "Where are replies to list messages directed?  <tt>Poster</tt> is <em>strongly</em> recommended for most mailing lists."
+msgstr "論壇信件的回信人要填誰？ 對大部分的論壇而言，<em>強烈</em>建議以<tt>寄信人</tt>作為論壇發出信件的回信人。"
+
+#: /home/mailman/Mailman/MailList.py:774
+msgid "Header added to mail sent to regular list members"
+msgstr "寄給一般訂閱會員的抬頭"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:199
+msgid "Passwords must match."
+msgstr "密碼錯誤。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:627
+msgid "<b>digest</b> -- Does the member get messages in digests? (otherwise, individual messages)"
+msgstr "<b>摘要</b> -- 會員是否可以選擇摘要模式收信？（或者說依個別投書收信）"
+
+#: /home/mailman/Mailman/MailList.py:382
+msgid "All messages not related to an specific user will be displayed in this language."
+msgstr "除特定使用者外，所有訊息將以此種語言顯示。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:625
+msgid "<b>not metoo</b> -- Does the member avoid copies of their own posts?"
+msgstr "<b>我也不要</b> -- 寄信人是否要收到他自己的投書？"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:63
+msgid "Posting to a restricted list by sender requires approval"
+msgstr "投書到管制的論壇需要核准"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:300
+msgid "Usage: password [<oldpw> <newpw>]"
+msgstr "用法：password [<舊密碼> <新密碼>]"
+
+#: /home/mailman/Mailman/MailList.py:549
+msgid "Send mail to poster when their posting is held for approval?"
+msgstr "當投書遭留置移送裁決時是否要通知寄信人？"
+
+#: /home/mailman/Mailman/Cgi/admin.py:535
+msgid "Membership List"
+msgstr "會員清單"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:416
+msgid "Usage: lists"
+msgstr "用法： lists"
+
+#: /home/mailman/Mailman/Cgi/private.py:151
+msgid "Archive File Not Found"
+msgstr "未發現歸檔之檔案"
+
+#: /home/mailman/Mailman/MailList.py:695
+msgid "Must posts have list named in destination (to, cc) field (or be among the acceptable alias names, specified below)?"
+msgstr "投書之收件人(to,cc)欄位是否應該包含論壇名稱(或者下列所列之別名)？"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:192
+msgid "Subject:"
+msgstr "主題："
+
+#: /home/mailman/Mailman/GatewayManager.py:44
+msgid "The News server is not part of Mailman proper.  You have to already have access to a NNTP server, and that NNTP server has to recognize the machine this mailing list runs on as a machine capable of reading and posting news."
+msgstr "新聞伺服器並非 Mailman 的功能。您必須擁有存取 NNTP 伺服器的權限，且 NNTP 伺服器需認可 論壇所在的主機擁有讀信及投書的權限。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:268
+msgid ""
+"This is an automated response.\n"
+"\n"
+"There were problems with the email commands you sent to Mailman via the\n"
+"administrative address <%(sender)s>.\n"
+"\n"
+"To obtain instructions on valid Mailman email commands, send email to\n"
+"<%(sender)s> with the word \"help\" in the subject line or in the body of the\n"
+"message.\n"
+"\n"
+"If you want to reach the human being that manages this mailing list, please\n"
+"send your message to <%(admin)s>.\n"
+"\n"
+"The following is a detailed description of the problems.\n"
+"\n"
+msgstr ""
+"這是自動回覆的信件。\n"
+"\n"
+"您寄到管理信箱 <%(sender)s> 的 email 指令有誤。\n"
+"\n"
+"\n"
+"欲知正確的 email 指令，請以 \"help\" 為信件主題或者信件內容，\n"
+"寄到 <%(sender)s> 。\n"
+"\n"
+"\n"
+"若您要跟論壇管理人員(壇主)聯絡，請將您的意見寄到\n"
+" <%(admin)s>。\n"
+"\n"
+"以下附上問題信件的說明。\n"
+"\n"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:111
+msgid "Your account has gone awry - please contact the list administrator!"
+msgstr "您的帳號已經取消 - 請與壇主聯繫！"
+
+#: /home/mailman/Mailman/Cgi/private.py:123
+msgid "Error decoding authorization cookie."
+msgstr "驗證 cookie 解讀失敗。"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:64
+msgid "This list is restricted; your message was not approved."
+msgstr "這是私人論壇；不允許投書。"
+
+#: /home/mailman/Mailman/MailList.py:569
+msgid ""
+"Base URL for Mailman web interface.  The URL must end in a\n"
+" \t     single \"/\".  See also the details for an important warning when\n"
+" \t     changing this value."
+msgstr ""
+"Mailman 網頁介面的 URL。URL 結尾必須是一個 \"/\"。\n"
+"\t    當變更此項設定時，請詳讀關於變更時的重要訊息。\n"
+"\t"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:93
+msgid "%s Admindb"
+msgstr "% 管理資料庫"
+
+#: /home/mailman/Mailman/Cgi/admin.py:89
+msgid "Bounce Options"
+msgstr "退信設定"
+
+#: /home/mailman/Mailman/Digester.py:58
+msgid "Plain"
+msgstr "純文字"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:116
+msgid "You have been unsubscribed."
+msgstr "您已經退訂。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:190
+msgid "This is %sa private list, which means that the members list is not available to non-members.  "
+msgstr "這是 %s 上的私人論壇，也就是說會員清單不對非會員公開。"
+
+#: /home/mailman/Mailman/htmlformat.py:546
+msgid "Python Powered"
+msgstr "Python 加力"
+
+#: /home/mailman/Mailman/Cgi/private.py:109
+msgid "Please enter your %s subscription email address and password."
+msgstr "請輸入在 %s 的訂閱 email 帳號及密碼。 "
+
+#: /home/mailman/Mailman/Cgi/options.py:119
+msgid "Submit My Changes"
+msgstr "送出我的變更"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:55
+msgid "Post to moderated list"
+msgstr "投書到管制的論壇"
+
+#: /home/mailman/Mailman/Cgi/admin.py:789
+msgid "Incorrect administrator password"
+msgstr "壇主密碼不正確"
+
+#: /home/mailman/Mailman/GatewayManager.py:60
+msgid ""
+"When you tell Mailman to perform a catchup on the newsgroup,\n"
+"             this means that you want to start gating messages to the mailing\n"
+"             list with the next new message found.  All earlier\n"
+"             messages on the newsgroup will be ignored.  This is as if you\n"
+"             were reading the newsgroup yourself, and you marked all current\n"
+"             messages as <em>read</em>.  By catching up, your mailing list\n"
+"             members will not see any of the earlier messages."
+msgstr ""
+"當您要求 Mailman 在新聞群組執行抓信的工作時，\n"
+"             也就是說：當新聞群組收到下一封新信時，Mailman \n"
+"             才會將它轉到通信論壇中，先前的信件則不含在內。\n"
+"             這就像閱讀新聞群組時，將所有的信件標記成<em>已讀</em>\n"
+"             一般。開始抓信後，通信論壇的成員將不會收到\n"
+"             新聞群組早先的討論內容。"
+
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:203
+msgid "Your password has been changed."
+msgstr "您的密碼已經變更。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:679
+msgid "Confirm new password:"
+msgstr "確認新密碼："
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:152
+msgid "List Subscriptions for %s on %s"
+msgstr "%s 在 %s 的訂閱清單 "
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:93
+#: /home/mailman/Mailman/Cgi/options.py:121
+msgid "Unsubscribe"
+msgstr "退訂"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:233
+msgid "You must supply a password to change options."
+msgstr "您必須給定密碼以變更設定。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:172
+msgid "You will be sent email requesting confirmation, to prevent others from gratuitously subscribing you.  "
+msgstr "您必須寄出確認信，以防止未經您同意的代訂行為。"
+
+#: /home/mailman/Mailman/GatewayManager.py:42
+msgid "The Internet address of the machine your News server is running on."
+msgstr "您指定 IP 位址的新聞伺服器執行勤務中。"
+
+#: /home/mailman/Mailman/Bouncer.py:71
+msgid "Minimum number of posts to the list since members first bounce before we consider removing them from the list"
+msgstr "最少退信次數，超過此數 mailman 將會自動自論壇移除。"
+
+#: /home/mailman/Mailman/MailList.py:430
+msgid "Explicit address"
+msgstr "明確地址"
+
+#: /home/mailman/Mailman/Cgi/admin.py:691
+msgid "Submit Your Changes"
+msgstr "確認您的變更"
+
+#: /home/mailman/Mailman/Cgi/admin.py:396
+msgid "Mailman %s List Option Help"
+msgstr "Mailman %s 論壇設定說明"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:48
+msgid "List name is required."
+msgstr "需要論壇名稱。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:548
+msgid "member address"
+msgstr "會員地址"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:72
+msgid ""
+"Blind carbon copies or other implicit destinations are\n"
+"not allowed.  Try reposting your message by explicitly including the list\n"
+"address in the To: or Cc: fields."
+msgstr ""
+"不允許投書信件的收件人欄位空白，或者不清楚。\n"
+"投書時請將欲投書之論壇地址列在收件人欄位\n"
+"( To: 或 Cc: )。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:356
+msgid "<malformed option>"
+msgstr "<malformed 設定>"
+
+#: /home/mailman/Mailman/Cgi/admin.py:413
+msgid "return to the %s options page."
+msgstr "返回 %s 設定頁。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:279
+msgid "  (You can change your password there, too.)"
+msgstr "  (您也可在那邊變更密碼。)"
+
+#: /home/mailman/Mailman/Cgi/roster.py:44
+#: /home/mailman/Mailman/Cgi/subscribe.py:38
+msgid "Invalid options to CGI script"
+msgstr "CGI 設定錯誤"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:130
+msgid "Web site "
+msgstr "網站"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:153
+msgid " if you have questions."
+msgstr " 若您有其他問題。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:180
+msgid "<p> Below is the collection of publicly-advertised "
+msgstr "<p> 以下是公開的論壇列表"
+
+#: /home/mailman/Mailman/Cgi/admin.py:540
+msgid "(%s members total, max. %s at a time displayed)"
+msgstr "(會員共 %s 人，每頁最多顯示 %s 人)"
+
+#: /home/mailman/Mailman/Cgi/admin.py:548
+msgid "subscr"
+msgstr "訂閱"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:129
+msgid "private"
+msgstr "非公開"
+
+#: /home/mailman/Mailman/MailList.py:528
+msgid "Send welcome message when people subscribe?"
+msgstr "當有新會員加入時，是否寄發歡迎信？"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:242
+msgid "), %senter your subscription email address:"
+msgstr ")， %s 請輸入訂閱的 email 地址："
+
+#: /home/mailman/Mailman/MailCommandHandler.py:318
+#: /home/mailman/Mailman/MailCommandHandler.py:386
+#: /home/mailman/Mailman/MailCommandHandler.py:412
+#: /home/mailman/Mailman/MailCommandHandler.py:528
+msgid "Succeeded."
+msgstr "成功"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:647
+msgid "Your request has been forwarded to the list administrator for approval"
+msgstr "您的申請已轉送該論壇壇主核准"
+
+#: /home/mailman/Mailman/MailList.py:644
+msgid "Anyone"
+msgstr "任何人"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:262
+msgid "<i>The %s is only available to the list members.</i>)"
+msgstr "<i>%s 僅限論壇成員使用。</i>)"
+
+#: /home/mailman/Mailman/Cgi/private.py:125
+msgid "Authentication error."
+msgstr "驗證錯誤。"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:250
+msgid ""
+"Unexpected Mailman error:\n"
+"%s"
+msgstr ""
+"不可預期的 Mailman 錯誤：\n"
+"%s"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:332
+msgid "%s is not a member of the list."
+msgstr "%s 非本論壇會員"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:96
+msgid "You must give your password to unsubscribe."
+msgstr "欲取消訂閱您必須給定您的密碼。"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:96
+msgid "You must supply your email address."
+msgstr "您必須給定您的 email 地址。"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:126
+#: /home/mailman/Mailman/Bouncer.py:65
+#: /home/mailman/Mailman/Digester.py:49
+#: /home/mailman/Mailman/Digester.py:65
+#: /home/mailman/Mailman/GatewayManager.py:52
+#: /home/mailman/Mailman/GatewayManager.py:55
+#: /home/mailman/Mailman/GatewayManager.py:58
+#: /home/mailman/Mailman/MailList.py:488
+#: /home/mailman/Mailman/MailList.py:499
+#: /home/mailman/Mailman/MailList.py:523
+#: /home/mailman/Mailman/MailList.py:527
+#: /home/mailman/Mailman/MailList.py:535
+#: /home/mailman/Mailman/MailList.py:545
+#: /home/mailman/Mailman/MailList.py:548
+#: /home/mailman/Mailman/MailList.py:635
+#: /home/mailman/Mailman/MailList.py:650
+#: /home/mailman/Mailman/MailList.py:663
+#: /home/mailman/Mailman/MailList.py:666
+#: /home/mailman/Mailman/MailList.py:694
+#: /home/mailman/Mailman/MailList.py:760
+#: /home/mailman/Mailman/MailList.py:769
+msgid "Yes"
+msgstr "是"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:133
+msgid "Set date in archive to when the mail is claimed to have been sent, or to the time we resend it?"
+msgstr "設定信件存檔日期是依信件寄出時間，還是 mailman 送出的時間？"
+
+#: /home/mailman/Mailman/Cgi/admin.py:894
+msgid "Bad/Invalid email address"
+msgstr "不正確 的 email 地址"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:124
+msgid " To visit the info page for an unadvertised list, open a URL similar to this one, but with a '/' and"
+msgstr " 欲查看未公開論壇的簡介網頁，請依本例開啟 URL ，但要加上 '/' 和"
+
+#: /home/mailman/Mailman/MailList.py:590
+#: /home/mailman/Mailman/MailList.py:611
+msgid "What steps are required for subscription?<br>"
+msgstr "您需要怎樣的訂閱流程？<br>"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:390
+msgid "You already have digests off."
+msgstr "你已經取消摘要模式。"
+
+#: /home/mailman/Mailman/Deliverer.py:106
+msgid "%s user %s missing password!"
+msgstr "%s 使用者 %s 遺失密碼！"
+
+#: /home/mailman/Mailman/Bouncer.py:77
+msgid "Do nothing"
+msgstr "不作回應"
+
+#: /home/mailman/Mailman/Cgi/roster.py:99
+msgid "%s subscriber authentication failed."
+msgstr "%s 會員驗證失敗。"
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:133
+msgid " to find the management interface for your list.<p>(Send questions or comments to "
+msgstr " 查詢您的論壇管理介面。<p>(將您的意見或疑問寄給 "
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:141
+msgid "HTML successfully updated."
+msgstr "HTML 已更新成功。"
+
+#: /home/mailman/Mailman/GatewayManager.py:53
+msgid "Should new posts to the mailing list be sent to the newsgroup?"
+msgstr "通信論壇的新信是否要寄往新聞群組？"
+
+#: /home/mailman/Mailman/Handlers/ToDigest.py:279
+msgid "Digest Header"
+msgstr "摘要標題"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:126
+msgid "The password entry for `%s' has not been found.  The list administrator is being notified.<p>"
+msgstr "沒有發現 '%s' 的密碼。將通知壇主處理。<p>"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:185
+msgid "Confirmation from your email address is required, to prevent anyone from subscribing you without permission. Instructions are being sent to you at %s. Please note your subscription will not start until you confirm your subscription."
+msgstr "為了預防未經您同意卻逕行代為訂閱本論壇，確認您的 email 地址是必須的。詳細的步驟將寄到您在 %s 的帳號。請注意，除非獲得您的確認，否則訂閱仍不算有效。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:89
+msgid "<em>(%d private member%s not shown)</em>"
+msgstr "<em>(%d 非公開會員 %s 不顯示)</em>"
+
+#: /home/mailman/Mailman/Cgi/admin.py:489
+msgid "<br><em>...specify a file to upload</em><br>"
+msgstr "<br><em>...指定上傳檔案</em><br>"
+
+#: /home/mailman/Mailman/Cgi/admin.py:807
+msgid "You must type in your new password twice"
+msgstr "您必須輸入密碼兩次"
+
+#: /home/mailman/Mailman/MailList.py:636
+msgid "Advertise this list when people ask what lists are on this machine?"
+msgstr "當查詢本機所有論壇時，是否要列出本論壇？"
+
+#: /home/mailman/Mailman/Deliverer.py:76
+msgid "Unsubscribed from \"%s\" mailing list"
+msgstr "自 \"%s\" 論壇取消訂閱"
+
+#: /home/mailman/Mailman/Cgi/admin.py:90
+msgid "Archival Options"
+msgstr "歸檔設定"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:39
+msgid "edit your personal options"
+msgstr "修改個人設定"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:125
+msgid "When you are done making changes..."
+msgstr "當您完成變更後..."
+
+#: /home/mailman/Mailman/Bouncer.py:79
+msgid "Disable and DON'T notify me"
+msgstr "取消訂閱且不要通知我"
+
+#: /home/mailman/Mailman/Archiver/pipermail.py:276
+msgid "Reloading pickled archive state"
+msgstr "重新載入歸檔狀態"
+
+#: /home/mailman/Mailman/MailList.py:588
+#: /home/mailman/Mailman/MailList.py:609
+msgid "confirm"
+msgstr "確認"
+
+#: /home/mailman/Mailman/Cgi/admin.py:84
+msgid "General Options"
+msgstr "一般設定"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:453
+msgid "Private list: only members may see info."
+msgstr "私人論壇：限會員觀看。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:277
+msgid " subscribers: "
+msgstr " 訂戶："
+
+#: /home/mailman/Mailman/Digester.py:71
+msgid "Text attached (as an initial message, before the table of contents) to the top of digests. "
+msgstr "附加在摘要前面的文字 (當作摘要的開場白，在內容列表前面)"
+
+#: /home/mailman/Mailman/htmlformat.py:547
+msgid "Gnu's Not Unix"
+msgstr ""
+
+#: /home/mailman/Mailman/MailCommandHandler.py:516
+msgid ""
+"Usage: unsubscribe <password> [<email-address>]\n"
+"To unsubscribe from a particular list, send your request\n"
+"to the '-request' address for that list."
+msgstr ""
+"用法： unsubscribe <密碼> [<email 地址>]\n"
+"欲終止一論壇的訂閱時，將您的申請寄到\n"
+"該論壇 '-request' 的地址。"
+
+#: /home/mailman/Mailman/Bouncer.py:66
+msgid "Try to figure out error messages automatically? "
+msgstr "欲自動找出錯誤信件嗎？"
+
+#: /home/mailman/Mailman/Cgi/admin.py:282
+msgid "Make your changes below, and then submit them using the button at the bottom.%s<p>"
+msgstr "在下面變更您的設定，並使用下方的按鍵確定之。%s<p>"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:83
+msgid "Edit HTML : Error"
+msgstr "編輯 HTML : 錯誤"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:129
+msgid "public"
+msgstr "公開"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:90
+msgid "%s Admindb Results"
+msgstr "%s 管理資料庫結果"
+
+#: /home/mailman/Mailman/Bouncer.py:78
+msgid "Disable and notify me"
+msgstr "取消並通知我"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:137
+msgid "Daily"
+msgstr "每日"
+
+#: /home/mailman/Mailman/ListAdmin.py:312
+msgid "New subscription request to list %s from %s"
+msgstr "%s 論壇訂閱申請，由 %s 提出"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:144
+msgid "Incorrect password."
+msgstr "密碼錯誤。"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:88
+msgid "Message has a suspicious header"
+msgstr "信件含有可疑的標題"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:194
+msgid "This is %sa hidden list, which means that the members list is available only to the list administrator.  "
+msgstr "這是主機 %s 上的未公開論壇，意思就是說會員清單僅限壇主查閱。"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:117
+msgid "View or edit the list configuration information."
+msgstr "查看或編輯論壇設定資訊。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:150
+msgid " option.  Contact "
+msgstr " 選項。 接洽 "
+
+#: /home/mailman/Mailman/Cgi/admin.py:190
+msgid " To visit the administrators configuration page for an unadvertised list, open a URL similar to this"
+msgstr "欲前往未公開論壇之管理設定網頁，請如下所示開啟 URL "
+
+#: /home/mailman/Mailman/Cgi/admin.py:549
+msgid "hide"
+msgstr "隱藏"
+
+#: /home/mailman/Mailman/MailList.py:514
+msgid "When \"umbrella_list\" is set to indicate that this list has other mailing lists as members, then administrative notices like confirmations and password reminders need to not be sent to the member list addresses, but rather to the owner of those member lists.  In that case, the value of this setting is appended to the member's account name for such notices. '-owner' is the typical choice.  This setting has no effect when \"umbrella_list\" is \"No\"."
+msgstr "當設定\"樹狀論壇\"時就代表該論壇擁有其他通信論壇為其會員，因此管理的提醒郵件如確認信、密碼提醒不可以直接寄給其他通信論壇。遇到這種情形時，本設定會加在訂閱帳號之後用來收前述的管理信件。'-owner' 就是典型的範例。若\"樹狀論壇\"設定為\"否\"的話，則本項設定無效。"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:57
+#: /home/mailman/Mailman/Cgi/options.py:45
+msgid "Invalid options to CGI script."
+msgstr "CGI 選項錯誤。"
+
+#: /home/mailman/Mailman/Cgi/subscribe.py:141
+msgid "You must supply a valid password, and confirm it.<br>"
+msgstr "您必須給定一正確密碼，並確認之。<br>"
+
+#: /home/mailman/Mailman/Cgi/admin.py:147
+msgid "%s mailing lists - Admin Links"
+msgstr "%s 通信論壇 - 管理網頁連結"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:283
+msgid "Address:"
+msgstr "地址："
+
+#: /home/mailman/Mailman/Cgi/listinfo.py:187
+#: /home/mailman/Mailman/HTMLFormatter.py:251
+msgid "Edit Options"
+msgstr "修改設定"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:260
+#: /home/mailman/Mailman/MailCommandHandler.py:325
+#: /home/mailman/Mailman/MailCommandHandler.py:381
+#: /home/mailman/Mailman/MailCommandHandler.py:535
+msgid "You gave the wrong password."
+msgstr "密碼錯誤。"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:59
+msgid "Post by non-member to a members-only list"
+msgstr "非會員投書到限會員發言的論壇"
+
+#: /home/mailman/Mailman/Digester.py:76
+msgid "Footer added to every digest"
+msgstr "加在每封摘要的註腳"
+
+#: /home/mailman/Mailman/MailList.py:667
+msgid "Restrict posting privilege to list members? (<i>member_posting_only</i>)"
+msgstr "僅限論壇會員發言嗎？(<i>限_會員_投書</i>)"
+
+#: /home/mailman/Mailman/MailList.py:645
+msgid "Who can view subscription list?"
+msgstr "誰可以查詢訂戶清單？"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:132
+msgid "When resent"
+msgstr "當重寄時"
+
+#: /home/mailman/Mailman/Cgi/private.py:117
+msgid "Your email address or password were incorrect. Please try again."
+msgstr "您的 email 地址或密碼有誤。請再試一次。"
+
+#: /home/mailman/Mailman/Handlers/CookHeaders.py:50
+#: /home/mailman/Mailman/Handlers/Hold.py:226
+#: /home/mailman/Mailman/Handlers/Hold.py:235
+#: /home/mailman/Mailman/ListAdmin.py:171
+msgid "(no subject)"
+msgstr "(沒有主題)"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:127
+msgid "Archive messages?"
+msgstr "信件是否歸檔？"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:228
+msgid "Message Headers:"
+msgstr "信件標題："
+
+#: /home/mailman/Mailman/Cgi/admin.py:198
+msgid "the mailing list overview page"
+msgstr "通信論壇簡介網頁"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:597
+msgid ""
+"The list is not fully functional, and can not accept subscription\n"
+"requests."
+msgstr ""
+"本論壇功能未完全開放，目前暫不接受訂閱申請\n。"
+
+#: /home/mailman/Mailman/Bouncer.py:80
+msgid "Remove and notify me"
+msgstr "移除並通知我"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:238
+msgid "To change your subscription (set options like digest and delivery modes, get a reminder of your password, or unsubscribe from "
+msgstr "欲變更您的訂閱(設定 摘要或一般模式，取得提醒密碼"
+
+#: /home/mailman/Mailman/Handlers/ToDigest.py:322
+msgid "End of %s Digest"
+msgstr "%s 摘要結尾"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:57
+msgid ""
+"When turned on, you do *not* get copies of your own\n"
+"posts to the list.  Otherwise, you do get copies of your own posts\n"
+" (yes, this seems a little backwards).  This does not affect the contents\n"
+"of digests, so if you receive postings in digests, you will always get\n"
+"copies of your messages in the digest."
+msgstr ""
+"當開啟本項設定後，您 *不* 會收到由您自己寄到\n"
+"論壇的信件。 此外，您也可收到您自己的投書 \n"
+"(沒錯，這聽起來有點矛盾)。 這個設定不會影響\n"
+"摘要的內容，所以如果您是摘要訂戶的話，您收\n"
+"到的摘要也會包含您自己投書的信件。"
+
+#: /home/mailman/Mailman/MailList.py:1153
+msgid "%s subscription notification"
+msgstr "%s 訂閱通知"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:474
+msgid ""
+"Usage: who\n"
+"To get subscribership for a particular list, send your request\n"
+"to the '-request' address for that list."
+msgstr ""
+"用法： who\n"
+"欲訂閱某一論壇時，請將申請函寄到\n"
+"該論壇的 '-request' 地址。"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:120
+#: /home/mailman/Mailman/Cgi/admindb.py:146
+msgid "Submit All Data"
+msgstr "送出所有資料"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:137
+msgid "Yearly"
+msgstr "每年"
+
+#: /home/mailman/Mailman/Defaults.py:559
+msgid "Italian"
+msgstr "義大利"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:67
+msgid "Too many recipients to the message"
+msgstr "信件收件人太多"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:142
+#: /home/mailman/Mailman/Cgi/handle_opts.py:192
+msgid "You seem to no longer be a list member."
+msgstr "您不是論壇成員。"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:56
+msgid "Your message has been deemed inappropriate by the moderator."
+msgstr "壇主認為您投書的內容不妥。"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:286
+msgid "Admin address:"
+msgstr "壇主 email："
+
+#: /home/mailman/Mailman/MailCommandHandler.py:184
+msgid "Maximum command lines (%d) encountered, ignoring the rest..."
+msgstr "超過最大指令行數(%d)，超過部分將忽略..."
+
+#: /home/mailman/Mailman/HTMLFormatter.py:275
+msgid "Click here for the list of "
+msgstr "點此處到論壇"
+
+#: /home/mailman/Mailman/Cgi/admin.py:245
+msgid "Tend to pending administrative requests"
+msgstr "處理待裁決申請"
+
+#: /home/mailman/Mailman/Cgi/admin.py:316
+msgid "Value"
+msgstr "值"
+
+#: /home/mailman/Mailman/Cgi/admin.py:677
+msgid " Enter new password:"
+msgstr " 請輸入新密碼："
+
+#: /home/mailman/Mailman/MailList.py:510
+msgid "Suffix for use when this list is an umbrella for other lists, according to setting of previous \"umbrella_list\" setting."
+msgstr "根據之前 \"樹狀論壇\" 的設定值，當本論壇作為樹狀論壇的分支時的延伸附加字尾"
+
+#: /home/mailman/Mailman/MailList.py:692
+msgid "Spam-specific posting filters"
+msgstr "垃圾信件過濾規則"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:297
+msgid "Password: "
+msgstr "密碼： "
+
+#: /home/mailman/Mailman/MailList.py:551
+msgid "Approval notices are sent when mail triggers certain of the limits <em>except</em> routine list moderation and spam filters, for which notices are <em>not</em> sent.  This option overrides ever sending the notice."
+msgstr "當發生信件遭攔截或其他類似的情形時，mailman 會寄出要求核准的信件。 <em>除非</em> 是違反論壇的特殊規範及 spam 預防規則，遇到這種情形時 mailman <em>不</em>會寄出要求核准的信件。 這個設定會取消每次都寄出要求核准的信件的設定。"
+
+#: /home/mailman/Mailman/Cgi/Auth.py:78
+msgid "Authentication failed"
+msgstr "驗證不成功"
+
+#: /home/mailman/Mailman/Handlers/ToDigest.py:313
+msgid "Digest Footer"
+msgstr "摘要註腳"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:258
+#: /home/mailman/Mailman/ListAdmin.py:227
+msgid "[No reason given]"
+msgstr "[沒有說明原因]"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:281
+msgid "You may get one last digest."
+msgstr "您可收到最新一期的摘要。"
+
+#: /home/mailman/Mailman/Cgi/edithtml.py:38
+msgid "General list information page"
+msgstr "論壇簡介網頁"
+
+#: /home/mailman/Mailman/Cgi/private.py:54
+msgid "Private Archive Error"
+msgstr "非公開論壇歸檔失敗"
+
+#: /home/mailman/Mailman/Cgi/admindb.py:283
+msgid "Database Updated..."
+msgstr "資料庫已更新..."
+
+#: /home/mailman/Mailman/Handlers/Acknowledge.py:55
+msgid "%(realname)s post acknowledgement"
+msgstr "%(realname)s 發言回執"
+
+#: /home/mailman/Mailman/Cgi/handle_opts.py:243
+#: /home/mailman/Mailman/MailCommandHandler.py:395
+msgid "List only accepts digest members."
+msgstr "論壇僅接受摘要會員"
+
+#: /home/mailman/Mailman/MailList.py:711
+msgid "Alias names (regexps) which qualify as explicit to or cc destination names for this list."
+msgstr "別名 (regexps) 限定為 to 或 cc 含有論壇名稱。"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:132
+msgid "When sent"
+msgstr "當寄出時"
+
+#: /home/mailman/Mailman/Cgi/admin.py:216
+#: /home/mailman/Mailman/Cgi/listinfo.py:150
+msgid "[no description available]"
+msgstr "[沒有說明]"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:102
+msgid ""
+"Your message was too big; please trim it to less than\n"
+"%(kb)s KB in size."
+msgstr ""
+"您的信件太大，請刪減信件到小於"
+"%(kb)s KB。"
+
+#: /home/mailman/Mailman/Cgi/options.py:70
+msgid "%s: No such member %s."
+msgstr "%s: 沒有會員 %s。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:194
+#: /home/mailman/Mailman/Cgi/listinfo.py:128
+msgid "right "
+msgstr "對 "
+
+#: /home/mailman/Mailman/Digester.py:47
+msgid "Batched-delivery digest characteristics."
+msgstr "摘要發送選項"
+
+#: /home/mailman/Mailman/MailList.py:589
+#: /home/mailman/Mailman/MailList.py:610
+msgid "confirm+approval"
+msgstr "確認+核准"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:265
+msgid "<i>The %s is only available to the list administrator.</i>"
+msgstr "<i>%s 限壇主執行。</i>"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:77
+msgid "Message may contain administrivia"
+msgstr "訊息包含管理指令"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:60
+msgid "Non-members are not allowed to post messages to this list."
+msgstr "不允許非會員在此論壇發言"
+
+#: /home/mailman/Mailman/HTMLFormatter.py:182
+msgid "You will be sent email requesting confirmation, to prevent others from gratuitously subscribing you.  Once confirmation is received, your request will be held for approval by the list administrator.  You will be notified of the administrator's decision by email.  "
+msgstr "您必須寄出確認信以防止無故的代訂行為。一旦收到您的確認信後，您的訂閱申請將轉送壇主核准。稍後您會收到壇主的裁決 email。"
+
+#: /home/mailman/Mailman/Cgi/admin.py:904
+msgid "Error Subscribing:"
+msgstr "訂閱不成功："
+
+#: /home/mailman/Mailman/htmlformat.py:545
+msgid "Delivered by Mailman<br>version %s"
+msgstr "由 Mailman<br>版本 %s 發送"
+
+#: /home/mailman/Mailman/Handlers/Hold.py:71
+msgid "Message has implicit destination"
+msgstr "信件有隱含收件人"
+
+#: /home/mailman/Mailman/Cgi/admin.py:193
+msgid " one, but with a '/' and the %slist name appended.<p>"
+msgstr " ，且會加上 '/' 及論壇名稱 %s 。"
+
+#: /home/mailman/Mailman/MailList.py:644
+msgid "List admin only"
+msgstr "限壇主"
+
+#: /home/mailman/Mailman/Archiver/Archiver.py:137
+msgid "Monthly"
+msgstr "每月"
+
+#: /home/mailman/Mailman/GatewayManager.py:56
+msgid "Should new posts to the newsgroup be sent to the mailing list?"
+msgstr "新聞群組的新信是否要轉送通信論壇？"
+
+#: /home/mailman/Mailman/MailCommandHandler.py:360
+msgid ""
+"Usage: set <option> <on|off> <password>\n"
+"Valid options are:\n"
+msgstr ""
+"用法: set <選項> <on|off> <密碼>\n"
+"正確的選項是:\n"
+
+#: /home/mailman/Mailman/Cgi/admin.py:639
+msgid "Mass Subscribe Members"
+msgstr "一般訂閱會員"
+
+#: /home/mailman/Mailman/Cgi/admin.py:378
+msgid "Option %s/%s not found: %s"
+msgstr "選項 %s/%s 未發現︰%s"
+
+#: /home/mailman/Mailman/MailList.py:714
+msgid "Alternate addresses that are acceptable when `require_explicit_destination' is enabled.  This option takes a list of regular expressions, one per line, which is matched against every recipient address in the message.  The matching is performed with Python's re.match() function, meaning they are anchored to the start of the string. <p>For backwards compatibility with Mailman 1.1, if the regexp does not contain an `@', then the pattern is matched against just the local part of the recipient address.  If that match fails, or if the pattern does contain an `@', then the pattern is matched against the entire recipient address.  <p>Matching against the local part is deprecated; in a future release, the patterm will always be matched against the  entire recipient address."
+msgstr "當開啟 '需要_明確_收信人' 設定後，可以輸入另一個收信地址。該設定執行一系列以行分段的 reqular expression ，以檢查投書信件全部的收件人。檢查是利用 Python 的 re.match() 函數執行，所以定位點是在字串的起點。<p>為了與 Mailman 1.1 相容，如果 regexp 沒有 '@' 字元，將針對收件人帳號作比對。如果比對失敗或者比對規則有 '@' 字元，則會比對完整的收件人地址。<p> 單獨比對收件人帳號的功能，稍後版本將會取消並改為比對完整的收件人地址。"
