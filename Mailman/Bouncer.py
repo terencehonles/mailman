@@ -17,7 +17,6 @@
 
 "Handle delivery bounce messages, doing filtering when list is set for it."
 
-__version__ = "$Revision: 693 $"
 
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
@@ -26,7 +25,9 @@ __version__ = "$Revision: 693 $"
 import sys
 import time
 import regsub, string, regex, re
-import mm_utils, mm_cfg, mm_err
+import Utils
+import mm_cfg
+import Errors
 
 class Bouncer:
     def InitVars(self):
@@ -73,7 +74,7 @@ class Bouncer:
     def RegisterBounce(self, email, msg):
 	report = "%s: %s - " % (self.real_name, email)
 	bouncees = self.bounce_info.keys()
-	this_dude = mm_utils.FindMatchingAddresses(email, bouncees)
+	this_dude = Utils.FindMatchingAddresses(email, bouncees)
 	now = time.time()
 	if not len(this_dude):
 	    # Time address went bad, post where address went bad,
@@ -87,7 +88,7 @@ class Bouncer:
 	addr = string.lower(this_dude[0])
 	inf = self.bounce_info[addr]
 	difference = now - inf[0]
-	if len(mm_utils.FindMatchingAddresses(addr, self.members)):
+	if len(Utils.FindMatchingAddresses(addr, self.members)):
 	    if self.post_id - inf[2] > self.max_posts_between_bounces:
 		# Stale entry that's now being restarted...
 		# Should maybe keep track in see if people become stale entries
@@ -115,7 +116,7 @@ class Bouncer:
 		self.Save()
 		return
 
-	elif len(mm_utils.FindMatchingAddresses(addr, self.digest_members)):
+	elif len(Utils.FindMatchingAddresses(addr, self.digest_members)):
 	    if self.volume > inf[1]:
 		self.LogMsg("bounce",
 			    "%s: first fresh (D)", self._internal_name)
@@ -204,7 +205,7 @@ class Bouncer:
             text.append("")
             text.append(string.join(msg.headers, ''))
             text.append("")
-            text.append(mm_utils.QuotePeriods(msg.body))
+            text.append(Utils.QuotePeriods(msg.body))
             text.append("")
             text.append("--" + boundary + "--")
 
@@ -242,12 +243,12 @@ class Bouncer:
 			    "%s: disabled %s", self.real_name, addr)
 		self.Save()
 		return 1, 1
-	except mm_err.MMNoSuchUserError:
+	except Errors.MMNoSuchUserError:
 	    self.LogMsg("bounce", "%s: NOT disabled %s: %s",
-                        self.real_name, addr, mm_err.MMNoSuchUserError)
+                        self.real_name, addr, Errors.MMNoSuchUserError)
 	    self.ClearBounceInfo(addr)
             self.Save()
-            return mm_err.MMNoSuchUserError, 1
+            return Errors.MMNoSuchUserError, 1
 	    
     def RemoveBouncingAddress(self, addr):
 	"""Unsubscribe user with bouncing address.
@@ -263,12 +264,12 @@ class Bouncer:
 	    self.LogMsg("bounce", "%s: removed %s", self.real_name, addr) 
             self.Save()
             return 1, 1
-	except mm_err.MMNoSuchUserError:
+	except Errors.MMNoSuchUserError:
 	    self.LogMsg("bounce", "%s: NOT removed %s: %s",
-                        self.real_name, addr, mm_err.MMNoSuchUserError)
+                        self.real_name, addr, Errors.MMNoSuchUserError)
 	    self.ClearBounceInfo(addr)
             self.Save()
-            return mm_err.MMNoSuchUserError, 1
+            return Errors.MMNoSuchUserError, 1
 
     # Return 0 if we couldn't make any sense of it, 1 if we handled it.
     def ScanMessage(self, msg):

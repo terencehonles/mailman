@@ -17,14 +17,15 @@
 
 """Routines for presentation of list-specific HTML text."""
 
-__version__ = "$Revision: 730 $"
-
 
 import os
+# XXX: should be converted to use re module
 import regsub 
 import string
-import mm_cfg, mm_utils
+import mm_cfg
+import Utils
 from htmlformat import *
+
 
 class HTMLFormatter:
     def InitTempVars(self):
@@ -53,6 +54,8 @@ class HTMLFormatter:
                         "Mailman v %s" % mm_cfg.VERSION)))).Format()
 
     def SnarfHTMLTemplate(self, file):
+        # XXX: hack, blech, yuk
+        HTMLFormatter.InitTempVars(self)
 	filename = os.path.join(self._template_dir, file)
 	f = open(filename,'r')
 	str = f.read()
@@ -81,7 +84,7 @@ class HTMLFormatter:
 			  # Make some local refs for efficiency:
 			  disdel=mm_cfg.DisableDelivery,
 			  Link=Link, os=os,
-			  ObscureEmail=mm_utils.ObscureEmail):
+			  ObscureEmail=Utils.ObscureEmail):
 	    id = ObscureEmail(person)
 	    if me.obscure_addresses:
 		showing = ObscureEmail(person, for_text=1)
@@ -326,7 +329,7 @@ class HTMLFormatter:
 	    return item[-5:] == '.html'
 
 	files = filter(ExtensionFilter, os.listdir(mm_cfg.TEMPLATE_DIR))
-	mm_utils.MakeDirTree(self._template_dir)
+	Utils.MakeDirTree(self._template_dir)
 	for filename in files:
 	    file1 = open(os.path.join(mm_cfg.TEMPLATE_DIR, filename), 'r')
 	    text = file1.read()
