@@ -45,6 +45,42 @@ class Deliverer:
 
     def QuotePeriods(self, text):
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
+
+    #
+    # this function is used to deliver messages
+    # that are sent to <listname>-admin.  the sender
+    # is the envelope sender of the message, or if
+    # that is not available, the sender via Message.GetSender()
+    # the recipients arg is a list of the current list
+    # owners.  We don't mess with adding list specific
+    # headers on body modifications so that the address
+    # will work just like a normal forwarding address
+    #
+    def DeliverToOwner(self, msg, recipients):
+        if not (len(recipients)):
+            return
+        sender = msg.GetEnvelopeSender()
+        if not sender:
+            sender = msg.GetSender()
+        cmd = "%s %s" % (mm_cfg.PYTHON,
+                         os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"))
+        cmdproc = os.popen(cmd, 'w')
+
+        cmdproc.write("%d\n" % self.num_spawns)
+        cmdproc.write("%s\n" % sender)
+        for r in recipients:
+            # Mustn't send blank lines before end of recipients:
+            if not r: continue
+            cmdproc.write(r + "\n")
+        cmdproc.write('\n')
+        cmdproc.write(string.join(msg.headers, '') + "\n")
+	cmdproc.write(self.QuotePeriods(msg.body))
+	status = cmdproc.close()
+        if status:
+            sys.stderr.write('Non-zero exit status: %d'
+                             '\nCommand: %s' % ((status >> 8), cmd))
+        
+
     def DeliverToList(self, msg, recipients, 
                       header="", footer="", remove_to=0, tmpfile_prefix = ""):
 	if not(len(recipients)):

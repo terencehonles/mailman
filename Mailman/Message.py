@@ -112,6 +112,31 @@ class IncomingMessage(rfc822.Message):
 
 	return string.lower(mail_address)
 
+    def GetEnvelopeSender(self):
+        #
+        # look for unix from line and attain address
+        # from it, return None if there is no unix from line
+        # this function is used to get the envelope sender
+        # when mail is sent to a <listname>-admin address
+        # 
+        if not self.unixfrom:
+            return None
+        parts = string.split(self.unixfrom) # XXX assumes no whitespace in address
+        for part in parts:
+            #
+            # perform minimal check for the address
+            #
+            if string.find(part, '@') > -1:
+                user, host = string.split(part, '@', 1)
+                if not user: 
+                    continue
+                if string.count(host, ".") < 1: # doesn't look qualified
+                    continue
+                return part
+        return None
+    
+                
+
     def GetSenderName(self):
 	real_name, mail_addr = self.getaddr('from')
 	if not real_name:
