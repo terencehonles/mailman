@@ -33,7 +33,6 @@ import fcntl
 import random
 import mm_cfg
 
-
 # Valid toplevel domains for when we check the validity of an email address.
 
 valid_toplevels = ["com", "edu", "gov", "int", "mil", "net", "org",
@@ -168,6 +167,7 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     # foreground*.  If the errorsto happens to be the list owner for a list
     # that is doing the send - and holding a lock - then the delivery will
     # hang pending release of the lock - deadlock.
+
     if os.fork():
         return
     sender = msg.GetSender()
@@ -194,17 +194,38 @@ def DeliverToUser(msg, recipient, add_headers=[]):
         os._exit(0)
 
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
+    import socket
     import smtplib
+    import OutgoingQueue
+
     try:
         con = smtplib.SmtpConnection(mm_cfg.SMTPHOST)
         con.helo(mm_cfg.DEFAULT_HOST_NAME)
         con.send(to=recipient,frm=sender,text=text)
         con.quit()
-        import OutgoingQueue
         OutgoingQueue.dequeueMessage(queue_entry)
-    finally:
-#    except: # Todo: This might want to handle special cases.    
-        pass # Just try again later.
+
+    # Any exceptions that warrant leaving the message on the queue should
+    # be identified here.  Otherwise we fall through to the blanket
+    # 'except', which does *not* leave the message queued.
+
+    except socket.error:
+        # MTA not responding - leave on queue for later.
+        pass
+
+    except:
+        # Delivery failed for anticipated reason - *don't* leave message 
+        # queued, or it may stay, under delivery attempts, forever!
+        OutgoingQueue.dequeueMessage(queue_entry)
+        # XXX Here may be the place to get the failure info back to the
+        #     list object, so it can disable the recipient, etc.  But how?
+        import sys
+        e = sys.exc_info()
+        from Logging.Logger import Logger
+        Logger("error").write(
+            "TrySMTPDelivery: bad smtp delivery to %s\n\t%s/%s\n"
+            % (recipient, e[0], e[1]))
+        
 def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
 
