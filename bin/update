@@ -76,6 +76,7 @@ script.
     # move private archive mbox there if it's around
     # and take into account all sorts of absurdities
     #
+    print '- updating old private mbox file'
     if os.path.exists(o_pri_mbox_file):
         if os.path.isfile(o_pri_mbox_file):
             os.rename(o_pri_mbox_file, mbox_file)
@@ -83,19 +84,20 @@ script.
             newname = "%s.mm_install-dunno_what_this_was_but_it_was_in_the_way" % \
                       o_pri_mbox_file
             os.rename(o_pri_mbox_file, newname)
-            print "unknown file in the way, moving"
-            print  "\t" + o_pri_mbox_file
-            print "to"
-            print "\t" + newname
+            print "    unknown file in the way, moving"
+            print "        " + o_pri_mbox_file
+            print "    to"
+            print "        " + newname
         else: # directory
-            print "looks like you have a really recent CVS installation..."
-            print "you're either one brave soul, or you already ran me"
+            print "    looks like you have a really recent CVS installation..."
+            print "    you're either one brave soul, or you already ran me"
     
 
     #
     # move public archive mbox there if it's around
     # and take into account all sorts of absurdities.
     #
+    print '- updating old public mbox file'
     if os.path.exists(o_pub_mbox_file):
         if os.path.isfile(o_pub_mbox_file):
             os.rename(o_pub_mbox_file, mbox_file)
@@ -103,13 +105,13 @@ script.
             newname = "%s.mm_install-dunno_what_this_was_but_it_was_in_the_way" % \
                       o_pub_mbox_file
             os.rename(o_pub_mbox_file, newname)
-            print "unknown file in the way, moving"
-            print  "\t" + o_pub_mbox_file
-            print "to"
-            print "\t" + newname
+            print "    unknown file in the way, moving"
+            print "        " + o_pub_mbox_file
+            print "    to"
+            print "        " + newname
         else: # directory
-            print "looks like you have a really recent CVS installation..."
-            print "you're either one brave soul, or you already ran me"
+            print "    looks like you have a really recent CVS installation..."
+            print "    you're either one brave soul, or you already ran me"
 
     #
     # move the html archives there
