@@ -52,6 +52,9 @@ from Mailman.Logging.Syslog import syslog
 
 _ = i18n._
 
+UEMPTYSTRING = u''
+EMPTYSTRING = ''
+
 
 
 def process(mlist, msg, msgdata):
@@ -203,27 +206,24 @@ def send_i18n_digests(mlist, mboxfp):
         messages.append(msg)
         # Get the Subject header
         msgsubj = msg.get('subject', _('(no subject)'))
-        subject = lheader(msgsubj, lcset)
+        subject = oneline(msgsubj, lcset)
         # Don't include the redundant subject prefix in the toc
         mo = re.match('(re:? *)?(%s)' % re.escape(mlist.subject_prefix),
                       subject, re.IGNORECASE)
         if mo:
             subject = subject[:mo.start(2)] + subject[mo.end(2):]
         username = ''
-        addresses = getaddresses([lheader(msg.get('from', ''), lcset)])
+        addresses = getaddresses([oneline(msg.get('from', ''), lcset)])
         # Take only the first author we find
         if isinstance(addresses, ListType) and addresses:
             username = addresses[0][0]
             if not username:
                 username = addresses[0][1]
         if username:
-            # username = lheader(username, lcset)
             username = ' (%s)' % username
-        # Wrap the toc subject line
-        wrapped = lheader(msgsubj, lcset, continuation_ws='')
+        # Put count and Wrap the toc subject line
+        wrapped = Utils.wrap('%2d. %s' % (msgcount, subject), 65)
         slines = wrapped.split('\n')
-        # Put the count on the first line
-        slines[0] = '%2d. ' % msgcount + slines[0]
         # See if the user's name can fit on the last line
         if len(slines[-1]) + len(username) > 70:
             slines.append(username)
@@ -262,7 +262,6 @@ def send_i18n_digests(mlist, mboxfp):
         msg['Message'] = `msgcount`
         # Get the next message in the digest mailbox
         msg = mbox.next()
-        print >> toc
     # Now we're finished with all the messages in the digest.  First do some
     # sanity checking and then on to adding the toc.
     if msgcount == 0:
@@ -297,9 +296,9 @@ def send_i18n_digests(mlist, mboxfp):
         # Honor the default setting
         for h in mm_cfg.PLAIN_DIGEST_KEEP_HEADERS:
             if msg[h]:
-                uh = lheader(msg[h], lcset, header_name=h,
-                             continuation_ws='\t')
-                print >> plainmsg, '%s: %s' % (h, uh)
+                uh = Utils.wrap('%s: %s' % (h, oneline(msg[h], lcset)))
+                uh = '\n\t'.join(uh.split('\n'))
+                print >> plainmsg, uh
         print >> plainmsg
         print >> plainmsg, msg.get_payload(decode=1)
     # Now add the footer
@@ -367,7 +366,13 @@ def send_i18n_digests(mlist, mboxfp):
 
 
 
-def lheader(s, cset, **kws):
-    # Decode header string and convert into specified charset
-    h = make_header(decode_header(s), **kws)
-    return h.__unicode__().encode(cset, 'replace')
+def oneline(s, cset):
+    # Decode header string in one line and convert into specified charset
+    try:
+        h = decode_header(make_header(s))
+        ustr = h.__unicode__()
+        oneline = UEMPTYSTRING.join(ustr.splitlines())
+        return oneline.encode(cset, 'replace')
+    except (LookupError, UnicodeError):
+        # possibly charset problem. return with undecoded string in one line.
+        return EMPTYSTRING.join(s.splitlines())
