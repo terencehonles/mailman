@@ -1,0 +1,55 @@
+#!/usr/local/bin/python
+# We don't need to lock in this script, because we're never going to change data.
+
+import sys, os
+f = open('/tmp/listinfo.err', 'a+')
+sys.stderr = f #sys.stdout
+from regsub import gsub
+sys.path.append('/home/mailman/mailman/modules')
+import mm_utils, maillist, htmlformat
+
+doc = htmlformat.Document()
+
+path = os.environ['PATH_INFO']
+
+list_info = mm_utils.GetPathPieces(path)
+
+if len(list_info) < 1:
+    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    print doc.Format()
+    sys.exit(0)
+
+list_name = list_info[0]
+
+try:
+  list = maillist.MailList(list_name)
+except:
+  doc.AddItem(htmlformat.Header(2, "%s: No such list."  % list_name ))
+  print doc.Format()
+  sys.exit(0)
+
+if not list._ready:
+    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
+    print doc.Format()
+    sys.exit(0)
+
+replacements = list.GetStandardReplacements()
+
+
+if not list.digestable or not list.nondigestable:
+    replacements['<mm-digest-radio-button>'] = ""
+    replacements['<mm-undigest-radio-button>'] = ""
+else:
+    replacements['<mm-digest-radio-button>'] = list.FormatDigestButton()
+    replacements['<mm-undigest-radio-button>'] = list.FormatUndigestButton()
+replacements['<mm-subscribe-box>'] = list.FormatBox('email')
+replacements['<mm-subscribe-button>'] = list.FormatButton('email-button')
+replacements['<mm-new-password-box>'] = list.FormatSecureBox('pw')
+replacements['<mm-confirm-password>'] = list.FormatSecureBox('pw-conf')
+replacements['<mm-form-start>'] = list.FormatFormStart('subscribe')
+replacements['<mm-change-info>'] = htmlformat.TextBox('info', size=40).Format()
+replacements['<mm-info-button>'] = htmlformat.SubmitButton('submitinfo', 
+	                                                    'Submit').Format()
+
+doc.AddItem(list.ParseTags('listinfo.html', replacements))
+print doc.Format()
