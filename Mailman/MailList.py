@@ -1453,4 +1453,5 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetAvailableLanguages(self):
         dirs = Utils.GetDirectories(self._full_path)
+        dirs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
         return [d for d in dirs if mm_cfg.LC_DESCRIPTIONS.has_key(d)]
