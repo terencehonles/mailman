@@ -61,11 +61,7 @@ def main():
     # See if the form data has a preferred language set, in which case, use it
     # for the results.  If not, use the list's preferred language.
     cgidata = cgi.FieldStorage()
-    if cgidata.has_key('language'):
-        language = cgidata['language'].value
-    else:
-        language = mlist.preferred_language
-
+    language = cgidata.getvalue('language', mlist.preferred_language)
     i18n.set_language(language)
     doc.set_language(language)
 
@@ -151,6 +147,8 @@ def process_form(mlist, doc, cgidata, lang):
     else:
         email = cgidata['email'].value
 
+    fullname = cgidata.getvalue('fullname', '')
+
     remote = remote_addr()
     if email == mlist.GetListEmail():
         error = 1
@@ -201,11 +199,17 @@ def process_form(mlist, doc, cgidata, lang):
             if mlist.isMember(email):
                 raise Errors.MMAlreadyAMember, email
 
-            mlist.AddMember(email, password, digest, remote, lang)
-        #
+            class UserDesc: pass
+            userdesc = UserDesc()
+            userdesc.address = email
+            userdesc.fullname = fullname
+            userdesc.digest = digest
+            userdesc.language = lang
+            userdesc.password = password
+
+            mlist.AddMember(userdesc, remote)
         # check for all the errors that mlist.AddMember can throw
         # options  on the web page for this cgi
-        #
         except Errors.MMBadEmailError:
             results += (_("Mailman won't accept the given email "
                           "address as a valid address. (Does it "
