@@ -183,18 +183,20 @@ class HTMLFormatter:
         if self.subscribe_policy == 1:
             msg += _('''You will be sent email requesting confirmation, to
             prevent others from gratuitously subscribing you.''')
-        if self.subscribe_policy == 2:
+        elif self.subscribe_policy == 2:
             msg += _("""This is a closed list, which means your subscription
             will be held for approval.  You will be notified of the list
             moderator's decision by email.""")
             also = _('also ')
-        if self.subscribe_policy == 3:
+        elif self.subscribe_policy == 3:
             msg += _("""You will be sent email requesting confirmation, to
             prevent others from gratuitously subscribing you.  Once
             confirmation is received, your request will be held for approval
             by the list moderator.  You will be notified of the moderator's
             decision by email.""")
             also = _("also ")
+        if msg:
+            msg += ' '
         if self.private_roster == 1:
             msg += _('''This is %(also)sa private list, which means that the
             list of members is not available to non-members.''')
