@@ -121,17 +121,19 @@ class IncomingMessage(rfc822.Message):
     def SetHeader(self, name, value, crush_duplicates=1):
 	# Well, we crush dups in the dict no matter what...
 	name = "%s%s" % (name[0], name[1:])
+        newheader = not self.dict.has_key(string.lower(name))
 	self.dict[string.lower(name)] = value
 	if value[-1] <> '\n':
 	    value = value + '\n'
 
-	if not crush_duplicates:
+	if not crush_duplicates or newheader:
 	    self.headers.append('%s: %s' % (name, value))
 	    return
-	for i in range(len(self.headers)):
-	    if (string.lower(self.headers[i][:len(name)+1]) == 
-		string.lower(name) + ':'):
-		self.headers[i] = '%s: %s' % (name, value)
+        else:
+            for i in range(len(self.headers)):
+                if (string.lower(self.headers[i][:len(name)+1]) == 
+                    string.lower(name) + ':'):
+                    self.headers[i] = '%s: %s' % (name, value)
 		
     # XXX Eventually (1.5.1?) Python rfc822.Message() will have its own
     # __delitem__. 
