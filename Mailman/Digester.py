@@ -17,8 +17,9 @@
 
 """Mixin class with list-digest handling methods and settings."""
 
-from Mailman import Errors
 from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import Errors
 
 
 
@@ -66,13 +67,13 @@ class Digester:
             ('digest_header', mm_cfg.Text, (4, WIDTH), 0,
 	     'Header added to every digest',
              "Text attached (as an initial message, before the table"
-             " of contents) to the top of digests.<p>"
-             + Errors.MESSAGE_DECORATION_NOTE),
+             " of contents) to the top of digests. "
+             + Utils.maketext('headfoot.html', raw=1)),
 
 	    ('digest_footer', mm_cfg.Text, (4, WIDTH), 0,
 	     'Footer added to every digest',
-             "Text attached (as a final message) to the bottom of digests.<p>"
-             + Errors.MESSAGE_DECORATION_NOTE),
+             "Text attached (as a final message) to the bottom of digests. "
+             + Utils.maketext('headfoot.html', raw=1)),
 	    ]
 
     def SetUserDigest(self, sender, value, force=0):
