@@ -4,12 +4,12 @@ import time, os, string
 class Digester:
     def InitVars(self):
 	# Configurable
-	self.digest_header = None
-	self.digest_footer = None
 	self.digestable = mm_cfg.DEFAULT_DIGESTABLE
 	self.digest_is_default = mm_cfg.DEFAULT_DIGEST_IS_DEFAULT
 	self.digest_size_threshhold = mm_cfg.DEFAULT_DIGEST_SIZE_THRESHOLD
 	self.next_post_number = 1
+	self.digest_header = mm_cfg.DEFAULT_DIGEST_HEADER
+	self.digest_footer = mm_cfg.DEFAULT_DIGEST_FOOTER
 	
 	# Non-configurable.
 	self.digest_members = []
@@ -27,9 +27,11 @@ class Digester:
 
 	    ('digest_header', mm_cfg.Text, (4, 65), 0,
 	     'Header added to every digest'),
+	    # See msg_header option note.
 
 	    ('digest_footer', mm_cfg.Text, (4, 65), 0,
 	     'Footer added to every digest'),
+	    # See msg_header option note.
 
 	    ('digest_is_default', mm_cfg.Radio, 
 	     ('Regular mail', 'Digests'), 0,
@@ -131,7 +133,8 @@ class Digester:
 	digest_file.close()
 
 	# Create the header and footer... this is a mess!
-	topics_file = open(os.path.join(self._full_path, 'next-digest-topics'), 
+	topics_file = open(os.path.join(self._full_path,
+					'next-digest-topics'), 
 			   'r+')
 	topics_text = topics_file.read()
 	topics_file.truncate(0)
@@ -149,17 +152,18 @@ Topics for this digest:
             self.next_digest_number, time.ctime(time.time()), topics_text)
 
         if self.digest_header:
-	    digest_header = digest_header + self.digest_header
+	    digest_header = digest_header + (self.digest_header
+					     % self.__dict__)
 	if self.digest_footer:
 	    digest_footer = '''--%s
 
 From: %s
-Subject: Reminder
+Subject: Digest Footer
 Date: %s
 
 %s
 --%s--''' % (self._mime_separator, msg.GetSender(), time.ctime(time.time()), 
-             self.digest_footer, self._mime_separator)
+	     (self.digest_footer % self.__dict__), self._mime_separator)
         else:
 	    digest_footer = '''
 --%s--''' % self._mime_separator
