@@ -47,7 +47,7 @@ IMAGE_LOGOS = '/icons/'
 
 # Don't change MAILMAN_URL, unless you want to point it at the list.org
 # mirror.
-MAILMAN_URL = 'http://www.gnu.org/software/mailman/mailman.html'
+MAILMAN_URL = 'http://www.gnu.org/software/mailman/index.html'
 #MAILMAN_URL = 'http://www.list.org/'
 
 # Site-specific settings
