@@ -56,7 +56,7 @@ char* strerror(int errno)
 /* Report on errors and exit
  */
 void
-fatal(const char* ident, const char* format, ...)
+fatal(const char* ident, int exitcode, const char* format, ...)
 {
 	char log_entry[1024];
 
@@ -95,7 +95,7 @@ fatal(const char* ident, const char* format, ...)
 		printf("</pre>\n");
 	}
 #endif /* HELPFUL */
-	exit(1);
+	exit(exitcode);
 }
 
 
@@ -107,10 +107,10 @@ check_caller(const char* ident, gid_t parentgid)
 {
 	gid_t mygid = getgid();
 	if (parentgid != mygid) {
-	    fatal(ident,
-		  "Failure to exec script. WANTED gid %d, GOT gid %d.  "
-                  "(Reconfigure to take %d?)",
-		  parentgid, mygid, mygid);
+		fatal(ident, GID_MISMATCH,
+		      "Failure to exec script. WANTED gid %d, GOT gid %d.  "
+		      "(Reconfigure to take %d?)",
+		      parentgid, mygid, mygid);
 	}
 }
 
@@ -142,7 +142,7 @@ run_script(const char* script, int argc, char** argv, char** env)
 #ifdef HAVE_SETREGID
 	status = setregid(getegid(), -1);
 	if (status)
-		fatal(logident, "%s", strerror(errno));
+		fatal(logident, SETREGID_FAILURE, "%s", strerror(errno));
 #endif /* HAVE_SETREGID */
 
 	/* We want to tightly control how the CGI scripts get executed.
@@ -213,8 +213,9 @@ run_script(const char* script, int argc, char** argv, char** env)
 
 	newargv[i] = NULL;
 
-	status = execve(python, &newargv[0], &newenv[0]);
-	return status;
+	/* return always means failure */
+	(void)execve(python, &newargv[0], &newenv[0]);
+	return EXECVE_FAILURE;
 }
 
 
