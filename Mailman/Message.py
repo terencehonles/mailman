@@ -1,6 +1,6 @@
 """Embody incoming and outgoing messages as objects."""
 
-__version__ = "$Revision: 474 $"
+__version__ = "$Revision: 490 $"
 
 
 import sys
@@ -194,3 +194,21 @@ class OutgoingMessage:
             newheaders.append(h)
         self.headers = newheaders
         self.CacheHeaders()
+
+class Digest:
+    "Represent a maillist digest, present in either plain or mime format."
+    def __init__(self, list, toc, body, admininfo):
+        self.list = list
+        self.toc = toc
+        self.body = body
+        self.admininfo = admininfo
+    def ComposeHeaders(self):
+        msg = self.msg = OutgoingMessage()
+        numtopics = string.count(self.toc, '\n')
+        plural = ((numtopics != 1) and "s") or ""
+	msg.SetSender(self.GetAdminEmail())
+	msg.SetHeader('Subject', '%s digest, Vol %d #%d - %d msg%s' % 
+                      (list.real_name, list.volume,
+                       list.next_digest_number,
+                       numtopics, plural))
+	msg.SetHeader('Reply-to', list.GetListEmail())
