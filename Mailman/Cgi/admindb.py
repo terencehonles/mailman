@@ -184,7 +184,7 @@ def PrintRequests(mlist, doc, form):
 def PrintAddMemberRequest(mlist, id, table):
     time, addr, passwd, digest = mlist.GetRecord(id)
     table.AddRow([addr,
-                  RadioButtonArray(id, ('Refuse', 'Subscribe')),
+                  RadioButtonArray(id, ('Subscribe', 'Refuse')),
                   TextBox('comment-%d' % id, size=30)
                   ])
 
