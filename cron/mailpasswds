@@ -123,7 +123,7 @@ def main():
         users = hosts.get(host, {})
         badaddrs = []
         for addr, passwd in mlist.passwords.items():
-            url = mlist.GetAbsoluteOptionsURL(addr)
+            url = mlist.GetOptionsURL(addr, absolute=1)
             realaddr = mlist.GetUserSubscribedAddress(addr)
             if not realaddr:
                 badaddrs.append(addr)
