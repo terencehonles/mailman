@@ -164,6 +164,9 @@ def main():
             doc.SetTitle(title)
             doc.AddItem(Header(2, title))
             doc.AddItem(_('There are no pending requests.'))
+            doc.AddItem(' ')
+            doc.AddItem(Link(mlist.GetScriptURL('admindb', absolute=1),
+                             _('Click here to reload this page.')))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format()
             mlist.Save()
