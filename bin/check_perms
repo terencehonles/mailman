@@ -73,6 +73,18 @@ def checkwalk(arg, dirname, names):
                 print
 
 def checkall():
+    # first check PREFIX
+    mode = statmode(mm_cfg.PREFIX)
+    perms = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH
+    if (mode & perms) <> perms:
+        STATE.ERRORS = STATE.ERRORS + 1
+        print mm_cfg.PREFIX, 'must be at least 02755',
+        if STATE.FIX:
+            print '(fixing)'
+            os.chmod(mm_cfg.PREFIX, mode | perms)
+        else:
+            print
+    # check all subdirs
     os.path.walk(mm_cfg.PREFIX, checkwalk, STATE)
 
 
