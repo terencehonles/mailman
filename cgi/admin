@@ -195,9 +195,13 @@ def FormatOptionsSection(category, list):
     for item in options:
         if type(item) == types.StringType:
             big_table.AddRow([Bold(item)])
-            big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0), 0,
-                                  colspan=2, bgcolor ="#FFF0D0")
-            if not did_col_header:
+            if did_col_header:
+		# Color the string only when after the colheader.
+		big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0),
+				      0, colspan=2, bgcolor ="#FFF0D0")
+	    else:
+		big_table.AddCellInfo(max(big_table.GetCurrentRowIndex(), 0),
+				      0, colspan=2)
                 # Do col header after very first string descr, if any...
                 ColHeader()
                 did_col_header = 1
