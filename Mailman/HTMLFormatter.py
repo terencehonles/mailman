@@ -113,13 +113,13 @@ class HTMLFormatter:
 	    checked = ' CHECKED'
 	else:
 	    checked = ''
-	name = { mm_cfg.DontReceiveOwnPosts : "dontreceive",
-		 mm_cfg.DisableDelivery : "disablemail",
-		 mm_cfg.DisableMime : "mime",
-		 mm_cfg.AcknowlegePosts : "ackposts",
-		 mm_cfg.Digests : "digest",
-		 mm_cfg.ConcealSubscription : "conceal"
-	       }[type]
+	name = {mm_cfg.DontReceiveOwnPosts : "dontreceive",
+                mm_cfg.DisableDelivery     : "disablemail",
+                mm_cfg.DisableMime         : "mime",
+                mm_cfg.AcknowledgePosts    : "ackposts",
+                mm_cfg.Digests             : "digest",
+                mm_cfg.ConcealSubscription : "conceal"
+                }[type]
 	import sys
 	return ('<input type=radio name="%s" value="%d"%s>'
 		% (name, value, checked))
