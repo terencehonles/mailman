@@ -414,7 +414,8 @@ The following is a detailed description of the problems.
                 try:
                     from Mailman import MailList
                     listob = MailList.MailList(listname, lock=0)
-                except Errors.MMUnknownListError:
+                except Errors.MMListError, e:
+                    # TBD: better error reporting
                     continue
 	    # We can mention this list if you already know about it.
 	    if not listob.advertised and listob <> self: 
