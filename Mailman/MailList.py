@@ -112,7 +112,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         try:
             execfile(filename, dict)
         except IOError, e:
-            if e.errno <> errno.ENOENT: raise
+            # Ignore missing files, but log other errors
+            if e.errno == errno.ENOENT:
+                pass
+            else:
+                syslog('error', 'IOError reading list extension: %s', e)
         else:
             func = dict.get('extend')
             if func:
