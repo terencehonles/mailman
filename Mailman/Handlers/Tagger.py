@@ -24,7 +24,7 @@ import email.Iterators
 from Mailman.Logging.Syslog import syslog
 
 CRNL = '\r\n'
-NL = '\n'
+EMPTYSTRING = ''
 NLTAB = '\n\t'
 
 
@@ -67,11 +67,11 @@ def scanbody(msg, numlines=None):
     # or if the outer type is multipart/alternative and there is a text/plain
     # part.  Anything else, and the body is ignored for header-scan purposes.
     found = None
-    if msg.gettype('text/plain') == 'text/plain':
+    if msg.get_type('text/plain') == 'text/plain':
         found = msg
-    elif msg.ismultipart() and msg.gettype() == 'multipart/alternative':
+    elif msg.is_multipart() and msg.get_type() == 'multipart/alternative':
         for found in msg.get_payload():
-            if found.gettype('text/plain') == 'text/plain':
+            if found.get_type('text/plain') == 'text/plain':
                 break
         else:
             found = None
@@ -98,5 +98,5 @@ def scanbody(msg, numlines=None):
         lines.append(line)
     # Concatenate those body text lines with newlines, and then create a new
     # message object from those lines.
-    msg = email.message_from_string(NL.join(lines))
-    return msg.getall('subject', []) + msg.getall('keywords', [])
+    msg = email.message_from_string(EMPTYSTRING.join(lines))
+    return msg.get_all('subject', []) + msg.get_all('keywords', [])
