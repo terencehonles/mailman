@@ -27,7 +27,11 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
-from Mailman.i18n import _
+from Mailman import i18n
+
+# Set up i18n
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
@@ -53,6 +57,8 @@ def PrintResults(mlist, operation, doc, results, user=None, lang=None):
 
 def main():
     doc = Document()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
     parts = Utils.GetPathPieces()
     if not parts or len(parts) < 2:
         doc.AddItem(Header(2, _("Error")))
@@ -71,6 +77,10 @@ def main():
         print doc.Format(bgcolor="#ffffff")
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
+
+    # Now that we have a valid list, set the language to its default
+    i18n.set_language(mlist.preferred_language)
+    doc.set_language(mlist.preferred_language)
 
     # We need a signal handler to catch the SIGTERM that can come from Apache
     # when the user hits the browser's STOP button.  See the comment in
@@ -106,7 +116,10 @@ def process_form(mlist, user, doc):
     operation = ""
     user = Utils.LCDomain(user)
 
-    os.environ['LANG'] = pluser = mlist.GetPreferredLanguage(user)
+    # Set the user's preferred language
+    pluser = mlist.GetPreferredLanguage(user)
+    i18n.set_language(pluser)
+    doc.set_language(pluser)
 
     if not Utils.FindMatchingAddresses(user, mlist.members,
                                        mlist.digest_members):

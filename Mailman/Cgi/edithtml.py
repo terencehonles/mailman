@@ -27,7 +27,7 @@ from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman import Errors
 from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
-from Mailman.i18n import _
+from Mailman import i18n
 
 
 
@@ -44,10 +44,13 @@ def main():
         ('handle_opts.html', _('Changing user options results page')),
         )
 
-    import Mailman.i18n
-    _ = Mailman.i18n._
-
     doc = Document()
+
+    # Set up the system default language
+    _ = i18n._
+    i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
     parts = Utils.GetPathPieces()
     if not parts:
         doc.AddItem(Header(2, _("List name is required.")))
@@ -63,7 +66,9 @@ def main():
         syslog('error', _('No such list "%(listname)s": %(e)s\n'))
         return
 
-    os.environ['LANG'] = mlist.preferred_language
+    # Now that we have a valid list, set the language to its default
+    i18n.set_language(mlist.preferred_language)
+    doc.set_language(mlist.preferred_language)
 
     # Must be authenticated to get any farther
     cgidata = cgi.FieldStorage()
