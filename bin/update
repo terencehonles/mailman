@@ -155,6 +155,8 @@ script.
             else:
                 print "- both %s and %s exist, leaving untouched" \
                       % (o_tmpl, n_tmpl)
+    # Avoid eating filehandles with the list lockfiles
+    l.Unlock()
 
 #
 # this function is passed to os.path.walk
