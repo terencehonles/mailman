@@ -396,6 +396,18 @@ def ChangeOptions(list, opt_list, cgi_info, document):
 
     list.Save()
 
+def error_page(errmsg, *args):
+    print apply(error_page_doc, (errmsg,) + args).Format()
+
+def error_page_doc(errmsg, *args):
+    """Produce a simple error-message page on stdout and exit.
+
+    Optional arg justreturn means just return the doc, don't print it."""
+    doc = htmlformat.Document()
+    doc.AddItem(htmlformat.Header(2, "Error"))
+    doc.AddItem(htmlformat.Bold(errmsg % args))
+    return doc
+
 if __name__ == "__main__":
     try:
 	main()
@@ -403,8 +415,7 @@ if __name__ == "__main__":
 	print "Interrupted!"
 	raise SystemExit, 0
     except mm_err.MMUnknownListError, msg:
-	doc.AddItem(htmlformat.Header(2, "%s: %s" % (list_name, msg)))
-	print doc.Format()
+        error_page("%s: %s", list_name, msg)
 	raise SystemExit, 0
     except:
 	print "Content-type: text/html\n"
