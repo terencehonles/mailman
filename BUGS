@@ -1,3 +1,5 @@
+Send bug reports to mailman-developers@python.org
+
 Known bugs:
 
 - There seems to be a problem building the C wrappers on FreeBSD
@@ -6,3 +8,10 @@ Known bugs:
   anything more about the causes, and there is some suspicion that the 
   problem is unrelated to Mailman.  Using gmake to build Mailman
   appears to solve the problem.
+
+
+
+Local Variables:
+mode: indented-text
+indent-tabs-mode: nil
+End:
