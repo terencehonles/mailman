@@ -24,7 +24,11 @@ places that a list users password can be used."""
 
 import sys
 import paths
-import getpass
+try:
+    import getpass
+except ImportError:
+    # we must be in Python 1.5, which didn't have the getpass module
+    from Mailman.pythonlib import getpass
 from Mailman import MailList
 
 def main(argv):
