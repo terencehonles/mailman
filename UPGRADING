@@ -5,7 +5,7 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 UPGRADING FROM PREVIOUS VERSIONS
 
     For the most part, upgrading Mailman is as easy as just installing
-    the latest versio over the existing version.  However, there are
+    the latest version over the existing version.  However, there are
     some changes that need to be taken care of manually.
 
     What you need to do depends on the version you are using and the
@@ -47,9 +47,11 @@ UPGRADING FROM 1.x to 2.x
     all this stuff has been redesigned in 2.x :).
 
     You do not need to run "make update" if you are upgrading from
-    version 1.0 or 1.1 to version 2.0.  However you should modify your
-    crontab entry to not execute cron/run_queue.  You can also safely
-    remove the file $prefix/cron/run_queue.
+    version 1.0 or 1.1 to version 2.0, since this is now run
+    automatically when you do a "make install".  However you should
+    modify your crontab entries to execute cron/qrunner instead of
+    cron/run_queue.  You can also safely remove the file
+    $prefix/cron/run_queue.
 
     If you are upgrading from a pre-1.0 beta, you need to follow the
     instructions below.
