@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 
+"""Use this script to help you update to Mailman 1.0b6 from previous versions.
+"""
+
 import sys, os, string
 import paths
 from Mailman.MailList import MailList
@@ -99,10 +102,9 @@ if __name__ == '__main__':
     for list in list_names():
         print 'Updating mailing list: ', list
         dolist(list)
-
-
-
-
+    print 'Setting permission o-rw,o+x on archives/private'
+    os.system('chmod o-rw,o+x %s' % os.path.join(Mailman.mm_cfg.PREFIX,
+                                                 'archives/private'))
 
 
 
