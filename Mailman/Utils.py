@@ -131,6 +131,7 @@ def SendTextToUser(subject, text, recipient, sender, add_headers=[]):
     msg.SetBody(QuotePeriods(text))
     DeliverToUser(msg, recipient, add_headers=add_headers)
 
+
 def DeliverToUser(msg, recipient, add_headers=[]):
     """Use smtplib to deliver message.
 
@@ -165,24 +166,32 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     finally:
         os._exit(0)
 
+
 def TrySMTPDelivery(recipient, sender, text, queue_entry):
     import sys, socket
-    import smtplib
     import OutgoingQueue
 
+    # We need to get a modern smtplib.  The Python 1.5.1 version does not
+    # support ehlo (ESMTP), but the Python 1.5.2 version does, so search for
+    # that.  For compatibility, we distribute the just-pre-1.5.2 version in
+    # the Mailman.pythonlib package.  This is about the grossest hack
+    # imaginable, but it will use the standard Python module, if it's
+    # compatible, otherwise it will use our (possibly version skewed) copy.
+    import smtplib
+    if not hasattr(smtplib, 'SMTP') or not hasattr(smtplib.SMTP, 'ehlo'):
+        from Mailman.pythonlib import smtplib
+    assert hasattr(smtplib.SMTP, 'ehlo')
+
     try:
-        con = smtplib.SmtpConnection(mm_cfg.SMTPHOST)
-        con.helo(mm_cfg.DEFAULT_HOST_NAME)
-        con.send(to=recipient,frm=sender,text=text)
-        con.quit()
+        conn = smtplib.SMTP(mm_cfg.SMTPHOST)
+        conn.sendmail(sender, recipient, text)
+        conn.quit()
         defer = 0
         failure = None
-
-    #
-    # Any exceptions that warrant leaving the message on the queue should
-    # be identified by their exception, below, with setting 'defer' to 1
-    # and 'failure' to something suitable.  Without a particular exception
-    # we fall through to the blanket 'except:', which dequeues the message.
+    # Any exceptions that warrant leaving the message on the queue should be
+    # identified by their exception, below, with setting 'defer' to 1 and
+    # 'failure' to something suitable.  Without a particular exception we fall
+    # through to the blanket 'except:', which dequeues the message.
     # 
     except socket.error:
         # MTA not responding, or other socket prob - leave on queue.
@@ -199,8 +208,8 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
     else:
         OutgoingQueue.dequeueMessage(queue_entry)
     if failure:
-        # XXX Here may be the place to get the failure info back to the
-        #     list object, so it can disable the recipient, etc.  But how?
+        # XXX Here may be the place to get the failure info back to the list
+        # object, so it can disable the recipient, etc.  But how?
         from Logging.StampedLogger import StampedLogger
         l = StampedLogger("smtp-failures", "TrySMTPDelivery", immediate=1)
         l.write("To %s:\n" % recipient)
