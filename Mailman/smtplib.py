@@ -27,7 +27,7 @@
 # >>> s.quit()
 
 from socket import *
-import string
+import string, types
 
 SMTP_PORT = 25
 
@@ -66,8 +66,13 @@ class SmtpConnection:
 	lines  = string.split(text, '\n')
 	self._sock.send('MAIL FROM: %s\r\n' % frm)
 	self.getresp()
-	self._sock.send('RCPT TO: %s\r\n' % to)
-	self.getresp()
+        if type(to) == types.StringType:
+         self._sock.send('RCPT TO: %s\r\n' % to)
+         self.getresp()
+        else:
+         for item in to:
+           self._sock.send('RCPT TO: %s\r\n' % item)
+           self.getresp()
 	self._sock.send('DATA\r\n')
 	self.getresp()
 	if headers:
