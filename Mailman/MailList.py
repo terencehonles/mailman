@@ -299,6 +299,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.preferred_language = mm_cfg.DEFAULT_SERVER_LANGUAGE
         # Analogs to these are initted in Digester.InitVars
         self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
+        self.personalize = 0
 
 	# BAW: This should really be set in SecurityManager.InitVars()
 	self.password = crypted_password
