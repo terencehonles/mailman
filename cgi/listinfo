@@ -40,6 +40,8 @@ if not list.digestable or not list.nondigestable:
 else:
     replacements['<mm-digest-radio-button>'] = list.FormatDigestButton()
     replacements['<mm-undigest-radio-button>'] = list.FormatUndigestButton()
+replacements['<mm-plain-digests-button>'] = list.FormatPlainDigestsButton()
+replacements['<mm-mime-digests-button>'] = list.FormatMimeDigestsButton()
 replacements['<mm-subscribe-box>'] = list.FormatBox('email')
 replacements['<mm-subscribe-button>'] = list.FormatButton('email-button')
 replacements['<mm-new-password-box>'] = list.FormatSecureBox('pw')
