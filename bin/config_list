@@ -144,7 +144,13 @@ def do_output(listname, outfile):
                 elif vtype in (mm_cfg.Radio, mm_cfg.Toggle):
                     print '#'
                     print '# legal values are:'
-                    i = 0
+                    # TBD: This is disgusting, but it's special cased
+                    # everywhere else anyway...
+                    if varname == 'subscribe_policy' and \
+                           not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+                        i = 1
+                    else:
+                        i = 0
                     for choice in data[2]:
                         print '#   ', i, '= "%s"' % choice
                         i = i + 1
