@@ -597,7 +597,8 @@ VERP_CONFIRMATIONS = 0
 # loops between Mailman and misconfigured remote email robots.  Mailman
 # already inhibits automatic replies to any message labeled with a header
 # "Precendence: bulk|list|junk".  This is a fallback safety valve so it should
-# be set fairly high.
+# be set fairly high.  Set to 0 for no limit (probably useful only for
+# debugging).
 MAX_AUTORESPONSES_PER_DAY = 10
 
 
