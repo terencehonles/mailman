@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0rc3\n"
 "POT-Creation-Date: Fri Aug  9 23:58:02 2002\n"
-"PO-Revision-Date: 2002-06-30 12:11+0200\n"
+"PO-Revision-Date: 2002-08-13 18:42+0200\n"
 "Last-Translator: Dan Ohnesorg <dan@ohnesorg.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr "Oznámení o nedoruèitelnosti"
 
 #: Mailman/Bouncer.py:237
 msgid " The last bounce received from you was dated %(date)s"
-msgstr ""
+msgstr " Poslední pøíspìvek, který se vrátil jako nedoruèitelný na Va¹i adresu má datum: %(date)s"
 
 #: Mailman/Bouncer.py:262 Mailman/Handlers/Acknowledge.py:44
 #: Mailman/Handlers/CookHeaders.py:212 Mailman/Handlers/Hold.py:207
@@ -547,8 +547,7 @@ msgstr "<b>potvrzení</b> -- Dostává pøispìvatel potvrzení o pøijetí pøíspìvku?"
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
 "        own postings?"
-msgstr ""
-"<b>not metoo</b> -- Úèasník si nepøeje dostávat kopie vlastních pøíspìvkù."
+msgstr "<b>not metoo</b> -- Úèasník si nepøeje dostávat kopie vlastních pøíspìvkù."
 
 #: Mailman/Cgi/admin.py:1001
 msgid ""
@@ -600,8 +599,7 @@ msgstr "od %(start)s do %(end)s"
 
 #: Mailman/Cgi/admin.py:1056
 msgid "Subscribe these users now or invite them?"
-msgstr ""
-"Mají být tito úèastníci pøihlá¹eni a nebo pozváni k úèasti v konferenci?"
+msgstr "Mají být tito úèastníci pøihlá¹eni a nebo pozváni k úèasti v konferenci?"
 
 #: Mailman/Cgi/admin.py:1058
 msgid "Invite"
@@ -837,9 +835,8 @@ msgid "There are no pending requests."
 msgstr "®ádné po¾adavky neèekají na vyøízení."
 
 #: Mailman/Cgi/admindb.py:169
-#, fuzzy
 msgid "Click here to reload this page."
-msgstr "Kliknutím sem skryjete popisek této tabulky."
+msgstr "Kliknutím sem obnovíte obsah této stránky."
 
 #: Mailman/Cgi/admindb.py:180
 msgid "Detailed instructions for the administrative database"
@@ -2000,11 +1997,14 @@ msgid ""
 "address.  Upon confirmation, any other mailing list containing the address\n"
 "%(user)s will be changed. "
 msgstr ""
+"Nová adresa, kterou jste zadal (%(newaddr)s) je ji¾ v konferenci\n"
+"%(listname)s pøihlá¹ena. Nicménì jste po¾ádal o globální\n"
+"zmìnu adresy a tak budou po potvrzení zmìnìny adresy v ostatních\n"
+"konferencích, kterých je u¾ivatel %(user)s èlenem."
 
 #: Mailman/Cgi/options.py:306
-#, fuzzy
 msgid "The new address is already a member: %(newaddr)s"
-msgstr "cílová adresa, na kterou klonujete je ji¾ úèastníkem:"
+msgstr "Nová adresa je v konferenci ji¾ pøihlá¹ena: %(newaddr)s"
 
 #: Mailman/Cgi/options.py:312
 msgid "Addresses may not be blank"
@@ -2248,8 +2248,7 @@ msgstr "Pøipomínka hesla"
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
-msgstr ""
-"Kliknutím na tlaèítko <em>Po¹li heslo</em> Vám bude zaslána Va¹e heslo."
+msgstr "Kliknutím na tlaèítko <em>Po¹li heslo</em> Vám bude zaslána Va¹e heslo."
 
 #: Mailman/Cgi/options.py:817
 msgid "Remind"
@@ -3267,7 +3266,7 @@ msgstr "Korej¹tina"
 
 #: Mailman/Defaults.py:1200
 msgid "Dutch"
-msgstr ""
+msgstr "Dán¹tina"
 
 #: Mailman/Defaults.py:1201
 msgid "Norwegian"
@@ -3275,7 +3274,7 @@ msgstr "Nor¹tina"
 
 #: Mailman/Defaults.py:1202
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Brazilská portugal¹tina"
 
 #: Mailman/Defaults.py:1203
 msgid "Russian"
@@ -3843,10 +3842,8 @@ msgid "How big in Kb should a digest be before it gets sent out?"
 msgstr "Jaká je maximální velikost digestu?"
 
 #: Mailman/Gui/Digest.py:63
-msgid ""
-"Should a digest be dispatched daily when the size threshold isn't reached?"
-msgstr ""
-"Má být digest odeslán ka¾dý den i pøi nepøekroèení maximální velikosti?"
+msgid "Should a digest be dispatched daily when the size threshold isn't reached?"
+msgstr "Má být digest odeslán ka¾dý den i pøi nepøekroèení maximální velikosti?"
 
 #: Mailman/Gui/Digest.py:67
 msgid "Header added to every digest"
@@ -3959,7 +3956,7 @@ msgstr "V¹eobecné vlastnosti"
 
 #: Mailman/Gui/General.py:46
 msgid "Conceal the member's address"
-msgstr ""
+msgstr "Skrýt adresu úèastníka"
 
 #: Mailman/Gui/General.py:47
 msgid "Acknowledge the member's posting"
@@ -3977,8 +3974,7 @@ msgstr "Filtruj duplicitní pøíspìvky, pokud je to mo¾né"
 msgid ""
 "Fundamental list characteristics, including descriptive\n"
 "            info and basic behaviors."
-msgstr ""
-"Základní charakteristika konference, vèetnì popisu a základních informací."
+msgstr "Základní charakteristika konference, vèetnì popisu a základních informací."
 
 #: Mailman/Gui/General.py:60
 msgid "General list personality"
@@ -3986,8 +3982,7 @@ msgstr "Informaèní stránka konference"
 
 #: Mailman/Gui/General.py:63
 msgid "The public name of this list (make case-changes only)."
-msgstr ""
-"Jméno konference. Je v nìm mo¾né provádìt pouze zmìny velikosti písmen."
+msgstr "Jméno konference. Je v nìm mo¾né provádìt pouze zmìny velikosti písmen."
 
 #: Mailman/Gui/General.py:64
 msgid ""
@@ -4514,8 +4509,7 @@ msgstr ""
 msgid ""
 "Should administrator get notices of subscribes and\n"
 "             unsubscribes?"
-msgstr ""
-"Má být administrátor informován o pøihla¹ování a odhla¹ování úèastníkù?"
+msgstr "Má být administrátor informován o pøihla¹ování a odhla¹ování úèastníkù?"
 
 #: Mailman/Gui/General.py:312
 msgid "Send mail to poster when their posting is held for approval?"
@@ -4754,18 +4748,16 @@ msgstr ""
 "             jazyk</a> musí být také vybrán."
 
 #: Mailman/Gui/Language.py:77
-#, fuzzy
 msgid "Always"
-msgstr "dny"
+msgstr "V¾dy"
 
 #: Mailman/Gui/Language.py:77
 msgid "As needed"
-msgstr ""
+msgstr "Dle potøeby"
 
 #: Mailman/Gui/Language.py:77
-#, fuzzy
 msgid "Never"
-msgstr "Odlo¾"
+msgstr "Nikdy"
 
 #: Mailman/Gui/Language.py:78
 msgid ""
@@ -4773,6 +4765,9 @@ msgid ""
 "             <a href=\"?VARHELP=general/subject_prefix\">subject\n"
 "             prefix</a> even when it consists of only ASCII characters?"
 msgstr ""
+"Kódovat \n"
+"             <a href=\"?VARHELP=general/subject_prefix\">prefix hlavièky\n"
+"             subject</a> i kdy¾ obsahuje pouze ASCII znaky?"
 
 #: Mailman/Gui/Language.py:82
 msgid ""
@@ -5609,8 +5604,7 @@ msgstr ""
 
 #: Mailman/Gui/Privacy.py:353
 msgid "Ceiling on acceptable number of recipients for a posting."
-msgstr ""
-"Maximální poèet adresátù, pokud bude pøekroèen pøíspìvek nebude rozeslán."
+msgstr "Maximální poèet adresátù, pokud bude pøekroèen pøíspìvek nebude rozeslán."
 
 #: Mailman/Gui/Privacy.py:355
 msgid ""
@@ -5623,8 +5617,7 @@ msgstr ""
 
 #: Mailman/Gui/Privacy.py:359
 msgid "Hold posts with header value matching a specified regexp."
-msgstr ""
-"Pozastav distribuci pøíspìvkù, které obsahují v hlavièce takovéto øetìzce."
+msgstr "Pozastav distribuci pøíspìvkù, které obsahují v hlavièce takovéto øetìzce."
 
 #: Mailman/Gui/Privacy.py:360
 msgid ""
@@ -5733,8 +5726,7 @@ msgstr ""
 
 #: Mailman/Gui/Topics.py:62
 msgid "How many body lines should the topic matcher scan?"
-msgstr ""
-"Kolik øádek z tìla pøíspìvku má být prohlédnuto pøi hledání klíèových slov?"
+msgstr "Kolik øádek z tìla pøíspìvku má být prohlédnuto pøi hledání klíèových slov?"
 
 #: Mailman/Gui/Topics.py:64
 msgid ""
@@ -5870,7 +5862,7 @@ msgstr ""
 
 #: Mailman/Gui/Usenet.py:65
 msgid "Prefix <tt>Subject:</tt> headers on postings gated to news?"
-msgstr ""
+msgstr "Pøidávat <tt>prefix Subjectu:</tt> i u pøíspìvkù pøedávaných do news?"
 
 #: Mailman/Gui/Usenet.py:66
 msgid ""
@@ -5887,7 +5879,7 @@ msgstr ""
 
 #: Mailman/Gui/Usenet.py:79
 msgid "Mass catchup completed"
-msgstr ""
+msgstr "Hromadné sta¾ení pøíspìvkù bylo dokonèeno."
 
 #: Mailman/Gui/Usenet.py:91
 msgid ""
@@ -5931,11 +5923,12 @@ msgid "; it was disabled by the list administrator"
 msgstr "; bylo to zakázáno administrátorem konference"
 
 #: Mailman/HTMLFormatter.py:143
-#, fuzzy
 msgid ""
 "; it was disabled due to excessive bounces.  The\n"
 "            last bounce was received on %(date)s"
-msgstr "; bylo to zakázáno, proto¾e se vracely pøíspìvky jako nedoruèitelné"
+msgstr ""
+"; bylo to zakázáno, proto¾e se vracely pøíspìvky jako nedoruèitelné. \n"
+"       Podlední pøíspìvek se vrátil dne: %(date)s"
 
 #: Mailman/HTMLFormatter.py:146
 msgid "; it was disabled for unknown reasons"
@@ -6237,8 +6230,7 @@ msgstr "Do konference není mo¾né pøispívat bez souhlasu moderátora"
 
 #: Mailman/Handlers/Hold.py:68
 msgid "This list is restricted; your message was not approved."
-msgstr ""
-"Tato konference není veøejnì pøístupná, Vás pøíspìvek nebyl akceptován."
+msgstr "Tato konference není veøejnì pøístupná, Vás pøíspìvek nebyl akceptován."
 
 #: Mailman/Handlers/Hold.py:71
 msgid "Too many recipients to the message"
@@ -6295,8 +6287,7 @@ msgstr "Vá¹ pøíspìvek má neplatnou hlavièku."
 msgid ""
 "Message body is too big: %(size)d bytes with a limit of\n"
 "%(limit)d KB"
-msgstr ""
-"Tìlo zprávy je pøíli¹ veliké: %(size)d bytù, kde¾to limit je %(limit)d KB."
+msgstr "Tìlo zprávy je pøíli¹ veliké: %(size)d bytù, kde¾to limit je %(limit)d KB."
 
 #: Mailman/Handlers/Hold.py:108
 msgid ""
@@ -6335,7 +6326,7 @@ msgstr ""
 
 #: Mailman/Handlers/Moderate.py:35
 msgid "Posts by member are currently quarantined for moderation"
-msgstr ""
+msgstr "Pøíspìvky èlenù jsou momentálnì pozastavovány do rozhodnutí moderátora"
 
 #: Mailman/Handlers/Moderate.py:130
 msgid ""
@@ -6603,23 +6594,22 @@ msgstr "Ovìøuji práva souboru %(file)s"
 
 #: Mailman/MTA/Postfix.py:309
 msgid "%(file)s permissions must be 066x (got %(octmode)s)"
-msgstr ""
+msgstr "Práva na souboru: %(file)s musí být 066x (jsou %(octmode)s)"
 
 #: Mailman/MTA/Postfix.py:311 Mailman/MTA/Postfix.py:337 bin/check_perms:101
 #: bin/check_perms:123 bin/check_perms:142 bin/check_perms:160
 #: bin/check_perms:180 bin/check_perms:204 bin/check_perms:224
 #: bin/check_perms:238 bin/check_perms:258 bin/check_perms:294
 msgid "(fixing)"
-msgstr ""
+msgstr "(opravuji)"
 
 #: Mailman/MTA/Postfix.py:327
-#, fuzzy
 msgid "checking ownership of %(dbfile)s"
-msgstr "Ovìøuji práva souboru %(file)s"
+msgstr "Ovìøuji práva souboru %(dbfile)s"
 
 #: Mailman/MTA/Postfix.py:334
 msgid "%(dbfile)s owned by %(owner)s (must be owned by Mailman)"
-msgstr ""
+msgstr "Soubor %(dbfile)s patøí u¾ivateli %(owner)s (musí být vlastnìn Mailmanem)"
 
 #: Mailman/MTA/Qmail.py:31
 msgid ""
@@ -9381,3 +9371,4 @@ msgstr ""
 #~ "Pokud potøebujete dal¹í informace a nebo seznam neplatných adres,\n"
 #~ "nahlédnìte do: \n"
 #~ "    %(varhelp)s\n"
+
