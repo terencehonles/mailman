@@ -53,8 +53,10 @@ MMBadConfirmation    = "MMBadConfirmation"
 MMAlreadyAMember     = "MMAlreadyAMember"
 MMAlreadyDigested    = "MMAlreadyDigested"
 MMAlreadyUndigested  = "MMAlreadyUndigested"
-MMBadRequestId       = "MMBadRequestId"
-MMLoopingPost	     = "Post already went through this list!"
+
+class MMLoopingPost:
+    """Post already went through this list!"""
+    pass
 
 MODERATED_LIST_MSG    = "Moderated list"
 IMPLICIT_DEST_MSG     = "Implicit destination"
