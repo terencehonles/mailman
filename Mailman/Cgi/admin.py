@@ -550,7 +550,7 @@ def FormatMembershipOptions(lst):
     t.AddRow([("<b>1.</b> Send Welcome message to this batch? " +
                RadioButton("send_welcome_msg_to_this_batch", 0, nochecked).Format() + " no " +
                RadioButton("send_welcome_msg_to_this_batch", 1, yeschecked).Format() + " yes ")])
-    t.AddRow(["<b>2.</b> Enter one addres per line: <p>"])
+    t.AddRow(["<b>2.</b> Enter one address per line: <p>"])
     container.AddItem(Center(t))
     container.AddItem(Center(TextArea(name='subscribees', rows=10,cols=60,wrap=None)))
     return container
