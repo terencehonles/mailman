@@ -94,22 +94,24 @@ class BounceRunner(Runner):
         if mlist.internal_name() == mm_cfg.MAILMAN_SITE_LIST:
             for listname in Utils.list_names():
                 xlist = self._open_list(listname)
-                if xlist.isMember(addr):
-                    unlockp = 0
-                    if not xlist.Locked():
+                xlist.Load()
+                for addr in addrs:
+                    if xlist.isMember(addr):
+                        unlockp = 0
+                        if not xlist.Locked():
+                            try:
+                                xlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+                            except LockFile.TimeOutError:
+                                # Oh well, forget aboutf this list
+                                continue
+                            unlockp = 1
                         try:
-                            xlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-                        except LockFile.TimeOutError:
-                            # Oh well, forget aboutf this list
-                            continue
-                        unlockp = 1
-                    try:
-                        xlist.registerBounce(addr, msg)
-                        found = 1
-                        xlist.Save()
-                    finally:
-                        if unlockp:
-                            xlist.Unlock()
+                            xlist.registerBounce(addr, msg)
+                            found = 1
+                            xlist.Save()
+                        finally:
+                            if unlockp:
+                                xlist.Unlock()
         else:
             try:
                 mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
