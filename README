@@ -15,11 +15,11 @@ Initial version of Mailman (v. 0.9) written by John Viega Dec 12-15
 1996.  Mailman 1.0b3, 2, and  1.1 developments by Ken Manheimer,  4/98
 and 5/98.  Autoconf support added 5/98 by Barry Warsaw.
 
-See the Mailman home site for current mailman status, including new
-releases and known problems: http://www.list.org
+See the Mailman home site for current status, including new releases
+and known problems: http://www.list.org
 
-To join the Mailman user's mailing list (recommended)  - and to see an
-example of a mailman list interface in action - visit:
+To join the Mailman user's mailing list (recommended) - and to see an
+example of a Mailman list interface in action - visit:
 
 	    http://www.python.org/mailman/listinfo/mailman-users
 
