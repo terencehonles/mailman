@@ -215,8 +215,6 @@ class Archiver:
                 f.close()
         except:
             traceback.print_exc()
-            syslog('error', 'CORRUPT ARCHIVE FOR LIST: %s',
-                   self.internal_name())
 	
     #
     # called from MailList.MailList.Save()
