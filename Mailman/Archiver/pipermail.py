@@ -17,6 +17,7 @@ CACHESIZE = 100    # Number of slots in the cache
 
 from Mailman import Errors
 from Mailman.Mailbox import ArchiverMailbox
+from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
 SPACE = ' '
@@ -542,12 +543,17 @@ class T:
             counter += 1
 	while 1:
             try:
+                pos = input.tell()
                 m = mbox.next()
             except Errors.DiscardMessage:
                 continue
             except email.Errors.MessageParseError:
                 # Probably a missing terminating boundary
                 continue
+            except Exception, e:
+                syslog('error', 'uncaught archiver exception at filepos: %s',
+                       pos)
+                raise
 	    if not m:
                 break
             msgid = m.get('message-id', 'n/a')
