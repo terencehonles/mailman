@@ -39,6 +39,7 @@ LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'pending.lock')
 SUBSCRIPTION = 'S'
 UNSUBSCRIPTION = 'U'
 CHANGE_OF_ADDRESS = 'C'
+HELD_MESSAGE = 'H'
 
 
 
@@ -49,6 +50,7 @@ def new(*content):
     assert content[:1] in ((SUBSCRIPTION,),
                            (UNSUBSCRIPTION,),
                            (CHANGE_OF_ADDRESS,),
+                           (HELD_MESSAGE,),
                            )
     # Acquire the pending database lock, letting TimeOutError percolate up.
     lock = LockFile.LockFile(LOCKFILE)
