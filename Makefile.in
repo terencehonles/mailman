@@ -49,7 +49,7 @@ ARCH_INDEP_DIRS= \
 	bin templates scripts cron \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Bouncers Mailman/pythonlib \
-	Mailman/MTA messages icons
+	Mailman/MTA Mailman/Gui messages icons
 ARCH_DEP_DIRS=	cgi-bin mail
 
 # Directories make should decend into
