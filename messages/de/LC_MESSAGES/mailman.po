@@ -1483,8 +1483,8 @@ msgstr ""
 "<b>Ungültige Bestätigung:</b> %(safecookie)s.\n"
 " <p>Bitte beachten Sie, dass Bestätigungen ungefähr %(days)s Tage nach der "
 "Anfrage ungültig werden. Falls Ihre Bestätigung ungültig ist, senden Sie "
-"bitte eine neue Anfrage. Andernfalls geben Sie Ihre Bestätigung <a href=\"%"
-"(confirmurl)s\">erneut</a>."
+"bitte eine neue Anfrage. Andernfalls geben Sie bitte Ihre Bestätigung <a href=\"%"
+"(confirmurl)s\">erneut</a> ein."
 
 #: Mailman/Cgi/confirm.py:122
 msgid ""
@@ -2769,7 +2769,7 @@ msgstr "Mailingliste %(realname)s: Login für Mitglieder"
 # Mailman/Cgi/options.py:621
 #: Mailman/Cgi/options.py:762
 msgid "email address and "
-msgstr "e-Mailadresse und"
+msgstr "und e-Mailadresse"
 
 # Mailman/Cgi/options.py:623
 #: Mailman/Cgi/options.py:765
@@ -2795,7 +2795,7 @@ msgid ""
 "    "
 msgstr ""
 "Um Ihre persönlichen Optionen zu ändern, müssen Sie sich erst mit Ihrem\n"
-" %(extra)s Passwort anmelden. Wenn Sie sich an das Passwort nicht\n"
+" Passwort %(extra)s anmelden. Wenn Sie sich an das Passwort nicht\n"
 " erinnern, können Sie es sich per e-Mail schicken lassen, indem Sie\n"
 " unten auf den entsprechenden Knopf drücken. Wenn Sie nur das\n"
 " Abonnement kündigen wollen, tragen Sie e-Mailadresse und Passwort ein\n"
@@ -2858,7 +2858,7 @@ msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
 msgstr ""
-"Haben Sie Ihr Passwort nicht mehr? Klicken auf <em>Erinnern</em> um sich Ihr "
+"Haben Sie Ihr Passwort nicht mehr? Klicken auf <em>Passwort zumailen</em> um sich Ihr "
 "Passwort per e-Mail zusenden zu lassen!"
 
 # Mailman/Cgi/options.py:686
@@ -5849,7 +5849,7 @@ msgstr ""
 # Mailman/Gui/Membership.py:26
 #: Mailman/Gui/Membership.py:26
 msgid "Membership&nbsp;Management..."
-msgstr "Mitglieder-Verwaltung "
+msgstr "Mitglieder-Verwaltung... "
 
 # Mailman/Cgi/admin.py:721 Mailman/Gui/Membership.py:30
 #: Mailman/Gui/Membership.py:30
@@ -6037,7 +6037,7 @@ msgstr "Passwörter"
 # Mailman/Gui/Privacy.py:27
 #: Mailman/Gui/Privacy.py:28
 msgid "Privacy options..."
-msgstr "Abo-Regeln und Adreßfilter "
+msgstr "Abo-Regeln und Adreßfilter..."
 
 # Mailman/Cgi/admindb.py:171
 #: Mailman/Gui/Privacy.py:32
