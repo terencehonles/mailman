@@ -47,7 +47,7 @@ Where:
         Scan the list admin addresses for the old address, and clone or change
         them too.
 
-    --quite
+    --quiet
     -q
         Do the modifications quietly.
 
@@ -89,19 +89,31 @@ def dolist(mlist, options):
         print 'processing mailing list:', mlist.internal_name()
 
     # scan the list owners.  TBD: mlist.owner keys should be lowercase?
+    oldowners = mlist.owner
+    oldowners.sort()
     if options.admintoo:
         if not options.quiet:
-            print '    scanning list owners:', string.join(mlist.owner, ' ')
+            print '    scanning list owners:', string.join(oldowners, ' '),
         newowners = {}
         for owner in mlist.owner:
-            if options.remove and options.lfromaddr == string.lower(owner):
-                continue
-            newowners[owner] = 1 
-        newowners[options.toaddr] = 1 
+            foundp = 0
+            if options.lfromaddr == string.lower(owner):
+                foundp = 1
+                if options.remove:
+                    continue
+            newowners[owner] = 1
+        if foundp:
+            newowners[options.toaddr] = 1 
+        newowners = newowners.keys()
+        newowners.sort()
         if options.modify:
-            mlist.owner = newowners.keys()
+            mlist.owner = newowners
         if not options.quiet:
-            print '    new list owners:', string.join(newowners.keys(), ' ')
+            if newowners <> oldowners:
+                print
+                print '    new list owners:', string.join(newowners, ' ')
+            else:
+                print '(no change)'
 
     # see if the fromaddr is a digest member or regular member
     if options.lfromaddr in mlist.GetDigestMembers():
