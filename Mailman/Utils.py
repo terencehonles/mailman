@@ -189,7 +189,10 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         ropts = []
         if conn.has_extn('dsn'):
             ropts.append('NOTIFY=failure')
-        conn.sendmail(sender, recipient, text, rcpt_options=ropts)
+        # With a global listmember database, we could intercept RCPT errors
+        # here to disable/remove bad local addresses.  Currently we don't
+        # know which list(s) the address is on :(
+        refused = conn.sendmail(sender, recipient, text, rcpt_options=ropts)
         conn.quit()
         defer = 0
         failure = None
@@ -198,15 +201,52 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
     # 'failure' to something suitable.  Without a particular exception we fall
     # through to the blanket 'except:', which dequeues the message.
     # 
-    except socket.error:
-        # MTA not responding, or other socket prob - leave on queue.
+    except (# MTA not responding, or other socket prob
+            socket.error,
+            # Unusual HELO response, hopefully due to transient problems
+            smtplib.SMTPHeloError):
+        # Leave the message on queue
         defer = 1
         failure = sys.exc_info()
+        log_hint = "Maybe your MTA daemon needs restarting?"
+    except smtplib.SMTPSenderRefused:
+        # Leave message on queue, hoping problem (which probably has to
+        # do with "relaying restrictions") will be fixed shortly
+        defer = 1
+        failure = sys.exc_info()
+        # Try to notify local mailman-owner of the problem by email --
+        # unless the failure is on the mailman-owner address (in which
+        # case the MTA configuration is _seriously_ screwed up)
+        log_hint = ("MTA '%s' relaying restrictions probably "
+                    "too strict" % mm_cfg.SMTPHOST)
+        admin = mm_cfg.MAILMAN_OWNER
+        if sender <> admin:
+            pass
+#             SendTextToUser(log_hint, """\
+# Mailman currently isn't allowed to send mail with sender address
+# 
+#   %(sender)s
+# 
+# In order for your Mailman installation to function properly, sending
+# from this address should be allowed.
+# 
+# The most common cause of such a problem is the MTA's relaying
+# restrictions being set too tight.  You should in your case check the
+# MTA running on '%(mta_host)s'.
+# 
+# As Mailman tries to be MTA independent, you will have to look in your
+# MTA manuals for instructions on how to change it's relaying
+# restriction configuration.""" % {'sender': sender,
+#                                  'mta_host': mm_cfg.SMTPHOST},
+#                            admin, admin)
+        else:
+            log_hint = log_hint + " -- even for sender '%s'" % admin
     except:
         # Unanticipated cause of delivery failure - *don't* leave message 
         # queued, or it may stay, with reattempted delivery, forever...
         defer = 0
         failure = sys.exc_info()
+        log_hint = ""
 
     if defer:
         OutgoingQueue.deferMessage(queue_entry)        
@@ -223,6 +263,8 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         if v:
             l.write(' / %s' % v)
         l.write(' (%s)\n' % (defer and 'deferred' or 'dequeued'))
+        if log_hint:
+            l.write(' %s\n' % log_hint)
         l.flush()
 
 
