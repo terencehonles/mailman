@@ -45,7 +45,7 @@ Entry for aliases file:
 %(owner2)s %(listname)s-admin
 ''' % {'listname': list_name,
 	   'list': "%-24s" % (list_name + ":"),
-	   'wrapper': '%s/bin/wrapper' % mm_cfg.MAILMAN_DIR,
+	   'wrapper': '%s/mail/wrapper' % mm_cfg.MAILMAN_DIR,
 	   'admin': "%-24s" % ("%s-admin:" % list_name),
 	   'request': "%-24s" % ("%s-request:" % list_name),
 	   'owner1': "%-24s" % ("owner-%s:" % list_name),
