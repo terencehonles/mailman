@@ -19,7 +19,7 @@ class Digester:
 	return [
 
 	    ('digestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
-	     'Can list members choose to receive list traffic '
+	     'Can list members choose to receive list traffic ',
 	     'bunched in digests?'),
 
 	    ('digest_size_threshhold', mm_cfg.Number, 3, 0,
