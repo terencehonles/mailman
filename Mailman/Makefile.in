@@ -42,7 +42,7 @@ PACKAGEDIR= 	$(prefix)/Mailman
 SHELL=		/bin/sh
 
 MODULES=	*.py
-SUBDIRS=	Cgi Logging Archiver Handlers Bouncers pythonlib
+SUBDIRS=	Cgi Logging Archiver Handlers Bouncers Queue pythonlib
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
