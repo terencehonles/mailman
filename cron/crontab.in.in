@@ -1,16 +1,14 @@
 # At 5PM every day, mail reminders to admins as to pending requests
 0 17 * * * /usr/local/bin/python /home/mailman/mailman/cron/checkdbs
 #
-# At 5 AM on the first of each month, mail out password reminders.
+# Noon, mail digests for lists that do periodic as well as threshhold delivery.
+0 12 * * * /usr/local/bin/python /home/mailman/mailman/cron/checkdigests
+#
+# 5 AM on the first of each month, mail out password reminders.
 0 5 1 * * /usr/local/bin/python /home/mailman/mailman/cron/mailpasswds
 #
-# At 12 on the first of each month, bump the volume for large lists.
+# Midnight on the first of each month, bump the volume for large lists.
 0 0 1 * * /usr/local/bin/python /home/mailman/mailman/cron/upvolumes_monthly
 #
 # Near years second, bump volume numbers for most lists archives/digests
 0 0 1 1 * /home/mailman/mailman/cron/upvolumes_yearly
-#
-## Do level 1 daily mailman archive:
-15 1 * * * /usr/local/bin/python /home/mailman/mailman/cron/archive 1
-## Do level 2 hourly mailman archive - except the hour of the level 1 daily:
-15 0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 * * * /usr/local/bin/python /home/mailman/mailman/cron/archive 2
