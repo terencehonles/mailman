@@ -26,87 +26,149 @@
 """Convert a list.
 
 Usage:
-    convert_list <list name> <non-digest-members-file> <digest-members-file>
+    convert_list [-n <file>] [-d <file>] [-h] listname
+
+Where:
+
+    --non-digest-members-file <file>
+    -n <file>
+        The /etc/aliases style file containing addresses of the members of the
+        old list (e.g. it contains one address per line).  This list of people
+        become non-digest members.
+
+    --digest-members-file <file>
+    -d <file>
+        Similar to above, but these people become digest members.
+
+
+    --help
+    -h
+        Print this help message and exit.
+
+    listname
+        The name of the Mailman list you are converting an old list into.
+        It must already exist.
+
+You must supply one or both of -n and -d options.
+
 """
 
 import sys
 import os
 import string
+import getopt
 import paths
 import Mailman.MailList
 import Mailman.Utils
 import Mailman.Message
+import Mailman.Errors
 import Mailman.mm_cfg
 
 
 def usage(status, msg=''):
     if msg:
-        print msgne
+        print msg
     print __doc__ % globals()
     sys.exit(status)
 
 
 def GetRandomPassword():
-    seed1 = Mailman.Utils.GetRandomPassword()
-    seed2 = Mailman.Utils.GetRandomPassword()
+    seed1 = Mailman.Utils.GetRandomSeed()
+    seed2 = Mailman.Utils.GetRandomSeed()
     return "%s%s" % (seed1, seed2)
 
 
-def SendExplanation(users):
+def SendExplanation(ml, users):
     msg = Mailman.Message.OutgoingMessage()
-    msg.SetSender(list.GetAdminEmail())
-    dict = {'listname'    : list.real_name,
-            'listhost'    : list.host_name,
-            'listaddr'    : list.GetListEmail(),
-            'listinfo_url': list.GetAbsoluteScriptURL('listinfo'),
-            'requestaddr' : list.GetRequestEmail(),
-            'adminaddr'   : list.GetAdminEmail(),
+    msg.SetSender(ml.GetAdminEmail())
+    dict = {'listname'    : ml.real_name,
+            'listhost'    : ml.host_name,
+            'listaddr'    : ml.GetListEmail(),
+            'listinfo_url': ml.GetAbsoluteScriptURL('listinfo'),
+            'requestaddr' : ml.GetRequestEmail(),
+            'adminaddr'   : ml.GetAdminEmail(),
             'version'     : Mailman.mm_cfg.VERSION,
             }
-    header = 'Big change in %(listname)s@%(listhost) mailing list' % dict
+    header = 'Big change in %(listname)s@%(listhost)s mailing list' % dict
     msg.SetHeader('subject', header)
     msg.AppendToBody(Mailman.Utils.maketext('convert.txt', dict))
-    list.DeliverToList(msg, users, None, None)
+    ml.DeliverToList(msg, users, None, None)
 
 
+def AddMember(ml, addr, digest_p):
+    # if the line was empty, just ignore it
+    pw = GetRandomPassword()
+    try:
+        ml.ApprovedAddMember(addr, pw, digest_p)
+    except Mailman.Errors.MMAlreadyAMember:
+        print 'Already subscribed (skipping):', addr
+        
+        
+
 def main():
-    if len(sys.argv) <> 4:
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+                                   'n:d:h',
+                                   ['non-digest-members-file=',
+                                    'digest-members-file=',
+                                    'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if not len(args) == 1:
+        usage(1)
+
+    listname = args[0]
+    nfile = None
+    dfile = None
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-d', '--digest-members-file'):
+            dfile = arg
+        elif opt in ('-n', '--non-digest-members-file'):
+            nfile = arg
+
+    if dfile is None and nfile is None:
         usage(1)
 
     try:
-        list = maillist.MailList(sys.argv[1])
-    except:
-        usage(1, 'You must first run: newlist ' + sys.argv[1])
+        ml = Mailman.MailList.MailList(listname)
+    except Mailman.Errors.MMUnknownListError:
+        usage(1, 'You must first create the list by running: newlist %s' %
+              listname)
 
-try:
-    non_digest_members = string.split(open(sys.argv[2]).read(), '\n')
-except:
-    non_digest_members = []
-    print 'file for non-digest members could not be opened.  Ignoring.'
-try:
-    digest_members     = string.split(open(sys.argv[3]).read(), '\n')
-except:
-    digest_members = []
-    print 'file for digest members could not be opened.  Ignoring.'
+    try:
+        dmembers = []
+        if dfile:
+            try:
+                fp = open(dfile)
+                dmembers = filter(None, map(string.strip, fp.readlines()))
+                fp.close()
+            except IOError:
+                pass
 
-def FormatMembers(mbrs):
-    def NotNull(str):
-        return str
-    return filter(NotNull, map(string.strip, mbrs))
+        nmembers = []
+        if nfile:
+            try:
+                fp = open(nfile)
+                nmembers = filter(None, map(string.strip, fp.readlines()))
+                fp.close()
+            except IOError:
+                pass
 
-non_digest_members = FormatMembers(non_digest_members)
-digest_members     = FormatMembers(digest_members)
+        if not dmembers and not nmembers:
+            usage(1)
 
+        for member in nmembers:
+            AddMember(ml, member, 0)
 
-SendExplanation(non_digest_members + digest_members)
+        for member in dmembers:
+            AddMember(ml, member, 1)
 
-for member in non_digest_members:
-    pw = GetRandomPassword()
-    list.ApprovedAddMember(member, pw, 0)
+        SendExplanation(ml, nmembers + dmembers)
+    finally:
+        ml.Unlock()
 
-for member in digest_members:
-    pw = GetRandomPassword()
-    list.ApprovedAddMember(member, pw, 1)
-    
-list.Unlock()
-
+main()
