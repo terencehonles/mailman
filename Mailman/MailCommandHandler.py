@@ -494,30 +494,23 @@ class MailCommandHandler:
             self.ApprovedAddMember(email_addr, password, digest)
             self.AddToResponse("Succeeded")
         else:
-            self.AddRequest('add_member', digest, email_addr, password)
+            try:
+                self.AddRequest('add_member', digest, email_addr, password)
+            except Errors.MMNeedApproval:
+                self.AddApprovalMsg('add_member')
         del pending[cookie]
         Pending.set_pending(pending)
 
 
 		
     def AddApprovalMsg(self, cmd):
-        # XXX: convert to templates/*.txt style
-        self.AddError('''Your request to %s:
-
-        %s
-
-has been forwarded to the person running the list.
-
-This is probably because you are trying to subscribe to a 'closed' list.
-
-You will receive email notification of the list owner's decision about
-your subscription request.
-
-Any questions about the list owner's policy should be directed to:
-
-        %s
-
-''' % (self.GetRequestEmail(), cmd, self.GetAdminEmail()))
+        text = Utils.maketext(
+            'approve.txt',
+            {'requestaddr': self.GetRequestEmail(),
+             'cmd'        : cmd,
+             'adminaddr'  : self.GetAdminEmail(),
+             })
+        self.AddError(text)
 
 
     def ProcessHelpCmd(self, args, cmd, mail):
