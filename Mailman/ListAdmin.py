@@ -42,6 +42,11 @@ from Mailman.pythonlib.StringIO import StringIO
 HELDMSG = 1
 SUBSCRIPTION = 2
 
+# Return status from __handlepost()
+DEFER = 0
+REMOVE = 1
+LOST = 2
+
 
 
 class ListAdmin:
@@ -116,7 +121,8 @@ class ListAdmin:
         type, data = self.__db[id]
         return type
 
-    def HandleRequest(self, id, value, comment, preserve, forward, addr):
+    def HandleRequest(self, id, value, comment=None, preserve=None,
+                      forward=None, addr=None):
         self.__opendb()
         rtype, data = self.__db[id]
         if rtype == HELDMSG:
@@ -179,23 +185,21 @@ class ListAdmin:
                 shutil.copy(path, os.path.join(mm_cfg.SPAM_DIR, spamfile))
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
-                raise Errors.LostHeldMessage(path)
+                return LOST
         # Now handle updates to the database
         rejection = None
         msg = None
-        defer = None
-        if value == 0:
+        status = REMOVE
+        if value == mm_cfg.DEFER:
             # Defer
-            defer = 1
-        elif value == 1:
+            status = DEFER
+        elif value == mm_cfg.APPROVE:
             # Approved
             try:
                 fp = open(path)
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
-                # we lost the message text file.  clean up our housekeeping
-                # and raise an exception.
-                raise Errors.LostHeldMessage(path)
+                return LOST
             msg = Message.Message(fp)
             msgdata['approved'] = 1
             # Queue the file for delivery by qrunner.  Trying to deliver the
@@ -203,13 +207,13 @@ class ListAdmin:
             # turnaround.
             syslog('vette', 'approved held message enqueued: %s' % filename)
             msg.Enqueue(self, newdata=msgdata)
-        elif value == 2:
+        elif value == mm_cfg.REJECT:
             # Rejected
             rejection = 'Refused'
             self.__refuse('Posting of your message titled "%s"' % subject,
                           sender, comment or '[No reason given]')
         else:
-            assert value == 3
+            assert value == mm_cfg.DISCARD
             # Discarded
             rejection = 'Discarded'
         #
@@ -227,7 +231,7 @@ class ListAdmin:
             # file naming (not foolproof though).
             msg['Resent-To'] = addr
             msg.recips = addr
-            HandlerAPI.DeliverToUser(self, msg)
+            HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
         # for safety
         def strquote(s):
             return string.replace(s, '%', '%%')
@@ -247,15 +251,15 @@ class ListAdmin:
             syslog('vette', note)
         # Always unlink the file containing the message text.  It's not
         # necessary anymore, regardless of the disposition of the message.
-        if not defer:
+        if status <> DEFER:
             try:
                 os.unlink(path)
             except OSError, e:
                 if e.errno <> errno.ENOENT: raise
                 # We lost the message text file.  Clean up our housekeeping
                 # and raise an exception.
-                raise Errors.LostHeldMessage(path)
-        return not defer
+                return LOST
+        return status
             
     def HoldSubscription(self, addr, password, digest):
         # assure that the database is open for writing
@@ -293,19 +297,18 @@ class ListAdmin:
                  })
             adminaddr = self.GetAdminEmail()
             msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
-            HandlerAPI.DeliverToUser(self, msg)
-
+            HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
 
     def __handlesubscription(self, record, value, comment):
         stime, addr, password, digest = record
-        if value == 1:
+        if value == mm_cfg.REJECT:
             # refused
             self.__refuse('Subscription request', addr, comment)
         else:
             # subscribe
-            assert value == 0
+            assert value == mm_cfg.SUBSCRIBE
             self.ApprovedAddMember(addr, password, digest)
-        return 1
+        return REMOVE
 
     def __refuse(self, request, recip, comment, origmsg=None):
         adminaddr = self.GetAdminEmail()
@@ -323,4 +326,4 @@ class ListAdmin:
                                 str(origmsg)], '\n')
         subject = 'Request to mailing list %s rejected' % self.real_name
         msg = Message.UserNotification(recip, adminaddr, subject, text)
-        HandlerAPI.DeliverToUser(self, msg)
+        HandlerAPI.DeliverToUser(self, msg, {'_enqueue_immediate': 1})
