@@ -11,13 +11,8 @@ UPGRADING:
 
 Generally one can follow the below directions, giving the location of
 the old install as the target directory, and the upgrade will happen
-transparently.  However, please note the following exceptions:
-
-    - If upgrading from version 1.0b4 or earlier, templates need to be
-    moved.  For each list, move $prefix/templates/<listname>/* to
-    $prefix/lists/<listname>.  Be careful about stomping template
-    changes that your list managers have changed!  (Only the
-    options.html template changed from 1.0b5 to 1.0b6.)
+transparently.  However, please read the notes in the file UPGRADING
+if you want to keep your existing installation intact.
 
 0. Installation requirements
 
@@ -43,8 +38,7 @@ transparently.  However, please note the following exceptions:
     system by adding certain users and groups.
 
     - Add a new user called `mailman'.  Typically this is added to
-      your /etc/passwd file.  One Mailman program will be installed
-      with the set-user-id bit set (see below).
+      your /etc/passwd file.
 
     - Add a new group called `mailman'.  Typically this is added to
       your /etc/group file.  The Mailman files will be installed under
@@ -148,24 +142,14 @@ transparently.  However, please note the following exceptions:
 
     - Run `make install'
 
-3. Finishing the install
-
-    The final installation step requires you to be root.  In order to
-    provide security for private Pipermail archives, the CGI wrapper
-    program $prefix/cgi-bin/private must be owned by the mailman user, 
-    and it must have the set-user-id bit set.
-
-    As root, run `make finish'.
-
-4. Final system set-up
+3. Final system set-up
 
     Congratulations!  You've installed the Mailman software.  To get
     everything running you need to hook Mailman up to both your Web
     server and your mail system.
 
     - Configure your Web server to give $prefix/cgi-bin permission to
-      run CGI scripts, and restart your Web server.  You probably need 
-      to be root to do this.
+      run CGI scripts.  You probably need to be root to do this.
 
       The line you should add might look something like the following
       (with the real absolute directory substituted for $prefix, of
@@ -182,9 +166,14 @@ transparently.  However, please note the following exceptions:
 
       For example, in Apache:
 
-         Alias /pipermail/ $prefix/public_html/archives/
+         Alias /pipermail/ $prefix/archives/public/
 
-      Consult your Web server's documentation for details.
+      Consult your Web server's documentation for details.  Also be
+      sure to configure your Web server to follow symbolic links in
+      this directory, otherwise public Pipermail archives won't be
+      accessible.
+
+      Now restart your Web server.
 
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       to do things such as send out password reminders, etc.  You need
