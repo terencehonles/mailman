@@ -20,18 +20,18 @@
 
 import os
 import errno
-# BAW: should be converted to use re module
-import regsub 
-# BAW: this should be de-string-module-ified
-import string
+import re
 import shutil
 
-# BAW: these should import from Mailman
-import mm_cfg
-import Utils
-from htmlformat import *
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman.htmlformat import *
 
 from Mailman.i18n import _
+
+EMPTYSTRING = ''
+BR = '<br>'
+NL = '\n'
 
 
 
@@ -298,7 +298,7 @@ class HTMLFormatter:
             container.AddItem(self.RestrictedListMessage(_('subscribers list'),
                                                          self.private_roster)
                               + _(" <p>Enter your ")
-                              + string.lower(whom[:-1])
+                              + whom[:-1].lower()
                               + _(" and password to visit"
                               "  the subscribers list: <p><center> ")
                               + whom
@@ -345,16 +345,16 @@ class HTMLFormatter:
         if lang is None:
             lang = self.preferred_language
         text = self.SnarfHTMLTemplate(template, lang)
-        parts = regsub.splitx(text, '</?[Mm][Mm]-[^>]*>')
+	parts = re.split('(</?[Mm][Mm]-[^>]*>)', text)
         i = 1
         while i < len(parts):
-            tag = string.lower(parts[i])
+            tag = parts[i].lower()
             if replacements.has_key(tag):
                 parts[i] = replacements[tag]
             else:
                 parts[i] = ''
             i = i + 2
-        return string.join(parts, '')
+        return EMPTYSTRING.join(parts)
 
     # This needs to wait until after the list is inited, so let's build it
     # when it's needed only.
@@ -375,8 +375,7 @@ class HTMLFormatter:
             '<mm-list-name>' : self.real_name,
             '<mm-email-user>' : self._internal_name,
             '<mm-list-description>' : self.description,
-            '<mm-list-info>' : string.join(string.split(self.info, '\n'),
-                                           '<br>'),
+            '<mm-list-info>' : BR.join(self.info.split(NL)),
             '<mm-form-end>'  : self.FormatFormEnd(),
             '<mm-archive>'   : self.FormatArchiveAnchor(),
             '</mm-archive>'  : '</a>',
