@@ -3,6 +3,14 @@
 #
 # Pipermail 0.0.2-mm
 #
+# **NOTE**
+#
+# This internal version of pipermail has been deprecated in favor of use of 
+# an external version of pipermail, available from:
+# http://starship.skyport.net/crew/amk/maintained/pipermail.html
+# The external version should be pointed at the created archive files.
+#
+#
 # Some minor mods have been made for use with the Mailman mailing list manager.
 # All changes will have JV by them.
 #
