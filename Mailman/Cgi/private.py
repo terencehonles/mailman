@@ -28,8 +28,8 @@ subscribers.
 """
 
 import sys, os, string, re
-import maillist, mm_err, mm_utils
-import Cookie
+from Mailman import MailList, Errors
+from Mailman import Cookie
 
 ROOT = "/local/pipermail/private/"
 SECRET = "secret"  # XXX used for hashing
@@ -71,18 +71,16 @@ PAGE = '''
 login_attempted = 0
 _list = None
 
-name_pat = re.compile(r"""
-(?: / (?: \d{4} q \d\. )?   # Match "/", and, optionally, 1998q1."
-    ( [^/]* ) /?      # The SIG name
-    /[^/]*$           # The trailing 12345.html portion                      
-) | (?:
-    / ( [^/.]* )  # Match matrix-sig
-    (?:\.html)?   # Optionally match .html
-    /?            # Optionally match a trailing slash
-    $             # Must match to end of string
-    
-)
-""", re.VERBOSE)
+name_pat = re.compile(
+    r'(?: / (?: \d{4} q \d\. )?'      # Match "/", and, optionally, 1998q1.
+    r'( [^/]* ) /?'                   # The SIG name
+    r'/[^/]*$'                        # The trailing 12345.html portion
+    r') | (?:'
+    r'/ ( [^/.]* )'                   # Match matrix-sig
+    r'(?:\.html)?'                    # Optionally match .html
+    r'/?'                             # Optionally match a trailing slash
+    r'$'                              # Must match to end of string
+    , re.VERBOSE)
 
 def getListName(path):
     match = name_pat.search(path)
@@ -98,8 +96,8 @@ def GetListobj(list_name):
     if _list:
 	return _list
     try:
-        _list = maillist.MailList(list_name, lock=0)
-    except mm_err.MMUnknownListError:
+        _list = MailList.MailList(list_name, lock=0)
+    except Errors.MMUnknownListError:
 	_list = None
 	return None
     return _list
@@ -146,7 +144,7 @@ def isAuthenticated(list_name):
     
     try:
 	listobj.ConfirmUserPassword( username, password)
-    except (mm_err.MMBadUserError, mm_err.MMBadPasswordError): 
+    except (Errors.MMBadUserError, Errors.MMBadPasswordError): 
 	return 1
 
     import base64, md5
@@ -224,5 +222,3 @@ def main():
                 if data == "": break
                 sys.stdout.write(data)
             f.close()
-
-
