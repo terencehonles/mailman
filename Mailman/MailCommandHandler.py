@@ -23,8 +23,9 @@ option_descs = { 'digest' :
 		 'ack'    :
 		     'Turn this on to receive acknowlegement mail when you '
 		     'send mail to the list',
-		 'fancy'  :
-		    'Get MIME-compliant digests (only works if digest is set)',
+		 'plain'  :
+		    'Get plain, not MIME-compliant, '
+		    'digests (only if digest is set)',
 		 'hide'   :
 		    'Conceals your email from the list of subscribers'
 	       }
@@ -32,7 +33,7 @@ option_info = { 'digest' : 0,
 		'nomail' : mm_cfg.DisableDelivery,
 		'norcv'  : mm_cfg.DontReceiveOwnPosts,
 		'ack'    : mm_cfg.AcknowlegePosts,
-		'fancy'  : mm_cfg.EnableMime,
+		'plain'  : mm_cfg.DisableMime,
 		'hide'   : mm_cfg.ConcealSubscription
 		}
 
@@ -210,7 +211,9 @@ class MailCommandHandler:
 	    
     def ProcessListsCmd(self, args, cmd, mail):
 	lists = os.listdir(mm_cfg.LIST_DATA_DIR)
-	self.AddToResponse("Mailing lists run by Mailman@%s:" % self.host_name)
+	lists.sort()
+	self.AddToResponse("Public mailing lists run by Mailman@%s:"
+			   % self.host_name)
 	for list in lists:
 	    if list == self._internal_name:
 		listob = self
@@ -223,7 +226,7 @@ class MailCommandHandler:
 	    # We can mention this list if you already know about it.
 	    if not listob.advertised and listob <> self: 
 		continue
-	    self.AddToResponse("%s (requests to %s): %s" % 
+	    self.AddToResponse("%s (requests to %s):\n\t%s" % 
 			       (listob.real_name, listob.GetRequestEmail(),
 				listob.description))
 	
@@ -350,7 +353,8 @@ class MailCommandHandler:
 	except mm_err.MMNeedApproval:
 	    self.AddApprovalMsg(cmd)
         except mm_err.MMHostileAddress:
-	    self.AddError("Email address '%s' not accepted by Mailman (insecure address)" % mail.GetSender())
+	    self.AddError("Email address '%s' not accepted by Mailman "
+			  "(insecure address)" % mail.GetSender())
 	except mm_err.MMAlreadyAMember:
 	    self.AddError("%s is already a list member." % mail.GetSender())
 	except:
@@ -428,8 +432,8 @@ The following commands are valid:
 	receive mail from the list bundled together instead of one post at
 	a time 
 
-	fancy:
-	Get MIME-compliant digests (only works if digest is set)
+	plain:
+	Get plain-text, not MIME-compliant, digests (only if digest is set)
 
 	nomail:
 	Stop delivering mail.  Useful if you plan on taking a short vacation.
