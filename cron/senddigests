@@ -21,15 +21,9 @@
 Typically it's invoked via cron.
 """
 
-import sys
-import os
-import errno
-from stat import ST_SIZE
-
 import paths
 from Mailman import MailList
 from Mailman import Utils
-from Mailman.Handlers import ToDigest
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -37,30 +31,16 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 
 
-def send_digests(mlist):
-    mlist.Lock()
-    try:
-        # See if there's a digest pending for this mailing list
-        digestmbox = os.path.join(mlist.fullpath(), 'digest.mbox')
-        try:
-            if os.stat(digestmbox)[ST_SIZE] > 0:
-                mboxfp = open(digestmbox)
-                ToDigest.send_digests(mlist, mboxfp)
-                os.unlink(digestmbox)
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
-            # List has no outstanding digests
-    finally:
-        mlist.Save()
-        mlist.Unlock()
-
-
-
 def main():
     for listname in Utils.list_names():
         mlist = MailList.MailList(listname, lock=0)
         if mlist.digest_send_periodic:
-            send_digests(mlist)
+            mlist.Lock()
+            try:
+                mlist.send_digest_now()
+            finally:
+                mlist.Save()
+                mlist.Unlock()
 
 
 
