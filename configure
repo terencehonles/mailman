@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.13 
+# From configure.in Revision: 1.14 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.12 
@@ -1816,10 +1816,11 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "misc/paths.py modules/mm_defaults.py
-           src/Makefile misc/Makefile bin/Makefile modules/Makefile
-	   mail/Makefile templates/Makefile cgi/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile modules/mm_cfg.py
+trap 'rm -fr `echo "misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py
+           src/Makefile misc/Makefile bin/Makefile
+	   Mailman/Makefile Mailman/Cgi/Makefile
+	   mail/Makefile templates/Makefile cron/Makefile
+	   filters/Makefile scripts/Makefile
 	   cron/crontab.in Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -1905,10 +1906,11 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"misc/paths.py modules/mm_defaults.py
-           src/Makefile misc/Makefile bin/Makefile modules/Makefile
-	   mail/Makefile templates/Makefile cgi/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile modules/mm_cfg.py
+CONFIG_FILES=\${CONFIG_FILES-"misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py
+           src/Makefile misc/Makefile bin/Makefile
+	   Mailman/Makefile Mailman/Cgi/Makefile
+	   mail/Makefile templates/Makefile cron/Makefile
+	   filters/Makefile scripts/Makefile
 	   cron/crontab.in Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
