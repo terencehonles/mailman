@@ -6,6 +6,11 @@ Here is a history of user visible changes to Mailman.
 
 2.1 beta 1 (???)
 
+    - New feature: banned subscription addresses.  Privacy
+      options/subscription rules now has an additional list box, which
+      can contain addresses or regular expressions.  Subscription
+      requests from any matching address is automatically rejected.
+
     - DEFAULT_DEFAULT_MEMBER_MODERATION set to 1
 
     - admindb summary page gives the option of clearing the moderation
