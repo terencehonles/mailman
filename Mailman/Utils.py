@@ -210,14 +210,12 @@ def ParseAddrs(addresses):
 
 
 
-def GetPathPieces(path):
-    l = string.split(path, '/')
-    try:
-	while 1:
-	    l.remove('')
-    except ValueError:
-	pass
-    return l
+def GetPathPieces(envar='PATH_INFO'):
+    path = os.environ.get(envar)
+    if path:
+        return filter(None, string.split(path, '/'))
+    return None
+
 
 
 def ScriptURL(target, web_page_url=mm_cfg.DEFAULT_URL, absolute=0):
@@ -247,7 +245,7 @@ def ScriptURL(target, web_page_url=mm_cfg.DEFAULT_URL, absolute=0):
 
 def MakeDirTree(path, perms=0775, verbose=0):
     made_part = '/'
-    path_parts = GetPathPieces(path)
+    path_parts = filter(None, string.split(path, '/'))
     for item in path_parts:
 	made_part = os.path.join(made_part, item)
 	if os.path.exists(made_part):
