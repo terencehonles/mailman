@@ -182,7 +182,16 @@ class Article:
 
 	if self.author == "": self.author = self.email
 
-	# Save the 'In-Reply-To:' and 'References:' lines
+	# Save the In-Reply-To:, References:, and Message-ID: lines
+        #
+        # TBD: The original code does some munging on these fields, which
+        # shouldn't be necessary, but changing this may break code.  For
+        # safety, I save the original headers on different attributes for use
+        # in writing the plain text periodic flat files.
+        self._in_reply_to = message.getheader('in-reply-to')
+        self._references = message.getheader('references')
+        self._message_id = message.getheader('message-id')
+
 	i_r_t = message.getheader('In-Reply-To')
 	if i_r_t is None:
             self.in_reply_to = ''
@@ -213,7 +222,7 @@ class Article:
 	    self.datestr = str(message['Date'])
    	    date = message.getdate_tz('Date')
 	else: 
-	    self.datestr = 'None' 
+	    self.datestr = ''
 	    date = None
 	if date is not None:
 	    date, tzoffset = date[:9], date[-1] or 0
