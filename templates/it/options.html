@@ -1,7 +1,6 @@
-<!-- $Revision: 5015 $ -->
+<!-- $Revision: 5197 $ -->
 <html>
 <head>
-    <link rel="SHORTCUT ICON" href="<mm-favicon>">
 <title>Configurazione utente <MM-Presentable-User> per la lista <MM-List-Name>
     </title>
 </head>
@@ -13,12 +12,13 @@
 	lista <MM-List-Name>			    
 	</FONT></B></TD></TR>
     </TABLE>
+<MM-Form-Start>
 <p>
 <table width="100%" border="0" cellspacing="5" cellpadding="5">
     <tr><td>
     	Stato di iscrizione dell'utente <b><MM-Presentable-User></b>,
 	password e opzioni per la lista <MM-List-Name>.
-        </td><td><MM-Form-Start><mm-logout-button><mm-form-end></td>
+        </td><td><mm-logout-button></td>
     </tr><tr>
         <td colspan="2">
         <MM-Case-Preserved-User>
@@ -30,7 +30,6 @@
     </tr>
 </table>
 
-<MM-Form-Start>
 <p>
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
@@ -179,9 +178,11 @@ qui sopra per vedere a quali altre liste sei iscritto.
     <tr><TD BGCOLOR="#cccccc">
 	<strong>Modo Digest</strong><p>
 	Se abiliti il modo digest, riceverai i messaggi in un unico
-	pacchetto giornaliero invece di uno per volta.  Se era
-	abilitato e lo stai disabilitando, potresti ricevere ancora
-	un ultimo digest prima che le cose vadano a regime.
+	pacchetto giornaliero (normalmente ne viene inviato uno al
+	giorno ma potrebbero essere pi&ugrave; frequenti su liste
+	particolarmente trafficate) invece di uno per volta.  Se era
+	abilitato e lo stai disabilitando, potresti ricevere ancora un
+	ultimo digest prima che le cose vadano a regime.
         </td><td bgcolor="#cccccc">
         <MM-Undigest-Radio-Button>Off<br>
         <MM-Digest-Radio-Button>On
@@ -194,8 +195,7 @@ qui sopra per vedere a quali altre liste sei iscritto.
 	preferibile ma se hai problemi scegli il formato testo.
         </td><td bgcolor="#cccccc">
         <MM-Mime-Digests-Button>MIME<br>
-	<MM-Plain-Digests-Button>Testo<p>
-        <mm-global-mime-button><i>Globalmente</i>
+	<MM-Plain-Digests-Button>Testo
         </td></tr>
         
     <tr><TD BGCOLOR="#cccccc">
@@ -279,7 +279,27 @@ qui sopra per vedere a quali altre liste sei iscritto.
         </td><td bgcolor="#cccccc">
         <mm-suppress-nonmatching-topics>No<br>
 	<mm-receive-nonmatching-topics>Si
-        </td></tr>
+        </td></tr>  
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Elimino i doppioni?</strong><p>
+
+	Quando sei indicato esplicitamente nel <tt>To:</tt> o
+	nel <tt>Cc:</tt> di un messaggio che era stato inviato
+	aalla lista, puoi scegliere di non ricevere la copia
+	che la lista ti avrebbe inviato.
+	Scegli <em>Si</em> per evitare di ricevere copie dalla
+	lista; scegli <em>No</em> per riceverle.
+
+	<p>Se la lista ha i messaggi personalizzati abilitati, 
+	e tu hai deciso di ricevere le copie, ogni copia avrà una
+	intestazione <tt>X-Mailman-Copy: yes</tt> aggiunta.
+
+        </td><td bgcolor="#cccccc">
+        <mm-receive-duplicates-button>No<br>
+        <mm-dont-receive-duplicates-button>Yes<p>
+        <mm-global-nodupes-button><i>Set globally</i>
+	</td></tr>
 
     <tr><TD colspan="2">
         <center><MM-options-Submit-button></center>

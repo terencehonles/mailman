@@ -77,6 +77,11 @@ I seguenti comandi sono validi:
     hide:
          Nasconde il tuo indirizzo quando qualcuno chiede l'elenco
          degli iscritti in questa lista.
+
+    nodupes:
+         Attivalo se non vuoi ricevere doppioni dalla lista in caso
+	 tu sia esplicitamente citato nel To: o nel Cc: o nel caso
+	 tu sia iscritto a più liste cui il messaggio è stato inviato.
 	 
     options:
         Mostra i settaggi correnti delle tue opzioni per la lista.
