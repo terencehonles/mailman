@@ -42,8 +42,8 @@ OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
 
 ARCH_INDEP_DIRS= \
-	logs archives bin \
-	lists locks templates scripts filters cron data \
+	logs archives bin lists locks templates scripts \
+	qfiles filters cron data \
 	archives/private archives/public \
 	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
 	Mailman/Handlers Mailman/Bouncers Mailman/pythonlib
