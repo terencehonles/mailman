@@ -278,6 +278,7 @@ class Label(Container):
 class Document(Container):
     title = None
     language = None
+    bgcolor = mm_cfg.WEB_BGCOLOR
 
     def set_language(self, lang=None):
         self.language = lang
@@ -288,12 +289,15 @@ class Document(Container):
             ctype += '; charset=' + Utils.GetCharSet(self.language)
         return ctype
 
+    def set_bgcolor(self, color):
+        self.bgcolor = color
+
     def SetTitle(self, title):
 	self.title = title
 
     def Format(self, indent=0, **kws):
+        kws.setdefault('bgcolor', self.bgcolor)
         tab = ' ' * indent
-
         output = [self.get_content_type(),
                   '',
                   tab,
