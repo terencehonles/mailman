@@ -169,8 +169,10 @@ class Deliverer:
 	else:
 	    digest_mode = ''
 
-	if self.reminders_to_admins:
-	    recipient = "%s-admin@%s" % tuple(string.split(name, '@'))
+	if self.umbrella_list:
+            acct, host = tuple(string.split(name, '@'))
+            recipient = ("%s%s@%s" %
+                         (acct, self.umbrella_member_suffix, host))
 	else:
 	    recipient = name
 
@@ -180,17 +182,25 @@ class Deliverer:
 			    text = self.CreateSubscribeAck(name, password))
 
     def SendUnsubscribeAck(self, name):
+        if self.umbrella_list:
+            acct, host = tuple(string.split(name, '@'))
+            recipient = ("%s%s@%s" %
+                         (acct, self.umbrella_member_suffix, host))
+        else:
+            recipient = name
 	self.SendTextToUser(subject = 'Unsubscribed from "%s"\n' % 
 			               self.real_name,
-			    recipient = name, 
+			    recipient = recipient, 
 			    text = Utils.wrap(self.goodbye_msg))
 
     def MailUserPassword(self, user):
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
         if self.passwords.has_key(user):
-	    if self.reminders_to_admins:
-		recipient = "%s-admin@%s" % tuple(string.split(user, '@'))
+	    if self.umbrella_list:
+                acct, host = tuple(string.split(user, '@'))
+                recipient = ("%s%s@%s" %
+                             (acct, self.umbrella_member_suffix, host))
 	    else:
 		recipient = user
             subj = '%s maillist reminder\n' % listfullname
