@@ -1,0 +1,279 @@
+# Copyright (C) 2001 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software 
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+"""Create mailing lists through the web."""
+
+import sys
+import os
+import signal
+import cgi
+import sha
+
+from Mailman import mm_cfg
+from Mailman import MailList
+from Mailman import Message
+from Mailman import Errors
+from Mailman import i18n
+from Mailman.htmlformat import *
+from Mailman.Logging.Syslog import syslog
+
+# Set up i18n
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+
+
+def main():
+    doc = Document()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+    cgidata = cgi.FieldStorage()
+    parts = Utils.GetPathPieces()
+    if parts:
+        # Bad URL specification
+        title = _('Bad URL specification')
+        doc.SetTitle(title)
+        doc.AddItem(
+            Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
+        syslog('error', 'Bad URL specification: %s' % parts)
+    elif cgidata.has_key('listname'):
+        # We must be processing the list creation request
+        process_request(doc, cgidata)
+    else:
+        # Put up the list creation request form
+        request_creation(doc)
+    doc.AddItem('<hr>')
+    # Always add the footer and print the document
+    doc.AddItem(_('Return to the ') +
+                Link(Utils.ScriptURL('listinfo'),
+                     _('general list overview')).Format())
+    doc.AddItem(_('<br>Return to the ') +
+                Link(Utils.ScriptURL('admin'),
+                     _('administrative list overview')).Format())
+    doc.AddItem(MailmanLogo())
+    print doc.Format(bgcolor='#ffffff')
+
+
+
+def process_request(doc, cgidata):
+    listname = cgidata.getvalue('listname', '').strip()
+    owner    = cgidata.getvalue('owner', '').strip()
+    password = cgidata.getvalue('password', '').strip()
+    confirm  = cgidata.getvalue('confirm', '').strip()
+    auth     = cgidata.getvalue('auth', '').strip()
+    # Sanity check
+    if '@' in listname:
+        request_creation(doc, cgidata,
+                         _('List name must not include "@": %(listname)s'))
+        return
+    if Utils.list_exists(listname):
+        # BAW: should we tell them the list already exists?  This could be
+        # used to mine/guess the existance of non-advertised lists.  Then
+        # again, that can be done in other ways already, so oh well.
+        request_creation(doc, cgidata, _('List already exists: %(listname)s'))
+        return
+    if not owner:
+        request_creation(doc, cgidata,
+                         _('You forgot to specify the list owner'))
+        return
+    if password <> confirm:
+        request_creation(doc, cgidata,
+                         _('Initial list passwords do not match'))
+        return
+    if not password:
+        request_creation(doc, cgidata, _('The list password cannot be empty'))
+        return
+    # The authorization password must be non-empty, and it must match either
+    # the list creation password or the site admin password
+    ok = 0
+    if auth:
+        ok = Utils.check_global_password(auth, 0)
+        if not ok:
+            ok = Utils.check_global_password(auth)
+    if not ok:
+        request_creation(
+            doc, cgidata,
+            _('You are not authorized to create new mailing lists'))
+        return
+    # We've got all the data we need, so go ahead and try to create the list
+    # See admin.py for why we need to set up the signal handler.
+    mlist = MailList.MailList()
+
+    def sigterm_handler(signum, frame, mlist=mlist):
+        # Make sure the list gets unlocked...
+        mlist.Unlock()
+        # ...and ensure we exit, otherwise race conditions could cause us to
+        # enter MailList.Save() while we're in the unlocked state, and that
+        # could be bad!
+        sys.exit(0)
+
+    try:
+        # Install the emergency shutdown signal handler
+        signal.signal(signal.SIGTERM, sigterm_handler)
+
+        pw = sha.new(password).hexdigest()
+        # Guarantee that all newly created files have the proper permission.
+        # proper group ownership should be assured by the autoconf script
+        # enforcing that all directories have the group sticky bit set
+        oldmask = os.umask(002)
+        try:
+            try:
+                mlist.Create(listname, owner, pw)
+            finally:
+                os.umask(oldmask)
+        except Errors.MMBadEmailError:
+            request_creation(doc, cgidata,
+                             _('Bad owner email address: %(owner)s'))
+            return
+        except Errors.MMListAlreadyExistsError:
+            request_creation(doc, cgidata,
+                             _('List already exists: %(listname)s'))
+            return
+        except Errors.MMListError:
+            request_creation(
+                doc, cgidata,
+                _('''Some unknown error occurred while creating the list.
+                Please contact the site administrator for assistance.'''))
+            return
+        
+        # Now do the MTA-specific list creation tasks
+        if mm_cfg.MTA:
+            modname = 'Mailman.MTA.' + mm_cfg.MTA
+            __import__(modname)
+            sys.modules[modname].create(mlist)
+
+        # And send the notice to the list owner
+        text = Utils.maketext(
+            'newlist.txt',
+            {'listname'    : listname,
+             'password'    : password, 
+             'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
+             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
+             'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
+             'hostname'    : mlist.host_name,
+             }, mlist.preferred_language)
+        msg = Message.UserNotification(
+            owner,
+            'mailman-owner@' + mlist.host_name,
+            _('Your new mailing list: %(listname)s'),
+            text)
+        msg.send(mlist)
+
+        # Success!
+        listinfo_url = mlist.GetScriptURL('listinfo', absolute=1)
+        admin_url = mlist.GetScriptURL('admin', absolute=1)
+        create_url = Utils.ScriptURL('create')
+
+        title = _('Mailing list creation results')
+        doc.SetTitle(title)
+        table = Table(border=0, width='100%')
+        table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+        table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor='#99ccff')
+        table.AddRow([_('''You have successfully created the mailing list
+        <b>%(listname)s</b> and notification has been sent to the list owner
+        <b>%(owner)s</b>.  You can now:''')])
+        ullist = UnorderedList()
+        ullist.AddItem(Link(listinfo_url, _("Visit the list's info page")))
+        ullist.AddItem(Link(admin_url, _("Visit the list's admin page")))
+        ullist.AddItem(Link(create_url, _('Create another list')))
+        table.AddRow([ullist])
+        doc.AddItem(table)
+
+    finally:
+        # Now be sure to unlock the list.  It's okay if we get a signal here
+        # because essentially, the signal handler will do the same thing.  And
+        # unlocking is unconditional, so it's not an error if we unlock while
+        # we're already unlocked.
+        mlist.Unlock()
+
+
+
+# For convenience
+class Dummy:
+    def getvalue(self, name, default):
+        return default
+dummy = Dummy()
+
+
+
+def request_creation(doc, cgidata=dummy, errmsg=None):
+    # What virtual domain are we using?
+    hostname = Utils.get_domain()
+    # Set up the document
+    title = _('Create a %(hostname)s Mailing List')
+    doc.SetTitle(title)
+    table = Table(border=0, width='100%')
+    table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor='#99ccff')
+    # Add any error message
+    if errmsg:
+        table.AddRow([Header(3, Bold(
+            FontAttr(_('Error: '), color='#ff0000', size='+2').Format() +
+            Italic(errmsg).Format()))])
+    table.AddRow([_("""You can create a new mailing list by entering the
+    relevant information into the form below.  The name of the mailing list
+    will be used as the primary address for posting messages to the list, so
+    it should be lowercased.  You will not be able to change this once the
+    list is created.
+
+    <p>You also need to enter the email address of the initial list owner.
+    Once the list is created, the list owner will be given notification, along
+    with the initial list password.  The list owner will then be able to
+    modify the password and add or remove additional list owners.
+
+    <p>You must have the proper authorization to create new mailing lists.
+    Each site should have a <em>list creator's</em> password, which you can
+    enter in the field at the bottom.  Note that the site administrator's
+    password can also be used for authentication.
+    """)])
+    # Build the form for the necessary input
+    form = Form(Utils.ScriptURL('create'))
+    ftable = Table(border=0, cols='2', width='100%',
+                   cellspacing=3, cellpadding=4)
+
+    ftable.AddRow([Label(_('Name of list:')),
+                   TextBox('listname', cgidata.getvalue('listname', ''))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+
+    ftable.AddRow([Label(_('Initial list owner address:')),
+                   TextBox('owner', cgidata.getvalue('owner', ''))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+
+    ftable.AddRow([Label(_('Initial list password:')),
+                   PasswordBox('password', cgidata.getvalue('password', ''))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+
+    ftable.AddRow([Label(_('Confirm initial password:')),
+                   PasswordBox('confirm', cgidata.getvalue('confirm', ''))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+
+    ftable.AddRow(['<hr>'])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
+    ftable.AddRow([Label(_("List creator's (authentication) password:")),
+                   PasswordBox('auth')])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor="#cccccc")
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor="#cccccc")
+
+    ftable.AddRow([Center(SubmitButton('doit', _('Create List')))])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
+    form.AddItem(ftable)
+    table.AddRow([form])
+    doc.AddItem(table)
+    return
