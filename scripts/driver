@@ -51,18 +51,16 @@ def run_main():
         # insert the relative path to the parent of the Mailman package
         # directory, so we can pick up the Utils module
         import os
+        # sys gets imported at module level below
         sys.path.insert(0, os.pardir)
         # map stderr to a logger, if possible
-        import Mailman.Utils
-        try:
-            sys.stderr = Utils.StampedLogger('error', label='admin',
-                                             manual_reprime=1,
-                                             nofail=0)
-        except:
-            # semi-bogus bare except means that if any problems in creating
-            # the logger occur, we should just use standard stderr
-            pass
-        #
+        from Mailman.Logging.StampedLogger import StampedLogger
+        from Mailman.Logging.MultiLogger import MultiLogger
+        logger = StampedLogger('error',
+                               label='admin',
+                               manual_reprime=1,
+                               nofail=0)
+        multi = MultiLogger(sys.__stdout__, logger)
         # The name of the module to run is passed in argv[1].  What we
         # actually do is import the module named by argv[1] that lives in the
         # Mailman.Cgi package.  That module must have a main() function, which
@@ -80,12 +78,12 @@ def run_main():
             # this is a valid way for the function to exit
             pass
     except:
-        print_traceback()
-        print_environment()
+        print_traceback(logger, multi)
+        print_environment(logger)
 
 
 
-def print_traceback():
+def print_traceback(logger, multi):
     print """\
 Content-type: text/html
 
@@ -98,16 +96,20 @@ a description of what happened.  Thanks!
 <h4>Traceback:</h4>
 <p><pre>
 """
+    logger.write('[----- Traceback ------]\n')
     try:
         import traceback
-        traceback.print_exc(file=sys.stdout)
+        # in normal situation, this will get logged to the MultiLogger created
+        # above, which will write the data to both the real live stdout, and
+        # the StampedLogger
+        traceback.print_exc(file=multi)
     except:
-        print '[failed to get a traceback]'
+        multi.write('[failed to get a traceback]\n')
     print '\n\n</pre>'
 
 
 
-def print_environment():
+def print_environment(logger):
     try:
         import os
         print '''\
@@ -117,8 +119,10 @@ def print_environment():
 <tr><td><strong>Variable</strong></td>
 <td><strong>Value</strong></td></tr>
 '''
+        logger.write('[----- Environment Variables -----]\n')
         for varname, value in os.environ.items():
             print '<tr><td>', varname, '</td><td>', value, '</td></tr>'
+            logger.write('\t%s: %s\n' % (varname, value))
         print '</table>'
     except:
         print '<p><hr>[environment variables are not available]'
@@ -126,13 +130,12 @@ def print_environment():
 
 try:
     import sys
-    # cache so we can undo this, even though it's probably not strictly
-    # necessary since the script is exiting soon anyway
-    stderr = sys.stderr
     try:
         run_main()
     finally:
-        sys.stderr = stderr
+        # this is probably not strictly necessary since the script is exiting
+        # soon anyway
+        sys.stderr = sys.__stderr__
 except:
     # Jeez, we couldn't even import sys, or sys didn't have a stderr
     # attribute!
