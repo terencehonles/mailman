@@ -1065,10 +1065,10 @@ LIST_LOCK_LIFETIME = hours(5)
 # the message will be re-queued for later delivery.
 LIST_LOCK_TIMEOUT = seconds(10)
 
-# Set this to true to turn on lock debugging messages for the pending
-# requests database, which will be written to logs/locks.  If you think
-# you're having lock problems, or just want to tune the locks for your
-# system, turn on lock debugging.
+# Set this to true to turn on lock debugging messages for the pending requests
+# database, which will be written to logs/locks.  If you think you're having
+# lock problems, or just want to tune the locks for your system, turn on lock
+# debugging.
 PENDINGDB_LOCK_DEBUGGING = 0
 
 # This variable specifies how long an attempt will be made to acquire a
@@ -1078,9 +1078,9 @@ PENDINGDB_LOCK_TIMEOUT = seconds(30)
 
 # The pendingdb is shared among all lists, and handles all list
 # (un)subscriptions, admin approvals and otherwise held messages, so it is
-# potentially locked a lot more often than single lists. Mailman deals with
-# this by re-trying any attempts to alter the pendingdb that failed because
-# of locking errors. This variable indicates howmany attempt should be made
+# potentially locked a lot more often than single lists.  Mailman deals with
+# this by re-trying any attempts to alter the pendingdb that failed because of
+# locking errors.  This variable indicates how many attempt should be made
 # before abandoning all hope.
 PENDINGDB_LOCK_ATTEMPTS = 10
 

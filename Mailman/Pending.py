@@ -60,9 +60,8 @@ def new(*content):
     # Get a lock handle now, but only lock inside the loop.
     lock = LockFile.LockFile(LOCKFILE,
                              withlogging=mm_cfg.PENDINGDB_LOCK_DEBUGGING)
-    # We try the main loop several times. If we get a lock error
-    # somewhere (for instance because someone broke the lock) we simply
-    # try again.
+    # We try the main loop several times. If we get a lock error somewhere
+    # (for instance because someone broke the lock) we simply try again.
     retries = mm_cfg.PENDINGDB_LOCK_ATTEMPTS
     try:
         while retries:
@@ -82,8 +81,8 @@ def new(*content):
                 cookie = sha.new(hashfood).hexdigest()
                 if not db.has_key(cookie):
                     break
-            # Store the content, plus the time in the future when this
-            # entry will be evicted from the database, due to staleness.
+            # Store the content, plus the time in the future when this entry
+            # will be evicted from the database, due to staleness.
             db[cookie] = content
             evictions = db.setdefault('evictions', {})
             evictions[cookie] = now + mm_cfg.PENDING_REQUEST_LIFE
@@ -93,8 +92,8 @@ def new(*content):
                 continue
             return cookie
         else:
-            # We failed to get the lock or keep it long enough to save
-            # the data!
+            # We failed to get the lock or keep it long enough to save the
+            # data!
             raise LockFile.TimeOutError
     finally:
         if lock.locked():
@@ -108,7 +107,6 @@ def confirm(cookie, expunge=1):
     If optional expunge is true (the default), the record is also removed from
     the database.
     """
-
     if not expunge:
         db = _load()
         missing = []
@@ -120,9 +118,8 @@ def confirm(cookie, expunge=1):
     # Get a lock handle now, but only lock inside the loop.
     lock = LockFile.LockFile(LOCKFILE,
                              withlogging=mm_cfg.PENDINGDB_LOCK_DEBUGGING)
-    # We try the main loop several times. If we get a lock error
-    # somewhere (for instance because someone broke the lock) we simply
-    # try again.
+    # We try the main loop several times. If we get a lock error somewhere
+    # (for instance because someone broke the lock) we simply try again.
     retries = mm_cfg.PENDINGDB_LOCK_ATTEMPTS
     try:
         while retries:
@@ -146,8 +143,8 @@ def confirm(cookie, expunge=1):
                 continue
             return content
         else:
-            # We failed to get the lock and keep it long enough to save
-            # the data!
+            # We failed to get the lock and keep it long enough to save the
+            # data!
             raise LockFile.TimeOutError
     finally:
         if lock.locked():
@@ -201,7 +198,7 @@ def _save(db, lock):
     omask = os.umask(007)
     # Always save this as a pickle (safely), and after that succeeds, blow
     # away any old marshal file.
-    tmpfile = "%s.tmp.%d.%d"%(PCKFILE, os.getpid(), now)
+    tmpfile = '%s.tmp.%d.%d' % (PCKFILE, os.getpid(), now)
     fp = None
     try:
         fp = open(tmpfile, 'w')
