@@ -421,7 +421,7 @@ METADATA_FORMAT = METAFMT_MARSHAL
 
 # This variable controls the order in which list-specific category options are
 # presented in the admin cgi page.
-ADMIN_CATEGORIES = ['general', 'members', 'privacy', 'nondigest',
+ADMIN_CATEGORIES = ['general', 'language', 'members', 'privacy', 'nondigest',
                     'digest', 'bounce', 'archive', 'gateway',
                     'autoreply', 'topics',
                     ]
@@ -675,6 +675,7 @@ Number     = 8
 FileUpload = 9
 Select     = 10
 Topics     = 11
+Checkbox   = 12
 
 # Held message disposition actions, for use between admindb.py and
 # ListAdmin.py.
@@ -772,6 +773,7 @@ add_language('en',   _('English (USA)'),       'us-ascii')
 add_language('es',   _('Spanish (Spain)'),     'iso-8859-1')
 add_language('fr',   _('French'),              'iso-8859-1')
 add_language('gb',   _('Simplified Chinese'),  'gb2312')
+add_language('hu',   _('Hungarian'),           'iso-8859-1')
 add_language('it',   _('Italian'),             'iso-8859-1')
 add_language('ja',   _('Japanese'),            'euc-jp')
 add_language('no',   _('Norwegian'),           'iso-8859-1')
