@@ -27,6 +27,7 @@ import Utils
 from htmlformat import *
 
 
+
 class HTMLFormatter:
     def InitVars(self):
         if self._internal_name:
@@ -44,13 +45,6 @@ class HTMLFormatter:
 		owners_html.AddItem(', ')
 
 	# Remove the .Format() when htmlformat conversion is done.
-        if mm_cfg.DELIVERED_BY_URL:
-            img = Link(mm_cfg.MAILMAN_URL,
-                       '<img src="%s" alt="Delivered by Mailman" border=0>'
-                       ' v %s' %
-                       (mm_cfg.DELIVERED_BY_URL, mm_cfg.VERSION))
-        else:
-            img = 'Delivered by Mailman v %s' % mm_cfg.VERSION
 	return Container(
 	    '<hr>',
 	    Address(
@@ -59,7 +53,7 @@ class HTMLFormatter:
                          self.real_name),
 		    ' list run by ',
 		    owners_html,
-		    '<p>', img))).Format()
+		    '<p>', MailmanLogo()))).Format()
 
     def SnarfHTMLTemplate(self, file):
         # XXX: hack, blech, yuk
