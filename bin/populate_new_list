@@ -59,6 +59,7 @@ def main(argv):
         pw = GetRandomPassword()
         try:
             list.ApprovedAddMember(member, pw, 0)
+            print "Regular member", member, "added"
         except mm_err.MMAlreadyAMember:
             sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
@@ -67,6 +68,7 @@ def main(argv):
         pw = GetRandomPassword()
         try:
             list.ApprovedAddMember(member, pw, 1)
+            print "Digest member", member, "added"
         except mm_err.MMAlreadyAMember:
             sys.stderr.write("%s: %s already a member\n" %
                              (list.real_name, member))
