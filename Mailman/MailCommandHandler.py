@@ -181,7 +181,7 @@ Subject: %s''', self.internal_name(), msg['from'], subject)
             if mo:
                 subject = mo.group('cmd')
 
-        lines = email.Iterators.body_line_iterator(msg)
+        lines = email.Iterators.body_line_iterator(msg)[:]
 
         # Find out if the subject line has a command on it
         subjcmd = []
