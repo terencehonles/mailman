@@ -16,29 +16,38 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-# Remove the components of a maillist with impunity - beware!
+"""Remove the components of a maillist with impunity - beware!
+
+This removes (almost) all traces of a mailing list.  By default, the lists
+archives are not removed, which is very handy for retiring old lists.
+
+Usage:
+    rmlist [-a] [-h] listname
+
+Where:
+    --archives
+    -a
+        remove the lists archives too
+
+    --help
+    -h
+        print this help message and exit
+
+"""
 
 import os
 import sys
+import getopt
 import paths
 
-def usage():
-    print 'Usage: rmlist [-a] list-name'
-    sys.exit(1)
+def usage(status, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(status)
 
-try:
-    if sys.argv[1] == '-a':
-        removeArchives = 1
-        listname = sys.argv[2]
-    else:
-        removeArchives = 0
-        listname = sys.argv[1]
-        print 'Not removing archives.  Reinvoke with -a to remove them.'
-except IndexError:
-    usage()
-
-
-def remove_it(dir, msg):
+
+def remove_it(listname, dir, msg):
     if os.path.islink(dir):
         print 'Removing', msg
         os.unlink(dir)
@@ -48,19 +57,45 @@ def remove_it(dir, msg):
     else:
         print listname, msg, 'not found as', dir
 
-REMOVABLES = [('lists/%s',     'list info'),
-              ]
 
-if removeArchives:
-    REMOVABLES = REMOVABLES + \
-                 [('archives/private/%s',      'private archives'),
-                  ('archives/private/%s.mbox', 'private archives'),
-                  ('archives/public/%s',       'public archives'),
-                  ('archives/public/%s.mbox',  'public archives'),
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'ah',
+                                   ['archives', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    if len(args) <> 1:
+        usage(1)
+    listname = args[0]
+
+    removeArchives = 0
+    for opt, arg in opts:
+        if opt in ('-a', '--archive'):
+            removeArchives = 1
+        elif opt in ('-h', '--help'):
+            usage(0)
+
+    if not removeArchives:
+        print 'Not removing archives.  Reinvoke with -a to remove them.'
+
+    REMOVABLES = [('lists/%s',     'list info'),
                   ]
 
-REMOVABLES.append(('locks/%s.lock', 'lock file'))
+    if removeArchives:
+        REMOVABLES = REMOVABLES + \
+                     [('archives/private/%s',      'private archives'),
+                      ('archives/private/%s.mbox', 'private archives'),
+                      ('archives/public/%s',       'public archives'),
+                      ('archives/public/%s.mbox',  'public archives'),
+                      ]
 
-for dirtmpl, msg in REMOVABLES:
-    dir = os.path.join(paths.prefix, dirtmpl % listname)
-    remove_it(dir, msg)
+    REMOVABLES.append(('locks/%s.lock', 'lock file'))
+
+    for dirtmpl, msg in REMOVABLES:
+        dir = os.path.join(paths.prefix, dirtmpl % listname)
+        remove_it(listname, dir, msg)
+
+
+if __name__ == '__main__':
+    main()
