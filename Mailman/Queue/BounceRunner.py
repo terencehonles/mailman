@@ -172,9 +172,9 @@ def maybe_forward(mlist, msg):
         mlist.ForwardMessage(msg,
                              text=_("""\
 The attached message was received as a bounce, but either the bounce format
-was not recognized, or no member addresses could be extracted from it.  You,
-as the list administrators have requested to receive all unrecognized bounce
-messages.
+was not recognized, or no member addresses could be extracted from it.  This
+mailing list has been configured to send all unrecognized bounce messages to
+the list administrator(s).
 
 """),
                              subject=_('Uncaught bounce notification'),
