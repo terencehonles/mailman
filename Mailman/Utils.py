@@ -234,7 +234,7 @@ def QuotePeriods(text):
 
 
 # TBD: what other characters should be disallowed?
-_badchars = re.compile('[][()<>|;^]')
+_badchars = re.compile('[][()<>|;^],')
 
 def ValidateEmail(str):
     """Verify that the an email address isn't grossly invalid."""
