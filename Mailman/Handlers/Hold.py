@@ -74,7 +74,7 @@ not allowed.  Try reposting your message by explicitly including the list
 address in the To: or Cc: fields.'''
 
 class Administrivia(HandlerAPI.MessageHeld):
-    "Message may contain adbministrivia"
+    "Message may contain administrivia"
 
     def rejection_notice(self, mlist):
         return """Please do *not* post administrative requests to the mailing
