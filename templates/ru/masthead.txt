@@ -1,15 +1,18 @@
-Сообщения, предназначенные для списка рассылки %(real_name)s, необходимо
-отправлять по адресу
+Сообщения, предназначенные для списка рассылки %(real_name)s,
+необходимо отправлять по адресу
 	%(got_list_email)s
 
-Для того, чтобы изменить параметры
-To subscribe or unsubscribe via the World Wide Web, visit
+Для изменения параметров подписки вы можеже использовать веб-страницу
 	%(got_listinfo_url)s
-or, via email, send a message with subject or body 'help' to
+
+Для получения информации о том, как пользовать почтовым интерфейсом,
+отправьте письмо, в теле или теме которого будет слово 'help', по
+адресу:
 	%(got_request_email)s
 
-You can reach the person managing the list at
+Адрес человека, ответственного за этот список рассылки:
 	%(got_owner_email)s
 
-When replying, please edit your Subject line so it is more specific than
-"Re: Contents of %(real_name)s digest..."
+При ответе, пожалуйста, измение тему письма так, чтобы она была более
+содержательной чем "Re: Содержание дайджеста списка рассылки
+%(real_name)s..."
