@@ -84,8 +84,8 @@ def main():
             local = re.sub(i[0],"",local)
 
     if os.path.exists(local):
-        os.execv(MailmanHome + "/mail/wrapper",
-                 (MailmanHome + "/mail/wrapper", type, local))
+        os.execv(MailmanHome + "/mail/mailman",
+                 (MailmanHome + "/mail/mailman", type, local))
     else:
         bounce()
     sys.exit(111)
