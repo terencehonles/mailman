@@ -73,32 +73,30 @@ class HTMLFormatter:
                 if not self.getMemberOption(m, conceal_sub):
                     people.append(m)
             num_concealed = len(members) - len(people)
-        people.sort()
-        if (num_concealed > 0):
-            plu = (((num_concealed > 1) and "s") or "")
-            concealed = _(
-                "<em>(%(num_concealed)d private member%(plu)s not shown)</em>")
+        if num_concealed == 1:
+            concealed = _('<em>(1 private member not shown)</em>')
+        elif num_concealed > 1:
+           concealed = _(
+               '<em>(%(num_concealed)d private members not shown)</em>')
         else:
-            concealed = ""
-        ObscureEmail = Utils.ObscureEmail
+            concealed = ''
         disdel = mm_cfg.DisableDelivery
         items = []
+        people.sort()
         for person in people:
-            id = ObscureEmail(person)
+            id = Utils.ObscureEmail(person)
             url = self.GetOptionsURL(person)
             if self.obscure_addresses:
-                showing = ObscureEmail(person, for_text=1)
+                showing = Utils.ObscureEmail(person, for_text=1)
             else:
                 showing = person
             got = Link(url, showing)
             if self.getMemberOption(person, disdel):
-                got = Italic("(", got, ")")
+                got = Italic('(', got, ')')
             items.append(got)
         # Just return the .Format() so this works until I finish
         # converting everything to htmlformat...
-        return (concealed +
-                apply(UnorderedList, tuple(items)).Format())
-
+        return concealed + UnorderedList(*tuple(items)).Format()
 
     def FormatOptionButton(self, type, value, user):
         users_val = self.getMemberOption(user, type)
