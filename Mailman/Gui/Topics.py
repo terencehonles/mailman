@@ -51,7 +51,7 @@ class Topics(GUIBase):
              digest delivery.
 
              <p>The body of the message can also be optionally scanned for
-             <code>Subject:</code> and <code>Keyword:</code> headers, as
+             <code>Subject:</code> and <code>Keywords:</code> headers, as
              specified by the <a
        href="?VARHELP=topics/topics_bodylines_limit">topics_bodylines_limit</a>
              configuration variable.""")),
