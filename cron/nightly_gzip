@@ -63,9 +63,13 @@ program = sys.argv[0]
 VERBOSE = 0
 
 def usage(code, msg=''):
-    print __doc__ % globals()
+    if code:
+        fd = sys.stderr
+    else:
+        fd = sys.stdout
+    print >> fd, _(__doc__) % globals()
     if msg:
-        print msg
+        print >> fd, msg
     sys.exit(code)
 
 

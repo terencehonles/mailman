@@ -90,9 +90,13 @@ _ = i18n._
 
 
 def usage(status, msg=''):
-    print >> sys.stderr, _(__doc__)
+    if status:
+        fd = sys.stderr
+    else:
+        fd = sys.stdout
+    print >> fd, _(__doc__)
     if msg:
-        print >> sys.stderr, msg
+        print >> fd, msg
     sys.exit(status)
 
 

@@ -183,9 +183,13 @@ msgstr ""
 
 
 def usage(code, msg=''):
-    print >> sys.stderr, _(__doc__) % globals()
+    if code:
+        fd = sys.stderr
+    else:
+        fd = sys.stdout
+    print >> fd, _(__doc__) % globals()
     if msg:
-        print >> sys.stderr, msg
+        print >> fd, msg
     sys.exit(code)
 
 
