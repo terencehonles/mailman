@@ -26,6 +26,9 @@ from Mailman.Logging.Syslog import syslog
 
 
 def process(mlist, msg, msgdata):
+    if msgdata.get('isdigest'):
+        # Digests already have their own header and footers attached.
+        return
     d = Utils.SafeDict(mlist.__dict__)
     d['cgiext'] = mm_cfg.CGIEXT
     # interpolate into the header
