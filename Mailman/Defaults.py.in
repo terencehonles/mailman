@@ -884,6 +884,13 @@ DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL = days(7)
 # failed to match by the bounce detector?
 DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER = 1
 
+# Notifications on bounce actions.  The first specifies whether the list owner
+# should get a notification when a member is disabled due to bouncing, while
+# the second specifies whether the owner should get one when the member is
+# removed due to bouncing.
+DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE = 1
+DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL = 1
+
 # List of addresses (lhs of the @) that likely come only from MTAs bouncing
 # messages.  This is used in the bounce detector and MailCommandHandler.py to
 # stop processing or forwarding such messages.
