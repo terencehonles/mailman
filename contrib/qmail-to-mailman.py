@@ -48,7 +48,7 @@ MailmanOwner = "postmaster@localhost"; # Postmaster and abuse mail recepient.
 import sys, os, re, string
 
 def main():
-    os.nice(5)	# Handle mailing lists at non-interactive priority.
+    os.nice(5)  # Handle mailing lists at non-interactive priority.
 
     os.chdir(MailmanHome + "/lists")
 
@@ -105,4 +105,4 @@ except Exception, argument:
     trace = info[2]
     sys.stderr.write("%s %s\n" % (sys.exc_type, argument))
     sys.stderr.write("Line %d\n" % (trace.tb_lineno))
-    sys.exit(111)	# Soft failure, try again later.
+    sys.exit(111)       # Soft failure, try again later.
