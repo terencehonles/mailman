@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -46,7 +46,7 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
-from Mailman.i18n import _
+from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
 
 # Work around known problems with some RedHat cron daemons
@@ -55,6 +55,8 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 NL = '\n'
 PROGRAM = sys.argv[0]
+
+_ = i18n._
 
 
 
@@ -108,7 +110,6 @@ def main():
     # entry has the form (listaddr, password, optionsurl)
     for host in byhost.keys():
         # Site owner is `mailman@dom.ain'
-        subj = _('%(host)s mailing list memberships reminder')
         userinfo = {}
         for mlist in byhost[host]:
             listaddr = mlist.GetListEmail()
@@ -167,7 +168,16 @@ def main():
                  }, lang=poplang)
             # Add the table to the end so it doesn't get wrapped/filled
             text += (header + '\n' + NL.join(table))
-            msg = Message.UserNotification(addr, siteowner, subj, text)
+            # Translate the message and headers to user's suggested lang
+            otrans = i18n.get_translation()
+            try:
+                i18n.set_language(poplang)
+                msg = Message.UserNotification(
+                    addr, siteowner,
+                    _('%(host)s mailing list memberships reminder'),
+                    text, poplang)
+            finally:
+                i18n.set_translation(otrans)
             msg['X-No-Archive'] = 'yes'
             # We want to make this look like it's coming from the siteowner's
             # list, but we also want to be sure that the apparent host name is
