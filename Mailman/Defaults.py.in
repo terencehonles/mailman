@@ -142,27 +142,6 @@ DEFAULT_AUTOMATIC_BOUNCE_ACTION = 1
 # get in 1 hour.
 DEFAULT_MAX_POSTS_BETWEEN_BOUNCES = 5
 
-# Enumeration for types of configurable variables in Mailman.
-Toggle    = 1
-Radio     = 2
-String    = 3
-Text      = 4
-Email     = 5
-EmailList = 6
-Host      = 7
-Number    = 8
-
-# could add Directory and URL
-
-
-# Bitfield for user options
-Digests             = 0 # handled by other mechanism, doesn't need a flag.
-DisableDelivery     = 1
-DontReceiveOwnPosts = 2 # Non-digesters only
-AcknowlegePosts     = 4
-DisableMime         = 8 # Digesters only
-ConcealSubscription = 16
-
 #
 # how long the cookie authorizing administrative
 # changes via the admin cgi lasts
@@ -188,6 +167,31 @@ EXEC_PREFIX	= '@exec_prefix@'
 if EXEC_PREFIX == '${prefix}':
     EXEC_PREFIX = PREFIX
 
+# Don't change anything from here down unless you know what you're doing...
+
+
+# Enumeration for types of configurable variables in Mailman.
+Toggle    = 1
+Radio     = 2
+String    = 3
+Text      = 4
+Email     = 5
+EmailList = 6
+Host      = 7
+Number    = 8
+
+# could add Directory and URL
+
+
+# Bitfield for user options
+Digests             = 0 # handled by other mechanism, doesn't need a flag.
+DisableDelivery     = 1
+DontReceiveOwnPosts = 2 # Non-digesters only
+AcknowlegePosts     = 4
+DisableMime         = 8 # Digesters only
+ConcealSubscription = 16
+
+
 LIST_DATA_DIR	= os.path.join(PREFIX, 'lists')
 HTML_DIR	= os.path.join(PREFIX, 'public_html')
 CGI_DIR 	= os.path.join(EXEC_PREFIX, 'cgi-bin')
@@ -202,3 +206,6 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 
 # The Mailman version, also set by configure
 VERSION           = '@VERSION@'
+
+# Data file version number
+DATA_FILE_VERSION = 1
