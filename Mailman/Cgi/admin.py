@@ -77,8 +77,8 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         admin_overview(_('No such list <em>%(listname)s</em>'))
-        syslog('error', 'Someone tried to access the admin interface for a '
-               'non-existent list: %s' % listname)
+        syslog('error', 'admin.py access for non-existent list: %s',
+               listname)
         return
     # Now that we know what list has been requested, all subsequent admin
     # pages are shown in that list's preferred language.

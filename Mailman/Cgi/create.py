@@ -48,7 +48,7 @@ def main():
         doc.SetTitle(title)
         doc.AddItem(
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
-        syslog('error', 'Bad URL specification: %s' % parts)
+        syslog('error', 'Bad URL specification: %s', parts)
     elif cgidata.has_key('doit'):
         # We must be processing the list creation request
         process_request(doc, cgidata)

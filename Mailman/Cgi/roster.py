@@ -53,7 +53,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         error_page(_('No such list <em>%(listname)s</em>'))
-        syslog('error', 'roster: no such list "%s": %s' % (listname, e))
+        syslog('error', 'roster: no such list "%s": %s', listname, e)
         return
 
     cgidata = cgi.FieldStorage()

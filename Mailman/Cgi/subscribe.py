@@ -55,7 +55,7 @@ def main():
         doc.AddItem(Header(2, _("Error")))
         doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n', listname, e)
         return
 
     # See if the form data has a preferred language set, in which case, use it
@@ -159,8 +159,7 @@ def process_form(mlist, doc, cgidata, lang):
         else:
             remote = _("unidentified origin")
         badremote = "\n\tfrom " + remote
-        syslog("mischief", "Attempt to self subscribe %s:%s"
-               % (email, badremote))
+        syslog('mischief', 'Attempt to self subscribe %s:%s', email, badremote)
         results += _('You must not subscribe a list to itself!<br>')
 
     # If the user did not supply a password, generate one for him

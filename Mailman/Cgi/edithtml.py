@@ -18,7 +18,6 @@
 
 import os
 import cgi
-import gettext
 
 from Mailman import Utils
 from Mailman import MailList
@@ -63,7 +62,7 @@ def main():
     except Errors.MMListError, e:
         doc.AddItem(Header(2, _('No such list <em>%(listname)s</em>')))
         print doc.Format()
-        syslog('error', _('No such list "%(listname)s": %(e)s\n'))
+        syslog('error', 'No such list "%s": %s', listname, e)
         return
 
     # Now that we have a valid list, set the language to its default

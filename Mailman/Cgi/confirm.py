@@ -50,7 +50,7 @@ def main():
         bad_confirmation(doc, _('No such list <em>%(listname)s</em>'))
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'No such list "%s": %s' % (listname, e))
+        syslog('error', 'No such list "%s": %s', listname, e)
         return
 
     # Set the language for the list

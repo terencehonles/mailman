@@ -65,7 +65,7 @@ def main():
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n', listname, e)
         return
 
     # Now we know which list is requested, so we can set the language to the

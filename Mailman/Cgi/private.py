@@ -97,7 +97,7 @@ def main():
         doc.SetTitle(_("Private Archive Error - %(msg)s"))
         doc.AddItem(Header(2, msg))
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n', listname, e)
         return
 
     i18n.set_language(mlist.preferred_language)

@@ -58,7 +58,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         handle_no_list(doc, _('No such list <em>%(listname)s</em>'))
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        syslog('error', 'No such list "%s": %s\n', listname, e)
         return
 
     # Now that we know which list to use, set the system's language to it.
