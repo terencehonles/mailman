@@ -33,6 +33,10 @@ if __name__ == '__main__':
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
 
+class _Stop:
+    pass
+Stop = _Stop()
+
 
 
 # msg must be a mimetools.Message
@@ -57,6 +61,8 @@ def ScanMessages(mlist, msg, testing=0):
         modname = 'Mailman.Bouncers.' + module
         __import__(modname)
         addrs = sys.modules[modname].process(msg)
+        if addrs is Stop:
+            return 1
         if addrs:
             for addr in addrs:
                 # we found a bounce or a list of bounce addrs
