@@ -27,6 +27,7 @@ import email.Utils
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
+from Mailman.Logging.Syslog import syslog
 
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '
@@ -170,23 +171,28 @@ def prefix_subject(mlist, msg):
     subject = msg['subject']
     # The header may be multilingual; decode it from base64/quopri and search
     # each chunk for the prefix.
+    headerbits = decode_header(subject)
     has_prefix = 0
     if prefix and subject:
         pattern = re.escape(prefix.strip())
-        for decodedsubj, charset in decode_header(subject):
+        for decodedsubj, charset in headerbits:
             if re.search(pattern, decodedsubj, re.IGNORECASE):
                 has_prefix = 1
     charset = Charset(Utils.GetCharSet(mlist.preferred_language))
     # We purposefully leave no space b/w prefix and subject!
     if not subject:
         del msg['subject']
-        msg['Subject'] = Header(prefix + _('(no subject)'),
-                                charset,
-                                header_name='Subject')
+        h = Header(prefix, charset, header_name='Subject')
+        h.append(_('(no subject)'), charset)
+        msg['Subject'] = h
     elif prefix and not has_prefix:
         del msg['subject']
         # We'll encode the new prefix (just in case) but leave the old subject
         # alone, in case it was already encoded.
-        new_subject = Header(prefix, charset, 128, header_name='Subject')
-        new_subject.append(subject, charset)
-        msg['Subject'] = new_subject.encode()
+        h = Header(prefix, charset, 128, header_name='Subject')
+        for s, c in headerbits:
+            # BAW: This should not be necessary once email 2.2 is released.
+            if c is not None and not isinstance(c, Charset):
+                c = Charset(c)
+            h.append(s, c)
+        msg['Subject'] = h
