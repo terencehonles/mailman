@@ -83,7 +83,7 @@ your membership administrative address, %s.
         if user and self.passwords.has_key(user):
             cpuser = self.GetUserSubscribedAddress(user)
             recipient = self.GetMemberAdminEmail(cpuser)
-            subject = '%s mailing list reminder\n' % listfullname
+            subject = '%s mailing list reminder' % listfullname
             adminaddr = self.GetAdminEmail()
             # get the text from the template
             text = Utils.maketext(
@@ -98,7 +98,7 @@ your membership administrative address, %s.
         else:
             ok = 0
             recipient = self.GetAdminEmail()
-            subject = '%s user %s missing password!\n' % (listfullname, user)
+            subject = '%s user %s missing password!' % (listfullname, user)
             text = Utils.maketext(
                 'nopass.txt',
                 {'username'     : `user`,
@@ -106,6 +106,9 @@ your membership administrative address, %s.
                  })
         msg = Message.UserNotification(recipient, adminaddr, subject, text)
         msg['X-No-Archive'] = 'yes'
+        fp = open('/tmp/msg', 'w')
+        fp.write(str(msg))
+        fp.close()
         HandlerAPI.DeliverToUser(self, msg)
         if not ok:
              raise Errors.MMBadUserError
