@@ -231,7 +231,7 @@ def admin_overview(msg=''):
         '.)<p>',
         ])
 
-    table.addRow([Container(*welcome)])
+    table.AddRow([Container(*welcome)])
     table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0, colspan=2)
 
     if advertised:
