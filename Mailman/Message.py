@@ -16,58 +16,24 @@
 
 """Standard Mailman message object.
 
-This is a subclass of rfc822.Message but provides an extended interface which
-is more convenient for use inside Mailman.  One of the important things it
-provides is a writable mapping interface so that new headers can be added, or
-existing headers modified.
-
+This is a subclass of mimeo.Message but provides a slightly extended interface
+which is more convenient for use inside Mailman.
 """
 
-import sys
-import os
-import string
-import time
-import sha
-import marshal
-from types import StringType, ListType
+from types import ListType
+
+import mimelib.Message
+import mimelib.ReprMixin
+from mimelib.address import getaddresses
 
 from Mailman import mm_cfg
-from Mailman import Utils
 
-# Python 1.5's version of rfc822.py is buggy and lacks features we
-# depend on -- so we always use the up-to-date version distributed
-# with Mailman.
-from Mailman.pythonlib import rfc822
+COMMASPACE = ', '
 
 
 
-class Message(rfc822.Message):
-    """This class extends the standard rfc822.Message object.
-
-    It provides some convenience functions for getting certain interesting
-    information out of the message.
-
-    """
-    def __init__(self, fp, filebase=None):
-        rfc822.Message.__init__(self, fp)
-        if self.seekable:
-            self.rewindbody()
-        self.body = self.fp.read()
-        self.__filebase = filebase
-
-    def __repr__(self):
-        """Return the entire reproducible message.
-        This includes the headers, body, and `unixfrom' line.
-        """
-        return self.unixfrom + string.join(self.headers, '') + '\n' + self.body
-
-    def __str__(self):
-        """Return the string representation of the message.
-        This includes just the standard RFC822 headers and body text.
-        """
-        return string.join(self.headers, '') + '\n' + self.body
-
-    def GetSender(self, use_envelope=None):
+class Message(mimelib.Message.Message, mimelib.ReprMixin.ReprMixin):
+    def get_sender(self, use_envelope=None, preserve_case=0):
         """Return the address considered to be the author of the email.
 
         This can return either the From: header, the Sender: header or the
@@ -84,8 +50,8 @@ class Message(rfc822.Message):
         mm_cfg.USE_ENVELOPE_SENDER setting.  It should be set to either 0 or 1
         (don't use None since that indicates no-override).
 
-        unixfrom should never be empty.
-
+        unixfrom should never be empty.  The return address is always
+        lowercased, unless preserve_case is true.
         """
         senderfirst = mm_cfg.USE_ENVELOPE_SENDER
         if use_envelope is not None:
@@ -95,128 +61,56 @@ class Message(rfc822.Message):
         else:
             headers = ('from', 'sender')
         for h in headers:
-            realname, address = self.getaddr(h)
-            # TBD: previous code said: "We can't trust that any of the headers
-            # really contained an address".  I don't know if that's still true
-            # or not, but we still test this
-            if address and type(address) == StringType:
-                return string.lower(address)
-        # Didn't find a non-empty header, so let's fall back to the unixfrom
-        # address.  This should never be empty, but if it ever is, it's
-        # probably a Really Bad Thing.
-        #
-        # We also don't do all the elaboration that the old
-        # GetEnvelopeSender() did.  We just assume that if the unixfrom
-        # exists, the second field is the address.  This is what GetSender()
-        # always did.
-        if self.unixfrom:
-            return string.lower(string.split(self.unixfrom)[1])
+            # Use only the first occurrance of Sender: or From:, although it's
+            # not likely there will be more than one.
+            addrs = getaddresses([self[h]])
+            realname, address = addrs[0]
+            if address:
+                break
         else:
-            # TBD: now what?!
-            return ''
-
-    def Enqueue(self, mlist, newdata={}, **kws):
-        """Enqueue a message for redelivery by the qrunner cronjob.
-
-        For each enqueued message, a .msg and a .db file is written.  The .msg
-        contains the plain text of the message (TBD: should this be called
-        .txt?).  The .db contains a marshaled dictionary of message metadata.
-        The base name of the file is the SHA hexdigest of some unique data,
-        currently the message text + the list's name + the current time.
-
-        The message metadata is a dictionary calculated as follows:
-
-        - If the message was previously queued, it is now being requeued and
-          the metadata dictionary is initialized from the existing .db file.
-          Otherwise the metadata is initialized to a dictionary containing the
-          listname and a scheme version number.
-
-        - If the argument `newdata' was given, the metadata dictionary
-          initialized above is .update()'d with newdata (which must conform to
-          the mapping interface).
-
-        - If additional keyword arguments are given, they are .update()'d into
-          the metadata dictionary.
-
-        mlist is the mailing list that delivery is to be attempted for.
-
-        """
-        # Calculate a unique name for the queue file
-        text = repr(self)
-        if self.__filebase is None:
-            hashfood = text + mlist.internal_name() + `time.time()`
-            self.__filebase = sha.new(hashfood).hexdigest()
-        # calculate metadata from parameter list
-        newdata.update(kws)
-        whichq = newdata.get('_whichq', mm_cfg.INQUEUE_DIR)
-        msgfile = os.path.join(whichq, self.__filebase + '.msg')
-        dbfile = os.path.join(whichq, self.__filebase + '.db')
-        # Initialize the information about this message delivery.  It's
-        # possible a delivery attempt has been previously tried on this
-        # message, in which case, we'll just update the data.
-        try:
-            dbfp = open(dbfile)
-            msgdata = marshal.load(dbfp)
-            dbfp.close()
-            existsp = 1
-        except (EOFError, ValueError, TypeError, IOError):
-            msgdata = {'listname' : mlist.internal_name(),
-                       'version'  : mm_cfg.QFILE_SCHEMA_VERSION,
-                       }
-            existsp = 0
-        # Merge in the additional msgdata
-        msgdata.update(newdata)
-        msgdata['filebase'] = self.__filebase
-        # Get rid of volatile entries, which have the convention of starting
-        # with an underscore (TBD: should we use v_ as a naming convention?).
-        # Need the _dirty flag for later though.
-        dirty = msgdata.get('_dirty')
-        for k in msgdata.keys():
-            if k[0] == '_':
-                del msgdata[k]
-        # If it doesn't already exist, or if the text of the message has
-        # changed, write the message file to disk.
-        if not existsp or dirty:
-            msgfp = Utils.open_ex(msgfile, 'w')
-            msgfp.write(text)
-            msgfp.close()
-        # Write the data file, first to a tmp file and then move it to the .db
-        # file.  Do this to avoid race conditions when re-queuing to another
-        # message queue.  We only need to do the .db files because Runner only
-        # looks at .db files.
-        tmpfile = dbfile + '.tmp'
-        dbfp = Utils.open_ex(tmpfile, 'w')
-        marshal.dump(msgdata, dbfp)
-        dbfp.close()
-        os.rename(tmpfile, dbfile)
-
-    def Requeue(self, mlist, newdata={}, **kws):
-        """Like Enqueing, but force a new filebase calculation."""
-        self.__filebase = None
-        self.Enqueue(mlist, newdata=newdata, **kws)
+            # We didn't find a non-empty header, so let's fall back to the
+            # unixfrom address.  This should never be empty, but if it ever
+            # is, it's probably a Really Bad Thing.  Further, we just assume
+            # that if the unixfrom exists, the second field is the address.
+            unixfrom = self.get_unixfrom()
+            if unixfrom:
+                address = unixfrom.split()[1]
+            else:
+                # TBD: now what?!
+                address = ''
+        if not preserve_case:
+            address = address.lower()
+        return address
 
 
 
-class OutgoingMessage(Message):
-    def __init__(self, text=''):
-        from Mailman.pythonlib.StringIO import StringIO
-        # NOTE: text if supplied must begin with valid rfc822 headers.  It can
-        # also begin with the body of the message but in that case you better
-        # make sure that the first line does NOT contain a colon!
-        Message.__init__(self, StringIO(text))
+class UserNotification(Message):
+    """Class for internally crafted messages."""
 
-
-
-class UserNotification(OutgoingMessage):
     def __init__(self, recip, sender, subject=None, text=''):
-        OutgoingMessage.__init__(self, text)
+        Message.__init__(self)
+        self.set_payload(text)
         if subject is None:
             subject = '(no subject)'
         self['Subject'] = subject
         self['From'] = sender
         if type(recip) == ListType:
-            self['To'] = string.join(recip, ', ')
-            self.recips = recip[:]
+            self['To'] = COMMASPACE.join(recip)
+            self.recips = recip
         else:
             self['To'] = recip
             self.recips = [recip]
+
+    def send(self, mlist):
+        """Prepares the message for sending by enqueing it to the `virgin'
+        queue.
+
+        This is used for all internally crafted messages.
+        """
+        # Not imported at module scope to avoid import loop
+        from Mailman.Queue.sbcache import get_switchboard
+        virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        # The message better have a `recip' attribute
+        virginq.enqueue(self,
+                        listname = mlist.internal_name(),
+                        recips = self.recips)
