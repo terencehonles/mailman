@@ -191,8 +191,5 @@ def prefix_subject(mlist, msg):
         # alone, in case it was already encoded.
         h = Header(prefix, charset, 128, header_name='Subject')
         for s, c in headerbits:
-            # BAW: This should not be necessary once email 2.2 is released.
-            if c is not None and not isinstance(c, Charset):
-                c = Charset(c)
             h.append(s, c)
         msg['Subject'] = h
