@@ -39,7 +39,7 @@ const char *LEGAL_PARENT_NAMES[] = {
 
 /* Should make these arrays too... */
 const int  LEGAL_PARENT_UID = 1;  /* mail's UID */
-const int  LEGAL_PARENT_GID = 9001; /* mail's GID */
+const int  LEGAL_PARENT_GID = 1; /* mail's GID */
 
 
 /*
