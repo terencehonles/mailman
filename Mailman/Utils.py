@@ -437,32 +437,92 @@ def UnobscureEmail(addr):
 
 
 
-def maketext(templatefile, dict=None, raw=0, lang=None):
-    """Make some text from a template file.
-
-    Reads the `templatefile', relative to mm_cfg.TEMPLATE_DIR, does string
-    substitution by interpolating in the `dict', and if `raw' is false,
-    wraps/fills the resulting text by calling wrap().
-    """
-    if lang is None:
-        lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
-    if dict is None:
-        dict = {}
-    file = os.path.join(mm_cfg.TEMPLATE_DIR, lang, templatefile)
+def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
+    # Make some text from a template file.  The order of searches depends on
+    # whether mlist and lang are provided.  Once the templatefile is found,
+    # string substitution is performed by interpolation in `dict'.  If `raw'
+    # is false, the resulting text is wrapped/filled by calling wrap().
+    #
+    # When looking for a template in a specific language, there are 4 places
+    # that are searched, in this order:
+    #
+    # 1. the list-specific language directory
+    #    lists/<listname>/<language>
+    #
+    # 2. the domain-specific language directory
+    #    templates/<list.host_name>/<language>
+    #
+    # 3. the site-wide language directory
+    #    templates/site/<language>
+    #
+    # 4. the global default language directory
+    #    templates/<language>
+    #
+    # The first match found stops the search.  In this way, you can specialize
+    # templates at the desired level, or, if you use only the default
+    # templates, you don't need to change anything.  You should never modify
+    # files in the templates/<language> subdirectory, since Mailman will
+    # overwrite these when you upgrade.  That's what the templates/site
+    # language directories are for.
+    #
+    # A further complication is that the language to search for is determined
+    # by both the `lang' and `mlist' arguments.  the search order there is
+    # that if lang is given, then the 4 locations above are searched,
+    # substituting lang for <language>.  If no match is found, and mlist is
+    # given, then the 4 locations are searched using the list's preferred
+    # language.  After that, the server default language is used for
+    # <language>.  If that still doesn't yield a template, you've got big
+    # problems. ;)
+    #
+    # A word on backwards compatibility: Mailman versions prior to 2.1 stored
+    # templates in templates/*.{html,txt} and lists/<listname>/*.{html,txt}.
+    # Those directories are no longer searched so if you've got customizations
+    # in those files, you should move them to the appropriate directory based
+    # on the above description.  Mailman's upgrade script cannot do this for
+    # you.
+    #
+    # Calculate the languages to scan
+    languages = []
+    if lang is not None:
+        languages.append(lang)
+    if mlist is not None:
+        languages.append(mlist.preferred_language)
+    languages.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    # Calculate the locations to scan
+    searchdirs = []
+    if mlist is not None:
+        searchdirs.append(mlist.fullpath())
+        searchdirs.append(os.path.join(mm_cfg.TEMPLATE_DIR, mlist.host_name))
+    searchdirs.append(os.path.join(mm_cfg.TEMPLATE_DIR, 'site'))
+    searchdirs.append(mm_cfg.TEMPLATE_DIR)
+    # Start scanning
+    quickexit = 'quickexit'
+    fp = None
     try:
-        fp = open(file)
-    except IOError, e:
-        if e.errno <> errno.ENOENT: raise
-        # The language specific template directory may not yet exist
-        file = os.path.join(mm_cfg.TEMPLATE_DIR, templatefile)
-        fp = open(file)
+        for lang in languages:
+            for dir in searchdirs:
+                filename = os.path.join(dir, lang, templatefile)
+                try:
+                    fp = open(filename)
+                    raise quickexit
+                except IOError, e:
+                    if e.errno <> errno.ENOENT: raise
+                    # Okay, it doesn't exist, keep looping
+                    fp = None
+    except quickexit:
+        pass
+    if fp is None:
+        # We never found the template.  BAD!
+        raise IOError(errno.ENOENT, 'No template file found', templatefile)
     template = fp.read()
     fp.close()
-    try:
-        text = template % SafeDict(dict)
-    except TypeError:
-        # The template is really screwed up
-        text = template
+    text = template
+    if dict is not None:
+        try:
+            text = template % SafeDict(dict)
+        except TypeError:
+            # The template is really screwed up
+            pass
     if raw:
         return text
     return wrap(text)
@@ -528,20 +588,6 @@ def is_administrivia(msg):
 
         
 
-def mkdir(dir, mode=02775):
-    """Wraps os.mkdir() in a umask saving try/finally.
-
-    Two differences from os.mkdir():
-        - umask is forced to 0 during mkdir()
-        - default mode is 02775
-    """
-    ou = os.umask(0)
-    try:
-        os.mkdir(dir, mode)
-    finally:
-        os.umask(ou)
-
-
 def rmdirhier(dir):
     """Like `rm -r'
 
