@@ -26,6 +26,7 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman.htmlformat import *
 from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -54,7 +55,7 @@ def main():
         doc.AddItem(Header(2, "Error"))
         doc.AddItem(Bold('No such list <em>%s</em>' % listname))
         print doc.Format(bgcolor="#ffffff")
-        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
+        syslog('No such list "%s": %s\n' % (listname, e))
         return
     try:
         process_form(mlist, doc)
@@ -130,8 +131,8 @@ def process_form(mlist, doc):
         else:
             remote = "unidentified origin"
         badremote = "\n\tfrom " + remote
-        mlist.LogMsg("mischief", ("Attempt to self subscribe %s:%s"
-                                 % (email, badremote)))
+        syslog("mischief", "Attempt to self subscribe %s:%s"
+               % (email, badremote))
         results = results + "You must not subscribe a list to itself!<br>"
 
     if not form.has_key("pw") or not form.has_key("pw-conf"):

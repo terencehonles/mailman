@@ -18,7 +18,6 @@
 
 """
 
-import sys
 import os
 import cgi
 import string
@@ -31,6 +30,8 @@ from Mailman import MailCommandHandler
 from Mailman.htmlformat import *
 from Mailman.Crypt import crypt
 from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
+
 
 CATEGORIES = [('general', "General Options"),
               ('members', "Membership Management"),
@@ -67,11 +68,10 @@ def main():
     try: 
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
-            FormatAdminOverview('No such list <em>%s</em>' % listname)
-            sys.stderr.write(
-                'Someone tried to access the admin interface for a '
-                'non-existent list: %s\n' % listname)
-            return
+        FormatAdminOverview('No such list <em>%s</em>' % listname)
+        syslog('Someone tried to access the admin interface for a '
+               'non-existent list: %s\n' % listname)
+        return
     try:
         if len(parts) == 1:
             category = 'general'
@@ -378,7 +378,7 @@ def AddOptionsTableItem(table, item, category, mlist, detailsp=1):
 	got = GetItemCharacteristics(item)
 	varname, kind, params, dependancies, descr, elaboration = got
     except ValueError, msg:
-        mlist.LogMsg("error", "admin: %s", msg)
+        syslog('error', 'admin: %s' % msg)
         return Italic("<malformed option>")
     descr = GetItemGuiDescr(mlist, category, varname, descr, detailsp)
     val = GetItemGuiValue(mlist, kind, varname, params)
@@ -821,8 +821,6 @@ def ChangeOptions(mlist, category, cgi_info, document):
             if cgi_info.has_key(property+'_upload') and \
                    cgi_info[property+'_upload'].value:
                 val = cgi_info[property+'_upload'].value
-##                mlist.LogMsg('debug', 'got ' + property+'_upload: ' +
-##                             string.replace(val, '%', '%%'))
             elif not cgi_info.has_key(property):
                 if (kind <> mm_cfg.Text and 
                     kind <> mm_cfg.String and 

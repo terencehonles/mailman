@@ -25,6 +25,7 @@ from Mailman import Utils, MailList, Errors
 from Mailman.htmlformat import *
 from Mailman.Logging.Utils import LogStdErr
 from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
 
 LogStdErr("error", "private")
 
@@ -124,7 +125,7 @@ def main():
         doc.SetTitle("Private Archive Error - %s" % msg)
         doc.AddItem(Header(2, msg))
         print doc.Format(bgcolor="#FFFFFF")
-        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
+        syslog('No such list "%s": %s\n' % (listname, e))
         sys.exit(0)
 
     form = cgi.FieldStorage()

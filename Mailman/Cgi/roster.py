@@ -26,8 +26,15 @@ Takes listname in PATH_INFO.
 import sys
 import os, string
 import cgi
-from Mailman import Utils, MailList, htmlformat, Errors
 
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import htmlformat
+from Mailman import Errors
+from Mailman.Logging.Syslog import syslog
+
+
+
 def main():
     doc = htmlformat.HeadlessDocument()
     form = cgi.FieldStorage()
@@ -93,7 +100,7 @@ def get_list():
         mlist.IsListInitialized()
     except Errors.MMListError, e:
         error_page('No such list <em>%s</em>' % listname)
-        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
+        syslog('No such list "%s": %s\n' % (listname, e))
         sys.exit(0)
     return mlist
 

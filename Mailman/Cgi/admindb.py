@@ -17,7 +17,6 @@
 """Produce and process the pending-approval items for a list."""
 
 import os
-import sys
 import string
 import types
 import cgi
@@ -28,6 +27,7 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman.htmlformat import *
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -65,7 +65,7 @@ def main():
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
         handle_no_list(doc, 'No such list <em>%s</em><p>' % listname)
-        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
+        syslog('No such list "%s": %s\n' % (listname, e))
         return
     #
     # now we must authorize the user to view this page, and if they are, to

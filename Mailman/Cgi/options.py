@@ -25,7 +25,6 @@ unobscured ids as well.
 # We don't need to lock in this script, because we're never going to change
 # data. 
 
-import sys
 import os
 import string
 
@@ -34,6 +33,7 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
 from Mailman.htmlformat import *
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -62,7 +62,7 @@ def main():
         doc.AddItem(Header(2, "Error"))
         doc.AddItem(Bold('No such list <em>%s</em>' % listname))
         print doc.Format()
-        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
+        syslog('No such list "%s": %s\n' % (listname, e))
         return
 
     # Sanity check the user

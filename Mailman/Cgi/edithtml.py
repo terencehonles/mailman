@@ -16,7 +16,6 @@
 
 """Script which implements admin editing of the list's html templates."""
 
-import sys
 import os
 import cgi
 import string
@@ -26,6 +25,7 @@ from Mailman import MailList
 from Mailman.htmlformat import *
 from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman import Errors
+from Mailman.Logging.Syslog import syslog
 
 
 
@@ -53,7 +53,7 @@ def main():
     except Errors.MMListError, e:
         doc.AddItem(Header(2, 'No such list <em>%s</em>' % listname))
         print doc.Format(bgcolor='#ffffff')
-        sys.stderr.write('No such list "%s": %s\n' % (listname, e))
+        syslog('No such list "%s": %s\n' % (listname, e))
         return
 
     # get the list._template_dir attribute
