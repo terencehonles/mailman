@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,20 +18,28 @@
 
 import sys
 import os
-import string
 import cgi
 
+from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
+from Mailman import i18n
 from Mailman.htmlformat import *
-from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
+
+SLASH = '/'
+
+# Set up i18n
+_ = i18n._
+i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
 def main():
     doc = Document()
+    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
     parts = Utils.GetPathPieces()
     if not parts:
         doc.AddItem(Header(2, _("Error")))
@@ -39,21 +47,29 @@ def main():
         print doc.Format(bgcolor="#ffffff")
         return
         
-    listname = string.lower(parts[0])
+    listname = parts[0].lower()
     try:
         mlist = MailList.MailList(listname)
-        mlist.IsListInitialized()
     except Errors.MMListError, e:
         doc.AddItem(Header(2, _("Error")))
-        doc.AddItem(Bold(_('No such list <em>%s</em>') % listname))
+        doc.AddItem(Bold(_('No such list <em>%(listname)s</em>')))
         print doc.Format(bgcolor="#ffffff")
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
-    os.environ['LANG'] = mlist.preferred_language
+    # See if the form data has a preferred language set, in which case, use it
+    # for the results.  If not, use the list's preferred language.
+    cgidata = cgi.FieldStorage()
+    if cgidata.has_key('language'):
+        language = form['language'].value
+    else:
+        language = mlist.preferred_language
+
+    i18n.set_language(language)
+    doc.set_language(language)
 
     try:
-        process_form(mlist, doc)
+        process_form(mlist, doc, cgidata, language)
     finally:
         mlist.Save()
         mlist.Unlock()
@@ -62,7 +78,7 @@ def main():
 
 def call_script(mlist, member, which):
     """A hack to call one of the other CGI scripts."""
-    os.environ['PATH_INFO'] = string.join([mlist.internal_name(), member], '/')
+    os.environ['PATH_INFO'] = SLASH.join([mlist.internal_name(), member])
     pkg = __import__('Mailman.Cgi', globals(), locals(), [which])
     mod = getattr(pkg, which)
     mlist.Save()
@@ -75,37 +91,28 @@ def call_script(mlist, member, which):
 
 
 
-def process_form(mlist, doc):
-    form = cgi.FieldStorage()
+def process_form(mlist, doc, cgidata, lang):
     error = 0
     results = ''
 
-    # Preliminaries done, actual processing of the form input below.
-    if form.has_key("language"):
-        language = form["language"].value
-    else:
-        language = mlist.preferred_language
-
-    os.environ['LANG'] = language
-
-    if form.has_key("UserOptions") or \
-            form.has_key("info") and \
-            not form.has_key("email"):
-        # then
-        # Go to user options section.
-        if not form.has_key("info"):
+    if cgidata.has_key('UserOptions') or \
+            cgidata.has_key('info') and \
+            not cgidata.has_key("email"):
+        # Then go to user options section.
+        if not cgidata.has_key('info'):
             doc.AddItem(Header(2, _("Error")))
             doc.AddItem(Bold(_("You must supply your email address.")))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor="#ffffff")
             return
 
-        addr = form['info'].value
+        addr = cgidata['info'].value
         member = mlist.FindUser(addr)
         if not member:
+            realname = mlist.real_name
             doc.AddItem(Header(2, _("Error")))
-            doc.AddItem(Bold(_("%s has no subscribed addr <i>%s</i>.")
-                             % (mlist.real_name, addr)))
+            doc.AddItem(Bold(
+                _("%(realname)s has no subscribed addr <i>%(addr)s</i>.")))
             doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor="#ffffff")
             return
@@ -114,16 +121,14 @@ def process_form(mlist, doc):
         # should never get here!
         assert 0
 
-    if not form.has_key("email"):
+    if not cgidata.has_key('email'):
         error = 1
-        results = results + _("You must supply a valid email address.<br>")
-        #
+        results += _("You must supply a valid email address.<br>")
         # define email so we don't get a NameError below
         # with if email == mlist.GetListEmail() -scott
-        #
-        email = ""
+        email = ''
     else:
-        email = form["email"].value
+        email = cgidata['email'].value
 
     remote = remote_addr()
     if email == mlist.GetListEmail():
@@ -135,23 +140,31 @@ def process_form(mlist, doc):
         badremote = "\n\tfrom " + remote
         syslog("mischief", "Attempt to self subscribe %s:%s"
                % (email, badremote))
-        results = results + _("You must not subscribe a list to itself!<br>")
+        results += _('You must not subscribe a list to itself!<br>')
 
-    if not form.has_key("pw") or not form.has_key("pw-conf"):
-        error = 1
-        results = (results +
-                   _("You must supply a valid password, and confirm it.<br>"))
+    # If the user did not supply a password, generate one for him
+    if cgidata.has_key('pw'):
+        password = cgidata['pw'].value
     else:
-        pw  = form["pw"].value
-        pwc = form["pw-conf"].value
+        password = None
+    if cgidata.has_key('pw-conf'):
+        confirmed = cgidata['pw-conf'].value
+    else:
+        confirmed = None
 
-    if not error and pw <> pwc:
+    if password is None and confirmed is None:
+        password = Utils.MakeRandomPassword()
+    elif password is None or confirmed is None:
         error = 1
-        results = results + _("Your passwords did not match.<br>")
+        results += _('If you supply a password, you must confirm it.<br>')
+    elif password <> confirmed:
+        error = 1
+        results += _('Your passwords did not match.<br>')
 
-    if form.has_key("digest"):
+    # Get the digest option for the subscription.
+    if cgidata.has_key('digest'):
         try:
-            digest = int(form['digest'].value)
+            digest = int(cgidata['digest'].value)
         except ValueError:
             # TBD: Hmm, this shouldn't happen
             digest = 0
@@ -167,64 +180,57 @@ def process_form(mlist, doc):
         try:
             if mlist.FindUser(email):
                 raise Errors.MMAlreadyAMember, email
-            if digest:
-                digesting = " digest"
-            else:
-                digesting = ""
-            mlist.AddMember(email, pw, digest, remote, language)
+
+            mlist.AddMember(email, password, digest, remote, lang)
         #
         # check for all the errors that mlist.AddMember can throw
         # options  on the web page for this cgi
         #
         except Errors.MMBadEmailError:
-            results = results + (_("Mailman won't accept the given email "
-                                 "address as a valid address. (Does it "
-                                 "have an @ in it???)<p>"))
+            results += (_("Mailman won't accept the given email "
+                          "address as a valid address. (Does it "
+                          "have an @ in it???)<p>"))
         except Errors.MMListError:
-            results = results + (_("The list is not fully functional, and "
-                                 "can not accept subscription requests.<p>"))
+            results += (_("The list is not fully functional, and "
+                          "can not accept subscription requests.<p>"))
         except Errors.MMSubscribeNeedsConfirmation:
-             results = results + (_("Confirmation from your email address is "
-                                  "required, to prevent anyone from "
-                                  "subscribing you without permission. "
-                                  "Instructions are being "
-                                  "sent to you at %s. Please note your "
-                                  "subscription will not start until you "
-                                  "confirm your subscription.") % email)
+             results += (_("Confirmation from your email address is "
+                           "required, to prevent anyone from "
+                           "subscribing you without permission. "
+                           "Instructions are being "
+                           "sent to you at %(email)s. Please note your "
+                           "subscription will not start until you "
+                           "confirm your subscription."))
 
         except Errors.MMNeedApproval, x:
-            results = results + (_("Subscription was <em>deferred</em> "
-                                 "because %s.  Your request has been "
-                                 "forwarded to the list administrator.  "
-                                 "You will receive email informing you "
-                                 "of the moderator's decision when they "
-                                 "get to your request.<p>") % x)
+            results += (_("Subscription was <em>deferred</em> "
+                          "because %(x)s.  Your request has been "
+                          "forwarded to the list administrator.  "
+                          "You will receive email informing you "
+                          "of the moderator's decision when they "
+                          "get to your request.<p>"))
         except Errors.MMHostileAddress:
-            results = results + (_("Your subscription is not allowed because "
-                                 "the email address you gave is insecure.<p>"))
+            results += (_("Your subscription is not allowed because "
+                          "the email address you gave is insecure.<p>"))
         except Errors.MMAlreadyAMember:
-            results = results + _("You are already subscribed!<p>")
+            results += _("You are already subscribed!<p>")
         #
         # these shouldn't happen, but if someone's futzing with the cgi
         # they might -scott
         #
         except Errors.MMCantDigestError:
-            results = results + \
-                      _("No one can subscribe to the digest of this list!")
+            results += _("No one can subscribe to the digest of this list!")
         except Errors.MMMustDigestError:
-            results = results + \
-                      _("This list only supports digest subscriptions!")
+            results += _("This list only supports digest subscriptions!")
         else:
-            results = results + \
-                      _("You have been successfully subscribed to %s.") % \
-                      (mlist.real_name)
-    PrintResults(mlist, results, doc, language)
+            rname = mlist.real_name
+            results += _("You have been successfully subscribed to %(rname)s.")
+    # Show the results
+    print_results(mlist, results, doc, lang)
 
 
 
-def PrintResults(mlist, results, doc, lang=None):
-    if lang is None:
-        lang = mlist.preferred_language
+def print_results(mlist, results, doc, lang):
     replacements = mlist.GetStandardReplacements(lang)
     replacements['<mm-results>'] = results
     output = mlist.ParseTags('subscribe.html', replacements, lang)
