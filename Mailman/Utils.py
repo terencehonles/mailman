@@ -410,7 +410,7 @@ def SetSiteAdminPassword(pw):
 def CheckSiteAdminPassword(response):
     try:
         fp = open(mm_cfg.SITE_PW_FILE)
-        challenge = fp.read()[-1]                 # strip off trailing nl
+        challenge = fp.read()[:-1]                # strip off trailing nl
         fp.close()
     except IOError, e:
         if e.errno <> errno.ENOENT: raise
