@@ -20,12 +20,27 @@
 # messages pending delivery on the mailman mail queue.
 
 
+import os
 import sys
 import paths
 from Mailman import OutgoingQueue
+from Mailman import flock
+from Mailman import mm_cfg
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
-OutgoingQueue.processQueue()
+def main():
+    path = os.path.join(mm_cfg.LOCK_DIR, 'mmqueue_run.lock')
+    lockfile = flock.FileLock(path,
+                              # running the queue can take a long time
+                              hung_timeout=14400)
+    lockfile.lock()
+    try:
+        OutgoingQueue.processQueue()
+    finally:
+        lockfile.unlock()
+
+
+main()
