@@ -46,7 +46,7 @@ import pipermail
 from Mailman import mm_cfg, EncWord
 from Mailman.Logging.Syslog import syslog
 
-from Mailman.Utils import mkdir, open_ex
+from Mailman.Utils import mkdir
 
 gzip = None
 if mm_cfg.GZIP_ARCHIVE_TXT_FILES:
@@ -740,11 +740,15 @@ class HyperArchive(pipermail.T):
         #if the working file is still here, the archiver may have 
         # crashed during archiving. Save it, log an error, and move on. 
 	try:
-            wf=open_ex(wname,'r')
+            wf = open(wname)
             syslog("error","Archive working file %s present. "
                    "Check %s for possibly unarchived msgs"
                    % (wname,ename))
-            ef=open_ex(ename, 'a+')
+            omask = os.umask(007)
+            try:
+                ef = open(ename, 'a+')
+            finally:
+                os.umask(omask)
             ef.seek(1,2)
             if ef.read(1) <> '\n':
                 ef.write('\n')
@@ -757,7 +761,7 @@ class HyperArchive(pipermail.T):
         os.rename(name,wname)
         if self._unlocklist:
             self.maillist.Unlock()
-        archfile=open_ex(wname,'r')
+        archfile = open(wname)
         self.processUnixMailbox(archfile, Article)
         archfile.close()
         os.unlink(wname)
@@ -908,19 +912,31 @@ class HyperArchive(pipermail.T):
 
     def write_TOC(self):
         self.sortarchives()
-        toc=open_ex(os.path.join(self.basedir, 'index.html'), 'w')
+        omask = os.umask(002)
+        try:
+            toc = open(os.path.join(self.basedir, 'index.html'), 'w')
+        finally:
+            os.umask(omask)
         toc.write(self.html_TOC())
         toc.close()
 
     def write_article(self, index, article, path):
         # called by add_article
-        f = open_ex(path, 'w')
+        omask = os.umask(002)
+        try:
+            f = open(path, 'w')
+        finally:
+            os.umask(omask)
         f.write(article.as_html())
         f.close()
 
         # Write the text article to the text archive.
         path = os.path.join(self.basedir, "%s.txt" % index)
-        f = open_ex(path, 'a+')
+        omask = os.umask(002)
+        try:
+            f = open(path, 'a+')
+        finally:
+            os.umask(omask)
         f.write(article.as_text())
         f.close()
 
@@ -961,7 +977,7 @@ class HyperArchive(pipermail.T):
             oldgzip = os.path.join(self.basedir, '%s.old.txt.gz' % archive)
             try:
                 # open the plain text file
-                archt = open_ex(txtfile, 'r')
+                archt = open(txtfile)
             except IOError:
                 return
             try:
@@ -1103,7 +1119,7 @@ class HyperArchive(pipermail.T):
     def update_article(self, arcdir, article, prev, next):
 	self.message('Updating HTML for article ' + str(article.sequence))
 	try:
-	    f = open_ex(os.path.join(arcdir, article.filename), 'r')
+	    f = open(os.path.join(arcdir, article.filename))
             article.loadbody_fromHTML(f)
 	    f.close()
         except IOError:
@@ -1111,6 +1127,10 @@ class HyperArchive(pipermail.T):
                          % os.path.join(arcdir, article.filename))
         article.prev = prev
         article.next = next
-	f = open_ex(os.path.join(arcdir, article.filename), 'w')
+        omask = os.umask(002)
+        try:
+            f = open(os.path.join(arcdir, article.filename), 'w')
+        finally:
+            os.umask(omask)
 	f.write(article.as_html())
 	f.close()
