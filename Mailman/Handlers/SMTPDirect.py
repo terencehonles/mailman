@@ -279,33 +279,33 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                  'host'   : DOT.join(rdomain),
                  }
             envsender = '%s@%s' % ((mm_cfg.VERP_FORMAT % d), DOT.join(bdomain))
-##        if mlist.personalize:
-##            # When personalizing, we want to To: address to point to the
-##            # recipient, not to the mailing list
-##            del msgcopy['to']
-##            name = None
-##            if mlist.isMember(recip):
-##                name = mlist.getMemberName(recip)
-##            if name:
-##                # Convert the name to an email-safe representation.  If the
-##                # name is a byte string, convert it first to Unicode, given
-##                # the character set of the member's language, replacing bad
-##                # characters for which we can do nothing about.  Once we have
-##                # the name as Unicode, we can create a Header instance for it
-##                # so that it's properly encoded for email transport.
-##                charset = Utils.GetCharSet(mlist.getMemberLanguage(recip))
-##                if charset == 'us-ascii':
-##                    # Since Header already tries both us-ascii and utf-8,
-##                    # let's add something a bit more useful.
-##                    charset = 'iso-8859-1'
-##                charset = Charset(charset)
-##                codec = charset.input_codec or 'ascii'
-##                if not isinstance(name, UnicodeType):
-##                    name = unicode(name, codec, 'replace')
-##                name = Header(name, charset).encode()
-##                msgcopy['To'] = formataddr((name, recip))
-##            else:
-##                msgcopy['To'] = recip
+        if mlist.personalize == 2:
+            # When fully personalizing, we want the To address to point to the
+            # recipient, not to the mailing list
+            del msgcopy['to']
+            name = None
+            if mlist.isMember(recip):
+                name = mlist.getMemberName(recip)
+            if name:
+                # Convert the name to an email-safe representation.  If the
+                # name is a byte string, convert it first to Unicode, given
+                # the character set of the member's language, replacing bad
+                # characters for which we can do nothing about.  Once we have
+                # the name as Unicode, we can create a Header instance for it
+                # so that it's properly encoded for email transport.
+                charset = Utils.GetCharSet(mlist.getMemberLanguage(recip))
+                if charset == 'us-ascii':
+                    # Since Header already tries both us-ascii and utf-8,
+                    # let's add something a bit more useful.
+                    charset = 'iso-8859-1'
+                charset = Charset(charset)
+                codec = charset.input_codec or 'ascii'
+                if not isinstance(name, UnicodeType):
+                    name = unicode(name, codec, 'replace')
+                name = Header(name, charset).encode()
+                msgcopy['To'] = formataddr((name, recip))
+            else:
+                msgcopy['To'] = recip
         # We can flag the mail as a duplicate for each member, if they've
         # already received this message, as calculated by Message-ID.  See
         # AvoidDuplicates.py for details.
