@@ -50,13 +50,11 @@ def handle_no_list(doc, extra=''):
 def main():
     doc = Document()
     # figure out which list we're going to process
-    try:
-        path = os.environ['PATH_INFO']
-    except KeyError:
+    parts = Utils.GetPathPieces()
+    if not parts:
         handle_no_list(doc)
         return
     # get URL components.  the list name should be the zeroth part
-    parts = Utils.GetPathPieces(path)
     try:
         listname = string.lower(parts[0])
     except IndexError:

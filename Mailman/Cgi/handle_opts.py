@@ -50,14 +50,8 @@ def PrintResults(mlist, operation, doc, results, user=None):
 
 def main():
     doc = Document()
-
-    path = os.environ.get('PATH_INFO')
-    if path:
-        parts = Utils.GetPathPieces(path)
-    else:
-        parts = []
-
-    if len(parts) < 2:
+    parts = Utils.GetPathPieces()
+    if not parts or len(parts) < 2:
         doc.AddItem(Header(2, "Error"))
         doc.AddItem(Bold("Invalid options to CGI script."))
         print doc.Format(bgcolor="#ffffff")
@@ -65,12 +59,6 @@ def main():
 
     listname = string.lower(parts[0])
     user = parts[1]
-
-    if len(parts) < 2:
-        doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold("Invalid options to CGI script."))
-        print doc.Format(bgcolor="#ffffff")
-        return
 
     try:
         mlist = MailList.MailList(listname)
@@ -97,7 +85,7 @@ def process_form(mlist, user, doc):
 
     if not Utils.FindMatchingAddresses(user, mlist.members,
                                        mlist.digest_members):
-        PrintResults(mlist, operation, doc, "%s not a member!<p>" % user, user)
+        PrintResults(mlist, operation, doc, "%s not a member!<p>" % user)
 
     if form.has_key("unsub"):
         operation = "Unsubscribe"

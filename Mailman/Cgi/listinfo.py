@@ -32,14 +32,8 @@ from Mailman.Logging.Syslog import syslog
 
 
 def main():
-    try:
-        path = os.environ['PATH_INFO']
-    except KeyError:
-        FormatListinfoOverview()
-        return
-
-    parts = Utils.GetPathPieces(path)
-    if len(parts) == 0:
+    parts = Utils.GetPathPieces()
+    if not parts:
         FormatListinfoOverview()
         return
 

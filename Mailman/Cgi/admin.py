@@ -55,15 +55,10 @@ def main():
 
     """
     doc = Document()
-    try:
-        path = os.environ['PATH_INFO']
-    except KeyError:
-        path = ''
-    parts = Utils.GetPathPieces(path)
-    # How many ../'s we need to get back to http://host/mailman
-    if len(parts) == 0:
+    parts = Utils.GetPathPieces()
+    if not parts:
         FormatAdminOverview()
-	return
+        return
     # get the list object
     listname = string.lower(parts[0])
     try: 
@@ -378,8 +373,8 @@ def FormatOptionHelp(doc, varref, mlist):
                 item = i
                 break
     if not item:
-	bad = ("Option %s/%s not found. %s"
-	       % (category, varname, os.environ['PATH_INFO']))
+        bad = 'Option %s/%s not found: %s' % (
+            category, varname, os.environ.get('PATH_INFO'))
         AddErrorMessage(doc, bad)
         return
     got = GetItemCharacteristics(item)

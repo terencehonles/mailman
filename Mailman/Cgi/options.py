@@ -39,14 +39,8 @@ from Mailman.Logging.Syslog import syslog
 
 def main():
     doc = HeadlessDocument()
-    try:
-        path = os.environ['PATH_INFO']
-    except KeyError:
-        path = ''
-
-    parts = Utils.GetPathPieces(path)
-    # sanity check options
-    if len(parts) < 2:
+    parts = Utils.GetPathPieces()
+    if not parts or len(parts) < 2:
         doc.AddItem(Header(2, "Error"))
         doc.AddItem(Bold("Invalid options to CGI script."))
         print doc.Format()

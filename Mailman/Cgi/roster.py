@@ -37,74 +37,68 @@ from Mailman.Logging.Syslog import syslog
 
 def main():
     doc = htmlformat.HeadlessDocument()
+
+    parts = Utils.GetPathPieces()
+    if not parts:
+        error_page('Invalid options to CGI script')
+        return
+
+    listname = string.lower(parts[0])
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMListError, e:
+        error_page('No such list <em>%s</em>' % listname)
+        syslog('error', 'roster: no such list "%s": %s' % (listname, e))
+        return
+
     form = cgi.FieldStorage()
-    list = get_list()
 
     bad = ""
     # These nested conditionals constituted a cascading authentication
     # check, yielding a 
-    if not list.private_roster:
+    if not mlist.private_roster:
         # No privacy.
         bad = ""
     else:
         auth_req = ("%s subscriber list requires authentication."
-                    % list.real_name)
+                    % mlist.real_name)
         if not form.has_key("roster-pw"):
             bad = auth_req
         else:
             pw = form['roster-pw'].value
             # Just the admin password is sufficient - check it early.
-            if not list.ValidAdminPassword(pw):
+            if not mlist.ValidAdminPassword(pw):
                 if not form.has_key('roster-email'):
                     # No admin password and no user id, nogo.
                     bad = auth_req
                 else:
                     id = form['roster-email'].value
-                    if list.private_roster == 1:
+                    if mlist.private_roster == 1:
                         # Private list - members visible.
                         try:
-                            list.ConfirmUserPassword(id, pw)
+                            mlist.ConfirmUserPassword(id, pw)
                         except (Errors.MMBadUserError, 
                                 Errors.MMBadPasswordError,
                                 Errors.MMNotAMemberError):
                             bad = ("%s subscriber authentication failed."
-                                   % list.real_name)
+                                   % mlist.real_name)
                     else:
                         # Anonymous list - admin-only visible
                         # - and we already tried admin password, above.
                         bad = ("%s admin authentication failed."
-                               % list.real_name)
+                               % mlist.real_name)
     if bad:
         doc = error_page_doc(bad)
-        doc.AddItem(list.GetMailmanFooter())
+        doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         sys.exit(0)
 
-    replacements = list.GetAllReplacements()
-    doc.AddItem(list.ParseTags('roster.html', replacements))
+    replacements = mlist.GetAllReplacements()
+    doc.AddItem(mlist.ParseTags('roster.html', replacements))
     print doc.Format()
 
-def get_list():
-    "Return list or bail out with error page."
-    list_info = []
-    try:
-        list_info = Utils.GetPathPieces(os.environ['PATH_INFO'])
-    except KeyError:
-        pass
-    if len(list_info) != 1:
-        error_page("Invalid options to CGI script.")
-        sys.exit(0)
-    listname = string.lower(list_info[0])
-    try:
-        mlist = MailList.MailList(listname, lock=0)
-        mlist.IsListInitialized()
-    except Errors.MMListError, e:
-        error_page('No such list <em>%s</em>' % listname)
-        syslog('error', 'No such list "%s": %s\n' % (listname, e))
-        sys.exit(0)
-    return mlist
 
-
+
 def error_page(errmsg, *args):
     print apply(error_page_doc, (errmsg,) + args).Format()
 

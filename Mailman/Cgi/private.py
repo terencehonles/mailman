@@ -92,27 +92,19 @@ def content_type(path):
 
 def main():
     doc = Document()
-
-    try:
-        path = os.environ['PATH_INFO']
-    except KeyError:
+    parts = Utils.GetPathPieces()
+    if not parts:
         doc.SetTitle("Private Archive Error")
         doc.AddItem(Header(3, "You must specify a list."))
         print doc.Format(bgcolor="#FFFFFF")
         sys.exit(0)
 
+    path = os.environ.get('PATH_INFO')
     true_filename = os.path.join(
         mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
         true_path(path))
 
-    list_info = Utils.GetPathPieces(path)
-
-    if len(list_info) < 1:
-        doc.SetTitle("Private Archive Error")
-        doc.AddItem(Header(3, "You must specify a list."))
-        print doc.Format(bgcolor="#FFFFFF")
-        sys.exit(0)
-    listname = string.lower(list_info[0])
+    listname = string.lower(parts[0])
 
     # If it's a directory, we have to append index.html in this script.  We
     # must also check for a gzipped file, because the text archives are

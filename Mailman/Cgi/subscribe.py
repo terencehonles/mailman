@@ -32,18 +32,10 @@ from Mailman.Logging.Syslog import syslog
 
 def main():
     doc = Document()
-    try:
-        path = os.environ['PATH_INFO']
-    except KeyError:
+    parts = Utils.GetPathPieces()
+    if not parts:
         doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold("You must include a listname in the url."))
-        print doc.Format(bgcolor="#ffffff")
-        return
-
-    parts = Utils.GetPathPieces(path)
-    if len(parts) < 1:
-        doc.AddItem(Header(2, "Error"))
-        doc.AddItem(Bold("Invalid options to CGI script."))
+        doc.AddItem(Bold('Invalid options to CGI script'))
         print doc.Format(bgcolor="#ffffff")
         return
         

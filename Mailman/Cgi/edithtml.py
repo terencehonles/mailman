@@ -25,6 +25,7 @@ from Mailman import MailList
 from Mailman.htmlformat import *
 from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman import Errors
+from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
 
 
@@ -38,11 +39,8 @@ def main():
         )
 
     doc = Document()
-
-    path = os.environ['PATH_INFO']
-    parts = Utils.GetPathPieces(path)
-
-    if len(parts) < 1:
+    parts = Utils.GetPathPieces()
+    if not parts:
         doc.AddItem(Header(2, "List name is required."))
         print doc.Format(bgcolor='#ffffff')
         return
@@ -54,6 +52,14 @@ def main():
         doc.AddItem(Header(2, 'No such list <em>%s</em>' % listname))
         print doc.Format(bgcolor='#ffffff')
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
+        return
+
+    # Must be authenticated to get any farther
+    cgidata = cgi.FieldStorage()
+    try:
+        Auth.authenticate(mlist, cgidata)
+    except Auth.NotLoggedInError, e:
+        Auth.loginpage(mlist, 'edithtml', e.message)
         return
 
     # get the list._template_dir attribute
@@ -87,20 +93,8 @@ def main():
         return
 
     try:
-        cgi_data = cgi.FieldStorage()
-        if len(cgi_data.keys()):
-            if not cgi_data.has_key('adminpw'):
-                m = 'Error: You must supply the admin password to edit html.'
-                doc.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))
-                doc.AddItem('<hr>')
-            else:
-                try:
-                    mlist.ConfirmAdminPassword(cgi_data['adminpw'].value)
-                    ChangeHTML(mlist, cgi_data, template_name, doc)
-                except Errors.MMBadPasswordError:
-                    m = 'Error: Incorrect admin password.'
-                    doc.AddItem(Header(3, Italic(FontAttr(m, color="ff5060"))))
-                    doc.AddItem('<hr>')
+        if cgidata.keys():
+            ChangeHTML(mlist, cgidata, template_name, doc)
         FormatHTML(mlist, doc, template_name, template_info)
     finally:
         doc.AddItem(mlist.GetMailmanFooter())
@@ -120,17 +114,11 @@ def FormatHTML(mlist, doc, template_name, template_info):
     doc.AddItem('<p>')
     doc.AddItem('<hr>')
     form = Form(mlist.GetScriptURL('edithtml') + '/' + template_name)
-    doc.AddItem(form)
-
-    password_table = Table()
-    password_table.AddRow(['Enter the admin password to edit html:',
-			   PasswordBox('adminpw')])
-    password_table.AddRow(['When you are done making changes...', 
-			   SubmitButton('submit', 'Submit Changes')])
-
-    form.AddItem(password_table)
     text = Utils.QuoteHyperChars(mlist.SnarfHTMLTemplate(template_name))
     form.AddItem(TextArea('html_code', text, rows=40, cols=75))
+    form.AddItem('<p>When you are done making changes...')
+    form.AddItem(SubmitButton('submit', 'Submit Changes'))
+    doc.AddItem(form)
 
 
 
