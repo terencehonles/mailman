@@ -40,6 +40,9 @@ SCRIPTSDIR= 	$(prefix)/scripts
 
 SHELL=		/bin/sh
 
+# Note that `admin' is a backwards compatible alias for `bounces'
+# 'subscribe' is an alias for join
+# 'unsubscribe' is an alias for leave
 SCRIPTS=	bounces driver join leave owner post request
 
 # Modes for directories and executables created by the install
@@ -61,6 +64,8 @@ install:
 	    $(INSTALL) -m $(FILEMODE) $$f $(SCRIPTSDIR); \
 	done
 	$(INSTALL) -m $(FILEMODE) bounces $(SCRIPTSDIR)/admin
+	$(INSTALL) -m $(FILEMODE) join    $(SCRIPTSDIR)/subscribe
+	$(INSTALL) -m $(FILEMODE) leave   $(SCRIPTSDIR)/unsubscribe
 
 finish:
 
