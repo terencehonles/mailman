@@ -810,7 +810,11 @@ it will not be changed.""")),
 	if Utils.list_exists(name):
 	    raise Errors.MMListAlreadyExistsError, name
         Utils.ValidateEmail(admin)
-        Utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
+        omask = os.umask(0)
+        try:
+            os.makedirs(os.path.join(mm_cfg.LIST_DATA_DIR, name), 02775)
+        finally:
+            os.umask(omask)
 	self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	self._internal_name = name
         # Don't use Lock() since that tries to load the non-existant config.db
