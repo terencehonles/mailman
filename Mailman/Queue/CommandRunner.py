@@ -130,7 +130,7 @@ Attached is your original message.
             resp.extend(indent(self.results))
         # Ignore empty lines
         unprocessed = [line for line in self.commands[self.lineno:]
-                       if line.strip()]
+                       if line and line.strip()]
         if unprocessed:
             resp.append(_('\n- Unprocessed:'))
             resp.extend(indent(unprocessed))
