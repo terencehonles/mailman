@@ -54,7 +54,25 @@ MAILMAN_URL = 'http://www.gnu.org/software/mailman/index.html'
 #MAILMAN_URL = 'http://www.list.org/'
 #MAILMAN_URL = 'http://mailman.sf.net/'
 
-# Site-specific settings
+# Mailman needs to know about (at least) two fully-qualified domain names
+# (fqdn); 1) the hostname used in your urls, and 2) the hostname used in email
+# addresses for your domain.  For example, if people visit your Mailman system
+# with "http://www.dom.ain/mailman" then your url fqdn is "www.dom.ain", and
+# if people send mail to your system via "yourlist@dom.ain" then your email
+# fqdn is "dom.ain".  DEFAULT_URL_HOST controls the former, and
+# DEFAULT_EMAIL_HOST controls the latter.  Mailman also needs to know how to
+# map from one to the other (this is especially important if you're running
+# with virtual domains).  You use "add_virtualhost(urlfqdn, emailfqdn)" to add
+# new mappings.
+#
+# If you don't need to change DEFAULT_EMAIL_HOST and DEFAULT_URL_HOST in your
+# mm_cfg.py, then you're done; the default mapping is added automatically.  If
+# however you change either variable in your mm_cfg.py, then be sure to also
+# include the following:
+#
+#     add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
+#
+# because otherwise the default mappings won't be correct.
 DEFAULT_EMAIL_HOST = '@FQDN@'
 DEFAULT_URL_HOST = '@URL@'
 DEFAULT_URL_PATTERN = 'http://%s/mailman/'
