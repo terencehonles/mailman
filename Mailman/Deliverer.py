@@ -74,6 +74,11 @@ class Deliverer:
         sender = msg.GetEnvelopeSender()
         if not sender:
             sender = msg.GetSender()
+        if sender:
+            if not '@' in sender:
+                sender = sender + "@" + mm_cfg.DEFAULT_HOST_NAME
+        else:
+            sender = self.GetAdminEmail()
         cmd = "%s %s" % (mm_cfg.PYTHON,
                          os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"))
         cmdproc = os.popen(cmd, 'w')
