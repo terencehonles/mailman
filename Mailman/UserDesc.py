@@ -42,3 +42,16 @@ class UserDesc:
         if getattr(other, 'language', None) is not None:
             self.language = other.language
         return self
+
+    def __repr__(self):
+        address = getattr(self, 'address', 'n/a')
+        fullname = getattr(self, 'fullname', 'n/a')
+        password = getattr(self, 'password', 'n/a')
+        digest = getattr(self, 'digest', 'n/a')
+        if digest == 0:
+            digest = 'no'
+        elif digest == 1:
+            digest = 'yes'
+        language = getattr(self, 'language', 'n/a')
+        return '<UserDesc %s (%s) [%s] [digest? %s] [%s]>' % (
+            address, fullname, password, digest, language)
