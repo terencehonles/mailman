@@ -197,11 +197,11 @@ Receiver Verification
 
 Exim's receiver verification feature is very useful -- it lets Exim
 reject unrouteable addresses at SMTP time.  However, this is most useful
-for externally-originating mail that is addresses to mail in one of your
+for externally-originating mail that is addressed to mail in one of your
 local domains.  For Mailman list traffic, mail originates on your
 server, and is addressed to random external domains that are not under
 your control.  Furthermore, each message is addressed to many recipients
--- up to 500 if you use Mailman's default configuration, and don't tweak
+-- up to 500 if you use Mailman's default configuration and don't tweak
 SMTP_MAX_RCPTS.
 
 Doing receiver verification on Mailman list traffic is a recipe for
@@ -243,13 +243,6 @@ In order to ensure that Mailman can disable/remove bouncing addresses,
 you generally want to receive bounces for Mailman lists, even if those
 bounces are themselves not bounceable.  Thus, you might want to disable
 SMTP callback on bounce messages.
-
-If you do header and envelope callbacks, you can disable them for
-bounces to Mailman lists (it is quite common for internal hosts to
-bounce with a non-reachable internal address).  The idea is that you
-typically don't want non-bounceable email, but you'd better accept
-bounces to Mailman lists so that you can unsubscribe the people who
-are bouncing.
 
 With Exim 4, you can accomplish this using something like the following
 in your "RCPT TO" ACL:
