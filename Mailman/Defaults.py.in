@@ -62,6 +62,13 @@ ARCHIVE_TO_MBOX = 2
 #
 DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
 
+# Set this to 1 to enable gzipping of the downloadable archive .txt file.
+# Note that this is /extremely/ inefficient, so an alternative is to just
+# collect the messages in the associated .txt file and run a cron job every
+# night to generate the txt.gz file.  There isn't any built-in Mailman support 
+# for this yet though.
+GZIP_ARCHIVE_TXT_FILES = 0
+
 
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
