@@ -64,12 +64,8 @@ try:
 	current_list.Post(msg)
     except Errors.MMNeedApproval, err_msg:
 	if (current_list.dont_respond_to_post_requests
-            or err_msg == Errors.MODERATED_LIST_MSG
-            or err_msg == Errors.IMPLICIT_DEST_MSG
-            or err_msg == Errors.SUSPICIOUS_HEADER_MSG
-            or err_msg == Errors.FORBIDDEN_SENDER_MSG):
-            # Do not send hold-for-approval notices for moderated messages
-	    # or potential spam.
+            or err_msg == Errors.MODERATED_LIST_MSG):
+            # Do not send hold-for-approval notices for moderated messages.
             current_list.Unlock()
 	    sys.exit(0)
             
