@@ -1453,5 +1453,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetAvailableLanguages(self):
         dirs = Utils.GetDirectories(self._full_path)
+        # If we don't add this, and the site admin has never added any
+        # language support to the list, then the general admin page may have a
+        # blank field where the list owner is supposed to chose the list's
+        # preferred language.
         dirs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
         return [d for d in dirs if mm_cfg.LC_DESCRIPTIONS.has_key(d)]
