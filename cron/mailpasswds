@@ -63,7 +63,8 @@ def MailAllPasswords(list, users):
    			    recipient = user,
    			    text = text,
  			    sender = mm_cfg.MAILMAN_OWNER,
-                            add_headers = ["X-No-Archive: yes"])
+                            add_headers = ["X-No-Archive: yes",
+                                           "Precedence: bulk"])
         count = count - 1
         if count == 0:
             # The pause that refreshes.
