@@ -678,23 +678,3 @@ except ImportError:
         for i in range(0, len(s), 2):
             append(chr(int16(s[i:i+2], 16)))
         return string.join(acc, '')
-
-
-
-def write(*args, **kws):
-    file = sys.stdout
-    sep = ' '
-    end = '\n'
-    if kws.has_key('file'):
-        file = kws['file']
-        del kws['file']
-    if kws.has_key('nl'):
-        if not kws['nl']:
-            end = ' '
-        del kws['nl']
-    if kws.has_key('sep'):
-        sep = kws['sep']
-        del kws['sep']
-    if kws:
-        raise TypeError('unexpected keywords')
-    file.write(string.join(map(str, args), sep) + end)
