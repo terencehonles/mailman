@@ -40,7 +40,7 @@ class Autoresponder:
             ('autorespond_postings', mm_cfg.Toggle, ('No', 'Yes'), 0,
              'Should Mailman send an auto-response to mailing list posters?'),
 
-            ('autoresponse_postings_text', mm_cfg.Text, ('6', '30'), 0,
+            ('autoresponse_postings_text', mm_cfg.FileUpload, ('6', '30'), 0,
              """Auto-response text to send to mailing list posters.
 Python %(string)s interpolation is performed on the text with the following
 key/value pairs.<p>
@@ -53,7 +53,7 @@ key/value pairs.<p>
              'Should Mailman send an auto-response to emails sent to the '
              '-admin address?'),
 
-            ('autoresponse_admin_text', mm_cfg.Text, ('6', '30'), 0,
+            ('autoresponse_admin_text', mm_cfg.FileUpload, ('6', '30'), 0,
              """Auto-response text to send to -admin emails.
 Python %(string)s interpolation is performed on the text with the following
 key/value pairs.<p>
