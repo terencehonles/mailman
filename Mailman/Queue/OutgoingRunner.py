@@ -1,6 +1,4 @@
-#! /usr/bin/env python
-#
-# Copyright (C) 2000 by the Free Software Foundation, Inc.
+# Copyright (C) 2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,40 +16,62 @@
 
 """Outgoing queue runner."""
 
+import sys
+import os
+
 from Mailman import mm_cfg
-from Mailman.Queue import Runner
-from Mailman.Handlers import HandlerAPI
+from Mailman import Errors
+from Mailman.Queue.Runner import Runner
 
 
 
-class OutgoingRunner(Runner.Runner):
-    def __init__(self, cachelists=1):
-        Runner.Runner.__init__(self, mm_cfg.OUTQUEUE_DIR)
+class OutgoingRunner(Runner):
+    def __init__(self, slice=None, numslices=1, cachelists=1):
+        Runner.__init__(self, mm_cfg.OUTQUEUE_DIR,
+                        slice, numslices, cachelists)
 
-    def _dispose_message(self, msg, msgdata):
-        # TBD: refactor this stanza.
-        # Find out which mailing list this message is destined for
-        listname = msgdata.get('listname')
-        if not listname:
-            syslog('qrunner', 'qfile metadata specifies no list: %s' % root)
-            return 1
-        mlist = self._open_list(listname)
-        if not mlist:
-            syslog('qrunner',
-                   'Dequeuing message destined for missing list: %s' % root)
-            self._dequeue(root)
-            return 1
-        # Now try to get the list lock
+    def _dispose(self, mlist, msg, msgdata):
+        # Fortunately, we do not need the list lock to do deliveries.
+        handler = mm_cfg.DELIVERY_MODULE
+        modname = 'Mailman.Handlers.' + handler
+        mod = __import__(modname)
+        func = getattr(sys.modules[modname], 'process')
         try:
-            mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-        except LockFile.TimeOutError:
-            # oh well, try again later
+            pid = os.getpid()
+            func(mlist, msg, msgdata)
+            # Failsafe -- a child may have leaked through.
+            if pid <> os.getpid():
+                syslog('error', 'child process leaked through: %s' % modname)
+                os._exit(1)
+        except Errors.SomeRecipientsFailed:
+            # The delivery module being used (SMTPDirect or Sendmail) failed
+            # to deliver the message to one or all of the recipients.  Requeue
+            # the message so that delivery to those temporary failures are
+            # retried later.
+            #
+            # Consult and adjust some meager metrics that try to decide
+            # whether it's worth continuing to attempt delivery of this
+            # message.
+            now = time.time()
+            recips = msgdata['recips']
+            last_recip_count = msgdata.get('last_recip_count', 0)
+            deliver_until = msgdata.get('deliver_until', now)
+            if len(recips) == last_recip_count:
+                # We didn't make any progress.
+                if now > deliver_until:
+                    # We won't attempt delivery any longer.
+                    return 0
+            else:
+                # Keep trying to delivery this for 3 days
+                deliver_until = now + mm_cfg.DELIVERY_RETRY_PERIOD
+            msgdata['last_recip_count'] = len(recips)
+            msgdata['deliver_until'] = deliver_until
+            # Requeue
             return 1
-        #
-        # runner specific code
-        try:
-            msgdata['pipeline'] = [mm_cfg.DELIVERY_MODULE]
-            return HandlerAPI.DeliverToList(mlist, msg, msgdata)
-        finally:
-            mlist.Save()
-            mlist.Unlock()
+        except Exception, e:
+            # Some other exception occurred, which we definitely did not
+            # expect, so set this message up for requeuing.
+            self._log(e)
+            return 1
+        # We've successfully completed handling of this message
+        return 0
