@@ -333,8 +333,18 @@ upgrade.
 
           % bin/mailmanctl start
 
-      You can use the mailmanctl script as a typical Unix init
-      script.  [BAW: add more here.]
+      If you want to start Mailman every time you reboot your system,
+      you should do the following as root (note I'm assuming you have
+      an /etc/init.d directory; some Unixes may put that in
+      /etc/rc.d/init.d):
+
+          % cp misc/S98mailman /etc/init.d/mailman
+          % cd /etc/rc.d/rc2.d
+          % ln -s ../init.d/mailman S98mailman
+          % cd ../rc3.d
+          % ln -s ../init.d/mailman S98mailman
+          % cd ../rc5.d
+          % ln -s ../init.d/mailman S98mailman
 
     - Add aliases for `mailman' and `mailman-owner' to the system's
       mail alias database.  These aliases should point to whoever is
