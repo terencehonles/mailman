@@ -1,0 +1,30 @@
+Este texto pode incluir
+<a href="http://www.python.org/doc/current/lib/typesseq-strings.html">strings 
+de formatação em Python</a> as quais são resolvidas em relação à lista de
+atributos ??????? atributos da lista.
+As substituições permitidas são:
+
+<ul>
+    <li><b><code>real_name</code></b> - O nome `bonito' da lista; normalmente
+    é o nome da lista com alguma capitalização.
+
+    <li><b><code>list_name</code></b> - O nome pelo qual a lista é
+    identificada em URLs, as quais são sensíveis à capitalização.
+    (para garantir compatibilidade  <code>_internal_name</code> é
+    equivalente.)
+
+    <li><b><code>host_name</code></b> - O nome completo do servidor onde 
+    corre o servidor da lista.
+
+    <li><b><code>web_page_url</code></b> - A URL base do Mailman. A ela
+    pode-se acrescentar, por exemplo,
+    <em><code>listinfo/%(internal_name)s</code></em> para obter a página de
+    informações da lista. ????? internal_name ou list_name?????
+
+    <li><b><code>description</code></b> - Uma breve descrição da lista
+    de discussão.
+
+    <li><b><code>info</code></b> - A descrilção completa.
+
+    <li><b><code>cgiext</code></b> - A extensão utilizada em scripts CGI.
+</ul>
