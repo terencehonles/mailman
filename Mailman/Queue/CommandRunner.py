@@ -26,16 +26,119 @@
 # BAW: get rid of this when we Python 2.2 is a minimum requirement.
 from __future__ import nested_scopes
 
+import sys
 import re
+from types import StringType, UnicodeType
 
 from Mailman import mm_cfg
-from Mailman.Bouncers import BouncerAPI
-from Mailman.Handlers import SpamDetect
-
+from Mailman import Utils
+from Mailman import Message
+from Mailman.i18n import _
 from Mailman.Queue.Runner import Runner
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Syslog import syslog
 from Mailman import LockFile
+
+from email.MIMEText import MIMEText
+from email.MIMEMessage import MIMEMessage
+from email.Iterators import typed_subpart_iterator
+
+NL = '\n'
+
+
+
+class Results:
+    def __init__(self, mlist, msg, msgdata):
+        self.mlist = mlist
+        self.msg = msg
+        self.msgdata = msgdata
+        # Only set returnaddr if the response is to go to someone other than
+        # the address specified in the From: header (e.g. for the password
+        # command).
+        self.returnaddr = None
+        self.commands = []
+        self.results = []
+        self.ignored = []
+        self.lineno = 0
+        # Always process the Subject: header first
+        self.commands.append(msg['subject'])
+        # Find the first text/plain part
+        part = None
+        for part in typed_subpart_iterator(msg, 'text', 'plain'):
+            break
+        if part is None or part is not msg:
+            # Either there was no text/plain part or we ignored some
+            # non-text/plain parts.
+            self.results.append(_('Ignoring non-text/plain MIME parts'))
+        body = part.get_payload()
+        # text/plain parts better have string payloads
+        assert isinstance(body, StringType) or isinstance(body, UnicodeType)
+        lines = body.splitlines()
+        # Use no more lines than specified
+        self.commands.extend(lines[:mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES])
+        self.ignored.extend(lines[mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES:])
+
+    def process(self):
+        # Now, process each line until we find an error.  The first
+        # non-command line found stops processing.
+        stop = 0
+        for line in self.commands:
+            if line and line.strip():
+                args = line.split()
+                cmd = args.pop(0).lower()
+                stop = self.do_command(cmd, args)
+            self.lineno += 1
+            if stop:
+                break
+
+    def do_command(self, cmd, args=None):
+        if args is None:
+            args = ()
+        # Try to import a command handler module for this command
+        modname = 'Mailman.Commands.cmd_' + cmd
+        try:
+            __import__(modname)
+            handler = sys.modules[modname]
+        except ImportError:
+            # If we're on line zero, it was the Subject: header that
+            # didn't contain a command.  This isn't enough to stop
+            # processing.  BAW: should we include a message that the
+            # Subject: was ignored?
+            return self.lineno <> 0
+        return handler.process(self, args)
+
+    def make_response(self):
+        def indent(lines):
+            return ['    ' + line for line in lines]
+
+        resp = [Utils.wrap(_("""\
+The results of your email command are provided below.
+Attached is your original message.
+"""))]
+        if self.results:
+            resp.append(_('- Results:'))
+            resp.extend(indent(self.results))
+        # Ignore empty lines
+        unprocessed = [line for line in self.commands[self.lineno:]
+                       if line.strip()]
+        if unprocessed:
+            resp.append(_('\n- Unprocessed:'))
+            resp.extend(indent(unprocessed))
+        if self.ignored:
+            resp.append(_('\n- Ignored:'))
+            resp.extend(indent(self.ignored))
+        resp.append(_('\n- Done.\n\n'))
+        results = MIMEText(
+            NL.join(resp),
+            _charset=Utils.GetCharSet(self.mlist.preferred_language))
+        msg = Message.UserNotification(
+            self.returnaddr or self.msg.get_sender(),
+            self.mlist.GetBouncesEmail(),
+            _('The results of your email commands'))
+        msg.set_type('multipart/mixed')
+        msg.attach(results)
+        orig = MIMEMessage(self.msg)
+        msg.attach(orig)
+        return msg
 
 
 
@@ -43,6 +146,7 @@ class CommandRunner(Runner):
     QDIR = mm_cfg.CMDQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
+        res = Results(mlist, msg, msgdata)
         # BAW: Not all the functions of this qrunner require the list to be
         # locked.  Still, it's more convenient to lock it here and now and
         # deal with lock failures in one place.
@@ -51,45 +155,22 @@ class CommandRunner(Runner):
         except LockFile.TimeOutError:
             # Oh well, try again later
             return 1
-        # runner specific code
-        #
         # This message will have been delivered to one of mylist-request,
         # mylist-join, or mylist-leave, and the message metadata will contain
-        # a key to which one was used.  BAW: The tojoin and toleave actions
-        # are hacks!
-        def parsecmd():
-            try:
-                mlist.ParseMailCommands(msg, msgdata)
-            except LockFile.TimeOutError:
-                # We probably could not get the lock on the pending
-                # database.  That's okay, we'll just try again later.
-                return 1
-            return 0
+        # a key to which one was used.
         try:
-            status = 0
             if msgdata.get('torequest'):
-                # Just pass the message off the command handler
-                status = parsecmd()
+                res.process()
             elif msgdata.get('tojoin'):
-                del msg['subject']
-                msg['Subject'] = 'join'
-                msg.set_payload('')
-                status = parsecmd()
+                res.do_command('join')
             elif msgdata.get('toleave'):
-                del msg['subject']
-                msg['Subject'] = 'leave'
-                msg.set_payload('')
-                status = parsecmd()
+                res.do_command('leave')
             elif msgdata.get('toconfirm'):
                 mo = re.match(mm_cfg.VERP_CONFIRM_REGEXP, msg.get('to', ''))
                 if mo:
-                    # BAW: blech, this should not hack the Subject: header,
-                    # but this is quick and dirty until we rewrite email
-                    # command handling.
-                    del msg['subject']
-                    msg['Subject'] = 'confirm ' + mo.group('cookie')
-                status = parsecmd()
+                    res.do_command('confirm', (mo.group('cookie'),))
+            msg = res.make_response()
+            msg.send(mlist)
             mlist.Save()
-            return status
         finally:
             mlist.Unlock()
