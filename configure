@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.7 
+# From configure.in Revision: 1.9 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.12 
@@ -974,7 +974,7 @@ fi
 
 if test -z "$with_mail_gid"
 then
-    with_mail_gid="other daemon"
+    with_mail_gid="other mail daemon"
 fi
 echo "$ac_t""$with_mail_gid" 1>&6
 
