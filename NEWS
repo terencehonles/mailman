@@ -16,6 +16,9 @@ Here is a history of user visible changes to Mailman.
       given, the removal is performed immediately.  If no password is
       given, then a confirmation message is generated.
 
+    - In email commands, "join" is a synonym for "subscribe". "remove"
+      and "leave" are synonyms for "unsubscribe".
+
     - Fixes in 2.0.3 ported forward:
 
         Bug fix release.  There was a small typo in 2.0.2 in
