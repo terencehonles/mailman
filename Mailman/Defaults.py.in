@@ -659,7 +659,7 @@ QRUNNER_SLEEP_TIME = seconds(1)
 # broken MIME encapsulation, and the most common cause of that is viruses like
 # Nimda.  Set this variable to 0 to discard such messages, or to 1 to store
 # them in qfiles/bad subdirectory.
-QRUNNER_SAVE_BAD_MESSAGES = 0
+QRUNNER_SAVE_BAD_MESSAGES = 1
 
 
 
