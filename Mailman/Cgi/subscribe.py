@@ -19,118 +19,129 @@
 """Process subscription or roster requests from listinfo form."""
 
 import sys
-import os, cgi, string
-from regsub import gsub
-from Mailman import Utils, MailList, Errors, htmlformat
+import os
+import string
+import cgi
+
+from Mailman import Utils
+from Mailman import MailList
+from Mailman import Errors
+from Mailman.htmlformat import *
 from Mailman import mm_cfg
 
-def main():
-    doc = htmlformat.Document()
-    if not os.environ.has_key("PATH_INFO"):
-        doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("You must include a listname in the url."))
-        print doc.Format(bgcolor="#ffffff")
-        sys.exit(0)
-    path = os.environ['PATH_INFO']
-    list_info = Utils.GetPathPieces(path)
-    list_name = string.lower(list_info[0])
 
-    if len(list_info) < 1:
-        doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
+
+def main():
+    doc = Document()
+    try:
+        path = os.environ['PATH_INFO']
+    except KeyError:
+        doc.AddItem(Header(2, "Error"))
+        doc.AddItem(Bold("You must include a listname in the url."))
         print doc.Format(bgcolor="#ffffff")
-        sys.exit(0)
+        return
+
+    parts = Utils.GetPathPieces(path)
+    if len(parts) < 1:
+        doc.AddItem(Header(2, "Error"))
+        doc.AddItem(Bold("Invalid options to CGI script."))
+        print doc.Format(bgcolor="#ffffff")
+        return
+        
+    listname = string.lower(parts[0])
+    try:
+        mlist = MailList.MailList(listname)
+    except (Errors.MMUnknownListError, Errors.MMListNotReady):
+        doc.AddItem(Header(2, "Error"))
+        doc.AddItem(Bold("%s: No such list." % listname))
+        print doc.Format(bgcolor="#ffffff")
+        return
 
     try:
-      list = MailList.MailList(list_name)
-    except:
-      doc.AddItem(htmlformat.Header(2, "Error"))
-      doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
-      print doc.Format(bgcolor="#ffffff")
-      sys.exit(0)
+        process_form(mlist, doc)
+    finally:
+        mlist.Save()
+        mlist.Unlock()
 
 
-    if not list._ready:
-        doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
-        print doc.Format(bgcolor="#ffffff")
-        list.Unlock()
-        sys.exit(0)
+
+def call_script(mlist, member, which):
+    """A hack to call one of the other CGI scripts."""
+    os.environ['PATH_INFO'] = string.join([mlist.internal_name(), member], '/')
+    pkg = __import__('Mailman.Cgi', globals(), locals(), [which])
+    mod = getattr(pkg, which)
+    mlist.Save()
+    mlist.Unlock()
+    mod.main()
+    # skip finally clause above since we've already saved and unlocked the list
+    os._exit(0)
 
+
+
+def process_form(mlist, doc):
     form = cgi.FieldStorage()
-
     error = 0
     results = ''
 
-    def call_script(which, pathinfo, list):
-        "A little bit of a hack to call one of the scripts..."
-        os.environ['PATH_INFO'] = string.join(pathinfo, '/')
-        list.Unlock()
-        pkg = __import__('Mailman.Cgi', globals(), locals(), [which])
-        mod = getattr(pkg, which)
-        mod.main()
-        sys.exit(0)
-
-    #######
     # Preliminaries done, actual processing of the form input below.
-
     if form.has_key("UserOptions") or \
-       form.has_key("info") and not \
-       form.has_key("email"):
+            form.has_key("info") and \
+            not form.has_key("email"):
         # then
         # Go to user options section.
         if not form.has_key("info"):
-            doc.AddItem(htmlformat.Header(2, "Error"))
-            doc.AddItem(
-                htmlformat.Bold("You must supply your email address."))
-            doc.AddItem(list.GetMailmanFooter())
+            doc.AddItem(Header(2, "Error"))
+            doc.AddItem(Bold("You must supply your email address."))
+            doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor="#ffffff")
-            list.Unlock()
-            sys.exit(0)
+            return
+
         addr = form['info'].value
-        member = list.FindUser(addr)
+        member = mlist.FindUser(addr)
         if not member:
-            doc.AddItem(htmlformat.Header(2, "Error"))
-            doc.AddItem(htmlformat.Bold("%s has no subscribed addr <i>%s</i>."
-                                        % (list.real_name, addr)))
-            doc.AddItem(list.GetMailmanFooter())
+            doc.AddItem(Header(2, "Error"))
+            doc.AddItem(Bold("%s has no subscribed addr <i>%s</i>."
+                             % (mlist.real_name, addr)))
+            doc.AddItem(mlist.GetMailmanFooter())
             print doc.Format(bgcolor="#ffffff")
-            list.Unlock()
-            sys.exit(0)
-        list.Unlock()
-        call_script('options', [list._internal_name, member], list)
-        return                          # Should not get here!
+            return
+
+        call_script(mlist, member, 'options')
+        # should never get here!
+        assert 0
 
     if not form.has_key("email"):
         error = 1
         results = results + "You must supply a valid email address.<br>"
         #
         # define email so we don't get a NameError below
-        # with if email == list.GetListEmail() -scott
+        # with if email == mlist.GetListEmail() -scott
         #
         email = ""
     else:
         email = form["email"].value
 
     remote = remote_addr()
-    if email == list.GetListEmail():
+    if email == mlist.GetListEmail():
         error = 1
-        if remote: remote = "Web site " + remote
-        else:      remote = "unidentified origin"
+        if remote:
+            remote = "Web site " + remote
+        else:
+            remote = "unidentified origin"
         badremote = "\n\tfrom " + remote
-        list.LogMsg("mischief", ("Attempt to self subscribe %s:%s"
+        mlist.LogMsg("mischief", ("Attempt to self subscribe %s:%s"
                                  % (email, badremote)))
         results = results + "You must not subscribe a list to itself!<br>"
 
     if not form.has_key("pw") or not form.has_key("pw-conf"):
         error = 1
-        results = (results
-                   + "You must supply a valid password, and confirm it.<br>")
+        results = (results +
+                   "You must supply a valid password, and confirm it.<br>")
     else:
         pw  = form["pw"].value
         pwc = form["pw-conf"].value
 
-    if not error and (pw <> pwc):
+    if not error and pw <> pwc:
         error = 1
         results = results + "Your passwords did not match.<br>"
 
@@ -141,24 +152,24 @@ def main():
             # TBD: Hmm, this shouldn't happen
             digest = 0
 
-    if not list.digestable:
+    if not mlist.digestable:
         digest = 0
-    elif not list.nondigestable:
+    elif not mlist.nondigestable:
         digest = 1
 
     if error:
-        PrintResults(list, results, doc)
+        PrintResults(mlist, results, doc)
     else:
         try:
-            if list.FindUser(email):
-                raise Errors.MMAlreadyAMember
+            if mlist.FindUser(email):
+                raise Errors.MMAlreadyAMember, email
             if digest:
                 digesting = " digest"
             else:
                 digesting = ""
-            list.AddMember(email, pw, digest, remote)
+            mlist.AddMember(email, pw, digest, remote)
         #
-        # check for all the errors that list.AddMember can throw
+        # check for all the errors that mlist.AddMember can throw
         # options  on the web page for this cgi
         #
         except Errors.MMBadEmailError:
@@ -199,23 +210,20 @@ def main():
         else:
             results = results + \
                       "You have been successfully subscribed to %s." % \
-                      (list.real_name)
-    list.Save()
-    PrintResults(list, results, doc)
-    list.Unlock()
+                      (mlist.real_name)
+    PrintResults(mlist, results, doc)
 
 
 
-def PrintResults(list, results, doc):
-    replacements = list.GetStandardReplacements()
+def PrintResults(mlist, results, doc):
+    replacements = mlist.GetStandardReplacements()
     replacements['<mm-results>'] = results
-    output = list.ParseTags('subscribe.html', replacements)
-
+    output = mlist.ParseTags('subscribe.html', replacements)
     doc.AddItem(output)
     print doc.Format(bgcolor="#ffffff")
-    list.Unlock()
-    sys.exit(0)
 
+
+
 def remote_addr():
     "Try to return the remote addr, or if unavailable, None."
     if os.environ.has_key('REMOTE_HOST'):
@@ -224,4 +232,3 @@ def remote_addr():
         return os.environ['REMOTE_ADDR']
     else:
         return None
-                                
