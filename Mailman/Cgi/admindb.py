@@ -193,7 +193,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     # Header shown on each held posting (including count of total)
     msg = _('Posting Held for Approval')
     if total <> 1:
-        msg += _(' (%d of %d)') % (count, total)
+        msg += _(' (%(count)d of %(total)d)')
     form.AddItem(Center(Header(2, msg)))
     # We need to get the headers and part of the textual body of the message
     # being held.  The best way to do this is to use the mimelib Parser to get
