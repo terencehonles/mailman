@@ -4,7 +4,7 @@ Public archives are separated from private ones.  An external archival
 mechanism (eg, pipermail) should be pointed to the right places, to do the
 archival."""
 
-__version__ = "$Revision: 421 $"
+__version__ = "$Revision: 441 $"
 
 import sys, os, string
 import mm_utils, mm_mbox, mm_cfg, mm_message
@@ -20,14 +20,6 @@ class Archiver:
 	self.archive = 1
 	# 0=public, 1=private:
 	self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
-	# Though the archive file dirs are instance vars, they are not
-	# settable from the web interface.  If you REALLY want to redirect
-	# something to a different dir, you can set the member vars by
-	# hand, from the python interpreter!
-	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
-	self.private_archive_file_dir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
-	self.archive_directory = os.path.join(mm_cfg.HTML_DIR, "archives/%s" % 
-					      self._internal_name)
 ## 	self.archive_update_frequency = \
 ## 		 mm_cfg.DEFAULT_ARCHIVE_UPDATE_FREQUENCY
 ## 	self.archive_volume_frequency = \
@@ -37,6 +29,14 @@ class Archiver:
 
 	# Not configurable
 	self.clobber_date = 0
+	# Though the archive file dirs are list-specific, they are not
+	# settable from the web interface.  If you REALLY want to redirect
+	# something to a different dir, you can set the member vars by
+	# hand, from the python interpreter!
+	self.public_archive_file_dir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
+	self.private_archive_file_dir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
+	self.archive_directory = os.path.join(mm_cfg.HTML_DIR, "archives/%s" % 
+					      self._internal_name)
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
@@ -74,7 +74,7 @@ class Archiver:
 	    ]
 
     def UpdateArchive(self):
-	# This method is being deprecated, in favor of external archiver!
+	# This method is not being used, in favor of external archiver!
 	if not self.archive:
 	    return
 	archive_file_name = os.path.join(self._full_path, ARCHIVE_PENDING)
