@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 440 $"
+__version__ = "$Revision: 465 $"
 
 try:
     import mm_cfg
@@ -204,7 +204,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     ' text will be added to the unsubscribe message.'),
 
 	    ('reply_goes_to_list', mm_cfg.Radio, ('Poster', 'List'), 0,
-	     'Are replies to a the original post directed to poster'
+	     'Are replies to a post directed to the original poster'
 	     ' or to the list?',
 
              "List postings include headers which designate where replies"
