@@ -21,8 +21,8 @@ import sys
 import mailbox
 
 import email
-from email.Generator import Generator
 from email.Parser import Parser
+from email.Generator import Generator
 from email.Errors import MessageParseError
 
 from Mailman import mm_cfg
