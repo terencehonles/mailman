@@ -29,4 +29,4 @@
 
 若有任何使用上的問題請 email 到:
 
-mailman-owner@%(hostname)s
+%(siteowner)s

@@ -32,4 +32,4 @@ Where that user would put in their password to unsubscribe, put in
 your admin password.  You can also use your password to change
 member's options, including digestification, delivery disabling, etc.
 
-Please address all questions to mailman-owner@%(hostname)s.
+Please address all questions to %(siteowner)s.

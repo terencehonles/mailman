@@ -34,4 +34,4 @@ introduzca la misma, como si usted fuera él. Utilice la clave de
 adminstración en lugar de la clave del usuario. Tambien puede usar la
 clave de administración para cambiar las opciones de los usuarios.
 
-Por favor, remita sus dudas a mailman-owner@%(hostname)s.
+Por favor, remita sus dudas a %(siteowner)s.

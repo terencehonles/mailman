@@ -37,4 +37,4 @@ de passe, entrez votre mot de passe d'administrateur. Vous pouvez
 aussi utiliser votre mot de passe pour changer les préférences des
 membres y compris les messages groupés, la désactivation, etc.
 
-Pour toute question adressez-vous à mailman-owner@%(hostname)s. 
+Pour toute question adressez-vous à %(siteowner)s. 

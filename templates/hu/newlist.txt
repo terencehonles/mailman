@@ -33,4 +33,4 @@ leiratkozasi helyen. A listatag beallitasait (peldaul digest vagy
 nem-digest formaju levelek fogadasa, vagy szuneteltetese, stb.)
 az adminisztrator jelszoval is elvegezheted.
 
-Tovabbi kerdeseiddel fordulj ide mailman-owner@%(hostname)s.
+Tovabbi kerdeseiddel fordulj ide %(siteowner)s.
