@@ -369,10 +369,7 @@ class Privacy(GUIBase):
 
              <p>Note that leading whitespace is trimmed from the regexp.  This
              can be circumvented in a number of ways, e.g. by escaping or
-             bracketing it.
-             
-             <p> See also the <em>forbidden_posters</em> option for a related
-             mechanism.""")),
+             bracketing it.""")),
 
           ('anonymous_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
            _("""Hide the sender of a message, replacing it with the list
