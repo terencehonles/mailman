@@ -10,4 +10,4 @@ should read:
     system.  For example, on many Solaris machines this file is
     located in /etc/mail/aliases.
 
--Barry
+[published.ps.gz is compressed with GNU gzip]
