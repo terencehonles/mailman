@@ -764,6 +764,7 @@ add_language('es', _('Spanish (Spain)'), 'iso-8859-1')
 add_language('fr', _('French'),          'iso-8859-1')
 add_language('it', _('Italian'),         'iso-8859-1')
 add_language('ja', _('Japanese'),        'euc-jp')
+add_language('no', _('Norwegian'),       'iso-8859-1')
 
 del _                                   
 
