@@ -86,7 +86,7 @@ def process(res, args):
          'requestaddr' : mlist.GetRequestEmail(),
          'adminaddr'   : mlist.GetOwnerEmail(),
          'commands'    : commands,
-         }, mlist=mlist, raw=1)
+         }, mlist=mlist, lang=res.msgdata['lang'], raw=1)
     # Now add to the response
     res.results.append('help')
     res.results.append(helptext)
