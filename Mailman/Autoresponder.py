@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 """
 
 from Mailman import mm_cfg
+from Mailman.i18n import _
 
 
 
@@ -44,7 +45,8 @@ class Autoresponder:
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         return [
-            """Auto-responder characteristics.<p>
+            _("""\
+Auto-responder characteristics.<p>
 
 In the text fields below, Python %(string)s interpolation is performed with
 the following key/value substitutions:
@@ -57,37 +59,38 @@ the following key/value substitutions:
 </ul>
 
 <p>For each text field, you can either enter the text directly into the text
-box, or you can specify a file on your local system to upload as the text.""",
+box, or you can specify a file on your local system to upload as the text."""),
 
-            ('autorespond_postings', mm_cfg.Toggle, ('No', 'Yes'), 0,
-             'Should Mailman send an auto-response to mailing list posters?'),
+            ('autorespond_postings', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+             _('''Should Mailman send an auto-response to mailing list
+             posters?''')),
 
             ('autoresponse_postings_text', mm_cfg.FileUpload,
              (6, WIDTH), 0,
-             'Auto-response text to send to mailing list posters.'),
+             _('Auto-response text to send to mailing list posters.')),
 
             ('autorespond_admin', mm_cfg.Toggle, ('No', 'Yes'), 0,
-             '''Should Mailman send an auto-response to emails sent to the
--admin and -owner addresses?'''),
+             _('''Should Mailman send an auto-response to emails sent to the
+             -admin and -owner addresses?''')),
 
             ('autoresponse_admin_text', mm_cfg.FileUpload,
              (6, WIDTH), 0,
-             'Auto-response text to send to -admin and -owner emails.'),
+             _('Auto-response text to send to -admin and -owner emails.')),
 
             ('autorespond_requests', mm_cfg.Radio,
-             ('No', 'Yes, w/discard', 'Yes, w/forward'), 0,
-             '''Should Mailman send an auto-response to emails sent to the
--request address?  If you choose yes, decide whether you want Mailman to
-discard the original email, or forward it on to the system as a normal mail
-command.'''),
+             (_('No'), _('Yes, w/discard'), _('Yes, w/forward')), 0,
+             _('''Should Mailman send an auto-response to emails sent to the
+             -request address?  If you choose yes, decide whether you want
+             Mailman to discard the original email, or forward it on to the
+             system as a normal mail command.''')),
 
             ('autoresponse_request_text', mm_cfg.FileUpload,
              (6, WIDTH), 0,
-             'Auto-response text to send to -request emails.'),
+             _('Auto-response text to send to -request emails.')),
 
             ('autoresponse_graceperiod', mm_cfg.Number, 3, 0,
-             '''Number of days between auto-responses to either the mailing
-list or -admin/-owner address from the same poster.  Set to zero (or negative)
-for no grace period (i.e. auto-respond to every message).'''),
-
+             _('''Number of days between auto-responses to either the mailing
+             list or -admin/-owner address from the same poster.  Set to zero
+             (or negative) for no grace period (i.e. auto-respond to every
+             message).''')),
             ]
