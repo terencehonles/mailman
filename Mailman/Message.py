@@ -180,10 +180,18 @@ class Message(rfc822.Message):
 class OutgoingMessage(Message):
     def __init__(self, text=''):
         from Mailman.pythonlib.StringIO import StringIO
-        # NOTE: text if supplied must begin with valid rfc822 headers.  It can
-        # also begin with the body of the message but in that case you better
-        # make sure that the first line does NOT contain a colon!
-        Message.__init__(self, StringIO(text))
+        # Because of semantics imposed by rfc822.Message, text cannot have a
+        # colon on the first line because otherwise the Message class
+        # constructor will think the first line is an rfc822 header.  This can
+        # severely mess up the message.  If you want to set headers on this
+        # object, just the __setitem__ interface (i.e. msg['to']='somebody'.
+        #
+        # If text has a colon on the first line, the best thing to do is to
+        # prepend a blank line.
+        lines = string.split(text, '\n')
+        if string.count(lines[0], ':'):
+            lines.insert(0, '\n')
+        Message.__init__(self, StringIO(string.join(lines, '\n')))
 
 
 
