@@ -1,41 +1,36 @@
----- New stuff goes above this line. Do not change this line. ----
 1.0b6
 
-1.0b6
+ - Archiving is (finally) back in.
 
-  - Archiving is (finally) back in.
+ - Administrivia filter added.
 
-  - Administrivia filter added.
+ - Mail queue mechanism revamped with better concurrency control.
 
-  - Mail queue mechanism revamped with better concurrency control.
+ - For recipients that have estmp MTAs, set delivery notification
+   status so that only delivery failure notices are sent out,
+   inhibiting 4 hour and N day warning notices.
 
-  - For recipients that have estmp MTAs, set delivery notification
-    status so that only delivery failure notices are sent out,
-    inhibiting 4 hour and N day warning notices.
+ - Now expire old unconfirmed subscription requests, rather than keeping
+   them forever.
 
-  - Now expire old unconfirmed subscription requests, rather than keeping
-    them forever.
+ - Added proposed standard List-Id: header, and our own X-MailmanVersion
+   header.                                 
 
-  - Added proposed standard List-Id: header, and our own X-MailmanVersion
-    header.                                 
+ - Prevent havoc from attempts to subscribe a list to itself.  (!)
 
-  - Prevent havoc from attempts to subscribe a list to itself.  (!)
+ - Refine mail command processing to prevent loops.
 
-  - Refine mail command processing to prevent loops.
+ - Pending subscription DB redone with better locking and cleaner 
+   interface. 
 
-  - Pending subscription DB redone with better locking and cleaner 
-    interface. 
+ - posters functionality expanded.
 
-  - posters functionality expanded.
+ - Subcsription policy more flexible, sensible, and site-configurable.
 
-  - Subcsription policy more flexible, sensible, and site-configurable.
-
-  - Various and sundry bug fixes.
+ - Various and sundry bug fixes.
 
 
 1.0b5
-
-DONE $Revision: 1188 $, $Date: 1998-11-06 17:56:15 +0000 (Fri, 06 Nov 1998) $
 
  - New file locking that should be portable and work w/ NFS.
 
