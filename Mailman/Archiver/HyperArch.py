@@ -101,9 +101,9 @@ html_charset = '<META http-equiv="Content-Type" ' \
 
 def CGIescape(arg):
     if isinstance(arg, types.UnicodeType):
-        s = cgi.escape(arg)
+        s = Utils.websafe(arg)
     else:
-        s = cgi.escape(str(arg))
+        s = Utils.websafe(str(arg))
     return unicode_quote(s.replace('"', '&quot;'))
 
 # Parenthesized human name

@@ -344,9 +344,8 @@ def check_global_password(response, siteadmin=1):
 
 
 
-def QuoteHyperChars(str):
-    from cgi import escape
-    return escape(str, quote=1)
+def websafe(s):
+    return cgi.escape(s, quote=1)
 
 
 
@@ -563,7 +562,7 @@ def GetRequestURI(fallback=None, escape=1):
     elif os.environ.has_key('SCRIPT_NAME') and os.environ.has_key('PATH_INFO'):
         url = os.environ['SCRIPT_NAME'] + os.environ['PATH_INFO']
     if escape:
-        return cgi.escape(url)
+        return websafe(url)
     return url
 
 

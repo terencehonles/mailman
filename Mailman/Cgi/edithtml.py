@@ -63,7 +63,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         # Avoid cross-site scripting attacks
-        safelistname = cgi.escape(listname)
+        safelistname = Utils.websafe(listname)
         doc.AddItem(Header(2, _('No such list <em>%(safelistname)s</em>')))
         print doc.Format()
         syslog('error', 'No such list "%s": %s', listname, e)
@@ -99,7 +99,7 @@ def main():
                 break
         else:
             # Avoid cross-site scripting attacks
-            safetemplatename = cgi.escape(template_name)
+            safetemplatename = Utils.websafe(template_name)
             doc.SetTitle(_('Edit HTML : Error'))
             doc.AddItem(Header(2, _("%(safetemplatename)s: Invalid template")))
             doc.AddItem(mlist.GetMailmanFooter())
@@ -140,8 +140,7 @@ def FormatHTML(mlist, doc, template_name, template_info):
     doc.AddItem('<p>')
     doc.AddItem('<hr>')
     form = Form(mlist.GetScriptURL('edithtml') + '/' + template_name)
-    text = Utils.QuoteHyperChars(
-        Utils.maketext(template_name, raw=1, mlist=mlist))
+    text = Utils.websafe(Utils.maketext(template_name, raw=1, mlist=mlist))
     form.AddItem(TextArea('html_code', text, rows=40, cols=75))
     form.AddItem('<p>' + _('When you are done making changes...'))
     form.AddItem(SubmitButton('submit', _('Submit Changes')))

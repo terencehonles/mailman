@@ -51,7 +51,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         # Avoid cross-site scripting attacks
-        safelistname = cgi.escape(listname)
+        safelistname = Utils.websafe(listname)
         bad_confirmation(doc, _('No such list <em>%(safelistname)s</em>'))
         doc.AddItem(MailmanLogo())
         print doc.Format()
@@ -85,7 +85,7 @@ def main():
     days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
     confirmurl = mlist.GetScriptURL('confirm', absolute=1)
     # Avoid cross-site scripting attacks
-    safecookie = cgi.escape(cookie)
+    safecookie = Utils.websafe(cookie)
     badconfirmstr = _('''<b>Invalid confirmation string:</b>
     %(safecookie)s.
 
@@ -561,7 +561,7 @@ def heldmsg_confirm(mlist, doc, cookie):
             # the user who posted the message.
             op, id = Pending.confirm(cookie, expunge=1)
             ign, sender, msgsubject, ign, ign, ign = mlist.GetRecord(id)
-            subject = cgi.escape(msgsubject)
+            subject = Utils.websafe(msgsubject)
             lang = mlist.getMemberLanguage(sender)
             i18n.set_language(lang)
             doc.set_language(lang)
@@ -617,8 +617,8 @@ def heldmsg_prompt(mlist, doc, cookie, id):
     i18n.set_language(lang)
     doc.set_language(lang)
 
-    subject = cgi.escape(msgsubject)
-    reason = cgi.escape(givenreason)
+    subject = Utils.websafe(msgsubject)
+    reason = Utils.websafe(givenreason)
     listname = mlist.real_name
     table.AddRow([_('''Your confirmation is required in order to cancel the
     posting of your message to the mailing list <em>%(listname)s</em>:

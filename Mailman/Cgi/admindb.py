@@ -81,7 +81,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         # Avoid cross-site scripting attacks
-        safelistname = cgi.escape(listname)
+        safelistname = Utils.websafe(listname)
         handle_no_list(_('No such list <em>%(safelistname)s</em>'))
         syslog('error', 'No such list "%s": %s\n', listname, e)
         return
@@ -193,7 +193,7 @@ def main():
              }
         addform = 1
         if sender:
-            esender = cgi.escape(sender)
+            esender = Utils.websafe(sender)
             d['description'] = _("all of %(esender)s's held messages.")
             doc.AddItem(Utils.maketext('admindbpreamble.html', d,
                                        raw=1, mlist=mlist))
@@ -353,7 +353,7 @@ def show_helds_overview(mlist, form):
     senders.sort()
     for sender in senders:
         qsender = quote_plus(sender)
-        esender = cgi.escape(sender)
+        esender = Utils.websafe(sender)
         senderurl = admindburl + '?sender=' + qsender
         # The encompassing sender table
         stable = Table(border=1)
@@ -448,7 +448,7 @@ def show_helds_overview(mlist, form):
             t = Table(border=0)
             t.AddRow([Link(admindburl + '?msgid=%d' % id, '[%d]' % counter),
                       Bold(_('Subject:')),
-                      cgi.escape(subject)
+                      Utils.websafe(subject)
                       ])
             t.AddRow(['&nbsp;', Bold(_('Size:')), str(size) + _(' bytes')])
             t.AddRow(['&nbsp;', Bold(_('Reason:')),
@@ -556,13 +556,13 @@ def show_post_requests(mlist, id, info, total, count, form):
     else:
         body = EMPTYSTRING.join(lines)
     hdrtxt = NL.join(['%s: %s' % (k, v) for k, v in msg.items()])
-    hdrtxt = cgi.escape(hdrtxt)
+    hdrtxt = Utils.websafe(hdrtxt)
     # Okay, we've reconstituted the message just fine.  Now for the fun part!
     t = Table(cellspacing=0, cellpadding=0, width='100%')
     t.AddRow([Bold(_('From:')), sender])
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
-    t.AddRow([Bold(_('Subject:')), cgi.escape(subject)])
+    t.AddRow([Bold(_('Subject:')), Utils.websafe(subject)])
     t.AddCellInfo(row+1, col-1, align='right')
     t.AddRow([Bold(_('Reason:')), _(reason)])
     t.AddCellInfo(row+2, col-1, align='right')
@@ -604,7 +604,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     row, col = t.GetCurrentRowIndex(), t.GetCurrentCellIndex()
     t.AddCellInfo(row, col-1, align='right')
     t.AddRow([Bold(_('Message Excerpt:')),
-              TextArea('fulltext-%d' % id, cgi.escape(body),
+              TextArea('fulltext-%d' % id, Utils.websafe(body),
                        rows=10, cols=80, readonly=1)])
     t.AddCellInfo(row+1, col-1, align='right')
     form.AddItem(t)

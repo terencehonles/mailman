@@ -53,7 +53,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         # Avoid cross-site scripting attacks
-        safelistname = cgi.escape(listname)
+        safelistname = Utils.websafe(listname)
         error_page(_('No such list <em>%(safelistname)s</em>'))
         syslog('error', 'roster: no such list "%s": %s', listname, e)
         return

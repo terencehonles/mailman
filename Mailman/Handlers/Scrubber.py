@@ -20,7 +20,6 @@
 import os
 import re
 import sha
-import cgi
 import errno
 import mimetypes
 import tempfile
@@ -99,7 +98,7 @@ URL: %(url)s
             else:
                 # HTML-escape it and store it as an attachment, but make it
                 # look a /little/ bit prettier. :(
-                payload = cgi.escape(part.get_payload())
+                payload = Utils.websafe(part.get_payload())
                 # For whitespace in the margin, change spaces into
                 # non-breaking spaces, and tabs into 8 of those.  Then use a
                 # mono-space font.  Still looks hideous to me, but then I'd
@@ -299,7 +298,7 @@ def save_attachment(mlist, msg, filter_html=1):
     elif msg.get_type() == 'message/rfc822':
         submsg = msg.get_payload()
         # BAW: I'm sure we can eventually do better than this. :(
-        decodedpayload = cgi.escape(str(submsg))
+        decodedpayload = Utils.websafe(str(submsg))
     fp = open(path, 'w')
     fp.write(decodedpayload)
     fp.close()

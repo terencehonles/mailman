@@ -361,7 +361,7 @@ class QuotedContainer(Container):
         # If I don't start a new I ignore indent
         output = '<%s>%s</%s>' % (
             self.tag,
-            Utils.QuoteHyperChars(Container.Format(self, indent)),
+            Utils.websafe(Container.Format(self, indent)),
             self.tag)
         return output
 

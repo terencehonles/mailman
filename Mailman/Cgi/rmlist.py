@@ -58,7 +58,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         # Avoid cross-site scripting attacks
-        safelistname = cgi.escape(listname)
+        safelistname = Utils.websafe(listname)
         title = _('No such list <em>%(safelistname)s</em>')
         doc.SetTitle(title)
         doc.AddItem(

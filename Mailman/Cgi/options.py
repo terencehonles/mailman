@@ -63,7 +63,7 @@ def main():
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
         # Avoid cross-site scripting attacks
-        safelistname = cgi.escape(listname)
+        safelistname = Utils.websafe(listname)
         title = _('CGI script error')
         doc.SetTitle(title)
         doc.AddItem(Header(2, title))
@@ -100,7 +100,7 @@ def main():
         user = Utils.LCDomain(Utils.UnobscureEmail(SLASH.join(parts[1:])))
 
     # Avoid cross-site scripting attacks
-    safeuser = cgi.escape(user)
+    safeuser = Utils.websafe(user)
     # Sanity check the user, but be careful about leaking membership
     # information when we're using private rosters.
     if not mlist.isMember(user) and mlist.private_roster == 0:
@@ -912,11 +912,11 @@ def topic_details(mlist, doc, user, cpuser, userlang, varhelp):
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
                       bgcolor=mm_cfg.WEB_SUBHEADER_COLOR)
     table.AddRow([Bold(Label(_('Name:'))),
-                  Utils.QuoteHyperChars(name)])
+                  Utils.websafe(name)])
     table.AddRow([Bold(Label(_('Pattern (as regexp):'))),
-                  '<pre>' + Utils.QuoteHyperChars(pattern) + '</pre>'])
+                  '<pre>' + Utils.websafe(pattern) + '</pre>'])
     table.AddRow([Bold(Label(_('Description:'))),
-                  Utils.QuoteHyperChars(description)])
+                  Utils.websafe(description)])
     # Make colors look nice
     for row in range(1, 4):
         table.AddCellInfo(row, 0, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
