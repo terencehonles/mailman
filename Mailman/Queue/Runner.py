@@ -17,7 +17,6 @@
 """Generic queue runner class.
 """
 
-import random
 import time
 import traceback
 import weakref
@@ -35,6 +34,7 @@ from Mailman.Logging.Syslog import syslog
 
 
 class Runner:
+    QDIR = None
     SLEEPTIME = mm_cfg.QRUNNER_SLEEP_TIME
 
     def __init__(self, slice=None, numslices=1):
@@ -160,7 +160,7 @@ class Runner:
             self._kids.update(kids)
         if keepqueued:
             self._switchboard.enqueue(msg, msgdata)
-        
+
     # Mapping of listnames to MailList instances as a weak value dictionary.
     _listcache = weakref.WeakValueDictionary()
 
