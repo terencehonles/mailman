@@ -1,12 +1,15 @@
-German translation for the MailMan project
+German translation for the Mailman project
 
-This is currently IN PROGRESS. Direct any questions, suggestions or flames to Jens Vagelpohl (jens@zope.com).
+This is currently IN PROGRESS. Direct any questions, suggestions or
+flames to Jens Vagelpohl (jens@zope.com).
 
 
 
-Deutsche Uebersetzung fuer das MailMan-Projekt
+Deutsche Uebersetzung fuer das Mailman-Projekt
 
-Diese Uebersetzung ist zur Zeit noch nicht komplettiert. Bitte wenden Sie sich an Jens Vagelpohl (jens@zope.com) mit allen Fragen, Ideen oder Kritik.
+Diese Uebersetzung ist zur Zeit noch nicht komplettiert. Bitte wenden
+Sie sich an Jens Vagelpohl (jens@zope.com) mit allen Fragen, Ideen
+oder Kritik.
 
 
 
@@ -16,3 +19,10 @@ Software Engineer
 Zope Corporation
 
 jens@zope.com
+
+
+
+Local Variables:
+mode: indented-text
+indent-tabs-mode: nil
+End:
