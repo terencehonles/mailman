@@ -173,8 +173,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return '%s-%s@%s' % (self.internal_name(), extra, self.host_name)
 
     # For backwards compatibility
-    def GetAdminEmail(self):
-        return self.getListAddress('admin')
+    def GetBouncesEmail(self):
+        return self.getListAddress('bounces')
 
     def GetOwnerEmail(self):
         return self.getListAddress('owner')
@@ -728,7 +728,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  'cookie'      : cookie,
                  'requestaddr' : self.GetRequestEmail(),
                  'remote'      : remote,
-                 'listadmin'   : self.GetAdminEmail(),
+                 'listadmin'   : self.GetOwnerEmail(),
                  'confirmurl'  : confirmurl,
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
@@ -808,7 +808,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         if ack:
             self.SendSubscribeAck(email, self.getMemberPassword(email), digest)
         if admin_notif:
-            adminaddr = self.GetAdminEmail()
             realname = self.real_name
             subject = _('%(realname)s subscription notification')
             text = Utils.maketext(
@@ -917,7 +916,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              'cookie'     : cookie,
              'requestaddr': self.GetRequestEmail(),
              'remote'     : '',
-             'listadmin'  : self.GetAdminEmail(),
+             'listadmin'  : self.GetOwnerEmail(),
              'confirmurl' : confirmurl,
              }, lang=lang, mlist=self)
         # BAW: We don't pass the Subject: into the UserNotification
@@ -1079,7 +1078,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              'cookie'      : cookie,
              'requestaddr' : self.GetRequestEmail(),
              'remote'      : remote,
-             'listadmin'   : self.GetAdminEmail(),
+             'listadmin'   : self.GetOwnerEmail(),
              'confirmurl'  : confirmurl,
              }, lang=lang, mlist=self)
         msg = Message.UserNotification(
