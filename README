@@ -1,4 +1,4 @@
-Mailman - The GNU Mailing List Management System
+yMailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
@@ -29,7 +29,8 @@ INTRODUCTION
 
         http://www.list.org
 
-    Mailman requires Python 1.5.2, which can be downloaded from
+    Mailman requires Python 1.5.2 or greater, which can be downloaded
+    from
 
         http://www.python.org
 
