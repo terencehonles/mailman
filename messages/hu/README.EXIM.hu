@@ -1,0 +1,264 @@
+Ez a fájl az Exim & Mailman HOWTO dokumentáció kivonatát tartalmazza.
+Az eredeti és aktuális dokumentációt a következõ címen lehet megtalálni:
+	http://www.exim.org/howto/mailman.html
+
+=======================================================================
+
+		   HOWTO - Az exim és a mailman együtt
+
+   A Mailman egy webfelülettel és archiválási funkciókkal is rendelkezõ
+   levelezõlista-kezelõ program. Bõvebben a [1]http://www.list.org/
+   címen lehet róla olvasni.
+   
+Mailman beállítása
+
+   A Mailmant nem kell a hagyományostól eltérõ módon, mint ahogy az a
+   Mailman telepítési dokumentációjában le van írva, beállítani. Az Exim
+   számára ez lényegtelen. Mindössze a mailman uid/gid értékeit kell
+   az Exim konfigurációjának megfelelõ helyein megadni.
+   
+Exim beállítása
+
+   Az exim beállításával a mailmanban létrehozott listák automatikusan,
+   további bejegyzések nélkül megjelennek és használhatóak lesznek.
+   
+   Ezt a beállítást azonban valószínûleg a több, eltérõ tartományt kiszolgáló
+   listáknál nem lehet használni - ennek oka a mailman ilyen irányú gyenge
+   képessége. A jövõben ez valószínûleg fejlõdni fog.
+   
+   A késõbb bemutatott konfigurációs állomány részleteket azon mûködõ exim
+   konfigurációs részbe kell elhelyezni, amely azon tartomány levelezéséért
+   felelõs, ahol a lista mûködik (pl. a tartomány a local_domains-ben meg
+   van adva - ekkor ennek a tartománynak a kezelésére külön beállítást kell
+   az exim megadni; a domains=en.listam.tartomany bejegyzést minden egyes 
+   átirányítónál (directors, lásd késõbb) adjuk külön meg, esetleg a többi
+   átirányítónál vegyük fel a figyelmen kívül hagyandók (exclude) közé.
+      
+   Az eximnek a mailmanhoz kapcsolódó egyéb bejegyzéseket (aliases) meg kell
+   adni, a (tartományhoz tartozó) mailman, mailman-request és mailman-admin
+   (valamint egyéb a listákhoz tartozó segítséget nyújtó) címeket. Ezek a
+   címek (vagy néhányuk - nem kötelezõ mindnek) inkább élõszemélyekhez. mint
+   a mailmanhoz továbbítsák az üzeneteket. A csak a listákhoz tartozó bejegy-
+   zéseket nem kell megadnunk a rendszerszintû alias állományba, mert azok
+   valószínûleg hibás vagy nem érvényes felhasználói azonosítót használnának
+   (s ezzel az eximnél hibát okoznának).
+ 
+   Az exim fõ konfigurációs állományának megfelelõ részébe kell bemásolni
+   a lent található 3 különbözõ konfigurációs részt. Az elsõ részben megadott
+   változókat a saját telepített mailman-unk alapján lehet hogy változtatni
+   kell.
+
+    Main config file section
+    
+## A konfig fájl elsõ része - változók
+## Módosítsuk a saját rendszerünk szerint
+## a többinek magától kéne mûködnie...
+##
+# telepített mailman 'home' könyvtára
+MAILMAN_HOME=/home/mailman
+# mailman wrapper programja
+MAILMAN_WRAP=MAILMAN_HOME/mail/mailman
+# mailman felhasználó és csoport azonosítója
+MAILMAN_UID=exim
+MAILMAN_GID=exim
+
+    Transports config file section
+    
+## Transports fejezet
+##
+## Három 'továbbító' bejegyzés a list mail, request mail és admin 
+## mail címeknek  
+## Mailman a MAILMAN_HOME könyvtárban található
+## A beállítással a Mailman exim felhasználóként kerül meghívásra
+list_transport:
+           driver = pipe
+           command = MAILMAN_WRAP post ${lc:$local_part}
+           current_directory = MAILMAN_HOME
+           home_directory = MAILMAN_HOME
+           user = MAILMAN_UID
+           group = MAILMAN_GID
+
+list_request_transport:
+           driver = pipe
+           command = MAILMAN_WRAP mailcmd ${lc:$local_part}
+           current_directory = MAILMAN_HOME
+           home_directory = MAILMAN_HOME
+           user = MAILMAN_UID
+           group = MAILMAN_GID
+
+list_admin_transport:
+           driver = pipe
+           command = MAILMAN_WRAP mailowner ${lc:$local_part}
+           current_directory = MAILMAN_HOME
+           home_directory = MAILMAN_HOME
+           user = MAILMAN_UID
+           group = MAILMAN_GID
+
+### transports rész vége
+
+    Directors config file section
+    
+## Directors fejezet [a helyi címek kezelésére]
+##
+## Az elsõ 2 átirányító a list-owner vagy owner-list címeket a 
+## list-admin címre irányítja át, már ha létezik a lista.
+## Ha a
+## MAILMAN_HOME/lists//config.pck
+## fájl létezik, akkor a lista is létezik.
+
+list_owner_director:
+   driver = smartuser
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
+   suffix = "-owner"
+   new_address = "${lc:$local_part}-admin@${domain}"
+
+owner_list_director:
+   driver = smartuser
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
+   prefix = "owner-"
+   new_address = "${lc:$local_part}-admin@${domain}"
+
+##
+## A következõ 3 átirányító az admin, request és lista címekre érkezõ
+## üzeneteket a megfelelõ továbbítóhoz dobja. A lista létezését a fenn
+## már leírtak alapján ellenõrzi.
+
+list_admin_director:
+   driver = smartuser
+   suffix = -admin
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
+   transport = list_admin_transport
+
+list_request_director:
+   driver = smartuser
+   suffix = -request
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
+   transport = list_request_transport
+
+list_director:
+   driver = smartuser
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.pck
+   transport = list_transport
+
+## directors fejezet vége
+## konfigurációs állomány rész vége
+
+   Az eximet úgy kell beállítani, hogy a kézbesítés elfogadható mértékû
+   legyen - pl. a max_recipients ne valami nagyon kis érték legyen, és a
+   biztonsági beállítások is értelmes szinten vannak - pl. 127.0.0.1
+   címrõl (evidensen) engedélyezett a relaying, de máshonnan nagyon nem.
+   Párhuzamos küldési módot is be lehet állítani. A kézbesítések idõ-
+   túllépésére figyelmeztetõ üzeneteket legalább a listákhoz kapcsolódó
+   címeknél kapcsoljuk ki, ha nem szeretnénk nagyon sok ilyen üzenetet
+   kapni, amikor a címzett gép nem érhetõ el.
+   
+  Problémák
+  
+     * Fejleszteni kell még az eximes visszapattanások (exim bounces)
+       kezelését a Mailmanban - célszerû lenne ha felhasználná a külön
+       megadott exim fejléceket azonosításnál. Ezen túl a kézbesítés 
+       idõtúllépésébõl (delay) eredõ üzeneteket eltérõ módon kéne 
+       kezelnie vagy figyelmen kívül hagynia.
+     * A listák létezésénél ellenõrzi a beállítás, hogy található-e a
+       listához config.pck fájl. Ha töröljük a listát, akkor ügyeljünk
+       hogy töröljük a listához tartozó config.pck fájlt is.
+     * Ha hibás felhasználói azonosítóra hivatkozva nem történik kézbesítés, 
+       akkor ellenõrizzük, hogy a MAILMAN_UID és MAILMAN_GID váltózóknak
+       helyesen adtuk-e meg a mailman ezen értékeit. Figyeljünk arra
+       is, hogy a rendszerszintû aliases fájlban nem található a listához
+       közvetlenül kapcsolódó bejegyzés.
+       
+Egyéb trükkök
+
+   Virtuális tartományok kezelésére megoldás lehet következõ módszer - mivel 
+   minden egyes virtuális tartományhoz külön-külön telepített mailman-t
+   használok, a beállítások az alábbiak szerint változtak:
+## transport fejezetben
+
+command = "/virtual/${domain}/mailman/mail/mailman post ${lc:$local_part}"
+current_directory = /virtual/${domain}/mailman
+home_directory = /virtual/${domain}/mailman
+
+## director fejezetben:
+
+require_files = /virtual/${domain}/mailman/lists/${lc:$local_part}/config.pck
+
+Trükkök Exim Listák Hatékonyságának Növeléséhez
+
+   A következõ konfigurációs parancsokat az általam üzemeltetett listáknál
+   használom. Néhány fontos, mások csak szépítgetésért vannak, míg egypár
+   akár fölösleges is lehet - de nálam így mûködnek!
+# definition of injecting IP addresses
+LOCAL_NETS=127.0.0.1/32
+#
+# Bõvített naplózás - nem fontos, de a naplóállományokban több minden
+# és persze nagyobb is lesz
+# lookup all hostnames - a gépneveket is és ne csak az ip-ket naplózza
+host_lookup = 0.0.0.0/0
+# naplózás finomhangolása
+log_all_parents
+log_file_path = /var/log/exim/%s.log
+log_received_recipients
+log_refused_recipients
+log_received_sender
+log_smtp_confirmation
+#
+# RBL settings - these are more severe than I use
+rbl_domains = rbl.maps.vix.com/reject:relays.mail-abuse.org/reject:dul.maps.vix
+.com/reject:relays.orbs.org=127.0.0.2,127.0.0.3/reject
+rbl_hosts = !LOCAL_NETS:0.0.0.0/0
+rbl_log_rcpt_count
+recipients_reject_except=postmaster@*:*-admin@*
+#
+# relay control - csak a saját hálózatunkból engedélyezett
+host_accept_relay = LOCAL_NETS
+#
+# delay warnings - a második sor ma már az alapértelmezett, de korábbi exim
+# verzóknál meg kell adni
+delay_warning = 26h
+##delay_warning_condition = "${if match{$h_precedence:}{(?i)bulk|list|junk}{no}
+{yes}}"
+#
+# A feladó címének ellenõrzése, kivétel ha helyi továbbítás történik.
+# NE ELLENÕRÍZTESSÜK a mailman-hoz tartozó címeket - ez nagyon
+# lelassítaná a levelek küldését
+receiver_verify_hosts = !127.0.0.1/8:0.0.0.0/0
+sender_verify
+#
+# teljesítmény hangolása - az elsõ valószínû csak linuxokon mûködik, máshol nem
+split_spool_directory
+remote_max_parallel = 15
+
+Lista ellenõrzés
+
+   Ezekkel a parancsokkal lehet ellenõrizni egy mûködõ rendszeren az
+   exim listákat. (a parancsok a ">" jellel kezdõdõ sorban vannak)
+> /usr/sbin/exim -v -bt exim-users
+exim-users@www.exim.org
+  deliver to exim-users in domain www.exim.org
+  director = list_director, transport = list_transport
+
+> /usr/sbin/exim -bt exim-users-request
+exim-users-request@www.exim.org
+  deliver to exim-users in domain www.exim.org
+  director = list_request_director, transport = list_request_transport
+
+> /usr/sbin/exim -bt exim-users-admin
+exim-users-admin@www.exim.org
+  deliver to exim-users in domain www.exim.org
+  director = list_admin_director, transport = list_admin_transport
+
+
+  __________________________________________________________________________
+
+
+
+
+    [2]Nigel Metheringham
+    
+    $Id: README.EXIM.hu 4576 2002-01-08 07:46:02Z bwarsaw $
+  
+Hivatkozások
+
+   1. http://www.list.org/
+   2. mailto:Postmaster@exim.org
