@@ -16,6 +16,7 @@ The Mailman TODO list
 *General Web UI
 - Add a navigation sidebar to all web pages - central links, and
   list-specific links for list-specific pages.
+- NO DEAD ENDS
 - Implement cookies for edithtml and admindb
 - Make sure when settings are changed, there is always some sort of 
   confirmation!
@@ -60,10 +61,10 @@ The Mailman TODO list
 
 *Email Handling
 - Implement a more general (form-based, like the netscape email
-  filter) filtering/bouncing/etc. mechanism.
+  filter) filtering/bouncing/etc. mechanism.  Or use VERP.
 - Allow for programs to run that perform filtering / reformatting.
-- Set asside messages IMMEDIATELY as a rescue mechanism... make sure no
-    mails are ever lost, even if there turned out to be a bad Mailman bug.
+- Set aside messages IMMEDIATELY as a rescue mechanism... make sure no
+  mails are ever lost, even if there turned out to be a bad Mailman bug.
 
 *Mailcmd interface
 - Provide an email interface to administrative commands.
@@ -77,21 +78,28 @@ The Mailman TODO list
 - Send mail to people that are being removed w/o their knowlege (even though
   they're likely not to get it).
 - Clean the code up, make it more robust and efficent (see also bugs)
+- Or trash the current approach and use something better
+- Reminders to disabled addresses.  The idea is that if an addr is
+  disabled due to bouncing, we should send out periodic reminders.  We
+  may want to do this for explicitly disabled addrs too, but perhaps
+  with a different schedule.
 
 *Pipermail + Archiving mechanism
 - Search engine for archives
 - Provide downloadable tar.gz's of the html archives
+- sort by date should go most-recent to oldest
+- allow list owner to edit archive messages
 
 *Code cleanup
 - Use the re module where regexp and regsub are used.
 - Refine any remaining unqualified exception guards to specify target 
-    exceptions, when appropriate.
+  exceptions, when appropriate.
 - Turn standard mailman exceptions into class exceptions.
 - Seperate edit-options from the subscribe script.
 - Remove dead code, etc.
 
 *Misc
-- Automatically update aliases again
+- Automatically update aliases again (fix alias wrapper)
 - Make the listinfo pages static, and have them regenerate when options are 
   changed, or html is edited.
 - Make it so Mailman can run as a threaded server (this feature should be 
