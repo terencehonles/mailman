@@ -35,8 +35,6 @@ import getopt
 import socket
 import nntplib
 
-from mimelib.Parser import Parser
-
 import paths
 from Mailman import mm_cfg
 from Mailman import MailList
@@ -47,6 +45,8 @@ from Mailman.i18n import _
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 from Mailman.Logging.Syslog import syslog
+
+from mimelib.Parser import Parser
 
 # Work around known problems with some RedHat cron daemons
 import signal
