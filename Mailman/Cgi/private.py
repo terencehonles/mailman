@@ -57,10 +57,17 @@ PAGE = '''
     <tr>
     </tr>
       <td></td>
-      <td> <INPUT TYPE=SUBMIT>
+      <td> <INPUT TYPE=SUBMIT VALUE="Let me in...">
       </td>
     </tr>
   </TABLE>
+      <p><strong><em>Important:</em></strong> From this point on, you
+      must have cookies enabled in your browser, otherwise you will not
+      be able to read the private archives.
+
+      <p>Session cookies are used in the private archives so that you
+      don\'t need to re-authenticate for every article your read.  This
+      cookie will expire automatically when you exit your browser.
 </FORM>
 '''
 
