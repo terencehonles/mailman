@@ -112,11 +112,13 @@ class SecurityManager:
         # the list that we expect.  The kludge given here (slightly modified)
         # was initially provided by Evaldas Auryla <evaldas.auryla@pheur.org>
         #
-##        self.LogMsg('debug', 'Browser Cookie: ' + cookiedata)
         keylen = len(key)
-        if cookiedata[keylen+1] <> '"' and cookiedata[-1] <> '"':
-            cookiedata = key + '="' + cookiedata[keylen+1:] + '"'
-##            self.LogMsg('debug', 'Using   Cookie: ' + cookiedata)
+        try:
+            if cookiedata[keylen+1] <> '"' and cookiedata[-1] <> '"':
+                cookiedata = key + '="' + cookiedata[keylen+1:] + '"'
+        except IndexError:
+            # cookiedata got truncated somehow; just let it fail normally
+            pass
         c = Cookie.Cookie(cookiedata)
         if not c.has_key(key):
             return 0
