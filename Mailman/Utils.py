@@ -628,7 +628,10 @@ class SafeDict(UserDict):
     This is used in maketext so that editing templates is a bit more robust.
     """
     def __init__(self, d):
-        UserDict.__init__(self, d)
+        # optional initial dictionary is a Python 1.5.2-ism.  Do it this way
+        # for portability
+        UserDict.__init__(self)
+        self.update(d)
 
     def __getitem__(self, key):
         try:
