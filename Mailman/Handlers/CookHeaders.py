@@ -95,12 +95,7 @@ def process(mlist, msg, msgdata):
         # Set Reply-To: an explicit address, but only if reply_to_address is a
         # valid email address.  BAW: this really should be validated on input.
         elif mlist.reply_goes_to_list == 2:
-            try:
-                Utils.ValidateEmail(mlist.reply_to_address)
-            except Errors.EmailAddressError:
-                pass
-            else:
-                replyto.append(('', mlist.reply_to_address))
+            replyto.append(('', mlist.reply_to_address))
         # If we're not first stripping existing Reply-To: then we need to add
         # the original Reply-To:'s to the list we're building up.  In both
         # cases we'll zap the existing field because RFC 2822 says max one is
