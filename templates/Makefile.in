@@ -29,6 +29,7 @@ exec_prefix=	@exec_prefix@
 CC=		@CC@
 CHMOD=  	@CHMOD@
 INSTALL=	@INSTALL@
+TRUE=		@TRUE@
 
 DEFS=   	@DEFS@
 
@@ -58,7 +59,7 @@ all:
 install:
 	for f in $(TEMPLATES); \
 	do \
-	    mv -f $(TEMPLATEDIR)/$$f $(TEMPLATEDIR)/$$f.prev || /bin/true; \
+	    mv -f $(TEMPLATEDIR)/$$f $(TEMPLATEDIR)/$$f.prev || $(TRUE); \
 	    $(INSTALL) -m $(FILEMODE) $$f $(TEMPLATEDIR); \
 	done
 
