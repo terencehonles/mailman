@@ -46,18 +46,18 @@ class OutgoingRunner(Runner):
         # We never lock the lists, but we need to be sure that MailList
         # objects read from the cache are always fresh.
         self._freshen = 1
+        # We look this function up only at startup time
+        modname = 'Mailman.Handlers.' + mm_cfg.DELIVERY_MODULE
+        mod = __import__(modname)
+        self._func = getattr(sys.modules[modname], 'process')
 
     def _dispose(self, mlist, msg, msgdata):
         # Fortunately, we do not need the list lock to do deliveries.  However
         # this does mean that we aren't as responsive to changes in list
         # configuration, since we never reload the list configuration.
-        handler = mm_cfg.DELIVERY_MODULE
-        modname = 'Mailman.Handlers.' + handler
-        mod = __import__(modname)
-        func = getattr(sys.modules[modname], 'process')
         try:
             pid = os.getpid()
-            func(mlist, msg, msgdata)
+            self._func(mlist, msg, msgdata)
             # Failsafe -- a child may have leaked through.
             if pid <> os.getpid():
                 syslog('error', 'child process leaked thru: %s', modname)
