@@ -17,33 +17,38 @@
 
 """The class representing a Mailman mailing list.
 
-Mixes in many task-specific classes."""
+Mixes in many task-specific classes.
+"""
 
-try:
-    import mm_cfg
-except ImportError:
-    raise RuntimeError, ('missing mm_cfg - has Config_dist been configured '
-			 'for the site?')
-
-import sys, os, marshal, string, posixfile, time
+import sys
+import os
+import marshal
+import string
 import errno
 import re
-import Utils
-import Errors
 from types import StringType, IntType, DictType
 
-from ListAdmin import ListAdmin
-from Deliverer import Deliverer
-from MailCommandHandler import MailCommandHandler 
-from HTMLFormatter import HTMLFormatter 
-from Archiver import Archiver
-from Digester import Digester
-from SecurityManager import SecurityManager
-from Bouncer import Bouncer
-from GatewayManager import GatewayManager
-from Mailman.Logging.StampedLogger import StampedLogger
-import LockFile
+import paths
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import Errors
+from Mailman import LockFile
 
+# base classes
+from Mailman.pythonlib.StringIO import StringIO
+from Mailman.ListAdmin import ListAdmin
+from Mailman.Deliverer import Deliverer
+from Mailman.MailCommandHandler import MailCommandHandler 
+from Mailman.HTMLFormatter import HTMLFormatter 
+from Mailman.Archiver import Archiver
+from Mailman.Digester import Digester
+from Mailman.SecurityManager import SecurityManager
+from Mailman.Bouncer import Bouncer
+from Mailman.GatewayManager import GatewayManager
+from Mailman.Logging.StampedLogger import StampedLogger
+
+
+
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
 # a variable that does not save when we marshal our state.
@@ -269,7 +274,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self._log_files = {}		# 'class': log_file_obj
 	if name:
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
-	Digester.InitTempVars(self)
+        ListAdmin.InitTempVars(self)
 
     def InitVars(self, name=None, admin='', crypted_password=''):
         """Assign default values - some will be overriden by stored state."""
@@ -797,6 +802,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         finally:
             os.umask(omask)
         self.CheckHTMLArchiveDir()
+        self.SaveRequestsDb()
 
     def Load(self, check_version = 1):
         if self.__createlock_p:
@@ -924,9 +930,28 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                         who,
                         by)
             raise Errors.MMSubscribeNeedsConfirmation
-        else: # approval needed
-            self.AddRequest('add_member', digest, name, password)
-            raise Errors.MMNeedApproval, self.GetAdminEmail()
+        else:
+            # subscription approval is required.  add this entry to the admin
+            # requests database.
+            self.HoldSubscription(name, password, digest)
+            raise Errors.MMNeedApproval, \
+                  'subscriptions to %s require administrator approval' % \
+                  self.real_name
+
+    def ProcessConfirmation(self, cookie):
+        from Pending import Pending
+        got = Pending().confirmed(cookie)
+        if not got:
+            raise Errors.MMBadConfirmation
+        else:
+            (email_addr, password, digest) = got
+        if self.subscribe_policy == 3: # confirm + approve
+            self.HoldSubscription(email_addr, password, digest)
+            raise Errors.MMNeedApproval, \
+                  'subscriptions to %s require administrator approval' % \
+                  self.real_name
+        self.ApprovedAddMember(email_addr, password, digest)
+        self.Save()
 
     def ApprovedAddMember(self, name, password, digest,
                           ack=None, admin_notif=None):
@@ -1036,22 +1061,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                              "admin_email": self.GetAdminEmail(),
                              "listname": self.real_name,
                              "member": name}, 1)
-                        msg = Message.IncomingMessage(txt)
+                        msg = Message.Message(StringIO(txt))
                         self.DeliverToOwner(msg, self.owner)
         return result
-
-    def ProcessConfirmation(self, cookie):
-        from Pending import Pending
-        got = Pending().confirmed(cookie)
-        if not got:
-            raise Errors.MMBadConfirmation
-        else:
-            (email_addr, password, digest) = got
-        if self.subscribe_policy == 3: # confirm + approve
-            self.AddRequest('add_member', digest, email_addr, password)
-            raise Errors.MMNeedApproval, self.GetAdminEmail()
-        self.ApprovedAddMember(email_addr, password, digest)
-        self.Save()
 
     def DeleteMember(self, name, whence=None, admin_notif=None):
 	self.IsListInitialized()
@@ -1098,7 +1110,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 				  "admin_email": self.GetAdminEmail(),
 				  "listname": self.real_name,
 				  "member": name}, 1)
-	    msg = Message.IncomingMessage(txt)
+	    msg = Message.Message(StringIO(txt))
 	    self.DeliverToOwner(msg, self.owner)
         if whence: whence = "; %s" % whence
         else: whence = ""
@@ -1205,165 +1217,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    return line
 	return 0
 
-    # msg should be an IncomingMessage object.
-    def Post(self, msg, approved=0):
+    # msg should be an Message.Message object.
+    def Post(self, msg):
 	self.IsListInitialized()
-        # Be sure to ExtractApproval, whether or not flag is already set!
-        msgapproved = self.ExtractApproval(msg)
-        if not approved:
-            approved = msgapproved
-        sender = None
-        if mm_cfg.USE_ENVELOPE_SENDER:
-            sender = msg.GetEnvelopeSender()
-        # Specialcase an ugly sendmail feature: If there exists an
-        # "owner-foo: bar" alias and sendmail receives mail for address
-        # "foo", sendmail will change the envelope sender of the message
-        # to "bar" before delivering.  This feature does not appear to
-        # be configurable.  *Boggle*.
-        if (not sender or sender[:len(self._internal_name)+6] ==
-            '%s-admin' % self._internal_name):
-            sender = msg.GetSender()
-##        sys.stderr.write('envsend: %s, sender: %s\n' %
-##                         (msg.GetEnvelopeSender(), msg.GetSender()))
-	# If it's the admin, which we know by the approved variable,
-	# we can skip a large number of checks.
-	if not approved:
-            beentheres = map(lambda x: string.split(x, ": ")[1][:-1],
-                             msg.getallmatchingheaders('x-beenthere'))
-            if self.GetListEmail() in beentheres:
-                # Exit from scripts/post - no longer held
-                raise Errors.MMLoopingPost
-	    if len(self.forbidden_posters):
-                forbidden_posters = Utils.List2Dict(self.forbidden_posters)
-		addrs = Utils.FindMatchingAddresses(sender, forbidden_posters)
-		if len(addrs):
-		    self.AddRequest('post', Utils.SnarfMessage(msg),
-				    Errors.FORBIDDEN_SENDER_MSG,
-				    msg.getheader('subject'))
-            if self.moderated and not len(self.posters):
-		self.AddRequest('post', Utils.SnarfMessage(msg),
-				Errors.MODERATED_LIST_MSG,
-				msg.getheader('subject'))
-            elif self.moderated and len(self.posters):
-                addrs = Utils.FindMatchingAddresses(
-                    sender, Utils.List2Dict(self.posters))
-                if not len(addrs):
-                    self.AddRequest('post', Utils.SnarfMessage(msg),
-                                    Errors.MODERATED_LIST_MSG,
-                                    msg.getheader('subject'))
-            #
-            # not moderated
-            #
-	    elif len(self.posters): 
-		addrs = Utils.FindMatchingAddresses(
-                    sender, Utils.List2Dict(self.posters))
-		if not len(addrs):
-                    if self.member_posting_only:
-                        if not self.IsMember(sender):
-                            self.AddRequest('post', Utils.SnarfMessage(msg),
-                                            'Only approved posters may post'
-                                            ' without moderator approval.',
-                                            msg.getheader('subject'))
-                    else:
-                        self.AddRequest('post', Utils.SnarfMessage(msg),
-                                        'Only approved posters may post'
-                                        ' without moderator approval.',
-                                        msg.getheader('subject'))
-
-	    elif self.member_posting_only and not self.IsMember(sender):
-		self.AddRequest('post', Utils.SnarfMessage(msg),
-				'Postings from member addresses only.',
-				msg.getheader('subject'))
-	    if self.max_num_recipients > 0:
-		recips = []
-		toheader = msg.getheader('to')
-		if toheader:
-		    recips = recips + string.split(toheader, ',')
-		ccheader = msg.getheader('cc')
-		if ccheader:
-		    recips = recips + string.split(ccheader, ',')
-		if len(recips) > self.max_num_recipients:
-		    self.AddRequest('post', Utils.SnarfMessage(msg),
-				    'Too many recipients.',
-				    msg.getheader('subject'))
- 	    if (self.require_explicit_destination and
- 		  not self.HasExplicitDest(msg)):
- 		self.AddRequest('post', Utils.SnarfMessage(msg),
- 				Errors.IMPLICIT_DEST_MSG,
-				msg.getheader('subject'))
-            if self.administrivia and Utils.IsAdministrivia(msg):
-                self.AddRequest('post', Utils.SnarfMessage(msg),
-                                'possible administrivia to list',
-                                msg.getheader("subject"))
-                
- 	    if self.bounce_matching_headers:
-		triggered = self.HasMatchingHeader(msg)
-		if triggered:
-		    # Darn - can't include the matching line for the admin
-		    # message because the info would also go to the sender.
-		    self.AddRequest('post', Utils.SnarfMessage(msg),
-				    Errors.SUSPICIOUS_HEADER_MSG,
-				    msg.getheader('subject'))
-	    if self.max_message_size > 0:
-		if len(msg.body)/1024. > self.max_message_size:
-		    self.AddRequest('post', Utils.SnarfMessage(msg),
-				    'Message body too long (>%dk)' % 
-				    self.max_message_size,
-				    msg.getheader('subject'))
-	# Prepend the subject_prefix to the subject line.
-	subj = msg.getheader('subject')
-	prefix = self.subject_prefix
-	if not subj:
-	    msg.SetHeader('Subject', '%s(no subject)' % prefix)
-	elif prefix and not re.search(re.escape(self.subject_prefix),
-                                      subj, re.I):
-	    msg.SetHeader('Subject', '%s%s' % (prefix, subj))
-        if self.anonymous_list:
-            del msg['reply-to']
-            del msg['sender']
-            msg.SetHeader('From', self.GetAdminEmail())
-            msg.SetHeader('Reply-to', self.GetListEmail())
-	if self.digestable:
-	    self.SaveForDigest(msg)
-	if self.archive:
-	    self.ArchiveMail(msg)
-	if self.gateway_to_news:
-	    self.SendMailToNewsGroup(msg)
-
-	dont_send_to_sender = 0
-	ack_post = 0
-	# Try to get the address the list thinks this sender is
-	sender = self.FindUser(msg.GetSender())
-	if sender:
-	    if self.GetUserOption(sender, mm_cfg.DontReceiveOwnPosts):
-		dont_send_to_sender = 1
-	    if self.GetUserOption(sender, mm_cfg.AcknowlegePosts):
-		ack_post = 1
-	# Deliver the mail.
-	members = self.GetDeliveryMembers()
-        recipients = []
-        for m in members:
-            if not self.GetUserOption(m, mm_cfg.DisableDelivery):
-                recipients.append(m)
-	if dont_send_to_sender:
-            try:
-                recipients.remove(self.GetUserSubscribedAddress(sender))
-            except ValueError:
-                # sender does not want to get copies of their own messages
-                # (not metoo), but delivery to their address is disabled
-                # (nomail)
-                pass
-        self.LogMsg("post", "post to %s from %s size=%d",
-                    self._internal_name, msg.GetSender(), len(msg.body))
-        d = self.__dict__.copy()
-        d['cgiext'] = mm_cfg.CGIEXT
-	self.DeliverToList(msg, recipients, 
-			   header = self.msg_header % d,
-			   footer = self.msg_footer % d)
-	if ack_post:
-	    self.SendPostAck(msg, sender)
-	self.last_post_time = time.time()
-	self.post_id = self.post_id + 1
+        # TBD: this is bogus and will later be configurable
+        import Mailman.Handlers.HandlerAPI
+        Mailman.Handlers.HandlerAPI.process(self, msg)
 	self.Save()
 
     def Locked(self):
@@ -1386,3 +1245,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return ("<%s.%s %s%s at %s>" %
                 (self.__module__, self.__class__.__name__,
                  `self._internal_name`, status, hex(id(self))[2:]))
+
+    def internal_name(self):
+        return self._internal_name
+
+    def fullpath(self):
+        return self._full_path
