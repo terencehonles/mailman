@@ -40,9 +40,7 @@ class ArchRunner(Runner):
             return 1
         # Support clobber_date, i.e. setting the date in the archive to the
         # received date, not the (potentially bogus) Date: header of the
-        # original message.  BAW: Note that there should be a third option
-        # here: to clobber the date only if it's bogus, i.e. way in the future
-        # or way in the past.
+        # original message.
         clobber = 0
         originaldate = msg.get('date')
         receivedtime = formatdate(msgdata['received_time'])
