@@ -2,6 +2,22 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+1.0
+
+- Configure script now allows $PREFIX (by default /home/mailman) to be 
+  permissions 02755.  Also, configure now tests for vsnprintf()
+
+- Workaround, taken from GNU screen, for systems missing vsnprintf()
+
+- Return-Receipt-To: and Disposition-Notification-To: headers are
+  always removed from posted messages (they can be used to troll for
+  list membership).
+
+- Workaround for MSIE4.01 (and possibly other versions) bug in the
+  handling of cookies.
+
+- A small collection of other bug fixes.
+
 1.0rc3
 
 - new script bin/check_perms which checks (and optionally fixes) the
