@@ -24,8 +24,16 @@ from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
-from Mailman.i18n import _
+from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
+
+_ = i18n._
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
 
 
 
@@ -54,8 +62,8 @@ your membership administrative address, %(addr)s.'''))
              'welcome'     : welcome,
              'umbrella'    : umbrella,
              'emailaddr'   : self.GetListEmail(),
-             'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
-             'optionsurl'  : self.GetOptionsURL(name, absolute=1),
+             'listinfo_url': self.GetScriptURL('listinfo', absolute=True),
+             'optionsurl'  : self.GetOptionsURL(name, absolute=True),
              'password'    : password,
              'user'        : self.getMemberCPAddress(name),
              }, lang=pluser, mlist=self)
@@ -110,7 +118,7 @@ your membership administrative address, %(addr)s.'''))
              'listname'   : self.real_name,
              'fqdn_lname' : self.GetListEmail(),
              'password'   : self.getMemberPassword(user),
-             'options_url': self.GetOptionsURL(user, absolute=1),
+             'options_url': self.GetOptionsURL(user, absolute=True),
              'requestaddr': requestaddr,
              'owneraddr'  : self.GetOwnerEmail(),
             }, lang=self.getMemberLanguage(user), mlist=self)
@@ -119,7 +127,7 @@ your membership administrative address, %(addr)s.'''))
         msg['X-No-Archive'] = 'yes'
         msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
 
-    def ForwardMessage(self, msg, text=None, subject=None, tomoderators=1):
+    def ForwardMessage(self, msg, text=None, subject=None, tomoderators=True):
         # Wrap the message as an attachment
         if text is None:
             text = _('No reason given')
@@ -135,3 +143,41 @@ your membership administrative address, %(addr)s.'''))
         notice.attach(text)
         notice.attach(attachment)
         notice.send(self)
+
+    def SendHostileSubscriptionNotice(self, listname, address):
+        # Some one was invited to one list but tried to confirm to a different
+        # list.  We inform both list owners of the bogosity, but be careful
+        # not to reveal too much information.
+        selfname = self.internal_name()
+        syslog('mischief', '%s was invited to %s but confirmed to %s',
+               address, listname, selfname)
+        # First send a notice to the attacked list
+        msg = Message.OwnerNotification(
+            self,
+            _('Hostile subscription attempt detected'),
+            Utils.wrap(_("""%(address)s was invited to a different mailing
+list, but in a deliberate malicious attempt they tried to confirm the
+invitation to your list.  We just thought you'd like to know.  No further
+action by you is required.""")))
+        msg.send(self)
+        # Now send a notice to the invitee list
+        try:
+            # Avoid import loops
+            from Mailman.MailList import MailList
+            mlist = MailList(listname, lock=False)
+        except MMListError:
+            # Oh well
+            return
+        otrans = i18n.get_translation()
+        i18n.set_language(mlist.preferred_language)
+        try:
+            msg = Message.OwnerNotification(
+                mlist,
+                _('Hostile subscription attempt detected'),
+                Utils.wrap(_("""You invited %(address)s to your list, but in a
+deliberate malicious attempt, they tried to confirm the invitation to a
+different list.  We just thought you'd like to know.  No further action by you
+is required.""")))
+            msg.send(mlist)
+        finally:
+            i18n.set_translation(otrans)
