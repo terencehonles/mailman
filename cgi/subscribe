@@ -179,7 +179,8 @@ else:
                                        list.GetRequestEmail(),
                                        pw,
                                        digesting)),
-                            errorsto = list.GetAdminEmail())
+                            add_to_headers = ["Errors-To: %s"
+                                              % list.GetAdminEmail()])
     except mm_err.MMBadEmailError:
 	results = results + ("Mailman won't accept the given email "
 			     "address as a valid address. (Does it "
