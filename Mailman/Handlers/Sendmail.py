@@ -52,6 +52,9 @@ def process(mlist, msg):
     program.
     
     """
+    if msg.recips == 0:
+        # nothing to do!
+        return
     # Use -f to set the envelope sender
     cmd = mm_cfg.SENDMAIL_CMD + ' -f ' + msg.GetSender() + ' '
     # make sure the command line is of a manageable size
