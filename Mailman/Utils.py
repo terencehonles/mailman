@@ -171,7 +171,6 @@ def DeliverToUser(msg, recipient, add_headers=[]):
     if os.fork():
         return
     sender = msg.GetSender()
-
     try:
         try:
             msg.headers.remove('\n')
@@ -188,8 +187,6 @@ def DeliverToUser(msg, recipient, add_headers=[]):
         import OutgoingQueue
         queue_id = OutgoingQueue.enqueueMessage(sender, recipient, text)
         TrySMTPDelivery(recipient,sender,text,queue_id)
-        # Just in case there's still something waiting to be sent...
-        OutgoingQueue.processQueue()
     finally:
         os._exit(0)
 
@@ -203,26 +200,28 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         con.helo(mm_cfg.DEFAULT_HOST_NAME)
         con.send(to=recipient,frm=sender,text=text)
         con.quit()
-        dequeue = 1
+        defer = 0
         failure = None
 
+    #
     # Any exceptions that warrant leaving the message on the queue should
-    # be identified by their exception, below, with setting 'dequeue' to 1
+    # be identified by their exception, below, with setting 'defer' to 1
     # and 'failure' to something suitable.  Without a particular exception
     # we fall through to the blanket 'except:', which dequeues the message.
-
+    # 
     except socket.error:
         # MTA not responding, or other socket prob - leave on queue.
-        dequeue = 0
+        defer = 1
         failure = sys.exc_info()
-
     except:
         # Unanticipated cause of delivery failure - *don't* leave message 
         # queued, or it may stay, with reattempted delivery, forever...
-        dequeue = 1
+        defer = 0
         failure = sys.exc_info()
 
-    if dequeue:
+    if defer:
+        OutgoingQueue.deferMessage(queue_entry)        
+    else:
         OutgoingQueue.dequeueMessage(queue_entry)
     if failure:
         # XXX Here may be the place to get the failure info back to the
@@ -232,7 +231,8 @@ def TrySMTPDelivery(recipient, sender, text, queue_entry):
         l.write("To %s:\n" % recipient)
         l.write("\t %s / %s\n" % (failure[0], failure[1]))
         l.flush()
-        
+
+
 def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
 
@@ -457,3 +457,9 @@ def maketext(templatefile, dict, raw=0):
     if raw:
         return template % dict
     return wrap(template % dict)
+
+
+
+
+
+

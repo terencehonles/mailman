@@ -57,5 +57,5 @@ except IOError:
     sys.stderr.flush()
     raise exc, exc_msg, exc_tb
 Utils.TrySMTPDelivery(to_addrs, from_addr, text, queue_id)
-OutgoingQueue.processQueue()
+
 
