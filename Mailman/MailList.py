@@ -180,30 +180,33 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return ("%s <%s.%s>" %
                 (self.description, self._internal_name, self.host_name))
 
-    def GetRelativeScriptURL(self, script_name):
-	prefix = '../' * Utils.GetNestingLevel()
-        return '%s%s%s/%s' % (prefix, script_name, mm_cfg.CGIEXT,
-                              self._internal_name)
-
-    def GetAbsoluteScriptURL(self, script_name):
-        if self.web_page_url:
+    def GetScriptURL(self, scriptname, relative=0):
+        if relative:
+            prefix = '../' * Utils.GetNestingLevel()
+        elif self.web_page_url:
             prefix = self.web_page_url
         else:
             prefix = mm_cfg.DEFAULT_URL
-        while prefix[-1] == "/":
-            prefix = prefix[:-1]
-        return "%s/%s%s/%s" % (prefix, script_name, mm_cfg.CGIEXT,
-                               self._internal_name)
+        i = len(prefix)-1
+        while i >= 0 and prefix[i] == '/':
+            i = i - 1
+        prefix = prefix[:i+1]
+        return '%s/%s%s/%s' % (prefix, scriptname, mm_cfg.CGIEXT,
+                               self.internal_name())
 
-    def GetAbsoluteOptionsURL(self, addr, obscured=0):
-        # address could come in case-preserved
+    def GetOptionsURL(self, scriptname, obscure=0, relative=0):
         addr = string.lower(addr)
-	options = self.GetAbsoluteScriptURL('options')
+        url = self.GetScriptURL('options', relative)
         if obscured:
-            treated = Utils.ObscureEmail(addr, for_text=0)
-        else:
-            treated = addr
-        return "%s/%s" % (options, treated)
+            addr = Utils.ObscureEmail(addr)
+        return '%s/%s' % (url, addr)
+
+    # TBD: backwards compatibility.  We should really just fix the code
+    GetAbsoluteOptionsURL = GetOptionsURL
+    GetAbsoluteScriptURL = GetScriptURL
+
+    def GetRelativeScriptURL(self, scriptname):
+        return GetScriptURL(self, scriptname, relative=1)
 
     def GetUserOption(self, user, option):
         """Return user's setting for option, defaulting to 0 if no settings."""
