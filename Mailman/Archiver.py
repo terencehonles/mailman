@@ -212,7 +212,7 @@ class Archiver:
 	    try:
 		val, msg = rest
 	    except ValueError:
-		self.LogMsg("MailList.Save(): error getting archive mode for %s!: %s\n",
+		self.LogMsg("error", "MailList.Save(): error getting archive mode for %s!: %s\n",
                             self.real_name, str(rest))
 		return
 	    if val == errno.ENOENT: # no such file
@@ -228,25 +228,25 @@ class Archiver:
 		    os.umask(ou)
 		    return
 	    else:
-		self.LogMsg("CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+		self.LogMsg("error", "CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
                             self.real_name, str(rest))
 		return
         import stat
         mode = st[stat.ST_MODE]
         if self.archive_private:
-            if mode != 0770:
+            if mode != 02770:
                 try:
                     ou = os.umask(0)
                     os.chmod(self.archive_directory, 02770)
                 except os.error, rest:
-                    self.LogMsg("CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+                    self.LogMsg("error", "CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
                                 self.real_name, str(rest))                    
         else:
-            if mode != 0775:
+            if mode != 02775:
                 try:
                     os.chmod(self.archive_directory, 02775)
                 except os.error, rest:
-                    self.LogMsg("CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+                    self.LogMsg("error", "CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
                                 self.real_name, str(rest))
                     
         
