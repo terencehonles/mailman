@@ -68,6 +68,8 @@ def html_quote(s):
 def url_quote(s):
     return urllib.quote(s)
 
+def null_to_space(s):
+    return string.replace(s, '\000', ' ')
 
 article_text_template="""\
 From %(email)s  %(fromdate)s
@@ -312,7 +314,7 @@ class Article(pipermail.Article):
     def _get_body(self):
         """Return the message body ready for HTML, decoded if necessary"""
         if self.charset is None or self.cenc != "quoted-printable":
-            return string.join(self.body, "")
+            return null_to_space(string.join(self.body, ""))
         # the charset is specified and the body is quoted-printable
         # first get rid of soft line breaks, then decode literals
         lines = []
@@ -337,7 +339,7 @@ class Article(pipermail.Article):
             chunks.append(buf[offset:i])
             offset = i + 3
             chunks.append(chr(string.atoi(mo.group(1), 16)))
-        return string.join(chunks, "")
+        return null_to_space(string.join(chunks, ""))
 
     def _add_decoded(self, d):
         """Add encoded-word keys to HTML output"""
