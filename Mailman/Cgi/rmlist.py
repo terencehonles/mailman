@@ -126,7 +126,7 @@ def process_request(doc, cgidata, mlist):
     if mm_cfg.MTA:
         modname = 'Mailman.MTA.' + mm_cfg.MTA
         __import__(modname)
-        sys.modules[modname].remove(mlist)
+        sys.modules[modname].remove(mlist, cgi=1)
     
     REMOVABLES = ['lists/%s']
 
