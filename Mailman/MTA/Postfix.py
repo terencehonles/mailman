@@ -23,7 +23,6 @@ import os
 import socket
 import time
 import dbhash
-import errno
 
 from Mailman import mm_cfg
 
