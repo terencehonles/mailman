@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -157,6 +157,22 @@ class _Switchboard:
                     os.unlink(msgfile)
                 except EnvironmentError, e:
                     if e.errno <> errno.ENOENT: raise
+                except email.Errors.MessageParseError, e:
+                    # This message was unparsable, most likely because its
+                    # MIME encapsulation was broken.  For now, there's not
+                    # much we can do about it.
+                    syslog('error', 'message is unparsable: %s', filebase)
+                    msgfp.close()
+                    msgfp = None
+                    if mm_cfg.QRUNNER_SAVE_BAD_MESSAGES:
+                        # Cheapo way to ensure the directory exists w/ the
+                        # proper permissions.
+                        sb = Switchboard(mm_cfg.BADQUEUE_DIR)
+                        os.rename(msgfile, os.path.join(
+                            mm_cfg.BADQUEUE_DIR, filebase + '.txt'))
+                    else:
+                        os.unlink(msgfile)
+                    msg = data = None
         finally:
             if msgfp:
                 msgfp.close()
