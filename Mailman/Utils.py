@@ -229,24 +229,24 @@ def QuotePeriods(text):
     return string.join(string.split(text, '\n.\n'), '\n .\n')
 
 
-def ValidEmail(str):
+# TBD: what other characters should be disallowed?
+_badchars = re.compile('[][()<>|;]')
+
+def ValidateEmail(str):
     """Verify that the an email address isn't grossly invalid."""
     # Pretty minimal, cheesy check.  We could do better...
-    if ((string.find(str, '|') <> -1) or (string.find(str, ';') <> -1)
-	or str[0] == '-'):
-	raise Errors.MMHostileAddress
-    if string.find(str, '/') <> -1:
-	if os.path.isdir(os.path.split(str)[0]):
-	    raise Errors.MMHostileAddress
+    if _badchars.search(str) or str[0] == '-':
+        raise Errors.MMHostileAddress
+    if string.find(str, '/') <> -1 and \
+       os.path.isdir(os.path.split(str)[0]):
+        # then
+        raise Errors.MMHostileAddress
     user, domain_parts = ParseEmail(str)
+    # this means local, unqualified addresses, are no allowed
     if not domain_parts:
-	if string.find(str, '@') < 1:
-	    return 0
-	else:
-	    return 1
+        raise Errors.MMBadEmailError
     if len(domain_parts) < 2:
-	return 0
-    return 1
+	raise Errors.MMBadEmailError
 
 
 # User J. Person <person@allusers.com>
