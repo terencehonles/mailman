@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,45 +16,191 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Process queued messages.
+"""Master queue runner watchdog.
+
+This script should be started from an init script.  It simply makes sure that
+the various long-running qrunners are still alive and kicking.  It does this
+by forking the individual qrunners and waiting on their pids.  When it detects
+a subprocess has exited, it will restart it.  Sending a SIGINT to the qrunner
+process raises a KeyboardInterrupt, which is caught and propagated to each
+subprocess.
+
+You can substitute your own queue management system for qrunner, or you can
+edit this file to tailor which Mailman qrunners actually get started.  This
+way you can say, drop in your own archiver qrunner or your own outgoing
+qrunner, or define entirely new qrunner paths through the system.  The only
+one that's required is the IncomingRunner, which handles passing a message
+through the Mailman system.
+
+The current set of queues are:
+
+    - incoming queue for messages from the MTA, Usenet, or other injection
+      processes.
+
+    - outgoing queue for messages processed by Mailman and intended to go out
+      through the MTA to final destination recipients
+
+    - news queue for messages processed by Mailman and destined for posting
+      via NNTP.
+
+    - archive queue for messages processed by Mailman and destined for the
+      internal or external archiver.
+
+    - bounce queue for bounce messages to be processed by the detector
+
+This subsystem is in a bit of flux and should be considered experimental.
+Specifically, we'd like to support non-Mailman queue processors and a more
+flexible queuing subsystem (e.g. for authentication queues, etc.)
+
+When run as a script, the follow usage is allowed:
+
+Usage: qrunner [options]
+
+Options:
+
+    -r runnername
+    --runner=runnername
+        Run the named qrunner exactly once.  runnername is the name of a
+        module in the Mailman.Queue package, but it should be just the first
+        part of the package name (i.e. sans `Runner').  E.g.
+
+            qrunner -r Virgin
+
+        runs the Mailman.Queue.VirginRunner qrunner once.  With no --runner
+        flag, this starts the qrunner watchdog master script.
+
+    -b/--background
+        Run the qrunner process in the background.  Only effective if --runner
+        option is not used.
+
+    -h/--help
+        Print this help message and exit.
 """
 
+import sys
 import os
+import getopt
+import errno
+from signal import SIGINT
 
 import paths
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.Queue import IncomingRunner
-from Mailman.Queue import OutgoingRunner
-from Mailman.Queue import NewsRunner
+from Mailman.i18n import _
+from Mailman.Logging.Syslog import syslog
 from Mailman.Logging.Utils import LogStdErr
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
-LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
 
-QRUNNERS = [IncomingRunner.IncomingRunner,
-            OutgoingRunner.OutgoingRunner,
-            NewsRunner.NewsRunner,
-            ]
+
+def start_runner(qrclass, slice, count):
+    pid = os.fork()
+    if pid:
+        # parent
+        syslog('qrunner', '%s qrunner started with pid: %d' % (qrclass, pid))
+        return pid
+    else:
+        # child
+        qrunner = qrclass(slice, count).run()
+        syslog('qrunner', '%s qrunner exiting' % qrclass)
+        os._exit(0)
+
+
+
+def master():
+    kids = {}
+    # Start up all the qrunners
+    for classname, count in mm_cfg.QRUNNERS:
+        modulename = 'Mailman.Queue.' + classname
+        __import__(modulename)
+        qrclass = getattr(sys.modules[modulename], classname)
+        for slice in range(count):
+            info = (qrclass, slice, count)
+            pid = start_runner(*info)
+            kids[pid] = info
+    #
+    # Now just wait for children to end, but also catch KeyboardInterrupts
+    try:
+        while 1:
+            try:
+                pid, status = os.wait()
+                killsig = status & 0xff
+                exitstatus = (status >> 8) & 0xff
+                # What should we do with this information other than log it?
+                qrclass, slice, count = kids[pid]
+                syslog('qrunner', '''\
+qrunner watchdog detected subprocess exit
+    (pid: %d, sig: %d, sts: %d, class: %s, slice %d of %d)
+    restarting''' % (pid, killsig, exitstatus, qrclass, slice, count))
+                # Now restart the process
+                del kids[pid]
+                newpid = start_runner(qrclass, slice, count)
+                kids[newpid] = (qrclass, slice, count)
+            except KeyboardInterrupt:
+                break
+    finally:
+        # Should we leave the main loop for any reason, we want to be sure all
+        # of our children are exited cleanly.  Send SIGINTs to all the child
+        # processes and wait for them all to exit.
+        for pid in kids.keys():
+            try:
+                os.kill(pid, SIGINT)
+            except OSError, e:
+                if e.errno == errno.ESRCH:
+                    # The child has already exited
+                    del kids[pid]
+        # Wait for all the childred to go away
+        Utils.reap(kids)
 
 
 
 def main():
-    # run each qrunner in their own processes
-    kids = {}
-    for qrclass in QRUNNERS:
-        pid = os.fork()
-        if pid:
-            # parent
-            kids[pid] = pid
-        else:
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'r:h',
+                                   ['runner=', 'help'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    bg = None
+    runner = None
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-r', '--runner'):
+            runner = arg
+        elif opt in ('-b', '--background'):
+            bg = 1
+
+    COMMASPACE = ', '
+    if args:
+        usage(1, _('Bad arguments: %s' % COMMASPACE.join(args)))
+
+    if runner is None:
+        # If we're running as a long-running process, stderr should go to the
+        # error log file.  Otherwise it should continue to go to stderr.
+        LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_stdout=0)
+        if bg and not os.fork():
             # child
-            qrclass().run()
-            os._exit(0)
-    Utils.reap(kids)
+            master()
+    else:
+        classname = runner + 'Runner'
+        modulename = 'Mailman.Queue.%s' % classname
+        try:
+            __import__(modulename)
+        except ImportError:
+            print >> sys.stderr, 'Qrunner module not found:', modulename
+            raise
+        class_ = getattr(sys.modules[modulename], classname)
+        # Subclass to hack in the setting of the stop flag in the
+        # _doperiodic() subclass.
+        class Once(class_):
+            def _doperiodic(self):
+                self.stop()
+        runner = Once()
+        runner.run()
 
 
 
