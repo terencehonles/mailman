@@ -9,12 +9,11 @@ this file, to override the distributed defaults with site-specific ones.
 import os
 
 VERSION           = '1.0b1.1'
-__version__ = VERSION + "$Revision: 121 $"
+__version__ = VERSION + "$Revision: 123 $"
 
 		   # Many site-specific settings #
 
 MAILMAN_URL       = 'http://www.python.org/ftp/python/contrib/Network/mailman/'
-MAX_SPAWNS        = 40
 DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.NAME'
 SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s' # yours may be different
 DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
@@ -22,6 +21,9 @@ ARCHIVE_URL       = 'http://www.OVERRIDE.WITH.YOUR.ARCHIVE.DIR/'
 # Once we know our home directory we can figure out the rest.
 HOME_DIR	  = '/home/mailman'		# Override if you change
 MAILMAN_DIR       = '/home/mailman/mailman'	# Override if you change
+
+# System ceiling on number of batches into which deliveries are divided:
+MAX_SPAWNS        = 40
 
 LIST_DATA_DIR     = os.path.join(MAILMAN_DIR, 'lists')
 HTML_DIR	  = os.path.join(HOME_DIR, 'public_html')
@@ -36,6 +38,7 @@ MAIL_LOG          = '/var/log/maillog'
 			 # General Defaults #
 
 DEFAULT_FILTER_PROG = ''
+# Default number of batches in which to divide large deliveries:
 DEFAULT_NUM_SPAWNS = 5
 DEFAULT_LIST_ADVERTISED = 1
 DEFAULT_MAX_NUM_RECIPIENTS = 10
