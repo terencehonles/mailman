@@ -13,18 +13,19 @@ was successfully received by %s.
 SUBSCRIBEACKTEXT = '''Welcome to the %s@%s mailing list! 
 
 If you ever want to unsubscribe or change your options (eg, switch to  
-or from digest mode), visit the web page:
+or from digest mode, change your password, etc.), visit the web page:
 
       %s
 
-You can also make these adjustments via email - send a message to
+You can also make these adjustments via email - send a message to:
 
       %s-request@%s
 
 with the text "help" in the subject or body, and you will get back a
 message with instructions.
 
-You must know your password to change your options or unsubscribe.  It is:
+You must know your password to change your options (including changing the
+password, itself) or to unsubscribe.  It is:
 
       %s
 
@@ -49,10 +50,18 @@ This is a reminder of how to unsubscribe or change your configuration
 for the mailing list "%s".  You need to have your password for
 these things.  YOUR PASSWORD IS:
 
-%s
+      %s
 
 To make changes, use this password on the web site: 
+
       %s
+
+You can also make these adjustments via email - send a message to:
+
+      %s-request@%s
+
+with the text "help" in the subject or body, and you will get back a
+message with instructions.
 
 Questions or comments?  Send mail to Mailman-owner@%s
 '''
@@ -175,4 +184,5 @@ class Deliverer:
 				    % (self.real_name,
 				       self.passwords[user],
 				       self.GetScriptURL('listinfo'),
+				       self.real_name, self.host_name,
 				       self.host_name)))
