@@ -702,11 +702,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             msg = Message.UserNotification(
                 recipient, self.GetRequestEmail(),
                 'confirm %s' % cookie,
-                text)
+                text, lang)
             msg['Reply-To'] = self.GetRequestEmail()
-            msg['MIME-Version'] = '1.0'
-            msg.add_header('Content-Type', 'text/plain',
-                           charset=Utils.GetCharSet(lang))
             msg.send(self)
             if recipient <> email:
                 who = "%s (%s)" % (email, recipient.split('@')[0])
@@ -787,7 +784,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
                 self.owner, Utils.get_site_email(self.host_name, 'admin'),
-                subject, text)
+                subject, text, lang)
             msg.send(self)
 
     def DeleteMember(self, name, whence=None, admin_notif=0, userack=1):
@@ -825,7 +822,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                  }, mlist=self)
             msg = Message.UserNotification(
                 self.owner, Utils.get_site_email(self.host_name, 'admin'),
-                subject, text)
+                subject, text, self.preferred_language)
             msg.send(self)
         if whence:
             whence = "; %s" % whence
