@@ -111,8 +111,7 @@ def process_form(mlist, user, doc):
             except Errors.MMBadPasswordError:
                 PrintResults(mlist, operation, doc,
                              "That password was incorrect.<p>")
-        PrintResults(mlist, operation, doc, "You have been unsubscribed.<p>",
-                     user)
+        PrintResults(mlist, operation, doc, "You have been unsubscribed.<p>")
 
     elif form.has_key("emailpw"):
         try:
