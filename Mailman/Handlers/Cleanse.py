@@ -33,3 +33,5 @@ def process(mlist, msg):
     del msg['return-receipt-to']
     del msg['disposition-notification-to']
     del msg['x-confirm-reading-to']
+    # pegasus mail uses this one... sigh
+    del msg['x-pmrqc']
