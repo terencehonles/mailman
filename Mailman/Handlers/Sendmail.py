@@ -31,8 +31,10 @@ it's not recommended either -- use the SMTPDirect delivery module instead.
 
 import string
 import os
+
 import HandlerAPI
 from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
 
 MAX_CMDLINE = 3000
 
@@ -85,15 +87,15 @@ def process(mlist, msg, msgdata):
         status = fp.close()
         if status:
             errcode = (status & 0xff00) >> 8
-            mlist.LogMsg('post', 'post to %s from %s, size=%d, failure=%d' %
-                         (mlist.internal_name(), msg.GetSender(),
-                          len(msg.body), errcode))
+            syslog('post', 'post to %s from %s, size=%d, failure=%d' %
+                   (mlist.internal_name(), msg.GetSender(),
+                    len(msg.body), errcode))
             # TBD: can we do better than this?  What if only one recipient out
             # of the entire chunk failed?
             failedrecips.extend(chunk)
         # Log the successful post
-        mlist.LogMsg('post', 'post to %s from %s, size=%d, success' %
-                     (mlist.internal_name(), msg.GetSender(), len(msg.body)))
+        syslog('post', 'post to %s from %s, size=%d, success' %
+               (mlist.internal_name(), msg.GetSender(), len(msg.body)))
     if failedrecips:
         msgdata['recips'] = failedrecips
         raise HandlerAPI.SomeRecipientsFailed
