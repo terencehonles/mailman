@@ -24,11 +24,15 @@ existing headers modified.
 """
 
 import sys
+import os
 import string
 import time
+import sha
+import marshal
 from types import StringType
 
 from Mailman import mm_cfg
+from Mailman import Utils
 
 # Python 1.5's version of rfc822.py is buggy and lacks features we
 # depend on -- so we always use the up-to-date version distributed
@@ -49,6 +53,10 @@ class Message(rfc822.Message):
         if self.seekable:
             self.rewindbody()
         self.body = self.fp.read()
+
+    def __str__(self):
+        # TBD: should this include the unixfrom?
+        return string.join(self.headers, '') + '\n' + self.body
 
     def GetSender(self, use_envelope=None):
         """Return the address considered to be the author of the email.
@@ -98,9 +106,61 @@ class Message(rfc822.Message):
             # TBD: now what?!
             return None
 
-    def __str__(self):
-        # TBD: should this include the unixfrom?
-        return string.join(self.headers, '') + '\n' + self.body
+    def Enqueue(self, mlist, newdata={}, **kws):
+        """Enqueue a message for redelivery by the qrunner cronjob.
+
+        For each enqueued message, a .msg and a .db file is written.  The .msg
+        contains the plain text of the message (TBD: should this be called
+        .txt?).  The .db contains a marshaled dictionary of message metadata.
+        The base name of the file is the SHA hexdigest of the message text.
+
+        The message metadata is a dictionary calculated as follows:
+
+        - If the message was previously queued, it is now being requeued and
+          the metadata dictionary is initialized from the existing .db file.
+          Otherwise the metadata is initialized to a dictionary containing the
+          listname and a scheme version number.
+
+        - If the argument `newdata' was given, the metadata dictionary
+          initialized above is .update()'d with newdata (which must conform to
+          the mapping interface).
+
+        - If additional keyword arguments are given, they are .update()'d into
+          the metadata dictionary.
+
+        mlist is the mailing list that delivery is to be attempted for.
+
+        """
+        # Calculate a unique name for the queue file
+        text = str(self)
+        filebase = sha.new(text).hexdigest()
+        msgfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.msg')
+        dbfile = os.path.join(mm_cfg.QUEUE_DIR, filebase + '.db')
+        # Initialize the information about this message delivery.  It's
+        # possible a delivery attempt has been previously tried on this
+        # message, in which case, we'll just update the data.
+        try:
+            dbfp = open(dbfile)
+            msgdata = marshal.load(dbfp)
+            dbfp.close()
+            existsp = 1
+        except (EOFError, ValueError, TypeError, IOError):
+            msgdata = {'listname' : mlist.internal_name(),
+                       'version'  : mm_cfg.QFILE_SCHEMA_VERSION,
+                       }
+            existsp = 0
+        # Merge in the additional msgdata
+        msgdata.update(newdata)
+        msgdata.update(kws)
+        # Write the data file
+        dbfp = Utils.open_ex(dbfile, 'w')
+        marshal.dump(msgdata, dbfp)
+        dbfp.close()
+        # if it doesn't already exist, write the message file
+        if not existsp:
+            msgfp = Utils.open_ex(msgfile, 'w')
+            msgfp.write(text)
+            msgfp.close()
 
 
 
