@@ -36,8 +36,20 @@
 # only one such process to happen at a time.
 #
 
-import os, stat, tempfile, marshal, errno, mm_cfg
+import os
+import stat
+import marshal
+import errno
+import mm_cfg
 import Utils
+
+# We need the version of tempfile.py from Python 1.5.2 because it has
+# provisions for uniquifying filenames in concurrent children after a fork.
+# If not using Python 1.5.2's version, let's get our copy of the new file.
+import tempfile
+if not hasattr(tempfile, '_pid'):
+    from Mailman.pythonlib import tempfile
+assert hasattr(tempfile, '_pid')
 
 TEMPLATE = "mm_q."
 #
@@ -170,10 +182,3 @@ def deferMessage(q_entry):
 #
 def dequeueMessage(q_entry):
     os.unlink(q_entry)
-
-
-
-
-
-
-
