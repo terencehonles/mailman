@@ -822,3 +822,11 @@ add_language('no',   _('Norwegian'),           'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
 
 del _                                   
+
+# Include Python's site-packages directory.  We need this until we require
+# Python 2.2, which includes the email package in its standard library.  Until
+# then, we distribute the email package as a distutils install.
+import sys
+sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                       'site-packages')
+sys.path.append(sitedir)
