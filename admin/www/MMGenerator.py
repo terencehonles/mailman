@@ -84,7 +84,7 @@ class MMGenerator(Skeleton, Sidebar, Banner):
     % self.__d
 
     def get_corner_bgcolor(self):
-        return 'black'
+        return 'white'
 
     def get_banner(self):
         return Banner.get_banner(self)
