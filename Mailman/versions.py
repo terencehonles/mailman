@@ -34,7 +34,6 @@ run again until another version change is detected.
 
 
 import re
-import string
 from types import ListType, StringType
 
 from Mailman import mm_cfg
@@ -154,21 +153,20 @@ def UpdateOldVars(l, stored_state):
     # value contains the case preserved value
     #
     for k in l.members.keys():
-        if string.lower(k) <> k:
-            l.members[string.lower(k)] = Utils.LCDomain(k)
+        if k.lower() <> k:
+            l.members[k.lower()] = Utils.LCDomain(k)
             del l.members[k]
-        elif type(l.members[k]) == StringType and \
-             k == string.lower(l.members[k]):
+        elif type(l.members[k]) == StringType and k == l.members[k].lower():
             # already converted
             pass
         else:
             l.members[k] = 0
     for k in l.digest_members.keys():
-        if string.lower(k) != k:
-            l.digest_members[string.lower(k)] = Utils.LCDomain(k)
+        if k.lower() <> k:
+            l.digest_members[k.lower()] = Utils.LCDomain(k)
             del l.digest_members[k]
         elif type(l.digest_members[k]) == StringType and \
-             k == string.lower(l.digest_members[k]):
+                 k == l.digest_members[k].lower():
             # already converted
             pass
         else:
@@ -194,6 +192,7 @@ def NewVars(l):
     add_only_if_missing('admin_responses', {})
     add_only_if_missing('reply_goes_to_list', '')
     add_only_if_missing('preferred_language', mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    add_only_if_missing('available_languages', [])
     add_only_if_missing('digest_volume_frequency',
                         mm_cfg.DEFAULT_DIGEST_VOLUME_FREQUENCY)
     add_only_if_missing('digest_last_sent_at', 0)
@@ -213,7 +212,7 @@ def UpdateOldUsers(l):
     # pre-1.0b11 to 1.0b11.  Force all keys in l.passwords to be lowercase
     passwords = {}
     for k, v in l.passwords.items():
-        passwords[string.lower(k)] = v
+        passwords[k.lower()] = v
     l.passwords = passwords
 
 
@@ -226,7 +225,7 @@ def CanonicalizeUserOptions(l):
     for k, v in l.user_options.items():
         if k is None:
             continue
-        lcuser = string.lower(k)
+        lcuser = k.lower()
         flags = 0
         if options.has_key(lcuser):
             flags = options[lcuser]
