@@ -266,13 +266,24 @@ class T:
 	# Loop over all the articles 
 	msgid=self.database.first(self.archive, 'date')
 	while (msgid != None):
-  	    article=self.database.getArticle(self.archive, msgid)
-	    if article.parentID==None or not self.database.hasArticle(self.archive, article.parentID): 
-		key=article.date
-	    else: 
-		parent=self.database.getArticle(self.archive, article.parentID)
-		article.threadKey=parent.threadKey+article.date+'-' 
-   	    self.database.setThreadKey(self.archive, article.threadKey+'\000'+article.msgid, msgid)
+            try:
+                article=self.database.getArticle(self.archive, msgid)
+            except KeyError:
+                pass
+            else:
+                if article.parentID==None or \
+                   not self.database.hasArticle(self.archive,
+                                                article.parentID):
+                    # then
+                    key=article.date
+                else: 
+                    parent=self.database.getArticle(self.archive,
+                                                    article.parentID)
+                    article.threadKey=parent.threadKey+article.date+'-' 
+                self.database.setThreadKey(
+                    self.archive,
+                    article.threadKey+'\000'+ article.msgid,
+                    msgid)
 	    msgid=self.database.next(self.archive, 'date')
 
 ## 	    L1=[] ; L2=[]
@@ -319,10 +330,14 @@ class T:
 	    finished=0
 	    msgid=self.database.first(archive, i)
 	    while (msgid != None):
-		article=self.database.getArticle(self.archive, msgid)
-		count=count+1
-		self.write_index_entry(article)
-		msgid = self.database.next(archive, i )
+                try:
+                    article=self.database.getArticle(self.archive, msgid)
+                except KeyError:
+                    pass
+                else:
+                    count=count+1
+                    self.write_index_entry(article)
+		msgid = self.database.next(archive, i)
 	    # Finish up this index
 	    self.write_index_footer()
 	    sys.stdout=temp_stdout
