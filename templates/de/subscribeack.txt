@@ -13,24 +13,26 @@ persoenliche Abonnements-Seite:
 
   %(optionsurl)s
 %(umbrella)s
-Sie koennen Aenderungen auch vie Email vornehmen, indem Sie eine Email an
+Sie koennen Änderungen auch via Email vornehmen, indem Sie eine Email an
 die Adresse:
 
   %(real_name)s-request@%(host_name)s
 
-schicken, die das Wort `help' (ohne die Anfuehrenszeichen!) im
+schicken, die das Wort 'help' (ohne die Anführungszeichen!) im
 Subject/Betreff oder im Text der Email enthaelt. Sie erhalten dann eine
 Nachricht mit Instruktionen zurueck.
 
 Damit Sie Ihre Abonnements-Optionen aendern koennen, benoetigen Sie Ihr
-Passwort; es lautet:
+Passwort! Es lautet:
 
   %(password)s
 
 Normalerweise erhalten Sie von Mailman jeden Monat eine Email, die Ihre
 Abonnements auf %(host_name)s auflistet und die Passwoerter enthaelt.
-Dieser Erinnerungsmail enthaelt auch Informationen darueber, wie Sie Ihr
+Diese Erinnerungsmail enthält auch Informationen darueber, wie Sie Ihr
 Abonnement stornieren oder Ihrer Abonnements-Optionen aendern koennen.
 
-Auf der Seite mit den persoenliche Einstellungen gibt es einen Knopft, der
+Auf der Seite mit den persoenliche Einstellungen gibt es einen Knopf, der
 Ihnen Ihr aktuelles Passwort zuschickt.
+
+
