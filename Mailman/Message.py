@@ -154,10 +154,7 @@ class UserNotification(Message):
         charset = None
         if lang is not None:
             charset = Charset(Utils.GetCharSet(lang))
-        if text is None:
-            self.set_charset(charset)
-        else:
-            # Implies a set_charset() call
+        if text is not None:
             self.set_payload(text, charset)
         if subject is None:
             subject = '(no subject)'
@@ -190,4 +187,5 @@ class UserNotification(Message):
         virginq.enqueue(self,
                         listname = mlist.internal_name(),
                         recips = self.recips,
+                        nodecorate = 1,
                         **_kws)
