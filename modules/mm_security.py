@@ -22,7 +22,7 @@ import crypt, types, string, os
 import mm_err, mm_utils, mm_cfg
 
 # TBD: is this the best location for the site password?
-SITE_PW_FILE = os.path.join(mm_cfg.LIST_DATA_DIR, 'adm.pw')
+SITE_PW_FILE = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
 
 
 class SecurityManager:
