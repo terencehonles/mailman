@@ -99,7 +99,7 @@ def processQueue():
         # it anyway.  If the creation time was recent, leave it
         # alone as it's probably being delivered by another process anyway
         #
-        if not isDeferred(full_fname) and st[stat.ST_CTIME] > (time.time() - MAX_ACTIVE): 
+        if not isDeferred(full_fname, st) and st[stat.ST_CTIME] > (time.time() - MAX_ACTIVE): 
             continue
         f = open(full_fname,"r")
         recip,sender,text = marshal.load(f)
@@ -136,8 +136,9 @@ def enqueueMessage(the_sender, recip, text):
 #
 # is this queue entry a deferred one?
 #
-def isDeferred(q_entry):
-    st = os.stat(q_entry)
+def isDeferred(q_entry, st=None):
+    if st is None:
+        st = os.stat(q_entry)
     size = st[stat.ST_SIZE]
     mode = st[stat.ST_MODE]
     if mode & stat.S_ISUID: 
