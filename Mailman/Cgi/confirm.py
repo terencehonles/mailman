@@ -123,7 +123,15 @@ def main():
             elif cgidata.getvalue('submit'):
                 addrchange_confirm(mlist, doc, cookie)
             else:
-                addrchange_prompt(mlist, doc, cookie, *content[1:])
+                # Watch out for users who have unsubscribed themselves in the
+                # meantime!
+                try:
+                    addrchange_prompt(mlist, doc, cookie, *content[1:])
+                except Errors.NotAMemberError:
+                    doc.addError(_("""The address requesting to be changed has
+                    been subsequently unsubscribed.  This request has been
+                    cancelled"""))
+                    Pending.confirm(cookie, expunge=1)
         elif content[0] == Pending.HELD_MESSAGE:
             if cgidata.getvalue('cancel'):
                 heldmsg_cancel(mlist, doc, cookie)
