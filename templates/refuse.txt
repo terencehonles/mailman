@@ -5,11 +5,9 @@ Your request to the %(listname)s mailing list:
 has been rejected by the list moderator.  The moderator gave the
 following reason for rejecting your request:
 
-    %(reason)s
+"%(reason)s"
 
 Any questions or comments should be directed to the list administrator 
 at:
 
     %(adminaddr)s
-
-Your original message follows:
