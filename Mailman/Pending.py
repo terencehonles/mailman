@@ -49,6 +49,12 @@ _ALLKEYS = [(x,) for x in (SUBSCRIPTION, UNSUBSCRIPTION,
                            RE_ENABLE,
                            )]
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 def new(*content):
@@ -73,12 +79,20 @@ def new(*content):
                     continue
             # Load the current database
             db = _load()
-            # Calculate a unique cookie
-            while 1:
-                n = random.random()
+            # Calculate a unique cookie.  Algorithm vetted by the Timbot.
+            # time() has high resolution on Linux, clock() on Windows.  random
+            # gives us about 45 bits in Python 2.2, 53 bits on Python 2.3.
+            # The time and clock values basically help obscure the random
+            # number generator, as does the hash calculation.  The integral
+            # parts of the time values are discarded because they're the most
+            # predictable bits.
+            while True:
                 now = time.time()
-                hashfood = str(now) + str(n) + str(content)
+                x = random.random() + now % 1.0 + time.clock() % 1.0
+                hashfood = repr(x)
                 cookie = sha.new(hashfood).hexdigest()
+                # We'll never get a duplicate, but we'll be anal about
+                # checking anyway.
                 if not db.has_key(cookie):
                     break
             # Store the content, plus the time in the future when this entry
@@ -101,10 +115,10 @@ def new(*content):
 
 
 
-def confirm(cookie, expunge=1):
+def confirm(cookie, expunge=True):
     """Return data for cookie, or None if not found.
 
-    If optional expunge is true (the default), the record is also removed from
+    If optional expunge is True (the default), the record is also removed from
     the database.
     """
     if not expunge:
