@@ -104,5 +104,5 @@ notification of the moderator's decison.
                                      raw = 1)
 # Let another process run.
 finally:
-    current_list.Unlock()
-
+    if current_list.Locked():
+        current_list.Unlock()
