@@ -473,8 +473,11 @@ def show_helds_overview(mlist, form):
                       Utils.websafe(subject)
                       ])
             t.AddRow(['&nbsp;', Bold(_('Size:')), str(size) + _(' bytes')])
-            t.AddRow(['&nbsp;', Bold(_('Reason:')),
-                      reason or _('not available')])
+            if reason:
+                reason = _(reason)
+            else:
+                reason = _('not available')
+            t.AddRow(['&nbsp;', Bold(_('Reason:')), reason])
             # Include the date we received the message, if available
             when = msgdata.get('received_time')
             if when:
