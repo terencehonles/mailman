@@ -184,7 +184,12 @@ class CommandRunner(Runner):
                    precedence, mlist.GetRequestEmail())
             return 0
         # Do replybot for commands
+        mlist.Load()
         Replybot.process(mlist, msg, msgdata)
+        if mlist.autorespond_requests == 1:
+            syslog('vette', 'replied and discard')
+            # w/discard
+            return 0
         # Now craft the response
         res = Results(mlist, msg, msgdata)
         # BAW: Not all the functions of this qrunner require the list to be
