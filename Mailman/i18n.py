@@ -34,6 +34,15 @@ def set_language(language):
         # untranslated English.
         _translation = gettext.NullTranslations()
 
+
+def get_translation():
+    return _translation
+
+def set_translation(translation):
+    global _translation
+    _translation = translation
+
+
 
 def _x(s, frame):
     # Do translation of the given string into the current language, and do
