@@ -24,8 +24,8 @@ bounce detection, digest delivery, and so on.  See the
 <p>Mailman is free software.  It is distributed under the
 <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public
 License</a>.  The canonical Mailman home page is at
-<a href="http://www.gnu.org/software/mailman/mailman.html">
-www.gnu.org/software/mailman/mailman.html</a>, with more information
+<a href="http://www.gnu.org/software/mailman/">
+www.gnu.org/software/mailman</a>, with more information
 available at <a href="http://www.list.org/">www.list.org</a>.  Mailman
 is written in the <a href="http://www.python.org/">Python</a>
 programming language, with a little bit of C code for security.
