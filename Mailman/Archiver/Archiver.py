@@ -28,6 +28,13 @@ archival.
 #
 import sys, os, string
 import errno
+import traceback
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 from Mailman.Utils import reraise, mkdir
 
 #
@@ -36,6 +43,7 @@ from Mailman.Utils import reraise, mkdir
 from Mailman import Utils
 from Mailman import Mailbox
 from Mailman import mm_cfg
+from Mailman.LockFile import LockFile
 
 
 
@@ -184,8 +192,11 @@ class Archiver:
             return
 	if os.fork(): 
 	    return
-        # archive to builtin html archiver
-        import traceback
+        # archive to builtin html archiver.  first grab the archiver lock
+        lockfile = os.path.join(mm_cfg.LOCK_DIR, self._internal_name) + \
+                   '.archiver.lock'
+        lock = LockFile(lockfile, lifetime=60)
+        lock.lock()
         try:
             try:
                 if mm_cfg.ARCHIVE_TO_MBOX in [1, 2]:
@@ -193,10 +204,8 @@ class Archiver:
                     if mm_cfg.ARCHIVE_TO_MBOX == 1:
                         # Archive to mbox only.
                         os._exit(0)
-                try:
-                    from cStringIO import StringIO
-                except ImportError:
-                    from StringIO import StringIO
+                # from this point on, we're doing all the expensive archiving
+                # work.
                 txt = msg.unixfrom
                 for h in msg.headers:
                     txt = txt + h
@@ -216,6 +225,7 @@ class Archiver:
             except:
                 traceback.print_exc(file=sys.stderr)
         finally:
+            lock.unlock()
             # need this or we'll never see the error messages!
             sys.stderr.flush()
             os._exit(0)
