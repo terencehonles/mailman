@@ -47,7 +47,15 @@ while 1:
     to_addrs.append(l)
 text = sys.stdin.read()
 
-queue_id = OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
+try:
+    queue_id = OutgoingQueue.enqueueMessage(from_addr, to_addrs, text)
+except IOError:
+    # Log the error event and reraise the exception.
+    (exc, exc_msg, exc_tb) = sys.exc_info()
+    sys.stderr.write("IOError writing outgoing queue\n\t%s/%s\n"
+                     % (str(exc), str(exc_msg)))
+    sys.stderr.flush()
+    raise exc, exc_msg, exc_tb
 Utils.TrySMTPDelivery(to_addrs, from_addr, text, queue_id)
 OutgoingQueue.processQueue()
 
