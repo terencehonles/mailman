@@ -404,7 +404,7 @@ From: dperson@dom.ain
 Urgent: zzZZzz
 
 """, Message.Message)
-        self.assertRaises(CalcRecips.RejectUrgentMessage,
+        self.assertRaises(Errors.RejectMessage,
                           CalcRecips.process,
                           self._mlist, msg, msgdata)
 
@@ -1454,7 +1454,117 @@ A message.
 
 
 class TestTagger(TestBase):
-    pass
+    def test_short_circuit(self):
+        self._mlist.topics = 0
+        rtn = Tagger.process(self._mlist, None, {})
+        # Not really a great test, but there's little else to assert
+        self.assertEqual(rtn, None)
+
+    def test_simple(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
+        mlist.topics_bodylines_limit = 0
+        msg = email.message_from_string("""\
+Subject: foobar
+Keywords: barbaz
+
+""")
+        msgdata = {}
+        Tagger.process(mlist, msg, msgdata)
+        eq(msg['x-topics'], 'bar fight')
+        eq(msgdata.get('topichits'), ['bar fight'])
+
+    def test_all_body_lines_plain_text(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
+        mlist.topics_bodylines_limit = -1
+        msg = email.message_from_string("""\
+Subject: Was
+Keywords: Raw
+
+Subject: farbaw
+Keywords: barbaz
+""")
+        msgdata = {}
+        Tagger.process(mlist, msg, msgdata)
+        eq(msg['x-topics'], 'bar fight')
+        eq(msgdata.get('topichits'), ['bar fight'])
+
+    def test_no_body_lines(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
+        mlist.topics_bodylines_limit = 0
+        msg = email.message_from_string("""\
+Subject: Was
+Keywords: Raw
+
+Subject: farbaw
+Keywords: barbaz
+""")
+        msgdata = {}
+        Tagger.process(mlist, msg, msgdata)
+        eq(msg['x-topics'], None)
+        eq(msgdata.get('topichits'), None)
+
+    def test_body_lines_in_multipart(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
+        mlist.topics_bodylines_limit = -1
+        msg = email.message_from_string("""\
+Subject: Was
+Keywords: Raw
+Content-Type: multipart/alternative; boundary="BOUNDARY"
+
+--BOUNDARY
+From: sabo
+To: obas
+
+Subject: farbaw
+Keywords: barbaz
+
+--BOUNDARY--
+""")
+        msgdata = {}
+        Tagger.process(mlist, msg, msgdata)
+        eq(msg['x-topics'], None)
+        eq(msgdata.get('topichits'), None)
+
+    def test_body_lines_no_part(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
+        mlist.topics_bodylines_limit = -1
+        msg = email.message_from_string("""\
+Subject: Was
+Keywords: Raw
+Content-Type: multipart/alternative; boundary="BOUNDARY"
+
+--BOUNDARY
+From: sabo
+To: obas
+Content-Type: message/rfc822
+
+Subject: farbaw
+Keywords: barbaz
+
+--BOUNDARY
+From: sabo
+To: obas
+Content-Type: message/rfc822
+
+Subject: farbaw
+Keywords: barbaz
+
+--BOUNDARY--
+""")
+        msgdata = {}
+        Tagger.process(mlist, msg, msgdata)
+        eq(msg['x-topics'], None)
+        eq(msgdata.get('topichits'), None)
 
 
 
