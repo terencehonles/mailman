@@ -111,8 +111,11 @@ class MailCommandHandler:
         self.__respbuf = ''
         self.__dispatch = {
             'subscribe'   : self.ProcessSubscribeCmd,
+            'join'        : self.ProcessSubscribeCmd,
             'confirm'     : self.ProcessConfirmCmd,
             'unsubscribe' : self.ProcessUnsubscribeCmd,
+            'remove'      : self.ProcessUnsubscribeCmd,
+            'leave'       : self.ProcessUnsubscribeCmd,
             'who'         : self.ProcessWhoCmd,
             'info'        : self.ProcessInfoCmd,
             'lists'       : self.ProcessListsCmd,
@@ -541,23 +544,49 @@ background and instructions for subscribing to and using it, visit:
                                trunc=0)
 
     def ProcessUnsubscribeCmd(self, args, cmd, mail):
-        if not len(args):
-            self.AddError(_("Usage: unsubscribe <password> [<email-address>]"))
-            return
-        if len(args) > 2:
-            self.AddError(_("Usage: unsubscribe <password> [<email-address>]\n"
-                          "To unsubscribe from a particular list, "
-                          "send your request\n"
-                          "to the '-request' address for that list."))
-            return
-        if len(args) == 2:
+        password = None
+        if not args:
+            # No password and no address.  We can sniff the address, and we
+            # will do a confirmation notice.
+            addr = mail.get_sender()
+        elif len(args) == 1:
+            # We only got one argument, so we're not sure if that's the user's
+            # address or password.  If the argument is a subscribed user, then
+            # assume its the address and send a confirmation notice.
+            # Otherwise, assume it's a password.  This could seem weird if
+            # they're using their address as their password, but even still,
+            # it's not too bad.
+            if self.FindUser(args[0]):
+                addr = args[0]
+            else:
+                addr = mail.get_sender()
+                password = args[0]
+        elif len(args) == 2:
+            password = args[0]
             addr = args[1]
         else:
-            addr = mail.get_sender()
+            self.AddError(Utils.wrap(
+                _("""Usage: unsubscribe [password] [email-address]
+
+                To unsubscribe from a particular list, send your request to
+                the `-request' address for that list."""),
+                honor_leading_ws = 0),
+                          trunc = 0)
+            return
         try:
-            self.ConfirmUserPassword(addr, args[0])
-            self.DeleteMember(addr, "mailcmd")
-            self.AddToResponse(_("Succeeded."))
+            if password is None:
+                # Send a confirmation instead of unsubscribing them
+                if self.FindUser(addr):
+                    self.ConfirmUnsubscription(addr)
+                    self.AddToResponse(
+                        _('A removal confirmation message has been sent.'))
+                else:
+                    # Slightly bogus, but convenient
+                    raise Errors.MMNoSuchUserError
+            else:
+                self.ConfirmUserPassword(addr, password)
+                self.DeleteMember(addr, "mailcmd")
+                self.AddToResponse(_("Succeeded."))
         except Errors.MMListNotReadyError:
             self.AddError(_("List is not functional."))
         except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError):
@@ -658,13 +687,16 @@ background and instructions for subscribing to and using it, visit:
             return
         try:
             self.ProcessConfirmation(args[0])
-        except Errors.MMBadConfirmation:
+        except Errors.MMBadConfirmation, e:
+            #syslog('debug', 'MMBadConfirmation: %s' % e)
             # Express in approximate days
             days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
-            self.AddError(_('''Invalid confirmation string.  Note that
-            confirmation strings expire approximately %(days)s days after the
-            initial subscription request.  If your confirmation has expired,
-            please try to re-submit your subscription.'''),
+            self.AddError(Utils.wrap(
+                _('''Invalid confirmation string.  Note that confirmation
+                strings expire approximately %(days)s days after the initial
+                subscription request.  If your confirmation has expired,
+                please try to re-submit your subscription.'''),
+                honor_leading_ws = 0),
                           trunc=0)
         except Errors.MMNeedApproval, admin_addr:
             self.AddToResponse(_('''Your request has been forwarded to the
