@@ -89,14 +89,14 @@ def dolist(mlist, options):
         print 'processing mailing list:', mlist.internal_name()
 
     # scan the list owners.  TBD: mlist.owner keys should be lowercase?
-    oldowners = mlist.owner
+    oldowners = mlist.owner[:]
     oldowners.sort()
     if options.admintoo:
         if not options.quiet:
             print '    scanning list owners:', string.join(oldowners, ' '),
         newowners = {}
+        foundp = 0
         for owner in mlist.owner:
-            foundp = 0
             if options.lfromaddr == string.lower(owner):
                 foundp = 1
                 if options.remove:
