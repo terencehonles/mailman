@@ -75,6 +75,9 @@ The Mailman TODO list
 
 *Mailcmd interface
 - Provide an email interface to administrative commands.
+- Allow email unsubs from matching address to unsubscribe, possibly
+  adding an "allow open unsubscribes" option to control this.  Also,
+  adding a confirmation with hit-reply to resubscribe.
 
 *Portability concerns
 - Replace cron stuff with our own scheduling mechanism
@@ -129,4 +132,8 @@ The Mailman TODO list
 - Need to go through and verify there are no obvious security problems.
 
 
-
+
+Local Variables:
+mode: indented-text
+indent-tabs-mode: nil
+End:
