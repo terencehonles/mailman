@@ -72,7 +72,7 @@ def main():
         # Overwrite the current file contents, since we're going to be adding
         # all new entries.  See the discussion in Mailman/MTA/Postfix.py for
         # why we do the locking this way.
-        lockfp = open(Postfix.DBFILE)
+        lockfp = open(Postfix.DBFILE, 'w')
         fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
         db = dbhash.open(Postfix.DBFILE, 'n')
         fp = open(Postfix.TEXTFILE, 'w')
