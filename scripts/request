@@ -31,12 +31,8 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman.Logging.StampedLogger import StampedLogger
 
-try:
-    sys.stderr = StampedLogger("error", label = 'mailcmd',
-                               manual_reprime=1)
-except IOError:
-    pass                        # Oh well - SOL on redirect, errors show thru.
-
+from Mailman.Logging.Utils import LogStdErr
+LogStdErr("error", "mailcmd")
 
 # Only let one program run at once per list.
 
