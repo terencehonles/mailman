@@ -20,11 +20,12 @@ code, and have assigned copyright for this code to the FSF:
     Juan Carlos Rey Anaya
     Victoriano Giralt
     Mads Kiilerich
+    Thomas Wouters
 
 Thanks also to Dragon for his winning Mailman logo contribution!
 
-Here is a list of authors of separate modules which are currently
-distributed with Mailman, but are not part of Mailman:
+Here is a list of authors of separate modules which are distributed
+with Mailman for convenience purposes:
 
     Timothy O'Malley, author of misc/Cookie.py.  This file is
     distributed under the GNU LGPL, and is included in the Mailman
@@ -35,6 +36,7 @@ suggestions, bug fixes, testing, etc., or who have been very helpful
 in answering questions on mailman-users.
 
     Jeff Berliner
+    Stan Bubrouski
     Ted Cabeen
     Jeff Hahn
     Paul Hebble
@@ -50,10 +52,11 @@ in answering questions on mailman-users.
     Nigel Metheringham
     Dan Mick
     Balazs Nagy
+    Hrvoje Niksic
     Bernhard Reiter
     Greg Stein
     Jim Tittsler
-    Thomas Wouters
+    Chuq Von Rospach
     Michael Yount
 
 And everyone else on mailman-developers@python.org and
