@@ -26,6 +26,7 @@ import sys, os, string
 from Mailman import MailList, Errors
 from Mailman import Cookie
 from Mailman.Logging.Utils import LogStdErr
+from Mailman import Utils
 import Mailman.mm_cfg
 
 LogStdErr("error", "private")
@@ -71,11 +72,6 @@ PAGE = '''
 	
 login_attempted = 0
 _list = None
-
-def getListName(path):
-    component = string.split(path, os.sep)[1]
-    root, ext = os.path.splitext(component)
-    return root
 
 def GetListobj(list_name):
     """Return an unlocked instance of the named maillist, if found."""
@@ -149,7 +145,11 @@ def main():
     true_filename = os.path.join(
         Mailman.mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
         true_path(path))
-    list_name = getListName(path)
+    list_info = Utils.GetPathPieces(path)
+    if len(list_info) == 0:
+        list_name = None
+    else:
+        list_name = string.lower(list_info[0])
 
     # If it's a directory, we have to append index.html in this script.  We
     # must also check for a gzipped file, because the text archives are
