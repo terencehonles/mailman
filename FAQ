@@ -115,10 +115,10 @@ FREQUENTLY ASKED QUESTIONS
    There appears to be a problem on some systems where the envelope
    sender (e.g. the Unix "From " line) is set incorrectly.  This will
    cause a negative match when checking to see if the sender is a
-   member of the list.  Mailman defaults to using the envelope sender
-   before the sender (i.e. "From:" header) because the former is set
-   by the SMTP agent while the latter is easily spoofable by the end
-   user.
+   member of the list.  Until 1.0b12, Mailman defaulted to using the
+   envelope sender before the sender (i.e. "From:" header) because the
+   former is set by the SMTP agent while the latter is easily
+   spoofable by the end user.
 
    However, if you are having this problem, you may opt to favor the
    From: header over the envelope sender.  Do this by adding the
@@ -126,8 +126,13 @@ FREQUENTLY ASKED QUESTIONS
 
    USE_ENVELOPE_SENDER=0
 
+   if you want (arguably) more security, add this to your mm_cfg.py
+   file:
+
+   USE_ENVELOPE_SENDER=1
+
    However, read the comments about this variable in the Defaults.py
-   file first.
+   file for a full discussion of the issues.
 
 
 
