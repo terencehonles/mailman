@@ -62,7 +62,7 @@ DIRMODE=	775
 EXEMODE=	755
 FILEMODE=	644
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
-PROG=		build/bin/pygettext.py
+PROG=		@PYTHON@ build/bin/pygettext.py
 
 .SUFFIXES:	.po .mo
 .po.mo:
