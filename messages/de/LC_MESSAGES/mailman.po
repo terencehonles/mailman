@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
-"PO-Revision-Date: 2002-12-12 02:10+0100\n"
+"PO-Revision-Date: 2002-12-12 13:47+0100\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: Deutsch\n"
 "MIME-Version: 1.0\n"
@@ -1073,9 +1073,8 @@ msgstr "Das Moderatoren-Passwort und die Bestätigung sind nicht gleich"
 
 # Mailman/Cgi/admin.py:1123
 #: Mailman/Cgi/admin.py:1217
-#, fuzzy
 msgid "Administrator passwords did not match"
-msgstr "Inkorrektes Administratoren-Passwort"
+msgstr "Die Administrator-passwörter stimmten nicht überein"
 
 # Mailman/Cgi/admin.py:1228
 #: Mailman/Cgi/admin.py:1265
@@ -2409,7 +2408,7 @@ msgstr "Optionen verändern"
 #: Mailman/Cgi/listinfo.py:194 Mailman/Cgi/options.py:767
 #: Mailman/Cgi/roster.py:111
 msgid "View this page in"
-msgstr "Betrachten Sie diese Seite in"
+msgstr "Diese Seite in / View this page in"
 
 # Mailman/Cgi/options.py:49 Mailman/Cgi/options.py:64
 #: Mailman/Cgi/options.py:51 Mailman/Cgi/options.py:68
@@ -2682,7 +2681,7 @@ msgstr ""
 # Mailman/Cgi/options.py:619
 #: Mailman/Cgi/options.py:748
 msgid "%(realname)s list: member options login page"
-msgstr "Mailingliste %(realname)s: Anmeldung für Mitglieder"
+msgstr "Mailingliste %(realname)s: Login für Mitglieder"
 
 # Mailman/Cgi/options.py:621
 #: Mailman/Cgi/options.py:749
@@ -3155,7 +3154,7 @@ msgstr ""
 
 #: Mailman/Commands/cmd_help.py:47
 msgid "You can access your personal options via the following url:"
-msgstr ""
+msgstr "Sie können Ihre persönlichen Einstellungen unter folgender Webadresse ändern:"
 
 #: Mailman/Commands/cmd_info.py:17
 msgid ""
@@ -3166,7 +3165,7 @@ msgstr ""
 
 #: Mailman/Commands/cmd_info.py:39 Mailman/Commands/cmd_lists.py:62
 msgid "n/a"
-msgstr ""
+msgstr "n/a"
 
 # Mailman/Cgi/create.py:95
 #: Mailman/Commands/cmd_info.py:44
@@ -3175,15 +3174,15 @@ msgstr "Listenname: %(listname)s"
 
 #: Mailman/Commands/cmd_info.py:45
 msgid "Description:  %(description)s"
-msgstr ""
+msgstr "Beschreibung:  %(description)s"
 
 #: Mailman/Commands/cmd_info.py:46
 msgid "Postings to:  %(postaddr)s"
-msgstr ""
+msgstr "e-mails an:  %(postaddr)s"
 
 #: Mailman/Commands/cmd_info.py:47
 msgid "List Helpbot: %(requestaddr)s"
-msgstr ""
+msgstr "Listen-Programm: %(requestaddr)s"
 
 #: Mailman/Commands/cmd_info.py:48
 msgid "List Owners:  %(owneraddr)s"
@@ -3191,15 +3190,15 @@ msgstr "Liste-Administrator: %(owneraddr)s"
 
 #: Mailman/Commands/cmd_info.py:49
 msgid "More information: %(listurl)s"
-msgstr ""
+msgstr "Weitere Informationen: %(listurl)s"
 
 #: Mailman/Commands/cmd_join.py:17
 msgid "The `join' command is synonymous with `subscribe'.\n"
-msgstr ""
+msgstr "Das Kommando `join' ist identisch mit `subscribe'.\n"
 
 #: Mailman/Commands/cmd_leave.py:17
 msgid "The `leave' command is synonymous with `unsubscribe'.\n"
-msgstr ""
+msgstr "Das Kommando `leave' ist identisch mit `unsubscribe'.\n"
 
 #: Mailman/Commands/cmd_lists.py:17
 msgid ""
@@ -3215,7 +3214,7 @@ msgstr "Öffentliche Mailingliste auf %(hostname)s:"
 
 #: Mailman/Commands/cmd_lists.py:66
 msgid "%(i)3d. List name:   %(realname)s"
-msgstr ""
+msgstr "%(i)3d. Listen-Name:   %(realname)s"
 
 #: Mailman/Commands/cmd_lists.py:67
 msgid "     Description: %(description)s"
