@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b2\n"
 "POT-Creation-Date: Sun Oct 20 11:44:44 2002\n"
-"PO-Revision-Date: 2002-10-14 11:22+0200\n"
-"Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
+"PO-Revision-Date: 2002-10-21 01:03+0200\n"
+"Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -4034,6 +4034,28 @@ msgid ""
 "is\n"
 "            enabled and the site is configured to allow these conversions."
 msgstr ""
+"Regler for innhold i epost sendt til listen.\n"
+"\n"
+"<p>Filtrering på innhold fungerer slik: når listen mottar en epost og du har\n"
+"skrudd på filtrering på innhold, sammenlignes først eventuelle vedlegg mot\n"
+"<a href=\"?VARHELP=contentfilter/filter_mime_types\">MIME filtre</a>.\n"
+"Hvis et vedlegg passer med et av disse filtrene, blir vedlegget forkastet.\n"
+"\n"
+"<p>Deretter sammenlignes eventuelle vedlegg mot\n"
+"<a href=\"?VARHELP=contentfilter/pass_mime_types\">gyldige MIME typer</a>,\n"
+"hvis det er definert noen. Alle vedlegg som ikke passer med de angitte MIME\n"
+"typene, blir forkastet.\n"
+"\n"
+"<p>Etter disse filtrene, vil alle tomme <tt>multipart</tt> vedlegg bli fjernet.\n"
+"Hvis selve meldingen er helt tom etter denne filtreringen, vil meldingen bli\n"
+"forkastet. Deretter vil hvert <tt>multipart/alternative</tt> vedlegg bli\n"
+"erstattet av det først alternativet som ikke er tomt.\n"
+"\n"
+"<p>Til slutt vil alle <tt>text/html</tt> vedlegg som måtte være igjen i\n"
+"meldingen bli konvertert til <tt>text/plain</tt> dersom\n"
+"<a href=\"?VARHELP=contentfilter/convert_html_to_plaintext\">konvertere til ren\n"
+"tekst</a> er skrudd på og serveren er konfigurert til å tillate slike\n"
+"konverteringer."
 
 #: Mailman/Gui/ContentFilter.py:70
 msgid ""
@@ -4062,6 +4084,15 @@ msgid ""
 "             <p>See also <a href=\"?VARHELP=contentfilter/pass_mime_types\"\n"
 "             >pass_mime_types</a> for a content type whitelist."
 msgstr ""
+"Bruk denne instillingen til å fjerne vedlegg som har fitte MIME typer.\n"
+"Hver linje skal her inneholde navnet på en MIME <tt>type/subtype</tt>,\n"
+"f.eks. <tt>image/gif</tt>. Dersom du ønsker å fjerne alle vedlegg som har en\n"
+"gitt hoved MIME type, kan du la være å angi subtype, f.eks. <tt>image</tt>.\n"
+"\n"
+"<p>Blanke linjer hoppes over.\n"
+"\n"
+"<p>Se også <a href=\"?VARHELP=contentfilter/pass_mime_types\">gyldige MIME typer</a>\n"
+"for hvitelisting av MIME typer."
 
 #: Mailman/Gui/ContentFilter.py:89
 msgid ""
@@ -4069,6 +4100,8 @@ msgid ""
 "             content type.  Leave this field blank to skip this filter\n"
 "             test."
 msgstr ""
+"Fjerne alle vedlegg som ikke har en gyldig MIME type.\n"
+"La dette feltet være blankt for at alle MIME typer skal være gyldige."
 
 #: Mailman/Gui/ContentFilter.py:93
 msgid ""
@@ -4083,6 +4116,10 @@ msgid ""
 "             <tt>multipart</tt> to this list, any messages with attachments\n"
 "             will be rejected by the pass filter."
 msgstr ""
+"Bruk denne innstillingen for definere hvilke MIME typer som skal være tillatt.\n"
+"Krav og format på filtrering er identisk med <a href=\"?VARHELP=contentfilter/filter_mime_types\">MIME filtre</a>.\n"
+"\n"
+"<p><b>Merk:</b> hvis du legger inn noe her, men ikke angir <tt>multipart</tt>, vil all epost med vedlegg bli forkastet."
 
 #: Mailman/Gui/ContentFilter.py:103
 msgid ""
@@ -4131,6 +4168,24 @@ msgid ""
 "             option is only available if enabled by the site\n"
 "             administrator."
 msgstr ""
+"Her bestemmer du hva som skal skje når en melding filtreres av et filter, altså\n"
+"dersom vedleggene filtreres av\n"
+"<a href=\"?VARHELP=contentfilter/filter_mime_types\">MIME filteret</a>, eller et\n"
+"vedlegg ikke har en av de\n"
+"<a href=\"?VARHELP=contentfilter/pass_mime_types\">gyldige MIME typer</a>, eller\n"
+"meldingen ender opp med å være tom etter filtrering.\n"
+"\n"
+"<p>Merk at det du velger her vil ikke skje dersom en melding fremdeles\n"
+"inneholder noe etter filtrering. Da vil meldingen alltid sendes videre til\n"
+"listemedlemskapet.\n"
+"\n"
+"<p>Når meldinger forkastes, skrives Message-IDen til den forkastede meldingen\n"
+"til loggen. Når meldinger sendes i retur eller videresendes til listens eier,\n"
+"vil en begrunnelse alltid inkluderes i returmeldingen som sendes til avsenderen.\n"
+"Når meldinger skal bevares, lagres de i en spesiell køkatalog på disk slik at\n"
+"serveradministratoren kan se (og kanskje gjøre noe med) meldingen, men utenom\n"
+"det blir de forkastet. Dette siste valget er kun tilgjengelig dersom\n"
+"serveradministratoren har tillatt det."
 
 #: Mailman/Gui/ContentFilter.py:153
 msgid "Bad MIME type ignored: %(spectype)s"
@@ -6359,7 +6414,7 @@ msgstr "Epost-Til-Nyhetsgruppe og Nyhetsgruppe-Til-Epost tjeneste."
 
 #: Mailman/Gui/Usenet.py:37
 msgid "News server settings"
-msgstr ""
+msgstr "Innstillinger for nyhetsgruppeserver"
 
 #: Mailman/Gui/Usenet.py:40
 msgid ""
@@ -6398,22 +6453,20 @@ msgid ""
 msgstr "Skal nye meldinger til nyhetsgruppen sendes til denne epostlisten?"
 
 #: Mailman/Gui/Usenet.py:58
-#, fuzzy
 msgid "Forwarding options"
-msgstr "Innstillinger for arkivering"
+msgstr "Innstillinger for videresending"
 
 #: Mailman/Gui/Usenet.py:61
-#, fuzzy
 msgid "Moderated"
-msgstr "Moderator"
+msgstr "Moderert"
 
 #: Mailman/Gui/Usenet.py:61
 msgid "Open list, moderated group"
-msgstr ""
+msgstr "Åpen liste, moderert nyhetsgruppe"
 
 #: Mailman/Gui/Usenet.py:64
 msgid "The moderation policy of the newsgroup."
-msgstr ""
+msgstr "Moderasjonsreglene for nyhetsgruppen."
 
 #: Mailman/Gui/Usenet.py:66
 msgid ""
@@ -6472,9 +6525,8 @@ msgid ""
 msgstr ""
 
 #: Mailman/Gui/Usenet.py:101
-#, fuzzy
 msgid "Mass catch up"
-msgstr "Oppdatering fullført"
+msgstr "Utføre oppdatering"
 
 #: Mailman/Gui/Usenet.py:104
 msgid "Should Mailman perform a <em>catchup</em> on the newsgroup?"
@@ -6918,9 +6970,8 @@ msgstr ""
 "%(kb)s KB."
 
 #: Mailman/Handlers/Hold.py:110
-#, fuzzy
 msgid "Posting to a moderated newsgroup"
-msgstr "Melding sendt til moderert liste"
+msgstr "Melding sendt til moderert nyhetsgruppe"
 
 #: Mailman/Handlers/Hold.py:233
 msgid "Your message to %(listname)s awaits moderator approval"
@@ -6973,6 +7024,10 @@ msgid ""
 "are receiving the only remaining copy of the discarded message.\n"
 "\n"
 msgstr ""
+"Den vedlagte meldingen ble filtrert av innholdsfiltrene til epostlisten\n"
+"%(listname)s og ble dermed ikke sendt videre til listens medlemskap. Du\n"
+"mottar den siste kopien av den forkastede meldingen.\n"
+"\n"
 
 #: Mailman/Handlers/MimeDel.py:214
 msgid "Content filtered message notification"
@@ -7273,6 +7328,10 @@ msgid ""
 "messages.\n"
 "\n"
 msgstr ""
+"Den vedlagte meldingen ble mottatt som en returmelding, men enten er formatet på\n"
+"den ukjent, eller så kunne ingen medlemsadresse plukkes ut av meldingen. Du,\n"
+"som listeadministrator, har bedt om å motta alle ukjente returmeldinger.\n"
+"\n"
 
 #: Mailman/Queue/BounceRunner.py:180
 msgid "Uncaught bounce notification"
