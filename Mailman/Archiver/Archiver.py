@@ -88,7 +88,6 @@ class Archiver:
         # which has o+rx permissions.  Private archives do not have the
         # symbolic links.
         omask = os.umask(0)
-        listname = self.internal_name();
         try:
             try:
                 os.mkdir(self.archive_dir()+'.mbox', 02775)
@@ -187,7 +186,6 @@ class Archiver:
         # normal delivery mechanism continue.  The archiver is too f*cked up
         # anyway, and at the very least we've got the mbox to regenerate
         # from.
-        t0 = time.time()
         try:
             txt = str(msg)
             # should we use the internal or external archiver?
@@ -208,8 +206,6 @@ class Archiver:
             traceback.print_exc()
             syslog('error', 'CORRUPT ARCHIVE FOR LIST: %s',
                    self.internal_name())
-        else:
-            t1 = time.time()
 	
     #
     # called from MailList.MailList.Save()
