@@ -32,7 +32,7 @@ updates the data_version number of the list, and then does a .Save(), so
 the transformations won't be run again until another version change is
 detected."""
 
-__version__ = "$Revision: 547 $"
+__version__ = "$Revision: 721 $"
 
 import re, string, types
 import mm_cfg
@@ -80,51 +80,54 @@ def older(version, reference):
     """True if version is older than current.
 
     Different numbering systems imply version is older."""
-
+    if type(version) != type(reference):
+      return 1
+    if version >= reference:
+      return 0  
+    else:
+      return 1
     # Iterate over the repective contiguous sections of letters and digits
     # until a section from the reference is found to be different than the
     # corresponding version section, and return the sense of the
     # difference.  If no differences are found, then 0 is returned.
-    for v, r in map(None, section(version), section(reference)):
-        if r == None:
+    #for v, r in map(None, section(version), section(reference)):
+     #   if r == None:
             # Reference is a full release and version is an interim - eg,
             # alpha or beta - which precede full, are older:
-            return 1
-        if type(v) != type(r):
-            # Numbering system changed.
-            return 1
-        if v < r:
-            return 1
-        if v > r:
-            return 0
-    return 0
+      #      return 1
+       # if type(v) != type(r):
+        #    # Numbering system changed.
+         #   return 1
+       # if v < r:
+        #    return 1
+       # if v > r:
+        #    return 0
+    # return 0
     
-def section(s):
-    """Split string into contiguous sequences of letters and digits."""
-    section = ""
-    got = []
-    wasat = ""
-    for c in s:
-        if c in string.letters:
-            at = string.letters; add = c
-        elif c in string.digits:
-            at = string.digits; add = c
-        else:
-            at = ""; add = ""
-
-        if at == wasat:                 # In continuous sequence.
-            section = section + add
-        else:                           # Switching.
-            if section:
-                if wasat == string.digits:
-                    section = int(section)
-                got.append(section)
-            section = add
-            wasat = at
-    if section:                         # Get trailing stuff.
-        if wasat == string.digits:
-            section = int(section)
-        got.append(section)
-    return got
-        
-                
+#def section(s):
+#    """Split string into contiguous sequences of letters and digits."""
+#    section = ""
+#    got = []
+#    wasat = ""
+#    for c in s:
+#        if c in string.letters:
+#            at = string.letters; add = c
+#        elif c in string.digits:
+#            at = string.digits; add = c
+#        else:
+#            at = ""; add = ""
+#
+#        if at == wasat:                 # In continuous sequence.
+#            section = section + add
+#        else:                           # Switching.
+#            if section:
+#                if wasat == string.digits:
+#                    section = int(section)
+#                got.append(section)
+#            section = add
+#            wasat = at
+#    if section:                         # Get trailing stuff.
+#        if wasat == string.digits:
+#            section = int(section)
+#        got.append(section)
+#    return got
