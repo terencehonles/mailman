@@ -76,7 +76,10 @@ class ContentFilter(GUIBase):
              e.g. <tt>image/gif</tt>.  Leave off the subtype to remove all
              parts with a matching major content type, e.g. <tt>image</tt>.
 
-             <p>Blank lines are ignored.""")),
+             <p>Blank lines are ignored.
+
+             <p>See also <a href="?VARHELP=contentfilter/pass_mime_types"
+             >pass_mime_types</a> for a content type whitelist.""")),
 
             ('pass_mime_types', mm_cfg.Text, (10, WIDTH), 0,
              _("""Remove message attachments that don't have a matching
@@ -103,7 +106,18 @@ class ContentFilter(GUIBase):
         if property in ('filter_mime_types', 'pass_mime_types'):
             types = []
             for spectype in [s.strip() for s in val.splitlines()]:
-                if 0 > spectype.count('/') > 1:
+                ok = 1
+                slashes = spectype.count('/')
+                if slashes == 0 and not spectype:
+                    ok = 0
+                elif slashes == 1:
+                    maintype, subtype = [s.strip().lower()
+                                         for s in spectype.split('/')]
+                    if not maintype or not subtype:
+                        ok = 0
+                elif slashes > 1:
+                    ok = 0
+                if not ok:
                     doc.addError(_('Bad MIME type ignored: %(spectype)s'))
                 else:
                     types.append(spectype.strip().lower())
