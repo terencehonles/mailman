@@ -47,19 +47,23 @@
 <LI> A web UI to the -urgent address.</LI>
 <LI> Better options for the policy on bundling digests (periodic w/ arbitrary   periods, size based, a combo of the two, etc).</LI>
 <LI> A button that will bundle a digest right now (tm).</LI>
+<LI> Ability to set the next digest volume and issue number from the Web</LI>
 <LI> A generic error template page.</LI>
 <LI> An option for setting the precedence header.</LI>
 <LI> Make the MM-tags accept useful options where appropriate.</LI>
 <LI> Revamp the admindb user interface, it's fairly clunky (include a decent   cataloging mechanism based on the file system).</LI>
 <LI> Be able to edit ALL the web pages, as well as the mail messages.</LI>
-<LI> Use templates from the templates dir until the list owner changes    the page, so the site admin can change them...</LI>
+<LI> Use templates from the templates dir until the list owner changes  the page, so the site admin can change them...</LI>
+<LI> All the list-admin to require approvals for unsubs</LI>
+<LI> Allow the admin to disable option settings by users</LI>
 </UL>
 <A NAME=c5><H3>List Member UI</H3>
 <UL>
 <LI> Editing your user options should put you back to the edit-options page. </LI>
 <LI> Allow the user to be excluded from postings if they're getting them  in the to: or cc: headers.</LI>
-<LI> An option to change your email address.</LI>
+<LI> An option to change your email address.  Or what might be easier:  allow a user to clone the options of an existing user into a new  address.</LI>
 <LI> Allow users to specify a different address for password reminders  (w/ confirmation), or come up w/ a better strategy for remailing lists  (could be done as the default, given a generic filter mechanism).</LI>
+<LI> Allow the user to get BOTH normal and digested delivery (but I still  don't understand why someone would want this)</LI>
 </UL>
 <A NAME=c6><H3>Site Administrator's UI</H3>
 <UL>
@@ -76,6 +80,7 @@
 <A NAME=c8><H3>Mailcmd interface</H3>
 <UL>
 <LI> Provide an email interface to administrative commands.</LI>
+<LI> Allow email unsubs from matching address to unsubscribe, possibly  adding an "allow open unsubscribes" option to control this.  Also,  adding a confirmation with hit-reply to resubscribe.</LI>
 </UL>
 <A NAME=c9><H3>Portability concerns</H3>
 <UL>
@@ -96,6 +101,8 @@
 <LI> Provide downloadable tar.gz's of the html archives</LI>
 <LI> sort by date should go most-recent to oldest</LI>
 <LI> allow list owner to edit archive messages</LI>
+<LI> support for alternative archiving systems, e.g. MHonArc, Hypermail</LI>
+<LI> archive link should do *something* reasonable before the first  message has been posted to the list.</LI>
 </UL>
 <A NAME=c12><H3>Code cleanup</H3>
 <UL>
@@ -114,6 +121,6 @@
 <LI> The threaded server should be able to off its workload to friendly machines   if it is overworked (distributed support).</LI>
 <LI> Refine locking to lock only necessary sections to get rid of superfluous  contention.</LI>
 <LI> Implement member profiles, using a class to store name,  organization, description, etc, and default option settings.  The  lists still can have their own data, but the user can set defaults in  their profile...</LI>
-<LI> Need to go through and verify there are no obvious security problems.</LI>
+<LI> Need to go through and verify there are no obvious security problems. Local Variables: mode: indented-text indent-tabs-mode: nil End:</LI>
 </UL>
 </BODY></HTML>

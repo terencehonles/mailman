@@ -36,6 +36,7 @@ Where:
 import sys
 import os
 import string
+import re
 import time
 import tempfile
 import getopt
@@ -117,23 +118,26 @@ def do_bump(newvers):
     fp.write(text)
     fp.close()
     # hack the configure.in file
-    print 'configure.in...',
-    fp_in = open('configure.in')
-    fp_out = open('configure.in.new', 'w')
+    print 'Defaults.py.in...',
+    fp_in = open('Mailman/Defaults.py.in')
+    fp_out = open('Mailman/Defaults.py.in.new', 'w')
     matched = 0
+    cre = re.compile(r'^VERSION(?P<ws>[ \t]*)=')
     while 1:
         line = fp_in.readline()
         if not line:
+            if not matched:
+                print 'Error! VERSION line not found'
             break
-        if not matched and line[:8] == 'VERSION=':
-            fp_out.write('VERSION=' + newvers + '\n')
-            matched = 1
-        else:
+        mo = cre.search(line)
+        if matched or not mo:
             fp_out.write(line)
+        else:
+            fp_out.write('VERSION%s= "%s"\n' % (mo.group('ws'), newvers))
+            matched = 1
     fp_in.close()
     fp_out.close()
-    os.rename('configure.in.new', 'configure.in')
-    os.system('autoreconf')
+    os.rename('Mailman/Defaults.py.in.new', 'Mailman/Defaults.py.in')
     # update the TODO file
     print 'TODO...'
     os.system('admin/bin/mm2do')

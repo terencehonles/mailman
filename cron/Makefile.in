@@ -20,8 +20,6 @@
 
 # Variables set by configure
 
-VERSION=	@VERSION@
-
 VPATH=		@srcdir@
 srcdir= 	@srcdir@
 bindir= 	@bindir@

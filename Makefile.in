@@ -21,7 +21,6 @@
 # Variables set by configure
 
 SHELL=		/bin/sh
-VERSION=	@VERSION@
 
 VPATH=		@srcdir@
 srcdir=		@srcdir@
