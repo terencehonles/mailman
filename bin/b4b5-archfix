@@ -31,6 +31,8 @@ $PREFIX directory
 %% %(PROGRAM)s `grep -l _mlist archives/private/*/database/*-article`
 
 (note the backquotes are required)
+
+You will need to run `bin/check_perms -f' after running this script.
 """
 # This script is provided for convenience purposes only.  It isn't supported.
 
@@ -42,6 +44,7 @@ import cPickle as pickle
 
 # Required to get the right classes for unpickling
 import paths
+from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
 
@@ -84,6 +87,8 @@ def main():
         fp.close()
         os.rename(filename, filename + '.bak')
         os.rename(filename + '.tmp', filename)
+
+    print 'You should now run "bin/check_perms -f"'
 
 
 
