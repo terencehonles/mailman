@@ -102,7 +102,7 @@ def process_form(mlist, user, doc):
                 pw = form["upw"].value
                 if mlist.ConfirmUserPassword(user, pw):
                     mlist.DeleteMember(user, "web cmd")
-            except Errors.MMListNotReady:
+            except Errors.MMListNotReadyError:
                 PrintResults(mlist, operation, doc, "List is not functional.")
             except Errors.MMNoSuchUserError:
                 PrintResults(mlist, operation, doc,
@@ -135,7 +135,7 @@ def process_form(mlist, user, doc):
         else:
             try:
                 mlist.ConfirmUserPassword(user, form['othersubspw'].value)
-            except Errors.MMListNotReady:
+            except Errors.MMListNotReadyError:
                 PrintResults(mlist, operation, doc,
                              "The list is currently not functional.")
             except Errors.MMNotAMemberError:
@@ -181,7 +181,7 @@ def process_form(mlist, user, doc):
                 mlist.ConfirmUserPassword(user, form['opw'].value)
                 mlist.ChangeUserPassword(user, form['newpw'].value,
                                          form['confpw'].value)
-            except Errors.MMListNotReady:
+            except Errors.MMListNotReadyError:
                 PrintResults(mlist, operation, doc,
                              "The list is currently not functional.")
             except Errors.MMNotAMemberError:
@@ -240,7 +240,7 @@ def process_form(mlist, user, doc):
             PrintResults(mlist, operation, doc,
                          "%s isn't subscribed to this list."
                          % mail.GetSender())
-        except Errors.MMListNotReady:
+        except Errors.MMListNotReadyError:
             PrintResults(mlist, operation, doc, "List is not functional.")
         except Errors.MMNoSuchUserError:
             PrintResults(mlist, operation, doc,
