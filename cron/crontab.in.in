@@ -6,9 +6,3 @@
 #
 # 5 AM on the first of each month, mail out password reminders.
 0 5 1 * * /usr/local/bin/python /home/mailman/mailman/cron/mailpasswds
-#
-# Midnight on the first of each month, bump the volume for large lists.
-0 0 1 * * /usr/local/bin/python /home/mailman/mailman/cron/upvolumes_monthly
-#
-# Near years second, bump volume numbers for most lists archives/digests
-0 0 1 1 * /home/mailman/mailman/cron/upvolumes_yearly
