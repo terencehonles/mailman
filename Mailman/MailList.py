@@ -828,7 +828,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         Utils.ValidateEmail(admin)
         omask = os.umask(0)
         try:
-            os.makedirs(os.path.join(mm_cfg.LIST_DATA_DIR, name), 02775)
+            try:
+                os.makedirs(os.path.join(mm_cfg.LIST_DATA_DIR, name), 02775)
+            except OSError:
+                raise Errors.MMUnknownListError
         finally:
             os.umask(omask)
         self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
@@ -1067,7 +1070,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         if data is None:
             raise Errors.MMBadConfirmation, 'data is None'
         try:
-            op, data = data
+            op = data[0]
+            data = data[1:]
         except ValueError:
             raise Errors.MMBadConfirmation, 'op-less data %s' % data
         if op == Pending.SUBSCRIPTION:
@@ -1300,6 +1304,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def HasExplicitDest(self, msg):
         """True if list name or any acceptable_alias is included among the
         to or cc addrs."""
+        # BAW: fall back to Utils.ParseAddr if the first test fails.
         # this is the list's full address
         listfullname = '%s@%s' % (self.internal_name(), self.host_name)
         recips = []
