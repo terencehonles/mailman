@@ -107,7 +107,9 @@ def SendExplanation(ml, users):
 def AddMember(ml, addr, digest_p, send_welcome_msg):
     # if the line was empty, just ignore it
     pw = GetRandomPassword()
-
+    if not Mailman.Utils.ValidEmail(addr):
+        print "not a valid email address:", addr
+        return
     try:
         ml.ApprovedAddMember(addr, pw, digest_p, send_welcome_msg)
     except Mailman.Errors.MMAlreadyAMember:
