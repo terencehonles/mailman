@@ -117,8 +117,10 @@ def UpdateOldVars(l, stored_state):
     # Now convert what we can...
     if hasattr(l, 'moderated'):
         # The closest we can get to the semantics of this variable is to set
-        # the default member moderation flag, and to set the generic nonmember
-        # action.
+        # the default member moderation flag so that new members are always
+        # moderated, and to set the generic nonmember action.  We also need to
+        # go through the list membership and turn on all the moderation flags
+        # for every member.
         oldval = getattr(l, 'moderated')
         # Flag values have the same semantic
         l.default_member_moderation = oldval
@@ -126,6 +128,8 @@ def UpdateOldVars(l, stored_state):
         # accept them.
         if oldval:
             l.generic_nonmember_action = 1
+            for member in l.getMembers():
+                l.setMemberOption(member, mm_cfg.Moderate, 1)
         else:
             l.generic_nonmember_action = 0
         del l.moderated
