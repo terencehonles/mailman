@@ -339,12 +339,13 @@ def GetPossibleMatchingAddrs(name):
 
 
 
-def FindMatchingAddresses(name, *dicts):
+def FindMatchingAddresses(name, dict, *dicts):
     """Given an email address, and any number of dictionaries keyed by
     email addresses, returns the subset of the list that matches the
     given address.  Should sort based on exactness of match,
     just in case."""
-
+    dicts = list(dicts)
+    dicts.insert(0, dict)
     if not mm_cfg.SMART_ADDRESS_MATCH:
         for d in dicts:
             if d.has_key(LCDomain(name)):
