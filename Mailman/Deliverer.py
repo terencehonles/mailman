@@ -1,6 +1,6 @@
 """Mixin class with message delivery routines."""
 
-__version__ = "$Revision: 438 $"
+__version__ = "$Revision: 453 $"
 
 
 import string, os, sys, tempfile
@@ -168,8 +168,8 @@ class Deliverer:
 	    header = ''
 	    welcome = ''
 
-        body = (SUBSCRIBEACKTEXT % (header, welcome,
-                                    self.real_name, self.host_name,
+        body = (SUBSCRIBEACKTEXT % (self.real_name, self.host_name,
+                                    header, welcome,
                                     self.GetScriptURL('listinfo'),
                                     self.GetOptionsURL(name),
                                     self.real_name, self.host_name,
