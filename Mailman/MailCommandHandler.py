@@ -33,13 +33,20 @@ from Mailman import Utils
 from Mailman.Handlers import HandlerAPI
 from Mailman.Logging.Syslog import syslog
 from Mailman.pythonlib.StringIO import StringIO
-from Mailman.i18n import _
-
+import gettext
 
 
 MAXERRORS = 5
 MAXCOLUMN = 70
 
+# jcrey: I must to do a trick to make pygettext detect this strings.  First we
+# define a fake function.  Idea taken from Mads.
+
+def _(string):
+    return string
+
+
+
 option_descs = {
     'hide'   : _('When turned on, your email address is concealed\n'
                  'on the Web page that lists the members of the mailing list.'),
@@ -63,6 +70,11 @@ option_descs = {
                  "have a mail reader that supports MIME."),
     }
 
+# jcrey: and then the real one
+_=gettext.gettext
+
+
+
 option_info = {'digest'  : 0,
                'nomail'  : mm_cfg.DisableDelivery,
                'notmetoo': mm_cfg.DontReceiveOwnPosts,
@@ -129,6 +141,7 @@ class MailCommandHandler:
                 return
 	subject = msg.getheader("subject")
         sender = string.lower(msg.GetSender())
+        os.environ['LANG'] = self.GetPreferredLanguage(sender)
         sender = string.split(sender, "@")[0]
         #
         # XXX: why 'orphanage'?
@@ -657,7 +670,7 @@ background and instructions for subscribing to and using it, visit:
             {'requestaddr': self.GetRequestEmail(),
              'cmd'        : cmd,
              'adminaddr'  : self.GetAdminEmail(),
-             })
+             }, self.preferred_language)
         self.AddError(text, trunc=0)
 
     def ProcessHelpCmd(self, args, cmd, mail):
@@ -668,6 +681,6 @@ background and instructions for subscribing to and using it, visit:
              'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'requestaddr' : self.GetRequestEmail(),
              'adminaddr'   : self.GetAdminEmail(),
-             })
+             }, self.preferred_language)
         self.AddToResponse(text, trunc=0)
 
