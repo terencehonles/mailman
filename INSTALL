@@ -17,8 +17,8 @@ upgrade.
 
     You must have a mail server (MTA) that you can send messages to,
     and a web server that supports the CGI/1.1 API.  Apache makes a
-    fine choice for web server, and MTAs such as Postfix, Exim, and
-    Sendmail should work just fine.
+    fine choice for web server, and MTAs such as Postfix, Exim,
+    Sendmail, and qmail should work just fine.
 
     You will need an ANSI C compiler to build Mailman's security
     wrappers.  The GNU C compiler gcc 2.8.1 or later is known to work
@@ -27,10 +27,9 @@ upgrade.
         http://www.gnu.org
 
     You must have the Python interpreter installed somewhere on your
-    system.  Currently Python 2.1 or later is required; Python
-    2.1.2 or Python 2.2 is recommended.  For information about
-    obtaining Python source code, RPM packages, or pre-compiled
-    binaries please see:
+    system.  Currently Python 2.1.3 or Python 2.2.1 is recommended.
+    For information about obtaining Python source code, RPM packages,
+    or pre-compiled binaries please see:
 
         http://www.python.org
 
@@ -41,10 +40,10 @@ upgrade.
     stick to the basics that compile on most systems.
 
     If there is a README.<yourMTA> file that describes your mail
-    server (MTA), read it now.  Some MTAs are more compatible with
-    Mailman such that you can do automatic creation and removal of
-    mailing lists, including through-the-web operations.  Examples are
-    Exim and Postfix.  Setup instructions for specific MTAs are
+    server (MTA), read it now.  Some MTAs can be integrated more
+    seamlessly with Mailman for support of some advanced features
+    (like creation and removal of lists through-the-web).  Examples
+    are Exim and Postfix.  Setup instructions for specific MTAs are
     contained in these README files.
 
 
@@ -71,16 +70,15 @@ upgrade.
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
       installed under $prefix.  Run "configure --help" for ways to
-      split the installation up based on read-only vs. read/write
-      files.
+      split the installation based on read-only vs. read/write files.
 
       The default installation directory for Mailman 2.1 is
       /usr/local/mailman.  It used to be /home/mailman for all
       versions prior to Mailman 2.1alpha2.  You can override the
       default by using the --prefix option to configure (see below).
-      If you're upgrading from a version previous to Mailman2.1alpha2,
-      you will need to use --prefix unless you move your mailing
-      lists (this can be a wise upgrade strategy).
+      If you're upgrading from a version previous to Mailman 2.1, you
+      will need to use --prefix unless you move your mailing lists
+      (this can be a wise upgrade strategy).
 
       Watch out if your site does something like mount /usr/local with
       the nosuid option.  This will break Mailman, which relies on
@@ -109,8 +107,8 @@ upgrade.
 
     You should not be root while performing the steps in this section.
     Do them under your own login, or whatever account you typically
-    install software as.  You do not need to do these steps as user
-    mailman, but you could.
+    use to install software.  You do not need to do these steps as
+    user mailman, but you could.
 
     Make sure that you have write permissions to the target
     installation directory, and permission to create a setgid file in
@@ -119,8 +117,8 @@ upgrade.
 
     If you've installed other GNU software, you should be familiar
     with the configure script.  Usually you can just cd to the
-    directory you unpacked Mailman into, and run configure with no
-    arguments:
+    directory you unpacked the Mailman source tarball into, and run
+    configure with no arguments:
 
         % cd mailman-<version>
         % ./configure
@@ -172,7 +170,8 @@ upgrade.
             mail wrapper.  <group-or-groups> can be a list of one or
             more integer group ids or symbolic group names.  The first
             value in the list that resolves to an existing group is
-            used.  By default, the value is the list `other daemon'.
+            used.  By default, the value is the list
+            `mailman other mail daemon'.
 
             This is highly system dependent and you must get this
             right, because the group id is compiled into the mail
@@ -190,8 +189,8 @@ upgrade.
             CGI wrapper.  <group-or-groups> can be a list of one or
             more integer group ids or symbolic group names.  The first
             value in the list that resolves to an existing group is
-            used.  By default, the value is the the list `www www-data
-            nobody'.
+            used.  By default, the value is the the list
+            `www www-data nobody'.
 
             The proper value for this is dependent on your web server
             configuration.  You must get this right, because the group
@@ -209,8 +208,8 @@ upgrade.
             <extension> must include the dot.
 
       --with-gcc=no
-            Don't use gcc, even if it is found.  `cc' must be found on
-            your $PATH.
+            Don't use gcc, even if it is found.  In this case, `cc'
+            must be found on your $PATH.
 
 
 3. Check your installation
@@ -272,9 +271,10 @@ upgrade.
 
     - Copy the Mailman, Python, and GNU logos to a location accessible
       to your web server.  E.g. with Apache, you've usually got an
-      `icons' directory that you can drop the images into.  You want
-      to copy $prefix/icons/mailman.jpg, $prefix/icons/PythonPowered.png,
-      and $prefix/icons/gnu-head-tiny.jpg to this directory.
+      `icons' directory that you can drop the images into.  For
+      example:
+
+        % cp $prefix/icons/*.{jpg,png} /path/to/apache/icons
 
       You then want to add a line to your $prefix/Mailman/mm_cfg.py
       file which sets the base URL for the logos.  For example:
@@ -303,17 +303,11 @@ upgrade.
       Now restart your web server.
 
     - Set up the crontab entries.  Mailman runs a number of cron jobs
-      for its basic functionality.  In version of Mailman prior to
-      2.1alpha2, setting up your crontab was imperative to getting
-      Mailman to work.  With MM2.1alpha2 and later though, the qrunner
-      is started from the bin/mailmanctl script (see below) instead of
-      cron.  You still want to set up crontab to run the ancillary
-      scripts, but it isn't as crucial to getting Mailman working as
-      it once was.  Note that if you're upgrading from a previous
-      version of Mailman, you'll want to install the new crontab, but
-      be careful if you're running multiple Mailman installations on
-      your site!  Changing the crontab could mess with other parallel
-      Mailman installations.
+      for its basic functionality.  Note that if you're upgrading from
+      a previous version of Mailman, you'll want to install the new
+      crontab, but be careful if you're running multiple Mailman
+      installations on your site!  Changing the crontab could mess
+      with other parallel Mailman installations.
 
       If your version of crontab supports the -u option, you must be
       root to do this next step.  Add $prefix/cron/crontab.in as a
@@ -373,6 +367,10 @@ upgrade.
 
     - Check the values for DEFAULT_EMAIL_HOST and DEFAULT_URL_HOST in
       Defaults.py.  Make any necessary changes in the mm_cfg.py file.
+      Note that if you change either of these two values, you'll want
+      to add the following afterwards in the mm_cfg.py file:
+
+          add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
 
     - Create a "site-wide" mailing list.  This is the one that
       password reminders will appear to come from.  Usually this
@@ -380,7 +378,7 @@ upgrade.
       this, be sure to change the MAILMAN_SITE_LIST variable in
       mm_cfg.py (see below).
 
-      % bin/newlist mailman
+          % bin/newlist mailman
 
       Follow the prompts, and see the README file for more
       information.
@@ -400,10 +398,7 @@ upgrade.
       created, editing many of these variables will have no effect.
       At that point, you'll need to configure your lists through the
       web admin interface or through the command line script
-      bin/config_list or bin/withlist.
-
-      Specifically check to make sure the variables DEFAULT_HOST_NAME
-      and DEFAULT_URL are correct.  The latter MUST end in a slash.
+      bin/withlist or bin/config_list.
 
       The install process will not overwrite an existing mm_cfg.py
       file so you can freely make changes to this file.
@@ -436,8 +431,9 @@ upgrade.
   
     If you encounter problems with running Mailman, first check the
     "Common Problems" section, below.  If your problem is not covered
-    there, check the FAQ.  Then check for a log entry from Mailman in
-    your syslog and in the $prefix/logs/error file.
+    there, check both the FAQ file and the online FAQ Wizard.  Also
+    check for errors your syslog files and in the $prefix/logs/error
+    file.
     
     Where syslog lives on your particular machine may vary.  It may be
     in /var/log/maillog.  It may also be in /var/log/syslog.  On many
