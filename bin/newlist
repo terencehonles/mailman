@@ -10,7 +10,7 @@ immediately.  Otherwise, the script hangs pending input, to give time for
 the person creating the list to customize it before sending the admin an
 email notice about the existence of the new list."""
 
-__version__ = "$Revision: 382 $"
+__version__ = "$Revision: 512 $"
 # $Source$
 
 ADDALIASES_CMD = '/home/mailman/mailman/bin/addaliases'
@@ -39,7 +39,7 @@ def main(argv):
     if len(argv) > 3:
 	list_pw = argv[3]
     else:
-	list_pw = raw_input("Enter the initial list password:")
+	list_pw = raw_input("Enter the initial list password: ")
 
     newlist = maillist.MailList()
     pw = crypt.crypt(list_pw , mm_utils.GetRandomSeed())
