@@ -78,13 +78,15 @@ class HTMLFormatter:
 	    checked = ''
 	name = { mm_cfg.DontReceiveOwnPosts : "dontreceive",
 		 mm_cfg.DisableDelivery : "disablemail",
-		 mm_cfg.EnableMime : "plaintext",
+		 mm_cfg.DisableMime : "mime",
 		 mm_cfg.AcknowlegePosts : "ackposts",
 		 mm_cfg.Digests : "digest",
 		 mm_cfg.ConcealSubscription : "conceal"
 	       }[type]
 	import sys
-	return '<input type=radio name="%s" value="%d"%s>' % (name, value, checked)
+	return ('<input type=radio name="%s" value="%d"%s>'
+		% (name, value, checked))
+
     def FormatDigestButton(self):
 	if self.digest_is_default:
 	    checked = ' CHECKED'
@@ -99,13 +101,30 @@ class HTMLFormatter:
 	    checked = ' CHECKED'
 	return '<input type=radio name="digest" value="0"%s>' % checked
 
+    def FormatMimeDigestsButton(self):
+	if self.mime_is_default_digest:
+	    checked = ' CHECKED'
+	else:
+	    checked = ''
+	return '<input type=radio name="mime" value="1"%s>' % checked
+    def FormatPlainDigestsButton(self):
+	if self.mime_is_default_digest:
+	    checked = ''
+	else:
+	    checked = ' CHECKED'
+	return '<input type=radio name="plain" value="1"%s>' % checked
+
     def FormatFormStart(self, name, extra=''):
 	base_url = self.GetScriptURL(name)
 	full_url = os.path.join(base_url, extra)
 	return ('<FORM Method=POST ACTION="%s">' % full_url)
 
     def FormatArchiveAnchor(self):
-	return '<a href="%s">' % self.GetScriptURL("archives")
+	# *** XXX *** What's the right thing here?  When hooking up with an 
+	# 	      external mechanism, we need to go to an arbitrary 
+	# 	      place, not just to within the mailman hierarchy.  Isn't
+	# 	      that what the _base_archive_url is for?
+	return '<a href="%s">' % self._base_archive_url
 
     def FormatFormEnd(self):
 	return '</FORM>'
