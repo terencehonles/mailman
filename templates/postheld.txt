@@ -1,4 +1,4 @@
-Your mail to '%(list_name)s' with the subject:
+Your mail to '%(listname)s' with the subject
 
     %(subject)s
 
