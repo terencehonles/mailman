@@ -1,31 +1,31 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Unit tests for the various Mailman/Handlers/*.py modules.
 """
 
 import os
-import time
 import sha
-import unittest
-import cPickle
-import errno
+import time
 import email
-from email.Generator import Generator
+import errno
+import cPickle
+import unittest
 from types import ListType
+from email.Generator import Generator
 
 from Mailman import mm_cfg
 from Mailman.MailList import MailList
@@ -45,7 +45,6 @@ from Mailman.Handlers import FileRecips
 from Mailman.Handlers import Hold
 from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
-from Mailman.Handlers import Personalize
 from Mailman.Handlers import Replybot
 from Mailman.Handlers import SMTPDirect
 from Mailman.Handlers import Sendmail
@@ -72,6 +71,7 @@ class TestAcknowledge(TestBase):
         self._sb = Switchboard(mm_cfg.VIRGINQUEUE_DIR)
         # Add a member
         self._mlist.addNewMember('aperson@dom.ain')
+        self._mlist.personalize = False
 
     def tearDown(self):
         for f in os.listdir(mm_cfg.VIRGINQUEUE_DIR):
@@ -146,6 +146,7 @@ Your message entitled
 was successfully received by the _xtest mailing list.
 
 List info page: http://www.dom.ain/mailman/listinfo/_xtest
+Your preferences: http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
 """)
         # Make sure we dequeued the only message
         eq(len(self._sb.files()), 0)
@@ -185,46 +186,7 @@ Your message entitled
 was successfully received by the _xtest mailing list.
 
 List info page: http://www.dom.ain/mailman/listinfo/_xtest
-""")
-        # Make sure we dequeued the only message
-        eq(len(self._sb.files()), 0)
-
-    def test_ack_with_prefixed_subject(self):
-        eq = self.assertEqual
-        self._mlist.subject_prefix = '[XTEST] '
-        self._mlist.setMemberOption(
-            'aperson@dom.ain', mm_cfg.AcknowledgePosts, 1)
-        eq(len(self._sb.files()), 0)
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-Subject: [XTEST] Wish you were here
-
-""", Message.Message)
-        Acknowledge.process(self._mlist, msg, {})
-        files = self._sb.files()
-        eq(len(files), 1)
-        qmsg, qdata = self._sb.dequeue(files[0])
-        # Check the .db file
-        eq(qdata.get('listname'), '_xtest')
-        eq(qdata.get('recips'), ['aperson@dom.ain'])
-        eq(qdata.get('version'), 3)
-        # Check the .pck
-        eq(str(qmsg['subject']), '_xtest post acknowledgement')
-        eq(qmsg['to'], 'aperson@dom.ain')
-        eq(qmsg['from'], '_xtest-bounces@dom.ain')
-        eq(qmsg.get_type(), 'text/plain')
-        eq(qmsg.get_param('charset'), 'us-ascii')
-        msgid = qmsg['message-id']
-        self.failUnless(msgid.startswith('<mailman.'))
-        self.failUnless(msgid.endswith('._xtest@dom.ain>'))
-        eq(qmsg.get_payload(), """\
-Your message entitled
-
-    Wish you were here
-
-was successfully received by the _xtest mailing list.
-
-List info page: http://www.dom.ain/mailman/listinfo/_xtest
+Your preferences: http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
 """)
         # Make sure we dequeued the only message
         eq(len(self._sb.files()), 0)
@@ -555,7 +517,7 @@ From: aperson@dom.ain
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        eq(msg['precedence'], 'bulk')
+        eq(msg['precedence'], 'list')
 
     def test_existing_precedence(self):
         eq = self.assertEqual
@@ -574,7 +536,9 @@ Precedence: junk
 From: aperson@dom.ain
 
 """, Message.Message)
-        CookHeaders.process(self._mlist, msg, {})
+        msgdata = {}
+        CookHeaders.process(self._mlist, msg, msgdata)
+        self.assertEqual(msgdata.get('origsubj'), '')
         self.assertEqual(str(msg['subject']), '[XTEST] (no subject)')
 
     def test_subject_munging(self):
@@ -794,7 +758,7 @@ Here is a message.
 XTest header
 Here is a message.
 XTest footer""")
-        
+
     def test_no_multipart_type_error(self):
         mlist = self._mlist
         mlist.msg_header = '%(real_name) header\n'
@@ -810,7 +774,7 @@ Here is a message.
 %(real_name) header
 Here is a message.
 %(real_name) footer""")
-        
+
     def test_no_multipart_value_error(self):
         mlist = self._mlist
         # These will generate warnings in logs/error
@@ -827,7 +791,7 @@ Here is a message.
 %(real_name)p header
 Here is a message.
 %(real_name)p footer""")
-        
+
     def test_no_multipart_missing_key(self):
         mlist = self._mlist
         mlist.msg_header = '%(spooge)s header\n'
@@ -842,7 +806,7 @@ Here is a message.
 %(spooge)s header
 Here is a message.
 %(spooge)s footer""")
-        
+
     def test_multipart(self):
         mlist = self._mlist
         mlist.msg_header = 'header\n'
@@ -871,6 +835,7 @@ Content-Type: multipart/mixed; boundary="BOUNDARY"
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 header
 
@@ -888,12 +853,14 @@ Here is the second message.
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 footer
 
 --BOUNDARY--""")
 
     def test_image(self):
+        eq = self.assertEqual
         mlist = self._mlist
         mlist.msg_header = 'header\n'
         mlist.msg_footer = 'footer'
@@ -904,7 +871,8 @@ Content-type: image/x-spooge
 IMAGEDATAIMAGEDATAIMAGEDATA
 """)
         Decorate.process(self._mlist, msg, {})
-        self.assertEqual(msg.get_payload(), """\
+        eq(len(msg.get_payload()), 3)
+        self.assertEqual(msg.get_payload(1).get_payload(), """\
 IMAGEDATAIMAGEDATAIMAGEDATA
 """)
 
@@ -1164,6 +1132,7 @@ class TestMimeDel(TestBase):
         TestBase.setUp(self)
         self._mlist.filter_content = 1
         self._mlist.filter_mime_types = ['image/jpeg']
+        self._mlist.pass_mime_types = []
         self._mlist.convert_html_to_plaintext = 1
 
     def test_outer_matches(self):
@@ -1249,7 +1218,7 @@ MIME-Version: 1.0
 """)
         MimeDel.process(self._mlist, msg, {})
         eq(msg.get_type(), 'text/plain')
-        eq(msg.get_payload(), '\n   \n\n')
+        eq(msg.get_payload(), '\n\n\n')
 
     def test_deep_structure(self):
         eq = self.assertEqual
@@ -1565,7 +1534,7 @@ Here is message %(i)d
         fp = open(self._path, 'w')
         g = Generator(fp)
         for i in range(5):
-            g(self._makemsg(i), unixfrom=1)
+            g.flatten(self._makemsg(i), unixfrom=1)
         fp.close()
         self._sb = Switchboard(mm_cfg.VIRGINQUEUE_DIR)
 
@@ -1609,13 +1578,14 @@ Here is message %(i)d
         # is the RFC 1153 digest.
         for filebase in files:
             qmsg, qdata = self._sb.dequeue(filebase)
-            if qmsg['mime-version']:
+            if qmsg.get_main_type() == 'multipart':
                 mimemsg = qmsg
                 mimedata = qdata
             else:
                 rfc1153msg = qmsg
                 rfc1153data = qdata
-        eq(mimemsg.get_type(), 'multipart/mixed')
+        eq(rfc1153msg.get_content_type(), 'text/plain')
+        eq(mimemsg.get_content_type(), 'multipart/mixed')
         eq(mimemsg['from'], mlist.GetRequestEmail())
         eq(mimemsg['subject'],
            '%(realname)s Digest, Vol %(volume)d, Issue %(issue)d' % {
@@ -1652,12 +1622,11 @@ It rocks!
         eq(len(files), 1)
         msg2, data = self._sb.dequeue(files[0])
         eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
-        eq(len(data), 6)
+        eq(len(data), 5)
         eq(data['foo'], 1)
         eq(data['bar'], 2)
         eq(data['version'], 3)
         eq(data['listname'], '_xtest')
-        eq(data['verp'], 0)
         # Clock skew makes this unreliable
         #self.failUnless(data['received_time'] <= time.time())
 
