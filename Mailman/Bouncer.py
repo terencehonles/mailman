@@ -18,13 +18,15 @@ class Bouncer:
 	self.minimum_removal_date = mm_cfg.DEFAULT_MINIMUM_REMOVAL_DATE
 	self.minimum_post_count_before_bounce_action = \
 		mm_cfg.DEFAULT_MINIMUM_POST_COUNT_BEFORE_BOUNCE_ACTION
-	self.automatic_bounce_action = \
-                                     mm_cfg.DEFAULT_AUTOMATIC_BOUNCE_ACTION
+	self.automatic_bounce_action = mm_cfg.DEFAULT_AUTOMATIC_BOUNCE_ACTION
 	self.max_posts_between_bounces = \
 		mm_cfg.DEFAULT_MAX_POSTS_BETWEEN_BOUNCES
 
     def GetConfigInfo(self):
 	return [
+            "Policies regarding systematic processing of bounce messages,"
+            " to help automate recognition and handling of defunct"
+            " addresses.",
 	    ('bounce_processing', mm_cfg.Toggle, ('No', 'Yes'), 0,
 	     'Try to figure out error messages automatically? '),
 	    ('minimum_removal_date', mm_cfg.Number, 3, 0,
@@ -41,7 +43,7 @@ class Bouncer:
               "Disable and notify me",
               "Disable and DON'T notify me",
 	      "Remove and notify me"),
-	     0, "Action when fatal or excessive bounces are detected.")
+	     0, "Action when critical or excessive bounces are detected.")
 	    ]
     def ClearBounceInfo(self, email):
 	email = string.lower(email)
@@ -162,7 +164,8 @@ class Bouncer:
                                               negative, did)),
                                 recipient = recipient,
                                 sender = mm_cfg.MAILMAN_OWNER,
-                                errorsto = mm_cfg.MAILMAN_OWNER,
+                                add_to_headers = ["Errors-To: %s"
+                                                  % mm_cfg.MAILMAN_OWNER],
                                 text = text)
     def DisableBouncingAddress(self, addr):
         if not self.IsMember(addr):
