@@ -1,20 +1,24 @@
-This is a reminder of how to unsubscribe or change your configuration
-for the address "%(user)s" on the mailing list %(listname)s.  You need
-to have your password for these things.  YOUR %(listname)s PASSWORD
-IS:
+You, or someone posing as you, has requested a password reminder for
+your membership on the mailing list %(fqdn_lname)s.  You will need
+this password in order to change your membership options (e.g. do you
+want regular delivery or digest delivery), and having this password
+makes it easier for you to unsubscribe from the mailing list.
 
-    %(password)s
+You are subscribed with the address: %(user)s
 
-To make changes to your subscription, use the password on your options
-World Wide Web page:
+Your %(listname)s password is: %(password)s
+
+To make changes to your membership options, log in and visit your
+options web page:
 
     %(options_url)s
 
-You can also make such changes via email - send a message to:
+You can also make such changes via email by sending a message to:
 
     %(requestaddr)s
 
-with the text "help" in the subject or body, and you will be emailed
-instructions.
+with the text "help" in the subject or body.  The automatic reply will
+contain more detailed instructions.
 
-Questions or comments?  Please send them to %(adminaddr)s.
+Questions or comments?  Please send them to the %(listname)s mailing
+list administrator at %(owneraddr)s.
