@@ -118,7 +118,7 @@ class Digester:
 	except os.error, err:
 	    if err[0] == 2:
 		# No such file or directory
-		self.LogMsg("system", "mm_digest lost digest file %s, %s",
+		self.LogMsg("error", "mm_digest lost digest file %s, %s",
 			    ndf, err)
 
 # If the mime separator appears in the text anywhere, throw a space on
@@ -143,10 +143,10 @@ class Digester:
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
 	self.LogMsg("digest",
-		    '%s digest %d log--',
+		    'Fake %s digest %d log--',
 		    self.real_name, self.next_digest_number)
 	self.LogMsg("digest",
-		    ('%d digesters, %d disabled.  '
+		    ('Fake %d digesters, %d disabled.  '
 		     'Active: %d MIMEers, %d non.'),
 		    len(self.digest_members),
 		    len(self.digest_members) - len(recipients),
@@ -164,16 +164,13 @@ class Digester:
 
         digest_file = open(os.path.join(self._full_path, 'next-digest'), 'r+')
 	msg.SetBody(digest_file.read())
-	digest_file.truncate(0)
-	digest_file.close()
 
 	# Create the header and footer... this is a mess!
 	topics_file = open(os.path.join(self._full_path,
 					'next-digest-topics'), 
 			   'r+')
 	topics_text = topics_file.read()
-	topics_file.truncate(0)
-	topics_file.close()
+        topics_number = string.count(topics_text, '\n')
 
 	digest_header = '''--%s
 
@@ -217,21 +214,29 @@ Date: %s
 	mime_recipients = filter(LikesMime, recipients)
 	text_recipients = filter(HatesMime, recipients)
 	self.LogMsg("digest",
-		    '%s digest %d log--',
-		    self.real_name, self.next_digest_number)
-	self.LogMsg("digest",
-		    ('%d digesters, %d disabled. '
-		     'Active: %d MIMEers, %d non.'),
-		    len(self.digest_members),
-		    len(self.digest_members) - len(recipients),
+		    ('%s v %d - '
+                     '%d msgs %d dgstrs: %d m %d non %d dis'),
+                    self.real_name,
+                    self.next_digest_number,
+                    topics_number,
+                    len(self.digest_members),
 		    len(mime_recipients),
-		    len(text_recipients))
+		    len(text_recipients),
+		    len(self.digest_members) - len(recipients))
 	self.DeliverToList(msg, mime_recipients, digest_header, 
 	                   digest_footer, remove_to=1,
 			   tmpfile_prefix = "mime.")
 	msg.SetHeader('content-type', 'text/plain', crush_duplicates=1)
+
+        # Zero the digest files only *just* before the messages are out.
+	topics_file.truncate(0)
+	topics_file.close()
+	digest_file.truncate(0)
+	digest_file.close()
+
 	self.DeliverToList(msg, text_recipients, digest_header,
 			   digest_footer, remove_to=1)
+
 	self.next_digest_number = self.next_digest_number + 1
 	self.next_post_number = 1
 	self.Save()
