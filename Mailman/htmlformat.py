@@ -364,6 +364,9 @@ class Form(Container):
 	self.method = method
         self.encoding = encoding
 
+    def set_action(self, action):
+        self.action = action
+
     def Format(self, indent=0):
 	spaces = ' ' * indent
         encoding = ''
@@ -406,6 +409,10 @@ class PasswordBox(InputObj):
 class TextBox(InputObj):
     def __init__(self, name, value='', size=10):
 	InputObj.__init__(self, name, "TEXT", value, checked=0, size=size)
+
+class Hidden(InputObj):
+    def __init__(self, name, value=''):
+        InputObj.__init__(self, name, 'HIDDEN', value, checked=0)
 
 class TextArea:
     def __init__(self, name, text='', rows=None, cols=None, wrap='soft'):
