@@ -25,6 +25,8 @@ import sys
 import re
 import traceback
 
+from mimelib.MsgReader import MsgReader
+
 from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
@@ -39,7 +41,7 @@ MAXERRORS = 5
 MAXCOLUMN = 70
 
 NL = '\n'
-
+SPACE = ' '
 
 # jcrey: I must to do a trick to make pygettext detect this strings.  First we
 # define a fake function.  Idea taken from Mads.
@@ -132,7 +134,7 @@ class MailCommandHandler:
             self.__respbuf = self.__respbuf + line + "\n"
 
     def AddError(self, text, prefix='>>>>> ', trunc=MAXCOLUMN):
-        self.__errors = self.__errors + 1
+        self.__errors += 1
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
 	
     def ParseMailCommands(self, msg, msgdata):
@@ -174,26 +176,30 @@ class MailCommandHandler:
             if mo:
                 subject = mo.group('cmd')
 
-        body = msg.get_text()
+        reader = MsgReader(msg)
+        # BAW: here's where Python 2.1's xreadlines module would help!
+        lines = []
+        while 1:
+            line = reader.readline()
+            if not line:
+                break
+            lines.append(line)
 
-	if (subject and
-            self.__dispatch.has_key(subject.split()[0].lower())):
-	    lines = [subject] + body.split('\n')
+        # Find out if the subject line has a command on it
+        subjcmd = []
+        if subject:
+            cmdfound = 0
+            for word in subject.split():
+                word = word.lower()
+                if cmdfound:
+                    subjcmd.append(word)
+                elif self.__dispatch.has_key(word):
+                    cmdfound = 1
+                    subjcmd.append(word)
+        if subjcmd:
+	    lines.insert(0, SPACE.join(subjcmd))
         else:
-	    lines = body.split('\n')
-	    if subject:
-		#
-		# check to see if confirmation request -- special handling
-		conf_pat = (r'%s\s+--\s+confirmation\s+of\s+subscription'
-                            r'\s+--\s+request\s+(\d{6})'
-                            % re.escape(self.real_name))
-		mo = re.search(conf_pat, subject, re.IGNORECASE)
-		if not mo:
-		    mo = re.search(conf_pat, body)
-		if mo:
-		    lines = ["confirm %s" % (mo.group(1))]
-		else:
-		    self.AddError(_('Subject line ignored:\n  ') + subject)
+            self.AddError(_('Subject line ignored:\n  ') + subject)
         processed = {}                      # For avoiding redundancies.
         maxlines = mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES
 	for linecount in range(len(lines)):
@@ -276,7 +282,7 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
                         responsemsg['X-No-Archive'] = 'yes'
                         lang = msgdata.get(
                             'lang',
-                            mlist.GetPreferredLanguage(admin))
+                            self.GetPreferredLanguage(admin))
                         responsemsg.addheader('Content-Type', 'text/plain',
                                               charset=Utils.GetCharSet(lang))
                         responsemsg.send(self)
@@ -289,14 +295,14 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
                 header = Utils.wrap(_('''This is an automated response.
 
 There were problems with the email commands you sent to Mailman via the
-administrative address <%(sender)s>.
+administrative address %(requestaddr)s.
 
 To obtain instructions on valid Mailman email commands, send email to
-<%(sender)s> with the word "help" in the subject line or in the body of the
+%(requestaddr)s with the word "help" in the subject line or in the body of the
 message.
 
 If you want to reach the human being that manages this mailing list, please
-send your message to <%(admin)s>.
+send your message to %(adminaddr)s.
 
 The following is a detailed description of the problems.
 
@@ -306,7 +312,7 @@ The following is a detailed description of the problems.
             realname = self.real_name
             subject = _('Mailman results for %(realname)s')
             sender = msg.get_sender()
-            lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
+            lang = msgdata.get('lang', self.GetPreferredLanguage(sender))
             responsemsg = Message.UserNotification(msg.get_sender(),
                                                    self.GetRequestEmail(),
                                                    subject,
