@@ -1,4 +1,16 @@
-DONE for mailman 1.0b4 (DONE $Revision: 691 $, $Date: 1998-06-03 14:01:11 +0100 (Wed, 03 Jun 1998) $)
+DONE $Revision: 891 $, $Date: 1998-07-27 19:21:52 +0100 (Mon, 27 Jul 1998) $
+
+ - New file locking that should be portable and work w/ NFS.
+
+ - Better use of packages.
+
+ - Better error logging and reporting.
+
+ - Less startup overhead.
+
+ - Various and sundry bug fixes.
+
+---- New stuff goes above this line. Do not change this line. ----
 
 1.0b4
  
