@@ -18,24 +18,30 @@
 """
 
 import os
-import cgi
+import re
+import sha
 import errno
-import cPickle
 import mimetypes
+import tempfile
 from cStringIO import StringIO
+from types import StringType
 
-import email
-import email.Errors
 from email.Parser import HeaderParser
 from email.Generator import Generator
 
+from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman import LockFile
 from Mailman import Message
 from Mailman.Errors import DiscardMessage
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
 
-ARCHIVE_FILE_VERSION = 1
+# Path characters for common platforms
+pre = re.compile(r'[/\\:]')
+# All other characters to strip out of Content-Disposition: filenames
+# (essentially anything that isn't an alphanum, dot, slash, or underscore.
+sre = re.compile(r'[^-\w.]')
 
 
 
@@ -65,14 +71,15 @@ def process(mlist, msg, msgdata=None):
         # If the part is text/plain, we leave it alone
         if part.get_type('text/plain') == 'text/plain':
             pass
-        # I think it's generally a good idea to scrub out HTML.  You never
-        # know what's in there -- web bugs, JavaScript nasties, etc.  If the
-        # whole message is HTML, just discard the entire thing.  Otherwise,
-        # just add an indication that the HTML part was removed.
-        elif part.get_type() == 'text/html':
-            if outer:
-                raise DiscardMessage
-            part.set_payload(_("An HTML attachment was scrubbed and removed"))
+        elif part.get_type() == 'text/html' and \
+             not isinstance(mm_cfg.ARCHIVE_HTML_SANITIZER, StringType):
+            if mm_cfg.ARCHIVE_HTML_SANITIZER == 0:
+                if outer:
+                    raise DiscardMessage
+                part.set_payload(_('HTML attachment scrubbed and removed'))
+            else:
+                # By leaving it alone, Pipermail will automatically escape it
+                pass
         # If the message isn't a multipart, then we'll strip it out as an
         # attachment that would have to be separately downloaded.  Pipermail
         # will transform the url into a hyperlink.
@@ -86,8 +93,10 @@ def process(mlist, msg, msgdata=None):
             finally:
                 os.umask(omask)
             desc = part.get('content-description', _('not available'))
+            filename = part.get_filename(_('not available'))
             part.set_payload(_("""\
 A non-text attachment was scrubbed...
+Name: %(filename)s
 Type: %(ctype)s
 Size: %(size)d bytes
 Desc: %(desc)s
@@ -118,34 +127,27 @@ Url : %(url)s
 def save_attachment(mlist, msg):
     # The directory to store the attachment in
     dir = os.path.join(mlist.archive_dir(), 'attachments')
-    # We need a lock to calculate the next attachment number
-    lock = LockFile.LockFile(os.path.join(mlist.archive_dir(),
-                                          'attachments.lock'))
-    lock.lock()
     try:
-        try:
-            os.mkdir(dir, 02775)
-        except OSError, e:
-            if e.errno <> errno.EEXIST: raise
-        # Open the attachments database file
-        dbfile = os.path.join(dir, 'attachments.pck')
-        try:
-            fp = open(dbfile)
-            d = cPickle.load(fp)
-            fp.close()
-        except IOError, e:
-            if e.errno <> errno.ENOENT: raise
-            d = {'version': ARCHIVE_FILE_VERSION,
-                 'next'   : 1,
-                 }
-        # Calculate the attachment file name
-        file = 'attachment-%04d' % d['next']
-        d['next'] += 1
-        fp = open(dbfile, 'w')
-        cPickle.dump(d, fp, 1)
-        fp.close()
-    finally:
-        lock.unlock()
+        os.mkdir(dir, 02775)
+    except OSError, e:
+        if e.errno <> errno.EEXIST: raise
+    # We need a directory to contain this message's attachments.  Base it
+    # on the Message-ID: so that all attachments for the same message end
+    # up in the same directory (we'll uniquify the filenames in that
+    # directory as needed).  We use the first 2 and last 2 bytes of the
+    # SHA1 has of the message id as the basis of the directory name.
+    # Clashes here don't really matter too much, and that still gives us a
+    # 32-bit space to work with.
+    msgid = msg['message-id']
+    if msgid is None:
+        msgid = msg['Message-ID'] = Utils.unique_message_id(mlist)
+    # We assume that the message id actually /is/ unique!
+    digest = sha.new(msgid).hexdigest()
+    msgdir = digest[:4] + digest[-4:]
+    try:
+        os.mkdir(os.path.join(dir, msgdir), 02775)
+    except OSError, e:
+        if e.errno <> errno.EEXIST: raise
     # Figure out the attachment type and get the decoded data
     decodedpayload = msg.get_payload(decode=1)
     # BAW: mimetypes ought to handle non-standard, but commonly found types,
@@ -156,9 +158,76 @@ def save_attachment(mlist, msg):
         # We don't know what it is, so assume it's just a shapeless
         # application/octet-stream
         ext = '.bin'
-    fp = open(os.path.join(dir, file + ext), 'w')
+    path = None
+    # We need a lock to calculate the next attachment number
+    lockfile = os.path.join(dir, msgdir, 'attachments.lock')
+    lock = LockFile.LockFile(lockfile)
+    lock.lock()
+    try:
+        # Now base the filename on what's in the attachment, uniquifying it if
+        # necessary.
+        filename = msg.get_filename()
+        if not filename:
+            filename = 'attachment' + ext
+        else:
+            # Sanitize the filename given in the message headers
+            parts = pre.split(filename)
+            filename = parts[-1]
+            # Allow only alphanumerics, dash, underscore, and dot
+            filename = sre.sub('', filename)
+            # If the filename's extension doesn't match the type we guessed,
+            # which one should we go with?  Not sure.  Let's do this at least:
+            # if the filename /has/ no extension, then tack on the one we
+            # guessed.
+            if not os.path.splitext(filename)[1]:
+                filename += ext
+            # BAW: Anything else we need to be worried about?
+        counter = 0
+        extra = ''
+        while 1:
+            path = os.path.join(dir, msgdir, filename + extra)
+            # Generally it is not a good idea to test for file existance
+            # before just trying to create it, but the alternatives aren't
+            # wonderful (i.e. os.open(..., O_CREAT | O_EXCL) isn't
+            # NFS-safe).  Besides, we have an exclusive lock now, so we're
+            # guaranteed that no other process will be racing with us.
+            if os.path.exists(path):
+                counter += 1
+                extra = '-%04d%s' % (counter, ext)
+            else:
+                break
+    finally:
+        lock.unlock()
+    # `path' now contains the unique filename for the attachment.  There's
+    # just one more step we need to do.  If the part is text/html and
+    # ARCHIVE_HTML_SANITIZER is a string (which it must be or we wouldn't be
+    # here), then send the attachment through the filter program for
+    # sanitization
+    if msg.get_type() == 'text/html':
+        base, ext = os.path.splitext(path)
+        tmppath = base + '-tmp' + ext
+        fp = open(tmppath, 'w')
+        try:
+            fp.write(decodedpayload)
+            fp.close()
+            cmd = mm_cfg.ARCHIVE_HTML_SANITIZER % {'filename' : tmppath}
+            progfp = os.popen(cmd, 'r')
+            decodedpayload = progfp.read()
+            status = progfp.close()
+            if status:
+                syslog('error',
+                       'HTML sanitizer exited with non-zero status: %s',
+                       status)
+        finally:
+            os.unlink(tmppath)
+        # BAW: Since we've now sanitized the document, it should be plain
+        # text.  Blarg, we really want the sanitizer to tell us what the type
+        # if the return data is. :(
+        path = base + '.txt'
+        filename = os.path.splitext(filename)[0] + '.txt'
+    fp = open(path, 'w')
     fp.write(decodedpayload)
     fp.close()
     # Now calculate the url
-    url = mlist.GetBaseArchiveURL() + '/attachments/' + file + ext
+    url = mlist.GetBaseArchiveURL() + '/attachments/%s/%s' % (msgdir, filename)
     return url
