@@ -3,8 +3,8 @@ Copyright (C) 1998,1999,2000 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 This file contains installation instructions for GNU Mailman, which is
-configured using the standard GNU autoconf software.  You should first
-set up your system as outlined in the sections below, and then
+configured using the standard GNU autoconf software.  You first need
+to prepare your system as outlined in the sections below, and then
 configure and install the Mailman software.
 
 IMPORTANT: Pay special attention to the step below where you have to
@@ -58,10 +58,6 @@ upgrade.
       split the installation up based on read-only vs. read/write
       files.
 
-      Note that if you've added a mailman user, and plan to install to
-      the default location (/home/mailman), that directory may have
-      already been made for you.
-
       The default directory for installing is /home/mailman, but some
       sites do things like mount /home with the nosuid option.  This
       will break Mailman, which relies on set-gid programs for its
@@ -96,16 +92,17 @@ upgrade.
     the file system where it resides (NFS and other mounts can be
     configured to inhibit setgid settings).
 
-    - If you've installed other GNU software, you should be familiar
-      with the configure script.  Usually you can just cd to the
-      directory you unpacked Mailman into, and run configure with no
-      arguments:
+    If you've installed other GNU software, you should be familiar
+    with the configure script.  Usually you can just cd to the
+    directory you unpacked Mailman into, and run configure with no
+    arguments:
 
-          % cd mailman-<version>
-          % ./configure
+        % cd mailman-<version>
+        % ./configure
+        % make install
 
-      and then run `make install'.  The following options allow you to
-      customize your Mailman installation.
+    The following options allow you to customize your Mailman
+    installation.
 
       --prefix=<dir>
             Standard GNU configure option which changes the base
@@ -184,7 +181,6 @@ upgrade.
             Don't use gcc, even if it is found.  `cc' must be found on
             your $PATH
 
-    - Run `make install'
 
 3. Check your installation
 
@@ -194,6 +190,9 @@ upgrade.
     - cd to $prefix
 
     - Run bin/check_perms
+
+    Don't try to run bin/check_perms from the source directory; it
+    will only run from the install (i.e. $prefix) directory.
 
     If this reports no problems, then it's very likely that your
     installation is set up correctly :)  If it reports problems, then
@@ -311,17 +310,13 @@ upgrade.
     - The file $prefix/Mailman/Defaults.py contains a number of
       defaults for your installation.  If any of these are incorrect,
       override them in $prefix/Mailman/mm_cfg.py, NOT IN Defaults.py!
-      See the comments in Defaults.py for details.
+      See the comments in Defaults.py for details.  Once a list is
+      created, editing many of these variables will have no effect
+      (you need to configure your lists through the web admin
+      interface or through the command line script bin/config_list).
 
       Specifically check to make sure the variables DEFAULT_HOST_NAME
       and DEFAULT_URL are correct.
-
-      Consult Defaults.py for the list of variables that control
-      Mailman.  Add any additional settings that you want to change
-      for your site to mm_cfg.py (don't edit Defaults.py).  Once a
-      list is created, editing many of these variables will have no
-      effect (you need to configure your lists through the command
-      line script bin/config_list or through the web admin interface).
 
       The install process will not overwrite an existing mm_cfg.py
       file so you can freely make changes to this file.
@@ -436,7 +431,7 @@ upgrade.
     Problem:  I use Postfix for my MTA and the mail wrapper programs
               are logging complaints about the wrong GID.
 
-    Solution: Create a separate aliases file for Postfix in it's
+    Solution: Create a separate aliases file for Postfix in its
               main.cf config file under the variable "alias_maps". Put
               the file somewhere in Mailman's home directory, or
               somewhere else where the user mailman has write access
@@ -449,9 +444,9 @@ upgrade.
 
               % python -c'import os; print os.getgid()' 
               
-              This should print out the group id that mailman should
+              This should print out the group id that Mailman should
               be configured to expect when the mail wrapper programs
-              are run.  Call it "thegid".  Rebuild mailman with
+              are run.  Call it "thegid".  Rebuild Mailman with
 
               % ./configure --with-mail-gid=thegid
 
@@ -470,8 +465,9 @@ upgrade.
               Note that on Debian Linux, the system makes
               /usr/lib/sm.bin, which is wrong, you will need to create
               the directory /usr/admin/sm.bin and add the link there.
-              NOTE: any aliases newaliases spits out will need to be
-              adjusted to point to the secure link to the wrapper.
+              Note further any aliases newaliases spits out will need
+              to be adjusted to point to the secure link to the
+              wrapper.
 
     Problem:  I messed up when I called configure.  How do I clean
               things up and re-install?
