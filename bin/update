@@ -290,6 +290,9 @@ if __name__ == '__main__':
         d = marshal.load(fp)
         fp.close()
         for listname in d.keys():
+            if listname not in lists:
+                # this list no longer exists
+                continue
             mlist = MailList.MailList(listname)
             # Pre 1.0b7 stored 0 in the gate_watermarks file to indicate that
             # no gating had been done yet.  Without coercing this to None, the
