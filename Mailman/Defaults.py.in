@@ -591,6 +591,7 @@ DontReceiveOwnPosts = 2 # Non-digesters only
 AcknowledgePosts    = 4
 DisableMime         = 8 # Digesters only
 ConcealSubscription = 16
+SuppressPasswordReminder = 32 # currently, per-list unfortunately
 
 # Useful directories
 LIST_DATA_DIR   = os.path.join(VAR_PREFIX, 'lists')
