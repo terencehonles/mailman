@@ -1,0 +1,186 @@
+#!/usr/local/bin/python
+
+import sys, os, cgi
+f = open('/tmp/cbgb', 'a+')
+sys.stderr = f
+#sys.stderr = sys.stdout
+sys.path.append('/home/mailman/mailman/modules')
+import mm_utils, maillist, mm_err, mm_cfg, htmlformat
+
+
+doc = htmlformat.Document()
+
+path = os.environ['PATH_INFO']
+list_info = mm_utils.GetPathPieces(path)
+
+if len(list_info) < 2:
+    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    print doc.Format()
+    sys.exit(0)
+
+list_name = list_info[0]
+user = list_info[1]
+
+if len(list_info) < 2:
+    doc.AddItem(htmlformat.Header(2, "Invalid options to CGI script."))
+    print doc.Format()
+    sys.exit(0)
+
+try:
+  list = maillist.MailList(list_name)
+except:
+    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
+    print doc.Format()
+    sys.exit(0)
+
+if not list._ready:
+    doc.AddItem(htmlformat.Header(2, "%s: No such list." % list_name))
+    print doc.Format()
+    sys.exit(0)
+
+
+def PrintResults(results):
+    replacements = list.GetStandardReplacements()
+    replacements['<mm-results>'] = results
+    replacements['<mm-operation>'] = operation
+    output = list.ParseTags('handle_opts.html', replacements)
+
+    doc.AddItem(output)
+    print doc.Format()
+    list.Unlock()
+    sys.exit(0)
+
+
+form = cgi.FieldStorage()
+
+error = 0
+operation = ""
+
+    
+if form.has_key("unsub"):
+    operation = "Unsubscribe"
+    if not form.has_key("upw"):
+	PrintResults("You must give your password to unsubscribe.<p>")
+    else:
+	try:
+	    pw = form["upw"].value
+	    if list.ConfirmUserPassword(user, pw):
+		list.DeleteMember(user)
+	except mm_err.MMListNotReady:
+	    PrintResults("List is not functional.")
+	except mm_err.MMNoSuchUserError:
+	    PrintResults("You seem to already no longer be a member.<p>")
+	except mm_err.MMBadPasswordError:
+	    PrintResults("That password was incorrect.<p>")
+#	except:
+#	    PrintResults('''An unknown error occured.  <p>
+#Please send mail to <a href=%s>%s</a> explaining 
+#exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER,
+#                                                 mm_cfg.MAILMAN_OWNER))
+
+    PrintResults("You have been unsubscribed.<p>")
+elif form.has_key("emailpw"):
+	list.MailUserPassword(user)
+	PrintResults("A reminder of your password has been emailed to you.<p>")
+elif form.has_key("changepw"):
+    if form.has_key('opw') and form.has_key('newpw') and form.has_key('confpw'):
+	try:
+	    list.ConfirmUserPassword(user, form['opw'].value)
+	    list.ChangeUserPassword(user, 
+				    form['newpw'].value, form['confpw'].value)
+	except mm_err.MMListNotReady:
+	    PrintResults("The list is currently not funcitonal.")
+	except mm_err.MMNotAMemberError:
+	    PrintResults("You seem to no longer be a list member.")
+	except mm_err.MMBadPasswordError:
+	    PrintResults("The old password you supplied was incorrect.")
+	except mm_err.MMPasswordsMustMatch:
+	    PrintResults("Passwords must match.")
+	except:
+	    PrintResults('''An unknown error occured.  <p>
+Please send mail to <a href=%s>%s</a> explaining 
+exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER))
+
+
+	PrintResults("Your password has been changed.")
+    else:
+	PrintResults("You must supply your old password, and your new password twice.")
+else:
+    f.write("User = %s\n" % user)
+    # If keys don't exist, set them to whatever they were. (essentially a noop)
+    if form.has_key("digest"):
+	digest_value = eval(form["digest"].value)
+    else:
+	digest_value = list.GetUserOption(user, mm_cfg.Digests)
+    if form.has_key("plaintext"):
+	plaintext = eval(form["plaintext"].value)
+	f.write("plaintext = %d\n" % plaintext)
+    else:
+	plaintext = list.GetUserOption(user, mm_cfg.EnableMime)
+    if form.has_key("dontreceive"):
+	dont_receive = eval(form["dontreceive"].value)
+	f.write("dont_receive = %d\n" % dont_receive)
+    else:
+	dont_receive = list.GetUserOption(user, mm_cfg.DontReceiveOwnPosts)
+    if form.has_key("ackposts"):
+	ack_posts    = eval(form["ackposts"].value)
+	f.write("ack_posts = %d\n" % ack_posts)
+    else:
+	ack_posts    = list.GetUserOption(user, mm_cfg.AcknowlegePosts)
+    if form.has_key("disablemail"):
+	disable_mail = eval(form["disablemail"].value)
+	f.write("disable_mail = %d\n" % disable_mail)
+    else:
+	disable_mail = list.GetUserOption(user, mm_cfg.DisableDelivery)
+    if form.has_key("conceal"):
+	conceal = eval(form["conceal"].value)
+	f.write("conceal = %d\n" % conceal)
+    else:
+	conceal = list.GetUserOption(user, mm_cfg.ConcealSubscription)
+
+    if not form.has_key("digpw"):
+	PrintResults("You must supply a password to change options.")
+    try:
+	list.ConfirmUserPassword(user, form['digpw'].value)
+    except mm_err.MMAlreadyDigested:
+	pass
+    except mm_err.MMAlreadyUndigested:
+	pass
+    except mm_err.MMMustDigestError:
+	PrintResults("List only accepts digest members.")
+    except mm_err.MMCantDigestError:
+	PrintResults("List doesn't accept digest members.")
+    except mm_err.MMNotAMemberError:
+	PrintResults("%s isn't subscribed to this list." % mail.GetSender())
+    except mm_err.MMListNotReady:
+	PrintResults("List is not functional.")
+    except mm_err.MMNoSuchUserError:
+	PrintResults("%s is not subscribed to this list." %mail.GetSender())
+    except mm_err.MMBadPasswordError:
+	PrintResults("You gave the wrong password.")
+    except:
+	PrintResults('''An unknown error occured.  <p>
+Please send mail to <a href=%s>%s</a> explaining
+exactly what you did to get this error.<p>''' % (mm_cfg.MAILMAN_OWNER))
+    
+
+    list.SetUserOption(user, mm_cfg.DisableDelivery, disable_mail)
+    list.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
+    list.SetUserOption(user, mm_cfg.AcknowlegePosts, ack_posts)
+    list.SetUserOption(user, mm_cfg.EnableMime, plaintext)
+    try:
+        list.SetUserDigest(user, digest_value)
+    except:
+	pass # Can get MMAlreadyDigested.  Ignore it.
+    list.SetUserOption(user, mm_cfg.ConcealSubscription, conceal)
+    PrintResults("You have successfully set your options.")
+
+
+
+
+
+
+
+
+
+
