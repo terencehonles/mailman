@@ -31,8 +31,10 @@ from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.pythonlib.StringIO import StringIO
+from Mailman.Handlers import HandlerAPI
 
 
+
 MAXERRORS = 5
 MAXCOLUMN = 70
 
@@ -62,7 +64,7 @@ have a mail reader that supports MIME.""",
 option_info = {'digest'  : 0,
                'nomail'  : mm_cfg.DisableDelivery,
                'notmetoo': mm_cfg.DontReceiveOwnPosts,
-               'ack'     : mm_cfg.AcknowlegePosts,
+               'ack'     : mm_cfg.AcknowledgePosts,
                'plain'   : mm_cfg.DisableMime,
                'hide'    : mm_cfg.ConcealSubscription
                }
@@ -217,58 +219,57 @@ class MailCommandHandler:
 An unexpected Mailman error has occurred.
 
 Please forward your request to the human list administrator in charge of this
-list at <%s>.  The traceback is attached below and will be forwarded to the list
-administrator automatically.''' % admin)
+list at <%s>.  The traceback is attached below and will be forwarded to the
+list administrator automatically.''' % admin)
                         self.AddError(errmsg, trunc=0)
                         self.AddToResponse('\n' + tbmsg, trunc=0)
                         # log it to the error file
                         self.LogMsg('error',
                                     'Unexpected Mailman error:\n%s' % tbmsg)
                         # and send the traceback to the user
-                        self.SendTextToUser(subject='Unexpected Mailman error',
-                                            recipient=admin,
-                                            text='''\
+                        responsemsg = Message.UserNotification(
+                            admin, admin, 'Unexpected Mailman error',
+                            '''\
 An unexpected Mailman error has occurred in
 MailCommandHandler.ParseMailCommands().  Here is the traceback:
 
-''' + tbmsg,
-                                            add_headers=['Errors-To: %s' %
-                                                         admin,
-                                                         'X-No-Archive: yes',
-                                                         'Precedence: bulk'])
+''' + tbmsg)
+                        responsemsg['X-No-Archive'] = 'yes'
+                        HandlerAPI.DeliverToUser(self, responsemsg)
                         break
         # send the response
         if not self.__NoMailCmdResponse:
+            adminaddr = self.GetAdminEmail()
+            requestaddr = self.GetRequestEmail()
             if self.__errors > 0:
                 header = Utils.wrap('''This is an automated response.
 
-There were problems with the email commands you sent to Mailman via
-the administrative address <%(sender)s>.
+There were problems with the email commands you sent to Mailman via the
+administrative address <%(sender)s>.
 
 To obtain instructions on valid Mailman email commands, send email to
-<%(sender)s> with the word "help" in the subject line or in the body
-of the message.
+<%(sender)s> with the word "help" in the subject line or in the body of the
+message.
 
-If you want to reach the human being that manages this mailing list,
-please send your message to <%(admin)s>.
+If you want to reach the human being that manages this mailing list, please
+send your message to <%(admin)s>.
 
 The following is a detailed description of the problems.
 
-''' % {'sender': self.GetRequestEmail(),
-       'admin' : self.GetAdminEmail(),
+''' % {'sender': requestaddr,
+       'admin' : adminaddr,
        })
                 self.__respbuf = header + self.__respbuf
-            self.SendMailCmdResponse(msg)
-
-    def SendMailCmdResponse(self, mail):
-        subject = 'Mailman results for %s' % self.real_name
-	self.SendTextToUser(subject   = subject,
-			    recipient = mail.GetSender(),
-			    sender    = self.GetRequestEmail(),
-			    text      = self.__respbuf)
-	self.__respbuf = ''
-        self.__errors = 0
-        self.__NoMailCmdResponse = 0
+            # send the response
+            subject = 'Mailman results for %s' % self.real_name,
+            responsemsg = Message.UserNotification(msg.GetSender(),
+                                                   self.GetRequestEmail(),
+                                                   subject,
+                                                   self.__respbuf)
+            HandlerAPI.DeliverToUser(self, responsemsg)
+            self.__respbuf = ''
+            self.__errors = 0
+            self.__NoMailCmdResponse = 0
 
     def ProcessPasswordCmd(self, args, cmd, mail):
         if len(args) not in [0,2]:
