@@ -10,13 +10,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-09-26 16:32+0200\n"
+"PO-Revision-Date: 2003-10-22 01:10+0200\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
-"Language-Team: \n"
+"Language-Team: Deutsch <p.heinlein@jpberlin.de>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.0.1\n"
 
 # Mailman/Handlers/Decorate.py:49
 #: Mailman/Archiver/HyperArch.py:119
@@ -76,7 +76,7 @@ msgstr "Text%(sz)s"
 # Mailman/Cgi/private.py:62
 #: Mailman/Archiver/HyperArch.py:849
 msgid "figuring article archives\n"
-msgstr ""
+msgstr "Bearbeite Archive\n"
 
 #: Mailman/Archiver/HyperArch.py:859
 msgid "April"
@@ -1704,6 +1704,8 @@ msgid ""
 "            been discarded, and both list administrators have been\n"
 "            alerted."
 msgstr ""
+"            Sie waren nicht zu dieser Liste eingeladen. Die Einladung wurde\n"
+"            verworfen und beide Listen-Administratoren wurden benachrichtigt."
 
 # Mailman/Cgi/confirm.py:287
 #: Mailman/Cgi/confirm.py:362
@@ -3232,6 +3234,8 @@ msgid ""
 "discarded,\n"
 "and both list administrators have been alerted."
 msgstr ""
+"Sie waren nicht zu dieser Liste eingeladen. Die Einladung wurde\n"
+"verworfen und beide Listen-Administratoren wurden benachrichtigt."
 
 # Mailman/Cgi/confirm.py:166
 #: Mailman/Commands/cmd_confirm.py:77
@@ -3617,7 +3621,7 @@ msgstr "Ein"
 
 #: Mailman/Commands/cmd_set.py:154
 msgid "    ack %(onoff)s"
-msgstr ""
+msgstr "    ack %(onoff)s"
 
 # Mailman/Gui/Digest.py:27
 #: Mailman/Commands/cmd_set.py:160
@@ -3660,23 +3664,23 @@ msgstr "wegen unzustellbarerer Nachrichten"
 
 #: Mailman/Commands/cmd_set.py:186
 msgid "    %(status)s (%(how)s on %(date)s)"
-msgstr ""
+msgstr "    %(status)s (%(how)s am %(date)s)"
 
 #: Mailman/Commands/cmd_set.py:192
 msgid "    myposts %(onoff)s"
-msgstr ""
+msgstr "    mypost %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:195
 msgid "    hide %(onoff)s"
-msgstr ""
+msgstr "    hide %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:199
 msgid "    duplicates %(onoff)s"
-msgstr ""
+msgstr "    duplicates %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:203
 msgid "    reminders %(onoff)s"
-msgstr ""
+msgstr "    reminders %(onoff)s"
 
 # Mailman/MailCommandHandler.py:354 Mailman/MailCommandHandler.py:424
 # Mailman/MailCommandHandler.py:578
@@ -4046,7 +4050,7 @@ msgstr "Schwedisch"
 
 #: Mailman/Defaults.py:1279
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainisch"
 
 # Mailman/Deliverer.py:42
 #: Mailman/Deliverer.py:51
@@ -4081,7 +4085,7 @@ msgstr "%(listfullname)s Mailinglisten Erinnerung"
 
 #: Mailman/Deliverer.py:157 Mailman/Deliverer.py:176
 msgid "Hostile subscription attempt detected"
-msgstr ""
+msgstr "Versuch unrechtmäßiger Listeneintragung entdeckt."
 
 #: Mailman/Deliverer.py:158
 msgid ""
@@ -4090,6 +4094,10 @@ msgid ""
 "invitation to your list.  We just thought you'd like to know.  No further\n"
 "action by you is required."
 msgstr ""
+"%(address)s war zu einer anderen Mailingliste eingeladen, \n"
+"versuchte aber sich in diese Mailingliste unrechtmäßig einzutragen.\n"
+"Wir benachrichtigen Sie darüber zu Ihrer Information, vielleicht interessiert\n"
+"Sie das. Von Ihrer Seite ist keine weitere Reaktion nötig. "
 
 #: Mailman/Deliverer.py:177
 msgid ""
@@ -4099,6 +4107,10 @@ msgid ""
 "you\n"
 "is required."
 msgstr ""
+"Sie haben %(address)s zu Ihrer Mailingliste eingeladen, aber dieser\n"
+"Nutzer versuchte sich auf diesem Wege zu einer anderen Mailingliste \n"
+"unrechtmäßig einzutragen. "
+"Diese e-Mail ist nur zu Ihrer Information, es ist keine Reaktion von Ihnen nötig. "
 
 #: Mailman/Errors.py:114
 msgid "For some unknown reason"
@@ -4607,6 +4619,17 @@ msgid ""
 "             <p>See also <a href=\"?VARHELP=contentfilter/pass_mime_types\"\n"
 "             >pass_mime_types</a> for a content type whitelist."
 msgstr ""
+"Nutzen Sie diese Option um jedes Attachement einer e-Mail zu entfernen, \n"
+"das auf einen der folgenden MIME content-types paßt. Jede Zeile muß einen \n"
+"Eintrag enthalten, der einen MIME content-type benennt, z.B. \n"
+"<tt>image/gif</tt>. \n"
+"Wenn Sie den Untertyp weglassen, können Sie alle Attachements des \n"
+"Haupttyps entfernen lassen, z.B. <tt>image</tt>.\n"
+"\n"
+"             <p>Leere Einträge werden ignoriert.\n"
+"\n"
+"             <p>Sehen Sie auch <a href=\"?VARHELP=contentfilter/pass_mime_types\"\n"
+"             >pass_mime_types</a> für eine Liste der content-types."
 
 #: Mailman/Gui/ContentFilter.py:90
 msgid ""
@@ -4631,6 +4654,13 @@ msgid ""
 "             <tt>multipart</tt> to this list, any messages with attachments\n"
 "             will be rejected by the pass filter."
 msgstr ""
+"Netzen Sie diese Option um jede Nachricht entfernen zu lassen, die <i>nicht</i> auf\n"
+"diesen MIME content-type zutrifft. Das Format dieses Parameters ist wie in "
+"<a href=\"?VARHELP=contentfilter/filter_mime_types\">filter_mime_types</a>.\n"
+"\n"
+"             <p><b>Beachten Sie:</b>Wenn Sie hier Einträge vornehmen und "
+"nicht auch den Eintrag <tt>multipart</tt> mit aufnehmen, wird jede Nachricht "
+"mit Attachment geblocket werden!"
 
 #: Mailman/Gui/ContentFilter.py:104
 msgid ""
@@ -4849,6 +4879,9 @@ msgid ""
 "                    double check that this is what you intended.\n"
 "                    "
 msgstr ""
+"Ihre Einstellung <code>%(property)s</code> scheint einige behebbare\n"
+"Fehler zu haben. Wir haben den Wert korrigiert übernommen, bitte\n"
+"prüfen Sie, ob die neue Einstellung Ihren Wünschen entspricht. "
 
 # Mailman/Gui/General.py:28
 #: Mailman/Gui/General.py:32
@@ -6891,12 +6924,17 @@ msgid ""
 "Topic specifications require both a name and\n"
 "                a pattern.  Incomplete topics will be ignored."
 msgstr ""
+"Die Definition eines Themens benötigt die Angabe eines Namens und\n"
+"eines entsprechenden Suchmusters. Unvollständige Themendefinitionen\n"
+"werden ignoriert."
 
 #: Mailman/Gui/Topics.py:124
 msgid ""
 "The topic pattern `%(pattern)s' is not a\n"
 "                legal regular expression.  It will be discarded."
 msgstr ""
+"Das Muster  `%(pattern)s' ist keine zulässige Regular Expression\n"
+"und wird darum ignoriert. "
 
 # Mailman/Gui/Usenet.py:24
 #: Mailman/Gui/Usenet.py:25
@@ -7034,7 +7072,7 @@ msgstr ""
 
 #: Mailman/Gui/Usenet.py:103
 msgid "Mass catch up"
-msgstr ""
+msgstr "Massenaustausch"
 
 # Mailman/Gui/Usenet.py:52
 #: Mailman/Gui/Usenet.py:106
@@ -7063,7 +7101,7 @@ msgstr ""
 
 #: Mailman/Gui/Usenet.py:121
 msgid "Mass catchup completed"
-msgstr ""
+msgstr "Massenaustausch beendet"
 
 #: Mailman/Gui/Usenet.py:133
 msgid ""
@@ -9180,7 +9218,7 @@ msgstr "Ignoriere nichtgehaltene Nachricht: %(f)s"
 
 #: bin/discard:100
 msgid "Ignoring held msg w/bad id: %(f)s"
-msgstr ""
+msgstr "Ignoriere gehaltene Nachricht mit falscher ID: %(f)s"
 
 # Mailman/Cgi/admin.py:66 Mailman/Cgi/admindb.py:60 Mailman/Cgi/confirm.py:52
 # Mailman/Cgi/edithtml.py:65 Mailman/Cgi/listinfo.py:49
@@ -9422,6 +9460,21 @@ msgid ""
 "    -h/--help\n"
 "        Print this message and exit.\n"
 msgstr ""
+"Baut die aliases-Datei von Grund auf neu auf. \n"
+"\n"
+"Das genaue Format und Vorgehen hängt vom Wert der Einstellung\n"
+"`MTA' in der Dateu mm_cfg ab. "
+"\n"
+"Benutzung: genaliases [optionen]\n"
+"Optionen:\n"
+"\n"
+"    -q/--quiet\n"
+"        Je nach MTA können in der aliases-Datei weitere Infos als \n"
+"        Memo eingebunden werden. Mit dieser Option können Sie das\n"
+"        unterdrücken. "
+"\n"
+"    -h/--help\n"
+"        Gibt diese Hilfe aus.\n"
 
 #: bin/inject:19
 msgid ""
@@ -10107,7 +10160,7 @@ msgstr ""
 
 #: bin/msgfmt.py:57
 msgid "Return the generated output."
-msgstr ""
+msgstr "Gibt die erzeugte Ausgabe zurück."
 
 #: bin/newlist:19
 msgid ""
@@ -10788,6 +10841,17 @@ msgid ""
 "Where <lang> is your country code (e.g. 'it' for Italy) and -q is\n"
 "to ask for a brief summary.\n"
 msgstr ""
+"\n"
+"Prüft eine vorhandene Mailman-Übersetzung und stellt sicher, daß\n"
+"Variablen und Tags in Orginal und Übersetzung übereinstimmen.\n"
+"\n"
+"Benutzung:\n"
+"\n"
+"cd $MAILMAN_DIR\n"
+"%(program)s [-q] <lang>\n"
+"\n"
+"Wobei <lang> die Angabe des Sprach-Kürzels ist (z.B. 'de' für \"deutsch\")\n"
+"und -q gibt eine kurze Zusammenfassung aus.\n"
 
 #: bin/transcheck:57
 msgid "check a translation comparing with the original string"
@@ -10795,15 +10859,15 @@ msgstr "überprüft eine Übersetzung und vergleicht sie mit dem Orginal"
 
 #: bin/transcheck:67
 msgid "scan a string from the original file"
-msgstr ""
+msgstr "Sucht einen Text von der Orginal-Datei"
 
 #: bin/transcheck:77
 msgid "scan a translated string"
-msgstr ""
+msgstr "Sucht einen übersetzten Text"
 
 #: bin/transcheck:90
 msgid "check for differences between checked in and checked out"
-msgstr ""
+msgstr "Sucht nach Abweichungen in eingecheckter und ausgecheckter Fassung"
 
 #: bin/transcheck:123
 msgid "parse a .po file extracting msgids and msgstrs"
@@ -11181,7 +11245,6 @@ msgid "Using Mailman version:"
 msgstr "Benutze Mailman-Version:"
 
 #: bin/withlist:19
-#, fuzzy
 msgid ""
 "General framework for interacting with a mailing list object.\n"
 "\n"
