@@ -98,7 +98,6 @@ class IncomingRunner(Runner):
         except LockFile.TimeOutError:
             # Oh well, try again later
             return 1
-        #
         # Process the message through a handler pipeline.  The handler
         # pipeline can actually come from one of three places: the message
         # metadata, the mlist, or the global pipeline.
@@ -130,10 +129,9 @@ class IncomingRunner(Runner):
             handler = pipeline.pop(0)
             modname = 'Mailman.Handlers.' + handler
             mod = __import__(modname)
-            func = getattr(sys.modules[modname], 'process')
             try:
                 pid = os.getpid()
-                func(mlist, msg, msgdata)
+                sys.modules[modname].process(mlist, msg, msgdata)
                 # Failsafe -- a child may have leaked through.
                 if pid <> os.getpid():
                     syslog('error', 'child process leaked thru: %s', modname)
@@ -141,9 +139,12 @@ class IncomingRunner(Runner):
             except Errors.DiscardMessage:
                 # Throw the message away; we need do nothing else with it.
                 return 0
-            except Errors.MessageHeld:
+            except Errors.HoldMessage:
                 # Let the approval process take it from here.  The message no
                 # longer needs to be queued.
+                return 0
+            except Errors.RejectMessage, e:
+                mlist.BounceMessage(msg, msgdata, e)
                 return 0
             except Exception, e:
                 # Some other exception occurred, which we definitely did not
