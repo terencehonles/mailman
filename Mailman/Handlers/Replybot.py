@@ -23,7 +23,6 @@ import HandlerAPI
 
 from Mailman import Utils
 from Mailman import Message
-from Mailman.Logging.Syslog import syslog
 
 
 
