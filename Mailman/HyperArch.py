@@ -457,10 +457,18 @@ class HyperArchive(pipermail.T):
         # so we're leavin' the perms wide open from here on out
         #
         ou = os.umask(0)
+        #
+        # can't init the database while other
+        # processes are writing to it!
+        # XXX TODO- implement native locking
+        # with mailman's flock module for HyperDatabase.HyperDatabase
+        #
+        self.GetArchLock()
 	pipermail.T.__init__(self,
 			     maillist.archive_directory,
 			     reload=1,
 			     database=HyperDatabase.HyperDatabase(maillist.archive_directory))
+        self.DropArchLock()
 
         if hasattr(self.maillist,'archive_volume_frequency'):
             if self.maillist.archive_volume_frequency == 0:
