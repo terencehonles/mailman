@@ -55,14 +55,19 @@ def usage(code, msg=''):
 
 class TransChecker:
     "check a translation comparing with the original string"
-    def __init__(self, regexp):
+    def __init__(self, regexp, escaped=None):
         self.dict = {}
         self.errs = []
         self.regexp = re.compile(regexp)
+        self.escaped = None
+        if escaped:
+            self.escaped = re.compile(escaped)
 
     def checkin(self, string):
         "scan a string from the original file"
         for key in self.regexp.findall(string):
+            if self.escaped and self.escaped.match(key):
+                continue
             if self.dict.has_key(key):
                 self.dict[key] += 1
             else:
@@ -71,6 +76,8 @@ class TransChecker:
     def checkout(self, string):
         "scan a translated string"
         for key in self.regexp.findall(string):
+            if self.escaped and self.escaped.match(key):
+                continue
             if self.dict.has_key(key):
                 self.dict[key] -= 1
             else:
@@ -273,9 +280,9 @@ def check_file(translatedFile, originalFile, html=0, quiet=0):
        search also <MM-*> tags if html is not zero"""
 
     if html:
-        c = TransChecker("(%\([^)]+\)[0-9]*[sd]|</?MM-[^>]+>)")
+        c = TransChecker("(%%|%\([^)]+\)[0-9]*[sd]|</?MM-[^>]+>)", "^%%$")
     else:
-        c = TransChecker("(%\([^)]+\)[0-9]*[sd])")
+        c = TransChecker("(%%|%\([^)]+\)[0-9]*[sd])", "^%%$")
 
     try:
         f = open(originalFile)
@@ -319,7 +326,7 @@ def check_po(file, quiet=0):
     "scan the po file comparing msgids with msgstrs"
     n = 0
     p = POParser(file)
-    c = TransChecker("(%\([^)]+\)[0-9]*[sdu]|%[0-9]*[sdu])")
+    c = TransChecker("(%%|%\([^)]+\)[0-9]*[sdu]|%[0-9]*[sdu])", "^%%$")
     while p.parse():
         if p.msgstr:
             c.reset()
