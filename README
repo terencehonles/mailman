@@ -1,4 +1,4 @@
-Mailman 1.0b2 (README $Revision: 493 $, $Date: 1998-04-29 22:53:58 +0100 (Wed, 29 Apr 1998) $)
+Mailman 1.0b2 (README $Revision: 494 $, $Date: 1998-04-29 22:55:35 +0100 (Wed, 29 Apr 1998) $)
 
 This is mailman, maillist management software written mostly in
 Python.  Mailman was originally developed by John Viega.  Ken
@@ -171,12 +171,15 @@ Interactive python sessions with maillists
     postal:
 
 >>> l = maillist.MailList('postal')
+>>> l.Unlock()
 
-    If the list is active, and you aren't going to be saving any
-    changes, do an l.Unlock() immediately.  (Otherwise, anyone visiting 
-    a web interface involving the list, or postings going to the list,
-    will be held awaiting the lock.)  Now you can examine various
-    aspects of the list:
+    Don't do the Unlock() if you're going to be doing surgery on the
+    list.  However, if the list is active, and you aren't going to be
+    saving any changes, be sure to do the l.Unlock() immediately.
+    Otherwise, anyone visiting a web interface involving the list, or
+    postings going to the list, will be held awaiting the lock.
+
+    Now you can examine various aspects of the list:
 
 >>> l.members
 ['klm@python.org']
