@@ -304,7 +304,7 @@ The following is a detailed description of the problems.
             self.ConfirmUserPassword(sender, args[0])
 	    self.ChangeUserPassword(sender, args[1], args[1])
 	    self.AddToResponse('Succeeded.')
-	except Errors.MMListNotReady:
+	except Errors.MMListNotReadyError:
 	    self.AddError("List is not functional.")
 	except Errors.MMNotAMemberError:
 	    self.AddError("%s isn't subscribed to this list." % sender,
@@ -383,7 +383,7 @@ The following is a detailed description of the problems.
 		self.AddError("List only accepts digest members.")
 	    except Errors.MMCantDigestError:
 		self.AddError("List doesn't accept digest members.")
-	    except Errors.MMListNotReady:
+	    except Errors.MMListNotReadyError:
 		self.AddError("List is not functional.")
 	    except Errors.MMNoSuchUserError:
 		self.AddError("%s is not subscribed to this list."
@@ -514,7 +514,7 @@ background and instructions for subscribing to and using it, visit:
 	    self.ConfirmUserPassword(addr, args[0])
 	    self.DeleteMember(addr, "mailcmd")
 	    self.AddToResponse("Succeeded.")
-	except Errors.MMListNotReady:
+	except Errors.MMListNotReadyError:
 	    self.AddError("List is not functional.")
 	except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError):
 	    self.AddError("%s is not subscribed to this list." % addr,
@@ -577,7 +577,7 @@ background and instructions for subscribing to and using it, visit:
             self.AddError("Mailman won't accept the given email "
                           "address as a valid address.\n"
                           "(Does it have an @ in it???)")
-        except Errors.MMListNotReady:
+        except Errors.MMListNotReadyError:
             self.AddError("The list is not fully functional, and "
                           "can not accept subscription\n"
                           "requests.")
