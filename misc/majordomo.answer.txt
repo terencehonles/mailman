@@ -1,4 +1,4 @@
 We no longer run Majordomo here - we run mailman - see
-http://www.python.org/sigs for a list of lists.
+http://www.python.org/mailman/listinfo for a list of lists.
 
-Sorry for the inconvenience!!
+Sorry for the inconvenience!
