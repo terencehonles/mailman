@@ -822,12 +822,3 @@ add_language('no',   _('Norwegian'),           'iso-8859-1')
 add_language('ru',   _('Russian'),             'koi8-r')
 
 del _                                   
-
-
-
-# BAW: Another hack to get Python's site-packages directory on the path.  This
-# should go away in favor of distributing required non-standard packages like
-# mimelib in the Mailman heirarchy.
-import sys
-sys.path.append(os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
-                             'site-packages'))
