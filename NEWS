@@ -4,7 +4,7 @@ Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.1 alpha 2 (10-Jul-2001)
+2.1 alpha 2 (11-Jul-2001)
 
     - Building
         o mimelib 0.4 is now required.  Get it from
@@ -121,6 +121,11 @@ Here is a history of user visible changes to Mailman.
           mylist-join@mysite
           mylist-leave@mysite
 
+        o Confirmation messages have a shortened Subject: header,
+          containing just the word "confirm" and the confirmation
+          cookie.  This should help for MUAs that like to wrap long
+          Subject: lines, messing up confirmation.
+
         o Mailman now recognizes an Urgent: header, which, if it
           contains the list moderator or list administrator password,
           forces the message to be delivered immediately to all
@@ -159,6 +164,8 @@ Here is a history of user visible changes to Mailman.
           virtual domain.
 
         o The `auto' script has been removed.
+
+        o bin/dumpdb has grown -m/--marshal and -p/--pickle options.
 
     - Archiver
         o New archiver date clobbering option, which allows dates to
