@@ -1,6 +1,7 @@
-This is a reminder, sent out once a month, about your %(hostname)s
-mailing list memberships.  It includes your subscription info and how
-to use it to change it or unsubscribe from a list.
+Это отправляемое раз в месяц сообщение содержит информацию о Вашей
+подписке на списки рассылки, hosted на машине %(hostname)s.  Здесь
+также сообщается о том, как получить более подробную информацию о
+Вашей подписке, как изменить ее параметры, а также как ее удалить.
 
 You can visit the URLs to change your membership status or
 configuration, including unsubscribing, setting digest-style delivery
