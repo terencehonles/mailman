@@ -107,14 +107,14 @@ class BounceRunner(Runner):
                     if xlist.isMember(addr):
                         xlist.Lock()
                         try:
-                            xlist.RegisterBounce(addr, msg)
+                            xlist.registerBounce(addr, msg)
                             found = 1
                             xlist.Save()
                         finally:
                             xlist.Unlock()
                 return found
             elif mlist.isMember(addr):
-                mlist.RegisterBounce(addr, msg)
+                mlist.registerBounce(addr, msg)
                 return 1
         return 0
 
