@@ -27,53 +27,55 @@ unobscured ids as well.
 # We don't need to lock in this script, because we're never going to change
 # data. 
 
-import sys
-import os, string
-from types import StringType
-from Mailman import Utils, MailList, htmlformat
+import os
+import string
+
+from Mailman import Utils
+from Mailman import MailList
 from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman.htmlformat import *
 
+
+
 def main():
-    doc = htmlformat.HeadlessDocument()
+    doc = HeadlessDocument()
     try:
         path = os.environ['PATH_INFO']
     except KeyError:
-        path = ""
-    list_info = Utils.GetPathPieces(path)
+        path = ''
+
+    parts = Utils.GetPathPieces(path)
     # sanity check options
-    if len(list_info) < 2:
-        doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
+    if len(parts) < 2:
+        doc.AddItem(Header(2, "Error"))
+        doc.AddItem(Bold("Invalid options to CGI script."))
         print doc.Format()
-        sys.exit(0)
+        return
+
     # get the list and user's name
-    list_name = string.lower(list_info[0])
-    user = Utils.UnobscureEmail(list_info[1])
+    listname = string.lower(parts[0])
+    user = Utils.UnobscureEmail(parts[1])
     # open list
     try:
-        mlist = MailList.MailList(list_name, lock=0)
-    except Errors.MMUnknownListError:
-        doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
+        mlist = MailList.MailList(listname, lock=0)
+    except (Errors.MMUnknownListError, Errors.MMListNotReady):
+        doc.AddItem(Header(2, "Error"))
+        doc.AddItem(Bold("%s: No such list." % listname ))
         print doc.Format()
-        sys.exit(0)
-    # more list sanity checking
-    if not mlist._ready:
-        doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
-        print doc.Format()
-        sys.exit(0)
+        return
+
     # Sanity check the user
     user = Utils.LCDomain(user)
-    if not mlist.members.has_key(user) \
-       and not mlist.digest_members.has_key(user):
-        doc.AddItem(htmlformat.Header(2, "Error"))
-        doc.AddItem(htmlformat.Bold("%s: No such member %s."
-                                    % (list_name, `user`)))
+    if not mlist.members.has_key(user) and \
+            not mlist.digest_members.has_key(user):
+        # then
+        doc.AddItem(Header(2, "Error"))
+        doc.AddItem(Bold("%s: No such member %s." % (listname, `user`)))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
-        sys.exit(0)
+        return
+
     # find the case preserved email address (the one the user subscribed with)
     lcuser = mlist.FindUser(user)
     cpuser = mlist.GetUserSubscribedAddress(lcuser)
@@ -85,6 +87,7 @@ def main():
             cpuser = Utils.ObscureEmail(cpuser, for_text=1)
     else:
         presentable_user = user
+
     # Do replacements
     replacements = mlist.GetStandardReplacements()
     replacements['<mm-digest-radio-button>'] = mlist.FormatOptionButton(
@@ -137,11 +140,13 @@ def main():
                                                            ' To Me'))
     replacements['<mm-umbrella-notice>'] = (
         mlist.FormatUmbrellaNotice(user, "password"))
+
     if cpuser is not None:
         replacements['<mm-case-preserved-user>'] = '''
 You are subscribed to this list with the case-preserved address
 <em>%s</em>.''' % cpuser
     else:
         replacements['<mm-case-preserved-user>'] = ''
+
     doc.AddItem(mlist.ParseTags('options.html', replacements))
     print doc.Format()
