@@ -48,8 +48,6 @@ SCRIPTS=	mmsitepass newlist rmlist add_members \
 		list_admins genaliases change_pw mailmanctl qrunner inject \
 		unshunt fix_url.py convert.py
 
-NONSCRIPTS=	
-
 BUILDDIR=	../build/bin
 
 # Modes for directories and executables created by the install
@@ -69,10 +67,6 @@ install:
 	for f in $(SCRIPTS); \
 	do \
 	    $(INSTALL) -m $(EXEMODE) $(BUILDDIR)/$$f $(SCRIPTSDIR); \
-	done
-	for f in $(NONSCRIPTS); \
-	do \
-	    $(INSTALL) -m $(FILEMODE) $$f $(SCRIPTSDIR); \
 	done
 
 finish:
