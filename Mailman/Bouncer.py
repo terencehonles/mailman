@@ -73,7 +73,6 @@ class Bouncer:
         specific thresholds self.minimum_post_count_before_bounce_action
         and self.max_posts_between_bounces.
         """
-        # Set 'dirty' if anything needs to be save in the finally clause.
         report = "%s: %s - " % (self.real_name, member)
         now = time.time()
         days = mm_cfg.days
@@ -87,7 +86,6 @@ class Bouncer:
             if now - v[0] > stalesecs:
                 # It's been long enough to drop their bounce record:
                 del self.bounce_info[k]
-                dirty = 1
 
         # Is this the first bounce we're seeing from this address?
         this_dude = Utils.FindMatchingAddresses(member, self.bounce_info)
@@ -96,7 +94,6 @@ class Bouncer:
             self.bounce_info[member.lower()] = [now, self.post_id,
                                                self.post_id]
             syslog('bounce', '%sfirst', report)
-            dirty = 1
             return
 
         # No, there are some priors.
@@ -111,10 +108,8 @@ class Bouncer:
                 # how often.)
                 syslog('bounce', '%sfirst fresh', report)
                 self.bounce_info[addr] = [now, self.post_id, self.post_id]
-                dirty = 1
                 return
             self.bounce_info[addr][2] = self.post_id
-            dirty = 1
             if ((self.post_id - hist[1] >
                  self.minimum_post_count_before_bounce_action)
                 and
@@ -203,11 +198,11 @@ Bad admin recipient: %s''', self.internal_name(), addr)
                  'did'      : did,
                  'but'      : but,
                  'reenable' : reenable,
-                 'owneraddr': Utils.get_site_email(self.host_name, '-admin'),
+                 'owneraddr': Utils.get_site_email(self.host_name, 'admin'),
                  }, mlist=self)
             rname = self.real_name
             msg0 = Message.UserNotification(
-                recipient, Utils.get_site_email(self.host_name, '-admin'),
+                recipient, Utils.get_site_email(self.host_name, 'admin'),
                 _('%(rname)s member %(addr)s bouncing - %(negative)s%(did)s'))
             msg0['MIME-Version'] = '1.0'
             msg0['Content-Type'] = 'multipart/mixed'
