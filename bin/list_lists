@@ -6,14 +6,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """List all mailing lists.
@@ -22,8 +22,7 @@ Usage: %(program)s [options]
 
 Where:
 
-    --advertised
-    -a
+    -a / --advertised
         List only those mailing lists that are publically advertised
 
     --virtual-host-overview=domain
@@ -32,8 +31,10 @@ Where:
         domain.  This only works if the VIRTUAL_HOST_OVERVIEW variable is
         set.
 
-    --help
-    -h
+    -b / --bare
+        Displays only the list name, with no description.
+
+    -h / --help
         Print this text and exit.
 
 """
@@ -64,15 +65,16 @@ def usage(code, msg=''):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'aV:h',
-                                   ['advertised', 'virtual-host-overview=',
+        opts, args = getopt.getopt(sys.argv[1:], 'abV:h',
+                                   ['advertised', 'bare',
+                                    'virtual-host-overview=',
                                     'help'])
     except getopt.error, msg:
         usage(1, msg)
 
     advertised = 0
     vhost = None
-
+    bare = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -80,6 +82,8 @@ def main():
             advertised = 1
         elif opt in ('-V', '--virtual-host-overview'):
             vhost = arg
+        elif opt in ('-b', '--bare'):
+            bare = 1
 
     names = Utils.list_names()
     names.sort()
@@ -97,16 +101,22 @@ def main():
         mlists.append(mlist)
         longest = max(len(mlist.real_name), longest)
 
-    if not mlists:
+    if not mlists and not bare:
         print _('No matching mailing lists found')
         return
 
-    print len(mlists), _('matching mailing lists found:')
+    if not bare:
+        print len(mlists), _('matching mailing lists found:')
+
     format = '%%%ds - %%.%ds' % (longest, 77 - longest)
     for mlist in mlists:
-        description = mlist.description or _('[no description available]')
-        print '   ', format % (mlist.real_name, description)
-            
+        if bare:
+            print mlist.internal_name()
+        else:
+            description = mlist.description or _('[no description available]')
+            print '   ', format % (mlist.real_name, description)
 
+
+
 if __name__ == '__main__':
     main()
