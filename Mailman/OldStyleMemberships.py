@@ -23,12 +23,13 @@ i.e. KEY is LCE.
 This is the adaptor used by default in Mailman 2.1.
 """
 
+import time
 from types import StringType
 
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
-from Mailman.MemberAdaptor import MemberAdaptor
+from Mailman import MemberAdaptor
 
 ISREGULAR = 1
 ISDIGEST = 2
@@ -41,7 +42,7 @@ ISDIGEST = 2
 
 
 
-class OldStyleMemberships(MemberAdaptor):
+class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
     def __init__(self, mlist):
         self.__mlist = mlist
 
@@ -130,6 +131,26 @@ class OldStyleMemberships(MemberAdaptor):
     def getMemberTopics(self, member):
         self.__assertIsMember(member)
         return self.__mlist.topics_userinterest.get(member.lower(), [])
+
+    def getDeliveryStatus(self, member):
+        self.__assertIsMember(member)
+        return self.__mlist.delivery_status.get(
+            member.lower(),
+            # Values are tuples, so the default should also be a tuple.  The
+            # second item will be ignored.
+            (MemberAdaptor.ENABLED, 0))[0]
+
+    def getDeliveryStatusChangeTime(self, member):
+        self.__assertIsMember(member)
+        return self.__mlist.delivery_status.get(
+            member.lower(),
+            # Values are tuples, so the default should also be a tuple.  The
+            # second item will be ignored.
+            (MemberAdaptor.ENABLED, 0))[1]
+
+    def getBounceInfo(self, member):
+        self.__assertIsMember(member)
+        return self.__mlist.bounce_info.get(member.lower())
 
     #
     # Write interface
@@ -293,3 +314,27 @@ class OldStyleMemberships(MemberAdaptor):
         # if topics is empty, then delete the entry in this dictionary
         elif self.__mlist.topics_userinterest.has_key(memberkey):
             del self.__mlist.topics_userinterest[memberkey]
+
+    def setDeliveryStatus(self, member, status):
+        assert status in (MemberAdaptor.ENABLED,  MemberAdaptor.UNKNOWN,
+                          MemberAdaptor.BYUSER,   MemberAdaptor.BYADMIN,
+                          MemberAdaptor.BYBOUNCE)
+        assert self.__mlist.Locked()
+        self.__assertIsMember(member)
+        member = member.lower()
+        if status == MemberAdaptor.ENABLED:
+            if self.__mlist.delivery_status.has_key(member):
+                del self.__mlist.delivery_status[member]
+            # Otherwise, nothing to do
+        else:
+            self.__mlist.delivery_status[member] = (status, time.time())
+
+    def setBounceInfo(self, member, info):
+        assert self.__mlist.Locked()
+        self.__assertIsMember(member)
+        if status is None:
+            if self.__mlist.bounce_info.has_key(member):
+                del self.__mlist.bounce_info[member]
+            # Otherwise, nothing to do
+        else:
+            self.__mlist.bounce_info[member] = info
