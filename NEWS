@@ -4,19 +4,24 @@ Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.1 alpha 2 (XXX)
+2.1 alpha 2 (10-Jul-2001)
 
     - Building
         o mimelib 0.4 is now required.  Get it from
-          http://mimelib.sourceforge.net.  If you've installed an
-          earlier version of mimelib, you must upgrade.
+          http://mimelib.sf.net.  If you've installed an earlier
+          version of mimelib, you must upgrade.
+
+        o /usr/local/mailman is now the default installation
+          directory.  Use configure's --prefix switch to change it
+          back to the default (/home/mailman) or any other
+          installation directory of your choice.
 
     - Security
         o Better definition of authentication domains.  The following
           roles have been defined: user, list-admin, list-moderator,
           creator, site-admin.
 
-        o There is now a separate role of "list moderators", which has
+        o There is now a separate role of "list moderator", which has
           access to the pending requests (admindb) page, but not the
           list configuration pages.
 
@@ -34,8 +39,8 @@ Here is a history of user visible changes to Mailman.
     - Internationalization
         o More I18N patches.  The basic infrastructure should now be
           working correctly.  Spanish templates and catalogs are
-          included (although out-of-date at the moment), and English,
-          French, Hungarian, and Big5 templates are included.
+          included, and English, French, Hungarian, and Big5 templates
+          are included.
 
         o Cascading specializations and internationalization of
           templates.  Templates are now search for in the following
@@ -50,7 +55,7 @@ Here is a history of user visible changes to Mailman.
 
     - Web UI
         o Redesigned the user options page.  It now sits behind an
-          authentication so user options cannot be viewed with the
+          authentication so user options cannot be viewed without the
           proper password.  The other advantage is that the user's
           password need not be entered on the options page to
           unsubscribe or change option values.  The login screen also
@@ -94,7 +99,7 @@ Here is a history of user visible changes to Mailman.
 
         o Through-the-web list creation and removal, using a separate
           site-wide authentication role called the "list creator and
-          destroyer" or simply "creator".  If the configuration
+          destroyer" or simply "list creator".  If the configuration
           variable OWNERS_CAN_DELETE_THEIR_OWN_LISTS is set to 1 (by
           default, it's 0), then list admins can delete their own
           lists.
@@ -127,10 +132,13 @@ Here is a history of user visible changes to Mailman.
         o Refinements to the new qrunner subsystem which preserves
           FIFO order of messages.
 
+        o The qrunner is no longer started from cron.  It is started
+          by a Un*x init-style script called bin/mailmanctl (see
+          below).  cron/qrunner has been removed.
+
     - Command line scripts
         o bin/mailmanctl script added, which is used to start, stop,
-          and restart the qrunner daemon.  This replaces cron/qrunner
-          which is now obsolete and has been removed.
+          and restart the qrunner daemon.
 
         o bin/qrunner script added which allows a single sub-qrunner
           to run once through its processing loop.
@@ -142,9 +150,9 @@ Here is a history of user visible changes to Mailman.
 
         o bin/newlang renamed to bin/addlang; bin/rmlang removed.
 
-        o bin/mmsitepass has grown a -c option to set the creator's
-          password.  The site-wide `create' web page is linked to from
-          the admin overview page.
+        o bin/mmsitepass has grown a -c option to set the list
+          creator's password.  The site-wide `create' web page is
+          linked to from the admin overview page.
 
         o bin/newlist's -o option is removed.  This script also grows
           a way of spelling the creation of a list in a specific
@@ -175,7 +183,8 @@ Here is a history of user visible changes to Mailman.
         o Most syslog entries for the qrunner have been redirected to
           logs/error.
 
-        o On SIGHUP, qrunner will re-open all its log files.
+        o On SIGHUP, qrunner will re-open all its log files and
+          restart all child processes.  See "bin/mailmanctl restart".
 
     - Patches and bug fixes
         o SF patches and bug fixes applied: 420396, 424389, 227694,
