@@ -109,7 +109,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
             else:
-                dict['extend'](self)
+                func = dict.get('extend')
+                if func:
+                    func(self)
 
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute
