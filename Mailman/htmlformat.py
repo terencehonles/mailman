@@ -292,7 +292,7 @@ class Document(Container):
 class HeadlessDocument(Document):
     """Document without head section, for templates that provide their own."""
     def Format(self, indent=0, **kws):
-        return 'Content-type: text/html\n' + Container.Format(self, indent)
+        return 'Content-type: text/html\n\n' + Container.Format(self, indent)
     
 class StdContainer(Container):
     def Format(self, indent=0):
