@@ -5,7 +5,7 @@
 To run stand-alone for debugging, set env var PATH_INFO to name of list
 and, optionally, options category."""
 
-__version__ = "$Revision: 383 $"
+__version__ = "$Revision: 411 $"
 
 import sys
 sys.path.append('/home/mailman/mailman/modules')
@@ -36,13 +36,15 @@ def main():
     global list_name		# For encompassing try/except.
     doc = Document()
 
-    path = os.environ['PATH_INFO']
+    try:
+        path = os.environ['PATH_INFO']
+    except KeyError:
+        path = ""
     list_info = mm_utils.GetPathPieces(path)
 
-    if len(list_info) < 1:
-	doc.AddItem(Header(2, "Invalid options to CGI script."))
-	print doc.Format(bgcolor="#ffffff")
-	sys.exit(0)
+    if len(list_info) == 0:
+        FormatAdminOverview()
+	return
 
     list_name = string.lower(list_info[0])
 
@@ -50,9 +52,9 @@ def main():
     
     try:
 	if not (list and list._ready):
-	    doc.AddItem(Header(3, "%s: No such list" % list_name))
-	    print doc.Format(bgcolor="#ffffff")
-	    sys.exit(0)
+            FormatAdminOverview(error="List <em>%s</em> not found."
+                                % list_name)
+            return
 
         if len(list_info) == 1:
             category = 'general'
@@ -112,8 +114,79 @@ def main():
     finally:
 	list.Unlock()
 
-
 # Form Production:
+
+def FormatAdminOverview(error=None):
+    "Present a general welcome and itemize the (public) lists."
+    doc = Document()
+    legend = "%s Maillists - Admin Links" % mm_cfg.DEFAULT_HOST_NAME
+    doc.SetTitle(legend)
+
+    table = Table(border=0, width="100%")
+    table.AddRow([Center(Header(2, legend))])
+    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
+                      colspan=2, bgcolor="#99ccff")
+
+    if error:
+        table.AddRow([Center(FontAttr(error, color="ff5060", size="+1"))])
+        table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0,
+                          colspan=2)
+
+    advertised = []
+    for n in mm_utils.list_names():
+	l = maillist.MailList(n)
+	l.Unlock()
+        if l.advertised: advertised.append(l)
+
+    if not advertised:
+        welcome_items = (
+            "Welcome!<p>"
+            " There currently are no publicly-advertised ",
+            Link(mm_cfg.MAILMAN_URL, "mailman"),
+            " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+            )
+    else:
+
+        welcome_items = (
+            "Welcome!<p>"
+            " Below is the collection of publicly-advertised ",
+            Link(mm_cfg.MAILMAN_URL, "mailman"),
+            " maillists on %s." % mm_cfg.DEFAULT_HOST_NAME,
+            (' Click on a list name to visit the configuration pages'
+             ' for that list.'
+             )
+            )
+
+    welcome_items = (welcome_items +
+                     (" To visit the administrators configuration page for"
+                      " an unadvertised list, open a URL similar to this"
+                      +
+                      (" one, but with a '/' and the %slist name appended.<p>"
+                       % ((error and "the right ") or ""))
+                      +
+                      " General list information can be found at ",
+                      Link(os.path.join(mm_cfg.DEFAULT_URL, "listinfo/"),
+                           "the maillist overview page"),
+                      "."
+                      "<p>(Send questions or comments to ",
+                     Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
+                          mm_cfg.MAILMAN_OWNER),
+                     ".)<p>"
+                      )
+                     )
+
+    table.AddRow([apply(Container, welcome_items)])
+    table.AddCellInfo(max(table.GetCurrentRowIndex(), 0), 0, colspan=2)
+
+    if advertised:
+        table.AddRow([Italic("List"), Italic("Description")])
+        for l in advertised:
+            table.AddRow([Link(l.GetScriptURL('admin'), Bold(l.real_name)),
+                          l.description])
+
+    doc.AddItem(table)
+
+    print doc.Format(bgcolor="#ffffff")
 
 def FormatConfiguration(doc, list, category, category_suffix):
     """Produce the overall doc, *except* any processing error messages."""
@@ -506,15 +579,6 @@ def AddErrorMessage(doc, errmsg, *args):
     doc.AddItem(Header(3, Italic(FontAttr(errmsg % args,
                                           color="#ff66cc"))))
 
-def error_page(errmsg, *args):
-    print apply(error_page_doc, (errmsg,) + args).Format()
-
-def error_page_doc(errmsg, *args):
-    """Produce a simple error-message page on stdout and exit."""
-    doc = Document()
-    doc.AddItem(Header(2, "Error"))
-    doc.AddItem(Bold(errmsg % args))
-    return doc
 
 _config_info = None
 def GetConfigOptions(list, category):
@@ -530,8 +594,7 @@ if __name__ == "__main__":
 	print "Interrupted!"
 	raise SystemExit, 0
     except mm_err.MMUnknownListError, msg:
-        error_page("%s: %s", list_name, msg)
-	raise SystemExit, 0
+        FormatAdminOverview(error="List <em>%s</em> not found." % list_name)
     except:
 	print "Content-type: text/html\n"
 
