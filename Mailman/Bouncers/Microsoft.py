@@ -31,31 +31,34 @@ def process(msg):
         return None
     boundary = msg.getparam('boundary')
     msg.fp.seek(0)
-    mfile = multifile.MultiFile(msg.fp)
-    mfile.push(boundary)
-    # find the first subpart, which has no mime type
-    try:
-        more = mfile.next()
-    except multifile.Error:
-        # the message *looked* like a DSN, but it really wasn't :(
-        return None
-    if not more:
-        # we didn't find it
-        return None
     addrs = []
-    # simple state machine
-    #    0 == nothng seen yet
-    #    1 == tag line seen
-    state = 0
-    while 1:
-        line = mfile.readline()
-        if not line:
-            break
-        line = string.strip(line)
-        if state == 0:
-            if scre.search(line):
-                state = 1
-        if state == 1:
-            if '@' in line:
-                addrs.append(line)
-    return addrs or []
+    try:
+        mfile = multifile.MultiFile(msg.fp)
+        mfile.push(boundary)
+        # find the first subpart, which has no mime type
+        try:
+            more = mfile.next()
+        except multifile.Error:
+            # the message *looked* like a DSN, but it really wasn't :(
+            return None
+        if not more:
+            # we didn't find it
+            return None
+        # simple state machine
+        #    0 == nothng seen yet
+        #    1 == tag line seen
+        state = 0
+        while 1:
+            line = mfile.readline()
+            if not line:
+                break
+            line = string.strip(line)
+            if state == 0:
+                if scre.search(line):
+                    state = 1
+            if state == 1:
+                if '@' in line:
+                    addrs.append(line)
+    except multifile.Error:
+        pass
+    return addrs
