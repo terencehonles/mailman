@@ -34,7 +34,15 @@ import pwd
 import grp
 from stat import *
 
-import paths
+try:
+    import paths
+except ImportError:
+    print '''Could not import paths!
+
+This probably means that you are trying to run check_perms from the source
+directory.  You must run this from the installation directory instead.
+'''
+    raise
 from Mailman import mm_cfg
 from Mailman.mm_cfg import MAILMAN_UID, MAILMAN_GID
 
