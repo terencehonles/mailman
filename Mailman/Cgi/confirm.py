@@ -75,6 +75,10 @@ def main():
             confirmation strings expire approximately %(days)s days after the
             initial subscription request.  If your confirmation has expired,
             please try to re-submit your subscription.'''))
+        except Errors.MMNoSuchUserError:
+            bad_confirmation(doc, _('''Invalid confirmation string.  It is
+            possible that you are attempting to confirm a request for an
+            address that has already been unsubscribed.'''))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         mlist.Save()
