@@ -28,10 +28,20 @@ class MMCorruptListDatabaseError(MMListError): pass
 class MMListNotReadyError(MMListError): pass
 class MMListAlreadyExistsError(MMListError): pass
 
+# Membership exceptions
+class MMMemberError(Exception): pass
+class MMBadUserError(MMMemberError): pass
+class MMNotAMemberError(MMMemberError): pass
+class MMNoSuchUserError(MMMemberError): pass
+class MMAlreadyAMember(MMMemberError): pass
 
-# XXX: These should be converted to new style class exceptions
-MMBadUserError       = "MMBadUserError"
-
+# "New" style membership exceptions (new w/ MM2.1)
+class MemberError(Exception): pass
+class NotAMemberError(MemberError): pass
+class AlreadyReceivingDigests(MemberError): pass
+class AlreadyReceivingRegularDeliveries(MemberError): pass
+class CantDigestError(MemberError): pass
+class MustDigestError(MemberError): pass
 
 # Exception hierarchy for various authentication failures, can be
 # raised from functions in SecurityManager.py
@@ -42,14 +52,12 @@ class MMCookieError(MMAuthenticationError): pass
 class MMExpiredCookieError(MMCookieError): pass
 class MMInvalidCookieError(MMCookieError): pass
 
+# BAW: these still need to be converted to classes.
 MMMustDigestError    = "MMMustDigestError"
 MMCantDigestError    = "MMCantDigestError"
-MMNotAMemberError    = "MMNotAMemberError"
-MMNoSuchUserError    = "MMNoSuchUserError"
 MMNeedApproval       = "MMNeedApproval"
 MMSubscribeNeedsConfirmation = "MMSubscribeNeedsConfirmation"
 MMBadConfirmation    = "MMBadConfirmation"
-MMAlreadyAMember     = "MMAlreadyAMember"
 MMAlreadyDigested    = "MMAlreadyDigested"
 MMAlreadyUndigested  = "MMAlreadyUndigested"
 
