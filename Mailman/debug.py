@@ -13,36 +13,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
-# debug.py:  Utility functions for debugging.  
-# Michael McLay <mclay@nist.gov> wrote print_trace().
-# John Viega reconstructed print_environ since it wasn't provided...
 
 import sys
+import os
+import Utils
+import traceback
 
+
+# We don't use Utils.maketext() here because we want to reduce the critical
+# path to getting this page vended.  Using Utils.maketext() just introduces
+# another path for code that could go wrong.
 def print_trace():
-    print "Content-type: text/html\n"             
-    print "<p><h3>We're sorry, we hit a bug!</h3>\n"                      
-    print "If you would like to help us identify the problem, please " 
-    print "email a copy of this page to the webmaster for this site"
-    print 'with a description of what happened.  Thanks!'
-    print "\n<PRE>"
-    print sys.argv                                           
-    try:                                                        
-        import traceback                                                
-        sys.stderr = sys.stdout
-        traceback.print_exc()                                           
+    print """\
+Content-type: text/html
+
+<p><h3>We're sorry, we hit a bug!</h3>
+
+<p>If you would like to help us identify the problem, please
+email a copy of this page to the webmaster for this site with
+a description of what happened.  Thanks!
+
+<p><pre>
+"""
+    print sys.argv
+    try:
+        stderr = sys.stderr
+        try:
+            sys.stderr = sys.stdout
+            traceback.print_exc()
+        finally:
+            sys.stderr = stderr
     except:
-        print "[failed to get traceback]"                     
-    print "\n\n</PRE>"   
+        print '[failed to get a traceback]'
+    print '\n\n</pre>'
 
+
+# Same comment as above applies here
 def print_environ():
-    import os
-    print "<p><hr><h4>Environment variables:</h4>"
-    print "<table>"
-    print "<tr><td><strong><font size=+1>Variable</font></strong></td>"
-    print "<td><strong><font size=+1>Value</font></strong></td></tr>"
-    for (x,y) in os.environ.items():
-	print "<tr><td>", x, "</td><td>", y, "</td></tr>"
-    print "</table>"
+    print '''\
+<p><hr><h4>Environment variables:</h4>
 
+<p><table>
+<tr><td><strong><font size=+1>Variable</font></strong></td>
+<td><strong><font size=+1>Value</font></strong></td></tr>
+'''
+    for varname, value in os.environ.items():
+	print '<tr><td>', varname, '</td><td>', value, '</td></tr>'
+    print '</table>'
