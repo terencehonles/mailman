@@ -16,6 +16,7 @@
 
 """Add the message to the archives."""
 
+import string
 from Mailman import mm_cfg
 
 
@@ -23,6 +24,9 @@ from Mailman import mm_cfg
 def process(mlist, msg):
     # short circuits
     if getattr(msg, 'isdigest', 0):
+        return
+    archivep = msg.getheader('x-archive')
+    if archivep and string.lower(archivep) == 'no':
         return
     # TBD: this needs to be converted to the new pipeline machinery
     mlist.ArchiveMail(msg)
