@@ -29,6 +29,10 @@ import Utils
 import mm_cfg
 import Errors
 
+from Mailman import Message
+from Mailman.Handlers import HandlerAPI
+
+
 class Bouncer:
     def InitVars(self):
 	# Not configurable...
@@ -245,17 +249,15 @@ class Bouncer:
             if negative:
                 negative = string.upper(negative)
 
-            self.SendTextToUser(
-                subject = "%s member %s bouncing - %s%s"
-                % (self.real_name, addr, negative, did),
-                recipient = recipient,
-                sender = mm_cfg.MAILMAN_OWNER,
-                add_headers = [
-                    "Errors-To: %s" % mm_cfg.MAILMAN_OWNER,
-                    "MIME-version: 1.0",
-                    "Content-type: multipart/mixed;"
-                    ' boundary="%s"' % boundary],
-                text = text)
+            # send the bounce message
+            msg = Message.UserNotification(
+                recipient, mm_cfg.MAILMAN_OWNER,
+                '%s member %s bouncing - %s%s' % (self.real_name, addr,
+                                                  negative, did),
+                text)
+            msg['MIME-Version'] = '1.0'
+            msg['Content-Type'] = 'multipart/mixed; boundary="%s"' % boundary
+            HandlerAPI.DeliverToUser(self, msg)
 
     def DisableBouncingAddress(self, addr):
 	"""Disable delivery for bouncing user address.
