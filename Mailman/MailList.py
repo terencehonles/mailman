@@ -197,7 +197,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetOptionsURL(self, addr, obscure=0, relative=0):
         addr = string.lower(addr)
         url = self.GetScriptURL('options', relative)
-        if obscured:
+        if obscure:
             addr = Utils.ObscureEmail(addr)
         return '%s/%s' % (url, addr)
 
