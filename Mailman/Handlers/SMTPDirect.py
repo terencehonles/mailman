@@ -306,9 +306,10 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
     # Get the plain, flattened text of the message, sans unixfrom
     msgtext = msg.as_string()
     refused = {}
+    recips = msgdata['recips']
     try:
         # Send the message
-        refused = conn.sendmail(envsender, msgdata['recips'], msgtext)
+        refused = conn.sendmail(envsender, recips, msgtext)
     except smtplib.SMTPRecipientsRefused, e:
         refused = e.recipients
     # MTA not responding, or other socket problems, or any other kind of
