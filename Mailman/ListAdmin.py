@@ -306,7 +306,7 @@ class ListAdmin:
             i18n.set_language(lang)
             try:
                 fmsg = Message.UserNotification(
-                    addr, self.GetAdminEmail(),
+                    addr, self.GetBouncesEmail(),
                     _('Forward of moderated message'),
                     copy, lang)
             finally:
@@ -455,7 +455,6 @@ class ListAdmin:
         # As this message is going to the requestor, try to set the language
         # to his/her language choice, if they are a member.  Otherwise use the
         # list's preferred language.
-        adminaddr = self.GetAdminEmail()
         realname = self.real_name
 	if lang is None:
             lang = self.getMemberLanguage(recip)
@@ -464,7 +463,7 @@ class ListAdmin:
             {'listname' : realname,
              'request'  : request,
              'reason'   : comment,
-             'adminaddr': adminaddr,
+             'adminaddr': self.GetOwnerEmail(),
             }, lang=lang, mlist=self)
         otrans = i18n.get_translation()
         i18n.set_language(lang)
@@ -479,8 +478,51 @@ class ListAdmin:
             subject = _('Request to mailing list %(realname)s rejected')
         finally:
             i18n.set_translation(otrans)
-        msg = Message.UserNotification(recip, adminaddr, subject, text, lang)
+        msg = Message.UserNotification(recip, self.GetBouncesEmail(),
+                                       subject, text, lang)
         msg.send(self)
+
+    def _UpdateRecords(self):
+        # Subscription records have changed since MM2.0.x.  In that family,
+        # the records were of length 4, containing the request time, the
+        # address, the password, and the digest flag.  In MM2.1a2, they grew
+        # an additional language parameter at the end.  In MM2.1a4, they grew
+        # a fullname slot after the address.  This semi-public method is used
+        # by the update script to coerce all subscription records to the
+        # latest MM2.1 format.
+        #
+        # Held message records have historically either 5 or 6 items too.
+        # These always include the requests time, the sender, subject, default
+        # rejection reason, and message text.  When of length 6, it also
+        # includes the message metadata dictionary on the end of the tuple.
+        self.__opendb()
+        for id, (type, info) in self.__db.items():
+            if type == SUBSCRIPTION:
+                if len(info) == 4:
+                    # pre-2.1a2 compatibility
+                    when, addr, passwd, digest = info
+                    fullname = ''
+                    lang = mlist.preferred_language
+                elif len(info) == 5:
+                    # pre-2.1a4 compatibility
+                    when, addr, passwd, digest, lang = info
+                    fullname = ''
+                else:
+                    assert len(info) == 6, 'Unknown subscription record layout'
+                    continue
+                # Here's the new layout
+                self.__db[id] = when, addr, fullname, passwd, digest, lang
+            elif type == HELDMSG:
+                if len(info) == 5:
+                    when, sender, subject, reason, text = info
+                    msgdata = {}
+                else:
+                    assert len(info) == 6, 'Unknown held msg record layout'
+                    continue
+                # Here's the new layout
+                self.__db[id] = when, sender, subject, reason, text, msgdata
+        # All done
+        self.__closedb()
 
 
 
