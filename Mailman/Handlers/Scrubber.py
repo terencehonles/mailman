@@ -301,8 +301,11 @@ Url : %(url)s
                 try:
                     t = unicode(t, partcharset, 'replace')
                 except (UnicodeError, LookupError):
-                    # Replace funny characters
-                    t = unicode(t, 'ascii', 'replace').encode('ascii')
+                    # Replace funny characters.  We use errors='replace' for
+                    # both calls since the first replace will leave U+FFFD,
+                    # which isn't ASCII encodeable.
+                    u = unicode(t, 'ascii', 'replace')
+                    t = u.encode('ascii', 'replace')
                 try:
                     # Should use HTML-Escape, or try generalizing to UTF-8
                     t = t.encode(charset, 'replace')
