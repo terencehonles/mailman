@@ -26,6 +26,7 @@ except ImportError:
 			 'for the site?')
 
 import sys, os, marshal, string, posixfile, time
+import errno
 import re
 import Utils
 import Errors
@@ -759,6 +760,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         fname = os.path.join(self._full_path, 'config.db')
         fname_tmp = fname + '.tmp.' + `os.getpid()`
         fname_last = fname + ".last"
+        # Make config.db unreadable by `other', as it contains all the
+        # list members' passwords (in clear text).
         omask = os.umask(007)
         try:
             try:
@@ -771,10 +774,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                             'Failed config.db file write, retaining old state'
                             '\n %s' % `status.args`)
                 Utils.reraise()
-            # now move config.db -> config.db.last
-            # then move config.db.tmp.xxx -> config.db
-            aside_new(fname, fname_last)
-            aside_new(fname_tmp, fname)
+            # Now do config.db.tmp.xxx -> config.db -> config.db.last
+            # rotation -- safely.
+            try:
+                # might not exist yet
+                os.unlink(fname_last)
+            except os.error, (code, msg):
+                if code <> errno.ENOENT:
+                    Utils.reraise()
+            os.link(fname, fname_last)
+            os.rename(fname_tmp, fname)
         finally:
             os.umask(omask)
         self.CheckHTMLArchiveDir()
@@ -1376,22 +1385,3 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return ("<%s.%s %s%s at %s>"
 		% (self.__module__, self.__class__.__name__,
 		   `self._internal_name`, status, hex(id(self))[2:]))
-
-def aside_new(old_name, new_name, reopen=0):
-    """Utility to move aside a file, optionally returning a fresh open version.
-
-    We ensure maintanance of proper umask in the process."""
-    # Make config.db unreadable by `other', as it contains all the list
-    # members' passwords (in clear text).
-    ou = os.umask(007)
-    try:
-        if os.path.exists(new_name):
-            os.unlink(new_name)
-        if os.path.exists(old_name):
-            os.link(old_name, new_name)
-            os.unlink(old_name)
-        if reopen:
-            file = open(old_name, 'w')
-            return file
-    finally:
-        os.umask(ou)
