@@ -1,4 +1,4 @@
-#! /usr/bin/env/python
+#! /usr/bin/env python
 #
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
@@ -22,65 +22,70 @@
 # data.
 
 import sys
-import os, types, posix, string
+import os
+import string
 from Mailman import Utils, MailList, htmlformat
 
-print "Content-type: text/html"
-print
 
-path = os.environ['PATH_INFO']
-list_info = Utils.GetPathPieces(path)
-
-if len(list_info) < 1:
-    print "<h2>Invalid options to CGI script.</h2>"
-    sys.exit(0)
-
-list_name = string.lower(list_info[0])
-
-try:
-  list = MailList.MailList(list_name)
-except:
-  print "<h2>%s: No such list.</h2>" % list_name
-  sys.exit(0)
-
-if not list._ready:
-    print "<h2>%s: No such list.</h2>" % list_name
-    sys.exit(0)
-
-def GetArchiveList(list):
-    archive_list = htmlformat.UnorderedList()
-    
-    def ArchiveFilter(str):
-	if str[:7] <> 'volume_':
-	    return 0
-	try:
-	    x = eval(str[7:])
-	    if type(x) <> types.IntType:
-		return 0
-	    if x < 1:
-		return 0
-	    return 1
-	except:
-	    return 0
+def ArchiveFilter(str):
     try:
-	dir_listing = filter(ArchiveFilter, os.listdir(list.archive_dir()))
-    except posix.error:
+        if str[:7] <> 'volume_':
+            return 0
+        try:
+            x = int(str[7:])
+        except ValueError:
+            return 0
+        if x < 1:
+            return 0
+        return 1
+    except IndexError:
+        return 0
+
+
+def GetArchiveList(mlist):
+    archive_list = htmlformat.UnorderedList()
+    try:
+	dir_listing = filter(ArchiveFilter, os.listdir(mlist.archive_dir()))
+    except os.error:
 	return "<h3><em>No archives are currently available.</em></h3>"
     if not len(dir_listing):
 	return "<h3><em>No archives are currently available.</em></h3>"
     for dir in dir_listing:
-	link = htmlformat.Link("%s/%s" % (list._base_archive_url, dir),
+	link = htmlformat.Link("%s/%s" % (mlist._base_archive_url, dir),
 			       "Volume %s" % dir[7:])
 	archive_list.AddItem(link)
-
     return archive_list.Format()
 	
     
-    
+def main():
+    print "Content-type: text/html"
+    print
 
-replacements = list.GetStandardReplacements()
-replacements['<mm-archive-list>'] = GetArchiveList(list)
+    list_info = []
+    try:
+        path = os.environ['PATH_INFO']
+        list_info = Utils.GetPathPieces(path)
+    except KeyError:
+        pass
 
-# Just doing print list.ParseTags(...) calls ParseTags twice???
-text = list.ParseTags('archives.html', replacements)
-print text
+    if len(list_info) < 1:
+        print "<h2>Invalid options to CGI script.</h2>"
+        sys.exit(0)
+
+    list_name = string.lower(list_info[0])
+    try:
+        mlist = MailList.MailList(list_name)
+    except:
+        print "<h2>%s: No such list.</h2>" % list_name
+        sys.exit(0)
+
+    if not mlist._ready:
+        print "<h2>%s: No such list.</h2>" % list_name
+        sys.exit(0)
+
+    replacements = mlist.GetStandardReplacements()
+    replacements['<mm-archive-list>'] = GetArchiveList(mlist)
+
+    # Just doing print mlist.ParseTags(...) calls ParseTags twice???
+    text = mlist.ParseTags('archives.html', replacements)
+    print text
