@@ -76,16 +76,36 @@ def usage(status, msg=''):
 
 
 
+_hostcache = {}
+
 def open_newsgroup(mlist):
-    # Open up a "mode reader" connection to the gated newsgroup.  Let
-    # exceptions percolate up.
-    conn = nntplib.NNTP(mlist.nntp_host, readermode=1,
-                        user=mm_cfg.NNTP_USERNAME,
-                        password=mm_cfg.NNTP_PASSWORD)
+    # Open up a "mode reader" connection to nntp server.  This will be shared
+    # for all the gated lists having the same nntp_host.
+    conn = _hostcache.get(mlist.nntp_host)
+    if conn is None:
+        try:
+            conn = nntplib.NNTP(mlist.nntp_host, readermode=1,
+                                user=mm_cfg.NNTP_USERNAME,
+                                password=mm_cfg.NNTP_PASSWORD)
+        except (socket.error, nntplib.NNTPError), e:
+            syslog('fromusenet',
+                   'error opening connection to nntp_host: %s\n%s',
+                   mlist.nntp_host, e)
+            raise
+        _hostcache[mlist.nntp_host] = conn
     # Get the GROUP information for the list, but we're only really interested
     # in the first article number and the last article number
     r,c,f,l,n = conn.group(mlist.linked_newsgroup)
     return conn, int(f), int(l)
+
+
+def clearcache():
+    reverse = {}
+    for conn in _hostcache.values():
+        reverse[conn] = 1
+    for conn in reverse.keys():
+        conn.quit()
+    _hostcache.clear()
 
 
 
@@ -144,10 +164,10 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                             fromusenet = 1)
                 syslog('fromusenet',
                        'posted to list %s: %7d' % (listname, num))
-        except nntplib.error_temp, msg:
+        except nntplib.NNTPError, e:
             syslog('fromusenet',
                    'NNTP error for list %s: %7d' % (listname, num))
-            syslog('fromusenet', str(msg))
+            syslog('fromusenet', str(e))
         except _ContinueLoop:
             continue
         # Even if we don't post the message because it was seen on the
@@ -172,7 +192,7 @@ def process_lists(glock):
         # Open the newsgroup, but let most exceptions percolate up.
         try:
             conn, first, last = open_newsgroup(mlist)
-        except socket.error:
+        except (socket.error, nntplib.NNTPError):
             break
         syslog('fromusenet', '%s: [%d..%d]' % (listname, first, last))
         try:
@@ -212,7 +232,6 @@ def process_lists(glock):
             if mlist.Locked():
                 mlist.Save()
                 mlist.Unlock()
-            conn.quit()
         syslog('fromusenet', '%s watermark: %d' %
                (listname, mlist.usenet_watermark))
 
@@ -230,6 +249,7 @@ def main():
     try:
         process_lists(lock)
     finally:
+        clearcache()
         lock.unlock(unconditionally=1)
             
 
