@@ -3,9 +3,9 @@
 
 import os
 
-MAILMAN_URL       = 'http://parrot.python.org/'
+MAILMAN_URL       = 'http://www.python.org/'
 MAX_SPAWNS        = 40
-DEFAULT_HOST_NAME = 'parrot.python.org'
+DEFAULT_HOST_NAME = 'python.org'
 
 VERSION           = '1.0b1'
 # Our home directory.  Once we know this, we can figure out other things
