@@ -117,12 +117,10 @@ def process_form(mlist, doc, cgidata, lang):
     remote = os.environ.get('REMOTE_HOST',
                             os.environ.get('REMOTE_ADDR',
                                            'unidentified origin'))
-
     # Was an attempt made to subscribe the list to itself?
     if email == mlist.GetListEmail():
         syslog('mischief', 'Attempt to self subscribe %s: %s', email, remote)
         results.append(_('You may not subscribe a list to itself!'))
-
     # If the user did not supply a password, generate one for him
     password = cgidata.getvalue('pw')
     confirmed = cgidata.getvalue('pw-conf')
