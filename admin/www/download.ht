@@ -15,7 +15,7 @@ Other-links:
 
 <h3>Requirements</h3>
 
-<p>Mailman currently runs only on Unix-y systems, such as Linux,
+<p>Mailman currently runs only on Unix-y systems, such as GNU/Linux,
 Solaris, *BSD, etc.  It should work on MacOSX but not earlier versions
 of MacOS.  It probably does not work on Windows, although it's
 possible you could get it running on a Cygwin system (please
@@ -26,7 +26,7 @@ community know</a> if you have success with this!)
 Before you can run Mailman, you need to make sure that
 <a href="http://www.python.org/">Python</a> is installed.  Mailman
 requires at least Python 1.5.2 and is known to work with Python 1.6
-and Python 2.0.  Most Linux systems come with Python pre-installed, so
+and Python 2.0.  Most GNU/Linux systems come with Python pre-installed, so
 you just need to make sure you're running an up-to-date version.  You
 can do this by executing the following at your shell's command line:
 

@@ -111,7 +111,7 @@ Attempt to exec script with invalid gid 51, expected 99
         <code>/var/admin/sm.bin</code>, <code>/usr/admin/sm.bin</code>
         or <code>/etc/smrsh</code>.
 
-        <p>Note that on Debian Linux, the system makes
+        <p>Note that on Debian GNU/Linux, the system makes
         <code>/usr/lib/sm.bin</code>, which is wrong, you will need to
         create the directory <code>/usr/admin/sm.bin</code> and add
         the link there.  Note further that any aliases
