@@ -16,8 +16,9 @@
 
 """Contains all the common functionality for the msg handler API."""
 
-import traceback
+import os
 import time
+import traceback
 
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -77,7 +78,10 @@ def do_pipeline(mlist, msg, msgdata, pipeline):
         mod = __import__('Mailman.Handlers.' + modname)
         func = getattr(getattr(getattr(mod, 'Handlers'), modname), 'process')
         try:
+            pid = os.getpid()
             func(mlist, msg, msgdata)
+            # Failsafe -- a child may have leaked through.
+            if pid <> os.getpid(): os._exit(1)
         except DiscardMessage:
             # Throw the message away; we need do nothing else with it.
             pipeline = []
