@@ -269,9 +269,8 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
                   SelectOptions('language', langs, values, selected)])
     table.AddRow([Hidden('cookie', cookie)])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
-    table.AddRow([SubmitButton('submit', _('Subscribe')),
+    table.AddRow([Label(SubmitButton('submit', _('Subscribe'))),
                   SubmitButton('cancel', _('Cancel and discard'))])
-
     form.AddItem(table)
     doc.AddItem(form)
 
