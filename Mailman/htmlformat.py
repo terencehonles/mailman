@@ -374,17 +374,15 @@ class InputObj:
 	self.kws = kws
 
     def Format(self, indent=0):
-	output = '<INPUT name="%s" type="%s" value="%s"' % (
-            self.name, self.type, self.value)
-	
-	for (key, val) in self.kws.items():
-	    output = '%s "%s"="%s"' % (output, key, val)
+	output = ['<INPUT name="%s" type="%s" value="%s"' %
+                  (self.name, self.type, self.value)]
+        for item in self.kws.items():
+            output.append('%s="%s"' % item)
+        if self.checked:
+            output.append('CHECKED')
+        output.append('>')
+        return string.join(output, ' ')
 
-	if self.checked:
-	    output = output + ' CHECKED'
-
-	output = output + '>'
-	return output
 
 class SubmitButton(InputObj):
     def __init__(self, name, button_text):
