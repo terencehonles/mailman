@@ -115,11 +115,12 @@ catclean:
 
 marked.files:
 	@echo "Calculating marked input files for pygettext"
-	(cd ..; find Mailman -path '*pythonlib' -prune -o -name '*.py' -print >| messages/$@)
+	(cd ..; find Mailman -path '*pythonlib' -prune -o -path '*Commands/cmd_*.py' -prune -o -name '*.py' -print >| messages/$@)
 
 docstring.files:
 	@echo "Calculating script input files for pygettext"
 	(cd ..; grep -d skip -l -i '^#! .*python.*' `find bin cron scripts -name ".#*" -prune -o -print` >| messages/$@)
+	(cd ..; ls Mailman/Commands/cmd_*.py >> messages/$@)
 
 mailman.pot: marked.files docstring.files
 	@echo "Running pygettext on $@; this make take a while."
