@@ -4,9 +4,10 @@
 #
 msgid ""
 msgstr ""
+"Project-Id-Version: Mailman 2.1b2\n"
 "Project-Id-Version: Mailman 2.1b1\n"
 "POT-Creation-Date: Sun May 19 12:46:02 2002\n"
-"PO-Revision-Date: 2002-05-05 18:13+0200\n"
+"PO-Revision-Date: 2002-05-22 23:58+0200\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -434,7 +435,7 @@ msgstr "stopp epost<br>[årsak]"
 
 #: Mailman/Cgi/admin.py:884
 msgid "ack"
-msgstr "bekreftelse"
+msgstr "bekreft"
 
 #: Mailman/Cgi/admin.py:884
 msgid "not metoo"
@@ -530,9 +531,7 @@ msgstr ""
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
-msgstr ""
-"<b>bekreftelse</b> -- Send bekreftelse p&aring; hver epost medlemmet sender "
-"til listen?"
+msgstr "<b>bekreft</b> -- Send bekreftelse p&aring; hver epost medlemmet sender til listen?"
 
 #: Mailman/Cgi/admin.py:999
 msgid ""
@@ -2524,9 +2523,8 @@ msgid ""
 msgstr ""
 "\n"
 "    confirm <bekreftelses-indikator>\n"
-"        Bekrefter en forespørsel. En indikator må angis, og skal ha blitt "
-"gitt\n"
-"        eposten som ba om bekreftelse.\n"
+"        Bekrefter en forespørsel. En indikator må angis, og skal ha blitt gitt\n"
+"        i eposten som ba om bekreftelse.\n"
 
 #: Mailman/Commands/cmd_confirm.py:39 Mailman/Commands/cmd_lists.py:40
 #: Mailman/Commands/cmd_set.py:133 Mailman/Commands/cmd_subscribe.py:68
@@ -2554,11 +2552,10 @@ msgstr ""
 "godkjenning."
 
 #: Mailman/Commands/cmd_confirm.py:64
-#, fuzzy
 msgid ""
 "You are not current a member.  Have you already unsubscribed or changed\n"
 "your email address?"
-msgstr "Du er ikke medlem av listen. Har du meldt deg av kanskje?"
+msgstr "Du er ikke medlem av listen. Har du kanskje allerede meldt deg ut, eller endret epostadresse?"
 
 #: Mailman/Commands/cmd_confirm.py:69
 msgid "Confirmation succeeded"
@@ -2603,7 +2600,7 @@ msgstr ""
 
 #: Mailman/Commands/cmd_help.py:47
 msgid "You can access your personal options via the following url:"
-msgstr ""
+msgstr "Du har tilgang til dine personlige innstillinger på følgende url:"
 
 #: Mailman/Commands/cmd_info.py:17
 msgid ""
@@ -2659,9 +2656,8 @@ msgid ""
 msgstr ""
 "\n"
 "    lists\n"
-"        Viser en liste over epostlister som er offentlig tilgjengelig på "
-"denne\n"
-"        GNU Mailman serveren.\n"
+"        Viser en liste over epostlister som er offentlig tilgjengelig på denne\n"
+"        GNU Mailman tjeneren.\n"
 
 #: Mailman/Commands/cmd_lists.py:44
 msgid "Public mailing lists at %(hostname)s:"
@@ -2704,9 +2700,8 @@ msgstr ""
 "\n"
 "        Hvis du sender denne kommandoen fra en annen epostadresse enn den\n"
 "        du er påmeldt listen med, må du angi epostadressen med\n"
-"        'address=<epostadresse>' (uten tegnene '<' og '>', og uten "
-"apostrofer).\n"
-"        I dette tilfelle vil svaret alltid bli sendt til den påmeldte\n"
+"        'address=<epostadresse>' (uten tegnene '<' og '>', og uten apostrofer).\n"
+"        I dette tilfellet vil svaret alltid bli sendt til den påmeldte\n"
 "        epostadressen.\n"
 
 #: Mailman/Commands/cmd_password.py:51 Mailman/Commands/cmd_password.py:64
@@ -2854,36 +2849,31 @@ msgstr ""
 "    set ack on\n"
 "    set ack off\n"
 "        Når 'ack' valget er satt, vil du hver gang du sender en epost til\n"
-"        listen, motta en melding om at eposten din er mottatt.\n"
+"        listen få en bekreftelse på at eposten din er mottatt.\n"
 "\n"
 "    set digest plain\n"
 "    set digest mime\n"
 "    set digest off\n"
-"        Når 'digest' valget er satt til 'av', vil du motta epost etter "
-"hvert\n"
+"        Når 'digest' valget er satt til 'av', vil du motta epost etter hvert\n"
 "        som de sendes til listen. Bruk 'set digest plain' hvis du istedet\n"
 "        med jevne mellomrom vil motta en samle-epost (sammendrag-modus, som\n"
-"        definert i RFC 1153). Bruk 'set digest mime' for å motta slik "
-"samle-\n"
+"        definert i RFC 1153). Bruk 'set digest mime' for å motta slik samle-\n"
 "        epost i MIME format.\n"
 "\n"
 "    set myposts on\n"
 "    set myposts off\n"
 "        Bruk 'set myposts off' for å ikke motta epost du selv sender til\n"
-"        listen. Denne innstillingen har ingen innvirkning dersom du har "
-"satt\n"
+"        listen. Denne innstillingen har ingen innvirkning dersom du har satt\n"
 "        på sammendrag-modus.\n"
 "\n"
 "    set hide on\n"
 "    set hide off\n"
-"        Bruk 'set hide on' for å gjemme epostadressen din når andre ber om "
-"å\n"
+"        Bruk 'set hide on' for å gjemme epostadressen din når andre ber om å\n"
 "        se hvem som er medlem av denne epostlisten.\n"
 "\n"
 "    set duplicates on\n"
 "    set duplicates off\n"
-"        Bruk 'set duplicates off' hvis du vil at Mailman ikke skal sende "
-"epost\n"
+"        Bruk 'set duplicates off' hvis du vil at Mailman ikke skal sende epost\n"
 "        til deg dersom din epostadresse er angitt i To: eller Cc: feltet i\n"
 "        eposter. Dette kan redusere antall duplikater du eventuelt ville ha\n"
 "        mottatt.\n"
@@ -2895,7 +2885,7 @@ msgstr ""
 
 #: Mailman/Commands/cmd_set.py:122
 msgid "Bad set command: %(subcmd)s"
-msgstr "Uygldig kommando: %(subcmd)s"
+msgstr "Ugyldig innstilling: %(subcmd)s"
 
 #: Mailman/Commands/cmd_set.py:151
 msgid "Your current option settings:"
@@ -2915,7 +2905,7 @@ msgstr "på"
 
 #: Mailman/Commands/cmd_set.py:154
 msgid "    ack %(onoff)s"
-msgstr ""
+msgstr "    bekreft: %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:169
 msgid "delivery on"
@@ -2948,19 +2938,19 @@ msgstr ""
 
 #: Mailman/Commands/cmd_set.py:192
 msgid "    myposts %(onoff)s"
-msgstr ""
+msgstr "    ikke-mine: %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:195
 msgid "    hide %(onoff)s"
-msgstr ""
+msgstr "    skjult: %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:199
 msgid "    duplicates %(onoff)s"
-msgstr ""
+msgstr "    unngå duplikater: %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:203
 msgid "    reminders %(onoff)s"
-msgstr ""
+msgstr "    passordpåminnelse: %(onoff)s"
 
 #: Mailman/Commands/cmd_set.py:224
 msgid "You did not give the correct password"
@@ -2976,31 +2966,31 @@ msgstr "Ikke autentisert"
 
 #: Mailman/Commands/cmd_set.py:254
 msgid "ack option set"
-msgstr "'ack' valget er satt"
+msgstr "valget 'bekreft' er satt"
 
 #: Mailman/Commands/cmd_set.py:286
 msgid "digest option set"
-msgstr "sammendrag-modus satt"
+msgstr "sammendrag-modus er valgt"
 
 #: Mailman/Commands/cmd_set.py:298
 msgid "delivery option set"
-msgstr "leveringsmåte satt"
+msgstr "epostlevering satt"
 
 #: Mailman/Commands/cmd_set.py:310
 msgid "myposts option set"
-msgstr "valget 'ikke-mine' satt"
+msgstr "valget 'ikke-mine' er satt"
 
 #: Mailman/Commands/cmd_set.py:321
 msgid "hide option set"
-msgstr "valget 'skjult' satt"
+msgstr "valget 'skjult' er satt"
 
 #: Mailman/Commands/cmd_set.py:333
 msgid "duplicates option set"
-msgstr "valget 'duplikater' satt"
+msgstr "valget 'unngå duplikater' er satt"
 
 #: Mailman/Commands/cmd_set.py:345
 msgid "reminder option set"
-msgstr "valget 'påminnelse' satt"
+msgstr "valget 'passordpåminnelse' er satt"
 
 #: Mailman/Commands/cmd_stop.py:17
 msgid "stop is synonymous with the end command.\n"
@@ -3086,7 +3076,7 @@ msgstr "Denne listen st&oslash;tter kun sammendrag-modus!"
 
 #: Mailman/Commands/cmd_subscribe.py:118
 msgid "A confirmation email has been sent separately."
-msgstr "En epost med forespørsel om bekreftelse er sendt."
+msgstr "En epost med forespørsel om bekreftelse på påmelding er sendt."
 
 #: Mailman/Commands/cmd_subscribe.py:120
 msgid ""
@@ -3231,7 +3221,7 @@ msgstr "Spansk (Spania)"
 
 #: Mailman/Defaults.py:1156
 msgid "Estonian"
-msgstr ""
+msgstr "Estisk"
 
 #: Mailman/Defaults.py:1157
 msgid "Finnish"
@@ -5771,7 +5761,6 @@ msgstr ""
 "meldingshodet) som passer med egendefinerte regexp-uttrykk."
 
 #: Mailman/Gui/Privacy.py:360
-#, fuzzy
 msgid ""
 "Use this option to prohibit posts according to specific\n"
 "             header values.  The target value is a regular-expression for\n"
@@ -5802,11 +5791,7 @@ msgstr ""
 "skal holdes tilbake for godkjenning.\n"
 "\n"
 "<p>Merk: blanke tegn i starten av regexp-uttrykket fjernes.\n"
-"Dette kan man unng&aring; p&aring; flere m&aring;ter, f.eks. ved &aring; "
-"bruke escape-tegn eller klammeparenteser.\n"
-"\n"
-"<p>Se ogs&aring; innstillingen <em>forbidden_posters</em> for en lignende "
-"m&aring;te &aring; blokkere epost p&aring;."
+"Dette kan man unng&aring; p&aring; flere m&aring;ter, f.eks. ved &aring; bruke escape-tegn eller klammeparenteser."
 
 #: Mailman/Gui/Privacy.py:375
 msgid ""
@@ -6864,10 +6849,7 @@ msgid ""
 "\n"
 "- Done.\n"
 "\n"
-msgstr ""
-"\n"
-"- Utført.\n"
-"\n"
+msgstr "\n- Slutt på kommandoer.\n\n"
 
 #: Mailman/Queue/CommandRunner.py:147
 msgid "The results of your email commands"
