@@ -72,6 +72,7 @@ def process(mlist, msg, msgdata):
     # BAW: If the charsets don't match, should we add the header and footer by
     # MIME multipart chroming the message?
     if not msg.is_multipart() and msgtype == 'text/plain' and \
+           msg.get('content-transfer-encoding', '').lower() <> 'base64' and \
            (lcset == 'us-ascii' or mcset == lcset):
         payload = header + msg.get_payload() + footer
         msg.set_payload(payload)
