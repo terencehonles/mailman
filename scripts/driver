@@ -19,7 +19,6 @@
 # This better succeed.  If this fails, Python is royally screwed so we might
 # as well let the Web server give us a fatal and obtrusive error.
 import sys
-from Mailman.Utils import reraise
 
 # From here on we are as bulletproof as possible!
 
@@ -30,19 +29,20 @@ from Mailman.Utils import reraise
 # unnecessary in Python 1.5.2, which also does sensible things to most os
 # module functions.
 
-realopen = open
-def open(filename, mode='r', bufsize=-1, realopen=realopen):
-    try:
-        return realopen(filename, mode, bufsize)
-    except IOError, e:
-        strerror = e.strerror + ': ' + filename
-        e.strerror = strerror
-        e.filename = filename
-        e.args = (e.args[0], strerror)
-        reraise(e)
+##realopen = open
+##def open(filename, mode='r', bufsize=-1, realopen=realopen):
+##    from Mailman.Utils import reraise
+##    try:
+##        return realopen(filename, mode, bufsize)
+##    except IOError, e:
+##        strerror = e.strerror + ': ' + filename
+##        e.strerror = strerror
+##        e.filename = filename
+##        e.args = (e.args[0], strerror)
+##        reraise(e)
 
-import __builtin__
-__builtin__.__dict__['open'] = open
+##import __builtin__
+##__builtin__.__dict__['open'] = open
 
 
 
