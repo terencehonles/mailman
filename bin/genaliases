@@ -82,9 +82,12 @@ def main():
     omask = os.umask(002)
     try:
         MTA.clear()
-        for hostname, vlists in mlists.items():
-            for mlist in vlists:
-                MTA.create(mlist, nolock=1)
+        if not mlists:
+            MTA.create(None, nolock=1)
+        else:
+            for hostname, vlists in mlists.items():
+                for mlist in vlists:
+                    MTA.create(mlist, nolock=1)
     finally:
         os.umask(omask)
         lock.unlock(unconditionally=1)
