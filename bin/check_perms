@@ -227,7 +227,7 @@ def checkcgi():
                 print
 
 def checkmail():
-    wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'wrapper')
+    wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'mailman')
     if STATE.VERBOSE:
         print _('checking set-gid for %(wrapper)s')
     mode = statmode(wrapper)
