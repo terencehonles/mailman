@@ -1,6 +1,6 @@
 """Embody incoming and outgoing messages as objects."""
 
-__version__ = "$Revision: 399 $"
+__version__ = "$Revision: 419 $"
 
 
 import sys
@@ -12,6 +12,7 @@ def AddBackNewline(str):
     return str + '\n'
 	
 
+# XXX klm - use the standard lib StringIO module instead of FakeFile.
 # If we're trying to create a message object from text, we need to pass
 # a file object to rfc822.Message to get it to do its magic.  Well,
 # to avoid writing text out to a file, and having it read back in,
