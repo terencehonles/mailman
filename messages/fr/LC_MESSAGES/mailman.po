@@ -2050,7 +2050,7 @@ msgstr "Vous recevrez un dernier lot."
 
 #: Mailman/Cgi/options.py:618
 msgid "<em>Yes, I really want to unsubscribe</em>"
-msgstr "<em>Oui, je veut vraiment résilier mon abonnement</em>"
+msgstr "<em>Oui, je veux vraiment résilier mon abonnement</em>"
 
 #: Mailman/Cgi/options.py:622
 msgid "Change My Password"
