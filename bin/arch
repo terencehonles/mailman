@@ -96,7 +96,7 @@ def main():
         try:
             fp = open(mbox)
         except IOError, msg:
-            usage(3, 'cannot open mbox file %s: %s' % (mbox, rest))
+            usage(3, 'cannot open mbox file %s: %s' % (mbox, msg))
 
         archiver = HyperArchive(mlist)
         archiver.VERBOSE = 1
