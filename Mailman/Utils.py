@@ -18,9 +18,9 @@
 """Miscellaneous essential routines.
 
 This includes actual message transmission routines, address checking and
-message and address munging, a handy-dandy routine to map a function on all 
-the maillists, the Logging routines, and whatever else doesn't belong
-elsewhere.
+message and address munging, a handy-dandy routine to map a function on all
+the mailing lists, and whatever else doesn't belong elsewhere.
+
 """
 
 import sys
@@ -382,122 +382,6 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
 	del l
     return got
 
-class Logger:
-    """File-based logger, writes to named category files in mm_cfg.LOG_DIR."""
-    def __init__(self, category, nofail=1):
-        """Nofail (by default) says to fallback to sys.stderr if write
-        fails to category file.  A message is emitted, but the IOError is
-        caught.  Set nofail=0 if you want to handle the error in your code,
-        instead."""
-        
-	self.__category=category
-	self.__f = None
-        self.__nofail = nofail
-    def __get_f(self):
-	if self.__f:
-	    return self.__f
-	else:
-	    fname = os.path.join(mm_cfg.LOG_DIR, self.__category)
-	    try:
-		ou = os.umask(002)
-		try:
-		    f = self.__f = open(fname, 'a+')
-		finally:
-		    os.umask(ou)
-	    except IOError, msg:
-                if not self.__nofail:
-                    raise IOError, msg, sys.exc_info()[2]
-                else:
-                    f = self.__f = sys.stderr
-                    f.write("logger open %s failed %s, using stderr\n"
-                            % (fname, msg))
-	    return f
-    def flush(self):
-	f = self.__get_f()
-	if hasattr(f, 'flush'):
-	    f.flush()
-    def write(self, msg):
-	f = self.__get_f()
-	try:
-	    f.write(msg)
-	except IOError, msg:
-	    f = self.__f = sys.stderr
-	    f.write("logger write %s failed %s, using stderr\n"
-		    % (fname, msg))
-    def writelines(self, lines):
-	for l in lines:
-	    self.write(l)
-    def close(self):
-	if not self.__f:
-	    return
-	self.__get_f().close()
-    def __del__(self):
-	try:
-	    if self.__f and self.__f != sys.stderr:
-		self.close()
-	except:
-	    pass
-	    
-class StampedLogger(Logger):
-    """Record messages in log files, including date stamp and optional label.
-
-    If manual_reprime is on (off by default), then timestamp prefix will
-    included only on first .write() and on any write immediately following
-    a call to the .reprime() method.  This is useful for when StampedLogger
-    is substituting for sys.stderr, where you'd like to see the grouping of
-    multiple writes under a single timestamp (and there is often is one
-    group, for uncaught exceptions where a script is bombing).
-
-    In any case, the identifying prefix will only follow writes that start
-    on a new line.
-
-    Nofail (by default) says to fallback to sys.stderr if write fails to
-    category file.  A message is emitted, but the IOError is caught.
-    Initialize with nofail=0 if you want to handle the error in your code,
-    instead."""
-
-    def __init__(self, category, label=None, manual_reprime=0, nofail=1):
-	"If specified, optional label is included after timestamp."
-	self.label = label
-        self.manual_reprime = manual_reprime
-        self.primed = 1
-        self.bol = 1
-	Logger.__init__(self, category, nofail=nofail)
-    def reprime(self):
-        """Reset so timestamp will be included with next write."""
-        self.primed = 1
-    def write(self, msg):
-	import time
-        if not self.bol:
-            prefix = ""
-        else:
-            if not self.manual_reprime or self.primed:
-                stamp = time.strftime("%b %d %H:%M:%S %Y ",
-                                      time.localtime(time.time()))
-                self.primed = 0
-            else:
-                stamp = ""
-            if self.label == None:
-                label = ""
-            else:
-                label = "%s:" % self.label
-            prefix = stamp + label
-        Logger.write(self, "%s %s" % (prefix, msg))
-        if msg and msg[-1] == '\n':
-            self.bol = 1
-        else:
-            self.bol = 0
-    def writelines(self, lines):
-	first = 1
-	for l in lines:
-	    if first:
-		self.write(l)
-		first = 0
-	    else:
-		if l and l[0] not in [' ', '\t', '\n']:
-		    Logger.write(self, ' ' + l)
-		else:
-		    Logger.write(self, l)
 
 def chunkify(members, chunksize=mm_cfg.ADMIN_MEMBER_CHUNKSIZE):
      """
