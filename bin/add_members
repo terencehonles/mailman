@@ -30,11 +30,12 @@ Usage:
 
 Options:
 
-    --non-digest-members-file=file
-    -n file
+    --regular-members-file=file
+    -r file
         A file containing addresses of the members to be added, one
         address per line.  This list of people become non-digest
-        members.  If file is `-', read addresses from stdin.
+        members.  If file is `-', read addresses from stdin.  Note that
+        -n/--non-digest-members-file are deprecated synonyms for this option.
 
     --digest-members-file=file
     -d=file
@@ -175,8 +176,9 @@ def addall(mlist, members, digest, ack, outfp):
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   'a:n:d:c:w:h',
+                                   'a:n:r:d:c:w:h',
                                    ['admin-notify=',
+                                    'regular-members-file=',
                                     'non-digest-members-file=',
                                     'digest-members-file=',
                                     'changes-msg=',
@@ -199,8 +201,15 @@ def main():
             usage(0)
         elif opt in ('-d', '--digest-members-file'):
             dfile = arg
+        # Deprecate -/--non-digest-members-file or consistency with
+        # list_members
+        elif opt in ('-r', '--regular-members-file'):
+            nfile = arg
         elif opt in ('-n', '--non-digest-members-file'):
             nfile = arg
+            # I don't think we need to use the warnings module here.
+            print >> sys.stderr, 'option', opt, \
+                  'is deprecated, use -r/--regular-members-file'
         elif opt in ('-c', '--changes-msg'):
             if arg.lower()[0] == 'y':
                 send_changes_msg = 1
