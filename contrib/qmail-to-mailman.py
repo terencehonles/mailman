@@ -2,6 +2,7 @@
 
 # Configuration variables - Change these for your site if necessary.
 MailmanHome = "@prefix@"; # Mailman home directory.
+MailmanVar = "@VAR_PREFIX@"; # Mailman directory for mutable data.
 MailmanOwner = "postmaster@localhost"; # Postmaster and abuse mail recepient.
 # End of configuration variables.
 
@@ -53,7 +54,7 @@ import sys, os, re, string
 def main():
     os.nice(5)  # Handle mailing lists at non-interactive priority.
 
-    os.chdir(MailmanHome + "/lists")
+    os.chdir(MailmanVar + "/lists")
 
     try:
         local = os.environ["LOCAL"]
