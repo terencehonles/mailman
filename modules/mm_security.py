@@ -43,8 +43,11 @@ class SecurityManager:
 	    return 1
 	if not user in self.members and not user in self.digest_members:
 	    user = self.FindUser(user)
-	if string.lower(pw) <> string.lower(self.passwords[user]):
-	    raise mm_err.MMBadPasswordError
+        try:
+            if string.lower(pw) <> string.lower(self.passwords[user]):
+                raise mm_err.MMBadPasswordError
+        except KeyError:
+            raise mm_err.MMBadUserError
 	return 1
 
     def ChangeUserPassword(self, user, newpw, confirm):
