@@ -30,6 +30,29 @@ char* python = PYTHON;
 
 
 
+/*
+ *  Some older systems don't define strerror().  Provide a replacement
+ *  that is good enough for our purposes.
+ */
+
+#ifndef HAVE_STRERROR
+
+extern char *sys_errlist[];      
+extern int sys_nerr;                      
+        
+char* strerror(int errno)                
+{                                                   
+	if(errno < 0 || errno >= sys_nerr) { 
+		return "unknown error";
+	}
+	else {
+		return sys_errlist[errno];
+	}
+}
+
+#endif /* ! HAVE_STRERROR */
+
+
 /* Report on errors and exit
  */
 void
@@ -157,31 +180,6 @@ run_script(const char* script, int argc, char** argv, char** env)
 	return status;
 }
 
-
-
-/*
- *  Some older systems don't define strerror().  Provide a replacement
- *  that is good enough for our purposes.
- */
-
-#ifdef NEED_STRERROR
-
-extern char *sys_errlist[];      
-extern int sys_nerr;                      
-        
-char* strerror(int errno)                
-{                                                   
-   if(errno < 0 || errno >= sys_nerr)            
-     { 
-       return "unknown error";
-     }
-   else
-     {
-       return sys_errlist[errno];
-     }
-}
-
-#endif /* NEED_STRERROR */
 
 
 /*
