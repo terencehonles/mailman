@@ -23,7 +23,9 @@ class Archive:
     def GetConfigCategory(self):
         return 'archive', _('Archiving Options')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'archive':
+            return None
 	return [
             _("List traffic archival policies."),
 

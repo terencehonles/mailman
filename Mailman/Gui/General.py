@@ -27,7 +27,9 @@ class General:
     def GetConfigCategory(self):
         return 'general', _('General Options')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat):
+        if category <> 'general':
+            return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         return [

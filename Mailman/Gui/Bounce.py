@@ -23,7 +23,9 @@ class Bounce:
     def GetConfigCategory(self):
         return 'bounce', _('Bounce detection')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'bounce':
+            return None
         return [
             _('''Policies regarding systematic processing of bounce messages,
             to help automate recognition and handling of defunct

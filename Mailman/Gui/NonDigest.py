@@ -27,7 +27,9 @@ class NonDigest:
     def GetConfigCategory(self):
         return 'nondigest', _('Non-digest&nbsp;options')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'nondigest':
+            return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         info = [

@@ -23,7 +23,9 @@ class Usenet:
     def GetConfigCategory(self):
         return 'gateway', _('Mail&lt;-&gt;News&nbsp;gateways')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'gateway':
+            return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         return [

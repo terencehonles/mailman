@@ -25,7 +25,9 @@ class Autoresponse:
     def GetConfigCategory(self):
         return 'autoreply', _('Auto-responder')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'autoreply':
+            return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         return [

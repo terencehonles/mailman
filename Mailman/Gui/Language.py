@@ -28,7 +28,9 @@ class Language:
     def GetConfigCategory(self):
         return 'language', _('Language&nbsp;options')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'language':
+            return None
         # Set things up for the language choices
         langs = mlist.GetAvailableLanguages()
         langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]

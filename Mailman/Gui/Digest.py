@@ -26,7 +26,9 @@ class Digest:
     def GetConfigCategory(self):
         return 'digest', _('Digest options')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'digest':
+            return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
 	info = [

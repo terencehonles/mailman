@@ -24,7 +24,9 @@ class Topics:
     def GetConfigCategory(self):
         return 'topics', _('Topic filters')
 
-    def GetConfigInfo(self, mlist):
+    def GetConfigInfo(self, mlist, category, subcat=None):
+        if category <> 'topics':
+            return None
         WIDTH = mm_cfg.TEXTFIELDWIDTH
 
         return [
