@@ -105,11 +105,13 @@ doinstall:
 finish:
 
 clean:
-	-rm -f marked.files docstring.files *.pot
+	-rm -f marked.files docstring.files
 
-distclean:
+distclean: clean
+
+catclean:
 	-rm -f Makefile */LC_MESSAGES/mailman.mo */LC_MESSAGES/mailman.po.old $(POTFILE)
-
+	-rm *.pot
 
 marked.files:
 	@echo "Calculating marked input files for pygettext"
