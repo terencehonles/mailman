@@ -46,6 +46,7 @@ class Message(email.Message.Message):
         if not d.has_key('_charset'):
             self._charset = None
 
+    # I think this method ought to eventually be deprecated
     def get_sender(self, use_envelope=None, preserve_case=0):
         """Return the address considered to be the author of the email.
 
@@ -65,6 +66,9 @@ class Message(email.Message.Message):
 
         unixfrom should never be empty.  The return address is always
         lowercased, unless preserve_case is true.
+
+        This method differs from get_senders() in that it returns one and only
+        one address, and uses a different search order.
         """
         senderfirst = mm_cfg.USE_ENVELOPE_SENDER
         if use_envelope is not None:
@@ -100,6 +104,45 @@ class Message(email.Message.Message):
         if not preserve_case:
             return address.lower()
         return address
+
+    def get_senders(self, preserve_case=0, headers=None):
+        """Return a list of addresses representing the author of the email.
+
+        The list will contain the following addresses (in order)
+        depending on availability:
+
+        1. From:
+        2. unixfrom
+        3. Reply-To:
+        4. Sender:
+
+        The return addresses are always lower cased, unless `preserve_case' is
+        true.  Optional `headers' gives an alternative search order, with None
+        meaning, search the unixfrom header.  Items in `headers' are field
+        names without the trailing colon.
+        """
+        if headers is None:
+            headers = ('from', None, 'reply-to', 'sender')
+        pairs = []
+        for h in headers:
+            if h is None:
+                fieldval = self.get_unixfrom()
+                try:
+                    pairs.append(fieldval.split()[1])
+                except IndexError:
+                    # Ignore badly formatted unixfroms
+                    pass
+            else:
+                fieldval = self[h]
+                if fieldval:
+                    pairs.extend(email.Utils.getaddresses([fieldval]))
+        authors = []
+        for pair in pairs:
+            address = pair[1]
+            if address is not None and not preserve_case:
+                address = address.lower()
+            authors.append(address)
+        return authors
 
 
 
