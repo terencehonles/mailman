@@ -1,19 +1,19 @@
 #! @PYTHON@
 
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Clean up an .mbox archive file.
@@ -46,8 +46,8 @@ Options:
         Print this message and exit
 """
 
-import sys
 import re
+import sys
 import getopt
 import mailbox
 
@@ -92,17 +92,17 @@ def main():
     except getopt.error, msg:
         usage(1, msg)
 
-    quiet = 0
-    output = 1
+    quiet = False
+    output = True
     status = -1
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-q', '--quiet'):
-            quiet = 1
+            quiet = True
         elif opt in ('-n', '--dry-run'):
-            output = 0
+            output = False
         elif opt in ('-s', '--status'):
             try:
                 status = int(arg)
@@ -115,7 +115,8 @@ def main():
     lineno = 0
     statuscnt = 0
     messages = 0
-    while 1:
+    prevline = None
+    while True:
         lineno += 1
         line = sys.stdin.readline()
         if not line:
@@ -143,6 +144,10 @@ def main():
                     # It's a valid Unix-From line
                     messages += 1
                     if output:
+                        # Before we spit out the From_ line, make sure the
+                        # previous line was blank.
+                        if prevline is not None and prevline <> '\n':
+                            sys.stdout.write('\n')
                         sys.stdout.write(line)
                         sys.stdout.write(nextline)
             else:
@@ -157,6 +162,7 @@ def main():
             if statuscnt > 50:
                 print >> sys.stderr
                 statuscnt = 0
+        prevline = line
     print >> sys.stderr, _('%(messages)d messages found')
 
 
