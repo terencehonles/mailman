@@ -808,6 +808,18 @@ msgstr ""
 "Tienes que especificar un nombre de lista. Aqu&iiacute; est&aacute; el "
 "%(link)s"
 
+#: Mailman/Cgi/admindb.py:148
+msgid "Administrative requests for mailing list:"
+msgstr "Peticiones administrativas para la lista de distribuci&oacute;n:"
+
+#: Mailman/Cgi/admindb.py:152
+msgid "There are no pending requests."
+msgstr "No hay peticiones pendientes."
+
+#: Mailman/Cgi/admindb.py:165 Mailman/Cgi/admindb.py:229
+msgid "Submit All Data"
+msgstr "Enviar todos los datos"
+
 #: Mailman/Cgi/admindb.py:255
 msgid "Subscription Requests"
 msgstr "Peticiones de Subscripci&oacute;n"
@@ -947,6 +959,18 @@ msgstr "<em>Se ha perdido el mensaje con el identificador #%(id)d"
 #: Mailman/Cgi/admindb.py:488
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>El mensaje con el id #%(id)d esta corrupto."
+
+#: Mailman/Cgi/admindb.py:288
+msgid "From:"
+msgstr "de:"
+
+#: Mailman/Cgi/admindb.py:291
+msgid "Subject:"
+msgstr "Asunto:"
+
+#: Mailman/Cgi/admindb.py:293
+msgid "Reason:"
+msgstr "Motivo:"
 
 #: Mailman/Cgi/admindb.py:535
 msgid "Action:"
@@ -2559,7 +2583,7 @@ msgstr "Chino tradicional"
 
 #: Mailman/Defaults.py:1030
 msgid "Czech"
-msgstr ""
+msgstr "Checoslovaco"
 
 #: Mailman/Defaults.py:1031
 msgid "German"
@@ -2901,7 +2925,21 @@ msgid ""
 "             is discarded, if no new bounces have been received in the\n"
 "             interim.  This value must be an integer."
 msgstr ""
+"N&uacute;mero m&aacute;ximo de mensajes que su lista puede\n"
+"             aceptar en una hora. (Si, la detecci&oacute;n de rebotes\n"
+"             encuentra esta informaci&oacute;n &uacute;til)"
 
+#: Mailman/Gui/Bounce.py:50
+msgid "Do nothing"
+msgstr "No hacer nada"
+
+#: Mailman/Gui/Bounce.py:51
+msgid "Disable and notify me"
+msgstr "Inhabilitar y notificarme"
+
+#: Mailman/Gui/Bounce.py:52
+msgid "Disable and DON'T notify me"
+msgstr "Inhabilitar y NO notificarme"
 #: Mailman/Gui/Bounce.py:92
 msgid ""
 "How many <em>Your Membership Is Disabled</em> warnings a\n"
@@ -3773,7 +3811,7 @@ msgid ""
 "(Administrivia filter) Check postings and intercept ones\n"
 "             that seem to be administrative requests?"
 msgstr ""
-"(Fitro administrativo) &iquest;Comprobar los env&iacute;os e\n"
+"(Filtro administrativo) &iquest;Comprobar los env&iacute;os e\n"
 "             interceptar los que parezcan ser peticiones administrativas?"
 
 #: Mailman/Gui/General.py:303
@@ -3863,6 +3901,26 @@ msgid ""
 "disable\n"
 "                 these headers may eventually go away)."
 msgstr ""
+"El RFC 2369 define una serie de cabeceras List--* headers that are\n"
+"                 normally added to every message sent to the list "
+"membership.\n"
+"                 These greatly aid end-users who are using standards "
+"compliant\n"
+"                 mail readers.  They should normally always be enabled.\n"
+"\n"
+"                 <p>However, not all mail readers are standards compliant "
+"yet,\n"
+"                 and if you have a large number of members who are using\n"
+"                 non-compliant mail readers, they may be annoyed at these\n"
+"                 headers.  You should first try to educate your members as "
+"to\n"
+"                 why these headers exist, and how to hide them in their "
+"mail\n"
+"                 clients.  As a last resort you can disable these headers, "
+"but\n"
+"                 this is not recommended (and in fact, your ability to "
+"disable\n"
+"                 these headers may eventually go away)."
 
 #: Mailman/Gui/Language.py:29
 msgid "Language&nbsp;options"
@@ -8050,9 +8108,9 @@ msgid ""
 "\"Generated-By: pygettext.py %(version)s\\n\"\n"
 "\n"
 msgstr ""
-"# ALGUNOS TÍTUTLOS DESCRIPTIVOS.\n"
+"# ALGUNOS TÍTULOS DESCRIPTIVOS.\n"
 "# Copyright (C) AÑO ORGANIZACIÓN\n"
-"# AUTOR PRINCIPAL <DIRECCION@DECORREO>, AÑOR.\n"
+"# AUTOR PRINCIPAL <DIRECCION@DECORREO>, AÑO.\n"
 "#\n"
 "msgid \"\"\n"
 "msgstr \"\"\n"
