@@ -125,7 +125,7 @@ def main():
     varhelp = None
     if cgidata.has_key('VARHELP'):
         varhelp = cgidata['VARHELP'].value
-    elif cgidata.has_key('request_login') and os.environ.get('QUERY_STRING'):
+    elif os.environ.get('QUERY_STRING'):
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
         qs = cgi.parse_qs(os.environ['QUERY_STRING']).get('VARHELP')
