@@ -1,17 +1,19 @@
 #!/usr/local/bin/python 
-#
-# argv[1] should be the name of the list.
-# argv[2] should be the list of non-digested users.
-# argv[3] should be the list of digested users.
 
-# Make sure that the list of email addresses doesn't contain any comments,
-# like majordomo may throw in.  For now, you just have to remove them manually.
+"""Populate a mailman list with the addresses specified in files.
+
+ - argv[1]: the list name.
+ - argv[2]: the path to a file of non-digest user addresses
+ - argv[3]: the path to a file of digest user addresses
+
+The email address lists must not have comments or other fance formatting -
+just email addrs, one per line."""
 
 import sys, os, crypt, string
 
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist, mm_utils, mm_message, mm_cfg
+import maillist, mm_utils, mm_message, mm_cfg, mm_err
 
 
 
@@ -52,11 +54,17 @@ digest_members     = FormatMembers(digest_members)
 
 for member in non_digest_members:
     pw = GetRandomPassword()
-    list.ApprovedAddMember(member, pw, 0)
+    try:
+        list.ApprovedAddMember(member, pw, 0)
+    except mm_err.MMAlreadyAMember:
+        print "%s: %s already a member" % (list.real_name, member)
 
 for member in digest_members:
     pw = GetRandomPassword()
-    list.ApprovedAddMember(member, pw, 1)
+    try:
+        list.ApprovedAddMember(member, pw, 1)
+    except mm_err.MMAlreadyAMember:
+        print "%s: %s already a member" % (list.real_name, member)
     
 
 
