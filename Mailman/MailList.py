@@ -28,10 +28,15 @@ import re
 import shutil
 import socket
 import urllib
+from UserDict import UserDict
 from urlparse import urlparse
 from types import *
 
 from mimelib.address import getaddresses
+# We use this explicitly instead of going through mimelib so that we can pick
+# up the RFC 2822-conformant version of rfc822.py that will be included in
+# Python 2.2.
+from Mailman.pythonlib.rfc822 import parseaddr
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -39,18 +44,23 @@ from Mailman import Errors
 from Mailman import LockFile
 
 # base classes
-from Mailman.ListAdmin import ListAdmin
-from Mailman.Deliverer import Deliverer
-from Mailman.MailCommandHandler import MailCommandHandler 
-from Mailman.HTMLFormatter import HTMLFormatter 
 from Mailman.Archiver import Archiver
-from Mailman.Digester import Digester
-from Mailman.SecurityManager import SecurityManager
-from Mailman.Bouncer import Bouncer
-from Mailman.GatewayManager import GatewayManager
 from Mailman.Autoresponder import Autoresponder
+from Mailman.Bouncer import Bouncer
+from Mailman.Deliverer import Deliverer
+from Mailman.Digester import Digester
+from Mailman.GatewayManager import GatewayManager
+from Mailman.HTMLFormatter import HTMLFormatter 
+from Mailman.ListAdmin import ListAdmin
+from Mailman.MailCommandHandler import MailCommandHandler 
+from Mailman.SecurityManager import SecurityManager
+from Mailman.TopicMgr import TopicMgr
+
+# gui components package
+from Mailman import Gui
 
 # other useful classes
+from Mailman.OldStyleMemberships import OldStyleMemberships
 from Mailman import Message
 from Mailman import Pending
 from Mailman.i18n import _
@@ -61,26 +71,43 @@ EMPTYSTRING = ''
 
 
 
-# Note: 
-# an _ in front of a member variable for the MailList class indicates
-# a variable that does not save when we marshal our state.
-
 # Use mixins here just to avoid having any one chunk be too large.
-
 class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
-               Autoresponder):
+               Autoresponder, TopicMgr):
+
+    #
+    # A MailList object's basic Python object model support
+    #
     def __init__(self, name=None, lock=1):
         # No timeout by default.  If you want to timeout, open the list
         # unlocked, then lock explicitly.
-        MailCommandHandler.__init__(self)
+        #
+        # Only one level of mixin inheritance allowed
+        for baseclass in self.__class__.__bases__:
+            if hasattr(baseclass, '__init__'):
+                baseclass.__init__(self)
+        # Initialize volatile attributes
         self.InitTempVars(name)
+        # Default membership adaptor class
+        self._memberadaptor = OldStyleMemberships(self)
         if name:
             if lock:
                 # This will load the database.
                 self.Lock()
             else:
                 self.Load()
+            # This extension mechanism allows list-specific overrides of any
+            # method (well, except __init__(), InitTempVars(), and InitVars()
+            # I think).
+            filename = os.path.join(self._full_path, 'extend.py')
+            dict = {}
+            try:
+                execfile(filename, dict)
+            except IOError, e:
+                if e.errno <> errno.ENOENT: raise
+            else:
+                dict['extend'](self)
 
     def __del__(self):
         try:
@@ -89,51 +116,60 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             # List didn't get far enough to have __lock
             pass
 
-    def GetMembers(self):
-        """returns a list of the members. (all lowercase)"""
-        return self.members.keys()
-    
-    def GetDigestMembers(self):
-        """returns a list of digest members. (all lowercase)"""
-        return self.digest_members.keys()
-
-    def GetDeliveryMembers(self):
-        """returns a list of the members with username case preserved."""
-        res = []
-        for k, v in self.members.items():
-            if type(v) is StringType:
-                res.append(v)
+    def __getattr__(self, name):
+        # Because we're using delegation, we want to be sure that attribute
+        # access to a delegated member function gets passed to the
+        # sub-objects.  This of course imposes a specific name resolution
+        # order.
+        try:
+            return getattr(self._memberadaptor, name)
+        except AttributeError:
+            for guicomponent in self._gui:
+                try:
+                    return getattr(guicomponent, name)
+                except AttributeError:
+                    pass
             else:
-                res.append(k)
-        return res
+                raise AttributeError, name
 
-    def GetDigestDeliveryMembers(self):
-        """returns a list of the members with username case preserved."""
-        res = []
-        for k,v in self.digest_members.items():
-            if type(v) is StringType:
-                res.append(v)
-            else:
-                res.append(k)
-        return res
-
-    def __AddMember(self, addr, digest):
-        """adds the appropriate data to the internal members dict.
-
-        If the username has upercase letters in it, then the value
-        in the members dict is the case preserved address, otherwise,
-        the value is 0.
-        """
-        if Utils.LCDomain(addr) == addr.lower():
-            if digest:
-                self.digest_members[addr] = 0
-            else:
-                self.members[addr] = 0
+    def __repr__(self):
+        if self.Locked():
+            status = '(locked)'
         else:
-            if digest:
-                self.digest_members[addr.lower()] = addr
-            else:
-                self.members[addr.lower()] = addr
+            status = '(unlocked)'
+        return '<mailing list "%s" %s at %x>' % (
+            self.internal_name(), status, id(self))
+
+
+    #
+    # Lock management
+    #
+    def Lock(self, timeout=0):
+        self.__lock.lock(timeout)
+        # Must reload our database for consistency.  Watch out for lists that
+        # don't exist.
+        try:
+            self.Load()
+        except Errors.MMUnknownListError:
+            self.Unlock()
+            raise
+    
+    def Unlock(self):
+        self.__lock.unlock(unconditionally=1)
+
+    def Locked(self):
+        return self.__lock.locked()
+
+
+
+    #
+    # Useful accessors
+    #
+    def internal_name(self):
+        return self._internal_name
+
+    def fullpath(self):
+        return self._full_path
 
     def GetAdminEmail(self):
         return '%s-admin@%s' % (self._internal_name, self.host_name)
@@ -157,29 +193,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             acct, host = tuple(member.split('@'))
             return "%s%s@%s" % (acct, self.umbrella_member_suffix, host)
 
-    def GetUserSubscribedAddress(self, member):
-        """Return the member's case preserved address.
-        """
-        member = member.lower()
-        cpuser = self.members.get(member)
-        if type(cpuser) == IntType:
-            return member
-        elif type(cpuser) == StringType:
-            return cpuser
-        cpuser = self.digest_members.get(member)
-        if type(cpuser) == IntType:
-            return member
-        elif type(cpuser) == StringType:
-            return cpuser
-        return None
-
-    def GetUserCanonicalAddress(self, member):
-        """Return the member's address lower cased."""
-        cpuser = self.GetUserSubscribedAddress(member)
-        if cpuser is not None:
-            return cpuser.lower()
-        return None
-
     def GetRequestEmail(self):
         return '%s-request@%s' % (self._internal_name, self.host_name)
 
@@ -190,76 +203,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         return Utils.ScriptURL(scriptname, self.web_page_url, absolute) + \
                '/' + self.internal_name()
 
-    def GetOptionsURL(self, addr, obscure=0, absolute=0):
-        addr = addr.lower()
+    def GetOptionsURL(self, user, obscure=0, absolute=0):
         url = self.GetScriptURL('options', absolute)
         if obscure:
-            addr = Utils.ObscureEmail(addr)
-        return '%s/%s' % (url, urllib.quote(addr))
+            user = Utils.ObscureEmail(user)
+        return '%s/%s' % (url, urllib.quote(user.lower()))
 
-    def GetUserOption(self, user, option):
-        """Return user's setting for option, defaulting to 0 if no settings."""
-        user = self.GetUserCanonicalAddress(user)
-        if option == mm_cfg.Digests:
-            return self.digest_members.has_key(user)
-        if not self.user_options.has_key(user):
-            return 0
-        return not not self.user_options[user] & option
-
-    def SetUserOption(self, user, option, value, save_list=1):
-        user = self.GetUserCanonicalAddress(user)
-        if not self.user_options.has_key(user):
-            self.user_options[user] = 0
-        if value:
-            self.user_options[user] = self.user_options[user] | option
-        else:
-            self.user_options[user] = self.user_options[user] & ~(option)
-        if not self.user_options[user]:
-            del self.user_options[user]
-        if save_list:
-            self.Save()
-
-    # Here are the rules for the three dictionaries self.members,
-    # self.digest_members, and self.passwords:
+
     #
-    # The keys of all these dictionaries are the lowercased version of the
-    # address.  This makes finding a user very quick: just lowercase the name
-    # you're matching against, and do a has_key() or get() on first
-    # self.members, then if that returns false, self.digest_members
+    # Instance and subcomponent initialization
     #
-    # The value of the key in self.members and self.digest_members is either
-    # the integer 0, meaning the user was subscribed with an all-lowercase
-    # address, or a string which would be the address with the username part
-    # case preserved.  Note that for Mailman versions before 1.0b11, the value 
-    # could also have been the integer 1.  This is a bug that was caused when
-    # a user switched from regular to/from digest membership.  If this
-    # happened, you're screwed because there's no way to recover the case
-    # preserved address. :-(
-    #
-    # The keys for self.passwords is also lowercase, although for versions of
-    # Mailman before 1.0b11, this was not always true.  1.0b11 has a hack in
-    # Load() that forces the keys to lowercase.  The value for the keys in
-    # self.passwords is, of course the password in plain text.
-    
-    def FindUser(self, email):
-        """Return the lowercased version of the subscribed email address.
-
-        If email is not subscribed, either as a regular member or digest
-        member, None is returned.  If they are subscribed, the return value is 
-        guaranteed to be lowercased.
-        """
-        # shortcut
-        lcuser = self.GetUserCanonicalAddress(email)
-        if lcuser is not None:
-            return lcuser
-        matches = Utils.FindMatchingAddresses(email,
-                                              self.members,
-                                              self.digest_members)
-        # sadly, matches may or may not be case preserved
-        if not matches or not len(matches):
-            return None
-        return matches[0].lower()
-
     def InitTempVars(self, name):
         """Set transient variables of this and inherited classes."""
         self.__lock = LockFile.LockFile(
@@ -273,7 +226,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
         else:
             self._full_path = None
-        ListAdmin.InitTempVars(self)
+        # Only one level of mixin inheritance allowed
+        for baseclass in self.__class__.__bases__:
+            if hasattr(baseclass, 'InitTempVars'):
+                baseclass.InitTempVars(self)
+        # Now, initialize our gui components
+        self._gui = []
+        for component in dir(Gui):
+            if component.startswith('_'):
+                continue
+            self._gui.append(getattr(Gui, component)())
 
     def InitVars(self, name=None, admin='', crypted_password=''):
         """Assign default values - some will be overriden by stored state."""
@@ -290,6 +252,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.post_id = 1.  # A float so it never has a chance to overflow.
         self.user_options = {}
         self.language = {}
+        self.usernames = {}
+        self.passwords = {}
 
         # This stuff is configurable
         self.dont_respond_to_post_requests = 0
@@ -335,13 +299,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Analogs to these are initted in Digester.InitVars
         self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
 
-        Digester.InitVars(self) # has configurable stuff
-        SecurityManager.InitVars(self, crypted_password)
-        Archiver.InitVars(self) # has configurable stuff
-        ListAdmin.InitVars(self)
-        Bouncer.InitVars(self)
-        GatewayManager.InitVars(self)
-        Autoresponder.InitVars(self)
+	# BAW: This should really be set in SecurityManager.InitVars()
+	self.password = crypted_password
+
+        # Only one level of mixin inheritance allowed
+        for baseclass in self.__class__.__bases__:
+            if hasattr(baseclass, 'InitVars'):
+                baseclass.InitVars(self)
 
         # These need to come near the bottom because they're dependent on
         # other settings.
@@ -349,533 +313,60 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.msg_header = mm_cfg.DEFAULT_MSG_HEADER
         self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER
 
+
+    #
+    # Web API support via administrative categories
+    #
+    def GetConfigCategories(self):
+        class CategoryDict(UserDict):
+            def __init__(self):
+                UserDict.__init__(self)
+                self.keysinorder = mm_cfg.ADMIN_CATEGORIES[:]
+            def keys(self):
+                return self.keysinorder
+            def items(self):
+                items = []
+                for k in mm_cfg.ADMIN_CATEGORIES:
+                    items.append((k, self.data[k]))
+                return items
+            def values(self):
+                values = []
+                for k in mm_cfg.ADMIN_CATEGORIES:
+                    values.append(self.data[k])
+                return values
+
+        categories = CategoryDict()
+        # Only one level of mixin inheritance allowed
+        for gui in self._gui:
+            k, v = gui.GetConfigCategory()
+            categories[k] = (v, gui)
+        return categories
+
+    def GetConfigSubCategories(self, category):
+        for gui in self._gui:
+            if hasattr(gui, 'GetConfigSubCategories'):
+                # Return the first one that knows about the given subcategory
+                subcat = gui.GetConfigSubCategories(category)
+                if subcat is not None:
+                    return subcat
+        return None
+
     def GetConfigInfo(self):
-        config_info = {}
-        config_info['digest'] = Digester.GetConfigInfo(self)
-        config_info['archive'] = Archiver.GetConfigInfo(self)
-        config_info['gateway'] = GatewayManager.GetConfigInfo(self)
-        config_info['autoreply'] = Autoresponder.GetConfigInfo(self)
-
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
-
-        # Set things up for the language choices
-        langs = self.GetAvailableLanguages()
-        langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]
-        try:
-            langi = langs.index(self.preferred_language)
-        except ValueError:
-            # Someone must have deleted the list's preferred language.  Could
-            # be other trouble lurking!
-            langi = 0
-
-        # XXX: Should this text be migrated into the templates dir?
-        config_info['general'] = [
-            _("Fundamental list characteristics, including descriptive"
-              " info and basic behaviors."),
-
-            ('real_name', mm_cfg.String, WIDTH, 0,
-             _('The public name of this list (make case-changes only).'),
-             _('''The capitalization of this name can be changed to make it
-             presentable in polite company as a proper noun, or to make an
-             acronym part all upper case, etc.  However, the name will be
-             advertised as the email address (e.g., in subscribe confirmation
-             notices), so it should <em>not</em> be otherwise altered.  (Email
-             addresses are not case sensitive, but they are sensitive to
-             almost everything else :-)''')),
-
-            ('owner', mm_cfg.EmailList, (3, WIDTH), 0,
-             _("""The list administrator email addresses.  Multiple
-             administrator addresses, each on separate line is okay."""),
-
-             _("""There are two ownership roles associated with each mailing
-             list.  The <em>list administrators</em> are the people who have
-             ultimate control over all parameters of this mailing list.  They
-             are able to change any list configuration variable available
-             through these administration web pages.
-
-             <p>The <em>list moderators</em> have more limited permissions;
-             they are not able to change any list configuration variable, but
-             they are allowed to tend to pending administration requests,
-             including approving or rejecting held subscription requests, and
-             disposing of held postings.  Of course, the <em>list
-             administrators</em> can also tend to pending requests.
-
-             <p>In order to split the list ownership duties into
-             administrators and moderators, you must set a separate moderator
-             password in the section below, and also provide the email
-             addresses of the list moderators in this section.  Note that the
-             field you are changing here specifies the list
-             administators.""")),
-
-            ('moderator', mm_cfg.EmailList, (3, WIDTH), 0,
-             _("""The list moderator email addresses.  Multiple
-             moderator addresses, each on separate line is okay."""),
-
-             _("""There are two ownership roles associated with each mailing
-             list.  The <em>list administrators</em> are the people who have
-             ultimate control over all parameters of this mailing list.  They
-             are able to change any list configuration variable available
-             through these administration web pages.
-
-             <p>The <em>list moderators</em> have more limited permissions;
-             they are not able to change any list configuration variable, but
-             they are allowed to tend to pending administration requests,
-             including approving or rejecting held subscription requests, and
-             disposing of held postings.  Of course, the <em>list
-             administrators</em> can also tend to pending requests.
-
-             <p>In order to split the list ownership duties into
-             administrators and moderators, you must set a separate moderator
-             password in the section below, and also provide the email
-             addresses of the list moderators in this section.  Note that the
-             field you are changing here specifies the list moderators.""")),
-
-            ('preferred_language', mm_cfg.Select,
-             (langs, langnames, langi),
-             0,
-             _('Default language for this list.'),
-             _('''All messages not related to an specific user will be
-             displayed in this language.''')),
-
-            ('description', mm_cfg.String, WIDTH, 0,
-             _('A terse phrase identifying this list.'),
-
-             _('''This description is used when the mailing list is listed with
-                other mailing lists, or in headers, and so forth.  It should
-                be as succinct as you can get it, while still identifying what
-                the list is.''')),
-
-            ('info', mm_cfg.Text, (7, WIDTH), 0,
-             _('''An introductory description - a few paragraphs - about the
-             list.  It will be included, as html, at the top of the listinfo
-             page.  Carriage returns will end a paragraph - see the details
-             for more info.'''),
-             _("""The text will be treated as html <em>except</em> that
-             newlines will be translated to &lt;br&gt; - so you can use links,
-             preformatted text, etc, but don't put in carriage returns except
-             where you mean to separate paragraphs.  And review your changes -
-             bad html (like some unterminated HTML constructs) can prevent
-             display of the entire listinfo page.""")),
-
-            ('subject_prefix', mm_cfg.String, WIDTH, 0,
-             _('Prefix for subject line of list postings.'),
-             _("""This text will be prepended to subject lines of messages
-             posted to the list, to distinguish mailing list messages in in
-             mailbox summaries.  Brevity is premium here, it's ok to shorten
-             long mailing list names to something more concise, as long as it
-             still identifies the mailing list.""")),
-
-            ('welcome_msg', mm_cfg.Text, (4, WIDTH), 0,
-             _('''List-specific text prepended to new-subscriber welcome
-             message'''),
-
-             _("""This value, if any, will be added to the front of the
-             new-subscriber welcome message.  The rest of the welcome message
-             already describes the important addresses and URLs for the
-             mailing list, so you don't need to include any of that kind of
-             stuff here.  This should just contain mission-specific kinds of
-             things, like etiquette policies or team orientation, or that kind
-             of thing.
-
-             <p>Note that this text will be wrapped, according to the
-             following rules:
-             <ul><li>Each paragraph is filled so that no line is longer than
-                     70 characters.
-                 <li>Any line that begins with whitespace is not filled.
-                 <li>A blank line separates paragraphs.
-             </ul>""")),
-
-            ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
-             _('''Text sent to people leaving the list.  If empty, no special
-             text will be added to the unsubscribe message.''')),
-
-            ('reply_goes_to_list', mm_cfg.Radio,
-             (_('Poster'), _('This list'), _('Explicit address')), 0,
-             _('''Where are replies to list messages directed?
-             <tt>Poster</tt> is <em>strongly</em> recommended for most mailing
-             lists.'''),
-
-             # Details for reply_goes_to_list
-             _("""This option controls what Mailman does to the
-             <tt>Reply-To:</tt> header in messages flowing through this
-             mailing list.  When set to <em>Poster</em>, no <tt>Reply-To:</tt>
-             header is added by Mailman, although if one is present in the
-             original message, it is not stripped.  Setting this value to
-             either <em>This list</em> or <em>Explicit address</em> causes
-             Mailman to insert a specific <tt>Reply-To:</tt> header in all
-             messages, overriding the header in the original message if
-             necessary (<em>Explicit address</em> inserts the value of <a
-             href="?VARHELP=general/reply_to_address">reply_to_address</a>).
- 
-             <p>There are many reasons not to introduce or override the
-             <tt>Reply-To:</tt> header.  One is that some posters depend on
-             their own <tt>Reply-To:</tt> settings to convey their valid
-             return address.  Another is that modifying <tt>Reply-To:</tt>
-             makes it much more difficult to send private replies.  See <a
-             href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To'
-             Munging Considered Harmful</a> for a general discussion of this
-             issue.  See <a
-        href="http://www.metasystema.org/essays/reply-to-useful.mhtml">Reply-To
-             Munging Considered Useful</a> for a dissenting opinion.
-
-             <p>Some mailing lists have restricted posting privileges, with a
-             parallel list devoted to discussions.  Examples are `patches' or
-             `checkin' lists, where software changes are posted by a revision
-             control system, but discussion about the changes occurs on a
-             developers mailing list.  To support these types of mailing
-             lists, select <tt>Explicit address</tt> and set the
-             <tt>Reply-To:</tt> address below to point to the parallel
-             list.""")),
-
-            ('reply_to_address', mm_cfg.Email, WIDTH, 0,
-             _('Explicit <tt>Reply-To:</tt> header.'),
-             # Details for reply_to_address
-             _("""This is the address set in the <tt>Reply-To:</tt> header
-             when the <a
-             href="?VARHELP=general/reply_goes_to_list">reply_goes_to_list</a>
-             option is set to <em>Explicit address</em>.
-
-             <p>There are many reasons not to introduce or override the
-             <tt>Reply-To:</tt> header.  One is that some posters depend on
-             their own <tt>Reply-To:</tt> settings to convey their valid
-             return address.  Another is that modifying <tt>Reply-To:</tt>
-             makes it much more difficult to send private replies.  See <a
-             href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To'
-             Munging Considered Harmful</a> for a general discussion of this
-             issue.  See <a
-        href="http://www.metasystema.org/essays/reply-to-useful.mhtml">Reply-To
-             Munging Considered Useful</a> for a dissenting opinion.
-
-             <p>Some mailing lists have restricted posting privileges, with a
-             parallel list devoted to discussions.  Examples are `patches' or
-             `checkin' lists, where software changes are posted by a revision
-             control system, but discussion about the changes occurs on a
-             developers mailing list.  To support these types of mailing
-             lists, specify the explicit <tt>Reply-To:</tt> address here.  You
-             must also specify <tt>Explicit address</tt> in the
-             <tt>reply_goes_to_list</tt>
-             variable.
-
-             <p>Note that if the original message contains a
-             <tt>Reply-To:</tt> header, it will not be changed.""")),
-
-            ('administrivia', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''(Administrivia filter) Check postings and intercept ones
-             that seem to be administrative requests?'''),
-
-             _("""Administrivia tests will check postings to see whether it's
-             really meant as an administrative request (like subscribe,
-             unsubscribe, etc), and will add it to the the administrative
-             requests queue, notifying the administrator of the new request,
-             in the process.""")),
-
-            ('umbrella_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Send password reminders to, eg, "-owner" address instead of
-             directly to user.'''),
-
-             _("""Set this to yes when this list is intended to cascade only
-             to other mailing lists.  When set, meta notices like
-             confirmations and password reminders will be directed to an
-             address derived from the member\'s address - it will have the
-             value of "umbrella_member_suffix" appended to the member's
-             account name.""")),
-
-            ('umbrella_member_suffix', mm_cfg.String, WIDTH, 0,
-             _('''Suffix for use when this list is an umbrella for other
-             lists, according to setting of previous "umbrella_list"
-             setting.'''),
-
-             _("""When "umbrella_list" is set to indicate that this list has
-             other mailing lists as members, then administrative notices like
-             confirmations and password reminders need to not be sent to the
-             member list addresses, but rather to the owner of those member
-             lists.  In that case, the value of this setting is appended to
-             the member's account name for such notices.  `-owner' is the
-             typical choice.  This setting has no effect when "umbrella_list"
-             is "No".""")),
-
-            ('send_reminders', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Send monthly password reminders or no? Overrides the
-             previous option.''')),
-
-            ('send_welcome_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0, 
-             _('Send welcome message when people subscribe?'),
-             _("""Turn this on only if you plan on subscribing people manually
-             and don't want them to know that you did so.  This option is most
-             useful for transparently migrating lists from some other mailing
-             list manager to Mailman.""")),
-
-            ('admin_immed_notify', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Should administrator get immediate notice of new requests,
-             as well as daily notices about collected ones?'''),
-
-             _('''List admins are sent daily reminders of pending admin
-             approval requests, like subscriptions to a moderated list or
-             postings that are being held for one reason or another.  Setting
-             this option causes notices to be sent immediately on the arrival
-             of new requests, as well.''')),
-
-            ('admin_notify_mchanges', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Should administrator get notices of subscribes and
-             unsubscribes?''')),
-            
-            ('dont_respond_to_post_requests', mm_cfg.Radio,
-             (_('Yes'), _('No')), 0,
-             _('Send mail to poster when their posting is held for approval?'),
-
-             _("""Approval notices are sent when mail triggers certain of the
-             limits <em>except</em> routine list moderation and spam filters,
-             for which notices are <em>not</em> sent.  This option overrides
-             ever sending the notice.""")),
-
-            ('max_message_size', mm_cfg.Number, 7, 0,
-             _('''Maximum length in Kb of a message body.  Use 0 for no
-             limit.''')),
-
-            ('host_name', mm_cfg.Host, WIDTH, 0,
-             _('Host name this list prefers for email.'),
-
-             _("""The "host_name" is the preferred name for email to
-             mailman-related addresses on this host, and generally should be
-             the mail host's exchanger address, if any.  This setting can be
-             useful for selecting among alternative names of a host that has
-             multiple addresses.""")),
-
-##            ('web_page_url', mm_cfg.String, WIDTH, 0,
-##             _('''Base URL for Mailman web interface.  The URL must end in a
-##             single "/".  See also the details for an important warning when
-##             changing this value.'''),
-
-##             _("""This is the common root for all Mailman URLs referencing
-##             this mailing list.  It is also used in the listinfo overview of
-##             mailing lists to identify whether or not this list resides on the
-##             virtual host identified by the overview URL; i.e. if this value
-##             is found (anywhere) in the URL, then this list is considered to
-##             be on that virtual host.  If not, then it is excluded from the
-##             listing.
-
-##             <p><b><font size="+1">Warning:</font></b> setting this value to
-##             an invalid base URL will render the mailing list unusable.  You
-##             will also not be able to fix this from the web interface!  In
-##             that case, the site administrator will have to fix the mailing
-##             list from the command line.""")),
-          ]
-        if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-            sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
-                           # choices
-                           (_('none'),
-                            _('confirm'),
-                            _('require approval'),
-                            _('confirm+approval')),
-                           0, 
-                           _('What steps are required for subscription?<br>'),
-                           _('''None - no verification steps (<em>Not
-                           Recommended </em>)<br>
-                           confirm (*) - email confirmation step required <br>
-                           require approval - require list administrator
-                           approval for subscriptions <br>
-                           confirm+approval - both confirm and approve
-                           
-                           <p>(*) when someone requests a subscription,
-                           Mailman sends them a notice with a unique
-                           subscription request number that they must reply to
-                           in order to subscribe.<br>
-
-                           This prevents mischievous (or malicious) people
-                           from creating subscriptions for others without
-                           their consent.'''))
-        else:
-            sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
-                           # choices
-                           (_('confirm'),
-                            _('require approval'),
-                            _('confirm+approval')),
-                           1,
-                           _('What steps are required for subscription?<br>'),
-                           _('''confirm (*) - email confirmation required <br>
-                           require approval - require list administrator
-                           approval for subscriptions <br>
-                           confirm+approval - both confirm and approve
-                           
-                           <p>(*) when someone requests a subscription,
-                           Mailman sends them a notice with a unique
-                           subscription request number that they must reply to
-                           in order to subscribe.<br> This prevents
-                           mischievous (or malicious) people from creating
-                           subscriptions for others without their consent.'''))
-
-        # some helpful values
-        adminurl = self.GetScriptURL('admin')
-        
-        config_info['privacy'] = [
-            _("""List access policies, including anti-spam measures, covering
-            members and outsiders.  See also the <a
-            href="%(admin)s/archive">Archival Options section</a> for separate
-            archive-privacy settings."""),
-
-            _('Subscribing'),
-            ('advertised', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('''Advertise this list when people ask what lists are on this
-             machine?''')),
-
-            sub_cfentry,
-            
-            _("Membership exposure"),
-            ('private_roster', mm_cfg.Radio,
-             (_('Anyone'), _('List members'), _('List admin only')), 0,
-             _('Who can view subscription list?'),
-
-             _('''When set, the list of subscribers is protected by member or
-             admin password authentication.''')),
-
-            ('obscure_addresses', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _("""Show member addrs so they're not directly recognizable as
-             email addrs?"""),
-             _("""Setting this option causes member email addresses to be
-             transformed when they are presented on list web pages (both in
-             text and as links), so they're not trivially recognizable as
-             email addresses.  The intention is to to prevent the addresses
-             from being snarfed up by automated web scanners for use by
-             spammers.""")),
-
-            _("General posting filters"),
-            ('moderated', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _('Must posts be approved by an administrator?')),
-
-            ('member_posting_only', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-             _("""Restrict posting privilege to list members?
-             (<i>member_posting_only</i>)"""),
-
-             _("""Use this option if you want to restrict posting to list
-             members.  If you want list members to be able to post, plus a
-             handful of other posters, see the <i> posters </i> setting
-             below.""")),
-
-            ('posters', mm_cfg.EmailList, (5, WIDTH), 1,
-             _('''Addresses of members accepted for posting to this list
-             without implicit approval requirement. (See "Restrict ... to list
-             members" for whether or not this is in addition to allowing
-             posting by list members'''),
-
-             _("""Adding entries here will have one of two effects, according
-             to whether another option restricts posting to members.
-
-             <ul>
-                 <li>If <i>member_posting_only</i> is 'yes', then entries
-                 added here will have posting privilege in addition to list
-                 members.
-
-                 <li>If <i>member_posting_only</i> is 'no', then <em>only</em>
-                 the posters listed here will be able to post without admin
-                 approval.
-
-             </ul>""")),
-
-            _("Spam-specific posting filters"),
-
-            ('require_explicit_destination', mm_cfg.Radio,
-             (_('No'), _('Yes')), 0,
-             _("""Must posts have list named in destination (to, cc) field
-             (or be among the acceptable alias names, specified below)?"""),
-
-             _("""Many (in fact, most) spams do not explicitly name their
-             myriad destinations in the explicit destination addresses - in
-             fact often the To: field has a totally bogus address for
-             obfuscation.  The constraint applies only to the stuff in the
-             address before the '@' sign, but still catches all such spams.
-
-             <p>The cost is that the list will not accept unhindered any
-             postings relayed from other addresses, unless
-
-             <ol>
-                 <li>The relaying address has the same name, or
-
-                 <li>The relaying address name is included on the options that
-                 specifies acceptable aliases for the list.
-
-             </ol>""")),
-
-            ('acceptable_aliases', mm_cfg.Text, (4, WIDTH), 0,
-             _("""Alias names (regexps) which qualify as explicit to or cc
-             destination names for this list."""),
-
-             _("""Alternate addresses that are acceptable when
-             `require_explicit_destination' is enabled.  This option takes a
-             list of regular expressions, one per line, which is matched
-             against every recipient address in the message.  The matching is
-             performed with Python's re.match() function, meaning they are
-             anchored to the start of the string.
-             
-             <p>For backwards compatibility with Mailman 1.1, if the regexp
-             does not contain an `@', then the pattern is matched against just
-             the local part of the recipient address.  If that match fails, or
-             if the pattern does contain an `@', then the pattern is matched
-             against the entire recipient address.
-             
-             <p>Matching against the local part is deprecated; in a future
-             release, the pattern will always be matched against the entire
-             recipient address.""")),
-
-            ('max_num_recipients', mm_cfg.Number, 5, 0, 
-             _('Ceiling on acceptable number of recipients for a posting.'),
-
-             _('''If a posting has this number, or more, of recipients, it is
-             held for admin approval.  Use 0 for no ceiling.''')),
-
-            ('forbidden_posters', mm_cfg.EmailList, (5, WIDTH), 1,
-             _('Addresses whose postings are always held for approval.'),
-             _('''Email addresses whose posts should always be held for
-             approval, no matter what other options you have set.  See also
-             the subsequent option which applies to arbitrary content of
-             arbitrary headers.''')),
-
-            ('bounce_matching_headers', mm_cfg.Text, (6, WIDTH), 0,
-             _('Hold posts with header value matching a specified regexp.'),
-             _("""Use this option to prohibit posts according to specific
-             header values.  The target value is a regular-expression for
-             matching against the specified header.  The match is done
-             disregarding letter case.  Lines beginning with '#' are ignored
-             as comments.
-
-             <p>For example:<pre>to: .*@public.com </pre> says to hold all
-             postings with a <em>To:</em> mail header containing '@public.com'
-             anywhere among the addresses.
-
-             <p>Note that leading whitespace is trimmed from the regexp.  This
-             can be circumvented in a number of ways, e.g. by escaping or
-             bracketing it.
-             
-             <p> See also the <em>forbidden_posters</em> option for a related
-             mechanism.""")),
-
-          ('anonymous_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
-           _("""Hide the sender of a message, replacing it with the list
-           address (Removes From, Sender and Reply-To fields)""")),
-          ]
-
-        config_info['nondigest'] = [
-            _("Policies concerning immediately delivered list traffic."),
-
-            ('nondigestable', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
-             _("""Can subscribers choose to receive mail immediately, rather
-             than in batched digests?""")),
-
-            ('msg_header', mm_cfg.Text, (4, WIDTH), 0,
-             _('Header added to mail sent to regular list members'),
-             _('''Text prepended to the top of every immediately-delivery
-             message. ''') + Utils.maketext('headfoot.html',
-                                            raw=1, mlist=self)),
-            
-            ('msg_footer', mm_cfg.Text, (4, WIDTH), 0,
-             _('Footer added to mail sent to regular list members'),
-             _('''Text appended to the bottom of every immediately-delivery
-             message. ''') + Utils.maketext('headfoot.html',
-                                            raw=1, mlist=self)),
-            ]
-
-        config_info['bounce'] = Bouncer.GetConfigInfo(self)
-        return config_info
-
+        info = {}
+        for gui in self._gui:
+            try:
+                key = gui.GetConfigCategory()[0]
+                value = gui.GetConfigInfo(self)
+            except AttributeError:
+                pass
+            else:
+                info[key] = value
+        return info
+
+
+    #
+    # List creation
+    #
     def Create(self, name, admin, crypted_password):
         if Utils.list_exists(name):
             raise Errors.MMListAlreadyExistsError, name
@@ -897,6 +388,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.CheckValues()
         self.Save()
         
+
+    #
+    # Database and filesystem I/O
+    #
     def __save(self, dict):
         # Marshal this dictionary to file, and rotate the old version to a
         # backup file.  The dictionary must contain only builtin objects.  We
@@ -944,8 +439,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # copy all public attributes to marshalable dictionary
         dict = {}
         for key, value in self.__dict__.items():
-            if key[0] <> '_':
-                dict[key] = value
+            if key[0] == '_' or type(value) is MethodType:
+                continue
+            dict[key] = value
         # Make config.db unreadable by `other', as it contains all the
         # list members' passwords (in clear text).
         omask = os.umask(007)
@@ -1014,6 +510,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.CheckValues()
             self.CheckVersion(dict)
 
+
+    #
+    # Sanity checks
+    #
     def CheckVersion(self, stored_state):
         """Migrate prior version's state to new structure, if changed."""
         if (self.data_version >= mm_cfg.DATA_FILE_VERSION and 
@@ -1042,23 +542,19 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         if not self._ready:
             raise Errors.MMListNotReadyError
 
+
+    #
+    # Membership management front-ends and assertion checks
+    #
     def AddMember(self, name, password, digest=0, remote=None, lang=None):
-        self.IsListInitialized()
-        # normalize the name, it could be of the form
-        #
-        # <person@place.com> User Name
-        # person@place.com (User Name)
-        # etc
-        #
-        name = Utils.ParseAddrs(name)
-        # Remove spaces... it's a common thing for people to add...
-        name = EMPTYSTRING.join(name.split())
-        # lower case only the domain part
-        name = Utils.LCDomain(name)
-
+        # Add a new member, after sanity checking the address, and based on
+        # the mailing list's policies.
+        fullname, emailaddr = parseaddr(name)
+        # Lowercase the domain part
+        emailaddr = Utils.LCDomain(emailaddr)
         # Validate the e-mail address to some degree.
         Utils.ValidateEmail(name)
-        if self.IsMember(name):
+        if self.isMember(name):
             raise Errors.MMAlreadyAMember
         if name == self.GetListEmail().lower():
             # Trying to subscribe the list to itself!
@@ -1073,25 +569,25 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             lang = self.preferred_language
 
         if self.subscribe_policy == 0:
-            # no confirmation or approval necessary:
-            self.ApprovedAddMember(name, password, digest, lang)
+            # No confirmation or approval is necessary
+            self.ApprovedAddMember(emailaddr, fullname, password, digest, lang)
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
             # User confirmation required
             cookie = Pending.new(Pending.SUBSCRIPTION,
-                                 name, password, digest, lang)
+                                 emailaddr, fullname, password, digest, lang)
             if remote is not None:
-                by = " " + remote
-                remote = _(" from %(remote)s")
+                by = ' ' + remote
+                remote = _(' from %(remote)s')
             else:
-                by = ""
-                remote = ""
-            recipient = self.GetMemberAdminEmail(name)
+                by = ''
+                remote = ''
+            recipient = self.GetMemberAdminEmail(emailaddr)
             realname = self.real_name
             confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                     cookie)
             text = Utils.maketext(
                 'verify.txt',
-                {'email'       : name,
+                {'email'       : emailaddr,
                  'listaddr'    : self.GetListEmail(),
                  'listname'    : realname,
                  'cookie'      : cookie,
@@ -1106,18 +602,179 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 text)
             msg['Reply-To'] = self.GetRequestEmail()
             msg.send(self)
-            if recipient != name:
-                who = "%s (%s)" % (name, recipient.split('@')[0])
-            else: who = name
+            if recipient <> emailaddr:
+                who = "%s (%s)" % (emailaddr, recipient.split('@')[0])
+            else:
+                who = name
             syslog('subscribe', '%s: pending %s %s',
                    self.internal_name(), who, by)
             raise Errors.MMSubscribeNeedsConfirmation
         else:
-            # subscription approval is required.  add this entry to the admin
+            # Subscription approval is required.  Add this entry to the admin
             # requests database.
-            self.HoldSubscription(name, password, digest, lang)
+            self.HoldSubscription(emailaddr, fullname, password, digest, lang)
             raise Errors.MMNeedApproval, _(
                 'subscriptions to %(realname)s require administrator approval')
+
+    def ApprovedAddMember(self, name, password, digest,
+                          ack=None, admin_notif=None, lang=None):
+        # A convenience interface on ApprovedAddMembers (plural)
+        res = self.ApprovedAddMembers([name], [password],
+                                      digest, ack, admin_notif, lang)
+        # There should be exactly one (key, value) pair in the returned dict,
+        # extract the possible exception value
+        assert len(res) == 1
+        res = res.values()[0]
+        if res is None:
+            # User was added successfully
+            return
+        else:
+            # Split up the exception list and reraise it here
+            e, v = res
+            raise e, v
+
+    def ApprovedAddMembers(self, names, passwords, digest,
+                           ack=None, admin_notif=None, lang=None):
+        """Subscribe members in list `names'.
+
+        Passwords can be supplied in the passwords list.  If an empty
+        password is encountered, a random one is generated and used.
+
+        Returns a dict where the keys are addresses that were tried
+        subscribed, and the corresponding values are either two-element
+        tuple containing the first exception type and value that was
+        raised when trying to add that address, or `None' to indicate
+        that no exception was raised.
+
+        """
+        if ack is None:
+            ack = self.send_welcome_msg
+        if admin_notif is None:
+            admin_notif = self.admin_notify_mchanges
+        if lang is None:
+            lang = self.preferred_language
+
+        # Make sure our passwords vector is the same size as our names vector
+        if type(passwords) is not ListType:
+            # TypeError? -- For now, ignore whatever value(s) we were given
+            passwords = [None] * len(names)
+        lenpws = len(passwords)
+        lennames = len(names)
+        if lenpws < lennames:
+            passwords.extend([None] * (lennames - lenpws))
+
+        result = {}
+        fullnames = {}
+        for name, pw in zip(names, passwords):
+            # Dig out the full name and the email address, lowercase the
+            # domain part, and validate
+            fullname, emailaddr = parseaddr(name)
+            emailaddr = Utils.LCDomain(emailaddr)
+            fullnames[name] = fullname, emailaddr
+            try:
+                Utils.ValidateEmail(emailaddr)
+            except (Errors.MMBadEmailError, Errors.MMHostileAddress), e:
+                # We don't really need the traceback object for the exception.
+                result[name] = e
+            # WIBNI we could `continue' within `try' constructs...
+            if result.has_key(name):
+                continue
+            if self.isMember(emailaddr):
+                result[name] = [Errors.MMAlreadyAMember, name]
+                continue
+            # Make sure we set a moderately "good" password
+            if not pw:
+                pw = Utils.MakeRandomPassword()
+            self.addNewMember(emailaddr, realname=fullname, digest=digest,
+                              password=pw, language=lang)
+            self.setMemberOption(name, mm_cfg.DisableMime,
+                                 1 - self.mime_is_default_digest)
+            result[name] = None
+
+        # Now send and log results
+        if not result:
+            return
+
+        if digest:
+            kind = ' (digest)'
+        else:
+            kind = ''
+
+        for name in result.keys():
+            if result[name] is None:
+                fullname, emailaddr = fullnames[name]
+                syslog('subscribe', '%s: new%s %s (%s)',
+                       self.internal_name(), kind, emailaddr, fullname)
+                if ack:
+                    self.SendSubscribeAck(
+                        emailaddr, self.getMemberPassword(emailaddr), digest)
+                if admin_notif:
+                    adminaddr = self.GetAdminEmail()
+                    realname = self.real_name
+                    subject = _('%(realname)s subscription notification')
+                    text = Utils.maketext(
+                        "adminsubscribeack.txt",
+                        {"listname" : self.real_name,
+                         "member"   : name,
+                         }, lang=lang, mlist=self)
+                    msg = Message.UserNotification(
+                        self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
+                    msg.send(self)
+        return result
+
+    def ApprovedDeleteMember(self, name, whence=None,
+                             admin_notif=None, userack=1):
+        if admin_notif is None:
+            admin_notif = self.admin_notify_mchanges
+
+        # Delete a member, for which we know the approval has been made
+        fullname, emailaddr = parseaddr(name)
+        if not self.isMember(emailaddr):
+            raise Errors.MMNoSuchUserError
+        # Remove the member
+        self.removeMember(emailaddr)
+        # And send an acknowledgement to the user...
+        if userack and self.goodbye_msg and len(self.goodbye_msg):
+            self.SendUnsubscribeAck(name)
+        # ...and to the administrator
+        if admin_notif:
+            realname = self.real_name
+            subject = _('%(realname)s unsubscribe notification')
+            text = Utils.maketext(
+                'adminunsubscribeack.txt',
+                {'member'  : name,
+                 'listname': self.real_name,
+                 }, mlist=self)
+            msg = Message.UserNotification(self.owner,
+                                           mm_cfg.MAILMAN_OWNER,
+                                           subject, text)
+            msg.send(self)
+        if whence:
+            whence = "; %s" % whence
+        else:
+            whence = ""
+        syslog('subscribe', '%s: deleted %s%s',
+               self.internal_name(), name, whence)
+
+    def ChangeMemberName(self, addr, name, globally):
+        self.setMemberName(addr, name)
+        if not globally:
+            return
+        for listname in Utils.list_names():
+            # Don't bother with ourselves
+            if listname == self.internal_name():
+                continue
+            mlist = MailList(listname, lock=0)
+            if mlist.host_name <> self.host_name:
+                continue
+            if not mlist.isMember(oldaddr):
+                continue
+            mlist.Lock()
+            try:
+                mlist.setMemberName(addr, name)
+                mlist.Save()
+            finally:
+                mlist.Unlock()
 
     def ChangeMemberAddress(self, oldaddr, newaddr, globally):
         # Changing a member address consists of verifying the new address,
@@ -1127,7 +784,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Most of these checks are copied from AddMember
         newaddr = Utils.LCDomain(newaddr)
         Utils.ValidateEmail(newaddr)
-        if self.IsMember(newaddr):
+        # Raise an exception if this email address is already a member of the
+        # list, but only if the new address is the same case-wise as the old
+        # address.
+        if newaddr == oldaddr and self.isMember(newaddr):
             raise Errors.MMAlreadyAMember
         if newaddr == self.GetListEmail().lower():
             raise Errors.MMBadEmailError
@@ -1155,6 +815,34 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
 
+    def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
+        # Change the membership for the current list first.  We don't lock and
+        # save ourself since we assume that the list is already locked.
+        self.changeMemberAddress(oldaddr, newaddr)
+        # If globally is true, then we also include every list for which
+        # oldaddr is a member.
+        if not globally:
+            return
+        for listname in Utils.list_names():
+            # Don't bother with ourselves
+            if listname == self.internal_name():
+                continue
+            mlist = MailList(listname, lock=0)
+            if mlist.host_name <> self.host_name:
+                continue
+            if not mlist.isMember(oldaddr):
+                continue
+            mlist.Lock()
+            try:
+                mlist.changeMemberAddress(oldaddr, newaddr)
+                mlist.Save()
+            finally:
+                mlist.Unlock()
+
+
+    #
+    # Confirmation processing
+    #
     def ProcessConfirmation(self, cookie):
         data = Pending.confirm(cookie)
         if data is None:
@@ -1179,7 +867,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         elif op == Pending.UNSUBSCRIPTION:
             addr = data[0]
             # Can raise MMNoSuchUserError if they unsub'd via other means
-            self.DeleteMember(addr, whence='web confirmation')
+            self.ApprovedDeleteMember(addr, whence='web confirmation')
             return op, addr
         elif op == Pending.CHANGE_OF_ADDRESS:
             oldaddr, newaddr, globally = data
@@ -1217,227 +905,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         msg['Reply-To'] = self.GetRequestEmail()
         msg.send(self)
 
-    def ApprovedAddMember(self, name, password, digest,
-                          ack=None, admin_notif=None, lang=None):
-        res = self.ApprovedAddMembers([name], [password],
-                                      digest, ack, admin_notif, lang)
-        # There should be exactly one (key, value) pair in the returned dict,
-        # extract the possible exception value
-        res = res.values()[0]
-        if res is None:
-            # User was added successfully
-            return
-        else:
-            # Split up the exception list and reraise it here
-            e, v = res
-            raise e, v
-
-    def ApprovedAddMembers(self, names, passwords, digest,
-                           ack=None, admin_notif=None, lang=None):
-        """Subscribe members in list `names'.
-
-        Passwords can be supplied in the passwords list.  If an empty
-        password is encountered, a random one is generated and used.
-
-        Returns a dict where the keys are addresses that were tried
-        subscribed, and the corresponding values are either two-element
-        tuple containing the first exception type and value that was
-        raised when trying to add that address, or `None' to indicate
-        that no exception was raised.
-
-        """
-        if ack is None:
-            if self.send_welcome_msg:
-                ack = 1
-            else:
-                ack = 0
-        if admin_notif is None:
-            if self.admin_notify_mchanges:
-                admin_notif = 1
-            else:
-                admin_notif = 0
-        if type(passwords) is not ListType:
-            # Type error -- ignore whatever value(s) we were given
-            passwords = [None] * len(names)
-        lenpws = len(passwords)
-        lennames = len(names)
-        if lenpws < lennames:
-            passwords.extend([None] * (lennames - lenpws))
-        result = {}
-        dirty = 0
-        for i in range(lennames):
-            try:
-                # normalize the name, it could be of the form
-                #
-                # <person@place.com> User Name
-                # person@place.com (User Name)
-                # etc
-                #
-                name = Utils.ParseAddrs(names[i])
-                Utils.ValidateEmail(name)
-                name = Utils.LCDomain(name)
-            except (Errors.MMBadEmailError, Errors.MMHostileAddress):
-                # We don't really need the traceback object for the exception,
-                # and as using it in the wrong way prevents garbage collection
-                # from working smoothly, we strip it away
-                result[name] = sys.exc_info()[:2]
-            # WIBNI we could `continue' within `try' constructs...
-            if result.has_key(name):
-                continue
-            if self.IsMember(name):
-                result[name] = [Errors.MMAlreadyAMember, name]
-                continue
-            self.__AddMember(name, digest)
-            if lang is None:
-                lang = self.preferred_language
-            self.SetPreferredLanguage(name, lang)
-            self.SetUserOption(name, mm_cfg.DisableMime,
-                               1 - self.mime_is_default_digest,
-                               save_list=0)
-            # Make sure we set a "good" password
-            password = passwords[i]
-            if not password:
-                password = Utils.MakeRandomPassword()
-            self.passwords[name.lower()] = password
-            # An address has been added successfully, make sure the
-            # list config is saved later on
-            dirty = 1
-            result[name] = None
-
-        if dirty:
-            self.Save()
-            if digest:
-                kind = " (D)"
-            else:
-                kind = ""
-            for name in result.keys():
-                if result[name] is None:
-                    syslog('subscribe', '%s: new%s %s',
-                           self.internal_name(), kind, name)
-                    if ack:
-                        self.SendSubscribeAck(
-                            name,
-                            self.passwords[name.lower()],
-                            digest)
-                    if admin_notif:
-                        adminaddr = self.GetAdminEmail()
-                        realname = self.real_name
-                        subject = _('%(realname)s subscription notification')
-                        text = Utils.maketext(
-                            "adminsubscribeack.txt",
-                            {"listname" : self.real_name,
-                             "member"   : name,
-                             }, lang=lang, mlist=self)
-                        msg = Message.UserNotification(
-                            self.owner, mm_cfg.MAILMAN_OWNER, subject, text)
-                        msg.send(self)
-        return result
-
-    def DeleteMember(self, name, whence=None, admin_notif=None, userack=1):
-        self.IsListInitialized()
-        # FindMatchingAddresses *should* never return more than 1 address.
-        # However, should log this, just to make sure.
-        aliases = Utils.FindMatchingAddresses(name, self.members, 
-                                              self.digest_members)
-        if not len(aliases):
-            raise Errors.MMNoSuchUserError
-
-        def DoActualRemoval(alias, me=self):
-            kind = "(unfound)"
-            try:
-                del me.passwords[alias]
-            except KeyError: 
-                pass
-            if me.user_options.has_key(alias):
-                del me.user_options[alias]
-            try:
-                del me.members[alias]
-                kind = "regular"
-            except KeyError:
-                pass
-            try:
-                del me.digest_members[alias]
-                kind = "digest"
-            except KeyError:
-                pass
-            if me.language.has_key(alias):
-                del me.language[alias]
-
-        map(DoActualRemoval, aliases)
-        if userack and self.goodbye_msg and len(self.goodbye_msg):
-            self.SendUnsubscribeAck(name)
-        self.ClearBounceInfo(name)
-        self.Save()
-        if admin_notif is None:
-            if self.admin_notify_mchanges:
-                admin_notif = 1
-            else:
-                admin_notif = 0
-        if admin_notif:
-            realname = self.real_name
-            subject = _('%(realname)s unsubscribe notification')
-            text = Utils.maketext(
-                'adminunsubscribeack.txt',
-                {'member'  : name,
-                 'listname': self.real_name,
-                 }, mlist=self)
-            msg = Message.UserNotification(self.owner,
-                                           mm_cfg.MAILMAN_OWNER,
-                                           subject, text)
-            msg.send(self)
-        if whence:
-            whence = "; %s" % whence
-        else:
-            whence = ""
-        syslog('subscribe', '%s: deleted %s%s',
-               self.internal_name(), name, whence)
-
-    def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
-        # Get the user's current options and password.  Ugly hack: if a user's
-        # options would have been zero, then Mailman saves room by deleting
-        # the entry for the user from the user_options dictionary.  Note that
-        # /really/ it would be better if GetUserOption() and SetUserOption()
-        # supported an interface to get the entire option value.
-        flags = self.user_options.get(oldaddr, 0)
-        password = self.passwords[oldaddr]
-        digest = oldaddr in self.GetDigestMembers()
-        lang = self.GetPreferredLanguage(oldaddr)
-        self.ApprovedAddMember(newaddr, password, digest,
-                               ack=1, admin_notif=1, lang=lang)
-        # hack the account flags
-        if not flags:
-            try:
-                del self.user_options[newaddr]
-            except KeyError:
-                pass
-        else:
-            self.user_options[newaddr] = flags
-        # Delete the old address
-        self.DeleteMember(oldaddr, userack=1)
-        # Now, if the globally flag was set, then try to do this for every
-        # mailing list that had the oldaddr as a member.
-        if not globally:
-            return
-        for listname in Utils.list_names():
-            # Don't bother with ourselves
-            if listname == self.internal_name():
-                continue
-            mlist = MailList(listname, lock=0)
-            if mlist.host_name <> self.host_name:
-                continue
-            if not mlist.IsMember(oldaddr):
-                continue
-            mlist.Lock()
-            try:
-                mlist.ApprovedChangeMemberAddress(oldaddr, newaddr, 0)
-                mlist.Save()
-            finally:
-                mlist.Unlock()
-
-    def IsMember(self, address):
-        return len(Utils.FindMatchingAddresses(address, self.members,
-                                               self.digest_members))
-
+
+    #
+    # Miscellaneous stuff
+    #
     def HasExplicitDest(self, msg):
         """True if list name or any acceptable_alias is included among the
         to or cc addrs."""
@@ -1542,37 +1013,10 @@ bad regexp in bounce_matching_header line: %s
                     return line
         return 0
 
-    def Locked(self):
-        return self.__lock.locked()
-
-    def Lock(self, timeout=0):
-        self.__lock.lock(timeout)
-        # Must reload our database for consistency.  Watch out for lists that
-        # don't exist.
-        try:
-            self.Load()
-        except Errors.MMUnknownListError:
-            self.Unlock()
-            raise
-    
-    def Unlock(self):
-        self.__lock.unlock(unconditionally=1)
-
-    def __repr__(self):
-        if self.Locked():
-            status = " (locked)"
-        else:
-            status = ""
-        return ("<%s.%s %s%s at %s>" %
-                (self.__module__, self.__class__.__name__,
-                 `self._internal_name`, status, hex(id(self))[2:]))
-
-    def internal_name(self):
-        return self._internal_name
-
-    def fullpath(self):
-        return self._full_path
-
+
+    #
+    # Multilingual (i18n) support
+    #
     def SetPreferredLanguage(self, name, lang):
         assert lang in self.GetAvailableLanguages()
         lcname = name.lower()
@@ -1582,7 +1026,9 @@ bad regexp in bounce_matching_header line: %s
             if self.language.has_key(lcname):
                 del self.language[lcname]
 
-    def GetPreferredLanguage(self, name):
+    def GetPreferredLanguage(self, name=None):
+        if name is None:
+            return self.preferred_language
         lcname = name.lower()
         return self.language.get(lcname, self.preferred_language)
 
