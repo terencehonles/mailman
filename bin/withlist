@@ -21,7 +21,7 @@
 This is useful for playing with a list from Python's interactive interpreter.
 Run this script as follows:
 
-% python -i bin/withlist [options] listname
+%% python -i bin/withlist [options] listname
 
 This will load the list object named by <listname> into an object called `m'
 in the global namespace.  It also loads the class MailList into the global
