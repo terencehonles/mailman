@@ -1004,7 +1004,8 @@ class HyperArchive(pipermail.T):
 		if s==None: continue
 		dest[i]=CGIescape(s) ; source[i]=None
 	    if len(dest) > 0:
-		dest[0]='<PRE>'+dest[0] ; dest[-1]=dest[-1]+'</PRE>'
+                dest.insert(0, '<PRE>')
+                dest.append('</pre>')
 	else:
 	    # Do fancy formatting here
 	    if self.SHOWBR:
@@ -1039,13 +1040,3 @@ class HyperArchive(pipermail.T):
 	f=open(os.path.join(arcdir, article.filename), 'w')
 	f.write(article.as_html())
 	f.close()
-
-
-
-
-
-
-
-
-
-
