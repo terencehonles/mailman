@@ -956,8 +956,16 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         for recip in recips:
             for alias in string.split(self.acceptable_aliases, '\n'):
                 stripped = string.strip(alias)
-                if stripped and re.match(stripped, recip):
-                    return 1
+                try:
+                    # The list alias in `stripped` is a user supplied regexp,
+                    # which could be malformed.
+                    if stripped and re.match(stripped, recip):
+                        return 1
+                except re.error:
+                    # `stripped' is a malformed regexp -- try matching
+                    # safely, with all non-alphanumerics backslashed:
+                    if stripped and re.match(re.escape(stripped), recip):
+                        return 1
 	return 0
 
     def parse_matching_header_opt(self):
@@ -973,8 +981,18 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		continue
 	    else:
 		try:
-		    h, e = re.split(":[ 	]*", stripped)
-		    all.append((h, e, stripped))
+		    h, e = re.split(":[ \t]*", stripped, 1)
+                    try:
+                        re.compile(e)
+                        all.append((h, e, stripped))
+                    except re.error, cause:
+                        # The regexp in this line is malformed -- log it
+                        # and ignore it
+                        self.LogMsg("config", "%s - "
+                                    "bad regexp %s [%s] "
+                                    "in bounce_matching_header line %s"
+                                    % (self.real_name, `e`,
+                                       `cause`, `stripped`))
 		except ValueError:
 		    # Whoops - some bad data got by:
 		    self.LogMsg("config", "%s - "
@@ -1010,6 +1028,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    # Continuation line.
 		    subjs[-1] = subjs[-1] + f
 	    for s in subjs:
+                # This is safe because parse_matching_header_opt only
+                # returns valid regexps
 		if re.search(matchexp, s, re.I):
 		    return line
 	return 0
