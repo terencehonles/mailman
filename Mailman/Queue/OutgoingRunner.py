@@ -44,6 +44,13 @@ class OutgoingRunner(Runner):
         self._permfail_counter = 0
 
     def _dispose(self, mlist, msg, msgdata):
+        # See if we should VERP this message.
+        if mm_cfg.VERP_DELIVERY_INTERVAL > 0:
+            if mm_cfg.VERP_DELIVERY_INTERVAL == 1:
+                # VERP every time
+                msgdata['verp'] = 1
+            elif not int(mlist.post_id) % mm_cfg.VERP_DELIVERY_INTERVAL:
+                msgdata['verp'] = 1
         # Fortunately, we do not need the list lock to do deliveries.
         handler = mm_cfg.DELIVERY_MODULE
         modname = 'Mailman.Handlers.' + handler
