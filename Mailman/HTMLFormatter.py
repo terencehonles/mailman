@@ -36,13 +36,6 @@ NL = '\n'
 
 
 class HTMLFormatter:
-    def InitVars(self):
-        if self.internal_name():
-            self._template_dir = os.path.join(mm_cfg.LIST_DATA_DIR,
-                                              self._internal_name)
-        else:
-            self._template_dir = mm_cfg.TEMPLATE_DIR
-
     def GetMailmanFooter(self):
         owners_html = Container()
         for i in range(len(self.owner)):
@@ -64,17 +57,6 @@ class HTMLFormatter:
                          _('%(realname)s administrative interface')),
                     _(' (requires authorization)'),
                     '<p>', MailmanLogo()))).Format()
-
-    def SnarfHTMLTemplate(self, file, lang=None):
-        # XXX: hack, blech, yuk
-        if lang is None:
-            lang = self.preferred_language
-        HTMLFormatter.InitVars(self)
-        filename = os.path.join(self._template_dir, lang, file)
-        fp = open(filename)
-        data = fp.read()
-        fp.close()
-        return data
 
     def FormatUsers(self, digest, lang=None):
         if lang is None:
@@ -342,9 +324,7 @@ class HTMLFormatter:
         return ''
 
     def ParseTags(self, template, replacements, lang=None):
-        if lang is None:
-            lang = self.preferred_language
-        text = self.SnarfHTMLTemplate(template, lang)
+        text = Utils.maketext(template, raw=1, lang=lang, mlist=self)
 	parts = re.split('(</?[Mm][Mm]-[^>]*>)', text)
         i = 1
         while i < len(parts):
@@ -406,25 +386,3 @@ class HTMLFormatter:
         d.update({"<mm-regular-users>": self.FormatUsers(0, lang),
                   "<mm-digest-users>": self.FormatUsers(1, lang)})
         return d
-                  
-    def InitTemplates(self, langs=None):
-        if langs is None:
-            langs = [mm_cfg.DEFAULT_SERVER_LANGUAGE]
-        for L in langs:
-            # srcdir is where the language template .html files will come
-            # from.  Usually $MAILMAN/templates/<lang> but if that doesn't
-            # exist, default to $MAILMAN/templates for the English templates.
-            srcdir = os.path.join(mm_cfg.TEMPLATE_DIR, L)
-            if not os.path.isdir(srcdir):
-                srcdir = mm_cfg.TEMPLATE_DIR
-            # dstdir is where to copy the language templates to.
-            dstdir = os.path.join(self._template_dir, L)
-            omask = os.umask(0)
-            try:
-                os.makedirs(dstdir, 02775)
-            finally:
-                os.umask(omask)
-            # Now copy all the .html and .txt files over
-            for file in [f for f in os.listdir(srcdir)
-                         if f.endswith('.html') or f.endswith('.txt')]:
-                shutil.copy(os.path.join(srcdir, file), dstdir)
