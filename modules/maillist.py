@@ -153,9 +153,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
         self.acceptable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
 	self.reminders_to_admins = mm_cfg.DEFAULT_REMINDERS_TO_ADMINS
+	self.send_reminders = mm_cfg.DEFAULT_SEND_REMINDERS
 	self.bounce_matching_headers = \
 		mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
-        self.anonymous_list = 0
+        self.anonymous_list = mm_cfg.DEFAULT_ANONYMOUS_LIST
 	self.real_name = '%s%s' % (string.upper(self._internal_name[0]), 
 				   self._internal_name[1:])
 	self.description = ''
@@ -278,6 +279,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     " directed to an address derived from the member's address"
 	     ' - it will have "-admin" appended to the member\'s account'
 	     " name."),
+
+	    ('send_reminders', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     'Send monthly password reminders or no? Overrides the previous '
+	     'option.'),
 
 	    ('admin_immed_notify', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Should administrator get immediate notice of new requests, '
@@ -530,7 +535,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    fname = os.path.join(self._full_path, 'config.db')
             fname_last = fname + ".last"
 	    if os.path.exists(fname_last):
-	      os.unlink(fname_last)
+  	        os.unlink(fname_last)
 	    if os.path.exists(fname):
 	        os.link(fname, fname_last)
 	        os.unlink(fname)
@@ -580,13 +585,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		type(self.data_version) == type(mm_cfg.DATA_FILE_VERSION)):
 	    return
 	else:
-	    print "updating..."
 	    self.InitVars() # Init any new variables, 
 	    self.Load(check_version = 0) # then reload the file
             from versions import Update
             Update(self, stored_state)
-
-	self.data_version = mm_cfg.DATA_FILE_VERSION
+	    self.data_version = mm_cfg.DATA_FILE_VERSION
 	self.Save()
 
     def CheckValues(self):
