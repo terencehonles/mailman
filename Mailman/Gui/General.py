@@ -416,6 +416,10 @@ class General(GUIBase):
                 if opt in val:
                     newopts |= bitfield
             mlist.new_member_options = newopts
+        elif property == 'subject_prefix':
+            # Convert any html entities to Unicode
+            mlist.subject_prefix = Utils.canonstr(
+                val, mlist.preferred_language)
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
 
@@ -427,3 +431,9 @@ class General(GUIBase):
             address if that address is blank.  Resetting these values."""))
             mlist.reply_to_address = ''
             mlist.reply_goes_to_list = 0
+
+    def getValue(self, mlist, kind, varname, params):
+        if varname <> 'subject_prefix':
+            return None
+        # The subject_prefix may be Unicode
+        return Utils.uncanonstr(mlist.subject_prefix, mlist.preferred_language)
