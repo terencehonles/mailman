@@ -13,15 +13,12 @@ try:
 except ImportError:
     import pickle
 
-from Mailman.Utils import mkdir, open_ex
-# TBD: ugly, ugly, ugly -baw
-open = open_ex
-
-__version__ = '0.05 (Mailman edition)'
+__version__ = '0.06 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
 # Use our optimized version, which will probably be included in Python 2.0
+from Mailman.Utils import mkdir
 from Mailman.Mailbox import Mailbox
 
 # for faking out i18n
@@ -308,7 +305,11 @@ class T:
 	self.database.close()
 	del self.database
 
-	f = open(os.path.join(self.basedir, 'pipermail.pck'), 'w')
+        omask = os.umask(007)
+        try:
+            f = open(os.path.join(self.basedir, 'pipermail.pck'), 'w')
+        finally:
+            os.umask(omask)
 	pickle.dump(self.getstate(), f)
 	f.close()
 
@@ -495,7 +496,11 @@ class T:
 
     def _open_index_file_as_stdout(self, arcdir, index_name):
         path = os.path.join(arcdir, index_name + self.INDEX_EXT)
-        self.__f = open(path, "w")
+        omask = os.umask(002)
+        try:
+            self.__f = open(path, 'w')
+        finally:
+            os.umask(omask)
         self.__stdout = sys.stdout
         sys.stdout = self.__f
 
@@ -603,7 +608,11 @@ class T:
         
 
     def write_article(self, index, article, path):
-        f = open(path, 'w')
+        omask = os.umask(002)
+        try:
+            f = open(path, 'w')
+        finally:
+            os.umask(omask)
         temp_stdout, sys.stdout = sys.stdout, f
         self.write_article_header(article)
         sys.stdout.writelines(article.body)
