@@ -29,6 +29,7 @@ unobscured ids as well.
 
 import sys
 import os, string
+from types import StringType
 from Mailman import Utils, MailList, htmlformat
 from Mailman import mm_cfg
 from Mailman import Errors
@@ -79,7 +80,8 @@ def main():
     # set.
     if mlist.obscure_addresses:
         presentable_user = Utils.ObscureEmail(user, for_text=1)
-        cpuser = Utils.ObscureEmail(cpuser, for_text=1)
+        if type(cpuser) == StringType:
+            cpuser = Utils.ObscureEmail(cpuser, for_text=1)
     else:
         presentable_user = user
     # Do replacements
@@ -134,7 +136,7 @@ def main():
                                                            ' To Me'))
     replacements['<mm-umbrella-notice>'] = (
         mlist.FormatUmbrellaNotice(user, "password"))
-    if type(cpuser) == type(''):
+    if type(cpuser) == StringType:
         replacements['<mm-case-preserved-user>'] = '''
 You are subscribed to this list with the case-preserved address
 <em>%s</em>.''' % cpuser
