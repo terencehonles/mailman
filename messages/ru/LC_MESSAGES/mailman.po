@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailman v2.1\n"
 "POT-Creation-Date: Sun May  5 17:07:13 2002\n"
-"PO-Revision-Date: $Date: 2002-05-07 10:14:13 +0100 (Tue, 07 May 2002) $\n"
+"PO-Revision-Date: $Date: 2002-05-14 17:34:02 +0100 (Tue, 14 May 2002) $\n"
 "Last-Translator: Mikhail Sobolev <mss@mawhrin.net>\n"
 "Language-Team: Russian <mailman-ru@only.mawhrin.net>\n"
 "MIME-Version: 1.0\n"
@@ -40,7 +40,7 @@ msgstr "  Темы дискуссий"
 
 #: Mailman/Archiver/pipermail.py:554
 msgid "#%(counter)05d %(msgid)s"
-msgstr ""
+msgstr "#%(counter)05d %(msgid)s"
 
 #: Mailman/Bouncer.py:168
 msgid "disabled"
@@ -190,7 +190,7 @@ msgstr "[описание отсутствует]"
 
 #: Mailman/Cgi/admin.py:322
 msgid "No valid variable name found."
-msgstr ""
+msgstr "Не найдено названия допустимой переменной."
 
 #: Mailman/Cgi/admin.py:332
 msgid ""
@@ -209,6 +209,10 @@ msgid ""
 "    pages that are displaying this option for this mailing list.  You can also\n"
 "    "
 msgstr ""
+"<em><strong>Внимание</strong>: изменение этого параметра может привести к тому,\n"
+"    что информация на других страницах не будет отражать текущую конфигурацию\n"
+"    списка рассылки. Обязательно обновите страницы, на которые появляется этот\n"
+"    параметр.  Вы также можете"
 
 #: Mailman/Cgi/admin.py:367
 msgid "return to the %(category)s options page."
@@ -282,15 +286,15 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:511
 msgid "Off"
-msgstr ""
+msgstr "Выкл"
 
 #: Mailman/Cgi/admin.py:511
 msgid "On"
-msgstr ""
+msgstr "Вкл"
 
 #: Mailman/Cgi/admin.py:513
 msgid "Set"
-msgstr ""
+msgstr "Запомнить"
 
 #: Mailman/Cgi/admin.py:554
 msgid "Value"
@@ -353,6 +357,9 @@ msgid ""
 "        setting this value performs an immediate action but does not modify\n"
 "        permanent state.</em>"
 msgstr ""
+"<br><em><strong>Note</strong>:\n"
+"        изменение этого значения приводит к немедленному результату, но не влияет\n"
+"        сохраненное состояние.</em>"
 
 #: Mailman/Cgi/admin.py:763
 msgid "Mass Subscriptions"
@@ -368,11 +375,11 @@ msgstr "Список подписчиков"
 
 #: Mailman/Cgi/admin.py:784
 msgid "(help)"
-msgstr ""
+msgstr "(подсказка)"
 
 #: Mailman/Cgi/admin.py:785
 msgid "Find member %(link)s:"
-msgstr ""
+msgstr "Найти подписчика %(link)s:"
 
 #: Mailman/Cgi/admin.py:788
 msgid "Search..."
@@ -408,19 +415,19 @@ msgstr ""
 
 #: Mailman/Cgi/admin.py:883
 msgid "nomail<br>[reason]"
-msgstr ""
+msgstr "nomail<br>[причина]"
 
 #: Mailman/Cgi/admin.py:884
 msgid "ack"
-msgstr ""
+msgstr "ack"
 
 #: Mailman/Cgi/admin.py:884
 msgid "not metoo"
-msgstr ""
+msgstr "not metoo"
 
 #: Mailman/Cgi/admin.py:885
 msgid "nodupes"
-msgstr ""
+msgstr "nodupes"
 
 #: Mailman/Cgi/admin.py:886
 msgid "digest"
@@ -428,7 +435,7 @@ msgstr "дайджест"
 
 #: Mailman/Cgi/admin.py:886
 msgid "plain"
-msgstr ""
+msgstr "обычная"
 
 #: Mailman/Cgi/admin.py:887
 msgid "language"
@@ -491,12 +498,16 @@ msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
 msgstr ""
+"<b>ack</b> -- получает ли подписчик подтверждения о доставке\n"
+"        своих писем в список рассылки?"
 
 #: Mailman/Cgi/admin.py:999
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
 "        own postings?"
 msgstr ""
+"<b>not metoo</b> -- хочет ли подписчик отказаться от получения копий\n"
+"        своих собственных сообщений?"
 
 #: Mailman/Cgi/admin.py:1002
 msgid ""
@@ -542,15 +553,15 @@ msgstr "с %(start)s по %(end)s"
 
 #: Mailman/Cgi/admin.py:1057
 msgid "Subscribe these users now or invite them?"
-msgstr ""
+msgstr "Подписать этих пользователей или пригласить?"
 
 #: Mailman/Cgi/admin.py:1059
 msgid "Invite"
-msgstr ""
+msgstr "Пригласить"
 
 #: Mailman/Cgi/admin.py:1059 Mailman/Cgi/confirm.py:272 Mailman/Cgi/listinfo.py:171
 msgid "Subscribe"
-msgstr "Подписаться"
+msgstr "Подписать"
 
 #: Mailman/Cgi/admin.py:1065
 msgid "Send welcome messages to new subscribees?"
@@ -762,7 +773,7 @@ msgstr "все отложенные сообщения"
 
 #: Mailman/Cgi/admindb.py:241
 msgid "Mailman Administrative Database Error"
-msgstr ""
+msgstr "ошибка работы с административной базой данных Mailman"
 
 #: Mailman/Cgi/admindb.py:246
 msgid "list of available mailing lists."
@@ -899,7 +910,7 @@ msgstr "Причина:"
 #: Mailman/Cgi/admindb.py:455 Mailman/Handlers/Decorate.py:49 Mailman/Handlers/Scrubber.py:157
 #: Mailman/Handlers/Scrubber.py:158
 msgid "not available"
-msgstr ""
+msgstr "отсутствует"
 
 #: Mailman/Cgi/admindb.py:511
 msgid "Posting Held for Approval"
@@ -2537,7 +2548,7 @@ msgstr ""
 
 #: Mailman/Commands/cmd_unsubscribe.py:83
 msgid "You gave the wrong password"
-msgstr ""
+msgstr "Вы указали неверный пароль"
 
 #: Mailman/Commands/cmd_unsubscribe.py:86
 msgid "Unsubscription request succeeded."
@@ -2549,6 +2560,9 @@ msgid ""
 "    who\n"
 "        See everyone who is on this mailing list.\n"
 msgstr ""
+"\n"
+"    who\n"
+"        Получить список подписчиков на этот список рассылки.\n"
 
 #: Mailman/Commands/cmd_who.py:34
 msgid ""
@@ -2573,11 +2587,11 @@ msgstr ""
 
 #: Mailman/Commands/cmd_who.py:110
 msgid "You are not allowed to retrieve the list membership."
-msgstr ""
+msgstr "Вы не имеете права получать список подписчиков."
 
 #: Mailman/Commands/cmd_who.py:116
 msgid "This list has no members."
-msgstr ""
+msgstr "На этот список никто не подписан."
 
 #: Mailman/Commands/cmd_who.py:129
 msgid "Non-digest (regular) members:"
@@ -5880,7 +5894,7 @@ msgstr ""
 
 #: bin/list_lists:100
 msgid "matching mailing lists found:"
-msgstr ""
+msgstr "найдены следующие подходящие по образцу списки рассылки:"
 
 #: bin/list_members:19
 msgid ""
@@ -6054,19 +6068,19 @@ msgstr ""
 
 #: bin/mailmanctl:300
 msgid "No command given."
-msgstr ""
+msgstr "Не указано ни одной команды."
 
 #: bin/mailmanctl:303
 msgid "Bad command: %(command)s"
-msgstr ""
+msgstr "Неизвестная команда: %(command)s"
 
 #: bin/mailmanctl:315
 msgid "Shutting down Mailman's master qrunner"
-msgstr ""
+msgstr "Останавливается основной обработчик Mailman"
 
 #: bin/mailmanctl:322
 msgid "Restarting Mailman's master qrunner"
-msgstr ""
+msgstr "Перезапускается основной обработчик Mailman"
 
 #: bin/mailmanctl:326
 msgid "Re-opening all log files"
@@ -6117,7 +6131,7 @@ msgstr ""
 
 #: bin/mmsitepass:85
 msgid "Passwords do not match; no changes made."
-msgstr ""
+msgstr "Пароли не совпадают; изменения сделаны не были."
 
 #: bin/mmsitepass:88
 msgid "Interrupted..."
@@ -6125,11 +6139,11 @@ msgstr ""
 
 #: bin/mmsitepass:94
 msgid "Password changed."
-msgstr ""
+msgstr "Пароль был изменен."
 
 #: bin/mmsitepass:96
 msgid "Password change failed."
-msgstr ""
+msgstr "Пароль изменить не удалось."
 
 #: bin/newlist:19
 msgid ""
@@ -6183,11 +6197,11 @@ msgstr ""
 
 #: bin/newlist:114
 msgid "Unknown language: %(lang)s"
-msgstr ""
+msgstr "Неизвестный язык: %(lang)s"
 
 #: bin/newlist:119
 msgid "Enter the name of the list: "
-msgstr ""
+msgstr "Укажите имя списка рассылки: "
 
 #: bin/newlist:136
 msgid "Enter the email of the person running the list: "
@@ -6199,7 +6213,7 @@ msgstr ""
 
 #: bin/newlist:145
 msgid "The list password cannot be empty"
-msgstr ""
+msgstr "Пароль списка рассылки не может быть пустым"
 
 #: bin/newlist:160
 msgid "Bad owner email address: %(owner_mail)s"
@@ -6210,6 +6224,7 @@ msgid "Hit enter to notify %(listname)s owner..."
 msgstr ""
 
 #: bin/pygettext.py:7
+#, fuzzy
 msgid ""
 "pygettext -- Python equivalent of xgettext(1)\n"
 "\n"
@@ -6345,6 +6360,7 @@ msgid ""
 msgstr ""
 
 #: bin/pygettext.py:165
+#, fuzzy
 msgid ""
 "# SOME DESCRIPTIVE TITLE.\n"
 "# Copyright (C) YEAR ORGANIZATION\n"
@@ -6381,38 +6397,47 @@ msgstr ""
 "\n"
 
 #: bin/pygettext.py:366
+#, fuzzy
 msgid "# File: %(filename)s, line: %(lineno)d"
 msgstr ""
 
 #: bin/pygettext.py:374
+#, fuzzy
 msgid " %(filename)s:%(lineno)d"
 msgstr ""
 
 #: bin/pygettext.py:451
+#, fuzzy
 msgid "Invalid value for --style: %s"
 msgstr ""
 
 #: bin/pygettext.py:459
+#, fuzzy
 msgid "pygettext.py (xgettext for Python) %s"
 msgstr ""
 
 #: bin/pygettext.py:465
+#, fuzzy
 msgid "--width argument must be an integer: %s"
 msgstr ""
 
 #: bin/pygettext.py:492
+#, fuzzy
 msgid "Can't read --exclude-file: %s"
-msgstr ""
+msgstr "Не удалось прочитать --exclude-file: %s"
 
 #: bin/pygettext.py:503
+#, fuzzy
 msgid "Reading standard input"
-msgstr ""
+msgstr "Обрабатывается поток стандартного ввода"
 
 #: bin/pygettext.py:508
+#, fuzzy
 msgid "Working on %s"
-msgstr ""
+msgstr "Обрабатывается %s"
 
 #: bin/pygettext.py:541
+#, fuzzy
 msgid "a unicode string"
 msgstr ""
 
@@ -6476,11 +6501,11 @@ msgstr ""
 
 #: bin/qrunner:173
 msgid "All runs all the above qrunners"
-msgstr ""
+msgstr "Для запуска вышеуказанных обработчиков используйте \"All\""
 
 #: bin/qrunner:209
 msgid "No runner name given."
-msgstr ""
+msgstr "Не указано имя обработчика."
 
 #: bin/remove_members:19
 msgid ""
@@ -6519,7 +6544,7 @@ msgstr ""
 
 #: bin/remove_members:128
 msgid "Could not open file for reading: %(filename)s."
-msgstr ""
+msgstr "Не удалось открыть файл на чтение: %(filename)s."
 
 #: bin/remove_members:135
 msgid "Error opening list %(listname)s... skipping."
@@ -6527,7 +6552,7 @@ msgstr "Не удалось открыть список рассылки %(listname)s...  Пропущен."
 
 #: bin/remove_members:145
 msgid "No such member: %(addr)s"
-msgstr ""
+msgstr "Такой подписчик отсутствует: %(addr)s"
 
 #: bin/remove_members:149
 msgid "User `%(addr)s' removed from list: %(listname)s."
@@ -6573,7 +6598,7 @@ msgstr ""
 
 #: bin/rmlist:97
 msgid "Not removing archives.  Reinvoke with -a to remove them."
-msgstr ""
+msgstr "Архивы удалены не были. Для их удаления запустите программу с параметром -a."
 
 #: bin/rmlist:111
 msgid "list info"
@@ -6675,7 +6700,7 @@ msgstr "Не указан список рассылки"
 
 #: bin/sync_members:178
 msgid "Must have a listname and a filename"
-msgstr ""
+msgstr "Имя списка рассылки и имя файла должны быть указаны"
 
 #: bin/sync_members:187
 msgid "Cannot read address file: %(filename)s: %(msg)s"
@@ -6691,7 +6716,7 @@ msgstr ""
 
 #: bin/sync_members:211
 msgid "You must fix the preceding invalid addresses first."
-msgstr ""
+msgstr "Сначала вы должны поправить вышеуказанные адреса."
 
 #: bin/sync_members:254
 msgid "Added  : <%(addr)30s> %(name)s"
@@ -6717,6 +6742,7 @@ msgid ""
 msgstr ""
 
 #: bin/update:19
+#, fuzzy
 msgid ""
 "Perform all necessary upgrades.\n"
 "\n"
@@ -6734,6 +6760,22 @@ msgid ""
 "Use this script to help you update to the latest release of Mailman from\n"
 "some previous version.  It knows about versions back to 1.0b4 (?).\n"
 msgstr ""
+"Произвести все необходимые обновления.\n"
+"\n"
+"Запуск: %(PROGRAM)s [параметры]\n"
+"\n"
+"Параметры:\n"
+"    -f/--force\n"
+"        Force running the upgrade procedures.  Normally, if the version number\n"
+"        of the installed Mailman matches the current version number (or a\n"
+"        `downgrade' is detected), nothing will be done.\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Вывести подсказку и завершить работу.\n"
+"\n"
+"Use this script to help you update to the latest release of Mailman from\n"
+"some previous version.  It knows about versions back to 1.0b4 (?).\n"
 
 #: bin/update:99
 msgid "Fixing language templates: %(listname)s"
@@ -6745,13 +6787,15 @@ msgstr "ВНИМАНИЕ: не удалось получить единоличный доступ к списку рассылки: %(li
 
 #: bin/update:193
 msgid "Updating the held requests database."
-msgstr ""
+msgstr "Обновляется база данных отложенных запросов."
 
 #: bin/update:215
 msgid ""
 "For some reason, %(mbox_dir)s exists as a file.  This won't work with\n"
 "b6, so I'm renaming it to %(mbox_dir)s.tmp and proceeding."
 msgstr ""
+"В силу каких-то причин %(mbox_dir)s является обычным файлом. Это может привести\n"
+"к ошибкам.  Файл будет переименован в %(mbox_dir)s.tmp и работа будет продолжена."
 
 #: bin/update:227
 msgid ""
@@ -6782,7 +6826,7 @@ msgstr ""
 
 #: bin/update:259
 msgid "- updating old private mbox file"
-msgstr ""
+msgstr "-- обновляется старый закрытый архив в формате mbox"
 
 #: bin/update:267
 msgid ""
@@ -6806,7 +6850,7 @@ msgstr ""
 
 #: bin/update:283
 msgid "- updating old public mbox file"
-msgstr ""
+msgstr "-- обновляется старый открытый архив в формате mbox"
 
 #: bin/update:291
 msgid ""
@@ -6822,15 +6866,15 @@ msgstr ""
 
 #: bin/update:322
 msgid "- This list looks like it might have <= b4 list templates around"
-msgstr ""
+msgstr "-- похоже, что этот список рассылки может использовать шаблоны версии <= b4"
 
 #: bin/update:329
 msgid "- moved %(o_tmpl)s to %(n_tmpl)s"
-msgstr ""
+msgstr "-- перемещен %(o_tmpl) в %(n_tmpl)s"
 
 #: bin/update:331
 msgid "- both %(o_tmpl)s and %(n_tmpl)s exist, leaving untouched"
-msgstr ""
+msgstr "-- как %(o_tmpl)s, так и %(n_tmpl) существуют; ничего не сделано"
 
 #: bin/update:361
 msgid "removing directory %(src)s and everything underneath"
@@ -6865,7 +6909,7 @@ msgid ""
 "fixing all the perms on your old html archives to work with b6\n"
 "If your archives are big, this could take a minute or two..."
 msgstr ""
-"поправляются режим доступа к старым html-архивам\n"
+"поправляются режимы доступа к старым html-архивам\n"
 "если архивы велики, операция может занять несколько минут..."
 
 #: bin/update:421
@@ -6878,7 +6922,7 @@ msgstr "Обновление списка рассылки: %(listname)s"
 
 #: bin/update:425
 msgid "Updating Usenet watermarks"
-msgstr ""
+msgstr "Обновление usenet-меток"
 
 #: bin/update:430
 msgid "- nothing to update here"
@@ -6886,11 +6930,11 @@ msgstr "- здесь обновлять нечего"
 
 #: bin/update:453
 msgid "- usenet watermarks updated and gate_watermarks removed"
-msgstr ""
+msgstr "-- usenet-метки обновлены, файл gate_watermarks удален"
 
 #: bin/update:463
 msgid "Updating old pending_subscriptions.db database"
-msgstr ""
+msgstr "Обновляется старая база данных pending_subscriptions.db"
 
 #: bin/update:480
 msgid ""
@@ -6939,6 +6983,9 @@ msgid ""
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
+"Обнаружена попытка перехода на более старую версию (с версии %(hexlversion)s на\n"
+"версию %(hextversion)s). Скорее всего, это небезопасно.\n"
+"Работа завершена."
 
 #: bin/update:541
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
@@ -6959,7 +7006,7 @@ msgstr ""
 "\n"
 "ОШИБКА:\n"
 "\n"
-"Для некоторый списков не удалось получить единоличный доступ.  Это может означать,\n"
+"Для некоторых списков не удалось получить единоличный доступ.  Это может означать,\n"
 "что либо Mailman был запущен, в момент, когда вы пытались обновлять его, либо остались\n"
 "какие-то файлы замков в каталоге %(lockdir)s.\n"
 "\n"
@@ -7134,7 +7181,7 @@ msgstr "Выполняется %(module)s.%(callable)s()..."
 
 #: bin/withlist:266
 msgid "The variable `m' is the %(listname)s MailList instance"
-msgstr ""
+msgstr "Переменная `m' -- экземпляр объекта, представляющего список рассылки %(listname)s"
 
 #: cron/bumpdigests:19
 msgid ""
@@ -7150,6 +7197,18 @@ msgid ""
 "The lists named on the command line are bumped.  If no list names are given,\n"
 "all lists are bumped.\n"
 msgstr ""
+"Увеличить номер тома дайджеста на один и установить номер дайджеста в один.\n"
+"\n"
+"Запуск: %(PROGRAM)s [параметры] [список-рассылки ...]\n"
+"\n"
+"Параметры:\n"
+"\n"
+"    --help\n"
+"    -h\n"
+"        Вывести подсказку и завершить работу.\n"
+"\n"
+"Операция будет произведена над указанными списками рассылки, если список рассылки\n"
+"не указан, операция будет произведена над всеми списками рассылки.\n"
 
 #: cron/checkdbs:19
 msgid ""
@@ -7185,6 +7244,7 @@ msgstr ""
 "  Причина: %(reason)s"
 
 #: cron/disabled:19
+#, fuzzy
 msgid ""
 "Process disabled members, recommended once per day.\n"
 "\n"
@@ -7203,6 +7263,23 @@ msgid ""
 "    --list listname\n"
 "        Process only the given list, otherwise do all lists.\n"
 msgstr ""
+"Обработать з disabled members, recommended once per day.\n"
+"\n"
+"Этот сценарий просматривает списки подписчиков в поисках script cruises through every mailing list looking for members whose\n"
+"delivery is disabled.  If they have been disabled due to bounces, they will\n"
+"receive another notification, or they may be removed if they've received the\n"
+"maximum number of notifications.\n"
+"\n"
+"Запуск: %(PROGRAM)s [параметры]\n"
+"\n"
+"Параметры:\n"
+"    -h / --help\n"
+"        Вывести подсказку и завершить работу.\n"
+"\n"
+"    -l имясписка\n"
+"    --list имясписка\n"
+"        Обработывать подписчиков только указанного списка рассылки.  По\n"
+"        умолчанию, обрабатывать всех подписчиков.\n"
 
 #: cron/disabled:87
 msgid "[disabled by periodic sweep and cull, no message available]"
