@@ -111,6 +111,7 @@ def listinfo_overview(msg=''):
 
     # set up some local variables
     adj = msg and _('right') or ''
+    siteowner = Utils.get_site_email()
     welcome.extend(
         (_(''' To visit the info page for an unadvertised list,
         a URL similar to this one, but with a '/' and the %(adj)s
@@ -120,8 +121,7 @@ def listinfo_overview(msg=''):
               _('the list admin overview page')),
          _(''' to find the management interface for your list.
          <p>Send questions or comments to '''),
-         Link('mailto:' + mm_cfg.MAILMAN_OWNER,
-              mm_cfg.MAILMAN_OWNER),
+         Link('mailto:' + siteowner, siteowner),
          '.<p>'))
 
     table.AddRow([apply(Container, welcome)])
