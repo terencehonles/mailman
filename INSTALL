@@ -68,9 +68,10 @@ upgrade.
 
       Make sure this directory is set to group `mailman' (or whatever
       you're going to specify as --with-ownergroup) and has the setgid
-      bit set.  You probably also want to guarantee that this
-      directory is readable and executable by everyone.  For example,
-      these shell commands will accomplish this:
+      bit set (but see README.BSD if you're on a BSD system).  You
+      probably also want to guarantee that this directory is readable
+      and executable by everyone.  For example, these shell commands
+      will accomplish this:
 
           % cd $prefix
           % chgrp mailman .
