@@ -73,6 +73,31 @@ class Language(GUIBase):
              <a href="?VARHELP=language/preferred_language">default
              language</a> must be included.''')),
 
+            ('encode_ascii_prefixes', mm_cfg.Radio,
+             (_('Never'), _('Always'), _('As needed')), 0,
+             _("""Encode the
+             <a href="?VARHELP=general/subject_prefix">subject
+             prefix</a> even when it consists of only ASCII characters?"""),
+
+             _("""If your mailing list's default language uses a non-ASCII
+             character set and the prefix contains non-ASCII characters, the
+             prefix will always be encoded according to the relevant
+             standards.  However, if your prefix contains only ASCII
+             characters, you may want to set this option to <em>Never</em> to
+             disable prefix encoding.  This can make the subject headers
+             slightly more readable for users with mail readers that don't
+             properly handle non-ASCII encodings.
+
+             <p>Note however, that if your mailing list receives both encoded
+             and unencoded subject headers, you might want to choose <em>As
+             needed</em>.  Using this setting, Mailman will not encode ASCII
+             prefixes when the rest of the header contains only ASCII
+             characters, but if the original header contains non-ASCII
+             characters, it will encode the prefix.  This avoids an ambiguity
+             in the standards which could cause some mail readers to display
+             extra, or missing spaces between the prefix and the original
+             header.""")),
+
             ]
 
     def _setValue(self, mlist, property, val, doc):
