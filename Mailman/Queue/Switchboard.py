@@ -56,10 +56,6 @@ except NameError:
     True = 1
     False = 0
 
-# This flag causes Mailman to fsync() the file after writing and flushing its
-# contents.  While this ensures the data is written to disk, avoiding data
-# loss, it is a huge performance killer.
-SYNC_AFTER_WRITE = False
 # This flag causes messages to be written as pickles (when True) or text files
 # (when False).  Pickles are more efficient because the message doesn't need
 # to be re-parsed every time it's unqueued, but pickles are not human readable.
@@ -255,7 +251,7 @@ class MarshalSwitchboard(_Switchboard):
         marshal.dump(dict, fp)
         # Make damn sure that the data we just wrote gets flushed to disk
         fp.flush()
-        if SYNC_AFTER_WRITE:
+        if mm_cfg.SYNC_AFTER_WRITE:
             os.fsync(fp.fileno())
         fp.close()
 
@@ -327,7 +323,7 @@ class ASCIISwitchboard(_Switchboard):
             print >> fp, '%s = %s' % (k, repr(v))
         # Make damn sure that the data we just wrote gets flushed to disk
         fp.flush()
-        if SYNC_AFTER_WRITE:
+        if mm_cfg.SYNC_AFTER_WRITE:
             os.fsync(fp.fileno())
         fp.close()
 
