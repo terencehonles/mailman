@@ -61,8 +61,7 @@ def process(msg):
     leaves = []
     flatten(msg, leaves)
     for i, subpart in zip(range(len(leaves)-1), leaves):
-        if subpart.get_type() == 'text/plain' and \
-               leaves[i+1].get_main_type() == 'message':
+        if subpart.get_type() == 'text/plain':
             plainmsg = subpart
             break
     if not plainmsg:
