@@ -214,7 +214,7 @@ def PrintPostRequest(mlist, id, info, total, count, form):
               CheckBox('forward-%d' % id, 'on', 0).Format() +
               '&nbsp;Additionally, forward this message to: ' +
               TextBox('forward-addr-%d' % id, size=47,
-                      value=mlist.GetAdminEmail()).Format()
+                      value=mlist.GetOwnerEmail()).Format()
               ])
     t.AddRow([
 	Bold('If you reject this post,<br>please explain (optional):'),
