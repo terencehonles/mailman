@@ -19,6 +19,7 @@
 import os
 import cgi
 import string
+import gettext
 
 from Mailman import Utils
 from Mailman import MailList
@@ -31,6 +32,8 @@ from Mailman.Logging.Syslog import syslog
 
 
 def main():
+    def _(string): return string
+
     template_data = (
         ('listinfo.html',    _('General list information page')),
         ('subscribe.html',   _('Subscribe results page')),
@@ -38,6 +41,7 @@ def main():
         ('handle_opts.html', _('Changing user options results page')),
         )
 
+    _ = gettext.gettext
     doc = Document()
     parts = Utils.GetPathPieces()
     if not parts:
@@ -53,6 +57,8 @@ def main():
         print doc.Format(bgcolor='#ffffff')
         syslog('error', _('No such list "%s": %s\n') % (listname, e))
         return
+
+    os.environ['LANG'] = mlist.preferred_language
 
     # Must be authenticated to get any farther
     cgidata = cgi.FieldStorage()
@@ -130,7 +136,9 @@ def ChangeHTML(mlist, cgi_info, template_name, doc):
 	doc.AddItem('<hr>')
 	return
     code = cgi_info['html_code'].value
-    f = open(os.path.join(mlist._template_dir, template_name), 'w')
+    f = open(os.path.join(mlist._template_dir, mlist.preferred_language,
+                          template_name),
+             'w')
     f.write(code)
     f.close()
     doc.AddItem(Header(3, _('HTML successfully updated.')))

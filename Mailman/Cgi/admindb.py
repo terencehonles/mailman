@@ -67,6 +67,9 @@ def main():
         handle_no_list(doc, _('No such list <em>%s</em><p>') % listname)
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
+
+    os.environ['LANG'] = mlist.preferred_language
+
     #
     # now we must authorize the user to view this page, and if they are, to
     # handle both the printing of the current outstanding requests, and the
@@ -111,7 +114,8 @@ def PrintRequests(mlist, doc):
 	return
 
     doc.AddItem(Utils.maketext(
-        'admindbpreamble.html', {'listname': mlist.real_name}, raw=1))
+        'admindbpreamble.html', {'listname': mlist.real_name},
+        mlist.preferred_language, raw=1))
     doc.AddItem('.<p>')
     form = Form(mlist.GetScriptURL('admindb'))
     doc.AddItem(form)
@@ -147,7 +151,7 @@ def PrintRequests(mlist, doc):
 
 
 def PrintAddMemberRequest(mlist, id, table):
-    time, addr, passwd, digest = mlist.GetRecord(id)
+    time, addr, passwd, digest, lang  = mlist.GetRecord(id)
     table.AddRow([addr,
                   RadioButtonArray(id, (_('Subscribe'), _('Refuse')),
                                    values=(mm_cfg.SUBSCRIBE, mm_cfg.REJECT)),

@@ -31,6 +31,7 @@ from Mailman import Utils
 from Mailman import MailList
 from Mailman import htmlformat
 from Mailman import Errors
+from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
 
 
@@ -53,10 +54,26 @@ def main():
 
     form = cgi.FieldStorage()
 
+    # messages in form should go in selected language (if any...)
+    if form.has_key('language'):
+       os.environ['LANG'] = lang = form['language'].value
+    else:
+       os.environ['LANG'] = lang = mlist.preferred_language
+
     bad = ""
     # These nested conditionals constituted a cascading authentication
     # check, yielding a 
-    if not mlist.private_roster:
+    # jcrey:
+    # Already in roster page, an user may desire to see roster page 
+    # in a different language in a list with privacy access
+
+    try:
+       FromURL = os.environ['HTTP_REFERER']
+    except KeyError:
+       FromURL = ''
+    
+    if not mlist.private_roster or \
+           mlist.GetScriptURL('roster', absolute=1) == FromURL:
         # No privacy.
         bad = ""
     else:
@@ -93,8 +110,12 @@ def main():
         print doc.Format()
         sys.exit(0)
 
-    replacements = mlist.GetAllReplacements()
-    doc.AddItem(mlist.ParseTags('roster.html', replacements))
+    replacements = mlist.GetAllReplacements(lang)
+    replacements['<mm-displang-box>'] = mlist.FormatButton(
+        'displang-button',
+        text = _('See this page in'))
+    replacements['<mm-lang-form-start>'] = mlist.FormatFormStart('roster')
+    doc.AddItem(mlist.ParseTags('roster.html', replacements, lang))
     print doc.Format()
 
 

@@ -59,6 +59,8 @@ def main():
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
+    os.environ['LANG'] = mlist.preferred_language
+
     # Sanity check the user
     user = Utils.LCDomain(user)
     if not mlist.members.has_key(user) and \
@@ -82,8 +84,12 @@ def main():
     else:
         presentable_user = user
 
+    # user's preferred language
+    pluser = mlist.GetPreferredLanguage(user)
+    os.environ['LANG'] = pluser
+
     # Do replacements
-    replacements = mlist.GetStandardReplacements()
+    replacements = mlist.GetStandardReplacements(pluser)
     replacements['<mm-digest-radio-button>'] = mlist.FormatOptionButton(
         mm_cfg.Digests, 1, user)
     replacements['<mm-undigest-radio-button>'] = mlist.FormatOptionButton(
@@ -142,5 +148,5 @@ You are subscribed to this list with the case-preserved address
     else:
         replacements['<mm-case-preserved-user>'] = ''
 
-    doc.AddItem(mlist.ParseTags('options.html', replacements))
+    doc.AddItem(mlist.ParseTags('options.html', replacements, pluser))
     print doc.Format()

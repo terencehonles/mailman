@@ -49,6 +49,9 @@ def main():
         print doc.Format(bgcolor="#ffffff")
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
+
+    os.environ['LANG'] = mlist.preferred_language
+
     try:
         process_form(mlist, doc)
     finally:
@@ -78,6 +81,13 @@ def process_form(mlist, doc):
     results = ''
 
     # Preliminaries done, actual processing of the form input below.
+    if form.has_key("language"):
+        language = form["language"].value
+    else:
+        language = mlist.preferred_language
+
+    os.environ['LANG'] = language
+
     if form.has_key("UserOptions") or \
             form.has_key("info") and \
             not form.has_key("email"):
@@ -161,7 +171,7 @@ def process_form(mlist, doc):
                 digesting = " digest"
             else:
                 digesting = ""
-            mlist.AddMember(email, pw, digest, remote)
+            mlist.AddMember(email, pw, digest, remote, language)
         #
         # check for all the errors that mlist.AddMember can throw
         # options  on the web page for this cgi
@@ -208,14 +218,16 @@ def process_form(mlist, doc):
             results = results + \
                       _("You have been successfully subscribed to %s.") % \
                       (mlist.real_name)
-    PrintResults(mlist, results, doc)
+    PrintResults(mlist, results, doc, language)
 
 
 
-def PrintResults(mlist, results, doc):
-    replacements = mlist.GetStandardReplacements()
+def PrintResults(mlist, results, doc, lang=None):
+    if lang is None:
+        lang = mlist.preferred_language
+    replacements = mlist.GetStandardReplacements(lang)
     replacements['<mm-results>'] = results
-    output = mlist.ParseTags('subscribe.html', replacements)
+    output = mlist.ParseTags('subscribe.html', replacements, lang)
     doc.AddItem(output)
     print doc.Format(bgcolor="#ffffff")
 

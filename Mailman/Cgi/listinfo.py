@@ -21,6 +21,7 @@
 
 import os
 import string
+import cgi
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -45,7 +46,14 @@ def main():
         syslog('error', 'listinfo: no such list "%s": %s' % (listname, e))
         return
 
-    FormatListListinfo(mlist)
+    # see if the user want to see this page in other language
+    form = cgi.FieldStorage()
+    if form.has_key('language'):
+        language = form['language'].value
+    else:
+        language = mlist.preferred_language
+
+    FormatListListinfo(mlist, language)
 
 
 
@@ -88,6 +96,10 @@ def FormatListinfoOverview(error=None):
 		continue
 	    else:
 		advertised.append(mlist)
+
+    # This call to environ must be done because MailList overwrite
+    # Environment variable 'LANG'
+    os.environ['LANG'] = mm_cfg.DEFAULT_SERVER_LANGUAGE
 
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
@@ -143,12 +155,14 @@ def FormatListinfoOverview(error=None):
 
 
 
-def FormatListListinfo(mlist):
+def FormatListListinfo(mlist, lang):
     "Expand the listinfo template against the list's settings, and print."
+
+    os.environ['LANG'] = lang
 
     doc = HeadlessDocument()
 
-    replacements = mlist.GetStandardReplacements()
+    replacements = mlist.GetStandardReplacements(lang)
 
     if not mlist.digestable or not mlist.nondigestable:
         replacements['<mm-digest-radio-button>'] = ""
@@ -168,13 +182,16 @@ def FormatListListinfo(mlist):
     replacements['<mm-subscribe-form-start>'] = mlist.FormatFormStart(
         'subscribe')
     replacements['<mm-roster-form-start>'] = mlist.FormatFormStart('roster')
-    replacements['<mm-editing-options>'] = mlist.FormatEditingOption()
+    replacements['<mm-editing-options>'] = mlist.FormatEditingOption(lang)
     replacements['<mm-info-button>'] = SubmitButton('UserOptions',
                                                     _('Edit Options')).Format()
-    replacements['<mm-roster-option>'] = mlist.FormatRosterOptionForUser()
+    replacements['<mm-roster-option>'] = mlist.FormatRosterOptionForUser(lang)
+    replacements['<mm-displang-box>'] = mlist.FormatButton('displang-button',
+                             text = _("See this page in"))
+    replacements['<mm-lang-form-start>'] = mlist.FormatFormStart('listinfo')
 
     # Do the expansion.
-    doc.AddItem(mlist.ParseTags('listinfo.html', replacements))
+    doc.AddItem(mlist.ParseTags('listinfo.html', replacements, lang))
     print doc.Format()
 
 

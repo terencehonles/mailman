@@ -29,49 +29,6 @@ from Mailman.Logging.Syslog import syslog
 
 LogStdErr("error", "private")
 
-
-PAGE = '''
-<html>
-<head>
-  <title>%(listname)s Private Archives Authentication</title>
-</head>
-<body bgcolor="#ffffff">
-<FORM METHOD=POST ACTION="%(basepath)s/">
-  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
-    <TR>
-      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
-	<B><FONT COLOR="#000000" SIZE="+1">%(listname)s Private Archives
-	    Authentication</FONT></B>
-      </TD>
-    </TR>
-    <tr>
-      <td COLSPAN="2"> <P>%(message)s </td>
-    <tr>
-    </tr>
-      <TD> <div ALIGN="Right">Address:  </div></TD>
-      <TD> <INPUT TYPE=TEXT NAME=username SIZE=30> </TD>
-    <tr>
-    </tr>
-      <TD> <div ALIGN="Right"> Password: </div> </TD>
-      <TD> <INPUT TYPE=password NAME=password SIZE=30></TD>
-    <tr>
-    </tr>
-      <td></td>
-      <td> <INPUT TYPE=SUBMIT VALUE="Let me in...">
-      </td>
-    </tr>
-  </TABLE>
-      <p><strong><em>Important:</em></strong> From this point on, you
-      must have cookies enabled in your browser, otherwise you will not
-      be able to read the private archives.
-
-      <p>Session cookies are used in the private archives so that you
-      don\'t need to re-authenticate for every article your read.  This
-      cookie will expire automatically when you exit your browser.
-</FORM>
-'''
-
-	
 login_attempted = 0
 _list = None
 
@@ -169,12 +126,12 @@ def main():
     
     if not is_auth:
         # Output the password form
-        print 'Content-type: text/html\n\n'
-        page = PAGE
-        while path and path[0] == '/': path=path[1:]  # Remove leading /'s
+        print 'Content-type: text/html; charset=' + Utils.GetCharSet() + '\n\n'
+        while path and path[0] == '/':
+            path=path[1:]  # Remove leading /'s
         basepath = os.path.split(mlist.GetBaseArchiveURL())[0]
         listname = mlist.real_name
-        print page % vars()
+        print Utils.maketext('private.txt', vars(), mlist.preferred_language)
         sys.exit(0)
 
     # Authorization confirmed... output the desired file
@@ -190,7 +147,7 @@ def main():
         else:
             f = open(true_filename, 'r')
     except IOError:
-        print 'Content-type: text/html\n'
+        print 'Content-type: text/html; charset=' + Utils.GetCharSet() + '\n\n'
 
         print "<H3>" + _("Archive File Not Found") + "</H3>"
         print _("No file"), path, '(%s)' % true_filename

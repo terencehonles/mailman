@@ -33,17 +33,7 @@ from Mailman import mm_cfg
 from Mailman.Cgi import Auth
 from Mailman.Logging.Syslog import syslog
 
-
-CATEGORIES = [('general', "General Options"),
-              ('members', "Membership Management"),
-              ('privacy', "Privacy Options"),
-              ('nondigest', "Regular-member (non-digest) Options"),
-              ('digest', "Digest-member Options"),
-              ('bounce', "Bounce Options"),
-              ('archive', "Archival Options"),
-	      ('gateway', "Mail-News and News-Mail gateways"),
-              ('autoreply', 'Auto-responder'),
-              ]
+CATEGORIES = []
 
 
 
@@ -54,6 +44,7 @@ def main():
     settings, which is processed before producing the new version.
 
     """
+    global CATEGORIES
     doc = Document()
     parts = Utils.GetPathPieces()
     if not parts:
@@ -90,14 +81,17 @@ def main():
             Auth.loginpage(mlist, 'admin', frontpage=1)
             return
 
+        os.environ['LANG'] = mlist.preferred_language
+
         CATEGORIES = [('general', _("General Options")),
-              ('members', _("Membership Management")),
-              ('privacy', _("Privacy Options")),
-              ('nondigest', _("Regular-member (non-digest) Options")),
-              ('digest', _("Digest-member Options")),
-              ('bounce', _("Bounce Options")),
-              ('archive', _("Archival Options")),
-              ('gateway', _("Mail-News and News-Mail gateways"))]
+                      ('members', _("Membership Management")),
+                      ('privacy', _("Privacy Options")),
+                      ('nondigest', _("Regular-member (non-digest) Options")),
+                      ('digest', _("Digest-member Options")),
+                      ('bounce', _("Bounce Options")),
+                      ('archive', _("Archival Options")),
+                      ('gateway', _("Mail-News and News-Mail gateways")),
+                      ]
 
         if category not in map(lambda x: x[0], CATEGORIES):
             category = 'general'
@@ -168,6 +162,8 @@ def FormatAdminOverview(error=None):
 	l = MailList.MailList(n, lock=0)
         if l.advertised:
             advertised.append(l)
+
+    os.environ['LANG'] = mm_cfg.DEFAULT_SERVER_LANGUAGE
 
     if error:
 	greeting = FontAttr(error, color="ff5060", size="+1")
@@ -498,6 +494,17 @@ def GetItemGuiValue(mlist, kind, varname, params):
         container.AddItem(_('<br><em>...specify a file to upload</em><br>'))
         container.AddItem(FileUpload(varname+'_upload', r, c))
         return container
+    
+    # jcrey - new to deal with language
+    elif kind == mm_cfg.Select:
+        if params:
+	   values, legend, selected = params
+	else:
+	   values   = mlist.GetAvailableLanguages()
+	   legend   = map(_, map(Utils.GetLanguageDescr, values))
+	   selected = values.index(mlist.preferred_language)
+	return SelectOptions(varname, values, legend, selected)
+
 
 
 def GetItemGuiDescr(mlist, category, varname, descr, detailsp):
@@ -533,7 +540,7 @@ def FormatMembershipOptions(mlist, cgi_data):
     user_table.AddRow([Center(Header(4, _("Membership List")))])
     user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
                            user_table.GetCurrentCellIndex(),
-                           bgcolor="#cccccc", colspan=8)
+                           bgcolor="#cccccc", colspan=9)
     membercnt = len(mlist.members) + len(mlist.digest_members)
     chunksz = mlist.admin_member_chunksize
     user_table.AddRow(
@@ -542,13 +549,13 @@ def FormatMembershipOptions(mlist, cgi_data):
                        ))])
     user_table.AddCellInfo(user_table.GetCurrentRowIndex(),
                            user_table.GetCurrentCellIndex(),
-                           bgcolor="#cccccc", colspan=8)
+                           bgcolor="#cccccc", colspan=9)
 
     user_table.AddRow(map(Center, [_('member address'), _('subscr'),
                                    _('hide'), _('nomail'), _('ack'), _('not metoo'),
-                                   _('digest'), _('plain')]))
+                                   _('digest'), _('plain'), _('language')]))
     rowindex = user_table.GetCurrentRowIndex()
-    for i in range(8):
+    for i in range(9):
         user_table.AddCellInfo(rowindex, i, bgcolor='#cccccc')
     all = mlist.GetMembers() + mlist.GetDigestMembers()
     if len(all) > mlist.admin_member_chunksize:
@@ -602,6 +609,17 @@ def FormatMembershipOptions(mlist, cgi_data):
             checked = 0
         cells.append(Center(CheckBox('%s_plain' % member, value, checked)))
         user_table.AddRow(cells)
+        
+        # format preferred user's language
+        pl = mlist.GetPreferredLanguage(member)
+        ListLangs = mlist.GetAvailableLanguages()
+        LangDescr = map(_, map(Utils.GetLanguageDescr, ListLangs))
+        try:
+            selected = ListLangs.index(pl)
+        except:
+            selected = 0
+        cells.append(Center(SelectOptions(member + '_language' , ListLangs, 
+                                              LangDescr, selected).Format()))
     container.AddItem(Center(user_table))
     legend = UnorderedList()
     legend.AddItem(_('<b>subscr</b> -- Is the member subscribed?'))
@@ -619,6 +637,8 @@ def FormatMembershipOptions(mlist, cgi_data):
         _('<b>plain</b> -- '
           'If getting digests, does the member get plain text digests? '
           '(otherwise, MIME)'))
+    legend.AddItem(_("<b>language</b> --"
+                                    "Language preferred by the user"))
     container.AddItem(legend.Format())
     container.AddItem(footer)
     t = Table(width="90%")
@@ -754,6 +774,8 @@ def GetValidValue(mlist, prop, my_type, val, dependant):
         if num < 0:
             return getattr(mlist, prop)
         return num
+    elif my_type == mm_cfg.Select:
+        return val
     else:
 	# Should never get here...
 	return val
@@ -861,7 +883,7 @@ def ChangeOptions(mlist, category, cgi_info, document):
         subscribe_errors = []
         subscribe_success = []
         result = mlist.ApprovedAddMembers(names, None,
-                                        digest, send_welcome_msg)
+                                        digest, None, send_welcome_msg)
         for name in result.keys():
             if result[name] is None:
                 subscribe_success.append(name)
@@ -915,6 +937,13 @@ def ChangeOptions(mlist, category, cgi_info, document):
                     Errors.MMAlreadyDigested,
                     Errors.MMAlreadyUndigested):
                 pass
+
+            if cgi_info.has_key(user+'_language'):
+                newlang = cgi_info[user+'_language'].value
+                oldlang = mlist.GetPreferredLanguage(user)
+                if newlang <> oldlang:
+                    mlist.SetPreferredLanguage(user, newlang)
+                  
             for opt in ("hide", "nomail", "ack", "notmetoo", "plain"):
                 opt_code = MailCommandHandler.option_info[opt]
                 if cgi_info.has_key("%s_%s" % (user, opt)):
@@ -931,7 +960,7 @@ def ChangeOptions(mlist, category, cgi_info, document):
 
 def AddErrorMessage(doc, errmsg, tag='Warning: ', *args):
     doc.AddItem(Header(3, Bold(FontAttr(
-        tag, color="#ff0000", size="+2")).Format() +
+        _(tag), color="#ff0000", size="+2")).Format() +
                        Italic(errmsg % args).Format()))
 
 
