@@ -6,6 +6,11 @@ Here is a history of user visible changes to Mailman.
 
 2.1 beta 1 (???)
 
+    - The action to take when a moderated member posts to a list is
+      now configurable.  The list can either hold, reject (bounce), or
+      discard the message.  If the message is rejected, a rejection
+      notice string can be given.
+
     - ALLOW_SITE_ADMIN_COOKIES is a new configuration variable which
       says whether to allow AuthSiteAdmin cookies or not.  Normally,
       when a list administrator logs into a list with the site
