@@ -48,10 +48,10 @@ class _BounceInfo:
         self.reset(score, date, noticesleft)
 
     def reset(self, score, date, noticesleft):
-        info.score = score
-        info.date = date
-        info.noticesleft = noticesleft
-        info.lastnotice = ZEROHOUR_PLUSONEDAY
+        self.score = score
+        self.date = date
+        self.noticesleft = noticesleft
+        self.lastnotice = ZEROHOUR_PLUSONEDAY
 
     def __repr__(self):
         # For debugging
