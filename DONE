@@ -1,3 +1,6 @@
+---- New stuff goes above this line. Do not change this line. ----
+1.0b6
+
 1.0b6
 
   - Archiving is (finally) back in.
@@ -29,10 +32,10 @@
 
   - Various and sundry bug fixes.
 
----- New stuff goes above this line. Do not change this line. ----
+
 1.0b5
 
-DONE $Revision: 1187 $, $Date: 1998-11-06 17:46:33 +0000 (Fri, 06 Nov 1998) $
+DONE $Revision: 1188 $, $Date: 1998-11-06 17:56:15 +0000 (Fri, 06 Nov 1998) $
 
  - New file locking that should be portable and work w/ NFS.
 

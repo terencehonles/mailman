@@ -1,370 +1,739 @@
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
+
 #
+
 # This program is free software; you can redistribute it and/or
+
 # modify it under the terms of the GNU General Public License
+
 # as published by the Free Software Foundation; either version 2
+
 # of the License, or (at your option) any later version.
+
 # 
+
 # This program is distributed in the hope that it will be useful,
+
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
+
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+
 # GNU General Public License for more details.
+
 # 
+
 # You should have received a copy of the GNU General Public License
+
 # along with this program; if not, write to the Free Software 
+
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+
+
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1182 $)
+
+AC_REVISION($Revision: 1188 $)
+
 AC_PREREQ(2.0)
+
 AC_INIT(src/alias-wrapper.c)
 
 
+
+
+
 # Set VERSION so we only need to edit it in one place
+
 AC_SUBST(VERSION)
-VERSION=1.0b6
+
+VERSION=1.0b7
+
+
 
 
 # /home/mailman is the default installation directory
+
 AC_PREFIX_DEFAULT(/home/mailman)
 
 
+
+
+
 # Check for Python!  Better be found on $PATH
+
 AC_MSG_CHECKING(for --with-python)
+
 AC_ARG_WITH(python, [
+
 	--with-python         specify path to Python interpreter])
+
 AC_MSG_RESULT($with_python)
 
+
+
 if test -z "$with_python"
+
 then
+
 	AC_PATH_PROG(with_python, python, /usr/local/bin/python)
+
 fi
+
+
 
 AC_MSG_CHECKING(Python interpreter)
+
 if test ! -x $with_python
+
 then
+
     AC_MSG_ERROR([
 
+
+
 ***** No Python interpreter found!
+
 ***** Try including the configure option
+
 ***** --with-python=/path/to/python/interpreter])
+
 fi
+
 AC_SUBST(PYTHON)
+
 PYTHON=$with_python
+
 AC_MSG_RESULT($PYTHON)
 
+
+
 # Checks for programs.
+
 AC_PROG_INSTALL
+
 AC_PROG_MAKE_SET
 
+
+
 # Find compiler, allow alternatives to gcc
+
 AC_MSG_CHECKING(for --without-gcc)
+
 AC_ARG_WITH(gcc, [--without-gcc             never use gcc], [
+
 	case $withval in
+
 	no)	CC=cc
+
 		without_gcc=yes;;
+
 	yes)	CC=gcc
+
 		without_gcc=no;;
+
 	*)	CC=$withval
+
 		without_gcc=$withval;;
+
 	esac], without_gcc=no;)
+
 AC_MSG_RESULT($without_gcc)
 
+
+
 # If the user switches compilers, we can't believe the cache
+
 if test ! -z "$ac_cv_prog_CC" -a ! -z "$CC" -a "$CC" != "$ac_cv_prog_CC"
+
 then
+
   AC_ERROR(cached CC is different -- throw away $cache_file
+
 (it is also a good idea to do 'make clean' before compiling))
+
 fi
+
+
 
 AC_PROG_CC
 
 
+
+
+
 # Optimizer/debugger flags passed between Makefiles
+
 AC_SUBST(OPT)
+
 if test -z "$OPT"
+
 then
+
 	case $GCC in
+
 	yes)
+
 		case $ac_cv_prog_cc_g in
+
 		yes)	OPT="-g -O2";;
+
 		*)	OPT="-O2";;
+
 		esac
+
 		;;
+
 	*)	OPT="-O";;
+
 	esac
+
 fi
+
+
 
 # We better be able to execute interpreters
+
 AC_SYS_INTERPRETER
+
 if test "$ac_cv_sys_interpreter" != "yes"
+
 then
+
     AC_MSG_ERROR([
 
+
+
 ***** Cannot execute interpreter scripts?
+
 ***** Are you sure you system doesn't support this?])
+
 fi
+
+
+
 
 
 # new macro for finding GIDs
+
 AC_DEFUN(MM_FIND_GROUP_ID, [
+
 # $1 == variable name
+
 # $2 == user id to check for
+
 AC_SUBST($1)
+
 changequote(,)
+
 if test -z "$$1"
+
 then
+
     cat > conftest.py <<EOF
+
 import grp, string
+
 gid = ''
+
 for group in string.split("$2"):
+
     try:
+
         try:
+
 	    gid = grp.getgrgid(int(group))[2]
+
 	    break
+
 	except ValueError:
+
 	    gid = grp.getgrnam(group)[2]
+
 	    break
+
     except KeyError:
+
         gid = ''
+
 fp = open("conftest.out", "w")
+
 fp.write("%s\n" % gid)
+
 fp.close()
+
 EOF
+
     $PYTHON conftest.py
+
     $1=`cat conftest.out`
+
 fi
+
 changequote([, ])
+
 AC_MSG_RESULT($$1)
+
 rm -f conftest.out conftest.py])
+
+
+
 
 
 # new macro for finding UIDs
+
 AC_DEFUN(MM_FIND_USER_ID, [
+
 # $1 == variable name
+
 # $2 == user id to check for
+
 AC_SUBST($1)
+
 changequote(,)
+
 if test -z "$$1"
+
 then
+
     cat > conftest.py <<EOF
+
 import pwd, string
+
 uid = ''
+
 for user in string.split("$2"):
+
     try:
+
         try:
+
 	    uid = pwd.getpwuid(int(user))[0]
+
 	    break
+
 	except ValueError:
+
 	    uid = pwd.getpwnam(user)[0]
+
 	    break
+
     except KeyError:
+
         uid = ''
+
 fp = open("conftest.out", "w")
+
 fp.write("%s\n" % uid)
+
 fp.close()
+
 EOF
+
     $PYTHON conftest.py
+
     $1=`cat conftest.out`
+
 fi
+
 changequote([, ])
+
 AC_MSG_RESULT($$1)
+
 rm -f conftest.out conftest.py])
 
+
+
 # User `mailman' must exist
+
 AC_MSG_CHECKING(for mailman UID)
+
 MM_FIND_USER_ID(MAILMAN_UID, mailman)
+
 if test -z "$MAILMAN_UID"
+
 then
+
     AC_MSG_ERROR([
+
 ***** No \"mailman\" user found!
+
 ***** Your system must have a \"mailman\" user defined (usually
+
 ***** in your /etc/passwd file).  Please see the INSTALL file
+
 ***** file details.])
+
 fi
+
+
+
 
 
 # Group `mailman' must exist
+
 AC_MSG_CHECKING(for mailman GID)
+
 MM_FIND_GROUP_ID(MAILMAN_GID, mailman)
+
 if test -z "$MAILMAN_GID"
+
 then
+
     AC_MSG_ERROR([
+
 ***** No \"mailman\" group found!
+
 ***** Your system must have a \"mailman\" group defined (usually
+
 ***** in your /etc/group file).  Please see the INSTALL file
+
 ***** file details.])
+
 fi
+
+
+
 
 
 # Now make sure that $prefix is set up correctly.  It must be group
+
 # owned by `mailman', it must have the group sticky bit set, and it
+
 # must be a+rx
+
 if test "$prefix" = "NONE"
+
 then
+
     prefixcheck=$ac_default_prefix
+
 else
+
     prefixcheck=$prefix
+
 fi
 
+
+
 AC_MSG_CHECKING(permissions on $prefixcheck)
+
 changequote(,)
+
 cat > conftest.py <<EOF
+
 import os, grp, string
+
 from stat import *
+
 prefix = "$prefixcheck"
+
 mailmangid = $MAILMAN_GID
+
 problems = []
+
 try: statdata = os.stat(prefix)
+
 except os.error:
+
     problems.append("Directory doesn't exist: " + prefix)
+
 else:    
+
     mode = statdata[ST_MODE]
+
     gid = statdata[ST_GID]
+
     if mailmangid <> gid:
+
 	problems.append("Directory must be owned by group mailman: " + prefix)
+
     if (mode & S_ISGID) <> S_ISGID:
+
 	problems.append("Set-gid bit must be set for directory: " +prefix)
+
     perms = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+
     if (mode & perms) <> perms:
+
 	problems.append("Permissions should be at least 0775: " + prefix)
+
 if not problems:
+
     msg = "okay\n"
+
 else:
+
     msg = '***** ' + string.join(problems, '\n***** ') + '\n'
+
 fp = open("conftest.out", "w")
+
 fp.write(msg)
+
 fp.close()
+
 EOF
+
 changequote([, ])
+
 $PYTHON conftest.py
+
 status=`cat conftest.out`
+
 rm -f conftest.out conftest.py
+
 if test "$status" != "okay"
+
 then
+
     AC_MSG_ERROR([
+
 ***** Installation directory $prefixcheck is not configured properly!
+
 $status])
+
 fi
+
+
 
 AC_MSG_RESULT(okay)
 
 
+
+
+
 # Now find the UIDs and GIDs
+
 # Support --with-mail-gid and --with-cgi-gid
+
 AC_MSG_CHECKING(for mail wrapper GID)
+
 AC_ARG_WITH(mail-gid, [
+
 	--with-mail-gid  	specify GID mail programs run as])
+
 if test -z "$with_mail_gid"
+
 then
+
     AC_CACHE_VAL(ac_cv_group_mail, [dnl
+
     ac_cv_group_mail="other mail daemon"])
+
 else
+
     ac_cv_group_mail=$with_mail_gid
+
 fi
+
 MM_FIND_GROUP_ID(MAIL_GID, $ac_cv_group_mail)
+
 if test -z "$MAIL_GID"
+
 then
+
     AC_MSG_ERROR([
+
 ***** No existing group found for the mail_wrapper program.
+
 ***** This is the group that your mail delivery agent runs under, and
+
 ***** uses to run filter programs.  You might want to specify an
+
 ***** existing group with the --with-mail-gid configure option.
+
 ***** Please see your mail agent's documentation, and the INSTALL file
+
 ***** for details])
+
 fi
+
+
+
 
 
 AC_MSG_CHECKING(for CGI wrapper GID)
+
 AC_ARG_WITH(cgi-gid, [
+
 	--with-cgi-gid  	specify GID CGI programs run as])
+
 if test -z "$with_cgi_gid"
+
 then
+
     AC_CACHE_VAL(ac_cv_group_cgi, [dnl
+
     ac_cv_group_cgi="www www-data nobody"])
+
 else
+
     ac_cv_group_cgi=$with_cgi_gid
+
 fi
 
+
+
 MM_FIND_GROUP_ID(CGI_GID, $ac_cv_group_cgi)
+
 if test -z "$CGI_GID"
+
 then
+
     AC_MSG_ERROR([
+
 ***** No existing group found for the cgi_wrapper program.
+
 ***** This is the group that your Web server runs CGI scripts under.
+
 ***** You might want to specify an existing group with the
+
 ***** --with-cgi-gid configure option.  Please see your Web server's
+
 ***** documentation, and the INSTALL file for details])
+
 fi
+
+
+
 
 
 #MM_FIND_USER_ID(ALIAS_UID, mailman, alias_wrapper)
+
 #MM_FIND_GROUP_ID(ALIAS_GID, mail, alias_wrapper)
 
+
+
 # figure out the DEFAULT_HOST_NAME and DEFAULT_URL
+
 AC_SUBST(FQDN)
+
 AC_SUBST(URL)
+
 changequote(,)
+
 cat > conftest.py <<EOF
+
 # attempt to figure out the default hostname and URL
+
 from socket import *
+
 import string
+
 fqdn = None
+
 www = None
+
 host, aliases, ipaddrs = gethostbyaddr(gethostbyname(gethostname()))
+
 aliases.insert(0, host)
+
 for h in aliases:
+
     parts = string.split(h, '.')
+
     if len(parts) > 1:
+
         if parts[0] == 'www':
+
             www = h
+
         elif not fqdn:
+
             fqdn = h
+
 fp = open('conftest.out', 'w')
+
 if not www and fqdn:
+
     fp.write('%s\n%s\n' % (fqdn, fqdn))
+
 elif www:
+
     dhn = string.join(string.split(www, '.')[1:], '.')
+
     fp.write('%s\n%s\n' % (dhn, www))
+
 else:
+
     fp.write('please.change.me\nwww.please.change.me\n')
+
 fp.close()
+
 EOF
+
 $PYTHON conftest.py
+
 changequote([, ])
+
 AC_MSG_CHECKING(for default fully qualified host name)
+
 if test -z "$FQDN"
+
 then
+
     FQDN=`head -1 conftest.out`
+
 fi
+
 AC_MSG_RESULT($FQDN)
+
 AC_MSG_CHECKING(for default URL host component)
+
 if test -z "$URL"
+
 then
+
     URL=`tail -1 conftest.out`
+
 fi
+
 AC_MSG_RESULT($URL)
+
 rm -f conftest.out conftest.py
 
+
+
 # Checks for libraries.
+
 AC_CHECK_FUNCS(strerror)
 
+
+
 # Checks for header files.
+
 AC_HEADER_STDC
+
 AC_CHECK_HEADERS(syslog.h)
 
+
+
 # Checks for typedefs, structures, and compiler characteristics.
+
 AC_TYPE_UID_T
+
 AC_TYPE_GETGROUPS
 
+
+
 # Checks for library functions.
+
 AC_FUNC_VPRINTF
 
+
+
 dnl Output everything
+
 AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py
+
            src/Makefile misc/Makefile bin/Makefile
+
 	   Mailman/Makefile Mailman/Cgi/Makefile Mailman/Logging/Makefile
+
 	   Mailman/Archiver/Makefile
+
 	   mail/Makefile templates/Makefile cron/Makefile
+
 	   filters/Makefile scripts/Makefile
+
 	   cron/crontab.in Makefile])
+
