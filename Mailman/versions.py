@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -58,6 +58,8 @@ def Update(l, stored_state):
 def ZapOldVars(l):
     if hasattr(l, 'num_spawns'):
         del l.num_spawns
+    if hasattr(l, 'filter_prog'):
+        del l.filter_prog
 
 
 
@@ -179,16 +181,17 @@ def NewVars(l):
             setattr(l, attr, initval)
     # 1.2 beta 1, baw 18-Feb-2000
     # Autoresponder mixin class attributes
-    add_only_if_missing('autorespond_postings', 0, l)
-    add_only_if_missing('autorespond_admin', 0, l)
-    add_only_if_missing('autorespond_requests', 0, l)
-    add_only_if_missing('autoresponse_postings_text', '', l)
-    add_only_if_missing('autoresponse_admin_text', '', l)
-    add_only_if_missing('autoresponse_request_text', '', l)
-    add_only_if_missing('autoresponse_graceperiod', 90, l)
-    add_only_if_missing('postings_responses', {}, l)
-    add_only_if_missing('admin_responses', {}, l)
-    add_only_if_missing('reply_goes_to_list', '', l)
+    add_only_if_missing('autorespond_postings', 0)
+    add_only_if_missing('autorespond_admin', 0)
+    add_only_if_missing('autorespond_requests', 0)
+    add_only_if_missing('autoresponse_postings_text', '')
+    add_only_if_missing('autoresponse_admin_text', '')
+    add_only_if_missing('autoresponse_request_text', '')
+    add_only_if_missing('autoresponse_graceperiod', 90)
+    add_only_if_missing('postings_responses', {})
+    add_only_if_missing('admin_responses', {})
+    add_only_if_missing('reply_goes_to_list', '')
+    add_only_if_missing('preferred_language', mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 
 
