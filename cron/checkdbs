@@ -75,7 +75,12 @@ def pending_requests(mlist):
         if first:
             pending.append('\nPending posts:')
             first = 0
-        when, sender, subject, reason, text = mlist.GetRecord(id)
+        info = mlist.GetRecord(id)
+        if len(info) == 5:
+            # pre-2.0beta3 compatibility
+            when, sender, subject, reason, text = mlist.GetRecord(id)
+        else:
+            when, sender, subject, reason, text, msgdata = mlist.GetRecord(id)
         pending.append('     From: %s on %s\n    Cause: %s' %
                        (sender, time.ctime(when), reason))
         pending.append('')
