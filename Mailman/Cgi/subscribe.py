@@ -103,9 +103,9 @@ def main():
     else:
         email = form["email"].value
 
+    remote = remote_addr()
     if email == list.GetListEmail():
         error = 1
-        remote = remote_addr()
         if remote: remote = "Web site " + remote
         else:      remote = "unidentified origin"
         badremote = "\n\tfrom " + remote
@@ -139,15 +139,28 @@ def main():
 
     else:
         try:
+            if remote:
+                by = " " + remote
+            else:
+                by = ""
+            list.LogMsg("subscribe", "%s: pending %s %s%s",
+                        list._internal_name,
+                        "web",
+                        email,
+                        by)
+            results = results + ("Confirmation from your email address is "
+                                 "required, to prevent anyone from covertly "
+                                 "subscribing you.  Instructions are being "
+                                 "sent to you at %s." % email)
+                        
+            remote = " from %s" % remote
+
             if list.FindUser(email):
                 raise Errors.MMAlreadyAMember
             results = results + ("Confirmation from your email address is "
                                  "required, to prevent anyone from covertly "
                                  "subscribing you.  Instructions are being "
                                  "sent to you at %s." % email)
-
-            remote = remote_addr()
-            if remote: remote = " from %s" % remote
 
             if digest:
                 digesting = " digest"
