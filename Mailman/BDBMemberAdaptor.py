@@ -160,7 +160,6 @@ class BDBMemberAdaptor(MemberAdaptor.MemberAdaptor):
             pass
         d.open(name, db.DB_BTREE, openflags)
         self._tables.append(d)
-        setattr
         return d
 
     def _close(self):
