@@ -46,7 +46,7 @@ class ListAdmin:
 	self.Save()
 	if request == 'add_member':
 	    who = args[1]
-	    self.LogMsg("vette", ("%s: Subscribe request, %s"
+	    self.LogMsg("vette", ("%s: Subscribe request: %s"
 				  % (self.real_name, who)))
 	    if self.admin_immed_notify:
 		subj = 'New %s subscription request: %s' % (self.real_name,
@@ -65,7 +65,7 @@ class ListAdmin:
 	    reason = args[1]
 	    subject = args[2]
 	    self.LogMsg("vette",
-			("%s: %s posting request, %s"
+			("%s: Posting hold: %s,\n\t%s"
 			 % (self.real_name, sender, `reason`)))
 	    if self.admin_immed_notify:
 		subj = '%s post approval required for %s' % (self.real_name,
@@ -122,6 +122,10 @@ class ListAdmin:
 	destination_email = data[0][0]
 	msg = mm_message.IncomingMessage(data[0][1])
 	if not value:
+            # Accept.
+	    self.Post(msg, 1)
+        elif value == 1:
+            # Refuse.
 	    request = 'Posting of your message entitled:\n\t\t %s' % \
 		      msg.getheader('subject')
 	    if not comment:
@@ -130,7 +134,8 @@ class ListAdmin:
 		self.RefuseRequest(request, destination_email,
 				   comment, msg)
 	else:
-	    self.Post(msg, 1)
+            # Discard.
+            pass
 
     def HandleAddMemberRequest(self, data, value, comment):
 	digest = data[0]
