@@ -44,7 +44,6 @@ ICONDIR=        $(prefix)/icons
 SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
-UNTAR=		tar zxf
 EMAILPKG=	email-0.97
 PYTHONLIBDIR=	$(prefix)/pythonlib
 SETUPCMD=	setup.py --quiet install --install-lib
@@ -76,7 +75,7 @@ install: install-email
 	$(INSTALL) -m $(EXEMODE) mailman $(SCRIPTSDIR)
 
 install-email:
-	$(UNTAR) $(EMAILPKG).tar.gz
+	gunzip -c $(EMAILPKG).tar.gz | tar xf -
 	(cd $(EMAILPKG) ; $(PYTHON) $(SETUPCMD) $(PYTHONLIBDIR))
 
 finish:
