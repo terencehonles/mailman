@@ -153,15 +153,23 @@ class HTMLFormatter:
         "Tailor to approval, roster privacy, and web vetting requirements."
         msg = ""
         also = ""
-        if self.web_subscribe_requires_confirmation:
+        if self.subscribe_policy == 1:
             msg = msg + ("You will be sent email requesting confirmation, "
                          "to prevent others from gratuitously subscribing "
                          "you.  ")
-        if not self.open_subscribe:
+        if self.subscribe_policy == 2:
             msg = msg + ("This is a closed list, which means your "
                          "subscription will be held for approval.  You will "
-                         "be notified of the administrators decision by "
+                         "be notified of the administrator's decision by "
                          "email.  ")
+            also = "also "
+        if self.subscribe_policy == 3:
+            msg = msg + ("You will be sent email requesting confirmation, "
+                         "to prevent others from gratuitously subscribing "
+                         "you.  Once confirmation is received, your "
+                         "request will be held for approval by the list "
+                         "administrator.  You will be notified of the "
+                         "administrator's decision by email.  ")
             also = "also "
         if self.private_roster:
             msg = msg + ("This is %sa private list, which means that "
