@@ -4,7 +4,10 @@ f = open('TODO', 'r')
 sys.stdout = open('admin/www/todo.html', 'w')
 lines = f.readlines()
 f.close()
-l = len(lines)
+for l in range(len(lines)):
+  if lines[l][0] == '\f':
+    l = l - 1
+    break
 i = 0
 print "<HTML><HEAD><TITLE>The Mailman TODO list</TITLE></HEAD><BODY>"
 while lines[i][0] <> '*':
