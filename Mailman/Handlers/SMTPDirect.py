@@ -24,7 +24,6 @@ isn't locked while delivery occurs synchronously.
 """
 
 import os
-import string
 import time
 import socket
 import smtplib
@@ -52,8 +51,10 @@ def process(mlist, msg, msgdata):
         return
     if mlist:
         admin = mlist.GetAdminEmail()
+        listname = mlist.internal_name()
     else:
         admin = Utils.get_site_email()
+        listname = '<no list>'
     msgtext = msg.as_string(unixfrom=0)
     #
     # Split the recipient list into SMTP_MAX_RCPTS chunks.  Most MTAs have a
@@ -76,7 +77,7 @@ def process(mlist, msg, msgdata):
                           'size'    : len(msgtext),
                           '#recips' : len(recips),
                           '#refused': len(refused),
-                          'listname': mlist.internal_name(),
+                          'listname': listname,
                           'sender'  : msg.get_sender(),
                           })
 
@@ -151,7 +152,7 @@ def chunkify(recips, chunksize):
     buckets = {}
     for r in recips:
         tld = None
-        i = string.rfind(r, '.')
+        i = r.rfind('.')
         if i >= 0:
             tld = r[i+1:]
         bin = chunkmap.get(tld, 0)
