@@ -104,7 +104,7 @@ class LockFile:
         global _logfile
         if self.__withlogging:
             if not _logfile:
-                _logfile = StampedLogger('locks', manual_reprime=1)
+                _logfile = StampedLogger('locks')
             head, tail = os.path.split(self.__lockfile)
             _logfile.write('%s %s\n' % (tail, msg))
 
