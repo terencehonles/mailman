@@ -30,7 +30,6 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import MailList
 from Mailman.pythonlib.StringIO import StringIO
 
 
@@ -400,6 +399,7 @@ The following is a detailed description of the problems.
 		listob = self
 	    else:
                 try:
+                    from Mailman import MailList
                     listob = MailList.MailList(listname, lock=0)
                 except Errors.MMUnknownListError:
                     continue
