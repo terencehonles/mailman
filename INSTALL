@@ -185,7 +185,8 @@ if you want to keep your existing installation intact.
       Consult your Web server's documentation for details.  Also be
       sure to configure your Web server to follow symbolic links in
       this directory, otherwise public Pipermail archives won't be
-      accessible.
+      accessible.  For Apache users, consult the FollowSymLinks
+      option.
 
       Now restart your Web server.
 
