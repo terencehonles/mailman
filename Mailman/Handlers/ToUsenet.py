@@ -14,19 +14,17 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Inject the message to Usenet."""
+"""Move the message to the mail->news queue."""
 
-import sys
 import os
 import time
-import string
 import re
-import socket
-import traceback
 
+from Mailman import Message
 from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
-from Mailman.pythonlib.StringIO import StringIO
+
+COMMASPACE = ', '
 
 
 
@@ -44,63 +42,25 @@ def process(mlist, msg, msgdata):
         error.append('no NNTP host')
     if error:
         syslog('error', 'NNTP gateway improperly configured: ' +
-               string.join(error, ', '))
+               COMMASPACE.join(error))
         return
-    # Fork in case the nntp connection hangs.
-    pid = os.fork()
-    if pid:
-        # In the parent.
-        kids = msgdata.get('_kids', {})
-        kids[pid] = pid
-        msgdata['_kids'] = kids
-        return
-    # In the child
-    try:
-        do_child(mlist, msg)
-        os._exit(0)
-    except:
-        traceback.print_exc()
-        os._exit(1)
-
-
-
-def do_child(mlist, msg):
-    # The version we have is from Python 1.5.2+ and fixes the "mode reader"
-    # problem.
-    from Mailman.pythonlib import nntplib
-    # Ok, munge headers, etc.
-    subj = msg.getheader('subject')
-    subjpref = mlist.subject_prefix
-    if subj:
-        if not re.match('(re:? *)?' + re.escape(subjpref), subj, re.I):
-            msg['Subject'] = subjpref + subj
-    else:
-        msg['Subject'] = subjpref + '(no subject)'
-    if mlist.reply_goes_to_list:
-        del msg['reply-to']
-        msg.headers.append('Reply-To: %s\n' % mlist.GetListEmail())
-    # if we already have a sender header, don't add another one; use
-    # the header that's already there.
-    if not msg.getheader('sender'):
-        msg.headers.append('Sender: %s\n' % mlist.GetAdminEmail())
-    msg.headers.append('Errors-To: %s\n' % mlist.GetAdminEmail())
-    msg.headers.append('X-BeenThere: %s\n' % mlist.GetListEmail())
+    # Make a copy of the message to prepare for Usenet
+    msg = Message.OutgoingMessage(repr(msg))
+    # Add the appropriate Newsgroups: header
     ngheader = msg.getheader('newsgroups')
     if ngheader is not None:
-        # see if the Newsgroups: header already contains our
-        # linked_newsgroup.  If so, don't add it again.  If not,
-        # append our linked_newsgroup to the end of the header list
-        ngroups = map(string.strip, string.split(ngheader, ','))
+        # See if the Newsgroups: header already contains our linked_newsgroup.
+        # If so, don't add it again.  If not, append our linked_newsgroup to
+        # the end of the header list
+        ngroups = [s.strip() for s in ngheader.split(',')]
         if mlist.linked_newsgroup not in ngroups:
             ngroups.append(mlist.linked_newsgroup)
-            ngheader = string.join(ngroups, ',')
-            # subtitute our new header for the old one.  XXX Message
-            # class should have a __setitem__()
+            # Subtitute our new header for the old one.
             del msg['newsgroups']
-            msg.headers.append('Newsgroups: %s\n' % ngroups)
+            msg['Newsgroups'] = COMMA.join(ngroups)
     else:
         # Newsgroups: isn't in the message
-        msg.headers.append('Newsgroups: %s\n' % mlist.linked_newsgroup)
+        msg['Newsgroups'] = mlist.linked_newsgroup
     #
     # Note: We need to be sure two messages aren't ever sent to the same list
     # in the same process, since message ids need to be unique.  Further, if
@@ -127,19 +87,21 @@ def do_child(mlist, msg):
             time.time(), os.getpid(), mlist.internal_name(), mlist.host_name)
     #
     # Lines: is useful
-    if msg.getheader('Lines') is None:
-        msg.headers.append('Lines: %s\n' % 
-                           len(string.split(msg.body,"\n")))
-    del msg['received']
-    # TBD: Gross hack to ensure that we have only one
-    # content-transfer-encoding header.  More than one barfs NNTP.  I
-    # don't know why we sometimes have more than one such header, and it
-    # probably isn't correct to take the value of just the first one.
-    # What if there are conflicting headers???
+    if msg.getheader('lines') is None:
+        msg['Lines'] = str(msg.body.count('\n') + 1)
     #
-    # This relies on the new interface for getaddrlist() returning values
-    # for all present headers, and the fact that the legal values are
-    # usually not parseable as addresses.  Yes this is another bogosity.
+    # Get rid of these lines
+    del msg['received']
+    #
+    # TBD: Gross hack to ensure that we have only one
+    # content-transfer-encoding header.  More than one barfs NNTP.  I don't
+    # know why we sometimes have more than one such header, and it probably
+    # isn't correct to take the value of just the first one.  What if there
+    # are conflicting headers???
+    #
+    # This relies on the new interface for getaddrlist() returning values for
+    # all present headers, and the fact that the legal values are usually not
+    # parseable as addresses.  Yes this is another bogosity.
     cteheaders = msg.getaddrlist('content-transfer-encoding')
     if cteheaders:
         ctetuple = cteheaders[0]
@@ -149,25 +111,10 @@ def do_child(mlist, msg):
     # NNTP is strict about spaces after the colon in headers.
     for n in range(len(msg.headers)):
         line = msg.headers[n]
-        i = string.find(line,":")
+        i = line.find(':')
         if i <> -1 and line[i+1] <> ' ':
             msg.headers[n] = line[:i+1] + ' ' + line[i+1:]
-    # flatten the message object, stick it in a StringIO object and post
-    # that resulting thing to the newsgroup
-    fp = StringIO(str(msg))
-    conn = None
-    try:
-        try:
-            conn = nntplib.NNTP(mlist.nntp_host, readermode=1,
-                                user=mm_cfg.NNTP_USERNAME,
-                                password=mm_cfg.NNTP_PASSWORD)
-            conn.post(fp)
-        except nntplib.error_temp, e:
-            syslog('error', '(ToUsenet) NNTP error for list "%s": %s' %
-                   (mlist.internal_name(), e))
-        except socket.error, e:
-            syslog('error', '(ToUsenet) socket error for list "%s": %s'
-                   % (mlist.internal_name(), e))
-    finally:
-        if conn:
-            conn.quit()
+    #
+    # Write the message into the outgoing NNTP queue.
+    msg.Requeue(mlist, newdata=msgdata,
+                _whichq = mm_cfg.NEWSQUEUE_DIR)
