@@ -252,9 +252,9 @@ also appear in the first line of the body of the reply.""")),
             dmsg['Subject'] = 'confirm ' + cookie
             dmsg['Sender'] = requestaddr
             dmsg['From'] = requestaddr
-            nmsg.add_payload(text)
-            nmsg.add_payload(MIMEMessage(msg))
-            nmsg.add_payload(MIMEMessage(dmsg))
+            nmsg.attach(text)
+            nmsg.attach(MIMEMessage(msg))
+            nmsg.attach(MIMEMessage(dmsg))
             nmsg.send(mlist, **{'tomoderators': 1})
         finally:
             i18n.set_translation(otranslation)
