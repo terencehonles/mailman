@@ -82,6 +82,12 @@ def DeliverToList(mlist, msg, msgdata):
             # The delivery module being used (SMTPDirect or Sendmail) failed
             # to deliver the message to one or all of the recipients.  Push
             # the delivery module back on the pipeline list and break.
+            #
+            # TBD: What this logic should really do is continue with the rest
+            # of the pipeline and put only the delivery module on the queued
+            # pipeline.  I don't think this matters much right now because
+            # delivery success will generally be all-or-nothing until we
+            # support DSN.
             pipeline.insert(0, modname)
             # Consult and adjust some meager metrics that try to decide
             # whether it's worth continuing to attempt delivery of this
@@ -91,14 +97,15 @@ def DeliverToList(mlist, msg, msgdata):
             last_recip_count = msgdata.get('last_recip_count', 0)
             deliver_until = msgdata.get('deliver_until', now)
             if len(recips) == last_recip_count:
-                # We didn't make any progress.  How many times to we continue
-                # to attempt delivery?  TBD: make this configurable.
+                # We didn't make any progress.
                 if now > deliver_until:
-                    # throw this message away
-                    return 0
+                    # We won't attempt delivery any longer so continue with
+                    # the rest of the pipeline.  See the TBD above.
+                    del pipeline[0]
+                    break
             else:
                 # Keep trying to delivery this for 3 days
-                deliver_until = now + 60*60*24*3
+                deliver_until = now + mm_cfg.DELIVERY_RETRY_PERIOD
             msgdata['last_recip_count'] = len(recips)
             msgdata['deliver_until'] = deliver_until
             break
