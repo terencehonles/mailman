@@ -332,7 +332,7 @@ class ListAdmin:
                  'listname'   : self.real_name,
                  'hostname'   : self.host_name,
                  'admindb_url': self.GetScriptURL('admindb', absolute=1),
-                 }, lang=self.preferred_language)
+                 }, mlist=self)
             adminaddr = self.GetAdminEmail()
             msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
             msg.send(self)
@@ -371,7 +371,7 @@ class ListAdmin:
              'request'  : request,
              'reason'   : comment,
              'adminaddr': adminaddr,
-            }, lang=lang)
+            }, lang=lang, mlist=self)
         # add in original message, but not wrap/filled
         if origmsg:
             text = NL.join(
