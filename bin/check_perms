@@ -45,6 +45,7 @@ directory.  You must run this from the installation directory instead.
     raise
 from Mailman import mm_cfg
 from Mailman.mm_cfg import MAILMAN_UID, MAILMAN_GID
+from Mailman.i18n import _
 
 try:
     MAILMAN_GRPNAME = grp.getgrgid(MAILMAN_GID)[0]
@@ -109,7 +110,7 @@ def checkwalk(arg, dirname, names):
             continue
         if S_ISDIR(mode) and (mode & DIRPERMS) <> DIRPERMS:
             arg.ERRORS += 1
-            print _('directory permissions must be at least 02775: %(path)s',
+            print _('directory permissions must be at least 02775: %(path)s'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chmod(path, mode | DIRPERMS)
@@ -160,7 +161,7 @@ MBOXPERMS = S_IRGRP | S_IWGRP | S_IRUSR | S_IWUSR
 def checkmboxfile(mboxdir):
     absdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, mboxdir)
     for f in os.listdir(absdir):
-        if f[-5:] <> '.mbox':
+        if not f.endswith('.mbox'):
             continue
         mboxfile = os.path.join(absdir, f)
         mode = statmode(mboxfile)
@@ -180,7 +181,7 @@ def checkarchivedbs():
     # are public.  That may not be a horrible breach, but let's close this off
     # anyway.
     for dir in os.listdir(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR):
-        if dir[-5:] == '.mbox':
+        if dir.endswith('.mbox'):
             checkmboxfile(dir)
         dbdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, dir, 'database')
         try:
@@ -250,7 +251,7 @@ def checkadminpw():
 def checkdata():
     targetmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
     checkfiles = ('config.db', 'config.db.last',
-                  'next-digest', 'next-digest-topics')
+                  'next-digest', 'next-digest-topics', 'request.db')
     if STATE.VERBOSE:
         print _('checking permissions on list data')
     for dir in os.listdir(mm_cfg.LIST_DATA_DIR):
@@ -274,7 +275,7 @@ def checkdata():
 
 
 
-def usage(code=0, msg=''):
+def usage(code, msg=''):
     print >> sys.stderr, _(__doc__)
     if msg:
         print >> sys.stderr, msg
@@ -291,7 +292,7 @@ if __name__ == '__main__':
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            usage()
+            usage(0)
         elif opt in ('-f', '--fix'):
             STATE.FIX = 1
         elif opt in ('-v', '--verbose'):
