@@ -25,7 +25,7 @@ from Mailman.Gui.GUIBase import GUIBase
 
 class Privacy(GUIBase):
     def GetConfigCategory(self):
-        return 'privacy', _('Privacy options')
+        return 'privacy', _('Privacy options...')
 
     def GetConfigSubCategories(self, category):
         if category == 'privacy':
