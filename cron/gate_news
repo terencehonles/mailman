@@ -81,9 +81,11 @@ def open_newsgroup(mlist):
 
 
 # This function requires the list to be locked.
-def poll_newsgroup(mlist, conn, first, last):
+def poll_newsgroup(mlist, conn, first, last, lock):
+    listname = mlist.internal_name()
     # NEWNEWS is not portable and has synchronization issues.
     for num in range(first, last):
+        lock.refresh()
         try:
             headers = conn.head(`num`)[3]
             found_to = 0
@@ -115,15 +117,13 @@ def poll_newsgroup(mlist, conn, first, last):
                     msg['X-Originally-To'] = msg['To']
                 msg['To'] = mlist.GetListEmail()
                 # Post the message to the locked list
-                syslog('fromusenet', 'posting msgid %d to list %s' %
-                       (num, mlist.internal_name()))
                 HandlerAPI.DeliverToList(mlist, msg, {'fromusenet': 1,
                                                       '_enqueue_immediate': 1})
-                syslog('fromusenet', 'posted msgid %d to list %s' %
-                       (num, mlist.internal_name()))
+                syslog('fromusenet',
+                       'posted to list %s: %7d' % (listname, num))
         except nntplib.error_temp, msg:
-            syslog('fromusenet', 'NNTP error for list %s, article %d' %
-                   (mlist.internal_name(), num))
+            syslog('fromusenet',
+                   'NNTP error for list %s: %7d' % (listname, num))
             syslog('fromusenet', str(msg))
         # Even if we don't post the message because it was seen on the
         # list already, update the watermark
@@ -131,77 +131,57 @@ def poll_newsgroup(mlist, conn, first, last):
 
 
 
-# This function requires the list to be locked.
-def gate_list(mlist):
-    # Get the list's watermark, i.e. the last article number that this gated
-    # from news to mail.  None means that this list has never polled its
-    # newsgroup.
-    watermark = getattr(mlist, 'usenet_watermark', None)
-    # Open the newsgroup, but let exceptions percolate up
-    conn, first, last = open_newsgroup(mlist)
-    try:
-        if watermark is None:
-            # This is the first time we've tried to gate this newsgroup.  We
-            # essentially do a mass catch-up, otherwise we'd flood the mailing
-            # list.
-            mlist.usenet_watermark = last
-        else:
-            # The list has been polled previously, so now we simply grab all
-            # the messages on the newsgroup that have not been seen by the
-            # mailing list.  The first such article is the maximum of the
-            # lowest article available on the list and the watermark.  It's
-            # possible that some articles have been expired since the last
-            # time gate_news has run.  Not much we can do about that.
-            poll_newsgroup(mlist, conn, max(watermark+1, first), last+1)
-    finally:
-        conn.quit()
-
-
-
-def process_lists():
-    # for waitpids
-    kids = {}
+def process_lists(lock):
     for listname in Utils.list_names():
+        lock.refresh()
         # Open the list unlocked just to check to see if it is gating news to
-        # mail.  If not, we're done with the list.  Otherwise, create a fork
-        # for gating, and immediately lock the group.
+        # mail.  If not, we're done with the list.  Otherwise, lock the list
+        # and gate the group.
         mlist = MailList.MailList(listname, lock=0)
         if not mlist.gateway_to_mail:
             continue
         try:
-            pid = os.fork()
-        except OSError, e:
-            # The fork failed, so there's not much we can do from here on out.
-            syslog('fromusenet', 'fork failed: %s' % e)
-            return kids
-        if pid:
-            # In the parent.
-            kids[pid] = pid
-            continue
-        # In the child
-        locked = 0
-        try:
-            try:
-                mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-                locked = 1
-                gate_list(mlist)
-            finally:
-                if locked:
-                    try:
-                        mlist.Save()
-                    finally:
-                        # Be dang sure we unlock the list.
-                        mlist.Unlock()
-                syslog('fromusenet', '%s watermark: %d' %
-                       (mlist.internal_name(), mlist.usenet_watermark))
-            os._exit(0)
+            mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
         except LockFile.TimeOutError:
-            # Couldn't get the list lock.  Try again later.
-            os._exit(0)
-        except:
-            traceback.print_exc()
-            os._exit(1)
-    return kids
+            syslog('fromusenet', 'Could not acquire list lock: %s' %
+                   mlist.internal_name())
+            continue
+        try:
+            syslog('fromusenet', 'gating group %s to list %s' %
+                   (mlist.linked_newsgroup, listname))
+            # Get the list's watermark, i.e. the last article number that this
+            # gated from news to mail.  None means that this list has never
+            # polled its newsgroup.
+            watermark = getattr(mlist, 'usenet_watermark', None)
+            # Open the newsgroup, but let exceptions percolate up
+            conn, first, last = open_newsgroup(mlist)
+            try:
+                if watermark is None:
+                    syslog('fromusenet',
+                           'catching up %s to article %d' % (listname, last))
+                    # This is the first time we've tried to gate this
+                    # newsgroup.  We essentially do a mass catch-up, otherwise
+                    # we'd flood the mailing list.
+                    mlist.usenet_watermark = last
+                else:
+                    # The list has been polled previously, so now we simply
+                    # grab all the messages on the newsgroup that have not
+                    # been seen by the mailing list.  The first such article
+                    # is the maximum of the lowest article available on the
+                    # list and the watermark.  It's possible that some
+                    # articles have been expired since the last time gate_news
+                    # has run.  Not much we can do about that.
+                    start = max(watermark+1, first)
+                    syslog('fromusenet', 'gating %s articles [%d..%d]' %
+                           (listname, start, last))
+                    poll_newsgroup(mlist, conn, start, last+1, lock)
+            finally:
+                conn.quit()
+        finally:
+            mlist.Save()
+            mlist.Unlock()
+        syslog('fromusenet', '%s watermark: %d' %
+               (listname, mlist.usenet_watermark))
 
 
 
@@ -215,16 +195,7 @@ def main():
         syslog('fromusenet', 'could not acquire gate_news lock')
         return
     try:
-        pid = os.getpid()
-        kids = process_lists()
-        # Failsafe -- child process may have leaked through.
-        if pid <> os.getpid(): os._exit(1)
-        # This function will touching the gate_news lock file so it doesn't
-        # get stale as the child processes are running.
-        def keepalive(lock=lock):
-            lock.refresh()
-        # Wait until all the child processes have exited.
-        Utils.reap(kids, keepalive)
+        process_lists(lock)
     finally:
         lock.unlock(unconditionally=1)
             
