@@ -485,7 +485,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     " filters, for which notices are <em>not</em> sent.  This"
 	     " option overrides ever sending the notice."),
 
-	    ('max_message_size', mm_cfg.Number, 3, 0,
+	    ('max_message_size', mm_cfg.Number, 5, 0,
 	     'Maximum length in Kb of a message body.  Use 0 for no limit.'),
 
 	    ('num_spawns', mm_cfg.Number, 3, 0,
@@ -679,6 +679,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " by escaping or bracketing it."
 	     "<p> See also the <em>forbidden_posters</em> option for"
 	     " a related mechanism."),
+
 	    ('anonymous_list', mm_cfg.Radio, ('No', 'Yes'), 0,
 	      'Hide the sender of a message, replacing it with the list '
 	      'address (Removes From, Sender and Reply-To fields)'),
