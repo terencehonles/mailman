@@ -72,6 +72,8 @@ import sys
 import os
 import getopt
 
+from email.Utils import parseaddr
+
 import paths
 from Mailman import MailList
 from Mailman import Utils
@@ -80,9 +82,6 @@ from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman.pythonlib.StringIO import StringIO
 from Mailman.i18n import _
-
-# WIBNI I could get parseaddr() from mimelib.address?
-from Mailman.pythonlib.rfc822 import parseaddr
 
 
 
