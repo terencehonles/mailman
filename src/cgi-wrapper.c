@@ -42,11 +42,6 @@ main(int argc, char** argv, char** env)
 	running_as_cgi = 1;
 	check_caller(logident, parentgid);
 
-	/* if we get here, the caller is OK */
-	status = setuid(geteuid());
-	if (status)
-		fatal(logident, "%s", strerror(errno));
-
 	/* for these CGI programs, we can ignore argc and argv since they
 	 * don't contain anything useful.  `script' will always be the driver
 	 * program and argv will always just contain the name of the real
@@ -58,7 +53,7 @@ main(int argc, char** argv, char** env)
 	fake_argv[2] = script;
 
 	status = run_script("driver", 3, fake_argv, env);
-	fatal(logident, "%s", strerror(errno));
+	fatal(logident, status, "%s", strerror(errno));
 	return status;
 }
 
