@@ -116,7 +116,9 @@ def ctime(date):
                 break
     else:
         year, mon, day, hh, mm, ss, wday, yday, dst = time.localtime(date)
+        tzname = time.tzname[dst and 1 or 0]
 
     wday = daysofweek[wday]
     mon = months[mon]
-    return _('%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i')
+    return _('%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i '
+             '%(tzname)s %(year)04i')
