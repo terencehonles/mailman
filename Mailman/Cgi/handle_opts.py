@@ -160,7 +160,7 @@ exactly what happened to provoke this error.<p>'''
                                            l.real_name)
                     return link
             all_links = filter(None, Utils.map_maillists(optionslinks))
-            items = htmlformat.UnorderedList()
+            items = htmlformat.OrderedList()
             for i in all_links:
                 items.AddItem(i)
             doc.AddItem(items)
