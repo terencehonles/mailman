@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -355,7 +355,7 @@ def set_global_password(pw, siteadmin=1):
         os.umask(omask)
     
 
-def check_global_password(response, siteadmin=1):
+def get_global_password(siteadmin=1):
     if siteadmin:
         filename = mm_cfg.SITE_PW_FILE
     else:
@@ -367,7 +367,14 @@ def check_global_password(response, siteadmin=1):
     except IOError, e:
         if e.errno <> errno.ENOENT: raise
         # It's okay not to have a site admin password, just return false
-        return 0
+        return None
+    return challenge
+
+
+def check_global_password(response, siteadmin=1):
+    challenge = get_global_password(siteadmin)
+    if challenge is None:
+        return None
     return challenge == sha.new(response).hexdigest()
 
 
