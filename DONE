@@ -1,4 +1,7 @@
-DONE $Revision: 891 $, $Date: 1998-07-27 19:21:52 +0100 (Mon, 27 Jul 1998) $
+---- New stuff goes above this line. Do not change this line. ----
+1.0b5
+
+DONE $Revision: 894 $, $Date: 1998-07-27 19:58:44 +0100 (Mon, 27 Jul 1998) $
 
  - New file locking that should be portable and work w/ NFS.
 
@@ -10,7 +13,7 @@ DONE $Revision: 891 $, $Date: 1998-07-27 19:21:52 +0100 (Mon, 27 Jul 1998) $
 
  - Various and sundry bug fixes.
 
----- New stuff goes above this line. Do not change this line. ----
+
 
 1.0b4
  
