@@ -23,13 +23,14 @@ import HandlerAPI
 
 from Mailman import Utils
 from Mailman import Message
+from Mailman.Logging.Syslog import syslog
 
 
 
 def process(mlist, msg, msgdata):
     # "X-Ack: No" header in the original message disables the replybot
     ack = string.lower(msg.get('x-ack', ''))
-    if ack == 'no':
+    if ack == 'no' or msgdata.get('noack'):
         return
     #
     # Check to see if the list is even configured to autorespond to this email
