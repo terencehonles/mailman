@@ -11,6 +11,8 @@ Questions, suggestions: wilane@yahoo.com
 
 Ousmane Wilane <wilane@yahoo.com>
 
+Note décembre 2002 : Le traducteur en cours est  Pascal GEORGE. Pour tous commentaires
+veuillez contacter <george@lyon.inserm.fr>
 
 Local Variables:
 mode: indented-text
