@@ -189,7 +189,11 @@ def PrintAddMemberRequest(mlist, id, table):
                   ])
 
 def PrintPostRequest(mlist, id, info, total, count, form):
-    ptime, sender, subject, reason, filename = info
+    # For backwards compatibility with pre 2.0beta3
+    if len(info) == 5:
+        ptime, sender, subject, reason, filename = info
+    else:
+        ptime, sender, subject, reason, filename, msgdata = info
     form.AddItem('<hr>')
     msg = 'Posting Held for Approval'
     if total <> 1:
