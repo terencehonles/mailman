@@ -332,7 +332,12 @@ class Bouncer:
                                         '"[^"]+"')[1][1:-1]
 
 	if boundry:
-	    relevant_text = string.split(msg.body, '--%s' % boundry)[1]
+	    relevant_text = string.split(msg.body, '--%s' % boundry)
+            # Invalid MIME messages shouldn't cause exceptions
+            if len(relevant_text) >= 2:
+                relevant_text = relevant_text[1]
+            else:
+                relevant_text = relevant_text[0]
 	else:
 	    # This looks strange, but at least 2 are going to be no-ops.
 	    relevant_text = regsub.split(msg.body,
