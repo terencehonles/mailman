@@ -356,7 +356,7 @@ class T:
                                                    refs[0])
                 for ref in refs[1:]:
                     a = self.database.getArticle(self.archive, ref)
-                    if a.date > maxdate.data:
+                    if a.date > maxdate.date:
                         maxdate = a
                 parentID = maxdate.msgid
 	    else:
