@@ -361,7 +361,6 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
     linktable = Table(valign='top')
     linktable.AddRow([Center(Bold(_("Configuration Categories"))),
                       Center(Bold(_("Other Administrative Activities")))])
-
     # The `other links' are stuff in the right column.
     otherlinks = UnorderedList()
     otherlinks.AddItem(Link(mlist.GetScriptURL('admindb'), 
@@ -429,39 +428,51 @@ def show_results(mlist, doc, category, category_suffix, cgidata):
         form = Form('%s/%s' % (adminurl, category_suffix), encoding=encoding)
     else:
         form = Form(adminurl)
-    # And add the form
-    doc.AddItem(form)
     # The general category supports changing the password.
     if category == 'general':
         andpassmsg = _('  (You can change your password there, too.)')
     else:
         andpassmsg = ''
     form.AddItem(
-        _('''Make your changes below, and then submit them
-        using the button at the bottom.''') +
-        andpassmsg +
-        '<p>')
+        _('''Make your changes in the following section, then submit them
+        using the <em>Submit Your Changes</em> button below.''')
+        + andpassmsg
+        + '<p>')
 
-    form.AddItem(show_variables(mlist, category, cgidata, doc, form))
+    if category == 'members':
+        # Figure out which subcategory we should display
+        subcat = Utils.GetPathPieces()[-1]
+        if subcat not in ('list', 'add', 'remove'):
+            subcat = 'list'
+        # Add member category specific tables
+        form.AddItem(membership_options(mlist, subcat, cgidata, doc, form))
+        form.AddItem(Center(submit_button()))
+        form.AddItem('<hr>')
+        # In "list" subcategory, we can also search for members
+        if subcat == 'list':
+            form.AddItem(_('''Find members by
+          <a href="http://www.python.org/doc/current/lib/re-syntax.html">Python
+          regular expression</a>:'''))
+            form.AddItem(TextBox('findmember',
+                                 value=cgidata.getvalue('findmember', ''),
+                                 size='50%'))
+            form.AddItem(SubmitButton('findmember_btn', _('Search...')))
+            form.AddItem('<hr>')
+    else:
+        form.AddItem(show_variables(mlist, category, cgidata, doc))
+        if category == 'general':
+            form.AddItem(Center(password_inputs()))
+        form.AddItem(Center(submit_button()))
+        form.AddItem('<hr>')
 
-    if category == 'general':
-        form.AddItem(Center(password_inputs()))
-
-    form.AddItem('<p>')
-    form.AddItem(Center(submit_button()))
-    form.AddItem('<hr>')
-    form.AddItem(linktable)
-    form.AddItem(mlist.GetMailmanFooter())
-    # main() formats and prints the document
+    # And add the form
+    doc.AddItem(form)
+    doc.AddItem(linktable)
+    doc.AddItem(mlist.GetMailmanFooter())
 
 
 
-def show_variables(mlist, category, cgidata, doc, form):
-    # Produce the category specific variable options table
-    if category == 'members':
-        # Special case for members section.
-        return membership_options(mlist, cgidata, doc, form)
-
+def show_variables(mlist, category, cgidata, doc):
     options = mlist.GetConfigInfo()[category]
 
     # The table containing the results
@@ -678,11 +689,7 @@ def get_item_gui_description(mlist, category, varname, descr, detailsp):
 
 
 
-def membership_options(mlist, cgidata, doc, form):
-    # Figure out which subcategory we should display
-    subcat = Utils.GetPathPieces()[-1]
-    if subcat not in ('list', 'add', 'remove'):
-        subcat = 'list'
+def membership_options(mlist, subcat, cgidata, doc, form):
     # Show the main stuff
     container = Container()
     header = Table(width="100%")
@@ -713,9 +720,8 @@ def membership_options(mlist, cgidata, doc, form):
     all = mlist.getMembers()
     all.sort(lambda x, y: cmp(x.lower(), y.lower()))
     # See if the query has a regular expression
-    regexp = ''
-    if cgidata.has_key('findmember'):
-        regexp = cgidata['findmember'].value
+    regexp = cgidata.getvalue('findmember')
+    if regexp:
         try:
             cre = re.compile(regexp, re.IGNORECASE)
         except re.error:
@@ -796,8 +802,9 @@ def membership_options(mlist, cgidata, doc, form):
                           usertable.GetCurrentCellIndex(),
                           colspan=9,
                           bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
-    usertable.AddRow([Center(h) for h in (_('member address<br>member name'),
-                                          _('subscr'), _('hide'), _('nomail'),
+    usertable.AddRow([Center(h) for h in (_('unsub'),
+                                          _('member address<br>member name'),
+                                          _('hide'), _('nomail'),
                                           _('ack'), _('not metoo'),
                                           _('digest'), _('plain'),
                                           _('language'))])
@@ -818,10 +825,10 @@ def membership_options(mlist, cgidata, doc, form):
         if fullname is None:
             fullname = ''
         name = TextBox(addr + '_realname', fullname, size=longest).Format()
-        cells = [link.Format() + '<br>' +
+        cells = [Center(CheckBox(addr + '_unsub', 'off', 0).Format()),
+                 link.Format() + '<br>' +
                  name + 
                  Hidden('user', urllib.quote(addr)).Format(),
-                 Center(CheckBox(addr + '_subscribed', 'on', 1).Format()),
                  ]
         for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
             if mlist.getMemberOption(addr,
@@ -860,7 +867,8 @@ def membership_options(mlist, cgidata, doc, form):
     # Add the usertable and a legend
     container.AddItem(Center(usertable))
     legend = UnorderedList()
-    legend.AddItem(_('<b>subscr</b> -- Is the member subscribed?'))
+    legend.AddItem(
+        _('<b>unsub</b> -- Click on this to unsubscribe the member.'))
     legend.AddItem(
         _("""<b>hide</b> -- Is the member's address concealed on
         the list of subscribers?"""))
@@ -897,63 +905,78 @@ def membership_options(mlist, cgidata, doc, form):
             buttons.append(link)
         buttons = UnorderedList(*buttons)
         container.AddItem(footer + buttons.Format() + '<p>')
-    # Search for member
-    container.AddItem(
-        _('Find members by regular expression:') +
-        TextBox('findmember', value=regexp, size='50%').Format() +
-        SubmitButton('findmember_btn', _('Search...')).Format())
     return container
 
 
+
 def mass_subscribe(mlist, container):
     # MASS SUBSCRIBE
-    t = Table(width='90%')
+    table = Table(width='90%')
     # Ask whether to send a welcome message and/or to notify the admin
-    t.AddRow([_('Send welcome message to this batch? ')
-              + RadioButton('send_welcome_msg_to_this_batch', 0,
-                            not mlist.send_welcome_msg).Format()
-              + _(' no ')
-              + RadioButton('send_welcome_msg_to_this_batch', 1,
-                            mlist.send_welcome_msg).Format()
-              + _(' yes ')])
-    t.AddRow([_('Send notifications to the list owner? ')
-              + RadioButton('send_notifications_to_list_owner', 0,
-                            not mlist.admin_notify_mchanges).Format()
-              + _(' no ')
-              + RadioButton('send_notifications_to_list_owner', 1,
-                            mlist.admin_notify_mchanges).Format()
-              + _(' yes ')])
-    t.AddRow([Italic(_('Enter one address per line below...')).Format()
-              + '<br>'])
-    t.AddRow([Center(TextArea(name='subscribees',
-                              rows=10, cols='100%', wrap=None))])
-    t.AddRow([Italic(_('...or specify a file to upload:'))])
-    t.AddRow([FileUpload('subscribees_upload', cols='50').Format()])
-    container.AddItem(Center(t))
+    table.AddRow([
+        # td 1
+        Label(_('Send welcome message to this batch?')),
+        # td 2
+        RadioButton('send_welcome_msg_to_this_batch', 0,
+                    not mlist.send_welcome_msg).Format()
+        + _(' no ')
+        + RadioButton('send_welcome_msg_to_this_batch', 1,
+                      mlist.send_welcome_msg).Format()
+        + _(' yes ')
+        ])
+    table.AddRow([
+        # td 1
+        Label(_('Send notifications to the list owner? ')),
+        # td 2
+        RadioButton('send_notifications_to_list_owner', 0,
+                    not mlist.admin_notify_mchanges).Format()
+        + _(' no ')
+        + RadioButton('send_notifications_to_list_owner', 1,
+                      mlist.admin_notify_mchanges).Format()
+        + _(' yes ')
+        ])
+    table.AddRow([Italic(_('Enter one address per line below...'))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Center(TextArea(name='subscribees',
+                                  rows=10, cols='70%', wrap=None))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Italic(Label(_('...or specify a file to upload:'))),
+                  FileUpload('subscribees_upload', cols='50')])
+    container.AddItem(Center(table))
 
 
+
 def mass_remove(mlist, container):
     # MASS UNSUBSCRIBE
-    t = Table(width='90%')
-    t.AddRow([_('Send unsubscription acknowledgement to the user? ')
-              + RadioButton('send_unsub_ack_to_this_batch', 0, 1).Format()
-              + _(' no ')
-              + RadioButton('send_unsub_ack_to_this_batch', 1, 0).Format()
-              +_(' yes ')])
-    t.AddRow([_('Send notifications to the list owner? ')
-              + RadioButton('send_unsub_notifications_to_list_owner', 0,
-                            not mlist.admin_notify_mchanges).Format()
-              + _(' no ')
-              + RadioButton('send_unsub_notifications_to_list_owner', 1,
-                            mlist.admin_notify_mchanges).Format()
-              + _(' yes ')])
-    t.AddRow([Italic(_('Enter one address per line below...')).Format()
-              + '<br>'])
-    t.AddRow([Center(TextArea(name='unsubscribees',
-                              rows=10, cols='100%', wrap=None))])
-    t.AddRow([Italic(_('...or specify a file to upload:'))])
-    t.AddRow([FileUpload('unsubscribees_upload', cols='50').Format()])
-    container.AddItem(Center(t))
+    table = Table(width='90%')
+    table.AddRow([
+        # td 1
+        Label(_('Send unsubscription acknowledgement to the user?')),
+        # td 2
+        RadioButton('send_unsub_ack_to_this_batch', 0, 1).Format()
+        + _(' no ')
+        + RadioButton('send_unsub_ack_to_this_batch', 1, 0).Format()
+        + _(' yes ')
+        ])
+    table.AddRow([
+        # td 1
+        Label(_('Send notifications to the list owner?')),
+        # td 2
+        RadioButton('send_unsub_notifications_to_list_owner', 0,
+                    not mlist.admin_notify_mchanges).Format()
+        + _(' no ')
+        + RadioButton('send_unsub_notifications_to_list_owner', 1,
+                      mlist.admin_notify_mchanges).Format()
+        + _(' yes ')
+        ])
+    table.AddRow([Italic(_('Enter one address per line below...'))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Center(TextArea(name='unsubscribees',
+                                  rows=10, cols='70%', wrap=None))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
+    table.AddRow([Italic(Label(_('...or specify a file to upload:'))),
+                  FileUpload('unsubscribees_upload', cols='50')])
+    container.AddItem(Center(table))
 
 
 
@@ -999,10 +1022,10 @@ above.""")])
 
 
 def submit_button():
-    submit = Table(border=0, cellspacing=0, cellpadding=2)
-    submit.AddRow([Bold(SubmitButton('submit', _('Submit Your Changes')))])
-    submit.AddCellInfo(submit.GetCurrentRowIndex(), 0, align="middle")
-    return submit
+    table = Table(border=0, cellspacing=0, cellpadding=2)
+    table.AddRow([Bold(SubmitButton('submit', _('Submit Your Changes')))])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, align='middle')
+    return table
 
 
 
@@ -1257,7 +1280,7 @@ def change_options(mlist, category, cgidata, doc):
             users = [urllib.unquote(user.value)]
         errors = []
         for user in users:
-            if not cgidata.has_key('%s_subscribed' % (user)):
+            if cgidata.has_key('%s_unsub' % user):
                 try:
                     mlist.ApprovedDeleteMember(user)
                 except Errors.MMNoSuchUserError:
