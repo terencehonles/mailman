@@ -127,7 +127,7 @@ CREATE YOUR FIRST LIST
     create and test your first list, try the following:
 
     - First, initialize the site administrator's password by cd'ing to
-      the install directory (by default /home/mailman) and typing
+      the install directory (by default /usr/local/mailman) and typing
 
       % bin/mmsitepass
       New site password: [yourpassword]
