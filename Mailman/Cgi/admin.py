@@ -18,6 +18,9 @@
 
 """
 
+# For Python 2.1.x compatibility
+from __future__ import nested_scopes
+
 import sys
 import os
 import re
@@ -1038,30 +1041,34 @@ def membership_options(mlist, subcat, cgidata, doc, form):
 
 def mass_subscribe(mlist, container):
     # MASS SUBSCRIBE
+    GREY = mm_cfg.WEB_ADMINITEM_COLOR
     table = Table(width='90%')
-    # Ask whether to send a welcome message and/or to notify the admin
     table.AddRow([
-        # td 1
-        Label(_('Send welcome message to this batch?')),
-        # td 2
-        RadioButton('send_welcome_msg_to_this_batch', 0,
-                    not mlist.send_welcome_msg).Format()
-        + _(' no ')
-        + RadioButton('send_welcome_msg_to_this_batch', 1,
-                      mlist.send_welcome_msg).Format()
-        + _(' yes ')
+        Label(_('Subscribe these users now or invite them?')),
+        RadioButtonArray('subscribe_or_invite',
+                         (_('Subscribe'), _('Invite')),
+                         0, values=(0, 1))
         ])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    table.AddCellInfo(table.GetCurrentRowIndex(), 1, bgcolor=GREY)
     table.AddRow([
-        # td 1
-        Label(_('Send notifications to the list owner? ')),
-        # td 2
-        RadioButton('send_notifications_to_list_owner', 0,
-                    not mlist.admin_notify_mchanges).Format()
-        + _(' no ')
-        + RadioButton('send_notifications_to_list_owner', 1,
-                      mlist.admin_notify_mchanges).Format()
-        + _(' yes ')
+        Label(_('Send welcome messages to new subscribees?')),
+        RadioButtonArray('send_welcome_msg_to_this_batch',
+                         (_('No'), _('Yes')),
+                         mlist.send_welcome_msg,
+                         values=(0, 1))
         ])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    table.AddCellInfo(table.GetCurrentRowIndex(), 1, bgcolor=GREY)
+    table.AddRow([
+        Label(_('Send notifications of new subscriptions to the list owner?')),
+        RadioButtonArray('send_notifications_to_list_owner',
+                         (_('No'), _('Yes')),
+                         mlist.admin_notify_mchanges,
+                         values=(0,1))
+        ])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    table.AddCellInfo(table.GetCurrentRowIndex(), 1, bgcolor=GREY)
     table.AddRow([Italic(_('Enter one address per line below...'))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     table.AddRow([Center(TextArea(name='subscribees',
@@ -1075,27 +1082,25 @@ def mass_subscribe(mlist, container):
 
 def mass_remove(mlist, container):
     # MASS UNSUBSCRIBE
+    GREY = mm_cfg.WEB_ADMINITEM_COLOR
     table = Table(width='90%')
     table.AddRow([
-        # td 1
         Label(_('Send unsubscription acknowledgement to the user?')),
-        # td 2
-        RadioButton('send_unsub_ack_to_this_batch', 0, 1).Format()
-        + _(' no ')
-        + RadioButton('send_unsub_ack_to_this_batch', 1, 0).Format()
-        + _(' yes ')
+        RadioButtonArray('send_unsub_ack_to_this_batch',
+                         (_('No'), _('Yes')),
+                         0, values=(0, 1))
         ])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    table.AddCellInfo(table.GetCurrentRowIndex(), 1, bgcolor=GREY)
     table.AddRow([
-        # td 1
         Label(_('Send notifications to the list owner?')),
-        # td 2
-        RadioButton('send_unsub_notifications_to_list_owner', 0,
-                    not mlist.admin_notify_mchanges).Format()
-        + _(' no ')
-        + RadioButton('send_unsub_notifications_to_list_owner', 1,
-                      mlist.admin_notify_mchanges).Format()
-        + _(' yes ')
+        RadioButtonArray('send_unsub_notifications_to_list_owner',
+                         (_('No'), _('Yes')),
+                         mlist.admin_notify_mchanges,
+                         values=(0, 1))
         ])
+    table.AddCellInfo(table.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    table.AddCellInfo(table.GetCurrentRowIndex(), 1, bgcolor=GREY)
     table.AddRow([Italic(_('Enter one address per line below...'))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     table.AddRow([Center(TextArea(name='unsubscribees',
@@ -1192,14 +1197,17 @@ def change_options(mlist, category, subcat, cgidata, doc):
     subscribers += cgidata.getvalue('subscribees_upload', '')
     if subscribers:
         entries = filter(None, [n.strip() for n in subscribers.splitlines()])
-        send_welcome_msg = mlist.send_welcome_msg
-        if cgidata.has_key('send_welcome_msg_to_this_batch'):
-            send_welcome_msg = int(
-                cgidata.getvalue('send_welcome_msg_to_this_batch'))
-        send_admin_notif = mlist.admin_notify_mchanges
-        if cgidata.has_key('send_notifications_to_list_owner'):
-            send_admin_notif = int(
-                cgidata.getvalue('send_notifications_to_list_owner'))
+        def safeint(formvar, defaultval=None):
+            try:
+                return int(cgidata.getvalue(formvar))
+            except (ValueError, TypeError):
+                return defaultval
+        send_welcome_msg = safeint('send_welcome_msg_to_this_batch',
+                                   mlist.send_welcome_msg)
+        send_admin_notif = safeint('send_notifications_to_list_owner',
+                                   mlist.admin_notify_mchanges)
+        # Default is to subscribe
+        subscribe_or_invite = safeint('subscribe_or_invite', 0)
         digest = 0
         if not mlist.digestable:
             digest = 0
@@ -1207,13 +1215,18 @@ def change_options(mlist, category, subcat, cgidata, doc):
             digest = 1
         subscribe_errors = []
         subscribe_success = []
-
+        # Now cruise through all the subscribees and do the deed
         for entry in entries:
             fullname, address = parseaddr(entry)
-            userdesc = UserDesc(address, fullname, digest=digest)
+            userdesc = UserDesc(address, fullname,
+                                Utils.MakeRandomPassword(),
+                                digest, mlist.preferred_language)
             try:
-                mlist.ApprovedAddMember(userdesc, send_welcome_msg,
-                                       send_admin_notif)
+                if subscribe_or_invite:
+                    mlist.InviteNewMember(userdesc)
+                else:
+                    mlist.ApprovedAddMember(userdesc, send_welcome_msg,
+                                            send_admin_notif)
             except Errors.MMAlreadyAMember:
                 subscribe_errors.append((entry, _('Already a member')))
             except Errors.MMBadEmailError:
@@ -1229,11 +1242,17 @@ def change_options(mlist, category, subcat, cgidata, doc):
             else:
                 subscribe_success.append(entry)
         if subscribe_success:
-            doc.AddItem(Header(5, _('Successfully Subscribed:')))
+            if subscribe_or_invite:
+                doc.AddItem(Header(5, _('Successfully invited:')))
+            else:
+                doc.AddItem(Header(5, _('Successfully subscribed:')))
             doc.AddItem(UnorderedList(*subscribe_success))
             doc.AddItem('<p>')
         if subscribe_errors:
-            doc.AddItem(Header(5, _('Error Subscribing:')))
+            if subscribe_or_invite:
+                doc.AddItem(Header(5, _('Error inviting:')))
+            else:
+                doc.AddItem(Header(5, _('Error subscribing:')))
             items = ['%s -- %s' % (x0, x1) for x0, x1 in subscribe_errors]
             doc.AddItem(UnorderedList(*items))
             doc.AddItem('<p>')
