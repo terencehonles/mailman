@@ -276,9 +276,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.advertised = mm_cfg.DEFAULT_LIST_ADVERTISED
         self.max_num_recipients = mm_cfg.DEFAULT_MAX_NUM_RECIPIENTS
         self.max_message_size = mm_cfg.DEFAULT_MAX_MESSAGE_SIZE
-        self.host_name = mm_cfg.DEFAULT_HOST_NAME
-        self.web_page_url = mm_cfg.DEFAULT_URL_PATTERN \
-                            % mm_cfg.DEFAULT_URL_HOST
+        # See the note in Defaults.py concerning DEFAULT_HOST_NAME
+        # vs. DEFAULT_EMAIL_HOST.
+        self.host_name = mm_cfg.DEFAULT_HOST_NAME or mm_cfg.DEFAULT_EMAIL_HOST
+        self.web_page_url = (
+            mm_cfg.DEFAULT_URL or
+            mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST)
         self.owner = [admin]
         self.moderator = []
         self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
@@ -631,8 +634,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         if '' in urlparse(self.web_page_url)[:2]:
             # Either the "scheme" or the "network location" part of the parsed
             # URL is empty; substitute faulty value with (hopefully sane)
-            # default.
-            self.web_page_url = mm_cfg.DEFAULT_URL
+            # default.  Note that DEFAULT_URL is obsolete.
+            self.web_page_url = (
+                mm_cfg.DEFAULT_URL or
+                mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST)
         if self.web_page_url and self.web_page_url[-1] <> '/':
             self.web_page_url = self.web_page_url + '/'
         # Legacy reply_to_address could be an illegal value.  We now verify
@@ -915,8 +920,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             admin_notif = self.admin_notify_mchanges
         # Delete a member, for which we know the approval has been made
         fullname, emailaddr = parseaddr(name)
-        if not self.isMember(emailaddr):
-            raise Errors.MMNoSuchUserError
         # Remove the member
         self.removeMember(emailaddr)
         # And send an acknowledgement to the user...
@@ -1086,7 +1089,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 whence = 'email confirmation'
             else:
                 whence = 'web confirmation'
-            # Can raise MMNoSuchUserError if they unsub'd via other means
+            # Can raise NotAMemberError if they unsub'd via other means
             self.ApprovedDeleteMember(addr, whence=whence)
             return op, addr
         elif op == Pending.CHANGE_OF_ADDRESS:
