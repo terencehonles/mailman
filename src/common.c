@@ -29,8 +29,8 @@ char* python = PYTHON;
 
 
 
-/*  Some older systems don't define strerror().  Provide a replacement that is
- *  good enough for our purposes.
+/* Some older systems don't define strerror().  Provide a replacement that is
+ * good enough for our purposes.
  */
 #ifndef HAVE_STRERROR
 
