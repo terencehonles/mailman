@@ -833,7 +833,7 @@ it will not be changed."""),
                 self.LogMsg('error',
                             'Failed config.db file write, retaining old state'
                             '\n %s' % `status.args`)
-                Utils.reraise()
+                raise
             # Now do config.db.tmp.xxx -> config.db -> config.db.last
             # rotation -- safely.
             try:
@@ -841,13 +841,13 @@ it will not be changed."""),
                 os.unlink(fname_last)
             except os.error, (code, msg):
                 if code <> errno.ENOENT:
-                    Utils.reraise()
+                    raise
             try:
                 # might not exist yet
                 os.link(fname, fname_last)
             except os.error, (code, msg):
                 if code <> errno.ENOENT:
-                    Utils.reraise()
+                    raise
             os.rename(fname_tmp, fname)
         finally:
             os.umask(omask)
