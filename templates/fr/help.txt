@@ -84,6 +84,13 @@ Les commandes suivantes sont reconnues:
         hide : 
 		    Cacher votre adresse lors de la visualisation des abonnés
             de la liste.
+		
+		nodupes :
+			Activez cette option si vous ne souhaitez pas recevoir
+			plusieurs copies des messages en provenance de la liste,
+			dans le cas où votre adresse a été explicitée dans l'un
+			des champs A: ou Cc: ou que le message est destiné à
+			plusieurs listes. 
 
     options 
 		Montre les valeurs actuelles de vos options pour les listes.
