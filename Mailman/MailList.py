@@ -1145,12 +1145,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# Note that qualified host can be different!  This allows, eg, for
         # relaying from remote lists that have the same name.  Still
         # stringent, but offers a way to provide for remote exploders.
-	lowname = string.lower(self.real_name)
+        listname = self.internal_name()
         recips = []
         # First check all dests against simple name:
         for recip in msg.getaddrlist('to') + msg.getaddrlist('cc'):
             curr = string.lower(string.split(recip[1], '@')[0])
-	    if lowname == curr:
+	    if listname == curr:
 		return 1
             recips.append(curr)
         # ... and only then try the regexp acceptable aliases.
@@ -1160,12 +1160,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 try:
                     # The list alias in `stripped` is a user supplied regexp,
                     # which could be malformed.
-                    if stripped and re.match(stripped, recip):
+                    if stripped and re.match(recip, stripped):
                         return 1
                 except re.error:
                     # `stripped' is a malformed regexp -- try matching
                     # safely, with all non-alphanumerics backslashed:
-                    if stripped and re.match(re.escape(stripped), recip):
+                    if stripped and re.match(recip, re.escape(stripped)):
                         return 1
 	return 0
 
