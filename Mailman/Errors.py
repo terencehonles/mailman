@@ -109,14 +109,18 @@ class HandlerError(MailmanError):
 
 class HoldMessage(HandlerError):
     """Base class for all message-being-held short circuits."""
-    def __str__(self):
-        return self.__class__.__doc__
+
+    # funky spelling is necessary to break import loops
+    reason = Mailman.i18n._('For some unknown reason')
+
+    def reason_notice(self):
+        return self.reason
 
     # funky spelling is necessary to break import loops
     rejection = Mailman.i18n._('Your message was rejected')
 
     def rejection_notice(self, mlist):
-        return self.__class__.rejection
+        return self.rejection
 
 class DiscardMessage(HandlerError):
     """The message can be discarded with no further action"""
