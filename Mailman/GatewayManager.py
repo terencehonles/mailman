@@ -36,25 +36,25 @@ class GatewayManager:
         self.gateway_to_news  = 0
         self.gateway_to_mail  = 0
 
-        def GetConfigInfo(self):
-            return [
-                'Mail-to-News and News-to-Mail gateway services.',
-                ('nntp_host', mm_cfg.String, 50, 0,
-                 'The Internet address of the machine your News server '
-                 'is running on.',
-                 'The News server is not part of Mailman proper.  You have to '
-                 'already have access to a NNTP server, and that NNTP server '
-                 'has to recognize the machine this mailing list runs on as '
-                 'a machine capable of reading and posting news.'),
-                ('linked_newsgroup', mm_cfg.String, 50, 0,
-                  'The name of the Usenet group to gateway to and/or from.'),
-                ('gateway_to_news',  mm_cfg.Toggle, ('No', 'Yes'), 0,
-                 'Should posts to the mailing list be resent to the '
-                 'newsgroup?'),
-                ('gateway_to_mail',  mm_cfg.Toggle, ('No', 'Yes'), 0,
-                 'Should newsgroup posts not sent from the list be resent '
-                 'to the list?')
-                ]
+    def GetConfigInfo(self):
+        return [
+            'Mail-to-News and News-to-Mail gateway services.',
+            ('nntp_host', mm_cfg.String, 50, 0,
+             'The Internet address of the machine your News server '
+             'is running on.',
+             'The News server is not part of Mailman proper.  You have to '
+             'already have access to a NNTP server, and that NNTP server '
+             'has to recognize the machine this mailing list runs on as '
+             'a machine capable of reading and posting news.'),
+            ('linked_newsgroup', mm_cfg.String, 50, 0,
+              'The name of the Usenet group to gateway to and/or from.'),
+            ('gateway_to_news',  mm_cfg.Toggle, ('No', 'Yes'), 0,
+             'Should posts to the mailing list be resent to the '
+             'newsgroup?'),
+            ('gateway_to_mail',  mm_cfg.Toggle, ('No', 'Yes'), 0,
+             'Should newsgroup posts not sent from the list be resent '
+             'to the list?')
+            ]
 
     # Watermarks are kept externally to avoid locking problems.
     def PollNewsGroup(self, watermark):
