@@ -105,7 +105,6 @@ def main():
     # number actually gated
     children = {}
     # cruise through lists
-    conn = None
     for name in names:
         # check to see if the list is gating news to mail.  If not, skip the
         # list.  If so, then we have to poll the newsgroup and gate any
@@ -119,9 +118,6 @@ def main():
         # child process, so we do need to open up a new connection for each
         # list.
         try:
-            # close the previous NNTP connection
-            if conn:
-                conn.quit()
             conn = nntplib.NNTP(mlist.nntp_host)
         except socket.error, e:
             # couldn't open a socket to the NNTP host.  maybe we've got too
@@ -133,6 +129,7 @@ def main():
         if not updatewatermarks:
             # just post the specified messages and be done with it
             poll_newsgroup(mlist, conn, first, last+1)
+            conn.quit()
             return
         # Otherwise, let's figure out what needs to be done
         first = int(f)
@@ -197,7 +194,10 @@ def main():
             # steal()), but that should be very small.
             try:
                 lock.steal()
-                poll_newsgroup(mlist, conn, max(wm+1, first), last+1)
+                try:
+                    poll_newsgroup(mlist, conn, max(wm+1, first), last+1)
+                finally:
+                    conn.quit()
                 try:
                     lock.unlock()
                 except LockFile.NotLockedError:
@@ -214,8 +214,6 @@ def main():
         reap(children, watermarks)
     # we're done forking off all the gating children, now just wait for them
     # all to exit, and then we're done
-    if conn:
-        conn.quit()
     while children:
         reap(children, watermarks)
 
