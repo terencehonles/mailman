@@ -1232,7 +1232,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             if not self.GetUserOption(m, mm_cfg.DisableDelivery):
                 recipients.append(m)
 	if dont_send_to_sender:
-            recipients.remove(self.GetUserSubscribedAddress(sender))
+            try:
+                recipients.remove(self.GetUserSubscribedAddress(sender))
+            except ValueError:
+                # sender does not want to get copies of their own messages
+                # (not metoo), but delivery to their address is disabled
+                # (nomail)
+                pass
         self.LogMsg("post", "post to %s from %s size=%d",
                     self._internal_name, msg.GetSender(), len(msg.body))
 	self.DeliverToList(msg, recipients, 
