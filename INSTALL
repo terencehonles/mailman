@@ -208,11 +208,11 @@ file UPGRADING for important information before you upgrade.
       scripts run is *not* in the `mailman' group you created above,
       otherwise private archives will be accessible to anyone.
 
-    - Copy the Mailman, Python, and GNU logos a location accessible to
-      your Web server.  E.g. with Apache, you've usually got an
+    - Copy the Mailman, Python, and GNU logos to a location accessible
+      to your Web server.  E.g. with Apache, you've usually got an
       `icons' directory that you can drop the images into.  You want
-      to copy misc/mailman.jpg, misc/PythonPowered.png, and
-      misc/gnu-head-tiny.jpg to this directory.
+      to copy $prefix/icons/mailman.jpg, $prefix/icons/PythonPowered.png,
+      and $prefix/icons/gnu-head-tiny.jpg to this directory.
 
       You then want to add a line to your $prefix/Mailman/mm_cfg.py
       file which sets the base URL for the logos.  For example:
