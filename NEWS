@@ -2,6 +2,26 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+1.0rc3
+
+- Removed a bottleneck in the archiving code that was causing
+  performance problems on highly loaded servers.
+
+- The code that saves a list's state and configuration database has
+  been made more robust.
+
+- Additional exception handlers have been added in several places to
+  alleviate problems with Mailman bombing out when it really would be
+  better to print/log a helpful message.
+
+- The "password" mail command will now mail back the sender's
+  subscription password when given with no arguments.
+
+- The embarrassing subject-prefixing bug present in rc2 has been
+  fixed.
+
+- A small (but nice :) collection of other squashed bugs.
+
 1.0rc2
 
 - A security flaw in the CGI cookie mechanisms was discovered -- the
