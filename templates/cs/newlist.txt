@@ -36,5 +36,5 @@ své administrátorské heslo. Také mù¾ete stejným zpùsobem nastavovat
 úèastníkùm parametry jejich kont.
 
 Pokud mátì nìjaké dotazy, zasílejte je na adresu
-mailman-owner@%(hostname)s, pokud to ov¹em není Va¹e vlastní adresa.
+%(siteowner)s, pokud to ov¹em není Va¹e vlastní adresa.
 

@@ -1,4 +1,4 @@
-Proto¾e jste srávcem konference, je po¾adován Vá¹ souhlas s pøihlá¹ením
+Proto¾e jste správcem konference, je po¾adován Vá¹ souhlas s pøihlá¹ením
 následujícího u¾ivatele:
 
     U¾ivatel:   %(username)s

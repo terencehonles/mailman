@@ -1,9 +1,7 @@
-Tento dopis dostáváte pro pøipomenutí hesla pro konferenci, do které jste
-pøihlá¹eni z adresy "%(user)s". Konference se jmenuje %(listname)s.
+Tento dopis dostáváte pro pøipomenutí hesla pro konferenci na %(fqdn_lname)s,
+do které jste pøihlá¹eni z adresy "%(user)s".
 
-Va¹e heslo pro konferenci %(listname)s je:
-
-    %(password)s
+Va¹e heslo pro konferenci %(listname)s je: %(password)s
 
 Abyste mohli mìnit nastavení svého úèastnického konta, nav¹tivte WWW
 stránku:
