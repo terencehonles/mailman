@@ -2,6 +2,10 @@ Mailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
+Note: We're migrating the FAQ to an on-line interactive system called
+      "FAQ Wizard".  To see the Mailman FAQ Wizard in action, go to
+      http://www.python.org/cgi-bin/faqw-mm.py
+
 FREQUENTLY ASKED QUESTIONS
 
 Q. How do you spell this program?
