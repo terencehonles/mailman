@@ -1,4 +1,4 @@
-<!-- $Revision: 4025 $ -->
+<!-- $Revision: 4827 $ -->
 <html>
 <head>
     <title>Personlig medlemside for <MM-Presentable-User> p&aring; listen <MM-List-Name>
@@ -41,7 +41,7 @@
         adressen. Endringene trer ikke i kraft f&oslash;r du har bekreftet dem.
         Du har <mm-pending-days> p&aring; deg til &aring; bekrefte endringen.
 
-        <p>Du kan også oppgi eller endre navnet ditt på listen (f.eks <em>Ola Normann</em>).
+        <p>Du kan ogs&aring; oppgi eller endre navnet ditt p&aring; listen (f.eks <em>Ola Normann</em>).
 
         <p>Hvis du vil endre epostadressen din for alle
            epostlistene du er p&aring;meldt p&aring; <mm-host>, kryss av for 
@@ -168,9 +168,10 @@ er medlem av.
 
     <tr><TD BGCOLOR="#cccccc">
         <strong>Sammendrag-modus</strong><p>
-	Setter du p&aring; sammendrag-modus, vil du med jevne mellomrom f&aring; en
-	epost som inneholder alle meldinger som ble sendt til listen i
-	det tidsrommet. Hvis du bytter fra sammendrag-modus til normal-
+	Setter du p&aring; sammendrag-modus, vil du med jevne mellomrom (vanligvis en gang om dagen,
+        muligens flere ganger, det kommer an p&aring; hvor mye som sendes til listen) f&aring; en
+	samle-epost som inneholder alle meldinger som blir sendt til listen, istedenfor &aring; f&aring; hver
+	enkelt melding. Hvis du bytter fra sammendrag-modus til normal-
 	modus, vil du muligens allikevel f&aring; en siste epost med sammendrag
 	selv om du allerede da vil begynne &aring; motta alle meldinger som
 	kommer til listen.
@@ -240,10 +241,10 @@ er medlem av.
 
     <tr><td bgcolor="#cccccc">
         <strong>Hvilke emner vil du motta?</strong>
-        <p>Ved å velge ett eller flere emner, kan du filtrere meldingene som sendes til
+        <p>Ved &aring; velge ett eller flere emner, kan du filtrere meldingene som sendes til
         epostlisten, slik at du kun vil motta det som kan interessere deg.
 
-        <p>Hvis en melding ikke går under noen emner, kommer det an på innstillingen nedenfor
+        <p>Hvis en melding ikke g&aring;r under noen emner, kommer det an p&aring; innstillingen nedenfor
         om du vil motta meldingen eller ikke. Hvis du ikke velger noen emner her, vil
         du motta alle meldinger som sendes til listen.
         </td><td bgcolor="#cccccc">
@@ -251,9 +252,9 @@ er medlem av.
         </td></tr>
 
     <tr><td bgcolor="#cccccc">
-        <strong>Vil du motta meldinger som ikke går under noe emne?</strong>
+        <strong>Vil du motta meldinger som ikke g&aring;r under noe emne?</strong>
         <p>Dette valget gjelder bare hvis du har valgt et eller flere emner ovenfor.
-        Det avgjør om du skal motta meldinger som ikke går under noen emner.
+        Det avgj&oslash;r om du skal motta meldinger som ikke g&aring;r under noen emner.
         Velger du <em>Nei</em> vil du ikke motta dem, velger du <em>Ja</em> vil
         du motta dem.
 
@@ -263,7 +264,25 @@ er medlem av.
         </td><td bgcolor="#cccccc">
         <mm-suppress-nonmatching-topics>Nei<br>
         <mm-receive-nonmatching-topics>Ja
-        </td></tr>
+      </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Unng&aring; &aring; f&aring; epost fra listen som ogs&aring; er adressert direkte til deg?</strong><p>
+
+        Du kan velge hva som skal skje dersom det kommer en epost til listen som i tillegg er
+        adressert direkte til deg (dvs. din epostadresse st&aring;r i <tt>To:</tt> eller <tt>Cc:</tt>
+        feltet). Velg <em>Ja</em> for da &aring; unng&aring; &aring; motta epost fra listen; velg <em>Nei</em>
+        for likevel &aring; motta epost fra listen.
+
+        <p>For spesielt interesserte: Dersom listen er satt opp til &aring; personifisere
+        meldinger sendt til listen, og du velger &aring; motta epost fra listen, vil hver
+        kopi ha et <tt>X-Mailman-Copy: yes</tt> felt i meldingshodet.
+ 
+	</td><td bgcolor="#cccccc">
+        <mm-receive-duplicates-button>Nei<br>
+        <mm-dont-receive-duplicates-button>Ja<p>
+        <mm-global-nodupes-button><i>Sett globalt</i>
+      </td></tr>
     <tr><TD colspan="2">
         <center><MM-options-Submit-button></center>
         </td></tr>
