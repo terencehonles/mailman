@@ -149,6 +149,8 @@ class Deliverer:
 	if self.reply_goes_to_list:
             del msg['reply-to']
             msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
+        # get rid of duplicate Sender: fields.
+        del msg['sender']
 	msg.headers.append('Sender: %s\n' % self.GetAdminEmail())
 	msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
         self.AddNonStandardHeaders(msg.headers)
