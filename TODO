@@ -61,6 +61,9 @@ List Admin UI
       handling pending requests sitting on all those lists.
     - Ability to ban specific troublesome users (from posting,
       subscribing, etc).  Posts from banned users would be discarded.
+    - Better integration with moderated newsgroups (and allow some
+      addresses to bypass even that moderation and be delivered to a
+      secondary channel, like moderators@isc.org).
 
 List Member UI
     - Editing your user options should put you back to the edit-options page
