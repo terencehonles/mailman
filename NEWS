@@ -161,6 +161,8 @@ Here is a history of user visible changes to Mailman.
         o Most syslog entries for the qrunner have been redirected to
           logs/error.
 
+        o On SIGHUP, qrunner will re-open all its log files.
+
     - Patches and bug fixes
         o SF patches and bug fixes applied: 420396, 424389, 227694, 426002
 
