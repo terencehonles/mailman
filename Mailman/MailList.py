@@ -62,6 +62,7 @@ from Mailman.TopicMgr import TopicMgr
 from Mailman import Gui
 
 # other useful classes
+from Mailman import MemberAdaptor
 from Mailman.OldStyleMemberships import OldStyleMemberships
 from Mailman import Message
 from Mailman import Pending
@@ -972,6 +973,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                 # via the admindb page.
                 syslog('error', 'Could not process HELD_MESSAGE: %s', id)
             return (op,)
+        elif op == Pending.RE_ENABLE:
+            member = data[1]
+            self.setDeliveryStatus(member, MemberAdaptor.ENABLED)
+            return op, member
 
     def ConfirmUnsubscription(self, addr, lang=None, remote=None):
         if lang is None:
