@@ -23,22 +23,23 @@ Mixes in many feature classes.
 try:
     import mm_cfg
 except ImportError:
-    raise RuntimeError, ('missing mm_cfg - has mm_cfg_dist been configured '
+    raise RuntimeError, ('missing mm_cfg - has Config_dist been configured '
 			 'for the site?')
 
 import sys, os, marshal, string, posixfile, time
 import re
-import mm_utils, mm_err, flock
+import Utils
+import Errors
 
-from mm_admin import ListAdmin
-from mm_deliver import Deliverer
-from mm_mailcmd import MailCommandHandler 
-from mm_html import HTMLFormatter 
-from mm_archive import Archiver
-from mm_digest import Digester
-from mm_security import SecurityManager
-from mm_bouncer import Bouncer
-from mm_gateway import GatewayManager
+from ListAdmin import ListAdmin
+from Deliverer import Deliverer
+from MailCommandHandler import MailCommandHandler 
+from HTMLFormatter import HTMLFormatter 
+from Archiver import Archiver
+from Digester import Digester
+from SecurityManager import SecurityManager
+from Bouncer import Bouncer
+from GatewayManager import GatewayManager
 
 # Note: 
 # an _ in front of a member variable for the MailList class indicates
@@ -48,31 +49,18 @@ from mm_gateway import GatewayManager
 
 class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
 	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager):
-    def __del__(self):
-	self.Unlock()
     def __init__(self, name=None, lock=1):
 	MailCommandHandler.__init__(self)
-        self.InitTempVars(name, lock)
-        if name:
-	    self.Load()
-
-    def InitTempVars(self, name, lock):
-	if name:
-	    if name not in mm_utils.list_names():
-		raise mm_err.MMUnknownListError, 'list not found: %s' % name
-	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	self._tmp_lock = lock
 	self._lock_file = None
 	self._internal_name = name
 	self._ready = 0
 	self._log_files = {}		# 'class': log_file_obj
-        lock_file_name = os.path.join(mm_cfg.LOCK_DIR, '%s.lock' %
-					  self._internal_name)
-	self._lock_file = flock.FileLock(lock_file_name)
-        HTMLFormatter.InitTempVars(self)
-	self._mime_separator = '__--__--' 
-
-
+	if name:
+	    if name not in Utils.list_names():
+		raise Errors.MMUnknownListError, 'list not found: %s' % name
+	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
+	    self.Load()
 
     def __del__(self):
 	for f in self._log_files.values():
@@ -88,7 +76,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return '%s@%s' % (self._internal_name, self.host_name)
 
     def GetRelativeScriptURL(self, script_name):
-	prefix = '../'*mm_utils.GetNestingLevel()
+	prefix = '../'*Utils.GetNestingLevel()
         return '%s%s/%s' % (prefix,script_name, self._internal_name)
     def GetAbsoluteScriptURL(self, script_name):
         if self.web_page_url:
@@ -101,7 +89,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetAbsoluteOptionsURL(self, addr, obscured=0,):
 	options = self.GetAbsoluteScriptURL('options')
         if obscured:
-            treated = mm_utils.ObscureEmail(addr, for_text=0)
+            treated = Utils.ObscureEmail(addr, for_text=0)
         else:
             treated = addr
         return os.path.join(options, treated)
@@ -125,7 +113,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.Save()
 
     def FindUser(self, email):
-	matches = mm_utils.FindMatchingAddresses(email,
+	matches = Utils.FindMatchingAddresses(email,
 						 (self.members
 						  + self.digest_members))
 	if not matches or not len(matches):
@@ -134,6 +122,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def InitVars(self, name=None, admin='', crypted_password=''):
         """Assign default values - some will be overriden by stored state."""
+	# Non-configurable list info 
+	if name:
+	  self._internal_name = name
+	self._mime_separator = '__--__--' 
+
 	# Must save this state, even though it isn't configurable
 	self.volume = 1
 	self.members = [] # self.digest_members is initted in mm_digest
@@ -185,7 +178,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	Digester.InitVars(self) # has configurable stuff
 	SecurityManager.InitVars(self, crypted_password)
-	HTMLFormatter.InitVars(self)
+	HTMLFormatter.InitTempVars(self)
 	Archiver.InitVars(self) # has configurable stuff
 	ListAdmin.InitVars(self)
 	Bouncer.InitVars(self)
@@ -203,6 +196,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	config_info['archive'] = Archiver.GetConfigInfo(self)
 	config_info['gateway'] = GatewayManager.GetConfigInfo(self)
 
+        # XXX: Should this text be migrated into the templates dir?
 	config_info['general'] = [
             "Fundamental list characteristics, including descriptive"
             " info and basic behaviors.",
@@ -498,23 +492,23 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Header added to mail sent to regular list members',
 
              "Text prepended to the top of every immediately-delivery"
-             " message.  <p>" + mm_err.MESSAGE_DECORATION_NOTE),
+             " message.  <p>" + Errors.MESSAGE_DECORATION_NOTE),
 	    
 	    ('msg_footer', mm_cfg.Text, (4, 55), 0,
 	     'Footer added to mail sent to regular list members',
 
              "Text appended to the bottom of every immediately-delivery"
-             " message.  <p>" + mm_err.MESSAGE_DECORATION_NOTE),
+             " message.  <p>" + Errors.MESSAGE_DECORATION_NOTE),
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
 	return config_info
 
     def Create(self, name, admin, crypted_password):
-	if name in mm_utils.list_names():
+	if name in Utils.list_names():
 	    raise ValueError, 'List %s already exists.' % name
 	else:
-	    mm_utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
+	    Utils.MakeDirTree(os.path.join(mm_cfg.LIST_DATA_DIR, name))
 	self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	self._internal_name = name
 	self.Lock()
@@ -529,7 +523,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# A "just-in-case" thing.  This shouldn't have to be here.
 	ou = os.umask(002)
 	try:
-	    import mm_archive
+## 	    import mm_archive
 ## 	    open(os.path.join(self._full_path,
 ## 			      mm_archive.ARCHIVE_PENDING), "a+").close()
 ## 	    open(os.path.join(self._full_path,
@@ -592,7 +586,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	if self._log_files.has_key(kind):
 	    logf = self._log_files[kind]
 	else:
-	    logf = self._log_files[kind] = mm_utils.StampedLogger(kind)
+	    logf = self._log_files[kind] = Utils.StampedLogger(kind)
  	logf.write("%s\n" % (msg % args))
 	logf.flush()
 
@@ -616,7 +610,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def IsListInitialized(self):
 	if not self._ready:
-	    raise mm_err.MMListNotReady
+	    raise Errors.MMListNotReady
 
     def AddMember(self, name, password, digest=0, web_subscribe=0):
 	self.IsListInitialized()
@@ -624,21 +618,21 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	name = string.join(string.split(string.lower(name)), '')
 
 	# Validate the e-mail address to some degree.
-	if not mm_utils.ValidEmail(name):
-            raise mm_err.MMBadEmailError
+	if not Utils.ValidEmail(name):
+            raise Errors.MMBadEmailError
 	if self.IsMember(name):
-            raise mm_err.MMAlreadyAMember
+            raise Errors.MMAlreadyAMember
 
 	if digest and not self.digestable:
-            raise mm_err.MMCantDigestError
+            raise Errors.MMCantDigestError
 	elif not digest and not self.nondigestable:
-            raise mm_err.MMMustDigestError
+            raise Errors.MMMustDigestError
 
         if self.open_subscribe:
             if (web_subscribe and self.web_subscribe_requires_confirmation):
                 if self.web_subscribe_requires_confirmation == 1:
                     # Requester confirmation required.
-                    raise mm_err.MMWebSubscribeRequiresConfirmation
+                    raise Errors.MMWebSubscribeRequiresConfirmation
                 else:
                     # Admin approval required.
                     self.AddRequest('add_member', digest, name, password)
@@ -655,7 +649,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         #          lower case version for computations.
         name = string.lower(name)
 	if self.IsMember(name):
-	    raise mm_err.MMAlreadyAMember
+	    raise Errors.MMAlreadyAMember
 	if digest:
 	    self.digest_members.append(name)
             kind = " (D)"
@@ -673,10 +667,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.IsListInitialized()
 # FindMatchingAddresses *should* never return more than 1 address.
 # However, should log this, just to make sure.
-	aliases = mm_utils.FindMatchingAddresses(name, self.members + 
+	aliases = Utils.FindMatchingAddresses(name, self.members + 
 						 self.digest_members)
 	if not len(aliases):
-	    raise mm_err.MMNoSuchUserError
+	    raise Errors.MMNoSuchUserError
 
 	def DoActualRemoval(alias, me=self):
 	    kind = "(unfound)"
@@ -708,7 +702,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                     self._internal_name, name, whence)
 
     def IsMember(self, address):
-	return len(mm_utils.FindMatchingAddresses(address, self.members +
+	return len(Utils.FindMatchingAddresses(address, self.members +
 						    self.digest_members))
 
     def HasExplicitDest(self, msg):
@@ -801,29 +795,29 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	if not approved:
             from_lists = msg.getallmatchingheaders('x-beenthere')
             if self.GetListEmail() in from_lists:
-                self.AddRequest('post', mm_utils.SnarfMessage(msg),
-                                mm_err.LOOPING_POST,
+                self.AddRequest('post', Utils.SnarfMessage(msg),
+                                Errors.LOOPING_POST,
                                 msg.getheader('subject'))
 	    if len(self.forbidden_posters):
-		addrs = mm_utils.FindMatchingAddresses(sender,
+		addrs = Utils.FindMatchingAddresses(sender,
 						       self.forbidden_posters)
 		if len(addrs):
-		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				    mm_err.FORBIDDEN_SENDER_MSG,
+		    self.AddRequest('post', Utils.SnarfMessage(msg),
+				    Errors.FORBIDDEN_SENDER_MSG,
 				    msg.getheader('subject'))
 	    if len(self.posters):
-		addrs = mm_utils.FindMatchingAddresses(sender, self.posters)
+		addrs = Utils.FindMatchingAddresses(sender, self.posters)
 		if not len(addrs):
-		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
+		    self.AddRequest('post', Utils.SnarfMessage(msg),
 				    'Only approved posters may post without '
 				    'moderator approval.',
 				    msg.getheader('subject'))
 	    elif self.moderated:
-		self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				mm_err.MODERATED_LIST_MSG,
+		self.AddRequest('post', Utils.SnarfMessage(msg),
+				Errors.MODERATED_LIST_MSG,
 				msg.getheader('subject'))
 	    if self.member_posting_only and not self.IsMember(sender):
-		self.AddRequest('post', mm_utils.SnarfMessage(msg),
+		self.AddRequest('post', Utils.SnarfMessage(msg),
 				'Postings from member addresses only.',
 				msg.getheader('subject'))
 	    if self.max_num_recipients > 0:
@@ -835,25 +829,25 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		if ccheader:
 		    recips = recips + string.split(ccheader, ',')
 		if len(recips) > self.max_num_recipients:
-		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
+		    self.AddRequest('post', Utils.SnarfMessage(msg),
 				    'Too many recipients.',
 				    msg.getheader('subject'))
  	    if (self.require_explicit_destination and
  		  not self.HasExplicitDest(msg)):
- 		self.AddRequest('post', mm_utils.SnarfMessage(msg),
- 				mm_err.IMPLICIT_DEST_MSG,
+ 		self.AddRequest('post', Utils.SnarfMessage(msg),
+ 				Errors.IMPLICIT_DEST_MSG,
 				msg.getheader('subject'))
  	    if self.bounce_matching_headers:
 		triggered = self.HasMatchingHeader(msg)
 		if triggered:
 		    # Darn - can't include the matching line for the admin
 		    # message because the info would also go to the sender.
-		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				    mm_err.SUSPICIOUS_HEADER_MSG,
+		    self.AddRequest('post', Utils.SnarfMessage(msg),
+				    Errors.SUSPICIOUS_HEADER_MSG,
 				    msg.getheader('subject'))
 	    if self.max_message_size > 0:
 		if len(msg.body)/1024. > self.max_message_size:
-		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
+		    self.AddRequest('post', Utils.SnarfMessage(msg),
 				    'Message body too long (>%dk)' % 
 				    self.max_message_size,
 				    msg.getheader('subject'))
@@ -902,17 +896,30 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.Save()
 
     def Locked(self):
-	if not self._lock_file:
-	    return 0
-        return self._lock_file.locked()
+        try:
+            return self._lock_file and 1
+        except AttributeError:
+            return 0
 
     def Lock(self):
-	if self._lock_file.locked():
+	try:
+	    if self._lock_file:
+		return
+	except AttributeError:
 	    return
-	self._lock_file.lock()
+	ou = os.umask(0)
+	try:
+	    self._lock_file = posixfile.open(
+		os.path.join(mm_cfg.LOCK_DIR, '%s.lock' % self._internal_name),
+		'a+')
+	finally:
+	    os.umask(ou)
+	self._lock_file.lock('w|', 1)
     
     def Unlock(self):
-	self._lock_file.unlock()
+	self._lock_file.lock('u')
+	self._lock_file.close()
+	self._lock_file = None
 
     def __repr__(self):
 	if self.Locked(): status = " (locked)"
