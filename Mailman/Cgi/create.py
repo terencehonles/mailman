@@ -175,7 +175,9 @@ def process_request(doc, cgidata):
             __import__(modname)
             sys.modules[modname].create(mlist)
 
-        # And send the notice to the list owner
+        # And send the notice to the list owner.  BAW: Note that we might be
+        # setting the wrong From: address.  There should probably be a
+        # per-list or per domain MAILMAN_OWNER.
         if notify:
             text = Utils.maketext(
                 'newlist.txt',
@@ -184,11 +186,10 @@ def process_request(doc, cgidata):
                  'admin_url'   : mlist.GetScriptURL('admin', absolute=1), 
                  'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
                  'requestaddr' : "%s-request@%s" % (listname, mlist.host_name),
-                 'hostname'    : mlist.host_name,
-                 }, mlist.preferred_language)
+                 'owner'       : mm_cfg.MAILMAN_OWNER,
+                 }, mlist=mlist)
             msg = Message.UserNotification(
-                owner,
-                'mailman-owner@' + mlist.host_name,
+                owner, mm_cfg.MAILMAN_OWNER,
                 _('Your new mailing list: %(listname)s'),
                 text)
             msg.send(mlist)
