@@ -95,7 +95,7 @@ def ReadFile(filename):
 
 def SendExplanation(ml, users):
     msg = Mailman.Message.OutgoingMessage()
-    msg.SetSender(ml.GetAdminEmail())
+    msg['From'] = ml.GetAdminEmail())
     dict = {'listname'    : ml.real_name,
             'listhost'    : ml.host_name,
             'listaddr'    : ml.GetListEmail(),
@@ -105,7 +105,7 @@ def SendExplanation(ml, users):
             'version'     : Mailman.mm_cfg.VERSION,
             }
     header = 'Big change in %(listname)s@%(listhost)s mailing list' % dict
-    msg.SetHeader('subject', header)
+    msg['Subject'] = header
     msg.AppendToBody(Mailman.Utils.maketext('convert.txt', dict))
     ml.DeliverToList(msg, users, None, None)
 
