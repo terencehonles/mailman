@@ -819,6 +819,7 @@ add_language('hu',   _('Hungarian'),           'iso-8859-1')
 add_language('it',   _('Italian'),             'iso-8859-1')
 add_language('ja',   _('Japanese'),            'euc-jp')
 add_language('no',   _('Norwegian'),           'iso-8859-1')
+add_language('ru',   _('Russian'),             'koi8-r')
 
 del _                                   
 
