@@ -20,6 +20,7 @@
 from Mailman import Utils
 from Mailman import Errors
 from Mailman.htmlformat import FontAttr
+from Mailman.i18n import _
 
 
 
@@ -39,14 +40,16 @@ def loginpage(mlist, scriptname, msg='', frontpage=None):
         actionurl = Utils.GetRequestURI(url)
     if msg:
         msg = FontAttr(msg, color='#ff0000', size='+1').Format()
-    print 'Content-type: text/html\n'
+    # Language stuff
+    charset = Utils.GetCharSet(mlist.preferred_language)
+    print 'Content-type: text/html; charset=' + charset + '\n\n'
     print Utils.maketext(
         # Should really be admlogin.html :/
         'admlogin.txt',
         {'listname': mlist.real_name,
          'path'    : actionurl,
          'message' : msg,
-         })
+         }, lang=mlist.preferred_language)
 
     
 
@@ -71,11 +74,11 @@ def authenticate(mlist, cgidata):
     try:
         isauthed = mlist.WebAuthenticate(password=adminpw, cookie='admin')
     except Errors.MMExpiredCookieError:
-        msg = 'Stale cookie found'
+        msg = _('Stale cookie found')
     except Errors.MMInvalidCookieError:
-        msg = 'Error decoding authorization cookie'
+        msg = _('Error decoding authorization cookie')
     except (Errors.MMBadPasswordError, Errors.MMAuthenticationError):
-        msg = 'Authentication failed'
+        msg = _('Authentication failed')
     #
     # Returns successfully if logged in
     if not isauthed:
