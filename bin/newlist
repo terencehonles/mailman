@@ -29,6 +29,7 @@ email notice about the existence of the new list.
 
 import sys, os, string
 import time
+import getpass
 import paths                                      # path hacking
 from Mailman import MailList
 from Mailman import Utils
@@ -71,8 +72,7 @@ def main(argv):
     if len(argv) > 3:
 	list_pw = argv[3]
     else:
-        list_pw = Utils.getTtyPwWithConfirm("Initial %s password: "
-                                            % list_name)
+        list_pw = getpass.getpass("Initial %s password: " % list_name)
 
     newlist = MailList.MailList()
     pw = crypt(list_pw , Utils.GetRandomSeed())

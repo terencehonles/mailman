@@ -24,8 +24,8 @@ places that a list users password can be used."""
 
 import sys
 import paths
+import getpass
 from Mailman import MailList
-from Mailman.Utils import getTtyPwWithConfirm
 
 def main(argv):
     if len(sys.argv) >= 2:
@@ -35,7 +35,7 @@ def main(argv):
         pw = sys.argv[1]
     else:
         try:
-            pw = getTtyPwWithConfirm("Password: ")
+            pw = getpass.getpass("Password: ")
         except KeyboardInterrupt:
             print "Interrupted..."
             raise SystemExit, 1
