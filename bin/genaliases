@@ -31,8 +31,18 @@ Options:
 import sys
 import os
 import getopt
-import dbhash
 import fcntl
+
+# The issue here is that we must be using a Berkeley DB version in Python
+# that's compatible with the version that Postfix uses.  First, we'll try
+# Robin Dunn's PyBSDDB3 module if its available, since that should be
+# backwards compatible with the widest range of existing libraries.
+# Otherwise,we'll fall back to whatever's available in Python.  Then about the
+# best we can do is just report any errors that come up.
+try:
+    import bsddb3 as bsddb
+except ImportError:
+    import bsddb
 
 import paths                                      # path hacking
 from Mailman import Utils
@@ -63,9 +73,9 @@ def main():
     if args:
         usage(1)
 
-    # Open the text file and dbhash files, truncating any data already there.
-    # We need to acquire a lock so nobody tries to update the files while
-    # we're doing it.
+    # Open the text file and Berkeley DB files, truncating any data already
+    # there.  We need to acquire a lock so nobody tries to update the files
+    # while we're doing it.
     lock = Postfix.makelock()
     lock.lock()
     lockfp = None
@@ -78,7 +88,7 @@ def main():
         # why we do the locking this way.
         lockfp = open(Postfix.DBFILE, 'w')
         fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
-        db = dbhash.open(Postfix.DBFILE, 'n')
+        db = bsddb.hashopen(Postfix.DBFILE, 'n')
         fp = open(Postfix.TEXTFILE, 'w')
         for listname in Utils.list_names():
             mlist = MailList.MailList(listname, lock=0)
@@ -95,4 +105,9 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except bsddb.error, (code, msg):
+        if code <> 22: raise
+        print >> sys.stderr, _(
+            "Python and Postfix have incompatible Berkeley DB libraries!")
