@@ -520,7 +520,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.IsListInitialized()
 	ou = os.umask(002)
 	try:
-	    file = open(os.path.join(self._full_path, 'config.db'), 'w')
+	    fname = os.path.join(self._full_path, 'config.db')
+            fname_last = fname + ".last"
+	    if os.path.exists(fname_last):
+	      os.unlink(fname_last)
+	    os.link(fname, fname_last)
+	    os.unlink(fname)
+	    file = open(fname, 'w')
 	finally:
 	    os.umask(ou)
 	dict = {}
