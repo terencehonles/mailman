@@ -26,6 +26,7 @@ from Privacy import Privacy
 from Topics import Topics
 from Usenet import Usenet
 from Language import Language
+from ContentFilter import ContentFilter
 
 # Don't export this symbol outside the package
 del GUIBase
