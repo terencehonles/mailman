@@ -12,6 +12,9 @@ Email Handling
       server to do DNS lookups and remote MTA delivery directly
       (optional).
     - Plain text digests should conform to RFC 1153.
+    - If a message has MIME parts and the header/footer is going to be
+      added, the message should be transformed into a mulitpart/mixed
+      with the header and footer added as text/plain parts.
 
 Documentation
     - A detailed feature list
