@@ -23,6 +23,7 @@ from email.MIMEText import MIMEText
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
+from Mailman.Message import Message
 from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
@@ -50,8 +51,12 @@ def process(mlist, msg, msgdata):
             d['user_optionsurl'] = mlist.GetOptionsURL(member)
         except Errors.NotAMemberError:
             pass
-    header = decorate(mlist, mlist.msg_header, _('non-digest header'), d)
-    footer = decorate(mlist, mlist.msg_footer, _('non-digest footer'), d)
+    # These strings are descriptive for the log file and shouldn't be i18n'd
+    header = decorate(mlist, mlist.msg_header, 'non-digest header', d)
+    footer = decorate(mlist, mlist.msg_footer, 'non-digest footer', d)
+    # Escape hatch if both the footer and header are empty
+    if not header and not footer:
+        return
     # Be MIME smart here.  We only attach the header and footer by
     # concatenation when the message is a non-multipart of type text/plain.
     # Otherwise, if it is not a multipart, we make it a multipart, and then we
@@ -71,6 +76,7 @@ def process(mlist, msg, msgdata):
     msgtype = msg.get_type('text/plain')
     # BAW: If the charsets don't match, should we add the header and footer by
     # MIME multipart chroming the message?
+    wrap = 1
     if not msg.is_multipart() and msgtype == 'text/plain' and \
            msg.get('content-transfer-encoding', '').lower() <> 'base64' and \
            (lcset == 'us-ascii' or mcset == lcset):
@@ -82,6 +88,7 @@ def process(mlist, msg, msgdata):
             endsep = '\n'
         payload = header + frontsep + oldpayload + endsep + footer
         msg.set_payload(payload)
+        wrap = 0
     elif msg.get_type() == 'multipart/mixed':
         # The next easiest thing to do is just prepend the header and append
         # the footer as additional subparts
@@ -95,21 +102,53 @@ def process(mlist, msg, msgdata):
         if header:
             payload.insert(0, mimehdr)
         msg.set_payload(payload)
-    elif msg.get_main_type() <> 'multipart':
-        # Okay, we've got some 'image/*' or 'audio/*' -like type.  For now, we
-        # simply refuse to add headers and footers to this message.  BAW:
-        # still trying to decide what the Right Thing To Do is.
-        pass
-    else:
-        # Now we've got some multipart/* that's not a multipart/mixed.  I'm
-        # even less sure about what to do here, so once again, let's not add
-        # headers or footers for now.
-        pass
+        wrap = 0
+    # If we couldn't add the header or footer in a less intrusive way, we can
+    # at least do it by MIME encapsulation.  We want to keep as much of the
+    # outer chrome as possible.
+    if not wrap:
+        return
+    # Because of the way Message objects are passed around to process(), we
+    # need to play tricks with the outer message -- i.e. the outer one must
+    # remain the same instance.  So we're going to create a clone of the outer
+    # message, with all the header chrome intact, then copy the payload to it.
+    # This will give us a clone of the original message, and it will form the
+    # basis of the interior, wrapped Message.
+    inner = Message()
+    # Which headers to copy?  Let's just do the Content-* headers
+    for h, v in msg.items():
+        if h.lower().startswith('content-'):
+            inner[h] = v
+    inner.set_payload(msg.get_payload())
+    # For completeness
+    inner.set_unixfrom(msg.get_unixfrom())
+    inner.preamble = msg.preamble
+    inner.epilogue = msg.epilogue
+    inner.set_charset(msg.get_charset())
+    inner.set_default_type(msg.get_default_type())
+    # BAW: HACK ALERT.
+    if hasattr(msg, '__version__'):
+        inner.__version__ = msg.__version__
+    # Now, play games with the outer message to make it contain three
+    # subparts: the header (if any), the wrapped message, and the footer (if
+    # any).
+    payload = [inner]
+    if header:
+        mimehdr = MIMEText(header)
+        payload.insert(0, mimehdr)
+    if footer:
+        mimeftr = MIMEText(footer)
+        payload.append(mimeftr)
+    msg.set_payload(payload)
+    del msg['content-type']
+    del msg['content-transfer-encoding']
+    del msg['content-disposition']
+    msg['Content-Type'] = 'multipart/mixed'
 
 
 
 def decorate(mlist, template, what, extradict={}):
-    # `what' is just a descriptive phrase
+    # `what' is just a descriptive phrase used in the log message
     #
     # BAW: We've found too many situations where Python can be fooled into
     # interpolating too much revealing data into a format string.  For
