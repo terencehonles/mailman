@@ -665,6 +665,7 @@ def GetValidValue(lst, prop, my_type, val, dependant):
                 pass
         if num < 0:
             return getattr(lst, prop)
+        return num
     else:
 	# Should never get here...
 	return val
