@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,16 +42,23 @@ def dumpsection(header, items, hasitems):
         else:
             for item in items:
                 print >> outfp, SPACE.join(item), '<p>'
-        del items[:]
+        items = [['']]
 
 
 header = ''
 items = [['']]
 hasitems = 0
+inpreamble = 1
 while 1:
     line = infp.readline()
     if not line or line[0] == '\f':
         break
+    # Skip the legalese preamble
+    if inpreamble:
+        if line.strip():
+            continue
+        else:
+            inpreamble = 0
     if not line[0].isspace():
         dumpsection(header, items, hasitems)
         header = line
@@ -62,6 +69,8 @@ while 1:
         items.append([line[2:-1]])
         hasitems += 1
     else:
-        items[-1].append(line[:-1])
+        if not line:
+            continue
+        items[-1].append(line)
 
 dumpsection(header, items, hasitems)
