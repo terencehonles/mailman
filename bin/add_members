@@ -23,10 +23,10 @@
 # Make sure that the list of email addresses doesn't contain any comments,
 # like majordomo may throw in.  For now, you just have to remove them manually.
 
-"""Convert a list.
+"""Add members to a list from the command line.
 
 Usage:
-    convert_list [-n <file>] [-d <file>] [-c <y|n>] [-w <y|n>] [-h] listname
+    add_members [-n <file>] [-d <file>] [-c <y|n>] [-w <y|n>] [-h] listname
 
 Where:
 
@@ -42,7 +42,7 @@ Where:
 
     --changes-msg=<y|n>
     -c <y|n> 
-	set whether or not to send the list members the `there's going to be 
+	set whether or not to send the list members the `there's going to be
 	big changes to your list' message. defaults to no.
 
     --welcome-msg=<y|n>
@@ -55,8 +55,8 @@ Where:
         Print this help message and exit.
 
     listname
-        The name of the Mailman list you are converting an old list into.
-        It must already exist.
+        The name of the Mailman list you are adding members to.  It must
+        already exist.
 
 You must supply one or both of -n and -d options.
 
