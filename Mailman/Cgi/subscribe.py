@@ -226,7 +226,7 @@ moderator's decision when they get to your request.""")
             try:
                 msg = Message.UserNotification(
                     mlist.getMemberCPAddress(email),
-                    mlist.GetAdminEmail(),
+                    mlist.GetBouncesEmail(),
                     _('Mailman privacy alert'),
                     _("""\
 An attempt was made to subscribe your address to the mailing list
