@@ -1,4 +1,4 @@
-Mailman - The GNU Mailing List Management System
+yMailman - The GNU Mailing List Management System
 Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
@@ -17,12 +17,14 @@ Here is the list of other contributors who have donated large bits of
 code, and have assigned copyright for contributions to the FSF:
 
     Juan Carlos Rey Anaya
+    Norbert Bollow
     Ben Gertzfield
     Victoriano Giralt
     Mads Kiilerich
     The Dragon De Monsyne
     Les Niles
     Terri Oda
+    Simone Piunno
 
 Thanks also to Dragon for his winning Mailman logo contribution, and
 to Terri Oda for the neat shortcut icon.
@@ -38,7 +40,6 @@ in answering questions on mailman-users.
 
     David Abrahams
     Jeff Berliner
-    Norbert Bollow
     Alessio Bragadini
     J. D. Bronson
     Stan Bubrouski
@@ -59,6 +60,7 @@ in answering questions on mailman-users.
     Jeff Hahn
     Paul Hebble
     Tollef Fog Heen
+    Henny Huisman
     Jeremy Hylton
     Ron Jarrell
     Tamito KAJIYAMA
@@ -92,7 +94,6 @@ in answering questions on mailman-users.
     Gerald Oskoboiny
     Jon Parise
     Rodolfo Pilas
-    Simone Piunno
     Bob Puff
     John Read
     Sean Reifschneider
@@ -102,6 +103,7 @@ in answering questions on mailman-users.
     Heiko Rommel
     Guido van Rossum
     Chris Ryan
+    Gleydson Mazioli da Silva
     Chris Snell
     Mikhail Sobolev
     Greg Stein
@@ -110,6 +112,7 @@ in answering questions on mailman-users.
     Vizi Szilard
     David T-G
     Owen Taylor
+    Danny Terweij
     Jim Tittsler
     Chuq Von Rospach
     Jens Vagelpohl
