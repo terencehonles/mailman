@@ -18,7 +18,10 @@
 
 "Invoked by cron, checks for pending list requests and mails the admin if any."
 
-import sys, os
+import sys
+import time
+import string
+
 import paths
 from Mailman import MailList
 from Mailman import mm_cfg
@@ -28,51 +31,53 @@ from Mailman import Utils
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
-def main(verbose=0):
 
+
+def main():
     for name in Utils.list_names():
-	list = MailList.MailList(name, lock = 0)
-        count = list.NumRequestsPending()
-        if verbose:
-            print name, count, list.GetAdminEmail()
-	if count:
-            text = Utils.maketext('checkdbs.txt',
-                                  {'count': count,
-                                   'host_name': list.host_name,
-                                   'adminDB':
-                                   list.GetAbsoluteScriptURL('admindb'),
-                                   'real_name': list.real_name,
-                                   })
-	    list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 
-				(count, list.real_name),
-				recipient = list.GetAdminEmail(),
-				text = text + "\n" + pending_requests(list),
-                                add_headers = ["Precedence: bulk"])
+        # the list must be locked in order to open the requests database
+	mlist = MailList.MailList(name)
+        try:
+            count = mlist.NumRequestsPending()
+            if count:
+                text = Utils.maketext(
+                    'checkdbs.txt',
+                    {'count'    : count,
+                     'host_name': mlist.host_name,
+                     'adminDB'  : mlist.GetAbsoluteScriptURL('admindb'),
+                     'real_name': mlist.real_name,
+                     })
+                mlist.SendTextToUser(
+                    subject = '%d %s admin request(s) waiting' % 
+                    (count, mlist.real_name),
+                    recipient = mlist.GetAdminEmail(),
+                    text = text + "\n" + pending_requests(mlist),
+                    add_headers = ["Precedence: bulk"])
+        finally:
+            mlist.Unlock()
+            
 
-def pending_requests(list):
-    import time, string
+
+def pending_requests(mlist):
     pending = []
-    requests = list.requests
-    # First the pending subscriptions:
-    if requests.has_key('add_member'):
-	pending.append("Pending subscriptions:")
-	for req in requests['add_member']:
-	    id, when, digested, who, pwd = req
-	    pending.append("\t%s %s" %
-			   (string.strip(who),
-			    time.ctime(when)))
-    if requests.has_key('post'):
-	if pending:
-	    pending.append("")
-	pending.append("Pending posts:")
-	for req in requests['post']:
-	    id, when, (who, msg), cause, subj = req
-	    pending.append("\tFrom: %s on %s:\n\tCause: %s"
-                           % (string.strip(who),
-                              time.ctime(when),
-                              `string.strip(cause)`))
+    first = 1
+    for id in mlist.GetSubscriptionIds():
+        if first:
+            pending.append('Pending subscriptions:')
+            first = 0
+        when, addr, passwd, digest = mlist.GetRecord(id)
+        pending.append('    %s %s' % addr, time.ctime(when))
+    first = 1
+    for id in mlist.GetHeldMessageIds():
+        if first:
+            pending.append('\nPending posts:')
+            first = 0
+        when, sender, subject, reason, text = mlist.GetRecord(id)
+        pending.append('    From: %s on %s:\n    Cause: %s' %
+                       (sender, time.ctime(when), reason))
     return string.join(pending, '\n')
 
-if __name__ == "__main__":
-    main(verbose=(len(sys.argv) > 1
-                  and sys.argv[1] in ["-v", "--verbose"]))
+
+
+if __name__ == '__main__':
+    main()
