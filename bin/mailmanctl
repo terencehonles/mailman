@@ -441,22 +441,27 @@ def main():
                     elif e.errno <> errno.EINTR:
                         raise
                     continue
-                killsig = status & 0xff
-                exitstatus = (status >> 8) & 0xff
+                killsig = exitstatus = None
+                if os.WIFSIGNALED(status):
+                    killsig = os.WTERMSIG(status)
+                if os.WIFEXITED(status):
+                    exitstatus = os.WEXITSTATUS(status)
                 # We'll restart the process unless we were given the
-                # "no-restart" switch, or if the process was SIGTERM'd.  This
-                # lets us better handle runaway restarts (say, if the subproc
-                # had a syntax error!)
-                if restart and not (killsig == signal.SIGTERM or
-                                    exitstatus == signal.SIGTERM):
-                    restarting = '[restarting]'
-                else:
-                    restarting = ''
+                # "no-restart" switch, or if the process was SIGTERM'd or
+                # exitted with a SIGTERM exit status.  This lets us better
+                # handle runaway restarts (say, if the subproc had a syntax
+                # error!)
+                restarting = ''
+                if restart:
+                    if (exitstatus == None and killsig <> signal.SIGTERM) or \
+                       (killsig == None and exitstatus <> signal.SIGTERM):
+                        # Then
+                        restarting = '[restarting]'
                 qrname, slice, count = kids[pid]
                 del kids[pid]
                 syslog('qrunner', """\
 Master qrunner detected subprocess exit
-(pid: %d, sig: %d, sts: %d, class: %s, slice: %d/%d) %s""",
+(pid: %d, sig: %s, sts: %s, class: %s, slice: %d/%d) %s""",
                        pid, killsig, exitstatus, qrname,
                        slice+1, count, restarting)
                 # Now perhaps restart the process unless it exited with a
