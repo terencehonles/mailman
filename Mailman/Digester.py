@@ -19,8 +19,8 @@ class Digester:
 	return [
 
 	    ('digestable', mm_cfg.Toggle, ('No', 'Yes'), 1,
-	     'Can members choose to receive digests instead of '
-	     'individual pieces of mail?'),
+	     'Can list members choose to receive list traffic '
+	     'bunched in digests?'),
 
 	    ('digest_size_threshhold', mm_cfg.Number, 3, 0,
 	     'How big in Kb should a digest be before it gets sent out?'),
@@ -33,8 +33,7 @@ class Digester:
 
 	    ('digest_is_default', mm_cfg.Radio, 
 	     ('Regular mail', 'Digests'), 0,
-	     'If one doesn\'t specify a preference, '
-	     '(s)he gets what by default?')
+	     'Which mode is the default?')
 	    ]
 
 
