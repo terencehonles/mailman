@@ -93,25 +93,25 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.InitTempVars(name)
         # Default membership adaptor class
         self._memberadaptor = OldStyleMemberships(self)
+        # This extension mechanism allows list-specific overrides of any
+        # method (well, except __init__(), InitTempVars(), and InitVars()
+        # I think).
+        filename = os.path.join(self.fullpath(), 'extend.py')
+        dict = {}
+        try:
+            execfile(filename, dict)
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+        else:
+            func = dict.get('extend')
+            if func:
+                func(self)
         if name:
             if lock:
                 # This will load the database.
                 self.Lock()
             else:
                 self.Load()
-            # This extension mechanism allows list-specific overrides of any
-            # method (well, except __init__(), InitTempVars(), and InitVars()
-            # I think).
-            filename = os.path.join(self.fullpath(), 'extend.py')
-            dict = {}
-            try:
-                execfile(filename, dict)
-            except IOError, e:
-                if e.errno <> errno.ENOENT: raise
-            else:
-                func = dict.get('extend')
-                if func:
-                    func(self)
 
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute
