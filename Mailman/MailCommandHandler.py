@@ -418,7 +418,10 @@ be the subject line or in the body of the message.
 
 (Note that much of the following can also be accomplished via the web, at:
 
-	%s )
+	%s
+
+In particular, you can use the web site to have your password sent to your
+delivery address.)
 
 List specific commands (subscribe, who, etc) should be sent to the
 *-request address for the particular list, e.g. for the 'mailman' list,
