@@ -4,6 +4,40 @@ Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+2.1 beta 5 (19-Nov-2002)
+
+    As is typical for a late beta release, this one includes the usual
+    bug fixes, tweaks, and massive new features (just kidding).
+
+    IMPORTANT: If you are using Pipermail, and you have any archives
+    that were created or added to in 2.1b4, you will need to run
+    bin/b4b5-archfix, followed by bin/check_perms to fix some serious
+    performance problems.  From you install directory, run
+    "bin/b4b5-archfix --help" for details.
+
+    - The personalization options have been tweaked to provide more
+      control over mail header and decoration personalizations.  In
+      2.1b4, when personalization was enabled, the To and Cc headers
+      were always overwritten.  But that's usually not appropriate for
+      anything but announce lists, so now these headers aren't changed
+      unless "Full personalization" is enabled.
+
+    - You now need to go to the General category to enable emergency
+      moderation.
+
+    - The order of the hold modules in the GLOBAL_PIPELINE has
+      changed, again.  Now Moderate comes before Hold.
+
+    - Estonian language support has been added.
+
+    - All posted messages should now get decorated with headers and
+      footers in a MIME-safe way.  Previously, some MIME type messages
+      didn't get decorated at all.
+
+    - bin/arch grew a -q/--quiet option
+
+    - bin/list_lists grew a -b/--bare option
+
 2.1 beta 4 (26-Oct-2002)
 
     The usual assortment of bug fixes and language updates, some u/i
