@@ -27,8 +27,8 @@ class Membership:
 
     def GetConfigSubCategories(self, category):
         if category == 'members':
-            return [('list',   _('Membership List')),
-                    ('add',    _('Mass Subscription')),
-                    ('remove', _('Mass Removal')),
+            return [('list',   _('Membership&nbsp;List')),
+                    ('add',    _('Mass&nbsp;Subscription')),
+                    ('remove', _('Mass&nbsp;Removal')),
                     ]
         return None
