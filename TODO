@@ -61,8 +61,6 @@ in the to: or cc: headers.
 - Improve list deletion by requiring a valid password (from the shell script)
 
 *Email Handling
-- Implement a reasonable administrivia filter (but less likely to misfire than
-majordomo's).
 - Implement a more general (form-based, like the netscape email
 filter) filtering/bouncing/etc. mechanism.
 - Allow for programs to run that perform filtering / reformatting.
