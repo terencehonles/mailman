@@ -1,4 +1,5 @@
-#!/usr/local/bin/python
+#! /usr/bin/env python
+#
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,12 +18,9 @@
 
 """Process input to user options form."""
 
-__version__ = "$Revision: 547 $"
-
 import sys
-sys.path.append('/home/mailman/mailman/modules')
-
 import os, cgi, string
+import paths                                      # path hacking
 import mm_utils, maillist, mm_err, mm_cfg, htmlformat
 
 try:
