@@ -1087,7 +1087,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.ApprovedAddMember(addr, password, digest, lang)
             return op, addr, password, digest, lang
         elif op == Pending.UNSUBSCRIPTION:
-            addr = data
+            addr = data[0]
             # Can raise MMNoSuchUserError if they unsub'd via other means
             self.DeleteMember(addr, whence='web confirmation')
             return op, addr
