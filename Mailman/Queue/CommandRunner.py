@@ -157,6 +157,15 @@ class CommandRunner(Runner):
     QDIR = mm_cfg.CMDQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
+        # The policy here is similar to the Replybot policy.  If a message has
+        # "Precedence: bulk" and no "X-Ack: yes" header, we discard it to
+        # prevent replybot response storms.
+        precedence = msg.get('precedence', '').lower()
+        ack = msg.get('x-ack', '').lower()
+        if precedence == 'bulk' and ack <> 'yes':
+            syslog('vette', 'Precedence: bulk message discarded by: %s',
+                   mlist.GetRequestEmail())
+            return 0
         res = Results(mlist, msg, msgdata)
         # BAW: Not all the functions of this qrunner require the list to be
         # locked.  Still, it's more convenient to lock it here and now and
