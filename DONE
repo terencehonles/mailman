@@ -1,3 +1,36 @@
+1.0b7
+
+ - Many, many bug fixes.  Some performance improvements for large
+   lists.  Some improvements in the Web interfaces.  Some security
+   improvements.  Improved compatibility with Python 1.5.
+
+ - bin/convert_list and bin/populate_new_list have been replaced by
+   bin/add_members.
+
+ - Admins can now get notification on subscriptions and
+   unsubscriptions.  Post are now logged.
+
+ - The username portion of email addresses are now case-preserved for
+   delivery purposes.  All other address comparisions are
+   case-insensitive.
+
+ - New default SMTP_MAX_RCPTS that limits the number of "RCPT TO" SMTP 
+   commands that can be given for a single message.  Most MTAs have
+   some hard limit.
+
+ - "Precedence: bulk" header and "List-id:" header are now added to
+   all outgoing messages.  The latter is not added if the message
+   already has a "List-id:" header.  See RFC 2046 and
+   draft-chandhok-listid-02 for details.
+
+ - The standard (as of Python 1.5.2) smtplib.py is now used.
+
+ - The install process now compiles all the .py files in the installation.
+
+ - Versions of the Mailman papers given at IPC7 and LISA-98 are now
+   included.
+
+
 1.0b6
 
  - Archiving is (finally) back in.
