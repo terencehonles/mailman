@@ -19,8 +19,14 @@ class ListAdmin:
 	    self.requests[request].append( (request_id, now) + args )
 	self.Save()
 	if request == 'add_member':
+	    self.LogMsg("vette", ("%s: %s for %s" % (self.real_name,
+						     "Subscription request",
+						     args[2])))
 	    raise mm_err.MMNeedApproval, "Admin approval required to subscribe"
 	elif request == 'post':
+	    sender = args[0][0]
+	    self.LogMsg("vette",
+			("%s: %s %s" % (self.real_name, `args[1]`, sender)))
 	    raise mm_err.MMNeedApproval, args[1]
 
     def CleanRequests(self):
@@ -89,7 +95,10 @@ class ListAdmin:
 	    self.RefuseRequest('subscribe %s %s' % (pw, digest_text),
 			       destination_email, comment)
 	else:
-	    self.ApprovedAddMember(destination_email, pw, digest)
+	    try:
+		self.ApprovedAddMember(destination_email, pw, digest)
+	    except mm_err.MMAlreadyAMember:
+		pass
 
 
 
