@@ -160,6 +160,11 @@ class Message(rfc822.Message):
         # Merge in the additional msgdata
         msgdata.update(newdata)
         msgdata.update(kws)
+        # Get rid of volatile entries, which have the convention of starting
+        # with an underscore (TBD: should we use v_ as a naming convention?)
+        for k in msgdata.keys():
+            if k[0] == '_':
+                del msgdata[k]
         # Write the data file
         dbfp = Utils.open_ex(dbfile, 'w')
         marshal.dump(msgdata, dbfp)
