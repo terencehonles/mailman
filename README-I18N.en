@@ -1,0 +1,101 @@
+Mailman - The GNU Mailing List Management System
+Copyright (C) 2001 by the Free Software Foundation, Inc.
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
+INTERNATIONALIZATION
+
+    Mailman 2.1 is multilingual.  By default it supports English, but
+    additional languages may also be available.  If the language you
+    want to add is already supported by Mailman, then getting all your
+    lists to also support that language is fairly easy.  You first
+    need to run the "newlang" script at the command line, giving it
+    the names of the list to add language support to.
+
+    Let's say for example, you're adding Spanish support.  You should
+    do the following:
+
+        % cd $prefix (the Mailman installation directory)
+        % bin/newlang -l mylist es
+
+    This will add Spanish support to mylist, provided that following
+    is true (all relative to the $prefix directory):
+
+    1. There must be a file messages/es/LC_MESSAGES/mailman.mo file
+       which contains the catalog of translations for translatable
+       strings in the Mailman source code.
+
+    2. There must be a directory templates/es which contains all the
+       global default translated template files for Spanish.
+
+    3. There is an entry in the Mailman/Defaults.py file for the 'es'
+       language in the constant LC_DESCRIPTIONS.  If not, do not
+       change Defaults.py!  Instead add the following in your
+       mm_cfg.py file (again, the example here is for Spanish):
+
+       add_language('es', 'Spanish (Spain)', 'iso-8859-1')
+
+       The add_language() function takes three arguments (as strings):
+       the language code, the language description, and the language
+       charset.
+
+    If the language you want to use has not been previously
+    translated, or you don't know where to find the language pack for
+    your language, read the section below or contact the Mailman
+    internationalization mailing list mailman-i18n@python.org.
+
+
+ADDING NEW TRANSLATIONS
+
+    Suppose you want to add new translations for a previously
+    unsupported language, what steps would you need to take?
+
+    First, you should send a message to mailman-i18n@python.org to
+    make sure nobody has already created the translations for your
+    language.  In the example below, we're going to create a
+    translation for the mythical language "Fredonia" which has the
+    official language code of "ha".
+
+    In general you need to do two things to add translations for a
+    language in Mailman.  You need to translate the message catalog
+    and you need to translate the templates.
+
+    To translate the message catalog, grab the file
+    messages/mailman.pot and make a copy called mailman.po in the
+    subdirectory messages/ha/LC_MESSAGES.  Then you edit the file and
+    add the translations for each message identified in the catalog.
+    It will be very helpful to have a good tool, such as po-mode for
+    Emacs, for this part of the job.
+
+    Once you've added your translations, you can then run msgfmt over
+    your .po file to generate messages/ha/LC_MESSAGE/mailman.mo (it
+    would also be a good idea to donate your translated .po file back
+    to the Mailman project!)
+
+    Next, create the subdirectory templates/ha and translate each of
+    the files in templates/en/*.{html,txt}.  These you should also
+    donate back to the Mailman project.
+
+    To make Mailman and your lists aware of the new language, follow
+    the directions in the section above.
+
+
+RESYNCHRONIZING THE CATALOG
+
+    As Mailman development continues, new updated catalogs
+    (i.e. mailman.pot files) will be made available.  You should
+    occasionally resynchonize your translated catalog with this file.
+    You can do this with the `msgmerge' program, like so:
+
+    msgmerge -o new-messages.po messages.pot messages.po
+
+    Any new messages in the standard template message.pot will be
+    placed at the end of new-messages.po.  Move this file to
+    messages.po inside messages/ha/LC_MESSAGE and add the new
+    translations as above.
+
+
+
+Local Variables:
+mode: text
+indent-tabs-mode: nil
+End:
