@@ -111,10 +111,28 @@ def FormatConfiguration(doc):
 	gui_item = GetGuiItem(item)
 	big_table.AddRow([item[4], gui_item])
 	# This wasn't handled too well.
-	if item[1] == mm_cfg.Toggle:
+	if item[1] == mm_cfg.Toggle and len(general) > 1:
 	    big_table.AddRow([htmlformat.Header(2, "If so:")])
 	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
 
+
+    big_table.AddRow(['<br>'])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Center(
+	htmlformat.Header(2, 'Non-Digest Options'))])
+    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
+
+    big_table.AddRow([htmlformat.Bold('Option'),
+		      htmlformat.Bold('Value')])
+
+    for item in nodigest:
+	gui_item = GetGuiItem(item)
+	big_table.AddRow([item[4], gui_item])
+	# *sigh*
+	if item[1] == mm_cfg.Toggle and len(nodigest) > 1:
+	    big_table.AddRow([htmlformat.Header(2, "If so:")])
+	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
 
     big_table.AddRow(['<br>'])
     big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
@@ -128,25 +146,7 @@ def FormatConfiguration(doc):
 	gui_item = GetGuiItem(item)
 	big_table.AddRow([item[4], gui_item])
 	# Yuck.
-	if item[1] == mm_cfg.Toggle:
-	    big_table.AddRow([htmlformat.Header(2, "If so:")])
-	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
-
-
-    big_table.AddRow(['<br>'])
-    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
-
-    big_table.AddRow([htmlformat.Center(htmlformat.Header(2, 
-						      'Non-Digested Options'))])
-    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
-
-    big_table.AddRow([htmlformat.Bold('Option'), htmlformat.Bold('Value')])
-
-    for item in nodigest:
-	gui_item = GetGuiItem(item)
-	big_table.AddRow([item[4], gui_item])
-	# *sigh*
-	if item[1] == mm_cfg.Toggle:
+	if item[1] == mm_cfg.Toggle and len(digest) > 1:
 	    big_table.AddRow([htmlformat.Header(2, "If so:")])
 	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
 
@@ -158,7 +158,7 @@ def FormatConfiguration(doc):
 	gui_item = GetGuiItem(item)
 	big_table.AddRow([item[4], gui_item])
 	# This code sux...
-	if item[1] == mm_cfg.Toggle:
+	if item[1] == mm_cfg.Toggle  and len(bounce) > 1:
 	    big_table.AddRow([htmlformat.Header(2, "If so:")])
 	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
     
@@ -174,7 +174,7 @@ def FormatConfiguration(doc):
 	gui_item = GetGuiItem(item)
 	big_table.AddRow([item[4], gui_item])
 	# This code sux...
-	if item[1] == mm_cfg.Toggle:
+	if item[1] == mm_cfg.Toggle and len(archives) > 1:
 	    big_table.AddRow([htmlformat.Header(2, "If so:")])
 	    big_table.AddCellInfo(big_table.GetCurrentRowIndex(), 0, colspan=2)
 
