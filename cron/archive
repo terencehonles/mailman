@@ -10,9 +10,8 @@ sys.path.append('/home/mailman/mailman/modules')
 
 import maillist, mm_cfg
 
-list_name = sys.argv[1]
+for list_name in sys.argv[1:]:
 
-
-list = maillist.MailList(list_name)
-list.UpdateArchive()
-list.Unlock()
+    list = maillist.MailList(list_name)
+    list.UpdateArchive()
+    list.Unlock()
