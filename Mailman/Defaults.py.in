@@ -8,12 +8,14 @@ this file, to override the distributed defaults with site-specific ones.
 
 import os
 
-VERSION           = '1.0b2'
-__version__ = "$Revision: 495 $"
+VERSION           = '1.0b3'
+__version__ = "$Revision: 510 $"
+
+# The URL for Mailman sources, etc. - you probably don't want to change this.
+MAILMAN_URL       = 'http://www.list.org/'
 
 		   # Many site-specific settings #
 
-MAILMAN_URL       = 'http://www.python.org/ftp/python/contrib/Network/mailman/'
 DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.OR.HOST.NAME'
 SMTPHOST	  = 'localhost'
 SENDMAIL_CMD      = '/usr/lib/sendmail -f %s %s'     # yours may be different
