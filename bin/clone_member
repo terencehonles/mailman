@@ -126,11 +126,11 @@ def dolist(mlist, options):
             print _('    address not found:'), options.fromaddr
         return
 
-    # Get the user's current options and password.  TBD: Ugly hack: if a
-    # user's options would have been zero, then Mailman saves room by deleting
-    # the entry for the user from the user_options dictionary.  Note that
-    # /really/ it would be better if GetUserOption() and SetUserOption()
-    # supported an interface to get the entire option value.
+    # Get the user's current options and password.  Ugly hack: if a user's
+    # options would have been zero, then Mailman saves room by deleting the
+    # entry for the user from the user_options dictionary.  Note that /really/
+    # it would be better if GetUserOption() and SetUserOption() supported an
+    # interface to get the entire option value.
     flags = mlist.user_options.get(options.lfromaddr, 0)
     password = mlist.passwords[options.lfromaddr]
 
