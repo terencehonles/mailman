@@ -4,7 +4,7 @@ Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
 
 Some of your users may experience problems sending mail to a
 members-only list, if they are using Netscape Communicator as their
-MUA.  Communicator 4.6 on Linux has been observed to insert bogus
+MUA.  Communicator 4.x on Linux has been observed to insert bogus
 unqualified Sender: headers -- i.e. Sender: headers with only the
 username part of the email address.  Other version of Netscape may
 also have the same bug.
