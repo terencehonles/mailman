@@ -223,6 +223,17 @@ def GetPathPieces(path):
 	pass
     return l
 
+nesting_level = None
+def GetNestingLevel():
+  global nesting_level
+  if nesting_level == None:
+    try:
+      path = os.environ['PATH_INFO']
+      nesting_level = len(string.split(os.environ['PATH_INFO'], '/')) - 1
+    except KeyError:
+      nesting_level = 0
+  return nesting_level
+
 def MakeDirTree(path, perms=0775, verbose=0):
     made_part = '/'
     path_parts = GetPathPieces(path)
