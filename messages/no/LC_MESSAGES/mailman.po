@@ -763,7 +763,7 @@ msgstr "fra %(start)s til %(end)s"
 
 #: Mailman/Cgi/admin.py:1063
 msgid "Subscribe these users now or invite them?"
-msgstr "Melde på disse adressen umiddelbart, eller invitere dem?"
+msgstr "Melde på disse adressene umiddelbart, eller invitere dem?"
 
 #: Mailman/Cgi/admin.py:1065
 msgid "Invite"
@@ -851,11 +851,8 @@ msgid ""
 "least\n"
 "    one blank line at the end..."
 msgstr ""
-"Her kan du legge inn ekstra tekst som skal legges til i toppen av "
-"invitasjonen\n"
-"eller påmeldingsbekreftelsen, i tekstboksen nedenfor. Husk å ha minst én "
-"blank\n"
-"linje nederst..."
+"I tekstboksen nedenfor kan du angi en ekstra tekst som skal legges til i toppen av invitasjonen\n"
+"eller påmeldingsbekreftelsen. Husk å ha minst én blank linje nederst..."
 
 #: Mailman/Cgi/admin.py:1113
 msgid "Send unsubscription acknowledgement to the user?"
@@ -1341,19 +1338,14 @@ msgid ""
 "    <p>Or hit <em>Cancel and discard</em> to cancel this subscription\n"
 "    request."
 msgstr ""
-"Din bekreftelse er n&oslash;dvendig for &aring; fullf&oslash;re din p&aring;"
-"melding p&aring; epostlisten <em>%(listname)s</em>.\n"
-"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du "
-"m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
-"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker "
-"&aring; melde deg p&aring; listen.\n"
-"Gj&oslash;r du det vil din personlige medlemsside vises, der du kan "
-"gj&oslash;re ytterligere endringer p&aring; ditt medlemskap.\n"
+"Din bekreftelse er n&oslash;dvendig for &aring; fullf&oslash;re din p&aring;melding p&aring; epostlisten <em>%(listname)s</em>.\n"
+"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
+"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker &aring; melde deg p&aring; listen.\n"
+"Gj&oslash;r du det vil din personlige medlemsside vises, der du kan gj&oslash;re ytterligere endringer p&aring; ditt medlemskap.\n"
 "\n"
-"<p>Merk: du vil få tilsendt passordet straks du har bekreftet din påmelding. "
-"Du kan skifte passord ved å gå inn på din personlige medlemsside.\n"
+"<p>Merk: du vil få tilsendt passordet straks du har bekreftet din påmelding. Du kan skifte passord ved å gå inn på din personlige medlemsside.\n"
 "\n"
-"<p>Eller klikk <em>Avbryt</em> for &aring; trekke s&oslash;knaden din."
+"<p>Eller klikk <em>Trekke min s&oslash;knad</em> for &aring; trekke s&oslash;knaden din."
 
 #: Mailman/Cgi/confirm.py:242
 msgid ""
@@ -1413,7 +1405,7 @@ msgstr "Trekke min søknad"
 
 #: Mailman/Cgi/confirm.py:285
 msgid "Subscribe to list %(listname)s"
-msgstr "Påmelding på listen %(listname)s"
+msgstr "Melde meg på listen %(listname)s"
 
 #: Mailman/Cgi/confirm.py:298
 msgid "You have canceled your subscription request."
@@ -7211,7 +7203,7 @@ msgstr ""
 "Fra: %(who)s\n"
 "Tittel: %(subject)s\n"
 "Dato: %(date)s\n"
-"St&oslash;rrelse: %(size)s\n"
+"Størrelse: %(size)s\n"
 "Url: %(url)s\n"
 
 #: Mailman/Handlers/Scrubber.py:264
@@ -7226,7 +7218,7 @@ msgstr ""
 "Et vedlegg som ikke var tekst, ble skilt ut...\n"
 "Navn       : %(filename)s\n"
 "Type       : %(ctype)s\n"
-"St&oslash;rrelse  : %(size)d bytes\n"
+"Størrelse  : %(size)d bytes\n"
 "Beskrivelse: %(desc)s\n"
 "URL        : %(url)s\n"
 
