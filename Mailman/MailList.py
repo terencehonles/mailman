@@ -1022,7 +1022,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             if result.has_key(name):
                 continue
             if self.IsMember(name):
-                result[name] = [Errors.MMAlreadyAMember, None]
+                result[name] = [Errors.MMAlreadyAMember, name]
                 continue
             self.__AddMember(name, digest)
             self.SetUserOption(name, mm_cfg.DisableMime,
