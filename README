@@ -198,6 +198,6 @@ Interactive python sessions with maillists
 'Plot-SIG', 'Pythonmac-SIG', 'String-SIG', 'Thread-SIG', 'Grail', 'XML-SIG',
 'JPython-Interest', 'Trove-Dev', 'Mailman-Users']
 
-    If you do list surgery with this  mechanism, make really sure that
-    you're doing  what you  intend  before having   the routine do any
-    .Save()'s.
+    Beware that "list surgery" can be easily used to foul up your list
+    data structures - so be careful, and confident of what you're
+    done *before* any list .Save()'s are applied...
