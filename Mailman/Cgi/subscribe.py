@@ -94,50 +94,9 @@ def main():
 
 
 
-def call_script(mlist, member, which):
-    """A hack to call one of the other CGI scripts."""
-    os.environ['PATH_INFO'] = SLASH.join([mlist.internal_name(), member])
-    pkg = __import__('Mailman.Cgi', globals(), locals(), [which])
-    mod = getattr(pkg, which)
-    mlist.Save()
-    mlist.Unlock()
-    mod.main()
-    sys.stdout.flush()
-    sys.stderr.flush()
-    # skip finally clause above since we've already saved and unlocked the list
-    os._exit(0)
-
-
-
 def process_form(mlist, doc, cgidata, lang):
     error = 0
     results = ''
-
-    if cgidata.has_key('UserOptions') or \
-            cgidata.has_key('info') and \
-            not cgidata.has_key("email"):
-        # Then go to user options section.
-        if not cgidata.has_key('info'):
-            doc.AddItem(Header(2, _("Error")))
-            doc.AddItem(Bold(_("You must supply your email address.")))
-            doc.AddItem(mlist.GetMailmanFooter())
-            print doc.Format()
-            return
-
-        addr = cgidata['info'].value
-        member = addr.lower()
-        if not mlist.isMember(member):
-            realname = mlist.real_name
-            doc.AddItem(Header(2, _("Error")))
-            doc.AddItem(Bold(
-                _("%(realname)s has no subscribed addr <i>%(addr)s</i>.")))
-            doc.AddItem(mlist.GetMailmanFooter())
-            print doc.Format()
-            return
-
-        call_script(mlist, member, 'options')
-        # should never get here!
-        assert 0
 
     if not cgidata.has_key('email'):
         error = 1
