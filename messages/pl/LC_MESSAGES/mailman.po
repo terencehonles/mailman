@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-04-15\n"
+"PO-Revision-Date: 2003-09-23\n"
 "Last-Translator: Bartosz Sawicki <bartek@kajak.org.pl>\n"
 "Language-Team: Polish <wanted@linux.gda.pl>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr " %(size)i bajtów "
 #: Mailman/Archiver/HyperArch.py:279 Mailman/Archiver/HyperArch.py:438
 #: Mailman/Archiver/HyperArch.py:999 Mailman/Archiver/HyperArch.py:1164
 msgid " at "
-msgstr " at "
+msgstr " w "
 
 #: Mailman/Archiver/HyperArch.py:467
 msgid "Previous message:"
@@ -141,7 +141,7 @@ msgstr "%(month)s %(year)i"
 
 #: Mailman/Archiver/HyperArch.py:883
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
-msgstr ""
+msgstr "Tydzieñ zaczynaj±cy siê od Poniedzia³ku %(day)i %(month)s %(year)i"
 
 #: Mailman/Archiver/HyperArch.py:887
 msgid "%(day)i %(month)s %(year)i"
@@ -1083,7 +1083,7 @@ msgstr "Zachowaj list dla administratora serwera"
 
 #: Mailman/Cgi/admindb.py:403
 msgid "Forward messages (individually) to:"
-msgstr ""
+msgstr "Prze¶lij wiadomo¶ci (pojedyñczo) do:""
 
 #: Mailman/Cgi/admindb.py:421
 msgid "Clear this member's <em>moderate</em> flag"
@@ -1091,12 +1091,11 @@ msgstr ""
 
 #: Mailman/Cgi/admindb.py:425
 msgid "<em>The sender is now a member of this list</em>"
-msgstr ""
+msgstr "<em>Nadawca jest teraz cz³onkiem tej listy</em>"
 
 #: Mailman/Cgi/admindb.py:434
-#, fuzzy
 msgid "Add <b>%(esender)s</b> to one of these sender filters:"
-msgstr "Dodaj <b>%(esender)s</b> do filtra wysy³aj±cych"
+msgstr "Dodaj <b>%(esender)s</b> do filtra nadawców"
 
 #: Mailman/Cgi/admindb.py:439
 msgid "Accepts"
@@ -2080,7 +2079,6 @@ msgid "the list admin overview page"
 msgstr "g³ówn± stronê administracyjn±"
 
 #: Mailman/Cgi/listinfo.py:124
-#, fuzzy
 msgid ""
 " to find the management interface for your list.\n"
 "         <p>If you are having trouble using the lists, please contact "
@@ -2103,7 +2101,7 @@ msgstr "B³±d skryptu CGI"
 
 #: Mailman/Cgi/options.py:54
 msgid "Invalid options to CGI script."
-msgstr "Nieprawid³owe opcje do skryptu CGI"
+msgstr "Nieprawid³owe opcje do skryptu CGI."
 
 #: Mailman/Cgi/options.py:98
 msgid "No address given"
@@ -2666,7 +2664,6 @@ msgid "You have been successfully subscribed to the %(realname)s mailing list."
 msgstr "Zosta³e¶ zapisany na listê %(realname)s."
 
 #: Mailman/Commands/cmd_confirm.py:17
-#, fuzzy
 msgid ""
 "\n"
 "    confirm <confirmation-string>\n"
@@ -2704,7 +2701,6 @@ msgid "Your request has been forwarded to the list moderator for approval."
 msgstr "Twoja pro¶ba zosta³a przekazana do moderatora w celu potwierdzenia."
 
 #: Mailman/Commands/cmd_confirm.py:63
-#, fuzzy
 msgid ""
 "You are not currently a member.  Have you already unsubscribed or changed\n"
 "your email address?"
@@ -3345,9 +3341,8 @@ msgid "Polish"
 msgstr "Polski"
 
 #: Mailman/Defaults.py:1274
-#, fuzzy
 msgid "Portuguese"
-msgstr "Portugalski (Brazylia)"
+msgstr "Portugalski"
 
 #: Mailman/Defaults.py:1275
 msgid "Portuguese (Brazil)"
@@ -3358,9 +3353,8 @@ msgid "Russian"
 msgstr "Rosyjski"
 
 #: Mailman/Defaults.py:1277
-#, fuzzy
 msgid "Serbian"
-msgstr "Niemiecki"
+msgstr "Serbski"
 
 #: Mailman/Defaults.py:1278
 msgid "Swedish"
@@ -3368,7 +3362,7 @@ msgstr "Szwedzki"
 
 #: Mailman/Defaults.py:1279
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukraiñski"
 
 #: Mailman/Deliverer.py:51
 msgid ""
@@ -4927,7 +4921,6 @@ msgid ""
 msgstr ""
 
 #: Mailman/Gui/Membership.py:26
-#, fuzzy
 msgid "Membership&nbsp;Management..."
 msgstr "Zarz±dzanie&nbsp;subskrybcjami"
 
@@ -5117,9 +5110,8 @@ msgid "Passwords"
 msgstr "Has³a"
 
 #: Mailman/Gui/Privacy.py:28
-#, fuzzy
 msgid "Privacy options..."
-msgstr "Opcje prywatno¶ci"
+msgstr "Opcje prywatno¶ci..."
 
 #: Mailman/Gui/Privacy.py:32
 msgid "Subscription&nbsp;rules"
@@ -5951,12 +5943,10 @@ msgid "News server settings"
 msgstr "Ustawienia serwera News"
 
 #: Mailman/Gui/Usenet.py:40
-#, fuzzy
 msgid "The hostname of the machine your news server is running on."
 msgstr "Internetowy adres Twojego serwera News."
 
 #: Mailman/Gui/Usenet.py:41
-#, fuzzy
 msgid ""
 "This value may be either the name of your news server, or\n"
 "             optionally of the format name:port, where port is a port "
@@ -5968,6 +5958,9 @@ msgid ""
 "             recognize the machine this mailing list runs on as a machine\n"
 "             capable of reading and posting news."
 msgstr ""
+"Warto¶æ w tym polu mo¿e byæ nazw± serwera NNTP lub \n"
+"          w formacie nazwa:port, gdzie port jest numerem portu.\n"
+"\n"
 "Serwer News nie jest czê¶cia programu Mailman. Musisz mieæ dostêp\n"
 "do dzia³aj±cego serwera NNTP. Wymagana jest mo¿liwo¶æ czytania i \n"
 "wysy³ania postów do serwera."
@@ -6533,9 +6526,8 @@ msgid "The attached message has been automatically discarded."
 msgstr ""
 
 #: Mailman/Handlers/Replybot.py:74
-#, fuzzy
 msgid "Auto-response for your message to the \"%(realname)s\" mailing list"
-msgstr "Nie jeste¶ cz³onkiem listy %(listname)s"
+msgstr "Automatyczna odpowied¼ z listy dyskusyjnej \"%(realname)s\" "
 
 #: Mailman/Handlers/Replybot.py:107
 msgid "The Mailman Replybot"
@@ -6673,13 +6665,12 @@ msgid ""
 msgstr ""
 
 #: Mailman/MTA/Manual.py:80
-#, fuzzy
 msgid "## %(listname)s mailing list"
-msgstr "Listy dyskusyjne na serwerze %(hostname)s"
+msgstr "## Lista dyskusyjna %(listname)s"
 
 #: Mailman/MTA/Manual.py:97
 msgid "Mailing list creation request for list %(listname)s"
-msgstr ""
+msgstr "Pro¶ba o stworzenie listy dyskusyjnej %(listname)s"
 
 #: Mailman/MTA/Manual.py:112
 msgid ""
@@ -7633,18 +7624,16 @@ msgid ""
 msgstr ""
 
 #: bin/discard:94
-#, fuzzy
 msgid "Ignoring non-held message: %(f)s"
-msgstr "Nie znaleziono subskrybenta: %(user)s."
+msgstr "Zignorowano niewstrzynan± wiadomo¶æ: %(f)s."
 
 #: bin/discard:100
 msgid "Ignoring held msg w/bad id: %(f)s"
-msgstr ""
+msgstr "Zignorowano wstrzyman± wiadomo¶æ ze z³ym id: %(f)s"
 
 #: bin/discard:112
-#, fuzzy
 msgid "Discarded held msg #%(id)s for list %(listname)s"
-msgstr "Zapisz siê na listê %(listname)s"
+msgstr "Odrzucone wstrzymanie wiadomo¶ci #%(id)s na li¶cie %(listname)s"
 
 #: bin/dumpdb:19
 msgid ""
@@ -8266,7 +8255,7 @@ msgstr ""
 
 #: bin/msgfmt.py:49
 msgid "Add a non-fuzzy translation to the dictionary."
-msgstr ""
+msgstr "Dodaj t³umacznia nie-fuzzy do s³ownika."
 
 #: bin/msgfmt.py:57
 msgid "Return the generated output."
@@ -8332,19 +8321,19 @@ msgstr ""
 
 #: bin/newlist:118
 msgid "Unknown language: %(lang)s"
-msgstr ""
+msgstr "Nieznany jêzyk: %(lang)s""
 
 #: bin/newlist:123
 msgid "Enter the name of the list: "
-msgstr ""
+msgstr "Podaj nazwê listy: "
 
 #: bin/newlist:140
 msgid "Enter the email of the person running the list: "
-msgstr ""
+msgstr "Podaj email osoby opiekuj±cej siê list±: "
 
 #: bin/newlist:145
 msgid "Initial %(listname)s password: "
-msgstr ""
+msgstr "Pocz±tkowe has³o listy %(listname)s: "
 
 #: bin/newlist:149
 msgid "The list password cannot be empty"
@@ -8352,7 +8341,7 @@ msgstr "Has³o listy nie mo¿e byæ puste"
 
 #: bin/newlist:190
 msgid "Hit enter to notify %(listname)s owner..."
-msgstr ""
+msgstr "Naci¶nij Enter aby wys³aæ powiadomienie do opiekuna listy..."
 
 #: bin/qrunner:19
 msgid ""
@@ -8516,12 +8505,11 @@ msgstr ""
 
 #: bin/rmlist:72 bin/rmlist:75
 msgid "Removing %(msg)s"
-msgstr ""
+msgstr "Usuwanie %(msg)s"
 
-#: bin/rmlist:80
-#, fuzzy
+#: bin/rmlist:80     
 msgid "%(listname)s %(msg)s not found as %(filename)s"
-msgstr "Nazwa listy nie mo¿e zawieraæ znaku \"@\": %(listname)s"
+msgstr "%(listname)s %(msg)s nie znalezione jako %(filename)s"
 
 #: bin/rmlist:104
 msgid "No such list (or list already deleted): %(listname)s"
@@ -8529,15 +8517,15 @@ msgstr "Nie ma takiej listy (lub lista zosta³a ju¿ skasowana): %(listname)s"
 
 #: bin/rmlist:106
 msgid "No such list: %(listname)s.  Removing its residual archives."
-msgstr ""
+msgstr "Nie ma takiej listy: %(listname)s. Usuwanie pozosta³ych archiwów."
 
 #: bin/rmlist:110
 msgid "Not removing archives.  Reinvoke with -a to remove them."
-msgstr ""
+msgstr "Nie usuniêto archiwum. Uruchom ponownie z opcj± -a."
 
 #: bin/rmlist:124
 msgid "list info"
-msgstr ""
+msgstr "informacja o li¶cie"
 
 #: bin/rmlist:132
 msgid "stale lock file"
@@ -8545,11 +8533,11 @@ msgstr ""
 
 #: bin/rmlist:137 bin/rmlist:139
 msgid "private archives"
-msgstr ""
+msgstr "prywatne archiwum"
 
 #: bin/rmlist:141 bin/rmlist:143
 msgid "public archives"
-msgstr ""
+msgstr "publiczne archiwum"
 
 #: bin/show_qfiles:3
 msgid ""
