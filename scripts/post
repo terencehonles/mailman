@@ -84,4 +84,5 @@ def main():
 if __name__ == '__main__':
     sys.stderr.write('starting\n')
     main()
+    sys.stderr.reprime()
     sys.stderr.write('ending\n')
