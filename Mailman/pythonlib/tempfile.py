@@ -134,7 +134,12 @@ def TemporaryFile(mode='w+b', bufsize=-1, suffix=""):
             return os.fdopen(fd, mode, bufsize)
         except:
             os.close(fd)
-            raise
+            # this is a divergence from the Python 1.5.2 copy.  Mailman can't
+            # guarantee that Python 1.5.1 or better is being used, and Python
+            # 1.5 doesn't have bare raise.
+            import sys
+            t, v, tb = sys.exc_info()
+            raise t, v, tb
     else:
         # Non-unix -- can't unlink file that's still open, use wrapper
         file = open(name, mode, bufsize)
