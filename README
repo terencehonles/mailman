@@ -1,4 +1,4 @@
-Mailman 1.0b3 (README $Revision: 516 $, $Date: 1998-05-04 19:18:08 +0100 (Mon, 04 May 1998) $)
+Mailman 1.0b3 (README $Revision: 531 $, $Date: 1998-05-20 18:28:05 +0100 (Wed, 20 May 1998) $)
 
 This is mailman, maillist management software written mostly in
 Python.  Mailman was originally developed by John Viega.  Ken
@@ -54,7 +54,7 @@ Install:
     system requires the source be located there.  [I've been running
     with the untarred mailman dir as a subdir of /home/mailman, so eg
     maillist.py, the main mailman list object module, is situated as
-    /home/mailman/mailman/maillist.py.]
+    /home/mailman/mailman/modules/maillist.py.]
   o As mailman, in /home/mailman make public_html, cgi-bin, and logs
     directories.  Chmod them g+sw.
   o As mailman, in /home/mailman make archives/private and archives/public
@@ -88,6 +88,8 @@ Install:
 
 Adding a new list:
   o Run the program bin/newlist
+  o Visit the list general admin page, and use the descriptions and
+    the "details" help feature to understand the configuration settings.
 
 List managers, note that:
 
@@ -98,7 +100,6 @@ List managers, note that:
     - mailman/admin/listname for options
     - mailman/admindb/listname for pending requests
     - and generally, mailman/listinfo for the list of (public) lists
-
 
 Troubleshooting:
 
