@@ -845,7 +845,7 @@ def membership_options(mlist, cgidata, doc, form):
     container.AddItem(
         _('Find members by regular expression:') +
         TextBox('findmember', value=regexp, size='50%').Format() +
-        SubmitButton('findmember_btn', 'Search...').Format())
+        SubmitButton('findmember_btn', _('Search...')).Format())
     return container
 
 
