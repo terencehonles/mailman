@@ -67,7 +67,7 @@ def GetPathPieces(path):
 	pass
     return l
 
-def MakeDirTree(path, perms=0774, verbose=0):
+def MakeDirTree(path, perms=0775, verbose=0):
     made_part = '/'
     path_parts = GetPathPieces(path)
     for item in path_parts:
