@@ -264,7 +264,6 @@ def main():
             addall(mlist, dmembers, 1, send_welcome_msg, s)
 
         if admin_notif:
-            adminaddr = mlist.GetAdminEmail()
             realname = mlist.real_name
             subject = _('%(realname)s subscription notification')
             msg = Message.UserNotification(
