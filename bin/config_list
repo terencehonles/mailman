@@ -121,6 +121,7 @@ def do_output(listname, outfile):
 
 def do_list_categories(mlist, k, subcat, outfp):
     info = mlist.GetConfigInfo(k, subcat)
+    label, gui = mlist.GetConfigCategories()[k]
     if info is None:
         return
     print >> outfp, '##', k.capitalize(), _('options')
@@ -135,7 +136,7 @@ def do_list_categories(mlist, k, subcat, outfp):
         print >> outfp, '#', line
     print >> outfp
     for data in info[1:]:
-        if type(data) <> TupleType:
+        if not isinstance(data, TupleType):
             continue
         varname = data[0]
         # Variable could be volatile
@@ -156,15 +157,21 @@ def do_list_categories(mlist, k, subcat, outfp):
         for line in desc.split('\n'):
             print >> outfp, '#', line
         # munge the value based on its type
-        value = getattr(mlist, varname)
+        value = None
+        if hasattr(gui, 'getValue'):
+            value = gui.getValue(mlist, vtype, varname, data[2])
+        if value is None and not varname.startswith('_'):
+            value = getattr(mlist, varname)
         if vtype in (mm_cfg.Text, mm_cfg.FileUpload):
             print >> outfp, varname, '=',
-            lines = value.replace('\r', '').split('\n')
-            if len(lines) == 1:
-                print >> outfp, repr(value)
+            lines = value.splitlines()
+            if not lines:
+                print >> outfp, "''"
+            elif len(lines) == 1:
+                print >> outfp, repr(lines[0])
             else:
                 first = 1
-                outfp.write('"""')
+                outfp.write(' """')
                 for line in lines:
                     if first:
                         first = 0
@@ -192,13 +199,40 @@ def do_list_categories(mlist, k, subcat, outfp):
 
 
 
+def getPropertyMap(mlist):
+    guibyprop = {}
+    categories = mlist.GetConfigCategories()
+    for category, (label, gui) in categories.items():
+        if not hasattr(gui, 'GetConfigInfo'):
+            continue
+        subcats = mlist.GetConfigSubCategories(category)
+        if subcats is None:
+            subcats = [(None, None)]
+        for subcat, sclabel in subcats:
+            for element in gui.GetConfigInfo(mlist, category, subcat):
+                if not isinstance(element, TupleType):
+                    continue
+                propname = element[0]
+                wtype = element[1]
+                guibyprop[propname] = (gui, wtype)
+    return guibyprop
+
+
+class FakeDoc:
+    # Supports the interface required by gui._setValue()
+    def addError(self, s):
+        print >> sys.stderr, s
+
+
 def do_input(listname, infile, checkonly, verbose):
+    fakedoc = FakeDoc()
     # open the specified list locked, unless checkonly is set
     try:
         mlist = MailList.MailList(listname, lock=not checkonly)
     except Errors.MMListError, e:
         usage(1, _('No such list "%(listname)s"\n%(e)s'))
     savelist = 0
+    guibyprop = getPropertyMap(mlist)
     try:
         globals = {'mlist': mlist}
         # Any exception that occurs in execfile() will cause the list to not
@@ -213,7 +247,26 @@ def do_input(listname, infile, checkonly, verbose):
                 continue
             if verbose:
                 print >> sys.stderr, _('attribute "%(k)s" changed')
-            setattr(mlist, k, v)
+            missing = []
+            gui, wtype = guibyprop.get(k, (missing, missing))
+            if gui is missing:
+                # This isn't an official property of the list, but that's
+                # okay, we'll just restore it the old fashioned way
+                print >> sys.stderr, _('Non-standard property restored: %(k)s')
+                setattr(mlist, k, v)
+            else:
+                # BAW: This uses non-public methods.  This logic taken from
+                # the guts of GUIBase.handleForm().
+                try:
+                    validval = gui._getValidValue(mlist, k, wtype, v)
+                except ValueError:
+                    print >> sys.stderr, _('Invalid value for property: %(k)s')
+                except Errors.EmailAddressError:
+                    print >> sys.stderr, _(
+                        'Bad email address for option %(k)s: %(v)s')
+                else:
+                    gui._setValue(mlist, k, validval, fakedoc)
+            # BAW: when to do gui._postValidate()???
     finally:
         if savelist and not checkonly:
             mlist.Save()
