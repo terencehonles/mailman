@@ -197,6 +197,8 @@ def NewVars(l):
     add_only_if_missing('digest_volume_frequency',
                         mm_cfg.DEFAULT_DIGEST_VOLUME_FREQUENCY)
     add_only_if_missing('digest_last_sent_at', 0)
+    add_only_if_missing('mod_password', None)
+    add_only_if_missing('moderator', [])
 
 
 
