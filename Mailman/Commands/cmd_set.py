@@ -157,11 +157,11 @@ class SetCommands:
         if digestsp:
             plainp = mlist.getMemberOption(address, mm_cfg.DisableMime)
             if plainp:
-                res.results.append('    digest plain')
+                res.results.append(_('    digest plain'))
             else:
-                res.results.append('    digest mime')
+                res.results.append(_('    digest mime'))
         else:
-            res.results.append('    digest off')
+            res.results.append(_('    digest off'))
         # If their membership is disabled, let them know why
         status = mlist.getDeliveryStatus(address)
         how = None
