@@ -61,7 +61,7 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_07.txt', ['david.farrar@parliament.govt.nz']),
         ('DSN', 'dsn_08.txt', ['news-list.zope@localhost.bln.innominate.de']),
         ('DSN', 'dsn_09.txt', ['pr@allen-heath.com']),
-        ('DSN', 'dsn_10.txt', ['martin.timpe@gmx.de']),
+        ('DSN', 'dsn_10.txt', ['anne.person@dom.ain']),
         # Microsoft Exchange
         ('Exchange', 'microsoft_01.txt', ['DJBENNETT@IKON.COM']),
         ('Exchange', 'microsoft_02.txt', ['MDMOORE@BALL.COM']),
