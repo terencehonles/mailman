@@ -118,7 +118,11 @@ def main():
         if not mlist.archive:
             continue
         dir = mlist.archive_directory
-        allfiles = os.listdir(dir)
+        try:
+            allfiles = os.listdir(dir)
+        except os.error:
+            print 'List', name, 'has a bogus archive_directory:', dir
+            allfiles = []
         files = []
         for f in allfiles:
             try:
