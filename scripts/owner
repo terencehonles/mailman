@@ -65,7 +65,8 @@ def main():
                 listname=listname,
                 _plaintext=1,
                 envsender=Utils.get_site_email(extra='bounces'),
-                pipeline=OWNER_PIPELINE)
+                pipeline=OWNER_PIPELINE,
+                toowner=1)
 
 
 
