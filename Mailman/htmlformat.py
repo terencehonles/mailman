@@ -450,9 +450,8 @@ class UnorderedList(Container):
 	spaces = ' ' * indent
 	output = '\n%s<ul>\n' % spaces
 	for item in self.items:
-	    output = output + '%s<li>%s\n' % (spaces, 
-					      HTMLFormatObject(item,
-							       indent + 2))
+	    output = output + '%s<li>%s\n' % \
+                     (spaces, HTMLFormatObject(item, indent + 2))
 	output = output + '%s</ul>\n' % spaces
 	return output
 
@@ -461,8 +460,18 @@ class OrderedList(Container):
 	spaces = ' ' * indent
 	output = '\n%s<ol>\n' % spaces
 	for item in self.items:
-	    output = output + '%s<li>%s\n' % (spaces, 
-					      HTMLFormatObject(item, indent + 2))
+	    output = output + '%s<li>%s\n' % \
+                     (spaces, HTMLFormatObject(item, indent + 2))
 	output = output + '%s</ol>\n' % spaces
 	return output
 	
+class DefinitionList(Container):
+    def Format(self, indent=0):
+        spaces = ' ' * indent
+        output = '\n%s<dl>\n' % spaces
+        for dt, dd in self.items:
+            output = output + '%s<dt>%s\n<dd>%s\n' % \
+                     (spaces, HTMLFormatObject(dt, indent+2),
+                      HTMLFormatObject(dd, indent+2))
+        output = output + '%s</dl>\n' % spaces
+        return output
