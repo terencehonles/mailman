@@ -28,12 +28,17 @@ for python and, recursively, for nested HTML formatting objects.
 
 
 import types
-import string
-import mm_cfg
-import Utils
+
+from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.i18n import _
 
+SPACE = ' '
+EMPTYSTRING = ''
+NL = '\n'
 
+
+
 # Format an arbitrary object.
 def HTMLFormatObject(item, indent):
     "Return a presentation of an object, invoking their Format method if any."
@@ -47,7 +52,7 @@ def HTMLFormatObject(item, indent):
 def CaseInsensitiveKeyedDict(d):
     result = {}
     for (k,v) in d.items():
-	result[string.lower(k)] = v
+	result[k.lower()] = v
     return result
 
 # Given references to two dictionaries, copy the second dictionary into the
@@ -122,7 +127,7 @@ class Table:
 		output = output + ' NOWRAP'
 		continue
 	    else:
-		output = output + ' %s="%s"' %(string.upper(key), val) 
+		output = output + ' %s="%s"' % (key.upper(), val)
 
 	return output
 
@@ -133,7 +138,7 @@ class Table:
 	for (key, val) in info.items():
 	    if not key in valid_mods:
 		continue
-	    output = output + ' %s="%s"' %(string.upper(key), val) 
+	    output = output + ' %s="%s"' % (key.upper(), val)
 
 	return output
 
@@ -150,7 +155,7 @@ class Table:
 		output = output + ' BORDER'
 		continue
 	    else:	
-		output = output + ' %s="%s"' %(string.upper(key), val) 	
+		output = output + ' %s="%s"' % (key.upper(), val)
 
 	return output
 
@@ -236,7 +241,7 @@ class FontAttr:
 	seq = []
 	for k, v in self.attrs.items():
 	    seq.append('%s="%s"' % (k, v))
-	output = '<font %s>' % string.join(seq, ' ')
+	output = '<font %s>' % SPACE.join(seq)
 	for item in self.items:
 	    output = output + HTMLFormatObject(item, indent)
 	output = output + '</font>'
@@ -257,7 +262,7 @@ class Container:
         output = []
         for item in self.items:
             output.append(HTMLFormatObject(item, indent))
-        return string.join(output, '')
+        return EMPTYSTRING.join(output)
 
 
 class Label(Container):
@@ -278,7 +283,7 @@ class Label(Container):
 class Document(Container):
     title = None
     language = None
-    bgcolor = mm_cfg.WEB_BGCOLOR
+    bgcolor = mm_cfg.WEB_BG_COLOR
 
     def set_language(self, lang=None):
         self.language = lang
@@ -309,13 +314,20 @@ class Document(Container):
         output.append('%s</HEAD>' % tab)
         output.append('%s<BODY' % tab)
 	quals = []
+        # Default link colors
+        if mm_cfg.WEB_VLINK_COLOR:
+            kws.setdefault('vlink', mm_cfg.WEB_VLINK_COLOR)
+        if mm_cfg.WEB_ALINK_COLOR:
+            kws.setdefault('alink', mm_cfg.WEB_ALINK_COLOR)
+        if mm_cfg.WEB_LINK_COLOR:
+            kws.setdefault('alink', mm_cfg.WEB_LINK_COLOR)
 	for k, v in kws.items():
 	    quals.append('%s="%s"' % (k, v))
-        output.append('%s<BODY %s>' % (tab, string.join(quals, ' ')))
+        output.append('%s<BODY %s>' % (tab, SPACE.join(quals)))
         output.append(Container.Format(self, indent))
         output.append('%s</BODY>' % tab)
         output.append('%s</HTML>' % tab)
-        return string.join(output, '\n')
+        return NL.join(output)
 
 
 class HeadlessDocument(Document):
@@ -412,7 +424,7 @@ class InputObj:
         if self.checked:
             output.append('CHECKED')
         output.append('>')
-        return string.join(output, ' ')
+        return SPACE.join(output)
 
 
 class SubmitButton(InputObj):
