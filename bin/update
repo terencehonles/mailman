@@ -301,13 +301,7 @@ script.
         # chmod the html archives
         #
         os.chmod(html_dir, 02775)
-    #
-    # save the new variables and
-    # let it create public symlinks if necessary
-    #
-    mlist.archive_directory = make_varabs('archives/private/%s' % (listname))
-    mlist.private_archive_file_dir = make_varabs('archives/private/%s.mbox' %
-                                                 listname)
+    # BAW: Is this still necessary?!
     mlist.Save()
     #
     # check to see if pre-b4 list-specific templates are around
