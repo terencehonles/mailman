@@ -262,12 +262,17 @@ exactly what happened to provoke this error.<p>'''
         list.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
         list.SetUserOption(user, mm_cfg.AcknowlegePosts, ack_posts)
         list.SetUserOption(user, mm_cfg.DisableMime, mime)
+        msg = 'You have successfully set your options.'
         try:
             list.SetUserDigest(user, digest_value)
         except (Errors.MMAlreadyDigested, Errors.MMAlreadyUndigested):
             pass
+        except Errors.MMCantDigestError:
+            msg = 'The list administrator has disabled digest delivery for ' \
+                  'this list, however your other options have been ' \
+                  'successfully set.'
         list.SetUserOption(user, mm_cfg.ConcealSubscription, conceal)
-        PrintResults("You have successfully set your options.")
+        PrintResults(msg)
 
 
     list.Unlock()
