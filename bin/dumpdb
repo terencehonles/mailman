@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,10 +24,11 @@ Usage: %(PROGRAM)s filename
 """
 
 import sys
-import marshal
+import os
 import pprint
 
 import paths
+from Mailman.Queue.Switchboard import Switchboard
 from Mailman.i18n import _
 
 PROGRAM = sys.argv[0]
@@ -40,9 +41,9 @@ def main():
     except IndexError:
         print >> sys.stderr, _(__doc__)
         sys.exit(1)
-    fp = open(filename)
-    d = marshal.load(fp)
-    fp.close()
+    
+    # Note: this uses a protected interface
+    d = Switchboard(os.path.split(filename)[0])._ext_read(filename)
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(d)
 
