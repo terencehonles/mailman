@@ -20,8 +20,9 @@
 
 import os
 import time
-from types import StringType, ListType
-import md5
+import sha
+import marshal
+from types import StringType, TupleType
 from urlparse import urlparse
 
 from Mailman import Crypt
@@ -29,6 +30,7 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import Cookie
 from Mailman import mm_cfg
+
 
 # TBD: is this the best location for the site password?
 SITE_PW_FILE = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
@@ -69,34 +71,41 @@ class SecurityManager:
 	return 1
 
     def WebAuthenticate(self, user=None, password=None, cookie=None):
+        key = self.internal_name()
         if cookie:
-            cookie_key = self._internal_name + ':' + cookie
-        else:
-            cookie_key = self._internal_name
-        if password is not None:  # explicit login
+            key = key + ':' + cookie
+        # password will be None for explicit login
+        if password is not None:
             if user:
                 self.ConfirmUserPassword(user, password)
             else:
                 self.ConfirmAdminPassword(password)
-            print self.MakeCookie(cookie_key)
+            print self.MakeCookie(key)
             return 1
         else:
-            return self.CheckCookie(cookie_key)
+            return self.CheckCookie(key)
 
     def MakeCookie(self, key):
-        # Make sure we have the necessary ingredients for our cookie
-        issued = time.time()
-        expires = int(issued) + mm_cfg.ADMIN_COOKIE_LIFE
-        # ... including the secret ingredient :)
+        # Ingredients for our cookie: our `secret' which is the list's admin
+        # password (never sent in the clear), the time right now in seconds
+        # since the epoch, and the calculated expire time.
         secret = self.password
-        mac = md5.new(secret + `issued` + `expires`).digest()
-        # Mix all ingredients gently together,
+        issued = int(time.time())
+        expires = issued + int(mm_cfg.ADMIN_COOKIE_LIFE)
+        # Get a digest of the secret, plus other information.
+        mac = sha.new(secret + `issued` + `expires`).hexdigest()
+        # Create the cookie object.  The way the cookie module converts
+        # non-strings to pickles can cause problems if the resulting string
+        # needs to be quoted.  So we'll do the conversion ourselves.
         c = Cookie.Cookie()
-        c[key] = [issued, expires, mac]
-        # place in oven,
-        path = urlparse(self.web_page_url)[2] # '/mailman'
+        c[key] = Utils.hexlify(marshal.dumps((issued, expires, mac)))
+        # The path to all Mailman stuff, minus the scheme and host,
+        # i.e. usually the string `/mailman'
+        path = urlparse(self.web_page_url)[2]
         c[key]['path'] = path
-        # and bake until golden brown
+        # The Cookie module defines the semantics for the value of the
+        # `expires' key to be an offset from now, not the absolute time
+        # value!
         c[key]['expires'] = mm_cfg.ADMIN_COOKIE_LIFE
         return c
 
@@ -104,35 +113,22 @@ class SecurityManager:
         cookiedata = os.environ.get('HTTP_COOKIE')
         if not cookiedata:
             return 0
-        #
-        # TBD: At least some versions of MS Internet Explorer stores cookies
-        # without the double quotes.  This has been verified for MSIE 4.01,
-        # although MSIE 5 is fixed.  The bug (see PR#80) is that if these
-        # double quotes are missing, the cookie data does not unpickle into
-        # the list that we expect.  The kludge given here (slightly modified)
-        # was initially provided by Evaldas Auryla <evaldas.auryla@pheur.org>
-        #
-        keylen = len(key)
-        try:
-            if cookiedata[keylen+1] <> '"' and cookiedata[-1] <> '"':
-                cookiedata = key + '="' + cookiedata[keylen+1:] + '"'
-        except IndexError:
-            # cookiedata got truncated somehow; just let it fail normally
-            pass
         c = Cookie.Cookie(cookiedata)
         if not c.has_key(key):
             return 0
-        cookie = c[key].value
-        if type(cookie) <> ListType or len(cookie) <> 3:
+        # Undo the encoding we performed in MakeCookie() above
+        try:
+            cookie = marshal.loads(Utils.unhexlify(c[key].value))
+            issued, expires, received_mac = cookie
+        except (EOFError, ValueError, TypeError):
             raise Errors.MMInvalidCookieError
         now = time.time()
-        [issued, expires, received_mac] = cookie
         if now < issued:
             raise Errors.MMInvalidCookieError
         if now > expires:
             raise Errors.MMExpiredCookieError
         secret = self.password
-        mac = md5.new(secret + `issued` + `expires`).digest()
+        mac = sha.new(secret + `issued` + `expires`).hexdigest()
         if mac <> received_mac:
             raise Errors.MMInvalidCookieError
         return 1
