@@ -159,10 +159,14 @@ def list_listinfo(mlist, lang):
     if not mlist.digestable or not mlist.nondigestable:
         replacements['<mm-digest-radio-button>'] = ""
         replacements['<mm-undigest-radio-button>'] = ""
+        replacements['<mm-digest-question-start>'] = '<!-- '
+        replacements['<mm-digest-question-end>'] = ' -->'
     else:
         replacements['<mm-digest-radio-button>'] = mlist.FormatDigestButton()
         replacements['<mm-undigest-radio-button>'] = \
                                                    mlist.FormatUndigestButton()
+        replacements['<mm-digest-question-start>'] = ''
+        replacements['<mm-digest-question-end>'] = ''
     replacements['<mm-plain-digests-button>'] = \
                                               mlist.FormatPlainDigestsButton()
     replacements['<mm-mime-digests-button>'] = mlist.FormatMimeDigestsButton()
