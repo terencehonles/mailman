@@ -92,8 +92,10 @@ for log in ( 'error', 'smtp-failures' ):
 #  send message if we've actually found anything
 if textSend:
 	text = string.join(text, '\n') + '\n'
-	Utils.SendTextToUser('Mailman Log Report -- %s' % time.ctime(time.time()),
-			text, mm_cfg.MAILMAN_OWNER, mm_cfg.MAILMAN_OWNER)
+	siteowner = Utils.get_site_email()
+	Utils.SendTextToUser(
+		'Mailman Log Report -- %s' % time.ctime(time.time()),
+		text, siteowner, siteowner)
 
 #  compress any log-files we made
 if hasattr(mm_cfg, 'COMPRESS_LOGFILES_WITH') and mm_cfg.COMPRESS_LOGFILES_WITH:
