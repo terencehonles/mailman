@@ -49,33 +49,33 @@ def _(s):
 
 
 class ForbiddenPoster(Errors.HoldMessage):
-    "Sender is explicitly forbidden"
+    reason = _('Sender is explicitly forbidden')
     rejection = _('You are forbidden from posting messages to this list.')
 
 class ModeratedPost(Errors.HoldMessage):
-    "Post to moderated list"
+    reason = _('Post to moderated list')
     rejection = _('Your message was deemed inappropriate by the moderator.')
 
 class NonMemberPost(Errors.HoldMessage):
-    "Post by non-member to a members-only list"
+    reason = _('Post by non-member to a members-only list')
     rejection = _('Non-members are not allowed to post messages to this list.')
 
 class NotExplicitlyAllowed(Errors.HoldMessage):
-    "Posting to a restricted list by sender requires approval"
+    reason = _('Posting to a restricted list by sender requires approval')
     rejection = _('This list is restricted; your message was not approved.')
 
 class TooManyRecipients(Errors.HoldMessage):
-    "Too many recipients to the message"
+    reason = _('Too many recipients to the message')
     rejection = _('Please trim the recipient list; it is too long.')
 
 class ImplicitDestination(Errors.HoldMessage):
-    "Message has implicit destination"
+    reason = _('Message has implicit destination')
     rejection = _('''Blind carbon copies or other implicit destinations are
 not allowed.  Try reposting your message by explicitly including the list
 address in the To: or Cc: fields.''')
 
 class Administrivia(Errors.HoldMessage):
-    "Message may contain administrivia"
+    reason = _('Message may contain administrivia')
 
     def rejection_notice(self, mlist):
         listurl = mlist.GetScriptURL('listinfo', absolute=1)
@@ -86,23 +86,24 @@ word `help' in it to the request address, %(request)s, for further
 instructions.""")
 
 class SuspiciousHeaders(Errors.HoldMessage):
-   "Message has a suspicious header"
+   reason = _('Message has a suspicious header')
    rejection = _('Your message had a suspicious header.')
 
 class MessageTooBig(Errors.HoldMessage):
-    "Message body is too big: %d bytes but there's a limit of %d KB"
     def __init__(self, msgsize, limit):
         self.__msgsize = msgsize
         self.__limit = limit
 
-    def __str__(self):
-        return Errors.HoldMessage.__str__(self) % (
-            self.__msgsize, self.__limit)
+    def reason_notice(self):
+        size = self.__msgsize
+        limit = self.__limit
+        return _('''Message body is too big: %(size)d bytes with a limit of
+%(limit)d KB''')
 
     def rejection_notice(self, mlist):
-        kb = mlist.max_message_size
+        kb = self.__limit
         return _('''Your message was too big; please trim it to less than
-%(kb)s KB in size.''')
+%(kb)d KB in size.''')
 
 
 # And reset the translator
@@ -228,8 +229,8 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     adminaddr = mlist.GetAdminEmail()
     # We need to send both the reason and the rejection notice through the
     # translator again, because of the games we play above
-    reason = _(str(exc))
-    msgdata['rejection-notice'] = _(exc.rejection_notice(mlist))
+    reason = Utils.wrap(exc.reason_notice())
+    msgdata['rejection-notice'] = Utils.wrap(exc.rejection_notice(mlist))
     id = mlist.HoldMessage(msg, reason, msgdata)
     # Now we need to craft and send a message to the list admin so they can
     # deal with the held message.
