@@ -30,6 +30,7 @@ import errno
 
 from mimelib.Generator import Generator
 from mimelib.Parser import Parser
+from mimelib.date import formatdate
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -245,8 +246,11 @@ class ListAdmin:
                 pass
             # Queue the file for delivery by qrunner.  Trying to deliver the
             # message directly here can lead to a huge delay in web
-            # turnaround.
-            syslog('vette', 'approved held message enqueued: %s', filename)
+            # turnaround.  Log the moderation and add a header.
+            msg['X-Moderated'] = '<%s> %s' % (self.GetOwnerEmail(),
+                                              formatdate())
+            syslog('vette', 'held message approved, message-id: %s',
+                   msg.get('message-id', 'n/a'))
             # Stick the message back in the incoming queue for further
             # processing.
             inq = get_switchboard(mm_cfg.INQUEUE_DIR)
