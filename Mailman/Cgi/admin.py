@@ -771,7 +771,8 @@ def ChangeOptions(lst, category, cgi_info, document):
 	names = string.split(name_text, '\n')
         subscribe_success = []
         subscribe_errors = []
-        send_welcome_msg = string.atoi(cgi_info["send_welcome_msg_to_this_batch"].value)
+        send_welcome_msg = string.atoi(
+            cgi_info["send_welcome_msg_to_this_batch"].value)
 	for new_name in map(string.strip, names):
             new_name = Utils.ParseAddrs(new_name)
             digest = 0
