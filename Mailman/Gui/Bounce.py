@@ -72,6 +72,8 @@ class Bounce(GUIBase):
             disabled.  You should tune both of these to the frequency and
             traffic volume of your list."""),
 
+            _('Bounce detection sensitivity'),
+
             ('bounce_processing', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
              _('Should Mailman perform automatic bounce processing?'),
              _("""By setting this value to <em>No</em>, you disable all
@@ -100,6 +102,8 @@ class Bounce(GUIBase):
              _("""The number of days between sending the <em>Your Membership
              Is Disabled</em> warnings.  This value must be an integer.""")),
 
+            _('Notifications'),
+
             ('bounce_unrecognized_goes_to_list_owner', mm_cfg.Toggle,
              (_('No'), _('Yes')), 0,
              _('''Should Mailman send you, the list owner, any bounce messages
@@ -125,6 +129,25 @@ class Bounce(GUIBase):
              to set up an
              <a href="?VARHELP=autoreply/autoresponse_admin_text">autoresponse
              message</a> for email to the -owner and -admin address.""")),
+
+            ('bounce_notify_owner_on_disable', mm_cfg.Toggle,
+             (_('No'), _('Yes')), 0,
+             _("""Should Mailman notify you, the list owner, when bounces
+             cause a member's subscription to be disabled?"""),
+             _("""By setting this value to <em>No</em>, you turn off
+             notification messages that are normally sent to the list owners
+             when a member's delivery is disabled due to excessive bounces.
+             An attempt to notify the member will always be made.""")),
+
+            ('bounce_notify_owner_on_removal', mm_cfg.Toggle,
+             (_('No'), _('Yes')), 0,
+             _("""Should Mailman notify you, the list owner, when bounces
+             cause a member to be unsubscribed?"""),
+             _("""By setting this value to <em>No</em>, you turn off
+             notification messages that are normally sent to the list owners
+             when a member is unsubscribed due to excessive bounces.  An
+             attempt to notify the member will always be made.""")),
+
             ]
 
     def _setValue(self, mlist, property, val, doc):
@@ -141,6 +164,10 @@ class Bounce(GUIBase):
                 val = int(val)
             elif property == 'bounce_you_are_disabled_warnings_interval':
                 val = days(int(val))
+            elif property == 'bounce_notify_owner_on_disable':
+                val = int(val)
+            elif property == 'bounce_notify_owner_on_removal':
+                val = int(val)
         except ValueError:
             doc.addError(
                 _("""Bad value for <a href="?VARHELP=bounce/%(property)s"
