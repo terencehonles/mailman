@@ -302,6 +302,7 @@ def NewVars(l):
         'bounce_you_are_disabled_warnings_interval',
         mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
     add_only_if_missing('ban_list', [])
+    add_only_if_missing('delivery_status', {})
 
 
 
@@ -335,7 +336,6 @@ def CanonicalizeUserOptions(l):
     # 2.1alpha3 -> 2.1alpha4.  The DisableDelivery flag is now moved into
     # get/setDeilveryStatus().  This must be done after the addresses are
     # canonicalized.
-    l.delivery_status = {}
     for k, v in l.user_options.items():
         if l.getMemberOption(k, mm_cfg.DisableDelivery):
             # Convert this flag into a legacy disable
