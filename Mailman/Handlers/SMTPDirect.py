@@ -28,6 +28,7 @@ for a threaded implementation.
 import time
 import socket
 import smtplib
+from types import UnicodeType
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -39,6 +40,7 @@ from Mailman.SafeDict import MsgSafeDict
 import email
 from email.Utils import formataddr
 from email.Header import Header
+from email.Charset import Charset
 
 DOT = '.'
 
@@ -281,22 +283,22 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
             del msgcopy['to']
             if mlist.isMember(recip):
                 name = mlist.getMemberName(recip)
-                # If there are non-ASCII characters in the name, attempt to
-                # encode the name in the outgoing character set.
-                try:
-                    name.encode('us-ascii')
-                except UnicodeError:
-                    charset = Utils.GetCharSet(mlist.getMemberLanguage(recip))
-                    # We want non-ASCII characters to be allowed in English
-                    # lists, without changing the English charset to
-                    # iso-8859-1.  See Utils.canonstr() for details.
-                    if charset == 'us-ascii':
-                        charset = 'iso-8859-1'
-                    name = Header(name, charset).encode()
-                    # And now ensure that it actually /is/ ASCII.  E.g. the
-                    # user's preferred language is English, but they have a
-                    # funny character in their name.
-                    name = name.encode('us-ascii', 'replace')
+                # Convert the name to an email-safe representation.  If the
+                # name is a byte string, convert it first to Unicode, given
+                # the character set of the member's language, replacing bad
+                # characters for which we can do nothing about.  Once we have
+                # the name as Unicode, we can create a Header instance for it
+                # so that it's properly encoded for email transport.
+                charset = Utils.GetCharSet(mlist.getMemberLanguage(recip))
+                if charset == 'us-ascii':
+                    # Since Header already tries both us-ascii and utf-8,
+                    # let's add something a bit more useful.
+                    charset = 'iso-8859-1'
+                charset = Charset(charset)
+                if not isinstance(name, UnicodeType):
+                    name = unicode(name, charset.get_output_charset(),
+                                   'replace')
+                name = Header(name, charset).encode()
                 msgcopy['To'] = formataddr((name, recip))
             else:
                 msgcopy['To'] = recip
