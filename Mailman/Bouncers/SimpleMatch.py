@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -70,6 +70,10 @@ PATTERNS = [
     (_c('Undeliverable Address:\s*(?P<addr>.*)$'),
      _c('Original message attached'),
      _c('Undeliverable Address:\s*(?P<addr>.*)$')),
+    # Another demon.co.uk format
+    (_c('This message was created automatically by mail delivery'),
+     _c('^---- START OF RETURNED MESSAGE ----'),
+     _c("addressed to '(?P<addr>[^']*)'")),
     # Next one goes here...
     ]
 
