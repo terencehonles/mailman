@@ -308,6 +308,12 @@ def NewVars(l):
     add_only_if_missing(
         'bounce_unrecognized_goes_to_list_owner',
         mm_cfg.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER)
+    add_only_if_missing(
+        'bounce_notify_owner_on_disable',
+        mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE)
+    add_only_if_missing(
+        'bounce_notify_owner_on_removal',
+        mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
     add_only_if_missing('ban_list', [])
     add_only_if_missing('delivery_status', {})
     # This really ought to default to mm_cfg.HOLD, but that doesn't work with
