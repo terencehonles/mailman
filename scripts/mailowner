@@ -7,16 +7,19 @@ This script gets called by the wrapper.
 Stdin is the mail message, and argv[1] is the name of the mailing list
 whose owner(s) to send mail to."""
 
-__version__ = "$Revision: 399 $"
+__version__ = "$Revision: 417 $"
 
 
 import sys
-f = open('/tmp/owner.errs', 'a+')
-sys.stderr = f
-
 sys.path.append('/home/mailman/mailman/modules')
 
-import maillist, mm_message
+import maillist, mm_message, mm_utils
+
+try:
+    sys.stderr = mm_utils.StampedLogger("error", label = 'post',
+                                        manual_reprime=1, nofail=0)
+except IOError:
+    pass                        # Oh well - SOL on redirect, errors show thru.
 
 # Only let one program run at once per list.
 
