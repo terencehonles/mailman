@@ -267,34 +267,40 @@ class Document(Container):
     def SetTitle(self, title):
 	self.title = title
 
-    def Format(self, indent=0, **kw):
-	output = 'Content-type: text/html\n\n'
-	spaces = ' ' * indent
-	output = output + spaces
-	output = output + '<html>\n<head>\n'
-	if self.title:
-	    output = '%s%s<TITLE>%s</TITLE>\n'  % (output, spaces,
-						   self.title)
-	output = '%s%s</head>\n%s<body' % (output, spaces, spaces)
+    def Format(self, indent=0, **kws):
+        tab = ' ' * indent
+        output = ['Content-type: text/html',
+                  'Cache-control: no-cache',
+                  'Expires: 0',
+                  '',
+                  tab,
+                  '<HTML>',
+                  '<HEAD>'
+                  ]
+        if self.title:
+            output.append('%s<TITLE>%s</TITLE>' % (tab, self.title))
+        output.append('%s</HEAD>' % tab)
+
+
+        output.append('%s<BODY' % tab)
 	quals = []
-	for k, v in kw.items():
+	for k, v in kws.items():
 	    quals.append('%s="%s"' % (k, v))
-	if quals:
-	    output = output + ' %s>\n' % string.join(quals, " ")
-	else:
-	    output = output + '>\n'
-	output = output + Container.Format(self, indent)
-	output = output + '%s</body>\n%s</html>\n' % (spaces, spaces)
-	return output
+        output.append('%s<BODY %s>' % (tab, string.join(quals, ' ')))
+        output.append(Container.Format(self, indent))
+        output.append('%s</BODY>' % tab)
+        output.append('%s</HTML>' % tab)
+        return string.join(output, '\n')
+
 
 class HeadlessDocument(Document):
     """Document without head section, for templates that provide their own."""
-    def Format(self, indent=0, **kw):
-	output = 'Content-type: text/html\n\n'
-	spaces = ' ' * indent
-	output = output + spaces
-	output = output + Container.Format(self, indent)
-	return output
+    def Format(self, indent=0, **kws):
+        return '''Content-type: text/html
+        Cache-control: no-cache
+        Expires: 0
+
+        ''' + Container.Format(self, indent)
     
 class StdContainer(Container):
     def Format(self, indent=0):
