@@ -1,52 +1,54 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-QMAIL ISSUES
+QMAIL TANÁCSOK
 
-There are some issues that users of the qmail mail transport agent
-have encountered.  None of the core maintainers use qmail, so all of
-this information has been contributed by the Mailman user community,
-especially Martin Preishuber and Christian Tismer, with notes by
-Balazs Nagy (BN) and Norbert Bollow (NB).
+A következõkben pár hasznos tanácsot olvashatnak azok a felhasználók,
+akik levelezõszerverükön qmailt használnak. Fontos megjegyeznünk, hogy
+a fõfejlesztõk közül senkisem használ qmailt, ezért az itt található
+leírások a Mailman felhasználói csoporttól, fõleg Martin Preishubertól
+és Christian Tismertõl származnak, pár kiegészítéssel Balazs Nagytól(BN)
+és Norbert Bollowtól (NB).
 
-- You might need to set the mail-gid user to either "qmail", "mailman", or
-  "nofiles" by using the --with-mail-gid configure option.
+- A mail-gid felhasználónak valószínû, hogy telepítéskor a --with-mail-gid
+  kapcsolóval vagy a "qmail", vagy a "mailman" vagy a "nofiles" értéket
+  kell megadnunk.   
 
-  BN: it highly depends on your mail storing policy.  For example if
-  you use the simple ~alias/.qmail-* files, you can use `id -g alias`.
-  But if you use /var/qmail/users, the specified mail gid can be
-  used.
+  BN: hogy valójában melyiket kell használnunk a fentiek közül, az függ
+  a gépünkön beállított jogosultságoktól. Például, ha egyszerûen az 
+  ~ alias/.qmail-* állományokat használjuk, akkor a megfelelõ értéket
+  megtudhajtuk az `id -g alias` paranccsal. Azonban, ha a /var/qmail/users
+  mellett döntünk, akkor a megfelelõ felhasználói azonosítót kell
+  használnunk.
 
-  If you are going to be directing virtual domains directly to the
-  "mailman" user (using "virtualdomains" on a list-only domain, for
-  example), you will have to use --with-mail-gid=<gid of mailman user's group>
-  This is incompatible with having list aliases in ~alias, unless that alias
-  simply forwards to "mailman-listname*".
+- Ha a rendszeren található `mailman' felhasználó, akkor a
+  `mailman-owner' alias csak a ~mailman könyvtárban fog mûködni.
+  Ezen bejegyzés létrehozásához a ~mailman könyvtárban egy
+  "touch .qmail-owner" parancsot kell kiadni.
 
-- If there is a user `mailman' on your system, the alias
-  `mailman-owner' will work only in ~mailman.  You have to do a "touch
-  .qmail-owner" in ~mailman directory to create this alias.
+  NB: Egy másik, és talán jobb megoldás a `chown root ~mailman'
+  parancs használata, amellyel megelõzhetõ, hogy a qmail a
+  `mailman' felhasználót úgy kezelje, mint akinek kézbesíteni lehet
+  a leveleket. (Bõvebben a témáról `man 8 qmail-getpw'.)
 
-  NB: An alternative, IMHO better solution is to `chown root
-  ~mailman', that will stop qmail from considering `mailman' to be a
-  user to whom mail can be delivered.  (See `man 8 qmail-getpw'.)
-
-- In a related issue, if you have any users with the same name as one
-  of your mailing lists, you will have problems if list names contain
-  `-' in them.  Putting .qmail redirections into the user's home
-  directory doesn't work because the Mailman wrappers will not get
-  spawned with the proper GID.  The solution is to put the following
-  lines in the /var/qmail/users/assign file:
+- Az elõzõhöz hasonló probléma az, amikor az egyik levelezõlistánk
+  nevével megegyezõ felhasználói név is található a rendszeren, vagy
+  a lista nevében van `-' karakter. A felhasználó könyvtárába el-
+  helyezett .qmail átiranyítás ilyenkor nem mûködik, mivel a Mailman
+  wrapper programja nem a megfelelõ GID-del kerül meghívásra. Megoldás
+  a problémára a következõ sor elhelyezése a /var/qmail/users/assign
+  állományban:
 
   +zope-:alias:112:11:/var/qmail/alias:-:zope-:
   .
 
-  where in this case the listname is e.g. zope-users.
+  ahol például a listaneve zope-users.
 
-  NB: Alternatively, you could host the lists on a virtual domain, and
-  use the /var/qmail/control/virtualdomains file to put the mailman
-  user in charge of this virtual domain.
+  NB: Másik megoldás lehet, hogy a listát egy másik virtuális 
+  tartományban mûködtetjük, és a /var/qmail/control/virtualdomains
+  állományban megadjuk, hogy a mailman felhasználó kezelje ezt a
+  virtuális tartományt.
 
 - BN: If inbound messages are delivered by another user than mailman,
   it's necessary to allow it to access ~mailman.  Be sure that
@@ -103,11 +105,11 @@ Balazs Nagy (BN) and Norbert Bollow (NB).
 - More information about setting up qmail and relaying can be found in 
   the qmail documentation.
 
-BN: Last but not least, here's a little script to generate aliases to
-your lists (if for some reason you can/will not have them
-automatically picked up using "contrib/qmail-to-mailman.py"):
+BN: Végül, de nem utoljára itt egy kis programocska a listák bejegyzéseinek
+létrehozásához (ha valamiért még sem akarod, vagy tudod használni a
+"contrib/qmail-to-mailman.py" programot az automatikus listakezeléshez):
 
-This script is for the Mailman 2.0 series:
+Ezt a programot használjuk a Mailman 2.0-as sorozathoz:
 #!/bin/sh
 if [ $# = 1 ]; then
     i=$1
@@ -119,12 +121,13 @@ if [ $# = 1 ]; then
     echo "|preline /home/mailman/mail/mailman mailcmd $i" > .qmail-$i-request
 fi
 
-This script is for the Mailman 2.1 series:
-Note: this is for a new Mailman 2.1 installation.  Users upgrading from
-      Mailman 2.0 would most likely change /usr/local/mailman to
-      /home/mailman.  If in doubt, refer to the --prefix option passed to
-      configure during compile time.
-
+Ezt a programot használjuk a Mailman 2.1-es sorozathoz:
+Megjegyzes: egy frissen telepített 2.1-es Mailmanhoz használható. Azok a
+            felhasználók, akik 2.0-as verzióról frissitenek, azoknak
+            az /usr/local/mailman elérési útvonalát mindenhol át kell
+            írniuk /home/mailman -re. További információért olvassuk el
+            a configure --prefix kapcsolónál található megjegyzést.
+            
 #!/bin/sh
 if [ $# = 1 ]; then
     i=$1
@@ -143,7 +146,10 @@ if [ $# = 1 ]; then
     echo "|preline /usr/local/mailman/mail/mailman unsubscribe $i" > .qmail-$i-unsubscribe
 fi
 
-INFORMATION ON VERP
+INFORMÁCIÓK A VERP HASZNÁLATÁRÓL
+
+A feljebb látható, 2.1-es sorozathoz használható bejegyzéseket létrehozó
+programban a VERP-pel kapcsolatos sor ki van 
 
 You will note in the alias generating script for 2.1 above, there is a
 line for VERP that has been commented out.  If you are interested in VERP
@@ -163,19 +169,20 @@ developers or people well familiar with qmail.  Having said that, this
 patch is the more qmail-friendly approach resulting in large performance
 gains.
 
-VIRTUAL MAIL SERVER
+VIRTUÁLIS MAIL SZERVER
 
 As mentioned in the ISSUES area for a virtual mail server, a patch under
 testing is located at:
 
 http://sf.net/tracker/index.php?func=detail&aid=621257&group_id=103&atid=300103
 
-Again, this patch is for people familiar with their qmail installation.
+Fontos, hogy ezt a javítást csak azok használják akik jártassak a
+qmail telepítésében, beállításában.
 
-MORE INFORMATION
+TOVÁBBI INFORMÁCIÓK
 
-You might be interested in some information on modifying footers that
-Norbert Bollow has written about Mailman and qmail, available here:
+Norbert Bollow leírása a Mailman lábléceinek módosításáról a következõ
+címen érhetõ el:
 
     http://mailman.cis.to/qmail-verh/
 

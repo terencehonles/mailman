@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998-2003 Free Software Foundation, Inc.
+Copyright (C) 1998-2004 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 Ebben az állományban a GNU Mailman telepítéséhez találunk útmutatót,
@@ -29,7 +29,7 @@ olvasásra az UPGRADING állományban található fontos információkat.
     frissebb megfelel a célnak. A gcc beszerzésérõl bõvebben a 
     következõ oldalon olvashatunk:
 
-        http://www.gnu.org
+        http://gcc.gnu.org
     
     A Python feldolgozó nyelvnek is telepítve kell lennie a rendszeren. 
     A megfelelõ mûködéshez jelenleg a Python 2.1.3-as vagy 2.2.1-es
