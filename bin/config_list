@@ -117,6 +117,9 @@ def do_output(listname, outfile):
                 if type(data) <> TupleType:
                     continue
                 varname = data[0]
+                # Variable could be volatile
+                if varname[0] == '_':
+                    continue
                 vtype = data[1]
                 desc = Utils.wrap(data[-1])
                 for line in string.split(desc, '\n'):
