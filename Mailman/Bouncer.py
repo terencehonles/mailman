@@ -83,7 +83,7 @@ class Bouncer:
 	if self.bounce_info.has_key(email):
 	    del self.bounce_info[email]
 
-    def RegisterBounce(self, email, msg):
+    def RegisterBounce(self, email, msg, saveifdirty=1):
         """Detect and handle repeat-offender bounce addresses.
         
         We use very sketchy bounce history profiles in self.bounce_info
@@ -96,7 +96,6 @@ class Bouncer:
         report = "%s: %s - " % (self.real_name, email)
 
         try:
-
             now = time.time()
             secs_per_day = 24 * 60 * 60
 
@@ -171,7 +170,7 @@ class Bouncer:
                             self._internal_name,
                             addr)
         finally:
-            if dirty:
+            if dirty and saveifdirty:
                 self.Save()
 
     def HandleBouncingAddress(self, addr, msg):
