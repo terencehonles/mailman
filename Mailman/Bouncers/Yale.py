@@ -37,7 +37,9 @@ def process(msg):
     if msg.ismultipart():
         return None
     try:
-        whofrom = address.getaddresses(msg.get('from', ''))[0][1]
+        whofrom = address.getaddresses([msg.get('from', '')])[0][1]
+        if not whofrom:
+            return None
         username, domain = whofrom.split('@', 1)
     except (IndexError, ValueError):
         return None
