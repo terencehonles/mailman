@@ -271,6 +271,7 @@ class OutgoingMessage:
 
     def __delitem__(self, name):
         if not self.getheader(name):
+            # XXX this should raise an exception
             return None
         newheaders = []
         name = string.lower(name)
@@ -284,6 +285,7 @@ class OutgoingMessage:
         self.headers = newheaders
         self.CacheHeaders()
 
+    # XXX should have a __setitem__
 
 
 class NewsMessage(IncomingMessage):
