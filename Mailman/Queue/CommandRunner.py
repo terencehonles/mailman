@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,6 +23,8 @@
 
 
 
+import re
+
 from Mailman import mm_cfg
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Handlers import SpamDetect
@@ -46,7 +48,6 @@ class CommandRunner(Runner):
         except LockFile.TimeOutError:
             # Oh well, try again later
             return 1
-        #
         # runner specific code
         #
         # This message will have been delivered to one of mylist-request,
@@ -66,6 +67,15 @@ class CommandRunner(Runner):
                 del msg['subject']
                 msg['Subject'] = 'leave'
                 msg.set_payload('')
+                mlist.ParseMailCommands(msg, msgdata)
+            elif msgdata.get('toconfirm'):
+                mo = re.match(mm_cfg.VERP_CONFIRM_REGEXP, msg.get('to', ''))
+                if mo:
+                    # BAW: blech, this should not hack the Subject: header,
+                    # but this is quick and dirty until we rewrite email
+                    # command handling.
+                    del msg['subject']
+                    msg['Subject'] = 'confirm ' + mo.group('cookie')
                 mlist.ParseMailCommands(msg, msgdata)
             mlist.Save()
         finally:
