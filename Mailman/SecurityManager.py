@@ -20,6 +20,7 @@
 
 import os
 import string
+import time
 import types
 import Crypt
 import Errors
@@ -66,6 +67,32 @@ class SecurityManager:
 	if(not self.ValidAdminPassword(pw)):
 	    raise Errors.MMBadPasswordError
 	return 1
+
+    def MakeCookie(self):
+        client_ip = os.environ.get('REMOTE_ADDR') or '0.0.0.0'
+        issued = int(time.time())
+        expires = issued + mm_cfg.ADMIN_COOKIE_LIFE
+        secret = self.password
+        mac = hash(secret + client_ip + `issued` + `expires`)
+        return [client_ip, issued, expires, mac]
+
+    def CheckCookie(self, cookie):
+        if type(cookie) <> type([]):
+            return 0
+        if len(cookie) <> 4:
+            return 0
+        client_ip = os.environ.get('REMOTE_ADDR') or '0.0.0.0'
+        [for_ip, issued, expires, received_mac] = cookie
+        if for_ip <> client_ip:
+            return 0
+        now = time.time()
+        if not issued < now < expires:
+            return 0
+        secret = self.password
+        mac = hash(secret + client_ip + `issued` + `expires`)
+        if mac <> received_mac:
+            return 0
+        return 1
 
     def ConfirmUserPassword(self, user, pw):
         """True if password is valid for site, list admin, or specific user."""

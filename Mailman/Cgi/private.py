@@ -32,9 +32,6 @@ import Mailman.mm_cfg
 LogStdErr("error", "private")
 
 
-
-SECRET = "secret"  # XXX used for hashing
-
 PAGE = '''
 <html>
 <head>
@@ -82,10 +79,15 @@ def GetListobj(list_name):
     return _list
 
 def isAuthenticated(list_name):
+    try:
+        listobj = GetListobj(list_name)
+    except Errors.MMUnknownListError:
+        print "\n<H3>List", repr(list_name), "not found.</h3>"
+        raise SystemExit
     if os.environ.has_key('HTTP_COOKIE'):
 	c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
 	if c.has_key(list_name):
-            if c[list_name].value == `hash(list_name)`:
+            if listobj.CheckCookie(c[list_name].value):
                 return 1
     # No corresponding cookie.  OK, then check for username, password
     # CGI variables 
@@ -108,17 +110,12 @@ def isAuthenticated(list_name):
     global login_attempted
     login_attempted=1
     try:
-        listobj = GetListobj(list_name)
-    except Errors.MMUnknownListError:
-        print "\n<H3>List", repr(list_name), "not found.</h3>"
-        raise SystemExit
-    try:
 	listobj.ConfirmUserPassword( username, password)
     except (Errors.MMBadUserError, Errors.MMBadPasswordError,
             Errors.MMNotAMemberError): 
 	return 0
 
-    token = `hash(list_name)`
+    token = listobj.MakeCookie()
     c = Cookie.Cookie()
     c[list_name] = token
     print c				# Output the cookie

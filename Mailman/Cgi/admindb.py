@@ -34,7 +34,7 @@ def isAuthenticated(mlist, password=None, SECRET="SECRET"):
             AddErrorMessage(doc, 'Error: Incorrect admin password.')
             return 0
 
-        token = `hash(list_name)`
+        token = list.MakeCookie()
         c = Cookie.Cookie()
         cookie_key = list_name + "-admin"
         c[cookie_key] = token
@@ -44,7 +44,7 @@ def isAuthenticated(mlist, password=None, SECRET="SECRET"):
     if os.environ.has_key('HTTP_COOKIE'):
         c = Cookie.Cookie( os.environ['HTTP_COOKIE'] )
         if c.has_key(list_name + "-admin"):
-	    if c[list_name + "-admin"].value == `hash(list_name)`:
+	    if list.CheckCookie(c[list_name + "-admin"].value):
 		return 1
 	    else:
 		AddErrorMessage(doc, "error decoding authorization cookie")
