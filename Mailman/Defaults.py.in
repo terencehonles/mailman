@@ -35,11 +35,12 @@ DELIVERED_BY_URL = '/images/mailman.jpg'
 
 		   # Many site-specific settings #
 
-DEFAULT_HOST_NAME = 'OVERRIDE.WITH.YOUR.MX.OR.HOST.NAME'
-SMTPHOST	  = 'localhost'
-DEFAULT_URL       = 'http://www.OVERRIDE.WITH.YOUR.HOST/mailman/'
-PUBLIC_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PUBLIC.ARCHIVE.URL/'
-PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
+DEFAULT_HOST_NAME = '@FQDN@'
+SMTPHOST	  = '@FQDN@'
+SMTPPORT          = 0                             # default from smtplib
+DEFAULT_URL       = 'http://@URL@/mailman/'
+PUBLIC_ARCHIVE_URL = '/pipermail'
+PRIVATE_ARCHIVE_URL = '/mailman/private'
 
 DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
 
@@ -63,11 +64,11 @@ ARCHIVE_TO_MBOX = 2
 DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
 
 # These variables control the use of an external archiver.  Normally if
-# archiving is turned on (see ARCHIVE_TO_MBOX about and the list's archive*
-# attributes) the internal Pipermail archiver is used.  This is the default if 
+# archiving is turned on (see ARCHIVE_TO_MBOX above and the list's archive*
+# attributes) the internal Pipermail archiver is used.  This is the default if
 # both of these variables are set to false.  When either is set, the value
 # should be a shell command string which will get passed to os.popen().  This
-# string can contain ${listname}s for dictionary interpolation.  The name of
+# string can contain %(listname)s for dictionary interpolation.  The name of
 # the list being archived will be substituted for this.
 #
 # Note that if you set one of these variables, you should set both of them
