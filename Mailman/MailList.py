@@ -772,6 +772,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	else:
 	    self.members.append(name)
             kind = ""
+        self.SetUserOption(name, mm_cfg.DisableMime,
+                           1 - self.mime_is_default_digest)
         self.LogMsg("subscribe", "%s: new%s %s",
                     self._internal_name, kind, name)
 	self.passwords[name] = password
