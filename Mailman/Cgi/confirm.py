@@ -648,7 +648,7 @@ def heldmsg_prompt(mlist, doc, cookie, id):
     doc.set_language(lang)
 
     subject = Utils.websafe(msgsubject)
-    reason = Utils.websafe(givenreason)
+    reason = Utils.websafe(_(givenreason))
     listname = mlist.real_name
     table.AddRow([_('''Your confirmation is required in order to cancel the
     posting of your message to the mailing list <em>%(listname)s</em>:
