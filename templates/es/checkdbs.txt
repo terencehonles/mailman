@@ -1,0 +1,8 @@
+La lista de distribución %(host_name)s@%(host_name)s tiene
+%(count)d peticione(s) pendientes para que usted las revise en la
+siguiente página:
+
+	%(adminDB)s
+	
+Por favor, atiendalas tan pronto como le sea posible. Se le enviará
+esta notificación todos los días. 

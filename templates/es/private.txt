@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>Autentificaci&oacute;n para los archivos privados de %(listname)s </title>
+</head>
+<body bgcolor="#ffffff">
+<FORM METHOD=POST ACTION="%(basepath)s/">
+  <TABLE WIDTH="100%%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+    <TR>
+      <TD COLSPAN="2" WIDTH="100%%" BGCOLOR="#99CCFF" ALIGN="CENTER">
+	<B><FONT COLOR="#000000" SIZE="+1">Autentificaci&oacute;n de archivos 
+	        privados de %(listname)s </FONT></B>
+      </TD>
+    </TR>
+    <tr>
+      <td COLSPAN="2"> <P>%(message)s </td>
+    <tr>
+    </tr>
+      <TD> <div ALIGN="Right">Direcci&oacute;n:  </div></TD>
+      <TD> <INPUT TYPE=TEXT NAME=username SIZE=30> </TD>
+    <tr>
+    </tr>
+      <TD> <div ALIGN="Right"> Clave: </div> </TD>
+      <TD> <INPUT TYPE=password NAME=password SIZE=30></TD>
+    <tr>
+    </tr>
+      <td></td>
+      <td> <INPUT TYPE=SUBMIT>
+      </td>
+    </tr>
+  </TABLE>
+</FORM>

@@ -1,0 +1,2 @@
+Puede reactivar sus subscripciones a traves de la página de gestión
+de subscriptores %(admin_url)s/members y cambiando sus opciones

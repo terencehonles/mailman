@@ -1,0 +1,24 @@
+%(listname)s -- confirmación de subscripción -- Petición %(cookie)s
+
+Se ha recibido una solicitud de subscripción de la dirección <%(email)s>,
+para la lista %(listaddr)s, %(remote)s. Para confirmar la petición, por favor, 
+envíe un mensaje de correo electrónico a %(requestaddr)s, puede optar por
+
+- mantener la el asunto tal y como está (el Re: adicional que se añade
+automáticamente al responder los mensajes, se procesará perfectamente)
+
+- o incluir la siguiente línea - Y SOLO LA SIGUIENTE LÍNEA - en el cuerpo
+del mensaje:
+
+confirm %(cookie)s
+
+(Responder a este mensaje, debería funcionar con la mayoria de los programas
+de correo electrónico, ya que suelen dejar el asunto de la forma adecuada)
+
+Si no desea subscribirse a esta lista, por favor, ignore este mensaje.
+
+Si tiene alguna pregunta sobre este mensaje, póngase en contacto con 
+la siguiente dirección: 
+
+%(listadmin)s
+

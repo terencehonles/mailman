@@ -1,0 +1,37 @@
+Bienvenido a la lista de distribución %(real_name)s@%(host_name)s
+%(welcome)s
+
+Para mandar un mensaje a esta lista, envíelo a:
+
+   %(emailaddr)s
+
+Puede obtener información general sobre la lista en:
+
+   %(listinfo_url)s
+
+Si alguna vez desea anular su subscripción o cambiar las opciones
+de la misma (p.ej.: cambiarse a modo resumido o no, cambiar su clave,
+etc.), consulte la página de su subscripción en:
+
+  %(optionsurl)s
+%(umbrella)s
+
+Tambien puede realizar estos cambios por medio de correo electrónico,
+enviando un mensaje a:
+
+  %(real_name)s-request@%(host_name)s
+
+indicando la palabra "help" en el asunto (subject) o en el cuerpo del
+mensaje. Se le devolverá un mensaje con instrucciones.
+
+Tiene que saber su clave para poder cambiar sus opciones (incluido
+el cambio de la propia clave) o para anular su subscripción. Su clave es:
+
+  %(password)s
+
+Si se le olvida la clave, no se preocupe, todos los meses se le enviará
+un recordatorio con todas las claves de las listas a las que está
+subscrito en %(host_name)s y con información de como cancelar las
+subscripciones o cambiar sus opciones. Tambien existe un botón en la
+página de su subscripción con el que solicitar que se le envie su clave
+a su dirección de correo electrónico.

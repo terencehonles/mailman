@@ -1,0 +1,110 @@
+Ayuda de la lista de distribución %(listname)s:
+
+Esta es la ayuda con las ordenes que se pueden enviar por correo
+electrónico en la versión %(version)s del gestor de listas 'Mailman'.
+Seguidamente se describen las ordenes que se pueden enviar para 
+obtener información y controlar su subscripción en las listas 
+gestiondas por 'Mailman'. Las ordenes pueden enviarse en el asunto
+(subject) o en el cuerpo del mensaje.
+
+Observe que muchas de las cosas siguientes se pueden realizar tambien
+a través de WEB en:
+
+    %(listinfo_url)s
+
+En particular, puede usar este sitio WEB para hacer que se le envie
+su clave a su dirección de correo electrónico.
+
+Las ordenes especificas a las listas (subscribe, who, etc) se deben 
+enviar a la dirección *-request para la lista concreta. Por ejemplo,
+para la lista %(listname)s se usaria %(requestaddr)s.
+
+En la descripción de las ordenes se utilizan las siguientes convenciones:
+Las palabras indicadas entre ángulos '<>' son elementos IMPRESCINDIBLES,
+mientras que las palabras indicadas entre corchetes '[]' son elementos
+OPCIONALES. No incluya los ángulos o los corchetes cuando utilice las 
+ordenes.
+
+Ordenes válidas:
+
+
+    subscribe [clave] [resumen] [address=<dirección-electrónica>] 
+        Le subscribe a la lista de distribución. La clave debe 
+        indicarse para cambiar las opciones o darse de baja. Cuando 
+        está usted subscrito a la lista recibirá periódicamente un 
+        recordatorio de su clave. 'resumen' puede ser uno de los dos 
+        valores siguientes: 'digest' o 'nodigest' (no envie las
+        comillas, por favor).
+        Si desea subscribirse con una dirección distinta a la que está
+        usando para enviar la petición, puede indicarlo con 
+        "address=<dirección-electrónica>" (no ponga los ángulos ni las
+        comillas).
+
+    unsubscribe <clave> [dirección-electronica]
+        Le da de baja de la lista de distribución. La clave debe 
+        coincidir con la que indicó cuando se subscribió. Si se está 
+        dando de baja desde una direccion distinta a aquella con la 
+        que está subscrito puede indicarlo en el campo 
+        'dirección-electrónica'.
+
+    who
+        Envia una lista de subscriptores.
+
+    info
+        Envia la información de bienvenida de la lista.
+
+    lists
+        Le envía la relación de las listas gestionadas en el servidor.
+
+    help
+        Como ya habrá descubierto, le envia este mensaje.
+    
+    set <opcion> <on|off> <clave>
+        Activa o desactiva las opciones de la lista. Las opciones 
+        válidas son:
+        
+        ack
+            Active esta opción para recibir una mensaje de 
+            confirmación cuando envíe mensajes a la lista.
+            
+        digest
+            Active esta opción si desea recibir los mensajes enviados a
+            la lista en un unico mensaje de correo electrónico de 
+            forma periódica.
+            
+        plain
+            Hace que los mensajes generados por la opción anterior
+            (digest) se le envíen como texto plano en lugar de 
+            formato MIME.
+
+        nomail
+            Cuando está activa, no se le enviaran los mensajes de la 
+            lista. Esta opcion es muy útil en periodos vacacionales.
+
+        notmetoo
+            Active esta opción si NO desea recibir los mensajes que
+            usted envíe a la lista. No funciona cuando la opción 
+            digest está activa.
+        
+        hide
+            Oculta su dirección de la lista de subscriptores.
+
+    options
+        Muestra los valores de las distintas opciones de su 
+        subscripción.
+
+    password <clave antigua> <clave nueva>
+        Cambia su clave de la lista.
+    
+    end o --
+        Indica el final de las ordenes (muy util si su programa
+        incluye una firma automanticamente, le ahorrara un montón 
+        de basura).
+
+Las ordenes se deben enviar a %(requestaddr)s
+
+Las preguntas y comentarios para el responsable de la lista se deben 
+enviar a 
+
+    %(adminaddr)s
+

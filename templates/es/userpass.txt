@@ -1,0 +1,23 @@
+Esto es un recordatorio de como cancelar o cambiar la configuración para
+la dirección "%(user)s" en la lista de distribución %(listname)s.   Esta
+clave es necesaria para dichas acciones.
+SU CLAVE EN LA LISTA %(listname)s ES:
+
+    %(password)s
+
+Para efectuar cambios en su subscripción, utilice la clave en su página
+de opciones:
+
+    %(options_url)s
+
+Tambien puede realizar estos cambios por correo electrónico, enviando
+un mensaje a:
+
+    %(requestaddr)s
+
+con el texto "help" en el asunto (subject) o en el cuerpo del mensaje,
+y se le enviará un mensaje con instrucciones.
+
+Si tiene alguna pregunta o algun comentario, por favor, envielo a:
+
+%(adminaddr)s
