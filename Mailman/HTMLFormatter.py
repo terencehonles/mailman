@@ -105,13 +105,13 @@ class HTMLFormatter:
             checked = ' CHECKED'
         else:
             checked = ''
-        name = {mm_cfg.DontReceiveOwnPosts : 'dontreceive',
-                mm_cfg.DisableDelivery     : 'disablemail',
-                mm_cfg.DisableMime         : 'mime',
-                mm_cfg.AcknowledgePosts    : 'ackposts',
-                mm_cfg.Digests             : 'digest',
-                mm_cfg.ConcealSubscription : 'conceal',
-                mm_cfg.SuppressPasswordReminder : 'passwdremind',
+        name = {mm_cfg.DontReceiveOwnPosts      : 'dontreceive',
+                mm_cfg.DisableDelivery          : 'disablemail',
+                mm_cfg.DisableMime              : 'mime',
+                mm_cfg.AcknowledgePosts         : 'ackposts',
+                mm_cfg.Digests                  : 'digest',
+                mm_cfg.ConcealSubscription      : 'conceal',
+                mm_cfg.SuppressPasswordReminder : 'remind',
                 }[type]
         return '<input type=radio name="%s" value="%d"%s>' % (
             name, value, checked)
@@ -125,22 +125,20 @@ class HTMLFormatter:
 
     def FormatDisabledNotice(self, user):
         if self.GetUserOption(user, mm_cfg.DisableDelivery):
-            text = Center(Header(3, _(
-                "Note - your list delivery is currently disabled."))).Format()
-            text = text + "\n"
-            text = text + _("You may have set non-delivery deliberately, or"
-                            " it may have been triggered by bounces from your"
-                            " delivery address.  In either case, to reenable "
-                            " delivery, change the ")
-            text = text + Link('#disable',
-                               _("Disable mail delivery")).Format()
-            text = text + _(" option.  Contact ")
-            text = text + Link('mailto:' + self.GetAdminEmail(),
-                               _("your list administrator")).Format()
-            text = text + _(" if you have questions.")
-            return text
+            note = FontSize('+1', _(
+                'Note: your list delivery is currently disabled.')).Format()
+            link = Link('#disable', _('Mail delivery')).Format()
+            mailto = Link('mailto:' + self.GetOwnerEmail(),
+                          _('the list administrator')).Format()
+            return _('''<p>%(note)s
+
+            <p>You may have disabled list delivery intentionally,
+            or it may have been triggered by bounces from your email
+            address.  In either case, to re-enable delivery, change the
+            %(link)s option below.  Contact %(mailto)s if you have any
+            questions or need assistance.''')
         else:
-            return ""
+            return ''
 
     def FormatUmbrellaNotice(self, user, type):
         addr = self.GetMemberAdminEmail(user)
