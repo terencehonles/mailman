@@ -19,15 +19,16 @@
 
 
 import os
-import string
 import time
-import types
-import Crypt
-import Errors
-import Utils
-import Cookie
+from types import StringType, ListType
+import md5
 from urlparse import urlparse
-import mm_cfg
+
+from Mailman import Crypt
+from Mailman import Errors
+from Mailman import Utils
+from Mailman import Cookie
+from Mailman import mm_cfg
 
 # TBD: is this the best location for the site password?
 SITE_PW_FILE = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
@@ -59,7 +60,7 @@ class SecurityManager:
     def ValidAdminPassword(self, pw):
 	if self.CheckSiteAdminPassword(pw):
             return 1
-	return type(pw) == types.StringType and \
+	return type(pw) == StringType and \
                Crypt.crypt(pw, self.password) == self.password
 
     def ConfirmAdminPassword(self, pw):
@@ -84,15 +85,14 @@ class SecurityManager:
 
     def MakeCookie(self, key):
         # Make sure we have the necessary ingredients for our cookie
-        client_ip = os.environ.get('REMOTE_ADDR') or '0.0.0.0'
-        issued = int(time.time())
-        expires = issued + mm_cfg.ADMIN_COOKIE_LIFE
+        issued = time.time()
+        expires = int(issued) + mm_cfg.ADMIN_COOKIE_LIFE
         # ... including the secret ingredient :)
         secret = self.password
-        mac = hash(secret + client_ip + `issued` + `expires`)
+        mac = md5.new(secret + `issued` + `expires`).digest()
         # Mix all ingredients gently together,
         c = Cookie.Cookie()
-        c[key] = [client_ip, issued, expires, mac]
+        c[key] = [issued, expires, mac]
         # place in oven,
         path = urlparse(self.web_page_url)[2] # '/mailman'
         c[key]['path'] = path
@@ -123,18 +123,16 @@ class SecurityManager:
         if not c.has_key(key):
             return 0
         cookie = c[key].value
-        if (type(cookie) <> type([]) or
-            len(cookie) <> 4):
+        if type(cookie) <> ListType or len(cookie) <> 3:
             raise Errors.MMInvalidCookieError
-        client_ip = os.environ.get('REMOTE_ADDR') or '0.0.0.0'
         now = time.time()
-        [for_ip, issued, expires, received_mac] = cookie
-        if (for_ip <> client_ip or now < issued):
+        [issued, expires, received_mac] = cookie
+        if now < issued:
             raise Errors.MMInvalidCookieError
         if now > expires:
             raise Errors.MMExpiredCookieError
         secret = self.password
-        mac = hash(secret + client_ip + `issued` + `expires`)
+        mac = md5.new(secret + `issued` + `expires`).digest()
         if mac <> received_mac:
             raise Errors.MMInvalidCookieError
         return 1
