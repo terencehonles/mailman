@@ -130,6 +130,16 @@ class CommandRunner(Runner):
                 # Just pass the message off the command handler
                 mlist.ParseMailCommands(msg, msgdata)
                 return
+            elif msgdata.get('tojoin'):
+                del msg['subject']
+                msg['Subject'] = 'join'
+                msg.set_payload('')
+                mlist.ParseMailCommands(msg, msgdata)
+            elif msgdata.get('toleave'):
+                del msg['subject']
+                msg['Subject'] = 'leave'
+                msg.set_payload('')
+                mlist.ParseMailCommands(msg, msgdata)
         finally:
             mlist.Save()
             mlist.Unlock()
