@@ -20,6 +20,9 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
 
+# Intra-package import
+from Mailman.Gui.NonDigest import handle_form
+
 
 
 class Digest:
@@ -126,3 +129,7 @@ class Digest:
 ##                ])
 
         return info
+
+    def HandleForm(self, mlist, cgidata, doc):
+        for attr in ('digest_header', 'digest_footer'):
+            handle_form(mlist, attr, cgidata, doc, 0)

@@ -21,6 +21,8 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
 
+BADJOINER = '</code>, <code>'
+
 
 
 class NonDigest:
@@ -103,3 +105,59 @@ class NonDigest:
                 ])
 
         return info
+
+    def HandleForm(self, mlist, cgidata, doc):
+        for attr in ('msg_header', 'msg_footer'):
+            handle_form(mlist, attr, cgidata, doc, 1)
+
+
+
+# This is code that can be shared between the digest and non-digest headers
+# and footers.
+def handle_form(mlist, attr, cgidata, doc, allow_personalizations):
+    newval = cgidata.getvalue(attr)
+    # Are we converted to using $-strings?
+    dollarp = getattr(mlist, 'use_dollar_strings', 0)
+    if dollarp:
+        ids = Utils.dollar_identifiers(newval)
+    else:
+        # %-strings
+        ids = Utils.percent_identifiers(newval)
+    # Here's the list of allowable interpolations
+    allows = ['real_name', 'list_name', 'host_name', 'web_page_url',
+              'description', 'info', 'cgiext', '_internal_name']
+    if allow_personalizations and mlist.personalize:
+        allows.extend(['user_address', 'user_delivered_to',
+                       'user_password', 'user_name',
+                       'user_optionsurl'])
+    for allowed in allows:
+        if ids.has_key(allowed):
+            del ids[allowed]
+    if ids:
+        # What's left are not allowed
+        badkeys = ids.keys()
+        badkeys.sort()
+        bad = BADJOINER.join(badkeys)
+        doc.addError(_(
+            """The following illegal interpolation variables were
+            found in the <code>%(attr)s</code> string:
+            <code>%(bad)s</code>
+            <p>Your changes will be discarded.  Please correct the
+            mistakes and try again."""),
+                     tag=_('Error: '))
+        return
+    # Now if we're still using %-strings, do a roundtrip conversion
+    # and see if the converted value is the same as the new value.  If
+    # not, then they probably left off a trailing `s'.  We'll warn
+    # them and use the corrected string.
+    if not dollarp:
+        fixed = Utils.to_percent(Utils.to_dollar(newval))
+        if fixed <> newval:
+            doc.addError(_(
+                """Your <code>%(attr)s</code> string appeared to have
+                some correctable problems in its new value.  The fixed
+                value will be used instead.  Please double check that
+                this is what you intended.
+                """))
+            newval = fixed
+    setattr(mlist, attr, newval)
