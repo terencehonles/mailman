@@ -641,43 +641,49 @@ Subject: Re: [XTEST] About Mailman...
 
     def test_reply_to_list(self):
         eq = self.assertEqual
-        self._mlist.reply_goes_to_list = 1
+        mlist = self._mlist
+        mlist.reply_goes_to_list = 1
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 
 """, Message.Message)
-        CookHeaders.process(self._mlist, msg, {})
+        CookHeaders.process(mlist, msg, {})
         eq(msg['reply-to'], '_xtest@dom.ain')
-        eq(msg['x-reply-to'], None)
+        eq(msg.get_all('reply-to'), ['_xtest@dom.ain'])
 
-    def test_reply_to_list_with_xreplyto(self):
+    def test_reply_to_list_with_strip(self):
         eq = self.assertEqual
-        self._mlist.reply_goes_to_list = 1
+        mlist = self._mlist
+        mlist.reply_goes_to_list = 1
+        mlist.first_strip_reply_to = 1
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 Reply-To: bperson@dom.ain
 
 """, Message.Message)
-        CookHeaders.process(self._mlist, msg, {})
+        CookHeaders.process(mlist, msg, {})
         eq(msg['reply-to'], '_xtest@dom.ain')
-        eq(msg['x-reply-to'], 'bperson@dom.ain')
+        eq(msg.get_all('reply-to'), ['_xtest@dom.ain'])
 
     def test_reply_to_explicit(self):
         eq = self.assertEqual
-        self._mlist.reply_goes_to_list = 2
-        self._mlist.reply_to_address = 'mlist@dom.ain'
+        mlist = self._mlist
+        mlist.reply_goes_to_list = 2
+        mlist.reply_to_address = 'mlist@dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 
 """, Message.Message)
-        CookHeaders.process(self._mlist, msg, {})
+        CookHeaders.process(mlist, msg, {})
         eq(msg['reply-to'], 'mlist@dom.ain')
-        eq(msg['x-reply-to'], None)
+        eq(msg.get_all('reply-to'), ['mlist@dom.ain'])
 
-    def test_reply_to_list_with_xreplyto2(self):
+    def test_reply_to_explicit_with_strip(self):
         eq = self.assertEqual
-        self._mlist.reply_goes_to_list = 2
-        self._mlist.reply_to_address = 'mlist@dom.ain'
+        mlist = self._mlist
+        mlist.reply_goes_to_list = 2
+        mlist.first_strip_reply_to = 1
+        mlist.reply_to_address = 'mlist@dom.ain'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 Reply-To: bperson@dom.ain
@@ -685,21 +691,49 @@ Reply-To: bperson@dom.ain
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
         eq(msg['reply-to'], 'mlist@dom.ain')
-        eq(msg['x-reply-to'], 'bperson@dom.ain')
+        eq(msg.get_all('reply-to'), ['mlist@dom.ain'])
 
     def test_reply_to_explicit_with_bad_address(self):
         eq = self.assertEqual
-        self._mlist.reply_goes_to_list = 2
+        mlist = self._mlist
+        mlist.reply_goes_to_list = 2
+        mlist.first_strip_reply_to = 0
         # A bad address that is missing the domain part
-        self._mlist.reply_to_address = 'mlist'
+        mlist.reply_to_address = 'mlist'
         msg = email.message_from_string("""\
 From: aperson@dom.ain
 Reply-To: bperson@dom.ain
 
 """, Message.Message)
-        CookHeaders.process(self._mlist, msg, {})
+        CookHeaders.process(mlist, msg, {})
         eq(msg['reply-to'], 'bperson@dom.ain')
-        eq(msg['x-reply-to'], None)
+
+    def test_reply_to_extends_to_list(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.reply_goes_to_list = 1
+        mlist.first_strip_reply_to = 0
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Reply-To: bperson@dom.ain
+
+""", Message.Message)
+        CookHeaders.process(mlist, msg, {})
+        eq(msg['reply-to'], '_xtest@dom.ain, bperson@dom.ain')
+
+    def test_reply_to_extends_to_explicit(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+        mlist.reply_goes_to_list = 2
+        mlist.first_strip_reply_to = 0
+        mlist.reply_to_address = 'mlist@dom.ain'
+        msg = email.message_from_string("""\
+From: aperson@dom.ain
+Reply-To: bperson@dom.ain
+
+""", Message.Message)
+        CookHeaders.process(mlist, msg, {})
+        eq(msg['reply-to'], 'mlist@dom.ain, bperson@dom.ain')
 
     def test_list_headers_nolist(self):
         eq = self.assertEqual
@@ -1128,95 +1162,6 @@ Subject: unsubscribe
 
 """, Message.Message)
         self.assertRaises(Hold.Administrivia, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_forbidden_posters(self):
-        self._mlist.forbidden_posters = ['aperson@dom.ain']
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-Subject: The forbidden donut
-
-""", Message.Message)
-        self.assertRaises(Hold.ForbiddenPoster, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_moderated_no_posters(self):
-        self._mlist.moderated = 1
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-Subject: An unapproved message
-
-""", Message.Message)
-        self.assertRaises(Hold.ModeratedPost, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_moderated_posters(self):
-        self._mlist.moderated = 1
-        self._mlist.posters = ['aperson@dom.ain']
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
-Subject: An unapproved message
-
-""", Message.Message)
-        rtn = Hold.process(self._mlist, msg, {})
-        self.assertEqual(rtn, None)
-
-    def test_member_posting_only(self):
-        self._mlist.member_posting_only = 1
-        msg = email.message_from_string("""\
-From: bperson@dom.ain
-To: _xtest@dom.ain
-Subject: An unapproved message
-
-""", Message.Message)
-        self.assertRaises(Hold.NonMemberPost, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_member_posting_only_ok_member(self):
-        self._mlist.addNewMember('aperson@dom.ain')
-        self._mlist.member_posting_only = 1
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
-Subject: An unapproved message
-
-""", Message.Message)
-        rtn = Hold.process(self._mlist, msg, {})
-        self.assertEqual(rtn, None)
-
-    def test_member_posting_only_ok_poster(self):
-        self._mlist.member_posting_only = 1
-        self._mlist.posters = ['aperson@dom.ain']
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
-Subject: An unapproved message
-
-""", Message.Message)
-        rtn = Hold.process(self._mlist, msg, {})
-        self.assertEqual(rtn, None)
-
-    def test_posters_ok(self):
-        self._mlist.posters = ['aperson@dom.ain']
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
-Subject: An unapproved message
-
-""", Message.Message)
-        rtn = Hold.process(self._mlist, msg, {})
-        self.assertEqual(rtn, None)
-
-    def test_posters(self):
-        self._mlist.posters = ['bperson@dom.ain']
-        msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
-Subject: An unapproved message
-
-""", Message.Message)
-        self.assertRaises(Hold.NotExplicitlyAllowed, Hold.process,
                           self._mlist, msg, {})
 
     def test_max_recips(self):
