@@ -28,7 +28,6 @@ import errno
 import re
 from types import StringType, IntType, DictType
 
-import paths
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
