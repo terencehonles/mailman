@@ -86,7 +86,11 @@ class ContentFilter(GUIBase):
              _("""Use this option to remove each message attachment that does
              not have a matching content type.  Requirements and formats are
              exactly like <a href="?VARHELP=contentfilter/filter_mime_types"
-             >filter_mime_types</a>.""")),
+             >filter_mime_types</a>.
+
+             <p><b>Note:</b> if you add entries to this list but don't add
+             <tt>multipart</tt> to this list, any messages with attachments
+             will be rejected by the pass filter.""")),
 
             ('convert_html_to_plaintext',
              mm_cfg.Radio, (_('No'), _('Yes')), 0,
