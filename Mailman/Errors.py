@@ -17,9 +17,6 @@
 
 """Shared mailman errors and messages."""
 
-import Mailman.i18n
-
-
 
 # exceptions for problems related to opening a list
 class MMListError(Exception): pass
@@ -103,6 +100,9 @@ class LostHeldMessage(MailmanError):
 
 
 
+def _(s):
+    return s
+
 # Exceptions for the Handler subsystem
 class HandlerError(MailmanError):
     """Base class for all handler errors."""
@@ -111,13 +111,13 @@ class HoldMessage(HandlerError):
     """Base class for all message-being-held short circuits."""
 
     # funky spelling is necessary to break import loops
-    reason = Mailman.i18n._('For some unknown reason')
+    reason = _('For some unknown reason')
 
     def reason_notice(self):
         return self.reason
 
     # funky spelling is necessary to break import loops
-    rejection = Mailman.i18n._('Your message was rejected')
+    rejection = _('Your message was rejected')
 
     def rejection_notice(self, mlist):
         return self.rejection
@@ -140,7 +140,7 @@ class RejectMessage(HandlerError):
     """The message will be bounced back to the sender"""
     def __init__(self, notice=None):
         if notice is None:
-            notice = Mailman.i18n._('Your message was rejected')
+            notice = _('Your message was rejected')
         self.__notice = notice
 
     def notice(self):
