@@ -114,11 +114,13 @@ def process_request(doc, cgidata, mlist):
         delarchives = 0
 
     # Removing a list is limited to the list-creator (a.k.a. list-destroyer),
-    # the list-admin, or the site-admin.
-    if not mlist.WebAuthenticate((mm_cfg.AuthCreator,
-                                  mm_cfg.AuthListAdmin,
-                                  mm_cfg.AuthSiteAdmin),
-                                 password):
+    # the list-admin, or the site-admin.  Don't use WebAuthenticate here
+    # because we want to be sure the actual typed password is valid, not some
+    # password sitting in a cookie.
+    if mlist.Authenticate((mm_cfg.AuthCreator,
+                           mm_cfg.AuthListAdmin,
+                           mm_cfg.AuthSiteAdmin),
+                          password) == mm_cfg.UnAuthorized:
         request_deletion(
             doc, mlist,
             _('You are not authorized to delete this mailing list'))
