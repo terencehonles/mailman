@@ -4,20 +4,19 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
 """Mixin class with message delivery routines."""
 
-import os
 from email.MIMEText import MIMEText
 from email.MIMEMessage import MIMEMessage
 
@@ -34,11 +33,11 @@ class Deliverer:
     def SendSubscribeAck(self, name, password, digest, text=''):
         pluser = self.getMemberLanguage(name)
         if not self.send_welcome_msg:
-	    return
-	if self.welcome_msg:
-	    welcome = Utils.wrap(self.welcome_msg) + '\n'
-	else:
-	    welcome = ''
+            return
+        if self.welcome_msg:
+            welcome = Utils.wrap(self.welcome_msg) + '\n'
+        else:
+            welcome = ''
         if self.umbrella_list:
             addr = self.GetMemberAdminEmail(name)
             umbrella = Utils.wrap(_('''\
@@ -59,10 +58,10 @@ your membership administrative address, %(addr)s.'''))
              'optionsurl'  : self.GetOptionsURL(name, absolute=1),
              'password'    : password,
              }, lang=pluser, mlist=self)
-	if digest:
-	    digmode = _(' (Digest mode)')
-	else:
-	    digmode = ''
+        if digest:
+            digmode = _(' (Digest mode)')
+        else:
+            digmode = ''
         realname = self.real_name
         msg = Message.UserNotification(
             self.GetMemberAdminEmail(name), self.GetRequestEmail(),
