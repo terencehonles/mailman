@@ -766,10 +766,10 @@ from: .*@uplinkpro.com
 # 2 - Reply-To: set to an explicit value (reply_to_address)
 DEFAULT_REPLY_GOES_TO_LIST = 0
 
-# Before munging Reply-To: Mailman can be configured to strip any existing
-# Reply-To: header first, or simply extend any existing Reply-To: with one
-# based on the above setting.  This is a boolean variable.
-DEFAULT_FIRST_STRIP_REPLY_TO = 1
+# Mailman can be configured to strip any existing Reply-To: header, or simply
+# extend any existing Reply-To: with one based on the above setting.  This is
+# a boolean variable.
+DEFAULT_FIRST_STRIP_REPLY_TO = 0
 
 # SUBSCRIBE POLICY
 # 0 - open list (only when ALLOW_OPEN_SUBSCRIBE is set to 1) **
