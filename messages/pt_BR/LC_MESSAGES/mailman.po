@@ -20,7 +20,7 @@ msgstr "tamanho não disponível"
 
 #: Mailman/Archiver/HyperArch.py:118
 msgid " %(size)i bytes "
-msgstr "% (size)i bytes "
+msgstr " %(size)i bytes "
 
 #: Mailman/Archiver/HyperArch.py:249 Mailman/Archiver/HyperArch.py:405
 #: Mailman/Archiver/HyperArch.py:963 Mailman/Archiver/HyperArch.py:1127
@@ -177,7 +177,7 @@ msgstr "Conservando estado de arquivos em "
 
 #: Mailman/Archiver/pipermail.py:419
 msgid "Updating index files for archive [%(archive)s]"
-msgstr "Atualizando indice de arquivos para o arquivo [%(archive)s]"
+msgstr "Atualizando indices para o arquivo [%(archive)s]"
 
 #: Mailman/Archiver/pipermail.py:452
 msgid "  Thread"
@@ -1462,7 +1462,7 @@ msgstr ""
 
 #: Mailman/Cgi/confirm.py:343
 msgid "You are already a member of this mailing list!"
-msgstr "VOce já é um membro desta lista de discussão!"
+msgstr "Você já é membro desta lista de discussão!"
 
 #: Mailman/Cgi/confirm.py:350
 msgid "Subscription request confirmed"
@@ -1505,7 +1505,7 @@ msgid ""
 "main\n"
 "            information page</a>."
 msgstr ""
-"        Você se descadastrou com sucesso da lista de discussào %(listname)"
+"        Você se descadastrou com sucesso da lista de discussào %(listname)s"
 "s. \n"
 "        Você pode agora <a href=\"%(listinfourl)s\">visitar a página de "
 "informações sobre a lista</a>."
@@ -1874,11 +1874,11 @@ msgstr "Você não tem autorização para criar novas listas de discussão"
 
 #: Mailman/Cgi/create.py:181 bin/newlist:166
 msgid "Bad owner email address: %(s)s"
-msgstr "Endereço de e-mail do dono incorreto: %(s)s"
+msgstr "Endereço de email incorreto: %(s)s"
 
 #: Mailman/Cgi/create.py:189 bin/newlist:164
 msgid "Illegal list name: %(s)s"
-msgstr "Nome de lista ilegal: %(s)s"
+msgstr "Nome de lista inválido: %(s)s"
 
 #: Mailman/Cgi/create.py:194
 msgid ""
@@ -3177,7 +3177,7 @@ msgstr "    digesto mime"
 
 #: Mailman/Commands/cmd_set.py:164
 msgid "    digest off"
-msgstr "    digesto desligado"
+msgstr "    digest inativo"
 
 #: Mailman/Commands/cmd_set.py:169
 msgid "delivery on"
@@ -3202,7 +3202,7 @@ msgstr "devido a mensagens retornadas"
 
 #: Mailman/Commands/cmd_set.py:186
 msgid "    %(status)s (%(how)s on %(date)s)"
-msgstr "    %(status)s %(how)s em %(date)s)"
+msgstr "    %(status)s (%(how)s em %(date)s)"
 
 #: Mailman/Commands/cmd_set.py:192
 msgid "    myposts %(onoff)s"
@@ -6730,7 +6730,7 @@ msgstr ""
 "        <p>Você pode ter que desativar a entrega desta lista "
 "intencionalmente,\n"
 "        ou pode ser bombardeado por bounces de seu endereço de email.\n"
-"        Em todo caso, para reativar a entrega, modifique a opção de %(link)"
+"        Em todo caso, para reativar a entrega, modifique a opção de %(link)s"
 "s\n"
 "        abaixo. Contacte %(mailto)s se tiver quaisquer questões ou precisar\n"
 "        de assistência."
@@ -7251,7 +7251,7 @@ msgstr "Fim da "
 
 #: Mailman/ListAdmin.py:307
 msgid "Posting of your message titled \"%(subject)s\""
-msgstr "Postagem de sua mensagem com o título \"%(subject)s\""
+msgstr "Envio da mensagem intitulada \"%(subject)s\""
 
 #: Mailman/ListAdmin.py:346
 msgid "Forward of moderated message"
@@ -7376,7 +7376,8 @@ msgstr "verificando o dono de %(dbfile)s"
 
 #: Mailman/MTA/Postfix.py:336
 msgid "%(dbfile)s owned by %(owner)s (must be owned by %(user)s"
-msgstr "O %(dbfile)s que tem como dono %(owner)s(deve ter como dono %(user)s"
+msgstr ""
+"%(dbfile)s tem como dono %(owner)s (deveria ser %(user)s)"
 
 #: Mailman/MailList.py:697
 msgid "You have been invited to join the %(listname)s mailing list"
@@ -8119,7 +8120,7 @@ msgstr "    verificando gid e modo de %(path)s"
 #: bin/check_perms:97
 msgid "%(path)s bad group (has: %(groupname)s, expected %(MAILMAN_GROUP)s)"
 msgstr ""
-"%(path)s gid incorrete (tem: %(groupname)s, esperado %(MAILMAN_GROUP)s)"
+"grupo inválido para %(path)s (encontrado: %(groupname)s, esperado %(MAILMAN_GROUP)s)"
 
 #: bin/check_perms:120
 msgid "directory permissions must be %(octperms)s: %(path)s"
@@ -9746,8 +9747,8 @@ msgid ""
 msgstr ""
 "Executando um qrunners ou mais, uma só vez ou repetidamente.\n"
 "\n"
-"Cada classe de execução especificada é executada no método round-robin. Em \n"
-"outras palavras, o primeiro runner nomeado é executado para consumir todos "
+"Cada classe especificada é executada no método round-robin. Em \n"
+"outras palavras, o primeiro qrunner nomeado é executado para consumir todos "
 "os \n"
 "arquivos atuais em seu diretóri. Quando este qrunner é concluído, o "
 "próximo \n"
@@ -9756,7 +9757,7 @@ msgstr ""
 "diante. O número de interações totais pode ser pego através da linha de \n"
 "comando.\n"
 "\n"
-"Uso: %(PROGRAM)s [opções}\n"
+"Uso: %(PROGRAM)s [opções]\n"
 "\n"
 "Opções:\n"
 "\n"
@@ -10552,7 +10553,7 @@ msgid ""
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
-"Downgrade detectado, da versão %(hexlversion)s para a versão %(hextversion)"
+"Downgrade detectado, da versão %(hexlversion)s para a versão %(hextversion)s"
 "s.\n"
 "Isto provavelmente não é seguro.\n"
 "Saindo."
@@ -10878,7 +10879,7 @@ msgstr "Executando %(module)s.%(callable)s()..."
 
 #: bin/withlist:270
 msgid "The variable `m' is the %(listname)s MailList instance"
-msgstr "A variável 'm' é a instância da lista de discussão %(listname)s"
+msgstr "A variável `m' é a instância da lista de discussão %(listname)s"
 
 #: cron/bumpdigests:19
 msgid ""
