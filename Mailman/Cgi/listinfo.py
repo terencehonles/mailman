@@ -122,8 +122,8 @@ def FormatListinfoOverview(error=None):
                        % ((error and "right ") or ""))
                       +
                       '<p> List administrators, you can visit ',
-                      Link(os.path.join('../' * Utils.GetNestingLevel(),
-	                   'admin/'), "the list admin overview page"),
+                      Link("%sadmin/" % ('../' * Utils.GetNestingLevel()),
+                           "the list admin overview page"),
                       " to find the management interface for your list."
                       "<p>(Send questions or comments to ",
                       Link("mailto:%s" % mm_cfg.MAILMAN_OWNER,
