@@ -58,7 +58,7 @@ all:
 install:
 	for f in $(TEMPLATES); \
 	do \
-	    mv -f $(TEMPLATEDIR)/$$f $(TEMPLATEDIR)/$$f.prev; \
+	    mv -f $(TEMPLATEDIR)/$$f $(TEMPLATEDIR)/$$f.prev || /bin/true; \
 	    $(INSTALL) -m $(FILEMODE) $$f $(TEMPLATEDIR); \
 	done
 
