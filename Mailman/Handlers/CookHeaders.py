@@ -118,27 +118,23 @@ def process(mlist, msg, msgdata):
             msg['Reply-To'] = COMMASPACE.join(
                 [formataddr(pair) for pair in new])
         # The To field normally contains the list posting address.  However
-        # when messages are personalized, that header will get overwritten
-        # with the address of the recipient.  We need to get the posting
-        # address in one of the recipient headers or they won't be able to
-        # reply back to the list.  It's possible the posting address was
-        # munged into the Reply-To header, but if not, we'll add it to a Cc
-        # header.  BAW: should we force it into a Reply-To header in the above
-        # code?
-        #
-        # BAW: This turned out to be very controversial for MM2.1b4, so we're
-        # disabling this for the final release.  We can re-address this for
-        # future versions.
-##        if mlist.personalize and mlist.reply_goes_to_list <> 1:
-##            # Watch out for existing Cc headers, merge, and remove dups.  Note
-##            # that RFC 2822 says only zero or one Cc header is allowed.
-##            new = []
-##            d = {}
-##            for pair in getaddresses(msg.get_all('cc', [])):
-##                add(pair)
-##            add((mlist.description, mlist.GetListEmail()))
-##            del msg['Cc']
-##            msg['Cc'] = COMMASPACE.join([formataddr(pair) for pair in new])
+        # when messages are fully personalized, that header will get
+        # overwritten with the address of the recipient.  We need to get the
+        # posting address in one of the recipient headers or they won't be
+        # able to reply back to the list.  It's possible the posting address
+        # was munged into the Reply-To header, but if not, we'll add it to a
+        # Cc header.  BAW: should we force it into a Reply-To header in the
+        # above code?
+        if mlist.personalize == 2 and mlist.reply_goes_to_list <> 1:
+            # Watch out for existing Cc headers, merge, and remove dups.  Note
+            # that RFC 2822 says only zero or one Cc header is allowed.
+            new = []
+            d = {}
+            for pair in getaddresses(msg.get_all('cc', [])):
+                add(pair)
+            add((mlist.description, mlist.GetListEmail()))
+            del msg['Cc']
+            msg['Cc'] = COMMASPACE.join([formataddr(pair) for pair in new])
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
     # if the message is being crafted for a specific list (e.g. not for the
     # password reminders).
