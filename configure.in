@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1418 $)
+AC_REVISION($Revision: 1441 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -343,6 +343,7 @@ rm -f conftest.out conftest.py
 
 # Checks for libraries.
 AC_CHECK_FUNCS(strerror)
+AC_CHECK_FUNCS(setregid)
 
 # Checks for header files.
 AC_HEADER_STDC
