@@ -82,7 +82,7 @@ def main():
             category_suffix = category
 
         # If the user is not authenticated, we're done.
-        cgidata = cgi.FieldStorage()
+        cgidata = cgi.FieldStorage(keep_blank_values=1)
         try:
             Auth.authenticate(mlist, cgidata)
         except Auth.NotLoggedInError, e:
