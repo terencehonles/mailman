@@ -20,6 +20,7 @@
 import os
 import marshal
 import string
+import errno
 
 #
 # package/project modules
@@ -58,12 +59,21 @@ class DumbBTree:
         self.lockfile = LockFile.LockFile(self.path + ".lock")
         self.lock()
         self.__dirty = 0
-        if os.path.exists(path):
-            self.dict = marshal.load(open(path))
-            self.__sort(dirty=1)
+        self.dict = {}
+        self.sorted = []
+        try:
+            fp = open(path)
+            try:
+                self.dict = marshal.load(fp)
+            finally:
+                fp.close()
+        except IOError, e:
+            if e.errno <> errno.ENOENT: raise
+            pass
+        except EOFError:
+            pass
         else:
-            self.dict = {}
-            self.sorted = []
+            self.__sort(dirty=1)
 
     def __sort(self, dirty=None):
         if self.__dirty == 1 or dirty:
