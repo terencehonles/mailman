@@ -15,8 +15,7 @@ Mailmanで日本語を扱うときの注意 (English summary in the end)
 Mailman から出ていくメールは全て ISO-2022-JP へ変換する必要があり
 ます。このための変換プログラムを ja_toEuc.py および ja_toJis.py として
 用意しました。また、全てのメールが ja_toJis.py を経て出ていくように、
-ja_SMTPDirect.py を作りました。これは、ja_toJis.py と SMTPDirect.py
-を呼び出すようになっています。
+ja_SMTPDirect.py を作りました。
 
 Mailman/Handlers に ja_SMTPDirect.py, ja_toEuc.py, ja_toJis.py を
 入れてください。これらの最新版は http://mm.tkikuchi.net/ から
