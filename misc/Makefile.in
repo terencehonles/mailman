@@ -83,6 +83,7 @@ install-other:
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
 	$(INSTALL) -m $(EXEMODE) mailman $(DESTDIR)$(SCRIPTSDIR)
+	$(INSTALL) -m $(FILEMODE) sitelist.cfg $(DESTDIR)$(DATADIR)
 
 install-packages:
 	for p in $(PACKAGES); \
