@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.4 
+# From configure.in Revision: 2.5 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -13,7 +13,7 @@
 ac_help=
 ac_default_prefix=/usr/local
 # Any additions from configure.in:
-ac_default_prefix=/home/mailman
+ac_default_prefix=/usr/local/mailman
 ac_help="$ac_help
   --with-python		specify path to Python interpreter"
 ac_help="$ac_help
