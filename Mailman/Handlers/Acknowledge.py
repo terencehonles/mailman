@@ -16,19 +16,23 @@
 
 """Send an acknowledgement of the successful post to the sender.
 
-This only happens if the sender has set their AcknowlegePosts attribute.  This
-module must appear after the deliverer in the message pipeline in order to
-send acks only after successful delivery.
+This only happens if the sender has set their AcknowledgePosts attribute.
+This module must appear after the deliverer in the message pipeline in order
+to send acks only after successful delivery.
 
 """
 
+from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Message
+from Mailman.Handlers import HandlerAPI
 
 
 
 def process(mlist, msg):
-    sender = mlist.FindUser(msg.GetSender())
-    if sender and mlist.GetUserOption(sender, mm_cfg.AcknowlegePosts):
+    sender = getattr(msg, 'original_sender', msg.GetSender())
+    sender = mlist.FindUser(sender)
+    if sender and mlist.GetUserOption(sender, mm_cfg.AcknowledgePosts):
         subject = msg.getheader('subject')
         if subject:
             # trim off the subject prefix
@@ -40,11 +44,12 @@ def process(mlist, msg):
         text = Utils.maketext(
             'postack.txt',
             {'subject'     : subject,
-             'listname'    : self.real_name,
-             'listinfo_url': self.GetAbsoluteScriptURL('listinfo'),
+             'listname'    : mlist.real_name,
+             'listinfo_url': mlist.GetAbsoluteScriptURL('listinfo'),
              })
-        # TBD: we should send the message to the admin using the same
-        # mechanism used to post messages to the list (e.g. if we're doing
-        # sendmail injection, we should use it for all sent messages)
-        self.SendTextToUser('%s post acknowlegement' % mlist.real_name,
-                            text, sender)
+        # craft the outgoing message, with all headers and attributes
+        # necessary for general delivery
+        subject = '%s post acknowledgement' % mlist.real_name
+        msg = Message.UserNotification(sender, mlist.GetAdminEmail(),
+                                       subject, text)
+        HandlerAPI.DeliverToUser(mlist, msg)
