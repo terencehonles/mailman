@@ -44,7 +44,7 @@ class Language(GUIBase):
             # be other trouble lurking!
             langi = 0
 
-        all = Utils.GetDirectories(mm_cfg.TEMPLATE_DIR)
+        all = mm_cfg.LC_DESCRIPTIONS.keys()
         all.sort()
         checked = [L in langs for L in all]
         allnames = [_(Utils.GetLanguageDescr(L)) for L in all]
