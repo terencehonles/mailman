@@ -25,7 +25,7 @@ from Mailman.Errors import *
 
 try:
     listname, mbox = sys.argv[1:]
-except IndexError:
+except (IndexError, ValueError):
     print "usage: arch <listname> <mbox>"
     sys.exit(0)
 
