@@ -91,10 +91,10 @@ def usage(code, msg=''):
 
 
 def do_output(listname, outfile):
+    closep = 0
     try:
         if outfile == '-':
             outfp = sys.stdout
-            closep = 0
         else:
             outfp = open(outfile, 'w')
             closep = 1
