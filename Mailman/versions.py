@@ -24,12 +24,11 @@ is necessary to distinguish from default assignments done in the .InitVars()
 methods, before .CheckVersion() is called.
 
 For new versions you should add sections to the UpdateOldVars() and the
-UpdateOldUsers() sections, to preserve the sense of settings across
-structural changes.  Note that the routines have only one pass - when
-.CheckVersions() finds a version change it runs this routine and then
-updates the data_version number of the list, and then does a .Save(), so
-the transformations won't be run again until another version change is
-detected.
+UpdateOldUsers() sections, to preserve the sense of settings across structural
+changes.  Note that the routines have only one pass - when .CheckVersions()
+finds a version change it runs this routine and then updates the data_version
+number of the list, and then does a .Save(), so the transformations won't be
+run again until another version change is detected.
 
 """
 
@@ -41,13 +40,16 @@ import mm_cfg
 import Utils
 
 
+
 def Update(l, stored_state):
     "Dispose of old vars and user options, mapping to new ones when suitable."
-    # No worry about entirely new vars because InitVars() takes care of them.
+    NewVars(l)
     UpdateOldVars(l, stored_state)
     UpdateOldUsers(l)
     CanonicalizeUserOptions(l)
 
+
+
 uniqueval = []
 def UpdateOldVars(l, stored_state):
     """Transform old variable values into new ones, deleting old ones.
@@ -156,6 +158,24 @@ def UpdateOldVars(l, stored_state):
             l.digest_members[k] = 0
 
 
+
+def NewVars(l):
+    """Add defaults for these new variables if they don't exist."""
+    def add_only_if_missing(attr, initval, l=l):
+        if not hasattr(l, attr):
+            setattr(l, attr, initval)
+    # 1.2 beta 1, baw 18-Feb-2000
+    # Autoresponder mixin class attributes
+    add_only_if_missing('autorespond_postings', 0, l)
+    add_only_if_missing('autorespond_admin', 0, l)
+    add_only_if_missing('autoresponse_postings_text', '', l)
+    add_only_if_missing('autoresponse_admin_text', '', l)
+    add_only_if_missing('autoresponse_graceperiod', 90, l)
+    add_only_if_missing('postings_responses', {}, l)
+    add_only_if_missing('admin_responses', {}, l)
+
+
+
 def UpdateOldUsers(l):
     """Transform sense of changed user options."""
     # pre-1.0b11 to 1.0b11.  Force all keys in l.passwords to be lowercase
@@ -165,6 +185,7 @@ def UpdateOldUsers(l):
     l.passwords = passwords
 
 
+
 def CanonicalizeUserOptions(l):
     """Keys in user_options must be lower case."""
     # pre 1.0rc2 to 1.0rc3.  For all keys in l.user_options to be lowercase,
@@ -179,6 +200,8 @@ def CanonicalizeUserOptions(l):
         options[lcuser] = flags
     l.user_options = options
 
+
+
 def older(version, reference):
     """True if version is older than current.
 
