@@ -93,12 +93,6 @@ def ReadFile(filename):
     return lines
 
 
-def GetRandomPassword():
-    seed1 = Mailman.Utils.GetRandomSeed()
-    seed2 = Mailman.Utils.GetRandomSeed()
-    return "%s%s" % (seed1, seed2)
-
-
 def SendExplanation(ml, users):
     msg = Mailman.Message.OutgoingMessage()
     msg.SetSender(ml.GetAdminEmail())
@@ -116,20 +110,6 @@ def SendExplanation(ml, users):
     ml.DeliverToList(msg, users, None, None)
 
 
-def AddMember(ml, addr, digest_p, send_welcome_msg):
-    # if the line was empty, just ignore it
-    pw = GetRandomPassword()
-    try:
-        Mailman.Utils.ValidateEmail(addr)
-    except Mailman.Errors.EmailAddressError:
-        print "not a valid email address:", addr
-        return
-    try:
-        ml.ApprovedAddMember(addr, pw, digest_p, send_welcome_msg)
-    except Mailman.Errors.MMAlreadyAMember:
-        print 'Already subscribed (skipping):', addr
-        
-        
 
 def main():
     try:
@@ -205,12 +185,28 @@ def main():
         if not dmembers and not nmembers:
             usage(1)
 
-        for member in nmembers:
-             AddMember(ml, member, 0, send_welcome_msg)
+        if nmembers:
+            nres = ml.ApprovedAddMembers(nmembers, None, 0, send_welcome_msg)
+        else: nres = {}
 
-        for member in dmembers:
-            AddMember(ml, member, 1, send_welcome_msg)
-	ml.Save()
+        if dmembers:
+            dres = ml.ApprovedAddMembers(dmembers, None, 1, send_welcome_msg)
+        else: dres = {}
+
+        for result in (nres, dres):
+            for name in result.keys():
+                if result[name] is None:
+                    pass
+                else:
+                    # `name' was not subscribed, find out why.  On failures,
+                    # result[name] is set from sys.exc_info()[:2]
+                    e, v = result[name]
+                    if e is Mailman.Errors.MMAlreadyAMember:
+                        print 'Already subscribed (skipping):', name
+                    elif issubclass(e, Mailman.Errors.EmailAddressError):
+                        if name == '': name = '( blank line )'
+                        print "Not a valid email address:", name
+
         if send_changes_msg:
             SendExplanation(ml, nmembers + dmembers)
     finally:
