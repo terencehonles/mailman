@@ -25,6 +25,7 @@ Note: This file only handles single threaded delivery.  See SMTPThreaded.py
 for a threaded implementation.
 """
 
+import copy
 import time
 import socket
 import smtplib
@@ -268,7 +269,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
         # they missed due to bouncing.  Neat idea.
         msgdata['recips'] = [recip]
         # Make a copy of the message and decorate + delivery that
-        msgcopy = email.message_from_string(msg.as_string())
+        msgcopy = copy.deepcopy(msg)
         Decorate.process(mlist, msgcopy, msgdata)
         # Calculate the envelope sender, which we may be VERPing
         if msgdata.get('verp'):
