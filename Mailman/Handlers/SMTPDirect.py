@@ -52,8 +52,6 @@ def process(mlist, msg, msgdata):
     if not recips:
         # Nobody to deliver to!
         return
-    # Get the flat, plain text of the message
-    msgtext = msg.as_string(unixfrom=0)
     # Calculate the envelope sender.  When VERPing, envsender is a 2-tuple
     # containing the list's bounces address and the list's host_name.
     envsender = None
@@ -69,6 +67,16 @@ def process(mlist, msg, msgdata):
         # We're VERPing.  Pre-calculate what we can.
         bmailbox, bdomain = Utils.ParseEmail(mlist.getListAddress('bounces'))
         envsender = (bmailbox, DOT.join(bdomain))
+        # Also, blow away the Sender: and Errors: to headers so remote MTAs
+        # won't be tempted to deliver bounces there instead of our VERP'd
+        # envelope sender.  It would be better to stick in our VERP return
+        # address, but that would have to get done in deliver() below, and by
+        # then we've already flattened the message.  BAW: maybe we shouldn't
+        # do that here?)
+        del msg['sender']
+        del msg['errors-to']
+    # Get the flat, plain text of the message
+    msgtext = msg.as_string(unixfrom=0)
     # Time to split up the recipient list.  If we're VERPing then each chunk
     # will have exactly one recipient, and we'll hand craft an envelope sender
     # for each one separately.  If we're not VERPing, then we'll chunkify
@@ -243,6 +251,10 @@ def threaded_deliver(envsender, msgtext, chunks, failures):
 def deliver(envsender, msgtext, recips, failures, conn):
     # If we're VERPIng, we have to calculate the envelope sender for each
     # recipient.  Note that the list of recipients must be of length 1.
+    #
+    # BAW: ezmlm includes the message number in the envelope, used when
+    # sending a notification to the user telling her how many messages they
+    # missed due to bouncing.  Neat idea.
     if isinstance(envsender, TupleType) and len(recips) == 1:
         mailbox, domain = Utils.ParseEmail(recips[0])
         d = {'bounces': envsender[0],
