@@ -396,13 +396,13 @@ def ObscureEmail(addr, for_text=0):
     if for_text:
 	return string.replace(addr, "@", " at ")
     else:
-	return string.replace(addr, "@", "__at__")
+	return string.replace(addr, "@", "--at--")
 
 def UnobscureEmail(addr):
     """Invert ObscureEmail() conversion."""
     # Contrived to act as an identity operation on already-unobscured
     # emails, so routines expecting obscured ones will accept both.
-    return string.replace(addr, "__at__", "@")
+    return string.replace(addr, "--at--", "@")
 
 
 
