@@ -102,8 +102,8 @@ class Bounce:
 
     def __convert(self, mlist, cgidata, varname, doc, func):
         # BAW: This should really be an attribute on the doc object
-        from Mailman.Cgi.admin import add_error_message
         def error(doc, varname, value):
+            from Mailman.Cgi.admin import add_error_message
             text = _("""Bad value for <a href="?VARHELP=bounce/%(varname)s"
             >%(varname)s</a>: %(value)s""")
             add_error_message(doc, text, _('Error: '))
