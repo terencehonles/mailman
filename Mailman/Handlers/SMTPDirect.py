@@ -37,7 +37,8 @@ from Mailman.Logging.Syslog import syslog
 from Mailman.SafeDict import MsgSafeDict
 
 import email
-import email.Utils
+from email.Utils import formataddr
+from email.Header import Header
 
 DOT = '.'
 
@@ -280,7 +281,23 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
             del msgcopy['to']
             if mlist.isMember(recip):
                 name = mlist.getMemberName(recip)
-                msgcopy['To'] = email.Utils.formataddr((name, recip))
+                # If there are non-ASCII characters in the name, attempt to
+                # encode the name in the outgoing character set.
+                try:
+                    name.encode('us-ascii')
+                except UnicodeError:
+                    charset = Utils.GetCharSet(mlist.getMemberLanguage(recip))
+                    # We want non-ASCII characters to be allowed in English
+                    # lists, without changing the English charset to
+                    # iso-8859-1.  See Utils.canonstr() for details.
+                    if charset == 'us-ascii':
+                        charset = 'iso-8859-1'
+                    name = Header(name, charset).encode()
+                    # And now ensure that it actually /is/ ASCII.  E.g. the
+                    # user's preferred language is English, but they have a
+                    # funny character in their name.
+                    name = name.encode('us-ascii', 'replace')
+                msgcopy['To'] = formataddr((name, recip))
             else:
                 msgcopy['To'] = recip
         # We can flag the mail as a duplicate for each member, if they've
