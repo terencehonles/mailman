@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Aug  2 11:48:08 2002 -->
+<!-- Sat Sep 28 12:49:13 2002 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -180,9 +180,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
 </ul>
 <h3> Documentation
@@ -199,9 +197,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -226,9 +222,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -260,9 +254,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -283,6 +275,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -303,6 +296,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
 </ul>
 <h3> List Membership
@@ -319,9 +320,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -342,6 +341,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -362,6 +362,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -392,9 +400,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -415,6 +421,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -435,6 +442,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -471,9 +486,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -494,6 +507,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -514,6 +528,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -556,9 +578,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -579,6 +599,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -599,6 +620,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -651,9 +680,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -674,6 +701,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -694,6 +722,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -757,9 +793,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -780,6 +814,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -800,6 +835,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -866,9 +909,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -889,6 +930,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -909,6 +951,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per
@@ -982,9 +1032,7 @@ Email Us
     <li> For low-traffic sites, a queued message could trigger a qrunner process.  It would work until all mail was delivered, then sleep
  and exit if no new work arrived.
 
-    <li> We could get rid of the wrappers by doing a file delivery at the aliases, then having qrunner use UnixMailbox to deliver each
- message.  There would have to be some locking between the MTA
- and Mailman.
+    <li> Strip any addresses of members who have nodupe turned on, from the Cc headers of the list copy of a message.
 
     <li> A detailed feature list
     <li> A user's guide
@@ -1005,6 +1053,7 @@ Email Us
  message was edited by the moderator).
 
     <li> Allow the admin to disable option settings by users
+    <li> Allow admins to block nomail settings
     <li> Allow admins to control and set individual headers, adding, removing, or overriding those in the original message (sometimes
  very useful, but could be dangerous!)
 
@@ -1025,6 +1074,14 @@ Email Us
  some period of time) and discard it.  The admin should be able
  to see all these super-quarantined messages with the flip of a
  button.
+
+    <li> Add a moderation option to pass through any message which is a reply to a message previously distributed through the list, even
+ if it comes from a non-member.  Treat that non-member as a
+ member for the duration of the thread.  Use In-Reply-To,
+ References and Message-ID to match these up.
+
+    <li> When a held message is forwarded (for admin editing and approved resend) there should be a way to auto-discard the held message
+ when the approved resend is received.
 
     <li> Have one account per user per site, with multiple email addresses and fallbacks.  Allow them to subscribe whichever
  address they want to whichever list, with different options per

@@ -19,6 +19,8 @@ Email Handling
     - For low-traffic sites, a queued message could trigger a qrunner
       process.  It would work until all mail was delivered, then sleep
       and exit if no new work arrived.
+    - Strip any addresses of members who have nodupe turned on, from
+      the Cc headers of the list copy of a message.
 
 Documentation
     - A detailed feature list
@@ -44,6 +46,7 @@ List Administration
       it evident, either through a header or other means that the
       message was edited by the moderator).
     - Allow the admin to disable option settings by users
+    - Allow admins to block nomail settings
     - Allow admins to control and set individual headers, adding,
       removing, or overriding those in the original message (sometimes
       very useful, but could be dangerous!)
@@ -70,6 +73,9 @@ List Administration
       if it comes from a non-member.  Treat that non-member as a
       member for the duration of the thread.  Use In-Reply-To,
       References and Message-ID to match these up.
+    - When a held message is forwarded (for admin editing and approved
+      resend) there should be a way to auto-discard the held message
+      when the approved resend is received.
 
 List Membership
     - Have one account per user per site, with multiple email
