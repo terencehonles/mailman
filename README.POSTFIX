@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
@@ -84,6 +84,16 @@ INTEGRATING POSTFIX AND MAILMAN
 
       alias_maps = hash:/etc/postfix/aliases,
           hash:/usr/local/mailman/data/aliases
+
+    - There are two other Postfix options that you probably want to
+      set.  To stop Postfix from doing anything special with -owner
+      addresses, you'll want to set the owner_request_special
+      variable.  If you plan on doing personalization (VERP), you'll
+      want to set the recipient_delimiter variable.  Here are settings
+      for the default Mailman settings:
+
+        recipient_delimiter = +
+        owner_request_special = no
 
     - When you configure Mailman, use the --with-mail-gid=mailman
       switch (actually, this will be the default if you configured
