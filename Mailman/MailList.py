@@ -50,15 +50,11 @@ from GatewayManager import GatewayManager
 class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
 	       Archiver, Digester, SecurityManager, Bouncer, GatewayManager):
     def __init__(self, name=None, lock=1):
-	MailCommandHandler.__init__(self)
-	self._tmp_lock = lock
-	self._lock_file = None
-	self._internal_name = name
-	self._ready = 0
-	self._log_files = {}		# 'class': log_file_obj
-	if name:
-	    if name not in Utils.list_names():
+        if name and name not in Utils.list_names():
 		raise Errors.MMUnknownListError, 'list not found: %s' % name
+	MailCommandHandler.__init__(self)
+        self.InitTempVars(name, lock)
+	if name:
 	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
 	    self.Load()
 
@@ -120,12 +116,23 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    return None
 	return matches[0]
 
+    def InitTempVars(self, name, lock):
+        """Set transient variables of this and inherited classes."""
+	self._tmp_lock = lock
+	self._lock_file = None
+	self._internal_name = name
+	self._ready = 0
+	self._log_files = {}		# 'class': log_file_obj
+	if name:
+	    self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
+	HTMLFormatter.InitTempVars(self)
+	Digester.InitTempVars(self)
+
     def InitVars(self, name=None, admin='', crypted_password=''):
         """Assign default values - some will be overriden by stored state."""
 	# Non-configurable list info 
 	if name:
 	  self._internal_name = name
-	self._mime_separator = '__--__--' 
 
 	# Must save this state, even though it isn't configurable
 	self.volume = 1
@@ -178,7 +185,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	Digester.InitVars(self) # has configurable stuff
 	SecurityManager.InitVars(self, crypted_password)
-	HTMLFormatter.InitTempVars(self)
 	Archiver.InitVars(self) # has configurable stuff
 	ListAdmin.InitVars(self)
 	Bouncer.InitVars(self)
