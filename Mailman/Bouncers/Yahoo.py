@@ -28,24 +28,28 @@ ecre = re.compile(r'--- Original message follows')
 def process(mlist, msg):
     # yahoo bounces seem to have a known subject value and something called an
     # x-uidl header, the value of which seems unimportant
-    if msg.get('subject') == 'failed delivery' and msg.get('x-uidl'):
-        msg.rewindbody()
-        # simple state machine
-        #     0 == nothing seen
-        #     1 == tag line seen
-        state = 0
-        while 1:
-            line = msg.fp.readline()
-            if not line:
-                return None
-            line = string.strip(line)
-            if state == 0 and tcre.match(line):
-                state = 1
-            elif state == 1:
-                mo = acre.match(line)
-                if mo:
-                    return [mo.group('addr')]
-                mo = ecre.match(line)
-                if mo:
-                    # ain't there
-                    return None
+    if string.lower(msg.get('from')) <> 'mailer-daemon@yahoo.com':
+        return None
+    msg.rewindbody()
+    addrs = []
+    # simple state machine
+    #     0 == nothing seen
+    #     1 == tag line seen
+    state = 0
+    while 1:
+        line = msg.fp.readline()
+        if not line:
+            break
+        line = string.strip(line)
+        if state == 0 and tcre.match(line):
+            state = 1
+        elif state == 1:
+            mo = acre.match(line)
+            if mo:
+                addrs.append(mo.group('addr'))
+                continue
+            mo = ecre.match(line)
+            if mo:
+                # we're at the end of the error response
+                break
+    return addrs or None
