@@ -48,6 +48,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.InitVars(name)
 	    self.Load()
 
+    def __del__(self):
+	for f in self._log_files.values():
+	    f.close()
+
     def GetAdminEmail(self):
 	return '%s-admin@%s' % (self._internal_name, self.host_name)
 
