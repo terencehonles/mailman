@@ -255,6 +255,11 @@ def process_form(mlist, doc, cgidata, lang):
 
 
 def print_results(mlist, results, doc, lang):
+    # The bulk of the document will come from the options.html template, which
+    # includes it's own html armor (head tags, etc.).  Suppress the head that
+    # Document() derived pages get automatically.
+    doc.suppress_head = 1
+
     replacements = mlist.GetStandardReplacements(lang)
     replacements['<mm-results>'] = results
     output = mlist.ParseTags('subscribe.html', replacements, lang)
