@@ -462,7 +462,13 @@ def maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
     text = template
     if dict is not None:
         try:
-            text = template % SafeDict(dict)
+            sdict = SafeDict(dict)
+            try:
+                text = sdict.interpolate(template)
+            except UnicodeError:
+                # Try again after coercing the template to unicode
+                utemplate = unicode(template, GetCharSet(lang), 'replace')
+                text = sdict.interpolate(utemplate)
         except (TypeError, ValueError):
             # The template is really screwed up
             pass
