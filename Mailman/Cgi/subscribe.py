@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -99,6 +99,7 @@ def main():
 
 
 def process_form(mlist, doc, cgidata, lang):
+    listowner = mlist.GetOwnerEmail()
     realname = mlist.real_name
     results = []
 
@@ -176,6 +177,10 @@ email which contains further instructions.""")
         results = ''
     # Check for all the errors that mlist.AddMember can throw options on the
     # web page for this cgi
+    except Errors.MembershipIsBanned:
+        results = _("""The email address you supplied is banned from this
+        mailing list.  If you think this restriction is erroneous, please
+        contact the list owners at %(listowner)s.""")
     except Errors.MMBadEmailError:
         results = _("""\
 The email address you supplied is not valid.  (E.g. it must contain an
@@ -214,7 +219,6 @@ moderator's decision when they get to your request.""")
             # This could be a membership probe.  For safety, let the user know
             # a probe occurred.  BAW: should we inform the list moderator?
             listaddr = mlist.GetListEmail()
-            listowner = mlist.GetOwnerEmail()
             msg = Message.UserNotification(
                 mlist.getMemberCPAddress(email),
                 mlist.GetAdminEmail(),
