@@ -272,7 +272,7 @@ Subject: %s''', self.internal_name(), msg['from'], subject)
                         # immediately
                         self.__dispatch[cmd](args, line, msg)
                     except:
-                        admin = self.GetAdminEmail()
+                        admin = self.GetOwnerEmail()
                         sfp = StringIO()
                         traceback.print_exc(file=sfp)
                         tbmsg = sfp.getvalue()
@@ -288,10 +288,10 @@ the list administrator automatically.'''))
                         syslog('error',
                                'Unexpected Mailman error:\n%s', tbmsg)
                         # and send the traceback to the user
-                        lang = msgdata.get('lang',
-                                           self.getMemberLanguage(admin))
+                        lang = msgdata.get('lang', self.preferred_language)
                         responsemsg = Message.UserNotification(
-                            admin, admin, _('Unexpected Mailman error'),
+                            admin, self.GetBouncesEmail(),
+                            _('Unexpected Mailman error'),
                             _('''\
 An unexpected Mailman error has occurred in
 MailCommandHandler.ParseMailCommands().  Here is the traceback:
@@ -302,7 +302,7 @@ MailCommandHandler.ParseMailCommands().  Here is the traceback:
                         break
         # send the response
         if not self.__noresponse:
-            adminaddr = self.GetAdminEmail()
+            adminaddr = self.GetOwnerEmail()
             requestaddr = self.GetRequestEmail()
             if self.__errors > 0:
                 header = Utils.wrap(_('''This is an automated response.
@@ -686,7 +686,7 @@ owners at %(listowner)s."""))
             #
             self.__noresponse = 1
         except Errors.MMNeedApproval:
-            adminemail = self.GetAdminEmail()
+            adminemail = self.GetOwnerEmail()
             self.AddToResponse(_("""\
 Your subscription request has been forwarded to the  list administrator
 at %(adminemail)s for review."""), trunc=0)
@@ -766,7 +766,7 @@ Your request has been forwarded to the list moderator for approval.'''),
             'approve.txt',
             {'requestaddr': self.GetRequestEmail(),
              'cmd'        : cmd,
-             'adminaddr'  : self.GetAdminEmail(),
+             'adminaddr'  : self.GetOwnerEmail(),
              }, mlist=self)
         self.AddError(text, trunc=0)
 
@@ -777,7 +777,7 @@ Your request has been forwarded to the list moderator for approval.'''),
              'version'     : mm_cfg.VERSION,
              'listinfo_url': self.GetScriptURL('listinfo', absolute=1),
              'requestaddr' : self.GetRequestEmail(),
-             'adminaddr'   : self.GetAdminEmail(),
+             'adminaddr'   : self.GetOwnerEmail(),
              }, mlist=self)
         self.AddToResponse(text, trunc=0)
 
