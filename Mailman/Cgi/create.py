@@ -357,10 +357,18 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
                          values=(0,1))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
-
-    # Create the table of initially supported languages
-    langs = mm_cfg.LC_DESCRIPTIONS.keys()
-    langs.sort()
+    # Create the table of initially supported languages, sorted on the long
+    # name of the language.
+    revmap = {}
+    for key, (name, charset) in mm_cfg.LC_DESCRIPTIONS.items():
+        revmap[_(name)] = key
+    langnames = revmap.keys()
+    langnames.sort()
+    langs = []
+    for name in langnames:
+        langs.append(revmap[name])
+    syslog('debug', 'langs: %s, langnames: %s, revmap: %s',
+           langs, langnames, revmap)
     try:
         langi = langs.index(mm_cfg.DEFAULT_SERVER_LANGUAGE)
     except ValueError:
