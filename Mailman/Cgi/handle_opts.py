@@ -153,18 +153,19 @@ def process_form(mlist, user, doc):
             doc.AddItem("Click a link to visit your options page for"
                         " that mailing list:")
 
-            def optionslinks(l, user=user):
-                addrs = Utils.FindMatchingAddresses(user, l.members,
-                                                    l.digest_members)
+            def optionslinks(listname, user=user):
+                mlist = MailList.MailList(listname, lock=0)
+                addrs = Utils.FindMatchingAddresses(user, mlist.members,
+                                                    mlist.digest_members)
                 if addrs:
                     addr = Utils.ObscureEmail(addrs[0])
-                    if l.obscure_addresses:
+                    if mlist.obscure_addresses:
                         addr = Utils.ObscureEmail(addr)
-                    url = l.GetAbsoluteOptionsURL(addr)
-                    link = Link(url, l.real_name)
-                    return l._internal_name, link
+                    url = mlist.GetAbsoluteOptionsURL(addr)
+                    link = Link(url, mlist.real_name)
+                    return mlist.internal_name(), link
 
-            all_links = filter(None, Utils.map_maillists(optionslinks))
+            all_links = filter(None, map(optionslinks, Utils.list_names()))
             all_links.sort()
             items = OrderedList()
             for name, link in all_links:
