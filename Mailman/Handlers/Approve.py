@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,32 +23,25 @@ not tested by this module.
 
 """
 
-import HandlerAPI
 from Mailman import mm_cfg
 from Mailman import Errors
-
-# multiple inheritance for backwards compatibility
-class LoopError(HandlerAPI.DiscardMessage, Errors.MMLoopingPost):
-    """We've seen this message before"""
 
 
 
 def process(mlist, msg, msgdata):
-    # short circuits
+    # Short circuits
     if msgdata.get('approved'):
-        # digests, Usenet postings, and some other messages come
-        # pre-approved.  TBD: we may want to further filter Usenet messages,
-        # so the test above may not be entirely correct.
+        # Digests, Usenet postings, and some other messages come pre-approved.
+        # TBD: we may want to further filter Usenet messages, so the test
+        # above may not be entirely correct.
         return
     # See if the message has an Approved: header with a valid password
-    passwd = msg.getheader('approved')
+    passwd = msg['approved']
     if passwd and mlist.ValidAdminPassword(passwd):
         # TBD: should we definitely deny if the password exists but does not
-        # match?  For now we'll let it percolate up for further
-        # determination.
+        # match?  For now we'll let it percolate up for further determination.
         msgdata['approved'] = 1
     # has this message already been posted to this list?
-    beentheres = [s.split(':', 1)[1].strip() for s in
-                  msg.getallmatchingheaders('x-beenthere')]
-    if mlist.GetListEmail() in beentheres:
-        raise LoopError
+    beentheres = [s.strip().lower() for s in msg.getall('x-beenthere')]
+    if mlist.GetListEmail().lower() in beentheres:
+        raise Errors.LoopError
