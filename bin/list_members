@@ -48,9 +48,13 @@ Where:
         Output member addresses case preserved the way they were added to the
         list.  Otherwise, addresses are printed in all lowercase.
 
-    --checkaddrs / -c
-        Check the email addresses in the resulting list and verify that they
-        are valid.
+    --invalid / -i
+        Print only the addresses in the membership list that are invalid.
+        Ignores -r, -d, -n.
+
+    --unicode / -u
+        Print addresses which are stored as Unicode objects instead of normal
+        string objects.  Ignores -r, -d, -n.
 
     --help
     -h
@@ -115,17 +119,15 @@ def safe(s):
     return unicode(s, ENC, 'replace').encode(ENC, 'replace')
 
 
-def isvalid(addr):
-    states = []
+def isinvalid(addr):
     try:
         Utils.ValidateEmail(addr)
+        return False
     except Errors.EmailAddressError:
-        states.append('INVALID')
-    if isinstance(addr, UnicodeType):
-        states.append('UNICODE')
-    if states:
-        return '(' + COMMASPACE.join(states) + ')'
-    return ''
+        return True
+
+def isunicode(addr):
+    return isinstance(addr, UnicodeType)
 
 
 
@@ -150,7 +152,8 @@ def main():
     why = None
     kind = None
     fullnames = False
-    checkaddrs = True
+    invalidonly = False
+    unicodeonly = False
 
     # Throw away the first (program) argument
     args = sys.argv[1:]
@@ -197,8 +200,10 @@ def main():
                 kind = opt[i+1:]
                 if kind not in ('mime', 'plain'):
                     usage(1, _('Bad --digest option: %(kind)s'))
-        elif opt in ('-c', '--checkaddrs'):
-            checkaddrs = True
+        elif opt in ('-i', '--invalid'):
+            invalidonly = True
+        elif opt in ('-u', '--unicode'):
+            unicodeonly = True
         else:
             # No more options left, push the last one back on the list
             args.insert(0, opt)
@@ -236,25 +241,30 @@ def main():
         rmembers = mlist.getMemberCPAddresses(rmembers)
         dmembers = mlist.getMemberCPAddresses(dmembers)
 
+    if invalidonly or unicodeonly:
+        all = rmembers + dmembers
+        all.sort()
+        for addr in all:
+            name = fullnames and mlist.getMemberName(addr) or ''
+            showit = False
+            if invalidonly and isinvalid(addr):
+                showit = True
+            if unicodeonly and isunicode(addr):
+                showit = True
+            if showit:
+                print >> fp, formataddr((safe(name), addr))
+        return
     if regular:
         rmembers.sort()
         for addr in rmembers:
-            if checkaddrs:
-                validmsg = isvalid(addr)
-            else:
-                validmsg = ''
             name = fullnames and mlist.getMemberName(addr) or ''
             # Filter out nomails
             if nomail and not whymatches(mlist, addr, why):
                 continue
-            print >> fp, formataddr((safe(name), addr)), validmsg
+            print >> fp, formataddr((safe(name), addr))
     if digest:
         dmembers.sort()
         for addr in dmembers:
-            if checkaddrs:
-                validmsg = isvalid(addr)
-            else:
-                validmsg = ''
             name = fullnames and mlist.getMemberName(addr) or ''
             # Filter out nomails
             if nomail and not whymatches(mlist, addr, why):
@@ -268,7 +278,7 @@ def main():
                 # They're getting MIME digests
                 if kind == 'plain':
                     continue
-            print >> fp, formataddr((safe(name), addr)), validmsg
+            print >> fp, formataddr((safe(name), addr))
 
 
 
