@@ -108,7 +108,9 @@ class Deliverer:
     def DeliverToOwner(self, msg, recipients):
         if not (len(recipients)):
             return
-        sender = msg.GetEnvelopeSender()
+        sender = None
+        if mm_cfg.USE_ENVELOPE_SENDER:
+            sender = msg.GetEnvelopeSender()
         if not sender:
             sender = msg.GetSender()
         if sender:
