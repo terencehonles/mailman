@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,10 +17,11 @@
 from Mailman import mm_cfg
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
+from Mailman.Gui.GUIBase import GUIBase
 
 
 
-class Topics:
+class Topics(GUIBase):
     def GetConfigCategory(self):
         return 'topics', _('Topics')
 
@@ -80,7 +81,7 @@ class Topics:
 
             ]
 
-    def HandleForm(self, mlist, cgidata, doc):
+    def handleForm(self, mlist, category, subcat, cgidata, doc):
         topics = []
         # We start i at 1 and keep going until we no longer find items keyed
         # with the marked tags.
@@ -109,8 +110,9 @@ class Topics:
                 break
 
             if cgidata.has_key(newtag) and (not name or not pattern):
-                # This new entry is incomplete.  BAW: we should probably warn
-                # about it instead of just dropping it from sight.
+                # This new entry is incomplete.
+                doc.addError(_("""Topic specifications require both a name and
+                a pattern.  Incomplete topics will be ignored."""))
                 continue
 
             # Was this an add item?
