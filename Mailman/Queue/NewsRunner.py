@@ -23,6 +23,8 @@ import nntplib
 from mimelib.MsgReader import MsgReader
 from mimelib.address import getaddresses
 
+COMMASPACE = ', '
+
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Queue.Runner import Runner
@@ -93,7 +95,7 @@ def prepare_message(mlist, msg, msgdata):
             ngroups.append(mlist.linked_newsgroup)
             # Subtitute our new header for the old one.
             del msg['newsgroups']
-            msg['Newsgroups'] = COMMA.join(ngroups)
+            msg['Newsgroups'] = COMMASPACE.join(ngroups)
     else:
         # Newsgroups: isn't in the message
         msg['Newsgroups'] = mlist.linked_newsgroup
