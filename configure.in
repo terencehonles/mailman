@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1694 $)
+AC_REVISION($Revision: 1695 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -51,6 +51,7 @@ AC_MSG_RESULT($PYTHON)
 # Checks for programs.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
+AC_PATH_PROG(TRUE, true, true, $PATH:/bin:/usr/bin)
 
 # Find compiler, allow alternatives to gcc
 AC_MSG_CHECKING(for --without-gcc)
