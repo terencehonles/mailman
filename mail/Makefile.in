@@ -63,6 +63,8 @@ install:
 	    $(INSTALL) -m $(FILEMODE) $$f $(SCRIPTSDIR); \
 	done
 
+finish:
+
 clean:
 
 distclean:

@@ -63,6 +63,9 @@ install:
 	do \
 	    $(INSTALL) -m $(FILEMODE) $$f $(CGIDIR); \
         done
+
+finish:
+
 clean:
 
 distclean:

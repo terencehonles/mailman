@@ -40,6 +40,7 @@ MAIL_GID=      	@MAIL_GID@
 CGI_GID=	@CGI_GID@
 #ALIAS_UID=	@ALIAS_UID@
 #ALIAS_GID=	@ALIAS_GID@
+MAILMAN_UID=	@MAILMAN_UID@
 
 # Customizable but not set by configure
 OPT=		@OPT@
@@ -77,6 +78,10 @@ MAIL_PROGS= wrapper
 
 #ALIAS_PROGS= addaliases
 
+SUID_CGI_PROGS= private
+
+SUID_MAIL_PROGS=
+
 PROGRAMS= $(CGI_PROGS) $(MAIL_PROGS) $(ALIAS_PROGS)
 
 
@@ -101,18 +106,29 @@ install: all
 	do \
 	    exe=$(CGIDIR)/$$f$(CGIEXT); \
 	    $(INSTALL_PROGRAM) $$f $$exe; \
-	    chown mailman $$exe; \
-	    chmod ug+s $$exe; \
+	    chmod g+s $$exe; \
 	done
 	for f in $(MAIL_PROGS); \
 	do \
 	    $(INSTALL_PROGRAM) $$f $(MAILDIR); \
-	    chown mailman $(MAILDIR)/$$f; \
-	    chmod ug+s $(MAILDIR)/$$f; \
+	    chmod g+s $(MAILDIR)/$$f; \
 	done
 #	@for f in $(ALIAS_PROGS); \
 #	do \
 #	    $(INSTALL_PROGRAM) $$f $(bindir) ; \
+#	done
+
+finish:
+	-for f in $(SUID_CGI_PROGS); \
+	do \
+	    exe=$(CGIDIR)/$$f$(CGIEXT); \
+	    chmod u+s $$exe; \
+	    chown $(MAILMAN_UID) $$exe; \
+	done
+#	-for f in $(SUID_MAIL_PROGS); \
+#	do \
+#	    exe=$(MAILDIR)/$$f; \
+#	    chown $(MAILMAN_UID) $$exe; \
 #	done
 
 clean:

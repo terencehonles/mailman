@@ -34,6 +34,8 @@ INSTALL=	@INSTALL@
 
 DEFS=   	@DEFS@
 
+MAILMAN_UID=	@MAILMAN_UID@
+
 # Customizable but not set by configure
 
 OPT=		@OPT@
@@ -95,6 +97,17 @@ install: $(SUBDIRS)
 	@for d in $(SUBDIRS); \
 	do \
 	    (cd $$d; $(MAKE) install); \
+	done
+	@echo "*****"
+	@echo "***** You must finish installing Mailman by becoming root"
+	@echo "***** and running \"make finish\".  See the INSTALL file"
+	@echo "***** for details."
+	@echo "*****"
+
+finish:
+	@for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) finish); \
 	done
 
 clean: $(SUBDIRS)

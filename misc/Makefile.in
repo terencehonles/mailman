@@ -69,6 +69,8 @@ install:
 	done
 	$(INSTALL) -m $(DATAMODE) pending_subscriptions.db $(prefix)/data
 
+finish:
+
 clean:
 
 distclean:

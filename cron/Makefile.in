@@ -64,6 +64,8 @@ install:
 	    $(INSTALL) -m $(FILEMODE) $$f $(CRONDIR); \
 	done
 
+finish:
+
 clean:
 
 distclean:

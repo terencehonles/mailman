@@ -63,6 +63,8 @@ install:
 	    $(INSTALL) -m $(FILEMODE) $$f $(PACKAGEDIR); \
 	done
 
+finish:
+
 clean:
 
 distclean:
