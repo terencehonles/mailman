@@ -44,7 +44,7 @@ acre = re.compile(r'''
 
 
 def process(msg):
-    mailer = msg['x-mailer']
+    mailer = msg.get('x-mailer', '')
     if not mailer.startswith('<SMTP32 v'):
         return
     mi = MsgReader(msg)
