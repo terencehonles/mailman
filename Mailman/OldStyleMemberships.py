@@ -113,8 +113,11 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
             raise Errors.NotAMemberError, member
 
     def getMemberLanguage(self, member):
-        return self.__mlist.language.get(member.lower(),
-                                         self.__mlist.preferred_language)
+        lang = self.__mlist.language.get(
+            member.lower(), self.__mlist.preferred_language)
+        if lang in self.__mlist.GetAvailableLanguages():
+            return lang
+        return self.__mlist.preferred_language
 
     def getMemberOption(self, member, flag):
         self.__assertIsMember(member)
@@ -168,7 +171,7 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
     def addNewMember(self, member, **kws):
         assert self.__mlist.Locked()
         # Make sure this address isn't already a member
-        if self.__mlist.isMember(member):
+        if self.isMember(member):
             raise Errors.MMAlreadyAMember, member
         # Parse the keywords
         digest = 0
@@ -335,8 +338,8 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         self.__assertIsMember(member)
         member = member.lower()
         if status == MemberAdaptor.ENABLED:
+            # Enable by resetting their bounce info.
             self.setBounceInfo(member, None)
-            # Otherwise, nothing to do
         else:
             self.__mlist.delivery_status[member] = (status, time.time())
 
