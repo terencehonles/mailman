@@ -42,7 +42,8 @@ def main(verbose=0):
 	    list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 
 				(count, list.real_name),
 				recipient = list.GetAdminEmail(),
-				text = text + "\n" + pending_requests(list))
+				text = text + "\n" + pending_requests(list),
+                                add_headers = ["Precedence: bulk"])
 
 def pending_requests(list):
     import time, string
