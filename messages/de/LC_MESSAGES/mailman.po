@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-11-02 17:18+0100\n"
+"PO-Revision-Date: 2003-12-31 16:11+0100\n"
 "Last-Translator: Peer Heinlein <p.heinlein@jpberlin.de>\n"
 "Language-Team: deutsch\n"
 "MIME-Version: 1.0\n"
@@ -549,7 +549,7 @@ msgstr "Ein"
 
 #: Mailman/Cgi/admin.py:509
 msgid "Set"
-msgstr "Änderung übernehmen"
+msgstr "Moderationsflags ändern"
 
 # Mailman/Cgi/admin.py:509
 #: Mailman/Cgi/admin.py:550
