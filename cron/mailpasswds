@@ -85,8 +85,11 @@ def main(args):
     users = {}				# user: (listname, password, url)
     # Constrain to specified users, if any.
     confined_to = args[1:]
+    a_public_list = None
     for name in Utils.list_names():
 	list = MailList.MailList(name, lock = 0)
+        if not a_public_list and not list.advertised:
+            a_public_list = list
 	list_name = list.real_name
 	umbrella_list = list.umbrella_list
 	if not list.send_reminders:
@@ -96,6 +99,7 @@ def main(args):
                 if user not in confined_to:
                     continue
                 else:
+                    # We're a bit verbose when operating "confined_to":
                     print "%s in %s" % (user, list.real_name)
 	    url = list.GetAbsoluteOptionsURL(user)
             recipient = list.GetMemberAdminEmail(user)
@@ -104,7 +108,7 @@ def main(args):
 	    else:
 		users[recipient] = [(list_name, password, url)]
     if list:
-	MailAllPasswords(list, users)
+	MailAllPasswords(a_public_list or list, users)
 
 def waitall():
     """Return only when there are no forked subprocesses running."""
