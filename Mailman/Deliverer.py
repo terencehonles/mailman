@@ -31,12 +31,12 @@ import Utils
 class Deliverer:
     # This method assumes the sender is list-admin if you don't give one.
     def SendTextToUser(self, subject, text, recipient, sender=None,
-                       add_headers=[], raw=0):
+                       add_headers=[]):
         # repr(recipient) necessary for addresses containing "'" quotes!
         if not sender:
             sender = self.GetAdminEmail()
         Utils.SendTextToUser(subject, text, recipient, sender,
-                                add_headers=add_headers, raw=raw)
+                                add_headers=add_headers)
 
     def DeliverToUser(self, msg, recipient):
         # This method assumes the sender is the one given by the message.
