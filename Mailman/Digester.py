@@ -148,5 +148,5 @@ class Digester:
             # List has no outstanding digests
 
     def bump_digest_volume(self):
-        mlist.volume += 1
-        mlist.next_digest_number = 1
+        self.volume += 1
+        self.next_digest_number = 1
