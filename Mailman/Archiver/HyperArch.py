@@ -293,11 +293,19 @@ class Article(pipermail.Article):
         d = self.__dict__.copy()
         # We definitely don't want to pickle the MailList instance, so just
         # pickle a reference to it.
-        del d['_mlist']
-        d['__listname'] = self._mlist.internal_name()
+        if d.has_key('_mlist'):
+            mlist = d['_mlist']
+            del d['_mlist']
+        else:
+            mlist = None
+        if mlist:
+            d['__listname'] = self._mlist.internal_name()
+        else:
+            d['__listname'] = None
         # Delete a few other things we don't want in the pickle
         for attr in ('prev', 'next', 'body'):
-            del d[attr]
+            if d.has_key(attr):
+                del d[attr]
         d['body'] = []
         return d
 
@@ -311,10 +319,10 @@ class Article(pipermail.Article):
             del d['__listname']
             d['_mlist'] = self._open_list(listname)
         if not d.has_key('_lang'):
-            if self._mlist is None:
-                self._lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
-            else:
+            if hasattr(self, '_mlist'):
                 self._lang = self._mlist.preferred_language
+            else:
+                self._lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
         if not d.has_key('charset'):
             self.charset = Utils.GetCharSet(self._lang)
         if not d.has_key('cenc'):
