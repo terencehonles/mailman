@@ -38,7 +38,11 @@ def LogStdErr(category, label, manual_reprime=1, tee_to_stdout=1):
                                    manual_reprime=1,
                                    nofail=0)
         if tee_to_stdout:
-            multi = MultiLogger(sys.__stdout__, sys.stderr)
+            if hasattr(sys, '__stdout__'):
+                stdout = sys.__stdout__
+            else:
+                stdout = sys.stdout
+            multi = MultiLogger(stdout, sys.stderr)
             sys.stderr = multi
         return sys.stderr
     except IOError:
