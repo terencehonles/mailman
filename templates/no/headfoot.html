@@ -1,23 +1,26 @@
 Teksten kan inneholde <b><code>%(attribute)s</code></b> formateringskoder
 som byttes ut med verdier fra listens oppsett. For detaljer, se
 <a href="http://www.python.org/doc/current/lib/typesseq-strings.html">Pythons
-formateringsregler (engelsk)</a>.  Noen nyttige koder er:
+formateringsregler (engelsk)</a>. Gyldige koder er:
 
 <ul>
     <li><b><code>real_name</code></b> - Listens formaterte navn; vanligvis
     listenavnet med stor forbokstav eller store bokstaver enkelte steder.
 
-    <li><b><code>_internal_name</code></b> - Listens navn som brukt i URLer,
+    <li><b><code>list_name</code></b> - Listens navn som brukt i URLer,
     der det har betydning om den staves med store eller sm&aring; bokstaver.
+    (For bakoverkompatibilitet, er <code>_internal_name</code> det samme.)
 
     <li><b><code>host_name</code></b> - Internettadressen (fully qulified
     domain name) til maskinen som listeserveren g&aring;r p&aring;.
 
     <li><b><code>web_page_url</code></b> - Basis URL for Mailman. Denne kan
-    legges til sammen med, f.eks. <em><code>listinfo/%(_internal_name)s</code></em>
+    legges til sammen med, f.eks. <em><code>listinfo/%(internal_name)s</code></em>
     for &aring; danne URLen til en listes infoside.
 
     <li><b><code>description</code></b> - En kort beskrivelse av listen.
 
     <li><b><code>info</code></b> - Full beskrivelse av listen.
+
+    <li><b><code>cgiext</code></b> - Tillegg som legges til CGI scripts.
 </ul>
