@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.15\n"
-"POT-Creation-Date: Fri Aug  9 23:58:02 2002\n"
+"POT-Creation-Date: Thu Aug 15 11:11:02 2002\n"
 "PO-Revision-Date: 2002-03-18 HO:MI+ZONE\n"
 "Last-Translator: Pekka Haavisto <pekka.haavisto@mtt.fi>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,7 +120,7 @@ msgstr ""
 "\t\t on periaatteessa k‰yttˆkelvoton."
 
 #: Mailman/Cgi/admin.py:179 Mailman/Cgi/admin.py:185 Mailman/Cgi/admin.py:190
-#: Mailman/Cgi/admin.py:1349 Mailman/Gui/GUIBase.py:184
+#: Mailman/Cgi/admin.py:1353 Mailman/Gui/GUIBase.py:184
 msgid "Warning: "
 msgstr "Varoitus: "
 
@@ -182,8 +182,8 @@ msgid ""
 "        unadvertised list, open a URL similar to this one, but with a '/' "
 "and\n"
 "        the %(extra)slist name appended.  If you have the proper authority,\n"
-"        you can also <a href=\"%(creatorurl)s\">create a new mailing "
-"list</a>.\n"
+"        you can also <a href=\"%(creatorurl)s\">create a new mailing list</"
+"a>.\n"
 "\n"
 "        <p>General list information can be found at "
 msgstr ""
@@ -207,7 +207,7 @@ msgstr "<p>(L‰het‰ kysymykset ja kommentit "
 msgid "List"
 msgstr "Lista"
 
-#: Mailman/Cgi/admin.py:283 Mailman/Cgi/admin.py:553
+#: Mailman/Cgi/admin.py:283 Mailman/Cgi/admin.py:554
 #: Mailman/Cgi/listinfo.py:133
 msgid "Description"
 msgstr "Kuvaus"
@@ -247,59 +247,60 @@ msgstr ""
 " t‰m‰n valinnan. Voit myˆs\n"
 " "
 
-#: Mailman/Cgi/admin.py:367
-msgid "return to the %(category)s options page."
+#: Mailman/Cgi/admin.py:368
+#, fuzzy
+msgid "return to the %(categoryname)s options page."
 msgstr "palaa %(category)s valintojen sivulle."
 
-#: Mailman/Cgi/admin.py:382
+#: Mailman/Cgi/admin.py:383
 msgid "%(realname)s Administration (%(label)s)"
 msgstr "%(realname)s Yll‰pito (%(label)s)"
 
-#: Mailman/Cgi/admin.py:383
+#: Mailman/Cgi/admin.py:384
 msgid "%(realname)s mailing list administration<br>%(label)s Section"
 msgstr "%(realname)s postitusistan yll‰pidon <br>%(label)s Kappale"
 
-#: Mailman/Cgi/admin.py:399
+#: Mailman/Cgi/admin.py:400
 msgid "Configuration Categories"
 msgstr "Konfigurointi luokat"
 
-#: Mailman/Cgi/admin.py:400
+#: Mailman/Cgi/admin.py:401
 msgid "Other Administrative Activities"
 msgstr "Muut Yll‰pidon Toiminnot"
 
-#: Mailman/Cgi/admin.py:404
+#: Mailman/Cgi/admin.py:405
 msgid "Tend to pending moderator requests"
 msgstr "Odottaa p‰‰k‰ytt‰j‰n toimia"
 
-#: Mailman/Cgi/admin.py:406
+#: Mailman/Cgi/admin.py:407
 msgid "Go to the general list information page"
 msgstr "Mene listan esittelysivulle"
 
-#: Mailman/Cgi/admin.py:408
+#: Mailman/Cgi/admin.py:409
 msgid "Edit the public HTML pages"
 msgstr "Muokkaa julkisia HTML sivuja"
 
-#: Mailman/Cgi/admin.py:410
+#: Mailman/Cgi/admin.py:411
 msgid "Go to list archives"
 msgstr "Mene listan arkistoon"
 
-#: Mailman/Cgi/admin.py:416
+#: Mailman/Cgi/admin.py:417
 msgid "Delete this mailing list"
 msgstr "Poista t‰m‰ postituslista"
 
-#: Mailman/Cgi/admin.py:417
+#: Mailman/Cgi/admin.py:418
 msgid " (requires confirmation)<br>&nbsp;<br>"
 msgstr " (vaatii vahvistuksen)<br>&nbsp;<br>"
 
-#: Mailman/Cgi/admin.py:423
+#: Mailman/Cgi/admin.py:424
 msgid "Logout"
 msgstr "Poistu"
 
-#: Mailman/Cgi/admin.py:466
+#: Mailman/Cgi/admin.py:467
 msgid "Emergency moderation of all list traffic:"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:483
+#: Mailman/Cgi/admin.py:484
 msgid ""
 "Make your changes in the following section, then submit them\n"
 "        using the <em>Submit Your Changes</em> button below."
@@ -307,11 +308,11 @@ msgstr ""
 "Tee muutoksesi seuraavassa kappaleessa ja l‰het‰\n"
 " ne painamalla allaolevaa <em>L‰het‰ muutokset</em> nappia."
 
-#: Mailman/Cgi/admin.py:501
+#: Mailman/Cgi/admin.py:502
 msgid "Additional Member Tasks"
 msgstr "J‰senen lis‰teht‰v‰t"
 
-#: Mailman/Cgi/admin.py:507
+#: Mailman/Cgi/admin.py:508
 msgid ""
 "<li>Set everyone's moderation bit, including\n"
 "            those members not currently visible"
@@ -319,23 +320,23 @@ msgstr ""
 "<li>Aseta kaikkien muutosoikeudet, myˆs\n"
 "            niiden j‰senten, jotka eiv‰t nyt ole n‰kyviss‰"
 
-#: Mailman/Cgi/admin.py:511
+#: Mailman/Cgi/admin.py:512
 msgid "Off"
 msgstr "Pois"
 
-#: Mailman/Cgi/admin.py:511
+#: Mailman/Cgi/admin.py:512
 msgid "On"
 msgstr "K‰ytˆss‰"
 
-#: Mailman/Cgi/admin.py:513
+#: Mailman/Cgi/admin.py:514
 msgid "Set"
 msgstr "Aseta"
 
-#: Mailman/Cgi/admin.py:554
+#: Mailman/Cgi/admin.py:555
 msgid "Value"
 msgstr "Arvo"
 
-#: Mailman/Cgi/admin.py:608
+#: Mailman/Cgi/admin.py:609
 msgid ""
 "Badly formed options entry:\n"
 " %(record)s"
@@ -343,51 +344,51 @@ msgstr ""
 "V‰‰rin muotoiltu arvo:\n"
 " %(record)s"
 
-#: Mailman/Cgi/admin.py:663
+#: Mailman/Cgi/admin.py:664
 msgid "<em>Enter the text below, or...</em><br>"
 msgstr "<em>Syˆt‰ teksti alapuolelle, tai...</em><br>"
 
-#: Mailman/Cgi/admin.py:665
+#: Mailman/Cgi/admin.py:666
 msgid "<br><em>...specify a file to upload</em><br>"
 msgstr "<br><em>...m‰‰rittele ladattava tiedosto</em><br>"
 
-#: Mailman/Cgi/admin.py:691 Mailman/Cgi/admin.py:694
+#: Mailman/Cgi/admin.py:692 Mailman/Cgi/admin.py:695
 msgid "Topic %(i)d"
 msgstr "Aihe %(i)d"
 
-#: Mailman/Cgi/admin.py:695
+#: Mailman/Cgi/admin.py:696
 msgid "Delete"
 msgstr "Poista"
 
-#: Mailman/Cgi/admin.py:696
+#: Mailman/Cgi/admin.py:697
 msgid "Topic name:"
 msgstr "Aiheen nimi:"
 
-#: Mailman/Cgi/admin.py:698
+#: Mailman/Cgi/admin.py:699
 msgid "Regexp:"
 msgstr "Regexp:"
 
-#: Mailman/Cgi/admin.py:701 Mailman/Cgi/options.py:940
+#: Mailman/Cgi/admin.py:702 Mailman/Cgi/options.py:940
 msgid "Description:"
 msgstr "Kuvaus:"
 
-#: Mailman/Cgi/admin.py:705
+#: Mailman/Cgi/admin.py:706
 msgid "Add new item..."
 msgstr "Lis‰‰ uusi aihe..."
 
-#: Mailman/Cgi/admin.py:707
+#: Mailman/Cgi/admin.py:708
 msgid "...before this one."
 msgstr "...ennen t‰t‰."
 
-#: Mailman/Cgi/admin.py:708
+#: Mailman/Cgi/admin.py:709
 msgid "...after this one."
 msgstr "...t‰m‰n j‰lkeen."
 
-#: Mailman/Cgi/admin.py:743
+#: Mailman/Cgi/admin.py:744
 msgid "<br>(Details for <b>%(varname)s</b>)"
 msgstr "<br>(Yksityiskohta <b>%(varname)s</b>)"
 
-#: Mailman/Cgi/admin.py:748
+#: Mailman/Cgi/admin.py:749
 msgid ""
 "<br><em><strong>Note:</strong>\n"
 "        setting this value performs an immediate action but does not modify\n"
@@ -397,107 +398,107 @@ msgstr ""
 "        t‰m‰n arvon asettaminen suoritetaan heti, mutta se ei muokkaa\n"
 "        sit‰ pysyv‰sti.</em>"
 
-#: Mailman/Cgi/admin.py:762
+#: Mailman/Cgi/admin.py:763
 msgid "Mass Subscriptions"
 msgstr "Joukkoliittymiset"
 
-#: Mailman/Cgi/admin.py:769
+#: Mailman/Cgi/admin.py:770
 msgid "Mass Removals"
 msgstr "Joukkopoistot"
 
-#: Mailman/Cgi/admin.py:776
+#: Mailman/Cgi/admin.py:777
 msgid "Membership List"
 msgstr "J‰senien listaus"
 
-#: Mailman/Cgi/admin.py:783
+#: Mailman/Cgi/admin.py:784
 msgid "(help)"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:784
+#: Mailman/Cgi/admin.py:785
 msgid "Find member %(link)s:"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:787
+#: Mailman/Cgi/admin.py:788
 msgid "Search..."
 msgstr "Etsit‰‰n..."
 
-#: Mailman/Cgi/admin.py:802
+#: Mailman/Cgi/admin.py:803
 msgid "Bad regular expression: "
 msgstr "V‰‰r‰ vakioilmaus:"
 
-#: Mailman/Cgi/admin.py:853
+#: Mailman/Cgi/admin.py:857
 msgid "%(allcnt)s members total, %(membercnt)s shown"
 msgstr "%(allcnt)s j‰sent‰ yhteens‰, %(membercnt)s n‰ytet‰‰n"
 
-#: Mailman/Cgi/admin.py:856
+#: Mailman/Cgi/admin.py:860
 msgid "%(allcnt)s members total"
 msgstr "%(allcnt)s j‰sent‰ yhteens‰"
 
-#: Mailman/Cgi/admin.py:879
+#: Mailman/Cgi/admin.py:883
 msgid "unsub"
 msgstr "irtisano"
 
-#: Mailman/Cgi/admin.py:880
+#: Mailman/Cgi/admin.py:884
 msgid "member address<br>member name"
 msgstr "j‰senen osoite<br>j‰senen nimi"
 
-#: Mailman/Cgi/admin.py:881
+#: Mailman/Cgi/admin.py:885
 msgid "hide"
 msgstr "piilota"
 
-#: Mailman/Cgi/admin.py:881
+#: Mailman/Cgi/admin.py:885
 msgid "mod"
 msgstr "muokkaa"
 
-#: Mailman/Cgi/admin.py:882
+#: Mailman/Cgi/admin.py:886
 msgid "nomail<br>[reason]"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:883
+#: Mailman/Cgi/admin.py:887
 msgid "ack"
 msgstr "hyv‰ksynt‰"
 
-#: Mailman/Cgi/admin.py:883
+#: Mailman/Cgi/admin.py:887
 msgid "not metoo"
 msgstr "ei (metoo)"
 
-#: Mailman/Cgi/admin.py:884
+#: Mailman/Cgi/admin.py:888
 msgid "nodupes"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:885
+#: Mailman/Cgi/admin.py:889
 msgid "digest"
 msgstr "kokoelma"
 
-#: Mailman/Cgi/admin.py:885
+#: Mailman/Cgi/admin.py:889
 msgid "plain"
 msgstr "tavallinen"
 
-#: Mailman/Cgi/admin.py:886
+#: Mailman/Cgi/admin.py:890
 msgid "language"
 msgstr "kieli"
 
-#: Mailman/Cgi/admin.py:897
+#: Mailman/Cgi/admin.py:901
 msgid "?"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:898
+#: Mailman/Cgi/admin.py:902
 msgid "U"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:899
+#: Mailman/Cgi/admin.py:903
 msgid "A"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:900
+#: Mailman/Cgi/admin.py:904
 msgid "B"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:972
+#: Mailman/Cgi/admin.py:976
 msgid "<b>unsub</b> -- Click on this to unsubscribe the member."
 msgstr "<b>irtisano</b> -- Klikkaa t‰st‰ irtisanoaksesi j‰sen."
 
-#: Mailman/Cgi/admin.py:974
+#: Mailman/Cgi/admin.py:978
 msgid ""
 "<b>mod</b> -- The user's personal moderation flag.  If this is\n"
 "        set, postings from them will be moderated, otherwise they will be\n"
@@ -507,7 +508,7 @@ msgstr ""
 "        asetetaan, heid‰n l‰hetyksens‰ muokataan, muuten heid‰t on\n"
 "        hyv‰ksytty."
 
-#: Mailman/Cgi/admin.py:978
+#: Mailman/Cgi/admin.py:982
 msgid ""
 "<b>hide</b> -- Is the member's address concealed on\n"
 "        the list of subscribers?"
@@ -515,7 +516,7 @@ msgstr ""
 "<b>piilota</b> -- Onko j‰senen osoite concealed\n"
 "        tilaajien listassa?"
 
-#: Mailman/Cgi/admin.py:980
+#: Mailman/Cgi/admin.py:984
 msgid ""
 "<b>nomail</b> -- Is delivery to the member disabled?  If so, an\n"
 "        abbreviation will be given describing the reason for the disabled\n"
@@ -534,7 +535,7 @@ msgid ""
 "            </ul>"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:995
+#: Mailman/Cgi/admin.py:999
 msgid ""
 "<b>ack</b> -- Does the member get acknowledgements of their\n"
 "        posts?"
@@ -542,7 +543,7 @@ msgstr ""
 "<b>Ilmoitukset</b> -- Saavatko j‰senet ilmoitukset\n"
 "        l‰hetetyist‰ viesteist‰?"
 
-#: Mailman/Cgi/admin.py:998
+#: Mailman/Cgi/admin.py:1002
 #, fuzzy
 msgid ""
 "<b>not metoo</b> -- Does the member want to avoid copies of their\n"
@@ -551,7 +552,7 @@ msgstr ""
 "<b>ei (metoo)</b> -- Estet‰‰nkˆ j‰senelle omien viestien\n"
 "        saaminen?"
 
-#: Mailman/Cgi/admin.py:1001
+#: Mailman/Cgi/admin.py:1005
 #, fuzzy
 msgid ""
 "<b>nodupes</b> -- Does the member want to avoid duplicates of the\n"
@@ -560,7 +561,7 @@ msgstr ""
 "<b>ei (metoo)</b> -- Estet‰‰nkˆ j‰senelle omien viestien\n"
 "        saaminen?"
 
-#: Mailman/Cgi/admin.py:1004
+#: Mailman/Cgi/admin.py:1008
 msgid ""
 "<b>digest</b> -- Does the member get messages in digests?\n"
 "        (otherwise, individual messages)"
@@ -568,7 +569,7 @@ msgstr ""
 "<b>lukemisto</b> -- Saako j‰sen viestit lukemistona?\n"
 "        (muuten yksitt‰iset viestit)"
 
-#: Mailman/Cgi/admin.py:1007
+#: Mailman/Cgi/admin.py:1011
 msgid ""
 "<b>plain</b> -- If getting digests, does the member get plain\n"
 "        text digests?  (otherwise, MIME)"
@@ -576,19 +577,19 @@ msgstr ""
 "<b>tavallinen</b> -- Jos lukemistona, saako j‰sen tavallisen\n"
 "        tekstin lukemistona?  (muuten, MIME)"
 
-#: Mailman/Cgi/admin.py:1009
+#: Mailman/Cgi/admin.py:1013
 msgid "<b>language</b> -- Language preferred by the user"
 msgstr "<b>kieli</b> -- K‰ytt‰j‰n haluama kieli"
 
-#: Mailman/Cgi/admin.py:1023
+#: Mailman/Cgi/admin.py:1027
 msgid "Click here to hide the legend for this table."
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1027
+#: Mailman/Cgi/admin.py:1031
 msgid "Click here to include the legend for this table."
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1034
+#: Mailman/Cgi/admin.py:1038
 msgid ""
 "<p><em>To view more members, click on the appropriate\n"
 "        range listed below:</em>"
@@ -596,38 +597,38 @@ msgstr ""
 "<p><em>N‰hd‰ksesi lis‰‰ j‰seni‰, klikkaa allaolevasta listasta\n"
 "        sopivaa aluetta:</em>"
 
-#: Mailman/Cgi/admin.py:1043
+#: Mailman/Cgi/admin.py:1047
 msgid "from %(start)s to %(end)s"
 msgstr "%(start)s sta %(end)s aan"
 
-#: Mailman/Cgi/admin.py:1056
+#: Mailman/Cgi/admin.py:1060
 msgid "Subscribe these users now or invite them?"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1058
+#: Mailman/Cgi/admin.py:1062
 msgid "Invite"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1058 Mailman/Cgi/confirm.py:275
+#: Mailman/Cgi/admin.py:1062 Mailman/Cgi/confirm.py:275
 #: Mailman/Cgi/listinfo.py:171
 msgid "Subscribe"
 msgstr "Liity"
 
-#: Mailman/Cgi/admin.py:1064
+#: Mailman/Cgi/admin.py:1068
 #, fuzzy
 msgid "Send welcome messages to new subscribees?"
 msgstr "L‰het‰ tervetuloviestit t‰h‰n jonoon?"
 
-#: Mailman/Cgi/admin.py:1066 Mailman/Cgi/admin.py:1075
-#: Mailman/Cgi/admin.py:1108 Mailman/Cgi/admin.py:1116
+#: Mailman/Cgi/admin.py:1070 Mailman/Cgi/admin.py:1079
+#: Mailman/Cgi/admin.py:1112 Mailman/Cgi/admin.py:1120
 #: Mailman/Cgi/confirm.py:263 Mailman/Cgi/create.py:323
 #: Mailman/Cgi/create.py:351 Mailman/Cgi/create.py:383
 #: Mailman/Cgi/rmlist.py:205 Mailman/Gui/Archive.py:33
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:108 Mailman/Gui/Bounce.py:134
-#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:40
-#: Mailman/Gui/ContentFilter.py:64 Mailman/Gui/Digest.py:46
+#: Mailman/Gui/Bounce.py:143 Mailman/Gui/ContentFilter.py:65
+#: Mailman/Gui/ContentFilter.py:96 Mailman/Gui/Digest.py:46
 #: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
 #: Mailman/Gui/General.py:150 Mailman/Gui/General.py:228
 #: Mailman/Gui/General.py:255 Mailman/Gui/General.py:282
@@ -644,15 +645,15 @@ msgstr "L‰het‰ tervetuloviestit t‰h‰n jonoon?"
 msgid "No"
 msgstr "Ei"
 
-#: Mailman/Cgi/admin.py:1066 Mailman/Cgi/admin.py:1075
-#: Mailman/Cgi/admin.py:1108 Mailman/Cgi/admin.py:1116
+#: Mailman/Cgi/admin.py:1070 Mailman/Cgi/admin.py:1079
+#: Mailman/Cgi/admin.py:1112 Mailman/Cgi/admin.py:1120
 #: Mailman/Cgi/confirm.py:263 Mailman/Cgi/create.py:323
 #: Mailman/Cgi/create.py:351 Mailman/Cgi/create.py:383
 #: Mailman/Cgi/rmlist.py:205 Mailman/Gui/Archive.py:33
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:108
 #: Mailman/Gui/Bounce.py:134 Mailman/Gui/Bounce.py:143
-#: Mailman/Gui/ContentFilter.py:40 Mailman/Gui/ContentFilter.py:64
+#: Mailman/Gui/ContentFilter.py:65 Mailman/Gui/ContentFilter.py:96
 #: Mailman/Gui/Digest.py:46 Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84
 #: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:150
 #: Mailman/Gui/General.py:228 Mailman/Gui/General.py:255
@@ -669,20 +670,20 @@ msgstr "Ei"
 msgid "Yes"
 msgstr "Kyll‰"
 
-#: Mailman/Cgi/admin.py:1073
+#: Mailman/Cgi/admin.py:1077
 #, fuzzy
 msgid "Send notifications of new subscriptions to the list owner?"
 msgstr "L‰het‰ ilmoitus listan omistajalle?"
 
-#: Mailman/Cgi/admin.py:1081 Mailman/Cgi/admin.py:1122
+#: Mailman/Cgi/admin.py:1085 Mailman/Cgi/admin.py:1126
 msgid "Enter one address per line below..."
 msgstr "Syˆt‰ yksi osoite riville..."
 
-#: Mailman/Cgi/admin.py:1086 Mailman/Cgi/admin.py:1127
+#: Mailman/Cgi/admin.py:1090 Mailman/Cgi/admin.py:1131
 msgid "...or specify a file to upload:"
 msgstr "... tai m‰‰rittele ladattava tiedosto:"
 
-#: Mailman/Cgi/admin.py:1091
+#: Mailman/Cgi/admin.py:1095
 msgid ""
 "Below, enter additional text to be added to the\n"
 "    top of your invitation or the subscription notification.  Include at "
@@ -690,19 +691,19 @@ msgid ""
 "    one blank line at the end..."
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1106
+#: Mailman/Cgi/admin.py:1110
 msgid "Send unsubscription acknowledgement to the user?"
 msgstr "L‰het‰ irtisanomisilmoitus k‰ytt‰j‰lle?"
 
-#: Mailman/Cgi/admin.py:1114
+#: Mailman/Cgi/admin.py:1118
 msgid "Send notifications to the list owner?"
 msgstr "L‰het‰ ilmoitus listan omistajalle?"
 
-#: Mailman/Cgi/admin.py:1136
+#: Mailman/Cgi/admin.py:1140
 msgid "Change list ownership passwords"
 msgstr "Vaihda listan omistussuhteen salasanat"
 
-#: Mailman/Cgi/admin.py:1139
+#: Mailman/Cgi/admin.py:1143
 msgid ""
 "The <em>list administrators</em> are the people who have ultimate control "
 "over\n"
@@ -736,95 +737,95 @@ msgstr ""
 "ja syˆtt‰‰ listan p‰‰k‰ytt‰jien s‰hkˆpostiosoitteet \n"
 "<a href=\"%(adminurl)s/general\">yleisten valintojen osassa</a>."
 
-#: Mailman/Cgi/admin.py:1158
+#: Mailman/Cgi/admin.py:1162
 msgid "Enter new administrator password:"
 msgstr "Anna uusi yll‰pit‰j‰n salasana:"
 
-#: Mailman/Cgi/admin.py:1160
+#: Mailman/Cgi/admin.py:1164
 msgid "Confirm administator password:"
 msgstr "Vahvista yll‰pit‰j‰n salasana:"
 
-#: Mailman/Cgi/admin.py:1165
+#: Mailman/Cgi/admin.py:1169
 msgid "Enter new moderator password:"
 msgstr "Anna uusi p‰‰k‰ytt‰j‰n salasana:"
 
-#: Mailman/Cgi/admin.py:1167
+#: Mailman/Cgi/admin.py:1171
 msgid "Confirm moderator password:"
 msgstr "Vahvista p‰‰k‰ytt‰j‰n salasana:"
 
-#: Mailman/Cgi/admin.py:1177
+#: Mailman/Cgi/admin.py:1181
 msgid "Submit Your Changes"
 msgstr "L‰het‰ muutoksesi"
 
-#: Mailman/Cgi/admin.py:1200
+#: Mailman/Cgi/admin.py:1204
 msgid "Moderator passwords did not match"
 msgstr "P‰‰k‰ytt‰j‰n salasana ei t‰sm‰‰"
 
-#: Mailman/Cgi/admin.py:1210
+#: Mailman/Cgi/admin.py:1214
 msgid "Administator passwords did not match"
 msgstr "Yll‰pit‰j‰n salasana ei t‰sm‰‰"
 
-#: Mailman/Cgi/admin.py:1254
+#: Mailman/Cgi/admin.py:1258
 msgid "Already a member"
 msgstr "Jo j‰sen"
 
-#: Mailman/Cgi/admin.py:1257
+#: Mailman/Cgi/admin.py:1261
 msgid "&lt;blank line&gt;"
 msgstr "&lt;tyhj‰ rivigt;"
 
-#: Mailman/Cgi/admin.py:1258 Mailman/Cgi/admin.py:1261
+#: Mailman/Cgi/admin.py:1262 Mailman/Cgi/admin.py:1265
 msgid "Bad/Invalid email address"
 msgstr "Virheellinen s‰hkˆpostiosoite"
 
-#: Mailman/Cgi/admin.py:1264
+#: Mailman/Cgi/admin.py:1268
 msgid "Hostile address (illegal characters)"
 msgstr "Vihamielinen osoite (v‰‰ri‰ kirjaimia)"
 
-#: Mailman/Cgi/admin.py:1269
+#: Mailman/Cgi/admin.py:1273
 #, fuzzy
 msgid "Successfully invited:"
 msgstr "Poistettu onnistuneesti:"
 
-#: Mailman/Cgi/admin.py:1271
+#: Mailman/Cgi/admin.py:1275
 #, fuzzy
 msgid "Successfully subscribed:"
 msgstr "Erotettu onnistuneesti:"
 
-#: Mailman/Cgi/admin.py:1276
+#: Mailman/Cgi/admin.py:1280
 #, fuzzy
 msgid "Error inviting:"
 msgstr "Virhe eroamisessa:"
 
-#: Mailman/Cgi/admin.py:1278
+#: Mailman/Cgi/admin.py:1282
 #, fuzzy
 msgid "Error subscribing:"
 msgstr "Virhe eroamisessa:"
 
-#: Mailman/Cgi/admin.py:1307
+#: Mailman/Cgi/admin.py:1311
 msgid "Successfully Unsubscribed:"
 msgstr "Erotettu onnistuneesti:"
 
-#: Mailman/Cgi/admin.py:1312
+#: Mailman/Cgi/admin.py:1316
 msgid "Cannot unsubscribe non-members:"
 msgstr "Ei voi erota, koska ei ole j‰sen:"
 
-#: Mailman/Cgi/admin.py:1324
+#: Mailman/Cgi/admin.py:1328
 msgid "Bad moderation flag value"
 msgstr "Viallinen p‰‰k‰ytt‰j‰n lipun arvo"
 
-#: Mailman/Cgi/admin.py:1345
+#: Mailman/Cgi/admin.py:1349
 msgid "Not subscribed"
 msgstr "Ei liitetty"
 
-#: Mailman/Cgi/admin.py:1348
+#: Mailman/Cgi/admin.py:1352
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr ""
 
-#: Mailman/Cgi/admin.py:1387
+#: Mailman/Cgi/admin.py:1391
 msgid "Successfully Removed:"
 msgstr "Poistettu onnistuneesti:"
 
-#: Mailman/Cgi/admin.py:1391
+#: Mailman/Cgi/admin.py:1395
 msgid "Error Unsubscribing:"
 msgstr "Virhe eroamisessa:"
 
@@ -1012,7 +1013,7 @@ msgid "Reason:"
 msgstr "Syy:"
 
 #: Mailman/Cgi/admindb.py:458 Mailman/Handlers/Decorate.py:49
-#: Mailman/Handlers/Scrubber.py:157 Mailman/Handlers/Scrubber.py:158
+#: Mailman/Handlers/Scrubber.py:191 Mailman/Handlers/Scrubber.py:192
 msgid "not available"
 msgstr "ei saatavilla"
 
@@ -1369,8 +1370,8 @@ msgid ""
 "            login page</a>."
 msgstr ""
 "            Olet onnistuneesti muuttanut osoitteesi %(listname)s\n"
-"            -postituslistalle <b>%(oldaddr)s sta</b> <b>%(newaddr)s "
-"ksi</b>.\n"
+"            -postituslistalle <b>%(oldaddr)s sta</b> <b>%(newaddr)s ksi</"
+"b>.\n"
 "            Voit nyt <a href=\"%(optionsurl)s\">jatkaa j‰senen\n"
 "            sis‰‰nkirjautumissivulle</a>."
 
@@ -1455,8 +1456,8 @@ msgid ""
 msgstr ""
 "Jonossa oleva viesti, jonka Aihe on:\n"
 "            Otsikkoa <em>%(subject)s</em> ei lˆydy.  Todenn‰kˆisin\n"
-"            syy t‰h‰n on, ett‰ listan p‰‰k‰ytt‰j‰ on jo hyv‰ksynyt tai       "
-"     hyl‰nnyt viestin.  Viesti‰ ei voitu peruuttaa ajoissa."
+"            syy t‰h‰n on, ett‰ listan p‰‰k‰ytt‰j‰ on jo hyv‰ksynyt "
+"tai            hyl‰nnyt viestin.  Viesti‰ ei voitu peruuttaa ajoissa."
 
 #: Mailman/Cgi/confirm.py:582
 msgid "Posted message canceled"
@@ -3068,75 +3069,79 @@ msgstr "ei-lukemisto otsikko"
 msgid "Digest members:"
 msgstr "Listan j‰senet"
 
-#: Mailman/Defaults.py:1187
+#: Mailman/Defaults.py:1190
 msgid "Traditional Chinese"
 msgstr "Perinteinen kiina"
 
-#: Mailman/Defaults.py:1188
+#: Mailman/Defaults.py:1191
 msgid "Czech"
 msgstr "Tsekki"
 
-#: Mailman/Defaults.py:1189
+#: Mailman/Defaults.py:1192
 msgid "German"
 msgstr "Saksa"
 
-#: Mailman/Defaults.py:1190
+#: Mailman/Defaults.py:1193
 msgid "English (USA)"
 msgstr "Englanti (amerikan-)"
 
-#: Mailman/Defaults.py:1191
+#: Mailman/Defaults.py:1194
 #, fuzzy
 msgid "Spanish (Spain)"
 msgstr "Espanja (Espanja)"
 
-#: Mailman/Defaults.py:1192
+#: Mailman/Defaults.py:1195
 msgid "Estonian"
 msgstr ""
 
-#: Mailman/Defaults.py:1193
+#: Mailman/Defaults.py:1196
 msgid "Finnish"
 msgstr ""
 
-#: Mailman/Defaults.py:1194
+#: Mailman/Defaults.py:1197
 msgid "French"
 msgstr "Ranska"
 
-#: Mailman/Defaults.py:1195
+#: Mailman/Defaults.py:1198
 msgid "Simplified Chinese"
 msgstr "Yksinkertaistettu kiina"
 
-#: Mailman/Defaults.py:1196
+#: Mailman/Defaults.py:1199
 msgid "Hungarian"
 msgstr "Unkari"
 
-#: Mailman/Defaults.py:1197
+#: Mailman/Defaults.py:1200
 msgid "Italian"
 msgstr "Italia"
 
-#: Mailman/Defaults.py:1198
+#: Mailman/Defaults.py:1201
 msgid "Japanese"
 msgstr "Japani"
 
-#: Mailman/Defaults.py:1199
+#: Mailman/Defaults.py:1202
 #, fuzzy
 msgid "Korean"
 msgstr "Norja"
 
-#: Mailman/Defaults.py:1200
+#: Mailman/Defaults.py:1203
 msgid "Dutch"
 msgstr ""
 
-#: Mailman/Defaults.py:1201
+#: Mailman/Defaults.py:1204
 msgid "Norwegian"
 msgstr "Norja"
 
-#: Mailman/Defaults.py:1202
+#: Mailman/Defaults.py:1205
 msgid "Portuguese (Brazil)"
 msgstr ""
 
-#: Mailman/Defaults.py:1203
+#: Mailman/Defaults.py:1206
 msgid "Russian"
 msgstr "Ven‰j‰"
+
+#: Mailman/Defaults.py:1207
+msgid "Swedish"
+msgstr ""
 
 #: Mailman/Deliverer.py:42
 msgid ""
@@ -3320,8 +3325,8 @@ msgid ""
 msgstr ""
 "Automaattivastauksien v‰listen p‰ivien m‰‰r‰ joko postituslistalle\n"
 "             tai yll‰pito/omistajan osoitteisiin samalta l‰hett‰j‰lt‰.\n"
-"             Jos m‰‰ritell‰n nollaksi (tai negatiiviseksi luvuksi) lis‰aikaa "
-"\n"
+"             Jos m‰‰ritell‰n nollaksi (tai negatiiviseksi luvuksi) "
+"lis‰aikaa \n"
 "             ei anneta (esim. automaattivastaus jokaiselle viestille)."
 
 #: Mailman/Gui/Bounce.py:26
@@ -3371,11 +3376,11 @@ msgid ""
 "            membership.\n"
 "\n"
 "            <p>You can control both the\n"
-"            <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings\">number\n"
+"            <a href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings"
+"\">number\n"
 "            of reminders</a> the member will receive and the\n"
-"            <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\"\n"
+"            <a href=\"?VARHELP=bounce/"
+"bounce_you_are_disabled_warnings_interval\"\n"
 "            >frequency</a> with which these reminders are sent.\n"
 "\n"
 "            <p>There is one other important configuration variable; after a\n"
@@ -3405,8 +3410,8 @@ msgstr ""
 "            tavallisesti hyl‰t‰‰n.  Muussa tapauksessa jokainen j‰sen saa \n"
 "            <em>palautettujen viestien m‰‰r‰n</em> ja joka kerta kun saamme "
 "palautetun viestin\n"
-"            t‰lt‰ j‰senelt‰, lis‰‰mme m‰‰r‰‰. Vakavat palautukset m‰‰r‰‰ "
-"1:ll‰\n"
+"            t‰lt‰ j‰senelt‰, lis‰‰mme m‰‰r‰‰. Vakavat palautukset m‰‰r‰‰ 1:"
+"ll‰\n"
 "            v‰h‰iset virheet kasvattavat m‰‰r‰‰ 0.5:ll‰.  Lis‰mme "
 "palautettujen viestien m‰‰r‰‰\n"
 "            kerran p‰iv‰ss‰, eli jos esimerkiksi saamme kymmenen palautettua "
@@ -3427,11 +3432,11 @@ msgstr ""
 "            voidaan aktivoida.\n"
 "\n"
 "            <p>Voit ohjata sek‰\n"
-"            <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings\">muistutuksien\n"
+"            <a href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings"
+"\">muistutuksien\n"
 "            m‰‰r‰‰</a> jotka k‰ytt‰j‰ saa ett‰\n"
-"            <a "
-"href=\"?VARHELP=bounce/bounce_you_are_disabled_warnings_interval\"\n"
+"            <a href=\"?VARHELP=bounce/"
+"bounce_you_are_disabled_warnings_interval\"\n"
 "            >aikav‰lin</a> kuinka usein k‰ytt‰j‰lle l‰hetet‰‰n "
 "muistutuksia.\n"
 "\n"
@@ -3525,8 +3530,8 @@ msgstr "Ilmoitukset"
 #: Mailman/Gui/Bounce.py:109
 msgid ""
 "Should Mailman send you, the list owner, any bounce messages\n"
-"             that failed to be detected by the bounce processor?  "
-"<em>Yes</em>\n"
+"             that failed to be detected by the bounce processor?  <em>Yes</"
+"em>\n"
 "             is recommended."
 msgstr ""
 "Pit‰isikˆ Mailmanin l‰hett‰‰ sinulle, listan omistajana, yht‰‰n palautettua\n"
@@ -3560,8 +3565,8 @@ msgid ""
 "             <em>No</em> those messages too will get discarded.  You may "
 "want\n"
 "             to set up an\n"
-"             <a "
-"href=\"?VARHELP=autoreply/autoresponse_admin_text\">autoresponse\n"
+"             <a href=\"?VARHELP=autoreply/autoresponse_admin_text"
+"\">autoresponse\n"
 "             message</a> for email to the -owner and -admin address."
 msgstr ""
 "Vaikka Mailmanin palautettujen viestien havainnointi on varsin j‰re‰,\n"
@@ -3587,8 +3592,8 @@ msgstr ""
 "arvoksi \n"
 "             on asetettu <em>Ei</em> myˆsk‰‰n n‰it‰ viestej‰ ei huomioida. "
 "Haluat ehk‰ \n"
-"             asettaa <a "
-"href=\"?VARHELP=autoreply/autoresponse_admin_text\">\n"
+"             asettaa <a href=\"?VARHELP=autoreply/autoresponse_admin_text"
+"\">\n"
 "             automaattivastauksen</a> kaikille niille s‰hkˆposteille, \n"
 "              jotka l‰hetet‰‰n omistaja tai yll‰pit‰j‰n osoitteisiin."
 
@@ -3649,48 +3654,88 @@ msgid "Content&nbsp;filtering"
 msgstr "L‰heet‰j‰n&nbsp;suodattimet"
 
 #: Mailman/Gui/ContentFilter.py:38
-#, fuzzy
-msgid "Policies concerning concerning the content of list traffic."
-msgstr "Heti toimitettavien l‰hetysten toimintatavat."
+msgid ""
+"Policies concerning concerning the content of list traffic.\n"
+"\n"
+"            <p>Content filtering works like this: when a message is\n"
+"            received by the list and you have enabled content filtering, "
+"the\n"
+"            individual attachments are first compared to the\n"
+"            <a href=\"?VARHELP=contentfilter/filter_mime_types\">filter\n"
+"            types</a>.  If the attachment type matches an entry in the "
+"filter\n"
+"            types, it is discarded.\n"
+"\n"
+"            <p>Then, if there are <a\n"
+"            href=\"?VARHELP=contentfilter/pass_mime_types\">pass types</a>\n"
+"            defined, any attachment type that does <em>not</em> match a\n"
+"            pass type is also discarded.  If there are no pass types "
+"defined,\n"
+"            this check is skipped.\n"
+"\n"
+"            <p>After this initial filtering, any <tt>multipart</tt>\n"
+"            attachments that are empty are removed.  If the outer message "
+"is\n"
+"            left empty after this filtering, then the whole message is\n"
+"            discarded.  Then, each <tt>multipart/alternative</tt> section "
+"will\n"
+"            be replaced by just the first alternative that is non-empty "
+"after\n"
+"            filtering.\n"
+"\n"
+"            <p>Finally, any <tt>text/html</tt> parts that are left in the\n"
+"            message may be converted to <tt>text/plain</tt> if\n"
+"            <a href=\"?VARHELP=contentfilter/convert_html_to_plaintext\"</a> "
+"is\n"
+"            enabled and the site is configured to allow these conversions."
+msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:41
+#: Mailman/Gui/ContentFilter.py:66
 msgid ""
 "Should Mailman filter the content of list traffic according\n"
 "             to the settings below?"
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:45
+#: Mailman/Gui/ContentFilter.py:70
 msgid ""
-"Remove sections of messages that have a matching MIME\n"
+"Remove message attachments that have a matching content\n"
 "             type."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:48
+#: Mailman/Gui/ContentFilter.py:73
 msgid ""
-"Use this option to remove each message section with a\n"
-"             matching MIME type.  Each line should contain a string naming "
+"Use this option to remove each message attachment that\n"
+"             matches one of these content types.  Each line should contain "
 "a\n"
-"             MIME <tt>type/subtype</tt>, e.g. <tt>image/gif</tt>.  Leave "
-"off\n"
-"             the subtype to remove all parts with a matching MIME major "
-"type,\n"
-"             e.g. <tt>image</tt>.  Blank lines are ignored.\n"
+"             string naming a MIME <tt>type/subtype</tt>,\n"
+"             e.g. <tt>image/gif</tt>.  Leave off the subtype to remove all\n"
+"             parts with a matching major content type, e.g. <tt>image</tt>.\n"
 "\n"
-"             <p>After stripping message parts, any <tt>multipart</tt>\n"
-"             attachment that is empty as a result is removed all together.  "
-"If\n"
-"             the outer part's MIME type matches one of the strip types, or "
-"if\n"
-"             all of the outer part's subparts are stripped, then the whole\n"
-"             message is discarded.  Finally, each\n"
-"             <tt>multipart/alternative</tt> section will be replaced by "
-"just\n"
-"             the first alternative that is non-empty after the specified "
-"types\n"
-"             have been removed."
+"             <p>Blank lines are ignored."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:65
+#: Mailman/Gui/ContentFilter.py:82
+msgid ""
+"Remove message attachments that don't have a matching\n"
+"             content type.  Leave this field blank to skip this filter\n"
+"             test."
+msgstr ""
+
+#: Mailman/Gui/ContentFilter.py:86
+msgid ""
+"Use this option to remove each message attachment that does\n"
+"             not have a matching content type.  Requirements and formats "
+"are\n"
+"             exactly like <a href=\"?VARHELP=contentfilter/filter_mime_types"
+"\"\n"
+"             >filter_mime_types</a>.\n"
+"\n"
+"             <p><b>Note:</b> if you add entries to this list but don't add\n"
+"             <tt>multipart</tt> to this list, any messages with attachments\n"
+"             will be rejected by the pass filter."
+msgstr ""
+
+#: Mailman/Gui/ContentFilter.py:97
 msgid ""
 "Should Mailman convert <tt>text/html</tt> parts to plain\n"
 "             text?  This conversion happens after MIME attachments have "
@@ -3698,7 +3743,7 @@ msgid ""
 "             stripped."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:75
+#: Mailman/Gui/ContentFilter.py:107
 msgid "Bad MIME type ignored: %(spectype)s"
 msgstr ""
 
@@ -3942,8 +3987,8 @@ msgid ""
 "             <p>In order to split the list ownership duties into\n"
 "             administrators and moderators, you must\n"
 "             <a href=\"passwords\">set a separate moderator password</a>,\n"
-"             and also provide the <a "
-"href=\"?VARHELP=general/moderator\">email\n"
+"             and also provide the <a href=\"?VARHELP=general/moderator"
+"\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
 "             are changing here specifies the list administators."
 msgstr ""
@@ -3963,8 +4008,8 @@ msgstr ""
 "             <p>Jakaaksesi listan omistajasuhteen yll‰pit‰jiin ja\n"
 "             p‰‰k‰ytt‰jiin, sinun t‰ytyy  <a href=\"passwords\">\n"
 "             asettaa erillinen p‰‰k‰ytt‰j‰n salasana</a>,\n"
-"             ja antaa myˆs <a "
-"href=\"?VARHELP=general/moderator\">p‰‰k‰ytt‰jien\n"
+"             ja antaa myˆs <a href=\"?VARHELP=general/moderator"
+"\">p‰‰k‰ytt‰jien\n"
 "             s‰hkˆpostiosoitteet</a>.  Huomaa, ett‰ kentt‰, jota\n"
 "             muut t‰‰ll‰, m‰‰rittelee listan yll‰pit‰j‰t."
 
@@ -4018,8 +4063,8 @@ msgstr ""
 "             <p>Jakaaksesi listan omistajasuhteen yll‰pit‰jiin ja\n"
 "             p‰‰k‰ytt‰jiin, sinun t‰ytyy  <a href=\"passwords\">\n"
 "             asettaa erillinen p‰‰k‰ytt‰j‰n salasana</a>,\n"
-"             ja antaa myˆs <a "
-"href=\"?VARHELP=general/moderator\">p‰‰k‰ytt‰jien\n"
+"             ja antaa myˆs <a href=\"?VARHELP=general/moderator"
+"\">p‰‰k‰ytt‰jien\n"
 "             s‰hkˆpostiosoitteet</a>.  Huomaa, ett‰ kentt‰, jota\n"
 "             muutat t‰‰ll‰, m‰‰rittelee listan p‰‰k‰ytt‰j‰t."
 
@@ -4142,29 +4187,29 @@ msgstr ""
 msgid ""
 "This option controls what Mailman does to the\n"
 "             <tt>Reply-To:</tt> header in messages flowing through this\n"
-"             mailing list.  When set to <em>Poster</em>, no "
-"<tt>Reply-To:</tt>\n"
+"             mailing list.  When set to <em>Poster</em>, no <tt>Reply-To:</"
+"tt>\n"
 "             header is added by Mailman, although if one is present in the\n"
 "             original message, it is not stripped.  Setting this value to\n"
 "             either <em>This list</em> or <em>Explicit address</em> causes\n"
 "             Mailman to insert a specific <tt>Reply-To:</tt> header in all\n"
 "             messages, overriding the header in the original message if\n"
 "             necessary (<em>Explicit address</em> inserts the value of <a\n"
-"             "
-"href=\"?VARHELP=general/reply_to_address\">reply_to_address</a>).\n"
+"             href=\"?VARHELP=general/reply_to_address\">reply_to_address</"
+"a>).\n"
 " \n"
 "             <p>There are many reasons not to introduce or override the\n"
 "             <tt>Reply-To:</tt> header.  One is that some posters depend on\n"
 "             their own <tt>Reply-To:</tt> settings to convey their valid\n"
 "             return address.  Another is that modifying <tt>Reply-To:</tt>\n"
 "             makes it much more difficult to send private replies.  See <a\n"
-"             "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To'\n"
+"             href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-"
+"To'\n"
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        "
-"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
+"\">Reply-To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4185,15 +4230,15 @@ msgstr ""
 "lis‰‰ <tt>Vastaus:</tt>\n"
 "             -kentt‰‰n otsikkoa, siit‰ huolimatta alkuper‰isess‰ viestiss‰\n"
 "             olevaa tietoa ei muuteta.  Asettamalla t‰m‰ arvo\n"
-"             joko <em>T‰lle listalle</em> tai <em>Tiettyyn "
-"osoitteeseen</em>\n"
+"             joko <em>T‰lle listalle</em> tai <em>Tiettyyn osoitteeseen</"
+"em>\n"
 "             aiheuttaa sen, ett‰ Mailman lis‰‰ tietyn <tt>Vastaus:</tt> "
 "otsikon \n"
 "             kaikkiin viesteihin ja kirjoittaa tarvittaessa yli "
 "olemassaolevan\n"
 "             kent‰n arvon (<em>Tiettyyn osoitteeseen</em> lis‰‰ arvon<a\n"
-"             "
-"href=\"?VARHELP=general/reply_to_address\">reply_to_address</a>).\n"
+"             href=\"?VARHELP=general/reply_to_address\">reply_to_address</"
+"a>).\n"
 " \n"
 "             <p>On monia syit‰ olla ylikirjoittamatta\n"
 "             <tt>Vastaus:</tt> otsikoita.  Jotkus l‰hett‰j‰t luottavat\n"
@@ -4201,8 +4246,8 @@ msgstr ""
 "             vastausosoitteensa.  Toisekseen muokkaamalla <tt>Vastaus:</tt>\n"
 "             arvoa vaikeutetaan yksityisten vastausten l‰hett‰mist‰.  Katso "
 "<a\n"
-"             "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">Vastaus'\n"
+"             href=\"http://www.unicom.com/pw/reply-to-harmful.html"
+"\">Vastaus'\n"
 "             Munging pidet‰‰n haitallisena</a> t‰m‰n aiheen yleist‰ "
 "keskustelua\n"
 "             Katso <a\n"
@@ -4232,8 +4277,8 @@ msgstr "Selke‰ <tt>Vastaus:</tt> otsikko."
 msgid ""
 "This is the address set in the <tt>Reply-To:</tt> header\n"
 "             when the <a\n"
-"             "
-"href=\"?VARHELP=general/reply_goes_to_list\">reply_goes_to_list</a>\n"
+"             href=\"?VARHELP=general/reply_goes_to_list"
+"\">reply_goes_to_list</a>\n"
 "             option is set to <em>Explicit address</em>.\n"
 "\n"
 "             <p>There are many reasons not to introduce or override the\n"
@@ -4241,13 +4286,13 @@ msgid ""
 "             their own <tt>Reply-To:</tt> settings to convey their valid\n"
 "             return address.  Another is that modifying <tt>Reply-To:</tt>\n"
 "             makes it much more difficult to send private replies.  See <a\n"
-"             "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-To'\n"
+"             href=\"http://www.unicom.com/pw/reply-to-harmful.html\">`Reply-"
+"To'\n"
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        "
-"href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Reply-To\n"
+"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
+"\">Reply-To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4269,8 +4314,8 @@ msgid ""
 msgstr ""
 "T‰m‰ on osoite, joka on asetettu <tt>Vastaus:</tt> kentt‰‰n\n"
 "             kun <a\n"
-"             "
-"href=\"?VARHELP=general/reply_goes_to_list\">reply_goes_to_list</a>\n"
+"             href=\"?VARHELP=general/reply_goes_to_list"
+"\">reply_goes_to_list</a>\n"
 "             valinta on asetettu <em>Tiettyyn osoitteeseen</em>.\n"
 "\n"
 "             <p>On monia syit‰ olla ottamatta k‰yttˆˆn tai kumota\n"
@@ -4278,8 +4323,8 @@ msgstr ""
 "             luottavat omiin <tt>Vastaus:</tt> asetuksiinsa vastauksen\n"
 "             l‰hetyksess‰.  Toisekseen muokkaamalla <tt>Vastaus:</tt>\n"
 "             kentt‰‰ vaikeutetaan yksityisten vastausten l‰hett‰mist‰.\n"
-"             Katso <a "
-"href=\"http://www.unicom.com/pw/reply-to-harmful.html\">'Vastaus'\n"
+"             Katso <a href=\"http://www.unicom.com/pw/reply-to-harmful.html"
+"\">'Vastaus'\n"
 "             Munging pidet‰‰n haitallisena</a> keskustelua t‰st‰\n"
 "             asiasta.  Katso <a\n"
 " href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml\">Vastaus\n"
@@ -4353,8 +4398,8 @@ msgid ""
 "             member list addresses, but rather to the owner of those member\n"
 "             lists.  In that case, the value of this setting is appended to\n"
 "             the member's account name for such notices.  `-owner' is the\n"
-"             typical choice.  This setting has no effect when "
-"\"umbrella_list\"\n"
+"             typical choice.  This setting has no effect when \"umbrella_list"
+"\"\n"
 "             is \"No\"."
 msgstr ""
 "Kun \"umbrella_list\" m‰‰ritell‰‰n osoittaakseen, ett‰ t‰ll‰ listalla on "
@@ -4592,14 +4637,14 @@ msgstr ""
 #: Mailman/Gui/General.py:363
 msgid ""
 "Should messages from this mailing list include the\n"
-"                 <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC "
-"2369</a>\n"
+"                 <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC 2369</"
+"a>\n"
 "                 (i.e. <tt>List-*</tt>) headers?  <em>Yes</em> is highly\n"
 "                 recommended."
 msgstr ""
 "Pit‰isikˆ t‰lt‰ postituslistalta l‰hetett‰viin viesteihin sis‰llytt‰‰\n"
-"                 <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC "
-"2369</a>\n"
+"                 <a href=\"http://www.faqs.org/rfc/rfc2369.html\">RFC 2369</"
+"a>\n"
 "                 (esim. <tt>Lista-*</tt>) otsikot?  <em>Kyll‰</em> on\n"
 "                 suositeltavaa."
 
@@ -4822,14 +4867,14 @@ msgstr ""
 msgid ""
 "Should Mailman personalize each non-digest delivery?\n"
 "                 This is often useful for announce-only lists, but <a\n"
-"                 href=\"?VARHELP=nondigest/personalize\">read the "
-"details</a>\n"
+"                 href=\"?VARHELP=nondigest/personalize\">read the details</"
+"a>\n"
 "                 section for a discussion of important performance\n"
 "                 issues."
 msgstr ""
 "Pit‰isikˆ Mailmanin personoida jokainen ei-lukemisto l‰hetys?\n"
-"                 T‰m‰ on usein k‰yttˆkelpoinen tiedotus-tyyppiselle "
-"listalle/n                 <a href=\"?VARHELP=nondigest/personalize\">lue "
+"                 T‰m‰ on usein k‰yttˆkelpoinen tiedotus-tyyppiselle listalle/"
+"n                 <a href=\"?VARHELP=nondigest/personalize\">lue "
 "lis‰tietoja</a>\n"
 "                 kappale t‰rkeit‰ suoritusasioita \n"
 "                 keskustelussa."
@@ -4867,8 +4912,8 @@ msgid ""
 "included\n"
 "                 in the <a href=\"?VARHELP=nondigest/msg_header\">message\n"
 "                 header</a> and\n"
-"                 <a href=\"?VARHELP=nondigest/msg_footer\">message "
-"footer</a>.\n"
+"                 <a href=\"?VARHELP=nondigest/msg_footer\">message footer</"
+"a>.\n"
 "\n"
 "                 <p>These additional substitution variables will be "
 "available\n"
@@ -5239,8 +5284,8 @@ msgid ""
 "            either individually or as a group.  Any\n"
 "            posting from a non-member who is not explicitly accepted,\n"
 "            rejected, or discarded, will have their posting filtered by the\n"
-"            <a "
-"href=\"?VARHELP=privacy/sender/generic_nonmember_action\">general\n"
+"            <a href=\"?VARHELP=privacy/sender/generic_nonmember_action"
+"\">general\n"
 "            non-member rules</a>.\n"
 "\n"
 "            <p>In the text boxes below, add one address per line; start the\n"
@@ -5275,8 +5320,8 @@ msgstr ""
 "            joko yksitt‰in tai ryhm‰n‰.  Mik‰ tahansa\n"
 "            ei-j‰senelt‰ tuleva viesti, jota ei erityisesti ole hyv‰ksytty,\n"
 "            palautettu, or hyl‰tty, suodatetaan  \n"
-"            <a "
-"href=\"?VARHELP=privacy/sender/generic_nonmember_action\">yleisten\n"
+"            <a href=\"?VARHELP=privacy/sender/generic_nonmember_action"
+"\">yleisten\n"
 "            ei-j‰senten s‰‰ntˆjen mukaan</a>.\n"
 "\n"
 "            <p>Alla olevissa tekstilaatikoissa, lis‰‰ yksi osoite riville;\n"
@@ -5499,8 +5544,8 @@ msgid ""
 "             further processing or notification.  The sender will not "
 "receive\n"
 "             a notification or a bounce, however the list moderators can\n"
-"             optionally <a "
-"href=\"?VARHELP=privacy/sender/forward_auto_discards\"\n"
+"             optionally <a href=\"?VARHELP=privacy/sender/"
+"forward_auto_discards\"\n"
 "             >receive copies of auto-discarded messages.</a>.\n"
 "\n"
 "             <p>Add member addresses one per line; start the line with a ^\n"
@@ -5510,8 +5555,8 @@ msgstr ""
 "             automaattisesti.  Viesti heitet‰‰n pois ilman erillist‰\n"
 "             k‰sittely‰ tai ilmoitusta.  L‰hett‰j‰ ei saa ilmoitusta\n"
 "             tai palautusta, kuitenkin listan p‰‰k‰ytt‰j‰ voi\n"
-"             vaihtoehtoisesti <a "
-"href=\"?VARHELP=privacy/sender/forward_auto_discards\"\n"
+"             vaihtoehtoisesti <a href=\"?VARHELP=privacy/sender/"
+"forward_auto_discards\"\n"
 "             >saada kopiot automaattisesti hyl‰tyist‰ viesteist‰.</a>.\n"
 "\n"
 "             <p>Lis‰‰ j‰senen osoitteet yksi riville; aloita rivi ^\n"
@@ -5531,8 +5576,8 @@ msgid ""
 "             sender is matched against the list of explicitly\n"
 "             <a href=\"?VARHELP=privacy/sender/accept_these_nonmembers\"\n"
 "             >accepted</a>,\n"
-"             <a "
-"href=\"?VARHELP=privacy/sender/hold_these_nonmembers\">held</a>,\n"
+"             <a href=\"?VARHELP=privacy/sender/hold_these_nonmembers\">held</"
+"a>,\n"
 "             <a href=\"?VARHELP=privacy/sender/reject_these_nonmembers\"\n"
 "             >rejected</a> (bounced), and\n"
 "             <a href=\"?VARHELP=privacy/sender/discard_these_nonmembers\"\n"
@@ -5544,8 +5589,8 @@ msgstr ""
 "             tiedot tarkistetaan nimenomaisesti\n"
 "             <a href=\"?VARHELP=privacy/sender/accept_these_nonmembers\"\n"
 "             >hyv‰ksyttyjen</a> listasta,\n"
-"             <a "
-"href=\"?VARHELP=privacy/sender/hold_these_nonmembers\">pid‰tet‰‰n</a>,\n"
+"             <a href=\"?VARHELP=privacy/sender/hold_these_nonmembers"
+"\">pid‰tet‰‰n</a>,\n"
 "             <a href=\"?VARHELP=privacy/sender/reject_these_nonmembers\"\n"
 "             >hyl‰t‰‰n</a> (palautetaan), ja\n"
 "             <a href=\"?VARHELP=privacy/sender/discard_these_nonmembers\"\n"
@@ -5621,8 +5666,8 @@ msgstr ""
 "             <ol>\n"
 "                 <li>L‰hett‰v‰ll‰ osoitteella on sama nimi, tai\n"
 "\n"
-"                 <li>l‰hett‰v‰n osoitteen nimi on sis‰llytetty "
-"valintoihin,jotka\n"
+"                 <li>l‰hett‰v‰n osoitteen nimi on sis‰llytetty valintoihin,"
+"jotka\n"
 "                 m‰‰ritell‰‰n hyv‰ksyttyjen alias-nimiin listalle.\n"
 "\n"
 "             </ol>"
@@ -5704,8 +5749,8 @@ msgid ""
 "             as comments.\n"
 "\n"
 "             <p>For example:<pre>to: .*@public.com </pre> says to hold all\n"
-"             postings with a <em>To:</em> mail header containing "
-"'@public.com'\n"
+"             postings with a <em>To:</em> mail header containing '@public."
+"com'\n"
 "             anywhere among the addresses.\n"
 "\n"
 "             <p>Note that leading whitespace is trimmed from the regexp.  "
@@ -5725,8 +5770,8 @@ msgstr ""
 "sis‰lt‰‰'@public.com'\n"
 "             miss‰ tahansa kohtaa osoitetta.\n"
 "\n"
-"             <p>Huomaa, ett‰ etu leading whitespace karsitaan pois "
-"regexp:ist‰.  T‰m‰\n"
+"             <p>Huomaa, ett‰ etu leading whitespace karsitaan pois regexp:"
+"ist‰.  T‰m‰\n"
 "             voidaan kiert‰‰ monilla keinoilla, esim. esc-merkill‰ tai\n"
 "             sulkumerkeill‰.\n"
 "             \n"
@@ -5766,8 +5811,8 @@ msgstr "Pit‰isikˆ aiheen suodatin olla p‰‰ll‰ vai pois p‰‰lt‰?"
 msgid ""
 "The topic filter categorizes each incoming email message\n"
 "             according to <a\n"
-"            "
-"href=\"http://www.python.org/doc/current/lib/module-re.html\">regular\n"
+"            href=\"http://www.python.org/doc/current/lib/module-re.html"
+"\">regular\n"
 "             expression filters</a> you specify below.  If the message's\n"
 "             <code>Subject:</code> or <code>Keywords:</code> header contains "
 "a\n"
@@ -5785,14 +5830,14 @@ msgid ""
 "             <p>The body of the message can also be optionally scanned for\n"
 "             <code>Subject:</code> and <code>Keywords:</code> headers, as\n"
 "             specified by the <a\n"
-"       "
-"href=\"?VARHELP=topics/topics_bodylines_limit\">topics_bodylines_limit</a>\n"
+"       href=\"?VARHELP=topics/topics_bodylines_limit"
+"\">topics_bodylines_limit</a>\n"
 "             configuration variable."
 msgstr ""
 "Aiheen suodattimet luokittelee jokaisen tulevan s‰hkˆpostin\n"
 "             <a\n"
-"            "
-"href=\"http://www.python.org/doc/current/lib/module-re.html\">tavallisen\n"
+"            href=\"http://www.python.org/doc/current/lib/module-re.html"
+"\">tavallisen\n"
 "             ilmaisun suodattimen</a> mukaan kuten m‰‰rittelet alla. Jos\n"
 "             viestin <code>Aihe:</code> tai <code>Avainsanat:</code> kent‰t "
 "t‰sm‰‰v‰t\n"
@@ -5810,8 +5855,8 @@ msgstr ""
 "             <p>Viestiosa voidaan vaihtoehtoisesti myˆs selata\n"
 "             <code>Aihe:</code> ja <code>Avainsanat:</code> kentill‰,\n"
 "             kuten m‰‰ritelty <a\n"
-"       "
-"href=\"?VARHELP=topics/topics_bodylines_limit\">topics_bodylines_limit</a>\n"
+"       href=\"?VARHELP=topics/topics_bodylines_limit"
+"\">topics_bodylines_limit</a>\n"
 "             m‰‰ritysmuuttujassa."
 
 #: Mailman/Gui/Topics.py:62
@@ -5823,8 +5868,8 @@ msgid ""
 "The topic matcher will scan this many lines of the message\n"
 "             body looking for topic keyword matches.  Body scanning stops "
 "when\n"
-"             either this many lines have been looked at, or a "
-"non-header-like\n"
+"             either this many lines have been looked at, or a non-header-"
+"like\n"
 "             body line is encountered.  By setting this value to zero, no "
 "body\n"
 "             lines will be scanned (i.e. only the <code>Keywords:</code> "
@@ -5865,8 +5910,8 @@ msgid ""
 msgstr ""
 "Jokainen aiheen avainsanan on oikeastaan tavallinen ilmaisu, jota\n"
 "             verrataan tiettyj‰ viestin osia vastaanm, erityisesti, \n"
-"             viestin otsikkotietojen <code>Avainsanat:</code> ja "
-"<code>Aihe:</code>.\n"
+"             viestin otsikkotietojen <code>Avainsanat:</code> ja <code>Aihe:"
+"</code>.\n"
 "             Note ett‰ muutamat ensimm‰iset viestiosan rivit voivatmyˆs\n"
 "             sis‰lt‰‰ <code>Avainsanat:</code> ja <code>Aihe:</code>\n"
 "             \"header\" joissa lukeminen myˆs suoritetaan."
@@ -6281,7 +6326,7 @@ msgstr "Kerran kussa, salasananmuistuttaja l‰hett‰‰ sinulle salasanasi"
 msgid "current archive"
 msgstr "nykyinen arkistointi"
 
-#: Mailman/Handlers/Acknowledge.py:58
+#: Mailman/Handlers/Acknowledge.py:59
 msgid "%(realname)s post acknowledgement"
 msgstr "%(realname)s postitiedot"
 
@@ -6461,11 +6506,11 @@ msgstr "\"%(realname)s\" postituslista"
 msgid "The Mailman Replybot"
 msgstr "Mailmanin vastaus"
 
-#: Mailman/Handlers/Scrubber.py:82
+#: Mailman/Handlers/Scrubber.py:116
 msgid "HTML attachment scrubbed and removed"
 msgstr "HTML liitetiedosto poistettu"
 
-#: Mailman/Handlers/Scrubber.py:95 Mailman/Handlers/Scrubber.py:117
+#: Mailman/Handlers/Scrubber.py:129 Mailman/Handlers/Scrubber.py:151
 msgid ""
 "An HTML attachment was scrubbed...\n"
 "URL: %(url)s\n"
@@ -6473,19 +6518,19 @@ msgstr ""
 "HTML liite on poistettu...\n"
 "URL: %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:129
+#: Mailman/Handlers/Scrubber.py:163
 msgid "no subject"
 msgstr "ei aihetta"
 
-#: Mailman/Handlers/Scrubber.py:130
+#: Mailman/Handlers/Scrubber.py:164
 msgid "no date"
 msgstr "ei p‰iv‰m‰‰r‰‰"
 
-#: Mailman/Handlers/Scrubber.py:131
+#: Mailman/Handlers/Scrubber.py:165
 msgid "unknown sender"
 msgstr "tuntematon l‰hett‰j‰"
 
-#: Mailman/Handlers/Scrubber.py:133
+#: Mailman/Handlers/Scrubber.py:167
 msgid ""
 "An embedded message was scrubbed...\n"
 "From: %(who)s\n"
@@ -6501,7 +6546,7 @@ msgstr ""
 "Koko: %(size)s\n"
 "Url: %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:159
+#: Mailman/Handlers/Scrubber.py:193
 msgid ""
 "A non-text attachment was scrubbed...\n"
 "Name: %(filename)s\n"
@@ -6581,30 +6626,6 @@ msgstr "Alkuper‰inen viesti"
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "Pyyntˆ listalle %(realname)s on hyl‰tty"
 
-#: Mailman/MTA/Aliases.py:40
-msgid ""
-"To finish creating your mailing list, you must edit your\n"
-"/etc/aliases (or equivalent) file by adding the following lines:\n"
-"\n"
-"## %(listname)s mailing list\n"
-"## created: %(date)s %(user)s\n"
-"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
-"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
-"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
-"%(owner)s %(listname)s-admin\n"
-msgstr ""
-
-#: Mailman/MTA/Aliases.py:63
-msgid ""
-"To finish removing your mailing list, you must edit your\n"
-"/etc/aliases (or equivalent) file by removing the following lines:\n"
-"\n"
-"%(list)s \"|%(wrapper)s post %(listname)s\"\n"
-"%(admin)s \"|%(wrapper)s mailowner %(listname)s\"\n"
-"%(request)s \"|%(wrapper)s mailcmd %(listname)s\"\n"
-"%(owner)s %(listname)s-admin\n"
-msgstr ""
-
 #: Mailman/MTA/Manual.py:55
 msgid ""
 "The mailing list `%(listname)s' has been created via the through-the-web\n"
@@ -6677,61 +6698,36 @@ msgstr ""
 msgid "%(dbfile)s owned by %(owner)s (must be owned by Mailman)"
 msgstr ""
 
-#: Mailman/MTA/Qmail.py:31
-msgid ""
-"To finish creating your mailing list, execute the following\n"
-"commands with the proper permission:\n"
-"\n"
-"echo '|preline %(wrapper)s post %(listname)s' >~alias/.qmail-%(listname)s\n"
-"echo '|preline %(wrapper)s mailowner %(listname)s' "
-">~alias/.qmail-%(listname)s-admin\n"
-"echo '|preline %(wrapper)s mailcmd %(listname)s' "
-">~alias/.qmail-%(listname)s-request\n"
-"echo '&%(listname)s-admin' >~alias/.qmail-owner-%(listname)s\n"
-"echo '&%(listname)s-admin' >~alias/.qmail-%(listname)s-owner\n"
-"\n"
-"chmod 644 ~alias/.qmail-%(listname)s ~alias/.qmail-%(listname)s-admin\n"
-"chmod 644 ~alias/.qmail-%(listname)s-request "
-"~alias/.qmail-%(listname)s-owner\n"
-"chmod 644 ~alias/.qmail-owner-%(listname)s\n"
-msgstr ""
-
-#: Mailman/MTA/Qmail.py:48
-msgid ""
-"To finish removing your mailing list, you must remove the\n"
-"all the entires for the %(listname)s aliases."
-msgstr ""
-
-#: Mailman/MailList.py:677
+#: Mailman/MailList.py:678
 #, fuzzy
 msgid "You have been invited to join the %(listname)s mailing list"
 msgstr "Sinut on irtisanottu %(realname)s postituslistalta"
 
-#: Mailman/MailList.py:781 Mailman/MailList.py:1143
+#: Mailman/MailList.py:782 Mailman/MailList.py:1144
 msgid " from %(remote)s"
 msgstr ""
 
-#: Mailman/MailList.py:818
+#: Mailman/MailList.py:819
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr ""
 
-#: Mailman/MailList.py:877 bin/add_members:277
+#: Mailman/MailList.py:878 bin/add_members:277
 msgid "%(realname)s subscription notification"
 msgstr ""
 
-#: Mailman/MailList.py:895
+#: Mailman/MailList.py:896
 msgid "unsubscriptions require moderator approval"
 msgstr ""
 
-#: Mailman/MailList.py:916
+#: Mailman/MailList.py:917
 msgid "%(realname)s unsubscribe notification"
 msgstr ""
 
-#: Mailman/MailList.py:1063
+#: Mailman/MailList.py:1064
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr ""
 
-#: Mailman/MailList.py:1312
+#: Mailman/MailList.py:1313
 msgid "Last autoresponse notification for today"
 msgstr ""
 
@@ -7039,8 +7035,8 @@ msgid ""
 "    config.safety\n"
 "\n"
 "It's okay if any of these are missing.  config.pck and config.pck.last are\n"
-"pickled versions of the config database file for 2.1a3 and beyond.  "
-"config.db\n"
+"pickled versions of the config database file for 2.1a3 and beyond.  config."
+"db\n"
 "and config.db.last are used in all earlier versions, and these are Python\n"
 "marshals.  config.safety is a pickle written by 2.1a3 and beyond when the\n"
 "primary config.pck file could not be read.\n"
@@ -7774,8 +7770,8 @@ msgid ""
 "this\n"
 "        user and group before the check is made.\n"
 "\n"
-"        This can be inconvenient for testing and debugging purposes, so the "
-"-u\n"
+"        This can be inconvenient for testing and debugging purposes, so the -"
+"u\n"
 "        flag means that the step that sets and checks the uid/gid is "
 "skipped,\n"
 "        and the program is run as the current user and group.  This flag is\n"
@@ -7818,37 +7814,37 @@ msgid ""
 "    reopen  - This will simply cause all log files to be re-opened.\n"
 msgstr ""
 
-#: bin/mailmanctl:140
+#: bin/mailmanctl:141
 msgid "PID unreadable in: %(pidfile)s"
 msgstr ""
 
-#: bin/mailmanctl:142
+#: bin/mailmanctl:143
 msgid "Is qrunner even running?"
 msgstr ""
 
-#: bin/mailmanctl:148
+#: bin/mailmanctl:149
 msgid "No child with pid: %(pid)s"
 msgstr ""
 
-#: bin/mailmanctl:150
+#: bin/mailmanctl:151
 msgid "Stale pid file removed."
 msgstr ""
 
-#: bin/mailmanctl:208
+#: bin/mailmanctl:209
 msgid ""
 "The master qrunner lock could not be acquired because it appears as if "
 "another\n"
 "master qrunner is already running.\n"
 msgstr ""
 
-#: bin/mailmanctl:214
+#: bin/mailmanctl:215
 msgid ""
 "The master qrunner lock could not be acquired.  It appears as though there "
 "is\n"
 "a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.\n"
 msgstr ""
 
-#: bin/mailmanctl:220
+#: bin/mailmanctl:221
 msgid ""
 "The master qrunner lock could not be acquired, because it appears as if "
 "some\n"
@@ -7863,32 +7859,32 @@ msgid ""
 "Exiting."
 msgstr ""
 
-#: bin/mailmanctl:269
+#: bin/mailmanctl:271
 msgid "Run this program as root or as the %(name)s user, or use -u."
 msgstr ""
 
-#: bin/mailmanctl:300
+#: bin/mailmanctl:302
 #, fuzzy
 msgid "No command given."
 msgstr "Syyt‰ ei annettu"
 
-#: bin/mailmanctl:303
+#: bin/mailmanctl:305
 msgid "Bad command: %(command)s"
 msgstr ""
 
-#: bin/mailmanctl:315
+#: bin/mailmanctl:317
 msgid "Shutting down Mailman's master qrunner"
 msgstr ""
 
-#: bin/mailmanctl:322
+#: bin/mailmanctl:324
 msgid "Restarting Mailman's master qrunner"
 msgstr ""
 
-#: bin/mailmanctl:326
+#: bin/mailmanctl:328
 msgid "Re-opening all log files"
 msgstr ""
 
-#: bin/mailmanctl:360
+#: bin/mailmanctl:362
 msgid "Starting Mailman's master qrunner."
 msgstr ""
 
@@ -8261,8 +8257,8 @@ msgid ""
 "    --digest[=<yes|no>]\n"
 "    -d[=<yes|no>]\n"
 "        Selects whether to make newly added members receive messages in\n"
-"        digests.  With -d=yes or -d, they become digest members.  With "
-"-d=no\n"
+"        digests.  With -d=yes or -d, they become digest members.  With -"
+"d=no\n"
 "        (or if no -d option given) they are added as regular members.\n"
 "\n"
 "    --notifyadmin[=<yes|no>]\n"
@@ -8342,7 +8338,7 @@ msgstr ""
 msgid "Removed: <%(addr)30s> %(name)s"
 msgstr ""
 
-#: bin/transcheck:18
+#: bin/transcheck:18 bin/transcheck.~2~:18
 msgid ""
 "\n"
 "Check a given Mailman translation, making sure that variables and \n"
@@ -8358,23 +8354,23 @@ msgid ""
 "to ask for a brief summary.\n"
 msgstr ""
 
-#: bin/transcheck:39
+#: bin/transcheck:39 bin/transcheck.~2~:39
 msgid "check a translation comparing with the original string"
 msgstr ""
 
-#: bin/transcheck:46
+#: bin/transcheck:46 bin/transcheck.~2~:46
 msgid "scan a string from the original file"
 msgstr ""
 
-#: bin/transcheck:54
+#: bin/transcheck:54 bin/transcheck.~2~:54
 msgid "scan a translated string"
 msgstr ""
 
-#: bin/transcheck:65
+#: bin/transcheck:65 bin/transcheck.~2~:65
 msgid "check for differences between checked in and checked out"
 msgstr ""
 
-#: bin/transcheck:98
+#: bin/transcheck:98 bin/transcheck.~2~:98
 msgid "parse a .po file extracting msgids and msgstrs"
 msgstr ""
 
@@ -8395,8 +8391,25 @@ msgid ""
 "       search also <MM-*> tags if html is not zero"
 msgstr ""
 
-#: bin/transcheck:301
+#: bin/transcheck:301 bin/transcheck.~2~:301
 msgid "scan the po file comparing msgids with msgstrs"
+msgstr ""
+
+#: bin/transcheck.~2~:117
+msgid ""
+"States table for the finite-states-machine parser:\n"
+"\t\t\t0  idle\n"
+"\t\t\t1  filename-or-comment\n"
+"\t\t\t2  msgid\n"
+"\t\t\t3  msgstr\n"
+"\t\t\t4  end\n"
+"\t\t"
+msgstr ""
+
+#: bin/transcheck.~2~:254
+msgid ""
+"check a translated template against the original one\n"
+"\t   search also <MM-*> tags if html is not zero"
 msgstr ""
 
 #: bin/unshunt:19
@@ -8669,8 +8682,8 @@ msgid ""
 "after\n"
 "        the fact by typing `m.Lock()'\n"
 "\n"
-"        Note that if you use this option, you should explicitly call "
-"m.Save()\n"
+"        Note that if you use this option, you should explicitly call m.Save"
+"()\n"
 "        before exiting, since the interpreter's clean up procedure will not\n"
 "        automatically save changes to the MailList object (but it will "
 "unlock\n"
@@ -8996,6 +9009,10 @@ msgid ""
 "Typically it's invoked via cron.\n"
 msgstr ""
 
+#, fuzzy
+#~ msgid "Policies concerning concerning the content of list traffic."
+#~ msgstr "Heti toimitettavien l‰hetysten toimintatavat."
+
 #~ msgid "Get plain text digests (RFC 1153) rather than MIME digests"
 #~ msgstr ""
 #~ "Vastaanota raakatekstin lukemistoja (RFC 1153) mieluummin kuin MIME "
@@ -9006,13 +9023,13 @@ msgstr ""
 
 #~ msgid ""
 #~ "<li>Find members by\n"
-#~ "                <a "
-#~ "href=\"http://www.python.org/doc/current/lib/re-syntax.html\"\n"
+#~ "                <a href=\"http://www.python.org/doc/current/lib/re-syntax."
+#~ "html\"\n"
 #~ "                >Python regular expression</a> (<em>regexp</em>)<br>"
 #~ msgstr ""
 #~ "<li>Etsi j‰senet \n"
-#~ "                <a "
-#~ "href=\"http://www.python.org/doc/current/lib/re-syntax.html\"\n"
+#~ "                <a href=\"http://www.python.org/doc/current/lib/re-syntax."
+#~ "html\"\n"
 #~ "                >Python regular expression</a> (<em>regexp</em>)<br>"
 
 #~ msgid "nomail"
@@ -9044,9 +9061,10 @@ msgstr ""
 #~ msgid ""
 #~ "                The passwords you entered in the confirmation screen did "
 #~ "not\n"
-#~ "                match, so your original subscription password will be used\n"
-#~ "                instead.  Your password will have been generated by Mailman "
-#~ "if\n"
+#~ "                match, so your original subscription password will be "
+#~ "used\n"
+#~ "                instead.  Your password will have been generated by "
+#~ "Mailman if\n"
 #~ "                you left the password fields blank.  In any event, your\n"
 #~ "                membership password will be sent to you in a separate\n"
 #~ "                acknowledgement email.<p>"
