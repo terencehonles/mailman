@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 704 $)
+AC_REVISION($Revision: 705 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -133,7 +133,7 @@ fp = open("conftest.out", "w")
 fp.write("%s\n" % gid)
 fp.close()
 EOF
-    python conftest.py
+    $PYTHON conftest.py
     $1=`cat conftest.out`
 fi
 changequote([, ])
@@ -141,10 +141,8 @@ if test -z "$$1"
 then
     AC_MSG_ERROR([
 
-***** Group $2 not found!  You must first
-***** set up the $2 entry in /etc/group
-***** or set the $1 shell variable on the
-***** configure command line])
+***** No group for the $3 program found!
+***** Please see the INSTALL file for details])
 fi
 AC_MSG_RESULT($$1)
 rm -f conftest.out conftest.py])
@@ -204,7 +202,7 @@ else:
     fp.write('please.change.me\nwww.please.change.me\n')
 fp.close()
 EOF
-python conftest.py
+$PYTHON conftest.py
 changequote([, ])
 AC_MSG_CHECKING(for default fully qualified host name)
 if test -z "$FQDN"
