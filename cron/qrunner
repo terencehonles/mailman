@@ -261,7 +261,7 @@ def main(lock):
 
 if __name__ == '__main__':
     global _listcache
-    syslog('qrunner', 'qrunner begining')
+##    syslog('qrunner', 'qrunner begining')
     # first, claim the queue runner lock
     lock = LockFile.LockFile(QRUNNER_LOCK_FILE,
                              lifetime=mm_cfg.QRUNNER_LOCK_LIFETIME)
@@ -281,4 +281,4 @@ if __name__ == '__main__':
             # (e.g. from ToUsenet).
             _listcache.clear()
             Utils.reap(kids)
-    syslog('qrunner', 'qrunner ended')
+##    syslog('qrunner', 'qrunner ended')
