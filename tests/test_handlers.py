@@ -526,8 +526,8 @@ Errors-To: bsystem@dom.ain
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        eq(msg['sender'], '_xtest-admin@dom.ain')
-        eq(msg['errors-to'], '_xtest-admin@dom.ain')
+        eq(msg['sender'], '_xtest-bounces@dom.ain')
+        eq(msg['errors-to'], '_xtest-bounces@dom.ain')
 
     def test_xbeenthere(self):
         msg = email.message_from_string("""\
@@ -756,7 +756,12 @@ From: aperson@dom.ain
 From: aperson@dom.ain
 
 """, Message.Message)
-        CookHeaders.process(self._mlist, msg, {})
+        oldval = mm_cfg.DEFAULT_URL_HOST
+        mm_cfg.DEFAULT_URL_HOST = 'www.dom.ain'
+        try:
+            CookHeaders.process(self._mlist, msg, {})
+        finally:
+            mm_cfg.DEFAULT_URL_HOST = oldval
         eq(msg['list-id'], '<_xtest.dom.ain>')
         eq(msg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
         eq(msg['list-unsubscribe'],
@@ -786,7 +791,6 @@ From: aperson@dom.ain
            '<http://www.dom.ain/mailman/listinfo/_xtest>,'
            '\n\t<mailto:_xtest-request@dom.ain?subject=subscribe>')
         eq(msg['list-post'], '<mailto:_xtest@dom.ain>')
-        eq(msg['list-archive'], '<http://www.dom.ain/pipermail/_xtest>')
 
 
 
