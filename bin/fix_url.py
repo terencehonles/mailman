@@ -33,6 +33,7 @@ def fix_url(mlist):
     mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST
     print _('Saving list')
     mlist.Save()
+    mlist.Unlock()
 
 
 
