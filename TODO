@@ -118,8 +118,8 @@ The Mailman TODO list
 - Turn standard mailman exceptions into class exceptions. (In
   particular, categorize into, eg, message-hold vs other sorts of
   exceptions.)
-- Make error messages indicate the file, maillist, etc at fault, when
-  possible.
+- Make error messages indicate the file, mailing list, etc at fault,
+  when possible.
 - Seperate edit-options from the subscribe script.
 - Remove dead code, etc.
 

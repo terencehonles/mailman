@@ -105,13 +105,14 @@ How to add a new user option
         7) Update templates if the options have replacements
         8) Use your option wherever appropriate...
 
-Interactive python sessions with maillists
+Interactive python sessions with mailing lists
 
-    You  can  do substantial  things  with maillists from the interpreter!
-    Include the mailman  homedir on  your shell  python path, or  manually
-    insert it on sys.path  from within python, and import Mailman.MailList
-    and Mailman.Utils  from within the  interpreter.  You  can instantiate
-    the maillist of your choice, eg for a list named postal:
+    You can do substantial things with mailing lists from the
+    interpreter!  Include the mailman homedir on your shell python
+    path, or manually insert it on sys.path from within python, and
+    import Mailman.MailList and Mailman.Utils from within the
+    interpreter.  You can instantiate the mailing list of your choice,
+    e.g. for a list named postal:
 
 >>> sys.path.insert(0, '/local/mailman')
 >>> from Mailman import MailList, Utils

@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
-"""Process maillist user commands arriving via email."""
+"""Process mailing list user commands arriving via email."""
 
 # Try to stay close to majordomo commands, but accept common mistakes.
 # Not implemented: get / index / which.

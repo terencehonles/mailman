@@ -1,4 +1,4 @@
-Send %(real_name)s maillist submissions to
+Send %(real_name)s mailing list submissions to
 
 	%(got_list_email)s
 

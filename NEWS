@@ -285,10 +285,11 @@ DONE for mailman 1.0b3
      specific list)
    - Admin interface broken into sections, with help elaboration for
      complicated configuration options
-  Maillist Archives
+  Mailing List Archives
    - Integrated with a newer, *much* improved, external pipermail - to be
      found at http://starship.skyport.net/crew/amk/maintained/pipermail.html
-   - Private archives protected with maillist members passwords, cookie-fied.
+   - Private archives protected with mailing list members passwords,
+     cookie-fied.
   Spam prevention
    - New spam prevention measures catch most if not all spam without
      operator intervention or general constraints on who can post to
@@ -299,7 +300,7 @@ DONE for mailman 1.0b3
        spam.
      Other options (forbidden_posters, bounce_matching_headers) provide
      for filtering of known transgressors.
-   - Option obscure_addresses (default on) causes maillist subscriber
+   - Option obscure_addresses (default on) causes mailing list subscriber
      lists on the web to be slightly mangled so they're not directly
      recognizable as email address by web spiders, which might be
      seeking targets for spammers.
@@ -396,14 +397,17 @@ DONE for mailman 1.0b3
   -  Added an option to clobber the date in the archives to the date the list
      resent the post, so that the archive doesn't get mail from people sending
       bad dates clumped up at the beginning or end.
-  -  Added automatic error message processing as an option.  Currently logging to /tmp/bounce.log
+  -  Added automatic error message processing as an option.  Currently
+     logging to /tmp/bounce.log 
   -  Changed archive to take a list as an argument, (the old way was broken)
   -  Remove (ignore) spaces in email addresses
   -  Allow user passwords to be case insensitive.
   -  Removed the cleanup script since it was now redundant.
   -  Fixed archives if there were no archives.
-  -  Added a Lock() call to Load() and Create().  This fixes the problem of loading then locking.
-  -  Removed all occurances of Lock() except for the ones in maillist since creating a list
+  -  Added a Lock() call to Load() and Create().  This fixes the
+     problem of loading then locking. 
+  -  Removed all occurances of Lock() except for the ones in mailing
+     list since creating a list 
      now implicitly locks it. 
   -  Quote single periods in message text.
   - Made bounce system handle digest users fairly.

@@ -74,7 +74,7 @@ login_attempted = 0
 _list = None
 
 def GetListobj(list_name):
-    """Return an unlocked instance of the named maillist, if found."""
+    """Return an unlocked instance of the named mailing list, if found."""
     global _list
     if _list:
 	return _list

@@ -119,10 +119,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetMemberAdminEmail(self, member):
         """Usually the member addr, but modified for umbrella lists.
 
-        Umbrella lists have other maillists as members, and so admin stuff
+        Umbrella lists have other mailing lists as members, and so admin stuff
         like confirmation requests and passwords must not be sent to the
-        member addresses - the sublists - but rather to the administrators
-        of the sublists.  This routine picks the right address, considering 
+        member addresses - the sublists - but rather to the administrators of
+        the sublists.  This routine picks the right address, considering
         regular member address to be their own administrative addresses.
 
         """
@@ -362,8 +362,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    ('description', mm_cfg.String, 50, 0,
 	     'A terse phrase identifying this list.',
 
-             "This description is used when the maillist is listed with"
-             " other maillists, or in headers, and so forth.  It should"
+             "This description is used when the mailing list is listed with"
+             " other mailing lists, or in headers, and so forth.  It should"
              " be as succinct as you can get it, while still identifying"
              " what the list is."),
 
@@ -384,10 +384,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Prefix for subject line of list postings.',
 
              "This text will be prepended to subject lines of messages"
-             " posted to the list, to distinguish maillist messages in"
+             " posted to the list, to distinguish mailing list messages in"
              " in mailbox summaries.  Brevity is premium here, it's ok"
-             " to shorten long maillist names to something more concise,"
-             " as long as it still identifies the maillist."),
+             " to shorten long mailing list names to something more concise,"
+             " as long as it still identifies the mailing list."),
 
 	    ('welcome_msg', mm_cfg.Text, (4, 50), 0,
 	     'List-specific text prepended to new-subscriber welcome message',
@@ -395,7 +395,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              "This value, if any, will be added to the front of the"
              " new-subscriber welcome message.  The rest of the"
              " welcome message already describes the important addresses"
-             " and URLs for the maillist, so you don't need to include"
+             " and URLs for the mailing list, so you don't need to include"
              " any of that kind of stuff here.  This should just contain"
              " mission-specific kinds of things, like etiquette policies"
              " or team orientation, or that kind of thing."),
@@ -433,7 +433,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     ' directly to user.',
 
 	     "Set this to yes when this list is intended to cascade only to"
-	     " other maillists.  When set, meta notices like confirmations"
+	     " other mailing lists.  When set, meta notices like confirmations"
              " and password reminders will be directed to an address derived"
              " from the member\'s address - it will have the value of"
              ' \"umbrella_member_suffix\" appended to the'
@@ -444,8 +444,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              ' according to setting of previous "umbrella_list" setting.',
 
 	     'When \"umbrella_list\" is set to indicate that this list has'
-             " other maillists as members, then administrative notices like"
-             " confirmations and password reminders need to not be sent"
+             " other mailing lists as members, then administrative notices"
+             " like confirmations and password reminders need to not be sent"
              " to the member list addresses, but rather to the owner of those"
              " member lists.  In that case, the value of this setting is"
              " appended to the member\'s account name for such notices."
@@ -507,7 +507,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
  	     'Base URL for Mailman web interface',
 
              "This is the common root for all mailman URLs concerning this"
-             " list.  It is also used in the listinfo overview of maillists"
+             " list.  It is also used in the listinfo overview of mailing"
+             " lists"
              " to identify whether or not this list resides on the virtual"
              " host identified by the overview URL - if this value is found"
              " (anywhere) in the URL, then this list is considered to be"
@@ -646,7 +647,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              "Alternate list names (the stuff before the '@') that are to be"
              " accepted when the explicit-destination constraint (a prior"
              " option) is active.  This enables things like cascading"
-             " maillists and relays while the constraint is still"
+             " mailing lists and relays while the constraint is still"
              " preventing random spams."), 
 
 	    ('max_num_recipients', mm_cfg.Number, 3, 0, 

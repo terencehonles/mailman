@@ -153,8 +153,8 @@ class HTMLFormatter:
 
     def FormatUmbrellaNotice(self, user, type):
         if self.umbrella_list:
-	    return ("(Note - you are subscribing to a list of maillists, so"
-                    " the %s notice will be sent to the admin address"
+	    return ("(Note - you are subscribing to a list of mailing lists,"
+                    " so the %s notice will be sent to the admin address"
                     " for your membership, %s.)<p>"
                     % (type, self.GetMemberAdminEmail(user)))
 	else:
@@ -201,7 +201,7 @@ class HTMLFormatter:
 
         if self.umbrella_list:
             msg = msg + ("<p>(Note that this is an umbrella list, intended to"
-                         " have only other maillists as members.  Among"
+                         " have only other mailing lists as members.  Among"
                          " other things, this means that your confirmation"
                          " request will be sent to the '%s' account for"
                          " your address.)" % self.umbrella_member_suffix)
