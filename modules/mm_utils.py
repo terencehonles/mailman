@@ -257,9 +257,16 @@ def map_maillists(func, names=None, unlock=None, verbose=0):
     return got
 
 class Logger:
-    def __init__(self, category):
+    """File-based logger, writes to named category files in mm_cfg.LOG_DIR."""
+    def __init__(self, category, nofail=1):
+        """Nofail (by default) says to fallback to sys.stderr if write
+        fails to category file.  A message is emitted, but the IOError is
+        caught.  Set nofail=0 if you want to handle the error in your code,
+        instead."""
+        
 	self.__category=category
 	self.__f = None
+        self.__nofail = nofail
     def __get_f(self):
 	if self.__f:
 	    return self.__f
@@ -272,9 +279,12 @@ class Logger:
 		finally:
 		    os.umask(ou)
 	    except IOError, msg:
-		f = self.__f = sys.stderr
-		f.write("logger open %s failed %s, using stderr\n"
-			% (fname, msg))
+                if not self.__nofail:
+                    raise IOError, msg, sys.exc_info()[2]
+                else:
+                    f = self.__f = sys.stderr
+                    f.write("logger open %s failed %s, using stderr\n"
+                            % (fname, msg))
 	    return f
     def flush(self):
 	f = self.__get_f()
@@ -305,7 +315,7 @@ class Logger:
 class StampedLogger(Logger):
     """Record messages in log files, including date stamp and optional label.
 
-    If manual_reset is off (default on), then timestamp prefix will
+    If manual_reprime is on (off by default), then timestamp prefix will
     included only on first .write() and on any write immediately following
     a call to the .reprime() method.  This is useful for when StampedLogger
     is substituting for sys.stderr, where you'd like to see the grouping of
@@ -313,15 +323,20 @@ class StampedLogger(Logger):
     group, for uncaught exceptions where a script is bombing).
 
     In any case, the identifying prefix will only follow writes that start
-    on a new line."""
+    on a new line.
 
-    def __init__(self, category, label=None, manual_reprime=0):
+    Nofail (by default) says to fallback to sys.stderr if write fails to
+    category file.  A message is emitted, but the IOError is caught.
+    Initialize with nofail=0 if you want to handle the error in your code,
+    instead."""
+
+    def __init__(self, category, label=None, manual_reprime=0, nofail=1):
 	"If specified, optional label is included after timestamp."
 	self.label = label
         self.manual_reprime = manual_reprime
         self.primed = 1
         self.bol = 1
-	Logger.__init__(self, category)
+	Logger.__init__(self, category, nofail=nofail)
     def reprime(self):
         """Reset so timestamp will be included with next write."""
         self.primed = 1
