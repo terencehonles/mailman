@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,15 +27,15 @@ Stdin is the mail message, and argv[1] is the name of the target mailing list.
 """
 
 import sys
-import mimetools
 
 import paths
-from Mailman import MailList
-from Mailman import Message
-from Mailman import Errors
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman.i18n import _
+from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Logging.Utils import LogStdErr
 
-LogStdErr('error', 'post')
+LogStdErr('error', 'mailowner')
 
 
 
@@ -43,35 +43,24 @@ def main():
     try:
         listname = sys.argv[1]
     except IndexError:
-        sys.stderr.write('Mailman error: mailowner got no listname.\n')
+        print >> sys.stderr, _('mailowner got no listname.')
         sys.exit(1)
-    try:
-        mlist = MailList.MailList(listname, lock=0)
-    except Errors.MMListError, e:
-        sys.stderr.write('Mailman error: mailowner got bad listname: %s\n%s' %
-                         (listname, e))
+    # Make sure the list exists
+    if not Utils.list_exists(listname):
+        print >> sys.stderr, _('mailcmd script, list not found: %(listname)s')
         sys.exit(1)
-    # Create the message object
-    msg = Message.Message(sys.stdin)
-    # Immediately queue the message for disposition by qrunner, most likely in
-    # about a minute from now.  The advantage to this approach is that
-    # messages should never get lost -- some MTAs have a hard limit to the
-    # time a filter prog can run.  Postfix is a good example; if the limit is
-    # hit, the proc is SIGKILL'd giving us no chance to save the message.  It
-    # could take a long time to acquire the lock.  This way we're fairly safe
-    # against catastrophe at the expense of more disk I/O.
+    # Immediately queue the message for the bounce/cmd qrunner to process.
+    # The advantage to this approach is that messages should never get lost --
+    # some MTAs have a hard limit to the time a filter prog can run.  Postfix
+    # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
+    # no chance to save the message.
     #
-    # Try to figure out if the message came to the listname-admin@ or
-    # listname-owner@ address.  Ideally these would get delivered to different
-    # programs, but for backwards compatibility, they both get delivered to
-    # mailowner.  We don't want -owner messages to get processed by the bounce
-    # processor.
-    #
-    # See cron/qrunner for the paths these to flagged messages take.
-    if msg.get('to') == mlist.GetOwnerEmail():
-        msg.Enqueue(mlist, toowner=1, _whichq=mm_cfg.INQUEUE_DIR)
-    else:
-        msg.Enqueue(mlist, toadmin=1, _whichq=mm_cfg.INQUEUE_DIR)
+    # BAW: This script can receive both -owner and -admin messages.  This is
+    # bogus because there /is/ a distinction: -admin messages do bounce
+    # processing while -owner messages do not.  However, it's too expensive to
+    # make this determination here, so we defer it to the CommandRunner.
+    cmdq = get_switchboard(mm_cfg.CMDQUEUE_DIR)
+    cmdq.enqueue(sys.stdin.read(), listname=listname, toauthoritah=1)
 
 
 
