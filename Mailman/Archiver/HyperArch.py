@@ -31,6 +31,7 @@
 
 """   
 
+import sys
 import re, cgi, urllib, string
 import time, pickle, os, posixfile
 import HyperDatabase
@@ -377,7 +378,7 @@ TOC_entry_template = '''\
               <A href="%(archive)s/author.html">[ Author ]</a>
               <A href="%(archive)s/date.html">[ Date ]</a>
             </td>
-            <td><A href="%(archive)s.txt%(gzip)s">[ Text ]</a></td>
+            %(textlink)s
             </tr>
 
 '''
@@ -464,15 +465,50 @@ class HyperArchive(pipermail.T):
             d["archive_listing_start"] = self.arch_listing_start
             d["archive_listing_end"] = self.arch_listing_end
             for a in self.archives:
+                # Check to see if the archive is gzip'd or not
+                txtfile = os.path.join(mm_cfg.PREFIX,
+                                       'archives/private',
+                                       self.maillist._internal_name,
+                                       a + '.txt')
+                gzfile = txtfile + '.gz'
+                templ = '<td><A href="%(url)s">[ %(fmt)sText%(sz)s]</a></td>'
+                # which exists?  .txt.gz first, then .txt
+                if os.path.exists(gzfile):
+                    file = gzfile
+                    url = a + '.txt.gz'
+                    fmt = "Gzip'd "
+                elif os.path.exists(txtfile):
+                    file = txtfile
+                    url = a + '.txt'
+                    fmt = ''
+                else:
+                    # neither found?
+                    file = None
+                # in Python 1.5.2 we have an easy way to get the size
+                if file:
+                    try:
+                        size = os.path.getsize(file)
+                    except AttributeError:
+                        # getsize() probably does this anyway ;-)
+                        size = os.stat(file)[6]
+                    if size < 1000:
+                        sz = ' %d bytes ' % size
+                    elif size < 1000000:
+                        sz = ' %d KB ' % (size / 1000)
+                    else:
+                        sz = ' %d MB ' % (size / 1000000)
+                        # GB?? :-)
+                    textlink = templ % {'url': url,
+                                        'fmt': fmt,
+                                        'sz' : sz}
+                else:
+                    # there's no archive file at all... hmmm.
+                    textlink = ''
                 listing = listing + self.TOC_entry_tmpl % \
-                          {'archive': a,
-                           # only add .gz extension if gzip module was
-                           # imported
-                           'gzip': gzip and '.gz' or ''}
+                          {'archive' : a,
+                           'textlink': textlink}
         d["archive_listing"] = listing
         return self.html_TOC_tmpl % d
-
-
 
     def __init__(self, maillist,unlock=1):
         self.maillist=maillist
@@ -580,9 +616,8 @@ class HyperArchive(pipermail.T):
 	and the empty list is legal."""
 	if article.subject in ['subscribe', 'unsubscribe']: return None
         res = self.dateToVolName(string.atof(article.date))
-        import sys
-        sys.stderr.write("figuring article archives\n")
-        sys.stderr.write(res + "\n")
+        self.message("figuring article archives\n")
+        self.message(res + "\n")
         return res
     
 
@@ -666,7 +701,6 @@ class HyperArchive(pipermail.T):
 
     def message(self, msg):
 	if self.VERBOSE:
-            import sys
             f = sys.stderr
             f.write(msg)
             if msg[-1:]!='\n': f.write('\n')
@@ -702,7 +736,8 @@ class HyperArchive(pipermail.T):
 
     def write_threadindex_entry(self, article, depth):
 	if depth<0: 
-	    sys.stderr.write('depth<0') ; depth=0
+	    self.message('depth<0')
+            depth=0
 	if depth>self.THREADLEVELS: depth=self.THREADLEVELS
 	if depth<self.depth: 
 	    for i in range(self.depth-depth): print '</UL>'
@@ -889,7 +924,7 @@ class HyperArchive(pipermail.T):
 		else: # j==k
 		    raise ValueError, "j==k: This can't happen!"
 		length=len(text)
-#		sys.stderr.write("URL: %s %s %s \n" % (CGIescape(L[:pos]), URL, CGIescape(text)))
+#		self.message("URL: %s %s %s \n" % (CGIescape(L[:pos]), URL, CGIescape(text)))
 		L2=L2+'%s<A HREF="%s">%s</A>' % (CGIescape(L[:pos]), URL, CGIescape(text))
 		L=L[pos+length:]
 		jr=emailpat.search(L) ; kr=urlpat.search(L)
