@@ -17,7 +17,9 @@
 """Decorate a message by sticking the header and footer around it.
 """
 
-import mimelib.Text
+from types import ListType
+
+from mimelib.Text import Text
 
 from Mailman import mm_cfg
 from Mailman.i18n import _
@@ -32,18 +34,34 @@ def process(mlist, msg, msgdata):
         return
     header = decorate(mlist, mlist.msg_header, _('non-digest header'))
     footer = decorate(mlist, mlist.msg_footer, _('non-digest footer'))
-    # Be MIME smart here.  If the message is non-multipart, then we can just
-    # tack the header and footers onto the message body.  But if the message
-    # is multipart, we want to add them as MIME subobjects.
-    if msg.ismultipart():
-        mimehdr = mimelib.Text(header)
-        mimeftr = mimelib.Text(footer)
-        payload = msg.get_payload()
-        payload.insert(0, mimehdr)
-        payload.append(mimeftr)
-    else:
+    # Be MIME smart here.  We only attach the header and footer by
+    # concatenation when the message is a non-multipart of type text/plain.
+    # Otherwise, if it is not a multipart, we make it a multipart, and then we
+    # add the header and footer as text/plain parts.
+    if not msg.ismultipart() and msg.gettype() in (None, 'text/plain'):
         payload = header + msg.get_payload() + footer
         msg.set_payload(payload)
+    elif msg.gettype() == 'multipart/mixed':
+        # The next easiest thing to do is just prepend the header and append
+        # the footer as additional subparts
+        mimehdr = Text(header)
+        mimeftr = Text(footer)
+        payload = msg.get_payload()
+        if not isinstance(payload, ListType):
+            payload = [payload]
+        payload.append(mimeftr)
+        payload.insert(0, mimehdr)
+        msg.set_payload(payload)
+    elif msg.getmaintype() <> 'multipart':
+        # Okay, we've got some 'image/*' or 'audio/*' -like type.  For now, we
+        # simply refuse to add headers and footers to this message.  BAW:
+        # still trying to decide what the Right Thing To Do is.
+        pass
+    else:
+        # Now we've got some multipart/* that's not a multipart/mixed.  I'm
+        # even less sure about what to do here, so once again, let's not add
+        # headers or footers for now.
+        pass
 
 
 
