@@ -96,9 +96,9 @@ MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 MAX_SPAWNS        = 40
 
 #
-# ceiling on the number of recipients that can be specified in a single
-# smtp transaction
-#
+# Ceiling on the number of recipients that can be specified in a single
+# smtp transaction.  Set to 0 to relay the entire recipient list in one
+# transaction.
 SMTP_MAX_RCPTS = 500
 
 # Delivery module for the message pipeline.  See
