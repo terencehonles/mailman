@@ -14,7 +14,12 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Deliver a message via `sendmail' drop-off.
+"""Deliver a message via command-line drop-off.
+
+WARNING WARNING WARNING: This module is provided for example purposes only.
+It should not be used in a production environment for reasons described
+below.  Because of this, you must explicitly enable it with by editing the
+code.  See the WARN section in the process() function.
 
 This module delivers the message via the command line interface to the
 sendmail program.  It should work for sendmail clones like Postfix.  It is
@@ -25,8 +30,13 @@ about 3k in size.
 SECURITY WARNING: Because this module uses os.popen(), it goes through the
 shell.  This module does not scan the arguments for potential exploits and so
 it should be considered unsafe for production use.  For performance reasons,
-it's not recommended either -- use the SMTPDirect delivery module instead.
+it's not recommended either -- use the SMTPDirect delivery module instead,
+even if you're using the sendmail MTA.
 
+DUPLICATES WARNING: Using this module can cause duplicates to be delivered to
+your membership, depending on your MTA!  E.g. It is known that if you're using
+the sendmail MTA, and if a message contains a single dot on a line by itself,
+your list members will receive many duplicates.
 """
 
 import string
@@ -55,6 +65,10 @@ def process(mlist, msg, msgdata):
     program.
     
     """
+    # WARN: If you've read the warnings above and /still/ insist on using this
+    # module, you must comment out the following line.  I still recommend you
+    # don't do this!
+    assert 0, 'Use of the Sendmail.py delivery module is highly discouraged'
     recips = msgdata.get('recips')
     if not recips:
         # Nobody to deliver to!
