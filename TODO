@@ -1,6 +1,7 @@
 The Mailman TODO list
 
 *Bugs
+- Apparently two confirmation notices seem to show up now.
 - Confirmation step seems to always happen, even if no confirmation
 is required.  Need to check about w/ admin-approval on, etc...
 - Turning off bounce processing doesn't seem to work (still?).
@@ -10,7 +11,6 @@ is required.  Need to check about w/ admin-approval on, etc...
 working again before we booted them from the list)
 
 *Documentation
-- A FAQ (esp. for the web page)
 - A detailed feature list
 - A user's guide
 - A site-admin's guide
@@ -26,8 +26,6 @@ list-specific links for list-specific pages.
 confirmation!
 
 *List Admin UI
-- The list admin should be able to turn off the security mechanisms such as 
-confirmation and passwords if he deems it necessary.
 - Make it so mass-subscribe doesn't hang waiting for the mail transport to 
 do all delivery. (This may have been done w/ the admin cookie patches?)
 - Time out admin requests, and have them auto-fail after that period.
@@ -50,7 +48,6 @@ cataloging mechanism based on the file system).
 - Be able to edit ALL the web pages, as well as the mail messages.
 - Use templates from the templates dir until the list owner changes
   the page, so the site admin can change them...
-- Be able to turn off / set time frame for password reminders
 
 *List Member UI
 - Editing your user options should put you back to the edit-options page. 
@@ -81,11 +78,6 @@ filter) filtering/bouncing/etc. mechanism.
 *Portability concerns
 - Use portable file locking
 - Replace cron stuff with our own scheduling mechanism
-- Provide a way to get list mail from another machine so the SMTP server
-  doesn't have to live on the same machine as the web server + mailman.
-  The easiest thing to do would be to use something like fetchmail to poll
-  a pop3 port.  However, we could have a program that runs on the SMTP server,
-  and just copies mail over to the other machine. (an rsh setup would be OK)
 
 *Bounce handling
 - Add more patterns for bounce handling
@@ -113,7 +105,6 @@ they're likely not to get it).
   exceptions, when appropriate.
 - Turn standard mailman exceptions into class exceptions.
 - Seperate edit-options from the subscribe script.
-- Encapsulate all modules into a python package.
 - Remove dead code, etc.
 
 *Misc
