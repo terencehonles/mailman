@@ -20,8 +20,26 @@
 
 This script is intended to be run as a bin/withlist script, i.e.
 
-% bin/withlist -l -r fix_url <mylist>
+% bin/withlist -l -r fix_url listname [options]
+
+Options:
+    -u urlhost
+    --urlhost=urlhost
+        Look up urlhost in the virtual host table and set the web_page_url and
+        host_name attributes of the list to the values found.  This
+        essentially moves the list from one virtual domain to another.
+
+        Without this option, the default web_page_url and host_name values are
+        used.
+
+    -v / --verbose
+        Print what the script is doing.
+
+If run standalone, it prints this help text and exits.
 """
+
+import sys
+import getopt
 
 import paths
 from Mailman import mm_cfg
@@ -29,8 +47,41 @@ from Mailman.i18n import _
 
 
 
-def fix_url(mlist):
-    mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST
+def usage(code, msg=''):
+    print _(__doc__.replace('%', '%%'))
+    if msg:
+        print msg
+    sys.exit(code)
+
+
+
+def fix_url(mlist, *args):
+    try:
+        opts, args = getopt.getopt(args, 'u:v', ['urlhost=', 'verbose'])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    verbose = 0
+    urlhost = mailhost = None
+    for opt, arg in opts:
+        if opt in ('-u', '--urlhost'):
+            urlhost = arg
+        elif opt in ('-v', '--verbose'):
+            verbose = 1
+
+    if urlhost:
+        web_page_url = mm_cfg.DEFAULT_URL_PATTERN % urlhost
+        mailhost = mm_cfg.VIRTUAL_HOSTS.get(urlhost.lower(), urlhost)
+    else:
+        web_page_url = mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST
+        mailhost = mm_cfg.DEFAULT_EMAIL_HOST
+
+    if verbose:
+        print _('Setting web_page_url to: %(web_page_url)s')
+    mlist.web_page_url = web_page_url
+    if verbose:
+        print _('Setting host_name to: %(mailhost)s')
+    mlist.host_name = mailhost
     print _('Saving list')
     mlist.Save()
     mlist.Unlock()
@@ -38,4 +89,4 @@ def fix_url(mlist):
 
 
 if __name__ == '__main__':
-    print _(__doc__.replace('%', '%%'))
+    usage(0)
