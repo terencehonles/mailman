@@ -340,6 +340,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    setattr(self, key, value)
 	file.close()
 	self._ready = 1
+	self.CheckValues()
 	self.CheckVersion()
 
     def LogMsg(self, kind, msg, *args):
@@ -377,6 +378,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	self.data_version = mm_cfg.VERSION
 	self.Save()
+
+    def CheckValues(self):
+	"""Normalize selected values to known formats."""
+	if self.web_page_url and  self.web_page_url[-1] != '/':
+	    self.web_page_url = self.web_page_url + '/'
 
     def IsListInitialized(self):
 	if not self._ready:
@@ -526,34 +532,33 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 #msg should be an IncomingMessage object.
     def Post(self, msg, approved=0):
-##	print "Post in"			# DEBUG
 	self.IsListInitialized()
 	sender = msg.GetSender()
 	# If it's the admin, which we know by the approved variable,
 	# we can skip a large number of checks.
 	if not approved:
-##	    print "Post checking..."			# DEBUG
 	    if len(self.bad_posters):
 		addrs = mm_utils.FindMatchingAddresses(sender,
 						       self.bad_posters)
 		if len(addrs):
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				'Post from an untrusted origin.')
+				    'Post from a questionable origin.',
+				    msg.getheader('subject'))
 	    if len(self.posters):
 		addrs = mm_utils.FindMatchingAddresses(sender, self.posters)
 		if not len(addrs):
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
 				    'Only approved posters may post without '
-				    'moderator approval.')
+				    'moderator approval.',
+				    msg.getheader('subject'))
 	    elif self.moderated:
 		self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				'Moderated list.',
-				# Add an extra arg to avoid generating an
-				# error mail.
-				1)
+				mm_err.MODERATED_LIST_MSG,
+				msg.getheader('subject'))
 	    if self.member_posting_only and not self.IsMember(sender):
 		self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				'Postings from member addresses only.')
+				'Postings from member addresses only.',
+				msg.getheader('subject'))
 	    if self.max_num_recipients > 0:
 		recips = []
 		toheader = msg.getheader('to')
@@ -564,23 +569,27 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		    recips = recips + string.split(ccheader, ',')
 		if len(recips) > self.max_num_recipients:
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				    'Too many recipients.')
+				    'Too many recipients.',
+				    msg.getheader('subject'))
  	    if (self.require_explicit_destination and
  		  not self.HasExplicitDest(msg)):
  		self.AddRequest('post', mm_utils.SnarfMessage(msg),
- 				'List name not among explicit destinations.')
+ 				'List name not among explicit destinations.',
+				msg.getheader('subject'))
  	    if self.bounce_matching_headers:
 		triggered = self.HasMatchingHeader(msg)
 		if triggered:
 		    # Darn - can't include the matching line for the admin
 		    # message because the info would also go to the sender.
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
-				    'Suspicious header content.')
+				    'Suspicious header content.',
+				    msg.getheader('subject'))
 	    if self.max_message_size > 0:
 		if len(msg.body)/1024. > self.max_message_size:
 		    self.AddRequest('post', mm_utils.SnarfMessage(msg),
 				    'Message body too long (>%dk)' % 
-				    self.max_message_size)
+				    self.max_message_size,
+				    msg.getheader('subject'))
 	# Prepend the subject_prefix to the subject line.
 	subj = msg.getheader('subject')
 	prefix = self.subject_prefix
@@ -607,14 +616,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    if self.GetUserOption(sender, mm_cfg.AcknowlegePosts):
 		ack_post = 1
 	# Deliver the mail.
-##	print "post about to deliver"	# DEBUG
 	recipients = self.members[:] 
 	if dont_send_to_sender:
 	    recipients.remove(sender)
 	def DeliveryEnabled(x, s=self, v=mm_cfg.DisableDelivery):
 	    return not s.GetUserOption(x, v)
 	recipients = filter(DeliveryEnabled, recipients)
-##	print "post delivering"	# DEBUG
 	self.DeliverToList(msg, recipients,
 			   self.msg_header % self.__dict__,
 			   self.msg_footer % self.__dict__)
@@ -622,7 +629,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    self.SendPostAck(msg, sender)
 	self.last_post_time = time.time()
 	self.post_id = self.post_id + 1
-##	print "post done"	# DEBUG
 	self.Save()
 
     def Lock(self):
