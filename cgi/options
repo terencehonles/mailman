@@ -49,9 +49,9 @@ replacements['<mm-digest-radio-button>'] = list.FormatOptionButton(
 replacements['<mm-undigest-radio-button>'] = list.FormatOptionButton(
 	mm_cfg.Digests, 0, user)
 replacements['<mm-plain-digests-button>'] = list.FormatOptionButton(
-	mm_cfg.EnableMime, 0, user)
-replacements['<mm-fancy-digests-button>'] = list.FormatOptionButton(
-	mm_cfg.EnableMime, 1, user)
+	mm_cfg.DisableMime, 1, user)
+replacements['<mm-mime-digests-button>'] = list.FormatOptionButton(
+	mm_cfg.DisableMime, 0, user)
 replacements['<mm-delivery-enable-button>'] = list.FormatOptionButton(
 	mm_cfg.DisableDelivery, 0, user)
 replacements['<mm-delivery-disable-button>'] = list.FormatOptionButton(
