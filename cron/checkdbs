@@ -1,4 +1,5 @@
-#!/usr/local/bin/python 
+#! /usr/bin/env python
+#
 # Copyright (C) 1998 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,12 +18,8 @@
 
 "Invoked by cron, checks for pending list requests and mails the admin if any."
 
-__version__ = "$Revision: 547 $"
-
 import sys, os
-
-sys.path.append('/home/mailman/mailman/modules')
-
+import paths
 import maillist, mm_cfg, mm_message, mm_utils
 
 def main():
