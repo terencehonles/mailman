@@ -7,9 +7,9 @@ Here is a history of user visible changes to Mailman.
 2.1 alpha 2 (XXX)
 
     - Building
-        o mimelib 0.3 is now required.  Get it from
-          http://mimelib.sourceforge.net
-          If you've installed mimelib 0.2, you must upgrade.
+        o mimelib 0.4 is now required.  Get it from
+          http://mimelib.sourceforge.net.  If you've installed an
+          earlier version of mimelib, you must upgrade.
 
     - Security
         o Better definition of authentication domains.  The following
@@ -116,9 +116,16 @@ Here is a history of user visible changes to Mailman.
           mylist-join@mysite
           mylist-leave@mysite
 
+        o Mailman now recognizes an Urgent: header, which, if it
+          contains the list moderator or list administrator password,
+          forces the message to be delivered immediately to all
+          members (i.e. both regular and digest members).  The message
+          is also placed in the digest.  If the password is incorrect,
+          the message will be bounced back to the sender.
+
     - Performance
         o Refinements to the new qrunner subsystem which preserves
-          FIFO order of message clearing.
+          FIFO order of messages.
 
     - Command line scripts
         o bin/mailmanctl script added, which is used to start, stop,
