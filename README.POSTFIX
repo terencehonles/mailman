@@ -70,7 +70,7 @@ INTEGRATING POSTFIX AND MAILMAN
       % chown mailman.mailman data/aliases*
 
     - Hack your Postfix's main.cf file to include the following path
-      in your alias_map variable:
+      in your alias_maps variable:
 
           /usr/local/mailman/data/aliases
 

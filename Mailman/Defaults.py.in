@@ -561,7 +561,7 @@ VERP_CONFIRM_FORMAT = '%(addr)s+%(cookie)s'
 # VERP_CONFIRM_FORMAT.
 VERP_CONFIRM_REGEXP = r'^(?P<addr>[^+]+?)\+(?P<cookie>[^@]+)@.*$'
 
-# Set this to true to enable VERP-like (more use friendly) confirmations
+# Set this to true to enable VERP-like (more user friendly) confirmations
 VERP_CONFIRMATIONS = 0
 
 
