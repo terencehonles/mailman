@@ -24,7 +24,7 @@ Usage:
 
 Options:
 
-    --help/-h
+    -h/--help
         Print this message and exit.
 """
 
