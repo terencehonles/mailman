@@ -168,8 +168,7 @@ def main():
             mlist.CheckValues()
         # Additional sanity checks
         if not mlist.digestable and not mlist.nondigestable:
-            add_error_message(
-                doc,
+            doc.addError(
                 _('''You have turned off delivery of both digest and
                 non-digest messages.  This is an incompatible state of
                 affairs.  You must turn on either digest delivery or
@@ -177,13 +176,11 @@ def main():
                 unusable.'''))
 
         if not mlist.digestable and mlist.getDigestMemberKeys():
-            add_error_message(
-                doc,
+            doc.addError(
                 _('''You have digest members, but digests are turned
                 off. Those people will not receive mail.'''))
         if not mlist.nondigestable and mlist.getRegularMemberKeys():
-            add_error_message(
-                doc,
+            doc.addError(
                 _('''You have regular list members but non-digestified mail is
                 turned off.  They will receive mail until you fix this
                 problem.'''))
@@ -319,7 +316,7 @@ def option_help(mlist, varhelp):
     # Print an error message if we couldn't find a valid one
     if not item:
         bad = _('No valid variable name found.')
-        add_error_message(doc, bad)
+        doc.addError(bad)
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
         return
@@ -788,7 +785,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         try:
             cre = re.compile(regexp, re.IGNORECASE)
         except re.error:
-            add_error_message(doc, _('Bad regular expression: ') + regexp)
+            doc.addError(_('Bad regular expression: ') + regexp)
         else:
             all = [s for s in all if cre.search(s)]
     chunkindex = None
@@ -1225,8 +1222,8 @@ def change_options(mlist, category, subcat, cgidata, doc):
             # No re-authentication necessary because the moderator's
             # password doesn't get you into these pages.
         else:
-            add_error_message(
-                doc, _('Moderator passwords did not match'),
+            doc.addError(
+                _('Moderator passwords did not match'),
                 tag=_('Error: '))
     # Handle changes to the list administator password
     new = cgidata.getvalue('newpw', '').strip()
@@ -1237,8 +1234,8 @@ def change_options(mlist, category, subcat, cgidata, doc):
             # Set new cookie
             print mlist.MakeCookie(mm_cfg.AuthListAdmin)
         else:
-            add_error_message(
-                doc, _('Administator passwords did not match'),
+            doc.addError(
+                _('Administator passwords did not match'),
                 tag=_('Error: '))
     # Give the individual gui item a chance to process the form data
     categories = mlist.GetConfigCategories()
@@ -1270,9 +1267,8 @@ def change_options(mlist, category, subcat, cgidata, doc):
             try:
                 value = get_valid_value(mlist, property, kind, val, deps)
             except Errors.EmailAddressError:
-                add_error_message(
-                    doc,
-                    _('Bad email address for option %(property)s: %(val)s'),
+                doc.addError(
+                    y_('Bad email address for option %(property)s: %(val)s'),
                     tag=_('Error: '))
                 continue
             # BAW: Ugly, ugly hack for "do immediately" pseudo-options
@@ -1396,8 +1392,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
         except VallueError:
             val = None
         if val not in (0, 1):
-            add_error_message(doc, _('Bad moderation flag value'),
-                              tag=_('Error: '))
+            doc.addError(_('Bad moderation flag value'), tag=_('Error: '))
         else:
             for member in mlist.getMembers():
                 mlist.setMemberOption(member, mm_cfg.Moderate, val)
@@ -1464,12 +1459,3 @@ def change_options(mlist, category, subcat, cgidata, doc):
             items = ['%s -- %s' % (x[0], x[1]) for x in errors]
             doc.AddItem(apply(UnorderedList, tuple((items))))
             doc.AddItem("<p>")
-
-
-
-def add_error_message(doc, errmsg, tag=None, *args):
-    if tag is None:
-        tag = _('Warning: ')
-    doc.AddItem(Header(3, Bold(FontAttr(
-        _(tag), color=mm_cfg.WEB_ERROR_COLOR, size="+2")).Format() +
-                       Italic(errmsg % args).Format()))
