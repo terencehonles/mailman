@@ -21,14 +21,9 @@
 This script should be run nightly from cron.  When run from the command line,
 the following usage is understood:
 
-Usage: %(program)s [-a] [-h] [listnames]
+Usage: %(program)s [-v] [-h] [listnames]
 
 Where:
-    --all
-    -a
-        gzip all the flat .txt archives files.  Without this, only the
-        chronologically latest named .txt file is compressed for each list.
-
     --verbose
     -v
         print each file as it's being gzip'd
@@ -46,6 +41,7 @@ Where:
 import sys
 import os
 import time
+from stat import *
 import getopt
 gzip = None
 try:
@@ -70,13 +66,6 @@ def usage(code, msg=''):
 
 
 
-def sortfunc(a, b):
-    f1, y1, m1 = a
-    f2, y2, m2 = b
-    return cmp((y2, m2), (y1, m1))
-
-
-
 def compress(txtfile):
     if VERBOSE:
         print "gzip'ing:", txtfile
@@ -91,18 +80,14 @@ def compress(txtfile):
 def main():
     global VERBOSE
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'avh',
-                                   ['all', 'verbose', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'vh', ['verbose', 'help'])
     except getopt.error, msg:
         usage(1, msg)
 
     # defaults
-    all = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
-        elif opt in ('-a', '--all'):
-            all = 1
         elif opt in ('-v', '--verbose'):
             VERBOSE = 1
 
@@ -122,23 +107,25 @@ def main():
             allfiles = os.listdir(dir)
         except os.error:
             print 'List', name, 'has a bogus archive_directory:', dir
-            allfiles = []
+            continue
         files = []
         for f in allfiles:
             try:
-                year, month = time.strptime(f, '%Y-%B.txt')[0:2]
+                time.strptime(f, '%Y-%B.txt')
             except ValueError:
-                pass
-            else:
-                files.append((os.path.join(dir, f), year, month))
-        if not files:
-            continue
-        if all:
-            for f, m, y in files:
-                compress(f)
-        else:
-            files.sort(sortfunc)
-            f, m, y = files[0]
+                continue
+            # stat both the .txt and .txt.gz files and append them only if 
+            # the former is newer than the latter.
+            txtfile = os.path.join(dir, f)
+            gzpfile = txtfile + '.gz'
+            txt_mtime = os.stat(txtfile)[ST_MTIME]
+            try:
+                gzp_mtime = os.stat(gzpfile)[ST_MTIME]
+            except os.error:
+                gzp_mtime = -1
+            if txt_mtime > gzp_mtime:
+                files.append(txtfile)
+        for f in files:
             compress(f)
 
         
