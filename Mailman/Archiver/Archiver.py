@@ -114,7 +114,7 @@ class Archiver:
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
-            return self.GetScriptURL('private', absolute=1)
+            return self.GetScriptURL('private', absolute=1) + '/'
         else:
             return '%s/%s/' % (mm_cfg.PUBLIC_ARCHIVE_URL, self._internal_name)
 
