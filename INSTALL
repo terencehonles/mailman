@@ -39,19 +39,6 @@ configure and install the Mailman software.
       the Web based and mail based programs will have the proper write 
       permissions.
 
-    - Make sure you also have the following user ids:
-        nobody
-        daemon
-
-      and the following groups:
-        nobody
-        mail
-
-      These user and group ids are compiled into the wrapper programs
-      for improved security.  If you don't want to or can't added
-      these users and groups, see below for specifying alternative
-      user and group ids for the wrapper programs.
-
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
       installed under $prefix.  
@@ -106,47 +93,33 @@ configure and install the Mailman software.
             the scripts from the command line, the first Python
             interpreter found on $PATH is always used.
 
+      --with-mail-gid=<gid>
+            Specify an alternative group id for running scripts via
+            the mail wrapper.  By default, this id is for the `other'
+            group (typically defined in your system's /etc/group
+            file).
+
+            This is highly system dependent and you must get this
+            right, because the group id is compiled into the mail
+            wrapper program for added security.  On systems using
+            sendmail, check your sendmail.cf file to see what group it
+            runs programs as.
+
+      --with-cgi-gid=<gid>
+            Specify an alternative group id for running scripts via
+            the CGI wrapper.  By default, this id is for the `nobody'
+            group (typically defined in your system's /etc/group
+            file).
+
+            The proper value for this is dependent on your Web server
+            configuration, and you must get this right, because the
+            group id is compiled into the CGI wrapper program for
+            added security.  On system using Apache for example, check
+            the values for the `Group' option in your httpd.conf file.
+
       --with-gcc=no
             Don't use gcc, even if it is found.  `cc' must be found on
             your $PATH
-
-      Also, a number of shell environment variables can be used on the
-      configure command line to customize things.
-
-      $CC         The C compiler to use
-
-      $CGI_UID    The uid to use in the CGI wrapper (default is
-                  the uid for the user `nobody')
-
-      $CGI_GID    The gid to use in the CGI wrapper (default is
-                  the gid for the group `nobody')
-
-      $MAIL_UID   The uid to use in the mail wrapper (default is
-                  the uid for the user `daemon)
-
-      $MAIL_GID   The gid to use in the CGI wrapper (default is
-                  the gid for the group `mail')
-
-      For example, to set $MAIL_GID to 20 instead of the default,
-      users of csh or tcsh should type:
-
-            % setenv MAIL_GID 20
-
-      Users of bash, ksh and similar shells should type:
-
-            % export MAIL_GID=20
-
-      or, you can invoke configure like so:
-
-            % MAIL_GID=20 ./configure
-
-      For $CGI_UID and $CGI_GID, consult your Web server's
-      documentation.  This uid and gid should match the user and group 
-      that the Web server will use to execute CGI scripts.
-
-      For $MAIL_UID and $MAIL_GID, consult your sendmail documentation
-      or sendmail.cf file.  This is the user and group that your mail
-      delivery will use to execute filter programs.
 
     - Run `make install'
 
@@ -336,5 +309,5 @@ configure and install the Mailman software.
 
 Local Variables:
 mode: indented-text
-insert-tabs-mode: nil
+indent-tabs-mode: nil
 End:
