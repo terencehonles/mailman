@@ -27,6 +27,7 @@
 
 import os
 import re
+import copy
 import time
 from types import ListType
 from cStringIO import StringIO
@@ -289,8 +290,9 @@ def send_i18n_digests(mlist, mboxfp):
     mimemsg.attach(mimedigest)
     first = True
     for msg in messages:
-        # MIME
-        mimedigest.attach(MIMEMessage(msg))
+        # MIME.  Make a copy of the message object since the rfc1153
+        # processing scrubs out attachments.
+        mimedigest.attach(MIMEMessage(copy.deepcopy(msg)))
         # rfc1153
         if first:
             first = False
