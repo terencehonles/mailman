@@ -65,6 +65,9 @@ FILEMODE=	644
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 DIRSETGID=	chmod g+s
 
+DATE = $(shell python -c 'import time; print time.strftime("%d-%b-%Y"),')
+LANGPACK = README-I18N.en templates messages
+EXCLUDES = --exclude=CVS --exclude=.cvsignore --exclude=Makefile* --exclude=*.files --exclude=*.old
 
 # Rules
 
@@ -137,3 +140,6 @@ distclean: $(SUBDIRS)
 	    (cd $$d; $(MAKE) distclean); \
 	done
 	-rm -f config.cache config.log config.status Makefile
+
+langpack:
+	tar zcvf langpack-$(DATE).tgz $(EXCLUDES) $(LANGPACK)
