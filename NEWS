@@ -35,6 +35,14 @@ Here is a history of user visible changes to Mailman.
     - admindb summary page gives the option of clearing the moderation
       flag of members who are on probation.
 
+    - More robustness against badly MIME encapsulated messages: if a
+      MessageParseError is raised during the initial parse, the
+      message can either be discarded or saved in qfiles/bad,
+      depending on the value of the new configuration variable
+      QRUNNER_SAVE_BAD_MESSAGES.
+
+    - Russian templates and catalogs have been added.
+
 
 2.1 alpha 4 (31-Dec-2001)
 
