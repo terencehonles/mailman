@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.34 
+# From configure.in Revision: 2.35 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -2393,7 +2393,7 @@ cat >> $CONFIG_STATUS <<EOF
 
 EOF
 cat >> $CONFIG_STATUS <<\EOF
-
+echo "configuration completed at" `date`
 exit 0
 EOF
 chmod +x $CONFIG_STATUS
