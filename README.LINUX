@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
@@ -14,6 +14,10 @@ GNU/LINUX ISSUES
 
     Note that if you are using Linux Mandrake in secure mode, you are probably
     concerned by this.
+
+    Apparently Mandrake 9.0 changed the permissions on gcc, so if you
+    build as the mailman user, you need to be sure mailman is in the
+    cctools group.
 
 
 PYTHON PACKAGES
@@ -37,9 +41,12 @@ PYTHON PACKAGES
             import paths
         ImportError: No module named paths
         make: *** [update] Error 1
-    
+
     If this happens, install the Python development package and try
     "configure ; make install" again.
+
+    This problem can manifest itself in other Linux distributions in
+    different ways, although usually it appears as ImportErrors.
 
 
 
