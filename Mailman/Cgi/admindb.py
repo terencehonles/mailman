@@ -210,7 +210,7 @@ def PrintRequests(doc):
 	list.GetRelativeScriptURL('admin'), htmlformat.Italic(
 	    'View or edit the list configuration information'))))
     doc.AddItem('<p><hr>')
-    if not list.RequestsPending():
+    if not list.NumRequestsPending():
 	doc.AddItem(htmlformat.Header(3,'There are no pending requests.'))
 	doc.AddItem(list.GetMailmanFooter())
 	return
