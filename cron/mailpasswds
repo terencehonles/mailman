@@ -18,6 +18,12 @@
 
 """Send password reminders for all lists to all users.
 
+Any arguments are taken as a list of addresses that become the focus - only 
+the subscribers on the list are attended to, all other subscribers are
+ignored.  In addition, if any addresses are specified, a line is printed
+for each list where that address is found.  (Otherwise operation is
+silent.)
+
 We accumulate users and their passwords, and use the last list to send a
 single message to each user with their complete collection of passwords,
 rather than sending a single message for each password."""
@@ -78,7 +84,7 @@ def main(args):
     list = None
     users = {}				# user: (listname, password, url)
     # Constrain to specified users, if any.
-    constrained_to = args[1:]
+    confined_to = args[1:]
     for name in Utils.list_names():
 	list = MailList.MailList(name, lock = 0)
 	list_name = list.real_name
@@ -86,8 +92,11 @@ def main(args):
 	if not list.send_reminders:
 	    continue
 	for user, password in list.passwords.items():
-            if constrained_to and user not in constrained_to:
-                continue
+            if confined_to:
+                if user not in confined_to:
+                    continue
+                else:
+                    print "%s in %s" % (user, list.real_name)
 	    url = list.GetAbsoluteOptionsURL(user)
 	    if reminders_to_admins:
 		recipient = "%s-admin@%s" % tuple(string.split(user, '@'))
