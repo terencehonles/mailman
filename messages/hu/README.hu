@@ -14,10 +14,10 @@ BEVEZETÉS
     A Mailman elsõ fejlesztõje John Viega volt. Ken Manheimer segítségével
     (az 1.0b3 verzióig) folytatódott a fejlesztés. A késõbbiekben és
     az 1.0-ás végleges verzióban már több programozó vett részt a 
-    fejlesztésben. A vezetõ  programozók közé Barry Warsaw, Ken Manheimer,
+    fejlesztésben. A vezetõ programozók közé Barry Warsaw, Ken Manheimer,
     Scott Cotton, Harald Meland és John Viega tartozott. Az újabb verziók
-    feljesztését Barry Warsaw vezeti; a fejlesztésben résztvevõk egyrészének
-    névsorát az ACKNOWLEDGMENTS állományban lehet olvasni.A Mailman 2.0-ban
+    fejlesztését Barry Warsaw vezeti; a fejlesztésben résztvevõk egy részének
+    névsorát az ACKNOWLEDGMENTS állományban lehet olvasni. A Mailman 2.0-ban
     található Pipermail kódjának fejlesztésében nagy része volt Jeremy 
     Hlyton-nak.
 
@@ -35,12 +35,14 @@ BEVEZETÉS
 
         http://www.python.org
 
-    A GPL licenszben foglaltakhoz Python 2.0.1-et célszerû használni.
-    A Python 2.1.1 és 2.2 szintén GPL kompatibilis lesz, de az írás
-    idõpontjában (2000. július 9.) még nem jelentek meg. A Mailman
-    az összes Python 2.x verzióval együtt tud mûködni.
+    A GPL licenszben foglaltakhoz célszerû Python 2.0.1-et, vagy 
+    2.1.1-et használni.A Python 2.2 szintén GPL kompatibilis lesz, 
+    de az írás idõpontjában (2001. október 1.) még nem jelent meg.
+    A Mailman az összes Python 2.x verzióval együtt tud mûködni,
+    azonban Python 2.2-es verziójával még csak felületesen lett
+    tesztelve.
 
-    Továbbá szükség van egy ANSI C fordítóra; gcc (a GNU C fordítója)
+    Szükség van továbbá egy ANSI C fordítóra; gcc (a GNU C fordítója)
     megfelel a célnak. A Mailman jelenleg GNU/Linux és más Unix-típusú
     operációs rendszereken (pl. Solaris, *BSD, stb.) képes futni. Nem
     mûködik Windows rendszeren, azonban bármely platform web és levelezõ
@@ -56,29 +58,29 @@ TULAJDONSÁGOK
     A NEWS állományban a 0.9-es verziótól fogva követhetõk nyomon a 
     változások. A TODO állományban a kívánság lista található (azon
     újabb tulajdonságok, változtatások, amelyeket a felhasználók szívesen
-    használnának). A következõ címen Mailman mûködik: 
+    használnának). A következõ címen látható a Mailman mûködés közben: 
 
 
         http://www.python.org/mailman/listinfo
 
     A Mailman rendelkezik mindazokkal a szükséges tulajdonságokkal,
-    amelyekkel egy levelezõlista kezelõ-programnak rendelkeznie kell
+    amelyekkel egy levelezõlista-kezelõ programnak rendelkeznie kell
     és még annál többel:
 
     - Web alapú lista adminisztrálás majdnem minden beállításhoz. Web alapú
-      feliratkozás és felhasználói beállítás lehetõség. Minden listához
+      feliratkozás és felhasználói beállítási lehetõség. Minden listához
       külön megváltoztatható információs oldal.
 
     - Biztonsági beállítások, mind szerkesztés, nyitott és zártkörû listák,
       feliratkozási korlátozások és privát tagnévsor.
 
-    - Beépített automatikus web alapú levél archíválás mind nyilvános, mind
-      privát archívumhoz, valamint külsõ archiváló engedélyezése.
+    - Beépített automatikus web alapú levél archiválás mind nyilvános, mind
+      privát archívumhoz, valamint külsõ archiváló használatának lehetõsége.
 
-    - Felhasználóként változtatható levél küldési mód, MIME formátumú vagy
+    - Felhasználóként változtatható levélküldési mód, MIME formátumú vagy
       RFC 1153 típusú sima szöveges digestek kézbesítése.
 
-    - Beépített levél/Hírcsoport átjáró.
+    - Beépített levél/hírcsoport átjáró.
 
     - Beépített automatikus válaszadás.
 
@@ -86,9 +88,9 @@ TULAJDONSÁGOK
 
     - Beépített visszapattanás kezelés.
 
-    - Beépített spam kezelés.
+    - Beépített spamkezelés.
 
-    - Bõvíthetõ levél kézbesítési mechanizmus.
+    - Bõvíthetõ levélkézbesítési mechanizmus.
 
     - Virtuális tartományok támogatása.
 
@@ -96,9 +98,9 @@ TULAJDONSÁGOK
 KÖVETELMÉNYEK
 
     Bármilyen olyan levél továbbító programmal együtt lehet használni
-    a Mailman-t, amelyik támogtja a közvetlen SMTP kapcsolatot a 25-os
+    a Mailman-t, amelyik támogatja a közvetlen SMTP kapcsolatot a 25-os
     porton keresztül. Azonban néhány MTA-nál (pl. Exim és Postfix) a
-    Mailman képés leveleõlisták web felületröl történõ létrehozására
+    Mailman képes levelezõlisták web felületrõl történõ létrehozására
     vagy törlésére. A Mailman-t be lehet állítani úgy is, hogy az
     adott MTA-val parancssori kapcsolók segítségével kommunikáljon,
     azonban ez bizonyos biztonsági problémákkal járhat.
@@ -109,14 +111,13 @@ KÖVETELMÉNYEK
     internet kapcsolaton futnia kell. Az oldalak megtekinthetõségét,
     kinézését idõnként IE 5.5, Windowsos Netscape 4.7x és Mozilla
     0.9.x és Linuxos Netscape 4.7x és Mozilla 0.9.x böngészõkkel
-    teszteljtük (esetenként Linuxos Lynx-el és MacOS-os Netscape-el
-    is).      
+    (esetenként Linuxos Lynx-el és MacOS-os Netscape-el is) teszteljük.      
 
     Root-jogokkal kell rendelkeznünk azon a gépen, ahova a Mailman-t
     telepíteni szeretnénk. A szükséges beállításokról az INSTALL.hu
     állományban lehet olvasni.
 
-    A Mailman web és e-mail felület minden web-böngészõvel és levelezõ-
+    A Mailman web és e-mail felülete minden web-böngészõvel és levelezõ-
     klienssel képes együtt mûködni. Nincs szükség Java, JavaScript vagy
     egyéb plugin használatára.
 
@@ -124,12 +125,12 @@ KÖVETELMÉNYEK
 ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA
 
     A következõkben tárgyaltakhoz szükséges egy az INSTALL.hu alapján
-    telepített és beállított Mailman. Az elsõ saját levelezõlista 
+    telepített és beállított Mailman. Az elsõ saját levelezõlistánk 
     létrehozásához a következõt kell tenni:
 
-    - Elõször váltsunk abba a könyvtárba ahova a Mailman telepítve lett
+    - Elõször váltsunk abba a könyvtárba, ahova a Mailman telepítve lett
       (alapesetben ez az /usr/local/mailman), majd állítsuk be a rendszer 
-      adminisztrátori jelszót az alábbi paranccsal (a kijelzett üzenetek
+      adminisztrátori jelszót az alábbi paranccsal (mg. a kijelzett üzenetek
       eltérhetnek, ha a Mailman alapértelmezett nyelve eltér az 
       angoltól): 
 
@@ -142,8 +143,8 @@ ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA
 
         http://sajatgep.vhol/mailman/create
 
-      Töltsük ki az oldalon található ürlapot az ott található magyarázatok
-      segítségével és a "List creator's password" mezõbe a fent beállított
+      Töltsük ki az oldalon található ûrlapot az ott található magyarázatok
+      segítségével, a "List creator's password" mezõbe a fent beállított
       jelszót adjuk meg. "Initial list owner address" mezõbe írjuk be a 
       saját e-mail címünket, majd válasszuk ki a lista adminisztrátorának
       értesítését.
@@ -156,26 +157,26 @@ ELSÕ SAJÁT LEVELEZÕLISTA LÉTREHOZÁSA
     - MEGJEGYZÉS: Exim vagy Postfix-tól eltérõ MTA-k használata esetén (pl.
       Sendmail vagy Qmail) szükség van még a levelezõlisták bejegyzéseinek
       manuális hozzáadására a rendszer bizonyos állományaihoz. Kövessük a
-      kapott e-mailben leirtakat (fontos tudnunk milyen MTA-t található a
+      kapott e-mailben leírtakat (fontos tudnunk milyen MTA található a
       rendszerünkön, kérjük olvassa el az Ön MTA-jához tartozó README 
       állományt).
 
     - Ezek után látogassunk el a lista adminisztrációs oldalára (ide vagy a
       fõoldalról elindulva vagy a Mailmantól kapott levélben megadott cím
-      alapján juthatunk el). Adja meg a listához használt jelszavunkat és 
+      alapján juthatunk el). Adjuk meg a listához használt jelszavunkat és 
       kattintsunk a "Let me in..." gombra.
 
     - Kattintsunk a "Membership Management" majd a "Mass Subscription" 
       hivatkozásra.
 
-    - Adjuk meg a saját e-mail címünkent a nagy üres szövegmezõben, majd
+    - Adjuk meg a saját e-mail címünket a nagy üres szövegmezõben, majd
       kattintsunk a "Submit Your Changes" gombra.
 
-    - Ezek után a listank@sajatgep.vhol címre küldjönk egy próba levelet.
+    - Ezek után a listank@sajatgep.vhol címre küldjünk egy próba levelet.
       A Mailman a levelünket perceken belül továbbítani fogja címünkre. 
 
     Gratulálunk! Sikeresen létrehoztuk és teszteltük elsõ saját levelezõ-
-    listánkat. Probléma esetén olvassa el az alább található EGYÉB 
+    listánkat. Probléma esetén olvassuk el az alább található EGYÉB 
     INFORMÁCIÓK részt.
 
 EGYÉB INFORMÁCIÓK
@@ -209,13 +210,17 @@ EGYÉB INFORMÁCIÓK
         http://www.python.org/mailman/listinfo/mailman-users
 
     Mailman-Developers
-	Nyitott lista mindazoknak akik Mailman jövõbeni fejlõdésében,
-	fejlesztésében szeretnének résztvenni. A listán mély technikai
+	Nyitott lista mindazoknak, akik Mailman jövõbeni fejlõdésében,
+	fejlesztésében szeretnének részt venni. A listán mély technikai
 	témák kerülnek megvitatásra.
 
+        http://www.python.org/mailman/listinfo/mailman-developers
+
     Mailman-I18N
-	Nyitot lista a Mailman nyelvi támogatásának koordinálásra. A
+	Nyitott lista a Mailman nyelvi támogatásának koordinálásra. A
 	2.1-es Mailman teljesen több-nyelvû lesz.
+
+        http://www.python.org/mailman/listinfo/mailman-i18n
 
     Mailman-Checkins
 	Csak-olvasható lista, ahol a nyilvános anonymous CVS tár 
@@ -226,14 +231,16 @@ EGYÉB INFORMÁCIÓK
 
         http://sf.net/projects/mailman
 
-    A SourceForge keresztül célszerû a különbözõ hibákat bejelenteni
+    A SourceForge-on keresztül célszerû a különbözõ hibákat bejelenteni
     (bugs report) és hibajavításokat közzétenni.
 
 KÖSZÖNETNYILVÁNÍTÁS
 
     Szeretném megköszönni a segítségüket Funk Gábornak, Fintha Attilának 
-    és Komáromi Tamásnak, akik remek tanácsaikkal és észrevetéleikkel
+    és Komáromi Tamásnak, akik remek tanácsaikkal és észrevételeikkel
     segítették a fordítás elkészültét.
+
+    Magyar fordítás Vizi Szilárd.
 
 
 Local Variables:
