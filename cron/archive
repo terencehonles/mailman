@@ -1,17 +1,32 @@
 #!/usr/local/bin/python 
 # 
 # This script gets called by cron.
-# It updates the archive for all mailing lists.
+# It updates the archive for all mailing lists with update-frequency equal
+# to or greater than the specified archive level.
 
 
 import sys
-
 sys.path.append('/home/mailman/mailman/modules')
-
 import maillist, mm_cfg
 
-for list_name in sys.argv[1:]:
+def usage():
+    sys.stderr.write("Usage: %s level\n" % sys.argv[0])
+    sys.stderr.write("\twhere level is an integer, "
+		     "typically 1=daily, 2=hourly")
 
-    list = maillist.MailList(list_name)
-    list.UpdateArchive()
+if len(sys.argv) != 2:
+    usage()
+    raise SystemExit, 1
+try:
+    level = int(sys.argv[1])
+except ValueError:
+    usage()
+    raise SystemExit, 1
+
+for name in maillist.list_names():
+
+    list = maillist.MailList(name)
+
+    if level <= list.archive_update_frequency:
+	list.UpdateArchive()
     list.Unlock()
