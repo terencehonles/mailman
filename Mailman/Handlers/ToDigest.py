@@ -369,7 +369,7 @@ def send_i18n_digests(mlist, mboxfp):
 def oneline(s, cset):
     # Decode header string in one line and convert into specified charset
     try:
-        h = decode_header(make_header(s))
+        h = make_header(decode_header(s))
         ustr = h.__unicode__()
         oneline = UEMPTYSTRING.join(ustr.splitlines())
         return oneline.encode(cset, 'replace')
