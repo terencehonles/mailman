@@ -188,6 +188,16 @@ WEB_VLINK_COLOR = ''                              # If true, forces VLINK=
 WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
                                                   # in listinfo & admin display
 
+# The driver script prints out a lot of information when a Mailman bug is
+# encountered.  This really helps for development, but it also reveals
+# information about the host system that some administrators are not
+# comfortable with.  By setting STEALTH_MODE to On, you disable the printing
+# of this information on the web pages.  Set STEALTH_MODE to Off to enable
+# better debugging.  This information is still, and always, printed in the
+# error logs.
+STEALTH_MODE = On
+
+
 
 #####
 # Archive defaults
