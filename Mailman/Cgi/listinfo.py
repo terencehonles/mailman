@@ -114,7 +114,7 @@ def listinfo_overview(msg=''):
     siteowner = Utils.get_site_email()
     welcome.extend(
         (_(''' To visit the info page for an unadvertised list,
-        a URL similar to this one, but with a '/' and the %(adj)s
+        enter a URL similar to this one, but with a '/' and the %(adj)s
         list name appended.
         <p>List administrators, you can visit '''),
          Link(Utils.ScriptURL('admin'),
