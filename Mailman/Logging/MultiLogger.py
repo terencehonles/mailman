@@ -17,7 +17,7 @@
 """A mutiple sink logger.  Any message written goes to all sub-loggers."""
 
 import sys
-from Mailman.Logging.Utils import __logexc
+from Mailman.Logging.Utils import _logexc
 
 
 
@@ -42,7 +42,7 @@ class MultiLogger:
             try:
                 logger.write(msg)
             except:
-                __logexc(logger, msg)
+                _logexc(logger, msg)
 
     def writelines(self, lines):
         for line in lines:
@@ -56,7 +56,7 @@ class MultiLogger:
                 try:
                     logger.flush()
                 except:
-                    __logexc(logger)
+                    _logexc(logger)
 
     def close(self):
         for logger in self.__loggers:
@@ -66,4 +66,4 @@ class MultiLogger:
                 if logger <> sys.__stderr__ and logger <> sys.__stdout__:
                     logger.close()
             except:
-                __logexc(logger)
+                _logexc(logger)
