@@ -59,6 +59,11 @@ def ZapOldVars(mlist):
     for name in ('num_spawns', 'filter_prog', 'clobber_date',
                  'public_archive_file_dir', 'private_archive_file_dir',
                  'archive_directory',
+                 # Pre-2.1a4 bounce data
+                 'minimum_removal_date',
+                 'minimum_post_count_before_bounce_action',
+                 'automatic_bounce_action',
+                 'max_posts_between_bounces',
                  ):
         if hasattr(mlist, name):
             delattr(mlist, name)
@@ -287,6 +292,15 @@ def NewVars(l):
                         mm_cfg.DEFAULT_UNSUBSCRIBE_POLICY)
     add_only_if_missing('send_goodbye_msg', mm_cfg.DEFAULT_SEND_GOODBYE_MSG)
     add_only_if_missing('include_rfc2369_headers', 1)
+    add_only_if_missing('bounce_score_threshold',
+                        mm_cfg.DEFAULT_BOUNCE_SCORE_THRESHOLD)
+    add_only_if_missing('bounce_info_stale_after',
+                        mm_cfg.DEFAULT_BOUNCE_INFO_STALE_AFTER)
+    add_only_if_missing('bounce_you_are_disabled_warnings',
+                        mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS)
+    add_only_if_missing(
+        'bounce_you_are_disabled_warnings_interval',
+        mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
 
 
 
@@ -297,6 +311,8 @@ def UpdateOldUsers(l):
     for k, v in l.passwords.items():
         passwords[k.lower()] = v
     l.passwords = passwords
+    # Clear out bounce_info; we're going to do things completely differently
+    l.bounce_info = {}
 
 
 
