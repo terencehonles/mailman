@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -64,10 +64,11 @@ def main():
                  'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
                  'real_name': realname,
                  }, mlist=mlist)
-            text = text + '\n' + pending_requests(mlist)
+            text += '\n' + pending_requests(mlist)
             subject = _('%(count)d %(realname)s moderator request(s) waiting')
             admin = mlist.GetAdminEmail()
-            msg = Message.UserNotification(admin, admin, subject, text)
+            msg = Message.UserNotification(admin, admin, subject, text,
+                                           mlist.preferred_language)
             msg.send(mlist, **{'tomoderators': 1})
             
 
