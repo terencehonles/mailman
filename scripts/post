@@ -7,8 +7,6 @@
 # Send back why the post was rejected.
 
 import sys
-f = open('/tmp/hmm2', 'a+')
-sys.stderr = f
 
 sys.path.append('/home/mailman/mailman/modules')
 
@@ -48,7 +46,8 @@ Your mail to '%s' with the subject:
 %s
 
 Is being held until the list moderator can review it for approval.
-The reason why it is being held is:
+
+The reason it is being held:
 
         %s
 
