@@ -25,8 +25,9 @@ from Mailman.Queue.sbcache import get_switchboard
 
 def inject(listname, msg, recips=None):
     inq = get_switchboard(mm_cfg.INQUEUE_DIR)
-    kws = {'listname': listname,
-           'tolist'  : 1,
+    kws = {'listname'  : listname,
+           'tolist'    : 1,
+           '_plaintext': 1,
            }
     if recips:
         kws['recips'] = recips
