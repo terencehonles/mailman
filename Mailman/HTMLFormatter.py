@@ -28,9 +28,9 @@ from htmlformat import *
 
 
 class HTMLFormatter:
-    def InitTempVars(self):
+    def InitVars(self):
         if self._internal_name:
-            self._template_dir = os.path.join(mm_cfg.TEMPLATE_DIR, 
+            self._template_dir = os.path.join(mm_cfg.LIST_DATA_DIR,
                                               self._internal_name)
         else:
             self._template_dir = mm_cfg.TEMPLATE_DIR
@@ -58,7 +58,7 @@ class HTMLFormatter:
 
     def SnarfHTMLTemplate(self, file):
         # XXX: hack, blech, yuk
-        HTMLFormatter.InitTempVars(self)
+        HTMLFormatter.InitVars(self)
 	filename = os.path.join(self._template_dir, file)
 	f = open(filename,'r')
 	str = f.read()
