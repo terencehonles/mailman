@@ -64,12 +64,12 @@ def process(mlist, msg, msgdata):
     # known exploits in a particular version of Mailman and we know a site is
     # using such an old version, they may be vulnerable.  It's too easy to
     # edit the code to add a configuration variable to handle this.
-    if not msg.get('x-mailman-version'):
+    if not msg.has_key('x-mailman-version'):
         msg['X-Mailman-Version'] = mm_cfg.VERSION
-    # Semi-controversial: some don't want this included at all, others
-    # want the value to be `list'.
-    if not msg.get('precedence'):
-        msg['Precedence'] = 'bulk'
+    # We set "Precedence: list" because this is the recommendation from the
+    # sendmail docs, the most authoritative source of this header's semantics.
+    if not msg.has_key('precedence'):
+        msg['Precedence'] = 'list'
     # Reply-To: munging.  Do not do this if the message is "fast tracked",
     # meaning it is internally crafted and delivered to a specific user.  BAW:
     # Yuck, I really hate this feature but I've caved under the sheer pressure
@@ -185,15 +185,6 @@ def prefix_subject(mlist, msg, msgdata):
         del msg['subject']
         # We'll encode the new prefix (just in case) but leave the old subject
         # alone, in case it was already encoded.
-        new_subject = Header(prefix, charset, header_name='Subject').encode()
-        # If we go over 76 characters with the prefix, just put the old
-        # subject on its own line.
-        first = subject.split('\n')[0]
-        if len(new_subject) + len(first) + 1 >= MAXLINELEN - len('Subject: '):
-            new_subject += '\n '
-        # We might have to add a space because the prefix and old subject may
-        # both be MIME-encoded, losing the space at the end of the prefix.
-        elif new_subject[-1] <> ' ':
-            new_subject += ' '
-        new_subject += subject
-        msg['Subject'] = new_subject
+        new_subject = Header(prefix, charset, 128, header_name='Subject')
+        new_subject.append(subject, charset)
+        msg['Subject'] = new_subject.encode()
