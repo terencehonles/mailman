@@ -71,7 +71,7 @@ def url_quote(s):
 
 
 article_text_template="""\
-From %(email)s %(datestr)s
+From %(email)s  %(fromdate)s
 Date: %(datestr)s
 From: %(author)s %(email)s
 Subject: %(subject)s
@@ -161,6 +161,7 @@ quotedpat=re.compile(r'^([>|:]|&gt;)+')
 #  subject  : Subject
 #  datestr  : The posting date, in human-readable format
 #  date     : The posting date, in purely numeric format
+#  fromdate : The posting date, in `unixfrom' format
 #  headers  : Any other headers of interest
 #  author   : The author's name (and possibly organization)
 #  email    : The author's e-mail address
@@ -254,6 +255,7 @@ class Article(pipermail.Article):
 	else:
 	    date=self.__last_article_time+1 
 	    
+        self.fromdate = time.ctime(date)
 	self.__last_article_time=date 
 	self.date='%011i' % (date,)
 
