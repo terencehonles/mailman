@@ -1098,8 +1098,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             return op, addr, password, digest, lang
         elif op == Pending.UNSUBSCRIPTION:
             addr = data[0]
+            # Log file messages don't need to be i18n'd
+            if isinstance(context, Message.Message):
+                whence = 'email confirmation'
+            else:
+                whence = 'web confirmation'
             # Can raise MMNoSuchUserError if they unsub'd via other means
-            self.ApprovedDeleteMember(addr, whence='web confirmation')
+            self.ApprovedDeleteMember(addr, whence=whence)
             return op, addr
         elif op == Pending.CHANGE_OF_ADDRESS:
             oldaddr, newaddr, globally = data
