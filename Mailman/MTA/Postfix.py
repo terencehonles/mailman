@@ -67,8 +67,8 @@ def _zapfile(filename):
 
 
 def clear():
-    _zapfile(TEXTFILE)
-    _zapfile(VTEXTFILE)
+    _zapfile(ALIASFILE)
+    _zapfile(VIRTFILE)
 
 
 
