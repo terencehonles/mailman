@@ -42,9 +42,7 @@ PACKAGEDIR= 	$(prefix)/Mailman
 CGIDIR=		$(PACKAGEDIR)/Cgi
 SHELL=		/bin/sh
 
-CGI_MODULES=	__init__.py admin.py admindb.py archives.py \
-edithtml.py handle_opts.py listinfo.py options.py private.py \
-roster.py subscribe.py
+CGI_MODULES=	*.py
 
 
 # Modes for directories and executables created by the install
