@@ -4,9 +4,8 @@
 import sys
 import time
 import regsub, string, regex
-import mm_utils, mm_cfg
+import mm_utils, mm_cfg, mm_err
 
-my_log = open('/tmp/bounce.log', 'a+')
 class Bouncer:
     def InitVars(self):
 	# Not configurable...
@@ -39,13 +38,12 @@ class Bouncer:
 	     0, "Automatically remove addresses considered for removal, or alert you?")
 	    ]
     def ClearBounceInfo(self, email):
-	my_log.write("*Removed %s from %s (%s)\n" % (email, self.real_name, time.ctime(time.time())))
 	email = string.lower(email)
 	if self.bounce_info.has_key(email):
 	    del self.bounce_info[email]
 
     def RegisterBounce(self, email):
-	my_log.write("Bouncing %s on list %s (%s) -- " % (email, self.real_name, time.ctime(time.time())))
+	report = "Bouncing %s on list %s - " % (email, self.real_name)
 	bouncees = self.bounce_info.keys()
 	this_dude = mm_utils.FindMatchingAddresses(email, bouncees)
 	now = time.time()
@@ -54,7 +52,7 @@ class Bouncer:
 	    # What the last post ID was that we saw a bounce.
 	    self.bounce_info[string.lower(email)] = [now, self.post_id,
 						     self.post_id]
-	    my_log.write("First bounce\n")
+	    self.LogMsg("bounce", report + "first bounce")
 	    self.Save()
 	    return
 
@@ -66,13 +64,14 @@ class Bouncer:
 		# Stale entry that's now being restarted...
 		# Should maybe keep track in see if people become stale entries
 		# often...
-		my_log.write("First fresh bounce on a stale addr.\n")
+		self.LogMsg("bounce",
+			    report + "first fresh bounce on a stale addr")
 		self.bounce_info[addr] = [now, self.post_id, self.post_id]
 		return
 	    self.bounce_info[addr][2] = self.post_id
 	    if (self.post_id - inf[1] > self.minimum_post_count_before_removal
 		and difference > self.minimum_removal_date * 24 * 60 * 60):
-		my_log.write("You're out of here...\n")
+		self.LogMsg("bounce", report + "they're Out of here...")
 		self.RemoveBouncingAddress(addr)
 		return
 	    else:
@@ -80,32 +79,41 @@ class Bouncer:
 			      self.post_id - inf[1])
 		if post_count < 0:
 		    post_count = 0
-		my_log.write("%d more posts, %d more secs\n" % 
-			     (post_count,
-			      self.minimum_removal_date * 24 * 60 * 60 -
-			      difference))
+		self.LogMsg("bounce",
+			    (report + ("%d more posts, %d more secs"
+				       (post_count,
+					(self.minimum_removal_date
+					 * 24 * 60 * 60 - difference)))))
 		self.Save()
 		return
 
 	elif len(mm_utils.FindMatchingAddresses(addr, self.digest_members)):
 	    if self.volume > inf[1]:
-		my_log.write("First fresh bounce on a stale addr (D).\n")
+		self.LogMsg("bounce",
+			    "%s: First fresh bounce on a stale addr (D).",
+			    self._internal_name)
 		self.bounce_info[addr] = [now, self.volume, self.volume]
 		return
 	    if difference > self.minimum_removal_date * 24 * 60 * 60:
-		my_log.write("Seeya, digest-ee...\n")
+		self.LogMsg("bounce", "Seeya, digest-ee...")
 		self.RemoveBouncingAddress(addr)
 		return 
-	    my_log.write("digester lucked out, he's still got time!\n")
+	    self.LogMsg("bounce",
+			"digester lucked out, he's still got time!")
 	else:
-	    my_log.write("Address %s wasn't a member of the list.\n" % addr)
+	    self.LogMsg("bounce",
+			"Address %s wasn't a member of %s.",
+			addr,
+			self._internal_name)
 
 	    
     def RemoveBouncingAddress(self, addr):
 	try:
 	    self.DeleteMember(addr)
+	    self.LogMsg("bounce", "%s removed from %s",
+			addr, self.real_name) 
 	    # Send mail to the user...
-	except:
+	except mm_err.MMNoSuchUserError:
 	    self.ClearBounceInfo(addr)
 	self.Save()
 
@@ -163,6 +171,7 @@ class Bouncer:
 
 	message_groked = 0
 
+	did = []
 	for line in string.split(relevent_text, '\n'):
 	    for pattern, action in simple_bounce_pats:
 		if pattern.match(line) <> -1:
@@ -170,11 +179,15 @@ class Bouncer:
 		    if action == REMOVE:
 			emails = string.split(email,',')
 			for email_addr in emails:
-			    self.RemoveBouncingAddress(string.strip(email_addr))
+			    if email_addr not in did:
+				self.RemoveBouncingAddress(
+				    string.strip(email_addr))
+				did.append(email_addr)
 			message_groked = 1
 			continue
 		    elif action == BOUNCE:
 			emails = string.split(email,',')
+			print emails
 			for email_addr in emails:
 			    self.RegisterBounce(email_addr)
 			message_groked = 1
@@ -208,7 +221,8 @@ class Bouncer:
 	return message_groked
 
     def ExtractBouncingAddr(self, line):
-	email = regsub.splitx(line, '<?[^ \t@<>]+@[^ \t@<>]+\.[^ \t<>.]+>?')[1]
+	# First try with angles:
+	email = regsub.splitx(line, '[^ \t@<>]+@[^ \t@<>]+\.[^ \t<>.]+')[1]
 	if email[0] == '<':
 	    return email[1:-1]
 	else:
