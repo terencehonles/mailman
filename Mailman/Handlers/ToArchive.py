@@ -25,8 +25,10 @@ def process(mlist, msg, msgdata):
     # short circuits
     if msgdata.get('isdigest') or not mlist.archive:
         return
-    archivep = msg.getheader('x-archive')
-    if archivep and string.lower(archivep) == 'no':
+    # Common practice seems to favor "X-No-Archive: yes".  I'm keeping
+    # "X-Archive: no" for backwards compatibility.
+    if string.lower(msg.getheader('x-no-archive', '')) == 'yes' or \
+       string.lower(msg.getheader('x-archive', '')) == 'no':
         return
     #
     # TBD: This is a kludge around the archiver to properly support
