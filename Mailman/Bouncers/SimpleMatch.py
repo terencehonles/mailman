@@ -24,6 +24,15 @@ from mimelib import MsgReader
 def _c(pattern):
     return re.compile(pattern, re.IGNORECASE)
 
+# This is a list of tuples of the form
+#
+#     (start cre, end cre, address cre)
+#
+# where `cre' means compiled regular expression, start is the line just before
+# the bouncing address block, end is the line just after the bouncing address
+# block, and address cre is the regexp that will recognize the addresses.  It
+# must have a group called `addr' which will contain exactly and only the
+# address that bounced.
 patterns = [
     # sdm.de
     (_c('here is your list of failed recipients'),
@@ -49,6 +58,14 @@ patterns = [
     (_c('This is the machine generated message from mail service.'),
      _c('--- Below the next line is a copy of the message.'),
      _c('<(?P<addr>[^>]*)>')),
+    # turbosport.com runs something called `MDaemon 3.5.2' ???
+    (_c('The following addresses did NOT receive a copy of your message:'),
+     _c('--- Session Transcript ---'),
+     _c('[>]\s*(?P<addr>.*)$')),
+    # usa.net
+    (_c('Intended recipient:\s*(?P<addr>.*)$'),
+     _c('--------RETURNED MAIL FOLLOWS--------'),
+     _c('Intended recipient:\s*(?P<addr>.*)$')),
     # Next one goes here...
     ]
 
@@ -65,13 +82,12 @@ def process(msg):
         line = mi.readline()
         if not line:
             break
-
         if state == 0:
             for scre, ecre, acre in patterns:
                 if scre.search(line):
                     state = 1
                     break
-        elif state == 1:
+        if state == 1:
             mo = acre.search(line)
             if mo:
                 addrs[mo.group('addr')] = 1
