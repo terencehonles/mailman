@@ -30,6 +30,7 @@ for python and, recursively, for nested HTML formatting objects.
 import types
 import string
 import mm_cfg
+import Utils
 
 
 # Format an arbitrary object.
@@ -304,6 +305,15 @@ class StdContainer(Container):
 	return output	    
 
 
+class QuotedContainer(Container):
+    def Format(self, indent=0):
+	# If I don't start a new I ignore indent
+	output = '<%s>%s</%s>' % (
+            self.tag,
+            Utils.QuoteHyperChars(Container.Format(self, indent)),
+            self.tag)
+	return output
+
 class Header(StdContainer):
     def __init__(self, num, *items):
 	self.items = items
@@ -321,7 +331,7 @@ class Bold(StdContainer):
 class Italic(StdContainer):
     tag = 'em'
 
-class Preformatted(StdContainer):
+class Preformatted(QuotedContainer):
     tag = 'pre'
 
 class Subscript(StdContainer):
