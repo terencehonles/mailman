@@ -208,7 +208,7 @@ def process_form(mlist, user, doc):
         mime = getval('mime', useropt(user, mm_cfg.DisableMime))
         dont_receive = getval('dontreceive',
                               useropt(user, mm_cfg.DontReceiveOwnPosts))
-        ack_posts = getval('ackposts', useropt(user, mm_cfg.AcknowlegePosts))
+        ack_posts = getval('ackposts', useropt(user, mm_cfg.AcknowledgePosts))
         disable_mail = getval('disablemail',
                               useropt(user, mm_cfg.DisableDelivery))
         conceal = getval('conceal', useropt(user, mm_cfg.ConcealSubscription))
@@ -243,7 +243,7 @@ def process_form(mlist, user, doc):
 
         mlist.SetUserOption(user, mm_cfg.DisableDelivery, disable_mail)
         mlist.SetUserOption(user, mm_cfg.DontReceiveOwnPosts, dont_receive)
-        mlist.SetUserOption(user, mm_cfg.AcknowlegePosts, ack_posts)
+        mlist.SetUserOption(user, mm_cfg.AcknowledgePosts, ack_posts)
         mlist.SetUserOption(user, mm_cfg.DisableMime, mime)
         msg = 'You have successfully set your options.'
         try:

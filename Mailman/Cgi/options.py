@@ -104,9 +104,9 @@ def main():
         mm_cfg.DisableDelivery, 1, user)
     replacements['<mm-disabled-notice>'] = mlist.FormatDisabledNotice(user)
     replacements['<mm-dont-ack-posts-button>'] = mlist.FormatOptionButton(
-        mm_cfg.AcknowlegePosts, 0, user)
+        mm_cfg.AcknowledgePosts, 0, user)
     replacements['<mm-ack-posts-button>'] = mlist.FormatOptionButton(
-        mm_cfg.AcknowlegePosts, 1, user)
+        mm_cfg.AcknowledgePosts, 1, user)
     replacements['<mm-receive-own-mail-button>'] = mlist.FormatOptionButton(
         mm_cfg.DontReceiveOwnPosts, 0, user)
     replacements['<mm-dont-receive-own-mail-button>'] = (
