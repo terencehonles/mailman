@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 FREQUENTLY ASKED QUESTIONS
@@ -104,7 +104,7 @@ A. If you are using Apache, you must make sure that FollowSymLinks is
    are public, is the symlink followed. See this archive message for
    more details:
 
-   http://www.python.org/pipermail/mailman-users/1998-November/000173.html
+   http://mail.python.org/pipermail/mailman-users/1998-November/000150.html
 
 Q. Still having problems?  Running QMail?
 
