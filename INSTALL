@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000 Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 This file contains installation instructions for GNU Mailman, which is
@@ -19,12 +19,11 @@ upgrade.
 0. Installation requirements
 
     You must have the Python interpreter installed somewhere on your
-    system.  Currently Python 1.5.2 or later is required (Python 2.0
-    should work fine).  For information about obtaining Python source
-    code, RPM packages, or pre-compiled binaries please see:
+    system.  Currently Python 2.0 or later is required.  For
+    information about obtaining Python source code, RPM packages, or
+    pre-compiled binaries please see:
 
         http://www.python.org
-        http://www.pythonlabs.com
 
     You must also have an ANSI C compiler in order to build the
     wrapper programs which are used for improved security.  The GNU C
