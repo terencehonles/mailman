@@ -111,8 +111,7 @@ class Archiver:
 
     #
     # old ArchiveMail function, retained under a new name
-    # for those
-    # who still want to use an external archiver
+    # for optional archiving to an mbox
     #
     def ArchiveToMbox(self, post):
         """Retain a text copy of the message in an mbox file."""
@@ -194,6 +193,61 @@ class Archiver:
 	finally:
 	    os.umask(ou)
 
-
-
+    #
+    # called from MailList.MailList.Save()
+    #
+    def CheckHTMLArchiveDir(self):
+        #
+        # we need to make sure that the archive
+        # directory has the right perms for public vs
+        # private.  If it doesn't exist, or some weird
+        # permissions errors prevent us from stating
+        # the directory, it's pointless to try to
+        # fix the perms, so we just return  -scott
+        #
+        try:
+            st = os.stat(self.archive_directory)
+        except os.error, rest:
+	    import errno
+	    try:
+		val, msg = rest
+	    except ValueError:
+		self.LogMsg("MailList.Save(): error getting archive mode for %s!: %s\n",
+                            self.real_name, str(rest))
+		return
+	    if val == errno.ENOENT: # no such file
+		ou = os.umask(0)
+		if self.archive_private:
+		    mode = 02770
+		else:
+		    mode = 02775
+		try:
+		    os.mkdir(self.archive_directory)
+		    os.chmod(self.archive_directory, mode)
+		finally:
+		    os.umask(ou)
+		    return
+	    else:
+		self.LogMsg("CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+                            self.real_name, str(rest))
+		return
+        import stat
+        mode = st[stat.ST_MODE]
+        if self.archive_private:
+            if mode != 0770:
+                try:
+                    ou = os.umask(0)
+                    os.chmod(self.archive_directory, 02770)
+                except os.error, rest:
+                    self.LogMsg("CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+                                self.real_name, str(rest))                    
+        else:
+            if mode != 0775:
+                try:
+                    os.chmod(self.archive_directory, 02775)
+                except os.error, rest:
+                    self.LogMsg("CheckHTMLArchiveDir: error getting archive mode for %s!: %s\n",
+                                self.real_name, str(rest))
+                    
+        
 
