@@ -50,7 +50,6 @@ Invalid confirmation string.  Note that confirmation strings expire
 approximately %(days)s days after the initial subscription request.  If your
 confirmation has expired, please try to re-submit your original request or
 message."""))
-        return STOP
     except Errors.MMNeedApproval:
         res.results.append(_("""\
 Your request has been forwarded to the list moderator for approval."""))
@@ -58,12 +57,21 @@ Your request has been forwarded to the list moderator for approval."""))
         # Some other subscription request for this address has
         # already succeeded.
         res.results.append(_('You are already subscribed.'))
-        return STOP
     except Errors.NotAMemberError:
         # They've already been unsubscribed
         res.results.append(_("""\
 You are not current a member.  Have you already unsubscribed or changed
 your email address?"""))
-        return STOP
     else:
         res.results.append(_('Confirmation succeeded'))
+        # Consume any other confirmation strings with the same cookie so the
+        # user doesn't get a misleading "unprocessed" message.
+        match = 'confirm ' + cookie
+        unprocessed = []
+        for line in res.commands:
+            if line.lstrip() == match:
+                continue
+            unprocessed.append(line)
+        res.commands = unprocessed
+    # Process just one confirmation string per message
+    return STOP
