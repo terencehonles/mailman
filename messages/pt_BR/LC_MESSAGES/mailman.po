@@ -177,7 +177,7 @@ msgstr "Conservando estado de arquivos em "
 
 #: Mailman/Archiver/pipermail.py:419
 msgid "Updating index files for archive [%(archive)s]"
-msgstr "Atualizando indice de arquivos para o arquivo [%(arquive)s]"
+msgstr "Atualizando indices para o arquivo [%(archive)s]"
 
 #: Mailman/Archiver/pipermail.py:452
 msgid "  Thread"
@@ -1461,9 +1461,8 @@ msgstr ""
 "             ja foi descadastrado."
 
 #: Mailman/Cgi/confirm.py:343
-#, fuzzy
 msgid "You are already a member of this mailing list!"
-msgstr "Você não é um membro da lista de discussão %(listname)s"
+msgstr "Você já é membro desta lista de discussão!"
 
 #: Mailman/Cgi/confirm.py:350
 msgid "Subscription request confirmed"
@@ -1506,7 +1505,7 @@ msgid ""
 "main\n"
 "            information page</a>."
 msgstr ""
-"        Você se descadastrou com sucesso da lista de discussào %(listname)"
+"        Você se descadastrou com sucesso da lista de discussào %(listname)s"
 "s. \n"
 "        Você pode agora <a href=\"%(listinfourl)s\">visitar a página de "
 "informações sobre a lista</a>."
@@ -1790,7 +1789,7 @@ msgid ""
 "    re-enabling your membership.\n"
 "    "
 msgstr ""
-"Seu membro na lista de discussão é %(realname)\n"
+"Seu membro na lista de discussão é %(realname)s\n"
 "    atualmente desativado devido a excessivos bounces. Sua confirmação\n"
 "    é requerida para reativar a entrega para seu endereço. Nós temos\n"
 "    os seguintes detalhes no arquivo:\n"
@@ -1874,14 +1873,12 @@ msgid "You are not authorized to create new mailing lists"
 msgstr "Você não tem autorização para criar novas listas de discussão"
 
 #: Mailman/Cgi/create.py:181 bin/newlist:166
-#, fuzzy
 msgid "Bad owner email address: %(s)s"
-msgstr "Endereço de email incorreto do dono: %(owner)s"
+msgstr "Endereço de email para o dono incorreto: %(s)s"
 
 #: Mailman/Cgi/create.py:189 bin/newlist:164
-#, fuzzy
 msgid "Illegal list name: %(s)s"
-msgstr "Opção ilegal: %(opt)s"
+msgstr "Nome de lista inválido: %(s)s"
 
 #: Mailman/Cgi/create.py:194
 msgid ""
@@ -2027,7 +2024,7 @@ msgid ""
 msgstr ""
 "Lista inicial de idiomas suportados. <p>Note que se não selecionar\n"
 "      pelo menos um idioma inicial, a lista utilizará o idioma \n"
-"      padrão do servidor %(defland)s"
+"      padrão do servidor %(deflang)s"
 
 #: Mailman/Cgi/create.py:394
 msgid "Send \"list created\" email to list owner?"
@@ -2184,7 +2181,7 @@ msgstr "Nenhum endereço fornecido"
 #: Mailman/Cgi/options.py:108 Mailman/Cgi/options.py:155
 #: Mailman/Cgi/options.py:177
 msgid "No such member: %(safeuser)s."
-msgstr "Membro inexistente: %(safeuser)"
+msgstr "Membro inexistente: %(safeuser)s"
 
 #: Mailman/Cgi/options.py:150 Mailman/Cgi/options.py:160
 msgid "The confirmation email has been sent."
@@ -2201,7 +2198,7 @@ msgstr "Falha na autenticação."
 
 #: Mailman/Cgi/options.py:232
 msgid "List subscriptions for %(user)s on %(hostname)s"
-msgstr "Inscrições na lista para o usuário %(user)s em $(hostname)s"
+msgstr "Inscrições na lista para o usuário %(user)s em %(hostname)s"
 
 #: Mailman/Cgi/options.py:235
 msgid ""
@@ -2384,7 +2381,7 @@ msgstr "dia"
 
 #: Mailman/Cgi/options.py:696
 msgid "%(days)d %(units)s"
-msgstr "%(days)s %(units)s"
+msgstr "%(days)d %(units)s"
 
 #: Mailman/Cgi/options.py:702
 msgid "Change My Address and Name"
@@ -2550,7 +2547,7 @@ msgid ""
 "        for details."
 msgstr ""
 "Existem alguns problemas para apagar a lista de discussão\n"
-"        <b>%(listname)s</b>. Contacte seu administrador em %(sitelist)\n"
+"        <b>%(listname)s</b>. Contacte seu administrador em %(sitelist)s\n"
 "        para detalhes."
 
 #: Mailman/Cgi/rmlist.py:188
@@ -3182,9 +3179,8 @@ msgid "    digest mime"
 msgstr " (modo Digest)"
 
 #: Mailman/Commands/cmd_set.py:164
-#, fuzzy
 msgid "    digest off"
-msgstr "    duplicadas %(onoff)s"
+msgstr "    digest inativo"
 
 #: Mailman/Commands/cmd_set.py:169
 msgid "delivery on"
@@ -3209,7 +3205,7 @@ msgstr "devido a mensagens retornadas"
 
 #: Mailman/Commands/cmd_set.py:186
 msgid "    %(status)s (%(how)s on %(date)s)"
-msgstr "    %(status)s (%how)s em %(date)s)"
+msgstr "    %(status)s (%(how)s em %(date)s)"
 
 #: Mailman/Commands/cmd_set.py:192
 msgid "    myposts %(onoff)s"
@@ -3560,7 +3556,7 @@ msgstr "Você se desinscreveu da lista de discussão %(realname)s"
 
 #: Mailman/Deliverer.py:104
 msgid "%(listfullname)s mailing list reminder"
-msgstr "lembrete da lista de discussão %(listfullname)"
+msgstr "lembrete da lista de discussão %(listfullname)s"
 
 #: Mailman/Errors.py:114
 msgid "For some unknown reason"
@@ -4324,7 +4320,7 @@ msgid ""
 "            %(volume)s, number %(number)s"
 msgstr ""
 "O próximo digest será enviado como volume \n"
-"     %(volume)s, número %(número)s"
+"     %(volume)s, número %(number)s"
 
 #: Mailman/Gui/Digest.py:150
 msgid "A digest has been sent."
@@ -6672,7 +6668,7 @@ msgstr ""
 "        <p>Você pode ter que desativar a entrega desta lista "
 "intencionalmente,\n"
 "        ou pode ser bombardeado por bounces de seu endereço de email.\n"
-"        Em todo caso, para reativar a entrega, modifique a opção de %(link)"
+"        Em todo caso, para reativar a entrega, modifique a opção de %(link)s"
 "s\n"
 "        abaixo. Contacte %(mailto)s se tiver quaisquer questões ou precisar\n"
 "        de assistência."
@@ -6903,7 +6899,7 @@ msgid ""
 "Your urgent message to the %(realname)s mailing list was not authorized for\n"
 "delivery.  The original message as received by Mailman is attached.\n"
 msgstr ""
-"Sua mensagem urgente para a lista de discussão %(realname) não foi \n"
+"Sua mensagem urgente para a lista de discussão %(realname)s não foi \n"
 "autorizada para entrega. A mensagem original na forma que foi recebida\n"
 "pelo Mailman está em anexo.\n"
 
@@ -7018,7 +7014,7 @@ msgstr "Sua mensagem para a lista %(listname)s aguarda aprovação"
 
 #: Mailman/Handlers/Hold.py:253
 msgid "%(listname)s post from %(sender)s requires approval"
-msgstr "A postagem de %(sender)s para a lista %(listname) requer aprovação"
+msgstr "A postagem de %(sender)s para a lista %(listname)s requer aprovação"
 
 #: Mailman/Handlers/Hold.py:260
 msgid ""
@@ -7136,7 +7132,7 @@ msgstr ""
 "Uma mensagem embutida foi limpa...\n"
 "De: %(who)s\n"
 "Assunto: %(subject)s\n"
-"Data: %(date)\n"
+"Data: %(date)s\n"
 "Tam: %(size)s\n"
 "Url: %(url)s\n"
 
@@ -7150,7 +7146,7 @@ msgid ""
 "Url : %(url)s\n"
 msgstr ""
 "Um anexo não texto foi limpo...\n"
-"Nome  : %(filename)\n"
+"Nome  : %(filename)s\n"
 "Tipo  : %(ctype)s\n"
 "Tam   : %(size)d bytes\n"
 "Descr.: %(desc)s\n"
@@ -7166,7 +7162,7 @@ msgstr "-------------- Próxima Parte ----------\n"
 
 #: Mailman/Handlers/ToDigest.py:141
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
-msgstr "Digest %(realname), volume %(volume)d, assunto %(issue)d"
+msgstr "Digest %(realname)s, volume %(volume)d, assunto %(issue)d"
 
 #: Mailman/Handlers/ToDigest.py:181
 msgid "digest header"
@@ -7198,7 +7194,7 @@ msgstr "Fim da "
 
 #: Mailman/ListAdmin.py:307
 msgid "Posting of your message titled \"%(subject)s\""
-msgstr "Encaminhamento de mensagem moderada"
+msgstr "Envio da mensagem intitulada \"%(subject)s\""
 
 #: Mailman/ListAdmin.py:346
 msgid "Forward of moderated message"
@@ -7214,7 +7210,7 @@ msgstr "Requisição de desinscrição"
 
 #: Mailman/ListAdmin.py:458
 msgid "New unsubscription request from %(realname)s by %(addr)s"
-msgstr "Nova requisição de desinscrição de %(realname) por %(addr)s"
+msgstr "Nova requisição de desinscrição de %(realname)s por %(addr)s"
 
 #: Mailman/ListAdmin.py:481
 msgid "Unsubscription request"
@@ -7226,7 +7222,7 @@ msgstr "Mensagem Original"
 
 #: Mailman/ListAdmin.py:515
 msgid "Request to mailing list %(realname)s rejected"
-msgstr "Requisição para a lista de discussão %(realname) rejeitada."
+msgstr "Requisição para a lista de discussão %(realname)s rejeitada."
 
 #: Mailman/MTA/Manual.py:57
 msgid ""
@@ -7322,11 +7318,9 @@ msgid "checking ownership of %(dbfile)s"
 msgstr "verificando o dono de %(dbfile)s"
 
 #: Mailman/MTA/Postfix.py:336
-#, fuzzy
 msgid "%(dbfile)s owned by %(owner)s (must be owned by %(user)s"
 msgstr ""
-"O %(dbfile) que tem como dono %(owner)(deve ter como dono o mesmo\n"
-"do Mailman)"
+"%(dbfile)s tem como dono %(owner)s (deveria ter como dono %(user)s)"
 
 #: Mailman/MailList.py:697
 msgid "You have been invited to join the %(listname)s mailing list"
@@ -7338,11 +7332,11 @@ msgstr " de %(remote)s"
 
 #: Mailman/MailList.py:838
 msgid "subscriptions to %(realname)s require moderator approval"
-msgstr "as inscrições de %(realname) requerem aprovação pelo moderador"
+msgstr "as inscrições de %(realname)s requerem aprovação pelo moderador"
 
 #: Mailman/MailList.py:897 bin/add_members:281
 msgid "%(realname)s subscription notification"
-msgstr "notificação de inscriçào de %(realname)"
+msgstr "notificação de inscriçào de %(realname)s"
 
 #: Mailman/MailList.py:912
 msgid "unsubscriptions require moderator approval"
@@ -8061,10 +8055,9 @@ msgid "    checking gid and mode for %(path)s"
 msgstr "    verificando gid e modo de %(path)s"
 
 #: bin/check_perms:97
-#, fuzzy
 msgid "%(path)s bad group (has: %(groupname)s, expected %(MAILMAN_GROUP)s)"
 msgstr ""
-"%(path)s gid incorrete (tem: %(groupname)s, esperado %(MAILMAN_GRPNAME)s)"
+"grupo inválido para %(path)s (encontrado: %(groupname)s, esperado %(MAILMAN_GROUP)s)"
 
 #: bin/check_perms:120
 msgid "directory permissions must be %(octperms)s: %(path)s"
@@ -8155,10 +8148,9 @@ msgid "Problems found:"
 msgstr "Problemas encontrados"
 
 #: bin/check_perms:362
-#, fuzzy
 msgid "Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix"
 msgstr ""
-"Re-execute como %(MAILMAN_OWNER)s (ou root) com a opção -f para \n"
+"Re-execute como %(MAILMAN_USER)s (ou root) com a opção -f para \n"
 "corrigir o problema."
 
 #: bin/cleanarch:19
@@ -9682,8 +9674,8 @@ msgid ""
 msgstr ""
 "Executando um qrunners ou mais, uma só vez ou repetidamente.\n"
 "\n"
-"Cada calsse de execução especificada é executada no método round-robin. Em \n"
-"outras palavras, o primeiro runner nomeado é executado para consumir todos "
+"Cada classe especificada é executada no método round-robin. Em \n"
+"outras palavras, o primeiro qrunner nomeado é executado para consumir todos "
 "os \n"
 "arquivos atuais em seu diretóri. Quando este qrunner é concluído, o "
 "próximo \n"
@@ -9691,6 +9683,8 @@ msgstr ""
 "por \n"
 "diante. O número de interações totais pode ser pego através da linha de \n"
 "comando.\n"
+"\n"
+"Uso: %(PROGRAM)s [opções]\n"
 "\n"
 "Opções:\n"
 "\n"
@@ -10079,14 +10073,12 @@ msgid "You must fix the preceding invalid addresses first."
 msgstr "Você deverá corrigir os endereços precedentes inválidos primeiro."
 
 #: bin/sync_members:259
-#, fuzzy
 msgid "Added  : %(s)s"
-msgstr "Adicionado: <%(addr)30s> %(name)s"
+msgstr "Adicionado: %(s)s"
 
 #: bin/sync_members:278
-#, fuzzy
 msgid "Removed: %(s)s"
-msgstr "Removendo %(msg)s"
+msgstr "Removido: %(s)s"
 
 #: bin/transcheck:18
 #, fuzzy
@@ -10200,7 +10192,7 @@ msgid ""
 "Cannot unshunt message %(filebase)s, skipping:\n"
 "%(e)s"
 msgstr ""
-"Não é possível fazer unshunt da mensagem %(filebase_s, pulando:\n"
+"Não é possível fazer unshunt da mensagem %(filebase)s, pulando:\n"
 "%(e)s"
 
 #: bin/update:19
@@ -10262,7 +10254,7 @@ msgid ""
 "b6, so I'm renaming it to %(mbox_dir)s.tmp and proceeding."
 msgstr ""
 "Por alguma razão, o %(mbox_dir)s existe como um arquivo. Isto não\n"
-"funcionará com o b6, assim ele será renomeado para %(mbox_)dir_s.tmp e \n"
+"funcionará com o b6, assim ele será renomeado para %(mbox_dir)s.tmp e \n"
 "irá prosseguir."
 
 #: bin/update:250
@@ -10287,7 +10279,7 @@ msgstr ""
 "\n"
 "para\n"
 "\n"
-"        %(o_pub_mbox_file_s.preb6\n"
+"        %(o_pub_mbox_file)s.preb6\n"
 "\n"
 "Você poderá integra-lo nos arquivos se quiser usando o script 'arch'.\n"
 
@@ -10475,7 +10467,7 @@ msgid ""
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
-"Downgrade detectado, da versão %(hexlversion)s para a versão %(hextversion)"
+"Downgrade detectado, da versão %(hexlversion)s para a versão %(hextversion)s"
 "s.\n"
 "Isto provavelmente não é seguro.\n"
 "Saindo."
@@ -10797,11 +10789,11 @@ msgstr "Importando %(module)s..."
 
 #: bin/withlist:249
 msgid "Running %(module)s.%(callable)s()..."
-msgstr "Executando %(modules.%(callable)s()..."
+msgstr "Executando %(module)s.%(callable)s()..."
 
 #: bin/withlist:270
 msgid "The variable `m' is the %(listname)s MailList instance"
-msgstr "A variável 'm' é a instância da lista de discussão %(listname)s"
+msgstr "A variável `m' é a instância da lista de discussão %(listname)s"
 
 #: cron/bumpdigests:19
 msgid ""
@@ -10855,14 +10847,14 @@ msgstr ""
 "Postagens pendentes:"
 
 #: cron/checkdbs:114
-#, fuzzy
 msgid ""
 "From: %(sender)s on %(date)s\n"
 "Subject: %(subject)s\n"
 "Cause: %(reason)s"
 msgstr ""
-"    De: %(sender)s em %(date)s\n"
-"    Causa: %(reason)s"
+"De: %(sender)s em %(date)s\n"
+"Assunto: %(subject)s\n"
+"Causa: %(reason)s"
 
 #: cron/disabled:19
 msgid ""
