@@ -1,6 +1,6 @@
 "The class representing a mailman maillist.  Mixes in many feature classes."
 
-__version__ = "$Revision: 524 $"
+__version__ = "$Revision: 535 $"
 
 try:
     import mm_cfg
@@ -191,7 +191,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " what the list is."),
 
 	    ('info', mm_cfg.Text, (7, 50), 0, 
-	     'A descriptive paragraph about the list.',
+	     'An introductory description - a few paragraphs - about the'
+	     'list.  It will be included, as html, at the top of the'
+	     'listinfo page.  Carriage returns will end a paragraph - see'
+             'the details for more info.',
 
              "The text will be treated as html <em>except</em> that newlines"
              " newlines will be translated to &lt;br&gt; - so you can use"
