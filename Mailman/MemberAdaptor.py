@@ -47,6 +47,15 @@ raised.
 
 """
 
+# Delivery statuses
+ENABLED  = 0                                      # enabled
+UNKNOWN  = 1                                      # legacy disabled
+BYUSER   = 2                                      # disabled by user choice
+BYADMIN  = 3                                      # disabled by admin choice
+BYBOUNCE = 4                                      # disabled by bounces
+
+
+
 class MemberAdaptor:
     #
     # The readable interface
@@ -149,6 +158,45 @@ class MemberAdaptor:
         """
         raise NotImplemented
 
+    def getDeliveryStatus(self, member):
+        """Return the delivery status of this member.
+
+        Value is one of the module constants:
+        
+            ENABLED  - The deliveries to the user are not disabled
+            UNKNOWN  - Deliveries are disabled for unknown reasons.  The
+                       primary reason for this to happen is that we've copied
+                       their delivery status from a legacy version which didn't
+                       keep track of disable reasons
+            BYCHOICE - The user explicitly disable deliveries
+            BYBOUNCE - The system disabled deliveries due to bouncing
+
+        If member is not a member of the list, raise NotAMemberError.
+        """
+        raise NotImplemented
+
+    def getDeliveryStatusChangeTime(self, member):
+        """Return the time of the last disabled delivery status change.
+
+        If the current delivery status is ENABLED, the status change time will
+        be zero.  If member is not a member of the list, raise
+        NotAMemberError.
+        """
+        raise NotImplemented
+
+    def getBounceInfo(self, member):
+        """Return the member's bounce information.
+
+        A value of None means there is no bounce information registered for
+        the member.
+
+        Bounce info is opaque to the MemberAdaptor.  It is set by
+        setBounceInfo() and returned by this method without modification.
+
+        If member is not a member of the list, raise NotAMemberError.
+        """
+        raise NotImplemented
+
 
     #
     # The writeable interface
@@ -243,5 +291,35 @@ class MemberAdaptor:
         member is an LCE/KEY and realname is an arbitrary string.
         NotAMemberError is raised if member does not refer to a valid member.
         topics must be a sequence of strings.
+        """
+        raise NotImplemented
+
+    def setDeliveryStatus(self, member, status):
+        """Set the delivery status of the member's address.
+
+        Status must be one of the module constants:
+
+            ENABLED  - The deliveries to the user are not disabled
+            UNKNOWN  - Deliveries are disabled for unknown reasons.  The
+                       primary reason for this to happen is that we've copied
+                       their delivery status from a legacy version which didn't
+                       keep track of disable reasons
+            BYCHOICE - The user explicitly disable deliveries
+            BYBOUNCE - The system disabled deliveries due to bouncing
+
+        This method also records the time (in seconds since epoch) at which
+        the last status change was made.  If the delivery status is changed to
+        ENABLED, then the change time information will be deleted.  This value
+        is retrievable via getDeliveryStatusChangeTime().
+        """
+        raise NotImplemented
+
+    def setBounceInfo(self, member, info):
+        """Set the member's bounce information.
+
+        When info is None, any bounce info for the member is cleared.
+
+        Bounce info is opaque to the MemberAdaptor.  It is set by this method
+        and returned by getBounceInfo() without modification.
         """
         raise NotImplemented
