@@ -614,9 +614,7 @@ class HyperArchive(pipermail.T):
 
     def html_TOC_entry(self, arch):
         # Check to see if the archive is gzip'd or not
-        txtfile = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
-                               self.maillist.internal_name(),
-                               arch + '.txt')
+        txtfile = os.path.join(self.maillist.archive_dir(), arch + '.txt')
         gzfile = txtfile + '.gz'
         templ = '<td><A href="%(url)s">[ %(fmt)sText%(sz)s]</a></td>'
         # which exists?  .txt.gz first, then .txt

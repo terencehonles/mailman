@@ -31,6 +31,7 @@ from cStringIO import StringIO
 from Mailman import mm_cfg
 from Mailman import Mailbox
 from Mailman import Utils
+from Mailman import Site
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
@@ -111,8 +112,7 @@ class Archiver:
             os.umask(omask)
 
     def archive_dir(self):
-        return os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR,
-                            self.internal_name())
+        return Site.get_archpath(self.internal_name())
 
     def ArchiveFileName(self):
 	"""The mbox name where messages are left for archive construction."""
@@ -217,8 +217,7 @@ class Archiver:
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
             # Archiving is completely disabled, don't require the skeleton.
             return
-        pubdir  = os.path.join(mm_cfg.PUBLIC_ARCHIVE_FILE_DIR,
-                               self.internal_name())
+        pubdir = Site.get_archpath(self.internal_name(), public=1)
         privdir = self.archive_dir()
         pubmbox = pubdir + '.mbox'
         privmbox = privdir + '.mbox'
