@@ -1310,7 +1310,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                     admin_notif=send_unsub_notifications,
                     userack=userack)
                 unsubscribe_success.append(addr)
-            except Errors.MMNoSuchUserError:
+            except Errors.NotAMemberError:
                 unsubscribe_errors.append(addr)
         if unsubscribe_success:
             doc.AddItem(Header(5, _('Successfully Unsubscribed:')))
@@ -1350,7 +1350,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 try:
                     mlist.ApprovedDeleteMember(user)
                     removes.append(user)
-                except Errors.MMNoSuchUserError:
+                except Errors.NotAMemberError:
                     errors.append((user, _('Not subscribed')))
                 continue
             if not mlist.isMember(user):
