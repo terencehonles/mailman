@@ -28,7 +28,6 @@ import Message
 import Errors
 import mm_cfg
 import Utils
-import Pending
 
 
 option_descs = { 'digest' :
