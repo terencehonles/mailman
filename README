@@ -28,8 +28,8 @@ Features:
 
   o Most standard mailing list features, including:
         moderation, mail based commands, digests, etc...
-  o An extensive Web interface customizable on a per-list basis.
-  o Web based list administration interface for *all* admin-type tasks.
+  o An extensive Web interface, customizable on a per-list basis.
+  o Web based list administration interface for *all* admin-type tasks
   o Automatic Web based hypermail-style archives (using pipermail or
     other external archiver), including provisions for private archives
   o Integrated mail list to newsgroup gatewaying
@@ -45,7 +45,7 @@ Features:
   o Multiple list owners and moderators are possible
   o Optional MIME-compliant digests
   o Nice about which machine you subscribed from if you're from the
-        right domain.
+        right domain
 
 
 Here is a list of sites mirroring the Mailman ftp site
