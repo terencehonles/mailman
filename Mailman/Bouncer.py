@@ -97,7 +97,7 @@ class Bouncer:
             return
         info = self.getBounceInfo(member)
         today = time.localtime()[:3]
-        if info is None:
+        if not isinstance(info, _BounceInfo):
             # This is the first bounce we've seen from this member
             cookie = Pending.new(Pending.RE_ENABLE, self.internal_name(),
                                  member)
