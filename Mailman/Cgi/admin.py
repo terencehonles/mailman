@@ -741,28 +741,38 @@ def ChangeOptions(lst, category, cgi_info, document):
 	name_text = cgi_info['subscribees'].value
         name_text = string.replace(name_text, '\r', '')
 	names = string.split(name_text, '\n')
-        if '' in names:
-            names.remove('')
         subscribe_success = []
         subscribe_errors = []
         send_welcome_msg = string.atoi(cgi_info["send_welcome_msg_to_this_batch"].value)
-	for new_name in map(string.strip,names):
+	for new_name in map(string.strip, names):
             digest = 0
             if not lst.digestable:
                 digest = 0
             if not lst.nondigestable:
                 digest = 1
 	    try:
-		lst.ApprovedAddMember(new_name, (Utils.GetRandomSeed() +
-                                                  Utils.GetRandomSeed()), digest, send_welcome_msg)
+                # catches blank lines or whitespace-only lines in mass
+                # subscribe dialog
+                if not new_name:
+                    # TBD: we raise the exception here instead of just
+                    # appending to subscribe_errors and doing a continue,
+                    # because as of Python 1.5.2, this is not supported syntax
+                    # (a continue inside the try inside a loop).
+                    new_name = '&lt;blank line&gt;'
+                    raise Errors.MMBadEmailError
+		lst.ApprovedAddMember(
+                    new_name,
+                    Utils.GetRandomSeed() + Utils.GetRandomSeed(),
+                    digest, send_welcome_msg)
                 subscribe_success.append(new_name)
 	    except Errors.MMAlreadyAMember:
                 subscribe_errors.append((new_name, 'Already a member'))
-                
             except Errors.MMBadEmailError:
-                subscribe_errors.append((new_name, "Bad/Invalid email address"))
+                subscribe_errors.append(
+                    (new_name, "Bad/Invalid email address"))
             except Errors.MMHostileAddress:
-                subscribe_errors.append((new_name, "Hostile Address (illegal characters)"))
+                subscribe_errors.append(
+                    (new_name, "Hostile Address (illegal characters)"))
         if subscribe_success:
             document.AddItem(Header(5, "Successfully Subscribed:"))
             document.AddItem(apply(UnorderedList, tuple((subscribe_success))))
