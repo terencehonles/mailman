@@ -136,6 +136,10 @@ def main():
         for mlist in byhost[host]:
             listaddr = mlist.GetListEmail()
             for member in mlist.getMembers():
+                # The user may have disabled reminders for this list
+                if mlist.getMemberOption(member,
+                                         mm_cfg.SuppressPasswordReminder):
+                    continue
                 # Group by the lower-cased address, since Mailman always
                 # treates person@dom.ain the same as PERSON@dom.ain.
                 password = mlist.getMemberPassword(member)
