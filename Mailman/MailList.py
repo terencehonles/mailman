@@ -282,7 +282,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.__lock = LockFile.LockFile(
             os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
             # TBD: is this a good choice of lifetime?
-            lifetime = mm_cfg.LIST_LOCK_LIFETIME)
+            lifetime = mm_cfg.LIST_LOCK_LIFETIME,
+            withlogging = mm_cfg.LIST_LOCK_DEBUGGING)
 	self._internal_name = name
 	self._ready = 0
 	if name:
@@ -309,7 +310,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# This stuff is configurable
 	self.filter_prog = mm_cfg.DEFAULT_FILTER_PROG
 	self.dont_respond_to_post_requests = 0
-	self.num_spawns = mm_cfg.DEFAULT_NUM_SPAWNS
 	self.advertised = mm_cfg.DEFAULT_LIST_ADVERTISED
 	self.max_num_recipients = mm_cfg.DEFAULT_MAX_NUM_RECIPIENTS
 	self.max_message_size = mm_cfg.DEFAULT_MAX_MESSAGE_SIZE
@@ -551,13 +551,6 @@ it will not be changed."""),
 
 	    ('max_message_size', mm_cfg.Number, 7, 0,
 	     'Maximum length in Kb of a message body.  Use 0 for no limit.'),
-
-	    ('num_spawns', mm_cfg.Number, 7, 0,
-	     'Number of outgoing connections to open at once '
-	     '(expert users only).',
-
-             "This determines the maximum number of batches into which"
-             " a mass posting will be divided."),
 
 	    ('host_name', mm_cfg.Host, WIDTH, 0,
              'Host name this list prefers.',
@@ -1236,8 +1229,12 @@ it will not be changed."""),
         # this is the list's full address
         listfullname = '%s@%s' % (self.internal_name(), self.host_name)
         recips = []
-        # check all recipient addresses against the list's explicit address.
-        for fullname, addr in msg.getaddrlist('to') + msg.getaddrlist('cc'):
+        # check all recipient addresses against the list's explicit addresses,
+        # specifically To: Cc: and Resent-to:
+        to = []
+        for header in ('to', 'cc', 'resent-to'):
+            to.extend(msg.getaddrlist(header))
+        for fullname, addr in to:
             addr = string.lower(addr)
             localpart = string.split(addr, '@')[0]
             if (# TBD: backwards compatibility: deprecated
