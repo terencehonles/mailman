@@ -38,7 +38,7 @@ import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 QRUNNER_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'qrunner.lock')
-QRUNNER_LOCK_LIFETIME = 60 * 10                   # seconds
+QRUNNER_LOCK_LIFETIME = 60 * 10                   # 10 minutes
 
 LogStdErr('error', 'qrunner', tee_to_stdout=0)
 
@@ -147,13 +147,7 @@ if __name__ == '__main__':
     try:
         lock.lock(timeout=0.5)
     except LockFile.TimeOutError:
-        # TBD: It is possible that some other process has laid claim to the
-        # gate lock for this list, but that said process has exited uncleanly.
-        # If that's the case, and it leaves it's lock claim on disk, we will
-        # never be able to gate from usenet to the list again, until the stale
-        # lock is removed.  For now, we just log this potentially deadlocked
-        # situation, but this should really be fixed (probably in LockFile.py
-        # though).
+        # Some other qrunner process is running, which is fine.
         sys.stderr.write('Could not acquire qrunner lock\n')
     else:
         try:
