@@ -29,7 +29,7 @@ import string
 import time
 import sha
 import marshal
-from types import StringType
+from types import StringType, ListType
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -194,5 +194,9 @@ class UserNotification(OutgoingMessage):
             subject = '(no subject)'
         self['Subject'] = subject
         self['From'] = sender
-        self['To'] = recip
-        self.recips = [recip]
+        if type(recip) == ListType:
+            self['To'] = string.join(recip, ', ')
+            self.recips = recip[:]
+        else:
+            self['To'] = recip
+            self.recips = [recip]
