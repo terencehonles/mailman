@@ -525,8 +525,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             fname_last = fname + ".last"
 	    if os.path.exists(fname_last):
 	      os.unlink(fname_last)
-	    os.link(fname, fname_last)
-	    os.unlink(fname)
+	    if os.path.exists(fname):
+	        os.link(fname, fname_last)
+	        os.unlink(fname)
 	    file = open(fname, 'w')
 	finally:
 	    os.umask(ou)
