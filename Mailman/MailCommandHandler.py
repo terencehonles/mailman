@@ -242,16 +242,26 @@ class MailCommandHandler:
                           "use the 'lists' command\n"
                           "to get info for all the lists.")
 	    return
+
 	if self.private_roster and not self.IsMember(mail.GetSender()):
 	    self.AddError("Private list: only members may see info.")
 	    return
 
-	self.AddToResponse("Here is the info for list %s:" % self.real_name)
+        self.AddToResponse("\nFor more complete info about %s, including"
+                           " background" % self.real_name)
+        self.AddToResponse("and instructions for subscribing to and"
+                           " using it, visit:\n\n\t%s\n"
+                           % self.GetScriptURL('listinfo'))
+
 	if not self.info:
-	    self.AddToResponse("No information on list %s found." %
+	    self.AddToResponse("No other details about %s are available." %
 			       self.real_name)
 	else:
-	    self.AddToResponse(self.info)
+            self.AddToResponse("Here is the specific description of %s:\n"
+                               % self.real_name)
+            # Put a blank line between the paragraphs, as indicated by CRs.
+	    self.AddToResponse(string.join(string.split(self.info, "\n"),
+					   "\n\n"))
 	
     def ProcessWhoCmd(self, args, cmd, mail):
 	if len(args) != 0:
