@@ -23,7 +23,6 @@ the mailing lists, and whatever else doesn't belong elsewhere.
 
 """
 
-import sys
 import os
 import re
 import random
@@ -286,6 +285,7 @@ for v in _vowels:
     for c in _consonants:
         _syllables.append(c+v)
         _syllables.append(v+c)
+del c, v
 
 def MakeRandomPassword(length=6):
     syls = []
@@ -591,9 +591,8 @@ def reap(kids, func=None, once=0):
 
 
 def GetDirectories(path):
-    from os import listdir
-    from os.path import isdir, join
-    return [f for f in listdir(path) if isdir(join(path, f))]
+    return [f for f in os.listdir(path)
+            if os.path.isdir(os.path.join(path, f))]
 
 
 def GetLanguageDescr(lang):
