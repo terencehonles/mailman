@@ -30,6 +30,7 @@ var_prefix=	@VAR_PREFIX@
 CC=		@CC@
 CHMOD=  	@CHMOD@
 INSTALL=	@INSTALL@
+PYTHON=		@PYTHON@
 
 DEFS=   	@DEFS@
 
@@ -43,7 +44,10 @@ ICONDIR=        $(prefix)/icons
 SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
-
+UNTAR=		tar zxf
+EMAILPKG=	email-0.97
+PYTHONLIBDIR=	$(prefix)/pythonlib
+SETUPCMD=	setup.py --quiet install --install-lib
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -61,7 +65,7 @@ ICONS=		*.jpg *.png
 
 all:
 
-install:
+install: install-email
 	$(INSTALL) -m $(FILEMODE) $(ICONS) $(ICONDIR)
 	for d in $(PATHSDIRS); \
 	do \
@@ -70,6 +74,10 @@ install:
 	done
 	$(INSTALL) -m $(DATAMODE) pending_subscriptions.db $(DATADIR)
 	$(INSTALL) -m $(EXEMODE) mailman $(SCRIPTSDIR)
+
+install-email:
+	$(UNTAR) $(EMAILPKG).tar.gz
+	(cd $(EMAILPKG) ; $(PYTHON) $(SETUPCMD) $(PYTHONLIBDIR))
 
 finish:
 
