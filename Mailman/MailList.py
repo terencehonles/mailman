@@ -54,7 +54,6 @@ from Mailman.Digester import Digester
 from Mailman.GatewayManager import GatewayManager
 from Mailman.HTMLFormatter import HTMLFormatter 
 from Mailman.ListAdmin import ListAdmin
-from Mailman.MailCommandHandler import MailCommandHandler 
 from Mailman.SecurityManager import SecurityManager
 from Mailman.TopicMgr import TopicMgr
 
@@ -75,7 +74,7 @@ EMPTYSTRING = ''
 
 
 # Use mixins here just to avoid having any one chunk be too large.
-class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin, 
+class MailList(HTMLFormatter, Deliverer, ListAdmin, 
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
                Autoresponder, TopicMgr):
 
@@ -973,10 +972,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # constructor because it will encode it in the charset of the language
         # being used.  For non-us-ascii charsets, this means it will probably
         # quopri quote it, and thus replies will also be quopri encoded.  But
-        # MailCommandHandler doesn't yet grok such headers, and I'm avoiding
-        # fixing that until a future version which will completely rewrite the
-        # mail command handling.  So, just set the Subject: in a separate
-        # step, although we have to delete the one UserNotification adds.
+        # CommandRunner doesn't yet grok such headers.  So, just set the
+        # Subject: in a separate step, although we have to delete the one
+        # UserNotification adds.
         msg = Message.UserNotification(
             newaddr, self.GetRequestEmail(),
             text=text, lang=lang)
