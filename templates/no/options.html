@@ -1,4 +1,4 @@
-<!-- $Revision: 3817 $ -->
+<!-- $Revision: 3977 $ -->
 <html>
 <head>
     <title>Personlig medlemside for <MM-Presentable-User> p&aring; listen <MM-List-Name>
@@ -17,15 +17,15 @@
     <tr><td>
         <b>Medlemsstatus, passord, og innstillinger for <MM-Presentable-User></b>
         p&aring; epostlisten <MM-List-Name>.
+        </td><td><mm-logout-button></td>
+    </tr><tr>
+        <td colspan="2">
         <MM-Case-Preserved-User>
 
         <MM-Disabled-Notice>
 
         <p><mm-results>
-
         </td>
-
-        <td><mm-logout-button></td>
     </tr>
 </table>
 
@@ -35,17 +35,21 @@
         <FONT COLOR="#000000">
         <B>Bytte epostadresse p&aring; <MM-List-Name></B>
 	</FONT></TD></TR>
-    <tr><td width="50%">Du kan bytte ut den epostadressen du har meldt inn p&aring;
+    <tr><td colspan="2">Du kan bytte ut den epostadressen du har meldt inn p&aring;
         listen ved &aring; skrive inn en annen epostadresse i feltene nedenfor.
         Merk at en epost med n&aelig;rmere instruksjoner vil da bli sendt til den nye
         adressen. Endringene trer ikke i kraft f&oslash;r du har bekreftet dem.
         Du har <mm-pending-days> p&aring; deg til &aring; bekrefte endringen.
 
+        <p>Du kan også oppgi eller endre navnet ditt på listen (f.eks <em>Ola Normann</em>).
+
         <p>Hvis du vil endre epostadressen din for alle
            epostlistene du er p&aring;meldt p&aring; <mm-host>, kryss av for 
         <em>Endre alle lister</em>.
-    </td><td><center>
-        <table border="0" cellspacing="2" cellpadding="2" width="70%" cols="2">
+
+        </td></tr>
+    <tr><td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
         <tr><td bgcolor="#dddddd"><div align="right">Ny epostadresse:</div></td>
             <td><mm-new-address-box></td>
             </tr>
@@ -53,11 +57,20 @@
             </div></td> 
             <td><mm-confirm-address-box></td>
             </tr>
-        <tr><td colspan="2"><center><mm-change-address-button>
-            <p><mm-global-change-of-address>Endre min epostadresse p&aring; alle lister jeg er medlem av
-            </center></td>
         </tr></table></center>
-    </td>
+        </td>
+        <td><center>
+        <table border="0" cellspacing="2" cellpadding="2" width="80%" cols="2">
+            <tr><td bgcolor="#dddddd"><div align="right">Ditt navn
+            (valgfritt):</div></td>
+            <td><mm-fullname-box></td>
+            </tr>
+        </table></center>
+        </td>
+        </tr>
+    <tr><td colspan="2"><center><mm-change-address-button>
+         <p><mm-global-change-of-address>Endre min epostadresse p&aring; alle lister jeg er medlem av</center></td>
+    </tr>
 </table>
 
 <p>
@@ -180,7 +193,7 @@ er medlem av.
         <strong>Motta dine egne meldinger til listen?</strong><p>
 
         Vanligvis vil du motta epost som du selv sender til listen.
-        Hvis du ikke vil motta disse, bør du velge <em>Nei</em> her.
+        Hvis du ikke vil motta disse, b&oslash;r du velge <em>Nei</em> her.
         </td><td bgcolor="#cccccc">
         <mm-dont-receive-own-mail-button>Nei<br>
         <mm-receive-own-mail-button>Ja
@@ -189,7 +202,7 @@ er medlem av.
     <tr><TD BGCOLOR="#cccccc">
         <strong>Motta bekreftelse n&aring;r du sender epost til listen?</strong><p>
 
-        Velg <em>Ja</em> her hvis du ønsker å få en bekreftelse hver gang du sender en epost til listen.
+        Velg <em>Ja</em> her hvis du &oslash;nsker &aring; f&aring; en bekreftelse hver gang du sender en epost til listen.
         </td><td bgcolor="#cccccc">
         <mm-dont-ack-posts-button>Nei<br>
         <mm-ack-posts-button>Ja
@@ -225,6 +238,32 @@ er medlem av.
         <MM-list-langs>
         </td></tr>
 
+    <tr><td bgcolor="#cccccc">
+        <strong>Hvilke emner vil du motta?</strong>
+        <p>Ved å velge ett eller flere emner, kan du filtrere meldingene som sendes til
+        epostlisten, slik at du kun vil motta det som kan interessere deg.
+
+        <p>Hvis en melding ikke går under noen emner, kommer det an på innstillingen nedenfor
+        om du vil motta meldingen eller ikke. Hvis du ikke velger noen emner her, vil
+        du motta alle meldinger som sendes til listen.
+        </td><td bgcolor="#cccccc">
+        <mm-topics>
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Vil du motta meldinger som ikke går under noe emne?</strong>
+        <p>Dette valget gjelder bare hvis du har valgt et eller flere emner ovenfor.
+        Det avgjør om du skal motta meldinger som ikke går under noen emner.
+        Velger du <em>Nei</em> vil du ikke motta dem, velger du <em>Ja</em> vil
+        du motta dem.
+
+        <p>Hvis du ikke har valgt noen emner i innstillingen ovenfor, vil du motta alle
+        meldinger som sendes til listen.
+
+        </td><td bgcolor="#cccccc">
+        <mm-suppress-nonmatching-topics>Nei<br>
+        <mm-receive-nonmatching-topics>Ja
+        </td></tr>
     <tr><TD colspan="2">
         <center><MM-options-Submit-button></center>
         </td></tr>

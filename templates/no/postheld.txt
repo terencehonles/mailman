@@ -10,4 +10,7 @@ Grunnen til at den holdes tilbake er:
     %(reason)s
 
 Enten vil eposten din sendes ut på listen, eller du får den i retur
-med begrunnelse for hvorfor den ikke ble sendt ut.
+med begrunnelse for hvorfor den ikke ble sendt ut. Ønsker du å trekke
+den tilbake, gå inn på følgende URL:
+
+    %(confirmurl)s

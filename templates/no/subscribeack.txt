@@ -27,10 +27,11 @@ Passordet ditt er:
 
   %(password)s
 
-Glemmer du passordet ditt, fortvil ikke, det kan være denne listen er satt
-opp slik at du får en epost en gang i måneden med en påminnelse om hva
-passordet er, hvordan du kan melde deg av, eller hvordan du kan endre
-innstillinger.
+Normalt vil Mailman en gang i måneden sende deg en epost med påminnelse om
+passordene du har for epostlistene du er medlem av på %(host_name)s,
+men det kan du skru av dersom du ønsker det.
+Påminnelsen vil også inneholde informasjon om hvordan du kan melde deg av
+listen, eller endre dine personlige innstillinger for listen.
 
-Du kan også få passordet ditt tilsendt på epost når som helst.
-Det kan du gjøre fra din personlige medlemsside.
+På din personlige medlemsside finnes det også en knapp som du kan trykke
+hvis du ønsker å få passordet ditt tilsendt i en epost.
