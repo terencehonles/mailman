@@ -280,6 +280,8 @@ def NewVars(l):
     add_only_if_missing('one_last_digest', {})
     add_only_if_missing('usernames', {})
     add_only_if_missing('personalize', 0)
+    add_only_if_missing('first_strip_reply_to',
+                        mm_cfg.DEFAULT_FIRST_STRIP_REPLY_TO)
 
 
 
