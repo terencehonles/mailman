@@ -1,32 +1,86 @@
 #!/usr/local/bin/python 
 
-# This script gets called by cron.  It goes through all the lists,
-# and locks each list as it processes it.  It goes through every
-# address, and mails a password reminder.  It isn't a big enough deal
-# to worry about what happens if someone is on multiple lists.
-#
+"""This script gets called by cron.  It goes through all the lists,
+and locks each list as it processes it.  It goes through every
+address, and mails a password reminder.  It isn't a big enough deal
+to worry about what happens if someone is on multiple lists."""
+
 # This puppy should probably do lots of logging.
 
-
-import sys, os
+import sys, os, string
 
 sys.path.append('/home/mailman/mailman/modules')
 
 import maillist, mm_cfg, mm_message
 
 
-def MailPasswords(list):
-    for user in list.passwords.keys():
-	list.MailUserPassword(user)
+users = {}				# user: (listname, password, url)
 
-dirs = os.listdir(mm_cfg.LIST_DATA_DIR)
-for dir in dirs:
-    if not (os.path.exists(os.path.join(
-	os.path.join(mm_cfg.LIST_DATA_DIR, dir), 'config.db'))):
-	continue
+USERPASSWORDSTEXT = """
+This is a reminder, sent out once a month, about your %s
+mailing list memberships.  It includes your configuration info and
+how to use it to change it or unsubscribe from a list.  Here are the
+details:
+
+%s
+%s
+
+The URLs have web-based interfaces for changing your membership status or
+configuration for the respective list.
+
+In addition to the URL web interfaces, you can also use email to make the
+changes.  For more info, send a message to the '-request' address of the
+list (for example, %s-request@%s) containing just the word
+'help' in the message body, and an email message will be sent to you with
+instructions.
+
+Questions, problems, comments?
+Please send them to mailman-owner@%s.  Thanks!
+"""
+
+def MailAllPasswords(list, users):
+    """Send each user their complete list of passwords.
+
+    The list can be any random one - it is only used for the message
+    delivery mechanism."""
+    subj = '%s maillist memberships reminder\n' % list.host_name
+    for user, data in users.items():
+	table = []
+	for l, p, u in data:
+	    table.append("%-10s %-10s  %s" % (l, p, u))
+	header = ("%-10s %-10s  %s\n%-10s %-10s  %s"
+		  % ("List", "Password", "URL", "----", "--------", "---"))
+	text = USERPASSWORDSTEXT % (list.host_name,
+				    header,
+				    string.join(table, "\n"),
+				    l, list.host_name,
+				    list.host_name)
+ 	list.SendTextToUser(subject = subj,
+ 			    recipient = user,
+ 			    text = text)
+
+# Consolidate all the list/url/password info for each user, so we send
+# the user a single message with the info for all their lists on this
+# site.
+list = None
+for name in maillist.list_names():
     try:
-	list = maillist.MailList(dir)
+	list = maillist.MailList(name)
     except:
 	continue
-    MailPasswords(list)
+    url = list.GetScriptURL('listinfo')
+    list_name = list.real_name
+    for user, password in list.passwords.items():
+	if users.has_key(user):
+	    users[user].append(list_name, password, url)
+	else:
+	    users[user] = [(list_name, password, url)]
+    # Unlocking each list after identifying passwords, but before having
+    # the consolidated list, means that there is a window for discrepancy
+    # between the reported and actual password.  Big deal - if the user
+    # changed the password in the meanwhile, they'll realize it, and it's
+    # not worth the extra deadlock risk.
     list.Unlock()
+
+if list:
+    MailAllPasswords(list, users)
