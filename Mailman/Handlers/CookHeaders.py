@@ -220,14 +220,16 @@ def prefix_subject(mlist, msg, msgdata):
     # If prefix is a byte string and there are funky characters in it that
     # don't match the charset, we might as well replace them now.
     if not _isunicode(prefix):
-        prefix = unicode(prefix, charset.get_output_charset(), 'replace')
+        codec = charset.input_codec or 'ascii'
+        prefix = unicode(prefix, codec, 'replace')
     # We purposefully leave no space b/w prefix and subject!
     h = Header(prefix, charset, header_name='Subject')
     for s, c in headerbits:
         # Once again, convert the string to unicode.
         if c is None:
-            c = 'iso-8859-1'
+            c = Charset('iso-8859-1')
         if not _isunicode(s):
-            s = unicode(s, c, 'replace')
+            codec = c.input_codec or 'ascii'
+            s = unicode(s, codec, 'replace')
         h.append(s, c)
     msg['Subject'] = h
