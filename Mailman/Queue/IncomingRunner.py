@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -126,11 +126,12 @@ class IncomingRunner(Runner):
         # used.  Final fallback is the global pipeline.
         try:
             pipeline = self._get_pipeline(mlist, msg, msgdata)
-            status = self._dopipeline(mlist, msg, msgdata, pipeline)
-            if status:
-                msgdata['pipeline'] = pipeline
+            msgdata['pipeline'] = pipeline
+            more = self._dopipeline(mlist, msg, msgdata, pipeline)
+            if not more:
+                del msgdata['pipeline']
             mlist.Save()
-            return status
+            return more
         finally:
             mlist.Unlock()
 
@@ -166,5 +167,10 @@ class IncomingRunner(Runner):
             except Errors.RejectMessage, e:
                 mlist.BounceMessage(msg, msgdata, e)
                 return 0
+            except:
+                # Push this pipeline module back on the stack, then re-raise
+                # the exception.
+                pipeline.insert(0, handler)
+                raise
         # We've successfully completed handling of this message
         return 0
