@@ -718,12 +718,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	elif not digest and not self.nondigestable:
             raise Errors.MMMustDigestError
 
-        if self.subscribe_policy == 0: # no confirmation or approval necessary
+        if self.subscribe_policy == 0:
+            # no confirmation or approval necessary:
             self.ApprovedAddMember(name, password, digest)
-        elif self.subscribe_policy == 1 or self.subscribe_policy == 3: # confirmation
-            import Pending
-            cookie = Pending.gencookie()
-            Pending.add2pending(name, password, digest, cookie)
+        elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
+            # confirmation:
+            from Pending import Pending
+            cookie = Pending().new(name, password, digest)
             if remote is not None:
                 by = " " + remote
                 remote = " from %s" % remote
@@ -787,13 +788,12 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 
     def ProcessConfirmation(self, cookie):
-        import Pending
-        pending = Pending.get_pending()
-        if not pending.has_key(cookie):
+        from Pending import Pending
+        got = Pending().confirmed(cookie)
+        if not got:
             raise Errors.MMBadConfirmation
-        (email_addr, password, digest, ts) = pending[cookie]
-        del pending[cookie]
-        Pending.set_pending(pending)
+        else:
+            (email_addr, password, digest) = got
         if self.subscribe_policy == 3: # confirm + approve
             self.AddRequest('add_member', digest, email_addr, password)
             raise Errors.MMNeedApproval, self.GetAdminEmail()
@@ -1088,10 +1088,3 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	return ("<%s.%s %s%s at %s>"
 		% (self.__module__, self.__class__.__name__,
 		   `self._internal_name`, status, hex(id(self))[2:]))
-
-
-
-
-
-
-
