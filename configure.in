@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1664 $)
+AC_REVISION($Revision: 1694 $)
 AC_PREREQ(2.0)
 AC_INIT(src/alias-wrapper.c)
 
@@ -386,7 +386,8 @@ AC_TYPE_UID_T
 AC_TYPE_GETGROUPS
 
 # Checks for library functions.
-AC_FUNC_VPRINTF
+# TBD: what to do if vsnprintf /doesn't/ exist?
+#AC_CHECK_FUNCS(vsnprintf)
 
 dnl Output everything
 AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
