@@ -1,37 +1,63 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-SENDMAIL ISSUES
+SENDMAIL `smrsh' COMPATIBILITY
 
-Many newer versions of Sendmail come with a restricted execution
-utility called "smrsh", which limits the executables that sendmail can
-use as mail filter programs.  You need to explicitly allow Mailman's
-wrapper program to be used with smrsh before it will work.  If mail is
-not getting delivered to Mailman's wrapper program and you're getting
-an "operating system error" in your mail syslog, this could be your
-problem.
+    Many newer versions of Sendmail come with a restricted execution
+    utility called "smrsh", which limits the executables that Sendmail
+    will allow to be used as mail filter programs.  You need to
+    explicitly allow Mailman's wrapper program to be used with smrsh
+    before it will work.  If mail is not getting delivered to
+    Mailman's wrapper program and you're getting an "operating system
+    error" in your mail syslog, this could be your problem.
 
-One good way of doing this is to:
+    One good way of doing this is to:
 
-    - cd into /etc/smrsh (or where ever it happens to reside on your
-      system, such as /var/smrsh or /usr/local/smrsh).
+        - cd into /etc/smrsh (or where ever it happens to reside on
+          your system, such as /var/smrsh or /usr/local/smrsh).
 
-    - create a symbolic link to Mailman's wrapper program
+        - create a symbolic link to Mailman's wrapper program
 
-For example, if you've installed Mailman in the standard location, you
-can just execute these commands (you might have to do these as root):
+    For example, if you've installed Mailman in the standard location,
+    you can just execute these commands (you might have to do these as
+    root):
 
-    % cd /etc/smrsh
-    % ln -s /home/mailman/mail/wrapper wrapper
+        % cd /etc/smrsh
+        % ln -s /home/mailman/mail/wrapper wrapper
 
-One complication: if you're running Majordomo and Mailman
-simultaneously (i.e. in the process of migrating from MD to MM :),
-then you might have a small problem because Majordomo also uses a
-program called `wrapper'.  In this case, Paul Tomblin suggests calling
-the Mailman symlink `mailman_wrapper', and changing the alias entries
-to call this instead of `wrapper'.  You might want to hack bin/newlist
-to output this instead.
+    One complication: if you're running Majordomo and Mailman
+    simultaneously (i.e. in the process of migrating from MD to MM :),
+    then you might have a small problem because Majordomo also uses a
+    program called `wrapper'.  In this case, Paul Tomblin suggests
+    calling the Mailman symlink `mailman_wrapper', and changing the
+    alias entries to call this instead of `wrapper'.
+
+    If you do this, you'll probably want to hack Mailman/MTA/Utils.py
+    to output the correct path to your wrapper program.
+
+
+INTEGRATING SENDMAIL AND MAILMAN
+
+    David Champion has contributed a Sendmail mailer which you can use
+    so that Sendmail will automatically deliver to Mailman mailing
+    lists without manual intervention (i.e. updated an aliases file or
+    running newaliases).  He suggests adding the following to your
+    sendmail.cf file:
+
+	MMailman,	P=/etc/mail/mm-handler, F=rDFMhlqSu, U=mailman:other,
+			S=EnvFromL, R=EnvToL/HdrToL,
+			A=mm-handler $h $u
+
+    The mm-handler script can be found in the contrib directory; copy
+    this script to /etc/mail and in your Mailman/mm_cfg.py file, add
+    the following:
+
+        MTA = None
+
+    Now Sendmail should automagically deliver to the standard Mailman
+    aliases for mailing lists.
+
 
 
 Local Variables:
