@@ -76,6 +76,8 @@ class Bouncer:
             mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS
         self.bounce_you_are_disabled_warnings_interval = \
             mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL
+        self.bounce_unrecognized_goes_to_list_owner = \
+            mm_cfg.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER
         # Not configurable...
         #
         # This holds legacy member related information.  It's keyed by the
