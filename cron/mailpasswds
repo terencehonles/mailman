@@ -34,8 +34,11 @@ treated like real separate machines.
 """
 
 # This puppy should probably do lots of logging.
+import sys
+import os
+import string
+import errno
 
-import sys, os, string, time, errno
 import paths
 from Mailman import MailList
 from Mailman import mm_cfg
@@ -53,11 +56,10 @@ def waitall():
         while 1:
             os.wait()
     except os.error, (code, msg):
-        if code == errno.ECHILD:
-            # errno.ECHILD: "No child processes"
-            return
-        else:
-            Utils.reraise()
+        # errno.ECHILD: "No child processes"
+        if code <> errno.ECHILD:
+            raise
+
 
 
 # Give time for the delivery process-forks to clear every so often, to
@@ -65,7 +67,7 @@ def waitall():
 # pauses.
 PAUSE_FREQUENCY = 10
 
-def MailAllPasswords(mlist, hosts):
+def mail_passwords(mlist, hosts):
     """Send each user their complete list of passwords.
 
     The list can be any random one - it is only used for the message
@@ -104,6 +106,7 @@ def MailAllPasswords(mlist, hosts):
                 # The pause that refreshes.
                 waitall()
                 count = PAUSE_FREQUENCY
+
 
 
 def main():
@@ -166,7 +169,8 @@ def main():
             finally:
                 mlist.Unlock()
     if a_public_list:
-        MailAllPasswords(a_public_list, hosts)
+        mail_passwords(a_public_list, hosts)
+
 
 
 if __name__ == '__main__':
