@@ -40,13 +40,14 @@ class HTMLFormatter:
         # Remove the .Format() when htmlformat conversion is done.
         realname = self.real_name
         hostname = self.host_name
+        listinfo_link  = Link(self.GetScriptURL('listinfo'), realname).Format()
+        owner_link = Link('mailto:' + self.GetOwnerEmail(), ownertext).Format()
+        innertext = _('%(listinfo_link)s list run by %(owner_link)s')
         return Container(
             '<hr>',
             Address(
                 Container( 
-                    Link(self.GetScriptURL('listinfo'), self.real_name),
-                    _(' list run by '),
-                    Link('mailto:' + self.GetOwnerEmail(), ownertext),
+                   innertext,
                     '<br>',
                     Link(self.GetScriptURL('admin'),
                          _('%(realname)s administrative interface')),
