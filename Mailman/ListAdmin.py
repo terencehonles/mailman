@@ -34,8 +34,9 @@ from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman.Handlers import HandlerAPI
+from Mailman.Logging.Syslog import syslog
+from Mailman.pythonlib.StringIO import StringIO
 
 # Request types requiring admin approval
 HELDMSG = 1
@@ -182,8 +183,7 @@ class ListAdmin:
             # Queue the file for delivery by qrunner.  Trying to deliver the
             # message directly here can lead to a huge delay in web
             # turnaround.
-            self.LogMsg('vette', 'approved held message enqueued: %s' %
-                        filename)
+            syslog('vette', 'approved held message enqueued: %s' % filename)
             msg.Enqueue(self, newdata=msgdata)
         elif value == 1:
             # Rejected
@@ -210,7 +210,7 @@ class ListAdmin:
                 }
             if comment:
                 note = note + '\n\tReason: ' + strquote(comment)
-            self.LogMsg('vette', note)
+            syslog('vette', note)
         # always unlink the file containing the message text.  It's not
         # necessary anymore, regardless of the disposition of the message.
         try:
@@ -243,8 +243,8 @@ class ListAdmin:
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
-        self.LogMsg('vette', '%s: held subscription request from %s' %
-                    (self.real_name, addr))
+        syslog('vette', '%s: held subscription request from %s' %
+               (self.real_name, addr))
         # possibly notify the administrator
         if self.admin_immed_notify:
             subject = 'New subscription request to list %s from %s' % (

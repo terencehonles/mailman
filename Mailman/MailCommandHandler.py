@@ -30,8 +30,9 @@ from Mailman import Message
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.pythonlib.StringIO import StringIO
 from Mailman.Handlers import HandlerAPI
+from Mailman.Logging.Syslog import syslog
+from Mailman.pythonlib.StringIO import StringIO
 
 
 
@@ -136,15 +137,12 @@ class MailCommandHandler:
             # This is for what are probably delivery-failure notices of
             # subscription confirmations that are, of necessity, bounced
             # back to the -request address.
-            self.LogMsg("bounce",
-                        ("%s: Mailcmd rejected"
-                         "\n\tReason: Probable bounced subscribe-confirmation"
-                         "\n\tFrom: %s"
-                         "\n\tSubject: %s"
-                         ),
-                        self._internal_name,
-                        msg.getheader('from'),
-                        subject)
+            syslog("bounce", "%s: Mailcmd rejected"
+                   "\n\tReason: Probable bounced subscribe-confirmation"
+                   "\n\tFrom: %s"
+                   "\n\tSubject: %s" % (self.internal_name(),
+                                        msg.getheader('from'),
+                                        subject))
             return
 	if subject:
 	    subject = string.strip(subject)
@@ -239,8 +237,8 @@ list administrator automatically.''' % admin)
                         self.AddError(errmsg, trunc=0)
                         self.AddToResponse('\n' + tbmsg, trunc=0)
                         # log it to the error file
-                        self.LogMsg('error',
-                                    'Unexpected Mailman error:\n%s' % tbmsg)
+                        syslog('error',
+                               'Unexpected Mailman error:\n%s' % tbmsg)
                         # and send the traceback to the user
                         responsemsg = Message.UserNotification(
                             admin, admin, 'Unexpected Mailman error',
@@ -528,8 +526,8 @@ background and instructions for subscribing to and using it, visit:
 	    self.AddError("You gave the wrong password.")
         except Errors.MMBadUserError:
             self.AddError('Your stored password is bogus.')
-            self.LogMsg('subscribe', 'User %s on list %s has no password' %
-                        (addr, self.internal_name()))
+            syslog('subscribe', 'User %s on list %s has no password' %
+                   (addr, self.internal_name()))
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
         """Parse subscription request and send confirmation request."""

@@ -31,6 +31,8 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
 from Mailman.Handlers import HandlerAPI
+from Mailman.Logging.Syslog import syslog
+
 
 
 class Bouncer:
@@ -116,7 +118,7 @@ class Bouncer:
                 # No (or expired) priors - new record.
                 self.bounce_info[string.lower(email)] = [now, self.post_id,
                                                          self.post_id]
-                self.LogMsg("bounce", report + "first")
+                syslog("bounce", report + "first")
                 dirty = 1
                 return
 
@@ -129,7 +131,7 @@ class Bouncer:
                     # There's been enough posts since last bounce that we're
                     # restarting.  (Might should keep track of who goes stale
                     # how often.)
-                    self.LogMsg("bounce", report + "first fresh")
+                    syslog("bounce", report + "first fresh")
                     self.bounce_info[addr] = [now, self.post_id, self.post_id]
                     dirty = 1
                     return
@@ -139,7 +141,7 @@ class Bouncer:
                      self.minimum_post_count_before_bounce_action)
                     and
                     (difference > self.minimum_removal_date * secs_per_day)):
-                    self.LogMsg("bounce", report + "exceeded limits")
+                    syslog("bounce", report + "exceeded limits")
                     self.HandleBouncingAddress(addr, msg)
                     return
                 else:
@@ -149,27 +151,24 @@ class Bouncer:
                         post_count = 0
                     remain = (self.minimum_removal_date
                               * secs_per_day - difference)
-                    self.LogMsg("bounce",
-                                report + ("%d more allowed over %d secs"
-                                          % (post_count, remain)))
+                    syslog("bounce", report + ("%d more allowed over %d secs"
+                                               % (post_count, remain)))
                     return
 
             elif len(Utils.FindMatchingAddresses(addr, self.digest_members)):
                 if self.volume > hist[1]:
-                    self.LogMsg("bounce",
-                                "%s: first fresh (D)", self._internal_name)
+                    syslog("bounce", "%s: first fresh (D)" %
+                           self._internal_name)
                     self.bounce_info[addr] = [now, self.volume, self.volume]
                     return
                 if difference > self.minimum_removal_date * secs_per_day:
-                    self.LogMsg("bounce", report + "exceeded limits (D)")
+                    syslog("bounce", report + "exceeded limits (D)")
                     self.HandleBouncingAddress(addr, msg)
                     return 
-                self.LogMsg("bounce", report + "digester lucked out")
+                syslog("bounce", report + "digester lucked out")
             else:
-                self.LogMsg("bounce",
-                            "%s: address %s not a member.",
-                            self._internal_name,
-                            addr)
+                syslog("bounce", "%s: address %s not a member." %
+                       (self.internal_name(), addr))
         finally:
             if dirty and saveifdirty:
                 self.Save()
@@ -202,12 +201,12 @@ class Bouncer:
                 # Whoops!  This is a bounce of a bounce notice - do not
                 # perpetuate the bounce loop!  Log it prominently and be
                 # satisfied with that.
-                self.LogMsg("error",
-                            "%s: Bounce recipient loop"
-                            " encountered!\n\t%s\n\tBad admin recipient: %s",
-                            self._internal_name,
-                            "(Ie, bounce notification addr, itself, bounces.)",
-                            addr)
+                syslog("error",
+                       "%s: Bounce recipient loop"
+                       " encountered!\n\t%s\n\tBad admin recipient: %s" %
+                       (self.internal_name(),
+                        "(Ie, bounce notification addr, itself, bounces.)",
+                        addr))
                 return
             import mimetools
             boundary = mimetools.choose_boundary()
@@ -267,24 +266,23 @@ class Bouncer:
 	Returning success and notification status."""
         if not self.IsMember(addr):
             reason = "User not found."
-	    self.LogMsg("bounce", "%s: NOT disabled %s: %s",
-                        self.real_name, addr, reason)
+	    syslog("bounce", "%s: NOT disabled %s: %s" %
+                   (self.real_name, addr, reason))
             return reason, 1
 	try:
 	    if self.GetUserOption(addr, mm_cfg.DisableDelivery):
 		# No need to send out notification if they're already disabled.
-		self.LogMsg("bounce",
-			    "%s: already disabled %s", self.real_name, addr)
+		syslog("bounce", "%s: already disabled %s" %
+                       (self.real_name, addr))
 		return 1, 0
 	    else:
 		self.SetUserOption(addr, mm_cfg.DisableDelivery, 1)
-		self.LogMsg("bounce",
-			    "%s: disabled %s", self.real_name, addr)
+		syslog("bounce", "%s: disabled %s" % (self.real_name, addr))
 		self.Save()
 		return 1, 1
 	except Errors.MMNoSuchUserError:
-	    self.LogMsg("bounce", "%s: NOT disabled %s: %s",
-                        self.real_name, addr, Errors.MMNoSuchUserError)
+            syslog("bounce", "%s: NOT disabled %s: %s" %
+                   (self.real_name, addr, Errors.MMNoSuchUserError))
 	    self.ClearBounceInfo(addr)
             self.Save()
             return Errors.MMNoSuchUserError, 1
@@ -295,17 +293,17 @@ class Bouncer:
 	Returning success and notification status."""
         if not self.IsMember(addr):
             reason = "User not found."
-	    self.LogMsg("bounce", "%s: NOT removed %s: %s",
-                        self.real_name, addr, reason)
+	    syslog("bounce", "%s: NOT removed %s: %s" %
+                   (self.real_name, addr, reason))
             return reason, 1
 	try:
 	    self.DeleteMember(addr, "bouncing addr")
-	    self.LogMsg("bounce", "%s: removed %s", self.real_name, addr) 
+	    syslog("bounce", "%s: removed %s" % (self.real_name, addr))
             self.Save()
             return 1, 1
 	except Errors.MMNoSuchUserError:
-	    self.LogMsg("bounce", "%s: NOT removed %s: %s",
-                        self.real_name, addr, Errors.MMNoSuchUserError)
+	    syslog("bounce", "%s: NOT removed %s: %s" %
+                   (self.real_name, addr, Errors.MMNoSuchUserError))
 	    self.ClearBounceInfo(addr)
             self.Save()
             return Errors.MMNoSuchUserError, 1
