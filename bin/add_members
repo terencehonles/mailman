@@ -1,19 +1,19 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 # argv[1] should be the name of the list.
@@ -38,13 +38,13 @@ Options:
         -n/--non-digest-members-file are deprecated synonyms for this option.
 
     --digest-members-file=file
-    -d=file
+    -d file
         Similar to above, but these people become digest members.
 
     --changes-msg=<y|n>
-    -c <y|n> 
-	Set whether or not to send the list members the `there's going to be
-	big changes to your list' message. defaults to no.
+    -c <y|n>
+        Set whether or not to send the list members the `there's going to be
+        big changes to your list' message. defaults to no.
 
     --welcome-msg=<y|n>
     -w <y|n>
@@ -174,7 +174,7 @@ def addall(mlist, members, digest, ack, outfp):
             print >> tee, _('Hostile address (illegal characters): %(member)s')
         else:
             print >> tee, _('Subscribed: %(member)s')
-        
+
 
 
 def main():
@@ -186,7 +186,7 @@ def main():
                                     'non-digest-members-file=',
                                     'digest-members-file=',
                                     'changes-msg=',
-				    'welcome-msg=',
+                                    'welcome-msg=',
                                     'help'])
     except getopt.error, msg:
         usage(1, msg)
@@ -235,7 +235,7 @@ def main():
                 admin_notif = 0
             else:
                 usage(1, _('Bad argument to -a/--admin-notify: %(arg)s'))
-                
+
     if dfile is None and nfile is None:
         usage(1)
 
