@@ -22,11 +22,11 @@ Note: only hash: type maps are currently supported.
 import os
 import socket
 import time
-import dbhash
 import errno
 import pwd
 import fcntl
 from stat import *
+import bsddb
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -34,16 +34,13 @@ from Mailman import LockFile
 from Mailman.i18n import _
 from Mailman.MTA.Utils import makealiases
 
-TEXTFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
-DBFILE = TEXTFILE + '.db'
 LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'creator')
 
+TEXTFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
+DBFILE = TEXTFILE + '.db'
 
-
-def virtual_files(hostname):
-    textfile = os.path.join(mm_cfg.DATA_DIR, 'virtual-') + hostname
-    dbfile = textfile + '.db'
-    return dbfile, textfile
+VTEXTFILE = os.path.join(mm_cfg.DATA_DIR, 'virtual-mailman')
+VDBFILE = VTEXTFILE + '.db'
 
 
 
@@ -80,11 +77,32 @@ def makelock():
     return LockFile.LockFile(LOCKFILE)
 
 
+def _zapfile(filename):
+    # Truncate the file w/o messing with the file permissions
+    fp = open(filename, 'w')
+    fp.close()
+
+
+def _zapdb(filename):
+    db = bsddb.hashopen(filename, 'c')
+    for k in db.keys():
+        del db[k]
+    db.close()
+
+
+def clear():
+    _zapfile(TEXTFILE)
+    _zapfile(VTEXTFILE)
+    _zapdb(DBFILE)
+    _zapdb(VDBFILE)
+
+
 
 def addlist(mlist, db, fp):
     listname = mlist.internal_name()
     fieldsz = len(listname) + len('-request')
-    loopaddr = Utils.get_site_email(mlist.host_name, 'loop')
+    # Set up the mailman-loop address
+    loopaddr = Utils.ParseEmail(Utils.get_site_email(extra='loop'))[0]
     loopmbox = os.path.join(mm_cfg.DATA_DIR, 'owner-bounces.mbox')
     # Seek to the end of the text file, but if it's empty write the standard
     # disclaimer, and the loop catch address.
@@ -96,14 +114,14 @@ def addlist(mlist, db, fp):
 # unless you know what you're doing, and can keep the two files properly
 # in sync.  If you screw it up, you're on your own.
 """
-        print >> fp, '# For breaking bounce loops to the site list owners'
-        print >> fp, '%s: %s' % (Utils.ParseEmail(loopaddr)[0], loopmbox)
+        print >> fp, '# The ultimate loop stopper address'
+        print >> fp, '%s: %s' % (loopaddr, loopmbox)
         print >> fp
-    # Always output the loop-stopper address
-    db[loopaddr + '\0'] = loopmbox + '\0'
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
+    # Add the loop stopper address
+    db[loopaddr + '\0'] = loopmbox + '\0'
     # Now add all the standard alias entries
     for k, v in makealiases(listname):
         # Every key and value in the dbhash file as created by Postfix
@@ -127,8 +145,9 @@ def addvirtual(mlist, db, fp):
     listname = mlist.internal_name()
     fieldsz = len(listname) + len('request')
     hostname = mlist.host_name
-    loopaddr = Utils.get_site_email(mlist.host_name, 'loop')
-    mailbox, domain = Utils.ParseEmail(loopaddr)
+    # Set up the mailman-loop address
+    loopaddr = Utils.get_site_email(mlist.host_name, extra='loop')
+    loopdest = Utils.ParseEmail(loopaddr)[0]
     # Seek to the end of the text file, but if it's empty write the standard
     # disclaimer, and the loop catch address.
     fp.seek(0, 2)
@@ -138,16 +157,16 @@ def addvirtual(mlist, db, fp):
 # file virtual-mailman.db.  YOU SHOULD NOT MANUALLY EDIT THIS FILE unless you
 # know what you're doing, and can keep the two files properly in sync.  If you
 # screw it up, you're on your own.
-"""
-        # The entry which designates this as is a Postfix-style virtual map
-        print >> fp, hostname, '\tIGNORE'
-        print >> fp, '# For breaking bounce loops to the site list owners'
-        print >> fp, '%s: %s' % (loopaddr, mailbox)
-        print >> fp
-        # Add the magic bit that designates this as a virtual domain
-        db[hostname + '\0'] = 'IGNORE\0'
-    # Always output the loop-stopper address
-    db[loopaddr + '\0'] = loopaddr + '\0'
+#
+# Note that you should already have this virtual domain set up properly in
+# your Postfix installation.  See README.POSTFIX for details.
+
+# LOOP ADDRESSES START
+%s\t%s
+# LOOP ADDRESSES END
+""" % (loopaddr, loopdest)
+        # Add the loop address entry to the db file
+        db[loopaddr + '\0'] = loopdest + '\0'
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
@@ -159,10 +178,43 @@ def addvirtual(mlist, db, fp):
         # YP_MASTER_NAME.
         db[fqdnaddr + '\0'] = k + '\0'
         # Format the text file nicely
-        print >> fp, fqdnaddr + ':', ((fieldsz - len(k) + 1) * ' '), k
+        print >> fp, fqdnaddr, ((fieldsz - len(k) + 1) * ' '), '\t', k
     # Finish the text file stanza
     print >> fp, '# STANZA END:', listname
     print >> fp
+
+
+
+# Blech.
+def check_for_virtual_loopaddr(mlist, db, filename):
+    loopaddr = Utils.get_site_email(mlist.host_name, extra='loop')
+    loopdest = Utils.ParseEmail(loopaddr)[0]
+    # If the loop address is already in the database, we don't need to add it
+    # to the plain text file, but if it isn't, then we do!
+    if db.has_key(loopaddr + '\0'):
+        # It's already there
+        return
+    infp = open(filename)
+    omask = os.umask(007)
+    try:
+        outfp = open(filename + '.tmp', 'w')
+    finally:
+        os.umask(omask)
+    try:
+        while 1:
+            line = infp.readline()
+            if not line:
+                break
+            outfp.write(line)
+            if line.startswith('# LOOP ADDRESSES START'):
+                print >> outfp, '%s\t%s' % (loopaddr, loopdest)
+                break
+        outfp.writelines(infp.readlines())
+    finally:
+        infp.close()
+        outfp.close()
+    os.rename(filename + '.tmp', filename)
+    db[loopaddr + '\0'] = loopdest + '\0'
 
 
 
@@ -174,7 +226,7 @@ def do_create(mlist, dbfile, textfile, func):
         # this way instead of specifying the `l' option to dbhash.open()
         lockfp = open(dbfile)
         fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
-        db = dbhash.open(dbfile, 'c')
+        db = bsddb.hashopen(dbfile, 'c')
         # Crack open the plain text file
         try:
             fp = open(textfile, 'r+')
@@ -187,8 +239,12 @@ def do_create(mlist, dbfile, textfile, func):
                 os.umask(omask)
         func(mlist, db, fp)
         # And flush everything out to disk
-        db.sync()
         fp.close()
+        # Now double check the virtual plain text file
+        if func is addvirtual:
+            check_for_virtual_loopaddr(mlist, db, textfile)
+        db.sync()
+        db.close()
     finally:
         if lockfp:
             fcntl.flock(lockfp.fileno(), fcntl.LOCK_UN)
@@ -204,9 +260,8 @@ def create(mlist, cgi=0, nolock=0):
     # Do the aliases file, which need to be done in any case
     try:
         do_create(mlist, DBFILE, TEXTFILE, addlist)
-        if mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-            dbfile, textfile = virtual_files(mlist.host_name)
-            do_create(mlist, dbfile, textfile, addvirtual)
+        if mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+            do_create(mlist, VDBFILE, VTEXTFILE, addvirtual)
     finally:
         if lock:
             lock.unlock(unconditionally=1)
@@ -221,7 +276,7 @@ def do_remove(mlist, dbfile, textfile, virtualp):
         # discussion above for while we lock the aliases.db file this way.
         lockfp = open(dbfile)
         fcntl.flock(lockfp.fileno(), fcntl.LOCK_EX)
-        db = dbhash.open(dbfile, 'c')
+        db = bsddb.hashopen(dbfile, 'c')
         for k, v in makealiases(listname):
             try:
                 del db[k + '\0']
@@ -288,7 +343,7 @@ def remove(mlist, cgi=0):
     lock.lock()
     try:
         do_remove(mlist, DBFILE, TEXTFILE, 0)
-        if mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+        if mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
             do_remove(mlist, VDBFILE, VTEXTFILE, 1)
     finally:
         lock.unlock(unconditionally=1)
