@@ -199,6 +199,11 @@ def NewVars(l):
     add_only_if_missing('digest_last_sent_at', 0)
     add_only_if_missing('mod_password', None)
     add_only_if_missing('moderator', [])
+    add_only_if_missing('topics', [])
+    add_only_if_missing('topics_enabled', 0)
+    add_only_if_missing('topics_bodylines_limit', 5)
+    add_only_if_missing('one_last_digest', {})
+    add_only_if_missing('usernames', {})
 
 
 
