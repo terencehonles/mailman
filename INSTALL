@@ -108,7 +108,9 @@ upgrade.
     You should not be root while performing the steps in this section.
     Do them under your own login, or whatever account you typically
     use to install software.  You do not need to do these steps as
-    user mailman, but you could.
+    user mailman, but you could.  However, make sure that the login
+    used is a member of the mailman group as that that group has write
+    permissions to the $prefix directory made in the previous step.
 
     Make sure that you have write permissions to the target
     installation directory, and permission to create a setgid file in
