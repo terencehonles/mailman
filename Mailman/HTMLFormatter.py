@@ -66,17 +66,19 @@ class HTMLFormatter:
 	return str
 
     def FormatUsers(self, digest):
-	def NotHidden(x, s=self, v=mm_cfg.ConcealSubscription):
-	    return not s.GetUserOption(x, v)
-
-        
+        conceal_sub = mm_cfg.ConcealSubscription
+        people = []
 	if digest:
             digestmembers = self.GetDigestMembers()
-	    people = filter(NotHidden, digestmembers)
-	    num_concealed = len(digestmembers) - len(people)
+            for dm in digestmembers:
+                if not self.GetUserOption(dm, conceal_sub):
+                    people.append(dm)
+            num_concealed = len(digestmembers) - len(people)
 	else:
             members = self.GetMembers()
-	    people = filter(NotHidden, members)
+            for m in members:
+                if not self.GetUserOption(m, conceal_sub):
+                    people.append(m)
 	    num_concealed = len(members) - len(people)
         people.sort()
 	if (num_concealed > 0):
@@ -85,24 +87,21 @@ class HTMLFormatter:
 			 % (num_concealed, plurality))
  	else:
  	    concealed = ""
-
-	def FormatOneUser(person, me=self,
-			  # Make some local refs for efficiency:
-			  disdel=mm_cfg.DisableDelivery,
-			  Link=Link, os=os,
-			  ObscureEmail=Utils.ObscureEmail):
-	    id = ObscureEmail(person)
-	    if me.obscure_addresses:
-		showing = ObscureEmail(person, for_text=1)
-	    else:
-		showing = person
-            url = "%s/%s" % (me.GetRelativeScriptURL('options'),
-                             id)
-	    got = Link(url, showing)
-            if me.GetUserOption(person, disdel):
+        ObscureEmail = Utils.ObscureEmail
+        options_url = self.GetRelativeScriptURL('options')
+        disdel = mm_cfg.DisableDelivery
+        items = []
+        for person in people:
+            id = ObscureEmail(person)
+            if self.obscure_addresses:
+                showing = ObscureEmail(person, for_text=1)
+            else:
+                showing = person
+            url = "%s/%s" % (options_url, id)
+            got = Link(url, showing)
+            if self.GetUserOption(person, disdel):
                 got = Italic("(", got, ")")
-            return got
-	items = map(FormatOneUser, people) 
+            items.append(got)
 	# Just return the .Format() so this works until I finish
 	# converting everything to htmlformat...
 	return (concealed +
