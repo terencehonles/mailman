@@ -66,7 +66,7 @@ def DeliverToUser(mlist, msg):
                 'CookHeaders',
                 mm_cfg.DELIVERY_MODULE,
                 ]
-    msg.fastrack = 1
+    msg.fasttrack = 1
     for modname in pipeline:
         mod = __import__('Mailman.Handlers.'+modname)
         func = getattr(getattr(getattr(mod, 'Handlers'), modname), 'process')
