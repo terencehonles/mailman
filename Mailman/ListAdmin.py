@@ -317,25 +317,21 @@ class ListAdmin:
                (self.real_name, addr))
         # possibly notify the administrator in default list language
         if self.admin_immed_notify:
-            # This message must be in list's preferred language
-            # FIXME
-            os.environ['LANG'] = self.preferred_language
             realname = self.real_name
             subject = _(
                 'New subscription request to list %(realname)s from %(addr)s')
-            # other messages to come, will be in user preferred language
-            # FIXME
-            os.environ['LANG'] = lang
             text = Utils.maketext(
                 'subauth.txt',
                 {'username'   : addr,
                  'listname'   : self.real_name,
                  'hostname'   : self.host_name,
                  'admindb_url': self.GetScriptURL('admindb', absolute=1),
-                 }, mlist=self)
-            adminaddr = self.GetAdminEmail()
-            msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
-            msg.send(self)
+                 }, mlist=self, lang=lang)
+            # This message should appear to come from the <list>-owner so as
+            # to avoid any useless bounce processing.
+            owneraddr = self.GetOwnerEmail()
+            msg = Message.UserNotification(owneraddr, owneraddr, subject, text)
+            msg.send(self, **{'tomoderators': 1})
 
     def __handlesubscription(self, record, value, comment):
         stime, addr, password, digest, lang = record
