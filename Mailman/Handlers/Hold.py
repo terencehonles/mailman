@@ -37,8 +37,13 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 from Mailman import Message
-from Mailman.i18n import _
+from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
+
+# First, play footsie with _ so that the following are marked as translated,
+# but aren't actually translated until we need the text later on.
+def _(s):
+    return s
 
 
 
@@ -72,12 +77,12 @@ class Administrivia(Errors.MessageHeld):
     "Message may contain administrivia"
 
     def rejection_notice(self, mlist):
+        listurl = mlist.GetScriptURL('listinfo', absolute=1)
+        request = mlist.GetRequestEmail()
         return _("""Please do *not* post administrative requests to the mailing
 list.  If you wish to subscribe, visit %(listurl)s or send a message with the
 word `help' in it to the request address, %(request)s, for further
-instructions.""") % {'listurl': mlist.GetScriptURL('listinfo', absolute=1),
-                     'request': mlist.GetRequestEmail(),
-                    }
+instructions.""")
 
 class SuspiciousHeaders(Errors.MessageHeld):
    "Message has a suspicious header"
@@ -94,8 +99,13 @@ class MessageTooBig(Errors.MessageHeld):
             self.__msgsize, self.__limit)
 
     def rejection_notice(self, mlist):
-        return _("""Your message was too big; please trim it to less than
-%(kb)s KB in size.""") % {'kb': mlist.max_message_size}
+        kb = mlist.max_message_size
+        return _('''Your message was too big; please trim it to less than
+%(kb)s KB in size.''')
+
+
+# And reset the translator
+_ = i18n._
 
 
 
@@ -214,13 +224,13 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     listname = mlist.real_name
     sender = msg.get_sender()
     adminaddr = mlist.GetAdminEmail()
-    # BAW: I don't like using $LANG :(
-    os.environ['LANG'] = mlist.preferred_language
-    reason = str(exc)
-    msgdata['rejection-notice'] = exc.rejection_notice(mlist)
+    # We need to send both the reason and the rejection notice through the
+    # translator again, because of the games we play above
+    reason = _(str(exc))
+    msgdata['rejection-notice'] = _(exc.rejection_notice(mlist))
     mlist.HoldMessage(msg, reason, msgdata)
-    # now we need to craft and send a message to the list admin so they can
-    # deal with the held message
+    # Now we need to craft and send a message to the list admin so they can
+    # deal with the held message.
     d = {'listname'   : listname,
          'hostname'   : mlist.host_name,
          'reason'     : reason,
@@ -230,31 +240,41 @@ def hold_for_approval(mlist, msg, msgdata, exc):
          }
     # We may want to send a notification to the original sender too
     fromusenet = msgdata.get('fromusenet')
-    # jcrey: I need to translate subject in msg before it may be overriden by
-    # the notification to the admin, so I must to duplicate code :-(
-    #
-    # BAW: I don't like using $LANG :(
+    # Since we're sending two messages, which may potentially be in different
+    # languages (the user's preferred and the list's preferred for the admin),
+    # we need to play some i18n games here.  Since the current language
+    # context ought to be set up for the user, let's craft his message first.
     if not fromusenet and not mlist.dont_respond_to_post_requests:
-        os.environ['LANG'] = mlist.GetPreferredLanguage(sender)
-        usersubject = msg.get('subject', _('(no subject)'))
-        os.environ['LANG'] = mlist.preferred_language
-    if mlist.admin_immed_notify:
-        # get the text from the template
-        subject = _('%(listname)s post from %(sender)s requires approval')
-        text = Utils.maketext('postauth.txt', d, raw=1)
-        # craft the admin notification message and deliver it
-        msg = Message.UserNotification(adminaddr, adminaddr, subject, text)
-        msg.send(mlist)
-    if not fromusenet and not mlist.dont_respond_to_post_requests:
-        # jcrey: We need to translate certains parts to user's preferred
-        # language.
-        os.environ['LANG'] = pluser = mlist.GetPreferredLanguage(sender)
+        lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
         subject = _('Your message to %(listname)s awaits moderator approval')
-        d['reason'] = str(exc)
-        d['subject'] = usersubject
-        text = Utils.maketext('postheld.txt', d, lang=pluser)
+        text = Utils.maketext('postheld.txt', d, lang=lang)
         msg = Message.UserNotification(sender, adminaddr, subject, text)
+        msg.addheader('Content-Type', 'text/plain',
+                      charset=Utils.GetCharSet(lang))
         msg.send(mlist)
+    # Now the message for the administrator
+    if mlist.admin_immed_notify:
+        # Now let's temporarily set the language context to that which the
+        # admin is expecting.
+        otranslation = i18n.get_translation()
+        i18n.set_language(mlist.preferred_language)
+        try:
+            # We need to regenerate or re-translate a few values in d
+            usersubject = msg.get('subject', _('(no subject)'))
+            d['reason'] = _(reason)
+            d['subject'] = usersubject
+            text = Utils.maketext('postauth.txt', d,
+                                  lang=mlist.preferred_language,
+                                  raw=1)
+            # craft the admin notification message and deliver it
+            subject = _('%(listname)s post from %(sender)s requires approval')
+            msg = Message.UserNotification(adminaddr, adminaddr, subject,
+            text)
+            msg.addheader('Content-Type', 'text/plain',
+                          charset=Utils.GetCharSet(lang))
+            msg.send(mlist)
+        finally:
+            i18n.set_translation(otranslation)
     # Log the held message
     syslog('vette', '%s post from %s held: %s' % (listname, sender, reason))
     # raise the specific MessageHeld exception to exit out of the message
