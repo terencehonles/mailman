@@ -66,8 +66,10 @@ from Mailman.OldStyleMemberships import OldStyleMemberships
 from Mailman import Message
 from Mailman import Pending
 from Mailman import Site
-from Mailman.i18n import _
+from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
+
+_ = i18n._
 
 EMPTYSTRING = ''
 
@@ -890,17 +892,25 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             self.SendSubscribeAck(email, self.getMemberPassword(email),
                                   digest, text)
         if admin_notif:
-            realname = self.real_name
-            subject = _('%(realname)s subscription notification')
+            lang = self.preferred_language
+            otrans = i18n.get_translation()
+            i18n.set_language(lang)
+            try:
+                realname = self.real_name
+                subject = _('%(realname)s subscription notification')
+            finally:
+                i18n.set_translation(otrans)
+            if isinstance(name, UnicodeType):
+                name = name.encode(Utils.GetCharSet(lang), 'replace')
             text = Utils.maketext(
                 "adminsubscribeack.txt",
-                {"listname" : self.real_name,
+                {"listname" : realname,
                  "member"   : formataddr((name, email)),
                  }, mlist=self)
             msg = Message.OwnerNotification(self, subject, text)
             msg.send(self)
 
-    def DeleteMember(self, name, whence=None, admin_notif=0, userack=1):
+    def DeleteMember(self, name, whence=None, admin_notif=None, userack=1):
         realname, email = parseaddr(name)
         if self.unsubscribe_policy == 0:
             self.ApprovedDeleteMember(name, whence, admin_notif, userack)
