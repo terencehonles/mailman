@@ -327,7 +327,7 @@ class General(GUIBase):
              (opttext, optvals, 0, OPTIONS),
              0, _('''Default options for new members joining this list.'''),
              
-             _("""When a new member is subscripted to this list, their initial
+             _("""When a new member is subscribed to this list, their initial
              set of options is taken from the this variable's setting.""")),
 
             ('administrivia', mm_cfg.Radio, (_('No'), _('Yes')), 0,
