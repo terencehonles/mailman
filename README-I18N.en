@@ -8,14 +8,14 @@ INTERNATIONALIZATION
     additional languages may also be available.  If the language you
     want to add is already supported by Mailman, then getting all your
     lists to also support that language is fairly easy.  You first
-    need to run the "newlang" script at the command line, giving it
+    need to run the "addlang" script at the command line, giving it
     the names of the list to add language support to.
 
     Let's say for example, you're adding Spanish support.  You should
     do the following:
 
         % cd $prefix (the Mailman installation directory)
-        % bin/newlang -l mylist es
+        % bin/addlang -l mylist es
 
     This will add Spanish support to mylist, provided that following
     is true (all relative to the $prefix directory):
