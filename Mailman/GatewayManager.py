@@ -28,7 +28,7 @@ from Mailman import mm_cfg
 class GatewayManager:
     def InitVars(self):
         # Configurable
-        self.nntp_host        = ''
+        self.nntp_host        = mm_cfg.DEFAULT_NNTP_HOST
         self.linked_newsgroup = ''
         self.gateway_to_news  = 0
         self.gateway_to_mail  = 0
