@@ -210,8 +210,8 @@ Subject: %s''', self.internal_name(), msg['from'], subject)
         maxlines = mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES
         for linecount in range(len(lines)):
             if linecount > maxlines:
-                self.AddError(_("Maximum command lines (%(maxlines)d) "
-                                "encountered, ignoring the rest..."))
+                self.AddError(_(
+"Maximum command lines (%(maxlines)d) encountered, ignoring the rest..."))
                 for line in lines[linecount:]:
                     self.AddToResponse("> " + line, trunc=0)
                 break
@@ -234,8 +234,8 @@ Subject: %s''', self.internal_name(), msg['from'], subject)
             if not self.__dispatch.has_key(cmd):
                 self.AddError(line, prefix=_('Command? '))
                 if self.__errors >= MAXERRORS:
-                    self.AddError(_('\nToo many errors encountered; '
-                                  'the rest of the message is ignored:'))
+                    self.AddError(_(
+'\nToo many errors encountered; the rest of the message is ignored:'))
                     for line in lines[linecount+1:]:
                         self.AddToResponse(line, trunc=0, prefix='> ')
                     break
@@ -356,13 +356,13 @@ The following is a detailed description of the problems.
                 self.setMemberPassword(sender, args[1])
                 self.AddToResponse(_('Succeeded.'))
         except Errors.NotAMemberError:
-            self.AddError(_("%(sender)s isn't subscribed to this list."),
+            self.AddError(_("%(sender)s is not a member of this list."),
                           trunc=0)
 
     def ProcessOptionsCmd(self, args, cmd, mail):
         sender = mail.get_sender()
         if not self.isMember(sender):
-            self.AddError(_("%(sender)s is not a member of the list."),
+            self.AddError(_("%(sender)s is not a member of this list."),
                           trunc=0)
             return
         for option in options:
@@ -371,12 +371,12 @@ The following is a detailed description of the problems.
             else:
                 value = 'off'
             self.AddToResponse('%8s: %s' % (option, value))
-        self.AddToResponse(_("\n"
-                           "To change an option, do: "
-                           "set <option> <on|off> <password>\n"
-                           "\n"
-                           "Option explanations:\n"
-                           "--------------------"))
+        self.AddToResponse(_("""\
+To change an option, do: set <option> <on|off> <password>
+
+Option explanations:
+--------------------
+"""))
         for option in options:
             self.AddToResponse(option + ':')
             self.AddToResponse(Utils.wrap(_(option_desc[option])) + '\n',
@@ -417,7 +417,7 @@ Valid options are:
         try:
             password = self.getMemberPassword(sender)
         except Errors.NotAMemberError:
-            self.AddError(_("%(sender)s isn't subscribed to this list."),
+            self.AddError(_("%(sender)s is not a member of this list."),
                           trunc=0)
             return
         if password <> args[2]:
@@ -471,12 +471,11 @@ Valid options are:
         
     def ProcessInfoCmd(self, args, cmd, mail):
         if len(args) != 0:
-            self.AddError(_("Usage: info\n"
-                          "To get info for a particular list, "
-                          "send your request to\n"
-                          "the '-request' address for that list, or "
-                          "use the 'lists' command\n"
-                          "to get info for all the lists."))
+            self.AddError(_("""
+Usage: info
+To get info for a particular list, send your request to
+the `-request' address for that list, or use the `lists' command
+to get info for all the lists."""))
             return
 
         if self.private_roster and not self.isMember(mail.get_sender()):
@@ -499,17 +498,17 @@ background and instructions for subscribing to and using it, visit:
         
     def ProcessWhoCmd(self, args, cmd, mail):
         if len(args) != 0:
-            self.AddError(_("Usage: who\n"
-                          "To get subscribership for a particular list, "
-                          "send your request\n"
-                          "to the '-request' address for that list."))
+            self.AddError(_("""\
+Usage: who
+To get subscribership for a particular list, send your request
+to the `-request' address for that list."""))
             return
         if self.private_roster == 2:
             self.AddError(_("Private list: No one may see subscription list."))
             return
         if self.private_roster and not self.isMember(mail.get_sender()):
-            self.AddError(_("Private list: only members may see list "
-                          "of subscribers."))
+            self.AddError(_(
+                "Private list: only members may see list of subscribers."))
             return
         digestmembers = self.getDigestMemberKeys()
         members = self.getRegularMemberKeys()
@@ -558,10 +557,10 @@ background and instructions for subscribing to and using it, visit:
             addr = args[1]
         else:
             self.AddError(Utils.wrap(
-                _("""Usage: unsubscribe [password] [email-address]
-
-                To unsubscribe from a particular list, send your request to
-                the `-request' address for that list."""),
+                _("""\
+Usage: unsubscribe [password] [email-address]
+To unsubscribe from a particular list, send your request to
+the `-request' address for that list."""),
                 honor_leading_ws = 0),
                           trunc = 0)
             return
@@ -583,7 +582,9 @@ background and instructions for subscribing to and using it, visit:
         # FIXME: we really need to make these exceptions sane!
         except (Errors.MMNoSuchUserError, Errors.MMNotAMemberError,
                 Errors.NotAMemberError):
-            self.AddError(_("%(addr)s is not subscribed to this list."),
+            # For compatibility with similar strings above :(
+            sender = addr
+            self.AddError(_("%(sender)s is not a member of this list."),
                           trunc=0)
 
     def ProcessSubscribeCmd(self, args, cmd, mail):
@@ -595,8 +596,8 @@ background and instructions for subscribing to and using it, visit:
         if not len(args):
             password = Utils.MakeRandomPassword()
         elif len(args) > 3:
-            self.AddError(_("Usage: subscribe [password] "
-                          "[digest|nodigest] [address=<email-address>]"),
+            self.AddError(_("""\
+Usage: subscribe [password] [digest|nodigest] [address=<email-address>]"""),
                           trunc=0)
             return
         else:
@@ -612,9 +613,8 @@ background and instructions for subscribing to and using it, visit:
                 elif not password:
                     password = arg
                 else:
-                    self.AddError(_("Usage: subscribe [password] "
-                                  "[digest|nodigest] "
-                                  "[address=<email-address>]"))
+                    self.AddError(_("""\
+Usage: subscribe [password] [digest|nodigest] [address=<email-address>]"""))
                     return
         if not password:
             password = Utils.MakeRandomPassword()
@@ -638,21 +638,20 @@ background and instructions for subscribing to and using it, visit:
             self.__noresponse = 1
         except Errors.MMNeedApproval:
             adminemail = self.GetAdminEmail()
-            self.AddToResponse(_(
-                "Your subscription request has been forwarded to the"
-                " list administrator\n"
-                "at %(adminemail)s for review."), trunc=0)
+            self.AddToResponse(_("""\
+Your subscription request has been forwarded to the  list administrator
+at %(adminemail)s for review."""), trunc=0)
         except Errors.MMBadEmailError:
-            self.AddError(_("Mailman won't accept the given email "
-                          "address as a valid address.\n"
-                          "(Does it have an @ in it???)"))
+            self.AddError(_("""\
+Mailman won't accept the given email address as a valid address.
+(E.g. it must have an @ in it.)"""))
         except Errors.MMListNotReadyError:
-            self.AddError(_("The list is not fully functional, and "
-                          "can not accept subscription\n"
-                          "requests."))
+            self.AddError(_("\
+The list is not fully functional, and can not accept subscription requests."))
         except Errors.MMHostileAddress:
-            self.AddError(_("Your subscription is not allowed because\n"
-                          "the email address you gave is insecure."))
+            self.AddError(_("""\
+Your subscription is not allowed because
+the email address you gave is insecure."""))
         except Errors.MMAlreadyAMember:
             self.AddError(_("You are already subscribed!"))
         except Errors.MMCantDigestError:
@@ -682,16 +681,16 @@ background and instructions for subscribing to and using it, visit:
             # Express in approximate days
             days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
             self.AddError(Utils.wrap(
-                _('''Invalid confirmation string.  Note that confirmation
-                strings expire approximately %(days)s days after the initial
-                subscription request.  If your confirmation has expired,
-                please try to re-submit your subscription.'''),
+                _('''\
+Invalid confirmation string.  Note that confirmation strings expire
+approximately %(days)s days after the initial subscription request.  If your
+confirmation has expired, please try to re-submit your subscription.'''),
                 honor_leading_ws=0),
                           trunc=0)
         except Errors.MMNeedApproval, admin_addr:
             self.AddToResponse(Utils.wrap(
-                _('''Your request has been forwarded to the
-                list moderator for approval.'''),
+                _('''\
+Your request has been forwarded to the list moderator for approval.'''),
                 honor_leading_ws=0),
                                trunc=0)
         except Errors.MMAlreadyAMember:
