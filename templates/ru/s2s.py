@@ -1,5 +1,7 @@
 #! /usr/bin/python
 
+# A simple script to check the status of the translation.
+
 import sys, string
 from pprint import pprint
 
