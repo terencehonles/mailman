@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Process listinfo form submission, ie subscriptions or roster requests."""
+"""Process subscription or roster requests from listinfo form."""
 
 import sys
 import os, cgi, string
@@ -71,17 +71,20 @@ def main():
 
     if (form.has_key("UserOptions")
           or (form.has_key("info") and not form.has_key("email"))):
+
         # Go to user options section.
+
         if not form.has_key("info"):
             doc.AddItem(htmlformat.Header(2, "Error"))
-            doc.AddItem(htmlformat.Bold("You must supply your email address."))
+            doc.AddItem(
+                htmlformat.Bold("You must supply your email address."))
             doc.AddItem(list.GetMailmanFooter())
             print doc.Format()
             list.Unlock()
             sys.exit(0)
         addr = form['info'].value
         member = list.FindUser(addr)
-        if not list.FindUser(addr):
+        if not member:
             doc.AddItem(htmlformat.Header(2, "Error"))
             doc.AddItem(htmlformat.Bold("%s has no subscribed addr <i>%s</i>."
                                         % (list.real_name, addr)))
@@ -97,7 +100,8 @@ def main():
         email = form["email"].value
     if not form.has_key("pw") or not form.has_key("pw-conf"):
         error = 1
-        results = results + "You must supply a valid password, and confirm it.<br>"
+        results = (results
+                   + "You must supply a valid password, and confirm it.<br>")
     else:
         pw  = form["pw"].value
         pwc = form["pw-conf"].value
@@ -120,6 +124,8 @@ def main():
 
     else:
         try:
+            if list.FindUser(email):
+                raise Errors.MMAlreadyAMember
             results = results + ("Confirmation from your email address is "
                                  "required, to prevent anyone from covertly "
                                  "subscribing you.  Instructions are being "
