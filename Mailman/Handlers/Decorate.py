@@ -22,6 +22,7 @@ from types import ListType
 from mimelib.Text import Text
 
 from Mailman import mm_cfg
+from Mailman import Errors
 from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
@@ -32,8 +33,25 @@ def process(mlist, msg, msgdata):
     if msgdata.get('isdigest'):
         # Digests already have their own header and footer
         return
-    header = decorate(mlist, mlist.msg_header, _('non-digest header'))
-    footer = decorate(mlist, mlist.msg_footer, _('non-digest footer'))
+    d = {}
+    if msgdata.get('personalized'):
+        # Calculate the extra personalization dictionary.  Note that the
+        # length of the recips list better be exactly 1.
+        recips = msgdata['recips']
+        assert type(recips) == ListType and len(recips) == 1
+        member = recips[0].lower()
+        d['user_address'] = member
+        try:
+            d['user_delivered_to'] = mlist.getMemberCPAddress(member)
+            # BAW: Hmm, should we allow this?
+            d['user_password'] = mlist.getMemberPassword(member)
+            d['user_language'] = mlist.getMemberLanguage(member)
+            d['user_name'] = mlist.getMemberName(member) or _('not available')
+            d['user_optionsurl'] = mlist.GetOptionsURL(member)
+        except Errors.NotAMemberError:
+            pass
+    header = decorate(mlist, mlist.msg_header, _('non-digest header'), d)
+    footer = decorate(mlist, mlist.msg_footer, _('non-digest footer'), d)
     # Be MIME smart here.  We only attach the header and footer by
     # concatenation when the message is a non-multipart of type text/plain.
     # Otherwise, if it is not a multipart, we make it a multipart, and then we
@@ -65,13 +83,14 @@ def process(mlist, msg, msgdata):
 
 
 
-def decorate(mlist, template, what):
+def decorate(mlist, template, what, extradict={}):
     # `what' is just a descriptive phrase
     d = SafeDict(mlist.__dict__)
     # Certain attributes are sensitive
     del d['password']
     del d['passwords']
     d['cgiext'] = mm_cfg.CGIEXT
+    d.update(extradict)
     # Interpolate into the template
     try:
         text = (template % d).replace('\r\n', '\n')
