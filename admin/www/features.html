@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 <td>
 <ul>
   <li>Most standard mailing list features, including list moderation,
-    mail based commands, digests (both MIME and `plain'), and so on.
+    mail based commands, MIME and RFC 934 (plain) digests, and so on.
 
   <p><li>An extensive web-based user interface that is customizable on a
     per-list basis.  This allows users to manage their own
@@ -45,33 +45,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
     accounts, selecting digest modes, hiding their email addresses
     from other members, etc.
 
-  <p><li>A web-based list administration interface for <b>all</b>
+  <p><li>A web-based list administration interface for almost all
     admin-type tasks, including list configuration, moderation (post
     approvals), selection of posting and subscribing rules, management
     of user accounts via the web, etc.
 
-  <p><li>Automatic web-based hypermail-style archiving, including
-    provisions for private archives.
+  <p>Privacy features such as closed-subscriptions, private archives,
+  private membership rosters, etc.
+
+  <p><li>Automatic web-based Hypermail-style archiving, including
+    provisions for private archives.  External archivers such as
+    <a href="http://www.oac.uci.edu/indiv/ehood/mhonarc.html">MHonArc</a>
+    can be easily integrated.
   
-  <p><li>Integrated gatewaying to and from Usenet.
+  <p><li>Integrated Usenet gatewaying.
 
   <p><li>Smart bounce detection with automatic disposition
     (i.e. configurable disabling, unsubscribing).
 
-  <p><li>Direct SMTP delivery of messages, including integrated fast
-    bulk mailing.
+  <p><li>Integrated spam detection.
 
-  <p><li>Smart spam protection.
+  <p><li>Integrated auto-replies.
 
   <p><li>Multiple list owners and moderators are possible.
   
-  <p><li>Optional (per-user) MIME-compliant digests.
-
   <p><li>Support for virtual domains.
 
   <p><li>Runs on most Un*x-like systems, compatible with most web
-    servers and browsers, and most SMTP servers.  Compatible with
-    Python 1.5 or newer.  Mailman does not currently work on Windows.
+    servers and browsers, and most SMTP servers.  Requires Python
+    1.5.2 or newer (works with Python 1.6 and 2.0).
 
 </ul>
 </td>
