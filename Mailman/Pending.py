@@ -40,9 +40,11 @@ SUBSCRIPTION = 'S'
 UNSUBSCRIPTION = 'U'
 CHANGE_OF_ADDRESS = 'C'
 HELD_MESSAGE = 'H'
+RE_ENABLE = 'E'
 
 _ALLKEYS = [(x,) for x in (SUBSCRIPTION, UNSUBSCRIPTION,
                            CHANGE_OF_ADDRESS, HELD_MESSAGE,
+                           RE_ENABLE,
                            )]
 
 
