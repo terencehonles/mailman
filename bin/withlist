@@ -16,16 +16,24 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Start interacting with a mailing list.
+"""General framework for interacting with a mailing list object.
 
-This is useful for playing with a list from Python's interactive interpreter.
-Run this script as follows:
+There are two ways to use this script: interactively or programmatically.
+Using it interactively allows you to play with, examine and modify a MailList
+object from Python's interactive interpreter.  To do this, run the script as
+follows:
 
-%% python -i bin/withlist [options] listname
+%% python -i bin/withlist [options] listname [args ...]
 
-This will load the list object named by <listname> into an object called `m'
-in the global namespace.  It also loads the class MailList into the global
-namespace.
+This will load the list object named by listname (required) into an object
+called `m' in the global namespace.  It also loads the class MailList into the
+global namespace.
+
+Programmatically, you can write a function to operate on a MailList object,
+and this script will take care of the housekeeping (see below for examples).
+In that case, the general usage syntax is:
+
+%% bin/withlist [options] listname [args ...]
 
 Options:
 
@@ -35,28 +43,30 @@ Options:
         (e.g. for read-only operations).  You can always lock the file after
         the fact by typing `m.Lock()'
 
-        Note that if you use this option, you should explicitly call
-        m.Unlock() before exiting, since the interpreter's clean up procedure
-        will not cause the lock to be deleted automatically.
+        Note that if you use this option, you should explicitly call m.Save()
+        before exiting, since the interpreter's clean up procedure will not
+        automatically save changes to the MailList object (but it will unlock
+        the list).
 
     --run [module.]callable
     -r [module.]callable
         This can be used to run a script with the opened MailList object.
         This works by attempting to import `module' (which must already be
         accessible on your sys.path), and then calling `callable' from the
-        module.  callable can be a class or function; it is called with a
-        single argument, the MailList object.
+        module.  callable can be a class or function; it is called with the
+        MailList object as the first argument.  If additional args are given
+        on the command line, they are passed as subsequent positional args to
+        the callable.
 
         Note that `module.' is optional; if it is omitted then a module with
         the name `callable' will be imported.
 
         The global variable `r' will be set to the results of this call.
 
-        See below for an example.
-
     --help
     -h
         Print this message and exit
+
 
 Here's an example of how to use the -r option.  Say you have a file in the
 Mailman installation directory called `listaddr.py', with the following
@@ -71,7 +81,7 @@ def requestaddr(mlist):
 Now, from the command line you can print the list's posting address by running
 the following from the command line:
 
-%% python bin/withlist -r listaddr mylist
+%% bin/withlist -r listaddr mylist
 Loading list: mylist (unlocked)
 Importing listaddr ...
 Running listaddr.listaddr() ...
@@ -79,12 +89,27 @@ mylist@myhost.com
 
 And you can print the list's request address by running:
 
-%% python bin/withlist -r listaddr.requestaddr mylist
+%% bin/withlist -r listaddr.requestaddr mylist
 Loading list: mylist (unlocked)
 Importing listaddr ...
 Running listaddr.requestaddr() ...
 mylist-request@myhost.com
 
+As another example, say you wanted to change the password for a particular
+user on a particular list.  You could put the following function in a file called `changepw.py':
+
+import string
+
+def changepw(mlist, addr, newpasswd):
+    addr = string.lower(addr)
+    if mlist.passwords.has_key(addr):
+        mlist.passwords[string.lower(addr)] = newpasswd
+        mlist.Save()
+    else:
+        print 'No address matched:', addr
+
+and run this from the command line:
+%% bin/withlist -l -r changepw mylist somebody@somewhere.org foobar
 """
 
 import sys
@@ -134,13 +159,6 @@ def main():
     except getopt.error, m:
         usage(m)
 
-    if len(args) <> 1:
-        usage('No list name supplied.')
-
-    listname = string.lower(args[0])
-    lock = 0
-    run = None
-
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(code=0)
@@ -148,6 +166,13 @@ def main():
             lock = 1
         elif opt in ('-r', '--run'):
             run = arg
+
+    if len(args) < 1:
+        usage('No list name supplied.')
+
+    listname = string.lower(args.pop(0))
+    lock = 0
+    run = None
 
     # first try to open mailing list
     write('Loading list:', listname, file=sys.stderr, nl=0)
@@ -170,7 +195,8 @@ def main():
         write('Importing', module, '...', file=sys.stderr)
         mod = __import__(module)
         write('Running %s.%s()' % (module, callable), '...', file=sys.stderr)
-        r = getattr(mod, callable)(m)
+        # getattr(mode, callable)(m, *args)
+        r = apply(getattr(mod, callable), (m,) + tuple(args))
 
 
 
