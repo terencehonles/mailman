@@ -24,7 +24,13 @@ from email.Iterators import typed_subpart_iterator
 from email.Utils import parseaddr
 from cStringIO import StringIO
 
-from Mailman.BouncerAPI import Stop
+from Mailman.Bouncers.BouncerAPI import Stop
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
 
 
 
@@ -52,11 +58,11 @@ def check(msg):
                 # Some non-permanent failure, so ignore this block
                 continue
             params = []
-            foundp = 0
+            foundp = False
             for header in ('original-recipient', 'final-recipient'):
                 for k, v in msgblock.get_params([], header):
                     if k.lower() == 'rfc822':
-                        foundp = 1
+                        foundp = True
                     else:
                         params.append(k)
                 if foundp:
@@ -68,7 +74,7 @@ def check(msg):
     for a in addrs:
         if a is not None:
             realname, a = parseaddr(a)
-            rtnaddrs[a] = 1
+            rtnaddrs[a] = True
     return rtnaddrs.keys()
 
 
