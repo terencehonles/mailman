@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@ from Mailman import Message
 from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 
 
@@ -64,7 +65,7 @@ def main():
     try:
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
-        handle_no_list(doc, _('No such list <em>%s</em><p>') % listname)
+        handle_no_list(doc, _('No such list <em>%(listname)s</em><p>'))
         syslog('error', 'No such list "%s": %s\n' % (listname, e))
         return
 
@@ -115,7 +116,7 @@ def PrintRequests(mlist, doc):
 
     doc.AddItem(Utils.maketext(
         'admindbpreamble.html', {'listname': mlist.real_name},
-        mlist.preferred_language, raw=1))
+        lang=mlist.preferred_language, raw=1))
     doc.AddItem('.<p>')
     form = Form(mlist.GetScriptURL('admindb'))
     doc.AddItem(form)
