@@ -55,8 +55,8 @@ if you want to keep your existing installation intact.
       already been made for you.
 
       Make sure this directory is set to group `mailman' and has the
-      group sticky bit set.  You probably also want to guarantee that
-      this directory is read and executeable by everyone. For example,
+      setgid bit set.  You probably also want to guarantee that this
+      directory is read and executeable by everyone. For example,
       these shell commands will accomplish this:
 
           % cd $prefix
