@@ -27,7 +27,6 @@ Stdin is the mail message, and argv[1] is the name of the target mailing list.
 """
 
 import sys
-import time
 
 import paths
 from Mailman import mm_cfg
@@ -62,8 +61,7 @@ def main():
     inq = get_switchboard(mm_cfg.INQUEUE_DIR)
     inq.enqueue(sys.stdin.read(),
                 listname=listname,
-                tolist=1,
-                received_time=time.time())
+                tolist=1)
 
 
 
