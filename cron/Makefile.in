@@ -43,7 +43,7 @@ CRONDIR= 	$(prefix)/cron
 SHELL=		/bin/sh
 
 SCRIPTS=	archive checkdbs crontab.in mailpasswds senddigests \
-upvolumes_monthly upvolumes_yearly
+upvolumes_monthly upvolumes_yearly gate_news
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
