@@ -535,27 +535,6 @@ def is_administrivia(msg):
 
         
 
-def rmdirhier(dir):
-    """Like `rm -r'
-
-    Completely and recursively removes a directory and all its contents,
-    unlike os.removedirs().
-    """
-    files = []
-    def ls(arg, dirname, names):
-        for name in names:
-            arg.append(os.path.join(dirname, name))
-    os.path.walk(dir, ls, files)
-    files.reverse()
-    for file in files:
-        if os.path.isdir(file):
-            os.rmdir(file)
-        else:
-            os.unlink(file)
-    os.rmdir(dir)
-
-
-
 def GetRequestURI(fallback=None, escape=1):
     """Return the full virtual path this CGI script was invoked with.
 
@@ -622,7 +601,10 @@ def get_domain():
     if mm_cfg.VIRTUAL_HOST_OVERVIEW and host:
         return host.lower()
     else:
-        return mm_cfg.DEFAULT_HOST_NAME.lower()
+        # See the note in Defaults.py concerning DEFAULT_HOST_NAME
+        # vs. DEFAULT_EMAIL_HOST.
+        hostname = mm_cfg.DEFAULT_HOST_NAME or mm_cfg.DEFAULT_EMAIL_HOST
+        return hostname.lower()
 
 
 def get_site_email(hostname=None, extra=None):
