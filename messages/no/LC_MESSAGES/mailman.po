@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1a3\n"
 "POT-Creation-Date: Tue Nov  6 18:57:25 2001\n"
-"PO-Revision-Date: 2001-11-06 18:18+01:00\n"
+"PO-Revision-Date: 2001-11-13 21:35+01:00\n"
 "Last-Translator: Daniel Buchmann <db@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -576,7 +576,6 @@ msgid "Change list ownership passwords"
 msgstr "Endre admin/moderator passord"
 
 #: Mailman/Cgi/admin.py:1051
-#, fuzzy
 msgid ""
 "The <em>list administrators</em> are the people who have ultimate control "
 "over\n"
@@ -608,7 +607,7 @@ msgstr ""
 "(Passordet kan selvsagt v&aelig;re hva som helst, men er det det samme som\n"
 "administratorpassordet, har det jo ingen hensikt.)\n"
 "Du m&aring; ogs&aring; skrive inn epostadressen(e) til listemoderatoren(e)\n"
-"i den tilh&oslash;rende tekstboksen lengre opp p&aring; denne siden."
+"p&aring;<a href=\"%(adminurl)s/general\">Generelle innstillinger</a> siden."
 
 #: Mailman/Cgi/admin.py:1070
 msgid "Enter new administrator password:"
@@ -930,7 +929,6 @@ msgstr ""
 "<p>Eller klikk <em>Avbryt</em> for &aring; trekke s&oslash;knaden din."
 
 #: Mailman/Cgi/confirm.py:208
-#, fuzzy
 msgid ""
 "Your confirmation is required in order to continue with\n"
 "        the subscription request to the mailing list <em>%(listname)s</em>.\n"
@@ -947,14 +945,12 @@ msgid ""
 "        <p>Or you can hit <em>Cancel and discard</em> now to cancel this\n"
 "        subscription request."
 msgstr ""
-"Din bekreftelse er n&oslash;dvendig for &aring; fullf&oslash;re din "
-"p&aring;melding p&aring; epostlisten <em>%(listname)s</em>.\n"
-"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du "
-"m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
-"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker "
-"&aring; melde deg p&aring; listen.\n"
-"Gj&oslash;r du det vil din personlige medlemsside vises, der du kan "
-"gj&oslash;re ytterligere endringer p&aring; ditt medlemskap.\n"
+"Din bekreftelse er n&oslash;dvendig for &aring; fortsette din p&aring;melding p&aring; epostlisten <em>%(listname)s</em>.\n"
+"Dine innstillinger vises nedenfor; gj&oslash;r eventuelle endringer du m&aring;tte &oslash;nske &aring; gj&oslash;re og klikk\n"
+"deretter \"Meld meg p&aring;\" knappen dersom du virkelig &oslash;nsker &aring; melde deg p&aring; listen.\n"
+"Gj&oslash;r du det vil s&oslash;knaden din sendes til listemoderatoren, som vil godkjenne eller avsl&aring; den.\n"
+"Du vil f&aring; beskjed s&aring; snart en avgj&oslash;relse er tatt.\n"
+"\n"
 "<p>Eller klikk <em>Avbryt</em> for &aring; trekke s&oslash;knaden din."
 
 #: Mailman/Cgi/confirm.py:221
@@ -1388,7 +1384,6 @@ msgid "Initial list passwords do not match"
 msgstr "Passordene er ikke like"
 
 #: Mailman/Cgi/create.py:133
-#, fuzzy
 msgid "The list password cannot be empty<!-- ignore -->"
 msgstr ""
 "Listen m&aring; ha et passord (listens passord kan ikke v&aelig;re blankt)"
@@ -1755,7 +1750,7 @@ msgstr ""
 
 #: Mailman/Cgi/options.py:361
 msgid "via the member options page"
-msgstr "via din personlige innstillinger"
+msgstr "via medlemmets personlige side"
 
 #: Mailman/Cgi/options.py:373
 msgid "Unsubscription results"
@@ -1945,7 +1940,6 @@ msgid "Log in"
 msgstr "Logg inn"
 
 #: Mailman/Cgi/options.py:699
-#, fuzzy
 msgid ""
 "By clicking on the <em>Unsubscribe</em> button, a\n"
 "    confirmation message will be emailed to you.  This message will have a\n"
@@ -1965,13 +1959,10 @@ msgid "Password reminder"
 msgstr "P&aring;minnelse om passord"
 
 #: Mailman/Cgi/options.py:711
-#, fuzzy
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
-msgstr ""
-"Trykker du p&aring; <em>Send P&aring;minnelse</em> knappen, vil du f&aring; "
-"tilsendt passordet ditt i en epost."
+msgstr "Trykker du p&aring; <em>Send P&aring;minnelse</em> knappen, vil du f&aring; tilsendt passordet ditt i en epost."
 
 #: Mailman/Cgi/options.py:714
 msgid "Remind"
@@ -2249,7 +2240,7 @@ msgstr "Kinesisk (Traditional)"
 
 #: Mailman/Defaults.py:923
 msgid "Czech"
-msgstr ""
+msgstr "Tsjekkisk"
 
 #: Mailman/Defaults.py:924
 msgid "German"
@@ -7204,9 +7195,8 @@ msgid ""
 msgstr ""
 
 #: bin/mailmanctl.~1~:81 bin/mailmanctl.~1~:92
-#, fuzzy
 msgid "PID unreadable in: %(PIDFILE)s"
-msgstr "Uleselig PID i: %(pidfile)s"
+msgstr "Uleselig PID i: %(PIDFILE)s"
 
 #: bin/mmsitepass:19
 msgid ""
@@ -7396,8 +7386,7 @@ msgstr "Det første passordet for \"%(listname)s\" er: "
 
 #: bin/newlist:131
 msgid "The list password cannot be empty"
-msgstr ""
-"Listen m&aring; ha et passord (listens passord kan ikke v&aelig;re blankt)"
+msgstr "Listen må ha et passord (listens passord kan ikke være blankt)"
 
 #: bin/newlist:146
 msgid "Bad owner email address: %(owner_mail)s"
@@ -8583,9 +8572,8 @@ msgstr ""
 "        Viser denne hjelpeteksten.\n"
 
 #: cron/mailpasswds:89
-#, fuzzy
 msgid "Site list is missing: %(sitelistname)s"
-msgstr "Listen finnes allerede: %(listname)s !"
+msgstr "Systemets epostliste mangler: %(sitelistname)s"
 
 #: cron/mailpasswds:111
 msgid "%(host)s mailing list memberships reminder"
@@ -8669,6 +8657,5 @@ msgid "mailcmd script got no listname."
 msgstr ""
 
 #: scripts/join.~1~:49 scripts/leave.~1~:49
-#, fuzzy
 msgid "mailcmd script, list not found: %(listname)s"
-msgstr "Listen finnes ikke: %(listname)s"
+msgstr "mailcmd script, listen finnes ikke: %(listname)s"
