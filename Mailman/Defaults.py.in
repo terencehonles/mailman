@@ -404,6 +404,7 @@ GLOBAL_PIPELINE = [
     'Replybot',
     'Moderate',
     'Hold',
+    'Emergency',
     'Tagger',
     'CalcRecips',
     'AvoidDuplicates',
