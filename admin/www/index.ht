@@ -6,7 +6,7 @@ Other-links:
     <li><a href="http://www.gnu.org/">GNU/FSF</a>
     <li><a href="http://www.gnu.org/software/mailman/mailman.html">Mailman&nbsp;at&nbsp;GNU</a>
     <li><a href="http://www.list.org/">List.Org&nbsp;mirror</a>
-    <li><a href="http://www.wooz.org/barry/">Barry Warsaw</a>
+    <li><a href="http://barry.wooz.org/">Barry Warsaw</a>
 
 
 <h3>Mailman, the GNU Mailing List Manager</h3>
@@ -47,7 +47,7 @@ is the current stable GNU release.
 
 <p>Mailman is brought to you by the <em>Mailman Cabal</em>, currently
 composed of the following core developers:
-<a href="http://www.wooz.org/barry/">Barry Warsaw</a>, Harald
+<a href="http://barry.wooz.org/">Barry Warsaw</a>, Harald
 Meland, Ken Manheimer, Scott Cotton, and John Viega.  Mailman was
 originally written by John Viega.
 
