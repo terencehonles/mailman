@@ -19,7 +19,9 @@
 
 import re
 import email
+import email.Errors
 import email.Iterators
+import email.Parser
 
 from Mailman.Logging.Syslog import syslog
 
@@ -30,7 +32,7 @@ NLTAB = '\n\t'
 
 
 def process(mlist, msg, msgdata):
-    if not mlist.topics:
+    if not mlist.topics_enabled:
         return
     # Extract the Subject:, Keywords:, and possibly body text
     matchlines = []
@@ -91,12 +93,66 @@ def scanbody(msg, numlines=None):
         if not line.strip():
             continue
         lineno += 1
-        # Stop scanning if we find a line that would not be recognized as
-        # either a header or a continuation line
-        if line[0] not in ' \t' and line.find(':') < 0:
-            break
         lines.append(line)
     # Concatenate those body text lines with newlines, and then create a new
     # message object from those lines.
-    msg = email.message_from_string(EMPTYSTRING.join(lines))
+    p = _ForgivingParser()
+    msg = p.parsestr(EMPTYSTRING.join(lines))
+    syslog('debug', 'lines: %s', ''.join(lines))
+    syslog('debug', 'msg: %s', msg.as_string())
     return msg.get_all('subject', []) + msg.get_all('keywords', [])
+
+
+
+class _ForgivingParser(email.Parser.HeaderParser):
+    # Be a little more forgiving about non-header/continuation lines, since
+    # we'll just read as much as we can from "header-like" lines in the body.
+    #
+    # BAW: WIBNI we didn't have to cut-n-paste this whole thing just to
+    # specialize the way it returns?
+    def _parseheaders(self, container, fp):
+        # Parse the headers, returning a list of header/value pairs.  None as
+        # the header means the Unix-From header.
+        lastheader = ''
+        lastvalue = []
+        lineno = 0
+        while 1:
+            # Don't strip the line before we test for the end condition,
+            # because whitespace-only header lines are RFC compliant
+            # continuation lines.
+            line = fp.readline()
+            if not line:
+                break
+            line = line.splitlines()[0]
+            if not line:
+                break
+            # Ignore the trailing newline
+            lineno += 1
+            # Check for initial Unix From_ line
+            if line.startswith('From '):
+                if lineno == 1:
+                    container.set_unixfrom(line)
+                    continue
+                else:
+                    break
+            # Header continuation line
+            if line[0] in ' \t':
+                if not lastheader:
+                    break
+                lastvalue.append(line)
+                continue
+            # Normal, non-continuation header.  BAW: this should check to make
+            # sure it's a legal header, e.g. doesn't contain spaces.  Also, we
+            # should expose the header matching algorithm in the API, and
+            # allow for a non-strict parsing mode (that ignores the line
+            # instead of raising the exception).
+            i = line.find(':')
+            if i < 0:
+                break
+            if lastheader:
+                container[lastheader] = NLTAB.join(lastvalue)
+            lastheader = line[:i]
+            lastvalue = [line[i+1:].lstrip()]
+        # Make sure we retain the last header
+        if lastheader:
+            container[lastheader] = NLTAB.join(lastvalue)
