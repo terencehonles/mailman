@@ -76,6 +76,14 @@ def main():
     # The total contents of the user's response
     cgidata = cgi.FieldStorage(keep_blank_values=1)
 
+    # Set the language for the page.  If we're coming from the listinfo cgi,
+    # we might have a 'language' key in the cgi data.  That was an explicit
+    # preference to view the page in, so we should honor that here.  If that's
+    # not available, use the list's default language.
+    language = cgidata.getvalue('language', mlist.preferred_language)
+    i18n.set_language(language)
+    doc.set_language(language)
+
     if lenparts < 2:
         user = cgidata.getvalue('email')
         if not user:
@@ -84,11 +92,6 @@ def main():
             return
     else:
         user = Utils.LCDomain(Utils.UnobscureEmail(SLASH.join(parts[1:])))
-
-    # Now we know which list is requested, so we can set the language to the
-    # list's preferred language.
-    i18n.set_language(mlist.preferred_language)
-    doc.set_language(mlist.preferred_language)
 
     # Sanity check the user, but be careful about leaking membership
     # information when we're using private rosters.
@@ -657,15 +660,23 @@ def loginpage(mlist, doc, user, cgidata):
         title = _('%(realname)s list: member options for user %(user)s')
         obuser = Utils.ObscureEmail(user)
         extra = ''
-    # Set up the login page
-    form = Form(actionurl)
-    table = Table(width='100%', border=0, cellspacing=4, cellpadding=5)
     # Set up the title
     doc.SetTitle(title)
+    # We use a subtable here so we can put a language selection box in
+    lang = cgidata.getvalue('language', mlist.preferred_language)
+    table = Table(width='100%', border=0, cellspacing=4, cellpadding=5)
+    langform = Form(actionurl)
+    langform.AddItem(SubmitButton('displang-button', _('View this page in')))
+    langform.AddItem(mlist.GetLangSelectBox(lang))
     table.AddRow([Center(Header(2, title))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
+    table.AddRow([Center(langform)])
+    doc.AddItem(table)
     # Preamble
+    # Set up the login page
+    form = Form(actionurl)
+    table = Table(width='100%', border=0, cellspacing=4, cellpadding=5)
     table.AddRow([_("""In order to change your membership option, you must
     first log in by giving your %(extra)smembership password in the section
     below.  If you don't remember your membership password, you can have it
