@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,43 +25,41 @@ This module should be conformant.
 
 """
 
-import string
 import re
+from mimelib import MsgReader
 
 introtag = 'Hi. This is the'
-
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
 
 
 def process(msg):
-    msg.rewindbody()
+    mi = MsgReader.MsgReader(msg)
+    addrs = []
     # simple state machine
     #    0 = nothing seen yet
     #    1 = intro paragraph seen
     #    2 = recip paragraphs seen
     state = 0
-    addrs = []
     while 1:
-        line = msg.fp.readline()
+        line = mi.readline()
         if not line:
             break
-        line = string.strip(line)
-        if state == 0 and line[:len(introtag)] == introtag:
+        line = line.strip()
+        if state == 0 and line.startswith(introtag):
             state = 1
         elif state == 1 and not line:
+            # Looking for the end of the intro paragraph
             state = 2
         elif state == 2:
-            if line and line[0] == '-':
-                # we're looking at the break paragraph, so we're done
+            if line.startswith('-'):
+                # We're looking at the break paragraph, so we're done
                 break
             # At this point we know we must be looking at a recipient
             # paragraph
             mo = acre.match(line)
             if mo:
                 addrs.append(mo.group('addr'))
-            # otherwise, it must be a continuation line, so just ignore it
-        # not looking at anything in particular
-    #
-    # we've parse everything we need to
-    return addrs or None
+            # Otherwise, it must be a continuation line, so just ignore it
+        # Not looking at anything in particular
+    return addrs

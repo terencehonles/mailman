@@ -1,4 +1,4 @@
-# Copyright (C) 2000 by the Free Software Foundation, Inc.
+# Copyright (C) 2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ and is subject to failure whenever Yale even slightly changes their MTA. :(
 """
 
 import re
-from mimeo import address
+from mimelib import address
 from Mailman.pythonlib.StringIO import StringIO
 
 scre = re.compile(r'Message not delivered to the following', re.IGNORECASE)

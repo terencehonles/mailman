@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,14 +20,22 @@ X-Mailer: Novell GroupWise Internet Agent 5.5.3.1
 X-Mailer: NTMail v4.30.0012
 """
 
-import string
 import re
-import mimetools
-import multifile
-
 from Mailman.pythonlib.StringIO import StringIO
 
 acre = re.compile(r'<(?P<addr>[^>]*)>')
+
+
+
+def find_textplain(msg):
+    if msg.gettype() == 'text/plain':
+        return msg
+    if msg.ismultipart:
+        for part in msg.get_payload():
+            ret = find_textplain(part)
+            if ret:
+                return ret
+    return None
 
 
 
@@ -35,32 +43,22 @@ def process(msg):
     if msg.gettype() <> 'multipart/mixed':
         return None
     addrs = {}
-    boundary = msg.getparam('boundary')
-    msg.rewindbody()
-    mfile = multifile.MultiFile(msg.fp)
-    try:
-        mfile.push(boundary)
-        while 1:
-            if not mfile.next():
-                return None
-            msg2 = mimetools.Message(StringIO(mfile.read()))
-            if msg2.gettype() == 'text/plain':
-                # Hmm, could there be more than one part per message?
-                break
-        msg2.rewindbody()
-        while 1:
-            line = string.strip(msg2.fp.readline())
-            if not line:
-                break
-            mo = acre.search(line)
-            if mo:
-                addrs[mo.group('addr')] = 1
-            elif '@' in line:
-                i = string.find(line, ' ')
-                if i < 0:
-                    addrs[line] = 1
-                else:
-                    addrs[line[:i]] = 1
-    except multifile.Error:
-        pass
-    return addrs.keys() or None
+    # find the first text/plain part in the message
+    textplain = find_textplain(msg)
+    if not textplain:
+        return None
+    body = StringIO(textplain.get_payload())
+    while 1:
+        line = body.readline()
+        if not line:
+            break
+        mo = acre.search(line)
+        if mo:
+            addrs[mo.group('addr')] = 1
+        elif '@' in line:
+            i = line.find(' ')
+            if i < 0:
+                addrs[line] = 1
+            else:
+                addrs[line[:i]] = 1
+    return addrs.keys()

@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 """Netscape Messaging Server bounce formats.
 
 I've seen at least one NMS server version 3.6 (envy.gmp.usyd.edu.au) bounce
-messages of this format.  Bounces come in DSN mime format, but don't include
+messages of this format.  Bounces come in DSN MIME format, but don't include
 any -Recipient: headers.  Gotta just parse the text :(
 
 NMS 4.1 (dfw-smtpin1.email.verio.net) seems even worse, but we'll try to
@@ -25,11 +25,7 @@ decipher the format here too.
 
 """
 
-import string
 import re
-import multifile
-import mimetools
-
 from Mailman.pythonlib.StringIO import StringIO
 
 pcre = re.compile(
@@ -42,49 +38,40 @@ acre = re.compile(
 
 
 
+def flatten(msg, leaves):
+    # give us all the leaf (non-multipart) subparts
+    if msg.ismultipart():
+        for part in msg.get_payload():
+            flatten(part, leaves)
+    else:
+        leaves.append(msg)
+
+
+
 def process(msg):
     # Sigh.  Some show NMS 3.6's show
     #     multipart/report; report-type=delivery-status
     # and some show
     #     multipart/mixed;
-    # TBD: should we tighten this check?
-    if msg.getmaintype() <> 'multipart':
+    if not msg.ismultipart():
         return None
-    boundary = msg.getparam('boundary')
-    msg.fp.seek(0)
-    mfile = multifile.MultiFile(msg.fp)
-    mfile.push(boundary)
+    # We're looking for a text/plain subpart occuring before a
+    # message/delivery-status subpart.
     plainmsg = None
-    # find the text/plain subpart which must occur before a
-    # message/delivery-status part
-    while 1:
-        try:
-            more = mfile.next()
-        except multifile.Error:
-            # Not properly formatted MIME
-            return None
-        if not more:
-            # we didn't find it
-            return None
-        try:
-            s = StringIO(mfile.read())
-        except multifile.Error:
-            # Not properly formatted MIME
-            return None
-        msg = mimetools.Message(s)
-        if msg.getmaintype() == 'message':
+    leaves = []
+    flatten(msg, leaves)
+    for i, subpart in zip(range(len(leaves)-1), leaves):
+        if subpart.gettype() == 'text/plain' and \
+               leaves[i+1].getmaintype() == 'message':
+            plainmsg = subpart
             break
-        elif msg.gettype() <> 'text/plain':
-            # we're looking at something else entirely
-            return None
-        plainmsg = msg
-    # Did we find a text/plain part?
     if not plainmsg:
         return None
     # Total guesswork, based on captured examples...
+    body = StringIO(plainmsg.get_payload())
     addrs = []
     while 1:
-        line = plainmsg.fp.readline()
+        line = body.readline()
         if not line:
             break
         mo = pcre.search(line)
@@ -93,10 +80,10 @@ def process(msg):
             # format inside here is.  :(  We'll just search for <addr>
             # strings.
             while 1:
-                line = plainmsg.fp.readline()
+                line = body.readline()
                 if not line:
                     break
                 mo = acre.search(line)
                 if mo and not mo.group('reply'):
                     addrs.append(mo.group('addr'))
-    return addrs or None
+    return addrs

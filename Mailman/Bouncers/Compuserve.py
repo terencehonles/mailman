@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,6 +17,7 @@
 """Compuserve has its own weird format for bounces."""
 
 import re
+from mimelib import MsgReader
 
 dcre = re.compile(r'your message could not be delivered', re.IGNORECASE)
 acre = re.compile(r'Invalid receiver address: (?P<addr>.*)')
@@ -24,14 +25,14 @@ acre = re.compile(r'Invalid receiver address: (?P<addr>.*)')
 
 
 def process(msg):
-    msg.rewindbody()
+    mi = MsgReader.MsgReader(msg)
     # simple state machine
     #    0 = nothing seen yet
     #    1 = intro line seen
     state = 0
     addrs = []
     while 1:
-        line = msg.fp.readline()
+        line = mi.readline()
         if not line:
             break
         if state == 0:
@@ -45,4 +46,4 @@ def process(msg):
             mo = acre.search(line)
             if mo:
                 addrs.append(mo.group('addr'))
-    return addrs or None
+    return addrs

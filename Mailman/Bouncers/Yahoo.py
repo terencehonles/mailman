@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,10 +14,10 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-"""Yahoo has its own weird format for bounces."""
+"""Yahoo! has its own weird format for bounces."""
 
-import string
 import re
+from mimelib import MsgReader
 
 tcre = re.compile(r'message\s+from\s+yahoo.com', re.IGNORECASE)
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
@@ -26,21 +26,21 @@ ecre = re.compile(r'--- Original message follows')
 
 
 def process(msg):
-    # yahoo bounces seem to have a known subject value and something called an
-    # x-uidl header, the value of which seems unimportant
-    if string.lower(msg.get('from', '')) <> 'mailer-daemon@yahoo.com':
+    # Yahoo! bounces seem to have a known subject value and something called
+    # an x-uidl: header, the value of which seems unimportant.
+    if msg.get('from', '').lower() <> 'mailer-daemon@yahoo.com':
         return None
-    msg.rewindbody()
+    mi = MsgReader.MsgReader(msg)
     addrs = []
     # simple state machine
     #     0 == nothing seen
     #     1 == tag line seen
     state = 0
     while 1:
-        line = msg.fp.readline()
+        line = mi.readline()
         if not line:
             break
-        line = string.strip(line)
+        line = line.strip()
         if state == 0 and tcre.match(line):
             state = 1
         elif state == 1:
@@ -52,4 +52,4 @@ def process(msg):
             if mo:
                 # we're at the end of the error response
                 break
-    return addrs or None
+    return addrs

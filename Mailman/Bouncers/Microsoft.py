@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,10 +16,7 @@
 
 """Microsoft's `SMTPSVC' nears I kin tell."""
 
-import string
 import re
-import multifile
-
 from Mailman.pythonlib.StringIO import StringIO
 
 scre = re.compile(r'transcript of session follows', re.IGNORECASE)
@@ -29,36 +26,23 @@ scre = re.compile(r'transcript of session follows', re.IGNORECASE)
 def process(msg):
     if msg.gettype() <> 'multipart/mixed':
         return None
-    boundary = msg.getparam('boundary')
-    msg.fp.seek(0)
-    addrs = []
+    # Find the first subpart, which has no MIME type
     try:
-        mfile = multifile.MultiFile(msg.fp)
-        mfile.push(boundary)
-        # find the first subpart, which has no mime type
-        try:
-            more = mfile.next()
-        except multifile.Error:
-            # the message *looked* like a DSN, but it really wasn't :(
-            return None
-        if not more:
-            # we didn't find it
-            return None
-        # simple state machine
-        #    0 == nothng seen yet
-        #    1 == tag line seen
-        state = 0
-        while 1:
-            line = mfile.readline()
-            if not line:
-                break
-            line = string.strip(line)
-            if state == 0:
-                if scre.search(line):
-                    state = 1
-            if state == 1:
-                if '@' in line:
-                    addrs.append(line)
-    except multifile.Error:
-        pass
+        subpart = msg.get_payload(0)
+    except IndexError:
+        # The message *looked* like a multipart but wasn't
+        return None
+    body = StringIO(subpart.get_payload())
+    state = 0
+    addrs = []
+    while 1:
+        line = body.readline()
+        if not line:
+            break
+        if state == 0:
+            if scre.search(line):
+                state = 1
+        if state == 1:
+            if '@' in line:
+                addrs.append(line)
     return addrs

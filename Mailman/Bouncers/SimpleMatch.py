@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,10 @@
 """Recognizes simple heuristically delimited bounces."""
 
 import re
+from mimelib import MsgReader
 
+
+
 def _c(pattern):
     return re.compile(pattern, re.IGNORECASE)
 
@@ -26,10 +29,10 @@ patterns = [
     (_c('here is your list of failed recipients'),
      _c('here is your returned mail'),
      _c(r'<(?P<addr>[^>]*)>')),
-    # sz-sb.de, corridor.com
+    # sz-sb.de, corridor.com, nfg.nl
     (_c('the following addresses had'),
      _c('transcript of session follows'),
-     _c(r'<(?P<addr>[^>]*)>')),
+     _c(r'<(?P<addr>[^>]*)>|\(expanded from: (?P<addr>[^)]*)\)')),
     # robanal.demon.co.uk
     (_c('this message was created automatically by mail delivery software'),
      _c('original message follows'),
@@ -38,22 +41,31 @@ patterns = [
     (_c('message from interscan e-mail viruswall nt'),
      _c('end of message'),
      _c('rcpt to:\s*<(?P<addr>[^>]*)>')),
+    # Smail
+    (_c('failed addresses follow:'),
+     _c('message text follows:'),
+     _c('<(?P<addr>[^>]*)>')),
+    # newmail.ru
+    (_c('This is the machine generated message from mail service.'),
+     _c('--- Below the next line is a copy of the message.'),
+     _c('<(?P<addr>[^>]*)>')),
+    # Next one goes here...
     ]
-
 
 
 
 def process(msg):
-    msg.rewindbody()
+    mi = MsgReader.MsgReader(msg)
     # simple state machine
     #     0 = nothing seen yet
     #     1 = intro seen
     addrs = {}
     state = 0
     while 1:
-        line = msg.fp.readline()
+        line = mi.readline()
         if not line:
             break
+
         if state == 0:
             for scre, ecre, acre in patterns:
                 if scre.search(line):
@@ -65,4 +77,4 @@ def process(msg):
                 addrs[mo.group('addr')] = 1
             elif ecre.search(line):
                 break
-    return addrs.keys() or None
+    return addrs.keys()

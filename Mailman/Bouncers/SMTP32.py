@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@ What the heck is this thing?
 """
 
 import re
+from mimelib import MsgReader
 
 ecre = re.compile('original message follows', re.IGNORECASE)
 acre = re.compile(r'user mailbox[^:]*:\s*(?P<addr>.*)', re.IGNORECASE)
@@ -28,10 +29,10 @@ acre = re.compile(r'user mailbox[^:]*:\s*(?P<addr>.*)', re.IGNORECASE)
 
 
 def process(msg):
-    msg.rewindbody()
+    mi = MsgReader.MsgReader(msg)
     addrs = {}
     while 1:
-        line = msg.fp.readline()
+        line = mi.readline()
         if not line:
             break
         if ecre.search(line):
@@ -39,4 +40,4 @@ def process(msg):
         mo = acre.search(line)
         if mo:
             addrs[mo.group('addr')] = 1
-    return addrs.keys() or None
+    return addrs.keys()

@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,9 +21,9 @@ an `addresslist' of failed addresses.
 
 """
 
+from mimelib.address import getaddresses
+
+
 
 def process(msg):
-    addrs = []
-    for fullname, addr in msg.getaddrlist('x-failed-recipients'):
-        addrs.append(addr)
-    return addrs or None
+    return [a for n, a in getaddresses(msg.getall('x-failed-recipients'))]
