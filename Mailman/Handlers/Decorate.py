@@ -20,6 +20,7 @@
 import mimelib.Text
 
 from Mailman import mm_cfg
+from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
 
@@ -29,8 +30,8 @@ def process(mlist, msg, msgdata):
     if msgdata.get('isdigest'):
         # Digests already have their own header and footer
         return
-    header = decorate(mlist, mlist.msg_header, 'non-digest header')
-    footer = decorate(mlist, mlist.msg_footer, 'non-digest footer')
+    header = decorate(mlist, mlist.msg_header, _('non-digest header'))
+    footer = decorate(mlist, mlist.msg_footer, _('non-digest footer'))
     # Be MIME smart here.  If the message is non-multipart, then we can just
     # tack the header and footers onto the message body.  But if the message
     # is multipart, we want to add them as MIME subobjects.
@@ -59,5 +60,6 @@ def decorate(mlist, template, what):
     except ValueError, e:
         syslog('error', 'Exception while calculating %s:\n%s' %
                (what, e))
-        text = '[INVALID %s]' % what.upper()
+        what = what.upper()
+        text = _('[INVALID %(what)s]')
     return text
