@@ -3,7 +3,7 @@ CGI=${HOME}/cgi-bin
 MAILMAN=${HOME}/mailman
 
 
-all: admin_wrapper admindb_wrapper archives_wrapper edithtml_wrapper options_wrapper listinfo_wrapper subscribe_wrapper roster_wrapper handle_opts_wrapper mail_wrapper alias_wrapper
+all: admin_wrapper admindb_wrapper archives_wrapper edithtml_wrapper options_wrapper listinfo_wrapper subscribe_wrapper roster_wrapper handle_opts_wrapper mail_wrapper alias_wrapper private_wrapper
 
 admin_wrapper:
 	gcc -D SCRIPT="\"admin\"" -o ${CGI}/admin cgi-wrapper.c
@@ -40,6 +40,10 @@ roster_wrapper:
 handle_opts_wrapper:
 	gcc -D SCRIPT="\"handle_opts\"" -o ${CGI}/handle_opts cgi-wrapper.c
 	chmod a+sx ${CGI}/handle_opts
+
+private_wrapper:
+	gcc -D SCRIPT="\"private\"" -o ${CGI}/private cgi-wrapper.c
+	chmod a+sx ${CGI}/private
 
 mail_wrapper:
 	gcc -o ${MAILMAN}/mail/wrapper mail-wrapper.c
