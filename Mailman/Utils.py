@@ -360,6 +360,17 @@ def websafe(s):
     return cgi.escape(s, quote=1)
 
 
+def nntpsplit(s):
+    parts = s.split(':', 1)
+    if len(parts) == 2:
+        try:
+            return parts[0], int(parts[1])
+        except ValueError:
+            pass
+    # Use the defaults
+    return s, 119
+
+
 
 # Just changing these two functions should be enough to control the way
 # that email address obscuring is handled.
