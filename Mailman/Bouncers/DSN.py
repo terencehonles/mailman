@@ -87,7 +87,10 @@ def check(msg):
     # Final-Recipient:
     addrs = []
     for headers in blocks:
-        if headers.get('action', '').lower() not in ('failed', 'failure'):
+        # Should we treat delayed bounces the same?  Yes, because if the
+        # transient problem clears up, they should get unbounced.
+        if headers.get('action', '').lower() not in ('failed', 'failure',
+                                                     'delayed'):
             # Some non-permanent failure, so ignore this block
             continue
         val = headers.get('original-recipient',
