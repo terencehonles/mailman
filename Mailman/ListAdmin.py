@@ -182,6 +182,8 @@ class ListAdmin:
             # Queue the file for delivery by qrunner.  Trying to deliver the
             # message directly here can lead to a huge delay in web
             # turnaround.
+            self.LogMsg('vette', 'approved held message enqueued: %s' %
+                        filename)
             msg.Enqueue(self, newdata=msgdata)
         elif value == 1:
             # Rejected
