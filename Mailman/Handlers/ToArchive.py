@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,10 +28,10 @@ def process(mlist, msg, msgdata):
     # short circuits
     if msgdata.get('isdigest') or not mlist.archive:
         return
-    # Common practice seems to favor "X-No-Archive: yes".  I'm keeping
-    # "X-Archive: no" for backwards compatibility.
-    if msg.get('x-no-archive', '').lower() == 'yes' or \
-           msg.get('x-archive', '').lower() == 'no':
+    # Common practice seems to favor "X-No-Archive: yes".  No other value for
+    # this header seems to make sense, so we'll just test for it's presence.
+    # I'm keeping "X-Archive: no" for backwards compatibility.
+    if msg.has_key('x-no-archive') or msg.get('x-archive', '').lower() == 'no':
         return
     # Send the message to the archiver queue
     archq = get_switchboard(mm_cfg.ARCHQUEUE_DIR)
