@@ -1,7 +1,7 @@
 Konference %(listname)s -- potvrzení pøihlá¹ení
 
 Obdr¾eli jsme po¾adavek z %(remote)s na pøihlá¹ení adresy
-"%(email)s", do konference %(listaddr)s. Pro potvzení, ¾e tento po¾adavek
+"%(email)s", do konference %(listaddr)s. Pro potvrzení, ¾e tento po¾adavek
 pochází od Vás za¹lete, prosíme, zprávu na adresu %(requestaddr)s
 a buï: 
 
@@ -14,8 +14,8 @@ a buï:
 
 confirm %(cookie)s
 
-(Ve vìt¹inì po¹tovních klinetù prostì za¹lete odpovìï na tento dopis.
-Obvykle je toti¾ rádek vìc: ponechán beze zmìny.)
+(Ve vìt¹inì po¹tovních klientù prostì za¹lete odpovìï na tento dopis.
+Obvykle je toti¾ øádek vìc: ponechán beze zmìny.)
 
 Nebo mù¾ete místo zaslání mailu nav¹tívit následující URL:
 

@@ -1,6 +1,6 @@
 Konference %(listname)s právì prodìlal velkou zmìnu. Od nynìj¹ka je 
 provozována novým programem, který se jmenuje "Mailman". Doufám,
-¾e to vyøe¹í v¹echny problémy, které se mo¾ná døíve pøi bbìhu
+¾e to vyøe¹í v¹echny problémy, které se mo¾ná døíve pøi bìhu
 konference vyskytly.
 
 A jak se to týká Vás?
@@ -34,7 +34,7 @@ A jak se to týká Vás?
    podrobný návod.
 
 Pokud máte jakékoliv dotazy nebo problémy, mù¾ete kontaktovat správce
-konfernce na adrese:
+konference na adrese:
 %(adminaddr)s.
 
 Tato zprávy byla generována automaticky programem Mailman verze %(version)s.

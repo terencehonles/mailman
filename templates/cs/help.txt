@@ -24,7 +24,7 @@ zasílejte na tzv. request adresu, která má tvar
 jméno_konference-request@..., tedy napøíklad pro konferenci, které se
 jmenuje mailman na adresu mailman-request@....
 
-Konvence zápisu: slova uvedná mezi ostrými závorkami "<>" oznaèují
+Konvence zápisu: slova uvedená mezi ostrými závorkami "<>" oznaèují
 povinné parametry, které musí být u pøíkazu uvedeny, slova v hranatých
 závorkách "[]" jsou nepovinné parametry, které uvedete jen tehdy, kdy¾
 po¾adujete nìjakou zvlá¹tní konfiguraci. Závorky "<>" a "[]" nejsou
@@ -37,24 +37,24 @@ Systém rozumí následujícím pøíkazùm:
 	nebo zmìnu nastavení Va¹eho u¾ivatelského konta. Pokud si heslo
 	nezvolíte bude Vám nìjaké vygenerováno. Heslo je periodicky zasíláno
 	v¹em úèastníkùm, zpravidla na zaèátku mìsíce. Nastavení digestu mù¾e
-	být buï "nodigest" nebo "digest". (Bez tìch úvozovek.) Pokud je digest
+	být buï "nodigest" nebo "digest". (Bez tìch uvozovek.) Pokud je digest
 	zapnut jsou Vám pøíspìvky z konference zasílány jen jednou dennì (nebo 
 	dle nastavení správcem konference) v jednom mnohadílném dopise.
 	Pokud tuto volbu neuvedete, pou¾ije se volba nastavená správcem 
 	konference jako standardní. 
 	Pokud se chcete pøihlásit z jiné adresy, ne¾ z které odchází po¾adavek,
 	tak vyu¾ijete parametr adress=. Za nìj napí¹ete adresu, kterou chcete
-	pøihlásit, bez úvozovek a závorek, napø. takto: 
+	pøihlásit, bez uvozovek a závorek, napø. takto: 
 	address=pepa@freemail.fr
 
     unsubscribe <heslo> [adresa]
         Odhlá¹ení z konference. Heslo je vy¾adováno, pokud jej neznáte nechte
-	si jej zaslat z webovského rozhranní konference. Pokud se odhla¹ujete
+	si jej zaslat z webovského rozhraní konference. Pokud se odhla¹ujete
 	z jiné adresy, ne¾ kterou máte v konferenci, zadejte ji jako dal¹í
 	volbu za heslo, tentokrát bez address=.
 
     who
-        Vrátí seznam úèatníkù, pokud to správce konference povolil.
+        Vrátí seznam úèastníkù, pokud to správce konference povolil.
 
     info
         Vrátí informace o konferenci (o èem konference je a podobnì).
@@ -70,7 +70,7 @@ Systém rozumí následujícím pøíkazùm:
         jako option mù¾ete pou¾ít:
 
         ack:
-            Pokud je on, budete dostávat oznámení o úspe¹né distribuci,
+            Pokud je on, budete dostávat oznámení o úspì¹né distribuci,
 	    Va¹eho pøíspìvku.
 
         digest:
@@ -93,7 +93,7 @@ Systém rozumí následujícím pøíkazùm:
 
         hide:
            Skryje Vás v seznamu úèastníkù, tak¾e nebudete vidìt pøíkazem who
-	   a na webovském rozhranní.
+	   a na webovském rozhraní.
 
     options
         Vrátí pøehled nastavení parametrù Va¹eho konta.
@@ -106,8 +106,6 @@ Systém rozumí následujícím pøíkazùm:
        dopisu vùbec analyzován.
 
 Pøíkazy zasílejte na adresu %(requestaddr)s
-
-Questions and concerns for the attention of a person should be sent to
 
 Pøípadnì dotazy nebo námìty zasílejte na adresu
 

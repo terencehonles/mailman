@@ -8,11 +8,11 @@ svého èlenského konta, vèetnì pøihlá¹ení a odhlá¹ení.
 
 Kromì http pøístupu mù¾ete parametry svého èlenského konta
 mìnit zasláním po¾adavkù na '-request'adresu konference.
-Dopis zslaný (napø. na, %(exreq)s) obsahující slovo 'help'
+Dopis zaslaný (napø. na, %(exreq)s) obsahující slovo 'help'
 v tìle dopisu vrátí zpìt kompletní popis ovládání konference 
-elekronickou po¹tou.
+elektronickou po¹tou.
 
-Pokud mátì nìjaké dotazy, problémy, pøipomínky a tak podobnì,
+Pokud máte nìjaké dotazy, problémy, pøipomínky a tak podobnì,
 za¹lete je, prosím, na adresu %(owner)s.  Dìkuji!
 
 Hesla pro %(useraddr)s:

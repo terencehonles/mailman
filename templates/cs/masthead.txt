@@ -1,7 +1,7 @@
 Pøíspìvky do konference  %(real_name)s zasílejte na adresu:
 	%(got_list_email)s
 
-Pro pøihlá¹ení nebo odhlá¹ení pou¾ijte WWW rozhranní na adrese"
+Pro pøihlá¹ení nebo odhlá¹ení pou¾ijte WWW rozhraní na adrese"
 	%(got_listinfo_url)s
 nebo pou¾ijte elektronickou po¹tu, za¹lete slovo help v tìle dopisu
 na adresu

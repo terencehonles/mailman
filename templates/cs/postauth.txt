@@ -1,4 +1,4 @@
-Proto¾e jste srávcem konference, je po¾adován Vá¹ souhlas s distribucí
+Proto¾e jste správcem konference, je po¾adován Vá¹ souhlas s distribucí
 následujícího pøíspìvku:
 
     Konference:    %(listname)s@%(hostname)s
