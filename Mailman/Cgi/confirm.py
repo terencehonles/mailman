@@ -419,6 +419,8 @@ def unsubscription_prompt(mlist, doc, cookie, addr):
     fullname = mlist.getMemberName(addr)
     if fullname is None:
         fullname = _('<em>Not available</em>')
+    else:
+        fullname = Utils.uncanonstr(fullname, lang)
     table.AddRow([_("""Your confirmation is required in order to complete the
     unsubscription request from the mailing list <em>%(listname)s</em>.  You
     are currently subscribed with
@@ -506,6 +508,8 @@ def addrchange_prompt(mlist, doc, cookie, oldaddr, newaddr, globally):
     fullname = mlist.getMemberName(oldaddr)
     if fullname is None:
         fullname = _('<em>Not available</em>')
+    else:
+        fullname = Utils.uncanonstr(fullname, lang)
     if globally:
         globallys = _('globally')
     else:
@@ -737,7 +741,14 @@ def reenable_prompt(mlist, doc, cookie, list, member):
     daysleft = int(info.noticesleft *
                    mlist.bounce_you_are_disabled_warnings_interval /
                    mm_cfg.days(1))
-    username = mlist.getMemberName(member) or _('<em>not available</em>')
+    # BAW: for consistency this should be changed to 'fullname' or the above
+    # 'fullname's should be changed to 'username'.  Don't want to muck with
+    # the i18n catalogs though.
+    username = mlist.getMemberName(member)
+    if username is None:
+        username = _('<em>not available</em>')
+    else:
+        username = Utils.uncanonstr(username, lang)
 
     table.AddRow([_("""Your membership in the %(realname)s mailing list is
     currently disabled due to excessive bounces.  Your confirmation is
