@@ -22,7 +22,6 @@
 # Handling, we consider that an error condition, and raise MMNeedApproval
 
 import os
-import marshal
 import time
 import string
 import Errors
