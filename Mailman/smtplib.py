@@ -29,6 +29,13 @@
 from socket import *
 import string, types
 
+## DEBUG ...
+#import sys
+#from Mailman.Logging.StampedLogger import StampedLogger
+#sys.error = StampedLogger("debug", label = 'smtplib', manual_reprime=1)
+#sys.error.write("smtplib got debug\n")
+## ... DEBUG
+
 SMTP_PORT = 25
 
 CRLF = '\r\n'
@@ -67,12 +74,12 @@ class SmtpConnection:
 	self._sock.send('MAIL FROM: <%s>\r\n' % frm)
 	self.getresp()
         if type(to) == types.StringType:
-         self._sock.send('RCPT TO: <%s>\r\n' % to)
-         self.getresp()
+            self._sock.send('RCPT TO: <%s>\r\n' % to)
+            self.getresp()
         else:
-         for item in to:
-           self._sock.send('RCPT TO: <%s>\r\n' % item)
-           self.getresp()
+            for item in to:
+                self._sock.send('RCPT TO: <%s>\r\n' % item)
+                self.getresp(impunity=1)
 	self._sock.send('DATA\r\n')
 	self.getresp()
 	if headers:
@@ -109,8 +116,10 @@ class SmtpConnection:
 		    break
 	return line
 
-    def getresp(self):
+    def getresp(self, impunity=0):
 	resp = self.getmultiline()
+        if impunity:
+            return resp
 	self.lastresp = resp[:3]
 	c = resp[:1]
 	if c == '4':
@@ -120,7 +129,3 @@ class SmtpConnection:
 	if c not in '123':
 	    raise error_proto, resp
 	return resp
-	
-
-
-
