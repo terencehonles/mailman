@@ -239,17 +239,22 @@ def FormatOptionHelp(doc, varref, list):
     if bad:
 	AddErrorMessage(doc, bad)
     header = Table(width="100%")
-    legend = ('%s Maillist Configuration Help - <em>%s</em> Option'
+    legend = ('%s Maillist Configuration Help<br><em>%s</em> Option'
 	      % (list.real_name, varname))
     header.AddRow([Center(Header(3, legend))])
     header.AddCellInfo(max(header.GetCurrentRowIndex(), 0), 0,
                        colspan=2, bgcolor="#99ccff")
     doc.SetTitle("Mailman %s List Option Help" % varname)
     doc.AddItem(header)
-    doc.AddItem("<b>%s</b>: %s<br>" % (varname, item[4]))
-    doc.AddItem("Category: %s<p>" % category)
+    doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, item[4]))
     doc.AddItem("%s<p>" % item[5])
-    doc.AddItem("Current value:<hr><pre>%s</pre><hr>" % getattr(list, varname))
+    doc.AddItem("Current value:")
+    valbox = Table(border=1, cellpadding=2)
+    val = getattr(list, varname)
+    if type(val) == types.StringType:
+        val = Preformatted(val)
+    valbox.AddRow([val])
+    doc.AddItem(Center(valbox))
 
 def GetGuiItem(table_entry, category, list):
     """Return the contents for a table row representing an options item.
