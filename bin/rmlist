@@ -39,7 +39,10 @@ except IndexError:
 
 
 def remove_it(dir, msg):
-    if os.path.exists(dir):
+    if os.path.islink(dir):
+        print 'Removing', msg
+        os.unlink(dir)
+    elif os.path.exists(dir):
         print 'Removing', msg
         os.system('rm -rf ' + dir)
     else:
@@ -49,11 +52,12 @@ REMOVABLES = [('lists/%s',     'list info'),
               ]
 
 if removeArchives:
-    REMOVABLES = REMOVABLES + [('archives/private/%s', 'archives'),
-                               ('archives/private/%s.mbox', 'archives'),
-                               ('archives/public/%s', 'archives'),
-                               ('archives/public/%s.mbox', 'archives'),
-                               ]
+    REMOVABLES = REMOVABLES + \
+                 [('archives/private/%s',      'private archives'),
+                  ('archives/private/%s.mbox', 'private archives'),
+                  ('archives/public/%s',       'public archives'),
+                  ('archives/public/%s.mbox',  'public archives'),
+                  ]
 
 REMOVABLES.append(('locks/%s.lock', 'lock file'))
 
