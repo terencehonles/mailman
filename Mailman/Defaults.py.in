@@ -873,6 +873,10 @@ DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS = 3
 # The interval of time between disabled warnings.
 DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL = days(7)
 
+# Does the list owner get messages to the -bounces (and -admin) address that
+# failed to match by the bounce detector?
+DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER = 1
+
 # List of addresses (lhs of the @) that likely come only from MTAs bouncing
 # messages.  This is used in the bounce detector and MailCommandHandler.py to
 # stop processing or forwarding such messages.
