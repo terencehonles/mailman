@@ -1,0 +1,263 @@
+This is a snapshot of the Exim & Mailman HOWTO document.  The current
+original document can be found on the exim web site at
+	http://www.exim.org/howto/mailman.html
+
+=======================================================================
+
+                    HOWTO - Using exim and mailman together
+                                       
+   Mailman is a list manager with web front end and built in archiving
+   functions. Details can be found at [1]http://www.list.org/
+   
+Mailman configuration
+
+   There is no mailman configuration needed other than the standard
+   options detailed in the mailman install documentation. The exim
+   configuration is transparent to mailman. The uid/gid settings for
+   mailman must match those in the config fragments given below.
+   
+Exim configuration
+
+   The exim configuration is built so that a list created within mailman
+   automagically appears to exim without the need for additional alias
+   files etc to be changed.
+   
+   The drawback of this configuration is that it will work poorly on
+   systems supporting lists in several different mail domains - for that
+   matter mailman itself has poor support for this right now. This may
+   change in the future
+   
+   The configuration file segments included are to be built on top of an
+   already functional exim configuration, which accepts mail for the
+   domain which the list resides in (ie that domain is already in
+   local_domains - should this domain be separate from the others handled
+   by this exim, then add the list domain to local_domains, add a
+   domains=my.list.domain option to each of the directors and you may
+   wish to exclude that domain from the other directors.
+   
+   Your exim configuration also needs a working alias configuration, with
+   entries (within the list domain) for mailman, mailman-request and
+   mailman-admin (plus any other global contact addresses for the list
+   master). These addresses point to a (or some - not necessarily the
+   same for all of these aliases) human rather than being piped into
+   mailman. You do not need to put per-list entries into the system alias
+   file, and doing so will most likely break things since the user id
+   used for delivery is likely to be incorrect or not set (which causes
+   an exim delivery time config error).
+   
+   There are 3 config file sections below which need pasting into the
+   appropriate parts of the main exim config file. The first one may also
+   need tailoring to your mailman configuration
+   
+    Main config file section
+    
+## Top section of config file - macro definitions
+## Tailor these to fit your installation
+## pretty much everything else should just fit...
+##
+# home dir for mailman
+MAILMAN_HOME=/home/mailman
+# wrapper script for mailman
+MAILMAN_WRAP=MAILMAN_HOME/mail/wrapper
+# user and group for mailman
+MAILMAN_UID=exim
+MAILMAN_GID=exim
+
+    Transports config file section
+    
+## Transports section
+##
+## Three transports for list mail, request mail and admin mail
+## respectively
+## Mailman is installed in MAILMAN_HOME
+## Mailman is configured to be invoked as user exim
+list_transport:
+           driver = pipe
+           command = MAILMAN_WRAP post ${lc:$local_part}
+           current_directory = MAILMAN_HOME
+           home_directory = MAILMAN_HOME
+           user = MAILMAN_UID
+           group = MAILMAN_GID
+
+list_request_transport:
+           driver = pipe
+           command = MAILMAN_WRAP mailcmd ${lc:$local_part}
+           current_directory = MAILMAN_HOME
+           home_directory = MAILMAN_HOME
+           user = MAILMAN_UID
+           group = MAILMAN_GID
+
+list_admin_transport:
+           driver = pipe
+           command = MAILMAN_WRAP mailowner ${lc:$local_part}
+           current_directory = MAILMAN_HOME
+           home_directory = MAILMAN_HOME
+           user = MAILMAN_UID
+           group = MAILMAN_GID
+
+### end of transports section fragment
+
+    Directors config file section
+    
+## Directors section [this deals with local addresses]
+##
+## First 2 directors rewrite list-owner or owner-list to list-admin
+## This is only done if the list exists.
+## List existence checks are done by seeing if the file
+## MAILMAN_HOME/lists//config.db
+## exists.
+
+list_owner_director:
+   driver = smartuser
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   suffix = "-owner"
+   new_address = "${lc:$local_part}-admin@${domain}"
+
+owner_list_director:
+   driver = smartuser
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   prefix = "owner-"
+   new_address = "${lc:$local_part}-admin@${domain}"
+
+##
+## Next 3 directors direct admin, request and list mail to the appropriate
+## transport.  List existence is checked as above.
+
+list_admin_director:
+   driver = smartuser
+   suffix = -admin
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   transport = list_admin_transport
+
+list_request_director:
+   driver = smartuser
+   suffix = -request
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   transport = list_request_transport
+
+list_director:
+   driver = smartuser
+   require_files = MAILMAN_HOME/lists/${lc:$local_part}/config.db
+   transport = list_transport
+
+## End of directors fragment
+## End of config files bits
+
+   Exim should be configured to allow reasonable volume - ie no setting
+   max_recipients down to a silly value, and with normal degrees of
+   security - ie allowing relaying from 127.0.0.1 (thats vital), but
+   pretty much nothing else. Parallel deliveries and other tweaks can
+   also be used. Delay warning messages should be switched off or
+   configured to only happen for non-list mail - unless you like
+   receiving tons of mail when a host is down.
+   
+  Problems
+  
+     * Mailman's detection of exim bounces needs improving - it really
+       should make use of the extra header information that exim
+       provides. It also should recognise and deal with or ignore delay
+       warning messages. Mailman 2.0beta does handle exim bounces
+       correctly, but still passes delay warnings to the list
+       administrator
+     * List existence is checked on whether there is a config.db file for
+       a list. If you delete lists by foul means, be aware of this.
+     * If you are getting exim or mailman complaining about user ids when
+       you send mail to a list, check that the MAILMAN_UID and
+       MAILMAN_GID match those of mailman itself. Also make sure you do
+       not have aliases in the main alias file for the list.
+       
+Other Tweaks
+
+   One solution passed to me for handling virtual domains was - Since I
+   use mailman in a virtual domain configuration with a separate
+   installation for each virtual domain, I did a slight modification like
+   this:
+## transport configurations
+
+command = "/virtual/${domain}/mailman/mail/wrapper post ${lc:$local_part}"
+current_directory = /virtual/${domain}/mailman
+home_directory = /virtual/${domain}/mailman
+
+## and in the director part:
+
+require_files = /virtual/${domain}/mailman/lists/${lc:$local_part}/config.db
+
+Exim List Efficiency Tweaks
+
+   This is a set of configuration directives I used on the list boxes I
+   admin. Some of these are necessary, others are cosmetic, a few are
+   probably superfluous - they work for me!
+# definition of injecting IP addresses
+LOCAL_NETS=127.0.0.1/32
+#
+# Extra logging data - not necessary but makes the logs more
+# useful, but bigger
+# lookup all hostnames - puts hostnames into log as well as ips
+host_lookup = 0.0.0.0/0
+# tweak logging
+log_all_parents
+log_file_path = /var/log/exim/%s.log
+log_received_recipients
+log_refused_recipients
+log_received_sender
+log_smtp_confirmation
+#
+# RBL settings - these are more severe than I use
+rbl_domains = rbl.maps.vix.com/reject:relays.mail-abuse.org/reject:dul.maps.vix
+.com/reject:relays.orbs.org=127.0.0.2,127.0.0.3/reject
+rbl_hosts = !LOCAL_NETS:0.0.0.0/0
+rbl_log_rcpt_count
+recipients_reject_except=postmaster@*:*-admin@*
+#
+# relay control - from our local network only
+host_accept_relay = LOCAL_NETS
+#
+# delay warnings - second line is now default, but earlier versions of
+# exim need it setting
+delay_warning = 26h
+##delay_warning_condition = "${if match{$h_precedence:}{(?i)bulk|list|junk}{no}
+{yes}}"
+#
+# Verify receipient addresses on everything except local injects
+# DO NOT verify addresses from mailman - this would slow down
+# the acceptance of messages dramatically
+receiver_verify_hosts = !127.0.0.1/8:0.0.0.0/0
+sender_verify
+#
+# performance tweaks - 1st is good for linux, maybe less so for others
+split_spool_directory
+remote_max_parallel = 15
+
+List verification
+
+   This is how a set of address tests for the exim lists look on a
+   working system. (command lines start with ">")
+> /usr/sbin/exim -v -bt exim-users
+exim-users@www.exim.org
+  deliver to exim-users in domain www.exim.org
+  director = list_director, transport = list_transport
+
+> /usr/sbin/exim -bt exim-users-request
+exim-users-request@www.exim.org
+  deliver to exim-users in domain www.exim.org
+  director = list_request_director, transport = list_request_transport
+
+> /usr/sbin/exim -bt exim-users-admin
+exim-users-admin@www.exim.org
+  deliver to exim-users in domain www.exim.org
+  director = list_admin_director, transport = list_admin_transport
+
+
+  __________________________________________________________________________
+
+
+
+
+    [2]Nigel Metheringham
+    
+    $Id: README.EXIM 2677 2000-09-20 01:39:40Z bwarsaw $
+
+References
+
+   1. http://www.list.org/
+   2. mailto:Postmaster@exim.org
