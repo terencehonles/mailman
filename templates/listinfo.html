@@ -1,113 +1,136 @@
-<html>
-<body>
-<title><MM-List-Name> -- <MM-List-Description></title>
-<h2><MM-List-Name> -- <MM-List-Description></h2>
+<HTML>
+  <HEAD>
+    <TITLE><MM-List-Name> Info Page</TITLE>
+  
+  </HEAD>
+  <BODY BGCOLOR="#ffffff">
 
-<ul>
-      <li><a href="#about">About the List</a>
-      <li><MM-Archive><MM-List-Name> Archives</MM-Archive> (off-page)
-      <li><a href="#posting">Posting messages</a>
-      <li><a href="#subscribing">Subscribing</a>
-      <li><a href="#changing">Changing your subscription options</a>
-      <li><a href="#members">List members</a>
-</ul>
+<!-- #8FD5E0 #FFEEBB -->
 
-<hr>
-	
-<a name="about"><h3>About <MM-List-Name>:</h3></a>
-<table BORDER=1>
- <tr>
-   <td>
-<MM-List-Info>
-   </td>
- </tr>
-</table>
+    <P>
+    <TABLE COLS="1" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+      <TR>
+	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#90D0F0" ALIGN="CENTER">
+	  <B><FONT SIZE="+1"><MM-List-Name> --
+		<MM-List-Description></FONT></B>
+	</TD>
+      </TR>
+      <tr>
+	<td colspan="2">
+	  <p>&nbsp;
+	</td>
+      </tr>
+      <tr>
+	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	  <B>About <MM-List-Name></B>
+	</TD>
+      </TR>
+      <tr>
+	<td colspan="2">
+		<P><MM-List-Info></P>
+	</TD>
+      </TR>
+      <TR>
+	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	  <B>Using <MM-List-Name></B>
+	</TD>
+      </TR>
+      <tr>
+	<td colspan="2">
+	  To post a message to the list membership, send email to
+	  <A HREF="mailto:<MM-Posting-Addr>"><MM-Posting-Addr></A>.
 
-    <p>
-<a name="posting">
-Post messages to the list by sending email to
-<a href=mailto:<MM-Posting-Addr>><MM-Posting-Addr></a>.</a>
+	  <p>
+	    To see the history of postings to the list, visit the
+	    <MM-Archive><MM-List-Name> Archives</MM-Archive>.</p>
+	</td>
+      </tr>
+      <TR>
+	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	  <B>Subscribing to <MM-List-Name></B>
+	</TD>
+      </TR>
+      <tr>
+	<td colspan="2">
+	  <P>
+	    Subscribe to <MM-List-Name> by filling out the following form:</P>
 
-<p>
-<a name="help">
-To contact a person about the list, send a message to
-<a href=mailto:<MM-Owner>><MM-Owner></a>.</a>
+	  <ul>
+	      <MM-Form-Start>
+	      <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2"
+	      WIDTH="57%" HEIGHT= "112">
+	      <TR>
+		<TD BGCOLOR="#dddddd" WIDTH="55%">Your E-mail address:</TD>
+		<TD WIDTH="33%"><MM-Subscribe-Box>
+                </TD>
+		<TD WIDTH="12%">&nbsp;</TD></TR>
+	      <TR>
+		<TD COLSPAN="2" COLSPAN="3"><FONT SIZE=-1>You must enter a
+		    privacy password. This provides only very mild security,
+		    but should help prevent others from messing with
+		    your subscription.  Your privacy password will be
+		    e-mailed to you once a month as a
+		    reminder.
+		</TD>
+	      </TR>  
+	      <TR>
+		<TD BGCOLOR="#dddddd">Your Privacy password:</TD>
+		<TD><MM-New-Password-Box></TD>
+		<TD>&nbsp;</TD></TR>
+	      <TR> 
+		<TD BGCOLOR="#dddddd">Again to confirm:</TD>
+		<TD><MM-Confirm-Password></TD>
+		<TD>&nbsp; </TD></TR>
+              <tr>
+	        <td colspan="3">Would you like to receive mail in
+	          digested form? No <MM-Undigest-Radio-Button>
+		  Yes <MM-Digest-Radio-Button> </TD></TR>
+	    </TABLE>
+	    <MM-Subscribe-Button></P>
+	  </ul>
+      </td>
+      </tr>
+      <TR>
+	<TD COLSPAN="2" WIDTH="100%" BGCOLOR="#FFF0D0">
+	  <B>Editing Your <MM-List-Name> Subscription Options and
+	Unsubscribing</B>
+      </TD>
+      </TR>
+	<tr>
+	  <td colspan="2" WIDTH="100%">
+	    <b><em>Either</em></b> type in your email address to edit your
+	    options: <mm-change-info> 
+	      <mm-info-button>
+		  <BR>
+	    <b><em>Or</em></b> find your name below and click on it.
 
-<hr>
-
-<a name="subscribing"><h3>Subscribe to <MM-List-Name>:</h3></a>
-<MM-Form-Start>
-
-<table>
-<tr>
-<td>Your email address:</td>
-<td COLSPAN="2"><MM-Subscribe-Box></td>
-</tr>
-<tr>
-<td COLSPAN="3">
-Would you like to receive postings batched together in
-digested form or as separate messages?
-</td>
-</tr>
-<tr>
-<td>Message batching:
-<td>
-<font size=+1>Separate</font> <MM-Undigest-Radio-Button> <p>
-</td>
-<td>
-<font size=+1>Digestified</font> <MM-Digest-Radio-Button> 
-</td>
-</tr>
-<tr>
-<td colspan=3>
-<br>
-You must enter a privacy password.  You will need it in
-order to change your subscription or unsubscribe - it's a mild
-precaution to prevent others from surreptitiously doing if for you.  Your
-privacy password will be emailed to you once a month as a
-reminder.</td>
-</tr>
-<tr>
-<td>Your Privacy password:</td>
-<td><MM-New-Password-Box></td>
-</tr>
-<tr>
-<td>Again to verify:</td>
-<td><MM-Confirm-Password></td>
-</tr>
-</table>
-&nbsp;&nbsp;<MM-Subscribe-Button><p>
-
-<hr>
-
-<a name="changing"><h3>Changing your subscription options:</h3></a>
-
-To edit your subscription options or unsubscribe:
-
-<p>
-<em>Either</em> enter your subscription email address: <mm-change-info>
-<mm-info-button> <MM-Form-End>
-
-<p>
-<em>Or</em> click on your address entry, below:
-<a name="members">
-</a>
-<table BORDER="1" COLS="2">
-  <tr COLSPAN="2">
-    <h4>
-  <tr VALIGN="top">
-    <td WIDTH="50%">
-<h3><mm-num-reg-users> <MM-List-Name> Non-digest Recipients:</h3>
-<MM-Regular-Users>
-    </td>
-    <td WIDTH="50%">
-<h3><mm-num-digesters> <MM-List-Name> Digest Recipients:</h3>
-<MM-Digest-Users>
-    </td>
-  </tr>
-</table>
-
+		  </td>
+	</tr>
+      <TR WIDTH="100%" VALIGN="top">
+	      <TD BGCOLOR="#FFF0D0">
+		<center>
+		  <B><mm-num-reg-users> Non-digested Members of
+		      <MM-List-Name>:</B>
+		</center>
+	      </TD>
+	      <TD BGCOLOR="#FFF0D0">
+		<center>
+		  <B><mm-num-digesters> Digested Members of <MM-List-Name>:</B>
+		</center>
+	      </TD>
+	    </TR>
+	    <TR WIDTH="100%" VALIGN="top">
+	      <td>
+		<P><I>Click on your email for (un)subscription options</I></P>
+		<P><MM-Regular-Users></P>
+	      </td>
+	      <td>
+		<P><I>Click on your email for (un)subscription options</I></P>
+		<P><MM-Digest-Users>
+	      </td>
+      </tr>
+    </table>
+		      <MM-Form-End>
 <MM-Mailman-Footer>
-
-</body>
-</html>
+</BODY>
+</HTML>
