@@ -33,8 +33,9 @@ class Bouncer:
 	    ('max_posts_between_bounces', mm_cfg.Number, 3, 0,
 	     "Maximum number of messages your list gets in an hour.  (Yes, bounce detection "
 	     "finds this info useful)"),
-	    ('automatically_remove', mm_cfg.Radio, ("Don't remove; Notify me", "Remove, but "
-						    "notify me", "Remove and don't notify me"),
+	    ('automatically_remove', mm_cfg.Radio,
+	     ("Don't remove and notify me; ", "Remove, but notify me",
+	      "Remove and don't notify me"),
 	     0, "Automatically remove addresses considered for removal, or alert you?")
 	    ]
     def ClearBounceInfo(self, email):
@@ -43,7 +44,7 @@ class Bouncer:
 	    del self.bounce_info[email]
 
     def RegisterBounce(self, email):
-	report = "Bouncing %s on list %s - " % (email, self.real_name)
+	report = "%s: %s - " % (self.real_name, email)
 	bouncees = self.bounce_info.keys()
 	this_dude = mm_utils.FindMatchingAddresses(email, bouncees)
 	now = time.time()
@@ -110,8 +111,7 @@ class Bouncer:
     def RemoveBouncingAddress(self, addr):
 	try:
 	    self.DeleteMember(addr)
-	    self.LogMsg("bounce", "%s removed from %s",
-			addr, self.real_name) 
+	    self.LogMsg("bounce", "%s: removed %s", self.real_name, addr) 
 	    # Send mail to the user...
 	except mm_err.MMNoSuchUserError:
 	    self.ClearBounceInfo(addr)
@@ -119,8 +119,8 @@ class Bouncer:
 
     # Return 0 if we couldn't make any sense of it, 1 if we handled it.
     def ScanMessage(self, msg):
-#	realname, who_from = msg.getaddr('from')
-#	who_info = string.lower(who_from)
+##	realname, who_from = msg.getaddr('from')
+##	who_info = string.lower(who_from)
 	who_info = string.lower(msg.GetSender())
         at_index = string.find(who_info, '@')
 	who_from = who_info[:at_index]
