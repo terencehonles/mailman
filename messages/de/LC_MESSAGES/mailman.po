@@ -7573,11 +7573,11 @@ msgstr ""
 
 #: Mailman/Handlers/MimeDel.py:56
 msgid "The message's content type was explicitly disallowed"
-msgstr "Der Inhalt der Nachricht wurde ausdrücklich geblocked."
+msgstr "Der MIME-Typ der Nachricht wurde vom Moderator ausdrücklich verboten."
 
 #: Mailman/Handlers/MimeDel.py:61
 msgid "The message's content type was not explicitly allowed"
-msgstr "Der Inhalt der Nachricht wurde ausdrücklich geblocked."
+msgstr "Der MIME-Typ der Nachricht wurde vom Moderator nicht erlaubt."
 
 #: Mailman/Handlers/MimeDel.py:73
 msgid "After content filtering, the message was empty"
