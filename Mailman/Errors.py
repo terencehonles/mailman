@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,10 @@
 
 """Shared mailman errors and messages."""
 
+import Mailman.i18n
 
+
+
 # exceptions for problems related to opening a list
 class MMListError(Exception): pass
 class MMUnknownListError(MMListError): pass
@@ -89,3 +92,30 @@ class MMHostileAddress(EmailAddressError):
 class LostHeldMessage(MailmanError):
     """Held message was lost."""
     pass
+
+
+
+# Exceptions for the Handler subsystem
+class HandlerError(MailmanError):
+    """Base class for all handler errors."""
+
+class MessageHeld(HandlerError):
+    """Base class for all message-being-held short circuits."""
+    def __str__(self):
+        return self.__class__.__doc__
+
+    # funky spelling is necessary to break import loops
+    rejection = Mailman.i18n._('Your message was rejected')
+
+    def rejection_notice(self, mlist):
+        return self.__class__.rejection
+
+class DiscardMessage(HandlerError):
+    """The message can be discarded with no further action"""
+
+class SomeRecipientsFailed(HandlerError):
+    """Delivery to some or all recipients failed"""
+
+# multiple inheritance for backwards compatibility
+class LoopError(DiscardMessage, MMLoopingPost):
+    """We've seen this message before"""
