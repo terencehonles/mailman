@@ -132,33 +132,7 @@ DONATING YOUR TRANSLATION BACK TO MAILMAN
 
 CURRENT LIST OF LANGUAGE SUPPORTED OUT-OF-THE BOX
 
-    As of this writing (23-Dec-2002), Mailman 2.1 supports the
-    following languages out of the box:
-
-    - Czech
-    - Chinese (Simplified and Traditional, but may have problems)
-    - Dutch
-    - English
-    - Estonian
-    - Finnish
-    - French
-    - German
-    - Hungarian
-    - Italian
-    - Japanese
-    - Korean
-    - Lithuanian
-    - Norwegian
-    - Portuguese (Brazil)
-    - Russian
-    - Spanish
-    - Swedish
-
-    We've also had volunteers for these languages, although they
-    aren't yet integrated into the code base:
-
-    - Catalan
-    - Polish
+    See http://www.list.org/i18n.html
 
 
 MORE INSTRUCTIONS
