@@ -61,7 +61,7 @@ def main():
     # for the results.  If not, use the list's preferred language.
     cgidata = cgi.FieldStorage()
     if cgidata.has_key('language'):
-        language = form['language'].value
+        language = cgidata['language'].value
     else:
         language = mlist.preferred_language
 
