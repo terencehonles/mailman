@@ -50,6 +50,18 @@ Options:
         and the program is run as the current user and group.  This flag is
         not recommended for normal production environments.
 
+    -s/--stale-lock-cleanup
+        If mailmanctl finds an existing master qrunner lock, it will normally
+        exit with an error message.  With this switch, mailmanctl will perform
+        an extra level of checking.  If a process matching the host/pid
+        described in the lock file is running, mailmanctl will still exit, but
+        if no matching process is found, mailmanctl will remove the apparently
+        stale lock and continue running.
+
+    -q/--quiet
+        Don't print status messages.  Error messages are still printed to
+        standard error.
+
     -h/--help
         Print this message and exit.
 
@@ -73,12 +85,14 @@ import getopt
 import signal
 import errno
 import pwd
+import socket
 
 import paths
 from Mailman import mm_cfg
 from Mailman import LockFile
 from Mailman.Queue import Control
 from Mailman.i18n import _
+from Mailman.Logging.Syslog import syslog
 
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
@@ -130,15 +144,32 @@ def check_privs():
 
 
 
+# We need to install a SIGTERM handler because that's what init will kill this
+# process with when changing run levels.
+def sigterm_handler(signum, frame):
+    # See the 'stop' command below
+    if not quiet:
+        print _("Shutting down Mailman's master qrunner.")
+    #syslog('debug', 'sigterm_handler from pid: %s', os.getpid())
+    kill_subrunners(signal.SIGINT)
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+
+
+
 def main():
+    global quiet
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hnu',
-                                   ['help', 'no-start', 'run-as-user'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hnusq',
+                                   ['help', 'no-start', 'run-as-user',
+                                    'stale-lock-cleanup', 'quiet'])
     except getopt.error, msg:
         usage(1, msg)
 
     restart = 1
     checkprivs = 1
+    cleanup = 0
+    quiet = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -146,6 +177,10 @@ def main():
             restart = 0
         elif opt in ('-u', '--run-as-user'):
             checkprivs = 0
+        elif opt in ('-s', '--stale-lock-cleanup'):
+            cleanup = 1
+        elif opt in ('-q', '--quiet'):
+            quiet = 1
 
     if len(args) < 1:
         usage(1, _('No command given.'))
@@ -153,32 +188,34 @@ def main():
         command = COMMASPACE.join(args)
         usage(1, _('Bad command: %(command)s'))
 
-    command = args[0].lower()
-    if command not in ('start', 'stop', 'restart'):
-        usage(1, _('Bad command: %(command)s'))
-
     if checkprivs:
         check_privs()
+
     # Handle the commands
+    command = args[0].lower()
     if command == 'stop':
         # Sent the master qrunner process a SIGINT, which is equivalent to
         # giving cron/qrunner a ctrl-c or KeyboardInterrupt.  This will
         # effectively shut everything down.
-        print _("Shutting down Mailman's master qrunner.")
+        if not quiet:
+            print _("Shutting down Mailman's master qrunner.")
+        #syslog('debug', 'stop command from pid: %s', os.getpid())
         kill_subrunners(signal.SIGINT)
     elif command == 'restart':
         # Sent the master qrunner process a SIGHUP.  This will cause the
         # master qrunner to kill and restart all the worker qrunners, and to
         # close and re-open its log files.
-        print _("Restarting Mailman's master qrunner.")
+        if not quiet:
+            print _("Restarting Mailman's master qrunner.")
         kill_subrunners(signal.SIGHUP)
-    else:
+    elif command == 'start':
         # Must be `start'
         #
         # Daemon process startup according to Stevens, Advanced Programming in
         # the UNIX Environment, Chapter 13.
         if os.fork():
-            print _("Starting Mailman's master qrunner.")
+            if not quiet:
+                print _("Starting Mailman's master qrunner.")
             # parent
             sys.exit(0)
         # child
@@ -196,10 +233,48 @@ def main():
             Control.start(restart)
         except LockFile.TimeOutError:
             lockfile = Control.LOCKFILE
-            print >> sys.stderr, _("""
+            if cleanup:
+                fp = open(lockfile)
+                data = fp.read().strip()
+                fp.close()
+                hostname, pid = os.path.basename(data).split('.')[1:]
+                if hostname == socket.gethostname():
+                    try:
+                        os.kill(int(pid), 0)
+                    except OSError, e:
+                        if e.errno <> errno.ESRCH: raise
+                        else:
+                            print >> sys.stderr, _("""
+The master qrunner lock appears to be stale.  Cleaning up and trying again.""")
+                            # Process did not exist, so wax the lock files and
+                            # try again.
+                            os.unlink(lockfile)
+                            os.unlink(data)
+                            try:
+                                Control.start(restart)
+                            except LockFile.TimeOutError:
+                                pass
+                #syslog('debug', 'start 1 from pid: %s', os.getpid())
+                print >> sys.stderr, _("""
+The master qrunner lock could not be acquired.  The lock file is probably not
+stale, so it's likely that another qrunner process is already running.
+
+Lock file: %(lockfile)s
+
+Exiting.""")
+            else:
+                # Okay, process exists on our host, so we can't kill it
+                #syslog('debug', 'start 2 from pid: %s', os.getpid())
+                print >> sys.stderr, _("""
 The master qrunner lock could not be acquired.  Either another qrunner is
 already running, or a stale lock exists.  Please check to see if the lock
-file %(lockfile)s is stale.  Exiting.""")
+file is stale, or use the -s option.
+
+Lock file: %(lockfile)s
+
+Exiting.""")
+    else:
+        usage(1, _('Bad command: %(command)s'))
 
 
 
