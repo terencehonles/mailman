@@ -75,9 +75,9 @@ def listinfo_overview(msg=''):
     if port and http_host[-len(port)-1:] == ':'+port:
         http_host = http_host[:-len(port)-1]
     if mm_cfg.VIRTUAL_HOST_OVERVIEW and http_host:
-	hostname = http_host
+        hostname = http_host
     else:
-	hostname = mm_cfg.DEFAULT_HOST_NAME
+        hostname = mm_cfg.DEFAULT_HOST_NAME
 
     # Set up the document and assign it the correct language.  The only one we
     # know about at the moment is the server's default.
@@ -98,21 +98,21 @@ def listinfo_overview(msg=''):
     listnames.sort()
 
     for name in listnames:
-	mlist = MailList.MailList(name, lock=0)
-	if mlist.advertised:
-	    if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
+        mlist = MailList.MailList(name, lock=0)
+        if mlist.advertised:
+            if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
                     http_host and \
                     http_host.find(mlist.web_page_url) == -1 and \
                     mlist.web_page_url.find(http_host) == -1:
-		# List is for different identity of this host - skip it.
-		continue
-	    else:
-		advertised.append(mlist)
+                # List is for different identity of this host - skip it.
+                continue
+            else:
+                advertised.append(mlist)
 
     if msg:
-	greeting = FontAttr(msg, color="ff5060", size="+1")
+        greeting = FontAttr(msg, color="ff5060", size="+1")
     else:
-	greeting = FontAttr(_('Welcome!'), size='+2')
+        greeting = FontAttr(_('Welcome!'), size='+2')
 
     welcome = [greeting]
     if not advertised:
