@@ -25,8 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <grp.h>
 #include <sys/types.h>
+#include <grp.h>
 #include <unistd.h>
 
 /* GETGROUPS_T gets set in the makefile by configure */
