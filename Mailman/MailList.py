@@ -128,6 +128,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.goodbye_msg = None
 	self.auto_subscribe = mm_cfg.DEFAULT_AUTO_SUBSCRIBE
 	self.closed = mm_cfg.DEFAULT_CLOSED
+	self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
 	self.member_posting_only = mm_cfg.DEFAULT_MEMBER_POSTING_ONLY
 	self.web_subscribe_requires_confirmation = \
 		mm_cfg.DEFAULT_WEB_SUBSCRIBE_REQUIRES_CONFIRMATION
@@ -146,8 +147,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	# These need to come near the bottom because they're dependent on
 	# other settings.
 	self.subject_prefix = mm_cfg.DEFAULT_SUBJECT_PREFIX % self.__dict__
-	self.msg_header = mm_cfg.DEFAULT_MSG_HEADER % self.__dict__
-	self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER % self.__dict__
+	self.msg_header = mm_cfg.DEFAULT_MSG_HEADER
+	self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER
 
     def GetConfigInfo(self):
 	config_info = {}
@@ -195,9 +196,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    # Note that leading whitespace in the matchexp is trimmed - you can
 	    # defeat that by, eg, containing it in gratuitous square brackets.
- 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '40'), 0,
- 	     'Anti-spam: Bounce posts with header matching specified'
-	     ' regexp; divide header name and (case-insensitive) match regexp'
+ 	    ('bounce_matching_headers', mm_cfg.Text, ('6', '60'), 0,
+ 	     'Anti-spam: Bounce posts with header containing regexp match;'
+	     ' divide header name and (case-insensitive) match regexp'
 	     ' with colon'),
 
 	    ('posters', mm_cfg.EmailList, (5, 30), 1,
@@ -211,6 +212,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    ('closed', mm_cfg.Radio, ('Anyone', 'List members', 'No one'), 0,
 	     'Anti-spam: Who can view subscription list'),
+
+	    ('obscure_addresses', mm_cfg.Radio, ('No', 'Yes'), 0,
+	     "Anti-spam: Show member addrs so they're not directly "
+	     ' recognizable as email addrs?'),
 
 	    ('member_posting_only', mm_cfg.Radio, ('No', 'Yes'), 0,
 	     'Anti-spam: Only list members can send mail to the list '
@@ -256,9 +261,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
 	    ('msg_header', mm_cfg.Text, (4, 65), 0,
 	     'Header added to mail sent to regular list members'),
+	    # Note: Can have "%(field)s" format entries which will be
+	    # resolved against list object __dict__ at message send time.
+	    # Need to list some of the useful fields for the long-help.
 	    
 	    ('msg_footer', mm_cfg.Text, (4, 65), 0,
 	     'Footer added to mail sent to regular list members'),
+	    # See msg_header note.
 	    ]
 
 	config_info['bounce'] = Bouncer.GetConfigInfo(self)
@@ -602,7 +611,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	    return not s.GetUserOption(x, v)
 	recipients = filter(DeliveryEnabled, recipients)
 ##	print "post delivering"	# DEBUG
-	self.DeliverToList(msg, recipients, self.msg_header, self.msg_footer)
+	self.DeliverToList(msg, recipients,
+			   self.msg_header % self.__dict__,
+			   self.msg_footer % self.__dict__)
 	if ack_post:
 	    self.SendPostAck(msg, sender)
 	self.last_post_time = time.time()
