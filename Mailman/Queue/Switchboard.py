@@ -145,6 +145,12 @@ class _Switchboard:
             os.unlink(dbfile)
         except EnvironmentError, e:
             if e.errno <> errno.ENOENT: raise
+        # Between 2.1b4 and 2.1b5, the `rejection-notice' key in the metadata
+        # was renamed to `rejection_notice', since dashes in the keys are not
+        # supported in METAFMT_ASCII.
+        if data.has_key('rejection-notice'):
+            data['rejection_notice'] = data['rejection-notice']
+            del data['rejection-notice']
         msgfp = None
         try:
             try:
