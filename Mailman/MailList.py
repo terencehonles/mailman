@@ -222,7 +222,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             lifetime = mm_cfg.LIST_LOCK_LIFETIME,
             withlogging = mm_cfg.LIST_LOCK_DEBUGGING)
         self._internal_name = name
-        self._ready = 0
         if name:
             self._full_path = os.path.join(mm_cfg.LIST_DATA_DIR, name)
         else:
@@ -297,6 +296,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.admin_member_chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
         self.administrivia = mm_cfg.DEFAULT_ADMINISTRIVIA
         self.preferred_language = mm_cfg.DEFAULT_SERVER_LANGUAGE
+        self.available_languages = []
         # Analogs to these are initted in Digester.InitVars
         self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
         self.personalize = 0
@@ -367,7 +367,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     #
     # List creation
     #
-    def Create(self, name, admin, crypted_password):
+    def Create(self, name, admin, crypted_password, langs=None):
         if Utils.list_exists(name):
             raise Errors.MMListAlreadyExistsError, name
         Utils.ValidateEmail(admin)
@@ -384,8 +384,11 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Don't use Lock() since that tries to load the non-existant config.db
         self.__lock.lock()
         self.InitVars(name, admin, crypted_password)
-        self._ready = 1
         self.CheckValues()
+        if langs is None:
+            self.available_languages = [self.preferred_language]
+        else:
+            self.available_languages = langs
         self.Save()
         
 
@@ -432,10 +435,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # the lock (which is a serious problem!).  TBD: do we need to be more
         # defensive?
         self.__lock.refresh()
-        # If more than one client is manipulating the database at once, we're
-        # pretty hosed.  That's a good reason to make this a daemon not a
-        # program.
-        self.IsListInitialized()
         # copy all public attributes to marshalable dictionary
         dict = {}
         for key, value in self.__dict__.items():
@@ -505,7 +504,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         # Copy the unmarshaled dictionary into the attributes of the mailing
         # list object.
         self.__dict__.update(dict)
-        self._ready = 1
         if check_version:
             self.CheckValues()
             self.CheckVersion(dict)
@@ -537,10 +535,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             self.web_page_url = mm_cfg.DEFAULT_URL
         if self.web_page_url and self.web_page_url[-1] <> '/':
             self.web_page_url = self.web_page_url + '/'
-
-    def IsListInitialized(self):
-        if not self._ready:
-            raise Errors.MMListNotReadyError
 
 
     #
@@ -1024,11 +1018,11 @@ bad regexp in bounce_matching_header line: %s
     # Multilingual (i18n) support
     #
     def GetAvailableLanguages(self):
-        dirs = Utils.GetDirectories(self._full_path)
+        langs = self.available_languages
         # If we don't add this, and the site admin has never added any
         # language support to the list, then the general admin page may have a
         # blank field where the list owner is supposed to chose the list's
         # preferred language.
-        if mm_cfg.DEFAULT_SERVER_LANGUAGE not in dirs:
-            dirs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
-        return [d for d in dirs if mm_cfg.LC_DESCRIPTIONS.has_key(d)]
+        if mm_cfg.DEFAULT_SERVER_LANGUAGE not in langs:
+            langs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+        return langs
