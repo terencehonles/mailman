@@ -58,6 +58,8 @@ def process(mlist, msg, msgdata):
     # the list-admin's address
     name, addr = msg.getaddr('from')
     sender = quotemime(name or addr)
+    # BAW: I don't like using $LANG
+    os.environ['LANG'] = mlist.GetPreferredLanguage(sender)
     fromline = quotemime(msg.getheader('from'))
     date = quotemime(msg.getheader('date'))
     body = quotemime(msg.body)
@@ -105,8 +107,8 @@ def process(mlist, msg, msgdata):
     if have_content_type and not have_content_description:
         kept_headers.append('Content-Description: %s\n' % subject)
     # TBD: reply-to munging happens elsewhere in the pipeline
-    digestfp.write('--%s\n\nMessage: %d\n%s\n%s' %
-                   (MIME_SEPARATOR, mlist.next_post_number,
+    digestfp.write('--%s\n\n%s: %d\n%s\n%s' %
+                   (MIME_SEPARATOR, _("Message"),  mlist.next_post_number,
                     string.join(kept_headers, ''),
                     body))
     digestfp.write('\n')
@@ -265,18 +267,19 @@ class Digest:
             realname = self.__mlist.real_name
             volume = self.__volume
             lines.append(dashbound)
-            lines.append("Content-type: text/plain; charset=us-ascii")
+            lines.append("Content-type: text/plain; charset=" + Utils.GetCharSet())
             lines.append("Content-description:" +
                          _(" Masthead (%(realname)s digest, %(volume)s)"))
             lines.append('')
-        masthead = Utils.maketext('masthead.txt', self.TemplateRefs())
+        masthead = Utils.maketext('masthead.txt', self.TemplateRefs(), 
+                                                      self.__mlist.preferred_language)
         lines = lines + string.split(masthead, '\n')
         # List-specific header:
         if self.__mlist.digest_header:
             lines.append('')
             if mime:
                 lines.append(dashbound)
-                lines.append("Content-type: text/plain; charset=us-ascii")
+                lines.append("Content-type: text/plain; charset=" + Utils.GetCharSet())
                 lines.append("Content-description: " + _("Digest Header"))
                 lines.append('')
             lines.append(self.__mlist.digest_header % self.TemplateRefs())
@@ -285,7 +288,7 @@ class Digest:
         if mime:
             numinfo = self.__numinfo
             lines.append(dashbound)
-            lines.append("Content-type: text/plain; charset=us-ascii")
+            lines.append("Content-type: text/plain; charset=" + Utils.GetCharSet())
             lines.append("Content-description: " +
                          _("Today's Topics (%(numinfo)s)"))
             lines.append('')
@@ -311,7 +314,7 @@ class Digest:
         if self.__mlist.digest_footer:
             lines.append(dashbound)
             if mime:
-                lines.append("Content-type: text/plain; charset=us-ascii")
+                lines.append("Content-type: text/plain; charset=" + Utils.GetCharSet())
                 lines.append("Content-description: " + _("Digest Footer"))
             lines.append('')
             lines.append(self.__mlist.digest_footer % self.TemplateRefs())
