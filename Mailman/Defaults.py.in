@@ -62,6 +62,14 @@ DEFAULT_URL       = DEFAULT_URL_PATTERN % DEFAULT_URL_HOST
 HOME_PAGE         = 'index.html'
 MAILMAN_SITE_LIST = 'mailman'
 
+# Normally when a site administrator authenticates to a web page with the site
+# password, they get a cookie which authorizes them as the list admin.  It
+# makes me nervous to hand out site auth cookies because if this cookie is
+# cracked or intercepted, the intruder will have access to every list on the
+# site.  OTOH, it's dang handy to not have to re-authenticate to every list on
+# the site.  Set this value to 1 to allow site admin cookies.
+ALLOW_SITE_ADMIN_COOKIES = 0
+
 
 
 #####
