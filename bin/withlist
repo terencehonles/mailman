@@ -21,33 +21,100 @@
 This is useful for playing with a list from Python's interactive interpreter.
 Run this script as follows:
 
-% python -i bin/withlist <listname> [locked?]
+% python -i bin/withlist [options] listname
 
 This will load the list object named by <listname> into an object called `m'
 in the global namespace.  It also loads the class MailList into the global
 namespace.
 
-If second argument is given, the list will be locked (the value of the
-argument is ignored).
+Options:
+
+    -l
+    --lock
+        Lock the list when opening.  Normally the list is opened unlocked
+        (e.g. for read-only operations).  You can always lock the file after
+        the fact by typing `m.Lock()'
+
+    --run [module.]callable
+    -r [module.]callable
+        This can be used to run a script with the opened MailList object.
+        This works by attempting to import `module' (which must already be
+        accessible on your sys.path), and then calling `callable' from the
+        module.  callable can be a class or function; it is called with a
+        single argument, the MailList object.
+
+        Note that `module.' is optional; if it is omitted then a module with
+        the name `callable' will be imported.
+
+        The global variable `r' will be set to the results of this call.
+
+    --help
+    -h
+        Print this message and exit
 
 """
 
 import sys
+import getopt
+import string
 import paths
 from Mailman.MailList import MailList
 
 m = None
-try:
-    listname = sys.argv[1]
-except IndexError:
-    print "Warning: no listname given.  `m' will be None."
-else:
-    locked = 0
+r = None
+
+
+def usage(msg='', code=1):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+
+
+def main():
+    global m
+    global r
     try:
-        sys.argv[2]
-        locked = 1
-    except IndexError:
-        pass
-    print 'Loading list:', listname, '(%s)' % (locked and 'locked' or
-                                               'unlocked')
-    m = MailList(listname, lock=locked)
+        opts, args = getopt.getopt(sys.argv[1:], 'hlr:',
+                                   ['help', 'lock', 'run='])
+    except getopt.error, m:
+        usage(m)
+
+    if len(args) <> 1:
+        usage('No list name supplied.')
+
+    listname = args[0]
+    lock = 0
+    run = None
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(code=0)
+        elif opt in ('-l', '--lock'):
+            lock = 1
+        elif opt in ('-r', '--run'):
+            run = arg
+
+    # first try to open mailing list
+    print 'Loading list:', listname,
+    if lock: print '(locked)'
+    else: print '(unlocked)'
+
+    m = MailList(listname, lock=lock)
+
+    # try to import the module and run the callable
+    if run:
+        i = string.find(run, '.')
+        if i < 0:
+            module = run
+            callable = run
+        else:
+            module = run[:i]
+            callable = run[i+1:]
+        print 'Importing', module, '...'
+        mod = __import__(module)
+        print 'Running %s.%s()' % (module, callable), '...'
+        r = getattr(mod, callable)(m)
+
+main()
