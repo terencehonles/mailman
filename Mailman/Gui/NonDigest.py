@@ -96,6 +96,7 @@ class NonDigest:
                      <li><b>user_name</b> - The user's full name.
                      <li><b>user_optionsurl</b> - The url to the user's option
                          page.
+                 </ul>
                  """))
                 ])
 
