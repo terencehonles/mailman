@@ -574,7 +574,7 @@ def add_options_table_item(mlist, category, subcat, table, item, detailsp=1):
         elaboration = descr
     descr = get_item_gui_description(mlist, category, subcat,
                                      varname, descr, detailsp)
-    val = get_item_gui_value(mlist, kind, varname, params)
+    val = get_item_gui_value(mlist, category, kind, varname, params)
     table.AddRow([descr, val])
     table.AddCellInfo(table.GetCurrentRowIndex(), 1,
                       bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
@@ -604,8 +604,17 @@ def get_item_characteristics(record):
 
 
 
-def get_item_gui_value(mlist, kind, varname, params):
+def get_item_gui_value(mlist, category, kind, varname, params):
     """Return a representation of an item's settings."""
+    # Give the category a chance to return the value for the variable
+    value = None
+    label, gui = mlist.GetConfigCategories()[category]
+    if hasattr(gui, 'GetValue'):
+        missing = []
+        value = gui.GetValue(mlist, kind, varname, params)
+    if value is None:
+        value = getattr(mlist, varname)
+    # Now create the widget for this value
     if kind == mm_cfg.Radio or kind == mm_cfg.Toggle:
         # If we are returning the option for subscribe policy and this site
         # doesn't allow open subscribes, then we have to alter the value of
@@ -618,28 +627,25 @@ def get_item_gui_value(mlist, kind, varname, params):
         if varname[0] == '_':
             checked = 0
         else:
-            checked = getattr(mlist, varname)
+            checked = value
         if varname == 'subscribe_policy' and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
             checked = checked - 1
         return RadioButtonArray(varname, params, checked)
     elif (kind == mm_cfg.String or kind == mm_cfg.Email or
           kind == mm_cfg.Host or kind == mm_cfg.Number):
-        return TextBox(varname, getattr(mlist, varname), params)
+        return TextBox(varname, value, params)
     elif kind == mm_cfg.Text:
         if params:
             r, c = params
         else:
             r, c = None, None
-        val = getattr(mlist, varname)
-        if not val:
-            val = ''
-        return TextArea(varname, val, r, c)
+        return TextArea(varname, value or '', r, c)
     elif kind in (mm_cfg.EmailList, mm_cfg.EmailListEx):
         if params:
             r, c = params
         else:
             r, c = None, None
-        res = NL.join(getattr(mlist, varname))
+        res = NL.join(value)
         return TextArea(varname, res, r, c, wrap='off')
     elif kind == mm_cfg.FileUpload:
         # like a text area, but also with uploading
@@ -647,12 +653,9 @@ def get_item_gui_value(mlist, kind, varname, params):
             r, c = params
         else:
             r, c = None, None
-        val = getattr(mlist, varname)
-        if not val:
-            val = ''
         container = Container()
         container.AddItem(_('<em>Enter the text below, or...</em><br>'))
-        container.AddItem(TextArea(varname, val, r, c))
+        container.AddItem(TextArea(varname, value or '', r, c))
         container.AddItem(_('<br><em>...specify a file to upload</em><br>'))
         container.AddItem(FileUpload(varname+'_upload', r, c))
         return container
