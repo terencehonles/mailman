@@ -308,6 +308,9 @@ class ListAdmin:
             # subscribe
             assert value == mm_cfg.SUBSCRIBE
             self.ApprovedAddMember(addr, password, digest)
+            # TBD: disgusting hack: ApprovedAddMember() can end up closing the
+            # request database.
+            self.__opendb()
         return REMOVE
 
     def __refuse(self, request, recip, comment, origmsg=None):
