@@ -247,7 +247,9 @@ class Deliverer:
     def MailUserPassword(self, user):
         listfullname = '%s@%s' % (self.real_name, self.host_name)
         ok = 1
-        if self.passwords.has_key(user):
+        # find the case-preserved version of the user's address
+        user = self.members.get(self.FindUser(user))
+        if user and self.passwords.has_key(user):
             recipient = self.GetMemberAdminEmail(user)
             subj = '%s maillist reminder\n' % listfullname
             # get the text from the template
@@ -269,7 +271,6 @@ class Deliverer:
                 {'username'     : `user`,
                  'internal_name': self._internal_name,
                  })
-
 	self.SendTextToUser(subject = subj,
 			    recipient = recipient,
                             text = text,
