@@ -166,16 +166,6 @@ configure and install the Mailman software.
 
       Consult your Web server's documentation for details.
 
-    - Add `mailman' as a trusted mail user.  You probably need to be
-      root to do this.  This is usually done by adding the following
-      line to your /etc/sendmail.cf file:
-
-          Tmailman
-
-      under the line that says
-
-          Troot
-
     - Set up the crontab entries.  Mailman runs a number of cron jobs
       to do things such as send out password reminders, etc.  You need
       to be user `mailman' to perform this step.  Add
@@ -253,7 +243,7 @@ configure and install the Mailman software.
       need to run the command 'newaliases' (all as root).  Now the
       mailing address for your list as well as its administrative
       addresses will be set up.  If you are not running Sendmail,
-      consult your MUA's documentation for information on adding
+      consult your MTA's documentation for information on adding
       aliases.
 
     - You will receive email instructions on how to visit the list you
