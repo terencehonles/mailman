@@ -1296,9 +1296,8 @@ def change_options(mlist, category, cgidata, doc):
                     Errors.MustDigestError):
                 pass
 
-            newname = cgidata.getvalue(user+'_realname')
-            if newname:
-                mlist.setMemberName(user, newname)
+            newname = cgidata.getvalue(user+'_realname', '')
+            mlist.setMemberName(user, newname)
 
             newlang = cgidata.getvalue(user+'_language')
             oldlang = mlist.getMemberLanguage(user)
