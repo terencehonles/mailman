@@ -33,6 +33,7 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 from Mailman.Logging.Syslog import syslog
+from Mailman.SafeDict import MsgSafeDict
 
 threading = None
 try:
@@ -71,20 +72,36 @@ def process(mlist, msg, msgdata):
             deliver(admin, msgtext, chunk, refused)
     # Log the successful post
     t1 = time.time()
-    syslog('smtp', 'smtp for %d recips, completed in %.3f seconds' %
-           (len(recips), (t1-t0)))
+    d = MsgSafeDict(msg, {'time'    : t1-t0,
+                          'size'    : len(msgtext),
+                          '#recips' : len(recips),
+                          '#refused': len(refused),
+                          'listname': mlist.internal_name(),
+                          'sender'  : msg.get_sender(),
+                          })
+
+    # We have to use the copy() method because extended call syntax requires a
+    # concrete dictionary object; it does not allow a generic mapping.  It's
+    # still worthwhile doing the interpolation in syslog() because it'll catch
+    # any catastrophic exceptions due to bogus format strings.
+    if mm_cfg.SMTP_LOG_EVERY_MESSAGE:
+        syslog(mm_cfg.SMTP_LOG_EVERY_MESSAGE[0],
+               mm_cfg.SMTP_LOG_EVERY_MESSAGE[1], **d.copy())
 
     if refused:
-        # Always log failures
-        syslog('post', 'post to %s from %s, size=%d, %d failures' %
-               (mlist.internal_name(), msg.get_sender(), len(msgtext),
-                len(refused)))
+        if mm_cfg.SMTP_LOG_REFUSED:
+            syslog(mm_cfg.SMTP_LOG_REFUSED[0],
+                   mm_cfg.SMTP_LOG_REFUSED[1], **d.copy())
+
     elif msgdata.get('tolist'):
         # Log the successful post, but only if it really was a post to the
         # mailing list.  Don't log sends to the -owner, or -admin addrs.
-        # -request addrs should never get here.
-        syslog('post', 'post to %s from %s, size=%d, success' %
-               (mlist.internal_name(), msg.get_sender(), len(msgtext)))
+        # -request addrs should never get here.  BAW: it may be useful to log
+        # the other messages, but in that case, we should probably have a
+        # separate configuration variable to control that.
+        if mm_cfg.SMTP_LOG_SUCCESS:
+            syslog(mm_cfg.SMTP_LOG_SUCCESS[0],
+                   mm_cfg.SMTP_LOG_SUCCESS[1], **d.copy())
 
     # Process any failed deliveries.
     tempfailures = []
@@ -106,7 +123,12 @@ def process(mlist, msg, msgdata):
             # Deal with persistent transient failures by queuing them up for
             # future delivery.  TBD: this could generate lots of log entries!
             tempfailures.append(recip)
-        syslog('smtp-failure', '%d %s (%s)' % (code, recip, smtpmsg))
+        if mm_cfg.SMTP_LOG_EACH_FAILURE:
+            d.update({'recipient': recip,
+                      'failcode' : code,
+                      'failmsg'  : smtpmsg})
+            syslog(mm_cfg.SMTP_LOG_EACH_FAILURE[0],
+                   mm_cfg.SMTP_LOG_EACH_FAILURE[1], **d.copy())
     # Return the results
     if tempfailures or permfailures:
         raise Errors.SomeRecipientsFailed(tempfailures, permfailures)
@@ -203,16 +225,14 @@ def deliver(envsender, msgtext, recips, failures):
             # constructor if SMTPHOST is false
             refused = conn.sendmail(envsender, recips, msgtext)
         finally:
-##            t1 = time.time()
-##            syslog('smtp', 'smtp for %d recips, completed in %.3f seconds' %
-##                   (len(recips), (t1-t0)))
             conn.quit()
     except smtplib.SMTPRecipientsRefused, e:
         refused = e.recipients
     # MTA not responding, or other socket problems, or any other kind of
     # SMTPException.  In that case, nothing got delivered
     except (socket.error, smtplib.SMTPException), e:
-        syslog('smtp', 'All recipients refused: %s' % e)
+        # BAW: should this be configurable?
+        syslog('smtp', 'All recipients refused: %s', e)
         # If the exception had an associated error code, use it, otherwise,
         # fake it with a non-triggering exception code
         errcode = getattr(e, 'smtp_code', -1)
