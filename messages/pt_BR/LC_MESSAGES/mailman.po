@@ -1,12 +1,12 @@
 # Portuguese translation of 2.1.
 # Copyright (C) 2003 ORGANIZATION
-# Gleydson Mazioli da Silva <gleydson@debian.org>, 2003.
+# Gleydson Mazioli da Silva <gleydson@debian.org>, 2003-2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.1b5\n"
 "POT-Creation-Date: Mon Sep 22 09:46:10 2003\n"
-"PO-Revision-Date: 2003-09-29 09:23-0300\n"
+"PO-Revision-Date: 2004-03-09 10:09-0300\n"
 "Last-Translator: Gleydson Mazioli da Silva <gleydson@debian.org>\n"
 "Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -176,7 +176,7 @@ msgstr "Conservando estado de arquivos em "
 
 #: Mailman/Archiver/pipermail.py:419
 msgid "Updating index files for archive [%(archive)s]"
-msgstr "Atualizando indices para o arquivo [%(archive)s]"
+msgstr "Atualizando índices para o arquivo [%(archive)s]"
 
 #: Mailman/Archiver/pipermail.py:452
 msgid "  Thread"
@@ -240,7 +240,7 @@ msgstr "Administrador"
 #: Mailman/Cgi/rmlist.py:64 Mailman/Cgi/roster.py:57
 #: Mailman/Cgi/subscribe.py:61
 msgid "No such list <em>%(safelistname)s</em>"
-msgstr "Nenhumta tal lista <em>%(safelistname)s</em>"
+msgstr "Nenhuma tal lista <em>%(safelistname)s</em>"
 
 #: Mailman/Cgi/admin.py:85 Mailman/Cgi/admindb.py:105
 #: Mailman/Cgi/edithtml.py:85 Mailman/Cgi/private.py:123
@@ -255,8 +255,8 @@ msgid ""
 "                non-digest delivery or your mailing list will basically be\n"
 "                unusable."
 msgstr ""
-"Você desativou a entrega das mensagens em ambos os modos digest e não "
-"\n                digest. Este é um estado incompatível entre si. Você \n"
+"Você desativou a entrega das mensagens em ambos os modos digest e não\n"
+"                digest. Este é um estado incompatível entre si. Você \n"
 "                deve ativar ou a entrega digest ou a entrega não digest\n"
 "                ou sua lista de discussão estará basicamente inutilizável."
 
@@ -271,7 +271,7 @@ msgid ""
 "                off. Those people will not receive mail."
 msgstr ""
 "Você possui membros que usam digest, mas o digest está desativado.\n"
-"                 Estas pessoas não receberão emails."
+"                 Estas pessoas não receberão mensagens."
 
 #: Mailman/Cgi/admin.py:188
 msgid ""
@@ -334,7 +334,7 @@ msgstr ""
 "         apropriada, você também poderá <a href=\"%(creatorurl)s\">criar\n"
 "         uma nova lista de discussão</a>.\n"
 "\n"
-"\t<p>Informações gerais da lista podem ser encontradas em "
+"          <p>Informações gerais da lista podem ser encontradas em "
 
 #: Mailman/Cgi/admin.py:270
 msgid "the mailing list overview page"
@@ -382,9 +382,8 @@ msgid ""
 "    "
 msgstr ""
 "<em><strong>Alerta:</strong> a modificação desta opção poderão deixar "
-"\nesta tela fora de sincronismo. Tenha certeza de recarregar quaisquer outras "
-"\n"
-"páginas que estão mostrando esta opção para a lista de discussão Você também "
+"    outras telas fora de sincronismo. Tenha certeza de recarregar quaisquer outras "
+"\n    páginas que estão mostrando esta opção para a lista de discussão Você também "
 "\npoderá.\n"
 "     "
 
@@ -439,20 +438,20 @@ msgstr "Sair"
 #: Mailman/Cgi/admin.py:468
 msgid "Emergency moderation of all list traffic is enabled"
 msgstr ""
-"A Moderação de emergência para o tráfego de todas as listas está ativado"
+"A Moderação de emergência para o tráfego de todas as listas está ativada"
 
 #: Mailman/Cgi/admin.py:479
 msgid ""
 "Make your changes in the following section, then submit them\n"
 "        using the <em>Submit Your Changes</em> button below."
 msgstr ""
-"Faça suas modificações nas seções seguintes, então submeta\n"
+"Faça suas modificações nas seções seguintes, então grave\n"
 "        as modificações usando o botão <em>Enviar suas modificações</em> "
-"abaixo."
+"logo abaixo."
 
 #: Mailman/Cgi/admin.py:497
 msgid "Additional Member Tasks"
-msgstr "Tarefas adicionais dos Membros"
+msgstr "Tarefas adicionais relacionada a Membros"
 
 #: Mailman/Cgi/admin.py:503
 msgid ""
@@ -743,7 +742,7 @@ msgstr "Clique aqui para ocultar a legenda desta tabela."
 
 #: Mailman/Cgi/admin.py:1036
 msgid "Click here to include the legend for this table."
-msgstr "Clique aqui para incluir a legenda para esta tabela."
+msgstr "Clique aqui para incluir a legenda para a tabela abaixo."
 
 #: Mailman/Cgi/admin.py:1043
 msgid ""
@@ -858,7 +857,7 @@ msgstr "Enviar notificacões para o dono da lista?"
 
 #: Mailman/Cgi/admin.py:1145
 msgid "Change list ownership passwords"
-msgstr "Modificar senhas do dono da lista"
+msgstr "Modificar as senhas de dono da lista"
 
 #: Mailman/Cgi/admin.py:1148
 msgid ""
@@ -890,7 +889,7 @@ msgstr ""
 "podem liberar requisições pendentes.\n"
 "\n"
 "<p>Para dividir a responsabilidade do dono da lista em administradores e \n"
-"moderadores, você deverá definir uma senha separada de moderador nos \n"
+"moderadores, você poderá definir uma senha separada de moderador nos \n"
 "campos abaixo e também fornecer ume ndereço de email do moderador da \n"
 "lista na <a href=\\\"%(adminurl)s/general\\\">seção de opções gerais</a>."
 
@@ -2043,7 +2042,7 @@ msgstr "Página de resultados de inscrição"
 
 #: Mailman/Cgi/edithtml.py:45
 msgid "User specific options page"
-msgstr "Página de opções específicas de usuário"
+msgstr "Página de opções específicas do usuário"
 
 #: Mailman/Cgi/edithtml.py:57
 msgid "List name is required."
@@ -2143,7 +2142,7 @@ msgid ""
 " to find the management interface for your list.\n"
 "         <p>If you are having trouble using the lists, please contact "
 msgstr ""
-" para encontrar a interface de gerenciamento de sua lista.\n"
+" para ver sua interface de gerenciamento.\n"
 "         <p>Caso esteja tendo problemas com o uso destas listas, por favor "
 "contacte"
 
@@ -3727,8 +3726,8 @@ msgid ""
 "             Mailman to discard the original email, or forward it on to the\n"
 "             system as a normal mail command."
 msgstr ""
-"O FMailman deverá enviar uma auto-resposta para mensagens enviadas para\n"
-"        emails -request? Caso escolha sim, decisa de deseja que o Mailman\n"
+"O Mailman deverá enviar uma auto-resposta para as mensagens enviadas para\n"
+"        emails -request? Caso escolha sim, decida se deseja que o Mailman\n"
 "        descarte o email original ou que ele seja redirecionado ao \n"
 "        sistema como um comando mail normal."
 
@@ -3750,7 +3749,7 @@ msgstr ""
 
 #: Mailman/Gui/Bounce.py:26
 msgid "Bounce processing"
-msgstr "Processamento de Retorno"
+msgstr "Processamento de Retornos"
 
 #: Mailman/Gui/Bounce.py:32
 msgid ""
@@ -3807,7 +3806,7 @@ msgid ""
 "and\n"
 "            traffic volume of your list."
 msgstr ""
-"Estas politicas controlam o sistema de retorno automático do Mailman.\n"
+"Estas políticas controlam o sistema de retorno automático do Mailman.\n"
 "        Aqui está uma visão de como ele funciona.\n"
 "\n"
 "        <p>Quando um retorno de mensagem é recebido, o Mailman tenta\n"
@@ -3888,8 +3887,8 @@ msgid ""
 "             is discarded, if no new bounces have been received in the\n"
 "             interim.  This value must be an integer."
 msgstr ""
-"O número de dias após descartar a informação de retorno d membro. Se nenhum\n"
-"        bounce novo for recebido interinamente. Este valor deverá ser um\n"
+"O número de dias após descartar a informação de retorno do membro. Se nenhum\n"
+"        bounce novo for recebido no intervalo. Este valor deverá ser um\n"
 "        número."
 
 #: Mailman/Gui/Bounce.py:95
@@ -4074,9 +4073,9 @@ msgid ""
 msgstr ""
 "Politicas que trabalham com o conteúdo do tráfego da lista.\n"
 "\n"
-"            <p>A filtragem de conteúdo funciona de forma parecida: quando \n"
+"            <p>A filtragem de conteúdo funciona desta forma: quando \n"
 "            uma mensagem é recebida pela lista e a filtragem de conteúdo\n"
-"            está ativada, os anexos individuais são primeiro comparados \n"
+"            está ativa, os anexos individuais são primeiro comparados \n"
 "            aos\n"
 "            <a href=\"?VARHELP=contentfilter/filter_mime_types\">tipos de\n"
 "            filtros</a>. Se um tipo de anexo confere com as condições do \n"
@@ -4092,9 +4091,9 @@ msgstr ""
 "\n"
 "            <p>Após esta filtragem inicial, qualquer anexo "
 "<tt>multipart</tt>\n            que estão vazios são removidos. Caso a "
-"mensagem é \n"
-"            deixada vazia após esta filtragem, então toda a mensagem é\n"
-"            descartada. Então cada seção <tt>multipart/alternative</tt> \n"
+"mensagem esteja \n"
+"            em branco após esta filtragem, então ela será descartada.\n"
+"            Então cada seção <tt>multipart/alternative</tt> \n"
 "            será substituida pela primeira alternativa que não estiver\n"
 "            vazia após a filtragem.\n"
 "\n"
@@ -4435,7 +4434,7 @@ msgstr "Personalidade geral da lista"
 
 #: Mailman/Gui/General.py:63
 msgid "The public name of this list (make case-changes only)."
-msgstr "O nome público da lista (faça somente modificações capitalizadas)."
+msgstr "O nome público da lista (faça somente modificações com maísculas e minúsculas)."
 
 #: Mailman/Gui/General.py:64
 msgid ""
@@ -4590,7 +4589,7 @@ msgid ""
 msgstr ""
 "Uma descrição introdutória - em poucos parágrafos - sobre a lista. \n"
 "        Ela será incluida, como html, no topo da página listinfo. \n"
-"        O pressionamento de enter finaliza um parágrafo - veja os \n"
+"        Para finalizar um parágrafo, pressione enter - veja os \n"
 "        detalhes para mais informações."
 
 #: Mailman/Gui/General.py:133
@@ -4614,7 +4613,7 @@ msgstr ""
 
 #: Mailman/Gui/General.py:141
 msgid "Prefix for subject line of list postings."
-msgstr "Prefixo colocado na linha de assunto das postagens nas listas."
+msgstr "Prefixo colocado na linha de assunto nas postagens para a lista."
 
 #: Mailman/Gui/General.py:142
 msgid ""
@@ -4651,7 +4650,7 @@ msgid ""
 "             added by Mailman or not."
 msgstr ""
 "Qualquer cabeçalho <tt>Reply-To:</tt> encontrado na mensagem original\n"
-"        deverá ser retirados? Caso isto aconteça, isto será feito\n"
+"        deverá ser removido? Caso isto aconteça, isto será feito\n"
 "        mesmo que o cabeçalho <tt>Reply-To:</tt> seja adicionado ou \n"
 "        não pelo Mailman."
 
@@ -4674,7 +4673,7 @@ msgid ""
 "mailing\n"
 "             lists."
 msgstr ""
-"Onde as respostas para as mensagens desta lista deverão ser direcionadas?\n"
+"Para onde as respostas para as mensagens desta lista deverão ser direcionadas?\n"
 "        <tt>Remetente</tt> é <em>extremamente</em> recomendado para a "
 "maioria\n        das listas de discussão."
 
@@ -4980,7 +4979,7 @@ msgid ""
 "             requests, as well as daily notices about collected ones?"
 msgstr ""
 "Os moderadores de lista devem obter uma notificação imediata de \n"
-"        novas requisição, assim como também as notícias diárias coletadas?"
+"        novas requisição, assim como também as notícias coletadas diariamente?"
 
 #: Mailman/Gui/General.py:304
 msgid ""
@@ -5092,7 +5091,7 @@ msgstr ""
 
 #: Mailman/Gui/General.py:360
 msgid "Host name this list prefers for email."
-msgstr "Nome de máquina que esta listas prefere para emails."
+msgstr "Nome de máquina que esta listas prefere para o envio de emails."
 
 #: Mailman/Gui/General.py:362
 msgid ""
@@ -5333,7 +5332,7 @@ msgstr "Remoção&nbsp;em&nbsp;massa"
 
 #: Mailman/Gui/NonDigest.py:34
 msgid "Non-digest&nbsp;options"
-msgstr "Opções&nbsp;não&nbsp;digest"
+msgstr "Opções&nbsp;de&nbsp;entrega&nbsp;normal"
 
 #: Mailman/Gui/NonDigest.py:42
 msgid "Policies concerning immediately delivered list traffic."
@@ -5543,7 +5542,7 @@ msgstr "Filtros&nbsp;de&nbsp;remetentes"
 
 #: Mailman/Gui/Privacy.py:34
 msgid "Recipient&nbsp;filters"
-msgstr "Recipient&nbsp;filtros"
+msgstr "Filtros&nbsp;de&nbsp;Recipientes"
 
 #: Mailman/Gui/Privacy.py:35
 msgid "Spam&nbsp;filters"
@@ -5693,7 +5692,7 @@ msgstr ""
 
 #: Mailman/Gui/Privacy.py:122
 msgid "Ban list"
-msgstr "Lista de Banimentos"
+msgstr "Lista de Banidos"
 
 #: Mailman/Gui/Privacy.py:124
 msgid ""
@@ -5717,7 +5716,7 @@ msgstr ""
 
 #: Mailman/Gui/Privacy.py:132
 msgid "Membership exposure"
-msgstr "Esposição de membros"
+msgstr "Exibição de Membros"
 
 #: Mailman/Gui/Privacy.py:134
 msgid "Anyone"
@@ -5832,7 +5831,7 @@ msgstr ""
 "            descartada, terá sua postagem filtrada pelas\n"
 "            <a "
 "href=\"?VARHELP=privacy/sender/generic_nonmember_action\">regras\n"
-"\"            gerais de não membros</a>.\n"
+"            gerais de não membros</a>.\n"
 "\n"
 "            <p>Nas caixas de texto abaixo, adicione um endereço por linha;\n"
 "            inicie a linha com o caracter ^ para designar uma\n"
@@ -5953,7 +5952,7 @@ msgid ""
 "             automatically accepted."
 msgstr ""
 "Lista se endereços de não membros no qual as postagens devam \n"
-"        ser aceitas automaticamente."
+"        ser automaticamente aceitas."
 
 #: Mailman/Gui/Privacy.py:235
 msgid ""
@@ -5971,8 +5970,8 @@ msgid ""
 "List of non-member addresses whose postings will be\n"
 "             immediately held for moderation."
 msgstr ""
-"Lista de endereços de não membros que as postagens serão\n"
-"        postas imediatamente em moderação."
+"Lista de endereços de não membros que as postagens imediatamente\n"
+"        serão colocadas em moderação."
 
 #: Mailman/Gui/Privacy.py:244
 msgid ""
@@ -6120,8 +6119,8 @@ msgid ""
 "Must posts have list named in destination (to, cc) field\n"
 "             (or be among the acceptable alias names, specified below)?"
 msgstr ""
-"Os posts devem ter o nome da lista no campo destino (to, cc) da lista\n"
-"        (ou estar junto de nomes de aliases, especificados abaixo)?"
+"As postagens devem ter o nome da lista no campo destino (to, cc) da lista\n"
+"        (ou estar junto de nomes de aliases, configurados abaixo)?"
 
 #: Mailman/Gui/Privacy.py:313
 msgid ""
@@ -6162,8 +6161,8 @@ msgid ""
 "Alias names (regexps) which qualify as explicit to or cc\n"
 "             destination names for this list."
 msgstr ""
-"Nomes aliases (expressões) que qualificam os nomes de destinos \n"
-"        to e cc para esta lista."
+"Nomes aliases (expressões regulares) que qualificam os nomes de destinos \n"
+"        TO e CC como explícitos para esta lista."
 
 #: Mailman/Gui/Privacy.py:334
 msgid ""
@@ -6230,7 +6229,7 @@ msgstr ""
 
 #: Mailman/Gui/Privacy.py:364
 msgid "Anti-Spam filters"
-msgstr "Filtrons anti-spam"
+msgstr "Filtros Anti-Spam"
 
 #: Mailman/Gui/Privacy.py:367
 msgid "Hold posts with header value matching a specified regexp."
@@ -6414,7 +6413,7 @@ msgstr ""
 
 #: Mailman/Gui/Usenet.py:25
 msgid "Mail&lt;-&gt;News&nbsp;gateways"
-msgstr "gateways&nbsp;Mail&lt;-&gt;News"
+msgstr "Ligação&nbsp;Mail&lt;-&gt;News"
 
 #: Mailman/Gui/Usenet.py:35
 msgid "Mail-to-News and News-to-Mail gateway services."
@@ -6595,7 +6594,7 @@ msgstr ""
 "Quando você diz para o Mailman fazer um catchup do grupo de notícias,\n"
 "        isto significa que deseja iniciar a obtenção de mensagens para a\n"
 "        lista de discussão quando a próxima mensagem for encontrada. Todas\n"
-"        as mensagens anteiorires no newsgrupo serão ignoradas. Isto é como\n"
+"        as mensagens anteriores no grupo de notícias serão ignoradas. Isto é como\n"
 "        se você estivesse lendo o grupo de notícias por si próprio \n"
 "        e marcou todas as mensagens atuais como <em>lidas</em>. Fazendo isto\n"
 "        todos os membros das lista de discussão não verão qualquer mensagem\n"
