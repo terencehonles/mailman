@@ -57,19 +57,6 @@ from Mailman import LockFile
 from Mailman import Message
 from Mailman.Logging.Utils import LogStdErr
 
-# TBD: Duplicates functionality in scripts/driver.  This should be
-# re-evaluated when we require Python 1.5.2.
-#
-# pre-load the `cgi' module.  we do this because we're distributing a slightly
-# different version than the standard Python module.  it's essentially Python
-# 1.5.2's module, with an experimental patch to handle clients that give bogus
-# or non-existant content-type headers.
-#
-# we assign sys.modules['cgi'] to this special cgi module so any other module
-# that tries to import cgi will get our special one
-import Mailman.pythonlib.cgi
-sys.modules['cgi'] = Mailman.pythonlib.cgi
-
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
@@ -118,6 +105,7 @@ def main():
     # number actually gated
     children = {}
     # cruise through lists
+    conn = None
     for name in names:
         # check to see if the list is gating news to mail.  If not, skip the
         # list.  If so, then we have to poll the newsgroup and gate any
@@ -131,6 +119,9 @@ def main():
         # child process, so we do need to open up a new connection for each
         # list.
         try:
+            # close the previous NNTP connection
+            if conn:
+                conn.quit()
             conn = nntplib.NNTP(mlist.nntp_host)
         except socket.error, e:
             # couldn't open a socket to the NNTP host.  maybe we've got too
@@ -223,6 +214,8 @@ def main():
         reap(children, watermarks)
     # we're done forking off all the gating children, now just wait for them
     # all to exit, and then we're done
+    if conn:
+        conn.quit()
     while children:
         reap(children, watermarks)
 
