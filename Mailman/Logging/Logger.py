@@ -19,6 +19,7 @@
 import sys
 import os
 import Mailman.mm_cfg
+from Mailman.Utils import reraise
 from Mailman.Logging.Utils import _logexc
 
 
@@ -59,11 +60,7 @@ class Logger:
                     _logexc(self, e)
                     f = self.__fp = sys.__stderr__
                 else:
-                    # re-raise the original exception
-                    # Python 1.5.1
-                    #raise
-                    # Python 1.5
-                    raise e, None, sys.exc_info()[2]
+                    reraise()
             return f
 
     def flush(self):
