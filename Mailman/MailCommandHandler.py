@@ -568,11 +568,11 @@ background and instructions for subscribing to and using it, visit:
             # of the results of the mail command message
             #
             self.__NoMailCmdResponse = 1
-        except Errors.MMNeedApproval, admin_email:
+        except Errors.MMNeedApproval:
             self.AddToResponse(
-                "your subscription request has been forwarded the list "
-                "administrator\n"
-                "at %s for review." % admin_email, trunc=0)
+                "Your subscription request has been forwarded the"
+                " list administrator\n"
+                "at %s for review." % self.GetAdminEmail(), trunc=0)
         except Errors.MMBadEmailError:
             self.AddError("Mailman won't accept the given email "
                           "address as a valid address.\n"
