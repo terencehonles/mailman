@@ -1,4 +1,4 @@
-<!-- $Revision: 401 $ -->
+<!-- $Revision: 527 $ -->
 <html>
 <head>
 <title><MM-Presentable-User> Configuration for <MM-List-Name></title>
@@ -14,9 +14,10 @@
 
 <p>
 
-Here is the place for <MM-Presentable-User> to review and change
-subscription status, password, and options for the <MM-List-Name>
-mailing list.
+<b><MM-Presentable-User></b>'s subscription status,
+password, and options for the <MM-List-Name> mailing list.
+
+<MM-Disabled-Notice>
 
 <p>
 
@@ -72,7 +73,6 @@ address. <p>
       </TR>
 </table>
            <MM-Change-Pass-Button>
-</center>
     </TABLE>
 
 <p>
@@ -87,10 +87,12 @@ address. <p>
 <p>
 <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="3" WIDTH="80%">
 <tr><TD BGCOLOR="#dcdcdc">
+<a name="disable">
 <strong> Disable mail delivery </strong> <br>
 Turn this on if you want mail to not be delivered to you for a little while.<br>
 <mm-delivery-enable-button> Off
 <mm-delivery-disable-button> On <p>
+</a>
 </td></tr>
 <tr><TD BGCOLOR="#dcdcdc">
 <strong> Set Digest Mode</strong> <br>
@@ -123,6 +125,7 @@ If you have any problems with MIME digests, select plain text. <br>
 <tr><TD BGCOLOR="#dcdcdc">
 Password: <MM-Digest-Pw-Box>  <MM-Digest-Submit><p>
 </td></tr></table>
+</center>
 <MM-Form-End>
 
 <MM-Mailman-Footer>
