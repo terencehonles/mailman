@@ -37,6 +37,7 @@ import cgi
 import urllib
 import time
 import os
+import types
 import HyperDatabase
 import pipermail
 
@@ -58,6 +59,18 @@ NL = '\n'
 
 
 
+def unicode_quote(arg):
+    if isinstance(arg, types.UnicodeType):
+        result = []
+        for c in arg:
+            c = ord(c)
+            if c < 128:
+                result.append(chr(c))
+            else:
+                result.append("&#%d;" % c)
+        arg = "".join(result)
+    return arg
+
 def html_quote(s):
     repls = ( ('&', '&amp;'),
 	      ("<", '&lt;'),
@@ -65,7 +78,7 @@ def html_quote(s):
 	      ('"', '&quot;'))
     for thing, repl in repls:
 	s = s.replace(thing, repl)
-    return s
+    return unicode_quote(s)
 
 def url_quote(s):
     return urllib.quote(s)
@@ -86,9 +99,12 @@ def sizeof(filename):
 html_charset = '<META http-equiv="Content-Type" ' \
                'content="text/html; charset=%s">'
 
-def CGIescape(arg): 
-    s = cgi.escape(str(arg))
-    return s.replace('"', '&quot;')
+def CGIescape(arg):
+    if isinstance(arg, types.UnicodeType):
+        s = cgi.escape(arg)
+    else:
+        s = cgi.escape(str(arg))
+    return unicode_quote(s.replace('"', '&quot;'))
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])') 
@@ -170,11 +186,14 @@ class Article(pipermail.Article):
         self.decoded = {}
         charset = message.get_param('charset')
         if charset:
-            self.check_header_charsets(charset)
-        else:
-            self.check_header_charsets()
+            charset = charset.lower().strip()
+            if charset[0]=='"' and charset[-1]=='"':
+                charset = charset[1:-1]
+            if charset[0]=="'" and charset[-1]=="'":
+                charset = charset[1:-1]
+        self.check_header_charsets(charset)
         if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
-            self.quote = lambda x:x
+            self.quote = unicode_quote
 
     def quote(self, buf):
         return html_quote(buf)
@@ -189,27 +208,26 @@ class Article(pipermail.Article):
 
         If the charsets used by these headers differ from each other
         or from the charset specified by the message's Content-Type
-        header, then an arbitrary charset is chosen.  Only those
-        values that match the chosen charset are decoded.
+        header, then an arbitrary charset is chosen. If the decoded
+        fields match that charset, they are preserved
+        literally. Otherwise, an attempt is made to decode them as
+        Unicode. If that fails, they are left undecoded.
         """
+        
         self.charset = msg_charset
         author, a_charset = self.decode_charset(self.author)
+        if self.charset is None and a_charset:
+            self.charset = a_charset
         subject, s_charset = self.decode_charset(self.subject)
-        if author is not None or subject is not None:
-            # Both charsets should be the same.  If they aren't, we
-            # can only handle one way.
-            if msg_charset is None:
-                self.charset = a_charset or s_charset
-            else:
-                self.charset = msg_charset
-
-            if author and self.charset == a_charset:
-                self.decoded['author'] = author
-                email, e_charset = self.decode_charset(self.email)
-                if email:
-                    self.decoded['email'] = email
-            if subject and self.charset == s_charset:
-                self.decoded['subject'] = subject
+        if self.charset is None and a_charset:
+            self.charset = s_charset        
+        if author:
+            self.decoded['author'] = author
+            email, e_charset = self.decode_charset(self.email)
+            if email:
+                self.decoded['email'] = email
+        if subject:
+            self.decoded['subject'] = subject
 
     def decode_charset(self, field):
         if field.find("=?") == -1:
@@ -218,7 +236,16 @@ class Article(pipermail.Article):
             s, c = EncWord.decode(field)
         except ValueError:
             return None, None
-        return s, c.lower()
+        c = c.lower()
+        # If the charset of the header matches the article charset,
+        # leave it as encoded. Otherwise, try Unicode decoding
+        if c.lower() == self.charset:
+            return s, c
+        try:
+            return unicode(s, c), None
+        except (UnicodeError, LookupError):
+            # Unknown encoding
+            return None, None
 
     def as_html(self):
 	d = self.__dict__.copy()
@@ -262,11 +289,17 @@ class Article(pipermail.Article):
         If the charset of the current message and art match and the
         article's subject is encoded, decode it.
         """
-        if self.charset and art.charset \
-           and self.charset == art.charset \
-           and art.decoded.has_key('subject'):
-            return art.decoded['subject']
-        return art.subject
+        subj = art.decoded.get('subject')
+        if not subj:
+            return art.subject
+        if isinstance(subj, types.UnicodeType):
+            return subj
+        if self.charset and self.charset == art.charset:
+                return subj
+        try:
+            return unicode(subj, art.charset)
+        except (UnicodeError, LookupError):
+            return art.subject
 
     def _get_next(self):
         """Return the href and subject for the previous message"""
@@ -325,7 +358,7 @@ class Article(pipermail.Article):
                          ('email', 'email_html'),
                          ('subject', 'subject_html')):
             if self.decoded.has_key(src):
-                d[dst] = self.decoded[src]
+                d[dst] = self.quote(self.decoded[src])
     
     def as_text(self):
 	d = self.__dict__.copy()
@@ -821,14 +854,29 @@ Archive working file %s present.  Check %s for possibly unarchived msgs',
         print self.html_foot()
 
     def write_index_entry(self, article):
-        if article.charset == self.charset:
-            d = article.decoded
-            subject = d.get("subject", article.subject)
-            author = d.get("author", article.author)
-        subject = CGIescape(article.subject)
-        author = CGIescape(article.author)
+        subject = self.get_header("subject", article)
+        author = self.get_header("author", article)
+        subject = CGIescape(subject)
+        author = CGIescape(author)
+            
         print index_entry_template % (urllib.quote(article.filename),
                                       subject, article.sequence, author)
+
+    def get_header(self, field, article):
+        # if we have no decoded header, return the encoded one
+        result = article.decoded.get(field)
+        if result is None:
+            return getattr(article, field)
+        # if the encodings match, use the result
+        if self.charset == article.charset:
+            return result
+        # otherwise, try to return a Unicode result
+        if isinstance(result, types.UnicodeType):
+            return result
+        try:
+            return unicode(result, article.charset)
+        except (UnicodeError, LookupError):
+            return getattr(article, field)
 
     def write_threadindex_entry(self, article, depth):
 	if depth < 0: 
