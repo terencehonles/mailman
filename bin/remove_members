@@ -19,14 +19,18 @@
 """Remove members from a list.
 
 Usage:
-    remove_members [-f file] [-h] listname [addr1 ...]
+    remove_members [options] listname [addr1 ...]
 
-Where:
+Options:
 
-    --file file
+    --file=file
     -f file
         Remove member addresses found in the given file.  If file is
         `-', read stdin.
+
+    --all
+    -a
+        Remove all members of the mailing list.
 
     --help
     -h
@@ -70,9 +74,7 @@ def ReadFile(filename):
 def main():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:],
-            'f:h',
-            ['file=', 'help'])
+            sys.argv[1:], 'af:h', ['all', 'file=', 'help'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -82,12 +84,15 @@ def main():
     listname = string.lower(args[0])
     addresses = args[1:]
     filename = None
+    all = 0
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-f', '--file'):
             filename = arg
+        elif opt in ('-a', '--all'):
+            all = 1
                 
     if filename:
         try:
@@ -102,6 +107,9 @@ def main():
     except Errors.MMListError, e:
         print 'No such list "%s"\n%s' % (listname, e)
         sys.exit(1)
+
+    if all:
+        addresses = mlist.GetMembers() + mlist.GetDigestMembers()
 
     try:
         for addr in addresses:
