@@ -33,9 +33,12 @@ try:
 
     try:
 	current_list.Post(msg)
-    except mm_err.MMNeedApproval, err_msg: 
-	if current_list.dont_respond_to_post_requests:
+    except mm_err.MMNeedApproval, err_msg:
+	if (current_list.dont_respond_to_post_requests
+            or err_msg == mm_err.MODERATED_LIST_MSG):
+            # Do not send hold-for-approval notices for moderated messages.
 	    sys.exit(0)
+            
 	the_sender = msg.GetSender()
 	subj = msg.getheader('subject')
 	if not subj:
