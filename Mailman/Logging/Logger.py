@@ -19,19 +19,22 @@
 import sys
 import os
 import Mailman.mm_cfg
-from Mailman.Logging.Utils import __logexc
+from Mailman.Logging.Utils import _logexc
 
 
 class Logger:
-    def __init__(self, category, nofail=1):
-        """Nofail (by default) says to fallback to sys.stderr if write
+    def __init__(self, category, nofail=1, immediate=0):
+        """Nofail (by default) says to fallback to sys.__stderr__ if write
         fails to category file.  A message is emitted, but the IOError is
         caught.  Set nofail=0 if you want to handle the error in your code,
-        instead.
+        instead.  immediate=1 says to create the log file immediately,
+        otherwise it's created when first needed.
         """
         self.__filename = os.path.join(Mailman.mm_cfg.LOG_DIR, category)
 	self.__fp = None
         self.__nofail = nofail
+        if immediate:
+            self.__get_f()
 
     def __del__(self):
         self.close()
@@ -49,13 +52,17 @@ class Logger:
 		    f = self.__fp = open(self.__filename, 'a+')
 		finally:
 		    os.umask(ou)
-	    except IOError, msg:
+	    except IOError, e:
                 if self.__nofail:
-                    __logexc(self, msg)
+                    _logexc(self, e)
+                    f = self.__fp = sys.__stderr__
                 else:
                     # re-raise the original exception
-                    raise
-	    return f
+                    # Python 1.5.1
+                    #raise
+                    # Python 1.5
+                    raise e, None, sys.exc_info()[2]
+            return f
 
     def flush(self):
 	f = self.__get_f()
@@ -67,7 +74,7 @@ class Logger:
 	try:
 	    f.write(msg)
 	except IOError, msg:
-            __logexc(self, msg)
+            _logexc(self, msg)
 
     def writelines(self, lines):
 	for l in lines:
