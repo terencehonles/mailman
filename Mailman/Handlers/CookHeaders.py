@@ -135,7 +135,7 @@ def process(mlist, msg, msgdata):
     # BAW: Some people really hate the List-* headers.  It seems that the free
     # version of Eudora (possibly on for some platforms) does not hide these
     # headers by default, pissing off their users.  Too bad.  Fix the MUAs.
-    if msgdata.get('_nolist'):
+    if msgdata.get('_nolist') or not mlist.include_rfc2369_headers:
         return
     # Pre-calculate
     listid = '<%s.%s>' % (mlist.internal_name(), mlist.host_name)
