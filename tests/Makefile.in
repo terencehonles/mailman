@@ -39,8 +39,8 @@ CFLAGS=		$(OPT) $(DEFS)
 TESTDIR=	$(prefix)/tests
 SHELL=		/bin/sh
 
-TEST_MODULES=	*.py
-
+TEST_MODULES=	test*.py *Base.py
+EXECS=  	onebounce.py fblast.py
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -60,6 +60,10 @@ install:
 	for f in $(TEST_MODULES); \
 	do \
 	    $(INSTALL) -m $(FILEMODE) $$f $(TESTDIR); \
+        done
+	for f in $(EXECS); \
+	do \
+	    $(INSTALL) -m $(EXEMODE) $$f $(TESTDIR); \
         done
 	for d in $(SUBDIRS); \
 	do \
