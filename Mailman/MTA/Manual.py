@@ -21,6 +21,7 @@ from cStringIO import StringIO
 
 from Mailman import mm_cfg
 from Mailman import Message
+from Mailman import Utils
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
 from Mailman.MTA.Utils import makealiases
