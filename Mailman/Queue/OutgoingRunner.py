@@ -19,6 +19,7 @@
 import sys
 import os
 import time
+import socket
 
 import email
 
@@ -47,6 +48,10 @@ class OutgoingRunner(Runner):
         modname = 'Mailman.Handlers.' + mm_cfg.DELIVERY_MODULE
         mod = __import__(modname)
         self._func = getattr(sys.modules[modname], 'process')
+        # This prevents smtp server connection problems from filling up the
+        # error log.  It gets reset if the message was successfully sent, and
+        # set if there was a socket.error.
+        self.__logged = 0
 
     def _dispose(self, mlist, msg, msgdata):
         # Make sure we have the most up-to-date state
@@ -58,6 +63,20 @@ class OutgoingRunner(Runner):
             if pid <> os.getpid():
                 syslog('error', 'child process leaked thru: %s', modname)
                 os._exit(1)
+            self.__logged = 0
+        except socket.error:
+            # There was a problem connecting to the SMTP server.  Log this
+            # once, but crank up our sleep time so we don't fill the error
+            # log.
+            port = mm_cfg.SMTPPORT
+            if port == 0:
+                port = 'smtp'
+            # Log this just once.
+            if not self.__logged:
+                syslog('error', 'Cannot connect to SMTP server %s on port %s',
+                       mm_cfg.SMTPHOST, port)
+                self.__logged = 1
+            return 1
         except Errors.SomeRecipientsFailed, e:
             # The delivery module being used (SMTPDirect or Sendmail) failed
             # to deliver the message to one or all of the recipients.
