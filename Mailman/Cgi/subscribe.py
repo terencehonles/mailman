@@ -108,9 +108,9 @@ def process_form(mlist, doc, cgidata, lang):
     if not email:
         results.append(_('You must supply a valid email address.'))
 
-    # The full name of the subscribee, optional
     fullname = cgidata.getvalue('fullname', '')
-
+    # Canonicalize the full name
+    fullname = Utils.canonstr(fullname, lang)
     # Who was doing the subscribing?
     remote = os.environ.get('REMOTE_HOST',
                             os.environ.get('REMOTE_ADDR',
