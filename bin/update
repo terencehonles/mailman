@@ -46,7 +46,7 @@ def dolist(list):
     # Move any existing mboxes around, but watch out for both a public and a
     # private one existing
     if os.path.isfile(o_pri_mbox_file) and os.path.isfile(o_pub_mbox_file):
-        if list.archive_private:
+        if l.archive_private:
             print """\
 %s has both public and private mbox archives, since this list
 currently uses private archiving, I'm installing the private mbox
@@ -57,7 +57,7 @@ to
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
-""" % (list._internal_name, o_pri_mbox_file, o_pub_mbox_file, o_pub_mbox_file)
+""" % (l._internal_name, o_pri_mbox_file, o_pub_mbox_file, o_pub_mbox_file)
             os.rename(o_pub_mbox_file, "%s.preb6" % (o_pub_mbox_file))
         else:
             print """\
@@ -70,19 +70,47 @@ archive file (%s) as the active one, and renaming
 
 You can integrate that into the archives if you want by using the 'arch'
 script.
-""" % (list._internal_name, o_pub_mbox_file, o_pri_mbox_file, o_pri_mbox_file)
+""" % (l._internal_name, o_pub_mbox_file, o_pri_mbox_file, o_pri_mbox_file)
             os.rename(o_pri_mbox_file, "%s.preb6" % (o_pri_mbox_file))
     #
     # move private archive mbox there if it's around
-    # (don't rename it if it's a dir because then it's from
-    # a very recent cvs tree and is already set up right.)
-    if os.path.isfile(o_pri_mbox_file):
-        os.rename(o_pri_mbox_file, mbox_file)
+    # and take into account all sorts of absurdities
+    #
+    if os.path.exists(o_pri_mbox_file):
+        if os.path.isfile(o_pri_mbox_file):
+            os.rename(o_pri_mbox_file, mbox_file)
+        elif not os.path.isdir(o_pri_mbox_file):
+            newname = "%s.mm_install-dunno_what_this_was_but_it_was_in_the_way" % \
+                      o_pri_mbox_file
+            os.rename(o_pri_mbox_file, newname)
+            print "unknown file in the way, moving"
+            print  "\t" + o_pri_mbox_file
+            print "to"
+            print "\t" + newname
+        else: # directory
+            print "looks like you have a really recent CVS isntallation..."
+            print "you're either one brave soul, or you already ran me"
+    
+
     #
     # move public archive mbox there if it's around
+    # and take into account all sorts of absurdities.
     #
     if os.path.exists(o_pub_mbox_file):
-        os.rename(o_pub_mbox_file, mbox_file)
+        if os.path.isfile(o_pub_mbox_file):
+            os.rename(o_pub_mbox_file, mbox_file)
+        elif not os.path.isdir(o_pub_mbox_file):
+            newname = "%s.mm_install-dunno_what_this_was_but_it_was_in_the_way" % \
+                      o_pub_mbox_file
+            os.rename(o_pub_mbox_file, newname)
+            print "unknown file in the way, moving"
+            print  "\t" + o_pub_mbox_file
+            print "to"
+            print "\t" + newname
+        else: # directory
+            print "looks like you have a really recent CVS isntallation..."
+            print "you're either one brave soul, or you already ran me"
+
     #
     # move the html archives there
     #
