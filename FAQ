@@ -22,8 +22,8 @@ FREQUENTLY ASKED QUESTIONS
       does not match the one compiled into the C mail wrapper.
 
       To fix this you will need to re-configure Mailman using the
-      --with-cgi-gid and --with-mail-gid options.  See INSTALL for
-      details.
+      --with-cgi-gid and --with-mail-gid options.  See the INSTALL
+      file for details.
 
       These errors are logged to syslog and they do not show up in the
       Mailman log files.  Problems with the CGI wrapper do get
@@ -68,28 +68,13 @@ FREQUENTLY ASKED QUESTIONS
       to force byte compilation of a file, or just fire up the Python
       interpreter and try importing the module.
     
-5. Other debugging aids
-
-      If you get exceptions in the log and/or Web pages, and these are
-      complaining that files could not be opened, you might like to
-      see which files Mailman is trying to open!
-
-      In Python 1.5.2, this will be a standard part of the exception
-      message.  In Python 1.5.1 the best you can do is to comment out
-      the code in $prefix/scripts/driver where it is redefining the
-      built-in open function.  This simulates what Python 1.5.2 will
-      do when it raises an IOError exception, however this only works
-      for open().  While this is the most common case, Python 1.5.2
-      will handle many other cases where files are unsuccessfully
-      referenced.
-
-6. Why doesn't the archive link work?
+5. Why doesn't the archive link work?
 
       Have any messages been posted to the list?  This is a known
       buglet; the archive link doesn't work until at least one message 
       has been posted.
 
-7. Okay, the archive link works, but I can't access the public
+6. Okay, the archive link works, but I can't access the public
    archives.
 
       If you are using Apache, you must make sure that FollowSymLinks
@@ -99,6 +84,21 @@ FREQUENTLY ASKED QUESTIONS
       message for more details:
 
       http://www.python.org/pipermail/mailman-users/1998-November/000173.html
+
+7. Still having problems?  Running QMail?
+
+    Make sure that you are using "preline" before calling "wrapper":
+
+        |preline /home/mailman/mail/wrapper post listname
+    
+    "preline" adds a Unix-style "From " header which the archiver requires.
+    You can fix the archive mbox files by adding:
+
+        From somebody Mon Oct  9 12:27:34 MDT 2000
+    
+    before every message and re-running the archive command
+    "bin/arch listname".  The archives should now exist.  See README.QMAIL
+    for more information.
 
 8. Still having problems?  Running on GNU/Linux?
 
@@ -151,7 +151,8 @@ FREQUENTLY ASKED QUESTIONS
    USE_ENVELOPE_SENDER=1
 
    However, read the comments about this variable in the Defaults.py
-   file for a full discussion of the issues.
+   file for a full discussion of the issues.  By default, Mailman 2.0
+   relies on the From: header for doing address matching.
 
 11. How secure are the authentication mechanisms used in Mailman's web
     interface?
@@ -192,10 +193,10 @@ FREQUENTLY ASKED QUESTIONS
      be accessing the proxy from.
 
    * Getting access to the user's terminal: This is really just
-     another kind of cookie stealing.  The short cookie expiry time is
-     supposed to help defeat this problem.  It can be considered the
-     price to pay for the convenience of not having to type the
-     password in every time.
+     another kind of cookie stealing.  The short cookie expiration
+     time is supposed to help defeat this problem.  It can be
+     considered the price to pay for the convenience of not having to
+     type the password in every time.
 
 
 Local Variables:
