@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -77,9 +77,10 @@ def main(argv):
         sys.exit(1)
 
     print "Making select directories owned and writable by root only"
+    gid = grp.getgrnam(MAILMAN_GROUP)[2]
     for dir in dirstochownroot:
         dirpath = paths.prefix + '/' + dir
-        os.chown(dirpath, 0, MAILMAN_GID)
+        os.chown(dirpath, 0, gid)
         os.chmod(dirpath, 02755)
         print dirpath
 
@@ -162,10 +163,10 @@ class CheckFixUid:
                     file.insert(i,
                         object.group(1) + "CheckFixUid.CheckFixUid()\n")
                     patched=1
-      break
+                    break
                 if object2:
                     print "Patching " + script
-                    file.insert(i, 
+                    file.insert(i,
                         object2.group(1) + "CheckFixUid.CheckFixUid()\n")
                     patched=1
                     break
@@ -176,5 +177,5 @@ class CheckFixUid:
             else:
                 filefd=open(script, "w")
                 filefd.writelines(file)
-            
+
 main(sys.argv)
