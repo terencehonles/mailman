@@ -1,7 +1,7 @@
 add.\"
 .\" GNU Mailman Manual
 .\"
-.\" remove_members 
+.\" list_members 
 .\"
 .\" Documenter:   Terri Oda
 .\"               terri (at) zone12.com
@@ -22,10 +22,11 @@ sync_members \- Synchronize a Mailman mailing list's membership with a flat file
 [-a <\fIyes|no\fP>]
 [-h]
 -f \fIfilename\fP
-listname
+\fIlistname\fP
 .\"=====================================================================
 .SH DESCRIPTION
-Synchronizes a Mailman mailing list's membership with a flat file.
+.B sync_members
+synchronizes a Mailman mailing list's membership with a flat file.
 .PP
 This script is useful if you have a Mailman mailing list and a sendmail
 :include: style list of addresses (also as is used in Majordomo).  For every
@@ -63,13 +64,14 @@ This option is required.  It specifies the flat file to synchronize
 against.  Email addresses must appear one per line.  If filename is
 `-' then stdin is used.
 .IP "--help, -h"
-Print this message.
-.IP listname
+Print help message.
+.IP \fIlistname\fP
 Required.  This specifies the list to synchronize.
 .\"=====================================================================
 .SH SEE ALSO
 .BR add_members (1),
-.BR list_members(1),
+.BR clone_member (1),
+.BR list_members (1),
 .BR remove_members (1)
 .PP
 The Mailman website: http://www.list.org

@@ -1,7 +1,7 @@
 add.\"
 .\" GNU Mailman Manual
 .\"
-.\" remove_members 
+.\" find_member 
 .\"
 .\" Documenter:   Terri Oda
 .\"               terri (at) zone12.com
@@ -20,10 +20,11 @@ subscribed.
 [-x \fIlistname\fP]
 [-w]
 [-h]
-regex
+\fIregex\fP
 .\"=====================================================================
 .SH DESCRIPTION
-Finds all Mailman mailing lists to which a member's address is subscribed.
+.B find_member 
+finds all Mailman mailing lists to which a member's address is subscribed.
 .PP
 The interaction between -l and -x is as follows.  If any -l option is given
 then only the named list will be included in the search.  If any -x option is
@@ -46,13 +47,14 @@ Exclude the named list from the search.
 .IP "--owners, -w"
 Search list owners as well as members.
 .IP "--help, -h"
-Print this help message and exit.
-.IP regex
+Print help message and exit.
+.IP \fIregex\fP
 A Python regular expression to match.
 .\"=====================================================================
 .SH SEE ALSO
 .BR add_members (1),
-.BR list_members(1),
+.BR clone_member (1),
+.BR list_members (1),
 .BR remove_members (1)
 .PP
 The Mailman website: http://www.list.org

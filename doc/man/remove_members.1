@@ -21,11 +21,12 @@ remove_members \- Remove members from a Mailman mailing list.
 [-n]
 [-N]
 [-h]
-[listname]
-[addr1 ...]
+[\fIlistname\fP]
+[\fIaddr1\fP ...]
 .\"=====================================================================
 .SH DESCRIPTION
-Remove members from a Mailman mailing list from the command line.
+.B remove_members
+removes members from a Mailman mailing list from the command line.
 .\"=====================================================================
 .SH OPTIONS
 .IP "---file=\fIfile\fP, -f \fIfile\fP"
@@ -43,15 +44,16 @@ using this option.
 Don't send the admin acknowledgements.  If not specified, the list
 default value is used.
 .IP "--help, -h"
-Print this help message and exit.
-.IP listname
+Print help message and exit.
+.IP \fPlistname\fI
 The name of the mailing list to use.
-.IP addr1 ...
+.IP \fPaddr1\fI ...
 Additional addresses to remove.
 .\"=====================================================================
 .SH SEE ALSO
 .BR add_members (1),
-.BR find_member(1),
+.BR clone_member (1),
+.BR find_member (1),
 .BR list_members (1)
 .PP
 The Mailman website: http://www.list.org

@@ -1,7 +1,7 @@
 add.\"
 .\" GNU Mailman Manual
 .\"
-.\" remove_members 
+.\" list_members 
 .\"
 .\" Documenter:   Terri Oda
 .\"               terri (at) zone12.com
@@ -24,10 +24,11 @@ list_member \- List all the members of a Mailman mailing list.
 [-i]
 [-u]
 [-h]
-listname
+\fIlistname\fP
 .\"=====================================================================
 .SH DESCRIPTION
-Lists all members of a mailing list.
+.B list_member 
+lists all members of a mailing list.
 .PP
 Note that if neither -r or -d is supplied, both regular members are printed
 first, followed by digest members, but no indication is given as to address
@@ -60,13 +61,14 @@ Ignores -r, -d, -n.
 Print addresses which are stored as Unicode objects instead of normal
 string objects.  Ignores -r, -d, -n.
 .IP "--help, -h"
-Print this help message and exit.
-.IP "listname"
+Print help message and exit.
+.IP "\fIlistname\fP"
 The name of the mailing list to use.
 .\"=====================================================================
 .SH SEE ALSO
 .BR add_members (1),
-.BR find_member(1),
+.BR clone_member (1),
+.BR find_member (1),
 .BR remove_members (1)
 .PP
 The Mailman website: http://www.list.org

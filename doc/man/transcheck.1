@@ -1,0 +1,41 @@
+.\"
+.\" GNU Mailman Manual
+.\"
+.\" transcheck 
+.\"
+.\" Documenter:   Terri Oda
+.\"               terri (at) zone12.com
+.\" Created:      September 18, 2004
+.\" Last Updated: September 18, 2004
+.\"
+.TH transcheck 1 "September 18, 2004" "Mailman 2.1" "GNU Mailman Manual"
+.\"=====================================================================
+.SH NAME
+transcheck \- Check a given Mailman translation
+.\"=====================================================================
+.SH SYNOPSIS
+.B transcheck 
+[-q]
+\fIlang\fP
+.\"=====================================================================
+.SH DESCRIPTION
+.B transcheck 
+checks a given Mailman translation, making sure that variables and
+tags referenced in translation are the same variables and tags in
+the original templates and catalog.
+.\"=====================================================================
+.SH OPTIONS
+.IP "-q"
+Asks for a brief summary.
+.IP "\fIlang\fP"
+Your country code.  (e.g. 'it' for Italy) 
+.\"=====================================================================
+.SH SEE ALSO
+.BR check_perms (1),
+.BR check_db (1)
+.PP
+The Mailman website: http://www.list.org
+.\"=====================================================================
+.SH AUTHOR
+This man page was created by Terri Oda <terri (at) zone12.com>.
+Use <mailman-developers@python.org> to contact the developers.

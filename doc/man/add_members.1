@@ -20,10 +20,11 @@ add_members \- Remove members from a Mailman mailing list.
 [-w <\fIy|n\fP>]
 [-a <\fIy|n\fP>]
 [-h]
-listname
+\fIlistname\fP
 .\"=====================================================================
 .SH DESCRIPTION
-Adds members to a Mailman mailing list from the command line.
+.B add_members 
+adds members to a Mailman mailing list from the command line.
 .PP
 You must supply at least one of -r and -d options.  At most one of the
 files can be `-'.
@@ -43,11 +44,12 @@ overriding whatever the list's `send_welcome_msg' setting is.
 Set whether or not to send the list administrators a notification on
 the success/failure of these subscriptions, overriding whatever the
 list's `admin_notify_mchanges' setting is.
-.IP listname
+.IP \fIlistname\fP
 The name of the list to which you wish to add members.
 .\"=====================================================================
 .SH SEE ALSO
-.BR find_member(1),
+.BR clone_member (1),
+.BR find_member (1),
 .BR list_members (1),
 .BR remove_members (1)
 .PP

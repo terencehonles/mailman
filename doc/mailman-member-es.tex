@@ -28,7 +28,7 @@
 % snail-mail address if you like.
 \author{Terri Oda}
 \authoraddress{terri(en)zone12.com}
-% Translated by "Pablo Chamorro C." pchamorro(en)ingeomin.gov.co    
+% Translated by "Pablo Chamorro C." pchamorro(en)ingeomin.gov.co 
 
 \date{\today}        % XXX update before tagging release!
 \release{2.1}        % software release, not documentation
@@ -66,50 +66,50 @@ Este documento describe el interfaz del suscriptor de listas GNU Mailman 2.1.
 Este manual contiene instrucciones para suscripción, desuscripción, consulta
 de los archivos de la lista, edición de opciones de suscriptor, obtención de
 recordatorios de contraseñas y otras tareas a nivel del suscriptor.  También
-responde algunas preguntas comunes de interés para miembros de listas Mailman.
+responde algunas preguntas comunes de interés para usuarios de listas Mailman.
 \end{abstract}
 
 \tableofcontents
 
 % ============================================================================
 \section{Introducci\'on}
-Este documento tiene como prop\'{o}sito ayudar a los miembros de una lista de correo
-Mailman 2.1 a aprender a usar las características de este software, disponibles
-para ellos.  Este cubre el uso de los interfaces web y de correo electrónico para
-suscribipción y desuscripción, cambio de opciones de suscriptor y otras tareas a
-nivel de suscriptor.  También responde algunas preguntas comunes de interés para 
-miembros de listas Mailman.
+Este documento tiene como propósito ayudar a los usuarios del gestor de listas
+de correo Mailman 2.1, a aprender a usar las características que este software,
+pone a su disposición, incluyendo el uso de los interfaces web y de correo 
+electrónico para suscripción, desuscripción, cambio de opciones de suscriptor
+y otras tareas a este nivel.  También responde a algunas preguntas comunes de 
+interés para usuarios de listas Mailman.
 
 La información para administradores de listas y de sitio se proporciona en
 otros documentos.
 
 Este documento se debe leer en orden.  Si usted simplemente está buscando una 
 respuesta a una pregunta específica, consulte la sección o subsección que
-necesite, donde encuentrará referencias a otras secciones, en caso de ser
+necesite, donde encontrará referencias a otras secciones, en caso de ser
 necesario o de potencial utilidad.
 
 \note{Para los propósitos de este documento, se asume que el lector está
-familiarizado con términos comunes relacionados con correo electrónico (por
-ejemplo: Línea de Asunto, cuerpo del mensaje) y sitios web (por ejemplo:
+familiarizado con los términos comunes relacionados con correo electrónico 
+(por ejemplo: asunto, cuerpo del mensaje) y sitios web (por ejemplo:
 cuadro de lista desplegable, botón), o los puede consultar.  También se asume
-que el lector ya puede usar lo suficientemente bien su programa de correo
-electrónico y navegador web, de tal forma que sean claras las instrucciones
-tales como ``envíe correo electrónico a esta dirección'' o ``visite esta
-página web'' o ``rellene el formulario proporcionado''.  Si usted no está
-familiarizado con estas acciones, usted puede desear consultar otra
-documentación para aprender como hacer estas cosas con su configuración
-particular.} 
+que el lector maneja suficientemente bien su programa de correo
+electrónico y navegador web, de tal forma que instrucciones
+tales como ``envíe correo electrónico a esta dirección'', ``visite esta
+página web'' o ``rellene el formulario proporcionado'' no revistan duda.  Si
+usted no está familiarizado con estas acciones, sería conveniente que 
+consulte documentación adicional para que aprenda a hacer estas
+tareas con su software preferido.} 
 
 % ----------------------------------------------------------------------------
 \subsection{Reconocimientos}
 
 Varias secciones de este documento se tomaron del Manual de Administrador de
-Listas del CVS de Mailman, escritas por Barry A. Warsaw, y también de la ayuda
+Listas de Mailman, escritas por Barry A. Warsaw, y también de la ayuda
 integrada de Mailman 2.1.
 
 El resto de este manual fue escrito por Terri Oda.  Terri ha estado manteniendo
-listas de correo desde el año que ella alcanzó la edad para votar en Canada,
-aunque las dos cosas no están relacionadas.  Ella actualmente administra las
+listas de correo desde el año que alcanzó la edad para votar en Canada,
+aunque las dos cosas no están relacionadas.  Actualmente administra las
 listas de correo de Linuxchix.org, así como tambien varios servidores más
 pequeños.  En el mundo ajeno a la administración de listas, Terri está haciendo
 un trabajo con un detector de spam de vida artificial, y realmente es más una
@@ -126,45 +126,44 @@ documento.
 % ----------------------------------------------------------------------------
 \subsection{¿Qué es una lista de correo?}
 
-Una lista de correo es simplemente una lista de direcciones a las cuales se
-envía la misma información.  Si usted fuera un editor de una revista, usted
+Una lista de correo es simplemente un grupo de direcciones a las cuales se
+envía la misma información.  Si usted fuera un editor de una revista, 
 tendría una lista de direcciones de correo postal de todos los suscriptores
-de la revista.  En el caso de las listas de correo electrónico, se usa una
+de la revista.  En el caso de las listas de correo electrónico, se usa 
 una lista de direcciones de correo electrónico de gente interesada en
-escuchar o discutir acerca de un tema dado.
+escuchar o discutir sobre un tema dado.
 
-Dos tipos comunes de listas de correo electrónico son las listas de anuncios 
-y las listas de discusión.
+Entre los tipos más comunes de listas de correo electrónico están las listas
+de anuncios y las listas de discusión.
 
-Las listas de anuncios sirven para que una o más personas puedan enviar
-anuncios a un grupo de personas, en forma similar a la manera cómo hace un
-editor de una revista que utiliza su lista de direcciones postales para 
-enviar las revistas.  Por ejemplo, una banda musical podría usar una lista de
-anuncios para facilitar que sus seguidores estén al tanto de sus conciertos 
-futuros.
+Las listas de anuncios sirven para que una o más personas puedan informar
+a un grupo de personas, en forma similar a cómo hace un editor de una 
+revista que utiliza su lista de direcciones postales para distribuir las
+revistas.  Por ejemplo, una banda musical podría usar una lista de anuncios
+para facilitar que sus seguidores estén al tanto de sus conciertos venideros.
 
-Una lista de discusión permite a un grupo de personas discutir temáticas entre
-ellos mismos, pudiendo cada uno enviar correo a la lista y hacer que se
-distribuya a todos los integrantes del grupo.  Esta discusión también se puede
-moderar, de tal manera que sólo los mensajes seleccionados se envien al grupo
-como un todo, o que únicamente se le permita enviar al grupo a ciertas
-personas.  Por ejemplo, un grupo de entusiastas de modelos de aviones podrían
-usar una lista de discusión para compartir consejos útiles sobre la 
-construcción de modelos y aviación.
+Una lista de discusión permite a un grupo de personas debatir temáticas entre
+ellos mismos, pudiendo cada uno enviar mensajes a la lista y hacer que se
+distribuyan a todos los integrantes del grupo.  Esta discusión también se
+puede moderar, de manera que sólo los mensajes a los cuales el administrador
+les haya dado el visto bueno serán distribuidos a la lista. También es posible
+hacer que sólo a ciertas personas se les permita enviar mensajes a la lista.
+Por ejemplo, un grupo de entusiastas de modelos de aviones podrían usar una 
+lista de discusión para compartir consejos útiles sobre la construcción de 
+modelos y aviación.
 
 Algunos términos comunes:
 \begin{itemize}
 	\item Un ``envío'' típicamente denota un mensaje que se envía a una lista
-	de correo.  (Piense en poner un mensaje en un tablero de anuncios.)
+	de correo.  (Piense en poner un mensaje en un tablón de anuncios.)
 	\item A las personas que son parte de una lista de correo electrónico
-	normalmente se las llama ``miembros'' de la lista o ``suscriptores.''
+	normalmente se las llama ``suscriptores'' de la lista.
 	\item  ``Los administradores de las listas'' son personas encargadas de,
-	precisamente, mantener esas listas.   Las listas pueden tener uno o más
-	administradores.
+	mantener esas listas.   Las listas pueden tener uno o más administradores.
 	\item Una lista puede tener también personas encargadas de leer los
-	mensajes enviados a la lista y decidir si ellos deberían ser enviados a
-	todos los suscriptores.  A estas personas se las llama moderadores de las
-	listas.  \item A menudo varias listas de correo electrónico utilizan el
+	mensajes enviados a la lista y decidir si éstos deberían ser distribuidos
+	a todos los suscriptores.  A estas personas se les llaman moderadores. 
+	\item A menudo varias listas de correo electrónico utilizan el
 	mismo software.  A la persona que mantiene el software gracias al cual
 	funcionan las listas se le llama el ``administrador del sitio.''  A
 	menudo el administrador del sitio también administra listas individuales.
@@ -172,13 +171,13 @@ Algunos términos comunes:
 % ----------------------------------------------------------------------------
 \subsection{GNU Mailman}
 
-GNU Mailman es software que le permite administrar listas de correo electrónico,
+GNU Mailman es un programa que le permite administrar listas de correo electrónico,
 con soporte para un rango amplio de tipos de listas de correo, tales como listas
 de discusión general y listas de sólo anuncios.  Mailman tiene características
-extensivas que lo hacen bueno para listas de suscriptores, tales como facilidad
-en la suscripción y desuscripción, opciones de privacidad, y la capacidad de
+extensivas que lo hacen bueno para los suscriptores, tales como: facilidad
+en la suscripción y desuscripción, opciones de privacidad, y capacidad de
 detener temporalmente la recepción de los envíos a la lista.  En este documento
-se incluye sobre las características de los miembros de las listas.
+se describen las características de los suscriptores de las listas.
 
 Mailman también tiene muchas características que lo hacen atractivo a 
 administradores de listas y administradores de sitio.  Estas características 
@@ -187,66 +186,65 @@ están cubiertas en los manuales del administrador de listas y del sitio.
 % ============================================================================
 \section{Pasando de nuestros ejemplos a las listas reales}
 
-A menudo es más fácil, simplemente dar un ejemplo que explicar exactamente
-como encontrar la dirección de una lista específica.  Por ello, aquí
-frecuentemente se darán ejemplos para una lista ficticia llamada
-\email{NOMBRELISTA@DOMINIO} cuya página de información se puede encontrar en
+A menudo es más fácil, dar un ejemplo que explicar exactamente
+como encontrar la dirección de una lista específica.  Por ello en este manual
+se incluirán ejemplos para una lista ficticia llamada
+\email{NOMBRELISTA@DOMINIO} cuya página de información se encontraría en
 \url{http://SERVIDORWEB/mailman/listinfo/NOMBRELISTA}.
 
-Ninguna de estas direcciones es real, pero muestran la forma típica de las
-direcciones de las listas.  Las letras máyusculas utilizadas para las partes
-específicas a las listas de cada dirección debería hacerlo más fácil para
-mirar lo que se debería cambiar para cada lista.  Aunque las configuraciones
-específicas para las listas pueden ser diferentes, usted probablemente podrá
-simplemente reemplazar las palabras dadas en letras mayúsculas con los
-valores apropiados para una lista real:
+Ninguna de estas direcciones es real, pero muestran la forma típica que toman
+las direcciones de las listas.  Las palabras en máyusculas representan la
+parte que se debería cambiar para adecuar los ejemplos a casos reales.  Aunque
+las configuraciones específicas para las listas pueden ser diferentes, usted
+podrá reemplazar las palabras dadas en letras mayúsculas con los valores
+concretos de una lista real:
 
 \begin{description}
 	\item [NOMBRELISTA] El nombre de su lista.
-	\item [DOMINIO] El nombre del servidor de correo que gestiona la lista. 
-	\item [SERVIDORWEB] El nombre del servidor web que gestiona el interfaz web de la lista.  Este puede ser el mismo utilizado como DOMINIO, y a menudo se refiere a la misma máquina, pero no tiene que ser idéntico. 
+	\item [DOMINIO]     El nombre del servidor de correo que gestiona la lista. 
+	\item [SERVIDORWEB] El nombre del servidor web que gestiona el interfaz web de la lista.  Este puede ser el mismo utilizado como DOMINIO, y a menudo se refiere a la misma máquina, pero no tiene por qué ser idéntico. 
 \end{description}
 
-Como ejemplo de la vida real, si usted está interesado en la lista de usuarios
-mailman (mailman-users), usted realizaría las siguientes sustituciones:
+Por ejemplo, si usted estuviera interesado en la lista de usuarios mailman
+(mailman-users), tendría que realizar las siguientes sustituciones:
 NOMBRELISTA=mailman-users, DOMINIO=python.org, SERVIDORWEB=mail.python.org.
 De esta forma, para la lista de correo \email{mailman-users@python.org},
 la página de información de esa lista se encontraría en la dirección URL
-\url{http://mail.python.org/mailman/listinfo/mailman-users} (estas, a
-diferencia de la mayoría de ejemplos datos en este documento, son direcciones
-reales).
+\url{http://mail.python.org/mailman/listinfo/mailman-users}.  Estas, a
+diferencia de la mayoría de ejemplos dados en este documento, son direcciones
+reales.
 
 La mayoría de las listas tendrán esta información almacenada en las cabeceras
-\mailheader{List-*}.  Muchos programs de correo ocultarán estas cabeceras por
-omisión, así que usted tiene que seleccionar mirar todas las cabeceras antes
-que pueda mirar estas cabeceras informativas.
+\mailheader{List-*}.  Muchos programas de correo ocultan estas cabeceras en
+forma predeterminada, así que si desea darles un vistazo debe hacer que su
+programa de correo le muestre todas las cabeceras del mensaje.
 
 % ============================================================================
 \section{Interfaces de Mailman}
 Mailman tiene dos interfaces diferentes para los suscriptores de las listas:
-la interfaz web y la interfaz de correo electrónico.  La mayoría de suscriptores
-de las listas de discusión usan el interfaz de correo electrónico, ya que ésta
-incluye las direcciones de correo electrónico que usted utiliza para enviar
-correo a todos los suscriptores de esa lista.
+el interfaz web y el interfaz de correo electrónico.  La mayoría de los 
+suscriptores de las listas de discusión usan el interfaz de correo electrónico,
+ya que éste incluye las direcciones de correo electrónico que usted utiliza 
+para enviar mensajes a todos los suscriptores de esa lista.
 
-La interfaz que usted use para cambiar las opciones es cuestión de preferencia,
-ya que la mayoría de (pero no todas) las opciones que se pueden cambiar utilizando
-la interfaz web también se pueden cambiar por correo electrónico.  Usualmente es
-más fácil utilizar la interfaz web para cambiar opciones, ya que la interfaz web
-proporciona instrucciones como parte de las mismas páginas, pero hay ocasiones en
-las cuales las personas prefieren la interfaz de correo electrónico, así que las
-dos se proporcionan y son útiles.
+El interfaz que se use para cambiar las opciones es cuestión de gustos, ya que
+la mayoría de las opciones que se pueden cambiar utilizando el interfaz web
+(pero no todas) también se pueden cambiar por correo electrónico.  Usualmente
+es más fácil utilizar el interfaz web para cambiar opciones, ya que el interfaz
+web proporciona instrucciones integradas, pero hay ocasiones en las cuales las
+personas prefieren el interfaz de correo electrónico, así que se proporcionan
+los dos.
 
 % ----------------------------------------------------------------------------
 \subsection{El interfaz web\label{sec:web}}
-Para mucha gente, el interfaz web de Mailman es su punto más destacable
-ya que lo hace mucho más fácil para suscriptores y administradores mirar
-que opciones están disponibles y lo que hacen estas opciones.
+Para mucha gente, el interfaz web de Mailman es su característica más destacable
+ya que resulta mucho más fácil para suscriptores y administradores saber
+que opciones están disponibles y lo que hace cada una de ellas.
 
-Cada lista de correo también está accesible desde un número de páginas web.
-Note que las direcciones URL exactas son configurables por el administrador
-del sitio, así que ellas pueden ser diferentes a las que se describen abajo.
-Nosotros describiremos la configuración más común, pero consulte los
+Cada lista de correo también queda accesible desde varias páginas web.
+Note que las direcciones URL exactas las configura el administrador
+del sitio, así que pueden ser diferentes a las que se describen abajo.
+En seguida se describe la configuración más común, pero debe consultar los
 detalles con su administrador de sitio o proveedor del servicio.
 
 \hyphenchar\font=-1
@@ -259,10 +257,10 @@ detalles con su administrador de sitio o proveedor del servicio.
 			\url{http://listas.ejemplo.com/mailman/listinfo/milista}).
 
 			\item La página listinfo es el punto de inicio del interfaz
-			del suscriptor.  Como uno podría asumir por el nombre dado, ésta
-			contiene información acerca de la lista NOMBRELISTA.  Usualmente
-			todas las otras páginas del suscriptor se pueden acceder desde
-			este punto, así que realmente usted sólo necesita conocer esta
+			del suscriptor.  Como se podría asumir por el nombre dado, esta
+			página contiene información acerca de la lista NOMBRELISTA.  A
+			partir de esta página se puede llegar al resto de páginas del
+			suscriptor, así que realmente sólo se necesita conocer esta
 			dirección.
 
 		\end{itemize}
@@ -276,24 +274,24 @@ detalles con su administrador de sitio o proveedor del servicio.
 			/maria@aqui.com}).
 
 			\item También se puede acceder a esta página yendo a la página
-			listinfo y entrando su dirección de correo en el cuadro de texto
-			junto al botón marcado ``Opciones de Edición y Desuscripción''
+			listinfo y escribiendo su dirección de correo en el cuadro de texto
+			junto al botón etiquetado ``Opciones de Edición y Desuscripción''
 			(este está cerca del final de la página).
 
-			\item La página de opciones de suscriptor le permite a usted
+			\item La página de opciones de suscriptor le permite 
 			entrar/salir y cambiar la configuración de sus opciones, así como
 			también desuscribirse u obtener una copia de su contraseña por
 			correo electrónico.
 
-			\item \textbf{Para ingresar en su página de opciones de
+			\item \textbf{Para acceder a su página de opciones de
 			suscriptor}:  Si usted aún no ha ingresado, encontrará un cuadro
-			de texto cerca a la parte superior de la página para introducir
-			su contraseña (si usted no conoce su contraseña, mire la
-			seccion \ref{sec:getpassword} para más información sobre cómo
-			obtener su contraseña).  Entre su contraseña en el cuadro de texto
+			de texto cerca de la parte superior de la página para introducir
+			su contraseña (si no conoce su contraseña, mire la
+			sección \ref{sec:getpassword} para más información sobre cómo
+			obtener su contraseña).  Escriba su contraseña en el cuadro de texto
 			mencionado y haga clic en el botón ``Cambiar''.
 
-			\item Una vez usted esté adentro, podrá mirar y cambiar toda la 
+			\item Una vez haya ingresado, podrá mirar y cambiar toda la 
 			configuración personal de su lista.
 
 		\end{itemize}
@@ -308,17 +306,17 @@ detalles con su administrador de sitio o proveedor del servicio.
 			\url{http://listas.ejemplo.com/mailman/private/milista}).
 
 			\item Las páginas de los archivos de la lista disponen de una copia de
-			los mensajes enviados a la lista de correo, usualmente agrupados por
+			los mensajes enviados a la lista, usualmente agrupados por
 			mes.  En cada grupo mensual, los envíos se indexan por autor, fecha,
-			hilo, y asunto.
+			hilo y asunto.
 
 			\item \note{Pipermail es el nombre del archivador predeterminado que
-			viene con Mailman.  Otros programas de archivado están disponibles.}
+			viene con Mailman, pero hay otros programas de archivado disponibles.}
 
-			\item Si el archivo es privado, usted necesitará suministrar su
-			dirección de correo de suscriptor y su contraseña para ingresar
-			(mire la Sección~\ref{sec:getpassword} para mayor información sobre la
-			obtención de su contraseña).
+			\item Si el archivo es privado, para acceder usted necesitará 
+			suministrar su dirección de correo de suscriptor y su contraseña 
+			(mire en la Sección~\ref{sec:getpassword} mayor información sobre
+			cómo obtener su contraseña).
 		\end{itemize}
 \end{description}
 
@@ -326,60 +324,61 @@ detalles con su administrador de sitio o proveedor del servicio.
 \subsection{El interfaz de correo electrónico\label{sec:email}}
 
 Toda lista de correo tiene un conjunto de direcciones de correo electrónico
-a las cuales se pueden enviar los mensajes.  Siempre hay una dirección
-para enviar los mensajes a la lista, una dirección a a la cual se envían
-los mensajes devueltos y direcciones para procesar órdenes de correo.
+a las cuales se pueden enviar los mensajes, incluyendo, una dirección
+para enviar los mensajes a la lista, una dirección destinada a recibir 
+mensajes devueltos y direcciones para procesar órdenes de correo.
 Para una lista de correo ficticia llamada
 \email{milista@ejemplo.com}, usted encontraría estas direcciones:
 
 \begin{itemize}
 \item \email{milista@ejemplo.com} -- esta es la dirección de correo que la gente
-      debería usar para los nuevos envíos a la lista.
+      debería usar para enviar mensajes a la lista.
 
 \item \email{milista-join@ejemplo.com} -- enviando un mensaje a esta dirección,
-      un nuevo miembro puede solicitar suscripción a la lista.  Tanto la cabecera
-      de \mailheader{Asunto} como el cuerpo de tal mensaje son ignorados.  Note
-      que milista-subscribe@ejemplo.com es un alias para la dirección -join.
+      un nuevo miembro puede solicitar suscripción a la lista, pero si se hace,
+      Mailman ignora tanto la cabecera de \mailheader{Asunto} como el cuerpo de 
+      tal mensaje.  Note que milista-subscribe@ejemplo.com es un alias para la 
+      dirección -join.
 
 \item \email{milista-leave@ejemplo.com} -- enviando un mensaje a esta dirección
-      un miembro puede solicitar desuscripción de la lista.  Igual que con la
-      dirección -join, la cabecera \mailheader{Asunto} y el cuerpo del mensaje
-      son ignorados.  Note que milista-unsubscribe@ejemplo.com es un alias para
+      un miembro puede solicitar que se le dé de baja de la lista.  Igual que con
+      la dirección -join, se ignora la cabecera \mailheader{Asunto} y el cuerpo
+      del mensaje.  Note que milista-unsubscribe@ejemplo.com es un alias para
       la dirección -leave.
 
-\item \email{milista-owner@ejemplo.com} -- Con esta dirección se llega
-      directamente al propietario y moderador de la lista.  Esta es la
-      dirección que usted usa si necesita contactar a la persona o
-      personas encargadas de la lista.
+\item \email{milista-owner@ejemplo.com} -- Esta dirección permite contactar al
+      al propietario o moderador de la lista.  Esta es la dirección que deberá
+      utilizar cuando necesite contactar a la persona o personas encargadas de
+      la lista.
 
-\item \email{milista-request@ejemplo.com} -- Esta dirección alcanza un robot
-      de correo que procesa órdenes de correo electrónico que se pueden usar
-      para definir opciones de suscripción de los miembros, así como también
-      para procesar otros comandos.  En el Apéndice~\ref{a:commands} se
-      proporciona una lista de órdenes de correo electrónico de miembros de
-      listas.
+\item \email{milista-request@ejemplo.com} -- Esta dirección está asociada a un
+      robot de correo que procesa órdenes de correo electrónico que se pueden usar
+      para definir las distintas opciones de los suscriptores, así 
+      como también para procesar otras órdenes.  En el Apéndice~\ref{a:commands} se
+      proporciona una lista de las órdenes de correo electrónico que reconoce el
+      robot.
 
-\item \email{milista-bounces@ejemplo.com} -- Esta dirección se usa para
-      procesamiento automático de mensajes devueltos de Mailman.
+\item \email{milista-bounces@ejemplo.com} -- Esta dirección se usa para el
+      procesamiento automático de los mensajes devueltos de Mailman.
 
 \item \email{milista-confirm@ejemplo.com} -- Esta dirección se usa para
-      procesar mensajes de confirmación de solicitudes de suscripción y
+      procesar mensajes de confirmación de las solicitudes de suscripción y
       desuscripción.
 \end{itemize}
 
-También hay una dirección -admin con la cual también se llega a los
-administradores de listas, pero esta dirección solamente existe por
+También hay una dirección -admin que permite contactar a los
+administradores de las listas.  Esta dirección solo existe por
 compatibilidad con las versiones más antigüas de Mailman.
 
 Para cambiar las opciones, se usa la dirección \email{NOMBRELISTA-request}
 (por ejemplo, \email{milista-request@ejemplo.com}).
 
-Las órdenes pueden aparecer en la línea de asunto o en el cuerpo del mensaje.
-Cada comando debería ir en una línea separada. Si su programa de correo
-adiciona automáticamente una firma a sus mensajes, usted podría desear colocar
-la palabra ``\var{end}'' (sin las comillas) en una línea separada después de sus
-otras órdenes.  La orden \var{end} le dice a Mailman que no procese el correo
-electrónico después de ese punto.
+Las órdenes pueden aparecer tanto en el asunto como en el cuerpo del mensaje.
+Cada orden debería ir en una línea distinta. Si su programa de correo
+agrega automáticamente una firma a sus mensajes, usted podría desear colocar
+la palabra ``\var{end}'' (sin comillas) en una línea separada después de sus
+otras órdenes.  La orden \var{end} hace que Mailman no siga procesando el
+mensaje.
 
 La órden más importante es probablemente la orden ``\var{help}'', ya que
 ésta hace que Mailman devuelva un mensaje completo de información útil sobre
@@ -391,14 +390,14 @@ salida de la orden \var{help}.)
 
 % ============================================================================
 \section{¡Necesito hablar con un humano!\label{sec:human}}
-Si usted tiene problemas con cualquiera de estas órdenes, usted siempre puede
+Si tiene problemas con cualquiera de estas órdenes, siempre puede
 contactar a la persona o personas encargadas de las listas utilizando las
-direcciones administrativas de las listas.  Los administradores de las listas
-pueden ayudar a resolver como hacer algo, suscribirlo/desuscribirlo, o cambiar
-su configuración si usted no puede cambiarla por alguna razón.  Por favor
-recuerde que muchos administradores de listas de correo son voluntarios quienes
-están donando su tiempo libre para administrar la lista y ellos pueden ser gente
-muy ocupada.
+direcciones administrativas de las mismas.  Los administradores de las listas
+pueden ayudarle a resolver como hacer algo, suscribirlo/desuscribirlo, o 
+cambiar su configuración si por alguna razón usted no puede hacerlo.  Por favor
+recuerde que muchos administradores de listas de correo son voluntarios que
+están donando su tiempo libre para administrar la lista y pueden ser personas
+muy ocupadas.
 
 La dirección de correo del administrador de una lista tiene la forma 
 \email{NOMBRELISTA-owner@DOMINIO}, donde NOMBRELISTA es el nombre de la lista
@@ -406,13 +405,13 @@ La dirección de correo del administrador de una lista tiene la forma
 python.org).  Esta dirección de correo, junto con las direcciones de correo
 electrónico de administradores específicos, están dadas en la parte inferior de
 las páginas de información de cada lista.  Mire en la Sección~\ref{sec:web}
-mayor información sobre cómo encontrar la página de información de su lista.
+las instrucciones de cómo encontrar la página de información de su lista.
 
 % ============================================================================
 \section{Suscripción y desuscripción}
 Dado que suscribirse (unirse) o desuscribirse (salirse) son a menudo las únicas 
-cosas que un miembro de lista necesita conocer, con Mailman éstas se pueden hacer
-opcionalmente sin necesidad de que usted conozca una contraseña.
+cosas sobre las cuales un suscriptor de una lista necesita conocer, opcionalmente
+con Mailman éstas tareas se pueden hacer sin necesidad de una contraseña.
 
 % ----------------------------------------------------------------------------
 \subsection{¿Cómo me uno a la lista? (subscribe)\label{sec:subscribe}}
@@ -421,27 +420,26 @@ Hay dos formas comunes para que usted se suscriba a una lista de correo Mailman.
 
 Usando el interfaz web:
 \begin{enumerate}
-	\item Vaya a la página de información de la lista a la cual usted desea
-	suscribirse (esta será probablemente similar a
+	\item Vaya a la página de información de la lista a la cual desea
+	suscribirse (posiblemente será similar a
 	\url{http://SERVIDORWEB/mailman/listinfo/NOMBRELISTA}).
-	\item Mire la sección identificada como ``Suscribirse a NOMBRELISTA''
-	y rellene en los cuadros de texto.  Usted puede introducir lo siguiente:
+	\item Ubique la sección identificada como ``Suscribirse a NOMBRELISTA''
+	y rellene los cuadros de texto respectivos:
 	\begin{itemize}
-		\item Usted \emph{debe} entrar su dirección de correo electrónico.
-		\item Usted puede suministrar su nombre real.
-		\item Usted puede seleccionar una contraseña.  Si no selecciona una,
-		Mailman generará una para usted.
+		\item \emph{Debe} introducir su dirección de correo electrónico.
+		\item Puede suministrar su nombre.
+		\item Puede seleccionar su contraseña.  En caso contrario,
+		Mailman le generará una.
 
 		\warning{NO use una contraseña valiosa, ya que eventualmente esta
 		contraseña se enviará por correo electrónico como texto plano.}
 		\item Si la lista soporta más de un idioma, usted puede seleccionar
-		su idioma preferido.  \note{Este cambio no afecta los 
-		envíos a la lista, solamente a los textos Mailman que vienen con
-		el software de la listas, tal como su página de opciones de 
-		suscriptor.}
+		su idioma preferido.  \note{Este cambio no afecta al idioma de los 
+		mensajes enviados a la lista, solamente a los textos que despliega 
+		Mailman, como por ejemplo, en la página de opciones del suscriptor.}
 	\end{itemize}
-	\item Haga clic en el botón subscribe.  Una nueva página debería aparecer
-	diciéndole que se ha recibido su solicitud de suscripción.  Esta página
+	\item Haga clic en el botón suscribir.  Debería aparecer una nueva página 
+	informándole que se ha recibido su solicitud de suscripción.  Esta página
 	le proporcionará instrucciones adicionales, tales como la necesidad de
 	esperar y responder a un mensaje de confirmación, dependiendo de las 
 	políticas de suscripción de la lista.
@@ -449,51 +447,51 @@ Usando el interfaz web:
 
 Usando el interfaz de correo electrónico:
 \begin{enumerate}
-	\item Abra un programa de correo que le permita enviar correo desde la
-	dirección que usted desea suscribir.
-	\item Envíe un correo a la dirección de suscripción de la lista, la cual
-	estará en la forma \email{NOMBRELISTA-join@DOMINIO}.  El asunto y cuerpo
-	del mensaje se ignorarán, así que no importa lo que usted coloque ahí.
+	\item Abra un programa de correo que le permita enviar mensajes con la
+	dirección de remitente que usted desea suscribir.
+	\item Envíe un mensaje a la dirección de suscripción de la lista, la cual
+	será de la forma \email{NOMBRELISTA-join@DOMINIO}.  El asunto y cuerpo
+	del mensaje se ignorarán, así que no importa lo que coloque ahí.
 \end{enumerate}
 
-Después de seguir uno de los dos procedimientos (¡usted no necesita llevar
-a cabo los dos!), hay unos pocas posibilidades dependiendo de la configuración
+Después de seguir uno de los dos procedimientos (¡no necesita llevar a cabo
+los dos!), hay unos pocas posibilidades dependiendo de la configuración
 de la lista:
 \begin{itemize}
-	\item Usted puede recibir un mensaje de correo de confirmación que
-	usted realmente desea suscribirse a la lista.  Esto es para prevenir
-	que cualquier otra persona lo suscriba a la lista sin su permiso.
-	Siga las instrucciones dadas en el mensaje para confirmar su deseo de
-	estar suscrito.
-	\item Un moderador también puede necesitar confirmar su suscripción
-	si usted se está suscribiendo a una lista cerrada.
-	\item O usted puede tener que esperar a un moderador \textit{y}
-	seguir las instrucciones en el correo de confirmación.
+	\item Puede que reciba un mensaje preguntando si realmente desea
+	suscribirse a la lista.  Esto es para prevenir que cualquier otra
+	persona lo suscriba a la lista sin su permiso.  Siga las instrucciones
+	dadas en el mensaje para confirmar su deseo de suscribirse.
+	\item Si se está suscribiendo a una lista cerrada puede que el moderador
+	tenga que dar antes su visto bueno.
+	\item O puede que necesite el visto bueno del moderador, y luego sí,
+	seguir las instrucciones del correo de confirmación que pueda recibir.
 \end{itemize}
 
-Una vez hecho esto, usted muy probablemente recibirá otro mensaje, dándole la
+Una vez hecho esto, posiblemente recibirá otro mensaje, dándole la
 bienvenida a la lista.  Este mensaje contiene información útil, incluyendo su
 contraseña de la lista y algunos enlaces directos para el cambio de sus
-opciones, de manera que usted puede desear guardarlo para referencia posterior.
+opciones, de manera que podría ser conveniente que lo guarde para referencia
+posterior.
 
-\note{La suscripción también se puede realizar de otras maneras.  Mire en el
-Apéndice~\ref{a:commands} las órdenes de suscripción por correo electrónico
-más avanzadas.}
+\note{La suscripción también se puede realizar de otras formas.  Mire en el
+Apéndice~\ref{a:commands} las órdenes más avanzadas de suscripción por correo
+electrónico.}
 
 % ----------------------------------------------------------------------------
 \subsection{¿Cómo dejo la lista? (unsubscribe)\label{sec:unsubscribe}}
 
-¿Ya no desea estar en una lista?  Si usted sólo va a salir de vacaciones o
+¿Ya no desea estar en una lista?  Si sólo va a salir de vacaciones o
 está demasiado ocupado para leer correos y desea suspender temporalmente
-la recepción de esos mensajes, usted puede desear detener la entrega de
-correo en lugar de desuscribirse.  Esto significa que usted mantendrá su
-contraseña y configuración personal de manera que usted pueda aún, por
-ejemplo, aún tener acceso a los archivos privados de la lista.  Si esto es
-lo que usted desea, mire en la Sección~\ref{sec:nomail} las instrucciones
+la recepción de esos mensajes, usted podría detener la entrega de correo
+en lugar de desuscribirse.  Esto significa que mantendría su contraseña
+y configuración personal de manera que podría aún, por ejemplo, tener
+acceso a los archivos privados de la lista.  Si esto es
+lo que desea, mire en la Sección~\ref{sec:nomail} las instrucciones
 para inhabilitar temporalmente la entrega de correo.
 
-Si usted realmente desea dejar la lista, hay dos formas para que usted se
-desuscriba de una lista de correo Mailman.
+Si realmente lo desea hacer, hay dos formas para que se dé de baja
+de una lista de correo Mailman.
 
 Usando el interfaz web:
 \begin{enumerate}
@@ -505,7 +503,7 @@ Usando el interfaz web:
 	\item Debería haber un botón etiquetado ``Desuscribirse o Editar Opciones.''
 	Introduzca su dirección de correo electrónico en el cuadro de texto que se
 	encuentra junto a ese botón y haga clic en el.
-	\item Usted debería observar en pantalla una nueva página con un botón de
+	\item Debería aparecer en pantalla una nueva página con un botón de
 	``Desuscribir''.  Haga clic en él para desuscribirse y siga las
 	instrucciones dadas.
 \end{enumerate}
@@ -514,40 +512,40 @@ Usando el interfaz de correo electrónico:
 \begin{enumerate}
 	\item Abra un programa de correo que le permita enviar correo desde la
 	dirección que usted desee desuscribir.
-	\item Envíe un correo a la dirección de desuscripción de la lista, la cual
-	tendrá la forma \email{NOMBRELISTA-leave@DOMINIO}.  El asunto y cuerpo
-	del mensaje serán ignorados, así que no importa lo que usted coloque ahí.
+	\item Envíe un mensaje a la dirección de desuscripción de la lista, la cual
+	tendrá la forma \email{NOMBRELISTA-leave@DOMINIO}.  No importa lo que coloque
+	en el asunto y en el cuerpo del mensaje ya que será ignorado.
 \end{enumerate}
 
-Después de seguir alguno de estos procedimientos (¡usted no necesitará llevar
-a cabo los dos!), a usted se le enviará un correo de confirmación, siendo
-necesario que usted siga las instrucciones dadas en ese correo para completar
-la desuscripción.  Esto es neceario para evitar que otras personas lo
-desuscriban sin su permiso.  En adición, un moderador puede necesitar aprobar
-su desuscripción (son poco comunes las desuscripciones aprobadas por un
+Después de seguir alguno de estos procedimientos (¡no necesitará llevar
+a cabo los dos!), Mailman le enviará un mensaje de confirmación, siendo
+necesario que siga las instrucciones dadas en él para completar
+la desuscripción.  Esto es necesario para evitar que otras personas lo
+desuscriban sin su permiso.  Además, puede que un moderador tenga que aprobar
+su desuscripción (no son comunes las desuscripciones aprobadas por un
 administrador).
 
-Si usted no recibe ese correo de confirmación con las instrucciones incluidas,
-asegúrese de haber escrito correctamente la dirección de correo electrónico
-(si usted está usando el interfaz web para desuscribirse) y que la dirección
-que usted trató de dar de baja, está de hecho, realmente suscrita a la lista.
-Por razones de seguridad, Mailman genera la misma página de opciones de
-suscriptor independientemente de si la dirección entrada está o no suscrita.
-Esto significa que la gente no puede usar esta parte del interfaz web para
+Si no recibe ese mensaje de confirmación con las instrucciones de
+desuscripción incluidas, asegúrese de haber escrito correctamente la
+dirección de correo electrónico (si está usando el interfaz web) y que la
+dirección que trató de dar de baja, está de hecho, suscrita a la lista.  Por
+razones de seguridad, Mailman genera la misma página de opciones de suscriptor
+independientemente de si la dirección suministrada está suscrita.  Esto
+significa que la gente no puede usar esta parte del interfaz web para
 averiguar si alguien está suscrito a la lista, pero también significa que
-es difícil decir si usted solamente cometió un error al teclear.
+es difícil decir si se cometió un error al teclear.
 
-Una vez que se haya procesado su desuscripción, usted probablemente recibirá
-otro mensaje confirmando su desuscripción de la lista, y en ese punto usted
+Una vez que se haya procesado su desuscripción, probablemente recibirá
+otro mensaje confirmando su desuscripción de la lista, y a partir de allí 
 debería dejar de recibir mensajes.
 
-Si usted desea saltarse el proceso de confirmación (por ejemplo, podría estar
-desuscribiendo una dirección que ya no trabaja), es posible omitirlo utilizando
-su contraseña en su lugar, ya sea, ingresando a su página de opciones usando su
-contraseña (ver Sección~\ref{sec:web}), o enviar la contraseña con sus órdenes
-de correo a NOMBRELISTA-request (mire en el Apéndice~\ref{a:commands} las
-órdenes avanzadas de suscripción por correo electrónico).  Mire en la
-Sección~\ref{sec:getpassword} más información sobre obtención de su contraseña.
+Si desea saltarse el proceso de confirmación (por ejemplo, para desuscribir
+una dirección que ya no funciona), incluya la contraseña respectiva al hacerlo,
+ya sea desde su página de opciones (ver Sección~\ref{sec:web}), o mediante
+envío de ordenes de correo a NOMBRELISTA-request (mire en el
+Apéndice~\ref{a:commands} las órdenes avanzadas de suscripción por correo
+electrónico).  Consulte en la Sección~\ref{sec:getpassword} más información
+sobre la obtención de su contraseña.
 
 % ============================================================================
 \section{Contraseñas\label{sec:password}}
@@ -563,13 +561,13 @@ se envían en formato de texto plano.}
 
 % ----------------------------------------------------------------------------
 \subsection{¿Cómo obtengo mi contraseña?\label{sec:getpassword}}
-Si usted ha olvidado su contraseña y no ha grabado el mensaje de bienvenida o
-cualquier mensaje recordatorio, usted siempre puede obtener un recordatorio a
-través del interfaz web:
+Si olvidó su contraseña y no grabó ni el mensaje de bienvenida ni ningún
+mensaje recordatorio, siempre podrá obtener un mensaje para obtener la
+contraseña a través del interfaz web:
 
 \begin{enumerate}
-	\item Vaya a la página de información de la lista de la cual usted desea
-	obtener su contraseña (esta probablemente será similar a
+	\item Vaya a la página de información de la lista de la cual desea
+	obtener su contraseña (ésta probablemente será similar a
 	\url{http://SERVIDORWEB/mailman/listinfo/NOMBRELISTA}).
 	\item Ubique la sección identificada como ``Suscriptores de NOMBRELISTA''
 	(esta sección usualmente se encuentra cerca de la parte inferior de la
@@ -577,32 +575,31 @@ través del interfaz web:
 	\item Debería haber un botón etiquetado ``Desuscribir o Editar Opciones.''
 	Introduzca su dirección de correo electrónico en el cuadro de texto que se
 	encuentra junto a ese botón y haga clic en él.
-	\item Usted debería observar en pantalla una nueva página que tiene una
+	\item Debería observar en pantalla una nueva página que tiene una
 	sección identificada como ``Recordatorio de Contraseña''.  Haga clic en el
-	botón ``Recordar'' para hacer que se le envíe su contraseña por correo
+	botón ``Recordar'' para hacer que Mailman le envíe su contraseña por correo
 	electrónico.
 \end{enumerate}
 
-Si usted no recibe el recordatorio de contraseña por correo electrónico después
-de hacer esto, asegúrese de haber escrito correctamente su dirección de correo
-electrónico y que la dirección que utilizó está, efectivamente, realmente
-suscrita a la lista.  Por razones de seguridad, Mailman genera la misma página
-de opciones de suscriptor independientemente de si la dirección entrada está o
-no suscrita.  Esto significa que la gente no puede usar esta parte del interfaz
-web para averiguar si alguien está suscrito a la lista, pero también significa
-que es difícil decir si usted solamente cometió un error al teclear.
+Si no recibe el recordatorio de contraseña por correo electrónico después de hacer
+esto, asegúrese de haber escrito correctamente su dirección de correo electrónico
+y que la dirección que utilizó está suscrita a la lista.  Por razones de seguridad,
+Mailman genera la misma página de opciones de suscriptor independientemente de si
+la dirección proporcionada está suscrita o no.  Esto significa que la gente no
+puede usar esta parte del interfaz web para averiguar si alguien está suscrito a la
+lista, pero también significa que es difícil decir si se cometió un error al teclear.
 
-Usted también puede obtener un recordatorio utilizando el interfaz de correo
+También puede obtener un recordatorio utilizando el interfaz de correo
 electrónico:
 \begin{enumerate}
-	\item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO} con la orden
+	\item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO} con la orden
 	\var{password}
 
-	Los comandos pueden aparecer ya sea en el cuerpo o en la línea de asunto
+	Las órdenes pueden aparecer tanto en el cuerpo como en el asunto
 	del mensaje (mire en la Sección~\ref{sec:email} mayor información sobre
-	envío de órdenes de correo).
+	envío de órdenes por correo).
 
-	Si usted no está enviando correo desde la dirección suscrita, también
+	Si no está enviando mensajes desde la dirección suscrita, también
 	puede especificar esta dirección enviando la orden
 	\nolinebreak{\var{password~address=$<$DIRECCIÓN$>$}}.
 \end{enumerate}
@@ -614,30 +611,29 @@ electrónico:
 
 Desde el interfaz web:
 \begin{enumerate}
-	\item Ingrese a su página de opciones de suscriptor (Mire en la
-	Section~\ref{sec:web} las instrucciones de cómo hacer esto).
+	\item Ingrese a su página de opciones de suscriptor (mire en la
+	Section~\ref{sec:web} la forma de hacer esto).
 
-	\item Ubique los cuadros de texto de cambio de contraseña en el lado
+	\item Localice los cuadros de texto de cambio de contraseña en el lado
 	derecho de la página e introduzca allí su nueva contraseña, luego haga
 	clic en el botón etiquetado ``Cambiar mi contraseña''.
 \end{enumerate}
 
-Esto también se puede cambiar para múltiples listas al mismo tiempo si usted
-está suscrito a más de una lista en el mismo dominio.  Mire en la
-Sección~\ref{sec:global} la información sobre cambios globales de
-configuración.
+El cambio de contraseña también puede realizarse para múltiples listas a la vez
+si usted está suscrito a más de una lista en el mismo dominio.  Mire en la
+Sección~\ref{sec:global} la información sobre cambios globales de configuración.
 
 Desde el interfaz de correo electrónico:
 \begin{enumerate}
-	\item Envíe un correo a la dirección de correo 
+	\item Envíe un mensaje a la dirección de correo 
         \email{NOMBRELISTA-request@DOMINIO} con la orden 
 	{\var{password~$<$CONTRASEÑA~-~ANTERIOR$>$~$<$CONTRASEÑA~-~NUEVA$>$}}.
 
-	Las órdenes pueden aparecer ya sea en cuerpo o en la línea de asunto
-	del mensaje (mire en la Sección~\ref{sec:email} la información sobre
-	el envío de órdenes de correo).
+	Las órdenes pueden aparecer tanto en cuerpo como en el asunto del
+	mensaje (mire en la Sección~\ref{sec:email} la información sobre
+	el envío de órdenes por correo).
 
-	Si usted no está enviando correo desde su dirección de membresía, usted
+	Si no está enviando el mensaje desde su dirección de suscripción, 
 	puede también especificar esta dirección con
 	\var{address=$<$DIRECCIÓN$>$} después de $<$CONTRASEÑA-NUEVA$>$.
 	
@@ -645,39 +641,39 @@ Desde el interfaz de correo electrónico:
 	de la lista \var{milista}, de \var{zirc} a \var{miko}, pero ella estaba
 	enviando correo desde la dirección de la oficina 
 	\email{maria@trabajo.com}, podría enviar un mensaje a 
-	\email{milista-request@ejemplo.com} con la línea de asunto 
+	\email{milista-request@ejemplo.com} con el asunto 
 	{\var{password~zirc~miko~address=maria@micasa.com}}.
 \end{enumerate}
 
 % ----------------------------------------------------------------------------
 \subsection{¿Cómo activo/desactivo los recordatorios de contraseñas? (opción
 reminders)}
-Si usted no desea recibir recordatorios de contraseña cada mes, puede
-desactivarlos desde la página de opciones del suscriptor (usted siempre puede
-conseguir que se le envíe la contraseña por correo cuando realmente lo desee.
-Mire las instrucciones en la Sección~\ref{sec:getpassword}).
+Si no desea recibir recordatorios de contraseña cada mes, puede desactivarlos
+desde la página de opciones del suscriptor (siempre puede conseguir que se le
+envíe la contraseña por correo cuando realmente lo desee.  Mire las
+instrucciones en la Sección~\ref{sec:getpassword}).
 
 Usando el interfaz web:
 \begin{enumerate}
 	\item Ingrese a su página de opciones de suscriptor (mire en la
-	Sección~\ref{sec:web} las instrucciones de cómo hacer esto).
-	\item Ubique la sección identificada como ``Obtener recordatorio de
-	contraseña para esta lista'' y cambie el valor en forma apropiada.
+	Sección~\ref{sec:web} la forma de hacer esto).
+	\item Localice la sección ``Obtener recordatorio de contraseña para
+	esta lista'' y cambie el valor en forma apropiada.
 \end{enumerate}
 
-Esto también se puede cambiar para múltiples listas al mismo tiempo si usted
+Este cambio también se puede con múltiples listas a la vez si usted
 está suscrito a más de una lista en el mismo dominio.  Mire en la
 Sección~\ref{sec:global} la información sobre cambios globales de
 configuración.
 
 Usando el interfaz de correo electrónico:
 \begin{enumerate}
-   \item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO}
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO}
    con la orden \var{set~reminders~on} o \var{set~reminders~off}.
 
-   Las órdenes pueden aparecer ya sea en el cuerpo o en la línea de asunto del
+   Las órdenes pueden aparecer tanto en el cuerpo como en el asunto del
    mensaje.  Mire en la Sección~\ref{sec:email} la información sobre el envío
-   de órdenes de correo.
+   de órdenes por correo.
    \item Seleccione ``on'' para recibir recordatorios y ``off'' para dejar de
    recibir los recordatorios.
 \end{enumerate}
@@ -685,71 +681,71 @@ Usando el interfaz de correo electrónico:
 % ============================================================================
 \section{Cambiando la entrega del correo}
 % ----------------------------------------------------------------------------
-\subsection{¿Cómo activo o desactivo la entrega de correo? 
-	(opción delivery)\label{sec:nomail}}
+\subsection{¿Cómo activo o desactivo la recepción de correo procedente de la
+lista? (opción delivery)\label{sec:nomail}}
 
-Usted puede desear dejar de recibir temporalmente los mensajes de la lista sin
-necesidad de darse de baja.  Si usted desactiva la entrega de correo, ya no
-podrá recibir mensajes, pero aún será un suscriptor y como tal retendrá su
-contraseña y su configuración.
+Usted puede dejar de recibir temporalmente los mensajes de la lista sin
+necesidad de darse de baja.  Si desactiva la recepción de correo ya no
+podrá recibir mensajes, pero seguirá siendo un suscriptor y como tal
+conservará su contraseña y su configuración.
 
-Esto puede ser práctico en muchos casos diferentes.  Por ejemplo, usted podría
-salir de vacaciones o necesitar un descanso de la lista porque está demasiado
-ocupado para leer cualquier correo extra.
+Esto puede ser práctico en diversos casos.  Por ejemplo, si sale de vacaciones
+o cuando está demasiado ocupado para leer cualquier correo extra.
 
-También, muchas listas de correo únicamente permiten a los suscriptores enviar
-mensajes a la lista, así que si usted comunmente envía correo desde más de una
-dirección (por ejemplo, una dirección para la casa y otra para cuando está
-viajando), podría tener más de una cuenta suscrita, pero hacer que solamente
-una de ellas realmente reciba correo.
+Además, dado que muchas listas de correo solo aceptan mensajes de los
+suscriptores, si eventualmente llega a necesitar enviar correo desde más de
+una dirección (por ejemplo, una dirección para la casa y otra para cuando esté
+viajando), podría tener más de una cuenta suscrita y hacer que solamente
+una de ellas reciba los mensajes.
 
 Usted también puede usar su suscripción como un medio para leer archivos 
-privados, inclusive en una lista que pueda ser demasiado ocupada para que
-usted haga enviar los mensajes directamente a su buzón de correo.  Todo lo
-que necesita hacer es suscribirse, desactivar la entrega de correo, y usar
-su contraseña y dirección de correo electrónico para acceder a los archivos.
+privados, por ejemplo en el caso de listas con tráfico alto, donde por lo
+general resulta preferible suspender la recepción de los mensajes en el buzón
+del usuario y limitarse a su lectura mediante consulta vía interfaz web. Todo
+lo que necesita hacer es suscribirse, desactivar la recepción del correo, y
+usar su contraseña y dirección de correo electrónico para acceder a los
+archivos.
 
 Para desactivar/activar la entrega de correo usando el interfaz web:
 \begin{enumerate}
 	\item Ingrese a su página de opciones (mire las instrucciones en la
 	Sección~\ref{sec:web}).
-	\item Ubique la sección identificada como ``Entrega de correo'' y
+	\item Localice la sección identificada como ``Entrega de correo'' y
 	seleccione ``Desactivar'' para detener la recepción de correo, y
-	``Activar'' para iniciar a recibir el correo.
+	``Activar'' para empezar a recibir el correo.
 \end{enumerate}
 
-Esto también se puede cambiar para múltiples listas al mismo tiempo, si
-usted está suscrito a más de una lista en el mismo dominio.  Mire en la
-Sección~\ref{sec:global} la información acerca de cambios globales de
+Esto también se puede hacer con varias listas a la vez, siempre que esté
+suscrito a más de una lista en el mismo dominio.  Mire en la
+Sección~\ref{sec:global} la información acerca de los cambios globales de
 configuración.
 
 Para activar/desactivar la entrega de correo usando el interfaz de correo
 electrónico:
 \begin{enumerate}
-   \item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO} con la orden
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO} con la orden
    \var{set~delivery~off} o \var{set~delivery~on}.
 
-   Las órdenes pueden aparecer ya sea en el cuerpo o en la línea de asunto
+   Las órdenes pueden aparecer tanto en el cuerpo como en el asunto
    del mensaje (mire en la Sección~\ref{sec:email} más información sobre
-   envío de órdenes de correo).
+   envío de órdenes por correo).
    \item Seleccione ``off'' para parar la recepción de los envíos, y ``on''
-   para iniciar a recibirlos otra vez.
+   para empezar a recibirlos otra vez.
 \end{enumerate}
 
 % ----------------------------------------------------------------------------
-\subsection{¿Cómo puedo evitar recibir mensajes duplicados? (opción duplicates)
-\label{sec:nodupes}}
+\subsection{¿Cómo puedo evitar recibir mensajes duplicados? (opción
+duplicates) \label{sec:nodupes}}
 
-Mailman no puede impedir completamente que usted reciba mensajes duplicados,
-pero puede ayudar.  Una razón común para que la gente reciba múltiples copias
-de un correo es que el remitente haya usado una función ``responder al grupo''
-para enviar correo tanto a la lista como a algún número de individuos.  Si
-usted desea evitar recibir estos mensajes, se puede configurar Mailman para
-que revise y mire si usted está en las líneas \mailheader{To} o \mailheader{Cc}
-del mensaje.  Si su dirección aparece ahí, entonces se le puede indicar a
-Mailman que no le envíe otra copia.  Esto significa que usted recibirá
-solamente la copia enviada por el remitente, y no una copia que haya sido
-alterada por Mailman (incluir cabeceras y piés, borrar adjuntos, etc.).
+Mailman no puede impedir que usted reciba mensajes duplicados, pero puede
+ayudar.  Una situación habitual que hace que la gente reciba múltiples copias
+de un correo se produce cuando un remitente usa la opción ``responder a
+todos'' para enviar un mensaje de respuesta a la lista con copia a determinados
+destinatarios.  Si no desea recibir estos mensajes adicionales, se puede
+configurar Mailman para que revise y mire si su dirección está en las líneas
+\mailheader{To} o \mailheader{Cc} del mensaje, de manera que sólo reciba la
+copia enviada por el remitente, y no una copia que haya sido alterada por
+Mailman (para incluir cabeceras y piés, borrar archivos adjuntos, etc.).
 
 Para activar/desactivar esta opción usando el interfaz web:
 \begin{enumerate}
@@ -760,18 +756,18 @@ Para activar/desactivar esta opción usando el interfaz web:
 	según corresponda.
 \end{enumerate}
 
-Esto también se puede cambiar para múltiples listas al mismo tiempo si usted
-está suscrito a más de una lista en el mismo dominio.  Mire en la
-Sección~\ref{sec:global} la información sobre cambios globales de configuración. 
+Esto también se puede hacer con varias listas a la vez si usted está suscrito
+a más de una lista en el mismo dominio.  Mire en la Sección~\ref{sec:global}
+la información sobre cambios globales de configuración. 
 
 Para activar/desactivar esto usando el interfaz de correo electrónico:
 \begin{enumerate}
-   \item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO} con la orden
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO} con la orden
    \var{set~duplicates~on} o \var{set~duplicates~off}.
 
-   Las órdenes pueden aparecer ya sea en el cuerpo o en la línea de asunto
+   Las órdenes pueden aparecer tanto en el cuerpo como en el asunto
    del mensaje (mire en la Sección~\ref{sec:email} más información sobre
-   envío de órdenes de correo). 
+   envío de órdenes por correo). 
    \item Seleccione ``on'' para recibir copias de los mensajes que ya le
    hayan enviado, seleccione ``off'' para evitar recibir esos duplicados.
 \end{enumerate}
@@ -781,107 +777,106 @@ Para activar/desactivar esto usando el interfaz de correo electrónico:
 
 Para cambiar su dirección de suscripción:
 \begin{enumerate}
-	\item Ingrese a su página de opciones de suscriptor (mire en la
+	\item Acceda a su página de opciones de suscriptor (mire en la
 	Sección~\ref{sec:web} más detalles de cómo hacer esto).
 	\item Introduzca su nueva dirección en la sección identificada como
-	``Cambiando su información de membresía de NOMBRELISTA''.
-	\item Si usted desea cambiar su dirección para todas sus suscripciones
+	``Cambiando su información de suscripción de NOMBRELISTA''.
+	\item Si desea cambiar su dirección para todas sus suscripciones
 	usando la dirección antigüa, habilite la opción ``Cambiar
-	globalmente''.  Si uste tiene suscripciones desde otras direcciones o
-	suscripciones a listas en un dominio diferente, estas tendrán que
-	hacerse por separado.  Mire en la Sección~\ref{sec:global} más
+	globalmente''.  Si tiene suscripciones con otras direcciones o
+	suscripciones a listas en un dominio diferente, se tendrán que
+	hacer por separado.  Mire en la Sección~\ref{sec:global} más
 	información sobre cambios globales de configuración.
 \end{enumerate}
 
 Mailman le enviará un mensaje de confirmación a su nueva dirección, pero el
-cambio no tendrá efecto hasta que usted confirme el cambio siguiendo las
+cambio no tendrá efecto sino hasta que usted lo confirme siguiendo las
 instrucciones dadas en ese mensaje.
 
-No hay una forma especial de hacer esto desde el interfaz de correo
-electrónico, pero usted puede suscribirse y desuscribirse para conseguir más o
-menos el mismo efecto (mire en las Secciones~\ref{sec:subscribe} y
+No hay una forma equivalente de hacer esto desde el interfaz de correo
+electrónico, pero usted puede suscribirse y desuscribirse para conseguir más
+o menos el mismo efecto (mire en las Secciones~\ref{sec:subscribe} y
 \ref{sec:unsubscribe} más información sobre suscripción y desuscripción).
 
 % ----------------------------------------------------------------------------
-\subsection{¿Cómo hago para dejar de o iniciar a recibir copias de mis propios
-        envíos? (opción myposts)\label{sec:getown}}
+\subsection{¿Cómo hago para dejar de recibir copias de mis propios
+        envíos o empezar a hacerlo? (opción myposts)\label{sec:getown}}
 
-Por omisión en Mailman, usted recibe una copia de todos los mensajes que 
-usted envía a la lista.  A algunas personas les gusta esto ya que les 
-permite saber que el envío ha alcanzado su destino y así ellas tienen una
-copia de sus propias palabras con el resto de una discusión, pero otros no
-desean molestarse recibiendo copias de sus propios envíos.
+Por omisión en Mailman, usted recibe una copia de cada mensaje que envíe a la 
+la lista.  A algunas personas les gusta esto ya que les permite saber cuando
+un envío ha alcanzado su destino y de esta manera pueden recibir una copia de
+sus propias palabras con el resto de una eventual discusión, pero otros no
+desearán recibir copias de sus propios envíos.
 
-\note{Esta opción no tiene efecto si usted está recibiendo mensajes agrupados}
+\note{Esta opción no tiene efecto si está recibiendo mensajes agrupados}
 
-Usted también puede desear mirar la Sección~\ref{sec:getack}, la cual discute
-sobre los correos electrónicos de acuso de recibo de los mensajes que se
-envían a la lista.
+Si lo desea, en la Sección~\ref{sec:getack} se discute sobre el acuse de
+recibo de los mensajes que se envían a la lista.
 
 Para hacer esto usando el interfaz web:
 \begin{enumerate}
-	\item Ingrese a su página de opciones de suscriptor (mire en la
+	\item Acceda a su página de opciones de suscriptor (mire en la
 	Sección~\ref{sec:web} las instrucciones de cómo hacer esto).
-	\item Ubique la sección identificada como ``¿Recibir sus propios
+	\item Localice la sección identificada como ``¿Recibir sus propios
 	envíos a la lista?'', seleccione ``Si'' para recibir copias de sus
 	propios mensajes, y ``No'' para evitar recibirlos.
 \end{enumerate}
 
 Para hacer esto usando el interfaz de correo:
 \begin{enumerate}
-   \item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO} con la orden
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO} con la orden
    \var{set~myposts~on} o \var{set~myposts~off}.
-   Las órdenes pueden aparecer ya sea en el cuerpo o en la línea de asunto del
+   Las órdenes pueden aparecer tanto en el cuerpo como en el asunto del
    mensaje.  Mire en la Sección~\ref{sec:email} más información sobre el envío
-   de órdenes de correo.
+   de órdenes por correo.
    \item Seleccione ``on'' para recibir copias de sus propios mensajes, y 
    ``off'' para evitar recibirlos.
 \end{enumerate}
 
 % ----------------------------------------------------------------------------
-\subsection{¿Cómo puedo hacer para que Mailman me diga cuando mi envío ha
-sido recibido por la lista? (opción ack)\label{sec:getack}}
+\subsection{¿Cómo puedo hacer para que Mailman me informe cuando la lista
+ha recibido un envío mío? (opción ack)\label{sec:getack}}
 
-En la mayoría de las listas, usted simplemente recibirá una copia de su
-correo cuando éste se haya ido, no obstante, esta opción puede ser útil
-para usted, si esta opción está desactivada (ver Section~\ref{sec:getown}),
-su entrega de correo está desactivada (ver Section~\ref{sec:nomail}),
-usted no está suscrito a ese tema (ver Section~\ref{sec:sometopic}) o usted
-simplemente desea una confirmación de mensaje recibido extra del sistema.
+Como con la mayoría de las listas, usted simplemente recibirá una copia de sus
+correos enviados cuando el software de listas los distribuye, no obstante, la
+opción ack le puede ser útil, ya sea si tiene desactivada la opción de recibir
+copia de sus propios mensajes (ver Section~\ref{sec:getown}), si tiene
+desactivada la recepción del correo procedente de la lista (ver 
+Section~\ref{sec:nomail}), si no está suscrito a un cierto tema (ver
+Section~\ref{sec:sometopic}) o simplemente, si desea una confirmación de
+mensaje recibido de parte del sistema.
 
-\note{Si usted no está suscrito a la lista, no se puede usar esta opción.
-Usted debe, ya sea, revisar los archivos por su cuenta (si la lista tiene
-archivos públicos), preguntarle a alguien que esté suscrito a la lista, o
-suscribirse para usar esta opción.}
+\note{Si no está suscrito a la lista no se puede usar esta opción, pero aún
+así puede revisar los archivos por su cuenta (si la lista tiene archivos públicos), 
+o preguntar por los mensajes que envíe a alguien que esté suscrito a la lista.}
 
 Para utilizar esta opción usando el interfaz web:
 \begin{enumerate}
-	\item Ingrese a su página de opciones de suscriptor (mire en la
-	Sección~\ref{sec:web} mayores detalles de cómo hacer esto).
-	\item Ubique la sección identficada como ``¿Recibir correos de acuso
-	de rebibo cuando usted envía correo a la lista?''  Seleccione ``Si''
-	para recibir un correo haciéndole saber que se ha recibido su envío
-	y ``No'' para evitar recibir tal mensaje de acuso de recibo.
+	\item Acceda a su página de opciones de suscriptor (mire en la
+	Sección~\ref{sec:web} los detalles de cómo hacer esto).
+	\item Localice la sección identificada como ``¿Recibir acuse
+	de recibo al enviar correo a la lista?''  Seleccione ``Si''
+	si desea recibir un correo de confirmación de cada mensaje enviado 
+	y ``No'' para evitar recibir tales mensajes.
 \end{enumerate}
 
 Para utilizar esta opción usando el interfaz de correo electrónico:
 \begin{enumerate}
-   \item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO} con la orden
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO} con la orden
    \var{set~ack~on} o \var{set~ack~off}.
 
-   Las órdenes pueden aparecer ya sea en el cuerpo o en la línea de asunto del
+   Las órdenes pueden aparecer tanto en el cuerpo como en el asunto del
    mensaje.  Mire en la Sección~\ref{sec:email} más información sobre el envío
-   de órdenes de correo.
-   \item Seleccione ``on'' si usted desea recibir correo haciéndole saber que
-   se ha recibido su envío y ``off'' para evitar recibir tal mensaje de acuso
-   de recibo.
+   de órdenes por correo.
+   \item Seleccione ``on'' si desea recibir correo haciéndole saber que se han
+   recibido sus envíos y ``off'' para evitar recibir tal correo.
 \end{enumerate}
 
 % ----------------------------------------------------------------------------
 \subsection{Parece que no estoy recibiendo correo de las listas. ¿Qué debería
 	hacer?}
 
-Hay pocas razones comunes para que esto ocurra:
+Hay unas cuántas razones para que esto ocurra:
 \begin{itemize}
 	\item Durante un cierto lapso de tiempo nadie ha enviado correo a la
 	lista o listas en las cuales usted está suscrito.
@@ -977,8 +972,9 @@ Hay pocas razones comunes para que esto ocurra:
 % ============================================================================
 \section{Envíos agrupados}
 % ----------------------------------------------------------------------------
-\subsection{¿Cómo puedo iniciar o dejar de recibir los mensajes enviados a la
-lista agrupados en un correo de gran tamaño? (opción digest)\label{sec:digest}}
+\subsection{¿Cómo puedo empezar a recibir los mensajes enviados a la
+lista agrupados en un correo de gran tamaño o dejar de hacerlo? 
+(opción digest)\label{sec:digest}}
 
 Los grupos de envíos se llaman ``digests'' en Mailman.  En lugar de recibir
 los mensajes de uno en uno, usted puede recibir los mensajes agrupados (digests).
@@ -989,7 +985,7 @@ lista.
 Usted también puede desear mirar la Sección~\ref{sec:MIME} que trata sobre
 los envíos agrupados en formato MIME y texto plano. 
 
-Para activar o desactivar los envíos en modo agrupado usando la interfaz web:
+Para activar o desactivar los envíos en modo agrupado usando el interfaz web:
 \begin{enumerate}
 	\item Ingrese a su página de opciones de suscriptor (mire en la 
 	Sección~\ref{sec:web} más detalles de cómo hacer esto).
@@ -1002,12 +998,12 @@ Para activar o desactivar los envíos en modo agrupado usando la interfaz web:
 Para activar o desactivar los envíos en modo agrupado usando el interfaz de
 correo electrónico:
 \begin{enumerate} 
-   \item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO} con la orden
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO} con la orden
    \var{set~digest~plain} o \var{set~digest~mime} o \var{set~digest~off}.
    
-   Las órdenes pueden aparecer ya sea en el cuerpo o el la línea de asunto
+   Las órdenes pueden aparecer tanto en el cuerpo como en el asunto
    de un mensaje (ver en la Sección~\ref{sec:email} más información sobre el
-   envío de órdenes de correo).
+   envío de órdenes por correo).
    
    \item Seleccione ``off'' si usted desea recibir los mensajes cada uno por
    separado y seleccione ``plain'' o ``mime'' para recibir los mensajes
@@ -1062,12 +1058,12 @@ configuración.
 Para seleccionar su tipo de envíos agrupados a recibir, usando el interfaz
 de correo electrónico:
 \begin{enumerate}
-   \item Envíe un correo electrónico a \email{NOMBRELISTA-request@DOMINIO}
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO}
    con la orden \var{set~digest~plain} o \var{set~digest~mime}.
 
    Los comandos pueden aparecer ya sea en el cuerpo o en la línea de
    asunto del mensaje (mire en la Sección~\ref{sec:email} más información
-   sobre envío de órdenes de correo).
+   sobre envío de órdenes por correo).
 
    \item Seleccione ``plain'' para recibir los envíos agrupados en formato
    de texto plano, o ``mime'' para recibir los envíos agrupados en formato
@@ -1075,7 +1071,7 @@ de correo electrónico:
 \end{enumerate}
 
 % ----------------------------------------------------------------------------
-\section{Temas de listas de correo\label{sec:topics}}
+\section{Los temas en listas de correo\label{sec:topics}}
 
 Algunas listas están configuradas para que Mailman maneje diferentes temas.
 Por ejemplo, la lista de cursos en Linuxchix.org es una lista de discusión
@@ -1087,8 +1083,8 @@ Cada uno de estos cursos que se están dictando está asociado con un tema
 diferente en la lista de manera que la gente puede escoger que curso o cursos
 tomar.  El administrador debe configurar los temas, pero es responsabilidad
 de cada suscriptor asegurarse que cada envío tenga el tema correcto.
-Usualmente, ello requiere adicionar una palabra o etiqueta de algún tipo a
-la línea de asunto (por ejemplo: [Redes] ¿Qué tipos de cables necesito?)
+Usualmente, ello requiere adicionar una palabra o etiqueta de algún tipo en
+el asunto (por ejemplo: [Redes] ¿Qué tipos de cables necesito?)
 o asegurarse que la línea \mailheader{Palabras claves} tiene la información
 correcta (por omisión, usted puede poner una sección \mailheader{Palabras
 claves} en el comienzo del cuerpo de su mensaje, pero esto lo puede configurar
@@ -1328,12 +1324,12 @@ Para cambiar esta opción utilizando el interfaz web:
 
 Para cambiar esta opción utilizando el interfaz de correo electrónico:
 \begin{enumerate} 
-   \item Envíe un correo a \email{NOMBRELISTA-request@DOMINIO} con la órden
+   \item Envíe un mensaje a \email{NOMBRELISTA-request@DOMINIO} con la órden
    \var{set~hide~on} o \var{set~hide~off}.
 
-   Las órdenes puede aparecer ya sea en el cuerpo o en la línea de asunto del
+   Las órdenes puede aparecer tanto en el cuerpo como en el asunto del
    mensaje (mire en la Sección~\ref{sec:email} más información sobre el envío
-   de órdenes de correo.
+   de órdenes por correo.
    \item Seleccione ``on'' para ocultar su dirección de correo electrónico de
    la lista de membresía, u ``off'' para dejar de ocultar su dirección.
 \end{enumerate}
@@ -1362,7 +1358,7 @@ Mire en la Sección~\ref{sec:web} más información sobre búsqueda de
 direcciones de una lista.
 
 % ----------------------------------------------------------------------------
-\subsection{¿Qué hace Mailman para ayudar a protegerme de correo basura no
+\subsection{¿Qué hace Mailman para protegerme del correo basura no
 solicitado (spam)?\label{sec:antispam}}
 
 Los archivos de una lista técnica pueden incluir respuestas a un rango de
@@ -1572,7 +1568,7 @@ pueden no ser suficientes.
 		\begin{list}{}{}
 			\item
         Cuando se activa la opción `ack', usted recibirá un mensaje de
-	acuso de recibo cada vez que usted envíe un mensaje a la lista.
+	acuse de recibo cada vez que usted envíe un mensaje a la lista.
 		\end{list}
 
    \item set digest plain\\
