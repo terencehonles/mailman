@@ -116,7 +116,7 @@ def print_traceback(logfp=None):
         VERSION = '&lt;undetermined&gt;'
 
     # write to the log file first
-    logfp.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
+    logfp.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
     logfp.write('[----- Mailman Version: %s -----]\n' % VERSION)
     logfp.write('[----- Traceback ------]\n')
     if traceback:
@@ -138,8 +138,7 @@ email a copy of this page to the webmaster for this site with
 a description of what happened.  Thanks!
 
 <h4>Traceback:</h4>
-<p><pre>
-""" % locals()
+<p><pre>""" % locals()
     if traceback:
         traceback.print_exc(file=sys.stdout)
     else:
@@ -158,13 +157,45 @@ def print_environment(logfp=None):
     except ImportError:
         os = None
 
+    # some information about our Python executable
+    logfp.write('[----- Python Information -----]\n')
+    logfp.write('sys.version    = %s\n' % sys.version)
+    logfp.write('sys.executable = %s\n' % sys.executable)
+    logfp.write('sys.prefix     = %s\n' % sys.prefix)
+    logfp.write('sys.exec_prefix= %s\n' % sys.exec_prefix)
+    # what else?
+    logfp.write('sys.path       = %s\n' % sys.exec_prefix)
+    logfp.write('sys.platform   = %s\n' % sys.platform)
+
+    # some information about our Python executable
+    if os:
+        print '''\
+<p><hr><h4>Python information:</h4>
+
+<p><table>
+<tr><th>Variable</th><th>Value</th></tr>
+'''
+        print '<tr><td><tt>sys.version</tt></td><td>', \
+              sys.version, '</td></tr>'
+        print '<tr><td><tt>sys.executable</tt></td><td>', \
+              sys.executable, '</td></tr>'
+        print '<tr><td><tt>sys.prefix</tt></td><td>', sys.prefix, '</td></tr>'
+        print '<tr><td><tt>sys.exec_prefix</tt></td><td>', \
+              sys.exec_prefix, '</td></tr>'
+        # what else?
+        print '<tr><td><tt>sys.path</tt></td><td>', \
+              sys.exec_prefix, '</td></tr>'
+        print '<tr><td><tt>sys.platform</tt></td><td>', \
+              sys.platform, '</td></tr>'
+        print '</table>'
+
     # write to the log file first
     logfp.write('[----- Environment Variables -----]\n')
     if os:
         for k, v in os.environ.items():
             logfp.write('\t%s: %s\n' % (k, v))
     else:
-        logfp.write('[failed to import module os]\n')
+        logfp.write('[failed to import module os]')
 
     # write to the HTML sink
     if os:
@@ -172,11 +203,10 @@ def print_environment(logfp=None):
 <p><hr><h4>Environment variables:</h4>
 
 <p><table>
-<tr><td><strong>Variable</strong></td>
-<td><strong>Value</strong></td></tr>
+<tr><th>Variable</th><th>Value</th></tr>
 '''
         for k, v in os.environ.items():
-            print '<tr><td>', k, '</td><td>', v, '</td></tr>'
+            print '<tr><td><tt>', k, '</tt></td><td>', v, '</td></tr>'
         print '</table>'
     else:
         print '<p><hr>[failed to import module os]'
