@@ -136,7 +136,8 @@ class ListAdmin:
 
     def HoldMessage(self, msg, reason, msgdata={}):
         # Make a copy of msgdata so that subsequent changes won't corrupt the
-        # request database.
+        # request database.  TBD: remove the `filebase' key since this will
+        # not be relevant when the message is resurrected.
         newmsgdata = {}
         newmsgdata.update(msgdata)
         msgdata = newmsgdata
@@ -224,7 +225,14 @@ class ListAdmin:
         #
         # Forward the message
         if forward and addr:
-            if not msg:
+            # If we've approved the message, we need to be sure to craft a
+            # completely unique second message for the forwarding operation,
+            # since we don't want to share any state or information with the
+            # normal delivery.
+            if msg:
+                fp.seek(0)
+                msg = Message.Message(fp)
+            else:
                 try:
                     fp = open(path)
                 except IOError, e:
