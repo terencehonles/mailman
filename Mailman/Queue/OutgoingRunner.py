@@ -70,9 +70,9 @@ class OutgoingRunner(Runner):
             # requires the list lock), and temporary failures should be
             # retried later.
             #
-            # For permanent failures, make a copy of the message for
-            # HandleBouncingAddress().  I'm not sure this is necessary, or the
-            # right thing to do.
+            # For permanent failures, make a copy of the message for bounce
+            # handling.  I'm not sure this is necessary, or the right thing to
+            # do.
             pcnt = len(e.permfailures)
             copy = email.message_from_string(str(msg))
             self._permfailures.setdefault(mlist, []).extend(
@@ -117,7 +117,7 @@ class OutgoingRunner(Runner):
                 return
             try:
                 for recip, msg in self._permfailures[mlist]:
-                    mlist.RegisterBounce(recip, msg)
+                    mlist.registerBounce(recip, msg)
                 del self._permfailures[mlist]
                 mlist.Save()
             finally:
