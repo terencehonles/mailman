@@ -202,7 +202,8 @@ class UserNotification(Message):
             self.set_payload(text, charset)
         if subject is None:
             subject = '(no subject)'
-        self['Subject'] = Header(subject, charset, header_name='Subject')
+        self['Subject'] = Header(subject, charset, header_name='Subject',
+                                 errors='replace')
         self['From'] = sender
         if isinstance(recip, ListType):
             self['To'] = COMMASPACE.join(recip)
