@@ -27,17 +27,23 @@ from Mailman.Queue.sbcache import get_switchboard
 
 
 def process(mlist, msg, msgdata):
-    # Do VERP calculation for non-personalized interval delivery.  BAW: We
-    # can't do this in OutgoingRunner.py (where it was originally) because
-    # that runner loads the list unlocked and we can't have it re-load the
-    # list state for every cycle through its mainloop.
     interval = mm_cfg.VERP_DELIVERY_INTERVAL
-    # If occasional VERPing is turned on, and we haven't't already made a
-    # VERPing decision...
-    if interval > 0 and not msgdata.has_key('verp'):
-        if interval == 1:
-            # VERP every time
+    # Should we VERP this message?  If personalization is enabled for this
+    # list and VERP_PERSONALIZED_DELIVERIES is true, then yes we VERP it.
+    # Also, if personalization is /not/ enabled, but VERP_DELIVERY_INTERVAL is
+    # set (and we've hit this interval), then again, this message should be
+    # VERPed. Otherwise, no.
+    if mlist.personalize:
+        if mm_cfg.VERP_PERSONALIZED_DELIVERIES:
             msgdata['verp'] = 1
+    elif interval == 0:
+        # Never VERP
+        pass
+    elif interval == 1:
+        # VERP every time
+        msgdata['verp'] = 1
+    else:
+        # VERP every `inteval' number of times
         msgdata['verp'] = not int(mlist.post_id) % interval
     # And now drop the message in qfiles/out
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
